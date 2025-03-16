@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
@@ -557,7 +558,7 @@ public partial class WorldModel : IGame, IGameDebug
 
     public void SendCommand(string command)
     {
-        SendCommand(command, 0, null);
+        SendCommand(command, 0, ReadOnlyDictionary<string, string>.Empty);
     }
 
     public void SendEvent(string eventName, string param)
