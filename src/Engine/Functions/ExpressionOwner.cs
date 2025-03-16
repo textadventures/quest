@@ -152,7 +152,7 @@ namespace QuestViva.Engine.Functions
         {
             Element parentElement = GetParameter<Element>(parent, "Contains", "object");
             Element nameElement = GetParameter<Element>(name, "Contains", "object");
-            return m_worldModel.ObjectContains(parentElement, nameElement);
+            return WorldModel.ObjectContains(parentElement, nameElement);
         }
 
         public QuestList<Element> NewObjectList()

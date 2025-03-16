@@ -1554,7 +1554,7 @@ namespace QuestViva.EditorCore
                     if (newParent.ElemType == ElementType.Object)
                     {
                         // Can't drag a parent object onto one of its own children
-                        return !m_worldModel.ObjectContains(element, newParent);
+                        return !WorldModel.ObjectContains(element, newParent);
                     }
                 }
 
@@ -1622,7 +1622,7 @@ namespace QuestViva.EditorCore
                    where possibleParent != element
                    && possibleParent != element.Parent
                    && possibleParent.Type == ObjectType.Object
-                   && !m_worldModel.ObjectContains(element, possibleParent)
+                   && !WorldModel.ObjectContains(element, possibleParent)
                    orderby possibleParent.Name
                    select possibleParent.Name;
         }
@@ -1899,7 +1899,7 @@ namespace QuestViva.EditorCore
             if (!ElementExists(elementName)) return false;
             if (elementName == "game") return false;
             if (m_editorStyle == EditorStyle.GameBook && elementName == "player") return false;
-            if (m_editorStyle == EditorStyle.GameBook && m_worldModel.ObjectContains(m_worldModel.Elements.Get(elementName), m_worldModel.Elements.Get("player"))) return false;
+            if (m_editorStyle == EditorStyle.GameBook && WorldModel.ObjectContains(m_worldModel.Elements.Get(elementName), m_worldModel.Elements.Get("player"))) return false;
             return true;
         }
 

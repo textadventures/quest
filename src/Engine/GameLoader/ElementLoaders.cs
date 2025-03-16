@@ -265,7 +265,7 @@ namespace QuestViva.Engine.GameLoader
             {
                 string name = pattern == null ? null : m_regex().Match(pattern.Replace(" ", "")).Value;
 
-                if (string.IsNullOrEmpty(name) || WorldModel.ObjectExists(name)) name = WorldModel.GetUniqueID(name);
+                if (string.IsNullOrEmpty(name) || WorldModel.ObjectExists(name)) name = WorldModel.GetUniqueId(name);
                 return name;
             }
         }
@@ -863,7 +863,7 @@ namespace QuestViva.Engine.GameLoader
             public override object Load(XmlReader reader, ref Element current)
             {
                 string name = reader.GetAttribute("name");
-                if (string.IsNullOrEmpty(name)) name = WorldModel.GetUniqueID(IDPrefix);
+                if (string.IsNullOrEmpty(name)) name = WorldModel.GetUniqueId(IDPrefix);
                 Element newElement = WorldModel.GetElementFactory(CreateElementType).Create(name);
                 newElement.Parent = current;
                 return newElement;

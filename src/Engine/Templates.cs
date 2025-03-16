@@ -29,7 +29,7 @@ namespace QuestViva.Engine
                 }
             }
 
-            string elementName = m_worldModel.GetUniqueID("template");
+            string elementName = m_worldModel.GetUniqueId("template");
 
             Element template = m_worldModel.GetElementFactory(ElementType.Template).Create(elementName);
             template.Fields[FieldDefinitions.TemplateName] = templateName;

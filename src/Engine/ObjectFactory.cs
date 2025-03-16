@@ -101,7 +101,7 @@ namespace QuestViva.Engine
 
         public virtual Element Create()
         {
-            string id = WorldModel.GetUniqueID();
+            string id = WorldModel.GetUniqueId();
             return Create(id);
         }
 
@@ -259,7 +259,7 @@ namespace QuestViva.Engine
 
         public Element CreateObject(ObjectType type, IList<string> initialTypes, IDictionary<string, object> initialFields)
         {
-            string id = (type == ObjectType.Exit) ? WorldModel.GetUniqueID("exit") : WorldModel.GetUniqueID();
+            string id = (type == ObjectType.Exit) ? WorldModel.GetUniqueId("exit") : WorldModel.GetUniqueId();
             return CreateObject(id, type, true, initialTypes, initialFields);
         }
 
@@ -295,7 +295,7 @@ namespace QuestViva.Engine
 
         public Element CreateCommand()
         {
-            string id = WorldModel.GetUniqueID();
+            string id = WorldModel.GetUniqueId();
             return CreateCommand(id);
         }
 
@@ -312,7 +312,7 @@ namespace QuestViva.Engine
             if (string.IsNullOrEmpty(id))
             {
                 anonymous = true;
-                id = WorldModel.GetUniqueID();
+                id = WorldModel.GetUniqueId();
             }
             Element newTurnScript = CreateObject(id, ObjectType.TurnScript);
             newTurnScript.Type = ObjectType.TurnScript;
@@ -334,8 +334,8 @@ namespace QuestViva.Engine
             bool anonymous = false;
             if (string.IsNullOrEmpty(exitID))
             {
-                exitID = WorldModel.GetUniqueID("exit");
-                if (WorldModel.ObjectExists(exitID)) exitID = WorldModel.GetUniqueID(exitID);
+                exitID = WorldModel.GetUniqueId("exit");
+                if (WorldModel.ObjectExists(exitID)) exitID = WorldModel.GetUniqueId(exitID);
                 anonymous = true;
             }
             if (string.IsNullOrEmpty(initialType)) initialType = null;

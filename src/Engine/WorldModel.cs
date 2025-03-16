@@ -15,7 +15,6 @@ namespace QuestViva.Engine;
 
 public partial class WorldModel : IGameDebug, IGameTimer
 {
-    private readonly Element _game;
     private readonly Elements _elements;
     private readonly Dictionary<string, int> _nextUniqueId = new();
     private readonly Template _template;
@@ -24,7 +23,6 @@ public partial class WorldModel : IGameDebug, IGameTimer
     private readonly Dictionary<string, ObjectType> _debuggerObjectTypes = new();
     private readonly Dictionary<string, ElementType> _debuggerElementTypes = new();
     private readonly Dictionary<ElementType, IElementFactory> _elementFactories = new();
-    private readonly ObjectFactory _objectFactory;
     private readonly ExpressionOwner _expressionOwner;
     private readonly List<string> _attributeNames = [];
     private readonly RegexCache _regexCache = new();
@@ -103,20 +101,20 @@ public partial class WorldModel : IGameDebug, IGameTimer
         _expressionOwner = new ExpressionOwner(this);
         _template = new Template(this);
         InitialiseElementFactories();
-        _objectFactory = (ObjectFactory)_elementFactories[ElementType.Object];
+        ObjectFactory = (ObjectFactory)_elementFactories[ElementType.Object];
 
         InitialiseDebuggerObjectTypes();
         _gameData = gameData;
         _elements = new Elements();
         _undoLogger = new UndoLogger(this);
-        _game = ObjectFactory.CreateObject("game", ObjectType.Game);
+        Game = ObjectFactory.CreateObject("game", ObjectType.Game);
     }
 
     public bool UseNcalc { get; set; }
 
     private void InitialiseElementFactories()
     {
-        foreach (Type t in Classes.GetImplementations(System.Reflection.Assembly.GetExecutingAssembly(),
+        foreach (var t in Classes.GetImplementations(System.Reflection.Assembly.GetExecutingAssembly(),
                      typeof(IElementFactory)))
         {
             AddElementFactory((IElementFactory)Activator.CreateInstance(t));
@@ -130,9 +128,9 @@ public partial class WorldModel : IGameDebug, IGameTimer
         factory.ObjectsUpdated += ElementsUpdated;
     }
 
-    void ElementsUpdated(object sender, ObjectsUpdatedEventArgs args)
+    private void ElementsUpdated(object sender, ObjectsUpdatedEventArgs args)
     {
-        if (ObjectsUpdated != null) ObjectsUpdated(this, args);
+        ObjectsUpdated?.Invoke(this, args);
     }
 
     private void InitialiseDebuggerObjectTypes()
@@ -161,53 +159,37 @@ public partial class WorldModel : IGameDebug, IGameTimer
             Monitor.PulseAll(_threadLock);
         }
 
-        lock (m_waitForResponseLock)
+        lock (_waitForResponseLock)
         {
-            Monitor.PulseAll(m_waitForResponseLock);
+            Monitor.PulseAll(_waitForResponseLock);
         }
 
-        if (RequestNextTimerTick != null) RequestNextTimerTick(0);
-
-        if (Finished != null) Finished();
+        RequestNextTimerTick?.Invoke(0);
+        Finished?.Invoke();
     }
 
-    internal string GetUniqueID()
-    {
-        return GetUniqueID(null);
-    }
-
-    internal string GetUniqueID(string prefix)
+    internal string GetUniqueId(string prefix = null)
     {
         if (string.IsNullOrEmpty(prefix)) prefix = "k";
-        if (!_nextUniqueId.ContainsKey(prefix))
-        {
-            _nextUniqueId.Add(prefix, 0);
-        }
-
+        _nextUniqueId.TryAdd(prefix, 0);
         string newid;
         do
         {
             _nextUniqueId[prefix]++;
-            newid = prefix + _nextUniqueId[prefix].ToString();
+            newid = prefix + _nextUniqueId[prefix];
         } while (_elements.ContainsKey(newid));
             
         return newid;
     }
 
-    public Element Game
-    {
-        get { return _game; }
-    }
+    public Element Game { get; }
 
     public Element Object(string name)
     {
         return _elements.Get(ElementType.Object, name);
     }
 
-    public ObjectFactory ObjectFactory
-    {
-        get { return _objectFactory; }
-    }
+    public ObjectFactory ObjectFactory { get; }
 
     public IElementFactory GetElementFactory(ElementType t)
     {
@@ -258,32 +240,31 @@ public partial class WorldModel : IGameDebug, IGameTimer
         return new QuestList<Element>(_elements.Objects);
     }
 
-    internal QuestList<Element> GetObjectsInScope(string scopeFunction)
+    private QuestList<Element> GetObjectsInScope(string scopeFunction)
     {
         if (_elements.ContainsKey(ElementType.Function, scopeFunction))
         {
             return (QuestList<Element>)RunProcedure(scopeFunction, true);
         }
-        throw new Exception(string.Format("No function '{0}'", scopeFunction));
+        throw new Exception($"No function '{scopeFunction}'");
     }
 
-    public bool ObjectContains(Element parent, Element searchObj)
+    public static bool ObjectContains(Element parent, Element searchObj)
     {
         if (searchObj.Parent == null) return false;
-        if (searchObj.Parent == parent) return true;
-        return ObjectContains(parent, searchObj.Parent);
+        return searchObj.Parent == parent || ObjectContains(parent, searchObj.Parent);
     }
 
-    private object m_waitForResponseLock = new object();
-    private string m_menuResponse = null;
-    private IDictionary<string, string> m_menuOptions = null;
+    private readonly object _waitForResponseLock = new();
+    private string _menuResponse = null;
+    private IDictionary<string, string> _menuOptions = null;
 
     internal string DisplayMenu(string caption, IDictionary<string, string> options, bool allowCancel, bool async)
     {
         Print(caption);
 
-        MenuData menuData = new MenuData(caption, options, allowCancel);
-        m_menuOptions = options;
+        var menuData = new MenuData(caption, options, allowCancel);
+        _menuOptions = options;
 
         _playerUi.ShowMenu(menuData);
 
@@ -293,38 +274,34 @@ public partial class WorldModel : IGameDebug, IGameTimer
         }
 
         _callbacks.Pop(CallbackManager.CallbackTypes.Menu);
-        m_menuOptions = null;
+        _menuOptions = null;
 
         ChangeThreadState(ThreadState.Waiting);
 
-        lock (m_waitForResponseLock)
+        lock (_waitForResponseLock)
         {
-            Monitor.Wait(m_waitForResponseLock);
+            Monitor.Wait(_waitForResponseLock);
         }
 
         ChangeThreadState(ThreadState.Working);
 
-        return m_menuResponse;
+        return _menuResponse;
     }
 
     internal string DisplayMenu(string caption, IList<string> options, bool allowCancel, bool async)
     {
-        Dictionary<string, string> optionsDictionary = new Dictionary<string, string>();
-        foreach (string option in options)
-        {
-            optionsDictionary.Add(option, option);
-        }
+        var optionsDictionary = options.ToDictionary(option => option);
         return DisplayMenu(caption, optionsDictionary, allowCancel, async);
     }
 
     public void SetMenuResponse(string response)
     {
-        Callback menuCallback = _callbacks.Pop(CallbackManager.CallbackTypes.Menu);
+        var menuCallback = _callbacks.Pop(CallbackManager.CallbackTypes.Menu);
         if (menuCallback != null)
         {
-            if (response != null) Print(" - " + m_menuOptions[response]);
+            if (response != null) Print(" - " + _menuOptions[response]);
             menuCallback.Context.Parameters["result"] = response;
-            m_menuOptions = null;
+            _menuOptions = null;
             DoInNewThreadAndWait(() =>
             {
                 RunCallbackAndFinishTurn(menuCallback);
@@ -334,11 +311,11 @@ public partial class WorldModel : IGameDebug, IGameTimer
         {
             DoInNewThreadAndWait(() =>
             {
-                m_menuResponse = response;
+                _menuResponse = response;
 
-                lock (m_waitForResponseLock)
+                lock (_waitForResponseLock)
                 {
-                    Monitor.Pulse(m_waitForResponseLock);
+                    Monitor.Pulse(_waitForResponseLock);
                 }
             });
         }
@@ -848,9 +825,9 @@ public partial class WorldModel : IGameDebug, IGameTimer
 
         ChangeThreadState(ThreadState.Waiting);
 
-        lock (m_waitForResponseLock)
+        lock (_waitForResponseLock)
         {
-            Monitor.Wait(m_waitForResponseLock);
+            Monitor.Wait(_waitForResponseLock);
         }
 
         ChangeThreadState(ThreadState.Working);
@@ -877,9 +854,9 @@ public partial class WorldModel : IGameDebug, IGameTimer
             if (_state == GameState.Finished) return;
             DoInNewThreadAndWait(() =>
             {
-                lock (m_waitForResponseLock)
+                lock (_waitForResponseLock)
                 {
-                    Monitor.Pulse(m_waitForResponseLock);
+                    Monitor.Pulse(_waitForResponseLock);
                 }
             });
         }
@@ -891,9 +868,9 @@ public partial class WorldModel : IGameDebug, IGameTimer
 
         ChangeThreadState(ThreadState.Waiting);
 
-        lock (m_waitForResponseLock)
+        lock (_waitForResponseLock)
         {
-            Monitor.Wait(m_waitForResponseLock);
+            Monitor.Wait(_waitForResponseLock);
         }
 
         ChangeThreadState(ThreadState.Working);
@@ -903,9 +880,9 @@ public partial class WorldModel : IGameDebug, IGameTimer
     {
         DoInNewThreadAndWait(() =>
         {
-            lock (m_waitForResponseLock)
+            lock (_waitForResponseLock)
             {
-                Monitor.Pulse(m_waitForResponseLock);
+                Monitor.Pulse(_waitForResponseLock);
             }
         });
     }
@@ -934,7 +911,7 @@ public partial class WorldModel : IGameDebug, IGameTimer
         if (Version < WorldModelVersion.v530) return null;
 
         var webFontsInUse = new List<string>();
-        var defaultWebFont = _game.Fields[FieldDefinitions.DefaultWebFont];
+        var defaultWebFont = Game.Fields[FieldDefinitions.DefaultWebFont];
         if (!string.IsNullOrEmpty(defaultWebFont))
         {
             webFontsInUse.Add(defaultWebFont);
@@ -1456,9 +1433,9 @@ public partial class WorldModel : IGameDebug, IGameTimer
 
         ChangeThreadState(ThreadState.Waiting);
 
-        lock (m_waitForResponseLock)
+        lock (_waitForResponseLock)
         {
-            Monitor.Wait(m_waitForResponseLock);
+            Monitor.Wait(_waitForResponseLock);
         }
 
         ChangeThreadState(ThreadState.Working);
@@ -1489,9 +1466,9 @@ public partial class WorldModel : IGameDebug, IGameTimer
             {
                 m_questionResponse = response;
 
-                lock (m_waitForResponseLock)
+                lock (_waitForResponseLock)
                 {
-                    Monitor.Pulse(m_waitForResponseLock);
+                    Monitor.Pulse(_waitForResponseLock);
                 }
             });
         }
@@ -1579,9 +1556,9 @@ public partial class WorldModel : IGameDebug, IGameTimer
         {
             ChangeThreadState(ThreadState.Waiting);
 
-            lock (m_waitForResponseLock)
+            lock (_waitForResponseLock)
             {
-                Monitor.Wait(m_waitForResponseLock);
+                Monitor.Wait(_waitForResponseLock);
             }
         }
     }
@@ -1682,14 +1659,14 @@ public partial class WorldModel : IGameDebug, IGameTimer
 
     public int ASLVersion { get { return int.Parse(VersionString); } }
 
-    public string GameID => _game.Fields[FieldDefinitions.GameID];
+    public string GameID => Game.Fields[FieldDefinitions.GameID];
         
     IEnumerable<string> IGame.GetResourceNames()
     {
         return GetResourceNames == null ? [] : GetResourceNames();
     }
 
-    public string Category { get { return _game.Fields[FieldDefinitions.Category]; } }
-    public string Description { get { return _game.Fields[FieldDefinitions.Description]; } }
-    public string Cover { get { return _game.Fields[FieldDefinitions.Cover]; } }
+    public string Category { get { return Game.Fields[FieldDefinitions.Category]; } }
+    public string Description { get { return Game.Fields[FieldDefinitions.Description]; } }
+    public string Cover { get { return Game.Fields[FieldDefinitions.Cover]; } }
 }
