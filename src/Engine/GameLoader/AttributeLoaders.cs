@@ -1,488 +1,444 @@
-﻿#nullable disable
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Xml.Linq;
 using QuestViva.Engine.Types;
 using QuestViva.Utility;
+// ReSharper disable UnusedType.Local
 
-namespace QuestViva.Engine.GameLoader
+namespace QuestViva.Engine.GameLoader;
+
+internal partial class GameLoader
 {
-    partial class GameLoader
+    private delegate void AddErrorHandler(string error);
+
+    private readonly Dictionary<string, IAttributeLoader> _attributeLoaders = new();
+    private readonly Dictionary<string, IValueLoader> _valueLoaders = new();
+
+    private void AddLoaders(LoadMode mode)
     {
-        private delegate void AddErrorHandler(string error);
-
-        private Dictionary<string, IAttributeLoader> m_attributeLoaders = new Dictionary<string, IAttributeLoader>();
-        private Dictionary<string, IValueLoader> m_valueLoaders = new Dictionary<string, IValueLoader>();
-
-        private void AddLoaders(GameLoader.LoadMode mode)
+        foreach (var t in Classes.GetImplementations(System.Reflection.Assembly.GetExecutingAssembly(),
+                     typeof(IAttributeLoader)))
         {
-            foreach (Type t in Classes.GetImplementations(System.Reflection.Assembly.GetExecutingAssembly(),
-                typeof(IAttributeLoader)))
-            {
-                AddLoader((IAttributeLoader)Activator.CreateInstance(t), mode);
-            }
-
-            foreach (Type t in Classes.GetImplementations(System.Reflection.Assembly.GetExecutingAssembly(),
-                typeof(IValueLoader)))
-            {
-                AddValueLoader((IValueLoader)Activator.CreateInstance(t));
-            }
+            AddLoader((IAttributeLoader)Activator.CreateInstance(t)!, mode);
         }
 
-        private void AddLoader(IAttributeLoader loader, GameLoader.LoadMode mode)
+        foreach (var t in Classes.GetImplementations(System.Reflection.Assembly.GetExecutingAssembly(),
+                     typeof(IValueLoader)))
         {
-            if (loader.SupportsMode(mode))
-            {
-                m_attributeLoaders.Add(loader.AppliesTo, loader);
-                loader.GameLoader = this;
-            }
+            AddValueLoader((IValueLoader)Activator.CreateInstance(t)!);
+        }
+    }
+
+    private void AddLoader(IAttributeLoader loader, LoadMode mode)
+    {
+        if (!loader.SupportsMode(mode))
+        {
+            return;
         }
 
-        private void AddValueLoader(IValueLoader loader)
+        _attributeLoaders.Add(loader.AppliesTo, loader);
+        loader.GameLoader = this;
+    }
+
+    private void AddValueLoader(IValueLoader loader)
+    {
+        _valueLoaders.Add(loader.AppliesTo, loader);
+        loader.GameLoader = this;
+    }
+
+    private object? ReadXmlValue(string? type, XElement xml)
+    {
+        type ??= xml.IsEmpty ? "boolean" : "string";
+
+        if (_valueLoaders.TryGetValue(type, out var loader))
         {
-            m_valueLoaders.Add(loader.AppliesTo, loader);
-            loader.GameLoader = this;
+            return loader.GetValue(xml);
         }
 
-        private object ReadXmlValue(string type, XElement xml)
+        AddError($"Unrecognised nested attribute type '{type}'");
+
+        return null;
+    }
+
+    private interface IAttributeLoader
+    {
+        string AppliesTo { get; }
+        void Load(Element element, string attribute, string value);
+        GameLoader GameLoader { set; }
+        bool SupportsMode(LoadMode mode);
+    }
+
+    private interface IValueLoader
+    {
+        string AppliesTo { get; }
+        object? GetValue(XElement xml);
+        GameLoader GameLoader { set; }
+    }
+
+    private abstract class AttributeLoaderBase : IAttributeLoader
+    {
+        public abstract string AppliesTo { get; }
+        public abstract void Load(Element element, string attribute, string value);
+
+        public GameLoader GameLoader { set; protected get; } = null!;
+
+        public virtual bool SupportsMode(LoadMode mode)
         {
-            if (type == null)
+            return true;
+        }
+    }
+
+    private abstract class BasicAttributeLoaderBase : AttributeLoaderBase, IValueLoader
+    {
+        protected abstract record AttributeLoadResult;
+        protected record InvalidAttributeLoadResult : AttributeLoadResult;
+        protected record ValidAttributeLoadResult(object Value) : AttributeLoadResult;
+
+        public object? GetValue(XElement xml)
+        {
+            var value = GetValueFromString(xml.Value, "(nested)");
+            if (value is ValidAttributeLoadResult validResult)
             {
-                type = xml.IsEmpty ? "boolean" : "string";
+                return validResult.Value;
             }
-
-            IValueLoader loader;
-
-            if (m_valueLoaders.TryGetValue(type, out loader))
-            {
-                return loader.GetValue(xml);
-            }
-
-            AddError(string.Format("Unrecognised nested attribute type '{0}'", type));
 
             return null;
         }
 
-        private interface IAttributeLoader
+        public override void Load(Element element, string attribute, string value)
         {
-            string AppliesTo { get; }
-            void Load(Element element, string attribute, string value);
-            GameLoader GameLoader { set; }
-            bool SupportsMode(GameLoader.LoadMode mode);
-        }
-
-        private interface IValueLoader
-        {
-            string AppliesTo { get; }
-            object GetValue(XElement xml);
-            GameLoader GameLoader { set; }
-        }
-
-        private abstract class AttributeLoaderBase : IAttributeLoader
-        {
-            public abstract string AppliesTo { get; }
-            public abstract void Load(Element element, string attribute, string value);
-
-            public GameLoader GameLoader { set; protected get; }
-
-            public virtual bool SupportsMode(GameLoader.LoadMode mode)
+            var result = GetValueFromString(value, $"{element.Name}.{attribute}");
+            if (result is ValidAttributeLoadResult validResult)
             {
-                return true;
+                element.Fields.Set(attribute, validResult.Value);
             }
         }
 
-        private abstract class BasicAttributeLoaderBase : AttributeLoaderBase, IValueLoader
+        protected abstract AttributeLoadResult GetValueFromString(string s, string errorSource);
+    }
+
+    private class SimpleStringListLoader : AttributeLoaderBase
+    {
+        public override string AppliesTo => "simplestringlist";
+
+        public override void Load(Element element, string attribute, string value)
         {
-            protected class AttributeLoadResult
-            {
-                public bool IsValid { get; set; }
-                public object Value { get; set; }
-            }
-
-            public object GetValue(XElement xml)
-            {
-                return GetValueFromString(xml.Value, "(nested)").Value;
-            }
-
-            public override void Load(Element element, string attribute, string value)
-            {
-                var result = GetValueFromString(value, string.Format("{0}.{1}", element.Name, attribute));
-                if (result.IsValid)
-                {
-                    element.Fields.Set(attribute, result.Value);
-                }
-            }
-
-            protected abstract AttributeLoadResult GetValueFromString(string s, string errorSource);
+            var values = GetValues(value);
+            element.Fields.Set(attribute, new QuestList<string>(values));
         }
 
-        private class SimpleStringListLoader : AttributeLoaderBase
+        protected static string[] GetValues(string value)
         {
-            public override string AppliesTo
-            {
-                get { return "simplestringlist"; }
-            }
+            var values = value.Contains('\n')
+                ? Utility.SplitIntoLines(value).ToArray()
+                : Utility.ListSplit(value);
+            return values;
+        }
+    }
 
-            public override void Load(Element element, string attribute, string value)
-            {
-                string[] values = GetValues(value);
-                element.Fields.Set(attribute, new QuestList<string>(values));
-            }
+    private class ListExtensionLoader : SimpleStringListLoader
+    {
+        public override string AppliesTo => "listextend";
 
-            protected string[] GetValues(string value)
-            {
-                string[] values;
-                if (value.IndexOf("\n", StringComparison.Ordinal) >= 0)
-                {
-                    values = Utility.SplitIntoLines(value).ToArray();
-                }
-                else
-                {
-                    values = Utility.ListSplit(value);
-                }
-                return values;
-            }
+        public override void Load(Element element, string attribute, string value)
+        {
+            var values = GetValues(value);
+            element.Fields.AddFieldExtension(attribute, new QuestList<string>(values, true));
+        }
+    }
+
+    private class ObjectListLoader : AttributeLoaderBase, IValueLoader
+    {
+        public override string AppliesTo => "objectlist";
+
+        public override void Load(Element element, string attribute, string value)
+        {
+            var values = GetValues(value);
+            element.Fields.LazyFields.AddObjectList(attribute, values);
         }
 
-        private class ListExtensionLoader : SimpleStringListLoader
+        private static IEnumerable<string> GetValues(string value)
         {
-            public override string AppliesTo
-            {
-                get { return "listextend"; }
-            }
-
-            public override void Load(Element element, string attribute, string value)
-            {
-                string[] values = GetValues(value);
-                element.Fields.AddFieldExtension(attribute, new QuestList<string>(values, true));
-            }
+            var values = value.Contains('\n')
+                ? Utility.SplitIntoLines(value).ToArray()
+                : Utility.ListSplit(value);
+            return values.Where(v => v.Length > 0);
         }
 
-        private class ObjectListLoader : AttributeLoaderBase, IValueLoader
+        public object GetValue(XElement xml)
         {
-            public override string AppliesTo
+            return new LazyObjectList(GetValues(xml.Value));
+        }
+    }
+
+    private class ScriptLoader : AttributeLoaderBase, IValueLoader
+    {
+        public override string AppliesTo => "script";
+
+        public override void Load(Element element, string attribute, string value)
+        {
+            element.Fields.LazyFields.AddScript(attribute, value);
+        }
+
+        public object GetValue(XElement xml)
+        {
+            return new LazyScript(xml.Value);
+        }
+    }
+
+    private class StringLoader : AttributeLoaderBase, IValueLoader
+    {
+        public override string AppliesTo => "string";
+
+        public override void Load(Element element, string attribute, string value)
+        {
+            element.Fields.Set(attribute, value);
+        }
+
+        public object GetValue(XElement xml)
+        {
+            return xml.Value;
+        }
+    }
+
+    private class DoubleLoader : BasicAttributeLoaderBase
+    {
+        public override string AppliesTo => "double";
+
+        protected override AttributeLoadResult GetValueFromString(string s, string errorSource)
+        {
+            if (double.TryParse(s,
+                    System.Globalization.NumberStyles.AllowDecimalPoint |
+                    System.Globalization.NumberStyles.AllowLeadingSign,
+                    System.Globalization.CultureInfo.InvariantCulture, out var num))
             {
-                get { return "objectlist"; }
+                return new ValidAttributeLoadResult(num);
             }
 
-            public override void Load(Element element, string attribute, string value)
+            GameLoader.AddError($"Invalid number specified '{errorSource} = {s}'");
+            return new InvalidAttributeLoadResult();
+        }
+    }
+
+    private class IntLoader : BasicAttributeLoaderBase
+    {
+        public override string AppliesTo => "int";
+
+        protected override AttributeLoadResult GetValueFromString(string s, string errorSource)
+        {
+            if (int.TryParse(s, out var num))
             {
-                IEnumerable<string> values = GetValues(value);
-                element.Fields.LazyFields.AddObjectList(attribute, values);
+                return new ValidAttributeLoadResult(num);
             }
 
-            private IEnumerable<string> GetValues(string value)
+            GameLoader.AddError($"Invalid number specified '{errorSource} = {s}'");
+            return new InvalidAttributeLoadResult();
+        }
+    }
+
+    private class BooleanLoader : BasicAttributeLoaderBase
+    {
+        public override string AppliesTo => "boolean";
+
+        protected override AttributeLoadResult GetValueFromString(string s, string errorSource)
+        {
+            switch (s)
             {
-                string[] values;
-                if (value.IndexOf("\n", StringComparison.Ordinal) >= 0)
+                case "":
+                case "true":
+                    return new ValidAttributeLoadResult(true);
+                case "false":
+                    return new ValidAttributeLoadResult(false);
+                default:
+                    GameLoader.AddError($"Invalid boolean specified '{errorSource} = {s}'");
+                    return new InvalidAttributeLoadResult();
+            }
+        }
+    }
+
+    private partial class SimplePatternLoader : AttributeLoaderBase
+    {
+        // TO DO: It would be nice if we could also specify optional text in square brackets
+        // e.g. ask man about[ the] #subject#
+
+        [GeneratedRegex("#([A-Za-z]\\w+)#")]
+        private partial Regex m_regex();
+
+        public override string AppliesTo => "simplepattern";
+
+        public override void Load(Element element, string attribute, string value)
+        {
+            if (element.Fields.GetAsType<bool>("isverb"))
+            {
+                element.Fields.LazyFields.AddAction(() =>
                 {
-                    values = Utility.SplitIntoLines(value).ToArray();
-                }
-                else
-                {
-                    values = Utility.ListSplit(value);
-                }
-                return values.Where(v => v.Length > 0);
+                    // use LazyField as we need the separator attribute to exist to create
+                    // the correct regex
+                    LoadVerb(element, attribute, value);
+                });
             }
-
-            public object GetValue(XElement xml)
+            else
             {
-                return new LazyObjectList(GetValues(xml.Value));
-            }
-        }
-
-        private class ScriptLoader : AttributeLoaderBase, IValueLoader
-        {
-            public override string AppliesTo
-            {
-                get { return "script"; }
-            }
-
-            public override void Load(Element element, string attribute, string value)
-            {
-                element.Fields.LazyFields.AddScript(attribute, value);
-            }
-
-            public object GetValue(XElement xml)
-            {
-                return new LazyScript(xml.Value);
-            }
-        }
-
-        private class StringLoader : AttributeLoaderBase, IValueLoader
-        {
-            public override string AppliesTo
-            {
-                get { return "string"; }
-            }
-
-            public override void Load(Element element, string attribute, string value)
-            {
-                element.Fields.Set(attribute, value);
-            }
-
-            public object GetValue(XElement xml)
-            {
-                return xml.Value;
-            }
-        }
-
-        private class DoubleLoader : BasicAttributeLoaderBase
-        {
-            public override string AppliesTo
-            {
-                get { return "double"; }
-            }
-
-            protected override AttributeLoadResult GetValueFromString(string s, string errorSource)
-            {
-                double num;
-                if (double.TryParse(s, System.Globalization.NumberStyles.AllowDecimalPoint | System.Globalization.NumberStyles.AllowLeadingSign, System.Globalization.CultureInfo.InvariantCulture, out num))
-                {
-                    return new AttributeLoadResult {IsValid = true, Value = num};
-                }
-
-                GameLoader.AddError(string.Format("Invalid number specified '{0} = {1}'", errorSource, s));
-                return new AttributeLoadResult {IsValid = false};
-            }
-        }
-
-        private class IntLoader : BasicAttributeLoaderBase
-        {
-            public override string AppliesTo
-            {
-                get { return "int"; }
-            }
-
-            protected override AttributeLoadResult GetValueFromString(string s, string errorSource)
-            {
-                int num;
-                if (int.TryParse(s, out num))
-                {
-                    return new AttributeLoadResult {IsValid = true, Value = num};
-                }
-
-                GameLoader.AddError(string.Format("Invalid number specified '{0} = {1}'", errorSource, s));
-                return new AttributeLoadResult {IsValid = false};
+                LoadCommand(element, attribute, value);
             }
         }
 
-        private class BooleanLoader : BasicAttributeLoaderBase
+        private void LoadCommand(Element element, string attribute, string value)
         {
-            public override string AppliesTo
+            value = value.Replace("(", @"\(").Replace(")", @"\)").Replace(".", @"\.").Replace("?", @"\?");
+            value = m_regex().Replace(value, MatchReplace);
+
+            if (value.Contains('#'))
             {
-                get { return "boolean"; }
+                GameLoader.AddError($"Invalid command pattern '{element.Name}.{attribute} = {value}'");
             }
 
-            protected override AttributeLoadResult GetValueFromString(string s, string errorSource)
+            // Now split semicolon separated command patterns
+            var patterns = Utility.ListSplit(value);
+            var result = string.Empty;
+            foreach (var pattern in patterns)
             {
-                switch (s)
+                if (result.Length > 0) result += "|";
+                result += "^" + pattern + "$";
+            }
+
+            element.Fields.Set(attribute, result);
+        }
+
+        private static string MatchReplace(Match m)
+        {
+            // "#blah#" needs to be converted to "(?<blah>.*)"
+            return "(?<" + m.Groups[1].Value + ">.*)";
+        }
+
+        private static void LoadVerb(Element element, string attribute, string value)
+        {
+            element.Fields.Set(attribute, Utility.ConvertVerbSimplePattern(value, element.Fields[FieldDefinitions.Separator]));
+
+            var verbs = value.Split(';');
+            element.Fields[FieldDefinitions.DisplayVerb] = verbs[0].Replace("#object#", string.Empty).Trim();
+        }
+
+        public override bool SupportsMode(LoadMode mode)
+        {
+            return mode == LoadMode.Play;
+        }
+    }
+
+    private class EditorSimplePatternLoader : AttributeLoaderBase
+    {
+        private readonly SimplePatternLoader _patternLoader = new();
+
+        public override string AppliesTo => "simplepattern";
+
+        public override void Load(Element element, string attribute, string value)
+        {
+            if (element.ElemType == ElementType.Editor)
+            {
+                // For Editor elements, use the normal pattern loader to convert this
+                // simple pattern to a regex.
+                _patternLoader.Load(element, attribute, value);
+
+                if (attribute == FieldDefinitions.Pattern.Property)
                 {
-                    case "":
-                    case "true":
-                        return new AttributeLoadResult {IsValid = true, Value = true};
-                    case "false":
-                        return new AttributeLoadResult {IsValid = true, Value = false};
-                    default:
-                        GameLoader.AddError(string.Format("Invalid boolean specified '{0} = {1}'", errorSource, s));
-                        return new AttributeLoadResult {IsValid = false};
+                    // Save the original pattern for convenience so we can generate expression easily
+                    element.Fields[FieldDefinitions.OriginalPattern] = value;
                 }
+            }
+            else
+            {
+                // For all other element types, create an EditorCommandPattern so the pattern
+                // can be edited as a simple string
+                element.Fields.Set(attribute, new EditorCommandPattern(value));
             }
         }
 
-        private partial class SimplePatternLoader : AttributeLoaderBase
+        public override bool SupportsMode(LoadMode mode)
         {
-            // TO DO: It would be nice if we could also specify optional text in square brackets
-            // e.g. ask man about[ the] #subject#
+            return mode == LoadMode.Edit;
+        }
+    }
 
-            [GeneratedRegex("#([A-Za-z]\\w+)#")]
-            private partial Regex m_regex();
+    private class SimpleStringDictionaryLoader : AttributeLoaderBase
+    {
+        public override string AppliesTo => "simplestringdictionary";
 
-            public override string AppliesTo
+        public override void Load(Element element, string attribute, string value)
+        {
+            var result = new QuestDictionary<string>();
+
+            var values = Utility.ListSplit(value);
+            foreach (var pair in values)
             {
-                get { return "simplepattern"; }
-            }
-
-            public override void Load(Element element, string attribute, string value)
-            {
-                if (element.Fields.GetAsType<bool>("isverb"))
+                if (pair.Length <= 0)
                 {
-                    element.Fields.LazyFields.AddAction(() =>
-                    {
-                        // use LazyField as we need the separator attribute to exist to create
-                        // the correct regex
-                        LoadVerb(element, attribute, value);
-                    });
-                }
-                else
-                {
-                    LoadCommand(element, attribute, value);
-                }
-            }
-
-            private void LoadCommand(Element element, string attribute, string value)
-            {
-                value = value.Replace("(", @"\(").Replace(")", @"\)").Replace(".", @"\.").Replace("?", @"\?");
-                value = m_regex().Replace(value, MatchReplace);
-
-                if (value.Contains("#"))
-                {
-                    GameLoader.AddError(string.Format("Invalid command pattern '{0}.{1} = {2}'", element.Name, attribute, value));
+                    continue;
                 }
 
-                // Now split semi-colon separated command patterns
-                string[] patterns = Utility.ListSplit(value);
-                string result = string.Empty;
-                foreach (string pattern in patterns)
+                var trimmedPair = pair.Trim();
+                var splitPos = trimmedPair.IndexOf('=');
+                if (splitPos == -1)
                 {
-                    if (result.Length > 0) result += "|";
-                    result += "^" + pattern + "$";
+                    GameLoader.AddError(
+                        $"Missing '=' in dictionary element '{trimmedPair}' in '{element.Name}.{attribute}'");
+                    return;
+                }
+                var key = trimmedPair[..splitPos].Trim();
+                var dictValue = trimmedPair[(splitPos + 1)..].Trim();
+                result.Add(key, dictValue);
+            }
+
+            element.Fields.Set(attribute, result);
+        }
+    }
+
+    private class SimpleObjectDictionaryLoader : AttributeLoaderBase
+    {
+        public override string AppliesTo => "simpleobjectdictionary";
+
+        public override void Load(Element element, string attribute, string value)
+        {
+            var result = new Dictionary<string, string>();
+
+            var values = Utility.ListSplit(value);
+            foreach (var pair in values)
+            {
+                if (pair.Length <= 0)
+                {
+                    continue;
                 }
 
-                element.Fields.Set(attribute, result);
+                var trimmedPair = pair.Trim();
+                var splitPos = trimmedPair.IndexOf('=');
+                if (splitPos == -1)
+                {
+                    GameLoader.AddError(
+                        $"Missing '=' in dictionary element '{trimmedPair}' in '{element.Name}.{attribute}'");
+                    return;
+                }
+                var key = trimmedPair[..splitPos].Trim();
+                var dictValue = trimmedPair[(splitPos + 1)..].Trim();
+                result.Add(key, dictValue);
             }
 
-            private string MatchReplace(System.Text.RegularExpressions.Match m)
-            {
-                // "#blah#" needs to be converted to "(?<blah>.*)"
-                return "(?<" + m.Groups[1].Value + ">.*)";
-            }
+            element.Fields.LazyFields.AddObjectDictionary(attribute, result);
+        }
+    }
 
-            private void LoadVerb(Element element, string attribute, string value)
-            {
-                element.Fields.Set(attribute, Utility.ConvertVerbSimplePattern(value, element.Fields[FieldDefinitions.Separator]));
+    private class ObjectReferenceLoader : AttributeLoaderBase, IValueLoader
+    {
+        public override string AppliesTo => "object";
 
-                string[] verbs = value.Split(';');
-                element.Fields[FieldDefinitions.DisplayVerb] = verbs[0].Replace("#object#", string.Empty).Trim();
-            }
-
-            public override bool SupportsMode(GameLoader.LoadMode mode)
-            {
-                return (mode == Engine.GameLoader.GameLoader.LoadMode.Play);
-            }
+        public override void Load(Element element, string attribute, string value)
+        {
+            element.Fields.LazyFields.AddObjectField(attribute, value);   
         }
 
-        private class EditorSimplePatternLoader : AttributeLoaderBase
+        public object GetValue(XElement xml)
         {
-            private SimplePatternLoader m_patternLoader = new SimplePatternLoader();
-
-            public override string AppliesTo
-            {
-                get { return "simplepattern"; }
-            }
-
-            public override void Load(Element element, string attribute, string value)
-            {
-                if (element.ElemType == ElementType.Editor)
-                {
-                    // For Editor elements, use the normal pattern loader to convert this
-                    // simple pattern to a regex.
-                    m_patternLoader.Load(element, attribute, value);
-
-                    if (attribute == FieldDefinitions.Pattern.Property)
-                    {
-                        // Save the original pattern for convenience so we can generate expression easily
-                        element.Fields[FieldDefinitions.OriginalPattern] = value;
-                    }
-                }
-                else
-                {
-                    // For all other element types, create an EditorCommandPattern so the pattern
-                    // can be edited as a simple string
-                    element.Fields.Set(attribute, new EditorCommandPattern(value));
-                }
-            }
-
-            public override bool SupportsMode(GameLoader.LoadMode mode)
-            {
-                return (mode == Engine.GameLoader.GameLoader.LoadMode.Edit);
-            }
-        }
-
-        private class SimpleStringDictionaryLoader : AttributeLoaderBase
-        {
-            public override string AppliesTo
-            {
-                get { return "simplestringdictionary"; }
-            }
-
-            public override void Load(Element element, string attribute, string value)
-            {
-                QuestDictionary<string> result = new QuestDictionary<string>();
-
-                string[] values = Utility.ListSplit(value);
-                foreach (string pair in values)
-                {
-                    if (pair.Length > 0)
-                    {
-                        string trimmedPair = pair.Trim();
-                        int splitPos = trimmedPair.IndexOf('=');
-                        if (splitPos == -1)
-                        {
-                            GameLoader.AddError(string.Format("Missing '=' in dictionary element '{0}' in '{1}.{2}'", trimmedPair, element.Name, attribute));
-                            return;
-                        }
-                        string key = trimmedPair.Substring(0, splitPos).Trim();
-                        string dictValue = trimmedPair.Substring(splitPos + 1).Trim();
-                        result.Add(key, dictValue);
-                    }
-                }
-
-                element.Fields.Set(attribute, result);
-            }
-        }
-
-        private class SimpleObjectDictionaryLoader : AttributeLoaderBase
-        {
-            public override string AppliesTo
-            {
-                get { return "simpleobjectdictionary"; }
-            }
-
-            public override void Load(Element element, string attribute, string value)
-            {
-                Dictionary<string, string> result = new Dictionary<string, string>();
-
-                string[] values = Utility.ListSplit(value);
-                foreach (string pair in values)
-                {
-                    if (pair.Length > 0)
-                    {
-                        string trimmedPair = pair.Trim();
-                        int splitPos = trimmedPair.IndexOf('=');
-                        if (splitPos == -1)
-                        {
-                            GameLoader.AddError(string.Format("Missing '=' in dictionary element '{0}' in '{1}.{2}'", trimmedPair, element.Name, attribute));
-                            return;
-                        }
-                        string key = trimmedPair.Substring(0, splitPos).Trim();
-                        string dictValue = trimmedPair.Substring(splitPos + 1).Trim();
-                        result.Add(key, dictValue);
-                    }
-                }
-
-                element.Fields.LazyFields.AddObjectDictionary(attribute, result);
-            }
-        }
-
-        private class ObjectReferenceLoader : AttributeLoaderBase, IValueLoader
-        {
-            public override string AppliesTo
-            {
-                get { return "object"; }
-            }
-
-            public override void Load(Element element, string attribute, string value)
-            {
-                element.Fields.LazyFields.AddObjectField(attribute, value);   
-            }
-
-            public object GetValue(XElement xml)
-            {
-                return new LazyObjectReference(xml.Value);
-            }
+            return new LazyObjectReference(xml.Value);
         }
     }
 }

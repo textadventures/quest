@@ -32,7 +32,7 @@ namespace QuestViva.Engine.GameLoader
 
         private Dictionary<string, IAttributeLoader> AttributeLoaders
         {
-            get { return m_attributeLoaders; }
+            get { return _attributeLoaders; }
         }
 
         private Dictionary<string, GameLoader.IExtendedAttributeLoader> ExtendedAttributeLoaders
