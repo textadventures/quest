@@ -26,8 +26,6 @@ internal partial class GameLoader
         public string Status { get; private set; } = status;
     }
 
-    private readonly WorldModel _worldModel;
-    private readonly ScriptFactory _scriptFactory;
     private readonly ImplicitTypes _implicitTypes = new();
     private readonly Stack<FileData> _currentFile = new();
 
@@ -50,12 +48,12 @@ internal partial class GameLoader
     public GameLoader(WorldModel worldModel, LoadMode mode, bool? isCompiled = null)
     {
         IsCompiledFile = isCompiled ?? false;
-        _worldModel = worldModel;
-        _scriptFactory = new ScriptFactory(worldModel);
-        _scriptFactory.ErrorHandler += AddError;
+        WorldModel = worldModel;
+        ScriptFactory = new ScriptFactory(worldModel);
+        ScriptFactory.ErrorHandler += AddError;
         AddLoaders(mode);
         AddExtendedAttributeLoaders(mode);
-        AddXMLLoaders(mode);
+        AddXmlLoaders(mode);
     }
         
     public async Task<bool> Load(GameData gameData)
@@ -95,8 +93,8 @@ internal partial class GameLoader
                 }
                 else
                 {
-                    _worldModel.Version = value;
-                    _worldModel.VersionString = version;
+                    WorldModel.Version = value;
+                    WorldModel.VersionString = version;
                 }
 
                 var originalFile = reader.GetAttribute("original");
@@ -166,13 +164,13 @@ internal partial class GameLoader
         var timer = System.Diagnostics.Stopwatch.StartNew();
 
         Element? current = null;
-        IXMLLoader? currentLoader = null;
+        IXmlLoader? currentLoader = null;
 
         // Set the "IsEditorLibrary" flag for any library with type="editor", and its sub-libraries
         var isEditorLibrary = _currentFile.Count > 0 && _currentFile.Peek().IsEditorLibrary ||
                               reader.GetAttribute("type") == "editor";
 
-        if (!IsCompiledFile && _currentFile.Count == 0 && _worldModel.Version >= WorldModelVersion.v530)
+        if (!IsCompiledFile && _currentFile.Count == 0 && WorldModel.Version >= WorldModelVersion.v530)
         {
             ScanForTemplates(filename);
         }
@@ -241,9 +239,9 @@ internal partial class GameLoader
         newElement.MetaFields[MetaFieldDefinitions.EditorLibrary] = (_currentFile.Peek().IsEditorLibrary);
     }
 
-    private IXMLLoader GetLoader(string name, Element? current)
+    private IXmlLoader GetLoader(string name, Element? current)
     {
-        if (!m_xmlLoaders.TryGetValue(name, out var loader) && current != null) loader = m_defaultXmlLoader;
+        if (!_xmlLoaders.TryGetValue(name, out var loader) && current != null) loader = _defaultXmlLoader;
         if (loader == null) throw new Exception($"Unrecognised tag '{name}' outside object definition");
         return loader;
     }
@@ -260,7 +258,7 @@ internal partial class GameLoader
 
     private string GetTemplate(string? text)
     {
-        return _worldModel.Template.ReplaceTemplateText(text);
+        return WorldModel.Template.ReplaceTemplateText(text);
     }
 
     // resolves "lazy" exit strings into actual objects,
@@ -268,9 +266,9 @@ internal partial class GameLoader
     private void ResolveGame()
     {
         UpdateStatus("Initialising elements...");
-        foreach (var e in _worldModel.Elements.GetElements())
+        foreach (var e in WorldModel.Elements.GetElements())
         {
-            e.Fields.LazyFields.Resolve(_scriptFactory);
+            e.Fields.LazyFields.Resolve(ScriptFactory);
         }
     }
 

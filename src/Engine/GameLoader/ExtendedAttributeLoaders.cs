@@ -22,8 +22,6 @@ namespace QuestViva.Engine.GameLoader
             bool SupportsMode(GameLoader.LoadMode mode);
         }
 
-        private Dictionary<string, IExtendedAttributeLoader> m_extendedAttributeLoaders = new Dictionary<string, IExtendedAttributeLoader>();
-
         private void AddExtendedAttributeLoaders(GameLoader.LoadMode mode)
         {
             foreach (Type t in Classes.GetImplementations(System.Reflection.Assembly.GetExecutingAssembly(),
@@ -37,7 +35,7 @@ namespace QuestViva.Engine.GameLoader
         {
             if (loader.SupportsMode(mode))
             {
-                m_extendedAttributeLoaders.Add(loader.AppliesTo, loader);
+                ExtendedAttributeLoaders.Add(loader.AppliesTo, loader);
                 loader.GameLoader = this;
             }
         }

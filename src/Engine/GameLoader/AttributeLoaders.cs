@@ -13,7 +13,6 @@ internal partial class GameLoader
 {
     private delegate void AddErrorHandler(string error);
 
-    private readonly Dictionary<string, IAttributeLoader> _attributeLoaders = new();
     private readonly Dictionary<string, IValueLoader> _valueLoaders = new();
 
     private void AddLoaders(LoadMode mode)
@@ -38,7 +37,7 @@ internal partial class GameLoader
             return;
         }
 
-        _attributeLoaders.Add(loader.AppliesTo, loader);
+        AttributeLoaders.Add(loader.AppliesTo, loader);
         loader.GameLoader = this;
     }
 

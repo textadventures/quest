@@ -1,5 +1,4 @@
-﻿#nullable disable
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
@@ -7,1002 +6,846 @@ using System.Xml;
 using QuestViva.Engine.Scripts;
 using QuestViva.Engine.Types;
 using QuestViva.Utility;
+// ReSharper disable UnusedType.Local
 
-namespace QuestViva.Engine.GameLoader
+namespace QuestViva.Engine.GameLoader;
+
+internal partial class GameLoader
 {
-    partial class GameLoader
+    private delegate void LoadNestedXmlHandler(string filename, XmlReader newReader);
+
+    private readonly Dictionary<string, IXmlLoader> _xmlLoaders = new();
+    private IXmlLoader _defaultXmlLoader = null!;
+
+    private void AddXmlLoaders(LoadMode mode)
     {
-        private delegate void LoadNestedXMLHandler(string filename, XmlReader newReader);
-
-        private Dictionary<string, IXMLLoader> m_xmlLoaders = new Dictionary<string, IXMLLoader>();
-        private IXMLLoader m_defaultXmlLoader;
-
-        private void AddXMLLoaders(GameLoader.LoadMode mode)
+        // Use Reflection to create instances of all IXmlLoaders
+        foreach (var t in Classes.GetImplementations(System.Reflection.Assembly.GetExecutingAssembly(),
+                     typeof(IXmlLoader)))
         {
-            // Use Reflection to create instances of all IXMLLoaders
-            foreach (Type t in Classes.GetImplementations(System.Reflection.Assembly.GetExecutingAssembly(),
-                typeof(IXMLLoader)))
+            AddXmlLoader((IXmlLoader)Activator.CreateInstance(t)!, mode);
+        }
+
+        _defaultXmlLoader = new DefaultXmlLoader();
+        InitXmlLoader(_defaultXmlLoader);
+    }
+
+    private Dictionary<string, IAttributeLoader> AttributeLoaders { get; } = new();
+    private Dictionary<string, IExtendedAttributeLoader> ExtendedAttributeLoaders { get; } = new Dictionary<string, IExtendedAttributeLoader>();
+
+    private WorldModel WorldModel { get; }
+    private ScriptFactory ScriptFactory { get; }
+
+    private void AddXmlLoader(IXmlLoader loader, LoadMode mode)
+    {
+        InitXmlLoader(loader);
+        if (loader.AppliesTo != null && loader.SupportsMode(mode))
+        {
+            _xmlLoaders.Add(loader.AppliesTo, loader);
+        }
+    }
+
+    private void InitXmlLoader(IXmlLoader loader)
+    {
+        loader.GameLoader = this;
+        loader.AddError += AddError;
+        loader.LoadNestedXml += LoadXml;
+    }
+
+    private interface IXmlLoader
+    {
+        event AddErrorHandler AddError;
+        event LoadNestedXmlHandler LoadNestedXml;
+        string? AppliesTo { get; }
+        void StartElement(XmlReader reader, ref Element? current);
+        void EndElement(XmlReader reader, ref Element? current);
+        void SetText(string text, ref Element? current);
+        GameLoader GameLoader { set; }
+        bool SupportsMode(LoadMode mode);
+    }
+
+    private abstract class XmlLoaderBase : IXmlLoader
+    {
+        private GameLoader _loader = null!;
+        protected WorldModel WorldModel { get; private set; } = null!;
+
+        public event AddErrorHandler? AddError;
+        public event LoadNestedXmlHandler? LoadNestedXml;
+        public abstract string? AppliesTo { get; }
+        
+        public void StartElement(XmlReader reader, ref Element? current)
+        {
+            var createdObject = Load(reader, ref current);
+
+            if (createdObject is Element element)
             {
-                AddXMLLoader((IXMLLoader)Activator.CreateInstance(t), mode);
+                GameLoader.AddedElement(element);
             }
 
-            m_defaultXmlLoader = new DefaultXMLLoader();
-            InitXMLLoader(m_defaultXmlLoader);
-        }
-
-        private Dictionary<string, IAttributeLoader> AttributeLoaders
-        {
-            get { return _attributeLoaders; }
-        }
-
-        private Dictionary<string, GameLoader.IExtendedAttributeLoader> ExtendedAttributeLoaders
-        {
-            get { return m_extendedAttributeLoaders; }
-        }
-
-        private WorldModel WorldModel
-        {
-            get { return _worldModel; }
-        }
-
-        private ScriptFactory ScriptFactory
-        {
-            get { return _scriptFactory; }
-        }
-
-        private void AddXMLLoader(IXMLLoader loader, GameLoader.LoadMode mode)
-        {
-            InitXMLLoader(loader);
-            if (loader.AppliesTo != null && loader.SupportsMode(mode))
+            if (!CanContainNestedAttributes)
             {
-                m_xmlLoaders.Add(loader.AppliesTo, loader);
-            }
-        }
-
-        private void InitXMLLoader(IXMLLoader loader)
-        {
-            loader.GameLoader = this;
-            loader.AddError += AddError;
-            loader.LoadNestedXML += LoadXml;
-        }
-
-        private interface IXMLLoader
-        {
-            event AddErrorHandler AddError;
-            event LoadNestedXMLHandler LoadNestedXML;
-            string AppliesTo { get; }
-            void StartElement(XmlReader reader, ref Element current);
-            void EndElement(XmlReader reader, ref Element current);
-            void SetText(string text, ref Element current);
-            QuestViva.Engine.GameLoader.GameLoader GameLoader { set; }
-            bool SupportsMode(GameLoader.LoadMode mode);
-        }
-
-        private abstract class XMLLoaderBase : IXMLLoader
-        {
-            private WorldModel m_worldModel = null;
-            private QuestViva.Engine.GameLoader.GameLoader m_loader = null;
-
-            protected WorldModel WorldModel
-            {
-                get { return m_worldModel; }
+                return;
             }
 
-            #region IXMLLoader Members
+            if (createdObject != null && !reader.IsEmptyElement) current = (Element)createdObject;
+        }
 
-            public event AddErrorHandler AddError;
-            public event LoadNestedXMLHandler LoadNestedXML;
-            public abstract string AppliesTo { get; }
-            public void StartElement(XmlReader reader, ref Element current)
+        public void EndElement(XmlReader reader, ref Element? current)
+        {
+            if (!CanContainNestedAttributes) return;
+
+            current = current!.Parent == null ? null : current.Parent;
+        }
+
+        public GameLoader GameLoader
+        {
+            set
             {
-                object createdObject = Load(reader, ref current);
+                _loader = value;
+                WorldModel = _loader.WorldModel;
+            }
+            get => _loader;
+        }
 
-                if (createdObject != null && createdObject is Element)
+        public virtual void SetText(string text, ref Element? current)
+        {
+        }
+
+        public virtual bool SupportsMode(LoadMode mode)
+        {
+            return true;
+        }
+
+        public abstract object? Load(XmlReader reader, ref Element? current);
+
+        protected virtual bool CanContainNestedAttributes => false;
+
+        protected void RaiseError(string error)
+        {
+            AddError?.Invoke(error);
+        }
+
+        protected void LoadXml(string filename, XmlReader newReader)
+        {
+            LoadNestedXml?.Invoke(filename, newReader);
+        }
+    }
+
+    private partial class CommandLoader : XmlLoaderBase
+    {
+        private readonly RequiredAttributes _requiredAttributes = new(
+            new RequiredAttribute("name", true, true, false),
+            new RequiredAttribute("pattern", true, true, false),
+            new RequiredAttribute("unresolved", true, true, false),
+            new RequiredAttribute("template", false, true, false));
+
+        public override string AppliesTo => "command";
+
+        public override object Load(XmlReader reader, ref Element? current)
+        {
+            return Load(reader, ref current, null);
+        }
+
+        protected object Load(XmlReader reader, ref Element? current, string? defaultName)
+        {
+            var data = GameLoader.GetRequiredAttributes(reader, _requiredAttributes);
+
+            var pattern = data["pattern"];
+            var name = data["name"];
+            var template = data["template"];
+
+            var anonymous = false;
+
+            if (string.IsNullOrEmpty(name)) name = defaultName;
+            if (string.IsNullOrEmpty(name))
+            {
+                anonymous = true;
+                name = GetUniqueCommandId(pattern);
+            }
+
+            var newCommand = WorldModel.ObjectFactory.CreateCommand(name);
+
+            if (anonymous)
+            {
+                newCommand.Fields[FieldDefinitions.Anonymous] = true;
+            }
+
+            if (current != null)
+            {
+                newCommand.Parent = current;
+            }
+
+            if (pattern != null)
+            {
+                newCommand.Fields[FieldDefinitions.Pattern] = pattern;
+            }
+
+            if (template != null)
+            {
+                LoadTemplate(newCommand, template);
+            }
+
+            var unresolved = data["unresolved"];
+            if (!string.IsNullOrEmpty(unresolved)) newCommand.Fields[FieldDefinitions.Unresolved] = unresolved;
+
+            return newCommand;
+        }
+
+        private void LoadTemplate(Element newCommand, string template)
+        {
+            var pattern = WorldModel.Template.GetText(template);
+            if (WorldModel.EditMode)
+            {
+                newCommand.Fields.Set(FieldDefinitions.Pattern.Property, new EditorCommandPattern(Utility.ConvertVerbSimplePatternForEditor(pattern)));
+            }
+            else
+            {
+                if (WorldModel.Version >= WorldModelVersion.v530)
                 {
-                    GameLoader.AddedElement((Element)createdObject);
+                    var verbs = pattern.Split(';');
+                    newCommand.Fields[FieldDefinitions.DisplayVerb] = verbs[0].Trim();
+                }
+                LoadPattern(newCommand, pattern);
+            }
+        }
+
+        protected virtual void LoadPattern(Element newCommand, string pattern)
+        {
+            newCommand.Fields[FieldDefinitions.Pattern] = Utility.ConvertVerbSimplePattern(pattern, null);
+        }
+
+        public override void SetText(string text, ref Element? current)
+        {
+            if (current == null)
+            {
+                throw new Exception("Current element is not set");
+            }
+            current.Fields.LazyFields.AddScript("script", GameLoader.GetTemplate(text));
+        }
+
+        protected override bool CanContainNestedAttributes => true;
+
+        [GeneratedRegex("[A-Za-z0-9]+")]
+        private partial Regex m_regex();
+
+        private string GetUniqueCommandId(string? pattern)
+        {
+            var name = pattern == null ? null : m_regex().Match(pattern.Replace(" ", "")).Value;
+
+            if (string.IsNullOrEmpty(name) || WorldModel.ObjectExists(name)) name = WorldModel.GetUniqueId(name);
+            return name;
+        }
+    }
+
+    private class VerbLoader : CommandLoader
+    {
+        public override string AppliesTo => "verb";
+
+        public override object Load(XmlReader reader, ref Element? current)
+        {
+            var property = reader.GetAttribute("property");
+
+            var newCommand = (Element)base.Load(reader, ref current, property);
+
+            newCommand.Fields[FieldDefinitions.Property] = property;
+
+            var response = reader.GetAttribute("response");
+            if (!string.IsNullOrEmpty(response))
+            {
+                newCommand.Fields[FieldDefinitions.DefaultTemplate] = response;
+            }
+
+            newCommand.Fields.LazyFields.AddType("defaultverb");
+            newCommand.Fields[FieldDefinitions.IsVerb] = true;
+
+            return newCommand;
+        }
+
+        public override void SetText(string text, ref Element? current)
+        {
+            if (current == null)
+            {
+                throw new Exception("Current element is not set");
+            }
+            var contents = GameLoader.GetTemplate(text);
+            current.Fields[FieldDefinitions.DefaultText] = contents;
+        }
+
+        protected override void LoadPattern(Element newCommand, string pattern)
+        {
+            newCommand.Fields.LazyFields.AddAction(() =>
+            {
+                newCommand.Fields[FieldDefinitions.Pattern] = Utility.ConvertVerbSimplePattern(pattern, newCommand.Fields[FieldDefinitions.Separator]);
+            });
+        }
+    }
+
+    private abstract class IncludeLoaderBase : XmlLoaderBase
+    {
+        public override string AppliesTo => "include";
+
+        public override object? Load(XmlReader reader, ref Element? current)
+        {
+            var filename = GameLoader.GetTemplateAttribute(reader, "ref");
+            if (filename.Length == 0) return null;
+            var stream = WorldModel.GetLibraryStream(filename);
+            var newReader = new XmlTextReader(stream);
+            while (newReader.NodeType != XmlNodeType.Element && !newReader.EOF)
+            {
+                newReader.Read();
+            }
+            if (newReader.Name != "library")
+            {
+                RaiseError($"Included file '{filename}' is not a library");
+            }
+            LoadXml(filename, newReader);
+            return LoadInternal(filename);
+        }
+
+        protected abstract object? LoadInternal(string file);
+        protected abstract LoadMode LoaderMode { get; }
+
+        public override bool SupportsMode(LoadMode mode)
+        {
+            return mode == LoaderMode;
+        }
+    }
+
+    private class IncludeLoader : IncludeLoaderBase
+    {
+        protected override object? LoadInternal(string file)
+        {
+            return null;
+        }
+
+        protected override LoadMode LoaderMode => LoadMode.Play;
+    }
+
+    private class EditorIncludeLoader : IncludeLoaderBase
+    {
+        protected override object LoadInternal(string file)
+        {
+            Element include = WorldModel.GetElementFactory(ElementType.IncludedLibrary).Create();
+            include.Fields[FieldDefinitions.Filename] = file;
+            include.Fields[FieldDefinitions.Anonymous] = true;
+            return include;
+        }
+
+        protected override LoadMode LoaderMode => LoadMode.Edit;
+    }
+
+    private class LibraryLoader : XmlLoaderBase
+    {
+        // This class doesn't need to do anything. The initial <library> tag is loaded from the XML
+        // by the IncludeLoader, but we still need something to handle the closing tag.
+
+        public override string AppliesTo => "library";
+
+        public override object? Load(XmlReader reader, ref Element? current)
+        {
+            return null;
+        }
+    }
+
+    private class ASLElementLoader : XmlLoaderBase
+    {
+        // This class doesn't need to do anything, it just handles the closing </asl> tag.
+
+        public override string AppliesTo => "asl";
+
+        public override object? Load(XmlReader reader, ref Element? current)
+        {
+            return null;
+        }
+    }
+
+    private class DefaultXmlLoader : XmlLoaderBase
+    {
+        public override string? AppliesTo => null;
+
+        private static readonly Dictionary<string, string> LegacyTypeMappings = new()
+        {
+            { "list", "simplestringlist" },
+            { "stringdictionary", "simplestringdictionary" },
+            { "objectdictionary", "simpleobjectdictionary" },
+        };
+
+        public override object? Load(XmlReader reader, ref Element? current)
+        {
+            if (current == null)
+            {
+                throw new Exception("Current element is not set");
+            }
+            
+            var attribute = reader.Name;
+            if (attribute == "attr")
+            {
+                attribute = reader.GetAttribute("name");
+            }
+            
+            if (attribute == null)
+            {
+                throw new Exception($"Invalid attribute");
+            }
+            
+            var type = reader.GetAttribute("type");
+
+            WorldModel.AddAttributeName(attribute);
+
+            if (type == null)
+            {
+                var currentElementType = current.Fields.GetString("type");
+                if (string.IsNullOrEmpty(currentElementType))
+                {
+                    // the type property is the object type, so is not set for other element types.
+                    currentElementType = current.Fields.GetString("elementtype");
+                }
+                type = GameLoader._implicitTypes.Get(currentElementType, attribute);
+            }
+
+            // map old to new type names if necessary (but not in included library files)
+            if (type != null && WorldModel.Version <= WorldModelVersion.v530 &&
+                !current.MetaFields[MetaFieldDefinitions.Library] &&
+                LegacyTypeMappings.TryGetValue(type, out var legacyType))
+            {
+                type = legacyType;
+            }
+
+            if (type != null && GameLoader.ExtendedAttributeLoaders.TryGetValue(type, out var extendedAttributeLoader))
+            {
+                extendedAttributeLoader.Load(reader, current);
+            }
+            else
+            {
+                string value;
+
+                try
+                {
+                    value = GameLoader.GetTemplateContents(reader);
+                }
+                catch (XmlException)
+                {
+                    RaiseError(
+                        $"Error loading XML data for '{current.Name}.{attribute}' - ensure that it contains no nested XML");
+                    return null;
                 }
 
-                if (CanContainNestedAttributes)
-                {
-                    if (createdObject != null && !reader.IsEmptyElement) current = (Element)createdObject;
-                }
-            }
+                type ??= value.Length > 0 ? "string" : "boolean";
 
-            public void EndElement(XmlReader reader, ref Element current)
-            {
-                if (!CanContainNestedAttributes) return;
-
-                if (current.Parent == null)
+                if (GameLoader.AttributeLoaders.TryGetValue(type, out var attributeLoader))
                 {
-                    current = null;
+                    attributeLoader.Load(current, attribute, value);
                 }
                 else
                 {
-                    current = current.Parent;
-                }
-            }
-
-            public QuestViva.Engine.GameLoader.GameLoader GameLoader
-            {
-                set
-                {
-                    m_loader = value;
-                    m_worldModel = m_loader.WorldModel;
-                }
-                get { return m_loader; }
-            }
-
-            public virtual void SetText(string text, ref Element current)
-            {
-            }
-
-            public virtual bool SupportsMode(GameLoader.LoadMode mode)
-            {
-                return true;
-            }
-            #endregion
-
-            public abstract object Load(XmlReader reader, ref Element current);
-
-            protected virtual bool CanContainNestedAttributes
-            {
-                get { return false; }
-            }
-
-            protected void RaiseError(string error)
-            {
-                AddError(error);
-            }
-
-            protected void LoadXML(string filename, XmlReader newReader)
-            {
-                LoadNestedXML(filename, newReader);
-            }
-        }
-
-        private partial class CommandLoader : XMLLoaderBase
-        {
-            private GameLoader.RequiredAttributes m_requiredAttributes = new GameLoader.RequiredAttributes(
-                new GameLoader.RequiredAttribute("name", true, true, false),
-                new GameLoader.RequiredAttribute("pattern", true, true, false),
-                new GameLoader.RequiredAttribute("unresolved", true, true, false),
-                new GameLoader.RequiredAttribute("template", false, true, false));
-
-            public override string AppliesTo
-            {
-                get { return "command"; }
-            }
-
-            public override object Load(XmlReader reader, ref Element current)
-            {
-                return Load(reader, ref current, null);
-            }
-
-            protected object Load(XmlReader reader, ref Element current, string defaultName)
-            {
-                Dictionary<string, string> data = GameLoader.GetRequiredAttributes(reader, m_requiredAttributes);
-
-                string pattern = data["pattern"];
-                string name = data["name"];
-                string template = data["template"];
-
-                bool anonymous = false;
-
-                if (string.IsNullOrEmpty(name)) name = defaultName;
-                if (string.IsNullOrEmpty(name))
-                {
-                    anonymous = true;
-                    name = GetUniqueCommandID(pattern);
-                }
-
-                Element newCommand = WorldModel.ObjectFactory.CreateCommand(name);
-
-                if (anonymous)
-                {
-                    newCommand.Fields[FieldDefinitions.Anonymous] = true;
-                }
-
-                if (current != null)
-                {
-                    newCommand.Parent = (Element)current;
-                }
-
-                if (pattern != null)
-                {
-                    newCommand.Fields[FieldDefinitions.Pattern] = pattern;
-                }
-
-                if (template != null)
-                {
-                    LoadTemplate(newCommand, template);
-                }
-
-                string unresolved = data["unresolved"];
-                if (!string.IsNullOrEmpty(unresolved)) newCommand.Fields[FieldDefinitions.Unresolved] = unresolved;
-
-                return newCommand;
-            }
-
-            private void LoadTemplate(Element newCommand, string template)
-            {
-                string pattern = WorldModel.Template.GetText(template);
-                if (WorldModel.EditMode)
-                {
-                    newCommand.Fields.Set(FieldDefinitions.Pattern.Property, new EditorCommandPattern(Utility.ConvertVerbSimplePatternForEditor(pattern)));
-                }
-                else
-                {
-                    if (WorldModel.Version >= WorldModelVersion.v530)
+                    if (WorldModel.Elements.TryGetValue(ElementType.Delegate, type, out var del))
                     {
-                        string[] verbs = pattern.Split(';');
-                        newCommand.Fields[FieldDefinitions.DisplayVerb] = verbs[0].Trim();
-                    }
-                    LoadPattern(newCommand, pattern);
-                }
-            }
-
-            protected virtual void LoadPattern(Element newCommand, string pattern)
-            {
-                newCommand.Fields[FieldDefinitions.Pattern] = Utility.ConvertVerbSimplePattern(pattern, null);
-            }
-
-            public override void SetText(string text, ref Element current)
-            {
-                current.Fields.LazyFields.AddScript("script", GameLoader.GetTemplate(text));
-            }
-
-            protected override bool CanContainNestedAttributes
-            {
-                get
-                {
-                    return true;
-                }
-            }
-
-            [GeneratedRegex("[A-Za-z0-9]+")]
-            private partial Regex m_regex();
-
-            private string GetUniqueCommandID(string pattern)
-            {
-                string name = pattern == null ? null : m_regex().Match(pattern.Replace(" ", "")).Value;
-
-                if (string.IsNullOrEmpty(name) || WorldModel.ObjectExists(name)) name = WorldModel.GetUniqueId(name);
-                return name;
-            }
-        }
-
-        private class VerbLoader : CommandLoader
-        {
-            public override string AppliesTo
-            {
-                get { return "verb"; }
-            }
-
-            public override object Load(XmlReader reader, ref Element current)
-            {
-                string property = reader.GetAttribute("property");
-
-                Element newCommand = (Element)base.Load(reader, ref current, property);
-
-                newCommand.Fields[FieldDefinitions.Property] = property;
-
-                string response = reader.GetAttribute("response");
-                if (!string.IsNullOrEmpty(response))
-                {
-                    newCommand.Fields[FieldDefinitions.DefaultTemplate] = response;
-                }
-
-                newCommand.Fields.LazyFields.AddType("defaultverb");
-                newCommand.Fields[FieldDefinitions.IsVerb] = true;
-
-                return newCommand;
-            }
-
-            public override void SetText(string text, ref Element current)
-            {
-                string contents = GameLoader.GetTemplate(text);
-                current.Fields[FieldDefinitions.DefaultText] = contents;
-            }
-
-            protected override void LoadPattern(Element newCommand, string pattern)
-            {
-                newCommand.Fields.LazyFields.AddAction(() =>
-                {
-                    newCommand.Fields[FieldDefinitions.Pattern] = Utility.ConvertVerbSimplePattern(pattern, newCommand.Fields[FieldDefinitions.Separator]);
-                });
-            }
-        }
-
-        private abstract class IncludeLoaderBase : XMLLoaderBase
-        {
-            public override string AppliesTo
-            {
-                get { return "include"; }
-            }
-
-            public override object Load(XmlReader reader, ref Element current)
-            {
-                var filename = GameLoader.GetTemplateAttribute(reader, "ref");
-                if (filename.Length == 0) return null;
-                var stream = WorldModel.GetLibraryStream(filename);
-                var newReader = new XmlTextReader(stream);
-                while (newReader.NodeType != XmlNodeType.Element && !newReader.EOF)
-                {
-                    newReader.Read();
-                }
-                if (newReader.Name != "library")
-                {
-                    RaiseError($"Included file '{filename}' is not a library");
-                }
-                LoadXML(filename, newReader);
-                return LoadInternal(filename);
-            }
-
-            protected abstract object LoadInternal(string file);
-            protected abstract GameLoader.LoadMode LoaderMode { get; }
-
-            public override bool SupportsMode(GameLoader.LoadMode mode)
-            {
-                return mode == LoaderMode;
-            }
-        }
-
-        private class IncludeLoader : IncludeLoaderBase
-        {
-            protected override object LoadInternal(string file)
-            {
-                return null;
-            }
-
-            protected override GameLoader.LoadMode LoaderMode
-            {
-                get { return Engine.GameLoader.GameLoader.LoadMode.Play; }
-            }
-        }
-
-        private class EditorIncludeLoader : IncludeLoaderBase
-        {
-            protected override object LoadInternal(string file)
-            {
-                Element include = WorldModel.GetElementFactory(ElementType.IncludedLibrary).Create();
-                include.Fields[FieldDefinitions.Filename] = file;
-                include.Fields[FieldDefinitions.Anonymous] = true;
-                return include;
-            }
-
-            protected override GameLoader.LoadMode LoaderMode
-            {
-                get { return Engine.GameLoader.GameLoader.LoadMode.Edit; }
-            }
-        }
-
-        private class LibraryLoader : XMLLoaderBase
-        {
-            // This class doesn't need to do anything. The initial <library> tag is loaded from the XML
-            // by the IncludeLoader, but we still need something to handle the closing tag.
-
-            public override string AppliesTo
-            {
-                get { return "library"; }
-            }
-
-            public override object Load(XmlReader reader, ref Element current)
-            {
-                return null;
-            }
-        }
-
-        private class ASLElementLoader : XMLLoaderBase
-        {
-            // This class doesn't need to do anything, it just handles the closing </asl> tag.
-
-            public override string AppliesTo
-            {
-                get { return "asl"; }
-            }
-
-            public override object Load(XmlReader reader, ref Element current)
-            {
-                return null;
-            }
-        }
-
-        private class DefaultXMLLoader : XMLLoaderBase
-        {
-            public override string AppliesTo
-            {
-                get { return null; }
-            }
-
-            private static Dictionary<string, string> s_legacyTypeMappings = new Dictionary<string, string>
-            {
-                { "list", "simplestringlist" },
-                { "stringdictionary", "simplestringdictionary" },
-                { "objectdictionary", "simpleobjectdictionary" },
-            };
-
-            public override object Load(XmlReader reader, ref Element current)
-            {
-                string attribute = reader.Name;
-                if (attribute == "attr")
-                {
-                    attribute = reader.GetAttribute("name");
-                }
-                string type = reader.GetAttribute("type");
-
-                WorldModel.AddAttributeName(attribute);
-
-                if (type == null)
-                {
-                    string currentElementType = current.Fields.GetString("type");
-                    if (string.IsNullOrEmpty(currentElementType))
-                    {
-                        // the type property is the object type, so is not set for other element types.
-                        currentElementType = current.Fields.GetString("elementtype");
-                    }
-                    type = GameLoader._implicitTypes.Get(currentElementType, attribute);
-                }
-
-                // map old to new type names if necessary (but not in included library files)
-                if (type != null && WorldModel.Version <= WorldModelVersion.v530 && !current.MetaFields[MetaFieldDefinitions.Library] && s_legacyTypeMappings.ContainsKey(type))
-                {
-                    type = s_legacyTypeMappings[type];
-                }
-
-                if (type != null && GameLoader.ExtendedAttributeLoaders.ContainsKey(type))
-                {
-                    GameLoader.ExtendedAttributeLoaders[type].Load(reader, current);
-                }
-                else
-                {
-                    string value;
-
-                    try
-                    {
-                        value = GameLoader.GetTemplateContents(reader);
-                    }
-                    catch (XmlException)
-                    {
-                        RaiseError(string.Format("Error loading XML data for '{0}.{1}' - ensure that it contains no nested XML", current.Name, attribute));
-                        return null;
-                    }
-
-                    if (type == null)
-                    {
-                        if (value.Length > 0)
-                        {
-                            type = "string";
-                        }
-                        else
-                        {
-                            type = "boolean";
-                        }
-                    }
-
-                    if (GameLoader.AttributeLoaders.ContainsKey(type))
-                    {
-                        GameLoader.AttributeLoaders[type].Load(current, attribute, value);
+                        var proc = WorldModel.GetElementFactory(ElementType.Delegate).Create();
+                        proc.MetaFields[MetaFieldDefinitions.DelegateImplementation] = true;
+                        proc.Fields.LazyFields.AddScript(FieldDefinitions.Script.Property, value);
+                        current.Fields.Set(attribute, new DelegateImplementation(type, del, proc));
                     }
                     else
                     {
-                        Element del;
-                        if (WorldModel.Elements.TryGetValue(ElementType.Delegate, type, out del))
-                        {
-                            Element proc = WorldModel.GetElementFactory(ElementType.Delegate).Create();
-                            proc.MetaFields[MetaFieldDefinitions.DelegateImplementation] = true;
-                            proc.Fields.LazyFields.AddScript(FieldDefinitions.Script.Property, value);
-                            current.Fields.Set(attribute, new DelegateImplementation(type, del, proc));
-                        }
-                        else
-                        {
-                            RaiseError(string.Format("Unrecognised attribute type '{0}' in '{1}.{2}'", type, current.Name, attribute));
-                        }
+                        RaiseError($"Unrecognised attribute type '{type}' in '{current.Name}.{attribute}'");
                     }
                 }
-                return null;
             }
+            return null;
+        }
+    }
+
+    private class GameElementLoader : XmlLoaderBase
+    {
+        public override string AppliesTo => "game";
+
+        public override object Load(XmlReader reader, ref Element? current)
+        {
+            var name = reader.GetAttribute("name");
+            WorldModel.SetGameName(name ?? "");
+            WorldModel.Game.Fields[FieldDefinitions.GameName] = name;
+            return WorldModel.Game;
         }
 
-        private class GameElementLoader : XMLLoaderBase
+        protected override bool CanContainNestedAttributes => true;
+    }
+
+    // TO DO: This should derive from ElementLoaderBase
+    private class ObjectLoader : XmlLoaderBase
+    {
+        public override string AppliesTo => "object";
+
+        public override object Load(XmlReader reader, ref Element? current)
         {
-            public override string AppliesTo
-            {
-                get { return "game"; }
-            }
-
-            public override object Load(XmlReader reader, ref Element current)
-            {
-                string name = reader.GetAttribute("name");
-                WorldModel.SetGameName(name);
-                WorldModel.Game.Fields[FieldDefinitions.GameName] = name;
-                return WorldModel.Game;
-            }
-
-            protected override bool CanContainNestedAttributes { get { return true; } }
+            return current != null
+                ? WorldModel.ObjectFactory.CreateObject(reader.GetAttribute("name"), current)
+                : WorldModel.ObjectFactory.CreateObject(reader.GetAttribute("name"));
         }
 
-        // TO DO: This should derive from ElementLoaderBase
-        private class ObjectLoader : XMLLoaderBase
+        protected override bool CanContainNestedAttributes => true;
+    }
+
+    private class ExitLoader : XmlLoaderBase
+    {
+        public override string AppliesTo => "exit";
+
+        public override object Load(XmlReader reader, ref Element? current)
         {
-            public override string AppliesTo
+            if (current == null)
             {
-                get { return "object"; }
+                throw new Exception("Current element is not set");
+            }
+            
+            var alias = reader.GetAttribute("alias");
+            var to = reader.GetAttribute("to");
+            var id = reader.GetAttribute("name");
+            if (string.IsNullOrEmpty(alias) && !WorldModel.EditMode)
+            {
+                alias = to;
             }
 
-            public override object Load(XmlReader reader, ref Element current)
-            {
-                Element newElement;
-
-                if (current != null)
-                {
-                    newElement = WorldModel.ObjectFactory.CreateObject(reader.GetAttribute("name"), (Element)current);
-                }
-                else
-                {
-                    newElement = WorldModel.ObjectFactory.CreateObject(reader.GetAttribute("name"));
-                }
-
-                return newElement;
-            }
-
-            protected override bool CanContainNestedAttributes { get { return true; } }
+            return string.IsNullOrEmpty(id)
+                ? WorldModel.ObjectFactory.CreateExitLazy(alias, current, to)
+                : WorldModel.ObjectFactory.CreateExitLazy(id, alias, current, to);
         }
 
-        private class ExitLoader : XMLLoaderBase
+        protected override bool CanContainNestedAttributes => true;
+    }
+
+    private class TurnScriptLoader : XmlLoaderBase
+    {
+        public override string AppliesTo => "turnscript";
+
+        public override object Load(XmlReader reader, ref Element? current)
         {
-            public override string AppliesTo
-            {
-                get { return "exit"; }
-            }
-
-            public override object Load(XmlReader reader, ref Element current)
-            {
-                string alias = reader.GetAttribute("alias");
-                string to = reader.GetAttribute("to");
-                string id = reader.GetAttribute("name");
-                Element newElement;
-                if (string.IsNullOrEmpty(alias) && !WorldModel.EditMode)
-                {
-                    alias = to;
-                }
-                if (string.IsNullOrEmpty(id))
-                {
-                    newElement = WorldModel.ObjectFactory.CreateExitLazy(alias, (Element)current, to);
-                }
-                else
-                {
-                    newElement = WorldModel.ObjectFactory.CreateExitLazy(id, alias, (Element)current, to);
-                }
-
-                return newElement;
-            }
-
-            protected override bool CanContainNestedAttributes { get { return true; } }
+            var id = reader.GetAttribute("name");
+            return WorldModel.ObjectFactory.CreateTurnScript(id, current);
         }
 
-        private class TurnScriptLoader : XMLLoaderBase
+        protected override bool CanContainNestedAttributes => true;
+    }
+
+    private class TypeLoader : XmlLoaderBase
+    {
+        public override string AppliesTo => "type";
+
+        public override object Load(XmlReader reader, ref Element? current)
         {
-            public override string AppliesTo
-            {
-                get { return "turnscript"; }
-            }
-
-            public override object Load(XmlReader reader, ref Element current)
-            {
-                string id = reader.GetAttribute("name");
-                Element newElement;
-                newElement = WorldModel.ObjectFactory.CreateTurnScript(id, current);
-
-                return newElement;
-            }
-
-            protected override bool CanContainNestedAttributes { get { return true; } }
+            return WorldModel.GetElementFactory(ElementType.ObjectType).Create(reader.GetAttribute("name"));
         }
 
-        private class TypeLoader : XMLLoaderBase
+        protected override bool CanContainNestedAttributes => true;
+    }
+
+    private class TemplateLoader : XmlLoaderBase
+    {
+        public bool IsBaseTemplateLoader { get; init; }
+
+        public override string AppliesTo => "template";
+
+        public override object? Load(XmlReader reader, ref Element? current)
         {
-            public override string AppliesTo
-            {
-                get { return "type"; }
-            }
-
-            public override object Load(XmlReader reader, ref Element current)
-            {
-                Element newElement = WorldModel.GetElementFactory(ElementType.ObjectType).Create(reader.GetAttribute("name"));
-                return newElement;
-            }
-
-            protected override bool CanContainNestedAttributes { get { return true; } }
+            var isCommandTemplate = reader.GetAttribute("templatetype") == "command";
+            return AddTemplate(reader.GetAttribute("name"), reader.ReadElementContentAsString(), isCommandTemplate);
         }
 
-        private class TemplateLoader : XMLLoaderBase
+        private Element? AddTemplate(string? t, string text, bool isCommandTemplate)
         {
-            public bool IsBaseTemplateLoader { get; set; }
-
-            public override string AppliesTo
+            if (!string.IsNullOrEmpty(t))
             {
-                get { return "template"; }
-            }
-
-            public override object Load(XmlReader reader, ref Element current)
-            {
-                bool isCommandTemplate = (reader.GetAttribute("templatetype") == "command");
-                return AddTemplate(reader.GetAttribute("name"), reader.ReadElementContentAsString(), isCommandTemplate);
-            }
-
-            private Element AddTemplate(string t, string text, bool isCommandTemplate)
-            {
-                if (string.IsNullOrEmpty(t))
-                {
-                    RaiseError("Expected 'name' attribute in template");
-                    return null;
-                }
                 return WorldModel.Template.AddTemplate(t, text, isCommandTemplate, IsBaseTemplateLoader);
             }
+
+            RaiseError("Expected 'name' attribute in template");
+            return null;
+        }
+    }
+
+    private class VerbTemplateLoader : XmlLoaderBase
+    {
+        public override string AppliesTo => "verbtemplate";
+
+        public override object Load(XmlReader reader, ref Element? current)
+        {
+            return AddVerbTemplate(reader.GetAttribute("name"), reader.ReadElementContentAsString());
         }
 
-        private class VerbTemplateLoader : XMLLoaderBase
+        private Element AddVerbTemplate(string? c, string text)
         {
-            public override string AppliesTo
-            {
-                get { return "verbtemplate"; }
-            }
+            return WorldModel.Template.AddVerbTemplate(c, text, GameLoader._currentFile.Peek().Filename);
+        }
+    }
 
-            public override object Load(XmlReader reader, ref Element current)
-            {
-                return AddVerbTemplate(reader.GetAttribute("name"), reader.ReadElementContentAsString());
-            }
+    // TO DO: Use RequiredAttributes in the above XML loaders too...
 
-            private Element AddVerbTemplate(string c, string text)
-            {
-                return WorldModel.Template.AddVerbTemplate(c, text, GameLoader._currentFile.Peek().Filename);
-            }
+    private class DynamicTemplateLoader : XmlLoaderBase
+    {
+        public override string AppliesTo => "dynamictemplate";
+
+        public override object? Load(XmlReader reader, ref Element? current)
+        {
+            return AddDynamicTemplate(reader.GetAttribute("name"), reader.ReadElementContentAsString());
         }
 
-        // TO DO: Use RequiredAttributes in the above XML loaders too...
-
-        private class DynamicTemplateLoader : XMLLoaderBase
+        private Element? AddDynamicTemplate(string? t, string expression)
         {
-            public override string AppliesTo
+            if (!string.IsNullOrEmpty(t))
             {
-                get { return "dynamictemplate"; }
-            }
-
-            public override object Load(XmlReader reader, ref Element current)
-            {
-                return AddDynamicTemplate(reader.GetAttribute("name"), reader.ReadElementContentAsString());
-            }
-
-            private Element AddDynamicTemplate(string t, string expression)
-            {
-                if (string.IsNullOrEmpty(t))
-                {
-                    RaiseError("Expected 'name' attribute in template");
-                    return null;
-                }
                 return WorldModel.Template.AddDynamicTemplate(t, expression);
             }
+
+            RaiseError("Expected 'name' attribute in template");
+            return null;
         }
+    }
 
-        private abstract class FunctionLoaderBase : XMLLoaderBase
+    private abstract class FunctionLoaderBase : XmlLoaderBase
+    {
+        private readonly string[] _delimiters = [", ", ","];
+
+        protected RequiredAttributes RequiredAttributes { get; } = new(
+            new RequiredAttribute("name"),
+            new RequiredAttribute(false, "parameters"),
+            new RequiredAttribute(false, "type"));
+
+        protected void SetupProcedure(Element proc, string? returnType, string script, string name, string? parameters)
         {
-            private GameLoader.RequiredAttributes m_required = new GameLoader.RequiredAttributes(
-                new GameLoader.RequiredAttribute("name"),
-                new GameLoader.RequiredAttribute(false, "parameters"),
-                new GameLoader.RequiredAttribute(false, "type"));
+            string[]? paramNames = null;
 
-            private string[] m_delimiters = new string[] { ", ", "," };
-
-            protected GameLoader.RequiredAttributes RequiredAttributes
+            if (!string.IsNullOrEmpty(parameters))
             {
-                get { return m_required; }
+                paramNames = parameters.Split(_delimiters, StringSplitOptions.None).Select(p => p.Trim()).ToArray();
             }
 
-            protected void SetupProcedure(Element proc, string returnType, string script, string name, string parameters)
+            Type? returns = null;
+            if (!string.IsNullOrEmpty(returnType))
             {
-                string[] paramNames = null;
-
-                if (!string.IsNullOrEmpty(parameters))
+                try
                 {
-                    paramNames = parameters.Split(m_delimiters, StringSplitOptions.None).Select(p => p.Trim()).ToArray();
+                    returns = WorldModel.ConvertTypeNameToType(returnType);
                 }
-
-                Type returns = null;
-                if (!string.IsNullOrEmpty(returnType))
+                catch (ArgumentOutOfRangeException)
                 {
-                    try
-                    {
-                        returns = WorldModel.ConvertTypeNameToType(returnType);
-                    }
-                    catch (ArgumentOutOfRangeException)
-                    {
-                        RaiseError(string.Format("Unrecognised function return type '{0}' in '{1}'", returnType, name));
-                    }
+                    RaiseError($"Unrecognised function return type '{returnType}' in '{name}'");
                 }
-
-                proc.Fields[FieldDefinitions.ParamNames] = new QuestList<string>(paramNames);
-                if (returns != null)
-                {
-                    proc.Fields[FieldDefinitions.ReturnType] = WorldModel.ConvertTypeToTypeName(returns);
-                }
-
-                proc.Fields.LazyFields.AddScript(FieldDefinitions.Script.Property, script);
             }
-        }
 
-        private class FunctionLoader : FunctionLoaderBase
+            proc.Fields[FieldDefinitions.ParamNames] = new QuestList<string>(paramNames);
+            if (returns != null)
+            {
+                proc.Fields[FieldDefinitions.ReturnType] = WorldModel.ConvertTypeToTypeName(returns);
+            }
+
+            proc.Fields.LazyFields.AddScript(FieldDefinitions.Script.Property, script);
+        }
+    }
+
+    private class FunctionLoader : FunctionLoaderBase
+    {
+        public override string AppliesTo => "function";
+
+        public override object Load(XmlReader reader, ref Element? current)
         {
-            public override string AppliesTo
-            {
-                get { return "function"; }
-            }
-
-            public override object Load(XmlReader reader, ref Element current)
-            {
-                return AddProcedure(reader);
-            }
-
-            private Element AddProcedure(XmlReader reader)
-            {
-                Dictionary<string, string> data = GameLoader.GetRequiredAttributes(reader, RequiredAttributes);
-                Element proc = WorldModel.AddProcedure(data["name"]);
-                SetupProcedure(proc, data["type"], GameLoader.GetTemplateContents(reader), data["name"], data["parameters"]);
-                return proc;
-            }
+            return AddProcedure(reader);
         }
 
-        private class InheritLoader : XMLLoaderBase
+        private Element AddProcedure(XmlReader reader)
         {
-            public override string AppliesTo
-            {
-                get { return "inherit"; }
-            }
-
-            public override object Load(XmlReader reader, ref Element current)
-            {
-                current.Fields.LazyFields.AddType(reader.GetAttribute("name"));
-                return null;
-            }
+            var data = GameLoader.GetRequiredAttributes(reader, RequiredAttributes);
+            var name = data["name"] ?? throw new InvalidOperationException("Function name is null");
+            var proc = WorldModel.AddProcedure(name);
+            SetupProcedure(proc, data["type"], GameLoader.GetTemplateContents(reader), name, data["parameters"]);
+            return proc;
         }
+    }
 
-        private class WalkthroughLoader : ElementLoaderBase
+    private class InheritLoader : XmlLoaderBase
+    {
+        public override string AppliesTo => "inherit";
+
+        public override object? Load(XmlReader reader, ref Element? current)
         {
-            public override string AppliesTo
+            if (current == null)
             {
-                get { return "walkthrough"; }
+                throw new Exception("Current element is not set");
             }
-
-            public override ElementType CreateElementType
-            {
-                get { return ElementType.Walkthrough; }
-            }
-
-            protected override string IDPrefix
-            {
-                get { return "walkthrough"; }
-            }
+            current.Fields.LazyFields.AddType(reader.GetAttribute("name"));
+            return null;
         }
+    }
 
-        private class DelegateLoader : FunctionLoaderBase
+    private class WalkthroughLoader : ElementLoaderBase
+    {
+        public override string AppliesTo => "walkthrough";
+
+        protected override ElementType CreateElementType => ElementType.Walkthrough;
+
+        protected override string IdPrefix => "walkthrough";
+    }
+
+    private class DelegateLoader : FunctionLoaderBase
+    {
+        public override string AppliesTo => "delegate";
+
+        public override object Load(XmlReader reader, ref Element? current)
         {
-            public override string AppliesTo
-            {
-                get { return "delegate"; }
-            }
-
-            public override object Load(XmlReader reader, ref Element current)
-            {
-                return AddDelegate(reader);
-            }
-
-            private Element AddDelegate(XmlReader reader)
-            {
-                Dictionary<string, string> data = GameLoader.GetRequiredAttributes(reader, RequiredAttributes);
-                Element del = WorldModel.AddDelegate(data["name"]);
-                SetupProcedure(del, data["type"], GameLoader.GetTemplateContents(reader), data["name"], data["parameters"]);
-                return del;
-            }
+            return AddDelegate(reader);
         }
 
-        private abstract class ImpliedTypeLoaderBase : XMLLoaderBase
+        private Element AddDelegate(XmlReader reader)
         {
-            private GameLoader.RequiredAttributes m_required = new GameLoader.RequiredAttributes(false, "element", "property", "type");
-
-            public override string AppliesTo
-            {
-                get { return "implied"; }
-            }
-
-            public override object Load(XmlReader reader, ref Element current)
-            {
-                Dictionary<string, string> data = GameLoader.GetRequiredAttributes(reader, m_required);
-                GameLoader._implicitTypes.Add(data["element"], data["property"], data["type"]);
-                return LoadInternal(data["element"], data["property"], data["type"]);
-            }
-
-            protected abstract object LoadInternal(string element, string property, string type);
-            protected abstract GameLoader.LoadMode LoaderMode { get; }
-
-            public override bool SupportsMode(GameLoader.LoadMode mode)
-            {
-                return mode == LoaderMode;
-            }
+            var data = GameLoader.GetRequiredAttributes(reader, RequiredAttributes);
+            var name = data["name"] ?? throw new InvalidOperationException("Delegate name is null");
+            var del = WorldModel.AddDelegate(name);
+            SetupProcedure(del, data["type"], GameLoader.GetTemplateContents(reader), name, data["parameters"]);
+            return del;
         }
+    }
 
-        private class ImpliedTypeLoader : ImpliedTypeLoaderBase
+    private abstract class ImpliedTypeLoaderBase : XmlLoaderBase
+    {
+        private readonly RequiredAttributes _required = new(false, "element", "property", "type");
+
+        public override string AppliesTo => "implied";
+
+        public override object? Load(XmlReader reader, ref Element? current)
         {
-            protected override object LoadInternal(string element, string property, string type)
-            {
-                return null;
-            }
-
-            protected override GameLoader.LoadMode LoaderMode
-            {
-                get { return Engine.GameLoader.GameLoader.LoadMode.Play; }
-            }
+            var data = GameLoader.GetRequiredAttributes(reader, _required);
+            var element = data["element"] ?? throw new InvalidOperationException("Element is null");
+            var property = data["property"] ?? throw new InvalidOperationException("Property is null");
+            var type = data["type"] ?? throw new InvalidOperationException("Type is null");
+            GameLoader._implicitTypes.Add(element, property, type);
+            return LoadInternal(element, property, type);
         }
 
-        private class EditorImpliedTypeLoader : ImpliedTypeLoaderBase
+        protected abstract object? LoadInternal(string element, string property, string type);
+        protected abstract LoadMode LoaderMode { get; }
+
+        public override bool SupportsMode(LoadMode mode)
         {
-            protected override object LoadInternal(string element, string property, string type)
-            {
-                Element e = WorldModel.GetElementFactory(ElementType.ImpliedType).Create();
-                e.Fields[FieldDefinitions.Element] = element;
-                e.Fields[FieldDefinitions.Property] = property;
-                e.Fields[FieldDefinitions.Type] = type;
-                return e;
-            }
-
-            protected override GameLoader.LoadMode LoaderMode
-            {
-                get { return Engine.GameLoader.GameLoader.LoadMode.Edit; }
-            }
+            return mode == LoaderMode;
         }
+    }
 
-        private abstract class ElementLoaderBase : XMLLoaderBase
+    private class ImpliedTypeLoader : ImpliedTypeLoaderBase
+    {
+        protected override object? LoadInternal(string element, string property, string type)
         {
-            public override object Load(XmlReader reader, ref Element current)
-            {
-                string name = reader.GetAttribute("name");
-                if (string.IsNullOrEmpty(name)) name = WorldModel.GetUniqueId(IDPrefix);
-                Element newElement = WorldModel.GetElementFactory(CreateElementType).Create(name);
-                newElement.Parent = current;
-                return newElement;
-            }
-
-            protected override bool CanContainNestedAttributes { get { return true; } }
-
-            public abstract ElementType CreateElementType { get; }
-
-            protected virtual string IDPrefix { get { return AppliesTo; } }
+            return null;
         }
 
-        private class EditorLoader : ElementLoaderBase
+        protected override LoadMode LoaderMode => LoadMode.Play;
+    }
+
+    private class EditorImpliedTypeLoader : ImpliedTypeLoaderBase
+    {
+        protected override object LoadInternal(string element, string property, string type)
         {
-            public override string AppliesTo
-            {
-                get { return "editor"; }
-            }
-
-            public override ElementType CreateElementType
-            {
-                get { return ElementType.Editor; }
-            }
-
-            protected override string IDPrefix
-            {
-                get { return "editor"; }
-            }
+            var e = WorldModel.GetElementFactory(ElementType.ImpliedType).Create();
+            e.Fields[FieldDefinitions.Element] = element;
+            e.Fields[FieldDefinitions.Property] = property;
+            e.Fields[FieldDefinitions.Type] = type;
+            return e;
         }
 
-        private class EditorTabLoader : ElementLoaderBase
+        protected override LoadMode LoaderMode => LoadMode.Edit;
+    }
+
+    private abstract class ElementLoaderBase : XmlLoaderBase
+    {
+        public override object Load(XmlReader reader, ref Element? current)
         {
-            public override string AppliesTo
-            {
-                get { return "tab"; }
-            }
-
-            public override ElementType CreateElementType
-            {
-                get { return ElementType.EditorTab; }
-            }
-
-            protected override string IDPrefix
-            {
-                get { return "editor"; }
-            }
+            var name = reader.GetAttribute("name");
+            if (string.IsNullOrEmpty(name)) name = WorldModel.GetUniqueId(IdPrefix);
+            var newElement = WorldModel.GetElementFactory(CreateElementType).Create(name);
+            newElement.Parent = current;
+            return newElement;
         }
 
-        private class EditorControlLoader : ElementLoaderBase
+        protected override bool CanContainNestedAttributes => true;
+
+        protected abstract ElementType CreateElementType { get; }
+
+        protected virtual string? IdPrefix => AppliesTo;
+    }
+
+    private class EditorLoader : ElementLoaderBase
+    {
+        public override string AppliesTo => "editor";
+
+        protected override ElementType CreateElementType => ElementType.Editor;
+
+        protected override string IdPrefix => "editor";
+    }
+
+    private class EditorTabLoader : ElementLoaderBase
+    {
+        public override string AppliesTo => "tab";
+
+        protected override ElementType CreateElementType => ElementType.EditorTab;
+
+        protected override string IdPrefix => "editor";
+    }
+
+    private class EditorControlLoader : ElementLoaderBase
+    {
+        public override string AppliesTo => "control";
+
+        protected override ElementType CreateElementType => ElementType.EditorControl;
+
+        protected override string IdPrefix => "editor";
+    }
+
+    private class JavascriptReferenceLoader : XmlLoaderBase
+    {
+        public override string AppliesTo => "javascript";
+
+        public override object? Load(XmlReader reader, ref Element? current)
         {
-            public override string AppliesTo
+            var jsRef = WorldModel.GetElementFactory(ElementType.Javascript).Create();
+            jsRef.Fields[FieldDefinitions.Anonymous] = true;
+            var file = GameLoader.GetTemplateAttribute(reader, "src");
+            if (file.Length == 0) return null;
+            if (WorldModel.Version == WorldModelVersion.v500)
             {
-                get { return "control"; }
+                // Quest 5.0 would incorrectly save a full path name. We only want the filename.
+                file = System.IO.Path.GetFileName(file);
             }
 
-            public override ElementType CreateElementType
-            {
-                get { return ElementType.EditorControl; }
-            }
+            jsRef.Fields[FieldDefinitions.Src] = file;
 
-            protected override string IDPrefix
-            {
-                get { return "editor"; }
-            }
+            return jsRef;
         }
+    }
 
-        private class JavascriptReferenceLoader : XMLLoaderBase
+    private class TimerLoader : ElementLoaderBase
+    {
+        public override string AppliesTo => "timer";
+
+        protected override ElementType CreateElementType => ElementType.Timer;
+    }
+
+    private class ResourceLoader : ElementLoaderBase
+    {
+        public override string AppliesTo => "resource";
+
+        protected override ElementType CreateElementType => ElementType.Resource;
+
+        public override object Load(XmlReader reader, ref Element? current)
         {
-            public override string AppliesTo
-            {
-                get { return "javascript"; }
-            }
+            var resourceRef = WorldModel.GetElementFactory(ElementType.Resource).Create();
+            resourceRef.Fields[FieldDefinitions.Anonymous] = true;
+            var file = GameLoader.GetTemplateAttribute(reader, "src");
+            resourceRef.Fields[FieldDefinitions.Src] = file;
 
-            public override object Load(XmlReader reader, ref Element current)
-            {
-                Element jsRef = WorldModel.GetElementFactory(ElementType.Javascript).Create();
-                jsRef.Fields[FieldDefinitions.Anonymous] = true;
-                string file = GameLoader.GetTemplateAttribute(reader, "src");
-                if (file.Length == 0) return null;
-                if (WorldModel.Version == WorldModelVersion.v500)
-                {
-                    // Quest 5.0 would incorrectly save a full path name. We only want the filename.
-                    file = System.IO.Path.GetFileName(file);
-                }
-
-                jsRef.Fields[FieldDefinitions.Src] = file;
-
-                return jsRef;
-            }
+            return resourceRef;
         }
+    }
 
-        private class TimerLoader : ElementLoaderBase
-        {
-            public override string AppliesTo
-            {
-                get { return "timer"; }
-            }
+    private class OutputLoader : ElementLoaderBase
+    {
+        protected override ElementType CreateElementType => ElementType.Output;
 
-            public override ElementType CreateElementType
-            {
-                get { return ElementType.Timer; }
-            }
-        }
-
-        private class ResourceLoader : ElementLoaderBase
-        {
-            public override string AppliesTo
-            {
-                get { return "resource"; }
-            }
-
-            public override ElementType CreateElementType
-            {
-                get { return ElementType.Resource; }
-            }
-
-            public override object Load(XmlReader reader, ref Element current)
-            {
-                Element resourceRef = WorldModel.GetElementFactory(ElementType.Resource).Create();
-                resourceRef.Fields[FieldDefinitions.Anonymous] = true;
-                string file = GameLoader.GetTemplateAttribute(reader, "src");
-                resourceRef.Fields[FieldDefinitions.Src] = file;
-
-                return resourceRef;
-            }
-        }
-
-        private class OutputLoader : ElementLoaderBase
-        {
-            public override ElementType CreateElementType
-            {
-                get { return ElementType.Output; }
-            }
-
-            public override string AppliesTo
-            {
-                get { return "output"; }
-            }
-        }
+        public override string AppliesTo => "output";
     }
 }
