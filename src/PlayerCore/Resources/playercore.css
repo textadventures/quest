@@ -76,14 +76,8 @@ div#gamePanes
     background: #F9F9FF;
     min-height: 100%;
     display: none;
-}
-
-@media (min-width: 950px) {
-    div#gamePanes
-    {
-        left: 50%;
-        margin-left: 255px;
-    }
+    left: 50%;
+    margin-left: 255px;
 }
 
 div#status
@@ -278,24 +272,20 @@ div.jj_menu_item_hover {
     display: none;
 }
 
-@media (max-width: 950px) {
-    /* Hide the sidebar by default */
-    #sidebar {
-        display: none;
-        position: fixed;   /* fixed position to overlay content */
-        top: 32px;
-        right: 0;
-        width: 220px;
-        height: 100%;
-        background: #fff;
-        z-index: 1000;
-        overflow-y: auto;
-        box-shadow: -2px 0 5px rgba(0,0,0,0.5);
-        padding: 10px;
-    }
+#sidebar {
+    display: none;
+    position: fixed;   /* fixed position to overlay content */
+    top: 32px;
+    right: 0;
+    width: 220px;
+    height: 100%;
+    /*background: #fff;*/
+    z-index: 1000;
+    overflow-y: auto;
+    /*box-shadow: -2px 0 5px rgba(0,0,0,0.5);*/
+    padding: 10px;
+}
 
-    /* Show the hamburger menu on mobile */
-    #cmdShowPanes {
-        display: inline;
-    }
+#cmdShowPanes {
+    display: none;
 }

@@ -139,23 +139,57 @@ function initPlayerUI() {
     cmdShowPanes.addEventListener("click", function () {
         sidebar.style.display = (sidebar.style.display === "block") ? "none" : "block";
     });
-
-    let wasWide = window.innerWidth > 950;
-
-    window.addEventListener("resize", function() {
+    
+    let gameWidth = 950;
+    
+    const isWindowWide = () => window.innerWidth > gameWidth;
+    let wasWide = isWindowWide();
+    
+    const doLayout = () => {
         const sidebar = document.getElementById("sidebar");
+        const cmdShowPanes = document.getElementById("cmdShowPanes");
+        const gamePanes = document.getElementById("gamePanes");
 
-        let isWide = window.innerWidth > 950;
+        let isWide = isWindowWide();
 
         if (isWide) {
             sidebar.style.display = "block";
-        } else if (wasWide) {
-            sidebar.style.display = "none";
-        }
-        
-        wasWide = isWide;
-    });
+            sidebar.style.background = "initial";
+            sidebar.style.boxShadow = "initial";
+            cmdShowPanes.style.display = "none";
+            gamePanes.style.left = "50%";
+            gamePanes.style.marginLeft = (gameWidth / 2 - 220) + "px";
+        } else {
+            if (wasWide) {
+                sidebar.style.display = "none";
+            }
+            sidebar.style.background = "#fff";
+            sidebar.style.boxShadow = "-2px 0 5px rgba(0,0,0,0.5)";
+            cmdShowPanes.style.display = "inline";
+            gamePanes.style.left = "initial";
+            gamePanes.style.marginLeft = "0";
+        } 
 
+        wasWide = isWide;
+    }
+    
+    window.addEventListener("resize", doLayout);
+    
+    window.setGameWidth = function (width) {
+        const gameBorder = document.getElementById("gameBorder");
+        gameBorder.style.maxWidth = width + "px";
+        
+        const status = document.getElementById("status");
+        status.style.maxWidth = (width - 2) + "px";
+
+        $("#gamePanel").css("margin-left", "-" + (width / 2 - 19) + "px");
+        $("#gridPanel").css("margin-left", "-" + (width / 2 - 19) + "px");
+        
+        gameWidth = width;
+        doLayout();
+    };
+    
+    doLayout();
     ui_init();
     updateStatusVisibility();
     
@@ -414,14 +448,6 @@ function setPanelContents(html) {
     }
     $("#gamePanel").html(html);
     setPanelHeight();
-}
-
-function setGameWidth(width) {
-    $("#gameBorder").width(width);
-    $("#status").width(width - 2);
-    $("#gamePanel").css("margin-left", "-" + (width / 2 - 19) + "px");
-    $("#gridPanel").css("margin-left", "-" + (width / 2 - 19) + "px");
-    $("#gamePanes").css("margin-left", (width / 2 - 220) + "px");
 }
 
 function setGamePadding(top, bottom, left, right) {
