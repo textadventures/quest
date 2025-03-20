@@ -141,6 +141,7 @@ function initPlayerUI() {
     });
     
     let gameWidth = 950;
+    let arePanesVisible = true;
     
     const isWindowWide = () => window.innerWidth > gameWidth;
     let wasWide = isWindowWide();
@@ -153,7 +154,7 @@ function initPlayerUI() {
 
         let isWide = isWindowWide();
 
-        if (isWide) {
+        if (isWide && arePanesVisible) {
             sidebar.style.display = "block";
             sidebar.style.background = "initial";
             sidebar.style.boxShadow = "initial";
@@ -167,7 +168,7 @@ function initPlayerUI() {
             }
             sidebar.style.background = "#fff";
             sidebar.style.boxShadow = "-2px 0 5px rgba(0,0,0,0.5)";
-            cmdShowPanes.style.display = "inline";
+            cmdShowPanes.style.display = arePanesVisible ? "inline" : "none";
             gamePanes.style.left = "initial";
             gamePanes.style.marginLeft = "0";
             gameContent.style.maxWidth = "initial";
@@ -191,6 +192,45 @@ function initPlayerUI() {
         gameWidth = width;
         doLayout();
     };
+
+    window.panesVisible = function (visible) {
+        arePanesVisible = visible;
+        var screenWidth = $("#gameBorder").width();
+
+        // TODO: Verify resize behaviour when an image or map panel is displayed,
+        // then remove the commented-out code here.
+
+        var gameContentPadding = parseInt($("#gameContent").css("padding-left").replace("px", "")) + parseInt($("#gameContent").css("padding-right").replace("px", ""));
+        var promptSpacing = $("#txtCommandPrompt").width() + 5;
+
+        if (visible) {
+            $("#gamePanes").show();
+            // $("#gameContent").width(screenWidth - 250);
+            // $("#txtCommand").width(screenWidth - gameContentPadding - promptSpacing - 250);
+            // $("#gamePanel").width(screenWidth - 250);
+            // $("#gridPanel").width(screenWidth - 250);
+            // $("#gridCanvas").prop("width", screenWidth - 250);
+            paper.view.viewSize.width = screenWidth - 250;
+            var css = addCSSRule("div#gamePanel img");
+            css.style.maxWidth = (screenWidth - 250) + "px";
+            var css = addCSSRule("div#divOutput img");
+            css.style.maxWidth = (screenWidth - 250) + "px";
+        }
+        else {
+            $("#gamePanes").hide();
+            // $("#gameContent").width(screenWidth - gameContentPadding);
+            // $("#txtCommand").width(screenWidth - promptSpacing - 60);
+            // $("#gamePanel").width(screenWidth - 40);
+            // $("#gridPanel").width(screenWidth - 40);
+            // $("#gridCanvas").prop("width", screenWidth - 40);
+            paper.view.viewSize.width = screenWidth - 40;
+            var css = addCSSRule("div#gamePanel img");
+            css.style.maxWidth = (screenWidth - 40) + "px";
+            var css = addCSSRule("div#divOutput img");
+            css.style.maxWidth = (screenWidth - 40) + "px";
+        }
+        doLayout();
+    }
     
     doLayout();
     ui_init();
@@ -353,45 +393,6 @@ function updateStatusVisibility() {
 
 function isElementVisible(element) {
     return $(element).css("display") != "none";
-}
-
-function panesVisible(visible) {
-    var screenWidth = $("#gameBorder").width();
-    
-    // TODO: Verfy resize behaviour when an image or map panel is displayed,
-    // then remove the commented-out code here.
-    
-    var gameContentPadding = parseInt($("#gameContent").css("padding-left").replace("px", "")) + parseInt($("#gameContent").css("padding-right").replace("px", ""));
-    var promptSpacing = $("#txtCommandPrompt").width() + 5;
-
-    if (visible) {
-        $("#gamePanes").show();
-        // $("#gameContent").width(screenWidth - 250);
-        // $("#txtCommand").width(screenWidth - gameContentPadding - promptSpacing - 250);
-        $("#updating").css("margin-left", (screenWidth / 2 - 290) + "px");
-        // $("#gamePanel").width(screenWidth - 250);
-        // $("#gridPanel").width(screenWidth - 250);
-        // $("#gridCanvas").prop("width", screenWidth - 250);
-        paper.view.viewSize.width = screenWidth - 250;
-        var css = addCSSRule("div#gamePanel img");
-        css.style.maxWidth = (screenWidth - 250) + "px";
-        var css = addCSSRule("div#divOutput img");
-        css.style.maxWidth = (screenWidth - 250) + "px";
-    }
-    else {
-        $("#gamePanes").hide();
-        // $("#gameContent").width(screenWidth - gameContentPadding);
-        // $("#txtCommand").width(screenWidth - promptSpacing - 60);
-        $("#updating").css("margin-left", (screenWidth / 2 - 70) + "px");
-        // $("#gamePanel").width(screenWidth - 40);
-        // $("#gridPanel").width(screenWidth - 40);
-        // $("#gridCanvas").prop("width", screenWidth - 40);
-        paper.view.viewSize.width = screenWidth - 40;
-        var css = addCSSRule("div#gamePanel img");
-        css.style.maxWidth = (screenWidth - 40) + "px";
-        var css = addCSSRule("div#divOutput img");
-        css.style.maxWidth = (screenWidth - 40) + "px";
-    }
 }
 
 var _animateScroll = true;
