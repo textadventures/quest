@@ -37,8 +37,6 @@ div#gamePanel
     position: fixed;
     top: 32px;
     padding-top: 2px;
-    left: 50%;
-    margin-left: -456px;
     max-width: 700px;
     text-align: center;
     display: none;

@@ -151,6 +151,7 @@ function initPlayerUI() {
         const cmdShowPanes = document.getElementById("cmdShowPanes");
         const gamePanes = document.getElementById("gamePanes");
         const gameContent = document.getElementById("gameContent");
+        const gamePanel = document.getElementById("gamePanel");
 
         let isWide = isWindowWide();
 
@@ -161,7 +162,8 @@ function initPlayerUI() {
             cmdShowPanes.style.display = "none";
             gamePanes.style.left = "50%";
             gamePanes.style.marginLeft = (gameWidth / 2 - 220) + "px";
-            gameContent.style.maxWidth = (gameWidth - 250) + "px";
+            gameContent.style.width = (gameWidth - 250) + "px";
+            gamePanel.style.width = (gameWidth - 220) + "px";
         } else {
             if (wasWide) {
                 sidebar.style.display = "none";
@@ -171,7 +173,8 @@ function initPlayerUI() {
             cmdShowPanes.style.display = arePanesVisible ? "inline" : "none";
             gamePanes.style.left = "initial";
             gamePanes.style.marginLeft = "0";
-            gameContent.style.maxWidth = "initial";
+            gameContent.style.width = "initial";
+            gamePanel.style.width = "initial";
         } 
 
         wasWide = isWide;
@@ -186,8 +189,8 @@ function initPlayerUI() {
         const status = document.getElementById("status");
         status.style.maxWidth = (width - 2) + "px";
 
-        $("#gamePanel").css("margin-left", "-" + (width / 2 - 19) + "px");
-        $("#gridPanel").css("margin-left", "-" + (width / 2 - 19) + "px");
+        // $("#gamePanel").css("margin-left", "-" + (width / 2 - 19) + "px");
+        // $("#gridPanel").css("margin-left", "-" + (width / 2 - 19) + "px");
         
         gameWidth = width;
         doLayout();
@@ -211,10 +214,10 @@ function initPlayerUI() {
             // $("#gridPanel").width(screenWidth - 250);
             // $("#gridCanvas").prop("width", screenWidth - 250);
             paper.view.viewSize.width = screenWidth - 250;
-            var css = addCSSRule("div#gamePanel img");
-            css.style.maxWidth = (screenWidth - 250) + "px";
-            var css = addCSSRule("div#divOutput img");
-            css.style.maxWidth = (screenWidth - 250) + "px";
+            // var css = addCSSRule("div#gamePanel img");
+            // css.style.maxWidth = (screenWidth - 250) + "px";
+            // var css = addCSSRule("div#divOutput img");
+            // css.style.maxWidth = (screenWidth - 250) + "px";
         }
         else {
             $("#gamePanes").hide();
@@ -224,10 +227,10 @@ function initPlayerUI() {
             // $("#gridPanel").width(screenWidth - 40);
             // $("#gridCanvas").prop("width", screenWidth - 40);
             paper.view.viewSize.width = screenWidth - 40;
-            var css = addCSSRule("div#gamePanel img");
-            css.style.maxWidth = (screenWidth - 40) + "px";
-            var css = addCSSRule("div#divOutput img");
-            css.style.maxWidth = (screenWidth - 40) + "px";
+            // var css = addCSSRule("div#gamePanel img");
+            // css.style.maxWidth = (screenWidth - 40) + "px";
+            // var css = addCSSRule("div#divOutput img");
+            // css.style.maxWidth = (screenWidth - 40) + "px";
         }
         doLayout();
     }
