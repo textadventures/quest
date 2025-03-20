@@ -149,6 +149,7 @@ function initPlayerUI() {
         const sidebar = document.getElementById("sidebar");
         const cmdShowPanes = document.getElementById("cmdShowPanes");
         const gamePanes = document.getElementById("gamePanes");
+        const gameContent = document.getElementById("gameContent");
 
         let isWide = isWindowWide();
 
@@ -159,6 +160,7 @@ function initPlayerUI() {
             cmdShowPanes.style.display = "none";
             gamePanes.style.left = "50%";
             gamePanes.style.marginLeft = (gameWidth / 2 - 220) + "px";
+            gameContent.style.maxWidth = (gameWidth - 250) + "px";
         } else {
             if (wasWide) {
                 sidebar.style.display = "none";
@@ -168,6 +170,7 @@ function initPlayerUI() {
             cmdShowPanes.style.display = "inline";
             gamePanes.style.left = "initial";
             gamePanes.style.marginLeft = "0";
+            gameContent.style.maxWidth = "initial";
         } 
 
         wasWide = isWide;
@@ -666,9 +669,7 @@ function disableInterface() {
 }
 
 function setCommandBarStyle(style) {
-    var width = $("#txtCommand").width();
     $("#txtCommand").attr("style", style);
-    $("#txtCommand").width(width);
 }
 
 function addTextAndScroll(text) {

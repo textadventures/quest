@@ -57,14 +57,7 @@ div#gridPanel
 div#gameContent
 {
     padding: 30px 20px 0px 20px;
-    
     min-height: 100%;
-}
-@media (min-width: 950px) {
-    div#gameContent
-    {
-        max-width: 700px;
-    }
 }
 div#gamePanes
 {
