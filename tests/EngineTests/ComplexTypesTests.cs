@@ -11,7 +11,7 @@ namespace QuestViva.EngineTests
         [TestInitialize]
         public void Setup()
         {
-            m_worldModel = new WorldModel();
+            m_worldModel = Helpers.CreateWorldModel();
 
             m_object = m_worldModel.GetElementFactory(ElementType.Object).Create("object");
             var list = new QuestList<object> {"string1"};

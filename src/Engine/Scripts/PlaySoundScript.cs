@@ -1,4 +1,5 @@
-﻿using System;
+﻿#nullable disable
+using System;
 using System.Collections.Generic;
 using QuestViva.Engine.Functions;
 
@@ -134,7 +135,7 @@ namespace QuestViva.Engine.Scripts
 
         public override void Execute(Context c)
         {
-            m_worldModel.PlayerUI.StopSound();
+            m_worldModel.PlayerUi.StopSound();
         }
 
         public override string Save()

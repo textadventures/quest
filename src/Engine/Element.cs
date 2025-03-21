@@ -1,4 +1,5 @@
-﻿using System;
+﻿#nullable disable
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using QuestViva.Common;
@@ -208,16 +209,48 @@ namespace QuestViva.Engine
             get { return m_metaFields; }
         }
 
+        private string _name;
+
         public string Name
         {
-            get { return Fields.GetString("name"); }
-            set { Fields.Set("name", value); }
+            get => _name;
+            set => Fields.Set("name", value);
         }
+        
+        internal void SetNameFromFields(string name)
+        {
+            _name = name;
+        }
+
+        private Element _parent;
 
         public Element Parent
         {
-            get { return Fields.GetObject("parent"); }
-            set { Fields.Set("parent", value); }
+            get => _parent;
+            set => Fields.Set("parent", value);
+        }
+
+        internal void SetParentFromFields(Element parent)
+        {
+            if (parent == this)
+            {
+                throw new ArgumentException($"Parent of element '{Name}' cannot be set to itself");                
+            }
+            
+            _parent = parent;
+        }
+        
+        private string _text;
+        
+        public string Text
+        {
+            get => _text;
+            set => Fields.Set("text", value);
+        }
+        
+        internal void SetTextFromFields(string text)
+        {
+            _text = text;
         }
 
         internal void AddType(Element addType)

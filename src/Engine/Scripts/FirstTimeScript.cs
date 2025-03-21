@@ -1,4 +1,5 @@
-﻿using System;
+﻿#nullable disable
+using System;
 
 namespace QuestViva.Engine.Scripts
 {
@@ -73,7 +74,7 @@ namespace QuestViva.Engine.Scripts
             if (!m_hasRun)
             {
                 m_hasRun = true;
-                m_worldModel.UndoLogger.AddUndoAction(new UndoFirstTime(this));
+                m_worldModel.UndoLogger.AddUndoAction(() => new UndoFirstTime(this));
                 m_firstTimeScript.Execute(c);
             }
             else

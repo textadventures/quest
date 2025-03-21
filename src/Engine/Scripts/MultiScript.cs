@@ -1,4 +1,5 @@
-﻿using System;
+﻿#nullable disable
+using System;
 using System.Collections.Generic;
 
 namespace QuestViva.Engine.Scripts
@@ -54,7 +55,7 @@ namespace QuestViva.Engine.Scripts
             {
                 foreach (IScript script in scripts)
                 {
-                    base.UndoLog.AddUndoAction(new UndoMultiScriptAddRemove(this, script, true, null));
+                    base.UndoLog.AddUndoAction(() => new UndoMultiScriptAddRemove(this, script, true, null));
                 }
             }
 
@@ -69,7 +70,7 @@ namespace QuestViva.Engine.Scripts
         {
             if (base.UndoLog != null)
             {
-                base.UndoLog.AddUndoAction(new UndoMultiScriptAddRemove(this, m_scripts[index], false, index));
+                base.UndoLog.AddUndoAction(() => new UndoMultiScriptAddRemove(this, m_scripts[index], false, index));
             }
             RemoveSilent(m_scripts[index]);
         }
@@ -92,7 +93,7 @@ namespace QuestViva.Engine.Scripts
         {
             if (base.UndoLog != null)
             {
-                base.UndoLog.AddUndoAction(new UndoMultiScriptAddRemove(this, script, true, index));
+                base.UndoLog.AddUndoAction(() => new UndoMultiScriptAddRemove(this, script, true, index));
             }
             InsertSilent(index, script);
         }
@@ -217,7 +218,7 @@ namespace QuestViva.Engine.Scripts
             var newScriptList = new List<IScript>(newScript.Scripts);
             if (base.UndoLog != null)
             {
-                base.UndoLog.AddUndoAction(new UndoMultiScriptLoadCode(this, m_scripts, newScriptList));
+                base.UndoLog.AddUndoAction(() => new UndoMultiScriptLoadCode(this, m_scripts, newScriptList));
             }
             ReplaceScripts(newScriptList);
         }

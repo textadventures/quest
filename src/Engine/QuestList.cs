@@ -1,4 +1,5 @@
-﻿using System;
+﻿#nullable disable
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -196,7 +197,7 @@ namespace QuestViva.Engine
                     mutableValue.UndoLog = UndoLog;
                 }
 
-                UndoLog.AddUndoAction(new UndoListAdd(this, item, index));
+                UndoLog.AddUndoAction(() => new UndoListAdd(this, item, index));
             }
         }
 
@@ -204,7 +205,7 @@ namespace QuestViva.Engine
         {
             if (UndoLog != null)
             {
-                UndoLog.AddUndoAction(new UndoListRemove(this, item, index));
+                UndoLog.AddUndoAction(() => new UndoListRemove(this, item, index));
             }
         }
 

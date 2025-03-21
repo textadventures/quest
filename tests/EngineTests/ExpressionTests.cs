@@ -38,10 +38,7 @@ public abstract class ExpressionTestsBase
     [TestInitialize]
     public void Setup()
     {
-        _worldModel = new WorldModel
-        {
-            UseNcalc = UseNCalc
-        };
+        _worldModel = Helpers.CreateWorldModel(UseNCalc);
         _scriptContext = new ScriptContext(_worldModel);
         _scriptFactory = new ScriptFactory(_worldModel);
 

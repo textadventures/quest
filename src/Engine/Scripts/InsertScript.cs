@@ -1,4 +1,5 @@
-﻿using System;
+﻿#nullable disable
+using System;
 using System.Collections.Generic;
 using QuestViva.Engine.Functions;
 
@@ -55,7 +56,7 @@ namespace QuestViva.Engine.Scripts
                 if (filename.ToLower() == "frame.htm") return;
             }
             string path = m_worldModel.GetExternalPath(filename);
-            m_worldModel.PlayerUI.WriteHTML(System.IO.File.ReadAllText(path));
+            m_worldModel.PlayerUi.WriteHTML(System.IO.File.ReadAllText(path));
         }
 
         public override string Save()

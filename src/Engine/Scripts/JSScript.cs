@@ -1,4 +1,5 @@
-﻿using System;
+﻿#nullable disable
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
@@ -70,11 +71,11 @@ namespace QuestViva.Engine.Scripts
             if (m_parameters != null)
             {
                 var paramValues = m_parameters.Select(p => p.Execute(c));
-                m_scriptContext.WorldModel.PlayerUI.RunScript(m_function, paramValues.ToArray());
+                m_scriptContext.WorldModel.PlayerUi.RunScript(m_function, paramValues.ToArray());
             }
             else
             {
-                m_scriptContext.WorldModel.PlayerUI.RunScript(m_function, null);
+                m_scriptContext.WorldModel.PlayerUi.RunScript(m_function, null);
             }
         }
 

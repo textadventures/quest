@@ -1,3 +1,4 @@
+#nullable disable
 using System;
 using System.Collections.Generic;
 
@@ -43,7 +44,7 @@ namespace QuestViva.Engine.Scripts
 
         public override void Execute(Context c)
         {
-            m_worldModel.PlayerUI.RequestSave(null);
+            m_worldModel.PlayerUi.RequestSave(null);
         }
 
         public override string Save()

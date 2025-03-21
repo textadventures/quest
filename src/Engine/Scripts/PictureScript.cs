@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿#nullable disable
+using System.Collections.Generic;
 using QuestViva.Engine.Functions;
 
 namespace QuestViva.Engine.Scripts
@@ -49,7 +50,7 @@ namespace QuestViva.Engine.Scripts
             }
             else
             {
-                m_worldModel.PlayerUI.ShowPicture(filename);
+                m_worldModel.PlayerUi.ShowPicture(filename);
                 ((LegacyOutputLogger)m_worldModel.OutputLogger).AddPicture(filename);
             }
         }

@@ -1,4 +1,5 @@
-﻿using System;
+﻿#nullable disable
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -14,7 +15,7 @@ namespace QuestViva.Engine
         public MismatchingQuotesException(string message) : base(message) { }
     }
 
-    public static class Utility
+    public static partial class Utility
     {
         private const string k_dotReplacementString = "___DOT___";
         private const string k_spaceReplacementString = "___SPACE___";
@@ -43,22 +44,22 @@ namespace QuestViva.Engine
             afterScript = null;
             string obscuredScript = ObscureStrings(script);
             int bracePos = obscuredScript.IndexOf('{');
-            int crlfPos = obscuredScript.IndexOf("\n", StringComparison.Ordinal);
+            int crlfPos = obscuredScript.IndexOf('\n');
             int commentPos = obscuredScript.IndexOf("//", StringComparison.Ordinal);
             if (crlfPos == -1) return script;
 
             if (bracePos == -1 || crlfPos < bracePos || (commentPos != -1 && commentPos < bracePos && commentPos < crlfPos))
             {
-                afterScript = script.Substring(crlfPos + 1);
-                return script.Substring(0, crlfPos);
+                afterScript = script[(crlfPos + 1)..];
+                return script[..crlfPos];
             }
 
-            string beforeBrace = script.Substring(0, bracePos);
+            string beforeBrace = script[..bracePos];
             string insideBraces = GetParameterInt(script, '{', '}', out afterScript);
 
             string result;
 
-            if (insideBraces.Contains("\n"))
+            if (insideBraces.Contains('\n'))
             {
                 result = beforeBrace + "{" + insideBraces + "}";
             }
@@ -85,9 +86,9 @@ namespace QuestViva.Engine
             while (!finished)
             {
                 pos++;
-                string curChar = obscuredText.Substring(pos, 1);
-                if (curChar == open.ToString()) braceCount++;
-                if (curChar == close.ToString()) braceCount--;
+                var curChar = obscuredText[pos];
+                if (curChar == open) braceCount++;
+                if (curChar == close) braceCount--;
                 if (braceCount == 0 || pos == obscuredText.Length - 1) finished = true;
             }
 
@@ -96,7 +97,7 @@ namespace QuestViva.Engine
                 throw new Exception(string.Format("Missing '{0}'", close));
             }
 
-            afterParameter = text.Substring(pos + 1);
+            afterParameter = text[(pos + 1)..];
             return text.Substring(start + 1, pos - start - 1);
         }
 
@@ -115,7 +116,7 @@ namespace QuestViva.Engine
 
         public static string GetTextAfter(string text, string startsWith)
         {
-            return text.Substring(startsWith.Length);
+            return text[startsWith.Length..];
         }
 
         public static List<string> SplitParameter(string text)
@@ -177,36 +178,43 @@ namespace QuestViva.Engine
                 return;
             }
 
-            obj = name.Substring(0, eqPos);
-            variable = name.Substring(eqPos + k_dotReplacementString.Length);
+            obj = name[..eqPos];
+            variable = name[(eqPos + k_dotReplacementString.Length)..];
         }
 
         public static void ResolveObjectDotAttribute(string name, out string obj, out string variable)
         {
             variable = ConvertVariablesToFleeFormat(ResolveElementName(name));
-            obj = null;
+            StringBuilder sb = null;
+
             do
             {
-                if (Utility.ContainsUnresolvedDotNotation(variable))
+                if (!ContainsUnresolvedDotNotation(variable))
                 {
-                    // We may have been passed in something like someobj.parent.someproperty
-                    string nestedObj;
-                    Utility.ResolveVariableName(ref variable, out nestedObj, out variable);
-
-                    if (nestedObj != null)
-                    {
-                        if (obj == null)
-                        {
-                            obj = string.Empty;
-                        }
-                        else
-                        {
-                            obj += ".";
-                        }
-                        obj += nestedObj;
-                    }
+                    continue;
                 }
-            } while (Utility.ContainsUnresolvedDotNotation(variable));
+
+                // We may have been passed in something like someobj.parent.someproperty
+                ResolveVariableName(ref variable, out var nestedObj, out variable);
+
+                if (nestedObj == null)
+                {
+                    continue;
+                }
+
+                if (sb == null)
+                {
+                    sb = new StringBuilder();
+                }
+                else
+                {
+                    sb.Append('.');
+                }
+                
+                sb.Append(nestedObj);
+            } while (ContainsUnresolvedDotNotation(variable));
+            
+            obj = sb?.ToString();
         }
 
         public static string ResolveElementName(string name)
@@ -214,8 +222,12 @@ namespace QuestViva.Engine
             return name.Replace(k_spaceReplacementString, " ");
         }
 
-        private static Regex s_convertVariables = new System.Text.RegularExpressions.Regex(@"(\w)\.([a-zA-Z])");
-        private static Regex s_detectComments = new Regex("//");
+        // private static Regex s_convertVariables = new System.Text.RegularExpressions.Regex(@"(\w)\.([a-zA-Z])");
+        [GeneratedRegex(@"(\w)\.([a-zA-Z])")]
+        private static partial Regex s_convertVariables();
+        
+        [GeneratedRegex(@"//")]
+        private static partial Regex s_detectComments();
 
         /// <summary>
         /// FLEE doesn't allow us to have control over dot notation i.e. "object.property",
@@ -225,7 +237,7 @@ namespace QuestViva.Engine
         /// <returns></returns>
         public static string ConvertVariablesToFleeFormat(string expression)
         {
-            string result = ReplaceRegexMatchesRespectingQuotes(expression, s_convertVariables, "$1" + k_dotReplacementString + "$2", false);
+            string result = ReplaceRegexMatchesRespectingQuotes(expression, s_convertVariables(), "$1" + k_dotReplacementString + "$2", false);
             return ConvertVariableNamesWithSpaces(result);
         }
 
@@ -251,39 +263,44 @@ namespace QuestViva.Engine
                 // our space placeholder. However, if one of the two words is a
                 // keyword ("and", "not" etc.), we don't convert it.
                 string[] words = text.Split(' ');
-                string result = words[0];
-
-                if (words.Length == 1) return result;
+                
+                if (words.Length == 1) return words[0];
+                
+                var result = new StringBuilder(words[0]);
 
                 for (int i = 1; i < words.Length; i++)
                 {
                     if (IsSplitVariableName(words[i - 1], words[i]))
                     {
-                        result += k_spaceReplacementString;
+                        result.Append(k_spaceReplacementString);
                     }
                     else
                     {
-                        result += " ";
+                        result.Append(' ');
                     }
-                    result += words[i];
+                    result.Append(words[i]);
                 }
 
-                return result;
+                return result.ToString();
             });
         }
 
         // Given two words e.g. "my" and "variable", see if they together comprise a variable name
 
-        private static Regex s_wordRegex1 = new System.Text.RegularExpressions.Regex(@"(\w+)$");
-        private static Regex s_wordRegex2 = new System.Text.RegularExpressions.Regex(@"^(\w+)");
+        [GeneratedRegex(@"(\w+)$")]
+        private static partial Regex s_wordRegex1();
+        
+        [GeneratedRegex(@"^(\w+)")]
+        private static partial Regex s_wordRegex2();
+        
         private static List<string> s_keywords = new List<string> { "and", "or", "xor", "not", "if", "in" };
 
         private static bool IsSplitVariableName(string word1, string word2)
         {
-            if (!(s_wordRegex1.IsMatch(word1) && s_wordRegex2.IsMatch(word2))) return false;
+            if (!(s_wordRegex1().IsMatch(word1) && s_wordRegex2().IsMatch(word2))) return false;
 
-            string word1last = s_wordRegex1.Match(word1).Groups[1].Value;
-            string word2first = s_wordRegex2.Match(word2).Groups[1].Value;
+            string word1last = s_wordRegex1().Match(word1).Groups[1].Value;
+            string word2first = s_wordRegex2().Match(word2).Groups[1].Value;
 
             if (s_keywords.Contains(word1last)) return false;
             if (s_keywords.Contains(word2first)) return false;
@@ -300,7 +317,7 @@ namespace QuestViva.Engine
             // We ignore regex matches which appear within quotes by splitting the string
             // at the position of quote marks, and then alternating whether we replace or not.
             string[] sections = SplitQuotes(input);
-            string result = string.Empty;
+            var result = new StringBuilder();
 
             bool insideQuote = false;
             for (int i = 0; i <= sections.Length - 1; i++)
@@ -309,17 +326,17 @@ namespace QuestViva.Engine
                 bool doReplace = (insideQuote && replaceInsideQuote) || (!insideQuote && !replaceInsideQuote);
                 if (doReplace)
                 {
-                    result += replaceFunction(section);
+                    result.Append(replaceFunction(section));
                 }
                 else
                 {
-                    result += section;
+                    result.Append(section);
                 }
-                if (i < sections.Length - 1) result += "\"";
+                if (i < sections.Length - 1) result.Append('"');
                 insideQuote = !insideQuote;
             }
 
-            return result;
+            return result.ToString();
         }
 
         private static string[] SplitQuotes(string text)
@@ -366,7 +383,7 @@ namespace QuestViva.Engine
         public static string RemoveComments(string input, bool onlyRemoveMidLineComments = false)
         {
             if (!input.Contains("//")) return input;
-            if (input.Contains("\n"))
+            if (input.Contains('\n'))
             {
                 return RemoveCommentsMultiLine(input, onlyRemoveMidLineComments);
             }
@@ -380,10 +397,10 @@ namespace QuestViva.Engine
 
             // Replace any occurrences of "//" which are inside string expressions. Then any occurrences of "//"
             // which remain mark the beginning of a comment.
-            string obfuscateDoubleSlashesInsideStrings = ReplaceRegexMatchesRespectingQuotes(input, s_detectComments, "--", true);
+            string obfuscateDoubleSlashesInsideStrings = ReplaceRegexMatchesRespectingQuotes(input, s_detectComments(), "--", true);
             if (obfuscateDoubleSlashesInsideStrings.Contains("//"))
             {
-                return input.Substring(0, obfuscateDoubleSlashesInsideStrings.IndexOf("//", StringComparison.Ordinal));
+                return input[..obfuscateDoubleSlashesInsideStrings.IndexOf("//", StringComparison.Ordinal)];
             }
             return input;
         }
@@ -439,7 +456,7 @@ namespace QuestViva.Engine
                 {
                     result.Append(section);
                 }
-                if (i < sections.Length - 1) result.Append("\"");
+                if (i < sections.Length - 1) result.Append('"');
                 insideQuote = !insideQuote;
             }
             return result.ToString();
@@ -603,11 +620,12 @@ namespace QuestViva.Engine
         //  - must not contain keywords "and", "or" etc.
         //  - can contain spaces, but not at the beginning or end
         //  - cannot be "object", "finish" etc. (attributes only)
-        private static Regex s_validAttributeName = new Regex(@"^[A-Za-z_][\w ]*$");
+        [GeneratedRegex(@"^[A-Za-z_][\w ]*$")]
+        private static partial Regex s_validAttributeName();
 
         public static bool IsValidFieldName(string name)
         {
-            if (!s_validAttributeName.IsMatch(name)) return false;
+            if (!s_validAttributeName().IsMatch(name)) return false;
             if (name.EndsWith(" ")) return false;
             if (name.Split(' ').Any(w => s_keywords.Contains(w))) return false;
             return true;
@@ -643,7 +661,7 @@ namespace QuestViva.Engine
                 // then resume with the rest of the line.
                 indentLevel--;
                 result += GetIndentChars(indentLevel, indentChars) + "}" + Environment.NewLine;
-                AddLine(ref result, ref indentLevel, line.Substring(1), indentChars);
+                AddLine(ref result, ref indentLevel, line[1..], indentChars);
                 return;
             }
 

@@ -8,7 +8,7 @@ namespace QuestViva.EngineTests
         [TestMethod]
         public void TestListExtension_Simple()
         {
-            WorldModel worldModel = new WorldModel();
+            WorldModel worldModel = Helpers.CreateWorldModel();
 
             Element type1 = worldModel.GetElementFactory(ElementType.ObjectType).Create("type1");
             type1.Fields.AddFieldExtension("listfield", new QuestList<string>(new[] { "a" }, true));
@@ -30,7 +30,7 @@ namespace QuestViva.EngineTests
         [TestMethod]
         public void TestListExtension_InheritingDirectly()
         {
-            WorldModel worldModel = new WorldModel();
+            WorldModel worldModel = Helpers.CreateWorldModel();
 
             Element type1 = worldModel.GetElementFactory(ElementType.ObjectType).Create("type1");
             type1.Fields.AddFieldExtension("listfield", new QuestList<string>(new[] { "a" }, true));
@@ -52,7 +52,7 @@ namespace QuestViva.EngineTests
         [TestMethod]
         public void TestListExtension_InheritingIndirectly()
         {
-            WorldModel worldModel = new WorldModel();
+            WorldModel worldModel = Helpers.CreateWorldModel();
 
             Element type1 = worldModel.GetElementFactory(ElementType.ObjectType).Create("type1");
             type1.Fields.AddFieldExtension("listfield", new QuestList<string>(new[] { "a" }, true));

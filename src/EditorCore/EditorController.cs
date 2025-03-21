@@ -123,7 +123,7 @@ namespace QuestViva.EditorCore
         private AvailableFilters m_availableFilters;
         private FilterOptions m_filterOptions;
         private EditableScriptFactory m_editableScriptFactory;
-        private FontsManager m_fontsManager;
+        // private FontsManager m_fontsManager;
         private Dictionary<string, EditorDefinition> m_editorDefinitions = new Dictionary<string, EditorDefinition>();
         private Dictionary<string, EditorDefinition> m_expressionDefinitions = new Dictionary<string, EditorDefinition>();
         private Dictionary<ElementType, TreeHeader> m_elementTreeStructure;
@@ -301,7 +301,8 @@ namespace QuestViva.EditorCore
             m_filterOptions = new FilterOptions();
             // set default filters here
 
-            m_fontsManager = new FontsManager();
+            // TODO: Replace. This is commented out because it downloads the font list in the constructor
+            // m_fontsManager = new FontsManager();
         }
 
         public class InitialiseResults : EventArgs
@@ -326,14 +327,14 @@ namespace QuestViva.EditorCore
         //     newThread.Start();
         // }
 
-        public async Task<bool> Initialise(string filename)
+        public async Task<bool> Initialise(IConfig config, string filename, bool partialInit = false)
         {
             m_lastelementscutout = false;
             m_filename = filename;
             // TODO: ResourcesId is probably not relevant here?
             var gameDataProvider = new FileGameDataProvider(filename, "editor");
             var gameData = await gameDataProvider.GetData();
-            m_worldModel = new WorldModel(gameData);
+            m_worldModel = new WorldModel(config, gameData);
             m_scriptFactory = new ScriptFactory(m_worldModel);
             m_worldModel.ElementFieldUpdated += m_worldModel_ElementFieldUpdated;
             m_worldModel.ElementRefreshed += m_worldModel_ElementRefreshed;
@@ -346,40 +347,45 @@ namespace QuestViva.EditorCore
 
             if (ok)
             {
-                if (m_worldModel.Game.Fields.Get("_editorstyle") as string == "gamebook")
+                // TODO: Move this code to another initialisation method - it's not needed when running tests
+                if (!partialInit)
                 {
-                    m_editorStyle = EditorStyle.GameBook;
-                    m_ignoredTypes.Add(ElementType.Template);
-                    m_ignoredTypes.Add(ElementType.ObjectType);
-                }
-
-                // need to initialise the EditableScriptFactory after we've loaded the game XML above,
-                // as the editor definitions contain the "friendly" templates for script commands.
-                m_editableScriptFactory = new EditableScriptFactory(this, m_scriptFactory, m_worldModel);
-
-                m_initialised = true;
-
-                m_worldModel.ObjectsUpdated += m_worldModel_ObjectsUpdated;
-
-                foreach (Element e in m_worldModel.Elements.GetElements(ElementType.Editor))
-                {
-                    EditorDefinition def = new EditorDefinition(m_worldModel, e);
-                    if (def.AppliesTo != null)
+                    if (m_worldModel.Game.Fields.Get("_editorstyle") as string == "gamebook")
                     {
-                        // Normal editor definition for editing an element or a script command
-                        m_editorDefinitions.Add(def.AppliesTo, def);
+                        m_editorStyle = EditorStyle.GameBook;
+                        m_ignoredTypes.Add(ElementType.Template);
+                        m_ignoredTypes.Add(ElementType.ObjectType);
                     }
-                    else if (def.Pattern != null)
-                    {
-                        // Editor definition for an expression template in the "if" editor
-                        m_expressionDefinitions.Add(def.Pattern, def);
-                    }
-                }
 
-                if (m_worldModel.Version == WorldModelVersion.v500)
-                {
-                    m_worldModel.Elements.Get("game").Fields.Set("gameid", GetNewGameId());
+                    // need to initialise the EditableScriptFactory after we've loaded the game XML above,
+                    // as the editor definitions contain the "friendly" templates for script commands.
+                    m_editableScriptFactory = new EditableScriptFactory(this, m_scriptFactory, m_worldModel);
+
+                    m_initialised = true;
+
+                    m_worldModel.ObjectsUpdated += m_worldModel_ObjectsUpdated;
+
+                    foreach (Element e in m_worldModel.Elements.GetElements(ElementType.Editor))
+                    {
+                        EditorDefinition def = new EditorDefinition(m_worldModel, e);
+                        if (def.AppliesTo != null)
+                        {
+                            // Normal editor definition for editing an element or a script command
+                            m_editorDefinitions.Add(def.AppliesTo, def);
+                        }
+                        else if (def.Pattern != null)
+                        {
+                            // Editor definition for an expression template in the "if" editor
+                            m_expressionDefinitions.Add(def.Pattern, def);
+                        }
+                    }
+
+                    if (m_worldModel.Version == WorldModelVersion.v500)
+                    {
+                        m_worldModel.Elements.Get("game").Fields.Set("gameid", GetNewGameId());
+                    }
                 }
+                
             }
             else
             {
@@ -394,7 +400,7 @@ namespace QuestViva.EditorCore
             return ok;
         }
 
-        void m_worldModel_LoadStatus(object sender, WorldModel.LoadStatusEventArgs e)
+        void m_worldModel_LoadStatus(object sender, Engine.LoadStatusEventArgs e)
         {
             if (LoadStatus != null)
             {
@@ -408,7 +414,7 @@ namespace QuestViva.EditorCore
             string newName = e.Element.Name;
 
             RenamedNode(this, new RenamedNodeEventArgs { OldName = oldName, NewName = newName });
-            if (ElementsUpdated != null) ElementsUpdated(this, new EventArgs());
+            if (ElementsUpdated != null) ElementsUpdated(this, EventArgs.Empty);
         }
 
         void UndoLogger_TransactionsUpdated(object sender, EventArgs e)
@@ -417,7 +423,7 @@ namespace QuestViva.EditorCore
             if (RedoListUpdated != null) RedoListUpdated(this, new UpdateUndoListEventArgs(m_worldModel.UndoLogger.RedoList()));
         }
 
-        void m_worldModel_ElementFieldUpdated(object sender, WorldModel.ElementFieldUpdatedEventArgs e)
+        void m_worldModel_ElementFieldUpdated(object sender, ElementFieldUpdatedEventArgs e)
         {
             if (!m_initialised) return;
 
@@ -444,7 +450,7 @@ namespace QuestViva.EditorCore
                 {
                     // element name might be null if we're undoing an element add
                     RetitledNode(this, new RetitledNodeEventArgs { Key = e.Element.Name, NewTitle = GetDisplayName(e.Element) });
-                    if (ElementsUpdated != null) ElementsUpdated(this, new EventArgs());
+                    if (ElementsUpdated != null) ElementsUpdated(this, EventArgs.Empty);
                 }
             }
 
@@ -459,7 +465,7 @@ namespace QuestViva.EditorCore
             }
         }
 
-        void m_worldModel_ElementMetaFieldUpdated(object sender, WorldModel.ElementFieldUpdatedEventArgs e)
+        void m_worldModel_ElementMetaFieldUpdated(object sender, ElementFieldUpdatedEventArgs e)
         {
             if (!m_initialised) return;
 
@@ -519,7 +525,7 @@ namespace QuestViva.EditorCore
             RemovedNode(this, new RemovedNodeEventArgs { Key = e.Name });
         }
 
-        void m_worldModel_ElementRefreshed(object sender, WorldModel.ElementRefreshEventArgs e)
+        void m_worldModel_ElementRefreshed(object sender, ElementRefreshEventArgs e)
         {
             if (m_initialised)
             {
@@ -1548,7 +1554,7 @@ namespace QuestViva.EditorCore
                     if (newParent.ElemType == ElementType.Object)
                     {
                         // Can't drag a parent object onto one of its own children
-                        return !m_worldModel.ObjectContains(element, newParent);
+                        return !WorldModel.ObjectContains(element, newParent);
                     }
                 }
 
@@ -1577,7 +1583,7 @@ namespace QuestViva.EditorCore
             // object as a sub-object of the current selection, or as a sibling of the current object.
             // It could also be created with no parent at all (it's up to the GUI to provide that option).
 
-            ElementType elementType = m_worldModel.GetElementTypeForTypeString(elementTypeString);
+            ElementType elementType = WorldModel.GetElementTypeForTypeString(elementTypeString);
 
             if (elementKey == null) return null;
             if (!m_worldModel.Elements.ContainsKey(elementType, elementKey)) return null;
@@ -1616,7 +1622,7 @@ namespace QuestViva.EditorCore
                    where possibleParent != element
                    && possibleParent != element.Parent
                    && possibleParent.Type == ObjectType.Object
-                   && !m_worldModel.ObjectContains(element, possibleParent)
+                   && !WorldModel.ObjectContains(element, possibleParent)
                    orderby possibleParent.Name
                    select possibleParent.Name;
         }
@@ -1893,7 +1899,7 @@ namespace QuestViva.EditorCore
             if (!ElementExists(elementName)) return false;
             if (elementName == "game") return false;
             if (m_editorStyle == EditorStyle.GameBook && elementName == "player") return false;
-            if (m_editorStyle == EditorStyle.GameBook && m_worldModel.ObjectContains(m_worldModel.Elements.Get(elementName), m_worldModel.Elements.Get("player"))) return false;
+            if (m_editorStyle == EditorStyle.GameBook && WorldModel.ObjectContains(m_worldModel.Elements.Get(elementName), m_worldModel.Elements.Get("player"))) return false;
             return true;
         }
 
@@ -2446,12 +2452,14 @@ namespace QuestViva.EditorCore
 
         public List<string> AvailableBaseFonts()
         {
-            return m_fontsManager.GetBaseFonts();
+            return [];
+            // return m_fontsManager.GetBaseFonts();
         }
 
         public List<string> AvailableWebFonts()
         {
-            return m_fontsManager.GetWebFonts();
+            return [];
+            // return m_fontsManager.GetWebFonts();
         }
     }
 }

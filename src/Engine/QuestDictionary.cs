@@ -1,4 +1,5 @@
-﻿using System;
+﻿#nullable disable
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Collections.Specialized;
@@ -54,7 +55,7 @@ namespace QuestViva.Engine
                     mutableValue.UndoLog = UndoLog;
                 }
 
-                UndoLog.AddUndoAction(new UndoDictionaryAdd(this, key, value, m_dictionary.IndexOfKey((string)key)));
+                UndoLog.AddUndoAction(() => new UndoDictionaryAdd(this, key, value, m_dictionary.IndexOfKey((string)key)));
             }
         }
 
@@ -62,7 +63,7 @@ namespace QuestViva.Engine
         {
             if (UndoLog != null)
             {
-                UndoLog.AddUndoAction(new UndoDictionaryRemove(this, key, m_dictionary[(string)key], m_dictionary.IndexOfKey((string)key)));
+                UndoLog.AddUndoAction(() => new UndoDictionaryRemove(this, key, m_dictionary[(string)key], m_dictionary.IndexOfKey((string)key)));
             }
         }
 

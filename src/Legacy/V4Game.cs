@@ -6,7 +6,7 @@ using Constants = Microsoft.VisualBasic.Constants;
 
 namespace QuestViva.Legacy;
 
-public partial class V4Game : IGameDebug, IGameTimer
+public partial class V4Game : IGame, IGameDebug
 {
     public enum State
     {

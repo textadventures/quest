@@ -1,4 +1,5 @@
-﻿using System;
+﻿#nullable disable
+using System;
 using QuestViva.Engine.Functions;
 
 namespace QuestViva.Engine.Scripts

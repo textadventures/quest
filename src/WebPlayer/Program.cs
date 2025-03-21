@@ -1,3 +1,6 @@
+using QuestViva.Common;
+using QuestViva.Engine;
+using QuestViva.PlayerCore;
 using QuestViva.WebPlayer;
 using QuestViva.WebPlayer.Components;
 
@@ -6,6 +9,10 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents();
+
+builder.Services.AddSingleton<IConfig, Config>();
+builder.Services.AddSingleton<WorldModelFactory>();
+builder.Services.AddSingleton<GameLauncher>();
 
 builder.Services.AddHttpClient();
 

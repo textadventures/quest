@@ -16,23 +16,28 @@ namespace QuestViva.EditorCoreTests
                 var tempFile = Path.GetTempFileName();
 
                 var initialFileText = EditorController.CreateNewGameFile(template.ResourceName, "Test");
-                File.WriteAllText(tempFile, initialFileText);
+                await File.WriteAllTextAsync(tempFile, initialFileText);
                 var controller = new EditorController();
                 var errorsRaised = string.Empty;
-                
-                controller.ShowMessage += (_, e) =>
-                {
-                    errorsRaised += e.Message;
-                };
 
-                var result = await controller.Initialise(tempFile);
+                controller.ShowMessage += OnControllerOnShowMessage;
+                var result = await controller.Initialise(new Config(), tempFile, partialInit: true);
 
                 Assert.IsTrue(result,
                     $"Initialisation failed for template '{template.ResourceName}': {errorsRaised}");
                 Assert.AreEqual(0, errorsRaised.Length,
                     $"Error loading game with template '{template.ResourceName}': {errorsRaised}");
-
+                
+                controller.ShowMessage -= OnControllerOnShowMessage;
+                controller.Uninitialise();
+                
                 tempFiles.Add(tempFile);
+                continue;
+
+                void OnControllerOnShowMessage(object _, EditorController.ShowMessageEventArgs e)
+                {
+                    errorsRaised += e.Message;
+                }
             }
 
             try
@@ -42,7 +47,10 @@ namespace QuestViva.EditorCoreTests
                     File.Delete(tempFile);
                 }
             }
-            catch { }
+            catch
+            {
+                // ignored
+            }
         }
     }
 }

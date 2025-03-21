@@ -1,4 +1,5 @@
-﻿using System;
+﻿#nullable disable
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using QuestViva.Common;
@@ -308,12 +309,12 @@ namespace QuestViva.Engine
 
         private void UndoLog(string property, object oldValue, object newValue, bool added)
         {
-            if (m_worldModel != null) m_worldModel.UndoLogger.AddUndoAction(new UndoFieldSet(m_worldModel, m_element.Name, property, oldValue, newValue, added, m_isMeta));
+            if (m_worldModel != null) m_worldModel.UndoLogger.AddUndoAction(() => new UndoFieldSet(m_worldModel, m_element.Name, property, oldValue, newValue, added, m_isMeta));
         }
 
         internal void UndoLog(UndoLogger.IUndoAction action)
         {
-            if (m_worldModel != null) m_worldModel.UndoLogger.AddUndoAction(action);
+            if (m_worldModel != null) m_worldModel.UndoLogger.AddUndoAction(() => action);
         }
 
         public void Set(string name, object value)
@@ -403,14 +404,24 @@ namespace QuestViva.Engine
                 }
             }
 
-            if (name == "name" && !(value is string))
+            switch (name)
             {
-                throw new ArgumentException("Invalid data type for 'name'");
-            }
-
-            if (name == "parent" && value == m_element)
-            {
-                throw new ArgumentException(string.Format("Parent of element '{0}' cannot be set to itself", m_element.Name));
+                case "name":
+                {
+                    if (value is not string strValue)
+                    {
+                        throw new ArgumentException("Invalid data type for 'name'");
+                    }
+                
+                    m_element.SetNameFromFields(strValue);
+                    break;
+                }
+                case "parent":
+                    m_element.SetParentFromFields(value as Element);
+                    break;
+                case "text":
+                    m_element.SetTextFromFields(value as string);
+                    break;
             }
 
             if (m_worldModel.Version >= WorldModelVersion.v530 && value == null)
@@ -630,7 +641,7 @@ namespace QuestViva.Engine
             Stack<Element> oldValue = CloneStack(m_types);
             AddType(addType);
             Stack<Element> newValue = CloneStack(m_types);
-            m_worldModel.UndoLogger.AddUndoAction(new UndoAddRemoveType(m_element.Name, oldValue, newValue));
+            m_worldModel.UndoLogger.AddUndoAction(() => new UndoAddRemoveType(m_element.Name, oldValue, newValue));
             if (AttributeChangedSilent != null) AttributeChangedSilent(this, new AttributeChangedEventArgs(true));
         }
 
@@ -639,7 +650,7 @@ namespace QuestViva.Engine
             Stack<Element> oldValue = CloneStack(m_types);
             m_types = CloneStackAndDelete(m_types, removeType);
             Stack<Element> newValue = CloneStack(m_types);
-            m_worldModel.UndoLogger.AddUndoAction(new UndoAddRemoveType(m_element.Name, oldValue, newValue));
+            m_worldModel.UndoLogger.AddUndoAction(() => new UndoAddRemoveType(m_element.Name, oldValue, newValue));
             if (AttributeChangedSilent != null) AttributeChangedSilent(this, new AttributeChangedEventArgs(true));
         }
 
