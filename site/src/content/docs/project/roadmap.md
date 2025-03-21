@@ -10,7 +10,6 @@ Here's a rough roadmap with my current ideas for major Quest Viva projects. The 
 
 This is well under way. Work remaining:
 
-- mobile view (responsive layout)
 - save/load
 - link to online resources for games on textadventures.co.uk without having to download the entire `.quest` file to the server
 - handle games from the current version of Quest 5's WebEditor
