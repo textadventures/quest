@@ -139,6 +139,7 @@ function initPlayerUI() {
     const gameContent = document.getElementById("gameContent");
     const gamePanel = document.getElementById("gamePanel");
     const gamePanelSpacer = document.getElementById("gamePanelSpacer");
+    const gridPanel = document.getElementById("gridPanel");
     
     cmdShowPanes.addEventListener("click", function () {
         sidebar.style.display = (sidebar.style.display === "block") ? "none" : "block";
@@ -162,6 +163,8 @@ function initPlayerUI() {
             gamePanes.style.marginLeft = (gameWidth / 2 - 220) + "px";
             gameContent.style.width = (gameWidth - 250) + "px";
             gamePanel.style.width = (gameWidth - 220) + "px";
+            gridPanel.style.width = (gameWidth - 220) + "px";
+            if (window.paper) paper.view.viewSize.width = gameWidth - 220;
         } else {
             if (wasWide) {
                 sidebar.style.display = "none";
@@ -173,6 +176,8 @@ function initPlayerUI() {
             gamePanes.style.marginLeft = "0";
             gameContent.style.width = "initial";
             gamePanel.style.width = "100%";
+            gridPanel.style.width = "100%";
+            if (window.paper) paper.view.viewSize.width = window.innerWidth;
         }
 
         const newPanelImageMaxHeight = `${(window.innerHeight - 30) * 0.5}px`;
@@ -201,11 +206,9 @@ function initPlayerUI() {
 
         if (visible) {
             $("#gamePanes").show();
-            paper.view.viewSize.width = screenWidth - 250;
         }
         else {
             $("#gamePanes").hide();
-            paper.view.viewSize.width = screenWidth - 40;
         }
         doLayout();
     };
@@ -226,6 +229,7 @@ function initPlayerUI() {
     };
     
     const resetPanelHeight = () => {
+        if (_showGrid) return;
         gamePanelSpacer.style.height = gamePanel.offsetHeight + "px";
     };
 
