@@ -135,6 +135,10 @@ function initPlayerUI() {
 
     const sidebar = document.getElementById("sidebar");
     const cmdShowPanes = document.getElementById("cmdShowPanes");
+    const gamePanes = document.getElementById("gamePanes");
+    const gameContent = document.getElementById("gameContent");
+    const gamePanel = document.getElementById("gamePanel");
+    const gamePanelSpacer = document.getElementById("gamePanelSpacer");
     
     cmdShowPanes.addEventListener("click", function () {
         sidebar.style.display = (sidebar.style.display === "block") ? "none" : "block";
@@ -147,12 +151,6 @@ function initPlayerUI() {
     let wasWide = isWindowWide();
     
     const doLayout = () => {
-        const sidebar = document.getElementById("sidebar");
-        const cmdShowPanes = document.getElementById("cmdShowPanes");
-        const gamePanes = document.getElementById("gamePanes");
-        const gameContent = document.getElementById("gameContent");
-        const gamePanel = document.getElementById("gamePanel");
-
         let isWide = isWindowWide();
 
         if (isWide && arePanesVisible) {
@@ -174,8 +172,12 @@ function initPlayerUI() {
             gamePanes.style.left = "initial";
             gamePanes.style.marginLeft = "0";
             gameContent.style.width = "initial";
-            gamePanel.style.width = "initial";
-        } 
+            gamePanel.style.width = "100%";
+        }
+
+        const newPanelImageMaxHeight = `${(window.innerHeight - 30) * 0.5}px`;
+        updatePanelImageMaxHeight(newPanelImageMaxHeight);
+        resetPanelHeight();
 
         wasWide = isWide;
     }
@@ -189,9 +191,6 @@ function initPlayerUI() {
         const status = document.getElementById("status");
         status.style.maxWidth = (width - 2) + "px";
 
-        // $("#gamePanel").css("margin-left", "-" + (width / 2 - 19) + "px");
-        // $("#gridPanel").css("margin-left", "-" + (width / 2 - 19) + "px");
-        
         gameWidth = width;
         doLayout();
     };
@@ -200,40 +199,43 @@ function initPlayerUI() {
         arePanesVisible = visible;
         var screenWidth = $("#gameBorder").width();
 
-        // TODO: Verify resize behaviour when an image or map panel is displayed,
-        // then remove the commented-out code here.
-
-        var gameContentPadding = parseInt($("#gameContent").css("padding-left").replace("px", "")) + parseInt($("#gameContent").css("padding-right").replace("px", ""));
-        var promptSpacing = $("#txtCommandPrompt").width() + 5;
-
         if (visible) {
             $("#gamePanes").show();
-            // $("#gameContent").width(screenWidth - 250);
-            // $("#txtCommand").width(screenWidth - gameContentPadding - promptSpacing - 250);
-            // $("#gamePanel").width(screenWidth - 250);
-            // $("#gridPanel").width(screenWidth - 250);
-            // $("#gridCanvas").prop("width", screenWidth - 250);
             paper.view.viewSize.width = screenWidth - 250;
-            // var css = addCSSRule("div#gamePanel img");
-            // css.style.maxWidth = (screenWidth - 250) + "px";
-            // var css = addCSSRule("div#divOutput img");
-            // css.style.maxWidth = (screenWidth - 250) + "px";
         }
         else {
             $("#gamePanes").hide();
-            // $("#gameContent").width(screenWidth - gameContentPadding);
-            // $("#txtCommand").width(screenWidth - promptSpacing - 60);
-            // $("#gamePanel").width(screenWidth - 40);
-            // $("#gridPanel").width(screenWidth - 40);
-            // $("#gridCanvas").prop("width", screenWidth - 40);
             paper.view.viewSize.width = screenWidth - 40;
-            // var css = addCSSRule("div#gamePanel img");
-            // css.style.maxWidth = (screenWidth - 40) + "px";
-            // var css = addCSSRule("div#divOutput img");
-            // css.style.maxWidth = (screenWidth - 40) + "px";
         }
         doLayout();
-    }
+    };
+
+    const updatePanelImageMaxHeight = (newMaxHeight) => {
+        for (const sheet of document.styleSheets) {
+            try {
+                for (const rule of sheet.cssRules) {
+                    if (rule.selectorText === 'div#gamePanel img') {
+                        rule.style.maxHeight = newMaxHeight;
+                        return;
+                    }
+                }
+            } catch (e) {
+                continue;
+            }
+        }
+    };
+    
+    const resetPanelHeight = () => {
+        gamePanelSpacer.style.height = gamePanel.offsetHeight + "px";
+    };
+
+    window.setPanelHeight = function () {
+        if (_showGrid) return;
+        setTimeout(function () {
+            resetPanelHeight();
+            scrollToEnd();
+        }, 100);
+    };
     
     doLayout();
     ui_init();
@@ -436,14 +438,6 @@ function setBackground(col) {
     $("#gameBorder").css("background-color", cssBackground);
     $("#gamePanel").css("background-color", col);
     $("#gridPanel").css("background-color", col);
-}
-
-function setPanelHeight() {
-    if (_showGrid) return;
-    setTimeout(function () {
-        $("#gamePanelSpacer").height($("#gamePanel").height());
-        scrollToEnd();
-    }, 100);
 }
 
 function setPanelContents(html) {
