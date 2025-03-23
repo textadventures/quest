@@ -1,5 +1,8 @@
 @using QuestViva.Common
 @using QuestViva.PlayerCore
+@using QuestViva.WebPlayer.Components.Debugger
+@rendermode InteractiveServer
+@inject GameLauncher GameLauncher
 
 <HeadContent>
     <script type="text/javascript" src="/res/lib/jquery-2.1.1.min.js"></script>
@@ -26,11 +29,41 @@
     </script>
 </HeadContent>
 
-@UiHtml
+@if (gameDebug != null)
+{
+    <Debugger Game="@gameDebug" OnRunWalkthrough="RunWalkthrough"></Debugger>
+}
 
-<Runner GameDataProvider="@GameDataProvider"></Runner>
+@UiHtml
 
 @code {
     [Parameter] public required IGameDataProvider GameDataProvider { get; set; }
     private static MarkupString UiHtml => (MarkupString) PlayerHelper.GetUiResourceString("playercore.htm");
+    [Inject] private IJSRuntime JS { get; set; } = null!;
+    private Player Player { get; set; } = null!;
+    private IGameDebug? gameDebug;
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (!firstRender) return;
+        
+        var gameData = await GameDataProvider.GetData();
+        var game = GameLauncher.GetGame(gameData);
+        
+        Player = new Player(game, GameDataProvider.ResourcesId, JS);
+        GameResources.AddResourceProvider(GameDataProvider.ResourcesId, Player.GetResource);
+        
+        await JS.InvokeVoidAsync("WebPlayer.initUI");
+
+        await Player.Initialise();
+        
+        gameDebug = game as IGameDebug;
+        await JS.InvokeVoidAsync("WebPlayer.setCanDebug", gameDebug != null);
+        StateHasChanged();
+    }
+
+    private async Task RunWalkthrough(string name)
+    {
+        await Player.RunWalkthrough(name);
+    }
 }
