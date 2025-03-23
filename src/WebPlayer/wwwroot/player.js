@@ -4,7 +4,6 @@ var tmrTick = null;
 var tickCount = 0;
 var sendNextGameTickerAfter = 0;
 var canSendCommand = true;
-var apiRoot = null; // "https://textadventures.co.uk/";
 var outputBufferId;
 var gameSessionLogData;
 
@@ -161,10 +160,10 @@ function goUrl(href) {
     window.open(href);
 }
 
-async function saveGame() {
-    const saveData = $("#divOutput").html();
-    const result = await WebPlayer.uiSaveGame(saveData);
-    console.log("TODO: Save game 2...", result);
+function saveGame() {
+    setTimeout(async () => {
+        await GameSaver.save();
+    }, 100);
 }
 
 function addExternalScript(url) {

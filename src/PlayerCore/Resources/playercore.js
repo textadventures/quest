@@ -34,7 +34,7 @@ function initPlayerUI() {
 
     const cmdSave = document.getElementById("cmdSave");
     cmdSave.addEventListener("click", async () => {
-        await saveGame();
+        await GameSaver.save();
     });
     
     const cmdDebug = document.getElementById("cmdDebug");
@@ -2089,3 +2089,109 @@ function whereAmI() {
   ASLEvent("WhereAmI", platform);
 }
 var platform = "desktop";
+
+const GameSaver = (() => {
+    function openDatabase() {
+        return new Promise((resolve, reject) => {
+            const request = indexedDB.open('quest-viva-saves', 1);
+
+            request.onupgradeneeded = () => {
+                const db = request.result;
+                if (!db.objectStoreNames.contains('saves')) {
+                    db.createObjectStore('saves', { keyPath: ['gameId', 'slotName'] });
+                }
+            };
+
+            request.onsuccess = () => resolve(request.result);
+            request.onerror = () => reject(request.error);
+        });
+    }
+
+    async function ensurePersistentStorage() {
+        if (navigator.storage && navigator.storage.persist) {
+            const isPersisted = await navigator.storage.persisted();
+            if (isPersisted) {
+                console.log('Storage is already persistent.');
+                return true;
+            }
+
+            const granted = await navigator.storage.persist();
+            if (granted) {
+                console.log('Storage permission granted: persistent!');
+            } else {
+                console.warn('Persistent storage request was denied.');
+            }
+            return granted;
+        } else {
+            console.warn('StorageManager API not supported.');
+            return false;
+        }
+    }
+
+    async function saveGame(gameId, slotName, dataUint8Array) {
+        const db = await openDatabase();
+        const tx = db.transaction('saves', 'readwrite');
+        const store = tx.objectStore('saves');
+
+        const entry = {
+            gameId,
+            slotName,
+            data: dataUint8Array,
+            timestamp: new Date()
+        };
+
+        store.put(entry);
+        
+        return tx.complete || tx.done || new Promise((res, rej) => {
+            tx.oncomplete = res;
+            tx.onerror = rej;
+        });
+    }
+
+    async function listSaves(gameId) {
+        const db = await openDatabase();
+        const tx = db.transaction('saves', 'readonly');
+        const store = tx.objectStore('saves');
+
+        const request = store.getAllKeys();
+
+        return new Promise((resolve, reject) => {
+            request.onsuccess = () => {
+                const keys = request.result;
+                const slots = keys
+                    .filter(([gid]) => gid === gameId)
+                    .map(([, slot]) => slot);
+                resolve(slots);
+            };
+            request.onerror = () => reject(request.error);
+        });
+    }
+
+    async function loadGame(gameId, slotName) {
+        const db = await openDatabase();
+        const tx = db.transaction('saves', 'readonly');
+        const store = tx.objectStore('saves');
+        const request = store.get([gameId, slotName]);
+
+        return new Promise((resolve, reject) => {
+            request.onsuccess = () => resolve(request.result?.data || null);
+            request.onerror = () => reject(request.error);
+        });
+    }
+    
+    let persistenceRequested = false;
+    
+    return {
+        save: async () => {
+            const saveData = $("#divOutput").html();
+            const result = await WebPlayer.uiSaveGame(saveData);
+            await saveGame("TODO-game-id",
+                "Saved game at " + new Date().toISOString().replace('T', ' ').substring(0, 19),
+                result);
+            if (!persistenceRequested) {
+                await ensurePersistentStorage();
+                persistenceRequested = true;
+            }
+        }
+    }
+})();
