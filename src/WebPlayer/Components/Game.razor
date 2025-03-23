@@ -3,6 +3,7 @@
 @using QuestViva.WebPlayer.Components.Debugger
 @rendermode InteractiveServer
 @inject GameLauncher GameLauncher
+@inject IJSRuntime JS
 
 <HeadContent>
     <script type="text/javascript" src="/res/lib/jquery-2.1.1.min.js"></script>
@@ -36,29 +37,46 @@
 
 @UiHtml
 
+<Slots OnStart="@StartGame"></Slots>
+
 @code {
     [Parameter] public required IGameDataProvider GameDataProvider { get; set; }
     private static MarkupString UiHtml => (MarkupString) PlayerHelper.GetUiResourceString("playercore.htm");
-    [Inject] private IJSRuntime JS { get; set; } = null!;
-    private Player Player { get; set; } = null!;
+    private Player? Player { get; set; } = null;
+    private GameData? gameData;
+    private IGame? game;
     private IGameDebug? gameDebug;
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
         if (!firstRender) return;
         
-        var gameData = await GameDataProvider.GetData();
-
+        gameData = await GameDataProvider.GetData();
         if (gameData == null) return;
         
         await JS.InvokeVoidAsync("WebPlayer.setGameId", gameData.GameId);
-        var game = GameLauncher.GetGame(gameData);
+        await JS.InvokeVoidAsync("WebPlayer.initSlotsDialog");
+        
+        var hasAnySaves = await JS.InvokeAsync<bool>("WebPlayer.hasAnySaves");
+        if (hasAnySaves)
+        {
+            await JS.InvokeVoidAsync("WebPlayer.showSlots", false);
+        }
+        else
+        {
+            await StartGame();
+        }
+    }
+
+    private async Task StartGame()
+    {
+        await JS.InvokeVoidAsync("WebPlayer.closeSlots");
+        game = GameLauncher.GetGame(gameData);
         
         Player = new Player(game, GameDataProvider.ResourcesId, JS);
         GameResources.AddResourceProvider(GameDataProvider.ResourcesId, Player.GetResource);
         
         await JS.InvokeVoidAsync("WebPlayer.initUI");
-
         await Player.Initialise();
         
         gameDebug = game as IGameDebug;
@@ -68,6 +86,7 @@
 
     private async Task RunWalkthrough(string name)
     {
+        if (Player == null) return;
         await Player.RunWalkthrough(name);
     }
 }

@@ -10,6 +10,9 @@ var verbButtonCount = 9;
 var beginningOfCurrentTurnScrollPosition = 0;
 
 function initPlayerUI() {
+    const gameBorder = document.getElementById("gameBorder");
+    gameBorder.style.display = "block";
+    
     addPaperScript();
     $("#jquery_jplayer").jPlayer({ supplied: "wav, mp3" });
     
@@ -2192,6 +2195,13 @@ const GameSaver = (() => {
                 await ensurePersistentStorage();
                 persistenceRequested = true;
             }
-        }
+        },
+        list: async () => {
+            return await listSaves(WebPlayer.gameId);
+        },
+        hasAnySaves: async () => {
+            const saves = await listSaves(WebPlayer.gameId);
+            return saves.length > 0;
+        },
     }
 })();

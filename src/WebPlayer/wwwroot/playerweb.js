@@ -1,6 +1,7 @@
 class WebPlayer {
     static dotNetHelper;
     static gameId;
+    static slotsDialogCanBeClosed = false;
 
     static setDotNetHelper(value) {
         WebPlayer.dotNetHelper = value;
@@ -8,6 +9,40 @@ class WebPlayer {
     
     static setGameId(id) {
         WebPlayer.gameId = id;
+    }
+    
+    static hasAnySaves = async () => {
+        return await GameSaver.hasAnySaves();
+    }
+    
+    static initSlotsDialog() {
+        const slots = document.getElementById("questVivaSlots");
+        slots.addEventListener('cancel', (event) => {
+            if (!WebPlayer.slotsDialogCanBeClosed) {
+                event.preventDefault();
+                slots.focus();
+            }
+        });
+
+        // workaround for Escape key _still_ closing the dialog
+        document.addEventListener('keydown', (e) => {
+            const slots = document.getElementById("questVivaSlots");
+            if (e.key === 'Escape' && slots.open && !WebPlayer.slotsDialogCanBeClosed) {
+                e.preventDefault();
+                e.stopPropagation();
+            }
+        }, true);
+    }
+    
+    static showSlots(cancellable) {
+        const slots = document.getElementById("questVivaSlots");
+        WebPlayer.slotsDialogCanBeClosed = cancellable;
+        slots.showModal();
+    }
+
+    static closeSlots() {
+        const slots = document.getElementById("questVivaSlots");
+        slots.close();
     }
     
     static closeDebugger() {

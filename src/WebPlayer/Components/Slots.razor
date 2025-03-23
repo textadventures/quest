@@ -1,0 +1,7 @@
+<dialog id="questVivaSlots" tabindex="0">
+    <button class="btn btn-primary" @onclick="OnStart">Start from the beginning</button>
+</dialog>
+
+@code {
+    [Parameter] public EventCallback OnStart { get; set; }
+}
