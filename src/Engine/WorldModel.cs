@@ -615,8 +615,6 @@ public partial class WorldModel : IGame, IGameDebug
         FinishGame();
     }
 
-    public string SaveExtension => "quest-save";
-
     internal Template Template { get; }
 
     public UndoLogger UndoLogger { get; }
@@ -1020,12 +1018,6 @@ public partial class WorldModel : IGame, IGameDebug
     public GameState State { get; private set; } = GameState.NotStarted;
 
     public Elements Elements { get; }
-
-    public void Save(string filename, string html)
-    {
-        var saveData = Save(SaveMode.SavedGame, html: html);
-        File.WriteAllText(filename, saveData);
-    }
 
     public byte[] Save(string html)
     {

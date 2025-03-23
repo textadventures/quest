@@ -22,9 +22,7 @@ namespace QuestViva.Common
         event ErrorHandler? LogError;
         List<string> Errors { get; }
         void Finish();
-        void Save(string filename, string html);
         byte[] Save(string html);
-        string SaveExtension { get; }
         void FinishWait();
         void FinishPause();
         

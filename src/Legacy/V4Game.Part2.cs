@@ -7950,11 +7950,6 @@ public partial class V4Game
 
     public event PrintTextHandler PrintText;
 
-    public void Save(string filename, string html)
-    {
-        SaveGame(filename);
-    }
-
     public byte[] Save(string html)
     {
         return SaveGame(_gameData.Filename, false);
@@ -8149,8 +8144,6 @@ public partial class V4Game
 
         return GetResourceLines(libCode);
     }
-
-    public string SaveExtension => "qsg";
 
     public void Tick(int elapsedTime)
     {
