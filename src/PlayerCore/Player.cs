@@ -474,13 +474,9 @@ public class Player : IPlayerHelperUI
         await UiActionAsync(() => PlayerHelper.Game.SendEvent(eventName, param));
     }
     
-    public async Task UiSaveGameAsync(string html)
+    public Task<byte[]> UiSaveGameAsync(string html)
     {
-        await UiActionAsync(() =>
-        {
-            var data = PlayerHelper.Game.Save(html);
-            AddJavaScriptToBuffer("saveGameResponse", data);
-        });
+        return Task.FromResult(PlayerHelper.Game.Save(html));
     }
     
     private WalkthroughRunner? Runner

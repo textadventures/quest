@@ -58,7 +58,7 @@ class WebPlayer {
     }
     
     static async uiSaveGame(html) {
-        await WebPlayer.dotNetHelper.invokeMethodAsync("UiSaveGameAsync", html);
+        return await WebPlayer.dotNetHelper.invokeMethodAsync("UiSaveGameAsync", html);
     }
 }
 

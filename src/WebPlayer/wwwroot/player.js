@@ -161,42 +161,10 @@ function goUrl(href) {
     window.open(href);
 }
 
-function saveGame() {
-    window.setTimeout(async function () {
-        const saveData = $("#divOutput").html();
-        await WebPlayer.uiSaveGame(saveData);
-    }, 1);
-}
-
-function saveGameResponse(data) {
-    addText("Saving game...<br/>");
-    // if (apiRoot) {
-    //     $.ajax({
-    //         url: apiRoot + "games/save/?id=" + $_GET["id"],
-    //         success: function (result) {
-    //             if (result.Success) {
-    //                 addText("Game saved successfully.<br/>");
-    //             } else {
-    //                 addText("Failed to save game: " + result.Reason + "<br/>");
-    //             }
-    //         },
-    //         error: function (xhr, status, err) {
-    //             console.log(status);
-    //             console.log(err);
-    //             addText("Failed to save game.<br/>");
-    //         },
-    //         xhrFields: {
-    //             withCredentials: true
-    //         },
-    //         type: "POST",
-    //         data: {
-    //             data: data
-    //         }
-    //     });
-    // }
-    // else {
-        console.log("TODO: Save game", data);
-    // }
+async function saveGame() {
+    const saveData = $("#divOutput").html();
+    const result = await WebPlayer.uiSaveGame(saveData);
+    console.log("TODO: Save game 2...", result);
 }
 
 function addExternalScript(url) {

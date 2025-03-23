@@ -32,8 +32,9 @@ function initPlayerUI() {
     $("#gamePanesRunning").multiOpenAccordion({ active: [0, 1, 2, 3] });
     showStatusVisible(false);
 
-    $("#cmdSave").click(function () {
-        saveGame();
+    const cmdSave = document.getElementById("cmdSave");
+    cmdSave.addEventListener("click", async () => {
+        await saveGame();
     });
     
     const cmdDebug = document.getElementById("cmdDebug");
