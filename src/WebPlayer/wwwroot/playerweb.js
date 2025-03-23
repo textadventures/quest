@@ -85,9 +85,6 @@ function sessionTimeout() {
     disableInterface();
 }
 
-function afterSave() {
-}
-
 var _currentPlayer = "";
 
 function playWav(filename, sync, looped) {

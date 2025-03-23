@@ -10,9 +10,6 @@ var verbButtonCount = 9;
 var beginningOfCurrentTurnScrollPosition = 0;
 
 function initPlayerUI() {
-    // TODO: Implement this properly
-    // $("#cmdSave").show();
-
     addPaperScript();
     $("#jquery_jplayer").jPlayer({ supplied: "wav, mp3" });
     
@@ -37,7 +34,6 @@ function initPlayerUI() {
 
     $("#cmdSave").click(function () {
         saveGame();
-        afterSave();
     });
     
     const cmdDebug = document.getElementById("cmdDebug");
@@ -384,7 +380,7 @@ function uiHide(element) {
 }
 
 function updateStatusVisibility() {
-    var anyVisible = isElementVisible("#location") || isElementVisible("#cmdSave") || isElementVisible("#cmdExitFullScreen");
+    var anyVisible = isElementVisible("#location") || isElementVisible("#cmdSave");
     if (anyVisible) {
         $("#status").show();
         $("#divOutput").css("margin-top", "20px");

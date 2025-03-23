@@ -4,7 +4,7 @@ var tmrTick = null;
 var tickCount = 0;
 var sendNextGameTickerAfter = 0;
 var canSendCommand = true;
-var apiRoot = "https://textadventures.co.uk/";
+var apiRoot = null; // "https://textadventures.co.uk/";
 var outputBufferId;
 var gameSessionLogData;
 
@@ -165,38 +165,38 @@ function saveGame() {
     window.setTimeout(async function () {
         const saveData = $("#divOutput").html();
         await WebPlayer.uiSaveGame(saveData);
-    }, 100);
+    }, 1);
 }
 
 function saveGameResponse(data) {
     addText("Saving game...<br/>");
-    if (apiRoot) {
-        $.ajax({
-            url: apiRoot + "games/save/?id=" + $_GET["id"],
-            success: function (result) {
-                if (result.Success) {
-                    addText("Game saved successfully.<br/>");
-                } else {
-                    addText("Failed to save game: " + result.Reason + "<br/>");
-                }
-            },
-            error: function (xhr, status, err) {
-                console.log(status);
-                console.log(err);
-                addText("Failed to save game.<br/>");
-            },
-            xhrFields: {
-                withCredentials: true
-            },
-            type: "POST",
-            data: {
-                data: data
-            }
-        });
-    }
-    else {
+    // if (apiRoot) {
+    //     $.ajax({
+    //         url: apiRoot + "games/save/?id=" + $_GET["id"],
+    //         success: function (result) {
+    //             if (result.Success) {
+    //                 addText("Game saved successfully.<br/>");
+    //             } else {
+    //                 addText("Failed to save game: " + result.Reason + "<br/>");
+    //             }
+    //         },
+    //         error: function (xhr, status, err) {
+    //             console.log(status);
+    //             console.log(err);
+    //             addText("Failed to save game.<br/>");
+    //         },
+    //         xhrFields: {
+    //             withCredentials: true
+    //         },
+    //         type: "POST",
+    //         data: {
+    //             data: data
+    //         }
+    //     });
+    // }
+    // else {
         console.log("TODO: Save game", data);
-    }
+    // }
 }
 
 function addExternalScript(url) {
