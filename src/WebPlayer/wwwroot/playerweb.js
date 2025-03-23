@@ -1,8 +1,13 @@
 class WebPlayer {
     static dotNetHelper;
+    static gameId;
 
     static setDotNetHelper(value) {
         WebPlayer.dotNetHelper = value;
+    }
+    
+    static setGameId(id) {
+        WebPlayer.gameId = id;
     }
     
     static closeDebugger() {

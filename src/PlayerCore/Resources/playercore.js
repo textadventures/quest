@@ -2185,7 +2185,7 @@ const GameSaver = (() => {
         save: async () => {
             const saveData = $("#divOutput").html();
             const result = await WebPlayer.uiSaveGame(saveData);
-            await saveGame("TODO-game-id",
+            await saveGame(WebPlayer.gameId,
                 "Saved game at " + new Date().toISOString().replace('T', ' ').substring(0, 19),
                 result);
             if (!persistenceRequested) {

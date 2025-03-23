@@ -48,6 +48,10 @@
         if (!firstRender) return;
         
         var gameData = await GameDataProvider.GetData();
+
+        if (gameData == null) return;
+        
+        await JS.InvokeVoidAsync("WebPlayer.setGameId", gameData.GameId);
         var game = GameLauncher.GetGame(gameData);
         
         Player = new Player(game, GameDataProvider.ResourcesId, JS);
