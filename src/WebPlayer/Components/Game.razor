@@ -37,7 +37,7 @@
 
 @UiHtml
 
-<Slots OnStart="@StartGame" Saves="@saves"></Slots>
+<Slots Saves="@saves" OnStart="@StartGame" OnLoad="@LoadGame"></Slots>
 
 @code {
     [Parameter] public required IGameDataProvider GameDataProvider { get; set; }
@@ -84,6 +84,12 @@
         gameDebug = game as IGameDebug;
         await JS.InvokeVoidAsync("WebPlayer.setCanDebug", gameDebug != null);
         StateHasChanged();
+    }
+
+    private async Task LoadGame(string slot)
+    {
+        var data = await JS.InvokeAsync<string>("WebPlayer.loadSlot", slot);
+        Console.WriteLine(data.Length);
     }
 
     private async Task RunWalkthrough(string name)

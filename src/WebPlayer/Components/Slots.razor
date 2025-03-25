@@ -21,7 +21,7 @@
     @if (Saves.Any())
     {
         <h3 class="mt-3">Saved games</h3>
-        <List Items="@Saves"></List>
+        <List Items="@Saves" OnItemSelected="Load"></List>
     }
 </dialog>
 

@@ -2199,9 +2199,8 @@ const GameSaver = (() => {
         listSaves: async () => {
             return await listSaves(WebPlayer.gameId);
         },
-        hasAnySaves: async () => {
-            const saves = await listSaves(WebPlayer.gameId);
-            return saves.length > 0;
-        },
+        load: async(slotName) => {
+            return await loadGame(WebPlayer.gameId, slotName);
+        }
     }
 })();

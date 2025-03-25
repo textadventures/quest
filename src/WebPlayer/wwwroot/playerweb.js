@@ -11,12 +11,14 @@ class WebPlayer {
         WebPlayer.gameId = id;
     }
     
-    static hasAnySaves = async () => {
-        return await GameSaver.hasAnySaves();
-    }
-    
     static listSaves = async () => {
         return await GameSaver.listSaves();
+    }
+    
+    static loadSlot = async (slot) => {
+        const result = await GameSaver.load(slot);
+        const decoder = new TextDecoder('utf8');
+        return btoa(decoder.decode(result));
     }
     
     static initSlotsDialog() {
