@@ -2196,7 +2196,7 @@ const GameSaver = (() => {
                 persistenceRequested = true;
             }
         },
-        list: async () => {
+        listSaves: async () => {
             return await listSaves(WebPlayer.gameId);
         },
         hasAnySaves: async () => {

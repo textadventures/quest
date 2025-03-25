@@ -15,6 +15,10 @@ class WebPlayer {
         return await GameSaver.hasAnySaves();
     }
     
+    static listSaves = async () => {
+        return await GameSaver.listSaves();
+    }
+    
     static initSlotsDialog() {
         const slots = document.getElementById("questVivaSlots");
         slots.addEventListener('cancel', (event) => {

@@ -37,7 +37,7 @@
 
 @UiHtml
 
-<Slots OnStart="@StartGame"></Slots>
+<Slots OnStart="@StartGame" Saves="@saves"></Slots>
 
 @code {
     [Parameter] public required IGameDataProvider GameDataProvider { get; set; }
@@ -46,6 +46,7 @@
     private GameData? gameData;
     private IGame? game;
     private IGameDebug? gameDebug;
+    private string[] saves = [];
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
@@ -57,10 +58,11 @@
         await JS.InvokeVoidAsync("WebPlayer.setGameId", gameData.GameId);
         await JS.InvokeVoidAsync("WebPlayer.initSlotsDialog");
         
-        var hasAnySaves = await JS.InvokeAsync<bool>("WebPlayer.hasAnySaves");
-        if (hasAnySaves)
+        saves = await JS.InvokeAsync<string[]>("WebPlayer.listSaves");
+        if (saves.Length > 0)
         {
             await JS.InvokeVoidAsync("WebPlayer.showSlots", false);
+            StateHasChanged();
         }
         else
         {
