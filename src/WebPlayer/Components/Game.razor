@@ -37,7 +37,7 @@
 
 @UiHtml
 
-<Slots Saves="@saves" OnStart="@StartGame" OnLoad="@LoadGame"></Slots>
+<Slots Saves="@saves" OnStart="() => StartGame(null)" OnLoad="@LoadGame"></Slots>
 
 @code {
     [Parameter] public required IGameDataProvider GameDataProvider { get; set; }
@@ -66,14 +66,18 @@
         }
         else
         {
-            await StartGame();
+            await StartGame(null);
         }
     }
 
-    private async Task StartGame()
+    private async Task StartGame(Stream? saveData)
     {
+        if (gameData == null) return;
+        
         await JS.InvokeVoidAsync("WebPlayer.closeSlots");
-        game = GameLauncher.GetGame(gameData);
+        game = GameLauncher.GetGame(gameData, saveData);
+        
+        if (game == null) return;
         
         Player = new Player(game, GameDataProvider.ResourcesId, JS);
         GameResources.AddResourceProvider(GameDataProvider.ResourcesId, Player.GetResource);
@@ -89,7 +93,9 @@
     private async Task LoadGame(string slot)
     {
         var data = await JS.InvokeAsync<string>("WebPlayer.loadSlot", slot);
-        Console.WriteLine(data.Length);
+        var bytes = Convert.FromBase64String(data);
+        var stream = new MemoryStream(bytes);
+        await StartGame(stream);
     }
 
     private async Task RunWalkthrough(string name)

@@ -21,10 +21,15 @@ public class GameQuery(WorldModelFactory worldModelFactory, string filename)
     {
         var gameDataProvider = new FileGameDataProvider(filename, "dummy-resources-id");
         var gameData = await gameDataProvider.GetData();
+
+        if (gameData == null)
+        {
+            return false;
+        }
         
         var gameLauncher = new GameLauncher(worldModelFactory);
         
-        _game = gameLauncher.GetGame(gameData);
+        _game = gameLauncher.GetGame(gameData, null);
         _v4Game = _game as V4Game;
         _v5Game = _game as WorldModel;
         _helper = new PlayerHelper(_game, _dummyUi);

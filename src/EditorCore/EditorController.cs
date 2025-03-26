@@ -334,7 +334,7 @@ namespace QuestViva.EditorCore
             // TODO: ResourcesId is probably not relevant here?
             var gameDataProvider = new FileGameDataProvider(filename, "editor");
             var gameData = await gameDataProvider.GetData();
-            m_worldModel = new WorldModel(config, gameData);
+            m_worldModel = new WorldModel(config, gameData, null);
             m_scriptFactory = new ScriptFactory(m_worldModel);
             m_worldModel.ElementFieldUpdated += m_worldModel_ElementFieldUpdated;
             m_worldModel.ElementRefreshed += m_worldModel_ElementRefreshed;
