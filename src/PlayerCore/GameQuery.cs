@@ -168,12 +168,7 @@ public class GameQuery(WorldModelFactory worldModelFactory, string filename)
         public void SetWindowMenu(MenuData menuData)
         {
         }
-
-        public string GetNewGameFile(string originalFilename, string extensions)
-        {
-            throw new NotImplementedException();
-        }
-
+        
         public void PlaySound(string filename, bool synchronous, bool looped)
         {
         }

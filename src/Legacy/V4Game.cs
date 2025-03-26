@@ -424,7 +424,6 @@ public partial class V4Game : IGame, IGameDebug
     private Collectable[] _collectables;
     private int _numCollectables;
     private string _gamePath;
-    private string _gameFileName;
     private string _defaultFontName;
     private double _defaultFontSize;
     private bool _autoIntro;
@@ -474,7 +473,6 @@ public partial class V4Game : IGame, IGameDebug
     private readonly Dictionary<ListType, List<string>> _listVerbs = new();
     private readonly GameData _gameData;
     private readonly Stream _saveData;
-    private string _originalFilename;
     private IPlayer _player;
     private bool _gameFinished;
     private bool _gameIsRestoring;
@@ -491,7 +489,6 @@ public partial class V4Game : IGame, IGameDebug
         _gameLoadMethod = "normal";
         _gameData = gameData;
         _saveData = saveData;
-        _originalFilename = null;
 
         // Very early versions of Quest didn't perform very good syntax checking of ASL files, so this is
         // for compatibility with games which have non-fatal errors in them.
@@ -1721,7 +1718,6 @@ public partial class V4Game : IGame, IGameDebug
 
         if (Strings.LCase(Strings.Right(filename, 4)) == ".zip")
         {
-            _originalFilename = filename;
             filename = GetUnzippedFile(filename);
             _gamePath = Path.GetDirectoryName(filename);
         }
@@ -6887,7 +6883,7 @@ public partial class V4Game : IGame, IGameDebug
 
         // <<< FILE HEADER DATA >>>
 
-        data.Append("QUEST300" + '\0' + GetOriginalFilenameForQSG() + '\0');
+        data.Append("QUEST300" + '\0' + "filename-not-used.asl" + '\0');
 
         // The start point for encrypted data is after the filename
         var start = data.Length + 1;

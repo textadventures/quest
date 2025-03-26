@@ -2562,15 +2562,6 @@ public partial class V4Game
 
     private async Task<bool> OpenGame(Stream saveData)
     {
-        bool cdatb, result;
-        bool visible;
-        string room;
-        var fileData = "";
-        string savedQsgVersion;
-        var data = "";
-        string name;
-        int scp, cdat;
-        int scp2, scp3;
         string[] lines = null;
         
         _gameLoadMethod = "loaded";
@@ -2578,10 +2569,10 @@ public partial class V4Game
         var prevQsgVersion = false;
         
         using var reader = new StreamReader(saveData, Encoding.GetEncoding(1252));
-        fileData = await reader.ReadToEndAsync();
-        
+        var fileData = await reader.ReadToEndAsync();
+
         // Check version
-        savedQsgVersion = Strings.Left(fileData, 10);
+        var savedQsgVersion = Strings.Left(fileData, 10);
         
         if (BeginsWith(savedQsgVersion, "QUEST200.1"))
         {
@@ -2594,27 +2585,19 @@ public partial class V4Game
         
         if (prevQsgVersion)
         {
-            lines = fileData.Split(new[] {Constants.vbCrLf, Constants.vbLf}, StringSplitOptions.None);
-            _gameFileName = lines[1];
+            lines = fileData.Split([Constants.vbCrLf, Constants.vbLf], StringSplitOptions.None);
         }
         else
         {
             InitFileData(fileData);
             GetNextChunk();
         
-            _gameFileName = GetNextChunk();
-        }
-        
-        if (!File.Exists(_gameFileName))
-        {
-            _gameFileName = _player.GetNewGameFile(_gameFileName, "*.asl;*.cas;*.zip");
-            if (string.IsNullOrEmpty(_gameFileName))
-            {
-                return false;
-            }
+            // This previously contained the original game filename, but we don't need this now as we always get
+            // the original game data when the game is initialised.
+            var _ = GetNextChunk();
         }
 
-        result = await InitialiseGame(_gameData, true);
+        var result = await InitialiseGame(_gameData, true);
         
         if (result == false)
         {
@@ -2636,7 +2619,10 @@ public partial class V4Game
         
             // Start at line 5 as line 4 is always "!c"
             var lineNumber = 5;
-        
+
+            var data = "";
+            string name;
+            int scp;
             do
             {
                 data = lines[lineNumber];
@@ -2645,7 +2631,7 @@ public partial class V4Game
                 {
                     scp = Strings.InStr(data, ";");
                     name = Strings.Trim(Strings.Left(data, scp - 1));
-                    cdat = Conversions.ToInteger(Strings.Right(data, Strings.Len(data) - scp));
+                    var cdat = Conversions.ToInteger(Strings.Right(data, Strings.Len(data) - scp));
         
                     for (int i = 1, loopTo = _numCollectables; i <= loopTo; i++)
                     {
@@ -2657,7 +2643,8 @@ public partial class V4Game
                     }
                 }
             } while (data != "!i");
-        
+
+            bool cdatb;
             do
             {
                 data = lines[lineNumber];
@@ -2678,7 +2665,11 @@ public partial class V4Game
                     }
                 }
             } while (data != "!o");
-        
+
+            bool visible;
+            string room;
+            int scp2;
+            int scp3;
             do
             {
                 data = lines[lineNumber];
@@ -2801,7 +2792,7 @@ public partial class V4Game
         int i;
 
         lines.Add("QUEST200.1");
-        lines.Add(GetOriginalFilenameForQSG());
+        lines.Add("filename-not-used.asl");
         lines.Add(_gameName);
         lines.Add(_currentRoom);
 
@@ -6411,8 +6402,6 @@ public partial class V4Game
         SetUpTimers();
         SetUpMenus();
 
-        _gameFileName = gameData.Filename;
-
         LogASLError("Finished loading file.", LogType.Init);
 
         _defaultRoomProperties = GetPropertiesInType("defaultroom", false);
@@ -8327,16 +8316,6 @@ public partial class V4Game
 
     public event Action<int> RequestNextTimerTick;
 
-    private string GetOriginalFilenameForQSG()
-    {
-        if (_originalFilename is not null)
-        {
-            return _originalFilename;
-        }
-
-        return _gameFileName;
-    }
-
     public delegate string UnzipFunctionDelegate(string filename, out string tempDir);
 
     private UnzipFunctionDelegate m_unzipFunction;
@@ -8374,18 +8353,7 @@ public partial class V4Game
         return new FileStream(path, FileMode.Open, FileAccess.Read);
     }
 
-    public string GameID
-    {
-        get
-        {
-            if (string.IsNullOrEmpty(_gameFileName))
-            {
-                return null;
-            }
-
-            return Files.FileMD5Hash(_gameFileName);
-        }
-    }
+    public string GameID => null;
 
     public IEnumerable<string> GetResourceNames()
     {

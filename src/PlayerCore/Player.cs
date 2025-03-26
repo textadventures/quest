@@ -189,12 +189,7 @@ public class Player : IPlayerHelperUI
     {
         // Do nothing - only implemented for desktop player
     }
-
-    string IPlayer.GetNewGameFile(string originalFilename, string extensions)
-    {
-        throw new NotImplementedException();
-    }
-
+    
     void IPlayer.PlaySound(string filename, bool synchronous, bool looped)
     {
         if (Runner != null && synchronous)

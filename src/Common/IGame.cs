@@ -49,7 +49,6 @@ namespace QuestViva.Common
         void DoPause(int ms);
         void ShowQuestion(string caption);
         void SetWindowMenu(MenuData menuData);
-        string GetNewGameFile(string originalFilename, string extensions);
         void PlaySound(string filename, bool synchronous, bool looped);
         void StopSound();
         void WriteHTML(string html);
