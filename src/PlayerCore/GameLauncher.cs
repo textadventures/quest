@@ -21,7 +21,7 @@ public class GameLauncher(WorldModelFactory worldModelFactory)
             case ".asl":
             case ".cas":
             case ".qsg":
-                V4Game game = new V4Game(gameData);
+                V4Game game = new V4Game(gameData, saveData);
                 game.SetUnzipFunction(UnzipAndGetGameFile);
                 return game;
             case ".zip":
