@@ -16,9 +16,7 @@ class WebPlayer {
     }
     
     static loadSlot = async (slot) => {
-        const result = await GameSaver.load(slot);
-        const decoder = new TextDecoder();
-        return btoa(decoder.decode(result));
+        return await GameSaver.load(slot);
     }
     
     static initSlotsDialog() {

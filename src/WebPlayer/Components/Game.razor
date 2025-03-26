@@ -92,9 +92,8 @@
 
     private async Task LoadGame(string slot)
     {
-        var data = await JS.InvokeAsync<string>("WebPlayer.loadSlot", slot);
-        var bytes = Convert.FromBase64String(data);
-        var stream = new MemoryStream(bytes);
+        var data = await JS.InvokeAsync<byte[]>("WebPlayer.loadSlot", slot);
+        var stream = new MemoryStream(data);
         await StartGame(stream);
     }
 
