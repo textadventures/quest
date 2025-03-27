@@ -38,9 +38,9 @@
     [Parameter] public EventCallback<string> OnRunWalkthrough { get; set; }
     private string? selectedWalkthrough;
 
-    private void OnWalkthroughSelected(string walkthrough)
+    private void OnWalkthroughSelected((int _, string walkthrough) item)
     {
-        selectedWalkthrough = walkthrough;
+        selectedWalkthrough = item.walkthrough;
     }
     
     private void RunWalkthrough()

@@ -1,6 +1,7 @@
 @using QuestViva.Common
 @using QuestViva.PlayerCore
 @using QuestViva.WebPlayer.Components.Debugger
+@using QuestViva.WebPlayer.Models
 @rendermode InteractiveServer
 @inject GameLauncher GameLauncher
 @inject IJSRuntime JS
@@ -46,7 +47,7 @@
     private GameData? gameData;
     private IGame? game;
     private IGameDebug? gameDebug;
-    private int[] saves = [];
+    private SaveSlot[] saves = [];
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
@@ -58,7 +59,7 @@
         await JS.InvokeVoidAsync("WebPlayer.setGameId", gameData.GameId);
         await JS.InvokeVoidAsync("WebPlayer.initSlotsDialog");
         
-        saves = await JS.InvokeAsync<int[]>("WebPlayer.listSaves");
+        saves = await JS.InvokeAsync<SaveSlot[]>("WebPlayer.listSaves");
         if (saves.Length > 0)
         {
             await JS.InvokeVoidAsync("WebPlayer.showSlots", false);

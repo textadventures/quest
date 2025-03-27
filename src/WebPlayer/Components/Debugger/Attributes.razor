@@ -59,8 +59,8 @@
         base.OnParametersSet();
     }
     
-    private void OnObjectSelected(string objName)
+    private void OnObjectSelected((int index, string objName) item)
     {
-        selectedObject = objName;
+        selectedObject = item.objName;
     }
 }

@@ -2131,7 +2131,7 @@ const GameSaver = (() => {
         }
     }
 
-    async function saveGame(gameId, slotIndex, dataUint8Array) {
+    async function saveGame(gameId, slotIndex, dataUint8Array, name) {
         const db = await openDatabase();
         const tx = db.transaction('saves', 'readwrite');
         const store = tx.objectStore('saves');
@@ -2140,6 +2140,7 @@ const GameSaver = (() => {
             gameId,
             slotIndex,
             data: dataUint8Array,
+            name,
             timestamp: new Date()
         };
 
@@ -2156,14 +2157,18 @@ const GameSaver = (() => {
         const tx = db.transaction('saves', 'readonly');
         const store = tx.objectStore('saves');
 
-        const request = store.getAllKeys();
+        const request = store.getAll();
 
         return new Promise((resolve, reject) => {
             request.onsuccess = () => {
-                const keys = request.result;
-                const slots = keys
-                    .filter(([gid]) => gid === gameId)
-                    .map(([, slotIndex]) => slotIndex);
+                const slots = request.result
+                    .filter(entry => entry.gameId === gameId)
+                    .map(entry => ({
+                        slotIndex: entry.slotIndex,
+                        name: entry.name || null,
+                        timestamp: entry.timestamp || null,
+                    }));
+
                 resolve(slots);
             };
             request.onerror = () => reject(request.error);
@@ -2188,7 +2193,8 @@ const GameSaver = (() => {
         save: async () => {
             const saveData = $("#divOutput").html();
             const result = await WebPlayer.uiSaveGame(saveData);
-            await saveGame(WebPlayer.gameId, 0, result);
+            await saveGame(WebPlayer.gameId, 0, result,
+                "Saved game at " + new Date().toISOString().replace('T', ' ').substring(0, 19));
             addText("Game saved.<br>");
             if (!persistenceRequested) {
                 await ensurePersistentStorage();

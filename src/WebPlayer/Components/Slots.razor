@@ -1,3 +1,4 @@
+@using QuestViva.WebPlayer.Models
 <style scoped>
     dialog {
         border: none;
@@ -21,17 +22,17 @@
     @if (Saves.Any())
     {
         <h3 class="mt-3">Saved games</h3>
-        <List Items="@Saves.Select((value, index) => index.ToString())" OnItemSelected="Load"></List>
+        <List Items="@Saves.Select(s => s.Name)" OnItemSelected="Load"></List>
     }
 </dialog>
 
 @code {
     [Parameter] public EventCallback OnStart { get; set; }
     [Parameter] public EventCallback<int> OnLoad { get; set; }
-    [Parameter] public required int[] Saves { get; set; } = [];
+    [Parameter] public required SaveSlot[] Saves { get; set; } = [];
 
-    private async Task Load(string save)    
+    private async Task Load((int index, string _) item)   
     {
-        await OnLoad.InvokeAsync(int.Parse(save));
+        await OnLoad.InvokeAsync(item.index);
     }
 }
