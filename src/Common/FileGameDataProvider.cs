@@ -8,7 +8,8 @@ public class FileGameDataProvider(string filename, string resourcesId): IGameDat
     public Task<GameData?> GetData()
     {
         var stream = File.OpenRead(filename);
-        return Task.FromResult<GameData?>(new GameData(stream, filename, filename, this));
+        var gameId = Path.GetFileName(filename);
+        return Task.FromResult<GameData?>(new GameData(stream, gameId, filename, this));
     }
 
     public string ResourcesId => resourcesId;
