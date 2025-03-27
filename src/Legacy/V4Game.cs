@@ -243,8 +243,7 @@ public partial class V4Game : IGame, IGameDebug
         public bool IsExit;
         public string CorresRoom;
         public int CorresRoomId;
-        // TODO: Uncomment when reimplementing OpenGame
-        // public bool Loaded;
+        public bool Loaded;
         public int NumberActions;
         public ActionType[] Actions;
         public int NumberUseData;
@@ -425,8 +424,6 @@ public partial class V4Game : IGame, IGameDebug
     private Collectable[] _collectables;
     private int _numCollectables;
     private string _gamePath;
-    private string _gameFileName;
-    private string _saveGameFile;
     private string _defaultFontName;
     private double _defaultFontSize;
     private bool _autoIntro;
@@ -470,13 +467,12 @@ public partial class V4Game : IGame, IGameDebug
     private State _state = State.Ready;
     private readonly object _waitLock = new();
     private bool _readyForCommand = true;
-    // TODO: Uncomment when reimplementing OpenGame
-    // private bool _gameLoading;
+    private bool _gameLoading;
     private readonly Random _random = new();
     private readonly string[] _playerErrorMessageString = new string[39];
     private readonly Dictionary<ListType, List<string>> _listVerbs = new();
     private readonly GameData _gameData;
-    private string _originalFilename;
+    private readonly Stream _saveData;
     private IPlayer _player;
     private bool _gameFinished;
     private bool _gameIsRestoring;
@@ -485,14 +481,14 @@ public partial class V4Game : IGame, IGameDebug
     private int _fileDataPos;
     private bool _questionResponse;
 
-    public V4Game(GameData gameData)
+    public V4Game(GameData gameData, Stream saveData)
     {
         Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
         TempFolder = Path.Combine(Path.GetTempPath(), "Quest", Guid.NewGuid().ToString());
         LoadCASKeywords();
         _gameLoadMethod = "normal";
         _gameData = gameData;
-        _originalFilename = null;
+        _saveData = saveData;
 
         // Very early versions of Quest didn't perform very good syntax checking of ASL files, so this is
         // for compatibility with games which have non-fatal errors in them.
@@ -1722,7 +1718,6 @@ public partial class V4Game : IGame, IGameDebug
 
         if (Strings.LCase(Strings.Right(filename, 4)) == ".zip")
         {
-            _originalFilename = filename;
             filename = GetUnzippedFile(filename);
             _gamePath = Path.GetDirectoryName(filename);
         }
@@ -2220,8 +2215,6 @@ public partial class V4Game : IGame, IGameDebug
         {
             throw new InvalidOperationException("Errors found in game file.");
         }
-
-        _saveGameFile = "";
 
         return result;
     }
@@ -5739,12 +5732,11 @@ public partial class V4Game : IGame, IGameDebug
                         _defaultProperties.Actions[j].Script);
                 }
             }
-
-            // TODO: Uncomment when reimplementing OpenGame
-            // if (!_gameLoading)
-            // {
+            
+            if (!_gameLoading)
+            {
                 UpdateObjectList(ctx);
-            // }
+            }
         }
 
         else if (BeginsWith(data, "exit "))
@@ -5919,10 +5911,9 @@ public partial class V4Game : IGame, IGameDebug
         {
             LogASLError("Invalid direction in 'create exit " + exitData + "'", LogType.WarningError);
         }
-
-        // TODO: Uncomment when reimplementing OpenGame
-        // if (!_gameLoading)
-        // {
+        
+        if (!_gameLoading)
+        {
             // Update quest.doorways variables
             ShowRoomInfo(_currentRoom, ctx, true);
 
@@ -5945,7 +5936,7 @@ public partial class V4Game : IGame, IGameDebug
                 // for current room anyway.
                 UpdateDoorways(GetRoomID(_currentRoom, ctx), ctx);
             }
-        // }
+        }
     }
 
     private void ExecDrop(string obj, Context ctx)
@@ -6892,7 +6883,7 @@ public partial class V4Game : IGame, IGameDebug
 
         // <<< FILE HEADER DATA >>>
 
-        data.Append("QUEST300" + '\0' + GetOriginalFilenameForQSG() + '\0');
+        data.Append("QUEST300" + '\0' + "filename-not-used.asl" + '\0');
 
         // The start point for encrypted data is after the filename
         var start = data.Length + 1;

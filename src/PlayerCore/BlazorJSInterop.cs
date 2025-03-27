@@ -57,8 +57,8 @@ public class BlazorJSInterop(Player player)
     }
     
     [JSInvokable]
-    public async Task UiSaveGameAsync(string html)
+    public async Task<byte[]> UiSaveGameAsync(string html)
     {
-        await Player.UiSaveGameAsync(html); 
+        return await Player.UiSaveGameAsync(html); 
     }
 }

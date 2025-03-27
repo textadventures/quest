@@ -74,9 +74,8 @@ namespace QuestViva.Engine.GameLoader
             GameXmlWriter writer = new GameXmlWriter(mode, options);
 
             UpdateImpliedTypesCache();
-
-            string ver = System.Reflection.Assembly.GetExecutingAssembly().GetName().Version.ToString();
-            writer.WriteComment(string.Format("Saved by Quest {0}", ver));
+            
+            writer.WriteComment($"Saved by Quest Viva {Common.VersionInfo.Version}");
             writer.WriteStartElement("asl");
             if (mode == SaveMode.Editor)
             {

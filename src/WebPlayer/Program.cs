@@ -8,7 +8,13 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddRazorComponents()
-    .AddInteractiveServerComponents();
+    .AddInteractiveServerComponents()
+    .AddHubOptions(o =>
+    {
+        o.EnableDetailedErrors = builder.Environment.IsDevelopment();
+        // Set max message size to 1MB (the default is 32KB, which is too small to receive save game data)
+        o.MaximumReceiveMessageSize = 1024 * 1024;
+    });
 
 builder.Services.AddSingleton<IConfig, Config>();
 builder.Services.AddSingleton<WorldModelFactory>();

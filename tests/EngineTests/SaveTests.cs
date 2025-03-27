@@ -1,6 +1,7 @@
 ﻿using Moq;
 using QuestViva.Common;
 using QuestViva.Engine;
+using QuestViva.Engine.GameLoader;
 
 namespace QuestViva.EngineTests
 {
@@ -24,8 +25,9 @@ namespace QuestViva.EngineTests
 
             worldModel.SendCommand("update");
 
-            var tempFilename = System.IO.Path.GetTempFileName();
-            worldModel.Save(tempFilename, null);
+            var tempFilename = Path.GetTempFileName();
+            var saveData = worldModel.Save(SaveMode.SavedGame, html: null);
+            await File.WriteAllTextAsync(tempFilename, saveData);
 
             var gameDataProvider2 = new FileGameDataProvider(tempFilename, "test");
             var gameData2 = await gameDataProvider2.GetData();

@@ -56,17 +56,24 @@ internal partial class GameLoader
         AddXmlLoaders(mode);
     }
         
-    public async Task<bool> Load(GameData gameData)
+    public async Task<bool> Load(GameData gameData, Stream? saveData)
     {
         Stream dataStream;
-            
-        if (Path.GetExtension(gameData.Filename) == ".quest")
+
+        if (saveData != null)
         {
-            dataStream = await LoadCompiledFile(gameData);
+            dataStream = saveData;
         }
         else
         {
-            dataStream = gameData.Data;
+            if (Path.GetExtension(gameData.Filename) == ".quest")
+            {
+                dataStream = await LoadCompiledFile(gameData);
+            }
+            else
+            {
+                dataStream = gameData.Data;
+            }
         }
 
         var timer = System.Diagnostics.Stopwatch.StartNew();
