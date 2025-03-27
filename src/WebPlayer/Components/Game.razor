@@ -46,7 +46,7 @@
     private GameData? gameData;
     private IGame? game;
     private IGameDebug? gameDebug;
-    private string[] saves = [];
+    private int[] saves = [];
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
@@ -58,7 +58,7 @@
         await JS.InvokeVoidAsync("WebPlayer.setGameId", gameData.GameId);
         await JS.InvokeVoidAsync("WebPlayer.initSlotsDialog");
         
-        saves = await JS.InvokeAsync<string[]>("WebPlayer.listSaves");
+        saves = await JS.InvokeAsync<int[]>("WebPlayer.listSaves");
         if (saves.Length > 0)
         {
             await JS.InvokeVoidAsync("WebPlayer.showSlots", false);
@@ -90,7 +90,7 @@
         StateHasChanged();
     }
 
-    private async Task LoadGame(string slot)
+    private async Task LoadGame(int slot)
     {
         var data = await JS.InvokeAsync<byte[]>("WebPlayer.loadSlot", slot);
         var stream = new MemoryStream(data);

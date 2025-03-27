@@ -2101,7 +2101,7 @@ const GameSaver = (() => {
             request.onupgradeneeded = () => {
                 const db = request.result;
                 if (!db.objectStoreNames.contains('saves')) {
-                    db.createObjectStore('saves', { keyPath: ['gameId', 'slotName'] });
+                    db.createObjectStore('saves', { keyPath: ['gameId', 'slotIndex'] });
                 }
             };
 
@@ -2131,14 +2131,14 @@ const GameSaver = (() => {
         }
     }
 
-    async function saveGame(gameId, slotName, dataUint8Array) {
+    async function saveGame(gameId, slotIndex, dataUint8Array) {
         const db = await openDatabase();
         const tx = db.transaction('saves', 'readwrite');
         const store = tx.objectStore('saves');
 
         const entry = {
             gameId,
-            slotName,
+            slotIndex,
             data: dataUint8Array,
             timestamp: new Date()
         };
@@ -2163,18 +2163,18 @@ const GameSaver = (() => {
                 const keys = request.result;
                 const slots = keys
                     .filter(([gid]) => gid === gameId)
-                    .map(([, slot]) => slot);
+                    .map(([, slotIndex]) => slotIndex);
                 resolve(slots);
             };
             request.onerror = () => reject(request.error);
         });
     }
 
-    async function loadGame(gameId, slotName) {
+    async function loadGame(gameId, slotIndex) {
         const db = await openDatabase();
         const tx = db.transaction('saves', 'readonly');
         const store = tx.objectStore('saves');
-        const request = store.get([gameId, slotName]);
+        const request = store.get([gameId, slotIndex]);
 
         return new Promise((resolve, reject) => {
             request.onsuccess = () => resolve(request.result?.data || null);
@@ -2188,9 +2188,7 @@ const GameSaver = (() => {
         save: async () => {
             const saveData = $("#divOutput").html();
             const result = await WebPlayer.uiSaveGame(saveData);
-            await saveGame(WebPlayer.gameId,
-                "Saved game at " + new Date().toISOString().replace('T', ' ').substring(0, 19),
-                result);
+            await saveGame(WebPlayer.gameId, 0, result);
             addText("Game saved.<br>");
             if (!persistenceRequested) {
                 await ensurePersistentStorage();
@@ -2200,8 +2198,8 @@ const GameSaver = (() => {
         listSaves: async () => {
             return await listSaves(WebPlayer.gameId);
         },
-        load: async(slotName) => {
-            return await loadGame(WebPlayer.gameId, slotName);
+        load: async(slotIndex) => {
+            return await loadGame(WebPlayer.gameId, slotIndex);
         }
     }
 })();

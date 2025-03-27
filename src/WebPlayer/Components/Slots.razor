@@ -21,17 +21,17 @@
     @if (Saves.Any())
     {
         <h3 class="mt-3">Saved games</h3>
-        <List Items="@Saves" OnItemSelected="Load"></List>
+        <List Items="@Saves.Select((value, index) => index.ToString())" OnItemSelected="Load"></List>
     }
 </dialog>
 
 @code {
     [Parameter] public EventCallback OnStart { get; set; }
-    [Parameter] public EventCallback<string> OnLoad { get; set; }
-    [Parameter] public required string[] Saves { get; set; } = [];
+    [Parameter] public EventCallback<int> OnLoad { get; set; }
+    [Parameter] public required int[] Saves { get; set; } = [];
 
     private async Task Load(string save)    
     {
-        await OnLoad.InvokeAsync(save);
+        await OnLoad.InvokeAsync(int.Parse(save));
     }
 }
