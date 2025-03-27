@@ -15,7 +15,7 @@ namespace QuestViva.LegacyTests
             var filename = Path.Combine(["..", "..", "..", "test1.asl"]);
             var gameDataProvider = new FileGameDataProvider(filename, "test");
             var gameData = await gameDataProvider.GetData();
-            m_game = new V4Game(gameData);
+            m_game = new V4Game(gameData, null);
             m_game.PrintText += m_player.PrintText;
             await m_game.Initialise(m_player);
             m_game.Begin();

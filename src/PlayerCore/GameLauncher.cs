@@ -1,4 +1,5 @@
-﻿using System;
+﻿#nullable enable
+using System;
 using System.IO;
 using System.Linq;
 using QuestViva.Common;
@@ -9,18 +10,18 @@ namespace QuestViva.PlayerCore;
 
 public class GameLauncher(WorldModelFactory worldModelFactory)
 {
-    public IGame GetGame(GameData gameData)
+    public IGame? GetGame(GameData gameData, Stream? saveData)
     {
         switch (Path.GetExtension(gameData.Filename).ToLower())
         {
             case ".aslx":
             case ".quest":
             case ".quest-save":
-                return worldModelFactory.Create(gameData);
+                return worldModelFactory.Create(gameData, saveData);
             case ".asl":
             case ".cas":
             case ".qsg":
-                V4Game game = new V4Game(gameData);
+                V4Game game = new V4Game(gameData, saveData);
                 game.SetUnzipFunction(UnzipAndGetGameFile);
                 return game;
             case ".zip":
@@ -63,7 +64,7 @@ public class GameLauncher(WorldModelFactory worldModelFactory)
         // return SearchForGameFile(tempDir, "aslx", "asl", "cas");
     }
 
-    private static string SearchForGameFile(string dir, params string[] exts)
+    private static string? SearchForGameFile(string dir, params string[] exts)
     {
         foreach (string ext in exts)
         {

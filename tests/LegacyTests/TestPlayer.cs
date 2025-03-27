@@ -63,12 +63,7 @@ namespace QuestViva.LegacyTests
         public void SetWindowMenu(MenuData menuData)
         {
         }
-
-        public string GetNewGameFile(string originalFilename, string extensions)
-        {
-            return string.Empty;
-        }
-
+        
         public void PlaySound(string filename, bool synchronous, bool looped)
         {
         }

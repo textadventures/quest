@@ -19,6 +19,7 @@ public partial class WorldModel : IGame, IGameDebug
     private readonly IConfig _config;
     private readonly Dictionary<string, int> _nextUniqueId = new();
     private readonly GameData? _gameData;
+    private readonly Stream? _saveData;
     private readonly Dictionary<string, ObjectType> _debuggerObjectTypes = new();
     private readonly Dictionary<string, ElementType> _debuggerElementTypes = new();
     private readonly Dictionary<ElementType, IElementFactory> _elementFactories = new();
@@ -91,11 +92,12 @@ public partial class WorldModel : IGame, IGameDebug
     public event ErrorHandler? LogError;
 
     internal WorldModel(IConfig config)
-        : this(config, null)
+        // ReSharper disable once IntroduceOptionalParameters.Global
+        : this(config, null, null)
     {
     }
 
-    public WorldModel(IConfig config, GameData? gameData)
+    public WorldModel(IConfig config, GameData? gameData, Stream? saveData)
     {
         ExpressionOwner = new ExpressionOwner(this);
         Template = new Template(this);
@@ -105,6 +107,7 @@ public partial class WorldModel : IGame, IGameDebug
         InitialiseDebuggerObjectTypes();
         _config = config;
         _gameData = gameData;
+        _saveData = saveData;
         Elements = new Elements();
         UndoLogger = new UndoLogger(this);
         Game = ObjectFactory.CreateObject("game", ObjectType.Game);
@@ -406,7 +409,7 @@ public partial class WorldModel : IGame, IGameDebug
         loader.LoadStatus += loader_LoadStatus;
         State = GameState.Loading;
             
-        var success = await loader.Load(_gameData);
+        var success = await loader.Load(_gameData, _saveData);
             
         DebugEnabled = !loader.IsCompiledFile;
         State = success ? GameState.Running : GameState.Finished;
@@ -614,8 +617,6 @@ public partial class WorldModel : IGame, IGameDebug
     {
         FinishGame();
     }
-
-    public string SaveExtension => "quest-save";
 
     internal Template Template { get; }
 
@@ -1020,12 +1021,6 @@ public partial class WorldModel : IGame, IGameDebug
     public GameState State { get; private set; } = GameState.NotStarted;
 
     public Elements Elements { get; }
-
-    public void Save(string filename, string html)
-    {
-        var saveData = Save(SaveMode.SavedGame, html: html);
-        File.WriteAllText(filename, saveData);
-    }
 
     public byte[] Save(string html)
     {

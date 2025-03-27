@@ -12,7 +12,10 @@
         if (!firstRender) return;
         
         var gameData = await GameDataProvider.GetData();
-        var game = GameLauncher.GetGame(gameData);
+        if (gameData == null) return;
+        
+        var game = GameLauncher.GetGame(gameData, null);
+        if (game == null) return;
         
         Player = new QuestViva.PlayerCore.Player(game, GameDataProvider.ResourcesId, JS);
         

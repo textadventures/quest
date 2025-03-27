@@ -2560,217 +2560,203 @@ public partial class V4Game
         return true;
     }
 
-    private bool OpenGame(string filename)
+    private async Task<bool> OpenGame(Stream saveData)
     {
-        // TODO: Need to load the original game file here
-        throw new NotImplementedException();
+        string[] lines = null;
         
-        // bool cdatb, result;
-        // bool visible;
-        // string room;
-        // var fileData = "";
-        // string savedQsgVersion;
-        // var data = "";
-        // string name;
-        // int scp, cdat;
-        // int scp2, scp3;
-        // string[] lines = null;
-        //
-        // _gameLoadMethod = "loaded";
-        //
-        // var prevQsgVersion = false;
-        //
-        // // TODO: Need a way to pass in the QSG file data instead of reading it from the file system
-        // fileData = File.ReadAllText(filename, Encoding.GetEncoding(1252));
-        //
-        // // Check version
-        // savedQsgVersion = Strings.Left(fileData, 10);
-        //
-        // if (BeginsWith(savedQsgVersion, "QUEST200.1"))
-        // {
-        //     prevQsgVersion = true;
-        // }
-        // else if (!BeginsWith(savedQsgVersion, "QUEST300"))
-        // {
-        //     return false;
-        // }
-        //
-        // if (prevQsgVersion)
-        // {
-        //     lines = fileData.Split(new[] {Constants.vbCrLf, Constants.vbLf}, StringSplitOptions.None);
-        //     _gameFileName = lines[1];
-        // }
-        // else
-        // {
-        //     InitFileData(fileData);
-        //     GetNextChunk();
-        //
-        //     _gameFileName = GetNextChunk();
-        // }
-        //
-        // if (!File.Exists(_gameFileName))
-        // {
-        //     _gameFileName = _player.GetNewGameFile(_gameFileName, "*.asl;*.cas;*.zip");
-        //     if (string.IsNullOrEmpty(_gameFileName))
-        //     {
-        //         return false;
-        //     }
-        // }
-        //
-        // result = InitialiseGame(_gameFileName, True)
-        //
-        // if (result == false)
-        // {
-        //     return false;
-        // }
-        //
-        // if (!prevQsgVersion)
-        // {
-        //     // Open Quest 3.0 saved game file
-        //     _gameLoading = true;
-        //     RestoreGameData(fileData);
-        //     _gameLoading = false;
-        // }
-        // else
-        // {
-        //     // Open Quest 2.x saved game file
-        //
-        //     _currentRoom = lines[3];
-        //
-        //     // Start at line 5 as line 4 is always "!c"
-        //     var lineNumber = 5;
-        //
-        //     do
-        //     {
-        //         data = lines[lineNumber];
-        //         lineNumber += 1;
-        //         if (data != "!i")
-        //         {
-        //             scp = Strings.InStr(data, ";");
-        //             name = Strings.Trim(Strings.Left(data, scp - 1));
-        //             cdat = Conversions.ToInteger(Strings.Right(data, Strings.Len(data) - scp));
-        //
-        //             for (int i = 1, loopTo = _numCollectables; i <= loopTo; i++)
-        //             {
-        //                 if ((_collectables[i].Name ?? "") == (name ?? ""))
-        //                 {
-        //                     _collectables[i].Value = cdat;
-        //                     i = _numCollectables;
-        //                 }
-        //             }
-        //         }
-        //     } while (data != "!i");
-        //
-        //     do
-        //     {
-        //         data = lines[lineNumber];
-        //         lineNumber += 1;
-        //         if (data != "!o")
-        //         {
-        //             scp = Strings.InStr(data, ";");
-        //             name = Strings.Trim(Strings.Left(data, scp - 1));
-        //             cdatb = IsYes(Strings.Right(data, Strings.Len(data) - scp));
-        //
-        //             for (int i = 1, loopTo1 = _numberItems; i <= loopTo1; i++)
-        //             {
-        //                 if ((_items[i].Name ?? "") == (name ?? ""))
-        //                 {
-        //                     _items[i].Got = cdatb;
-        //                     i = _numberItems;
-        //                 }
-        //             }
-        //         }
-        //     } while (data != "!o");
-        //
-        //     do
-        //     {
-        //         data = lines[lineNumber];
-        //         lineNumber += 1;
-        //         if (data != "!p")
-        //         {
-        //             scp = Strings.InStr(data, ";");
-        //             scp2 = Strings.InStr(scp + 1, data, ";");
-        //             scp3 = Strings.InStr(scp2 + 1, data, ";");
-        //
-        //             name = Strings.Trim(Strings.Left(data, scp - 1));
-        //             cdatb = IsYes(Strings.Mid(data, scp + 1, scp2 - scp - 1));
-        //             visible = IsYes(Strings.Mid(data, scp2 + 1, scp3 - scp2 - 1));
-        //             room = Strings.Trim(Strings.Mid(data, scp3 + 1));
-        //
-        //             for (int i = 1, loopTo2 = _numberObjs; i <= loopTo2; i++)
-        //             {
-        //                 if (((_objs[i].ObjectName ?? "") == (name ?? "")) & !_objs[i].Loaded)
-        //                 {
-        //                     _objs[i].Exists = cdatb;
-        //                     _objs[i].Visible = visible;
-        //                     _objs[i].ContainerRoom = room;
-        //                     _objs[i].Loaded = true;
-        //                     i = _numberObjs;
-        //                 }
-        //             }
-        //         }
-        //     } while (data != "!p");
-        //
-        //     do
-        //     {
-        //         data = lines[lineNumber];
-        //         lineNumber += 1;
-        //         if (data != "!s")
-        //         {
-        //             scp = Strings.InStr(data, ";");
-        //             scp2 = Strings.InStr(scp + 1, data, ";");
-        //             scp3 = Strings.InStr(scp2 + 1, data, ";");
-        //
-        //             name = Strings.Trim(Strings.Left(data, scp - 1));
-        //             cdatb = IsYes(Strings.Mid(data, scp + 1, scp2 - scp - 1));
-        //             visible = IsYes(Strings.Mid(data, scp2 + 1, scp3 - scp2 - 1));
-        //             room = Strings.Trim(Strings.Mid(data, scp3 + 1));
-        //
-        //             for (int i = 1, loopTo3 = _numberChars; i <= loopTo3; i++)
-        //             {
-        //                 if ((_chars[i].ObjectName ?? "") == (name ?? ""))
-        //                 {
-        //                     _chars[i].Exists = cdatb;
-        //                     _chars[i].Visible = visible;
-        //                     _chars[i].ContainerRoom = room;
-        //                     i = _numberChars;
-        //                 }
-        //             }
-        //         }
-        //     } while (data != "!s");
-        //
-        //     do
-        //     {
-        //         data = lines[lineNumber];
-        //         lineNumber += 1;
-        //         if (data != "!n")
-        //         {
-        //             scp = Strings.InStr(data, ";");
-        //             name = Strings.Trim(Strings.Left(data, scp - 1));
-        //             data = Strings.Right(data, Strings.Len(data) - scp);
-        //
-        //             SetStringContents(name, data, _nullContext);
-        //         }
-        //     } while (data != "!n");
-        //
-        //     do
-        //     {
-        //         data = lines[lineNumber];
-        //         lineNumber += 1;
-        //         if (data != "!e")
-        //         {
-        //             scp = Strings.InStr(data, ";");
-        //             name = Strings.Trim(Strings.Left(data, scp - 1));
-        //             data = Strings.Right(data, Strings.Len(data) - scp);
-        //
-        //             SetNumericVariableContents(name, Conversion.Val(data), _nullContext);
-        //         }
-        //     } while (data != "!e");
-        // }
-        //
-        // _saveGameFile = filename;
-        //
-        // return true;
+        _gameLoadMethod = "loaded";
+        
+        var prevQsgVersion = false;
+        
+        using var reader = new StreamReader(saveData, Encoding.GetEncoding(1252));
+        var fileData = await reader.ReadToEndAsync();
+
+        // Check version
+        var savedQsgVersion = Strings.Left(fileData, 10);
+        
+        if (BeginsWith(savedQsgVersion, "QUEST200.1"))
+        {
+            prevQsgVersion = true;
+        }
+        else if (!BeginsWith(savedQsgVersion, "QUEST300"))
+        {
+            return false;
+        }
+        
+        if (prevQsgVersion)
+        {
+            lines = fileData.Split([Constants.vbCrLf, Constants.vbLf], StringSplitOptions.None);
+        }
+        else
+        {
+            InitFileData(fileData);
+            GetNextChunk();
+        
+            // This previously contained the original game filename, but we don't need this now as we always get
+            // the original game data when the game is initialised.
+            var _ = GetNextChunk();
+        }
+
+        var result = await InitialiseGame(_gameData, true);
+        
+        if (result == false)
+        {
+            return false;
+        }
+        
+        if (!prevQsgVersion)
+        {
+            // Open Quest 3.0 saved game file
+            _gameLoading = true;
+            RestoreGameData(fileData);
+            _gameLoading = false;
+        }
+        else
+        {
+            // Open Quest 2.x saved game file
+        
+            _currentRoom = lines[3];
+        
+            // Start at line 5 as line 4 is always "!c"
+            var lineNumber = 5;
+
+            var data = "";
+            string name;
+            int scp;
+            do
+            {
+                data = lines[lineNumber];
+                lineNumber += 1;
+                if (data != "!i")
+                {
+                    scp = Strings.InStr(data, ";");
+                    name = Strings.Trim(Strings.Left(data, scp - 1));
+                    var cdat = Conversions.ToInteger(Strings.Right(data, Strings.Len(data) - scp));
+        
+                    for (int i = 1, loopTo = _numCollectables; i <= loopTo; i++)
+                    {
+                        if ((_collectables[i].Name ?? "") == (name ?? ""))
+                        {
+                            _collectables[i].Value = cdat;
+                            i = _numCollectables;
+                        }
+                    }
+                }
+            } while (data != "!i");
+
+            bool cdatb;
+            do
+            {
+                data = lines[lineNumber];
+                lineNumber += 1;
+                if (data != "!o")
+                {
+                    scp = Strings.InStr(data, ";");
+                    name = Strings.Trim(Strings.Left(data, scp - 1));
+                    cdatb = IsYes(Strings.Right(data, Strings.Len(data) - scp));
+        
+                    for (int i = 1, loopTo1 = _numberItems; i <= loopTo1; i++)
+                    {
+                        if ((_items[i].Name ?? "") == (name ?? ""))
+                        {
+                            _items[i].Got = cdatb;
+                            i = _numberItems;
+                        }
+                    }
+                }
+            } while (data != "!o");
+
+            bool visible;
+            string room;
+            int scp2;
+            int scp3;
+            do
+            {
+                data = lines[lineNumber];
+                lineNumber += 1;
+                if (data != "!p")
+                {
+                    scp = Strings.InStr(data, ";");
+                    scp2 = Strings.InStr(scp + 1, data, ";");
+                    scp3 = Strings.InStr(scp2 + 1, data, ";");
+        
+                    name = Strings.Trim(Strings.Left(data, scp - 1));
+                    cdatb = IsYes(Strings.Mid(data, scp + 1, scp2 - scp - 1));
+                    visible = IsYes(Strings.Mid(data, scp2 + 1, scp3 - scp2 - 1));
+                    room = Strings.Trim(Strings.Mid(data, scp3 + 1));
+        
+                    for (int i = 1, loopTo2 = _numberObjs; i <= loopTo2; i++)
+                    {
+                        if (((_objs[i].ObjectName ?? "") == (name ?? "")) & !_objs[i].Loaded)
+                        {
+                            _objs[i].Exists = cdatb;
+                            _objs[i].Visible = visible;
+                            _objs[i].ContainerRoom = room;
+                            _objs[i].Loaded = true;
+                            i = _numberObjs;
+                        }
+                    }
+                }
+            } while (data != "!p");
+        
+            do
+            {
+                data = lines[lineNumber];
+                lineNumber += 1;
+                if (data != "!s")
+                {
+                    scp = Strings.InStr(data, ";");
+                    scp2 = Strings.InStr(scp + 1, data, ";");
+                    scp3 = Strings.InStr(scp2 + 1, data, ";");
+        
+                    name = Strings.Trim(Strings.Left(data, scp - 1));
+                    cdatb = IsYes(Strings.Mid(data, scp + 1, scp2 - scp - 1));
+                    visible = IsYes(Strings.Mid(data, scp2 + 1, scp3 - scp2 - 1));
+                    room = Strings.Trim(Strings.Mid(data, scp3 + 1));
+        
+                    for (int i = 1, loopTo3 = _numberChars; i <= loopTo3; i++)
+                    {
+                        if ((_chars[i].ObjectName ?? "") == (name ?? ""))
+                        {
+                            _chars[i].Exists = cdatb;
+                            _chars[i].Visible = visible;
+                            _chars[i].ContainerRoom = room;
+                            i = _numberChars;
+                        }
+                    }
+                }
+            } while (data != "!s");
+        
+            do
+            {
+                data = lines[lineNumber];
+                lineNumber += 1;
+                if (data != "!n")
+                {
+                    scp = Strings.InStr(data, ";");
+                    name = Strings.Trim(Strings.Left(data, scp - 1));
+                    data = Strings.Right(data, Strings.Len(data) - scp);
+        
+                    SetStringContents(name, data, _nullContext);
+                }
+            } while (data != "!n");
+        
+            do
+            {
+                data = lines[lineNumber];
+                lineNumber += 1;
+                if (data != "!e")
+                {
+                    scp = Strings.InStr(data, ";");
+                    name = Strings.Trim(Strings.Left(data, scp - 1));
+                    data = Strings.Right(data, Strings.Len(data) - scp);
+        
+                    SetNumericVariableContents(name, Conversion.Val(data), _nullContext);
+                }
+            } while (data != "!e");
+        }
+        
+        return true;
     }
 
     private byte[] SaveGame(string filename, bool saveFile = true)
@@ -2797,8 +2783,6 @@ public partial class V4Game
             File.WriteAllText(filename, saveData, Encoding.GetEncoding(1252));
         }
 
-        _saveGameFile = filename;
-
         return Encoding.GetEncoding(1252).GetBytes(saveData);
     }
 
@@ -2808,7 +2792,7 @@ public partial class V4Game
         int i;
 
         lines.Add("QUEST200.1");
-        lines.Add(GetOriginalFilenameForQSG());
+        lines.Add("filename-not-used.asl");
         lines.Add(_gameName);
         lines.Add(_currentRoom);
 
@@ -6418,8 +6402,6 @@ public partial class V4Game
         SetUpTimers();
         SetUpMenus();
 
-        _gameFileName = gameData.Filename;
-
         LogASLError("Finished loading file.", LogType.Init);
 
         _defaultRoomProperties = GetPropertiesInType("defaultroom", false);
@@ -7950,11 +7932,6 @@ public partial class V4Game
 
     public event PrintTextHandler PrintText;
 
-    public void Save(string filename, string html)
-    {
-        SaveGame(filename);
-    }
-
     public byte[] Save(string html)
     {
         return SaveGame(_gameData.Filename, false);
@@ -8033,9 +8010,9 @@ public partial class V4Game
     public async Task<bool> Initialise(IPlayer player, bool? isCompiled = default)
     {
         _player = player;
-        if (Strings.LCase(Strings.Right(_gameData.Filename, 4)) == ".qsg")
+        if (_saveData != null)
         {
-            return OpenGame(_gameData.Filename);
+            return await OpenGame(_saveData);
         }
 
         return await InitialiseGame(_gameData);
@@ -8149,8 +8126,6 @@ public partial class V4Game
 
         return GetResourceLines(libCode);
     }
-
-    public string SaveExtension => "qsg";
 
     public void Tick(int elapsedTime)
     {
@@ -8341,16 +8316,6 @@ public partial class V4Game
 
     public event Action<int> RequestNextTimerTick;
 
-    private string GetOriginalFilenameForQSG()
-    {
-        if (_originalFilename is not null)
-        {
-            return _originalFilename;
-        }
-
-        return _gameFileName;
-    }
-
     public delegate string UnzipFunctionDelegate(string filename, out string tempDir);
 
     private UnzipFunctionDelegate m_unzipFunction;
@@ -8388,18 +8353,7 @@ public partial class V4Game
         return new FileStream(path, FileMode.Open, FileAccess.Read);
     }
 
-    public string GameID
-    {
-        get
-        {
-            if (string.IsNullOrEmpty(_gameFileName))
-            {
-                return null;
-            }
-
-            return Files.FileMD5Hash(_gameFileName);
-        }
-    }
+    public string GameID => null;
 
     public IEnumerable<string> GetResourceNames()
     {

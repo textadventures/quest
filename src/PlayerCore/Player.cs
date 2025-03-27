@@ -189,12 +189,7 @@ public class Player : IPlayerHelperUI
     {
         // Do nothing - only implemented for desktop player
     }
-
-    string IPlayer.GetNewGameFile(string originalFilename, string extensions)
-    {
-        throw new NotImplementedException();
-    }
-
+    
     void IPlayer.PlaySound(string filename, bool synchronous, bool looped)
     {
         if (Runner != null && synchronous)
@@ -474,13 +469,9 @@ public class Player : IPlayerHelperUI
         await UiActionAsync(() => PlayerHelper.Game.SendEvent(eventName, param));
     }
     
-    public async Task UiSaveGameAsync(string html)
+    public Task<byte[]> UiSaveGameAsync(string html)
     {
-        await UiActionAsync(() =>
-        {
-            var data = PlayerHelper.Game.Save(html);
-            AddJavaScriptToBuffer("saveGameResponse", data);
-        });
+        return Task.FromResult(PlayerHelper.Game.Save(html));
     }
     
     private WalkthroughRunner? Runner

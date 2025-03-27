@@ -1,0 +1,106 @@
+@using QuestViva.Common
+@using QuestViva.PlayerCore
+@using QuestViva.WebPlayer.Components.Debugger
+@using QuestViva.WebPlayer.Models
+@rendermode InteractiveServer
+@inject GameLauncher GameLauncher
+@inject IJSRuntime JS
+
+<HeadContent>
+    <script type="text/javascript" src="/res/lib/jquery-2.1.1.min.js"></script>
+    <script type="text/javascript" src="/res/lib/jquery-ui.min.js"></script>
+    <script type="text/javascript" src="/res/lib/jquery.jplayer.min.js"></script>
+    <script type="text/javascript" src="/res/lib/jquery.multi-open-accordion-1.5.3.js"></script>
+    <link rel="Stylesheet" type="text/css" href="/res/lib/jquery-ui.min.css" />
+    <link rel="Stylesheet" type="text/css" href="/res/playercore.css" />
+    <script type="text/javascript" src="/res/playercore.js"></script>
+    <script type="text/javascript" src="player.js"></script>
+    <script type="text/javascript" src="playerweb.js"></script>
+    <script>
+        function addPaperScript() {
+            const gridJs = document.createElement("script");
+            gridJs.type = "text/paperscript";
+            gridJs.src = "/res/grid.js";
+            gridJs.setAttribute("canvas", "gridCanvas");
+            document.head.appendChild(gridJs);
+
+            const paperJs = document.createElement("script");
+            paperJs.src = "/res/lib/paper.js";
+            document.head.appendChild(paperJs);
+        }
+    </script>
+</HeadContent>
+
+@if (gameDebug != null)
+{
+    <Debugger Game="@gameDebug" OnRunWalkthrough="RunWalkthrough"></Debugger>
+}
+
+@UiHtml
+
+<Slots Saves="@saves" OnStart="() => StartGame(null)" OnLoad="@LoadGame"></Slots>
+
+@code {
+    [Parameter] public required IGameDataProvider GameDataProvider { get; set; }
+    private static MarkupString UiHtml => (MarkupString) PlayerHelper.GetUiResourceString("playercore.htm");
+    private Player? Player { get; set; } = null;
+    private GameData? gameData;
+    private IGame? game;
+    private IGameDebug? gameDebug;
+    private SaveSlot[] saves = [];
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (!firstRender) return;
+        
+        gameData = await GameDataProvider.GetData();
+        if (gameData == null) return;
+        
+        await JS.InvokeVoidAsync("WebPlayer.setGameId", gameData.GameId);
+        await JS.InvokeVoidAsync("WebPlayer.initSlotsDialog");
+        
+        saves = await JS.InvokeAsync<SaveSlot[]>("WebPlayer.listSaves");
+        if (saves.Length > 0)
+        {
+            await JS.InvokeVoidAsync("WebPlayer.showSlots", false);
+            StateHasChanged();
+        }
+        else
+        {
+            await StartGame(null);
+        }
+    }
+
+    private async Task StartGame(Stream? saveData)
+    {
+        if (gameData == null) return;
+        
+        await JS.InvokeVoidAsync("WebPlayer.closeSlots");
+        game = GameLauncher.GetGame(gameData, saveData);
+        
+        if (game == null) return;
+        
+        Player = new Player(game, GameDataProvider.ResourcesId, JS);
+        GameResources.AddResourceProvider(GameDataProvider.ResourcesId, Player.GetResource);
+        
+        await JS.InvokeVoidAsync("WebPlayer.initUI");
+        await Player.Initialise();
+        
+        gameDebug = game as IGameDebug;
+        await JS.InvokeVoidAsync("WebPlayer.setCanDebug", gameDebug != null);
+        StateHasChanged();
+    }
+
+    private async Task LoadGame(int slot)
+    {
+        var data = await JS.InvokeAsync<byte[]>("WebPlayer.loadSlot", slot);
+        var stream = new MemoryStream(data);
+        await StartGame(stream);
+    }
+
+    private async Task RunWalkthrough(string name)
+    {
+        if (Player == null) return;
+        await Player.RunWalkthrough(name);
+    }
+}

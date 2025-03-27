@@ -19,6 +19,6 @@ internal static class Helpers
     public static WorldModel CreateWorldModel(GameData gameData)
     {
         var config = new Config(false);
-        return new WorldModel(config, gameData);
+        return new WorldModel(config, gameData, null);
     }
 }
