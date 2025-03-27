@@ -2191,6 +2191,7 @@ const GameSaver = (() => {
             await saveGame(WebPlayer.gameId,
                 "Saved game at " + new Date().toISOString().replace('T', ' ').substring(0, 19),
                 result);
+            addText("Game saved.<br>");
             if (!persistenceRequested) {
                 await ensurePersistentStorage();
                 persistenceRequested = true;
