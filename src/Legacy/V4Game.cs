@@ -1686,14 +1686,8 @@ public partial class V4Game : IGame, IGameDebug
     {
         // Returns FALSE if failed.
 
-        bool hasErrors;
-        bool result;
         var libCode = new string[1];
-        int libLines;
-        bool ignoreMode, skipCheck;
-        int c, d, l;
-        int libFileHandle;
-        string[] libResourceLines;
+        int l;
         string libFile;
         string libLine;
         int inDefGameBlock, gameLine = default;
@@ -1711,11 +1705,10 @@ public partial class V4Game : IGame, IGameDebug
 
         _defineBlockParams = new Dictionary<string, Dictionary<string, string>>();
 
-        result = true;
+        var result = true;
 
         // Parses file and returns the positions of each main
         // 'define' block. Supports nested defines.
-
         if (Strings.LCase(Strings.Right(filename, 4)) == ".zip")
         {
             filename = GetUnzippedFile(filename);
@@ -1745,6 +1738,7 @@ public partial class V4Game : IGame, IGameDebug
 
         else if (Strings.LCase(Strings.Right(filename, 4)) == ".cas")
         {
+            // TODO: Use GetFileData here
             LogASLError("Loading CAS");
             LoadCASFile(filename);
             l = Information.UBound(_lines);
@@ -1798,11 +1792,11 @@ public partial class V4Game : IGame, IGameDebug
                         libraryList[numLibraries] = libFileName;
 
                         libFoundThisSweep = true;
-                        libResourceLines = null;
+                        string[] libResourceLines = null;
 
                         libFile = _gamePath + libFileName;
                         LogASLError(" - Searching for " + libFile + " (game path)", LogType.Init);
-                        libFileHandle = FileSystem.FreeFile();
+                        var libFileHandle = FileSystem.FreeFile();
 
                         if (File.Exists(libFile))
                         {
@@ -1826,7 +1820,7 @@ public partial class V4Game : IGame, IGameDebug
 
                         LogASLError("     - Found library, opening...", LogType.Init);
 
-                        libLines = 0;
+                        var libLines = 0;
 
                         if (libResourceLines is null)
                         {
@@ -1855,6 +1849,7 @@ public partial class V4Game : IGame, IGameDebug
 
                         var libVer = -1;
 
+                        int c;
                         if (libCode[1] == "!library")
                         {
                             var loopTo2 = libLines;
@@ -1879,7 +1874,7 @@ public partial class V4Game : IGame, IGameDebug
                             libVer = 200;
                         }
 
-                        ignoreMode = false;
+                        var ignoreMode = false;
                         var loopTo3 = libLines;
                         for (c = 1; c <= loopTo3; c++)
                         {
@@ -1899,194 +1894,198 @@ public partial class V4Game : IGame, IGameDebug
                                 AddLine(libCode[c]);
                                 l = l + 1;
                             }
-                            else if (libCode[c] == "!addto game")
+                            else
                             {
-                                inDefGameBlock = 0;
-                                var loopTo4 = Information.UBound(_lines);
-                                for (d = 1; d <= loopTo4; d++)
+                                int d;
+                                if (libCode[c] == "!addto game")
                                 {
-                                    if (BeginsWith(_lines[d], "define game "))
+                                    inDefGameBlock = 0;
+                                    var loopTo4 = Information.UBound(_lines);
+                                    for (d = 1; d <= loopTo4; d++)
                                     {
-                                        inDefGameBlock = 1;
-                                    }
-                                    else if (BeginsWith(_lines[d], "define "))
-                                    {
-                                        if (inDefGameBlock != 0)
+                                        if (BeginsWith(_lines[d], "define game "))
                                         {
-                                            inDefGameBlock = inDefGameBlock + 1;
+                                            inDefGameBlock = 1;
+                                        }
+                                        else if (BeginsWith(_lines[d], "define "))
+                                        {
+                                            if (inDefGameBlock != 0)
+                                            {
+                                                inDefGameBlock = inDefGameBlock + 1;
+                                            }
+                                        }
+                                        else if ((_lines[d] == "end define") & (inDefGameBlock == 1))
+                                        {
+                                            gameLine = d;
+                                            d = Information.UBound(_lines);
+                                        }
+                                        else if (_lines[d] == "end define")
+                                        {
+                                            if (inDefGameBlock != 0)
+                                            {
+                                                inDefGameBlock = inDefGameBlock - 1;
+                                            }
                                         }
                                     }
-                                    else if ((_lines[d] == "end define") & (inDefGameBlock == 1))
+
+                                    do
                                     {
-                                        gameLine = d;
-                                        d = Information.UBound(_lines);
-                                    }
-                                    else if (_lines[d] == "end define")
-                                    {
-                                        if (inDefGameBlock != 0)
+                                        c = c + 1;
+                                        if (!BeginsWith(libCode[c], "!end"))
                                         {
-                                            inDefGameBlock = inDefGameBlock - 1;
+                                            Array.Resize(ref _lines, Information.UBound(_lines) + 1 + 1);
+                                            var loopTo5 = gameLine + 1;
+                                            for (d = Information.UBound(_lines); d >= loopTo5; d -= 1)
+                                            {
+                                                _lines[d] = _lines[d - 1];
+                                            }
+
+                                            // startscript lines in a library are prepended
+                                            // with "lib" internally so they are executed
+                                            // before any startscript specified by the
+                                            // calling ASL file, for asl-versions 311 and
+                                            // later.
+                                            // similarly, commands in a library. NB: without this, lib
+                                            // verbs have lower precedence than game verbs anyway. Also
+                                            // lib commands have lower precedence than game commands. We
+                                            // only need this code so that game verbs have a higher
+                                            // precedence than lib commands.
+                                            // we also need it so that lib verbs have a higher
+                                            // precedence than lib commands.
+                                            if ((libVer >= 311) & BeginsWith(libCode[c], "startscript "))
+                                            {
+                                                _lines[gameLine] = "lib " + libCode[c];
+                                            }
+                                            else if ((libVer >= 392) & (BeginsWith(libCode[c], "command ") |
+                                                                        BeginsWith(libCode[c], "verb ")))
+                                            {
+                                                _lines[gameLine] = "lib " + libCode[c];
+                                            }
+                                            else
+                                            {
+                                                _lines[gameLine] = libCode[c];
+                                            }
+
+                                            l = l + 1;
+                                            gameLine = gameLine + 1;
+                                        }
+                                    } while (!BeginsWith(libCode[c], "!end"));
+                                }
+                                else if (libCode[c] == "!addto synonyms")
+                                {
+                                    inDefSynBlock = 0;
+                                    var loopTo6 = Information.UBound(_lines);
+                                    for (d = 1; d <= loopTo6; d++)
+                                    {
+                                        if (_lines[d] == "define synonyms")
+                                        {
+                                            inDefSynBlock = 1;
+                                        }
+                                        else if ((_lines[d] == "end define") & (inDefSynBlock == 1))
+                                        {
+                                            synLine = d;
+                                            d = Information.UBound(_lines);
                                         }
                                     }
+
+                                    if (inDefSynBlock == 0)
+                                    {
+                                        // No "define synonyms" block in game - so add it
+                                        AddLine("define synonyms");
+                                        AddLine("end define");
+                                        synLine = Information.UBound(_lines);
+                                    }
+
+                                    do
+                                    {
+                                        c = c + 1;
+                                        if (!BeginsWith(libCode[c], "!end"))
+                                        {
+                                            Array.Resize(ref _lines, Information.UBound(_lines) + 1 + 1);
+                                            var loopTo7 = synLine + 1;
+                                            for (d = Information.UBound(_lines); d >= loopTo7; d -= 1)
+                                            {
+                                                _lines[d] = _lines[d - 1];
+                                            }
+
+                                            _lines[synLine] = libCode[c];
+                                            l = l + 1;
+                                            synLine = synLine + 1;
+                                        }
+                                    } while (!BeginsWith(libCode[c], "!end"));
+                                }
+                                else if (BeginsWith(libCode[c], "!addto type "))
+                                {
+                                    inDefTypeBlock = 0;
+                                    typeBlockName = Strings.LCase(GetParameter(libCode[c], _nullContext));
+                                    var loopTo8 = Information.UBound(_lines);
+                                    for (d = 1; d <= loopTo8; d++)
+                                    {
+                                        if ((Strings.LCase(_lines[d]) ?? "") ==
+                                            ("define type <" + typeBlockName + ">" ?? ""))
+                                        {
+                                            inDefTypeBlock = 1;
+                                        }
+                                        else if ((_lines[d] == "end define") & (inDefTypeBlock == 1))
+                                        {
+                                            typeLine = d;
+                                            d = Information.UBound(_lines);
+                                        }
+                                    }
+
+                                    if (inDefTypeBlock == 0)
+                                    {
+                                        // No "define type (whatever)" block in game - so add it
+                                        AddLine("define type <" + typeBlockName + ">");
+                                        AddLine("end define");
+                                        typeLine = Information.UBound(_lines);
+                                    }
+
+                                    do
+                                    {
+                                        c = c + 1;
+                                        if (c > libLines)
+                                        {
+                                            break;
+                                        }
+
+                                        if (!BeginsWith(libCode[c], "!end"))
+                                        {
+                                            Array.Resize(ref _lines, Information.UBound(_lines) + 1 + 1);
+                                            var loopTo9 = typeLine + 1;
+                                            for (d = Information.UBound(_lines); d >= loopTo9; d -= 1)
+                                            {
+                                                _lines[d] = _lines[d - 1];
+                                            }
+
+                                            _lines[typeLine] = libCode[c];
+                                            l = l + 1;
+                                            typeLine = typeLine + 1;
+                                        }
+                                    } while (!BeginsWith(libCode[c], "!end"));
                                 }
 
-                                do
-                                {
-                                    c = c + 1;
-                                    if (!BeginsWith(libCode[c], "!end"))
-                                    {
-                                        Array.Resize(ref _lines, Information.UBound(_lines) + 1 + 1);
-                                        var loopTo5 = gameLine + 1;
-                                        for (d = Information.UBound(_lines); d >= loopTo5; d -= 1)
-                                        {
-                                            _lines[d] = _lines[d - 1];
-                                        }
 
-                                        // startscript lines in a library are prepended
-                                        // with "lib" internally so they are executed
-                                        // before any startscript specified by the
-                                        // calling ASL file, for asl-versions 311 and
-                                        // later.
-                                        // similarly, commands in a library. NB: without this, lib
-                                        // verbs have lower precedence than game verbs anyway. Also
-                                        // lib commands have lower precedence than game commands. We
-                                        // only need this code so that game verbs have a higher
-                                        // precedence than lib commands.
-                                        // we also need it so that lib verbs have a higher
-                                        // precedence than lib commands.
-                                        if ((libVer >= 311) & BeginsWith(libCode[c], "startscript "))
-                                        {
-                                            _lines[gameLine] = "lib " + libCode[c];
-                                        }
-                                        else if ((libVer >= 392) & (BeginsWith(libCode[c], "command ") |
-                                                                    BeginsWith(libCode[c], "verb ")))
-                                        {
-                                            _lines[gameLine] = "lib " + libCode[c];
-                                        }
-                                        else
-                                        {
-                                            _lines[gameLine] = libCode[c];
-                                        }
-
-                                        l = l + 1;
-                                        gameLine = gameLine + 1;
-                                    }
-                                } while (!BeginsWith(libCode[c], "!end"));
-                            }
-                            else if (libCode[c] == "!addto synonyms")
-                            {
-                                inDefSynBlock = 0;
-                                var loopTo6 = Information.UBound(_lines);
-                                for (d = 1; d <= loopTo6; d++)
+                                else if (libCode[c] == "!library")
                                 {
-                                    if (_lines[d] == "define synonyms")
-                                    {
-                                        inDefSynBlock = 1;
-                                    }
-                                    else if ((_lines[d] == "end define") & (inDefSynBlock == 1))
-                                    {
-                                        synLine = d;
-                                        d = Information.UBound(_lines);
-                                    }
                                 }
-
-                                if (inDefSynBlock == 0)
+                                // ignore
+                                else if (BeginsWith(libCode[c], "!asl-version "))
                                 {
-                                    // No "define synonyms" block in game - so add it
-                                    AddLine("define synonyms");
-                                    AddLine("end define");
-                                    synLine = Information.UBound(_lines);
                                 }
-
-                                do
+                                // ignore
+                                else if (BeginsWith(libCode[c], "'"))
                                 {
-                                    c = c + 1;
-                                    if (!BeginsWith(libCode[c], "!end"))
-                                    {
-                                        Array.Resize(ref _lines, Information.UBound(_lines) + 1 + 1);
-                                        var loopTo7 = synLine + 1;
-                                        for (d = Information.UBound(_lines); d >= loopTo7; d -= 1)
-                                        {
-                                            _lines[d] = _lines[d - 1];
-                                        }
-
-                                        _lines[synLine] = libCode[c];
-                                        l = l + 1;
-                                        synLine = synLine + 1;
-                                    }
-                                } while (!BeginsWith(libCode[c], "!end"));
-                            }
-                            else if (BeginsWith(libCode[c], "!addto type "))
-                            {
-                                inDefTypeBlock = 0;
-                                typeBlockName = Strings.LCase(GetParameter(libCode[c], _nullContext));
-                                var loopTo8 = Information.UBound(_lines);
-                                for (d = 1; d <= loopTo8; d++)
-                                {
-                                    if ((Strings.LCase(_lines[d]) ?? "") ==
-                                        ("define type <" + typeBlockName + ">" ?? ""))
-                                    {
-                                        inDefTypeBlock = 1;
-                                    }
-                                    else if ((_lines[d] == "end define") & (inDefTypeBlock == 1))
-                                    {
-                                        typeLine = d;
-                                        d = Information.UBound(_lines);
-                                    }
                                 }
-
-                                if (inDefTypeBlock == 0)
+                                // ignore
+                                else if (BeginsWith(libCode[c], "!QDK"))
                                 {
-                                    // No "define type (whatever)" block in game - so add it
-                                    AddLine("define type <" + typeBlockName + ">");
-                                    AddLine("end define");
-                                    typeLine = Information.UBound(_lines);
+                                    ignoreMode = true;
                                 }
-
-                                do
+                                else if (BeginsWith(libCode[c], "!end"))
                                 {
-                                    c = c + 1;
-                                    if (c > libLines)
-                                    {
-                                        break;
-                                    }
-
-                                    if (!BeginsWith(libCode[c], "!end"))
-                                    {
-                                        Array.Resize(ref _lines, Information.UBound(_lines) + 1 + 1);
-                                        var loopTo9 = typeLine + 1;
-                                        for (d = Information.UBound(_lines); d >= loopTo9; d -= 1)
-                                        {
-                                            _lines[d] = _lines[d - 1];
-                                        }
-
-                                        _lines[typeLine] = libCode[c];
-                                        l = l + 1;
-                                        typeLine = typeLine + 1;
-                                    }
-                                } while (!BeginsWith(libCode[c], "!end"));
-                            }
-
-
-                            else if (libCode[c] == "!library")
-                            {
-                            }
-                            // ignore
-                            else if (BeginsWith(libCode[c], "!asl-version "))
-                            {
-                            }
-                            // ignore
-                            else if (BeginsWith(libCode[c], "'"))
-                            {
-                            }
-                            // ignore
-                            else if (BeginsWith(libCode[c], "!QDK"))
-                            {
-                                ignoreMode = true;
-                            }
-                            else if (BeginsWith(libCode[c], "!end"))
-                            {
-                                ignoreMode = false;
+                                    ignoreMode = false;
+                                }
                             }
                         }
                     }
@@ -2094,7 +2093,7 @@ public partial class V4Game : IGame, IGameDebug
             }
         } while (libFoundThisSweep);
 
-        skipCheck = false;
+        var skipCheck = false;
 
         int lastSlashPos = default, slashPos;
         var curPos = 1;
@@ -2205,7 +2204,7 @@ public partial class V4Game : IGame, IGameDebug
 
         ConvertMultiLineSections();
 
-        hasErrors = ConvertFriendlyIfs();
+        var hasErrors = ConvertFriendlyIfs();
         if (!hasErrors)
         {
             hasErrors = ErrorCheck();
@@ -2318,38 +2317,22 @@ public partial class V4Game : IGame, IGameDebug
 
     private void LoadCASFile(string filename)
     {
-        bool endLineReached, exitTheLoop;
-        var textMode = default(bool);
-        int casVersion;
+        var textMode = false;
         var startCat = "";
-        int endCatPos;
-        string chkVer;
-        var j = default(int);
-        string curLin, textData;
-        int cpos, nextLinePos;
-        string c, tl, ckw, d;
+        var j = 0;
 
         _lines = new string[1];
 
         var fileData = GetCASFileData(filename);
 
-        chkVer = Strings.Left(fileData, 7);
-        if (chkVer == "QCGF001")
+        var chkVer = Strings.Left(fileData, 7);
+        var casVersion = chkVer switch
         {
-            casVersion = 1;
-        }
-        else if (chkVer == "QCGF002")
-        {
-            casVersion = 2;
-        }
-        else if (chkVer == "QCGF003")
-        {
-            casVersion = 3;
-        }
-        else
-        {
-            throw new InvalidOperationException("Invalid or corrupted CAS file.");
-        }
+            "QCGF001" => 1,
+            "QCGF002" => 2,
+            "QCGF003" => 3,
+            _ => throw new InvalidOperationException("Invalid or corrupted CAS file.")
+        };
 
         if (casVersion == 3)
         {
@@ -2362,7 +2345,7 @@ public partial class V4Game : IGame, IGameDebug
             {
                 // Read catalog
                 _startCatPos = i;
-                endCatPos = Strings.InStr(j, fileData, Keyword2CAS("!endcat"));
+                var endCatPos = Strings.InStr(j, fileData, Keyword2CAS("!endcat"));
                 ReadCatalog(Strings.Mid(fileData, j + 1, endCatPos - j - 1));
                 _resourceFile = filename;
                 _resourceOffset = endCatPos + 1;
@@ -2371,28 +2354,28 @@ public partial class V4Game : IGame, IGameDebug
             }
             else
             {
-                curLin = "";
-                endLineReached = false;
+                var curLin = "";
+                var endLineReached = false;
                 if (textMode)
                 {
-                    textData = Strings.Mid(fileData, i,
+                    var textData = Strings.Mid(fileData, i,
                         Strings.InStr(i, fileData, Conversions.ToString(Strings.Chr(253))) - (i - 1));
                     textData = Strings.Left(textData, Strings.Len(textData) - 1);
-                    cpos = 1;
+                    var cpos = 1;
                     var finished = false;
 
                     if (!string.IsNullOrEmpty(textData))
                     {
                         do
                         {
-                            nextLinePos = Strings.InStr(cpos, textData, "\0");
+                            var nextLinePos = Strings.InStr(cpos, textData, "\0");
                             if (nextLinePos == 0)
                             {
                                 nextLinePos = Strings.Len(textData) + 1;
                                 finished = true;
                             }
 
-                            tl = DecryptString(Strings.Mid(textData, cpos, nextLinePos - cpos));
+                            var tl = DecryptString(Strings.Mid(textData, cpos, nextLinePos - cpos));
                             AddLine(tl);
                             cpos = nextLinePos + 1;
                         } while (!finished);
@@ -2405,8 +2388,8 @@ public partial class V4Game : IGame, IGameDebug
                 j = i;
                 do
                 {
-                    ckw = Strings.Mid(fileData, j, 1);
-                    c = ConvertCasKeyword(ckw);
+                    var ckw = Strings.Mid(fileData, j, 1);
+                    var c = ConvertCasKeyword(ckw);
 
                     if ((c ?? "") == Constants.vbCrLf)
                     {
@@ -2416,46 +2399,57 @@ public partial class V4Game : IGame, IGameDebug
                     {
                         curLin = curLin + c + " ";
                     }
-                    else if (c == "!quote")
+                    else
                     {
-                        exitTheLoop = false;
-                        curLin = curLin + "<";
-                        do
+                        bool exitTheLoop;
+                        string d;
+                        switch (c)
                         {
-                            j = j + 1;
-                            d = Strings.Mid(fileData, j, 1);
-                            if (d != "\0")
+                            case "!quote":
                             {
-                                curLin = curLin + DecryptString(d);
-                            }
-                            else
-                            {
-                                curLin = curLin + "> ";
-                                exitTheLoop = true;
-                            }
-                        } while (!exitTheLoop);
-                    }
-                    else if (c == "!unknown")
-                    {
-                        exitTheLoop = false;
-                        do
-                        {
-                            j = j + 1;
-                            d = Strings.Mid(fileData, j, 1);
-                            if (d != Conversions.ToString(Strings.Chr(254)))
-                            {
-                                curLin = curLin + d;
-                            }
-                            else
-                            {
-                                exitTheLoop = true;
-                            }
-                        } while (!exitTheLoop);
+                                exitTheLoop = false;
+                                curLin += "<";
+                                do
+                                {
+                                    j = j + 1;
+                                    d = Strings.Mid(fileData, j, 1);
+                                    if (d != "\0")
+                                    {
+                                        curLin += DecryptString(d);
+                                    }
+                                    else
+                                    {
+                                        curLin += "> ";
+                                        exitTheLoop = true;
+                                    }
+                                } while (!exitTheLoop);
 
-                        curLin = curLin + " ";
+                                break;
+                            }
+                            case "!unknown":
+                            {
+                                exitTheLoop = false;
+                                do
+                                {
+                                    j = j + 1;
+                                    d = Strings.Mid(fileData, j, 1);
+                                    if (d != Conversions.ToString(Strings.Chr(254)))
+                                    {
+                                        curLin += d;
+                                    }
+                                    else
+                                    {
+                                        exitTheLoop = true;
+                                    }
+                                } while (!exitTheLoop);
+
+                                curLin += " ";
+                                break;
+                            }
+                        }
                     }
 
-                    j = j + 1;
+                    j += 1;
                 } while (!endLineReached);
 
                 AddLine(Strings.Trim(curLin));
