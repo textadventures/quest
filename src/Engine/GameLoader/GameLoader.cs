@@ -108,9 +108,7 @@ internal partial class GameLoader
 
                 if (!string.IsNullOrEmpty(originalFile) && Path.GetExtension(originalFile) == ".quest")
                 {
-                    // TODO
-                    throw new NotImplementedException();
-                    // LoadCompiledFile(originalFile);
+                    IsCompiledFile = true;
                 }
 
                 if (!string.IsNullOrEmpty(originalFile))
