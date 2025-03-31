@@ -448,7 +448,7 @@ public partial class V4Game : IGame, IGameDebug
     private string _badCmdAfter;
     private int _numResources;
     private ResourceType[] _resources;
-    private string _resourceFile;
+    private bool _hasResources;
     private int _resourceOffset;
     private int _startCatPos;
     private bool _useAbbreviations;
@@ -1738,9 +1738,8 @@ public partial class V4Game : IGame, IGameDebug
 
         else if (Strings.LCase(Strings.Right(filename, 4)) == ".cas")
         {
-            // TODO: Use GetFileData here
             LogASLError("Loading CAS");
-            LoadCASFile(filename);
+            LoadCASFile(gameData);
             l = Information.UBound(_lines);
         }
 
@@ -2310,12 +2309,13 @@ public partial class V4Game : IGame, IGameDebug
         _lines[numLines] = line;
     }
 
-    private string GetCASFileData(string filename)
+    private string GetCASFileData(Stream stream)
     {
-        return File.ReadAllText(filename, Encoding.GetEncoding(1252));
+        using var reader = new StreamReader(stream, Encoding.GetEncoding(1252));
+        return reader.ReadToEnd();
     }
 
-    private void LoadCASFile(string filename)
+    private void LoadCASFile(GameData gameData)
     {
         var textMode = false;
         var startCat = "";
@@ -2323,7 +2323,7 @@ public partial class V4Game : IGame, IGameDebug
 
         _lines = new string[1];
 
-        var fileData = GetCASFileData(filename);
+        var fileData = GetCASFileData(gameData.Data);
 
         var chkVer = Strings.Left(fileData, 7);
         var casVersion = chkVer switch
@@ -2347,7 +2347,7 @@ public partial class V4Game : IGame, IGameDebug
                 _startCatPos = i;
                 var endCatPos = Strings.InStr(j, fileData, Keyword2CAS("!endcat"));
                 ReadCatalog(Strings.Mid(fileData, j + 1, endCatPos - j - 1));
-                _resourceFile = filename;
+                _hasResources = true;
                 _resourceOffset = endCatPos + 1;
                 i = Strings.Len(fileData);
                 _casFileData = fileData;
@@ -4139,7 +4139,7 @@ public partial class V4Game : IGame, IGameDebug
         var extracted = default(bool);
         var resId = default(int);
 
-        if (string.IsNullOrEmpty(_resourceFile))
+        if (!_hasResources)
         {
             return "";
         }

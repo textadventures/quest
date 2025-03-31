@@ -8047,7 +8047,7 @@ public partial class V4Game
 
     private string GetResourcePath(string filename)
     {
-        if (_resourceFile is not null && _resourceFile.Length > 0)
+        if (_hasResources)
         {
             var extractResult = ExtractFile(filename);
             return extractResult;
@@ -8371,7 +8371,8 @@ public partial class V4Game
 
     private byte[] GetResourcelessCAS()
     {
-        var fileData = File.ReadAllText(_resourceFile, Encoding.GetEncoding(1252));
-        return Encoding.GetEncoding(1252).GetBytes(Strings.Left(fileData, _startCatPos - 1));
+        throw new NotImplementedException();
+        // var fileData = File.ReadAllText(_resourceFile, Encoding.GetEncoding(1252));
+        // return Encoding.GetEncoding(1252).GetBytes(Strings.Left(fileData, _startCatPos - 1));
     }
 }
