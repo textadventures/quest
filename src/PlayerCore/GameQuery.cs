@@ -114,7 +114,7 @@ public class GameQuery(WorldModelFactory worldModelFactory, string filename)
             }
             if (_v5Game != null)
             {
-                return string.IsNullOrEmpty(_v5Game.Cover) ? null : _v5Game.GetResourcePath(_v5Game.Cover);
+                return string.IsNullOrEmpty(_v5Game.Cover) ? null : throw new NotImplementedException();
             }
             throw new InvalidOperationException();
         }

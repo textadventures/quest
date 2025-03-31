@@ -6966,8 +6966,6 @@ public partial class V4Game
 
             r.ResourceStart = resourceStart;
             resourceStart = resourceStart + r.ResourceLength;
-
-            r.Extracted = false;
         }
     }
 
@@ -8045,20 +8043,9 @@ public partial class V4Game
         Cleanup();
     }
 
-    private string GetResourcePath(string filename)
+    private Stream GetResourceStream(string filename)
     {
-        if (_hasResources)
-        {
-            var extractResult = ExtractFile(filename);
-            return extractResult;
-        }
-
-        return Path.Combine(_gamePath, filename);
-    }
-
-    string IGame.GetResourcePath(string filename)
-    {
-        return GetResourcePath(filename);
+        return _hasResources ? ExtractFile(filename) : _gameData.GetAdjacentFile(filename);
     }
 
     private void Cleanup()
@@ -8344,13 +8331,7 @@ public partial class V4Game
             return new MemoryStream(GetResourcelessCAS());
         }
 
-        var path = GetResourcePath(file);
-        if (!File.Exists(path))
-        {
-            return null;
-        }
-
-        return new FileStream(path, FileMode.Open, FileAccess.Read);
+        return GetResourceStream(file);
     }
 
     public string GameID => null;

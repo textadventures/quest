@@ -37,7 +37,6 @@ namespace QuestViva.Common
         
         string? TempFolder { get; set; }
         System.IO.Stream? GetResource(string filename);
-        string GetResourcePath(string filename);
         string GameID { get; }
         IEnumerable<string> GetResourceNames();
     }

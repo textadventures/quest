@@ -1575,11 +1575,6 @@ public partial class WorldModel : IGame, IGameDebug
         return System.Reflection.Assembly.GetExecutingAssembly().GetManifestResourceStream(name);
     }
 
-    public string GetResourcePath(string filename)
-    {
-        throw new NotImplementedException();
-    }
-
     internal RegexCache RegexCache { get; } = new();
 
     public WorldModelVersion Version { get; internal set; }

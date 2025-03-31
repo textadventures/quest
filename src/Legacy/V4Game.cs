@@ -3747,15 +3747,14 @@ public partial class V4Game : IGame, IGameDebug
         SetNumericVariableContents(arrayIndex.Name, value, ctx, arrayIndex.Index);
     }
 
-    private string ExtractFile(string file)
+    private Stream ExtractFile(string file)
     {
-        int length = default, startPos = default;
-        var extracted = default(bool);
-        var resId = default(int);
+        var length = 0;
+        var startPos = 0;
 
         if (!_hasResources)
         {
-            return "";
+            return null;
         }
 
         // Find file in catalog
@@ -3764,15 +3763,15 @@ public partial class V4Game : IGame, IGameDebug
 
         for (int i = 1, loopTo = _numResources; i <= loopTo; i++)
         {
-            if ((Strings.LCase(file) ?? "") == (Strings.LCase(_resources[i].ResourceName) ?? ""))
+            if ((Strings.LCase(file) ?? "") != (Strings.LCase(_resources[i].ResourceName) ?? ""))
             {
-                found = true;
-                startPos = _resources[i].ResourceStart + _resourceOffset;
-                length = _resources[i].ResourceLength;
-                extracted = _resources[i].Extracted;
-                resId = i;
-                break;
+                continue;
             }
+
+            found = true;
+            startPos = _resources[i].ResourceStart + _resourceOffset;
+            length = _resources[i].ResourceLength;
+            break;
         }
 
         if (!found)
@@ -3780,23 +3779,14 @@ public partial class V4Game : IGame, IGameDebug
             LogASLError("Unable to extract '" + file + "' - not present in resources.", LogType.WarningError);
             return null;
         }
-
-        // always lowercase the filename to match the resource name returned by GetResourceNames()
-        var fileName = Path.Combine(TempFolder, file.ToLowerInvariant());
-        Directory.CreateDirectory(Path.GetDirectoryName(fileName));
-
-        if (!extracted)
-        {
-            // Extract file from cached CAS data
-            var fileData = Strings.Mid(_casFileData, startPos, length);
-
-            // Write file to temp dir
-            File.WriteAllText(fileName, fileData, Encoding.GetEncoding(1252));
-
-            _resources[resId].Extracted = true;
-        }
-
-        return fileName;
+        
+        // Extract file from cached CAS data
+        var fileData = Strings.Mid(_casFileData, startPos, length);
+        var encoding = Encoding.GetEncoding(1252);
+        var bytes = encoding.GetBytes(fileData);
+        var stream = new MemoryStream(bytes);
+        
+        return stream;
     }
 
     private void AddObjectAction(int id, string name, string script, bool noUpdate = false)

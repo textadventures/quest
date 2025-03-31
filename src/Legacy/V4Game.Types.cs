@@ -275,7 +275,6 @@ public partial class V4Game
         public string ResourceName;
         public int ResourceStart;
         public int ResourceLength;
-        public bool Extracted;
     }
 
     private class ExpressionResult
