@@ -1581,8 +1581,6 @@ public partial class WorldModel : IGame, IGameDebug
 
     internal string? VersionString { get; set; }
 
-    public string? TempFolder { get; set; }
-
     internal IOutputLogger? OutputLogger { get; private set; }
 
     public int ASLVersion => int.Parse(VersionString!);

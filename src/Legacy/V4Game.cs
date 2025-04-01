@@ -98,7 +98,6 @@ public partial class V4Game : IGame, IGameDebug
     public V4Game(GameData gameData, Stream saveData)
     {
         Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
-        TempFolder = Path.Combine(Path.GetTempPath(), "Quest", Guid.NewGuid().ToString());
         LoadCASKeywords();
         _gameLoadMethod = "normal";
         _gameData = gameData;

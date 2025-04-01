@@ -8039,37 +8039,11 @@ public partial class V4Game
         {
             Monitor.PulseAll(_stateLock);
         }
-
-        Cleanup();
     }
 
     private Stream GetResourceStream(string filename)
     {
         return _hasResources ? ExtractFile(filename) : _gameData.GetAdjacentFile(filename);
-    }
-
-    private void Cleanup()
-    {
-        DeleteDirectory(TempFolder);
-    }
-
-    private void DeleteDirectory(string dir)
-    {
-        if (Directory.Exists(dir))
-        {
-            try
-            {
-                Directory.Delete(dir, true);
-            }
-            catch
-            {
-            }
-        }
-    }
-
-    ~V4Game()
-    {
-        Cleanup();
     }
 
     private string[] GetLibraryLines(string libName)
@@ -8314,13 +8288,9 @@ public partial class V4Game
 
     private string GetUnzippedFile(string filename)
     {
-        string tempDir = null;
-        var result = m_unzipFunction.Invoke(filename, out tempDir);
-        TempFolder = tempDir;
+        var result = m_unzipFunction.Invoke(filename, out _);
         return result;
     }
-
-    public string TempFolder { get; set; }
 
     public int ASLVersion { get; private set; }
 
