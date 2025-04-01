@@ -2759,7 +2759,7 @@ public partial class V4Game
         return true;
     }
 
-    private byte[] SaveGame(string filename, bool saveFile = true)
+    public byte[] Save(string html)
     {
         var ctx = new Context();
         string saveData;
@@ -2776,11 +2776,6 @@ public partial class V4Game
         else
         {
             saveData = MakeRestoreDataV2();
-        }
-
-        if (saveFile)
-        {
-            File.WriteAllText(filename, saveData, Encoding.GetEncoding(1252));
         }
 
         return Encoding.GetEncoding(1252).GetBytes(saveData);
@@ -7929,11 +7924,6 @@ public partial class V4Game
     public event ErrorHandler LogError;
 
     public event PrintTextHandler PrintText;
-
-    public byte[] Save(string html)
-    {
-        return SaveGame(_gameData.Filename, false);
-    }
 
     public void SendCommand(string command)
     {
