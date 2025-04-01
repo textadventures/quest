@@ -1296,11 +1296,8 @@ public partial class V4Game : IGame, IGameDebug
 
     private async Task<bool> ParseFile(GameData gameData)
     {
-        // Returns FALSE if failed.
-
         var libCode = new string[1];
         int l;
-        string libFile;
         string libLine;
         int inDefGameBlock, gameLine = default;
         int inDefSynBlock, synLine = default;
@@ -1395,18 +1392,12 @@ public partial class V4Game : IGame, IGameDebug
                         libFoundThisSweep = true;
                         string[] libResourceLines = null;
                         
-                        // TODO: Open library from adjacent files
+                        LogASLError(" - Searching for " + libFileName + " (game path)", LogType.Init);
 
-                        // libFile = _gamePath + libFileName;
-                        // LogASLError(" - Searching for " + libFile + " (game path)", LogType.Init);
-                        // var libFileHandle = FileSystem.FreeFile();
-                        //
-                        // if (File.Exists(libFile))
-                        // {
-                        //     FileSystem.FileOpen(libFileHandle, libFile, OpenMode.Input);
-                        // }
-                        // else
-                        // {
+                        var libStream = _gameData.GetAdjacentFile(libFileName);
+                        
+                        if (libStream == null)
+                        {
                             // File was not found; try standard Quest libraries (stored here as resources)
                             LogASLError("     - Library not found in game path.", LogType.Init);
                             LogASLError(" - Searching for " + libFileName + " (standard libraries)", LogType.Init);
@@ -1419,27 +1410,27 @@ public partial class V4Game : IGame, IGameDebug
                                                    "' not found." + Constants.vbCrLf;
                                 return false;
                             }
-                        //}
+                        }
 
                         LogASLError("     - Found library, opening...", LogType.Init);
 
                         var libLines = 0;
 
-                        // if (libResourceLines is null)
-                        // {
-                        //     do
-                        //     {
-                        //         libLines = libLines + 1;
-                        //         libLine = FileSystem.LineInput(libFileHandle);
-                        //         libLine = RemoveTabs(libLine);
-                        //         Array.Resize(ref libCode, libLines + 1);
-                        //         libCode[libLines] = Strings.Trim(libLine);
-                        //     } while (!FileSystem.EOF(libFileHandle));
-                        //
-                        //     FileSystem.FileClose(libFileHandle);
-                        // }
-                        // else
-                        // {
+                        if (libResourceLines is null)
+                        {
+                            var libData = await new StreamReader(libStream).ReadToEndAsync();
+                            var libDataLines = libData.Split(["\r\n", "\n", "\r"], StringSplitOptions.None);
+                            
+                            foreach (var line in libDataLines)
+                            {
+                                libLines = libLines + 1;
+                                libLine = RemoveTabs(line);
+                                Array.Resize(ref libCode, libLines + 1);
+                                libCode[libLines] = Strings.Trim(libLine);
+                            }
+                        }
+                        else
+                        {
                             foreach (var resLibLine in libResourceLines)
                             {
                                 libLines = libLines + 1;
@@ -1448,7 +1439,7 @@ public partial class V4Game : IGame, IGameDebug
                                 libLine = RemoveTabs(libLine);
                                 libCode[libLines] = Strings.Trim(libLine);
                             }
-                        // }
+                        }
 
                         var libVer = -1;
 
