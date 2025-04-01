@@ -10,6 +10,8 @@ public class GameQueryTests
     private class Config : IConfig
     {
         public bool UseNCalc => false;
+        public string? HomeFile { get; }
+        public bool DevEnabled { get; }
     }
     
     private GameQuery GetGameQuery(string filename)

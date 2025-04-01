@@ -16,6 +16,7 @@ builder.Services.AddRazorComponents()
         o.MaximumReceiveMessageSize = 1024 * 1024;
     });
 
+builder.Services.Configure<WebPlayerConfig>(builder.Configuration);
 builder.Services.AddSingleton<IConfig, Config>();
 builder.Services.AddSingleton<WorldModelFactory>();
 builder.Services.AddSingleton<GameLauncher>();

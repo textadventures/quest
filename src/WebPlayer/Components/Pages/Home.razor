@@ -1,12 +1,18 @@
 @page "/"
 @using QuestViva.Common
-@inject IConfiguration Configuration
+@inject IConfig Config
 @rendermode InteractiveServer
 
-@if (string.IsNullOrEmpty(Configuration["Home:File"]))
+@if (string.IsNullOrEmpty(Config.HomeFile))
 {
-    <p>No game file has been configured.</p>
-    <p><a href="/dev/open">Open a file</a></p>
+    @if (Config.DevEnabled)
+    {
+        <p><a href="/dev/open">Open a file</a></p>
+    }
+    else
+    {
+        <p>No game file has been configured.</p>
+    }
 }
 else
 {
@@ -16,6 +22,6 @@ else
 @code {
     private IGameDataProvider GetGameDataProvider()
     {
-        return new FileDirectoryGameDataProvider(Configuration["Home:File"]!, $"home");
+        return new FileDirectoryGameDataProvider(Config.HomeFile!, $"home");
     }
 }

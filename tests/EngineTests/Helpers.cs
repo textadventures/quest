@@ -6,6 +6,8 @@ namespace QuestViva.EngineTests;
 internal class Config(bool useNCalc) : IConfig
 {
     public bool UseNCalc => useNCalc;
+    public string HomeFile { get; }
+    public bool DevEnabled { get; }
 }
 
 internal static class Helpers
