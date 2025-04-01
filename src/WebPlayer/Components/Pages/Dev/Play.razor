@@ -1,4 +1,4 @@
-@page "/open/play"
+@page "/dev/play"
 @using QuestViva.Common
 @rendermode InteractiveServer
 
@@ -11,6 +11,6 @@
     
     private IGameDataProvider GetGameDataProvider()
     {
-        return new FileGameDataProvider(Path.Combine(Path.GetTempPath(), File), $"open.play.{File}");
+        return new FileGameDataProvider(Path.Combine(Path.GetTempPath(), File), $"dev.play.{File}");
     }
 }

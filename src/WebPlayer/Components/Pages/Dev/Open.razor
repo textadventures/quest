@@ -1,4 +1,4 @@
-@page "/open"
+@page "/dev/open"
 @inject NavigationManager NavigationManager
 @rendermode InteractiveServer
 
@@ -17,6 +17,6 @@
         await using FileStream fs = new(tempFile, FileMode.Create);
         await e.File.OpenReadStream(maxAllowedSize: 20 * 1024 * 1024).CopyToAsync(fs);
         
-        NavigationManager.NavigateTo("/open/play?file=" + e.File.Name, forceLoad: true);
+        NavigationManager.NavigateTo("/dev/play?file=" + e.File.Name, forceLoad: true);
     }
 }
