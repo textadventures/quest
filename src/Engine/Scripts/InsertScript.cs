@@ -55,8 +55,16 @@ namespace QuestViva.Engine.Scripts
                 // in Player and WebPlayer.
                 if (filename.ToLower() == "frame.htm") return;
             }
-            string path = m_worldModel.GetExternalPath(filename);
-            m_worldModel.PlayerUi.WriteHTML(System.IO.File.ReadAllText(path));
+            
+            var stream = m_worldModel.GetResource(filename);
+            if (stream == null)
+            {
+                return;
+            }
+
+            using var reader = new System.IO.StreamReader(stream);
+            var html = reader.ReadToEnd();
+            m_worldModel.PlayerUi.WriteHTML(html);
         }
 
         public override string Save()

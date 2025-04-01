@@ -1090,11 +1090,6 @@ public partial class WorldModel : IGame, IGameDebug
         throw new Exception("Library file not found: " + filename);
     }
 
-    public string GetExternalPath(string file)
-    {
-        throw new NotImplementedException();
-    }
-
     internal string GetExternalUrl(string file)
     {
         return PlayerUi.GetURL(file);
