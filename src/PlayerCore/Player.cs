@@ -39,7 +39,7 @@ public class Player : IPlayerHelperUI
         PlayerHelper.Game.RequestNextTimerTick += RequestNextTimerTick;
     }
 
-    public async Task Initialise()
+    public async Task<bool> Initialise()
     {
         await JSRuntime.InvokeVoidAsync("WebPlayer.setDotNetHelper",
             DotNetObjectReference.Create(JSInterop));
@@ -52,13 +52,14 @@ public class Player : IPlayerHelperUI
             RegisterExternalStylesheets();
             
             PlayerHelper.Game.Begin();
-            await ClearBuffer();
         }
         else
         {
-            OutputText(string.Join("<br/>", errors));
-            await ClearBuffer();
+            OutputText(string.Join("<br/>", errors) + "<br/>");
         }
+
+        await ClearBuffer();
+        return result;
     }
 
     public Stream? GetResource(string filename)

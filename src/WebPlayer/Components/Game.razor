@@ -84,11 +84,14 @@
         GameResources.AddResourceProvider(GameDataProvider.ResourcesId, Player.GetResource);
         
         await JS.InvokeVoidAsync("WebPlayer.initUI");
-        await Player.Initialise();
-        
-        gameDebug = game as IGameDebug;
-        await JS.InvokeVoidAsync("WebPlayer.setCanDebug", gameDebug != null);
-        StateHasChanged();
+        var result = await Player.Initialise();
+
+        if (result)
+        {
+            gameDebug = game as IGameDebug;
+            await JS.InvokeVoidAsync("WebPlayer.setCanDebug", gameDebug != null);
+            StateHasChanged();
+        }
     }
 
     private async Task LoadGame(int slot)
