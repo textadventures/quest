@@ -1326,7 +1326,7 @@ public partial class V4Game : IGame, IGameDebug
                 // Read file into Lines array
                 var fileData = await GetFileData(gameData);
 
-                var aslLines = fileData.Split('\r');
+                var aslLines = fileData.Split(["\r\n", "\n", "\r"], StringSplitOptions.None);
                 _lines = new string[aslLines.Length + 1];
                 _lines[0] = "";
 
