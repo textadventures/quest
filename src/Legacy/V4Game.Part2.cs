@@ -8277,21 +8277,6 @@ public partial class V4Game
 
     public event Action<int> RequestNextTimerTick;
 
-    public delegate string UnzipFunctionDelegate(string filename, out string tempDir);
-
-    private UnzipFunctionDelegate m_unzipFunction;
-
-    public void SetUnzipFunction(UnzipFunctionDelegate unzipFunction)
-    {
-        m_unzipFunction = unzipFunction;
-    }
-
-    private string GetUnzippedFile(string filename)
-    {
-        var result = m_unzipFunction.Invoke(filename, out _);
-        return result;
-    }
-
     public int ASLVersion { get; private set; }
 
     public Stream GetResource(string file)

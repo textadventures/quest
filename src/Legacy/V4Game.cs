@@ -37,7 +37,6 @@ public partial class V4Game : IGame, IGameDebug
     internal string _currentRoom;
     private Collectable[] _collectables;
     private int _numCollectables;
-    private string _gamePath;
     private string _defaultFontName;
     private double _defaultFontSize;
     private bool _autoIntro;
@@ -1317,48 +1316,38 @@ public partial class V4Game : IGame, IGameDebug
         var filename = gameData.Filename;
 
         _defineBlockParams = new Dictionary<string, Dictionary<string, string>>();
+        
+        var ext = Path.GetExtension(filename).ToLowerInvariant();
 
-        var result = true;
-
-        // Parses file and returns the positions of each main
-        // 'define' block. Supports nested defines.
-        if (Strings.LCase(Strings.Right(filename, 4)) == ".zip")
+        switch (ext)
         {
-            filename = GetUnzippedFile(filename);
-            _gamePath = Path.GetDirectoryName(filename);
-        }
-
-        if ((Strings.LCase(Strings.Right(filename, 4)) == ".asl") |
-            (Strings.LCase(Strings.Right(filename, 4)) == ".txt"))
-        {
-            // Read file into Lines array
-            var fileData = await GetFileData(gameData);
-
-            var aslLines = fileData.Split('\r');
-            _lines = new string[aslLines.Length + 1];
-            _lines[0] = "";
-
-            var loopTo = aslLines.Length;
-            for (l = 1; l <= loopTo; l++)
+            case ".asl":
             {
-                _lines[l] = aslLines[l - 1];
-                _lines[l] = RemoveTabs(_lines[l]);
-                _lines[l] = _lines[l].Trim(' ', '\n', '\r');
+                // Read file into Lines array
+                var fileData = await GetFileData(gameData);
+
+                var aslLines = fileData.Split('\r');
+                _lines = new string[aslLines.Length + 1];
+                _lines[0] = "";
+
+                var loopTo = aslLines.Length;
+                for (l = 1; l <= loopTo; l++)
+                {
+                    _lines[l] = aslLines[l - 1];
+                    _lines[l] = RemoveTabs(_lines[l]);
+                    _lines[l] = _lines[l].Trim(' ', '\n', '\r');
+                }
+
+                l = aslLines.Length;
+                break;
             }
-
-            l = aslLines.Length;
-        }
-
-        else if (Strings.LCase(Strings.Right(filename, 4)) == ".cas")
-        {
-            LogASLError("Loading CAS");
-            LoadCASFile(gameData);
-            l = Information.UBound(_lines);
-        }
-
-        else
-        {
-            throw new InvalidOperationException("Unrecognized file extension");
+            case ".cas":
+                LogASLError("Loading CAS");
+                LoadCASFile(gameData);
+                l = Information.UBound(_lines);
+                break;
+            default:
+                throw new InvalidOperationException("Unrecognized file extension");
         }
 
         // Add libraries to end of code:
@@ -1405,20 +1394,22 @@ public partial class V4Game : IGame, IGameDebug
 
                         libFoundThisSweep = true;
                         string[] libResourceLines = null;
+                        
+                        // TODO: Open library from adjacent files
 
-                        libFile = _gamePath + libFileName;
-                        LogASLError(" - Searching for " + libFile + " (game path)", LogType.Init);
-                        var libFileHandle = FileSystem.FreeFile();
-
-                        if (File.Exists(libFile))
-                        {
-                            FileSystem.FileOpen(libFileHandle, libFile, OpenMode.Input);
-                        }
-                        else
-                        {
+                        // libFile = _gamePath + libFileName;
+                        // LogASLError(" - Searching for " + libFile + " (game path)", LogType.Init);
+                        // var libFileHandle = FileSystem.FreeFile();
+                        //
+                        // if (File.Exists(libFile))
+                        // {
+                        //     FileSystem.FileOpen(libFileHandle, libFile, OpenMode.Input);
+                        // }
+                        // else
+                        // {
                             // File was not found; try standard Quest libraries (stored here as resources)
                             LogASLError("     - Library not found in game path.", LogType.Init);
-                            LogASLError(" - Searching for " + libFile + " (standard libraries)", LogType.Init);
+                            LogASLError(" - Searching for " + libFileName + " (standard libraries)", LogType.Init);
                             libResourceLines = GetLibraryLines(libFileName);
 
                             if (libResourceLines is null)
@@ -1428,27 +1419,27 @@ public partial class V4Game : IGame, IGameDebug
                                                    "' not found." + Constants.vbCrLf;
                                 return false;
                             }
-                        }
+                        //}
 
                         LogASLError("     - Found library, opening...", LogType.Init);
 
                         var libLines = 0;
 
-                        if (libResourceLines is null)
-                        {
-                            do
-                            {
-                                libLines = libLines + 1;
-                                libLine = FileSystem.LineInput(libFileHandle);
-                                libLine = RemoveTabs(libLine);
-                                Array.Resize(ref libCode, libLines + 1);
-                                libCode[libLines] = Strings.Trim(libLine);
-                            } while (!FileSystem.EOF(libFileHandle));
-
-                            FileSystem.FileClose(libFileHandle);
-                        }
-                        else
-                        {
+                        // if (libResourceLines is null)
+                        // {
+                        //     do
+                        //     {
+                        //         libLines = libLines + 1;
+                        //         libLine = FileSystem.LineInput(libFileHandle);
+                        //         libLine = RemoveTabs(libLine);
+                        //         Array.Resize(ref libCode, libLines + 1);
+                        //         libCode[libLines] = Strings.Trim(libLine);
+                        //     } while (!FileSystem.EOF(libFileHandle));
+                        //
+                        //     FileSystem.FileClose(libFileHandle);
+                        // }
+                        // else
+                        // {
                             foreach (var resLibLine in libResourceLines)
                             {
                                 libLines = libLines + 1;
@@ -1457,7 +1448,7 @@ public partial class V4Game : IGame, IGameDebug
                                 libLine = RemoveTabs(libLine);
                                 libCode[libLines] = Strings.Trim(libLine);
                             }
-                        }
+                        // }
 
                         var libVer = -1;
 
@@ -1827,7 +1818,7 @@ public partial class V4Game : IGame, IGameDebug
             throw new InvalidOperationException("Errors found in game file.");
         }
 
-        return result;
+        return true;
     }
 
     internal void LogASLError(string err, LogType type = LogType.Misc)
