@@ -317,8 +317,7 @@ public class Player : IPlayerHelperUI
 
     void IPlayer.RequestSave(string html)
     {
-        // TODO
-        throw new NotImplementedException();
+        AddJavaScriptToBuffer("saveGame");
     }
 
     void IPlayer.Show(string element)
