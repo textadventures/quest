@@ -42,7 +42,7 @@
 
 @code {
     [Parameter] public required IGameDataProvider GameDataProvider { get; set; }
-    [Parameter] public required IResourceProvider ResourceProvider { get; set; }
+    [Parameter] public required IResourceUrlProvider ResourceUrlProvider { get; set; }
     private static MarkupString UiHtml => (MarkupString) PlayerHelper.GetUiResourceString("playercore.htm");
     private Player? Player { get; set; } = null;
     private GameData? gameData;
@@ -81,12 +81,10 @@
         
         if (game == null) return;
         
-        Player = new Player(game, ResourceProvider, JS);
-        if (ResourceProvider is LocalResourceProvider localResourceProvider)
+        Player = new Player(game, ResourceUrlProvider, JS);
+        if (ResourceUrlProvider is LocalResourceUrlProvider localResourceProvider)
         {
-            // TODO: Fix naming here, we're using "resource provider" to mean both something that gets the URL of a 
-            // resource and something that gets the resource stream itself.
-            LocalResources.AddResourceProvider(localResourceProvider.ResourcesId, Player.GetResource);
+            LocalResources.AddResourceStreamProvider(localResourceProvider.ResourcesId, Player.GetResourceStream);
         }
         
         await JS.InvokeVoidAsync("WebPlayer.initUI");

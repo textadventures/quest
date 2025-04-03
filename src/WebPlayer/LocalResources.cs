@@ -4,19 +4,19 @@ namespace QuestViva.WebPlayer;
 
 public static class LocalResources
 {
-    private static readonly Dictionary<string, Func<string, Stream?>> ResourceProviders = new();
+    private static readonly Dictionary<string, Func<string, Stream?>> ResourceStreamProviders = new();
 
-    public static void AddResourceProvider(string resourcesId, Func<string, Stream?> resourceProvider)
+    public static void AddResourceStreamProvider(string resourcesId, Func<string, Stream?> resourceStreamProvider)
     {
-        ResourceProviders.TryAdd(resourcesId, resourceProvider);
+        ResourceStreamProviders.TryAdd(resourcesId, resourceStreamProvider);
     }
     
     public static IResult GetResource(string resourcesId, string name)
     {
-        if (!ResourceProviders.TryGetValue(resourcesId, out var resourceProvider))
+        if (!ResourceStreamProviders.TryGetValue(resourcesId, out var resourceStreamProvider))
             return Results.StatusCode(StatusCodes.Status404NotFound);
         
-        var stream = resourceProvider(name);
+        var stream = resourceStreamProvider(name);
         if (stream == null) return Results.StatusCode(StatusCodes.Status404NotFound);
     
         new FileExtensionContentTypeProvider().TryGetContentType(name, out var contentType);

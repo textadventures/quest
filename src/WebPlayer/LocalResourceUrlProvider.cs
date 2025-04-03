@@ -3,7 +3,7 @@ using QuestViva.PlayerCore;
 
 namespace QuestViva.WebPlayer;
 
-public class LocalResourceProvider(string resourcesId) : IResourceProvider
+public class LocalResourceUrlProvider(string resourcesId) : IResourceUrlProvider
 {
     public string GetUrl(string file)
     {

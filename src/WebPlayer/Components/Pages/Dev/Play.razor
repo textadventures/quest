@@ -4,7 +4,7 @@
 @using QuestViva.PlayerCore
 @rendermode InteractiveServer
 
-<Game GameDataProvider="@GetGameDataProvider()" ResourceProvider="@GetResourceProvider()"></Game>
+<Game GameDataProvider="@GetGameDataProvider()" ResourceUrlProvider="@GetResourceUrlProvider()"></Game>
 
 @code {
     [Parameter]
@@ -16,8 +16,8 @@
         return new FileGameDataProvider(Path.Combine(Path.GetTempPath(), File));
     }
     
-    private IResourceProvider GetResourceProvider()
+    private IResourceUrlProvider GetResourceUrlProvider()
     {
-        return new LocalResourceProvider($"dev.play.{File}");
+        return new LocalResourceUrlProvider($"dev.play.{File}");
     }
 }

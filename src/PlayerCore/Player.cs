@@ -16,13 +16,13 @@ public class Player : IPlayerHelperUI
     private ListHandler ListHandler { get; }
     private List<(string, object?[]?)> JavaScriptBuffer { get; } = [];
     private bool Finished { get; set; } = false;
-    private IResourceProvider ResourceProvider { get; }
+    private IResourceUrlProvider ResourceUrlProvider { get; }
     public IJSRuntime JSRuntime { get; }
     public BlazorJSInterop JSInterop { get; }
 
-    public Player(IGame game, IResourceProvider resourceProvider, IJSRuntime jsRuntime)
+    public Player(IGame game, IResourceUrlProvider resourceUrlProvider, IJSRuntime jsRuntime)
     {
-        ResourceProvider = resourceProvider;
+        ResourceUrlProvider = resourceUrlProvider;
         JSRuntime = jsRuntime;
         ListHandler = new ListHandler(AddJavaScriptToBuffer);
         JSInterop = new BlazorJSInterop(this);
@@ -62,7 +62,7 @@ public class Player : IPlayerHelperUI
         return result;
     }
 
-    public Stream? GetResource(string filename)
+    public Stream? GetResourceStream(string filename)
     {
         return PlayerHelper.Game.GetResourceStream(filename);
     }
@@ -235,7 +235,7 @@ public class Player : IPlayerHelperUI
         var resource = PlayerHelper.Game.GetResourceNames()
             .FirstOrDefault(n => string.Equals(n, file, StringComparison.InvariantCultureIgnoreCase));
         
-        return ResourceProvider.GetUrl(resource ?? file);
+        return ResourceUrlProvider.GetUrl(resource ?? file);
     }
 
     void IPlayer.LocationUpdated(string location)
