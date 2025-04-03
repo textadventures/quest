@@ -1545,7 +1545,7 @@ public partial class WorldModel : IGame, IGameDebug
         }
     }
 
-    public Stream? GetResource(string filename)
+    public Stream? GetResourceStream(string filename)
     {
         return ResourceGetter != null
             ? ResourceGetter.Invoke(filename)
@@ -1554,7 +1554,7 @@ public partial class WorldModel : IGame, IGameDebug
 
     public string? GetResourceData(string filename)
     {
-        var stream = GetResource(filename);
+        var stream = GetResourceStream(filename);
         if (stream == null) return null;
         using var reader = new StreamReader(stream);
         return reader.ReadToEnd();

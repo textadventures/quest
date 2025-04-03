@@ -64,7 +64,7 @@ public class Player : IPlayerHelperUI
 
     public Stream? GetResource(string filename)
     {
-        return PlayerHelper.Game.GetResource(filename);
+        return PlayerHelper.Game.GetResourceStream(filename);
     }
     
     private void AddJavaScriptToBuffer(string identifier, params object?[]? args)

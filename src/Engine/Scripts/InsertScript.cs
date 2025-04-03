@@ -56,7 +56,7 @@ namespace QuestViva.Engine.Scripts
                 if (filename.ToLower() == "frame.htm") return;
             }
             
-            var stream = m_worldModel.GetResource(filename);
+            var stream = m_worldModel.GetResourceStream(filename);
             if (stream == null)
             {
                 return;

@@ -126,7 +126,7 @@ public class GameQuery(WorldModelFactory worldModelFactory, string filename)
 
     public Stream GetResource(string resourceName)
     {
-        return _game.GetResource(resourceName);
+        return _game.GetResourceStream(resourceName);
     }
 
     private class GameQueryUi : IPlayerHelperUI

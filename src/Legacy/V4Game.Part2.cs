@@ -8031,7 +8031,7 @@ public partial class V4Game
         }
     }
 
-    private Stream GetResourceStream(string filename)
+    private Stream GetResourceStreamInternal(string filename)
     {
         return _hasResources ? ExtractFile(filename) : _gameData.GetAdjacentFile(filename);
     }
@@ -8269,14 +8269,14 @@ public partial class V4Game
 
     public int ASLVersion { get; private set; }
 
-    public Stream GetResource(string file)
+    public Stream GetResourceStream(string file)
     {
         if (file == "_game.cas")
         {
             return new MemoryStream(GetResourcelessCAS());
         }
 
-        return GetResourceStream(file);
+        return GetResourceStreamInternal(file);
     }
 
     public string GameID => null;

@@ -35,7 +35,7 @@ namespace QuestViva.Common
         IEnumerable<string>? GetExternalScripts();
         IEnumerable<string> GetExternalStylesheets();
         
-        System.IO.Stream? GetResource(string filename);
+        System.IO.Stream? GetResourceStream(string filename);
         string GameID { get; }
         IEnumerable<string> GetResourceNames();
     }
