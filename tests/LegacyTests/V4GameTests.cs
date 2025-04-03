@@ -13,7 +13,7 @@ namespace QuestViva.LegacyTests
         public async Task Init()
         {
             var filename = Path.Combine(["..", "..", "..", "test1.asl"]);
-            var gameDataProvider = new FileGameDataProvider(filename, new DummyResourceProvider());
+            var gameDataProvider = new FileGameDataProvider(filename);
             var gameData = await gameDataProvider.GetData();
             m_game = new V4Game(gameData, null);
             m_game.PrintText += m_player.PrintText;

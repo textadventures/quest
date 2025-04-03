@@ -1,5 +1,6 @@
 @page "/"
 @using QuestViva.Common
+@using QuestViva.PlayerCore
 @inject IConfig Config
 @rendermode InteractiveServer
 
@@ -16,12 +17,17 @@
 }
 else
 {
-    <Game GameDataProvider="@GetGameDataProvider()"></Game>
+    <Game GameDataProvider="@GetGameDataProvider()" ResourceProvider="@GetResourceProvider()"></Game>
 }
 
 @code {
     private IGameDataProvider GetGameDataProvider()
     {
-        return new FileDirectoryGameDataProvider(Config.HomeFile!, new LocalResourceProvider("home"));
+        return new FileDirectoryGameDataProvider(Config.HomeFile!);
+    }
+    
+    private IResourceProvider GetResourceProvider()
+    {
+        return new LocalResourceProvider("home");
     }
 }

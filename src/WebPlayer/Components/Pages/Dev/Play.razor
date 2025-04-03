@@ -1,9 +1,10 @@
 @page "/dev/play"
 @attribute [RequiresConfig("Dev:Enabled")]
 @using QuestViva.Common
+@using QuestViva.PlayerCore
 @rendermode InteractiveServer
 
-<Game GameDataProvider="@GetGameDataProvider()"></Game>
+<Game GameDataProvider="@GetGameDataProvider()" ResourceProvider="@GetResourceProvider()"></Game>
 
 @code {
     [Parameter]
@@ -12,6 +13,11 @@
     
     private IGameDataProvider GetGameDataProvider()
     {
-        return new FileGameDataProvider(Path.Combine(Path.GetTempPath(), File), new LocalResourceProvider($"dev.play.{File}"));
+        return new FileGameDataProvider(Path.Combine(Path.GetTempPath(), File));
+    }
+    
+    private IResourceProvider GetResourceProvider()
+    {
+        return new LocalResourceProvider($"dev.play.{File}");
     }
 }

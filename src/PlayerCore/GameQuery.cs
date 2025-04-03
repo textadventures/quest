@@ -19,7 +19,7 @@ public class GameQuery(WorldModelFactory worldModelFactory, string filename)
 
     public async Task<bool> Initialise()
     {
-        var gameDataProvider = new FileGameDataProvider(filename, new DummyResourceProvider());
+        var gameDataProvider = new FileGameDataProvider(filename);
         var gameData = await gameDataProvider.GetData();
 
         if (gameData == null)

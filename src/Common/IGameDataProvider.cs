@@ -15,7 +15,5 @@ public interface IGameDataProvider
 {
     Task<GameData?> GetData();
     
-    IResourceProvider ResourceProvider { get; }
-    
     public Stream? GetAdjacentFile(string _) => null;
 }

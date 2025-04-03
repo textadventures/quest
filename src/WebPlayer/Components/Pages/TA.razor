@@ -1,9 +1,10 @@
 @page "/textadventures/{Id}"
 @attribute [RequiresConfig("textadventures:Enabled")]
 @using QuestViva.Common
+@using QuestViva.PlayerCore
 @rendermode InteractiveServer
 
-<Game GameDataProvider="@GetGameDataProvider()"></Game>
+<Game GameDataProvider="@GetGameDataProvider()" ResourceProvider="@GetResourceProvider()"></Game>
 
 @code {
     [Parameter] public required string Id { get; set; }
@@ -11,6 +12,11 @@
     
     private IGameDataProvider GetGameDataProvider()
     {
-        return new UrlGameDataProvider(HttpClient, "http://textadventures.co.uk/games/download/" + Id, new LocalResourceProvider($"textadventures.{Id}"));
+        return new UrlGameDataProvider(HttpClient, "http://textadventures.co.uk/games/download/" + Id);
+    }
+
+    private IResourceProvider GetResourceProvider()
+    {
+        return new LocalResourceProvider($"textadventures.{Id}");
     }
 }

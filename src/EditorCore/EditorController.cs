@@ -332,7 +332,7 @@ namespace QuestViva.EditorCore
             m_lastelementscutout = false;
             m_filename = filename;
             // TODO: ResourceProvider is probably not relevant here?
-            var gameDataProvider = new FileGameDataProvider(filename, new DummyResourceProvider());
+            var gameDataProvider = new FileGameDataProvider(filename);
             var gameData = await gameDataProvider.GetData();
             m_worldModel = new WorldModel(config, gameData, null);
             m_scriptFactory = new ScriptFactory(m_worldModel);
