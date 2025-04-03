@@ -17,7 +17,8 @@ builder.Services.AddRazorComponents()
     });
 
 builder.Services.Configure<WebPlayerConfig>(builder.Configuration);
-builder.Services.AddSingleton<IConfig, Config>();
+builder.Services.AddSingleton<Config>();
+builder.Services.AddSingleton<IConfig>(sp => sp.GetRequiredService<Config>());
 builder.Services.AddSingleton<WorldModelFactory>();
 builder.Services.AddSingleton<GameLauncher>();
 

@@ -3,12 +3,20 @@
 @using QuestViva.Common
 @using QuestViva.PlayerCore
 @rendermode InteractiveServer
+@inject HttpClient HttpClient
+@inject Config Config
 
-<Game GameDataProvider="@GetGameDataProvider()" ResourceUrlProvider="@GetResourceUrlProvider()"></Game>
+@if (Config.TextAdventuresRemoteResources)
+{
+    <p>To do...</p>
+}
+else
+{
+    <Game GameDataProvider="@GetGameDataProvider()" ResourceUrlProvider="@GetResourceUrlProvider()"></Game>
+}
 
 @code {
     [Parameter] public required string Id { get; set; }
-    [Inject] private HttpClient HttpClient { get; set; } = null!;
     
     private IGameDataProvider GetGameDataProvider()
     {
