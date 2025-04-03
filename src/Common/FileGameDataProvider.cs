@@ -3,7 +3,7 @@ using System.Threading.Tasks;
 
 namespace QuestViva.Common;
 
-public class FileGameDataProvider(string filename, string resourcesId): IGameDataProvider
+public class FileGameDataProvider(string filename, IResourceProvider resourceProvider): IGameDataProvider
 {
     public Task<GameData?> GetData()
     {
@@ -12,12 +12,12 @@ public class FileGameDataProvider(string filename, string resourcesId): IGameDat
         return Task.FromResult<GameData?>(new GameData(stream, gameId, filename, this));
     }
 
-    public string ResourcesId => resourcesId;
+    public IResourceProvider ResourceProvider => resourceProvider;
 
     public virtual Stream? GetAdjacentFile(string adjacentFilename) => null;
 }
 
-public class FileDirectoryGameDataProvider(string filename, string resourcesId): FileGameDataProvider(filename, resourcesId)
+public class FileDirectoryGameDataProvider(string filename, IResourceProvider resourceProvider): FileGameDataProvider(filename, resourceProvider)
 {
     private readonly string? _parentDirectory = Path.GetDirectoryName(filename);
 

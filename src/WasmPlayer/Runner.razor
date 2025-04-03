@@ -17,10 +17,10 @@
         var game = GameLauncher.GetGame(gameData, null);
         if (game == null) return;
         
-        Player = new QuestViva.PlayerCore.Player(game, GameDataProvider.ResourcesId, JS);
-        
-        GameResources.AddResourceProvider(GameDataProvider.ResourcesId, Player.GetResource);
-
-        await Player.Initialise();
+        // Player = new QuestViva.PlayerCore.Player(game, GameDataProvider.ResourcesId, JS);
+        //
+        // GameResources.AddResourceProvider(GameDataProvider.ResourcesId, Player.GetResource);
+        //
+        // await Player.Initialise();
     }
 }

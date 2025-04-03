@@ -2,7 +2,7 @@ using Microsoft.AspNetCore.StaticFiles;
 
 namespace QuestViva.WebPlayer;
 
-public static class GameResources
+public static class LocalResources
 {
     private static readonly Dictionary<string, Func<string, Stream?>> ResourceProviders = new();
 

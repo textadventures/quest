@@ -10,7 +10,7 @@ namespace QuestViva.EngineTests
         [TestMethod]
         public async Task RunWalkthrough()
         {
-            var gameDataProvider = new FileGameDataProvider(Path.Combine("..", "..", "..", "walkthrough.aslx"), "test");
+            var gameDataProvider = new FileGameDataProvider(Path.Combine("..", "..", "..", "walkthrough.aslx"), new DummyResourceProvider());
             var gameData = await gameDataProvider.GetData();
             var worldModel = Helpers.CreateWorldModel(gameData);
 

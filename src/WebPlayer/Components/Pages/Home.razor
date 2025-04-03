@@ -22,6 +22,6 @@ else
 @code {
     private IGameDataProvider GetGameDataProvider()
     {
-        return new FileDirectoryGameDataProvider(Config.HomeFile!, $"home");
+        return new FileDirectoryGameDataProvider(Config.HomeFile!, new LocalResourceProvider("home"));
     }
 }

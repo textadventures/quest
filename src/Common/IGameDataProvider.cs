@@ -15,11 +15,7 @@ public interface IGameDataProvider
 {
     Task<GameData?> GetData();
     
-    /// <summary>
-    /// A unique id to be used when fetching resources for this game. Different instances of the same game can
-    /// share a ResourcesId.
-    /// </summary>
-    string ResourcesId { get; }
+    IResourceProvider ResourceProvider { get; }
     
     public Stream? GetAdjacentFile(string _) => null;
 }

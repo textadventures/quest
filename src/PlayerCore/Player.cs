@@ -16,13 +16,13 @@ public class Player : IPlayerHelperUI
     private ListHandler ListHandler { get; }
     private List<(string, object?[]?)> JavaScriptBuffer { get; } = [];
     private bool Finished { get; set; } = false;
-    private string ResourcesId { get; }
+    private IResourceProvider ResourceProvider { get; }
     public IJSRuntime JSRuntime { get; }
     public BlazorJSInterop JSInterop { get; }
 
-    public Player(IGame game, string resourcesId, IJSRuntime jsRuntime)
+    public Player(IGame game, IResourceProvider resourceProvider, IJSRuntime jsRuntime)
     {
-        ResourcesId = resourcesId;
+        ResourceProvider = resourceProvider;
         JSRuntime = jsRuntime;
         ListHandler = new ListHandler(AddJavaScriptToBuffer);
         JSInterop = new BlazorJSInterop(this);
@@ -230,11 +230,12 @@ public class Player : IPlayerHelperUI
     
     string GetURL(string file)
     {
+        // TODO: Is this only relevant for the local resource provider? If so move the logic there.
         // We might be running on a case-sensitive file system, so look up the correct casing
         var resource = PlayerHelper.Game.GetResourceNames()
             .FirstOrDefault(n => string.Equals(n, file, StringComparison.InvariantCultureIgnoreCase));
         
-        return $"/game/{ResourcesId}/{resource ?? file}";
+        return ResourceProvider.GetUrl(resource ?? file);
     }
 
     void IPlayer.LocationUpdated(string location)

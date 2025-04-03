@@ -80,8 +80,13 @@
         
         if (game == null) return;
         
-        Player = new Player(game, GameDataProvider.ResourcesId, JS);
-        GameResources.AddResourceProvider(GameDataProvider.ResourcesId, Player.GetResource);
+        Player = new Player(game, GameDataProvider.ResourceProvider, JS);
+        if (GameDataProvider.ResourceProvider is LocalResourceProvider localResourceProvider)
+        {
+            // TODO: Fix naming here, we're using "resource provider" to mean both something that gets the URL of a 
+            // resource and something that gets the resource stream itself.
+            LocalResources.AddResourceProvider(localResourceProvider.ResourcesId, Player.GetResource);
+        }
         
         await JS.InvokeVoidAsync("WebPlayer.initUI");
         var result = await Player.Initialise();

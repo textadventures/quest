@@ -11,7 +11,7 @@ namespace QuestViva.EngineTests
         [TestMethod]
         public async Task RunWalkthrough()
         {
-            var gameDataProvider = new FileGameDataProvider("savetest.aslx", "test");
+            var gameDataProvider = new FileGameDataProvider("savetest.aslx", new DummyResourceProvider());
             var gameData = await gameDataProvider.GetData();
             var worldModel = Helpers.CreateWorldModel(gameData);
 
@@ -29,7 +29,7 @@ namespace QuestViva.EngineTests
             var saveData = worldModel.Save(SaveMode.SavedGame, html: null);
             await File.WriteAllTextAsync(tempFilename, saveData);
 
-            var gameDataProvider2 = new FileGameDataProvider(tempFilename, "test");
+            var gameDataProvider2 = new FileGameDataProvider(tempFilename, new DummyResourceProvider());
             var gameData2 = await gameDataProvider2.GetData();
             var savedGameWorldModel = Helpers.CreateWorldModel(gameData2);
             success = await savedGameWorldModel.Initialise(player.Object);
