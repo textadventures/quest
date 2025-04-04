@@ -48,7 +48,7 @@ public class Player : IPlayerHelperUI
 
         if (result)
         {
-            RegisterExternalScripts();
+            await RegisterExternalScripts();
             RegisterExternalStylesheets();
             
             PlayerHelper.Game.Begin();
@@ -386,7 +386,7 @@ public class Player : IPlayerHelperUI
         OutputText(text);
     }
     
-    private void RegisterExternalScripts()
+    private async Task RegisterExternalScripts()
     {
         var scripts = PlayerHelper.Game.GetExternalScripts();
         if (scripts == null) return;
@@ -394,7 +394,7 @@ public class Player : IPlayerHelperUI
         foreach (var script in scripts)
         {
             var url = GetURL(script);
-            AddJavaScriptToBuffer("addExternalScript", url);
+            await JSRuntime.InvokeVoidAsync("addExternalScript", url);
         }
     }
 
