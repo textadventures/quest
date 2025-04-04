@@ -8,393 +8,7 @@ namespace QuestViva.Legacy;
 
 public partial class V4Game : IGame, IGameDebug
 {
-    public enum State
-    {
-        Ready, // game is not doing any processing, and is ready for a command
-        Working, // game is processing a command
-        Waiting, // while processing a command, game has encountered e.g. an "enter" script, and is awaiting further input
-        Finished // game is over
-    }
-
-    private class DefineBlock
-    {
-        public int StartLine;
-        public int EndLine;
-    }
-
-    internal class Context
-    {
-        public int CallingObjectId;
-        public int NumParameters;
-        public string[] Parameters;
-        public string FunctionReturnValue;
-        public bool AllowRealNamesInCommand;
-        public bool DontProcessCommand;
-        public bool CancelExec;
-        public int StackCounter;
-    }
-
-    private Context CopyContext(Context ctx)
-    {
-        var result = new Context();
-        result.CallingObjectId = ctx.CallingObjectId;
-        result.NumParameters = ctx.NumParameters;
-        result.Parameters = ctx.Parameters;
-        result.FunctionReturnValue = ctx.FunctionReturnValue;
-        result.AllowRealNamesInCommand = ctx.AllowRealNamesInCommand;
-        result.DontProcessCommand = ctx.DontProcessCommand;
-        result.CancelExec = ctx.CancelExec;
-        result.StackCounter = ctx.StackCounter;
-        return result;
-    }
-
-    internal enum LogType
-    {
-        Misc,
-        FatalError,
-        WarningError,
-        Init,
-        LibraryWarningError,
-        Warning,
-        UserError,
-        InternalError
-    }
-
     private Dictionary<string, Dictionary<string, string>> _defineBlockParams;
-
-    internal enum Direction
-    {
-        None = -1,
-        Out = 0,
-        North = 1,
-        South = 2,
-        East = 3,
-        West = 4,
-        NorthWest = 5,
-        NorthEast = 6,
-        SouthWest = 7,
-        SouthEast = 8,
-        Up = 9,
-        Down = 10
-    }
-
-    private class ItemType
-    {
-        public string Name;
-        public bool Got;
-    }
-
-    private class Collectable
-    {
-        public string Name;
-        public string Type;
-        public double Value;
-        public string Display;
-        public bool DisplayWhenZero;
-    }
-
-    internal class PropertyType
-    {
-        public string PropertyName;
-        public string PropertyValue;
-    }
-
-    internal class ActionType
-    {
-        public string ActionName;
-        public string Script;
-    }
-
-    internal class UseDataType
-    {
-        public string UseObject;
-        public UseType UseType;
-        public string UseScript;
-    }
-
-    internal class GiveDataType
-    {
-        public string GiveObject;
-        public GiveType GiveType;
-        public string GiveScript;
-    }
-
-    private class PropertiesActions
-    {
-        public string Properties;
-        public int NumberActions;
-        public ActionType[] Actions;
-        public int NumberTypesIncluded;
-        public string[] TypesIncluded;
-    }
-
-    private class VariableType
-    {
-        public string VariableName;
-        public string[] VariableContents;
-        public int VariableUBound;
-        public string DisplayString;
-        public string OnChangeScript;
-        public bool NoZeroDisplay;
-    }
-
-    private class SynonymType
-    {
-        public string OriginalWord;
-        public string ConvertTo;
-    }
-
-    private class TimerType
-    {
-        public string TimerName;
-        public int TimerInterval;
-        public bool TimerActive;
-        public string TimerAction;
-        public int TimerTicks;
-        public bool BypassThisTurn;
-    }
-
-    internal class UserDefinedCommandType
-    {
-        public string CommandText;
-        public string CommandScript;
-    }
-
-    internal class TextAction
-    {
-        public string Data;
-        public TextActionType Type;
-    }
-
-    internal enum TextActionType
-    {
-        Text,
-        Script,
-        Nothing,
-        Default
-    }
-
-    internal class ScriptText
-    {
-        public string Text;
-        public string Script;
-    }
-
-    internal class PlaceType
-    {
-        public string PlaceName;
-        public string Prefix;
-        public string Script;
-    }
-
-    internal class RoomType
-    {
-        public string RoomName;
-        public string RoomAlias;
-        public UserDefinedCommandType[] Commands;
-        public int NumberCommands;
-        public TextAction Description = new();
-        public ScriptText Out = new();
-        public TextAction East = new();
-        public TextAction West = new();
-        public TextAction North = new();
-        public TextAction South = new();
-        public TextAction NorthEast = new();
-        public TextAction NorthWest = new();
-        public TextAction SouthEast = new();
-        public TextAction SouthWest = new();
-        public TextAction Up = new();
-        public TextAction Down = new();
-        public string InDescription;
-        public string Look;
-        public PlaceType[] Places;
-        public int NumberPlaces;
-        public string Prefix;
-        public string Script;
-        public ScriptText[] Use;
-        public int NumberUse;
-        public int ObjId;
-        public string BeforeTurnScript;
-        public string AfterTurnScript;
-        public RoomExits Exits;
-    }
-
-    internal class ObjectType
-    {
-        public string ObjectName;
-        public string ObjectAlias;
-        public string Detail;
-        public string ContainerRoom;
-        public bool Exists;
-        public string Prefix;
-        public string Suffix;
-        public string Gender;
-        public string Article;
-        public int DefinitionSectionStart;
-        public int DefinitionSectionEnd;
-        public bool Visible;
-        public string GainScript;
-        public string LoseScript;
-        public int NumberProperties;
-        public PropertyType[] Properties;
-        public TextAction Speak = new();
-        public TextAction Take = new();
-        public bool IsRoom;
-        public bool IsExit;
-        public string CorresRoom;
-        public int CorresRoomId;
-        public bool Loaded;
-        public int NumberActions;
-        public ActionType[] Actions;
-        public int NumberUseData;
-        public UseDataType[] UseData;
-        public string UseAnything;
-        public string UseOnAnything;
-        public string Use;
-        public int NumberGiveData;
-        public GiveDataType[] GiveData;
-        public string GiveAnything;
-        public string GiveToAnything;
-        public string DisplayType;
-        public int NumberTypesIncluded;
-        public string[] TypesIncluded;
-        public int NumberAltNames;
-        public string[] AltNames;
-        public TextAction AddScript = new();
-        public TextAction RemoveScript = new();
-        public TextAction OpenScript = new();
-        public TextAction CloseScript = new();
-    }
-
-    private class ChangeType
-    {
-        public string AppliesTo;
-        public string Change;
-    }
-
-    private class GameChangeDataType
-    {
-        public int NumberChanges;
-        public ChangeType[] ChangeData;
-    }
-
-    private class ResourceType
-    {
-        public string ResourceName;
-        public int ResourceStart;
-        public int ResourceLength;
-        public bool Extracted;
-    }
-
-    private class ExpressionResult
-    {
-        public string Result;
-        public ExpressionSuccess Success;
-        public string Message;
-    }
-
-    internal enum PlayerError
-    {
-        BadCommand,
-        BadGo,
-        BadGive,
-        BadCharacter,
-        NoItem,
-        ItemUnwanted,
-        BadLook,
-        BadThing,
-        DefaultLook,
-        DefaultSpeak,
-        BadItem,
-        DefaultTake,
-        BadUse,
-        DefaultUse,
-        DefaultOut,
-        BadPlace,
-        BadExamine,
-        DefaultExamine,
-        BadTake,
-        CantDrop,
-        DefaultDrop,
-        BadDrop,
-        BadPronoun,
-        AlreadyOpen,
-        AlreadyClosed,
-        CantOpen,
-        CantClose,
-        DefaultOpen,
-        DefaultClose,
-        BadPut,
-        CantPut,
-        DefaultPut,
-        CantRemove,
-        AlreadyPut,
-        DefaultRemove,
-        Locked,
-        DefaultWait,
-        AlreadyTaken
-    }
-
-    private enum ItType
-    {
-        Inanimate,
-        Male,
-        Female
-    }
-
-    private enum SetResult
-    {
-        Error,
-        Found,
-        Unfound
-    }
-
-    private enum Thing
-    {
-        Character,
-        Object,
-        Room
-    }
-
-    private enum ConvertType
-    {
-        Strings,
-        Functions,
-        Numeric,
-        Collectables
-    }
-
-    internal enum UseType
-    {
-        UseOnSomething,
-        UseSomethingOn
-    }
-
-    internal enum GiveType
-    {
-        GiveToSomething,
-        GiveSomethingTo
-    }
-
-    private enum VarType
-    {
-        String,
-        Numeric
-    }
-
-    private enum StopType
-    {
-        Win,
-        Lose,
-        Null
-    }
-
-    private enum ExpressionSuccess
-    {
-        OK,
-        Fail
-    }
-
     private string _openErrorReport;
     private readonly string[] _casKeywords = new string[256]; // Tokenised CAS keywords
     private string[] _lines; // Stores the lines of the ASL script/definitions
@@ -423,7 +37,6 @@ public partial class V4Game : IGame, IGameDebug
     internal string _currentRoom;
     private Collectable[] _collectables;
     private int _numCollectables;
-    private string _gamePath;
     private string _defaultFontName;
     private double _defaultFontSize;
     private bool _autoIntro;
@@ -448,7 +61,7 @@ public partial class V4Game : IGame, IGameDebug
     private string _badCmdAfter;
     private int _numResources;
     private ResourceType[] _resources;
-    private string _resourceFile;
+    private bool _hasResources;
     private int _resourceOffset;
     private int _startCatPos;
     private bool _useAbbreviations;
@@ -484,7 +97,6 @@ public partial class V4Game : IGame, IGameDebug
     public V4Game(GameData gameData, Stream saveData)
     {
         Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
-        TempFolder = Path.Combine(Path.GetTempPath(), "Quest", Guid.NewGuid().ToString());
         LoadCASKeywords();
         _gameLoadMethod = "normal";
         _gameData = gameData;
@@ -1684,80 +1296,52 @@ public partial class V4Game : IGame, IGameDebug
 
     private async Task<bool> ParseFile(GameData gameData)
     {
-        // Returns FALSE if failed.
-
-        bool hasErrors;
-        bool result;
         var libCode = new string[1];
-        int libLines;
-        bool ignoreMode, skipCheck;
-        int c, d, l;
-        int libFileHandle;
-        string[] libResourceLines;
-        string libFile;
-        string libLine;
-        int inDefGameBlock, gameLine = default;
-        int inDefSynBlock, synLine = default;
+        int l;
+        var gameLine = 0;
+        var synLine = 0;
         bool libFoundThisSweep;
-        string libFileName;
         var libraryList = new string[1];
-        int numLibraries;
-        bool libraryAlreadyIncluded;
-        int inDefTypeBlock;
-        string typeBlockName;
-        var typeLine = default(int);
-        int defineCount, curLine;
+        var typeLine = 0;
         var filename = gameData.Filename;
 
         _defineBlockParams = new Dictionary<string, Dictionary<string, string>>();
+        
+        var ext = Path.GetExtension(filename).ToLowerInvariant();
 
-        result = true;
-
-        // Parses file and returns the positions of each main
-        // 'define' block. Supports nested defines.
-
-        if (Strings.LCase(Strings.Right(filename, 4)) == ".zip")
+        switch (ext)
         {
-            filename = GetUnzippedFile(filename);
-            _gamePath = Path.GetDirectoryName(filename);
-        }
-
-        if ((Strings.LCase(Strings.Right(filename, 4)) == ".asl") |
-            (Strings.LCase(Strings.Right(filename, 4)) == ".txt"))
-        {
-            // Read file into Lines array
-            var fileData = await GetFileData(gameData);
-
-            var aslLines = fileData.Split('\r');
-            _lines = new string[aslLines.Length + 1];
-            _lines[0] = "";
-
-            var loopTo = aslLines.Length;
-            for (l = 1; l <= loopTo; l++)
+            case ".asl":
             {
-                _lines[l] = aslLines[l - 1];
-                _lines[l] = RemoveTabs(_lines[l]);
-                _lines[l] = _lines[l].Trim(' ', '\n', '\r');
+                // Read file into Lines array
+                var fileData = await GetFileData(gameData);
+
+                var aslLines = fileData.Split(["\r\n", "\n", "\r"], StringSplitOptions.None);
+                _lines = new string[aslLines.Length + 1];
+                _lines[0] = "";
+
+                var loopTo = aslLines.Length;
+                for (l = 1; l <= loopTo; l++)
+                {
+                    _lines[l] = aslLines[l - 1];
+                    _lines[l] = RemoveTabs(_lines[l]);
+                    _lines[l] = _lines[l].Trim(' ', '\n', '\r');
+                }
+
+                l = aslLines.Length;
+                break;
             }
-
-            l = aslLines.Length;
-        }
-
-        else if (Strings.LCase(Strings.Right(filename, 4)) == ".cas")
-        {
-            LogASLError("Loading CAS");
-            LoadCASFile(filename);
-            l = Information.UBound(_lines);
-        }
-
-        else
-        {
-            throw new InvalidOperationException("Unrecognized file extension");
+            case ".cas":
+                LogASLError("Loading CAS");
+                LoadCASFile(gameData);
+                l = Information.UBound(_lines);
+                break;
+            default:
+                throw new InvalidOperationException("Unrecognized file extension");
         }
 
         // Add libraries to end of code:
-
-        numLibraries = 0;
+        var numLibraries = 0;
 
         do
         {
@@ -1770,138 +1354,142 @@ public partial class V4Game : IGame, IGameDebug
                 // gets executed before something-specific's, as we execute the
                 // lib startscripts backwards as well
             {
-                if (BeginsWith(_lines[i], "!include "))
+                if (!BeginsWith(_lines[i], "!include "))
                 {
-                    libFileName = GetParameter(_lines[i], _nullContext);
-                    // Clear !include statement
-                    _lines[i] = "";
-                    libraryAlreadyIncluded = false;
-                    LogASLError("Including library '" + libFileName + "'...", LogType.Init);
+                    continue;
+                }
 
-                    for (int j = 1, loopTo1 = numLibraries; j <= loopTo1; j++)
+                var libFileName = GetParameter(_lines[i], _nullContext);
+                // Clear !include statement
+                _lines[i] = "";
+                var libraryAlreadyIncluded = false;
+                LogASLError("Including library '" + libFileName + "'...", LogType.Init);
+
+                for (int j = 1, loopTo1 = numLibraries; j <= loopTo1; j++)
+                {
+                    if ((Strings.LCase(libFileName) ?? "") == (Strings.LCase(libraryList[j]) ?? ""))
                     {
-                        if ((Strings.LCase(libFileName) ?? "") == (Strings.LCase(libraryList[j]) ?? ""))
-                        {
-                            libraryAlreadyIncluded = true;
-                            break;
-                        }
+                        libraryAlreadyIncluded = true;
+                        break;
                     }
+                }
 
-                    if (libraryAlreadyIncluded)
+                if (libraryAlreadyIncluded)
+                {
+                    LogASLError("     - Library already included.", LogType.Init);
+                }
+                else
+                {
+                    numLibraries = numLibraries + 1;
+                    Array.Resize(ref libraryList, numLibraries + 1);
+                    libraryList[numLibraries] = libFileName;
+
+                    libFoundThisSweep = true;
+                    string[] libResourceLines = null;
+                        
+                    LogASLError(" - Searching for " + libFileName + " (game path)", LogType.Init);
+
+                    var libStream = _gameData.GetAdjacentFile(libFileName);
+                        
+                    if (libStream == null)
                     {
-                        LogASLError("     - Library already included.", LogType.Init);
-                    }
-                    else
-                    {
-                        numLibraries = numLibraries + 1;
-                        Array.Resize(ref libraryList, numLibraries + 1);
-                        libraryList[numLibraries] = libFileName;
-
-                        libFoundThisSweep = true;
-                        libResourceLines = null;
-
-                        libFile = _gamePath + libFileName;
-                        LogASLError(" - Searching for " + libFile + " (game path)", LogType.Init);
-                        libFileHandle = FileSystem.FreeFile();
-
-                        if (File.Exists(libFile))
-                        {
-                            FileSystem.FileOpen(libFileHandle, libFile, OpenMode.Input);
-                        }
-                        else
-                        {
-                            // File was not found; try standard Quest libraries (stored here as resources)
-                            LogASLError("     - Library not found in game path.", LogType.Init);
-                            LogASLError(" - Searching for " + libFile + " (standard libraries)", LogType.Init);
-                            libResourceLines = GetLibraryLines(libFileName);
-
-                            if (libResourceLines is null)
-                            {
-                                LogASLError("Library not found.", LogType.FatalError);
-                                _openErrorReport = _openErrorReport + "Library '" + libraryList[numLibraries] +
-                                                   "' not found." + Constants.vbCrLf;
-                                return false;
-                            }
-                        }
-
-                        LogASLError("     - Found library, opening...", LogType.Init);
-
-                        libLines = 0;
+                        // File was not found; try standard Quest libraries (stored here as resources)
+                        LogASLError("     - Library not found in game path.", LogType.Init);
+                        LogASLError(" - Searching for " + libFileName + " (standard libraries)", LogType.Init);
+                        libResourceLines = GetLibraryLines(libFileName);
 
                         if (libResourceLines is null)
                         {
-                            do
-                            {
-                                libLines = libLines + 1;
-                                libLine = FileSystem.LineInput(libFileHandle);
-                                libLine = RemoveTabs(libLine);
-                                Array.Resize(ref libCode, libLines + 1);
-                                libCode[libLines] = Strings.Trim(libLine);
-                            } while (!FileSystem.EOF(libFileHandle));
-
-                            FileSystem.FileClose(libFileHandle);
+                            LogASLError("Library not found.", LogType.FatalError);
+                            _openErrorReport = _openErrorReport + "Library '" + libraryList[numLibraries] +
+                                               "' not found." + Constants.vbCrLf;
+                            return false;
                         }
-                        else
+                    }
+
+                    LogASLError("     - Found library, opening...", LogType.Init);
+
+                    var libLines = 0;
+
+                    string libLine;
+                    if (libResourceLines is null)
+                    {
+                        var libData = await new StreamReader(libStream).ReadToEndAsync();
+                        var libDataLines = libData.Split(["\r\n", "\n", "\r"], StringSplitOptions.None);
+                            
+                        foreach (var line in libDataLines)
                         {
-                            foreach (var resLibLine in libResourceLines)
+                            libLines = libLines + 1;
+                            libLine = RemoveTabs(line);
+                            Array.Resize(ref libCode, libLines + 1);
+                            libCode[libLines] = Strings.Trim(libLine);
+                        }
+                    }
+                    else
+                    {
+                        foreach (var resLibLine in libResourceLines)
+                        {
+                            libLines = libLines + 1;
+                            Array.Resize(ref libCode, libLines + 1);
+                            libLine = resLibLine;
+                            libLine = RemoveTabs(libLine);
+                            libCode[libLines] = Strings.Trim(libLine);
+                        }
+                    }
+
+                    var libVer = -1;
+
+                    int c;
+                    if (libCode[1] == "!library")
+                    {
+                        var loopTo2 = libLines;
+                        for (c = 1; c <= loopTo2; c++)
+                        {
+                            if (BeginsWith(libCode[c], "!asl-version "))
                             {
-                                libLines = libLines + 1;
-                                Array.Resize(ref libCode, libLines + 1);
-                                libLine = resLibLine;
-                                libLine = RemoveTabs(libLine);
-                                libCode[libLines] = Strings.Trim(libLine);
+                                libVer = Conversions.ToInteger(GetParameter(libCode[c], _nullContext));
+                                break;
                             }
                         }
+                    }
+                    else
+                    {
+                        // Old library
+                        libVer = 100;
+                    }
 
-                        var libVer = -1;
+                    if (libVer == -1)
+                    {
+                        LogASLError(" - Library has no asl-version information.", LogType.LibraryWarningError);
+                        libVer = 200;
+                    }
 
-                        if (libCode[1] == "!library")
+                    var ignoreMode = false;
+                    var loopTo3 = libLines;
+                    for (c = 1; c <= loopTo3; c++)
+                    {
+                        if (BeginsWith(libCode[c], "!include "))
                         {
-                            var loopTo2 = libLines;
-                            for (c = 1; c <= loopTo2; c++)
-                            {
-                                if (BeginsWith(libCode[c], "!asl-version "))
-                                {
-                                    libVer = Conversions.ToInteger(GetParameter(libCode[c], _nullContext));
-                                    break;
-                                }
-                            }
-                        }
-                        else
-                        {
-                            // Old library
-                            libVer = 100;
-                        }
-
-                        if (libVer == -1)
-                        {
-                            LogASLError(" - Library has no asl-version information.", LogType.LibraryWarningError);
-                            libVer = 200;
-                        }
-
-                        ignoreMode = false;
-                        var loopTo3 = libLines;
-                        for (c = 1; c <= loopTo3; c++)
-                        {
-                            if (BeginsWith(libCode[c], "!include "))
-                            {
-                                // Quest only honours !include in a library for asl-version
-                                // 311 or later, as it ignored them in versions < 3.11
-                                if (libVer >= 311)
-                                {
-                                    AddLine(libCode[c]);
-                                    l = l + 1;
-                                }
-                            }
-                            else if ((Strings.Left(libCode[c], 1) != "!") & (Strings.Left(libCode[c], 1) != "'") &
-                                     !ignoreMode)
+                            // Quest only honours !include in a library for asl-version
+                            // 311 or later, as it ignored them in versions < 3.11
+                            if (libVer >= 311)
                             {
                                 AddLine(libCode[c]);
                                 l = l + 1;
                             }
-                            else if (libCode[c] == "!addto game")
+                        }
+                        else if ((Strings.Left(libCode[c], 1) != "!") & (Strings.Left(libCode[c], 1) != "'") &
+                                 !ignoreMode)
+                        {
+                            AddLine(libCode[c]);
+                            l = l + 1;
+                        }
+                        else
+                        {
+                            int d;
+                            if (libCode[c] == "!addto game")
                             {
-                                inDefGameBlock = 0;
+                                var inDefGameBlock = 0;
                                 var loopTo4 = Information.UBound(_lines);
                                 for (d = 1; d <= loopTo4; d++)
                                 {
@@ -1933,49 +1521,51 @@ public partial class V4Game : IGame, IGameDebug
                                 do
                                 {
                                     c = c + 1;
-                                    if (!BeginsWith(libCode[c], "!end"))
+                                    if (BeginsWith(libCode[c], "!end"))
                                     {
-                                        Array.Resize(ref _lines, Information.UBound(_lines) + 1 + 1);
-                                        var loopTo5 = gameLine + 1;
-                                        for (d = Information.UBound(_lines); d >= loopTo5; d -= 1)
-                                        {
-                                            _lines[d] = _lines[d - 1];
-                                        }
-
-                                        // startscript lines in a library are prepended
-                                        // with "lib" internally so they are executed
-                                        // before any startscript specified by the
-                                        // calling ASL file, for asl-versions 311 and
-                                        // later.
-                                        // similarly, commands in a library. NB: without this, lib
-                                        // verbs have lower precedence than game verbs anyway. Also
-                                        // lib commands have lower precedence than game commands. We
-                                        // only need this code so that game verbs have a higher
-                                        // precedence than lib commands.
-                                        // we also need it so that lib verbs have a higher
-                                        // precedence than lib commands.
-                                        if ((libVer >= 311) & BeginsWith(libCode[c], "startscript "))
-                                        {
-                                            _lines[gameLine] = "lib " + libCode[c];
-                                        }
-                                        else if ((libVer >= 392) & (BeginsWith(libCode[c], "command ") |
-                                                                    BeginsWith(libCode[c], "verb ")))
-                                        {
-                                            _lines[gameLine] = "lib " + libCode[c];
-                                        }
-                                        else
-                                        {
-                                            _lines[gameLine] = libCode[c];
-                                        }
-
-                                        l = l + 1;
-                                        gameLine = gameLine + 1;
+                                        continue;
                                     }
+
+                                    Array.Resize(ref _lines, Information.UBound(_lines) + 1 + 1);
+                                    var loopTo5 = gameLine + 1;
+                                    for (d = Information.UBound(_lines); d >= loopTo5; d -= 1)
+                                    {
+                                        _lines[d] = _lines[d - 1];
+                                    }
+
+                                    // startscript lines in a library are prepended
+                                    // with "lib" internally so they are executed
+                                    // before any startscript specified by the
+                                    // calling ASL file, for asl-versions 311 and
+                                    // later.
+                                    // similarly, commands in a library. NB: without this, lib
+                                    // verbs have lower precedence than game verbs anyway. Also
+                                    // lib commands have lower precedence than game commands. We
+                                    // only need this code so that game verbs have a higher
+                                    // precedence than lib commands.
+                                    // we also need it so that lib verbs have a higher
+                                    // precedence than lib commands.
+                                    if ((libVer >= 311) & BeginsWith(libCode[c], "startscript "))
+                                    {
+                                        _lines[gameLine] = "lib " + libCode[c];
+                                    }
+                                    else if ((libVer >= 392) & (BeginsWith(libCode[c], "command ") |
+                                                                BeginsWith(libCode[c], "verb ")))
+                                    {
+                                        _lines[gameLine] = "lib " + libCode[c];
+                                    }
+                                    else
+                                    {
+                                        _lines[gameLine] = libCode[c];
+                                    }
+
+                                    l = l + 1;
+                                    gameLine = gameLine + 1;
                                 } while (!BeginsWith(libCode[c], "!end"));
                             }
                             else if (libCode[c] == "!addto synonyms")
                             {
-                                inDefSynBlock = 0;
+                                var inDefSynBlock = 0;
                                 var loopTo6 = Information.UBound(_lines);
                                 for (d = 1; d <= loopTo6; d++)
                                 {
@@ -2001,25 +1591,27 @@ public partial class V4Game : IGame, IGameDebug
                                 do
                                 {
                                     c = c + 1;
-                                    if (!BeginsWith(libCode[c], "!end"))
+                                    if (BeginsWith(libCode[c], "!end"))
                                     {
-                                        Array.Resize(ref _lines, Information.UBound(_lines) + 1 + 1);
-                                        var loopTo7 = synLine + 1;
-                                        for (d = Information.UBound(_lines); d >= loopTo7; d -= 1)
-                                        {
-                                            _lines[d] = _lines[d - 1];
-                                        }
-
-                                        _lines[synLine] = libCode[c];
-                                        l = l + 1;
-                                        synLine = synLine + 1;
+                                        continue;
                                     }
+
+                                    Array.Resize(ref _lines, Information.UBound(_lines) + 1 + 1);
+                                    var loopTo7 = synLine + 1;
+                                    for (d = Information.UBound(_lines); d >= loopTo7; d -= 1)
+                                    {
+                                        _lines[d] = _lines[d - 1];
+                                    }
+
+                                    _lines[synLine] = libCode[c];
+                                    l = l + 1;
+                                    synLine = synLine + 1;
                                 } while (!BeginsWith(libCode[c], "!end"));
                             }
                             else if (BeginsWith(libCode[c], "!addto type "))
                             {
-                                inDefTypeBlock = 0;
-                                typeBlockName = Strings.LCase(GetParameter(libCode[c], _nullContext));
+                                var inDefTypeBlock = 0;
+                                var typeBlockName = Strings.LCase(GetParameter(libCode[c], _nullContext));
                                 var loopTo8 = Information.UBound(_lines);
                                 for (d = 1; d <= loopTo8; d++)
                                 {
@@ -2051,23 +1643,23 @@ public partial class V4Game : IGame, IGameDebug
                                         break;
                                     }
 
-                                    if (!BeginsWith(libCode[c], "!end"))
+                                    if (BeginsWith(libCode[c], "!end"))
                                     {
-                                        Array.Resize(ref _lines, Information.UBound(_lines) + 1 + 1);
-                                        var loopTo9 = typeLine + 1;
-                                        for (d = Information.UBound(_lines); d >= loopTo9; d -= 1)
-                                        {
-                                            _lines[d] = _lines[d - 1];
-                                        }
-
-                                        _lines[typeLine] = libCode[c];
-                                        l = l + 1;
-                                        typeLine = typeLine + 1;
+                                        continue;
                                     }
+
+                                    Array.Resize(ref _lines, Information.UBound(_lines) + 1 + 1);
+                                    var loopTo9 = typeLine + 1;
+                                    for (d = Information.UBound(_lines); d >= loopTo9; d -= 1)
+                                    {
+                                        _lines[d] = _lines[d - 1];
+                                    }
+
+                                    _lines[typeLine] = libCode[c];
+                                    l = l + 1;
+                                    typeLine = typeLine + 1;
                                 } while (!BeginsWith(libCode[c], "!end"));
                             }
-
-
                             else if (libCode[c] == "!library")
                             {
                             }
@@ -2094,7 +1686,7 @@ public partial class V4Game : IGame, IGameDebug
             }
         } while (libFoundThisSweep);
 
-        skipCheck = false;
+        var skipCheck = false;
 
         int lastSlashPos = default, slashPos;
         var curPos = 1;
@@ -2146,43 +1738,45 @@ public partial class V4Game : IGame, IGameDebug
         for (int i = 1, loopTo11 = l; i <= loopTo11; i++)
             // find section beginning with 'define'
         {
-            if (BeginsWith(_lines[i], "define"))
+            if (!BeginsWith(_lines[i], "define"))
             {
-                // Now, go through until we reach an 'end define'. However, if we
-                // encounter another 'define' there is a nested define. So, if we
-                // encounter 'define' we increment the definecount. When we find an
-                // 'end define' we decrement it. When definecount is zero, we have
-                // found the end of the section.
-                defineCount = 1;
-
-                // Don't count the current line - we know it begins with 'define'...
-                curLine = i + 1;
-                do
-                {
-                    if (BeginsWith(_lines[curLine], "define"))
-                    {
-                        defineCount = defineCount + 1;
-                    }
-                    else if (BeginsWith(_lines[curLine], "end define"))
-                    {
-                        defineCount = defineCount - 1;
-                    }
-
-                    curLine = curLine + 1;
-                } while (defineCount != 0);
-
-                curLine = curLine - 1;
-
-                // Now, we know that the define section begins at i and ends at
-                // curline. Remember where the section begins and ends:
-                Array.Resize(ref _defineBlocks, _numberSections + 1);
-                _defineBlocks[_numberSections] = new DefineBlock();
-                _defineBlocks[_numberSections].StartLine = i;
-                _defineBlocks[_numberSections].EndLine = curLine;
-
-                _numberSections = _numberSections + 1;
-                i = curLine;
+                continue;
             }
+
+            // Now, go through until we reach an 'end define'. However, if we
+            // encounter another 'define' there is a nested define. So, if we
+            // encounter 'define' we increment the definecount. When we find an
+            // 'end define' we decrement it. When definecount is zero, we have
+            // found the end of the section.
+            var defineCount = 1;
+
+            // Don't count the current line - we know it begins with 'define'...
+            var curLine = i + 1;
+            do
+            {
+                if (BeginsWith(_lines[curLine], "define"))
+                {
+                    defineCount = defineCount + 1;
+                }
+                else if (BeginsWith(_lines[curLine], "end define"))
+                {
+                    defineCount = defineCount - 1;
+                }
+
+                curLine = curLine + 1;
+            } while (defineCount != 0);
+
+            curLine = curLine - 1;
+
+            // Now, we know that the define section begins at i and ends at
+            // curline. Remember where the section begins and ends:
+            Array.Resize(ref _defineBlocks, _numberSections + 1);
+            _defineBlocks[_numberSections] = new DefineBlock();
+            _defineBlocks[_numberSections].StartLine = i;
+            _defineBlocks[_numberSections].EndLine = curLine;
+
+            _numberSections = _numberSections + 1;
+            i = curLine;
         }
 
         _numberSections = _numberSections - 1;
@@ -2205,7 +1799,7 @@ public partial class V4Game : IGame, IGameDebug
 
         ConvertMultiLineSections();
 
-        hasErrors = ConvertFriendlyIfs();
+        var hasErrors = ConvertFriendlyIfs();
         if (!hasErrors)
         {
             hasErrors = ErrorCheck();
@@ -2216,7 +1810,7 @@ public partial class V4Game : IGame, IGameDebug
             throw new InvalidOperationException("Errors found in game file.");
         }
 
-        return result;
+        return true;
     }
 
     internal void LogASLError(string err, LogType type = LogType.Misc)
@@ -2311,45 +1905,30 @@ public partial class V4Game : IGame, IGameDebug
         _lines[numLines] = line;
     }
 
-    private string GetCASFileData(string filename)
+    private string GetCASFileData(Stream stream)
     {
-        return File.ReadAllText(filename, Encoding.GetEncoding(1252));
+        using var reader = new StreamReader(stream, Encoding.GetEncoding(1252));
+        return reader.ReadToEnd();
     }
 
-    private void LoadCASFile(string filename)
+    private void LoadCASFile(GameData gameData)
     {
-        bool endLineReached, exitTheLoop;
-        var textMode = default(bool);
-        int casVersion;
+        var textMode = false;
         var startCat = "";
-        int endCatPos;
-        string chkVer;
-        var j = default(int);
-        string curLin, textData;
-        int cpos, nextLinePos;
-        string c, tl, ckw, d;
+        var j = 0;
 
         _lines = new string[1];
 
-        var fileData = GetCASFileData(filename);
+        var fileData = GetCASFileData(gameData.Data);
 
-        chkVer = Strings.Left(fileData, 7);
-        if (chkVer == "QCGF001")
+        var chkVer = Strings.Left(fileData, 7);
+        var casVersion = chkVer switch
         {
-            casVersion = 1;
-        }
-        else if (chkVer == "QCGF002")
-        {
-            casVersion = 2;
-        }
-        else if (chkVer == "QCGF003")
-        {
-            casVersion = 3;
-        }
-        else
-        {
-            throw new InvalidOperationException("Invalid or corrupted CAS file.");
-        }
+            "QCGF001" => 1,
+            "QCGF002" => 2,
+            "QCGF003" => 3,
+            _ => throw new InvalidOperationException("Invalid or corrupted CAS file.")
+        };
 
         if (casVersion == 3)
         {
@@ -2362,37 +1941,37 @@ public partial class V4Game : IGame, IGameDebug
             {
                 // Read catalog
                 _startCatPos = i;
-                endCatPos = Strings.InStr(j, fileData, Keyword2CAS("!endcat"));
+                var endCatPos = Strings.InStr(j, fileData, Keyword2CAS("!endcat"));
                 ReadCatalog(Strings.Mid(fileData, j + 1, endCatPos - j - 1));
-                _resourceFile = filename;
+                _hasResources = true;
                 _resourceOffset = endCatPos + 1;
                 i = Strings.Len(fileData);
                 _casFileData = fileData;
             }
             else
             {
-                curLin = "";
-                endLineReached = false;
+                var curLin = "";
+                var endLineReached = false;
                 if (textMode)
                 {
-                    textData = Strings.Mid(fileData, i,
+                    var textData = Strings.Mid(fileData, i,
                         Strings.InStr(i, fileData, Conversions.ToString(Strings.Chr(253))) - (i - 1));
                     textData = Strings.Left(textData, Strings.Len(textData) - 1);
-                    cpos = 1;
+                    var cpos = 1;
                     var finished = false;
 
                     if (!string.IsNullOrEmpty(textData))
                     {
                         do
                         {
-                            nextLinePos = Strings.InStr(cpos, textData, "\0");
+                            var nextLinePos = Strings.InStr(cpos, textData, "\0");
                             if (nextLinePos == 0)
                             {
                                 nextLinePos = Strings.Len(textData) + 1;
                                 finished = true;
                             }
 
-                            tl = DecryptString(Strings.Mid(textData, cpos, nextLinePos - cpos));
+                            var tl = DecryptString(Strings.Mid(textData, cpos, nextLinePos - cpos));
                             AddLine(tl);
                             cpos = nextLinePos + 1;
                         } while (!finished);
@@ -2405,8 +1984,8 @@ public partial class V4Game : IGame, IGameDebug
                 j = i;
                 do
                 {
-                    ckw = Strings.Mid(fileData, j, 1);
-                    c = ConvertCasKeyword(ckw);
+                    var ckw = Strings.Mid(fileData, j, 1);
+                    var c = ConvertCasKeyword(ckw);
 
                     if ((c ?? "") == Constants.vbCrLf)
                     {
@@ -2416,46 +1995,57 @@ public partial class V4Game : IGame, IGameDebug
                     {
                         curLin = curLin + c + " ";
                     }
-                    else if (c == "!quote")
+                    else
                     {
-                        exitTheLoop = false;
-                        curLin = curLin + "<";
-                        do
+                        bool exitTheLoop;
+                        string d;
+                        switch (c)
                         {
-                            j = j + 1;
-                            d = Strings.Mid(fileData, j, 1);
-                            if (d != "\0")
+                            case "!quote":
                             {
-                                curLin = curLin + DecryptString(d);
-                            }
-                            else
-                            {
-                                curLin = curLin + "> ";
-                                exitTheLoop = true;
-                            }
-                        } while (!exitTheLoop);
-                    }
-                    else if (c == "!unknown")
-                    {
-                        exitTheLoop = false;
-                        do
-                        {
-                            j = j + 1;
-                            d = Strings.Mid(fileData, j, 1);
-                            if (d != Conversions.ToString(Strings.Chr(254)))
-                            {
-                                curLin = curLin + d;
-                            }
-                            else
-                            {
-                                exitTheLoop = true;
-                            }
-                        } while (!exitTheLoop);
+                                exitTheLoop = false;
+                                curLin += "<";
+                                do
+                                {
+                                    j = j + 1;
+                                    d = Strings.Mid(fileData, j, 1);
+                                    if (d != "\0")
+                                    {
+                                        curLin += DecryptString(d);
+                                    }
+                                    else
+                                    {
+                                        curLin += "> ";
+                                        exitTheLoop = true;
+                                    }
+                                } while (!exitTheLoop);
 
-                        curLin = curLin + " ";
+                                break;
+                            }
+                            case "!unknown":
+                            {
+                                exitTheLoop = false;
+                                do
+                                {
+                                    j = j + 1;
+                                    d = Strings.Mid(fileData, j, 1);
+                                    if (d != Conversions.ToString(Strings.Chr(254)))
+                                    {
+                                        curLin += d;
+                                    }
+                                    else
+                                    {
+                                        exitTheLoop = true;
+                                    }
+                                } while (!exitTheLoop);
+
+                                curLin += " ";
+                                break;
+                            }
+                        }
                     }
 
-                    j = j + 1;
+                    j += 1;
                 } while (!endLineReached);
 
                 AddLine(Strings.Trim(curLin));
@@ -4139,15 +3729,14 @@ public partial class V4Game : IGame, IGameDebug
         SetNumericVariableContents(arrayIndex.Name, value, ctx, arrayIndex.Index);
     }
 
-    private string ExtractFile(string file)
+    private Stream ExtractFile(string file)
     {
-        int length = default, startPos = default;
-        var extracted = default(bool);
-        var resId = default(int);
+        var length = 0;
+        var startPos = 0;
 
-        if (string.IsNullOrEmpty(_resourceFile))
+        if (!_hasResources)
         {
-            return "";
+            return null;
         }
 
         // Find file in catalog
@@ -4156,15 +3745,15 @@ public partial class V4Game : IGame, IGameDebug
 
         for (int i = 1, loopTo = _numResources; i <= loopTo; i++)
         {
-            if ((Strings.LCase(file) ?? "") == (Strings.LCase(_resources[i].ResourceName) ?? ""))
+            if ((Strings.LCase(file) ?? "") != (Strings.LCase(_resources[i].ResourceName) ?? ""))
             {
-                found = true;
-                startPos = _resources[i].ResourceStart + _resourceOffset;
-                length = _resources[i].ResourceLength;
-                extracted = _resources[i].Extracted;
-                resId = i;
-                break;
+                continue;
             }
+
+            found = true;
+            startPos = _resources[i].ResourceStart + _resourceOffset;
+            length = _resources[i].ResourceLength;
+            break;
         }
 
         if (!found)
@@ -4172,23 +3761,14 @@ public partial class V4Game : IGame, IGameDebug
             LogASLError("Unable to extract '" + file + "' - not present in resources.", LogType.WarningError);
             return null;
         }
-
-        // always lowercase the filename to match the resource name returned by GetResourceNames()
-        var fileName = Path.Combine(TempFolder, file.ToLowerInvariant());
-        Directory.CreateDirectory(Path.GetDirectoryName(fileName));
-
-        if (!extracted)
-        {
-            // Extract file from cached CAS data
-            var fileData = Strings.Mid(_casFileData, startPos, length);
-
-            // Write file to temp dir
-            File.WriteAllText(fileName, fileData, Encoding.GetEncoding(1252));
-
-            _resources[resId].Extracted = true;
-        }
-
-        return fileName;
+        
+        // Extract file from cached CAS data
+        var fileData = Strings.Mid(_casFileData, startPos, length);
+        var encoding = Encoding.GetEncoding(1252);
+        var bytes = encoding.GetBytes(fileData);
+        var stream = new MemoryStream(bytes);
+        
+        return stream;
     }
 
     private void AddObjectAction(int id, string name, string script, bool noUpdate = false)

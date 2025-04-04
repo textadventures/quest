@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 
 namespace QuestViva.Common;
 
-public class UrlGameDataProvider(HttpClient client, string url, string resourcesId) : IGameDataProvider
+public class UrlGameDataProvider(HttpClient client, string url) : IGameDataProvider
 {
     public async Task<GameData?> GetData()
     {
@@ -16,8 +16,4 @@ public class UrlGameDataProvider(HttpClient client, string url, string resources
 
         return new GameData(stream, url, filename, this);
     }
-    
-    public string ResourcesId => resourcesId;
-
-    public string Url => url;
 }

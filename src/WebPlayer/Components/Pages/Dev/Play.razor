@@ -1,0 +1,23 @@
+@page "/dev/play"
+@attribute [RequiresConfig("Dev:Enabled")]
+@using QuestViva.Common
+@using QuestViva.PlayerCore
+@rendermode InteractiveServer
+
+<Game GameDataProvider="@GetGameDataProvider()" ResourceUrlProvider="GetResourceUrlProvider"></Game>
+
+@code {
+    [Parameter]
+    [SupplyParameterFromQuery]
+    public required string File { get; set; }
+    
+    private IGameDataProvider GetGameDataProvider()
+    {
+        return new FileGameDataProvider(Path.Combine(Path.GetTempPath(), File));
+    }
+    
+    private IResourceUrlProvider GetResourceUrlProvider(GameData gameData)
+    {
+        return new LocalResourceUrlProvider($"dev.play.{File}");
+    }
+}

@@ -16,13 +16,13 @@ public class Player : IPlayerHelperUI
     private ListHandler ListHandler { get; }
     private List<(string, object?[]?)> JavaScriptBuffer { get; } = [];
     private bool Finished { get; set; } = false;
-    private string ResourcesId { get; }
+    private IResourceUrlProvider ResourceUrlProvider { get; }
     public IJSRuntime JSRuntime { get; }
     public BlazorJSInterop JSInterop { get; }
 
-    public Player(IGame game, string resourcesId, IJSRuntime jsRuntime)
+    public Player(IGame game, IResourceUrlProvider resourceUrlProvider, IJSRuntime jsRuntime)
     {
-        ResourcesId = resourcesId;
+        ResourceUrlProvider = resourceUrlProvider;
         JSRuntime = jsRuntime;
         ListHandler = new ListHandler(AddJavaScriptToBuffer);
         JSInterop = new BlazorJSInterop(this);
@@ -39,7 +39,7 @@ public class Player : IPlayerHelperUI
         PlayerHelper.Game.RequestNextTimerTick += RequestNextTimerTick;
     }
 
-    public async Task Initialise()
+    public async Task<bool> Initialise()
     {
         await JSRuntime.InvokeVoidAsync("WebPlayer.setDotNetHelper",
             DotNetObjectReference.Create(JSInterop));
@@ -48,22 +48,23 @@ public class Player : IPlayerHelperUI
 
         if (result)
         {
-            RegisterExternalScripts();
+            await RegisterExternalScripts();
             RegisterExternalStylesheets();
             
             PlayerHelper.Game.Begin();
-            await ClearBuffer();
         }
         else
         {
-            OutputText(string.Join("<br/>", errors));
-            await ClearBuffer();
+            OutputText(string.Join("<br/>", errors) + "<br/>");
         }
+
+        await ClearBuffer();
+        return result;
     }
 
-    public Stream? GetResource(string filename)
+    public Stream? GetResourceStream(string filename)
     {
-        return PlayerHelper.Game.GetResource(filename);
+        return PlayerHelper.Game.GetResourceStream(filename);
     }
     
     private void AddJavaScriptToBuffer(string identifier, params object?[]? args)
@@ -229,11 +230,12 @@ public class Player : IPlayerHelperUI
     
     string GetURL(string file)
     {
+        // TODO: Is this only relevant for the local resource provider? If so move the logic there.
         // We might be running on a case-sensitive file system, so look up the correct casing
         var resource = PlayerHelper.Game.GetResourceNames()
             .FirstOrDefault(n => string.Equals(n, file, StringComparison.InvariantCultureIgnoreCase));
         
-        return $"/game/{ResourcesId}/{resource ?? file}";
+        return ResourceUrlProvider.GetUrl(resource ?? file);
     }
 
     void IPlayer.LocationUpdated(string location)
@@ -316,8 +318,7 @@ public class Player : IPlayerHelperUI
 
     void IPlayer.RequestSave(string html)
     {
-        // TODO
-        throw new NotImplementedException();
+        AddJavaScriptToBuffer("saveGame");
     }
 
     void IPlayer.Show(string element)
@@ -385,7 +386,7 @@ public class Player : IPlayerHelperUI
         OutputText(text);
     }
     
-    private void RegisterExternalScripts()
+    private async Task RegisterExternalScripts()
     {
         var scripts = PlayerHelper.Game.GetExternalScripts();
         if (scripts == null) return;
@@ -393,7 +394,7 @@ public class Player : IPlayerHelperUI
         foreach (var script in scripts)
         {
             var url = GetURL(script);
-            AddJavaScriptToBuffer("addExternalScript", url);
+            await JSRuntime.InvokeVoidAsync("addExternalScript", url);
         }
     }
 

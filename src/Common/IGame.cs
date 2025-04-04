@@ -11,7 +11,7 @@ namespace QuestViva.Common
 
     public interface IGame
     {
-        Task<bool> Initialise(IPlayer player, bool? isCompiled = null);
+        Task<bool> Initialise(IPlayer player);
         void Begin();
         void SendCommand(string command);
         void SendCommand(string command, int elapsedTime, IDictionary<string, string> metadata);
@@ -35,9 +35,7 @@ namespace QuestViva.Common
         IEnumerable<string>? GetExternalScripts();
         IEnumerable<string> GetExternalStylesheets();
         
-        string? TempFolder { get; set; }
-        System.IO.Stream? GetResource(string filename);
-        string GetResourcePath(string filename);
+        System.IO.Stream? GetResourceStream(string filename);
         string GameID { get; }
         IEnumerable<string> GetResourceNames();
     }

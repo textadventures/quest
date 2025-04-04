@@ -6,6 +6,8 @@ namespace QuestViva.EditorCoreTests
     public class Config : IConfig
     {
         public bool UseNCalc => false;
+        public string HomeFile { get; }
+        public bool DevEnabled { get; }
     }
     
     [TestClass]

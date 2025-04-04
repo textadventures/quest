@@ -373,11 +373,11 @@ public partial class WorldModel : IGame, IGameDebug
         _playerUi?.UpdateGameName(name);
     }
 
-    public async Task<bool> Initialise(IPlayer player, bool? isCompiled = null)
+    public async Task<bool> Initialise(IPlayer player)
     {
         EditMode = false;
         PlayerUi = player;
-        var loader = new QuestViva.Engine.GameLoader.GameLoader(this, QuestViva.Engine.GameLoader.GameLoader.LoadMode.Play, isCompiled);
+        var loader = new QuestViva.Engine.GameLoader.GameLoader(this, QuestViva.Engine.GameLoader.GameLoader.LoadMode.Play, _gameData?.IsCompiled);
         var result = await InitialiseInternal(loader);
         if (result)
         {
@@ -1090,11 +1090,6 @@ public partial class WorldModel : IGame, IGameDebug
         throw new Exception("Library file not found: " + filename);
     }
 
-    public string GetExternalPath(string file)
-    {
-        throw new NotImplementedException();
-    }
-
     internal string GetExternalUrl(string file)
     {
         return PlayerUi.GetURL(file);
@@ -1550,7 +1545,7 @@ public partial class WorldModel : IGame, IGameDebug
         }
     }
 
-    public Stream? GetResource(string filename)
+    public Stream? GetResourceStream(string filename)
     {
         return ResourceGetter != null
             ? ResourceGetter.Invoke(filename)
@@ -1559,7 +1554,7 @@ public partial class WorldModel : IGame, IGameDebug
 
     public string? GetResourceData(string filename)
     {
-        var stream = GetResource(filename);
+        var stream = GetResourceStream(filename);
         if (stream == null) return null;
         using var reader = new StreamReader(stream);
         return reader.ReadToEnd();
@@ -1575,18 +1570,11 @@ public partial class WorldModel : IGame, IGameDebug
         return System.Reflection.Assembly.GetExecutingAssembly().GetManifestResourceStream(name);
     }
 
-    public string GetResourcePath(string filename)
-    {
-        throw new NotImplementedException();
-    }
-
     internal RegexCache RegexCache { get; } = new();
 
     public WorldModelVersion Version { get; internal set; }
 
     internal string? VersionString { get; set; }
-
-    public string? TempFolder { get; set; }
 
     internal IOutputLogger? OutputLogger { get; private set; }
 

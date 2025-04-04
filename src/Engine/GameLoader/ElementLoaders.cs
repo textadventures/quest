@@ -491,10 +491,8 @@ internal partial class GameLoader
 
         public override object Load(XmlReader reader, ref Element? current)
         {
-            if (current == null)
-            {
-                throw new Exception("Current element is not set");
-            }
+            // current can be null here for some reason, e.g. in
+            // https://textadventures.co.uk/games/view/_tz-z3689ku5mhp_6gc7fw/guttersnipe-carnival-of-regrets
             
             var alias = reader.GetAttribute("alias");
             var to = reader.GetAttribute("to");

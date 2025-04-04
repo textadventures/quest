@@ -112,7 +112,11 @@ namespace QuestViva.Engine
                                     m_worldModel.Print(output.ToString());
                                     output.Clear();
                                 }
-                                m_worldModel.PlayerUi.ShowPicture(m_worldModel.GetExternalPath(reader.GetAttribute("filename")));
+                                var filename = reader.GetAttribute("filename");
+                                if (filename != null)
+                                {
+                                    m_worldModel.PlayerUi.ShowPicture(filename);
+                                }
                                 break;
                             case "output_setfontsize":
                                 if (output.Length > 0)

@@ -10,6 +10,11 @@ public partial class V4Game
         
         public WalkthroughList(V4Game game)
         {
+            if (game._defineBlocks == null)
+            {
+                return;
+            }
+            
             foreach (var section in game._defineBlocks.Skip(1))
             {
                 var startLine = game._lines[section.StartLine];

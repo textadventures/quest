@@ -2759,7 +2759,7 @@ public partial class V4Game
         return true;
     }
 
-    private byte[] SaveGame(string filename, bool saveFile = true)
+    public byte[] Save(string html)
     {
         var ctx = new Context();
         string saveData;
@@ -2776,11 +2776,6 @@ public partial class V4Game
         else
         {
             saveData = MakeRestoreDataV2();
-        }
-
-        if (saveFile)
-        {
-            File.WriteAllText(filename, saveData, Encoding.GetEncoding(1252));
         }
 
         return Encoding.GetEncoding(1252).GetBytes(saveData);
@@ -6966,8 +6961,6 @@ public partial class V4Game
 
             r.ResourceStart = resourceStart;
             resourceStart = resourceStart + r.ResourceLength;
-
-            r.Extracted = false;
         }
     }
 
@@ -7932,11 +7925,6 @@ public partial class V4Game
 
     public event PrintTextHandler PrintText;
 
-    public byte[] Save(string html)
-    {
-        return SaveGame(_gameData.Filename, false);
-    }
-
     public void SendCommand(string command)
     {
         SendCommand(command, 0, null);
@@ -8007,7 +7995,7 @@ public partial class V4Game
 
     public event UpdateListHandler UpdateList;
 
-    public async Task<bool> Initialise(IPlayer player, bool? isCompiled = default)
+    public async Task<bool> Initialise(IPlayer player)
     {
         _player = player;
         if (_saveData != null)
@@ -8041,48 +8029,11 @@ public partial class V4Game
         {
             Monitor.PulseAll(_stateLock);
         }
-
-        Cleanup();
     }
 
-    private string GetResourcePath(string filename)
+    private Stream GetResourceStreamInternal(string filename)
     {
-        if (_resourceFile is not null && _resourceFile.Length > 0)
-        {
-            var extractResult = ExtractFile(filename);
-            return extractResult;
-        }
-
-        return Path.Combine(_gamePath, filename);
-    }
-
-    string IGame.GetResourcePath(string filename)
-    {
-        return GetResourcePath(filename);
-    }
-
-    private void Cleanup()
-    {
-        DeleteDirectory(TempFolder);
-    }
-
-    private void DeleteDirectory(string dir)
-    {
-        if (Directory.Exists(dir))
-        {
-            try
-            {
-                Directory.Delete(dir, true);
-            }
-            catch
-            {
-            }
-        }
-    }
-
-    ~V4Game()
-    {
-        Cleanup();
+        return _hasResources ? ExtractFile(filename) : _gameData.GetAdjacentFile(filename);
     }
 
     private string[] GetLibraryLines(string libName)
@@ -8316,41 +8267,16 @@ public partial class V4Game
 
     public event Action<int> RequestNextTimerTick;
 
-    public delegate string UnzipFunctionDelegate(string filename, out string tempDir);
-
-    private UnzipFunctionDelegate m_unzipFunction;
-
-    public void SetUnzipFunction(UnzipFunctionDelegate unzipFunction)
-    {
-        m_unzipFunction = unzipFunction;
-    }
-
-    private string GetUnzippedFile(string filename)
-    {
-        string tempDir = null;
-        var result = m_unzipFunction.Invoke(filename, out tempDir);
-        TempFolder = tempDir;
-        return result;
-    }
-
-    public string TempFolder { get; set; }
-
     public int ASLVersion { get; private set; }
 
-    public Stream GetResource(string file)
+    public Stream GetResourceStream(string file)
     {
         if (file == "_game.cas")
         {
             return new MemoryStream(GetResourcelessCAS());
         }
 
-        var path = GetResourcePath(file);
-        if (!File.Exists(path))
-        {
-            return null;
-        }
-
-        return new FileStream(path, FileMode.Open, FileAccess.Read);
+        return GetResourceStreamInternal(file);
     }
 
     public string GameID => null;
@@ -8371,7 +8297,8 @@ public partial class V4Game
 
     private byte[] GetResourcelessCAS()
     {
-        var fileData = File.ReadAllText(_resourceFile, Encoding.GetEncoding(1252));
-        return Encoding.GetEncoding(1252).GetBytes(Strings.Left(fileData, _startCatPos - 1));
+        throw new NotImplementedException();
+        // var fileData = File.ReadAllText(_resourceFile, Encoding.GetEncoding(1252));
+        // return Encoding.GetEncoding(1252).GetBytes(Strings.Left(fileData, _startCatPos - 1));
     }
 }

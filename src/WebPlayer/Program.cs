@@ -16,7 +16,9 @@ builder.Services.AddRazorComponents()
         o.MaximumReceiveMessageSize = 1024 * 1024;
     });
 
-builder.Services.AddSingleton<IConfig, Config>();
+builder.Services.Configure<WebPlayerConfig>(builder.Configuration);
+builder.Services.AddSingleton<Config>();
+builder.Services.AddSingleton<IConfig>(sp => sp.GetRequiredService<Config>());
 builder.Services.AddSingleton<WorldModelFactory>();
 builder.Services.AddSingleton<GameLauncher>();
 
@@ -43,7 +45,19 @@ app.MapRazorComponents<App>()
 app.MapGet("/res/{name}", UiResources.GetResource);
 app.MapGet("/res/{dir}/{name}", (string dir, string name) => UiResources.GetResource($"{dir}.{name}"));
 app.MapGet("/res/{dir1}/{dir2}/{name}", (string dir1, string dir2, string name) => UiResources.GetResource($"{dir1}.{dir2}.{name}"));
-
-app.Map("/game/{resourcesId}/{name}", GameResources.GetResource);
+app.MapGet("/game/{resourcesId}/{name}", LocalResources.GetResource);
+app.MapGet("/Play.aspx", async context =>
+{
+    var id = context.Request.Query["id"];
+    if (!string.IsNullOrEmpty(id))
+    {
+        context.Response.Redirect($"/textadventures/{id}");
+    }
+    else
+    {
+        context.Response.StatusCode = 400;
+        await context.Response.WriteAsync("Missing id parameter");
+    }
+});
 
 app.Run();

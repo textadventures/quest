@@ -42,6 +42,7 @@
 
 @code {
     [Parameter] public required IGameDataProvider GameDataProvider { get; set; }
+    [Parameter] public required Func<GameData, IResourceUrlProvider> ResourceUrlProvider { get; set; }
     private static MarkupString UiHtml => (MarkupString) PlayerHelper.GetUiResourceString("playercore.htm");
     private Player? Player { get; set; } = null;
     private GameData? gameData;
@@ -80,15 +81,23 @@
         
         if (game == null) return;
         
-        Player = new Player(game, GameDataProvider.ResourcesId, JS);
-        GameResources.AddResourceProvider(GameDataProvider.ResourcesId, Player.GetResource);
+        var resourceUrlProvider = ResourceUrlProvider(gameData);
+        
+        Player = new Player(game, resourceUrlProvider, JS);
+        if (resourceUrlProvider is LocalResourceUrlProvider localResourceProvider)
+        {
+            LocalResources.AddResourceStreamProvider(localResourceProvider.ResourcesId, Player.GetResourceStream);
+        }
         
         await JS.InvokeVoidAsync("WebPlayer.initUI");
-        await Player.Initialise();
-        
-        gameDebug = game as IGameDebug;
-        await JS.InvokeVoidAsync("WebPlayer.setCanDebug", gameDebug != null);
-        StateHasChanged();
+        var result = await Player.Initialise();
+
+        if (result)
+        {
+            gameDebug = game as IGameDebug;
+            await JS.InvokeVoidAsync("WebPlayer.setCanDebug", gameDebug != null);
+            StateHasChanged();
+        }
     }
 
     private async Task LoadGame(int slot)

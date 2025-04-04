@@ -1,6 +1,30 @@
-﻿<Router AppAssembly="typeof(Program).Assembly">
+﻿@using System.Reflection
+@inject IConfiguration Configuration
+
+<Router AppAssembly="typeof(Program).Assembly">
     <Found Context="routeData">
-        <RouteView RouteData="routeData" DefaultLayout="typeof(Layout.MainLayout)"/>
-        <FocusOnNavigate RouteData="routeData" Selector="h1"/>
+        @if (IsPageEnabled(routeData.PageType))
+        {
+            <RouteView RouteData="routeData" DefaultLayout="typeof(Layout.MainLayout)"/>
+            <FocusOnNavigate RouteData="routeData" Selector="h1"/>
+        }
+        else
+        {
+            <LayoutView Layout="typeof(Layout.MainLayout)">
+                <p>Not found</p>
+            </LayoutView>
+        }
     </Found>
 </Router>
+
+
+@code {
+    private bool IsPageEnabled(Type pageType)
+    {
+        var attr = pageType.GetCustomAttribute<RequiresConfigAttribute>();
+        if (attr == null) return true;
+
+        var isEnabled = Configuration.GetValue<bool>(attr.FlagName);
+        return isEnabled;
+    }
+}

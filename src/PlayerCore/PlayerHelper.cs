@@ -58,18 +58,16 @@ namespace QuestViva.PlayerCore
             m_game.PrintText += m_game_PrintText;
         }
 
-        public async Task<(bool, IEnumerable<string>)> Initialise(IPlayer player, bool? isCompiled = null)
+        public async Task<(bool, IEnumerable<string>)> Initialise(IPlayer player)
         {
-            bool result = await m_game.Initialise(player, isCompiled);
+            var result = await m_game.Initialise(player);
             if (m_game.Errors.Count > 0)
             {
                 return (false, m_game.Errors);
             }
-            else
-            {
-                var errors = result ? new List<string> { "Unable to initialise game" } : null;
-                return (result, errors);
-            }
+
+            var errors = result ? null : new List<string> { "Unable to initialise game" };
+            return (result, errors);
         }
 
         void m_game_PrintText(string text)
