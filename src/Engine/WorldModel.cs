@@ -373,11 +373,11 @@ public partial class WorldModel : IGame, IGameDebug
         _playerUi?.UpdateGameName(name);
     }
 
-    public async Task<bool> Initialise(IPlayer player, bool? isCompiled = null)
+    public async Task<bool> Initialise(IPlayer player)
     {
         EditMode = false;
         PlayerUi = player;
-        var loader = new QuestViva.Engine.GameLoader.GameLoader(this, QuestViva.Engine.GameLoader.GameLoader.LoadMode.Play, isCompiled);
+        var loader = new QuestViva.Engine.GameLoader.GameLoader(this, QuestViva.Engine.GameLoader.GameLoader.LoadMode.Play, _gameData?.IsCompiled);
         var result = await InitialiseInternal(loader);
         if (result)
         {

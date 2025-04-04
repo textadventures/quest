@@ -1,7 +1,6 @@
 @page "/textadventures/{Id}"
 @attribute [RequiresConfig("textadventures:Enabled")]
 @rendermode InteractiveServer
-@inject HttpClient HttpClient
 @inject Config Config
 
 @if (Config.TextAdventuresRemoteResources)

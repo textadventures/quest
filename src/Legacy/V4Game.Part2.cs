@@ -7995,7 +7995,7 @@ public partial class V4Game
 
     public event UpdateListHandler UpdateList;
 
-    public async Task<bool> Initialise(IPlayer player, bool? isCompiled = default)
+    public async Task<bool> Initialise(IPlayer player)
     {
         _player = player;
         if (_saveData != null)

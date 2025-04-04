@@ -11,7 +11,7 @@ namespace QuestViva.Common
 
     public interface IGame
     {
-        Task<bool> Initialise(IPlayer player, bool? isCompiled = null);
+        Task<bool> Initialise(IPlayer player);
         void Begin();
         void SendCommand(string command);
         void SendCommand(string command, int elapsedTime, IDictionary<string, string> metadata);

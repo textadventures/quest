@@ -16,6 +16,4 @@ public class UrlGameDataProvider(HttpClient client, string url) : IGameDataProvi
 
         return new GameData(stream, url, filename, this);
     }
-
-    public string Url => url;
 }
