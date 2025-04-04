@@ -16,7 +16,10 @@
     
     private IResourceUrlProvider GetResourceUrlProvider(GameData gameData)
     {
-        // TODO: Use ResourceRoot
-        return new LocalResourceUrlProvider($"textadventures.{Id}");
+        if (gameData.ResourceRoot == null)
+        {
+            throw new InvalidOperationException("Resource root is not set.");
+        }
+        return new RemoteResourceUrlProvider(gameData.ResourceRoot);
     }
 }
