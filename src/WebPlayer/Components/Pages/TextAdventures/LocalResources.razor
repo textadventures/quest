@@ -3,7 +3,7 @@
 @rendermode InteractiveServer
 @inject HttpClient HttpClient
 
-<Game GameDataProvider="@GetGameDataProvider()" ResourceUrlProvider="@GetResourceUrlProvider()"></Game>
+<Game GameDataProvider="@GetGameDataProvider()" ResourceUrlProvider="GetResourceUrlProvider"></Game>
 
 @code {
     [Parameter] public required string Id { get; set; }
@@ -13,7 +13,7 @@
         return new UrlGameDataProvider(HttpClient, "https://textadventures.co.uk/games/download/" + Id);
     }
 
-    private IResourceUrlProvider GetResourceUrlProvider()
+    private IResourceUrlProvider GetResourceUrlProvider(GameData gameData)
     {
         return new LocalResourceUrlProvider($"textadventures.{Id}");
     }

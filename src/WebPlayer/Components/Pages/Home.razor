@@ -17,7 +17,7 @@
 }
 else
 {
-    <Game GameDataProvider="@GetGameDataProvider()" ResourceUrlProvider="@GetResourceUrlProvider()"></Game>
+    <Game GameDataProvider="@GetGameDataProvider()" ResourceUrlProvider="GetResourceUrlProvider"></Game>
 }
 
 @code {
@@ -26,7 +26,7 @@ else
         return new FileDirectoryGameDataProvider(Config.HomeFile!);
     }
     
-    private IResourceUrlProvider GetResourceUrlProvider()
+    private IResourceUrlProvider GetResourceUrlProvider(GameData gameData)
     {
         return new LocalResourceUrlProvider("home");
     }

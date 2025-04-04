@@ -32,7 +32,6 @@ public class TextAdventuresGameDataProvider(HttpClient client, string id) : IGam
         }
 
         var url = GetSourceGameUrl(gameApiResult);
-        // ResourceRoot = gameApiResult.ResourceRoot;
         
         var response = await client.GetAsync(url);
         if (!response.IsSuccessStatusCode) return null;
@@ -40,6 +39,11 @@ public class TextAdventuresGameDataProvider(HttpClient client, string id) : IGam
         var stream = await response.Content.ReadAsStreamAsync();
         var filename = response.RequestMessage!.RequestUri!.Segments.Last();
 
-        return new GameData(stream, url, filename, this, isCompiled: true);
+        var data = new GameData(stream, url, filename, this)
+        {
+            IsCompiled = true,
+            ResourceRoot = gameApiResult.ResourceRoot
+        };
+        return data;
     }
 }

@@ -42,7 +42,7 @@
 
 @code {
     [Parameter] public required IGameDataProvider GameDataProvider { get; set; }
-    [Parameter] public required IResourceUrlProvider ResourceUrlProvider { get; set; }
+    [Parameter] public required Func<GameData, IResourceUrlProvider> ResourceUrlProvider { get; set; }
     private static MarkupString UiHtml => (MarkupString) PlayerHelper.GetUiResourceString("playercore.htm");
     private Player? Player { get; set; } = null;
     private GameData? gameData;
@@ -81,8 +81,10 @@
         
         if (game == null) return;
         
-        Player = new Player(game, ResourceUrlProvider, JS);
-        if (ResourceUrlProvider is LocalResourceUrlProvider localResourceProvider)
+        var resourceUrlProvider = ResourceUrlProvider(gameData);
+        
+        Player = new Player(game, resourceUrlProvider, JS);
+        if (resourceUrlProvider is LocalResourceUrlProvider localResourceProvider)
         {
             LocalResources.AddResourceStreamProvider(localResourceProvider.ResourcesId, Player.GetResourceStream);
         }
