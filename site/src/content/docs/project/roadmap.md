@@ -8,12 +8,7 @@ Here's a rough roadmap with my current ideas for major Quest Viva projects. The 
 
 ## Quest Viva 6.0 - WebPlayer
 
-This is well under way. Work remaining:
-
-- link to online resources for games on textadventures.co.uk without having to download the entire `.quest` file to the server
-- handle games from the current version of Quest 5's WebEditor
-
-When this is complete, we'll launch this as the way the "Play online" feature works for games on textadventures.co.uk, and turn off the "old" WebPlayer from Quest 5.
+This is well under way. Soon, we'll launch this as the way the "Play online" feature works for games on textadventures.co.uk, and turn off the "old" WebPlayer from Quest 5.
 
 ## Quest Viva 7.0 - WasmPlayer
 
