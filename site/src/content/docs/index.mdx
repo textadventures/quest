@@ -4,7 +4,8 @@ description: Create text adventure games
 template: splash
 editUrl: false
 hero:
-  tagline: Quest Viva is a powerful platform for creating text adventure games and interactive fiction. It's easy to use, and you can create games quickly - no programming required!
+  # tagline: Quest Viva is a powerful platform for creating text adventure games and interactive fiction. It's easy to use, and you can create games quickly - no programming required!
+  tagline: Quest Viva is a project to create a modern fork of the Quest 5 text adventure game engine.
   image:
     alt: Quest Viva logo
     file: ../../assets/quest-viva.svg
@@ -20,12 +21,24 @@ hero:
 
 import { Card, CardGrid } from '@astrojs/starlight/components';
 
-:::caution
-Quest Viva is currently **under construction**. To create a game, [please use Quest 5](https://textadventures.co.uk/quest) for now.
-:::
-
 <CardGrid>
-	<Card title="It's free..." icon="sun">
+  <Card title="Cross-platform" icon="forward-slash">
+		Quest Viva is built with .NET 9, so it runs on Windows, Mac and Linux.
+	</Card>
+  <Card title="Host your own games" icon="document">
+		It's now much easier to host your own games on any Linux VPS using a Docker image. Soon, you'll be able to run games entirely in the browser using
+    WebAssembly, with no need to run a server at all.
+	</Card>
+  <Card title="Save games without logging in" icon="cloud-download">
+		Players no longer need to create an account to save their progress. Game data is saved to the browser's local storage.
+	</Card>
+  <Card title="Responsive layout" icon="laptop">
+		All devices are now handled using a responsive layout, so the game will look good on any screen size.
+	</Card>
+  <Card title="Debugger" icon="pen">
+		Quest Viva brings the game debugger to the browser for the first time. Inspect objects and run walkthroughs.
+	</Card>
+	{/* <Card title="It's free..." icon="sun">
 		Quest Viva is free to use, and runs in your browser. Quest Viva is free open source software.
 	</Card>
 	<Card title="...and you're free" icon="heart">
@@ -70,5 +83,5 @@ Quest Viva is currently **under construction**. To create a game, [please use Qu
     Publish your game to [textadventures.co.uk](https://textadventures.co.uk/), the top destination for people looking for text adventure games to play. Or, host your game on your own server.
 
     There's no need for players to download any software - people can play your game directly in their browser, whatever device they're using.
-	</Card>
+	</Card> */}
 </CardGrid>

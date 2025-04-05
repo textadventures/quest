@@ -4,11 +4,9 @@ title: Roadmap
 
 # Roadmap
 
-Here's a rough roadmap with my current ideas for major Quest Viva projects. The version numbers are notional - I may change my mind about the numbering, but I think the sequence of projects is broadly correct.
-
 ## Quest Viva 6.0 - WebPlayer
 
-This is well under way. Soon, we'll launch this as the way the "Play online" feature works for games on textadventures.co.uk, and turn off the "old" WebPlayer from Quest 5.
+This is currently in beta. Soon, this will power the "Play online" feature for Quest games on [textadventures.co.uk](https://textadventures.co.uk), and the "old" WebPlayer from Quest 5 will be turned off.
 
 ## Quest Viva 7.0 - WasmPlayer
 

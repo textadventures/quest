@@ -20,10 +20,8 @@ Because there's [another system](https://github.com/ThePix/QuestJS) already call
 
 ## Sounds great, how do I get started?
 
-It's a work in progress - that means it's not ready to be used quite yet.
+If you want to create a game, you will still need to use [Quest 5](https://textadventures.co.uk/quest) for now.
 
-For now, if you want to create a game, please use [Quest 5](https://textadventures.co.uk/quest).
-
-If you want to host a game on your own server, Quest Viva's [WebPlayer](webplayer) is currently in alpha testing.
+If you've already created a game with Quest 5, then great - you can use Quest Viva's [WebPlayer](webplayer) to host your game on your own server.
 
 Check out the [roadmap](/project/roadmap) for details about the project.
