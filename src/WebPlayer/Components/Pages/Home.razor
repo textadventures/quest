@@ -2,10 +2,15 @@
 @using QuestViva.Common
 @using QuestViva.PlayerCore
 @inject Config Config
+@inject NavigationManager NavigationManager
 @rendermode InteractiveServer
 
 @if (string.IsNullOrEmpty(Config.HomeFile))
 {
+    @if (!string.IsNullOrEmpty(Config.HomeRedirect))
+    {
+        NavigationManager.NavigateTo(Config.HomeRedirect);
+    }
     @if (Config.DevEnabled)
     {
         <p><a href="/dev/open">Open a file</a></p>

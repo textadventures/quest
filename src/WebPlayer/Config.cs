@@ -15,6 +15,7 @@ public class WebPlayerConfig
 public class HomeOptions
 {
     public string? File { get; set; }
+    public string? Redirect { get; set; }
 }
 
 public class DevOptions
@@ -34,6 +35,7 @@ public class Config(IOptionsMonitor<WebPlayerConfig> optionsMonitor) : IConfig
     
     public bool UseNCalc => ConfigValue.UseNCalc;
     public string? HomeFile => ConfigValue.Home?.File;
+    public string? HomeRedirect => ConfigValue.Home?.Redirect;
     public bool DevEnabled => ConfigValue.Dev?.Enabled ?? false;
     public bool TextAdventuresRemoteResources => ConfigValue.TextAdventures?.RemoteResources ?? false;
 }
