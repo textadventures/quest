@@ -16,6 +16,7 @@ public class HomeOptions
 {
     public string? File { get; set; }
     public string? Redirect { get; set; }
+    public bool Debug { get; set; }
 }
 
 public class DevOptions
@@ -27,6 +28,7 @@ public class TextAdventuresOptions
 {
     public bool Enabled { get; set; }
     public bool RemoteResources { get; set; }
+    public bool Debug { get; set; }
 }
 
 public class Config(IOptionsMonitor<WebPlayerConfig> optionsMonitor) : IConfig
@@ -35,7 +37,9 @@ public class Config(IOptionsMonitor<WebPlayerConfig> optionsMonitor) : IConfig
     
     public bool UseNCalc => ConfigValue.UseNCalc;
     public string? HomeFile => ConfigValue.Home?.File;
+    public bool HomeDebug => ConfigValue.Home?.Debug ?? false;
     public string? HomeRedirect => ConfigValue.Home?.Redirect;
     public bool DevEnabled => ConfigValue.Dev?.Enabled ?? false;
     public bool TextAdventuresRemoteResources => ConfigValue.TextAdventures?.RemoteResources ?? false;
+    public bool TextAdventuresDebug => ConfigValue.TextAdventures?.Debug ?? false;
 }
