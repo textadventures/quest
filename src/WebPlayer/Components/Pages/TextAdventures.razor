@@ -15,7 +15,7 @@
     {
         if (!Config.TextAdventuresRemoteResources)
         {
-            return new UrlGameDataProvider(HttpClient, "https://textadventures.co.uk/games/download/" + Id);
+            return new UrlGameDataProvider(HttpClient, "https://textadventures.co.uk/games/download/" + Id, Id);
         }
         
         return new TextAdventuresGameDataProvider(HttpClient, Id);

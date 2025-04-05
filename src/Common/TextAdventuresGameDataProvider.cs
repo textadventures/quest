@@ -39,7 +39,7 @@ public class TextAdventuresGameDataProvider(HttpClient client, string id) : IGam
         var stream = await response.Content.ReadAsStreamAsync();
         var filename = response.RequestMessage!.RequestUri!.Segments.Last();
 
-        var data = new GameData(stream, url, filename, this)
+        var data = new GameData(stream, id, filename, this)
         {
             IsCompiled = true,
             ResourceRoot = gameApiResult.ResourceRoot
