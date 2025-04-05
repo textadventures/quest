@@ -31,7 +31,7 @@
     </script>
 </HeadContent>
 
-@if (gameDebug != null)
+@if (EnableDebug && gameDebug != null)
 {
     <Debugger Game="@gameDebug" OnRunWalkthrough="RunWalkthrough"></Debugger>
 }
@@ -43,6 +43,7 @@
 @code {
     [Parameter] public required IGameDataProvider GameDataProvider { get; set; }
     [Parameter] public required Func<GameData, IResourceUrlProvider> ResourceUrlProvider { get; set; }
+    [Parameter] public required bool EnableDebug { get; set; } = false;
     private static MarkupString UiHtml => (MarkupString) PlayerHelper.GetUiResourceString("playercore.htm");
     private Player? Player { get; set; } = null;
     private GameData? gameData;
@@ -95,7 +96,7 @@
         if (result)
         {
             gameDebug = game as IGameDebug;
-            await JS.InvokeVoidAsync("WebPlayer.setCanDebug", gameDebug != null);
+            await JS.InvokeVoidAsync("WebPlayer.setCanDebug", EnableDebug && gameDebug != null);
             StateHasChanged();
         }
     }
