@@ -400,15 +400,13 @@ public class Player : IPlayerHelperUI
 
     private void RegisterExternalStylesheets()
     {
-        // TODO
+        var stylesheets = PlayerHelper.Game.GetExternalStylesheets();
+        if (stylesheets == null) return;
         
-        // var stylesheets = m_player.GetExternalStylesheets();
-        // if (stylesheets == null) return;
-        //
-        // foreach (var stylesheet in stylesheets)
-        // {
-        //     m_buffer.AddJavaScriptToBuffer("addExternalStylesheet", new StringParameter(stylesheet));
-        // }
+        foreach (var stylesheet in stylesheets)
+        {
+            AddJavaScriptToBuffer("addExternalStylesheet", stylesheet);
+        }
     }
     
     private async Task ClearBuffer()
