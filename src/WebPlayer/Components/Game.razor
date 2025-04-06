@@ -1,8 +1,11 @@
+@using Microsoft.AspNetCore.Components.Server.Circuits
 @using QuestViva.Common
 @using QuestViva.PlayerCore
 @using QuestViva.WebPlayer.Components.Debugger
 @using QuestViva.WebPlayer.Models
 @rendermode InteractiveServer
+@implements IDisposable
+@inject DisconnectionHandler DisconnectionHandler
 @inject GameLauncher GameLauncher
 @inject IJSRuntime JS
 
@@ -50,6 +53,11 @@
     private IGame? game;
     private IGameDebug? gameDebug;
     private SaveSlot[] saves = [];
+
+    protected override void OnInitialized()
+    {
+        DisconnectionHandler.OnCircuitDisconnected += OnCircuitDisconnectedAsync;
+    }
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
@@ -113,4 +121,16 @@
         if (Player == null) return;
         await Player.RunWalkthrough(name);
     }
+    
+    private Task OnCircuitDisconnectedAsync()
+    {
+        game?.Finish();
+        return Task.CompletedTask;
+    }
+
+    public void Dispose()
+    {
+        DisconnectionHandler.OnCircuitDisconnected -= OnCircuitDisconnectedAsync;
+    }
+
 }
