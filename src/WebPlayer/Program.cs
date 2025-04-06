@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Components.Server.Circuits;
 using QuestViva.Common;
 using QuestViva.Engine;
 using QuestViva.PlayerCore;
@@ -17,6 +18,8 @@ builder.Services.AddRazorComponents()
     });
 
 builder.Services.Configure<WebPlayerConfig>(builder.Configuration);
+builder.Services.AddSingleton<DisconnectionHandler>();
+builder.Services.AddSingleton<CircuitHandler>(sp => sp.GetRequiredService<DisconnectionHandler>());
 builder.Services.AddSingleton<Config>();
 builder.Services.AddSingleton<IConfig>(sp => sp.GetRequiredService<Config>());
 builder.Services.AddSingleton<WorldModelFactory>();

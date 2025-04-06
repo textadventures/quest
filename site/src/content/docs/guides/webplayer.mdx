@@ -12,31 +12,7 @@ There are two ways of running WebPlayer:
 
 ## Run WebPlayer using Docker
 
-First, install and run [Docker](https://www.docker.com/). Then, you can get a basic instance of WebPlayer up and running using:
-
-```bash wrap
-docker run -p 8080:8080 ghcr.io/textadventures/quest-viva-webplayer:latest
-```
-
-WebPlayer will now be running at <text>http://localhost:8080</text>
-
-While Quest Viva is under active development, you may want to pass the `--pull always` flag so that Docker always fetches the latest version, instead of using a cached one:
-
-```bash wrap
-docker run -p 8080:8080 --pull always ghcr.io/textadventures/quest-viva-webplayer:latest
-```
-
-You may also want to fetch a specific version:
-
-```bash wrap
-docker run -p 8080:8080 --pull always ghcr.io/textadventures/quest-viva-webplayer:6.0.0-alpha.12
-```
-
-You can see the available image versions on the [`quest-viva-webplayer` package page](https://github.com/textadventures/quest/pkgs/container/quest-viva-webplayer).
-
-### `compose.yaml` file
-
-For easier configuration, you can create a `compose.yaml` file:
+First, install and run [Docker](https://www.docker.com/). For configuration, you can create a `compose.yaml` file:
 
 ```yaml
 services:
@@ -44,6 +20,8 @@ services:
     image: ghcr.io/textadventures/quest-viva-webplayer:latest
     ports:
       - "8080:8080"
+    environment:
+      dev__Enabled: true
 ```
 
 You can then run this using:
@@ -52,7 +30,11 @@ You can then run this using:
 docker compose up
 ```
 
-This also accepts the `--pull always` flag, if you want to ensure you're running the very latest version:
+WebPlayer will now be running at <text>http://localhost:8080</text>
+
+The configuration above sets the `dev__Enabled` environment variable to `true`, which enables the developer mode. This enables uploading a game directly into the container, which is handy for testing - though you probably don't want to enable this on a production server.
+
+While Quest Viva is under active development, you may want to pass the `--pull always` flag so that Docker always fetches the latest version, instead of using a cached one:
 
 ```bash
 docker compose up --pull always
@@ -76,13 +58,15 @@ You should then have WebPlayer running, by default at <text>http://localhost:505
 
 ## Configuration
 
-You can choose a game to serve on the home page. The way to set this configuration varies depending on whether you're running via Docker, or building from source.
+### Home page
 
-<Tabs>
+You can choose a game to serve on the home page.
+
+<Tabs syncKey='config'>
   <TabItem label="Docker">
-    For Docker, you need to specify a `Home__File` environment variable to point to the game, _and_ that game needs to be available in the Docker environment. To do that, you need to set up a Docker volume.
+    You need to specify a `Home__File` environment variable to point to the game, _and_ that game needs to be available in the Docker environment. To do that, you need to set up a Docker volume.
 
-    Here's an example that serves `Moquette.quest` which is stored in `~/Downloads`:
+    Here's an example that serves `/path/to/your-game.quest` on your machine via a Docker volume, which exposes it as `data/your-game.quest` in the container:
 
     ```yaml
     services:
@@ -91,13 +75,13 @@ You can choose a game to serve on the home page. The way to set this configurati
         ports:
           - "8080:8080"
         environment:
-          Home__File: "/data/Moquette.quest"
+          Home__File: "/data/your-game.quest"
         volumes:
-          - "~/Downloads/Moquette.quest:/data/Moquette.quest:ro"
+          - "/path/to/your-game.quest:/data/your-game.quest:ro"
     ```
   </TabItem>
   <TabItem label="Source">
-    If you're building from source, you just need to update `appsettings.json`, like this:
+    Update `appsettings.json`, like this:
 
     ```json
     {
@@ -109,10 +93,96 @@ You can choose a game to serve on the home page. The way to set this configurati
       },
       "AllowedHosts": "*",
       "Home": {
-        "File": "/Users/alexwarren/Downloads/Moquette.quest"
+        "File": "/path/to/your-game.quest"
       }
     }
 
     ```
   </TabItem>
+</Tabs>
+
+### Debugger
+
+If you're developing your game, then you may want to enable the debugger.
+
+<Tabs syncKey='config'>
+  Set the `Home__Debug` environment variable to `true` to enable the debugger.
+
+  <TabItem label="Docker">
+    ```yaml
+    services:
+      webplayer:
+        image: ghcr.io/textadventures/quest-viva-webplayer:latest
+        ports:
+          - "8080:8080"
+        environment:
+          Home__File: "/data/your-game.quest"
+          Home__Debug: true
+        volumes:
+          - "/path/to/your-game.quest:/data/your-game.quest:ro"
+    ```
+  </TabItem>
+  <TabItem label="Source">
+    Update `appsettings.json`, like this:
+
+    ```json
+    {
+      "Logging": {
+        "LogLevel": {
+          "Default": "Information",
+          "Microsoft.AspNetCore": "Warning"
+        }
+      },
+      "AllowedHosts": "*",
+      "Home": {
+        "File": "/path/to/your-game.quest"
+        "Debug": true
+      }
+    }
+
+    ```
+  </TabItem>
+
+  When running the game, you'll see a "Debug" button in the top right corner. Click this to open the debugger.
+</Tabs>
+
+### Developer mode
+
+Enable developer mode to allow uploading a game directly into the container. This is useful for testing, as you don't need to restart your container to recreate your volume. You probably don't want to enable this on a production server though. In this mode, if there is no home page game specified, it will link to the file upload page. Otherwise you can access the page at `/dev/open`.
+
+<Tabs syncKey='config'>
+  <TabItem label="Docker">
+    You need to set the `Dev__Enabled` environment variable to `true`:
+    
+    ```yaml
+    services:
+      webplayer:
+        image: ghcr.io/textadventures/quest-viva-webplayer:latest
+        ports:
+          - "8080:8080"
+        environment:
+          Dev__Enabled: true
+    ```
+  </TabItem>
+  <TabItem label="Source">
+    Update `appsettings.json`, like this:
+
+    ```json
+    {
+      "Logging": {
+        "LogLevel": {
+          "Default": "Information",
+          "Microsoft.AspNetCore": "Warning"
+        }
+      },
+      "AllowedHosts": "*",
+      "Dev": {
+        "Enabled": true
+      }
+    }
+
+    ```
+  </TabItem>
+
+  The debugger is always enabled in developer mode. When running the game, you'll see a "Debug" button in the top right corner. Click this to open the debugger.
 </Tabs>
