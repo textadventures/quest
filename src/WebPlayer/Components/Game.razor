@@ -3,6 +3,7 @@
 @using QuestViva.WebPlayer.Components.Debugger
 @using QuestViva.WebPlayer.Models
 @rendermode InteractiveServer
+@implements IDisposable
 @inject GameLauncher GameLauncher
 @inject IJSRuntime JS
 
@@ -113,4 +114,10 @@
         if (Player == null) return;
         await Player.RunWalkthrough(name);
     }
+
+    public void Dispose()
+    {
+        game?.Finish();
+    }
+
 }
