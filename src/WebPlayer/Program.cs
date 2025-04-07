@@ -12,8 +12,8 @@ builder.Services.AddRazorComponents()
     .AddHubOptions(o =>
     {
         o.EnableDetailedErrors = builder.Environment.IsDevelopment();
-        // Set max message size to 1MB (the default is 32KB, which is too small to receive save game data)
-        o.MaximumReceiveMessageSize = 1024 * 1024;
+        // Set max message size to 5MB (the default is 32KB, which is too small to receive save game data)
+        o.MaximumReceiveMessageSize = 5 * 1024 * 1024;
     });
 
 builder.Services.Configure<WebPlayerConfig>(builder.Configuration);
