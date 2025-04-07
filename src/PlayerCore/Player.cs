@@ -84,20 +84,24 @@ public class Player : IPlayerHelperUI
     
     private async Task ClearJavaScriptBuffer()
     {
-        while (JavaScriptBuffer.Count != 0)
-        {
-            var buffer = JavaScriptBuffer.ToArray();
-            JavaScriptBuffer.Clear();
+        var buffer = JavaScriptBuffer.ToArray();
+        JavaScriptBuffer.Clear();
         
-            foreach (var (identifier, args) in buffer)
+        foreach (var (identifier, args) in buffer)
+        {
+            try
+            {
+                await JSRuntime.InvokeVoidAsync(identifier, args);
+            }
+            catch (Exception ex)
             {
                 try
                 {
-                    await JSRuntime.InvokeVoidAsync(identifier, args);
+                    await JSRuntime.InvokeVoidAsync("console.error", ex.Message);                    
                 }
-                catch (Exception ex)
+                catch 
                 {
-                    AddJavaScriptToBuffer("console.error", ex.Message);
+                    // Ignore errors when writing to console
                 }
             }
         }
@@ -400,15 +404,13 @@ public class Player : IPlayerHelperUI
 
     private void RegisterExternalStylesheets()
     {
-        // TODO
+        var stylesheets = PlayerHelper.Game.GetExternalStylesheets();
+        if (stylesheets == null) return;
         
-        // var stylesheets = m_player.GetExternalStylesheets();
-        // if (stylesheets == null) return;
-        //
-        // foreach (var stylesheet in stylesheets)
-        // {
-        //     m_buffer.AddJavaScriptToBuffer("addExternalStylesheet", new StringParameter(stylesheet));
-        // }
+        foreach (var stylesheet in stylesheets)
+        {
+            AddJavaScriptToBuffer("addExternalStylesheet", stylesheet);
+        }
     }
     
     private async Task ClearBuffer()

@@ -33,7 +33,7 @@ namespace QuestViva.Common
         void Tick(int elapsedTime);
         
         IEnumerable<string>? GetExternalScripts();
-        IEnumerable<string> GetExternalStylesheets();
+        IEnumerable<string>? GetExternalStylesheets();
         
         System.IO.Stream? GetResourceStream(string filename);
         string GameID { get; }

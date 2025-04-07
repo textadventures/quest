@@ -138,7 +138,6 @@ function initPlayerUI() {
     const gamePanes = document.getElementById("gamePanes");
     const gameContent = document.getElementById("gameContent");
     const gamePanel = document.getElementById("gamePanel");
-    const gamePanelSpacer = document.getElementById("gamePanelSpacer");
     const gridPanel = document.getElementById("gridPanel");
     
     cmdShowPanes.addEventListener("click", function () {
@@ -182,7 +181,6 @@ function initPlayerUI() {
 
         const newPanelImageMaxHeight = `${(window.innerHeight - 30) * 0.5}px`;
         updatePanelImageMaxHeight(newPanelImageMaxHeight);
-        resetPanelHeight();
 
         wasWide = isWide;
     }
@@ -227,16 +225,10 @@ function initPlayerUI() {
             }
         }
     };
-    
-    const resetPanelHeight = () => {
-        if (_showGrid) return;
-        gamePanelSpacer.style.height = gamePanel.offsetHeight + "px";
-    };
 
     window.setPanelHeight = function () {
         if (_showGrid) return;
         setTimeout(function () {
-            resetPanelHeight();
             scrollToEnd();
         }, 100);
     };
@@ -1152,7 +1144,6 @@ function ShowGrid(height) {
     $("#gridPanel").height(height);
     $("#gridCanvas").prop("height", height);
     paper.view.viewSize.height = height;
-    $("#gamePanelSpacer").height(height);
 }
 
 

@@ -34,7 +34,7 @@ div#gameBorder
 }
 div#gamePanel
 {
-    position: fixed;
+    position: sticky;
     top: 32px;
     padding-top: 2px;
     text-align: center;
@@ -42,7 +42,7 @@ div#gamePanel
 }
 div#gridPanel
 {
-    position: fixed;
+    position: sticky;
     top: 32px;
     padding: 0;
     overflow: hidden;
