@@ -1,10 +1,12 @@
+#nullable enable
 using System.IO;
 using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Json;
 using System.Threading.Tasks;
+using QuestViva.Common;
 
-namespace QuestViva.Common;
+namespace QuestViva.PlayerCore;
 
 public class TextAdventuresGameDataProvider(HttpClient client, string id) : IGameDataProvider
 {
