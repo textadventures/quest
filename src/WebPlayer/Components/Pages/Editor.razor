@@ -18,6 +18,6 @@
 
     private IResourceUrlProvider GetResourceUrlProvider(GameData gameData)
     {
-        return new RemoteResourceUrlProvider($"https://textadventures.blob.core.windows.net/editorgames/{Id}");
+        return new RemoteResourceUrlProvider($"https://textadventures.blob.core.windows.net/editorgames/{Id}/");
     }
 }
