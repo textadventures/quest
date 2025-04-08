@@ -12,8 +12,8 @@ builder.Services.AddRazorComponents()
     .AddHubOptions(o =>
     {
         o.EnableDetailedErrors = builder.Environment.IsDevelopment();
-        // Set max message size to 1MB (the default is 32KB, which is too small to receive save game data)
-        o.MaximumReceiveMessageSize = 1024 * 1024;
+        // Set max message size to 5MB (the default is 32KB, which is too small to receive save game data)
+        o.MaximumReceiveMessageSize = 5 * 1024 * 1024;
     });
 
 builder.Services.Configure<WebPlayerConfig>(builder.Configuration);
@@ -48,10 +48,10 @@ app.MapGet("/res/{dir1}/{dir2}/{name}", (string dir1, string dir2, string name) 
 app.MapGet("/game/{resourcesId}/{name}", LocalResources.GetResource);
 app.MapGet("/Play.aspx", async context =>
 {
-    var id = context.Request.Query["id"];
+    var id = (string?)context.Request.Query["id"];
     if (!string.IsNullOrEmpty(id))
     {
-        context.Response.Redirect($"/textadventures/{id}");
+        context.Response.Redirect(id.StartsWith("editor/") ? $"/editor/{id[7..]}" : $"/textadventures/{id}");
     }
     else
     {

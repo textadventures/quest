@@ -191,7 +191,7 @@ function initPlayerUI() {
         const gameBorder = document.getElementById("gameBorder");
         gameBorder.style.maxWidth = width + "px";
         
-        const status = document.getElementById("status");
+        const status = document.getElementById("qv-status");
         status.style.maxWidth = (width - 2) + "px";
 
         gameWidth = width;
@@ -377,14 +377,15 @@ function uiHide(element) {
 
 function updateStatusVisibility() {
     var anyVisible = isElementVisible("#location") || isElementVisible("#cmdSave");
+    console.log("updateStatusVisibility: " + anyVisible);
     if (anyVisible) {
-        $("#status").show();
+        $("#qv-status").show();
         $("#divOutput").css("margin-top", "20px");
         $("#gamePanes").css("top", "24px");
         $("#gridPanel").css("top", "32px");
         $("#gamePanel").css("top", "32px");
     } else {
-        $("#status").hide();
+        $("#qv-status").hide();
         $("#divOutput").css("margin-top", "0px");
         $("#gamePanes").css("top", "0px");
         $("#gridPanel").css("top", "0px");
@@ -1154,6 +1155,9 @@ function endsWith(str, suffix) {
     return str.indexOf(suffix, str.length - suffix.length) !== -1;
 }
 
+// TODO: Stop calling this function from Core.aslx, I don't think the core libraries should depend on or manipulate
+// interface details like this - at least not while playercore.htm is part of the runtime instead of being supplied
+// by the library.
 function setCss(element, cssString) {
   el = $(element);
   ary = cssString.split(";");

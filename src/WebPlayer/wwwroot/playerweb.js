@@ -62,6 +62,14 @@ class WebPlayer {
         const cmdDebug = document.getElementById("cmdDebug");
         cmdDebug.style.display = value ? "initial" : "none";
     }
+
+    static setCanSave(value) {
+        const cmdSave = document.getElementById("cmdSave");
+        cmdSave.style.display = value ? "initial" : "none";
+        if (!value) {
+            window.saveGame = () => addText("Disabled");
+        }
+    }
     
     static setAnimateScroll(value) {
         _animateScroll = value;

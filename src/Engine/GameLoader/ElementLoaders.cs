@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Xml;
@@ -12,7 +13,7 @@ namespace QuestViva.Engine.GameLoader;
 
 internal partial class GameLoader
 {
-    private delegate void LoadNestedXmlHandler(string filename, XmlReader newReader);
+    private delegate void LoadNestedXmlHandler(Stream stream, XmlReader newReader);
 
     private readonly Dictionary<string, IXmlLoader> _xmlLoaders = new();
     private IXmlLoader _defaultXmlLoader = null!;
@@ -125,9 +126,9 @@ internal partial class GameLoader
             AddError?.Invoke(error);
         }
 
-        protected void LoadXml(string filename, XmlReader newReader)
+        protected void LoadXml(Stream stream, XmlReader newReader)
         {
-            LoadNestedXml?.Invoke(filename, newReader);
+            LoadNestedXml?.Invoke(stream, newReader);
         }
     }
 
@@ -298,7 +299,7 @@ internal partial class GameLoader
             {
                 RaiseError($"Included file '{filename}' is not a library");
             }
-            LoadXml(filename, newReader);
+            LoadXml(stream, newReader);
             return LoadInternal(filename);
         }
 
