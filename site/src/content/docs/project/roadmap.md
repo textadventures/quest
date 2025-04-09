@@ -6,7 +6,7 @@ title: Roadmap
 
 ## Quest Viva 6.0 - WebPlayer
 
-This is currently in beta. Soon, this will power the "Play online" feature for Quest games on [textadventures.co.uk](https://textadventures.co.uk), and the "old" WebPlayer from Quest 5 will be turned off.
+This is currently in beta and is now powering the "Play online" feature for Quest games on [textadventures.co.uk](https://textadventures.co.uk).
 
 ## Quest Viva 7.0 - WasmPlayer
 
