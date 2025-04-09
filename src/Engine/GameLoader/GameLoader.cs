@@ -59,20 +59,29 @@ internal partial class GameLoader
     public async Task<bool> Load(GameData gameData, Stream? saveData)
     {
         Stream dataStream;
+        Stream gameDataScanStream;
 
         if (saveData != null)
         {
             dataStream = saveData;
+            gameDataScanStream = gameData.Data;
         }
         else
         {
             if (Path.GetExtension(gameData.Filename) == ".quest")
             {
                 dataStream = await LoadCompiledFile(gameData);
+                gameDataScanStream = gameData.Data;
             }
             else
             {
                 dataStream = gameData.Data;
+                // Because dataStream is gameData.Data, we'll need a _copy_ of this for ScanTemplates, otherwise we
+                // mess up the stream positions for parsing the XML.
+                gameDataScanStream = new MemoryStream();
+                await gameData.Data.CopyToAsync(gameDataScanStream);
+                dataStream.Seek(0, SeekOrigin.Begin);
+                gameDataScanStream.Seek(0, SeekOrigin.Begin);
             }
         }
 
@@ -121,7 +130,7 @@ internal partial class GameLoader
                 AddError("File must begin with an ASL element");
             }
 
-            LoadXml(gameData.Data, reader);
+            LoadXml(gameDataScanStream, reader);
 
             reader.Close();
         }
@@ -164,7 +173,7 @@ internal partial class GameLoader
         return result.GameFile;
     }
 
-    private void LoadXml(Stream stream, XmlReader reader)
+    private void LoadXml(Stream scanStream, XmlReader reader)
     {
         var timer = System.Diagnostics.Stopwatch.StartNew();
 
@@ -177,8 +186,7 @@ internal partial class GameLoader
 
         if (!IsCompiledFile && _currentFile.Count == 0 && WorldModel.Version >= WorldModelVersion.v530)
         {
-            stream.Seek(0, SeekOrigin.Begin);
-            ScanForTemplates(stream);
+            ScanForTemplates(scanStream);
         }
 
         var data = new FileData
