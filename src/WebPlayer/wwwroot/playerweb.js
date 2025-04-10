@@ -79,6 +79,20 @@ class WebPlayer {
         await WebPlayer.dotNetHelper.invokeMethodAsync("UiSendCommandAsync", command, tickCount, metadata);
         canSendCommand = true;
     }
+    
+    static runJs(scripts) {
+        // We need globalEval so that calls which add functions add them to the global scope.
+        // e.g. spondre evals strings like "function blah() { ... }" which need to be in the global scope so
+        // they can be called from subsequent evals.
+        const globalEval = window.eval;
+        for (const script of scripts) {
+            try {
+                globalEval(script);
+            } catch (e) {
+                console.error(e);
+            }
+        }
+    }
 
     static async uiChoice(choice) {
         await WebPlayer.dotNetHelper.invokeMethodAsync("UiChoiceAsync", choice);

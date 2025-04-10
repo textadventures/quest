@@ -3,7 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Threading;
+using System.Text.Json;
 using System.Threading.Tasks;
 using Microsoft.JSInterop;
 using QuestViva.Common;
@@ -86,25 +86,29 @@ public class Player : IPlayerHelperUI
     {
         var buffer = JavaScriptBuffer.ToArray();
         JavaScriptBuffer.Clear();
+
+        var scripts = new List<string>();
         
         foreach (var (identifier, args) in buffer)
         {
-            try
+            // We previously simply called this here (in a try/catch):
+            // await JSRuntime.InvokeVoidAsync(identifier, args);
+            
+            // But we don't want lots of back and forth between the server and browser
+            // for every single JS call, as there can be lots (especially at the start
+            // of a game). So we batch them up into one Blazor JS call.
+            
+            if (identifier == "eval" && args is [string str])
             {
-                await JSRuntime.InvokeVoidAsync(identifier, args);
+                // No point in eval-ing an eval
+                scripts.Add(str);
+                continue;
             }
-            catch (Exception ex)
-            {
-                try
-                {
-                    await JSRuntime.InvokeVoidAsync("console.error", ex.Message);                    
-                }
-                catch 
-                {
-                    // Ignore errors when writing to console
-                }
-            }
+            var serializedArgs = string.Join(',', args?.Select(arg => JsonSerializer.Serialize(arg)) ?? []); 
+            scripts.Add($"{identifier}({serializedArgs})");
         }
+        
+        await JSRuntime.InvokeVoidAsync("WebPlayer.runJs", scripts);
     }
     
     private void RequestNextTimerTick(int seconds)
