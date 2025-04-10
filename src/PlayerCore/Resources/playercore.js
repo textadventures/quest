@@ -377,7 +377,6 @@ function uiHide(element) {
 
 function updateStatusVisibility() {
     var anyVisible = isElementVisible("#location") || isElementVisible("#cmdSave");
-    console.log("updateStatusVisibility: " + anyVisible);
     if (anyVisible) {
         $("#qv-status").show();
         $("#divOutput").css("margin-top", "20px");
