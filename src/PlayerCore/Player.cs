@@ -75,6 +75,8 @@ public class Player : IPlayerHelperUI
             {
                 if (args[i] is string str)
                 {
+                    // NOTE: Removing linebreaks shouldn't be necessary, but some existing games depend on this
+                    // happening. So if we want to change this, that would be a breaking change for a new ASL version.
                     args[i] = str.Replace("\n", "").Replace("\r", "");
                 }
             }
