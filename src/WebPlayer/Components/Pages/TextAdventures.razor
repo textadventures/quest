@@ -15,10 +15,10 @@
     {
         if (!Config.TextAdventuresRemoteResources)
         {
-            return new UrlGameDataProvider(HttpClient, "https://textadventures.co.uk/games/download/" + Id, Id);
+            return new UrlGameDataProvider(HttpClient, $"{Config.GameDownloadRoot}{Id}", Id);
         }
         
-        return new TextAdventuresGameDataProvider(HttpClient, Id);
+        return new TextAdventuresGameDataProvider(Config, HttpClient, Id);
     }
 
     private IResourceUrlProvider GetResourceUrlProvider(GameData gameData)
