@@ -86,7 +86,7 @@ internal partial class GameSaver
             writer.WriteStartElement("dynamictemplate");
             writer.WriteAttributeString("name", e.Name);
 
-            writer.WriteString(GameSaver.m_worldModel.EditMode
+            writer.WriteString(GameSaver._worldModel.EditMode
                 ? e.Fields[FieldDefinitions.Text]
                 : e.Fields[FieldDefinitions.Function].Save());
             writer.WriteEndElement();
