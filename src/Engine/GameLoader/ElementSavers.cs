@@ -268,7 +268,7 @@ internal partial class GameSaver
             }
 
             var result = string.Empty;
-            var indent = Utility.GetIndentChars(writer.IndentLevel + 1, writer.IndentChars);
+            var indent = Utility.GetIndentChars(writer.IndentLevel + 1, GameXmlWriter.IndentChars);
 
             result = steps.Aggregate(result, (current, step) => current + Environment.NewLine + indent + step);
             result += Environment.NewLine;

@@ -134,7 +134,7 @@ internal partial class GameSaver
 
     public string SaveScript(GameXmlWriter writer, IScript script, int indent)
     {
-        return Utility.IndentScript(script.Save(), writer.IndentLevel + indent, writer.IndentChars);
+        return Utility.IndentScript(script.Save(), writer.IndentLevel + indent, GameXmlWriter.IndentChars);
     }
 
     private void UpdateImpliedTypesCache()

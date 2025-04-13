@@ -1,123 +1,106 @@
-﻿#nullable disable
-using System;
+﻿using System;
 using System.Text;
 using System.Xml;
 
-namespace QuestViva.Engine.GameLoader
+namespace QuestViva.Engine.GameLoader;
+
+internal class GameXmlWriter
 {
-    internal class GameXmlWriter
+    internal class GameXmlWriterOptions
     {
-        internal class GameXmlWriterOptions
-        {
-            public bool IncludeWalkthrough { get; set; }
-        }
+        public bool IncludeWalkthrough { get; init; }
+    }
 
-        private StringBuilder m_output;
-        private XmlWriter m_writer;
-        private int m_indentLevel = 0;
-        private const string k_indentChars = "  ";
-        private SaveMode m_mode;
-        private GameXmlWriterOptions m_options;
+    private readonly StringBuilder _output;
+    private readonly XmlWriter _writer;
 
-        public GameXmlWriter(SaveMode mode, GameXmlWriterOptions options = null)
+    public const string IndentChars = "  ";
+
+    public GameXmlWriter(SaveMode mode, GameXmlWriterOptions? options = null)
+    {
+        Mode = mode;
+        _output = new StringBuilder();
+        var settings = new XmlWriterSettings
         {
-            m_mode = mode;
-            m_output = new StringBuilder();
-            XmlWriterSettings settings = new XmlWriterSettings();
-            settings.Indent = true;
-            settings.IndentChars = k_indentChars;
-            settings.OmitXmlDeclaration = true;
-            m_writer = XmlWriter.Create(m_output, settings);
-            if (options == null)
+            Indent = true,
+            IndentChars = IndentChars,
+            OmitXmlDeclaration = true
+        };
+        _writer = XmlWriter.Create(_output, settings);
+        options ??= new GameXmlWriterOptions
+        {
+            IncludeWalkthrough = (mode != SaveMode.Package)
+        };
+        Options = options;
+    }
+
+    public void WriteComment(string text)
+    {
+        _writer.WriteComment(text);
+    }
+
+    public void WriteStartElement(string localName)
+    {
+        _writer.WriteStartElement(localName);
+        IndentLevel++;
+    }
+
+    public void WriteEndElement()
+    {
+        _writer.WriteEndElement();
+        IndentLevel--;
+    }
+
+    public void WriteAttributeString(string localName, string value)
+    {
+        _writer.WriteAttributeString(localName, value);
+    }
+
+    public void WriteString(string text)
+    {
+        // When writing a string containing newlines, the XmlWriter won't indent the ending tag at all.
+        // So, add the right amount of indenting to the end of the string, so that the ending tag will
+        // be indented correctly.
+        if (text.Contains(Environment.NewLine))
+        {
+            for (int i = 0; i < IndentLevel - 1; i++)
             {
-                options = new GameXmlWriterOptions();
-                options.IncludeWalkthrough = (mode != SaveMode.Package);
-            }
-            m_options = options;
-        }
-
-        public void WriteComment(string text)
-        {
-            m_writer.WriteComment(text);
-        }
-
-        public void WriteStartElement(string localName)
-        {
-            m_writer.WriteStartElement(localName);
-            m_indentLevel++;
-        }
-
-        public void WriteEndElement()
-        {
-            m_writer.WriteEndElement();
-            m_indentLevel--;
-        }
-
-        public void WriteAttributeString(string localName, string value)
-        {
-            m_writer.WriteAttributeString(localName, value);
-        }
-
-        public void WriteString(string text)
-        {
-            // When writing a string containing newlines, the XmlWriter won't indent the ending tag at all.
-            // So, add the right amount of indenting to the end of the string, so that the ending tag will
-            // be indented correctly.
-            if (text.Contains(Environment.NewLine))
-            {
-                for (int i = 0; i < m_indentLevel - 1; i++)
-                {
-                    text += k_indentChars;
-                }
-            }
-            if (UseCDATA(text))
-            {
-                m_writer.WriteCData(text);
-            }
-            else
-            {
-                m_writer.WriteString(text);
+                text += IndentChars;
             }
         }
-
-        private bool UseCDATA(string input)
+        if (UseCDATA(text))
         {
-            return input.Contains(">") || input.Contains("<") || input.Contains("&");
+            _writer.WriteCData(text);
         }
-
-        public void WriteElementString(string localName, string value)
+        else
         {
-            m_writer.WriteElementString(localName, value);
-        }
-
-        public void Close()
-        {
-            m_writer.Close();
-        }
-
-        public override string ToString()
-        {
-            return m_output.ToString();
-        }
-
-        public int IndentLevel
-        {
-            get { return m_indentLevel; }
-        }
-
-        public string IndentChars
-        {
-            get { return k_indentChars; }
-        }
-
-        public SaveMode Mode
-        {
-            get { return m_mode; }
-        }
-
-        public GameXmlWriterOptions Options
-        {
-            get { return m_options; }
+            _writer.WriteString(text);
         }
     }
+
+    private static bool UseCDATA(string input)
+    {
+        return input.Contains('>') || input.Contains('<') || input.Contains('&');
+    }
+
+    public void WriteElementString(string localName, string value)
+    {
+        _writer.WriteElementString(localName, value);
+    }
+
+    public void Close()
+    {
+        _writer.Close();
+    }
+
+    public override string ToString()
+    {
+        return _output.ToString();
+    }
+
+    public int IndentLevel { get; private set; }
+
+    public SaveMode Mode { get; }
+
+    public GameXmlWriterOptions Options { get; }
 }
