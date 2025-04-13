@@ -51,7 +51,7 @@ internal class GameXmlWriter
         IndentLevel--;
     }
 
-    public void WriteAttributeString(string localName, string value)
+    public void WriteAttributeString(string localName, string? value)
     {
         _writer.WriteAttributeString(localName, value);
     }
@@ -83,7 +83,7 @@ internal class GameXmlWriter
         return input.Contains('>') || input.Contains('<') || input.Contains('&');
     }
 
-    public void WriteElementString(string localName, string value)
+    public void WriteElementString(string localName, string? value)
     {
         _writer.WriteElementString(localName, value);
     }
