@@ -8,7 +8,7 @@ using QuestViva.Legacy;
 
 namespace QuestViva.PlayerCore;
 
-public class GameQuery(WorldModelFactory worldModelFactory, string filename)
+public class GameQuery(string filename)
 {
     private PlayerHelper _helper;
     private readonly GameQueryUi _dummyUi = new GameQueryUi();
@@ -16,6 +16,11 @@ public class GameQuery(WorldModelFactory worldModelFactory, string filename)
     private IGame _game;
     private V4Game _v4Game;
     private WorldModel _v5Game;
+    
+    private class Config : IConfig
+    {
+        public bool UseNCalc => false;
+    }
 
     public async Task<bool> Initialise()
     {
@@ -27,7 +32,8 @@ public class GameQuery(WorldModelFactory worldModelFactory, string filename)
             return false;
         }
         
-        var gameLauncher = new GameLauncher(worldModelFactory);
+        var factory = new WorldModelFactory(new Config());
+        var gameLauncher = new GameLauncher(factory);
         
         _game = gameLauncher.GetGame(gameData, null);
         _v4Game = _game as V4Game;
