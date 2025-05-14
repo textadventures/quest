@@ -153,13 +153,13 @@
                 Loading...</h1>
         </div>
         <div id="txtCommandSpacer"></div>
+        <div id="endWaitDiv">
+            <a id="endWaitLink" onclick="endWait();" class="cmdlink" style="display: none">Continue...</a>
+        </div>
         <div id="txtCommandDiv">
             <span id="txtCommandPrompt"></span>
             <input type="text" x-webkit-speech id="txtCommand" onkeydown="return commandKey(event);" placeholder="Type here..."
                 autofocus />
-        </div>
-        <div id="endWaitDiv">
-            <a id="endWaitLink" onclick="endWait();" class="cmdlink" style="display: none">Continue...</a>
         </div>
     </div>
 </div>
