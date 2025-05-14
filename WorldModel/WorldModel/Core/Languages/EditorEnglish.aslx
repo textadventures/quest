@@ -1,26 +1,7 @@
 <library type="editor">
   <template name="EditorDefault">Default</template>
   <template name="EditorObjectWearableAdjVerbs">Adapting the inventory verbs to the states</template>
-  <template name="EditorGameEnableDevMode">Show DevMode options</template>
-  <template name="EditorGameDevMode">DevMode</template>
-  <template name="EditorGameDevModeInfoRelease">Important: Before releasing the game DevMode must be deactivated!</template>
-  <template name="EditorGameDevModeInfoCommands">Enhanced commands are available in the current game. Enter '#?' to get more information.</template>
-  <template name="EditorGameDevModeOptions">Options</template>
-  <template name="EditorGameDevModeChangePov">Select another player</template>
-  <template name="EditorGameDevModeChangePovPos">Select another starting location for the player</template>
-  <template name="EditorGameDevModePov">Player</template>
-  <template name="EditorGameDevModePlace">Location</template>
-  <template name="EditorGameDevModeSetInitScript">Use an initialization script for DevMode</template>
-  <template name="EditorGameDevModeInitScript">Initialization script for DevMode</template>
-  <template name="EditorGameDevModeShowDebugTable">Show debugtable</template>
-  <template name="EditorGameDevModeSetVerbs">Add DevMode verbs to the verb list of objects</template>
-  <template name="EditorGameDevModeShowInfos">Display DevMode output</template>
-  <template name="EditorGameDevModeOwnFontColour">Use your own font color for DevMode output</template>
-  <template name="EditorGameDevModeFontColour">Font color for DevMode output</template>
-  <template name="EditorGameDevModeOn">Active</template>
-  <template name="EditorGameDevModeOff">Inactive</template>
-  <template name="EditorGameDevModeAttributes">Attributes</template>
-  <template name="EditorGameDevModeDescriptionAttribute"><![CDATA[Enter the object with the corresponding attribute in "Key" (e. g. game.showtitle or player.look). The assignment is entered in "Value". It is possible to create Strings ("Hello World!"), Boolean (true or false), Integer (15), Double (25.55), Listen (["Hello","World","!"]) and Dictionarys ({H:"Hello",W:"World"}.)]]></template>
+
   <template name="EditorGBScriptWhenEnteringPage">Script when entering page</template>
   <template name="EditorGBClearScreenBetweenEachPage">Clear screen between each page</template>
   <template name="EditorGBColour">Colour</template>
