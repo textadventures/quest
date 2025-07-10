@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Web;
 using System.Web.Mvc;
 using System.Web.Routing;
@@ -16,6 +17,8 @@ namespace WebEditor
         {
             filters.Add(new ExceptionFilter());
             filters.Add(new HandleErrorAttribute());
+
+            ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
         }
 
         public static void RegisterRoutes(RouteCollection routes)
