@@ -20,7 +20,15 @@ public class TextAdventuresGameDataProvider(ITextAdventuresConfig config, HttpCl
     
     private string GetSourceGameUrl(ApiGame game)
     {
-        var gameFile = game.ASLVersion >= 500 ? "game.aslx" : Path.GetFileName(game.OnlineRef);
+        if (game.OnlineRef == null)
+        {
+            throw new InvalidDataException("OnlineRef is null in ApiGame");
+        }
+        
+        // TODO: The new textadventures site's API returns SourceGameUrl directly on ApiGame, so we can
+        // remove this when that goes live.
+        
+        var gameFile = game.ASLVersion >= 500 ? "game.aslx" : Path.GetFileName(game.OnlineRef.Replace('\\', '/'));
         return $"{config.GameResourceRoot}{game.UniqueId}/{gameFile}";
     }
     

@@ -222,7 +222,6 @@ internal class ExpressionOwner(WorldModel worldModel)
     public bool ListContains(/* IQuestList */ object? list, object? item)
     {
         ArgumentNullException.ThrowIfNull(list);
-        ArgumentNullException.ThrowIfNull(item);
         var questList = GetParameter<IQuestList>(list, "ListContains", "list");
         return questList.Contains(item);
     }

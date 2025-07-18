@@ -47,10 +47,6 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       <SubType>Designer</SubType>
     </EmbeddedResource>
-    <None Remove="Core\CoreDevMode.aslx" />
-    <EmbeddedResource Include="Core\CoreDevMode.aslx">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </EmbeddedResource>
     <None Remove="Core\CoreEditor.aslx" />
     <EmbeddedResource Include="Core\CoreEditor.aslx">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>

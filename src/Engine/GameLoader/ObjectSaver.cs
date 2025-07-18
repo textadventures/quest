@@ -1,340 +1,285 @@
-﻿#nullable disable
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using QuestViva.Utility;
+// ReSharper disable UnusedType.Local
 
-namespace QuestViva.Engine.GameLoader
+namespace QuestViva.Engine.GameLoader;
+
+internal partial class GameSaver
 {
-    internal partial class GameSaver
+    private class ObjectsSaver : IElementsSaver
     {
-        private class ObjectsSaver : IElementsSaver
+        public ElementType AppliesTo => ElementType.Object;
+
+        public void Save(GameXmlWriter writer, WorldModel worldModel)
         {
-            #region IElementsSaver Members
-
-            public ElementType AppliesTo
+            var elementSaver = new ObjectSaver
             {
-                get { return ElementType.Object; }
+                GameSaver = GameSaver
+            };
+
+            var allObjects = worldModel.Elements.GetElements(ElementType.Object)
+                .OrderBy(o => o.MetaFields[MetaFieldDefinitions.SortIndex]).ToArray();
+
+            foreach (var e in allObjects.Where(e => e.Parent == null && GameSaver.CanSave(e)))
+            {
+                SaveObjectAndChildren(writer, allObjects, e, elementSaver);
+            }
+        }
+
+        public required GameSaver GameSaver { get; set; }
+
+        private void SaveObjectAndChildren(GameXmlWriter writer, Element[] allObjects, Element e, ObjectSaver saver)
+        {
+            saver.StartSave(writer, e);
+            var orderedChildren = from child in allObjects
+                where child.Parent == e
+                orderby child.MetaFields[MetaFieldDefinitions.SortIndex]
+                select child;
+
+            foreach (var child in orderedChildren)
+            {
+                SaveObjectAndChildren(writer, allObjects, child, saver);
             }
 
-            public void Save(GameXmlWriter writer, WorldModel worldModel)
+            saver.EndSave(writer, e);
+        }
+    }
+
+    private class ObjectSaver : ElementSaverBase
+    {
+        private readonly Dictionary<ObjectType, IObjectSaver> _savers = new();
+
+        public ObjectSaver()
+        {
+            AddIgnoreField("type");
+            AddIgnoreField("parent");
+        }
+
+        protected override void Initialise()
+        {
+            // Use Reflection to create instances of all IObjectSavers
+            foreach (var t in Classes.GetImplementations(System.Reflection.Assembly.GetExecutingAssembly(),
+                         typeof(IObjectSaver)))
             {
-                ObjectSaver elementSaver = new ObjectSaver();
-                elementSaver.GameSaver = GameSaver;
+                AddSaver((IObjectSaver)Activator.CreateInstance(t)!);
+            }
+        }
 
-                IEnumerable<Element> allObjects = worldModel.Elements.GetElements(ElementType.Object).OrderBy(o => o.MetaFields[MetaFieldDefinitions.SortIndex]);
+        private void AddSaver(IObjectSaver saver)
+        {
+            saver.ObjectSaver = this;
+            _savers.Add(saver.AppliesTo, saver);
+        }
 
-                foreach (Element e in allObjects.Where(e => e.Parent == null && GameSaver.CanSave(e)))
-                {
-                    SaveObjectAndChildren(writer, allObjects, e, elementSaver);
-                }
+        public override ElementType AppliesTo => ElementType.Object;
+
+        public override void Save(GameXmlWriter writer, Element e)
+        {
+            if (!GetSaver(e, out var saver))
+            {
+                return;
             }
 
-            public QuestViva.Engine.GameLoader.GameSaver GameSaver { get; set; }
+            saver.StartSave(writer, e);
+            saver.EndSave(writer, e);
+        }
 
-            #endregion
+        private bool GetSaver(Element e, out IObjectSaver saver)
+        {
+            if (!_savers.TryGetValue(e.Type, out saver!))
+            {
+                throw new Exception("ERROR: No ObjectSaver for type " + e.Type.ToString());
+            }
+            return true;
+        }
 
-            private void SaveObjectAndChildren(GameXmlWriter writer, IEnumerable<Element> allObjects, Element e, ObjectSaver saver)
+        public void StartSave(GameXmlWriter writer, Element e)
+        {
+            if (GetSaver(e, out var saver))
             {
                 saver.StartSave(writer, e);
-                IEnumerable<Element> orderedChildren = from child in allObjects
-                                                       where child.Parent == e
-                                                       orderby child.MetaFields[MetaFieldDefinitions.SortIndex]
-                                                       select child;
+            }
+        }
 
-                foreach (Element child in orderedChildren)
-                {
-                    SaveObjectAndChildren(writer, allObjects, child, saver);
-                }
-
+        public void EndSave(GameXmlWriter writer, Element e)
+        {
+            if (GetSaver(e, out var saver))
+            {
                 saver.EndSave(writer, e);
             }
         }
 
-        private class ObjectSaver : ElementSaverBase
+        protected override bool CanSaveAttribute(string attribute, Element e)
         {
-            private Dictionary<ObjectType, IObjectSaver> m_savers = new Dictionary<ObjectType, IObjectSaver>();
+            return base.CanSaveAttribute(attribute, e) && _savers[e.Type].CanSaveAttribute(attribute);
+        }
 
-            public ObjectSaver()
+        protected override bool CanSaveTypeName(GameXmlWriter writer, string type, Element e)
+        {
+            if (!base.CanSaveTypeName(writer, type, e)) return false;
+            return e.Type != ObjectType.Command || !e.Fields[FieldDefinitions.IsVerb] || type != "defaultverb";
+        }
+
+        private interface IObjectSaver
+        {
+            ObjectType AppliesTo { get; }
+            void StartSave(GameXmlWriter writer, Element e);
+            void EndSave(GameXmlWriter writer, Element e);
+            ObjectSaver ObjectSaver { set; }
+            bool CanSaveAttribute(string attribute);
+        }
+
+        private abstract class ObjectSaverBase : IObjectSaver
+        {
+            private readonly List<string> _ignoreAttributes = [];
+
+            protected void AddIgnoreField(string field)
             {
-                AddIgnoreField("type");
-                AddIgnoreField("parent");
+                _ignoreAttributes.Add(field);
             }
 
-            protected override void Initialise()
+            public abstract ObjectType AppliesTo { get; }
+
+            public abstract void StartSave(GameXmlWriter writer, Element e);
+            public abstract void EndSave(GameXmlWriter writer, Element e);
+
+            public required ObjectSaver ObjectSaver
             {
-                // Use Reflection to create instances of all IObjectSavers
-                foreach (Type t in Classes.GetImplementations(System.Reflection.Assembly.GetExecutingAssembly(),
-                    typeof(IObjectSaver)))
+                get;
+                set;
+            }
+
+            public bool CanSaveAttribute(string attribute)
+            {
+                return !_ignoreAttributes.Contains(attribute);
+            }
+        }
+
+        private class ObjectElementSaver : ObjectSaverBase
+        {
+            public override ObjectType AppliesTo => ObjectType.Object;
+
+            public override void StartSave(GameXmlWriter writer, Element e)
+            {
+                writer.WriteStartElement("object");
+                writer.WriteAttributeString("name", e.Name);
+                ObjectSaver.SaveFields(writer, e);
+            }
+
+            public override void EndSave(GameXmlWriter writer, Element e)
+            {
+                writer.WriteEndElement();
+            }
+        }
+
+        private class GameElementSaver : ObjectSaverBase
+        {
+            public GameElementSaver()
+            {
+                AddIgnoreField("gamename");
+            }
+
+            public override ObjectType AppliesTo => ObjectType.Game;
+
+            public override void StartSave(GameXmlWriter writer, Element e)
+            {
+                writer.WriteStartElement("game");
+                writer.WriteAttributeString("name", e.Fields.GetString("gamename"));
+                ObjectSaver.SaveFields(writer, e);
+            }
+
+            public override void EndSave(GameXmlWriter writer, Element e)
+            {
+                writer.WriteEndElement();
+            }
+        }
+
+        private class CommandSaver : ObjectSaverBase
+        {
+            public CommandSaver()
+            {
+                AddIgnoreField("isverb");
+                AddIgnoreField("anonymous");
+            }
+
+            public override ObjectType AppliesTo => ObjectType.Command;
+
+            public override void StartSave(GameXmlWriter writer, Element e)
+            {
+                writer.WriteStartElement(e.Fields[FieldDefinitions.IsVerb] ? "verb" : "command");
+                if (writer.Mode == SaveMode.SavedGame || !e.Fields[FieldDefinitions.Anonymous])
                 {
-                    AddSaver((IObjectSaver)Activator.CreateInstance(t));
-                }
-            }
-
-            private void AddSaver(IObjectSaver saver)
-            {
-                saver.ObjectSaver = this;
-                m_savers.Add(saver.AppliesTo, saver);
-            }
-
-            #region IElementSaver Members
-
-            public override ElementType AppliesTo
-            {
-                get { return ElementType.Object; }
-            }
-
-            public override void Save(GameXmlWriter writer, Element e)
-            {
-                IObjectSaver saver;
-                if (GetSaver(writer, e, out saver))
-                {
-                    saver.StartSave(writer, e);
-                    saver.EndSave(writer, e);
-                }
-            }
-
-            #endregion
-
-            private bool GetSaver(GameXmlWriter writer, Element e, out IObjectSaver saver)
-            {
-                if (!m_savers.TryGetValue(e.Type, out saver))
-                {
-                    throw new Exception("ERROR: No ObjectSaver for type " + e.Type.ToString());
-                }
-                return true;
-            }
-
-            public void StartSave(GameXmlWriter writer, Element e)
-            {
-                IObjectSaver saver;
-                if (GetSaver(writer, e, out saver))
-                {
-                    saver.StartSave(writer, e);
-                }
-            }
-
-            public void EndSave(GameXmlWriter writer, Element e)
-            {
-                IObjectSaver saver;
-                if (GetSaver(writer, e, out saver))
-                {
-                    saver.EndSave(writer, e);
-                }
-            }
-
-            protected override bool CanSaveAttribute(string attribute, Element e)
-            {
-                if (!base.CanSaveAttribute(attribute, e)) return false;
-                return m_savers[e.Type].CanSaveAttribute(attribute);
-            }
-
-            protected override bool CanSaveTypeName(GameXmlWriter writer, string type, Element e)
-            {
-                if (!base.CanSaveTypeName(writer, type, e)) return false;
-                if (e.Type == ObjectType.Command && e.Fields[FieldDefinitions.IsVerb] && type == "defaultverb") return false;
-                return true;
-            }
-
-            private interface IObjectSaver
-            {
-                ObjectType AppliesTo { get; }
-                void StartSave(GameXmlWriter writer, Element e);
-                void EndSave(GameXmlWriter writer, Element e);
-                ObjectSaver ObjectSaver { set; }
-                bool CanSaveAttribute(string attribute);
-            }
-
-            private abstract class ObjectSaverBase : IObjectSaver
-            {
-                private List<string> m_ignoreAttributes = new List<string>();
-
-                protected void AddIgnoreField(string field)
-                {
-                    m_ignoreAttributes.Add(field);
-                }
-
-                #region IObjectSaver Members
-
-                public abstract ObjectType AppliesTo { get; }
-
-                public abstract void StartSave(GameXmlWriter writer, Element e);
-                public abstract void EndSave(GameXmlWriter writer, Element e);
-
-                public ObjectSaver ObjectSaver
-                {
-                    get;
-                    set;
-                }
-
-                public bool CanSaveAttribute(string attribute)
-                {
-                    if (m_ignoreAttributes.Contains(attribute)) return false;
-                    return true;
-                }
-
-                #endregion
-            }
-
-            private class ObjectElementSaver : ObjectSaverBase
-            {
-                #region IObjectSaver Members
-
-                public override ObjectType AppliesTo
-                {
-                    get { return ObjectType.Object; }
-                }
-
-                public override void StartSave(GameXmlWriter writer, Element e)
-                {
-                    writer.WriteStartElement("object");
                     writer.WriteAttributeString("name", e.Name);
-                    ObjectSaver.SaveFields(writer, e);
                 }
-
-                public override void EndSave(GameXmlWriter writer, Element e)
-                {
-                    writer.WriteEndElement();
-                }
-
-                #endregion
+                ObjectSaver.SaveFields(writer, e);
             }
 
-            private class GameElementSaver : ObjectSaverBase
+            public override void EndSave(GameXmlWriter writer, Element e)
             {
-                public GameElementSaver()
-                {
-                    AddIgnoreField("gamename");
-                }
-
-                #region IObjectSaver Members
-
-                public override ObjectType AppliesTo
-                {
-                    get { return ObjectType.Game; }
-                }
-
-                public override void StartSave(GameXmlWriter writer, Element e)
-                {
-                    writer.WriteStartElement("game");
-                    writer.WriteAttributeString("name", e.Fields.GetString("gamename"));
-                    ObjectSaver.SaveFields(writer, e);
-                }
-
-                public override void EndSave(GameXmlWriter writer, Element e)
-                {
-                    writer.WriteEndElement();
-                }
-
-                #endregion
+                writer.WriteEndElement();
             }
+        }
 
-            private class CommandSaver : ObjectSaverBase
+        private class ExitElementSaver : ObjectSaverBase
+        {
+            public ExitElementSaver()
             {
-                public CommandSaver()
-                {
-                    AddIgnoreField("isverb");
-                    AddIgnoreField("anonymous");
-                }
-
-                #region IObjectSaver Members
-
-                public override ObjectType AppliesTo
-                {
-                    get { return ObjectType.Command; }
-                }
-
-                public override void StartSave(GameXmlWriter writer, Element e)
-                {
-                    if (e.Fields[FieldDefinitions.IsVerb])
-                    {
-                        writer.WriteStartElement("verb");
-                    }
-                    else
-                    {
-                        writer.WriteStartElement("command");
-                    }
-                    if (writer.Mode == SaveMode.SavedGame || !e.Fields[FieldDefinitions.Anonymous])
-                    {
-                        writer.WriteAttributeString("name", e.Name);
-                    }
-                    ObjectSaver.SaveFields(writer, e);
-                }
-
-                public override void EndSave(GameXmlWriter writer, Element e)
-                {
-                    writer.WriteEndElement();
-                }
-
-                #endregion
+                AddIgnoreField("to");
+                AddIgnoreField("alias");
+                AddIgnoreField("anonymous");
             }
 
-            private class ExitElementSaver : ObjectSaverBase
+            public override ObjectType AppliesTo => ObjectType.Exit;
+
+            public override void StartSave(GameXmlWriter writer, Element e)
             {
-                public ExitElementSaver()
+                writer.WriteStartElement("exit");
+                if (writer.Mode == SaveMode.SavedGame || !e.Fields[FieldDefinitions.Anonymous])
                 {
-                    AddIgnoreField("to");
-                    AddIgnoreField("alias");
-                    AddIgnoreField("anonymous");
+                    writer.WriteAttributeString("name", e.Name);
                 }
-
-                public override ObjectType AppliesTo
+                if (!string.IsNullOrEmpty(e.Fields[FieldDefinitions.Alias]))
                 {
-                    get { return ObjectType.Exit; }
+                    writer.WriteAttributeString("alias", e.Fields[FieldDefinitions.Alias]);
                 }
-
-                public override void StartSave(GameXmlWriter writer, Element e)
+                if (e.Fields[FieldDefinitions.To] != null)
                 {
-                    writer.WriteStartElement("exit");
-                    if (writer.Mode == SaveMode.SavedGame || !e.Fields[FieldDefinitions.Anonymous])
-                    {
-                        writer.WriteAttributeString("name", e.Name);
-                    }
-                    if (!string.IsNullOrEmpty(e.Fields[FieldDefinitions.Alias]))
-                    {
-                        writer.WriteAttributeString("alias", e.Fields[FieldDefinitions.Alias]);
-                    }
-                    if (e.Fields[FieldDefinitions.To] != null)
-                    {
-                        writer.WriteAttributeString("to", e.Fields[FieldDefinitions.To].Name);
-                    }
-                    ObjectSaver.SaveFields(writer, e);
+                    writer.WriteAttributeString("to", e.Fields[FieldDefinitions.To].Name);
                 }
-
-                public override void EndSave(GameXmlWriter writer, Element e)
-                {
-                    writer.WriteEndElement();
-                }
+                ObjectSaver.SaveFields(writer, e);
             }
 
-            private class TurnScriptElementSaver : ObjectSaverBase
+            public override void EndSave(GameXmlWriter writer, Element e)
             {
-                public TurnScriptElementSaver()
-                {
-                    AddIgnoreField("anonymous");
-                }
+                writer.WriteEndElement();
+            }
+        }
 
-                public override ObjectType AppliesTo
-                {
-                    get { return ObjectType.TurnScript; }
-                }
-
-                public override void StartSave(GameXmlWriter writer, Element e)
-                {
-                    writer.WriteStartElement("turnscript");
-                    if (writer.Mode == SaveMode.SavedGame || !e.Fields[FieldDefinitions.Anonymous])
-                    {
-                        writer.WriteAttributeString("name", e.Name);
-                    }
-                    ObjectSaver.SaveFields(writer, e);
-                }
-
-                public override void EndSave(GameXmlWriter writer, Element e)
-                {
-                    writer.WriteEndElement();
-                }
+        private class TurnScriptElementSaver : ObjectSaverBase
+        {
+            public TurnScriptElementSaver()
+            {
+                AddIgnoreField("anonymous");
             }
 
+            public override ObjectType AppliesTo => ObjectType.TurnScript;
+
+            public override void StartSave(GameXmlWriter writer, Element e)
+            {
+                writer.WriteStartElement("turnscript");
+                if (writer.Mode == SaveMode.SavedGame || !e.Fields[FieldDefinitions.Anonymous])
+                {
+                    writer.WriteAttributeString("name", e.Name);
+                }
+                ObjectSaver.SaveFields(writer, e);
+            }
+
+            public override void EndSave(GameXmlWriter writer, Element e)
+            {
+                writer.WriteEndElement();
+            }
         }
     }
 }

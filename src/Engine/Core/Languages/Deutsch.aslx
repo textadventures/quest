@@ -548,26 +548,7 @@
   <template templatetype="command" name="transcript_off_cmd">^(transkript|skript) aus$|^deaktiviere (skript|transkript)$</template>
   <template templatetype="command" name="view_transcript_cmd">^(zeige|zeig) (das |)(skript|transkript)$</template>
   <template templatetype="command" name="version_cmd">^(version|info|über)$</template>  
-
-  <template name="DevModeErrorWrongFormat">Das ist leider das falsche Format.</template>
-  <template name="DevModeErrorObjectNotRecognised">Das Objekt wurde nicht erkannt.</template>
-  <template name="DevModeErrorWrongTyp">Das ist der falsche Typ.</template>
-  <template name="DevModeErrorWrongKey">Der Key wurde nicht gefunden.</template>
-  <template name="DevModeExecuteCommand">Der Befehl wurde ausgeführt.</template>
-  <template name="DevModeNotActive">Der DevMode ist nicht aktiv!</template>
-  <template name="DevModeDescriptionCommands"><![CDATA[<h3>FlyScript - Hilfe</h3><b><u>Objekt-Kommandos</u></b><br/>#take object<br/>#drop object<br/>#put object1 in object2<br/>#open object<br/>#close object<br/>#on object<br/>#off object<br/>#to player<br/>#go room<br/><br/><i>Im Gegensatz zu den Kommandos im Spiel werden sie direkt und ohne Umwege über Abfangskripte ausgeführt.</i><br/><br/><b><u>Single-Kommandos</u></b><br/>#clr (Bildschirminhalt löschen)<br/>#? (Hilfe)<br/># (Spiel schliessen)<br/><br/><b><u>Objekt-Attribute</u></b><br/>#object1.attribute=object2.attribute (Attributzuweisung eines anderen Objektes)<br/>#object.attribute=true / false (Setze auf wahr / falsch)<br/>#object.attribute=? / ! (Setze auf wahr / falsch)<br/>#~object.attribute (Toggle auf wahr oder falsch)<br/>#object.attribute="value" (String)<br/>#object.attribute=15 (Integer)<br/>#object.attribute=25.55 (Double)<br/>#object.attribute=[item1,item2,item3] (List)<br/>#object.attribute[]=element (Element zur List hinzufügen)<br/>#object.attribute[key]=element (Element zur List hinzufügen oder überschreiben)<br/>#object.attribute=[] (Eine neue List erstellen)<br/>#object.attribute={key1:item1,key2:item2,key3:item3} (Dictionary)<br/>#object.attribute{key}=element (Element zum Dictionary hinzufügen oder überschreiben)<br/>#object.attribute={} (Neues Dictionary erstellen)<br/>#object.attribute (Lese Attribute)<br/>]]></template>
-  <template name="DevModeActive"><![CDATA[<b>Entwicklermodus: Aktiviert</b>]]></template>
-  <template name="DevModeInitDegugTable">Debugtabelle initialisiert.</template>
-  <template name="DevModeStartScript">Initialisierungsscript gestartet.</template>
-  <template name="DevModeSetVerbs">Verben zugeordnet.</template>
-  <template name="DevModeComExecute">Kommando ausgeführt.</template>
-  <template name="DevModeComSetAttribute">Attribut gesetzt: </template>
-  <template name="DevModeComGetAttribute">Attribut abgefragt: </template>
-  <template name="DevModeComSelfTestFailed">Die Zuordnung, wie sie nach dem Kommando sein sollte ist inkorrekt.</template>
-  <dynamictemplate name="DevModeErrorCantFindObject">"Das Objekt mit dem Namen '" + text + "' kann nicht gefunden werden."</dynamictemplate>
-  <dynamictemplate name="DevModeErrorCantFindAttribute">"Das Attribut mit dem Namen '" + text + "' kann nicht gefunden werden."</dynamictemplate>
-
- <verbtemplate name="enter">betrete</verbtemplate>
+  <verbtemplate name="enter">betrete</verbtemplate>
   <verbtemplate name="enter">gehe</verbtemplate>
   <verbtemplate name="enter">gehe in</verbtemplate>
   <dynamictemplate name="DefaultEnter">"Du kannst " + object.article + " nicht betreten."</dynamictemplate>
