@@ -110,7 +110,7 @@ public class GameQuery(string filename)
         }
     }
 
-    public string Cover
+    public string CoverResourceName
     {
         get
         {
@@ -120,7 +120,7 @@ public class GameQuery(string filename)
             }
             if (_v5Game != null)
             {
-                return string.IsNullOrEmpty(_v5Game.Cover) ? null : throw new NotImplementedException();
+                return _v5Game.Cover;
             }
             throw new InvalidOperationException();
         }
