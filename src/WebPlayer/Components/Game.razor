@@ -19,15 +19,16 @@
     <script type="text/javascript" src="playerweb.js?v=@VersionInfo.Version"></script>
     <script>
         function addPaperScript() {
-            const gridJs = document.createElement("script");
-            gridJs.type = "text/paperscript";
-            gridJs.src = "/res/grid.js";
-            gridJs.setAttribute("canvas", "gridCanvas");
-            document.head.appendChild(gridJs);
+            const canvas = document.getElementById('gridCanvas');
+            const gridPanel = document.getElementById('gridPanel');
 
-            const paperJs = document.createElement("script");
-            paperJs.src = "/res/lib/paper.js";
-            document.head.appendChild(paperJs);
+            if (canvas instanceof HTMLCanvasElement && gridPanel) {
+                gridPanel.appendChild(canvas);
+                canvas.style.display = '';
+                if (window.paper && paper.view) {
+                    paper.view.viewSize = new paper.Size(canvas.clientWidth, canvas.clientHeight);
+                }
+            }
         }
     </script>
 </HeadContent>
