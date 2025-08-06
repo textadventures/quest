@@ -9,11 +9,17 @@
     <link rel="stylesheet" href="app.css"/>
     <link rel="stylesheet" href="WebPlayer.styles.css"/>
     <link rel="shortcut icon" href="/favicon.svg" type="image/svg+xml"/>
+    <script type="text/javascript" src="/res/lib/paper.js"></script>
+    <script type="text/paperscript" src="/res/grid.js" canvas="gridCanvas"></script>
     <HeadOutlet/>
 </head>
 
 <body>
 <Routes/>
+<canvas id="gridCanvas" width="700" height="300" keepalive="true" style="display: none;">
+    <p><b>The graphical map cannot be displayed</b></p>
+    <p>Your web browser does not support the graphical map.</p>
+</canvas>
 <script src="_framework/blazor.web.js"></script>
 </body>
 
