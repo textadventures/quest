@@ -151,6 +151,9 @@ function sessionTimeout() {
     disableInterface();
 }
 
+function afterSendCommand() {
+}
+
 var _currentPlayer = "";
 
 function playWav(filename, sync, looped) {
