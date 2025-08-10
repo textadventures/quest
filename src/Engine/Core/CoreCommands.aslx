@@ -1009,7 +1009,7 @@
     <script>
       Ask (Template("WantRestartGame")){
         if (result){
-          JS.eval("if(webPlayer){window.location.reload();}else if (typeof(RestartGame) != 'undefined'){RestartGame();}else{addTextAndScroll('Try pressing CTRL+R.')};")
+          JS.eval("window.location.reload();")
         }
         else {
           game.suppressturnscripts = true
