@@ -1,5 +1,5 @@
 var $_GET = {};
-var webPlayer = true;
+var webPlayer = false;
 var tmrTick = null;
 var tickCount = 0;
 var sendNextGameTickerAfter = 0;

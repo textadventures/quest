@@ -1479,12 +1479,7 @@ var transcriptUrl = 'TranscriptViewer/index.html';
 
 // Another fallback to avoid errors
 function showTranscript(){
-  if (webPlayer){
     addTextAndScroll('Your transcripts are saved to the localStorage in your browser. You can view, download, or delete them here: <a href="' + transcriptUrl + '" target="_blank">Your Transcripts</a><br/>');
-  }
-  else {
-    addTextAndScroll('Your transcripts are saved to "Documents\\Quest Transcripts\\".<br/>');
-  }
 }
 
 function replaceTranscriptString(data) {
