@@ -285,6 +285,12 @@ namespace WebEditor.Controllers
             Logging.Log.DebugFormat("{0}: Upload file {1}", fileModel.GameId, filename);
             var uploadPath = Services.FileManagerLoader.GetFileManager().UploadPath(fileModel.GameId);
 
+            if (uploadPath != null)
+            {
+                ModelState.AddModelError("File", "Something went wrong. Try logging out and logging in again.");
+                return View(fileModel);
+            }
+
             if (Config.AzureFiles)
             {
                 var container = GetAzureBlobContainer("editorgames");
@@ -364,6 +370,7 @@ namespace WebEditor.Controllers
             if (Config.AzureFiles)
             {
                 var uploadPath = Services.FileManagerLoader.GetFileManager().UploadPath(id);
+                if (uploadPath == null) return null;
                 var container = GetAzureBlobContainer("editorgames");
                 var blobs = container.ListBlobs(uploadPath + "/");
                 return string.Join(":", blobs.Select(b => Path.GetFileName(b.Uri.ToString())));
@@ -394,6 +401,10 @@ namespace WebEditor.Controllers
             if (Config.AzureFiles)
             {
                 var uploadPath = Services.FileManagerLoader.GetFileManager().UploadPath(id);
+                if (uploadPath == null)
+                {
+                    return View("Error");
+                }
                 var container = GetAzureBlobContainer("editorgames");
                 var blobs = container.ListBlobs(uploadPath + "/");
                 var includeFiles = new List<EditorController.PackageIncludeFile>();
