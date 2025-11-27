@@ -42,7 +42,7 @@ namespace WebEditor.Controllers
             if (filename == null)
             {
                 Logging.Log.InfoFormat("Invalid game {0}", id);
-                return Json(new { error = "Invalid ID" }, JsonRequestBehavior.AllowGet);
+                return Json(new { error = "Couldn't access that game. Try logging out and logging in again." }, JsonRequestBehavior.AllowGet);
             }
             var result = editor.Initialise(id, filename, libFolder, simpleMode);
             if (!result.Success)
