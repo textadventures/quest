@@ -502,6 +502,12 @@ namespace WebEditor.Controllers
             ZipFile zip = new ZipFile();
 
             var uploadPath = Services.FileManagerLoader.GetFileManager().UploadPath(id);
+
+            if (uploadPath == null)
+            {
+                return HttpNotFound();
+            }
+
             var container = GetAzureBlobContainer("editorgames");
             var blobs = container.ListBlobs(uploadPath + "/");
             foreach (var blob in blobs.OfType<CloudBlockBlob>())
