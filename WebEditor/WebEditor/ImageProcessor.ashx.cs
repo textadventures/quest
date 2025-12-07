@@ -22,7 +22,7 @@ namespace WebEditor
             string filename = context.Request["image"];
             
             string uploadPath = Services.FileManagerLoader.GetFileManager().UploadPath(gameId);
-            if (uploadPath != null)
+            if (uploadPath == null)
             {
                 throw new InvalidOperationException();
             }

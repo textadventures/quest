@@ -285,7 +285,7 @@ namespace WebEditor.Controllers
             Logging.Log.DebugFormat("{0}: Upload file {1}", fileModel.GameId, filename);
             var uploadPath = Services.FileManagerLoader.GetFileManager().UploadPath(fileModel.GameId);
 
-            if (uploadPath != null)
+            if (uploadPath == null)
             {
                 ModelState.AddModelError("File", "Something went wrong. Try logging out and logging in again.");
                 return View(fileModel);
