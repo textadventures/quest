@@ -107,7 +107,7 @@ if (ListItem(l, 2) = 42) {
   msg("Here")
 }
 ```
-The first line is fine, but the second will through an error. Quest has extracted 42 from the list, but has yet to work out that it is an integer, and so throws an error when we try to compare it to a number. Assigning the value to a variable seems to give Quest enough time to work out what it is!
+The first line is fine, but the second will throw an error. Quest has extracted 42 from the list, but has yet to work out that it is an integer, and so throws an error when we try to compare it to a number. Assigning the value to a variable seems to give Quest enough time to work out what it is!
 ```
 if (ListItem(l, 2) = "one") {
   msg("Here")
@@ -363,4 +363,5 @@ while (ListCount(list) > 0) {
   list add (shuffled)
 }
 ```
+
 
