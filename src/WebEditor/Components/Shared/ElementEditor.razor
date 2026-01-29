@@ -1,0 +1,81 @@
+@inject EditorService EditorService
+@using QuestViva.EditorCore
+
+<MudPaper Elevation="1" Class="pa-4">
+    @if (_definition == null || _data == null)
+    {
+        <MudText Color="Color.Secondary">Unable to load editor for this element.</MudText>
+    }
+    else
+    {
+        <MudText Typo="Typo.h6" GutterBottom="true">@_data.Name</MudText>
+
+        <MudTabs Elevation="0" Rounded="true" ApplyEffectsToContainer="true" PanelClass="pa-4">
+            @foreach (var tabEntry in _visibleTabs)
+            {
+                <MudTabPanel Text="@tabEntry.Value.Caption">
+                    @foreach (var control in tabEntry.Value.Controls)
+                    {
+                        @if (control.IsControlVisible(_data))
+                        {
+                            <EditorControlFactory Control="@control"
+                                                  EditorData="@_data"
+                                                  EditorService="@EditorService"/>
+                        }
+                    }
+                </MudTabPanel>
+            }
+        </MudTabs>
+    }
+</MudPaper>
+
+@code {
+    [Parameter]
+    public string ElementKey { get; set; } = "";
+
+    private IEditorDefinition? _definition;
+    private IEditorData? _data;
+    private Dictionary<string, IEditorTab> _visibleTabs = new();
+
+    protected override void OnInitialized()
+    {
+        EditorService.ElementDataChanged += OnElementDataChanged;
+    }
+
+    protected override void OnParametersSet()
+    {
+        LoadElement();
+    }
+
+    private void LoadElement()
+    {
+        _definition = EditorService.GetEditorDefinition(ElementKey);
+        _data = EditorService.GetEditorData(ElementKey);
+
+        _visibleTabs = new();
+        if (_definition != null && _data != null)
+        {
+            foreach (var tab in _definition.Tabs)
+            {
+                if (tab.Value.IsTabVisible(_data) && !tab.Value.GetBool("desktop"))
+                {
+                    _visibleTabs[tab.Key] = tab.Value;
+                }
+            }
+        }
+    }
+
+    private void OnElementDataChanged()
+    {
+        InvokeAsync(() =>
+        {
+            LoadElement();
+            StateHasChanged();
+        });
+    }
+
+    public void Dispose()
+    {
+        EditorService.ElementDataChanged -= OnElementDataChanged;
+    }
+}

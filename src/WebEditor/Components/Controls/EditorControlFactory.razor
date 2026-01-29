@@ -1,0 +1,43 @@
+@using QuestViva.EditorCore
+
+<div class="mb-3">
+    @switch (Control.ControlType)
+    {
+        case "textbox":
+        case "pattern":
+            <TextBoxControl Control="@Control" EditorData="@EditorData" EditorService="@EditorService"/>
+            break;
+        case "checkbox":
+            <CheckBoxControl Control="@Control" EditorData="@EditorData" EditorService="@EditorService"/>
+            break;
+        case "dropdown":
+            <DropDownControl Control="@Control" EditorData="@EditorData" EditorService="@EditorService"/>
+            break;
+        case "richtext":
+            <MultiLineTextControl Control="@Control" EditorData="@EditorData" EditorService="@EditorService"/>
+            break;
+        case "number":
+        case "numberdouble":
+            <NumberControl Control="@Control" EditorData="@EditorData" EditorService="@EditorService"/>
+            break;
+        case "label":
+            <LabelControl Control="@Control" EditorData="@EditorData"/>
+            break;
+        default:
+            <MudAlert Severity="Severity.Info" Dense="true" Class="my-1">
+                @(Control.Caption ?? Control.ControlType): not yet supported (@Control.ControlType)
+            </MudAlert>
+            break;
+    }
+</div>
+
+@code {
+    [Parameter, EditorRequired]
+    public IEditorControl Control { get; set; } = null!;
+
+    [Parameter, EditorRequired]
+    public IEditorData EditorData { get; set; } = null!;
+
+    [Parameter, EditorRequired]
+    public EditorService EditorService { get; set; } = null!;
+}

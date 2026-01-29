@@ -1,0 +1,48 @@
+@using QuestViva.EditorCore
+
+<MudSelect T="string"
+           Label="@Control.Caption"
+           Value="@GetValue()"
+           ValueChanged="OnValueChanged"
+           Variant="Variant.Outlined"
+           Margin="Margin.Dense">
+    @if (_validValues != null)
+    {
+        @foreach (var item in _validValues)
+        {
+            <MudSelectItem Value="@item.Key">@item.Value</MudSelectItem>
+        }
+    }
+</MudSelect>
+
+@code {
+    [Parameter, EditorRequired]
+    public IEditorControl Control { get; set; } = null!;
+
+    [Parameter, EditorRequired]
+    public IEditorData EditorData { get; set; } = null!;
+
+    [Parameter, EditorRequired]
+    public EditorService EditorService { get; set; } = null!;
+
+    private IDictionary<string, string>? _validValues;
+
+    protected override void OnParametersSet()
+    {
+        _validValues = Control.GetDictionary("validvalues");
+    }
+
+    private string GetValue()
+    {
+        if (Control.Attribute == null) return "";
+        return EditorData.GetAttribute(Control.Attribute)?.ToString() ?? "";
+    }
+
+    private void OnValueChanged(string value)
+    {
+        if (Control.Attribute == null) return;
+        EditorService.StartTransaction($"Change {Control.Caption}");
+        EditorData.SetAttribute(Control.Attribute, value);
+        EditorService.EndTransaction();
+    }
+}

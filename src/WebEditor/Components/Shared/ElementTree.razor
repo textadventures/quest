@@ -1,0 +1,39 @@
+@inject EditorService EditorService
+
+<MudPaper Elevation="1" Class="pa-2">
+    <MudText Typo="Typo.subtitle2" Class="mb-2">Elements</MudText>
+    <MudTreeView T="string" SelectedValueChanged="OnNodeSelected" Dense="true">
+        @foreach (var node in EditorService.TreeNodes)
+        {
+            <RenderTreeNode Node="@node"/>
+        }
+    </MudTreeView>
+</MudPaper>
+
+@code {
+    [Parameter]
+    public EventCallback<string> OnElementSelected { get; set; }
+
+    protected override void OnInitialized()
+    {
+        EditorService.TreeChanged += OnTreeChanged;
+    }
+
+    private void OnTreeChanged()
+    {
+        InvokeAsync(StateHasChanged);
+    }
+
+    private async Task OnNodeSelected(string? key)
+    {
+        if (key != null)
+        {
+            await OnElementSelected.InvokeAsync(key);
+        }
+    }
+
+    public void Dispose()
+    {
+        EditorService.TreeChanged -= OnTreeChanged;
+    }
+}

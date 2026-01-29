@@ -1,0 +1,59 @@
+@inject EditorService EditorService
+
+<MudDialog>
+    <DialogContent>
+        <MudTextField @bind-Value="_gameName"
+                      Label="Game Name"
+                      Required="true"
+                      RequiredError="Please enter a game name"
+                      Immediate="true"
+                      Class="mb-4"/>
+
+        <MudText Typo="Typo.subtitle1" Class="mb-2">Template</MudText>
+        <MudRadioGroup @bind-Value="_selectedTemplate">
+            @foreach (var template in _templates)
+            {
+                <MudRadio Value="@template.Key" Color="Color.Primary">@template.Value.TemplateName</MudRadio>
+            }
+        </MudRadioGroup>
+    </DialogContent>
+    <DialogActions>
+        <MudButton OnClick="Cancel">Cancel</MudButton>
+        <MudButton Color="Color.Primary"
+                   Variant="Variant.Filled"
+                   Disabled="@(string.IsNullOrWhiteSpace(_gameName) || _selectedTemplate == null)"
+                   OnClick="Create">
+            Create
+        </MudButton>
+    </DialogActions>
+</MudDialog>
+
+@code {
+    [CascadingParameter]
+    private IMudDialogInstance MudDialog { get; set; } = null!;
+
+    private string _gameName = "";
+    private string? _selectedTemplate;
+    private Dictionary<string, EditorCore.TemplateData> _templates = new();
+
+    protected override void OnInitialized()
+    {
+        _templates = EditorService.GetAvailableTemplates();
+        if (_templates.Count > 0)
+        {
+            _selectedTemplate = _templates.Keys.First();
+        }
+    }
+
+    private void Cancel() => MudDialog.Cancel();
+
+    private void Create()
+    {
+        if (!string.IsNullOrWhiteSpace(_gameName) && _selectedTemplate != null
+            && _templates.TryGetValue(_selectedTemplate, out var templateData))
+        {
+            MudDialog.Close(DialogResult.Ok(
+                new Pages.Index.NewGameData(templateData.ResourceName, _gameName)));
+        }
+    }
+}

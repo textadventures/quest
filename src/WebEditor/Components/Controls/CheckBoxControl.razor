@@ -1,0 +1,33 @@
+@using QuestViva.EditorCore
+
+<MudCheckBox T="bool"
+             Label="@Control.Caption"
+             Value="@GetValue()"
+             ValueChanged="OnValueChanged"
+             Color="Color.Primary"/>
+
+@code {
+    [Parameter, EditorRequired]
+    public IEditorControl Control { get; set; } = null!;
+
+    [Parameter, EditorRequired]
+    public IEditorData EditorData { get; set; } = null!;
+
+    [Parameter, EditorRequired]
+    public EditorService EditorService { get; set; } = null!;
+
+    private bool GetValue()
+    {
+        if (Control.Attribute == null) return false;
+        var val = EditorData.GetAttribute(Control.Attribute);
+        return val is true;
+    }
+
+    private void OnValueChanged(bool value)
+    {
+        if (Control.Attribute == null) return;
+        EditorService.StartTransaction($"Change {Control.Caption}");
+        EditorData.SetAttribute(Control.Attribute, value);
+        EditorService.EndTransaction();
+    }
+}

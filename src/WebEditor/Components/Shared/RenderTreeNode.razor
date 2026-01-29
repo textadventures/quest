@@ -1,0 +1,11 @@
+<MudTreeViewItem T="string" Value="@Node.Key" Text="@Node.Text" Expanded="true">
+    @foreach (var child in Node.Children)
+    {
+        <RenderTreeNode Node="@child"/>
+    }
+</MudTreeViewItem>
+
+@code {
+    [Parameter, EditorRequired]
+    public TreeNode Node { get; set; } = null!;
+}

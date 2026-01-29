@@ -1,0 +1,47 @@
+@using QuestViva.EditorCore
+
+<MudNumericField T="double?"
+                 Label="@Control.Caption"
+                 Value="@GetValue()"
+                 ValueChanged="OnValueChanged"
+                 Min="@(Control.GetDouble("minimum"))"
+                 Max="@(Control.GetDouble("maximum"))"
+                 Variant="Variant.Outlined"
+                 Margin="Margin.Dense"/>
+
+@code {
+    [Parameter, EditorRequired]
+    public IEditorControl Control { get; set; } = null!;
+
+    [Parameter, EditorRequired]
+    public IEditorData EditorData { get; set; } = null!;
+
+    [Parameter, EditorRequired]
+    public EditorService EditorService { get; set; } = null!;
+
+    private double? GetValue()
+    {
+        if (Control.Attribute == null) return null;
+        var val = EditorData.GetAttribute(Control.Attribute);
+        if (val == null) return null;
+        if (val is int i) return i;
+        if (val is double d) return d;
+        if (double.TryParse(val.ToString(), out var parsed)) return parsed;
+        return null;
+    }
+
+    private void OnValueChanged(double? value)
+    {
+        if (Control.Attribute == null) return;
+        EditorService.StartTransaction($"Change {Control.Caption}");
+        if (Control.ControlType == "number")
+        {
+            EditorData.SetAttribute(Control.Attribute, (int)(value ?? 0));
+        }
+        else
+        {
+            EditorData.SetAttribute(Control.Attribute, value ?? 0.0);
+        }
+        EditorService.EndTransaction();
+    }
+}

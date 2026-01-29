@@ -1,0 +1,117 @@
+@page "/"
+@inject EditorService EditorService
+@inject NavigationManager Navigation
+@inject IDialogService DialogService
+@inject IJSRuntime JS
+
+<PageTitle>Quest Viva Editor</PageTitle>
+
+<MudContainer MaxWidth="MaxWidth.Small" Class="mt-16">
+    <MudPaper Elevation="2" Class="pa-8">
+        <MudText Typo="Typo.h4" GutterBottom="true">Quest Viva Editor</MudText>
+        <MudText Typo="Typo.body1" Class="mb-6">Create or open a text adventure game.</MudText>
+
+        <MudStack Spacing="4">
+            <MudButton Variant="Variant.Filled"
+                       Color="Color.Primary"
+                       Size="Size.Large"
+                       FullWidth="true"
+                       StartIcon="@Icons.Material.Filled.Add"
+                       OnClick="NewGame">
+                New Game
+            </MudButton>
+
+            <MudButton Variant="Variant.Outlined"
+                       Color="Color.Primary"
+                       Size="Size.Large"
+                       FullWidth="true"
+                       StartIcon="@Icons.Material.Filled.FolderOpen"
+                       OnClick="OpenGame">
+                Open Game
+            </MudButton>
+        </MudStack>
+
+        <InputFile id="fileInput" OnChange="OnFileSelected" style="display:none" accept=".aslx,.asl"/>
+
+        @if (_loading)
+        {
+            <MudProgressLinear Indeterminate="true" Class="mt-4"/>
+            <MudText Typo="Typo.body2" Class="mt-2">Loading game...</MudText>
+        }
+
+        @if (_error != null)
+        {
+            <MudAlert Severity="Severity.Error" Class="mt-4">@_error</MudAlert>
+        }
+    </MudPaper>
+</MudContainer>
+
+@code {
+    private bool _loading;
+    private string? _error;
+
+    private async Task NewGame()
+    {
+        var dialog = await DialogService.ShowAsync<Dialogs.NewGameDialog>("New Game",
+            new DialogOptions { MaxWidth = MaxWidth.Small, FullWidth = true });
+        var result = await dialog.Result;
+        if (result is { Canceled: false, Data: not null })
+        {
+            var data = (NewGameData)result.Data;
+            _loading = true;
+            _error = null;
+            StateHasChanged();
+
+            var success = await EditorService.CreateNewGame(data.TemplateKey, data.GameName);
+            _loading = false;
+
+            if (success)
+            {
+                Navigation.NavigateTo("/edit");
+            }
+            else
+            {
+                _error = "Failed to create new game.";
+            }
+        }
+    }
+
+    private async Task OpenGame()
+    {
+        await JS.InvokeVoidAsync("editorInterop.clickFileInput", "fileInput");
+    }
+
+    private async Task OnFileSelected(InputFileChangeEventArgs e)
+    {
+        _loading = true;
+        _error = null;
+        StateHasChanged();
+
+        try
+        {
+            var file = e.File;
+            using var stream = file.OpenReadStream(maxAllowedSize: 10 * 1024 * 1024);
+            using var ms = new MemoryStream();
+            await stream.CopyToAsync(ms);
+
+            var success = await EditorService.LoadGameFromBytes(ms.ToArray(), file.Name);
+            _loading = false;
+
+            if (success)
+            {
+                Navigation.NavigateTo("/edit");
+            }
+            else
+            {
+                _error = "Failed to load game file.";
+            }
+        }
+        catch (Exception ex)
+        {
+            _loading = false;
+            _error = $"Error loading file: {ex.Message}";
+        }
+    }
+
+    public record NewGameData(string TemplateKey, string GameName);
+}

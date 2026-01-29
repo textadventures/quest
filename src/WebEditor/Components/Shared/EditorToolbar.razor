@@ -1,0 +1,62 @@
+@inject EditorService EditorService
+@inject IJSRuntime JS
+
+<MudToolBar Dense="true" Class="border-b mud-border-lines-default" Style="background: var(--mud-palette-surface);">
+    <MudTooltip Text="Save">
+        <MudIconButton Icon="@Icons.Material.Filled.Save"
+                       Color="Color.Inherit"
+                       OnClick="SaveGame"/>
+    </MudTooltip>
+    <MudDivider Vertical="true" FlexItem="true" Class="mx-2 my-1"/>
+    <MudTooltip Text="Undo">
+        <MudIconButton Icon="@Icons.Material.Filled.Undo"
+                       Color="Color.Inherit"
+                       OnClick="Undo"
+                       Disabled="@(!EditorService.CanUndo)"/>
+    </MudTooltip>
+    <MudTooltip Text="Redo">
+        <MudIconButton Icon="@Icons.Material.Filled.Redo"
+                       Color="Color.Inherit"
+                       OnClick="Redo"
+                       Disabled="@(!EditorService.CanRedo)"/>
+    </MudTooltip>
+    <MudSpacer/>
+    <MudText Typo="Typo.body2">@EditorService.GameName</MudText>
+</MudToolBar>
+
+@code {
+    protected override void OnInitialized()
+    {
+        EditorService.UndoStateChanged += OnUndoStateChanged;
+    }
+
+    private void OnUndoStateChanged()
+    {
+        InvokeAsync(StateHasChanged);
+    }
+
+    private async Task SaveGame()
+    {
+        var content = EditorService.Save();
+        if (content != null)
+        {
+            var fileName = (EditorService.GameName ?? "game") + ".aslx";
+            await JS.InvokeVoidAsync("editorInterop.downloadFile", fileName, content);
+        }
+    }
+
+    private void Undo()
+    {
+        EditorService.Undo();
+    }
+
+    private void Redo()
+    {
+        EditorService.Redo();
+    }
+
+    public void Dispose()
+    {
+        EditorService.UndoStateChanged -= OnUndoStateChanged;
+    }
+}

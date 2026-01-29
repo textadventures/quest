@@ -1,0 +1,19 @@
+@using QuestViva.EditorCore
+
+@if (!string.IsNullOrEmpty(Control.Caption))
+{
+    <MudText Typo="Typo.body2" Class="mb-1">@Control.Caption</MudText>
+}
+
+@if (Control.Attribute != null)
+{
+    <MudText Typo="Typo.body1">@(EditorData.GetAttribute(Control.Attribute)?.ToString() ?? "")</MudText>
+}
+
+@code {
+    [Parameter, EditorRequired]
+    public IEditorControl Control { get; set; } = null!;
+
+    [Parameter, EditorRequired]
+    public IEditorData EditorData { get; set; } = null!;
+}

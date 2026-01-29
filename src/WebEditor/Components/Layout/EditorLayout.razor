@@ -1,0 +1,31 @@
+@inherits LayoutComponentBase
+
+<MudThemeProvider Theme="_theme" IsDarkMode="true"/>
+<MudPopoverProvider/>
+<MudDialogProvider/>
+<MudSnackbarProvider/>
+
+<MudLayout>
+    <MudAppBar Elevation="1" Dense="true">
+        <MudText Typo="Typo.h6">Quest Viva Editor</MudText>
+    </MudAppBar>
+    <MudMainContent Class="pt-12">
+        @Body
+    </MudMainContent>
+</MudLayout>
+
+@code {
+    private readonly MudTheme _theme = new()
+    {
+        PaletteLight = new PaletteLight
+        {
+            Primary = "#594AE2",
+            AppbarBackground = "#594AE2"
+        },
+        PaletteDark = new PaletteDark
+        {
+            Primary = "#7C6FF0",
+            AppbarBackground = "#2d2d30"
+        }
+    };
+}

@@ -1,0 +1,66 @@
+@page "/edit"
+@inject EditorService EditorService
+@inject NavigationManager Navigation
+@inject ISnackbar Snackbar
+
+<PageTitle>@(EditorService.GameName ?? "Editor") - Quest Viva Editor</PageTitle>
+
+@if (!EditorService.IsLoaded)
+{
+    <MudContainer MaxWidth="MaxWidth.Small" Class="mt-16">
+        <MudAlert Severity="Severity.Warning">No game is loaded. Please create or open a game first.</MudAlert>
+        <MudButton Variant="Variant.Filled" Color="Color.Primary" Class="mt-4" Href="/">Go Back</MudButton>
+    </MudContainer>
+}
+else
+{
+    <EditorToolbar/>
+
+    <MudGrid Class="pa-2" Style="height: calc(100vh - 100px); overflow: hidden;">
+        <MudItem xs="3" Style="height: 100%; overflow-y: auto;">
+            <ElementTree OnElementSelected="OnElementSelected"/>
+        </MudItem>
+        <MudItem xs="9" Style="height: 100%; overflow-y: auto;">
+            @if (EditorService.SelectedElementKey != null)
+            {
+                <ElementEditor ElementKey="@EditorService.SelectedElementKey"/>
+            }
+            else
+            {
+                <MudPaper Class="pa-8" Elevation="0">
+                    <MudText Typo="Typo.body1" Color="Color.Secondary">
+                        Select an element from the tree to edit it.
+                    </MudText>
+                </MudPaper>
+            }
+        </MudItem>
+    </MudGrid>
+}
+
+@code {
+    protected override void OnInitialized()
+    {
+        if (!EditorService.IsLoaded)
+        {
+            return;
+        }
+
+        EditorService.MessageRaised += OnMessage;
+    }
+
+    private void OnElementSelected(string key)
+    {
+        EditorService.SelectedElementKey = key;
+        StateHasChanged();
+    }
+
+    private void OnMessage(string message)
+    {
+        InvokeAsync(() => Snackbar.Add(message, Severity.Info));
+    }
+
+    public void Dispose()
+    {
+        EditorService.MessageRaised -= OnMessage;
+    }
+}
