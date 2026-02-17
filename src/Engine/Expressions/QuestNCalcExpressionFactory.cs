@@ -2,6 +2,8 @@
 
 #nullable enable
 using System;
+using System.Globalization;
+using System.Threading;
 using NCalc;
 using NCalc.Domain;
 using NCalc.Exceptions;
@@ -19,21 +21,24 @@ public class QuestNCalcExpressionFactory : ILogicalExpressionFactory
         return _instance ??= new QuestNCalcExpressionFactory();
     }
     
-    public LogicalExpression Create(string expression, ExpressionOptions options = ExpressionOptions.None)
+    public LogicalExpression Create(string expression, ExpressionOptions options = ExpressionOptions.None,
+        CancellationToken ct = new())
     {
         try
         {
             var parserContext = new LogicalExpressionParserContext(expression, options);
             var logicalExpression = QuestNCalcLogicalExpressionParser.Parse(parserContext);
-
-            if (logicalExpression is null)
-                throw new ArgumentNullException(nameof(logicalExpression));
-
-            return logicalExpression;
+    
+            return logicalExpression ?? throw new ArgumentNullException(nameof(logicalExpression));
         }
         catch (Exception exception)
         {
             throw new NCalcParserException("Error parsing the expression.", exception);
         }
     }
+
+    public LogicalExpression Create(string expression, CultureInfo cultureInfo,
+        ExpressionOptions options = ExpressionOptions.None,
+        CancellationToken ct = new())
+        => Create(expression, options, ct);
 }

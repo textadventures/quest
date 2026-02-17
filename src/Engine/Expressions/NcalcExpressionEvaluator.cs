@@ -4,8 +4,8 @@ using System.Linq;
 using System.Reflection;
 using NCalc;
 using NCalc.Cache;
+using NCalc.Factories;
 using NCalc.Handlers;
-using NCalc.Services;
 using QuestViva.Engine.Functions;
 using QuestViva.Engine.Scripts;
 
@@ -26,7 +26,7 @@ public class NcalcExpressionEvaluator<T>: IExpressionEvaluator<T>, IDynamicExpre
             new ExpressionContext(ExpressionOptions.NoStringTypeCoercion, null),
             QuestNCalcExpressionFactory.GetInstance(),
             LogicalExpressionCache.GetInstance(),
-            new EvaluationService());
+            new EvaluationVisitorFactory());
         
         _nCalcExpression.EvaluateFunction += EvaluateFunction;
         _nCalcExpression.EvaluateParameter += EvaluateParameter;
@@ -40,7 +40,7 @@ public class NcalcExpressionEvaluator<T>: IExpressionEvaluator<T>, IDynamicExpre
     public T Evaluate(Context c)
     {
         _context = c;
-        var result = _nCalcExpression.Evaluate();
+        var result = CoerceLong(_nCalcExpression.Evaluate());
 
         // Converting ints to generic doubles is fun
         if (typeof(T) == typeof(double) && result is int i)
@@ -50,6 +50,9 @@ public class NcalcExpressionEvaluator<T>: IExpressionEvaluator<T>, IDynamicExpre
 
         return (T)result;
     }
+
+    // NCalc returns Int64 for integer literals; coerce to Int32 to match engine expectations.
+    private static object CoerceLong(object value) => value is long l ? (int)l : value;
 
     private Context _context;
 
@@ -165,7 +168,7 @@ public class NcalcExpressionEvaluator<T>: IExpressionEvaluator<T>, IDynamicExpre
             return (false, null);
         }
 
-        var evaluatedArgs = parameters.Select(p => p.Evaluate()).ToArray();
+        var evaluatedArgs = parameters.Select(p => CoerceLong(p.Evaluate())).ToArray();
 
         // First, try to find a method with a params parameter.
         var paramsMethods = methods

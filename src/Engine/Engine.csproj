@@ -1,6 +1,6 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <TargetFramework>net9.0</TargetFramework>
+    <TargetFramework>net10.0</TargetFramework>
     <OutputType>Library</OutputType>
     <RootNamespace>QuestViva.Engine</RootNamespace>
     <LangVersion>default</LangVersion>
@@ -22,8 +22,7 @@
     <ProjectReference Include="..\Utility\Utility.csproj" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="Microsoft.VisualBasic" Version="10.3.0" />
-    <PackageReference Include="NCalcSync" Version="5.3.1" />
+    <PackageReference Include="NCalcSync" Version="5.11.0" />
     <PackageReference Include="System.Data.DataSetExtensions" Version="4.5.0" />
   </ItemGroup>
   <ItemGroup>
