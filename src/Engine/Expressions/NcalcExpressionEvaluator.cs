@@ -4,8 +4,8 @@ using System.Linq;
 using System.Reflection;
 using NCalc;
 using NCalc.Cache;
+using NCalc.Factories;
 using NCalc.Handlers;
-using NCalc.Services;
 using QuestViva.Engine.Functions;
 using QuestViva.Engine.Scripts;
 
@@ -26,7 +26,7 @@ public class NcalcExpressionEvaluator<T>: IExpressionEvaluator<T>, IDynamicExpre
             new ExpressionContext(ExpressionOptions.NoStringTypeCoercion, null),
             QuestNCalcExpressionFactory.GetInstance(),
             LogicalExpressionCache.GetInstance(),
-            new EvaluationService());
+            new EvaluationVisitorFactory());
         
         _nCalcExpression.EvaluateFunction += EvaluateFunction;
         _nCalcExpression.EvaluateParameter += EvaluateParameter;
