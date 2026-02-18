@@ -34,6 +34,7 @@ public class TextAdventuresOptions
     public string? GameDownloadRoot { get; set; }
     public string? GameResourceRoot { get; set; }
     public string? ApiRoot { get; set; }
+    public string? SessionTokenSecret { get; set; }
 }
 
 public class Config(IOptionsMonitor<WebPlayerConfig> optionsMonitor) : IConfig, ITextAdventuresConfig
