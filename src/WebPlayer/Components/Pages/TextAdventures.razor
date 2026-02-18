@@ -21,7 +21,7 @@
         {
             if (string.IsNullOrEmpty(Token) || !PlayTokenValidator.Validate(Token, Id, secret, Config.PlayTokenMaxAgeMinutes))
             {
-                NavigationManager.NavigateTo($"https://textadventures.co.uk/games/play/{Id}", forceLoad: true);
+                NavigationManager.NavigateTo($"{Config.GamePlayRoot}{Id}", forceLoad: true);
             }
         }
     }

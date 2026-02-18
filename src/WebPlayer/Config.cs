@@ -34,6 +34,7 @@ public class TextAdventuresOptions
     public string? GameDownloadRoot { get; set; }
     public string? GameResourceRoot { get; set; }
     public string? ApiRoot { get; set; }
+    public string? GamePlayRoot { get; set; }
     public string? SessionTokenSecret { get; set; }
     public int PlayTokenMaxAgeMinutes { get; set; } = 1440;
 }
@@ -52,6 +53,7 @@ public class Config(IOptionsMonitor<WebPlayerConfig> optionsMonitor) : IConfig, 
     public string GameDownloadRoot => ConfigValue.TextAdventures?.GameDownloadRoot ?? string.Empty;
     public string GameResourceRoot => ConfigValue.TextAdventures?.GameResourceRoot ?? string.Empty;
     public string TextAdventuresApiRoot => ConfigValue.TextAdventures?.ApiRoot ?? string.Empty;
+    public string GamePlayRoot => ConfigValue.TextAdventures?.GamePlayRoot ?? string.Empty;
     public string? SessionTokenSecret => ConfigValue.TextAdventures?.SessionTokenSecret;
     public int PlayTokenMaxAgeMinutes => ConfigValue.TextAdventures?.PlayTokenMaxAgeMinutes ?? 1440;
 }
