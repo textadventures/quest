@@ -64,6 +64,15 @@ EditorCore ───────────────────────
 
 **Test projects in `tests/`:** EngineTests, PlayerCoreTests, EditorCoreTests, UtilityTests, LegacyTests
 
+## Releasing
+
+1. Update the `VERSION` file on `main` and push
+2. Run `./release.sh`
+
+This creates and pushes a git tag (e.g. `v6.0.0-beta.12`) which triggers the `docker-publish` GitHub Actions workflow. That workflow verifies the tag matches the `VERSION` file, then builds and pushes the Docker image tagged with that version. The version is also embedded in the binary at build time and displayed at `/about`.
+
+If you forgot to update `VERSION`, the script will fail locally because the tag for the old version already exists.
+
 ## Key Technical Details
 
 - Target framework: .NET 9.0 with nullable reference types enabled
