@@ -76,6 +76,22 @@ public class GameQuery(string filename)
         }
     }
 
+    public bool IsGamebook
+    {
+        get
+        {
+            if (_v4Game != null)
+            {
+                return false;
+            }
+            if (_v5Game != null)
+            {
+                return _v5Game.IsGamebook;
+            }
+            throw new InvalidOperationException();
+        }
+    }
+
     public string GameId => _game.GameID;
 
     public string Category

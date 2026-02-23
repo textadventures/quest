@@ -350,7 +350,7 @@ namespace QuestViva.EditorCore
                 // TODO: Move this code to another initialisation method - it's not needed when running tests
                 if (!partialInit)
                 {
-                    if (m_worldModel.Game.Fields.Get("_editorstyle") as string == "gamebook")
+                    if (m_worldModel.IsGamebook)
                     {
                         m_editorStyle = EditorStyle.GameBook;
                         m_ignoredTypes.Add(ElementType.Template);

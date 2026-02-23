@@ -118,6 +118,7 @@ namespace QuestViva.Engine
         public static IField<string> DisplayVerb = new FieldDef<string>("displayverb");
         public static IField<string> Cover = new FieldDef<string>("cover");
         public static IField<string> PublishFileExtensions = new FieldDef<string>("publishfileextensions");
+        public static IField<string> EditorStyle = new FieldDef<string>("_editorstyle");
     }
 
     public static class MetaFieldDefinitions
