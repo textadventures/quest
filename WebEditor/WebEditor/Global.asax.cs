@@ -40,5 +40,17 @@ namespace WebEditor
             RegisterGlobalFilters(GlobalFilters.Filters);
             RegisterRoutes(RouteTable.Routes);
         }
+
+        protected void Session_End(object sender, EventArgs e)
+        {
+            var editorDictionary = Session["EditorDictionary"] as Dictionary<int, WebEditor.Services.EditorService>;
+            if (editorDictionary != null)
+            {
+                foreach (var editor in editorDictionary.Values)
+                {
+                    editor.Dispose();
+                }
+            }
+        }
     }
 }

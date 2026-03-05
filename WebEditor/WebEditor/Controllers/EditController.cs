@@ -36,7 +36,12 @@ namespace WebEditor.Controllers
         public JsonResult Load(int id, bool simpleMode)
         {
             Services.EditorService editor = new Services.EditorService();
-            EditorDictionary[id] = editor;
+            var dict = EditorDictionary;
+            if (dict.ContainsKey(id))
+            {
+                dict[id].Dispose();
+            }
+            dict[id] = editor;
             string libFolder = Server.MapPath("~/bin/Core/");
             string filename = Services.FileManagerLoader.GetFileManager().GetFile(id);
             if (filename == null)
@@ -383,7 +388,8 @@ namespace WebEditor.Controllers
         public ActionResult Publish(int id)
         {
             Logging.Log.InfoFormat("Publishing game {0}", id);
-            Services.EditorService editor = new Services.EditorService();
+            using (Services.EditorService editor = new Services.EditorService())
+            {
             string libFolder = Server.MapPath("~/bin/Core/");
             string filename = Services.FileManagerLoader.GetFileManager().GetFile(id);
             if (filename == null)
@@ -463,6 +469,7 @@ namespace WebEditor.Controllers
             string url = ConfigurationManager.AppSettings["PublishURL"] + id;
 
             return Redirect(url);
+            } // end using (editor)
         }
 
         private void UploadOutputToAzure(string filename)
@@ -510,8 +517,6 @@ namespace WebEditor.Controllers
 
         public ActionResult Download(int id)
         {
-            ZipFile zip = new ZipFile();
-
             var uploadPath = Services.FileManagerLoader.GetFileManager().UploadPath(id);
 
             if (uploadPath == null)
@@ -519,19 +524,30 @@ namespace WebEditor.Controllers
                 return HttpNotFound();
             }
 
+            var zip = new ZipFile();
+            var blobStreams = new List<MemoryStream>();
+
             var container = GetAzureBlobContainer("editorgames");
             var blobs = container.ListBlobs(uploadPath + "/");
             foreach (var blob in blobs.OfType<CloudBlockBlob>())
             {
                 var blobReference = container.GetBlockBlobReference(blob.Name);
                 var ms = new MemoryStream();
+                blobStreams.Add(ms);
                 blobReference.DownloadToStream(ms);
                 ms.Position = 0;
 
                 zip.AddEntry(Path.GetFileName(blob.Uri.ToString()), ms);
             }
 
-            return new FileGeneratingResult("game.zip", "application/zip", zip.Save);
+            return new FileGeneratingResult("game.zip", "application/zip", stream =>
+            {
+                using (zip)
+                {
+                    zip.Save(stream);
+                }
+                foreach (var ms in blobStreams) ms.Dispose();
+            });
         }
     }
 
