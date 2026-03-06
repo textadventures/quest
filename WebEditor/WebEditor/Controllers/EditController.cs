@@ -388,88 +388,88 @@ namespace WebEditor.Controllers
         public ActionResult Publish(int id)
         {
             Logging.Log.InfoFormat("Publishing game {0}", id);
-            using (Services.EditorService editor = new Services.EditorService())
+            using (var editor = new Services.EditorService())
             {
-            string libFolder = Server.MapPath("~/bin/Core/");
-            string filename = Services.FileManagerLoader.GetFileManager().GetFile(id);
-            if (filename == null)
-            {
-                Logging.Log.InfoFormat("Publish failed for {0} - couldn't get file", id);
-                return View("Error");
-            }
-            var result = editor.Initialise(id, filename, libFolder, false);
-            if (!result.Success)
-            {
-                Logging.Log.InfoFormat("Publish failed for {0} - failed to initialise editor", id);
-                return View("Error");
-            }
-            
-            if (Config.AzureFiles)
-            {
-                var uploadPath = Services.FileManagerLoader.GetFileManager().UploadPath(id);
-                if (uploadPath == null)
+                string libFolder = Server.MapPath("~/bin/Core/");
+                string filename = Services.FileManagerLoader.GetFileManager().GetFile(id);
+                if (filename == null)
                 {
+                    Logging.Log.InfoFormat("Publish failed for {0} - couldn't get file", id);
                     return View("Error");
                 }
-                var container = GetAzureBlobContainer("editorgames");
-                var blobs = container.ListBlobs(uploadPath + "/");
-                var includeFiles = new List<EditorController.PackageIncludeFile>();
-                foreach (var blob in blobs.OfType<CloudBlockBlob>())
+                var result = editor.Initialise(id, filename, libFolder, false);
+                if (!result.Success)
                 {
-                    if (blob.Name.EndsWith(".aslx")) continue;
-                    var blobReference = container.GetBlockBlobReference(blob.Name);
-                    var ms = new MemoryStream();
-                    blobReference.DownloadToStream(ms);
-                    ms.Position = 0;
-                    includeFiles.Add(new EditorController.PackageIncludeFile
+                    Logging.Log.InfoFormat("Publish failed for {0} - failed to initialise editor", id);
+                    return View("Error");
+                }
+            
+                if (Config.AzureFiles)
+                {
+                    var uploadPath = Services.FileManagerLoader.GetFileManager().UploadPath(id);
+                    if (uploadPath == null)
                     {
-                        Filename = Path.GetFileName(blob.Uri.ToString()),
-                        Content = ms
-                    });
-                }
+                        return View("Error");
+                    }
+                    var container = GetAzureBlobContainer("editorgames");
+                    var blobs = container.ListBlobs(uploadPath + "/");
+                    var includeFiles = new List<EditorController.PackageIncludeFile>();
+                    foreach (var blob in blobs.OfType<CloudBlockBlob>())
+                    {
+                        if (blob.Name.EndsWith(".aslx")) continue;
+                        var blobReference = container.GetBlockBlobReference(blob.Name);
+                        var ms = new MemoryStream();
+                        blobReference.DownloadToStream(ms);
+                        ms.Position = 0;
+                        includeFiles.Add(new EditorController.PackageIncludeFile
+                        {
+                            Filename = Path.GetFileName(blob.Uri.ToString()),
+                            Content = ms
+                        });
+                    }
 
-                using (var outputStream = new MemoryStream())
-                {
-                    editor.Publish(null, includeFiles, outputStream);
-                    outputStream.Position = 0;
-                    var blob = container.GetBlockBlobReference(uploadPath + "/Output/" + Path.GetFileNameWithoutExtension(filename) + ".quest");
-                    blob.UploadFromStream(outputStream);
-                }
+                    using (var outputStream = new MemoryStream())
+                    {
+                        editor.Publish(null, includeFiles, outputStream);
+                        outputStream.Position = 0;
+                        var blob = container.GetBlockBlobReference(uploadPath + "/Output/" + Path.GetFileNameWithoutExtension(filename) + ".quest");
+                        blob.UploadFromStream(outputStream);
+                    }
                 
-                foreach (var stream in includeFiles.Select(i => i.Content))
-                {
-                    stream.Dispose();
+                    foreach (var stream in includeFiles.Select(i => i.Content))
+                    {
+                        stream.Dispose();
+                    }
                 }
-            }
-            else
-            {
-                string outputFolder = Path.Combine(Path.GetDirectoryName(filename), "Output");
-
-                Directory.CreateDirectory(outputFolder);
-
-                string outputFilename = Path.Combine(
-                    outputFolder,
-                    Path.GetFileNameWithoutExtension(filename) + ".quest");
-
-                if (System.IO.File.Exists(outputFilename))
+                else
                 {
-                    System.IO.File.Delete(outputFilename);
+                    string outputFolder = Path.Combine(Path.GetDirectoryName(filename), "Output");
+
+                    Directory.CreateDirectory(outputFolder);
+
+                    string outputFilename = Path.Combine(
+                        outputFolder,
+                        Path.GetFileNameWithoutExtension(filename) + ".quest");
+
+                    if (System.IO.File.Exists(outputFilename))
+                    {
+                        System.IO.File.Delete(outputFilename);
+                    }
+
+                    Logging.Log.InfoFormat("Publishing {0} as {1}", id, outputFilename);
+
+                    editor.Publish(outputFilename, null, null);
+
+                    UploadOutputToAzure(outputFilename);
+
+                    Logging.Log.InfoFormat("Publish succeeded for {0}", id);
                 }
-
-                Logging.Log.InfoFormat("Publishing {0} as {1}", id, outputFilename);
-
-                editor.Publish(outputFilename, null, null);
-
-                UploadOutputToAzure(outputFilename);
-
-                Logging.Log.InfoFormat("Publish succeeded for {0}", id);
-            }
             
 
-            string url = ConfigurationManager.AppSettings["PublishURL"] + id;
+                string url = ConfigurationManager.AppSettings["PublishURL"] + id;
 
-            return Redirect(url);
-            } // end using (editor)
+                return Redirect(url);
+            }
         }
 
         private void UploadOutputToAzure(string filename)
