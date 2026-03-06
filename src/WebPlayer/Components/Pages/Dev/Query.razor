@@ -1,13 +1,16 @@
-@page "/dev/open"
+@page "/dev/query"
+@using QuestViva.PlayerCore
 @attribute [RequiresConfig("Dev:Enabled")]
-@inject NavigationManager NavigationManager
 @rendermode InteractiveServer
 
 <InputFile OnChange="@LoadFile"></InputFile>
 
+<p>@Result</p>
+
 @code {
 
     [Inject] private IJSRuntime JS { get; set; } = null!;
+    private string Result { get; set; } = "";
     
     private async Task LoadFile(InputFileChangeEventArgs e)
     {
@@ -18,6 +21,15 @@
         await using FileStream fs = new(tempFile, FileMode.Create);
         await e.File.OpenReadStream(maxAllowedSize: 20 * 1024 * 1024).CopyToAsync(fs);
         
-        NavigationManager.NavigateTo("/dev/play?file=" + e.File.Name, forceLoad: true);
+        var query = new GameQuery(tempFile);
+        
+        var success = await query.Initialise();
+        if (!success)
+        {
+            Result = "Failed to load file: " + string.Join(",", query.Errors);
+            return;
+        }
+
+        Result = "File loaded OK";
     }
 }
