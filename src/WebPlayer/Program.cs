@@ -23,7 +23,11 @@ builder.Services.AddSingleton<ITextAdventuresConfig>(sp => sp.GetRequiredService
 builder.Services.AddSingleton<WorldModelFactory>();
 builder.Services.AddSingleton<GameLauncher>();
 
-builder.Services.AddHttpClient();
+builder.Services.AddHttpClient(string.Empty, client =>
+{
+    client.DefaultRequestHeaders.UserAgent.ParseAdd(
+        "Mozilla/5.0 (compatible; QuestViva/1.0; +https://github.com/textadventures/quest)");
+});
 
 var app = builder.Build();
 
