@@ -1,5 +1,4 @@
 #nullable enable
-using System.IO;
 using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Json;
@@ -12,24 +11,8 @@ public class TextAdventuresGameDataProvider(ITextAdventuresConfig config, HttpCl
 {
     private class ApiGame
     {
-        public int ASLVersion { get; set; }
-        public string? OnlineRef { get; set; }
-        public string? UniqueId { get; set; }
         public string? ResourceRoot { get; set; }
-    }
-    
-    private string GetSourceGameUrl(ApiGame game)
-    {
-        if (game.OnlineRef == null)
-        {
-            throw new InvalidDataException("OnlineRef is null in ApiGame");
-        }
-        
-        // TODO: The new textadventures site's API returns SourceGameUrl directly on ApiGame, so we can
-        // remove this when that goes live.
-        
-        var gameFile = game.ASLVersion >= 500 ? "game.aslx" : Path.GetFileName(game.OnlineRef.Replace('\\', '/'));
-        return $"{config.GameResourceRoot}{game.UniqueId}/{gameFile}";
+        public string? SourceGameUrl { get; set; }
     }
     
     public async Task<GameData?> GetData()
@@ -41,7 +24,7 @@ public class TextAdventuresGameDataProvider(ITextAdventuresConfig config, HttpCl
             return null;
         }
 
-        var url = GetSourceGameUrl(gameApiResult);
+        var url = gameApiResult.SourceGameUrl;
         
         var response = await client.GetAsync(url);
         if (!response.IsSuccessStatusCode)

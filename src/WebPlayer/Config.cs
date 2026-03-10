@@ -32,7 +32,6 @@ public class TextAdventuresOptions
     public bool RemoteResources { get; set; }
     public bool Debug { get; set; }
     public string? GameDownloadRoot { get; set; }
-    public string? GameResourceRoot { get; set; }
     public string? ApiRoot { get; set; }
     public string? GamePlayRoot { get; set; }
     public string? SessionTokenSecret { get; set; }
@@ -51,7 +50,6 @@ public class Config(IOptionsMonitor<WebPlayerConfig> optionsMonitor) : IConfig, 
     public bool TextAdventuresRemoteResources => ConfigValue.TextAdventures?.RemoteResources ?? false;
     public bool TextAdventuresDebug => ConfigValue.TextAdventures?.Debug ?? false;
     public string GameDownloadRoot => ConfigValue.TextAdventures?.GameDownloadRoot ?? string.Empty;
-    public string GameResourceRoot => ConfigValue.TextAdventures?.GameResourceRoot ?? string.Empty;
     public string TextAdventuresApiRoot => ConfigValue.TextAdventures?.ApiRoot ?? string.Empty;
     public string GamePlayRoot => ConfigValue.TextAdventures?.GamePlayRoot ?? string.Empty;
     public string? SessionTokenSecret => ConfigValue.TextAdventures?.SessionTokenSecret;
