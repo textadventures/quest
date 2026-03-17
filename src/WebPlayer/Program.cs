@@ -29,6 +29,8 @@ builder.Services.AddHttpClient(string.Empty, client =>
         "Mozilla/5.0 (compatible; QuestViva/1.0; +https://github.com/textadventures/quest)");
 });
 
+builder.Services.AddHealthChecks();
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -46,6 +48,8 @@ app.UseAntiforgery();
 
 app.MapRazorComponents<App>()
     .AddInteractiveServerRenderMode();
+
+app.MapHealthChecks("/health");
 
 app.MapGet("/res/{name}", UiResources.GetResource);
 app.MapGet("/res/{dir}/{name}", (string dir, string name) => UiResources.GetResource($"{dir}.{name}"));
