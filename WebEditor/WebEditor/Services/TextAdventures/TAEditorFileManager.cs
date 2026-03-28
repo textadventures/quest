@@ -3,8 +3,8 @@ using System.Collections.Generic;
 using System.Configuration;
 using System.Linq;
 using WebInterfaces;
-using Microsoft.WindowsAzure.Storage.Blob;
-using Microsoft.WindowsAzure.Storage;
+using Azure.Storage.Blobs;
+using Azure.Storage.Blobs.Models;
 
 namespace TASessionManager
 {
@@ -65,19 +65,17 @@ namespace TASessionManager
             var filename = url.Substring(pathRoot.Length);
 
             var container = GetAzureBlobContainer("editorgames");
-            var blob = container.GetBlockBlobReference(filename);
-            blob.Properties.ContentType = "application/octet-stream";
-            blob.UploadText(data);
+            var blob = container.GetBlobClient(filename);
+            blob.Upload(new System.IO.MemoryStream(System.Text.Encoding.UTF8.GetBytes(data)), new BlobUploadOptions
+            {
+                HttpHeaders = new BlobHttpHeaders { ContentType = "application/octet-stream" }
+            });
         }
 
-        private static CloudBlobContainer GetAzureBlobContainer(string containerName)
+        private static BlobContainerClient GetAzureBlobContainer(string containerName)
         {
             var connectionString = ConfigurationManager.AppSettings["AzureConnectionString"];
-            var account = CloudStorageAccount.Parse(connectionString);
-
-            var blobClient = account.CreateCloudBlobClient();
-            var container = blobClient.GetContainerReference(containerName);
-            return container;
+            return new BlobContainerClient(connectionString, containerName);
         }
 
         public CreateNewFileData CreateNewFile(string filename, string gameName)
@@ -105,9 +103,11 @@ namespace TASessionManager
         public void FinishCreatingNewFile(string filename, string data)
         {
             var container = GetAzureBlobContainer("editorgames");
-            var blob = container.GetBlockBlobReference(filename);
-            blob.Properties.ContentType = "application/octet-stream";
-            blob.UploadText(data);
+            var blob = container.GetBlobClient(filename);
+            blob.Upload(new System.IO.MemoryStream(System.Text.Encoding.UTF8.GetBytes(data)), new BlobUploadOptions
+            {
+                HttpHeaders = new BlobHttpHeaders { ContentType = "application/octet-stream" }
+            });
         }
 
         public string UploadPath(int id)
