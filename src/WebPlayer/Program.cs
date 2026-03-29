@@ -32,6 +32,11 @@ builder.Services.AddHttpClient(string.Empty, client =>
 builder.Services.AddHealthChecks();
 builder.Services.AddSingleton<GameSessionTracker>();
 
+if (!string.IsNullOrEmpty(builder.Configuration["ApplicationInsights:ConnectionString"]))
+{
+    builder.Services.AddApplicationInsightsTelemetry();
+}
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
