@@ -30,6 +30,7 @@ builder.Services.AddHttpClient(string.Empty, client =>
 });
 
 builder.Services.AddHealthChecks();
+builder.Services.AddSingleton<GameSessionTracker>();
 
 var app = builder.Build();
 
@@ -50,6 +51,16 @@ app.MapRazorComponents<App>()
     .AddInteractiveServerRenderMode();
 
 app.MapHealthChecks("/health");
+
+var adminKey = app.Configuration["AdminKey"];
+app.MapGet("/admin/status", (GameSessionTracker tracker, HttpContext context) =>
+{
+    if (!string.IsNullOrEmpty(adminKey) && context.Request.Query["key"] != adminKey)
+    {
+        return Results.Unauthorized();
+    }
+    return Results.Ok(new { activeGames = tracker.ActiveGames });
+});
 
 app.MapGet("/res/{name}", UiResources.GetResource);
 app.MapGet("/res/{dir}/{name}", (string dir, string name) => UiResources.GetResource($"{dir}.{name}"));

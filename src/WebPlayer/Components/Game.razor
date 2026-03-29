@@ -5,6 +5,7 @@
 @rendermode InteractiveServer
 @implements IDisposable
 @inject GameLauncher GameLauncher
+@inject GameSessionTracker GameSessionTracker
 @inject IJSRuntime JS
 
 <HeadContent>
@@ -81,9 +82,18 @@
         if (gameData == null) return;
         
         await JS.InvokeVoidAsync("WebPlayer.closeSlots");
+
+        if (game != null)
+        {
+            game.Finish();
+            GameSessionTracker.GameEnded();
+        }
+
         game = GameLauncher.GetGame(gameData, saveData);
-        
+
         if (game == null) return;
+
+        GameSessionTracker.GameStarted();
         
         var resourceUrlProvider = ResourceUrlProvider(gameData);
         
@@ -125,7 +135,11 @@
 
     public void Dispose()
     {
-        game?.Finish();
+        if (game != null)
+        {
+            game.Finish();
+            GameSessionTracker.GameEnded();
+        }
     }
 
 }
