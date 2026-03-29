@@ -11,8 +11,8 @@
     <link rel="stylesheet" href="app.css"/>
     <link rel="stylesheet" href="WebPlayer.styles.css"/>
     <link rel="shortcut icon" href="/favicon.svg" type="image/svg+xml"/>
-    <script type="text/javascript" src="/res/lib/paper.js"></script>
-    <script type="text/paperscript" src="/res/grid.js" canvas="gridCanvas"></script>
+    <script type="text/javascript" src="/res/lib/paper.js" crossorigin="anonymous"></script>
+    <script type="text/paperscript" src="/res/grid.js" canvas="gridCanvas" crossorigin="anonymous"></script>
     @(new MarkupString(ServiceProvider.GetService<Microsoft.ApplicationInsights.AspNetCore.JavaScriptSnippet>()?.FullScript ?? string.Empty))
     <HeadOutlet/>
 </head>
