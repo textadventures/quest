@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Threading.Tasks;
 using QuestViva.Common;
 using QuestViva.Engine;
@@ -187,6 +188,36 @@ public class GameQuery(string filename)
                     }
                 }
                 return parts.Count > 0 ? string.Join(" ", parts) : null;
+            }
+            throw new InvalidOperationException();
+        }
+    }
+
+    /// <summary>
+    /// All rooms and objects defined in the game itself, excluding anything inherited from Core libraries.
+    /// Returns null for V4 games.
+    /// </summary>
+    public IReadOnlyList<GameObjectInfo> GameObjects
+    {
+        get
+        {
+            if (_v4Game != null)
+            {
+                return null;
+            }
+            if (_v5Game != null)
+            {
+                return _v5Game.Objects
+                    .Where(obj => obj.Type == ObjectType.Object
+                               && !obj.MetaFields[MetaFieldDefinitions.Library])
+                    .Select(obj => new GameObjectInfo(
+                        Name: obj.Name,
+                        Alias: obj.Fields.HasString("alias") ? obj.Fields.GetString("alias") : null,
+                        ParentName: obj.Parent?.Name,
+                        Description: obj.Fields.HasString("description") ? obj.Fields.GetString("description") : null
+                    ))
+                    .ToList()
+                    .AsReadOnly();
             }
             throw new InvalidOperationException();
         }

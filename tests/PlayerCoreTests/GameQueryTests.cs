@@ -51,6 +51,40 @@ public class GameQueryTests
         Assert.AreEqual("de", query.LanguageId);
         StringAssert.Contains(query.GameTextSample, "Ein kleines Zimmer");
     }
+
+    [TestMethod]
+    public async Task TestGameObjects()
+    {
+        var query = new GameQuery("test-de.quest");
+        var result = await query.Initialise();
+        Assert.IsTrue(result);
+
+        var objects = query.GameObjects;
+        Assert.IsNotNull(objects);
+
+        var names = objects.Select(o => o.Name).ToList();
+        CollectionAssert.Contains(names, "eingangshalle");
+        CollectionAssert.Contains(names, "schluessel");
+        CollectionAssert.Contains(names, "keller");
+        CollectionAssert.Contains(names, "player");
+
+        var halle = objects.Single(o => o.Name == "eingangshalle");
+        Assert.AreEqual("Eingangshalle", halle.Alias);
+        Assert.IsNull(halle.ParentName);
+        StringAssert.Contains(halle.Description, "Zimmer");
+
+        var schluessel = objects.Single(o => o.Name == "schluessel");
+        Assert.AreEqual("eingangshalle", schluessel.ParentName);
+    }
+
+    [TestMethod]
+    public async Task TestGameObjectsASL()
+    {
+        var query = new GameQuery("test1.asl");
+        var result = await query.Initialise();
+        Assert.IsTrue(result);
+        Assert.IsNull(query.GameObjects);
+    }
     
     [TestMethod]
     public async Task TestInvalidQuest()

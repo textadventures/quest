@@ -20,6 +20,28 @@
         <tr><th>CoverResourceName</th><td>@_query.CoverResourceName</td></tr>
         <tr><th>LanguageId</th><td>@_query.LanguageId</td></tr>
         <tr><th>GameTextSample</th><td>@_query.GameTextSample</td></tr>
+        <tr>
+            <th>GameObjects (@(_query.GameObjects?.Count ?? 0))</th>
+            <td>
+                @if (_query.GameObjects != null)
+                {
+                    <table>
+                        <thead><tr><th>Name</th><th>Alias</th><th>Parent</th><th>Description</th></tr></thead>
+                        <tbody>
+                            @foreach (var obj in _query.GameObjects)
+                            {
+                                <tr>
+                                    <td>@obj.Name</td>
+                                    <td>@obj.Alias</td>
+                                    <td>@obj.ParentName</td>
+                                    <td>@obj.Description</td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                }
+            </td>
+        </tr>
     </table>
 }
 else
