@@ -142,6 +142,56 @@ public class GameQuery(string filename)
         }
     }
 
+    /// <summary>
+    /// The language ID from the LanguageId template (e.g. "en", "de", "fr").
+    /// Returns null for V4 games and for V5 games that don't set the LanguageId template.
+    /// When null, callers can use <see cref="GameName"/> and <see cref="Description"/> for language detection.
+    /// </summary>
+    public string LanguageId
+    {
+        get
+        {
+            if (_v4Game != null)
+            {
+                return null;
+            }
+            if (_v5Game != null)
+            {
+                return _v5Game.LanguageId;
+            }
+            throw new InvalidOperationException();
+        }
+    }
+
+    /// <summary>
+    /// A sample of the game's prose text, collected from object and room description fields.
+    /// Intended for use with language detection when <see cref="LanguageId"/> is null.
+    /// Returns null for V4 games.
+    /// </summary>
+    public string GameTextSample
+    {
+        get
+        {
+            if (_v4Game != null)
+            {
+                return null;
+            }
+            if (_v5Game != null)
+            {
+                var parts = new List<string>();
+                foreach (var obj in _v5Game.Objects)
+                {
+                    if (obj.Fields.HasString("description"))
+                    {
+                        parts.Add(obj.Fields.GetString("description"));
+                    }
+                }
+                return parts.Count > 0 ? string.Join(" ", parts) : null;
+            }
+            throw new InvalidOperationException();
+        }
+    }
+
     public IEnumerable<string> Errors => _errors.AsReadOnly();
 
     public IEnumerable<string> GetResourceNames() => _game.GetResourceNames();

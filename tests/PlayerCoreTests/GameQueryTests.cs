@@ -16,6 +16,8 @@ public class GameQueryTests
         Assert.AreEqual(null, query.GameId);
         Assert.AreEqual(null, query.Category);
         Assert.AreEqual(null, query.Description);
+        Assert.AreEqual(null, query.LanguageId);
+        Assert.AreEqual(null, query.GameTextSample);
     }
 
     [TestMethod]
@@ -37,6 +39,17 @@ public class GameQueryTests
         Assert.AreEqual("33cb328d-bf80-42f7-a136-e916e7b45ed8", query.GameId);
         Assert.AreEqual("Test Category", query.Category);
         Assert.AreEqual("Test Description", query.Description);
+        Assert.AreEqual(null, query.LanguageId);
+    }
+
+    [TestMethod]
+    public async Task TestLanguageId()
+    {
+        var query = new GameQuery("test-de.quest");
+        var result = await query.Initialise();
+        Assert.IsTrue(result);
+        Assert.AreEqual("de", query.LanguageId);
+        StringAssert.Contains(query.GameTextSample, "Ein kleines Zimmer");
     }
     
     [TestMethod]

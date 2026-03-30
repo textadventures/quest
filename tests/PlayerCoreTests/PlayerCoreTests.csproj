@@ -37,6 +37,9 @@
       <None Update="resources.quest">
         <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       </None>
+      <None Update="test-de.quest">
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </None>
     </ItemGroup>
 
 </Project>
