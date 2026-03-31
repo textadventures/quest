@@ -1591,4 +1591,5 @@ public partial class WorldModel : IGame, IGameDebug
     public string Description => Game.Fields[FieldDefinitions.Description];
     public string Cover => Game.Fields[FieldDefinitions.Cover];
     public bool IsGamebook => Game.Fields[FieldDefinitions.EditorStyle] == "gamebook";
+    public string? LanguageId => Template.GetText("LanguageId", throwException: false);
 }

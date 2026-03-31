@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Threading.Tasks;
 using QuestViva.Common;
 using QuestViva.Engine;
@@ -137,6 +138,86 @@ public class GameQuery(string filename)
             if (_v5Game != null)
             {
                 return _v5Game.Cover;
+            }
+            throw new InvalidOperationException();
+        }
+    }
+
+    /// <summary>
+    /// The language ID from the LanguageId template (e.g. "en", "de", "fr").
+    /// Returns null for V4 games and for V5 games that don't set the LanguageId template.
+    /// When null, callers can use <see cref="GameName"/> and <see cref="Description"/> for language detection.
+    /// </summary>
+    public string LanguageId
+    {
+        get
+        {
+            if (_v4Game != null)
+            {
+                return null;
+            }
+            if (_v5Game != null)
+            {
+                return _v5Game.LanguageId;
+            }
+            throw new InvalidOperationException();
+        }
+    }
+
+    /// <summary>
+    /// A sample of the game's prose text, collected from object and room description fields.
+    /// Intended for use with language detection when <see cref="LanguageId"/> is null.
+    /// Returns null for V4 games.
+    /// </summary>
+    public string GameTextSample
+    {
+        get
+        {
+            if (_v4Game != null)
+            {
+                return null;
+            }
+            if (_v5Game != null)
+            {
+                var parts = new List<string>();
+                foreach (var obj in _v5Game.Objects)
+                {
+                    if (obj.Fields.HasString("description"))
+                    {
+                        parts.Add(obj.Fields.GetString("description"));
+                    }
+                }
+                return parts.Count > 0 ? string.Join(" ", parts) : null;
+            }
+            throw new InvalidOperationException();
+        }
+    }
+
+    /// <summary>
+    /// All rooms and objects defined in the game itself, excluding anything inherited from Core libraries.
+    /// Returns null for V4 games.
+    /// </summary>
+    public IReadOnlyList<GameObjectInfo> GameObjects
+    {
+        get
+        {
+            if (_v4Game != null)
+            {
+                return null;
+            }
+            if (_v5Game != null)
+            {
+                return _v5Game.Objects
+                    .Where(obj => obj.Type == ObjectType.Object
+                               && !obj.MetaFields[MetaFieldDefinitions.Library])
+                    .Select(obj => new GameObjectInfo(
+                        Name: obj.Name,
+                        Alias: obj.Fields.HasString("alias") ? obj.Fields.GetString("alias") : null,
+                        ParentName: obj.Parent?.Name,
+                        Description: obj.Fields.HasString("description") ? obj.Fields.GetString("description") : null
+                    ))
+                    .ToList()
+                    .AsReadOnly();
             }
             throw new InvalidOperationException();
         }

@@ -5,31 +5,77 @@
 
 <InputFile OnChange="@LoadFile"></InputFile>
 
-<p>@Result</p>
+@if (_query != null)
+{
+    <style>
+        table th { vertical-align: top }
+    </style>
+    <table>
+        <tr><th>GameName</th><td>@_query.GameName</td></tr>
+        <tr><th>GameId</th><td>@_query.GameId</td></tr>
+        <tr><th>ASLVersion</th><td>@_query.ASLVersion</td></tr>
+        <tr><th>IsGamebook</th><td>@_query.IsGamebook</td></tr>
+        <tr><th>Category</th><td>@_query.Category</td></tr>
+        <tr><th>Description</th><td>@_query.Description</td></tr>
+        <tr><th>CoverResourceName</th><td>@_query.CoverResourceName</td></tr>
+        <tr><th>LanguageId</th><td>@_query.LanguageId</td></tr>
+        <tr><th>GameTextSample</th><td>@_query.GameTextSample</td></tr>
+        <tr>
+            <th>GameObjects (@(_query.GameObjects?.Count ?? 0))</th>
+            <td>
+                @if (_query.GameObjects != null)
+                {
+                    <table>
+                        <thead><tr><th>Name</th><th>Alias</th><th>Parent</th><th>Description</th></tr></thead>
+                        <tbody>
+                            @foreach (var obj in _query.GameObjects)
+                            {
+                                <tr>
+                                    <td>@obj.Name</td>
+                                    <td>@obj.Alias</td>
+                                    <td>@obj.ParentName</td>
+                                    <td>@obj.Description</td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                }
+            </td>
+        </tr>
+    </table>
+}
+else
+{
+    <p>@_status</p>
+}
 
 @code {
 
     [Inject] private IJSRuntime JS { get; set; } = null!;
-    private string Result { get; set; } = "";
-    
+    private string _status = "";
+    private GameQuery? _query;
+
     private async Task LoadFile(InputFileChangeEventArgs e)
     {
+        _query = null!;
+        _status = "Loading...";
+
         var tempFile = Path.Combine(
             Path.GetTempPath(),
             e.File.Name);
 
         await using FileStream fs = new(tempFile, FileMode.Create);
         await e.File.OpenReadStream(maxAllowedSize: 20 * 1024 * 1024).CopyToAsync(fs);
-        
+
         var query = new GameQuery(tempFile);
-        
+
         var success = await query.Initialise();
         if (!success)
         {
-            Result = "Failed to load file: " + string.Join(",", query.Errors);
+            _status = "Failed to load file: " + string.Join(",", query.Errors);
             return;
         }
 
-        Result = "File loaded OK";
+        _query = query;
     }
 }
