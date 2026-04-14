@@ -244,7 +244,7 @@ public partial class WorldModel : IGame, IGameDebug
     {
         if (Elements.ContainsKey(ElementType.Function, scopeFunction))
         {
-            return (QuestList<Element>)RunProcedure(scopeFunction, true)!;
+            return (QuestList<Element>?)RunProcedure(scopeFunction, true) ?? new QuestList<Element>();
         }
         throw new Exception($"No function '{scopeFunction}'");
     }
@@ -530,15 +530,14 @@ public partial class WorldModel : IGame, IGameDebug
                     {
                         TryFinishTurn();
                     }
+                    if (State != GameState.Finished)
+                    {
+                        UpdateLists();
+                    }
                 }
                 catch (Exception ex)
                 {
                     LogException(ex);
-                }
-
-                if (State != GameState.Finished)
-                {
-                    UpdateLists();
                 }
 
                 ChangeThreadState(ThreadState.Ready);
@@ -1337,13 +1336,13 @@ public partial class WorldModel : IGame, IGameDebug
                 {
                     RunScript(timerScript.Value, timerScript.Key);
                 }
+
+                UpdateLists();
             }
             catch (Exception ex)
             {
                 LogException(ex);
             }
-
-            UpdateLists();
 
             ChangeThreadState(ThreadState.Ready, false);
         });
@@ -1414,11 +1413,18 @@ public partial class WorldModel : IGame, IGameDebug
 
     private void RunCallbackAndFinishTurn(Callback callback)
     {
-        RunScript(callback.Script, callback.Context);
-        TryFinishTurn();
-        if (State != GameState.Finished)
+        try
         {
-            UpdateLists();
+            RunScript(callback.Script, callback.Context);
+            TryFinishTurn();
+            if (State != GameState.Finished)
+            {
+                UpdateLists();
+            }
+        }
+        catch (Exception ex)
+        {
+            LogException(ex);
         }
         ChangeThreadState(ThreadState.Ready);
         SendNextTimerRequest();
