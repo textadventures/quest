@@ -477,15 +477,22 @@ Public Class MainToolbar
 
     Private Sub ScaleToolbarImages()
         Dim scale As Single = DeviceDpi / 96.0F
-        If scale <= 1.0F Then Return
 
         Dim items = ctlToolStrip.Items.Cast(Of ToolStripItem)().ToList()
+
+        For Each item In items
+            If Not TypeOf item Is ToolStripSeparator Then
+                item.Margin = New System.Windows.Forms.Padding(2, 1, 2, 2)
+            End If
+        Next
+
+        If scale <= 1.0F Then Return
 
         If _originalToolbarImages Is Nothing Then
             _originalToolbarImages = items.Select(Function(i) i.Image).ToList()
         End If
 
-        Dim newSize As Integer = CInt(32 * scale)
+        Dim newSize As Integer = CInt(16 * scale)
         ctlToolStrip.ImageScalingSize = New System.Drawing.Size(newSize, newSize)
 
         For i As Integer = 0 To items.Count - 1
