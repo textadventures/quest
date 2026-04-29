@@ -117,6 +117,103 @@ namespace TextAdventures.Quest.EditorControls
         {
             SetTextboxHint();
             base.OnHandleCreated(e);
+            ScaleImageList();
+            ScaleButtonImages();
+        }
+
+        protected override void OnDpiChangedAfterParent(EventArgs e)
+        {
+            base.OnDpiChangedAfterParent(e);
+            ScaleImageList();
+            ScaleButtonImages();
+            _originalContextMenuImages = null; // force re-capture at new DPI
+        }
+
+        private void ScaleImageList()
+        {
+            float scale = DeviceDpi / 96f;
+            int newSize = Math.Max(16, (int)(16 * scale));
+
+            if (ctlTreeView.ImageList != null && ctlTreeView.ImageList.ImageSize.Width == newSize)
+                return;
+
+            var sourceList = ctlImageList;
+            var newList = new ImageList();
+            newList.ColorDepth = ColorDepth.Depth32Bit;
+            newList.ImageSize = new Size(newSize, newSize);
+            newList.TransparentColor = sourceList.TransparentColor;
+
+            for (int i = 0; i < sourceList.Images.Count; i++)
+            {
+                newList.Images.Add(new Bitmap(sourceList.Images[i], newSize, newSize));
+                newList.Images.SetKeyName(i, sourceList.Images.Keys[i]);
+            }
+
+            var old = ctlTreeView.ImageList;
+            ctlTreeView.ImageList = newList;
+            if (old != null && old != ctlImageList)
+                old.Dispose();
+        }
+
+        private Bitmap _originalSearchImage;
+        private Bitmap _originalCloseImage;
+
+        private void ScaleButtonImages()
+        {
+            if (_originalSearchImage == null) _originalSearchImage = (Bitmap)cmdSearch.Image;
+            if (_originalCloseImage == null) _originalCloseImage = (Bitmap)cmdClose.Image;
+
+            float scale = DeviceDpi / 96f;
+            ScaleButtonImage(cmdSearch, _originalSearchImage, scale);
+            ScaleButtonImage(cmdClose, _originalCloseImage, scale);
+        }
+
+        private static void ScaleButtonImage(Button button, Bitmap original, float scale)
+        {
+            int newW = (int)(original.Width * scale);
+            int newH = (int)(original.Height * scale);
+            if (button.Image is Bitmap current && current != original && current.Width == newW) return;
+            var old = button.Image;
+            button.Image = new Bitmap(original, newW, newH);
+            if (old != null && old != original) old.Dispose();
+        }
+
+        private List<Image> _originalContextMenuImages;
+
+        private void ScaleContextMenuImages()
+        {
+            float scale = DeviceDpi / 96f;
+            if (scale <= 1f) return;
+
+            var items = ctlContextMenu.Items.Cast<ToolStripItem>().ToList();
+
+            if (_originalContextMenuImages == null)
+                _originalContextMenuImages = items.Select(i => i.Image).ToList();
+
+            for (int i = 0; i < items.Count && i < _originalContextMenuImages.Count; i++)
+            {
+                var original = _originalContextMenuImages[i];
+                if (original == null) continue;
+                int newSize = (int)(original.Width * scale);
+                var current = items[i].Image as Bitmap;
+                if (current != null && current != original && current.Width == newSize) continue;
+                var old = items[i].Image;
+                items[i].Image = ScaleImageHighQuality(original, newSize);
+                if (old != null && old != original) old.Dispose();
+            }
+        }
+
+        private static Bitmap ScaleImageHighQuality(Image source, int size)
+        {
+            var result = new Bitmap(size, size, System.Drawing.Imaging.PixelFormat.Format32bppArgb);
+            using (var g = Graphics.FromImage(result))
+            {
+                g.InterpolationMode = System.Drawing.Drawing2D.InterpolationMode.HighQualityBicubic;
+                g.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.HighQuality;
+                g.PixelOffsetMode = System.Drawing.Drawing2D.PixelOffsetMode.HighQuality;
+                g.DrawImage(source, 0, 0, size, size);
+            }
+            return result;
         }
 
         private void SetTextboxHint()

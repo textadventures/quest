@@ -9,6 +9,7 @@ using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
+using System.Windows.Interop;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
@@ -28,6 +29,34 @@ namespace TextAdventures.Quest.EditorControls
         {
             InitializeComponent();
             ctlElementsList.RequestParentElementEditorSave += ctlElementsList_RequestParentElementEditorSave;
+            Loaded += OnLoaded;
+        }
+
+        private HwndSource _hwndSource;
+
+        private void OnLoaded(object sender, RoutedEventArgs e)
+        {
+            ApplyCurrentDpi();
+            var source = PresentationSource.FromVisual(this) as HwndSource;
+            if (source != null && source != _hwndSource)
+            {
+                if (_hwndSource != null) _hwndSource.DpiChanged -= OnHwndDpiChanged;
+                _hwndSource = source;
+                _hwndSource.DpiChanged += OnHwndDpiChanged;
+            }
+        }
+
+        private void OnHwndDpiChanged(object sender, HwndDpiChangedEventArgs e)
+        {
+            ApplyCurrentDpi();
+        }
+
+        private void ApplyCurrentDpi()
+        {
+            var dpiInfo = VisualTreeHelper.GetDpi(this);
+            int dpi = (int)dpiInfo.PixelsPerInchX;
+            if (dpi > 96)
+                ctlElementsList.ApplyDpi(dpi);
         }
 
         void ctlElementsList_RequestParentElementEditorSave()

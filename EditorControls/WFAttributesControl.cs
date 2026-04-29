@@ -23,6 +23,53 @@ namespace TextAdventures.Quest.EditorControls
             lstAttributes.ListViewItemSorter = m_attributesListSorter;
         }
 
+        internal void ApplyDpi(int dpi)
+        {
+            float scale = dpi / 96f;
+            if (scale <= 1f) return;
+            ScaleStripImages(ctlToolStrip, ref _originalCtlToolStripImages, scale);
+            ScaleStripImages(ctlTypesToolStrip, ref _originalTypesToolStripImages, scale);
+        }
+
+        private List<Image> _originalCtlToolStripImages;
+        private List<Image> _originalTypesToolStripImages;
+
+        private static void ScaleStripImages(ToolStrip strip, ref List<Image> originals, float scale)
+        {
+            if (originals == null)
+            {
+                originals = new List<Image>();
+                foreach (ToolStripItem item in strip.Items)
+                    originals.Add(item.Image);
+            }
+
+            var items = strip.Items.Cast<ToolStripItem>().ToList();
+            for (int i = 0; i < items.Count && i < originals.Count; i++)
+            {
+                var original = originals[i];
+                if (original == null) continue;
+                int newSize = (int)(original.Width * scale);
+                var current = items[i].Image as Bitmap;
+                if (current != null && current != original && current.Width == newSize) continue;
+                var old = items[i].Image;
+                items[i].Image = ScaleImageHighQuality(original, newSize);
+                if (old != null && old != original) old.Dispose();
+            }
+        }
+
+        private static Bitmap ScaleImageHighQuality(Image source, int size)
+        {
+            var result = new Bitmap(size, size, System.Drawing.Imaging.PixelFormat.Format32bppArgb);
+            using (var g = Graphics.FromImage(result))
+            {
+                g.InterpolationMode = System.Drawing.Drawing2D.InterpolationMode.HighQualityBicubic;
+                g.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.HighQuality;
+                g.PixelOffsetMode = System.Drawing.Drawing2D.PixelOffsetMode.HighQuality;
+                g.DrawImage(source, 0, 0, size, size);
+            }
+            return result;
+        }
+
         private EditorController m_controller;
         private IEditorControl m_controlData;
         private IEditorDataExtendedAttributeInfo m_data;

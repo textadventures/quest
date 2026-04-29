@@ -31,6 +31,69 @@ namespace TextAdventures.Quest.EditorControls
         private Dictionary<string, ToolStripItem> m_extraToolStripItems = new Dictionary<string, ToolStripItem>();
         private List<string> m_extraToolStripItemsEnabledOnlyWithSelection = new List<string> { "goto" };
 
+        protected override void OnHandleCreated(EventArgs e)
+        {
+            base.OnHandleCreated(e);
+            ScaleToolStripImages();
+        }
+
+        protected override void OnDpiChangedAfterParent(EventArgs e)
+        {
+            base.OnDpiChangedAfterParent(e);
+            ScaleToolStripImages();
+        }
+
+        private void ScaleToolStripImages()
+        {
+            ScaleToolStripImages(DeviceDpi);
+        }
+
+        internal void ApplyDpi(int dpi)
+        {
+            ScaleToolStripImages(dpi);
+        }
+
+        private List<Image> _originalToolStripImages;
+
+        private void ScaleToolStripImages(int dpi)
+        {
+            float scale = dpi / 96f;
+            if (scale <= 1f) return;
+
+            if (_originalToolStripImages == null)
+            {
+                _originalToolStripImages = new List<Image>();
+                foreach (ToolStripItem item in ctlToolStrip.Items)
+                    _originalToolStripImages.Add(item.Image);
+            }
+
+            var items = ctlToolStrip.Items.Cast<ToolStripItem>().ToList();
+            for (int i = 0; i < items.Count && i < _originalToolStripImages.Count; i++)
+            {
+                var original = _originalToolStripImages[i];
+                if (original == null) continue;
+                int newSize = (int)(original.Width * scale);
+                var current = items[i].Image as Bitmap;
+                if (current != null && current != original && current.Width == newSize) continue;
+                var old = items[i].Image;
+                items[i].Image = ScaleImageHighQuality(original, newSize);
+                if (old != null && old != original) old.Dispose();
+            }
+        }
+
+        private static Bitmap ScaleImageHighQuality(Image source, int size)
+        {
+            var result = new Bitmap(size, size, System.Drawing.Imaging.PixelFormat.Format32bppArgb);
+            using (var g = Graphics.FromImage(result))
+            {
+                g.InterpolationMode = System.Drawing.Drawing2D.InterpolationMode.HighQualityBicubic;
+                g.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.HighQuality;
+                g.PixelOffsetMode = System.Drawing.Drawing2D.PixelOffsetMode.HighQuality;
+                g.DrawImage(source, 0, 0, size, size);
+            }
+            return result;
+        }
+
         public WFListEditor()
         {
             InitializeComponent();
