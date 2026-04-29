@@ -166,6 +166,66 @@ namespace TextAdventures.Quest.EditorControls
             float scale = DeviceDpi / 96f;
             ScaleButtonImage(cmdSearch, _originalSearchImage, scale);
             ScaleButtonImage(cmdClose, _originalCloseImage, scale);
+
+            if (scale > 1f)
+                ctlToolStrip.Renderer = new DpiScaledToolStripRenderer(scale);
+        }
+
+        private class DpiScaledToolStripRenderer : ToolStripProfessionalRenderer
+        {
+            private readonly float _scale;
+
+            public DpiScaledToolStripRenderer(float scale)
+            {
+                _scale = scale;
+            }
+
+            protected override void OnRenderArrow(ToolStripArrowRenderEventArgs e)
+            {
+                var r = e.ArrowRectangle;
+                var middle = new System.Drawing.Point(r.Left + r.Width / 2 + (r.Width % 2), r.Top + r.Height / 2);
+                int half = Math.Max(2, (int)(2 * _scale));
+
+                System.Drawing.Point[] arrow;
+                switch (e.Direction)
+                {
+                    case ArrowDirection.Up:
+                        arrow = new System.Drawing.Point[]
+                        {
+                            new System.Drawing.Point(middle.X - half, middle.Y + half / 2 + 1),
+                            new System.Drawing.Point(middle.X + half + 1, middle.Y + half / 2 + 1),
+                            new System.Drawing.Point(middle.X, middle.Y - half / 2)
+                        };
+                        break;
+                    case ArrowDirection.Left:
+                        arrow = new System.Drawing.Point[]
+                        {
+                            new System.Drawing.Point(middle.X + half / 2 + 1, middle.Y - half),
+                            new System.Drawing.Point(middle.X + half / 2 + 1, middle.Y + half + 1),
+                            new System.Drawing.Point(middle.X - half / 2, middle.Y)
+                        };
+                        break;
+                    case ArrowDirection.Right:
+                        arrow = new System.Drawing.Point[]
+                        {
+                            new System.Drawing.Point(middle.X - half / 2, middle.Y - half),
+                            new System.Drawing.Point(middle.X - half / 2, middle.Y + half + 1),
+                            new System.Drawing.Point(middle.X + half / 2 + 1, middle.Y)
+                        };
+                        break;
+                    default: // Down
+                        arrow = new System.Drawing.Point[]
+                        {
+                            new System.Drawing.Point(middle.X - half, middle.Y - half / 2),
+                            new System.Drawing.Point(middle.X + half + 1, middle.Y - half / 2),
+                            new System.Drawing.Point(middle.X, middle.Y + half / 2 + 1)
+                        };
+                        break;
+                }
+
+                using (var brush = new System.Drawing.SolidBrush(e.ArrowColor))
+                    e.Graphics.FillPolygon(brush, arrow);
+            }
         }
 
         private static void ScaleButtonImage(Button button, Bitmap original, float scale)
@@ -866,7 +926,7 @@ namespace TextAdventures.Quest.EditorControls
 
         private void ctlContextMenu_Opening(object sender, CancelEventArgs e)
         {
-
+            ScaleContextMenuImages();
         }
 
         private void txtSearch_TextChanged(object sender, EventArgs e)

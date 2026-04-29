@@ -39,6 +39,50 @@ Public Class Editor
         HideUI()
     End Sub
 
+    Private _originalLblHeaderImage As System.Drawing.Image
+
+    Protected Overrides Sub OnHandleCreated(e As EventArgs)
+        MyBase.OnHandleCreated(e)
+        ScaleStatusStripImages()
+    End Sub
+
+    Protected Overrides Sub OnDpiChangedAfterParent(e As EventArgs)
+        MyBase.OnDpiChangedAfterParent(e)
+        _originalLblHeaderImage = Nothing
+        ScaleStatusStripImages()
+    End Sub
+
+    Private Sub ScaleStatusStripImages()
+        Dim scale As Single = DeviceDpi / 96.0F
+        If scale <= 1.0F Then Return
+
+        If _originalLblHeaderImage Is Nothing Then
+            _originalLblHeaderImage = lblHeader.Image
+        End If
+        If _originalLblHeaderImage Is Nothing Then Return
+
+        Dim newSize As Integer = CInt(20 * scale)
+        Dim current = TryCast(lblHeader.Image, System.Drawing.Bitmap)
+        If current IsNot Nothing AndAlso current IsNot _originalLblHeaderImage AndAlso current.Width = newSize Then Return
+
+        Dim oldImg = lblHeader.Image
+        lblHeader.Image = ScaleImageHighQuality(_originalLblHeaderImage, newSize)
+        If oldImg IsNot Nothing AndAlso oldImg IsNot _originalLblHeaderImage Then oldImg.Dispose()
+
+        StatusStrip1.ImageScalingSize = New System.Drawing.Size(newSize, newSize)
+    End Sub
+
+    Private Shared Function ScaleImageHighQuality(source As System.Drawing.Image, size As Integer) As System.Drawing.Bitmap
+        Dim result As New System.Drawing.Bitmap(size, size, System.Drawing.Imaging.PixelFormat.Format32bppArgb)
+        Using g = System.Drawing.Graphics.FromImage(result)
+            g.InterpolationMode = System.Drawing.Drawing2D.InterpolationMode.HighQualityBicubic
+            g.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.HighQuality
+            g.PixelOffsetMode = System.Drawing.Drawing2D.PixelOffsetMode.HighQuality
+            g.DrawImage(source, 0, 0, size, size)
+        End Using
+        Return result
+    End Function
+
     Public Sub Initialise(ByRef filename As String)
         m_menu.Visible = False
         If Not m_uiHidden Then

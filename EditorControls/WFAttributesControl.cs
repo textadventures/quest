@@ -6,6 +6,7 @@ using System.Data;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
+using System.Runtime.InteropServices;
 using TextAdventures.Utility.Language;
 
 namespace TextAdventures.Quest.EditorControls
@@ -23,12 +24,48 @@ namespace TextAdventures.Quest.EditorControls
             lstAttributes.ListViewItemSorter = m_attributesListSorter;
         }
 
+        [DllImport("user32.dll")]
+        private static extern IntPtr MonitorFromWindow(IntPtr hwnd, uint dwFlags);
+
+        [DllImport("shcore.dll")]
+        private static extern int GetDpiForMonitor(IntPtr hmonitor, int dpiType, out uint dpiX, out uint dpiY);
+
+        private int GetHwndDpi()
+        {
+            if (!IsHandleCreated) return 96;
+            try
+            {
+                IntPtr monitor = MonitorFromWindow(Handle, 2);
+                uint dpiX, dpiY;
+                if (GetDpiForMonitor(monitor, 0, out dpiX, out dpiY) == 0)
+                    return (int)dpiX;
+            }
+            catch { }
+            return 96;
+        }
+
+        protected override void OnHandleCreated(EventArgs e)
+        {
+            base.OnHandleCreated(e);
+            ApplyDpi(GetHwndDpi());
+        }
+
+        protected override void OnDpiChangedAfterParent(EventArgs e)
+        {
+            base.OnDpiChangedAfterParent(e);
+            _originalCtlToolStripImages = null;
+            _originalTypesToolStripImages = null;
+            ApplyDpi(GetHwndDpi());
+        }
+
         internal void ApplyDpi(int dpi)
         {
             float scale = dpi / 96f;
             if (scale <= 1f) return;
             ScaleStripImages(ctlToolStrip, ref _originalCtlToolStripImages, scale);
             ScaleStripImages(ctlTypesToolStrip, ref _originalTypesToolStripImages, scale);
+            ctlToolStrip.AutoSize = true;
+            ctlTypesToolStrip.AutoSize = true;
         }
 
         private List<Image> _originalCtlToolStripImages;

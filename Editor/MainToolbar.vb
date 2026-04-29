@@ -462,4 +462,55 @@ Public Class MainToolbar
         ToolStripSeparator2.Visible = Not CodeView
     End Sub
 
+    Private _originalToolbarImages As System.Collections.Generic.List(Of System.Drawing.Image)
+
+    Protected Overrides Sub OnHandleCreated(e As EventArgs)
+        MyBase.OnHandleCreated(e)
+        ScaleToolbarImages()
+    End Sub
+
+    Protected Overrides Sub OnDpiChangedAfterParent(e As EventArgs)
+        MyBase.OnDpiChangedAfterParent(e)
+        _originalToolbarImages = Nothing
+        ScaleToolbarImages()
+    End Sub
+
+    Private Sub ScaleToolbarImages()
+        Dim scale As Single = DeviceDpi / 96.0F
+        If scale <= 1.0F Then Return
+
+        Dim items = ctlToolStrip.Items.Cast(Of ToolStripItem)().ToList()
+
+        If _originalToolbarImages Is Nothing Then
+            _originalToolbarImages = items.Select(Function(i) i.Image).ToList()
+        End If
+
+        Dim newSize As Integer = CInt(32 * scale)
+        ctlToolStrip.ImageScalingSize = New System.Drawing.Size(newSize, newSize)
+
+        For i As Integer = 0 To items.Count - 1
+            If i >= _originalToolbarImages.Count Then Exit For
+            Dim original = _originalToolbarImages(i)
+            If original Is Nothing Then Continue For
+            Dim current = TryCast(items(i).Image, System.Drawing.Bitmap)
+            If current IsNot Nothing AndAlso current IsNot original AndAlso current.Width = newSize Then Continue For
+            Dim oldImg = items(i).Image
+            items(i).Image = ScaleImageHighQuality(original, newSize)
+            If oldImg IsNot Nothing AndAlso oldImg IsNot original Then oldImg.Dispose()
+        Next
+
+        Height = ctlToolStrip.Height
+    End Sub
+
+    Private Shared Function ScaleImageHighQuality(source As System.Drawing.Image, size As Integer) As System.Drawing.Bitmap
+        Dim result As New System.Drawing.Bitmap(size, size, System.Drawing.Imaging.PixelFormat.Format32bppArgb)
+        Using g = System.Drawing.Graphics.FromImage(result)
+            g.InterpolationMode = System.Drawing.Drawing2D.InterpolationMode.HighQualityBicubic
+            g.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.HighQuality
+            g.PixelOffsetMode = System.Drawing.Drawing2D.PixelOffsetMode.HighQuality
+            g.DrawImage(source, 0, 0, size, size)
+        End Using
+        Return result
+    End Function
+
 End Class
