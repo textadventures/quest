@@ -56,9 +56,13 @@ namespace TextAdventures.Quest.EditorControls
                 ? System.Drawing.ColorTranslator.FromHtml("#9A9A9A")
                 : System.Drawing.ColorTranslator.FromHtml("#CCCCCC");
 
-            var fullRow = new Rectangle(0, e.Bounds.Top, ctlTreeView.ClientSize.Width, e.Bounds.Height);
+            // Start the highlight at the icon's left edge so the expander glyph (drawn by
+            // the system to the left of the icon before this event fires) isn't painted over.
+            int iconSize = ctlTreeView.ImageList?.ImageSize.Width ?? 0;
+            int fillX = Math.Max(0, e.Node.Bounds.Left - iconSize - 2);
+            var selectionRect = new Rectangle(fillX, e.Bounds.Top, ctlTreeView.ClientSize.Width - fillX, e.Bounds.Height);
             using (var brush = new SolidBrush(bgColor))
-                e.Graphics.FillRectangle(brush, fullRow);
+                e.Graphics.FillRectangle(brush, selectionRect);
 
             TextRenderer.DrawText(e.Graphics, e.Node.Text, e.Node.NodeFont ?? ctlTreeView.Font, e.Bounds, Color.White, TextFormatFlags.GlyphOverhangPadding | TextFormatFlags.VerticalCenter);
 
