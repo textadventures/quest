@@ -43,42 +43,60 @@ namespace TextAdventures.Quest.EditorControls
             
         }
 
-    // Color of the Treeview menu
     private void CtlTreeView_DrawNode(object sender, DrawTreeNodeEventArgs e)
     {
-      if (e.Node == null) return;
+        if (e.Node == null) return;
 
-      var selected = (e.State & TreeNodeStates.Selected) == TreeNodeStates.Selected;
-      var focused = e.Node.TreeView.Focused;
+        var selected = (e.State & TreeNodeStates.Selected) == TreeNodeStates.Selected;
 
-      if (selected)
-      {
-        var backgroundColor = "";
-        var foregroundColor = "";
-
-        // Selected with focus
-        if (focused)
+        if (selected)
         {
-          backgroundColor = "#1D1B61";
-          foregroundColor = "#FFFFFF";
+            var focused = e.Node.TreeView.Focused;
+            var bgColor = focused
+                ? System.Drawing.ColorTranslator.FromHtml("#1D1B61")
+                : System.Drawing.ColorTranslator.FromHtml("#A2A2A2");
+
+            using (var brush = new SolidBrush(bgColor))
+                e.Graphics.FillRectangle(brush, e.Bounds);
+
+            TextRenderer.DrawText(e.Graphics, e.Node.Text, e.Node.NodeFont ?? ctlTreeView.Font, e.Bounds, Color.White, TextFormatFlags.GlyphOverhangPadding);
+
+            // In OwnerDrawText mode the system uses the tree-level SelectedImageIndex rather than
+            // the per-node value, so we always draw the correct icon ourselves.
+            DrawNodeIcon(e.Graphics, e.Node, bgColor);
         }
-        // Selected without focus
         else
         {
-          backgroundColor = "#A2A2A2";
-          foregroundColor = "#FFFFFF";
+            e.DrawDefault = true;
+            // The system's ImageIndex falls back to 0 (first image) when the list has been
+            // rebuilt, so draw the correct icon ourselves on top regardless.
+            DrawNodeIcon(e.Graphics, e.Node, ctlTreeView.BackColor);
         }
-        var getBackgrColorFromHex = System.Drawing.ColorTranslator.FromHtml(backgroundColor);
-        var getForegrColorFromHex = System.Drawing.ColorTranslator.FromHtml(foregroundColor);
-        var font = e.Node.NodeFont ?? e.Node.TreeView.Font;
-        SolidBrush backgroundBrush = new SolidBrush(getBackgrColorFromHex);
-        e.Graphics.FillRectangle(backgroundBrush, e.Bounds);
-        TextRenderer.DrawText(e.Graphics, e.Node.Text, font, e.Bounds, getForegrColorFromHex, TextFormatFlags.GlyphOverhangPadding);
-      }
-      else
-      {
-          e.DrawDefault = true;
-      }
+    }
+
+    private void DrawNodeIcon(Graphics g, TreeNode node, Color bgColor)
+    {
+        var imageList = ctlTreeView.ImageList;
+        if (imageList == null) return;
+
+        string iconKey = node.Tag as string;
+        if (string.IsNullOrEmpty(iconKey)) return;
+
+        int idx = imageList.Images.IndexOfKey(iconKey);
+        if (idx < 0) return;
+
+        int iconSize = imageList.ImageSize.Width;
+        // In OwnerDrawText mode node.Bounds is the text-label area; the icon sits to its left.
+        int iconX = node.Bounds.Left - iconSize - 2;
+        int iconY = node.Bounds.Top + (node.Bounds.Height - iconSize) / 2;
+
+        if (iconX < 0) return;
+
+        // Fill the icon area with the row background before drawing, to cover any stale icon.
+        using (var brush = new SolidBrush(bgColor))
+            g.FillRectangle(brush, iconX, iconY, iconSize, iconSize);
+
+        g.DrawImage(imageList.Images[idx], iconX, iconY, iconSize, iconSize);
     }
 
     private Dictionary<string, TreeNode> m_nodes = new Dictionary<string, TreeNode>();
@@ -117,6 +135,7 @@ namespace TextAdventures.Quest.EditorControls
         {
             SetTextboxHint();
             base.OnHandleCreated(e);
+            RebuildImageList();
             ScaleImageList();
             ScaleButtonImages();
         }
@@ -127,6 +146,34 @@ namespace TextAdventures.Quest.EditorControls
             ScaleImageList();
             ScaleButtonImages();
             _originalContextMenuImages = null; // force re-capture at new DPI
+        }
+
+        private void RebuildImageList()
+        {
+            ctlImageList.Images.Clear();
+            AddToImageList("s_room", Properties.Resources.s_room);
+            AddToImageList("s_object", Properties.Resources.s_object);
+            AddToImageList("s_exit", Properties.Resources.s_exit);
+            AddToImageList("s_verb", Properties.Resources.s_verb);
+            AddToImageList("s_command", Properties.Resources.s_command);
+            AddToImageList("s_function", Properties.Resources.s_function);
+            AddToImageList("s_timer", Properties.Resources.s_timer);
+            AddToImageList("s_turn", Properties.Resources.s_turn);
+            AddToImageList("s_walk", Properties.Resources.s_walk);
+            AddToImageList("s_add_page", Properties.Resources.s_add_page);
+            AddToImageList("s_library", Properties.Resources.s_library);
+            AddToImageList("s_template", Properties.Resources.s_template);
+            AddToImageList("s_dynamictemplate", Properties.Resources.s_dynamictemplate);
+            AddToImageList("s_objecttype", Properties.Resources.s_objecttype);
+            AddToImageList("s_javascript", Properties.Resources.s_javascript);
+            AddToImageList("s_folder", Properties.Resources.s_folder);
+            AddToImageList("s_game", Properties.Resources.s_game);
+        }
+
+        private void AddToImageList(string key, Image image)
+        {
+            if (image != null)
+                ctlImageList.Images.Add(key, image);
         }
 
         private void ScaleImageList()
@@ -145,7 +192,10 @@ namespace TextAdventures.Quest.EditorControls
 
             for (int i = 0; i < sourceList.Images.Count; i++)
             {
-                newList.Images.Add(new Bitmap(sourceList.Images[i], newSize, newSize));
+                var scaled = newSize == 16
+                    ? new Bitmap(sourceList.Images[i])
+                    : ScaleImageHighQuality(sourceList.Images[i], newSize);
+                newList.Images.Add(scaled);
                 newList.Images.SetKeyName(i, sourceList.Images.Keys[i]);
             }
 
@@ -282,7 +332,7 @@ namespace TextAdventures.Quest.EditorControls
             SendMessage(new HandleRef(this, txtSearch.Handle), EM_SETCUEBANNER, IntPtr.Zero, hintText);
         }
 
-        public void AddNode(string key, string text, string parentKey, System.Drawing.Color? foreColor, System.Drawing.Color? backColor, int? position = null)
+        public void AddNode(string key, string text, string parentKey, System.Drawing.Color? foreColor, System.Drawing.Color? backColor, int? position = null, string imageKey = null)
         {
             if (m_nodes.ContainsKey(key)) return;
             TreeNode newNode = default(TreeNode);
@@ -309,6 +359,21 @@ namespace TextAdventures.Quest.EditorControls
             if (foreColor.HasValue)
             {
                 newNode.ForeColor = foreColor.Value;
+            }
+
+            if (!string.IsNullOrEmpty(imageKey))
+            {
+                newNode.Tag = imageKey;
+                var imageList = ctlTreeView.ImageList;
+                if (imageList != null)
+                {
+                    int idx = imageList.Images.IndexOfKey(imageKey);
+                    if (idx >= 0)
+                    {
+                        newNode.ImageIndex = idx;
+                        newNode.SelectedImageIndex = idx;
+                    }
+                }
             }
 
             m_nodes.Add(key, newNode);

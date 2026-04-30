@@ -254,7 +254,7 @@ Public Class Editor
 
     Private Sub m_controller_AddedNode(sender As Object, e As AddedNodeEventArgs) Handles m_controller.AddedNode
         Dim foreColor As Color = If(e.IsLibraryNode, SystemColors.ControlDarkDark, SystemColors.ControlText)
-        ctlTree.AddNode(e.Key, e.Text, e.Parent, foreColor, Nothing, e.Position)
+        ctlTree.AddNode(e.Key, e.Text, e.Parent, foreColor, Nothing, e.Position, e.NodeIcon)
     End Sub
 
     Private Sub m_controller_RemovedNode(sender As Object, e As RemovedNodeEventArgs) Handles m_controller.RemovedNode

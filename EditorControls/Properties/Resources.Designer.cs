@@ -220,6 +220,55 @@ namespace TextAdventures.Quest.EditorControls.Properties {
             }
         }
         
+        internal static System.Drawing.Bitmap s_library {
+            get {
+                object obj = ResourceManager.GetObject("s_library", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+
+        internal static System.Drawing.Bitmap s_template {
+            get {
+                object obj = ResourceManager.GetObject("s_template", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+
+        internal static System.Drawing.Bitmap s_dynamictemplate {
+            get {
+                object obj = ResourceManager.GetObject("s_dynamictemplate", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+
+        internal static System.Drawing.Bitmap s_objecttype {
+            get {
+                object obj = ResourceManager.GetObject("s_objecttype", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+
+        internal static System.Drawing.Bitmap s_javascript {
+            get {
+                object obj = ResourceManager.GetObject("s_javascript", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+
+        internal static System.Drawing.Bitmap s_folder {
+            get {
+                object obj = ResourceManager.GetObject("s_folder", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+
+        internal static System.Drawing.Bitmap s_game {
+            get {
+                object obj = ResourceManager.GetObject("s_game", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
