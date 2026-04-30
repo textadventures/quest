@@ -463,8 +463,8 @@ Public Class MainToolbar
     End Sub
 
     Private Shared ReadOnly _svgNames As New Dictionary(Of String, String) From {
-        {"butNew", "New"},
-        {"butOpen", "Open"},
+        {"butNew", "NewDocument"},
+        {"butOpen", "OpenFolder"},
         {"butSave", "Save"},
         {"butCut", "Cut"},
         {"butCopy", "Copy"},
@@ -483,7 +483,7 @@ Public Class MainToolbar
         {"butForward", "Forwards"},
         {"butPlay", "Run"},
         {"butCode", "Code"},
-        {"butHelp", "HelpApplication"},
+        {"butHelp", "QuestionMark"},
         {"butLogError", "LogError"}
     }
 

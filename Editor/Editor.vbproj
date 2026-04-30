@@ -238,8 +238,8 @@
     <EmbeddedResource Include="WPFElementEditor.resx">
       <DependentUpon>WPFElementEditor.vb</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Resources\New.xaml" />
-    <EmbeddedResource Include="Resources\Open.xaml" />
+    <EmbeddedResource Include="Resources\NewDocument.xaml" />
+    <EmbeddedResource Include="Resources\OpenFolder.xaml" />
     <EmbeddedResource Include="Resources\Save.xaml" />
     <EmbeddedResource Include="Resources\Cut.xaml" />
     <EmbeddedResource Include="Resources\Copy.xaml" />
@@ -256,7 +256,7 @@
     <EmbeddedResource Include="Resources\Forwards.xaml" />
     <EmbeddedResource Include="Resources\Run.xaml" />
     <EmbeddedResource Include="Resources\Code.xaml" />
-    <EmbeddedResource Include="Resources\HelpApplication.xaml" />
+    <EmbeddedResource Include="Resources\QuestionMark.xaml" />
     <EmbeddedResource Include="Resources\LogError.xaml" />
   </ItemGroup>
   <ItemGroup>
