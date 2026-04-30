@@ -53,28 +53,46 @@ namespace TextAdventures.Quest.EditorControls
         {
             var focused = e.Node.TreeView.Focused;
             var bgColor = focused
-                ? System.Drawing.ColorTranslator.FromHtml("#1D1B61")
-                : System.Drawing.ColorTranslator.FromHtml("#A2A2A2");
+                ? System.Drawing.ColorTranslator.FromHtml("#9A9A9A")
+                : System.Drawing.ColorTranslator.FromHtml("#CCCCCC");
+
+            var fullRow = new Rectangle(0, e.Bounds.Top, ctlTreeView.ClientSize.Width, e.Bounds.Height);
+            using (var brush = new SolidBrush(bgColor))
+                e.Graphics.FillRectangle(brush, fullRow);
+
+            TextRenderer.DrawText(e.Graphics, e.Node.Text, e.Node.NodeFont ?? ctlTreeView.Font, e.Bounds, Color.White, TextFormatFlags.GlyphOverhangPadding | TextFormatFlags.VerticalCenter);
+
+            // In OwnerDrawText mode the system uses the tree-level SelectedImageIndex rather than
+            // the per-node value, so we always draw the correct icon ourselves.
+            DrawNodeIcon(e.Graphics, e.Node, bgColor, selected: true);
+        }
+        else
+        {
+            var bgColor = e.Node.BackColor != Color.Empty ? e.Node.BackColor : ctlTreeView.BackColor;
+            var fgColor = e.Node.ForeColor != Color.Empty ? e.Node.ForeColor : ctlTreeView.ForeColor;
 
             using (var brush = new SolidBrush(bgColor))
                 e.Graphics.FillRectangle(brush, e.Bounds);
 
-            TextRenderer.DrawText(e.Graphics, e.Node.Text, e.Node.NodeFont ?? ctlTreeView.Font, e.Bounds, Color.White, TextFormatFlags.GlyphOverhangPadding);
+            TextRenderer.DrawText(e.Graphics, e.Node.Text, e.Node.NodeFont ?? ctlTreeView.Font, e.Bounds, fgColor, TextFormatFlags.GlyphOverhangPadding | TextFormatFlags.VerticalCenter);
 
-            // In OwnerDrawText mode the system uses the tree-level SelectedImageIndex rather than
-            // the per-node value, so we always draw the correct icon ourselves.
-            DrawNodeIcon(e.Graphics, e.Node, bgColor);
-        }
-        else
-        {
-            e.DrawDefault = true;
-            // The system's ImageIndex falls back to 0 (first image) when the list has been
-            // rebuilt, so draw the correct icon ourselves on top regardless.
-            DrawNodeIcon(e.Graphics, e.Node, ctlTreeView.BackColor);
+            DrawNodeIcon(e.Graphics, e.Node, bgColor, selected: false);
         }
     }
 
-    private void DrawNodeIcon(Graphics g, TreeNode node, Color bgColor)
+    // ColorMatrix that converts every opaque pixel to white while preserving alpha,
+    // so icons remain legible against the dark selection background.
+    private static readonly System.Drawing.Imaging.ColorMatrix _whiteIconMatrix =
+        new System.Drawing.Imaging.ColorMatrix(new float[][]
+        {
+            new float[] { 0, 0, 0, 0, 0 },
+            new float[] { 0, 0, 0, 0, 0 },
+            new float[] { 0, 0, 0, 0, 0 },
+            new float[] { 0, 0, 0, 1, 0 },
+            new float[] { 1, 1, 1, 0, 1 },
+        });
+
+    private void DrawNodeIcon(Graphics g, TreeNode node, Color bgColor, bool selected)
     {
         var imageList = ctlTreeView.ImageList;
         if (imageList == null) return;
@@ -96,7 +114,20 @@ namespace TextAdventures.Quest.EditorControls
         using (var brush = new SolidBrush(bgColor))
             g.FillRectangle(brush, iconX, iconY, iconSize, iconSize);
 
-        g.DrawImage(imageList.Images[idx], iconX, iconY, iconSize, iconSize);
+        var destRect = new Rectangle(iconX, iconY, iconSize, iconSize);
+        if (selected)
+        {
+            using (var ia = new System.Drawing.Imaging.ImageAttributes())
+            {
+                ia.SetColorMatrix(_whiteIconMatrix);
+                g.DrawImage(imageList.Images[idx], destRect,
+                    0, 0, iconSize, iconSize, GraphicsUnit.Pixel, ia);
+            }
+        }
+        else
+        {
+            g.DrawImage(imageList.Images[idx], destRect);
+        }
     }
 
     private Dictionary<string, TreeNode> m_nodes = new Dictionary<string, TreeNode>();
@@ -139,6 +170,7 @@ namespace TextAdventures.Quest.EditorControls
             ScaleImageList();
             ScaleButtonImages();
             ApplyContextMenuIcons();
+            UpdateItemHeight();
         }
 
         protected override void OnDpiChangedAfterParent(EventArgs e)
@@ -147,6 +179,13 @@ namespace TextAdventures.Quest.EditorControls
             ScaleImageList();
             ScaleButtonImages();
             ApplyContextMenuIcons();
+            UpdateItemHeight();
+        }
+
+        private void UpdateItemHeight()
+        {
+            int padding = (int)Math.Round(10 * DeviceDpi / 96f);
+            ctlTreeView.ItemHeight = ctlTreeView.Font.Height + padding;
         }
 
         private void RebuildImageList()
