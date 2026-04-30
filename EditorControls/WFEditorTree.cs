@@ -193,11 +193,17 @@ namespace TextAdventures.Quest.EditorControls
 
             for (int i = 0; i < sourceList.Images.Count; i++)
             {
-                var scaled = newSize == 16
-                    ? new Bitmap(sourceList.Images[i])
-                    : ScaleImageHighQuality(sourceList.Images[i], newSize);
-                newList.Images.Add(scaled);
-                newList.Images.SetKeyName(i, sourceList.Images.Keys[i]);
+                string key = sourceList.Images.Keys[i];
+                Bitmap bmp = null;
+                string xamlName;
+                if (_treeXamlNames.TryGetValue(key, out xamlName))
+                    bmp = RenderXaml(xamlName, newSize);
+                if (bmp == null)
+                    bmp = newSize == 16
+                        ? new Bitmap(sourceList.Images[i])
+                        : ScaleImageHighQuality(sourceList.Images[i], newSize);
+                newList.Images.Add(bmp);
+                newList.Images.SetKeyName(i, key);
             }
 
             var old = ctlTreeView.ImageList;
@@ -289,6 +295,27 @@ namespace TextAdventures.Quest.EditorControls
             if (old != null && old != original) old.Dispose();
         }
 
+        private static readonly Dictionary<string, string> _treeXamlNames = new Dictionary<string, string>
+        {
+            { "s_room",            "FolderClosed" },
+            { "s_object",         "Item" },
+            { "s_exit",           "Exit" },
+            { "s_verb",           "Comment" },
+            { "s_command",        "Script" },
+            { "s_function",       "Method" },
+            { "s_timer",          "Timer" },
+            { "s_turn",           "TriggerScript" },
+            { "s_walk",           "User" },
+            { "s_add_page",       "AddDocument" },
+            { "s_library",        "Library" },
+            { "s_template",       "Template" },
+            { "s_dynamictemplate","DynamicTemplate" },
+            { "s_objecttype",     "TypeDefinition" },
+            { "s_javascript",     "JSScript" },
+            { "s_folder",         "FolderClosed" },
+            { "s_game",           "WorldLocal" },
+        };
+
         private static readonly Dictionary<string, string> _contextMenuXamlNames = new Dictionary<string, string>
         {
             { "cutToolStripMenuItem",            "Cut" },
@@ -330,7 +357,7 @@ namespace TextAdventures.Quest.EditorControls
         {
             var asm = System.Reflection.Assembly.GetExecutingAssembly();
             var resourceName = asm.GetManifestResourceNames()
-                .FirstOrDefault(n => n.EndsWith(name + ".xaml", StringComparison.OrdinalIgnoreCase));
+                .FirstOrDefault(n => n.EndsWith("." + name + ".xaml", StringComparison.OrdinalIgnoreCase));
             if (resourceName == null) return null;
             using (var stream = asm.GetManifestResourceStream(resourceName))
             {
