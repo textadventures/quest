@@ -26,3 +26,4 @@ WebPlayer/grid.js
 *.pubxml
 _site/
 .claude
+.idea
