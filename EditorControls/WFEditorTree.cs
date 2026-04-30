@@ -138,6 +138,7 @@ namespace TextAdventures.Quest.EditorControls
             RebuildImageList();
             ScaleImageList();
             ScaleButtonImages();
+            ApplyContextMenuIcons();
         }
 
         protected override void OnDpiChangedAfterParent(EventArgs e)
@@ -145,7 +146,7 @@ namespace TextAdventures.Quest.EditorControls
             base.OnDpiChangedAfterParent(e);
             ScaleImageList();
             ScaleButtonImages();
-            _originalContextMenuImages = null; // force re-capture at new DPI
+            ApplyContextMenuIcons();
         }
 
         private void RebuildImageList()
@@ -288,28 +289,68 @@ namespace TextAdventures.Quest.EditorControls
             if (old != null && old != original) old.Dispose();
         }
 
-        private List<Image> _originalContextMenuImages;
+        private static readonly Dictionary<string, string> _contextMenuXamlNames = new Dictionary<string, string>
+        {
+            { "cutToolStripMenuItem",            "Cut" },
+            { "copyToolStripMenuItem",           "Copy" },
+            { "pasteToolStripMenuItem",          "Paste" },
+            { "deleteToolStripMenuItem",         "Delete" },
+            { "AddVerbToolStripMenuItem",        "Comment" },
+            { "AddCommandToolStripMenuItem",     "Script" },
+            { "addPageToolStripMenuItem",        "AddDocument" },
+            { "AddRoomToolStripMenuItem",        "AddFolder" },
+            { "AddObjectToolStripMenuItem",      "AddItem" },
+            { "AddExitToolStripMenuItem",        "Exit" },
+            { "AddFunctionToolStripMenuItem",    "Method" },
+            { "addTimerToolStripMenuItem",       "Timer" },
+            { "AddWalkthroughToolStripMenuItem", "User" },
+        };
 
-        private void ScaleContextMenuImages()
+        private void ApplyContextMenuIcons()
         {
             float scale = DeviceDpi / 96f;
-            if (scale <= 1f) return;
-
-            var items = ctlContextMenu.Items.Cast<ToolStripItem>().ToList();
-
-            if (_originalContextMenuImages == null)
-                _originalContextMenuImages = items.Select(i => i.Image).ToList();
-
-            for (int i = 0; i < items.Count && i < _originalContextMenuImages.Count; i++)
+            int size = Math.Max(16, (int)(16 * scale));
+            foreach (ToolStripItem item in ctlContextMenu.Items)
             {
-                var original = _originalContextMenuImages[i];
-                if (original == null) continue;
-                int newSize = (int)(original.Width * scale);
-                var current = items[i].Image as Bitmap;
-                if (current != null && current != original && current.Width == newSize) continue;
-                var old = items[i].Image;
-                items[i].Image = ScaleImageHighQuality(original, newSize);
-                if (old != null && old != original) old.Dispose();
+                string xamlName;
+                if (_contextMenuXamlNames.TryGetValue(item.Name, out xamlName))
+                {
+                    var bmp = RenderXaml(xamlName, size);
+                    if (bmp != null)
+                    {
+                        var old = item.Image;
+                        item.Image = bmp;
+                        if (old != null) old.Dispose();
+                    }
+                }
+            }
+        }
+
+        private static Bitmap RenderXaml(string name, int size)
+        {
+            var asm = System.Reflection.Assembly.GetExecutingAssembly();
+            var resourceName = asm.GetManifestResourceNames()
+                .FirstOrDefault(n => n.EndsWith(name + ".xaml", StringComparison.OrdinalIgnoreCase));
+            if (resourceName == null) return null;
+            using (var stream = asm.GetManifestResourceStream(resourceName))
+            {
+                var visual = System.Windows.Markup.XamlReader.Load(stream) as System.Windows.FrameworkElement;
+                if (visual == null) return null;
+                visual.Width = size;
+                visual.Height = size;
+                visual.Measure(new System.Windows.Size(size, size));
+                visual.Arrange(new System.Windows.Rect(0, 0, size, size));
+                var rtb = new System.Windows.Media.Imaging.RenderTargetBitmap(size, size, 96, 96, System.Windows.Media.PixelFormats.Pbgra32);
+                rtb.Render(visual);
+                var encoder = new System.Windows.Media.Imaging.PngBitmapEncoder();
+                encoder.Frames.Add(System.Windows.Media.Imaging.BitmapFrame.Create(rtb));
+                using (var ms = new System.IO.MemoryStream())
+                {
+                    encoder.Save(ms);
+                    ms.Position = 0;
+                    using (var raw = new Bitmap(ms))
+                        return new Bitmap(raw);
+                }
             }
         }
 
@@ -991,7 +1032,7 @@ namespace TextAdventures.Quest.EditorControls
 
         private void ctlContextMenu_Opening(object sender, CancelEventArgs e)
         {
-            ScaleContextMenuImages();
+            ApplyContextMenuIcons();
         }
 
         private void txtSearch_TextChanged(object sender, EventArgs e)

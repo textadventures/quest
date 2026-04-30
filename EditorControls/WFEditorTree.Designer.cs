@@ -207,28 +207,24 @@
       // 
       // cutToolStripMenuItem
       // 
-      this.cutToolStripMenuItem.Image = global::TextAdventures.Quest.EditorControls.Properties.Resources.s_cut;
       resources.ApplyResources(this.cutToolStripMenuItem, "cutToolStripMenuItem");
       this.cutToolStripMenuItem.Name = "cutToolStripMenuItem";
       this.cutToolStripMenuItem.Tag = "cut";
       // 
       // copyToolStripMenuItem
       // 
-      this.copyToolStripMenuItem.Image = global::TextAdventures.Quest.EditorControls.Properties.Resources.s_copy;
       resources.ApplyResources(this.copyToolStripMenuItem, "copyToolStripMenuItem");
       this.copyToolStripMenuItem.Name = "copyToolStripMenuItem";
       this.copyToolStripMenuItem.Tag = "copy";
       // 
       // pasteToolStripMenuItem
       // 
-      this.pasteToolStripMenuItem.Image = global::TextAdventures.Quest.EditorControls.Properties.Resources.s_paste;
       resources.ApplyResources(this.pasteToolStripMenuItem, "pasteToolStripMenuItem");
       this.pasteToolStripMenuItem.Name = "pasteToolStripMenuItem";
       this.pasteToolStripMenuItem.Tag = "paste";
       // 
       // deleteToolStripMenuItem
       // 
-      this.deleteToolStripMenuItem.Image = global::TextAdventures.Quest.EditorControls.Properties.Resources.s_delete;
       resources.ApplyResources(this.deleteToolStripMenuItem, "deleteToolStripMenuItem");
       this.deleteToolStripMenuItem.Name = "deleteToolStripMenuItem";
       this.deleteToolStripMenuItem.Tag = "delete";
@@ -241,14 +237,12 @@
       // 
       // AddVerbToolStripMenuItem
       // 
-      this.AddVerbToolStripMenuItem.Image = global::TextAdventures.Quest.EditorControls.Properties.Resources.s_verb;
       resources.ApplyResources(this.AddVerbToolStripMenuItem, "AddVerbToolStripMenuItem");
       this.AddVerbToolStripMenuItem.Name = "AddVerbToolStripMenuItem";
       this.AddVerbToolStripMenuItem.Tag = "addverb";
       // 
       // AddCommandToolStripMenuItem
       // 
-      this.AddCommandToolStripMenuItem.Image = global::TextAdventures.Quest.EditorControls.Properties.Resources.s_command;
       resources.ApplyResources(this.AddCommandToolStripMenuItem, "AddCommandToolStripMenuItem");
       this.AddCommandToolStripMenuItem.Name = "AddCommandToolStripMenuItem";
       this.AddCommandToolStripMenuItem.Tag = "addcommand";
@@ -261,28 +255,24 @@
       // 
       // addPageToolStripMenuItem
       // 
-      this.addPageToolStripMenuItem.Image = global::TextAdventures.Quest.EditorControls.Properties.Resources.s_add_page;
       resources.ApplyResources(this.addPageToolStripMenuItem, "addPageToolStripMenuItem");
       this.addPageToolStripMenuItem.Name = "addPageToolStripMenuItem";
       this.addPageToolStripMenuItem.Tag = "addpage";
       // 
       // AddRoomToolStripMenuItem
       // 
-      this.AddRoomToolStripMenuItem.Image = global::TextAdventures.Quest.EditorControls.Properties.Resources.s_room;
       resources.ApplyResources(this.AddRoomToolStripMenuItem, "AddRoomToolStripMenuItem");
       this.AddRoomToolStripMenuItem.Name = "AddRoomToolStripMenuItem";
       this.AddRoomToolStripMenuItem.Tag = "addroom";
       // 
       // AddObjectToolStripMenuItem
       // 
-      this.AddObjectToolStripMenuItem.Image = global::TextAdventures.Quest.EditorControls.Properties.Resources.s_object;
       resources.ApplyResources(this.AddObjectToolStripMenuItem, "AddObjectToolStripMenuItem");
       this.AddObjectToolStripMenuItem.Name = "AddObjectToolStripMenuItem";
       this.AddObjectToolStripMenuItem.Tag = "addobject";
       // 
       // AddExitToolStripMenuItem
       // 
-      this.AddExitToolStripMenuItem.Image = global::TextAdventures.Quest.EditorControls.Properties.Resources.s_exit;
       resources.ApplyResources(this.AddExitToolStripMenuItem, "AddExitToolStripMenuItem");
       this.AddExitToolStripMenuItem.Name = "AddExitToolStripMenuItem";
       this.AddExitToolStripMenuItem.Tag = "addexit";
@@ -295,28 +285,24 @@
       // 
       // addTurnScriptToolStripMenuItem
       // 
-      this.addTurnScriptToolStripMenuItem.Image = global::TextAdventures.Quest.EditorControls.Properties.Resources.s_turn;
       resources.ApplyResources(this.addTurnScriptToolStripMenuItem, "addTurnScriptToolStripMenuItem");
       this.addTurnScriptToolStripMenuItem.Name = "addTurnScriptToolStripMenuItem";
       this.addTurnScriptToolStripMenuItem.Tag = "addturnscript";
       // 
       // AddFunctionToolStripMenuItem
       // 
-      this.AddFunctionToolStripMenuItem.Image = global::TextAdventures.Quest.EditorControls.Properties.Resources.s_function;
       resources.ApplyResources(this.AddFunctionToolStripMenuItem, "AddFunctionToolStripMenuItem");
       this.AddFunctionToolStripMenuItem.Name = "AddFunctionToolStripMenuItem";
       this.AddFunctionToolStripMenuItem.Tag = "addfunction";
       // 
       // addTimerToolStripMenuItem
       // 
-      this.addTimerToolStripMenuItem.Image = global::TextAdventures.Quest.EditorControls.Properties.Resources.s_timer;
       resources.ApplyResources(this.addTimerToolStripMenuItem, "addTimerToolStripMenuItem");
       this.addTimerToolStripMenuItem.Name = "addTimerToolStripMenuItem";
       this.addTimerToolStripMenuItem.Tag = "addtimer";
       // 
       // AddWalkthroughToolStripMenuItem
       // 
-      this.AddWalkthroughToolStripMenuItem.Image = global::TextAdventures.Quest.EditorControls.Properties.Resources.s_walk;
       resources.ApplyResources(this.AddWalkthroughToolStripMenuItem, "AddWalkthroughToolStripMenuItem");
       this.AddWalkthroughToolStripMenuItem.Name = "AddWalkthroughToolStripMenuItem";
       this.AddWalkthroughToolStripMenuItem.Tag = "addwalkthrough";
