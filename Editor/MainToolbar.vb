@@ -462,7 +462,30 @@ Public Class MainToolbar
         ToolStripSeparator2.Visible = Not CodeView
     End Sub
 
-    Private _originalToolbarImages As System.Collections.Generic.List(Of System.Drawing.Image)
+    Private Shared ReadOnly _svgNames As New Dictionary(Of String, String) From {
+        {"butNew", "New"},
+        {"butOpen", "Open"},
+        {"butSave", "Save"},
+        {"butCut", "Cut"},
+        {"butCopy", "Copy"},
+        {"butPaste", "Paste"},
+        {"butDelete", "Delete"},
+        {"butFind", "QuickFind"},
+        {"butReplace", "QuickReplace"},
+        {"butUndoSimple", "Undo"},
+        {"butRedoSimple", "Redo"},
+        {"butUndo", "Undo"},
+        {"butRedo", "Redo"},
+        {"butAddPage", "AddDocument"},
+        {"butAddRoom", "AddFolder"},
+        {"butAddObject", "AddItem"},
+        {"butBack", "Backwards"},
+        {"butForward", "Forwards"},
+        {"butPlay", "Run"},
+        {"butCode", "Code"},
+        {"butHelp", "HelpApplication"},
+        {"butLogError", "LogError"}
+    }
 
     Protected Overrides Sub OnHandleCreated(e As EventArgs)
         MyBase.OnHandleCreated(e)
@@ -471,53 +494,55 @@ Public Class MainToolbar
 
     Protected Overrides Sub OnDpiChangedAfterParent(e As EventArgs)
         MyBase.OnDpiChangedAfterParent(e)
-        _originalToolbarImages = Nothing
         ScaleToolbarImages()
     End Sub
 
     Private Sub ScaleToolbarImages()
         Dim scale As Single = DeviceDpi / 96.0F
+        Dim size As Integer = CInt(16 * Math.Max(1.0F, scale))
 
-        Dim items = ctlToolStrip.Items.Cast(Of ToolStripItem)().ToList()
+        ctlToolStrip.ImageScalingSize = New System.Drawing.Size(size, size)
 
-        For Each item In items
-            If Not TypeOf item Is ToolStripSeparator Then
-                item.Margin = New System.Windows.Forms.Padding(2, 1, 2, 2)
+        For Each item In ctlToolStrip.Items.Cast(Of ToolStripItem)()
+            If TypeOf item Is ToolStripSeparator Then Continue For
+            item.Margin = New System.Windows.Forms.Padding(2, 1, 2, 2)
+            Dim svgName As String = Nothing
+            If _svgNames.TryGetValue(item.Name, svgName) Then
+                Dim rendered = RenderXaml(svgName, size)
+                If rendered IsNot Nothing Then
+                    Dim oldImg = item.Image
+                    item.Image = rendered
+                    If oldImg IsNot Nothing Then oldImg.Dispose()
+                End If
             End If
-        Next
-
-        If scale <= 1.0F Then Return
-
-        If _originalToolbarImages Is Nothing Then
-            _originalToolbarImages = items.Select(Function(i) i.Image).ToList()
-        End If
-
-        Dim newSize As Integer = CInt(16 * scale)
-        ctlToolStrip.ImageScalingSize = New System.Drawing.Size(newSize, newSize)
-
-        For i As Integer = 0 To items.Count - 1
-            If i >= _originalToolbarImages.Count Then Exit For
-            Dim original = _originalToolbarImages(i)
-            If original Is Nothing Then Continue For
-            Dim current = TryCast(items(i).Image, System.Drawing.Bitmap)
-            If current IsNot Nothing AndAlso current IsNot original AndAlso current.Width = newSize Then Continue For
-            Dim oldImg = items(i).Image
-            items(i).Image = ScaleImageHighQuality(original, newSize)
-            If oldImg IsNot Nothing AndAlso oldImg IsNot original Then oldImg.Dispose()
         Next
 
         Height = ctlToolStrip.Height
     End Sub
 
-    Private Shared Function ScaleImageHighQuality(source As System.Drawing.Image, size As Integer) As System.Drawing.Bitmap
-        Dim result As New System.Drawing.Bitmap(size, size, System.Drawing.Imaging.PixelFormat.Format32bppArgb)
-        Using g = System.Drawing.Graphics.FromImage(result)
-            g.InterpolationMode = System.Drawing.Drawing2D.InterpolationMode.HighQualityBicubic
-            g.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.HighQuality
-            g.PixelOffsetMode = System.Drawing.Drawing2D.PixelOffsetMode.HighQuality
-            g.DrawImage(source, 0, 0, size, size)
+    Private Shared Function RenderXaml(name As String, size As Integer) As System.Drawing.Bitmap
+        Dim asm = System.Reflection.Assembly.GetExecutingAssembly()
+        Dim resourceName = asm.GetManifestResourceNames().FirstOrDefault(Function(n) n.EndsWith(name & ".xaml", StringComparison.OrdinalIgnoreCase))
+        If resourceName Is Nothing Then Return Nothing
+        Using stream = asm.GetManifestResourceStream(resourceName)
+            Dim visual = TryCast(System.Windows.Markup.XamlReader.Load(stream), System.Windows.FrameworkElement)
+            If visual Is Nothing Then Return Nothing
+            visual.Width = size
+            visual.Height = size
+            visual.Measure(New System.Windows.Size(size, size))
+            visual.Arrange(New System.Windows.Rect(0, 0, size, size))
+            Dim rtb As New System.Windows.Media.Imaging.RenderTargetBitmap(size, size, 96, 96, System.Windows.Media.PixelFormats.Pbgra32)
+            rtb.Render(visual)
+            Dim encoder As New System.Windows.Media.Imaging.PngBitmapEncoder()
+            encoder.Frames.Add(System.Windows.Media.Imaging.BitmapFrame.Create(rtb))
+            Using ms As New System.IO.MemoryStream()
+                encoder.Save(ms)
+                ms.Position = 0
+                Using rawBmp As New System.Drawing.Bitmap(ms)
+                    Return New System.Drawing.Bitmap(rawBmp)
+                End Using
+            End Using
         End Using
-        Return result
     End Function
 
 End Class
