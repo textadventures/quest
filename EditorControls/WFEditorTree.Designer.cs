@@ -368,7 +368,7 @@
       this.ctlTreeView.BorderStyle = System.Windows.Forms.BorderStyle.None;
       this.ctlTreeView.ContextMenuStrip = this.ctlContextMenu;
       resources.ApplyResources(this.ctlTreeView, "ctlTreeView");
-      this.ctlTreeView.DrawMode = System.Windows.Forms.TreeViewDrawMode.OwnerDrawText;
+      this.ctlTreeView.FullRowSelect = true;
       this.ctlTreeView.ForeColor = System.Drawing.Color.Black;
       this.ctlTreeView.HideSelection = false;
       this.ctlTreeView.ImageList = this.ctlImageList;

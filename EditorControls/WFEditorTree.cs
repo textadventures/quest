@@ -19,7 +19,6 @@ namespace TextAdventures.Quest.EditorControls
             Resize += EditorTree_Resize;
             cmdClose.Click += cmdClose_Click;
             cmdSearch.Click += cmdSearch_Click;
-            ctlTreeView.DrawNode += CtlTreeView_DrawNode;
             ctlTreeView.AfterSelect += ctlTreeView_AfterSelect;
             ctlTreeView.DoubleClick += ctlTreeView_DoubleClick;
             ctlTreeView.KeyUp += ctlTreeView_KeyUp;
@@ -43,73 +42,35 @@ namespace TextAdventures.Quest.EditorControls
 
             ctlTreeView.HandleCreated += (s, e) => SetWindowTheme(ctlTreeView.Handle, "Explorer", null);
             ctlToolStrip.RenderMode = ToolStripRenderMode.System;
+
+            txtSearch.Dock = DockStyle.None;
+            foreach (var btn in new[] { cmdSearch, cmdClose })
+            {
+                btn.BackColor = Color.Transparent;
+                btn.FlatAppearance.MouseOverBackColor = Color.FromArgb(210, 228, 244);
+                var bmp = new Bitmap(btn.Image);
+                bmp.MakeTransparent(Color.White);
+                btn.Image = bmp;
+            }
+            pnlSearchContainer.Resize += (s, e) => LayoutSearchBox();
+            pnlSearchContainer.Paint += (s, e) =>
+            {
+                using (var pen = new Pen(Color.FromArgb(180, 180, 180)))
+                    e.Graphics.DrawRectangle(pen, 0, 0, pnlSearchContainer.Width - 1, pnlSearchContainer.Height - 1);
+            };
+            LayoutSearchBox();
+        }
+
+        private void LayoutSearchBox()
+        {
+            int rightWidth = cmdSearch.Width + (cmdClose.Visible ? cmdClose.Width : 0);
+            int h = txtSearch.PreferredHeight;
+            int y = (pnlSearchContainer.Height - h) / 2;
+            txtSearch.SetBounds(4, y, pnlSearchContainer.Width - rightWidth - 4, h);
         }
 
         [DllImport("uxtheme.dll", CharSet = CharSet.Unicode)]
         private static extern int SetWindowTheme(IntPtr hwnd, string pszSubAppName, string pszSubIdList);
-
-    private void CtlTreeView_DrawNode(object sender, DrawTreeNodeEventArgs e)
-    {
-        if (e.Node == null) return;
-
-        var selected = (e.State & TreeNodeStates.Selected) == TreeNodeStates.Selected;
-
-        if (selected)
-        {
-            var bgColor = System.Drawing.ColorTranslator.FromHtml("#CCE4F7");
-
-            // Start the highlight at the icon's left edge so the expander glyph (drawn by
-            // the system to the left of the icon before this event fires) isn't painted over.
-            int iconSize = ctlTreeView.ImageList?.ImageSize.Width ?? 0;
-            int fillX = Math.Max(0, e.Node.Bounds.Left - iconSize - 2);
-            var selectionRect = new Rectangle(fillX, e.Bounds.Top, ctlTreeView.ClientSize.Width - fillX, e.Bounds.Height);
-            using (var brush = new SolidBrush(bgColor))
-                e.Graphics.FillRectangle(brush, selectionRect);
-
-            TextRenderer.DrawText(e.Graphics, e.Node.Text, e.Node.NodeFont ?? ctlTreeView.Font, e.Bounds, Color.Black, TextFormatFlags.GlyphOverhangPadding | TextFormatFlags.VerticalCenter);
-
-            // In OwnerDrawText mode the system uses the tree-level SelectedImageIndex rather than
-            // the per-node value, so we always draw the correct icon ourselves.
-            DrawNodeIcon(e.Graphics, e.Node, bgColor);
-        }
-        else
-        {
-            var bgColor = e.Node.BackColor != Color.Empty ? e.Node.BackColor : ctlTreeView.BackColor;
-            var fgColor = e.Node.ForeColor != Color.Empty ? e.Node.ForeColor : ctlTreeView.ForeColor;
-
-            using (var brush = new SolidBrush(bgColor))
-                e.Graphics.FillRectangle(brush, e.Bounds);
-
-            TextRenderer.DrawText(e.Graphics, e.Node.Text, e.Node.NodeFont ?? ctlTreeView.Font, e.Bounds, fgColor, TextFormatFlags.GlyphOverhangPadding | TextFormatFlags.VerticalCenter);
-
-            DrawNodeIcon(e.Graphics, e.Node, bgColor);
-        }
-    }
-
-    private void DrawNodeIcon(Graphics g, TreeNode node, Color bgColor)
-    {
-        var imageList = ctlTreeView.ImageList;
-        if (imageList == null) return;
-
-        string iconKey = node.Tag as string;
-        if (string.IsNullOrEmpty(iconKey)) return;
-
-        int idx = imageList.Images.IndexOfKey(iconKey);
-        if (idx < 0) return;
-
-        int iconSize = imageList.ImageSize.Width;
-        // In OwnerDrawText mode node.Bounds is the text-label area; the icon sits to its left.
-        int iconX = node.Bounds.Left - iconSize - 2;
-        int iconY = node.Bounds.Top + (node.Bounds.Height - iconSize) / 2;
-
-        if (iconX < 0) return;
-
-        // Fill the icon area with the row background before drawing, to cover any stale icon.
-        using (var brush = new SolidBrush(bgColor))
-            g.FillRectangle(brush, iconX, iconY, iconSize, iconSize);
-
-        g.DrawImage(imageList.Images[idx], new Rectangle(iconX, iconY, iconSize, iconSize));
-    }
 
     private Dictionary<string, TreeNode> m_nodes = new Dictionary<string, TreeNode>();
         private FilterOptions m_filterSettings;
@@ -452,16 +413,8 @@ namespace TextAdventures.Quest.EditorControls
             if (!string.IsNullOrEmpty(imageKey))
             {
                 newNode.Tag = imageKey;
-                var imageList = ctlTreeView.ImageList;
-                if (imageList != null)
-                {
-                    int idx = imageList.Images.IndexOfKey(imageKey);
-                    if (idx >= 0)
-                    {
-                        newNode.ImageIndex = idx;
-                        newNode.SelectedImageIndex = idx;
-                    }
-                }
+                newNode.ImageKey = imageKey;
+                newNode.SelectedImageKey = imageKey;
             }
 
             m_nodes.Add(key, newNode);
@@ -629,28 +582,6 @@ namespace TextAdventures.Quest.EditorControls
                     ctlTreeView.ContextMenuStrip.Show(ctlTreeView, e.Location);
                 }
             }
-            else if (e.Button == System.Windows.Forms.MouseButtons.Left)
-            {
-                // GetNodeAt returns a node even for TVHT_ONITEMRIGHT (right of label) but the native
-                // control doesn't trigger selection there. Selecting by Y after native processing
-                // covers the full-width highlight area without interfering with normal label clicks
-                // (AfterSelect already fired and updated SelectedNode before MouseUp runs).
-                var node = GetNodeAtY(e.Y);
-                if (node != null && node != ctlTreeView.SelectedNode)
-                    ctlTreeView.SelectedNode = node;
-            }
-        }
-
-        private TreeNode GetNodeAtY(int y)
-        {
-            var node = ctlTreeView.TopNode;
-            while (node != null)
-            {
-                if (y >= node.Bounds.Top && y <= node.Bounds.Bottom)
-                    return node;
-                node = node.NextVisibleNode;
-            }
-            return null;
         }
 
         private void SelectCurrentTreeViewItem()
