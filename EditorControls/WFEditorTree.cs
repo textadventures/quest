@@ -566,6 +566,8 @@ namespace TextAdventures.Quest.EditorControls
 
         private void ctlTreeView_AfterSelect(System.Object sender, System.Windows.Forms.TreeViewEventArgs e)
         {
+            if (e.Node != null && e.Node.Tag is string imgKey)
+                e.Node.SelectedImageKey = imgKey;
             if (m_updatingSelection)
                 return;
             SelectCurrentTreeViewItem();

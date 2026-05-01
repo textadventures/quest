@@ -651,9 +651,6 @@
   <data name="ctlTreeView.Font" type="System.Drawing.Font, System.Drawing">
     <value>Microsoft Sans Serif, 9pt</value>
   </data>
-  <data name="ctlTreeView.ImageKey" xml:space="preserve">
-    <value>s_object_close.png</value>
-  </data>
   <metadata name="ctlImageList.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
     <value>548, 17</value>
   </metadata>
@@ -700,9 +697,6 @@
   </data>
   <data name="ctlTreeView.Location" type="System.Drawing.Point, System.Drawing">
     <value>0, 16</value>
-  </data>
-  <data name="ctlTreeView.SelectedImageKey" xml:space="preserve">
-    <value>s_object_open.png</value>
   </data>
   <data name="ctlTreeView.Size" type="System.Drawing.Size, System.Drawing">
     <value>289, 301</value>
