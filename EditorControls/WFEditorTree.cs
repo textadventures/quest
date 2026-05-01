@@ -113,6 +113,7 @@ namespace TextAdventures.Quest.EditorControls
             ScaleButtonImages();
             ApplyContextMenuIcons();
             UpdateItemHeight();
+            ScaleFilterToolStrip();
         }
 
         protected override void OnDpiChangedAfterParent(EventArgs e)
@@ -122,6 +123,14 @@ namespace TextAdventures.Quest.EditorControls
             ScaleButtonImages();
             ApplyContextMenuIcons();
             UpdateItemHeight();
+            ScaleFilterToolStrip();
+        }
+
+        private void ScaleFilterToolStrip()
+        {
+            float scale = DeviceDpi / 96f;
+            int size = Math.Max(16, (int)(16 * scale));
+            ctlToolStrip.ImageScalingSize = new Size(size, size);
         }
 
         private void UpdateItemHeight()

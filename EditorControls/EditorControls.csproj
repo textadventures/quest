@@ -561,6 +561,7 @@
     <Resource Include="Images\AddScript.png" />
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="Resources\Add.xaml" />
     <EmbeddedResource Include="Resources\AddDocument.xaml" />
     <EmbeddedResource Include="Resources\AddFolder.xaml" />
     <EmbeddedResource Include="Resources\AddItem.xaml" />
@@ -569,12 +570,18 @@
     <EmbeddedResource Include="Resources\Cut.xaml" />
     <EmbeddedResource Include="Resources\Delete.xaml" />
     <EmbeddedResource Include="Resources\DynamicTemplate.xaml" />
+    <EmbeddedResource Include="Resources\Edit.xaml" />
+    <EmbeddedResource Include="Resources\EditKey.xaml" />
     <EmbeddedResource Include="Resources\Exit.xaml" />
     <EmbeddedResource Include="Resources\FolderClosed.xaml" />
+    <EmbeddedResource Include="Resources\GoToDefinition.xaml" />
     <EmbeddedResource Include="Resources\Item.xaml" />
     <EmbeddedResource Include="Resources\JSScript.xaml" />
+    <EmbeddedResource Include="Resources\Link.xaml" />
     <EmbeddedResource Include="Resources\Library.xaml" />
     <EmbeddedResource Include="Resources\Method.xaml" />
+    <EmbeddedResource Include="Resources\MoveDown.xaml" />
+    <EmbeddedResource Include="Resources\MoveUp.xaml" />
     <EmbeddedResource Include="Resources\Paste.xaml" />
     <EmbeddedResource Include="Resources\Script.xaml" />
     <EmbeddedResource Include="Resources\Template.xaml" />

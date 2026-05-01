@@ -34,64 +34,80 @@ namespace TextAdventures.Quest.EditorControls
         protected override void OnHandleCreated(EventArgs e)
         {
             base.OnHandleCreated(e);
-            ScaleToolStripImages();
+            ApplyToolbarIcons(DeviceDpi);
         }
 
         protected override void OnDpiChangedAfterParent(EventArgs e)
         {
             base.OnDpiChangedAfterParent(e);
-            ScaleToolStripImages();
-        }
-
-        private void ScaleToolStripImages()
-        {
-            ScaleToolStripImages(DeviceDpi);
+            ApplyToolbarIcons(DeviceDpi);
         }
 
         internal void ApplyDpi(int dpi)
         {
-            ScaleToolStripImages(dpi);
+            ApplyToolbarIcons(dpi);
         }
 
-        private List<Image> _originalToolStripImages;
+        private static readonly Dictionary<string, string> _toolbarXamlNames = new Dictionary<string, string>
+        {
+            { "cmdAdd", "Add" },
+            { "cmdAddNewPage", "AddDocument" },
+            { "cmdDelete", "Delete" },
+            { "cmdEditKey", "EditKey" },
+            { "cmdEdit", "Edit" },
+            { "cmdLink", "Link" },
+            { "cmdGoToPage", "GoToDefinition" },
+            { "cmdMoveUp", "MoveUp" },
+            { "cmdMoveDown", "MoveDown" },
+        };
 
-        private void ScaleToolStripImages(int dpi)
+        private void ApplyToolbarIcons(int dpi)
         {
             float scale = dpi / 96f;
-            if (scale <= 1f) return;
-
-            if (_originalToolStripImages == null)
+            int size = Math.Max(16, (int)(16 * scale));
+            ctlToolStrip.ImageScalingSize = new Size(size, size);
+            foreach (ToolStripItem item in ctlToolStrip.Items)
             {
-                _originalToolStripImages = new List<Image>();
-                foreach (ToolStripItem item in ctlToolStrip.Items)
-                    _originalToolStripImages.Add(item.Image);
-            }
-
-            var items = ctlToolStrip.Items.Cast<ToolStripItem>().ToList();
-            for (int i = 0; i < items.Count && i < _originalToolStripImages.Count; i++)
-            {
-                var original = _originalToolStripImages[i];
-                if (original == null) continue;
-                int newSize = (int)(original.Width * scale);
-                var current = items[i].Image as Bitmap;
-                if (current != null && current != original && current.Width == newSize) continue;
-                var old = items[i].Image;
-                items[i].Image = ScaleImageHighQuality(original, newSize);
-                if (old != null && old != original) old.Dispose();
+                string xamlName;
+                if (_toolbarXamlNames.TryGetValue(item.Name, out xamlName))
+                {
+                    var bmp = RenderXaml(xamlName, size);
+                    if (bmp != null)
+                    {
+                        var old = item.Image;
+                        item.Image = bmp;
+                        if (old != null) old.Dispose();
+                    }
+                }
             }
         }
 
-        private static Bitmap ScaleImageHighQuality(Image source, int size)
+        private static Bitmap RenderXaml(string name, int size)
         {
-            var result = new Bitmap(size, size, System.Drawing.Imaging.PixelFormat.Format32bppArgb);
-            using (var g = Graphics.FromImage(result))
+            var asm = System.Reflection.Assembly.GetExecutingAssembly();
+            var resourceName = asm.GetManifestResourceNames()
+                .FirstOrDefault(n => n.EndsWith("." + name + ".xaml", StringComparison.OrdinalIgnoreCase));
+            if (resourceName == null) return null;
+            using (var stream = asm.GetManifestResourceStream(resourceName))
             {
-                g.InterpolationMode = System.Drawing.Drawing2D.InterpolationMode.HighQualityBicubic;
-                g.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.HighQuality;
-                g.PixelOffsetMode = System.Drawing.Drawing2D.PixelOffsetMode.HighQuality;
-                g.DrawImage(source, 0, 0, size, size);
+                var visual = System.Windows.Markup.XamlReader.Load(stream) as System.Windows.FrameworkElement;
+                if (visual == null) return null;
+                visual.Width = size;
+                visual.Height = size;
+                visual.Measure(new System.Windows.Size(size, size));
+                visual.Arrange(new System.Windows.Rect(0, 0, size, size));
+                var rtb = new System.Windows.Media.Imaging.RenderTargetBitmap(size, size, 96, 96, System.Windows.Media.PixelFormats.Pbgra32);
+                rtb.Render(visual);
+                var encoder = new System.Windows.Media.Imaging.PngBitmapEncoder();
+                encoder.Frames.Add(System.Windows.Media.Imaging.BitmapFrame.Create(rtb));
+                using (var ms = new System.IO.MemoryStream())
+                {
+                    encoder.Save(ms);
+                    ms.Position = 0;
+                    using (var raw = new Bitmap(ms))
+                        return new Bitmap(raw);
+                }
             }
-            return result;
         }
 
         public WFListEditor()
