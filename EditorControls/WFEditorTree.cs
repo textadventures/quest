@@ -643,15 +643,37 @@ namespace TextAdventures.Quest.EditorControls
 
         private void ctlTreeView_MouseUp(object sender, System.Windows.Forms.MouseEventArgs e)
         {
-            // When right-clicking, select the item first before displaying the context menu
             if (e.Button == System.Windows.Forms.MouseButtons.Right)
             {
+                // When right-clicking, select the item first before displaying the context menu
                 ctlTreeView.SelectedNode = ctlTreeView.GetNodeAt(e.X, e.Y);
                 if (ctlTreeView.SelectedNode != null && ctlTreeView.ContextMenuStrip != null)
                 {
                     ctlTreeView.ContextMenuStrip.Show(ctlTreeView, e.Location);
                 }
             }
+            else if (e.Button == System.Windows.Forms.MouseButtons.Left)
+            {
+                // GetNodeAt returns a node even for TVHT_ONITEMRIGHT (right of label) but the native
+                // control doesn't trigger selection there. Selecting by Y after native processing
+                // covers the full-width highlight area without interfering with normal label clicks
+                // (AfterSelect already fired and updated SelectedNode before MouseUp runs).
+                var node = GetNodeAtY(e.Y);
+                if (node != null && node != ctlTreeView.SelectedNode)
+                    ctlTreeView.SelectedNode = node;
+            }
+        }
+
+        private TreeNode GetNodeAtY(int y)
+        {
+            var node = ctlTreeView.TopNode;
+            while (node != null)
+            {
+                if (y >= node.Bounds.Top && y <= node.Bounds.Bottom)
+                    return node;
+                node = node.NextVisibleNode;
+            }
+            return null;
         }
 
         private void SelectCurrentTreeViewItem()
