@@ -57,8 +57,7 @@ namespace TextAdventures.Quest.EditorControls
         {
             var dpiInfo = VisualTreeHelper.GetDpi(this);
             int dpi = (int)dpiInfo.PixelsPerInchX;
-            if (dpi > 96)
-                ctlAttributes.ApplyDpi(dpi);
+            ctlAttributes.ApplyDpi(dpi);
         }
 
         void ctlAttributes_RequestParentElementEditorSave()
