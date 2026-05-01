@@ -372,7 +372,7 @@
       this.ctlTreeView.ForeColor = System.Drawing.Color.Black;
       this.ctlTreeView.HideSelection = false;
       this.ctlTreeView.ImageList = this.ctlImageList;
-      this.ctlTreeView.LineColor = System.Drawing.Color.Silver;
+      this.ctlTreeView.ShowLines = false;
       this.ctlTreeView.Name = "ctlTreeView";
       // 
       // ctlImageList

@@ -40,8 +40,12 @@ namespace TextAdventures.Quest.EditorControls
 
             AddMenuClickHandler("expandall", ExpandAll);
             AddMenuClickHandler("collapseall", CollapseAll);
-            
+
+            ctlTreeView.HandleCreated += (s, e) => SetWindowTheme(ctlTreeView.Handle, "Explorer", null);
         }
+
+        [DllImport("uxtheme.dll", CharSet = CharSet.Unicode)]
+        private static extern int SetWindowTheme(IntPtr hwnd, string pszSubAppName, string pszSubIdList);
 
     private void CtlTreeView_DrawNode(object sender, DrawTreeNodeEventArgs e)
     {
