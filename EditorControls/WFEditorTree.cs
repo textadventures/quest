@@ -42,6 +42,7 @@ namespace TextAdventures.Quest.EditorControls
             AddMenuClickHandler("collapseall", CollapseAll);
 
             ctlTreeView.HandleCreated += (s, e) => SetWindowTheme(ctlTreeView.Handle, "Explorer", null);
+            ctlToolStrip.RenderMode = ToolStripRenderMode.System;
         }
 
         [DllImport("uxtheme.dll", CharSet = CharSet.Unicode)]
