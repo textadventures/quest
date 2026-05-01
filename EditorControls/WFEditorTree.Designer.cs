@@ -103,7 +103,7 @@
       // 
       // lstSearchResults
       // 
-      this.lstSearchResults.BackColor = System.Drawing.Color.GhostWhite;
+      this.lstSearchResults.BackColor = System.Drawing.Color.White;
       this.lstSearchResults.BorderStyle = System.Windows.Forms.BorderStyle.None;
       this.lstSearchResults.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
             this.colSearchResults});
@@ -122,7 +122,7 @@
       // 
       // pnlSearchContainer
       // 
-      this.pnlSearchContainer.BackColor = System.Drawing.Color.GhostWhite;
+      this.pnlSearchContainer.BackColor = System.Drawing.Color.White;
       this.pnlSearchContainer.Controls.Add(this.cmdSearch);
       this.pnlSearchContainer.Controls.Add(this.cmdClose);
       this.pnlSearchContainer.Controls.Add(this.txtSearch);
@@ -364,7 +364,7 @@
       // ctlTreeView
       // 
       this.ctlTreeView.AllowDrop = true;
-      this.ctlTreeView.BackColor = System.Drawing.Color.GhostWhite;
+      this.ctlTreeView.BackColor = System.Drawing.Color.White;
       this.ctlTreeView.BorderStyle = System.Windows.Forms.BorderStyle.None;
       this.ctlTreeView.ContextMenuStrip = this.ctlContextMenu;
       resources.ApplyResources(this.ctlTreeView, "ctlTreeView");
@@ -391,7 +391,7 @@
       // 
       resources.ApplyResources(this, "$this");
       this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-      this.BackColor = System.Drawing.Color.GhostWhite;
+      this.BackColor = System.Drawing.Color.White;
       this.Controls.Add(this.ctlTreeView);
       this.Controls.Add(this.lstSearchResults);
       this.Controls.Add(this.ctlToolStrip);

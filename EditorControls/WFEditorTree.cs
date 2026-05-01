@@ -51,10 +51,7 @@ namespace TextAdventures.Quest.EditorControls
 
         if (selected)
         {
-            var focused = e.Node.TreeView.Focused;
-            var bgColor = focused
-                ? System.Drawing.ColorTranslator.FromHtml("#9A9A9A")
-                : System.Drawing.ColorTranslator.FromHtml("#CCCCCC");
+            var bgColor = System.Drawing.ColorTranslator.FromHtml("#CCE4F7");
 
             // Start the highlight at the icon's left edge so the expander glyph (drawn by
             // the system to the left of the icon before this event fires) isn't painted over.
@@ -64,11 +61,11 @@ namespace TextAdventures.Quest.EditorControls
             using (var brush = new SolidBrush(bgColor))
                 e.Graphics.FillRectangle(brush, selectionRect);
 
-            TextRenderer.DrawText(e.Graphics, e.Node.Text, e.Node.NodeFont ?? ctlTreeView.Font, e.Bounds, Color.White, TextFormatFlags.GlyphOverhangPadding | TextFormatFlags.VerticalCenter);
+            TextRenderer.DrawText(e.Graphics, e.Node.Text, e.Node.NodeFont ?? ctlTreeView.Font, e.Bounds, Color.Black, TextFormatFlags.GlyphOverhangPadding | TextFormatFlags.VerticalCenter);
 
             // In OwnerDrawText mode the system uses the tree-level SelectedImageIndex rather than
             // the per-node value, so we always draw the correct icon ourselves.
-            DrawNodeIcon(e.Graphics, e.Node, bgColor, selected: true);
+            DrawNodeIcon(e.Graphics, e.Node, bgColor);
         }
         else
         {
@@ -80,23 +77,11 @@ namespace TextAdventures.Quest.EditorControls
 
             TextRenderer.DrawText(e.Graphics, e.Node.Text, e.Node.NodeFont ?? ctlTreeView.Font, e.Bounds, fgColor, TextFormatFlags.GlyphOverhangPadding | TextFormatFlags.VerticalCenter);
 
-            DrawNodeIcon(e.Graphics, e.Node, bgColor, selected: false);
+            DrawNodeIcon(e.Graphics, e.Node, bgColor);
         }
     }
 
-    // ColorMatrix that converts every opaque pixel to white while preserving alpha,
-    // so icons remain legible against the dark selection background.
-    private static readonly System.Drawing.Imaging.ColorMatrix _whiteIconMatrix =
-        new System.Drawing.Imaging.ColorMatrix(new float[][]
-        {
-            new float[] { 0, 0, 0, 0, 0 },
-            new float[] { 0, 0, 0, 0, 0 },
-            new float[] { 0, 0, 0, 0, 0 },
-            new float[] { 0, 0, 0, 1, 0 },
-            new float[] { 1, 1, 1, 0, 1 },
-        });
-
-    private void DrawNodeIcon(Graphics g, TreeNode node, Color bgColor, bool selected)
+    private void DrawNodeIcon(Graphics g, TreeNode node, Color bgColor)
     {
         var imageList = ctlTreeView.ImageList;
         if (imageList == null) return;
@@ -118,20 +103,7 @@ namespace TextAdventures.Quest.EditorControls
         using (var brush = new SolidBrush(bgColor))
             g.FillRectangle(brush, iconX, iconY, iconSize, iconSize);
 
-        var destRect = new Rectangle(iconX, iconY, iconSize, iconSize);
-        if (selected)
-        {
-            using (var ia = new System.Drawing.Imaging.ImageAttributes())
-            {
-                ia.SetColorMatrix(_whiteIconMatrix);
-                g.DrawImage(imageList.Images[idx], destRect,
-                    0, 0, iconSize, iconSize, GraphicsUnit.Pixel, ia);
-            }
-        }
-        else
-        {
-            g.DrawImage(imageList.Images[idx], destRect);
-        }
+        g.DrawImage(imageList.Images[idx], new Rectangle(iconX, iconY, iconSize, iconSize));
     }
 
     private Dictionary<string, TreeNode> m_nodes = new Dictionary<string, TreeNode>();
