@@ -173,7 +173,7 @@ namespace TextAdventures.Quest.EditorControls
             float scale = DeviceDpi / 96f;
             int newSize = Math.Max(16, (int)(16 * scale));
 
-            if (ctlTreeView.ImageList != null && ctlTreeView.ImageList.ImageSize.Width == newSize)
+            if (ctlTreeView.ImageList != null && ctlTreeView.ImageList != ctlImageList && ctlTreeView.ImageList.ImageSize.Width == newSize)
                 return;
 
             var sourceList = ctlImageList;
