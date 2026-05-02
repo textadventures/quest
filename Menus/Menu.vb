@@ -290,7 +290,7 @@
         {"LogToolStripMenuItem", "EventLog"},
         {"HTMLDeveloperToolsToolStripMenuItem", "HTMLFile"},
         {"VerbToolStripMenuItem", "Comment"},
-        {"CommandToolStripMenuItem", "Script"},
+        {"CommandToolStripMenuItem", "Keyboard"},
         {"PageToolStripMenuItem", "AddDocument"},
         {"RoomToolStripMenuItem", "AddFolder"},
         {"ObjectToolStripMenuItem", "AddItem"},

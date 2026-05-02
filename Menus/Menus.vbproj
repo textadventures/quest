@@ -145,6 +145,7 @@
     <EmbeddedResource Include="Resources\Feedback.xaml" />
     <EmbeddedResource Include="Resources\FullScreen.xaml" />
     <EmbeddedResource Include="Resources\HTMLFile.xaml" />
+    <EmbeddedResource Include="Resources\Keyboard.xaml" />
     <EmbeddedResource Include="Resources\Method.xaml" />
     <EmbeddedResource Include="Resources\NewBug.xaml" />
     <EmbeddedResource Include="Resources\NewDocument.xaml" />

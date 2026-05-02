@@ -147,6 +147,7 @@ namespace TextAdventures.Quest.EditorControls
             AddToImageList("s_exit", Properties.Resources.s_exit);
             AddToImageList("s_verb", Properties.Resources.s_verb);
             AddToImageList("s_command", Properties.Resources.s_command);
+            AddToImageList("s_script", Properties.Resources.s_command);
             AddToImageList("s_function", Properties.Resources.s_function);
             AddToImageList("s_timer", Properties.Resources.s_timer);
             AddToImageList("s_turn", Properties.Resources.s_turn);
@@ -291,7 +292,8 @@ namespace TextAdventures.Quest.EditorControls
             { "s_object",         "Item" },
             { "s_exit",           "Exit" },
             { "s_verb",           "Comment" },
-            { "s_command",        "Script" },
+            { "s_command",        "Keyboard" },
+            { "s_script",         "Script" },
             { "s_function",       "Method" },
             { "s_timer",          "Timer" },
             { "s_turn",           "TriggerScript" },
@@ -313,7 +315,7 @@ namespace TextAdventures.Quest.EditorControls
             { "pasteToolStripMenuItem",          "Paste" },
             { "deleteToolStripMenuItem",         "Delete" },
             { "AddVerbToolStripMenuItem",        "Comment" },
-            { "AddCommandToolStripMenuItem",     "Script" },
+            { "AddCommandToolStripMenuItem",     "Keyboard" },
             { "addPageToolStripMenuItem",        "AddDocument" },
             { "AddRoomToolStripMenuItem",        "AddFolder" },
             { "AddObjectToolStripMenuItem",      "AddItem" },

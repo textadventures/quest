@@ -577,6 +577,7 @@
     <EmbeddedResource Include="Resources\GoToDefinition.xaml" />
     <EmbeddedResource Include="Resources\Item.xaml" />
     <EmbeddedResource Include="Resources\JSScript.xaml" />
+    <EmbeddedResource Include="Resources\Keyboard.xaml" />
     <EmbeddedResource Include="Resources\Link.xaml" />
     <EmbeddedResource Include="Resources\Library.xaml" />
     <EmbeddedResource Include="Resources\Method.xaml" />

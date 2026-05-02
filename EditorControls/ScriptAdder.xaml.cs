@@ -72,7 +72,7 @@ namespace TextAdventures.Quest.EditorControls
             {
                 if (data.Value.IsVisibleInSimpleMode || !m_controller.SimpleMode)
                 {
-                    ctlEditorTree.AddNode(data.Key, data.Value.AdderDisplayString, data.Value.Category, null, null, imageKey: "s_command");
+                    ctlEditorTree.AddNode(data.Key, data.Value.AdderDisplayString, data.Value.Category, null, null, imageKey: "s_script");
 
                     if (!string.IsNullOrEmpty(data.Value.CommonButton))
                     {
