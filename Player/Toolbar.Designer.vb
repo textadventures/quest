@@ -36,41 +36,36 @@ Partial Class Toolbar
         '
         resources.ApplyResources(Me.ctlToolStrip, "ctlToolStrip")
         Me.ctlToolStrip.BackColor = System.Drawing.Color.Transparent
-        Me.ctlToolStrip.ImageScalingSize = New System.Drawing.Size(20, 20)
+        Me.ctlToolStrip.ImageScalingSize = New System.Drawing.Size(16, 16)
         Me.ctlToolStrip.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.butStop, Me.butWalkthrough, Me.butDebugger, Me.butLog, Me.butHTML})
         Me.ctlToolStrip.Name = "ctlToolStrip"
         '
         'butStop
         '
-        Me.butStop.Image = Global.TextAdventures.Quest.My.Resources.Resources.b_stop
         resources.ApplyResources(Me.butStop, "butStop")
         Me.butStop.Name = "butStop"
         Me.butStop.Tag = "stop"
         '
         'butDebugger
         '
-        Me.butDebugger.Image = Global.TextAdventures.Quest.My.Resources.Resources.b_debug
         resources.ApplyResources(Me.butDebugger, "butDebugger")
         Me.butDebugger.Name = "butDebugger"
         Me.butDebugger.Tag = "debugger"
         '
         'butLog
         '
-        Me.butLog.Image = Global.TextAdventures.Quest.My.Resources.Resources.b_log
         resources.ApplyResources(Me.butLog, "butLog")
         Me.butLog.Name = "butLog"
         Me.butLog.Tag = "log"
         '
         'butHTML
         '
-        Me.butHTML.Image = Global.TextAdventures.Quest.My.Resources.Resources.b_html
         resources.ApplyResources(Me.butHTML, "butHTML")
         Me.butHTML.Name = "butHTML"
         Me.butHTML.Tag = "htmldevtools"
         '
         'butWalkthrough
         '
-        Me.butWalkthrough.Image = Global.TextAdventures.Quest.My.Resources.Resources.b_walkthrough
         resources.ApplyResources(Me.butWalkthrough, "butWalkthrough")
         Me.butWalkthrough.Name = "butWalkthrough"
         Me.butWalkthrough.Tag = "walkthrough"

@@ -297,7 +297,7 @@ namespace TextAdventures.Quest.EditorControls
             { "s_function",       "Method" },
             { "s_timer",          "Timer" },
             { "s_turn",           "TriggerScript" },
-            { "s_walk",           "User" },
+            { "s_walk",           "TaskRunner" },
             { "s_add_page",       "AddDocument" },
             { "s_library",        "Library" },
             { "s_template",       "Template" },
@@ -322,7 +322,7 @@ namespace TextAdventures.Quest.EditorControls
             { "AddExitToolStripMenuItem",        "Exit" },
             { "AddFunctionToolStripMenuItem",    "Method" },
             { "addTimerToolStripMenuItem",       "Timer" },
-            { "AddWalkthroughToolStripMenuItem", "User" },
+            { "AddWalkthroughToolStripMenuItem", "TaskRunner" },
         };
 
         private void ApplyContextMenuIcons()

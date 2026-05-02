@@ -297,8 +297,8 @@
         {"ExitToolStripMenuItem1", "Exit"},
         {"FunctionToolStripMenuItem", "Method"},
         {"TimerToolStripMenuItem", "Timer"},
-        {"WalkthroughToolStripMenuItem", "User"},
-        {"WalkthroughToolStripMenuItem1", "User"},
+        {"WalkthroughToolStripMenuItem", "TaskRunner"},
+        {"WalkthroughToolStripMenuItem1", "TaskRunner"},
         {"PublishToolStripMenuItem", "PublishOnDemand"},
         {"CodeViewToolStripMenuItem", "Code"},
         {"OptionsToolStripMenuItem", "Settings"},
@@ -344,7 +344,7 @@
         Next
     End Sub
 
-    Private Shared Function RenderXaml(name As String, size As Integer) As System.Drawing.Bitmap
+    Public Shared Function RenderXaml(name As String, size As Integer) As System.Drawing.Bitmap
         Dim asm = System.Reflection.Assembly.GetExecutingAssembly()
         Dim resourceName = asm.GetManifestResourceNames().FirstOrDefault(Function(n) n.EndsWith(name & ".xaml", StringComparison.OrdinalIgnoreCase))
         If resourceName Is Nothing Then Return Nothing

@@ -10,6 +10,14 @@
 
     Public Event ButtonClicked(sender As Object, args As ButtonClickedEventArgs)
 
+    Private Shared ReadOnly _toolbarXamlNames As New Dictionary(Of String, String) From {
+        {"butStop", "Stop"},
+        {"butWalkthrough", "TaskRunner"},
+        {"butDebugger", "NewBug"},
+        {"butLog", "EventLog"},
+        {"butHTML", "HTMLFile"}
+    }
+
     Public Sub New()
 
         ' This call is required by the designer.
@@ -24,6 +32,33 @@
             If button IsNot Nothing Then
                 m_buttons.Add(DirectCast(button.Tag, String), button)
                 AddHandler button.Click, AddressOf HandleClick
+            End If
+        Next
+    End Sub
+
+    Protected Overrides Sub OnHandleCreated(e As EventArgs)
+        MyBase.OnHandleCreated(e)
+        ApplyToolbarIcons(DeviceDpi)
+    End Sub
+
+    Protected Overrides Sub OnDpiChangedAfterParent(e As EventArgs)
+        MyBase.OnDpiChangedAfterParent(e)
+        ApplyToolbarIcons(DeviceDpi)
+    End Sub
+
+    Private Sub ApplyToolbarIcons(dpi As Integer)
+        Dim scale = dpi / 96.0F
+        Dim size = Math.Max(16, CInt(16 * scale))
+        ctlToolStrip.ImageScalingSize = New System.Drawing.Size(size, size)
+        For Each item As ToolStripItem In ctlToolStrip.Items
+            Dim xamlName As String = Nothing
+            If _toolbarXamlNames.TryGetValue(item.Name, xamlName) Then
+                Dim bmp = TextAdventures.Quest.Controls.Menu.RenderXaml(xamlName, size)
+                If bmp IsNot Nothing Then
+                    Dim old = item.Image
+                    item.Image = bmp
+                    If old IsNot Nothing Then old.Dispose()
+                End If
             End If
         Next
     End Sub

@@ -164,6 +164,7 @@
     <EmbeddedResource Include="Resources\Settings.xaml" />
     <EmbeddedResource Include="Resources\StatusInformation.xaml" />
     <EmbeddedResource Include="Resources\Stop.xaml" />
+    <EmbeddedResource Include="Resources\TaskRunner.xaml" />
     <EmbeddedResource Include="Resources\Timer.xaml" />
     <EmbeddedResource Include="Resources\Undo.xaml" />
     <EmbeddedResource Include="Resources\User.xaml" />

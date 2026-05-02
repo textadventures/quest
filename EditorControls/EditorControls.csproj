@@ -588,6 +588,7 @@
     <EmbeddedResource Include="Resources\Play.xaml" />
     <EmbeddedResource Include="Resources\Record.xaml" />
     <EmbeddedResource Include="Resources\Script.xaml" />
+    <EmbeddedResource Include="Resources\TaskRunner.xaml" />
     <EmbeddedResource Include="Resources\Template.xaml" />
     <EmbeddedResource Include="Resources\Timer.xaml" />
     <EmbeddedResource Include="Resources\TriggerScript.xaml" />
