@@ -184,13 +184,13 @@
     <value>False</value>
   </data>
   <data name="ToolStripLabel2.Font" type="System.Drawing.Font, System.Drawing">
-    <value>Segoe UI, 9pt, style=Bold</value>
+    <value>Segoe UI, 8pt</value>
   </data>
   <data name="ToolStripLabel2.Size" type="System.Drawing.Size, System.Drawing">
     <value>150, 22</value>
   </data>
   <data name="ToolStripLabel2.Text" xml:space="preserve">
-    <value>Inherited Types</value>
+    <value>Inherited types:</value>
   </data>
   <data name="ToolStripLabel2.TextAlign" type="System.Drawing.ContentAlignment, System.Drawing">
     <value>MiddleLeft</value>
@@ -319,13 +319,13 @@
     <value>False</value>
   </data>
   <data name="lblAttributesTitle.Font" type="System.Drawing.Font, System.Drawing">
-    <value>Segoe UI, 9pt, style=Bold</value>
+    <value>Segoe UI, 8pt</value>
   </data>
   <data name="lblAttributesTitle.Size" type="System.Drawing.Size, System.Drawing">
     <value>150, 22</value>
   </data>
   <data name="lblAttributesTitle.Text" xml:space="preserve">
-    <value>Attributes</value>
+    <value>Attributes:</value>
   </data>
   <data name="lblAttributesTitle.TextAlign" type="System.Drawing.ContentAlignment, System.Drawing">
     <value>MiddleLeft</value>
@@ -439,13 +439,13 @@
     <value>420, 17</value>
   </metadata>
   <data name="toolStripLabel1.Font" type="System.Drawing.Font, System.Drawing">
-    <value>Segoe UI, 9pt, style=Bold</value>
+    <value>Segoe UI, 8pt</value>
   </data>
   <data name="toolStripLabel1.Size" type="System.Drawing.Size, System.Drawing">
     <value>93, 22</value>
   </data>
   <data name="toolStripLabel1.Text" xml:space="preserve">
-    <value>Assignment</value>
+    <value>Assignment:</value>
   </data>
   <data name="toolStrip.Location" type="System.Drawing.Point, System.Drawing">
     <value>0, 0</value>

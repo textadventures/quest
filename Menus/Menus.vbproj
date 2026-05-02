@@ -74,10 +74,14 @@
     <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="PresentationCore" />
+    <Reference Include="PresentationFramework" />
     <Reference Include="System" />
     <Reference Include="System.Data" />
     <Reference Include="System.Drawing" />
     <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xaml" />
+    <Reference Include="WindowsBase" />
     <Reference Include="System.Xml" />
     <Reference Include="System.Core">
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
@@ -127,6 +131,43 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="Resources\AddDocument.xaml" />
+    <EmbeddedResource Include="Resources\AddFolder.xaml" />
+    <EmbeddedResource Include="Resources\AddItem.xaml" />
+    <EmbeddedResource Include="Resources\Code.xaml" />
+    <EmbeddedResource Include="Resources\Comment.xaml" />
+    <EmbeddedResource Include="Resources\Copy.xaml" />
+    <EmbeddedResource Include="Resources\Cut.xaml" />
+    <EmbeddedResource Include="Resources\Delete.xaml" />
+    <EmbeddedResource Include="Resources\Edit.xaml" />
+    <EmbeddedResource Include="Resources\EventLog.xaml" />
+    <EmbeddedResource Include="Resources\Exit.xaml" />
+    <EmbeddedResource Include="Resources\Feedback.xaml" />
+    <EmbeddedResource Include="Resources\FullScreen.xaml" />
+    <EmbeddedResource Include="Resources\HTMLFile.xaml" />
+    <EmbeddedResource Include="Resources\Keyboard.xaml" />
+    <EmbeddedResource Include="Resources\Method.xaml" />
+    <EmbeddedResource Include="Resources\NewBug.xaml" />
+    <EmbeddedResource Include="Resources\NewDocument.xaml" />
+    <EmbeddedResource Include="Resources\OpenFolder.xaml" />
+    <EmbeddedResource Include="Resources\Paste.xaml" />
+    <EmbeddedResource Include="Resources\PublishOnDemand.xaml" />
+    <EmbeddedResource Include="Resources\QuestionMark.xaml" />
+    <EmbeddedResource Include="Resources\QuickFind.xaml" />
+    <EmbeddedResource Include="Resources\QuickReplace.xaml" />
+    <EmbeddedResource Include="Resources\Redo.xaml" />
+    <EmbeddedResource Include="Resources\Restart.xaml" />
+    <EmbeddedResource Include="Resources\Run.xaml" />
+    <EmbeddedResource Include="Resources\Save.xaml" />
+    <EmbeddedResource Include="Resources\SaveAs.xaml" />
+    <EmbeddedResource Include="Resources\Script.xaml" />
+    <EmbeddedResource Include="Resources\Settings.xaml" />
+    <EmbeddedResource Include="Resources\StatusInformation.xaml" />
+    <EmbeddedResource Include="Resources\Stop.xaml" />
+    <EmbeddedResource Include="Resources\TaskRunner.xaml" />
+    <EmbeddedResource Include="Resources\Timer.xaml" />
+    <EmbeddedResource Include="Resources\Undo.xaml" />
+    <EmbeddedResource Include="Resources\User.xaml" />
     <EmbeddedResource Include="Menu.de-BE.resx">
       <DependentUpon>Menu.vb</DependentUpon>
     </EmbeddedResource>

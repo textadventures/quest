@@ -11,6 +11,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using System.Windows.Interop;
 
 namespace TextAdventures.Quest.EditorControls
 {
@@ -30,6 +31,33 @@ namespace TextAdventures.Quest.EditorControls
             m_options.MultipleAttributes = true;
             ctlAttributes.Dirty += ctlAttributes_Dirty;
             ctlAttributes.RequestParentElementEditorSave += ctlAttributes_RequestParentElementEditorSave;
+            Loaded += OnLoaded;
+        }
+
+        private HwndSource _hwndSource;
+
+        private void OnLoaded(object sender, RoutedEventArgs e)
+        {
+            ApplyCurrentDpi();
+            var source = PresentationSource.FromVisual(this) as HwndSource;
+            if (source != null && source != _hwndSource)
+            {
+                if (_hwndSource != null) _hwndSource.DpiChanged -= OnHwndDpiChanged;
+                _hwndSource = source;
+                _hwndSource.DpiChanged += OnHwndDpiChanged;
+            }
+        }
+
+        private void OnHwndDpiChanged(object sender, HwndDpiChangedEventArgs e)
+        {
+            ApplyCurrentDpi();
+        }
+
+        private void ApplyCurrentDpi()
+        {
+            var dpiInfo = VisualTreeHelper.GetDpi(this);
+            int dpi = (int)dpiInfo.PixelsPerInchX;
+            ctlAttributes.ApplyDpi(dpi);
         }
 
         void ctlAttributes_RequestParentElementEditorSave()

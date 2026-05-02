@@ -112,7 +112,7 @@
             // 
             this.ctlTypesToolStrip.BackColor = System.Drawing.Color.Transparent;
             this.ctlTypesToolStrip.GripStyle = System.Windows.Forms.ToolStripGripStyle.Hidden;
-            this.ctlTypesToolStrip.ImageScalingSize = new System.Drawing.Size(20, 20);
+            this.ctlTypesToolStrip.ImageScalingSize = new System.Drawing.Size(16, 16);
             this.ctlTypesToolStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.ToolStripLabel2,
             this.cmdAddType,
@@ -127,14 +127,12 @@
             // 
             // cmdAddType
             // 
-            this.cmdAddType.Image = global::TextAdventures.Quest.EditorControls.Properties.Resources.s_wf_add;
             resources.ApplyResources(this.cmdAddType, "cmdAddType");
             this.cmdAddType.Name = "cmdAddType";
             this.cmdAddType.Click += new System.EventHandler(this.cmdAddType_Click);
             // 
             // cmdDeleteType
             // 
-            this.cmdDeleteType.Image = global::TextAdventures.Quest.EditorControls.Properties.Resources.s_wf_delete;
             resources.ApplyResources(this.cmdDeleteType, "cmdDeleteType");
             this.cmdDeleteType.Name = "cmdDeleteType";
             this.cmdDeleteType.Click += new System.EventHandler(this.cmdDeleteType_Click);
@@ -189,7 +187,7 @@
             // 
             this.ctlToolStrip.BackColor = System.Drawing.Color.Transparent;
             this.ctlToolStrip.GripStyle = System.Windows.Forms.ToolStripGripStyle.Hidden;
-            this.ctlToolStrip.ImageScalingSize = new System.Drawing.Size(20, 20);
+            this.ctlToolStrip.ImageScalingSize = new System.Drawing.Size(16, 16);
             this.ctlToolStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.lblAttributesTitle,
             this.cmdAdd,
@@ -205,21 +203,18 @@
             // 
             // cmdAdd
             // 
-            this.cmdAdd.Image = global::TextAdventures.Quest.EditorControls.Properties.Resources.s_wf_add;
             resources.ApplyResources(this.cmdAdd, "cmdAdd");
             this.cmdAdd.Name = "cmdAdd";
             this.cmdAdd.Click += new System.EventHandler(this.cmdAdd_Click);
             // 
             // cmdDelete
             // 
-            this.cmdDelete.Image = global::TextAdventures.Quest.EditorControls.Properties.Resources.s_wf_delete;
             resources.ApplyResources(this.cmdDelete, "cmdDelete");
             this.cmdDelete.Name = "cmdDelete";
             this.cmdDelete.Click += new System.EventHandler(this.cmdDelete_Click);
             // 
             // cmdOnChange
             // 
-            this.cmdOnChange.Image = global::TextAdventures.Quest.EditorControls.Properties.Resources.s_wf_change_add;
             resources.ApplyResources(this.cmdOnChange, "cmdOnChange");
             this.cmdOnChange.Name = "cmdOnChange";
             this.cmdOnChange.Click += new System.EventHandler(this.cmdOnChange_Click);

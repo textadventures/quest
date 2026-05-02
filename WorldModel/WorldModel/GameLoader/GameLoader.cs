@@ -229,7 +229,6 @@ namespace TextAdventures.Quest
             }
 
             m_currentFile.Pop();
-            UpdateLoadStatus();
         }
 
         private void UpdateLoadStatus()

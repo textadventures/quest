@@ -462,4 +462,87 @@ Public Class MainToolbar
         ToolStripSeparator2.Visible = Not CodeView
     End Sub
 
+    Private Shared ReadOnly _svgNames As New Dictionary(Of String, String) From {
+        {"butNew", "NewDocument"},
+        {"butOpen", "OpenFolder"},
+        {"butSave", "Save"},
+        {"butCut", "Cut"},
+        {"butCopy", "Copy"},
+        {"butPaste", "Paste"},
+        {"butDelete", "Delete"},
+        {"butFind", "QuickFind"},
+        {"butReplace", "QuickReplace"},
+        {"butUndoSimple", "Undo"},
+        {"butRedoSimple", "Redo"},
+        {"butUndo", "Undo"},
+        {"butRedo", "Redo"},
+        {"butAddPage", "AddDocument"},
+        {"butAddRoom", "AddFolder"},
+        {"butAddObject", "AddItem"},
+        {"butBack", "Backwards"},
+        {"butForward", "Forwards"},
+        {"butPlay", "Run"},
+        {"butCode", "Code"},
+        {"butHelp", "QuestionMark"},
+        {"butLogError", "LogError"}
+    }
+
+    Protected Overrides Sub OnHandleCreated(e As EventArgs)
+        MyBase.OnHandleCreated(e)
+        ScaleToolbarImages()
+    End Sub
+
+    Protected Overrides Sub OnDpiChangedAfterParent(e As EventArgs)
+        MyBase.OnDpiChangedAfterParent(e)
+        ScaleToolbarImages()
+    End Sub
+
+    Private Sub ScaleToolbarImages()
+        Dim scale As Single = DeviceDpi / 96.0F
+        Dim size As Integer = CInt(16 * Math.Max(1.0F, scale))
+
+        ctlToolStrip.ImageScalingSize = New System.Drawing.Size(size, size)
+
+        For Each item In ctlToolStrip.Items.Cast(Of ToolStripItem)()
+            If TypeOf item Is ToolStripSeparator Then Continue For
+            item.Margin = New System.Windows.Forms.Padding(2, 1, 2, 2)
+            Dim svgName As String = Nothing
+            If _svgNames.TryGetValue(item.Name, svgName) Then
+                Dim rendered = RenderXaml(svgName, size)
+                If rendered IsNot Nothing Then
+                    Dim oldImg = item.Image
+                    item.Image = rendered
+                    If oldImg IsNot Nothing Then oldImg.Dispose()
+                End If
+            End If
+        Next
+
+        Height = ctlToolStrip.Height
+    End Sub
+
+    Private Shared Function RenderXaml(name As String, size As Integer) As System.Drawing.Bitmap
+        Dim asm = System.Reflection.Assembly.GetExecutingAssembly()
+        Dim resourceName = asm.GetManifestResourceNames().FirstOrDefault(Function(n) n.EndsWith(name & ".xaml", StringComparison.OrdinalIgnoreCase))
+        If resourceName Is Nothing Then Return Nothing
+        Using stream = asm.GetManifestResourceStream(resourceName)
+            Dim visual = TryCast(System.Windows.Markup.XamlReader.Load(stream), System.Windows.FrameworkElement)
+            If visual Is Nothing Then Return Nothing
+            visual.Width = size
+            visual.Height = size
+            visual.Measure(New System.Windows.Size(size, size))
+            visual.Arrange(New System.Windows.Rect(0, 0, size, size))
+            Dim rtb As New System.Windows.Media.Imaging.RenderTargetBitmap(size, size, 96, 96, System.Windows.Media.PixelFormats.Pbgra32)
+            rtb.Render(visual)
+            Dim encoder As New System.Windows.Media.Imaging.PngBitmapEncoder()
+            encoder.Frames.Add(System.Windows.Media.Imaging.BitmapFrame.Create(rtb))
+            Using ms As New System.IO.MemoryStream()
+                encoder.Save(ms)
+                ms.Position = 0
+                Using rawBmp As New System.Drawing.Bitmap(ms)
+                    Return New System.Drawing.Bitmap(rawBmp)
+                End Using
+            End Using
+        End Using
+    End Function
+
 End Class

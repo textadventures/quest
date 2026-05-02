@@ -147,6 +147,7 @@ namespace TextAdventures.Quest
             public string Parent { get; set; }
             public bool IsLibraryNode { get; set; }
             public int? Position { get; set; }
+            public string NodeIcon { get; set; }
         }
 
         public event EventHandler<AddedNodeEventArgs> AddedNode;
@@ -484,7 +485,8 @@ namespace TextAdventures.Quest
         private void MoveNove(string key, string text, string newParent)
         {
             RemovedNode(this, new RemovedNodeEventArgs { Key = key });
-            AddedNode(this, new AddedNodeEventArgs { Key = key, Text = text, Parent = newParent, IsLibraryNode = false, Position = null });
+            Element movedElement = m_worldModel.Elements.ContainsKey(key) ? m_worldModel.Elements.Get(key) : null;
+            AddedNode(this, new AddedNodeEventArgs { Key = key, Text = text, Parent = newParent, IsLibraryNode = false, Position = null, NodeIcon = movedElement != null ? GetNodeIcon(movedElement) : null });
         }
 
         private void AddElementAndSubElementsToTree(Element e, int? position = null)
@@ -569,7 +571,7 @@ namespace TextAdventures.Quest
                 {
                     m_elementTreeStructure.Add(type.Value, header);
                 }
-                AddedNode(this, new AddedNodeEventArgs { Key = key, Text = title, Parent = parent, IsLibraryNode = false, Position = null });
+                AddedNode(this, new AddedNodeEventArgs { Key = key, Text = title, Parent = parent, IsLibraryNode = false, Position = null, NodeIcon = GetTreeHeaderIcon(type, key) });
             }
         }
 
@@ -620,17 +622,17 @@ namespace TextAdventures.Quest
             if (display)
             {
                 string key = name ?? o.Name;
-                AddedNode(this, new AddedNodeEventArgs { Key = key, Text = text, Parent = parent, IsLibraryNode = isLibrary, Position = position });
+                AddedNode(this, new AddedNodeEventArgs { Key = key, Text = text, Parent = parent, IsLibraryNode = isLibrary, Position = position, NodeIcon = GetNodeIcon(o) });
 
                 if (o.Name == "game" && !SimpleMode && m_editorStyle == EditorStyle.TextAdventure)
                 {
                     if (m_editorMode == EditorMode.Desktop)
                     {
                         // TO DO: When WebEditor is fully functional, there should be no need for this
-                        AddedNode(this, new AddedNodeEventArgs { Key = k_verbs, Text = "Verbs", Parent = "game", IsLibraryNode = false, Position = null });
-                        
+                        AddedNode(this, new AddedNodeEventArgs { Key = k_verbs, Text = "Verbs", Parent = "game", IsLibraryNode = false, Position = null, NodeIcon = "s_verb" });
+
                     }
-                    AddedNode(this, new AddedNodeEventArgs { Key = k_commands, Text = "Commands", Parent = "game", IsLibraryNode = false, Position = null });
+                    AddedNode(this, new AddedNodeEventArgs { Key = k_commands, Text = "Commands", Parent = "game", IsLibraryNode = false, Position = null, NodeIcon = "s_command" });
                 }
             }
         }
@@ -746,6 +748,53 @@ namespace TextAdventures.Quest
             }
             if (!m_worldModel.Elements.ContainsKey(element)) return null;
             return GetDisplayName(m_worldModel.Elements.Get(element));
+        }
+
+        private string GetNodeIcon(Element o)
+        {
+            switch (o.ElemType)
+            {
+                case ElementType.Object:
+                    switch (o.Type)
+                    {
+                        case ObjectType.Game: return "s_game";
+                        case ObjectType.Exit: return "s_exit";
+                        case ObjectType.Command:
+                            return o.Fields.GetAsType<bool>("isverb") ? "s_verb" : "s_command";
+                        case ObjectType.TurnScript: return "s_turn";
+                        case ObjectType.Object:
+                            if (m_editorStyle == EditorStyle.GameBook) return "s_add_page";
+                            return o.Fields.GetAsType<bool>("isroom") ? "s_room" : "s_object";
+                        default: return null;
+                    }
+                case ElementType.Function: return "s_function";
+                case ElementType.Timer: return "s_timer";
+                case ElementType.Walkthrough: return "s_walk";
+                case ElementType.IncludedLibrary: return "s_library";
+                case ElementType.Template: return "s_template";
+                case ElementType.DynamicTemplate: return "s_dynamictemplate";
+                case ElementType.ObjectType: return "s_objecttype";
+                case ElementType.Javascript: return "s_javascript";
+                default: return null;
+            }
+        }
+
+        private string GetTreeHeaderIcon(ElementType? type, string key)
+        {
+            if (type == null) return "s_folder";
+            switch (type.Value)
+            {
+                case ElementType.Object: return "s_object";
+                case ElementType.Function: return "s_function";
+                case ElementType.Timer: return "s_timer";
+                case ElementType.Walkthrough: return "s_walk";
+                case ElementType.IncludedLibrary: return "s_library";
+                case ElementType.Template: return "s_template";
+                case ElementType.DynamicTemplate: return "s_dynamictemplate";
+                case ElementType.ObjectType: return "s_objecttype";
+                case ElementType.Javascript: return "s_javascript";
+                default: return null;
+            }
         }
 
         public AvailableFilters AvailableFilters

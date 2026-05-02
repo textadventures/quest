@@ -268,6 +268,107 @@
         applicableMenu.PerformClick()
     End Sub
 
+    Private Shared ReadOnly _xamlNames As New Dictionary(Of String, String) From {
+        {"OpenToolStripMenuItem", "OpenFolder"},
+        {"RestartToolStripMenuItem", "Restart"},
+        {"CreateNewGameToolStripMenuItem", "NewDocument"},
+        {"OpenEditToolStripMenuItem", "Edit"},
+        {"SaveToolStripMenuItem", "Save"},
+        {"SaveAsToolStripMenuItem", "SaveAs"},
+        {"PlayGameToolStripMenuItem", "Run"},
+        {"StopGameToolStripMenuItem", "Stop"},
+        {"UndoToolStripMenuItem", "Undo"},
+        {"RedoToolStripMenuItem", "Redo"},
+        {"CutToolStripMenuItem", "Cut"},
+        {"CopyToolStripMenuItem", "Copy"},
+        {"PasteToolStripMenuItem", "Paste"},
+        {"DeleteToolStripMenuItem", "Delete"},
+        {"FindToolStripMenuItem", "QuickFind"},
+        {"ReplaceToolStripMenuItem", "QuickReplace"},
+        {"FullScreenToolStripMenuItem", "FullScreen"},
+        {"DebuggerToolStripMenuItem", "NewBug"},
+        {"LogToolStripMenuItem", "EventLog"},
+        {"HTMLDeveloperToolsToolStripMenuItem", "HTMLFile"},
+        {"VerbToolStripMenuItem", "Comment"},
+        {"CommandToolStripMenuItem", "Keyboard"},
+        {"PageToolStripMenuItem", "AddDocument"},
+        {"RoomToolStripMenuItem", "AddFolder"},
+        {"ObjectToolStripMenuItem", "AddItem"},
+        {"ExitToolStripMenuItem1", "Exit"},
+        {"FunctionToolStripMenuItem", "Method"},
+        {"TimerToolStripMenuItem", "Timer"},
+        {"WalkthroughToolStripMenuItem", "TaskRunner"},
+        {"WalkthroughToolStripMenuItem1", "TaskRunner"},
+        {"PublishToolStripMenuItem", "PublishOnDemand"},
+        {"CodeViewToolStripMenuItem", "Code"},
+        {"OptionsToolStripMenuItem", "Settings"},
+        {"ViewHelpToolStripMenuItem", "QuestionMark"},
+        {"QuestDiscussionsToolStripMenuItem", "Feedback"},
+        {"AboutToolStripMenuItem", "StatusInformation"}
+    }
+
+    Protected Overrides Sub OnHandleCreated(e As EventArgs)
+        MyBase.OnHandleCreated(e)
+        ScaleMenuImages()
+    End Sub
+
+    Protected Overrides Sub OnDpiChangedAfterParent(e As EventArgs)
+        MyBase.OnDpiChangedAfterParent(e)
+        ScaleMenuImages()
+    End Sub
+
+    Private Sub ScaleMenuImages()
+        Dim scale As Single = DeviceDpi / 96.0F
+        Dim size As Integer = CInt(16 * Math.Max(1.0F, scale))
+        ctlMenuStrip.ImageScalingSize = New System.Drawing.Size(size, size)
+        For Each item As ToolStripItem In ctlMenuStrip.Items
+            ScaleMenuImages(DirectCast(item, ToolStripMenuItem), size)
+        Next
+        Me.Height = ctlMenuStrip.Height
+    End Sub
+
+    Private Sub ScaleMenuImages(menu As ToolStripMenuItem, size As Integer)
+        Dim xamlName As String = Nothing
+        If _xamlNames.TryGetValue(menu.Name, xamlName) Then
+            Dim rendered = RenderXaml(xamlName, size)
+            If rendered IsNot Nothing Then
+                Dim oldImg = menu.Image
+                menu.Image = rendered
+                If oldImg IsNot Nothing Then oldImg.Dispose()
+            End If
+        End If
+        For Each item As ToolStripItem In menu.DropDownItems
+            If TypeOf item Is ToolStripMenuItem Then
+                ScaleMenuImages(DirectCast(item, ToolStripMenuItem), size)
+            End If
+        Next
+    End Sub
+
+    Public Shared Function RenderXaml(name As String, size As Integer) As System.Drawing.Bitmap
+        Dim asm = System.Reflection.Assembly.GetExecutingAssembly()
+        Dim resourceName = asm.GetManifestResourceNames().FirstOrDefault(Function(n) n.EndsWith(name & ".xaml", StringComparison.OrdinalIgnoreCase))
+        If resourceName Is Nothing Then Return Nothing
+        Using stream = asm.GetManifestResourceStream(resourceName)
+            Dim visual = TryCast(System.Windows.Markup.XamlReader.Load(stream), System.Windows.FrameworkElement)
+            If visual Is Nothing Then Return Nothing
+            visual.Width = size
+            visual.Height = size
+            visual.Measure(New System.Windows.Size(size, size))
+            visual.Arrange(New System.Windows.Rect(0, 0, size, size))
+            Dim rtb As New System.Windows.Media.Imaging.RenderTargetBitmap(size, size, 96, 96, System.Windows.Media.PixelFormats.Pbgra32)
+            rtb.Render(visual)
+            Dim encoder As New System.Windows.Media.Imaging.PngBitmapEncoder()
+            encoder.Frames.Add(System.Windows.Media.Imaging.BitmapFrame.Create(rtb))
+            Using ms As New System.IO.MemoryStream()
+                encoder.Save(ms)
+                ms.Position = 0
+                Using rawBmp As New System.Drawing.Bitmap(ms)
+                    Return New System.Drawing.Bitmap(rawBmp)
+                End Using
+            End Using
+        End Using
+    End Function
+
     Private Sub Menu_Load(sender As Object, e As EventArgs) Handles MyBase.Load
 
     End Sub
