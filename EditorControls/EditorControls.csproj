@@ -575,6 +575,7 @@
     <EmbeddedResource Include="Resources\Exit.xaml" />
     <EmbeddedResource Include="Resources\FolderClosed.xaml" />
     <EmbeddedResource Include="Resources\GoToDefinition.xaml" />
+    <EmbeddedResource Include="Resources\Home.xaml" />
     <EmbeddedResource Include="Resources\Item.xaml" />
     <EmbeddedResource Include="Resources\JSScript.xaml" />
     <EmbeddedResource Include="Resources\Keyboard.xaml" />

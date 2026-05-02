@@ -305,7 +305,7 @@ namespace TextAdventures.Quest.EditorControls
             { "s_objecttype",     "TypeDefinition" },
             { "s_javascript",     "JSScript" },
             { "s_folder",         "FolderClosed" },
-            { "s_game",           "WorldLocal" },
+            { "s_game",           "Home" },
         };
 
         private static readonly Dictionary<string, string> _contextMenuXamlNames = new Dictionary<string, string>
