@@ -22,9 +22,53 @@ namespace TextAdventures.Quest.EditorControls
         private bool m_readOnly;
         private bool m_isItemSelected;
 
+        private static readonly Dictionary<string, string> _toolbarXamlNames = new Dictionary<string, string>
+        {
+            { "cmdAdd", "Add" },
+            { "cmdDelete", "Delete" },
+            { "cmdEdit", "Edit" },
+            { "cmdPlay", "Play" },
+            { "cmdRecord", "Record" },
+            { "cmdMoveUp", "MoveUp" },
+            { "cmdMoveDown", "MoveDown" },
+        };
+
         public WFToolbar()
         {
             InitializeComponent();
+        }
+
+        protected override void OnHandleCreated(EventArgs e)
+        {
+            base.OnHandleCreated(e);
+            ApplyToolbarIcons(DeviceDpi);
+        }
+
+        protected override void OnDpiChangedAfterParent(EventArgs e)
+        {
+            base.OnDpiChangedAfterParent(e);
+            ApplyToolbarIcons(DeviceDpi);
+        }
+
+        private void ApplyToolbarIcons(int dpi)
+        {
+            float scale = dpi / 96f;
+            int size = Math.Max(16, (int)(16 * scale));
+            ctlToolStrip.ImageScalingSize = new Size(size, size);
+            foreach (ToolStripItem item in ctlToolStrip.Items)
+            {
+                string xamlName;
+                if (_toolbarXamlNames.TryGetValue(item.Name, out xamlName))
+                {
+                    var bmp = WFListEditor.RenderXaml(xamlName, size);
+                    if (bmp != null)
+                    {
+                        var old = item.Image;
+                        item.Image = bmp;
+                        if (old != null) old.Dispose();
+                    }
+                }
+            }
         }
 
         private void cmdAdd_Click(object sender, EventArgs e)

@@ -82,7 +82,7 @@ namespace TextAdventures.Quest.EditorControls
             }
         }
 
-        private static Bitmap RenderXaml(string name, int size)
+        internal static Bitmap RenderXaml(string name, int size)
         {
             var asm = System.Reflection.Assembly.GetExecutingAssembly();
             var resourceName = asm.GetManifestResourceNames()
