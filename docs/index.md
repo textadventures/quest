@@ -1,5 +1,5 @@
 ---
-title: Quest 5 - Documentation
+title: Home
 nav_order: 1
 ---
 
