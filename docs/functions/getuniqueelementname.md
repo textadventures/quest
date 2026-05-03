@@ -1,6 +1,6 @@
 ---
-layout: index
 title: GetUniqueElementName
+nav_exclude: true
 ---
 
     GetUniqueElementName (string element name)

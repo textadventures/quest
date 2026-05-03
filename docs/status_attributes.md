@@ -1,6 +1,7 @@
 ---
-layout: index
 title: Status Attributes
+nav_order: 3
+parent: "Attributes"
 ---
 
 Status attributes are a great way to keep the player continuously informed of her progress. You might want to display the player's current score or health or money or any number of other values.

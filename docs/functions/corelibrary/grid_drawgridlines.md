@@ -1,6 +1,6 @@
 ---
-layout: index
 title: Grid_DrawGridLines
+nav_exclude: true
 ---
 
     Grid_DrawGridLines (int x1, int y1, int x2, int y2, string border)

@@ -1,6 +1,6 @@
 ---
-layout: index
 title: SetTurnTimeout
+nav_exclude: true
 ---
 
     SetTurnTimeout (turn count, script)

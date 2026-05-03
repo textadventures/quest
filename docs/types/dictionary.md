@@ -1,6 +1,6 @@
 ---
-layout: index
 title: Dictionary
+nav_exclude: true
 ---
 
 **New in Quest 5.4**

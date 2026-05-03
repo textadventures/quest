@@ -1,6 +1,6 @@
 ---
-layout: index
 title: ListVisibleFor
+nav_exclude: true
 ---
 
     ListVisibleFor (object character)

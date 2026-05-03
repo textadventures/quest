@@ -1,6 +1,7 @@
 ---
-layout: index
 title: More things to do with objects
+nav_order: 8
+parent: Tutorial
 ---
 
 Giving and Using objects

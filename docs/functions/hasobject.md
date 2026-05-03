@@ -1,6 +1,6 @@
 ---
-layout: index
 title: HasObject
+nav_exclude: true
 ---
 
     HasObject (object, string attribute name)

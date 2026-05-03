@@ -1,6 +1,6 @@
 ---
-layout: index
 title: UCase
+nav_exclude: true
 ---
 
     UCase (string input)

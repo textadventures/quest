@@ -1,6 +1,7 @@
 ---
-layout: index
 title: Text formatting
+nav_order: 15
+parent: Tutorial
 ---
 
 Up until now, our Quest game has been entirely plain text. In this section, we'll look at jazzing things up a bit by using text formatting, and including pictures, sounds and video.

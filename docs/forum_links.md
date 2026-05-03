@@ -1,3 +1,7 @@
+---
+nav_exclude: true
+---
+
 
 
 Interesting links

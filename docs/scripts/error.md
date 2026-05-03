@@ -1,6 +1,6 @@
 ---
-layout: index
 title: error
+nav_exclude: true
 ---
 
     error (string message)

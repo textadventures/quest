@@ -1,6 +1,7 @@
 ---
-layout: index
 title: Handling Multiple Items (and All)
+nav_order: 4
+parent: "How to use commands"
 ---
 
 

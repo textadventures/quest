@@ -1,6 +1,6 @@
 ---
-layout: index
 title: MakeObjectVisible
+nav_exclude: true
 ---
 
     MakeObjectVisible (object)

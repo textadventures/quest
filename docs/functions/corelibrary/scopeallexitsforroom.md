@@ -1,6 +1,6 @@
 ---
-layout: index
 title: ScopeAllExitsForRoom
+nav_exclude: true
 ---
 
     ScopeAllExitsForRoom (room)

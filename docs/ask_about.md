@@ -1,6 +1,7 @@
 ---
-layout: index
 title: Handling ASK/TELL
+nav_order: 4
+parent: "Characters (NPCs)"
 ---
 
 Interactive fiction has broadly three ways for the player to talk to NPCs.

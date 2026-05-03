@@ -1,6 +1,6 @@
 ---
-layout: index
 title: TypeOf
+nav_exclude: true
 ---
 
     TypeOf (object, string attribute name)

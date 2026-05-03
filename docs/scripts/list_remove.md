@@ -1,6 +1,6 @@
 ---
-layout: index
 title: list remove
+nav_exclude: true
 ---
 
     list remove (list, any type item)

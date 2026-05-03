@@ -1,6 +1,7 @@
 ---
-layout: index
 title: Showing a map
+nav_order: 7
+parent: "How To"
 ---
 
 A text adventure generally involves moving around the game world by following compass directions – north, south, east, and west, with the occasional use of up and down, or in and out. Many players like to map out a game as they play using pencil and paper, but you can help your players out by getting Quest to do that for them automatically!

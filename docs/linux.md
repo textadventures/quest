@@ -1,6 +1,7 @@
 ---
-layout: index
 title: How to run Quest on Linux
+nav_order: 21
+parent: "How To"
 ---
 
 Very grateful to redyoshi49q for working out how to do this. His/her instructions are reproduced as-is. The discussion can be found [here](https://textadventures.co.uk/forum/samples/topic/nwsz5gf0te6qdtfrwzdmga/quest-5-8-working-in-wine).

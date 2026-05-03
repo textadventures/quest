@@ -1,6 +1,7 @@
 ---
-layout: index
 title: Transcripts
+nav_order: 32
+parent: "Reference"
 ---
 
 As of Quest 5.8, there is a fully functional transcript feature.

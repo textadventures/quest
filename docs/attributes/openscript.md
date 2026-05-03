@@ -1,6 +1,6 @@
 ---
-layout: index
 title: openscript
+nav_exclude: true
 ---
 
 "openscript" is a [script](../types/script.html) attribute. If specified, when the object is opened, the script will run. If not specified, the object will be opened automatically.

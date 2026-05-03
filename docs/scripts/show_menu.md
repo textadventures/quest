@@ -1,6 +1,6 @@
 ---
-layout: index
 title: show menu
+nav_exclude: true
 ---
 
     show menu (string caption, stringdictionary or stringlist options, boolean allow cancel) {script}

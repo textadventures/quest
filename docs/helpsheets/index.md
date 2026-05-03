@@ -1,6 +1,6 @@
 ---
-layout: index
 title: Helpsheets for beginners
+nav_exclude: true
 ---
 
 

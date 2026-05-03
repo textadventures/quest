@@ -1,6 +1,6 @@
 ---
-layout: index
 title: NewScriptDictionary
+nav_exclude: true
 ---
 
     NewScriptDictionary ()

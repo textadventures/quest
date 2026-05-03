@@ -1,6 +1,6 @@
 ---
-layout: index
 title: WearGarment
+nav_exclude: true
 ---
 
     WearGarment (object)

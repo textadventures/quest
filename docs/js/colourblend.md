@@ -1,6 +1,6 @@
 ---
-layout: index
 title: ShowGrid
+nav_exclude: true
 ---
 
     JS.colourBlend (string colour1, string colour2)

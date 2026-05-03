@@ -1,6 +1,6 @@
 ---
-layout: index
 title: look
+nav_exclude: true
 ---
 
 "look" is an attribute that can be either [string](../types/string.html) or [script](../types/script.html). It specifies what happens when the player looks at the object.

@@ -1,6 +1,6 @@
 ---
-layout: index
 title: Notes
+nav_exclude: true
 ---
 
 Mutable attributes on inherited types

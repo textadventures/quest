@@ -1,6 +1,6 @@
 ---
-layout: index
 title: GetArmourFor
+nav_exclude: true
 ---
 
     GetArmourFor (object character)

@@ -1,6 +1,6 @@
 ---
-layout: index
 title: Locked Exits and How to Open them?
+nav_exclude: true
 ---
 
 *You may want to have an exit that you cannot open without a key or other object*

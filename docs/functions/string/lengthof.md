@@ -1,6 +1,6 @@
 ---
-layout: index
 title: LengthOf
+nav_exclude: true
 ---
 
     LengthOf (string input)

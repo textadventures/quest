@@ -1,6 +1,6 @@
 ---
-layout: index
 title: RemoveSceneryObjects
+nav_exclude: true
 ---
 
     RemoveSceneryObjects(objectlist)

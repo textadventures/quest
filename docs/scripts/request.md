@@ -1,6 +1,6 @@
 ---
-layout: index
 title: request
+nav_exclude: true
 ---
 
     request (request name, string parameter)

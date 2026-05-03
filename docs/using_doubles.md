@@ -1,6 +1,7 @@
 ---
-layout: index
 title: Using "doubles"
+nav_order: 12
+parent: "Reference"
 ---
 
 Doubles are an alternative number system to integers; what is the difference?

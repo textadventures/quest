@@ -1,6 +1,6 @@
 ---
-layout: index
 title: GetAttributeNames
+nav_exclude: true
 ---
 
     GetAttributeNames (object, boolean include inherited attributes)

@@ -1,6 +1,6 @@
 ---
-layout: index
 title: PickOneObject
+nav_exclude: true
 ---
 
     PickOneObject (objectlist)

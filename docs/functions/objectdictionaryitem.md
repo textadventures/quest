@@ -1,6 +1,6 @@
 ---
-layout: index
 title: ObjectDictionaryItem
+nav_exclude: true
 ---
 
     ObjectDictionaryItem (dictionary, string key)

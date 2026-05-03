@@ -1,6 +1,6 @@
 ---
-layout: index
 title: beforefirstenter
+nav_exclude: true
 ---
 
 "beforefirstenter" is a [script](../types/script.html) attribute. It is run the first time that a player enters an object (room), *before* the room description is printed.

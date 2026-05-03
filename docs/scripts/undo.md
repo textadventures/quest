@@ -1,6 +1,6 @@
 ---
-layout: index
 title: undo
+nav_exclude: true
 ---
 
     undo

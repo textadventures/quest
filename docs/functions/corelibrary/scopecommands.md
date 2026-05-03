@@ -1,6 +1,6 @@
 ---
-layout: index
 title: ScopeCommands
+nav_exclude: true
 ---
 
     ScopeCommands ()

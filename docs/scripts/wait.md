@@ -1,6 +1,6 @@
 ---
-layout: index
 title: wait
+nav_exclude: true
 ---
 
     wait {script}

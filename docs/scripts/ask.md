@@ -1,6 +1,6 @@
 ---
-layout: index
 title: ask
+nav_exclude: true
 ---
 
     ask (string question) {script}

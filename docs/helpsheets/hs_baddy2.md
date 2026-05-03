@@ -1,6 +1,6 @@
 ---
-layout: index
 title: Baddies behind a Door who want to kill you (but if you close the door you won’t die…!)
+nav_exclude: true
 ---
 
 *What happens if you open a door and there is a baddy who wants to kill you but if you close the door you get out alive!*

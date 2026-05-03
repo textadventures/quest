@@ -1,6 +1,6 @@
 ---
-layout: index
 title: javascript element
+nav_exclude: true
 ---
 
     <javascript src="filename"/>

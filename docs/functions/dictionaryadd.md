@@ -1,6 +1,6 @@
 ---
-layout: index
 title: DictionaryAdd
+nav_exclude: true
 ---
 
     DictionaryAdd (dictionary, string key, string value)

@@ -1,6 +1,6 @@
 ---
-layout: index
 title: ObjectLink
+nav_exclude: true
 ---
 
     ObjectLink (object)

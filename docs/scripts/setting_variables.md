@@ -1,6 +1,6 @@
 ---
-layout: index
 title: Setting variables
+nav_exclude: true
 ---
 
 To set an object attribute to a value:

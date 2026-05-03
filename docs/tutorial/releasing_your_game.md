@@ -1,6 +1,7 @@
 ---
-layout: index
 title: Releasing your game
+nav_order: 13
+parent: Tutorial
 ---
 
 There are five stages to releasing a Quest game.

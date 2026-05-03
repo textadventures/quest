@@ -1,6 +1,6 @@
 ---
-layout: index
 title: WriteVerb
+nav_exclude: true
 ---
 
     WriteVerb(obj, verb)

@@ -1,6 +1,6 @@
 ---
-layout: index
 title: DoesInherit
+nav_exclude: true
 ---
 
     DoesInherit (object object, string type name)

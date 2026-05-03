@@ -1,6 +1,6 @@
 ---
-layout: index
 title: ObjectListSort
+nav_exclude: true
 ---
 
     ObjectListSort (objectlist list, string attributes ...)

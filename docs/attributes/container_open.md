@@ -1,6 +1,6 @@
 ---
-layout: index
 title: container_open
+nav_exclude: true
 ---
 
 The "container\_open" type is defined in CoreTypes.aslx. It implements an open container.

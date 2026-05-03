@@ -1,6 +1,6 @@
 ---
-layout: index
 title: IsSwitchedOn
+nav_exclude: true
 ---
 
     IsSwitchedOn (object)

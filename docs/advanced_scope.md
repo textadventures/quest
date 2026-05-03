@@ -1,6 +1,7 @@
 ---
-layout: index
 title: Advanced Scope For Items
+nav_order: 6
+parent: "How to use commands"
 ---
 
 

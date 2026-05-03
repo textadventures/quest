@@ -1,6 +1,6 @@
 ---
-layout: index
 title: SwitchOn
+nav_exclude: true
 ---
 
     SwitchOn (object)

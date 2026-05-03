@@ -1,6 +1,6 @@
 ---
-layout: index
 title: command element
+nav_exclude: true
 ---
 
     <command name="name" pattern="pattern" unresolved="unresolved text" template="template name">script</command>

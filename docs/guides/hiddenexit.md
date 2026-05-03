@@ -1,6 +1,6 @@
 ---
-layout: index
 title: Hiddenexit
+nav_exclude: true
 ---
 
 You have a number of options with regards to how Quest handles your exit. Create it normally, then tick the boxes as appropriate. Remember that if you want to change the value of any of these, you need to give the exit a unique name.

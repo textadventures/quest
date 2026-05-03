@@ -1,6 +1,6 @@
 ---
-layout: index
 title: GetObject
+nav_exclude: true
 ---
 
     GetObject (string object name)

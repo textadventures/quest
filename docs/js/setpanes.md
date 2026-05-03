@@ -1,6 +1,6 @@
 ---
-layout: index
 title: setPanes
+nav_exclude: true
 ---
 
     JS.setPanes (string text, string background)

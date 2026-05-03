@@ -1,6 +1,6 @@
 ---
-layout: index
 title: destroy
+nav_exclude: true
 ---
 
     destroy (string name)

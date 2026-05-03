@@ -1,6 +1,6 @@
 ---
-layout: index
 title: AddToInventory
+nav_exclude: true
 ---
 
     AddToInventory (object)

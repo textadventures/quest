@@ -1,6 +1,6 @@
 ---
-layout: index
 title: FormatList
+nav_exclude: true
 ---
 
     FormatList (stringlist or object list, string joiner, string lastjoiner, string nothing)

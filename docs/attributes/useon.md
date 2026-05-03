@@ -1,6 +1,6 @@
 ---
-layout: index
 title: useon
+nav_exclude: true
 ---
 
 "useon" is an attribute that can be either a [scriptdictionary](../types/scriptdictionary.html) or [string](../types/string.html).

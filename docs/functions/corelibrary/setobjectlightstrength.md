@@ -1,6 +1,6 @@
 ---
-layout: index
 title: SetObjectLightstrength
+nav_exclude: true
 ---
 
     SetObjectLightstrength(object, string value)

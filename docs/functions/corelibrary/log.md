@@ -1,6 +1,6 @@
 ---
-layout: index
 title: Log
+nav_exclude: true
 ---
 
     Log (string text)

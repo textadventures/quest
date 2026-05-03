@@ -1,6 +1,6 @@
 ---
-layout: index
 title: showPopup/showPopupCustomSize/showPopupFullscreen
+nav_exclude: true
 ---
 
     JS.showPopup(title, text)

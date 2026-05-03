@@ -1,6 +1,6 @@
 ---
-layout: index
 title: PickOneString
+nav_exclude: true
 ---
 
     PickOneString (string or stringlist)

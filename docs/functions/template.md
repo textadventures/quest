@@ -1,6 +1,6 @@
 ---
-layout: index
 title: Template
+nav_exclude: true
 ---
 
     Template (string template name)

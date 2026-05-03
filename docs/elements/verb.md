@@ -1,6 +1,6 @@
 ---
-layout: index
 title: verb element
+nav_exclude: true
 ---
 
     <verboptional name="name"optional pattern="pattern"optional unresolved="unresolved text"optional property="attribute name"optional response="default response text"optional template="template name">script</verb>

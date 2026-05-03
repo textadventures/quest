@@ -1,6 +1,6 @@
 ---
-layout: index
 title: set
+nav_exclude: true
 ---
 
     set (object, string attribute name, any type value)

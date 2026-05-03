@@ -1,6 +1,6 @@
 ---
-layout: index
 title: if
+nav_exclude: true
 ---
 
     if (boolean expression) { script } [ else if ... ]* [ else { script } ]

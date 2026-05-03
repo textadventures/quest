@@ -1,6 +1,6 @@
 ---
-layout: index
 title: PickOneChildOfType
+nav_exclude: true
 ---
 
     PickOneChildOfType (object room or container, string typename)

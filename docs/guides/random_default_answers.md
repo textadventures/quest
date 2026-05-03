@@ -1,6 +1,6 @@
 ---
-layout: index
 title: Random default answers
+nav_exclude: true
 ---
 
 The default answer of a command is defined in the language file. So if you want to change this text, you can copy the template(s) with the name “Default…” that you wish to modify into your game as described [here](../overriding.html).

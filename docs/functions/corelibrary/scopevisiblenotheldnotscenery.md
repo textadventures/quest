@@ -1,6 +1,6 @@
 ---
-layout: index
 title: ScopeVisibleNotHeldNotScenery
+nav_exclude: true
 ---
 
     ScopeVisibleNotHeldNotScenery ()

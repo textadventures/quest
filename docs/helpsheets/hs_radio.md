@@ -1,6 +1,6 @@
 ---
-layout: index
 title: Adding Music to a Radio
+nav_exclude: true
 ---
 
 

@@ -1,6 +1,7 @@
 ---
-layout: index
 title: Setting up a shop
+nav_order: 15
+parent: "How To"
 ---
 
 

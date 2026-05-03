@@ -1,6 +1,6 @@
 ---
-layout: index
 title: DisplayList
+nav_exclude: true
 ---
 
     DisplayList (list, boolean numbers)

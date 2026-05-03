@@ -1,6 +1,6 @@
 ---
-layout: index
 title: Spaces
+nav_exclude: true
 ---
 
     Spaces (int)

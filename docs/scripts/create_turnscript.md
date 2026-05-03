@@ -1,6 +1,6 @@
 ---
-layout: index
 title: create turnscript
+nav_exclude: true
 ---
 
     create turnscript (string name)

@@ -1,6 +1,6 @@
 ---
-layout: index
 title: “Key” Inside another Object
+nav_exclude: true
 ---
 
 

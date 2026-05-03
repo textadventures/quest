@@ -1,6 +1,6 @@
 ---
-layout: index
 title: ShowGrid
+nav_exclude: true
 ---
 
     JS.ShowGrid (int height)

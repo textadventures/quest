@@ -1,6 +1,6 @@
 ---
-layout: index
 title: FormatExitList
+nav_exclude: true
 ---
 
     FormatExitList (string pre-list, objectlist exits, string pre-final, string post-list)

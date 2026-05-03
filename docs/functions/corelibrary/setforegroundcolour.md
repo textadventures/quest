@@ -1,6 +1,6 @@
 ---
-layout: index
 title: SetForegroundColour
+nav_exclude: true
 ---
 
     SetForegroundColour(string colour)

@@ -1,6 +1,6 @@
 ---
-layout: index
 title: Join
+nav_exclude: true
 ---
 
     Join (stringlist input, string split character)

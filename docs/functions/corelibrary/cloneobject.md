@@ -1,6 +1,6 @@
 ---
-layout: index
 title: CloneObject
+nav_exclude: true
 ---
 
     CloneObject (object)

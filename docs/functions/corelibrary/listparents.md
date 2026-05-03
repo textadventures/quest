@@ -1,6 +1,6 @@
 ---
-layout: index
 title: ListParents
+nav_exclude: true
 ---
 
     ListParents (object)

@@ -1,6 +1,6 @@
 ---
-layout: index
 title: OutputText
+nav_exclude: true
 ---
 
     OutputText (string text)

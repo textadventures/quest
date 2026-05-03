@@ -1,6 +1,6 @@
 ---
-layout: index
 title: ObjectListCompact
+nav_exclude: true
 ---
 
     ObjectListCompact (objectlist list)

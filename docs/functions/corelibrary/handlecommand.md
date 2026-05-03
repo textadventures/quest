@@ -1,6 +1,6 @@
 ---
-layout: index
 title: HandleCommand
+nav_exclude: true
 ---
 
     HandleCommand (command)

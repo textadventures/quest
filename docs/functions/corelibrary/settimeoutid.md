@@ -1,6 +1,6 @@
 ---
-layout: index
 title: SetTimeoutID
+nav_exclude: true
 ---
 
     SetTimeoutID (integer interval, string name, script)

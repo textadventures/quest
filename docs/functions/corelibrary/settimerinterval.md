@@ -1,6 +1,6 @@
 ---
-layout: index
 title: SetTimerInterval
+nav_exclude: true
 ---
 
     SetTimerInterval (timer, interval)

@@ -1,6 +1,6 @@
 ---
-layout: index
 title: Eval
+nav_exclude: true
 ---
 
     Eval (string expression, dictionary parameters)

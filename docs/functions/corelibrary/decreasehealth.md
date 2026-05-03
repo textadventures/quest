@@ -1,6 +1,6 @@
 ---
-layout: index
 title: DecreaseHealth
+nav_exclude: true
 ---
 
     DecreaseHealth (integer amount)

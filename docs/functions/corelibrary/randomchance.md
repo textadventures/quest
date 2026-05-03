@@ -1,6 +1,6 @@
 ---
-layout: index
 title: RandomChance
+nav_exclude: true
 ---
 
     RandomChance (integer percentile)

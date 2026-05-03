@@ -1,6 +1,6 @@
 ---
-layout: index
 title: GetDisplayVerbs
+nav_exclude: true
 ---
 
     GetDisplayVerbs (object)

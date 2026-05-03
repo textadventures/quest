@@ -1,6 +1,6 @@
 ---
-layout: index
 title: GetVolume
+nav_exclude: true
 ---
 
     GetVolume (object, boolean inclusiveobject)

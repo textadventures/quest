@@ -1,6 +1,6 @@
 ---
-layout: index
 title: CapFirst
+nav_exclude: true
 ---
 
     CapFirst (input)

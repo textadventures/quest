@@ -1,6 +1,6 @@
 ---
-layout: index
 title: HasDouble
+nav_exclude: true
 ---
 
     HasDouble (object, string attribute name)

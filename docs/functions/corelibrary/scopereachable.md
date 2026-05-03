@@ -1,6 +1,6 @@
 ---
-layout: index
 title: ScopeReachable
+nav_exclude: true
 ---
 
     ScopeReachable ()

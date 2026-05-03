@@ -1,6 +1,6 @@
 ---
-layout: index
 title: Implementing components of an object
+nav_exclude: true
 ---
 
 Occasionally you would like the player to be able to interact with a component of an object, for example, a machine with a button on it. The player has to be able to press the button. If the machine cannot be moved, you can just have the button as scenery in the room, but what do we do for objects that can be carried around?

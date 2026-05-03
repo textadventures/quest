@@ -1,6 +1,6 @@
 ---
-layout: index
 title: StringDictionaryItem
+nav_exclude: true
 ---
 
     StringDictionaryItem (stringdictionary, string key)

@@ -1,6 +1,6 @@
 ---
-layout: index
 title: Conjugate
+nav_exclude: true
 ---
 
     Conjugate (object, string verb)

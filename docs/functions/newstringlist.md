@@ -1,6 +1,6 @@
 ---
-layout: index
 title: NewStringList
+nav_exclude: true
 ---
 
     NewStringList ()

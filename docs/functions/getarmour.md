@@ -1,6 +1,6 @@
 ---
-layout: index
 title: GetArmour
+nav_exclude: true
 ---
 
     GetArmour ()

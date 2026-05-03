@@ -1,6 +1,7 @@
 ---
-layout: index
 title: Custom Status Pane
+nav_order: 8
+parent: "User Experience"
 ---
 
 The Custom Status Pane is an extra pane you can add to those on the right, that you can use to show pretty much anything. A knowledge of HTML and CSS will be useful here.

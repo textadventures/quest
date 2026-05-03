@@ -1,6 +1,6 @@
 ---
-layout: index
 title: FilterByType
+nav_exclude: true
 ---
 
     FilterByType (objectlist list, string typename)

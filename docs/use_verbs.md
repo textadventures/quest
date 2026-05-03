@@ -1,6 +1,7 @@
 ---
-layout: index
 title: Use verbs
+nav_order: 7
+parent: "How to use commands"
 ---
 
 The Verb element

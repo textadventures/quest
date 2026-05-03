@@ -1,6 +1,6 @@
 ---
-layout: index
 title: article
+nav_exclude: true
 ---
 
 "article" is a [string](../types/string.html) attribute. In English games it is usually "it" for inanimate objects, or "him" or "her" for characters.

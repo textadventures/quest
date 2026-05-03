@@ -1,6 +1,6 @@
 ---
-layout: index
 title: ListItem
+nav_exclude: true
 ---
 
     ListItem (list, int index)

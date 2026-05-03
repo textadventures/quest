@@ -1,6 +1,7 @@
 ---
-layout: index
 title: Changing templates
+nav_order: 5
+parent: "Advanced Topics"
 ---
 
 <div class="alert alert-info">

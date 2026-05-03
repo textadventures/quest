@@ -1,6 +1,7 @@
 ---
-layout: index
 title: Editor User Interface Elements
+nav_order: 8
+parent: "Advanced Topics"
 ---
 
 Much of the Editor user interface is defined by the core library itself, and the sub-libraries linked via CoreEditor.aslx. Look at the CoreEditor\*.aslx files for examples on creating a user interface for a library.

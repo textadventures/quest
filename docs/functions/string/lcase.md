@@ -1,6 +1,6 @@
 ---
-layout: index
 title: LCase
+nav_exclude: true
 ---
 
     LCase (string input)

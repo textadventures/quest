@@ -1,6 +1,6 @@
 ---
-layout: index
 title: Mid
+nav_exclude: true
 ---
 
     Mid (string input, int start position)

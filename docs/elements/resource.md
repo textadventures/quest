@@ -1,6 +1,6 @@
 ---
-layout: index
 title: resource element
+nav_exclude: true
 ---
 
     <resource src="filename"/>

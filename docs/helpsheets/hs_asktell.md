@@ -1,6 +1,6 @@
 ---
-layout: index
 title: Ask and Tell
+nav_exclude: true
 ---
 
 *You can use Ask and Tell commands to interact with other objects in the game eg if you go into a room with a wizard, you could ask him questions and have answers programmed to come out?*

@@ -1,6 +1,6 @@
 ---
-layout: index
 title: setCss
+nav_exclude: true
 ---
 
     JS.setCss (string element name, string css styling)

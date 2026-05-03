@@ -1,6 +1,6 @@
 ---
-layout: index
 title: editor element
+nav_exclude: true
 ---
 
     <editor name="name">attributes</editor>

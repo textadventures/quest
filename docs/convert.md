@@ -1,6 +1,7 @@
 ---
-layout: index
 title: Converting One Thing Into Another
+nav_order: 13
+parent: "How To"
 ---
 
 

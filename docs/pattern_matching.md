@@ -1,6 +1,7 @@
 ---
-layout: index
 title: Pattern Matching with Regular Expressions
+nav_order: 5
+parent: "How to use commands"
 ---
 
 What exactly is a "regular expression"? It is a sort of string that can be used to match against another string. You could think of it as a template or a set of rules that a string can be compared to. Quest handles a regex as a string, but behind the scenes it converts that into a proper regex object deep in its workings.

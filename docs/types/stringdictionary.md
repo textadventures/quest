@@ -1,6 +1,6 @@
 ---
-layout: index
 title: Stringdictionary
+nav_exclude: true
 ---
 
 A stringdictionary is a dictionary where both keys and values are [strings](string.html).

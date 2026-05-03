@@ -1,6 +1,6 @@
 ---
-layout: index
 title: Replace
+nav_exclude: true
 ---
 
     Replace (string input, string old text, string new text)

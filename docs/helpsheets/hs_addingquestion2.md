@@ -1,6 +1,6 @@
 ---
-layout: index
 title: Adding a Yes/No Question to a Container
+nav_exclude: true
 ---
 
 *A key is inside a box but you have to answer the question correctly to get it – here is how*

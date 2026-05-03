@@ -1,6 +1,6 @@
 ---
-layout: index
 title: SetDark
+nav_exclude: true
 ---
 
     SetDark(room)

@@ -1,6 +1,6 @@
 ---
-layout: index
 title: IsDouble
+nav_exclude: true
 ---
 
     IsDouble (string number)

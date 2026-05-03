@@ -1,6 +1,6 @@
 ---
-layout: index
 title: FilterByAttribute
+nav_exclude: true
 ---
 
     FilterByAttribute (objectlist list, string attribute name, any value)

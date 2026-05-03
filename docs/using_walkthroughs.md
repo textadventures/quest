@@ -1,6 +1,7 @@
 ---
-layout: index
 title: Using walkthroughs
+nav_order: 1
+parent: "Advanced Topics"
 ---
 
 <div class="alert alert-info">

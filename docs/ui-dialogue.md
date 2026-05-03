@@ -1,6 +1,7 @@
 ---
-layout: index
 title: Adding a Dialogue Panel
+nav_order: 10
+parent: "User Experience"
 ---
 
 We are going to use JQuery/JavaScript together with HTML to build a dialogue panel. This could be used at the start of an RPG-style game to create the character, for example, and you can see what is possible [here](https://textadventures.co.uk/games/view/em15b32xd0o-y-ysvgrtcg/deeper).

@@ -1,6 +1,6 @@
 ---
-layout: index
 title: DictionaryRemove
+nav_exclude: true
 ---
 
     DictionaryRemove (dictionary, string key)

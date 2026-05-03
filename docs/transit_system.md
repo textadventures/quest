@@ -1,6 +1,7 @@
 ---
-layout: index
 title: How to Build a Transit System
+nav_order: 12
+parent: "How To"
 ---
 
 

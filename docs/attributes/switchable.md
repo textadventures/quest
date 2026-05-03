@@ -1,6 +1,6 @@
 ---
-layout: index
 title: switchable
+nav_exclude: true
 ---
 
 The "switchable" type is defined in CoreTypes.aslx.

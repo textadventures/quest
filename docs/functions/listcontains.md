@@ -1,6 +1,6 @@
 ---
-layout: index
 title: ListContains
+nav_exclude: true
 ---
 
     ListContains (list, any type item)

@@ -1,6 +1,6 @@
 ---
-layout: index
 title: finish
+nav_exclude: true
 ---
 
     finish

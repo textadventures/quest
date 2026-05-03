@@ -1,6 +1,7 @@
 ---
-layout: index
 title: Scopes
+nav_order: 7
+parent: "Coding With Quest"
 ---
 
 Core.aslx defines various "scope" functions. Each of these will return an object list (possible empty). Scope functions that end "ForRoom" must be given a room as a parameter (other functions will default to the current room).

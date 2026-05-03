@@ -1,6 +1,6 @@
 ---
-layout: index
 title: inherit element
+nav_exclude: true
 ---
 
     <inherit name="name"/>

@@ -1,6 +1,6 @@
 ---
-layout: index
 title: ScopeVisibleNotHeldForRoom
+nav_exclude: true
 ---
 
     ScopeVisibleNotHeldForRoom (room)

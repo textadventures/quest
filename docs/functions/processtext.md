@@ -1,6 +1,6 @@
 ---
-layout: index
 title: ProcessText
+nav_exclude: true
 ---
 
     ProcessText (string)

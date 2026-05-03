@@ -1,6 +1,7 @@
 ---
-layout: index
 title: Messing with the Location Bar
+nav_order: 7
+parent: "User Experience"
 ---
 
 _NOTE:_ Basic knowledge of HTML will be useful here.

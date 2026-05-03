@@ -1,6 +1,7 @@
 ---
-layout: index
 title: The UI and Game-play
+nav_order: 1
+parent: "User Experience"
 ---
 
 Quest offers a number of options for the player to interact with the game:

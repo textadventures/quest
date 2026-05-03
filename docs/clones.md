@@ -1,6 +1,7 @@
 ---
-layout: index
 title: Attack of the Clones!
+nav_order: 8
+parent: "Coding With Quest"
 ---
 
 

@@ -1,6 +1,6 @@
 ---
-layout: index
 title: AllTurnScripts
+nav_exclude: true
 ---
 
     AllTurnScripts()

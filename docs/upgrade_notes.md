@@ -1,6 +1,7 @@
 ---
-layout: index
 title: Upgrade Notes
+nav_order: 7
+parent: "Reference"
 ---
 
 Upgrading from Quest 5.4.1 to Quest 5.5

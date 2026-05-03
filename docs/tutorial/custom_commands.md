@@ -1,6 +1,7 @@
 ---
-layout: index
 title: Custom commands
+nav_order: 7
+parent: Tutorial
 ---
 
 In this section, we will add a **command** that lets the player "say" something, and another to "weigh" an object.

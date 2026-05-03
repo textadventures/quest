@@ -1,6 +1,6 @@
 ---
-layout: index
 title: SetBackgroundImage
+nav_exclude: true
 ---
 
     SetBackgroundImage (filename)

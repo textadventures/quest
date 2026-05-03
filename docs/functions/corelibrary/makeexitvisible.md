@@ -1,6 +1,6 @@
 ---
-layout: index
 title: MakeExitVisible
+nav_exclude: true
 ---
 
     MakeExitVisible (object)

@@ -1,6 +1,7 @@
 ---
-layout: index
 title: Followers
+nav_order: 1
+parent: "Characters (NPCs)"
 ---
 
 Occasionally it is useful to have one or more characters follow the player, whether a helpful companion, or an annoying foe. Or an annoying companion...

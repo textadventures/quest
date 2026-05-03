@@ -1,6 +1,7 @@
 ---
-layout: index
 title: Custom attributes
+nav_order: 6
+parent: Tutorial
 ---
 
 We'll now start creating things in the kitchen, where we'll look at some more of Quest's features.

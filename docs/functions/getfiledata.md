@@ -1,6 +1,6 @@
 ---
-layout: index
 title: GetFileData
+nav_exclude: true
 ---
 
     GetFileData (string file name)

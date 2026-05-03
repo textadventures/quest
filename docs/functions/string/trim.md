@@ -1,6 +1,6 @@
 ---
-layout: index
 title: Trim
+nav_exclude: true
 ---
 
     Trim (input)

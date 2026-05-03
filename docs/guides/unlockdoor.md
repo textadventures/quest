@@ -1,6 +1,6 @@
 ---
-layout: index
 title: Unlock with combination
+nav_exclude: true
 ---
 
 Here is an example of an exit that will be unlocked when the player inserts the right code.

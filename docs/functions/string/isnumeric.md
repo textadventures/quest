@@ -1,6 +1,6 @@
 ---
-layout: index
 title: IsNumeric
+nav_exclude: true
 ---
 
     IsNumeric (string input)

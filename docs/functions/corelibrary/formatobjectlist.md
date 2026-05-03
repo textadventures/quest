@@ -1,6 +1,6 @@
 ---
-layout: index
 title: FormatObjectList
+nav_exclude: true
 ---
 
     FormatObjectList (string pre-list, object parent, string pre-final, string post-list, boolean use inventory verbs)

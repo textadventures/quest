@@ -1,6 +1,6 @@
 ---
-layout: index
 title: SetTurnScript
+nav_exclude: true
 ---
 
     SetTurnScript (turn script, script)

@@ -1,6 +1,6 @@
 ---
-layout: index
 title: take
+nav_exclude: true
 ---
 
 "take" is an attribute that can be either [boolean](../types/boolean.html) or [script](../types/script.html).

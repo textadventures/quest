@@ -1,6 +1,6 @@
 ---
-layout: index
 title: PickOneChild
+nav_exclude: true
 ---
 
     PickOneChild (object room or container)

@@ -1,6 +1,6 @@
 ---
-layout: index
 title: Grid_DrawImage
+nav_exclude: true
 ---
 
     Grid_DrawImage (string id, string url, int x, int y, int width, int height)

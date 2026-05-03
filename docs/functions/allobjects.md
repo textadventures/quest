@@ -1,6 +1,6 @@
 ---
-layout: index
 title: AllObjects
+nav_exclude: true
 ---
 
     AllObjects()

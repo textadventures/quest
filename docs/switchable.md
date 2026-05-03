@@ -1,6 +1,7 @@
 ---
-layout: index
 title: Items that can be switched on and off
+nav_order: 4
+parent: "Features"
 ---
 
 In a world of electronic goods, items that can be turned on and off are very common. How would you implement that in Quest?

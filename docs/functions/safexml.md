@@ -1,6 +1,6 @@
 ---
-layout: index
 title: SafeXML
+nav_exclude: true
 ---
 
     SafeXML (string)

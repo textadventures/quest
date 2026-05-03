@@ -1,6 +1,6 @@
 ---
-layout: index
 title: on ready
+nav_exclude: true
 ---
 
     on ready { script } 

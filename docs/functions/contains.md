@@ -1,6 +1,6 @@
 ---
-layout: index
 title: Contains
+nav_exclude: true
 ---
 
     Contains (object parent, object child)

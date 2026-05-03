@@ -1,6 +1,6 @@
 ---
-layout: index
 title: ObjectListToStringList
+nav_exclude: true
 ---
 
     ObjectListToStringList (objectlist list, string attribute name)

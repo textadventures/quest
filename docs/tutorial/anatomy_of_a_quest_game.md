@@ -1,6 +1,7 @@
 ---
-layout: index
 title: Anatomy of a Quest game
+nav_order: 4
+parent: Tutorial
 ---
 
 Every Quest game is made up of the following parts. Here are the main ones:

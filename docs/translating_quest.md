@@ -1,6 +1,7 @@
 ---
-layout: index
 title: Translating Quest
+nav_order: 6
+parent: "Advanced Topics"
 ---
 
 Introduction

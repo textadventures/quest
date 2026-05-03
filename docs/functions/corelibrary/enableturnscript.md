@@ -1,6 +1,6 @@
 ---
-layout: index
 title: EnableTurnScript
+nav_exclude: true
 ---
 
     EnableTurnScript (turn script)

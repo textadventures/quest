@@ -1,6 +1,6 @@
 ---
-layout: index
 title: StringListSort
+nav_exclude: true
 ---
 
     StringListSort (stringlist list)

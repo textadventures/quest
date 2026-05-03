@@ -1,6 +1,7 @@
 ---
-layout: index
 title: How to use verbs
+nav_order: 2
+parent: "How to use commands"
 ---
 
 

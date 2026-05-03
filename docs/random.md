@@ -1,6 +1,7 @@
 ---
-layout: index
 title: Randomisation
+nav_order: 20
+parent: "How To"
 ---
 
 

@@ -1,6 +1,7 @@
 ---
-layout: index
 title: Using Lists
+nav_order: 4
+parent: "Coding With Quest"
 ---
 
 

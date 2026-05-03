@@ -1,6 +1,6 @@
 ---
-layout: index
 title: DictionaryContains
+nav_exclude: true
 ---
 
     DictionaryContains (dictionary, string key)

@@ -1,6 +1,6 @@
 ---
-layout: index
 title: EndsWith
+nav_exclude: true
 ---
 
     EndsWith (string input, string ending)

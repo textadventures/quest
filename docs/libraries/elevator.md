@@ -1,6 +1,7 @@
 ---
-layout: index
 title: Elevator
+nav_order: 2
+parent: "Other Guides"
 ---
 
 Created by jaynabonne

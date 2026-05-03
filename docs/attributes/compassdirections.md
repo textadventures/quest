@@ -1,6 +1,6 @@
 ---
-layout: index
 title: compassdirections
+nav_exclude: true
 ---
 
 "compassdirections" is a [stringlist](../types/stringlist.html) attribute, specifying the names of the compass directions (north, south etc.)

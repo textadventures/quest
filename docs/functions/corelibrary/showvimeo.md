@@ -1,6 +1,6 @@
 ---
-layout: index
 title: ShowVimeo
+nav_exclude: true
 ---
 
     ShowVimeo(string id)

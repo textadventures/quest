@@ -1,6 +1,6 @@
 ---
-layout: index
 title: Grid_ClearCustomLayer
+nav_exclude: true
 ---
 
     Grid_ClearCustomLayer ()

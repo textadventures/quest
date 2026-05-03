@@ -1,6 +1,6 @@
 ---
-layout: index
 title: DisplayMailtoLink
+nav_exclude: true
 ---
 
     DisplayMailtoLink(string displaylink, string email)

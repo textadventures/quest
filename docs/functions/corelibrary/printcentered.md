@@ -1,6 +1,6 @@
 ---
-layout: index
 title: PrintCentered
+nav_exclude: true
 ---
 
     PrintCentered(string text)

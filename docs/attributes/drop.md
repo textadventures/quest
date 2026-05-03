@@ -1,6 +1,6 @@
 ---
-layout: index
 title: drop
+nav_exclude: true
 ---
 
 "drop" is an attribute that can be either [boolean](../types/boolean.html) or [script](../types/script.html).

@@ -1,6 +1,6 @@
 ---
-layout: index
 title: IsGameRunning
+nav_exclude: true
 ---
 
     IsGameRunning ()

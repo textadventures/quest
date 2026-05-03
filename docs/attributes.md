@@ -1,6 +1,7 @@
 ---
-layout: index
 title: Attributes
+nav_order: 5
+has_children: true
 ---
 
 Attributes help to describe an object to the game world and users of Quest, attributes can be added to an [object](types/object.html) and can be of any type supported by Quest.

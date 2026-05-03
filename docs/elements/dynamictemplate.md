@@ -1,6 +1,6 @@
 ---
-layout: index
 title: dynamictemplate element
+nav_exclude: true
 ---
 
     <dynamictemplate name="name">expression</template>

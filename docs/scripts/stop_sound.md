@@ -1,6 +1,6 @@
 ---
-layout: index
 title: stop sound
+nav_exclude: true
 ---
 
     stop sound

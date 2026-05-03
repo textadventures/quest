@@ -1,6 +1,7 @@
 ---
-layout: index
 title: Configuring Quest
+nav_order: 18
+parent: "Reference"
 ---
 
 Quest's Options window lets you show or hide the "Adult" category.

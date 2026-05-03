@@ -1,6 +1,6 @@
 ---
-layout: index
 title: CanReachThrough
+nav_exclude: true
 ---
 
     CanReachThrough (object)

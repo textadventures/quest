@@ -1,6 +1,6 @@
 ---
-layout: index
 title: GetAllChildObjects
+nav_exclude: true
 ---
 
     GetAllChildObjects (object)

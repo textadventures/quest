@@ -1,6 +1,6 @@
 ---
-layout: index
 title: picture
+nav_exclude: true
 ---
 
     picture (string filename)

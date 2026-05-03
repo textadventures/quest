@@ -1,6 +1,7 @@
 ---
-layout: index
 title: Creating Images on the Fly
+nav_order: 2
+parent: "Multi-media"
 ---
 
 

@@ -1,6 +1,7 @@
 ---
-layout: index
 title: Use functions
+nav_order: 23
+parent: "How To"
 ---
 
 If you want to run the same script from different places, you can use functions. Let us say you have a futuristic city, and the player can teleport between any of several points. Each time he teleports, you want to charge him, and give a little description. The first time, you want to give a longer description, but you do not know which route that will be.

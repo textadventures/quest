@@ -1,6 +1,6 @@
 ---
-layout: index
 title: Grid_LoadSvg
+nav_exclude: true
 ---
 
     Grid_LoadSvg (string data, string id)

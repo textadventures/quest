@@ -1,6 +1,6 @@
 ---
-layout: index
 title: ListWornFor
+nav_exclude: true
 ---
 
     ListWornFor (object character)

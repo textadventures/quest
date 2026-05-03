@@ -1,6 +1,6 @@
 ---
-layout: index
 title: invoke
+nav_exclude: true
 ---
 
     invoke (script)

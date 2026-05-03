@@ -1,6 +1,6 @@
 ---
-layout: index
 title: defaultobject
+nav_exclude: true
 ---
 
 The "defaultobject" type is defined in CoreTypes.aslx. It is automatically inherited by all objects so there is no need to inherit this directly.

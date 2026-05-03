@@ -1,6 +1,6 @@
 ---
-layout: index
 title: walkthrough element
+nav_exclude: true
 ---
 
     <walkthrough name="name" > <steps>steps</steps> </walkthrough>

@@ -1,6 +1,7 @@
 ---
-layout: index
 title: Commands Specific to a Room
+nav_order: 1
+parent: "How to use commands"
 ---
 
 

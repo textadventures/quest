@@ -1,6 +1,6 @@
 ---
-layout: index
 title: Right
+nav_exclude: true
 ---
 
     Right (string input, int character count)

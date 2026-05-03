@@ -1,6 +1,6 @@
 ---
-layout: index
 title: implied element
+nav_exclude: true
 ---
 
     <implied element="element" property="attribute name" type="type"/>

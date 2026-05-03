@@ -1,6 +1,6 @@
 ---
-layout: index
 title: ScopeVisibleNotReachable
+nav_exclude: true
 ---
 
     ScopeVisibleNotReachable ()

@@ -1,6 +1,6 @@
 ---
-layout: index
 title: control element
+nav_exclude: true
 ---
 
     <control>nameattributes</control>

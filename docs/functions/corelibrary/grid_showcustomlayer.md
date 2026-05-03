@@ -1,6 +1,6 @@
 ---
-layout: index
 title: Grid ShowCustomLayer
+nav_exclude: true
 ---
 
     Grid ShowCustomLayer (boolean visible)

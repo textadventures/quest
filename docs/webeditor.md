@@ -1,6 +1,7 @@
 ---
-layout: index
 title: WebEditor
+nav_order: 5
+parent: "Reference"
 ---
 
 The on-line web editor is very much like the desktop or off-line version, but with a few important differences.

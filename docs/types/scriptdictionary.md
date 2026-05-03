@@ -1,6 +1,6 @@
 ---
-layout: index
 title: Scriptdictionary
+nav_exclude: true
 ---
 
 A scriptdictionary is a dictionary which has [string](string.html) keys and [script](script.html) values.

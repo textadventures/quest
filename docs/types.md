@@ -1,6 +1,7 @@
 ---
-layout: index
 title: Types
+nav_order: 33
+parent: "Reference"
 ---
 
 Overview

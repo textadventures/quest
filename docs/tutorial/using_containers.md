@@ -1,6 +1,7 @@
 ---
-layout: index
 title: Using containers
+nav_order: 9
+parent: Tutorial
 ---
 
 Containers are objects that can contain other objects. In this example, we'll create a "fridge" object in the kitchen, which contains several items of food and drink. The fridge is initially closed, so these items will only be visible once the player has opened the fridge.

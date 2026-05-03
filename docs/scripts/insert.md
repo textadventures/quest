@@ -1,6 +1,6 @@
 ---
-layout: index
 title: insert
+nav_exclude: true
 ---
 
     insert (string filename)

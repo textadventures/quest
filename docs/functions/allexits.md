@@ -1,6 +1,6 @@
 ---
-layout: index
 title: AllExits
+nav_exclude: true
 ---
 
     AllExits()

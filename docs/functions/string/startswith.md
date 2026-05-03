@@ -1,6 +1,6 @@
 ---
-layout: index
 title: StartsWith
+nav_exclude: true
 ---
 
     StartsWith (string input, string start)

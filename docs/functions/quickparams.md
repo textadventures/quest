@@ -1,6 +1,6 @@
 ---
-layout: index
 title: QuickParams
+nav_exclude: true
 ---
 
     QuickParams (string key1, any type value1)

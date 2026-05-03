@@ -1,6 +1,6 @@
 ---
-layout: index
 title: PadString
+nav_exclude: true
 ---
 
     PadString (string input, int length, string pad)

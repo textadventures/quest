@@ -1,6 +1,6 @@
 ---
-layout: index
 title: scrollToEnd
+nav_exclude: true
 ---
 
     JS.scrollToEnd ()

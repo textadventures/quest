@@ -1,6 +1,6 @@
 ---
-layout: index
 title: firstenter
+nav_exclude: true
 ---
 
 "firstenter" is a [script](../types/script.html) attribute. It is run the first time that a player enters an object (room), *after* the room description is printed.

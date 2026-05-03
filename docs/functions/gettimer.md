@@ -1,6 +1,6 @@
 ---
-layout: index
 title: GetTimer
+nav_exclude: true
 ---
 
     GetTimer (string timer name)

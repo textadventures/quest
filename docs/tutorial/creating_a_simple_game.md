@@ -1,6 +1,7 @@
 ---
-layout: index
 title: Creating a simple game
+nav_order: 2
+parent: Tutorial
 ---
 
 This tutorial is applicable to both the Windows desktop version of Quest, and the web version. Any differences in the two versions will be mentioned as we go along. 

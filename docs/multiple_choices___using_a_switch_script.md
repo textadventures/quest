@@ -1,6 +1,7 @@
 ---
-layout: index
 title: Multiple choices - using a switch script
+nav_order: 4
+parent: "How To"
 ---
 
 A `switch` is like an `if` script, but it caters for more options without you having to to add a load of `else if` entries.

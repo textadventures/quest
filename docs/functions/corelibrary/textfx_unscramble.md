@@ -1,6 +1,6 @@
 ---
-layout: index
 title: TextFX_Unscramble
+nav_exclude: true
 ---
 
     TextFX_Unscramble(text, int speed, int reveal)

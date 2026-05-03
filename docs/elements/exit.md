@@ -1,6 +1,6 @@
 ---
-layout: index
 title: exit element
+nav_exclude: true
 ---
 
     <exit alias="direction or displayed exit name" name="name" to="to room">attributes</exit>

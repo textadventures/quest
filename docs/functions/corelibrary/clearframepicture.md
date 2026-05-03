@@ -1,6 +1,6 @@
 ---
-layout: index
 title: ClearFramePicture
+nav_exclude: true
 ---
 
     ClearFramePicture

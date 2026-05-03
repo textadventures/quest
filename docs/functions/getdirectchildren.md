@@ -1,6 +1,6 @@
 ---
-layout: index
 title: GetDirectChildren
+nav_exclude: true
 ---
 
     GetDirectChildren (object)

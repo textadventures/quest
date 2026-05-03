@@ -1,6 +1,7 @@
 ---
-layout: index
 title: Introduction to coding with Quest
+nav_order: 1
+parent: "How To"
 ---
 
 

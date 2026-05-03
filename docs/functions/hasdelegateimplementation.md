@@ -1,6 +1,6 @@
 ---
-layout: index
 title: HasDelegateImplementation
+nav_exclude: true
 ---
 
     HasDelegateImplementation (object, string attribute name)

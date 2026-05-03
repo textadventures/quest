@@ -1,6 +1,7 @@
 ---
-layout: index
 title: Wearable items
+nav_order: 6
+parent: "Features"
 ---
 
 A common feature of text adventures is items that can be worn.

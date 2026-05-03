@@ -1,6 +1,6 @@
 ---
-layout: index
 title: turnscript element
+nav_exclude: true
 ---
 
     <turnscript name="name">attributes</turnscript>

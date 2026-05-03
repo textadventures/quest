@@ -1,6 +1,6 @@
 ---
-layout: index
 title: CanSeeThrough
+nav_exclude: true
 ---
 
     CanSeeThrough (object)

@@ -1,6 +1,6 @@
 ---
-layout: index
 title: giveto
+nav_exclude: true
 ---
 
 "giveto" is an attribute that can be either a [scriptdictionary](../types/scriptdictionary.html) or [string](../types/string.html).

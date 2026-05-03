@@ -1,6 +1,6 @@
 ---
-layout: index
 title: updateStatus
+nav_exclude: true
 ---
 
     JS.updateStatus(string text)

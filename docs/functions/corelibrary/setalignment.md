@@ -1,6 +1,6 @@
 ---
-layout: index
 title: SetAlignment
+nav_exclude: true
 ---
 
     SetAlignment(string alignment)

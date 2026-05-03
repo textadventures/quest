@@ -1,6 +1,6 @@
 ---
-layout: index
 title: function element
+nav_exclude: true
 ---
 
     <function name="name"optional type="type"optional parameters="parameters">script</function>

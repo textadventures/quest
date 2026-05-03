@@ -1,6 +1,6 @@
 ---
-layout: index
 title: ClearScreen
+nav_exclude: true
 ---
 
     ClearScreen

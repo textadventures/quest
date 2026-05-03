@@ -1,6 +1,6 @@
 ---
-layout: index
 title: game element
+nav_exclude: true
 ---
 
     <game name="name">properties</game>

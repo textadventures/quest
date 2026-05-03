@@ -1,6 +1,6 @@
 ---
-layout: index
 title: ScopeReachableForRoom
+nav_exclude: true
 ---
 
     ScopeReachableForRoom (room)

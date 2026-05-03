@@ -1,6 +1,6 @@
 ---
-layout: index
 title: Grid_DrawSquare
+nav_exclude: true
 ---
 
     Grid_DrawSquare (string id, int x, int y, int width, int height, string text, string fill)

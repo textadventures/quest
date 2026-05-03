@@ -1,6 +1,7 @@
 ---
-layout: index
 title: Complex commands
+nav_order: 3
+parent: "How to use commands"
 ---
 
 So you want to use THIS with THAT? what is the best way to handle it?

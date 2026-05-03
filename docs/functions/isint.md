@@ -1,6 +1,6 @@
 ---
-layout: index
 title: IsInt
+nav_exclude: true
 ---
 
     IsInt (string number)

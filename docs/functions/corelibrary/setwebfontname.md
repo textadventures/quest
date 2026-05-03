@@ -1,6 +1,6 @@
 ---
-layout: index
 title: SetWebFontName
+nav_exclude: true
 ---
 
     SetWebFontName(string fontname)

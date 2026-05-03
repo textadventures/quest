@@ -1,6 +1,6 @@
 ---
-layout: index
 title: GetOuterFor
+nav_exclude: true
 ---
 
     GetOuterFor (object character, string slot)

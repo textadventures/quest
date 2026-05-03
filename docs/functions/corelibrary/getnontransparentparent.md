@@ -1,6 +1,6 @@
 ---
-layout: index
 title: GetNonTransparentParent
+nav_exclude: true
 ---
 
     GetNonTransparentParent (object)

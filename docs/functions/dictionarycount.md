@@ -1,6 +1,6 @@
 ---
-layout: index
 title: DictionaryCount
+nav_exclude: true
 ---
 
     DictionaryCount (dictionary)

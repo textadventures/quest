@@ -1,6 +1,7 @@
 ---
-layout: index
 title: Custom Command Panes
+nav_order: 4
+parent: "User Experience"
 ---
 
 Quest allows the player to click and object and then click on an associated verb, without typing anything. A custom command pane allows the player to click on simple one-word commands, such as WAIT and LOOK.

@@ -1,6 +1,6 @@
 ---
-layout: index
 title: Developers
+nav_order: 15
 ---
 
 Join In

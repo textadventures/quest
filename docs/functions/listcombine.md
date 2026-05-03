@@ -1,6 +1,6 @@
 ---
-layout: index
 title: ListCombine
+nav_exclude: true
 ---
 
     ListCombine (list, list)

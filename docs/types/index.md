@@ -1,6 +1,7 @@
 ---
-layout: index
 title: Attribute Types
+nav_order: 24
+parent: "Reference"
 ---
 
 Variables and object attributes can be any of the following types:

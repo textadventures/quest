@@ -1,6 +1,6 @@
 ---
-layout: index
 title: SetTimeout
+nav_exclude: true
 ---
 
     SetTimeout (interval, script)

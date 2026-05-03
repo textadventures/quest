@@ -1,6 +1,6 @@
 ---
-layout: index
 title: Grid_AddNewShapePoint
+nav_exclude: true
 ---
 
     Grid_AddNewShapePoint (int x, int y)

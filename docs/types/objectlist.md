@@ -1,6 +1,6 @@
 ---
-layout: index
 title: Objectlist
+nav_exclude: true
 ---
 
 An objectlist is a [list](list.html) that can contain any number of elements, all of which have to be of type [object](object.html).

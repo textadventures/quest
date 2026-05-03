@@ -1,6 +1,7 @@
 ---
-layout: index
 title: Handling water
+nav_order: 6
+parent: "How To"
 ---
 
 There is more than one way to do this, but this is what I recommend. This will involve setting attributes, so you will struggle with the on-line editor, but it is certainly doable!

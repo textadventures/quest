@@ -1,6 +1,6 @@
 ---
-layout: index
 title: ListCount
+nav_exclude: true
 ---
 
     ListCount (list)

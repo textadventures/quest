@@ -1,6 +1,6 @@
 ---
-layout: index
 title: CheckDarkness
+nav_exclude: true
 ---
 
     CheckDarkness()

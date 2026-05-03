@@ -1,6 +1,6 @@
 ---
-layout: index
 title: SetLight
+nav_exclude: true
 ---
 
     SetLight(room)

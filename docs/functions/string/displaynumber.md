@@ -1,6 +1,6 @@
 ---
-layout: index
 title: DisplayNumber
+nav_exclude: true
 ---
 
     DisplayNumber (int input, string format)

@@ -1,6 +1,6 @@
 ---
-layout: index
 title: foreach
+nav_exclude: true
 ---
 
     foreach (iterator variable, list) { script }

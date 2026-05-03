@@ -1,6 +1,6 @@
 ---
-layout: index
 title: AllCommands
+nav_exclude: true
 ---
 
     AllCommands()

@@ -1,6 +1,6 @@
 ---
-layout: index
 title: setCommands
+nav_exclude: true
 ---
 
     JS.setCommands(string commands, string colour)

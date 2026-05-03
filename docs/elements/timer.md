@@ -1,6 +1,6 @@
 ---
-layout: index
 title: timer element
+nav_exclude: true
 ---
 
     <timer name="name">attributes</timer>

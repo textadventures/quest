@@ -1,6 +1,6 @@
 ---
-layout: index
 title: RTrim
+nav_exclude: true
 ---
 
     RTrim (input)

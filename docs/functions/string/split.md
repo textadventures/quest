@@ -1,6 +1,6 @@
 ---
-layout: index
 title: Split
+nav_exclude: true
 ---
 
     Split (string input, string split character)

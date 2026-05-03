@@ -1,6 +1,6 @@
 ---
-layout: index
 title: EnableTimer
+nav_exclude: true
 ---
 
     EnableTimer (timer)

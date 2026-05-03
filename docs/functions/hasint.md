@@ -1,6 +1,6 @@
 ---
-layout: index
 title: HasInt
+nav_exclude: true
 ---
 
     HasInt (object, string attribute name)

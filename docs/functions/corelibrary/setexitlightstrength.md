@@ -1,6 +1,6 @@
 ---
-layout: index
 title: SetExitLightstrength
+nav_exclude: true
 ---
 
     SetExitLightstrength(exit, string value)

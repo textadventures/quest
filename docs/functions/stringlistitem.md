@@ -1,6 +1,6 @@
 ---
-layout: index
 title: StringListItem
+nav_exclude: true
 ---
 
     StringListItem (stringlist, int index)

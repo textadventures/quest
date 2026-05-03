@@ -1,6 +1,7 @@
 ---
-layout: index
 title: Libraries
+nav_order: 1
+parent: "Other Guides"
 ---
 
 For general information on libraries, see [Using Libraries](libraries.html).

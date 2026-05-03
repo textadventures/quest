@@ -1,6 +1,7 @@
 ---
-layout: index
 title: Editing in Full Code View
+nav_order: 14
+parent: "Reference"
 ---
 
 

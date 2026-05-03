@@ -1,6 +1,6 @@
 ---
-layout: index
 title: lightstrength
+nav_exclude: true
 ---
 
 "lightstrength" is a [string](../types/string.html) attribute specifying the level of illumination this object provides.

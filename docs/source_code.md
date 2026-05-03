@@ -1,6 +1,7 @@
 ---
-layout: index
 title: Quest Source Code
+nav_order: 21
+parent: "Reference"
 ---
 
 

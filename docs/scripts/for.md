@@ -1,6 +1,6 @@
 ---
-layout: index
 title: for
+nav_exclude: true
 ---
 
     for (iterator variable, int from, int to) { script }

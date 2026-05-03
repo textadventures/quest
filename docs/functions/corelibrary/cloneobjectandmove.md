@@ -1,6 +1,6 @@
 ---
-layout: index
 title: CloneObjectAndMove
+nav_exclude: true
 ---
 
     CloneObjectAndMove (object, object new parent)

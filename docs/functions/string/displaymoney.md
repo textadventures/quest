@@ -1,6 +1,6 @@
 ---
-layout: index
 title: DisplayMoney
+nav_exclude: true
 ---
 
     DisplayMoney (int money)

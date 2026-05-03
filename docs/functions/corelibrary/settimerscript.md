@@ -1,6 +1,6 @@
 ---
-layout: index
 title: SetTimerScript
+nav_exclude: true
 ---
 
     SetTimerScript (timer, script)

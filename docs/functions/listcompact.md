@@ -1,6 +1,6 @@
 ---
-layout: index
 title: ListCompact
+nav_exclude: true
 ---
 
     ListCompact (any list list)

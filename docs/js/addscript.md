@@ -1,6 +1,6 @@
 ---
-layout: index
 title: addScript
+nav_exclude: true
 ---
 
     JS.addScript (string text)

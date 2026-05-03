@@ -1,6 +1,6 @@
 ---
-layout: index
 title: DiceRoll
+nav_exclude: true
 ---
 
     DiceRoll (string dicetype)

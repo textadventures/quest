@@ -1,6 +1,7 @@
 ---
-layout: index
 title: Using Tabs for Types
+nav_order: 4
+parent: "Advanced Topics"
 ---
 
 <div class="alert alert-info">

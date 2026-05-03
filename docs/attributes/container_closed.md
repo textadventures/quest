@@ -1,6 +1,6 @@
 ---
-layout: index
 title: container_closed
+nav_exclude: true
 ---
 
 The "container\_closed" type is defined in CoreTypes.aslx. It implements a closed container.

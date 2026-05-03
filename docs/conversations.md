@@ -1,6 +1,7 @@
 ---
-layout: index
 title: Introduction to Conversations
+nav_order: 2
+parent: "Characters (NPCs)"
 ---
 
 This page is a guide to the issues involved, and is general to all interactive fiction.

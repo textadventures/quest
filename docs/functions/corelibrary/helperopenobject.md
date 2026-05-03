@@ -1,6 +1,6 @@
 ---
-layout: index
 title: HelperOpenObject
+nav_exclude: true
 ---
 
     HelperOpenObject (object)

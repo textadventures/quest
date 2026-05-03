@@ -1,6 +1,6 @@
 ---
-layout: index
 title: GetDefiniteName
+nav_exclude: true
 ---
 
     GetDefiniteName (object)

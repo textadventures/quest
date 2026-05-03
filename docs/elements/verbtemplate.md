@@ -1,6 +1,6 @@
 ---
-layout: index
 title: verbtemplate element
+nav_exclude: true
 ---
 
     <verbtemplate name="name">text</template>

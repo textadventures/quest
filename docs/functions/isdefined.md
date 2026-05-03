@@ -1,6 +1,6 @@
 ---
-layout: index
 title: IsDefined
+nav_exclude: true
 ---
 
     IsDefined (string variable name)

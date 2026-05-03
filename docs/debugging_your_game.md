@@ -1,6 +1,7 @@
 ---
-layout: index
 title: Debugging your game
+nav_order: 9
+parent: "Advanced Topics"
 ---
 
 <div class="alert alert-info">

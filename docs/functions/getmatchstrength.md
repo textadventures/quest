@@ -1,6 +1,6 @@
 ---
-layout: index
 title: GetMatchStrength
+nav_exclude: true
 ---
 
     GetMatchStrength (string regex, string input)

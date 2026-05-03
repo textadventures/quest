@@ -1,6 +1,6 @@
 ---
-layout: index
 title: GetInt
+nav_exclude: true
 ---
 
     GetInt (object, string attribute name)

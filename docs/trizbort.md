@@ -1,6 +1,7 @@
 ---
-layout: index
 title: Creating with Trizbort and Quest
+nav_order: 1
+parent: "Reference"
 ---
 
 

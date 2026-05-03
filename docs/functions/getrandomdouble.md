@@ -1,6 +1,6 @@
 ---
-layout: index
 title: GetRandomDouble
+nav_exclude: true
 ---
 
     GetRandomDouble ()

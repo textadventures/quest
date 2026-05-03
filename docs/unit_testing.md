@@ -1,6 +1,7 @@
 ---
-layout: index
 title: Unit Testing
+nav_order: 22
+parent: "Reference"
 ---
 
 Unit testing is a standard procedure in software development; the coder makes an _assertion_ about what is expected from a section of code.

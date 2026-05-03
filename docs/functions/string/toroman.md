@@ -1,6 +1,6 @@
 ---
-layout: index
 title: ToRoman
+nav_exclude: true
 ---
 
     ToRoman (int)

@@ -1,6 +1,6 @@
 ---
-layout: index
 title: while
+nav_exclude: true
 ---
 
     while (expression) { script }

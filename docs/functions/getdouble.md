@@ -1,6 +1,6 @@
 ---
-layout: index
 title: GetDouble
+nav_exclude: true
 ---
 
     GetDouble (object, string attribute name)

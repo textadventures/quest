@@ -1,6 +1,7 @@
 ---
-layout: index
 title: More on Attributes
+nav_order: 1
+parent: "Attributes"
 ---
 
 

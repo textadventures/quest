@@ -1,6 +1,7 @@
 ---
-layout: index
 title: Advanced game scripts
+nav_order: 9
+parent: "Coding With Quest"
 ---
 
 This file describes some new features for Quest 5.7. These are called advanced scripts for a reason, and will be of no interest to many users. You will need to turn the feature on by ticking it on the _Features_ tab of the game object. If you are using these scripts, it is assumed you are reasonably comfortable looking at code.

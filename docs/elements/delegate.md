@@ -1,6 +1,6 @@
 ---
-layout: index
 title: delegate element
+nav_exclude: true
 ---
 
     <delegate name="name"optional type="type"optional parameters="parameters">properties</delegate>

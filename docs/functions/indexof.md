@@ -1,6 +1,6 @@
 ---
-layout: index
 title: IndexOf
+nav_exclude: true
 ---
 
     IndexOf (list, anything)

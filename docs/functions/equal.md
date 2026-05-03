@@ -1,6 +1,6 @@
 ---
-layout: index
 title: Equal
+nav_exclude: true
 ---
 
     Equal (value, value)

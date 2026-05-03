@@ -1,6 +1,7 @@
 ---
-layout: index
 title: Tracking Time
+nav_order: 14
+parent: "How To"
 ---
 
 This describes how you can track the passage of time in your game. If you are using the desktop version, you may prefer to use the [Clock Library](https://github.com/ThePix/quest/wiki/Clock-Library), which has a lot of extra functionality for timetabling events. What is described here is a simpler version, which is also suitable for the web version.

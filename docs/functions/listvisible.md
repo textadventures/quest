@@ -1,6 +1,6 @@
 ---
-layout: index
 title: ListVisible
+nav_exclude: true
 ---
 
     ListVisible ()

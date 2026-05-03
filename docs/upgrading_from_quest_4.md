@@ -1,6 +1,7 @@
 ---
-layout: index
 title: Upgrading from Quest 4
+nav_order: 30
+parent: "Reference"
 ---
 
 Backwards compatibility

@@ -1,6 +1,6 @@
 ---
-layout: index
 title: library element
+nav_exclude: true
 ---
 
     <library>all library content</library>

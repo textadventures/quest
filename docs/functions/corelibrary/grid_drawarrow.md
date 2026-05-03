@@ -1,6 +1,6 @@
 ---
-layout: index
 title: Grid_DrawArrow
+nav_exclude: true
 ---
 
     Grid_DrawArrow (string id, int x1, int y1, int x2, int y2, string border, int borderwidth)

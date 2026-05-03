@@ -1,6 +1,6 @@
 ---
-layout: index
 title: HasString
+nav_exclude: true
 ---
 
     HasString (object, string attribute name)

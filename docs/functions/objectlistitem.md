@@ -1,6 +1,6 @@
 ---
-layout: index
 title: ObjectListItem
+nav_exclude: true
 ---
 
     ObjectListItem (objectlist, int index)

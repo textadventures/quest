@@ -1,6 +1,7 @@
 ---
-layout: index
 title: Path library
+nav_order: 3
+parent: "Other Guides"
 ---
 
 Created by jaynabonne

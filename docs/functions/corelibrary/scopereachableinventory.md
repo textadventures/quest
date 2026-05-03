@@ -1,6 +1,6 @@
 ---
-layout: index
 title: ScopeReachableInventory
+nav_exclude: true
 ---
 
     ScopeReachableInventory ()

@@ -1,6 +1,6 @@
 ---
-layout: index
 title: GetDisplayNameLink
+nav_exclude: true
 ---
 
 For Quest 5.3 and earlier:

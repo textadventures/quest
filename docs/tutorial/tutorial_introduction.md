@@ -1,6 +1,7 @@
 ---
-layout: index
 title: Tutorial Introduction
+nav_order: 1
+parent: Tutorial
 ---
 
 Introduction

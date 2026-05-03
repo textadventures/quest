@@ -1,6 +1,6 @@
 ---
-layout: index
 title: setCustomStatus
+nav_exclude: true
 ---
 
     JS.setCustomStatus(string html)

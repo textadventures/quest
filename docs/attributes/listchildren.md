@@ -1,6 +1,6 @@
 ---
-layout: index
 title: listchildren
+nav_exclude: true
 ---
 
 "listchildren" is a [boolean](../types/boolean.html) attribute, specifying whether to list child objects when this object is looked at or opened.

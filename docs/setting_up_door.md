@@ -1,6 +1,7 @@
 ---
-layout: index
 title: Setting Up a Door
+nav_order: 16
+parent: "How To"
 ---
 
 Generally in text adventures doors are implied. That means that when the player heads into the kitchen, it is assumed she first opens the door - the player will not be happy if she has to open a door each time she wants to go anywhere. That said, there may be occasions when it warranted. Perhaps this is a particular special door, or the state of the door determines whether the player is found or which way the guard goes.

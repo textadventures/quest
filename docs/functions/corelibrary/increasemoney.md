@@ -1,6 +1,6 @@
 ---
-layout: index
 title: IncreaseMoney
+nav_exclude: true
 ---
 
     IncreaseMoney (integer amount)

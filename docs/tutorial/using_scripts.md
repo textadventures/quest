@@ -1,6 +1,7 @@
 ---
-layout: index
 title: Using scripts
+nav_order: 5
+parent: Tutorial
 ---
 
 We'll now start to play with the real power behind Quest – scripts. Scripts let you do things within the game, change the game world, show pictures and more. With a script, you can print different messages or run other actions depending on the state of any object in the game.

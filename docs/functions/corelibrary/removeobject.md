@@ -1,6 +1,6 @@
 ---
-layout: index
 title: RemoveObject
+nav_exclude: true
 ---
 
     RemoveObject(objectobject1)

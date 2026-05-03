@@ -1,6 +1,6 @@
 ---
-layout: index
 title: play sound
+nav_exclude: true
 ---
 
     play sound (string file, boolean wait, boolean loop)

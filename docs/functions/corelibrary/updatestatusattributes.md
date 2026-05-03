@@ -1,6 +1,6 @@
 ---
-layout: index
 title: UpdateStatusAttributes
+nav_exclude: true
 ---
 
     UpdateStatusAttributes ()

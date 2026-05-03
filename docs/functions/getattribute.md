@@ -1,6 +1,6 @@
 ---
-layout: index
 title: GetAttribute
+nav_exclude: true
 ---
 
     GetAttribute (object, string attribute name)

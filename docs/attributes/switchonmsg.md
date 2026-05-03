@@ -1,6 +1,6 @@
 ---
-layout: index
 title: switchonmsg
+nav_exclude: true
 ---
 
 "switchonmsg" is a [string](../types/string.html) attribute, specifying text to print when the user switches on the object. If not specified, the SwitchedOn template is printed.

@@ -1,6 +1,6 @@
 ---
-layout: index
 title: Grid_SetCentre
+nav_exclude: true
 ---
 
     Grid_SetCentre (int x, int y)

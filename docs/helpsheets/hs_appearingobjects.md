@@ -1,6 +1,6 @@
 ---
-layout: index
 title: Objects appearing (inside other objects)
+nav_exclude: true
 ---
 
 ***Problem:*** *In my game I have a newspaper. I want to read the newspaper and when I get to Page 3 a map is going to appear.*

@@ -1,6 +1,6 @@
 ---
-layout: index
 title: start transaction
+nav_exclude: true
 ---
 
     start transaction (string command)

@@ -1,6 +1,7 @@
 ---
-layout: index
 title: Using neutral language
+nav_order: 19
+parent: "How To"
 ---
 
 Often when creating a text adventure you will find you do not know what you are talking about!

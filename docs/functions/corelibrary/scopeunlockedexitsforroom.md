@@ -1,6 +1,6 @@
 ---
-layout: index
 title: ScopeUnlockedExitsForRoom
+nav_exclude: true
 ---
 
     ScopeUnlockedExitsForRoom(room)

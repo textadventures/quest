@@ -1,6 +1,6 @@
 ---
-layout: index
 title: create exit
+nav_exclude: true
 ---
 
     create exit (string alias, object from, object to)

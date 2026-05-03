@@ -1,6 +1,6 @@
 ---
-layout: index
 title: Making Objects Appear when a Light is Switched On
+nav_exclude: true
 ---
 
 *To make objects appear when a light is turned on and off you need to move them from one room to another and back again*

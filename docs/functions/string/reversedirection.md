@@ -1,6 +1,6 @@
 ---
-layout: index
 title: ReverseDirection
+nav_exclude: true
 ---
 
     ReverseDirection (string input)

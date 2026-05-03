@@ -1,6 +1,6 @@
 ---
-layout: index
 title: HelperCloseObject
+nav_exclude: true
 ---
 
     HelperCloseObject (object)

@@ -1,6 +1,6 @@
 ---
-layout: index
 title: DynamicTemplate
+nav_exclude: true
 ---
 
     DynamicTemplate (string  template name, object  object)

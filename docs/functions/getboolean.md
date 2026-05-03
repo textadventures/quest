@@ -1,6 +1,6 @@
 ---
-layout: index
 title: GetBoolean
+nav_exclude: true
 ---
 
     GetBoolean (object, string attribute name)

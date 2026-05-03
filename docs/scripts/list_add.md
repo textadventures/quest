@@ -1,6 +1,6 @@
 ---
-layout: index
 title: list add
+nav_exclude: true
 ---
 
     list add (list, any type item)

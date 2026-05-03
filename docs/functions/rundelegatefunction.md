@@ -1,6 +1,6 @@
 ---
-layout: index
 title: RunDelegateFunction
+nav_exclude: true
 ---
 
     RunDelegateFunction (object, string attribute name, any type parameters ...)

@@ -1,6 +1,6 @@
 ---
-layout: index
 title: ScopeReachableNotHeld
+nav_exclude: true
 ---
 
     ScopeReachableNotHeld ()

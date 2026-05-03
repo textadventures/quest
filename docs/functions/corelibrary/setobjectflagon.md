@@ -1,6 +1,6 @@
 ---
-layout: index
 title: SetObjectFlagOn
+nav_exclude: true
 ---
 
     SetObjectFlagOff (object, string flag name)

@@ -1,6 +1,6 @@
 ---
-layout: index
 title: type element
+nav_exclude: true
 ---
 
     <type name="name">properties</type>

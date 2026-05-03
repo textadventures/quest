@@ -1,6 +1,6 @@
 ---
-layout: index
 title: SetFramePicture
+nav_exclude: true
 ---
 
     SetFramePicture (string filename)

@@ -1,6 +1,7 @@
 ---
-layout: index
 title: The Publish Tool
+nav_order: 31
+parent: "Reference"
 ---
 
 <div class="alert alert-info">

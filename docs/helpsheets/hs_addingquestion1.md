@@ -1,6 +1,6 @@
 ---
-layout: index
 title: Adding a Yes/No Quiz Question
+nav_exclude: true
 ---
 
 *Here is a way of creating a quiz style situation*

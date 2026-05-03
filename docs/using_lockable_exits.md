@@ -1,6 +1,7 @@
 ---
-layout: index
 title: Using lockable exits
+nav_order: 9
+parent: "Features"
 ---
 
 Creating the exit

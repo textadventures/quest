@@ -1,6 +1,6 @@
 ---
-layout: index
 title: ScopeVisibleNotHeld
+nav_exclude: true
 ---
 
     ScopeVisibleNotHeld ()

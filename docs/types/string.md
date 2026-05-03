@@ -1,6 +1,6 @@
 ---
-layout: index
 title: String
+nav_exclude: true
 ---
 
 A string is a piece of text (string literal), a string variable is variable that holds text.

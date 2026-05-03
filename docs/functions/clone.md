@@ -1,6 +1,6 @@
 ---
-layout: index
 title: Clone
+nav_exclude: true
 ---
 
     Clone (object object to clone)

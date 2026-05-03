@@ -1,6 +1,6 @@
 ---
-layout: index
 title: The CASE Command
+nav_exclude: true
 ---
 
 *Using the CASE command is a much quicker alternative to lots of “nested” IF scripts. This example shows you how to set up a phone where you can dial different numbers and get different responses*

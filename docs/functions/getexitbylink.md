@@ -1,6 +1,6 @@
 ---
-layout: index
 title: GetExitByLink
+nav_exclude: true
 ---
 
     GetExitByLink (object from room, object to room)

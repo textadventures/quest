@@ -1,6 +1,6 @@
 ---
-layout: index
 title: SetFontName
+nav_exclude: true
 ---
 
     SetFontName(string fontname)

@@ -1,6 +1,6 @@
 ---
-layout: index
 title: RemoveGarment
+nav_exclude: true
 ---
 
     RemoveGarment (object)

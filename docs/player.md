@@ -1,6 +1,7 @@
 ---
-layout: index
 title: Player
+nav_order: 34
+parent: "Reference"
 ---
 
 An object called "player" must be defined somewhere in the game. This will define the start location for the player.

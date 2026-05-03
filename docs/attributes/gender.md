@@ -1,6 +1,6 @@
 ---
-layout: index
 title: gender
+nav_exclude: true
 ---
 
 "gender" is a [string](../types/string.html) attribute. In English games it is usually "it" for inanimate objects, or "he" or "she" for characters.

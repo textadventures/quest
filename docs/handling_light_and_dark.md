@@ -1,6 +1,7 @@
 ---
-layout: index
 title: Handling light and dark
+nav_order: 5
+parent: "Features"
 ---
 
 Quest has a system built in for handling light and darkness in your game.

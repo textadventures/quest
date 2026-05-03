@@ -1,6 +1,6 @@
 ---
-layout: index
 title: AllRooms
+nav_exclude: true
 ---
 
     AllRooms()

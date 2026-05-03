@@ -1,6 +1,7 @@
 ---
-layout: index
 title: Move an object in a direction
+nav_order: 18
+parent: "How To"
 ---
 
 

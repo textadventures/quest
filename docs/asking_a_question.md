@@ -1,6 +1,7 @@
 ---
-layout: index
 title: Asking a question
+nav_order: 9
+parent: "How To"
 ---
 
 Open-Ended Question

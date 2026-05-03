@@ -1,6 +1,6 @@
 ---
-layout: index
 title: ScopeExitsAll
+nav_exclude: true
 ---
 
     ScopeExitsAll ()

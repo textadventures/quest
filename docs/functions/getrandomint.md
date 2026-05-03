@@ -1,6 +1,6 @@
 ---
-layout: index
 title: GetRandomInt
+nav_exclude: true
 ---
 
     GetRandomInt (integer min, integer max)

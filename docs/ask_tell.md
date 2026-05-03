@@ -1,6 +1,7 @@
 ---
-layout: index
 title: Handling ASK/TELL
+nav_order: 7
+parent: "Characters (NPCs)"
 ---
 
 

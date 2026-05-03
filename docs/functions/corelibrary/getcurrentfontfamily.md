@@ -1,6 +1,6 @@
 ---
-layout: index
 title: GetCurrentFontFamily
+nav_exclude: true
 ---
 
     GetCurrentFontFamily ()

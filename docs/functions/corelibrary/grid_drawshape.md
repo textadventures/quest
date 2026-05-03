@@ -1,6 +1,6 @@
 ---
-layout: index
 title: Grid_DrawShape
+nav_exclude: true
 ---
 
     Grid_DrawShape (string id, string border, string fill, double opacity)

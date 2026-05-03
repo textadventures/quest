@@ -1,6 +1,6 @@
 ---
-layout: index
 title: Script commands
+nav_exclude: true
 ---
 
 [General information about Quest script commands](scripts.html)

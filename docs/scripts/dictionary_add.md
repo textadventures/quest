@@ -1,6 +1,6 @@
 ---
-layout: index
 title: dictionary add
+nav_exclude: true
 ---
 
     dictionary add (dictionary, string key, any type item)

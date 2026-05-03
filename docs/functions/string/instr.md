@@ -1,6 +1,6 @@
 ---
-layout: index
 title: Instr
+nav_exclude: true
 ---
 
     Instr (string input, string search)

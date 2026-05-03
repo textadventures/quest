@@ -1,6 +1,6 @@
 ---
-layout: index
 title: ToInt
+nav_exclude: true
 ---
 
     ToInt (string number)

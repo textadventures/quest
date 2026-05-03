@@ -1,6 +1,6 @@
 ---
-layout: index
 title: IncreaseScore
+nav_exclude: true
 ---
 
     IncreaseScore (integer amount)

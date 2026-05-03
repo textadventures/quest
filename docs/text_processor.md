@@ -1,6 +1,7 @@
 ---
-layout: index
 title: Text processor
+nav_order: 1
+parent: "Features"
 ---
 
 Quest 5.4 introduces a text processor, giving an easy way to conditionally print text, show object links, show text only once, and more.

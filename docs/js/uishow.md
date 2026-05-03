@@ -1,6 +1,6 @@
 ---
-layout: index
 title: uiShow/uiHide
+nav_exclude: true
 ---
 
     JS.uiShow(string element)

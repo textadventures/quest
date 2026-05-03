@@ -1,6 +1,6 @@
 ---
-layout: index
 title: MoveObject
+nav_exclude: true
 ---
 
     MoveObject(object object1, object object2)

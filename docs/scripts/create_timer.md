@@ -1,6 +1,6 @@
 ---
-layout: index
 title: create timer
+nav_exclude: true
 ---
 
     create timer (string name)

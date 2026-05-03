@@ -1,6 +1,6 @@
 ---
-layout: index
 title: return
+nav_exclude: true
 ---
 
     return (any type result)

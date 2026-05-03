@@ -1,6 +1,6 @@
 ---
-layout: index
 title: HasBoolean
+nav_exclude: true
 ---
 
     HasBoolean (object, string attribute name)

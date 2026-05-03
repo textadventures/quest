@@ -1,6 +1,6 @@
 ---
-layout: index
 title: GetDisplayName
+nav_exclude: true
 ---
 
     GetDisplayName (object)

@@ -1,6 +1,7 @@
 ---
-layout: index
 title: Handling SPEAK TO
+nav_order: 3
+parent: "Characters (NPCs)"
 ---
 
 

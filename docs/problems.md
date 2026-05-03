@@ -1,6 +1,7 @@
 ---
-layout: index
 title: Resolving Common Problems
+nav_order: 3
+parent: "Reference"
 ---
 
 

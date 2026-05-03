@@ -1,6 +1,7 @@
 ---
-layout: index
 title: Interacting with objects
+nav_order: 3
+parent: Tutorial
 ---
 
 Object Types

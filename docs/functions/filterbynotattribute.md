@@ -1,6 +1,6 @@
 ---
-layout: index
 title: FilterByNotAttribute
+nav_exclude: true
 ---
 
     FilterByNotAttribute (objectlist list, string attribute name, any value)

@@ -1,6 +1,6 @@
 ---
-layout: index
 title: Asc
+nav_exclude: true
 ---
 
     Asc (string input)

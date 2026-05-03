@@ -1,6 +1,6 @@
 ---
-layout: index
 title: ToDouble
+nav_exclude: true
 ---
 
     ToDouble (string number)

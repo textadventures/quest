@@ -1,6 +1,6 @@
 ---
-layout: index
 title: ScopeInventoryNotScenery
+nav_exclude: true
 ---
 
     ScopeInventoryNotScenery

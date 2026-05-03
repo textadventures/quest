@@ -1,6 +1,7 @@
 ---
-layout: index
 title: Publishing Quest games (inc. size limitations)
+nav_order: 17
+parent: "Reference"
 ---
 
 To get your game playable on the Text Adventurers web site, you need to publish it.

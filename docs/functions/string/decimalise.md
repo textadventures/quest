@@ -1,6 +1,6 @@
 ---
-layout: index
 title: Decimalise
+nav_exclude: true
 ---
 
     Decimalise (int input, int places)

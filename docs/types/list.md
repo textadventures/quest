@@ -1,6 +1,6 @@
 ---
-layout: index
 title: List
+nav_exclude: true
 ---
 
 **New in Quest 5.4**

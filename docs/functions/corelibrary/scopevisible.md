@@ -1,6 +1,6 @@
 ---
-layout: index
 title: ScopeVisible
+nav_exclude: true
 ---
 
     ScopeVisible ()

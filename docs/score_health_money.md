@@ -1,6 +1,7 @@
 ---
-layout: index
 title: Score, Health and Money
+nav_order: 7
+parent: "Features"
 ---
 
 

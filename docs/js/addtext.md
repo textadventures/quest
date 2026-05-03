@@ -1,6 +1,6 @@
 ---
-layout: index
 title: addText
+nav_exclude: true
 ---
 
     JS.addText (string text)

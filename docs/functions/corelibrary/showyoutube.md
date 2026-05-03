@@ -1,6 +1,6 @@
 ---
-layout: index
 title: ShowYouTube
+nav_exclude: true
 ---
 
     ShowYouTube(string id)

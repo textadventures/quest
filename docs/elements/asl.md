@@ -1,6 +1,6 @@
 ---
-layout: index
 title: asl element
+nav_exclude: true
 ---
 
     <asl version="580">all game content</asl>

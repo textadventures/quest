@@ -1,6 +1,6 @@
 ---
-layout: index
 title: Populate
+nav_exclude: true
 ---
 
     Populate (string regex, string input)

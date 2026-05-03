@@ -1,6 +1,6 @@
 ---
-layout: index
 title: GetListDisplayAlias
+nav_exclude: true
 ---
 
     GetListDisplayAlias (object)

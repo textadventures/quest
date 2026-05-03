@@ -1,6 +1,7 @@
 ---
-layout: index
 title: How to use functions
+nav_order: 3
+parent: "How To"
 ---
 
 We looked at functions in the [tutorial](tutorial/more_things_to_do_with_objects.html#Using_Functions), and for a basic understanding, you are recommended looking at that. This document is going to go into more detail, and will be looking at using functions with code rather than the GUI.

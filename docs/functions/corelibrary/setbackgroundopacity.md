@@ -1,6 +1,6 @@
 ---
-layout: index
 title: SetBackgroundOpacity
+nav_exclude: true
 ---
 
     SetBackgroundOpacity(float value)

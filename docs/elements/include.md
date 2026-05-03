@@ -1,6 +1,6 @@
 ---
-layout: index
 title: include element
+nav_exclude: true
 ---
 
     <include ref="filename"/>

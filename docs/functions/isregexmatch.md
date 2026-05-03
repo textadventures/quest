@@ -1,6 +1,6 @@
 ---
-layout: index
 title: IsRegexMatch
+nav_exclude: true
 ---
 
     IsRegexMatch (string regex, string)

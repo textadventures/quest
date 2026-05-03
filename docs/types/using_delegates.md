@@ -1,6 +1,6 @@
 ---
-layout: index
 title: Using Delegates
+nav_exclude: true
 ---
 
 <div class="alert alert-info">

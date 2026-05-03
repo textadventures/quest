@@ -1,6 +1,7 @@
 ---
-layout: index
 title: JavaScript to Quest with ASLEvent
+nav_order: 9
+parent: "User Experience"
 ---
 
 We can think of the game as two distinct parts, the game world, handled by Quest, and the user interface, handled by JavaScript in the browser window (even the desktop version uses a browser). The `JS` object can be uses to pass information and commands from Quest to JavaScript; how do we get information to pass the other way?

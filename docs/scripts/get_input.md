@@ -1,6 +1,6 @@
 ---
-layout: index
 title: get input
+nav_exclude: true
 ---
 
     get input {script}

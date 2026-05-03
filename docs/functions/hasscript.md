@@ -1,6 +1,6 @@
 ---
-layout: index
 title: HasScript
+nav_exclude: true
 ---
 
     HasScript (object, string attribute name)

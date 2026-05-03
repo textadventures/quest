@@ -1,6 +1,6 @@
 ---
-layout: index
 title: GetExitByName
+nav_exclude: true
 ---
 
     GetExitByName (object from room, string direction name)

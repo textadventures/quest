@@ -1,6 +1,6 @@
 ---
-layout: index
 title: Got
+nav_exclude: true
 ---
 
     Got (object)

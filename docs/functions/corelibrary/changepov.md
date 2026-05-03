@@ -1,6 +1,6 @@
 ---
-layout: index
 title: ChangePOV
+nav_exclude: true
 ---
 
     ChangePOV (object)

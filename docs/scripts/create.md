@@ -1,6 +1,6 @@
 ---
-layout: index
 title: create
+nav_exclude: true
 ---
 
     create (string name)

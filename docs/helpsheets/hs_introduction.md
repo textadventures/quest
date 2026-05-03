@@ -1,6 +1,6 @@
 ---
-layout: index
 title: Introduction at Start of Game
+nav_exclude: true
 ---
 
 *Every game should have instructions or an introduction at the start. Here is how to do it*

@@ -1,6 +1,6 @@
 ---
-layout: index
 title: Object blocking an exit
+nav_exclude: true
 ---
 
 1. I have created the rooms and objects (the mini roll is in the garden and the oompa loompa is in the house)

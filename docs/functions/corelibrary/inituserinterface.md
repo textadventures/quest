@@ -1,6 +1,6 @@
 ---
-layout: index
 title: InitUserInterface
+nav_exclude: true
 ---
 
     InitUserInterface ()

@@ -1,6 +1,6 @@
 ---
-layout: index
 title: CreateBiExits
+nav_exclude: true
 ---
 
     CreateBiExits (string direction, object from, object to)

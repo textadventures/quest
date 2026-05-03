@@ -1,6 +1,6 @@
 ---
-layout: index
 title: SetTurnTimeoutID
+nav_exclude: true
 ---
 
     SetTurnTimeoutID (integer turn count, string name, script)

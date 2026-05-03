@@ -1,6 +1,7 @@
 ---
-layout: index
 title: Status Attributes
+nav_order: 11
+parent: Tutorial
 ---
 
 Often you will want the player to be able to see how they are doing at a glance, perhaps to see the score or health, or how much cash they have. This can be done with status attributes.

@@ -1,6 +1,6 @@
 ---
-layout: index
 title: SuppressTurnscripts
+nav_exclude: true
 ---
 
     SuppressTurnscripts ()

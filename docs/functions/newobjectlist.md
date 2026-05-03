@@ -1,6 +1,6 @@
 ---
-layout: index
 title: NewObjectList
+nav_exclude: true
 ---
 
     NewObjectList ()

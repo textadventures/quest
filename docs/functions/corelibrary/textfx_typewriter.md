@@ -1,6 +1,6 @@
 ---
-layout: index
 title: TextFX_Typewriter
+nav_exclude: true
 ---
 
     TextFX_Typewriter(text, int speed)

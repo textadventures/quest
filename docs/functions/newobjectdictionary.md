@@ -1,6 +1,6 @@
 ---
-layout: index
 title: NewObjectDictionary
+nav_exclude: true
 ---
 
     NewObjectDictionary ()

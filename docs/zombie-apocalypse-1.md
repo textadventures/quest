@@ -1,6 +1,7 @@
 ---
-layout: index
 title: Zombie Apocalypse (part 1)
+nav_order: 2
+parent: "Introduction to RPGs"
 ---
 
 

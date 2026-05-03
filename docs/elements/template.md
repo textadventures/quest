@@ -1,6 +1,6 @@
 ---
-layout: index
 title: template element
+nav_exclude: true
 ---
 
     <template name="name">text</template>

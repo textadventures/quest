@@ -1,6 +1,6 @@
 ---
-layout: index
 title: CommandLink
+nav_exclude: true
 ---
 
     CommandLink (string command, string link text)

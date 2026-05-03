@@ -1,6 +1,6 @@
 ---
-layout: index
 title: setInterfaceString
+nav_exclude: true
 ---
 
     JS.setInterfaceString(string name, string value)

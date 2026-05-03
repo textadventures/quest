@@ -1,6 +1,6 @@
 ---
-layout: index
 title: Double
+nav_exclude: true
 ---
 
 A "double" attribute represents a number with a decimal point. It can be positive or negative.

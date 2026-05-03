@@ -1,6 +1,7 @@
 ---
-layout: index
 title: Exits
+nav_order: 2
+parent: "Features"
 ---
 
 Exits are dead easy to set up in Quest. Go to the _Exits_ tab of the room, click the direction, select a destination, choose if you want to also create a reverse exit and click "Create exit".

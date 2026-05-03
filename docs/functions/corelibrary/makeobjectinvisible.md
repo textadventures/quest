@@ -1,6 +1,6 @@
 ---
-layout: index
 title: MakeObjectInvisible
+nav_exclude: true
 ---
 
     MakeObjectInvisible (object)

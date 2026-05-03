@@ -1,6 +1,6 @@
 ---
-layout: index
 title: LockExit
+nav_exclude: true
 ---
 
     LockExit (exit)

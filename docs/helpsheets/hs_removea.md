@@ -1,6 +1,6 @@
 ---
-layout: index
 title: Irritated by “a” in your objects?
+nav_exclude: true
 ---
 
 '**'Problem**'

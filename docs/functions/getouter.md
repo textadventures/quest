@@ -1,6 +1,6 @@
 ---
-layout: index
 title: ListWorn
+nav_exclude: true
 ---
 
     ListWorn (string slot)

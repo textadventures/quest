@@ -1,6 +1,6 @@
 ---
-layout: index
 title: LTrim
+nav_exclude: true
 ---
 
     LTrim (input)

@@ -1,6 +1,6 @@
 ---
-layout: index
 title: Grid_DrawSvg
+nav_exclude: true
 ---
 
     Grid_DrawSvg (string instance id, string symbol id, int x, int y, int width, int height)

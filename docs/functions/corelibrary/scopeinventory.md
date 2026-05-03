@@ -1,6 +1,6 @@
 ---
-layout: index
 title: ScopeInventory
+nav_exclude: true
 ---
 
     ScopeInventory ()

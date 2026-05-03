@@ -1,6 +1,6 @@
 ---
-layout: index
 title: ToString
+nav_exclude: true
 ---
 
     ToString (anything)

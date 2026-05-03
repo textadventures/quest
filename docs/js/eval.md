@@ -1,6 +1,6 @@
 ---
-layout: index
 title: eval
+nav_exclude: true
 ---
 
     JS.eval (string JavaScript code)

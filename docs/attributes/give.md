@@ -1,6 +1,6 @@
 ---
-layout: index
 title: give
+nav_exclude: true
 ---
 
 "give" is an attribute that can be either a [scriptdictionary](../types/scriptdictionary.html) or [string](../types/string.html).

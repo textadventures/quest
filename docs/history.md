@@ -1,6 +1,7 @@
 ---
-layout: index
 title: A History of Quest
+nav_order: 20
+parent: "Reference"
 ---
 
 When I took over Quest, I was intrigued to see its history. Alex did some retrospectives in some blog posts, allowing a timeline to be constructed.

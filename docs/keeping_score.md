@@ -1,6 +1,7 @@
 ---
-layout: index
 title: How to Keep Score
+nav_order: 11
+parent: "How To"
 ---
 
 Many years ago I wrote a library to help track the player's score. It was pretty simple, but worked well, and five years later on I cannot think of any way to improve. So, I am going drop it altogether! You do not need a library to do this, instead, I present a tutorial. The advantages of a tutorial are that you will learn more of Quest coding whilst following it, and it will be useable by anyone using the on-line editor too.

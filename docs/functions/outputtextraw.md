@@ -1,6 +1,6 @@
 ---
-layout: index
 title: OutputTextRaw
+nav_exclude: true
 ---
 
     OutputTextRaw (string text)

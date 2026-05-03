@@ -1,6 +1,6 @@
 ---
-layout: index
 title: Objectdictionary
+nav_exclude: true
 ---
 
 An objectdictionary is a dictionary where keys are [strings](string.html) and values are [objects](object.html).

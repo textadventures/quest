@@ -1,6 +1,7 @@
 ---
-layout: index
 title: Keeping a journal
+nav_order: 10
+parent: "How To"
 ---
 
 This is a way to add a journal to your game. This is a book the player can make notes in, and that the game can add to as well when appropriate.

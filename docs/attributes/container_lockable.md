@@ -1,6 +1,6 @@
 ---
-layout: index
 title: container_lockable
+nav_exclude: true
 ---
 
 The "container\_lockable" type is defined in CoreTypes.aslx. It implements locking and unlocking functionality. It does not inherit any other container types, so one of [container\_open](container_open.html), [container\_closed](container_closed.html) or [container\_limited](container_limited.html) should also be inherited.

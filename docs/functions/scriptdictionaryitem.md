@@ -1,6 +1,6 @@
 ---
-layout: index
 title: ScriptDictionaryItem
+nav_exclude: true
 ---
 
     ScriptDictionaryItem (scriptdictionary, string key)

@@ -1,6 +1,6 @@
 ---
-layout: index
 title: do
+nav_exclude: true
 ---
 
     do (object, string attribute name)

@@ -1,6 +1,6 @@
 ---
-layout: index
 title: switch
+nav_exclude: true
 ---
 
     switch (any type value) { case (any type value) { script } [ default { script } ] }

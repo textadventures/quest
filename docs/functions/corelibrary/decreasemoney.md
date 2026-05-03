@@ -1,6 +1,6 @@
 ---
-layout: index
 title: DecreaseMoney
+nav_exclude: true
 ---
 
     DecreaseMoney (integer amount)

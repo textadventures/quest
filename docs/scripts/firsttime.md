@@ -1,6 +1,6 @@
 ---
-layout: index
 title: firsttime
+nav_exclude: true
 ---
 
     firsttime { script1 } [ otherwise { script2 } ] 

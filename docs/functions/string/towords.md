@@ -1,6 +1,6 @@
 ---
-layout: index
 title: ToWords
+nav_exclude: true
 ---
 
     ToWords (int)

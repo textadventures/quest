@@ -1,6 +1,6 @@
 ---
-layout: index
 title: CurrentDateUTC
+nav_exclude: true
 ---
 
     CurrentDateUTC()

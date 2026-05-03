@@ -1,6 +1,6 @@
 ---
-layout: index
 title: Chr
+nav_exclude: true
 ---
 
     Chr (int input)

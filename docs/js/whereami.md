@@ -1,6 +1,6 @@
 ---
-layout: index
 title: whereAmI
+nav_exclude: true
 ---
 
     JS.whereAmI ()

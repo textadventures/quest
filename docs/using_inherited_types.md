@@ -1,6 +1,7 @@
 ---
-layout: index
 title: Using inherited types
+nav_order: 3
+parent: "Advanced Topics"
 ---
 
 <div class="alert alert-info">

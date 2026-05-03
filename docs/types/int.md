@@ -1,6 +1,6 @@
 ---
-layout: index
 title: Int
+nav_exclude: true
 ---
 
 An "int" (integer) attribute represents a whole number (which can be positive or negative).

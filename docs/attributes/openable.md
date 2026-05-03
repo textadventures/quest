@@ -1,6 +1,6 @@
 ---
-layout: index
 title: openable
+nav_exclude: true
 ---
 
 The "openable" type is defined in CoreTypes.aslx.

@@ -1,6 +1,7 @@
 ---
-layout: index
 title: Adding Videos
+nav_order: 4
+parent: "Multi-media"
 ---
 
 

@@ -1,6 +1,6 @@
 ---
-layout: index
 title: Pause
+nav_exclude: true
 ---
 
     Pause (interval)

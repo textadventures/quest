@@ -1,6 +1,6 @@
 ---
-layout: index
 title: InstrRev
+nav_exclude: true
 ---
 
     InstrRev (string input, string search)

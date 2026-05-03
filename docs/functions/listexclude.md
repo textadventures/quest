@@ -1,6 +1,6 @@
 ---
-layout: index
 title: ListExclude
+nav_exclude: true
 ---
 
     ListExclude (list, any type item or list)

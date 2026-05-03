@@ -1,6 +1,6 @@
 ---
-layout: index
 title: NewList
+nav_exclude: true
 ---
 
     NewList ()

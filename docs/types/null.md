@@ -1,6 +1,6 @@
 ---
-layout: index
 title: Null
+nav_exclude: true
 ---
 
 If Booleans seem limited in have only two possible values, null can have only one!

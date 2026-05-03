@@ -1,6 +1,6 @@
 ---
-layout: index
 title: object element
+nav_exclude: true
 ---
 
     <object name="name">attributes</object>

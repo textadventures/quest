@@ -1,6 +1,6 @@
 ---
-layout: index
 title: tab element
+nav_exclude: true
 ---
 
     <tab>attributes</tab>

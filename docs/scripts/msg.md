@@ -1,6 +1,6 @@
 ---
-layout: index
 title: msg
+nav_exclude: true
 ---
 
     msg (string message)

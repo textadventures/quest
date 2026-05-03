@@ -1,6 +1,6 @@
 ---
-layout: index
 title: GetFileURL
+nav_exclude: true
 ---
 
     GetFileURL(string filename)

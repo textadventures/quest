@@ -1,6 +1,7 @@
 ---
-layout: index
 title: DevMode
+nav_order: 2
+parent: "Reference"
 ---
 
 

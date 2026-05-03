@@ -1,6 +1,7 @@
 ---
-layout: index
 title: Creating functions
+nav_order: 3
+parent: "Coding With Quest"
 ---
 
 If you find you have several places in the game where you have script (or bits of scripts) doing essentially the same thing, you are probably better creating a function to do it just one. The basic idea is that you put the code in just one place, and then anywhere that needs to use the code, you send to the place.

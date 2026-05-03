@@ -1,6 +1,6 @@
 ---
-layout: index
 title: updateLocation
+nav_exclude: true
 ---
 
     JS.updateLocation(string text)

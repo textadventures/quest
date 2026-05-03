@@ -1,6 +1,6 @@
 ---
-layout: index
 title: GetBlockingObject
+nav_exclude: true
 ---
 
     GetBlockingObject (object)

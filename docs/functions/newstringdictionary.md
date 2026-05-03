@@ -1,6 +1,6 @@
 ---
-layout: index
 title: NewStringDictionary
+nav_exclude: true
 ---
 
     NewStringDictionary ()

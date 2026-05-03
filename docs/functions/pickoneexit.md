@@ -1,6 +1,6 @@
 ---
-layout: index
 title: PickOneExit
+nav_exclude: true
 ---
 
     PickOneExit (object room)

@@ -1,6 +1,6 @@
 ---
-layout: index
 title: DisplayHttpLink
+nav_exclude: true
 ---
 
     DisplayHttpLink(string displaylink,string url, boolean https)
