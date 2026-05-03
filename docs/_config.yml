@@ -9,8 +9,8 @@ search:
   previews: 3
 
 aux_links:
-  "GitHub Discussions": "https://github.com/textadventures/quest/discussions"
-  "Forum (Archive)": "https://textadventures.co.uk/forum"
+  "GitHub": "https://github.com/textadventures/quest"
+  "Discord": "https://textadventures.co.uk/community/discord"
 
 aux_links_new_tab: true
 
