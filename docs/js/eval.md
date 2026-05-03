@@ -1,6 +1,8 @@
 ---
 title: eval
-nav_exclude: true
+parent: "JS functions"
+grand_parent: "Reference"
+nav_order: 4
 ---
 
     JS.eval (string JavaScript code)

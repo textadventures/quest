@@ -1,7 +1,8 @@
 ---
 title: library element
-nav_exclude: true
 parent: "XML Elements"
+grand_parent: "Reference"
+nav_order: 2
 ---
 
     <library>all library content</library>

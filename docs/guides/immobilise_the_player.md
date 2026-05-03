@@ -1,6 +1,8 @@
 ---
 title: Immobilise the player
-nav_exclude: true
+parent: "Community Guides"
+grand_parent: "Other Guides"
+nav_order: 4
 ---
 
 Occasionally you want to stop the player moving to another room, say because he is sat down, and he has to stand first, or he is tied up or whatever. There are three ways (at least) to do this:

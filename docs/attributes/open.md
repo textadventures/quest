@@ -1,7 +1,7 @@
 ---
 title: open
-nav_exclude: true
-parent: "Attributes"
+parent: "Attribute Reference"
+grand_parent: "Attributes"
 ---
 
 "open" is a [boolean](../types/boolean.html) attribute specifying whether the object can be opened.

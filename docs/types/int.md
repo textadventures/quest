@@ -1,7 +1,8 @@
 ---
 title: Int
-nav_exclude: true
 parent: "Attribute Types"
+grand_parent: "Attributes"
+nav_order: 5
 ---
 
 An "int" (integer) attribute represents a whole number (which can be positive or negative).

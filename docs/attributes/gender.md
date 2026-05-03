@@ -1,7 +1,7 @@
 ---
 title: gender
-nav_exclude: true
-parent: "Attributes"
+parent: "Attribute Reference"
+grand_parent: "Attributes"
 ---
 
 "gender" is a [string](../types/string.html) attribute. In English games it is usually "it" for inanimate objects, or "he" or "she" for characters.

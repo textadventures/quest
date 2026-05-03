@@ -1,7 +1,7 @@
 ---
 title: ListWornFor
-nav_exclude: true
-parent: "Functions"
+parent: "Clothing Functions"
+grand_parent: "Functions"
 ---
 
     ListWornFor (object character)

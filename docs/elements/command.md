@@ -1,7 +1,8 @@
 ---
 title: command element
-nav_exclude: true
 parent: "XML Elements"
+grand_parent: "Reference"
+nav_order: 8
 ---
 
     <command name="name" pattern="pattern" unresolved="unresolved text" template="template name">script</command>

@@ -1,7 +1,8 @@
 ---
 title: template element
-nav_exclude: true
 parent: "XML Elements"
+grand_parent: "Reference"
+nav_order: 4
 ---
 
     <template name="name">text</template>

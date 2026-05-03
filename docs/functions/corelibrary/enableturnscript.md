@@ -1,7 +1,7 @@
 ---
 title: EnableTurnScript
-nav_exclude: true
-parent: "Functions"
+parent: "Timers and Turnscripts"
+grand_parent: "Functions"
 ---
 
     EnableTurnScript (turn script)

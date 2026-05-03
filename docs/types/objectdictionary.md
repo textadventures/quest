@@ -1,7 +1,8 @@
 ---
 title: Objectdictionary
-nav_exclude: true
 parent: "Attribute Types"
+grand_parent: "Attributes"
+nav_order: 11
 ---
 
 An objectdictionary is a dictionary where keys are [strings](string.html) and values are [objects](object.html).

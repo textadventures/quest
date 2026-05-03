@@ -1,6 +1,8 @@
 ---
 title: updateStatus
-nav_exclude: true
+parent: "JS functions"
+grand_parent: "Reference"
+nav_order: 15
 ---
 
     JS.updateStatus(string text)

@@ -1,6 +1,6 @@
 ---
 title: Notes
-nav_exclude: true
+parent: "Attributes"
 ---
 
 Mutable attributes on inherited types

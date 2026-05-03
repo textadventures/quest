@@ -1,7 +1,7 @@
 ---
 title: echohyperlinks
-nav_exclude: true
-parent: "Attributes"
+parent: "Attribute Reference"
+grand_parent: "Attributes"
 ---
 
 "echohyperlinks" is a [boolean](../types/boolean.html) attribute. If set to "true", when the player uses an object hyperlink, the echoed version of the command (shown in the interface as "\>" followed by the generated command text) also includes a hyperlink.

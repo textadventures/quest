@@ -1,7 +1,7 @@
 ---
 title: giveto
-nav_exclude: true
-parent: "Attributes"
+parent: "Attribute Reference"
+grand_parent: "Attributes"
 ---
 
 "giveto" is an attribute that can be either a [scriptdictionary](../types/scriptdictionary.html) or [string](../types/string.html).

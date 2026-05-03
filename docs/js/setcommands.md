@@ -1,6 +1,8 @@
 ---
 title: setCommands
-nav_exclude: true
+parent: "JS functions"
+grand_parent: "Reference"
+nav_order: 6
 ---
 
     JS.setCommands(string commands, string colour)

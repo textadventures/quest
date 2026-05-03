@@ -1,7 +1,8 @@
 ---
 title: include element
-nav_exclude: true
 parent: "XML Elements"
+grand_parent: "Reference"
+nav_order: 3
 ---
 
     <include ref="filename"/>

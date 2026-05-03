@@ -1,6 +1,8 @@
 ---
 title: updateLocation
-nav_exclude: true
+parent: "JS functions"
+grand_parent: "Reference"
+nav_order: 14
 ---
 
     JS.updateLocation(string text)

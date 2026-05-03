@@ -1,7 +1,8 @@
 ---
 title: editor element
-nav_exclude: true
 parent: "XML Elements"
+grand_parent: "Reference"
+nav_order: 20
 ---
 
     <editor name="name">attributes</editor>

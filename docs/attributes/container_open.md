@@ -1,7 +1,7 @@
 ---
 title: container_open
-nav_exclude: true
-parent: "Attributes"
+parent: "Attribute Reference"
+grand_parent: "Attributes"
 ---
 
 The "container\_open" type is defined in CoreTypes.aslx. It implements an open container.

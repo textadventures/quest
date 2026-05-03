@@ -1,7 +1,7 @@
 ---
 title: look
-nav_exclude: true
-parent: "Attributes"
+parent: "Attribute Reference"
+grand_parent: "Attributes"
 ---
 
 "look" is an attribute that can be either [string](../types/string.html) or [script](../types/script.html). It specifies what happens when the player looks at the object.

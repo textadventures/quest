@@ -1,7 +1,7 @@
 ---
 title: article
-nav_exclude: true
-parent: "Attributes"
+parent: "Attribute Reference"
+grand_parent: "Attributes"
 ---
 
 "article" is a [string](../types/string.html) attribute. In English games it is usually "it" for inanimate objects, or "him" or "her" for characters.

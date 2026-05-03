@@ -1,7 +1,7 @@
 ---
 title: EnableTimer
-nav_exclude: true
-parent: "Functions"
+parent: "Timers and Turnscripts"
+grand_parent: "Functions"
 ---
 
     EnableTimer (timer)

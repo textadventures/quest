@@ -1,6 +1,8 @@
 ---
 title: “Key” Inside another Object
-nav_exclude: true
+parent: "Helpsheets for beginners"
+grand_parent: "Other Guides"
+nav_order: 13
 ---
 
 

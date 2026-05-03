@@ -1,7 +1,7 @@
 ---
 title: GetArmourFor
-nav_exclude: true
-parent: "Functions"
+parent: "Clothing Functions"
+grand_parent: "Functions"
 ---
 
     GetArmourFor (object character)

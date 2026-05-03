@@ -1,6 +1,8 @@
 ---
 title: Locked Exits and How to Open them?
-nav_exclude: true
+parent: "Helpsheets for beginners"
+grand_parent: "Other Guides"
+nav_order: 4
 ---
 
 *You may want to have an exit that you cannot open without a key or other object*

@@ -1,7 +1,8 @@
 ---
 title: verb element
-nav_exclude: true
 parent: "XML Elements"
+grand_parent: "Reference"
+nav_order: 9
 ---
 
     <verboptional name="name"optional pattern="pattern"optional unresolved="unresolved text"optional property="attribute name"optional response="default response text"optional template="template name">script</verb>

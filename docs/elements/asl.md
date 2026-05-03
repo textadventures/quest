@@ -1,7 +1,8 @@
 ---
 title: asl element
-nav_exclude: true
 parent: "XML Elements"
+grand_parent: "Reference"
+nav_order: 1
 ---
 
     <asl version="580">all game content</asl>

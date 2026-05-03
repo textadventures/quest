@@ -1,6 +1,8 @@
 ---
 title: Adding Music to a Radio
-nav_exclude: true
+parent: "Helpsheets for beginners"
+grand_parent: "Other Guides"
+nav_order: 15
 ---
 
 

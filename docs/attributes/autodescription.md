@@ -1,7 +1,7 @@
 ---
 title: autodescription
-nav_exclude: true
-parent: "Attributes"
+parent: "Attribute Reference"
+grand_parent: "Attributes"
 ---
 
 "autodescription" is a [boolean](../types/boolean.html) attribute. If set to true, a room description automatically includes a generated list of the objects and exits within the room.

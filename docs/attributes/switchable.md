@@ -1,7 +1,7 @@
 ---
 title: switchable
-nav_exclude: true
-parent: "Attributes"
+parent: "Attribute Reference"
+grand_parent: "Attributes"
 ---
 
 The "switchable" type is defined in CoreTypes.aslx.

@@ -1,7 +1,7 @@
 ---
 title: compassdirections
-nav_exclude: true
-parent: "Attributes"
+parent: "Attribute Reference"
+grand_parent: "Attributes"
 ---
 
 "compassdirections" is a [stringlist](../types/stringlist.html) attribute, specifying the names of the compass directions (north, south etc.)

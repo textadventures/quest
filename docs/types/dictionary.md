@@ -1,7 +1,8 @@
 ---
 title: Dictionary
-nav_exclude: true
 parent: "Attribute Types"
+grand_parent: "Attributes"
+nav_order: 13
 ---
 
 **New in Quest 5.4**

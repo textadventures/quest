@@ -1,7 +1,7 @@
 ---
 title: CurrentDateUTC
-nav_exclude: true
-parent: "Functions"
+parent: "General Functions"
+grand_parent: "Functions"
 ---
 
     CurrentDateUTC()

@@ -1,6 +1,8 @@
 ---
 title: Adding Baddies who want to Kill or Eat you!
-nav_exclude: true
+parent: "Helpsheets for beginners"
+grand_parent: "Other Guides"
+nav_order: 5
 ---
 
 *What happens if you go into a room or open an object and there is a baddy who wants to kill you?*

@@ -1,7 +1,8 @@
 ---
 title: function element
-nav_exclude: true
 parent: "XML Elements"
+grand_parent: "Reference"
+nav_order: 7
 ---
 
     <function name="name"optional type="type"optional parameters="parameters">script</function>

@@ -1,6 +1,8 @@
 ---
 title: Timelimitedpuzzles
-nav_exclude: true
+parent: "Community Guides"
+grand_parent: "Other Guides"
+nav_order: 1
 ---
 
 *This tutorial was published by Alex in his blog [1](http://www.textadventures.co.uk/blog/2012/02/27/time-limited-puzzles)*

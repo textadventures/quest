@@ -1,7 +1,7 @@
 ---
 title: container_closed
-nav_exclude: true
-parent: "Attributes"
+parent: "Attribute Reference"
+grand_parent: "Attributes"
 ---
 
 The "container\_closed" type is defined in CoreTypes.aslx. It implements a closed container.

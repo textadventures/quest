@@ -1,7 +1,8 @@
 ---
 title: delegate element
-nav_exclude: true
 parent: "XML Elements"
+grand_parent: "Reference"
+nav_order: 18
 ---
 
     <delegate name="name"optional type="type"optional parameters="parameters">properties</delegate>

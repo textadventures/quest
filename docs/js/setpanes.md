@@ -1,6 +1,8 @@
 ---
 title: setPanes
-nav_exclude: true
+parent: "JS functions"
+grand_parent: "Reference"
+nav_order: 10
 ---
 
     JS.setPanes (string text, string background)

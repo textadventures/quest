@@ -1,6 +1,8 @@
 ---
 title: Objects appearing (inside other objects)
-nav_exclude: true
+parent: "Helpsheets for beginners"
+grand_parent: "Other Guides"
+nav_order: 11
 ---
 
 ***Problem:*** *In my game I have a newspaper. I want to read the newspaper and when I get to Page 3 a map is going to appear.*

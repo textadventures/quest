@@ -1,7 +1,8 @@
 ---
 title: verbtemplate element
-nav_exclude: true
 parent: "XML Elements"
+grand_parent: "Reference"
+nav_order: 6
 ---
 
     <verbtemplate name="name">text</template>

@@ -1,7 +1,8 @@
 ---
 title: implied element
-nav_exclude: true
 parent: "XML Elements"
+grand_parent: "Reference"
+nav_order: 17
 ---
 
     <implied element="element" property="attribute name" type="type"/>

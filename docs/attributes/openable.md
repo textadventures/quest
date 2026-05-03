@@ -1,7 +1,7 @@
 ---
 title: openable
-nav_exclude: true
-parent: "Attributes"
+parent: "Attribute Reference"
+grand_parent: "Attributes"
 ---
 
 The "openable" type is defined in CoreTypes.aslx.

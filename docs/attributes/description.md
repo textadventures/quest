@@ -1,7 +1,7 @@
 ---
 title: description
-nav_exclude: true
-parent: "Attributes"
+parent: "Attribute Reference"
+grand_parent: "Attributes"
 ---
 
 "description" is an object attribute which can be either a [string](../types/string.html) or a [script](../types/script.html). It is used to describe the room when the player enters.

@@ -1,7 +1,7 @@
 ---
 title: suffix
-nav_exclude: true
-parent: "Attributes"
+parent: "Attribute Reference"
+grand_parent: "Attributes"
 ---
 
 "suffix" is a [string](../types/string.html) attribute, specifying text which appears after the object name when it is printed in a room description.

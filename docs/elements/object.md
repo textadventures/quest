@@ -1,7 +1,8 @@
 ---
 title: object element
-nav_exclude: true
 parent: "XML Elements"
+grand_parent: "Reference"
+nav_order: 12
 ---
 
     <object name="name">attributes</object>

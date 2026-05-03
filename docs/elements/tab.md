@@ -1,7 +1,8 @@
 ---
 title: tab element
-nav_exclude: true
 parent: "XML Elements"
+grand_parent: "Reference"
+nav_order: 21
 ---
 
     <tab>attributes</tab>

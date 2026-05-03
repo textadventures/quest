@@ -1,7 +1,7 @@
 ---
 title: menuforeground
-nav_exclude: true
-parent: "Attributes"
+parent: "Attribute Reference"
+grand_parent: "Attributes"
 ---
 
 "menuforeground" is a [string](../types/string.html) attribute which should be set to a valid HTML colour name. It specifies the default text colour for menus.

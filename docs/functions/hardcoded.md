@@ -1,7 +1,6 @@
 ---
 title: Hard-coded Functions and Library Functions
-nav_exclude: true
-parent: "Functions"
+parent: "Reference"
 ---
 
 Quest functions fall into two types, hard-coded and library. Generally when you are created a text adventure, you will see no difference, but just occasionally it might be significant.

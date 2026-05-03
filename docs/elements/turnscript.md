@@ -1,7 +1,8 @@
 ---
 title: turnscript element
-nav_exclude: true
 parent: "XML Elements"
+grand_parent: "Reference"
+nav_order: 16
 ---
 
     <turnscript name="name">attributes</turnscript>

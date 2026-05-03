@@ -1,6 +1,8 @@
 ---
 title: setInterfaceString
-nav_exclude: true
+parent: "JS functions"
+grand_parent: "Reference"
+nav_order: 9
 ---
 
     JS.setInterfaceString(string name, string value)

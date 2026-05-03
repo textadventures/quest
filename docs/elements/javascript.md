@@ -1,7 +1,8 @@
 ---
 title: javascript element
-nav_exclude: true
 parent: "XML Elements"
+grand_parent: "Reference"
+nav_order: 19
 ---
 
     <javascript src="filename"/>

@@ -1,7 +1,7 @@
 ---
 title: Stringdictionary
-nav_exclude: true
 parent: "Attribute Types"
+grand_parent: "Attributes"
 ---
 
 A stringdictionary is a dictionary where both keys and values are [strings](string.html).

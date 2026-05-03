@@ -1,6 +1,8 @@
 ---
 title: Adding a Yes/No Quiz Question
-nav_exclude: true
+parent: "Helpsheets for beginners"
+grand_parent: "Other Guides"
+nav_order: 8
 ---
 
 *Here is a way of creating a quiz style situation*

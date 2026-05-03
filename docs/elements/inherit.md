@@ -1,7 +1,8 @@
 ---
 title: inherit element
-nav_exclude: true
 parent: "XML Elements"
+grand_parent: "Reference"
+nav_order: 24
 ---
 
     <inherit name="name"/>

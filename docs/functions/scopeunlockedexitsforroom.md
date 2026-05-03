@@ -1,7 +1,7 @@
 ---
 title: ScopeUnlockedExitsForRoom
-nav_exclude: true
-parent: "Functions"
+parent: "Scope Functions"
+grand_parent: "Functions"
 ---
 
     ScopeUnlockedExitsForRoom (object room)

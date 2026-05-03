@@ -1,6 +1,8 @@
 ---
-title: How to
-nav_exclude: true
+title: "Community Guides"
+parent: "Other Guides"
+nav_order: 4
+has_children: true
 ---
 
 This page is for "how to" guides which don't fit in to the tutorial (and may be out of date).

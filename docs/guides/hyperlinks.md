@@ -1,6 +1,7 @@
 ---
 title: Hyperlinks
-nav_exclude: true
+parent: "Community Guides"
+grand_parent: "Other Guides"
 ---
 
 Quest uses a kind of HTML (the language of web pages) to display text, and displaying a link is done through that. In fact, there are three different links, and if you set up a room that will print this (set the description to run a script, and have the script print the following as a message) you can see them:

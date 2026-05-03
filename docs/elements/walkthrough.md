@@ -1,7 +1,8 @@
 ---
 title: walkthrough element
-nav_exclude: true
 parent: "XML Elements"
+grand_parent: "Reference"
+nav_order: 14
 ---
 
     <walkthrough name="name" > <steps>steps</steps> </walkthrough>

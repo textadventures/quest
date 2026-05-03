@@ -1,7 +1,8 @@
 ---
 title: timer element
-nav_exclude: true
 parent: "XML Elements"
+grand_parent: "Reference"
+nav_order: 15
 ---
 
     <timer name="name">attributes</timer>

@@ -1,7 +1,8 @@
 ---
 title: String
-nav_exclude: true
 parent: "Attribute Types"
+grand_parent: "Attributes"
+nav_order: 2
 ---
 
 A string is a piece of text (string literal), a string variable is variable that holds text.

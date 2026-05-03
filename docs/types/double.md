@@ -1,7 +1,8 @@
 ---
 title: Double
-nav_exclude: true
 parent: "Attribute Types"
+grand_parent: "Attributes"
+nav_order: 6
 ---
 
 A "double" attribute represents a number with a decimal point. It can be positive or negative.

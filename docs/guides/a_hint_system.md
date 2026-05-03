@@ -1,6 +1,8 @@
 ---
 title: A Hint System
-nav_exclude: true
+parent: "Community Guides"
+grand_parent: "Other Guides"
+nav_order: 8
 ---
 
 Adding a hint system will allow more players to get to the end of your game, and so see more of your brilliant creation. but only if it works properly! So let us see how to do just that...

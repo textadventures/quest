@@ -1,7 +1,8 @@
 ---
 title: Objectlist
-nav_exclude: true
 parent: "Attribute Types"
+grand_parent: "Attributes"
+nav_order: 9
 ---
 
 An objectlist is a [list](list.html) that can contain any number of elements, all of which have to be of type [object](object.html).
