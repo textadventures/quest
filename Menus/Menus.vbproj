@@ -139,11 +139,13 @@
     <EmbeddedResource Include="Resources\Copy.xaml" />
     <EmbeddedResource Include="Resources\Cut.xaml" />
     <EmbeddedResource Include="Resources\Delete.xaml" />
+    <EmbeddedResource Include="Resources\Discord.xaml" />
     <EmbeddedResource Include="Resources\Edit.xaml" />
     <EmbeddedResource Include="Resources\EventLog.xaml" />
     <EmbeddedResource Include="Resources\Exit.xaml" />
     <EmbeddedResource Include="Resources\Feedback.xaml" />
     <EmbeddedResource Include="Resources\FullScreen.xaml" />
+    <EmbeddedResource Include="Resources\GitHub.xaml" />
     <EmbeddedResource Include="Resources\HTMLFile.xaml" />
     <EmbeddedResource Include="Resources\Keyboard.xaml" />
     <EmbeddedResource Include="Resources\Method.xaml" />

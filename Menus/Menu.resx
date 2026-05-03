@@ -631,7 +631,13 @@
     <value>359, 44</value>
   </data>
   <data name="QuestDiscussionsToolStripMenuItem.Text" xml:space="preserve">
-    <value>Quest &amp;Discussions</value>
+    <value>GitHub &amp;Discussions</value>
+  </data>
+  <data name="DiscordToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
+    <value>359, 44</value>
+  </data>
+  <data name="DiscordToolStripMenuItem.Text" xml:space="preserve">
+    <value>Discord</value>
   </data>
   <data name="ReportABugToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
     <value>359, 44</value>
@@ -1120,6 +1126,12 @@
     <value>QuestDiscussionsToolStripMenuItem</value>
   </data>
   <data name="&gt;&gt;QuestDiscussionsToolStripMenuItem.Type" xml:space="preserve">
+    <value>System.Windows.Forms.ToolStripMenuItem, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;DiscordToolStripMenuItem.Name" xml:space="preserve">
+    <value>DiscordToolStripMenuItem</value>
+  </data>
+  <data name="&gt;&gt;DiscordToolStripMenuItem.Type" xml:space="preserve">
     <value>System.Windows.Forms.ToolStripMenuItem, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="&gt;&gt;ReportABugToolStripMenuItem.Name" xml:space="preserve">
