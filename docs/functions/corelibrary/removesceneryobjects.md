@@ -1,6 +1,7 @@
 ---
 title: RemoveSceneryObjects
 nav_exclude: true
+parent: "Functions"
 ---
 
     RemoveSceneryObjects(objectlist)

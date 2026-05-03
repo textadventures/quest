@@ -1,6 +1,7 @@
 ---
 title: HandleCommand
 nav_exclude: true
+parent: "Functions"
 ---
 
     HandleCommand (command)

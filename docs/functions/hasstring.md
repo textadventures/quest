@@ -1,6 +1,7 @@
 ---
 title: HasString
 nav_exclude: true
+parent: "Functions"
 ---
 
     HasString (object, string attribute name)

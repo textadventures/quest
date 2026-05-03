@@ -1,6 +1,7 @@
 ---
 title: Equal
 nav_exclude: true
+parent: "Functions"
 ---
 
     Equal (value, value)

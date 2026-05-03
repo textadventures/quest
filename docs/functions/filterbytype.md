@@ -1,6 +1,7 @@
 ---
 title: FilterByType
 nav_exclude: true
+parent: "Functions"
 ---
 
     FilterByType (objectlist list, string typename)

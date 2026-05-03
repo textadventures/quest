@@ -1,6 +1,7 @@
 ---
 title: IndexOf
 nav_exclude: true
+parent: "Functions"
 ---
 
     IndexOf (list, anything)

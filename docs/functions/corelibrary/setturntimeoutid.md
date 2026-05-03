@@ -1,6 +1,7 @@
 ---
 title: SetTurnTimeoutID
 nav_exclude: true
+parent: "Functions"
 ---
 
     SetTurnTimeoutID (integer turn count, string name, script)

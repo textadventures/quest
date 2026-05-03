@@ -1,6 +1,7 @@
 ---
 title: GetDisplayAlias
 nav_exclude: true
+parent: "Functions"
 ---
 
     GetDisplayAlias (object)

@@ -1,6 +1,7 @@
 ---
 title: Int
 nav_exclude: true
+parent: "Attribute Types"
 ---
 
 An "int" (integer) attribute represents a whole number (which can be positive or negative).

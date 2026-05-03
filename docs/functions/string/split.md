@@ -1,6 +1,7 @@
 ---
 title: Split
 nav_exclude: true
+parent: "Functions"
 ---
 
     Split (string input, string split character)

@@ -1,6 +1,7 @@
 ---
 title: Got
 nav_exclude: true
+parent: "Functions"
 ---
 
     Got (object)

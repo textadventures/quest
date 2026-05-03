@@ -1,6 +1,7 @@
 ---
 title: SuppressTurnscripts
 nav_exclude: true
+parent: "Functions"
 ---
 
     SuppressTurnscripts ()

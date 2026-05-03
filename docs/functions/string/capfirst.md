@@ -1,6 +1,7 @@
 ---
 title: CapFirst
 nav_exclude: true
+parent: "Functions"
 ---
 
     CapFirst (input)

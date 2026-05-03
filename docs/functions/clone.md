@@ -1,6 +1,7 @@
 ---
 title: Clone
 nav_exclude: true
+parent: "Functions"
 ---
 
     Clone (object object to clone)

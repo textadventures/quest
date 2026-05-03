@@ -1,6 +1,7 @@
 ---
 title: IncreaseMoney
 nav_exclude: true
+parent: "Functions"
 ---
 
     IncreaseMoney (integer amount)

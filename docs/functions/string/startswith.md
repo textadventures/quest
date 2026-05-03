@@ -1,6 +1,7 @@
 ---
 title: StartsWith
 nav_exclude: true
+parent: "Functions"
 ---
 
     StartsWith (string input, string start)

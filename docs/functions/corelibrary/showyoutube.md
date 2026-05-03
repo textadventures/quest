@@ -1,6 +1,7 @@
 ---
 title: ShowYouTube
 nav_exclude: true
+parent: "Functions"
 ---
 
     ShowYouTube(string id)

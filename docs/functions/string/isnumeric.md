@@ -1,6 +1,7 @@
 ---
 title: IsNumeric
 nav_exclude: true
+parent: "Functions"
 ---
 
     IsNumeric (string input)

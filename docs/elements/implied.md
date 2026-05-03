@@ -1,6 +1,7 @@
 ---
 title: implied element
 nav_exclude: true
+parent: "XML Elements"
 ---
 
     <implied element="element" property="attribute name" type="type"/>

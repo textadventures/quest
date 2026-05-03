@@ -1,6 +1,7 @@
 ---
 title: GetDirectChildren
 nav_exclude: true
+parent: "Functions"
 ---
 
     GetDirectChildren (object)

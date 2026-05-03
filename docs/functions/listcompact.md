@@ -1,6 +1,7 @@
 ---
 title: ListCompact
 nav_exclude: true
+parent: "Functions"
 ---
 
     ListCompact (any list list)

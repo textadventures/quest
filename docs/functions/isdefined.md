@@ -1,6 +1,7 @@
 ---
 title: IsDefined
 nav_exclude: true
+parent: "Functions"
 ---
 
     IsDefined (string variable name)

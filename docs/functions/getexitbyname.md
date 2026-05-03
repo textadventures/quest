@@ -1,6 +1,7 @@
 ---
 title: GetExitByName
 nav_exclude: true
+parent: "Functions"
 ---
 
     GetExitByName (object from room, string direction name)

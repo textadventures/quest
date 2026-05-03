@@ -1,6 +1,7 @@
 ---
 title: AllRooms
 nav_exclude: true
+parent: "Functions"
 ---
 
     AllRooms()

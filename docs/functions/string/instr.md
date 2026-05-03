@@ -1,6 +1,7 @@
 ---
 title: Instr
 nav_exclude: true
+parent: "Functions"
 ---
 
     Instr (string input, string search)

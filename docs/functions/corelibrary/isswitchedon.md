@@ -1,6 +1,7 @@
 ---
 title: IsSwitchedOn
 nav_exclude: true
+parent: "Functions"
 ---
 
     IsSwitchedOn (object)

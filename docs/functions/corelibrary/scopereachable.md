@@ -1,6 +1,7 @@
 ---
 title: ScopeReachable
 nav_exclude: true
+parent: "Functions"
 ---
 
     ScopeReachable ()

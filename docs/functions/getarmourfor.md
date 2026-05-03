@@ -1,6 +1,7 @@
 ---
 title: GetArmourFor
 nav_exclude: true
+parent: "Functions"
 ---
 
     GetArmourFor (object character)

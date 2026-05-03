@@ -1,6 +1,7 @@
 ---
 title: useframe
 nav_exclude: true
+parent: "Attributes"
 ---
 
 "useframe" is a [boolean](../types/boolean.html) attribute specifying whether a static picture frame should be displayed above the game text.

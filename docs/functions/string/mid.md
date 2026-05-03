@@ -1,6 +1,7 @@
 ---
 title: Mid
 nav_exclude: true
+parent: "Functions"
 ---
 
     Mid (string input, int start position)

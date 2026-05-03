@@ -1,6 +1,7 @@
 ---
 title: ObjectListCompact
 nav_exclude: true
+parent: "Functions"
 ---
 
     ObjectListCompact (objectlist list)

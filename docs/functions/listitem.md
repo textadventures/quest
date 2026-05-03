@@ -1,6 +1,7 @@
 ---
 title: ListItem
 nav_exclude: true
+parent: "Functions"
 ---
 
     ListItem (list, int index)

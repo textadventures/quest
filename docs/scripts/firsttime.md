@@ -1,6 +1,7 @@
 ---
 title: firsttime
 nav_exclude: true
+parent: "Script commands"
 ---
 
     firsttime { script1 } [ otherwise { script2 } ] 

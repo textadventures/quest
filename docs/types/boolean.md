@@ -1,6 +1,7 @@
 ---
 title: Boolean
 nav_exclude: true
+parent: "Attribute Types"
 ---
 
 A Boolean can be either `true` or `false`. When using the GUI to create a script, they are called flags, and can be on or off. Boolean attributes are extremely use as they can tell us the current state of an object. It the torch on or off? Is the hat worn or not? Has the room been visited?

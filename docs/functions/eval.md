@@ -1,6 +1,7 @@
 ---
 title: Eval
 nav_exclude: true
+parent: "Functions"
 ---
 
     Eval (string expression, dictionary parameters)

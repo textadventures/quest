@@ -1,6 +1,7 @@
 ---
 title: Populate
 nav_exclude: true
+parent: "Functions"
 ---
 
     Populate (string regex, string input)

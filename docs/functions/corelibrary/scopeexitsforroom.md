@@ -1,6 +1,7 @@
 ---
 title: ScopeExitsForRoom
 nav_exclude: true
+parent: "Functions"
 ---
 
     ScopeExitsForRoom(room)

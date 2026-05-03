@@ -1,6 +1,7 @@
 ---
 title: IsDouble
 nav_exclude: true
+parent: "Functions"
 ---
 
     IsDouble (string number)

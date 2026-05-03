@@ -1,6 +1,7 @@
 ---
 title: ask
 nav_exclude: true
+parent: "Script commands"
 ---
 
     ask (string question) {script}

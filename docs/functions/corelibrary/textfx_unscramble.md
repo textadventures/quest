@@ -1,6 +1,7 @@
 ---
 title: TextFX_Unscramble
 nav_exclude: true
+parent: "Functions"
 ---
 
     TextFX_Unscramble(text, int speed, int reveal)

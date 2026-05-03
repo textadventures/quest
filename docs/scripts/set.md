@@ -1,6 +1,7 @@
 ---
 title: set
 nav_exclude: true
+parent: "Script commands"
 ---
 
     set (object, string attribute name, any type value)

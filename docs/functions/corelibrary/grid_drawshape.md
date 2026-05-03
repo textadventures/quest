@@ -1,6 +1,7 @@
 ---
 title: Grid_DrawShape
 nav_exclude: true
+parent: "Functions"
 ---
 
     Grid_DrawShape (string id, string border, string fill, double opacity)

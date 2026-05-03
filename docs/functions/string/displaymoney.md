@@ -1,6 +1,7 @@
 ---
 title: DisplayMoney
 nav_exclude: true
+parent: "Functions"
 ---
 
     DisplayMoney (int money)

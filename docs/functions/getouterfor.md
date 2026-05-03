@@ -1,6 +1,7 @@
 ---
 title: GetOuterFor
 nav_exclude: true
+parent: "Functions"
 ---
 
     GetOuterFor (object character, string slot)

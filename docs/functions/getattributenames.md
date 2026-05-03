@@ -1,6 +1,7 @@
 ---
 title: GetAttributeNames
 nav_exclude: true
+parent: "Functions"
 ---
 
     GetAttributeNames (object, boolean include inherited attributes)

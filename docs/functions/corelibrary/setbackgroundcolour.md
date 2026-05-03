@@ -1,6 +1,7 @@
 ---
 title: SetBackgroundColour
 nav_exclude: true
+parent: "Functions"
 ---
 
     SetBackgroundColour(string colour)

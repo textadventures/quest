@@ -1,6 +1,7 @@
 ---
 title: exit element
 nav_exclude: true
+parent: "XML Elements"
 ---
 
     <exit alias="direction or displayed exit name" name="name" to="to room">attributes</exit>

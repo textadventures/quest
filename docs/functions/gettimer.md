@@ -1,6 +1,7 @@
 ---
 title: GetTimer
 nav_exclude: true
+parent: "Functions"
 ---
 
     GetTimer (string timer name)

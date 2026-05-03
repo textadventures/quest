@@ -1,6 +1,7 @@
 ---
 title: IsGameRunning
 nav_exclude: true
+parent: "Functions"
 ---
 
     IsGameRunning ()

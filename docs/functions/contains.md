@@ -1,6 +1,7 @@
 ---
 title: Contains
 nav_exclude: true
+parent: "Functions"
 ---
 
     Contains (object parent, object child)

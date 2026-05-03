@@ -1,6 +1,7 @@
 ---
 title: ListCombine
 nav_exclude: true
+parent: "Functions"
 ---
 
     ListCombine (list, list)

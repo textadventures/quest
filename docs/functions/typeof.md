@@ -1,6 +1,7 @@
 ---
 title: TypeOf
 nav_exclude: true
+parent: "Functions"
 ---
 
     TypeOf (object, string attribute name)

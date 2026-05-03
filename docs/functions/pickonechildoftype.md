@@ -1,6 +1,7 @@
 ---
 title: PickOneChildOfType
 nav_exclude: true
+parent: "Functions"
 ---
 
     PickOneChildOfType (object room or container, string typename)

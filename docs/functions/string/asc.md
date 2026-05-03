@@ -1,6 +1,7 @@
 ---
 title: Asc
 nav_exclude: true
+parent: "Functions"
 ---
 
     Asc (string input)

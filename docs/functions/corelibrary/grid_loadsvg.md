@@ -1,6 +1,7 @@
 ---
 title: Grid_LoadSvg
 nav_exclude: true
+parent: "Functions"
 ---
 
     Grid_LoadSvg (string data, string id)

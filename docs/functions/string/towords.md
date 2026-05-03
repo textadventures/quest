@@ -1,6 +1,7 @@
 ---
 title: ToWords
 nav_exclude: true
+parent: "Functions"
 ---
 
     ToWords (int)

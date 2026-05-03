@@ -1,6 +1,7 @@
 ---
 title: editor element
 nav_exclude: true
+parent: "XML Elements"
 ---
 
     <editor name="name">attributes</editor>

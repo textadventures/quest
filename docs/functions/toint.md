@@ -1,6 +1,7 @@
 ---
 title: ToInt
 nav_exclude: true
+parent: "Functions"
 ---
 
     ToInt (string number)

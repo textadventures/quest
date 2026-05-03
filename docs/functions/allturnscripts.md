@@ -1,6 +1,7 @@
 ---
 title: AllTurnScripts
 nav_exclude: true
+parent: "Functions"
 ---
 
     AllTurnScripts()

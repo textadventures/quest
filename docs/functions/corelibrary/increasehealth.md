@@ -1,6 +1,7 @@
 ---
 title: IncreaseHealth
 nav_exclude: true
+parent: "Functions"
 ---
 
     IncreaseHealth (integer amount)

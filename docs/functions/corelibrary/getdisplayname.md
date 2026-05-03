@@ -1,6 +1,7 @@
 ---
 title: GetDisplayName
 nav_exclude: true
+parent: "Functions"
 ---
 
     GetDisplayName (object)

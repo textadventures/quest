@@ -1,6 +1,7 @@
 ---
 title: DisableTimer
 nav_exclude: true
+parent: "Functions"
 ---
 
     DisableTimer (timer)

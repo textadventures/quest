@@ -1,6 +1,7 @@
 ---
 title: DictionaryAdd
 nav_exclude: true
+parent: "Functions"
 ---
 
     DictionaryAdd (dictionary, string key, string value)

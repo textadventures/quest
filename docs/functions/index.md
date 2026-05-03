@@ -1,7 +1,6 @@
 ---
 title: Functions
-nav_order: 23
-parent: "Reference"
+nav_order: 6
 ---
 
 This is a list of most of the functions built in to Quest, grouped by type. For a list in alphabetical order, go [here](index_allfunctions.html).

@@ -1,6 +1,7 @@
 ---
 title: tab element
 nav_exclude: true
+parent: "XML Elements"
 ---
 
     <tab>attributes</tab>

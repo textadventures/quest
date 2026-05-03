@@ -1,6 +1,7 @@
 ---
 title: Chr
 nav_exclude: true
+parent: "Functions"
 ---
 
     Chr (int input)

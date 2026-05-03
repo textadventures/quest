@@ -1,6 +1,7 @@
 ---
 title: NewStringDictionary
 nav_exclude: true
+parent: "Functions"
 ---
 
     NewStringDictionary ()

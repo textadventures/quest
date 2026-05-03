@@ -1,6 +1,7 @@
 ---
 title: MakeObjectVisible
 nav_exclude: true
+parent: "Functions"
 ---
 
     MakeObjectVisible (object)

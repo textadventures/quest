@@ -1,6 +1,7 @@
 ---
 title: ListExclude
 nav_exclude: true
+parent: "Functions"
 ---
 
     ListExclude (list, any type item or list)

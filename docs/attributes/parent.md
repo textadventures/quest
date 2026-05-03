@@ -1,6 +1,7 @@
 ---
 title: parent
 nav_exclude: true
+parent: "Attributes"
 ---
 
 "parent" is an [object](../types/object.html) attribute, specifying the parent of the object.

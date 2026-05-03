@@ -1,6 +1,7 @@
 ---
 title: dictionary remove
 nav_exclude: true
+parent: "Script commands"
 ---
 
     dictionary remove (dictionary, string key)

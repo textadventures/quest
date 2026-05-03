@@ -1,6 +1,7 @@
 ---
 title: ShowVimeo
 nav_exclude: true
+parent: "Functions"
 ---
 
     ShowVimeo(string id)

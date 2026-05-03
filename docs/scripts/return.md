@@ -1,6 +1,7 @@
 ---
 title: return
 nav_exclude: true
+parent: "Script commands"
 ---
 
     return (any type result)

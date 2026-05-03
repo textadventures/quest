@@ -1,6 +1,7 @@
 ---
 title: MakeExitVisible
 nav_exclude: true
+parent: "Functions"
 ---
 
     MakeExitVisible (object)

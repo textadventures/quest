@@ -1,6 +1,7 @@
 ---
 title: HasScript
 nav_exclude: true
+parent: "Functions"
 ---
 
     HasScript (object, string attribute name)

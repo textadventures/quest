@@ -1,6 +1,7 @@
 ---
 title: DisplayList
 nav_exclude: true
+parent: "Functions"
 ---
 
     DisplayList (list, boolean numbers)

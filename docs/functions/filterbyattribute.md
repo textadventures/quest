@@ -1,6 +1,7 @@
 ---
 title: FilterByAttribute
 nav_exclude: true
+parent: "Functions"
 ---
 
     FilterByAttribute (objectlist list, string attribute name, any value)

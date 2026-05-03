@@ -1,6 +1,7 @@
 ---
 title: GetNonTransparentParent
 nav_exclude: true
+parent: "Functions"
 ---
 
     GetNonTransparentParent (object)

@@ -1,6 +1,7 @@
 ---
 title: GetFileData
 nav_exclude: true
+parent: "Functions"
 ---
 
     GetFileData (string file name)

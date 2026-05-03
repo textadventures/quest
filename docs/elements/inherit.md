@@ -1,6 +1,7 @@
 ---
 title: inherit element
 nav_exclude: true
+parent: "XML Elements"
 ---
 
     <inherit name="name"/>

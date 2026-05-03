@@ -1,6 +1,7 @@
 ---
 title: javascript element
 nav_exclude: true
+parent: "XML Elements"
 ---
 
     <javascript src="filename"/>

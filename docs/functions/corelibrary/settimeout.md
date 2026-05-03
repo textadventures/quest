@@ -1,6 +1,7 @@
 ---
 title: SetTimeout
 nav_exclude: true
+parent: "Functions"
 ---
 
     SetTimeout (interval, script)

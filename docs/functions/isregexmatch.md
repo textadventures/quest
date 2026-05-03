@@ -1,6 +1,7 @@
 ---
 title: IsRegexMatch
 nav_exclude: true
+parent: "Functions"
 ---
 
     IsRegexMatch (string regex, string)

@@ -1,6 +1,7 @@
 ---
 title: ScopeInventory
 nav_exclude: true
+parent: "Functions"
 ---
 
     ScopeInventory ()

@@ -1,6 +1,7 @@
 ---
 title: resource element
 nav_exclude: true
+parent: "XML Elements"
 ---
 
     <resource src="filename"/>

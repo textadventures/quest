@@ -1,6 +1,7 @@
 ---
 title: FormatList
 nav_exclude: true
+parent: "Functions"
 ---
 
     FormatList (stringlist or object list, string joiner, string lastjoiner, string nothing)

@@ -1,6 +1,7 @@
 ---
 title: FormatExitList
 nav_exclude: true
+parent: "Functions"
 ---
 
     FormatExitList (string pre-list, objectlist exits, string pre-final, string post-list)

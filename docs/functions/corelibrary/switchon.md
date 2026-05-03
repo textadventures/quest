@@ -1,6 +1,7 @@
 ---
 title: SwitchOn
 nav_exclude: true
+parent: "Functions"
 ---
 
     SwitchOn (object)

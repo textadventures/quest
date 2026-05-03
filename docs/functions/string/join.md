@@ -1,6 +1,7 @@
 ---
 title: Join
 nav_exclude: true
+parent: "Functions"
 ---
 
     Join (stringlist input, string split character)

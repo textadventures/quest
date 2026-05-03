@@ -1,6 +1,7 @@
 ---
 title: EnableTimer
 nav_exclude: true
+parent: "Functions"
 ---
 
     EnableTimer (timer)

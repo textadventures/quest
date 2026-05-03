@@ -1,6 +1,7 @@
 ---
 title: NewObjectList
 nav_exclude: true
+parent: "Functions"
 ---
 
     NewObjectList ()

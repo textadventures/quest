@@ -1,6 +1,7 @@
 ---
 title: SwitchOff
 nav_exclude: true
+parent: "Functions"
 ---
 
     SwitchOff (object)

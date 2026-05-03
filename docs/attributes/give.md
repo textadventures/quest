@@ -1,6 +1,7 @@
 ---
 title: give
 nav_exclude: true
+parent: "Attributes"
 ---
 
 "give" is an attribute that can be either a [scriptdictionary](../types/scriptdictionary.html) or [string](../types/string.html).

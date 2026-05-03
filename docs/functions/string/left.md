@@ -1,6 +1,7 @@
 ---
 title: Left
 nav_exclude: true
+parent: "Functions"
 ---
 
     Left (string input, int character count)

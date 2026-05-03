@@ -1,6 +1,7 @@
 ---
 title: GetMatchStrength
 nav_exclude: true
+parent: "Functions"
 ---
 
     GetMatchStrength (string regex, string input)

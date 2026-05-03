@@ -1,6 +1,7 @@
 ---
 title: create turnscript
 nav_exclude: true
+parent: "Script commands"
 ---
 
     create turnscript (string name)

@@ -1,6 +1,7 @@
 ---
 title: GetRandomDouble
 nav_exclude: true
+parent: "Functions"
 ---
 
     GetRandomDouble ()

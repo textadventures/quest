@@ -1,6 +1,7 @@
 ---
 title: NewObjectDictionary
 nav_exclude: true
+parent: "Functions"
 ---
 
     NewObjectDictionary ()

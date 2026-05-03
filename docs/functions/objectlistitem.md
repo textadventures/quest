@@ -1,6 +1,7 @@
 ---
 title: ObjectListItem
 nav_exclude: true
+parent: "Functions"
 ---
 
     ObjectListItem (objectlist, int index)

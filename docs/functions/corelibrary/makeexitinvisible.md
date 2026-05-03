@@ -1,6 +1,7 @@
 ---
 title: MakeExitInvisible
 nav_exclude: true
+parent: "Functions"
 ---
 
     MakeExitInvisible (object)

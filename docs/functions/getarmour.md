@@ -1,6 +1,7 @@
 ---
 title: GetArmour
 nav_exclude: true
+parent: "Functions"
 ---
 
     GetArmour ()

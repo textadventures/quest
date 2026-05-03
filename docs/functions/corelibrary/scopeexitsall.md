@@ -1,6 +1,7 @@
 ---
 title: ScopeExitsAll
 nav_exclude: true
+parent: "Functions"
 ---
 
     ScopeExitsAll ()

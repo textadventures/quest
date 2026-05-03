@@ -1,6 +1,7 @@
 ---
 title: GetDouble
 nav_exclude: true
+parent: "Functions"
 ---
 
     GetDouble (object, string attribute name)

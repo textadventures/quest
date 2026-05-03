@@ -1,6 +1,7 @@
 ---
 title: HasBoolean
 nav_exclude: true
+parent: "Functions"
 ---
 
     HasBoolean (object, string attribute name)

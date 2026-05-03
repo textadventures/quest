@@ -1,6 +1,7 @@
 ---
 title: DictionaryItem
 nav_exclude: true
+parent: "Functions"
 ---
 
     DictionaryItem (dictionary, string key)

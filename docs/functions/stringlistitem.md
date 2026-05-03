@@ -1,6 +1,7 @@
 ---
 title: StringListItem
 nav_exclude: true
+parent: "Functions"
 ---
 
     StringListItem (stringlist, int index)

@@ -1,6 +1,7 @@
 ---
 title: GetBoolean
 nav_exclude: true
+parent: "Functions"
 ---
 
     GetBoolean (object, string attribute name)

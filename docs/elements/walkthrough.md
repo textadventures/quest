@@ -1,6 +1,7 @@
 ---
 title: walkthrough element
 nav_exclude: true
+parent: "XML Elements"
 ---
 
     <walkthrough name="name" > <steps>steps</steps> </walkthrough>

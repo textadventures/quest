@@ -1,6 +1,7 @@
 ---
 title: DictionaryContains
 nav_exclude: true
+parent: "Functions"
 ---
 
     DictionaryContains (dictionary, string key)

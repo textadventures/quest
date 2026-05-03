@@ -1,6 +1,7 @@
 ---
 title: PadString
 nav_exclude: true
+parent: "Functions"
 ---
 
     PadString (string input, int length, string pad)

@@ -1,6 +1,7 @@
 ---
 title: HelperOpenObject
 nav_exclude: true
+parent: "Functions"
 ---
 
     HelperOpenObject (object)

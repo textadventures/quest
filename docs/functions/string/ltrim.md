@@ -1,6 +1,7 @@
 ---
 title: LTrim
 nav_exclude: true
+parent: "Functions"
 ---
 
     LTrim (input)

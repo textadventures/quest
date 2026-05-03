@@ -1,6 +1,7 @@
 ---
 title: HelperCloseObject
 nav_exclude: true
+parent: "Functions"
 ---
 
     HelperCloseObject (object)

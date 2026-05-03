@@ -1,6 +1,7 @@
 ---
 title: GetObject
 nav_exclude: true
+parent: "Functions"
 ---
 
     GetObject (string object name)

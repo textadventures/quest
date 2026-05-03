@@ -1,6 +1,7 @@
 ---
 title: GetInt
 nav_exclude: true
+parent: "Functions"
 ---
 
     GetInt (object, string attribute name)

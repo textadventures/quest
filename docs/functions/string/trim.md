@@ -1,6 +1,7 @@
 ---
 title: Trim
 nav_exclude: true
+parent: "Functions"
 ---
 
     Trim (input)

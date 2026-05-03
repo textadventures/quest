@@ -1,6 +1,7 @@
 ---
 title: Null
 nav_exclude: true
+parent: "Attribute Types"
 ---
 
 If Booleans seem limited in have only two possible values, null can have only one!

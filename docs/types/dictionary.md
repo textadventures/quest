@@ -1,6 +1,7 @@
 ---
 title: Dictionary
 nav_exclude: true
+parent: "Attribute Types"
 ---
 
 **New in Quest 5.4**

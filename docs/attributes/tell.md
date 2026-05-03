@@ -1,6 +1,7 @@
 ---
 title: tell
 nav_exclude: true
+parent: "Attributes"
 ---
 
 "tell" is a [scriptdictionary](../types/scriptdictionary.html). Keys are topics, and values are the scripts to run when the object is told about that topic.

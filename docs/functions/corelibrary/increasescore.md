@@ -1,6 +1,7 @@
 ---
 title: IncreaseScore
 nav_exclude: true
+parent: "Functions"
 ---
 
     IncreaseScore (integer amount)

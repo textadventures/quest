@@ -1,6 +1,7 @@
 ---
 title: ScopeVisibleNotHeld
 nav_exclude: true
+parent: "Functions"
 ---
 
     ScopeVisibleNotHeld ()

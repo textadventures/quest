@@ -1,6 +1,7 @@
 ---
 title: Conjugate
 nav_exclude: true
+parent: "Functions"
 ---
 
     Conjugate (object, string verb)

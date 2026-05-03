@@ -1,6 +1,7 @@
 ---
 title: invoke
 nav_exclude: true
+parent: "Script commands"
 ---
 
     invoke (script)

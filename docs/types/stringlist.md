@@ -1,6 +1,7 @@
 ---
 title: Stringlist
 nav_exclude: true
+parent: "Attribute Types"
 ---
 
 A stringlist is a [list](list.html) that can contain a number of elements, all have to be of type [string](string.html).

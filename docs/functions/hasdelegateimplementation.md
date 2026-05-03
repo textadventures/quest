@@ -1,6 +1,7 @@
 ---
 title: HasDelegateImplementation
 nav_exclude: true
+parent: "Functions"
 ---
 
     HasDelegateImplementation (object, string attribute name)

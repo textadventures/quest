@@ -1,6 +1,7 @@
 ---
 title: AllCommands
 nav_exclude: true
+parent: "Functions"
 ---
 
     AllCommands()

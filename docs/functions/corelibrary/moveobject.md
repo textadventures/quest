@@ -1,6 +1,7 @@
 ---
 title: MoveObject
 nav_exclude: true
+parent: "Functions"
 ---
 
     MoveObject(object object1, object object2)

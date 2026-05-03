@@ -1,6 +1,7 @@
 ---
 title: UpdateStatusAttributes
 nav_exclude: true
+parent: "Functions"
 ---
 
     UpdateStatusAttributes ()

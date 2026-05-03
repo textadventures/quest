@@ -1,6 +1,7 @@
 ---
 title: NewStringList
 nav_exclude: true
+parent: "Functions"
 ---
 
     NewStringList ()

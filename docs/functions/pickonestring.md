@@ -1,6 +1,7 @@
 ---
 title: PickOneString
 nav_exclude: true
+parent: "Functions"
 ---
 
     PickOneString (string or stringlist)

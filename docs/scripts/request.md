@@ -1,6 +1,7 @@
 ---
 title: request
 nav_exclude: true
+parent: "Script commands"
 ---
 
     request (request name, string parameter)

@@ -1,6 +1,7 @@
 ---
 title: GetRandomInt
 nav_exclude: true
+parent: "Functions"
 ---
 
     GetRandomInt (integer min, integer max)

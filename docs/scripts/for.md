@@ -1,6 +1,7 @@
 ---
 title: for
 nav_exclude: true
+parent: "Script commands"
 ---
 
     for (iterator variable, int from, int to) { script }

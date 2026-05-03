@@ -1,6 +1,7 @@
 ---
 title: ListContains
 nav_exclude: true
+parent: "Functions"
 ---
 
     ListContains (list, any type item)

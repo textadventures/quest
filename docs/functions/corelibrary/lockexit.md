@@ -1,6 +1,7 @@
 ---
 title: LockExit
 nav_exclude: true
+parent: "Functions"
 ---
 
     LockExit (exit)

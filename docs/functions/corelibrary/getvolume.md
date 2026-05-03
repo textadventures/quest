@@ -1,6 +1,7 @@
 ---
 title: GetVolume
 nav_exclude: true
+parent: "Functions"
 ---
 
     GetVolume (object, boolean inclusiveobject)

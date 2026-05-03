@@ -1,6 +1,7 @@
 ---
 title: SetAlignment
 nav_exclude: true
+parent: "Functions"
 ---
 
     SetAlignment(string alignment)

@@ -1,6 +1,7 @@
 ---
 title: type element
 nav_exclude: true
+parent: "XML Elements"
 ---
 
     <type name="name">properties</type>

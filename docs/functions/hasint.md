@@ -1,6 +1,7 @@
 ---
 title: HasInt
 nav_exclude: true
+parent: "Functions"
 ---
 
     HasInt (object, string attribute name)

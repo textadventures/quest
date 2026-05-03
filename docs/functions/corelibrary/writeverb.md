@@ -1,6 +1,7 @@
 ---
 title: WriteVerb
 nav_exclude: true
+parent: "Functions"
 ---
 
     WriteVerb(obj, verb)

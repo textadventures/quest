@@ -1,6 +1,7 @@
 ---
 title: library element
 nav_exclude: true
+parent: "XML Elements"
 ---
 
     <library>all library content</library>

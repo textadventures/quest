@@ -1,6 +1,7 @@
 ---
 title: ObjectListSort
 nav_exclude: true
+parent: "Functions"
 ---
 
     ObjectListSort (objectlist list, string attributes ...)

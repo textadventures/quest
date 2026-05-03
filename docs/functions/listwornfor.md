@@ -1,6 +1,7 @@
 ---
 title: ListWornFor
 nav_exclude: true
+parent: "Functions"
 ---
 
     ListWornFor (object character)

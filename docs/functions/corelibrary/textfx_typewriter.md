@@ -1,6 +1,7 @@
 ---
 title: TextFX_Typewriter
 nav_exclude: true
+parent: "Functions"
 ---
 
     TextFX_Typewriter(text, int speed)

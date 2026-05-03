@@ -1,6 +1,7 @@
 ---
 title: StringListSort
 nav_exclude: true
+parent: "Functions"
 ---
 
     StringListSort (stringlist list)

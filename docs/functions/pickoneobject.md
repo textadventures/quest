@@ -1,6 +1,7 @@
 ---
 title: PickOneObject
 nav_exclude: true
+parent: "Functions"
 ---
 
     PickOneObject (objectlist)

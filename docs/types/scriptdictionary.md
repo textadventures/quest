@@ -1,6 +1,7 @@
 ---
 title: Scriptdictionary
 nav_exclude: true
+parent: "Attribute Types"
 ---
 
 A scriptdictionary is a dictionary which has [string](string.html) keys and [script](script.html) values.

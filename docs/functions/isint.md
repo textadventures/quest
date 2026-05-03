@@ -1,6 +1,7 @@
 ---
 title: IsInt
 nav_exclude: true
+parent: "Functions"
 ---
 
     IsInt (string number)

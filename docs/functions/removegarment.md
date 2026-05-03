@@ -1,6 +1,7 @@
 ---
 title: RemoveGarment
 nav_exclude: true
+parent: "Functions"
 ---
 
     RemoveGarment (object)

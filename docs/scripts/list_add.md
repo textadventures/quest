@@ -1,6 +1,7 @@
 ---
 title: list add
 nav_exclude: true
+parent: "Script commands"
 ---
 
     list add (list, any type item)

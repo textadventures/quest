@@ -1,6 +1,7 @@
 ---
 title: ListVisible
 nav_exclude: true
+parent: "Functions"
 ---
 
     ListVisible ()

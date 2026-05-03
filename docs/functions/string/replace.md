@@ -1,6 +1,7 @@
 ---
 title: Replace
 nav_exclude: true
+parent: "Functions"
 ---
 
     Replace (string input, string old text, string new text)

@@ -1,6 +1,7 @@
 ---
 title: foreach
 nav_exclude: true
+parent: "Script commands"
 ---
 
     foreach (iterator variable, list) { script }

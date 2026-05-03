@@ -1,6 +1,7 @@
 ---
 title: SetBackgroundOpacity
 nav_exclude: true
+parent: "Functions"
 ---
 
     SetBackgroundOpacity(float value)

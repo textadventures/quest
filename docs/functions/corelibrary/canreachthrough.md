@@ -1,6 +1,7 @@
 ---
 title: CanReachThrough
 nav_exclude: true
+parent: "Functions"
 ---
 
     CanReachThrough (object)

@@ -1,6 +1,7 @@
 ---
 title: EndsWith
 nav_exclude: true
+parent: "Functions"
 ---
 
     EndsWith (string input, string ending)

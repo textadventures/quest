@@ -1,6 +1,7 @@
 ---
 title: MakeObjectInvisible
 nav_exclude: true
+parent: "Functions"
 ---
 
     MakeObjectInvisible (object)

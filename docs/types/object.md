@@ -1,6 +1,7 @@
 ---
 title: Object
 nav_exclude: true
+parent: "Attribute Types"
 ---
 
 An object attribute points to another object by name.

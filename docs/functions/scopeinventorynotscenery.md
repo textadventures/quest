@@ -1,6 +1,7 @@
 ---
 title: ScopeInventoryNotScenery
 nav_exclude: true
+parent: "Functions"
 ---
 
     ScopeInventoryNotScenery

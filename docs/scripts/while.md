@@ -1,6 +1,7 @@
 ---
 title: while
 nav_exclude: true
+parent: "Script commands"
 ---
 
     while (expression) { script }

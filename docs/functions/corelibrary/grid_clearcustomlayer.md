@@ -1,6 +1,7 @@
 ---
 title: Grid_ClearCustomLayer
 nav_exclude: true
+parent: "Functions"
 ---
 
     Grid_ClearCustomLayer ()

@@ -1,6 +1,7 @@
 ---
 title: Double
 nav_exclude: true
+parent: "Attribute Types"
 ---
 
 A "double" attribute represents a number with a decimal point. It can be positive or negative.

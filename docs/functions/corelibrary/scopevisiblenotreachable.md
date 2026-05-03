@@ -1,6 +1,7 @@
 ---
 title: ScopeVisibleNotReachable
 nav_exclude: true
+parent: "Functions"
 ---
 
     ScopeVisibleNotReachable ()

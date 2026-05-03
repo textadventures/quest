@@ -1,6 +1,7 @@
 ---
 title: if
 nav_exclude: true
+parent: "Script commands"
 ---
 
     if (boolean expression) { script } [ else if ... ]* [ else { script } ]

@@ -1,6 +1,7 @@
 ---
 title: AllObjects
 nav_exclude: true
+parent: "Functions"
 ---
 
     AllObjects()

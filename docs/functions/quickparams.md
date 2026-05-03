@@ -1,6 +1,7 @@
 ---
 title: QuickParams
 nav_exclude: true
+parent: "Functions"
 ---
 
     QuickParams (string key1, any type value1)

@@ -1,6 +1,7 @@
 ---
 title: ScopeUnlockedExitsForRoom
 nav_exclude: true
+parent: "Functions"
 ---
 
     ScopeUnlockedExitsForRoom(room)

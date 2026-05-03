@@ -1,6 +1,7 @@
 ---
 title: ToString
 nav_exclude: true
+parent: "Functions"
 ---
 
     ToString (anything)

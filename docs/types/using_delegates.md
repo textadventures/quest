@@ -1,6 +1,7 @@
 ---
 title: Using Delegates
 nav_exclude: true
+parent: "Attribute Types"
 ---
 
 <div class="alert alert-info">

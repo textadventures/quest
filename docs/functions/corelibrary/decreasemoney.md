@@ -1,6 +1,7 @@
 ---
 title: DecreaseMoney
 nav_exclude: true
+parent: "Functions"
 ---
 
     DecreaseMoney (integer amount)

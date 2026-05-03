@@ -1,6 +1,7 @@
 ---
 title: GetBlockingObject
 nav_exclude: true
+parent: "Functions"
 ---
 
     GetBlockingObject (object)

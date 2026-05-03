@@ -1,6 +1,7 @@
 ---
 title: AllExits
 nav_exclude: true
+parent: "Functions"
 ---
 
     AllExits()

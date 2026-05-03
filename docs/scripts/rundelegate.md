@@ -1,6 +1,7 @@
 ---
 title: rundelegate
 nav_exclude: true
+parent: "Script commands"
 ---
 
     rundelegate (object, string attribute name, any type parameters ... )

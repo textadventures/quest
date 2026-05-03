@@ -1,6 +1,7 @@
 ---
 title: SetTurnScript
 nav_exclude: true
+parent: "Functions"
 ---
 
     SetTurnScript (turn script, script)

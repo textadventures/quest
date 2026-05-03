@@ -1,6 +1,7 @@
 ---
 title: ScopeReachableInventory
 nav_exclude: true
+parent: "Functions"
 ---
 
     ScopeReachableInventory ()

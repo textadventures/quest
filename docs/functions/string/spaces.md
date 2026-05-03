@@ -1,6 +1,7 @@
 ---
 title: Spaces
 nav_exclude: true
+parent: "Functions"
 ---
 
     Spaces (int)

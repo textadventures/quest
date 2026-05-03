@@ -1,6 +1,7 @@
 ---
 title: ProcessText
 nav_exclude: true
+parent: "Functions"
 ---
 
     ProcessText (string)

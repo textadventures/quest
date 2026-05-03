@@ -1,6 +1,7 @@
 ---
 title: SafeXML
 nav_exclude: true
+parent: "Functions"
 ---
 
     SafeXML (string)

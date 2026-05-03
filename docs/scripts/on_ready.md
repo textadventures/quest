@@ -1,6 +1,7 @@
 ---
 title: on ready
 nav_exclude: true
+parent: "Script commands"
 ---
 
     on ready { script } 

@@ -1,6 +1,7 @@
 ---
 title: GetDisplayVerbs
 nav_exclude: true
+parent: "Functions"
 ---
 
     GetDisplayVerbs (object)

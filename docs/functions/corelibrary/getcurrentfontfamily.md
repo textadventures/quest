@@ -1,6 +1,7 @@
 ---
 title: GetCurrentFontFamily
 nav_exclude: true
+parent: "Functions"
 ---
 
     GetCurrentFontFamily ()

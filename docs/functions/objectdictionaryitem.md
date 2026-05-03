@@ -1,6 +1,7 @@
 ---
 title: ObjectDictionaryItem
 nav_exclude: true
+parent: "Functions"
 ---
 
     ObjectDictionaryItem (dictionary, string key)

@@ -1,6 +1,7 @@
 ---
 title: DisplayNumber
 nav_exclude: true
+parent: "Functions"
 ---
 
     DisplayNumber (int input, string format)

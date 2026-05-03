@@ -1,6 +1,7 @@
 ---
 title: DoesInherit
 nav_exclude: true
+parent: "Functions"
 ---
 
     DoesInherit (object object, string type name)

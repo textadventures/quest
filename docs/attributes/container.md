@@ -1,6 +1,7 @@
 ---
 title: container
 nav_exclude: true
+parent: "Attributes"
 ---
 
 The "container" type is defined in CoreTypes.aslx. It implements an open container by straightforwardly inheriting the [container\_open](container_open.html) type.

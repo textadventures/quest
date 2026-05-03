@@ -1,6 +1,7 @@
 ---
 title: SetDark
 nav_exclude: true
+parent: "Functions"
 ---
 
     SetDark(room)

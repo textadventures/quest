@@ -1,6 +1,7 @@
 ---
 title: OutputTextRawNoBr
 nav_exclude: true
+parent: "Functions"
 ---
 
     OutputTextRawNoBr (string text)

@@ -1,6 +1,7 @@
 ---
 title: dynamictemplate element
 nav_exclude: true
+parent: "XML Elements"
 ---
 
     <dynamictemplate name="name">expression</template>

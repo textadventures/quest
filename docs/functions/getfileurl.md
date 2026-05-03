@@ -1,6 +1,7 @@
 ---
 title: GetFileURL
 nav_exclude: true
+parent: "Functions"
 ---
 
     GetFileURL(string filename)

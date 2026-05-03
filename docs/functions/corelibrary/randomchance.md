@@ -1,6 +1,7 @@
 ---
 title: RandomChance
 nav_exclude: true
+parent: "Functions"
 ---
 
     RandomChance (integer percentile)

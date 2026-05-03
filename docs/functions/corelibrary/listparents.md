@@ -1,6 +1,7 @@
 ---
 title: ListParents
 nav_exclude: true
+parent: "Functions"
 ---
 
     ListParents (object)

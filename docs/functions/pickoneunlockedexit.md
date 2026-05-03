@@ -1,6 +1,7 @@
 ---
 title: PickOneUnlockedExit
 nav_exclude: true
+parent: "Functions"
 ---
 
     PickOneUnlockedExit (object room)

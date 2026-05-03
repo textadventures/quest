@@ -1,6 +1,7 @@
 ---
 title: PickOneChild
 nav_exclude: true
+parent: "Functions"
 ---
 
     PickOneChild (object room or container)

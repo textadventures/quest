@@ -1,6 +1,7 @@
 ---
 title: turnscript element
 nav_exclude: true
+parent: "XML Elements"
 ---
 
     <turnscript name="name">attributes</turnscript>

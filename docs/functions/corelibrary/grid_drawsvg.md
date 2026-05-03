@@ -1,6 +1,7 @@
 ---
 title: Grid_DrawSvg
 nav_exclude: true
+parent: "Functions"
 ---
 
     Grid_DrawSvg (string instance id, string symbol id, int x, int y, int width, int height)

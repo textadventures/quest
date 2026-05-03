@@ -1,6 +1,7 @@
 ---
 title: switchable
 nav_exclude: true
+parent: "Attributes"
 ---
 
 The "switchable" type is defined in CoreTypes.aslx.

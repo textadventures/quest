@@ -1,6 +1,7 @@
 ---
 title: play sound
 nav_exclude: true
+parent: "Script commands"
 ---
 
     play sound (string file, boolean wait, boolean loop)

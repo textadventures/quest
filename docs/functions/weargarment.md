@@ -1,6 +1,7 @@
 ---
 title: WearGarment
 nav_exclude: true
+parent: "Functions"
 ---
 
     WearGarment (object)

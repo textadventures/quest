@@ -1,6 +1,7 @@
 ---
 title: ListCount
 nav_exclude: true
+parent: "Functions"
 ---
 
     ListCount (list)

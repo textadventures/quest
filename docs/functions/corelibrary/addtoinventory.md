@@ -1,6 +1,7 @@
 ---
 title: AddToInventory
 nav_exclude: true
+parent: "Functions"
 ---
 
     AddToInventory (object)

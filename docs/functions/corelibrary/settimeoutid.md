@@ -1,6 +1,7 @@
 ---
 title: SetTimeoutID
 nav_exclude: true
+parent: "Functions"
 ---
 
     SetTimeoutID (integer interval, string name, script)

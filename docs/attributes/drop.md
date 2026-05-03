@@ -1,6 +1,7 @@
 ---
 title: drop
 nav_exclude: true
+parent: "Attributes"
 ---
 
 "drop" is an attribute that can be either [boolean](../types/boolean.html) or [script](../types/script.html).

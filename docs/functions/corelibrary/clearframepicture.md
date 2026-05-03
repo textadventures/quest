@@ -1,6 +1,7 @@
 ---
 title: ClearFramePicture
 nav_exclude: true
+parent: "Functions"
 ---
 
     ClearFramePicture

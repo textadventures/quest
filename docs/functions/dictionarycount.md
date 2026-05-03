@@ -1,6 +1,7 @@
 ---
 title: DictionaryCount
 nav_exclude: true
+parent: "Functions"
 ---
 
     DictionaryCount (dictionary)

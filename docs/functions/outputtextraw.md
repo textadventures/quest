@@ -1,6 +1,7 @@
 ---
 title: OutputTextRaw
 nav_exclude: true
+parent: "Functions"
 ---
 
     OutputTextRaw (string text)

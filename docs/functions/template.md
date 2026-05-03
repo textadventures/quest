@@ -1,6 +1,7 @@
 ---
 title: Template
 nav_exclude: true
+parent: "Functions"
 ---
 
     Template (string template name)

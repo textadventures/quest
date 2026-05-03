@@ -1,6 +1,7 @@
 ---
 title: Log
 nav_exclude: true
+parent: "Functions"
 ---
 
     Log (string text)

@@ -1,6 +1,7 @@
 ---
 title: RemoveObject
 nav_exclude: true
+parent: "Functions"
 ---
 
     RemoveObject(objectobject1)

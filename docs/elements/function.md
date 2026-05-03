@@ -1,6 +1,7 @@
 ---
 title: function element
 nav_exclude: true
+parent: "XML Elements"
 ---
 
     <function name="name"optional type="type"optional parameters="parameters">script</function>

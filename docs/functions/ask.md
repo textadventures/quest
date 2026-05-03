@@ -1,6 +1,7 @@
 ---
 title: Ask
 nav_exclude: true
+parent: "Functions"
 ---
 
 **Note:** The original function was deprecated as of Quest 5.1, and this version was introduced in Quest 5.4.

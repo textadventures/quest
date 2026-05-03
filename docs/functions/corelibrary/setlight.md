@@ -1,6 +1,7 @@
 ---
 title: SetLight
 nav_exclude: true
+parent: "Functions"
 ---
 
     SetLight(room)

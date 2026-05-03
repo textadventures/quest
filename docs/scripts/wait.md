@@ -1,6 +1,7 @@
 ---
 title: wait
 nav_exclude: true
+parent: "Script commands"
 ---
 
     wait {script}

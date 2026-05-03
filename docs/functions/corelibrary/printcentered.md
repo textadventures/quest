@@ -1,6 +1,7 @@
 ---
 title: PrintCentered
 nav_exclude: true
+parent: "Functions"
 ---
 
     PrintCentered(string text)

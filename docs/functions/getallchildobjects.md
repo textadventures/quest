@@ -1,6 +1,7 @@
 ---
 title: GetAllChildObjects
 nav_exclude: true
+parent: "Functions"
 ---
 
     GetAllChildObjects (object)

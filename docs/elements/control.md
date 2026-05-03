@@ -1,6 +1,7 @@
 ---
 title: control element
 nav_exclude: true
+parent: "XML Elements"
 ---
 
     <control>nameattributes</control>

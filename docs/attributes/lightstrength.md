@@ -1,6 +1,7 @@
 ---
 title: lightstrength
 nav_exclude: true
+parent: "Attributes"
 ---
 
 "lightstrength" is a [string](../types/string.html) attribute specifying the level of illumination this object provides.

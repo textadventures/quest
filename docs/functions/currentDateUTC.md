@@ -1,6 +1,7 @@
 ---
 title: CurrentDateUTC
 nav_exclude: true
+parent: "Functions"
 ---
 
     CurrentDateUTC()

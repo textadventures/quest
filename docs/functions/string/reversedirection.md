@@ -1,6 +1,7 @@
 ---
 title: ReverseDirection
 nav_exclude: true
+parent: "Functions"
 ---
 
     ReverseDirection (string input)

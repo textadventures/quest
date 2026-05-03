@@ -1,6 +1,7 @@
 ---
 title: CloneObjectAndMoveHere
 nav_exclude: true
+parent: "Functions"
 ---
 
     CloneObjectAndMoveHere (object)

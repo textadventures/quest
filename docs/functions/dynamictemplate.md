@@ -1,6 +1,7 @@
 ---
 title: DynamicTemplate
 nav_exclude: true
+parent: "Functions"
 ---
 
     DynamicTemplate (string  template name, object  object)

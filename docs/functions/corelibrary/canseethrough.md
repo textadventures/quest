@@ -1,6 +1,7 @@
 ---
 title: CanSeeThrough
 nav_exclude: true
+parent: "Functions"
 ---
 
     CanSeeThrough (object)

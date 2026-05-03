@@ -1,6 +1,7 @@
 ---
 title: delegate element
 nav_exclude: true
+parent: "XML Elements"
 ---
 
     <delegate name="name"optional type="type"optional parameters="parameters">properties</delegate>

@@ -1,6 +1,7 @@
 ---
 title: Pause
 nav_exclude: true
+parent: "Functions"
 ---
 
     Pause (interval)

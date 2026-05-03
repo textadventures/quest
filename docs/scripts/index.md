@@ -1,6 +1,6 @@
 ---
 title: Script commands
-nav_exclude: true
+nav_order: 5
 ---
 
 [General information about Quest script commands](scripts.html)

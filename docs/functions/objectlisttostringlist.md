@@ -1,6 +1,7 @@
 ---
 title: ObjectListToStringList
 nav_exclude: true
+parent: "Functions"
 ---
 
     ObjectListToStringList (objectlist list, string attribute name)

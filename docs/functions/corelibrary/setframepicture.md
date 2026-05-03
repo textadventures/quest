@@ -1,6 +1,7 @@
 ---
 title: SetFramePicture
 nav_exclude: true
+parent: "Functions"
 ---
 
     SetFramePicture (string filename)

@@ -1,6 +1,7 @@
 ---
 title: CheckDarkness
 nav_exclude: true
+parent: "Functions"
 ---
 
     CheckDarkness()

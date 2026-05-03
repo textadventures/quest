@@ -1,6 +1,7 @@
 ---
 title: ToDouble
 nav_exclude: true
+parent: "Functions"
 ---
 
     ToDouble (string number)

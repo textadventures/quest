@@ -1,6 +1,7 @@
 ---
 title: String
 nav_exclude: true
+parent: "Attribute Types"
 ---
 
 A string is a piece of text (string literal), a string variable is variable that holds text.

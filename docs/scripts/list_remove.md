@@ -1,6 +1,7 @@
 ---
 title: list remove
 nav_exclude: true
+parent: "Script commands"
 ---
 
     list remove (list, any type item)

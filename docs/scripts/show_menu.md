@@ -1,6 +1,7 @@
 ---
 title: show menu
 nav_exclude: true
+parent: "Script commands"
 ---
 
     show menu (string caption, stringdictionary or stringlist options, boolean allow cancel) {script}

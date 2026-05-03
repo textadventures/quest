@@ -1,6 +1,7 @@
 ---
 title: Setting variables
 nav_exclude: true
+parent: "Script commands"
 ---
 
 To set an object attribute to a value:

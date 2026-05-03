@@ -1,6 +1,7 @@
 ---
 title: DictionaryRemove
 nav_exclude: true
+parent: "Functions"
 ---
 
     DictionaryRemove (dictionary, string key)

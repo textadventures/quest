@@ -1,6 +1,7 @@
 ---
 title: GetDisplayNameLink
 nav_exclude: true
+parent: "Functions"
 ---
 
 For Quest 5.3 and earlier:

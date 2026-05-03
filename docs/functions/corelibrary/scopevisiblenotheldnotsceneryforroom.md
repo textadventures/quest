@@ -1,6 +1,7 @@
 ---
 title: ScopeVisibleNotHeldNotSceneryForRoom
 nav_exclude: true
+parent: "Functions"
 ---
 
     ScopeVisibleNotHeldNotSceneryForRoom (room)

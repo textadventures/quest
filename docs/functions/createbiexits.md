@@ -1,6 +1,7 @@
 ---
 title: CreateBiExits
 nav_exclude: true
+parent: "Functions"
 ---
 
     CreateBiExits (string direction, object from, object to)

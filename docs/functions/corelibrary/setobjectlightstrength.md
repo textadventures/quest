@@ -1,6 +1,7 @@
 ---
 title: SetObjectLightstrength
 nav_exclude: true
+parent: "Functions"
 ---
 
     SetObjectLightstrength(object, string value)

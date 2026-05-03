@@ -1,6 +1,7 @@
 ---
 title: ListWorn
 nav_exclude: true
+parent: "Functions"
 ---
 
     ListWorn ()

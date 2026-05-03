@@ -1,6 +1,7 @@
 ---
 title: DisableTurnScript
 nav_exclude: true
+parent: "Functions"
 ---
 
     DisableTurnScript (turn script)

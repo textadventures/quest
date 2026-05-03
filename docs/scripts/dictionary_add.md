@@ -1,6 +1,7 @@
 ---
 title: dictionary add
 nav_exclude: true
+parent: "Script commands"
 ---
 
     dictionary add (dictionary, string key, any type item)

@@ -1,6 +1,7 @@
 ---
 title: ScopeVisibleForRoom
 nav_exclude: true
+parent: "Functions"
 ---
 
     ScopeVisibleForRoom (room)

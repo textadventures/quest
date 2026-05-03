@@ -1,6 +1,7 @@
 ---
 title: GetUniqueElementName
 nav_exclude: true
+parent: "Functions"
 ---
 
     GetUniqueElementName (string element name)

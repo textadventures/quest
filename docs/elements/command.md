@@ -1,6 +1,7 @@
 ---
 title: command element
 nav_exclude: true
+parent: "XML Elements"
 ---
 
     <command name="name" pattern="pattern" unresolved="unresolved text" template="template name">script</command>

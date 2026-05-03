@@ -1,6 +1,7 @@
 ---
 title: verbtemplate element
 nav_exclude: true
+parent: "XML Elements"
 ---
 
     <verbtemplate name="name">text</template>

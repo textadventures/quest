@@ -1,6 +1,7 @@
 ---
 title: CommandLink
 nav_exclude: true
+parent: "Functions"
 ---
 
     CommandLink (string command, string link text)

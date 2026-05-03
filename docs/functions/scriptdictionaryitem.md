@@ -1,6 +1,7 @@
 ---
 title: ScriptDictionaryItem
 nav_exclude: true
+parent: "Functions"
 ---
 
     ScriptDictionaryItem (scriptdictionary, string key)

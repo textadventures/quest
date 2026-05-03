@@ -1,6 +1,7 @@
 ---
 title: LCase
 nav_exclude: true
+parent: "Functions"
 ---
 
     LCase (string input)

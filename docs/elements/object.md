@@ -1,6 +1,7 @@
 ---
 title: object element
 nav_exclude: true
+parent: "XML Elements"
 ---
 
     <object name="name">attributes</object>

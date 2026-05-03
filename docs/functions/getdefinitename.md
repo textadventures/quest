@@ -1,6 +1,7 @@
 ---
 title: GetDefiniteName
 nav_exclude: true
+parent: "Functions"
 ---
 
     GetDefiniteName (object)

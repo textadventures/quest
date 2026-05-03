@@ -1,6 +1,7 @@
 ---
 title: InitUserInterface
 nav_exclude: true
+parent: "Functions"
 ---
 
     InitUserInterface ()

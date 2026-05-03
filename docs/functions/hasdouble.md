@@ -1,6 +1,7 @@
 ---
 title: HasDouble
 nav_exclude: true
+parent: "Functions"
 ---
 
     HasDouble (object, string attribute name)

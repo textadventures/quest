@@ -1,6 +1,7 @@
 ---
 title: timer element
 nav_exclude: true
+parent: "XML Elements"
 ---
 
     <timer name="name">attributes</timer>

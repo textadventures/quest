@@ -1,7 +1,7 @@
 ---
 title: Attribute Types
-nav_order: 24
-parent: "Reference"
+nav_order: 5
+parent: "Attributes"
 ---
 
 Variables and object attributes can be any of the following types:

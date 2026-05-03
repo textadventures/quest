@@ -1,6 +1,7 @@
 ---
 title: game element
 nav_exclude: true
+parent: "XML Elements"
 ---
 
     <game name="name">properties</game>

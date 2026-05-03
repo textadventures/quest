@@ -1,6 +1,7 @@
 ---
 title: SetWebFontName
 nav_exclude: true
+parent: "Functions"
 ---
 
     SetWebFontName(string fontname)

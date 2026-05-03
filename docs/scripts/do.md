@@ -1,6 +1,7 @@
 ---
 title: do
 nav_exclude: true
+parent: "Script commands"
 ---
 
     do (object, string attribute name)

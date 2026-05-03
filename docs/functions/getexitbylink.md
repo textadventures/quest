@@ -1,6 +1,7 @@
 ---
 title: GetExitByLink
 nav_exclude: true
+parent: "Functions"
 ---
 
     GetExitByLink (object from room, object to room)

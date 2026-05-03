@@ -1,6 +1,7 @@
 ---
 title: SetObjectFlagOff
 nav_exclude: true
+parent: "Functions"
 ---
 
     SetObjectFlagOff (object, string flag name)

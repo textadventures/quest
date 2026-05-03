@@ -1,6 +1,7 @@
 ---
 title: ShowMenu
 nav_exclude: true
+parent: "Functions"
 ---
 
 **Note:** As of Quest 5.5, this function replaces one that was deprecated as of Quest 5.1 to display an inline menu.

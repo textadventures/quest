@@ -1,6 +1,7 @@
 ---
 title: UCase
 nav_exclude: true
+parent: "Functions"
 ---
 
     UCase (string input)

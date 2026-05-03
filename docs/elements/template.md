@@ -1,6 +1,7 @@
 ---
 title: template element
 nav_exclude: true
+parent: "XML Elements"
 ---
 
     <template name="name">text</template>

@@ -1,6 +1,7 @@
 ---
 title: ScopeCommands
 nav_exclude: true
+parent: "Functions"
 ---
 
     ScopeCommands ()

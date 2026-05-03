@@ -1,6 +1,7 @@
 ---
 title: get input
 nav_exclude: true
+parent: "Script commands"
 ---
 
     get input {script}

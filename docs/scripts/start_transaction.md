@@ -1,6 +1,7 @@
 ---
 title: start transaction
 nav_exclude: true
+parent: "Script commands"
 ---
 
     start transaction (string command)

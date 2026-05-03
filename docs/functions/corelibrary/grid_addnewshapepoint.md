@@ -1,6 +1,7 @@
 ---
 title: Grid_AddNewShapePoint
 nav_exclude: true
+parent: "Functions"
 ---
 
     Grid_AddNewShapePoint (int x, int y)

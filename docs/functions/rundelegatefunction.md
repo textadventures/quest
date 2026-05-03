@@ -1,6 +1,7 @@
 ---
 title: RunDelegateFunction
 nav_exclude: true
+parent: "Functions"
 ---
 
     RunDelegateFunction (object, string attribute name, any type parameters ...)

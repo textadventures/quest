@@ -1,6 +1,7 @@
 ---
 title: SetBackgroundImage
 nav_exclude: true
+parent: "Functions"
 ---
 
     SetBackgroundImage (filename)

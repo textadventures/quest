@@ -1,6 +1,7 @@
 ---
 title: create exit
 nav_exclude: true
+parent: "Script commands"
 ---
 
     create exit (string alias, object from, object to)

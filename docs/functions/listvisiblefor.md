@@ -1,6 +1,7 @@
 ---
 title: ListVisibleFor
 nav_exclude: true
+parent: "Functions"
 ---
 
     ListVisibleFor (object character)

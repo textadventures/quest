@@ -1,6 +1,7 @@
 ---
 title: RTrim
 nav_exclude: true
+parent: "Functions"
 ---
 
     RTrim (input)

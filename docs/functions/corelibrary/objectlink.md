@@ -1,6 +1,7 @@
 ---
 title: ObjectLink
 nav_exclude: true
+parent: "Functions"
 ---
 
     ObjectLink (object)

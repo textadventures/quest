@@ -1,6 +1,7 @@
 ---
 title: GetAttribute
 nav_exclude: true
+parent: "Functions"
 ---
 
     GetAttribute (object, string attribute name)

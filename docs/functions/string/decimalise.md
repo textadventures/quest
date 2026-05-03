@@ -1,6 +1,7 @@
 ---
 title: Decimalise
 nav_exclude: true
+parent: "Functions"
 ---
 
     Decimalise (int input, int places)

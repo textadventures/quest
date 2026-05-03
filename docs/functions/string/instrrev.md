@@ -1,6 +1,7 @@
 ---
 title: InstrRev
 nav_exclude: true
+parent: "Functions"
 ---
 
     InstrRev (string input, string search)

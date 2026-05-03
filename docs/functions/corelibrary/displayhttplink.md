@@ -1,6 +1,7 @@
 ---
 title: DisplayHttpLink
 nav_exclude: true
+parent: "Functions"
 ---
 
     DisplayHttpLink(string displaylink,string url, boolean https)

@@ -1,6 +1,7 @@
 ---
 title: SetExitLightstrength
 nav_exclude: true
+parent: "Functions"
 ---
 
     SetExitLightstrength(exit, string value)

@@ -1,6 +1,7 @@
 ---
 title: SetTimerScript
 nav_exclude: true
+parent: "Functions"
 ---
 
     SetTimerScript (timer, script)

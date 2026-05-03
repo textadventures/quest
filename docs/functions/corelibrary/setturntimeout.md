@@ -1,6 +1,7 @@
 ---
 title: SetTurnTimeout
 nav_exclude: true
+parent: "Functions"
 ---
 
     SetTurnTimeout (turn count, script)

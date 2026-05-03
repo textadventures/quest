@@ -1,6 +1,7 @@
 ---
 title: ScopeVisible
 nav_exclude: true
+parent: "Functions"
 ---
 
     ScopeVisible ()

@@ -1,6 +1,7 @@
 ---
 title: DiceRoll
 nav_exclude: true
+parent: "Functions"
 ---
 
     DiceRoll (string dicetype)

@@ -1,6 +1,7 @@
 ---
 title: Scripts
 nav_exclude: true
+parent: "Script commands"
 ---
 
 Scripts are created in a style similar to C, with script blocks denoted by braces. Unlike C, there is no character to mark the end of a line - each script command is simply on its own line.
