@@ -1,7 +1,7 @@
 ---
 title: WebEditor
-nav_order: 5
-parent: "Reference"
+nav_order: 10
+parent: "Features"
 ---
 
 The on-line web editor is very much like the desktop or off-line version, but with a few important differences.

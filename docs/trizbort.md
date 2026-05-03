@@ -1,7 +1,7 @@
 ---
 title: Creating with Trizbort and Quest
-nav_order: 1
-parent: "Reference"
+nav_order: 6
+parent: "Other Guides"
 ---
 
 

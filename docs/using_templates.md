@@ -1,6 +1,6 @@
 ---
 title: Using Templates
-nav_order: 10
+nav_order: 6
 parent: "Advanced Topics"
 ---
 

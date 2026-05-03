@@ -1,7 +1,7 @@
 ---
 title: Player
-nav_order: 34
-parent: "Reference"
+nav_order: 12
+parent: "Features"
 ---
 
 An object called "player" must be defined somewhere in the game. This will define the start location for the player.

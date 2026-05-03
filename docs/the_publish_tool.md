@@ -1,7 +1,7 @@
 ---
 title: The Publish Tool
-nav_order: 31
-parent: "Reference"
+nav_order: 2
+parent: "Publishing"
 ---
 
 <div class="alert alert-info">

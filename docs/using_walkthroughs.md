@@ -1,7 +1,7 @@
 ---
 title: Using walkthroughs
 nav_order: 1
-parent: "Advanced Topics"
+parent: "Desktop Features"
 ---
 
 <div class="alert alert-info">

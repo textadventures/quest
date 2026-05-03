@@ -1,7 +1,7 @@
 ---
 title: Transcripts
-nav_order: 32
-parent: "Reference"
+nav_order: 11
+parent: "Features"
 ---
 
 As of Quest 5.8, there is a fully functional transcript feature.

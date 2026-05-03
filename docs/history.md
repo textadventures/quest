@@ -1,7 +1,7 @@
 ---
 title: A History of Quest
-nav_order: 20
-parent: "Reference"
+nav_order: 5
+parent: "Release Notes"
 ---
 
 When I took over Quest, I was intrigued to see its history. Alex did some retrospectives in some blog posts, allowing a timeline to be constructed.

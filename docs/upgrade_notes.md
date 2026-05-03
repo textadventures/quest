@@ -1,7 +1,7 @@
 ---
 title: Upgrade Notes
-nav_order: 7
-parent: "Reference"
+nav_order: 1
+parent: "Release Notes"
 ---
 
 Upgrading from Quest 5.4.1 to Quest 5.5

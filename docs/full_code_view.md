@@ -1,7 +1,7 @@
 ---
 title: Editing in Full Code View
-nav_order: 14
-parent: "Reference"
+nav_order: 13
+parent: "Coding With Quest"
 ---
 
 

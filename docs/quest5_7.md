@@ -1,7 +1,7 @@
 ---
 title: Quest 5.7
-nav_order: 28
-parent: "Reference"
+nav_order: 2
+parent: "Release Notes"
 ---
 
 

@@ -1,7 +1,7 @@
 ---
 title: Open source
-nav_order: 36
-parent: "Reference"
+nav_order: 2
+parent: "Developers"
 ---
 
 Quest is free open source software, licensed under the [MIT License](http://opensource.org/licenses/MIT), which means you can download and modify the Quest source code, and even use it in closed source commercial applications. This gives you the complete freedom and power to make games according to your exact needs. The source code includes the WebPlayer project, which powers the "play online" feature of games on this website, so you can create games both for Windows and the web.

@@ -1,7 +1,6 @@
 ---
 title: Docs Style Guide
-nav_order: 19
-parent: "Reference"
+nav_exclude: true
 ---
 
 

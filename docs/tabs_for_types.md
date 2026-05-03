@@ -1,7 +1,7 @@
 ---
 title: Using Tabs for Types
-nav_order: 4
-parent: "Advanced Topics"
+nav_order: 2
+parent: "Desktop Features"
 ---
 
 <div class="alert alert-info">

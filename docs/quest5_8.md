@@ -1,7 +1,7 @@
 ---
 title: Quest 5.8
-nav_order: 29
-parent: "Reference"
+nav_order: 3
+parent: "Release Notes"
 ---
 
 This file documents changes to Quest as of version 5.8.

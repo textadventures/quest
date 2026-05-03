@@ -1,7 +1,7 @@
 ---
 title: What counts as "adult"?
-nav_order: 4
-parent: "Reference"
+nav_order: 3
+parent: "Publishing"
 ---
 
 NOTE: _It is important to say that this is my opinion. I curate the Quest program, but I have no control over the `textadventures.co.uk` web site and no control over how games are moderated. This is what I would have as the policy, if it was up to me._

@@ -1,7 +1,7 @@
 ---
 title: ASLX File Format
-nav_order: 13
-parent: "Reference"
+nav_order: 8
+parent: "Advanced Topics"
 ---
 
 Quest uses an XML-based file format, and files have an .aslx extension. If you go to _Tools - Code view_ you can see the XML code that is your game. 

@@ -1,7 +1,7 @@
 ---
 title: Unit Testing
-nav_order: 22
-parent: "Reference"
+nav_order: 17
+parent: "Coding With Quest"
 ---
 
 Unit testing is a standard procedure in software development; the coder makes an _assertion_ about what is expected from a section of code.

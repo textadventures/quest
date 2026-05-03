@@ -1,7 +1,7 @@
 ---
 title: Resolving Common Problems
-nav_order: 3
-parent: "Reference"
+nav_order: 25
+parent: "How To"
 ---
 
 

@@ -1,6 +1,6 @@
 ---
 title: Changing templates
-nav_order: 5
+nav_order: 3
 parent: "Advanced Topics"
 ---
 

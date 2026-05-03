@@ -1,7 +1,7 @@
 ---
 title: Competition Entry
-nav_order: 16
-parent: "Reference"
+nav_order: 1
+parent: "Publishing"
 ---
 
 Competitions are a good way to reach a wider audience for your Quest adventure, but you better be prepared to be judged harshly...

@@ -1,7 +1,7 @@
 ---
 title: Upgrading from Quest 4
-nav_order: 30
-parent: "Reference"
+nav_order: 4
+parent: "Release Notes"
 ---
 
 Backwards compatibility
