@@ -1,7 +1,7 @@
 ---
 title: HasBoolean
-nav_exclude: true
-parent: "Functions"
+parent: "Functions for Attributes"
+grand_parent: "Functions"
 ---
 
     HasBoolean (object, string attribute name)

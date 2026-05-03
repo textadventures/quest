@@ -1,7 +1,7 @@
 ---
 title: GetTimer
-nav_exclude: true
-parent: "Functions"
+parent: "Timers and Turnscripts"
+grand_parent: "Functions"
 ---
 
     GetTimer (string timer name)

@@ -1,7 +1,7 @@
 ---
 title: PickOneChildOfType
-nav_exclude: true
-parent: "Functions"
+parent: "Randomising Functions"
+grand_parent: "Functions"
 ---
 
     PickOneChildOfType (object room or container, string typename)

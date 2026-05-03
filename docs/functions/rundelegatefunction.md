@@ -1,7 +1,7 @@
 ---
 title: RunDelegateFunction
-nav_exclude: true
-parent: "Functions"
+parent: "General Functions"
+grand_parent: "Functions"
 ---
 
     RunDelegateFunction (object, string attribute name, any type parameters ...)

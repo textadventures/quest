@@ -1,6 +1,5 @@
 ---
 title: Setting variables
-nav_exclude: true
 parent: "Script commands"
 ---
 

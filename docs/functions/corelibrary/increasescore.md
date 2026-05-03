@@ -1,7 +1,7 @@
 ---
 title: IncreaseScore
-nav_exclude: true
-parent: "Functions"
+parent: "Functions for Attributes"
+grand_parent: "Functions"
 ---
 
     IncreaseScore (integer amount)

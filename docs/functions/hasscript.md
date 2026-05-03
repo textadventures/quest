@@ -1,7 +1,7 @@
 ---
 title: HasScript
-nav_exclude: true
-parent: "Functions"
+parent: "Functions for Attributes"
+grand_parent: "Functions"
 ---
 
     HasScript (object, string attribute name)

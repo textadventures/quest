@@ -1,7 +1,7 @@
 ---
 title: DisplayHttpLink
-nav_exclude: true
-parent: "Functions"
+parent: "Internal Core.aslx Functions"
+grand_parent: "Functions"
 ---
 
     DisplayHttpLink(string displaylink,string url, boolean https)

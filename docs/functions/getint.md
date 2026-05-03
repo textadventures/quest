@@ -1,7 +1,7 @@
 ---
 title: GetInt
-nav_exclude: true
-parent: "Functions"
+parent: "Functions for Attributes"
+grand_parent: "Functions"
 ---
 
     GetInt (object, string attribute name)

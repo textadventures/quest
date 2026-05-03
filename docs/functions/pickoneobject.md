@@ -1,7 +1,7 @@
 ---
 title: PickOneObject
-nav_exclude: true
-parent: "Functions"
+parent: "Randomising Functions"
+grand_parent: "Functions"
 ---
 
     PickOneObject (objectlist)

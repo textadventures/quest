@@ -1,7 +1,7 @@
 ---
 title: HasDouble
-nav_exclude: true
-parent: "Functions"
+parent: "Functions for Attributes"
+grand_parent: "Functions"
 ---
 
     HasDouble (object, string attribute name)

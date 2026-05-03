@@ -1,7 +1,7 @@
 ---
 title: Eval
-nav_exclude: true
-parent: "Functions"
+parent: "General Functions"
+grand_parent: "Functions"
 ---
 
     Eval (string expression, dictionary parameters)

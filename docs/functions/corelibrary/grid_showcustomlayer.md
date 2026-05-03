@@ -1,7 +1,7 @@
 ---
 title: Grid ShowCustomLayer
-nav_exclude: true
-parent: "Functions"
+parent: "Internal Core.aslx Functions"
+grand_parent: "Functions"
 ---
 
     Grid ShowCustomLayer (boolean visible)

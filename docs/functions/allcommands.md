@@ -1,7 +1,7 @@
 ---
 title: AllCommands
-nav_exclude: true
-parent: "Functions"
+parent: "Scope Functions"
+grand_parent: "Functions"
 ---
 
     AllCommands()

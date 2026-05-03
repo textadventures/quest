@@ -1,6 +1,5 @@
 ---
 title: rundelegate
-nav_exclude: true
 parent: "Script commands"
 ---
 

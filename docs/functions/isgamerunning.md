@@ -1,7 +1,7 @@
 ---
 title: IsGameRunning
-nav_exclude: true
-parent: "Functions"
+parent: "Internal Core.aslx Functions"
+grand_parent: "Functions"
 ---
 
     IsGameRunning ()

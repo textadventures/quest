@@ -1,7 +1,7 @@
 ---
 title: MakeExitInvisible
-nav_exclude: true
-parent: "Functions"
+parent: "Functions for Objects and Exits"
+grand_parent: "Functions"
 ---
 
     MakeExitInvisible (object)

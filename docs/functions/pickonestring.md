@@ -1,7 +1,7 @@
 ---
 title: PickOneString
-nav_exclude: true
-parent: "Functions"
+parent: "Randomising Functions"
+grand_parent: "Functions"
 ---
 
     PickOneString (string or stringlist)

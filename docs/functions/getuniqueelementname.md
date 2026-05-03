@@ -1,7 +1,7 @@
 ---
 title: GetUniqueElementName
-nav_exclude: true
-parent: "Functions"
+parent: "Internal Core.aslx Functions"
+grand_parent: "Functions"
 ---
 
     GetUniqueElementName (string element name)

@@ -1,7 +1,7 @@
 ---
 title: DisplayNumber
-nav_exclude: true
-parent: "Functions"
+parent: "String Functions"
+grand_parent: "Functions"
 ---
 
     DisplayNumber (int input, string format)

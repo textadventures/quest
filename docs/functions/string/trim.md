@@ -1,7 +1,7 @@
 ---
 title: Trim
-nav_exclude: true
-parent: "Functions"
+parent: "String Functions"
+grand_parent: "Functions"
 ---
 
     Trim (input)

@@ -1,7 +1,7 @@
 ---
 title: GetOuterFor
-nav_exclude: true
-parent: "Functions"
+parent: "Clothing Functions"
+grand_parent: "Functions"
 ---
 
     GetOuterFor (object character, string slot)

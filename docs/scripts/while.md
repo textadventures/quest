@@ -1,6 +1,5 @@
 ---
 title: while
-nav_exclude: true
 parent: "Script commands"
 ---
 

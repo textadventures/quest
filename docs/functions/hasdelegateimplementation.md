@@ -1,7 +1,7 @@
 ---
 title: HasDelegateImplementation
-nav_exclude: true
-parent: "Functions"
+parent: "Functions for Attributes"
+grand_parent: "Functions"
 ---
 
     HasDelegateImplementation (object, string attribute name)

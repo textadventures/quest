@@ -1,6 +1,5 @@
 ---
 title: show menu
-nav_exclude: true
 parent: "Script commands"
 ---
 

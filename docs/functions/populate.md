@@ -1,7 +1,7 @@
 ---
 title: Populate
-nav_exclude: true
-parent: "Functions"
+parent: "Internal Core.aslx Functions"
+grand_parent: "Functions"
 ---
 
     Populate (string regex, string input)

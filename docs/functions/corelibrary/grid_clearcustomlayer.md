@@ -1,7 +1,7 @@
 ---
 title: Grid_ClearCustomLayer
-nav_exclude: true
-parent: "Functions"
+parent: "Internal Core.aslx Functions"
+grand_parent: "Functions"
 ---
 
     Grid_ClearCustomLayer ()

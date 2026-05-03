@@ -1,7 +1,7 @@
 ---
 title: Contains
-nav_exclude: true
-parent: "Functions"
+parent: "List Functions"
+grand_parent: "Functions"
 ---
 
     Contains (object parent, object child)

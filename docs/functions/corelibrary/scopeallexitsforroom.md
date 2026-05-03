@@ -1,7 +1,7 @@
 ---
 title: ScopeAllExitsForRoom
-nav_exclude: true
-parent: "Functions"
+parent: "Scope Functions"
+grand_parent: "Functions"
 ---
 
     ScopeAllExitsForRoom (room)

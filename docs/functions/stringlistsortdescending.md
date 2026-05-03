@@ -1,7 +1,7 @@
 ---
 title: StringListSortDescending
-nav_exclude: true
-parent: "Functions"
+parent: "List Functions"
+grand_parent: "Functions"
 ---
 
     StringListSortDescending (stringlist list)

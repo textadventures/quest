@@ -1,7 +1,7 @@
 ---
 title: Right
-nav_exclude: true
-parent: "Functions"
+parent: "String Functions"
+grand_parent: "Functions"
 ---
 
     Right (string input, int character count)

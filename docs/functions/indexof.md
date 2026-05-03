@@ -1,7 +1,7 @@
 ---
 title: IndexOf
-nav_exclude: true
-parent: "Functions"
+parent: "List Functions"
+grand_parent: "Functions"
 ---
 
     IndexOf (list, anything)

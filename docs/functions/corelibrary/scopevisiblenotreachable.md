@@ -1,7 +1,7 @@
 ---
 title: ScopeVisibleNotReachable
-nav_exclude: true
-parent: "Functions"
+parent: "Scope Functions"
+grand_parent: "Functions"
 ---
 
     ScopeVisibleNotReachable ()

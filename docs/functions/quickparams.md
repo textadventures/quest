@@ -1,7 +1,7 @@
 ---
 title: QuickParams
-nav_exclude: true
-parent: "Functions"
+parent: "Dictionary Functions"
+grand_parent: "Functions"
 ---
 
     QuickParams (string key1, any type value1)

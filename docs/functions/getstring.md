@@ -1,7 +1,7 @@
 ---
 title: GetString
-nav_exclude: true
-parent: "Functions"
+parent: "Functions for Attributes"
+grand_parent: "Functions"
 ---
 
     GetString (object, string attribute name)

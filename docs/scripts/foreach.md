@@ -1,6 +1,5 @@
 ---
 title: foreach
-nav_exclude: true
 parent: "Script commands"
 ---
 

@@ -1,7 +1,7 @@
 ---
 title: SetWebFontName
-nav_exclude: true
-parent: "Functions"
+parent: "User Interface Functions"
+grand_parent: "Functions"
 ---
 
     SetWebFontName(string fontname)

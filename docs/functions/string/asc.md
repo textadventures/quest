@@ -1,7 +1,7 @@
 ---
 title: Asc
-nav_exclude: true
-parent: "Functions"
+parent: "String Functions"
+grand_parent: "Functions"
 ---
 
     Asc (string input)

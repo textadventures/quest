@@ -1,7 +1,7 @@
 ---
 title: Join
-nav_exclude: true
-parent: "Functions"
+parent: "String Functions"
+grand_parent: "Functions"
 ---
 
     Join (stringlist input, string split character)

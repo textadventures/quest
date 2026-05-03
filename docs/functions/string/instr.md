@@ -1,7 +1,7 @@
 ---
 title: Instr
-nav_exclude: true
-parent: "Functions"
+parent: "String Functions"
+grand_parent: "Functions"
 ---
 
     Instr (string input, string search)

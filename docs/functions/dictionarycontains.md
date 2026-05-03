@@ -1,7 +1,7 @@
 ---
 title: DictionaryContains
-nav_exclude: true
-parent: "Functions"
+parent: "Dictionary Functions"
+grand_parent: "Functions"
 ---
 
     DictionaryContains (dictionary, string key)

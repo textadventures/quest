@@ -1,7 +1,7 @@
 ---
 title: DictionaryCount
-nav_exclude: true
-parent: "Functions"
+parent: "Dictionary Functions"
+grand_parent: "Functions"
 ---
 
     DictionaryCount (dictionary)

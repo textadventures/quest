@@ -1,7 +1,7 @@
 ---
 title: GetDisplayNameLink
-nav_exclude: true
-parent: "Functions"
+parent: "Core.aslx Functions"
+grand_parent: "Functions"
 ---
 
 For Quest 5.3 and earlier:

@@ -1,7 +1,7 @@
 ---
 title: DiceRoll
-nav_exclude: true
-parent: "Functions"
+parent: "Randomising Functions"
+grand_parent: "Functions"
 ---
 
     DiceRoll (string dicetype)

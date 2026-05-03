@@ -1,7 +1,7 @@
 ---
 title: SetBackgroundOpacity
-nav_exclude: true
-parent: "Functions"
+parent: "User Interface Functions"
+grand_parent: "Functions"
 ---
 
     SetBackgroundOpacity(float value)

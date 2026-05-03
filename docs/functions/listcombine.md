@@ -1,7 +1,7 @@
 ---
 title: ListCombine
-nav_exclude: true
-parent: "Functions"
+parent: "List Functions"
+grand_parent: "Functions"
 ---
 
     ListCombine (list, list)

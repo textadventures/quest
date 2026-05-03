@@ -1,7 +1,7 @@
 ---
 title: ToWords
-nav_exclude: true
-parent: "Functions"
+parent: "String Functions"
+grand_parent: "Functions"
 ---
 
     ToWords (int)

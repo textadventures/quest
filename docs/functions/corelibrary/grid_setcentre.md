@@ -1,7 +1,7 @@
 ---
 title: Grid_SetCentre
-nav_exclude: true
-parent: "Functions"
+parent: "Internal Core.aslx Functions"
+grand_parent: "Functions"
 ---
 
     Grid_SetCentre (int x, int y)

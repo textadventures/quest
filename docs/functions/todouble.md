@@ -1,7 +1,7 @@
 ---
 title: ToDouble
-nav_exclude: true
-parent: "Functions"
+parent: "Functions for Variables"
+grand_parent: "Functions"
 ---
 
     ToDouble (string number)

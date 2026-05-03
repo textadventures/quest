@@ -1,7 +1,7 @@
 ---
 title: HasInt
-nav_exclude: true
-parent: "Functions"
+parent: "Functions for Attributes"
+grand_parent: "Functions"
 ---
 
     HasInt (object, string attribute name)

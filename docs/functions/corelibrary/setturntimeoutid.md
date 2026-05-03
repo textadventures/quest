@@ -1,7 +1,7 @@
 ---
 title: SetTurnTimeoutID
-nav_exclude: true
-parent: "Functions"
+parent: "Timers and Turnscripts"
+grand_parent: "Functions"
 ---
 
     SetTurnTimeoutID (integer turn count, string name, script)

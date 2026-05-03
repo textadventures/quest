@@ -1,7 +1,7 @@
 ---
 title: CommandLink
-nav_exclude: true
-parent: "Functions"
+parent: "Internal Core.aslx Functions"
+grand_parent: "Functions"
 ---
 
     CommandLink (string command, string link text)

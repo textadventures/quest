@@ -1,7 +1,7 @@
 ---
 title: ListCompact
-nav_exclude: true
-parent: "Functions"
+parent: "List Functions"
+grand_parent: "Functions"
 ---
 
     ListCompact (any list list)

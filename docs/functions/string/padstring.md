@@ -1,7 +1,7 @@
 ---
 title: PadString
-nav_exclude: true
-parent: "Functions"
+parent: "String Functions"
+grand_parent: "Functions"
 ---
 
     PadString (string input, int length, string pad)

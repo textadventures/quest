@@ -1,6 +1,5 @@
 ---
 title: create timer
-nav_exclude: true
 parent: "Script commands"
 ---
 

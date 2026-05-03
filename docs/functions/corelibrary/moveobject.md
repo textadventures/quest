@@ -1,7 +1,7 @@
 ---
 title: MoveObject
-nav_exclude: true
-parent: "Functions"
+parent: "Functions for Objects and Exits"
+grand_parent: "Functions"
 ---
 
     MoveObject(object object1, object object2)

@@ -1,7 +1,7 @@
 ---
 title: StartsWith
-nav_exclude: true
-parent: "Functions"
+parent: "String Functions"
+grand_parent: "Functions"
 ---
 
     StartsWith (string input, string start)

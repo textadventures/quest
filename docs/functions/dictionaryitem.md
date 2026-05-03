@@ -1,7 +1,7 @@
 ---
 title: DictionaryItem
-nav_exclude: true
-parent: "Functions"
+parent: "Dictionary Functions"
+grand_parent: "Functions"
 ---
 
     DictionaryItem (dictionary, string key)

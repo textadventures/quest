@@ -1,6 +1,5 @@
 ---
 title: dictionary add
-nav_exclude: true
 parent: "Script commands"
 ---
 

@@ -1,7 +1,7 @@
 ---
 title: NewObjectDictionary
-nav_exclude: true
-parent: "Functions"
+parent: "Dictionary Functions"
+grand_parent: "Functions"
 ---
 
     NewObjectDictionary ()

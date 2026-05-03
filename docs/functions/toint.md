@@ -1,7 +1,7 @@
 ---
 title: ToInt
-nav_exclude: true
-parent: "Functions"
+parent: "Functions for Variables"
+grand_parent: "Functions"
 ---
 
     ToInt (string number)

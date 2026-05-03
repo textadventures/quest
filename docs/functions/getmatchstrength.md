@@ -1,7 +1,7 @@
 ---
 title: GetMatchStrength
-nav_exclude: true
-parent: "Functions"
+parent: "String Functions"
+grand_parent: "Functions"
 ---
 
     GetMatchStrength (string regex, string input)

@@ -1,6 +1,5 @@
 ---
 title: error
-nav_exclude: true
 parent: "Script commands"
 ---
 

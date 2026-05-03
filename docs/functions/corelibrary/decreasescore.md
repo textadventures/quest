@@ -1,7 +1,7 @@
 ---
 title: DecreaseScore
-nav_exclude: true
-parent: "Functions"
+parent: "Functions for Attributes"
+grand_parent: "Functions"
 ---
 
     DecreaseScore (integer amount)

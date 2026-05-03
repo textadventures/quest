@@ -1,7 +1,7 @@
 ---
 title: ListContains
-nav_exclude: true
-parent: "Functions"
+parent: "List Functions"
+grand_parent: "Functions"
 ---
 
     ListContains (list, any type item)

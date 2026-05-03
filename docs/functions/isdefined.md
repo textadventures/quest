@@ -1,7 +1,7 @@
 ---
 title: IsDefined
-nav_exclude: true
-parent: "Functions"
+parent: "Functions for Variables"
+grand_parent: "Functions"
 ---
 
     IsDefined (string variable name)

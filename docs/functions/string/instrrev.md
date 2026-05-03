@@ -1,7 +1,7 @@
 ---
 title: InstrRev
-nav_exclude: true
-parent: "Functions"
+parent: "String Functions"
+grand_parent: "Functions"
 ---
 
     InstrRev (string input, string search)

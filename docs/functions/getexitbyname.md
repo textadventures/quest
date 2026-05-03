@@ -1,7 +1,7 @@
 ---
 title: GetExitByName
-nav_exclude: true
-parent: "Functions"
+parent: "Functions for Objects and Exits"
+grand_parent: "Functions"
 ---
 
     GetExitByName (object from room, string direction name)

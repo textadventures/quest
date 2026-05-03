@@ -1,7 +1,7 @@
 ---
 title: GetFileURL
-nav_exclude: true
-parent: "Functions"
+parent: "General Functions"
+grand_parent: "Functions"
 ---
 
     GetFileURL(string filename)

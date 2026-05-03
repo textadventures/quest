@@ -1,7 +1,7 @@
 ---
 title: OutputTextRaw
-nav_exclude: true
-parent: "Functions"
+parent: "User Interface Functions"
+grand_parent: "Functions"
 ---
 
     OutputTextRaw (string text)

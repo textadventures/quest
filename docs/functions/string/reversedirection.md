@@ -1,7 +1,7 @@
 ---
 title: ReverseDirection
-nav_exclude: true
-parent: "Functions"
+parent: "String Functions"
+grand_parent: "Functions"
 ---
 
     ReverseDirection (string input)

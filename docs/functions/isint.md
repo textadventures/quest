@@ -1,7 +1,7 @@
 ---
 title: IsInt
-nav_exclude: true
-parent: "Functions"
+parent: "Functions for Variables"
+grand_parent: "Functions"
 ---
 
     IsInt (string number)

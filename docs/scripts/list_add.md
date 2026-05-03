@@ -1,6 +1,5 @@
 ---
 title: list add
-nav_exclude: true
 parent: "Script commands"
 ---
 

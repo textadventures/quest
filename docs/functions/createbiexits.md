@@ -1,7 +1,7 @@
 ---
 title: CreateBiExits
-nav_exclude: true
-parent: "Functions"
+parent: "Functions for Objects and Exits"
+grand_parent: "Functions"
 ---
 
     CreateBiExits (string direction, object from, object to)

@@ -1,7 +1,7 @@
 ---
 title: Mid
-nav_exclude: true
-parent: "Functions"
+parent: "String Functions"
+grand_parent: "Functions"
 ---
 
     Mid (string input, int start position)

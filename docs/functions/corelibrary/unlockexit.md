@@ -1,7 +1,7 @@
 ---
 title: UnlockExit
-nav_exclude: true
-parent: "Functions"
+parent: "Functions for Objects and Exits"
+grand_parent: "Functions"
 ---
 
     UnlockExit (exit)

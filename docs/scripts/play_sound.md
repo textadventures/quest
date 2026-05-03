@@ -1,6 +1,5 @@
 ---
 title: play sound
-nav_exclude: true
 parent: "Script commands"
 ---
 

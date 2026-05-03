@@ -1,7 +1,7 @@
 ---
 title: GetAttributeNames
-nav_exclude: true
-parent: "Functions"
+parent: "Functions for Attributes"
+grand_parent: "Functions"
 ---
 
     GetAttributeNames (object, boolean include inherited attributes)

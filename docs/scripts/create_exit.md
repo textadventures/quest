@@ -1,6 +1,5 @@
 ---
 title: create exit
-nav_exclude: true
 parent: "Script commands"
 ---
 

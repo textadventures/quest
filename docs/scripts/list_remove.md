@@ -1,6 +1,5 @@
 ---
 title: list remove
-nav_exclude: true
 parent: "Script commands"
 ---
 

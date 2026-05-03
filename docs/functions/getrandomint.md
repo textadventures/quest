@@ -1,7 +1,7 @@
 ---
 title: GetRandomInt
-nav_exclude: true
-parent: "Functions"
+parent: "Randomising Functions"
+grand_parent: "Functions"
 ---
 
     GetRandomInt (integer min, integer max)

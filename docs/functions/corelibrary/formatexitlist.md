@@ -1,7 +1,7 @@
 ---
 title: FormatExitList
-nav_exclude: true
-parent: "Functions"
+parent: "Core.aslx Functions"
+grand_parent: "Functions"
 ---
 
     FormatExitList (string pre-list, objectlist exits, string pre-final, string post-list)

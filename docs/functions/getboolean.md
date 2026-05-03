@@ -1,7 +1,7 @@
 ---
 title: GetBoolean
-nav_exclude: true
-parent: "Functions"
+parent: "Functions for Attributes"
+grand_parent: "Functions"
 ---
 
     GetBoolean (object, string attribute name)

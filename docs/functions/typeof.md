@@ -1,7 +1,7 @@
 ---
 title: TypeOf
-nav_exclude: true
-parent: "Functions"
+parent: "Functions for Variables"
+grand_parent: "Functions"
 ---
 
     TypeOf (object, string attribute name)

@@ -1,7 +1,7 @@
 ---
 title: SetObjectFlagOn
-nav_exclude: true
-parent: "Functions"
+parent: "Functions for Attributes"
+grand_parent: "Functions"
 ---
 
     SetObjectFlagOff (object, string flag name)

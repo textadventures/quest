@@ -1,7 +1,7 @@
 ---
 title: HasAttribute
-nav_exclude: true
-parent: "Functions"
+parent: "Functions for Attributes"
+grand_parent: "Functions"
 ---
 
     HasAttribute (object, string attribute name)

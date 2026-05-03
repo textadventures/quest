@@ -1,7 +1,7 @@
 ---
 title: ObjectListSort
-nav_exclude: true
-parent: "Functions"
+parent: "List Functions"
+grand_parent: "Functions"
 ---
 
     ObjectListSort (objectlist list, string attributes ...)

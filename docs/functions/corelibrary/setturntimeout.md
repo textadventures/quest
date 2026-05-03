@@ -1,7 +1,7 @@
 ---
 title: SetTurnTimeout
-nav_exclude: true
-parent: "Functions"
+parent: "Timers and Turnscripts"
+grand_parent: "Functions"
 ---
 
     SetTurnTimeout (turn count, script)

@@ -1,7 +1,7 @@
 ---
 title: TextFX_Typewriter
-nav_exclude: true
-parent: "Functions"
+parent: "User Interface Functions"
+grand_parent: "Functions"
 ---
 
     TextFX_Typewriter(text, int speed)

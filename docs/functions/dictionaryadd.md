@@ -1,7 +1,7 @@
 ---
 title: DictionaryAdd
-nav_exclude: true
-parent: "Functions"
+parent: "Dictionary Functions"
+grand_parent: "Functions"
 ---
 
     DictionaryAdd (dictionary, string key, string value)

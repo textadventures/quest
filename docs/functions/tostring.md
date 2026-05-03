@@ -1,7 +1,7 @@
 ---
 title: ToString
-nav_exclude: true
-parent: "Functions"
+parent: "Functions for Variables"
+grand_parent: "Functions"
 ---
 
     ToString (anything)

@@ -1,7 +1,7 @@
 ---
 title: SetLight
-nav_exclude: true
-parent: "Functions"
+parent: "Core.aslx Functions"
+grand_parent: "Functions"
 ---
 
     SetLight(room)

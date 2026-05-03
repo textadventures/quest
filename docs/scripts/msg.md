@@ -1,6 +1,5 @@
 ---
 title: msg
-nav_exclude: true
 parent: "Script commands"
 ---
 

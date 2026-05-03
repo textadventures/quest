@@ -1,7 +1,7 @@
 ---
 title: WearGarment
-nav_exclude: true
-parent: "Functions"
+parent: "Clothing Functions"
+grand_parent: "Functions"
 ---
 
     WearGarment (object)

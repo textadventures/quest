@@ -1,7 +1,7 @@
 ---
 title: ListExclude
-nav_exclude: true
-parent: "Functions"
+parent: "List Functions"
+grand_parent: "Functions"
 ---
 
     ListExclude (list, any type item or list)

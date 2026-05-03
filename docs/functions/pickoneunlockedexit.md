@@ -1,7 +1,7 @@
 ---
 title: PickOneUnlockedExit
-nav_exclude: true
-parent: "Functions"
+parent: "Randomising Functions"
+grand_parent: "Functions"
 ---
 
     PickOneUnlockedExit (object room)

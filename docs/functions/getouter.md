@@ -1,7 +1,7 @@
 ---
 title: ListWorn
-nav_exclude: true
-parent: "Functions"
+parent: "Clothing Functions"
+grand_parent: "Functions"
 ---
 
     ListWorn (string slot)

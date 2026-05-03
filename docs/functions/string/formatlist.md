@@ -1,7 +1,7 @@
 ---
 title: FormatList
-nav_exclude: true
-parent: "Functions"
+parent: "String Functions"
+grand_parent: "Functions"
 ---
 
     FormatList (stringlist or object list, string joiner, string lastjoiner, string nothing)

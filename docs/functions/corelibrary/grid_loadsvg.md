@@ -1,7 +1,7 @@
 ---
 title: Grid_LoadSvg
-nav_exclude: true
-parent: "Functions"
+parent: "Internal Core.aslx Functions"
+grand_parent: "Functions"
 ---
 
     Grid_LoadSvg (string data, string id)

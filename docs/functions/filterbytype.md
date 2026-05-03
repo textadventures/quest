@@ -1,7 +1,7 @@
 ---
 title: FilterByType
-nav_exclude: true
-parent: "Functions"
+parent: "List Functions"
+grand_parent: "Functions"
 ---
 
     FilterByType (objectlist list, string typename)

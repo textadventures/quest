@@ -1,7 +1,7 @@
 ---
 title: SetTimeoutID
-nav_exclude: true
-parent: "Functions"
+parent: "Timers and Turnscripts"
+grand_parent: "Functions"
 ---
 
     SetTimeoutID (integer interval, string name, script)
