@@ -229,7 +229,10 @@
     <value>Das Tutorial lesen</value>
   </data>
   <data name="LauncherGetHelpInDiscussions" xml:space="preserve">
-    <value>Im Discussions nach Hilfe suchen</value>
+    <value>GitHub Discussions</value>
+  </data>
+  <data name="LauncherDiscord" xml:space="preserve">
+    <value>Discord</value>
   </data>
   <data name="LauncherRecent" xml:space="preserve">
     <value>Kürzlich geöffnet</value>

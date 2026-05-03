@@ -303,7 +303,8 @@
         {"CodeViewToolStripMenuItem", "Code"},
         {"OptionsToolStripMenuItem", "Settings"},
         {"ViewHelpToolStripMenuItem", "QuestionMark"},
-        {"QuestDiscussionsToolStripMenuItem", "Feedback"},
+        {"QuestDiscussionsToolStripMenuItem", "GitHub"},
+        {"DiscordToolStripMenuItem", "Discord"},
         {"AboutToolStripMenuItem", "StatusInformation"}
     }
 

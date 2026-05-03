@@ -401,7 +401,13 @@
     <value>199, 26</value>
   </data>
   <data name="QuestDiscussionsToolStripMenuItem.Text" xml:space="preserve">
-    <value>Quest &amp;Discussions</value>
+    <value>GitHub &amp;Discussions</value>
+  </data>
+  <data name="DiscordToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
+    <value>199, 26</value>
+  </data>
+  <data name="DiscordToolStripMenuItem.Text" xml:space="preserve">
+    <value>Discord</value>
   </data>
   <data name="ReportABugToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
     <value>199, 26</value>
