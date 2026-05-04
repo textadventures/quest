@@ -24,7 +24,7 @@
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
-        <Border Name="imageBorder" Margin="6" Width="80" Height="80">
+        <Border Name="imageBorder" Margin="6" Width="80" Height="80" Visibility="Collapsed">
             <Image Name="image" MaxHeight="80" MaxWidth="80" HorizontalAlignment="Center" VerticalAlignment="Center" RenderOptions.BitmapScalingMode="HighQuality"></Image>
         </Border>
         <StackPanel Margin="3" Grid.Column="1" VerticalAlignment="Center">
