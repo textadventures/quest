@@ -5,31 +5,73 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              mc:Ignorable="d" 
              d:DesignHeight="400" d:DesignWidth="500">
+    <UserControl.Resources>
+        <Style TargetType="TabControl">
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="TabControl">
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition/>
+                            </Grid.RowDefinitions>
+                            <TabPanel Grid.Row="0" IsItemsHost="True" Background="Transparent" Margin="4,4,4,0" Panel.ZIndex="1"/>
+                            <Border Grid.Row="1"
+                                    Background="{DynamicResource {x:Static SystemColors.WindowBrushKey}}"
+                                    BorderBrush="#FFCCCCCC"
+                                    BorderThickness="1">
+                                <ContentPresenter ContentSource="SelectedContent"/>
+                            </Border>
+                        </Grid>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+        <Style TargetType="TabItem">
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="TabItem">
+                        <Border Name="Border"
+                                Cursor="Hand"
+                                BorderBrush="#FFCCCCCC"
+                                BorderThickness="1,1,1,0"
+                                CornerRadius="6,6,0,0"
+                                Background="#FFF0F0F0"
+                                Margin="0,3,4,0"
+                                Padding="18,6">
+                            <ContentPresenter ContentSource="Header" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsSelected" Value="True">
+                                <Setter TargetName="Border" Property="Background" Value="{DynamicResource {x:Static SystemColors.WindowBrushKey}}"/>
+                                <Setter TargetName="Border" Property="Margin" Value="0,0,4,-1"/>
+                            </Trigger>
+                            <MultiTrigger>
+                                <MultiTrigger.Conditions>
+                                    <Condition Property="IsSelected" Value="False"/>
+                                    <Condition Property="IsMouseOver" Value="True"/>
+                                </MultiTrigger.Conditions>
+                                <Setter TargetName="Border" Property="Background" Value="#FFE8E8E8"/>
+                            </MultiTrigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+    </UserControl.Resources>
     <Grid TextOptions.TextFormattingMode="Display">
         <Grid.RowDefinitions>
             <RowDefinition/>
             <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
         <TabControl Name="ctlTabs">
-            <TabItem Padding="18,6,18,6" AllowDrop="True">
-                <TabItem.Background>
-                    <LinearGradientBrush EndPoint="0,1" StartPoint="0,0">
-                        <GradientStop Color="#FFF0F0F0"/>
-                        <GradientStop Color="#FFE5E5E5" Offset="1"/>
-                    </LinearGradientBrush>
-                </TabItem.Background>
+            <TabItem AllowDrop="True">
                 <TabItem.Header>
                     <TextBlock x:Name="lblPlay" FontSize="18">Play</TextBlock>
                 </TabItem.Header>
                 <my:PlayBrowser x:Name="ctlPlayBrowser" Background="{DynamicResource {x:Static SystemColors.WindowBrushKey}}" />
             </TabItem>
-            <TabItem Padding="18,6,18,6">
-                <TabItem.Background>
-                    <LinearGradientBrush EndPoint="0,1" StartPoint="0,0">
-                        <GradientStop Color="#FFF0F0F0"/>
-                        <GradientStop Color="#FFE5E5E5" Offset="1"/>
-                    </LinearGradientBrush>
-                </TabItem.Background>
+            <TabItem>
                 <TabItem.Header>
                     <TextBlock x:Name="lblCreate" FontSize="18">Create</TextBlock>
                 </TabItem.Header>
