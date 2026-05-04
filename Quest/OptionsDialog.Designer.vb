@@ -205,7 +205,7 @@ Partial Class OptionsDialog
         Me.AcceptButton = Me.cmdOK
         resources.ApplyResources(Me, "$this")
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
-        Me.BackColor = System.Drawing.Color.GhostWhite
+        Me.BackColor = System.Drawing.SystemColors.Window
         Me.CancelButton = Me.cmdCancel
         Me.Controls.Add(Me.ctlTabs)
         Me.Controls.Add(Me.cmdOK)

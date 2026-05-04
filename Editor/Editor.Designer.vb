@@ -44,7 +44,7 @@ Partial Class Editor
         'splitMain
         '
         resources.ApplyResources(Me.splitMain, "splitMain")
-        Me.splitMain.BackColor = System.Drawing.Color.GhostWhite
+        Me.splitMain.BackColor = System.Drawing.SystemColors.Window
         Me.splitMain.FixedPanel = System.Windows.Forms.FixedPanel.Panel1
         Me.splitMain.Name = "splitMain"
         '
@@ -63,7 +63,7 @@ Partial Class Editor
         'ctlTree
         '
         resources.ApplyResources(Me.ctlTree, "ctlTree")
-        Me.ctlTree.BackColor = System.Drawing.Color.GhostWhite
+        Me.ctlTree.BackColor = System.Drawing.SystemColors.Window
         Me.ctlTree.ForeColor = System.Drawing.Color.Black
         Me.ctlTree.IncludeRootLevelInSearchResults = True
         Me.ctlTree.Name = "ctlTree"
@@ -79,7 +79,7 @@ Partial Class Editor
         'pnlContent
         '
         resources.ApplyResources(Me.pnlContent, "pnlContent")
-        Me.pnlContent.BackColor = System.Drawing.Color.GhostWhite
+        Me.pnlContent.BackColor = System.Drawing.SystemColors.Window
         Me.pnlContent.Name = "pnlContent"
         '
         'pnlHeader
@@ -126,7 +126,7 @@ Partial Class Editor
         'ctlToolbar
         '
         resources.ApplyResources(Me.ctlToolbar, "ctlToolbar")
-        Me.ctlToolbar.BackColor = System.Drawing.Color.GhostWhite
+        Me.ctlToolbar.BackColor = System.Drawing.SystemColors.Window
         Me.ctlToolbar.CodeView = False
         Me.ctlToolbar.EditorStyle = TextAdventures.Quest.EditorStyle.TextAdventure
         Me.ctlToolbar.Name = "ctlToolbar"
@@ -138,7 +138,7 @@ Partial Class Editor
         '
         resources.ApplyResources(Me, "$this")
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
-        Me.BackColor = System.Drawing.Color.GhostWhite
+        Me.BackColor = System.Drawing.SystemColors.Window
         Me.Controls.Add(Me.splitMain)
         Me.Controls.Add(Me.ctlTextEditor)
         Me.Controls.Add(Me.ctlReloadBanner)

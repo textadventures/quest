@@ -77,7 +77,7 @@ Partial Class PublishWindow
         Me.AcceptButton = Me.cmdSave
         resources.ApplyResources(Me, "$this")
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
-        Me.BackColor = System.Drawing.Color.GhostWhite
+        Me.BackColor = System.Drawing.SystemColors.Window
         Me.CancelButton = Me.cmdCancel
         Me.Controls.Add(Me.cmdSave)
         Me.Controls.Add(Me.cmdCancel)
