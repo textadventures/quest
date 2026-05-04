@@ -1,7 +1,8 @@
 ---
 title: Adding Videos
 nav_order: 4
-parent: "Multi-media"
+parent: "Multimedia"
+grand_parent: "Features"
 ---
 
 

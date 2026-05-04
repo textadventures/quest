@@ -1,7 +1,8 @@
 ---
 title: Creating Images on the Fly
 nav_order: 2
-parent: "Multi-media"
+parent: "Multimedia"
+grand_parent: "Features"
 ---
 
 
