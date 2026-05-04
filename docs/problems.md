@@ -252,7 +252,7 @@ list remove (hat.displayverbs, "Flatten")
 
 The problem is that the two list attributes, "inventoryverbs" and "displayverbs" are set on the object's type, not on the object itself (if you are using the desktop version, go to the _Attributes_ tab, and check its source). You cannot modify the list when it belongs to the type.
 
-There are two solutions. The easiest is to add something to the the list in the editor (bottom of the __ tab). That will add the list attribute to this object. You can then delete the entry; once the attribute is on your object, it is there.
+There are two solutions. The easiest is to add something to the the list in the editor (bottom of the Attributes tab). That will add the list attribute to this object. You can then delete the entry; once the attribute is on your object, it is there.
 
 Alternatively, you can give the object a new list. The `Split` function offers an easy way to do that:
 

@@ -81,7 +81,7 @@ For the command script, the general strategy is to check each failing condition,
 
 ```
 if (not object.parent = player) {
-  msg ("You aren't carry " + object.article + ".")
+  msg ("You aren't carrying " + object.article + ".")
 }
 else if (not player.parent = cloakroom) {
   msg ("Hang " + object.article + " where, exactly?")

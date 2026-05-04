@@ -105,7 +105,7 @@ We use `Grid_GetGridCoordinateForPlayer(game.pov, lower, "z")` to get the curren
 
 You also need to make sure it works the other way, so this goes in the Enter script of `lower`:
 
-    Grid_SetGridCoordinateForPlayer (game.pov, upper, "z", Grid_GetGridCoordinateForPlayer(game.pov, lower, "z")+1)
+    Grid_SetGridCoordinateForPlayer (game.pov, upper, "z", Grid_GetGridCoordinateForPlayer(game.pov, lower, "z")-1)
 
 
 

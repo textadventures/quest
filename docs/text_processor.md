@@ -137,17 +137,6 @@ There may be an issue with using the hexadecimal form for colours (eg `#dedede`)
 {back:**colour**:**text**}
 Displays the given text with the colour specified as the background. To show text as white on black, you can combine these like this: {colour:white:{back:black:some highlighted text}}.
 
-
-HTML tags
----------
-
-You can also use HTML tags directly in any text output. For example:
-
-    This text is <b>bold</b>. This text is <i>italic</i>. This text is <u>underlined</u>.
-
-For more complex styling, use `<span>` tags with inline CSS, for example `<span style="color:red">this is red</span>`. The text processor `{colour:}` and `{back:}` commands above are generally more convenient for this.
-
-
 {here **object**:**text**}
 Displays the text only if the given object is in the current room (but not if in the player's inventory or in a container in the room).
 
@@ -169,7 +158,7 @@ This works similar to the if command above, but with two important differences. 
 ```
 "You {either StartsWith(player.name, \"play\") and not player.flag:are the player}"
  -> "You are the player",
-"'Oh, {either player.male**flag:he|she} is not worth it.'"
+"'Oh, {either player.male_flag:he|she} is not worth it.'"
  -> "'Oh, he is not worth it.'",
 ```
 
@@ -310,3 +299,12 @@ msg("Here is the {test}, now with some in {blue:a different colour!}")
 Inside the script, scr, there are two lines. The first gets the actual text. The word "blue" is four characters, then there is the colon, so the bit we want starts at the sixth character.
 
 The second line then sets the return value, using HTML and CSS to change the text colour to blue.
+
+HTML tags
+---------
+
+You can also use HTML tags directly in any text output. For example:
+
+    This text is <b>bold</b>. This text is <i>italic</i>. This text is <u>underlined</u>.
+
+For more complex styling, use `<span>` tags with inline CSS, for example `<span style="color:red">this is red</span>`. The text processor `{colour:}` and `{back:}` commands above are generally more convenient for this.

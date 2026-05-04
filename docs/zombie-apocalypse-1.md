@@ -33,6 +33,7 @@ obj.changedhitpoints => {
   if (this.hitpoints < 1) {
     msg ("It is dead!")
     this.dead = true
+    this.listalias = this.listalias + " (dead)"
   }
 }
 names = Split("decipit;decomposing;shambling;disgusting;filthy;falling-apart", ";")
