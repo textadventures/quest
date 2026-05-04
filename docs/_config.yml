@@ -14,5 +14,9 @@ aux_links:
 
 aux_links_new_tab: true
 
-
 markdown: kramdown
+
+callouts:
+  warning:
+    title: Warning
+    color: red
