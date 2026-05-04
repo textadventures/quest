@@ -1,7 +1,7 @@
 ---
 title: How to run Quest on Linux
-nav_order: 21
-parent: "How To"
+nav_order: 7
+parent: "Desktop Features"
 ---
 
 {: .warning }

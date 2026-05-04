@@ -4,6 +4,8 @@ nav_order: 11
 parent: "How To"
 ---
 
+Quest has a simple built-in score system you can enable on the _Features_ tab of the game object — see [Score, Health and Money](../score_health_money.html). This tutorial shows how to build a more flexible custom scoring system with achievements, rankings, and a SCORE command.
+
 Many years ago I wrote a library to help track the player's score. It was pretty simple, but worked well, and five years later on I cannot think of any way to improve. So, I am going to drop it altogether! You do not need a library to do this, instead, I present a tutorial. The advantages of a tutorial are that you will learn more of Quest coding whilst following it, and it will be useable by anyone using the on-line editor too.
 
 This system will not just keep score, it will also allow the player to see a list of achievements, and give her a rank. The on-going score will appear in the status panel.

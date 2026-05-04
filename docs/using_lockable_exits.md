@@ -37,3 +37,5 @@ Run the game and verify that the exit now works correctly:
      > south
      You are in a garden.
      You can go north.
+
+For a guide on setting up a door that is accessible from both sides — using lockable exits as described above — see [Setting Up a Door](../setting_up_door.html).
