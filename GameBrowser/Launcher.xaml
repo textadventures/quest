@@ -21,14 +21,7 @@
                 <TabItem.Header>
                     <TextBlock x:Name="lblPlay" FontSize="18">Play</TextBlock>
                 </TabItem.Header>
-                <my:PlayBrowser x:Name="ctlPlayBrowser" >
-                    <my:PlayBrowser.Background>
-                        <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
-                            <GradientStop Color="#FFF3F3F9" Offset="1"/>
-                            <GradientStop Color="White"/>
-                        </LinearGradientBrush>
-                    </my:PlayBrowser.Background>
-                </my:PlayBrowser>
+                <my:PlayBrowser x:Name="ctlPlayBrowser" Background="{DynamicResource {x:Static SystemColors.WindowBrushKey}}" />
             </TabItem>
             <TabItem Padding="18,6,18,6">
                 <TabItem.Background>
@@ -40,14 +33,7 @@
                 <TabItem.Header>
                     <TextBlock x:Name="lblCreate" FontSize="18">Create</TextBlock>
                 </TabItem.Header>
-                <my:EditBrowser x:Name="ctlEditBrowser" >
-                    <my:EditBrowser.Background>
-                        <LinearGradientBrush EndPoint="0.5,1" MappingMode="RelativeToBoundingBox" StartPoint="0.5,0">
-                            <GradientStop Color="#FFF3F3F9" Offset="1"/>
-                            <GradientStop Color="White"/>
-                        </LinearGradientBrush>
-                    </my:EditBrowser.Background>
-                </my:EditBrowser>
+                <my:EditBrowser x:Name="ctlEditBrowser" Background="{DynamicResource {x:Static SystemColors.WindowBrushKey}}" />
             </TabItem>
         </TabControl>
         <my:VersionInfo Grid.Row="1" x:Name="ctlVersionInfo" />
