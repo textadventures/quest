@@ -5,6 +5,34 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              mc:Ignorable="d" 
              d:DesignHeight="100" d:DesignWidth="300">
+    <UserControl.Resources>
+        <Style x:Key="ListItemButton" TargetType="Button">
+            <Setter Property="Background" Value="{DynamicResource {x:Static SystemColors.WindowBrushKey}}"/>
+            <Setter Property="BorderBrush" Value="#FFCCCCCC"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border Background="{TemplateBinding Background}"
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                BorderThickness="{TemplateBinding BorderThickness}"
+                                CornerRadius="6">
+                            <ContentPresenter Margin="{TemplateBinding Padding}" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter Property="Background" Value="#FFF5F5F5"/>
+                            </Trigger>
+                            <Trigger Property="IsPressed" Value="True">
+                                <Setter Property="Background" Value="#FFE8E8E8"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+    </UserControl.Resources>
     <Border BorderThickness="0,0,0,1" BorderBrush="{DynamicResource {x:Static SystemColors.ControlLightBrushKey}}">
     <Grid Name="grid" TextOptions.TextFormattingMode="Display" Cursor="Hand" Background="Transparent">
         <Grid.ContextMenu>
@@ -53,13 +81,7 @@
             <StackPanel Orientation="Horizontal">
             </StackPanel>
         </StackPanel>
-        <Button Name="cmdLaunch" Grid.Column="2" Padding="10,4,10,4" Margin="3" VerticalAlignment="Center" Cursor="Arrow" BorderBrush="#FFACACAC">
-            <Button.Background>
-                <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
-                    <GradientStop Color="#FFF0F0F0" Offset="0"/>
-                    <GradientStop Color="#FFE5E5E5" Offset="1"/>
-                </LinearGradientBrush>
-            </Button.Background> Play</Button>
+        <Button Name="cmdLaunch" Grid.Column="2" Padding="16,8,16,8" Margin="3" VerticalAlignment="Center" Style="{StaticResource ListItemButton}">Play</Button>
         <ProgressBar Name="progressBar" Grid.Row="1" Grid.ColumnSpan="3" Height="12" Margin="3" Visibility="Collapsed" />
     </Grid>
     </Border>
