@@ -62,7 +62,7 @@ Rooms
 
 It is a good idea to keep the player informed, and in this case we want her to know whether the door is open or closed. You can do that in the room description using the text processor. For example:
 
-> The lounge is very retro. The door west is {either door.isopen:open|closed}.
+    The lounge is very retro. The door west is {either door.isopen:open|closed}.
 
 This is again using the "isopen" attribute of the door object.
 

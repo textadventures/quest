@@ -176,6 +176,6 @@ At the end of the creation process, move the player to the start room. This will
 A Note About Random Stats
 -------------------------
 
-You may be tempted to generate stats randomly. This is more in keeping with traditional tabletop RPGs, though I think most are moving away from that nowadays, and in any case they still offered a way to reject the worst values or to assign then to attributes as you choose.
+You may be tempted to generate stats randomly. This is more in keeping with traditional tabletop RPGs, though I think most are moving away from that nowadays, and in any case they still offered a way to reject the worst values or to assign them to attributes as you choose.
 
-There are two big problem with random stats. The first is the player may end up with a terrible character who dies at the first encounter, barely able to swing a sword. The second is the player may end up with an incredible character, able to sweep past any hurdle without breaking a sweat. Then there is the very real temptation for a player to keep generating new characters until she gets one that is great at everything.
+There are two big problems with random stats. The first is the player may end up with a terrible character who dies at the first encounter, barely able to swing a sword. The second is the player may end up with an incredible character, able to sweep past any hurdle without breaking a sweat. Then there is the very real temptation for a player to keep generating new characters until she gets one that is great at everything.

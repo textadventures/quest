@@ -67,7 +67,7 @@ If you have anything else that should only happen after a real turn (such as ene
   game.time = game.time + 1
 ```
 
-You might also want to modify some commands so a minute does not pass whilst for them. For example, HELP and perhaps INVENTORY and LOOK. Just add this line to their scripts:
+You might also want to modify some commands so a minute does not pass for them. For example, `HELP` and perhaps `INVENTORY` and `LOOK`. Just add this line to their scripts:
 
 ```
 game.notarealturn = true
@@ -113,7 +113,7 @@ Note that the third to sixth lines are adding "timeasstring" as a status attribu
 Taking Your Time
 ----------------
 
-Most actions will take 1 minutes, but you can increase that just by adding to game.time. Suppose mending the car takes 10 minutes, put this in the script (1 minute passes anyway):
+Most actions will take 1 minute, but you can increase that just by adding to `game.time`. Suppose mending the car takes 10 minutes, put this in the script (1 minute passes anyway):
 
 ```
 game.time = game.time + 9

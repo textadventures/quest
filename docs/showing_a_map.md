@@ -97,7 +97,7 @@ JS.ShowGrid (0)
 
 ### Vertical movement
 
-You can add code to allow an exit to move the player between levels when travelling along the compass directions. The trick is to define one room relative to the other. Say we have two rooms, `lower` and`upper`. In `upper`, this code should go in the Enter script:
+You can add code to allow an exit to move the player between levels when travelling along the compass directions. The trick is to define one room relative to the other. Say we have two rooms, `lower` and `upper`. In `upper`, this code should go in the Enter script:
 
     Grid_SetGridCoordinateForPlayer (game.pov, upper, "z", Grid_GetGridCoordinateForPlayer(game.pov, lower, "z")+1)
 

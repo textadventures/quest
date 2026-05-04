@@ -11,7 +11,7 @@ Note that we will *not* be using a **verb** here, as we have done before. Why no
 Adding a Simple Command
 -----------------------
 
-Let's add a simple command - "say". This will let the player type conversation prefixed with the command "say," for example "say hello". Quest will respond with "You say 'hello.' We will also add the contextual text of "but nobody replies" as no-one is present in the game at this point.
+Let's add a simple command - "say". This will let the player type conversation prefixed with the command "say," for example `SAY HELLO`. Quest will respond with "You say 'hello.' We will also add the contextual text of "but nobody replies" as no-one is present in the game at this point.
 
 To add a command:
 
@@ -20,14 +20,14 @@ To add a command:
 
 Enter the following text into the command pattern box:
 
-     say #text#
+    say #text#
 
 This pattern handles the player typing the command "say" followed by any text. The text following the "say" command is then put into a string variable called "text".
 
 For example:
 
--   If the player types "say hello", the "text" string variable will contain "hello"
--   If the player types "say what a lovely day", the "text" string variable will contain "what a lovely day"
+-   If the player types `SAY HELLO`, the "text" string variable will contain "hello"
+-   If the player types `SAY WHAT A LOVELY DAY`, the "text" string variable will contain "what a lovely day"
 
 We can read string variables within an expression, in exactly the same way as we read object attributes in the previous section.
 
@@ -43,21 +43,21 @@ But if you don't  like the backslashes, you could use single quotes quite safely
 
 ![](../images/Commandsay.png "Commandsay.png")
 
-Launch the game and type in a few "say" commands to see that Quest responds correctly.
+Launch the game and type in a few `SAY` commands to see that Quest responds correctly.
 
 Alternative Command Patterns
 ----------------------------
 
-You can easily add alternatives to a command pattern by separating them with semicolons. For example, we could adapt our "say \#text\#" command to deal with "shout" and "yell" by modifying the pattern to read:
+You can easily add alternatives to a command pattern by separating them with semicolons. For example, we could adapt our `say #text#` command to deal with "shout" and "yell" by modifying the pattern to read:
 
-     say #text#; shout #text#; yell #text#
+    say #text#; shout #text#; yell #text#
 
 Adding a "Weigh" Command
 ------------------------
 
 We now know how to add a command that will process any kind of text the player enters. However, a lot of the time, our commands will be dealing with objects that the player can see. To handle objects correctly, just use the variable name "object". So the "weigh" command's pattern should be:
 
-     weigh #object#
+    weigh #object#
 
 If you want to create a command that uses multiple objects, you can call your variables "object1", "object2" etc. - in fact anything starting with "object" will work.
 
@@ -75,7 +75,7 @@ Add the "weigh" command using the command pattern above, and add a "print a mess
 
 ![](../images/Commandweigh.png "Commandweigh.png")
 
-Launch the game and go to the kitchen. See what happens when you type "weigh flour", "weigh sugar" etc.
+Launch the game and go to the kitchen. See what happens when you type `WEIGH FLOUR`, `WEIGH SUGAR` etc.
 
 Now go back to the lounge. What happens when you weigh Bob?
 
@@ -94,7 +94,7 @@ The script should now look like this:
 
 ![](../images/Checkforattribute.png "Checkforattribute.png")
 
-Launch the game and verify that you now get a sensible response for "weigh bob" and "weigh sofa" in the lounge (it should say "You can't weigh that") and that you can still weigh the items in the kitchen.
+Launch the game and verify that you now get a sensible response for `WEIGH BOB` and `WEIGH SOFA` in the lounge (it should say "You can't weigh that") and that you can still weigh the items in the kitchen.
 
 Additional Example (Advanced)
 ------------------
@@ -105,18 +105,18 @@ Quest can handle text and objects in the same command. Here the say command is e
 
 The pattern you are using is this:
 
-      say #text_talk# to #object_one#
+    say #text_talk# to #object_one#
 
-Quest will attempt to match \#object\_one\# to an object present, and if it does then an object variable called "object\_one" will be set to that object (if it cannot, Quest will output whatever you typed in the "Unresolved object text" box). The text part will match any text at all, just as before.
+Quest will attempt to match `#object_one#` to an object present, and if it does then an object variable called "object_one" will be set to that object (if it cannot, Quest will output whatever you typed in the "Unresolved object text" box). The text part will match any text at all, just as before.
 
 Suppose the player types:
 
-      say hi to troll
+    SAY HI TO TROLL
 
-Quest matches "say" and "to" directly. It then matches "hi" to the text, so now the string variable "text\_talk" is set to "hi". Then it matches the object, as long as the troll is here, and sets the object variable "object\_one" to the troll.
+Quest matches "say" and "to" directly. It then matches "hi" to the text, so now the string variable "text_talk" is set to "hi". Then it matches the object, as long as the troll is here, and sets the object variable "object_one" to the troll.
 
 The script uses a switch command so you get a different response for different characters, and a default too.
 
-You can set up commands with multiple objects just by giving them each their own name between the \# marks.
+You can set up commands with multiple objects just by giving them each their own name between the `#` marks.
 
 [Next: More things to do with objects](more_things_to_do_with_objects.html)

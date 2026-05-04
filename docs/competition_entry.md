@@ -96,7 +96,7 @@ It is tempting to get the game to beta-testers fast, but you are really just was
 
 ### Beta-Testing
 
-When you are ready for beta-testing, publish your game as normal, but ensure it is "Unlisted". This is important as the rules of IfComp mean your game will be disqualified if it is released opening before the competition. An unlisted game will not appear on the Text Adventurers web site, but you will be able to give your tests a link to the game.
+When you are ready for beta-testing, publish your game as normal, but ensure it is "Unlisted". This is important as the rules of IfComp mean your game will be disqualified if it is released opening before the competition. An unlisted game will not appear on textadventures.co.uk, but you will be able to give your tests a link to the game.
 
 Have a statement at the start of your game explaining that this is a beta version, what version it is and how testers can send you comments. When you upload a new version, make sure you have changed the text. Hopefully your testers will tell you which version they were looking at.
 

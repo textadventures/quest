@@ -64,11 +64,15 @@ Attack descriptions
 
 You may have noticed that if you shoot the zombie, you see:
 
-> You attacks decomposing zombie and misses...
+```
+You attacks decomposing zombie and misses...
+```
 
 And when it attacks you:
 
-> Decomposing zombie attacks you and misses...
+```
+Decomposing zombie attacks you and misses...
+```
 
 Not too slick. But we can fix that, by adding a new attribute to the weapons and enemies. We will add three strings called "critdesc", "attackdesc" and "missdesc", with special codes in them.
 
@@ -276,7 +280,7 @@ To turn on money, tick the "Money" box on the _Features_ tab of the game object,
 
 Create a command, and give it this pattern:
 
-> search #object#
+    search #object#
 
 We will keep the command very general, as you might want to have the player search all sorts of things in your game, not just monsters. All it will do is check if the object has a script called "searchscript", that it has not already been searched, and that it is not still moving. If all okay, run the script:
 

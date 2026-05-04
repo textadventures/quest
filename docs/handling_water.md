@@ -8,7 +8,7 @@ There is more than one way to do this, but this is what I recommend. This will i
 
 What we will do is to create a waterskin that can be filled and drunk from, and then set up a room with a pool of water and another with a tap.
 
-There are also a [library](https://github.com/ThePix/quest/wiki/Liquid-Library) available.
+There is also a [library](https://github.com/ThePix/quest/wiki/Liquid-Library) available.
 
 
 The waterskin
@@ -101,7 +101,7 @@ You might want to drink from the waterskin. Add a "drink from" verb, and paste t
 ```
 What it does is check the waterskin is not empty, and if not reduces its contents by 1. You might want to do some other things in the second block, if the player is going to die of thirst; that is up to you to sort out!
 
-You might want to USE the waterskin, i.e., (I guess) drink from it. USE is kind of built-in, so takes a bit of setting up. Go to the Features tab, and tick Use/Give. Then go to the Use/Give tab, and at the top, for "Use (on its own)", set the action to "Run script". This does the same thing as "drink from", so we can use that script (note that spaces are removed from the verb to make the attribute name).
+You might want to `USE` the waterskin, i.e., (I guess) drink from it. `USE` is kind of built-in, so takes a bit of setting up. Go to the Features tab, and tick Use/Give. Then go to the Use/Give tab, and at the top, for "Use (on its own)", set the action to "Run script". This does the same thing as "drink from", so we can use that script (note that spaces are removed from the verb to make the attribute name).
 ```
   do(this, "drinkfrom")
 ```

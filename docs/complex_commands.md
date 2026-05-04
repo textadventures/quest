@@ -4,23 +4,25 @@ nav_order: 3
 parent: "How to use commands"
 ---
 
-So you want to use THIS with THAT? what is the best way to handle it?
+So you want to use `THIS` with `THAT`? what is the best way to handle it?
 
 This page discusses how to set up commands that use two (or more) objects. For simple commands, see [here](commands.html).
 
+```
 > TIE CORD TO HOOK
->
+
 > CUT ROPE WITH KNIFE
->
+
 > ATTACK GOBLIN WITH KNIFE
->
+
 > GET HOT COAL WITH TONGS
->
+
 > IGNITE FIREWORK WITH MATCH
+```
 
-First, remember that GIVE and USE are already built in; if you want to use them, tick the feature on one of the items, and go to the Use/give tab. What about the others? 
+First, remember that `GIVE` and `USE` are already built in; if you want to use them, tick the feature on one of the items, and go to the Use/give tab. What about the others? 
 
-As an example, I am going to implement TIE CORD TO HOOK.
+As an example, I am going to implement `TIE CORD TO HOOK`.
 
 
 Command Pattern
@@ -34,11 +36,11 @@ If you do that then the player has to type that exact phrase or Quest will not r
 ```
   tie cord to hook; tie thread to hook; tie string to hook
 ```
-However, we can do even better, and let Quest handle the synonyms, by using #object#.
+However, we can do even better, and let Quest handle the synonyms, by using `#object#`.
 ```
   tie #object# to hook
 ```
-As long as you have set up the cord with these alternative names (the " Other names" list on the Object tab), Quest will match #object# against any of them. An important benefit here is that your game will have the same set of synonyms for an object whether the player is trying to pick it up, look at it or tie it to a hook.
+As long as you have set up the cord with these alternative names (the "Other names" list on the Object tab), Quest will match `#object#` against any of them. An important benefit here is that your game will have the same set of synonyms for an object whether the player is trying to pick it up, look at it or tie it to a hook.
 
 And you can have as many objects as you like in the pattern; just make sure they start object so Quest will match them against objects that are present (in practice, any more than two will confuse the player). We need two here, the cord and the hook:
 ```
@@ -57,11 +59,11 @@ If you are feeling brave, you could use a regular expression here (remember to s
 ```
   ^(tie|attach|fasten) (?<object1>.*) to (?<object2>.*)$
 ```
-* The ^ at the start says Quest must match this to the start of the command, whilst the $ at the end says this must be the end of the command.
+* The `^` at the start says Quest must match this to the start of the command, whilst the $ at the end says this must be the end of the command.
 
-* The (tie\|attach\|fasten) tells Quest it has to match to one of these. One has to match exactly, but it does not matter which.
+* The `(tie\|attach\|fasten)` tells Quest it has to match to one of these. One has to match exactly, but it does not matter which.
 
-* (?\<object1\>.*) is equivalent to #object1#; in a regex it is called a "capture group, because it groups some characters together, and captures them for use elsewhere.
+* `(?\<object1\>.*)` is equivalent to `#object1#`; in a regex it is called a "capture group", because it groups some characters together, and captures them for use elsewhere.
 
 * Plain text, like "to", has to be matched exactly.
 
@@ -79,13 +81,15 @@ Or even:
 ```
 That will handle any of these:
 
+```
 > get hat with hook
->
+
 > pick up hat using hook
->
+
 > take the hat with the hook
->
+
 > using the hook take the hat
+```
 
 There is more on regular expressions [here](pattern_matching.html).
 
@@ -178,7 +182,7 @@ Before we get to the commands, you need to give any fire a new attribute "fire",
 
 For the first command give it this pattern:
 
-> burn #object1# on #object2#;burn #object1# in #object2#;burn #object1# with #object2#
+    burn #object1# on #object2#;burn #object1# in #object2#;burn #object1# with #object2#
 
 Give it a name, "cmd_burn_with" (commands do not usually need names, but this will be useful later). Paste in the code:
 
@@ -209,7 +213,7 @@ The code checks if the second object is on fire (i.e., the "fire" attribute is t
 
 The second command has this pattern:
 
-> burn #object1#
+    burn #object1#
 
 Here is the code:
 

@@ -30,7 +30,7 @@ The editor template will then change, and next to the condition you will now see
 
 That's our condition added - now we just need to say what happens when the condition is met. Click the "Then" header and you'll see that you can add script commands here too. These script commands will *only* be run *if* the TV is switched on. Add a "Print a message" command.
 
-This will be the text that will appear when the player types "watch tv" while the TV is switched on, so enter a message like "You watch for a few minutes. As your will to live slowly ebbs away, you remember that you’ve always hated watching westerns."
+This will be the text that will appear when the player types `WATCH TV` while the TV is switched on, so enter a message like "You watch for a few minutes. As your will to live slowly ebbs away, you remember that you’ve always hated watching westerns."
 
 We're not done yet - what if the TV is *not* switched on? Fortunately we don't need to add a whole other condition - we can just add an "Else" script to the one we're working on. Click the "Add Else" button, then expand the "Else" header that appears. Add a "Print a message" command again, and this time add a message like "You watch for a few minutes, thinking that the latest episode of ‘Big Brother’ is even more boring than usual. You then realise that the TV is in fact switched off."
 
@@ -38,6 +38,6 @@ Your screen should now look like this:
 
 ![](../images/Addif4.png "Addif4.png")
 
-Now would be a good time to play the game to test that it works properly. Switch the TV on and off, and verify that you get a sensible response when you type "watch tv".
+Now would be a good time to play the game to test that it works properly. Switch the TV on and off, and verify that you get a sensible response when you type `WATCH TV`.
 
 [Next: Custom attributes](custom_attributes.html)

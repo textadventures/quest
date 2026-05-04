@@ -24,7 +24,7 @@ Now let's create some objects inside the fridge. To do this, we just create thes
 
 Add the following objects: milk, cheese, beer. Give each object a sensible description. The prefix for each object should be "some", so that the room description sounds natural. Allow each object to be taken.
 
-Now run the game and go to the kitchen. Notice that you can't see the milk, and if you type something like "look at milk", Quest will tell you that it's not here. Now open the fridge, and the objects inside it will be revealed.
+Now run the game and go to the kitchen. Notice that you can't see the milk, and if you type something like `LOOK AT MILK`, Quest will tell you that it's not here. Now open the fridge, and the objects inside it will be revealed.
 
 By setting the "List prefix" you can change the "It contains" text which appears before the list of objects.
 
@@ -70,30 +70,32 @@ Now, make the box lockable. Go to the Container tab and in the "Locking" section
 
 ![](../images/Lockedcontainer.png "Lockedcontainer.png")
 
-By default we have the "Automatically unlock if player has the key" and "Automatically open when unlocked" options turned on. This is out of politeness to players really, as there's no need to force them to jump through hoops and perform additional steps - if they've unlocked the object, it's a fair bet they want to open it, and if they type "open box" before unlocking it, then if they have the key, there's no point in forcing them to type "unlock box" first.
+By default we have the "Automatically unlock if player has the key" and "Automatically open when unlocked" options turned on. This is out of politeness to players really, as there's no need to force them to jump through hoops and perform additional steps - if they've unlocked the object, it's a fair bet they want to open it, and if they type `OPEN BOX` before unlocking it, then if they have the key, there's no point in forcing them to type `UNLOCK BOX` first.
 
 It might be a good idea to tick the "List children when object is looked at or opened" option, in the main Container options. Now your game output will look like something this:
 
-     > open box
-     It is locked.
-     
-     > unlock box
-     You do not have the key.
-     
-     > s
-     You are in a kitchen.
-     [rest of kitchen description snipped...]
-     
-     > take key
-     You pick it up.
-     
-     > n
-     You are in a lounge.
-     [rest of lounge description snipped...]
-     
-     > unlock box
-     Unlocked.
-     You open it.
-     It contains a defibrillator.
+```
+> OPEN BOX
+It is locked.
+
+> UNLOCK BOX
+You do not have the key.
+
+> S
+You are in a kitchen.
+[rest of kitchen description snipped...]
+
+> TAKE KEY
+You pick it up.
+
+> N
+You are in a lounge.
+[rest of lounge description snipped...]
+
+> UNLOCK BOX
+Unlocked.
+You open it.
+It contains a defibrillator.
+```
 
 [Next: Moving objects during the game](moving_objects_during_the_game.html)

@@ -19,7 +19,7 @@ This tutorial applies to both versions. The versions are fundamentally the same,
 What is a text adventure?
 -------------------------
 
-Text adventure games were the earliest type of computer game, from a time when computers could only display text - there were no graphics, so everything was described with text. You would play the game by typing commands with the keyboard such as "go north" or "hit troll". Quest lets you make this kind of game - you can include graphics now though, and play the game by clicking hyperlinks instead of having to type everything.
+Text adventure games were the earliest type of computer game, from a time when computers could only display text - there were no graphics, so everything was described with text. You would play the game by typing commands with the keyboard such as `GO NORTH` or `HIT TROLL`. Quest lets you make this kind of game - you can include graphics now though, and play the game by clicking hyperlinks instead of having to type everything.
 
 Why create text adventures
 --------------------------

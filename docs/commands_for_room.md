@@ -5,17 +5,17 @@ parent: "How to use commands"
 ---
 
 
-Frequently you will want to add a command that is specific to a certain room.  If the command involves an object, then Quest will attempt to match the object (for example, ATTACK GOBLIN, Quest will start by trying to match GOBLIN to any object present). Often there will be no object, for example, the player might have to CLIMB or SWIM.
+Frequently you will want to add a command that is specific to a certain room.  If the command involves an object, then Quest will attempt to match the object (for example, `ATTACK GOBLIN`, Quest will start by trying to match `GOBLIN` to any object present). Often there will be no object, for example, the player might have to `CLIMB` or `SWIM`.
 
 One way to do that would be to test whether you are in the right room in the command script. However, the cool way is to have two commands - one in the room itself.
 
-Let us suppose a room where the player has to CLIMB.
+Let us suppose a room where the player has to `CLIMB`.
 
 ### The general command
 
 In most rooms, CLIMB will do nothing. We will handle that first. Create a command as usual, and give it this pattern:
 
-> climb
+    climb
 
 Now click the "Add new script" button, select "Print" and paste in some suitable text, "Nothing to climb here."
 
@@ -25,7 +25,7 @@ Now create a second command. This will be the command that actually does somethi
 
 Now the clever bit. If you are using the web version, click on the "Move" button towards the top right, and select the room the player can climb in. For the desktop version, drag the command to the room (make sure you do the right one!).
 
-If the player is in that room, Quest will use the CLIMB command for the room, and the player will climb the drainpipe. Otherwise the general command will be used.
+If the player is in that room, Quest will use the `CLIMB` command for the room, and the player will climb the drainpipe. Otherwise the general command will be used.
 
 ### Another room?
 

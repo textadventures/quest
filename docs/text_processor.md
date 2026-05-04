@@ -163,7 +163,7 @@ Displays a link, with the first text (which cannot have text processor directive
 
 
 {either **condition**:**text**}
-This works similar to the if command above, but with two important differences. The first is the the condition can be any Quest code that results in a Boolean (true or false). The second is that if you are comparing a string it needs to be in double quotes (as is true of normal Quest code).
+This works similar to the if command above, but with two important differences. The first is that the condition can be any Quest code that results in a Boolean (true or false). The second is that if you are comparing a string it needs to be in double quotes (as is true of normal Quest code).
 
 
 ```
@@ -248,7 +248,7 @@ You cannot use text processor commands in an object's name, as only a limited se
 Support for "this"
 ------------------
 
-In Quest, "this" is a special local variable that refers to the object that owns the current script. Text processor directives do not naturally support "this", because when they are being processed they do not belong to a script. However, you cam fake it by setting a special attribute of the game object called "text_processor_this". This would allow you to do something like this:
+In Quest, "this" is a special local variable that refers to the object that owns the current script. Text processor directives do not naturally support "this", because when they are being processed they do not belong to a script. However, you can fake it by setting a special attribute of the game object called "text_processor_this". This would allow you to do something like this:
 
 ```
 game.text_processor_this = teapot

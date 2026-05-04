@@ -6,7 +6,7 @@ parent: "Characters (NPCs)"
 
 An NPC is going to feel more alive if he or she is doing things on their own initiative, rather than just reacting to what the player does. A simple way to do this is to add something to the room description for the location the NPC is in. Something like this, maybe:
 
-> You are in a rather grubby lounge, with a tatty settee in the centre. Mary is here, {random:scratching her nose:looking at you expectantly:looking at her phone}.
+    You are in a rather grubby lounge, with a tatty settee in the centre. Mary is here, {random:scratching her nose:looking at you expectantly:looking at her phone}.
 
 However, we will look at doing something a bit more involved, allowing the NPCs to move from one room to another (and in a later tutorial, to interact with objects in each room).
 

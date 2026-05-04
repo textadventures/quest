@@ -54,9 +54,9 @@ For more on the Publish tool, including size limitations and what gets included 
 Upload testing
 --------------
 
-Now play the uploaded version of your game. I would recommend saving, and ensuring a saved game can be loaded and looks okay, as saving and loading tend to be essentially sensitive to errors in scripts!
+Now play the uploaded version of your game. I would recommend saving, and ensuring a saved game can be loaded and looks okay, as saving and loading tend to be especially sensitive to errors in scripts!
 
-Now get some other people to test it – you'll be surprised at all the things they pick up that you would never have thought of. This is called beta-testing, and while it can be a pain, especially as you are keen to get your game out there fast, is well worth it in the long run. A couple of bugs in your game will quickly lead to bad reviews.
+Now get some other people to test it – you'll be surprised at all the things they pick up that you would never have thought of. This is called beta-testing, and while it can be a pain, especially as you are keen to get your game out there fast, it is well worth it in the long run. A couple of bugs in your game will quickly lead to bad reviews.
 
 
 Public upload

@@ -16,17 +16,19 @@ That is it. At its simplest, that is all you need to do. You can now go in game,
 
 You should see this:
 
->   &gt; wear trousers
-
->   You put it on.
+```
+> wear trousers
+You put it on.
+```
 
 Wait, it should say "them" not "it". This is not specifically about clothing, but we might as well get it right. Go to the "Setup" tab, and set the type to "Inanimate objects (plural)". Also untick "Use default prefix and suffix" and it will not get referred to as "a trousers".
 
 You can add specific messages for putting on and taking off items too. For the trousers, you could put "You pull on the trousers, one leg at a time." in the "Message to print when wearing" box. Now you will see:
 
-> &gt; wear trousers
-
-> You pull on the trousers, one leg at a time.
+```
+> wear trousers
+You pull on the trousers, one leg at a time.
+```
  
 That is the basics, however, the library allows you to do rather more. What about underwear? And what if you want to ensure underwear cannot be worn over the top of the trousers?
 
@@ -40,13 +42,12 @@ Garments can be assigned to layers and slots. Slots are where the item is worn. 
 
 As well as slots, clothing has layers. Trousers went in the default layer, 2. Create some underpants and give them a wear layer of 1, and again a wear slot "lower". Now if you go in game you will find you cannot put the underpants on if you are already wearing trousers. The verbs offered in the pane on the right will not include "Wear", and if you type it in the command bar you will see this:
 
-> &gt; wear trousers
-
-> You put them on.
-
-> &gt; wear underpants
-
-> You cannot wear that over trousers.
+```
+> wear trousers
+You put them on.
+> wear underpants
+You cannot wear that over trousers.
+```
 
 The logic here is that, for garments that have the same slot, you can only put on an item that has a higher layer than the items already worn, and you can only take off the garment with the highest layer.
 
@@ -69,7 +70,7 @@ Most people will not need to worry about the advanced features, so they are hidd
 
 Untick this if you do not want the player to be able to remove the garment. This might be because the item is cursed, or you just want to prevent the player getting completely naked, and having to handle the reactions of the NPCs to a naked person.
 
-If you go to the _Attributes_ tab, you can create a string attribute called "notremoveablemessage" that will be displayed when the player tries to take the garment off.
+If you go to the _Attributes_ tab, you can create a string attribute called `notremoveablemessage` that will be displayed when the player tries to take the garment off.
 
 
 ### Protection
@@ -182,7 +183,7 @@ For example, to have the player wearing clothes at the start, use the WearGarmen
   WearGarment (shirt)
 ```
 
-The `RemoveGarment` function works similar;y, taking the garment to be removed as a parameter. To remove all garments (without any message to the player), do this:
+The `RemoveGarment` function works similarly, taking the garment to be removed as a parameter. To remove all garments (without any message to the player), do this:
 
 ```
   foreach (o, GetAllChildObjects(game.pov)) {
@@ -247,7 +248,7 @@ If you feel the player's inventory is getting cluttered with what the player is 
 
 To get this to work successfully, you need to create a new object on the player object, and give it a Boolean attribute called `wornclothinglocation` that is set to true. On the _Features_ tab, set it to be a container, then on the _Container_ tab, set it to be a container. On the _Inventory_ tab, untick the box so it cannot be dropped.
 
-At this point it should work fine, but there is some tidying up we can do to make it more slick (however, you should only do this if you do not have SHOW or HIDE as commands; if you do this will screw them up). On the Inventory tab, tick "Disable automatically generated display verb list", and in the list of _Inventory Verbs_, delete everything. Click _Add_ and type in "Hide".
+At this point it should work fine, but there is some tidying up we can do to make it more slick (however, you should only do this if you do not have `SHOW` or `HIDE` as commands; if you do this will screw them up). On the Inventory tab, tick "Disable automatically generated display verb list", and in the list of _Inventory Verbs_, delete everything. Click _Add_ and type in "Hide".
 
 Now go to the verbs tab, and click _Add_ there. Again, type in "Hide" and set this to run a script, and paste this in:
 
@@ -346,7 +347,7 @@ Note that `ListVisibleFor` has some limitations, as it can only guess at what is
 
 Quest gives some facilities to handle armour. If you want to use the default armour system, then the body locations you use must be:
 
-> feet, legs, shoulders, arms, hands, head, torso
+    feet, legs, shoulders, arms, hands, head, torso
 
 You can set the protection for each garment the player is wearing. The function `GetArmour` will calculate the total protection worn. This is calculated by checking the protection for each location (if more than one item is worn in a location, the highest is used plus half the rest). Values for each location are added together, with head counting double and torso counting three times. If the protection value of each item can be from 0 to 5, the result from `GetArmour` can range from 0 to 100.
 

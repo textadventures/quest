@@ -54,7 +54,7 @@ The only complicated bit is the locked door to the north of the foyer. Quest wil
 
 For the objects, on the _Object_ tab, add any synonyms ("peg" for hook; "cape", "mantle", "robe" for cloak; "note", "writing" for message).
 
-On the _Inventory_ tab of the cloak, tick that it can be taken. You need to make sure the cloak is inside the player; if it is not, drag it there on the desktop version, or click the "Move" button on the web version. We could sent up the cloak as clothing, but there is nothing in the specification about putting it on and taking it off (which is a bit odd, perhaps), so I am not going to bother.
+On the _Inventory_ tab of the cloak, tick that it can be taken. You need to make sure the cloak is inside the player; if it is not, drag it there on the desktop version, or click the "Move" button on the web version. We could set up the cloak as clothing, but there is nothing in the specification about putting it on and taking it off (which is a bit odd, perhaps), so I am not going to bother.
 
 Give the cloak and the hook descriptions. Generally you would be adding descriptions for all the items and locations, but these are going to depend on the various systems, so we will leave that for now.
 
@@ -64,11 +64,7 @@ The Hook
 
 The first system we will look at is the hook, upon which we can hang the cloak.
 
-Go to the _Features_ tab of the hook, and tick the "Container" option. This will show the _Container_ tab. On that tab, set it to be a surface. Now go into the game, head to the cloakroom, and type:
-
-> PUT CLOAK ON HOOK
-
-When you look, you will see the cloak is now on the hook.
+Go to the _Features_ tab of the hook, and tick the "Container" option. This will show the _Container_ tab. On that tab, set it to be a surface. Now go into the game, head to the cloakroom, and type `PUT CLOAK ON HOOK`. When you look, you will see the cloak is now on the hook.
 
 What if the player types HANG UP CLOAK or HANG CLOAK ON HOOK? We need a couple of commands to cover this (two because one will deal with one object, and one with two objects).
 
@@ -77,9 +73,9 @@ What if the player types HANG UP CLOAK or HANG CLOAK ON HOOK? We need a couple o
 
 Our command pattern will be this:
 
-> hang up #object#;hang #object#
+    hang up #object#;hang #object#
 
-Note that you need to have the longer versions at the start, otherwise Quest will match "hang #object#" to HANG UP CLOAK, and will complain that it cannot see an "up cloak"!
+Note that you need to have the longer versions at the start, otherwise Quest will match "hang #object#" to `HANG UP CLOAK`, and will complain that it cannot see an "up cloak"!
 
 For the command script, the general strategy is to check each failing condition, with an appropriate message, and if it all passes, do the command:
 
@@ -103,9 +99,9 @@ I am using "object.article" so Quest will use "it", "them, "him" as appropriate.
 
 Our command pattern will be this:
 
-> hang #object1# on #object2#
+    hang #object1# on #object2#
 
-Why not do this as "hang #object1# on hook"? It is better practice to always use a general object, as this allows Quest to match the synonyms for the objects. The above will also match HANG CAPE ON PEG. If we later think of another synonym for hook, we can just add it to hook, and all the commands will handle it fine.
+Why not do this as "hang #object1# on hook"? It is better practice to always use a general object, as this allows Quest to match the synonyms for the objects. The above will also match `HANG CAPE ON PEG`. If we later think of another synonym for hook, we can just add it to hook, and all the commands will handle it fine.
 
 Quest will only match against objects present (unless we tell it otherwise for a specific command), so we know the hook must be present; so rather than checking we are in the right room, we need to check `object2` is the hook object. For a bigger game, we might want to have an attribute on the hook that flags it as something we can hang stuff on, and then check that flag on `object2`; I have written the messages to keep them general. Note that `GetDisplayName` prepends "a" or "some" to the name, as appropriate.
 
@@ -209,15 +205,15 @@ You should now be able to play the game to check it works.
 
 So we have a working system, but can improve it.
 
-Firstly, the player is likely to try READ MESSAGE. Go to the _Verbs_ tab and add "read". Set it to run a script, and paste in this code:
+Firstly, the player is likely to try `READ MESSAGE`. Go to the _Verbs_ tab and add "read". Set it to run a script, and paste in this code:
 
 ```
 do (this, "look")
 ```
 
-All it will do is run the "look" script, exactly the same as LOOK AT MESSAGE. This means that if we later change the "look" script, READ will not need to be updated.
+All it will do is run the "look" script, exactly the same as `LOOK AT MESSAGE`. This means that if we later change the "look" script, `READ` will not need to be updated.
 
-The second thing we can do is stop turnscripts running in some situations. If the player mistypes a command, it is not really fair to count that as a turn. Typing HELP should also not count as a turn. There may be other examples you can think of.
+The second thing we can do is stop turnscripts running in some situations. If the player mistypes a command, it is not really fair to count that as a turn. Typing `HELP` should also not count as a turn. There may be other examples you can think of.
 
 Go to the _Features_ tab of the game object, and tick "Show advanced scrips...", then go to the _Advanced scripts_ tab. The middle script is for unresolved commands. We want to have it print a message, and to tell Quest to skip turnscripts this turn.
 
@@ -230,7 +226,7 @@ Note that `command` is a local variable that contains the text the player typed.
 
 For the help command, we do pretty much the same. The pattern is:
 
-> help;?
+    help;?
 
 And the script:
 
@@ -284,15 +280,15 @@ But the bit in the `if` condition is already `true` or `false`, so we can just r
 
 So now we need some room descriptions, and these need to depend on whether the cloak is present or not. There are a couple of ways to do that. `if/else` is a good idea if the text is very different, but the text processor is better if just a few words are changing. For the foyer, then, we might have:
 
-> There is something oppressive about the {either CloakHere():dark\|dingy} {once:room}{notfirst:foyer}; a presence in the air that almost suffocates you. Very much faded glory, the walls sport posters from productions that ended over twenty years ago. Paint is peeling, dust is everywhere and it smells decidedly musty. 
+    There is something oppressive about the {either CloakHere():dark|dingy} {once:room}{notfirst:foyer}; a presence in the air that almost suffocates you. Very much faded glory, the walls sport posters from productions that ended over twenty years ago. Paint is peeling, dust is everywhere and it smells decidedly musty.
 
-This uses the `either` text processor directive, which then uses `CloakHere` as the condition. The true and false options are separated by the \|. If the cloak is here, the room is dark, otherwise dingy.
+This uses the `either` text processor directive, which then uses `CloakHere` as the condition. The true and false options are separated by `|`. If the cloak is here, the room is dark, otherwise dingy.
 
-> {either CloakHere():dark\|dingy}
+    {either CloakHere():dark|dingy}
 
 At the start of the game there is an introductory text saying how the player has arrived at the foyer. It reads better if this description then avoids the word "foyer". However, any other time the player enters the room, we do need the word. To handle this, we use the `once` directive which only uses the text the first time, and `notonce` which only uses the given text when it is not the first time.
 
-> {once:room}{notfirst:foyer}
+    {once:room}{notfirst:foyer}
 
 
 The cloakroom uses a script, but we can modify the first line to use the same text processor directive:
@@ -352,7 +348,7 @@ On the _Room descriptions_ tab we can change the text displayed. I am going to t
 Next steps
 ----------
 
-Now we have a complete game, that looks good too. We can add some finishing touches, such as an ABOUT command, or implement the posters that are mentioned in the foyer (remember to set them to be scenery).
+Now we have a complete game, that looks good too. We can add some finishing touches, such as an `ABOUT` command, or implement the posters that are mentioned in the foyer (remember to set them to be scenery).
 
 
 ### Introduction
@@ -372,11 +368,11 @@ msg ("")
 
 We can improve the message the player sees when trying the locked door using the text processor. Using the `once` directive, we can have a longer message appear the first time.
 
-> You try the doors out of the opera house, but they are locked. {once:How did that happen? you wonder.}
+    You try the doors out of the opera house, but they are locked. {once:How did that happen? you wonder.}
 
 We can put the player's thoughts in italics too, using the `i` directive, nesting one text directive in another.
- 
-> You try the doors out of the opera house, but they are locked. {once:{i:How did that happen?} you wonder.}
+
+    You try the doors out of the opera house, but they are locked. {once:{i:How did that happen?} you wonder.}
 
 
 
@@ -409,12 +405,12 @@ This will add each object in the "everywhere" room to the special object list "i
 
 ### LISTEN and SMELL
 
-We mention sounds and smells in the game, so the player is likely to try to LISTEN and to SMELL. The way these are handled is the same, so what works for one will work for the other. On the desktop, you can set attributes directly on the _Attributes_ tab, and it is far better to handle LISTEN and SMELL that way. On the web version, you cannot do that, and it is easier to handle the commands quite differently. With that in mind, we will do one one way, and the other the other.
+We mention sounds and smells in the game, so the player is likely to try to `LISTEN` and to `SMELL`. The way these are handled is the same, so what works for one will work for the other. On the desktop, you can set attributes directly on the _Attributes_ tab, and it is far better to handle `LISTEN` and `SMELL` that way. On the web version, you cannot do that, and it is easier to handle the commands quite differently. With that in mind, we will do one one way, and the other the other.
 
 
 _SMELL on the web version_
 
-Create a new command, with the pattern "smell;sniff". Paste in this code:
+Create a new command, with the pattern `smell;sniff`. Paste in this code:
 
 ```
 switch (player.parent) {
@@ -422,7 +418,7 @@ switch (player.parent) {
     msg ("It smells of damp and neglect in here.")
   }
   case (bar) {
-    msg ("There is a musty smell, but behind that, something else, something thast reminds you of the zoo, perhaps?")
+    msg ("There is a musty smell, but behind that, something else, something that reminds you of the zoo, perhaps?")
   }
   default {
     msg ("It smells slightly musty.")
@@ -435,7 +431,7 @@ So here we are checking what room the player is in, and giving an appropriate me
 
 _LISTEN on the desktop_
 
-The above will work fine on the desktop, but there is a better way. Create a new command, with the pattern "listen". Paste in this code:
+The above will work fine on the desktop, but there is a better way. Create a new command, with the pattern `listen`. Paste in this code:
 
 ```
 if (HasString(player.parent, "listen")) {
@@ -455,24 +451,26 @@ _Improved LISTEN_
 
 There is an issue here that if you go and listen in the bar, you will see this:
 
-> A bar
-> It is too dark to see anything except the door to the north.
-> 
-> &gt; listen
-> Is there something moving?
-> You think it might be a bad idea to disturb things in the dark.
-> 
-> &gt; listen
-> Is there something moving?
-> You can hear something moving in the dark.
-> 
-> &gt; listen
-> Is there something moving?
-> You can hear rasping breathing.
+```
+A bar
+It is too dark to see anything except the door to the north.
 
-It reads a little odd when the LISTEN commands says one thing, and the turnscript something slightly different. Little annoyances like this can be very tricky to correct, and you may feel it is better to just keep it as it is. Only a minority of players will even do LISTEN; is it worth the hassle? Let us suppose it is!
+> listen
+Is there something moving?
+You think it might be a bad idea to disturb things in the dark.
 
-What we will do is have a flag on the player called "suppress_background_sounds"; when it is true, no extra sounds are allowed. Therefore, we need to add this to the end of the LISTEN command script (whether it is the web or desktop version):
+> listen
+Is there something moving?
+You can hear something moving in the dark.
+
+> listen
+Is there something moving?
+You can hear rasping breathing.
+```
+
+It reads a little odd when the `LISTEN` command says one thing, and the turnscript something slightly different. Little annoyances like this can be very tricky to correct, and you may feel it is better to just keep it as it is. Only a minority of players will even do `LISTEN`; is it worth the hassle? Let us suppose it is!
+
+What we will do is have a flag on the player called "suppress_background_sounds"; when it is true, no extra sounds are allowed. Therefore, we need to add this to the end of the `LISTEN` command script (whether it is the web or desktop version):
 
 ```
 player.suppress_background_sounds = true
@@ -511,9 +509,9 @@ Some players will expect to be able to wear and remove the cloak, so we better h
 
 Quest has a built-in system for wearables, but it is a bit much for this game. Specifically, it will insist that the cloak is removed before it is hung up or dropped, which will be annoying and against the Cloak of Darkness specification, so we will create our own.
 
-As there is the built-in system, we cannot use verbs, but we can add our own commands. For the WEAR command, this is the pattern:
+As there is the built-in system, we cannot use verbs, but we can add our own commands. For the `WEAR` command, this is the pattern:
 
-> put #object# on; wear #object#; put on #object#; don #object#; wear #object#
+    put #object# on; wear #object#; put on #object#; don #object#; wear #object#
 
 We can set the scope to "inventory", so Quest will look there first, but it will then look anywhere reachable when trying to match the object. Here is the code:
 
@@ -531,11 +529,11 @@ else {
 }
 ```
 
-As usual it checks for possible failure first - can the item be worn, is it already worn? If all is okay, we make sure the player is carrying the object (so if it is on the hook, and the player does WEAR ClOAK, it will be picked up, and worn in one go), then set worn to true.
+As usual it checks for possible failure first - can the item be worn, is it already worn? If all is okay, we make sure the player is carrying the object (so if it is on the hook, and the player does `WEAR CLOAK`, it will be picked up, and worn in one go), then set worn to true.
 
-For the REMOVE command...
+For the `REMOVE` command:
 
-> take #object# off; remove #object#; take off #object#; doff #object#
+    take #object# off; remove #object#; take off #object#; doff #object#
 
 The code is a bit shorter, as it must be wearable and you must be carrying it if it is worn.
 
@@ -549,7 +547,7 @@ else {
 }
 ```
 
-Now we need to make the cloak wearable. On the desktop version, you can do this on the _Attrributes_ tab, but we will do it the more general way. Go to the _Features_ tab of the cloak, and turn on "Initialisation script...", then go to the _Initialisation script_ tab. Paste in this code:
+Now we need to make the cloak wearable. On the desktop version, you can do this on the _Attributes_ tab, but we will do it the more general way. Go to the _Features_ tab of the cloak, and turn on "Initialisation script...", then go to the _Initialisation script_ tab. Paste in this code:
 
 ```
 this.worn = true
@@ -562,9 +560,9 @@ This will set the "worn" attribute to be true, so the cloak is worn at the start
 
 The "this" variable indicates the object to which the script belongs, by the way. It is good practice to use it where possible as it means you can copy-and-paste code very easily. Any other wearable item can have exactly the same code.
 
-Finally we need to tell the player if the cloak is worn or not when in the inventory, so we will create our own INVENTORY command. Here is the pattern:
+Finally we need to tell the player if the cloak is worn or not when in the inventory, so we will create our own `INVENTORY` command. Here is the pattern:
 
-> ^i$|^inv$|^inventory$
+    ^i$|^inv$|^inventory$
 
 There is only one item that can be picked up in this game, so the code is very simple:
 

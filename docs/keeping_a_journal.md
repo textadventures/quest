@@ -42,13 +42,13 @@ The first bit checks if anything is written in the journal yet, and if not then 
 The JOURNAL command
 -------------------
 
-This is optional, but will allow the player to type JOURNAL to see what is currently written in it, and would be useful if you turn off the panes on the right.
+This is optional, but will allow the player to type `JOURNAL` to see what is currently written in it, and would be useful if you turn off the panes on the right.
 
 Create a new command, and give it the pattern "journal". Then paste in this code:
 ```
    do(journal, "read")
 ```
-We have already done the hard work setting up the READ verb, so here all we need to do is invoke that script. We could paste in the same code, but doing it this way means that if we later update that code, we only have to do it once.
+We have already done the hard work setting up the `read` verb, so here all we need to do is invoke that script. We could paste in the same code, but doing it this way means that if we later update that code, we only have to do it once.
 
 
 Adding to the Journal
@@ -62,7 +62,7 @@ The journal can be used for two things. The game can write to it automatically w
 Letting the Player Write in the Journal
 ---------------------------------------
 
-We are going to do this three ways. Firstly, for USE JOURNAL. On the _Features_ tab, tick "Use/Give", then on the _Use/Give_ tab in the "Use (on its own)" section, set it to "Run script". Paste in this code:
+We are going to do this three ways. Firstly, for `USE JOURNAL`. On the _Features_ tab, tick "Use/Give", then on the _Use/Give_ tab in the "Use (on its own)" section, set it to "Run script". Paste in this code:
 ```
   msg ("Please type the text to go in the journal")
   get input {
@@ -76,7 +76,7 @@ The `get input` command makes Quest wait for the player to type something, and t
 The NOTE command
 ----------------
 
-Like the JOURNAL command, this is optional, but useful if the right pane is turned off. We can use the same trick here too. Create a new command, and give it the pattern "note". The paste in this code:
+Like the `JOURNAL` command, this is optional, but useful if the right pane is turned off. We can use the same trick here too. Create a new command, and give it the pattern "note". Then paste in this code:
 ```
    do(journal, "use")
 ```

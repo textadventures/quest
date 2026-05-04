@@ -6,11 +6,11 @@ parent: "How To"
 
 Often when creating a text adventure you will find you do not know what you are talking about!
 
-This is often the case with a command. Let us suppose we have an ATTACK command, with this pattern:
+This is often the case with a command. Let us suppose we have an `ATTACK` command, with this pattern:
 
-> attack #object#;strike #object#;hit #object#
+    attack #object#;strike #object#;hit #object#
 
-In the command's script, you have this thing called "object", but you do not know what it is. You need your command to work - and to read properly, whether the player did ATTACK ZOMBIE, ATTACK CROWD or ATTACK MARY. If the response is "You attack it. It looks angry." for all three, the player will not be impressed. We need to make our response language neutral.
+In the command's script, you have this thing called "object", but you do not know what it is. You need your command to work - and to read properly, whether the player did `ATTACK ZOMBIE`, `ATTACK CROWD` or `ATTACK MARY`. If the response is "You attack it. It looks angry." for all three, the player will not be impressed. We need to make our response language neutral.
 
 
 Attributes
@@ -18,11 +18,11 @@ Attributes
 
 To help you, Quest has a number of attributes and functions built-in. However, you do need to set up your objects correctly. On the _Setup_ tab, in our example, set Mary to be a "Female character (named)" and set the crowd to "Inanimate objects (plural)" (the zombie will be fine as the default "inanimate object").
 
-You can see the attributes on that same tab, and see them change when you change the type: gender, article and possessive (but note, all lower-case).
+You can see the attributes on that same tab, and see them change when you change the type: `gender`, `article` and `possessive` (but note, all lower-case).
 
 Set the response to:
 
-> "You attack " + object.article + "; " + object.gender + " look angry."
+    "You attack " + object.article + "; " + object.gender + " look angry."
 
 Now if the player attacks the crowd, she will see "You attack them; they look angry."
 

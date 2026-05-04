@@ -66,9 +66,10 @@ The change script will fire when the attribute changes, so be careful where you 
 ```
 If it kills the player, she will see this:
 
-> You are died!!
-
-> You drink the liquid... and realise it was poison!
+```
+You are dead!
+You drink the liquid... and realised it was poison!
+```
 
 You need to adjust the hit points _after_ the message.
 
@@ -121,6 +122,7 @@ if (this.purity < 0) {
 if (this.purity > 100) {
   this.purity = 100
 }
+```
 
 For the web version, go to the initialisation script.
 

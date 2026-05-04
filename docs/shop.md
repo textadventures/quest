@@ -85,7 +85,7 @@ So this is a bit more complicated. First, it gives the object an alias if one is
 
 Then it sets "cloneme" to true. This will differentiate items that start in stock with items the player has sold to the shop. The former get cloned when bought, and destroyed when sold.
 
-Then we set the "take" and "buy" attributes to scripts that call the functions we created above, so now those functions will be called when the player tries to TAKE or BUY the item.
+Then we set the "take" and "buy" attributes to scripts that call the functions we created above, so now those functions will be called when the player tries to `TAKE` or `BUY` the item.
 
 
 The `BuyObject` function has no return type, and one parameter, "obj". It will be called if the player tries to buy something from the shop. Paste in this code:
@@ -117,15 +117,15 @@ Another complicated one. The first three lines handle the player not having enou
 
 The system uses verbs to handle purchasing, but it is easier to use a command for selling, as the player might try to sell anything. So create a new command (go to "Commands" in the left pane, then click "Add" in the right pane), and put this as the pattern:
 
-> sell #object#
+    sell #object#
 
 For the unresolved text:
 
-> You want to sell what exactly?
+    You want to sell what exactly?
 
 We can also set the scope, so that Quest looks in the player's inventory first. This means that if the player returns to the shop to sell something back, Quest will match the clone the player is holding, rather than the original in the shop.
 
-> inventory
+    inventory
 
 And paste in the script:
 
@@ -149,7 +149,7 @@ else {
 }
 ```
 
-This checks if the room is a shop, then checks if the object is being carried. If so, the player's money is adjusted. If the object has "cloneme" set to true, then it is a clone, and it is destroyed. Otherwise,it is moved to the shop's stock and set up as merchandise.
+This checks if the room is a shop, then checks if the object is being carried. If so, the player's money is adjusted. If the object has "cloneme" set to true, then it is a clone, and it is destroyed. Otherwise, it is moved to the shop's stock and set up as merchandise.
 
 
 
@@ -180,7 +180,7 @@ You need to initialise each shop. Go to the _Scripts_ tab of the game object, an
 SetUpShop (shop, stock)
 ```
 
-You will need to replace "shop" with the name of the shop object in your game, and "stock" with the name of it's stock room.
+You will need to replace "shop" with the name of the shop object in your game, and "stock" with the name of its stock room.
 
 ### A Cake Shop...
 

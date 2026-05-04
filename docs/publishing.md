@@ -28,7 +28,7 @@ On textadventures.co.uk, click on _Create_ at the top, then _Upload_ game below 
 The Publish Process
 --------------------
 
-_This applies to the desktop version only — the web version handles everything automatically._
+_This applies to the desktop version only - the web version handles everything automatically._
 
 What gets included in the .quest file, when you do _Tools - Publish_? Broadly two things.
 
@@ -38,11 +38,11 @@ Secondly, any supporting files. This is any file Quest can find in your game fol
 
 Quest grabs any file with a name that matches one of these formats
 
-> *.jpg;*.jpeg;*.png;*.gif;*.js;*.wav;*.mp3;*.htm;*.html;*.svg
+    *.jpg;*.jpeg;*.png;*.gif;*.js;*.wav;*.mp3;*.htm;*.html;*.svg
 
-However, you can modify that by changing `game.publishfileextensions`; despite the name, it is not restricted to file extensions. If you have a text file you want included, but other you do not, you could set it like this:
+However, you can modify that by changing `game.publishfileextensions`; despite the name, it is not restricted to file extensions. If you have a text file you want included, but others you do not, you could set it like this:
 
-> *.jpg;*.jpeg;*.png;*.gif;*.js;*.wav;*.mp3;*.htm;*.html;*.svg;includeme.txt
+    *.jpg;*.jpeg;*.png;*.gif;*.js;*.wav;*.mp3;*.htm;*.html;*.svg;includeme.txt
 
 The single code file plus all the supporting files are then compressed in a single archive file.
 
@@ -85,7 +85,7 @@ Beta-testing is getting other people to play your game so bugs and typos can be 
 
 You can upload a game to Text Adventures in the normal way for beta-testing, but keep its visibility to private. If working on-line, there is a "Publish Update" button in your list of games, allowing you to publish updates during the testing process. If working off-line, there is an "Upload a new file" link on the _Edit_ page.
 
-One thing you _must_check is saving the game. For some reason when you save, Quest does a particularly thorough check of the game code, and the save will fail if it finds an error (on-line it will not tell you it has failed, by the way, it will just not do anything). Do not release your game until it will successfully save.
+One thing you _must_ check is saving the game. For some reason when you save, Quest does a particularly thorough check of the game code, and the save will fail if it finds an error (on-line it will not tell you it has failed, by the way, it will just not do anything). Do not release your game until it will successfully save.
 
 You should also ensure the UI looks the same when you load a saved game.
 
