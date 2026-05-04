@@ -73,8 +73,8 @@ Public Class GameList
                     newItem.DownloadFilename = downloadFilename
                     newItem.Author = data.Author
                     newItem.GameId = data.GameId
-                    If Not String.IsNullOrEmpty(data.Thumbnail) Then
-                        newItem.SetImageURL(data.Thumbnail)
+                    If Not String.IsNullOrEmpty(data.Cover) Then
+                        newItem.SetImageURL(data.Cover)
                     End If
 
                     If System.IO.File.Exists(downloadFilename) Then

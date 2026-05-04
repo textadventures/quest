@@ -179,7 +179,6 @@ Public Class GameListItem
             bitmap.BeginInit()
             bitmap.StreamSource = New System.IO.MemoryStream(e.Result)
             bitmap.EndInit()
-            imageBorder.Visibility = Windows.Visibility.Visible
             image.Source = bitmap
         End If
     End Sub

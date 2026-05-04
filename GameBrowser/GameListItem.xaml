@@ -6,7 +6,7 @@
              mc:Ignorable="d" 
              d:DesignHeight="100" d:DesignWidth="300">
     <Border BorderThickness="0,0,0,1" BorderBrush="{DynamicResource {x:Static SystemColors.ControlLightBrushKey}}">
-    <Grid Name="grid" TextOptions.TextFormattingMode="Display" Cursor="Hand">
+    <Grid Name="grid" TextOptions.TextFormattingMode="Display" Cursor="Hand" Background="Transparent">
         <Grid.ContextMenu>
             <ContextMenu>
                 <MenuItem Header="Clear all items" Name="mnuClear" Click="mnuClear_Click"></MenuItem>
@@ -24,10 +24,10 @@
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
-        <Border Name="imageBorder" Margin="6" Visibility="Collapsed">
-            <Image Name="image" MaxHeight="40" MaxWidth="40" RenderOptions.BitmapScalingMode="HighQuality"></Image>
+        <Border Name="imageBorder" Margin="6" Width="80" Height="80">
+            <Image Name="image" MaxHeight="80" MaxWidth="80" HorizontalAlignment="Center" VerticalAlignment="Center" RenderOptions.BitmapScalingMode="HighQuality"></Image>
         </Border>
-        <StackPanel Margin="3" Grid.Column="1">
+        <StackPanel Margin="3" Grid.Column="1" VerticalAlignment="Center">
             <TextBlock Name="textBlock" Padding="3">
                 <Run Name="title" FontWeight="Bold">Game name</Run>
                 <Run xml:space="preserve">   </Run>
