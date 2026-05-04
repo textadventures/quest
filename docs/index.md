@@ -20,6 +20,8 @@ New to Quest? The **[Tutorial](tutorial/index.html)** walks you through creating
 
 - **[Commands](commands.html)** - the heart of a text adventure: commands, verbs, and pattern matching
 - **[Features](features.html)** - containers, exits, wearables, score, light and dark, and more
+- **[Script Commands](scripts/)** - all built-in script commands
+- **[Functions](functions/)** - all built-in functions, organised by category
 - **[Attributes](attributes.html)** - how Quest stores and uses data on every object in your game
 - **[How To](howto.html)** - practical recipes for common tasks, from keeping a journal to building a shop
 - **[Multimedia](multimedia.html)** - adding images, sounds and video
@@ -33,17 +35,13 @@ New to Quest? The **[Tutorial](tutorial/index.html)** walks you through creating
 - **[Advanced Topics](advanced.html)** - overriding functions, libraries, templates and translation
 - **[Desktop Features](desktop.html)** - walkthroughs, debugging and editor tools (Windows desktop only)
 
-## Reference
-
-- **[Script Commands](scripts/)** - all built-in script commands
-- **[Functions](functions/)** - all built-in functions, organised by category
-- **[Attribute Reference](attributes/index.html)** - reference for all built-in attributes
-- **[XML Elements](elements/)** - ASLX file format reference
-- **[JS Functions](js/js.html)** - JavaScript functions available in Quest
-
 ## Publishing
 
 Ready to share your game? See the **[Publishing](publishing.html)** section for how to publish, size limits, and competition entries.
+
+## Reference
+
+See the **[Reference](reference.html)** section for XML elements, JS functions, and more.
 
 ## Community and contributing
 
