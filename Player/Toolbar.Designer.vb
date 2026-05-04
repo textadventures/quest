@@ -74,7 +74,7 @@ Partial Class Toolbar
         '
         resources.ApplyResources(Me, "$this")
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
-        Me.BackColor = System.Drawing.Color.GhostWhite
+        Me.BackColor = System.Drawing.SystemColors.Window
         Me.Controls.Add(Me.ctlToolStrip)
         Me.Name = "Toolbar"
         Me.ctlToolStrip.ResumeLayout(False)

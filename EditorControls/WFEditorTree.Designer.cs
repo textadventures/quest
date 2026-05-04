@@ -88,7 +88,7 @@
       // ctlToolStrip
       // 
       resources.ApplyResources(this.ctlToolStrip, "ctlToolStrip");
-      this.ctlToolStrip.BackColor = System.Drawing.Color.GhostWhite;
+      this.ctlToolStrip.BackColor = System.Drawing.SystemColors.Window;
       this.ctlToolStrip.GripStyle = System.Windows.Forms.ToolStripGripStyle.Hidden;
       this.ctlToolStrip.ImageScalingSize = new System.Drawing.Size(20, 20);
       this.ctlToolStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {

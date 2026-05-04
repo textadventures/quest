@@ -10,6 +10,41 @@ Public Class NewGameWindow
     Private m_templates As Dictionary(Of String, TemplateData)
     Private m_manualFilename As Boolean = False
 
+    Private _origTextAdventureImage As System.Drawing.Image
+    Private _origGamebookImage As System.Drawing.Image
+
+    Protected Overrides Sub OnHandleCreated(e As EventArgs)
+        MyBase.OnHandleCreated(e)
+        _origTextAdventureImage = picTextAdventure.Image
+        _origGamebookImage = picGamebook.Image
+        ScaleImages()
+    End Sub
+
+    Protected Overrides Sub OnDpiChanged(e As DpiChangedEventArgs)
+        MyBase.OnDpiChanged(e)
+        ScaleImages()
+    End Sub
+
+    Private Sub ScaleImages()
+        Dim scale As Single = DeviceDpi / 96.0F
+        ScalePictureBox(picTextAdventure, _origTextAdventureImage, scale)
+        ScalePictureBox(picGamebook, _origGamebookImage, scale)
+    End Sub
+
+    Private Sub ScalePictureBox(pic As System.Windows.Forms.PictureBox, original As System.Drawing.Image, scale As Single)
+        If original Is Nothing Then Return
+        Dim w As Integer = CInt(original.Width * scale)
+        Dim h As Integer = CInt(original.Height * scale)
+        Dim scaled As New System.Drawing.Bitmap(w, h)
+        Using g As System.Drawing.Graphics = System.Drawing.Graphics.FromImage(scaled)
+            g.InterpolationMode = System.Drawing.Drawing2D.InterpolationMode.HighQualityBicubic
+            g.DrawImage(original, 0, 0, w, h)
+        End Using
+        Dim old = pic.Image
+        pic.Image = scaled
+        If old IsNot Nothing AndAlso old IsNot original Then old.Dispose()
+    End Sub
+
     Public Sub New()
 
         ' This call is required by the designer.

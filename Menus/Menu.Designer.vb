@@ -561,7 +561,7 @@ Partial Class Menu
         '
         resources.ApplyResources(Me, "$this")
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
-        Me.BackColor = System.Drawing.Color.GhostWhite
+        Me.BackColor = System.Drawing.SystemColors.Window
         Me.Controls.Add(Me.ctlMenuStrip)
         Me.Name = "Menu"
         Me.ctlMenuStrip.ResumeLayout(False)
