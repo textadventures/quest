@@ -4,20 +4,10 @@ nav_order: 25
 parent: "How To"
 ---
 
-
-Note: _This is a work in progress. It does not cover all errors, but is slowly getting closer to that state..._
-
-
 Problems when installing Quest
 ----------------------------
 
-Quest can only be installed on Windows. Note that more recent versions of Quest will not run on Windows XP (since Quest 5.6 I think, and since 5.7 it should even warn you if you try to install on Windows XP).
-
-If Quest fails to install properly, uninstall it (if applicable), restart your PC, then re-install.
-
-Try installing `vcredist_x86.exe` from [here](https://www.microsoft.com/en-gb/download/details.aspx?id=30679).
-
-Check you have .NET 3.0, 3.5 and 4.0 installed properly.
+Quest can only be installed on Windows. The latest version requires Windows 11. Versions 5.8 and earlier may run on earlier versions of Windows.
 
 
 Problems when starting Quest
