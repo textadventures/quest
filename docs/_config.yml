@@ -21,5 +21,19 @@ callouts:
     title: Warning
     color: red
 
+defaults:
+  - scope:
+      path: ""
+    values:
+      layout: default
+
+exclude:
+  - README.md
+  - Gemfile.dev
+  - Gemfile.dev.lock
+  - serve.sh
+  - _config_dev.yml
+
 plugins:
   - jekyll-redirect-from
+  - jekyll-include-cache
