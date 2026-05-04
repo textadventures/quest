@@ -16,13 +16,13 @@ The code is a mixture of C\# (for the internals) and VB.NET (for the GUI).
 Developer Guidelines
 --------------------
 
-### Issue Tracker
+### GitHub Issues
 
-The [Issue Tracker](https://github.com/textadventures/quest/issues) contains all features which need to be implemented, and all bugs which need to be fixed.
+[GitHub Issues](https://github.com/textadventures/quest/issues) contains all features which need to be implemented, and all bugs which need to be fixed.
 
 Assign yourself something that looks sensible. It is probably best to pick a small bug first, to give yourself a feel for the code before attempting something major.
 
-You can also create items - if there's an obvious missing feature or bug, add it to the Issue Tracker, and assign it to yourself if you want to work on it. Check it's not a duplicate first. And if you're proposing a major new feature, please suggest it Discussions (or PM me) first.
+You can also create items - if there's an obvious missing feature or bug, open an issue, and assign it to yourself if you want to work on it. Check it's not a duplicate first. And if you're proposing a major new feature, please suggest it Discussions (or PM me) first.
 
 Please ask me for help! I'm happy to answer your questions about how things work, and why things are the way they are. Just ask in [Quest Discussions](https://github.com/textadventures/quest/discussions).
 

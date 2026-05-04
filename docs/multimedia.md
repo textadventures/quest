@@ -1,5 +1,5 @@
 ---
-title: Multi-media
+title: Multimedia
 nav_order: 9
 has_children: true
 ---
