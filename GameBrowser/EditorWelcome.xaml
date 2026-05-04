@@ -5,6 +5,35 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              mc:Ignorable="d" 
              d:DesignHeight="500" d:DesignWidth="500">
+    <UserControl.Resources>
+        <Style x:Key="WelcomeButton" TargetType="Button">
+            <Setter Property="Background" Value="{DynamicResource {x:Static SystemColors.WindowBrushKey}}"/>
+            <Setter Property="BorderBrush" Value="#FFCCCCCC"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="Foreground" Value="Black"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border Background="{TemplateBinding Background}"
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                BorderThickness="{TemplateBinding BorderThickness}"
+                                CornerRadius="6">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter Property="Background" Value="#FFF5F5F5"/>
+                            </Trigger>
+                            <Trigger Property="IsPressed" Value="True">
+                                <Setter Property="Background" Value="#FFE8E8E8"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+    </UserControl.Resources>
     <ScrollViewer VerticalScrollBarVisibility="Auto">
         <Grid Margin="30">
             <Grid.RowDefinitions>
@@ -13,34 +42,13 @@
                 <RowDefinition Height="100" />
                 <RowDefinition Height="*" />
             </Grid.RowDefinitions>
-            <Button Name="cmdNewGame" Click="cmdNewGame_Click" Margin="20" BorderBrush="#FFACACAC" Foreground="Black">
-                <Button.Background>
-                    <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
-                        <GradientStop Color="#FF1D1B61" Offset="0.96"/>
-                        <GradientStop Color="White"/>
-                        <GradientStop Color="White" Offset="0.95"/>
-                    </LinearGradientBrush>
-                </Button.Background>
+            <Button Name="cmdNewGame" Click="cmdNewGame_Click" Margin="20" Style="{StaticResource WelcomeButton}">
                 <TextBlock x:Name="lblCreateNewGame" FontSize="16">Create a new game</TextBlock>
             </Button>
-            <Button Name="cmdOpenGame" Click="cmdOpenGame_Click" Grid.Row="1" Margin="20" BorderBrush="#FFACACAC">
-                <Button.Background>
-                    <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
-                        <GradientStop Color="White" Offset="0"/>
-                        <GradientStop Color="White" Offset="0.95"/>
-                        <GradientStop Color="#FF1D1B61" Offset="0.96"/>
-                    </LinearGradientBrush>
-                </Button.Background>
+            <Button Name="cmdOpenGame" Click="cmdOpenGame_Click" Grid.Row="1" Margin="20" Style="{StaticResource WelcomeButton}">
                 <TextBlock x:Name="lblOpenExistingGame" FontSize="16">Open an existing game</TextBlock>
             </Button>
-            <Button Name="cmdTutorial" Click="cmdTutorial_Click" Grid.Row="2" Margin="20" BorderBrush="#FFACACAC">
-                <Button.Background>
-                    <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
-                        <GradientStop Color="White" Offset="0"/>
-                        <GradientStop Color="White" Offset="0.95"/>
-                        <GradientStop Color="#FF1D1B61" Offset="0.96"/>
-                    </LinearGradientBrush>
-                </Button.Background>
+            <Button Name="cmdTutorial" Click="cmdTutorial_Click" Grid.Row="2" Margin="20" Style="{StaticResource WelcomeButton}">
                 <TextBlock x:Name="lblReadTheTutorial" FontSize="16">Read the tutorial</TextBlock>
             </Button>
             <StackPanel Grid.Row="3" VerticalAlignment="Center" HorizontalAlignment="Center" Margin="20">
