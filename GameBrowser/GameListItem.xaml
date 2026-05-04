@@ -5,6 +5,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              mc:Ignorable="d" 
              d:DesignHeight="100" d:DesignWidth="300">
+    <Border BorderThickness="0,0,0,1" BorderBrush="{DynamicResource {x:Static SystemColors.ControlLightBrushKey}}">
     <Grid Name="grid" TextOptions.TextFormattingMode="Display" Cursor="Hand">
         <Grid.ContextMenu>
             <ContextMenu>
@@ -61,4 +62,5 @@
             </Button.Background> Play</Button>
         <ProgressBar Name="progressBar" Grid.Row="1" Grid.ColumnSpan="3" Height="12" Margin="3" Visibility="Collapsed" />
     </Grid>
+    </Border>
 </UserControl>
