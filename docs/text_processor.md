@@ -138,6 +138,16 @@ There may be an issue with using the hexadecimal form for colours (eg `#dedede`)
 Displays the given text with the colour specified as the background. To show text as white on black, you can combine these like this: {colour:white:{back:black:some highlighted text}}.
 
 
+HTML tags
+---------
+
+You can also use HTML tags directly in any text output. For example:
+
+    This text is <b>bold</b>. This text is <i>italic</i>. This text is <u>underlined</u>.
+
+For more complex styling, use `<span>` tags with inline CSS, for example `<span style="color:red">this is red</span>`. The text processor `{colour:}` and `{back:}` commands above are generally more convenient for this.
+
+
 {here **object**:**text**}
 Displays the text only if the given object is in the current room (but not if in the player's inventory or in a container in the room).
 

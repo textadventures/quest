@@ -5,7 +5,7 @@ nav_order: 1
 
 ![Quest logo]({{ site.baseurl }}/images/questlogo.png){: style="display:block;margin:0 auto 1.5rem;width:220px;"}
 
-Quest 5 lets you create text adventure games. It is free and open source. It is designed to be powerful, extensible and easy to learn. You can create games in any language - Quest has templates for English, French, German, Spanish, Dutch, Italian, Portuguese, Russian and other languages.
+Quest 5 lets you create text adventure games. It is free and [open source](open_source.html). It is designed to be powerful, extensible and easy to learn. You can create games in any language - Quest has templates for English, French, German, Spanish, Dutch, Italian, Portuguese, Russian and other languages.
 
 You can run Quest in a web browser, or you can download Quest for Windows.
 

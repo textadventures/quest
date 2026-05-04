@@ -4,7 +4,7 @@ nav_order: 16
 has_children: true
 ---
 
-To get your game playable on the Text Adventurers web site, you need to publish it.
+To get your game playable on textadventures.co.uk, you need to publish it.
 
 Note that once you have published it, your game will go into a queue for moderation. Games may be assigned to "sandbox" if they are very basic, or to "adult" if they include explicit sex, etc., otherwise they will be assigned to the appropriate category, and will appear on the web site.
 
@@ -22,11 +22,13 @@ Publish Off-line
 
 This is a little more complicated, but not much. In the editor, go to _Tools - Publish_, give it a name (the same as your main file by default, but with a .quest extension), and click okay. Quest will produce a file in a subfolder of your main game called "Output".
 
-On the Text Adventurers web site, click on _Create_ at the top, then _Upload_ game below that. Then follow the instructions.
+On textadventures.co.uk, click on _Create_ at the top, then _Upload_ game below that. Then follow the instructions.
 
 
 The Publish Process
 --------------------
+
+_This applies to the desktop version only — the web version handles everything automatically._
 
 What gets included in the .quest file, when you do _Tools - Publish_? Broadly two things.
 
@@ -50,7 +52,7 @@ Size Limitations
 
 The Quest off-line editor has no limits, though eventually your computer will grind to a halt. Given the capabilities of modern computers that is really not going to happen.
 
-The Text Adventurers web site, however, has a 20 Mb upload limit. This is the size of the published .quest file, and if your game is larger than that, the editor will give you a warning when you do _Tools - Publish_. In terms of game, that is a huge amount, and you will be doing well to build a game that is even 1 Mb. However, images, videos and sounds can seriously inflate the file size.
+textadventures.co.uk, however, has a 20 Mb upload limit. This is the size of the published .quest file, and if your game is larger than that, the editor will give you a warning when you do _Tools - Publish_. In terms of game, that is a huge amount, and you will be doing well to build a game that is even 1 Mb. However, images, videos and sounds can seriously inflate the file size.
 
 I would guess the on-line editor is also limited to 20 Mb.
 
@@ -63,6 +65,17 @@ If you do find your game in over 20 Mb:
 * Host larger video/image/sound files on another web site
 
 * Host your Quest game on your own web server (this is not trivial, is not well-supported and may require spending money, so not to be undertaken lightly)
+
+
+Announcing your game
+--------------------
+
+Once your game is live, tell people about it! You can post on:
+
+-   the [textadventures.co.uk Game Announcements and Feedback forum](https://textadventures.co.uk/forum/games)
+-   the [intfiction.org forums](http://www.intfiction.org/forum/viewforum.php?f=19)
+-   [IFDB](http://ifdb.tads.org/)
+-   [rec.games.int-fiction newsgroup](http://groups.google.com/group/rec.games.int-fiction)
 
 
 Beta-testing

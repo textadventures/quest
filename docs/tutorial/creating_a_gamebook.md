@@ -4,9 +4,6 @@ nav_order: 14
 parent: Tutorial
 ---
 
-NOTE: _Rather than using the Game Book feature of Quest, we would suggest you use either the full product (and turn off the game panes and command bar so the player just uses hyperlinks), or use [Squiffy](http://docs.textadventures.co.uk/squiffy/). Quest Text Adventures have a full world model, where objects and rooms relate to each other in a meaningful way, and have numerous features not supported by Game Books. Squiffy has no world model, but is great for creating multiple choice games that focus on text and story, and will produce a game that can be run in any browser, without the need for a dedicated server. Quest Game Books represent the worst of both worlds._
-
-
 Creating a blank game
 ---------------------
 
@@ -44,7 +41,7 @@ You can go back to the Editor by clicking "Stop Game" in the top left of the scr
 
 ### Web version
 
-To create a new game, [log in to Quest](https://textadventures.co.uk/create/). You'll see the "New game" form.
+To create a new game, [log in to Quest](https://textadventures.co.uk/quest/) and click "Create a new game". You'll see the "New game" form.
 
 ![](../images/Webnewgamebook.png "Webnewgamebook.png")
 
@@ -88,7 +85,7 @@ This is the same as the Text type, but you can also choose a picture to display 
 
 ### YouTube
 
-This is the same as the Text type, but you can also choose a YouTube video to display at the top of the screen. You will need the YouTube id of the video - an easy way to get this for a YouTube video is to find the video you want and click Share. The id will be displayed at the end of a URL like <http://youtu.be/qDlakzXcnro> where "qDlakzXcnro" is the id you want.
+This is the same as the Text type, but you can also choose a YouTube video to display at the top of the screen. You will need the YouTube id of the video - an easy way to get this for a YouTube video is to find the video you want and click Share. The id will be displayed at the end of a URL like `https://youtu.be/8jPyg2pK11M` where `8jPyg2pK11M` is the id you want.
 
 ### External Link
 
