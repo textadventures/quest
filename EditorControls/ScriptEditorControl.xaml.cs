@@ -5,7 +5,10 @@ using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+using System.Windows.Media;
 using System.Threading;
+using ICSharpCode.AvalonEdit;
+using ICSharpCode.AvalonEdit.Highlighting;
 using TextAdventures.Utility.Language;
 
 namespace TextAdventures.Quest.EditorControls
@@ -23,6 +26,7 @@ namespace TextAdventures.Quest.EditorControls
         private bool m_saving;
         private bool m_populating;
         private bool m_initialised;
+        private TextEditor textEditor;
 
         internal event Action Initialise;
 
@@ -167,8 +171,6 @@ namespace TextAdventures.Quest.EditorControls
             bool fromInheritedType = IsScriptFromInheritedType();
             if (fromInheritedType) m_readOnly = true;
             ctlToolbar.CanMakeEditable = fromInheritedType;
-
-            textEditor.IsReadOnly = m_readOnly;
 
             m_populating = true;
             CodeView = false;
@@ -718,6 +720,7 @@ namespace TextAdventures.Quest.EditorControls
                         }
                     }
 
+                    EnsureTextEditor();
                     PopulateCodeView();
                     SetCodeViewEditButtonsEnabled();
                 }
@@ -730,6 +733,22 @@ namespace TextAdventures.Quest.EditorControls
                 cmdAddScript.Visibility = value ? Visibility.Collapsed : Visibility.Visible;
                 ctlToolbar.IsCodeView = value;
             }
+        }
+
+        private void EnsureTextEditor()
+        {
+            if (textEditor != null) return;
+            textEditor = new TextEditor
+            {
+                FontFamily = new FontFamily("Consolas, Courier New"),
+                FontSize = 10.0 * 96.0 / 72.0,
+                VerticalScrollBarVisibility = ScrollBarVisibility.Auto,
+                HorizontalScrollBarVisibility = ScrollBarVisibility.Auto,
+                MaxHeight = 500,
+                SyntaxHighlighting = HighlightingManager.Instance.GetDefinition("C#"),
+                IsReadOnly = m_readOnly
+            };
+            textEditorBorder.Child = textEditor;
         }
 
         private void PopulateCodeView()
