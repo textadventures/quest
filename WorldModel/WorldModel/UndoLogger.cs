@@ -125,7 +125,7 @@ namespace TextAdventures.Quest
 
         public void RollbackTransaction()
         {
-            if (m_currentTransaction != null) EndTransaction();
+            if (m_logging) EndTransaction();
             Undo();
             if (m_currentTransaction != null)
             {
