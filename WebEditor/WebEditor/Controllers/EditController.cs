@@ -4,7 +4,7 @@ using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 using System.Configuration;
-using Ionic.Zip;
+using System.IO.Compression;
 using TextAdventures.Quest;
 using System.IO;
 using Azure.Storage.Blobs;
@@ -528,29 +528,22 @@ namespace WebEditor.Controllers
                 return HttpNotFound();
             }
 
-            var zip = new ZipFile();
-            var blobStreams = new List<MemoryStream>();
-
             var container = GetAzureBlobContainer("editorgames");
             var blobs = container.GetBlobs(prefix: uploadPath + "/");
-            foreach (var blobItem in blobs)
-            {
-                var blobClient = container.GetBlobClient(blobItem.Name);
-                var ms = new MemoryStream();
-                blobStreams.Add(ms);
-                blobClient.DownloadTo(ms);
-                ms.Position = 0;
-
-                zip.AddEntry(Path.GetFileName(blobItem.Name), ms);
-            }
 
             return new FileGeneratingResult("game.zip", "application/zip", stream =>
             {
-                using (zip)
+                using (var archive = new ZipArchive(stream, ZipArchiveMode.Create, leaveOpen: true))
                 {
-                    zip.Save(stream);
+                    foreach (var blobItem in blobs)
+                    {
+                        var blobClient = container.GetBlobClient(blobItem.Name);
+                        using (var entryStream = archive.CreateEntry(Path.GetFileName(blobItem.Name)).Open())
+                        {
+                            blobClient.DownloadTo(entryStream);
+                        }
+                    }
                 }
-                foreach (var ms in blobStreams) ms.Dispose();
             });
         }
     }
