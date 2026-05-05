@@ -20,6 +20,9 @@ callouts:
   warning:
     title: Warning
     color: red
+  note:
+    title: Note
+    color: purple
 
 defaults:
   - scope:
