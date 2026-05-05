@@ -80,11 +80,11 @@ namespace TextAdventures.Quest.EditorControls
             {
                 if (m_parentScript != null)
                 {
-                    m_scripts = m_controller.CreateNewEditableScriptsChild(m_parentScript, m_helper.ControlDefinition.Attribute, script, true);
+                    m_scripts = m_controller.CreateNewEditableScriptsChild(m_parentScript, m_helper.ControlDefinition?.Attribute, script, true);
                 }
                 else
                 {
-                    m_scripts = m_controller.CreateNewEditableScripts(ElementName, m_helper.ControlDefinition.Attribute, script, true, true);
+                    m_scripts = m_controller.CreateNewEditableScripts(ElementName, m_helper.ControlDefinition?.Attribute, script, true, true);
                 }
             }
             else
