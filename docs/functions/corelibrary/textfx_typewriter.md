@@ -1,6 +1,7 @@
 ---
-layout: index
 title: TextFX_Typewriter
+parent: "User Interface Functions"
+grand_parent: "Functions"
 ---
 
     TextFX_Typewriter(text, int speed)

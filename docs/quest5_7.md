@@ -1,8 +1,11 @@
 ---
-layout: index
 title: Quest 5.7
+nav_order: 2
+parent: "Release Notes"
 ---
 
+{: .note }
+This page was written by ThePix
 
 This file documents changes to Quest as of version 5.7.
 

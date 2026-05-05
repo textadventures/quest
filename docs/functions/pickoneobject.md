@@ -1,6 +1,7 @@
 ---
-layout: index
 title: PickOneObject
+parent: "Randomising Functions"
+grand_parent: "Functions"
 ---
 
     PickOneObject (objectlist)

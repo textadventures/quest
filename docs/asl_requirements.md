@@ -1,6 +1,7 @@
 ---
-layout: index
 title: ASL Requirements
+nav_order: 30
+parent: "Reference"
 ---
 
 Quest expects an ASL file to provide a few standard items. These are all provided by Core.aslx, but if this file is replaced, the ASL must still deliver the below requirements to Quest.

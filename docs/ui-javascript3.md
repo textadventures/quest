@@ -1,6 +1,7 @@
 ---
-layout: index
 title: Customising the UI - Part 3
+nav_order: 14
+parent: "User Experience"
 ---
 
 Testing

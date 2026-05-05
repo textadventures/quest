@@ -1,6 +1,7 @@
 ---
-layout: index
 title: ShowYouTube
+parent: "User Interface Functions"
+grand_parent: "Functions"
 ---
 
     ShowYouTube(string id)

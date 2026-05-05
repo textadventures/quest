@@ -1,6 +1,7 @@
 ---
-layout: index
 title: Left
+parent: "String Functions"
+grand_parent: "Functions"
 ---
 
     Left (string input, int character count)

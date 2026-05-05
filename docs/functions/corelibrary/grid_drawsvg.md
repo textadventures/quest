@@ -1,6 +1,7 @@
 ---
-layout: index
 title: Grid_DrawSvg
+parent: "Internal Core.aslx Functions"
+grand_parent: "Functions"
 ---
 
     Grid_DrawSvg (string instance id, string symbol id, int x, int y, int width, int height)

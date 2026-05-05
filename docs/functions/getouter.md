@@ -1,6 +1,7 @@
 ---
-layout: index
 title: ListWorn
+parent: "Clothing Functions"
+grand_parent: "Functions"
 ---
 
     ListWorn (string slot)

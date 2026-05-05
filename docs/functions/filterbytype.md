@@ -1,6 +1,7 @@
 ---
-layout: index
 title: FilterByType
+parent: "List Functions"
+grand_parent: "Functions"
 ---
 
     FilterByType (objectlist list, string typename)

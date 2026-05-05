@@ -1,6 +1,7 @@
 ---
-layout: index
 title: SwitchOff
+parent: "Core.aslx Functions"
+grand_parent: "Functions"
 ---
 
     SwitchOff (object)

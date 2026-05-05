@@ -1,6 +1,7 @@
 ---
-layout: index
 title: GetRandomInt
+parent: "Randomising Functions"
+grand_parent: "Functions"
 ---
 
     GetRandomInt (integer min, integer max)

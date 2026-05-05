@@ -1,6 +1,7 @@
 ---
-layout: index
 title: Handling light and dark
+nav_order: 5
+parent: "Features"
 ---
 
 Quest has a system built in for handling light and darkness in your game.
@@ -97,12 +98,12 @@ if (torch.battery < 1) {
   torch.switchedon = false
   torch.lightsource = false
   DisableTurnScript (torchturnscript)
-  msg ("You torch flickers and dies.")
+  msg ("Your torch flickers and dies.")
   torch.cannotswitchon = "You cannot turn the torch on, the battery is dead."
 }
 ```
 
-The first line reduces the life of the battery. If it gets to zero the rest of the script kicks in (I am checking for less than one rather than zero in case something odd happens, and it jumps to -1; I still want the torch to the fail then). Once the battery fails, we need the torch to be switched off, to not be a light source and for this turn script to stop. We also need a message to the player.
+The first line reduces the life of the battery. If it gets to zero the rest of the script kicks in (I am checking for less than one rather than zero in case something odd happens, and it jumps to -1; I still want the torch to fail then). Once the battery fails, we need the torch to be switched off, to not be a light source and for this turn script to stop. We also need a message to the player.
 
 The last line sets a special attribute that (as of version 5.7) Quest will check before switching the object on; if the attribute is a string, the string is displayed, rather than turning on the item.
 
@@ -138,7 +139,7 @@ torch.cannotswitchon = null
 Is it dark?
 -----------
 
-If you want to know if it is dark in the current room, use the `CheckDarkness` function. This will return `true` if the room is dark and there is no strong light source in it, and false otherwise. For example, for a SEARCH command, the code might look like this:
+If you want to know if it is dark in the current room, use the `CheckDarkness` function. This will return `true` if the room is dark and there is no strong light source in it, and false otherwise. For example, for a `SEARCH` command, the code might look like this:
 
 ```
 if (CheckDarkness()) {
@@ -156,7 +157,7 @@ If you use text for a room or object description, Quest will check if it is dark
 
 If you have set the room description to be a script, then Quest will again check if it is dark, and will only run the script if the room is illuminated.
 
-For objects, however, the Quest will run the script, whatever the illumination. Note that this is only an issue when they are in the inventory - objects in the room are not reachable if the player cannot see them. Yo may want to check in each script, then, whether there is enough light to see the object. On the other hand, you might reason that since the player has picked the object up, it is reasonable to assume she can remember what it looks like or can feel it, and so it does not matter. Or you could give different descriptions depending on the lighting.
+For objects, however, the Quest will run the script, whatever the illumination. Note that this is only an issue when they are in the inventory - objects in the room are not reachable if the player cannot see them. You may want to check in each script, then, whether there is enough light to see the object. On the other hand, you might reason that since the player has picked the object up, it is reasonable to assume she can remember what it looks like or can feel it, and so it does not matter. Or you could give different descriptions depending on the lighting.
 
 To get you started, this script will check if it is dark, and if it is, give the standard response; otherwise if gives the proper description.
 

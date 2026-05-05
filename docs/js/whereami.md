@@ -1,6 +1,8 @@
 ---
-layout: index
 title: whereAmI
+parent: "JS functions"
+grand_parent: "Reference"
+nav_order: 16
 ---
 
     JS.whereAmI ()

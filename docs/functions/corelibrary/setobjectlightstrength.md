@@ -1,6 +1,7 @@
 ---
-layout: index
 title: SetObjectLightstrength
+parent: "Core.aslx Functions"
+grand_parent: "Functions"
 ---
 
     SetObjectLightstrength(object, string value)

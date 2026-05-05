@@ -1,6 +1,7 @@
 ---
-layout: index
 title: PickOneChild
+parent: "Randomising Functions"
+grand_parent: "Functions"
 ---
 
     PickOneChild (object room or container)

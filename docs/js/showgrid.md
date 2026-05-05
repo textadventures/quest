@@ -1,6 +1,8 @@
 ---
-layout: index
 title: ShowGrid
+parent: "JS functions"
+grand_parent: "Reference"
+nav_order: 11
 ---
 
     JS.ShowGrid (int height)

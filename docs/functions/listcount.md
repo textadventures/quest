@@ -1,6 +1,7 @@
 ---
-layout: index
 title: ListCount
+parent: "List Functions"
+grand_parent: "Functions"
 ---
 
     ListCount (list)

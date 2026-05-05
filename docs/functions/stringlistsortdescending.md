@@ -1,6 +1,7 @@
 ---
-layout: index
 title: StringListSortDescending
+parent: "List Functions"
+grand_parent: "Functions"
 ---
 
     StringListSortDescending (stringlist list)

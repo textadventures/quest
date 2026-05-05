@@ -1,6 +1,7 @@
 ---
-layout: index
 title: SetFontName
+parent: "User Interface Functions"
+grand_parent: "Functions"
 ---
 
     SetFontName(string fontname)

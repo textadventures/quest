@@ -1,6 +1,7 @@
 ---
-layout: index
 title: DecreaseMoney
+parent: "Functions for Attributes"
+grand_parent: "Functions"
 ---
 
     DecreaseMoney (integer amount)

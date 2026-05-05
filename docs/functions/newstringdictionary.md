@@ -1,6 +1,7 @@
 ---
-layout: index
 title: NewStringDictionary
+parent: "Dictionary Functions"
+grand_parent: "Functions"
 ---
 
     NewStringDictionary ()

@@ -1,6 +1,8 @@
 ---
-layout: index
 title: Using Delegates
+parent: "Attribute Types"
+grand_parent: "Attributes"
+nav_order: 14
 ---
 
 <div class="alert alert-info">

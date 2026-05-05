@@ -1,6 +1,8 @@
 ---
-layout: index
-title: Null
+title: "Null"
+parent: "Attribute Types"
+grand_parent: "Attributes"
+nav_order: 1
 ---
 
 If Booleans seem limited in have only two possible values, null can have only one!

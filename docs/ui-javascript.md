@@ -1,6 +1,7 @@
 ---
-layout: index
 title: Customising the UI - Part 1
+nav_order: 12
+parent: "User Experience"
 ---
 
 

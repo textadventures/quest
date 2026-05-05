@@ -1,6 +1,7 @@
 ---
-layout: index
 title: DictionaryAdd
+parent: "Dictionary Functions"
+grand_parent: "Functions"
 ---
 
     DictionaryAdd (dictionary, string key, string value)

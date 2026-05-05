@@ -1,6 +1,7 @@
 ---
-layout: index
 title: container_open
+parent: "Attribute Reference"
+grand_parent: "Attributes"
 ---
 
 The "container\_open" type is defined in CoreTypes.aslx. It implements an open container.

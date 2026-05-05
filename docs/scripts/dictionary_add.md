@@ -1,6 +1,6 @@
 ---
-layout: index
 title: dictionary add
+parent: "Script commands"
 ---
 
     dictionary add (dictionary, string key, any type item)

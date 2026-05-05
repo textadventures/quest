@@ -1,6 +1,6 @@
 ---
-layout: index
 title: play sound
+parent: "Script commands"
 ---
 
     play sound (string file, boolean wait, boolean loop)

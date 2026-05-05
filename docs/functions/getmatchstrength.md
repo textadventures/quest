@@ -1,6 +1,7 @@
 ---
-layout: index
 title: GetMatchStrength
+parent: "String Functions"
+grand_parent: "Functions"
 ---
 
     GetMatchStrength (string regex, string input)

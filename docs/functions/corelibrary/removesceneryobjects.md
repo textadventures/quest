@@ -1,6 +1,7 @@
 ---
-layout: index
 title: RemoveSceneryObjects
+parent: "List Functions"
+grand_parent: "Functions"
 ---
 
     RemoveSceneryObjects(objectlist)

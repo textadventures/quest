@@ -1,6 +1,6 @@
 ---
-layout: index
 title: if
+parent: "Script commands"
 ---
 
     if (boolean expression) { script } [ else if ... ]* [ else { script } ]

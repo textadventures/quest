@@ -1,6 +1,7 @@
 ---
-layout: index
 title: DiceRoll
+parent: "Randomising Functions"
+grand_parent: "Functions"
 ---
 
     DiceRoll (string dicetype)

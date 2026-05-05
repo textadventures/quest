@@ -1,6 +1,7 @@
 ---
-layout: index
 title: The UI Style
+nav_order: 2
+parent: "User Experience"
 ---
 
 Quest offers a number of options for making your game look good, and fit the style and atmosphere you want. All these options can be accessed from various tabs on the game object.

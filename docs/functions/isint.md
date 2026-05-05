@@ -1,6 +1,7 @@
 ---
-layout: index
 title: IsInt
+parent: "Functions for Variables"
+grand_parent: "Functions"
 ---
 
     IsInt (string number)

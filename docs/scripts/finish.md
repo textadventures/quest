@@ -1,6 +1,6 @@
 ---
-layout: index
 title: finish
+parent: "Script commands"
 ---
 
     finish

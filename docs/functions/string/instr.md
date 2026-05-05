@@ -1,6 +1,7 @@
 ---
-layout: index
 title: Instr
+parent: "String Functions"
+grand_parent: "Functions"
 ---
 
     Instr (string input, string search)

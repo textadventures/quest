@@ -1,6 +1,7 @@
 ---
-layout: index
 title: EnableTimer
+parent: "Timers and Turnscripts"
+grand_parent: "Functions"
 ---
 
     EnableTimer (timer)

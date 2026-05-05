@@ -1,6 +1,8 @@
 ---
-layout: index
-title: How to
+title: "Community Guides"
+parent: "Other Guides"
+nav_order: 4
+has_children: true
 ---
 
 This page is for "how to" guides which don't fit in to the tutorial (and may be out of date).
@@ -36,7 +38,7 @@ For those happy to use code.
 
 -   [A Hint System](a_hint_system.html)
 -   [Turn-based events](turn_based_events.html)
--   [Use and code functions](../use_functions.html)
+-   [How to use functions](../functions.html)
 -   [Random default messages](random_default_answers.html)
 
 

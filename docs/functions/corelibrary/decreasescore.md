@@ -1,6 +1,7 @@
 ---
-layout: index
 title: DecreaseScore
+parent: "Functions for Attributes"
+grand_parent: "Functions"
 ---
 
     DecreaseScore (integer amount)

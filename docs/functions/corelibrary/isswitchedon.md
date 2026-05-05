@@ -1,6 +1,7 @@
 ---
-layout: index
 title: IsSwitchedOn
+parent: "Core.aslx Functions"
+grand_parent: "Functions"
 ---
 
     IsSwitchedOn (object)

@@ -1,6 +1,7 @@
 ---
-layout: index
 title: ObjectListItem
+parent: "List Functions"
+grand_parent: "Functions"
 ---
 
     ObjectListItem (objectlist, int index)

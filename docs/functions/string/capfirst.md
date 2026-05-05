@@ -1,6 +1,7 @@
 ---
-layout: index
 title: CapFirst
+parent: "String Functions"
+grand_parent: "Functions"
 ---
 
     CapFirst (input)

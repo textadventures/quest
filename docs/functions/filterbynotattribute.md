@@ -1,6 +1,7 @@
 ---
-layout: index
 title: FilterByNotAttribute
+parent: "List Functions"
+grand_parent: "Functions"
 ---
 
     FilterByNotAttribute (objectlist list, string attribute name, any value)

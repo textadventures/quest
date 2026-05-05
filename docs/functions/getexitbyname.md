@@ -1,6 +1,7 @@
 ---
-layout: index
 title: GetExitByName
+parent: "Functions for Objects and Exits"
+grand_parent: "Functions"
 ---
 
     GetExitByName (object from room, string direction name)

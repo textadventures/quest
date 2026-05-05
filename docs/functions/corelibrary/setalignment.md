@@ -1,6 +1,7 @@
 ---
-layout: index
 title: SetAlignment
+parent: "User Interface Functions"
+grand_parent: "Functions"
 ---
 
     SetAlignment(string alignment)

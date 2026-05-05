@@ -1,6 +1,6 @@
 ---
-layout: index
 title: on ready
+parent: "Script commands"
 ---
 
     on ready { script } 

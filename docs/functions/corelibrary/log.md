@@ -1,6 +1,7 @@
 ---
-layout: index
 title: Log
+parent: "General Functions"
+grand_parent: "Functions"
 ---
 
     Log (string text)

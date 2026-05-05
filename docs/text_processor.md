@@ -1,6 +1,7 @@
 ---
-layout: index
 title: Text processor
+nav_order: 1
+parent: "Features"
 ---
 
 Quest 5.4 introduces a text processor, giving an easy way to conditionally print text, show object links, show text only once, and more.
@@ -136,7 +137,6 @@ There may be an issue with using the hexadecimal form for colours (eg `#dedede`)
 {back:**colour**:**text**}
 Displays the given text with the colour specified as the background. To show text as white on black, you can combine these like this: {colour:white:{back:black:some highlighted text}}.
 
-
 {here **object**:**text**}
 Displays the text only if the given object is in the current room (but not if in the player's inventory or in a container in the room).
 
@@ -152,13 +152,13 @@ Displays a link, with the first text (which cannot have text processor directive
 
 
 {either **condition**:**text**}
-This works similar to the if command above, but with two important differences. The first is the the condition can be any Quest code that results in a Boolean (true or false). The second is that if you are comparing a string it needs to be in double quotes (as is true of normal Quest code).
+This works similar to the if command above, but with two important differences. The first is that the condition can be any Quest code that results in a Boolean (true or false). The second is that if you are comparing a string it needs to be in double quotes (as is true of normal Quest code).
 
 
 ```
 "You {either StartsWith(player.name, \"play\") and not player.flag:are the player}"
  -> "You are the player",
-"'Oh, {either player.male**flag:he|she} is not worth it.'"
+"'Oh, {either player.male_flag:he|she} is not worth it.'"
  -> "'Oh, he is not worth it.'",
 ```
 
@@ -237,7 +237,7 @@ You cannot use text processor commands in an object's name, as only a limited se
 Support for "this"
 ------------------
 
-In Quest, "this" is a special local variable that refers to the object that owns the current script. Text processor directives do not naturally support "this", because when they are being processed they do not belong to a script. However, you cam fake it by setting a special attribute of the game object called "text_processor_this". This would allow you to do something like this:
+In Quest, "this" is a special local variable that refers to the object that owns the current script. Text processor directives do not naturally support "this", because when they are being processed they do not belong to a script. However, you can fake it by setting a special attribute of the game object called "text_processor_this". This would allow you to do something like this:
 
 ```
 game.text_processor_this = teapot
@@ -299,3 +299,12 @@ msg("Here is the {test}, now with some in {blue:a different colour!}")
 Inside the script, scr, there are two lines. The first gets the actual text. The word "blue" is four characters, then there is the colon, so the bit we want starts at the sixth character.
 
 The second line then sets the return value, using HTML and CSS to change the text colour to blue.
+
+HTML tags
+---------
+
+You can also use HTML tags directly in any text output. For example:
+
+    This text is <b>bold</b>. This text is <i>italic</i>. This text is <u>underlined</u>.
+
+For more complex styling, use `<span>` tags with inline CSS, for example `<span style="color:red">this is red</span>`. The text processor `{colour:}` and `{back:}` commands above are generally more convenient for this.

@@ -1,6 +1,7 @@
 ---
-layout: index
 title: How to use commands
+nav_order: 3
+has_children: true
 ---
 
 
@@ -10,7 +11,7 @@ When the player types something (or clicks a link), Quest will try to match the 
 Simple commands
 ---------------
 
-Let us start with a HELP command. There is already a HELP command in Quest, but we will add our own (somewhat less helpful) version.
+Let us start with a `HELP` command. There is already a `HELP` command in Quest, but we will add our own (somewhat less helpful) version.
 
 Quest searches the commands starting at the bottom, so any command we add in our game will be found first, before the built-in commands, so our new command will get a match and used, and the built-in one will not (actually it is a little more complicated than that, but that is good enough for now).
 
@@ -20,35 +21,35 @@ To add a command:
 
 - In the web version, select “Commands” in the tree (underneath “game”). Then click the “Add” button.
 
-The pattern we will match against is "help", and we just want to print something, so it will just look like this:
+The pattern we will match against is `help`, and we just want to print something, so it will just look like this:
 
 ![](images/CommandHelp.png "CommandHelp.png")
 
-Now if you play the game and type HELP, you will see the new text.
+Now if you play the game and type `HELP`, you will see the new text.
 
-There is a convention in interactive fiction that a question mark can be used as a synonym for HELP, so we better add that. You can add as many synonyms as you like (and should try to think of as many as possible), just separate them with semi-colons. So now the pattern Quest will use is:
+There is a convention in interactive fiction that a question mark can be used as a synonym for `HELP`, so we better add that. You can add as many synonyms as you like (and should try to think of as many as possible), just separate them with semi-colons. So now the pattern Quest will use is:
 
-> help;?
+    help;?
 
 
 Commands and objects
 --------------------
 
-Often you will want a command to involve an object. To handle that, Quest has a special system (in fact it has two, but [using verbs](using_verbs.html) is a discussion for another time). Let us say we want to have a command for attacking a zombie. And we want to allow STRIKE and HIT.
+Often you will want a command to involve an object. To handle that, Quest has a special system (in fact it has two, but [using verbs](using_verbs.html) is a discussion for another time). Let us say we want to have a command for attacking a zombie. And we want to allow `STRIKE` and `HIT`.
 
 We could use this as the pattern:
 
-> attack zombie;strike zombie;hit zombie
+    attack zombie;strike zombie;hit zombie
 
-That would work... but what if the player does ATTACK UNDEAD or ATTACK FOE? We could just add these synonyms too, but you can quickly get a dozen combinations. Also, we would have to check what zombie is present. Are we in the street with the ragged zombie or the back alley with the decrepit zombie or the cellar with the hat-wearing zombie?
+That would work... but what if the player does `ATTACK UNDEAD` or `ATTACK FOE`? We could just add these synonyms too, but you can quickly get a dozen combinations. Also, we would have to check what zombie is present. Are we in the street with the ragged zombie or the back alley with the decrepit zombie or the cellar with the hat-wearing zombie?
 
 A far better way is to use a place-holder, and to let Quest dynamically match that against any object present.
 
-> attack #object#;strike #object#;hit #object#
+    attack #object#;strike #object#;hit #object#
 
 Quest will match that against all the different words for "zombie" you give to the zombie (on the _Object_ tab), and that will be good for any command.
 
-So now the player can type HIT UNDEAD, and Quest will match this command pattern, and then it will check the objects present, and see if it can find a match for the object. If we are in the cellar, it will match it to the hat-wearing zombie, for example.
+So now the player can type `HIT UNDEAD`, and Quest will match this command pattern, and then it will check the objects present, and see if it can find a match for the object. If we are in the cellar, it will match it to the hat-wearing zombie, for example.
 
 
 ### What if there is no matching object?

@@ -1,6 +1,7 @@
 ---
-layout: index
 title: SetWebFontName
+parent: "User Interface Functions"
+grand_parent: "Functions"
 ---
 
     SetWebFontName(string fontname)

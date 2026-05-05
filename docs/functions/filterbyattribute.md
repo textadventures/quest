@@ -1,6 +1,7 @@
 ---
-layout: index
 title: FilterByAttribute
+parent: "List Functions"
+grand_parent: "Functions"
 ---
 
     FilterByAttribute (objectlist list, string attribute name, any value)

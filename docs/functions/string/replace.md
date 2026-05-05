@@ -1,6 +1,7 @@
 ---
-layout: index
 title: Replace
+parent: "String Functions"
+grand_parent: "Functions"
 ---
 
     Replace (string input, string old text, string new text)

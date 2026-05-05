@@ -1,6 +1,7 @@
 ---
-layout: index
 title: HelperCloseObject
+parent: "Core.aslx Functions"
+grand_parent: "Functions"
 ---
 
     HelperCloseObject (object)

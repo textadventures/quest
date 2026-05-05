@@ -1,6 +1,7 @@
 ---
-layout: index
 title: CurrentDateUTC
+parent: "General Functions"
+grand_parent: "Functions"
 ---
 
     CurrentDateUTC()

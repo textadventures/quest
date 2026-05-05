@@ -1,6 +1,8 @@
 ---
-layout: index
 title: setPanes
+parent: "JS functions"
+grand_parent: "Reference"
+nav_order: 10
 ---
 
     JS.setPanes (string text, string background)

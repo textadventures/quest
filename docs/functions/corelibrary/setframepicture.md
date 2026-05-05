@@ -1,6 +1,7 @@
 ---
-layout: index
 title: SetFramePicture
+parent: "User Interface Functions"
+grand_parent: "Functions"
 ---
 
     SetFramePicture (string filename)

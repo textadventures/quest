@@ -1,14 +1,12 @@
 ---
-layout: index
 title: Competition Entry
+nav_order: 1
+parent: "Publishing"
 ---
 
 Competitions are a good way to reach a wider audience for your Quest adventure, but you better be prepared to be judged harshly...
 
 Probably the most significant Interactive Fiction competition is [IfComp](http://www.ifcomp.org/), run during October each year, and this page is mostly geared towards that. It will not guarantee your game is a winner, but hopefully will improve its ranking to some degree.
-
-I originally wrote this in 2013, and have updated it slightly. My game The Myothian Falcon was placed 24th in IFComp 2011 (hey, it was high enough to get offered a prize), and I beta-tested three out of the top five games from IFComp 2012, including the winner, so I have at least *some* experience. That said, obviously, this is just my opinion.
-
 
 Starting Out
 ------------
@@ -86,16 +84,16 @@ It is tempting to get the game to beta-testers fast, but you are really just was
 
 3. Some things you might want to check, depending on your game:
 
--   Every room and object has an alias and a description
--   Everything mentioned in a description is actually implemented
--   The appropriate display and inventory verbs are there, and inappropriate ones are absent
+    -   Every room and object has an alias and a description
+    -   Everything mentioned in a description is actually implemented
+    -   The appropriate display and inventory verbs are there, and inappropriate ones are absent
 
 4. Play the game, then try to save it. When Quest saves it does some extra error checking it does not do any other time, so this a quick test of your code. If it saved successful, you should now try to load the game. Loading will stress test you UI, so check that the game still looks the same, and the various parts of the UI still work.
 
 
 ### Beta-Testing
 
-When you are ready for beta-testing, publish your game as normal, but ensure it is "Unlisted". This is important as the rules of IfComp mean your game will be disqualified if it is released opening before the competition. An unlisted game will not appear on the Text Adventurers web site, but you will be able to give your tests a link to the game.
+When you are ready for beta-testing, publish your game as normal, but ensure it is "Unlisted". This is important as the rules of IfComp mean your game will be disqualified if it is released opening before the competition. An unlisted game will not appear on textadventures.co.uk, but you will be able to give your tests a link to the game.
 
 Have a statement at the start of your game explaining that this is a beta version, what version it is and how testers can send you comments. When you upload a new version, make sure you have changed the text. Hopefully your testers will tell you which version they were looking at.
 
@@ -111,14 +109,3 @@ Ask on the Quest forum, you might also want to ask people outside the Quest comm
 ### Credit Your Testers
 
 Remember to credit your testers; they worked hard too. If this is for a competition, you may get a lower score if you do not, as people will assume the game is untested.
-
-Further Reading
----------------
-
-A good good article for further reading: <http://www.xyzzynews.com/xyzzy.18d.html>
-
-A useful forum thread: <http://www.intfiction.org/forum/viewtopic.php?f=32&t=6205>
-
-Not so good, but may be interesting: <http://inky.org/if/great-games.html>
-
-See also this web page about beta-testing: <http://ifwiki.org/index.php/Beta-testing>

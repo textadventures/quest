@@ -1,6 +1,7 @@
 ---
-layout: index
 title: CanReachThrough
+parent: "Core.aslx Functions"
+grand_parent: "Functions"
 ---
 
     CanReachThrough (object)

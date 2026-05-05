@@ -1,6 +1,7 @@
 ---
-layout: index
 title: useon
+parent: "Attribute Reference"
+grand_parent: "Attributes"
 ---
 
 "useon" is an attribute that can be either a [scriptdictionary](../types/scriptdictionary.html) or [string](../types/string.html).

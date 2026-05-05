@@ -1,6 +1,7 @@
 ---
-layout: index
 title: ListWornFor
+parent: "Clothing Functions"
+grand_parent: "Functions"
 ---
 
     ListWornFor (object character)

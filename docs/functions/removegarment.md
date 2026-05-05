@@ -1,6 +1,7 @@
 ---
-layout: index
 title: RemoveGarment
+parent: "Clothing Functions"
+grand_parent: "Functions"
 ---
 
     RemoveGarment (object)

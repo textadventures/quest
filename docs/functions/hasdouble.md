@@ -1,6 +1,7 @@
 ---
-layout: index
 title: HasDouble
+parent: "Functions for Attributes"
+grand_parent: "Functions"
 ---
 
     HasDouble (object, string attribute name)

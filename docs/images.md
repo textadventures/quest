@@ -1,6 +1,8 @@
 ---
-layout: index
 title: Images in Quest
+nav_order: 1
+parent: "Multimedia"
+grand_parent: "Features"
 ---
 
 A picture paints a thousand words, or so they say. So how do you add images to your game?

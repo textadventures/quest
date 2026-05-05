@@ -1,6 +1,7 @@
 ---
-layout: index
 title: StringListItem
+parent: "List Functions"
+grand_parent: "Functions"
 ---
 
     StringListItem (stringlist, int index)

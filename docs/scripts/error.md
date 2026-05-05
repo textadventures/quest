@@ -1,6 +1,6 @@
 ---
-layout: index
 title: error
+parent: "Script commands"
 ---
 
     error (string message)

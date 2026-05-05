@@ -1,6 +1,7 @@
 ---
-layout: index
 title: ObjectListCompact
+parent: "List Functions"
+grand_parent: "Functions"
 ---
 
     ObjectListCompact (objectlist list)

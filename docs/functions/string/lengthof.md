@@ -1,6 +1,7 @@
 ---
-layout: index
 title: LengthOf
+parent: "String Functions"
+grand_parent: "Functions"
 ---
 
     LengthOf (string input)

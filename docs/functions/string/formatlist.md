@@ -1,6 +1,7 @@
 ---
-layout: index
 title: FormatList
+parent: "String Functions"
+grand_parent: "Functions"
 ---
 
     FormatList (stringlist or object list, string joiner, string lastjoiner, string nothing)

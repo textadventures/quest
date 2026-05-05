@@ -1,6 +1,7 @@
 ---
-layout: index
 title: ScopeUnlockedExitsForRoom
+parent: "Scope Functions"
+grand_parent: "Functions"
 ---
 
     ScopeUnlockedExitsForRoom (object room)

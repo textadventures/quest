@@ -1,6 +1,7 @@
 ---
-layout: index
 title: NewScriptDictionary
+parent: "Dictionary Functions"
+grand_parent: "Functions"
 ---
 
     NewScriptDictionary ()

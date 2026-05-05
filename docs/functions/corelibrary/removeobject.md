@@ -1,6 +1,7 @@
 ---
-layout: index
 title: RemoveObject
+parent: "Functions for Objects and Exits"
+grand_parent: "Functions"
 ---
 
     RemoveObject(objectobject1)

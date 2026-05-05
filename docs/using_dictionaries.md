@@ -1,6 +1,7 @@
 ---
-layout: index
 title: Using Dictionaries
+nav_order: 5
+parent: "Coding With Quest"
 ---
 
 A dictionary is a data set where each entry is accessed by a string, called a key. If you think about an actual dictionary, it contains words linked to definitions. To find a specific definition, you use the word to look it up. Quest dictionaries are the same, you use a word, called a key, to look up your information, called a value.

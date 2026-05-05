@@ -1,6 +1,7 @@
 ---
-layout: index
 title: Equal
+parent: "Functions for Variables"
+grand_parent: "Functions"
 ---
 
     Equal (value, value)

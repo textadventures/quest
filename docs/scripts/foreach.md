@@ -1,6 +1,6 @@
 ---
-layout: index
 title: foreach
+parent: "Script commands"
 ---
 
     foreach (iterator variable, list) { script }

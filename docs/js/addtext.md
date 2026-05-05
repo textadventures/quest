@@ -1,6 +1,8 @@
 ---
-layout: index
 title: addText
+parent: "JS functions"
+grand_parent: "Reference"
+nav_order: 2
 ---
 
     JS.addText (string text)

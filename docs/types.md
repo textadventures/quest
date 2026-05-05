@@ -1,6 +1,7 @@
 ---
-layout: index
 title: Types
+nav_order: 18
+parent: "Coding With Quest"
 ---
 
 Overview

@@ -1,6 +1,7 @@
 ---
-layout: index
 title: drop
+parent: "Attribute Reference"
+grand_parent: "Attributes"
 ---
 
 "drop" is an attribute that can be either [boolean](../types/boolean.html) or [script](../types/script.html).

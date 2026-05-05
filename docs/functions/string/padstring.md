@@ -1,6 +1,7 @@
 ---
-layout: index
 title: PadString
+parent: "String Functions"
+grand_parent: "Functions"
 ---
 
     PadString (string input, int length, string pad)

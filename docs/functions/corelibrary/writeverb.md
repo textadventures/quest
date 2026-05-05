@@ -1,6 +1,7 @@
 ---
-layout: index
 title: WriteVerb
+parent: "String Functions"
+grand_parent: "Functions"
 ---
 
     WriteVerb(obj, verb)

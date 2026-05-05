@@ -1,6 +1,6 @@
 ---
-layout: index
 title: msg
+parent: "Script commands"
 ---
 
     msg (string message)

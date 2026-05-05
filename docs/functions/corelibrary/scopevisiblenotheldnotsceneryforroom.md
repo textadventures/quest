@@ -1,6 +1,7 @@
 ---
-layout: index
 title: ScopeVisibleNotHeldNotSceneryForRoom
+parent: "Scope Functions"
+grand_parent: "Functions"
 ---
 
     ScopeVisibleNotHeldNotSceneryForRoom (room)

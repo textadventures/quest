@@ -1,6 +1,7 @@
 ---
-layout: index
 title: Interacting with objects
+nav_order: 3
+parent: Tutorial
 ---
 
 Object Types
@@ -35,13 +36,13 @@ Scenery
 
 The "Scenery" option means that the object won't be displayed automatically in the room description, or the "Places and Objects" on the right of the screen.
 
-Why might we want to do this? Well, when we created our "lounge" description in the previous section, we wrote "This is quite a plain lounge with an old beige carpet and peeling wallpaper". What if the player types "look at wallpaper"? Quest will reply "I can't see that here", which will be a bit strange.
+Why might we want to do this? Well, when we created our "lounge" description in the previous section, we wrote "This is quite a plain lounge with an old beige carpet and peeling wallpaper". What if the player types `LOOK AT WALLPAPER`? Quest will reply "I can't see that here", which will be a bit strange.
 
-Although the wallpaper isn't an important object, we should still have a response for "look at wallpaper". If we make it a scenery object, it's "in the background" as far as the game goes, as it won't appear in the "Places and Objects" list, or in the list of objects in the description of the room. We won't be cluttering things unnecessarily, but we will still be providing responses for anything the player might reasonably type in.
+Although the wallpaper isn't an important object, we should still have a response for `LOOK AT WALLPAPER`. If we make it a scenery object, it's "in the background" as far as the game goes, as it won't appear in the "Places and Objects" list, or in the list of objects in the description of the room. We won't be cluttering things unnecessarily, but we will still be providing responses for anything the player might reasonably type in.
 
 So, create a new object called "wallpaper" and tick the Scenery box. Enter a description like "The horrible beige wallpaper hangs loosely on the walls."
 
-Launch the game and verify that although the wallpaper doesn't explicitly appear in the description, you can still get a sensible response by typing "look at wallpaper".
+Launch the game and verify that although the wallpaper doesn't explicitly appear in the description, you can still get a sensible response by typing `LOOK AT WALLPAPER`.
 
 Exercise
 --------
@@ -66,7 +67,7 @@ You can specify your own text by unchecking the box. Two new textboxes will appe
 
 A quicker way of doing this is to select "Male character (named)" from the types list.
 
-We will come back to Bob later in the tutorial, where will make him a little more animated.
+We will come back to Bob later in the tutorial, where we will make him a little more animated.
 
 Taking the newspaper
 --------------------
@@ -104,7 +105,7 @@ Enter some sensible text for these, for example as shown below.
 
 Go back to the Setup tab and change the "Look at" description so it just reads "The TV is an old model, possibly 20 years old."
 
-Now when you play the game, you get sensible behaviour for "switch on tv", "switch off tv", and alternative forms of the command.
+Now when you play the game, you get sensible behaviour for `SWITCH ON TV`, `SWITCH OFF TV`, and alternative forms of the command.
 
 ![](../images/Switchonoffplay.png "Switchonoffplay.png")
 

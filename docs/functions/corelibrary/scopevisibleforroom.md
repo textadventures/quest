@@ -1,6 +1,7 @@
 ---
-layout: index
 title: ScopeVisibleForRoom
+parent: "Scope Functions"
+grand_parent: "Functions"
 ---
 
     ScopeVisibleForRoom (room)

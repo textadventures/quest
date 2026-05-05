@@ -1,6 +1,6 @@
 ---
-layout: index
 title: destroy
+parent: "Script commands"
 ---
 
     destroy (string name)

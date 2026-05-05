@@ -1,6 +1,7 @@
 ---
-layout: index
 title: SetTurnScript
+parent: "Timers and Turnscripts"
+grand_parent: "Functions"
 ---
 
     SetTurnScript (turn script, script)

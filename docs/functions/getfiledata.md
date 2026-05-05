@@ -1,6 +1,7 @@
 ---
-layout: index
 title: GetFileData
+parent: "General Functions"
+grand_parent: "Functions"
 ---
 
     GetFileData (string file name)

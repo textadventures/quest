@@ -1,6 +1,7 @@
 ---
-layout: index
 title: ListItem
+parent: "List Functions"
+grand_parent: "Functions"
 ---
 
     ListItem (list, int index)

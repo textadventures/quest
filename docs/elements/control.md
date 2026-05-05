@@ -1,6 +1,8 @@
 ---
-layout: index
 title: control element
+parent: "XML Elements"
+grand_parent: "Reference"
+nav_order: 22
 ---
 
     <control>nameattributes</control>

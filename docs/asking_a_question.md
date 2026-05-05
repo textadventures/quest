@@ -1,6 +1,7 @@
 ---
-layout: index
 title: Asking a question
+nav_order: 9
+parent: "How To"
 ---
 
 Open-Ended Question
@@ -21,7 +22,7 @@ The first line just asks the question. Then we see the `get input` command. The 
 
 Note that we are setting the "alias" attribute; the "name" attribute cannot be changed during play as Quest uses that to track each object. Note that it makes sure there is a capital at the start. You can then use the text processor to insert the character's name in text:
 
-> 'Hi, {player.alias},' says the oddly-shaped doll.
+    'Hi, {player.alias},' says the oddly-shaped doll.
 
 
 

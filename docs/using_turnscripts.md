@@ -1,6 +1,7 @@
 ---
-layout: index
 title: Using Turnscripts
+nav_order: 6
+parent: "Coding With Quest"
 ---
 
 

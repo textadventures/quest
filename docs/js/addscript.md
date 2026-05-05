@@ -1,6 +1,8 @@
 ---
-layout: index
 title: addScript
+parent: "JS functions"
+grand_parent: "Reference"
+nav_order: 1
 ---
 
     JS.addScript (string text)

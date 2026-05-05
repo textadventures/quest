@@ -1,6 +1,8 @@
 ---
-layout: index
 title: Creating a Countdown Timer
+parent: "Helpsheets for beginners"
+grand_parent: "Other Guides"
+nav_order: 16
 ---
 
 *There used to be a TV program called the Crystal Maze where a team had to recover crystals from different rooms by doing certain challenges. Each person had to do a challenge and the difficult bit was that they only had 5 minutes to do it before the room was locked.*

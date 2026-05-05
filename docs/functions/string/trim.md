@@ -1,6 +1,7 @@
 ---
-layout: index
 title: Trim
+parent: "String Functions"
+grand_parent: "Functions"
 ---
 
     Trim (input)

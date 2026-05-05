@@ -1,6 +1,7 @@
 ---
-layout: index
 title: UCase
+parent: "String Functions"
+grand_parent: "Functions"
 ---
 
     UCase (string input)

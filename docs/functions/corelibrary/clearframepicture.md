@@ -1,6 +1,7 @@
 ---
-layout: index
 title: ClearFramePicture
+parent: "User Interface Functions"
+grand_parent: "Functions"
 ---
 
     ClearFramePicture

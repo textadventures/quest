@@ -1,6 +1,7 @@
 ---
-layout: index
 title: ChangePOV
+parent: "Core.aslx Functions"
+grand_parent: "Functions"
 ---
 
     ChangePOV (object)

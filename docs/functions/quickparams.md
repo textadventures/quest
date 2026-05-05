@@ -1,6 +1,7 @@
 ---
-layout: index
 title: QuickParams
+parent: "Dictionary Functions"
+grand_parent: "Functions"
 ---
 
     QuickParams (string key1, any type value1)

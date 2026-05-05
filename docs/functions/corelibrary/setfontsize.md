@@ -1,6 +1,7 @@
 ---
-layout: index
 title: SetFontSize
+parent: "User Interface Functions"
+grand_parent: "Functions"
 ---
 
     SetFontSize(int fontsize)

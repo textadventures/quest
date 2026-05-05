@@ -1,6 +1,7 @@
 ---
-layout: index
 title: ScopeExits
+parent: "Scope Functions"
+grand_parent: "Functions"
 ---
 
     ScopeExits ()

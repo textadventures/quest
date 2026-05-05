@@ -1,6 +1,7 @@
 ---
-layout: index
 title: SetExitLightstrength
+parent: "Core.aslx Functions"
+grand_parent: "Functions"
 ---
 
     SetExitLightstrength(exit, string value)

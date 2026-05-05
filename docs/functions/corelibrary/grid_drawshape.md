@@ -1,6 +1,7 @@
 ---
-layout: index
 title: Grid_DrawShape
+parent: "Internal Core.aslx Functions"
+grand_parent: "Functions"
 ---
 
     Grid_DrawShape (string id, string border, string fill, double opacity)

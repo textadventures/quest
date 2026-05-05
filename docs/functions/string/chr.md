@@ -1,6 +1,7 @@
 ---
-layout: index
 title: Chr
+parent: "String Functions"
+grand_parent: "Functions"
 ---
 
     Chr (int input)

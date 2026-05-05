@@ -1,6 +1,8 @@
 ---
-layout: index
 title: resource element
+parent: "XML Elements"
+grand_parent: "Reference"
+nav_order: 23
 ---
 
     <resource src="filename"/>

@@ -1,6 +1,6 @@
 ---
-layout: index
 title: insert
+parent: "Script commands"
 ---
 
     insert (string filename)

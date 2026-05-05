@@ -1,6 +1,7 @@
 ---
-layout: index
 title: ClearScreen
+parent: "User Interface Functions"
+grand_parent: "Functions"
 ---
 
     ClearScreen

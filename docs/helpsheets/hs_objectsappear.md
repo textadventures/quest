@@ -1,6 +1,8 @@
 ---
-layout: index
 title: Making Objects Appear when a Light is Switched On
+parent: "Helpsheets for beginners"
+grand_parent: "Other Guides"
+nav_order: 7
 ---
 
 *To make objects appear when a light is turned on and off you need to move them from one room to another and back again*

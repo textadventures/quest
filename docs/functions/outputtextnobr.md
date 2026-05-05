@@ -1,6 +1,7 @@
 ---
-layout: index
 title: OutputTextNoBr
+parent: "User Interface Functions"
+grand_parent: "Functions"
 ---
 
     OutputTextNoBr (string text)

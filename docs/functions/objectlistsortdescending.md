@@ -1,6 +1,7 @@
 ---
-layout: index
 title: ObjectListSortDescending
+parent: "List Functions"
+grand_parent: "Functions"
 ---
 
     ObjectListSortDescending (objectlist list, string attributes ...)

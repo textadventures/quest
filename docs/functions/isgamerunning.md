@@ -1,6 +1,7 @@
 ---
-layout: index
 title: IsGameRunning
+parent: "Internal Core.aslx Functions"
+grand_parent: "Functions"
 ---
 
     IsGameRunning ()

@@ -1,6 +1,8 @@
 ---
-layout: index
 title: Adding Sounds to your Game
+nav_order: 3
+parent: "Multimedia"
+grand_parent: "Features"
 ---
 
 

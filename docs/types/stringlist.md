@@ -1,6 +1,8 @@
 ---
-layout: index
 title: Stringlist
+parent: "Attribute Types"
+grand_parent: "Attributes"
+nav_order: 8
 ---
 
 A stringlist is a [list](list.html) that can contain a number of elements, all have to be of type [string](string.html).

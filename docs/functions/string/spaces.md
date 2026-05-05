@@ -1,6 +1,7 @@
 ---
-layout: index
 title: Spaces
+parent: "String Functions"
+grand_parent: "Functions"
 ---
 
     Spaces (int)

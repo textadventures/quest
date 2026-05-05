@@ -1,6 +1,8 @@
 ---
-layout: index
 title: “Key” Inside another Object
+parent: "Helpsheets for beginners"
+grand_parent: "Other Guides"
+nav_order: 13
 ---
 
 

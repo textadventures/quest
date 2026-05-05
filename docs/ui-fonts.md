@@ -1,6 +1,7 @@
 ---
-layout: index
 title: Fonts
+nav_order: 6
+parent: "User Experience"
 ---
 
 ## Fonts

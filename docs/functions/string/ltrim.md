@@ -1,6 +1,7 @@
 ---
-layout: index
 title: LTrim
+parent: "String Functions"
+grand_parent: "Functions"
 ---
 
     LTrim (input)

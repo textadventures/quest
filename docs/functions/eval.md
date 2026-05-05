@@ -1,6 +1,7 @@
 ---
-layout: index
 title: Eval
+parent: "General Functions"
+grand_parent: "Functions"
 ---
 
     Eval (string expression, dictionary parameters)

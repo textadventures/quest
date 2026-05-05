@@ -1,6 +1,7 @@
 ---
-layout: index
 title: GetDirectChildren
+parent: "Scope Functions"
+grand_parent: "Functions"
 ---
 
     GetDirectChildren (object)

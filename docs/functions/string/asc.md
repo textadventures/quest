@@ -1,6 +1,7 @@
 ---
-layout: index
 title: Asc
+parent: "String Functions"
+grand_parent: "Functions"
 ---
 
     Asc (string input)

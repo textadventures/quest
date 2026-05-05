@@ -1,7 +1,13 @@
 ---
-layout: index
 title: How to run Quest on Linux
+nav_order: 7
+parent: "Desktop Features"
 ---
+
+{: .warning }
+> Quest is not supported on Linux, and the instructions below are from a previous version - so they may be a starting point rather than a complete guide.
+>
+> For running games offline using Linux, you will find it much easier to [run Quest Viva WebPlayer using Docker](https://questviva.com/guides/webplayer/) instead of trying to get the Windows desktop version of Quest running.
 
 Very grateful to redyoshi49q for working out how to do this. His/her instructions are reproduced as-is. The discussion can be found [here](https://textadventures.co.uk/forum/samples/topic/nwsz5gf0te6qdtfrwzdmga/quest-5-8-working-in-wine).
 

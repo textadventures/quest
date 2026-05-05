@@ -1,6 +1,8 @@
 ---
-layout: index
 title: Help with InvisiClues
+parent: "Community Guides"
+grand_parent: "Other Guides"
+nav_order: 5
 ---
 
 It can be helpful to the player if your game has a help system - something she can access in game to get past that puzzle that seemed so simple to you, but is fiendishly complicated for the player. But how to let the player see how to solve this puzzle, but not inadvertently see the solution for the whole game?

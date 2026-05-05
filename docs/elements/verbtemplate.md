@@ -1,6 +1,8 @@
 ---
-layout: index
 title: verbtemplate element
+parent: "XML Elements"
+grand_parent: "Reference"
+nav_order: 6
 ---
 
     <verbtemplate name="name">text</template>

@@ -1,6 +1,7 @@
 ---
-layout: index
 title: Moving objects during the game
+nav_order: 10
+parent: Tutorial
 ---
 
 As your game unfolds and the player interacts with your world, you may want to bring additional objects into play, or remove others. In this example, we'll add a window to the kitchen. When the player opens it, a bee flies in. In the next section we'll make this bee quite irritating.

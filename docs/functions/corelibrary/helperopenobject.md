@@ -1,6 +1,7 @@
 ---
-layout: index
 title: HelperOpenObject
+parent: "Core.aslx Functions"
+grand_parent: "Functions"
 ---
 
     HelperOpenObject (object)

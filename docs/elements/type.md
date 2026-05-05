@@ -1,6 +1,8 @@
 ---
-layout: index
 title: type element
+parent: "XML Elements"
+grand_parent: "Reference"
+nav_order: 10
 ---
 
     <type name="name">properties</type>

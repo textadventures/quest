@@ -1,6 +1,7 @@
 ---
-layout: index
 title: SetBackgroundColour
+parent: "User Interface Functions"
+grand_parent: "Functions"
 ---
 
     SetBackgroundColour(string colour)

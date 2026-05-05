@@ -1,6 +1,7 @@
 ---
-layout: index
 title: take
+parent: "Attribute Reference"
+grand_parent: "Attributes"
 ---
 
 "take" is an attribute that can be either [boolean](../types/boolean.html) or [script](../types/script.html).

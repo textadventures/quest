@@ -1,6 +1,7 @@
 ---
-layout: index
 title: ScriptDictionaryItem
+parent: "Dictionary Functions"
+grand_parent: "Functions"
 ---
 
     ScriptDictionaryItem (scriptdictionary, string key)

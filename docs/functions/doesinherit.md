@@ -1,6 +1,7 @@
 ---
-layout: index
 title: DoesInherit
+parent: "Functions for Objects and Exits"
+grand_parent: "Functions"
 ---
 
     DoesInherit (object object, string type name)

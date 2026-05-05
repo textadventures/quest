@@ -1,6 +1,7 @@
 ---
-layout: index
 title: Tips and Tricks for Editing in Full Code View
+nav_order: 14
+parent: "Coding With Quest"
 ---
 
 _NOTE:_ You can only access full code view in the desktop version.

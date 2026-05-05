@@ -1,6 +1,7 @@
 ---
-layout: index
 title: CanSeeThrough
+parent: "Core.aslx Functions"
+grand_parent: "Functions"
 ---
 
     CanSeeThrough (object)

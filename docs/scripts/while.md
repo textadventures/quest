@@ -1,6 +1,6 @@
 ---
-layout: index
 title: while
+parent: "Script commands"
 ---
 
     while (expression) { script }

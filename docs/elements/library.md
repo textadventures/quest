@@ -1,6 +1,8 @@
 ---
-layout: index
 title: library element
+parent: "XML Elements"
+grand_parent: "Reference"
+nav_order: 2
 ---
 
     <library>all library content</library>

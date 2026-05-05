@@ -1,11 +1,14 @@
 ---
-layout: index
 title: Setting Up a Door
+nav_order: 16
+parent: "How To"
 ---
 
 Generally in text adventures doors are implied. That means that when the player heads into the kitchen, it is assumed she first opens the door - the player will not be happy if she has to open a door each time she wants to go anywhere. That said, there may be occasions when it warranted. Perhaps this is a particular special door, or the state of the door determines whether the player is found or which way the guard goes.
 
 The problem with doors is that need to be usable from both sides. In Quest an object is in one room, but the door needs to be in two. But there is a way around that.
+
+This guide uses Quest's lockable exits feature. If you are not already familiar with it, see [Using lockable exits](../using_lockable_exits.html) first.
 
 Let us suppose we have two rooms; the lounge with the kitchen to the west, with exits going each way. We will say the door is closed to start with.
 
@@ -61,7 +64,7 @@ Rooms
 
 It is a good idea to keep the player informed, and in this case we want her to know whether the door is open or closed. You can do that in the room description using the text processor. For example:
 
-> The lounge is very retro. The door west is {either door.isopen:open|closed}.
+    The lounge is very retro. The door west is {either door.isopen:open|closed}.
 
 This is again using the "isopen" attribute of the door object.
 

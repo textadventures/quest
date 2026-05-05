@@ -1,6 +1,7 @@
 ---
-layout: index
 title: CommandLink
+parent: "Internal Core.aslx Functions"
+grand_parent: "Functions"
 ---
 
     CommandLink (string command, string link text)

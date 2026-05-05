@@ -1,6 +1,7 @@
 ---
-layout: index
 title: SetObjectFlagOff
+parent: "Functions for Attributes"
+grand_parent: "Functions"
 ---
 
     SetObjectFlagOff (object, string flag name)

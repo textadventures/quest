@@ -1,6 +1,7 @@
 ---
-layout: index
 title: Much Ado About Nothing
+nav_order: 15
+parent: "Coding With Quest"
 ---
 
 

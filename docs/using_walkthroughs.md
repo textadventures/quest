@@ -1,6 +1,7 @@
 ---
-layout: index
 title: Using walkthroughs
+nav_order: 1
+parent: "Desktop Features"
 ---
 
 <div class="alert alert-info">

@@ -1,6 +1,7 @@
 ---
-layout: index
 title: ScopeVisible
+parent: "Scope Functions"
+grand_parent: "Functions"
 ---
 
     ScopeVisible ()

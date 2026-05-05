@@ -1,6 +1,7 @@
 ---
-layout: index
 title: Got
+parent: "Core.aslx Functions"
+grand_parent: "Functions"
 ---
 
     Got (object)

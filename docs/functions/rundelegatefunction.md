@@ -1,6 +1,7 @@
 ---
-layout: index
 title: RunDelegateFunction
+parent: "General Functions"
+grand_parent: "Functions"
 ---
 
     RunDelegateFunction (object, string attribute name, any type parameters ...)

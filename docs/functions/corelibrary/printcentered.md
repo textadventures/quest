@@ -1,6 +1,7 @@
 ---
-layout: index
 title: PrintCentered
+parent: "User Interface Functions"
+grand_parent: "Functions"
 ---
 
     PrintCentered(string text)

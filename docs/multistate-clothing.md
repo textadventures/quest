@@ -1,6 +1,7 @@
 ---
-layout: index
 title: Multi-state wearable items
+nav_order: 8
+parent: "Features"
 ---
 
 A multi-state [garment](wearables.html) is something that can be worn in more than one way. I am going to use a jacket as an example; it can be worn fastened up, or it can be worn open, or worn half-buttoned. This just has three states, but you can have as many as you want.

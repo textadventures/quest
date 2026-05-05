@@ -1,6 +1,8 @@
 ---
-layout: index
 title: setCss
+parent: "JS functions"
+grand_parent: "Reference"
+nav_order: 7
 ---
 
     JS.setCss (string element name, string css styling)

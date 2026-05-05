@@ -1,6 +1,6 @@
 ---
-layout: index
 title: Setting variables
+parent: "Script commands"
 ---
 
 To set an object attribute to a value:

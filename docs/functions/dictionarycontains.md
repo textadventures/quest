@@ -1,6 +1,7 @@
 ---
-layout: index
 title: DictionaryContains
+parent: "Dictionary Functions"
+grand_parent: "Functions"
 ---
 
     DictionaryContains (dictionary, string key)

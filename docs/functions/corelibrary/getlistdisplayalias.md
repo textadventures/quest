@@ -1,6 +1,7 @@
 ---
-layout: index
 title: GetListDisplayAlias
+parent: "Core.aslx Functions"
+grand_parent: "Functions"
 ---
 
     GetListDisplayAlias (object)

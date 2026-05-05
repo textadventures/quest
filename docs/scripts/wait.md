@@ -1,6 +1,6 @@
 ---
-layout: index
 title: wait
+parent: "Script commands"
 ---
 
     wait {script}

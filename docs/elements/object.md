@@ -1,6 +1,8 @@
 ---
-layout: index
 title: object element
+parent: "XML Elements"
+grand_parent: "Reference"
+nav_order: 12
 ---
 
     <object name="name">attributes</object>

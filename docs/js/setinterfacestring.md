@@ -1,6 +1,8 @@
 ---
-layout: index
 title: setInterfaceString
+parent: "JS functions"
+grand_parent: "Reference"
+nav_order: 9
 ---
 
     JS.setInterfaceString(string name, string value)

@@ -1,6 +1,7 @@
 ---
-layout: index
 title: ScopeVisibleNotHeld
+parent: "Scope Functions"
+grand_parent: "Functions"
 ---
 
     ScopeVisibleNotHeld ()

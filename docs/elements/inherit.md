@@ -1,6 +1,8 @@
 ---
-layout: index
 title: inherit element
+parent: "XML Elements"
+grand_parent: "Reference"
+nav_order: 24
 ---
 
     <inherit name="name"/>

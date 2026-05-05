@@ -1,6 +1,7 @@
 ---
-layout: index
 title: DictionaryRemove
+parent: "Dictionary Functions"
+grand_parent: "Functions"
 ---
 
     DictionaryRemove (dictionary, string key)

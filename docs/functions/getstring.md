@@ -1,6 +1,7 @@
 ---
-layout: index
 title: GetString
+parent: "Functions for Attributes"
+grand_parent: "Functions"
 ---
 
     GetString (object, string attribute name)

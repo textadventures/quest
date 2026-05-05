@@ -1,6 +1,8 @@
 ---
-layout: index
 title: command element
+parent: "XML Elements"
+grand_parent: "Reference"
+nav_order: 8
 ---
 
     <command name="name" pattern="pattern" unresolved="unresolved text" template="template name">script</command>

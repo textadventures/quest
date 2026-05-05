@@ -1,6 +1,8 @@
 ---
-layout: index
 title: Starting inventory
+parent: "Community Guides"
+grand_parent: "Other Guides"
+nav_order: 3
 ---
 
 To have the player start with things in the inventory, simply drag the object in the Editor to the "player" object in the hierarchy, so the object is shown as a child of the player.

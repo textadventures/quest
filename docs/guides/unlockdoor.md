@@ -1,6 +1,8 @@
 ---
-layout: index
 title: Unlock with combination
+parent: "Community Guides"
+grand_parent: "Other Guides"
+nav_order: 2
 ---
 
 Here is an example of an exit that will be unlocked when the player inserts the right code.

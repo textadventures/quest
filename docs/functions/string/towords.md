@@ -1,6 +1,7 @@
 ---
-layout: index
 title: ToWords
+parent: "String Functions"
+grand_parent: "Functions"
 ---
 
     ToWords (int)

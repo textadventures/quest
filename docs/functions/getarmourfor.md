@@ -1,6 +1,7 @@
 ---
-layout: index
 title: GetArmourFor
+parent: "Clothing Functions"
+grand_parent: "Functions"
 ---
 
     GetArmourFor (object character)

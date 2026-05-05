@@ -1,6 +1,6 @@
 ---
-layout: index
 title: request
+parent: "Script commands"
 ---
 
     request (request name, string parameter)

@@ -1,6 +1,7 @@
 ---
-layout: index
 title: Custom attributes
+nav_order: 6
+parent: Tutorial
 ---
 
 We'll now start creating things in the kitchen, where we'll look at some more of Quest's features.
@@ -27,7 +28,7 @@ Alternatively...
 
 The Web version currently has no attributes tab, so we will have to use an alternative approach. Go to the Script tab of the game object. The bit at the top is a script that will run when the game starts, so we can set attributes there (the disadvantage is that this will get pretty messy if you have dozens of objects with a few attributes each, but for a handful, it is okay).
 
-Click "Add new script", and select "Set a objects attribute (named by an expression)" from the "Variables" category. In the first line, keep "Name", and in the other box, select the flour. For the next line, set the attribute name to "weight" (note that for once you need quotes here, but there are already provided). In the third line, for the value type "500".
+Click "Add new script", and select "Set an object's attribute (named by an expression)" from the "Variables" category. In the first line, keep "Name", and in the other box, select the flour. For the next line, set the attribute name to "weight" (note that for once you need quotes here, but there are already provided). In the third line, for the value type "500".
      
 ![](../images/attributes_web.png "attributes_web.png")
 

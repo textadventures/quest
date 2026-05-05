@@ -1,6 +1,6 @@
 ---
-layout: index
 title: do
+parent: "Script commands"
 ---
 
     do (object, string attribute name)

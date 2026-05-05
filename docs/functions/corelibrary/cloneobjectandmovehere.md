@@ -1,6 +1,7 @@
 ---
-layout: index
 title: CloneObjectAndMoveHere
+parent: "Functions for Objects and Exits"
+grand_parent: "Functions"
 ---
 
     CloneObjectAndMoveHere (object)

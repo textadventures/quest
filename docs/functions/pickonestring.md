@@ -1,6 +1,7 @@
 ---
-layout: index
 title: PickOneString
+parent: "Randomising Functions"
+grand_parent: "Functions"
 ---
 
     PickOneString (string or stringlist)

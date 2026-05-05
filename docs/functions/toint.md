@@ -1,6 +1,7 @@
 ---
-layout: index
 title: ToInt
+parent: "Functions for Variables"
+grand_parent: "Functions"
 ---
 
     ToInt (string number)

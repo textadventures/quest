@@ -1,6 +1,6 @@
 ---
-layout: index
 title: create timer
+parent: "Script commands"
 ---
 
     create timer (string name)

@@ -1,6 +1,7 @@
 ---
-layout: index
 title: ScopeCommands
+parent: "Scope Functions"
+grand_parent: "Functions"
 ---
 
     ScopeCommands ()

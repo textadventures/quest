@@ -1,6 +1,7 @@
 ---
-layout: index
 title: NewList
+parent: "List Functions"
+grand_parent: "Functions"
 ---
 
     NewList ()

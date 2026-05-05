@@ -1,6 +1,8 @@
 ---
-layout: index
 title: Turn-based events
+parent: "Community Guides"
+grand_parent: "Other Guides"
+nav_order: 9
 ---
 
 If your game is only responding to what the player does, it feels dead. Bring it alive by having events occur that are not simply reacting to the player's actions (even if they are reacting to what he did four turns ago, it will still feel like it is not).

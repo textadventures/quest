@@ -1,6 +1,7 @@
 ---
-layout: index
 title: ListCompact
+parent: "List Functions"
+grand_parent: "Functions"
 ---
 
     ListCompact (any list list)

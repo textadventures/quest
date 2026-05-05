@@ -1,6 +1,7 @@
 ---
-layout: index
 title: SetTimerInterval
+parent: "Timers and Turnscripts"
+grand_parent: "Functions"
 ---
 
     SetTimerInterval (timer, interval)

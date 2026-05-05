@@ -1,6 +1,7 @@
 ---
-layout: index
 title: Give the player character memory or Wiki
+nav_order: 17
+parent: "How To"
 ---
 
 If you have created a complex world for your fantasy or sci-fi game, it is reasonable to suppose the player character (PC) knows the world fairly well, even if the player does not. If another character mentions the Weddle Hoots, the PC should know what they are, and the player should have some easy way to find out. In as sci-fi adventure that could be a Wiki page, in a fantasy game that would be from memory.

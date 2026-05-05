@@ -1,6 +1,8 @@
 ---
-layout: index
 title: XML Elements
+nav_order: 25
+parent: "Reference"
+has_children: true
 ---
 
 Note that this is about XML elements in the ASLX file, which is not quite the same as the elements in the game.

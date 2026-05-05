@@ -1,6 +1,7 @@
 ---
-layout: index
 title: Change Script
+nav_order: 4
+parent: "Attributes"
 ---
 
 A change script is a script linked to an attribute. The script runs whenever the attribute changes. It is most useful when you have an attribute that can change in several different situations, but in all of them, you want the same thing to happen. A good example is in an RPG-style game, where you want to check the player's hit points to see if he is dead. The hit points might change when the player is attacked, drinks a poison or sets off a trap. Each of those events can modify the hits, but you have one just one change script that checks if the player is alive.
@@ -65,9 +66,10 @@ The change script will fire when the attribute changes, so be careful where you 
 ```
 If it kills the player, she will see this:
 
-> You are died!!
-
-> You drink the liquid... and realise it was poison!
+```
+You are dead!
+You drink the liquid... and realised it was poison!
+```
 
 You need to adjust the hit points _after_ the message.
 
@@ -120,6 +122,7 @@ if (this.purity < 0) {
 if (this.purity > 100) {
   this.purity = 100
 }
+```
 
 For the web version, go to the initialisation script.
 

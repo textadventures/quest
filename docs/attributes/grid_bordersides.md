@@ -1,6 +1,7 @@
 ---
-layout: index
 title: grid_bordersides
+parent: "Attribute Reference"
+grand_parent: "Attributes"
 ---
 
 "grid\_bordersides" is an [int](../types/int.html) attribute. It specifies which sides of the square should be drawn for for this room on the map.

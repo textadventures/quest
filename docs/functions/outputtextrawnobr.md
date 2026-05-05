@@ -1,6 +1,7 @@
 ---
-layout: index
 title: OutputTextRawNoBr
+parent: "User Interface Functions"
+grand_parent: "Functions"
 ---
 
     OutputTextRawNoBr (string text)

@@ -1,6 +1,8 @@
 ---
-layout: index
 title: scrollToEnd
+parent: "JS functions"
+grand_parent: "Reference"
+nav_order: 5
 ---
 
     JS.scrollToEnd ()
