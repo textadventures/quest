@@ -1,8 +1,11 @@
 ---
 title: Quest 5.8
-nav_order: 3
+nav_order: 1
 parent: "Release Notes"
 ---
+
+{: .note }
+This page was written by ThePix
 
 This file documents changes to Quest as of version 5.8.
 

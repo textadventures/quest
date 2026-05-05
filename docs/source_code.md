@@ -1,14 +1,8 @@
 ---
-title: Quest Source Code
+title: Building from Source
 nav_order: 1
 parent: "Developers"
 ---
-
-
-Open Source
------------
-
-Quest is open-source, which means anyone can look at the code, and indeed (within the terms of the [licence agreement](https://github.com/textadventures/quest/blob/master/LICENSE)) make your own version.
 
 
 Compiling Quest
@@ -55,91 +49,6 @@ Set WebEditor as the Startup project in VS by right-clicking it in Solution Expl
 Press F5 to start the web editor. It will open a new tab in your browser with the TextAdventures home page, but you can then go here to edit a new game:
 
 [http://localhost:50212/Edit/Game/1](http://localhost:50212/Edit/Game/1)
-
-
-
-The Quest Solution
-------------------
-
-See also [here](developers.html).
-
-Generally the only folders of interest are "Resources" (containing images) and either "My Project" or "Properties" (with the actual code) - but they are plenty of exceptions.
-
-### Dependencies
-
-Looks to have FLEE, which is what handles code.
-
-### docs
-
-The documentation.
-
-### Editor, EditorController, EditorControls
-
-These are all for the desktop editor.
-
-### EditorControllerTests
-
-Unit tests for the above.
-
-### GameBrowser
-
-The game browser in the desktop version.
-
-### IASL
-
-IASL interface is the abstraction used so that the Player can handle both Legacy (Quest 4 and earlier) and WorldModel (Quest 5) games.
-
-### Legacy
-
-This is what runs Quest 4 (and earlier) games.
-
-### LegacyASLTests
-
-Unit tests for above.
-
-### Menus
-
-Menus for the desktop version.
-
-### packages
-
-Software packages that Quest uses.
-
-### Player, PlayerController
-
-The player for the desktop.
-
-### PlayerControllerTests
-
-Unit tests for above.
-
-### Quest
-
-The main project for the desktop version.
-
-### Setup
-
-This is used by Inno Setup only, when creating a Quest installer.
-
-### Utility
-
-Various utility classes used by the other projects.
-
-### UtilityTests
-
-Unit tests for above.
-
-### WebEditor
-
-Web version of the editor and player.
-
-### WorldModel
-
-This is the heart of Quest. This is where all the .aslx files are (worldmodel/worldmodel/core) and language support. All the script commands are defined in worldmodel/worldmodel/scripts, the hard-coded functions in worldmodel/worldmodel/functions/ExpressionOner.cs, and the types in worldmodel/worldmodel/types.
-
-### WorldModelTests
-
-Unit tests for above.
 
 
 

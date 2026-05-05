@@ -36,29 +36,6 @@ If you know a language other than English, why not try translating the English.a
 See [Translating Quest](translating_quest.html) for full information.
 
 
-### Adding your changes to Quest
-
-When you have a set of changes that you want included in Quest, you first need to be sure they work! There will be tests you will need to do specific to those changes, but additionally ensure:
-
-The unit tests all pass
-The desktop version can be used to open a game to edit, and the game, the player, a room and an item will all display tabs properly
-The desktop version can be used to open a game to play, and that you an save games whilst playing
-The web player starts up properly, and will accept a couple of commands
-The web editor starts up properly, and you can look at a couple of rooms/items
-
-You can then commit your changes to your local Github repository. When you do so, you will need to give it a name. Please prefix the name with the appropriate code. This allows us to quickly see what changes need special attention when Quest is updated - when adding a new file, we need to ensure it is replicated properly for example.
-
-[docs]  Changes to the documentation (including new files) in the `docs` folder only.
-[lang]  Changes to existing language files, in `WorldModel\WorldModel\Core\Languages` only
-[lang][new]  New language files and/or changes to existing language files, in `WorldModel\WorldModel\Core\Languages` and `WorldModel\WorldModel\Core\Templates`only
-[aslx]  Changes to existing files (including language files), in `WorldModel\WorldModel\Core\Languages` and subfolders only.
-[aslx][new]  New files and/or changes to existing files (including language files), in `WorldModel\WorldModel\Core\Languages` and subfolders only.
-
-Commits that make changes outside of the `docs` and ``WorldModel\WorldModel\Core` can potentially causes big problems when updating the web player and web editor (in part because they cannot be tested properly), and so are less likely to be permitted.
-
-
-
-
 Technical Overview
 ------------------
 

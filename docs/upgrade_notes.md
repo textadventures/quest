@@ -1,6 +1,6 @@
 ---
 title: Upgrade Notes
-nav_order: 1
+nav_order: 3
 parent: "Release Notes"
 ---
 
@@ -129,13 +129,3 @@ You can simply copy and paste this code block into your game file:
      <object name="player">
        <inherit name="defaultplayer" />
      </object>
-
-Upgrading from Quest 4.x
-------------------------
-
-See separate article [Upgrading from Quest 4](upgrading_from_quest_4.html)
-
-Upgrading to development versions
----------------------------------
-
-Development versions are unsupported. This section of the documentation is to note changes which will be moved to a new section above when the development version is released properly.
