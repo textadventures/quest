@@ -63,4 +63,4 @@ nav_order: 5
 
 23. So when the player opens the cupboard, if they use the flame thrower on the alien, the alien will no longer be visible in the room. However, if the player has not used the flame thrower, the alien will still be visible, in which case the alien enjoys a tasty meal.
 
-*This helpsheet is adapted from one written by Alex Warren from <http://www.textadventures.co.uk/blog/2012/02/27/time-limited-puzzles/>*
+*This helpsheet is adapted from one written by Alex Warren.*

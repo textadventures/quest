@@ -21,8 +21,6 @@ Where to find libraries
 
 You can find libraries:
 
-- [User submitted libraries](libraries.html)
-
 - [Pixie Libraries](https://github.com/ThePix/quest/wiki#libraries)
 
 - [Libraries and Code Samples forum](https://textadventures.co.uk/forum/samples).

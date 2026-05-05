@@ -8,11 +8,11 @@ We looked at functions in the [tutorial](tutorial/more_things_to_do_with_objects
 
 Quest has a whole load of functions built in, many of them will be used in your game without you even knowing about it. You can see a full list here:
 
-[Functions](../functions/)
+[Functions](functions/)
 
 Quest also has "script commands", which in many ways are like functions. One difference is that script commands are all named in lower case, while functions are all in CamelCase.
 
-[Script commands](../scripts/)
+[Script commands](scripts/)
 
 Many of these can be accessed through the GUI; for example, when you select the "Print" script in the GUI, that is adding the `msg` script command to your game.
 
@@ -80,7 +80,7 @@ Once you have written your function, it is very important to test it. Go to the 
 
 Obviously you need to remove the test lines once the function is validated. It might be best to comment them out so if it changes later, you can test again.
 
-For how to do proper unit testing, see [Unit Testing](../unit_testing.html).
+For how to do proper unit testing, see [Unit Testing](unit_testing.html).
 
 
 ### Returning Values
@@ -89,7 +89,7 @@ A function can return a value. You need to specify what type the returned value 
 
 Be aware that the script will continue to run even after the `Return`. It only sets the result of the function; it does not stop the script from executing.
 
-For more detail on creating functions with return values, see [Creating Functions](../creating_functions_which_return_a_value.html).
+For more detail on creating functions with return values, see [Creating Functions](creating_functions_which_return_a_value.html).
 
 
 ### Overriding Functions

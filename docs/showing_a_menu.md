@@ -21,8 +21,6 @@ For technical details, see:
 
 The `Split` function is often useful when setting options for a menu.
 
-- [Split](functions/split.html)
-
 The `select` script is often useful when handling the result.
 
 - [select](multiple_choices___using_a_switch_script.html)

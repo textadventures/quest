@@ -73,4 +73,4 @@ The money format string is also used by the `DisplayMoney` function, and has a l
 
 When "Money" is ticked, you will find there is a "Price" number box for every object on its _Inventory_ tab.
 
-For a tutorial on building a more flexible scoring system with achievements, rankings, and a SCORE command, see [How to Keep Score](../keeping_score.html).
+For a tutorial on building a more flexible scoring system with achievements, rankings, and a SCORE command, see [How to Keep Score](keeping_score.html).

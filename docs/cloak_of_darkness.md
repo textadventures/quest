@@ -14,7 +14,7 @@ This seems to be a great way to look in some detail at how to create a Quest gam
 
 If you want to see how the scripts look in the GUI, and you are using the desktop version, just download the game (link below), open it up and take a look. If you are using the web version, you will need to click the "code view" button for that script, paste the code in there, and then click "code view" again to go back to the GUI view.
 
-There is - or was - a version written for Quest, (see [here](http://www.firthworks.com/roger/cloak/quest/index.html), source code [here](http://www.firthworks.com/roger/cloak/quest/source.html)). This was written in October 2003, for Quest 3.5, and if you look at the source code you will see it is very different to the version of Quest that we know today.
+There was a version written for Quest 3.5 in October 2003, which was very different to the version of Quest that we know today.
 
 The source code for Cloak of Darkness for Quest 5.8 can be downloaded here:
 
@@ -24,7 +24,7 @@ The source code for Cloak of Darkness for Quest 5.8 can be downloaded here:
 The Specification
 ------------------
 
-The specification can be found [here](http://www.firthworks.com/roger/cloak/index.html), but for convenience I will repeat it in full:
+The specification is as follows:
 
 - The Foyer of the Opera House is where the game begins. This empty room has doors to the south and west, also an unusable exit to the north. There is nobody else around.
 - The Bar lies south of the Foyer, and is initially unlit. Trying to do anything other than return northwards results in a warning message about disturbing things in the dark.
@@ -42,7 +42,7 @@ We will divide the process into five sections, starting with the locations and i
 Locations and Items
 -------------------
 
-The first place to start is the geography of your game; creating the locations, the exits between them and the items in them. For a big game, you might want to create a map with [trizbort](https://blog.textadventures.co.uk/2018/03/06/creating-with-trizbort-and-quest/), and export it to Quest, but there is no point when there are only three rooms!
+The first place to start is the geography of your game; creating the locations, the exits between them and the items in them. For a big game, you might want to create a map with [trizbort](trizbort.html), and export it to Quest, but there is no point when there are only three rooms!
 
 Note that if you are creating a large adventure you may find it more convenient to create a section of the geography, and then get all the systems working there, then move to the next section. In fact, you may find it advantageous to do it in reverse order; do the ending first, and get that right, then work your way back to the start. In that way you do not have to trek all the way through the adventure to get to the bit you are working on.
 
@@ -608,9 +608,7 @@ This version creates two lists, one of worn items, one of carried items, and pri
 Walkthrough
 -----------
 
-There is a walk-through published for Cloak of Darkness [here](http://www.delron.org.uk/walkthru/cloak.html). For some reason it goes west twice, but maybe that is to test the player cannot do that. In fact, testing what happens when the player does something wrong is a vital part of the process, so this is a good thing to do, it is just odd that this is the only time it happens.
-
-You can test you game by following that walk through.
+You can test your game by following a walk through.
 
 On the desktop version, you can do more, and create a walkthrough object that you can play again and again. Click walkthrough in the left pane (almost at the bottom), then click the plus sign to create a new one. Give it some name. You can now add each step of the walkthrough.
 

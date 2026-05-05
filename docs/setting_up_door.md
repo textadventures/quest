@@ -8,7 +8,7 @@ Generally in text adventures doors are implied. That means that when the player 
 
 The problem with doors is that need to be usable from both sides. In Quest an object is in one room, but the door needs to be in two. But there is a way around that.
 
-This guide uses Quest's lockable exits feature. If you are not already familiar with it, see [Using lockable exits](../using_lockable_exits.html) first.
+This guide uses Quest's lockable exits feature. If you are not already familiar with it, see [Using lockable exits](using_lockable_exits.html) first.
 
 Let us suppose we have two rooms; the lounge with the kitchen to the west, with exits going each way. We will say the door is closed to start with.
 

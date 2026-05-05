@@ -8,4 +8,4 @@ grand_parent: "Functions"
 
 GetPlacesObjectsList()
 
-Required by Quest so it can display the "Places and Objects" list. Returns [ScopeVisibleNotHeldNotScenery](scopevisiblenotheldnotscenery.html) with the [player](../..//player.html) object excluded.
+Required by Quest so it can display the "Places and Objects" list. Returns [ScopeVisibleNotHeldNotScenery](scopevisiblenotheldnotscenery.html) with the player object excluded.
