@@ -3,8 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using TextAdventures.Quest;
-using Ionic.Zip;
 using System.IO;
+using System.IO.Compression;
 using TextAdventures.Quest.LegacyASL;
 
 namespace TextAdventures.Quest
@@ -70,8 +70,7 @@ namespace TextAdventures.Quest
 
             tempDir = Path.Combine(Path.GetTempPath(), "Quest", Guid.NewGuid().ToString());
             Directory.CreateDirectory(tempDir);
-            ZipFile zip = ZipFile.Read(zipFile);
-            zip.ExtractAll(tempDir);
+            ZipFile.ExtractToDirectory(zipFile, tempDir);
 
             return SearchForGameFile(tempDir, "aslx", "asl", "cas");
         }

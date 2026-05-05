@@ -2,8 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using Ionic.Zip;
 using System.IO;
+using System.IO.Compression;
 
 namespace TextAdventures.Quest
 {
@@ -25,9 +25,13 @@ namespace TextAdventures.Quest
                 string data = m_worldModel.Save(SaveMode.Package, includeWalkthrough);
                 string baseFolder = Path.GetDirectoryName(m_worldModel.Filename);
 
-                using (ZipFile zip = new ZipFile(Encoding.UTF8))
+                Stream zipStream = filename != null
+                    ? new FileStream(filename, FileMode.Create, FileAccess.Write)
+                    : outputStream;
+
+                using (var zip = new ZipArchive(zipStream, ZipArchiveMode.Create, leaveOpen: filename == null))
                 {
-                    zip.AddEntry("game.aslx", data, Encoding.UTF8);
+                    AddStringEntry(zip, "game.aslx", data, Encoding.UTF8);
 
                     if (includeFiles == null)
                     {
@@ -36,28 +40,19 @@ namespace TextAdventures.Quest
 
                         foreach (var file in m_worldModel.GetAvailableExternalFiles(fileTypesToInclude))
                         {
-                            zip.AddFile(Path.Combine(baseFolder, file), "");
+                            zip.CreateEntryFromFile(Path.Combine(baseFolder, file), Path.GetFileName(file));
                         }
                     }
                     else
                     {
                         foreach (var file in includeFiles)
                         {
-                            zip.AddEntry(file.Filename, file.Content);
+                            AddStreamEntry(zip, file.Filename, file.Content);
                         }
                     }
-                    
+
                     AddLibraryResources(zip, baseFolder, ElementType.Javascript);
                     AddLibraryResources(zip, baseFolder, ElementType.Resource);
-
-                    if (filename != null)
-                    {
-                        zip.Save(filename);
-                    }
-                    else if (outputStream != null)
-                    {
-                        zip.Save(outputStream);
-                    }
                 }
             }
             catch (Exception ex)
@@ -69,7 +64,23 @@ namespace TextAdventures.Quest
             return true;
         }
 
-        private void AddLibraryResources(ZipFile zip, string baseFolder, ElementType elementType)
+        private static void AddStringEntry(ZipArchive zip, string name, string content, Encoding encoding)
+        {
+            using (var writer = new StreamWriter(zip.CreateEntry(name).Open(), encoding))
+            {
+                writer.Write(content);
+            }
+        }
+
+        private static void AddStreamEntry(ZipArchive zip, string name, Stream content)
+        {
+            using (var entryStream = zip.CreateEntry(name).Open())
+            {
+                content.CopyTo(entryStream);
+            }
+        }
+
+        private void AddLibraryResources(ZipArchive zip, string baseFolder, ElementType elementType)
         {
             foreach (Element e in m_worldModel.Elements.GetElements(elementType))
             {
@@ -79,7 +90,8 @@ namespace TextAdventures.Quest
                     libFolder = TextAdventures.Utility.Utility.RemoveFileColonPrefix(libFolder);
                     if (libFolder != baseFolder)
                     {
-                        zip.AddFile(Path.Combine(libFolder, e.Fields[FieldDefinitions.Src]), "");
+                        string src = e.Fields[FieldDefinitions.Src];
+                        zip.CreateEntryFromFile(Path.Combine(libFolder, src), Path.GetFileName(src));
                     }
                 }
             }

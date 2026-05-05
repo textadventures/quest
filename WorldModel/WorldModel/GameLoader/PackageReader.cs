@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.IO;
-using Ionic.Zip;
+using System.IO.Compression;
 
 namespace TextAdventures.Quest
 {
@@ -20,8 +20,7 @@ namespace TextAdventures.Quest
             ReadResult result = new ReadResult();
             string tempDir = Path.Combine(Path.GetTempPath(), "Quest", Guid.NewGuid().ToString());
             Directory.CreateDirectory(tempDir);
-            ZipFile zip = ZipFile.Read(filename);
-            zip.ExtractAll(tempDir);
+            ZipFile.ExtractToDirectory(filename, tempDir);
 
             result.Folder = tempDir;
             result.GameFile = Path.Combine(tempDir, "game.aslx");
