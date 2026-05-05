@@ -28,7 +28,7 @@ The way to do this is to rewrite the GO command.
 
 Create a new command, and set the pattern to be a regular expression. In the text box below, paste in this string:
 
-> ^go to (?<exit>.*)$|^go (?<exit>.*)$|^(?<exit>north|east|south|west|northeast|northwest|southeast|southwest|in|out|up|down|n|e|s|w|ne|nw|se|sw|o|u|d)$
+    ^go to (?<exit>.*)$|^go (?<exit>.*)$|^(?<exit>north|east|south|west|northeast|northwest|southeast|southwest|in|out|up|down|n|e|s|w|ne|nw|se|sw|o|u|d)$
 
 Then paste in this code.
 

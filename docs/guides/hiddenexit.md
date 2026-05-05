@@ -1,5 +1,5 @@
 ---
-title: Hiddenexit
+title: Hidden exit
 parent: "Community Guides"
 grand_parent: "Other Guides"
 ---
