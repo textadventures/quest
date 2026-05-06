@@ -32,7 +32,7 @@ namespace EditorControllerTests
                     errorsRaised += e.Message;
                 };
 
-                bool result = controller.Initialise(tempFile, templateFolder);
+                bool result = controller.Initialise(tempFile, templateFolder, partialInit: true);
 
                 Assert.IsTrue(result, string.Format("Initialisation failed for template '{0}': {1}", System.IO.Path.GetFileName(template.Filename), errorsRaised));
                 Assert.AreEqual(0, errorsRaised.Length, string.Format("Error loading game with template '{0}': {1}", System.IO.Path.GetFileName(template.Filename), errorsRaised));
