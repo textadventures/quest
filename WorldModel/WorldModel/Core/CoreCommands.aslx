@@ -186,6 +186,7 @@
           else {
             msg (prefix + DynamicTemplate("MaxObjectsInInventory", object))
           }
+          return (false)
         }
       }
     }
