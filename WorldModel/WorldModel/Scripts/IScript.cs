@@ -72,6 +72,7 @@ namespace TextAdventures.Quest.Scripts
         object GetFunctionCallParameter(int index);
         void SetFunctionCallParameter(int index, object value);
         IScript GetFunctionCallParameterScript();
+        void SetFunctionCallParameterScript(IScript script);
         event EventHandler<ScriptUpdatedEventArgs> FunctionCallParametersUpdated;
     }
 
