@@ -339,7 +339,7 @@ namespace TextAdventures.Quest
         {
             if (m_elements.ContainsKey(ElementType.Function, scopeFunction))
             {
-                return (QuestList<Element>)RunProcedure(scopeFunction, true);
+                return (QuestList<Element>)RunProcedure(scopeFunction, true) ?? new QuestList<Element>();
             }
             throw new Exception(string.Format("No function '{0}'", scopeFunction));
         }
@@ -652,15 +652,14 @@ namespace TextAdventures.Quest
                         {
                              TryFinishTurn();
                         }
+                        if (State != GameState.Finished)
+                        {
+                            UpdateLists();
+                        }
                     }
                     catch (Exception ex)
                     {
                         LogException(ex);
-                    }
-
-                    if (State != GameState.Finished)
-                    {
-                        UpdateLists();
                     }
 
                     ChangeThreadState(ThreadState.Ready);
@@ -1547,13 +1546,13 @@ namespace TextAdventures.Quest
                     {
                         RunScript(timerScript.Value, timerScript.Key);
                     }
+
+                    UpdateLists();
                 }
                 catch (Exception ex)
                 {
                     LogException(ex);
                 }
-
-                UpdateLists();
 
                 ChangeThreadState(ThreadState.Ready, false);
             });
@@ -1621,11 +1620,18 @@ namespace TextAdventures.Quest
 
         private void RunCallbackAndFinishTurn(Callback callback)
         {
-            RunScript(callback.Script, callback.Context);
-            TryFinishTurn();
-            if (State != GameState.Finished)
+            try
             {
-                UpdateLists();
+                RunScript(callback.Script, callback.Context);
+                TryFinishTurn();
+                if (State != GameState.Finished)
+                {
+                    UpdateLists();
+                }
+            }
+            catch (Exception ex)
+            {
+                LogException(ex);
             }
             ChangeThreadState(ThreadState.Ready);
             SendNextTimerRequest();
