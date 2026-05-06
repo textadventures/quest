@@ -1,6 +1,8 @@
 ---
-layout: index
 title: Adding Sounds to your Game
+nav_order: 3
+parent: "Multimedia"
+grand_parent: "Features"
 ---
 
 
@@ -277,11 +279,3 @@ Sometimes, you may want to play two (or more) sounds at once.
 Here is an example game that does just that after adding some more advanced audio functions.
 
 https://textadventures.co.uk/games/view/n08rpt4hjemo48i3zabgdg/audiolib-tester
-
-
-
-### Additional Audio and Video Functions
-
-There is a user-submitted guide which provides step-by-step instructions for any online (or offline) users who would like to add a few audio and video functions to a game - desktop users may prefer to download the library, which can be downloaded from the same page.
-
-[Additional Audio and Video Functions](http://media.textadventures.co.uk/games/PHVys9dICUiMSSpr_m9WYQ/index.html)

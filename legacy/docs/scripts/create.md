@@ -1,6 +1,6 @@
 ---
-layout: index
 title: create
+parent: "Script commands"
 ---
 
     create (string name)

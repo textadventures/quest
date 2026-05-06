@@ -101,7 +101,7 @@ namespace WebEditor.Models
             int gameId = (int)bindingContext.ValueProvider.GetValue("_game_id").ConvertTo(typeof(int));
             string key = (string)bindingContext.ValueProvider.GetValue("_key").ConvertTo(typeof(string));
             string redirectToElement = (string)bindingContext.ValueProvider.GetValue("_redirectToElement").ConvertTo(typeof(string));
-            string additionalAction = (string)bindingContext.ValueProvider.GetValue("_additionalAction").ConvertTo(typeof(string));
+            string additionalAction = GetValueProviderString(bindingContext.ValueProvider, "_additionalAction");
             string additionalActionTab = (string)bindingContext.ValueProvider.GetValue("_additionalActionTab").ConvertTo(typeof(string));
             string ignoreExpression = (string)bindingContext.ValueProvider.GetValue("_ignoreExpression").ConvertTo(typeof(string));
 

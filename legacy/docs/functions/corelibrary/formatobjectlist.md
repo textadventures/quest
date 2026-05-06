@@ -1,6 +1,7 @@
 ---
-layout: index
 title: FormatObjectList
+parent: "Core.aslx Functions"
+grand_parent: "Functions"
 ---
 
     FormatObjectList (string pre-list, object parent, string pre-final, string post-list, boolean use inventory verbs)

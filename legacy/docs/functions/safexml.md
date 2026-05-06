@@ -1,6 +1,7 @@
 ---
-layout: index
 title: SafeXML
+parent: "String Functions"
+grand_parent: "Functions"
 ---
 
     SafeXML (string)

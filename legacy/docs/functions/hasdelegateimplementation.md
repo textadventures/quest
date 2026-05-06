@@ -1,6 +1,7 @@
 ---
-layout: index
 title: HasDelegateImplementation
+parent: "Functions for Attributes"
+grand_parent: "Functions"
 ---
 
     HasDelegateImplementation (object, string attribute name)

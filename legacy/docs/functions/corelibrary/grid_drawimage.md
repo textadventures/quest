@@ -1,6 +1,7 @@
 ---
-layout: index
 title: Grid_DrawImage
+parent: "Internal Core.aslx Functions"
+grand_parent: "Functions"
 ---
 
     Grid_DrawImage (string id, string url, int x, int y, int width, int height)

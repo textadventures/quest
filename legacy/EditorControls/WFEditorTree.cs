@@ -19,7 +19,6 @@ namespace TextAdventures.Quest.EditorControls
             Resize += EditorTree_Resize;
             cmdClose.Click += cmdClose_Click;
             cmdSearch.Click += cmdSearch_Click;
-            ctlTreeView.DrawNode += CtlTreeView_DrawNode;
             ctlTreeView.AfterSelect += ctlTreeView_AfterSelect;
             ctlTreeView.DoubleClick += ctlTreeView_DoubleClick;
             ctlTreeView.KeyUp += ctlTreeView_KeyUp;
@@ -40,46 +39,38 @@ namespace TextAdventures.Quest.EditorControls
 
             AddMenuClickHandler("expandall", ExpandAll);
             AddMenuClickHandler("collapseall", CollapseAll);
-            
+
+            ctlTreeView.HandleCreated += (s, e) => SetWindowTheme(ctlTreeView.Handle, "Explorer", null);
+            ctlToolStrip.RenderMode = ToolStripRenderMode.System;
+
+            txtSearch.Dock = DockStyle.None;
+            foreach (var btn in new[] { cmdSearch, cmdClose })
+            {
+                btn.BackColor = Color.Transparent;
+                btn.FlatAppearance.MouseOverBackColor = Color.FromArgb(210, 228, 244);
+                var bmp = new Bitmap(btn.Image);
+                bmp.MakeTransparent(Color.White);
+                btn.Image = bmp;
+            }
+            pnlSearchContainer.Resize += (s, e) => LayoutSearchBox();
+            pnlSearchContainer.Paint += (s, e) =>
+            {
+                using (var pen = new Pen(Color.FromArgb(180, 180, 180)))
+                    e.Graphics.DrawRectangle(pen, 0, 0, pnlSearchContainer.Width - 1, pnlSearchContainer.Height - 1);
+            };
+            LayoutSearchBox();
         }
 
-    // Color of the Treeview menu
-    private void CtlTreeView_DrawNode(object sender, DrawTreeNodeEventArgs e)
-    {
-      if (e.Node == null) return;
-
-      var selected = (e.State & TreeNodeStates.Selected) == TreeNodeStates.Selected;
-      var focused = e.Node.TreeView.Focused;
-
-      if (selected)
-      {
-        var backgroundColor = "";
-        var foregroundColor = "";
-
-        // Selected with focus
-        if (focused)
+        private void LayoutSearchBox()
         {
-          backgroundColor = "#1D1B61";
-          foregroundColor = "#FFFFFF";
+            int rightWidth = cmdSearch.Width + (cmdClose.Visible ? cmdClose.Width : 0);
+            int h = txtSearch.PreferredHeight;
+            int y = (pnlSearchContainer.Height - h) / 2;
+            txtSearch.SetBounds(4, y, pnlSearchContainer.Width - rightWidth - 4, h);
         }
-        // Selected without focus
-        else
-        {
-          backgroundColor = "#A2A2A2";
-          foregroundColor = "#FFFFFF";
-        }
-        var getBackgrColorFromHex = System.Drawing.ColorTranslator.FromHtml(backgroundColor);
-        var getForegrColorFromHex = System.Drawing.ColorTranslator.FromHtml(foregroundColor);
-        var font = e.Node.NodeFont ?? e.Node.TreeView.Font;
-        SolidBrush backgroundBrush = new SolidBrush(getBackgrColorFromHex);
-        e.Graphics.FillRectangle(backgroundBrush, e.Bounds);
-        TextRenderer.DrawText(e.Graphics, e.Node.Text, font, e.Bounds, getForegrColorFromHex, TextFormatFlags.GlyphOverhangPadding);
-      }
-      else
-      {
-          e.DrawDefault = true;
-      }
-    }
+
+        [DllImport("uxtheme.dll", CharSet = CharSet.Unicode)]
+        private static extern int SetWindowTheme(IntPtr hwnd, string pszSubAppName, string pszSubIdList);
 
     private Dictionary<string, TreeNode> m_nodes = new Dictionary<string, TreeNode>();
         private FilterOptions m_filterSettings;
@@ -117,6 +108,282 @@ namespace TextAdventures.Quest.EditorControls
         {
             SetTextboxHint();
             base.OnHandleCreated(e);
+            RebuildImageList();
+            ScaleImageList();
+            ScaleButtonImages();
+            ApplyContextMenuIcons();
+            UpdateItemHeight();
+            ScaleFilterToolStrip();
+        }
+
+        protected override void OnDpiChangedAfterParent(EventArgs e)
+        {
+            base.OnDpiChangedAfterParent(e);
+            ScaleImageList();
+            ScaleButtonImages();
+            ApplyContextMenuIcons();
+            UpdateItemHeight();
+            ScaleFilterToolStrip();
+        }
+
+        private void ScaleFilterToolStrip()
+        {
+            float scale = DeviceDpi / 96f;
+            int size = Math.Max(16, (int)(16 * scale));
+            ctlToolStrip.ImageScalingSize = new Size(size, size);
+        }
+
+        private void UpdateItemHeight()
+        {
+            int padding = (int)Math.Round(10 * DeviceDpi / 96f);
+            ctlTreeView.ItemHeight = ctlTreeView.Font.Height + padding;
+        }
+
+        private void RebuildImageList()
+        {
+            ctlImageList.Images.Clear();
+            AddToImageList("s_room", Properties.Resources.s_room);
+            AddToImageList("s_object", Properties.Resources.s_object);
+            AddToImageList("s_exit", Properties.Resources.s_exit);
+            AddToImageList("s_verb", Properties.Resources.s_verb);
+            AddToImageList("s_command", Properties.Resources.s_command);
+            AddToImageList("s_script", Properties.Resources.s_command);
+            AddToImageList("s_function", Properties.Resources.s_function);
+            AddToImageList("s_timer", Properties.Resources.s_timer);
+            AddToImageList("s_turn", Properties.Resources.s_turn);
+            AddToImageList("s_walk", Properties.Resources.s_walk);
+            AddToImageList("s_add_page", Properties.Resources.s_add_page);
+            AddToImageList("s_library", Properties.Resources.s_library);
+            AddToImageList("s_template", Properties.Resources.s_template);
+            AddToImageList("s_dynamictemplate", Properties.Resources.s_dynamictemplate);
+            AddToImageList("s_objecttype", Properties.Resources.s_objecttype);
+            AddToImageList("s_javascript", Properties.Resources.s_javascript);
+            AddToImageList("s_folder", Properties.Resources.s_folder);
+            AddToImageList("s_game", Properties.Resources.s_game);
+        }
+
+        private void AddToImageList(string key, Image image)
+        {
+            if (image != null)
+                ctlImageList.Images.Add(key, image);
+        }
+
+        private void ScaleImageList()
+        {
+            float scale = DeviceDpi / 96f;
+            int newSize = Math.Max(16, (int)(16 * scale));
+
+            if (ctlTreeView.ImageList != null && ctlTreeView.ImageList != ctlImageList && ctlTreeView.ImageList.ImageSize.Width == newSize)
+                return;
+
+            var sourceList = ctlImageList;
+            var newList = new ImageList();
+            newList.ColorDepth = ColorDepth.Depth32Bit;
+            newList.ImageSize = new Size(newSize, newSize);
+            newList.TransparentColor = sourceList.TransparentColor;
+
+            for (int i = 0; i < sourceList.Images.Count; i++)
+            {
+                string key = sourceList.Images.Keys[i];
+                Bitmap bmp = null;
+                string xamlName;
+                if (_treeXamlNames.TryGetValue(key, out xamlName))
+                    bmp = RenderXaml(xamlName, newSize);
+                if (bmp == null)
+                    bmp = newSize == 16
+                        ? new Bitmap(sourceList.Images[i])
+                        : ScaleImageHighQuality(sourceList.Images[i], newSize);
+                newList.Images.Add(bmp);
+                newList.Images.SetKeyName(i, key);
+            }
+
+            var old = ctlTreeView.ImageList;
+            ctlTreeView.ImageList = newList;
+            if (old != null && old != ctlImageList)
+                old.Dispose();
+        }
+
+        private Bitmap _originalSearchImage;
+        private Bitmap _originalCloseImage;
+
+        private void ScaleButtonImages()
+        {
+            if (_originalSearchImage == null) _originalSearchImage = (Bitmap)cmdSearch.Image;
+            if (_originalCloseImage == null) _originalCloseImage = (Bitmap)cmdClose.Image;
+
+            float scale = DeviceDpi / 96f;
+            ScaleButtonImage(cmdSearch, _originalSearchImage, scale);
+            ScaleButtonImage(cmdClose, _originalCloseImage, scale);
+
+            if (scale > 1f)
+                ctlToolStrip.Renderer = new DpiScaledToolStripRenderer(scale);
+        }
+
+        private class DpiScaledToolStripRenderer : ToolStripProfessionalRenderer
+        {
+            private readonly float _scale;
+
+            public DpiScaledToolStripRenderer(float scale)
+            {
+                _scale = scale;
+            }
+
+            protected override void OnRenderArrow(ToolStripArrowRenderEventArgs e)
+            {
+                var r = e.ArrowRectangle;
+                var middle = new System.Drawing.Point(r.Left + r.Width / 2 + (r.Width % 2), r.Top + r.Height / 2);
+                int half = Math.Max(2, (int)(2 * _scale));
+
+                System.Drawing.Point[] arrow;
+                switch (e.Direction)
+                {
+                    case ArrowDirection.Up:
+                        arrow = new System.Drawing.Point[]
+                        {
+                            new System.Drawing.Point(middle.X - half, middle.Y + half / 2 + 1),
+                            new System.Drawing.Point(middle.X + half + 1, middle.Y + half / 2 + 1),
+                            new System.Drawing.Point(middle.X, middle.Y - half / 2)
+                        };
+                        break;
+                    case ArrowDirection.Left:
+                        arrow = new System.Drawing.Point[]
+                        {
+                            new System.Drawing.Point(middle.X + half / 2 + 1, middle.Y - half),
+                            new System.Drawing.Point(middle.X + half / 2 + 1, middle.Y + half + 1),
+                            new System.Drawing.Point(middle.X - half / 2, middle.Y)
+                        };
+                        break;
+                    case ArrowDirection.Right:
+                        arrow = new System.Drawing.Point[]
+                        {
+                            new System.Drawing.Point(middle.X - half / 2, middle.Y - half),
+                            new System.Drawing.Point(middle.X - half / 2, middle.Y + half + 1),
+                            new System.Drawing.Point(middle.X + half / 2 + 1, middle.Y)
+                        };
+                        break;
+                    default: // Down
+                        arrow = new System.Drawing.Point[]
+                        {
+                            new System.Drawing.Point(middle.X - half, middle.Y - half / 2),
+                            new System.Drawing.Point(middle.X + half + 1, middle.Y - half / 2),
+                            new System.Drawing.Point(middle.X, middle.Y + half / 2 + 1)
+                        };
+                        break;
+                }
+
+                using (var brush = new System.Drawing.SolidBrush(e.ArrowColor))
+                    e.Graphics.FillPolygon(brush, arrow);
+            }
+        }
+
+        private static void ScaleButtonImage(Button button, Bitmap original, float scale)
+        {
+            int newW = (int)(original.Width * scale);
+            int newH = (int)(original.Height * scale);
+            if (button.Image is Bitmap current && current != original && current.Width == newW) return;
+            var old = button.Image;
+            button.Image = new Bitmap(original, newW, newH);
+            if (old != null && old != original) old.Dispose();
+        }
+
+        private static readonly Dictionary<string, string> _treeXamlNames = new Dictionary<string, string>
+        {
+            { "s_room",            "FolderClosed" },
+            { "s_object",         "Item" },
+            { "s_exit",           "Exit" },
+            { "s_verb",           "Comment" },
+            { "s_command",        "Keyboard" },
+            { "s_script",         "Script" },
+            { "s_function",       "Method" },
+            { "s_timer",          "Timer" },
+            { "s_turn",           "TriggerScript" },
+            { "s_walk",           "TaskRunner" },
+            { "s_add_page",       "AddDocument" },
+            { "s_library",        "Library" },
+            { "s_template",       "Template" },
+            { "s_dynamictemplate","DynamicTemplate" },
+            { "s_objecttype",     "TypeDefinition" },
+            { "s_javascript",     "JSScript" },
+            { "s_folder",         "FolderClosed" },
+            { "s_game",           "Home" },
+        };
+
+        private static readonly Dictionary<string, string> _contextMenuXamlNames = new Dictionary<string, string>
+        {
+            { "cutToolStripMenuItem",            "Cut" },
+            { "copyToolStripMenuItem",           "Copy" },
+            { "pasteToolStripMenuItem",          "Paste" },
+            { "deleteToolStripMenuItem",         "Delete" },
+            { "AddVerbToolStripMenuItem",        "Comment" },
+            { "AddCommandToolStripMenuItem",     "Keyboard" },
+            { "addPageToolStripMenuItem",        "AddDocument" },
+            { "AddRoomToolStripMenuItem",        "AddFolder" },
+            { "AddObjectToolStripMenuItem",      "AddItem" },
+            { "AddExitToolStripMenuItem",        "Exit" },
+            { "AddFunctionToolStripMenuItem",    "Method" },
+            { "addTimerToolStripMenuItem",       "Timer" },
+            { "AddWalkthroughToolStripMenuItem", "TaskRunner" },
+        };
+
+        private void ApplyContextMenuIcons()
+        {
+            float scale = DeviceDpi / 96f;
+            int size = Math.Max(16, (int)(16 * scale));
+            foreach (ToolStripItem item in ctlContextMenu.Items)
+            {
+                string xamlName;
+                if (_contextMenuXamlNames.TryGetValue(item.Name, out xamlName))
+                {
+                    var bmp = RenderXaml(xamlName, size);
+                    if (bmp != null)
+                    {
+                        var old = item.Image;
+                        item.Image = bmp;
+                        if (old != null) old.Dispose();
+                    }
+                }
+            }
+        }
+
+        private static Bitmap RenderXaml(string name, int size)
+        {
+            var asm = System.Reflection.Assembly.GetExecutingAssembly();
+            var resourceName = asm.GetManifestResourceNames()
+                .FirstOrDefault(n => n.EndsWith("." + name + ".xaml", StringComparison.OrdinalIgnoreCase));
+            if (resourceName == null) return null;
+            using (var stream = asm.GetManifestResourceStream(resourceName))
+            {
+                var visual = System.Windows.Markup.XamlReader.Load(stream) as System.Windows.FrameworkElement;
+                if (visual == null) return null;
+                visual.Width = size;
+                visual.Height = size;
+                visual.Measure(new System.Windows.Size(size, size));
+                visual.Arrange(new System.Windows.Rect(0, 0, size, size));
+                var rtb = new System.Windows.Media.Imaging.RenderTargetBitmap(size, size, 96, 96, System.Windows.Media.PixelFormats.Pbgra32);
+                rtb.Render(visual);
+                var encoder = new System.Windows.Media.Imaging.PngBitmapEncoder();
+                encoder.Frames.Add(System.Windows.Media.Imaging.BitmapFrame.Create(rtb));
+                using (var ms = new System.IO.MemoryStream())
+                {
+                    encoder.Save(ms);
+                    ms.Position = 0;
+                    using (var raw = new Bitmap(ms))
+                        return new Bitmap(raw);
+                }
+            }
+        }
+
+        private static Bitmap ScaleImageHighQuality(Image source, int size)
+        {
+            var result = new Bitmap(size, size, System.Drawing.Imaging.PixelFormat.Format32bppArgb);
+            using (var g = Graphics.FromImage(result))
+            {
+                g.InterpolationMode = System.Drawing.Drawing2D.InterpolationMode.HighQualityBicubic;
+                g.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.HighQuality;
+                g.PixelOffsetMode = System.Drawing.Drawing2D.PixelOffsetMode.HighQuality;
+                g.DrawImage(source, 0, 0, size, size);
+            }
+            return result;
         }
 
         private void SetTextboxHint()
@@ -125,7 +392,7 @@ namespace TextAdventures.Quest.EditorControls
             SendMessage(new HandleRef(this, txtSearch.Handle), EM_SETCUEBANNER, IntPtr.Zero, hintText);
         }
 
-        public void AddNode(string key, string text, string parentKey, System.Drawing.Color? foreColor, System.Drawing.Color? backColor, int? position = null)
+        public void AddNode(string key, string text, string parentKey, System.Drawing.Color? foreColor, System.Drawing.Color? backColor, int? position = null, string imageKey = null)
         {
             if (m_nodes.ContainsKey(key)) return;
             TreeNode newNode = default(TreeNode);
@@ -152,6 +419,13 @@ namespace TextAdventures.Quest.EditorControls
             if (foreColor.HasValue)
             {
                 newNode.ForeColor = foreColor.Value;
+            }
+
+            if (!string.IsNullOrEmpty(imageKey))
+            {
+                newNode.Tag = imageKey;
+                newNode.ImageKey = imageKey;
+                newNode.SelectedImageKey = imageKey;
             }
 
             m_nodes.Add(key, newNode);
@@ -303,6 +577,8 @@ namespace TextAdventures.Quest.EditorControls
 
         private void ctlTreeView_AfterSelect(System.Object sender, System.Windows.Forms.TreeViewEventArgs e)
         {
+            if (e.Node != null && e.Node.Tag is string imgKey)
+                e.Node.SelectedImageKey = imgKey;
             if (m_updatingSelection)
                 return;
             SelectCurrentTreeViewItem();
@@ -310,9 +586,9 @@ namespace TextAdventures.Quest.EditorControls
 
         private void ctlTreeView_MouseUp(object sender, System.Windows.Forms.MouseEventArgs e)
         {
-            // When right-clicking, select the item first before displaying the context menu
             if (e.Button == System.Windows.Forms.MouseButtons.Right)
             {
+                // When right-clicking, select the item first before displaying the context menu
                 ctlTreeView.SelectedNode = ctlTreeView.GetNodeAt(e.X, e.Y);
                 if (ctlTreeView.SelectedNode != null && ctlTreeView.ContextMenuStrip != null)
                 {
@@ -769,7 +1045,7 @@ namespace TextAdventures.Quest.EditorControls
 
         private void ctlContextMenu_Opening(object sender, CancelEventArgs e)
         {
-
+            ApplyContextMenuIcons();
         }
 
         private void txtSearch_TextChanged(object sender, EventArgs e)

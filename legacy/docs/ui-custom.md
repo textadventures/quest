@@ -1,6 +1,7 @@
 ---
-layout: index
 title: Modifying the Status and Game Panes
+nav_order: 5
+parent: "User Experience"
 ---
 
 In this article we will modify the status bar and game panes of the Quest interface, to show how easy it is to get a ook that is unique to your game. We will go for an old-fashioned look, in brown. This is what we are aiming for:

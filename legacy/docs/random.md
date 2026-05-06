@@ -1,10 +1,11 @@
 ---
-layout: index
 title: Randomisation
+nav_order: 20
+parent: "How To"
 ---
 
 
-There are a number of reasons why you may want to add a degree of randomness to your game. You might want to add some variation to a description, perhaps to make the world feel more a live and dynamic. This is especially true of a description the player will see numerous times, such as the description of a hub room or of an NPC who follows the player.
+There are a number of reasons why you may want to add a degree of randomness to your game. You might want to add some variation to a description, perhaps to make the world feel more alive and dynamic. This is especially true of a description the player will see numerous times, such as the description of a hub room or of an NPC who follows the player.
 
 Randomness is very useful in RPG-type games when you want to determine the outcome of an event such as an attack.
 
@@ -21,7 +22,7 @@ Not really a function, but the easiest to use. As with all [text processor](text
 
 Here is a simple example. When the text is printed, Quest will randomly select one of "blue", "red" or "yellow".
 
-> It was a {random:blue:red:yellow} flower.
+    It was a {random:blue:red:yellow} flower.
 
 It is worth emphasising that the colour is picked randomly every time the text is printed. If the player looks again, she may well find the flowers have changed colour. We will look at a solution to that in the examples.
 
@@ -186,11 +187,12 @@ switch (GetRandomInt(1,7)) {
     msg("Event one happens")
   }
 }
+```
 
 
 ### Permanent values for descriptions
 
-The text processor offers a very simple randomisation technique, but the fact that it gets randomised when printing means you can get a different result each time, and sometimes that is not what you want. Fr example, if you are creating clones, and want to randomise the descriptions, you want the description of a specific clone to always be the same.
+The text processor offers a very simple randomisation technique, but the fact that it gets randomised when printing means you can get a different result each time, and sometimes that is not what you want. For example, if you are creating clones, and want to randomise the descriptions, you want the description of a specific clone to always be the same.
 
 The trick is to process the text when the clone is created rather than when the player looks at it. Here is a very simple example:
 

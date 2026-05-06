@@ -1,6 +1,7 @@
 ---
-layout: index
 title: Using "doubles"
+nav_order: 16
+parent: "Coding With Quest"
 ---
 
 Doubles are an alternative number system to integers; what is the difference?

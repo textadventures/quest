@@ -1,6 +1,7 @@
 ---
-layout: index
 title: Grid_LoadSvg
+parent: "Internal Core.aslx Functions"
+grand_parent: "Functions"
 ---
 
     Grid_LoadSvg (string data, string id)

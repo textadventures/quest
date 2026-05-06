@@ -1,6 +1,7 @@
 ---
-layout: index
 title: open
+parent: "Attribute Reference"
+grand_parent: "Attributes"
 ---
 
 "open" is a [boolean](../types/boolean.html) attribute specifying whether the object can be opened.

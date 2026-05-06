@@ -1,6 +1,8 @@
 ---
-layout: index
 title: updateStatus
+parent: "JS functions"
+grand_parent: "Reference"
+nav_order: 15
 ---
 
     JS.updateStatus(string text)

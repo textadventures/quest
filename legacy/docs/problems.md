@@ -1,22 +1,13 @@
 ---
-layout: index
 title: Resolving Common Problems
+nav_order: 25
+parent: "How To"
 ---
-
-
-Note: _This is a work in progress. It does not cover all errors, but is slowly getting closer to that state..._
-
 
 Problems when installing Quest
 ----------------------------
 
-Quest can only be installed on Windows. Note that more recent versions of Quest will not run on Windows XP (since Quest 5.6 I think, and since 5.7 it should even warn you if you try to install on Windows XP).
-
-If Quest fails to install properly, uninstall it (if applicable), restart your PC, then re-install.
-
-Try installing `vcredist_x86.exe` from [here](https://www.microsoft.com/en-gb/download/details.aspx?id=30679).
-
-Check you have .NET 3.0, 3.5 and 4.0 installed properly.
+Quest can only be installed on Windows. The latest version requires Windows 11. Versions 5.8 and earlier may run on earlier versions of Windows.
 
 
 Problems when starting Quest
@@ -44,7 +35,7 @@ Follow these steps (thanks Jay!):
 
 We need to delete two keys, "Recent" and "EditorRecent" (in fact you only need to delete one; the former if the play browser is a problem, the latter if the edit browser is the problem, but if you are not sure it is safest to delete both). Right-click on the word "Recent" and then choose "Delete" from the popup menu. Choose yes to confirm. Do the same for "EditorRecent". Close the Regedit program (no need to save).
 
-Note that when you open Quest, the "recent" lists will be empty until you begin using Quest again, but that is preferable to not being to open Quest at all!
+Note that when you open Quest, the "recent" lists will be empty until you begin using Quest again, but that is preferable to not being able to open Quest at all!
 
 If you have never got the current version of Quest to run, then see also the section on problems with installing Quest, as it could be that Quest did not install properly.
 
@@ -95,14 +86,14 @@ There are all sorts of problems that can arise as you code with Quest. Computer 
 
 - Variables, attributes and objects are named consistently (if it is `hitpoints` in one place and `hit points` in another and `Hit points` in a third, it is not going to work)
 - Brackets and braces need to match; if you have three open brackets and only two close brackets it is not going to work
-- Quotes likewise need to quote marks at the start and end
-- If a function's return type in "None" there should be no `return`; if it is not "None" then there must be
+- Quotes likewise need quote marks at the start and end
+- If a function's return type is "None" there should be no `return`; if it is not "None" then there must be
 - Functions must have exactly the right number of parameters in the right order
 
 
 ### Room description appears twice
 
-This can happen if you move the player in script on the room. Say you want to turn a player back from an exit. You might think it is a good to set up the script that runs on the destination room so it moves the player back to the original room. What happens is that the player is moved twice, and so Quest thinks it has to show the room description twice - and to add to the confusion, it does it for the current room, which will be where the player ends up.
+This can happen if you move the player in script on the room. Say you want to turn a player back from an exit. You might think it is a good idea to set up the script that runs on the destination room so it moves the player back to the original room. What happens is that the player is moved twice, and so Quest thinks it has to show the room description twice - and to add to the confusion, it does it for the current room, which will be where the player ends up.
 
 The solution is to avoid moving the player on any of the built-in room scripts. In the example above, the script should be on the exit that goes to the destination, without moving the player at all.
 
@@ -111,7 +102,7 @@ The solution is to avoid moving the player on any of the built-in room scripts. 
 
 Occasionally you may see this error:
 
-> Error running script: Error evaluating expression '(not GetBoolean(game.pov.parent, "visited")) and HasScript(game.pov.parent, "beforefirstenter")': GetBoolean function expected object parameter but was passed 'null'
+    Error running script: Error evaluating expression '(not GetBoolean(game.pov.parent, "visited")) and HasScript(game.pov.parent, "beforefirstenter")': GetBoolean function expected object parameter but was passed 'null'
 
 This happens when the player's "parent" attribute is set to null, and can happen if you try to move the player to a variable that has not been set (and Quest will think an object name you have mis-spelled to be a variable).
 
@@ -213,7 +204,7 @@ If the function name is wrong, you will get something like this:
 Error running script: Error compiling expression 'msg2("some text")': FunctionCallElement: Could find not function 'msg2(String)'
 ```
 
-If you have the wrong number of arguments, you might one of these (first is for hard-coded functions):
+If you have the wrong number of arguments, you might see one of these (first is for hard-coded functions):
 
 ```
 Error running script: Expected 1 parameter(s) in script 'msg("some text", "more text")'
@@ -251,9 +242,9 @@ list remove (hat.displayverbs, "Flatten")
 
 The problem is that the two list attributes, "inventoryverbs" and "displayverbs" are set on the object's type, not on the object itself (if you are using the desktop version, go to the _Attributes_ tab, and check its source). You cannot modify the list when it belongs to the type.
 
-There are two solutions. The easiest is to add something to the the list in the editor (bottom of the __ tab). That will add the list attribute to this object. You can then delete the entry; once the attribute is on your object, it is there.
+There are two solutions. The easiest is to add something to the the list in the editor (bottom of the Attributes tab). That will add the list attribute to this object. You can then delete the entry; once the attribute is on your object, it is there.
 
-Alternatively, you can gve the object a new list. The `Split`function offers an easy way to do that:
+Alternatively, you can give the object a new list. The `Split` function offers an easy way to do that:
 
 ```
 sword.inventoryverbs = Split("Look at;Take;Equip", ";")
@@ -268,4 +259,4 @@ If the attribute is missing or not a script, this rather misleading error messag
 Error running script: Object reference not set to an instance of an object.
 ```
 
-Note that there maybe other issues that will also cause this error.
+Note that there may be other issues that will also cause this error.

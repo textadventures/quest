@@ -1,6 +1,7 @@
 ---
-layout: index
 title: TypeOf
+parent: "Functions for Variables"
+grand_parent: "Functions"
 ---
 
     TypeOf (object, string attribute name)

@@ -1,6 +1,7 @@
 ---
-layout: index
 title: GetDisplayVerbs
+parent: "Core.aslx Functions"
+grand_parent: "Functions"
 ---
 
     GetDisplayVerbs (object)

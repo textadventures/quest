@@ -1,6 +1,8 @@
 ---
-layout: index
 title: Adding Music to a Radio
+parent: "Helpsheets for beginners"
+grand_parent: "Other Guides"
+nav_order: 15
 ---
 
 

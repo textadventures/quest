@@ -1,6 +1,7 @@
 ---
-layout: index
 title: ScopeReachableNotHeld
+parent: "Scope Functions"
+grand_parent: "Functions"
 ---
 
     ScopeReachableNotHeld ()

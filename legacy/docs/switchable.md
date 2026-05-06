@@ -1,6 +1,7 @@
 ---
-layout: index
 title: Items that can be switched on and off
+nav_order: 4
+parent: "Features"
 ---
 
 In a world of electronic goods, items that can be turned on and off are very common. How would you implement that in Quest?
@@ -19,7 +20,7 @@ Descriptions
 
 Let us say the machine has a description that is text, and says "A funny looking machine." With the values set above, when the machine is looked at, the player will see "A funny looking machine." when it is turned off, and "A funny looking machine. It is chugging away to itself." when it is turned on.
 
-Yon can sometimes get better prose using the text processor, as you are not limited to tacking a sentence on the end. Make the two "Extra object description..." fields blank, and have the description (_Setup_ tab) like this:
+You can sometimes get better prose using the text processor, as you are not limited to tacking a sentence on the end. Make the two "Extra object description..." fields blank, and have the description (_Setup_ tab) like this:
 
 ```
 A funny looking machine{if machine.switchedon: chugging away}.
@@ -50,9 +51,9 @@ else {
 It won't turn on!
 ---------
 
-Switchables can be given a special attribute, "cannotswitchon", that will indicate it cannot be turned on - for example, there is no power or it needs a part or needs repairing. You can set this in the third text field on the _Switcheable_ tab. In your game, you will need to set this to null at some point - when the device has power, perhaps.
+Switchables can be given a special attribute, "cannotswitchon", that will indicate it cannot be turned on - for example, there is no power or it needs a part or needs repairing. You can set this in the third text field on the _Switchable_ tab. In your game, you will need to set this to null at some point - when the device has power, perhaps.
 
-In this simple example, the player just has to use a new POWER command to get power to the machine:
+In this simple example, the player just has to use a new `POWER` command to get power to the machine:
 
 ![Power comnmand](images/switchpower.png)
 

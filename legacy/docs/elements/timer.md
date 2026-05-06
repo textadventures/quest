@@ -1,6 +1,8 @@
 ---
-layout: index
 title: timer element
+parent: "XML Elements"
+grand_parent: "Reference"
+nav_order: 15
 ---
 
     <timer name="name">attributes</timer>

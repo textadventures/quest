@@ -1,6 +1,7 @@
 ---
-layout: index
 title: showhealth
+parent: "Attribute Reference"
+grand_parent: "Attributes"
 ---
 
 "showhealth" is a [boolean](../types/boolean.html) attribute. If set to true, a health status variable will be created for each player (POV) object.

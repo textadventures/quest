@@ -1,6 +1,7 @@
 ---
-layout: index
 title: InstrRev
+parent: "String Functions"
+grand_parent: "Functions"
 ---
 
     InstrRev (string input, string search)

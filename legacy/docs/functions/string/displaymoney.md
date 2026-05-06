@@ -1,6 +1,7 @@
 ---
-layout: index
 title: DisplayMoney
+parent: "String Functions"
+grand_parent: "Functions"
 ---
 
     DisplayMoney (int money)

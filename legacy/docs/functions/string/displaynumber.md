@@ -1,6 +1,7 @@
 ---
-layout: index
 title: DisplayNumber
+parent: "String Functions"
+grand_parent: "Functions"
 ---
 
     DisplayNumber (int input, string format)

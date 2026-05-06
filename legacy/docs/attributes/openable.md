@@ -1,6 +1,7 @@
 ---
-layout: index
 title: openable
+parent: "Attribute Reference"
+grand_parent: "Attributes"
 ---
 
 The "openable" type is defined in CoreTypes.aslx.

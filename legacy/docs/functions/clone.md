@@ -1,6 +1,7 @@
 ---
-layout: index
 title: Clone
+parent: "Functions for Objects and Exits"
+grand_parent: "Functions"
 ---
 
     Clone (object object to clone)

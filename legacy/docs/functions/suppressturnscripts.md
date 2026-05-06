@@ -1,6 +1,7 @@
 ---
-layout: index
 title: SuppressTurnscripts
+parent: "Timers and Turnscripts"
+grand_parent: "Functions"
 ---
 
     SuppressTurnscripts ()

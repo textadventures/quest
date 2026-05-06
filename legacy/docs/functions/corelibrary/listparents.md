@@ -1,6 +1,7 @@
 ---
-layout: index
 title: ListParents
+parent: "Core.aslx Functions"
+grand_parent: "Functions"
 ---
 
     ListParents (object)

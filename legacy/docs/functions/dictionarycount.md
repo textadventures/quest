@@ -1,6 +1,7 @@
 ---
-layout: index
 title: DictionaryCount
+parent: "Dictionary Functions"
+grand_parent: "Functions"
 ---
 
     DictionaryCount (dictionary)

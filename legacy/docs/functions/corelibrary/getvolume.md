@@ -1,6 +1,7 @@
 ---
-layout: index
 title: GetVolume
+parent: "Core.aslx Functions"
+grand_parent: "Functions"
 ---
 
     GetVolume (object, boolean inclusiveobject)

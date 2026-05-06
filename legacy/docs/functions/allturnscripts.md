@@ -1,6 +1,7 @@
 ---
-layout: index
 title: AllTurnScripts
+parent: "Scope Functions"
+grand_parent: "Functions"
 ---
 
     AllTurnScripts()

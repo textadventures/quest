@@ -1,6 +1,7 @@
 ---
-layout: index
 title: Using lockable exits
+nav_order: 9
+parent: "Features"
 ---
 
 Creating the exit
@@ -23,8 +24,6 @@ Unlocking the exit with a script
 
 Go to the door object, and on the Verbs tab add a verb "unlock". Set it to "Run a script", and then add a command to print a message (such as "You unlock you door"). Add an "unlock exit" command, and choose "garden exit" from the list.
 
-![](images/Unlockexit.png "Unlockexit.png")
-
 Run the game and verify that the exit now works correctly:
 
      > south
@@ -36,3 +35,5 @@ Run the game and verify that the exit now works correctly:
      > south
      You are in a garden.
      You can go north.
+
+For a guide on setting up a door that is accessible from both sides — using lockable exits as described above — see [Setting Up a Door](setting_up_door.html).

@@ -1,6 +1,7 @@
 ---
-layout: index
 title: ObjectLink
+parent: "Internal Core.aslx Functions"
+grand_parent: "Functions"
 ---
 
     ObjectLink (object)

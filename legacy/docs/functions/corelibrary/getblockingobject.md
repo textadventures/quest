@@ -1,6 +1,7 @@
 ---
-layout: index
 title: GetBlockingObject
+parent: "Core.aslx Functions"
+grand_parent: "Functions"
 ---
 
     GetBlockingObject (object)

@@ -1,6 +1,7 @@
 ---
-layout: index
 title: GetUniqueElementName
+parent: "Internal Core.aslx Functions"
+grand_parent: "Functions"
 ---
 
     GetUniqueElementName (string element name)

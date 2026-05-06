@@ -61,6 +61,7 @@ Public Class Main
         ctlMenu.AddMenuClickHandler("createnew", AddressOf CreateNewMenuClick)
         ctlMenu.AddMenuClickHandler("viewhelp", AddressOf Help)
         ctlMenu.AddMenuClickHandler("discussions", AddressOf Discussions)
+        ctlMenu.AddMenuClickHandler("discord", AddressOf Discord)
         ctlMenu.AddMenuClickHandler("logbug", AddressOf LogBug)
         ctlMenu.AddMenuClickHandler("fullscreen", AddressOf GoFullScreen)
         ctlMenu.AddMenuClickHandler("options", AddressOf ShowOptions)
@@ -391,6 +392,10 @@ Public Class Main
 
     Private Sub Discussions()
         LaunchURL("https://github.com/textadventures/quest/discussions")
+    End Sub
+
+    Private Sub Discord()
+        LaunchURL("https://textadventures.co.uk/community/discord")
     End Sub
 
     Private Sub Help()

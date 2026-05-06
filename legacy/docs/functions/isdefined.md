@@ -1,6 +1,7 @@
 ---
-layout: index
 title: IsDefined
+parent: "Functions for Variables"
+grand_parent: "Functions"
 ---
 
     IsDefined (string variable name)

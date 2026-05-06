@@ -1,6 +1,7 @@
 ---
-layout: index
 title: GetFileURL
+parent: "General Functions"
+grand_parent: "Functions"
 ---
 
     GetFileURL(string filename)

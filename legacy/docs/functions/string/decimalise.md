@@ -1,6 +1,7 @@
 ---
-layout: index
 title: Decimalise
+parent: "String Functions"
+grand_parent: "Functions"
 ---
 
     Decimalise (int input, int places)

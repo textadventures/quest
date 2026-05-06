@@ -1,6 +1,7 @@
 ---
-layout: index
 title: Asking a simple question
+nav_order: 8
+parent: "How To"
 ---
 
 

@@ -1,6 +1,7 @@
 ---
-layout: index
 title: Using Javascript
+nav_order: 10
+parent: "Coding With Quest"
 ---
 
 <div class="alert alert-info">

@@ -1,6 +1,8 @@
 ---
-layout: index
 title: exit element
+parent: "XML Elements"
+grand_parent: "Reference"
+nav_order: 13
 ---
 
     <exit alias="direction or displayed exit name" name="name" to="to room">attributes</exit>

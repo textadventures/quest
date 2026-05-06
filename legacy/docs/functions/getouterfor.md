@@ -1,6 +1,7 @@
 ---
-layout: index
 title: GetOuterFor
+parent: "Clothing Functions"
+grand_parent: "Functions"
 ---
 
     GetOuterFor (object character, string slot)

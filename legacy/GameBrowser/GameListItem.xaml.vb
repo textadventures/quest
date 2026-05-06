@@ -179,7 +179,6 @@ Public Class GameListItem
             bitmap.BeginInit()
             bitmap.StreamSource = New System.IO.MemoryStream(e.Result)
             bitmap.EndInit()
-            imageBorder.Visibility = Windows.Visibility.Visible
             image.Source = bitmap
         End If
     End Sub
@@ -331,6 +330,7 @@ Public Class GameListItem
         End Get
         Set(value As Boolean)
             m_isOnlineItem = value
+            If value Then imageBorder.Visibility = Windows.Visibility.Visible
         End Set
     End Property
 

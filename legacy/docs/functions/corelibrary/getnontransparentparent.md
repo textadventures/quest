@@ -1,6 +1,7 @@
 ---
-layout: index
 title: GetNonTransparentParent
+parent: "Core.aslx Functions"
+grand_parent: "Functions"
 ---
 
     GetNonTransparentParent (object)

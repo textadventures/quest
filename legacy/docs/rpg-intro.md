@@ -1,6 +1,7 @@
 ---
-layout: index
-title:  Introduction to RPGs
+title: Introduction to RPGs
+nav_order: 12
+has_children: true
 ---
 
 

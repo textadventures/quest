@@ -1,6 +1,7 @@
 ---
-layout: index
 title: ListCombine
+parent: "List Functions"
+grand_parent: "Functions"
 ---
 
     ListCombine (list, list)

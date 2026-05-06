@@ -1,6 +1,7 @@
 ---
-layout: index
 title: OutputTextRaw
+parent: "User Interface Functions"
+grand_parent: "Functions"
 ---
 
     OutputTextRaw (string text)

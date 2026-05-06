@@ -1,6 +1,7 @@
 ---
-layout: index
 title: Mid
+parent: "String Functions"
+grand_parent: "Functions"
 ---
 
     Mid (string input, int start position)

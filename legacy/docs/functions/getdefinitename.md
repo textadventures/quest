@@ -1,6 +1,7 @@
 ---
-layout: index
 title: GetDefiniteName
+parent: "Core.aslx Functions"
+grand_parent: "Functions"
 ---
 
     GetDefiniteName (object)

@@ -1,6 +1,7 @@
 ---
-layout: index
 title: MakeObjectInvisible
+parent: "Functions for Objects and Exits"
+grand_parent: "Functions"
 ---
 
     MakeObjectInvisible (object)

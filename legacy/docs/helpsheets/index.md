@@ -1,6 +1,8 @@
 ---
-layout: index
 title: Helpsheets for beginners
+parent: "Other Guides"
+nav_order: 5
+has_children: true
 ---
 
 

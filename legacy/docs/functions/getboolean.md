@@ -1,6 +1,7 @@
 ---
-layout: index
 title: GetBoolean
+parent: "Functions for Attributes"
+grand_parent: "Functions"
 ---
 
     GetBoolean (object, string attribute name)

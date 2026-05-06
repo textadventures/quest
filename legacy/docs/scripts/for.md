@@ -1,6 +1,6 @@
 ---
-layout: index
 title: for
+parent: "Script commands"
 ---
 
     for (iterator variable, int from, int to) { script }

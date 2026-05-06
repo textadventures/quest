@@ -1,6 +1,6 @@
 ---
-layout: index
 title: create turnscript
+parent: "Script commands"
 ---
 
     create turnscript (string name)

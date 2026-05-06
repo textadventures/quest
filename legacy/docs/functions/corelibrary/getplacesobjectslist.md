@@ -1,10 +1,11 @@
 ---
-layout: index
 title: GetPlacesObjectsList
+parent: "Internal Core.aslx Functions"
+grand_parent: "Functions"
 ---
 
 <b>Internal function to Core.aslx</b> - games should not normally need to call internal functions.
 
 GetPlacesObjectsList()
 
-Required by Quest so it can display the "Places and Objects" list. Returns [ScopeVisibleNotHeldNotScenery](scopevisiblenotheldnotscenery.html) with the [player](../..//player.html) object excluded.
+Required by Quest so it can display the "Places and Objects" list. Returns [ScopeVisibleNotHeldNotScenery](scopevisiblenotheldnotscenery.html) with the player object excluded.

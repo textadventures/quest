@@ -1,6 +1,7 @@
 ---
-layout: index
 title: switchable
+parent: "Attribute Reference"
+grand_parent: "Attributes"
 ---
 
 The "switchable" type is defined in CoreTypes.aslx.

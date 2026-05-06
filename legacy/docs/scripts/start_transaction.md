@@ -1,6 +1,6 @@
 ---
-layout: index
 title: start transaction
+parent: "Script commands"
 ---
 
     start transaction (string command)

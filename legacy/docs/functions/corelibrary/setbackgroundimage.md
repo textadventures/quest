@@ -1,6 +1,7 @@
 ---
-layout: index
 title: SetBackgroundImage
+parent: "User Interface Functions"
+grand_parent: "Functions"
 ---
 
     SetBackgroundImage (filename)

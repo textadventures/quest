@@ -1,6 +1,7 @@
 ---
-layout: index
 title: Using and creating libraries
+nav_order: 5
+parent: "Advanced Topics"
 ---
 
 <div class="alert alert-info">
@@ -19,8 +20,6 @@ Where to find libraries
 -----------------------
 
 You can find libraries:
-
-- [User submitted libraries](libraries.html)
 
 - [Pixie Libraries](https://github.com/ThePix/quest/wiki#libraries)
 

@@ -1,6 +1,6 @@
 ---
-layout: index
 title: dictionary remove
+parent: "Script commands"
 ---
 
     dictionary remove (dictionary, string key)

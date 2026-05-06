@@ -1,6 +1,7 @@
 ---
-layout: index
 title: PickOneUnlockedExit
+parent: "Randomising Functions"
+grand_parent: "Functions"
 ---
 
     PickOneUnlockedExit (object room)

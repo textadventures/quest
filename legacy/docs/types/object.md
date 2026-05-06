@@ -1,6 +1,8 @@
 ---
-layout: index
 title: Object
+parent: "Attribute Types"
+grand_parent: "Attributes"
+nav_order: 7
 ---
 
 An object attribute points to another object by name.

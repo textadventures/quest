@@ -1,6 +1,7 @@
 ---
-layout: index
 title: DisplayMailtoLink
+parent: "User Interface Functions"
+grand_parent: "Functions"
 ---
 
     DisplayMailtoLink(string displaylink, string email)

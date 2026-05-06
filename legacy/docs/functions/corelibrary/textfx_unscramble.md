@@ -1,6 +1,7 @@
 ---
-layout: index
 title: TextFX_Unscramble
+parent: "User Interface Functions"
+grand_parent: "Functions"
 ---
 
     TextFX_Unscramble(text, int speed, int reveal)

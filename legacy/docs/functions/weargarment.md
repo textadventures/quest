@@ -1,6 +1,7 @@
 ---
-layout: index
 title: WearGarment
+parent: "Clothing Functions"
+grand_parent: "Functions"
 ---
 
     WearGarment (object)

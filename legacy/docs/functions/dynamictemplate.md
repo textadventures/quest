@@ -1,6 +1,7 @@
 ---
-layout: index
 title: DynamicTemplate
+parent: "String Functions"
+grand_parent: "Functions"
 ---
 
     DynamicTemplate (string  template name, object  object)

@@ -1,6 +1,7 @@
 ---
-layout: index
 title: HasInt
+parent: "Functions for Attributes"
+grand_parent: "Functions"
 ---
 
     HasInt (object, string attribute name)

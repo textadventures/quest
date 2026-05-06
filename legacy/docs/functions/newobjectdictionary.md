@@ -1,6 +1,7 @@
 ---
-layout: index
 title: NewObjectDictionary
+parent: "Dictionary Functions"
+grand_parent: "Functions"
 ---
 
     NewObjectDictionary ()

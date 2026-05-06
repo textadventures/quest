@@ -1,6 +1,7 @@
 ---
-layout: index
 title: GetObject
+parent: "Functions for Objects and Exits"
+grand_parent: "Functions"
 ---
 
     GetObject (string object name)

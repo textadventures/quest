@@ -1,6 +1,7 @@
 ---
-layout: index
 title: ShowVimeo
+parent: "User Interface Functions"
+grand_parent: "Functions"
 ---
 
     ShowVimeo(string id)

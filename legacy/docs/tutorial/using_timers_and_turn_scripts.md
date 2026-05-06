@@ -1,6 +1,7 @@
 ---
-layout: index
 title: Using timers and turn scripts
+nav_order: 12
+parent: Tutorial
 ---
 
 You can use timers to make something happens every so many seconds, whilst with a turn script you can make it happen every turn.

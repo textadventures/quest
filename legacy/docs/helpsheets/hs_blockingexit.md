@@ -1,6 +1,8 @@
 ---
-layout: index
 title: Object blocking an exit
+parent: "Helpsheets for beginners"
+grand_parent: "Other Guides"
+nav_order: 3
 ---
 
 1. I have created the rooms and objects (the mini roll is in the garden and the oompa loompa is in the house)

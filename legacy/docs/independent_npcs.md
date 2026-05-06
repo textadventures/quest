@@ -1,6 +1,7 @@
 ---
-layout: index
 title: Making NPCs Act Independently
+nav_order: 6
+parent: "Characters (NPCs)"
 ---
 
 An NPC is going to feel more alive if he or she is doing things on their own initiative, rather than just reacting to what the player does. 

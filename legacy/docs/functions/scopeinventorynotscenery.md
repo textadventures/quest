@@ -1,6 +1,7 @@
 ---
-layout: index
 title: ScopeInventoryNotScenery
+parent: "Scope Functions"
+grand_parent: "Functions"
 ---
 
     ScopeInventoryNotScenery

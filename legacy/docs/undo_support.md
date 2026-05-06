@@ -1,6 +1,7 @@
 ---
-layout: index
 title: Undo support
+nav_order: 7
+parent: "Advanced Topics"
 ---
 
 Every change to an attribute is internally logged, which makes it easy to go backwards and undo changes on a turn-by-turn basis.

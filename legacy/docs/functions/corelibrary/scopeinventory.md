@@ -1,6 +1,7 @@
 ---
-layout: index
 title: ScopeInventory
+parent: "Scope Functions"
+grand_parent: "Functions"
 ---
 
     ScopeInventory ()

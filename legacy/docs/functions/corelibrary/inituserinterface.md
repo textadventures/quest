@@ -1,6 +1,7 @@
 ---
-layout: index
 title: InitUserInterface
+parent: "User Interface Functions"
+grand_parent: "Functions"
 ---
 
     InitUserInterface ()

@@ -1,6 +1,6 @@
 ---
-layout: index
 title: invoke
+parent: "Script commands"
 ---
 
     invoke (script)

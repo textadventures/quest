@@ -1,6 +1,7 @@
 ---
-layout: index
 title: ProcessText
+parent: "String Functions"
+grand_parent: "Functions"
 ---
 
     ProcessText (string)

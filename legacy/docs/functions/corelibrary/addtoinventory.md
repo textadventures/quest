@@ -1,6 +1,7 @@
 ---
-layout: index
 title: AddToInventory
+parent: "Core.aslx Functions"
+grand_parent: "Functions"
 ---
 
     AddToInventory (object)

@@ -1,6 +1,7 @@
 ---
-layout: index
 title: AllExits
+parent: "Scope Functions"
+grand_parent: "Functions"
 ---
 
     AllExits()

@@ -1,6 +1,7 @@
 ---
-layout: index
 title: NewObjectList
+parent: "List Functions"
+grand_parent: "Functions"
 ---
 
     NewObjectList ()

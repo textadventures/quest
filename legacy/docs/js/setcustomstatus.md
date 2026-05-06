@@ -1,6 +1,8 @@
 ---
-layout: index
 title: setCustomStatus
+parent: "JS functions"
+grand_parent: "Reference"
+nav_order: 8
 ---
 
     JS.setCustomStatus(string html)

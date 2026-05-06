@@ -1,6 +1,6 @@
 ---
-layout: index
 title: picture
+parent: "Script commands"
 ---
 
     picture (string filename)

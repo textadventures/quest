@@ -1,6 +1,7 @@
 ---
-layout: index
 title: Showing a map
+nav_order: 7
+parent: "How To"
 ---
 
 A text adventure generally involves moving around the game world by following compass directions – north, south, east, and west, with the occasional use of up and down, or in and out. Many players like to map out a game as they play using pencil and paper, but you can help your players out by getting Quest to do that for them automatically!
@@ -96,7 +97,7 @@ JS.ShowGrid (0)
 
 ### Vertical movement
 
-You can add code to allow an exit to move the player between levels when travelling along the compass directions. The trick is to define one room relative to the other. Say we have two rooms, `lower` and`upper`. In `upper`, this code should go in the Enter script:
+You can add code to allow an exit to move the player between levels when travelling along the compass directions. The trick is to define one room relative to the other. Say we have two rooms, `lower` and `upper`. In `upper`, this code should go in the Enter script:
 
     Grid_SetGridCoordinateForPlayer (game.pov, upper, "z", Grid_GetGridCoordinateForPlayer(game.pov, lower, "z")+1)
 
@@ -104,7 +105,7 @@ We use `Grid_GetGridCoordinateForPlayer(game.pov, lower, "z")` to get the curren
 
 You also need to make sure it works the other way, so this goes in the Enter script of `lower`:
 
-    Grid_SetGridCoordinateForPlayer (game.pov, upper, "z", Grid_GetGridCoordinateForPlayer(game.pov, lower, "z")+1)
+    Grid_SetGridCoordinateForPlayer (game.pov, upper, "z", Grid_GetGridCoordinateForPlayer(game.pov, lower, "z")-1)
 
 
 

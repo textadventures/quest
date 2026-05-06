@@ -1,6 +1,7 @@
 ---
-layout: index
 title: StartsWith
+parent: "String Functions"
+grand_parent: "Functions"
 ---
 
     StartsWith (string input, string start)

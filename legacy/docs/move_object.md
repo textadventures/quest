@@ -1,6 +1,7 @@
 ---
-layout: index
 title: Move an object in a direction
+nav_order: 18
+parent: "How To"
 ---
 
 
@@ -11,7 +12,7 @@ Basic Command
 
 This is pretty easy to do in its simplest form. We need a new command, with this pattern:
 
-> push #object# #exit#
+    push #object# #exit#
 
 The script will only run if both the object and exit have a match, so all the script has to do is move the object to the destination of the exit (which is set in its "to" attribute), and tell the player:
 
@@ -134,7 +135,7 @@ else {
 Other commands
 ---------------
 
-You might also want to create commands for PULL (which definitely should move the player too), SHIFT and MOVE. The code will be the same, except the messages should be modified as appropriate.
+You might also want to create commands for `PULL` (which definitely should move the player too), `SHIFT` and `MOVE`. The code will be the same, except the messages should be modified as appropriate.
 
 
 Finally

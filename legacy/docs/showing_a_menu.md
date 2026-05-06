@@ -1,6 +1,7 @@
 ---
-layout: index
 title: Showing a menu
+nav_order: 22
+parent: "How To"
 ---
 
 There are two ways to show a menu. To have a dialogue box pop-up, use the [show menu](scripts/show_menu.html) script command. If you prefer to have an in-line menu with hyperlinks, use the [ShowMenu](functions/showmenu.html) function. How you implement them is virtually the same.
@@ -19,8 +20,6 @@ For technical details, see:
 - [show menu](scripts/show_menu.html)
 
 The `Split` function is often useful when setting options for a menu.
-
-- [Split](functions/split.html)
 
 The `select` script is often useful when handling the result.
 

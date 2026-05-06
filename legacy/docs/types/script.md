@@ -1,6 +1,8 @@
 ---
-layout: index
 title: Script
+parent: "Attribute Types"
+grand_parent: "Attributes"
+nav_order: 3
 ---
 
 A script attribute contains code for Quest to run, i.e., a list of  instructions for Quest to carry out. Everything that happens in a game is controlled by script commands. Script commands can print messages, move objects around, show videos, start timers, change attributes, and much more.

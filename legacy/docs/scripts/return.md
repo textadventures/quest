@@ -1,6 +1,6 @@
 ---
-layout: index
 title: return
+parent: "Script commands"
 ---
 
     return (any type result)

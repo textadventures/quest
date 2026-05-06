@@ -1,6 +1,8 @@
 ---
-layout: index
 title: Adding a Yes/No Question to a Container
+parent: "Helpsheets for beginners"
+grand_parent: "Other Guides"
+nav_order: 9
 ---
 
 *A key is inside a box but you have to answer the question correctly to get it – here is how*

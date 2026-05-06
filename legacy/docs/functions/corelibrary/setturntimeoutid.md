@@ -1,6 +1,7 @@
 ---
-layout: index
 title: SetTurnTimeoutID
+parent: "Timers and Turnscripts"
+grand_parent: "Functions"
 ---
 
     SetTurnTimeoutID (integer turn count, string name, script)

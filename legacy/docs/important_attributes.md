@@ -1,6 +1,7 @@
 ---
-layout: index
 title: Important Attributes
+nav_order: 2
+parent: "Attributes"
 ---
 
 Attributes are what make objects (including rooms) in Quest what they are and do what they do. Where an object is, where it can be picked up, what it looks like, whether it can be locked or worn or eaten are all handled with attributes. Furthermore, attributes are the only things that change as the game progresses.

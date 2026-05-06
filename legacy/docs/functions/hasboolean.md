@@ -1,6 +1,7 @@
 ---
-layout: index
 title: HasBoolean
+parent: "Functions for Attributes"
+grand_parent: "Functions"
 ---
 
     HasBoolean (object, string attribute name)

@@ -1,6 +1,7 @@
 ---
-layout: index
 title: DisableTimer
+parent: "Timers and Turnscripts"
+grand_parent: "Functions"
 ---
 
     DisableTimer (timer)

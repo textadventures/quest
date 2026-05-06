@@ -1,6 +1,6 @@
 ---
-layout: index
 title: Notes
+parent: "Attributes"
 ---
 
 Mutable attributes on inherited types

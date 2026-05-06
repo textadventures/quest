@@ -1,6 +1,7 @@
 ---
-layout: index
 title: ReverseDirection
+parent: "String Functions"
+grand_parent: "Functions"
 ---
 
     ReverseDirection (string input)

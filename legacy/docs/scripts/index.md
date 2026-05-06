@@ -1,43 +1,14 @@
 ---
-layout: index
 title: Script commands
+nav_order: 5
 ---
 
-[General information about Quest script commands](scripts.html)
+Scripts are created in a style similar to C, with script blocks denoted by braces. Unlike C, there is no character to mark the end of a line - each script command is simply on its own line.
 
--   [ask](ask.html)
--   [create](create.html)
--   [create exit](create_exit.html)
--   [create timer](create_timer.html)
--   [create turnscript](create_turnscript.html)
--   [destroy](destroy.html)
--   [dictionary add](dictionary_add.html)
--   [dictionary remove](dictionary_remove.html)
--   [do](do.html)
--   [error](error.html)
--   [finish](finish.html)
--   [firsttime](firsttime.html)
--   [for](for.html)
--   [foreach](foreach.html)
--   [get input](get_input.html)
--   [if](if.html)
--   [invoke](invoke.html)
--   [list add](list_add.html)
--   [list remove](list_remove.html)
--   [msg](msg.html)
--   [on ready](on_ready.html)
--   [picture](picture.html)
--   [play sound](play_sound.html)
--   [request](request.html)
--   [return](return.html)
--   [rundelegate](rundelegate.html)
--   [set](set.html)
--   [show menu](show_menu.html)
--   [start transaction](start_transaction.html)
--   [stop sound](stop_sound.html)
--   [switch](switch.html)
--   [undo](undo.html)
--   [wait](wait.html)
--   [while](while.html)
+     if (someVariable = 3) {
+       msg ("Some text")
+     }
 
-Also see [setting variables](setting_variables.html)
+Comments are denoted by //
+
+     // this line will be ignored

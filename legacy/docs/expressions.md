@@ -1,6 +1,7 @@
 ---
-layout: index
 title: Expressions
+nav_order: 12
+parent: "Coding With Quest"
 ---
 
 Quest handles expressions throughout all script commands. You can use expressions everywhere, just as you can in ordinary programming languages.

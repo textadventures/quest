@@ -1,6 +1,7 @@
 ---
-layout: index
 title: Anatomy of a Quest game
+nav_order: 4
+parent: Tutorial
 ---
 
 Every Quest game is made up of the following parts. Here are the main ones:
@@ -22,7 +23,7 @@ Exits connect objects (usually rooms) together. The exit has a parent, so our si
 
 ### Commands and Verbs  
 
-Commands handle player input. They can exist globally, in which case the command will work everywhere. Commands can also exist inside a particular room, in which case that command will only work in that room. Commands have a pattern, such as `look at \#object\#`. When the player types something, it is compared to all the available command patterns. The best match is then used to process what the player typed in. So if the player typed "look at cat", the "look at" command is matched, and it performs whatever action is necessary to print the description of the cat.
+Commands handle player input. They can exist globally, in which case the command will work everywhere. Commands can also exist inside a particular room, in which case that command will only work in that room. Commands have a pattern, such as `look at #object#`. When the player types something, it is compared to all the available command patterns. The best match is then used to process what the player typed in. So if the player typed `LOOK AT CAT`, the "look at" command is matched, and it performs whatever action is necessary to print the description of the cat.
 
 Verbs are a shortcut for commands. Many commands follow the same pattern, and it is easier to have the verb mechanism handle that for us, so we can concentrate on what makes ours special.
 

@@ -1,6 +1,7 @@
 ---
-layout: index
 title: IncreaseHealth
+parent: "Functions for Attributes"
+grand_parent: "Functions"
 ---
 
     IncreaseHealth (integer amount)

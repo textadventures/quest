@@ -1,6 +1,6 @@
 ---
-layout: index
 title: create exit
+parent: "Script commands"
 ---
 
     create exit (string alias, object from, object to)

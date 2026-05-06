@@ -1,6 +1,7 @@
 ---
-layout: index
 title: How to Copy-and-Paste Code
+nav_order: 19
+parent: "Coding With Quest"
 ---
 
 Behind the scenes, Quest handles things using it own programming language, or code. If you are asking about how to do something on the forums, chances are people will respond by posting the code, and if you have never seen code before you may be left wondering what you do with it.

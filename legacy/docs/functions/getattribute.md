@@ -1,6 +1,7 @@
 ---
-layout: index
 title: GetAttribute
+parent: "Functions for Attributes"
+grand_parent: "Functions"
 ---
 
     GetAttribute (object, string attribute name)

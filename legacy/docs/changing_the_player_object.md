@@ -1,6 +1,7 @@
 ---
-layout: index
 title: Changing the player object
+nav_order: 5
+parent: "How To"
 ---
 
 When you create a Quest game, there is by default one "player" object, which represents the player's point of view (POV). The player's inventory consists of all the objects that are contained by this "player" object.

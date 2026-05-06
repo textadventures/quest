@@ -6,6 +6,7 @@ using System.Data;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
+using System.Runtime.InteropServices;
 using TextAdventures.Utility.Language;
 
 namespace TextAdventures.Quest.EditorControls
@@ -21,6 +22,112 @@ namespace TextAdventures.Quest.EditorControls
             ctlMultiControl.RequestParentElementEditorSave += ctlMultiControl_RequestParentElementEditorSave;
 
             lstAttributes.ListViewItemSorter = m_attributesListSorter;
+        }
+
+        [DllImport("user32.dll")]
+        private static extern IntPtr MonitorFromWindow(IntPtr hwnd, uint dwFlags);
+
+        [DllImport("shcore.dll")]
+        private static extern int GetDpiForMonitor(IntPtr hmonitor, int dpiType, out uint dpiX, out uint dpiY);
+
+        private int GetHwndDpi()
+        {
+            if (!IsHandleCreated) return 96;
+            try
+            {
+                IntPtr monitor = MonitorFromWindow(Handle, 2);
+                uint dpiX, dpiY;
+                if (GetDpiForMonitor(monitor, 0, out dpiX, out dpiY) == 0)
+                    return (int)dpiX;
+            }
+            catch { }
+            return 96;
+        }
+
+        protected override void OnHandleCreated(EventArgs e)
+        {
+            base.OnHandleCreated(e);
+            ApplyDpi(GetHwndDpi());
+        }
+
+        protected override void OnDpiChangedAfterParent(EventArgs e)
+        {
+            base.OnDpiChangedAfterParent(e);
+            ApplyDpi(GetHwndDpi());
+        }
+
+        private static readonly Dictionary<string, string> _typesXamlNames = new Dictionary<string, string>
+        {
+            { "cmdAddType", "Add" },
+            { "cmdDeleteType", "Delete" },
+        };
+
+        private static readonly Dictionary<string, string> _attrsXamlNames = new Dictionary<string, string>
+        {
+            { "cmdAdd", "Add" },
+            { "cmdDelete", "Delete" },
+            { "cmdOnChange", "TriggerScript" },
+        };
+
+        internal void ApplyDpi(int dpi)
+        {
+            float scale = dpi / 96f;
+            int iconSize = Math.Max(16, (int)(16 * scale));
+
+            ToolStripLabel2.AutoSize = true;
+            lblAttributesTitle.AutoSize = true;
+
+            ApplyStripIcons(ctlTypesToolStrip, _typesXamlNames, iconSize);
+            ApplyStripIcons(ctlToolStrip, _attrsXamlNames, iconSize);
+            ctlToolStrip.AutoSize = true;
+            ctlTypesToolStrip.AutoSize = true;
+        }
+
+        private static void ApplyStripIcons(ToolStrip strip, Dictionary<string, string> xamlNames, int size)
+        {
+            strip.ImageScalingSize = new Size(size, size);
+            foreach (ToolStripItem item in strip.Items)
+            {
+                string xamlName;
+                if (xamlNames.TryGetValue(item.Name, out xamlName))
+                {
+                    var bmp = RenderXaml(xamlName, size);
+                    if (bmp != null)
+                    {
+                        var old = item.Image;
+                        item.Image = bmp;
+                        if (old != null) old.Dispose();
+                    }
+                }
+            }
+        }
+
+        private static Bitmap RenderXaml(string name, int size)
+        {
+            var asm = System.Reflection.Assembly.GetExecutingAssembly();
+            var resourceName = asm.GetManifestResourceNames()
+                .FirstOrDefault(n => n.EndsWith("." + name + ".xaml", StringComparison.OrdinalIgnoreCase));
+            if (resourceName == null) return null;
+            using (var stream = asm.GetManifestResourceStream(resourceName))
+            {
+                var visual = System.Windows.Markup.XamlReader.Load(stream) as System.Windows.FrameworkElement;
+                if (visual == null) return null;
+                visual.Width = size;
+                visual.Height = size;
+                visual.Measure(new System.Windows.Size(size, size));
+                visual.Arrange(new System.Windows.Rect(0, 0, size, size));
+                var rtb = new System.Windows.Media.Imaging.RenderTargetBitmap(size, size, 96, 96, System.Windows.Media.PixelFormats.Pbgra32);
+                rtb.Render(visual);
+                var encoder = new System.Windows.Media.Imaging.PngBitmapEncoder();
+                encoder.Frames.Add(System.Windows.Media.Imaging.BitmapFrame.Create(rtb));
+                using (var ms = new System.IO.MemoryStream())
+                {
+                    encoder.Save(ms);
+                    ms.Position = 0;
+                    using (var raw = new Bitmap(ms))
+                        return new Bitmap(raw);
+                }
+            }
         }
 
         private EditorController m_controller;

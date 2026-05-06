@@ -1,6 +1,7 @@
 ---
-layout: index
 title: AllRooms
+parent: "Scope Functions"
+grand_parent: "Functions"
 ---
 
     AllRooms()

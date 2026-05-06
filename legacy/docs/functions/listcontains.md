@@ -1,6 +1,7 @@
 ---
-layout: index
 title: ListContains
+parent: "List Functions"
+grand_parent: "Functions"
 ---
 
     ListContains (list, any type item)

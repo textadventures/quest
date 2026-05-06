@@ -1,6 +1,7 @@
 ---
-layout: index
 title: Debugging your game
+nav_order: 3
+parent: "Desktop Features"
 ---
 
 <div class="alert alert-info">

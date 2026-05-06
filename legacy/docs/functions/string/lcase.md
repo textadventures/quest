@@ -1,6 +1,7 @@
 ---
-layout: index
 title: LCase
+parent: "String Functions"
+grand_parent: "Functions"
 ---
 
     LCase (string input)

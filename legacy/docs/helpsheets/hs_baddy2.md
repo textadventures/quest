@@ -1,6 +1,8 @@
 ---
-layout: index
 title: Baddies behind a Door who want to kill you (but if you close the door you won’t die…!)
+parent: "Helpsheets for beginners"
+grand_parent: "Other Guides"
+nav_order: 6
 ---
 
 *What happens if you open a door and there is a baddy who wants to kill you but if you close the door you get out alive!*

@@ -1,6 +1,7 @@
 ---
-layout: index
 title: RandomChance
+parent: "Randomising Functions"
+grand_parent: "Functions"
 ---
 
     RandomChance (integer percentile)

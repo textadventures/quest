@@ -1,6 +1,7 @@
 ---
-layout: index
 title: AllCommands
+parent: "Scope Functions"
+grand_parent: "Functions"
 ---
 
     AllCommands()

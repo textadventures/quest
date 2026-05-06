@@ -35,7 +35,7 @@ Partial Class LoadingControl
         '
         'Panel1
         '
-        Me.Panel1.BackColor = System.Drawing.Color.GhostWhite
+        Me.Panel1.BackColor = System.Drawing.SystemColors.Window
         Me.Panel1.Controls.Add(Me.lblStatus)
         Me.Panel1.Controls.Add(Me.ctlProgress)
         resources.ApplyResources(Me.Panel1, "Panel1")
@@ -61,7 +61,7 @@ Partial Class LoadingControl
         '
         'Label1
         '
-        Me.Label1.BackColor = System.Drawing.Color.GhostWhite
+        Me.Label1.BackColor = System.Drawing.SystemColors.Window
         Me.Label1.Cursor = System.Windows.Forms.Cursors.AppStarting
         resources.ApplyResources(Me.Label1, "Label1")
         Me.Label1.ForeColor = System.Drawing.Color.FromArgb(CType(CType(64, Byte), Integer), CType(CType(64, Byte), Integer), CType(CType(64, Byte), Integer))
@@ -69,7 +69,7 @@ Partial Class LoadingControl
         '
         'Label2
         '
-        Me.Label2.BackColor = System.Drawing.Color.GhostWhite
+        Me.Label2.BackColor = System.Drawing.SystemColors.Window
         Me.Label2.Cursor = System.Windows.Forms.Cursors.AppStarting
         resources.ApplyResources(Me.Label2, "Label2")
         Me.Label2.ForeColor = System.Drawing.Color.FromArgb(CType(CType(64, Byte), Integer), CType(CType(64, Byte), Integer), CType(CType(64, Byte), Integer))
@@ -77,7 +77,7 @@ Partial Class LoadingControl
         '
         'PictureBox1
         '
-        Me.PictureBox1.BackColor = System.Drawing.Color.GhostWhite
+        Me.PictureBox1.BackColor = System.Drawing.SystemColors.Window
         Me.PictureBox1.Cursor = System.Windows.Forms.Cursors.AppStarting
         resources.ApplyResources(Me.PictureBox1, "PictureBox1")
         Me.PictureBox1.Image = Global.TextAdventures.Quest.My.Resources.Resources.questlogo
@@ -88,7 +88,7 @@ Partial Class LoadingControl
         '
         resources.ApplyResources(Me, "$this")
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
-        Me.BackColor = System.Drawing.Color.GhostWhite
+        Me.BackColor = System.Drawing.SystemColors.Window
         Me.Controls.Add(Me.Panel1)
         Me.Controls.Add(Me.Label2)
         Me.Controls.Add(Me.Label1)

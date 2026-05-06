@@ -1,6 +1,7 @@
 ---
-layout: index
 title: Template
+parent: "String Functions"
+grand_parent: "Functions"
 ---
 
     Template (string template name)

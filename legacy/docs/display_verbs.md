@@ -1,6 +1,7 @@
 ---
-layout: index
 title: Using Display Verbs
+nav_order: 3
+parent: "User Experience"
 ---
 
 When you play a text adventure using Quest, there will usually be a set of panels on the right. As well as the compass rose, there will be lists of objects in the current location and in your inventory. Or there may be hyperlinks for each object in the text. If you click on an object, buttons will appear giving short-cuts to commands with the object. These are display verbs and inventory verbs.

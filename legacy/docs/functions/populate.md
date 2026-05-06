@@ -1,6 +1,7 @@
 ---
-layout: index
 title: Populate
+parent: "Internal Core.aslx Functions"
+grand_parent: "Functions"
 ---
 
     Populate (string regex, string input)

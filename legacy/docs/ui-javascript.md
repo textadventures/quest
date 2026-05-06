@@ -1,12 +1,13 @@
 ---
-layout: index
 title: Customising the UI - Part 1
+nav_order: 12
+parent: "User Experience"
 ---
 
 
 The Quest user interface is a web page. Even the desktop version has a built-in browser (Chrome as it happens), and what the player sees is just the same as any other web page on the internet.
 
-Potentially this means you can set up your game to look like _anything_. In practice, this is not always trivial and at least some knowledge of HTML, CSS, JavaScript and JQuery are vital for the more advanced features. There is a decent guide [here](http://www.xmlnews.org/docs/xml-basics.html). That said, we can make a lot of changes without knowing too much about any of them.
+Potentially this means you can set up your game to look like _anything_. In practice, this is not always trivial and at least some knowledge of HTML, CSS, JavaScript and JQuery are vital for the more advanced features. The [MDN Web Docs](https://developer.mozilla.org/en-US/docs/Learn_web_development/Core) are a good resource for learning these. That said, we can make a lot of changes without knowing too much about any of them.
 
 
 

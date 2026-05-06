@@ -1,6 +1,7 @@
 ---
-layout: index
 title: GetDisplayName
+parent: "Core.aslx Functions"
+grand_parent: "Functions"
 ---
 
     GetDisplayName (object)

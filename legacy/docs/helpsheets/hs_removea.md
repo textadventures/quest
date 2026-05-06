@@ -1,6 +1,8 @@
 ---
-layout: index
 title: Irritated by “a” in your objects?
+parent: "Helpsheets for beginners"
+grand_parent: "Other Guides"
+nav_order: 2
 ---
 
 '**'Problem**'

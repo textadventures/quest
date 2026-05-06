@@ -1,6 +1,7 @@
 ---
-layout: index
 title: OutputText
+parent: "User Interface Functions"
+grand_parent: "Functions"
 ---
 
     OutputText (string text)

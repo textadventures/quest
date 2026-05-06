@@ -1,6 +1,7 @@
 ---
-layout: index
 title: SetLight
+parent: "Core.aslx Functions"
+grand_parent: "Functions"
 ---
 
     SetLight(room)

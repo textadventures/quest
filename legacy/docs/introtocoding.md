@@ -1,6 +1,7 @@
 ---
-layout: index
 title: Introduction to Coding
+nav_order: 2
+parent: "Coding With Quest"
 ---
 
 Writing code is not trivial, and I cannot hope to make you an expert here. However, it is not as difficult as you might think, and hopefully this will get you started.

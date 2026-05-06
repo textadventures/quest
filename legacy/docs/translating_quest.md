@@ -1,6 +1,7 @@
 ---
-layout: index
 title: Translating Quest
+nav_order: 4
+parent: "Advanced Topics"
 ---
 
 Introduction
@@ -180,11 +181,7 @@ For example, in German, the verb to display to allow the player to wear somethin
 Releasing your translation
 --------------------------
 
-When you have finished your translation - and checked it works in your game - if you'd like it to be included with Quest so that other game authors can use it, please submit a new issue to the list at Github, and attach your translation. We would also be grateful for updates to existing translations.
-
-[Github Issue Tracker](https://github.com/textadventures/quest/issues)
-
-Note that Quest is only updated once or twice a year, so your changes may not become official straightaway.
+When you have finished your translation - and checked it works in your game - if you'd like it to be included with Quest so that other game authors can use it, open a Pull Request. We would also be grateful for updates to existing translations.
 
 Keeping the translation up to date
 ----------------------------------

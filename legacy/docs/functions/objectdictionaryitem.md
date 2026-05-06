@@ -1,6 +1,7 @@
 ---
-layout: index
 title: ObjectDictionaryItem
+parent: "Dictionary Functions"
+grand_parent: "Functions"
 ---
 
     ObjectDictionaryItem (dictionary, string key)

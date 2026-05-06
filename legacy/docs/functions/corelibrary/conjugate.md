@@ -1,6 +1,7 @@
 ---
-layout: index
 title: Conjugate
+parent: "String Functions"
+grand_parent: "Functions"
 ---
 
     Conjugate (object, string verb)

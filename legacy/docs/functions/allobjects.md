@@ -1,6 +1,7 @@
 ---
-layout: index
 title: AllObjects
+parent: "Scope Functions"
+grand_parent: "Functions"
 ---
 
     AllObjects()

@@ -1,6 +1,8 @@
 ---
-layout: index
 title: Adding Baddies who want to Kill or Eat you!
+parent: "Helpsheets for beginners"
+grand_parent: "Other Guides"
+nav_order: 5
 ---
 
 *What happens if you go into a room or open an object and there is a baddy who wants to kill you?*
@@ -61,4 +63,4 @@ title: Adding Baddies who want to Kill or Eat you!
 
 23. So when the player opens the cupboard, if they use the flame thrower on the alien, the alien will no longer be visible in the room. However, if the player has not used the flame thrower, the alien will still be visible, in which case the alien enjoys a tasty meal.
 
-*This helpsheet is adapted from one written by Alex Warren from <http://www.textadventures.co.uk/blog/2012/02/27/time-limited-puzzles/>*
+*This helpsheet is adapted from one written by Alex Warren.*

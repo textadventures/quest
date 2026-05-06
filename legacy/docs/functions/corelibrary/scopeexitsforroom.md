@@ -1,6 +1,7 @@
 ---
-layout: index
 title: ScopeExitsForRoom
+parent: "Scope Functions"
+grand_parent: "Functions"
 ---
 
     ScopeExitsForRoom(room)

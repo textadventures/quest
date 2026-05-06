@@ -1,6 +1,7 @@
 ---
-layout: index
 title: IncreaseScore
+parent: "Functions for Attributes"
+grand_parent: "Functions"
 ---
 
     IncreaseScore (integer amount)

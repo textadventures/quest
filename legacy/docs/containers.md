@@ -1,6 +1,7 @@
 ---
-layout: index
 title: Using Containers
+nav_order: 3
+parent: "Features"
 ---
 
 
@@ -37,7 +38,7 @@ There are also scripts that will trigger when the chest is opened (perhaps the c
 Locked Container
 ----------------
 
-_Be careful using locked containers. The "Key hunt" is something of a clique in computer games._
+_Be careful using locked containers. The "Key hunt" is something of a cliche in computer games._
 
 That said, we will set up our chest as lockable. Make sure it starts closed.
 
@@ -57,7 +58,7 @@ Set up the script like this:
 Limited Container
 -----------------
 
-_Again, you need to be a little bit careful here. The limited container is something of a text adventure clique, and can end up just annoying the player._
+_Again, you need to be a little bit careful here. The limited container is something of a text adventure cliche, and can end up just annoying the player._
 
 Let's say we have a backpack, but it is not very big, and we want to limit how much the player can put in there (by the way, you can allow the player to wear the backpack just by making it wearable).
 

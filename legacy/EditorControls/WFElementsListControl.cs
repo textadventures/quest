@@ -26,6 +26,11 @@ namespace TextAdventures.Quest.EditorControls
             ctlListEditor.ToolbarClicked += ctlListEditor_ToolbarClicked;
         }
 
+        internal void ApplyDpi(int dpi)
+        {
+            ctlListEditor.ApplyDpi(dpi);
+        }
+
         public EditorController Controller
         {
             get { return m_controller; }

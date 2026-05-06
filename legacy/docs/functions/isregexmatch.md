@@ -1,6 +1,7 @@
 ---
-layout: index
 title: IsRegexMatch
+parent: "String Functions"
+grand_parent: "Functions"
 ---
 
     IsRegexMatch (string regex, string)

@@ -443,4 +443,6 @@
   <type name="editor_room_object">
     <isroom />
   </type>
+  <type name="devmode">
+  </type>
 </library>

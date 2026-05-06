@@ -5,12 +5,12 @@ using System.Linq;
 using System.Web;
 using log4net.Appender;
 using log4net.Core;
-using Microsoft.WindowsAzure.Storage;
-using Microsoft.WindowsAzure.Storage.Table;
+using Azure;
+using Azure.Data.Tables;
 
 namespace WebEditor
 {
-    public sealed class LogEventEntity : TableEntity
+    public sealed class LogEventEntity : ITableEntity
     {
         public LogEventEntity()
         {
@@ -18,6 +18,11 @@ namespace WebEditor
             PartitionKey = string.Format("{0:d19}", (DateTime.MaxValue - now).Ticks);
             RowKey = Guid.NewGuid().ToString();
         }
+
+        public string PartitionKey { get; set; }
+        public string RowKey { get; set; }
+        public DateTimeOffset? Timestamp { get; set; }
+        public ETag ETag { get; set; }
 
         public string Identity { get; set; }
         public string ThreadName { get; set; }
@@ -32,17 +37,15 @@ namespace WebEditor
     public class TableStorageAppender : AppenderSkeleton
     {
         private readonly Level m_minLevel;
-        private readonly CloudTable m_table;
+        private readonly TableClient m_table;
         private readonly string m_tableName = ConfigurationManager.AppSettings["AzureLogTable"];
 
         public TableStorageAppender(Level minLevel)
         {
             m_minLevel = minLevel;
             var connectionString = ConfigurationManager.AppSettings["AzureConnectionString"];
-            var account = CloudStorageAccount.Parse(connectionString);
 
-            var tableClient = account.CreateCloudTableClient();
-            m_table = tableClient.GetTableReference(m_tableName);
+            m_table = new TableClient(connectionString, m_tableName);
             m_table.CreateIfNotExists();
         }
 
@@ -62,9 +65,7 @@ namespace WebEditor
                     Identity = loggingEvent.Identity
                 };
 
-                var operation = TableOperation.Insert(entity);
-
-                m_table.Execute(operation);
+                m_table.AddEntity(entity);
             }
             catch (Exception ex)
             {

@@ -65,14 +65,14 @@ namespace TextAdventures.Quest.EditorControls
 
             foreach (string cat in m_controller.GetAllScriptEditorCategories())
             {
-                ctlEditorTree.AddNode(cat, cat, null, null, null);
+                ctlEditorTree.AddNode(cat, cat, null, null, null, imageKey: "s_folder");
             }
 
             foreach (var data in m_controller.GetScriptEditorData().Where(d => d.Value.IsVisible()))
             {
                 if (data.Value.IsVisibleInSimpleMode || !m_controller.SimpleMode)
                 {
-                    ctlEditorTree.AddNode(data.Key, data.Value.AdderDisplayString, data.Value.Category, null, null);
+                    ctlEditorTree.AddNode(data.Key, data.Value.AdderDisplayString, data.Value.Category, null, null, imageKey: "s_script");
 
                     if (!string.IsNullOrEmpty(data.Value.CommonButton))
                     {

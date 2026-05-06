@@ -1,6 +1,7 @@
 ---
-layout: index
 title: ToString
+parent: "Functions for Variables"
+grand_parent: "Functions"
 ---
 
     ToString (anything)

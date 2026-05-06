@@ -1,6 +1,8 @@
 ---
-layout: index
 title: showPopup/showPopupCustomSize/showPopupFullscreen
+parent: "JS functions"
+grand_parent: "Reference"
+nav_order: 12
 ---
 
     JS.showPopup(title, text)

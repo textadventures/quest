@@ -1,19 +1,20 @@
 ---
-layout: index
 title: Handling ASK/TELL
+nav_order: 4
+parent: "Characters (NPCs)"
 ---
 
 Interactive fiction has broadly three ways for the player to talk to NPCs.
 
-> SAY ...
+    SAY ...
 
-> TALK TO ...
+    TALK TO ...
 
-> ASK ... ABOUT ...
+    ASK ... ABOUT ...
 
 This is something built in to Quest, but it does need to be turned on. On the _Features_ tab of the game object, tick the "Ask/Tell" box. You should now find there is an _Ask/Tell_ tab for the objects in your game.
 
-This page is about using ASK/ABOUT. This also includes TELL/ABOUT and TELL/TO, both of which are on the same tab, and work in exactly the same way, so everything here can also be applied to TELL/ABOUT and TELL/TO. For simplicity, we will go though just ASK/ABOUT.
+This page is about using `ASK/ABOUT`. This also includes `TELL/ABOUT` and `TELL/TO`, both of which are on the same tab, and work in exactly the same way, so everything here can also be applied to `TELL/ABOUT` and `TELL/TO`. For simplicity, we will go through just `ASK/ABOUT`.
 
 
 Ask ... about ...
@@ -21,7 +22,7 @@ Ask ... about ...
 
 The way ASK works is that you give a list of topics and corresponding scripts. Suppose we have a character, Mary, and we want to ask her about the murder of Dr Black. In the ASK section, click _Add_, and then type in the topic, "dr black". Click _Okay_, and then add the script that will run when the player asks about Dr Black. For now, just have it print a simple message.
 
-Now go in game, and type ASK MARY ABOUT DR BLACK, and you should see your message. Quest will do its best to match topics, so you should also see the message if you type ASK MARY ABOUT DR or ASK MARY ABOUT BLACK. Ah, but what if the player types ASK MARY ABOUT DOCTOR BLACK? Go back to the _Ask/Tell_ tab for Mary, make sure this topic is selected and click on "Edit Key". Replace "dr black" with "dr doctor black".
+Now go in game, and type `ASK MARY ABOUT DR BLACK`, and you should see your message. Quest will do its best to match topics, so you should also see the message if you type `ASK MARY ABOUT DR` or `ASK MARY ABOUT BLACK`. Ah, but what if the player types `ASK MARY ABOUT DOCTOR BLACK`? Go back to the _Ask/Tell_ tab for Mary, make sure this topic is selected and click on "Edit Key". Replace "dr black" with "dr doctor black".
 
 ![](images/Asktell3.png "Asktell.png")
 
@@ -103,7 +104,7 @@ msg("Mary shrugs, and says, 'I know nothing about " + text + ".'")
 Topics
 ------
 
-It can be frustrating for the player to have to guess what topics are available, so an option is to provide a TOPICS command, which simply lists the topics the player can ask about. The best way to do this is to set up a string with some initial entries, and then to add to it as the game progresses. In the investigation of the murder of Dr Black, new topics could be added as new evidence comes to light, for instance.
+It can be frustrating for the player to have to guess what topics are available, so an option is to provide a `TOPICS` command, which simply lists the topics the player can ask about. The best way to do this is to set up a string with some initial entries, and then to add to it as the game progresses. In the investigation of the murder of Dr Black, new topics could be added as new evidence comes to light, for instance.
 
 Note that this assumes all NPCs will have the same topics available. I think it likely that the player will assume that if she can ask Mary about Dr Black, she can ask any other character too. This does mean you will need to add all these topics to all the NPCs, even if they only say that they know nothing. This should be done anyway!
 
@@ -117,7 +118,7 @@ game.topics = Split("Job;Alibi", ";")
 
 This will be shown to the player, so capitalise it nicely and bear in mind it needs to fit the ASK ... ABOUT ... format. Also, it makes the script for the topics command easier if there are at least two topics from the start (because we can refer to them in the plural knowing there is at least two).
 
-Now we need to create a new command. Go to _Commands_ in the left pane, then click "Add" in the right pane. For the command pattern, type in "topics", and paste in this code:
+Now we need to create a new command. Go to _Commands_ in the left pane, then click "Add" in the right pane. For the command pattern, type in `topics`, and paste in this code:
 
 ```
 msg ("Topics you might want to ask about include:")
@@ -136,7 +137,7 @@ list add(game.topics, "Forensic results")
 Ask about ...
 -------------
 
-If there is only one NPC in the room, we can save the player some typing by creating an ASK ABOUT ... command. Go to _Commands_ in the left pane, then click "Add" in the right pane. For the command pattern, type in "ask about #text#", and paste in this code:
+If there is only one NPC in the room, we can save the player some typing by creating an `ASK ABOUT ...` command. Go to _Commands_ in the left pane, then click "Add" in the right pane. For the command pattern, type in `ask about #text#`, and paste in this code:
 
 ```
 npcs = NewObjectList()
@@ -176,7 +177,7 @@ Ask ...
 
 A further option we could give the player is to ask a character, and then offer a list of topics to ask about. We already have the list of topics from the TOPICS command, so half the work is done.
 
-Go to _Commands_ in the left pane, the click "Add" in the right pane. For the command pattern, type in "ask #object#", and paste in this code:
+Go to _Commands_ in the left pane, then click "Add" in the right pane. For the command pattern, type in `ask #object#`, and paste in this code:
 ```
 game.askaboutobject = object
 ShowMenu ("Ask about?", game.topics, true) {

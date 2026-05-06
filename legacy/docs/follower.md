@@ -1,6 +1,7 @@
 ---
-layout: index
 title: Followers
+nav_order: 1
+parent: "Characters (NPCs)"
 ---
 
 Occasionally it is useful to have one or more characters follow the player, whether a helpful companion, or an annoying foe. Or an annoying companion...
@@ -36,7 +37,7 @@ foreach (o, player.followers) {
 }
 ```
 
-What this does is iterate through each thing in the `followers` list. For each one, it checks if there is a `followphrases` attributes. If there is, one is selected at random and printed. Otherwise a default phrase is used.
+What this does is iterate through each thing in the `followers` list. For each one, it checks if there is a `followphrases` attribute. If there is, one is selected at random and printed. Otherwise a default phrase is used.
 
 Go in game and see if the dog will follow you!
 
@@ -45,7 +46,7 @@ Go in game and see if the dog will follow you!
 Some Variation
 --------------
 
-You game will feel much better if the player is not seeing the same phrase again and again. If she reads "A dog is following you." every time she goes into a new room, it will get tedious.
+Your game will feel much better if the player is not seeing the same phrase again and again. If she reads "A dog is following you." every time she goes into a new room, it will get tedious.
 
 So mix it up a bit with the "followphrases" attribute. This is where the off-line users can look smug, they can go to the _Attributes_ tab of the follower, the dog in this case, create a new attribute called "followphrases", set it to be a string list, and start typing in phrases. On-line users will have to do this in the start script of the `game` object. Here is some example code for the dog.
 
@@ -69,7 +70,7 @@ list add (player.followers, dog)
 list remove (player.followers, dog)
 ```
 
-You could add these scripts to commands to allow the player to control the dog. For example, for SAY STAY command, you could add this script:
+You could add these scripts to commands to allow the player to control the dog. For example, for a `SAY STAY` command, you could add this script:
 
 ```
   if (not dog.parent = player.parent) {

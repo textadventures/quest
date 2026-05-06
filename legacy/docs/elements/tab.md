@@ -1,6 +1,8 @@
 ---
-layout: index
 title: tab element
+parent: "XML Elements"
+grand_parent: "Reference"
+nav_order: 21
 ---
 
     <tab>attributes</tab>

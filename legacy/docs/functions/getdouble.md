@@ -1,6 +1,7 @@
 ---
-layout: index
 title: GetDouble
+parent: "Functions for Attributes"
+grand_parent: "Functions"
 ---
 
     GetDouble (object, string attribute name)

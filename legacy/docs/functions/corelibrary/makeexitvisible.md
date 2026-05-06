@@ -1,6 +1,7 @@
 ---
-layout: index
 title: MakeExitVisible
+parent: "Functions for Objects and Exits"
+grand_parent: "Functions"
 ---
 
     MakeExitVisible (object)

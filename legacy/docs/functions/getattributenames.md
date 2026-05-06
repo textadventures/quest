@@ -1,6 +1,7 @@
 ---
-layout: index
 title: GetAttributeNames
+parent: "Functions for Attributes"
+grand_parent: "Functions"
 ---
 
     GetAttributeNames (object, boolean include inherited attributes)

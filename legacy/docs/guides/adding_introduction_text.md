@@ -1,6 +1,7 @@
 ---
-layout: index
 title: Adding Introduction Text
+parent: "Community Guides"
+grand_parent: "Other Guides"
 ---
 
 Many games start with some introductory text before getting the player started. This is an suggestion how to create an introduction. This version is supported by Quest5.2

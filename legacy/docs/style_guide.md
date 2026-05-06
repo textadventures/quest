@@ -1,6 +1,6 @@
 ---
-layout: index
 title: Docs Style Guide
+nav_exclude: true
 ---
 
 
@@ -22,7 +22,6 @@ The standard header looks like this and must be at the top of every page:
 
 ```
 ---
-layout: index
 title: Docs Style Guide
 ---
 ```

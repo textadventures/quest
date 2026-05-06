@@ -1,6 +1,6 @@
 ---
-layout: index
 title: list add
+parent: "Script commands"
 ---
 
     list add (list, any type item)

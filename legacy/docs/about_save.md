@@ -1,6 +1,7 @@
 ---
-layout: index
 title: When the Player Saves a Game
+nav_order: 13
+parent: "Features"
 ---
 
 When a player saves a game, she saves _everything_.

@@ -1,6 +1,7 @@
 ---
-layout: index
 title: Join
+parent: "String Functions"
+grand_parent: "Functions"
 ---
 
     Join (stringlist input, string split character)

@@ -8,7 +8,7 @@ using WebInterfaces;
 
 namespace WebEditor.Services
 {
-    public class EditorService
+    public class EditorService : IDisposable
     {
         private class TreeItem
         {
@@ -54,6 +54,21 @@ namespace WebEditor.Services
         {
             m_controller = new EditorController();
             m_controller.EditorMode = EditorMode.Web;
+        }
+
+        public void Dispose()
+        {
+            m_controller.ShowMessage -= m_controller_ShowMessage;
+            m_controller.ClearTree -= m_controller_ClearTree;
+            m_controller.BeginTreeUpdate -= m_controller_BeginTreeUpdate;
+            m_controller.AddedNode -= m_controller_AddedNode;
+            m_controller.RemovedNode -= m_controller_RemovedNode;
+            m_controller.RenamedNode -= m_controller_RenamedNode;
+            m_controller.RetitledNode -= m_controller_RetitledNode;
+            m_controller.EndTreeUpdate -= m_controller_EndTreeUpdate;
+            m_controller.UndoListUpdated -= m_controller_UndoListUpdated;
+            m_controller.RedoListUpdated -= m_controller_RedoListUpdated;
+            m_controller.Dispose();
         }
 
         public InitialiseResult Initialise(int id, string filename, string libFolder, bool simpleMode)

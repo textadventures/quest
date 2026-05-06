@@ -1,6 +1,6 @@
 ---
-layout: index
 title: undo
+parent: "Script commands"
 ---
 
     undo

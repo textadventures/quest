@@ -1,15 +1,18 @@
 ---
-layout: index
 title: How to Keep Score
+nav_order: 11
+parent: "How To"
 ---
 
-Many years ago I wrote a library to help track the player's score. It was pretty simple, but worked well, and five years later on I cannot think of any way to improve. So, I am going drop it altogether! You do not need a library to do this, instead, I present a tutorial. The advantages of a tutorial are that you will learn more of Quest coding whilst following it, and it will be useable by anyone using the on-line editor too.
+Quest has a simple built-in score system you can enable on the _Features_ tab of the game object — see [Score, Health and Money](score_health_money.html). This tutorial shows how to build a more flexible custom scoring system with achievements, rankings, and a SCORE command.
+
+Many years ago I wrote a library to help track the player's score. It was pretty simple, but worked well, and five years later on I cannot think of any way to improve. So, I am going to drop it altogether! You do not need a library to do this, instead, I present a tutorial. The advantages of a tutorial are that you will learn more of Quest coding whilst following it, and it will be useable by anyone using the on-line editor too.
 
 This system will not just keep score, it will also allow the player to see a list of achievements, and give her a rank. The on-going score will appear in the status panel.
 
 ## Before We Begin
 
-Just for the sake of testing, we will set up a new command, with the pattern JUMP, and paste in this code:
+Just for the sake of testing, we will set up a new command, with the pattern `JUMP`, and paste in this code:
 ```
   msg("You jump into the air. Hurrah!")
 ```
@@ -50,15 +53,17 @@ However you set it up, your "score" status attribute should have a display forma
   Score: !/10
 ```
 
-The exclamation mark is a placeholder for the actual value, so it the score is currently zero, the player will see:
+The exclamation mark is a placeholder for the actual value, so if the score is currently zero, the player will see:
 
-> Score: 0/10
+```
+Score: 0/10
+```
 
 
 Scoring a Point...
 ------------------
 
-No go back to the JUMP command, and change its script to this:
+Now go back to the `JUMP` command, and change its script to this:
 
 ```
   msg("You jump into the air. Hurrah!")
@@ -71,7 +76,7 @@ You should now be able to go into the game, and see your score, and see that it 
 ... And Only One Point
 ---------------------
 
-In fact the score goes up every time you type JUMP; really we only want that to happen once. We will build in a system to ensure that that is the case later, but let us do it a different way first. Did you know you can set attributes on commands? Paste in this code:
+In fact the score goes up every time you type `JUMP`; really we only want that to happen once. We will build in a system to ensure that that is the case later, but let us do it a different way first. Did you know you can set attributes on commands? Paste in this code:
 
 ```
   msg("You jump into the air. Hurrah!")
@@ -93,7 +98,7 @@ So we have a simple system, and that may be enough for you. However, we can impr
 ```
 If off-line you might prefer to add a string list attribute to the game object called "score_achievements" instead.
 
-This string list will keep a list of the achievements, and we can check that to see if an achievement has already been done. Best way to do that is in a function. God to _Functions_, and click _Add_. Give it the name "IncScore", and leave its return type to _None_. You will need to add two parameters, `str` and `inc`, and then past in this code:
+This string list will keep a list of the achievements, and we can check that to see if an achievement has already been done. Best way to do that is in a function. Go to _Functions_, and click _Add_. Give it the name "IncScore", and leave its return type to _None_. You will need to add two parameters, `str` and `inc`, and then paste in this code:
 
 ```
   if (not DictionaryContains(game.score_achievements, str)) {
@@ -105,7 +110,7 @@ This string list will keep a list of the achievements, and we can check that to 
 
 What we will be sending this function is a string and a number. It will check if the string is already in the dictionary, and if it is not, it will get added, the score will be increased and the player informed.
 
-Now go back to your JUMP command, and delete the exiting script, pasting in this instead:
+Now go back to your `JUMP` command, and delete the existing script, pasting in this instead:
 
 ```
   msg ("You jump into the air. Hurrah!")
@@ -114,13 +119,13 @@ Now go back to your JUMP command, and delete the exiting script, pasting in this
 
 If you go into the game, you will find that you get 5 points for jumping, but only the first time.
 
-You could have several things giving the same reward. Perhaps leaping a chasm also counts as a jump; in your LEAP command, just have exactly the same line of code. The score system will check whether "You jumped" is already in the list, and only hand out points if it is not.
+You could have several things giving the same reward. Perhaps leaping a chasm also counts as a jump; in your `LEAP` command, just have exactly the same line of code. The score system will check whether "You jumped" is already in the list, and only hand out points if it is not.
 
 
 A SCORE Command
 ----------------
 
-We can add a score command, to allow the player to see how much she has score and for what. Create a new command, and give is the pattern "score", then paste in this code:
+We can add a score command, to allow the player to see how much she has scored and for what. Create a new command, and give it the pattern "score", then paste in this code:
 
 ```
   msg ("You have scored " + game.score + ".")

@@ -1,6 +1,7 @@
 ---
-layout: index
 title: CreateBiExits
+parent: "Functions for Objects and Exits"
+grand_parent: "Functions"
 ---
 
     CreateBiExits (string direction, object from, object to)

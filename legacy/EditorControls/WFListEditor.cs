@@ -31,6 +31,85 @@ namespace TextAdventures.Quest.EditorControls
         private Dictionary<string, ToolStripItem> m_extraToolStripItems = new Dictionary<string, ToolStripItem>();
         private List<string> m_extraToolStripItemsEnabledOnlyWithSelection = new List<string> { "goto" };
 
+        protected override void OnHandleCreated(EventArgs e)
+        {
+            base.OnHandleCreated(e);
+            ApplyToolbarIcons(DeviceDpi);
+        }
+
+        protected override void OnDpiChangedAfterParent(EventArgs e)
+        {
+            base.OnDpiChangedAfterParent(e);
+            ApplyToolbarIcons(DeviceDpi);
+        }
+
+        internal void ApplyDpi(int dpi)
+        {
+            ApplyToolbarIcons(dpi);
+        }
+
+        private static readonly Dictionary<string, string> _toolbarXamlNames = new Dictionary<string, string>
+        {
+            { "cmdAdd", "Add" },
+            { "cmdAddNewPage", "AddDocument" },
+            { "cmdDelete", "Delete" },
+            { "cmdEditKey", "EditKey" },
+            { "cmdEdit", "Edit" },
+            { "cmdLink", "Link" },
+            { "cmdGoToPage", "GoToDefinition" },
+            { "cmdMoveUp", "MoveUp" },
+            { "cmdMoveDown", "MoveDown" },
+        };
+
+        private void ApplyToolbarIcons(int dpi)
+        {
+            float scale = dpi / 96f;
+            int size = Math.Max(16, (int)(16 * scale));
+            ctlToolStrip.ImageScalingSize = new Size(size, size);
+            foreach (ToolStripItem item in ctlToolStrip.Items)
+            {
+                string xamlName;
+                if (_toolbarXamlNames.TryGetValue(item.Name, out xamlName))
+                {
+                    var bmp = RenderXaml(xamlName, size);
+                    if (bmp != null)
+                    {
+                        var old = item.Image;
+                        item.Image = bmp;
+                        if (old != null) old.Dispose();
+                    }
+                }
+            }
+        }
+
+        internal static Bitmap RenderXaml(string name, int size)
+        {
+            var asm = System.Reflection.Assembly.GetExecutingAssembly();
+            var resourceName = asm.GetManifestResourceNames()
+                .FirstOrDefault(n => n.EndsWith("." + name + ".xaml", StringComparison.OrdinalIgnoreCase));
+            if (resourceName == null) return null;
+            using (var stream = asm.GetManifestResourceStream(resourceName))
+            {
+                var visual = System.Windows.Markup.XamlReader.Load(stream) as System.Windows.FrameworkElement;
+                if (visual == null) return null;
+                visual.Width = size;
+                visual.Height = size;
+                visual.Measure(new System.Windows.Size(size, size));
+                visual.Arrange(new System.Windows.Rect(0, 0, size, size));
+                var rtb = new System.Windows.Media.Imaging.RenderTargetBitmap(size, size, 96, 96, System.Windows.Media.PixelFormats.Pbgra32);
+                rtb.Render(visual);
+                var encoder = new System.Windows.Media.Imaging.PngBitmapEncoder();
+                encoder.Frames.Add(System.Windows.Media.Imaging.BitmapFrame.Create(rtb));
+                using (var ms = new System.IO.MemoryStream())
+                {
+                    encoder.Save(ms);
+                    ms.Position = 0;
+                    using (var raw = new Bitmap(ms))
+                        return new Bitmap(raw);
+                }
+            }
+        }
+
         public WFListEditor()
         {
             InitializeComponent();

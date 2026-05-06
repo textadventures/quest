@@ -1,6 +1,8 @@
 ---
-layout: index
 title: turnscript element
+parent: "XML Elements"
+grand_parent: "Reference"
+nav_order: 16
 ---
 
     <turnscript name="name">attributes</turnscript>

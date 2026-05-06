@@ -1,6 +1,7 @@
 ---
-layout: index
 title: ToRoman
+parent: "String Functions"
+grand_parent: "Functions"
 ---
 
     ToRoman (int)

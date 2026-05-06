@@ -34,15 +34,12 @@ Public Class GameList
 
     Public Sub CreateListElements(list As List(Of GameListItemData))
         Dim newItem As GameListItem
-        Dim count As Integer = 0
 
         ClearListElements()
 
         If list Is Nothing Then Return
 
         For Each data As GameListItemData In list
-            count += 1
-
             Dim key As String = String.Format("{0}~{1}", data.GameId, data.DownloadFilename)
 
             If Not String.IsNullOrEmpty(data.DownloadFilename) AndAlso m_gameListItems.ContainsKey(key) Then
@@ -76,8 +73,8 @@ Public Class GameList
                     newItem.DownloadFilename = downloadFilename
                     newItem.Author = data.Author
                     newItem.GameId = data.GameId
-                    If Not String.IsNullOrEmpty(data.Thumbnail) Then
-                        newItem.SetImageURL(data.Thumbnail)
+                    If Not String.IsNullOrEmpty(data.Cover) Then
+                        newItem.SetImageURL(data.Cover)
                     End If
 
                     If System.IO.File.Exists(downloadFilename) Then
@@ -102,11 +99,6 @@ Public Class GameList
 
             m_visibleGameListItems.Add(newItem)
 
-            If count Mod 2 = 0 Then
-                newItem.SetBackground(New SolidColorBrush(Colors.WhiteSmoke))
-            Else
-                newItem.SetBackground(Nothing)
-            End If
 
             stackPanel.Children.Add(newItem)
         Next

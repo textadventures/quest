@@ -1,6 +1,7 @@
 ---
-layout: index
 title: ListExclude
+parent: "List Functions"
+grand_parent: "Functions"
 ---
 
     ListExclude (list, any type item or list)

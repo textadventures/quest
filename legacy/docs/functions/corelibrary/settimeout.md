@@ -1,6 +1,7 @@
 ---
-layout: index
 title: SetTimeout
+parent: "Timers and Turnscripts"
+grand_parent: "Functions"
 ---
 
     SetTimeout (interval, script)

@@ -1,6 +1,7 @@
 ---
-layout: index
 title: ScopeReachableForRoom
+parent: "Scope Functions"
+grand_parent: "Functions"
 ---
 
     ScopeReachableForRoom (room)

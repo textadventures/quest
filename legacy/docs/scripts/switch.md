@@ -1,6 +1,6 @@
 ---
-layout: index
 title: switch
+parent: "Script commands"
 ---
 
     switch (any type value) { case (any type value) { script } [ default { script } ] }

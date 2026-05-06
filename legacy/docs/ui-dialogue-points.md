@@ -1,6 +1,7 @@
 ---
-layout: index
 title: Adding a Dialogue Panel That Assigns Points
+nav_order: 11
+parent: "User Experience"
 ---
 
 

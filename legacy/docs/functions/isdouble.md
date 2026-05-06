@@ -1,6 +1,7 @@
 ---
-layout: index
 title: IsDouble
+parent: "Functions for Variables"
+grand_parent: "Functions"
 ---
 
     IsDouble (string number)

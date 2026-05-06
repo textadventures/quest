@@ -1,6 +1,7 @@
 ---
-layout: index
 title: Exits
+nav_order: 2
+parent: "Features"
 ---
 
 Exits are dead easy to set up in Quest. Go to the _Exits_ tab of the room, click the direction, select a destination, choose if you want to also create a reverse exit and click "Create exit".
@@ -21,7 +22,7 @@ When you create a room, you will find you cannot create an exit that goes to the
 Type vs alias
 -------------
 
-Quest uses the alias of the exit to decide which direction it is. The type is used when the exit is created, but does not really do anything once that has happened (it does provide an alternative name, if the alias is "east" and the type is "north", then the exit will get used for EAST, E and N).
+Quest uses the alias of the exit to decide which direction it is. The type is used when the exit is created, but does not really do anything once that has happened (it does provide an alternative name, if the alias is "east" and the type is "north", then the exit will get used for `EAST`, `E` and `N`).
 
 In the desktop version you can set the alias to any value you like, so you could have "kitchen" as a direction (you could do this in the web version by setting the exit alias in the start script, but it will be a pain if you do this for all the exits in your game). Note that the exit will then appear in the list of "Places and Objects" rather than the compass. Set the type to "Non-directional exit".
 
@@ -50,15 +51,15 @@ A name is optional for an exit (if you do not give the exit a room, Quest will w
 Locked vs Visible vs Scenery
 -----------------------------
 
-An exit that is not **visible** will not appear in the compass rose or room description, and cannot be used. As far as the player is concerned, it does not exit.
+An exit that is not **visible** will not appear in the compass rose or room description, and cannot be used. As far as the player is concerned, it does not exist.
 
-Having an exit invisible is a great way of making an exit during the game. Suppose the explosion has created a new opening through the wall. Rather than create a new exit during the game, it is far easy to have the exit already created in the editor, and just set it to be visible at the explosion.
+Having an exit invisible is a great way of making an exit during the game. Suppose the explosion has created a new opening through the wall. Rather than create a new exit during the game, it is far easier to have the exit already created in the editor, and just set it to be visible at the explosion.
 
 An exit that is **locked** will be listed in the room description, and will be visible in the compass rose, but the player will not be able to use it (she will see the locked message instead).
 
 An exit flagged as **scenery** will not be listed in the room description, and will not be visible in the compass rose, but the player will still be able to use it.
 
-If you have a flight of stairs heading up to the east, the player might type UP or EAST, so you need to be able to handle both. However, if the room description lists both up and east as exits, the player will think they are different exits. The solution is to flag one as scenery.
+If you have a flight of stairs heading up to the east, the player might type `UP` or `EAST`, so you need to be able to handle both. However, if the room description lists both up and east as exits, the player will think they are different exits. The solution is to flag one as scenery.
 
 
 Print message when used
@@ -114,12 +115,12 @@ else {
 
 The basic principle is that we test the condition. If the condition passes, then we print a message, and move the player (it is important to do the message first, as moving the player will cause the room description to get printed, and you want the message before that). If the condition fails, just give a message.
 
-This is very much like having the exit locked, so when would you use this, rather than unlocked? This technique is best for checking an on-going situation, so in fact whether the player is carrying a key is actually better done this way. The "locked" attribute is better for specific events, such as the player using the UNLOCK command...  Hmm, turns out setting up a locked door is pretty involved, but is discussed in detail [here](setting_up_door.html).
+This is very much like having the exit locked, so when would you use this, rather than unlocked? This technique is best for checking an on-going situation, so in fact whether the player is carrying a key is actually better done this way. The "locked" attribute is better for specific events, such as the player using the `UNLOCK` command...  Hmm, turns out setting up a locked door is pretty involved, but is discussed in detail [here](setting_up_door.html).
 
 
 ### Move and...
 
-You might the player to trigger some event by using the exit.
+You might want the player to trigger some event by using the exit.
 
 ![](images/exitscript2.png "exitscript2.png")
 

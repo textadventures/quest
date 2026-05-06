@@ -1,6 +1,7 @@
 ---
-layout: index
 title: Grid ShowCustomLayer
+parent: "Internal Core.aslx Functions"
+grand_parent: "Functions"
 ---
 
     Grid ShowCustomLayer (boolean visible)

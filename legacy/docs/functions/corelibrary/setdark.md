@@ -1,6 +1,7 @@
 ---
-layout: index
 title: SetDark
+parent: "Core.aslx Functions"
+grand_parent: "Functions"
 ---
 
     SetDark(room)

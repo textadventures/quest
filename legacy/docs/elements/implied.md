@@ -1,6 +1,8 @@
 ---
-layout: index
 title: implied element
+parent: "XML Elements"
+grand_parent: "Reference"
+nav_order: 17
 ---
 
     <implied element="element" property="attribute name" type="type"/>

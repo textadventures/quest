@@ -1,6 +1,7 @@
 ---
-layout: index
 title: IndexOf
+parent: "List Functions"
+grand_parent: "Functions"
 ---
 
     IndexOf (list, anything)

@@ -1,6 +1,7 @@
 ---
-layout: index
 title: Grid_AddNewShapePoint
+parent: "Internal Core.aslx Functions"
+grand_parent: "Functions"
 ---
 
     Grid_AddNewShapePoint (int x, int y)

@@ -1,6 +1,7 @@
 ---
-layout: index
 title: GetRandomDouble
+parent: "Randomising Functions"
+grand_parent: "Functions"
 ---
 
     GetRandomDouble ()

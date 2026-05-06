@@ -1,6 +1,7 @@
 ---
-layout: index
 title: ToDouble
+parent: "Functions for Variables"
+grand_parent: "Functions"
 ---
 
     ToDouble (string number)

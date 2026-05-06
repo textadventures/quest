@@ -1,8 +1,11 @@
 ---
-layout: index
 title: Quest 5.7
+nav_order: 2
+parent: "Release Notes"
 ---
 
+{: .note }
+This page was written by ThePix
 
 This file documents changes to Quest as of version 5.7.
 
@@ -151,7 +154,7 @@ New functions
 -------------
 
 -  [ScopeUnlockedExitsForRoom](functions/scopeunlockedexitsforroom.html)
--  [CloneObjectAndMoveHere](functions/cloneobjectandmovehere.html)
+-  [CloneObjectAndMoveHere](functions/corelibrary/cloneobjectandmovehere.html)
 -  [CreateBiExits](functions/createbiexits.html): Creates an exit in the given direction, between the given rooms, and a second exit coming back.
 -  [Equal](functions/equal.html): Compares any two things (comparing 4 and null will otherwise throw an error).
 
@@ -261,7 +264,7 @@ The second runs when Quest does not understand a command. The unresolvedcommandh
 
 The third is used by `ScopeReachableNotHeldForRoom` function, which Quest uses to match player input to commands. You can use it to add items to a local variable, a list called "items". This offers a relatively easy way to add "backdrop" objects; things that are always there, such as wall, ceiling, floor. You just have one of each of these in your game, this script effectively adds them to every room, so the player can LOOK AT WALL, and it will work with minimal effort. You could go further, and have different things in different types of rooms. If the room name has "forest" in it, add the `tree` object, for example.
 
-[Advanced scripts](advanced_game_script.html)
+[Advanced scripts](advanced_game_scripts.html)
 
 Scope attribute for commands
 ----------------------------
@@ -338,7 +341,7 @@ When adding a new verb, Quest will check if it will clash with an existing comma
 Testing
 -------
 
-Many of the changes have been unit tested in a Quest game made for that purpose; it can be found [here](unit test_for_5_7.aslx). The start script will test each feature in turn, and compare the result against an expected value, outputting a dot if it passes and an 'F' otherwise. There are over 500 such tests.
+Many of the changes have been unit tested in a Quest game made for that purpose; it can be found [here](util/unit_test_for_5_7.aslx). The start script will test each feature in turn, and compare the result against an expected value, outputting a dot if it passes and an 'F' otherwise. There are over 500 such tests.
 
 Some features, such as those related to the interface, do not lend themselves to testing in this way.
  

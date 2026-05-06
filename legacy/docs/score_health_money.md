@@ -1,6 +1,7 @@
 ---
-layout: index
 title: Score, Health and Money
+nav_order: 7
+parent: "Features"
 ---
 
 
@@ -50,7 +51,7 @@ finish
 You can set an object to be food (or a potion, or whatever) that will heal the player. Go to the _Features_ of the object and tick "Edible", then go to the _Edible_ tab, select "Can be eaten". You can then set how much health the food will give the player.
 
 
-_NOTE_ If you want a more flexible health system, for example you want to be able to set the maximum health, you are best starting from scratch with a custom attribute, not called "health", and turning off the health feature.
+**NOTE:** If you want a more flexible health system, for example you want to be able to set the maximum health, you are best starting from scratch with a custom attribute, not called "health", and turning off the health feature.
 
 
 Money
@@ -71,3 +72,5 @@ $!
 The money format string is also used by the `DisplayMoney` function, and has a lot of options beyond the scope of this page, but can be seen [here](functions/string/displaymoney.html).
 
 When "Money" is ticked, you will find there is a "Price" number box for every object on its _Inventory_ tab.
+
+For a tutorial on building a more flexible scoring system with achievements, rankings, and a SCORE command, see [How to Keep Score](keeping_score.html).

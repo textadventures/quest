@@ -29,8 +29,6 @@ Partial Class Editor
         Me.pnlContent = New System.Windows.Forms.Panel()
         Me.pnlHeader = New System.Windows.Forms.Panel()
         Me.ctlBanner = New TextAdventures.Quest.AlertBanner()
-        Me.StatusStrip1 = New System.Windows.Forms.StatusStrip()
-        Me.lblHeader = New System.Windows.Forms.ToolStripStatusLabel()
         Me.ctlSaveFile = New System.Windows.Forms.SaveFileDialog()
         Me.ctlTextEditor = New TextAdventures.Quest.TextEditorControl()
         Me.ctlReloadBanner = New TextAdventures.Quest.AlertBanner()
@@ -41,13 +39,12 @@ Partial Class Editor
         Me.splitMain.Panel2.SuspendLayout()
         Me.splitMain.SuspendLayout()
         Me.pnlHeader.SuspendLayout()
-        Me.StatusStrip1.SuspendLayout()
         Me.SuspendLayout()
         '
         'splitMain
         '
         resources.ApplyResources(Me.splitMain, "splitMain")
-        Me.splitMain.BackColor = System.Drawing.Color.GhostWhite
+        Me.splitMain.BackColor = System.Drawing.SystemColors.Window
         Me.splitMain.FixedPanel = System.Windows.Forms.FixedPanel.Panel1
         Me.splitMain.Name = "splitMain"
         '
@@ -62,12 +59,11 @@ Partial Class Editor
         resources.ApplyResources(Me.splitMain.Panel2, "splitMain.Panel2")
         Me.splitMain.Panel2.Controls.Add(Me.pnlContent)
         Me.splitMain.Panel2.Controls.Add(Me.pnlHeader)
-        Me.splitMain.Panel2.Controls.Add(Me.StatusStrip1)
         '
         'ctlTree
         '
         resources.ApplyResources(Me.ctlTree, "ctlTree")
-        Me.ctlTree.BackColor = System.Drawing.Color.GhostWhite
+        Me.ctlTree.BackColor = System.Drawing.SystemColors.Window
         Me.ctlTree.ForeColor = System.Drawing.Color.Black
         Me.ctlTree.IncludeRootLevelInSearchResults = True
         Me.ctlTree.Name = "ctlTree"
@@ -83,7 +79,7 @@ Partial Class Editor
         'pnlContent
         '
         resources.ApplyResources(Me.pnlContent, "pnlContent")
-        Me.pnlContent.BackColor = System.Drawing.Color.GhostWhite
+        Me.pnlContent.BackColor = System.Drawing.SystemColors.Window
         Me.pnlContent.Name = "pnlContent"
         '
         'pnlHeader
@@ -99,20 +95,6 @@ Partial Class Editor
         Me.ctlBanner.BackColor = System.Drawing.Color.FromArgb(CType(CType(255, Byte), Integer), CType(CType(255, Byte), Integer), CType(CType(192, Byte), Integer))
         Me.ctlBanner.ButtonText = "Action"
         Me.ctlBanner.Name = "ctlBanner"
-        '
-        'StatusStrip1
-        '
-        resources.ApplyResources(Me.StatusStrip1, "StatusStrip1")
-        Me.StatusStrip1.BackColor = System.Drawing.Color.GhostWhite
-        Me.StatusStrip1.ImageScalingSize = New System.Drawing.Size(20, 20)
-        Me.StatusStrip1.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.lblHeader})
-        Me.StatusStrip1.Name = "StatusStrip1"
-        '
-        'lblHeader
-        '
-        resources.ApplyResources(Me.lblHeader, "lblHeader")
-        Me.lblHeader.Image = Global.TextAdventures.Quest.My.Resources.Resources.s_object_open
-        Me.lblHeader.Name = "lblHeader"
         '
         'ctlSaveFile
         '
@@ -144,7 +126,7 @@ Partial Class Editor
         'ctlToolbar
         '
         resources.ApplyResources(Me.ctlToolbar, "ctlToolbar")
-        Me.ctlToolbar.BackColor = System.Drawing.Color.GhostWhite
+        Me.ctlToolbar.BackColor = System.Drawing.SystemColors.Window
         Me.ctlToolbar.CodeView = False
         Me.ctlToolbar.EditorStyle = TextAdventures.Quest.EditorStyle.TextAdventure
         Me.ctlToolbar.Name = "ctlToolbar"
@@ -156,7 +138,7 @@ Partial Class Editor
         '
         resources.ApplyResources(Me, "$this")
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
-        Me.BackColor = System.Drawing.Color.GhostWhite
+        Me.BackColor = System.Drawing.SystemColors.Window
         Me.Controls.Add(Me.splitMain)
         Me.Controls.Add(Me.ctlTextEditor)
         Me.Controls.Add(Me.ctlReloadBanner)
@@ -169,8 +151,6 @@ Partial Class Editor
         CType(Me.splitMain, System.ComponentModel.ISupportInitialize).EndInit()
         Me.splitMain.ResumeLayout(False)
         Me.pnlHeader.ResumeLayout(False)
-        Me.StatusStrip1.ResumeLayout(False)
-        Me.StatusStrip1.PerformLayout()
         Me.ResumeLayout(False)
 
     End Sub
@@ -184,7 +164,5 @@ Partial Class Editor
     Friend WithEvents ctlReloadBanner As TextAdventures.Quest.AlertBanner
     Friend WithEvents ctlLoading As TextAdventures.Quest.LoadingControl
     Friend WithEvents ctlToolbar As MainToolbar
-    Friend WithEvents StatusStrip1 As StatusStrip
-    Friend WithEvents lblHeader As ToolStripStatusLabel
     Friend WithEvents Splitter1 As Splitter
 End Class

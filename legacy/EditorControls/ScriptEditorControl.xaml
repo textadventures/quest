@@ -36,17 +36,7 @@
                     <RowDefinition Height="Auto"/>
                 </Grid.RowDefinitions>
                 <this:ScriptToolbar x:Name="ctlToolbar" IsTabStop="False"/>
-                <Border BorderThickness="1" Padding="4,2,4,4" BorderBrush="{DynamicResource {x:Static SystemColors.ControlDarkBrushKey}}" Grid.Row="1" Name="textEditorBorder" Visibility="Collapsed" Background="White">
-                    <avalonEdit:TextEditor
-                    xmlns:avalonEdit="http://icsharpcode.net/sharpdevelop/avalonedit"
-                    Name="textEditor"
-                    FontFamily="Consolas, Courier New"
-                    FontSize="10pt" Text=""
-                    VerticalScrollBarVisibility="Auto"
-                    HorizontalScrollBarVisibility="Auto"
-                    MaxHeight="500"
-                    SyntaxHighlighting="C#"/>
-                </Border>
+                <Border BorderThickness="1" Padding="4,2,4,4" BorderBrush="{DynamicResource {x:Static SystemColors.ControlDarkBrushKey}}" Grid.Row="1" Name="textEditorBorder" Visibility="Collapsed" Background="White"/>
                 <ListBox Name="lstScripts" Grid.Row="1" SelectionMode="Extended" SelectionChanged="lstScripts_SelectionChanged" AlternationCount="2" ScrollViewer.HorizontalScrollBarVisibility="Disabled">
                     <ListBox.Resources>
                         <LinearGradientBrush x:Key="{x:Static SystemColors.HighlightBrushKey}" StartPoint="0,0" EndPoint="0,0.5" SpreadMethod="Reflect">
@@ -96,7 +86,11 @@
                     <Button.BorderBrush>
                         <SolidColorBrush Color="#FFB4B4B4"/>
                     </Button.BorderBrush>
-                    <Image RenderOptions.BitmapScalingMode="HighQuality" Width="16" Height="16" SnapsToDevicePixels="True" Stretch="None" Source="./Images/AddScript.png"/>
+                    <Viewbox Width="16" Height="16">
+                        <Canvas Background="Transparent" Width="16" Height="16">
+                            <Path Data="M8 2.5C8 2.22386 7.77614 2 7.5 2C7.22386 2 7 2.22386 7 2.5V7H2.5C2.22386 7 2 7.22386 2 7.5C2 7.77614 2.22386 8 2.5 8H7V12.5C7 12.7761 7.22386 13 7.5 13C7.77614 13 8 12.7761 8 12.5V8H12.5C12.7761 8 13 7.77614 13 7.5C13 7.22386 12.7761 7 12.5 7H8V2.5Z" Fill="#11910D"/>
+                        </Canvas>
+                    </Viewbox>
                 </Button>
             </Grid>
         </Grid>

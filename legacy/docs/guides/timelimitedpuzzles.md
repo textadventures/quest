@@ -1,9 +1,11 @@
 ---
-layout: index
-title: Timelimitedpuzzles
+title: Time-limited puzzles
+parent: "Community Guides"
+grand_parent: "Other Guides"
+nav_order: 1
 ---
 
-*This tutorial was published by Alex in his blog [1](http://www.textadventures.co.uk/blog/2012/02/27/time-limited-puzzles)*
+*This tutorial was originally published on the textadventures.co.uk blog.*
 
 When I was at Perins School last week, I was asked about puzzles with a time limit. For example, the player opens a cupboard, inside which is a hungry alien. How do you give the player 10 seconds to kill the alien, before the alien kills them instead?
 

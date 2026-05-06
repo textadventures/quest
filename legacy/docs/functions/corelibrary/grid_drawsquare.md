@@ -1,6 +1,7 @@
 ---
-layout: index
 title: Grid_DrawSquare
+parent: "Internal Core.aslx Functions"
+grand_parent: "Functions"
 ---
 
     Grid_DrawSquare (string id, int x, int y, int width, int height, string text, string fill)

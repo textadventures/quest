@@ -1,6 +1,8 @@
 ---
-layout: index
 title: Introduction at Start of Game
+parent: "Helpsheets for beginners"
+grand_parent: "Other Guides"
+nav_order: 1
 ---
 
 *Every game should have instructions or an introduction at the start. Here is how to do it*

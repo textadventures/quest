@@ -1,6 +1,7 @@
 ---
-layout: index
 title: WaitForKeyPress
+parent: "User Interface Functions"
+grand_parent: "Functions"
 ---
 
 **Note:** This function is deprecated as of Quest 5.1 - use the [wait](../../scripts/wait.html) script command instead.

@@ -1,6 +1,7 @@
 ---
-layout: index
 title: SetBackgroundOpacity
+parent: "User Interface Functions"
+grand_parent: "Functions"
 ---
 
     SetBackgroundOpacity(float value)

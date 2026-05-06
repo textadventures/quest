@@ -1,6 +1,6 @@
 ---
-layout: index
 title: stop sound
+parent: "Script commands"
 ---
 
     stop sound

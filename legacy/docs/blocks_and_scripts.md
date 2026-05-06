@@ -1,6 +1,7 @@
 ---
-layout: index
 title: Blocks and scripts
+nav_order: 11
+parent: "Coding With Quest"
 ---
 
 

@@ -1,6 +1,8 @@
 ---
-layout: index
 title: Immobilise the player
+parent: "Community Guides"
+grand_parent: "Other Guides"
+nav_order: 4
 ---
 
 Occasionally you want to stop the player moving to another room, say because he is sat down, and he has to stand first, or he is tied up or whatever. There are three ways (at least) to do this:
@@ -26,7 +28,7 @@ The way to do this is to rewrite the GO command.
 
 Create a new command, and set the pattern to be a regular expression. In the text box below, paste in this string:
 
-> ^go to (?<exit>.*)$|^go (?<exit>.*)$|^(?<exit>north|east|south|west|northeast|northwest|southeast|southwest|in|out|up|down|n|e|s|w|ne|nw|se|sw|o|u|d)$
+    ^go to (?<exit>.*)$|^go (?<exit>.*)$|^(?<exit>north|east|south|west|northeast|northwest|southeast|southwest|in|out|up|down|n|e|s|w|ne|nw|se|sw|o|u|d)$
 
 Then paste in this code.
 

@@ -1,6 +1,6 @@
 ---
-layout: index
 title: Functions
+nav_exclude: true
 ---
 
 

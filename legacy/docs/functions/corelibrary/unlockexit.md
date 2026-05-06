@@ -1,6 +1,7 @@
 ---
-layout: index
 title: UnlockExit
+parent: "Functions for Objects and Exits"
+grand_parent: "Functions"
 ---
 
     UnlockExit (exit)

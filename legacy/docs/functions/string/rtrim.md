@@ -1,6 +1,7 @@
 ---
-layout: index
 title: RTrim
+parent: "String Functions"
+grand_parent: "Functions"
 ---
 
     RTrim (input)

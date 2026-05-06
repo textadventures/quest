@@ -1,6 +1,8 @@
 ---
-layout: index
 title: Multiple Options using Switch
+parent: "Helpsheets for beginners"
+grand_parent: "Other Guides"
+nav_order: 14
 ---
 
 *The Switch command allows you to set lots of different options for a user entering values. In this example I have set this up for dialling telephone numbers*

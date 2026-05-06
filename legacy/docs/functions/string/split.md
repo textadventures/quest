@@ -1,6 +1,7 @@
 ---
-layout: index
 title: Split
+parent: "String Functions"
+grand_parent: "Functions"
 ---
 
     Split (string input, string split character)

@@ -1,6 +1,7 @@
 ---
-layout: index
 title: EndsWith
+parent: "String Functions"
+grand_parent: "Functions"
 ---
 
     EndsWith (string input, string ending)

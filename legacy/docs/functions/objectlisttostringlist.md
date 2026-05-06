@@ -1,6 +1,7 @@
 ---
-layout: index
 title: ObjectListToStringList
+parent: "List Functions"
+grand_parent: "Functions"
 ---
 
     ObjectListToStringList (objectlist list, string attribute name)

@@ -58,7 +58,7 @@
             // 
             this.ctlToolStrip.BackColor = System.Drawing.Color.White;
             this.ctlToolStrip.GripStyle = System.Windows.Forms.ToolStripGripStyle.Hidden;
-            this.ctlToolStrip.ImageScalingSize = new System.Drawing.Size(32, 32);
+            this.ctlToolStrip.ImageScalingSize = new System.Drawing.Size(16, 16);
             this.ctlToolStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.cmdAdd,
             this.cmdAddNewPage,
@@ -75,14 +75,12 @@
             // cmdAdd
             // 
             this.cmdAdd.AutoToolTip = false;
-            this.cmdAdd.Image = global::TextAdventures.Quest.EditorControls.Properties.Resources.s_wf_add;
             resources.ApplyResources(this.cmdAdd, "cmdAdd");
             this.cmdAdd.Name = "cmdAdd";
             // 
             // cmdAddNewPage
             // 
             this.cmdAddNewPage.AutoToolTip = false;
-            this.cmdAddNewPage.Image = global::TextAdventures.Quest.EditorControls.Properties.Resources.s_wf_add_page;
             resources.ApplyResources(this.cmdAddNewPage, "cmdAddNewPage");
             this.cmdAddNewPage.Name = "cmdAddNewPage";
             this.cmdAddNewPage.Tag = "addpage";
@@ -90,28 +88,24 @@
             // cmdDelete
             // 
             this.cmdDelete.AutoToolTip = false;
-            this.cmdDelete.Image = global::TextAdventures.Quest.EditorControls.Properties.Resources.s_wf_delete;
             resources.ApplyResources(this.cmdDelete, "cmdDelete");
             this.cmdDelete.Name = "cmdDelete";
             // 
             // cmdEditKey
             // 
             this.cmdEditKey.AutoToolTip = false;
-            this.cmdEditKey.Image = global::TextAdventures.Quest.EditorControls.Properties.Resources.s_wf_rename_key;
             resources.ApplyResources(this.cmdEditKey, "cmdEditKey");
             this.cmdEditKey.Name = "cmdEditKey";
             // 
             // cmdEdit
             // 
             this.cmdEdit.AutoToolTip = false;
-            this.cmdEdit.Image = global::TextAdventures.Quest.EditorControls.Properties.Resources.s_wf_options;
             resources.ApplyResources(this.cmdEdit, "cmdEdit");
             this.cmdEdit.Name = "cmdEdit";
             // 
             // cmdLink
             // 
             this.cmdLink.AutoToolTip = false;
-            this.cmdLink.Image = global::TextAdventures.Quest.EditorControls.Properties.Resources.s_wf_link;
             resources.ApplyResources(this.cmdLink, "cmdLink");
             this.cmdLink.Name = "cmdLink";
             this.cmdLink.Tag = "link";
@@ -119,7 +113,6 @@
             // cmdGoToPage
             // 
             this.cmdGoToPage.AutoToolTip = false;
-            this.cmdGoToPage.Image = global::TextAdventures.Quest.EditorControls.Properties.Resources.s_wf_domain;
             resources.ApplyResources(this.cmdGoToPage, "cmdGoToPage");
             this.cmdGoToPage.Name = "cmdGoToPage";
             this.cmdGoToPage.Tag = "goto";
@@ -127,7 +120,6 @@
             // cmdMoveUp
             // 
             this.cmdMoveUp.AutoToolTip = false;
-            this.cmdMoveUp.Image = global::TextAdventures.Quest.EditorControls.Properties.Resources.s_wf_up;
             resources.ApplyResources(this.cmdMoveUp, "cmdMoveUp");
             this.cmdMoveUp.Name = "cmdMoveUp";
             this.cmdMoveUp.Click += new System.EventHandler(this.cmdMoveUp_Click);
@@ -135,7 +127,6 @@
             // cmdMoveDown
             // 
             this.cmdMoveDown.AutoToolTip = false;
-            this.cmdMoveDown.Image = global::TextAdventures.Quest.EditorControls.Properties.Resources.s_wf_down;
             resources.ApplyResources(this.cmdMoveDown, "cmdMoveDown");
             this.cmdMoveDown.Name = "cmdMoveDown";
             this.cmdMoveDown.Click += new System.EventHandler(this.cmdMoveDown_Click);

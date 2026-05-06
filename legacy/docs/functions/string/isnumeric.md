@@ -1,6 +1,7 @@
 ---
-layout: index
 title: IsNumeric
+parent: "String Functions"
+grand_parent: "Functions"
 ---
 
     IsNumeric (string input)

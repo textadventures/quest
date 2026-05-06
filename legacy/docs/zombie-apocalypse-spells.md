@@ -1,6 +1,7 @@
 ---
-layout: index
 title: Spells for the Zombie Apocalypse
+nav_order: 4
+parent: "Introduction to RPGs"
 ---
 
 
@@ -34,7 +35,7 @@ First, go to the _Features_ tab of the game object, and tick "Lightness and dark
 
 Now we can create the command. The pattern for our "frotz" spell will be this:
 
-> frotz #object#;cast frotz at #object#;cast frotz at #object#
+    frotz #object#;cast frotz at #object#;cast frotz at #object#
 
 You also need to give the command a name, "frotz", so we can reference it later (commands generally do not need names, but we will do some magic later that will need these to). Here is the code:
 
@@ -107,7 +108,7 @@ otherwise {
 
 The Lleps spell reverses any known spell. As spells are not objects (okay, I just said commands are, but when Quest tries to match text the player has typed, it only looks at _object_ objects), we will need to use "text" in the command pattern:
 
-> lleps #text#;cast lleps at #text#;cast lleps at #text#
+    lleps #text#;cast lleps at #text#;cast lleps at #text#
 
 The code then looks like this:
 
@@ -248,7 +249,7 @@ It is as easy as that!
 
 This spell teleports the caster to someone else's location, and we will look at it as it can be cast on objects that are not here. The pattern is the usual:
 
-> aimfiz #object#;cast aimfiz at #object#;cast aimfiz at #object#
+    aimfiz #object#;cast aimfiz at #object#;cast aimfiz at #object#
 
 Remember to name it "aimfiz" so it can be reversed. We will say that if it is reversed the target gets teleported to the player.
 

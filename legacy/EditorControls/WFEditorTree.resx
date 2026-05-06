@@ -123,7 +123,7 @@
   </data>
   <assembly alias="System.Drawing" name="System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
   <data name="txtSearch.Font" type="System.Drawing.Font, System.Drawing">
-    <value>Microsoft Sans Serif, 11pt</value>
+    <value>Microsoft Sans Serif, 9pt</value>
   </data>
   <data name="txtSearch.Location" type="System.Drawing.Point, System.Drawing">
     <value>0, 0</value>
@@ -190,7 +190,7 @@
     <value>0, 0, 0, 0</value>
   </data>
   <data name="ctlToolStrip.Size" type="System.Drawing.Size, System.Drawing">
-    <value>289, 20</value>
+    <value>289, 28</value>
   </data>
   <data name="ctlToolStrip.TabIndex" type="System.Int32, mscorlib">
     <value>5</value>
@@ -325,13 +325,13 @@
     <value>Top</value>
   </data>
   <data name="pnlSearchContainer.Font" type="System.Drawing.Font, System.Drawing">
-    <value>Microsoft Sans Serif, 11pt</value>
+    <value>Microsoft Sans Serif, 9pt</value>
   </data>
   <data name="pnlSearchContainer.Location" type="System.Drawing.Point, System.Drawing">
     <value>0, 0</value>
   </data>
   <data name="pnlSearchContainer.Size" type="System.Drawing.Size, System.Drawing">
-    <value>289, 16</value>
+    <value>289, 28</value>
   </data>
   <data name="pnlSearchContainer.TabIndex" type="System.Int32, mscorlib">
     <value>6</value>
@@ -649,10 +649,7 @@
     <value>Fill</value>
   </data>
   <data name="ctlTreeView.Font" type="System.Drawing.Font, System.Drawing">
-    <value>Microsoft Sans Serif, 7.8pt</value>
-  </data>
-  <data name="ctlTreeView.ImageKey" xml:space="preserve">
-    <value>s_object_close.png</value>
+    <value>Microsoft Sans Serif, 9pt</value>
   </data>
   <metadata name="ctlImageList.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
     <value>548, 17</value>
@@ -700,9 +697,6 @@
   </data>
   <data name="ctlTreeView.Location" type="System.Drawing.Point, System.Drawing">
     <value>0, 16</value>
-  </data>
-  <data name="ctlTreeView.SelectedImageKey" xml:space="preserve">
-    <value>s_object_open.png</value>
   </data>
   <data name="ctlTreeView.Size" type="System.Drawing.Size, System.Drawing">
     <value>289, 301</value>

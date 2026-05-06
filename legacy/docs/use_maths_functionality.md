@@ -1,6 +1,7 @@
 ---
-layout: index
 title: Use maths functionality
+nav_order: 24
+parent: "How To"
 ---
 
 Text adventures do not have a lot of call for mathematics, but Quest does have a lot of maths functions built in nevertheless.

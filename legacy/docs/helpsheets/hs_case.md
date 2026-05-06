@@ -1,6 +1,8 @@
 ---
-layout: index
 title: The CASE Command
+parent: "Helpsheets for beginners"
+grand_parent: "Other Guides"
+nav_order: 10
 ---
 
 *Using the CASE command is a much quicker alternative to lots of “nested” IF scripts. This example shows you how to set up a phone where you can dial different numbers and get different responses*

@@ -1,6 +1,8 @@
 ---
-layout: index
 title: eval
+parent: "JS functions"
+grand_parent: "Reference"
+nav_order: 4
 ---
 
     JS.eval (string JavaScript code)

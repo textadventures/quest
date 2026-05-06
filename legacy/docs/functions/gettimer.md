@@ -1,6 +1,7 @@
 ---
-layout: index
 title: GetTimer
+parent: "Timers and Turnscripts"
+grand_parent: "Functions"
 ---
 
     GetTimer (string timer name)

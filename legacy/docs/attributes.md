@@ -1,6 +1,7 @@
 ---
-layout: index
 title: Attributes
+nav_order: 7
+has_children: true
 ---
 
 Attributes help to describe an object to the game world and users of Quest, attributes can be added to an [object](types/object.html) and can be of any type supported by Quest.
@@ -9,213 +10,64 @@ The game code in Quest, that you write, can interrogate these attributes on an o
 
 See the [Custom attributes](tutorial/custom_attributes.html) tutorial for more information.
 
+What attributes do
+------------------
 
-## Index of internal attributes
+Most things in Quest are objects. In fact there are five types of objects. Rooms, objects and player objects are objects of the object type. Commands and verbs are objects of the command type. Exits are objects of the exit type. Turnscripts are objects of the turnscript type (timers are not objects by the way). The game object is an object of the game type.
 
-## A
+You can use the `GetObject` function to get any of these, and all will register as an object with the `TypeOf` command.
 
-* [Alias](attributes/alias.html)
-* [Allobjects](attributes/allobjects.html)
-* [Alt](attributes/alt.html)
-* [Appendobjectdescription](attributes/appendobjectdescription.html)
-* [Article](attributes/article.html)
-* [Ask](attributes/ask.html)
-* [Askdefault](attributes/askdefault.html)
-* [Autodescription](attributes/autodescription.html)
-* [Autodisplayverbs](attributes/autodisplayverbs.html)
-* [Autoopen](attributes/autoopen.html)
-* [Autounlock](attributes/autounlock.html)
+So what makes a turnscript different to a room or the player? The answer is: attributes.
 
-## B
+Attributes are values that are attached to an object. All objects have a "name" attribute that is unique to them. All objects have an "elementtype" attribute that is equal to "object". All objects have a "type" attribute equal to the type of the object ("object", "command", "exit", "turnscript" or "game"). Quest uses these to track what things are, and they cannot be changed during play, and indeed only the "name" attribute can be changed in the editor.
 
-* [Backgroundimage](attributes/backgroundimage.html)
-* [Backgroundopacity](attributes/backgroundopacity.html)
-* [Beforefirstenter](attributes/beforefirstenter.html)
+By the way, it is also worth mentioning that you cannot give anything an attribute with any of these five names: "object", "command", "turnscript", "game", "exit", "type", "elementtype", "finish".
 
-## C
+All other attributes you can add, modify or remove as you like, both with the editor and during play, and this is what makes your game world.
 
-* [Canlockopen](attributes/canlockopen.html)
-* [Clearframe](attributes/clearframe.html)
-* [Close](attributes/close.html)
-* [Closescript](attributes/closescript.html)
-* [Compassdirections](attributes/compassdirections.html)
-* [Container](attributes/container.html)
-* [Containerfullmessage](attributes/containerfullmessage.html)
-* [Container_base](attributes/container_base.html)
-* [Container_closed](attributes/container_closed.html)
-* [Container_limited](attributes/container_limited.html)
-* [Container_lockable](attributes/container_lockable.html)
-* [Container_open](attributes/container_open.html)
-* [Contentsprefix](attributes/contentsprefix.html)
 
-## D
+Built-in Attributes
+-------------------
 
-* [Dark](attributes/dark.html)
-* [Darklevel](attributes/darklevel.html)
-* [Defaultbackground](attributes/defaultbackground.html)
-* [Defaultfont](attributes/defaultfont.html)
-* [Defaultfontsize](attributes/defaultfontsize.html)
-* [Defaultforeground](attributes/defaultforeground.html)
-* [Defaultlinkforeground](attributes/defaultlinkforeground.html)
-* [Defaultobject](attributes/defaultobject.html)
-* [Defaultwebfont](attributes/defaultwebfont.html)
-* [Descprefix](attributes/descprefix.html)
-* [Description](attributes/description.html)
-* [Displayroomdescriptiononstart](attributes/displayroomdescriptiononstart.html)
-* [Displayverbs](attributes/displayverbs.html)
-* [Drop](attributes/drop.html)
-* [Dropmsg](attributes/dropmsg.html)
+Lots of things in Quest have built-in attributes; these are the attributes you can set on the various tabs for an object (or whatever). You can access more of them using the _Features_ tab. However, this page is more about custom attributes...
 
-## E
 
-* [Echohyperlinks](attributes/echohyperlinks.html)
-* [Edible](attributes/edible.html)
-* [Editor_object](attributes/editor_object.html)
-* [Editor_room](attributes/editor_room.html)
-* [Enablehyperlinks](attributes/enablehyperlinks.html)
-* [Enter](attributes/enter.html)
-* [Exitslistprefix](attributes/exitslistprefix.html)
+Setting Up Custom Attributes
+---------------------
 
-## F
+On the desktop version you can set up attributes on the _Attributes_ tab. The lower half lists all the attributes for this object, those in grey are what it has inherited from its types (which are listed in the upper half). To add a new attribute, click "Add", give it a name, select a type (it defaults to string), and then give it a starting value.
 
-* [Female](attributes/female.html)
-* [Femaleplural](attributes/femaleplural.html)
-* [Firstenter](attributes/firstenter.html)
+The web version does not support an _Attributes_ tab, so you need to do it differently. Go to the _Features_ tab, and tick "Run an initialisation script for this object", and then go to the _Initialisation script_ tab. Here we can set attributes in a script. Obviously you can do that using the GUI, but it is easier to show using code, and the code is trivial, so that is how I will show it here. In this example, two attributes are set:
 
-## G
+```
+this.colour = "red"
+this.size = 15
+```
 
-* [Gender](attributes/gender.html)
-* [Give](attributes/give.html)
-* [Giveanything](attributes/giveanything.html)
-* [Givesingle](attributes/givesingle.html)
-* [Giveto](attributes/giveto.html)
-* [Givetoanything](attributes/givetoanything.html)
-* [Gridmap](attributes/gridmap.html)
-* [Grid_border](attributes/grid_border.html)
-* [Grid_bordersides](attributes/grid_bordersides.html)
-* [Grid_borderwidth](attributes/grid_borderwidth.html)
-* [Grid_fill](attributes/grid_fill.html)
-* [Grid_label](attributes/grid_label.html)
-* [Grid_length](attributes/grid_length.html)
-* [Grid_parent_offset_auto](attributes/grid_parent_offset_auto.html)
-* [Grid_parent_offset_x](attributes/grid_parent_offset_x.html)
-* [Grid_parent_offset_y](attributes/grid_parent_offset_y.html)
-* [Grid_render](attributes/grid_render.html)
-* [Grid_width](attributes/grid_width.html)
+Each line starts with `this`, which is a special value meaning the object the script is attached to - this object. The dot says we want something attached to the object, and the next bit is the name of attribute (like objects, these can only contain numbers, letters, spaces and underscores, and must start with a letter). Then there is an equals, followed by the value. Note that _red_ is a string, so needs to start and end with double quotes. The 15 is a number, so no quotes required.
 
-## H
 
-* [Hidechildren](attributes/hidechildren.html)
+Status Attributes
+-----------------
 
-## I
+[Status attributes](status_attributes.html) are just attributes that you tell Quest to display - there is nothing special about the attribute itself. 
 
-* [Inventoryverbs](attributes/inventoryverbs.html)
-* [Isopen](attributes/isopen.html)
 
-## K
+Change Scripts
+--------------
 
-* [Key](attributes/key.html)
+A [change script](change_scripts) is a special attribute, a script that will fire whenever another attribute changes. From the example above, we want to update `player.ammonote`, whenever `player.ammo` changes (and `player.ammomax` too).
 
-## L
 
-* [Languageid](attributes/languageid.html)
-* [Lightstrength](attributes/lightstrength.html)
-* [Listchildren](attributes/listchildren.html)
-* [Listchildrenprefix](attributes/listchildrenprefix.html)
-* [Locked](attributes/locked.html)
-* [Lockmessage](attributes/lockmessage.html)
-* [Look](attributes/look.html)
 
-## M
 
-* [Male](attributes/male.html)
-* [Maleplural](attributes/maleplural.html)
-* [Mapscale](attributes/mapscale.html)
-* [Mapsize](attributes/mapsize.html)
-* [Maxobjects](attributes/maxobjects.html)
-* [Menubackground](attributes/menubackground.html)
-* [Menufont](attributes/menufont.html)
-* [Menufontsize](attributes/menufontsize.html)
-* [Menuforeground](attributes/menuforeground.html)
-* [Menuhoverbackground](attributes/menuhoverbackground.html)
-* [Menuhoverforeground](attributes/menuhoverforeground.html)
+Attribute names to avoid
+------------------------
 
-## N
+Quest uses "name", "type" and "elementtype" to track what things are, and will not allow you to change them during a game; only "name" can be changed in the editor.
 
-* [Namedfemale](attributes/namedfemale.html)
-* [Namedmale](attributes/namedmale.html)
-* [Nokeymessage](attributes/nokeymessage.html)
+There are several [important attributes](important_attributes.html) that already have a meaning in Quest, and you are probably best avoiding them to avoid confusion.
 
-## O
+Do not use the following as names for attributes: **command, delegate, dynamictemplate, exit, function, game, include, object, template, timer, turnscript, type, verb**. It may appear at first that these are okay, but when you save the game (whether during play or when editing), the attribute will be converted to an XML element with the same name. When the game is re-loaded, Quest will assume these refer to something else entire, an actual command, or whatever.
 
-* [Objectslistprefix](attributes/objectslistprefix.html)
-* [Onclose](attributes/onclose.html)
-* [Ondrop](attributes/ondrop.html)
-* [Onexit](attributes/onexit.html)
-* [Onlock](attributes/onlock.html)
-* [Onopen](attributes/onopen.html)
-* [Onswitchoff](attributes/onswitchoff.html)
-* [Onswitchon](attributes/onswitchon.html)
-* [Ontake](attributes/ontake.html)
-* [Onunlock](attributes/onunlock.html)
-* [Open](attributes/open.html)
-* [Openable](attributes/openable.html)
-* [Openscript](attributes/openscript.html)
-
-## P
-
-* [Parent](attributes/parent.html)
-* [Parserignoreprefixes](attributes/parserignoreprefixes.html)
-* [Picture](attributes/picture.html)
-* [Plural](attributes/plural.html)
-* [Pov_alias](attributes/pov_alias.html)
-* [Pov_alt](attributes/pov_alt.html)
-* [Pov_article](attributes/pov_article.html)
-* [Pov_gender](attributes/pov_gender.html)
-* [Pov_look](attributes/pov_look.html)
-* [Prefix](attributes/prefix.html)
-
-## S
-
-* [Scenery](attributes/scenery.html)
-* [Selfuseanything](attributes/selfuseanything.html)
-* [Selfuseon](attributes/selfuseon.html)
-* [Setbackgroundopacity](attributes/setbackgroundopacity.html)
-* [Showdescriptiononenter](attributes/showdescriptiononenter.html)
-* [Showhealth](attributes/showhealth.html)
-* [Showpanes](attributes/showpanes.html)
-* [Showscore](attributes/showscore.html)
-* [Start](attributes/start.html)
-* [Statusattributes](attributes/statusattributes.html)
-* [Suffix](attributes/suffix.html)
-* [Surface](attributes/surface.html)
-* [Switchable](attributes/switchable.html)
-* [Switchedoffdesc](attributes/switchedoffdesc.html)
-* [Switchedon](attributes/switchedon.html)
-* [Switchedondesc](attributes/switchedondesc.html)
-* [Switchoffmsg](attributes/switchoffmsg.html)
-* [Switchonmsg](attributes/switchonmsg.html)
-
-## T
-
-* [Take](attributes/take.html)
-* [Takemsg](attributes/takemsg.html)
-* [Tell](attributes/tell.html)
-* [Telldefault](attributes/telldefault.html)
-* [Transparent](attributes/transparent.html)
-
-## U
-
-* [Underlinehyperlinks](attributes/underlinehyperlinks.html)
-* [Unlockmessage](attributes/unlockmessage.html)
-* [Use](attributes/use.html)
-* [Useanything](attributes/useanything.html)
-* [Usedefaultprefix](attributes/usedefaultprefix.html)
-* [Useframe](attributes/useframe.html)
-* [Useon](attributes/useon.html)
-
-## V
-
-* [Visible](attributes/visible.html)
-* [Visited](attributes/visited.html)
-* [Volume](attributes/volume.html)
+For lists and dictionaries, attribute names cannot include spaces. Again, Quest will not complain when you do it, but it will when it tries to save your game (and you might have added a shed of load of data by then). If using the web version this might only become apparent when the player tries to save the game.

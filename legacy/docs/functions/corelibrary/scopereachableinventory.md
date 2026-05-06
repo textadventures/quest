@@ -1,6 +1,7 @@
 ---
-layout: index
 title: ScopeReachableInventory
+parent: "Scope Functions"
+grand_parent: "Functions"
 ---
 
     ScopeReachableInventory ()

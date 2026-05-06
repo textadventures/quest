@@ -51,14 +51,14 @@ Partial Class Main
         '
         'ctlEditor
         '
-        Me.ctlEditor.BackColor = System.Drawing.Color.GhostWhite
+        Me.ctlEditor.BackColor = System.Drawing.SystemColors.Window
         resources.ApplyResources(Me.ctlEditor, "ctlEditor")
         Me.ctlEditor.Name = "ctlEditor"
         Me.ctlEditor.SimpleMode = False
         '
         'ctlMenu
         '
-        Me.ctlMenu.BackColor = System.Drawing.Color.GhostWhite
+        Me.ctlMenu.BackColor = System.Drawing.SystemColors.Window
         resources.ApplyResources(Me.ctlMenu, "ctlMenu")
         Me.ctlMenu.ForeColor = System.Drawing.SystemColors.ControlText
         Me.ctlMenu.Mode = TextAdventures.Quest.Controls.Menu.MenuMode.GameBrowser
@@ -66,7 +66,7 @@ Partial Class Main
         '
         'ctlLauncherHost
         '
-        Me.ctlLauncherHost.BackColor = System.Drawing.Color.GhostWhite
+        Me.ctlLauncherHost.BackColor = System.Drawing.SystemColors.Window
         resources.ApplyResources(Me.ctlLauncherHost, "ctlLauncherHost")
         Me.ctlLauncherHost.Name = "ctlLauncherHost"
         Me.ctlLauncherHost.Child = Me.ctlLauncher

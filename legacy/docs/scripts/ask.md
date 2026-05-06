@@ -1,6 +1,6 @@
 ---
-layout: index
 title: ask
+parent: "Script commands"
 ---
 
     ask (string question) {script}

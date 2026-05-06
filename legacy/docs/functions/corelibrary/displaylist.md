@@ -1,6 +1,7 @@
 ---
-layout: index
 title: DisplayList
+parent: "User Interface Functions"
+grand_parent: "Functions"
 ---
 
     DisplayList (list, boolean numbers)

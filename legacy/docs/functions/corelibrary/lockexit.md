@@ -1,6 +1,7 @@
 ---
-layout: index
 title: LockExit
+parent: "Functions for Objects and Exits"
+grand_parent: "Functions"
 ---
 
     LockExit (exit)

@@ -86,7 +86,7 @@ Partial Class ErrorHandler
         Me.AcceptButton = Me.cmdReport
         resources.ApplyResources(Me, "$this")
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
-        Me.BackColor = System.Drawing.Color.GhostWhite
+        Me.BackColor = System.Drawing.SystemColors.Window
         Me.CancelButton = Me.cmdClose
         Me.Controls.Add(Me.lblIssueTracker)
         Me.Controls.Add(Me.lblHelp)

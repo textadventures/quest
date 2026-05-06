@@ -33,52 +33,52 @@ Friend Class RecentItems
     End Sub
 
     Private Sub LoadRecentList()
-        Dim key As RegistryKey
-        key = Registry.CurrentUser.CreateSubKey(m_regPath)
-        Dim values As List(Of String) = New List(Of String)(key.GetValueNames)
-
         m_recent = New GameListItems
 
-        For Each value As String In values
-            If value.StartsWith("Recent") Then
-                Dim filename As String = DirectCast(key.GetValue(value), String)
+        Using key As RegistryKey = Registry.CurrentUser.CreateSubKey(m_regPath)
+            Dim values As List(Of String) = New List(Of String)(key.GetValueNames)
 
-                If System.IO.File.Exists(filename) Then
-                    Dim nameValue As String
-                    Dim name As String = Nothing
-                    nameValue = "Name" + value.Substring(6)
-                    If values.Contains(nameValue) Then
-                        name = DirectCast(key.GetValue(nameValue), String)
+            For Each value As String In values
+                If value.StartsWith("Recent") Then
+                    Dim filename As String = DirectCast(key.GetValue(value), String)
+
+                    If System.IO.File.Exists(filename) Then
+                        Dim nameValue As String
+                        Dim name As String = Nothing
+                        nameValue = "Name" + value.Substring(6)
+                        If values.Contains(nameValue) Then
+                            name = DirectCast(key.GetValue(nameValue), String)
+                        End If
+
+                        If String.IsNullOrEmpty(name) Then name = "(unknown)"
+                        m_recent.Add(New GameListItemData(filename, name))
+                    Else
+                        Try
+                            key.DeleteValue(value)
+                            key.DeleteValue("Name" + value.Substring(6))
+                        Catch
+                            ' Ignore any failure in deleting items from the registry. Not sure how this could
+                            ' possibly happen but I can see from the error reports it has occurred a few times!
+                        End Try
                     End If
-
-                    If String.IsNullOrEmpty(name) Then name = "(unknown)"
-                    m_recent.Add(New GameListItemData(filename, name))
-                Else
-                    Try
-                        key.DeleteValue(value)
-                        key.DeleteValue("Name" + value.Substring(6))
-                    Catch
-                        ' Ignore any failure in deleting items from the registry. Not sure how this could
-                        ' possibly happen but I can see from the error reports it has occurred a few times!
-                    End Try
                 End If
-            End If
-        Next
+            Next
+        End Using
     End Sub
 
     Private Sub SaveRecentList()
-        Dim key As RegistryKey
-        key = Registry.CurrentUser.CreateSubKey(k_regPathPrefix)
-        key.DeleteSubKey(m_listName)
-        key = Registry.CurrentUser.CreateSubKey(m_regPath)
+        Using parentKey As RegistryKey = Registry.CurrentUser.CreateSubKey(k_regPathPrefix)
+            parentKey.DeleteSubKey(m_listName, throwOnMissingSubKey:=False)
+        End Using
 
-        Dim count As Integer = 1
-
-        For Each value As GameListItemData In m_recent
-            key.SetValue("Recent" + count.ToString(), value.Filename)
-            key.SetValue("Name" + count.ToString(), value.GameName)
-            count += 1
-        Next
+        Using key As RegistryKey = Registry.CurrentUser.CreateSubKey(m_regPath)
+            Dim count As Integer = 1
+            For Each value As GameListItemData In m_recent
+                key.SetValue("Recent" + count.ToString(), value.Filename)
+                key.SetValue("Name" + count.ToString(), value.GameName)
+                count += 1
+            Next
+        End Using
     End Sub
 
     Public ReadOnly Property Items() As GameListItems

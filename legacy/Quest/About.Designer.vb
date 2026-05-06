@@ -26,7 +26,7 @@ Partial Class About
         Me.PictureBox1 = New System.Windows.Forms.PictureBox()
         Me.Panel1 = New System.Windows.Forms.Panel()
         Me.Panel4 = New System.Windows.Forms.Panel()
-        Me.lblCopyright = New System.Windows.Forms.TextBox()
+        Me.lblCopyright = New System.Windows.Forms.LinkLabel()
         Me.Panel3 = New System.Windows.Forms.Panel()
         Me.lblBuild = New System.Windows.Forms.TextBox()
         Me.Panel2 = New System.Windows.Forms.Panel()
@@ -43,7 +43,7 @@ Partial Class About
         '
         'PictureBox1
         '
-        Me.PictureBox1.BackColor = System.Drawing.Color.GhostWhite
+        Me.PictureBox1.BackColor = System.Drawing.Color.White
         resources.ApplyResources(Me.PictureBox1, "PictureBox1")
         Me.PictureBox1.Image = Global.TextAdventures.Quest.My.Resources.Resources.questlogo
         Me.PictureBox1.Name = "PictureBox1"
@@ -65,11 +65,9 @@ Partial Class About
         '
         'lblCopyright
         '
-        Me.lblCopyright.BackColor = System.Drawing.Color.GhostWhite
-        Me.lblCopyright.BorderStyle = System.Windows.Forms.BorderStyle.None
+        Me.lblCopyright.BackColor = System.Drawing.Color.White
         resources.ApplyResources(Me.lblCopyright, "lblCopyright")
         Me.lblCopyright.Name = "lblCopyright"
-        Me.lblCopyright.TabStop = False
         '
         'Panel3
         '
@@ -79,7 +77,7 @@ Partial Class About
         '
         'lblBuild
         '
-        Me.lblBuild.BackColor = System.Drawing.Color.GhostWhite
+        Me.lblBuild.BackColor = System.Drawing.Color.White
         Me.lblBuild.BorderStyle = System.Windows.Forms.BorderStyle.None
         resources.ApplyResources(Me.lblBuild, "lblBuild")
         Me.lblBuild.ForeColor = System.Drawing.SystemColors.ControlDarkDark
@@ -95,7 +93,7 @@ Partial Class About
         '
         'lblTitle
         '
-        Me.lblTitle.BackColor = System.Drawing.Color.GhostWhite
+        Me.lblTitle.BackColor = System.Drawing.Color.White
         Me.lblTitle.BorderStyle = System.Windows.Forms.BorderStyle.None
         resources.ApplyResources(Me.lblTitle, "lblTitle")
         Me.lblTitle.Name = "lblTitle"
@@ -119,7 +117,7 @@ Partial Class About
         '
         resources.ApplyResources(Me, "$this")
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
-        Me.BackColor = System.Drawing.Color.GhostWhite
+        Me.BackColor = System.Drawing.Color.White
         Me.Controls.Add(Me.Panel1)
         Me.Controls.Add(Me.PictureBox1)
         Me.Controls.Add(Me.Panel5)
@@ -143,7 +141,7 @@ Partial Class About
     Friend WithEvents PictureBox1 As System.Windows.Forms.PictureBox
     Friend WithEvents Panel1 As Panel
     Friend WithEvents Panel4 As Panel
-    Friend WithEvents lblCopyright As TextBox
+    Friend WithEvents lblCopyright As LinkLabel
     Friend WithEvents Panel3 As Panel
     Friend WithEvents lblBuild As TextBox
     Friend WithEvents Panel2 As Panel

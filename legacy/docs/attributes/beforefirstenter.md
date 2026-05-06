@@ -1,6 +1,7 @@
 ---
-layout: index
 title: beforefirstenter
+parent: "Attribute Reference"
+grand_parent: "Attributes"
 ---
 
 "beforefirstenter" is a [script](../types/script.html) attribute. It is run the first time that a player enters an object (room), *before* the room description is printed.

@@ -1,6 +1,8 @@
 ---
-layout: index
 title: dynamictemplate element
+parent: "XML Elements"
+grand_parent: "Reference"
+nav_order: 5
 ---
 
     <dynamictemplate name="name">expression</template>

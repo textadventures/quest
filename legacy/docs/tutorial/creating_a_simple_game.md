@@ -1,6 +1,7 @@
 ---
-layout: index
 title: Creating a simple game
+nav_order: 2
+parent: Tutorial
 ---
 
 This tutorial is applicable to both the Windows desktop version of Quest, and the web version. Any differences in the two versions will be mentioned as we go along. 
@@ -32,7 +33,7 @@ Click OK and you'll see the main Editor screen:
 
 ### Web version
 
-To create a new game, [log in to Quest](https://textadventures.co.uk/create/). You'll see the "New game" form.
+To create a new game, [log in to Quest](https://textadventures.co.uk/quest/) and click "Create a new game". You'll see the "New game" form.
 
 ![](../images/Webnewgame.png "Webnewgame.png")
 
@@ -55,13 +56,13 @@ On the left is a tree showing you every element of the game. The "game" element 
 
 Quest has created a room called "room" for us, and inside this room is the "player" object, so that's where the player will begin when you run the game. You can test the game by clicking the "Play" button. On the Windows version you can also select "Play Game" from the File menu or press the F5 key.
 
-As you'll see, it's a pretty empty game at the moment. We can type some standard commands such as "inventory" to see that Quest comes up with some default responses, but that's about all we can do at the moment.
+As you'll see, it's a pretty empty game at the moment. We can type some standard commands such as `INVENTORY` to see that Quest comes up with some default responses, but that's about all we can do at the moment.
 
 ![](../images/Playblankgame.png "Playblankgame.png")
 
 ![](../images/Webplayblankgame.png "Webplayblankgame.png")
 
-In the Windows version you can go back to the Editor by clicking "Stop Game" in the top left of the screen, or you can also type "quit" or hit the Escape key.
+In the Windows version you can go back to the Editor by clicking "Stop Game" in the top left of the screen, or you can also type `QUIT` or hit the Escape key.
 
 If you are using the web version, you will probably have noticed that the game started in its own tab in your browser. Just close the tab when you have finished.
 
@@ -152,9 +153,9 @@ So for now, we can leave the Alias box blank for the TV.
 
 ### Other Names
 
-If you go to the _Object_ tab, you'll see an "Other Names" box. This lets you specify additional names that players can use to refer to this object. It is important to note that different players will have different ways of interacting with your game – many players prefer to use hyperlinks, but some prefer to type. You want to make it easy for Quest to understand what players type in, so you can add additional, alternative object names to ensure that happens. For example, for our TV object, some players might type in "look at television", and would reasonably expect that to work.
+If you go to the _Object_ tab, you'll see an "Other Names" box. This lets you specify additional names that players can use to refer to this object. It is important to note that different players will have different ways of interacting with your game – many players prefer to use hyperlinks, but some prefer to type. You want to make it easy for Quest to understand what players type in, so you can add additional, alternative object names to ensure that happens. For example, for our TV object, some players might type in `LOOK AT TELEVISION`, and would reasonably expect that to work.
 
-So, add "television" to the list of Other Names for this object. This will ensure that players can type in either "look at TV" or "look at television" to look at this object.
+So, add "television" to the list of Other Names for this object. This will ensure that players can type in either `LOOK AT TV` or `LOOK AT TELEVISION` to look at this object.
 
 As an exercise, add any other alternative names you think that players might want to use.
 
@@ -174,7 +175,7 @@ Launch the game again and verify that it now shows you the description when you 
 
 ### Adding a verb
 
-It is a good idea to think about what kinds of things players might try to do to any objects in your game. In our example of the TV, it seems likely that a player might try to type "watch tv", so it would be good if our game came up with a good response, rather than just saying it didn't understand.
+It is a good idea to think about what kinds of things players might try to do to any objects in your game. In our example of the TV, it seems likely that a player might try to type `WATCH TV`, so it would be good if our game came up with a good response, rather than just saying it didn't understand.
 
 To do this, let's add the verb "watch" to our TV object. As you should remember from school, verbs are "doing words", and that's what they are in Quest – verbs let you say what things can be "done" to your object.
 
@@ -186,7 +187,7 @@ Go to the _Verbs_ tab, click the "Add" button and type "watch". You can choose e
 
 As an exercise, add the following objects to the lounge:
 
--   A sofa. Give it a sensible description. Add a verb "sit on" so that the player can type "sit on sofa". This should print a message like "There’s no time for lounging about now."
+-   A sofa. Give it a sensible description. Add a verb "sit on" so that the player can type `SIT ON SOFA`. This should print a message like "There’s no time for lounging about now."
 -   A table. Enter a sensible description.
 -   A newspaper. Enter a description, and add a verb "read" which will print an appropriate message.
 

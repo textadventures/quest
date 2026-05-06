@@ -1,6 +1,7 @@
 ---
-layout: index
-title: Hiddenexit
+title: Hidden exit
+parent: "Community Guides"
+grand_parent: "Other Guides"
 ---
 
 You have a number of options with regards to how Quest handles your exit. Create it normally, then tick the boxes as appropriate. Remember that if you want to change the value of any of these, you need to give the exit a unique name.

@@ -1,14 +1,15 @@
 ---
-layout: index
 title: Handling SPEAK TO
+nav_order: 3
+parent: "Characters (NPCs)"
 ---
 
 
-When setting up conversations between the player and a character, one option is to implement the SPEAK TO command.
+When setting up conversations between the player and a character, one option is to implement the `SPEAK TO` command.
 
-> SPEAK TO BORIS
+    SPEAK TO BORIS
 
-This could than be handled with a stock response or by offering a list of options (Quest will accept TALK TO as a synonym of SPEAK TO). This is a restricted approach to conversations, compared to [ASK/TELL](ask_about.html), because while the player can choose who to talk to, you are dictating what the conversation is about.
+This could then be handled with a stock response or by offering a list of options (Quest will accept `TALK TO` as a synonym of `SPEAK TO`). This is a restricted approach to conversations, compared to [ASK/TELL](ask_about.html), because while the player can choose who to talk to, you are dictating what the conversation is about.
 
 
 Stock responses
@@ -16,13 +17,13 @@ Stock responses
 
 The examples above illustrate this in play.
 
-> \>TALK TO BORIS
->
->‘Hi,’ you say to Boris, ‘can you help me find the key to this door?’
->
->‘Sure, you need to look in the bedroom.’
+```
+> TALK TO BORIS
+‘Hi,’ you say to Boris, ‘can you help me find the key to this door?’
+‘Sure, you need to look in the bedroom.’
+```
 
-To set this up in Quest, select the character, go to the verbs tab, and add a new verb, "speak" (Quest will match this up to the right command as you type; if you type in "talk to" if will find "speak to" for you too). Then put in the response underneath. It could look like this:
+To set this up in Quest, select the character, go to the verbs tab, and add a new verb, "speak" (Quest will match this up to the right command as you type; if you type in "talk to" it will find "speak to" for you too). Then put in the response underneath. It could look like this:
 
 ![](images/Talk1.png "Talk1.png")
 
@@ -89,23 +90,19 @@ A menu of responses
 
 In play this might look like this:
 
-> \>TALK TO BORIS
->
-> 1. Where is key
->
-> 2. Who is the Queen
->
-> 3. How do I defeat the troll
->
-> \>1
->
-> 'Hi,' you say to Boris, 'can you help me find the key to this door?'
->
-> 'Sure, you need to look in the bedroom.'
+```
+> TALK TO BORIS
+1. Where is key
+2. Who is the Queen
+3. How do I defeat the troll
+> 1
+'Hi,' you say to Boris, 'can you help me find the key to this door?'
+'Sure, you need to look in the bedroom.'
+```
 
 Quest handles menus well, and it would actually look rather more slick than that.
 
-As this is again using the "TALK TO" command, setting it up is like the first option. However, the script for that "SPEAK" verb is rather more complicated.
+As this is again using the `TALK TO` command, setting it up is like the first option. However, the script for that "SPEAK" verb is rather more complicated.
 
 ![](images/Talk2.png "Talk2.png")
 

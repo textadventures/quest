@@ -1,6 +1,7 @@
 ---
-layout: index
 title: CheckDarkness
+parent: "Core.aslx Functions"
+grand_parent: "Functions"
 ---
 
     CheckDarkness()

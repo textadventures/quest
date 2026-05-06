@@ -1,6 +1,6 @@
 ---
-layout: index
 title: get input
+parent: "Script commands"
 ---
 
     get input {script}

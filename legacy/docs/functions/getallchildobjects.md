@@ -1,6 +1,7 @@
 ---
-layout: index
 title: GetAllChildObjects
+parent: "Scope Functions"
+grand_parent: "Functions"
 ---
 
     GetAllChildObjects (object)

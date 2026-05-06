@@ -1,6 +1,7 @@
 ---
-layout: index
 title: Overriding functions
+nav_order: 1
+parent: "Advanced Topics"
 ---
 
 

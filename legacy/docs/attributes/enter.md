@@ -1,6 +1,7 @@
 ---
-layout: index
 title: enter
+parent: "Attribute Reference"
+grand_parent: "Attributes"
 ---
 
 "enter" is a [script](../types/script.html) attribute. It is run every time that a player enters an object (room), *after* the room description is printed.

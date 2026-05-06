@@ -1,6 +1,8 @@
 ---
-layout: index
 title: Port and starboard
+parent: "Community Guides"
+grand_parent: "Other Guides"
+nav_order: 7
 ---
 
 So you have this plan for a game, but it is set on a ship or a starship, and north and south do not make any sense. The standard for marine ships is to use forward, starboard, aft and port, so why not implement that for your game? This is actually pretty easy to do using Quest's built-in language support.

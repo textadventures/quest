@@ -1,6 +1,7 @@
 ---
-layout: index
 title: GetCurrentFontFamily
+parent: "User Interface Functions"
+grand_parent: "Functions"
 ---
 
     GetCurrentFontFamily ()

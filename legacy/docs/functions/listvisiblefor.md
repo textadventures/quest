@@ -1,6 +1,7 @@
 ---
-layout: index
 title: ListVisibleFor
+parent: "Scope Functions"
+grand_parent: "Functions"
 ---
 
     ListVisibleFor (object character)

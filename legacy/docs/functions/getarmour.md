@@ -1,6 +1,7 @@
 ---
-layout: index
 title: GetArmour
+parent: "Clothing Functions"
+grand_parent: "Functions"
 ---
 
     GetArmour ()

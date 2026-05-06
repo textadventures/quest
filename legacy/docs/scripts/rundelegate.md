@@ -1,6 +1,6 @@
 ---
-layout: index
 title: rundelegate
+parent: "Script commands"
 ---
 
     rundelegate (object, string attribute name, any type parameters ... )
