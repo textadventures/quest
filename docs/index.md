@@ -5,16 +5,20 @@ nav_order: 1
 
 ![Quest logo]({{ site.baseurl }}/images/questlogo.png){: style="display:block;margin:0 auto 1.5rem;width:220px;"}
 
-Quest 5 lets you create text adventure games. It is free and [open source](open_source.html). It is designed to be powerful, extensible and easy to learn. You can create games in any language - Quest has templates for English, French, German, Spanish, Dutch, Italian, Portuguese, Russian and other languages.
+Quest lets you create text adventure games, gamebooks, and other interactive fiction. It is free and [open source](open_source.html), and works in any web browser or as a Windows download.
 
-You can run Quest in a web browser, or you can download Quest for Windows.
+You don't need programming experience to get started. Quest's point-and-click editor lets you focus on your story — adding rooms, objects, characters and actions without writing any code. A full scripting language is there when you want more control, but you can build a complete game without ever touching it. You can include pictures, sounds, music and video, and customise the player interface with HTML and JavaScript. Games you publish on [textadventures.co.uk](https://textadventures.co.uk) can be played by anyone directly in their browser, on any device.
+
+Quest has templates for English, French, German, Spanish, Dutch, Italian, Portuguese, Russian and other languages.
 
 <a href="https://textadventures.co.uk/quest" class="btn btn-purple" target="_blank">Use Quest in your browser</a>
 [Download Quest for Windows](https://github.com/textadventures/quest/releases/download/v5.9/quest590.exe){: .btn .btn-green }
 
 ## Getting started
 
-New to Quest? The **[Tutorial](tutorial/index.html)** walks you through creating your first game from scratch and is the best place to begin.
+New to Quest? The **[Tutorial](tutorial/index.html)** walks you through creating your first game from scratch — no experience needed. It covers all the essentials and is the best place to begin.
+
+If you'd like to see what a finished Quest game looks like before diving in, browse [Quest games on textadventures.co.uk](https://textadventures.co.uk/games/platform/quest).
 
 ## Building your game
 
