@@ -8,6 +8,7 @@ Public Class PlayerHTML
     Public Event SendEvent(eventName As String, param As String)
     Public Event ShortcutKeyPressed(keys As System.Windows.Forms.Keys)
     Public Event EndWait()
+    Public Event SoundFinished()
     Public Event ExitFullScreen()
     Public Event Save(html As String)
     Public Event Speak(text As String)
@@ -115,6 +116,8 @@ Public Class PlayerHTML
                 GoURL(args)
             Case "EndWait"
                 RaiseEvent EndWait()
+            Case "SoundFinished"
+                RaiseEvent SoundFinished()
             Case "ExitFullScreen"
                 RaiseEvent ExitFullScreen()
             Case "Save"

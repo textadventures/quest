@@ -100,3 +100,27 @@ function selectText(containerid) {
     sel.removeAllRanges();
     sel.addRange(range);
 }
+
+var _audio = null;
+
+function playSound(url, synchronous, looped) {
+    stopSound();
+    _audio = new Audio(url);
+    if (looped) {
+        _audio.loop = true;
+    }
+    if (synchronous) {
+        _audio.addEventListener('ended', function () {
+            UIEvent("SoundFinished", "");
+        });
+    }
+    _audio.play();
+}
+
+function stopSound() {
+    if (_audio !== null) {
+        _audio.pause();
+        _audio.src = '';
+        _audio = null;
+    }
+}
