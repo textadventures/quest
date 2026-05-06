@@ -136,7 +136,9 @@ namespace TextAdventures.Quest
             {
                 if (index == "script")
                 {
-                    throw new NotImplementedException();
+                    FunctionCallScript.SetFunctionCallParameterScript(valueToSet as IScript);
+                    RaiseUpdated(new EditableScriptUpdatedEventArgs { IsNestedScriptUpdate = true });
+                    return;
                 }
                 FunctionCallScript.SetFunctionCallParameter(int.Parse(index), valueToSet);
                 return;
