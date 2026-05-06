@@ -298,7 +298,8 @@ namespace TextAdventures.Quest
             m_filterOptions = new FilterOptions();
             // set default filters here
 
-            m_fontsManager = new FontsManager();
+            // FontsManager is initialized lazily to avoid firing the Google Fonts network request
+            // until fonts are actually needed (e.g. not during test runs).
         }
 
         public class InitialiseResults : EventArgs
@@ -2498,11 +2499,13 @@ namespace TextAdventures.Quest
 
         public List<string> AvailableBaseFonts()
         {
+            if (m_fontsManager == null) m_fontsManager = new FontsManager();
             return m_fontsManager.GetBaseFonts();
         }
 
         public List<string> AvailableWebFonts()
         {
+            if (m_fontsManager == null) m_fontsManager = new FontsManager();
             return m_fontsManager.GetWebFonts();
         }
     }
