@@ -1,2 +1,0 @@
-BUNDLE_GEMFILE=Gemfile.dev bundle exec jekyll clean --config _config.yml,_config_dev.yml
-BUNDLE_GEMFILE=Gemfile.dev bundle exec jekyll serve --watch --baseurl '' --incremental --config _config.yml,_config_dev.yml
