@@ -28,11 +28,9 @@
     <EmbeddedResource Include="Resources\lib\images\ui-icons_cd0a0a_256x240.png" />
     <EmbeddedResource Include="Resources\lib\images\ui-icons_d8e7f3_256x240.png" />
     <EmbeddedResource Include="Resources\lib\images\ui-icons_f9bd01_256x240.png" />
-    <EmbeddedResource Include="Resources\lib\Jplayer.swf" />
     <EmbeddedResource Include="Resources\lib\jquery-2.1.1.min.js" />
     <EmbeddedResource Include="Resources\lib\jquery-ui.min.css" />
     <EmbeddedResource Include="Resources\lib\jquery-ui.min.js" />
-    <EmbeddedResource Include="Resources\lib\jquery.jplayer.min.js" />
     <EmbeddedResource Include="Resources\lib\jquery.multi-open-accordion-1.5.3.js" />
     <EmbeddedResource Include="Resources\lib\paper.js" />
     <EmbeddedResource Include="Resources\playercore.css" />

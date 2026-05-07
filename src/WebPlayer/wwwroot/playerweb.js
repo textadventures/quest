@@ -154,71 +154,30 @@ function sessionTimeout() {
 function afterSendCommand() {
 }
 
-var _currentPlayer = "";
+var _audio = null;
 
-function playWav(filename, sync, looped) {
-    if (!document.createElement('audio').canPlayType) {
-        // no <audio> support, so we must play WAVs using <embed> as the 
-        // jPlayer Flash fallback does not support WAV.
-
-        var extra = "";
-
-        if (looped) {
-            extra = " loop=\"true\"";
-        }
-
-        $("#audio_embed").html("<embed src=\"" + filename + "\" autostart=\"true\" width=\"0\" height=\"0\" type=\"audio/wav\"" + extra + ">");
-        _currentPlayer = "embed";
-    }
-    else {
-        playAudio(filename, "wav", sync, looped);
-    }
-}
-
-function playMp3(filename, sync, looped) {
-    playAudio(filename, "mp3", sync, looped);
-}
-
-var showCommandDiv = isElementVisible("#txtCommandDiv");
-function playAudio(filename, format, sync, looped) {
-    _currentPlayer = "jplayer";
-
-    $("#jquery_jplayer").unbind($.jPlayer.event.ended);
-
+function playSound(url, synchronous, looped) {
+    stopSound();
+    _audio = new Audio(url);
     if (looped) {
-        // This works in Firefox and Chrome.
-        endFunction = function () { $("#jquery_jplayer").jPlayer("play"); };
+        _audio.loop = true;
     }
-    else if (sync) {
-        // Added the following line to set the variable properly. 3-4-2018
-        showCommandDiv = isElementVisible("#txtCommandDiv");
+    if (synchronous) {
+        var showCmdDiv = isElementVisible("#txtCommandDiv");
         _waitingForSoundToFinish = true;
-        // Altered finishSync to use the showCommandDiv variable.
-        // It was using txtCommandDiv visibility, which the last line sets to false!
-        endFunction = function () { finishSync(showCommandDiv); };
         $("#txtCommandDiv").hide();
+        _audio.addEventListener('ended', function () {
+            finishSync(showCmdDiv);
+        });
     }
-    else {
-        endFunction = null;
-    }
-
-    //$("#jquery_jplayer").bind($.jPlayer.event.error, function (event) { alert(event.jPlayer.error.type); });
-
-    if (endFunction != null) {
-        $("#jquery_jplayer").bind($.jPlayer.event.ended, function (event) { endFunction(); });
-    }
-
-    if (format == "wav") $("#jquery_jplayer").jPlayer("setMedia", { wav: filename });
-    if (format == "mp3") $("#jquery_jplayer").jPlayer("setMedia", { mp3: filename });
-    $("#jquery_jplayer").jPlayer("play");
+    _audio.play();
 }
 
-function stopAudio() {
-    if (_currentPlayer == "jplayer") {
-        $("#jquery_jplayer").jPlayer("stop");
-    }
-    else if (_currentPlayer == "embed") {
-        $("#audio_embed").html("");
+function stopSound() {
+    if (_audio !== null) {
+        _audio.pause();
+        _audio.src = '';
+        _audio = null;
     }
 }
 
