@@ -599,8 +599,12 @@
     <script>
       // remove object1 from object2
       // if object2 does indeed contain object1, this is a synonym for "take object1"
-      
-      if (not Contains(object2, object1)) {
+      // if object1 = object2, the regex matched "out" inside the object name; treat as simple take
+
+      if (object1 = object2) {
+        DoTake (object1, false)
+      }
+      else if (not Contains(object2, object1)) {
         msg (DynamicTemplate("ObjectDoesNotContain", object2, object1))
       }
       else {
