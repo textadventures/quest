@@ -271,7 +271,7 @@
           if (result = null) {
             if (StartsWith(var, "object")) {
               if (GetBoolean(game.pov.currentcommandpattern, "allow_all")) {
-                scope = FilterByAttribute(GetScope("object", "", "object"), "scenery", false)
+                scope = FilterByAttribute(GetScope(var, "", "object"), "scenery", false)
                 game.pov.currentcommandpendingobjectscope = ListExclude(scope, FilterByAttribute(scope, "not_all", true))
                 game.pov.currentcommandpendingvariable = var
                 ResolveNameList (value, "object")
