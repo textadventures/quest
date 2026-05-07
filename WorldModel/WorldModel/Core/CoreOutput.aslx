@@ -15,11 +15,13 @@
   </function>
 
   <function name="ResetCommandBarFormat">
+	<![CDATA[
     format = GetCommandBarFormat()
     if (GetString(game, "commandbarformat") <> format) {
       game.commandbarformat = format
       JS.setCommandBarStyle(format)
     }
+	]]>
   </function>
 
   <function name="GetCommandBarFormat" type="string">
