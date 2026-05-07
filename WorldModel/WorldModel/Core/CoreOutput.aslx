@@ -23,11 +23,7 @@
   </function>
 
   <function name="GetCommandBarFormat" type="string">
-    format = GetCurrentTextFormat("") + ";background:" + game.defaultbackground
-    if (HasString(game, "overridecommandbarformat")) {
-      format = format + ";" + game.overridecommandbarformat
-    }
-    return (format)
+    return (GetCurrentTextFormat("") + ";background:" + game.defaultbackground)
   </function>
 
   <function name="OutputTextNoBr" parameters="text">
