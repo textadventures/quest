@@ -123,7 +123,7 @@ namespace QuestViva.EditorCore
         private AvailableFilters m_availableFilters;
         private FilterOptions m_filterOptions;
         private EditableScriptFactory m_editableScriptFactory;
-        // private FontsManager m_fontsManager;
+        private FontsManager m_fontsManager;
         private Dictionary<string, EditorDefinition> m_editorDefinitions = new Dictionary<string, EditorDefinition>();
         private Dictionary<string, EditorDefinition> m_expressionDefinitions = new Dictionary<string, EditorDefinition>();
         private Dictionary<ElementType, TreeHeader> m_elementTreeStructure;
