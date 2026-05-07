@@ -22,7 +22,7 @@
     
     // go through all exits in room, set x,y co-ordinates for the rooms they point to
     foreach (exit, AllExits()) {
-      if (exit.parent = room and not GetBoolean(exit, "lookonly")) {
+      if (exit.parent = room and not GetBoolean(exit, "lookonly") and exit.visible) {
         if (DoesInherit(exit, "northdirection")) {
           Grid_SetGridCoordinateForPlayer (playerobject, exit, "x", Grid_GetGridCoordinateForPlayer(playerobject, room, "x") + room.grid_width/2.0 + exit.grid_offset_x)
           Grid_SetGridCoordinateForPlayer (playerobject, exit, "y", Grid_GetGridCoordinateForPlayer(playerobject, room, "y") + exit.grid_offset_y)
@@ -138,6 +138,7 @@
   </function>
 
   <function name="Grid_DrawPlayerInRoom" parameters="room">
+    room.grid_render = true
     if (room.grid_render) {
       Grid_DrawRoom (room, false, game.pov)
 
