@@ -126,7 +126,7 @@ namespace QuestViva.EditorCoreTests
             // Check the new display string is correct, and that we received the update event
             string newExpectedDisplayString = "If (someExpression) Then (Print \"Then script\"), Else If (newElseIfExpression) Then (Print \"test\")";
             Assert.AreEqual(newExpectedDisplayString, newScripts.DisplayString());
-            Assert.AreEqual(lastArgs.UpdatedScriptEventArgs.NewValue, "newElseIfExpression");
+            Assert.AreEqual("newElseIfExpression", lastArgs.UpdatedScriptEventArgs.NewValue);
 
             // Now undo and redo, and check the display strings update correctly
             Controller.Undo();

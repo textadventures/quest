@@ -302,8 +302,8 @@ namespace QuestViva.EditorCore
             m_filterOptions = new FilterOptions();
             // set default filters here
 
-            // TODO: Replace. This is commented out because it downloads the font list in the constructor
-            // m_fontsManager = new FontsManager();
+            // FontsManager is initialized lazily to avoid firing the Google Fonts network request
+            // until fonts are actually needed (e.g. not during test runs).
         }
 
         public class InitialiseResults : EventArgs
@@ -386,7 +386,6 @@ namespace QuestViva.EditorCore
                         m_worldModel.Elements.Get("game").Fields.Set("gameid", GetNewGameId());
                     }
                 }
-                
             }
             else
             {
@@ -2501,14 +2500,14 @@ namespace QuestViva.EditorCore
 
         public List<string> AvailableBaseFonts()
         {
-            return [];
-            // return m_fontsManager.GetBaseFonts();
+            if (m_fontsManager == null) m_fontsManager = new FontsManager();
+            return m_fontsManager.GetBaseFonts();
         }
 
         public List<string> AvailableWebFonts()
         {
-            return [];
-            // return m_fontsManager.GetWebFonts();
+            if (m_fontsManager == null) m_fontsManager = new FontsManager();
+            return m_fontsManager.GetWebFonts();
         }
     }
 }
