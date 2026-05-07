@@ -591,6 +591,7 @@ function updateVerbButtons(selectedItem, verbsArray, idprefix) {
 function beginWait() {
     _waitMode = true;
     $("#txtCommand").hide();
+    $("#txtCommandPrompt").hide();
     $("#endWaitLink").show();
     markScrollPosition();
 }
@@ -604,6 +605,7 @@ function waitEnded() {
     _waitMode = false;
     $("#endWaitLink").hide();
     $("#txtCommand").show();
+    $("#txtCommandPrompt").show();
 }
 
 function gameFinished() {
