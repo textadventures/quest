@@ -14,8 +14,7 @@ function initPlayerUI() {
     gameBorder.style.display = "block";
     
     addPaperScript();
-    $("#jquery_jplayer").jPlayer({ supplied: "wav, mp3" });
-    
+
     $("#txtCommand").bind("inview", function (event, visible) {
         // allows spacebar to scroll browser when txtCommand is not visible
         if (visible == true) {
