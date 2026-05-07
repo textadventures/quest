@@ -620,8 +620,14 @@ function disableInterface() {
 
 function setCommandBarStyle(style) {
     var width = $("#txtCommand").width();
+    var hidden = $("#txtCommand").is(":hidden") && $("#txtCommand").parent().is(":visible");
     $("#txtCommand").attr("style", style);
     $("#txtCommand").width(width);
+    if (hidden) {
+        $("#txtCommand").hide();
+    } else {
+        $("#txtCommand").show();
+    }
 }
 
 function addTextAndScroll(text) {
