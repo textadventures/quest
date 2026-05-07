@@ -292,9 +292,7 @@
     <Compile Include="WFToolbar.Designer.cs">
       <DependentUpon>WFToolbar.cs</DependentUpon>
     </Compile>
-    <Compile Include="WFVerbsControl.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
+    <Compile Include="WFVerbsControl.cs" />
     <Compile Include="WindowHelpers.cs" />
     <EmbeddedResource Include="InputWindow.de.resx">
       <DependentUpon>InputWindow.cs</DependentUpon>
