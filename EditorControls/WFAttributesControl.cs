@@ -357,6 +357,19 @@ namespace TextAdventures.Quest.EditorControls
 
         private void EditItem(string attribute)
         {
+            if (m_data != null)
+            {
+                ctlMultiControl.Save();
+                foreach (ListViewItem item in lstAttributes.Items)
+                {
+                    object value = m_data.GetAttribute(item.Name);
+                    if (value != null)
+                    {
+                        item.SubItems[1].Text = GetDisplayString(value);
+                    }
+                }
+            }
+
             if ((string.IsNullOrEmpty(attribute)))
             {
                 ctlMultiControl.Visible = false;
