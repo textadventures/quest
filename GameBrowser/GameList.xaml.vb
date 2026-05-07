@@ -39,6 +39,14 @@ Public Class GameList
 
         If list Is Nothing Then Return
 
+        If IsOnlineList AndAlso Not String.IsNullOrEmpty(m_downloadFolder) Then
+            Try
+                System.IO.Directory.CreateDirectory(m_downloadFolder)
+            Catch ex As UnauthorizedAccessException
+                ' Cannot create download folder - downloaded games will not be available
+            End Try
+        End If
+
         For Each data As GameListItemData In list
             Dim key As String = String.Format("{0}~{1}", data.GameId, data.DownloadFilename)
 
@@ -64,8 +72,6 @@ Public Class GameList
 
                 If String.IsNullOrEmpty(data.Filename) Then
                     newItem.URL = data.URL
-
-                    System.IO.Directory.CreateDirectory(m_downloadFolder)
 
                     Dim downloadFilename As String = System.IO.Path.Combine(
                         m_downloadFolder, data.DownloadFilename)
