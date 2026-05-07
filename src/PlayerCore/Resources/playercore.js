@@ -664,7 +664,13 @@ function disableInterface() {
 }
 
 function setCommandBarStyle(style) {
+    var hidden = $("#txtCommand").is(":hidden") && $("#txtCommand").parent().is(":visible");
     $("#txtCommand").attr("style", style);
+    if (hidden) {
+        $("#txtCommand").hide();
+    } else {
+        $("#txtCommand").show();
+    }
 }
 
 function addTextAndScroll(text) {

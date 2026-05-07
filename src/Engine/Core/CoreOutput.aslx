@@ -9,17 +9,21 @@
     <![CDATA[
     format = GetCurrentTextFormat("")
     JS.addText("<span style=\"" + format + "\">" + text + "</span><br/>")
-    if (GetString(game, "commandbarformat") <> format) {
-      ResetCommandBarFormat
-    }
+    ResetCommandBarFormat
     RequestSpeak (text)
     ]]>
   </function>
 
   <function name="ResetCommandBarFormat">
-    format = GetCurrentTextFormat("") + ";background:" + game.defaultbackground
-    game.commandbarformat = format
-    JS.setCommandBarStyle(format)
+    format = GetCommandBarFormat()
+    if (GetString(game, "commandbarformat") <> format) {
+      game.commandbarformat = format
+      JS.setCommandBarStyle(format)
+    }
+  </function>
+
+  <function name="GetCommandBarFormat" type="string">
+    return (GetCurrentTextFormat("") + ";background:" + game.defaultbackground)
   </function>
 
   <function name="OutputTextNoBr" parameters="text">
