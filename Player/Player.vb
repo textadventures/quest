@@ -37,6 +37,7 @@ Public Class Player
     Private WithEvents ctlToolbar As Toolbar
 
     Public Event Quit()
+    Public Event Restart()
     Public Event AddToRecent(filename As String, name As String)
     Public Event GameNameSet(name As String)
     Public Event ShortcutKeyPressed(keys As System.Windows.Forms.Keys)
@@ -79,6 +80,8 @@ Public Class Player
         Select Case args.Button
             Case "stop"
                 StopGame()
+            Case "restart"
+                RestartGame()
             Case "walkthrough"
                 RunWalkthrough()
             Case "debugger"
@@ -88,6 +91,10 @@ Public Class Player
             Case "htmldevtools"
                 HTMLDevToolsClick()
         End Select
+    End Sub
+
+    Private Sub RestartGame()
+        RaiseEvent Restart()
     End Sub
 
     Private Sub DebuggerMenuClick()
