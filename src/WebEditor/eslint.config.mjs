@@ -17,6 +17,7 @@ export default defineConfig([
             "object-curly-spacing": ["error", "always"],
             "no-extra-semi": "error",
             "semi": ["error", "always"],
+            "indent": ["error", 4],
         },
     },
     includeIgnoreFile(gitignorePath, "Imported .gitignore patterns"),
@@ -39,6 +40,7 @@ export default defineConfig([
         },
         rules: {
             "svelte/no-navigation-without-resolve": "off",
+            "svelte/indent": ["error", { indent: 4 }],
         },
     },
 ]);
