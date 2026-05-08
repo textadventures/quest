@@ -10,6 +10,7 @@ namespace QuestViva.WasmEditor;
 
 internal record TreeNodeData(string Key, string Text, string? Parent);
 
+[JsonSourceGenerationOptions(PropertyNamingPolicy = JsonKnownNamingPolicy.CamelCase)]
 [JsonSerializable(typeof(List<TreeNodeData>))]
 [JsonSerializable(typeof(Dictionary<string, string>))]
 internal partial class WasmEditorJsonContext : JsonSerializerContext { }
@@ -26,10 +27,15 @@ public partial class WasmEditorBridge
         _treeNodes.Clear();
 
         _controller = new EditorController();
+        _controller.ClearTree += (_, _) => { };
+        _controller.BeginTreeUpdate += (_, _) => { };
+        _controller.EndTreeUpdate += (_, _) => { };
         _controller.AddedNode += OnAddedNode;
 
         var provider = new ByteArrayGameDataProvider(gameFileBytes, filename);
-        return await _controller.Initialise(new WasmConfig(), provider);
+        bool ok = await _controller.Initialise(new WasmConfig(), provider);
+        if (ok) _controller.UpdateTree();
+        return ok;
     }
 
     [JSExport]

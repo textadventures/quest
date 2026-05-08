@@ -12,10 +12,11 @@ let _bridge: WasmBridge | null = null
 export async function loadWasm(): Promise<WasmBridge> {
   if (_bridge) return _bridge
 
-  // dotnet.js is served at runtime from the WasmEditor AppBundle via the Vite dev
-  // server middleware (vite.config.ts). Vite-ignore prevents Vite trying to bundle it.
-  // @ts-expect-error -- no type declarations for the .NET WASM runtime module
-  const { dotnet } = await import(/* @vite-ignore */ '/AppBundle/dotnet.js')
+  // dotnet.js is served at runtime by the Vite AppBundle middleware (vite.config.ts).
+  // Use new Function to prevent Vite's import-analysis plugin from trying to resolve
+  // the URL at build time — it only exists as a runtime-served file.
+  const loadModule = new Function('url', 'return import(url)')
+  const { dotnet } = (await loadModule('/AppBundle/_framework/dotnet.js')) as { dotnet: any }
 
   const { getAssemblyExports, getConfig, runMain } = await dotnet
     .withDiagnosticTracing(false)
@@ -25,6 +26,6 @@ export async function loadWasm(): Promise<WasmBridge> {
 
   const config = getConfig()
   const exports = await getAssemblyExports(config.mainAssemblyName)
-  _bridge = exports['QuestViva.WasmEditor.WasmEditorBridge'] as WasmBridge
+  _bridge = exports.QuestViva.WasmEditor.WasmEditorBridge as WasmBridge
   return _bridge
 }
