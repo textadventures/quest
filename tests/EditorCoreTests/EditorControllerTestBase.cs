@@ -45,7 +45,7 @@ namespace QuestViva.EditorCoreTests
             m_controller.RedoListUpdated += m_controller_RedoListUpdated;
             string tempFile = System.IO.Path.GetTempFileName();
             ExtractResource("QuestViva.EditorCoreTests.test.aslx", tempFile);
-            await m_controller.Initialise(new Config(), tempFile);
+            await m_controller.Initialise(new Config(), new QuestViva.Common.FileGameDataProvider(tempFile));
             DoExtraInitialisation();
             try
             {

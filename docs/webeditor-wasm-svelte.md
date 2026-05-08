@@ -172,12 +172,17 @@ Use **SvelteKit** for routing (welcome → editor) and dev tooling. Monaco Edito
 
 ## Phased delivery
 
-### Phase 1 — WASM proof of concept
-- Remove `System.Data.DataSetExtensions` from `EditorCore.csproj`
-- Change `EditorController.Initialise` to accept `IGameDataProvider` instead of `filename`
-- Create `WasmEditor` project, get it compiling to WASM
-- Export a minimal API (init, get tree, get element data, set attribute, save)
-- Verify EditorCore loads a `.aslx` file and round-trips saves
+### Phase 1 — WASM proof of concept ✅
+- ~~Remove `System.Data.DataSetExtensions` from `EditorCore.csproj`~~
+- ~~Change `EditorController.Initialise` to accept `IGameDataProvider` instead of `filename`~~
+- ~~Create `WasmEditor` project, get it compiling to WASM~~
+- ~~Export a minimal API (init, get tree, get element data, set attribute, save)~~
+- Verify EditorCore loads a `.aslx` file and round-trips saves (covered by Phase 2 integration)
+
+Notes:
+- `ByteArrayGameDataProvider` added to `Common` — wraps `byte[]` from JS as a `MemoryStream`
+- `WasmConfig` uses `UseNCalc = true`
+- `WasmEditorBridge` uses source-generated JSON (`JsonSerializerContext`) and `[assembly: SupportedOSPlatform("browser")]` — builds with zero warnings
 
 ### Phase 2 — Svelte skeleton
 - Set up Vite + SvelteKit project
@@ -205,6 +210,6 @@ Use **SvelteKit** for routing (welcome → editor) and dev tooling. Monaco Edito
 
 ## Open questions
 
-- **WasmPlayer**: Should it follow the same pattern once Engine's threading is resolved? If yes, keep the `IGameDataProvider` abstraction consistent between both projects.
+- **WasmPlayer**: The Blazor WasmPlayer prototype has been deleted. A future native-WASM player could follow the same JSExport/JSImport pattern once Engine's threading is resolved.
 - **Build integration**: Should `WasmEditor` output be served by `WebPlayer` (as an embedded SPA) or deployed separately?
 - **Auth / server-side storage**: Is cloud save (user accounts, server-side game storage) in scope? Affects whether the editor is purely client-side or needs a backend.
