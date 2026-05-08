@@ -328,13 +328,11 @@ namespace QuestViva.EditorCore
         //     newThread.Start();
         // }
 
-        public async Task<bool> Initialise(IConfig config, string filename, bool partialInit = false)
+        public async Task<bool> Initialise(IConfig config, IGameDataProvider gameDataProvider, bool partialInit = false)
         {
             m_lastelementscutout = false;
-            m_filename = filename;
-            // TODO: ResourceProvider is probably not relevant here?
-            var gameDataProvider = new FileGameDataProvider(filename);
             var gameData = await gameDataProvider.GetData();
+            m_filename = gameData?.Filename ?? string.Empty;
             m_worldModel = new WorldModel(config, gameData, null);
             m_scriptFactory = new ScriptFactory(m_worldModel);
             m_worldModel.ElementFieldUpdated += m_worldModel_ElementFieldUpdated;

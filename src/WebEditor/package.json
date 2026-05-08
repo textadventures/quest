@@ -1,0 +1,33 @@
+{
+  "name": "quest-web-editor",
+  "version": "0.0.1",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "vite dev",
+    "build": "vite build",
+    "preview": "vite preview",
+    "check": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",
+    "lint": "eslint src",
+    "lint:fix": "eslint src --fix"
+  },
+  "devDependencies": {
+    "@eslint/compat": "^2.1.0",
+    "@eslint/js": "^10.0.1",
+    "@skeletonlabs/skeleton": "^4.15.2",
+    "@skeletonlabs/skeleton-svelte": "^4.15.2",
+    "@sveltejs/adapter-static": "^3.0.0",
+    "@sveltejs/kit": "^2.0.0",
+    "@sveltejs/vite-plugin-svelte": "^7.0.0",
+    "@tailwindcss/vite": "^4.2.4",
+    "@types/node": "^25.0.0",
+    "eslint": "^10.3.0",
+    "eslint-plugin-svelte": "^3.17.1",
+    "svelte": "^5.0.0",
+    "svelte-check": "^4.0.0",
+    "tailwindcss": "^4.2.4",
+    "typescript": "^6.0.0",
+    "typescript-eslint": "^8.59.2",
+    "vite": "^8.0.0"
+  }
+}

@@ -1,0 +1,173 @@
+# WebEditor: EditorCore WASM + SvelteKit
+
+## Architecture
+
+```
+Browser
+├── SvelteKit frontend  (src/WebEditor/)
+│   ├── TreePanel       — game object hierarchy (Skeleton TreeView)
+│   ├── PropertyEditor  — attribute display (placeholder; full editors in Phase 3)
+│   ├── Toolbar         — save, undo/redo (Skeleton AppBar)
+│   └── [future] ScriptEditor, StatusBar
+│
+└── .NET WASM module  (src/WasmEditor/)
+    ├── WasmEditorBridge  — thin JSExport interop layer
+    └── EditorCore → Engine / Utility / Common
+```
+
+All data crossing the JS/WASM boundary is JSON. The Svelte layer calls `[JSExport]` methods on the bridge; events fire back synchronously during `Initialise` and are collected in C# lists before being returned via `GetTreeNodes()`.
+
+---
+
+## WasmEditor project
+
+`src/WasmEditor/` targets `net10.0` with `<RuntimeIdentifier>browser-wasm</RuntimeIdentifier>`. It depends on `EditorCore` and `Common`.
+
+### Implemented bridge API (`WasmEditorBridge.cs`)
+
+```csharp
+[JSExport] Task<bool> Initialise(byte[] gameFileBytes, string filename)
+[JSExport] string     GetTreeNodes()           // JSON: List<{key, text, parent}>
+[JSExport] string?    GetEditorData(string key) // JSON: Dictionary<string, string?>
+[JSExport] string     Save()                   // returns XML
+[JSExport] void       Undo()
+[JSExport] void       Redo()
+```
+
+Tree nodes are collected during `Initialise` by subscribing to `EditorController.AddedNode`, then returned as a flat list via `GetTreeNodes()`. `GetEditorData` uses `IEditorDataExtendedAttributeInfo` to enumerate attributes for a given element key.
+
+### Not yet implemented
+
+- `SetAttribute` — needed for any editing; blocked on Phase 3
+- Live JS callbacks (JSImport) — events currently captured into C# state at init time rather than pushed to JS as they occur
+
+### Supporting types
+
+- `WasmConfig` (`src/WasmEditor/WasmConfig.cs`) — `IConfig` implementation with `UseNCalc = true`
+- `ByteArrayGameDataProvider` (`src/Common/`) — wraps a `byte[]` as a `MemoryStream` so `EditorController` can load a file passed in from the browser File API
+
+### Build
+
+```bash
+dotnet build src/WasmEditor --configuration Debug
+```
+
+Output lands in `src/WasmEditor/bin/Debug/net10.0/browser-wasm/AppBundle/`. The Vite dev server serves this directory at `/AppBundle/` (see `vite.config.ts`).
+
+---
+
+## SvelteKit frontend
+
+`src/WebEditor/` is a SvelteKit SPA (adapter-static, `fallback: 'index.html'`).
+
+### Stack
+
+- **Svelte 5** + **SvelteKit 2**
+- **Tailwind CSS 4** via `@tailwindcss/vite`
+- **Skeleton UI v4** (`@skeletonlabs/skeleton` + `@skeletonlabs/skeleton-svelte`) — cerberus theme
+- **ESLint** with `typescript-eslint` + `eslint-plugin-svelte` (double quotes, semicolons, 4-space indent)
+
+### File structure
+
+```
+src/WebEditor/
+├── eslint.config.mjs
+├── svelte.config.js        # adapter-static, $components alias
+├── vite.config.ts          # AppBundle middleware, COOP/COEP headers
+├── src/
+│   ├── app.css             # @import tailwindcss + skeleton + cerberus theme
+│   ├── app.html            # data-theme="cerberus"
+│   ├── lib/
+│   │   ├── wasm.ts         # loads dotnet.js, exposes WasmBridge
+│   │   ├── editor-store.ts # Svelte stores + wrappers for all WASM calls
+│   │   └── types.ts        # TreeNode, ElementAttributes
+│   ├── components/
+│   │   ├── Toolbar.svelte         # AppBar: title, filename, undo/redo/save
+│   │   ├── TreePanel.svelte       # Skeleton TreeView (flat→hierarchy conversion)
+│   │   └── PropertyEditor.svelte  # Raw attribute grid (placeholder)
+│   └── routes/
+│       ├── +layout.svelte  # imports app.css
+│       ├── +layout.ts      # prerendering config
+│       ├── +page.svelte    # Welcome: file picker → openGame() → /editor
+│       └── editor/
+│           └── +page.svelte  # Editor layout: Toolbar + TreePanel + PropertyEditor
+```
+
+### Running the dev server
+
+Requires a WasmEditor Debug build first (see above), then:
+
+```bash
+cd src/WebEditor
+npm run dev     # http://localhost:5174
+```
+
+The Vite dev server sets `Cross-Origin-Opener-Policy: same-origin` and `Cross-Origin-Embedder-Policy: require-corp` headers, which are required for the .NET WASM runtime's use of `SharedArrayBuffer`.
+
+### WASM loading
+
+`wasm.ts` uses `new Function("url", "return import(url)")` to load `dotnet.js` at runtime. This prevents Vite's import-analysis plugin from trying to resolve the URL at build time (the file only exists as a runtime-served AppBundle asset).
+
+---
+
+## File handling
+
+The browser cannot read files from the local filesystem directly. Currently implemented: **Option A**.
+
+**Option A (implemented)** — File picker open, download save
+- User opens a file via `<input type="file">`
+- JS reads it as `ArrayBuffer`, converts to `Uint8Array`, passes to `Initialise`
+- Save triggers a download via a temporary `<a>` with an object URL
+
+**Option B (future)** — OPFS (Origin Private File System)
+- Game files live in the browser's private storage
+- Read/write without prompts after initial import
+- Enables auto-save
+
+---
+
+## Phased delivery
+
+### Phase 1 — WASM proof of concept ✅
+- Removed `System.Data.DataSetExtensions` from `EditorCore.csproj`
+- Changed `EditorController.Initialise` to accept `IGameDataProvider` instead of a filename string
+- Created `WasmEditor` project, compiles to WASM with zero warnings
+- Exported minimal API: init, get tree, get element data, save, undo, redo
+- `ByteArrayGameDataProvider` in `Common` wraps `byte[]` from JS
+- Source-generated JSON serialisation (`JsonSerializerContext`) throughout
+
+### Phase 2 — SvelteKit skeleton ✅
+- SvelteKit SPA at `src/WebEditor/`; Vite AppBundle middleware for WASM serving
+- File picker → bytes → `Initialise` → tree rendered with Skeleton `TreeView`
+- Click a tree node → attribute list in `PropertyEditor`
+- Toolbar: save (file download), undo, redo
+- Skeleton UI v4 + Tailwind CSS 4 + ESLint configured
+
+### Phase 3 — Property editors (next)
+
+The current `PropertyEditor` is a raw key/value dump. Phase 3 replaces it with proper typed controls.
+
+Steps:
+1. Implement `SetAttribute(string element, string attribute, string jsonValue)` in `WasmEditorBridge`
+2. Extend `GetEditorData` response to include the EditorCore control type for each attribute (dropdown, textbox, checkbox, script, etc.)
+3. Map each control type to a Svelte component in `PropertyEditor`
+4. Two-way binding: editing a control → `SetAttribute` → refresh affected state
+
+### Phase 4 — Script editor
+- Integrate Monaco or CodeMirror 6 for script attribute editing
+- Wire up the script editor data API from EditorCore
+
+### Phase 5 — Full feature parity
+- New game (from templates)
+- Publish/export
+- OPFS persistence
+- Test suite for the WASM bridge
+
+---
+
+## Open questions
+
+- **EditorCore API cleanup**: `EditorMode` (Desktop/Web distinction) and `AddControlType`/`GetControlType` (.NET UI control registration) are dead weight now the only consumer is Svelte. Remove in a future cleanup pass.
+- **Live C# → JS events**: Currently tree state is snapshot-based (collected at init). As editing adds/removes/renames nodes, the bridge will need to push updates to JS rather than relying on a full re-fetch.
+- **Build integration**: Should `WasmEditor` output be served by `WebPlayer` (embedded SPA) or deployed separately?
+- **Auth / server-side storage**: Is cloud save in scope? Affects whether the editor stays purely client-side.
