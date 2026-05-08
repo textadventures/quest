@@ -184,12 +184,19 @@ Notes:
 - `WasmConfig` uses `UseNCalc = true`
 - `WasmEditorBridge` uses source-generated JSON (`JsonSerializerContext`) and `[assembly: SupportedOSPlatform("browser")]` — builds with zero warnings
 
-### Phase 2 — Svelte skeleton
-- Set up Vite + SvelteKit project
-- Load WASM module, wire up init (file picker → bytes → WASM)
-- Render the tree from `GetTreeNodes()` JSON
-- Click a tree node → show raw attribute list in a side panel
-- Toolbar: save (download XML), undo, redo
+### Phase 2 — Svelte skeleton ✅
+- ~~Set up Vite + SvelteKit project~~
+- ~~Load WASM module, wire up init (file picker → bytes → WASM)~~
+- ~~Render the tree from `GetTreeNodes()` JSON~~
+- ~~Click a tree node → show raw attribute list in a side panel~~
+- ~~Toolbar: save (download XML), undo, redo~~
+
+Notes:
+- SvelteKit project at `src/WebEditor/` (Svelte 5, adapter-static SPA mode)
+- Vite middleware in `vite.config.ts` serves the .NET AppBundle at `/AppBundle/` and sets COOP/COEP headers required for SharedArrayBuffer
+- `src/lib/wasm.ts` loads the .NET runtime via `dotnet.create()` + `runMain()` then exposes the bridge
+- `src/lib/editor-store.ts` holds Svelte stores and wraps all WASM calls
+- Start dev server: `cd src/WebEditor && npm run dev` (requires a WasmEditor Debug build first)
 
 ### Phase 3 — Property editors
 - Map each EditorCore control type (`dropdown`, `textbox`, `script`, etc.) to a Svelte component
