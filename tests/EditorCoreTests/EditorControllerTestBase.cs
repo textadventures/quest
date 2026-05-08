@@ -43,29 +43,17 @@ namespace QuestViva.EditorCoreTests
             m_controller.AddedNode += m_controller_AddedNode;
             m_controller.UndoListUpdated += m_controller_UndoListUpdated;
             m_controller.RedoListUpdated += m_controller_RedoListUpdated;
-            string tempFile = System.IO.Path.GetTempFileName();
-            ExtractResource("QuestViva.EditorCoreTests.test.aslx", tempFile);
-            await m_controller.Initialise(new Config(), new QuestViva.Common.FileGameDataProvider(tempFile));
+            var bytes = GetResourceBytes("QuestViva.EditorCoreTests.test.aslx");
+            await m_controller.Initialise(new Config(), new QuestViva.Common.ByteArrayGameDataProvider(bytes, "test.aslx"));
             DoExtraInitialisation();
-            try
-            {
-                System.IO.File.Delete(tempFile);
-            }
-            catch (System.IO.IOException)
-            {
-                // ignore
-            }
         }
 
-        private void ExtractResource(string resource, string location)
+        private static byte[] GetResourceBytes(string resource)
         {
-            var resources = System.Reflection.Assembly.GetExecutingAssembly().GetManifestResourceNames();
-            
-            var stream = System.Reflection.Assembly.GetExecutingAssembly().GetManifestResourceStream(resource);
-            using (var streamReader = new System.IO.StreamReader(stream))
-            {
-                System.IO.File.WriteAllText(location, streamReader.ReadToEnd());
-            }
+            var stream = System.Reflection.Assembly.GetExecutingAssembly().GetManifestResourceStream(resource)!;
+            using var ms = new System.IO.MemoryStream();
+            stream.CopyTo(ms);
+            return ms.ToArray();
         }
 
         public virtual void DoExtraInitialisation()
