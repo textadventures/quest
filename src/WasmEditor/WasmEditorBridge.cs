@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Runtime.InteropServices.JavaScript;
 using System.Text.Json;
 using System.Text.Json.Serialization;
@@ -15,16 +16,17 @@ internal record TreeNodeData(string Key, string Text, string? Parent);
 [JsonSerializable(typeof(Dictionary<string, string>))]
 internal partial class WasmEditorJsonContext : JsonSerializerContext { }
 
+[SuppressMessage("ReSharper", "MemberCanBePrivate.Global")]
 public partial class WasmEditorBridge
 {
     private static EditorController? _controller;
-    private static readonly List<TreeNodeData> _treeNodes = new();
+    private static readonly List<TreeNodeData> TreeNodes = [];
 
     [JSExport]
     public static async Task<bool> Initialise(byte[] gameFileBytes, string filename)
     {
         _controller?.Dispose();
-        _treeNodes.Clear();
+        TreeNodes.Clear();
 
         _controller = new EditorController();
         _controller.ClearTree += (_, _) => { };
@@ -33,14 +35,14 @@ public partial class WasmEditorBridge
         _controller.AddedNode += OnAddedNode;
 
         var provider = new ByteArrayGameDataProvider(gameFileBytes, filename);
-        bool ok = await _controller.Initialise(new WasmConfig(), provider);
+        var ok = await _controller.Initialise(new WasmConfig(), provider);
         if (ok) _controller.UpdateTree();
         return ok;
     }
 
     [JSExport]
     public static string GetTreeNodes() =>
-        JsonSerializer.Serialize(_treeNodes, WasmEditorJsonContext.Default.ListTreeNodeData);
+        JsonSerializer.Serialize(TreeNodes, WasmEditorJsonContext.Default.ListTreeNodeData);
 
     [JSExport]
     public static string? GetEditorData(string key)
@@ -67,6 +69,6 @@ public partial class WasmEditorBridge
 
     private static void OnAddedNode(object? sender, EditorController.AddedNodeEventArgs e)
     {
-        _treeNodes.Add(new TreeNodeData(e.Key, e.Text, e.Parent));
+        TreeNodes.Add(new TreeNodeData(e.Key, e.Text, e.Parent));
     }
 }
