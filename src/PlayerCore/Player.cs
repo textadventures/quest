@@ -208,16 +208,11 @@ public class Player : IPlayerHelperUI
             synchronous = false;
             Runner.BeginWait();
         }
-        string? functionName = null;
-        if (filename.EndsWith(".wav", StringComparison.InvariantCultureIgnoreCase)) functionName = "playWav";
-        if (filename.EndsWith(".mp3", StringComparison.InvariantCultureIgnoreCase)) functionName = "playMp3";
 
-        if (functionName == null) return;
-        
         var url = GetURL(filename);
-            
+
         AddJavaScriptToBuffer(
-            functionName,
+            "playSound",
             url,
             synchronous,
             looped);
@@ -225,7 +220,7 @@ public class Player : IPlayerHelperUI
 
     void IPlayer.StopSound()
     {
-        AddJavaScriptToBuffer("stopAudio");
+        AddJavaScriptToBuffer("stopSound");
     }
 
     void IPlayer.WriteHTML(string html)

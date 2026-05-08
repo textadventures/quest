@@ -586,7 +586,10 @@
     <value>Read the Tutorial</value>
   </data>
   <data name="LauncherGetHelpInDiscussions" xml:space="preserve">
-    <value>Get help in Discussions</value>
+    <value>GitHub Discussions</value>
+  </data>
+  <data name="LauncherDiscord" xml:space="preserve">
+    <value>Discord</value>
   </data>
   <data name="LauncherRecent" xml:space="preserve">
     <value>Recent</value>

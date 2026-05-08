@@ -20,11 +20,12 @@ jobs:
       - name: Auto-merge patch and minor npm updates
         if: |
           steps.metadata.outputs.package-ecosystem == 'npm_and_yarn' &&
-          (steps.metadata.outputs.update-type == 'version-update:semver-patch' ||
+          (steps.metadata.outputs.dependency-type == 'indirect' ||
+           steps.metadata.outputs.update-type == 'version-update:semver-patch' ||
            steps.metadata.outputs.update-type == 'version-update:semver-minor')
         run: |
           gh pr review --approve "$PR_URL"
-          gh pr merge --squash "$PR_URL"
+          gh pr merge --auto --squash "$PR_URL"
         env:
           PR_URL: ${{ github.event.pull_request.html_url }}
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}

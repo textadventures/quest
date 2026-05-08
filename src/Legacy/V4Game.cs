@@ -1291,7 +1291,7 @@ public partial class V4Game : IGame, IGameDebug
     private async Task<string> GetFileData(GameData gameData)
     {
         var stream = gameData.Data;
-        return await new StreamReader(stream).ReadToEndAsync();
+        return await new StreamReader(stream, Encoding.GetEncoding(1252)).ReadToEndAsync();
     }
 
     private async Task<bool> ParseFile(GameData gameData)

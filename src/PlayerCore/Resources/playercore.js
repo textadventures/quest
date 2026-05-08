@@ -14,8 +14,7 @@ function initPlayerUI() {
     gameBorder.style.display = "block";
     
     addPaperScript();
-    $("#jquery_jplayer").jPlayer({ supplied: "wav, mp3" });
-    
+
     $("#txtCommand").bind("inview", function (event, visible) {
         // allows spacebar to scroll browser when txtCommand is not visible
         if (visible == true) {
@@ -637,6 +636,7 @@ function updateVerbButtons(selectedItem, verbsArray, idprefix) {
 function beginWait() {
     _waitMode = true;
     $("#txtCommand").hide();
+    $("#txtCommandPrompt").hide();
     $("#endWaitLink").show();
     markScrollPosition();
 }
@@ -650,6 +650,7 @@ function waitEnded() {
     _waitMode = false;
     $("#endWaitLink").hide();
     $("#txtCommand").show();
+    $("#txtCommandPrompt").show();
 }
 
 function gameFinished() {
@@ -663,7 +664,13 @@ function disableInterface() {
 }
 
 function setCommandBarStyle(style) {
+    var hidden = $("#txtCommand").is(":hidden") && $("#txtCommand").parent().is(":visible");
     $("#txtCommand").attr("style", style);
+    if (hidden) {
+        $("#txtCommand").hide();
+    } else {
+        $("#txtCommand").show();
+    }
 }
 
 function addTextAndScroll(text) {

@@ -48,7 +48,7 @@ namespace QuestViva.EngineTests
             actualCases = (QuestDictionary<IScript>)script.GetParameter(1);
             
             Assert.AreEqual(2, actualCases.Count);
-            Assert.ReferenceEquals(actualCases["StringListItem(myStringList, 0)"],
+            Assert.AreSame(actualCases["StringListItem(myStringList, 0)"],
                 actualCases["1"]);
         }
     }
