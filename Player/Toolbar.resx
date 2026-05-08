@@ -138,6 +138,18 @@
   <data name="butStop.Text" xml:space="preserve">
     <value>Stop Game</value>
   </data>
+  <data name="butRestart.ImageScaling" type="System.Windows.Forms.ToolStripItemImageScaling, System.Windows.Forms">
+    <value>None</value>
+  </data>
+  <data name="butRestart.ImageTransparentColor" type="System.Drawing.Color, System.Drawing">
+    <value>Magenta</value>
+  </data>
+  <data name="butRestart.Size" type="System.Drawing.Size, System.Drawing">
+    <value>102, 47</value>
+  </data>
+  <data name="butRestart.Text" xml:space="preserve">
+    <value>Restart</value>
+  </data>
   <data name="butWalkthrough.ImageScaling" type="System.Windows.Forms.ToolStripItemImageScaling, System.Windows.Forms">
     <value>None</value>
   </data>
@@ -226,6 +238,12 @@
     <value>butStop</value>
   </data>
   <data name="&gt;&gt;butStop.Type" xml:space="preserve">
+    <value>System.Windows.Forms.ToolStripButton, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;butRestart.Name" xml:space="preserve">
+    <value>butRestart</value>
+  </data>
+  <data name="&gt;&gt;butRestart.Type" xml:space="preserve">
     <value>System.Windows.Forms.ToolStripButton, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="&gt;&gt;butDebugger.Name" xml:space="preserve">
