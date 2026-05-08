@@ -1,7 +1,7 @@
 <script lang="ts">
-  import { TreeView, createTreeViewCollection } from '@skeletonlabs/skeleton-svelte'
-  import { treeNodes, selectedKey, selectNode } from '$lib/editor-store'
-  import type { TreeNode } from '$lib/types'
+  import { TreeView, createTreeViewCollection } from "@skeletonlabs/skeleton-svelte";
+  import { treeNodes, selectedKey, selectNode } from "$lib/editor-store";
+  import type { TreeNode } from "$lib/types";
 
   interface HierNode {
     id: string
@@ -10,26 +10,27 @@
   }
 
   function buildHierTree(nodes: TreeNode[]): HierNode[] {
-    const byParent = new Map<string | null, TreeNode[]>()
+    // eslint-disable-next-line svelte/prefer-svelte-reactivity
+    const byParent = new Map<string | null, TreeNode[]>();
     for (const n of nodes) {
-      const p = n.parent ?? null
-      if (!byParent.has(p)) byParent.set(p, [])
-      byParent.get(p)!.push(n)
+      const p = n.parent ?? null;
+      if (!byParent.has(p)) byParent.set(p, []);
+      byParent.get(p)!.push(n);
     }
     function build(node: TreeNode): HierNode {
-      const children = byParent.get(node.key)
-      return { id: node.key, text: node.text, ...(children ? { children: children.map(build) } : {}) }
+      const children = byParent.get(node.key);
+      return { id: node.key, text: node.text, ...(children ? { children: children.map(build) } : {}) };
     }
-    return (byParent.get(null) ?? []).map(build)
+    return (byParent.get(null) ?? []).map(build);
   }
 
   let collection = $derived(
     createTreeViewCollection<HierNode>({
       nodeToValue: (n) => n.id,
       nodeToString: (n) => n.text,
-      rootNode: { id: '__root__', text: '', children: buildHierTree($treeNodes) }
+      rootNode: { id: "__root__", text: "", children: buildHierTree($treeNodes) }
     })
-  )
+  );
 </script>
 
 <div class="flex flex-col w-60 min-w-[180px] border-r border-surface-200-800 bg-surface-50-950 overflow-hidden">
@@ -41,13 +42,11 @@
       {collection}
       selectionMode="single"
       selectedValue={$selectedKey ? [$selectedKey] : []}
-      onSelectionChange={(e) => { if (e.selectedValue[0]) selectNode(e.selectedValue[0]) }}
+      onSelectionChange={(e) => { if (e.selectedValue[0]) selectNode(e.selectedValue[0]); }}
     >
-      {#snippet children()}
-        {#each collection.rootNode.children ?? [] as node, i (node.id)}
-          {@render treeNode(node, [i])}
-        {/each}
-      {/snippet}
+      {#each collection.rootNode.children ?? [] as node, i (node.id)}
+        {@render treeNode(node, [i])}
+      {/each}
     </TreeView>
   </div>
 </div>

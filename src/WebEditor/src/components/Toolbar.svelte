@@ -1,16 +1,16 @@
 <script lang="ts">
-  import { AppBar } from '@skeletonlabs/skeleton-svelte'
-  import { gameFilename, saveGame, undo, redo } from '$lib/editor-store'
+  import { AppBar } from "@skeletonlabs/skeleton-svelte";
+  import { gameFilename, saveGame, undo, redo } from "$lib/editor-store";
 
   function handleSave() {
-    const xml = saveGame()
-    const blob = new Blob([xml], { type: 'application/xml' })
-    const url = URL.createObjectURL(blob)
-    const a = document.createElement('a')
-    a.href = url
-    a.download = $gameFilename ?? 'game.aslx'
-    a.click()
-    URL.revokeObjectURL(url)
+    const xml = saveGame();
+    const blob = new Blob([xml], { type: "application/xml" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = $gameFilename ?? "game.aslx";
+    a.click();
+    URL.revokeObjectURL(url);
   }
 </script>
 

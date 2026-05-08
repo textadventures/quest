@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { selectedKey, selectedAttributes } from '$lib/editor-store'
+  import { selectedKey, selectedAttributes } from "$lib/editor-store";
 </script>
 
 <div class="flex flex-col flex-1 bg-surface-50-950 overflow-hidden">

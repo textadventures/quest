@@ -1,26 +1,26 @@
 <script lang="ts">
-  import { goto } from '$app/navigation'
-  import { openGame } from '$lib/editor-store'
+  import { goto } from "$app/navigation";
+  import { openGame } from "$lib/editor-store";
 
-  let loading = $state(false)
-  let error = $state<string | null>(null)
+  let loading = $state(false);
+  let error = $state<string | null>(null);
 
   async function handleFile(e: Event) {
-    const file = (e.target as HTMLInputElement).files?.[0]
-    if (!file) return
-    loading = true
-    error = null
+    const file = (e.target as HTMLInputElement).files?.[0];
+    if (!file) return;
+    loading = true;
+    error = null;
     try {
-      const ok = await openGame(file)
+      const ok = await openGame(file);
       if (ok) {
-        goto('/editor')
+        goto("/editor");
       } else {
-        error = 'Failed to load game file.'
+        error = "Failed to load game file.";
       }
     } catch (err) {
-      error = String(err)
+      error = String(err);
     } finally {
-      loading = false
+      loading = false;
     }
   }
 </script>
