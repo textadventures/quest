@@ -1,5 +1,6 @@
 import { sveltekit } from '@sveltejs/kit/vite'
 import { defineConfig } from 'vite'
+import tailwindcss from '@tailwindcss/vite'
 import { fileURLToPath } from 'node:url'
 import { join, extname } from 'node:path'
 import { readFile } from 'node:fs/promises'
@@ -20,6 +21,7 @@ const mimeTypes: Record<string, string> = {
 
 export default defineConfig({
   plugins: [
+    tailwindcss(),
     sveltekit(),
     {
       name: 'wasm-appbundle',
