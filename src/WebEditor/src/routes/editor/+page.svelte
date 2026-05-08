@@ -14,25 +14,10 @@
   })
 </script>
 
-<div class="layout">
+<div class="flex flex-col h-svh overflow-hidden">
   <Toolbar />
-  <div class="body">
+  <div class="flex flex-1 overflow-hidden">
     <TreePanel />
     <PropertyEditor />
   </div>
 </div>
-
-<style>
-  .layout {
-    display: flex;
-    flex-direction: column;
-    height: 100svh;
-    overflow: hidden;
-  }
-
-  .body {
-    flex: 1;
-    display: flex;
-    overflow: hidden;
-  }
-</style>

@@ -1,97 +1,74 @@
 <script lang="ts">
+  import { TreeView, createTreeViewCollection } from '@skeletonlabs/skeleton-svelte'
   import { treeNodes, selectedKey, selectNode } from '$lib/editor-store'
   import type { TreeNode } from '$lib/types'
 
-  interface FlatNode extends TreeNode {
-    depth: number
+  interface HierNode {
+    id: string
+    text: string
+    children?: HierNode[]
   }
 
-  function buildFlatTree(nodes: TreeNode[]): FlatNode[] {
+  function buildHierTree(nodes: TreeNode[]): HierNode[] {
     const byParent = new Map<string | null, TreeNode[]>()
     for (const n of nodes) {
       const p = n.parent ?? null
       if (!byParent.has(p)) byParent.set(p, [])
       byParent.get(p)!.push(n)
     }
-
-    const result: FlatNode[] = []
-    function traverse(parentKey: string | null, depth: number) {
-      for (const n of byParent.get(parentKey) ?? []) {
-        result.push({ ...n, depth })
-        traverse(n.key, depth + 1)
-      }
+    function build(node: TreeNode): HierNode {
+      const children = byParent.get(node.key)
+      return { id: node.key, text: node.text, ...(children ? { children: children.map(build) } : {}) }
     }
-    traverse(null, 0)
-    return result
+    return (byParent.get(null) ?? []).map(build)
   }
 
-  let flat = $derived(buildFlatTree($treeNodes))
+  let collection = $derived(
+    createTreeViewCollection<HierNode>({
+      nodeToValue: (n) => n.id,
+      nodeToString: (n) => n.text,
+      rootNode: { id: '__root__', text: '', children: buildHierTree($treeNodes) }
+    })
+  )
 </script>
 
-<div class="tree-panel">
-  <div class="panel-header">Game Objects</div>
-  <div class="tree-scroll">
-    {#each flat as node (node.key)}
-      <button
-        class="tree-node"
-        class:selected={$selectedKey === node.key}
-        style="padding-left: {0.75 + node.depth * 1.25}rem"
-        onclick={() => selectNode(node.key)}
-      >
-        {node.text}
-      </button>
-    {/each}
+<div class="flex flex-col w-60 min-w-[180px] border-r border-surface-200-800 bg-surface-50-950 overflow-hidden">
+  <div class="px-3 py-2 text-xs font-semibold uppercase text-surface-500-400 border-b border-surface-200-800 bg-surface-100-900">
+    Game Objects
+  </div>
+  <div class="flex-1 overflow-y-auto p-1">
+    <TreeView
+      {collection}
+      selectionMode="single"
+      selectedValue={$selectedKey ? [$selectedKey] : []}
+      onSelectionChange={(e) => { if (e.selectedValue[0]) selectNode(e.selectedValue[0]) }}
+    >
+      {#snippet children()}
+        {#each collection.rootNode.children ?? [] as node, i (node.id)}
+          {@render treeNode(node, [i])}
+        {/each}
+      {/snippet}
+    </TreeView>
   </div>
 </div>
 
-<style>
-  .tree-panel {
-    display: flex;
-    flex-direction: column;
-    width: 240px;
-    min-width: 180px;
-    border-right: 1px solid #ddd;
-    background: #fafafa;
-    overflow: hidden;
-  }
-
-  .panel-header {
-    padding: 0.5rem 0.75rem;
-    font-weight: 600;
-    font-size: 0.75rem;
-    text-transform: uppercase;
-    color: #666;
-    border-bottom: 1px solid #ddd;
-    background: #f0f0f0;
-  }
-
-  .tree-scroll {
-    flex: 1;
-    overflow-y: auto;
-  }
-
-  .tree-node {
-    display: block;
-    width: 100%;
-    text-align: left;
-    padding-top: 0.3rem;
-    padding-bottom: 0.3rem;
-    padding-right: 0.75rem;
-    background: none;
-    border: none;
-    border-radius: 0;
-    font-size: 0.875rem;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-  }
-
-  .tree-node:hover {
-    background: #e8e8e8;
-  }
-
-  .tree-node.selected {
-    background: #1a73e8;
-    color: white;
-  }
-</style>
+{#snippet treeNode(node: HierNode, indexPath: number[])}
+  <TreeView.NodeProvider value={{ node, indexPath }}>
+    {#if node.children}
+      <TreeView.Branch>
+        <TreeView.BranchControl>
+          <TreeView.BranchIndicator />
+          <TreeView.BranchText>{node.text}</TreeView.BranchText>
+        </TreeView.BranchControl>
+        <TreeView.BranchContent>
+          <TreeView.BranchIndentGuide />
+          {#each node.children as child, ci (child.id)}
+            {@render treeNode(child, [...indexPath, ci])}
+          {/each}
+        </TreeView.BranchContent>
+      </TreeView.Branch>
+    {:else}
+      <TreeView.Item>{node.text}</TreeView.Item>
+    {/if}
+  </TreeView.NodeProvider>
+{/snippet}

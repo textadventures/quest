@@ -25,67 +25,20 @@
   }
 </script>
 
-<main>
-  <h1>Quest Viva Editor</h1>
-  <p>Open an <code>.aslx</code> game file to begin editing.</p>
+<main class="flex flex-col items-center justify-center min-h-svh gap-6 p-8">
+  <h1 class="text-3xl font-semibold">Quest Viva Editor</h1>
+  <p class="text-surface-500-400">Open an <code>.aslx</code> game file to begin editing.</p>
 
-  <label class="open-btn" class:disabled={loading}>
+  <label class="btn preset-filled-primary-500 cursor-pointer" class:opacity-60={loading} class:pointer-events-none={loading}>
     {#if loading}
       Loading…
     {:else}
       Open game file
     {/if}
-    <input type="file" accept=".aslx" onchange={handleFile} disabled={loading} />
+    <input type="file" accept=".aslx" onchange={handleFile} disabled={loading} class="hidden" />
   </label>
 
   {#if error}
-    <p class="error">{error}</p>
+    <p class="text-error-500 max-w-[40ch] text-center">{error}</p>
   {/if}
 </main>
-
-<style>
-  main {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    min-height: 100svh;
-    gap: 1.5rem;
-    padding: 2rem;
-  }
-
-  h1 {
-    font-size: 2rem;
-    font-weight: 600;
-  }
-
-  .open-btn {
-    display: inline-block;
-    padding: 0.75rem 1.5rem;
-    background: #1a73e8;
-    color: white;
-    border-radius: 6px;
-    font-size: 1rem;
-    cursor: pointer;
-    transition: background 0.15s;
-  }
-
-  .open-btn:hover:not(.disabled) {
-    background: #1558b0;
-  }
-
-  .open-btn.disabled {
-    opacity: 0.6;
-    cursor: default;
-  }
-
-  .open-btn input {
-    display: none;
-  }
-
-  .error {
-    color: #c0392b;
-    max-width: 40ch;
-    text-align: center;
-  }
-</style>
