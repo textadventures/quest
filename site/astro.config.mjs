@@ -20,11 +20,11 @@ export default defineConfig({
             sidebar: [
                 {
                     label: "Guides",
-                    autogenerate: { directory: "guides" },
+                    items: [{ autogenerate: { directory: "guides" } }],
                 },
                 {
                     label: "Project",
-                    autogenerate: { directory: "project" },
+                    items: [{ autogenerate: { directory: "project" } }],
                 },
             ],
         }),
