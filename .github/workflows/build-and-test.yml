@@ -6,13 +6,37 @@ on:
     paths:
       - "src/**"
       - "tests/**"
+      - "site/**"
   pull_request:
     branches: [ "main" ]
     paths:
       - "src/**"
       - "tests/**"
+      - "site/**"
 
 jobs:
+  build_site:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out repository code
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 'lts/*'
+          cache: 'npm'
+          cache-dependency-path: site/package-lock.json
+
+      - name: Install dependencies
+        run: npm ci
+        working-directory: site
+
+      - name: Build
+        run: npm run build
+        working-directory: site
+
   build_and_test:
     runs-on: ubuntu-latest
 
