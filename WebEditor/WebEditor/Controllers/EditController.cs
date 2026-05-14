@@ -533,20 +533,25 @@ namespace WebEditor.Controllers
             var container = GetAzureBlobContainer("editorgames");
             var blobs = container.GetBlobs(prefix: uploadPath + "/");
 
-            return new FileGeneratingResult("game.zip", "application/zip", stream =>
+            var zipData = new MemoryStream();
+            using (var archive = new ZipArchive(zipData, ZipArchiveMode.Create, leaveOpen: true))
             {
-                using (var archive = new ZipArchive(stream, ZipArchiveMode.Create, leaveOpen: true))
+                foreach (var blobItem in blobs)
                 {
-                    foreach (var blobItem in blobs)
+                    if (blobItem.Name.Substring(uploadPath.Length + 1).Contains("/")) continue;
+                    var blobClient = container.GetBlobClient(blobItem.Name);
+                    var ms = new MemoryStream();
+                    blobClient.DownloadTo(ms);
+                    ms.Position = 0;
+                    using (var entryStream = archive.CreateEntry(Path.GetFileName(blobItem.Name)).Open())
                     {
-                        var blobClient = container.GetBlobClient(blobItem.Name);
-                        using (var entryStream = archive.CreateEntry(Path.GetFileName(blobItem.Name)).Open())
-                        {
-                            blobClient.DownloadTo(entryStream);
-                        }
+                        ms.CopyTo(entryStream);
                     }
                 }
-            });
+            }
+            zipData.Position = 0;
+
+            return File(zipData, "application/zip", "game.zip");
         }
     }
 
