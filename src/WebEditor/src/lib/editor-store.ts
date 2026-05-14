@@ -41,6 +41,7 @@ export function selectNode(key: string) {
 export function setAttribute(elementKey: string, attribute: string, controlType: string, value: string): string {
     if (!_bridge) return "error";
     const result = _bridge.SetAttribute(elementKey, attribute, controlType, value);
+    refreshSelectedData();
     refreshUndoRedo();
     return result;
 }
