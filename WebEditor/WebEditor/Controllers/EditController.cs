@@ -419,6 +419,8 @@ namespace WebEditor.Controllers
                     foreach (var blobItem in blobs)
                     {
                         if (blobItem.Name.EndsWith(".aslx")) continue;
+                        // Skip files in subdirectories (e.g. Output/*.quest from previous publishes)
+                        if (blobItem.Name.Substring(uploadPath.Length + 1).Contains("/")) continue;
                         var blobClient = container.GetBlobClient(blobItem.Name);
                         var ms = new MemoryStream();
                         blobClient.DownloadTo(ms);
