@@ -52,7 +52,7 @@ namespace WebEditor.Controllers
             var result = editor.Initialise(id, filename, libFolder, simpleMode);
             if (!result.Success)
             {
-                Logging.Log.InfoFormat("Failed to load game {0} - {1}", id, result.Error);
+                Logging.Log.InfoFormat("Failed to load game {0} ({2}) - {1}", id, result.Error, filename);
                 return Json(new { error = result.Error.Replace(Environment.NewLine, "<br/>") }, JsonRequestBehavior.AllowGet);
             }
 
