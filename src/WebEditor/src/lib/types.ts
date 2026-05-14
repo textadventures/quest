@@ -4,4 +4,25 @@ export interface TreeNode {
   parent: string | null
 }
 
-export type ElementAttributes = Record<string, string | null>
+export interface ControlOption {
+  value: string
+  label: string
+}
+
+export interface ControlInfo {
+  attribute: string | null
+  controlType: string
+  caption: string | null
+  options: ControlOption[] | null
+}
+
+export interface TabInfo {
+  caption: string | null
+  controls: ControlInfo[]
+}
+
+export interface EditorDataResponse {
+  attributes: Record<string, string | null>
+  tabs: TabInfo[]
+  controls: ControlInfo[]
+}

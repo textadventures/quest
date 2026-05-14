@@ -2,6 +2,7 @@ export interface WasmBridge {
   Initialise(bytes: Uint8Array, filename: string): Promise<boolean>
   GetTreeNodes(): string
   GetEditorData(key: string): string | null
+  SetAttribute(elementKey: string, attribute: string, controlType: string, value: string): string
   Save(): string
   Undo(): void
   Redo(): void

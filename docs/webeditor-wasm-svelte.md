@@ -28,17 +28,38 @@ All data crossing the JS/WASM boundary is JSON. The Svelte layer calls `[JSExpor
 ```csharp
 [JSExport] Task<bool> Initialise(byte[] gameFileBytes, string filename)
 [JSExport] string     GetTreeNodes()           // JSON: List<{key, text, parent}>
-[JSExport] string?    GetEditorData(string key) // JSON: Dictionary<string, string?>
+[JSExport] string?    GetEditorData(string key) // JSON: EditorDataResponse (see below)
+[JSExport] string     SetAttribute(string elementKey, string attribute, string controlType, string value)
 [JSExport] string     Save()                   // returns XML
 [JSExport] void       Undo()
 [JSExport] void       Redo()
 ```
 
-Tree nodes are collected during `Initialise` by subscribing to `EditorController.AddedNode`, then returned as a flat list via `GetTreeNodes()`. `GetEditorData` uses `IEditorDataExtendedAttributeInfo` to enumerate attributes for a given element key.
+`GetEditorData` returns an `EditorDataResponse`:
+```json
+{
+  "attributes": { "name": "My Room", "alias": null, ... },
+  "tabs": [
+    {
+      "caption": "Setup",
+      "controls": [
+        { "attribute": "name", "controlType": "textbox", "caption": "Name", "options": null },
+        { "attribute": "enabled", "controlType": "checkbox", "caption": "Enabled", "options": null },
+        { "attribute": "direction", "controlType": "dropdown", "caption": "Direction",
+          "options": [{ "value": "north", "label": "north" }, ...] }
+      ]
+    }
+  ],
+  "controls": []
+}
+```
+
+`SetAttribute` converts `value` (always a string) to the correct .NET type based on `controlType` (`checkbox` → `bool`, `number` → `int`, `numberdouble` → `double`, otherwise `string`), wraps in a transaction for undo support, and returns `"ok"` or an error message.
+
+Tree nodes are collected during `Initialise` by subscribing to `EditorController.AddedNode`, then returned as a flat list via `GetTreeNodes()`.
 
 ### Not yet implemented
 
-- `SetAttribute` — needed for any editing; blocked on Phase 3
 - Live JS callbacks (JSImport) — events currently captured into C# state at init time rather than pushed to JS as they occur
 
 ### Supporting types
@@ -80,11 +101,11 @@ src/WebEditor/
 │   ├── lib/
 │   │   ├── wasm.ts         # loads dotnet.js, exposes WasmBridge
 │   │   ├── editor-store.ts # Svelte stores + wrappers for all WASM calls
-│   │   └── types.ts        # TreeNode, ElementAttributes
+│   │   └── types.ts        # TreeNode, ControlInfo, TabInfo, EditorDataResponse
 │   ├── components/
 │   │   ├── Toolbar.svelte         # AppBar: title, filename, undo/redo/save
 │   │   ├── TreePanel.svelte       # Skeleton TreeView (flat→hierarchy conversion)
-│   │   └── PropertyEditor.svelte  # Raw attribute grid (placeholder)
+│   │   └── PropertyEditor.svelte  # Typed controls with tab navigation
 │   └── routes/
 │       ├── +layout.svelte  # imports app.css
 │       ├── +layout.ts      # prerendering config
@@ -143,15 +164,17 @@ The browser cannot read files from the local filesystem directly. Currently impl
 - Toolbar: save (file download), undo, redo
 - Skeleton UI v4 + Tailwind CSS 4 + ESLint configured
 
-### Phase 3 — Property editors (next)
+### Phase 3 — Property editors ✅
 
-The current `PropertyEditor` is a raw key/value dump. Phase 3 replaces it with proper typed controls.
+`PropertyEditor` replaced with typed controls and tab navigation:
 
-Steps:
-1. Implement `SetAttribute(string element, string attribute, string jsonValue)` in `WasmEditorBridge`
-2. Extend `GetEditorData` response to include the EditorCore control type for each attribute (dropdown, textbox, checkbox, script, etc.)
-3. Map each control type to a Svelte component in `PropertyEditor`
-4. Two-way binding: editing a control → `SetAttribute` → refresh affected state
+1. `SetAttribute(elementKey, attribute, controlType, value)` added to `WasmEditorBridge` — type-converts `value` based on `controlType`, wraps in undo transaction
+2. `GetEditorData` extended to return `EditorDataResponse` with `attributes`, `tabs`, and `controls` — each control carries `controlType`, `caption`, and `options` (for dropdowns)
+3. `PropertyEditor.svelte` maps `controlType` to inputs: `textbox`/`richtext` → text input, `checkbox` → checkbox, `number`/`numberdouble` → number input, `dropdown` → select with options, `script` → Phase 4 placeholder, others → read-only display
+4. Tab navigation: tabs from the EditorDefinition are rendered as a tab bar; clicking a tab switches the visible controls
+5. `editor-store.ts` now exports `selectedData` (replacing `selectedAttributes`) and `setAttribute`
+
+Known limitations for this phase: control visibility conditions (`onlydisplayif`) are not evaluated — all controls are shown regardless of visibility. Live C#→JS events not yet implemented.
 
 ### Phase 4 — Script editor
 - Integrate Monaco or CodeMirror 6 for script attribute editing
