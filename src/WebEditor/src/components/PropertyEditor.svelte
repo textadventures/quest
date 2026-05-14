@@ -3,13 +3,20 @@
     import type { ControlInfo } from "$lib/types";
 
     let activeTab = $state<string | null>(null);
+    let lastKey = $state<string | null>(null);
 
     $effect(() => {
+        const key = $selectedKey;
         const data = $selectedData;
-        if (data && data.tabs.length > 0) {
-            activeTab = data.tabs[0].caption;
+        if (key !== lastKey) {
+            lastKey = key;
+            activeTab = (data && data.tabs.length > 0) ? data.tabs[0].caption : null;
+        } else if (activeTab !== null) {
+            // Keep activeTab valid after a data refresh (tab list is stable for the same node)
+            const stillExists = data?.tabs.some(t => t.caption === activeTab);
+            if (!stillExists) activeTab = (data && data.tabs.length > 0) ? data.tabs[0].caption : null;
         } else {
-            activeTab = null;
+            activeTab = (data && data.tabs.length > 0) ? data.tabs[0].caption : null;
         }
     });
 
