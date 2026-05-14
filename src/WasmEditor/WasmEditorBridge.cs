@@ -38,6 +38,11 @@ public partial class WasmEditorBridge
         _controller.BeginTreeUpdate += (_, _) => { };
         _controller.EndTreeUpdate += (_, _) => { };
         _controller.AddedNode += OnAddedNode;
+        // RetitledNode and RemovedNode are called without null guards in EditorController,
+        // so they must be subscribed even if we don't act on them yet.
+        _controller.RetitledNode += (_, _) => { };
+        _controller.RemovedNode += (_, _) => { };
+        _controller.RenamedNode += (_, _) => { };
 
         var provider = new ByteArrayGameDataProvider(gameFileBytes, filename);
         var ok = await _controller.Initialise(new WasmConfig(), provider);
@@ -98,20 +103,39 @@ public partial class WasmEditorBridge
         };
 
         _controller.StartTransaction($"Set {attribute}");
-        var result = data.SetAttribute(attribute, typedValue);
-        _controller.EndTransaction();
-
-        return result.Valid ? "ok" : result.Message.ToString();
+        try
+        {
+            var result = data.SetAttribute(attribute, typedValue);
+            return result.Valid ? "ok" : result.Message.ToString();
+        }
+        finally
+        {
+            _controller.EndTransaction();
+        }
     }
 
     [JSExport]
     public static string Save() => _controller?.Save() ?? string.Empty;
 
     [JSExport]
-    public static void Undo() => _controller?.Undo();
+    public static bool CanUndo() => _controller?.GetUndoItems().Any() ?? false;
 
     [JSExport]
-    public static void Redo() => _controller?.Redo();
+    public static bool CanRedo() => _controller?.GetRedoItems().Any() ?? false;
+
+    [JSExport]
+    public static void Undo()
+    {
+        if (_controller == null || !_controller.GetUndoItems().Any()) return;
+        _controller.Undo();
+    }
+
+    [JSExport]
+    public static void Redo()
+    {
+        if (_controller == null || !_controller.GetRedoItems().Any()) return;
+        _controller.Redo();
+    }
 
     private static void OnAddedNode(object? sender, EditorController.AddedNodeEventArgs e)
     {

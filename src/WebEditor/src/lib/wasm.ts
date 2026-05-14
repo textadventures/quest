@@ -4,6 +4,8 @@ export interface WasmBridge {
   GetEditorData(key: string): string | null
   SetAttribute(elementKey: string, attribute: string, controlType: string, value: string): string
   Save(): string
+  CanUndo(): boolean
+  CanRedo(): boolean
   Undo(): void
   Redo(): void
 }

@@ -206,7 +206,7 @@ public partial class WorldModel : IGame, IGameDebug
 
     public void Print(string text, bool linebreak = true)
     {
-        if (Version >= WorldModelVersion.v540 && Elements.ContainsKey(ElementType.Function, "OutputText"))
+        if (!EditMode && Version >= WorldModelVersion.v540 && Elements.ContainsKey(ElementType.Function, "OutputText"))
         {
             try
             {
@@ -217,7 +217,7 @@ public partial class WorldModel : IGame, IGameDebug
                 LogException(ex);
             }
         }
-        else
+        else if (!EditMode)
         {
             if (PrintText != null)
             {
