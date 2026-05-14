@@ -3,6 +3,7 @@ export interface WasmBridge {
   GetTreeNodes(): string
   GetEditorData(key: string): string | null
   SetAttribute(elementKey: string, attribute: string, controlType: string, value: string): string
+  SetDropdownType(elementKey: string, controlId: string, selectedType: string): string
   Save(): string
   CanUndo(): boolean
   CanRedo(): boolean

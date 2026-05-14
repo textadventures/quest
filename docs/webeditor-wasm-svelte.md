@@ -174,7 +174,7 @@ The browser cannot read files from the local filesystem directly. Currently impl
 4. Tab navigation: tabs from the EditorDefinition are rendered as a tab bar; clicking a tab switches the visible controls
 5. `editor-store.ts` now exports `selectedData` (replacing `selectedAttributes`) and `setAttribute`
 
-Known limitations for this phase: control visibility conditions (`onlydisplayif`) are not evaluated — all controls are shown regardless of visibility. Live C#→JS events not yet implemented.
+Known limitations for this phase: live C#→JS events not yet implemented.
 
 ### Phase 4 — Script editor
 - Integrate Monaco or CodeMirror 6 for script attribute editing

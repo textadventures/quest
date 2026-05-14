@@ -46,6 +46,14 @@ export function setAttribute(elementKey: string, attribute: string, controlType:
     return result;
 }
 
+export function setDropdownType(elementKey: string, controlId: string, selectedType: string): string {
+    if (!_bridge) return "error";
+    const result = _bridge.SetDropdownType(elementKey, controlId, selectedType);
+    refreshSelectedData();
+    refreshUndoRedo();
+    return result;
+}
+
 export function saveGame(): string {
     return _bridge?.Save() ?? "";
 }

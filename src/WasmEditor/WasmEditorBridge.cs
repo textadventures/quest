@@ -76,9 +76,14 @@ public partial class WasmEditorBridge
             var def = _controller.GetEditorDefinition(editorName);
             foreach (var tab in def.Tabs.Values)
             {
-                tabs.Add(new TabInfo(tab.Caption, tab.Controls.Select(ToControlInfo).ToList()));
+                if (!tab.IsTabVisible(data)) continue;
+                var visibleControls = tab.Controls.Where(c => c.IsControlVisible(data)).ToList();
+                AddDropdownTypeValues(attrs, visibleControls, key);
+                tabs.Add(new TabInfo(tab.Caption, visibleControls.Select(ToControlInfo).ToList()));
             }
-            topControls.AddRange(def.Controls.Select(ToControlInfo));
+            var visibleTopControls = def.Controls.Where(c => c.IsControlVisible(data)).ToList();
+            AddDropdownTypeValues(attrs, visibleTopControls, key);
+            topControls.AddRange(visibleTopControls.Select(ToControlInfo));
         }
 
         return JsonSerializer.Serialize(
@@ -137,6 +142,49 @@ public partial class WasmEditorBridge
         _controller.Redo();
     }
 
+    [JSExport]
+    public static string SetDropdownType(string elementKey, string controlId, string selectedType)
+    {
+        if (_controller == null) return "error";
+        var editorName = _controller.GetElementEditorName(elementKey);
+        if (editorName == null) return "error";
+        var def = _controller.GetEditorDefinition(editorName);
+
+        var ctrl = def.Tabs.Values.SelectMany(t => t.Controls)
+            .Concat(def.Controls)
+            .FirstOrDefault(c => c.Id == controlId);
+        if (ctrl == null) return "error";
+
+        var types = ctrl.GetDictionary("types");
+        if (types == null) return "error";
+
+        _controller.StartTransaction($"Set type");
+        try
+        {
+            foreach (var typeName in types.Keys.Where(k => k != "*"))
+            {
+                if (_controller.DoesElementInheritType(elementKey, typeName))
+                    _controller.RemoveInheritedTypeFromElement(elementKey, typeName, false);
+            }
+            if (selectedType != "*")
+            {
+                var result = _controller.AddInheritedTypeToElement(elementKey, selectedType, false);
+                if (!result.Valid) return result.Message.ToString();
+            }
+            return "ok";
+        }
+        finally
+        {
+            _controller.EndTransaction();
+        }
+    }
+
+    private static void AddDropdownTypeValues(Dictionary<string, string?> attrs, List<IEditorControl> controls, string elementKey)
+    {
+        foreach (var ctrl in controls.Where(c => c.ControlType == "dropdowntypes"))
+            attrs[ctrl.Id] = _controller!.GetSelectedDropDownType(ctrl, elementKey);
+    }
+
     private static void OnAddedNode(object? sender, EditorController.AddedNodeEventArgs e)
     {
         TreeNodes.Add(new TreeNodeData(e.Key, e.Text, e.Parent));
@@ -145,6 +193,8 @@ public partial class WasmEditorBridge
     private static ControlInfo ToControlInfo(IEditorControl ctrl)
     {
         List<ControlOption>? options = null;
+        string? attribute = ctrl.Attribute;
+
         if (ctrl.ControlType == "dropdown")
         {
             var list = ctrl.GetListString("validvalues");
@@ -161,6 +211,14 @@ public partial class WasmEditorBridge
                 }
             }
         }
-        return new ControlInfo(ctrl.Attribute, ctrl.ControlType, ctrl.Caption, options);
+        else if (ctrl.ControlType == "dropdowntypes")
+        {
+            var dict = ctrl.GetDictionary("types");
+            if (dict != null)
+                options = dict.Select(kv => new ControlOption(kv.Key, kv.Value)).ToList();
+            attribute = ctrl.Id;
+        }
+
+        return new ControlInfo(attribute, ctrl.ControlType, ctrl.Caption, options);
     }
 }

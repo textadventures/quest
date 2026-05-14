@@ -1,5 +1,5 @@
 <script lang="ts">
-    import { selectedKey, selectedData, setAttribute } from "$lib/editor-store";
+    import { selectedKey, selectedData, setAttribute, setDropdownType } from "$lib/editor-store";
     import type { ControlInfo } from "$lib/types";
 
     let activeTab = $state<string | null>(null);
@@ -135,6 +135,16 @@
                     class="select text-xs py-0.5 px-1.5 w-full"
                     value={attrValue(ctrl.attribute) ?? ""}
                     onchange={(e) => onDropdownChange(ctrl.attribute!, (e.target as HTMLSelectElement).value)}
+                >
+                    {#each ctrl.options as opt, oi (oi)}
+                        <option value={opt.value}>{opt.label}</option>
+                    {/each}
+                </select>
+            {:else if ctrl.controlType === "dropdowntypes" && ctrl.options && ctrl.attribute}
+                <select
+                    class="select text-xs py-0.5 px-1.5 w-full"
+                    value={attrValue(ctrl.attribute) ?? "*"}
+                    onchange={(e) => $selectedKey && setDropdownType($selectedKey, ctrl.attribute!, (e.target as HTMLSelectElement).value)}
                 >
                     {#each ctrl.options as opt, oi (oi)}
                         <option value={opt.value}>{opt.label}</option>
