@@ -140,10 +140,38 @@ The browser cannot read files from the local filesystem directly. Currently impl
 - JS reads it as `ArrayBuffer`, converts to `Uint8Array`, passes to `Initialise`
 - Save triggers a download via a temporary `<a>` with an object URL
 
-**Option B (future)** — OPFS (Origin Private File System)
-- Game files live in the browser's private storage
-- Read/write without prompts after initial import
-- Enables auto-save
+**Option B (future)** — File System Access API + OPFS
+- Chrome/Edge: use `showOpenFilePicker` / `showSaveFilePicker` for direct read/write to the user's real files without a download prompt; store recent file handles in IndexedDB for "recent files"
+- Safari/Firefox: fall back to `<input type="file">` open + download save (no persistent handle)
+- Consider using [`browser-fs-access`](https://github.com/GoogleChromeLabs/browser-fs-access) (Google Chrome Labs, ~5KB) rather than hand-rolling the feature detection — the Squiffy editor has already done this (see [squiffy#215](https://github.com/textadventures/squiffy/issues/215))
+- OPFS (Origin Private File System) for auto-save: supported on Chrome, Safari 15.2+, Firefox 111+; game files live in browser private storage with no prompts after initial import
+
+**Option C (future)** — Asset storage for images
+- Images referenced in game files need to survive across sessions and be resolvable during preview
+- Store blobs in OPFS (preferred over raw IndexedDB for binary assets)
+- A Service Worker intercepts requests for asset URLs during preview and serves from OPFS
+- This avoids needing a server round-trip for user-uploaded images
+
+**Option D (future)** — Electron wrapper
+- Electron exposes Node.js `fs` to the renderer via `contextBridge`
+- A thin adapter (~20 lines) behind a common `FileAdapter` interface would allow the same Svelte code to work in both browser PWA and Electron
+- See shared adapter design below
+
+**Shared filesystem adapter** (future, coordinate with Squiffy)
+
+Both Quest WebEditor and Squiffy face the same three-tier file system problem (File System Access API → OPFS → Electron `fs`). The intent is to extract a shared TypeScript package rather than duplicate the pattern. Proposed interface:
+
+```typescript
+interface FileAdapter {
+  openFile(opts?: OpenOptions): Promise<FileContent | null>
+  saveFile(data: Uint8Array | string): Promise<boolean>
+  saveFileAs(data: Uint8Array | string, suggestedName?: string): Promise<boolean>
+  putAsset(key: string, data: Blob): Promise<void>
+  getAsset(key: string): Promise<Blob | null>
+}
+```
+
+Factory functions: `createBrowserAdapter()`, `createOPFSAdapter()`, `createElectronAdapter()`.
 
 ---
 
@@ -183,7 +211,8 @@ Known limitations for this phase: live C#→JS events not yet implemented.
 ### Phase 5 — Full feature parity
 - New game (from templates)
 - Publish/export
-- OPFS persistence
+- File System Access API + OPFS persistence (see File handling section)
+- Asset storage for images via OPFS + Service Worker
 - Test suite for the WASM bridge
 
 ---
@@ -194,3 +223,5 @@ Known limitations for this phase: live C#→JS events not yet implemented.
 - **Live C# → JS events**: Currently tree state is snapshot-based (collected at init). As editing adds/removes/renames nodes, the bridge will need to push updates to JS rather than relying on a full re-fetch.
 - **Build integration**: Should `WasmEditor` output be served by `WebPlayer` (embedded SPA) or deployed separately?
 - **Auth / server-side storage**: Is cloud save in scope? Affects whether the editor stays purely client-side.
+- **Shared filesystem adapter**: Extract a common `FileAdapter` TypeScript package shared with Squiffy (see File handling section and [squiffy#215](https://github.com/textadventures/squiffy/issues/215)).
+- **Electron wrapper**: Both Quest and Squiffy editors are candidates for an Electron app. The `FileAdapter` interface is the seam; `createElectronAdapter()` would be a thin IPC shim. Decide whether to build one Electron shell that hosts both, or separate apps.
