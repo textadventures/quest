@@ -1203,7 +1203,7 @@ namespace TextAdventures.Quest
 
         public void Dispose()
         {
-            m_worldModel.FinishGame();
+            m_worldModel?.FinishGame();
         }
 
         public void AddControlType(string name, Type type)

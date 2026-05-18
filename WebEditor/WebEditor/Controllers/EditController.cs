@@ -35,13 +35,12 @@ namespace WebEditor.Controllers
 
         public JsonResult Load(int id, bool simpleMode)
         {
-            Services.EditorService editor = new Services.EditorService();
             var dict = EditorDictionary;
             if (dict.ContainsKey(id))
             {
                 dict[id].Dispose();
+                dict.Remove(id);
             }
-            dict[id] = editor;
             string libFolder = Server.MapPath("~/bin/Core/");
             string filename = Services.FileManagerLoader.GetFileManager().GetFile(id);
             if (filename == null)
@@ -49,12 +48,15 @@ namespace WebEditor.Controllers
                 Logging.Log.InfoFormat("Invalid game {0}", id);
                 return Json(new { error = "Couldn't access that game. Try logging out and logging in again." }, JsonRequestBehavior.AllowGet);
             }
+            Services.EditorService editor = new Services.EditorService();
             var result = editor.Initialise(id, filename, libFolder, simpleMode);
             if (!result.Success)
             {
                 Logging.Log.InfoFormat("Failed to load game {0} ({2}) - {1}", id, result.Error, filename);
+                editor.Dispose();
                 return Json(new { error = result.Error.Replace(Environment.NewLine, "<br/>") }, JsonRequestBehavior.AllowGet);
             }
+            dict[id] = editor;
 
             string playFilename = Services.FileManagerLoader.GetFileManager().GetPlayFilename(id);
 
