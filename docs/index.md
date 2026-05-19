@@ -16,7 +16,7 @@ Quest has templates for English, French, German, Spanish, Dutch, Italian, Portug
 
 ## Getting started
 
-New to Quest? The **[Tutorial](tutorial/index.html)** walks you through creating your first game from scratch — no experience needed. It covers all the essentials and is the best place to begin.
+New to Quest? Start with the **[Overview](overview.html)** for a quick tour of what Quest can do, then follow the **[Tutorial](tutorial/index.html)** to build your first game from scratch.
 
 If you'd like to see what a finished Quest game looks like before diving in, browse [Quest games on textadventures.co.uk](https://textadventures.co.uk/games/platform/quest).
 
