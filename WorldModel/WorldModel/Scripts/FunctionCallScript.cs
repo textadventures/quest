@@ -278,5 +278,10 @@ namespace TextAdventures.Quest.Scripts
         {
             return m_paramFunction;
         }
+
+        public void SetFunctionCallParameterScript(IScript script)
+        {
+            m_paramFunction = script;
+        }
     }
 }

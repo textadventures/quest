@@ -35,13 +35,12 @@ namespace WebEditor.Controllers
 
         public JsonResult Load(int id, bool simpleMode)
         {
-            Services.EditorService editor = new Services.EditorService();
             var dict = EditorDictionary;
             if (dict.ContainsKey(id))
             {
                 dict[id].Dispose();
+                dict.Remove(id);
             }
-            dict[id] = editor;
             string libFolder = Server.MapPath("~/bin/Core/");
             string filename = Services.FileManagerLoader.GetFileManager().GetFile(id);
             if (filename == null)
@@ -49,12 +48,15 @@ namespace WebEditor.Controllers
                 Logging.Log.InfoFormat("Invalid game {0}", id);
                 return Json(new { error = "Couldn't access that game. Try logging out and logging in again." }, JsonRequestBehavior.AllowGet);
             }
+            Services.EditorService editor = new Services.EditorService();
             var result = editor.Initialise(id, filename, libFolder, simpleMode);
             if (!result.Success)
             {
-                Logging.Log.InfoFormat("Failed to load game {0} - {1}", id, result.Error);
+                Logging.Log.InfoFormat("Failed to load game {0} ({2}) - {1}", id, result.Error, filename);
+                editor.Dispose();
                 return Json(new { error = result.Error.Replace(Environment.NewLine, "<br/>") }, JsonRequestBehavior.AllowGet);
             }
+            dict[id] = editor;
 
             string playFilename = Services.FileManagerLoader.GetFileManager().GetPlayFilename(id);
 
@@ -419,6 +421,8 @@ namespace WebEditor.Controllers
                     foreach (var blobItem in blobs)
                     {
                         if (blobItem.Name.EndsWith(".aslx")) continue;
+                        // Skip files in subdirectories (e.g. Output/*.quest from previous publishes)
+                        if (blobItem.Name.Substring(uploadPath.Length + 1).Contains("/")) continue;
                         var blobClient = container.GetBlobClient(blobItem.Name);
                         var ms = new MemoryStream();
                         blobClient.DownloadTo(ms);
@@ -531,20 +535,25 @@ namespace WebEditor.Controllers
             var container = GetAzureBlobContainer("editorgames");
             var blobs = container.GetBlobs(prefix: uploadPath + "/");
 
-            return new FileGeneratingResult("game.zip", "application/zip", stream =>
+            var zipData = new MemoryStream();
+            using (var archive = new ZipArchive(zipData, ZipArchiveMode.Create, leaveOpen: true))
             {
-                using (var archive = new ZipArchive(stream, ZipArchiveMode.Create, leaveOpen: true))
+                foreach (var blobItem in blobs)
                 {
-                    foreach (var blobItem in blobs)
+                    if (blobItem.Name.Substring(uploadPath.Length + 1).Contains("/")) continue;
+                    var blobClient = container.GetBlobClient(blobItem.Name);
+                    var ms = new MemoryStream();
+                    blobClient.DownloadTo(ms);
+                    ms.Position = 0;
+                    using (var entryStream = archive.CreateEntry(Path.GetFileName(blobItem.Name)).Open())
                     {
-                        var blobClient = container.GetBlobClient(blobItem.Name);
-                        using (var entryStream = archive.CreateEntry(Path.GetFileName(blobItem.Name)).Open())
-                        {
-                            blobClient.DownloadTo(entryStream);
-                        }
+                        ms.CopyTo(entryStream);
                     }
                 }
-            });
+            }
+            zipData.Position = 0;
+
+            return File(zipData, "application/zip", "game.zip");
         }
     }
 

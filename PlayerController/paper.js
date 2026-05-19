@@ -10668,7 +10668,7 @@ var CanvasProvider = {
 		} else {
 			canvas = document.createElement('canvas');
 		}
-		var ctx = canvas.getContext('2d');
+		var ctx = canvas.getContext('2d', {willReadFrequently: true});
 		if (canvas.width === width && canvas.height === height) {
 			if (init)
 				ctx.clearRect(0, 0, width + 1, height + 1);

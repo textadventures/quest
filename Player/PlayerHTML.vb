@@ -8,6 +8,7 @@ Public Class PlayerHTML
     Public Event SendEvent(eventName As String, param As String)
     Public Event ShortcutKeyPressed(keys As System.Windows.Forms.Keys)
     Public Event EndWait()
+    Public Event SoundFinished()
     Public Event ExitFullScreen()
     Public Event Save(html As String)
     Public Event Speak(text As String)
@@ -115,6 +116,8 @@ Public Class PlayerHTML
                 GoURL(args)
             Case "EndWait"
                 RaiseEvent EndWait()
+            Case "SoundFinished"
+                RaiseEvent SoundFinished()
             Case "ExitFullScreen"
                 RaiseEvent ExitFullScreen()
             Case "Save"
@@ -268,6 +271,7 @@ Public Class PlayerHTML
         If Not Me.IsHandleCreated Then Return
         ' copy m_buffer to a new list, in case invoking scripts cause new scripts to be added
         ' to the buffer.
+        Dim hasItems As Boolean
         Do
             Dim bufferCopy As List(Of Action)
             SyncLock m_buffer
@@ -277,7 +281,10 @@ Public Class PlayerHTML
             For Each script In bufferCopy
                 script.Invoke()
             Next
-        Loop Until Not m_buffer.Any()
+            SyncLock m_buffer
+                hasItems = m_buffer.Any()
+            End SyncLock
+        Loop Until Not hasItems
     End Sub
 
     Private Const k_scriptsPlaceholder As String = "<!-- EXTERNAL_SCRIPTS_PLACEHOLDER -->"

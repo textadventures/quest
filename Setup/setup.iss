@@ -1,5 +1,5 @@
-#define QuestVersion '5.9.0'
-#define SetupVersion '590'
+#define QuestVersion '5.10.0'
+#define QuestVersionInfo '5.10.0.1'
 
 [Setup]
 AppName=Quest
@@ -7,13 +7,13 @@ AppVersion={#QuestVersion}
 AppVerName=Quest {#QuestVersion}
 ArchitecturesAllowed=x64compatible
 ArchitecturesInstallIn64BitMode=x64compatible
-AppCopyright=Copyright © 2025 Alex Warren, Andy Joel and contributors
-VersionInfoVersion={#QuestVersion}
+AppCopyright=Copyright © 2026 Alex Warren, Andy Joel and contributors
+VersionInfoVersion={#QuestVersionInfo}
 AppPublisher=Alex Warren
 AppPublisherURL=https://textadventures.co.uk/
 AppSupportURL=https://textadventures.co.uk/help
-AppUpdatesURL=https://textadventures.co.uk/quest/desktop
-OutputBaseFilename=quest{#SetupVersion}
+AppUpdatesURL=https://textadventures.co.uk/quest
+OutputBaseFilename=quest-{#QuestVersion}
 DefaultGroupName=Quest
 DefaultDirName={autopf}\Quest 5
 UninstallDisplayIcon={app}\Quest.exe

@@ -12,6 +12,7 @@
 
     Private Shared ReadOnly _toolbarXamlNames As New Dictionary(Of String, String) From {
         {"butStop", "Stop"},
+        {"butRestart", "Restart"},
         {"butWalkthrough", "TaskRunner"},
         {"butDebugger", "NewBug"},
         {"butLog", "EventLog"},

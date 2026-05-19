@@ -1398,7 +1398,7 @@ Public Class LegacyGame
                 Return fileData
             End Using
         Else
-            Return System.IO.File.ReadAllText(filename)
+            Return System.IO.File.ReadAllText(filename, System.Text.Encoding.GetEncoding(1252))
         End If
     End Function
     'NOCONVERT>

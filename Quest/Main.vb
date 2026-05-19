@@ -89,6 +89,10 @@ Public Class Main
         ctlLauncher.AddToRecent(filename, name)
     End Sub
 
+    Private Sub ctlPlayer_Restart() Handles ctlPlayer.Restart
+        RestartMenuClick()
+    End Sub
+
     Private Sub ctlPlayer_Quit() Handles ctlPlayer.Quit
         If Not ctlPlayer.Visible Then Return
         FullScreen = False

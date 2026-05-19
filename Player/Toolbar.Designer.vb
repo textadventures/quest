@@ -25,6 +25,7 @@ Partial Class Toolbar
         Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(Toolbar))
         Me.ctlToolStrip = New System.Windows.Forms.ToolStrip()
         Me.butStop = New System.Windows.Forms.ToolStripButton()
+        Me.butRestart = New System.Windows.Forms.ToolStripButton()
         Me.butDebugger = New System.Windows.Forms.ToolStripButton()
         Me.butLog = New System.Windows.Forms.ToolStripButton()
         Me.butHTML = New System.Windows.Forms.ToolStripButton()
@@ -37,7 +38,7 @@ Partial Class Toolbar
         resources.ApplyResources(Me.ctlToolStrip, "ctlToolStrip")
         Me.ctlToolStrip.BackColor = System.Drawing.Color.Transparent
         Me.ctlToolStrip.ImageScalingSize = New System.Drawing.Size(16, 16)
-        Me.ctlToolStrip.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.butStop, Me.butWalkthrough, Me.butDebugger, Me.butLog, Me.butHTML})
+        Me.ctlToolStrip.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.butStop, Me.butRestart, Me.butWalkthrough, Me.butDebugger, Me.butLog, Me.butHTML})
         Me.ctlToolStrip.Name = "ctlToolStrip"
         '
         'butStop
@@ -45,6 +46,12 @@ Partial Class Toolbar
         resources.ApplyResources(Me.butStop, "butStop")
         Me.butStop.Name = "butStop"
         Me.butStop.Tag = "stop"
+        '
+        'butRestart
+        '
+        resources.ApplyResources(Me.butRestart, "butRestart")
+        Me.butRestart.Name = "butRestart"
+        Me.butRestart.Tag = "restart"
         '
         'butDebugger
         '
@@ -84,6 +91,7 @@ Partial Class Toolbar
     End Sub
     Friend WithEvents ctlToolStrip As System.Windows.Forms.ToolStrip
     Friend WithEvents butStop As System.Windows.Forms.ToolStripButton
+    Friend WithEvents butRestart As System.Windows.Forms.ToolStripButton
     Friend WithEvents butDebugger As System.Windows.Forms.ToolStripButton
     Friend WithEvents butLog As System.Windows.Forms.ToolStripButton
     Friend WithEvents butHTML As System.Windows.Forms.ToolStripButton

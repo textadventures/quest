@@ -158,6 +158,12 @@ namespace TextAdventures.Quest.EditorControls
 
         public void Populate(IEditableScripts script)
         {
+            if (CodeView && textEditor != null && textEditor.IsModified && m_scripts != null)
+            {
+                m_scripts.Code = textEditor.Text;
+                textEditor.IsModified = false;
+            }
+
             if (m_scripts != null)
             {
                 m_scripts.Updated -= m_scripts_Updated;
@@ -184,6 +190,7 @@ namespace TextAdventures.Quest.EditorControls
             if (CodeView && textEditor.IsModified)
             {
                 m_scripts.Code = textEditor.Text;
+                textEditor.IsModified = false;
             }
 
             m_saving = true;

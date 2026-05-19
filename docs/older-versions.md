@@ -4,7 +4,7 @@ nav_order: 99
 parent: "Release Notes"
 ---
 
-The current release is Quest 5.9, available from [textadventures.co.uk/quest](https://textadventures.co.uk/quest). Quest 5.9 is fully compatible with games made in older versions.
+The current release is Quest 5.10, available from [textadventures.co.uk/quest](https://textadventures.co.uk/quest). Quest 5.10 is fully compatible with games made in older versions.
 
 Older versions are provided here for reference — for example, if you need to compare behaviour against a specific version.
 
@@ -12,6 +12,7 @@ Older versions are provided here for reference — for example, if you need to c
 
 | Version | Released | Download |
 |---------|----------|----------|
+| Quest 5.10 | 19 May 2026 | [quest-5.10.0.exe](https://github.com/textadventures/quest/releases/download/v5.10.0/quest-5.10.0.exe) |
 | Quest 5.9 | 2 Feb 2025 | [quest590.exe](https://github.com/textadventures/quest/releases/download/v5.9/quest590.exe) |
 | Quest 5.8 | 20 Jul 2018 | [quest580.exe](https://github.com/textadventures/quest/releases/download/5.8.0/quest580.exe) |
 | Quest 5.7.2 | 1 Feb 2018 | [quest572.exe](https://github.com/textadventures/quest/releases/download/5.7.2/quest572.exe) |
@@ -27,7 +28,7 @@ Older versions are provided here for reference — for example, if you need to c
 | Quest 5.4 | 28 Mar 2013 | [quest540.exe](https://media.textadventures.co.uk/downloads/archive/quest540.exe) |
 | Quest 5.3 | 14 Jan 2013 | [quest530.exe](https://media.textadventures.co.uk/downloads/archive/quest530.exe) |
 | Quest 5.2 | 12 May 2012 | [quest520.exe](https://media.textadventures.co.uk/downloads/archive/quest520.exe) |
-| Quest 5.1.1 | | [quest511.exe](https://media.textadventures.co.uk/downloads/archive/quest511.exe) |
+| Quest 5.1.1 | 13 Feb 2012 | [quest511.exe](https://media.textadventures.co.uk/downloads/archive/quest511.exe) |
 | Quest 5.1 | 11 Jan 2012 | [quest510.exe](https://media.textadventures.co.uk/downloads/archive/quest510.exe) |
 | Quest 5.0.2 | | [quest502.exe](https://media.textadventures.co.uk/downloads/archive/quest502.exe) |
 | Quest 5.0.1 | 13 Oct 2011 | [quest501.exe](https://media.textadventures.co.uk/downloads/archive/quest501.exe) |

@@ -12,7 +12,7 @@ You don't need programming experience to get started. Quest's point-and-click ed
 Quest has templates for English, French, German, Spanish, Dutch, Italian, Portuguese, Russian and other languages.
 
 <a href="https://textadventures.co.uk/quest" class="btn btn-purple" target="_blank">Use Quest in your browser</a>
-[Download Quest for Windows](https://github.com/textadventures/quest/releases/download/v5.9/quest590.exe){: .btn .btn-green }
+[Download Quest for Windows](https://github.com/textadventures/quest/releases/download/v5.10.0/quest-5.10.0.exe){: .btn .btn-green }
 
 ## Getting started
 

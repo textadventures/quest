@@ -18,10 +18,7 @@ Public Class Player
     Private m_saveFile As String
     Private m_waiting As Boolean = False
     Private m_speech As New System.Speech.Synthesis.SpeechSynthesizer
-    Private m_loopSound As Boolean = False
-    Private m_waitingForSoundToFinish As Boolean = False
     Private m_destroyed As Boolean = False
-    Private WithEvents m_mediaPlayer As New System.Windows.Media.MediaPlayer
     Private m_tickCount As Integer
     Private m_sendNextTickEventAfter As Integer
     Private m_pausing As Boolean
@@ -40,6 +37,7 @@ Public Class Player
     Private WithEvents ctlToolbar As Toolbar
 
     Public Event Quit()
+    Public Event Restart()
     Public Event AddToRecent(filename As String, name As String)
     Public Event GameNameSet(name As String)
     Public Event ShortcutKeyPressed(keys As System.Windows.Forms.Keys)
@@ -82,6 +80,8 @@ Public Class Player
         Select Case args.Button
             Case "stop"
                 StopGame()
+            Case "restart"
+                RestartGame()
             Case "walkthrough"
                 RunWalkthrough()
             Case "debugger"
@@ -91,6 +91,10 @@ Public Class Player
             Case "htmldevtools"
                 HTMLDevToolsClick()
         End Select
+    End Sub
+
+    Private Sub RestartGame()
+        RaiseEvent Restart()
     End Sub
 
     Private Sub DebuggerMenuClick()
@@ -198,7 +202,7 @@ Public Class Player
 
         If Not m_initialised Then Exit Sub
 
-        If m_pausing Or m_waitingForSoundToFinish Then Return
+        If m_pausing Then Return
 
         If m_waiting Then
             m_waiting = False
@@ -589,19 +593,10 @@ Public Class Player
                             Throw New Exception("Can't play sound that is both synchronous and looped")
                         End If
 
-                        filename = m_game.GetResourcePath(filename)
-
-                        If System.IO.File.Exists(filename) And PlaySounds Then
-                            m_loopSound = looped
-
-                            m_mediaPlayer.Open(New System.Uri(filename))
-                            m_mediaPlayer.Play()
-                        End If
-
-                        m_waitingForSoundToFinish = synchronous
-
-                        If Not PlaySounds Then
-                            PlaybackFinished()
+                        If PlaySounds Then
+                            ctlPlayerHtml.InvokeScript("playSound", ctlPlayerHtml.GetURL(filename), synchronous, looped)
+                        ElseIf synchronous Then
+                            SoundFinished()
                         End If
                     End Sub
         )
@@ -610,30 +605,18 @@ Public Class Player
     Private Sub StopSound() Implements IPlayer.StopSound
         If m_destroyed Then Exit Sub
         BeginInvoke(Sub()
-                        m_loopSound = False
-                        m_mediaPlayer.Stop()
+                        ctlPlayerHtml.InvokeScript("stopSound")
                     End Sub
         )
     End Sub
 
-    Private Sub m_mediaPlayer_MediaEnded(sender As Object, e As System.EventArgs) Handles m_mediaPlayer.MediaEnded
-        PlaybackFinished()
+    Private Sub SoundFinished()
+        m_game.FinishWait()
+        ClearBuffer()
     End Sub
 
-    Private Sub m_mediaPlayer_MediaFailed(sender As Object, e As System.Windows.Media.ExceptionEventArgs) Handles m_mediaPlayer.MediaFailed
-        PlaybackFinished()
-    End Sub
-
-    Private Sub PlaybackFinished()
-        If m_waitingForSoundToFinish Then
-            m_waitingForSoundToFinish = False
-            m_game.FinishWait()
-            ClearBuffer()
-        End If
-        If m_loopSound Then
-            m_mediaPlayer.Position = New TimeSpan(0)
-            m_mediaPlayer.Play()
-        End If
+    Private Sub ctlPlayerHtml_SoundFinished() Handles ctlPlayerHtml.SoundFinished
+        SoundFinished()
     End Sub
 
     Private Sub Speak(text As String) Implements IPlayer.Speak
