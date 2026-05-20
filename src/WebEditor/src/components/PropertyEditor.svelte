@@ -1,6 +1,7 @@
 <script lang="ts">
     import { selectedKey, selectedData, setAttribute, setDropdownType } from "$lib/editor-store";
     import type { ControlInfo } from "$lib/types";
+    import ScriptEditor from "./ScriptEditor.svelte";
 
     let activeTab = $state<string | null>(null);
     let lastKey = $state<string | null>(null);
@@ -157,10 +158,10 @@
                     value={attrValue(ctrl.attribute) ?? ""}
                     onchange={(e) => onTextChange(ctrl.attribute!, ctrl.controlType, (e.target as HTMLInputElement).value)}
                 />
-            {:else if ctrl.controlType === "script"}
-                <button type="button" class="btn btn-sm preset-outlined text-xs py-0.5" disabled>
-                    Script editor (Phase 4)
-                </button>
+            {:else if ctrl.controlType === "script" && ctrl.attribute !== null && $selectedKey !== null}
+                <div class="flex-1 min-w-0 overflow-hidden">
+                    <ScriptEditor elementKey={$selectedKey} attribute={ctrl.attribute} />
+                </div>
             {:else}
                 {#if attrValue(ctrl.attribute) !== null}
                     <span class="text-xs overflow-hidden text-ellipsis whitespace-nowrap" title={attrValue(ctrl.attribute) ?? ""}>

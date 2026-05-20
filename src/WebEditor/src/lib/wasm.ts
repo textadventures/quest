@@ -9,6 +9,19 @@ export interface WasmBridge {
   CanRedo(): boolean
   Undo(): void
   Redo(): void
+  // Script editor API
+  GetScriptData(elementKey: string, attribute: string): string | null
+  SetScriptParameter(elementKey: string, attribute: string, containerPath: string, scriptIndex: number, paramName: string, value: string): string
+  SetIfExpression(elementKey: string, attribute: string, containerPath: string, scriptIndex: number, expression: string): string
+  SetElseIfExpression(elementKey: string, attribute: string, containerPath: string, scriptIndex: number, elseIfIndex: number, expression: string): string
+  AddScript(elementKey: string, attribute: string, containerPath: string, keyword: string): string
+  DeleteScript(elementKey: string, attribute: string, containerPath: string, scriptIndex: number): string
+  MoveScript(elementKey: string, attribute: string, containerPath: string, index1: number, index2: number): string
+  AddElse(elementKey: string, attribute: string, containerPath: string, scriptIndex: number): string
+  AddElseIf(elementKey: string, attribute: string, containerPath: string, scriptIndex: number): string
+  RemoveElse(elementKey: string, attribute: string, containerPath: string, scriptIndex: number): string
+  RemoveElseIf(elementKey: string, attribute: string, containerPath: string, scriptIndex: number, elseIfIndex: number): string
+  GetScriptCommandCategories(): string
 }
 
 let _bridge: WasmBridge | null = null;

@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
@@ -16,9 +17,36 @@ internal record ControlInfo(string? Attribute, string ControlType, string? Capti
 internal record TabInfo(string? Caption, List<ControlInfo> Controls);
 internal record EditorDataResponse(Dictionary<string, string?> Attributes, List<TabInfo> Tabs, List<ControlInfo> Controls);
 
+internal record ScriptControlData(
+    string ControlType,
+    string? Caption,
+    string? Attribute,
+    string? Value,
+    string? SimpleEditor,
+    List<ControlOption>? Options,
+    List<ScriptNodeData>? Scripts
+);
+internal record ElseIfClauseData(string Id, string Expression, List<ScriptNodeData> Scripts);
+internal record ScriptNodeData(
+    string Id,
+    string Type,
+    string? DisplayString,
+    List<ScriptControlData>? Controls,
+    string? Expression,
+    List<ScriptNodeData>? ThenScripts,
+    List<ElseIfClauseData>? ElseIfClauses,
+    List<ScriptNodeData>? ElseScripts
+);
+internal record ScriptBlockData(List<ScriptNodeData> Scripts);
+internal record ScriptCommandInfo(string Keyword, string Display, string Add, string CreateString);
+internal record ScriptCategoryInfo(string Name, List<ScriptCommandInfo> Commands);
+internal record ScriptCommandCategoriesData(List<ScriptCategoryInfo> Categories);
+
 [JsonSourceGenerationOptions(PropertyNamingPolicy = JsonKnownNamingPolicy.CamelCase)]
 [JsonSerializable(typeof(List<TreeNodeData>))]
 [JsonSerializable(typeof(EditorDataResponse))]
+[JsonSerializable(typeof(ScriptBlockData))]
+[JsonSerializable(typeof(ScriptCommandCategoriesData))]
 internal partial class WasmEditorJsonContext : JsonSerializerContext { }
 
 [SuppressMessage("ReSharper", "MemberCanBePrivate.Global")]
@@ -183,6 +211,428 @@ public partial class WasmEditorBridge
     {
         foreach (var ctrl in controls.Where(c => c.ControlType == "dropdowntypes"))
             attrs[ctrl.Id] = _controller!.GetSelectedDropDownType(ctrl, elementKey);
+    }
+
+    // ── Script editor API ──────────────────────────────────────────────────────
+
+    [JSExport]
+    public static string? GetScriptData(string elementKey, string attribute)
+    {
+        var scripts = GetScripts(elementKey, attribute);
+        if (scripts == null) return null;
+        return JsonSerializer.Serialize(BuildScriptBlockData(scripts), WasmEditorJsonContext.Default.ScriptBlockData);
+    }
+
+    [JSExport]
+    public static string SetScriptParameter(string elementKey, string attribute, string containerPath, int scriptIndex, string paramName, string value)
+    {
+        if (_controller == null) return "error";
+        var scripts = GetScripts(elementKey, attribute);
+        if (scripts == null) return "error";
+        var container = ResolveContainer(scripts, containerPath);
+        if (container == null || scriptIndex < 0 || scriptIndex >= container.Count) return "error";
+        var script = container[scriptIndex];
+
+        _controller.StartTransaction($"Set script parameter");
+        try
+        {
+            script.SetParameter(paramName, value);
+            return "ok";
+        }
+        catch (Exception ex)
+        {
+            return ex.Message;
+        }
+        finally
+        {
+            _controller.EndTransaction();
+        }
+    }
+
+    [JSExport]
+    public static string SetIfExpression(string elementKey, string attribute, string containerPath, int scriptIndex, string expression)
+    {
+        if (_controller == null) return "error";
+        var scripts = GetScripts(elementKey, attribute);
+        if (scripts == null) return "error";
+        var container = ResolveContainer(scripts, containerPath);
+        if (container == null || scriptIndex < 0 || scriptIndex >= container.Count) return "error";
+        var script = container[scriptIndex];
+        if (script is not EditableIfScript ifScript) return "not an if script";
+
+        _controller.StartTransaction("Set if expression");
+        try
+        {
+            ifScript.SetAttribute("expression", expression);
+            return "ok";
+        }
+        finally
+        {
+            _controller.EndTransaction();
+        }
+    }
+
+    [JSExport]
+    public static string SetElseIfExpression(string elementKey, string attribute, string containerPath, int scriptIndex, int elseIfIndex, string expression)
+    {
+        if (_controller == null) return "error";
+        var scripts = GetScripts(elementKey, attribute);
+        if (scripts == null) return "error";
+        var container = ResolveContainer(scripts, containerPath);
+        if (container == null || scriptIndex < 0 || scriptIndex >= container.Count) return "error";
+        var script = container[scriptIndex];
+        if (script is not EditableIfScript ifScript) return "not an if script";
+        var elseIf = ifScript.ElseIfScripts.ElementAtOrDefault(elseIfIndex);
+        if (elseIf == null) return "error";
+
+        _controller.StartTransaction("Set else-if expression");
+        try
+        {
+            elseIf.SetAttribute("expression", expression);
+            return "ok";
+        }
+        finally
+        {
+            _controller.EndTransaction();
+        }
+    }
+
+    [JSExport]
+    public static string AddScript(string elementKey, string attribute, string containerPath, string keyword)
+    {
+        if (_controller == null) return "error";
+        var scripts = GetScripts(elementKey, attribute);
+
+        // Attribute not yet set — create a new script container directly on the element
+        if (scripts == null && string.IsNullOrEmpty(containerPath))
+        {
+            try
+            {
+                _controller.CreateNewEditableScripts(elementKey, attribute, keyword, true);
+                return "ok";
+            }
+            catch (Exception ex)
+            {
+                return ex.Message;
+            }
+        }
+
+        if (scripts == null) return "error";
+        var container = ResolveContainer(scripts, containerPath);
+        if (container == null) return "error";
+
+        try
+        {
+            container.AddNew(keyword, elementKey);
+            return "ok";
+        }
+        catch (Exception ex)
+        {
+            return ex.Message;
+        }
+    }
+
+    [JSExport]
+    public static string DeleteScript(string elementKey, string attribute, string containerPath, int scriptIndex)
+    {
+        if (_controller == null) return "error";
+        var scripts = GetScripts(elementKey, attribute);
+        if (scripts == null) return "error";
+        var container = ResolveContainer(scripts, containerPath);
+        if (container == null || scriptIndex < 0 || scriptIndex >= container.Count) return "error";
+
+        container.Remove([scriptIndex]);
+        return "ok";
+    }
+
+    [JSExport]
+    public static string MoveScript(string elementKey, string attribute, string containerPath, int index1, int index2)
+    {
+        if (_controller == null) return "error";
+        var scripts = GetScripts(elementKey, attribute);
+        if (scripts == null) return "error";
+        var container = ResolveContainer(scripts, containerPath);
+        if (container == null) return "error";
+        if (index1 < 0 || index1 >= container.Count || index2 < 0 || index2 >= container.Count) return "error";
+
+        _controller.StartTransaction("Move script");
+        try
+        {
+            container.Swap(index1, index2);
+            return "ok";
+        }
+        finally
+        {
+            _controller.EndTransaction();
+        }
+    }
+
+    [JSExport]
+    public static string AddElse(string elementKey, string attribute, string containerPath, int scriptIndex)
+    {
+        if (_controller == null) return "error";
+        var scripts = GetScripts(elementKey, attribute);
+        if (scripts == null) return "error";
+        var container = ResolveContainer(scripts, containerPath);
+        if (container == null || scriptIndex < 0 || scriptIndex >= container.Count) return "error";
+        if (container[scriptIndex] is not EditableIfScript ifScript) return "not an if script";
+
+        try
+        {
+            ifScript.AddElse();
+            return "ok";
+        }
+        catch (Exception ex) { return ex.Message; }
+    }
+
+    [JSExport]
+    public static string AddElseIf(string elementKey, string attribute, string containerPath, int scriptIndex)
+    {
+        if (_controller == null) return "error";
+        var scripts = GetScripts(elementKey, attribute);
+        if (scripts == null) return "error";
+        var container = ResolveContainer(scripts, containerPath);
+        if (container == null || scriptIndex < 0 || scriptIndex >= container.Count) return "error";
+        if (container[scriptIndex] is not EditableIfScript ifScript) return "not an if script";
+
+        try
+        {
+            ifScript.AddElseIf();
+            return "ok";
+        }
+        catch (Exception ex) { return ex.Message; }
+    }
+
+    [JSExport]
+    public static string RemoveElse(string elementKey, string attribute, string containerPath, int scriptIndex)
+    {
+        if (_controller == null) return "error";
+        var scripts = GetScripts(elementKey, attribute);
+        if (scripts == null) return "error";
+        var container = ResolveContainer(scripts, containerPath);
+        if (container == null || scriptIndex < 0 || scriptIndex >= container.Count) return "error";
+        if (container[scriptIndex] is not EditableIfScript ifScript) return "not an if script";
+
+        try
+        {
+            ifScript.RemoveElse();
+            return "ok";
+        }
+        catch (Exception ex) { return ex.Message; }
+    }
+
+    [JSExport]
+    public static string RemoveElseIf(string elementKey, string attribute, string containerPath, int scriptIndex, int elseIfIndex)
+    {
+        if (_controller == null) return "error";
+        var scripts = GetScripts(elementKey, attribute);
+        if (scripts == null) return "error";
+        var container = ResolveContainer(scripts, containerPath);
+        if (container == null || scriptIndex < 0 || scriptIndex >= container.Count) return "error";
+        if (container[scriptIndex] is not EditableIfScript ifScript) return "not an if script";
+        var elseIf = ifScript.ElseIfScripts.ElementAtOrDefault(elseIfIndex);
+        if (elseIf == null) return "error";
+
+        try
+        {
+            ifScript.RemoveElseIf(elseIf);
+            return "ok";
+        }
+        catch (Exception ex) { return ex.Message; }
+    }
+
+    [JSExport]
+    public static string GetScriptCommandCategories()
+    {
+        if (_controller == null) return "null";
+        var scriptData = _controller.GetScriptEditorData();
+        var grouped = scriptData
+            .Where(kv => !string.IsNullOrEmpty(kv.Value.Category)
+                      && !kv.Value.IsDesktopOnly
+                      && kv.Value.IsVisible()
+                      && !string.IsNullOrEmpty(kv.Value.CreateString))
+            .GroupBy(kv => kv.Value.Category)
+            .Select(g => new ScriptCategoryInfo(
+                g.Key,
+                g.Select(kv => new ScriptCommandInfo(
+                    kv.Key,
+                    kv.Value.DisplayString ?? kv.Key,
+                    kv.Value.AdderDisplayString ?? kv.Key,
+                    kv.Value.CreateString!
+                )).OrderBy(c => c.Add).ToList()
+            ))
+            .ToList();
+        var data = new ScriptCommandCategoriesData(grouped);
+        return JsonSerializer.Serialize(data, WasmEditorJsonContext.Default.ScriptCommandCategoriesData);
+    }
+
+    // ── Private helpers ────────────────────────────────────────────────────────
+
+    private static IEditableScripts? GetScripts(string elementKey, string attribute)
+    {
+        if (_controller == null) return null;
+        var data = _controller.GetEditorData(elementKey);
+        return data?.GetAttribute(attribute) as IEditableScripts;
+    }
+
+    private static IEditableScripts? ResolveContainer(IEditableScripts root, string containerPath)
+    {
+        if (string.IsNullOrEmpty(containerPath)) return root;
+
+        var parts = containerPath.Split('/');
+        var current = root;
+        int i = 0;
+
+        while (i < parts.Length)
+        {
+            if (!int.TryParse(parts[i], out int scriptIndex)) return null;
+            i++;
+
+            if (i >= parts.Length) return null; // path ends at a script index, not a container
+
+            if (scriptIndex < 0 || scriptIndex >= current.Count) return null;
+            var script = current[scriptIndex];
+            var segment = parts[i];
+            i++;
+
+            if (script.Type == ScriptType.If)
+            {
+                var ifScript = (EditableIfScript)script;
+                if (segment == "then")
+                {
+                    current = ifScript.ThenScript;
+                }
+                else if (segment == "else")
+                {
+                    if (ifScript.ElseScript == null) return null;
+                    current = ifScript.ElseScript;
+                }
+                else if (segment == "elseif")
+                {
+                    if (i >= parts.Length || !int.TryParse(parts[i], out int elseIfIndex)) return null;
+                    i++;
+                    var elseIf = ifScript.ElseIfScripts.ElementAtOrDefault(elseIfIndex);
+                    if (elseIf == null) return null;
+                    current = elseIf.EditableScripts;
+                }
+                else return null;
+            }
+            else
+            {
+                if (segment == "param")
+                {
+                    if (i >= parts.Length) return null;
+                    var paramAttr = parts[i++];
+                    var scriptEditorData = _controller!.GetScriptEditorData(script);
+                    if (scriptEditorData.GetAttribute(paramAttr) is not IEditableScripts nestedScripts) return null;
+                    current = nestedScripts;
+                }
+                else return null;
+            }
+        }
+
+        return current;
+    }
+
+    private static ScriptBlockData BuildScriptBlockData(IEditableScripts scripts) =>
+        new(scripts.Scripts.Select(BuildScriptNodeData).ToList());
+
+    private static ScriptNodeData BuildScriptNodeData(IEditableScript script)
+    {
+        if (script.Type == ScriptType.If)
+        {
+            var ifScript = (EditableIfScript)script;
+            var elseIfClauses = ifScript.ElseIfScripts
+                .Select(ei => new ElseIfClauseData(ei.Id, ei.Expression, BuildScriptBlockData(ei.EditableScripts).Scripts))
+                .ToList();
+
+            return new ScriptNodeData(
+                Id: script.Id,
+                Type: "if",
+                DisplayString: null,
+                Controls: null,
+                Expression: ifScript.IfExpression,
+                ThenScripts: BuildScriptBlockData(ifScript.ThenScript).Scripts,
+                ElseIfClauses: elseIfClauses,
+                ElseScripts: ifScript.ElseScript != null ? BuildScriptBlockData(ifScript.ElseScript).Scripts : null
+            );
+        }
+
+        string? displayString = null;
+        List<ScriptControlData>? controls = null;
+
+        try
+        {
+            var def = _controller!.GetEditorDefinition(script);
+            var editorData = _controller.GetScriptEditorData(script);
+            displayString = script.DisplayString();
+            controls = def.Controls.Select(c => BuildScriptControlData(c, editorData)).ToList();
+        }
+        catch
+        {
+            displayString = script.DisplayString();
+            controls = [];
+        }
+
+        return new ScriptNodeData(
+            Id: script.Id,
+            Type: "normal",
+            DisplayString: displayString,
+            Controls: controls,
+            Expression: null,
+            ThenScripts: null,
+            ElseIfClauses: null,
+            ElseScripts: null
+        );
+    }
+
+    private static ScriptControlData BuildScriptControlData(IEditorControl ctrl, IEditorData editorData)
+    {
+        string? value = null;
+        string? simpleEditor = null;
+        List<ControlOption>? options = null;
+        List<ScriptNodeData>? nestedScripts = null;
+
+        if (ctrl.Attribute != null)
+        {
+            if (ctrl.ControlType == "script")
+            {
+                var attrValue = editorData.GetAttribute(ctrl.Attribute);
+                if (attrValue is IEditableScripts nested)
+                    nestedScripts = BuildScriptBlockData(nested).Scripts;
+            }
+            else
+            {
+                value = editorData.GetAttribute(ctrl.Attribute)?.ToString();
+            }
+        }
+
+        if (ctrl.ControlType == "expression")
+        {
+            simpleEditor = ctrl.GetString("simpleeditor");
+        }
+        else if (ctrl.ControlType == "dropdown")
+        {
+            var list = ctrl.GetListString("validvalues");
+            if (list != null)
+                options = list.Select(v => new ControlOption(v, v)).ToList();
+            else
+            {
+                var dict = ctrl.GetDictionary("validvalues");
+                if (dict != null)
+                    options = dict.Select(kv => new ControlOption(kv.Key, kv.Value)).ToList();
+            }
+        }
+
+        return new ScriptControlData(
+            ControlType: ctrl.ControlType,
+            Caption: ctrl.Caption,
+            Attribute: ctrl.Attribute,
+            Value: value,
+            SimpleEditor: simpleEditor,
+            Options: options,
+            Scripts: nestedScripts
+        );
     }
 
     private static void OnAddedNode(object? sender, EditorController.AddedNodeEventArgs e)
