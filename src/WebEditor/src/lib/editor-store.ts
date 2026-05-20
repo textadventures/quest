@@ -78,6 +78,7 @@ export function saveGame(): string {
 
 export function undo() {
     _bridge?.Undo();
+    refreshTree();
     refreshSelectedData();
     refreshUndoRedo();
     scriptVersion.update(n => n + 1);
@@ -85,6 +86,7 @@ export function undo() {
 
 export function redo() {
     _bridge?.Redo();
+    refreshTree();
     refreshSelectedData();
     refreshUndoRedo();
     scriptVersion.update(n => n + 1);
