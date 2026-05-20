@@ -32,6 +32,18 @@ export interface WasmBridge {
   GetObjectNames(): string
   GetIfExpressionTemplates(): string
   GetIfExpressionTemplateData(expression: string): string | null
+  // Element creation / deletion
+  ValidateName(name: string): string
+  GetUniqueName(baseName: string): string
+  CreateRoom(name: string, parent: string): string
+  CreateObject(name: string, parent: string): string
+  CreateFunction(name: string): string
+  CreateTimer(name: string): string
+  CreateExit(parent: string): string
+  CreateTurnScript(parent: string): string
+  CreateCommand(parent: string): string
+  CreateVerb(parent: string): string
+  DeleteElement(key: string): void
 }
 
 let _bridge: WasmBridge | null = null;

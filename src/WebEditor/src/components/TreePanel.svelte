@@ -1,39 +1,132 @@
 <script lang="ts">
     import { TreeView, createTreeViewCollection } from "@skeletonlabs/skeleton-svelte";
-    import { treeNodes, selectedKey, selectNode } from "$lib/editor-store";
+    import {
+        treeNodes, selectedKey, selectNode,
+        openAddModal, createExit, createTurnScript, createCommand, createVerb,
+        deleteElement,
+    } from "$lib/editor-store";
     import type { TreeNode } from "$lib/types";
 
     interface HierNode {
         id: string
         text: string
+        nodeType: string
         children?: HierNode[]
     }
 
+    // Header keys that support a simple one-click "add" action
+    const HEADER_ADD: Record<string, () => void> = {
+        "_objects": () => openAddModal("room", null),
+        "_functions": () => openAddModal("function", null),
+        "_timers": () => openAddModal("timer", null),
+        "_gameVerbs": () => createVerb(null),
+        "_gameCommands": () => createCommand(null),
+    };
+
+    // Build HierNode tree from flat list
     function buildHierTree(nodes: TreeNode[]): HierNode[] {
+        // Deduplicate by key (last write wins, matching C# upsert behaviour in OnAddedNode)
+        // eslint-disable-next-line svelte/prefer-svelte-reactivity
+        const byKey = new Map<string, TreeNode>();
+        for (const n of nodes) byKey.set(n.key, n);
+
         // eslint-disable-next-line svelte/prefer-svelte-reactivity
         const byParent = new Map<string | null, TreeNode[]>();
-        for (const n of nodes) {
+        for (const n of byKey.values()) {
             const p = n.parent ?? null;
             if (!byParent.has(p)) byParent.set(p, []);
             byParent.get(p)!.push(n);
         }
-        function build(node: TreeNode): HierNode {
+        const build = (node: TreeNode): HierNode => {
             const children = byParent.get(node.key);
-            return { id: node.key, text: node.text, ...(children ? { children: children.map(build) } : {}) };
-        }
+            return {
+                id: node.key,
+                text: node.text,
+                nodeType: node.nodeType,
+                ...(children ? { children: children.map(build) } : {}),
+            };
+        };
         return (byParent.get(null) ?? []).map(build);
     }
+
+    // ── Expansion state ────────────────────────────────────────────────────────
+
+    // Start with the main category headers open
+    let expandedIds = $state<string[]>(["_objects", "_functions", "_timers", "game"]);
+
+    // Auto-expand the ancestor chain whenever the selected node changes
+    $effect(() => {
+        const key = $selectedKey;
+        const nodes = $treeNodes;
+        if (!key || !nodes.length) return;
+        const nodeMap = new Map(nodes.map(n => [n.key, n]));
+        const toExpand: string[] = [];
+        let cur: TreeNode | undefined = nodeMap.get(key);
+        while (cur?.parent) {
+            toExpand.push(cur.parent);
+            cur = nodeMap.get(cur.parent);
+        }
+        if (toExpand.some(id => !expandedIds.includes(id))) {
+            expandedIds = [...new Set([...expandedIds, ...toExpand])];
+        }
+    });
 
     let collection = $derived(
         createTreeViewCollection<HierNode>({
             nodeToValue: (n) => n.id,
             nodeToString: (n) => n.text,
-            rootNode: { id: "__root__", text: "", children: buildHierTree($treeNodes) }
+            rootNode: { id: "__root__", text: "", nodeType: "header", children: buildHierTree($treeNodes) },
         })
     );
+
+    // ── Add / delete ───────────────────────────────────────────────────────────
+
+    let dropdownKey = $state<string | null>(null);
+
+    function closeDropdown() { dropdownKey = null; }
+
+    function toggleDropdown(key: string, e: MouseEvent) {
+        e.stopPropagation();
+        dropdownKey = dropdownKey === key ? null : key;
+    }
+
+    function dropdownAction(fn: () => void) {
+        fn();
+        dropdownKey = null;
+    }
+
+    function handleDelete(id: string) {
+        deleteElement(id);
+    }
+
+    // Returns child-add menu options for a given element node
+    function childAddOptions(id: string, nt: string): Array<{ label: string; action: () => void }> {
+        if (nt === "room") return [
+            { label: "Add Object here", action: () => openAddModal("object", id) },
+            { label: "Add Room here", action: () => openAddModal("room", id) },
+            { label: "Add Exit", action: () => createExit(id) },
+            { label: "Add Command", action: () => createCommand(id) },
+            { label: "Add Verb", action: () => createVerb(id) },
+            { label: "Add Turn Script", action: () => createTurnScript(id) },
+        ];
+        if (nt === "object") return [
+            { label: "Add Command", action: () => createCommand(id) },
+            { label: "Add Verb", action: () => createVerb(id) },
+            { label: "Add Turn Script", action: () => createTurnScript(id) },
+        ];
+        return [];
+    }
+
+    function isDeletable(nt: string): boolean {
+        return nt !== "header" && nt !== "game" && nt !== "other";
+    }
 </script>
 
-<div class="flex flex-col w-60 min-w-[180px] border-r border-surface-200-800 bg-surface-50-950 overflow-hidden">
+<!-- svelte-ignore a11y_no_static_element_interactions -->
+<div
+    class="flex flex-col w-60 min-w-[180px] border-r border-surface-200-800 bg-surface-50-950"
+    onmousedown={(e) => { if (!(e.target as HTMLElement).closest(".node-actions")) closeDropdown(); }}
+>
     <div class="px-3 py-2 text-xs font-semibold uppercase text-surface-500-400 border-b border-surface-200-800 bg-surface-100-900">
         Game Objects
     </div>
@@ -41,6 +134,8 @@
         <TreeView
             {collection}
             selectionMode="single"
+            expandedValue={expandedIds}
+            onExpandedChange={(e) => { expandedIds = e.expandedValue; }}
             selectedValue={$selectedKey ? [$selectedKey] : []}
             onSelectionChange={(e) => { if (e.selectedValue[0]) selectNode(e.selectedValue[0]); }}
         >
@@ -51,13 +146,58 @@
     </div>
 </div>
 
+{#snippet nodeActions(node: HierNode)}
+    {@const headerAddFn = node.nodeType === "header" ? (HEADER_ADD[node.id] ?? null) : null}
+    {@const opts = node.nodeType !== "header" ? childAddOptions(node.id, node.nodeType) : []}
+    {@const deletable = isDeletable(node.nodeType)}
+    {#if headerAddFn || opts.length > 0 || deletable}
+        <span class="node-actions flex items-center gap-0.5 ml-auto pr-1">
+            {#if headerAddFn}
+                <button
+                    class="size-5 flex items-center justify-center rounded text-surface-400 hover:text-primary-500 hover:bg-surface-200-800 text-sm leading-none"
+                    onclick={(e) => { e.stopPropagation(); headerAddFn(); }}
+                    title="Add"
+                >+</button>
+            {:else if opts.length > 0}
+                <div class="relative">
+                    <button
+                        class="size-5 flex items-center justify-center rounded text-surface-400 hover:text-primary-500 hover:bg-surface-200-800 text-sm leading-none"
+                        onclick={(e) => toggleDropdown(node.id + ":add", e)}
+                        title="Add child"
+                    >+</button>
+                    {#if dropdownKey === node.id + ":add"}
+                        <div class="fixed z-[999] mt-0.5 w-44 bg-surface-100-900 border border-surface-200-800 rounded shadow-lg py-1">
+                            {#each opts as opt (opt.label)}
+                                <button
+                                    class="w-full text-left px-3 py-1 text-xs hover:bg-surface-200-800"
+                                    onclick={() => dropdownAction(opt.action)}
+                                >{opt.label}</button>
+                            {/each}
+                        </div>
+                    {/if}
+                </div>
+            {/if}
+            {#if deletable}
+                <button
+                    class="size-5 flex items-center justify-center rounded text-surface-400 hover:text-error-500 hover:bg-surface-200-800 text-xs leading-none"
+                    onclick={(e) => { e.stopPropagation(); handleDelete(node.id); }}
+                    title="Delete"
+                >×</button>
+            {/if}
+        </span>
+    {/if}
+{/snippet}
+
 {#snippet treeNode(node: HierNode, indexPath: number[])}
     <TreeView.NodeProvider value={{ node, indexPath }}>
         {#if node.children}
             <TreeView.Branch>
-                <TreeView.BranchControl>
+                <TreeView.BranchControl class="group">
                     <TreeView.BranchIndicator />
-                    <TreeView.BranchText>{node.text}</TreeView.BranchText>
+                    <TreeView.BranchText class="flex-1 min-w-0 truncate">{node.text}</TreeView.BranchText>
+                    <span class="opacity-0 group-hover:opacity-100">
+                        {@render nodeActions(node)}
+                    </span>
                 </TreeView.BranchControl>
                 <TreeView.BranchContent>
                     <TreeView.BranchIndentGuide />
@@ -67,7 +207,12 @@
                 </TreeView.BranchContent>
             </TreeView.Branch>
         {:else}
-            <TreeView.Item>{node.text}</TreeView.Item>
+            <TreeView.Item class="group flex items-center">
+                <span class="flex-1 min-w-0 truncate">{node.text}</span>
+                <span class="opacity-0 group-hover:opacity-100">
+                    {@render nodeActions(node)}
+                </span>
+            </TreeView.Item>
         {/if}
     </TreeView.NodeProvider>
 {/snippet}

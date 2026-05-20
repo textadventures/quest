@@ -11,7 +11,7 @@ using QuestViva.EditorCore;
 
 namespace QuestViva.WasmEditor;
 
-internal record TreeNodeData(string Key, string Text, string? Parent);
+internal record TreeNodeData(string Key, string Text, string? Parent, string? NodeIcon, string NodeType);
 internal record ControlOption(string Value, string Label);
 internal record ControlInfo(string? Attribute, string ControlType, string? Caption, List<ControlOption>? Options);
 internal record TabInfo(string? Caption, List<ControlInfo> Controls);
@@ -85,11 +85,22 @@ public partial class WasmEditorBridge
         _controller.BeginTreeUpdate += (_, _) => { };
         _controller.EndTreeUpdate += (_, _) => { };
         _controller.AddedNode += OnAddedNode;
-        // RetitledNode and RemovedNode are called without null guards in EditorController,
-        // so they must be subscribed even if we don't act on them yet.
-        _controller.RetitledNode += (_, _) => { };
-        _controller.RemovedNode += (_, _) => { };
-        _controller.RenamedNode += (_, _) => { };
+        _controller.RemovedNode += (_, e) => TreeNodes.RemoveAll(n => n.Key == e.Key);
+        _controller.RenamedNode += (_, e) =>
+        {
+            for (int i = 0; i < TreeNodes.Count; i++)
+            {
+                if (TreeNodes[i].Key == e.OldName)
+                    TreeNodes[i] = TreeNodes[i] with { Key = e.NewName, NodeType = GetNodeType(e.NewName, TreeNodes[i].NodeIcon) };
+                else if (TreeNodes[i].Parent == e.OldName)
+                    TreeNodes[i] = TreeNodes[i] with { Parent = e.NewName };
+            }
+        };
+        _controller.RetitledNode += (_, e) =>
+        {
+            var idx = TreeNodes.FindIndex(n => n.Key == e.Key);
+            if (idx >= 0) TreeNodes[idx] = TreeNodes[idx] with { Text = e.NewTitle };
+        };
 
         var provider = new ByteArrayGameDataProvider(gameFileBytes, filename);
         var ok = await _controller.Initialise(new WasmConfig(), provider);
@@ -670,6 +681,101 @@ public partial class WasmEditorBridge
         );
     }
 
+    // ── Element creation / deletion ───────────────────────────────────────────
+
+    [JSExport]
+    public static string ValidateName(string name)
+    {
+        if (_controller == null) return "Not initialised";
+        var result = _controller.CanAdd(name);
+        return result.Valid ? "ok" : EditorController.GetValidationError(result, name);
+    }
+
+    [JSExport]
+    public static string GetUniqueName(string baseName)
+    {
+        if (_controller == null) return baseName;
+        return _controller.GetUniqueElementName(baseName);
+    }
+
+    [JSExport]
+    public static string CreateRoom(string name, string? parent)
+    {
+        if (_controller == null) return "error:Not initialised";
+        var validation = _controller.CanAdd(name);
+        if (!validation.Valid) return $"error:{EditorController.GetValidationError(validation, name)}";
+        try { _controller.CreateNewRoom(name, string.IsNullOrEmpty(parent) ? null : parent, null); return name; }
+        catch (Exception ex) { return $"error:{ex.Message}"; }
+    }
+
+    [JSExport]
+    public static string CreateObject(string name, string? parent)
+    {
+        if (_controller == null) return "error:Not initialised";
+        var validation = _controller.CanAdd(name);
+        if (!validation.Valid) return $"error:{EditorController.GetValidationError(validation, name)}";
+        try { _controller.CreateNewObject(name, string.IsNullOrEmpty(parent) ? null : parent, null); return name; }
+        catch (Exception ex) { return $"error:{ex.Message}"; }
+    }
+
+    [JSExport]
+    public static string CreateFunction(string name)
+    {
+        if (_controller == null) return "error:Not initialised";
+        var validation = _controller.CanAdd(name);
+        if (!validation.Valid) return $"error:{EditorController.GetValidationError(validation, name)}";
+        try { _controller.CreateNewFunction(name); return name; }
+        catch (Exception ex) { return $"error:{ex.Message}"; }
+    }
+
+    [JSExport]
+    public static string CreateTimer(string name)
+    {
+        if (_controller == null) return "error:Not initialised";
+        var validation = _controller.CanAdd(name);
+        if (!validation.Valid) return $"error:{EditorController.GetValidationError(validation, name)}";
+        try { _controller.CreateNewTimer(name); return name; }
+        catch (Exception ex) { return $"error:{ex.Message}"; }
+    }
+
+    [JSExport]
+    public static string CreateExit(string parent)
+    {
+        if (_controller == null) return "error:Not initialised";
+        try { return _controller.CreateNewExit(parent); }
+        catch (Exception ex) { return $"error:{ex.Message}"; }
+    }
+
+    [JSExport]
+    public static string CreateTurnScript(string parent)
+    {
+        if (_controller == null) return "error:Not initialised";
+        try { return _controller.CreateNewTurnScript(parent); }
+        catch (Exception ex) { return $"error:{ex.Message}"; }
+    }
+
+    [JSExport]
+    public static string CreateCommand(string? parent)
+    {
+        if (_controller == null) return "error:Not initialised";
+        try { return _controller.CreateNewCommand(string.IsNullOrEmpty(parent) ? null : parent); }
+        catch (Exception ex) { return $"error:{ex.Message}"; }
+    }
+
+    [JSExport]
+    public static string CreateVerb(string? parent)
+    {
+        if (_controller == null) return "error:Not initialised";
+        try { return _controller.CreateNewVerb(string.IsNullOrEmpty(parent) ? null : parent, true); }
+        catch (Exception ex) { return $"error:{ex.Message}"; }
+    }
+
+    [JSExport]
+    public static void DeleteElement(string key)
+    {
+        _controller?.DeleteElement(key, true);
+    }
+
     // ── Private helpers ────────────────────────────────────────────────────────
 
     private static IEditableScripts? GetScripts(string elementKey, string attribute)
@@ -858,9 +964,33 @@ public partial class WasmEditorBridge
         );
     }
 
+    private static string GetNodeType(string key, string? nodeIcon) => key.StartsWith("_")
+        ? "header"
+        : nodeIcon switch
+        {
+            "s_room" => "room",
+            "s_object" => "object",
+            "s_exit" => "exit",
+            "s_verb" => "verb",
+            "s_command" => "command",
+            "s_turn" => "turnscript",
+            "s_function" => "function",
+            "s_timer" => "timer",
+            "s_game" => "game",
+            _ => "other"
+        };
+
     private static void OnAddedNode(object? sender, EditorController.AddedNodeEventArgs e)
     {
-        TreeNodes.Add(new TreeNodeData(e.Key, e.Text, e.Parent));
+        // AddedNode can fire multiple times for the same key (e.g. k_commands fires on every
+        // AddElementToTree("game") call, and field-update paths can re-fire for existing nodes).
+        // Treat this as an upsert: update text/parent if present, add if absent.
+        var idx = TreeNodes.FindIndex(n => n.Key == e.Key);
+        var node = new TreeNodeData(e.Key, e.Text, e.Parent, e.NodeIcon, GetNodeType(e.Key, e.NodeIcon));
+        if (idx >= 0)
+            TreeNodes[idx] = node;
+        else
+            TreeNodes.Add(node);
     }
 
     private static ControlInfo ToControlInfo(IEditorControl ctrl)

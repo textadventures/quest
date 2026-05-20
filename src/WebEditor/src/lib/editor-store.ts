@@ -3,9 +3,16 @@ import { loadWasm } from "./wasm";
 import type { WasmBridge } from "./wasm";
 import type { TreeNode, EditorDataResponse, ScriptBlockData, ScriptCommandCategoriesData, IfExpressionTemplateData, IfExpressionTemplate } from "./types";
 
+export type AddElementModalState = { type: "room" | "object" | "function" | "timer"; parent: string | null } | null;
+
 let _bridge: WasmBridge | null = null;
 
 export const isLoaded = writable(false);
+export const addElementModal = writable<AddElementModalState>(null);
+
+export function openAddModal(type: "room" | "object" | "function" | "timer", parent: string | null) {
+    addElementModal.set({ type, parent });
+}
 export const gameFilename = writable<string | null>(null);
 export const treeNodes = writable<TreeNode[]>([]);
 export const selectedKey = writable<string | null>(null);
@@ -243,4 +250,76 @@ function refreshSelectedData() {
     if (!_bridge || !key) return;
     const json = _bridge.GetEditorData(key);
     selectedData.set(json ? JSON.parse(json) : null);
+}
+
+function refreshTree() {
+    if (!_bridge) return;
+    treeNodes.set(JSON.parse(_bridge.GetTreeNodes()));
+}
+
+// ── Element creation / deletion ─────────────────────────────────────────────
+
+export function validateName(name: string): string {
+    return _bridge?.ValidateName(name) ?? "error";
+}
+
+export function getUniqueName(baseName: string): string {
+    return _bridge?.GetUniqueName(baseName) ?? baseName;
+}
+
+function afterCreate(result: string): string {
+    if (result.startsWith("error:")) return result;
+    refreshTree();
+    selectNode(result);
+    refreshUndoRedo();
+    return result;
+}
+
+export function createRoom(name: string, parent: string | null): string {
+    if (!_bridge) return "error:not loaded";
+    return afterCreate(_bridge.CreateRoom(name, parent ?? ""));
+}
+
+export function createObject(name: string, parent: string | null): string {
+    if (!_bridge) return "error:not loaded";
+    return afterCreate(_bridge.CreateObject(name, parent ?? ""));
+}
+
+export function createFunction(name: string): string {
+    if (!_bridge) return "error:not loaded";
+    return afterCreate(_bridge.CreateFunction(name));
+}
+
+export function createTimer(name: string): string {
+    if (!_bridge) return "error:not loaded";
+    return afterCreate(_bridge.CreateTimer(name));
+}
+
+export function createExit(parent: string): string {
+    if (!_bridge) return "error:not loaded";
+    return afterCreate(_bridge.CreateExit(parent));
+}
+
+export function createTurnScript(parent: string): string {
+    if (!_bridge) return "error:not loaded";
+    return afterCreate(_bridge.CreateTurnScript(parent));
+}
+
+export function createCommand(parent: string | null): string {
+    if (!_bridge) return "error:not loaded";
+    return afterCreate(_bridge.CreateCommand(parent ?? ""));
+}
+
+export function createVerb(parent: string | null): string {
+    if (!_bridge) return "error:not loaded";
+    return afterCreate(_bridge.CreateVerb(parent ?? ""));
+}
+
+export function deleteElement(key: string) {
+    if (!_bridge) return;
+    _bridge.DeleteElement(key);
+    selectedKey.set(null);
+    selectedData.set(null);
+    refreshTree();
+    refreshUndoRedo();
 }
