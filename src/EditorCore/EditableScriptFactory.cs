@@ -10,8 +10,9 @@ namespace QuestViva.EditorCore
     {
         private Expression<bool> m_visibilityExpression;
 
-        public EditableScriptData(Element editor, WorldModel worldModel)
+        public EditableScriptData(Element editor, WorldModel worldModel, int order)
         {
+            Order = order;
             DisplayString = editor.Fields.GetString("display");
             Category = editor.Fields.GetString("category");
             CreateString = editor.Fields.GetString("create");
@@ -38,6 +39,7 @@ namespace QuestViva.EditorCore
         public bool IsVisibleInSimpleMode { get; private set; }
         public bool IsDesktopOnly { get; private set; }
         public string CommonButton { get; private set; }
+        public int Order { get; private set; }
     }
 
     internal class EditableScriptFactory
@@ -54,10 +56,11 @@ namespace QuestViva.EditorCore
             m_scriptFactory = factory;
             m_worldModel = worldModel;
 
+            int order = 0;
             foreach (Element editor in worldModel.Elements.GetElements(ElementType.Editor).Where(IsScriptEditor))
             {
                 string appliesTo = editor.Fields.GetString("appliesto");
-                m_scriptData.Add(appliesTo, new EditableScriptData(editor, worldModel));
+                m_scriptData.Add(appliesTo, new EditableScriptData(editor, worldModel, order++));
             }
         }
 
