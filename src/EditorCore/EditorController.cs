@@ -963,6 +963,11 @@ namespace QuestViva.EditorCore
             return m_worldModel.UndoLogger.UndoList();
         }
 
+        public IEnumerable<string> GetRedoItems()
+        {
+            return m_worldModel.UndoLogger.RedoList();
+        }
+
         internal EditableScriptFactory ScriptFactory
         {
             get { return m_editableScriptFactory; }

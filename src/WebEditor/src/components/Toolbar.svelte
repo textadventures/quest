@@ -1,6 +1,6 @@
 <script lang="ts">
     import { AppBar } from "@skeletonlabs/skeleton-svelte";
-    import { gameFilename, saveGame, undo, redo } from "$lib/editor-store";
+    import { gameFilename, saveGame, undo, redo, canUndo, canRedo } from "$lib/editor-store";
 
     function handleSave() {
         const xml = saveGame();
@@ -24,8 +24,8 @@
         </AppBar.Lead>
         <AppBar.Trail>
             <div class="flex gap-2">
-                <button type="button" class="btn btn-sm preset-outlined" onclick={undo} title="Undo">↩ Undo</button>
-                <button type="button" class="btn btn-sm preset-outlined" onclick={redo} title="Redo">↪ Redo</button>
+                <button type="button" class="btn btn-sm preset-outlined" onclick={undo} disabled={!$canUndo} title="Undo">↩ Undo</button>
+                <button type="button" class="btn btn-sm preset-outlined" onclick={redo} disabled={!$canRedo} title="Redo">↪ Redo</button>
                 <button type="button" class="btn btn-sm preset-filled-primary-500" onclick={handleSave} title="Save">💾 Save</button>
             </div>
         </AppBar.Trail>

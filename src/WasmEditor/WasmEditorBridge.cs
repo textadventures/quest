@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
+using System.Linq;
 using System.Runtime.InteropServices.JavaScript;
 using System.Text.Json;
 using System.Text.Json.Serialization;
@@ -10,10 +11,14 @@ using QuestViva.EditorCore;
 namespace QuestViva.WasmEditor;
 
 internal record TreeNodeData(string Key, string Text, string? Parent);
+internal record ControlOption(string Value, string Label);
+internal record ControlInfo(string? Attribute, string ControlType, string? Caption, List<ControlOption>? Options);
+internal record TabInfo(string? Caption, List<ControlInfo> Controls);
+internal record EditorDataResponse(Dictionary<string, string?> Attributes, List<TabInfo> Tabs, List<ControlInfo> Controls);
 
 [JsonSourceGenerationOptions(PropertyNamingPolicy = JsonKnownNamingPolicy.CamelCase)]
 [JsonSerializable(typeof(List<TreeNodeData>))]
-[JsonSerializable(typeof(Dictionary<string, string>))]
+[JsonSerializable(typeof(EditorDataResponse))]
 internal partial class WasmEditorJsonContext : JsonSerializerContext { }
 
 [SuppressMessage("ReSharper", "MemberCanBePrivate.Global")]
@@ -33,6 +38,11 @@ public partial class WasmEditorBridge
         _controller.BeginTreeUpdate += (_, _) => { };
         _controller.EndTreeUpdate += (_, _) => { };
         _controller.AddedNode += OnAddedNode;
+        // RetitledNode and RemovedNode are called without null guards in EditorController,
+        // so they must be subscribed even if we don't act on them yet.
+        _controller.RetitledNode += (_, _) => { };
+        _controller.RemovedNode += (_, _) => { };
+        _controller.RenamedNode += (_, _) => { };
 
         var provider = new ByteArrayGameDataProvider(gameFileBytes, filename);
         var ok = await _controller.Initialise(new WasmConfig(), provider);
@@ -47,7 +57,8 @@ public partial class WasmEditorBridge
     [JSExport]
     public static string? GetEditorData(string key)
     {
-        var data = _controller?.GetEditorData(key);
+        if (_controller == null) return null;
+        var data = _controller.GetEditorData(key);
         if (data is not IEditorDataExtendedAttributeInfo extended) return null;
 
         var attrs = new Dictionary<string, string?>();
@@ -55,20 +66,159 @@ public partial class WasmEditorBridge
         {
             attrs[attr.AttributeName] = data.GetAttribute(attr.AttributeName)?.ToString();
         }
-        return JsonSerializer.Serialize(attrs, WasmEditorJsonContext.Default.DictionaryStringString);
+
+        var tabs = new List<TabInfo>();
+        var topControls = new List<ControlInfo>();
+
+        var editorName = _controller.GetElementEditorName(key);
+        if (editorName != null)
+        {
+            var def = _controller.GetEditorDefinition(editorName);
+            foreach (var tab in def.Tabs.Values)
+            {
+                if (!tab.IsTabVisible(data)) continue;
+                var visibleControls = tab.Controls.Where(c => c.IsControlVisible(data)).ToList();
+                AddDropdownTypeValues(attrs, visibleControls, key);
+                tabs.Add(new TabInfo(tab.Caption, visibleControls.Select(ToControlInfo).ToList()));
+            }
+            var visibleTopControls = def.Controls.Where(c => c.IsControlVisible(data)).ToList();
+            AddDropdownTypeValues(attrs, visibleTopControls, key);
+            topControls.AddRange(visibleTopControls.Select(ToControlInfo));
+        }
+
+        return JsonSerializer.Serialize(
+            new EditorDataResponse(attrs, tabs, topControls),
+            WasmEditorJsonContext.Default.EditorDataResponse);
+    }
+
+    [JSExport]
+    public static string SetAttribute(string elementKey, string attribute, string controlType, string value)
+    {
+        if (_controller == null) return "error";
+        var data = _controller.GetEditorData(elementKey);
+        if (data == null) return "error";
+
+        object typedValue = controlType switch
+        {
+            "checkbox" => bool.Parse(value),
+            "number" => int.TryParse(value, out var i) ? (object)i : value,
+            "numberdouble" => double.TryParse(value, System.Globalization.NumberStyles.Any,
+                System.Globalization.CultureInfo.InvariantCulture, out var d) ? (object)d : value,
+            _ => value
+        };
+
+        _controller.StartTransaction($"Set {attribute}");
+        try
+        {
+            var result = data.SetAttribute(attribute, typedValue);
+            return result.Valid ? "ok" : result.Message.ToString();
+        }
+        finally
+        {
+            _controller.EndTransaction();
+        }
     }
 
     [JSExport]
     public static string Save() => _controller?.Save() ?? string.Empty;
 
     [JSExport]
-    public static void Undo() => _controller?.Undo();
+    public static bool CanUndo() => _controller?.GetUndoItems().Any() ?? false;
 
     [JSExport]
-    public static void Redo() => _controller?.Redo();
+    public static bool CanRedo() => _controller?.GetRedoItems().Any() ?? false;
+
+    [JSExport]
+    public static void Undo()
+    {
+        if (_controller == null || !_controller.GetUndoItems().Any()) return;
+        _controller.Undo();
+    }
+
+    [JSExport]
+    public static void Redo()
+    {
+        if (_controller == null || !_controller.GetRedoItems().Any()) return;
+        _controller.Redo();
+    }
+
+    [JSExport]
+    public static string SetDropdownType(string elementKey, string controlId, string selectedType)
+    {
+        if (_controller == null) return "error";
+        var editorName = _controller.GetElementEditorName(elementKey);
+        if (editorName == null) return "error";
+        var def = _controller.GetEditorDefinition(editorName);
+
+        var ctrl = def.Tabs.Values.SelectMany(t => t.Controls)
+            .Concat(def.Controls)
+            .FirstOrDefault(c => c.Id == controlId);
+        if (ctrl == null) return "error";
+
+        var types = ctrl.GetDictionary("types");
+        if (types == null) return "error";
+
+        _controller.StartTransaction($"Set type");
+        try
+        {
+            foreach (var typeName in types.Keys.Where(k => k != "*"))
+            {
+                if (_controller.DoesElementInheritType(elementKey, typeName))
+                    _controller.RemoveInheritedTypeFromElement(elementKey, typeName, false);
+            }
+            if (selectedType != "*")
+            {
+                var result = _controller.AddInheritedTypeToElement(elementKey, selectedType, false);
+                if (!result.Valid) return result.Message.ToString();
+            }
+            return "ok";
+        }
+        finally
+        {
+            _controller.EndTransaction();
+        }
+    }
+
+    private static void AddDropdownTypeValues(Dictionary<string, string?> attrs, List<IEditorControl> controls, string elementKey)
+    {
+        foreach (var ctrl in controls.Where(c => c.ControlType == "dropdowntypes"))
+            attrs[ctrl.Id] = _controller!.GetSelectedDropDownType(ctrl, elementKey);
+    }
 
     private static void OnAddedNode(object? sender, EditorController.AddedNodeEventArgs e)
     {
         TreeNodes.Add(new TreeNodeData(e.Key, e.Text, e.Parent));
+    }
+
+    private static ControlInfo ToControlInfo(IEditorControl ctrl)
+    {
+        List<ControlOption>? options = null;
+        string? attribute = ctrl.Attribute;
+
+        if (ctrl.ControlType == "dropdown")
+        {
+            var list = ctrl.GetListString("validvalues");
+            if (list != null)
+            {
+                options = list.Select(v => new ControlOption(v, v)).ToList();
+            }
+            else
+            {
+                var dict = ctrl.GetDictionary("validvalues");
+                if (dict != null)
+                {
+                    options = dict.Select(kv => new ControlOption(kv.Key, kv.Value)).ToList();
+                }
+            }
+        }
+        else if (ctrl.ControlType == "dropdowntypes")
+        {
+            var dict = ctrl.GetDictionary("types");
+            if (dict != null)
+                options = dict.Select(kv => new ControlOption(kv.Key, kv.Value)).ToList();
+            attribute = ctrl.Id;
+        }
+
+        return new ControlInfo(attribute, ctrl.ControlType, ctrl.Caption, options);
     }
 }

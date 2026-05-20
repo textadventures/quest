@@ -1,7 +1,7 @@
-import { writable } from "svelte/store";
+import { writable, get } from "svelte/store";
 import { loadWasm } from "./wasm";
 import type { WasmBridge } from "./wasm";
-import type { TreeNode, ElementAttributes } from "./types";
+import type { TreeNode, EditorDataResponse } from "./types";
 
 let _bridge: WasmBridge | null = null;
 
@@ -9,7 +9,14 @@ export const isLoaded = writable(false);
 export const gameFilename = writable<string | null>(null);
 export const treeNodes = writable<TreeNode[]>([]);
 export const selectedKey = writable<string | null>(null);
-export const selectedAttributes = writable<ElementAttributes | null>(null);
+export const selectedData = writable<EditorDataResponse | null>(null);
+export const canUndo = writable(false);
+export const canRedo = writable(false);
+
+function refreshUndoRedo() {
+    canUndo.set(_bridge?.CanUndo() ?? false);
+    canRedo.set(_bridge?.CanRedo() ?? false);
+}
 
 export async function openGame(file: File): Promise<boolean> {
     const bytes = new Uint8Array(await file.arrayBuffer());
@@ -19,6 +26,7 @@ export async function openGame(file: File): Promise<boolean> {
         treeNodes.set(JSON.parse(_bridge.GetTreeNodes()));
         isLoaded.set(true);
         gameFilename.set(file.name);
+        refreshUndoRedo();
     }
     return ok;
 }
@@ -27,7 +35,23 @@ export function selectNode(key: string) {
     if (!_bridge) return;
     selectedKey.set(key);
     const json = _bridge.GetEditorData(key);
-    selectedAttributes.set(json ? JSON.parse(json) : null);
+    selectedData.set(json ? JSON.parse(json) : null);
+}
+
+export function setAttribute(elementKey: string, attribute: string, controlType: string, value: string): string {
+    if (!_bridge) return "error";
+    const result = _bridge.SetAttribute(elementKey, attribute, controlType, value);
+    refreshSelectedData();
+    refreshUndoRedo();
+    return result;
+}
+
+export function setDropdownType(elementKey: string, controlId: string, selectedType: string): string {
+    if (!_bridge) return "error";
+    const result = _bridge.SetDropdownType(elementKey, controlId, selectedType);
+    refreshSelectedData();
+    refreshUndoRedo();
+    return result;
 }
 
 export function saveGame(): string {
@@ -36,8 +60,19 @@ export function saveGame(): string {
 
 export function undo() {
     _bridge?.Undo();
+    refreshSelectedData();
+    refreshUndoRedo();
 }
 
 export function redo() {
     _bridge?.Redo();
+    refreshSelectedData();
+    refreshUndoRedo();
+}
+
+function refreshSelectedData() {
+    const key = get(selectedKey);
+    if (!_bridge || !key) return;
+    const json = _bridge.GetEditorData(key);
+    selectedData.set(json ? JSON.parse(json) : null);
 }
