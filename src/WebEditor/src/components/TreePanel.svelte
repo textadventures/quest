@@ -82,17 +82,23 @@
     // ── Add / delete ───────────────────────────────────────────────────────────
 
     let dropdownKey = $state<string | null>(null);
+    let dropdownPos = $state<{ x: number; y: number } | null>(null);
+    let dropdownOpts = $state<Array<{ label: string; action: () => void }>>([]);
 
-    function closeDropdown() { dropdownKey = null; }
+    function closeDropdown() { dropdownKey = null; dropdownPos = null; }
 
-    function toggleDropdown(key: string, e: MouseEvent) {
+    function toggleDropdown(key: string, opts: Array<{ label: string; action: () => void }>, e: MouseEvent) {
         e.stopPropagation();
-        dropdownKey = dropdownKey === key ? null : key;
+        if (dropdownKey === key) { closeDropdown(); return; }
+        const rect = (e.currentTarget as HTMLElement).getBoundingClientRect();
+        dropdownKey = key;
+        dropdownPos = { x: rect.left, y: rect.bottom + 2 };
+        dropdownOpts = opts;
     }
 
     function dropdownAction(fn: () => void) {
         fn();
-        dropdownKey = null;
+        closeDropdown();
     }
 
     function handleDelete(id: string) {
@@ -125,7 +131,10 @@
 <!-- svelte-ignore a11y_no_static_element_interactions -->
 <div
     class="flex flex-col w-60 min-w-[180px] border-r border-surface-200-800 bg-surface-50-950"
-    onmousedown={(e) => { if (!(e.target as HTMLElement).closest(".node-actions")) closeDropdown(); }}
+    onmousedown={(e) => {
+        const t = e.target as HTMLElement;
+        if (!t.closest(".node-actions") && !t.closest(".tree-dropdown")) closeDropdown();
+    }}
 >
     <div class="px-3 py-2 text-xs font-semibold uppercase text-surface-500-400 border-b border-surface-200-800 bg-surface-100-900">
         Game Objects
@@ -144,6 +153,19 @@
             {/each}
         </TreeView>
     </div>
+    {#if dropdownKey && dropdownPos}
+        <div
+            class="tree-dropdown fixed z-[999] w-44 bg-surface-100-900 border border-surface-200-800 rounded shadow-lg py-1"
+            style="left: {dropdownPos.x}px; top: {dropdownPos.y}px"
+        >
+            {#each dropdownOpts as opt (opt.label)}
+                <button
+                    class="w-full text-left px-3 py-1 text-xs text-surface-900-50 hover:bg-surface-200-800"
+                    onclick={() => dropdownAction(opt.action)}
+                >{opt.label}</button>
+            {/each}
+        </div>
+    {/if}
 </div>
 
 {#snippet nodeActions(node: HierNode)}
@@ -159,23 +181,11 @@
                     title="Add"
                 >+</button>
             {:else if opts.length > 0}
-                <div class="relative">
-                    <button
-                        class="size-5 flex items-center justify-center rounded text-surface-400 hover:text-primary-500 hover:bg-surface-200-800 text-sm leading-none"
-                        onclick={(e) => toggleDropdown(node.id + ":add", e)}
-                        title="Add child"
-                    >+</button>
-                    {#if dropdownKey === node.id + ":add"}
-                        <div class="fixed z-[999] mt-0.5 w-44 bg-surface-100-900 border border-surface-200-800 rounded shadow-lg py-1">
-                            {#each opts as opt (opt.label)}
-                                <button
-                                    class="w-full text-left px-3 py-1 text-xs text-surface-900-50 hover:bg-surface-200-800"
-                                    onclick={() => dropdownAction(opt.action)}
-                                >{opt.label}</button>
-                            {/each}
-                        </div>
-                    {/if}
-                </div>
+                <button
+                    class="size-5 flex items-center justify-center rounded text-surface-400 hover:text-primary-500 hover:bg-surface-200-800 text-sm leading-none"
+                    onclick={(e) => toggleDropdown(node.id + ":add", opts, e)}
+                    title="Add child"
+                >+</button>
             {/if}
             {#if deletable}
                 <button
