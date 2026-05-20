@@ -3,7 +3,14 @@
     import AddScriptModal from "./AddScriptModal.svelte";
     import {
         scriptVersion,
+        scriptClipboardHasContent,
         getScriptData,
+        getScriptCode,
+        setScriptCode,
+        copyScripts,
+        cutScripts,
+        deleteScripts,
+        pasteScripts,
         setScriptParameter,
         setIfExpression,
         setElseIfExpression,
@@ -49,6 +56,11 @@
     let categories = $state<ScriptCategoryInfo[]>([]);
     let showAddModal = $state(false);
     let isRoot = $derived(initialData === null);
+    let codeViewMode = $state(false);
+    let scriptCode = $state("");
+    let selectedIndices = $state(new Set<number>());
+    // Set before a move mutation so the $effect restores it instead of clearing
+    let nextSelection: Set<number> | null = null;
     // Tracks which expression controls the user has explicitly forced into expression mode,
     // overriding the default simple-mode detection based on value shape.
     let expressionOverrides = $state(new Set<string>());
@@ -60,6 +72,8 @@
         const version = $scriptVersion; // track for reactivity on undo/redo
         if (isRoot) {
             scriptData = version >= 0 ? getScriptData(elementKey, attribute) : null;
+            selectedIndices = nextSelection ?? new Set();
+            nextSelection = null;
         }
         if (categories.length === 0) {
             const cats = getScriptCommandCategories();
@@ -202,6 +216,64 @@
         return result;
     }
 
+    function onToggleCodeView() {
+        codeViewMode = !codeViewMode;
+        if (codeViewMode) {
+            scriptCode = getScriptCode(elementKey, attribute);
+        } else {
+            refresh();
+        }
+    }
+
+    function onCodeViewSave(value: string) {
+        const result = setScriptCode(elementKey, attribute, value);
+        if (result === "ok") {
+            scriptCode = value;
+        }
+    }
+
+    function sortedSelection(): number[] {
+        return [...selectedIndices].sort((a, b) => a - b);
+    }
+
+    function toggleSelection(i: number, checked: boolean) {
+        const next = new Set(selectedIndices);
+        if (checked) next.add(i); else next.delete(i);
+        selectedIndices = next;
+    }
+
+    function onCopySelected() {
+        copyScripts(elementKey, attribute, containerPath, sortedSelection());
+        // no scriptVersion bump — selection intentionally preserved after copy
+    }
+
+    function onCutSelected() {
+        cutScripts(elementKey, attribute, containerPath, sortedSelection());
+        // selectedIndices cleared by $effect when scriptVersion bumps
+    }
+
+    function onDeleteSelected() {
+        deleteScripts(elementKey, attribute, containerPath, sortedSelection());
+    }
+
+    function onPaste() {
+        pasteScripts(elementKey, attribute, containerPath);
+    }
+
+    function onMoveUpSelected() {
+        const [idx] = sortedSelection();
+        if (idx <= 0) return;
+        nextSelection = new Set([idx - 1]);
+        mutate(() => moveScript(elementKey, attribute, containerPath, idx, idx - 1));
+    }
+
+    function onMoveDownSelected() {
+        const [idx] = sortedSelection();
+        if (idx >= scripts().length - 1) return;
+        nextSelection = new Set([idx + 1]);
+        mutate(() => moveScript(elementKey, attribute, containerPath, idx, idx + 1));
+    }
+
     function onAddScript(createString: string) {
         mutate(() => addScript(elementKey, attribute, containerPath, createString));
     }
@@ -269,50 +341,123 @@
 </script>
 
 <div class={indentClass}>
-    {#each scripts() as script, i (script.id)}
-        <div class="group relative border border-surface-200-800 rounded mb-1 bg-surface-50-950">
-            <!-- Script row actions -->
-            <div class="absolute right-1 top-1 flex gap-0.5 opacity-0 group-hover:opacity-100 transition-opacity z-10">
-                <button
-                    type="button"
-                    class="btn btn-sm preset-outlined px-1 py-0 text-xs leading-none"
-                    title="Move up"
-                    disabled={i === 0}
-                    onclick={() => onMoveUp(i)}
-                >↑</button>
-                <button
-                    type="button"
-                    class="btn btn-sm preset-outlined px-1 py-0 text-xs leading-none"
-                    title="Move down"
-                    disabled={i === scripts().length - 1}
-                    onclick={() => onMoveDown(i)}
-                >↓</button>
-                <button
-                    type="button"
-                    class="btn btn-sm preset-tonal-error px-1 py-0 text-xs leading-none"
-                    title="Delete"
-                    onclick={() => onDelete(i)}
-                >×</button>
-            </div>
+    {#if codeViewMode}
+        <textarea
+            class="textarea text-xs font-mono w-full"
+            rows={10}
+            value={scriptCode}
+            onchange={(e) => onCodeViewSave((e.target as HTMLTextAreaElement).value)}
+        ></textarea>
+    {:else}
+        {#each scripts() as script, i (script.id)}
+            <div class="group relative border border-surface-200-800 rounded mb-1 bg-surface-50-950 flex items-start">
+                {#if isRoot}
+                    <label class="flex items-start pt-1.5 pl-1.5 pr-0.5 cursor-pointer flex-shrink-0">
+                        <input
+                            type="checkbox"
+                            class="checkbox size-3.5"
+                            checked={selectedIndices.has(i)}
+                            onchange={(e) => toggleSelection(i, (e.target as HTMLInputElement).checked)}
+                        />
+                    </label>
+                {/if}
+                <div class="flex-1 min-w-0">
+                    <!-- Script row actions (hover) -->
+                    <div class="absolute right-1 top-1 flex gap-0.5 opacity-0 group-hover:opacity-100 transition-opacity z-10">
+                        <button
+                            type="button"
+                            class="btn btn-sm preset-outlined px-1 py-0 text-xs leading-none"
+                            title="Move up"
+                            disabled={i === 0}
+                            onclick={() => onMoveUp(i)}
+                        >↑</button>
+                        <button
+                            type="button"
+                            class="btn btn-sm preset-outlined px-1 py-0 text-xs leading-none"
+                            title="Move down"
+                            disabled={i === scripts().length - 1}
+                            onclick={() => onMoveDown(i)}
+                        >↓</button>
+                        <button
+                            type="button"
+                            class="btn btn-sm preset-tonal-error px-1 py-0 text-xs leading-none"
+                            title="Delete"
+                            onclick={() => onDelete(i)}
+                        >×</button>
+                    </div>
 
-            {#if script.type === "if"}
-                {@render ifBlock(script, i)}
-            {:else}
-                {@render normalBlock(script, i)}
-            {/if}
-        </div>
-    {/each}
+                    {#if script.type === "if"}
+                        {@render ifBlock(script, i)}
+                    {:else}
+                        {@render normalBlock(script, i)}
+                    {/if}
+                </div>
+            </div>
+        {/each}
+
+        <!-- Selection toolbar -->
+        {#if isRoot && selectedIndices.size > 0}
+            {@const sel = sortedSelection()}
+            <div class="flex items-center gap-1 mb-1 px-1 py-1 bg-surface-100-900 rounded border border-surface-200-800 text-xs">
+                <button
+                    type="button"
+                    class="btn btn-sm preset-outlined text-xs py-0.5"
+                    onclick={onCutSelected}
+                >Cut</button>
+                <button
+                    type="button"
+                    class="btn btn-sm preset-outlined text-xs py-0.5"
+                    onclick={onCopySelected}
+                >Copy</button>
+                <button
+                    type="button"
+                    class="btn btn-sm preset-tonal-error text-xs py-0.5"
+                    onclick={onDeleteSelected}
+                >Delete</button>
+                {#if sel.length === 1}
+                    <span class="w-px h-4 bg-surface-300-700 mx-0.5"></span>
+                    <button
+                        type="button"
+                        class="btn btn-sm preset-outlined text-xs py-0.5"
+                        disabled={sel[0] === 0}
+                        onclick={onMoveUpSelected}
+                    >↑ Move up</button>
+                    <button
+                        type="button"
+                        class="btn btn-sm preset-outlined text-xs py-0.5"
+                        disabled={sel[0] === scripts().length - 1}
+                        onclick={onMoveDownSelected}
+                    >↓ Move down</button>
+                {/if}
+                <span class="ml-auto text-surface-400-500">{sel.length} selected</span>
+            </div>
+        {/if}
+    {/if}
 
     <!-- Add script row -->
-    <div class="flex items-center gap-1 mt-1">
-        {#if categories.length > 0}
+    <div class="flex items-center gap-1 mt-1 flex-wrap">
+        {#if !codeViewMode && categories.length > 0}
             <button
                 type="button"
                 class="btn btn-sm preset-outlined text-xs py-0.5"
                 onclick={() => (showAddModal = true)}
             >+ Add script</button>
-        {:else if isRoot}
+        {:else if !codeViewMode && isRoot}
             <span class="text-xs text-surface-400-500 italic">Loading commands…</span>
+        {/if}
+        {#if isRoot && $scriptClipboardHasContent && !codeViewMode}
+            <button
+                type="button"
+                class="btn btn-sm preset-outlined text-xs py-0.5"
+                onclick={onPaste}
+            >Paste</button>
+        {/if}
+        {#if isRoot}
+            <button
+                type="button"
+                class="btn btn-sm preset-outlined text-xs py-0.5"
+                onclick={onToggleCodeView}
+            >{codeViewMode ? "Visual editor" : "Code view"}</button>
         {/if}
     </div>
 

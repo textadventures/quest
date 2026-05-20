@@ -104,7 +104,7 @@
             {ctrl.caption ?? ""}
         </div>
     {:else if ctrl.attribute !== null}
-        <div class="flex items-center gap-2 px-3 py-1.5 border-b border-surface-100-900 hover:bg-surface-100-900 min-h-8">
+        <div class="flex items-center gap-2 px-3 py-1.5 border-b border-surface-100-900 min-h-8">
             <span class="text-xs text-surface-600-400 w-32 flex-shrink-0 overflow-hidden text-ellipsis whitespace-nowrap" title={ctrl.caption ?? ctrl.attribute}>
                 {ctrl.caption ?? ctrl.attribute}
             </span>
