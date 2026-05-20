@@ -6,9 +6,10 @@
 Browser
 ├── SvelteKit frontend  (src/WebEditor/)
 │   ├── TreePanel       — game object hierarchy (Skeleton TreeView)
-│   ├── PropertyEditor  — attribute display (placeholder; full editors in Phase 3)
-│   ├── Toolbar         — save, undo/redo (Skeleton AppBar)
-│   └── [future] ScriptEditor, StatusBar
+│   ├── PropertyEditor  — attribute display with typed controls and tab navigation
+│   ├── ScriptEditor    — visual script editor with code view and copy/paste
+│   ├── AddScriptModal  — categorised command picker
+│   └── Toolbar         — save, undo/redo (Skeleton AppBar)
 │
 └── .NET WASM module  (src/WasmEditor/)
     ├── WasmEditorBridge  — thin JSExport interop layer
@@ -101,11 +102,13 @@ src/WebEditor/
 │   ├── lib/
 │   │   ├── wasm.ts         # loads dotnet.js, exposes WasmBridge
 │   │   ├── editor-store.ts # Svelte stores + wrappers for all WASM calls
-│   │   └── types.ts        # TreeNode, ControlInfo, TabInfo, EditorDataResponse
+│   │   └── types.ts        # TreeNode, ControlInfo, TabInfo, EditorDataResponse, ScriptNodeData, …
 │   ├── components/
 │   │   ├── Toolbar.svelte         # AppBar: title, filename, undo/redo/save
 │   │   ├── TreePanel.svelte       # Skeleton TreeView (flat→hierarchy conversion)
-│   │   └── PropertyEditor.svelte  # Typed controls with tab navigation
+│   │   ├── PropertyEditor.svelte  # Typed controls with tab navigation
+│   │   ├── ScriptEditor.svelte    # Visual script editor (recursive); code view; copy/paste
+│   │   └── AddScriptModal.svelte  # Categorised command picker modal
 │   └── routes/
 │       ├── +layout.svelte  # imports app.css
 │       ├── +layout.ts      # prerendering config
@@ -204,26 +207,34 @@ Factory functions: `createBrowserAdapter()`, `createOPFSAdapter()`, `createElect
 
 Known limitations for this phase: live C#→JS events not yet implemented.
 
-### Phase 4 — Script editor
+### Phase 4 — Script editor ✅
 
-Implement a v5-style visual script editor (see `WebEditor/WebEditor/Views/Edit/ScriptEditor.cshtml` on the `v5` branch for the reference implementation).
+Visual script editor, code view, and copy/paste — full feature parity with the v5 web editor for script editing.
 
-Design:
-- Script commands render as inline rows: labels + textboxes/dropdowns/expression inputs interleaved in a sentence-like layout (e.g. `Print [textbox]`, `Set [dropdown] of [dropdown] to [expression]`)
-- Nested scripts (if/then/else, for, foreach) recurse into child script blocks with their own Add/Delete buttons
-- `if` blocks are special-cased: condition + Then block, with Add Else If / Add Else buttons
-- Expression parameters offer a simple/expression toggle: friendly widget (dropdown, number, object picker) when the value matches a simple pattern; raw text input for arbitrary expressions
-- An "Add script" button opens a categorised command picker
+**Visual editor** (`ScriptEditor.svelte`)
+- Script commands render as inline rows: labels + textboxes/dropdowns/expression inputs interleaved in a sentence-like layout (`Print [textbox]`, `Set [dropdown] of [dropdown] to [expression]`)
+- Nested scripts (if/then/else, for, foreach) recurse into child `ScriptEditor` instances with their own Add/Delete buttons
+- `if` blocks special-cased: condition + Then block, with Add Else If / Add Else buttons
+- Expression parameters offer a simple/expression toggle: friendly widget (dropdown, number, object picker) when the value matches a simple form; raw text input for arbitrary expressions
+- `if` condition additionally offers a template picker (36 predefined patterns from `usetemplates="if"`) for the most common conditions
+- Move up/down and delete via hover action buttons on each row
 
-The underlying `IEditableScript` tree (via `GetParameter`/`SetParameter` on the WASM bridge) is view-agnostic; the script editor is purely a rendering layer over it.
+**Add script** (`AddScriptModal.svelte`)
+- Categorised command picker with quick-add shortcuts for common commands
+- Keyboard: Escape cancels, Enter confirms, double-click adds immediately
 
-Steps:
-1. Extend `WasmEditorBridge` with script-specific API: `GetScriptEditorData`, `SetScriptParameter`, `AddScript`, `DeleteScript`, `MoveScript`
-2. Expose editor definitions (`IEditorDefinition`, control types) from EditorCore so the Svelte layer knows how to render each script command's parameters
-3. Implement the `ScriptEditor` Svelte component, recursing for nested scripts
-4. Wire `ScriptEditor` into `PropertyEditor` when a script-type attribute is selected
+**Code view**
+- Toggle button switches the block between the visual editor and a monospace textarea showing the raw Quest script text
+- Round-trips through `EditableScripts.Code` (`Save()` / `LoadCode()`); works correctly on empty attributes by auto-creating the container
 
-A plain text code view (Monaco or CodeMirror) is also worth adding alongside the visual editor — each script already has a `Save()` / `Code` representation, so the round-trip exists.
+**Copy / cut / paste**
+- Checkbox on each root-level row; checking any shows a selection toolbar with Cut, Copy, Delete, and (single selection) Move Up / Move Down
+- Cut/Copy use `IEditableScripts.Cut/Copy` — clipboard lives in `EditorController.m_clipboardScripts`
+- Paste appends clipboard scripts at the end of the container; handles empty (unset) attributes by creating the container first
+- `scriptClipboardHasContent` Svelte store controls Paste button visibility
+
+**Bridge additions** (all `[JSExport]` on `WasmEditorBridge`):
+`GetScriptData`, `SetScriptParameter`, `SetIfExpression`, `SetElseIfExpression`, `AddScript`, `DeleteScript`, `DeleteScripts`, `MoveScript`, `AddElse`, `AddElseIf`, `RemoveElse`, `RemoveElseIf`, `GetScriptCommandCategories`, `GetObjectNames`, `GetIfExpressionTemplates`, `GetIfExpressionTemplateData`, `GetScriptCode`, `SetScriptCode`, `CopyScripts`, `CutScripts`, `PasteScripts`, `CanPasteScript`
 
 ### Phase 5 — Full feature parity
 - New game (from templates)
@@ -242,9 +253,9 @@ Three rendering modes over the same `IEditableScript` model, toggleable per-scri
 
 | Mode | Description |
 |---|---|
-| **Visual (v5-style)** | Inline form rows with typed controls per parameter — the Phase 4 target |
+| **Visual (v5-style)** | Inline form rows with typed controls per parameter ✅ |
+| **Code view** | Raw Quest script text — round-trips through `EditableScripts.Code` / `Save()` ✅ |
 | **Blockly** | Block-based drag-and-drop — future, see below |
-| **Code view** | Raw Quest script text via Monaco/CodeMirror — round-trips through `Save()` |
 
 All three modes read/write the same underlying script tree. Switching mode is a pure UI concern.
 
