@@ -7,5 +7,7 @@ namespace QuestViva.EditorCore
         IDictionary<string, IEditorTab> Tabs { get; }
         IEnumerable<IEditorControl> Controls { get; }
         string GetDefaultFilterName(string filterGroupName, IEditorData data);
+        string Description { get; }
+        string OriginalPattern { get; }
     }
 }

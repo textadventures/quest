@@ -23,6 +23,7 @@ internal record ScriptControlData(
     string? Attribute,
     string? Value,
     string? SimpleEditor,
+    string? SimpleLabel,
     List<ControlOption>? Options,
     List<ScriptNodeData>? Scripts
 );
@@ -42,11 +43,28 @@ internal record ScriptCommandInfo(string Keyword, string Display, string Add, st
 internal record ScriptCategoryInfo(string Name, List<ScriptCommandInfo> Commands);
 internal record ScriptCommandCategoriesData(List<ScriptCategoryInfo> Categories);
 
+internal record ExpressionTemplateControlData(
+    string Name,
+    string? Value,
+    string? SimpleEditor,
+    string? SimpleLabel,
+    List<ControlOption>? Options
+);
+internal record IfExpressionTemplateData(
+    string TemplateName,
+    string OriginalPattern,
+    List<ExpressionTemplateControlData> Controls
+);
+internal record IfExpressionTemplate(string Name, string CreateExpression);
+
 [JsonSourceGenerationOptions(PropertyNamingPolicy = JsonKnownNamingPolicy.CamelCase)]
 [JsonSerializable(typeof(List<TreeNodeData>))]
 [JsonSerializable(typeof(EditorDataResponse))]
 [JsonSerializable(typeof(ScriptBlockData))]
 [JsonSerializable(typeof(ScriptCommandCategoriesData))]
+[JsonSerializable(typeof(List<string>))]
+[JsonSerializable(typeof(List<IfExpressionTemplate>))]
+[JsonSerializable(typeof(IfExpressionTemplateData))]
 internal partial class WasmEditorJsonContext : JsonSerializerContext { }
 
 [SuppressMessage("ReSharper", "MemberCanBePrivate.Global")]
@@ -466,6 +484,81 @@ public partial class WasmEditorBridge
         return JsonSerializer.Serialize(data, WasmEditorJsonContext.Default.ScriptCommandCategoriesData);
     }
 
+    [JSExport]
+    public static string GetObjectNames()
+    {
+        if (_controller == null) return "[]";
+        var names = _controller.GetObjectNames("object", includeLibraryObjects: false).ToList();
+        return JsonSerializer.Serialize(names, WasmEditorJsonContext.Default.ListString);
+    }
+
+    [JSExport]
+    public static string GetIfExpressionTemplates()
+    {
+        if (_controller == null) return "[]";
+        var templates = _controller.GetExpressionEditorNames("if")
+            .Select(name => new IfExpressionTemplate(Name: name, CreateExpression: _controller.GetNewExpression(name)))
+            .ToList();
+        return JsonSerializer.Serialize(templates, WasmEditorJsonContext.Default.ListIfExpressionTemplate);
+    }
+
+    [JSExport]
+    public static string? GetIfExpressionTemplateData(string expression)
+    {
+        if (_controller == null || string.IsNullOrEmpty(expression)) return null;
+        var definition = _controller.GetExpressionEditorDefinition(expression, "if");
+        if (definition == null) return null;
+
+        IEditorData templateData;
+        try { templateData = _controller.GetExpressionEditorData(expression, "if", null!); }
+        catch { return null; }
+
+        var controls = definition.Controls
+            .Where(ctrl => ctrl.Attribute != null)
+            .Select(ctrl =>
+            {
+                var simpleLabel = ctrl.GetString("simple");
+                var simpleEditorTag = ctrl.GetString("simpleeditor");
+                var simpleEditor = simpleEditorTag ?? (simpleLabel != null ? "textbox" : null);
+
+                List<ControlOption>? options = null;
+                if (simpleEditor == "dropdown")
+                {
+                    var list = ctrl.GetListString("validvalues");
+                    if (list != null)
+                        options = list.Select(v => new ControlOption(v, v)).ToList();
+                    else
+                    {
+                        var dict = ctrl.GetDictionary("validvalues");
+                        if (dict != null)
+                            options = dict.Select(kv => new ControlOption(kv.Key, kv.Value)).ToList();
+                    }
+                }
+
+                string? paramValue = null;
+                try { paramValue = (string?)templateData.GetAttribute(ctrl.Attribute!); }
+                catch { /* parameter not present in expression */ }
+
+                return new ExpressionTemplateControlData(
+                    Name: ctrl.Attribute!,
+                    Value: paramValue,
+                    SimpleEditor: simpleEditor,
+                    SimpleLabel: simpleLabel,
+                    Options: options
+                );
+            })
+            .ToList();
+
+        return JsonSerializer.Serialize(
+            new IfExpressionTemplateData(
+                TemplateName: definition.Description,
+                OriginalPattern: definition.OriginalPattern,
+                Controls: controls
+            ),
+            WasmEditorJsonContext.Default.IfExpressionTemplateData
+        );
+    }
+
     // ── Private helpers ────────────────────────────────────────────────────────
 
     private static IEditableScripts? GetScripts(string elementKey, string attribute)
@@ -607,9 +700,27 @@ public partial class WasmEditorBridge
             }
         }
 
+        string? simpleLabel = null;
+
         if (ctrl.ControlType == "expression")
         {
-            simpleEditor = ctrl.GetString("simpleeditor");
+            simpleLabel = ctrl.GetString("simple");
+            var simpleEditorTag = ctrl.GetString("simpleeditor");
+            // If <simpleeditor> is absent but <simple> is set, default simple editor is a textbox
+            simpleEditor = simpleEditorTag ?? (simpleLabel != null ? "textbox" : null);
+
+            if (simpleEditor == "dropdown")
+            {
+                var list = ctrl.GetListString("validvalues");
+                if (list != null)
+                    options = list.Select(v => new ControlOption(v, v)).ToList();
+                else
+                {
+                    var dict = ctrl.GetDictionary("validvalues");
+                    if (dict != null)
+                        options = dict.Select(kv => new ControlOption(kv.Key, kv.Value)).ToList();
+                }
+            }
         }
         else if (ctrl.ControlType == "dropdown")
         {
@@ -630,6 +741,7 @@ public partial class WasmEditorBridge
             Attribute: ctrl.Attribute,
             Value: value,
             SimpleEditor: simpleEditor,
+            SimpleLabel: simpleLabel,
             Options: options,
             Scripts: nestedScripts
         );

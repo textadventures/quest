@@ -14,12 +14,17 @@
         removeElse,
         removeElseIf,
         getScriptCommandCategories,
+        getObjectNames,
+        getIfExpressionTemplates,
+        getIfExpressionTemplateData,
     } from "$lib/editor-store";
     import type {
         ScriptBlockData,
         ScriptNodeData,
         ScriptControlData,
         ScriptCategoryInfo,
+        IfExpressionTemplateData,
+        IfExpressionTemplate,
     } from "$lib/types";
 
     interface Props {
@@ -43,6 +48,11 @@
     let categories = $state<ScriptCategoryInfo[]>([]);
     let addKeyword = $state("");
     let isRoot = $derived(initialData === null);
+    // Tracks which expression controls the user has explicitly forced into expression mode,
+    // overriding the default simple-mode detection based on value shape.
+    let expressionOverrides = $state(new Set<string>());
+    let objectNames = $state<string[]>([]);
+    let ifTemplates = $state<IfExpressionTemplate[]>([]);
 
     // Load on mount and whenever scriptVersion bumps (undo/redo)
     $effect(() => {
@@ -59,6 +69,14 @@
                 }
             }
         }
+        if (objectNames.length === 0) {
+            const names = getObjectNames();
+            if (names && names.length > 0) objectNames = names;
+        }
+        if (ifTemplates.length === 0) {
+            const templates = getIfExpressionTemplates();
+            if (templates && templates.length > 0) ifTemplates = templates;
+        }
     });
 
     function scripts(): ScriptNodeData[] {
@@ -70,6 +88,7 @@
         if (isRoot) {
             scriptData = getScriptData(elementKey, attribute);
         }
+        expressionOverrides = new Set();
     }
 
     function mutate(fn: () => string): boolean {
@@ -79,6 +98,110 @@
             return true;
         }
         return false;
+    }
+
+    // Expression / simple-mode helpers
+
+    function exprKey(scriptIndex: number, attr: string): string {
+        return `${containerPath}/${scriptIndex}/${attr}`;
+    }
+
+    function isSimpleValue(ctrl: ScriptControlData): boolean {
+        const v = ctrl.value ?? '';
+        switch (ctrl.simpleEditor) {
+            case 'boolean':
+                return v === 'true' || v === 'false';
+            case 'number':
+            case 'numberdouble':
+                return v !== '' && Number.isFinite(Number(v));
+            case 'objects':
+                // Bare identifier (object name) or empty — not a complex expression
+                return v === '' || /^[a-zA-Z_][a-zA-Z0-9_]*$/.test(v);
+            default:
+                // textbox, dropdown, file: simple when value is a quoted string literal
+                return v.length >= 2 && v.startsWith('"') && v.endsWith('"');
+        }
+    }
+
+    function inSimpleMode(ctrl: ScriptControlData, scriptIndex: number): boolean {
+        if (!ctrl.simpleEditor) return false;
+        const key = exprKey(scriptIndex, ctrl.attribute!);
+        if (expressionOverrides.has(key)) return false;
+        return isSimpleValue(ctrl);
+    }
+
+    function toSimpleDisplay(ctrl: ScriptControlData): string {
+        const v = ctrl.value ?? '';
+        switch (ctrl.simpleEditor) {
+            case 'boolean':
+            case 'number':
+            case 'numberdouble':
+            case 'objects':
+                return v;
+            default: {
+                if (v.length < 2) return '';
+                return v.slice(1, -1).replace(/<br\/>/g, '\n').replace(/\\"/g, '"');
+            }
+        }
+    }
+
+    function fromSimpleToExpression(simpleValue: string, simpleEditor: string): string {
+        switch (simpleEditor) {
+            case 'boolean':
+            case 'number':
+            case 'numberdouble':
+            case 'objects':
+                return simpleValue;
+            default: {
+                const escaped = simpleValue.replace(/"/g, '\\"').replace(/\n/g, '<br/>');
+                return `"${escaped}"`;
+            }
+        }
+    }
+
+    function setExpressionOverride(scriptIndex: number, attr: string) {
+        expressionOverrides = new Set(expressionOverrides).add(exprKey(scriptIndex, attr));
+    }
+
+    function clearExpressionOverride(scriptIndex: number, attr: string) {
+        const next = new Set(expressionOverrides);
+        next.delete(exprKey(scriptIndex, attr));
+        expressionOverrides = next;
+    }
+
+    function onSwitchToExpression(scriptIndex: number, ctrl: ScriptControlData) {
+        setExpressionOverride(scriptIndex, ctrl.attribute!);
+    }
+
+    function onSwitchToSimple(scriptIndex: number, ctrl: ScriptControlData) {
+        clearExpressionOverride(scriptIndex, ctrl.attribute!);
+        // If the current value is not a valid simple value, reset to a default simple value
+        if (!isSimpleValue(ctrl)) {
+            switch (ctrl.simpleEditor) {
+                case 'boolean':
+                    onSetParam(scriptIndex, ctrl.attribute!, 'true');
+                    break;
+                case 'number':
+                case 'numberdouble':
+                    onSetParam(scriptIndex, ctrl.attribute!, '0');
+                    break;
+                default:
+                    onSetParam(scriptIndex, ctrl.attribute!, '""');
+            }
+        }
+    }
+
+    function onSimpleValueChange(scriptIndex: number, ctrl: ScriptControlData, simpleValue: string) {
+        onSetParam(scriptIndex, ctrl.attribute!, fromSimpleToExpression(simpleValue, ctrl.simpleEditor!));
+    }
+
+    function buildTemplateExpression(tmpl: IfExpressionTemplateData, changedName: string, changedValue: string): string {
+        let result = tmpl.originalPattern;
+        for (const ctrl of tmpl.controls) {
+            const value = ctrl.name === changedName ? changedValue : (ctrl.value ?? '');
+            result = result.replace(`#${ctrl.name}#`, value);
+        }
+        return result;
     }
 
     function onAddScript() {
@@ -240,7 +363,101 @@
 {/snippet}
 
 {#snippet valueControl(ctrl: ScriptControlData, scriptIndex: number)}
-    {#if ctrl.controlType === "expression" || ctrl.controlType === "textbox" || ctrl.controlType === "richtext"}
+    {#if ctrl.controlType === "expression" && ctrl.simpleEditor !== null}
+        {@const simple = inSimpleMode(ctrl, scriptIndex)}
+        {#if ctrl.simpleEditor === "boolean"}
+            <!-- Boolean: yes / no / expression dropdown (no separate widget) -->
+            <select
+                class="select text-xs py-0 px-1 max-w-32"
+                value={simple ? ctrl.value : "expression"}
+                onchange={(e) => {
+                    const v = (e.target as HTMLSelectElement).value;
+                    if (v === "expression") {
+                        onSwitchToExpression(scriptIndex, ctrl);
+                    } else {
+                        clearExpressionOverride(scriptIndex, ctrl.attribute!);
+                        onSetParam(scriptIndex, ctrl.attribute!, v === "yes" ? "true" : "false");
+                    }
+                }}
+            >
+                <option value="true">yes</option>
+                <option value="false">no</option>
+                <option value="expression">expression</option>
+            </select>
+            {#if !simple}
+                <input
+                    type="text"
+                    class="input text-xs py-0 px-1 min-w-16 max-w-48 flex-1"
+                    value={ctrl.value ?? ""}
+                    onchange={(e) => onSetParam(scriptIndex, ctrl.attribute!, (e.target as HTMLInputElement).value)}
+                />
+            {/if}
+        {:else}
+            <!-- Textbox / dropdown / number: labelled mode toggle + widget -->
+            <select
+                class="select text-xs py-0 px-1 max-w-28"
+                value={simple ? (ctrl.simpleLabel ?? "simple") : "expression"}
+                onchange={(e) => {
+                    const v = (e.target as HTMLSelectElement).value;
+                    if (v === "expression") {
+                        onSwitchToExpression(scriptIndex, ctrl);
+                    } else {
+                        onSwitchToSimple(scriptIndex, ctrl);
+                    }
+                }}
+            >
+                <option value={ctrl.simpleLabel ?? "simple"}>{ctrl.simpleLabel ?? "simple"}</option>
+                <option value="expression">expression</option>
+            </select>
+            {#if simple}
+                {#if ctrl.simpleEditor === "objects"}
+                    <select
+                        class="select text-xs py-0 px-1 max-w-40"
+                        value={ctrl.value ?? ""}
+                        onchange={(e) => onSimpleValueChange(scriptIndex, ctrl, (e.target as HTMLSelectElement).value)}
+                    >
+                        <option value=""></option>
+                        {#each objectNames as name (name)}
+                            <option value={name}>{name}</option>
+                        {/each}
+                    </select>
+                {:else if ctrl.simpleEditor === "dropdown" && ctrl.options}
+                    <select
+                        class="select text-xs py-0 px-1 max-w-32"
+                        value={toSimpleDisplay(ctrl)}
+                        onchange={(e) => onSimpleValueChange(scriptIndex, ctrl, (e.target as HTMLSelectElement).value)}
+                    >
+                        {#each ctrl.options as opt, oi (oi)}
+                            <option value={opt.value}>{opt.label}</option>
+                        {/each}
+                    </select>
+                {:else if ctrl.simpleEditor === "number" || ctrl.simpleEditor === "numberdouble"}
+                    <input
+                        type="number"
+                        class="input text-xs py-0 px-1 min-w-12 max-w-24"
+                        value={ctrl.value ?? "0"}
+                        onchange={(e) => onSetParam(scriptIndex, ctrl.attribute!, (e.target as HTMLInputElement).value)}
+                    />
+                {:else}
+                    <!-- textbox (default for message, text, colour, etc.) -->
+                    <input
+                        type="text"
+                        class="input text-xs py-0 px-1 min-w-16 max-w-48 flex-1"
+                        value={toSimpleDisplay(ctrl)}
+                        onchange={(e) => onSimpleValueChange(scriptIndex, ctrl, (e.target as HTMLInputElement).value)}
+                    />
+                {/if}
+            {:else}
+                <!-- Expression mode: raw expression text input -->
+                <input
+                    type="text"
+                    class="input text-xs py-0 px-1 min-w-16 max-w-48 flex-1"
+                    value={ctrl.value ?? ""}
+                    onchange={(e) => onSetParam(scriptIndex, ctrl.attribute!, (e.target as HTMLInputElement).value)}
+                />
+            {/if}
+        {/if}
+    {:else if ctrl.controlType === "expression" || ctrl.controlType === "textbox" || ctrl.controlType === "richtext"}
         <input
             type="text"
             class="input text-xs py-0 px-1 min-w-16 max-w-48 flex-1"
@@ -271,16 +488,75 @@
 {/snippet}
 
 {#snippet ifBlock(script: ScriptNodeData, i: number)}
+    {@const tmplData = getIfExpressionTemplateData(script.expression ?? "")}
+    {@const exprKey = `if/${i}`}
+    {@const inTemplateMode = tmplData !== null && !expressionOverrides.has(exprKey)}
     <div class="px-2 py-1 pr-16 text-xs">
         <!-- If condition -->
         <div class="flex items-center gap-1 flex-wrap">
             <span class="text-surface-600-400 font-medium select-none">if</span>
-            <input
-                type="text"
-                class="input text-xs py-0 px-1 min-w-24 max-w-64 flex-1"
-                value={script.expression ?? ""}
-                onchange={(e) => onSetIfExpr(i, (e.target as HTMLInputElement).value)}
-            />
+            {#if ifTemplates.length > 0}
+                <!-- Template / expression mode toggle -->
+                <select
+                    class="select text-xs py-0 px-1 max-w-40"
+                    value={inTemplateMode ? tmplData!.templateName : "expression"}
+                    onchange={(e) => {
+                        const v = (e.target as HTMLSelectElement).value;
+                        if (v === "expression") {
+                            expressionOverrides = new Set(expressionOverrides).add(exprKey);
+                        } else {
+                            const next = new Set(expressionOverrides);
+                            next.delete(exprKey);
+                            expressionOverrides = next;
+                            const tpl = ifTemplates.find(t => t.name === v);
+                            if (tpl) onSetIfExpr(i, tpl.createExpression);
+                        }
+                    }}
+                >
+                    <option value="expression">expression</option>
+                    {#each ifTemplates as tpl (tpl.name)}
+                        <option value={tpl.name}>{tpl.name}</option>
+                    {/each}
+                </select>
+            {/if}
+            {#if inTemplateMode && tmplData}
+                <!-- Template controls (e.g. object picker for Got(#object#)) -->
+                {#each tmplData.controls as ctrl (ctrl.name)}
+                    {#if ctrl.simpleEditor === "objects"}
+                        <select
+                            class="select text-xs py-0 px-1 max-w-40"
+                            value={ctrl.value ?? ""}
+                            onchange={(e) => {
+                                const newVal = (e.target as HTMLSelectElement).value;
+                                onSetIfExpr(i, buildTemplateExpression(tmplData!, ctrl.name, newVal));
+                            }}
+                        >
+                            <option value=""></option>
+                            {#each objectNames as name (name)}
+                                <option value={name}>{name}</option>
+                            {/each}
+                        </select>
+                    {:else}
+                        <input
+                            type="text"
+                            class="input text-xs py-0 px-1 min-w-16 max-w-32 flex-1"
+                            placeholder={ctrl.simpleLabel ?? ctrl.name}
+                            value={ctrl.value ?? ""}
+                            onchange={(e) => {
+                                const newVal = (e.target as HTMLInputElement).value;
+                                onSetIfExpr(i, buildTemplateExpression(tmplData!, ctrl.name, newVal));
+                            }}
+                        />
+                    {/if}
+                {/each}
+            {:else}
+                <input
+                    type="text"
+                    class="input text-xs py-0 px-1 min-w-24 max-w-64 flex-1"
+                    value={script.expression ?? ""}
+                    onchange={(e) => onSetIfExpr(i, (e.target as HTMLInputElement).value)}
+                />
+            {/if}
             <span class="text-surface-600-400 select-none">then</span>
         </div>
 
@@ -297,14 +573,71 @@
 
         <!-- Else-if blocks -->
         {#each script.elseIfClauses ?? [] as elseIf, ei (elseIf.id)}
+            {@const eiTmplData = getIfExpressionTemplateData(elseIf.expression ?? "")}
+            {@const eiExprKey = `elseif/${i}/${ei}`}
+            {@const eiInTemplateMode = eiTmplData !== null && !expressionOverrides.has(eiExprKey)}
             <div class="mt-1 flex items-center gap-1 flex-wrap">
                 <span class="text-surface-600-400 font-medium select-none">else if</span>
-                <input
-                    type="text"
-                    class="input text-xs py-0 px-1 min-w-24 max-w-64 flex-1"
-                    value={elseIf.expression}
-                    onchange={(e) => onSetElseIfExpr(i, ei, (e.target as HTMLInputElement).value)}
-                />
+                {#if ifTemplates.length > 0}
+                    <select
+                        class="select text-xs py-0 px-1 max-w-40"
+                        value={eiInTemplateMode ? eiTmplData!.templateName : "expression"}
+                        onchange={(e) => {
+                            const v = (e.target as HTMLSelectElement).value;
+                            if (v === "expression") {
+                                expressionOverrides = new Set(expressionOverrides).add(eiExprKey);
+                            } else {
+                                const next = new Set(expressionOverrides);
+                                next.delete(eiExprKey);
+                                expressionOverrides = next;
+                                const tpl = ifTemplates.find(t => t.name === v);
+                                if (tpl) onSetElseIfExpr(i, ei, tpl.createExpression);
+                            }
+                        }}
+                    >
+                        <option value="expression">expression</option>
+                        {#each ifTemplates as tpl (tpl.name)}
+                            <option value={tpl.name}>{tpl.name}</option>
+                        {/each}
+                    </select>
+                {/if}
+                {#if eiInTemplateMode && eiTmplData}
+                    {#each eiTmplData.controls as ctrl (ctrl.name)}
+                        {#if ctrl.simpleEditor === "objects"}
+                            <select
+                                class="select text-xs py-0 px-1 max-w-40"
+                                value={ctrl.value ?? ""}
+                                onchange={(e) => {
+                                    const newVal = (e.target as HTMLSelectElement).value;
+                                    onSetElseIfExpr(i, ei, buildTemplateExpression(eiTmplData!, ctrl.name, newVal));
+                                }}
+                            >
+                                <option value=""></option>
+                                {#each objectNames as name (name)}
+                                    <option value={name}>{name}</option>
+                                {/each}
+                            </select>
+                        {:else}
+                            <input
+                                type="text"
+                                class="input text-xs py-0 px-1 min-w-16 max-w-32 flex-1"
+                                placeholder={ctrl.simpleLabel ?? ctrl.name}
+                                value={ctrl.value ?? ""}
+                                onchange={(e) => {
+                                    const newVal = (e.target as HTMLInputElement).value;
+                                    onSetElseIfExpr(i, ei, buildTemplateExpression(eiTmplData!, ctrl.name, newVal));
+                                }}
+                            />
+                        {/if}
+                    {/each}
+                {:else}
+                    <input
+                        type="text"
+                        class="input text-xs py-0 px-1 min-w-24 max-w-64 flex-1"
+                        value={elseIf.expression}
+                        onchange={(e) => onSetElseIfExpr(i, ei, (e.target as HTMLInputElement).value)}
+                    />
+                {/if}
                 <span class="text-surface-600-400 select-none">then</span>
                 <button
                     type="button"

@@ -33,6 +33,7 @@ export interface ScriptControlData {
   attribute: string | null
   value: string | null
   simpleEditor: string | null
+  simpleLabel: string | null
   options: ControlOption[] | null
   scripts: ScriptNodeData[] | null
 }
@@ -72,4 +73,23 @@ export interface ScriptCategoryInfo {
 
 export interface ScriptCommandCategoriesData {
   categories: ScriptCategoryInfo[]
+}
+
+export interface ExpressionTemplateControlData {
+  name: string
+  value: string | null
+  simpleEditor: string | null
+  simpleLabel: string | null
+  options: ControlOption[] | null
+}
+
+export interface IfExpressionTemplateData {
+  templateName: string
+  originalPattern: string
+  controls: ExpressionTemplateControlData[]
+}
+
+export interface IfExpressionTemplate {
+  name: string
+  createExpression: string
 }

@@ -1,7 +1,7 @@
 import { writable, get } from "svelte/store";
 import { loadWasm } from "./wasm";
 import type { WasmBridge } from "./wasm";
-import type { TreeNode, EditorDataResponse, ScriptBlockData, ScriptCommandCategoriesData } from "./types";
+import type { TreeNode, EditorDataResponse, ScriptBlockData, ScriptCommandCategoriesData, IfExpressionTemplateData, IfExpressionTemplate } from "./types";
 
 let _bridge: WasmBridge | null = null;
 
@@ -169,6 +169,28 @@ export function getScriptCommandCategories(): ScriptCommandCategoriesData | null
     if (!_bridge) return null;
     const json = _bridge.GetScriptCommandCategories();
     return json ? JSON.parse(json) : null;
+}
+
+export function getObjectNames(): string[] | null {
+    if (!_bridge) return null;
+    try {
+        return JSON.parse(_bridge.GetObjectNames());
+    } catch { return null; }
+}
+
+export function getIfExpressionTemplates(): IfExpressionTemplate[] | null {
+    if (!_bridge) return null;
+    try {
+        return JSON.parse(_bridge.GetIfExpressionTemplates());
+    } catch { return null; }
+}
+
+export function getIfExpressionTemplateData(expression: string): IfExpressionTemplateData | null {
+    if (!_bridge) return null;
+    try {
+        const json = _bridge.GetIfExpressionTemplateData(expression);
+        return json ? JSON.parse(json) : null;
+    } catch { return null; }
 }
 
 function refreshSelectedData() {

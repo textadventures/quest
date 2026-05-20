@@ -22,6 +22,9 @@ export interface WasmBridge {
   RemoveElse(elementKey: string, attribute: string, containerPath: string, scriptIndex: number): string
   RemoveElseIf(elementKey: string, attribute: string, containerPath: string, scriptIndex: number, elseIfIndex: number): string
   GetScriptCommandCategories(): string
+  GetObjectNames(): string
+  GetIfExpressionTemplates(): string
+  GetIfExpressionTemplateData(expression: string): string | null
 }
 
 let _bridge: WasmBridge | null = null;
