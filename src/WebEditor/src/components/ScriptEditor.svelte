@@ -1,5 +1,6 @@
 <script lang="ts">
     import ScriptEditor from "./ScriptEditor.svelte";
+    import AddScriptModal from "./AddScriptModal.svelte";
     import {
         scriptVersion,
         getScriptData,
@@ -46,7 +47,7 @@
 
     let scriptData = $state<ScriptBlockData | null>(null);
     let categories = $state<ScriptCategoryInfo[]>([]);
-    let addKeyword = $state("");
+    let showAddModal = $state(false);
     let isRoot = $derived(initialData === null);
     // Tracks which expression controls the user has explicitly forced into expression mode,
     // overriding the default simple-mode detection based on value shape.
@@ -64,9 +65,6 @@
             const cats = getScriptCommandCategories();
             if (cats) {
                 categories = cats.categories;
-                if (cats.categories.length > 0 && cats.categories[0].commands.length > 0) {
-                    addKeyword = cats.categories[0].commands[0].createString;
-                }
             }
         }
         if (objectNames.length === 0) {
@@ -204,9 +202,8 @@
         return result;
     }
 
-    function onAddScript() {
-        if (!addKeyword) return;
-        mutate(() => addScript(elementKey, attribute, containerPath, addKeyword));
+    function onAddScript(createString: string) {
+        mutate(() => addScript(elementKey, attribute, containerPath, createString));
     }
 
     function onDelete(index: number) {
@@ -309,27 +306,23 @@
     <!-- Add script row -->
     <div class="flex items-center gap-1 mt-1">
         {#if categories.length > 0}
-            <select
-                class="select text-xs py-0.5 px-1 flex-1 min-w-0"
-                bind:value={addKeyword}
-            >
-                {#each categories as cat, ci (ci)}
-                    <optgroup label={cat.name}>
-                        {#each cat.commands as cmd, cmi (cmi)}
-                            <option value={cmd.createString}>{cmd.add}</option>
-                        {/each}
-                    </optgroup>
-                {/each}
-            </select>
             <button
                 type="button"
-                class="btn btn-sm preset-outlined text-xs py-0.5 whitespace-nowrap"
-                onclick={onAddScript}
-            >Add script</button>
+                class="btn btn-sm preset-outlined text-xs py-0.5"
+                onclick={() => (showAddModal = true)}
+            >+ Add script</button>
         {:else if isRoot}
             <span class="text-xs text-surface-400-500 italic">Loading commands…</span>
         {/if}
     </div>
+
+    {#if showAddModal}
+        <AddScriptModal
+            {categories}
+            onAdd={onAddScript}
+            onClose={() => (showAddModal = false)}
+        />
+    {/if}
 </div>
 
 {#snippet normalBlock(script: ScriptNodeData, i: number)}

@@ -472,12 +472,12 @@ public partial class WasmEditorBridge
             .GroupBy(kv => kv.Value.Category)
             .Select(g => new ScriptCategoryInfo(
                 g.Key,
-                g.Select(kv => new ScriptCommandInfo(
+                g.OrderBy(kv => kv.Value.Order).Select(kv => new ScriptCommandInfo(
                     kv.Key,
                     kv.Value.DisplayString ?? kv.Key,
                     kv.Value.AdderDisplayString ?? kv.Key,
                     kv.Value.CreateString!
-                )).OrderBy(c => c.Add).ToList()
+                )).ToList()
             ))
             .ToList();
         var data = new ScriptCommandCategoriesData(grouped);
