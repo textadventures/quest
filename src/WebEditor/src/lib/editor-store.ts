@@ -13,6 +13,7 @@ export const selectedData = writable<EditorDataResponse | null>(null);
 export const canUndo = writable(false);
 export const canRedo = writable(false);
 export const scriptVersion = writable(0);
+export const scriptClipboardHasContent = writable(false);
 
 function refreshUndoRedo() {
     canUndo.set(_bridge?.CanUndo() ?? false);
@@ -28,6 +29,7 @@ export async function openGame(file: File): Promise<boolean> {
         isLoaded.set(true);
         gameFilename.set(file.name);
         refreshUndoRedo();
+        scriptClipboardHasContent.set(false);
     }
     return ok;
 }
@@ -74,6 +76,49 @@ export function redo() {
 }
 
 // ── Script editor functions ─────────────────────────────────────────────────
+
+export function getScriptCode(elementKey: string, attribute: string): string {
+    return _bridge?.GetScriptCode(elementKey, attribute) ?? "";
+}
+
+export function setScriptCode(elementKey: string, attribute: string, code: string): string {
+    if (!_bridge) return "error";
+    const result = _bridge.SetScriptCode(elementKey, attribute, code);
+    if (result === "ok") bumpScriptVersion();
+    refreshUndoRedo();
+    return result;
+}
+
+export function copyScripts(elementKey: string, attribute: string, containerPath: string, indices: number[]): string {
+    if (!_bridge) return "error";
+    const result = _bridge.CopyScripts(elementKey, attribute, containerPath, JSON.stringify(indices));
+    if (result === "ok") scriptClipboardHasContent.set(true);
+    return result;
+}
+
+export function cutScripts(elementKey: string, attribute: string, containerPath: string, indices: number[]): string {
+    if (!_bridge) return "error";
+    const result = _bridge.CutScripts(elementKey, attribute, containerPath, JSON.stringify(indices));
+    if (result === "ok") { bumpScriptVersion(); scriptClipboardHasContent.set(true); }
+    refreshUndoRedo();
+    return result;
+}
+
+export function deleteScripts(elementKey: string, attribute: string, containerPath: string, indices: number[]): string {
+    if (!_bridge) return "error";
+    const result = _bridge.DeleteScripts(elementKey, attribute, containerPath, JSON.stringify(indices));
+    if (result === "ok") bumpScriptVersion();
+    refreshUndoRedo();
+    return result;
+}
+
+export function pasteScripts(elementKey: string, attribute: string, containerPath: string): string {
+    if (!_bridge) return "error";
+    const result = _bridge.PasteScripts(elementKey, attribute, containerPath);
+    if (result === "ok") bumpScriptVersion();
+    refreshUndoRedo();
+    return result;
+}
 
 export function getScriptData(elementKey: string, attribute: string): ScriptBlockData | null {
     if (!_bridge) return null;

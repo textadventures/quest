@@ -10,6 +10,13 @@ export interface WasmBridge {
   Undo(): void
   Redo(): void
   // Script editor API
+  GetScriptCode(elementKey: string, attribute: string): string
+  SetScriptCode(elementKey: string, attribute: string, code: string): string
+  CopyScripts(elementKey: string, attribute: string, containerPath: string, indicesJson: string): string
+  CutScripts(elementKey: string, attribute: string, containerPath: string, indicesJson: string): string
+  DeleteScripts(elementKey: string, attribute: string, containerPath: string, indicesJson: string): string
+  PasteScripts(elementKey: string, attribute: string, containerPath: string): string
+  CanPasteScript(): boolean
   GetScriptData(elementKey: string, attribute: string): string | null
   SetScriptParameter(elementKey: string, attribute: string, containerPath: string, scriptIndex: number, paramName: string, value: string): string
   SetIfExpression(elementKey: string, attribute: string, containerPath: string, scriptIndex: number, expression: string): string

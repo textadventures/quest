@@ -65,6 +65,7 @@ internal record IfExpressionTemplate(string Name, string CreateExpression);
 [JsonSerializable(typeof(List<string>))]
 [JsonSerializable(typeof(List<IfExpressionTemplate>))]
 [JsonSerializable(typeof(IfExpressionTemplateData))]
+[JsonSerializable(typeof(int[]))]
 internal partial class WasmEditorJsonContext : JsonSerializerContext { }
 
 [SuppressMessage("ReSharper", "MemberCanBePrivate.Global")]
@@ -232,6 +233,106 @@ public partial class WasmEditorBridge
     }
 
     // ── Script editor API ──────────────────────────────────────────────────────
+
+    [JSExport]
+    public static string GetScriptCode(string elementKey, string attribute)
+    {
+        var scripts = GetScripts(elementKey, attribute);
+        if (scripts is not EditableScripts editableScripts) return string.Empty;
+        return editableScripts.Code;
+    }
+
+    [JSExport]
+    public static string SetScriptCode(string elementKey, string attribute, string code)
+    {
+        if (_controller == null) return "error";
+        var scripts = GetScripts(elementKey, attribute);
+        if (scripts is not EditableScripts editableScripts) return "error";
+        try
+        {
+            editableScripts.Code = code;
+            return "ok";
+        }
+        catch (Exception ex)
+        {
+            return ex.Message;
+        }
+    }
+
+    [JSExport]
+    public static string CopyScripts(string elementKey, string attribute, string containerPath, string indicesJson)
+    {
+        if (_controller == null) return "error";
+        var scripts = GetScripts(elementKey, attribute);
+        if (scripts == null) return "error";
+        var container = ResolveContainer(scripts, containerPath);
+        if (container == null) return "error";
+        var indices = JsonSerializer.Deserialize(indicesJson, WasmEditorJsonContext.Default.Int32Array);
+        if (indices == null || indices.Length == 0) return "error";
+        container.Copy(indices);
+        return "ok";
+    }
+
+    [JSExport]
+    public static string CutScripts(string elementKey, string attribute, string containerPath, string indicesJson)
+    {
+        if (_controller == null) return "error";
+        var scripts = GetScripts(elementKey, attribute);
+        if (scripts == null) return "error";
+        var container = ResolveContainer(scripts, containerPath);
+        if (container == null) return "error";
+        var indices = JsonSerializer.Deserialize(indicesJson, WasmEditorJsonContext.Default.Int32Array);
+        if (indices == null || indices.Length == 0) return "error";
+        try { container.Cut(indices); return "ok"; }
+        catch (Exception ex) { return ex.Message; }
+    }
+
+    [JSExport]
+    public static string DeleteScripts(string elementKey, string attribute, string containerPath, string indicesJson)
+    {
+        if (_controller == null) return "error";
+        var scripts = GetScripts(elementKey, attribute);
+        if (scripts == null) return "error";
+        var container = ResolveContainer(scripts, containerPath);
+        if (container == null) return "error";
+        var indices = JsonSerializer.Deserialize(indicesJson, WasmEditorJsonContext.Default.Int32Array);
+        if (indices == null || indices.Length == 0) return "ok";
+        container.Remove(indices);
+        return "ok";
+    }
+
+    [JSExport]
+    public static string PasteScripts(string elementKey, string attribute, string containerPath)
+    {
+        if (_controller == null) return "error";
+        if (!_controller.CanPasteScript()) return "error";
+        var scripts = GetScripts(elementKey, attribute);
+
+        // No scripts container yet (attribute never set) — create an empty one then paste
+        if (scripts == null && string.IsNullOrEmpty(containerPath))
+        {
+            _controller.StartTransaction("Paste script");
+            try
+            {
+                _controller.CreateNewEditableScripts(elementKey, attribute, null!, false);
+                scripts = GetScripts(elementKey, attribute);
+                if (scripts == null) return "error";
+                scripts.Paste(0, false);
+                return "ok";
+            }
+            catch (Exception ex) { return ex.Message; }
+            finally { _controller.EndTransaction(); }
+        }
+
+        if (scripts == null) return "error";
+        var container = ResolveContainer(scripts, containerPath);
+        if (container == null) return "error";
+        container.Paste(container.Count, true);
+        return "ok";
+    }
+
+    [JSExport]
+    public static bool CanPasteScript() => _controller?.CanPasteScript() ?? false;
 
     [JSExport]
     public static string? GetScriptData(string elementKey, string attribute)
