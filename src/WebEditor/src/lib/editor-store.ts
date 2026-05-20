@@ -51,6 +51,14 @@ export function selectNode(key: string) {
 export function setAttribute(elementKey: string, attribute: string, controlType: string, value: string): string {
     if (!_bridge) return "error";
     const result = _bridge.SetAttribute(elementKey, attribute, controlType, value);
+    if (result.startsWith("renamed:")) {
+        const newKey = result.slice("renamed:".length);
+        selectedKey.set(newKey);
+        refreshTree();
+        refreshSelectedData();
+        refreshUndoRedo();
+        return "ok";
+    }
     refreshSelectedData();
     refreshUndoRedo();
     return result;

@@ -74,6 +74,7 @@ public partial class WasmEditorBridge
     private static EditorController? _controller;
     private static readonly List<TreeNodeData> TreeNodes = [];
     private static bool _isRebuilding;
+    private static string? _pendingRenameNewKey;
 
     [JSExport]
     public static async Task<bool> Initialise(byte[] gameFileBytes, string filename)
@@ -89,6 +90,7 @@ public partial class WasmEditorBridge
         _controller.RemovedNode += (_, e) => TreeNodes.RemoveAll(n => n.Key == e.Key);
         _controller.RenamedNode += (_, e) =>
         {
+            _pendingRenameNewKey = e.NewName;
             for (int i = 0; i < TreeNodes.Count; i++)
             {
                 if (TreeNodes[i].Key == e.OldName)
@@ -166,11 +168,13 @@ public partial class WasmEditorBridge
             _ => value
         };
 
+        _pendingRenameNewKey = null;
         _controller.StartTransaction($"Set {attribute}");
         try
         {
             var result = data.SetAttribute(attribute, typedValue);
-            return result.Valid ? "ok" : result.Message.ToString();
+            if (!result.Valid) return result.Message.ToString();
+            return _pendingRenameNewKey != null ? $"renamed:{_pendingRenameNewKey}" : "ok";
         }
         finally
         {
