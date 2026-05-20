@@ -154,14 +154,75 @@ Steps:
 4. Two-way binding: editing a control → `SetAttribute` → refresh affected state
 
 ### Phase 4 — Script editor
-- Integrate Monaco or CodeMirror 6 for script attribute editing
-- Wire up the script editor data API from EditorCore
+
+Implement a v5-style visual script editor (see `WebEditor/WebEditor/Views/Edit/ScriptEditor.cshtml` on the `v5` branch for the reference implementation).
+
+Design:
+- Script commands render as inline rows: labels + textboxes/dropdowns/expression inputs interleaved in a sentence-like layout (e.g. `Print [textbox]`, `Set [dropdown] of [dropdown] to [expression]`)
+- Nested scripts (if/then/else, for, foreach) recurse into child script blocks with their own Add/Delete buttons
+- `if` blocks are special-cased: condition + Then block, with Add Else If / Add Else buttons
+- Expression parameters offer a simple/expression toggle: friendly widget (dropdown, number, object picker) when the value matches a simple pattern; raw text input for arbitrary expressions
+- An "Add script" button opens a categorised command picker
+
+The underlying `IEditableScript` tree (via `GetParameter`/`SetParameter` on the WASM bridge) is view-agnostic; the script editor is purely a rendering layer over it.
+
+Steps:
+1. Extend `WasmEditorBridge` with script-specific API: `GetScriptEditorData`, `SetScriptParameter`, `AddScript`, `DeleteScript`, `MoveScript`
+2. Expose editor definitions (`IEditorDefinition`, control types) from EditorCore so the Svelte layer knows how to render each script command's parameters
+3. Implement the `ScriptEditor` Svelte component, recursing for nested scripts
+4. Wire `ScriptEditor` into `PropertyEditor` when a script-type attribute is selected
+
+A plain text code view (Monaco or CodeMirror) is also worth adding alongside the visual editor — each script already has a `Save()` / `Code` representation, so the round-trip exists.
 
 ### Phase 5 — Full feature parity
 - New game (from templates)
 - Publish/export
 - OPFS persistence
 - Test suite for the WASM bridge
+
+---
+
+## Script editor design
+
+### Editor modes (planned)
+
+Three rendering modes over the same `IEditableScript` model, toggleable per-script:
+
+| Mode | Description |
+|---|---|
+| **Visual (v5-style)** | Inline form rows with typed controls per parameter — the Phase 4 target |
+| **Blockly** | Block-based drag-and-drop — future, see below |
+| **Code view** | Raw Quest script text via Monaco/CodeMirror — round-trips through `Save()` |
+
+All three modes read/write the same underlying script tree. Switching mode is a pure UI concern.
+
+### Expression parameters
+
+Each script command's parameters are defined in `CoreEditorScripts.aslx` with a control type (`expression`, `textbox`, `dropdown`, etc.) and an optional `simpleeditor` hint (`boolean`, `number`, `objects`, `dropdown`, `file`).
+
+For `expression`-type parameters the editor shows:
+- A **simple widget** (dropdown, object picker, number input) when the value matches a known simple form
+- A **raw text input** fallback for arbitrary Quest expressions
+
+This simple/expression toggle is the correct design boundary — Quest's expression language is a full programming language (NCalc/Flee evaluator, 80+ built-in functions, arbitrary nesting) and is not fully representable as structured UI.
+
+The `usetemplates` mechanism (e.g. `usetemplates="if"`) provides 36 predefined expression patterns — common if-conditions, set targets, foreach lists — each with its own structured controls. These cover the majority of expressions authors write.
+
+### Blockly (future)
+
+Blockly was evaluated as a future alternative to the v5-style visual editor. Key findings:
+
+**What maps well**: script command *structure* (sequence, if/else/elseif, for, foreach) maps naturally to Blockly statement blocks. The existing 36 expression templates map to Blockly value blocks with typed inputs.
+
+**The expression challenge**: Quest expressions are typed, dynamically-evaluated, and can be arbitrarily nested. Full blockification would require ~50+ value blocks for the common built-in functions/operators (Tier 1–2) plus a permanent raw-text fallback block for anything outside that set. Completely eliminating the text fallback is impractical given the 80+ built-in functions and free-form expression syntax.
+
+**Recommended future approach**:
+- Blockify script *structure* (commands, control flow) — clean 1:1 mapping
+- Keep text input fields *inside* blocks for expression parameters, using the template system's 36 patterns as structured block inputs where applicable
+- Raw-text fallback block for expressions outside the template set
+- Auto-generate block definitions from `CoreEditorScripts.aslx` XML rather than hand-authoring 60+ blocks
+
+Blockly is ~800KB and requires a TypeScript bridge layer to synchronise the block workspace with the WASM `IEditableScript` tree. Worth revisiting after the v5-style editor is stable.
 
 ---
 
