@@ -94,7 +94,7 @@ public partial class WasmEditorBridge
             for (int i = 0; i < TreeNodes.Count; i++)
             {
                 if (TreeNodes[i].Key == e.OldName)
-                    TreeNodes[i] = TreeNodes[i] with { Key = e.NewName, NodeType = GetNodeType(e.NewName, TreeNodes[i].NodeIcon) };
+                    TreeNodes[i] = TreeNodes[i] with { Key = e.NewName, Text = e.NewName, NodeType = GetNodeType(e.NewName, TreeNodes[i].NodeIcon) };
                 else if (TreeNodes[i].Parent == e.OldName)
                     TreeNodes[i] = TreeNodes[i] with { Parent = e.NewName };
             }
