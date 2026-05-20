@@ -169,7 +169,7 @@
                         <div class="fixed z-[999] mt-0.5 w-44 bg-surface-100-900 border border-surface-200-800 rounded shadow-lg py-1">
                             {#each opts as opt (opt.label)}
                                 <button
-                                    class="w-full text-left px-3 py-1 text-xs hover:bg-surface-200-800"
+                                    class="w-full text-left px-3 py-1 text-xs text-surface-900-50 hover:bg-surface-200-800"
                                     onclick={() => dropdownAction(opt.action)}
                                 >{opt.label}</button>
                             {/each}
