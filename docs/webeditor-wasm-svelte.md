@@ -243,6 +243,15 @@ Visual script editor, code view, and copy/paste — full feature parity with the
 - Asset storage for images via OPFS + Service Worker
 - Test suite for the WASM bridge
 
+### Phase 6 — Raw ASLX editor
+
+The desktop editor (to be replaced by this WebEditor wrapped in Electron) includes a full raw-file code view. Required for parity.
+
+- A CodeMirror 6 XML editor surfaced as a top-level toggle (whole-file view, not per-script)
+- XML syntax highlighting is built into CM6 — no custom grammar needed
+- Round-trips through save/reload; needs a clear "you are editing raw XML" warning since changes bypass all validation
+- Natural fit for CodeMirror 6 given bundle size and the availability of the XML language package; Monaco is an alternative if a more VS Code–like experience is wanted at the cost of a much larger bundle
+
 ---
 
 ## Script editor design
