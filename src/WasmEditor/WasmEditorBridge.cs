@@ -247,7 +247,17 @@ public partial class WasmEditorBridge
     {
         if (_controller == null) return "error";
         var scripts = GetScripts(elementKey, attribute);
-        if (scripts is not EditableScripts editableScripts) return "error";
+
+        if (scripts is not EditableScripts editableScripts)
+        {
+            if (string.IsNullOrWhiteSpace(code)) return "ok";
+            // Attribute not yet set — create an empty container then fall through to set Code
+            _controller.CreateNewEditableScripts(elementKey, attribute, null!, false);
+            scripts = GetScripts(elementKey, attribute);
+            if (scripts is not EditableScripts newScripts) return "error";
+            editableScripts = newScripts;
+        }
+
         try
         {
             editableScripts.Code = code;
