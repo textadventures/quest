@@ -73,6 +73,7 @@ public partial class WasmEditorBridge
 {
     private static EditorController? _controller;
     private static readonly List<TreeNodeData> TreeNodes = [];
+    private static bool _isRebuilding;
 
     [JSExport]
     public static async Task<bool> Initialise(byte[] gameFileBytes, string filename)
@@ -81,9 +82,9 @@ public partial class WasmEditorBridge
         TreeNodes.Clear();
 
         _controller = new EditorController();
-        _controller.ClearTree += (_, _) => { };
+        _controller.ClearTree += (_, _) => { TreeNodes.Clear(); _isRebuilding = true; };
         _controller.BeginTreeUpdate += (_, _) => { };
-        _controller.EndTreeUpdate += (_, _) => { };
+        _controller.EndTreeUpdate += (_, _) => { _isRebuilding = false; };
         _controller.AddedNode += OnAddedNode;
         _controller.RemovedNode += (_, e) => TreeNodes.RemoveAll(n => n.Key == e.Key);
         _controller.RenamedNode += (_, e) =>
@@ -982,15 +983,22 @@ public partial class WasmEditorBridge
 
     private static void OnAddedNode(object? sender, EditorController.AddedNodeEventArgs e)
     {
-        // AddedNode can fire multiple times for the same key (e.g. k_commands fires on every
-        // AddElementToTree("game") call, and field-update paths can re-fire for existing nodes).
-        // Treat this as an upsert: update text/parent if present, add if absent.
-        var idx = TreeNodes.FindIndex(n => n.Key == e.Key);
         var node = new TreeNodeData(e.Key, e.Text, e.Parent, e.NodeIcon, GetNodeType(e.Key, e.NodeIcon));
-        if (idx >= 0)
-            TreeNodes[idx] = node;
-        else
+        if (_isRebuilding)
+        {
+            // ClearTree already emptied the list; all keys are unique in a fresh rebuild.
             TreeNodes.Add(node);
+        }
+        else
+        {
+            // Outside a full rebuild, AddedNode can fire for an existing key
+            // (e.g. field-update paths re-fire for nodes that move between parents).
+            var idx = TreeNodes.FindIndex(n => n.Key == e.Key);
+            if (idx >= 0)
+                TreeNodes[idx] = node;
+            else
+                TreeNodes.Add(node);
+        }
     }
 
     private static ControlInfo ToControlInfo(IEditorControl ctrl)
