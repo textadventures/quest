@@ -74,6 +74,14 @@ export function setAttribute(elementKey: string, attribute: string, controlType:
     return result;
 }
 
+export function setMultiType(elementKey: string, attribute: string, newType: string): string {
+    if (!_bridge) return "error";
+    const result = _bridge.SetMultiType(elementKey, attribute, newType);
+    refreshSelectedData();
+    refreshUndoRedo();
+    return result;
+}
+
 export function setObjectReference(elementKey: string, attribute: string, objectName: string): string {
     if (!_bridge) return "error";
     const result = _bridge.SetObjectReference(elementKey, attribute, objectName);

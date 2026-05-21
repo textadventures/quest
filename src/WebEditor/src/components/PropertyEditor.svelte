@@ -1,5 +1,5 @@
 <script lang="ts">
-    import { selectedKey, selectedData, setAttribute, setDropdownType, setObjectReference } from "$lib/editor-store";
+    import { selectedKey, selectedData, setAttribute, setDropdownType, setMultiType, setObjectReference } from "$lib/editor-store";
     import type { ControlInfo } from "$lib/types";
     import ScriptEditor from "./ScriptEditor.svelte";
     import Combobox from "./Combobox.svelte";
@@ -148,6 +148,36 @@
             onchange={(v) => $selectedKey && setObjectReference($selectedKey, ctrl.attribute!, v)}
             class="input text-xs py-0.5 px-1.5 w-auto min-w-24"
         />
+    {:else if ctrl.controlType === "multi" && ctrl.options}
+        {@const selectedType = attrValue(ctrl.attribute!) ?? "null"}
+        {@const subEditorType = ctrl.subEditors?.find(e => e.value === selectedType)?.label ?? selectedType}
+        <div class="flex flex-col gap-1 w-full">
+            <select
+                class="select text-xs py-0.5 px-1.5 w-auto self-start"
+                value={selectedType}
+                onchange={(e) => $selectedKey && setMultiType($selectedKey, ctrl.subAttribute!, (e.target as HTMLSelectElement).value)}
+            >
+                {#each ctrl.options as opt (opt.value)}
+                    <option value={opt.value}>{opt.label}</option>
+                {/each}
+            </select>
+            {#if subEditorType === "richtext" && ctrl.subAttribute !== null}
+                <textarea
+                    class="input text-xs py-0.5 px-1.5 w-full min-h-24 resize-y"
+                    value={attrValue(ctrl.subAttribute) ?? ""}
+                    onchange={(e) => onTextChange(ctrl.subAttribute!, "richtext", (e.target as HTMLTextAreaElement).value)}
+                ></textarea>
+            {:else if subEditorType === "textbox" && ctrl.subAttribute !== null}
+                <input
+                    type="text"
+                    class="input text-xs py-0.5 px-1.5 w-full"
+                    value={attrValue(ctrl.subAttribute) ?? ""}
+                    onchange={(e) => onTextChange(ctrl.subAttribute!, "textbox", (e.target as HTMLInputElement).value)}
+                />
+            {:else if subEditorType === "script" && ctrl.subAttribute !== null && $selectedKey !== null}
+                <ScriptEditor elementKey={$selectedKey} attribute={ctrl.subAttribute} />
+            {/if}
+        </div>
     {:else if ctrl.controlType === "script" && ctrl.attribute !== null && $selectedKey !== null}
         <div class="flex-1 min-w-0 overflow-hidden">
             <ScriptEditor elementKey={$selectedKey} attribute={ctrl.attribute} />
@@ -185,6 +215,40 @@
                     {ctrl.caption ?? ctrl.attribute}
                 </span>
             </label>
+        {:else if ctrl.controlType === "multi" && ctrl.options}
+            {@const label = ctrl.caption ?? ctrl.attribute}
+            {@const selectedType = attrValue(ctrl.attribute!) ?? "null"}
+            {@const subEditorType = ctrl.subEditors?.find(e => e.value === selectedType)?.label ?? selectedType}
+            <div class="flex flex-col gap-1 px-3 py-1.5">
+                <div class="flex items-center gap-2">
+                    <span class="text-xs text-surface-600-400 whitespace-nowrap">{label}:</span>
+                    <select
+                        class="select text-xs py-0.5 px-1.5 w-auto"
+                        value={selectedType}
+                        onchange={(e) => $selectedKey && setMultiType($selectedKey, ctrl.subAttribute!, (e.target as HTMLSelectElement).value)}
+                    >
+                        {#each ctrl.options as opt (opt.value)}
+                            <option value={opt.value}>{opt.label}</option>
+                        {/each}
+                    </select>
+                </div>
+                {#if subEditorType === "richtext" && ctrl.subAttribute !== null}
+                    <textarea
+                        class="input text-xs py-0.5 px-1.5 w-full min-h-24 resize-y"
+                        value={attrValue(ctrl.subAttribute) ?? ""}
+                        onchange={(e) => onTextChange(ctrl.subAttribute!, "richtext", (e.target as HTMLTextAreaElement).value)}
+                    ></textarea>
+                {:else if subEditorType === "textbox" && ctrl.subAttribute !== null}
+                    <input
+                        type="text"
+                        class="input text-xs py-0.5 px-1.5 w-full"
+                        value={attrValue(ctrl.subAttribute) ?? ""}
+                        onchange={(e) => onTextChange(ctrl.subAttribute!, "textbox", (e.target as HTMLInputElement).value)}
+                    />
+                {:else if subEditorType === "script" && ctrl.subAttribute !== null && $selectedKey !== null}
+                    <ScriptEditor elementKey={$selectedKey} attribute={ctrl.subAttribute} />
+                {/if}
+            </div>
         {:else}
             {@const label = ctrl.caption ?? ctrl.attribute}
             {@const isLong = label.length > 20}

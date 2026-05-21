@@ -16,6 +16,8 @@ export interface ControlInfo {
   controlType: string
   caption: string | null
   options: ControlOption[] | null
+  subEditors: ControlOption[] | null
+  subAttribute: string | null
 }
 
 export interface TabInfo {
