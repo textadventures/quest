@@ -63,7 +63,7 @@
 </script>
 
 <div class="flex flex-col flex-1 bg-surface-50-950 overflow-hidden">
-    <div class="px-3 py-2 text-xs font-semibold uppercase text-surface-500-400 border-b border-surface-200-800 bg-surface-100-900">
+    <div class="px-3 py-2 text-xs font-semibold uppercase text-surface-500-400 border-b border-surface-200-800">
         Properties
     </div>
 
@@ -73,7 +73,7 @@
         <p class="px-3 py-4 text-sm text-surface-400-500">No properties available.</p>
     {:else}
         {#if $selectedData.tabs.length > 0}
-            <div class="flex border-b border-surface-200-800 bg-surface-100-900 overflow-x-auto flex-shrink-0">
+            <div class="flex border-b border-surface-200-800 overflow-x-auto flex-shrink-0">
                 {#each $selectedData.tabs as tab, ti (ti)}
                     <button
                         type="button"

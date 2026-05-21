@@ -1,4 +1,8 @@
 @import 'tailwindcss';
 @import '@skeletonlabs/skeleton';
 @import '@skeletonlabs/skeleton-svelte';
-@import '@skeletonlabs/skeleton/themes/cerberus';
+@import '@skeletonlabs/skeleton/themes/wintry';
+
+[data-scope='app-bar'] {
+    background: light-dark(white, var(--color-surface-800));
+}

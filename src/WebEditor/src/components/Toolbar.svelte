@@ -74,12 +74,12 @@
                     <div class="add-dropdown relative">
                         <button
                             type="button"
-                            class="btn btn-sm preset-outlined"
+                            class="btn btn-sm preset-outlined-primary-500"
                             onclick={toggleAdd}
                             title="Add element"
                         >+ Add ▾</button>
                         {#if addOpen}
-                            <div class="absolute right-0 top-full z-[999] mt-1 w-56 bg-surface-100-900 border border-surface-200-800 rounded shadow-lg py-1">
+                            <div class="absolute right-0 top-full z-[999] mt-1 w-56 bg-surface-50-950 border border-surface-200-800 rounded shadow-lg py-1">
                                 {#each addOptions as opt (opt.label)}
                                     <button
                                         class="w-full text-left px-3 py-1.5 text-xs hover:bg-surface-200-800"
@@ -98,8 +98,8 @@
                             title={"Delete " + (selectedNode?.text ?? "")}
                         >Delete</button>
                     {/if}
-                    <button type="button" class="btn btn-sm preset-outlined" onclick={undo} disabled={!$canUndo} title="Undo">↩ Undo</button>
-                    <button type="button" class="btn btn-sm preset-outlined" onclick={redo} disabled={!$canRedo} title="Redo">↪ Redo</button>
+                    <button type="button" class="btn btn-sm preset-outlined-primary-500" onclick={undo} disabled={!$canUndo} title="Undo">↩ Undo</button>
+                    <button type="button" class="btn btn-sm preset-outlined-primary-500" onclick={redo} disabled={!$canRedo} title="Redo">↪ Redo</button>
                     <button type="button" class="btn btn-sm preset-filled-primary-500" onclick={handleSave} title="Save">💾 Save</button>
                 </div>
             </AppBar.Trail>

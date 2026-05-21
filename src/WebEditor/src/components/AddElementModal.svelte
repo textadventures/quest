@@ -18,7 +18,6 @@
     };
 
     let dialogEl: HTMLDivElement;
-    $effect(() => { dialogEl?.focus(); });
 
     let name = $state("");
     let error = $state("");

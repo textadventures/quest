@@ -14,14 +14,6 @@
         children?: HierNode[]
     }
 
-    // Header keys that support a simple one-click "add" action
-    const HEADER_ADD: Record<string, () => void> = {
-        "_objects": () => openAddModal("room", null),
-        "_functions": () => openAddModal("function", null),
-        "_timers": () => openAddModal("timer", null),
-        "_gameVerbs": () => createVerb(null),
-        "_gameCommands": () => createCommand(null),
-    };
 
     // Build HierNode tree from flat list
     function buildHierTree(nodes: TreeNode[]): HierNode[] {
@@ -105,26 +97,42 @@
         deleteElement(id);
     }
 
-    // Returns child-add menu options for a given element node
-    function childAddOptions(id: string, nt: string): Array<{ label: string; action: () => void }> {
-        if (nt === "room") return [
-            { label: "Add Object here", action: () => openAddModal("object", id) },
-            { label: "Add Room here", action: () => openAddModal("room", id) },
-            { label: "Add Exit", action: () => createExit(id) },
-            { label: "Add Command", action: () => createCommand(id) },
-            { label: "Add Verb", action: () => createVerb(id) },
-            { label: "Add Turn Script", action: () => createTurnScript(id) },
-        ];
-        if (nt === "object") return [
-            { label: "Add Command", action: () => createCommand(id) },
-            { label: "Add Verb", action: () => createVerb(id) },
-            { label: "Add Turn Script", action: () => createTurnScript(id) },
-        ];
-        return [];
-    }
-
     function isDeletable(nt: string): boolean {
         return nt !== "header" && nt !== "game" && nt !== "other";
+    }
+
+    function nodeMenuOptions(node: HierNode): Array<{ label: string; action: () => void }> {
+        const opts: Array<{ label: string; action: () => void }> = [];
+        const { id, text, nodeType: nt } = node;
+
+        if (nt === "header") {
+            if (id === "_objects") opts.push({ label: "Add Room", action: () => openAddModal("room", null) });
+            else if (id === "_functions") opts.push({ label: "Add Function", action: () => openAddModal("function", null) });
+            else if (id === "_timers") opts.push({ label: "Add Timer", action: () => openAddModal("timer", null) });
+            else if (id === "_gameVerbs") opts.push({ label: "Add Verb", action: () => createVerb(null) });
+            else if (id === "_gameCommands") opts.push({ label: "Add Command", action: () => createCommand(null) });
+        } else if (nt === "room") {
+            opts.push(
+                { label: "Add Object here", action: () => openAddModal("object", id) },
+                { label: "Add Room here", action: () => openAddModal("room", id) },
+                { label: "Add Exit", action: () => createExit(id) },
+                { label: "Add Command", action: () => createCommand(id) },
+                { label: "Add Verb", action: () => createVerb(id) },
+                { label: "Add Turn Script", action: () => createTurnScript(id) },
+            );
+        } else if (nt === "object") {
+            opts.push(
+                { label: "Add Command", action: () => createCommand(id) },
+                { label: "Add Verb", action: () => createVerb(id) },
+                { label: "Add Turn Script", action: () => createTurnScript(id) },
+            );
+        }
+
+        if (isDeletable(nt)) {
+            opts.push({ label: `Delete "${text}"`, action: () => handleDelete(id) });
+        }
+
+        return opts;
     }
 </script>
 
@@ -136,7 +144,7 @@
         if (!t.closest(".node-actions") && !t.closest(".tree-dropdown")) closeDropdown();
     }}
 >
-    <div class="px-3 py-2 text-xs font-semibold uppercase text-surface-500-400 border-b border-surface-200-800 bg-surface-100-900">
+    <div class="px-3 py-2 text-xs font-semibold uppercase text-surface-500-400 border-b border-surface-200-800">
         Game Objects
     </div>
     <div class="flex-1 overflow-y-auto p-1">
@@ -155,7 +163,7 @@
     </div>
     {#if dropdownKey && dropdownPos}
         <div
-            class="tree-dropdown fixed z-[999] w-44 bg-surface-100-900 border border-surface-200-800 rounded shadow-lg py-1"
+            class="tree-dropdown fixed z-[999] w-44 bg-surface-50-950 border border-surface-200-800 rounded shadow-lg py-1"
             style="left: {dropdownPos.x}px; top: {dropdownPos.y}px"
         >
             {#each dropdownOpts as opt (opt.label)}
@@ -169,31 +177,14 @@
 </div>
 
 {#snippet nodeActions(node: HierNode)}
-    {@const headerAddFn = node.nodeType === "header" ? (HEADER_ADD[node.id] ?? null) : null}
-    {@const opts = node.nodeType !== "header" ? childAddOptions(node.id, node.nodeType) : []}
-    {@const deletable = isDeletable(node.nodeType)}
-    {#if headerAddFn || opts.length > 0 || deletable}
-        <span class="node-actions flex items-center gap-0.5 ml-auto pr-1">
-            {#if headerAddFn}
-                <button
-                    class="size-5 flex items-center justify-center rounded text-surface-400 hover:text-primary-500 hover:bg-surface-200-800 text-sm leading-none"
-                    onclick={(e) => { e.stopPropagation(); headerAddFn(); }}
-                    title="Add"
-                >+</button>
-            {:else if opts.length > 0}
-                <button
-                    class="size-5 flex items-center justify-center rounded text-surface-400 hover:text-primary-500 hover:bg-surface-200-800 text-sm leading-none"
-                    onclick={(e) => toggleDropdown(node.id + ":add", opts, e)}
-                    title="Add child"
-                >+</button>
-            {/if}
-            {#if deletable}
-                <button
-                    class="size-5 flex items-center justify-center rounded text-surface-400 hover:text-error-500 hover:bg-surface-200-800 text-xs leading-none"
-                    onclick={(e) => { e.stopPropagation(); handleDelete(node.id); }}
-                    title="Delete"
-                >×</button>
-            {/if}
+    {@const opts = nodeMenuOptions(node)}
+    {#if opts.length > 0}
+        <span class="node-actions flex items-center ml-auto pr-1">
+            <button
+                class="size-5 flex items-center justify-center rounded text-surface-400 hover:text-primary-500 hover:bg-surface-200-800 text-sm leading-none"
+                onclick={(e) => toggleDropdown(node.id + ":menu", opts, e)}
+                title="Options"
+            >⋯</button>
         </span>
     {/if}
 {/snippet}

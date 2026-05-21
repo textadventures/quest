@@ -366,14 +366,14 @@
                     <div class="absolute right-1 top-1 flex gap-0.5 opacity-0 group-hover:opacity-100 transition-opacity z-10">
                         <button
                             type="button"
-                            class="btn btn-sm preset-outlined px-1 py-0 text-xs leading-none"
+                            class="btn btn-sm preset-outlined-primary-500 px-1 py-0 text-xs leading-none"
                             title="Move up"
                             disabled={i === 0}
                             onclick={() => onMoveUp(i)}
                         >↑</button>
                         <button
                             type="button"
-                            class="btn btn-sm preset-outlined px-1 py-0 text-xs leading-none"
+                            class="btn btn-sm preset-outlined-primary-500 px-1 py-0 text-xs leading-none"
                             title="Move down"
                             disabled={i === scripts().length - 1}
                             onclick={() => onMoveDown(i)}
@@ -401,12 +401,12 @@
             <div class="flex items-center gap-1 mb-1 px-1 py-1 bg-surface-100-900 rounded border border-surface-200-800 text-xs">
                 <button
                     type="button"
-                    class="btn btn-sm preset-outlined text-xs py-0.5"
+                    class="btn btn-sm preset-outlined-primary-500 text-xs py-0.5"
                     onclick={onCutSelected}
                 >Cut</button>
                 <button
                     type="button"
-                    class="btn btn-sm preset-outlined text-xs py-0.5"
+                    class="btn btn-sm preset-outlined-primary-500 text-xs py-0.5"
                     onclick={onCopySelected}
                 >Copy</button>
                 <button
@@ -418,13 +418,13 @@
                     <span class="w-px h-4 bg-surface-300-700 mx-0.5"></span>
                     <button
                         type="button"
-                        class="btn btn-sm preset-outlined text-xs py-0.5"
+                        class="btn btn-sm preset-outlined-primary-500 text-xs py-0.5"
                         disabled={sel[0] === 0}
                         onclick={onMoveUpSelected}
                     >↑ Move up</button>
                     <button
                         type="button"
-                        class="btn btn-sm preset-outlined text-xs py-0.5"
+                        class="btn btn-sm preset-outlined-primary-500 text-xs py-0.5"
                         disabled={sel[0] === scripts().length - 1}
                         onclick={onMoveDownSelected}
                     >↓ Move down</button>
@@ -439,7 +439,7 @@
         {#if !codeViewMode && categories.length > 0}
             <button
                 type="button"
-                class="btn btn-sm preset-outlined text-xs py-0.5"
+                class="btn btn-sm preset-outlined-primary-500 text-xs py-0.5"
                 onclick={() => (showAddModal = true)}
             >+ Add script</button>
         {:else if !codeViewMode && isRoot}
@@ -448,14 +448,14 @@
         {#if isRoot && $scriptClipboardHasContent && !codeViewMode}
             <button
                 type="button"
-                class="btn btn-sm preset-outlined text-xs py-0.5"
+                class="btn btn-sm preset-outlined-primary-500 text-xs py-0.5"
                 onclick={onPaste}
             >Paste</button>
         {/if}
         {#if isRoot}
             <button
                 type="button"
-                class="btn btn-sm preset-outlined text-xs py-0.5"
+                class="btn btn-sm preset-outlined-primary-500 text-xs py-0.5"
                 onclick={onToggleCodeView}
             >{codeViewMode ? "Visual editor" : "Code view"}</button>
         {/if}
@@ -821,13 +821,13 @@
         <div class="flex gap-1 mt-1">
             <button
                 type="button"
-                class="btn btn-sm preset-outlined text-xs py-0.5"
+                class="btn btn-sm preset-outlined-primary-500 text-xs py-0.5"
                 onclick={() => onAddElseIf(i)}
             >+ else if</button>
             {#if script.elseScripts === null || script.elseScripts === undefined}
                 <button
                     type="button"
-                    class="btn btn-sm preset-outlined text-xs py-0.5"
+                    class="btn btn-sm preset-outlined-primary-500 text-xs py-0.5"
                     onclick={() => onAddElse(i)}
                 >+ else</button>
             {/if}
