@@ -1,11 +1,13 @@
 <script lang="ts">
-    import { selectedKey, selectedData, setAttribute, setDropdownType, setMultiType, setObjectReference } from "$lib/editor-store";
-    import type { ControlInfo } from "$lib/types";
+    import { selectedKey, selectedData, setAttribute, setDropdownType, setMultiType, setObjectReference, addListItem, removeListItem, updateListItem } from "$lib/editor-store";
+    import type { ControlInfo, TextProcessorCommand } from "$lib/types";
     import ScriptEditor from "./ScriptEditor.svelte";
     import Combobox from "./Combobox.svelte";
 
     let activeTab = $state<string | null>(null);
     let lastKey = $state<string | null>(null);
+    let newListItemValues = $state<Record<string, string>>({});
+    let editingItem = $state<{attribute: string, key: string, value: string} | null>(null);
 
     $effect(() => {
         const key = $selectedKey;
@@ -56,6 +58,24 @@
         return v === "True" || v === "true";
     }
 
+    function insertTextProcessorText(attribute: string, controlType: string, insertBefore: string, insertAfter: string, event: MouseEvent) {
+        const wrapper = (event.target as HTMLElement).closest('.richtext-wrap');
+        const textarea = wrapper?.querySelector('textarea') as HTMLTextAreaElement | null;
+        if (!textarea) return;
+        const start = textarea.selectionStart ?? 0;
+        const end = textarea.selectionEnd ?? 0;
+        const selectedText = textarea.value.substring(start, end);
+        textarea.value = textarea.value.substring(0, start) + insertBefore + selectedText + insertAfter + textarea.value.substring(end);
+        textarea.selectionStart = start + insertBefore.length;
+        textarea.selectionEnd = start + insertBefore.length + selectedText.length;
+        textarea.focus();
+        onTextChange(attribute, controlType, textarea.value);
+    }
+
+    function focusOnMount(node: HTMLElement) {
+        node.focus();
+    }
+
     function tabClass(caption: string | null): string {
         return activeTab === caption
             ? "px-3 py-1.5 text-xs whitespace-nowrap transition-colors text-primary-600-400 border-b-2 border-primary-500 font-medium"
@@ -95,6 +115,22 @@
     {/if}
 </div>
 
+{#snippet textProcessorPanel(commands: TextProcessorCommand[], attribute: string, controlType: string)}
+    <div class="flex flex-col gap-0.5 shrink-0">
+        {#each commands as cmd}
+            <div class="flex items-center gap-1">
+                <button
+                    type="button"
+                    class="btn btn-sm preset-outlined-primary-500 text-xs px-2 py-0.5 w-28 justify-start"
+                    onclick={(e) => insertTextProcessorText(attribute, controlType, cmd.insertBefore, cmd.insertAfter, e)}
+                >{cmd.command}</button>
+                <span class="text-xs text-surface-400-500 whitespace-nowrap">{cmd.info}</span>
+            </div>
+        {/each}
+        <a href="https://docs.textadventures.co.uk/quest/text_processor.html" target="_blank" class="text-xs text-primary-500 underline mt-1">Text Processor help</a>
+    </div>
+{/snippet}
+
 {#snippet controlOnly(ctrl: ControlInfo)}
     {#if ctrl.controlType === "number"}
         <input
@@ -129,11 +165,22 @@
             {/each}
         </select>
     {:else if ctrl.controlType === "richtext"}
-        <textarea
-            class="input text-xs py-0.5 px-1.5 w-full min-h-24 resize-y"
-            value={attrValue(ctrl.attribute!) ?? ""}
-            onchange={(e) => onTextChange(ctrl.attribute!, ctrl.controlType, (e.target as HTMLTextAreaElement).value)}
-        ></textarea>
+        {#if ctrl.textProcessorCommands?.length}
+            <div class="richtext-wrap flex gap-2 w-full">
+                <textarea
+                    class="input text-xs py-0.5 px-1.5 flex-1 min-h-32 resize-y"
+                    value={attrValue(ctrl.attribute!) ?? ""}
+                    onchange={(e) => onTextChange(ctrl.attribute!, ctrl.controlType, (e.target as HTMLTextAreaElement).value)}
+                ></textarea>
+                {@render textProcessorPanel(ctrl.textProcessorCommands, ctrl.attribute!, ctrl.controlType)}
+            </div>
+        {:else}
+            <textarea
+                class="input text-xs py-0.5 px-1.5 w-full min-h-24 resize-y"
+                value={attrValue(ctrl.attribute!) ?? ""}
+                onchange={(e) => onTextChange(ctrl.attribute!, ctrl.controlType, (e.target as HTMLTextAreaElement).value)}
+            ></textarea>
+        {/if}
     {:else if ctrl.controlType === "textbox"}
         <input
             type="text"
@@ -141,6 +188,91 @@
             value={attrValue(ctrl.attribute!) ?? ""}
             onchange={(e) => onTextChange(ctrl.attribute!, ctrl.controlType, (e.target as HTMLInputElement).value)}
         />
+    {:else if ctrl.controlType === "gameid"}
+        <div class="flex items-center gap-2 w-full">
+            <input
+                type="text"
+                class="input text-xs py-0.5 px-1.5 flex-1"
+                readonly
+                value={attrValue(ctrl.attribute!) ?? ""}
+            />
+            <button
+                type="button"
+                class="btn btn-sm preset-outlined-primary-500 text-xs px-2 py-0.5 whitespace-nowrap"
+                onclick={() => onTextChange(ctrl.attribute!, "textbox", crypto.randomUUID())}
+            >Generate</button>
+        </div>
+    {:else if ctrl.controlType === "file"}
+        <em class="text-xs text-surface-400-500">File picker not yet implemented</em>
+    {:else if ctrl.controlType === "list"}
+        {@const items = (() => { try { return JSON.parse(attrValue(ctrl.attribute!) ?? "[]") as {key: string, value: string}[] } catch { return [] } })()}
+        {@const inputKey = ctrl.attribute!}
+        <div class="flex flex-col gap-1 w-full">
+            {#each items as item (item.key)}
+                {@const isEditing = editingItem?.attribute === ctrl.attribute! && editingItem?.key === item.key}
+                <div class="flex items-center gap-1">
+                    {#if isEditing}
+                        <input
+                            type="text"
+                            class="input text-xs py-0.5 px-1.5 flex-1"
+                            use:focusOnMount
+                            value={editingItem!.value}
+                            oninput={(e) => { if (editingItem) editingItem.value = (e.target as HTMLInputElement).value; }}
+                            onkeydown={(e) => {
+                                if (e.key === "Enter" && $selectedKey && editingItem) {
+                                    updateListItem($selectedKey, ctrl.attribute!, editingItem.key, editingItem.value);
+                                    editingItem = null;
+                                } else if (e.key === "Escape") {
+                                    editingItem = null;
+                                }
+                            }}
+                            onblur={() => {
+                                if ($selectedKey && editingItem) {
+                                    updateListItem($selectedKey, ctrl.attribute!, editingItem.key, editingItem.value);
+                                    editingItem = null;
+                                }
+                            }}
+                        />
+                    {:else}
+                        <button
+                            type="button"
+                            class="text-xs flex-1 text-left px-1.5 py-0.5 hover:text-primary-600-400"
+                            onclick={() => { editingItem = {attribute: ctrl.attribute!, key: item.key, value: item.value}; }}
+                        >{item.value}</button>
+                    {/if}
+                    <button
+                        type="button"
+                        class="btn btn-sm preset-outlined-error-500 text-xs px-1.5 py-0.5"
+                        onclick={() => $selectedKey && removeListItem($selectedKey, ctrl.attribute!, item.key)}
+                    >✕</button>
+                </div>
+            {/each}
+            <div class="flex items-center gap-1 mt-0.5">
+                <input
+                    type="text"
+                    class="input text-xs py-0.5 px-1.5 flex-1"
+                    placeholder={ctrl.addPrompt ?? "Add item…"}
+                    value={newListItemValues[inputKey] ?? ""}
+                    oninput={(e) => { newListItemValues[inputKey] = (e.target as HTMLInputElement).value; }}
+                    onkeydown={(e) => {
+                        if (e.key === "Enter" && $selectedKey && newListItemValues[inputKey]?.trim()) {
+                            addListItem($selectedKey, ctrl.attribute!, newListItemValues[inputKey].trim());
+                            newListItemValues[inputKey] = "";
+                        }
+                    }}
+                />
+                <button
+                    type="button"
+                    class="btn btn-sm preset-outlined-primary-500 text-xs px-2 py-0.5"
+                    onclick={() => {
+                        if ($selectedKey && newListItemValues[inputKey]?.trim()) {
+                            addListItem($selectedKey, ctrl.attribute!, newListItemValues[inputKey].trim());
+                            newListItemValues[inputKey] = "";
+                        }
+                    }}
+                >Add</button>
+            </div>
+        </div>
     {:else if ctrl.controlType === "objects" && ctrl.options}
         <Combobox
             value={attrValue(ctrl.attribute!) ?? ""}
@@ -162,11 +294,22 @@
                 {/each}
             </select>
             {#if subEditorType === "richtext" && ctrl.subAttribute !== null}
-                <textarea
-                    class="input text-xs py-0.5 px-1.5 w-full min-h-24 resize-y"
-                    value={attrValue(ctrl.subAttribute) ?? ""}
-                    onchange={(e) => onTextChange(ctrl.subAttribute!, "richtext", (e.target as HTMLTextAreaElement).value)}
-                ></textarea>
+                {#if ctrl.textProcessorCommands?.length}
+                    <div class="richtext-wrap flex gap-2 w-full">
+                        <textarea
+                            class="input text-xs py-0.5 px-1.5 flex-1 min-h-32 resize-y"
+                            value={attrValue(ctrl.subAttribute) ?? ""}
+                            onchange={(e) => onTextChange(ctrl.subAttribute!, "richtext", (e.target as HTMLTextAreaElement).value)}
+                        ></textarea>
+                        {@render textProcessorPanel(ctrl.textProcessorCommands, ctrl.subAttribute, "richtext")}
+                    </div>
+                {:else}
+                    <textarea
+                        class="input text-xs py-0.5 px-1.5 w-full min-h-24 resize-y"
+                        value={attrValue(ctrl.subAttribute) ?? ""}
+                        onchange={(e) => onTextChange(ctrl.subAttribute!, "richtext", (e.target as HTMLTextAreaElement).value)}
+                    ></textarea>
+                {/if}
             {:else if subEditorType === "textbox" && ctrl.subAttribute !== null}
                 <input
                     type="text"
@@ -233,11 +376,22 @@
                     </select>
                 </div>
                 {#if subEditorType === "richtext" && ctrl.subAttribute !== null}
-                    <textarea
-                        class="input text-xs py-0.5 px-1.5 w-full min-h-24 resize-y"
-                        value={attrValue(ctrl.subAttribute) ?? ""}
-                        onchange={(e) => onTextChange(ctrl.subAttribute!, "richtext", (e.target as HTMLTextAreaElement).value)}
-                    ></textarea>
+                    {#if ctrl.textProcessorCommands?.length}
+                        <div class="richtext-wrap flex gap-2 w-full">
+                            <textarea
+                                class="input text-xs py-0.5 px-1.5 flex-1 min-h-32 resize-y"
+                                value={attrValue(ctrl.subAttribute) ?? ""}
+                                onchange={(e) => onTextChange(ctrl.subAttribute!, "richtext", (e.target as HTMLTextAreaElement).value)}
+                            ></textarea>
+                            {@render textProcessorPanel(ctrl.textProcessorCommands, ctrl.subAttribute, "richtext")}
+                        </div>
+                    {:else}
+                        <textarea
+                            class="input text-xs py-0.5 px-1.5 w-full min-h-24 resize-y"
+                            value={attrValue(ctrl.subAttribute) ?? ""}
+                            onchange={(e) => onTextChange(ctrl.subAttribute!, "richtext", (e.target as HTMLTextAreaElement).value)}
+                        ></textarea>
+                    {/if}
                 {:else if subEditorType === "textbox" && ctrl.subAttribute !== null}
                     <input
                         type="text"
@@ -252,7 +406,7 @@
         {:else}
             {@const label = ctrl.caption ?? ctrl.attribute}
             {@const isLong = label.length > 20}
-            {@const isMultiline = ctrl.controlType === "richtext" || ctrl.controlType === "script"}
+            {@const isMultiline = ctrl.controlType === "richtext" || ctrl.controlType === "script" || ctrl.controlType === "list"}
             {#if isLong}
                 <div class="flex flex-col gap-1 px-3 py-1.5">
                     <span class="text-xs text-surface-600-400">{label}:</span>

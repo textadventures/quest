@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
@@ -13,7 +14,8 @@ namespace QuestViva.WasmEditor;
 
 internal record TreeNodeData(string Key, string Text, string? Parent, string? NodeIcon, string NodeType);
 internal record ControlOption(string Value, string Label);
-internal record ControlInfo(string? Attribute, string ControlType, string? Caption, List<ControlOption>? Options, List<ControlOption>? SubEditors = null, string? SubAttribute = null);
+internal record TextProcessorCommand(string Command, string Info, string InsertBefore, string InsertAfter);
+internal record ControlInfo(string? Attribute, string ControlType, string? Caption, List<ControlOption>? Options, List<ControlOption>? SubEditors = null, string? SubAttribute = null, List<TextProcessorCommand>? TextProcessorCommands = null, string? AddPrompt = null);
 internal record TabInfo(string? Caption, List<ControlInfo> Controls);
 internal record EditorDataResponse(Dictionary<string, string?> Attributes, List<TabInfo> Tabs, List<ControlInfo> Controls);
 
@@ -56,6 +58,7 @@ internal record IfExpressionTemplateData(
     List<ExpressionTemplateControlData> Controls
 );
 internal record IfExpressionTemplate(string Name, string CreateExpression);
+internal record ListItemData(string Key, string Value);
 
 [JsonSourceGenerationOptions(PropertyNamingPolicy = JsonKnownNamingPolicy.CamelCase)]
 [JsonSerializable(typeof(List<TreeNodeData>))]
@@ -66,6 +69,7 @@ internal record IfExpressionTemplate(string Name, string CreateExpression);
 [JsonSerializable(typeof(List<IfExpressionTemplate>))]
 [JsonSerializable(typeof(IfExpressionTemplateData))]
 [JsonSerializable(typeof(int[]))]
+[JsonSerializable(typeof(List<ListItemData>))]
 internal partial class WasmEditorJsonContext : JsonSerializerContext { }
 
 [SuppressMessage("ReSharper", "MemberCanBePrivate.Global")]
@@ -126,7 +130,14 @@ public partial class WasmEditorBridge
         foreach (var attr in extended.GetAttributeData())
         {
             var val = data.GetAttribute(attr.AttributeName);
-            attrs[attr.AttributeName] = val is IEditableObjectReference objRef ? objRef.Reference : val?.ToString();
+            attrs[attr.AttributeName] = val switch
+            {
+                IEditableObjectReference objRef => objRef.Reference,
+                IEditableList<string> list => JsonSerializer.Serialize(
+                    list.ItemsList.Select(i => new ListItemData(i.Key, i.Value)).ToList(),
+                    WasmEditorJsonContext.Default.ListListItemData),
+                _ => val?.ToString()
+            };
         }
 
         var tabs = new List<TabInfo>();
@@ -290,6 +301,67 @@ public partial class WasmEditorBridge
         {
             _controller.EndTransaction();
         }
+    }
+
+    [JSExport]
+    public static string AddListItem(string elementKey, string attribute, string value)
+    {
+        if (_controller == null) return "error";
+        var data = _controller.GetEditorData(elementKey);
+        if (data == null) return "error";
+
+        try
+        {
+            var existing = data.GetAttribute(attribute) as IEditableList<string>;
+            if (existing == null)
+            {
+                _controller.CreateNewEditableList(elementKey, attribute, value, true);
+            }
+            else
+            {
+                var validation = existing.CanAdd(value);
+                if (!validation.Valid) return validation.Message.ToString();
+                existing.Add(value);
+            }
+            return "ok";
+        }
+        catch (Exception ex) { return ex.Message; }
+    }
+
+    [JSExport]
+    public static string RemoveListItem(string elementKey, string attribute, string key)
+    {
+        if (_controller == null) return "error";
+        var data = _controller.GetEditorData(elementKey);
+        if (data == null) return "error";
+
+        var list = data.GetAttribute(attribute) as IEditableList<string>;
+        if (list == null) return "error";
+
+        try
+        {
+            list.Remove(key);
+            return "ok";
+        }
+        catch (Exception ex) { return ex.Message; }
+    }
+
+    [JSExport]
+    public static string UpdateListItem(string elementKey, string attribute, string key, string value)
+    {
+        if (_controller == null) return "error";
+        var data = _controller.GetEditorData(elementKey);
+        if (data == null) return "error";
+
+        var list = data.GetAttribute(attribute) as IEditableList<string>;
+        if (list == null) return "error";
+
+        try
+        {
+            list.Update(key, value);
+            return "ok";
+        }
+        catch (Exception ex) { return ex.Message; }
     }
 
     private static void AddDropdownTypeValues(Dictionary<string, string?> attrs, List<IEditorControl> controls, string elementKey, IEditorData data)
@@ -1068,6 +1140,28 @@ public partial class WasmEditorBridge
         }
     }
 
+    private static List<TextProcessorCommand>? GetTextProcessorCommands()
+    {
+        try
+        {
+            var data = _controller!.GetElementDataAttribute("_RichTextControl_TextProcessorCommands", "data") as IEnumerable;
+            if (data == null) return null;
+
+            var commands = new List<TextProcessorCommand>();
+            foreach (IDictionary<string, string?> commandData in data)
+            {
+                commandData.TryGetValue("command", out var command);
+                commandData.TryGetValue("info", out var info);
+                commandData.TryGetValue("insertbefore", out var insertBefore);
+                commandData.TryGetValue("insertafter", out var insertAfter);
+                if (command != null)
+                    commands.Add(new TextProcessorCommand(command, info ?? "", insertBefore ?? "", insertAfter ?? ""));
+            }
+            return commands.Count > 0 ? commands : null;
+        }
+        catch { return null; }
+    }
+
     private static ControlInfo ToControlInfo(IEditorControl ctrl)
     {
         List<ControlOption>? options = null;
@@ -1110,10 +1204,21 @@ public partial class WasmEditorBridge
             var editorsDict = ctrl.GetDictionary("editors");
             List<ControlOption>? subEditors = editorsDict?.Select(kv => new ControlOption(kv.Key, kv.Value)).ToList();
 
+            bool hasRichtextSubEditor = editorsDict?.Values.Any(v => v == "richtext") ?? false;
+            List<TextProcessorCommand>? multiTpCommands = (hasRichtextSubEditor && !ctrl.GetBool("notextprocessor"))
+                ? GetTextProcessorCommands()
+                : null;
+
             var caption = ctrl.Caption ?? ctrl.GetString("selfcaption");
-            return new ControlInfo(ctrl.Id, ctrl.ControlType, caption, options, subEditors, ctrl.Attribute);
+            return new ControlInfo(ctrl.Id, ctrl.ControlType, caption, options, subEditors, ctrl.Attribute, multiTpCommands);
         }
 
-        return new ControlInfo(attribute, ctrl.ControlType, ctrl.Caption ?? ctrl.GetString("selfcaption"), options);
+        List<TextProcessorCommand>? textProcessorCommands = null;
+        if (ctrl.ControlType == "richtext" && !ctrl.GetBool("notextprocessor"))
+            textProcessorCommands = GetTextProcessorCommands();
+
+        string? addPrompt = ctrl.ControlType == "list" ? ctrl.GetString("editprompt") : null;
+
+        return new ControlInfo(attribute, ctrl.ControlType, ctrl.Caption ?? ctrl.GetString("selfcaption"), options, null, null, textProcessorCommands, addPrompt);
     }
 }
