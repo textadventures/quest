@@ -196,6 +196,8 @@
                 onclick={() => onTextChange(ctrl.attribute!, "textbox", crypto.randomUUID())}
             >Generate</button>
         </div>
+    {:else if ctrl.controlType === "file"}
+        <em class="text-xs text-surface-400-500">File picker not yet implemented</em>
     {:else if ctrl.controlType === "objects" && ctrl.options}
         <Combobox
             value={attrValue(ctrl.attribute!) ?? ""}
