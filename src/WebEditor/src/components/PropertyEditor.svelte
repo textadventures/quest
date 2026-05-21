@@ -161,7 +161,7 @@
         </div>
     {:else if ctrl.attribute !== null}
         {#if ctrl.controlType === "checkbox"}
-            <div class="flex items-center gap-2 px-3 py-1.5 border-b border-surface-100-900 min-h-8">
+            <label class="flex items-center gap-2 px-3 py-1.5 min-h-8 cursor-pointer">
                 <input
                     type="checkbox"
                     class="checkbox flex-shrink-0"
@@ -171,17 +171,17 @@
                 <span class="text-xs text-surface-600-400">
                     {ctrl.caption ?? ctrl.attribute}
                 </span>
-            </div>
+            </label>
         {:else}
             {@const label = ctrl.caption ?? ctrl.attribute}
             {@const isLong = label.length > 20}
             {#if isLong}
-                <div class="flex flex-col gap-1 px-3 py-1.5 border-b border-surface-100-900">
+                <div class="flex flex-col gap-1 px-3 py-1.5">
                     <span class="text-xs text-surface-600-400">{label}</span>
                     {@render controlOnly(ctrl)}
                 </div>
             {:else}
-                <div class="flex items-center gap-2 px-3 py-1.5 border-b border-surface-100-900 min-h-8">
+                <div class="flex items-center gap-2 px-3 py-1.5 min-h-8">
                     <span class="text-xs text-surface-600-400 w-32 flex-shrink-0">{label}</span>
                     {@render controlOnly(ctrl)}
                 </div>
