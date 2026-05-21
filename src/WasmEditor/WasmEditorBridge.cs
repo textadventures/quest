@@ -15,7 +15,7 @@ namespace QuestViva.WasmEditor;
 internal record TreeNodeData(string Key, string Text, string? Parent, string? NodeIcon, string NodeType);
 internal record ControlOption(string Value, string Label);
 internal record TextProcessorCommand(string Command, string Info, string InsertBefore, string InsertAfter);
-internal record ControlInfo(string? Attribute, string ControlType, string? Caption, List<ControlOption>? Options, List<ControlOption>? SubEditors = null, string? SubAttribute = null, List<TextProcessorCommand>? TextProcessorCommands = null);
+internal record ControlInfo(string? Attribute, string ControlType, string? Caption, List<ControlOption>? Options, List<ControlOption>? SubEditors = null, string? SubAttribute = null, List<TextProcessorCommand>? TextProcessorCommands = null, string? AddPrompt = null);
 internal record TabInfo(string? Caption, List<ControlInfo> Controls);
 internal record EditorDataResponse(Dictionary<string, string?> Attributes, List<TabInfo> Tabs, List<ControlInfo> Controls);
 
@@ -1217,6 +1217,8 @@ public partial class WasmEditorBridge
         if (ctrl.ControlType == "richtext" && !ctrl.GetBool("notextprocessor"))
             textProcessorCommands = GetTextProcessorCommands();
 
-        return new ControlInfo(attribute, ctrl.ControlType, ctrl.Caption ?? ctrl.GetString("selfcaption"), options, null, null, textProcessorCommands);
+        string? addPrompt = ctrl.ControlType == "list" ? ctrl.GetString("editprompt") : null;
+
+        return new ControlInfo(attribute, ctrl.ControlType, ctrl.Caption ?? ctrl.GetString("selfcaption"), options, null, null, textProcessorCommands, addPrompt);
     }
 }

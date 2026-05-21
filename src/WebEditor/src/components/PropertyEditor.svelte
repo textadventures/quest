@@ -251,7 +251,7 @@
                 <input
                     type="text"
                     class="input text-xs py-0.5 px-1.5 flex-1"
-                    placeholder="Add item…"
+                    placeholder={ctrl.addPrompt ?? "Add item…"}
                     value={newListItemValues[inputKey] ?? ""}
                     oninput={(e) => { newListItemValues[inputKey] = (e.target as HTMLInputElement).value; }}
                     onkeydown={(e) => {
