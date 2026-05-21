@@ -182,6 +182,20 @@
             value={attrValue(ctrl.attribute!) ?? ""}
             onchange={(e) => onTextChange(ctrl.attribute!, ctrl.controlType, (e.target as HTMLInputElement).value)}
         />
+    {:else if ctrl.controlType === "gameid"}
+        <div class="flex items-center gap-2 w-full">
+            <input
+                type="text"
+                class="input text-xs py-0.5 px-1.5 flex-1"
+                readonly
+                value={attrValue(ctrl.attribute!) ?? ""}
+            />
+            <button
+                type="button"
+                class="btn btn-sm preset-outlined-primary-500 text-xs px-2 py-0.5 whitespace-nowrap"
+                onclick={() => onTextChange(ctrl.attribute!, "textbox", crypto.randomUUID())}
+            >Generate</button>
+        </div>
     {:else if ctrl.controlType === "objects" && ctrl.options}
         <Combobox
             value={attrValue(ctrl.attribute!) ?? ""}
