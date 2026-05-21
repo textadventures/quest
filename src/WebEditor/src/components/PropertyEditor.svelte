@@ -1,6 +1,6 @@
 <script lang="ts">
     import { selectedKey, selectedData, setAttribute, setDropdownType, setMultiType, setObjectReference } from "$lib/editor-store";
-    import type { ControlInfo } from "$lib/types";
+    import type { ControlInfo, TextProcessorCommand } from "$lib/types";
     import ScriptEditor from "./ScriptEditor.svelte";
     import Combobox from "./Combobox.svelte";
 
@@ -56,6 +56,20 @@
         return v === "True" || v === "true";
     }
 
+    function insertTextProcessorText(attribute: string, controlType: string, insertBefore: string, insertAfter: string, event: MouseEvent) {
+        const wrapper = (event.target as HTMLElement).closest('.richtext-wrap');
+        const textarea = wrapper?.querySelector('textarea') as HTMLTextAreaElement | null;
+        if (!textarea) return;
+        const start = textarea.selectionStart ?? 0;
+        const end = textarea.selectionEnd ?? 0;
+        const selectedText = textarea.value.substring(start, end);
+        textarea.value = textarea.value.substring(0, start) + insertBefore + selectedText + insertAfter + textarea.value.substring(end);
+        textarea.selectionStart = start + insertBefore.length;
+        textarea.selectionEnd = start + insertBefore.length + selectedText.length;
+        textarea.focus();
+        onTextChange(attribute, controlType, textarea.value);
+    }
+
     function tabClass(caption: string | null): string {
         return activeTab === caption
             ? "px-3 py-1.5 text-xs whitespace-nowrap transition-colors text-primary-600-400 border-b-2 border-primary-500 font-medium"
@@ -95,6 +109,22 @@
     {/if}
 </div>
 
+{#snippet textProcessorPanel(commands: TextProcessorCommand[], attribute: string, controlType: string)}
+    <div class="flex flex-col gap-0.5 shrink-0">
+        {#each commands as cmd}
+            <div class="flex items-center gap-1">
+                <button
+                    type="button"
+                    class="btn btn-sm preset-outlined-primary-500 text-xs px-2 py-0.5 w-28 justify-start"
+                    onclick={(e) => insertTextProcessorText(attribute, controlType, cmd.insertBefore, cmd.insertAfter, e)}
+                >{cmd.command}</button>
+                <span class="text-xs text-surface-400-500 whitespace-nowrap">{cmd.info}</span>
+            </div>
+        {/each}
+        <a href="https://docs.textadventures.co.uk/quest/text_processor.html" target="_blank" class="text-xs text-primary-500 underline mt-1">Text Processor help</a>
+    </div>
+{/snippet}
+
 {#snippet controlOnly(ctrl: ControlInfo)}
     {#if ctrl.controlType === "number"}
         <input
@@ -129,11 +159,22 @@
             {/each}
         </select>
     {:else if ctrl.controlType === "richtext"}
-        <textarea
-            class="input text-xs py-0.5 px-1.5 w-full min-h-24 resize-y"
-            value={attrValue(ctrl.attribute!) ?? ""}
-            onchange={(e) => onTextChange(ctrl.attribute!, ctrl.controlType, (e.target as HTMLTextAreaElement).value)}
-        ></textarea>
+        {#if ctrl.textProcessorCommands?.length}
+            <div class="richtext-wrap flex gap-2 w-full">
+                <textarea
+                    class="input text-xs py-0.5 px-1.5 flex-1 min-h-32 resize-y"
+                    value={attrValue(ctrl.attribute!) ?? ""}
+                    onchange={(e) => onTextChange(ctrl.attribute!, ctrl.controlType, (e.target as HTMLTextAreaElement).value)}
+                ></textarea>
+                {@render textProcessorPanel(ctrl.textProcessorCommands, ctrl.attribute!, ctrl.controlType)}
+            </div>
+        {:else}
+            <textarea
+                class="input text-xs py-0.5 px-1.5 w-full min-h-24 resize-y"
+                value={attrValue(ctrl.attribute!) ?? ""}
+                onchange={(e) => onTextChange(ctrl.attribute!, ctrl.controlType, (e.target as HTMLTextAreaElement).value)}
+            ></textarea>
+        {/if}
     {:else if ctrl.controlType === "textbox"}
         <input
             type="text"
@@ -162,11 +203,22 @@
                 {/each}
             </select>
             {#if subEditorType === "richtext" && ctrl.subAttribute !== null}
-                <textarea
-                    class="input text-xs py-0.5 px-1.5 w-full min-h-24 resize-y"
-                    value={attrValue(ctrl.subAttribute) ?? ""}
-                    onchange={(e) => onTextChange(ctrl.subAttribute!, "richtext", (e.target as HTMLTextAreaElement).value)}
-                ></textarea>
+                {#if ctrl.textProcessorCommands?.length}
+                    <div class="richtext-wrap flex gap-2 w-full">
+                        <textarea
+                            class="input text-xs py-0.5 px-1.5 flex-1 min-h-32 resize-y"
+                            value={attrValue(ctrl.subAttribute) ?? ""}
+                            onchange={(e) => onTextChange(ctrl.subAttribute!, "richtext", (e.target as HTMLTextAreaElement).value)}
+                        ></textarea>
+                        {@render textProcessorPanel(ctrl.textProcessorCommands, ctrl.subAttribute, "richtext")}
+                    </div>
+                {:else}
+                    <textarea
+                        class="input text-xs py-0.5 px-1.5 w-full min-h-24 resize-y"
+                        value={attrValue(ctrl.subAttribute) ?? ""}
+                        onchange={(e) => onTextChange(ctrl.subAttribute!, "richtext", (e.target as HTMLTextAreaElement).value)}
+                    ></textarea>
+                {/if}
             {:else if subEditorType === "textbox" && ctrl.subAttribute !== null}
                 <input
                     type="text"
@@ -233,11 +285,22 @@
                     </select>
                 </div>
                 {#if subEditorType === "richtext" && ctrl.subAttribute !== null}
-                    <textarea
-                        class="input text-xs py-0.5 px-1.5 w-full min-h-24 resize-y"
-                        value={attrValue(ctrl.subAttribute) ?? ""}
-                        onchange={(e) => onTextChange(ctrl.subAttribute!, "richtext", (e.target as HTMLTextAreaElement).value)}
-                    ></textarea>
+                    {#if ctrl.textProcessorCommands?.length}
+                        <div class="richtext-wrap flex gap-2 w-full">
+                            <textarea
+                                class="input text-xs py-0.5 px-1.5 flex-1 min-h-32 resize-y"
+                                value={attrValue(ctrl.subAttribute) ?? ""}
+                                onchange={(e) => onTextChange(ctrl.subAttribute!, "richtext", (e.target as HTMLTextAreaElement).value)}
+                            ></textarea>
+                            {@render textProcessorPanel(ctrl.textProcessorCommands, ctrl.subAttribute, "richtext")}
+                        </div>
+                    {:else}
+                        <textarea
+                            class="input text-xs py-0.5 px-1.5 w-full min-h-24 resize-y"
+                            value={attrValue(ctrl.subAttribute) ?? ""}
+                            onchange={(e) => onTextChange(ctrl.subAttribute!, "richtext", (e.target as HTMLTextAreaElement).value)}
+                        ></textarea>
+                    {/if}
                 {:else if subEditorType === "textbox" && ctrl.subAttribute !== null}
                     <input
                         type="text"

@@ -11,6 +11,13 @@ export interface ControlOption {
   label: string
 }
 
+export interface TextProcessorCommand {
+  command: string
+  info: string
+  insertBefore: string
+  insertAfter: string
+}
+
 export interface ControlInfo {
   attribute: string | null
   controlType: string
@@ -18,6 +25,7 @@ export interface ControlInfo {
   options: ControlOption[] | null
   subEditors: ControlOption[] | null
   subAttribute: string | null
+  textProcessorCommands: TextProcessorCommand[] | null
 }
 
 export interface TabInfo {

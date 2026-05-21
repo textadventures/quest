@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
@@ -13,7 +14,8 @@ namespace QuestViva.WasmEditor;
 
 internal record TreeNodeData(string Key, string Text, string? Parent, string? NodeIcon, string NodeType);
 internal record ControlOption(string Value, string Label);
-internal record ControlInfo(string? Attribute, string ControlType, string? Caption, List<ControlOption>? Options, List<ControlOption>? SubEditors = null, string? SubAttribute = null);
+internal record TextProcessorCommand(string Command, string Info, string InsertBefore, string InsertAfter);
+internal record ControlInfo(string? Attribute, string ControlType, string? Caption, List<ControlOption>? Options, List<ControlOption>? SubEditors = null, string? SubAttribute = null, List<TextProcessorCommand>? TextProcessorCommands = null);
 internal record TabInfo(string? Caption, List<ControlInfo> Controls);
 internal record EditorDataResponse(Dictionary<string, string?> Attributes, List<TabInfo> Tabs, List<ControlInfo> Controls);
 
@@ -1068,6 +1070,28 @@ public partial class WasmEditorBridge
         }
     }
 
+    private static List<TextProcessorCommand>? GetTextProcessorCommands()
+    {
+        try
+        {
+            var data = _controller!.GetElementDataAttribute("_RichTextControl_TextProcessorCommands", "data") as IEnumerable;
+            if (data == null) return null;
+
+            var commands = new List<TextProcessorCommand>();
+            foreach (IDictionary<string, string?> commandData in data)
+            {
+                commandData.TryGetValue("command", out var command);
+                commandData.TryGetValue("info", out var info);
+                commandData.TryGetValue("insertbefore", out var insertBefore);
+                commandData.TryGetValue("insertafter", out var insertAfter);
+                if (command != null)
+                    commands.Add(new TextProcessorCommand(command, info ?? "", insertBefore ?? "", insertAfter ?? ""));
+            }
+            return commands.Count > 0 ? commands : null;
+        }
+        catch { return null; }
+    }
+
     private static ControlInfo ToControlInfo(IEditorControl ctrl)
     {
         List<ControlOption>? options = null;
@@ -1110,10 +1134,19 @@ public partial class WasmEditorBridge
             var editorsDict = ctrl.GetDictionary("editors");
             List<ControlOption>? subEditors = editorsDict?.Select(kv => new ControlOption(kv.Key, kv.Value)).ToList();
 
+            bool hasRichtextSubEditor = editorsDict?.Values.Any(v => v == "richtext") ?? false;
+            List<TextProcessorCommand>? multiTpCommands = (hasRichtextSubEditor && !ctrl.GetBool("notextprocessor"))
+                ? GetTextProcessorCommands()
+                : null;
+
             var caption = ctrl.Caption ?? ctrl.GetString("selfcaption");
-            return new ControlInfo(ctrl.Id, ctrl.ControlType, caption, options, subEditors, ctrl.Attribute);
+            return new ControlInfo(ctrl.Id, ctrl.ControlType, caption, options, subEditors, ctrl.Attribute, multiTpCommands);
         }
 
-        return new ControlInfo(attribute, ctrl.ControlType, ctrl.Caption ?? ctrl.GetString("selfcaption"), options);
+        List<TextProcessorCommand>? textProcessorCommands = null;
+        if (ctrl.ControlType == "richtext" && !ctrl.GetBool("notextprocessor"))
+            textProcessorCommands = GetTextProcessorCommands();
+
+        return new ControlInfo(attribute, ctrl.ControlType, ctrl.Caption ?? ctrl.GetString("selfcaption"), options, null, null, textProcessorCommands);
     }
 }
