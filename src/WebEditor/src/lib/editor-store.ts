@@ -8,6 +8,7 @@ export type AddElementModalState = { type: "room" | "object" | "function" | "tim
 let _bridge: WasmBridge | null = null;
 
 export const isLoaded = writable(false);
+export const loadingStatus = writable<string | null>(null);
 export const addElementModal = writable<AddElementModalState>(null);
 
 export function openAddModal(type: "room" | "object" | "function" | "timer", parent: string | null) {
@@ -28,15 +29,24 @@ function refreshUndoRedo() {
 }
 
 export async function openGame(file: File): Promise<boolean> {
+    loadingStatus.set("Starting editor…");
     const bytes = new Uint8Array(await file.arrayBuffer());
     _bridge = await loadWasm();
+    loadingStatus.set("Loading game…");
+    // Double rAF ensures the browser actually paints the status update before
+    // Initialise blocks the JS thread (C# WASM calls are synchronous).
+    await new Promise<void>(resolve => requestAnimationFrame(() => requestAnimationFrame(resolve)));
     const ok = await _bridge.Initialise(bytes, file.name);
+    loadingStatus.set(null);
     if (ok) {
-        treeNodes.set(JSON.parse(_bridge.GetTreeNodes()));
+        const nodes: TreeNode[] = JSON.parse(_bridge.GetTreeNodes());
+        treeNodes.set(nodes);
         isLoaded.set(true);
         gameFilename.set(file.name);
         refreshUndoRedo();
         scriptClipboardHasContent.set(false);
+        const gameNode = nodes.find(n => n.nodeType === "game");
+        if (gameNode) selectNode(gameNode.key);
     }
     return ok;
 }
