@@ -99,7 +99,7 @@
     {#if ctrl.controlType === "number"}
         <input
             type="number"
-            class="input text-xs py-0.5 px-1.5 w-full"
+            class="input text-xs py-0.5 px-1.5 w-auto"
             value={attrValue(ctrl.attribute!) ?? ""}
             onchange={(e) => onNumberChange(ctrl.attribute!, "number", (e.target as HTMLInputElement).value)}
         />
@@ -107,7 +107,7 @@
         <input
             type="number"
             step="any"
-            class="input text-xs py-0.5 px-1.5 w-full"
+            class="input text-xs py-0.5 px-1.5 w-auto"
             value={attrValue(ctrl.attribute!) ?? ""}
             onchange={(e) => onNumberChange(ctrl.attribute!, "numberdouble", (e.target as HTMLInputElement).value)}
         />
@@ -177,12 +177,12 @@
             {@const isLong = label.length > 20}
             {#if isLong}
                 <div class="flex flex-col gap-1 px-3 py-1.5">
-                    <span class="text-xs text-surface-600-400">{label}</span>
+                    <span class="text-xs text-surface-600-400">{label}:</span>
                     {@render controlOnly(ctrl)}
                 </div>
             {:else}
                 <div class="flex items-center gap-2 px-3 py-1.5 min-h-8">
-                    <span class="text-xs text-surface-600-400 w-32 flex-shrink-0">{label}</span>
+                    <span class="text-xs text-surface-600-400 w-32 flex-shrink-0">{label}:</span>
                     {@render controlOnly(ctrl)}
                 </div>
             {/if}
