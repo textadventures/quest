@@ -37,6 +37,7 @@ export interface WasmBridge {
   // List editor API
   AddListItem(elementKey: string, attribute: string, value: string): string
   RemoveListItem(elementKey: string, attribute: string, key: string): string
+  UpdateListItem(elementKey: string, attribute: string, key: string, value: string): string
   // Element creation / deletion
   ValidateName(name: string): string
   GetUniqueName(baseName: string): string

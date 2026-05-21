@@ -136,6 +136,14 @@ export function removeListItem(elementKey: string, attribute: string, key: strin
     return result;
 }
 
+export function updateListItem(elementKey: string, attribute: string, key: string, value: string): string {
+    if (!_bridge) return "error";
+    const result = _bridge.UpdateListItem(elementKey, attribute, key, value);
+    refreshSelectedData();
+    refreshUndoRedo();
+    return result;
+}
+
 // ── Script editor functions ─────────────────────────────────────────────────
 
 export function getScriptCode(elementKey: string, attribute: string): string {

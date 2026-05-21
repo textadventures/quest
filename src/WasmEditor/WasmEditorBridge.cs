@@ -310,13 +310,12 @@ public partial class WasmEditorBridge
         var data = _controller.GetEditorData(elementKey);
         if (data == null) return "error";
 
-        _controller.StartTransaction($"Add item to {attribute}");
         try
         {
             var existing = data.GetAttribute(attribute) as IEditableList<string>;
             if (existing == null)
             {
-                _controller.CreateNewEditableList(elementKey, attribute, value, false);
+                _controller.CreateNewEditableList(elementKey, attribute, value, true);
             }
             else
             {
@@ -327,7 +326,6 @@ public partial class WasmEditorBridge
             return "ok";
         }
         catch (Exception ex) { return ex.Message; }
-        finally { _controller.EndTransaction(); }
     }
 
     [JSExport]
@@ -340,14 +338,30 @@ public partial class WasmEditorBridge
         var list = data.GetAttribute(attribute) as IEditableList<string>;
         if (list == null) return "error";
 
-        _controller.StartTransaction($"Remove item from {attribute}");
         try
         {
             list.Remove(key);
             return "ok";
         }
         catch (Exception ex) { return ex.Message; }
-        finally { _controller.EndTransaction(); }
+    }
+
+    [JSExport]
+    public static string UpdateListItem(string elementKey, string attribute, string key, string value)
+    {
+        if (_controller == null) return "error";
+        var data = _controller.GetEditorData(elementKey);
+        if (data == null) return "error";
+
+        var list = data.GetAttribute(attribute) as IEditableList<string>;
+        if (list == null) return "error";
+
+        try
+        {
+            list.Update(key, value);
+            return "ok";
+        }
+        catch (Exception ex) { return ex.Message; }
     }
 
     private static void AddDropdownTypeValues(Dictionary<string, string?> attrs, List<IEditorControl> controls, string elementKey, IEditorData data)

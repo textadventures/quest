@@ -1,5 +1,5 @@
 <script lang="ts">
-    import { selectedKey, selectedData, setAttribute, setDropdownType, setMultiType, setObjectReference, addListItem, removeListItem } from "$lib/editor-store";
+    import { selectedKey, selectedData, setAttribute, setDropdownType, setMultiType, setObjectReference, addListItem, removeListItem, updateListItem } from "$lib/editor-store";
     import type { ControlInfo, TextProcessorCommand } from "$lib/types";
     import ScriptEditor from "./ScriptEditor.svelte";
     import Combobox from "./Combobox.svelte";
@@ -7,6 +7,7 @@
     let activeTab = $state<string | null>(null);
     let lastKey = $state<string | null>(null);
     let newListItemValues = $state<Record<string, string>>({});
+    let editingItem = $state<{attribute: string, key: string, value: string} | null>(null);
 
     $effect(() => {
         const key = $selectedKey;
@@ -69,6 +70,10 @@
         textarea.selectionEnd = start + insertBefore.length + selectedText.length;
         textarea.focus();
         onTextChange(attribute, controlType, textarea.value);
+    }
+
+    function focusOnMount(node: HTMLElement) {
+        node.focus();
     }
 
     function tabClass(caption: string | null): string {
@@ -204,8 +209,37 @@
         {@const inputKey = ctrl.attribute!}
         <div class="flex flex-col gap-1 w-full">
             {#each items as item (item.key)}
+                {@const isEditing = editingItem?.attribute === ctrl.attribute! && editingItem?.key === item.key}
                 <div class="flex items-center gap-1">
-                    <span class="text-xs flex-1 px-1.5 py-0.5 bg-surface-100-900 rounded border border-surface-200-800">{item.value}</span>
+                    {#if isEditing}
+                        <input
+                            type="text"
+                            class="input text-xs py-0.5 px-1.5 flex-1"
+                            use:focusOnMount
+                            value={editingItem!.value}
+                            oninput={(e) => { if (editingItem) editingItem.value = (e.target as HTMLInputElement).value; }}
+                            onkeydown={(e) => {
+                                if (e.key === "Enter" && $selectedKey && editingItem) {
+                                    updateListItem($selectedKey, ctrl.attribute!, editingItem.key, editingItem.value);
+                                    editingItem = null;
+                                } else if (e.key === "Escape") {
+                                    editingItem = null;
+                                }
+                            }}
+                            onblur={() => {
+                                if ($selectedKey && editingItem) {
+                                    updateListItem($selectedKey, ctrl.attribute!, editingItem.key, editingItem.value);
+                                    editingItem = null;
+                                }
+                            }}
+                        />
+                    {:else}
+                        <button
+                            type="button"
+                            class="text-xs flex-1 text-left px-1.5 py-0.5 hover:text-primary-600-400"
+                            onclick={() => { editingItem = {attribute: ctrl.attribute!, key: item.key, value: item.value}; }}
+                        >{item.value}</button>
+                    {/if}
                     <button
                         type="button"
                         class="btn btn-sm preset-outlined-error-500 text-xs px-1.5 py-0.5"
@@ -372,7 +406,7 @@
         {:else}
             {@const label = ctrl.caption ?? ctrl.attribute}
             {@const isLong = label.length > 20}
-            {@const isMultiline = ctrl.controlType === "richtext" || ctrl.controlType === "script"}
+            {@const isMultiline = ctrl.controlType === "richtext" || ctrl.controlType === "script" || ctrl.controlType === "list"}
             {#if isLong}
                 <div class="flex flex-col gap-1 px-3 py-1.5">
                     <span class="text-xs text-surface-600-400">{label}:</span>
