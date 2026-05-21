@@ -125,7 +125,8 @@ public partial class WasmEditorBridge
         var attrs = new Dictionary<string, string?>();
         foreach (var attr in extended.GetAttributeData())
         {
-            attrs[attr.AttributeName] = data.GetAttribute(attr.AttributeName)?.ToString();
+            var val = data.GetAttribute(attr.AttributeName);
+            attrs[attr.AttributeName] = val is IEditableObjectReference objRef ? objRef.Reference : val?.ToString();
         }
 
         var tabs = new List<TabInfo>();
@@ -180,6 +181,25 @@ public partial class WasmEditorBridge
         {
             _controller.EndTransaction();
         }
+    }
+
+    [JSExport]
+    public static string SetObjectReference(string elementKey, string attribute, string objectName)
+    {
+        if (_controller == null) return "error";
+        var data = _controller.GetEditorData(elementKey);
+        if (data == null) return "error";
+
+        _controller.StartTransaction($"Set {attribute}");
+        try
+        {
+            var objRef = data.GetAttribute(attribute) as IEditableObjectReference
+                ?? _controller.CreateNewEditableObjectReference(elementKey, attribute, false);
+            objRef.Reference = objectName;
+            return "ok";
+        }
+        catch (Exception ex) { return ex.Message; }
+        finally { _controller.EndTransaction(); }
     }
 
     [JSExport]
@@ -1032,6 +1052,11 @@ public partial class WasmEditorBridge
             if (dict != null)
                 options = dict.Select(kv => new ControlOption(kv.Key, kv.Value)).ToList();
             attribute = ctrl.Id;
+        }
+        else if (ctrl.ControlType == "objects")
+        {
+            var names = _controller!.GetObjectNames("object", includeLibraryObjects: false);
+            options = names.Select(n => new ControlOption(n, n)).ToList();
         }
 
         return new ControlInfo(attribute, ctrl.ControlType, ctrl.Caption, options);

@@ -1,5 +1,5 @@
 <script lang="ts">
-    import { selectedKey, selectedData, setAttribute, setDropdownType } from "$lib/editor-store";
+    import { selectedKey, selectedData, setAttribute, setDropdownType, setObjectReference } from "$lib/editor-store";
     import type { ControlInfo } from "$lib/types";
     import ScriptEditor from "./ScriptEditor.svelte";
     import Combobox from "./Combobox.svelte";
@@ -128,12 +128,25 @@
                 <option value={opt.value}>{opt.label}</option>
             {/each}
         </select>
-    {:else if ctrl.controlType === "textbox" || ctrl.controlType === "richtext"}
+    {:else if ctrl.controlType === "richtext"}
+        <textarea
+            class="input text-xs py-0.5 px-1.5 w-full min-h-24 resize-y"
+            value={attrValue(ctrl.attribute!) ?? ""}
+            onchange={(e) => onTextChange(ctrl.attribute!, ctrl.controlType, (e.target as HTMLTextAreaElement).value)}
+        ></textarea>
+    {:else if ctrl.controlType === "textbox"}
         <input
             type="text"
             class="input text-xs py-0.5 px-1.5 w-full"
             value={attrValue(ctrl.attribute!) ?? ""}
             onchange={(e) => onTextChange(ctrl.attribute!, ctrl.controlType, (e.target as HTMLInputElement).value)}
+        />
+    {:else if ctrl.controlType === "objects" && ctrl.options}
+        <Combobox
+            value={attrValue(ctrl.attribute!) ?? ""}
+            options={ctrl.options}
+            onchange={(v) => $selectedKey && setObjectReference($selectedKey, ctrl.attribute!, v)}
+            class="input text-xs py-0.5 px-1.5 w-auto min-w-24"
         />
     {:else if ctrl.controlType === "script" && ctrl.attribute !== null && $selectedKey !== null}
         <div class="flex-1 min-w-0 overflow-hidden">
