@@ -147,7 +147,7 @@
     <div class="px-3 py-2 text-xs font-semibold uppercase text-surface-500-400 border-b border-surface-200-800">
         Game Objects
     </div>
-    <div class="flex-1 overflow-y-auto p-1">
+    <div class="flex-1 overflow-y-auto p-1 text-xs">
         <TreeView
             {collection}
             selectionMode="single"
