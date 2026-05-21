@@ -79,6 +79,16 @@
 
     function closeDropdown() { dropdownKey = null; dropdownPos = null; }
 
+    $effect(() => {
+        if (!dropdownKey) return;
+        function onOutside(e: MouseEvent) {
+            const t = e.target as HTMLElement;
+            if (!t.closest(".node-actions") && !t.closest(".tree-dropdown")) closeDropdown();
+        }
+        document.addEventListener("mousedown", onOutside);
+        return () => document.removeEventListener("mousedown", onOutside);
+    });
+
     function toggleDropdown(key: string, opts: Array<{ label: string; action: () => void }>, e: MouseEvent) {
         e.stopPropagation();
         if (dropdownKey === key) { closeDropdown(); return; }
@@ -136,14 +146,7 @@
     }
 </script>
 
-<!-- svelte-ignore a11y_no_static_element_interactions -->
-<div
-    class="flex flex-col w-60 min-w-[180px] border-r border-surface-200-800 bg-surface-50-950"
-    onmousedown={(e) => {
-        const t = e.target as HTMLElement;
-        if (!t.closest(".node-actions") && !t.closest(".tree-dropdown")) closeDropdown();
-    }}
->
+<div class="flex flex-col w-60 min-w-[180px] border-r border-surface-200-800 bg-surface-50-950">
     <div class="px-3 py-2 text-xs font-semibold uppercase text-surface-500-400 border-b border-surface-200-800">
         Game Objects
     </div>

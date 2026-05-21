@@ -56,11 +56,18 @@
     function closeAdd() { addOpen = false; }
     function toggleAdd(e: MouseEvent) { e.stopPropagation(); addOpen = !addOpen; }
     function doAdd(action: () => void) { action(); addOpen = false; }
+
+    $effect(() => {
+        if (!addOpen) return;
+        function onOutside(e: MouseEvent) {
+            if (!(e.target as HTMLElement).closest(".add-dropdown")) closeAdd();
+        }
+        document.addEventListener("mousedown", onOutside);
+        return () => document.removeEventListener("mousedown", onOutside);
+    });
 </script>
 
-<!-- svelte-ignore a11y_no_static_element_interactions -->
-<div onmousedown={(e) => { if (!(e.target as HTMLElement).closest(".add-dropdown")) closeAdd(); }}>
-    <AppBar>
+<AppBar>
         <AppBar.Toolbar class="grid-cols-[auto_1fr_auto]">
             <AppBar.Lead>
                 <span class="font-semibold">Quest Viva Editor</span>
@@ -105,4 +112,3 @@
             </AppBar.Trail>
         </AppBar.Toolbar>
     </AppBar>
-</div>
