@@ -53,11 +53,7 @@
     onclick={onBackdropClick}
     onkeydown={handleKeydown}
 >
-    <!-- svelte-ignore a11y_click_events_have_key_events -->
-    <div
-        class="card bg-white rounded-xl shadow-xl w-80 p-6 flex flex-col gap-4"
-        onclick={(e) => e.stopPropagation()}
-    >
+    <div class="card bg-white rounded-xl shadow-xl w-80 p-6 flex flex-col gap-4">
         <h2 class="text-base font-semibold">
             Add {labels[elementType]}{parent ? ` in "${parent}"` : ""}
         </h2>

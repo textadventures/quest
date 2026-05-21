@@ -13,7 +13,7 @@ namespace QuestViva.WasmEditor;
 
 internal record TreeNodeData(string Key, string Text, string? Parent, string? NodeIcon, string NodeType);
 internal record ControlOption(string Value, string Label);
-internal record ControlInfo(string? Attribute, string ControlType, string? Caption, List<ControlOption>? Options);
+internal record ControlInfo(string? Attribute, string ControlType, string? Caption, List<ControlOption>? Options, List<ControlOption>? SubEditors = null, string? SubAttribute = null);
 internal record TabInfo(string? Caption, List<ControlInfo> Controls);
 internal record EditorDataResponse(Dictionary<string, string?> Attributes, List<TabInfo> Tabs, List<ControlInfo> Controls);
 
@@ -125,7 +125,8 @@ public partial class WasmEditorBridge
         var attrs = new Dictionary<string, string?>();
         foreach (var attr in extended.GetAttributeData())
         {
-            attrs[attr.AttributeName] = data.GetAttribute(attr.AttributeName)?.ToString();
+            var val = data.GetAttribute(attr.AttributeName);
+            attrs[attr.AttributeName] = val is IEditableObjectReference objRef ? objRef.Reference : val?.ToString();
         }
 
         var tabs = new List<TabInfo>();
@@ -139,11 +140,11 @@ public partial class WasmEditorBridge
             {
                 if (!tab.IsTabVisible(data)) continue;
                 var visibleControls = tab.Controls.Where(c => c.IsControlVisible(data)).ToList();
-                AddDropdownTypeValues(attrs, visibleControls, key);
+                AddDropdownTypeValues(attrs, visibleControls, key, data);
                 tabs.Add(new TabInfo(tab.Caption, visibleControls.Select(ToControlInfo).ToList()));
             }
             var visibleTopControls = def.Controls.Where(c => c.IsControlVisible(data)).ToList();
-            AddDropdownTypeValues(attrs, visibleTopControls, key);
+            AddDropdownTypeValues(attrs, visibleTopControls, key, data);
             topControls.AddRange(visibleTopControls.Select(ToControlInfo));
         }
 
@@ -180,6 +181,55 @@ public partial class WasmEditorBridge
         {
             _controller.EndTransaction();
         }
+    }
+
+    [JSExport]
+    public static string SetMultiType(string elementKey, string attribute, string newType)
+    {
+        if (_controller == null) return "error";
+        var data = _controller.GetEditorData(elementKey);
+        if (data == null) return "error";
+
+        _controller.StartTransaction($"Set type of {attribute}");
+        try
+        {
+            switch (newType)
+            {
+                case "null":
+                    data.SetAttribute(attribute, null!);
+                    break;
+                case "string":
+                    data.SetAttribute(attribute, "");
+                    break;
+                case "script":
+                    _controller.CreateNewEditableScripts(elementKey, attribute, null!, false);
+                    break;
+                default:
+                    return $"Unknown type: {newType}";
+            }
+            return "ok";
+        }
+        catch (Exception ex) { return ex.Message; }
+        finally { _controller.EndTransaction(); }
+    }
+
+    [JSExport]
+    public static string SetObjectReference(string elementKey, string attribute, string objectName)
+    {
+        if (_controller == null) return "error";
+        var data = _controller.GetEditorData(elementKey);
+        if (data == null) return "error";
+
+        _controller.StartTransaction($"Set {attribute}");
+        try
+        {
+            var objRef = data.GetAttribute(attribute) as IEditableObjectReference
+                ?? _controller.CreateNewEditableObjectReference(elementKey, attribute, false);
+            objRef.Reference = objectName;
+            return "ok";
+        }
+        catch (Exception ex) { return ex.Message; }
+        finally { _controller.EndTransaction(); }
     }
 
     [JSExport]
@@ -242,10 +292,23 @@ public partial class WasmEditorBridge
         }
     }
 
-    private static void AddDropdownTypeValues(Dictionary<string, string?> attrs, List<IEditorControl> controls, string elementKey)
+    private static void AddDropdownTypeValues(Dictionary<string, string?> attrs, List<IEditorControl> controls, string elementKey, IEditorData data)
     {
         foreach (var ctrl in controls.Where(c => c.ControlType == "dropdowntypes"))
             attrs[ctrl.Id] = _controller!.GetSelectedDropDownType(ctrl, elementKey);
+
+        foreach (var ctrl in controls.Where(c => c.ControlType == "multi" && c.Attribute != null))
+        {
+            var val = data.GetAttribute(ctrl.Attribute!);
+            attrs[ctrl.Id] = val switch
+            {
+                null => "null",
+                string => "string",
+                IEditableScripts => "script",
+                IEditableObjectReference => "object",
+                _ => "null"
+            };
+        }
     }
 
     // ── Script editor API ──────────────────────────────────────────────────────
@@ -1033,7 +1096,24 @@ public partial class WasmEditorBridge
                 options = dict.Select(kv => new ControlOption(kv.Key, kv.Value)).ToList();
             attribute = ctrl.Id;
         }
+        else if (ctrl.ControlType == "objects")
+        {
+            var names = _controller!.GetObjectNames("object", includeLibraryObjects: false);
+            options = names.Select(n => new ControlOption(n, n)).ToList();
+        }
+        else if (ctrl.ControlType == "multi")
+        {
+            var typesDict = ctrl.GetDictionary("types");
+            if (typesDict != null)
+                options = typesDict.Select(kv => new ControlOption(kv.Key, kv.Value)).ToList();
 
-        return new ControlInfo(attribute, ctrl.ControlType, ctrl.Caption, options);
+            var editorsDict = ctrl.GetDictionary("editors");
+            List<ControlOption>? subEditors = editorsDict?.Select(kv => new ControlOption(kv.Key, kv.Value)).ToList();
+
+            var caption = ctrl.Caption ?? ctrl.GetString("selfcaption");
+            return new ControlInfo(ctrl.Id, ctrl.ControlType, caption, options, subEditors, ctrl.Attribute);
+        }
+
+        return new ControlInfo(attribute, ctrl.ControlType, ctrl.Caption ?? ctrl.GetString("selfcaption"), options);
     }
 }

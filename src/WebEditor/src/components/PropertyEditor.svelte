@@ -1,7 +1,8 @@
 <script lang="ts">
-    import { selectedKey, selectedData, setAttribute, setDropdownType } from "$lib/editor-store";
+    import { selectedKey, selectedData, setAttribute, setDropdownType, setMultiType, setObjectReference } from "$lib/editor-store";
     import type { ControlInfo } from "$lib/types";
     import ScriptEditor from "./ScriptEditor.svelte";
+    import Combobox from "./Combobox.svelte";
 
     let activeTab = $state<string | null>(null);
     let lastKey = $state<string | null>(null);
@@ -94,6 +95,104 @@
     {/if}
 </div>
 
+{#snippet controlOnly(ctrl: ControlInfo)}
+    {#if ctrl.controlType === "number"}
+        <input
+            type="number"
+            class="input text-xs py-0.5 px-1.5 w-auto"
+            value={attrValue(ctrl.attribute!) ?? ""}
+            onchange={(e) => onNumberChange(ctrl.attribute!, "number", (e.target as HTMLInputElement).value)}
+        />
+    {:else if ctrl.controlType === "numberdouble"}
+        <input
+            type="number"
+            step="any"
+            class="input text-xs py-0.5 px-1.5 w-auto"
+            value={attrValue(ctrl.attribute!) ?? ""}
+            onchange={(e) => onNumberChange(ctrl.attribute!, "numberdouble", (e.target as HTMLInputElement).value)}
+        />
+    {:else if ctrl.controlType === "dropdown" && ctrl.options}
+        <Combobox
+            value={attrValue(ctrl.attribute!) ?? ""}
+            options={ctrl.options}
+            onchange={(v) => onDropdownChange(ctrl.attribute!, v)}
+            class="input text-xs py-0.5 px-1.5 w-auto min-w-24"
+        />
+    {:else if ctrl.controlType === "dropdowntypes" && ctrl.options && ctrl.attribute}
+        <select
+            class="select text-xs py-0.5 px-1.5 w-auto"
+            value={attrValue(ctrl.attribute) ?? "*"}
+            onchange={(e) => $selectedKey && setDropdownType($selectedKey, ctrl.attribute!, (e.target as HTMLSelectElement).value)}
+        >
+            {#each ctrl.options as opt, oi (oi)}
+                <option value={opt.value}>{opt.label}</option>
+            {/each}
+        </select>
+    {:else if ctrl.controlType === "richtext"}
+        <textarea
+            class="input text-xs py-0.5 px-1.5 w-full min-h-24 resize-y"
+            value={attrValue(ctrl.attribute!) ?? ""}
+            onchange={(e) => onTextChange(ctrl.attribute!, ctrl.controlType, (e.target as HTMLTextAreaElement).value)}
+        ></textarea>
+    {:else if ctrl.controlType === "textbox"}
+        <input
+            type="text"
+            class="input text-xs py-0.5 px-1.5 w-full"
+            value={attrValue(ctrl.attribute!) ?? ""}
+            onchange={(e) => onTextChange(ctrl.attribute!, ctrl.controlType, (e.target as HTMLInputElement).value)}
+        />
+    {:else if ctrl.controlType === "objects" && ctrl.options}
+        <Combobox
+            value={attrValue(ctrl.attribute!) ?? ""}
+            options={ctrl.options}
+            onchange={(v) => $selectedKey && setObjectReference($selectedKey, ctrl.attribute!, v)}
+            class="input text-xs py-0.5 px-1.5 w-auto min-w-24"
+        />
+    {:else if ctrl.controlType === "multi" && ctrl.options}
+        {@const selectedType = attrValue(ctrl.attribute!) ?? "null"}
+        {@const subEditorType = ctrl.subEditors?.find(e => e.value === selectedType)?.label ?? selectedType}
+        <div class="flex flex-col gap-1 w-full">
+            <select
+                class="select text-xs py-0.5 px-1.5 w-auto self-start"
+                value={selectedType}
+                onchange={(e) => $selectedKey && setMultiType($selectedKey, ctrl.subAttribute!, (e.target as HTMLSelectElement).value)}
+            >
+                {#each ctrl.options as opt (opt.value)}
+                    <option value={opt.value}>{opt.label}</option>
+                {/each}
+            </select>
+            {#if subEditorType === "richtext" && ctrl.subAttribute !== null}
+                <textarea
+                    class="input text-xs py-0.5 px-1.5 w-full min-h-24 resize-y"
+                    value={attrValue(ctrl.subAttribute) ?? ""}
+                    onchange={(e) => onTextChange(ctrl.subAttribute!, "richtext", (e.target as HTMLTextAreaElement).value)}
+                ></textarea>
+            {:else if subEditorType === "textbox" && ctrl.subAttribute !== null}
+                <input
+                    type="text"
+                    class="input text-xs py-0.5 px-1.5 w-full"
+                    value={attrValue(ctrl.subAttribute) ?? ""}
+                    onchange={(e) => onTextChange(ctrl.subAttribute!, "textbox", (e.target as HTMLInputElement).value)}
+                />
+            {:else if subEditorType === "script" && ctrl.subAttribute !== null && $selectedKey !== null}
+                <ScriptEditor elementKey={$selectedKey} attribute={ctrl.subAttribute} />
+            {/if}
+        </div>
+    {:else if ctrl.controlType === "script" && ctrl.attribute !== null && $selectedKey !== null}
+        <div class="flex-1 min-w-0 overflow-hidden">
+            <ScriptEditor elementKey={$selectedKey} attribute={ctrl.attribute} />
+        </div>
+    {:else}
+        {#if attrValue(ctrl.attribute!) !== null}
+            <span class="text-xs overflow-hidden text-ellipsis whitespace-nowrap" title={attrValue(ctrl.attribute!) ?? ""}>
+                {attrValue(ctrl.attribute!)}
+            </span>
+        {:else}
+            <em class="text-xs text-surface-400-500">null</em>
+        {/if}
+    {/if}
+{/snippet}
+
 {#snippet controlRow(ctrl: ControlInfo)}
     {#if ctrl.controlType === "title"}
         <div class="px-3 pt-3 pb-1 text-xs font-semibold text-surface-500-400 uppercase tracking-wide">
@@ -104,73 +203,67 @@
             {ctrl.caption ?? ""}
         </div>
     {:else if ctrl.attribute !== null}
-        <div class="flex items-center gap-2 px-3 py-1.5 border-b border-surface-100-900 min-h-8">
-            <span class="text-xs text-surface-600-400 w-32 flex-shrink-0 overflow-hidden text-ellipsis whitespace-nowrap" title={ctrl.caption ?? ctrl.attribute}>
-                {ctrl.caption ?? ctrl.attribute}
-            </span>
-
-            {#if ctrl.controlType === "checkbox"}
+        {#if ctrl.controlType === "checkbox"}
+            <label class="flex items-center gap-2 px-3 py-1.5 min-h-8 cursor-pointer">
                 <input
                     type="checkbox"
-                    class="checkbox"
+                    class="checkbox flex-shrink-0"
                     checked={boolValue(ctrl.attribute)}
                     onchange={(e) => onCheckboxChange(ctrl.attribute!, (e.target as HTMLInputElement).checked)}
                 />
-            {:else if ctrl.controlType === "number"}
-                <input
-                    type="number"
-                    class="input text-xs py-0.5 px-1.5 w-full"
-                    value={attrValue(ctrl.attribute) ?? ""}
-                    onchange={(e) => onNumberChange(ctrl.attribute!, "number", (e.target as HTMLInputElement).value)}
-                />
-            {:else if ctrl.controlType === "numberdouble"}
-                <input
-                    type="number"
-                    step="any"
-                    class="input text-xs py-0.5 px-1.5 w-full"
-                    value={attrValue(ctrl.attribute) ?? ""}
-                    onchange={(e) => onNumberChange(ctrl.attribute!, "numberdouble", (e.target as HTMLInputElement).value)}
-                />
-            {:else if ctrl.controlType === "dropdown" && ctrl.options}
-                <select
-                    class="select text-xs py-0.5 px-1.5 w-full"
-                    value={attrValue(ctrl.attribute) ?? ""}
-                    onchange={(e) => onDropdownChange(ctrl.attribute!, (e.target as HTMLSelectElement).value)}
-                >
-                    {#each ctrl.options as opt, oi (oi)}
-                        <option value={opt.value}>{opt.label}</option>
-                    {/each}
-                </select>
-            {:else if ctrl.controlType === "dropdowntypes" && ctrl.options && ctrl.attribute}
-                <select
-                    class="select text-xs py-0.5 px-1.5 w-full"
-                    value={attrValue(ctrl.attribute) ?? "*"}
-                    onchange={(e) => $selectedKey && setDropdownType($selectedKey, ctrl.attribute!, (e.target as HTMLSelectElement).value)}
-                >
-                    {#each ctrl.options as opt, oi (oi)}
-                        <option value={opt.value}>{opt.label}</option>
-                    {/each}
-                </select>
-            {:else if ctrl.controlType === "textbox" || ctrl.controlType === "richtext"}
-                <input
-                    type="text"
-                    class="input text-xs py-0.5 px-1.5 w-full"
-                    value={attrValue(ctrl.attribute) ?? ""}
-                    onchange={(e) => onTextChange(ctrl.attribute!, ctrl.controlType, (e.target as HTMLInputElement).value)}
-                />
-            {:else if ctrl.controlType === "script" && ctrl.attribute !== null && $selectedKey !== null}
-                <div class="flex-1 min-w-0 overflow-hidden">
-                    <ScriptEditor elementKey={$selectedKey} attribute={ctrl.attribute} />
+                <span class="text-xs text-surface-600-400">
+                    {ctrl.caption ?? ctrl.attribute}
+                </span>
+            </label>
+        {:else if ctrl.controlType === "multi" && ctrl.options}
+            {@const label = ctrl.caption ?? ctrl.attribute}
+            {@const selectedType = attrValue(ctrl.attribute!) ?? "null"}
+            {@const subEditorType = ctrl.subEditors?.find(e => e.value === selectedType)?.label ?? selectedType}
+            <div class="flex flex-col gap-1 px-3 py-1.5">
+                <div class="flex items-center gap-2">
+                    <span class="text-xs text-surface-600-400 whitespace-nowrap">{label}:</span>
+                    <select
+                        class="select text-xs py-0.5 px-1.5 w-auto"
+                        value={selectedType}
+                        onchange={(e) => $selectedKey && setMultiType($selectedKey, ctrl.subAttribute!, (e.target as HTMLSelectElement).value)}
+                    >
+                        {#each ctrl.options as opt (opt.value)}
+                            <option value={opt.value}>{opt.label}</option>
+                        {/each}
+                    </select>
+                </div>
+                {#if subEditorType === "richtext" && ctrl.subAttribute !== null}
+                    <textarea
+                        class="input text-xs py-0.5 px-1.5 w-full min-h-24 resize-y"
+                        value={attrValue(ctrl.subAttribute) ?? ""}
+                        onchange={(e) => onTextChange(ctrl.subAttribute!, "richtext", (e.target as HTMLTextAreaElement).value)}
+                    ></textarea>
+                {:else if subEditorType === "textbox" && ctrl.subAttribute !== null}
+                    <input
+                        type="text"
+                        class="input text-xs py-0.5 px-1.5 w-full"
+                        value={attrValue(ctrl.subAttribute) ?? ""}
+                        onchange={(e) => onTextChange(ctrl.subAttribute!, "textbox", (e.target as HTMLInputElement).value)}
+                    />
+                {:else if subEditorType === "script" && ctrl.subAttribute !== null && $selectedKey !== null}
+                    <ScriptEditor elementKey={$selectedKey} attribute={ctrl.subAttribute} />
+                {/if}
+            </div>
+        {:else}
+            {@const label = ctrl.caption ?? ctrl.attribute}
+            {@const isLong = label.length > 20}
+            {@const isMultiline = ctrl.controlType === "richtext" || ctrl.controlType === "script"}
+            {#if isLong}
+                <div class="flex flex-col gap-1 px-3 py-1.5">
+                    <span class="text-xs text-surface-600-400">{label}:</span>
+                    {@render controlOnly(ctrl)}
                 </div>
             {:else}
-                {#if attrValue(ctrl.attribute) !== null}
-                    <span class="text-xs overflow-hidden text-ellipsis whitespace-nowrap" title={attrValue(ctrl.attribute) ?? ""}>
-                        {attrValue(ctrl.attribute)}
-                    </span>
-                {:else}
-                    <em class="text-xs text-surface-400-500">null</em>
-                {/if}
+                <div class="flex {isMultiline ? 'items-start' : 'items-center'} gap-2 px-3 py-1.5 min-h-8">
+                    <span class="text-xs text-surface-600-400 w-32 flex-shrink-0 {isMultiline ? 'pt-0.5' : ''}">{label}:</span>
+                    {@render controlOnly(ctrl)}
+                </div>
             {/if}
-        </div>
+        {/if}
     {/if}
 {/snippet}
