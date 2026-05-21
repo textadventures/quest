@@ -1,4 +1,5 @@
 <script lang="ts">
+    import { untrack } from "svelte";
     import { TreeView, createTreeViewCollection } from "@skeletonlabs/skeleton-svelte";
     import {
         treeNodes, selectedKey, selectNode,
@@ -43,8 +44,33 @@
 
     // ── Expansion state ────────────────────────────────────────────────────────
 
-    // Start with the main category headers open
-    let expandedIds = $state<string[]>(["_objects", "_functions", "_timers", "game"]);
+    let expandedIds = $state<string[]>([]);
+    let loadedGameKey = $state<string | null>(null);
+
+    // On game load, expand all nodes except _advanced
+    $effect(() => {
+        const nodes = $treeNodes;
+        if (nodes.length === 0) { loadedGameKey = null; return; }
+        const gameKey = nodes.find(n => n.nodeType === "game")?.key ?? null;
+        if (gameKey === loadedGameKey) return;
+        loadedGameKey = gameKey;
+        expandedIds = nodes.filter(n => n.key !== "_advanced").map(n => n.key);
+    });
+
+    function toggleExpand(id: string) {
+        if (expandedIds.includes(id)) {
+            // If the selected node is inside this branch, select the branch itself first
+            const nodeMap = new Map($treeNodes.map(n => [n.key, n]));
+            let cur = nodeMap.get($selectedKey ?? "");
+            while (cur?.parent) {
+                if (cur.parent === id) { selectNode(id); break; }
+                cur = nodeMap.get(cur.parent);
+            }
+            expandedIds = expandedIds.filter(x => x !== id);
+        } else {
+            expandedIds = [...expandedIds, id];
+        }
+    }
 
     // Auto-expand the ancestor chain whenever the selected node changes
     $effect(() => {
@@ -58,8 +84,11 @@
             toExpand.push(cur.parent);
             cur = nodeMap.get(cur.parent);
         }
-        if (toExpand.some(id => !expandedIds.includes(id))) {
-            expandedIds = [...new Set([...expandedIds, ...toExpand])];
+        // Use untrack so reading expandedIds doesn't make this effect re-run when
+        // the user manually collapses a branch (which would immediately re-expand it).
+        const current = untrack(() => expandedIds);
+        if (toExpand.some(id => !current.includes(id))) {
+            expandedIds = [...new Set([...current, ...toExpand])];
         }
     });
 
@@ -154,8 +183,8 @@
         <TreeView
             {collection}
             selectionMode="single"
+            expandOnClick={false}
             expandedValue={expandedIds}
-            onExpandedChange={(e) => { expandedIds = e.expandedValue; }}
             selectedValue={$selectedKey ? [$selectedKey] : []}
             onSelectionChange={(e) => { if (e.selectedValue[0]) selectNode(e.selectedValue[0]); }}
         >
@@ -196,8 +225,16 @@
     <TreeView.NodeProvider value={{ node, indexPath }}>
         {#if node.children}
             <TreeView.Branch>
-                <TreeView.BranchControl class="group">
-                    <TreeView.BranchIndicator />
+                <TreeView.BranchControl class="group" ondblclick={() => toggleExpand(node.id)}>
+                    <button
+                        type="button"
+                        tabindex="-1"
+                        class="flex-shrink-0 size-4 flex items-center justify-center transition-transform duration-150 {expandedIds.includes(node.id) ? 'rotate-90' : ''}"
+                        onclick={(e) => { e.stopPropagation(); toggleExpand(node.id); }}
+                        aria-label={expandedIds.includes(node.id) ? 'Collapse' : 'Expand'}
+                    >
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="size-4"><polyline points="9 18 15 12 9 6" /></svg>
+                    </button>
                     <TreeView.BranchText class="flex-1 min-w-0 truncate">{node.text}</TreeView.BranchText>
                     <span class="opacity-0 group-hover:opacity-100">
                         {@render nodeActions(node)}
