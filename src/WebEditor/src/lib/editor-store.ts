@@ -118,6 +118,24 @@ export function redo() {
     scriptVersion.update(n => n + 1);
 }
 
+// ── List editor functions ────────────────────────────────────────────────────
+
+export function addListItem(elementKey: string, attribute: string, value: string): string {
+    if (!_bridge) return "error";
+    const result = _bridge.AddListItem(elementKey, attribute, value);
+    refreshSelectedData();
+    refreshUndoRedo();
+    return result;
+}
+
+export function removeListItem(elementKey: string, attribute: string, key: string): string {
+    if (!_bridge) return "error";
+    const result = _bridge.RemoveListItem(elementKey, attribute, key);
+    refreshSelectedData();
+    refreshUndoRedo();
+    return result;
+}
+
 // ── Script editor functions ─────────────────────────────────────────────────
 
 export function getScriptCode(elementKey: string, attribute: string): string {

@@ -1,11 +1,12 @@
 <script lang="ts">
-    import { selectedKey, selectedData, setAttribute, setDropdownType, setMultiType, setObjectReference } from "$lib/editor-store";
+    import { selectedKey, selectedData, setAttribute, setDropdownType, setMultiType, setObjectReference, addListItem, removeListItem } from "$lib/editor-store";
     import type { ControlInfo, TextProcessorCommand } from "$lib/types";
     import ScriptEditor from "./ScriptEditor.svelte";
     import Combobox from "./Combobox.svelte";
 
     let activeTab = $state<string | null>(null);
     let lastKey = $state<string | null>(null);
+    let newListItemValues = $state<Record<string, string>>({});
 
     $effect(() => {
         const key = $selectedKey;
@@ -198,6 +199,46 @@
         </div>
     {:else if ctrl.controlType === "file"}
         <em class="text-xs text-surface-400-500">File picker not yet implemented</em>
+    {:else if ctrl.controlType === "list"}
+        {@const items = (() => { try { return JSON.parse(attrValue(ctrl.attribute!) ?? "[]") as {key: string, value: string}[] } catch { return [] } })()}
+        {@const inputKey = ctrl.attribute!}
+        <div class="flex flex-col gap-1 w-full">
+            {#each items as item (item.key)}
+                <div class="flex items-center gap-1">
+                    <span class="text-xs flex-1 px-1.5 py-0.5 bg-surface-100-900 rounded border border-surface-200-800">{item.value}</span>
+                    <button
+                        type="button"
+                        class="btn btn-sm preset-outlined-error-500 text-xs px-1.5 py-0.5"
+                        onclick={() => $selectedKey && removeListItem($selectedKey, ctrl.attribute!, item.key)}
+                    >✕</button>
+                </div>
+            {/each}
+            <div class="flex items-center gap-1 mt-0.5">
+                <input
+                    type="text"
+                    class="input text-xs py-0.5 px-1.5 flex-1"
+                    placeholder="Add item…"
+                    value={newListItemValues[inputKey] ?? ""}
+                    oninput={(e) => { newListItemValues[inputKey] = (e.target as HTMLInputElement).value; }}
+                    onkeydown={(e) => {
+                        if (e.key === "Enter" && $selectedKey && newListItemValues[inputKey]?.trim()) {
+                            addListItem($selectedKey, ctrl.attribute!, newListItemValues[inputKey].trim());
+                            newListItemValues[inputKey] = "";
+                        }
+                    }}
+                />
+                <button
+                    type="button"
+                    class="btn btn-sm preset-outlined-primary-500 text-xs px-2 py-0.5"
+                    onclick={() => {
+                        if ($selectedKey && newListItemValues[inputKey]?.trim()) {
+                            addListItem($selectedKey, ctrl.attribute!, newListItemValues[inputKey].trim());
+                            newListItemValues[inputKey] = "";
+                        }
+                    }}
+                >Add</button>
+            </div>
+        </div>
     {:else if ctrl.controlType === "objects" && ctrl.options}
         <Combobox
             value={attrValue(ctrl.attribute!) ?? ""}

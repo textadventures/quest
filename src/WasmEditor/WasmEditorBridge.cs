@@ -58,6 +58,7 @@ internal record IfExpressionTemplateData(
     List<ExpressionTemplateControlData> Controls
 );
 internal record IfExpressionTemplate(string Name, string CreateExpression);
+internal record ListItemData(string Key, string Value);
 
 [JsonSourceGenerationOptions(PropertyNamingPolicy = JsonKnownNamingPolicy.CamelCase)]
 [JsonSerializable(typeof(List<TreeNodeData>))]
@@ -68,6 +69,7 @@ internal record IfExpressionTemplate(string Name, string CreateExpression);
 [JsonSerializable(typeof(List<IfExpressionTemplate>))]
 [JsonSerializable(typeof(IfExpressionTemplateData))]
 [JsonSerializable(typeof(int[]))]
+[JsonSerializable(typeof(List<ListItemData>))]
 internal partial class WasmEditorJsonContext : JsonSerializerContext { }
 
 [SuppressMessage("ReSharper", "MemberCanBePrivate.Global")]
@@ -128,7 +130,14 @@ public partial class WasmEditorBridge
         foreach (var attr in extended.GetAttributeData())
         {
             var val = data.GetAttribute(attr.AttributeName);
-            attrs[attr.AttributeName] = val is IEditableObjectReference objRef ? objRef.Reference : val?.ToString();
+            attrs[attr.AttributeName] = val switch
+            {
+                IEditableObjectReference objRef => objRef.Reference,
+                IEditableList<string> list => JsonSerializer.Serialize(
+                    list.ItemsList.Select(i => new ListItemData(i.Key, i.Value)).ToList(),
+                    WasmEditorJsonContext.Default.ListListItemData),
+                _ => val?.ToString()
+            };
         }
 
         var tabs = new List<TabInfo>();
@@ -292,6 +301,53 @@ public partial class WasmEditorBridge
         {
             _controller.EndTransaction();
         }
+    }
+
+    [JSExport]
+    public static string AddListItem(string elementKey, string attribute, string value)
+    {
+        if (_controller == null) return "error";
+        var data = _controller.GetEditorData(elementKey);
+        if (data == null) return "error";
+
+        _controller.StartTransaction($"Add item to {attribute}");
+        try
+        {
+            var existing = data.GetAttribute(attribute) as IEditableList<string>;
+            if (existing == null)
+            {
+                _controller.CreateNewEditableList(elementKey, attribute, value, false);
+            }
+            else
+            {
+                var validation = existing.CanAdd(value);
+                if (!validation.Valid) return validation.Message.ToString();
+                existing.Add(value);
+            }
+            return "ok";
+        }
+        catch (Exception ex) { return ex.Message; }
+        finally { _controller.EndTransaction(); }
+    }
+
+    [JSExport]
+    public static string RemoveListItem(string elementKey, string attribute, string key)
+    {
+        if (_controller == null) return "error";
+        var data = _controller.GetEditorData(elementKey);
+        if (data == null) return "error";
+
+        var list = data.GetAttribute(attribute) as IEditableList<string>;
+        if (list == null) return "error";
+
+        _controller.StartTransaction($"Remove item from {attribute}");
+        try
+        {
+            list.Remove(key);
+            return "ok";
+        }
+        catch (Exception ex) { return ex.Message; }
+        finally { _controller.EndTransaction(); }
     }
 
     private static void AddDropdownTypeValues(Dictionary<string, string?> attrs, List<IEditorControl> controls, string elementKey, IEditorData data)
