@@ -34,6 +34,18 @@ All data crossing the JS/WASM boundary is JSON. The Svelte layer calls `[JSExpor
 [JSExport] string     Save()                   // returns XML
 [JSExport] void       Undo()
 [JSExport] void       Redo()
+// Element creation — returns new element key on success, "error:..." on failure
+[JSExport] string     ValidateName(string name)
+[JSExport] string     GetUniqueName(string baseName)
+[JSExport] string     CreateRoom(string name, string? parent)    // parent="" means top-level
+[JSExport] string     CreateObject(string name, string? parent)
+[JSExport] string     CreateFunction(string name)
+[JSExport] string     CreateTimer(string name)
+[JSExport] string     CreateExit(string parent)       // anonymous; navigate to it to edit destination
+[JSExport] string     CreateTurnScript(string parent) // anonymous
+[JSExport] string     CreateCommand(string? parent)   // anonymous; parent="" means global
+[JSExport] string     CreateVerb(string? parent)      // anonymous; parent="" means global
+[JSExport] void       DeleteElement(string key)
 ```
 
 `GetEditorData` returns an `EditorDataResponse`:
@@ -236,7 +248,20 @@ Visual script editor, code view, and copy/paste — full feature parity with the
 **Bridge additions** (all `[JSExport]` on `WasmEditorBridge`):
 `GetScriptData`, `SetScriptParameter`, `SetIfExpression`, `SetElseIfExpression`, `AddScript`, `DeleteScript`, `DeleteScripts`, `MoveScript`, `AddElse`, `AddElseIf`, `RemoveElse`, `RemoveElseIf`, `GetScriptCommandCategories`, `GetObjectNames`, `GetIfExpressionTemplates`, `GetIfExpressionTemplateData`, `GetScriptCode`, `SetScriptCode`, `CopyScripts`, `CutScripts`, `PasteScripts`, `CanPasteScript`
 
-### Phase 5 — Full feature parity
+### Phase 5 — Add / delete elements ✅
+
+Tree panel and WASM bridge support creating and deleting all element types:
+
+- **Rooms and Objects** — named, via `AddElementModal` (live name validation, unique-name suggestion)
+- **Functions and Timers** — named, same modal flow
+- **Exits, Commands, Verbs, Turn Scripts** — anonymous (auto-named), created immediately and selected for editing
+- **Delete** — any non-header element; confirm dialog; tree and undo/redo update immediately
+- Tree nodes now carry `nodeIcon` so the UI knows element type without a round-trip
+- `RemovedNode`, `RenamedNode`, `RetitledNode` events now kept live in C# so `GetTreeNodes()` always returns current state
+
+UX: hovering a tree node reveals "+" (add child) and "×" (delete) action buttons. Header nodes get a single-click "+". The Rooms exits tab with a richer exit dialog is a separate future phase.
+
+### Phase 6 — Remaining full feature parity
 - New game (from templates)
 - Publish/export
 - File System Access API + OPFS persistence (see File handling section)

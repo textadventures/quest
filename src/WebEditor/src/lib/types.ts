@@ -2,6 +2,8 @@ export interface TreeNode {
   key: string
   text: string
   parent: string | null
+  nodeIcon: string | null
+  nodeType: string
 }
 
 export interface ControlOption {

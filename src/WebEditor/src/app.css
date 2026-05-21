@@ -1,4 +1,35 @@
 @import 'tailwindcss';
 @import '@skeletonlabs/skeleton';
 @import '@skeletonlabs/skeleton-svelte';
-@import '@skeletonlabs/skeleton/themes/cerberus';
+@import '@skeletonlabs/skeleton/themes/wintry';
+
+[data-scope='app-bar'] {
+    background: light-dark(white, var(--color-surface-800));
+}
+
+/* Override flex-start so branches/items stretch to the full panel width */
+[data-scope='tree-view'][data-part='root'] {
+    align-items: stretch;
+}
+
+/* Reduce right padding so the ⋯ button sits close to the edge */
+/* Pointer cursor on all nodes; tighter vertical padding for compactness */
+[data-scope='tree-view'][data-part='item'],
+[data-scope='tree-view'][data-part='branch-control'] {
+    padding-inline-end: 0;
+    padding-block: calc(var(--spacing) * 1);
+    cursor: pointer;
+}
+
+/* Ensure indent guides paint above item backgrounds */
+[data-scope='tree-view'][data-part='branch-indent-guide'] {
+    z-index: 1;
+    pointer-events: none;
+}
+
+/* Subtle neutral selection highlight instead of the stark preset-filled black/white */
+[data-scope='tree-view'][data-part='item'][data-selected],
+[data-scope='tree-view'][data-part='branch-control'][data-selected] {
+    background-color: var(--color-surface-200-800);
+    color: inherit;
+}
