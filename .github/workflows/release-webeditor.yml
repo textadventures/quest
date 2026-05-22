@@ -19,6 +19,9 @@ jobs:
         with:
           node-version: '22'
 
+      - name: Install .NET WASM workload
+        run: dotnet workload install wasm-tools
+
       - name: Build WasmEditor
         run: dotnet build src/WasmEditor/WasmEditor.csproj -c Release
 
