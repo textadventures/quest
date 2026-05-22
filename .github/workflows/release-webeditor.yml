@@ -35,6 +35,6 @@ jobs:
         uses: peter-evans/repository-dispatch@v3
         with:
           token: ${{ secrets.TA_DEPLOY_PAT }}
-          repository: textadventures/textadventures.co.uk
+          repository: alexwarren/textadventures.co.uk
           event-type: webeditor-release
           client-payload: '{"tag": "${{ github.ref_name }}"}'
