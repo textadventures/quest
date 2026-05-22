@@ -73,7 +73,7 @@
             <AppBar.Lead>
                 <span class="font-semibold">Quest Viva Editor</span>
                 {#if PUBLIC_WEBEDITOR_VERSION}
-                    <span class="ml-2 text-xs text-surface-500-400">{PUBLIC_WEBEDITOR_VERSION}</span>
+                    <span class="ml-2 text-xs text-surface-500-400">{PUBLIC_WEBEDITOR_VERSION.replace('webeditor-', '')}</span>
                 {/if}
                 {#if $gameFilename}
                     <span class="ml-3 text-sm text-surface-500-400">{$gameFilename}</span>
