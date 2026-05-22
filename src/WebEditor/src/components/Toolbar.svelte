@@ -1,5 +1,7 @@
 <script lang="ts">
     import { AppBar } from "@skeletonlabs/skeleton-svelte";
+
+    const version: string | undefined = import.meta.env.PUBLIC_WEBEDITOR_VERSION;
     import {
         gameFilename, saveGame, undo, redo, canUndo, canRedo,
         treeNodes, selectedKey, openAddModal,
@@ -71,6 +73,9 @@
         <AppBar.Toolbar class="grid-cols-[auto_1fr_auto]">
             <AppBar.Lead>
                 <span class="font-semibold">Quest Viva Editor</span>
+                {#if version}
+                    <span class="ml-2 text-xs text-surface-500-400">{version}</span>
+                {/if}
                 {#if $gameFilename}
                     <span class="ml-3 text-sm text-surface-500-400">{$gameFilename}</span>
                 {/if}

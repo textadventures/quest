@@ -28,6 +28,8 @@ jobs:
       - name: Build WebEditor
         run: npm ci && npm run build
         working-directory: src/WebEditor
+        env:
+          PUBLIC_WEBEDITOR_VERSION: ${{ github.ref_name }}
 
       - name: Trigger textadventures.co.uk deployment
         uses: peter-evans/repository-dispatch@v3
