@@ -1,0 +1,35 @@
+name: Release WebEditor
+
+on:
+  push:
+    tags:
+      - 'webeditor-v*'
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '10.0.x'
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Build WasmEditor
+        run: dotnet build src/WasmEditor/WasmEditor.csproj -c Release
+
+      - name: Build WebEditor
+        run: npm ci && npm run build
+        working-directory: src/WebEditor
+
+      - name: Trigger textadventures.co.uk deployment
+        uses: peter-evans/repository-dispatch@v3
+        with:
+          token: ${{ secrets.TA_DEPLOY_PAT }}
+          repository: textadventures/textadventures.co.uk
+          event-type: webeditor-release
+          client-payload: '{"tag": "${{ github.ref_name }}"}'
