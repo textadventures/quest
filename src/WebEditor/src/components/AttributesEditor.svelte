@@ -3,6 +3,8 @@
     import type { AttributeDataItem } from "$lib/types";
     import ScriptEditor from "./ScriptEditor.svelte";
     import ListEditor from "./ListEditor.svelte";
+    import DictionaryEditor from "./DictionaryEditor.svelte";
+    import ScriptDictionaryEditor from "./ScriptDictionaryEditor.svelte";
 
     const TYPE_OPTIONS = [
         { value: "string",           label: "String" },
@@ -182,11 +184,11 @@
     function displayValue(attr: AttributeDataItem): string {
         if (attr.value === null) return "(null)";
         if (attr.type === "script") return "(script)";
-        if (attr.type === "scriptdictionary") return "(script dictionary)";
-        if (attr.type === "stringlist" || attr.type === "stringdictionary") {
+        if (attr.type === "stringlist" || attr.type === "stringdictionary" || attr.type === "scriptdictionary") {
             try {
                 const items = JSON.parse(attr.value) as {key: string, value: string}[];
-                return `(${attr.type === "stringlist" ? "list" : "dict"}: ${items.length})`;
+                const label = attr.type === "stringlist" ? "list" : "dict";
+                return `(${label}: ${items.length})`;
             } catch { /* fall through */ }
         }
         return attr.value;
@@ -380,13 +382,17 @@
                                 {/if}
                             </div>
                         {:else if attr.type === "scriptdictionary"}
-                            <p class="text-surface-400-500 italic">Edit via the relevant tab</p>
+                            {#if $selectedKey}
+                                <ScriptDictionaryEditor elementKey={$selectedKey} attribute={attr.name} value={attr.value} />
+                            {/if}
                         {:else if attr.type === "stringlist"}
                             {#if $selectedKey}
                                 <ListEditor elementKey={$selectedKey} attribute={attr.name} value={attr.value} />
                             {/if}
                         {:else if attr.type === "stringdictionary"}
-                            <p class="text-surface-400-500 italic">Edit via the relevant tab</p>
+                            {#if $selectedKey}
+                                <DictionaryEditor elementKey={$selectedKey} attribute={attr.name} value={attr.value} />
+                            {/if}
                         {:else if attr.type === "object"}
                             <select
                                 class="select text-xs py-0 px-1.5 h-7"

@@ -1020,6 +1020,10 @@ public partial class WasmEditorBridge
             {
                 _controller.CreateNewEditableScripts(elementKey, attribute, null!, false);
             }
+            else if (newType == "scriptdictionary")
+            {
+                _controller.CreateNewEditableScriptDictionary(elementKey, attribute, null!, null!, false);
+            }
             else if (newType == "object")
             {
                 _controller.CreateNewEditableObjectReference(elementKey, attribute, false);
@@ -1122,6 +1126,47 @@ public partial class WasmEditorBridge
         catch (Exception ex) { return ex.Message; }
     }
 
+    [JSExport]
+    public static string AddScriptDictionaryItem(string elementKey, string attribute, string key)
+    {
+        if (_controller == null) return "error";
+        var data = _controller.GetEditorData(elementKey);
+        if (data == null) return "error";
+
+        try
+        {
+            var existing = data.GetAttribute(attribute) as IEditableDictionary<IEditableScripts>;
+            if (existing == null)
+            {
+                var emptyScript = _controller.CreateNewEditableScripts(null!, null!, null!, false);
+                _controller.CreateNewEditableScriptDictionary(elementKey, attribute, key, emptyScript, true);
+            }
+            else
+            {
+                var validation = existing.CanAdd(key);
+                if (!validation.Valid) return validation.Message.ToString();
+                var emptyScript = _controller.CreateNewEditableScripts(null!, null!, null!, false);
+                existing.Add(key, emptyScript);
+            }
+            return "ok";
+        }
+        catch (Exception ex) { return ex.Message; }
+    }
+
+    [JSExport]
+    public static string RemoveScriptDictionaryItem(string elementKey, string attribute, string key)
+    {
+        if (_controller == null) return "error";
+        var data = _controller.GetEditorData(elementKey);
+        if (data == null) return "error";
+
+        var dict = data.GetAttribute(attribute) as IEditableDictionary<IEditableScripts>;
+        if (dict == null) return "error";
+
+        try { dict.Remove(key); return "ok"; }
+        catch (Exception ex) { return ex.Message; }
+    }
+
     // ── Private helpers ────────────────────────────────────────────────────────
 
     private static string? SerializeAttributeValue(object? val) => val switch
@@ -1139,7 +1184,9 @@ public partial class WasmEditorBridge
             WasmEditorJsonContext.Default.ListListItemData),
         IEditableScripts => "(script)",
         IEditableCommandPattern cmd => cmd.Pattern,
-        IEditableDictionary<IEditableScripts> => "(script dictionary)",
+        IEditableDictionary<IEditableScripts> scriptDict => JsonSerializer.Serialize(
+            scriptDict.Items.Values.Select(i => new ListItemData(i.Key, "(script)")).ToList(),
+            WasmEditorJsonContext.Default.ListListItemData),
         _ => val.ToString()
     };
 
@@ -1162,7 +1209,19 @@ public partial class WasmEditorBridge
     {
         if (_controller == null) return null;
         var data = _controller.GetEditorData(elementKey);
-        return data?.GetAttribute(attribute) as IEditableScripts;
+        if (data == null) return null;
+
+        var bracketIdx = attribute.IndexOf('[');
+        if (bracketIdx >= 0 && attribute.EndsWith(']'))
+        {
+            var attrName = attribute[..bracketIdx];
+            var key = attribute[(bracketIdx + 1)..^1];
+            var dict = data.GetAttribute(attrName) as IEditableDictionary<IEditableScripts>;
+            if (dict == null || !dict.Items.TryGetValue(key, out var item)) return null;
+            return item.Value;
+        }
+
+        return data.GetAttribute(attribute) as IEditableScripts;
     }
 
     private static IEditableScripts? ResolveContainer(IEditableScripts root, string containerPath)

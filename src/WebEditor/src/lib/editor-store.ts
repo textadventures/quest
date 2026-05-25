@@ -203,6 +203,22 @@ export function updateDictItem(elementKey: string, attribute: string, key: strin
     return result;
 }
 
+export function addScriptDictItem(elementKey: string, attribute: string, key: string): string {
+    if (!_bridge) return "error";
+    const result = _bridge.AddScriptDictionaryItem(elementKey, attribute, key);
+    if (result === "ok") { refreshSelectedData(); bumpScriptVersion(); }
+    refreshUndoRedo();
+    return result;
+}
+
+export function removeScriptDictItem(elementKey: string, attribute: string, key: string): string {
+    if (!_bridge) return "error";
+    const result = _bridge.RemoveScriptDictionaryItem(elementKey, attribute, key);
+    if (result === "ok") { refreshSelectedData(); bumpScriptVersion(); }
+    refreshUndoRedo();
+    return result;
+}
+
 export function changeAttributeType(elementKey: string, attribute: string, newType: string): string {
     if (!_bridge) return "error";
     const result = _bridge.ChangeAttributeType(elementKey, attribute, newType);
