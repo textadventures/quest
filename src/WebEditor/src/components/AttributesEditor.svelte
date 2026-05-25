@@ -2,6 +2,7 @@
     import { fullAttributeData, selectedKey, removeAttribute, addInheritedType, removeInheritedType, getTypeNames, setAttribute, setObjectReference, changeAttributeType, setPatternAttribute, getObjectNames } from "$lib/editor-store";
     import type { AttributeDataItem } from "$lib/types";
     import ScriptEditor from "./ScriptEditor.svelte";
+    import ListEditor from "./ListEditor.svelte";
 
     const TYPE_OPTIONS = [
         { value: "string",           label: "String" },
@@ -381,7 +382,9 @@
                         {:else if attr.type === "scriptdictionary"}
                             <p class="text-surface-400-500 italic">Edit via the relevant tab</p>
                         {:else if attr.type === "stringlist"}
-                            <p class="text-surface-400-500 italic">Edit via the relevant tab</p>
+                            {#if $selectedKey}
+                                <ListEditor elementKey={$selectedKey} attribute={attr.name} value={attr.value} />
+                            {/if}
                         {:else if attr.type === "stringdictionary"}
                             <p class="text-surface-400-500 italic">Edit via the relevant tab</p>
                         {:else if attr.type === "object"}

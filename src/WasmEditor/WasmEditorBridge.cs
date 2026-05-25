@@ -317,6 +317,7 @@ public partial class WasmEditorBridge
             }
             else
             {
+                existing = EnsureLocalList(data, attribute, existing);
                 var validation = existing.CanAdd(value);
                 if (!validation.Valid) return validation.Message.ToString();
                 existing.Add(value);
@@ -338,6 +339,7 @@ public partial class WasmEditorBridge
 
         try
         {
+            list = EnsureLocalList(data, attribute, list);
             list.Remove(key);
             return "ok";
         }
@@ -356,10 +358,23 @@ public partial class WasmEditorBridge
 
         try
         {
+            list = EnsureLocalList(data, attribute, list);
             list.Update(key, value);
             return "ok";
         }
         catch (Exception ex) { return ex.Message; }
+    }
+
+    private static IEditableList<string> EnsureLocalList(IEditorData data, string attribute, IEditableList<string> list)
+    {
+        if (data is not IEditorDataExtendedAttributeInfo extended) return list;
+        var attrInfo = extended.GetAttributeData().FirstOrDefault(a => a.AttributeName == attribute);
+        if (attrInfo is not { IsInherited: true } and not { IsDefaultType: true }) return list;
+
+        var copy = new QuestList<string>();
+        foreach (var item in list.ItemsList) copy.Add(item.Value);
+        data.SetAttribute(attribute, copy);
+        return (data.GetAttribute(attribute) as IEditableList<string>)!;
     }
 
     private static void AddDropdownTypeValues(Dictionary<string, string?> attrs, List<IEditorControl> controls, string elementKey, IEditorData data)

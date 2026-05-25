@@ -1,13 +1,13 @@
 <script lang="ts">
-    import { selectedKey, selectedData, setAttribute, setDropdownType, setMultiType, setObjectReference, addListItem, removeListItem, updateListItem, addDictItem, removeDictItem, updateDictItem } from "$lib/editor-store";
+    import { selectedKey, selectedData, setAttribute, setDropdownType, setMultiType, setObjectReference, addDictItem, removeDictItem, updateDictItem } from "$lib/editor-store";
     import type { ControlInfo, TextProcessorCommand } from "$lib/types";
     import ScriptEditor from "./ScriptEditor.svelte";
     import Combobox from "./Combobox.svelte";
     import AttributesEditor from "./AttributesEditor.svelte";
+    import ListEditor from "./ListEditor.svelte";
 
     let activeTab = $state<string | null>(null);
     let lastKey = $state<string | null>(null);
-    let newListItemValues = $state<Record<string, string>>({});
     let editingItem = $state<{attribute: string, key: string, value: string} | null>(null);
     let newDictItems = $state<Record<string, {key: string, value: string}>>({});
 
@@ -217,75 +217,8 @@
         </div>
     {:else if ctrl.controlType === "file"}
         <em class="text-xs text-surface-400-500">File picker not yet implemented</em>
-    {:else if ctrl.controlType === "list"}
-        {@const items = (() => { try { return JSON.parse(attrValue(ctrl.attribute!) ?? "[]") as {key: string, value: string}[] } catch { return [] } })()}
-        {@const inputKey = ctrl.attribute!}
-        <div class="flex flex-col gap-1 w-full">
-            {#each items as item (item.key)}
-                {@const isEditing = editingItem?.attribute === ctrl.attribute! && editingItem?.key === item.key}
-                <div class="flex items-center gap-1">
-                    {#if isEditing}
-                        <input
-                            type="text"
-                            class="input text-xs py-0.5 px-1.5 flex-1"
-                            use:focusOnMount
-                            value={editingItem!.value}
-                            oninput={(e) => { if (editingItem) editingItem.value = (e.target as HTMLInputElement).value; }}
-                            onkeydown={(e) => {
-                                if (e.key === "Enter" && $selectedKey && editingItem) {
-                                    updateListItem($selectedKey, ctrl.attribute!, editingItem.key, editingItem.value);
-                                    editingItem = null;
-                                } else if (e.key === "Escape") {
-                                    editingItem = null;
-                                }
-                            }}
-                            onblur={() => {
-                                if ($selectedKey && editingItem) {
-                                    updateListItem($selectedKey, ctrl.attribute!, editingItem.key, editingItem.value);
-                                    editingItem = null;
-                                }
-                            }}
-                        />
-                    {:else}
-                        <button
-                            type="button"
-                            class="text-xs flex-1 text-left px-1.5 py-0.5 hover:text-primary-600-400"
-                            onclick={() => { editingItem = {attribute: ctrl.attribute!, key: item.key, value: item.value}; }}
-                        >{item.value}</button>
-                    {/if}
-                    <button
-                        type="button"
-                        class="btn btn-sm preset-outlined-error-500 text-xs px-1.5 py-0.5"
-                        onclick={() => $selectedKey && removeListItem($selectedKey, ctrl.attribute!, item.key)}
-                    >✕</button>
-                </div>
-            {/each}
-            <div class="flex items-center gap-1 mt-0.5">
-                <input
-                    type="text"
-                    class="input text-xs py-0.5 px-1.5 flex-1"
-                    placeholder={ctrl.addPrompt ?? "Add item…"}
-                    value={newListItemValues[inputKey] ?? ""}
-                    oninput={(e) => { newListItemValues[inputKey] = (e.target as HTMLInputElement).value; }}
-                    onkeydown={(e) => {
-                        if (e.key === "Enter" && $selectedKey && newListItemValues[inputKey]?.trim()) {
-                            addListItem($selectedKey, ctrl.attribute!, newListItemValues[inputKey].trim());
-                            newListItemValues[inputKey] = "";
-                        }
-                    }}
-                />
-                <button
-                    type="button"
-                    class="btn btn-sm preset-outlined-primary-500 text-xs px-2 py-0.5"
-                    onclick={() => {
-                        if ($selectedKey && newListItemValues[inputKey]?.trim()) {
-                            addListItem($selectedKey, ctrl.attribute!, newListItemValues[inputKey].trim());
-                            newListItemValues[inputKey] = "";
-                        }
-                    }}
-                >Add</button>
-            </div>
-        </div>
+    {:else if ctrl.controlType === "list" && ctrl.attribute && $selectedKey}
+        <ListEditor elementKey={$selectedKey} attribute={ctrl.attribute} value={attrValue(ctrl.attribute)} addPrompt={ctrl.addPrompt ?? undefined} />
     {:else if ctrl.controlType === "stringdictionary" && ctrl.attribute}
         {@const items = (() => { try { return JSON.parse(attrValue(ctrl.attribute) ?? "[]") as {key: string, value: string}[] } catch { return [] } })()}
         {@const dk = ctrl.attribute}
