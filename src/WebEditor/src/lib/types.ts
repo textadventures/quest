@@ -106,3 +106,16 @@ export interface IfExpressionTemplate {
   name: string
   createExpression: string
 }
+
+export interface AttributeDataItem {
+  name: string
+  value: string | null
+  isInherited: boolean
+  source: string
+  isDefaultType: boolean
+}
+
+export interface FullAttributeData {
+  attributes: AttributeDataItem[]
+  inheritedTypes: AttributeDataItem[]
+}

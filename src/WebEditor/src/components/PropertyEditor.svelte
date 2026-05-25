@@ -1,13 +1,15 @@
 <script lang="ts">
-    import { selectedKey, selectedData, setAttribute, setDropdownType, setMultiType, setObjectReference, addListItem, removeListItem, updateListItem } from "$lib/editor-store";
+    import { selectedKey, selectedData, setAttribute, setDropdownType, setMultiType, setObjectReference, addListItem, removeListItem, updateListItem, addDictItem, removeDictItem, updateDictItem } from "$lib/editor-store";
     import type { ControlInfo, TextProcessorCommand } from "$lib/types";
     import ScriptEditor from "./ScriptEditor.svelte";
     import Combobox from "./Combobox.svelte";
+    import AttributesEditor from "./AttributesEditor.svelte";
 
     let activeTab = $state<string | null>(null);
     let lastKey = $state<string | null>(null);
     let newListItemValues = $state<Record<string, string>>({});
     let editingItem = $state<{attribute: string, key: string, value: string} | null>(null);
+    let newDictItems = $state<Record<string, {key: string, value: string}>>({});
 
     $effect(() => {
         const key = $selectedKey;
@@ -273,6 +275,83 @@
                 >Add</button>
             </div>
         </div>
+    {:else if ctrl.controlType === "stringdictionary" && ctrl.attribute}
+        {@const items = (() => { try { return JSON.parse(attrValue(ctrl.attribute) ?? "[]") as {key: string, value: string}[] } catch { return [] } })()}
+        {@const dk = ctrl.attribute}
+        <div class="flex flex-col gap-1 w-full">
+            {#each items as item (item.key)}
+                {@const isEditing = editingItem?.attribute === dk && editingItem?.key === item.key}
+                <div class="flex items-center gap-1">
+                    <span class="text-xs text-surface-500-400 w-24 flex-shrink-0 truncate" title={item.key}>{item.key}</span>
+                    {#if isEditing}
+                        <input
+                            type="text"
+                            class="input text-xs py-0.5 px-1.5 flex-1"
+                            use:focusOnMount
+                            value={editingItem!.value}
+                            oninput={(e) => { if (editingItem) editingItem.value = (e.target as HTMLInputElement).value; }}
+                            onkeydown={(e) => {
+                                if (e.key === "Enter" && $selectedKey && editingItem) {
+                                    updateDictItem($selectedKey, dk, editingItem.key, editingItem.value);
+                                    editingItem = null;
+                                } else if (e.key === "Escape") {
+                                    editingItem = null;
+                                }
+                            }}
+                            onblur={() => {
+                                if ($selectedKey && editingItem) {
+                                    updateDictItem($selectedKey, dk, editingItem.key, editingItem.value);
+                                    editingItem = null;
+                                }
+                            }}
+                        />
+                    {:else}
+                        <button
+                            type="button"
+                            class="text-xs flex-1 text-left px-1.5 py-0.5 hover:text-primary-600-400 truncate"
+                            onclick={() => { editingItem = {attribute: dk, key: item.key, value: item.value}; }}
+                        >{item.value}</button>
+                    {/if}
+                    <button
+                        type="button"
+                        class="btn btn-sm preset-outlined-error-500 text-xs px-1.5 py-0.5 flex-shrink-0"
+                        onclick={() => $selectedKey && removeDictItem($selectedKey, dk, item.key)}
+                    >✕</button>
+                </div>
+            {/each}
+            <div class="flex items-center gap-1 mt-0.5">
+                <input
+                    type="text"
+                    class="input text-xs py-0.5 px-1.5 w-24 flex-shrink-0"
+                    placeholder={ctrl.caption ? "Key" : "Key"}
+                    value={newDictItems[dk]?.key ?? ""}
+                    oninput={(e) => { newDictItems[dk] = {...(newDictItems[dk] ?? {key: "", value: ""}), key: (e.target as HTMLInputElement).value}; }}
+                />
+                <input
+                    type="text"
+                    class="input text-xs py-0.5 px-1.5 flex-1"
+                    placeholder="Value"
+                    value={newDictItems[dk]?.value ?? ""}
+                    oninput={(e) => { newDictItems[dk] = {...(newDictItems[dk] ?? {key: "", value: ""}), value: (e.target as HTMLInputElement).value}; }}
+                    onkeydown={(e) => {
+                        if (e.key === "Enter" && $selectedKey && newDictItems[dk]?.key?.trim()) {
+                            addDictItem($selectedKey, dk, newDictItems[dk].key.trim(), newDictItems[dk].value ?? "");
+                            newDictItems[dk] = {key: "", value: ""};
+                        }
+                    }}
+                />
+                <button
+                    type="button"
+                    class="btn btn-sm preset-outlined-primary-500 text-xs px-2 py-0.5 flex-shrink-0"
+                    onclick={() => {
+                        if ($selectedKey && newDictItems[dk]?.key?.trim()) {
+                            addDictItem($selectedKey, dk, newDictItems[dk].key.trim(), newDictItems[dk].value ?? "");
+                            newDictItems[dk] = {key: "", value: ""};
+                        }
+                    }}
+                >Add</button>
+            </div>
+        </div>
     {:else if ctrl.controlType === "objects" && ctrl.options}
         <Combobox
             value={attrValue(ctrl.attribute!) ?? ""}
@@ -337,7 +416,9 @@
 {/snippet}
 
 {#snippet controlRow(ctrl: ControlInfo)}
-    {#if ctrl.controlType === "title"}
+    {#if ctrl.controlType === "attributes"}
+        <AttributesEditor />
+    {:else if ctrl.controlType === "title"}
         <div class="px-3 pt-3 pb-1 text-xs font-semibold text-surface-500-400 uppercase tracking-wide">
             {ctrl.caption ?? ""}
         </div>
@@ -406,7 +487,7 @@
         {:else}
             {@const label = ctrl.caption ?? ctrl.attribute}
             {@const isLong = label.length > 20}
-            {@const isMultiline = ctrl.controlType === "richtext" || ctrl.controlType === "script" || ctrl.controlType === "list"}
+            {@const isMultiline = ctrl.controlType === "richtext" || ctrl.controlType === "script" || ctrl.controlType === "list" || ctrl.controlType === "stringdictionary"}
             {#if isLong}
                 <div class="flex flex-col gap-1 px-3 py-1.5">
                     <span class="text-xs text-surface-600-400">{label}:</span>

@@ -49,7 +49,6 @@
 
     <tab>
       <caption>[EditorCommandAttributes]</caption>
-      <desktop/>
 
       <control>
         <controltype>attributes</controltype>

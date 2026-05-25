@@ -59,6 +59,8 @@ internal record IfExpressionTemplateData(
 );
 internal record IfExpressionTemplate(string Name, string CreateExpression);
 internal record ListItemData(string Key, string Value);
+internal record AttributeDataItem(string Name, string? Value, bool IsInherited, string Source, bool IsDefaultType);
+internal record FullAttributeData(List<AttributeDataItem> Attributes, List<AttributeDataItem> InheritedTypes);
 
 [JsonSourceGenerationOptions(PropertyNamingPolicy = JsonKnownNamingPolicy.CamelCase)]
 [JsonSerializable(typeof(List<TreeNodeData>))]
@@ -70,6 +72,7 @@ internal record ListItemData(string Key, string Value);
 [JsonSerializable(typeof(IfExpressionTemplateData))]
 [JsonSerializable(typeof(int[]))]
 [JsonSerializable(typeof(List<ListItemData>))]
+[JsonSerializable(typeof(FullAttributeData))]
 internal partial class WasmEditorJsonContext : JsonSerializerContext { }
 
 [SuppressMessage("ReSharper", "MemberCanBePrivate.Global")]
@@ -130,14 +133,7 @@ public partial class WasmEditorBridge
         foreach (var attr in extended.GetAttributeData())
         {
             var val = data.GetAttribute(attr.AttributeName);
-            attrs[attr.AttributeName] = val switch
-            {
-                IEditableObjectReference objRef => objRef.Reference,
-                IEditableList<string> list => JsonSerializer.Serialize(
-                    list.ItemsList.Select(i => new ListItemData(i.Key, i.Value)).ToList(),
-                    WasmEditorJsonContext.Default.ListListItemData),
-                _ => val?.ToString()
-            };
+            attrs[attr.AttributeName] = SerializeAttributeValue(val);
         }
 
         var tabs = new List<TabInfo>();
@@ -916,7 +912,151 @@ public partial class WasmEditorBridge
         _controller?.DeleteElement(key, true);
     }
 
+    // ── Attributes editor API ──────────────────────────────────────────────────
+
+    [JSExport]
+    public static string? GetFullAttributeData(string elementKey)
+    {
+        if (_controller == null) return null;
+        var data = _controller.GetEditorData(elementKey);
+        if (data is not IEditorDataExtendedAttributeInfo extended) return null;
+
+        var attributes = extended.GetAttributeData().Select(attr =>
+        {
+            var val = data.GetAttribute(attr.AttributeName);
+            return new AttributeDataItem(attr.AttributeName, SerializeAttributeValue(val), attr.IsInherited, attr.Source, attr.IsDefaultType);
+        }).ToList();
+
+        var inheritedTypes = extended.GetInheritedTypes()
+            .Select(t => new AttributeDataItem(t.AttributeName, t.AttributeName, t.IsInherited, t.Source, t.IsDefaultType))
+            .ToList();
+
+        return JsonSerializer.Serialize(
+            new FullAttributeData(attributes, inheritedTypes),
+            WasmEditorJsonContext.Default.FullAttributeData);
+    }
+
+    [JSExport]
+    public static string RemoveAttribute(string elementKey, string attribute)
+    {
+        if (_controller == null) return "error";
+        var data = _controller.GetEditorData(elementKey);
+        if (data is not IEditorDataExtendedAttributeInfo extended) return "error";
+
+        _controller.StartTransaction($"Remove {attribute}");
+        try
+        {
+            extended.RemoveAttribute(attribute);
+            return "ok";
+        }
+        catch (Exception ex) { return ex.Message; }
+        finally { _controller.EndTransaction(); }
+    }
+
+    [JSExport]
+    public static string AddInheritedType(string elementKey, string typeName)
+    {
+        if (_controller == null) return "error";
+        _controller.StartTransaction($"Add type {typeName}");
+        try
+        {
+            var result = _controller.AddInheritedTypeToElement(elementKey, typeName, false);
+            return result.Valid ? "ok" : result.Message.ToString();
+        }
+        catch (Exception ex) { return ex.Message; }
+        finally { _controller.EndTransaction(); }
+    }
+
+    [JSExport]
+    public static string RemoveInheritedType(string elementKey, string typeName)
+    {
+        if (_controller == null) return "error";
+        _controller.StartTransaction($"Remove type {typeName}");
+        try
+        {
+            _controller.RemoveInheritedTypeFromElement(elementKey, typeName, false);
+            return "ok";
+        }
+        catch (Exception ex) { return ex.Message; }
+        finally { _controller.EndTransaction(); }
+    }
+
+    [JSExport]
+    public static string GetTypeNames()
+    {
+        if (_controller == null) return "[]";
+        var names = _controller.GetElementNames("type").ToList();
+        return JsonSerializer.Serialize(names, WasmEditorJsonContext.Default.ListString);
+    }
+
+    [JSExport]
+    public static string AddDictionaryItem(string elementKey, string attribute, string key, string value)
+    {
+        if (_controller == null) return "error";
+        var data = _controller.GetEditorData(elementKey);
+        if (data == null) return "error";
+
+        try
+        {
+            var existing = data.GetAttribute(attribute) as IEditableDictionary<string>;
+            if (existing == null)
+            {
+                _controller.CreateNewEditableStringDictionary(elementKey, attribute, key, value, true);
+            }
+            else
+            {
+                var validation = existing.CanAdd(key);
+                if (!validation.Valid) return validation.Message.ToString();
+                existing.Add(key, value);
+            }
+            return "ok";
+        }
+        catch (Exception ex) { return ex.Message; }
+    }
+
+    [JSExport]
+    public static string RemoveDictionaryItem(string elementKey, string attribute, string key)
+    {
+        if (_controller == null) return "error";
+        var data = _controller.GetEditorData(elementKey);
+        if (data == null) return "error";
+
+        var dict = data.GetAttribute(attribute) as IEditableDictionary<string>;
+        if (dict == null) return "error";
+
+        try { dict.Remove(key); return "ok"; }
+        catch (Exception ex) { return ex.Message; }
+    }
+
+    [JSExport]
+    public static string UpdateDictionaryItem(string elementKey, string attribute, string key, string value)
+    {
+        if (_controller == null) return "error";
+        var data = _controller.GetEditorData(elementKey);
+        if (data == null) return "error";
+
+        var dict = data.GetAttribute(attribute) as IEditableDictionary<string>;
+        if (dict == null) return "error";
+
+        try { dict.Update(key, value); return "ok"; }
+        catch (Exception ex) { return ex.Message; }
+    }
+
     // ── Private helpers ────────────────────────────────────────────────────────
+
+    private static string? SerializeAttributeValue(object? val) => val switch
+    {
+        null => null,
+        IEditableObjectReference objRef => objRef.Reference,
+        IEditableList<string> list => JsonSerializer.Serialize(
+            list.ItemsList.Select(i => new ListItemData(i.Key, i.Value)).ToList(),
+            WasmEditorJsonContext.Default.ListListItemData),
+        IEditableDictionary<string> dict => JsonSerializer.Serialize(
+            dict.Items.Values.Select(i => new ListItemData(i.Key, i.Value)).ToList(),
+            WasmEditorJsonContext.Default.ListListItemData),
+        IEditableScripts => "(script)",
+        _ => val.ToString()
+    };
 
     private static IEditableScripts? GetScripts(string elementKey, string attribute)
     {
