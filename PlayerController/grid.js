@@ -328,6 +328,10 @@ gridApi.clearCustomLayer = function() {
 
 gridApi.clearAllLayers = function () {
     player = null;
+    playerVector = null;
+    playerDestination = null;
+    offsetVector = null;
+    offsetDestination = null;
     $.each(layers, function(idx, layer) {
         layer.removeChildren();
     });
