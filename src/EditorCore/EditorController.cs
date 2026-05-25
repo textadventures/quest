@@ -84,17 +84,6 @@ namespace QuestViva.EditorCore
             ElementType.Walkthrough
         };
 
-        // TO DO: When WebEditor is fully functional, there should be no need for this
-        private List<ElementType> m_webEditorIgnoreTypes = new List<ElementType>
-        {
-            ElementType.DynamicTemplate,
-            ElementType.IncludedLibrary,
-            ElementType.Javascript,
-            ElementType.ObjectType,
-            ElementType.Template,
-            ElementType.Walkthrough
-        };
-
         private static Dictionary<ValidationMessage, string> s_validationMessages = new Dictionary<ValidationMessage, string> {
             {ValidationMessage.OK, "No error"},
             {ValidationMessage.ItemAlreadyExists, "Item '{0}' already exists in the list"},
