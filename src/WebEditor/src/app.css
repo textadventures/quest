@@ -33,3 +33,17 @@
     background-color: var(--color-surface-200-800);
     color: inherit;
 }
+
+/* Safari ignores box-shadow on <select> elements with native appearance.
+   Use a real border instead, which all browsers respect. */
+select.select {
+    border-width: 1px;
+    border-color: var(--color-surface-200-800);
+    box-shadow: none;
+}
+
+select.select:focus,
+select.select:active {
+    border-color: var(--color-primary-500);
+    outline: none;
+}
