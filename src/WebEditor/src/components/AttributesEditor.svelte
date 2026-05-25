@@ -33,6 +33,7 @@
 
     // Editing state for string/pattern/number values
     let editingValue = $state("");
+    let editingValueOriginal = $state("");
     let editingBool = $state(false);
     let editingObject = $state("");
 
@@ -44,6 +45,7 @@
             prevSelectedKey = key;
             selectedAttrName = null;
             editingValue = "";
+            editingValueOriginal = "";
             editingBool = false;
             editingObject = "";
             newAttrName = "";
@@ -62,9 +64,12 @@
             editingObject = attr.value ?? "";
             editingValue = "";
         } else if (isTextEditable(attr)) {
-            editingValue = attr.value ?? "";
+            const v = attr.value ?? "";
+            editingValue = v;
+            editingValueOriginal = v;
         } else {
             editingValue = "";
+            editingValueOriginal = "";
         }
     });
 
@@ -107,12 +112,14 @@
 
     function commitTextEdit() {
         if (!$selectedKey || !selectedAttr) return;
+        if (editingValue === editingValueOriginal) return;
         const attr = selectedAttr;
         if (attr.type === "simplepattern") {
             setPatternAttribute($selectedKey, attr.name, editingValue);
         } else if (attr.type === "string" || attr.type === "int" || attr.type === "double") {
             setAttribute($selectedKey, attr.name, "textbox", editingValue);
         }
+        editingValueOriginal = editingValue;
     }
 
     function onBoolChange(checked: boolean) {
@@ -302,7 +309,7 @@
                             class="select text-xs py-0 px-1.5 h-7"
                             value={attr.type}
                             onchange={(e) => onChangeType((e.target as HTMLSelectElement).value)}
-                            disabled={attr.isInherited || attr.isDefaultType}
+                            disabled={attr.isDefaultType}
                         >
                             {#each TYPE_OPTIONS as opt}
                                 <option value={opt.value}>{opt.label}</option>
@@ -321,7 +328,7 @@
                                     type="checkbox"
                                     class="checkbox"
                                     checked={editingBool}
-                                    disabled={attr.isInherited || attr.isDefaultType}
+                                    disabled={attr.isDefaultType}
                                     onchange={(e) => { editingBool = (e.target as HTMLInputElement).checked; onBoolChange(editingBool); }}
                                 />
                                 <span>{editingBool ? "True" : "False"}</span>
@@ -338,7 +345,7 @@
                             <select
                                 class="select text-xs py-0 px-1.5 h-7"
                                 bind:value={editingObject}
-                                disabled={attr.isInherited || attr.isDefaultType}
+                                disabled={attr.isDefaultType}
                                 onchange={(e) => onObjectChange((e.target as HTMLSelectElement).value)}
                             >
                                 <option value="">(none)</option>
@@ -352,7 +359,7 @@
                                 class="input text-xs py-1 px-1.5 w-full"
                                 step={attr.type === "double" ? "any" : "1"}
                                 value={editingValue}
-                                disabled={attr.isInherited || attr.isDefaultType}
+                                disabled={attr.isDefaultType}
                                 oninput={(e) => { editingValue = (e.target as HTMLInputElement).value; }}
                                 onblur={commitTextEdit}
                                 onkeydown={(e) => { if (e.key === "Enter") { e.preventDefault(); commitTextEdit(); } }}
@@ -363,7 +370,7 @@
                                 class="input text-xs py-1 px-1.5 w-full resize-none"
                                 rows="4"
                                 value={editingValue}
-                                disabled={attr.isInherited || attr.isDefaultType}
+                                disabled={attr.isDefaultType}
                                 oninput={(e) => { editingValue = (e.target as HTMLTextAreaElement).value; }}
                                 onblur={commitTextEdit}
                                 onkeydown={(e) => { if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); commitTextEdit(); } }}
