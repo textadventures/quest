@@ -234,11 +234,6 @@
                             onblur={commitEdit}
                             onkeydown={(e) => { if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); commitEdit(); } }}
                         ></textarea>
-                        <button
-                            type="button"
-                            class="btn btn-sm preset-filled-primary-500 text-xs px-3 py-0.5 self-start"
-                            onclick={commitEdit}
-                        >Set</button>
                     {/if}
                 </div>
             {:else}
