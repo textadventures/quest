@@ -198,6 +198,9 @@
   <data name="EditorFileOverwrite" xml:space="preserve">
     <value>The file {0} already exists.{1}Would you like to overwrite it?</value>
   </data>
+  <data name="EditorReservedGameName" xml:space="preserve">
+    <value>"{0}" cannot be used as a game name as it conflicts with a language template file.</value>
+  </data>
   <data name="EditorFailedCreateFolder" xml:space="preserve">
     <value>Failed to create folder: </value>
   </data>

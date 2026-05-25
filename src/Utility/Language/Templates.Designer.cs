@@ -437,6 +437,15 @@ namespace TextAdventures.Utility.Language {
                 return ResourceManager.GetString("EditorFileOverwrite", resourceCulture);
             }
         }
+
+        /// <summary>
+        ///   Looks up a localized string similar to "{0}" cannot be used as a game name as it conflicts with a language template file..
+        /// </summary>
+        internal static string EditorReservedGameName {
+            get {
+                return ResourceManager.GetString("EditorReservedGameName", resourceCulture);
+            }
+        }
         
         /// <summary>
         ///   Looks up a localized string similar to Files can only be created in the game folder..
