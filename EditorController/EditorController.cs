@@ -2426,6 +2426,13 @@ namespace TextAdventures.Quest
             return result;
         }
 
+        public static bool IsReservedFilename(string gameName, string folder = null)
+        {
+            string safeFilename = GenerateSafeFilename(gameName);
+            if (string.IsNullOrEmpty(safeFilename)) return false;
+            return GetAvailableTemplates(folder).Keys.Any(name => string.Equals(name, safeFilename, StringComparison.OrdinalIgnoreCase));
+        }
+
         internal void UpdateDictionariesReferencingRenamedObject(string oldName, string newName)
         {
             // This function is used so we can safely rename gamebook pages and have the corresponding links

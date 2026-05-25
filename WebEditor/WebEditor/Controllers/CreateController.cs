@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
+using TextAdventures.Quest;
 using WebEditor.Services;
 
 namespace WebEditor.Controllers
@@ -28,6 +29,11 @@ namespace WebEditor.Controllers
             EditorService.PopulateCreateModelLists(createModel, TemplateFolder);
             if (ModelState.IsValid)
             {
+                if (EditorController.IsReservedFilename(createModel.GameName, TemplateFolder))
+                {
+                    ModelState.AddModelError("GameName", string.Format("\"{0}\" cannot be used as a game name as it conflicts with a language template file.", createModel.GameName));
+                    return View(createModel);
+                }
                 int newId = EditorService.CreateNewGame(createModel.SelectedType,
                     createModel.SelectedTemplate,
                     createModel.GameName,
