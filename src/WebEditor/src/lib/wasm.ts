@@ -47,6 +47,8 @@ export interface WasmBridge {
   AddDictionaryItem(elementKey: string, attribute: string, key: string, value: string): string
   RemoveDictionaryItem(elementKey: string, attribute: string, key: string): string
   UpdateDictionaryItem(elementKey: string, attribute: string, key: string, value: string): string
+  ChangeAttributeType(elementKey: string, attribute: string, newType: string): string
+  SetPatternAttribute(elementKey: string, attribute: string, pattern: string): string
   // Element creation / deletion
   ValidateName(name: string): string
   GetUniqueName(baseName: string): string

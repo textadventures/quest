@@ -203,6 +203,22 @@ export function updateDictItem(elementKey: string, attribute: string, key: strin
     return result;
 }
 
+export function changeAttributeType(elementKey: string, attribute: string, newType: string): string {
+    if (!_bridge) return "error";
+    const result = _bridge.ChangeAttributeType(elementKey, attribute, newType);
+    if (result === "ok") refreshSelectedData();
+    refreshUndoRedo();
+    return result;
+}
+
+export function setPatternAttribute(elementKey: string, attribute: string, pattern: string): string {
+    if (!_bridge) return "error";
+    const result = _bridge.SetPatternAttribute(elementKey, attribute, pattern);
+    if (result === "ok") refreshSelectedData();
+    refreshUndoRedo();
+    return result;
+}
+
 // ── Script editor functions ─────────────────────────────────────────────────
 
 export function getScriptCode(elementKey: string, attribute: string): string {

@@ -113,6 +113,7 @@ export interface AttributeDataItem {
   isInherited: boolean
   source: string
   isDefaultType: boolean
+  type: string
 }
 
 export interface FullAttributeData {

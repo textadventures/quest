@@ -9,6 +9,8 @@ using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 using QuestViva.Common;
 using QuestViva.EditorCore;
+using QuestViva.Engine;
+using QuestViva.Engine.Types;
 
 namespace QuestViva.WasmEditor;
 
@@ -59,7 +61,7 @@ internal record IfExpressionTemplateData(
 );
 internal record IfExpressionTemplate(string Name, string CreateExpression);
 internal record ListItemData(string Key, string Value);
-internal record AttributeDataItem(string Name, string? Value, bool IsInherited, string Source, bool IsDefaultType);
+internal record AttributeDataItem(string Name, string? Value, bool IsInherited, string Source, bool IsDefaultType, string Type);
 internal record FullAttributeData(List<AttributeDataItem> Attributes, List<AttributeDataItem> InheritedTypes);
 
 [JsonSourceGenerationOptions(PropertyNamingPolicy = JsonKnownNamingPolicy.CamelCase)]
@@ -924,11 +926,11 @@ public partial class WasmEditorBridge
         var attributes = extended.GetAttributeData().Select(attr =>
         {
             var val = data.GetAttribute(attr.AttributeName);
-            return new AttributeDataItem(attr.AttributeName, SerializeAttributeValue(val), attr.IsInherited, attr.Source, attr.IsDefaultType);
+            return new AttributeDataItem(attr.AttributeName, SerializeAttributeValue(val), attr.IsInherited, attr.Source, attr.IsDefaultType, DetermineAttributeType(val));
         }).ToList();
 
         var inheritedTypes = extended.GetInheritedTypes()
-            .Select(t => new AttributeDataItem(t.AttributeName, t.AttributeName, t.IsInherited, t.Source, t.IsDefaultType))
+            .Select(t => new AttributeDataItem(t.AttributeName, t.AttributeName, t.IsInherited, t.Source, t.IsDefaultType, "type"))
             .ToList();
 
         return JsonSerializer.Serialize(
@@ -990,6 +992,65 @@ public partial class WasmEditorBridge
     }
 
     [JSExport]
+    public static string ChangeAttributeType(string elementKey, string attribute, string newType)
+    {
+        if (_controller == null) return "error";
+        var data = _controller.GetEditorData(elementKey);
+        if (data == null) return "error";
+
+        _controller.StartTransaction($"Change type of {attribute}");
+        try
+        {
+            if (newType == "script")
+            {
+                _controller.CreateNewEditableScripts(elementKey, attribute, null!, false);
+            }
+            else
+            {
+                object? newValue = newType switch
+                {
+                    "null" => null,
+                    "string" => (object)"",
+                    "boolean" => (object)false,
+                    "int" => (object)0,
+                    "double" => (object)0.0,
+                    "simplepattern" => (object)new EditorCommandPattern(""),
+                    "stringlist" => (object)new QuestList<string>(),
+                    "stringdictionary" => (object)new QuestDictionary<string>(),
+                    _ => null
+                };
+                if (newType != "null" && newValue == null) return $"Unsupported type: {newType}";
+                var result = data.SetAttribute(attribute, newValue!);
+                if (!result.Valid) return result.Message.ToString();
+            }
+            return "ok";
+        }
+        catch (Exception ex) { return ex.Message; }
+        finally { _controller.EndTransaction(); }
+    }
+
+    [JSExport]
+    public static string SetPatternAttribute(string elementKey, string attribute, string pattern)
+    {
+        if (_controller == null) return "error";
+        var data = _controller.GetEditorData(elementKey);
+        if (data == null) return "error";
+
+        _controller.StartTransaction($"Set {attribute}");
+        try
+        {
+            var cmd = data.GetAttribute(attribute) as IEditableCommandPattern;
+            if (cmd != null)
+                cmd.Pattern = pattern;
+            else
+                data.SetAttribute(attribute, new EditorCommandPattern(pattern));
+            return "ok";
+        }
+        catch (Exception ex) { return ex.Message; }
+        finally { _controller.EndTransaction(); }
+    }
+
+    [JSExport]
     public static string AddDictionaryItem(string elementKey, string attribute, string key, string value)
     {
         if (_controller == null) return "error";
@@ -1047,6 +1108,9 @@ public partial class WasmEditorBridge
     private static string? SerializeAttributeValue(object? val) => val switch
     {
         null => null,
+        bool b => b.ToString(),
+        int i => i.ToString(),
+        double d => d.ToString(System.Globalization.CultureInfo.InvariantCulture),
         IEditableObjectReference objRef => objRef.Reference,
         IEditableList<string> list => JsonSerializer.Serialize(
             list.ItemsList.Select(i => new ListItemData(i.Key, i.Value)).ToList(),
@@ -1055,7 +1119,24 @@ public partial class WasmEditorBridge
             dict.Items.Values.Select(i => new ListItemData(i.Key, i.Value)).ToList(),
             WasmEditorJsonContext.Default.ListListItemData),
         IEditableScripts => "(script)",
+        IEditableCommandPattern cmd => cmd.Pattern,
+        IEditableDictionary<IEditableScripts> => "(script dictionary)",
         _ => val.ToString()
+    };
+
+    private static string DetermineAttributeType(object? val) => val switch
+    {
+        null => "null",
+        bool => "boolean",
+        int => "int",
+        double => "double",
+        IEditableObjectReference => "object",
+        IEditableList<string> => "stringlist",
+        IEditableDictionary<string> => "stringdictionary",
+        IEditableScripts => "script",
+        IEditableCommandPattern => "simplepattern",
+        IEditableDictionary<IEditableScripts> => "scriptdictionary",
+        _ => "string"
     };
 
     private static IEditableScripts? GetScripts(string elementKey, string attribute)

@@ -1,25 +1,76 @@
 <script lang="ts">
-    import { fullAttributeData, selectedKey, removeAttribute, addInheritedType, removeInheritedType, getTypeNames, setAttribute } from "$lib/editor-store";
+    import { fullAttributeData, selectedKey, removeAttribute, addInheritedType, removeInheritedType, getTypeNames, setAttribute, changeAttributeType, setPatternAttribute, getObjectNames } from "$lib/editor-store";
     import type { AttributeDataItem } from "$lib/types";
 
+    const TYPE_OPTIONS = [
+        { value: "string",           label: "String" },
+        { value: "boolean",          label: "Boolean" },
+        { value: "int",              label: "Integer" },
+        { value: "double",           label: "Double" },
+        { value: "script",           label: "Script" },
+        { value: "stringlist",       label: "String List" },
+        { value: "object",           label: "Object" },
+        { value: "simplepattern",    label: "Command pattern" },
+        { value: "stringdictionary", label: "String dictionary" },
+        { value: "scriptdictionary", label: "Script dictionary" },
+        { value: "null",             label: "Null" },
+    ];
+
     let typeNames = $state<string[]>([]);
+    let objectNames = $state<string[]>([]);
     let addTypeValue = $state("");
     let newAttrName = $state("");
     let newAttrValue = $state("");
-    let selectedAttr = $state<AttributeDataItem | null>(null);
-    let editingValue = $state("");
 
+    // Track selected attribute by name so selection survives data refreshes
+    let selectedAttrName = $state<string | null>(null);
+
+    let selectedAttr = $derived(
+        selectedAttrName
+            ? ($fullAttributeData?.attributes.find(a => a.name === selectedAttrName) ?? null)
+            : null
+    );
+
+    // Editing state for string/pattern/number values
+    let editingValue = $state("");
+    let editingBool = $state(false);
+    let editingObject = $state("");
+
+    // Reset when element changes (selectedKey changes)
+    let prevSelectedKey = $state<string | null>(null);
     $effect(() => {
-        typeNames = getTypeNames();
+        const key = $selectedKey;
+        if (key !== prevSelectedKey) {
+            prevSelectedKey = key;
+            selectedAttrName = null;
+            editingValue = "";
+            editingBool = false;
+            editingObject = "";
+            newAttrName = "";
+            newAttrValue = "";
+        }
+    });
+
+    // Sync editing state when selectedAttr changes
+    $effect(() => {
+        const attr = selectedAttr;
+        if (!attr) return;
+        if (attr.type === "boolean") {
+            editingBool = attr.value?.toLowerCase() === "true";
+            editingValue = "";
+        } else if (attr.type === "object") {
+            editingObject = attr.value ?? "";
+            editingValue = "";
+        } else if (isTextEditable(attr)) {
+            editingValue = attr.value ?? "";
+        } else {
+            editingValue = "";
+        }
     });
 
     $effect(() => {
-        // Reset selection when element changes
-        $fullAttributeData;
-        selectedAttr = null;
-        editingValue = "";
-        newAttrName = "";
-        newAttrValue = "";
+        typeNames = getTypeNames();
+        objectNames = getObjectNames() ?? [];
     });
 
     function availableTypes(): string[] {
@@ -41,17 +92,38 @@
     function onDeleteAttribute(attr: AttributeDataItem, e: MouseEvent) {
         e.stopPropagation();
         if ($selectedKey) removeAttribute($selectedKey, attr.name);
-        if (selectedAttr?.name === attr.name) selectedAttr = null;
+        if (selectedAttrName === attr.name) selectedAttrName = null;
     }
 
     function onSelectAttribute(attr: AttributeDataItem) {
-        selectedAttr = attr;
-        editingValue = (attr.value === null || attr.value === "(script)" || isComplex(attr)) ? "" : attr.value;
+        selectedAttrName = attr.name;
     }
 
-    function commitEdit() {
-        if ($selectedKey && selectedAttr && !isComplex(selectedAttr) && selectedAttr.value !== "(script)") {
-            setAttribute($selectedKey, selectedAttr.name, "textbox", editingValue);
+    function onChangeType(newType: string) {
+        if ($selectedKey && selectedAttrName) {
+            changeAttributeType($selectedKey, selectedAttrName, newType);
+        }
+    }
+
+    function commitTextEdit() {
+        if (!$selectedKey || !selectedAttr) return;
+        const attr = selectedAttr;
+        if (attr.type === "simplepattern") {
+            setPatternAttribute($selectedKey, attr.name, editingValue);
+        } else if (attr.type === "string" || attr.type === "int" || attr.type === "double") {
+            setAttribute($selectedKey, attr.name, "textbox", editingValue);
+        }
+    }
+
+    function onBoolChange(checked: boolean) {
+        if ($selectedKey && selectedAttr) {
+            setAttribute($selectedKey, selectedAttr.name, "checkbox", checked ? "true" : "false");
+        }
+    }
+
+    function onObjectChange(value: string) {
+        if ($selectedKey && selectedAttr) {
+            setAttribute($selectedKey, selectedAttr.name, "textbox", value);
         }
     }
 
@@ -63,24 +135,25 @@
         }
     }
 
-    function isComplex(attr: AttributeDataItem): boolean {
-        if (attr.value === null || attr.value === "(script)") return true;
-        if (attr.value.startsWith("[")) {
-            try { JSON.parse(attr.value); return true; } catch { /* not JSON */ }
-        }
-        return false;
+    function isTextEditable(attr: AttributeDataItem): boolean {
+        return attr.type === "string" || attr.type === "int" || attr.type === "double" || attr.type === "simplepattern";
     }
 
     function displayValue(attr: AttributeDataItem): string {
-        if (attr.value === null) return "";
-        if (attr.value === "(script)") return "(script)";
-        if (attr.value.startsWith("[")) {
+        if (attr.value === null) return "(null)";
+        if (attr.type === "script") return "(script)";
+        if (attr.type === "scriptdictionary") return "(script dictionary)";
+        if (attr.type === "stringlist" || attr.type === "stringdictionary") {
             try {
                 const items = JSON.parse(attr.value) as {key: string, value: string}[];
-                return `(list: ${items.length})`;
-            } catch { /* not a list */ }
+                return `(${attr.type === "stringlist" ? "list" : "dict"}: ${items.length})`;
+            } catch { /* fall through */ }
         }
         return attr.value;
+    }
+
+    function typeLabel(type: string): string {
+        return TYPE_OPTIONS.find(o => o.value === type)?.label ?? type;
     }
 </script>
 
@@ -109,7 +182,6 @@
             <thead>
                 <tr class="text-surface-400-500 border-b border-surface-100-900">
                     <th class="text-left py-1 px-3 font-medium">Name</th>
-                    <th class="text-left py-1 px-3 font-medium">Value</th>
                     <th class="text-left py-1 px-3 font-medium">Source</th>
                     <th class="w-6"></th>
                 </tr>
@@ -117,7 +189,6 @@
             <tbody>
                 {#each $fullAttributeData?.inheritedTypes ?? [] as t}
                     <tr class="border-b border-surface-100-900">
-                        <td class="py-0.5 px-3">{t.name}</td>
                         <td class="py-0.5 px-3">{t.name}</td>
                         <td class="py-0.5 px-3 text-surface-400-500">{t.source}</td>
                         <td class="py-0.5 pr-2 text-right">
@@ -132,7 +203,7 @@
                         </td>
                     </tr>
                 {:else}
-                    <tr><td colspan="4" class="py-1 px-3 text-surface-400-500 italic">No inherited types</td></tr>
+                    <tr><td colspan="3" class="py-1 px-3 text-surface-400-500 italic">No inherited types</td></tr>
                 {/each}
             </tbody>
         </table>
@@ -181,10 +252,10 @@
                     <tbody>
                         {#each $fullAttributeData?.attributes ?? [] as attr}
                             {@const dimmed = attr.isInherited || attr.isDefaultType}
-                            {@const isSelected = selectedAttr?.name === attr.name}
+                            {@const isSelected = selectedAttrName === attr.name}
                             <tr
                                 class="border-b border-surface-100-900 cursor-pointer
-                                    {isSelected ? 'bg-primary-100-900' : dimmed ? 'hover:bg-surface-100-900' : 'hover:bg-surface-100-900'}
+                                    {isSelected ? 'bg-primary-100-900' : 'hover:bg-surface-100-900'}
                                     {dimmed ? 'text-surface-400-500' : ''}"
                                 onclick={() => onSelectAttribute(attr)}
                             >
@@ -211,30 +282,94 @@
         </div>
 
         <!-- Right: assignment panel -->
-        <div class="w-56 flex-shrink-0 flex flex-col overflow-y-auto">
+        <div class="w-64 flex-shrink-0 flex flex-col overflow-y-auto">
             <div class="px-3 py-1.5 border-b border-surface-100-900 font-semibold text-surface-500-400 uppercase tracking-wide flex-shrink-0">
                 Assignment
             </div>
             {#if selectedAttr}
+                {@const attr = selectedAttr}
                 <div class="p-3 flex flex-col gap-2">
-                    <div class="font-medium text-surface-700-300 truncate" title={selectedAttr.name}>{selectedAttr.name}</div>
-                    {#if selectedAttr.isInherited || selectedAttr.isDefaultType}
-                        <p class="text-surface-400-500 italic text-xs">Inherited from <span class="font-medium">{selectedAttr.source}</span></p>
+                    <div class="font-medium text-surface-700-300 truncate" title={attr.name}>{attr.name}</div>
+
+                    {#if attr.isInherited || attr.isDefaultType}
+                        <p class="text-surface-400-500 italic text-xs">Inherited from <span class="font-medium">{attr.source}</span></p>
                     {/if}
-                    {#if selectedAttr.value === "(script)"}
-                        <p class="text-surface-400-500 italic">Edit via the Scripts tab</p>
-                    {:else if isComplex(selectedAttr)}
-                        <p class="text-surface-400-500 italic">Complex type — edit via the relevant tab</p>
-                    {:else}
-                        <textarea
-                            class="input text-xs py-1 px-1.5 w-full resize-none"
-                            rows="4"
-                            value={editingValue}
-                            oninput={(e) => { editingValue = (e.target as HTMLTextAreaElement).value; }}
-                            onblur={commitEdit}
-                            onkeydown={(e) => { if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); commitEdit(); } }}
-                        ></textarea>
-                    {/if}
+
+                    <!-- Type selector -->
+                    <div class="flex flex-col gap-1">
+                        <span class="text-surface-400-500 uppercase tracking-wide text-xs">Type</span>
+                        <select
+                            class="select text-xs py-0 px-1.5 h-7"
+                            value={attr.type}
+                            onchange={(e) => onChangeType((e.target as HTMLSelectElement).value)}
+                            disabled={attr.isInherited || attr.isDefaultType}
+                        >
+                            {#each TYPE_OPTIONS as opt}
+                                <option value={opt.value}>{opt.label}</option>
+                            {/each}
+                        </select>
+                    </div>
+
+                    <!-- Value editor -->
+                    <div class="flex flex-col gap-1">
+                        <span class="text-surface-400-500 uppercase tracking-wide text-xs">Value</span>
+                        {#if attr.type === "null"}
+                            <p class="text-surface-400-500 italic">(no value)</p>
+                        {:else if attr.type === "boolean"}
+                            <label class="flex items-center gap-2 cursor-pointer">
+                                <input
+                                    type="checkbox"
+                                    class="checkbox"
+                                    checked={editingBool}
+                                    disabled={attr.isInherited || attr.isDefaultType}
+                                    onchange={(e) => { editingBool = (e.target as HTMLInputElement).checked; onBoolChange(editingBool); }}
+                                />
+                                <span>{editingBool ? "True" : "False"}</span>
+                            </label>
+                        {:else if attr.type === "script"}
+                            <p class="text-surface-400-500 italic">Edit via the Scripts tab</p>
+                        {:else if attr.type === "scriptdictionary"}
+                            <p class="text-surface-400-500 italic">Edit via the relevant tab</p>
+                        {:else if attr.type === "stringlist"}
+                            <p class="text-surface-400-500 italic">Edit via the relevant tab</p>
+                        {:else if attr.type === "stringdictionary"}
+                            <p class="text-surface-400-500 italic">Edit via the relevant tab</p>
+                        {:else if attr.type === "object"}
+                            <select
+                                class="select text-xs py-0 px-1.5 h-7"
+                                bind:value={editingObject}
+                                disabled={attr.isInherited || attr.isDefaultType}
+                                onchange={(e) => onObjectChange((e.target as HTMLSelectElement).value)}
+                            >
+                                <option value="">(none)</option>
+                                {#each objectNames as name}
+                                    <option value={name}>{name}</option>
+                                {/each}
+                            </select>
+                        {:else if attr.type === "int" || attr.type === "double"}
+                            <input
+                                type="number"
+                                class="input text-xs py-1 px-1.5 w-full"
+                                step={attr.type === "double" ? "any" : "1"}
+                                value={editingValue}
+                                disabled={attr.isInherited || attr.isDefaultType}
+                                oninput={(e) => { editingValue = (e.target as HTMLInputElement).value; }}
+                                onblur={commitTextEdit}
+                                onkeydown={(e) => { if (e.key === "Enter") { e.preventDefault(); commitTextEdit(); } }}
+                            />
+                        {:else}
+                            <!-- string, simplepattern -->
+                            <textarea
+                                class="input text-xs py-1 px-1.5 w-full resize-none"
+                                rows="4"
+                                value={editingValue}
+                                disabled={attr.isInherited || attr.isDefaultType}
+                                oninput={(e) => { editingValue = (e.target as HTMLTextAreaElement).value; }}
+                                onblur={commitTextEdit}
+                                onkeydown={(e) => { if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); commitTextEdit(); } }}
+                            ></textarea>
+                        {/if}
+                    </div>
                 </div>
             {:else}
                 <p class="p-3 text-surface-400-500 italic">Select an attribute to edit it.</p>
