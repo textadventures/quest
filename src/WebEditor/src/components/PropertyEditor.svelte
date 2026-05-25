@@ -109,11 +109,22 @@
             </div>
         {/if}
 
-        <div class="flex-1 overflow-y-auto">
-            {#each getControlsForView() as ctrl, i (i)}
-                {@render controlRow(ctrl)}
-            {/each}
-        </div>
+        {@const viewControls = getControlsForView()}
+        {@const hasAttributesPanel = viewControls.some(c => c.controlType === "attributes")}
+        {#if hasAttributesPanel}
+            <div class="flex-1 overflow-hidden flex flex-col min-h-0">
+                {#each viewControls.filter(c => c.controlType !== "attributes") as ctrl, i (i)}
+                    {@render controlRow(ctrl)}
+                {/each}
+                <AttributesEditor />
+            </div>
+        {:else}
+            <div class="flex-1 overflow-y-auto">
+                {#each viewControls as ctrl, i (i)}
+                    {@render controlRow(ctrl)}
+                {/each}
+            </div>
+        {/if}
     {/if}
 </div>
 
