@@ -144,7 +144,11 @@
         const attr = selectedAttr;
         if (attr.type === "simplepattern") {
             setPatternAttribute($selectedKey, attr.name, editingValue);
-        } else if (attr.type === "string" || attr.type === "int" || attr.type === "double") {
+        } else if (attr.type === "int") {
+            setAttribute($selectedKey, attr.name, "number", editingValue);
+        } else if (attr.type === "double") {
+            setAttribute($selectedKey, attr.name, "numberdouble", editingValue);
+        } else if (attr.type === "string") {
             setAttribute($selectedKey, attr.name, "textbox", editingValue);
         }
         editingValueOriginal = editingValue;
