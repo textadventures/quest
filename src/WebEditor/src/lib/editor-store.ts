@@ -36,7 +36,7 @@ export async function openGame(file: File): Promise<boolean> {
     loadingStatus.set("Loading game…");
     // Double rAF ensures the browser actually paints the status update before
     // Initialise blocks the JS thread (C# WASM calls are synchronous).
-    await new Promise<void>(resolve => requestAnimationFrame(() => requestAnimationFrame(resolve)));
+    await new Promise<void>(resolve => requestAnimationFrame(() => requestAnimationFrame(() => resolve())));
     const ok = await _bridge.Initialise(bytes, file.name);
     loadingStatus.set(null);
     if (ok) {
