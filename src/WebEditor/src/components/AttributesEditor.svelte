@@ -1,6 +1,7 @@
 <script lang="ts">
     import { fullAttributeData, selectedKey, removeAttribute, addInheritedType, removeInheritedType, getTypeNames, setAttribute, changeAttributeType, setPatternAttribute, getObjectNames } from "$lib/editor-store";
     import type { AttributeDataItem } from "$lib/types";
+    import ScriptEditor from "./ScriptEditor.svelte";
 
     const TYPE_OPTIONS = [
         { value: "string",           label: "String" },
@@ -76,6 +77,33 @@
     $effect(() => {
         typeNames = getTypeNames();
         objectNames = getObjectNames() ?? [];
+    });
+
+    // Resizable splitter
+    let panelWidth = $state(360);
+    let isDragging = $state(false);
+    let dragStartX = 0;
+    let dragStartWidth = 0;
+
+    function onSplitterMousedown(e: MouseEvent) {
+        isDragging = true;
+        dragStartX = e.clientX;
+        dragStartWidth = panelWidth;
+        e.preventDefault();
+    }
+
+    $effect(() => {
+        if (!isDragging) return;
+        function onMousemove(e: MouseEvent) {
+            panelWidth = Math.max(180, Math.min(900, dragStartWidth + (dragStartX - e.clientX)));
+        }
+        function onMouseup() { isDragging = false; }
+        window.addEventListener("mousemove", onMousemove);
+        window.addEventListener("mouseup", onMouseup);
+        return () => {
+            window.removeEventListener("mousemove", onMousemove);
+            window.removeEventListener("mouseup", onMouseup);
+        };
     });
 
     function availableTypes(): string[] {
@@ -219,7 +247,7 @@
     <!-- Attributes section: split pane -->
     <div class="flex flex-1 min-h-0">
         <!-- Left: attributes list -->
-        <div class="flex flex-col flex-1 min-w-0 overflow-hidden border-r border-surface-200-800">
+        <div class="flex flex-col flex-1 min-w-0 overflow-hidden">
             <!-- Add new attribute -->
             <div class="flex items-center gap-1 px-3 py-1.5 border-b border-surface-100-900 flex-shrink-0">
                 <span class="font-semibold text-surface-500-400 uppercase tracking-wide mr-1">Attributes</span>
@@ -288,22 +316,29 @@
             </div>
         </div>
 
+        <!-- Splitter -->
+        <!-- svelte-ignore a11y_no_static_element_interactions -->
+        <div
+            class="w-1 flex-shrink-0 cursor-col-resize bg-surface-200-800 hover:bg-primary-400 transition-colors"
+            onmousedown={onSplitterMousedown}
+        ></div>
+
         <!-- Right: assignment panel -->
-        <div class="w-64 flex-shrink-0 flex flex-col overflow-y-auto">
+        <div class="flex-shrink-0 flex flex-col overflow-hidden" style="width: {panelWidth}px">
             <div class="px-3 py-1.5 border-b border-surface-100-900 font-semibold text-surface-500-400 uppercase tracking-wide flex-shrink-0">
                 Assignment
             </div>
             {#if selectedAttr}
                 {@const attr = selectedAttr}
-                <div class="p-3 flex flex-col gap-2">
-                    <div class="font-medium text-surface-700-300 truncate" title={attr.name}>{attr.name}</div>
+                <div class="p-3 flex flex-col gap-2 overflow-y-auto">
+                    <div class="font-medium text-surface-700-300 truncate flex-shrink-0" title={attr.name}>{attr.name}</div>
 
                     {#if attr.isInherited || attr.isDefaultType}
-                        <p class="text-surface-400-500 italic text-xs">Inherited from <span class="font-medium">{attr.source}</span></p>
+                        <p class="text-surface-400-500 italic text-xs flex-shrink-0">Inherited from <span class="font-medium">{attr.source}</span></p>
                     {/if}
 
                     <!-- Type selector -->
-                    <div class="flex flex-col gap-1">
+                    <div class="flex flex-col gap-1 flex-shrink-0">
                         <span class="text-surface-400-500 uppercase tracking-wide text-xs">Type</span>
                         <select
                             class="select text-xs py-0 px-1.5 h-7"
@@ -319,7 +354,7 @@
 
                     <!-- Value editor -->
                     <div class="flex flex-col gap-1">
-                        <span class="text-surface-400-500 uppercase tracking-wide text-xs">Value</span>
+                        <span class="text-surface-400-500 uppercase tracking-wide text-xs flex-shrink-0">Value</span>
                         {#if attr.type === "null"}
                             <p class="text-surface-400-500 italic">(no value)</p>
                         {:else if attr.type === "boolean"}
@@ -334,7 +369,11 @@
                                 <span>{editingBool ? "True" : "False"}</span>
                             </label>
                         {:else if attr.type === "script"}
-                            <p class="text-surface-400-500 italic">Edit via the Scripts tab</p>
+                            <div class="min-h-48">
+                                {#if $selectedKey}
+                                    <ScriptEditor elementKey={$selectedKey} attribute={attr.name} />
+                                {/if}
+                            </div>
                         {:else if attr.type === "scriptdictionary"}
                             <p class="text-surface-400-500 italic">Edit via the relevant tab</p>
                         {:else if attr.type === "stringlist"}
@@ -384,3 +423,8 @@
         </div>
     </div>
 </div>
+
+<!-- Drag overlay: keeps col-resize cursor while dragging over other elements -->
+{#if isDragging}
+    <div class="fixed inset-0 z-50 cursor-col-resize select-none"></div>
+{/if}
