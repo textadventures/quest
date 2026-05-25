@@ -85,6 +85,10 @@ Public Class NewGameWindow
     End Function
 
     Private Sub cmdOK_Click(sender As System.Object, e As System.EventArgs) Handles cmdOK.Click
+        If EditorController.IsReservedFilename(txtGameName.Text) Then
+            MsgBox(String.Format(T("EditorReservedGameName"), txtGameName.Text), MsgBoxStyle.Exclamation)
+            Return
+        End If
         If System.IO.File.Exists(txtFilename.Text) Then
             Dim result = MsgBox(String.Format(T("EditorFileOverwrite"), txtFilename.Text, Environment.NewLine + Environment.NewLine),
                                 MsgBoxStyle.Exclamation Or MsgBoxStyle.YesNoCancel)
