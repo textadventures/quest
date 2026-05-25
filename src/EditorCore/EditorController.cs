@@ -42,13 +42,6 @@ namespace QuestViva.EditorCore
         GameBook
     }
 
-    // TO DO: When WebEditor is fully functional, there should be no need for this
-    public enum EditorMode
-    {
-        Desktop,
-        Web
-    }
-
     public struct ValidationResult
     {
         public bool Valid;
@@ -91,17 +84,6 @@ namespace QuestViva.EditorCore
             ElementType.Walkthrough
         };
 
-        // TO DO: When WebEditor is fully functional, there should be no need for this
-        private List<ElementType> m_webEditorIgnoreTypes = new List<ElementType>
-        {
-            ElementType.DynamicTemplate,
-            ElementType.IncludedLibrary,
-            ElementType.Javascript,
-            ElementType.ObjectType,
-            ElementType.Template,
-            ElementType.Walkthrough
-        };
-
         private static Dictionary<ValidationMessage, string> s_validationMessages = new Dictionary<ValidationMessage, string> {
             {ValidationMessage.OK, "No error"},
             {ValidationMessage.ItemAlreadyExists, "Item '{0}' already exists in the list"},
@@ -136,7 +118,6 @@ namespace QuestViva.EditorCore
         private List<IScript> m_clipboardScripts;
         private bool m_simpleMode;
         private EditorStyle m_editorStyle = EditorStyle.TextAdventure;
-        private EditorMode m_editorMode = EditorMode.Desktop;
         private bool m_lastelementscutout;
 
         public event EventHandler ClearTree;
@@ -558,16 +539,13 @@ namespace QuestViva.EditorCore
             AddTreeHeader(null, ElementType.Function, "_functions", "Functions", null, false);
 
             AddTreeHeader(EditorStyle.TextAdventure, ElementType.Timer, "_timers", "Timers", null, false);
-            if (m_editorMode == EditorMode.Desktop)
-            {
-                AddTreeHeader(EditorStyle.TextAdventure, ElementType.Walkthrough, "_walkthrough", "Walkthrough", null, false);
-                AddTreeHeader(null, null, "_advanced", "Advanced", null, false);
-                AddTreeHeader(null, ElementType.IncludedLibrary, "_include", "Included Libraries", "_advanced", false);
-                AddTreeHeader(EditorStyle.TextAdventure, ElementType.Template, "_template", "Templates", "_advanced", false);
-                AddTreeHeader(EditorStyle.TextAdventure, ElementType.DynamicTemplate, "_dynamictemplate", "Dynamic Templates", "_advanced", false);
-                AddTreeHeader(EditorStyle.TextAdventure, ElementType.ObjectType, "_objecttype", "Object Types", "_advanced", false);
-                AddTreeHeader(null, ElementType.Javascript, "_javascript", "Javascript", "_advanced", false);
-            }
+            AddTreeHeader(EditorStyle.TextAdventure, ElementType.Walkthrough, "_walkthrough", "Walkthrough", null, false);
+            AddTreeHeader(null, null, "_advanced", "Advanced", null, false);
+            AddTreeHeader(null, ElementType.IncludedLibrary, "_include", "Included Libraries", "_advanced", false);
+            AddTreeHeader(EditorStyle.TextAdventure, ElementType.Template, "_template", "Templates", "_advanced", false);
+            AddTreeHeader(EditorStyle.TextAdventure, ElementType.DynamicTemplate, "_dynamictemplate", "Dynamic Templates", "_advanced", false);
+            AddTreeHeader(EditorStyle.TextAdventure, ElementType.ObjectType, "_objecttype", "Object Types", "_advanced", false);
+            AddTreeHeader(null, ElementType.Javascript, "_javascript", "Javascript", "_advanced", false);
         }
 
         private void AddTreeHeader(EditorStyle? editorStyle, ElementType? type, string key, string title, string parent, bool simple)
@@ -636,12 +614,7 @@ namespace QuestViva.EditorCore
 
                 if (o.Name == "game" && !SimpleMode && m_editorStyle == EditorStyle.TextAdventure)
                 {
-                    if (m_editorMode == EditorMode.Desktop)
-                    {
-                        // TO DO: When WebEditor is fully functional, there should be no need for this
-                        AddedNode(this, new AddedNodeEventArgs { Key = k_verbs, Text = "Verbs", Parent = "game", IsLibraryNode = false, Position = null, NodeIcon = "s_verb" });
-
-                    }
+                    AddedNode(this, new AddedNodeEventArgs { Key = k_verbs, Text = "Verbs", Parent = "game", IsLibraryNode = false, Position = null, NodeIcon = "s_verb" });
                     AddedNode(this, new AddedNodeEventArgs { Key = k_commands, Text = "Commands", Parent = "game", IsLibraryNode = false, Position = null, NodeIcon = "s_command" });
                 }
             }
@@ -652,16 +625,6 @@ namespace QuestViva.EditorCore
             // Don't display implied types, editor elements etc.
             if (m_ignoredTypes.Contains(e.ElemType)) return false;
             if (SimpleMode && m_advancedTypes.Contains(e.ElemType)) return false;
-
-            // TO DO: When WebEditor is fully functional, there should be no need for this
-            if (m_editorMode == EditorMode.Web)
-            {
-                if (m_webEditorIgnoreTypes.Contains(e.ElemType)) return false;
-                if (e.ElemType == ElementType.Object && e.Type == ObjectType.Command && e.Fields[FieldDefinitions.IsVerb])
-                {
-                    return false;
-                }
-            }
 
             if (SimpleMode)
             {
@@ -2409,13 +2372,7 @@ namespace QuestViva.EditorCore
 
             return selectedAttribute;
         }
-
-        public EditorMode EditorMode
-        {
-            get { return m_editorMode; }
-            set { m_editorMode = value; }
-        }
-
+        
         private static List<string> s_invalidChars = new List<string> { "\\", "/", ":", "*", "?", "\"", "<", ">", "|" };
 
         public static string GenerateSafeFilename(string gameName)

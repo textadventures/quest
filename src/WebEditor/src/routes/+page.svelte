@@ -28,19 +28,21 @@
     }
 </script>
 
-<div class="flex flex-col h-svh overflow-hidden">
-    <Toolbar />
-    <div class="flex flex-1 overflow-hidden">
-        <TreePanel />
-        <PropertyEditor />
+{#if $isLoaded}
+    <div class="flex flex-col h-svh overflow-hidden">
+        <Toolbar />
+        <div class="flex flex-1 overflow-hidden">
+            <TreePanel />
+            <PropertyEditor />
+        </div>
     </div>
-</div>
 
-{#if $addElementModal}
-    <AddElementModal
-        elementType={$addElementModal.type}
-        parent={$addElementModal.parent}
-        onconfirm={handleAddConfirm}
-        oncancel={() => addElementModal.set(null)}
-    />
+    {#if $addElementModal}
+        <AddElementModal
+            elementType={$addElementModal.type}
+            parent={$addElementModal.parent}
+            onconfirm={handleAddConfirm}
+            oncancel={() => addElementModal.set(null)}
+        />
+    {/if}
 {/if}
