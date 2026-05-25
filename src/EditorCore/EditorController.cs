@@ -2430,11 +2430,12 @@ namespace QuestViva.EditorCore
             return result;
         }
 
-        public static bool IsReservedFilename(string gameName, string folder = null)
+        // TODO: Wire this up when creating new game from WebEditor
+        public static bool IsReservedFilename(string gameName)
         {
-            string safeFilename = GenerateSafeFilename(gameName);
+            var safeFilename = GenerateSafeFilename(gameName);
             if (string.IsNullOrEmpty(safeFilename)) return false;
-            return GetAvailableTemplates(folder).Keys.Any(name => string.Equals(name, safeFilename, StringComparison.OrdinalIgnoreCase));
+            return GetAvailableTemplates().Keys.Any(name => string.Equals(name, safeFilename, StringComparison.OrdinalIgnoreCase));
         }
 
         internal void UpdateDictionariesReferencingRenamedObject(string oldName, string newName)
