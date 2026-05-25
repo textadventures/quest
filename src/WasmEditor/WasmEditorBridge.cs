@@ -1005,6 +1005,10 @@ public partial class WasmEditorBridge
             {
                 _controller.CreateNewEditableScripts(elementKey, attribute, null!, false);
             }
+            else if (newType == "object")
+            {
+                _controller.CreateNewEditableObjectReference(elementKey, attribute, false);
+            }
             else
             {
                 object? newValue = newType switch

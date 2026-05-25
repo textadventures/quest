@@ -1,5 +1,5 @@
 <script lang="ts">
-    import { fullAttributeData, selectedKey, removeAttribute, addInheritedType, removeInheritedType, getTypeNames, setAttribute, changeAttributeType, setPatternAttribute, getObjectNames } from "$lib/editor-store";
+    import { fullAttributeData, selectedKey, removeAttribute, addInheritedType, removeInheritedType, getTypeNames, setAttribute, setObjectReference, changeAttributeType, setPatternAttribute, getObjectNames } from "$lib/editor-store";
     import type { AttributeDataItem } from "$lib/types";
     import ScriptEditor from "./ScriptEditor.svelte";
 
@@ -162,7 +162,7 @@
 
     function onObjectChange(value: string) {
         if ($selectedKey && selectedAttr) {
-            setAttribute($selectedKey, selectedAttr.name, "textbox", value);
+            setObjectReference($selectedKey, selectedAttr.name, value);
         }
     }
 
@@ -391,7 +391,6 @@
                                 disabled={attr.isDefaultType}
                                 onchange={(e) => onObjectChange((e.target as HTMLSelectElement).value)}
                             >
-                                <option value="">(none)</option>
                                 {#each objectNames as name}
                                     <option value={name}>{name}</option>
                                 {/each}
