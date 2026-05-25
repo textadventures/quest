@@ -378,12 +378,12 @@
                         {:else if attr.type === "script"}
                             <div class="min-h-48">
                                 {#if $selectedKey}
-                                    <ScriptEditor elementKey={$selectedKey} attribute={attr.name} />
+                                    <ScriptEditor elementKey={$selectedKey} attribute={attr.name} isLocked={attr.isInherited || attr.isDefaultType} />
                                 {/if}
                             </div>
                         {:else if attr.type === "scriptdictionary"}
                             {#if $selectedKey}
-                                <ScriptDictionaryEditor elementKey={$selectedKey} attribute={attr.name} value={attr.value} />
+                                <ScriptDictionaryEditor elementKey={$selectedKey} attribute={attr.name} value={attr.value} isLocked={attr.isInherited || attr.isDefaultType} />
                             {/if}
                         {:else if attr.type === "stringlist"}
                             {#if $selectedKey}

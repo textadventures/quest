@@ -377,6 +377,18 @@ public partial class WasmEditorBridge
         return (data.GetAttribute(attribute) as IEditableList<string>)!;
     }
 
+    private static IEditableDictionary<string> EnsureLocalDict(IEditorData data, string attribute, IEditableDictionary<string> dict)
+    {
+        if (data is not IEditorDataExtendedAttributeInfo extended) return dict;
+        var attrInfo = extended.GetAttributeData().FirstOrDefault(a => a.AttributeName == attribute);
+        if (attrInfo is not { IsInherited: true } and not { IsDefaultType: true }) return dict;
+
+        var copy = new QuestDictionary<string>();
+        foreach (var kvp in dict.Items) copy.Add(kvp.Key, (string)kvp.Value.Value);
+        data.SetAttribute(attribute, copy);
+        return (data.GetAttribute(attribute) as IEditableDictionary<string>)!;
+    }
+
     private static void AddDropdownTypeValues(Dictionary<string, string?> attrs, List<IEditorControl> controls, string elementKey, IEditorData data)
     {
         foreach (var ctrl in controls.Where(c => c.ControlType == "dropdowntypes"))
@@ -1089,6 +1101,7 @@ public partial class WasmEditorBridge
             }
             else
             {
+                existing = EnsureLocalDict(data, attribute, existing);
                 var validation = existing.CanAdd(key);
                 if (!validation.Valid) return validation.Message.ToString();
                 existing.Add(key, value);
@@ -1108,7 +1121,12 @@ public partial class WasmEditorBridge
         var dict = data.GetAttribute(attribute) as IEditableDictionary<string>;
         if (dict == null) return "error";
 
-        try { dict.Remove(key); return "ok"; }
+        try
+        {
+            dict = EnsureLocalDict(data, attribute, dict);
+            dict.Remove(key);
+            return "ok";
+        }
         catch (Exception ex) { return ex.Message; }
     }
 
@@ -1122,7 +1140,37 @@ public partial class WasmEditorBridge
         var dict = data.GetAttribute(attribute) as IEditableDictionary<string>;
         if (dict == null) return "error";
 
-        try { dict.Update(key, value); return "ok"; }
+        try
+        {
+            dict = EnsureLocalDict(data, attribute, dict);
+            dict.Update(key, value);
+            return "ok";
+        }
+        catch (Exception ex) { return ex.Message; }
+    }
+
+    [JSExport]
+    public static string MakeScriptEditable(string elementKey, string attribute)
+    {
+        if (_controller == null) return "error";
+        var scripts = GetScripts(elementKey, attribute);
+        if (scripts == null) return "error";
+
+        _controller.StartTransaction($"Copy {attribute} script to {elementKey}");
+        try { scripts.Clone(elementKey, attribute); return "ok"; }
+        catch (Exception ex) { return ex.Message; }
+        finally { _controller.EndTransaction(); }
+    }
+
+    [JSExport]
+    public static string MakeScriptDictEditable(string elementKey, string attribute)
+    {
+        if (_controller == null) return "error";
+        var data = _controller.GetEditorData(elementKey);
+        if (data == null) return "error";
+        if (data.GetAttribute(attribute) is not IEditableDictionary<IEditableScripts>) return "error";
+
+        try { _controller.MakeScriptDictionaryEditable(elementKey, attribute); return "ok"; }
         catch (Exception ex) { return ex.Message; }
     }
 

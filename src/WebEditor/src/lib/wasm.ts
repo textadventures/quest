@@ -47,6 +47,8 @@ export interface WasmBridge {
   AddDictionaryItem(elementKey: string, attribute: string, key: string, value: string): string
   RemoveDictionaryItem(elementKey: string, attribute: string, key: string): string
   UpdateDictionaryItem(elementKey: string, attribute: string, key: string, value: string): string
+  MakeScriptEditable(elementKey: string, attribute: string): string
+  MakeScriptDictEditable(elementKey: string, attribute: string): string
   AddScriptDictionaryItem(elementKey: string, attribute: string, key: string): string
   RemoveScriptDictionaryItem(elementKey: string, attribute: string, key: string): string
   ChangeAttributeType(elementKey: string, attribute: string, newType: string): string

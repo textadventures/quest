@@ -203,6 +203,22 @@ export function updateDictItem(elementKey: string, attribute: string, key: strin
     return result;
 }
 
+export function makeScriptEditable(elementKey: string, attribute: string): string {
+    if (!_bridge) return "error";
+    const result = _bridge.MakeScriptEditable(elementKey, attribute);
+    if (result === "ok") { refreshSelectedData(); bumpScriptVersion(); }
+    refreshUndoRedo();
+    return result;
+}
+
+export function makeScriptDictEditable(elementKey: string, attribute: string): string {
+    if (!_bridge) return "error";
+    const result = _bridge.MakeScriptDictEditable(elementKey, attribute);
+    if (result === "ok") { refreshSelectedData(); bumpScriptVersion(); }
+    refreshUndoRedo();
+    return result;
+}
+
 export function addScriptDictItem(elementKey: string, attribute: string, key: string): string {
     if (!_bridge) return "error";
     const result = _bridge.AddScriptDictionaryItem(elementKey, attribute, key);
