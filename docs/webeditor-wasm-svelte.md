@@ -168,13 +168,15 @@ The browser cannot read files from the local filesystem directly. Currently impl
 - This avoids needing a server round-trip for user-uploaded images
 
 **Option D (future)** — Electron wrapper
-- Electron exposes Node.js `fs` to the renderer via `contextBridge`
-- A thin adapter (~20 lines) behind a common `FileAdapter` interface would allow the same Svelte code to work in both browser PWA and Electron
-- See shared adapter design below
+- Electron exposes Node.js `fs` to the renderer via `contextBridge` + IPC handlers in the main process — do **not** attempt to use the File System Access API inside Electron, which has known parity bugs (missing persistent permissions, broken directory iteration)
+- The renderer calls `window.fileAdapter.openFile()` etc.; a `preload.js` bridges to `ipcRenderer.invoke`; the main process handles the actual `fs.readFile` / `fs.writeFile` calls
+- A `createElectronAdapter()` factory behind the shared `FileAdapter` interface means the same Svelte code works in both browser and Electron with no changes
 
 **Shared filesystem adapter** (future, coordinate with Squiffy)
 
-Both Quest WebEditor and Squiffy face the same three-tier file system problem (File System Access API → OPFS → Electron `fs`). The intent is to extract a shared TypeScript package rather than duplicate the pattern. Proposed interface:
+Both Quest WebEditor and Squiffy face the same three-tier file system problem (File System Access API → OPFS → Electron `fs`). No existing npm library covers all three — the ecosystem has `browser-fs-access` for the browser side and various ponyfills, but nothing that spans browser + Electron + OPFS in a single maintained package. This is a genuine gap.
+
+The intent is to build this once and eventually extract it as a shared package rather than duplicate the pattern across projects. Proposed interface:
 
 ```typescript
 interface FileAdapter {
@@ -187,6 +189,8 @@ interface FileAdapter {
 ```
 
 Factory functions: `createBrowserAdapter()`, `createOPFSAdapter()`, `createElectronAdapter()`.
+
+**Implementation strategy**: build the implementation here first, in `src/WebEditor/src/lib/filesystem/`. The key discipline is keeping that module completely free of Svelte or Quest-specific imports — plain TypeScript only, as if it were already a separate package. Wire the rest of the editor to it only via the `FileAdapter` interface. When Squiffy becomes the second consumer, extraction is just moving files into a new published package; no API design work remains because it was done here.
 
 ---
 
@@ -329,5 +333,5 @@ Blockly is ~800KB and requires a TypeScript bridge layer to synchronise the bloc
 - **Live C# → JS events**: Currently tree state is snapshot-based (collected at init). As editing adds/removes/renames nodes, the bridge will need to push updates to JS rather than relying on a full re-fetch.
 - **Build integration**: Should `WasmEditor` output be served by `WebPlayer` (embedded SPA) or deployed separately?
 - **Auth / server-side storage**: Is cloud save in scope? Affects whether the editor stays purely client-side.
-- **Shared filesystem adapter**: Extract a common `FileAdapter` TypeScript package shared with Squiffy (see File handling section and [squiffy#215](https://github.com/textadventures/squiffy/issues/215)).
-- **Electron wrapper**: Both Quest and Squiffy editors are candidates for an Electron app. The `FileAdapter` interface is the seam; `createElectronAdapter()` would be a thin IPC shim. Decide whether to build one Electron shell that hosts both, or separate apps.
+- **Shared filesystem adapter**: Implement `src/lib/filesystem/` here first (see File handling section and [squiffy#215](https://github.com/textadventures/squiffy/issues/215)); extract into a published package when Squiffy becomes the second consumer.
+- **Electron wrapper**: Both Quest and Squiffy editors are candidates for an Electron app. The `FileAdapter` interface is the seam; `createElectronAdapter()` bridges to Node.js `fs` via `contextBridge` IPC. Decide whether to build one Electron shell that hosts both, or separate apps.
