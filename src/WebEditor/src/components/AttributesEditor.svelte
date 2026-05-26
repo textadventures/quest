@@ -24,7 +24,6 @@
     let objectNames = $state<string[]>([]);
     let addTypeValue = $state("");
     let newAttrName = $state("");
-    let newAttrValue = $state("");
 
     // Track selected attribute by name so selection survives data refreshes
     let selectedAttrName = $state<string | null>(null);
@@ -53,7 +52,6 @@
             editingBool = false;
             editingObject = "";
             newAttrName = "";
-            newAttrValue = "";
         }
     });
 
@@ -171,9 +169,10 @@
 
     function onAddAttribute() {
         if ($selectedKey && newAttrName.trim()) {
-            setAttribute($selectedKey, newAttrName.trim(), "textbox", newAttrValue);
+            const name = newAttrName.trim();
+            setAttribute($selectedKey, name, "textbox", "");
             newAttrName = "";
-            newAttrValue = "";
+            selectedAttrName = name;
         }
     }
 
@@ -202,23 +201,8 @@
 <div class="flex flex-col flex-1 min-h-0 text-xs">
     <!-- Inherited types section -->
     <div class="flex-shrink-0 border-b border-surface-200-800">
-        <div class="flex items-center gap-2 px-3 py-1.5 border-b border-surface-100-900">
-            <span class="font-semibold text-surface-500-400 uppercase tracking-wide flex-1">Inherited types</span>
-            <select
-                class="select text-xs py-0 px-1.5 h-6"
-                bind:value={addTypeValue}
-            >
-                <option value="">Add type…</option>
-                {#each availableTypes() as t}
-                    <option value={t}>{t}</option>
-                {/each}
-            </select>
-            <button
-                type="button"
-                disabled={!addTypeValue}
-                onclick={onAddType}
-                class="btn btn-sm preset-outlined-primary-500 text-xs px-2 py-0 h-6"
-            >Add</button>
+        <div class="px-3 py-1.5 border-b border-surface-100-900">
+            <span class="font-semibold text-surface-500-400 uppercase tracking-wide">Inherited types</span>
         </div>
         <table class="w-full">
             <thead>
@@ -248,6 +232,29 @@
                     <tr><td colspan="3" class="py-1 px-3 text-surface-400-500 italic">No inherited types</td></tr>
                 {/each}
             </tbody>
+            <tfoot>
+                <tr>
+                    <td colspan="3" class="px-3 py-1.5">
+                        <div class="flex items-center gap-2 max-w-xs">
+                            <select
+                                class="select text-xs py-0 px-1.5 h-6 flex-1"
+                                bind:value={addTypeValue}
+                            >
+                                <option value="">Add type…</option>
+                                {#each availableTypes() as t}
+                                    <option value={t}>{t}</option>
+                                {/each}
+                            </select>
+                            <button
+                                type="button"
+                                disabled={!addTypeValue}
+                                onclick={onAddType}
+                                class="btn btn-sm preset-outlined-primary-500 text-xs px-2 py-0 h-6 flex-shrink-0"
+                            >Add</button>
+                        </div>
+                    </td>
+                </tr>
+            </tfoot>
         </table>
     </div>
 
@@ -255,29 +262,8 @@
     <div class="flex flex-1 min-h-0">
         <!-- Left: attributes list -->
         <div class="flex flex-col flex-1 min-w-0 overflow-hidden">
-            <!-- Add new attribute -->
-            <div class="flex items-center gap-1 px-3 py-1.5 border-b border-surface-100-900 flex-shrink-0">
-                <span class="font-semibold text-surface-500-400 uppercase tracking-wide mr-1">Attributes</span>
-                <input
-                    type="text"
-                    placeholder="Name"
-                    class="input text-xs py-0 px-1.5 h-6 w-28 flex-shrink-0"
-                    bind:value={newAttrName}
-                    onkeydown={(e) => { if (e.key === "Enter") onAddAttribute(); }}
-                />
-                <input
-                    type="text"
-                    placeholder="Value"
-                    class="input text-xs py-0 px-1.5 h-6 flex-1 min-w-0"
-                    bind:value={newAttrValue}
-                    onkeydown={(e) => { if (e.key === "Enter") onAddAttribute(); }}
-                />
-                <button
-                    type="button"
-                    disabled={!newAttrName.trim()}
-                    onclick={onAddAttribute}
-                    class="btn btn-sm preset-outlined-primary-500 text-xs px-2 py-0 h-6 flex-shrink-0"
-                >Add</button>
+            <div class="px-3 py-1.5 border-b border-surface-100-900 flex-shrink-0">
+                <span class="font-semibold text-surface-500-400 uppercase tracking-wide">Attributes</span>
             </div>
 
             <!-- Scrollable table -->
@@ -320,6 +306,25 @@
                         {/each}
                     </tbody>
                 </table>
+            </div>
+
+            <!-- Add new attribute -->
+            <div class="px-3 py-1.5 flex-shrink-0">
+                <div class="flex items-center gap-2 max-w-xs">
+                    <input
+                        type="text"
+                        placeholder="Add attribute..."
+                        class="input text-xs py-0 px-1.5 h-6 flex-1 min-w-0"
+                        bind:value={newAttrName}
+                        onkeydown={(e) => { if (e.key === "Enter") onAddAttribute(); }}
+                    />
+                    <button
+                        type="button"
+                        disabled={!newAttrName.trim()}
+                        onclick={onAddAttribute}
+                        class="btn btn-sm preset-outlined-primary-500 text-xs px-2 py-0 h-6 flex-shrink-0"
+                    >Add</button>
+                </div>
             </div>
         </div>
 
