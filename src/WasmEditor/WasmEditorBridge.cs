@@ -950,6 +950,60 @@ public partial class WasmEditorBridge
     }
 
     [JSExport]
+    public static string CreateWalkthrough(string name, string? parent)
+    {
+        if (_controller == null) return "error:Not initialised";
+        var validation = _controller.CanAdd(name);
+        if (!validation.Valid) return $"error:{EditorController.GetValidationError(validation, name)}";
+        try { _controller.CreateNewWalkthrough(name, string.IsNullOrEmpty(parent) ? null : parent); return name; }
+        catch (Exception ex) { return $"error:{ex.Message}"; }
+    }
+
+    [JSExport]
+    public static string CreateTemplate(string name)
+    {
+        if (_controller == null) return "error:Not initialised";
+        try { return _controller.CreateNewTemplate(name); }
+        catch (Exception ex) { return $"error:{ex.Message}"; }
+    }
+
+    [JSExport]
+    public static string CreateDynamicTemplate(string name)
+    {
+        if (_controller == null) return "error:Not initialised";
+        var validation = _controller.CanAdd(name);
+        if (!validation.Valid) return $"error:{EditorController.GetValidationError(validation, name)}";
+        try { _controller.CreateNewDynamicTemplate(name); return name; }
+        catch (Exception ex) { return $"error:{ex.Message}"; }
+    }
+
+    [JSExport]
+    public static string CreateObjectType(string name)
+    {
+        if (_controller == null) return "error:Not initialised";
+        var validation = _controller.CanAdd(name);
+        if (!validation.Valid) return $"error:{EditorController.GetValidationError(validation, name)}";
+        try { _controller.CreateNewType(name); return name; }
+        catch (Exception ex) { return $"error:{ex.Message}"; }
+    }
+
+    [JSExport]
+    public static string CreateIncludedLibrary()
+    {
+        if (_controller == null) return "error:Not initialised";
+        try { return _controller.CreateNewIncludedLibrary(); }
+        catch (Exception ex) { return $"error:{ex.Message}"; }
+    }
+
+    [JSExport]
+    public static string CreateJavascript()
+    {
+        if (_controller == null) return "error:Not initialised";
+        try { return _controller.CreateNewJavascript(); }
+        catch (Exception ex) { return $"error:{ex.Message}"; }
+    }
+
+    [JSExport]
     public static void DeleteElement(string key)
     {
         _controller?.DeleteElement(key, true);

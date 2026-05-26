@@ -2,7 +2,7 @@
     import { validateName } from "$lib/editor-store";
 
     interface Props {
-        elementType: "room" | "object" | "function" | "timer";
+        elementType: "room" | "object" | "function" | "timer" | "walkthrough" | "template" | "dynamictemplate" | "type";
         parent?: string | null;
         onconfirm: (name: string) => void;
         oncancel: () => void;
@@ -15,6 +15,10 @@
         object: "Object",
         function: "Function",
         timer: "Timer",
+        walkthrough: "Walkthrough",
+        template: "Template",
+        dynamictemplate: "Dynamic Template",
+        type: "Type",
     };
 
     let dialogEl: HTMLDivElement;

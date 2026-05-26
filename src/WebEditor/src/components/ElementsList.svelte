@@ -1,5 +1,5 @@
 <script lang="ts">
-    import { treeNodes, selectedKey, selectNode, deleteElement, openAddModal, createVerb, createCommand, swapElements } from "$lib/editor-store";
+    import { treeNodes, selectedKey, selectNode, deleteElement, openAddModal, createVerb, createCommand, createIncludedLibrary, createJavascript, swapElements } from "$lib/editor-store";
 
     interface Props {
         elementKey: string;
@@ -57,6 +57,12 @@
         nodeTypes.includes("timer") ? "Add Timer" :
         nodeTypes.includes("verb") ? "Add Verb" :
         nodeTypes.includes("command") ? "Add Command" :
+        nodeTypes.includes("walkthrough") ? "Add Walkthrough" :
+        nodeTypes.includes("template") ? "Add Template" :
+        nodeTypes.includes("dynamictemplate") ? "Add Dynamic Template" :
+        nodeTypes.includes("type") ? "Add Type" :
+        nodeTypes.includes("include") ? "Add Library" :
+        nodeTypes.includes("javascript") ? "Add JavaScript" :
         isObjectList ? "Add Object" :
         null
     );
@@ -67,6 +73,12 @@
         else if (nodeTypes.includes("timer")) openAddModal("timer", null);
         else if (nodeTypes.includes("verb")) createVerb(parent);
         else if (nodeTypes.includes("command")) createCommand(parent);
+        else if (nodeTypes.includes("walkthrough")) openAddModal("walkthrough", null);
+        else if (nodeTypes.includes("template")) openAddModal("template", null);
+        else if (nodeTypes.includes("dynamictemplate")) openAddModal("dynamictemplate", null);
+        else if (nodeTypes.includes("type")) openAddModal("type", null);
+        else if (nodeTypes.includes("include")) createIncludedLibrary();
+        else if (nodeTypes.includes("javascript")) createJavascript();
         else if (isObjectList) openAddModal("object", parent);
     }
 
