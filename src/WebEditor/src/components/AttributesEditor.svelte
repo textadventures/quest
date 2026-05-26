@@ -176,6 +176,12 @@
         }
     }
 
+    const UNDELETABLE_ATTRIBUTES = new Set(["name", "type", "elementtype"]);
+
+    function canDeleteAttribute(attr: AttributeDataItem): boolean {
+        return !attr.isInherited && !UNDELETABLE_ATTRIBUTES.has(attr.name);
+    }
+
     function isTextEditable(attr: AttributeDataItem): boolean {
         return attr.type === "string" || attr.type === "int" || attr.type === "double" || attr.type === "simplepattern";
     }
@@ -291,7 +297,7 @@
                                 <td class="py-0.5 px-3 max-w-40 truncate" title={attr.value ?? ""}>{displayValue(attr)}</td>
                                 <td class="py-0.5 px-3 text-surface-400-500 truncate" title={attr.source}>{attr.source}</td>
                                 <td class="py-0.5 pr-2 text-right">
-                                    {#if !attr.isInherited}
+                                    {#if canDeleteAttribute(attr)}
                                         <button
                                             type="button"
                                             class="text-error-500 hover:text-error-700"
