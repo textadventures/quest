@@ -26,6 +26,7 @@ Returns the `.aslx` game file content.
 - Status: `200 OK`
 - `Content-Type: application/xml`
 - `Content-Disposition: attachment; filename="My Game.aslx"` (use the actual filename)
+- `X-Preview-Url: https://textadventures.co.uk/games/play/{gameId}` (the public WebPlayer URL for this game)
 - Body: the raw `.aslx` file bytes
 
 **Errors:** `401`, `403`, `404`
