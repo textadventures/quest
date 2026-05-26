@@ -2,7 +2,7 @@
     import { AppBar } from "@skeletonlabs/skeleton-svelte";
     import { PUBLIC_WEBEDITOR_VERSION } from "$env/static/public";
     import {
-        gameFilename, saveGame, undo, redo, canUndo, canRedo,
+        gameFilename, saveGame, saveGameAs, canSaveAs, undo, redo, canUndo, canRedo,
         treeNodes, selectedKey, openAddModal,
         createExit, createTurnScript, createCommand, createVerb,
         createIncludedLibrary, createJavascript,
@@ -10,15 +10,16 @@
     } from "$lib/editor-store";
     import type { TreeNode } from "$lib/types";
 
-    function handleSave() {
-        const xml = saveGame();
-        const blob = new Blob([xml], { type: "application/xml" });
-        const url = URL.createObjectURL(blob);
-        const a = document.createElement("a");
-        a.href = url;
-        a.download = $gameFilename ?? "game.aslx";
-        a.click();
-        URL.revokeObjectURL(url);
+    let saving = $state(false);
+
+    async function handleSave() {
+        saving = true;
+        try { await saveGame(); } finally { saving = false; }
+    }
+
+    async function handleSaveAs() {
+        saving = true;
+        try { await saveGameAs(); } finally { saving = false; }
     }
 
     // Derive the currently selected tree node
@@ -118,7 +119,10 @@
                     {/if}
                     <button type="button" class="btn btn-sm preset-outlined-primary-500" onclick={undo} disabled={!$canUndo} title="Undo">↩ Undo</button>
                     <button type="button" class="btn btn-sm preset-outlined-primary-500" onclick={redo} disabled={!$canRedo} title="Redo">↪ Redo</button>
-                    <button type="button" class="btn btn-sm preset-filled-primary-500" onclick={handleSave} title="Save">💾 Save</button>
+                    <button type="button" class="btn btn-sm preset-filled-primary-500" onclick={handleSave} disabled={saving} title="Save">💾 Save</button>
+                    {#if $canSaveAs}
+                        <button type="button" class="btn btn-sm preset-outlined-primary-500" onclick={handleSaveAs} disabled={saving} title="Save As">Save As…</button>
+                    {/if}
                 </div>
             </AppBar.Trail>
         </AppBar.Toolbar>

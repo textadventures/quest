@@ -2,17 +2,18 @@
     import { goto } from "$app/navigation";
     import { base } from "$app/paths";
     import { openGame, loadingStatus } from "$lib/editor-store";
+    import { loadLocalFile } from "$lib/filesystem/browser-adapter";
 
     let loading = $state(false);
     let error = $state<string | null>(null);
 
-    async function handleFile(e: Event) {
-        const file = (e.target as HTMLInputElement).files?.[0];
-        if (!file) return;
+    async function handleOpen() {
         loading = true;
         error = null;
         try {
-            const ok = await openGame(file);
+            const loaded = await loadLocalFile();
+            if (!loaded) { loading = false; return; }
+            const ok = await openGame(loaded.bytes, loaded.adapter.filename, loaded.adapter);
             if (ok) {
                 goto(base || "/");
                 return;
@@ -35,10 +36,9 @@
             <p class="text-surface-500-400 text-sm">{$loadingStatus}</p>
         </div>
     {:else}
-        <label class="btn preset-filled-primary-500 cursor-pointer">
+        <button type="button" class="btn preset-filled-primary-500" onclick={handleOpen}>
             Open game file
-            <input type="file" accept=".aslx" onchange={handleFile} class="hidden" />
-        </label>
+        </button>
     {/if}
 
     {#if error}
