@@ -148,49 +148,66 @@ The Vite dev server sets `Cross-Origin-Opener-Policy: same-origin` and `Cross-Or
 
 ## File handling
 
-The browser cannot read files from the local filesystem directly. Currently implemented: **Option A**.
+The browser cannot read files from the local filesystem directly.
 
-**Option A (implemented)** — File picker open, download save
+**Option A (superseded)** — File picker open, download save
 - User opens a file via `<input type="file">`
 - JS reads it as `ArrayBuffer`, converts to `Uint8Array`, passes to `Initialise`
 - Save triggers a download via a temporary `<a>` with an object URL
 
-**Option B (future)** — File System Access API + OPFS
-- Chrome/Edge: use `showOpenFilePicker` / `showSaveFilePicker` for direct read/write to the user's real files without a download prompt; store recent file handles in IndexedDB for "recent files"
-- Safari/Firefox: fall back to `<input type="file">` open + download save (no persistent handle)
-- Consider using [`browser-fs-access`](https://github.com/GoogleChromeLabs/browser-fs-access) (Google Chrome Labs, ~5KB) rather than hand-rolling the feature detection — the Squiffy editor has already done this (see [squiffy#215](https://github.com/textadventures/squiffy/issues/215))
-- OPFS (Origin Private File System) for auto-save: supported on Chrome, Safari 15.2+, Firefox 111+; game files live in browser private storage with no prompts after initial import
+**Option B (implemented)** — File System Access API with download fallback
+- `loadLocalFile()` in `src/lib/filesystem/browser-adapter.ts` uses `showOpenFilePicker` on Chrome/Edge for direct read/write with no download prompt; the returned `FileSystemFileHandle` is stored on the adapter so subsequent saves overwrite the file in place
+- Safari/Firefox fallback: `<input type="file">` open + download save (programmatic `input.click()` triggered from the same user-gesture context)
+- `showSaveFilePicker` used for Save As on supporting browsers; updates the stored handle so future saves go to the new location; returns the new filename so the toolbar updates immediately
+- `canSaveAs: boolean` on the adapter interface gates the Save As button — false for server mode where the concept doesn't apply
 
-**Option C (future)** — Asset storage for images
-- Images referenced in game files need to survive across sessions and be resolvable during preview
-- Store blobs in OPFS (preferred over raw IndexedDB for binary assets)
-- A Service Worker intercepts requests for asset URLs during preview and serves from OPFS
-- This avoids needing a server round-trip for user-uploaded images
+**Option C (partially implemented)** — Asset storage
+- `putAsset` / `getAsset` / `listAssets` / `deleteAsset` on `BrowserFileAdapter` read/write to OPFS under a per-session UUID key
+- `ServerFileAdapter` delegates asset operations to `/api/editor/games/{gameId}/assets` REST endpoints (see `textadventures-api.md`)
+- Service Worker to intercept asset URL requests during game preview is **not yet implemented** — assets stored in OPFS are not yet resolvable as URLs inside the player
 
 **Option D (future)** — Electron wrapper
 - Electron exposes Node.js `fs` to the renderer via `contextBridge` + IPC handlers in the main process — do **not** attempt to use the File System Access API inside Electron, which has known parity bugs (missing persistent permissions, broken directory iteration)
-- The renderer calls `window.fileAdapter.openFile()` etc.; a `preload.js` bridges to `ipcRenderer.invoke`; the main process handles the actual `fs.readFile` / `fs.writeFile` calls
-- A `createElectronAdapter()` factory behind the shared `FileAdapter` interface means the same Svelte code works in both browser and Electron with no changes
+- Implement `ElectronFileAdapter` in `src/lib/filesystem/electron-adapter.ts`; the renderer calls `window.electronFileAdapter` via `contextBridge`; the main process handles `fs.readFile` / `fs.writeFile` via `ipcRenderer.invoke`
+- No Svelte code changes needed — the adapter is swapped at load time
 
-**Shared filesystem adapter** (future, coordinate with Squiffy)
+### FileAdapter interface
 
-Both Quest WebEditor and Squiffy face the same three-tier file system problem (File System Access API → OPFS → Electron `fs`). No existing npm library covers all three — the ecosystem has `browser-fs-access` for the browser side and various ponyfills, but nothing that spans browser + Electron + OPFS in a single maintained package. This is a genuine gap.
+Implemented in `src/WebEditor/src/lib/filesystem/`. The module has no Svelte or Quest-specific imports — plain TypeScript only, so it can be extracted into a shared package when Squiffy becomes a second consumer.
 
-The intent is to build this once and eventually extract it as a shared package rather than duplicate the pattern across projects. Proposed interface:
+**Loaders** produce a `{ bytes, adapter }` pair. `openFile` is not part of the adapter — it is a separate concern (only local-file loading needs a picker):
+
+```typescript
+loadLocalFile(): Promise<LoadedFile | null>      // FSA API or <input> fallback
+loadFromServer(gameId: string): Promise<LoadedFile>  // fetches from /api/editor/games/{gameId}
+```
+
+**Adapter interface:**
 
 ```typescript
 interface FileAdapter {
-  openFile(opts?: OpenOptions): Promise<FileContent | null>
-  saveFile(data: Uint8Array | string): Promise<boolean>
-  saveFileAs(data: Uint8Array | string, suggestedName?: string): Promise<boolean>
+  readonly filename: string
+  readonly canSaveAs: boolean
+  saveFile(data: Uint8Array | string): Promise<void>
+  saveFileAs(data: Uint8Array | string, suggestedName?: string): Promise<string | null>  // returns new filename or null if cancelled
   putAsset(key: string, data: Blob): Promise<void>
   getAsset(key: string): Promise<Blob | null>
+  listAssets(): Promise<AssetInfo[]>
+  deleteAsset(key: string): Promise<void>
 }
 ```
 
-Factory functions: `createBrowserAdapter()`, `createOPFSAdapter()`, `createElectronAdapter()`.
+`saveFileAs` returns the filename that was saved to (so the toolbar can update), or `null` if the user cancelled.
 
-**Implementation strategy**: build the implementation here first, in `src/WebEditor/src/lib/filesystem/`. The key discipline is keeping that module completely free of Svelte or Quest-specific imports — plain TypeScript only, as if it were already a separate package. Wire the rest of the editor to it only via the `FileAdapter` interface. When Squiffy becomes the second consumer, extraction is just moving files into a new published package; no API design work remains because it was done here.
+### Unsaved changes
+
+`UndoLogger` fires `TransactionCommitted` when a transaction records actual changes (not on no-op transactions or undo/redo). `EditorController` surfaces this as a `Dirty` event — matching the v5 desktop editor pattern. The bridge sets `_isDirty = true` on `Dirty` and clears it in `Save()`. The `isDirty` Svelte store drives a `*` indicator in the toolbar filename. A `beforeunload` handler on the editor page triggers the browser's native "unsaved changes" prompt if the tab is closed or navigated away while dirty.
+
+**Known limitation**: undoing all changes back to the last-saved state does not clear dirty — the `*` stays until the next explicit save. Fixing this requires either XML hash comparison on undo or a generation-counter approach; deferred as a future improvement.
+
+### Server-side API (textadventures.co.uk)
+
+`ServerFileAdapter` expects the API described in `src/WebEditor/textadventures-api.md`. When the editor is opened with `?game={guid}`, it auto-loads via `loadFromServer` and uses `ServerFileAdapter` for all subsequent saves and asset operations. The server API uses the user's existing session cookie — no token exchange needed.
 
 ---
 
