@@ -2,7 +2,7 @@
     import { AppBar } from "@skeletonlabs/skeleton-svelte";
     import { PUBLIC_WEBEDITOR_VERSION } from "$env/static/public";
     import {
-        gameFilename, saveGame, saveGameAs, canSaveAs, undo, redo, canUndo, canRedo,
+        gameFilename, isDirty, saveGame, saveGameAs, canSaveAs, undo, redo, canUndo, canRedo,
         treeNodes, selectedKey, openAddModal,
         createExit, createTurnScript, createCommand, createVerb,
         createIncludedLibrary, createJavascript,
@@ -84,7 +84,7 @@
                     <span class="ml-2 text-xs text-surface-500-400">{PUBLIC_WEBEDITOR_VERSION.replace('webeditor-', '')}</span>
                 {/if}
                 {#if $gameFilename}
-                    <span class="ml-3 text-sm text-surface-500-400">{$gameFilename}</span>
+                    <span class="ml-3 text-sm text-surface-500-400">{$gameFilename}{#if $isDirty} *{/if}</span>
                 {/if}
             </AppBar.Lead>
             <AppBar.Trail>

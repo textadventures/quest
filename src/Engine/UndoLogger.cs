@@ -16,6 +16,7 @@ public class UndoLogger
     }
 
     public event EventHandler TransactionsUpdated;
+    public event EventHandler TransactionCommitted;
 
     public void StartTransaction(string command)
     {
@@ -44,6 +45,7 @@ public class UndoLogger
         {
             m_undoTransactions.Push(m_currentTransaction);
             m_redoTransactions.Clear();
+            TransactionCommitted?.Invoke(this, EventArgs.Empty);
         }
 
         OnTransactionsUpdated();

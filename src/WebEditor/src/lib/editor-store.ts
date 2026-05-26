@@ -24,12 +24,14 @@ export const selectedData = writable<EditorDataResponse | null>(null);
 export const fullAttributeData = writable<FullAttributeData | null>(null);
 export const canUndo = writable(false);
 export const canRedo = writable(false);
+export const isDirty = writable(false);
 export const scriptVersion = writable(0);
 export const scriptClipboardHasContent = writable(false);
 
 function refreshUndoRedo() {
     canUndo.set(_bridge?.CanUndo() ?? false);
     canRedo.set(_bridge?.CanRedo() ?? false);
+    isDirty.set(_bridge?.IsDirty() ?? false);
 }
 
 export async function openGame(bytes: Uint8Array, filename: string, adapter: FileAdapter): Promise<boolean> {
@@ -107,13 +109,15 @@ export function setDropdownType(elementKey: string, controlId: string, selectedT
 
 export async function saveGame(): Promise<void> {
     if (!_bridge || !_adapter) return;
-    await _adapter.saveFile(_bridge.Save());
+    await _adapter.saveFile(_bridge.Save()); // Save() clears _isDirty in the bridge
+    isDirty.set(false);
 }
 
 export async function saveGameAs(): Promise<void> {
     if (!_bridge || !_adapter) return;
-    const newName = await _adapter.saveFileAs(_bridge.Save());
+    const newName = await _adapter.saveFileAs(_bridge.Save()); // Save() clears _isDirty in the bridge
     if (newName) gameFilename.set(newName);
+    isDirty.set(false);
 }
 
 export function undo() {

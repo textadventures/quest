@@ -7,6 +7,7 @@ export interface WasmBridge {
   SetObjectReference(elementKey: string, attribute: string, objectName: string): string
   SetDropdownType(elementKey: string, controlId: string, selectedType: string): string
   Save(): string
+  IsDirty(): boolean
   CanUndo(): boolean
   CanRedo(): boolean
   Undo(): void
