@@ -129,8 +129,39 @@
         if (selectedAttrName === attr.name) selectedAttrName = null;
     }
 
+    let attrTbodyEl = $state<HTMLTableSectionElement | null>(null);
+
     function onSelectAttribute(attr: AttributeDataItem) {
         selectedAttrName = attr.name;
+    }
+
+    function focusAttrRow(name: string) {
+        const el = attrTbodyEl?.querySelector<HTMLTableRowElement>(`[data-attr="${CSS.escape(name)}"]`);
+        el?.focus();
+        el?.scrollIntoView({ block: "nearest" });
+    }
+
+    function onAttrRowKeydown(e: KeyboardEvent, attr: AttributeDataItem) {
+        const attrs = $fullAttributeData?.attributes ?? [];
+        const idx = attrs.findIndex(a => a.name === attr.name);
+        if (e.key === "ArrowDown") {
+            e.preventDefault();
+            if (idx < attrs.length - 1) { onSelectAttribute(attrs[idx + 1]); focusAttrRow(attrs[idx + 1].name); }
+        } else if (e.key === "ArrowUp") {
+            e.preventDefault();
+            if (idx > 0) { onSelectAttribute(attrs[idx - 1]); focusAttrRow(attrs[idx - 1].name); }
+        } else if (e.key === "Home") {
+            e.preventDefault();
+            if (attrs.length > 0) { onSelectAttribute(attrs[0]); focusAttrRow(attrs[0].name); }
+        } else if (e.key === "End") {
+            e.preventDefault();
+            if (attrs.length > 0) { onSelectAttribute(attrs[attrs.length - 1]); focusAttrRow(attrs[attrs.length - 1].name); }
+        } else if (e.key === "Delete" && $selectedKey && canDeleteAttribute(attr)) {
+            e.preventDefault();
+            removeAttribute($selectedKey, attr.name);
+            const next = attrs[idx + 1] ?? attrs[idx - 1];
+            if (next) { onSelectAttribute(next); focusAttrRow(next.name); } else { selectedAttrName = null; }
+        }
     }
 
     function onChangeType(newType: string) {
@@ -173,6 +204,8 @@
             setAttribute($selectedKey, name, "textbox", "");
             newAttrName = "";
             selectedAttrName = name;
+            // Focus the new row after Svelte renders it
+            Promise.resolve().then(() => requestAnimationFrame(() => focusAttrRow(name)));
         }
     }
 
@@ -283,15 +316,19 @@
                             <th class="w-6"></th>
                         </tr>
                     </thead>
-                    <tbody>
+                    <tbody bind:this={attrTbodyEl}>
                         {#each $fullAttributeData?.attributes ?? [] as attr}
                             {@const dimmed = attr.isInherited || attr.isDefaultType}
                             {@const isSelected = selectedAttrName === attr.name}
                             <tr
-                                class="border-b border-surface-100-900 cursor-pointer
+                                class="border-b border-surface-100-900 cursor-pointer outline-none
+                                    focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-primary-500
                                     {isSelected ? 'bg-primary-100-900' : 'hover:bg-surface-100-900'}
                                     {dimmed ? 'text-surface-400-500' : ''}"
+                                tabindex={isSelected ? 0 : -1}
+                                data-attr={attr.name}
                                 onclick={() => onSelectAttribute(attr)}
+                                onkeydown={(e) => onAttrRowKeydown(e, attr)}
                             >
                                 <td class="py-0.5 px-3 truncate max-w-36 {!dimmed ? 'font-medium' : ''}" title={attr.name}>{attr.name}</td>
                                 <td class="py-0.5 px-3 max-w-40 truncate" title={attr.value ?? ""}>{displayValue(attr)}</td>
@@ -300,9 +337,10 @@
                                     {#if canDeleteAttribute(attr)}
                                         <button
                                             type="button"
+                                            tabindex="-1"
                                             class="text-error-500 hover:text-error-700"
                                             onclick={(e) => onDeleteAttribute(attr, e)}
-                                            title="Remove attribute"
+                                            title="Remove attribute (or press Delete)"
                                         >✕</button>
                                     {/if}
                                 </td>
@@ -314,24 +352,6 @@
                 </table>
             </div>
 
-            <!-- Add new attribute -->
-            <div class="px-3 py-1.5 flex-shrink-0">
-                <div class="flex items-center gap-2 max-w-xs">
-                    <input
-                        type="text"
-                        placeholder="Add attribute..."
-                        class="input text-xs py-0 px-1.5 h-6 flex-1 min-w-0"
-                        bind:value={newAttrName}
-                        onkeydown={(e) => { if (e.key === "Enter") onAddAttribute(); }}
-                    />
-                    <button
-                        type="button"
-                        disabled={!newAttrName.trim()}
-                        onclick={onAddAttribute}
-                        class="btn btn-sm preset-outlined-primary-500 text-xs px-2 py-0 h-6 flex-shrink-0"
-                    >Add</button>
-                </div>
-            </div>
         </div>
 
         <!-- Splitter -->
@@ -443,6 +463,25 @@
             {:else}
                 <p class="p-3 text-surface-400-500 italic">Select an attribute to edit it.</p>
             {/if}
+        </div>
+    </div>
+
+    <!-- Add new attribute -->
+    <div class="px-3 py-1.5 flex-shrink-0 border-t border-surface-200-800">
+        <div class="flex items-center gap-2 max-w-xs">
+            <input
+                type="text"
+                placeholder="Add attribute..."
+                class="input text-xs py-0 px-1.5 h-6 flex-1 min-w-0"
+                bind:value={newAttrName}
+                onkeydown={(e) => { if (e.key === "Enter") onAddAttribute(); }}
+            />
+            <button
+                type="button"
+                disabled={!newAttrName.trim()}
+                onclick={onAddAttribute}
+                class="btn btn-sm preset-outlined-primary-500 text-xs px-2 py-0 h-6 flex-shrink-0"
+            >Add</button>
         </div>
     </div>
 </div>
