@@ -110,7 +110,7 @@ public class ForEachScript : ScriptBase
         }
     }
 
-    public override void SetParameterInternal(int index, object value)
+    protected override void SetParameterInternal(int index, object value)
     {
         switch (index)
         {

@@ -63,7 +63,7 @@ public class DestroyScript : ScriptBase
         return m_expr.Save();
     }
 
-    public override void SetParameterInternal(int index, object value)
+    protected override void SetParameterInternal(int index, object value)
     {
         m_expr = new Expression<string>((string) value, m_scriptContext);
     }

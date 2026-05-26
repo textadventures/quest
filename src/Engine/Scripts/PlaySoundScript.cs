@@ -72,7 +72,7 @@ public class PlaySoundScript : ScriptBase
         }
     }
 
-    public override void SetParameterInternal(int index, object value)
+    protected override void SetParameterInternal(int index, object value)
     {
         switch (index)
         {
@@ -137,7 +137,7 @@ public class StopSoundScript : ScriptBase
         throw new ArgumentOutOfRangeException();
     }
 
-    public override void SetParameterInternal(int index, object value)
+    protected override void SetParameterInternal(int index, object value)
     {
         throw new ArgumentOutOfRangeException();
     }

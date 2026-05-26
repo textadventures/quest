@@ -63,7 +63,7 @@ public class PictureScript : ScriptBase
         return m_filename.Save();
     }
 
-    public override void SetParameterInternal(int index, object value)
+    protected override void SetParameterInternal(int index, object value)
     {
         m_filename = new Expression<string>((string) value, m_scriptContext);
     }

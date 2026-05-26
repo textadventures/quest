@@ -95,7 +95,7 @@ public class CreateScript : ScriptBase
         }
     }
 
-    public override void SetParameterInternal(int index, object value)
+    protected override void SetParameterInternal(int index, object value)
     {
         switch (index)
         {
@@ -238,7 +238,7 @@ public class CreateExitScript : ScriptBase
         }
     }
 
-    public override void SetParameterInternal(int index, object value)
+    protected override void SetParameterInternal(int index, object value)
     {
         switch (index)
         {
@@ -314,7 +314,7 @@ public class CreateTimerScript : ScriptBase
         return m_expr.Save();
     }
 
-    public override void SetParameterInternal(int index, object value)
+    protected override void SetParameterInternal(int index, object value)
     {
         m_expr = new Expression<string>((string) value, m_scriptContext);
     }
@@ -370,7 +370,7 @@ public class CreateTurnScript : ScriptBase
         return m_expr.Save();
     }
 
-    public override void SetParameterInternal(int index, object value)
+    protected override void SetParameterInternal(int index, object value)
     {
         m_expr = new Expression<string>((string) value, m_scriptContext);
     }

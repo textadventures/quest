@@ -232,7 +232,7 @@ public class MultiScript : ScriptBase, IScriptParent, IMultiScript
         NotifyUpdate(script, index);
     }
 
-    public override void SetParameterInternal(int index, object value)
+    protected override void SetParameterInternal(int index, object value)
     {
         throw new NotImplementedException();
     }

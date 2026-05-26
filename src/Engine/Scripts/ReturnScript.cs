@@ -59,7 +59,7 @@ public class ReturnScript : ScriptBase
         return m_returnValue.Save();
     }
 
-    public override void SetParameterInternal(int index, object value)
+    protected override void SetParameterInternal(int index, object value)
     {
         m_returnValue = new ExpressionDynamic((string) value, m_scriptContext);
     }

@@ -123,7 +123,7 @@ public class FirstTimeScript : ScriptBase, IFirstTimeScript
         }
     }
 
-    public override void SetParameterInternal(int index, object value)
+    protected override void SetParameterInternal(int index, object value)
     {
         switch (index)
         {

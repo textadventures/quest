@@ -49,7 +49,7 @@ public class CommentScript : ScriptBase
         return m_comment;
     }
 
-    public override void SetParameterInternal(int index, object value)
+    protected override void SetParameterInternal(int index, object value)
     {
         m_comment = (string) value;
     }

@@ -74,7 +74,7 @@ public class ListAddScript : ScriptBase
         }
     }
 
-    public override void SetParameterInternal(int index, object value)
+    protected override void SetParameterInternal(int index, object value)
     {
         switch (index)
         {
@@ -161,7 +161,7 @@ public class ListRemoveScript : ScriptBase
         }
     }
 
-    public override void SetParameterInternal(int index, object value)
+    protected override void SetParameterInternal(int index, object value)
     {
         switch (index)
         {

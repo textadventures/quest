@@ -68,7 +68,7 @@ public class AskScript(
         }
     }
 
-    public override void SetParameterInternal(int index, object value)
+    protected override void SetParameterInternal(int index, object value)
     {
         _caption = index switch
         {

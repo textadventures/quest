@@ -49,7 +49,7 @@ public class UndoScript : ScriptBase
         throw new ArgumentOutOfRangeException();
     }
 
-    public override void SetParameterInternal(int index, object value)
+    protected override void SetParameterInternal(int index, object value)
     {
         throw new ArgumentOutOfRangeException();
     }
@@ -105,7 +105,7 @@ public class StartTransactionScript : ScriptBase
         return m_command.Save();
     }
 
-    public override void SetParameterInternal(int index, object value)
+    protected override void SetParameterInternal(int index, object value)
     {
         m_command = new Expression<string>((string) value, m_scriptContext);
     }

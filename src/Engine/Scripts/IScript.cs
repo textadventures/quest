@@ -1,4 +1,5 @@
-﻿#nullable disable
+﻿using System.Diagnostics.CodeAnalysis;
+
 namespace QuestViva.Engine.Scripts;
 
 public class ScriptUpdatedEventArgs : EventArgs
@@ -33,14 +34,14 @@ public class ScriptUpdatedEventArgs : EventArgs
         IsNamedParameterUpdate = true;
     }
 
-    public IScript RemovedScript { get; private set; }
-    public IScript AddedScript { get; private set; }
-    public IScript InsertedScript { get; private set; }
+    public IScript? RemovedScript { get; private set; }
+    public IScript? AddedScript { get; private set; }
+    public IScript? InsertedScript { get; private set; }
     public int Index { get; private set; }
-    public object NewValue { get; private set; }
+    public object? NewValue { get; private set; }
     public bool IsParameterUpdate { get; private set; }
     public bool IsNamedParameterUpdate { get; private set; }
-    public string Id { get; private set; }
+    public string? Id { get; private set; }
     public bool ScriptsReplaced { get; set; }
 }
 
@@ -51,7 +52,7 @@ public interface IScriptParent
 
 public interface IScript : IMutableField
 {
-    string Line { get; set; }
+    string? Line { get; set; }
     string Keyword { get; }
     IScriptParent Parent { get; set; }
     void Execute(Context c);
@@ -60,7 +61,7 @@ public interface IScript : IMutableField
     void SetParameterSilent(int index, object value);
     object GetParameter(int index);
     event EventHandler<ScriptUpdatedEventArgs> ScriptUpdated;
-    IEnumerable<string> GetDefinedVariables();
+    IEnumerable<string>? GetDefinedVariables();
 }
 
 public interface IFunctionCallScript : IScript
@@ -82,30 +83,25 @@ public interface IScriptConstructor
 
 public abstract class ScriptBase : IScript, IMutableField
 {
-    private string m_line;
+    private string? _line;
 
-    private IScriptParent m_parent;
-
-    public Element Owner { get; set; }
+    public Element? Owner { get; set; }
 
     public abstract void Execute(Context c);
 
     public abstract string Save();
 
-    public virtual string Line
+    public virtual string? Line
     {
-        get => m_line;
-        set => m_line = value;
+        get => _line;
+        set => _line = value;
     }
 
     public void SetParameter(int index, object value)
     {
         var oldValue = GetParameter(index);
         SetParameterSilent(index, value);
-        if (UndoLog != null)
-        {
-            UndoLog.AddUndoAction(() => new UndoScriptChange(this, index, oldValue, value));
-        }
+        UndoLog?.AddUndoAction(() => new UndoScriptChange(this, index, oldValue, value));
     }
 
     public void SetParameterSilent(int index, object value)
@@ -118,15 +114,16 @@ public abstract class ScriptBase : IScript, IMutableField
 
     public abstract string Keyword { get; }
 
-    public event EventHandler<ScriptUpdatedEventArgs> ScriptUpdated;
+    public event EventHandler<ScriptUpdatedEventArgs>? ScriptUpdated;
 
+    [field: AllowNull, MaybeNull]
     public IScriptParent Parent
     {
-        get => m_parent;
+        get;
         set
         {
-            var changed = m_parent != value;
-            m_parent = value;
+            var changed = field != value;
+            field = value;
             if (changed)
             {
                 ParentUpdated();
@@ -134,7 +131,7 @@ public abstract class ScriptBase : IScript, IMutableField
         }
     }
 
-    public virtual IEnumerable<string> GetDefinedVariables()
+    public virtual IEnumerable<string>? GetDefinedVariables()
     {
         return null;
     }
@@ -149,17 +146,9 @@ public abstract class ScriptBase : IScript, IMutableField
         return keyword + " (" + string.Join(", ", args) + ")";
     }
 
-    protected string SaveScript(string keyword, IScript script, params string[] args)
+    protected string SaveScript(string keyword, IScript? script, params string[] args)
     {
-        string result;
-        if (args.Length == 0)
-        {
-            result = keyword;
-        }
-        else
-        {
-            result = SaveScript(keyword, args);
-        }
+        var result = args.Length == 0 ? keyword : SaveScript(keyword, args);
 
         var scriptString = script != null ? script.Save() : string.Empty;
         return result + " {" + Environment.NewLine + scriptString + Environment.NewLine + "}";
@@ -195,45 +184,29 @@ public abstract class ScriptBase : IScript, IMutableField
 
     protected abstract ScriptBase CloneScript();
 
-    public abstract void SetParameterInternal(int index, object value);
+    protected abstract void SetParameterInternal(int index, object value);
 
     protected virtual void ParentUpdated()
     {
     }
 
-    private class UndoScriptChange : UndoLogger.IUndoAction
+    private class UndoScriptChange(IScript appliesTo, int index, object oldValue, object newValue)
+        : UndoLogger.IUndoAction
     {
-        private readonly IScript m_appliesTo;
-        private readonly int m_index;
-        private readonly object m_newValue;
-        private readonly object m_oldValue;
-
-        public UndoScriptChange(IScript appliesTo, int index, object oldValue, object newValue)
-        {
-            m_appliesTo = appliesTo;
-            m_index = index;
-            m_oldValue = oldValue;
-            m_newValue = newValue;
-        }
-
-        #region IUndoAction Members
-
         public void DoUndo(WorldModel worldModel)
         {
-            m_appliesTo.SetParameterSilent(m_index, m_oldValue);
+            appliesTo.SetParameterSilent(index, oldValue);
         }
 
         public void DoRedo(WorldModel worldModel)
         {
-            m_appliesTo.SetParameterSilent(m_index, m_newValue);
+            appliesTo.SetParameterSilent(index, newValue);
         }
-
-        #endregion
     }
 
     #region IMutableField Members
 
-    public UndoLogger UndoLog { get; set; }
+    public UndoLogger? UndoLog { get; set; }
 
     public bool Locked
     {
@@ -244,7 +217,7 @@ public abstract class ScriptBase : IScript, IMutableField
     public virtual IMutableField Clone()
     {
         var clone = CloneScript();
-        clone.m_line = m_line;
+        clone._line = _line;
         return clone;
     }
 

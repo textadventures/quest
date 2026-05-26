@@ -27,7 +27,7 @@ internal class FailedScript : ScriptBase
         return m_script;
     }
 
-    public override void SetParameterInternal(int index, object value)
+    protected override void SetParameterInternal(int index, object value)
     {
         if (index != 0)
         {

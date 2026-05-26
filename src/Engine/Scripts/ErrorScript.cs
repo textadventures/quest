@@ -58,7 +58,7 @@ public class ErrorScript : ScriptBase
         return m_function.Save();
     }
 
-    public override void SetParameterInternal(int index, object value)
+    protected override void SetParameterInternal(int index, object value)
     {
         m_function = new ExpressionDynamic((string) value, m_scriptContext);
     }

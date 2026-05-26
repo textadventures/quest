@@ -486,7 +486,7 @@ public class IfScript : ScriptBase, IIfScript
         }
     }
 
-    public override void SetParameterInternal(int index, object value)
+    protected override void SetParameterInternal(int index, object value)
     {
         throw new NotImplementedException();
     }

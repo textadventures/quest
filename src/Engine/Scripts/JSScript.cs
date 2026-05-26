@@ -90,7 +90,7 @@ public class JSScript : ScriptBase
             m_parameters == null ? new[] {string.Empty} : m_parameters.Select(p => p.Save()).ToArray());
     }
 
-    public override void SetParameterInternal(int index, object value)
+    protected override void SetParameterInternal(int index, object value)
     {
         var constuctor = new JSScriptConstructor();
         try
