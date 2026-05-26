@@ -1230,7 +1230,7 @@ public partial class WasmEditorBridge
         IEditableDictionary<string> dict => JsonSerializer.Serialize(
             dict.Items.Values.Select(i => new ListItemData(i.Key, i.Value)).ToList(),
             WasmEditorJsonContext.Default.ListListItemData),
-        IEditableScripts => "(script)",
+        IEditableScripts scripts => scripts.DisplayString(-1, string.Empty),
         IEditableCommandPattern cmd => cmd.Pattern,
         IEditableDictionary<IEditableScripts> scriptDict => JsonSerializer.Serialize(
             scriptDict.Items.Values.Select(i => new ListItemData(i.Key, "(script)")).ToList(),

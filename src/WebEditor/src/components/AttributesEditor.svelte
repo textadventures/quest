@@ -222,12 +222,22 @@
 
     function displayValue(attr: AttributeDataItem): string {
         if (attr.value === null) return "(null)";
-        if (attr.type === "script") return "(script)";
-        if (attr.type === "stringlist" || attr.type === "stringdictionary" || attr.type === "scriptdictionary") {
+        if (attr.type === "stringlist") {
             try {
                 const items = JSON.parse(attr.value) as {key: string, value: string}[];
-                const label = attr.type === "stringlist" ? "list" : "dict";
-                return `(${label}: ${items.length})`;
+                return items.map(i => i.value).join(", ") || "(empty list)";
+            } catch { /* fall through */ }
+        }
+        if (attr.type === "stringdictionary") {
+            try {
+                const items = JSON.parse(attr.value) as {key: string, value: string}[];
+                return items.map(i => `${i.key}=${i.value}`).join(", ") || "(empty dict)";
+            } catch { /* fall through */ }
+        }
+        if (attr.type === "scriptdictionary") {
+            try {
+                const items = JSON.parse(attr.value) as {key: string, value: string}[];
+                return `(dict: ${items.length})`;
             } catch { /* fall through */ }
         }
         return attr.value;
