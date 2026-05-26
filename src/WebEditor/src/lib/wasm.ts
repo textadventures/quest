@@ -65,6 +65,7 @@ export interface WasmBridge {
   CreateCommand(parent: string): string
   CreateVerb(parent: string): string
   DeleteElement(key: string): void
+  SwapElements(key1: string, key2: string): string
 }
 
 let _bridge: WasmBridge | null = null;

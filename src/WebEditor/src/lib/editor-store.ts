@@ -494,3 +494,10 @@ export function deleteElement(key: string) {
     refreshTree();
     refreshUndoRedo();
 }
+
+export function swapElements(key1: string, key2: string): string {
+    if (!_bridge) return "error";
+    const result = _bridge.SwapElements(key1, key2);
+    if (result === "ok") refreshTree();
+    return result;
+}

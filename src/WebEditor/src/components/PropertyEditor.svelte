@@ -5,6 +5,7 @@
     import Combobox from "./Combobox.svelte";
     import AttributesEditor from "./AttributesEditor.svelte";
     import ListEditor from "./ListEditor.svelte";
+    import ElementsList from "./ElementsList.svelte";
 
     let activeTab = $state<string | null>(null);
     let lastKey = $state<string | null>(null);
@@ -370,6 +371,13 @@
         <div class="px-3 py-1 text-xs text-surface-500-400 italic">
             {ctrl.caption ?? ""}
         </div>
+    {:else if ctrl.controlType === "elementslist" && $selectedKey}
+        <ElementsList
+            elementKey={$selectedKey}
+            elementType={ctrl.elementType ?? "object"}
+            objectType={ctrl.objectType}
+            listFilter={ctrl.listFilter}
+        />
     {:else if ctrl.attribute !== null}
         {#if ctrl.controlType === "checkbox"}
             <label class="flex items-center gap-2 px-3 py-1.5 min-h-8 cursor-pointer">

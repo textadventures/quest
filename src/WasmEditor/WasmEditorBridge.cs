@@ -17,7 +17,7 @@ namespace QuestViva.WasmEditor;
 internal record TreeNodeData(string Key, string Text, string? Parent, string? NodeIcon, string NodeType);
 internal record ControlOption(string Value, string Label);
 internal record TextProcessorCommand(string Command, string Info, string InsertBefore, string InsertAfter);
-internal record ControlInfo(string? Attribute, string ControlType, string? Caption, List<ControlOption>? Options, List<ControlOption>? SubEditors = null, string? SubAttribute = null, List<TextProcessorCommand>? TextProcessorCommands = null, string? AddPrompt = null);
+internal record ControlInfo(string? Attribute, string ControlType, string? Caption, List<ControlOption>? Options, List<ControlOption>? SubEditors = null, string? SubAttribute = null, List<TextProcessorCommand>? TextProcessorCommands = null, string? AddPrompt = null, string? ElementType = null, string? ObjectType = null, string? ListFilter = null);
 internal record TabInfo(string? Caption, List<ControlInfo> Controls);
 internal record EditorDataResponse(Dictionary<string, string?> Attributes, List<TabInfo> Tabs, List<ControlInfo> Controls);
 
@@ -83,6 +83,7 @@ public partial class WasmEditorBridge
     private static EditorController? _controller;
     private static readonly List<TreeNodeData> TreeNodes = [];
     private static bool _isRebuilding;
+    private static bool _suppressTreeEvents;
     private static string? _pendingRenameNewKey;
 
     [JSExport]
@@ -96,7 +97,7 @@ public partial class WasmEditorBridge
         _controller.BeginTreeUpdate += (_, _) => { };
         _controller.EndTreeUpdate += (_, _) => { _isRebuilding = false; };
         _controller.AddedNode += OnAddedNode;
-        _controller.RemovedNode += (_, e) => TreeNodes.RemoveAll(n => n.Key == e.Key);
+        _controller.RemovedNode += (_, e) => { if (!_suppressTreeEvents) TreeNodes.RemoveAll(n => n.Key == e.Key); };
         _controller.RenamedNode += (_, e) =>
         {
             _pendingRenameNewKey = e.NewName;
@@ -129,13 +130,19 @@ public partial class WasmEditorBridge
     {
         if (_controller == null) return null;
         var data = _controller.GetEditorData(key);
-        if (data is not IEditorDataExtendedAttributeInfo extended) return null;
+
+        // data is null for synthetic header nodes (e.g. _objects, _functions) which don't
+        // exist as world model elements but do have editor definitions in the ASLX.
+        var extended = data as IEditorDataExtendedAttributeInfo;
 
         var attrs = new Dictionary<string, string?>();
-        foreach (var attr in extended.GetAttributeData())
+        if (extended != null)
         {
-            var val = data.GetAttribute(attr.AttributeName);
-            attrs[attr.AttributeName] = SerializeAttributeValue(val);
+            foreach (var attr in extended.GetAttributeData())
+            {
+                var val = data!.GetAttribute(attr.AttributeName);
+                attrs[attr.AttributeName] = SerializeAttributeValue(val);
+            }
         }
 
         var tabs = new List<TabInfo>();
@@ -147,14 +154,22 @@ public partial class WasmEditorBridge
             var def = _controller.GetEditorDefinition(editorName);
             foreach (var tab in def.Tabs.Values)
             {
-                if (!tab.IsTabVisible(data)) continue;
-                var visibleControls = tab.Controls.Where(c => c.IsControlVisible(data)).ToList();
-                AddDropdownTypeValues(attrs, visibleControls, key, data);
+                if (data != null && !tab.IsTabVisible(data)) continue;
+                var visibleControls = data != null
+                    ? tab.Controls.Where(c => c.IsControlVisible(data)).ToList()
+                    : tab.Controls.ToList();
+                if (data != null) AddDropdownTypeValues(attrs, visibleControls, key, data);
                 tabs.Add(new TabInfo(tab.Caption, visibleControls.Select(ToControlInfo).ToList()));
             }
-            var visibleTopControls = def.Controls.Where(c => c.IsControlVisible(data)).ToList();
-            AddDropdownTypeValues(attrs, visibleTopControls, key, data);
+            var visibleTopControls = data != null
+                ? def.Controls.Where(c => c.IsControlVisible(data)).ToList()
+                : def.Controls.ToList();
+            if (data != null) AddDropdownTypeValues(attrs, visibleTopControls, key, data);
             topControls.AddRange(visibleTopControls.Select(ToControlInfo));
+        }
+        else if (data == null)
+        {
+            return null;
         }
 
         return JsonSerializer.Serialize(
@@ -940,6 +955,21 @@ public partial class WasmEditorBridge
         _controller?.DeleteElement(key, true);
     }
 
+    [JSExport]
+    public static string SwapElements(string key1, string key2)
+    {
+        if (_controller == null) return "error";
+        // Capture positions before SwapElements fires tree events (Remove+AddToEnd) that would scramble the list.
+        var i1 = TreeNodes.FindIndex(n => n.Key == key1);
+        var i2 = TreeNodes.FindIndex(n => n.Key == key2);
+        _suppressTreeEvents = true;
+        try { _controller.SwapElements(key1, key2); }
+        finally { _suppressTreeEvents = false; }
+        if (i1 >= 0 && i2 >= 0)
+            (TreeNodes[i1], TreeNodes[i2]) = (TreeNodes[i2], TreeNodes[i1]);
+        return "ok";
+    }
+
     // ── Attributes editor API ──────────────────────────────────────────────────
 
     [JSExport]
@@ -1468,6 +1498,7 @@ public partial class WasmEditorBridge
 
     private static void OnAddedNode(object? sender, EditorController.AddedNodeEventArgs e)
     {
+        if (_suppressTreeEvents) return;
         var node = new TreeNodeData(e.Key, e.Text, e.Parent, e.NodeIcon, GetNodeType(e.Key, e.NodeIcon));
         if (_isRebuilding)
         {
@@ -1557,6 +1588,13 @@ public partial class WasmEditorBridge
 
             var caption = ctrl.Caption ?? ctrl.GetString("selfcaption");
             return new ControlInfo(ctrl.Id, ctrl.ControlType, caption, options, subEditors, ctrl.Attribute, multiTpCommands);
+        }
+        else if (ctrl.ControlType == "elementslist")
+        {
+            return new ControlInfo(null, "elementslist", null, null, null, null, null, null,
+                ctrl.GetString("elementtype"),
+                ctrl.GetString("objecttype"),
+                ctrl.GetString("listfilter"));
         }
 
         List<TextProcessorCommand>? textProcessorCommands = null;

@@ -27,6 +27,9 @@ export interface ControlInfo {
   subAttribute: string | null
   textProcessorCommands: TextProcessorCommand[] | null
   addPrompt: string | null
+  elementType?: string | null
+  objectType?: string | null
+  listFilter?: string | null
 }
 
 export interface TabInfo {
