@@ -166,7 +166,7 @@ internal partial class GameLoader
     private async Task<Stream> LoadCompiledFile(GameData gameData)
     {
         var packageReader = new PackageReader();
-        var result = await packageReader.LoadPackage(gameData);
+        var result = await PackageReader.LoadPackage(gameData);
         WorldModel.ResourceGetter = result.GetFile;
         WorldModel.GetResourceNames = result.GetFileNames;
         IsCompiledFile = true;
