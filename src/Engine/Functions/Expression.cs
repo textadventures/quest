@@ -5,9 +5,9 @@ namespace QuestViva.Engine.Functions;
 
 public abstract class ExpressionBase
 {
-    protected readonly ScriptContext ScriptContext;
-    protected readonly string OriginalExpression;
     protected readonly string Expression;
+    protected readonly string OriginalExpression;
+    protected readonly ScriptContext ScriptContext;
 
     protected ExpressionBase(string expression, ScriptContext scriptContext)
     {
@@ -74,7 +74,7 @@ public class ExpressionDynamic : ExpressionBase, IFunctionDynamic
         }
         else
         {
-            _dynamicExpressionEvaluator = new FleeDynamicExpressionEvaluator(Expression, ScriptContext);    
+            _dynamicExpressionEvaluator = new FleeDynamicExpressionEvaluator(Expression, ScriptContext);
         }
     }
 

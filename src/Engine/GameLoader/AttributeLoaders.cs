@@ -1,32 +1,30 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Globalization;
+using System.Reflection;
 using System.Text.RegularExpressions;
 using System.Xml.Linq;
 using QuestViva.Engine.Types;
 using QuestViva.Utility;
+
 // ReSharper disable UnusedType.Local
 
 namespace QuestViva.Engine.GameLoader;
 
 internal partial class GameLoader
 {
-    private delegate void AddErrorHandler(string error);
-
     private readonly Dictionary<string, IValueLoader> _valueLoaders = new();
 
     private void AddLoaders(LoadMode mode)
     {
-        foreach (var t in Classes.GetImplementations(System.Reflection.Assembly.GetExecutingAssembly(),
+        foreach (var t in Classes.GetImplementations(Assembly.GetExecutingAssembly(),
                      typeof(IAttributeLoader)))
         {
-            AddLoader((IAttributeLoader)Activator.CreateInstance(t)!, mode);
+            AddLoader((IAttributeLoader) Activator.CreateInstance(t)!, mode);
         }
 
-        foreach (var t in Classes.GetImplementations(System.Reflection.Assembly.GetExecutingAssembly(),
+        foreach (var t in Classes.GetImplementations(Assembly.GetExecutingAssembly(),
                      typeof(IValueLoader)))
         {
-            AddValueLoader((IValueLoader)Activator.CreateInstance(t)!);
+            AddValueLoader((IValueLoader) Activator.CreateInstance(t)!);
         }
     }
 
@@ -61,19 +59,21 @@ internal partial class GameLoader
         return null;
     }
 
+    private delegate void AddErrorHandler(string error);
+
     private interface IAttributeLoader
     {
         string AppliesTo { get; }
-        void Load(Element element, string attribute, string value);
         GameLoader GameLoader { set; }
+        void Load(Element element, string attribute, string value);
         bool SupportsMode(LoadMode mode);
     }
 
     private interface IValueLoader
     {
         string AppliesTo { get; }
-        object? GetValue(XElement xml);
         GameLoader GameLoader { set; }
+        object? GetValue(XElement xml);
     }
 
     private abstract class AttributeLoaderBase : IAttributeLoader
@@ -81,7 +81,7 @@ internal partial class GameLoader
         public abstract string AppliesTo { get; }
         public abstract void Load(Element element, string attribute, string value);
 
-        public GameLoader GameLoader { set; protected get; } = null!;
+        public GameLoader GameLoader { protected get; set; } = null!;
 
         public virtual bool SupportsMode(LoadMode mode)
         {
@@ -91,10 +91,6 @@ internal partial class GameLoader
 
     private abstract class BasicAttributeLoaderBase : AttributeLoaderBase, IValueLoader
     {
-        protected abstract record AttributeLoadResult;
-        protected record InvalidAttributeLoadResult : AttributeLoadResult;
-        protected record ValidAttributeLoadResult(object Value) : AttributeLoadResult;
-
         public object? GetValue(XElement xml)
         {
             var value = GetValueFromString(xml.Value, "(nested)");
@@ -116,6 +112,12 @@ internal partial class GameLoader
         }
 
         protected abstract AttributeLoadResult GetValueFromString(string s, string errorSource);
+
+        protected abstract record AttributeLoadResult;
+
+        protected record InvalidAttributeLoadResult : AttributeLoadResult;
+
+        protected record ValidAttributeLoadResult(object Value) : AttributeLoadResult;
     }
 
     private class SimpleStringListLoader : AttributeLoaderBase
@@ -152,6 +154,11 @@ internal partial class GameLoader
     {
         public override string AppliesTo => "objectlist";
 
+        public object GetValue(XElement xml)
+        {
+            return new LazyObjectList(GetValues(xml.Value));
+        }
+
         public override void Load(Element element, string attribute, string value)
         {
             var values = GetValues(value);
@@ -165,25 +172,20 @@ internal partial class GameLoader
                 : Utility.ListSplit(value);
             return values.Where(v => v.Length > 0);
         }
-
-        public object GetValue(XElement xml)
-        {
-            return new LazyObjectList(GetValues(xml.Value));
-        }
     }
 
     private class ScriptLoader : AttributeLoaderBase, IValueLoader
     {
         public override string AppliesTo => "script";
 
-        public override void Load(Element element, string attribute, string value)
-        {
-            element.Fields.LazyFields.AddScript(attribute, value);
-        }
-
         public object GetValue(XElement xml)
         {
             return new LazyScript(xml.Value);
+        }
+
+        public override void Load(Element element, string attribute, string value)
+        {
+            element.Fields.LazyFields.AddScript(attribute, value);
         }
     }
 
@@ -191,14 +193,14 @@ internal partial class GameLoader
     {
         public override string AppliesTo => "string";
 
-        public override void Load(Element element, string attribute, string value)
-        {
-            element.Fields.Set(attribute, value);
-        }
-
         public object GetValue(XElement xml)
         {
             return xml.Value;
+        }
+
+        public override void Load(Element element, string attribute, string value)
+        {
+            element.Fields.Set(attribute, value);
         }
     }
 
@@ -209,9 +211,9 @@ internal partial class GameLoader
         protected override AttributeLoadResult GetValueFromString(string s, string errorSource)
         {
             if (double.TryParse(s,
-                    System.Globalization.NumberStyles.AllowDecimalPoint |
-                    System.Globalization.NumberStyles.AllowLeadingSign,
-                    System.Globalization.CultureInfo.InvariantCulture, out var num))
+                    NumberStyles.AllowDecimalPoint |
+                    NumberStyles.AllowLeadingSign,
+                    CultureInfo.InvariantCulture, out var num))
             {
                 return new ValidAttributeLoadResult(num);
             }
@@ -259,13 +261,12 @@ internal partial class GameLoader
 
     private partial class SimplePatternLoader : AttributeLoaderBase
     {
+        public override string AppliesTo => "simplepattern";
         // TO DO: It would be nice if we could also specify optional text in square brackets
         // e.g. ask man about[ the] #subject#
 
         [GeneratedRegex("#([A-Za-z]\\w+)#")]
         private partial Regex m_regex();
-
-        public override string AppliesTo => "simplepattern";
 
         public override void Load(Element element, string attribute, string value)
         {
@@ -299,7 +300,11 @@ internal partial class GameLoader
             var result = string.Empty;
             foreach (var pattern in patterns)
             {
-                if (result.Length > 0) result += "|";
+                if (result.Length > 0)
+                {
+                    result += "|";
+                }
+
                 result += "^" + pattern + "$";
             }
 
@@ -314,7 +319,8 @@ internal partial class GameLoader
 
         private static void LoadVerb(Element element, string attribute, string value)
         {
-            element.Fields.Set(attribute, Utility.ConvertVerbSimplePattern(value, element.Fields[FieldDefinitions.Separator]));
+            element.Fields.Set(attribute,
+                Utility.ConvertVerbSimplePattern(value, element.Fields[FieldDefinitions.Separator]));
 
             var verbs = value.Split(';');
             element.Fields[FieldDefinitions.DisplayVerb] = verbs[0].Replace("#object#", string.Empty).Trim();
@@ -384,6 +390,7 @@ internal partial class GameLoader
                         $"Missing '=' in dictionary element '{trimmedPair}' in '{element.Name}.{attribute}'");
                     return;
                 }
+
                 var key = trimmedPair[..splitPos].Trim();
                 var dictValue = trimmedPair[(splitPos + 1)..].Trim();
                 result.Add(key, dictValue);
@@ -417,6 +424,7 @@ internal partial class GameLoader
                         $"Missing '=' in dictionary element '{trimmedPair}' in '{element.Name}.{attribute}'");
                     return;
                 }
+
                 var key = trimmedPair[..splitPos].Trim();
                 var dictValue = trimmedPair[(splitPos + 1)..].Trim();
                 result.Add(key, dictValue);
@@ -430,14 +438,14 @@ internal partial class GameLoader
     {
         public override string AppliesTo => "object";
 
-        public override void Load(Element element, string attribute, string value)
-        {
-            element.Fields.LazyFields.AddObjectField(attribute, value);   
-        }
-
         public object GetValue(XElement xml)
         {
             return new LazyObjectReference(xml.Value);
+        }
+
+        public override void Load(Element element, string attribute, string value)
+        {
+            element.Fields.LazyFields.AddObjectField(attribute, value);
         }
     }
 }

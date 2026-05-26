@@ -1,14 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-
-namespace QuestViva.Engine.GameLoader;
+﻿namespace QuestViva.Engine.GameLoader;
 
 internal class Packager(WorldModel worldModel)
 {
     private WorldModel _worldModel = worldModel;
 
-    public bool CreatePackage(string filename, bool includeWalkthrough, out string error, IEnumerable<WorldModel.PackageIncludeFile> includeFiles, Stream outputStream)
+    public bool CreatePackage(string filename, bool includeWalkthrough, out string error,
+        IEnumerable<WorldModel.PackageIncludeFile> includeFiles, Stream outputStream)
     {
         // TODO
         throw new NotImplementedException();

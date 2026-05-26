@@ -42,7 +42,7 @@ var app = builder.Build();
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
 {
-    app.UseExceptionHandler("/Error", createScopeForErrors: true);
+    app.UseExceptionHandler("/Error", true);
     // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
     app.UseHsts();
 }
@@ -64,16 +64,18 @@ app.MapGet("/admin/status", (GameSessionTracker tracker, HttpContext context) =>
     {
         return Results.Unauthorized();
     }
-    return Results.Ok(new { activeGames = tracker.ActiveGames });
+
+    return Results.Ok(new {activeGames = tracker.ActiveGames});
 });
 
 app.MapGet("/res/{name}", UiResources.GetResource);
 app.MapGet("/res/{dir}/{name}", (string dir, string name) => UiResources.GetResource($"{dir}.{name}"));
-app.MapGet("/res/{dir1}/{dir2}/{name}", (string dir1, string dir2, string name) => UiResources.GetResource($"{dir1}.{dir2}.{name}"));
+app.MapGet("/res/{dir1}/{dir2}/{name}",
+    (string dir1, string dir2, string name) => UiResources.GetResource($"{dir1}.{dir2}.{name}"));
 app.MapGet("/game/{resourcesId}/{name}", LocalResources.GetResource);
 app.MapGet("/Play.aspx", async context =>
 {
-    var id = (string?)context.Request.Query["id"];
+    var id = (string?) context.Request.Query["id"];
     if (!string.IsNullOrEmpty(id))
     {
         context.Response.Redirect(id.StartsWith("editor/") ? $"/editor/{id[7..]}" : $"/textadventures/{id}");

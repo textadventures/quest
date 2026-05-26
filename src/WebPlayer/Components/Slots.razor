@@ -18,7 +18,7 @@
 
 <dialog id="questVivaSlots" tabindex="0">
     <button class="btn btn-primary" @onclick="OnStart">Start from the beginning</button>
-    
+
     @if (Saves.Any())
     {
         <h3 class="mt-3">Saved games</h3>
@@ -31,8 +31,9 @@
     [Parameter] public EventCallback<int> OnLoad { get; set; }
     [Parameter] public required SaveSlot[] Saves { get; set; } = [];
 
-    private async Task Load((int index, string _) item)   
+    private async Task Load((int index, string _) item)
     {
         await OnLoad.InvokeAsync(item.index);
     }
+
 }

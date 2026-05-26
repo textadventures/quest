@@ -1,25 +1,25 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-  <PropertyGroup>
-    <TargetFramework>net10.0</TargetFramework>
-    <ImplicitUsings>enable</ImplicitUsings>
-    <Nullable>disable</Nullable>
-    <RootNamespace>QuestViva.Legacy</RootNamespace>
-    <LangVersion>default</LangVersion>
-  </PropertyGroup>
+    <PropertyGroup>
+        <TargetFramework>net10.0</TargetFramework>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>disable</Nullable>
+        <RootNamespace>QuestViva.Legacy</RootNamespace>
+        <LangVersion>default</LangVersion>
+    </PropertyGroup>
 
-  <ItemGroup>
-    <EmbeddedResource Include="Libraries\net.lib" />
-    <EmbeddedResource Include="Libraries\q3ext.qlb" />
-    <EmbeddedResource Include="Libraries\quest.dat" />
-    <EmbeddedResource Include="Libraries\standard.lib" />
-    <EmbeddedResource Include="Libraries\stdverbs.lib" />
-    <EmbeddedResource Include="Libraries\Typelib.qlb" />
-  </ItemGroup>
+    <ItemGroup>
+        <EmbeddedResource Include="Libraries\net.lib"/>
+        <EmbeddedResource Include="Libraries\q3ext.qlb"/>
+        <EmbeddedResource Include="Libraries\quest.dat"/>
+        <EmbeddedResource Include="Libraries\standard.lib"/>
+        <EmbeddedResource Include="Libraries\stdverbs.lib"/>
+        <EmbeddedResource Include="Libraries\Typelib.qlb"/>
+    </ItemGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\Common\Common.csproj" />
-    <ProjectReference Include="..\Utility\Utility.csproj" />
-  </ItemGroup>
+    <ItemGroup>
+        <ProjectReference Include="..\Common\Common.csproj"/>
+        <ProjectReference Include="..\Utility\Utility.csproj"/>
+    </ItemGroup>
 
 </Project>

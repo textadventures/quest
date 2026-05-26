@@ -1,7 +1,6 @@
-﻿namespace QuestViva.EditorCore
+﻿namespace QuestViva.EditorCore;
+
+public interface IEditableCommandPattern : IDataWrapper
 {
-    public interface IEditableCommandPattern : IDataWrapper
-    {
-        string Pattern { get; set; }
-    }
+    string Pattern { get; set; }
 }

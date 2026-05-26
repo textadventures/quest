@@ -1,335 +1,340 @@
 ﻿#nullable disable
-using System;
-using System.Collections.Generic;
+namespace QuestViva.Engine.Scripts;
 
-namespace QuestViva.Engine.Scripts
+public interface IMultiScript : IScript
 {
-    public interface IMultiScript : IScript
+    IEnumerable<IScript> Scripts { get; }
+    void Add(params IScript[] scripts);
+    void Remove(int index);
+    void Swap(int index1, int index2);
+    void Insert(int index, IScript script);
+    void LoadCode(string code);
+}
+
+public class MultiScript : ScriptBase, IScriptParent, IMultiScript
+{
+    private readonly WorldModel m_worldModel;
+
+    private ScriptFactory m_scriptFactory;
+    private List<IScript> m_scripts;
+
+    public MultiScript(WorldModel worldModel, params IScript[] scripts)
+        : this(worldModel)
     {
-        IEnumerable<IScript> Scripts { get; }
-        void Add(params IScript[] scripts);
-        void Remove(int index);
-        void Swap(int index1, int index2);
-        void Insert(int index, IScript script);
-        void LoadCode(string code);
+        m_scripts = new List<IScript>(scripts);
     }
 
-    public class MultiScript : ScriptBase, IScriptParent, IMultiScript
+    private MultiScript(WorldModel worldModel)
     {
-        private WorldModel m_worldModel;
-        private List<IScript> m_scripts;
+        m_worldModel = worldModel;
+    }
 
-        public MultiScript(WorldModel worldModel, params IScript[] scripts)
-            : this(worldModel)
+    private ScriptFactory ScriptFactory
+    {
+        get
         {
-            m_scripts = new List<IScript>(scripts);
-        }
-
-        private MultiScript(WorldModel worldModel)
-        {
-            m_worldModel = worldModel;
-        }
-
-        public override string Keyword
-        {
-            get { return null; }
-        }
-
-        protected override ScriptBase CloneScript()
-        {
-            MultiScript clone = new MultiScript(m_worldModel);
-            clone.m_scripts = new List<IScript>();
-            foreach (IScript script in m_scripts)
+            if (m_scriptFactory == null)
             {
-                IScript clonedScript = (IScript)script.Clone();
-                clonedScript.Parent = clone;
-                clone.m_scripts.Add(clonedScript);
-            }
-            return clone;
-        }
-
-        public void Add(params IScript[] scripts)
-        {
-            m_scripts.AddRange(scripts);
-            if (base.UndoLog != null)
-            {
-                foreach (IScript script in scripts)
-                {
-                    base.UndoLog.AddUndoAction(() => new UndoMultiScriptAddRemove(this, script, true, null));
-                }
+                m_scriptFactory = new ScriptFactory(m_worldModel);
             }
 
-            foreach (IScript script in scripts)
+            return m_scriptFactory;
+        }
+    }
+
+    public override string Keyword => null;
+
+    public void Add(params IScript[] scripts)
+    {
+        m_scripts.AddRange(scripts);
+        if (UndoLog != null)
+        {
+            foreach (var script in scripts)
             {
-                script.Parent = this;
-                NotifyUpdate(script, null);
+                UndoLog.AddUndoAction(() => new UndoMultiScriptAddRemove(this, script, true, null));
             }
         }
 
-        public void Remove(int index)
-        {
-            if (base.UndoLog != null)
-            {
-                base.UndoLog.AddUndoAction(() => new UndoMultiScriptAddRemove(this, m_scripts[index], false, index));
-            }
-            RemoveSilent(m_scripts[index]);
-        }
-
-        private void RemoveSilent(IScript script)
-        {
-            script.Parent = null;
-            m_scripts.Remove(script);
-            NotifyUpdate(null, script);
-        }
-
-        private void AddSilent(IScript script)
+        foreach (var script in scripts)
         {
             script.Parent = this;
-            m_scripts.Add(script);
             NotifyUpdate(script, null);
         }
+    }
 
-        public void Insert(int index, IScript script)
+    public void Remove(int index)
+    {
+        if (UndoLog != null)
         {
-            if (base.UndoLog != null)
-            {
-                base.UndoLog.AddUndoAction(() => new UndoMultiScriptAddRemove(this, script, true, index));
-            }
-            InsertSilent(index, script);
+            UndoLog.AddUndoAction(() => new UndoMultiScriptAddRemove(this, m_scripts[index], false, index));
         }
 
-        private void InsertSilent(int index, IScript script)
+        RemoveSilent(m_scripts[index]);
+    }
+
+    public void Insert(int index, IScript script)
+    {
+        if (UndoLog != null)
         {
-            script.Parent = this;
-            m_scripts.Insert(index, script);
-            NotifyUpdate(script, index);
+            UndoLog.AddUndoAction(() => new UndoMultiScriptAddRemove(this, script, true, index));
         }
 
-        public void Swap(int index1, int index2)
+        InsertSilent(index, script);
+    }
+
+    public void Swap(int index1, int index2)
+    {
+        if (index1 == index2)
         {
-            if (index1 == index2) return;
-            if (index1 > index2)
-            {
-                int temp = index1;
-                index1 = index2;
-                index2 = temp;
-            }
-
-            IScript script;
-
-            // This swap assumes index1 < index2
-            script = m_scripts[index1];
-            Remove(index1);
-            Insert(index2, script);
-
-            // If the elements are consecutive then there's no need to
-            // move the second script, as it's already in the correct place
-            if (index1 != index2 - 1)
-            {
-                script = m_scripts[index2 - 1];
-                Remove(index2 - 1);
-                Insert(index1, script);
-            }
+            return;
         }
 
-        public IEnumerable<IScript> Scripts
+        if (index1 > index2)
         {
-            get
-            {
-                return m_scripts.AsReadOnly();
-            }
+            var temp = index1;
+            index1 = index2;
+            index2 = temp;
         }
 
-        public override void Execute(Context c)
+        IScript script;
+
+        // This swap assumes index1 < index2
+        script = m_scripts[index1];
+        Remove(index1);
+        Insert(index2, script);
+
+        // If the elements are consecutive then there's no need to
+        // move the second script, as it's already in the correct place
+        if (index1 != index2 - 1)
         {
-            foreach (IScript script in m_scripts)
+            script = m_scripts[index2 - 1];
+            Remove(index2 - 1);
+            Insert(index1, script);
+        }
+    }
+
+    public IEnumerable<IScript> Scripts => m_scripts.AsReadOnly();
+
+    public override void Execute(Context c)
+    {
+        foreach (var script in m_scripts)
+        {
+            script.Execute(c);
+            if (c.IsReturned)
             {
-                script.Execute(c);
-                if (c.IsReturned) break;
+                break;
             }
         }
+    }
 
-        public override string Line
+    public override string Line
+    {
+        get
         {
-            get
+            var result = string.Empty;
+            foreach (var script in m_scripts)
             {
-                string result = string.Empty;
-                foreach (IScript script in m_scripts)
+                result += script.Line + Environment.NewLine;
+            }
+
+            return result;
+        }
+        set => throw new Exception("Cannot set Line in MultiScript");
+    }
+
+    public override string Save()
+    {
+        var result = string.Empty;
+
+        foreach (var script in m_scripts)
+        {
+            if (result.Length > 0)
+            {
+                result += Environment.NewLine;
+            }
+
+            result += script.Save();
+        }
+
+        return result;
+    }
+
+    public override object GetParameter(int index)
+    {
+        throw new NotImplementedException();
+    }
+
+    public void LoadCode(string code)
+    {
+        var newScript = (IMultiScript) ScriptFactory.CreateScript(code);
+        var newScriptList = new List<IScript>(newScript.Scripts);
+        if (UndoLog != null)
+        {
+            UndoLog.AddUndoAction(() => new UndoMultiScriptLoadCode(this, m_scripts, newScriptList));
+        }
+
+        ReplaceScripts(newScriptList);
+    }
+
+    public IEnumerable<string> GetVariablesInScope()
+    {
+        if (Parent == null)
+        {
+            var result = new List<string>();
+            foreach (var script in m_scripts)
+            {
+                // add any variables defined by the child script to the list
+                var definedVariables = script.GetDefinedVariables();
+                if (definedVariables != null)
                 {
-                    result += script.Line + Environment.NewLine;
+                    result.AddRange(definedVariables);
                 }
-                return result;
-            }
-            set
-            {
-                throw new Exception("Cannot set Line in MultiScript");
-            }
-        }
-
-        public override string Save()
-        {
-            string result = string.Empty;
-
-            foreach (IScript script in m_scripts)
-            {
-                if (result.Length > 0) result += Environment.NewLine;
-                result += script.Save();
             }
 
             return result;
         }
 
-        public override void SetParameterInternal(int index, object value)
+        return Parent.GetVariablesInScope();
+    }
+
+    protected override ScriptBase CloneScript()
+    {
+        var clone = new MultiScript(m_worldModel);
+        clone.m_scripts = new List<IScript>();
+        foreach (var script in m_scripts)
         {
-            throw new NotImplementedException();
+            var clonedScript = (IScript) script.Clone();
+            clonedScript.Parent = clone;
+            clone.m_scripts.Add(clonedScript);
         }
 
-        public override object GetParameter(int index)
+        return clone;
+    }
+
+    private void RemoveSilent(IScript script)
+    {
+        script.Parent = null;
+        m_scripts.Remove(script);
+        NotifyUpdate(null, script);
+    }
+
+    private void AddSilent(IScript script)
+    {
+        script.Parent = this;
+        m_scripts.Add(script);
+        NotifyUpdate(script, null);
+    }
+
+    private void InsertSilent(int index, IScript script)
+    {
+        script.Parent = this;
+        m_scripts.Insert(index, script);
+        NotifyUpdate(script, index);
+    }
+
+    public override void SetParameterInternal(int index, object value)
+    {
+        throw new NotImplementedException();
+    }
+
+    private void ReplaceScripts(List<IScript> newScripts)
+    {
+        foreach (var script in m_scripts)
         {
-            throw new NotImplementedException();
+            script.Parent = null;
         }
 
-        public IEnumerable<string> GetVariablesInScope()
+        m_scripts = newScripts;
+        foreach (var script in m_scripts)
         {
-            if (Parent == null)
+            script.Parent = this;
+        }
+
+        NotifyUpdate(new ScriptUpdatedEventArgs {ScriptsReplaced = true});
+    }
+
+    private class UndoMultiScriptLoadCode : UndoLogger.IUndoAction
+    {
+        private readonly MultiScript m_appliesTo;
+        private readonly List<IScript> m_newScripts;
+        private readonly List<IScript> m_oldScripts;
+
+        public UndoMultiScriptLoadCode(MultiScript appliesTo, List<IScript> oldScripts, List<IScript> newScripts)
+        {
+            m_appliesTo = appliesTo;
+            m_oldScripts = oldScripts;
+            m_newScripts = newScripts;
+        }
+
+        public void DoUndo(WorldModel worldModel)
+        {
+            m_appliesTo.ReplaceScripts(m_oldScripts);
+        }
+
+        public void DoRedo(WorldModel worldModel)
+        {
+            m_appliesTo.ReplaceScripts(m_newScripts);
+        }
+    }
+
+    private class UndoMultiScriptAddRemove : UndoLogger.IUndoAction
+    {
+        private readonly MultiScript m_appliesTo;
+        private readonly int? m_index;
+        private readonly bool m_isAdd;
+        private readonly IScript m_script;
+
+        public UndoMultiScriptAddRemove(MultiScript appliesTo, IScript script, bool isAdd, int? index)
+        {
+            m_appliesTo = appliesTo;
+            m_script = script;
+            m_isAdd = isAdd;
+            m_index = index;
+        }
+
+        private void DoAdd()
+        {
+            if (m_index.HasValue)
             {
-                List<string> result = new List<string>();
-                foreach (IScript script in m_scripts)
-                {
-                    // add any variables defined by the child script to the list
-                    var definedVariables = script.GetDefinedVariables();
-                    if (definedVariables != null)
-                    {
-                        result.AddRange(definedVariables);
-                    }
-                }
-
-                return result;
+                m_appliesTo.InsertSilent(m_index.Value, m_script);
             }
             else
             {
-                return Parent.GetVariablesInScope();
+                m_appliesTo.AddSilent(m_script);
             }
         }
 
-        public void LoadCode(string code)
+        private void DoRemove()
         {
-            var newScript = (IMultiScript)ScriptFactory.CreateScript(code);
-            var newScriptList = new List<IScript>(newScript.Scripts);
-            if (base.UndoLog != null)
-            {
-                base.UndoLog.AddUndoAction(() => new UndoMultiScriptLoadCode(this, m_scripts, newScriptList));
-            }
-            ReplaceScripts(newScriptList);
+            m_appliesTo.RemoveSilent(m_script);
         }
 
-        private void ReplaceScripts(List<IScript> newScripts)
+        #region IUndoAction Members
+
+        public void DoUndo(WorldModel worldModel)
         {
-            foreach (var script in m_scripts)
+            if (m_isAdd)
             {
-                script.Parent = null;
+                DoRemove();
             }
-            m_scripts = newScripts;
-            foreach (var script in m_scripts)
+            else
             {
-                script.Parent = this;
+                DoAdd();
             }
-            NotifyUpdate(new ScriptUpdatedEventArgs { ScriptsReplaced = true });
         }
 
-        private ScriptFactory m_scriptFactory;
-        private ScriptFactory ScriptFactory
+        public void DoRedo(WorldModel worldModel)
         {
-            get
+            if (m_isAdd)
             {
-                if (m_scriptFactory == null) m_scriptFactory = new ScriptFactory(m_worldModel);
-                return m_scriptFactory;
+                DoAdd();
+            }
+            else
+            {
+                DoRemove();
             }
         }
 
-        private class UndoMultiScriptLoadCode : UndoLogger.IUndoAction
-        {
-            private readonly MultiScript m_appliesTo;
-            private readonly List<IScript> m_oldScripts;
-            private readonly List<IScript> m_newScripts;
-
-            public UndoMultiScriptLoadCode(MultiScript appliesTo, List<IScript> oldScripts, List<IScript> newScripts)
-            {
-                m_appliesTo = appliesTo;
-                m_oldScripts = oldScripts;
-                m_newScripts = newScripts;
-            }
-
-            public void DoUndo(WorldModel worldModel)
-            {
-                m_appliesTo.ReplaceScripts(m_oldScripts);
-            }
-
-            public void DoRedo(WorldModel worldModel)
-            {
-                m_appliesTo.ReplaceScripts(m_newScripts);
-            }
-        }
-
-        private class UndoMultiScriptAddRemove : UndoLogger.IUndoAction
-        {
-            private MultiScript m_appliesTo;
-            private IScript m_script;
-            private bool m_isAdd;
-            private int? m_index;
-
-            public UndoMultiScriptAddRemove(MultiScript appliesTo, IScript script, bool isAdd, int? index)
-            {
-                m_appliesTo = appliesTo;
-                m_script = script;
-                m_isAdd = isAdd;
-                m_index = index;
-            }
-
-            #region IUndoAction Members
-
-            public void DoUndo(WorldModel worldModel)
-            {
-                if (m_isAdd)
-                {
-                    DoRemove();
-                }
-                else
-                {
-                    DoAdd();
-                }
-            }
-
-            public void DoRedo(WorldModel worldModel)
-            {
-                if (m_isAdd)
-                {
-                    DoAdd();
-                }
-                else
-                {
-                    DoRemove();
-                }
-            }
-
-            #endregion
-
-            private void DoAdd()
-            {
-                if (m_index.HasValue)
-                {
-                    m_appliesTo.InsertSilent(m_index.Value, m_script);
-                }
-                else
-                {
-                    m_appliesTo.AddSilent(m_script);
-                }
-            }
-
-            private void DoRemove()
-            {
-                m_appliesTo.RemoveSilent(m_script);
-            }
-        }
+        #endregion
     }
 }

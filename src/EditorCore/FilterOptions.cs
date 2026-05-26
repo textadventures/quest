@@ -1,43 +1,41 @@
-﻿using System.Collections.Generic;
+﻿namespace QuestViva.EditorCore;
 
-namespace QuestViva.EditorCore
+public class FilterOptions
 {
-    public class FilterOptions
-    {
-        private List<string> m_filters = new List<string>();
+    private readonly List<string> m_filters = new();
 
-        public void Set(string filter, bool value)
+    public void Set(string filter, bool value)
+    {
+        if (value && !m_filters.Contains(filter))
         {
-            if (value && !m_filters.Contains(filter)) m_filters.Add(filter);
-            if (!value && m_filters.Contains(filter)) m_filters.Remove(filter);
+            m_filters.Add(filter);
         }
 
-        public bool IsSet(string filter)
+        if (!value && m_filters.Contains(filter))
         {
-            return m_filters.Contains(filter);
+            m_filters.Remove(filter);
         }
     }
 
-    public class AvailableFilters
+    public bool IsSet(string filter)
     {
-        private Dictionary<string, string> m_filterDefs = new Dictionary<string, string>();
+        return m_filters.Contains(filter);
+    }
+}
 
-        internal void Add(string key, string desc)
-        {
-            m_filterDefs.Add(key, desc);
-        }
+public class AvailableFilters
+{
+    private readonly Dictionary<string, string> m_filterDefs = new();
 
-        public string Get(string key)
-        {
-            return m_filterDefs[key];
-        }
+    public IEnumerable<string> AllFilters => m_filterDefs.Keys;
 
-        public IEnumerable<string> AllFilters
-        {
-            get
-            {
-                return m_filterDefs.Keys;
-            }
-        }
+    internal void Add(string key, string desc)
+    {
+        m_filterDefs.Add(key, desc);
+    }
+
+    public string Get(string key)
+    {
+        return m_filterDefs[key];
     }
 }

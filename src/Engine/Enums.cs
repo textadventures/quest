@@ -1,4 +1,3 @@
-#nullable disable
 namespace QuestViva.Engine;
 
 public enum GameState

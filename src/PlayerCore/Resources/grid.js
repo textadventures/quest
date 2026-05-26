@@ -43,17 +43,17 @@ function getLayerIndex(index) {
 
 activateLayer(currentLayer);
 
-gridApi.setScale = function(newScale) {
+gridApi.setScale = function (newScale) {
     scale = newScale;
     gridX = new Point(scale, 0);
     gridY = new Point(0, scale);
 };
 
-gridApi.setZoom = function(zoom) {
+gridApi.setZoom = function (zoom) {
     paper.view.zoom = zoom;
 };
 
-gridApi.zoomIn = function(amount) {
+gridApi.zoomIn = function (amount) {
     zoom = paper.view.zoom * (Math.pow(1.1, amount));
     if (zoom > 0.0001) {
         paper.view.zoom = zoom;
@@ -78,8 +78,7 @@ function updateOffset(delta) {
     var paths;
     if (project.activeLayer == customLayer) {
         paths = customLayerPaths;
-    }
-    else {
+    } else {
         paths = allPaths;
     }
     for (var i = 0; i < paths.length; i++) {
@@ -100,8 +99,7 @@ function getOffset() {
 function setOffset(value) {
     if (project.activeLayer == customLayer) {
         customLayerOffset = value;
-    }
-    else {
+    } else {
         offset = value;
     }
 }
@@ -111,8 +109,7 @@ function onFrame(event) {
         var distance = player.position - playerDestination;
         if (distance.length > playerVector.length) {
             player.position += playerVector;
-        }
-        else {
+        } else {
             player.position = playerDestination;
             playerVector = null;
             playerDestination = null;
@@ -120,23 +117,22 @@ function onFrame(event) {
             var playerPositionAbsolute = player.position - offset;
             offsetDestination = paper.view.center - playerPositionAbsolute;
 
-            offsetVector = (offsetDestination-offset) / 10;
+            offsetVector = (offsetDestination - offset) / 10;
         }
     }
     if (offsetVector) {
         var distance = offset - offsetDestination;
         if (distance.length > offsetVector.length) {
             updateOffset(offsetVector);
-        }
-        else {
-            updateOffset(offsetDestination-offset);
+        } else {
+            updateOffset(offsetDestination - offset);
             offsetVector = null;
             offsetDestination = null;
         }
     }
 }
 
-gridApi.drawGrid = function(minX, minY, maxX, maxY, border) {
+gridApi.drawGrid = function (minX, minY, maxX, maxY, border) {
 
     function gridLine(start, end) {
         var path = new Path();
@@ -181,7 +177,7 @@ function gridPointNudge(x, y, nudgeX, nudgeY) {
 
 var firstBox = true;
 
-gridApi.drawBox = function(x, y, z, width, height, border, borderWidth, fill, sides) {
+gridApi.drawBox = function (x, y, z, width, height, border, borderWidth, fill, sides) {
     activateLayer(z);
     // if this is the very first room, centre the canvas by updating the offset
     if (firstBox) {
@@ -224,7 +220,7 @@ gridApi.drawBox = function(x, y, z, width, height, border, borderWidth, fill, si
     fillPath.closed = true;
 };
 
-gridApi.drawLine = function(x1, y1, x2, y2, border, borderWidth) {
+gridApi.drawLine = function (x1, y1, x2, y2, border, borderWidth) {
     var path = new Path;
     path.strokeColor = border;
     path.strokeWidth = borderWidth;
@@ -235,7 +231,7 @@ gridApi.drawLine = function(x1, y1, x2, y2, border, borderWidth) {
 
 gridApi.drawArrow = function (id, x1, y1, x2, y2, border, borderWidth) {
     clearExistingObject(id);
-    
+
     var linePath = new Path;
     var start = gridPoint(x1, y1);
     var end = gridPoint(x2, y2);
@@ -262,13 +258,12 @@ gridApi.drawArrow = function (id, x1, y1, x2, y2, border, borderWidth) {
 function addPathToCurrentLayerList(path) {
     if (project.activeLayer == customLayer) {
         customLayerPaths.push(path);
-    }
-    else {
+    } else {
         allPaths.push(path);
     }
 }
 
-gridApi.drawPlayer = function(x, y, z, radius, border, borderWidth, fill) {
+gridApi.drawPlayer = function (x, y, z, radius, border, borderWidth, fill) {
     activateLayer(z);
     if (!player) {
         player = new Path.Circle(gridPoint(x, y), radius);
@@ -292,8 +287,8 @@ gridApi.drawPlayer = function(x, y, z, radius, border, borderWidth, fill) {
     }
 };
 
- 
-gridApi.drawLabel = function(x, y, z, text, col) {
+
+gridApi.drawLabel = function (x, y, z, text, col) {
     if (col === undefined) col = "black";
     activateLayer(z);
     var pointText = new PointText(gridPoint(x, y));
@@ -311,18 +306,17 @@ function showCustomLayer(visible) {
         }
         if (visible) {
             customLayer.activate();
-        }
-        else {
+        } else {
             layers[getLayerIndex(currentLayer)].activate();
         }
     }
 }
 
-gridApi.showCustomLayer = function(visible) {
+gridApi.showCustomLayer = function (visible) {
     showCustomLayer(visible);
 };
 
-gridApi.clearCustomLayer = function() {
+gridApi.clearCustomLayer = function () {
     customLayer.removeChildren();
 };
 
@@ -332,12 +326,12 @@ gridApi.clearAllLayers = function () {
     playerDestination = null;
     offsetVector = null;
     offsetDestination = null;
-    $.each(layers, function(idx, layer) {
+    $.each(layers, function (idx, layer) {
         layer.removeChildren();
     });
 };
 
-gridApi.setCentre = function(x, y) {
+gridApi.setCentre = function (x, y) {
     var centrePoint = gridPoint(x, y);
     var offsetX = paper.view.center.x - centrePoint.x;
     var offsetY = paper.view.center.y - centrePoint.y;
@@ -345,7 +339,7 @@ gridApi.setCentre = function(x, y) {
     updateOffset(new Point(offsetX, offsetY));
 };
 
-gridApi.drawCustomLayerSquare = function(id, x, y, width, height, text, fill) {
+gridApi.drawCustomLayerSquare = function (id, x, y, width, height, text, fill) {
     var points = [];
     points.push(gridPointNudge(x, y, 1, 1));
     points.push(gridPointNudge(x + width, y, -1, 1));
@@ -373,7 +367,7 @@ gridApi.drawCustomLayerObject = function (id, points, text, textPoint, border, f
     var paths = new Array();
     path = new Path();
     path.strokeColor = border;
-    $.each(points, function(index, value) {
+    $.each(points, function (index, value) {
         path.add(value);
     });
     path.fillColor = fill;
@@ -419,10 +413,10 @@ gridApi.drawCustomLayerSvg = function (id, symbolId, x, y, width, height) {
     }
 };
 
-gridApi.drawCustomLayerImage = function(id, url, x, y, width, height) {
+gridApi.drawCustomLayerImage = function (id, url, x, y, width, height) {
     var existing = customLayerImages[id];
     var raster = existing ? existing : new Raster(url);
-    var resizeRaster = function() {
+    var resizeRaster = function () {
         raster.scale(gridX.x * width / raster.bounds.width, gridY.y * height / raster.bounds.height);
         raster.position = gridPoint(x, y) + raster.bounds.size / 2;
     };
@@ -432,7 +426,7 @@ gridApi.drawCustomLayerImage = function(id, url, x, y, width, height) {
         raster.onLoad = resizeRaster;
         addPathToCurrentLayerList(raster);
         customLayerImages[id] = raster;
-    }    
+    }
 }
 
 gridApi.addNewShapePoint = function (x, y) {

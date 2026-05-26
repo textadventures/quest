@@ -1,99 +1,87 @@
-﻿using QuestViva.Common;
+﻿using System.Reflection;
+using QuestViva.Common;
 using QuestViva.EditorCore;
 
-namespace QuestViva.EditorCoreTests
+namespace QuestViva.EditorCoreTests;
+
+public class Config : IConfig
 {
-    public class Config : IConfig
+    public string HomeFile { get; }
+    public bool DevEnabled { get; }
+    public bool UseNCalc => false;
+}
+
+[TestClass]
+public abstract class EditorControllerTestBase
+{
+    private readonly EditorTreeData m_tree = new();
+
+    protected EditorController Controller { get; private set; }
+
+    protected List<string> UndoList { get; private set; } = new();
+
+    protected List<string> RedoList { get; private set; } = new();
+
+    [TestInitialize]
+    public async Task Init()
     {
-        public bool UseNCalc => false;
-        public string HomeFile { get; }
-        public bool DevEnabled { get; }
+        Controller = new EditorController();
+        Controller.ClearTree += m_controller_ClearTree;
+        Controller.BeginTreeUpdate += m_controller_BeginTreeUpdate;
+        Controller.EndTreeUpdate += m_controller_EndTreeUpdate;
+        Controller.AddedNode += m_controller_AddedNode;
+        Controller.UndoListUpdated += m_controller_UndoListUpdated;
+        Controller.RedoListUpdated += m_controller_RedoListUpdated;
+        var bytes = GetResourceBytes("QuestViva.EditorCoreTests.test.aslx");
+        await Controller.Initialise(new Config(), new ByteArrayGameDataProvider(bytes, "test.aslx"));
+        DoExtraInitialisation();
     }
-    
-    [TestClass]
-    public abstract class EditorControllerTestBase
+
+    private static byte[] GetResourceBytes(string resource)
     {
-        private EditorController m_controller;
-        private EditorTreeData m_tree = new EditorTreeData();
-        private List<string> m_undoList = new List<string>();
-        private List<string> m_redoList = new List<string>();
+        var stream = Assembly.GetExecutingAssembly().GetManifestResourceStream(resource)!;
+        using var ms = new MemoryStream();
+        stream.CopyTo(ms);
+        return ms.ToArray();
+    }
 
-        protected EditorController Controller
-        {
-            get { return m_controller; }
-        }
+    public virtual void DoExtraInitialisation()
+    {
+    }
 
-        protected List<string> UndoList
-        {
-            get { return m_undoList; }
-        }
+    [TestCleanup]
+    public void Cleanup()
+    {
+        Controller.Dispose();
+    }
 
-        protected List<string> RedoList
-        {
-            get { return m_redoList; }
-        }
+    private void m_controller_ClearTree(object sender, EventArgs e)
+    {
+        m_tree.Clear();
+    }
 
-        [TestInitialize]
-        public async Task Init()
-        {
-            m_controller = new EditorController();
-            m_controller.ClearTree += m_controller_ClearTree;
-            m_controller.BeginTreeUpdate += m_controller_BeginTreeUpdate;
-            m_controller.EndTreeUpdate += m_controller_EndTreeUpdate;
-            m_controller.AddedNode += m_controller_AddedNode;
-            m_controller.UndoListUpdated += m_controller_UndoListUpdated;
-            m_controller.RedoListUpdated += m_controller_RedoListUpdated;
-            var bytes = GetResourceBytes("QuestViva.EditorCoreTests.test.aslx");
-            await m_controller.Initialise(new Config(), new QuestViva.Common.ByteArrayGameDataProvider(bytes, "test.aslx"));
-            DoExtraInitialisation();
-        }
+    private void m_controller_BeginTreeUpdate(object sender, EventArgs e)
+    {
+        m_tree.BeginUpdate();
+    }
 
-        private static byte[] GetResourceBytes(string resource)
-        {
-            var stream = System.Reflection.Assembly.GetExecutingAssembly().GetManifestResourceStream(resource)!;
-            using var ms = new System.IO.MemoryStream();
-            stream.CopyTo(ms);
-            return ms.ToArray();
-        }
+    private void m_controller_EndTreeUpdate(object sender, EventArgs e)
+    {
+        m_tree.EndUpdate();
+    }
 
-        public virtual void DoExtraInitialisation()
-        {
-        }
+    private void m_controller_AddedNode(object sender, EditorController.AddedNodeEventArgs e)
+    {
+        m_tree.Add(e.Key, e.Text, e.Parent);
+    }
 
-        [TestCleanup]
-        public void Cleanup()
-        {
-            m_controller.Dispose();
-        }
+    private void m_controller_UndoListUpdated(object sender, EditorController.UpdateUndoListEventArgs e)
+    {
+        UndoList = new List<string>(e.UndoList);
+    }
 
-        void m_controller_ClearTree(object sender, EventArgs e)
-        {
-            m_tree.Clear();
-        }
-
-        void m_controller_BeginTreeUpdate(object sender, EventArgs e)
-        {
-            m_tree.BeginUpdate();
-        }
-
-        void m_controller_EndTreeUpdate(object sender, EventArgs e)
-        {
-            m_tree.EndUpdate();
-        }
-
-        void m_controller_AddedNode(object sender, EditorController.AddedNodeEventArgs e)
-        {
-            m_tree.Add(e.Key, e.Text, e.Parent);
-        }
-
-        void m_controller_UndoListUpdated(object sender, EditorController.UpdateUndoListEventArgs e)
-        {
-            m_undoList = new List<string>(e.UndoList);
-        }
-
-        void m_controller_RedoListUpdated(object sender, EditorController.UpdateUndoListEventArgs e)
-        {
-            m_redoList = new List<string>(e.UndoList);
-        }
+    private void m_controller_RedoListUpdated(object sender, EditorController.UpdateUndoListEventArgs e)
+    {
+        RedoList = new List<string>(e.UndoList);
     }
 }

@@ -10,24 +10,6 @@ public partial class V4Game
         Finished // game is over
     }
 
-    private class DefineBlock
-    {
-        public int StartLine;
-        public int EndLine;
-    }
-
-    internal class Context
-    {
-        public int CallingObjectId;
-        public int NumParameters;
-        public string[] Parameters;
-        public string FunctionReturnValue;
-        public bool AllowRealNamesInCommand;
-        public bool DontProcessCommand;
-        public bool CancelExec;
-        public int StackCounter;
-    }
-
     private Context CopyContext(Context ctx)
     {
         var result = new Context();
@@ -42,6 +24,24 @@ public partial class V4Game
         return result;
     }
 
+    private class DefineBlock
+    {
+        public int EndLine;
+        public int StartLine;
+    }
+
+    internal class Context
+    {
+        public bool AllowRealNamesInCommand;
+        public int CallingObjectId;
+        public bool CancelExec;
+        public bool DontProcessCommand;
+        public string FunctionReturnValue;
+        public int NumParameters;
+        public string[] Parameters;
+        public int StackCounter;
+    }
+
     internal enum LogType
     {
         Misc,
@@ -53,8 +53,8 @@ public partial class V4Game
         UserError,
         InternalError
     }
-    
-        internal enum Direction
+
+    internal enum Direction
     {
         None = -1,
         Out = 0,
@@ -72,17 +72,17 @@ public partial class V4Game
 
     private class ItemType
     {
-        public string Name;
         public bool Got;
+        public string Name;
     }
 
     private class Collectable
     {
+        public string Display;
+        public bool DisplayWhenZero;
         public string Name;
         public string Type;
         public double Value;
-        public string Display;
-        public bool DisplayWhenZero;
     }
 
     internal class PropertyType
@@ -100,56 +100,56 @@ public partial class V4Game
     internal class UseDataType
     {
         public string UseObject;
-        public UseType UseType;
         public string UseScript;
+        public UseType UseType;
     }
 
     internal class GiveDataType
     {
         public string GiveObject;
-        public GiveType GiveType;
         public string GiveScript;
+        public GiveType GiveType;
     }
 
     private class PropertiesActions
     {
-        public string Properties;
-        public int NumberActions;
         public ActionType[] Actions;
+        public int NumberActions;
         public int NumberTypesIncluded;
+        public string Properties;
         public string[] TypesIncluded;
     }
 
     private class VariableType
     {
-        public string VariableName;
-        public string[] VariableContents;
-        public int VariableUBound;
         public string DisplayString;
-        public string OnChangeScript;
         public bool NoZeroDisplay;
+        public string OnChangeScript;
+        public string[] VariableContents;
+        public string VariableName;
+        public int VariableUBound;
     }
 
     private class SynonymType
     {
-        public string OriginalWord;
         public string ConvertTo;
+        public string OriginalWord;
     }
 
     private class TimerType
     {
-        public string TimerName;
-        public int TimerInterval;
-        public bool TimerActive;
-        public string TimerAction;
-        public int TimerTicks;
         public bool BypassThisTurn;
+        public string TimerAction;
+        public bool TimerActive;
+        public int TimerInterval;
+        public string TimerName;
+        public int TimerTicks;
     }
 
     internal class UserDefinedCommandType
     {
-        public string CommandText;
         public string CommandScript;
+        public string CommandText;
     }
 
     internal class TextAction
@@ -168,8 +168,8 @@ public partial class V4Game
 
     internal class ScriptText
     {
-        public string Text;
         public string Script;
+        public string Text;
     }
 
     internal class PlaceType
@@ -181,81 +181,81 @@ public partial class V4Game
 
     internal class RoomType
     {
-        public string RoomName;
-        public string RoomAlias;
+        public string AfterTurnScript;
+        public string BeforeTurnScript;
         public UserDefinedCommandType[] Commands;
-        public int NumberCommands;
         public TextAction Description = new();
-        public ScriptText Out = new();
+        public TextAction Down = new();
         public TextAction East = new();
-        public TextAction West = new();
+        public RoomExits Exits;
+        public string InDescription;
+        public string Look;
         public TextAction North = new();
-        public TextAction South = new();
         public TextAction NorthEast = new();
         public TextAction NorthWest = new();
+        public int NumberCommands;
+        public int NumberPlaces;
+        public int NumberUse;
+        public int ObjId;
+        public ScriptText Out = new();
+        public PlaceType[] Places;
+        public string Prefix;
+        public string RoomAlias;
+        public string RoomName;
+        public string Script;
+        public TextAction South = new();
         public TextAction SouthEast = new();
         public TextAction SouthWest = new();
         public TextAction Up = new();
-        public TextAction Down = new();
-        public string InDescription;
-        public string Look;
-        public PlaceType[] Places;
-        public int NumberPlaces;
-        public string Prefix;
-        public string Script;
         public ScriptText[] Use;
-        public int NumberUse;
-        public int ObjId;
-        public string BeforeTurnScript;
-        public string AfterTurnScript;
-        public RoomExits Exits;
+        public TextAction West = new();
     }
 
     internal class ObjectType
     {
-        public string ObjectName;
-        public string ObjectAlias;
-        public string Detail;
-        public string ContainerRoom;
-        public bool Exists;
-        public string Prefix;
-        public string Suffix;
-        public string Gender;
+        public ActionType[] Actions;
+        public TextAction AddScript = new();
+        public string[] AltNames;
         public string Article;
-        public int DefinitionSectionStart;
-        public int DefinitionSectionEnd;
-        public bool Visible;
-        public string GainScript;
-        public string LoseScript;
-        public int NumberProperties;
-        public PropertyType[] Properties;
-        public TextAction Speak = new();
-        public TextAction Take = new();
-        public bool IsRoom;
-        public bool IsExit;
+        public TextAction CloseScript = new();
+        public string ContainerRoom;
         public string CorresRoom;
         public int CorresRoomId;
-        public bool Loaded;
-        public int NumberActions;
-        public ActionType[] Actions;
-        public int NumberUseData;
-        public UseDataType[] UseData;
-        public string UseAnything;
-        public string UseOnAnything;
-        public string Use;
-        public int NumberGiveData;
-        public GiveDataType[] GiveData;
-        public string GiveAnything;
-        public string GiveToAnything;
+        public int DefinitionSectionEnd;
+        public int DefinitionSectionStart;
+        public string Detail;
         public string DisplayType;
-        public int NumberTypesIncluded;
-        public string[] TypesIncluded;
+        public bool Exists;
+        public string GainScript;
+        public string Gender;
+        public string GiveAnything;
+        public GiveDataType[] GiveData;
+        public string GiveToAnything;
+        public bool IsExit;
+        public bool IsRoom;
+        public bool Loaded;
+        public string LoseScript;
+        public int NumberActions;
         public int NumberAltNames;
-        public string[] AltNames;
-        public TextAction AddScript = new();
-        public TextAction RemoveScript = new();
+        public int NumberGiveData;
+        public int NumberProperties;
+        public int NumberTypesIncluded;
+        public int NumberUseData;
+        public string ObjectAlias;
+        public string ObjectName;
         public TextAction OpenScript = new();
-        public TextAction CloseScript = new();
+        public string Prefix;
+        public PropertyType[] Properties;
+        public TextAction RemoveScript = new();
+        public TextAction Speak = new();
+        public string Suffix;
+        public TextAction Take = new();
+        public string[] TypesIncluded;
+        public string Use;
+        public string UseAnything;
+        public UseDataType[] UseData;
+        public string UseOnAnything;
+        public bool Visible;
     }
 
     private class ChangeType
@@ -266,22 +266,22 @@ public partial class V4Game
 
     private class GameChangeDataType
     {
-        public int NumberChanges;
         public ChangeType[] ChangeData;
+        public int NumberChanges;
     }
 
     private class ResourceType
     {
+        public int ResourceLength;
         public string ResourceName;
         public int ResourceStart;
-        public int ResourceLength;
     }
 
     private class ExpressionResult
     {
+        public string Message;
         public string Result;
         public ExpressionSuccess Success;
-        public string Message;
     }
 
     internal enum PlayerError

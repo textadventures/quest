@@ -52,20 +52,27 @@ function showMenu(title, options, allowCancel) {
         autoOpen: false,
         buttons: [{
             text: "Select",
-            click: function () { dialogSelect(); }
+            click: function () {
+                dialogSelect();
+            }
         }]
     };
 
     if (allowCancel) {
         dialogOptions.buttons = dialogOptions.buttons.concat([{
             text: "Cancel",
-            click: function () { dialogCancel(); }
+            click: function () {
+                dialogCancel();
+            }
         }]);
-        dialogOptions.close = function (event, ui) { dialogClose(); };
-    }
-    else {
+        dialogOptions.close = function (event, ui) {
+            dialogClose();
+        };
+    } else {
         dialogOptions.closeOnEscape = false;
-        dialogOptions.open = function (event, ui) { $(".ui-dialog-titlebar-close").hide(); };    // suppresses "close" button
+        dialogOptions.open = function (event, ui) {
+            $(".ui-dialog-titlebar-close").hide();
+        };    // suppresses "close" button
     }
 
     _menuSelection = "";
@@ -104,7 +111,7 @@ function sendCommand(text, metadata) {
     if (_pauseMode || _waitingForSoundToFinish || _waitMode || !canSendCommand) return;
     canSendCommand = false;
     markScrollPosition();
-    
+
     // TODO: See if setTimeout is still needed here
     window.setTimeout(async function () {
         await WebPlayer.sendCommand(text, getTickCountAndStopTimer(), metadata);
@@ -176,40 +183,40 @@ function addExternalScript(url) {
     });
 }
 
-function WriteToLog(data){
+function WriteToLog(data) {
     // Do nothing.
-  }
-  
-function WriteToTranscript(data){
-    if (noTranscript){
-      // Do nothing.
-      return;
+}
+
+function WriteToTranscript(data) {
+    if (noTranscript) {
+        // Do nothing.
+        return;
     }
-    if (!isLocalStorageAvailable()){
-      console.error("There is no localStorage. Disabling transcript functionality.");
-      noTranscript = true;
-      savingTranscript = false;
-      return;
+    if (!isLocalStorageAvailable()) {
+        console.error("There is no localStorage. Disabling transcript functionality.");
+        noTranscript = true;
+        savingTranscript = false;
+        return;
     }
     var tName = transcriptName || "Transcript";
     if (data.indexOf("___SCRIPTDATA___") > -1) {
-      tName = data.split("___SCRIPTDATA___")[0].trim() || tName;
-      data = data.split("___SCRIPTDATA___")[1];
+        tName = data.split("___SCRIPTDATA___")[0].trim() || tName;
+        data = data.split("___SCRIPTDATA___")[1];
     }
     var oldData = localStorage.getItem("questtranscript-" + tName) || "";
     localStorage.setItem("questtranscript-" + tName, oldData + data);
 }
-  
+
 // Make sure localStorage is available, hopefully without throwing any errors!
-  
+
 /* https://stackoverflow.com/a/16427747 */
-function isLocalStorageAvailable(){
+function isLocalStorageAvailable() {
     var test = 'test';
     try {
         localStorage.setItem(test, test);
         localStorage.removeItem(test);
         return true;
-    } catch(e) {
+    } catch (e) {
         return false;
     }
 }

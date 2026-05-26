@@ -1,5 +1,3 @@
-using System.Collections.Generic;
-using System.Threading.Tasks;
 using Microsoft.JSInterop;
 
 namespace QuestViva.PlayerCore;
@@ -7,7 +5,7 @@ namespace QuestViva.PlayerCore;
 public class BlazorJSInterop(Player player)
 {
     private Player Player { get; } = player;
-    
+
     [JSInvokable]
     public async Task UiSendCommandAsync(string command, int tickCount, IDictionary<string, string> metadata)
     {
@@ -31,7 +29,7 @@ public class BlazorJSInterop(Player player)
     {
         await Player.UiChoiceAsync(choice);
     }
-    
+
     [JSInvokable]
     public async Task UiChoiceCancelAsync()
     {
@@ -49,16 +47,16 @@ public class BlazorJSInterop(Player player)
     {
         await Player.UiSetQuestionResponseAsync(response);
     }
-    
+
     [JSInvokable]
     public async Task UiSendEventAsync(string eventName, string param)
     {
         await Player.UiSendEventAsync(eventName, param);
     }
-    
+
     [JSInvokable]
     public async Task<byte[]> UiSaveGameAsync(string html)
     {
-        return await Player.UiSaveGameAsync(html); 
+        return await Player.UiSaveGameAsync(html);
     }
 }

@@ -28,7 +28,7 @@
 //            { "English", "en" },
 //            { "Deutsch", "de" }
 //        };
-               
+
 //        private const string DefaultLanguage = "English";
 
 //        public static void LoadLanguage()
@@ -77,3 +77,4 @@
 //        }
 //    }
 //}
+

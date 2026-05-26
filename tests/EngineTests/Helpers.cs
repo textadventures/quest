@@ -5,9 +5,9 @@ namespace QuestViva.EngineTests;
 
 internal class Config(bool useNCalc) : IConfig
 {
-    public bool UseNCalc => useNCalc;
     public string HomeFile { get; }
     public bool DevEnabled { get; }
+    public bool UseNCalc => useNCalc;
 }
 
 internal static class Helpers
@@ -17,7 +17,7 @@ internal static class Helpers
         var config = new Config(useNCalc);
         return new WorldModel(config);
     }
-    
+
     public static WorldModel CreateWorldModel(GameData gameData)
     {
         var config = new Config(false);

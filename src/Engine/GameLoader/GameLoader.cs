@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Threading.Tasks;
+﻿using System.Diagnostics;
 using System.Xml;
 using QuestViva.Common;
 
@@ -9,30 +6,13 @@ namespace QuestViva.Engine.GameLoader;
 
 internal partial class GameLoader
 {
+    public delegate void FilenameUpdatedHandler(string filename);
+
     public enum LoadMode
     {
         Play,
         Edit
     }
-
-    private struct FileData
-    {
-        public string Filename;
-        public bool IsEditorLibrary;
-    }
-
-    public class LoadStatusEventArgs(string status) : EventArgs
-    {
-        public string Status { get; private set; } = status;
-    }
-
-    private readonly ImplicitTypes _implicitTypes = new();
-    private readonly Stack<FileData> _currentFile = new();
-
-    public delegate void FilenameUpdatedHandler(string filename);
-    public event FilenameUpdatedHandler? FilenameUpdated;
-
-    public event EventHandler<LoadStatusEventArgs>? LoadStatus;
 
     private static readonly Dictionary<string, WorldModelVersion> Versions = new()
     {
@@ -42,8 +22,12 @@ internal partial class GameLoader
         {"530", WorldModelVersion.v530},
         {"540", WorldModelVersion.v540},
         {"550", WorldModelVersion.v550},
-        {"580", WorldModelVersion.v580},
+        {"580", WorldModelVersion.v580}
     };
+
+    private readonly Stack<FileData> _currentFile = new();
+
+    private readonly ImplicitTypes _implicitTypes = new();
 
     public GameLoader(WorldModel worldModel, LoadMode mode, bool? isCompiled = null)
     {
@@ -55,7 +39,14 @@ internal partial class GameLoader
         AddExtendedAttributeLoaders(mode);
         AddXmlLoaders(mode);
     }
-        
+
+    public List<string> Errors { get; } = [];
+
+    public bool IsCompiledFile { get; private set; }
+    public event FilenameUpdatedHandler? FilenameUpdated;
+
+    public event EventHandler<LoadStatusEventArgs>? LoadStatus;
+
     public async Task<bool> Load(GameData gameData, Stream? saveData)
     {
         Stream dataStream;
@@ -85,7 +76,7 @@ internal partial class GameLoader
             }
         }
 
-        var timer = System.Diagnostics.Stopwatch.StartNew();
+        var timer = Stopwatch.StartNew();
 
         try
         {
@@ -142,8 +133,8 @@ internal partial class GameLoader
         {
             AddError($"Error: {e.Message}");
         }
-            
-        System.Diagnostics.Debug.WriteLine($"XML load time: {timer.ElapsedMilliseconds}ms");
+
+        Debug.WriteLine($"XML load time: {timer.ElapsedMilliseconds}ms");
         timer.Restart();
 
         if (Errors.Count == 0)
@@ -157,10 +148,10 @@ internal partial class GameLoader
                 AddError($"Error: {e.Message}");
             }
         }
-            
-        System.Diagnostics.Debug.WriteLine($"ResolveGame: {timer.ElapsedMilliseconds}ms");
 
-        return (Errors.Count == 0);
+        Debug.WriteLine($"ResolveGame: {timer.ElapsedMilliseconds}ms");
+
+        return Errors.Count == 0;
     }
 
     private async Task<Stream> LoadCompiledFile(GameData gameData)
@@ -175,13 +166,13 @@ internal partial class GameLoader
 
     private void LoadXml(Stream scanStream, XmlReader reader)
     {
-        var timer = System.Diagnostics.Stopwatch.StartNew();
+        var timer = Stopwatch.StartNew();
 
         Element? current = null;
         IXmlLoader? currentLoader = null;
 
         // Set the "IsEditorLibrary" flag for any library with type="editor", and its sub-libraries
-        var isEditorLibrary = _currentFile.Count > 0 && _currentFile.Peek().IsEditorLibrary ||
+        var isEditorLibrary = (_currentFile.Count > 0 && _currentFile.Peek().IsEditorLibrary) ||
                               reader.GetAttribute("type") == "editor";
 
         if (!IsCompiledFile && _currentFile.Count == 0 && WorldModel.Version >= WorldModelVersion.v530)
@@ -236,6 +227,7 @@ internal partial class GameLoader
         {
             status = "Finished loading files";
         }
+
         UpdateStatus(status);
     }
 
@@ -247,14 +239,22 @@ internal partial class GameLoader
     private void AddedElement(Element newElement)
     {
         newElement.MetaFields[MetaFieldDefinitions.Filename] = _currentFile.Peek().Filename;
-        newElement.MetaFields[MetaFieldDefinitions.Library] = (_currentFile.Count > 1);
-        newElement.MetaFields[MetaFieldDefinitions.EditorLibrary] = (_currentFile.Peek().IsEditorLibrary);
+        newElement.MetaFields[MetaFieldDefinitions.Library] = _currentFile.Count > 1;
+        newElement.MetaFields[MetaFieldDefinitions.EditorLibrary] = _currentFile.Peek().IsEditorLibrary;
     }
 
     private IXmlLoader GetLoader(string name, Element? current)
     {
-        if (!_xmlLoaders.TryGetValue(name, out var loader) && current != null) loader = _defaultXmlLoader;
-        if (loader == null) throw new Exception($"Unrecognised tag '{name}' outside object definition");
+        if (!_xmlLoaders.TryGetValue(name, out var loader) && current != null)
+        {
+            loader = _defaultXmlLoader;
+        }
+
+        if (loader == null)
+        {
+            throw new Exception($"Unrecognised tag '{name}' outside object definition");
+        }
+
         return loader;
     }
 
@@ -292,57 +292,6 @@ internal partial class GameLoader
     private void AddError(string error)
     {
         Errors.Add(error);
-    }
-
-    public List<string> Errors { get; } = [];
-
-    private class RequiredAttribute(string name)
-    {
-        public string Name { get; set; } = name;
-        public bool UseTemplate { get; set; }
-        public bool AllowBlank { get; set; }
-        public bool Required { get; set; } = true;
-
-        public RequiredAttribute(string name, bool useTemplate, bool allowBlank, bool required)
-            : this(name, useTemplate, allowBlank)
-        {
-            Required = required;
-        }
-
-        public RequiredAttribute(string name, bool useTemplate, bool allowBlank)
-            : this(name, useTemplate)
-        {
-            AllowBlank = allowBlank;
-        }
-
-        private RequiredAttribute(string name, bool useTemplate)
-            : this(name)
-        {
-            UseTemplate = useTemplate;
-        }
-
-        public RequiredAttribute(bool required, string name)
-            : this(name)
-        {
-            Required = required;
-        }
-    }
-
-    private class RequiredAttributes
-    {
-        public List<RequiredAttribute> Attributes { get; set; }
-        public RequiredAttributes(params RequiredAttribute[] attribs)
-        {
-            Attributes = new List<RequiredAttribute>(attribs);
-        }
-        public RequiredAttributes(bool canUseTemplates, params string[] attribs)
-        {
-            Attributes = [];
-            foreach (var attrib in attribs)
-            {
-                Attributes.Add(new RequiredAttribute(attrib, canUseTemplates, false));
-            }
-        }
     }
 
     private Dictionary<string, string?> GetRequiredAttributes(XmlReader reader, RequiredAttributes attribs)
@@ -391,6 +340,68 @@ internal partial class GameLoader
         }
     }
 
+    private struct FileData
+    {
+        public string Filename;
+        public bool IsEditorLibrary;
+    }
+
+    public class LoadStatusEventArgs(string status) : EventArgs
+    {
+        public string Status { get; private set; } = status;
+    }
+
+    private class RequiredAttribute(string name)
+    {
+        public RequiredAttribute(string name, bool useTemplate, bool allowBlank, bool required)
+            : this(name, useTemplate, allowBlank)
+        {
+            Required = required;
+        }
+
+        public RequiredAttribute(string name, bool useTemplate, bool allowBlank)
+            : this(name, useTemplate)
+        {
+            AllowBlank = allowBlank;
+        }
+
+        private RequiredAttribute(string name, bool useTemplate)
+            : this(name)
+        {
+            UseTemplate = useTemplate;
+        }
+
+        public RequiredAttribute(bool required, string name)
+            : this(name)
+        {
+            Required = required;
+        }
+
+        public string Name { get; } = name;
+        public bool UseTemplate { get; }
+        public bool AllowBlank { get; }
+        public bool Required { get; } = true;
+    }
+
+    private class RequiredAttributes
+    {
+        public RequiredAttributes(params RequiredAttribute[] attribs)
+        {
+            Attributes = new List<RequiredAttribute>(attribs);
+        }
+
+        public RequiredAttributes(bool canUseTemplates, params string[] attribs)
+        {
+            Attributes = [];
+            foreach (var attrib in attribs)
+            {
+                Attributes.Add(new RequiredAttribute(attrib, canUseTemplates, false));
+            }
+        }
+
+        public List<RequiredAttribute> Attributes { get; }
+    }
+
     private class ImplicitTypes
     {
         private readonly Dictionary<string, string> _implicitTypes = new();
@@ -410,6 +421,4 @@ internal partial class GameLoader
             return element + "~" + property;
         }
     }
-
-    public bool IsCompiledFile { get; private set; }
 }

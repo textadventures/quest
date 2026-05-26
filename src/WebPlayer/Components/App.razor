@@ -1,3 +1,4 @@
+@using Microsoft.ApplicationInsights.AspNetCore
 @inject IServiceProvider ServiceProvider
 
 <!DOCTYPE html>
@@ -13,7 +14,7 @@
     <link rel="shortcut icon" href="/favicon.svg" type="image/svg+xml"/>
     <script type="text/javascript" src="/res/lib/paper.js" crossorigin="anonymous"></script>
     <script type="text/paperscript" src="/res/grid.js" canvas="gridCanvas" crossorigin="anonymous"></script>
-    @(new MarkupString(ServiceProvider.GetService<Microsoft.ApplicationInsights.AspNetCore.JavaScriptSnippet>()?.FullScript ?? string.Empty))
+    @(new MarkupString(ServiceProvider.GetService<JavaScriptSnippet>()?.FullScript ?? string.Empty))
     <HeadOutlet/>
 </head>
 

@@ -1,13 +1,12 @@
 ﻿#nullable disable
-namespace QuestViva.Engine.Types
-{
-    public class EditorCommandPattern
-    {
-        public EditorCommandPattern(string pattern)
-        {
-            Pattern = pattern;
-        }
+namespace QuestViva.Engine.Types;
 
-        public string Pattern { get; set; }
+public class EditorCommandPattern
+{
+    public EditorCommandPattern(string pattern)
+    {
+        Pattern = pattern;
     }
+
+    public string Pattern { get; set; }
 }

@@ -1,17 +1,31 @@
-﻿using System.Collections.Generic;
-using System.IO;
-using System.IO.Compression;
-using System.Threading.Tasks;
+﻿using System.IO.Compression;
 using QuestViva.Common;
 
 namespace QuestViva.Engine.GameLoader;
 
 internal class PackageReader
 {
+    public static Task<ReadResult> LoadPackage(GameData gameData)
+    {
+        var packageStream = gameData.Data;
+        var zip = new ZipArchive(packageStream, ZipArchiveMode.Read);
+
+        var gameFile = zip.GetEntry("game.aslx");
+
+        if (gameFile == null)
+        {
+            throw new InvalidDataException("Invalid game file");
+        }
+
+        return Task.FromResult(new ReadResult(zip, gameFile.Open()));
+    }
+
     public class ReadResult
     {
         private readonly Dictionary<string, byte[]> _files = new();
-            
+
+        public readonly Stream GameFile;
+
         public ReadResult(ZipArchive zip, Stream gameFile)
         {
             foreach (var entry in zip.Entries)
@@ -24,30 +38,16 @@ internal class PackageReader
 
             GameFile = gameFile;
         }
-            
-        public readonly Stream GameFile;
-            
+
         public Stream GetFile(string filename)
         {
             var bytes = _files[filename];
             return new MemoryStream(bytes);
         }
-            
-        public IEnumerable<string> GetFileNames() => _files.Keys;
-    }
 
-    public static Task<ReadResult> LoadPackage(GameData gameData)
-    {
-        var packageStream = gameData.Data;
-        var zip = new ZipArchive(packageStream, ZipArchiveMode.Read);
-            
-        var gameFile = zip.GetEntry("game.aslx");
-            
-        if (gameFile == null)
+        public IEnumerable<string> GetFileNames()
         {
-            throw new InvalidDataException("Invalid game file");
+            return _files.Keys;
         }
-            
-        return Task.FromResult(new ReadResult(zip, gameFile.Open()));
     }
 }

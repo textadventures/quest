@@ -1,11 +1,8 @@
-using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.IO;
-using System.Linq;
+using System.Diagnostics;
+using System.Reflection;
+using System.Text;
 using System.Text.RegularExpressions;
-using System.Threading;
-using System.Threading.Tasks;
 using QuestViva.Common;
 using QuestViva.Engine.Functions;
 using QuestViva.Engine.GameLoader;
@@ -16,44 +13,6 @@ namespace QuestViva.Engine;
 
 public partial class WorldModel : IGame, IGameDebug
 {
-    private readonly IConfig _config;
-    private readonly Dictionary<string, int> _nextUniqueId = new();
-    private readonly GameData? _gameData;
-    private readonly Stream? _saveData;
-    private readonly Dictionary<string, ObjectType> _debuggerObjectTypes = new();
-    private readonly Dictionary<string, ElementType> _debuggerElementTypes = new();
-    private readonly Dictionary<ElementType, IElementFactory> _elementFactories = new();
-    private readonly List<string> _attributeNames = [];
-    private readonly CallbackManager _callbacks = new();
-    private readonly object _threadLock = new();
-    private readonly object _commandOverrideLock = new();
-
-    private GameSaver? _saver;
-        
-    private Walkthroughs? _walkthroughs;
-    private TimerRunner? _timerRunner;
-        
-    private bool _commandOverride = false;
-    private string? _commandOverrideInput;
-
-    private LegacyOutputLogger? _legacyOutputLogger;
-
-    private bool _loadedFromSaved = false;
-    private ThreadState _threadState = ThreadState.Ready;
-    
-    public Func<string, Stream>? ResourceGetter { get; internal set; }
-    public Func<IEnumerable<string>>? GetResourceNames { get; internal set; }
-    public bool DebugEnabled { get; private set; }
-
-    internal static Dictionary<ObjectType, string> DefaultTypeNames { get; } = new()
-    {
-        {ObjectType.Object, "defaultobject"},
-        {ObjectType.Exit, "defaultexit"},
-        {ObjectType.Command, "defaultcommand"},
-        {ObjectType.Game, "defaultgame"},
-        {ObjectType.TurnScript, "defaultturnscript"}
-    };
-        
     private static readonly Dictionary<string, Type> TypeNamesToTypes = new()
     {
         {"string", typeof(string)},
@@ -70,8 +29,42 @@ public partial class WorldModel : IGame, IGameDebug
         {"dictionary", typeof(QuestDictionary<object>)},
         {"list", typeof(QuestList<object>)}
     };
+
     private static readonly Dictionary<Type, string> TypesToTypeNames = new();
-        
+
+    private static List<string>? FunctionNames;
+    private readonly List<string> _attributeNames = [];
+    private readonly CallbackManager _callbacks = new();
+    private readonly object _commandOverrideLock = new();
+    private readonly IConfig _config;
+    private readonly Dictionary<string, ElementType> _debuggerElementTypes = new();
+    private readonly Dictionary<string, ObjectType> _debuggerObjectTypes = new();
+    private readonly Dictionary<ElementType, IElementFactory> _elementFactories = new();
+    private readonly GameData? _gameData;
+    private readonly Dictionary<string, int> _nextUniqueId = new();
+    private readonly Stream? _saveData;
+    private readonly object _threadLock = new();
+
+    private readonly object _waitForResponseLock = new();
+
+    private bool _commandOverride;
+    private string? _commandOverrideInput;
+
+    private LegacyOutputLogger? _legacyOutputLogger;
+
+    private bool _loadedFromSaved;
+    private IDictionary<string, string>? _menuOptions;
+    private string? _menuResponse;
+    private IPlayer? _playerUi;
+
+    private bool _questionResponse;
+
+    private GameSaver? _saver;
+    private ThreadState _threadState = ThreadState.Ready;
+    private TimerRunner? _timerRunner;
+
+    private Walkthroughs? _walkthroughs;
+
     static WorldModel()
     {
         foreach (var kvp in TypeNamesToTypes)
@@ -79,17 +72,6 @@ public partial class WorldModel : IGame, IGameDebug
             TypesToTypeNames.Add(kvp.Value, kvp.Key);
         }
     }
-
-    public event EventHandler<ElementFieldUpdatedEventArgs>? ElementFieldUpdated;
-    public event EventHandler<ElementRefreshEventArgs>? ElementRefreshed;
-    public event EventHandler<ElementFieldUpdatedEventArgs>? ElementMetaFieldUpdated;
-    public event EventHandler<LoadStatusEventArgs>? LoadStatus;
-    public event Action<int>? RequestNextTimerTick;
-    public event PrintTextHandler? PrintText;
-    public event UpdateListHandler? UpdateList;
-    public event FinishedHandler? Finished;
-    public event EventHandler<ObjectsUpdatedEventArgs>? ObjectsUpdated;
-    public event ErrorHandler? LogError;
 
     internal WorldModel(IConfig config)
         // ReSharper disable once IntroduceOptionalParameters.Global
@@ -102,7 +84,7 @@ public partial class WorldModel : IGame, IGameDebug
         ExpressionOwner = new ExpressionOwner(this);
         Template = new Template(this);
         InitialiseElementFactories();
-        ObjectFactory = (ObjectFactory)_elementFactories[ElementType.Object];
+        ObjectFactory = (ObjectFactory) _elementFactories[ElementType.Object];
 
         InitialiseDebuggerObjectTypes();
         _config = config;
@@ -113,199 +95,90 @@ public partial class WorldModel : IGame, IGameDebug
         Game = ObjectFactory.CreateObject("game", ObjectType.Game);
     }
 
+    public Func<string, Stream>? ResourceGetter { get; internal set; }
+    public Func<IEnumerable<string>>? GetResourceNames { get; internal set; }
+
+    internal static Dictionary<ObjectType, string> DefaultTypeNames { get; } = new()
+    {
+        {ObjectType.Object, "defaultobject"},
+        {ObjectType.Exit, "defaultexit"},
+        {ObjectType.Command, "defaultcommand"},
+        {ObjectType.Game, "defaultgame"},
+        {ObjectType.TurnScript, "defaultturnscript"}
+    };
+
     public bool UseNCalc => _config.UseNCalc;
-
-    private void InitialiseElementFactories()
-    {
-        foreach (var t in Classes.GetImplementations(System.Reflection.Assembly.GetExecutingAssembly(),
-                     typeof(IElementFactory)))
-        {
-            AddElementFactory((IElementFactory)Activator.CreateInstance(t)!);
-        }
-    }
-
-    private void AddElementFactory(IElementFactory factory)
-    {
-        _elementFactories.Add(factory.CreateElementType, factory);
-        factory.WorldModel = this;
-        factory.ObjectsUpdated += ElementsUpdated;
-    }
-
-    private void ElementsUpdated(object? sender, ObjectsUpdatedEventArgs args)
-    {
-        ObjectsUpdated?.Invoke(this, args);
-    }
-
-    private void InitialiseDebuggerObjectTypes()
-    {
-        _debuggerObjectTypes.Add("Objects", ObjectType.Object);
-        _debuggerObjectTypes.Add("Exits", ObjectType.Exit);
-        _debuggerObjectTypes.Add("Commands", ObjectType.Command);
-        _debuggerObjectTypes.Add("Game", ObjectType.Game);
-        _debuggerObjectTypes.Add("Turn Scripts", ObjectType.TurnScript);
-        _debuggerElementTypes.Add("Timers", ElementType.Timer);
-    }
-
-    public void FinishGame()
-    {
-        State = GameState.Finished;
-
-        // Pulse all locks in case we're in the middle of waiting for player input for GetInput() etc.
-
-        lock (_commandOverrideLock)
-        {
-            Monitor.PulseAll(_commandOverrideLock);
-        }
-
-        lock (_threadLock)
-        {
-            Monitor.PulseAll(_threadLock);
-        }
-
-        lock (_waitForResponseLock)
-        {
-            Monitor.PulseAll(_waitForResponseLock);
-        }
-
-        RequestNextTimerTick?.Invoke(0);
-        Finished?.Invoke();
-    }
-
-    internal string GetUniqueId(string? prefix = null)
-    {
-        if (string.IsNullOrEmpty(prefix)) prefix = "k";
-        _nextUniqueId.TryAdd(prefix, 0);
-        string newid;
-        do
-        {
-            _nextUniqueId[prefix]++;
-            newid = prefix + _nextUniqueId[prefix];
-        } while (Elements.ContainsKey(newid));
-            
-        return newid;
-    }
 
     public Element Game { get; }
 
-    public Element Object(string name)
-    {
-        return Elements.Get(ElementType.Object, name);
-    }
-
     public ObjectFactory ObjectFactory { get; }
 
-    public IElementFactory GetElementFactory(ElementType t)
-    {
-        return _elementFactories[t];
-    }
+    public IEnumerable<Element> Objects => Elements.Objects;
 
-    public void PrintTemplate(string t)
-    {
-        Print(Template.GetText(t));
-    }
+    public string Filename => _gameData?.Filename ?? string.Empty;
 
-    public void Print(string text, bool linebreak = true)
+    internal Template Template { get; }
+
+    public UndoLogger UndoLogger { get; }
+
+    public GameState State { get; private set; } = GameState.NotStarted;
+
+    public Elements Elements { get; }
+
+    public bool EditMode { get; private set; }
+
+    internal ExpressionOwner ExpressionOwner { get; }
+
+    internal IPlayer PlayerUi
     {
-        if (!EditMode && Version >= WorldModelVersion.v540 && Elements.ContainsKey(ElementType.Function, "OutputText"))
+        get
         {
-            try
+            if (_playerUi == null)
             {
-                RunProcedure("OutputText", new Parameters(new Dictionary<string, string> {{"text", text}}), false);
-            }
-            catch (Exception ex)
-            {
-                LogException(ex);
-            }
-        }
-        else if (!EditMode)
-        {
-            if (PrintText != null)
-            {
-                if (linebreak)
-                {
-                    PrintText("<output>" + text + "</output>");
-                }
-                else
-                {
-                    PrintText("<output nobr=\"true\">" + text + "</output>");
-                }
+                throw new Exception("Player UI not set");
             }
 
-            _legacyOutputLogger?.AddText(text, linebreak);
+            return _playerUi;
         }
+        private set => _playerUi = value;
     }
 
-    internal QuestList<Element> GetAllObjects()
-    {
-        return new QuestList<Element>(Elements.Objects);
-    }
+    public IEnumerable<string> GetAllAttributeNames => _attributeNames.AsReadOnly();
 
-    private QuestList<Element> GetObjectsInScope(string scopeFunction)
-    {
-        if (Elements.ContainsKey(ElementType.Function, scopeFunction))
-        {
-            return (QuestList<Element>?)RunProcedure(scopeFunction, true) ?? new QuestList<Element>();
-        }
-        throw new Exception($"No function '{scopeFunction}'");
-    }
+    internal RegexCache RegexCache { get; } = new();
 
-    public static bool ObjectContains(Element parent, Element searchObj)
-    {
-        if (searchObj.Parent == null) return false;
-        return searchObj.Parent == parent || ObjectContains(parent, searchObj.Parent);
-    }
+    public WorldModelVersion Version { get; internal set; }
 
-    private readonly object _waitForResponseLock = new();
-    private string? _menuResponse = null;
-    private IDictionary<string, string>? _menuOptions = null;
+    internal string? VersionString { get; set; }
 
-    internal string DisplayMenu(string caption, IDictionary<string, string> options, bool allowCancel, bool async)
-    {
-        Print(caption);
+    internal IOutputLogger? OutputLogger { get; private set; }
 
-        var menuData = new MenuData(caption, options, allowCancel);
-        _menuOptions = options;
+    public int ASLVersion => int.Parse(VersionString!);
 
-        PlayerUi.ShowMenu(menuData);
-
-        if (async)
-        {
-            return string.Empty;
-        }
-
-        _callbacks.Pop(CallbackManager.CallbackTypes.Menu);
-        _menuOptions = null;
-
-        ChangeThreadState(ThreadState.Waiting);
-
-        lock (_waitForResponseLock)
-        {
-            Monitor.Wait(_waitForResponseLock);
-        }
-
-        ChangeThreadState(ThreadState.Working);
-
-        return _menuResponse!;
-    }
-
-    internal string DisplayMenu(string caption, IList<string> options, bool allowCancel, bool async)
-    {
-        var optionsDictionary = options.ToDictionary(option => option);
-        return DisplayMenu(caption, optionsDictionary, allowCancel, async);
-    }
+    public string Category => Game.Fields[FieldDefinitions.Category];
+    public string Description => Game.Fields[FieldDefinitions.Description];
+    public string Cover => Game.Fields[FieldDefinitions.Cover];
+    public bool IsGamebook => Game.Fields[FieldDefinitions.EditorStyle] == "gamebook";
+    public string? LanguageId => Template.GetText("LanguageId", false);
+    public event Action<int>? RequestNextTimerTick;
+    public event PrintTextHandler? PrintText;
+    public event UpdateListHandler? UpdateList;
+    public event FinishedHandler? Finished;
+    public event ErrorHandler? LogError;
 
     public void SetMenuResponse(string? response)
     {
         var menuCallback = _callbacks.Pop(CallbackManager.CallbackTypes.Menu);
         if (menuCallback != null)
         {
-            if (response != null) Print(" - " + _menuOptions![response]);
+            if (response != null)
+            {
+                Print(" - " + _menuOptions![response]);
+            }
+
             menuCallback.Context.Parameters["result"] = response;
             _menuOptions = null;
-            DoInNewThreadAndWait(() =>
-            {
-                RunCallbackAndFinishTurn(menuCallback);
-            });
+            DoInNewThreadAndWait(() => { RunCallbackAndFinishTurn(menuCallback); });
         }
         else
         {
@@ -321,126 +194,18 @@ public partial class WorldModel : IGame, IGameDebug
         }
     }
 
-    internal void DisplayMenuAsync(string caption, IList<string> options, bool allowCancel, IScript callback, Context c)
-    {
-        _callbacks.Push(CallbackManager.CallbackTypes.Menu, new Callback(callback, c), "Only one menu can be shown at a time.");
-        DisplayMenu(caption, options, allowCancel, true);
-    }
-
-    internal void DisplayMenuAsync(string caption, IDictionary<string, string> options, bool allowCancel, IScript callback, Context c)
-    {
-        _callbacks.Push(CallbackManager.CallbackTypes.Menu, new Callback(callback, c), "Only one menu can be shown at a time.");
-        DisplayMenu(caption, options, allowCancel, true);
-    }
-
-    public IEnumerable<Element> Objects => Elements.Objects;
-
-    public bool ObjectExists(string name)
-    {
-        return Elements.ContainsKey(ElementType.Object, name);
-    }
-
-    /// <summary>
-    /// Attempt to resolve an element name from elements which are eligible for expression,
-    /// i.e. objects and timers
-    /// </summary>
-    /// <param name="name"></param>
-    /// <param name="element"></param>
-    /// <returns></returns>
-    public bool TryResolveExpressionElement(string name, out Element? element)
-    {
-        element = null;
-        if (!Elements.ContainsKey(name)) return false;
-
-        var result = Elements.Get(name);
-        if (result.ElemType != ElementType.Object && result.ElemType != ElementType.Timer)
-        {
-            return false;
-        }
-
-        element = result;
-        return true;
-
-    }
-
-    internal void RemoveElement(ElementType type, string name)
-    {
-        Elements.Remove(type, name);
-    }
-
-    internal void SetGameName(string name)
-    {
-        _playerUi?.UpdateGameName(name);
-    }
-
     public async Task<bool> Initialise(IPlayer player)
     {
         EditMode = false;
         PlayerUi = player;
-        var loader = new QuestViva.Engine.GameLoader.GameLoader(this, QuestViva.Engine.GameLoader.GameLoader.LoadMode.Play, _gameData?.IsCompiled);
+        var loader = new GameLoader.GameLoader(this, GameLoader.GameLoader.LoadMode.Play, _gameData?.IsCompiled);
         var result = await InitialiseInternal(loader);
         if (result)
         {
             _walkthroughs = new Walkthroughs(this);
         }
+
         return result;
-    }
-
-    public async Task<bool> InitialiseEdit()
-    {
-        EditMode = true;
-        var loader = new QuestViva.Engine.GameLoader.GameLoader(this, QuestViva.Engine.GameLoader.GameLoader.LoadMode.Edit);
-        return await InitialiseInternal(loader);
-    }
-
-    private async Task<bool> InitialiseInternal(QuestViva.Engine.GameLoader.GameLoader loader)
-    {
-        if (_gameData == null)
-        {
-            throw new Exception("Game data not set");
-        }
-        
-        if (State != GameState.NotStarted)
-        {
-            throw new Exception("Game already initialised");
-        }
-        
-        loader.FilenameUpdated += loader_FilenameUpdated;
-        loader.LoadStatus += loader_LoadStatus;
-        State = GameState.Loading;
-            
-        var success = await loader.Load(_gameData, _saveData);
-            
-        DebugEnabled = !loader.IsCompiledFile;
-        State = success ? GameState.Running : GameState.Finished;
-        Errors = loader.Errors;
-        _saver = new GameSaver(this);
-        if (Version <= WorldModelVersion.v530)
-        {
-            _legacyOutputLogger = new LegacyOutputLogger(this);
-            OutputLogger = _legacyOutputLogger;
-        }
-        else
-        {
-            OutputLogger = new OutputLogger(this);
-        }
-        return success;
-    }
-
-    private void loader_LoadStatus(object? sender, QuestViva.Engine.GameLoader.GameLoader.LoadStatusEventArgs e)
-    {
-        LoadStatus?.Invoke(this, new LoadStatusEventArgs(e.Status));
-    }
-
-    private void loader_FilenameUpdated(string filename)
-    {
-        // TODO: This previously did this...
-        // // Update base ASLX filename to original filename if we're loading a saved game
-        // m_saveFilename = m_filename;
-        // m_filename = filename;
-            
-        // ... but we now only need it to do this, which could be more explicit:
-        _loadedFromSaved = true;
     }
 
     public void Begin()
@@ -456,11 +221,20 @@ public partial class WorldModel : IGame, IGameDebug
                     PlayerUi.Show("Location");
                     PlayerUi.Show("Command");
                 }
-                if (Elements.ContainsKey(ElementType.Function, "InitInterface")) RunProcedure("InitInterface");
+
+                if (Elements.ContainsKey(ElementType.Function, "InitInterface"))
+                {
+                    RunProcedure("InitInterface");
+                }
+
                 if (!_loadedFromSaved)
                 {
-                    if (Elements.ContainsKey(ElementType.Function, "StartGame")) RunProcedure("StartGame");
+                    if (Elements.ContainsKey(ElementType.Function, "StartGame"))
+                    {
+                        RunProcedure("StartGame");
+                    }
                 }
+
                 TryRunOnFinallyScripts();
                 UpdateLists();
                 if (_loadedFromSaved)
@@ -481,6 +255,7 @@ public partial class WorldModel : IGame, IGameDebug
                         _legacyOutputLogger.DisplayOutput(output.Fields.GetString("text"));
                     }
                 }
+
                 SendNextTimerRequest();
             }
             catch (Exception ex)
@@ -497,14 +272,13 @@ public partial class WorldModel : IGame, IGameDebug
 
     public List<string> Errors { get; private set; } = [];
 
-    public IWalkthroughs Walkthroughs => _walkthroughs!;
-
-    public List<string> DebuggerObjectTypes => [.._debuggerObjectTypes.Keys.Union(_debuggerElementTypes.Keys)];
-
     public void SendCommand(string command, int elapsedTime, IDictionary<string, string> metadata)
     {
-        if (_timerRunner == null) throw new Exception("Begin() has not been called");
-        
+        if (_timerRunner == null)
+        {
+            throw new Exception("Begin() has not been called");
+        }
+
         if (elapsedTime > 0)
         {
             _timerRunner.IncrementTime(elapsedTime);
@@ -522,7 +296,8 @@ public partial class WorldModel : IGame, IGameDebug
 
                 try
                 {
-                    RunProcedure("HandleCommand", new Parameters(new Dictionary<string, object>{
+                    RunProcedure("HandleCommand", new Parameters(new Dictionary<string, object>
+                    {
                         {"command", command},
                         {"metadata", new QuestDictionary<string>(metadata)}
                     }), false);
@@ -530,6 +305,7 @@ public partial class WorldModel : IGame, IGameDebug
                     {
                         TryFinishTurn();
                     }
+
                     if (State != GameState.Finished)
                     {
                         UpdateLists();
@@ -593,7 +369,7 @@ public partial class WorldModel : IGame, IGameDebug
         var parameters = new Parameters {{(string) handler.Fields[FieldDefinitions.ParamNames][0], param}};
 
         RunProcedure(eventName, parameters, false);
-        
+
         switch (Version)
         {
             case < WorldModelVersion.v540:
@@ -607,19 +383,503 @@ public partial class WorldModel : IGame, IGameDebug
         {
             UpdateLists();
         }
+
         SendNextTimerRequest();
     }
-
-    public string Filename => _gameData?.Filename ?? string.Empty;
 
     public void Finish()
     {
         FinishGame();
     }
 
-    internal Template Template { get; }
+    public void FinishWait()
+    {
+        var waitCallback = _callbacks.Pop(CallbackManager.CallbackTypes.Wait);
+        if (waitCallback != null)
+        {
+            DoInNewThreadAndWait(() => { RunCallbackAndFinishTurn(waitCallback); });
+        }
+        else
+        {
+            if (State == GameState.Finished)
+            {
+                return;
+            }
 
-    public UndoLogger UndoLogger { get; }
+            DoInNewThreadAndWait(() =>
+            {
+                lock (_waitForResponseLock)
+                {
+                    Monitor.Pulse(_waitForResponseLock);
+                }
+            });
+        }
+    }
+
+    public void FinishPause()
+    {
+        DoInNewThreadAndWait(() =>
+        {
+            lock (_waitForResponseLock)
+            {
+                Monitor.Pulse(_waitForResponseLock);
+            }
+        });
+    }
+
+    public IEnumerable<string> GetExternalScripts()
+    {
+        var result = new List<string>();
+        foreach (var jsRef in Elements.GetElements(ElementType.Javascript))
+        {
+            if (Version == WorldModelVersion.v500)
+            {
+                // v500 games used Frame.js functions for static panel feature. This is now implemented natively
+                // in Player and WebPlayer.
+                if (jsRef.Fields[FieldDefinitions.Src].Equals("frame.js", StringComparison.CurrentCultureIgnoreCase))
+                {
+                    continue;
+                }
+            }
+
+            result.Add(jsRef.Fields[FieldDefinitions.Src]);
+        }
+
+        return result;
+    }
+
+    // TO DO: This could actually be removed now, as we can dynamically load stylesheets. Core.aslx InitInterface
+    // should simply be able to use the SetWebFontName function to load game.defaultwebfont
+    public IEnumerable<string> GetExternalStylesheets()
+    {
+        if (Version < WorldModelVersion.v530)
+        {
+            return [];
+        }
+
+        var webFontsInUse = new List<string>();
+        var defaultWebFont = Game.Fields[FieldDefinitions.DefaultWebFont];
+        if (!string.IsNullOrEmpty(defaultWebFont))
+        {
+            webFontsInUse.Add(defaultWebFont);
+        }
+
+        var result = webFontsInUse.Select(f => "https://fonts.googleapis.com/css?family=" + f.Replace(' ', '+'));
+
+        return result;
+    }
+
+    public byte[] Save(string html)
+    {
+        var saveData = Save(SaveMode.SavedGame, html: html);
+        return Encoding.UTF8.GetBytes(saveData);
+    }
+
+    public void Tick(int elapsedTime)
+    {
+        if (_timerRunner == null)
+        {
+            throw new Exception("Begin() has not been called");
+        }
+
+        if (State == GameState.Finished)
+        {
+            return;
+        }
+
+        DoInNewThreadAndWait(() =>
+        {
+            try
+            {
+                var scripts = _timerRunner.TickAndGetScripts(elapsedTime);
+
+                foreach (var timerScript in scripts)
+                {
+                    RunScript(timerScript.Value, timerScript.Key);
+                }
+
+                UpdateLists();
+            }
+            catch (Exception ex)
+            {
+                LogException(ex);
+            }
+
+            ChangeThreadState(ThreadState.Ready, false);
+        });
+
+        SendNextTimerRequest();
+    }
+
+    public void SetQuestionResponse(bool response)
+    {
+        var questionCallback = _callbacks.Pop(CallbackManager.CallbackTypes.Question);
+        if (questionCallback != null)
+        {
+            questionCallback.Context.Parameters["result"] = response;
+            DoInNewThreadAndWait(() => { RunCallbackAndFinishTurn(questionCallback); });
+        }
+        else
+        {
+            DoInNewThreadAndWait(() =>
+            {
+                _questionResponse = response;
+
+                lock (_waitForResponseLock)
+                {
+                    Monitor.Pulse(_waitForResponseLock);
+                }
+            });
+        }
+    }
+
+    public Stream? GetResourceStream(string filename)
+    {
+        return ResourceGetter != null
+            ? ResourceGetter.Invoke(filename)
+            : _gameData?.GetAdjacentFile(filename);
+    }
+
+    public string GameID => Game.Fields[FieldDefinitions.GameID];
+
+    IEnumerable<string> IGame.GetResourceNames()
+    {
+        return GetResourceNames == null ? [] : GetResourceNames();
+    }
+
+    public bool DebugEnabled { get; private set; }
+    public event EventHandler<ObjectsUpdatedEventArgs>? ObjectsUpdated;
+
+    public IWalkthroughs Walkthroughs => _walkthroughs!;
+
+    public List<string> DebuggerObjectTypes => [.._debuggerObjectTypes.Keys.Union(_debuggerElementTypes.Keys)];
+
+    public List<string> GetObjects(string type)
+    {
+        IEnumerable<Element> elements;
+
+        if (_debuggerObjectTypes.TryGetValue(type, out var objectType))
+        {
+            elements = Elements.ObjectsFiltered(o => o.Type == objectType);
+        }
+        else
+        {
+            var filterType = _debuggerElementTypes[type];
+            elements = Elements.GetElements(filterType);
+        }
+
+        return elements.Select(obj => obj.Name).ToList();
+    }
+
+    public DebugData GetDebugData(string _, string el)
+    {
+        return Elements.Get(el).GetDebugData();
+    }
+
+    public bool Assert(string expr)
+    {
+        var expression = new Expression<bool>(expr, new ScriptContext(this));
+        var c = new Context();
+        return expression.Execute(c);
+    }
+
+    public event EventHandler<ElementFieldUpdatedEventArgs>? ElementFieldUpdated;
+    public event EventHandler<ElementRefreshEventArgs>? ElementRefreshed;
+    public event EventHandler<ElementFieldUpdatedEventArgs>? ElementMetaFieldUpdated;
+    public event EventHandler<LoadStatusEventArgs>? LoadStatus;
+
+    private void InitialiseElementFactories()
+    {
+        foreach (var t in Classes.GetImplementations(Assembly.GetExecutingAssembly(),
+                     typeof(IElementFactory)))
+        {
+            AddElementFactory((IElementFactory) Activator.CreateInstance(t)!);
+        }
+    }
+
+    private void AddElementFactory(IElementFactory factory)
+    {
+        _elementFactories.Add(factory.CreateElementType, factory);
+        factory.WorldModel = this;
+        factory.ObjectsUpdated += ElementsUpdated;
+    }
+
+    private void ElementsUpdated(object? sender, ObjectsUpdatedEventArgs args)
+    {
+        ObjectsUpdated?.Invoke(this, args);
+    }
+
+    private void InitialiseDebuggerObjectTypes()
+    {
+        _debuggerObjectTypes.Add("Objects", ObjectType.Object);
+        _debuggerObjectTypes.Add("Exits", ObjectType.Exit);
+        _debuggerObjectTypes.Add("Commands", ObjectType.Command);
+        _debuggerObjectTypes.Add("Game", ObjectType.Game);
+        _debuggerObjectTypes.Add("Turn Scripts", ObjectType.TurnScript);
+        _debuggerElementTypes.Add("Timers", ElementType.Timer);
+    }
+
+    public void FinishGame()
+    {
+        State = GameState.Finished;
+
+        // Pulse all locks in case we're in the middle of waiting for player input for GetInput() etc.
+
+        lock (_commandOverrideLock)
+        {
+            Monitor.PulseAll(_commandOverrideLock);
+        }
+
+        lock (_threadLock)
+        {
+            Monitor.PulseAll(_threadLock);
+        }
+
+        lock (_waitForResponseLock)
+        {
+            Monitor.PulseAll(_waitForResponseLock);
+        }
+
+        RequestNextTimerTick?.Invoke(0);
+        Finished?.Invoke();
+    }
+
+    internal string GetUniqueId(string? prefix = null)
+    {
+        if (string.IsNullOrEmpty(prefix))
+        {
+            prefix = "k";
+        }
+
+        _nextUniqueId.TryAdd(prefix, 0);
+        string newid;
+        do
+        {
+            _nextUniqueId[prefix]++;
+            newid = prefix + _nextUniqueId[prefix];
+        } while (Elements.ContainsKey(newid));
+
+        return newid;
+    }
+
+    public Element Object(string name)
+    {
+        return Elements.Get(ElementType.Object, name);
+    }
+
+    public IElementFactory GetElementFactory(ElementType t)
+    {
+        return _elementFactories[t];
+    }
+
+    public void PrintTemplate(string t)
+    {
+        Print(Template.GetText(t));
+    }
+
+    public void Print(string text, bool linebreak = true)
+    {
+        if (!EditMode && Version >= WorldModelVersion.v540 && Elements.ContainsKey(ElementType.Function, "OutputText"))
+        {
+            try
+            {
+                RunProcedure("OutputText", new Parameters(new Dictionary<string, string> {{"text", text}}), false);
+            }
+            catch (Exception ex)
+            {
+                LogException(ex);
+            }
+        }
+        else if (!EditMode)
+        {
+            if (PrintText != null)
+            {
+                if (linebreak)
+                {
+                    PrintText("<output>" + text + "</output>");
+                }
+                else
+                {
+                    PrintText("<output nobr=\"true\">" + text + "</output>");
+                }
+            }
+
+            _legacyOutputLogger?.AddText(text, linebreak);
+        }
+    }
+
+    internal QuestList<Element> GetAllObjects()
+    {
+        return new QuestList<Element>(Elements.Objects);
+    }
+
+    private QuestList<Element> GetObjectsInScope(string scopeFunction)
+    {
+        if (Elements.ContainsKey(ElementType.Function, scopeFunction))
+        {
+            return (QuestList<Element>?) RunProcedure(scopeFunction, true) ?? new QuestList<Element>();
+        }
+
+        throw new Exception($"No function '{scopeFunction}'");
+    }
+
+    public static bool ObjectContains(Element parent, Element searchObj)
+    {
+        if (searchObj.Parent == null)
+        {
+            return false;
+        }
+
+        return searchObj.Parent == parent || ObjectContains(parent, searchObj.Parent);
+    }
+
+    internal string DisplayMenu(string caption, IDictionary<string, string> options, bool allowCancel, bool async)
+    {
+        Print(caption);
+
+        var menuData = new MenuData(caption, options, allowCancel);
+        _menuOptions = options;
+
+        PlayerUi.ShowMenu(menuData);
+
+        if (async)
+        {
+            return string.Empty;
+        }
+
+        _callbacks.Pop(CallbackManager.CallbackTypes.Menu);
+        _menuOptions = null;
+
+        ChangeThreadState(ThreadState.Waiting);
+
+        lock (_waitForResponseLock)
+        {
+            Monitor.Wait(_waitForResponseLock);
+        }
+
+        ChangeThreadState(ThreadState.Working);
+
+        return _menuResponse!;
+    }
+
+    internal string DisplayMenu(string caption, IList<string> options, bool allowCancel, bool async)
+    {
+        var optionsDictionary = options.ToDictionary(option => option);
+        return DisplayMenu(caption, optionsDictionary, allowCancel, async);
+    }
+
+    internal void DisplayMenuAsync(string caption, IList<string> options, bool allowCancel, IScript callback, Context c)
+    {
+        _callbacks.Push(CallbackManager.CallbackTypes.Menu, new Callback(callback, c),
+            "Only one menu can be shown at a time.");
+        DisplayMenu(caption, options, allowCancel, true);
+    }
+
+    internal void DisplayMenuAsync(string caption, IDictionary<string, string> options, bool allowCancel,
+        IScript callback, Context c)
+    {
+        _callbacks.Push(CallbackManager.CallbackTypes.Menu, new Callback(callback, c),
+            "Only one menu can be shown at a time.");
+        DisplayMenu(caption, options, allowCancel, true);
+    }
+
+    public bool ObjectExists(string name)
+    {
+        return Elements.ContainsKey(ElementType.Object, name);
+    }
+
+    /// <summary>
+    ///     Attempt to resolve an element name from elements which are eligible for expression,
+    ///     i.e. objects and timers
+    /// </summary>
+    /// <param name="name"></param>
+    /// <param name="element"></param>
+    /// <returns></returns>
+    public bool TryResolveExpressionElement(string name, out Element? element)
+    {
+        element = null;
+        if (!Elements.ContainsKey(name))
+        {
+            return false;
+        }
+
+        var result = Elements.Get(name);
+        if (result.ElemType != ElementType.Object && result.ElemType != ElementType.Timer)
+        {
+            return false;
+        }
+
+        element = result;
+        return true;
+    }
+
+    internal void RemoveElement(ElementType type, string name)
+    {
+        Elements.Remove(type, name);
+    }
+
+    internal void SetGameName(string name)
+    {
+        _playerUi?.UpdateGameName(name);
+    }
+
+    public async Task<bool> InitialiseEdit()
+    {
+        EditMode = true;
+        var loader = new GameLoader.GameLoader(this, GameLoader.GameLoader.LoadMode.Edit);
+        return await InitialiseInternal(loader);
+    }
+
+    private async Task<bool> InitialiseInternal(GameLoader.GameLoader loader)
+    {
+        if (_gameData == null)
+        {
+            throw new Exception("Game data not set");
+        }
+
+        if (State != GameState.NotStarted)
+        {
+            throw new Exception("Game already initialised");
+        }
+
+        loader.FilenameUpdated += loader_FilenameUpdated;
+        loader.LoadStatus += loader_LoadStatus;
+        State = GameState.Loading;
+
+        var success = await loader.Load(_gameData, _saveData);
+
+        DebugEnabled = !loader.IsCompiledFile;
+        State = success ? GameState.Running : GameState.Finished;
+        Errors = loader.Errors;
+        _saver = new GameSaver(this);
+        if (Version <= WorldModelVersion.v530)
+        {
+            _legacyOutputLogger = new LegacyOutputLogger(this);
+            OutputLogger = _legacyOutputLogger;
+        }
+        else
+        {
+            OutputLogger = new OutputLogger(this);
+        }
+
+        return success;
+    }
+
+    private void loader_LoadStatus(object? sender, GameLoader.GameLoader.LoadStatusEventArgs e)
+    {
+        LoadStatus?.Invoke(this, new LoadStatusEventArgs(e.Status));
+    }
+
+    private void loader_FilenameUpdated(string filename)
+    {
+        // TODO: This previously did this...
+        // // Update base ASLX filename to original filename if we're loading a saved game
+        // m_saveFilename = m_filename;
+        // m_filename = filename;
+
+        // ... but we now only need it to do this, which could be more explicit:
+        _loadedFromSaved = true;
+    }
 
     private void UpdateStatusVariables()
     {
@@ -665,22 +925,30 @@ public partial class WorldModel : IGame, IGameDebug
             {
                 if (scope == "ScopeInventory")
                 {
-                    objects.Add(new ListData(GetListDisplayAlias(obj), obj.Fields[FieldDefinitions.InventoryVerbs], obj.Name, GetDisplayAlias(obj)));
+                    objects.Add(new ListData(GetListDisplayAlias(obj), obj.Fields[FieldDefinitions.InventoryVerbs],
+                        obj.Name, GetDisplayAlias(obj)));
                 }
                 else
                 {
-                    objects.Add(new ListData(GetListDisplayAlias(obj), obj.Fields[FieldDefinitions.DisplayVerbs], obj.Name, GetDisplayAlias(obj)));
+                    objects.Add(new ListData(GetListDisplayAlias(obj), obj.Fields[FieldDefinitions.DisplayVerbs],
+                        obj.Name, GetDisplayAlias(obj)));
                 }
             }
             else
             {
-                objects.Add(new ListData(GetListDisplayAlias(obj), GetDisplayVerbs(obj), obj.Name, GetDisplayAlias(obj)));
+                objects.Add(
+                    new ListData(GetListDisplayAlias(obj), GetDisplayVerbs(obj), obj.Name, GetDisplayAlias(obj)));
             }
         }
+
         // The "Places and Objects" list is generated by function, so we also
         // need to add any exits. (The UI is responsible for filtering out the
         // directional exits so they only display in the compass)
-        if (scope == "GetPlacesObjectsList") objects.AddRange(GetExitsListData());
+        if (scope == "GetPlacesObjectsList")
+        {
+            objects.AddRange(GetExitsListData());
+        }
+
         UpdateList(listType, objects);
     }
 
@@ -693,8 +961,9 @@ public partial class WorldModel : IGame, IGameDebug
     {
         if (Elements.ContainsKey(ElementType.Function, "GetListDisplayAlias"))
         {
-            return (string)RunProcedure("GetListDisplayAlias", new Parameters("obj", obj), true)!;
+            return (string) RunProcedure("GetListDisplayAlias", new Parameters("obj", obj), true)!;
         }
+
         return GetDisplayAlias(obj);
     }
 
@@ -702,14 +971,15 @@ public partial class WorldModel : IGame, IGameDebug
     {
         if (Elements.ContainsKey(ElementType.Function, "GetDisplayAlias"))
         {
-            return (string)RunProcedure("GetDisplayAlias", new Parameters("obj", obj), true)!;
+            return (string) RunProcedure("GetDisplayAlias", new Parameters("obj", obj), true)!;
         }
+
         return obj.Name;
     }
 
     private IEnumerable<string> GetDisplayVerbs(Element obj)
     {
-        return (QuestList<string>)RunProcedure("GetDisplayVerbs", new Parameters("object", obj), true)!;
+        return (QuestList<string>) RunProcedure("GetDisplayVerbs", new Parameters("object", obj), true)!;
     }
 
     private List<ListData> GetExitsListData()
@@ -720,6 +990,7 @@ public partial class WorldModel : IGame, IGameDebug
         {
             scopeFunction = "GetExitsList";
         }
+
         foreach (var exit in GetObjectsInScope(scopeFunction))
         {
             IEnumerable<string> verbs;
@@ -731,33 +1002,13 @@ public partial class WorldModel : IGame, IGameDebug
             {
                 verbs = GetDisplayVerbs(exit);
             }
+
             exits.Add(new ListData(GetListDisplayAlias(exit), verbs, exit.Name, GetDisplayAlias(exit)));
         }
+
         return exits;
     }
 
-    public List<string> GetObjects(string type)
-    {
-        IEnumerable<Element> elements;
-
-        if (_debuggerObjectTypes.TryGetValue(type, out var objectType))
-        {
-            elements = Elements.ObjectsFiltered(o => o.Type == objectType);
-        }
-        else
-        {
-            var filterType = _debuggerElementTypes[type];
-            elements = Elements.GetElements(filterType);
-        }
-
-        return elements.Select(obj => obj.Name).ToList();
-    }
-
-    public DebugData GetDebugData(string _, string el)
-    {
-        return Elements.Get(el).GetDebugData();
-    }
-        
     public DebugData GetDebugData(string el)
     {
         return Elements.Get(el).GetDebugData();
@@ -790,31 +1041,9 @@ public partial class WorldModel : IGame, IGameDebug
 
     public void StartWaitAsync(IScript callback, Context c)
     {
-        _callbacks.Push(CallbackManager.CallbackTypes.Wait, new Callback(callback, c), "Only one wait can be in progress at a time.");
+        _callbacks.Push(CallbackManager.CallbackTypes.Wait, new Callback(callback, c),
+            "Only one wait can be in progress at a time.");
         PlayerUi.DoWait();
-    }
-
-    public void FinishWait()
-    {
-        Callback waitCallback = _callbacks.Pop(CallbackManager.CallbackTypes.Wait);
-        if (waitCallback != null)
-        {
-            DoInNewThreadAndWait(() =>
-            {
-                RunCallbackAndFinishTurn(waitCallback);
-            });
-        }
-        else
-        {
-            if (State == GameState.Finished) return;
-            DoInNewThreadAndWait(() =>
-            {
-                lock (_waitForResponseLock)
-                {
-                    Monitor.Pulse(_waitForResponseLock);
-                }
-            });
-        }
     }
 
     public void StartPause(int ms)
@@ -831,59 +1060,13 @@ public partial class WorldModel : IGame, IGameDebug
         ChangeThreadState(ThreadState.Working);
     }
 
-    public void FinishPause()
-    {
-        DoInNewThreadAndWait(() =>
-        {
-            lock (_waitForResponseLock)
-            {
-                Monitor.Pulse(_waitForResponseLock);
-            }
-        });
-    }
-
-    public IEnumerable<string> GetExternalScripts()
-    {
-        var result = new List<string>();
-        foreach (var jsRef in Elements.GetElements(ElementType.Javascript))
-        {
-            if (Version == WorldModelVersion.v500)
-            {
-                // v500 games used Frame.js functions for static panel feature. This is now implemented natively
-                // in Player and WebPlayer.
-                if (jsRef.Fields[FieldDefinitions.Src].Equals("frame.js", StringComparison.CurrentCultureIgnoreCase)) continue;
-            }
-
-            result.Add(jsRef.Fields[FieldDefinitions.Src]);
-        }
-        return result;
-    }
-
-    // TO DO: This could actually be removed now, as we can dynamically load stylesheets. Core.aslx InitInterface
-    // should simply be able to use the SetWebFontName function to load game.defaultwebfont
-    public IEnumerable<string> GetExternalStylesheets()
-    {
-        if (Version < WorldModelVersion.v530) return [];
-
-        var webFontsInUse = new List<string>();
-        var defaultWebFont = Game.Fields[FieldDefinitions.DefaultWebFont];
-        if (!string.IsNullOrEmpty(defaultWebFont))
-        {
-            webFontsInUse.Add(defaultWebFont);
-        }
-            
-        var result = webFontsInUse.Select(f => "https://fonts.googleapis.com/css?family=" + f.Replace(' ', '+'));
-            
-        return result;
-    }
-
     public void RunScript(IScript script)
     {
-        RunScript(script, (Parameters?)null, false);
+        RunScript(script, (Parameters?) null, false);
     }
 
     /// <summary>
-    /// Use this version of RunScript when executing an object action. Set thisElement to the object whose action it is.
+    ///     Use this version of RunScript when executing an object action. Set thisElement to the object whose action it is.
     /// </summary>
     /// <param name="script"></param>
     /// <param name="thisElement"></param>
@@ -916,7 +1099,11 @@ public partial class WorldModel : IGame, IGameDebug
     {
         var c = new Context();
         parameters ??= new Parameters();
-        if (thisElement != null) parameters.Add("this", thisElement);
+        if (thisElement != null)
+        {
+            parameters.Add("this", thisElement);
+        }
+
         c.Parameters = parameters;
 
         return RunScript(script, c, expectResult);
@@ -932,7 +1119,11 @@ public partial class WorldModel : IGame, IGameDebug
         try
         {
             script.Execute(c);
-            if (expectResult && c.ReturnValue is NoReturnValue) throw new Exception("Function did not return a value");
+            if (expectResult && c.ReturnValue is NoReturnValue)
+            {
+                throw new Exception("Function did not return a value");
+            }
+
             return c.ReturnValue;
         }
         catch (Exception ex)
@@ -940,6 +1131,7 @@ public partial class WorldModel : IGame, IGameDebug
             // TODO: Add some way of nicely showing script errors to the user (should be higher up the callstack)
             Print("Error running script: " + Utility.SafeXML(ex.Message));
         }
+
         return null;
     }
 
@@ -951,7 +1143,7 @@ public partial class WorldModel : IGame, IGameDebug
 
     public Element AddProcedure(string name, IScript script, string[] parameters)
     {
-        Element proc = AddProcedure(name);
+        var proc = AddProcedure(name);
         proc.Fields[FieldDefinitions.Script] = script;
         proc.Fields[FieldDefinitions.ParamNames] = new QuestList<string>(parameters);
         return proc;
@@ -990,7 +1182,8 @@ public partial class WorldModel : IGame, IGameDebug
             }
             else if (Version >= WorldModelVersion.v530)
             {
-                parametersInvalid = (parameters == null || parameters.Count == 0) && function.Fields[FieldDefinitions.ParamNames].Count > 0;
+                parametersInvalid = (parameters == null || parameters.Count == 0) &&
+                                    function.Fields[FieldDefinitions.ParamNames].Count > 0;
             }
 
             if (parametersInvalid)
@@ -1017,20 +1210,13 @@ public partial class WorldModel : IGame, IGameDebug
         return Elements.Get(ElementType.ObjectType, name);
     }
 
-    public GameState State { get; private set; } = GameState.NotStarted;
-
-    public Elements Elements { get; }
-
-    public byte[] Save(string html)
-    {
-        var saveData = Save(SaveMode.SavedGame, html: html);
-        return System.Text.Encoding.UTF8.GetBytes(saveData);
-    }
-
     public string Save(SaveMode mode, bool? includeWalkthrough = null, string? html = null)
     {
-        if (_saver == null) throw new Exception("Game not initialised");
-        
+        if (_saver == null)
+        {
+            throw new Exception("Game not initialised");
+        }
+
         return _saver.Save(mode, includeWalkthrough, html);
     }
 
@@ -1041,7 +1227,10 @@ public partial class WorldModel : IGame, IGameDebug
             return type;
         }
 
-        if (name == "null") return null;
+        if (name == "null")
+        {
+            return null;
+        }
 
         // TO DO: type name could also be a DelegateImplementation
         //if (value is DelegateImplementation) return ((DelegateImplementation)value).TypeName;
@@ -1061,26 +1250,30 @@ public partial class WorldModel : IGame, IGameDebug
             return kvp.Value;
         }
 
-        throw new ArgumentOutOfRangeException($"Unrecognised type '{type.ToString()}'");
+        throw new ArgumentOutOfRangeException($"Unrecognised type '{type}'");
     }
 
     public Stream GetLibraryStream(string filename)
     {
-        if (_gameData == null) throw new Exception("Game data not set");
-        
+        if (_gameData == null)
+        {
+            throw new Exception("Game data not set");
+        }
+
         var stream = _gameData.GetAdjacentFile(filename);
         if (stream != null)
         {
             return stream;
         }
 
-        stream = System.Reflection.Assembly.GetExecutingAssembly().GetManifestResourceStream("QuestViva.Engine.Core." + filename);
+        stream = Assembly.GetExecutingAssembly().GetManifestResourceStream("QuestViva.Engine.Core." + filename);
         if (stream != null)
         {
             return stream;
         }
 
-        stream = System.Reflection.Assembly.GetExecutingAssembly().GetManifestResourceStream("QuestViva.Engine.Core.Languages." + filename);
+        stream = Assembly.GetExecutingAssembly()
+            .GetManifestResourceStream("QuestViva.Engine.Core.Languages." + filename);
         if (stream != null)
         {
             return stream;
@@ -1113,12 +1306,19 @@ public partial class WorldModel : IGame, IGameDebug
     private void AddFilesInPathToList(List<string> list, string path, bool recurse, string searchPattern = "*.aslx")
     {
         path = Files.RemoveFileColonPrefix(path);
-        var option = recurse ? SearchOption.AllDirectories : System.IO.SearchOption.TopDirectoryOnly;
+        var option = recurse ? SearchOption.AllDirectories : SearchOption.TopDirectoryOnly;
         foreach (var result in Directory.GetFiles(path, searchPattern, option))
         {
-            if (result == Filename) continue;
+            if (result == Filename)
+            {
+                continue;
+            }
+
             var filename = Path.GetFileName(result);
-            if (!list.Contains(filename)) list.Add(filename);
+            if (!list.Contains(filename))
+            {
+                list.Add(filename);
+            }
         }
     }
 
@@ -1126,22 +1326,31 @@ public partial class WorldModel : IGame, IGameDebug
     {
         var result = new List<string>();
         var patterns = searchPatterns.Split(';');
-        foreach (string searchPattern in patterns)
+        foreach (var searchPattern in patterns)
         {
             AddFilesInPathToList(result, Path.GetDirectoryName(Filename)!, false, searchPattern);
         }
+
         return result;
     }
 
     internal void NotifyElementFieldUpdate(Element element, string attribute, object newValue, bool isUndo)
     {
-        if (!element.Initialised) return;
+        if (!element.Initialised)
+        {
+            return;
+        }
+
         ElementFieldUpdated?.Invoke(this, new ElementFieldUpdatedEventArgs(element, attribute, newValue, isUndo));
     }
 
     internal void NotifyElementMetaFieldUpdate(Element element, string attribute, object newValue, bool isUndo)
     {
-        if (!element.Initialised) return;
+        if (!element.Initialised)
+        {
+            return;
+        }
+
         ElementMetaFieldUpdated?.Invoke(this, new ElementFieldUpdatedEventArgs(element, attribute, newValue, isUndo));
     }
 
@@ -1150,10 +1359,6 @@ public partial class WorldModel : IGame, IGameDebug
         ElementRefreshed?.Invoke(this, new ElementRefreshEventArgs(element));
     }
 
-    public bool EditMode { get; private set; } = false;
-
-    internal ExpressionOwner ExpressionOwner { get; }
-
     private void ScrollToEnd()
     {
         PlayerUi.RunScript("scrollToEnd", null);
@@ -1161,12 +1366,17 @@ public partial class WorldModel : IGame, IGameDebug
 
     private void ChangeThreadState(ThreadState newState, bool scroll = true)
     {
-        if (scroll && Version >= WorldModelVersion.v540 && (newState == ThreadState.Ready || newState == ThreadState.Waiting))
+        if (scroll && Version >= WorldModelVersion.v540 &&
+            (newState == ThreadState.Ready || newState == ThreadState.Waiting))
         {
             ScrollToEnd();
         }
 
-        if (newState == ThreadState.Waiting && State == GameState.Finished) throw new Exception("Game is finished");
+        if (newState == ThreadState.Waiting && State == GameState.Finished)
+        {
+            throw new Exception("Game is finished");
+        }
+
         _threadState = newState;
         lock (_threadLock)
         {
@@ -1206,19 +1416,6 @@ public partial class WorldModel : IGame, IGameDebug
     private void LogException(Exception ex)
     {
         LogError?.Invoke(ex);
-    }
-
-    internal IPlayer PlayerUi
-    {
-        get
-        {
-            if (_playerUi == null)
-            {
-                throw new Exception("Player UI not set");
-            }
-            return _playerUi;
-        }
-        private set => _playerUi = value;
     }
 
     public static ElementType GetElementTypeForTypeString(string typeString)
@@ -1286,10 +1483,11 @@ public partial class WorldModel : IGame, IGameDebug
 
     internal void AddAttributeName(string name)
     {
-        if (!_attributeNames.Contains(name)) _attributeNames.Add(name);
+        if (!_attributeNames.Contains(name))
+        {
+            _attributeNames.Add(name);
+        }
     }
-
-    public IEnumerable<string> GetAllAttributeNames => _attributeNames.AsReadOnly();
 
     internal string GetNextCommandInput(bool async)
     {
@@ -1317,51 +1515,27 @@ public partial class WorldModel : IGame, IGameDebug
 
     internal void GetNextCommandInputAsync(IScript callback, Context c)
     {
-        _callbacks.Push(CallbackManager.CallbackTypes.GetInput, new Callback(callback, c), "Only one 'get input' can be in progress at a time");
+        _callbacks.Push(CallbackManager.CallbackTypes.GetInput, new Callback(callback, c),
+            "Only one 'get input' can be in progress at a time");
         GetNextCommandInput(true);
-    }
-
-    public void Tick(int elapsedTime)
-    {
-        if (_timerRunner == null) throw new Exception("Begin() has not been called");
-        
-        if (State == GameState.Finished) return;
-        DoInNewThreadAndWait(() =>
-        {
-            try
-            {
-                var scripts = _timerRunner.TickAndGetScripts(elapsedTime);
-
-                foreach (var timerScript in scripts)
-                {
-                    RunScript(timerScript.Value, timerScript.Key);
-                }
-
-                UpdateLists();
-            }
-            catch (Exception ex)
-            {
-                LogException(ex);
-            }
-
-            ChangeThreadState(ThreadState.Ready, false);
-        });
-
-        SendNextTimerRequest();
     }
 
     private void SendNextTimerRequest()
     {
-        if (_timerRunner == null) throw new Exception("Begin() has not been called");
-        
-        if (State == GameState.Finished) return;
+        if (_timerRunner == null)
+        {
+            throw new Exception("Begin() has not been called");
+        }
+
+        if (State == GameState.Finished)
+        {
+            return;
+        }
+
         var next = _timerRunner.GetTimeUntilNextTimerRuns();
         RequestNextTimerTick?.Invoke(next);
-        System.Diagnostics.Debug.Print("Request next timer in {0}", next);
+        Debug.Print("Request next timer in {0}", next);
     }
-
-    private bool _questionResponse;
-    private IPlayer? _playerUi = null;
 
     internal bool ShowQuestion(string caption)
     {
@@ -1382,33 +1556,9 @@ public partial class WorldModel : IGame, IGameDebug
 
     internal void ShowQuestionAsync(string caption, IScript callback, Context c)
     {
-        _callbacks.Push(CallbackManager.CallbackTypes.Question, new Callback(callback, c), "Only one question can be asked at a time.");
+        _callbacks.Push(CallbackManager.CallbackTypes.Question, new Callback(callback, c),
+            "Only one question can be asked at a time.");
         PlayerUi.ShowQuestion(caption);
-    }
-
-    public void SetQuestionResponse(bool response)
-    {
-        var questionCallback = _callbacks.Pop(CallbackManager.CallbackTypes.Question);
-        if (questionCallback != null)
-        {
-            questionCallback.Context.Parameters["result"] = response;
-            DoInNewThreadAndWait(() =>
-            {
-                RunCallbackAndFinishTurn(questionCallback);
-            });
-        }
-        else
-        {
-            DoInNewThreadAndWait(() =>
-            {
-                _questionResponse = response;
-
-                lock (_waitForResponseLock)
-                {
-                    Monitor.Pulse(_waitForResponseLock);
-                }
-            });
-        }
     }
 
     private void RunCallbackAndFinishTurn(Callback callback)
@@ -1426,6 +1576,7 @@ public partial class WorldModel : IGame, IGameDebug
         {
             LogException(ex);
         }
+
         ChangeThreadState(ThreadState.Ready);
         SendNextTimerRequest();
     }
@@ -1455,7 +1606,11 @@ public partial class WorldModel : IGame, IGameDebug
 
     private void TryRunOnFinallyScripts()
     {
-        if (_callbacks.AnyOutstanding()) return;
+        if (_callbacks.AnyOutstanding())
+        {
+            return;
+        }
+
         var onReadyScripts = _callbacks.FlushOnReadyCallbacks();
         foreach (var callback in onReadyScripts)
         {
@@ -1463,19 +1618,12 @@ public partial class WorldModel : IGame, IGameDebug
         }
     }
 
-    public class PackageIncludeFile
-    {
-        public required string Filename { get; set; }
-        public required Stream Content { get; set; }
-    }
-
-    public bool CreatePackage(string filename, bool includeWalkthrough, out string error, IEnumerable<PackageIncludeFile> includeFiles, Stream outputStream)
+    public bool CreatePackage(string filename, bool includeWalkthrough, out string error,
+        IEnumerable<PackageIncludeFile> includeFiles, Stream outputStream)
     {
         var packager = new Packager(this);
         return packager.CreatePackage(filename, includeWalkthrough, out error, includeFiles, outputStream);
     }
-
-    private static List<string>? FunctionNames = null;
 
     public IEnumerable<string> GetBuiltInFunctionNames()
     {
@@ -1519,7 +1667,10 @@ public partial class WorldModel : IGame, IGameDebug
         {
             var doUpdate = movedElement.ElemType == ElementType.Object &&
                            (movedElement.Type == ObjectType.Exit || movedElement.Type == ObjectType.Object);
-            if (!doUpdate) return;
+            if (!doUpdate)
+            {
+                return;
+            }
         }
 
         // This function is called when an element is moved to a new parent.
@@ -1530,13 +1681,6 @@ public partial class WorldModel : IGame, IGameDebug
             .Select(sibling => sibling.MetaFields[MetaFieldDefinitions.SortIndex]).Prepend(-1).Max();
 
         movedElement.MetaFields[MetaFieldDefinitions.SortIndex] = maxIndex + 1;
-    }
-
-    public bool Assert(string expr)
-    {
-        var expression = new Expression<bool>(expr, new ScriptContext(this));
-        var c = new Context();
-        return expression.Execute(c);
     }
 
     internal void AddOnReady(IScript callback, Context c)
@@ -1551,51 +1695,31 @@ public partial class WorldModel : IGame, IGameDebug
         }
     }
 
-    public Stream? GetResourceStream(string filename)
-    {
-        return ResourceGetter != null
-            ? ResourceGetter.Invoke(filename)
-            : _gameData?.GetAdjacentFile(filename);
-    }
-
     public string? GetResourceData(string filename)
     {
         var stream = GetResourceStream(filename);
-        if (stream == null) return null;
+        if (stream == null)
+        {
+            return null;
+        }
+
         using var reader = new StreamReader(stream);
         return reader.ReadToEnd();
     }
 
     public static string[] GetEmbeddedResources()
     {
-        return System.Reflection.Assembly.GetExecutingAssembly().GetManifestResourceNames();
+        return Assembly.GetExecutingAssembly().GetManifestResourceNames();
     }
 
     public static Stream? GetEmbeddedResourceStream(string name)
     {
-        return System.Reflection.Assembly.GetExecutingAssembly().GetManifestResourceStream(name);
+        return Assembly.GetExecutingAssembly().GetManifestResourceStream(name);
     }
 
-    internal RegexCache RegexCache { get; } = new();
-
-    public WorldModelVersion Version { get; internal set; }
-
-    internal string? VersionString { get; set; }
-
-    internal IOutputLogger? OutputLogger { get; private set; }
-
-    public int ASLVersion => int.Parse(VersionString!);
-
-    public string GameID => Game.Fields[FieldDefinitions.GameID];
-        
-    IEnumerable<string> IGame.GetResourceNames()
+    public class PackageIncludeFile
     {
-        return GetResourceNames == null ? [] : GetResourceNames();
+        public required string Filename { get; set; }
+        public required Stream Content { get; set; }
     }
-
-    public string Category => Game.Fields[FieldDefinitions.Category];
-    public string Description => Game.Fields[FieldDefinitions.Description];
-    public string Cover => Game.Fields[FieldDefinitions.Cover];
-    public bool IsGamebook => Game.Fields[FieldDefinitions.EditorStyle] == "gamebook";
-    public string? LanguageId => Template.GetText("LanguageId", throwException: false);
 }

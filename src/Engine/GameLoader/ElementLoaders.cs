@@ -1,41 +1,37 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
+﻿using System.Reflection;
 using System.Text.RegularExpressions;
 using System.Xml;
 using QuestViva.Engine.Scripts;
 using QuestViva.Engine.Types;
 using QuestViva.Utility;
+
 // ReSharper disable UnusedType.Local
 
 namespace QuestViva.Engine.GameLoader;
 
 internal partial class GameLoader
 {
-    private delegate void LoadNestedXmlHandler(Stream stream, XmlReader newReader);
-
     private readonly Dictionary<string, IXmlLoader> _xmlLoaders = new();
     private IXmlLoader _defaultXmlLoader = null!;
+
+    private Dictionary<string, IAttributeLoader> AttributeLoaders { get; } = new();
+    private Dictionary<string, IExtendedAttributeLoader> ExtendedAttributeLoaders { get; } = new();
+
+    private WorldModel WorldModel { get; }
+    private ScriptFactory ScriptFactory { get; }
 
     private void AddXmlLoaders(LoadMode mode)
     {
         // Use Reflection to create instances of all IXmlLoaders
-        foreach (var t in Classes.GetImplementations(System.Reflection.Assembly.GetExecutingAssembly(),
+        foreach (var t in Classes.GetImplementations(Assembly.GetExecutingAssembly(),
                      typeof(IXmlLoader)))
         {
-            AddXmlLoader((IXmlLoader)Activator.CreateInstance(t)!, mode);
+            AddXmlLoader((IXmlLoader) Activator.CreateInstance(t)!, mode);
         }
 
         _defaultXmlLoader = new DefaultXmlLoader();
         InitXmlLoader(_defaultXmlLoader);
     }
-
-    private Dictionary<string, IAttributeLoader> AttributeLoaders { get; } = new();
-    private Dictionary<string, IExtendedAttributeLoader> ExtendedAttributeLoaders { get; } = new Dictionary<string, IExtendedAttributeLoader>();
-
-    private WorldModel WorldModel { get; }
-    private ScriptFactory ScriptFactory { get; }
 
     private void AddXmlLoader(IXmlLoader loader, LoadMode mode)
     {
@@ -53,15 +49,17 @@ internal partial class GameLoader
         loader.LoadNestedXml += LoadXml;
     }
 
+    private delegate void LoadNestedXmlHandler(Stream stream, XmlReader newReader);
+
     private interface IXmlLoader
     {
+        string? AppliesTo { get; }
+        GameLoader GameLoader { set; }
         event AddErrorHandler AddError;
         event LoadNestedXmlHandler LoadNestedXml;
-        string? AppliesTo { get; }
         void StartElement(XmlReader reader, ref Element? current);
         void EndElement(XmlReader reader, ref Element? current);
         void SetText(string text, ref Element? current);
-        GameLoader GameLoader { set; }
         bool SupportsMode(LoadMode mode);
     }
 
@@ -70,10 +68,12 @@ internal partial class GameLoader
         private GameLoader _loader = null!;
         protected WorldModel WorldModel { get; private set; } = null!;
 
+        protected virtual bool CanContainNestedAttributes => false;
+
         public event AddErrorHandler? AddError;
         public event LoadNestedXmlHandler? LoadNestedXml;
         public abstract string? AppliesTo { get; }
-        
+
         public void StartElement(XmlReader reader, ref Element? current)
         {
             var createdObject = Load(reader, ref current);
@@ -88,24 +88,30 @@ internal partial class GameLoader
                 return;
             }
 
-            if (createdObject != null && !reader.IsEmptyElement) current = (Element)createdObject;
+            if (createdObject != null && !reader.IsEmptyElement)
+            {
+                current = (Element) createdObject;
+            }
         }
 
         public void EndElement(XmlReader reader, ref Element? current)
         {
-            if (!CanContainNestedAttributes) return;
+            if (!CanContainNestedAttributes)
+            {
+                return;
+            }
 
             current = current!.Parent == null ? null : current.Parent;
         }
 
         public GameLoader GameLoader
         {
+            get => _loader;
             set
             {
                 _loader = value;
                 WorldModel = _loader.WorldModel;
             }
-            get => _loader;
         }
 
         public virtual void SetText(string text, ref Element? current)
@@ -118,8 +124,6 @@ internal partial class GameLoader
         }
 
         public abstract object? Load(XmlReader reader, ref Element? current);
-
-        protected virtual bool CanContainNestedAttributes => false;
 
         protected void RaiseError(string error)
         {
@@ -142,6 +146,8 @@ internal partial class GameLoader
 
         public override string AppliesTo => "command";
 
+        protected override bool CanContainNestedAttributes => true;
+
         public override object Load(XmlReader reader, ref Element? current)
         {
             return Load(reader, ref current, null);
@@ -157,7 +163,11 @@ internal partial class GameLoader
 
             var anonymous = false;
 
-            if (string.IsNullOrEmpty(name)) name = defaultName;
+            if (string.IsNullOrEmpty(name))
+            {
+                name = defaultName;
+            }
+
             if (string.IsNullOrEmpty(name))
             {
                 anonymous = true;
@@ -187,7 +197,10 @@ internal partial class GameLoader
             }
 
             var unresolved = data["unresolved"];
-            if (!string.IsNullOrEmpty(unresolved)) newCommand.Fields[FieldDefinitions.Unresolved] = unresolved;
+            if (!string.IsNullOrEmpty(unresolved))
+            {
+                newCommand.Fields[FieldDefinitions.Unresolved] = unresolved;
+            }
 
             return newCommand;
         }
@@ -197,7 +210,8 @@ internal partial class GameLoader
             var pattern = WorldModel.Template.GetText(template);
             if (WorldModel.EditMode)
             {
-                newCommand.Fields.Set(FieldDefinitions.Pattern.Property, new EditorCommandPattern(Utility.ConvertVerbSimplePatternForEditor(pattern)));
+                newCommand.Fields.Set(FieldDefinitions.Pattern.Property,
+                    new EditorCommandPattern(Utility.ConvertVerbSimplePatternForEditor(pattern)));
             }
             else
             {
@@ -206,6 +220,7 @@ internal partial class GameLoader
                     var verbs = pattern.Split(';');
                     newCommand.Fields[FieldDefinitions.DisplayVerb] = verbs[0].Trim();
                 }
+
                 LoadPattern(newCommand, pattern);
             }
         }
@@ -221,10 +236,9 @@ internal partial class GameLoader
             {
                 throw new Exception("Current element is not set");
             }
+
             current.Fields.LazyFields.AddScript("script", GameLoader.GetTemplate(text));
         }
-
-        protected override bool CanContainNestedAttributes => true;
 
         [GeneratedRegex("[A-Za-z0-9]+")]
         private partial Regex m_regex();
@@ -233,7 +247,11 @@ internal partial class GameLoader
         {
             var name = pattern == null ? null : m_regex().Match(pattern.Replace(" ", "")).Value;
 
-            if (string.IsNullOrEmpty(name) || WorldModel.ObjectExists(name)) name = WorldModel.GetUniqueId(name);
+            if (string.IsNullOrEmpty(name) || WorldModel.ObjectExists(name))
+            {
+                name = WorldModel.GetUniqueId(name);
+            }
+
             return name;
         }
     }
@@ -246,7 +264,7 @@ internal partial class GameLoader
         {
             var property = reader.GetAttribute("property");
 
-            var newCommand = (Element)base.Load(reader, ref current, property);
+            var newCommand = (Element) base.Load(reader, ref current, property);
 
             newCommand.Fields[FieldDefinitions.Property] = property;
 
@@ -268,6 +286,7 @@ internal partial class GameLoader
             {
                 throw new Exception("Current element is not set");
             }
+
             var contents = GameLoader.GetTemplate(text);
             current.Fields[FieldDefinitions.DefaultText] = contents;
         }
@@ -276,7 +295,8 @@ internal partial class GameLoader
         {
             newCommand.Fields.LazyFields.AddAction(() =>
             {
-                newCommand.Fields[FieldDefinitions.Pattern] = Utility.ConvertVerbSimplePattern(pattern, newCommand.Fields[FieldDefinitions.Separator]);
+                newCommand.Fields[FieldDefinitions.Pattern] =
+                    Utility.ConvertVerbSimplePattern(pattern, newCommand.Fields[FieldDefinitions.Separator]);
             });
         }
     }
@@ -284,27 +304,33 @@ internal partial class GameLoader
     private abstract class IncludeLoaderBase : XmlLoaderBase
     {
         public override string AppliesTo => "include";
+        protected abstract LoadMode LoaderMode { get; }
 
         public override object? Load(XmlReader reader, ref Element? current)
         {
             var filename = GameLoader.GetTemplateAttribute(reader, "ref");
-            if (filename.Length == 0) return null;
+            if (filename.Length == 0)
+            {
+                return null;
+            }
+
             var stream = WorldModel.GetLibraryStream(filename);
             var newReader = new XmlTextReader(stream);
             while (newReader.NodeType != XmlNodeType.Element && !newReader.EOF)
             {
                 newReader.Read();
             }
+
             if (newReader.Name != "library")
             {
                 RaiseError($"Included file '{filename}' is not a library");
             }
+
             LoadXml(stream, newReader);
             return LoadInternal(filename);
         }
 
         protected abstract object? LoadInternal(string file);
-        protected abstract LoadMode LoaderMode { get; }
 
         public override bool SupportsMode(LoadMode mode)
         {
@@ -314,25 +340,25 @@ internal partial class GameLoader
 
     private class IncludeLoader : IncludeLoaderBase
     {
+        protected override LoadMode LoaderMode => LoadMode.Play;
+
         protected override object? LoadInternal(string file)
         {
             return null;
         }
-
-        protected override LoadMode LoaderMode => LoadMode.Play;
     }
 
     private class EditorIncludeLoader : IncludeLoaderBase
     {
+        protected override LoadMode LoaderMode => LoadMode.Edit;
+
         protected override object LoadInternal(string file)
         {
-            Element include = WorldModel.GetElementFactory(ElementType.IncludedLibrary).Create();
+            var include = WorldModel.GetElementFactory(ElementType.IncludedLibrary).Create();
             include.Fields[FieldDefinitions.Filename] = file;
             include.Fields[FieldDefinitions.Anonymous] = true;
             return include;
         }
-
-        protected override LoadMode LoaderMode => LoadMode.Edit;
     }
 
     private class LibraryLoader : XmlLoaderBase
@@ -362,14 +388,14 @@ internal partial class GameLoader
 
     private class DefaultXmlLoader : XmlLoaderBase
     {
-        public override string? AppliesTo => null;
-
         private static readonly Dictionary<string, string> LegacyTypeMappings = new()
         {
-            { "list", "simplestringlist" },
-            { "stringdictionary", "simplestringdictionary" },
-            { "objectdictionary", "simpleobjectdictionary" },
+            {"list", "simplestringlist"},
+            {"stringdictionary", "simplestringdictionary"},
+            {"objectdictionary", "simpleobjectdictionary"}
         };
+
+        public override string? AppliesTo => null;
 
         public override object? Load(XmlReader reader, ref Element? current)
         {
@@ -377,18 +403,18 @@ internal partial class GameLoader
             {
                 throw new Exception("Current element is not set");
             }
-            
+
             var attribute = reader.Name;
             if (attribute == "attr")
             {
                 attribute = reader.GetAttribute("name");
             }
-            
+
             if (attribute == null)
             {
-                throw new Exception($"Invalid attribute");
+                throw new Exception("Invalid attribute");
             }
-            
+
             var type = reader.GetAttribute("type");
 
             WorldModel.AddAttributeName(attribute);
@@ -401,6 +427,7 @@ internal partial class GameLoader
                     // the type property is the object type, so is not set for other element types.
                     currentElementType = current.Fields.GetString("elementtype");
                 }
+
                 type = GameLoader._implicitTypes.Get(currentElementType, attribute);
             }
 
@@ -452,6 +479,7 @@ internal partial class GameLoader
                     }
                 }
             }
+
             return null;
         }
     }
@@ -460,6 +488,8 @@ internal partial class GameLoader
     {
         public override string AppliesTo => "game";
 
+        protected override bool CanContainNestedAttributes => true;
+
         public override object Load(XmlReader reader, ref Element? current)
         {
             var name = reader.GetAttribute("name");
@@ -467,8 +497,6 @@ internal partial class GameLoader
             WorldModel.Game.Fields[FieldDefinitions.GameName] = name;
             return WorldModel.Game;
         }
-
-        protected override bool CanContainNestedAttributes => true;
     }
 
     // TO DO: This should derive from ElementLoaderBase
@@ -476,25 +504,27 @@ internal partial class GameLoader
     {
         public override string AppliesTo => "object";
 
+        protected override bool CanContainNestedAttributes => true;
+
         public override object Load(XmlReader reader, ref Element? current)
         {
             return current != null
                 ? WorldModel.ObjectFactory.CreateObject(reader.GetAttribute("name"), current)
                 : WorldModel.ObjectFactory.CreateObject(reader.GetAttribute("name"));
         }
-
-        protected override bool CanContainNestedAttributes => true;
     }
 
     private class ExitLoader : XmlLoaderBase
     {
         public override string AppliesTo => "exit";
 
+        protected override bool CanContainNestedAttributes => true;
+
         public override object Load(XmlReader reader, ref Element? current)
         {
             // current can be null here for some reason, e.g. in
             // https://textadventures.co.uk/games/view/_tz-z3689ku5mhp_6gc7fw/guttersnipe-carnival-of-regrets
-            
+
             var alias = reader.GetAttribute("alias");
             var to = reader.GetAttribute("to");
             var id = reader.GetAttribute("name");
@@ -507,33 +537,31 @@ internal partial class GameLoader
                 ? WorldModel.ObjectFactory.CreateExitLazy(alias, current, to)
                 : WorldModel.ObjectFactory.CreateExitLazy(id, alias, current, to);
         }
-
-        protected override bool CanContainNestedAttributes => true;
     }
 
     private class TurnScriptLoader : XmlLoaderBase
     {
         public override string AppliesTo => "turnscript";
 
+        protected override bool CanContainNestedAttributes => true;
+
         public override object Load(XmlReader reader, ref Element? current)
         {
             var id = reader.GetAttribute("name");
             return WorldModel.ObjectFactory.CreateTurnScript(id, current);
         }
-
-        protected override bool CanContainNestedAttributes => true;
     }
 
     private class TypeLoader : XmlLoaderBase
     {
         public override string AppliesTo => "type";
 
+        protected override bool CanContainNestedAttributes => true;
+
         public override object Load(XmlReader reader, ref Element? current)
         {
             return WorldModel.GetElementFactory(ElementType.ObjectType).Create(reader.GetAttribute("name"));
         }
-
-        protected override bool CanContainNestedAttributes => true;
     }
 
     private class TemplateLoader : XmlLoaderBase
@@ -668,6 +696,7 @@ internal partial class GameLoader
             {
                 throw new Exception("Current element is not set");
             }
+
             current.Fields.LazyFields.AddType(reader.GetAttribute("name"));
             return null;
         }
@@ -706,6 +735,7 @@ internal partial class GameLoader
         private readonly RequiredAttributes _required = new(false, "element", "property", "type");
 
         public override string AppliesTo => "implied";
+        protected abstract LoadMode LoaderMode { get; }
 
         public override object? Load(XmlReader reader, ref Element? current)
         {
@@ -718,7 +748,6 @@ internal partial class GameLoader
         }
 
         protected abstract object? LoadInternal(string element, string property, string type);
-        protected abstract LoadMode LoaderMode { get; }
 
         public override bool SupportsMode(LoadMode mode)
         {
@@ -728,16 +757,18 @@ internal partial class GameLoader
 
     private class ImpliedTypeLoader : ImpliedTypeLoaderBase
     {
+        protected override LoadMode LoaderMode => LoadMode.Play;
+
         protected override object? LoadInternal(string element, string property, string type)
         {
             return null;
         }
-
-        protected override LoadMode LoaderMode => LoadMode.Play;
     }
 
     private class EditorImpliedTypeLoader : ImpliedTypeLoaderBase
     {
+        protected override LoadMode LoaderMode => LoadMode.Edit;
+
         protected override object LoadInternal(string element, string property, string type)
         {
             var e = WorldModel.GetElementFactory(ElementType.ImpliedType).Create();
@@ -746,26 +777,28 @@ internal partial class GameLoader
             e.Fields[FieldDefinitions.Type] = type;
             return e;
         }
-
-        protected override LoadMode LoaderMode => LoadMode.Edit;
     }
 
     private abstract class ElementLoaderBase : XmlLoaderBase
     {
-        public override object Load(XmlReader reader, ref Element? current)
-        {
-            var name = reader.GetAttribute("name");
-            if (string.IsNullOrEmpty(name)) name = WorldModel.GetUniqueId(IdPrefix);
-            var newElement = WorldModel.GetElementFactory(CreateElementType).Create(name);
-            newElement.Parent = current;
-            return newElement;
-        }
-
         protected override bool CanContainNestedAttributes => true;
 
         protected abstract ElementType CreateElementType { get; }
 
         protected virtual string? IdPrefix => AppliesTo;
+
+        public override object Load(XmlReader reader, ref Element? current)
+        {
+            var name = reader.GetAttribute("name");
+            if (string.IsNullOrEmpty(name))
+            {
+                name = WorldModel.GetUniqueId(IdPrefix);
+            }
+
+            var newElement = WorldModel.GetElementFactory(CreateElementType).Create(name);
+            newElement.Parent = current;
+            return newElement;
+        }
     }
 
     private class EditorLoader : ElementLoaderBase
@@ -804,11 +837,15 @@ internal partial class GameLoader
             var jsRef = WorldModel.GetElementFactory(ElementType.Javascript).Create();
             jsRef.Fields[FieldDefinitions.Anonymous] = true;
             var file = GameLoader.GetTemplateAttribute(reader, "src");
-            if (file.Length == 0) return null;
+            if (file.Length == 0)
+            {
+                return null;
+            }
+
             if (WorldModel.Version == WorldModelVersion.v500)
             {
                 // Quest 5.0 would incorrectly save a full path name. We only want the filename.
-                file = System.IO.Path.GetFileName(file);
+                file = Path.GetFileName(file);
             }
 
             jsRef.Fields[FieldDefinitions.Src] = file;

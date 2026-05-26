@@ -1,88 +1,80 @@
-﻿using System;
-using System.Collections.Generic;
+﻿namespace QuestViva.EditorCore;
 
-namespace QuestViva.EditorCore
+internal class ExpressionTemplateEditorData : IEditorData
 {
-    internal class ExpressionTemplateEditorData : IEditorData
+    private readonly string m_originalPattern;
+    private readonly IDictionary<string, string> m_parameters;
+    private readonly IEditorData m_parentData;
+
+    public ExpressionTemplateEditorData(string expression, EditorDefinition definition, IEditorData parentData)
     {
-        private IDictionary<string, string> m_parameters;
-        private string m_originalPattern;
-        private IEditorData m_parentData;
+        // We get passed in an expression like "Got(myobject)"
+        // The definition has pattern like "Got(#object#)" (as a regex)
+        // We create the parameter dictionary in the same way as the command parser, so
+        // we end up with a dictionary like "object=myobject".
 
-        public event EventHandler Changed;
+        m_parameters = Engine.Utility.Populate(definition.Pattern, expression);
+        m_originalPattern = definition.OriginalPattern;
+        m_parentData = parentData;
+    }
 
-        public ExpressionTemplateEditorData(string expression, EditorDefinition definition, IEditorData parentData)
+    public event EventHandler Changed;
+
+    public string Name => throw new NotImplementedException();
+
+    public object GetAttribute(string attribute)
+    {
+        return m_parameters[attribute];
+    }
+
+    public ValidationResult SetAttribute(string attribute, object value)
+    {
+        m_parameters[attribute] = (string) value;
+        if (Changed != null)
         {
-            // We get passed in an expression like "Got(myobject)"
-            // The definition has pattern like "Got(#object#)" (as a regex)
-            // We create the parameter dictionary in the same way as the command parser, so
-            // we end up with a dictionary like "object=myobject".
-
-            m_parameters = Engine.Utility.Populate(definition.Pattern, expression);
-            m_originalPattern = definition.OriginalPattern;
-            m_parentData = parentData;
+            Changed(this, new EventArgs());
         }
 
-        public string SaveExpression(string changedAttribute, string changedValue)
-        {
-            // Take the original pattern (e.g. "Got(#myobject#)") and replace the parameter
-            // names with their values. If changedAttribute and changedValue are set, then
-            // we're in the middle of editing, so use the specified change in place of the
-            // currently saved values.
-            string result = m_originalPattern;
-            foreach (var parameter in m_parameters)
-            {
-                string value = parameter.Key == changedAttribute ? changedValue : parameter.Value;
-                result = result.Replace(string.Format("#{0}#", parameter.Key), value);
-            }
+        return new ValidationResult {Valid = true};
+    }
 
-            return result;
+    public IEnumerable<string> GetAffectedRelatedAttributes(string attribute)
+    {
+        throw new NotImplementedException();
+    }
+
+    public string GetSelectedFilter(string filterGroup)
+    {
+        throw new NotImplementedException();
+    }
+
+    public void SetSelectedFilter(string filterGroup, string filter)
+    {
+        throw new NotImplementedException();
+    }
+
+    public bool ReadOnly { get; set; }
+
+    public IEnumerable<string> GetVariablesInScope()
+    {
+        return m_parentData.GetVariablesInScope();
+    }
+
+    public bool IsDirectlySaveable => false;
+
+    public string SaveExpression(string changedAttribute, string changedValue)
+    {
+        // Take the original pattern (e.g. "Got(#myobject#)") and replace the parameter
+        // names with their values. If changedAttribute and changedValue are set, then
+        // we're in the middle of editing, so use the specified change in place of the
+        // currently saved values.
+        var result = m_originalPattern;
+        foreach (var parameter in m_parameters)
+        {
+            var value = parameter.Key == changedAttribute ? changedValue : parameter.Value;
+            result = result.Replace(string.Format("#{0}#", parameter.Key), value);
         }
 
-        public string Name
-        {
-            get { throw new NotImplementedException(); }
-        }
-
-        public object GetAttribute(string attribute)
-        {
-            return m_parameters[attribute];
-        }
-
-        public ValidationResult SetAttribute(string attribute, object value)
-        {
-            m_parameters[attribute] = (string)value;
-            if (Changed != null) Changed(this, new EventArgs());
-
-            return new ValidationResult { Valid = true };
-        }
-
-        public IEnumerable<string> GetAffectedRelatedAttributes(string attribute)
-        {
-            throw new NotImplementedException();
-        }
-
-        public string GetSelectedFilter(string filterGroup)
-        {
-            throw new NotImplementedException();
-        }
-
-        public void SetSelectedFilter(string filterGroup, string filter)
-        {
-            throw new NotImplementedException();
-        }
-
-        public bool ReadOnly
-        {
-            get;
-            set;
-        }
-
-        public IEnumerable<string> GetVariablesInScope()
-        {
-            return m_parentData.GetVariablesInScope();
-        }
-
-        public bool IsDirectlySaveable { get { return false; } }
+        return result;
     }
 }

@@ -1,15 +1,12 @@
 ﻿#nullable disable
-using System.Collections.Generic;
+namespace QuestViva.Engine.Types;
 
-namespace QuestViva.Engine.Types
+internal class LazyObjectList
 {
-    internal class LazyObjectList
+    public LazyObjectList(IEnumerable<string> objects)
     {
-        public LazyObjectList(IEnumerable<string> objects)
-        {
-            Objects = objects;
-        }
-
-        public IEnumerable<string> Objects { get; private set; }
+        Objects = objects;
     }
+
+    public IEnumerable<string> Objects { get; private set; }
 }

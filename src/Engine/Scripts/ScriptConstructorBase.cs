@@ -1,62 +1,58 @@
 ﻿#nullable disable
-using System;
-using System.Collections.Generic;
-using System.Linq;
+namespace QuestViva.Engine.Scripts;
 
-namespace QuestViva.Engine.Scripts
+public abstract class ScriptConstructorBase : IScriptConstructor
 {
-    public abstract class ScriptConstructorBase : IScriptConstructor
+    protected abstract int[] ExpectedParameters { get; }
+
+    protected abstract IScript CreateInt(List<string> parameters, ScriptContext scriptContext);
+
+    private string FormatExpectedParameters()
     {
-        #region IScriptConstructor Members
-
-        public abstract string Keyword { get; }
-
-        public IScript Create(string script, ScriptContext scriptContext)
+        var result = "";
+        foreach (var i in ExpectedParameters)
         {
-            List<string> parameters = null;
-            string param = Utility.GetParameter(script);
-
-            int numParams;
-            if (param == null)
-            {
-                numParams = 0;
-            }
-            else
-            {
-                parameters = Utility.SplitParameter(param);
-                numParams = parameters.Count;
-            }
-
-            if (ExpectedParameters.Count() > 0)
-            {
-                if (!ExpectedParameters.Contains(numParams))
-                {
-                    throw new Exception(string.Format("Expected {0} parameter(s) in script '{1}'", FormatExpectedParameters(), script));
-                }
-            }
-
-            return CreateInt(parameters, scriptContext);
+            result += i + ",";
         }
 
-        public IScriptFactory ScriptFactory { get; set; }
-
-        public WorldModel WorldModel { get; set; }
-
-        #endregion
-
-        protected abstract IScript CreateInt(List<string> parameters, ScriptContext scriptContext);
-
-        protected abstract int[] ExpectedParameters { get; }
-
-        private string FormatExpectedParameters()
-        {
-            string result = "";
-            foreach (int i in ExpectedParameters)
-            {
-                result += i.ToString() + ",";
-            }
-            return result.Substring(0, result.Length - 1);
-        }
-
+        return result.Substring(0, result.Length - 1);
     }
+
+    #region IScriptConstructor Members
+
+    public abstract string Keyword { get; }
+
+    public IScript Create(string script, ScriptContext scriptContext)
+    {
+        List<string> parameters = null;
+        var param = Utility.GetParameter(script);
+
+        int numParams;
+        if (param == null)
+        {
+            numParams = 0;
+        }
+        else
+        {
+            parameters = Utility.SplitParameter(param);
+            numParams = parameters.Count;
+        }
+
+        if (ExpectedParameters.Count() > 0)
+        {
+            if (!ExpectedParameters.Contains(numParams))
+            {
+                throw new Exception(string.Format("Expected {0} parameter(s) in script '{1}'",
+                    FormatExpectedParameters(), script));
+            }
+        }
+
+        return CreateInt(parameters, scriptContext);
+    }
+
+    public IScriptFactory ScriptFactory { get; set; }
+
+    public WorldModel WorldModel { get; set; }
+
+    #endregion
 }

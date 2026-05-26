@@ -1,15 +1,12 @@
 ﻿#nullable disable
-using System.Collections.Generic;
+namespace QuestViva.Engine.Types;
 
-namespace QuestViva.Engine.Types
+internal class LazyObjectDictionary
 {
-    internal class LazyObjectDictionary
+    public LazyObjectDictionary(IDictionary<string, string> dictionary)
     {
-        public LazyObjectDictionary(IDictionary<string, string> dictionary)
-        {
-            Dictionary = dictionary;
-        }
-
-        public IDictionary<string, string> Dictionary { get; private set; }
+        Dictionary = dictionary;
     }
+
+    public IDictionary<string, string> Dictionary { get; private set; }
 }

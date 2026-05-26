@@ -1,67 +1,54 @@
 ﻿#nullable disable
-using System;
-using System.Collections.Generic;
+namespace QuestViva.Engine.Scripts;
 
-namespace QuestViva.Engine.Scripts
+public class FinishScriptConstructor : ScriptConstructorBase
 {
-    public class FinishScriptConstructor : ScriptConstructorBase
+    public override string Keyword => "finish";
+
+    protected override int[] ExpectedParameters
     {
-        public override string Keyword
-        {
-            get { return "finish"; }
-        }
-
-        protected override IScript CreateInt(List<string> parameters, ScriptContext scriptContext)
-        {
-            return new FinishScript(WorldModel);
-        }
-
-        protected override int[] ExpectedParameters
-        {
-            get { return new int[] { 0 }; }
-        }
+        get { return new[] {0}; }
     }
 
-    public class FinishScript : ScriptBase
+    protected override IScript CreateInt(List<string> parameters, ScriptContext scriptContext)
     {
-        private WorldModel m_worldModel;
+        return new FinishScript(WorldModel);
+    }
+}
 
-        public FinishScript(WorldModel worldModel)
-        {
-            m_worldModel = worldModel;
-        }
+public class FinishScript : ScriptBase
+{
+    private readonly WorldModel m_worldModel;
 
-        protected override ScriptBase CloneScript()
-        {
-            return new FinishScript(m_worldModel);
-        }
+    public FinishScript(WorldModel worldModel)
+    {
+        m_worldModel = worldModel;
+    }
 
-        public override void Execute(Context c)
-        {
-            m_worldModel.FinishGame();
-        }
+    public override string Keyword => "finish";
 
-        public override string Save()
-        {
-            return "finish";
-        }
+    protected override ScriptBase CloneScript()
+    {
+        return new FinishScript(m_worldModel);
+    }
 
-        public override string Keyword
-        {
-            get
-            {
-                return "finish";
-            }
-        }
+    public override void Execute(Context c)
+    {
+        m_worldModel.FinishGame();
+    }
 
-        public override object GetParameter(int index)
-        {
-            throw new ArgumentOutOfRangeException();
-        }
+    public override string Save()
+    {
+        return "finish";
+    }
 
-        public override void SetParameterInternal(int index, object value)
-        {
-            throw new ArgumentOutOfRangeException();
-        }
+    public override object GetParameter(int index)
+    {
+        throw new ArgumentOutOfRangeException();
+    }
+
+    public override void SetParameterInternal(int index, object value)
+    {
+        throw new ArgumentOutOfRangeException();
     }
 }

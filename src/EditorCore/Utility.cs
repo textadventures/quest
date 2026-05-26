@@ -1,140 +1,152 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Text.RegularExpressions;
+﻿using System.Text.RegularExpressions;
 
-namespace QuestViva.EditorCore
+namespace QuestViva.EditorCore;
+
+public static class EditorUtility
 {
-    public static class EditorUtility
+    private static readonly Regex s_containsUnescapedQuote = new("^\"|[^\\\\]\\\"");
+
+    public static string FormatAsOneLine(string input)
     {
-        public static string FormatAsOneLine(string input)
+        if (input == null)
         {
-            if (input == null) return null;
-            return input.Replace(Environment.NewLine, " / ");
+            return null;
         }
 
-        private static Regex s_containsUnescapedQuote = new Regex("^\"|[^\\\\]\\\"");
+        return input.Replace(Environment.NewLine, " / ");
+    }
 
-        public static bool IsSimpleStringExpression(string expression)
+    public static bool IsSimpleStringExpression(string expression)
+    {
+        if (string.IsNullOrEmpty(expression))
         {
-            if (string.IsNullOrEmpty(expression)) return false;
-
-            // must start and end with quote character
-            if (!(expression.StartsWith("\"") && expression.EndsWith("\""))) return false;
-
-            string inner = expression.Substring(1, expression.Length - 2);
-
-            // must not contain an unescaped quote character
-            return !s_containsUnescapedQuote.IsMatch(inner);
+            return false;
         }
 
-        public static string ConvertToSimpleStringExpression(string expression)
+        // must start and end with quote character
+        if (!(expression.StartsWith("\"") && expression.EndsWith("\"")))
         {
-            // remove surrounding quotes
-            string inner = expression.Substring(1, expression.Length - 2);
-
-            // replace newline markup
-            inner = inner.Replace("<br/>", Environment.NewLine);
-
-            // replace escaped quotes with unescaped quotes, i.e. replace \" with "
-            return inner.Replace("\\\"", "\"");
+            return false;
         }
 
-        public static string ConvertFromSimpleStringExpression(string simpleValue)
+        var inner = expression.Substring(1, expression.Length - 2);
+
+        // must not contain an unescaped quote character
+        return !s_containsUnescapedQuote.IsMatch(inner);
+    }
+
+    public static string ConvertToSimpleStringExpression(string expression)
+    {
+        // remove surrounding quotes
+        var inner = expression.Substring(1, expression.Length - 2);
+
+        // replace newline markup
+        inner = inner.Replace("<br/>", Environment.NewLine);
+
+        // replace escaped quotes with unescaped quotes, i.e. replace \" with "
+        return inner.Replace("\\\"", "\"");
+    }
+
+    public static string ConvertFromSimpleStringExpression(string simpleValue)
+    {
+        // escape quotes
+        var result = simpleValue.Replace("\"", "\\\"");
+
+        // markup newlines
+        result = result.Replace(Environment.NewLine, "<br/>");
+
+        // surround with quotes
+        return string.Format("\"{0}\"", result);
+    }
+
+    public static string GetUniqueFilename(string filename)
+    {
+        var i = 1;
+        var directory = Path.GetDirectoryName(filename);
+        var baseFilename = Path.GetFileNameWithoutExtension(filename);
+        var extension = Path.GetExtension(filename);
+        string newFilename;
+        do
         {
-            // escape quotes
-            string result = simpleValue.Replace("\"", "\\\"");
+            i++;
+            newFilename = Path.Combine(directory, baseFilename + " " + i + extension);
+        } while (File.Exists(newFilename));
 
-            // markup newlines
-            result = result.Replace(Environment.NewLine, "<br/>");
+        return newFilename;
+    }
 
-            // surround with quotes
-            return string.Format("\"{0}\"", result);
+    public static string GetDisplayString(object value)
+    {
+        var scriptValue = value as IEditableScripts;
+        var listStringValue = value as IEditableList<string>;
+        var dictionaryStringValue = value as IEditableDictionary<string>;
+        var dictionaryScriptValue = value as IEditableDictionary<IEditableScripts>;
+        var wrappedValue = value as IDataWrapper;
+        string result = null;
+
+        if (scriptValue != null)
+        {
+            result = scriptValue.DisplayString();
+        }
+        else if (listStringValue != null)
+        {
+            result = GetListDisplayString(listStringValue.DisplayItems);
+        }
+        else if (dictionaryStringValue != null)
+        {
+            result = GetDictionaryDisplayString(dictionaryStringValue.DisplayItems);
+        }
+        else if (dictionaryScriptValue != null)
+        {
+            result = GetDictionaryDisplayString(dictionaryScriptValue.DisplayItems);
+        }
+        else if (wrappedValue != null)
+        {
+            result = wrappedValue.DisplayString();
+        }
+        else if (value == null)
+        {
+            result = "(null)";
+        }
+        else
+        {
+            result = value.ToString();
         }
 
-        public static string GetUniqueFilename(string filename)
+        return FormatAsOneLine(result);
+    }
+
+    private static string GetListDisplayString(IEnumerable<KeyValuePair<string, string>> items)
+    {
+        var result = string.Empty;
+
+        foreach (var item in items)
         {
-            int i = 1;
-            string directory = Path.GetDirectoryName(filename);
-            string baseFilename = Path.GetFileNameWithoutExtension(filename);
-            string extension = Path.GetExtension(filename);
-            string newFilename;
-            do
+            if (result.Length > 0)
             {
-                i++;
-                newFilename = Path.Combine(directory, baseFilename + " " + i.ToString() + extension);
+                result += ", ";
             }
-            while (System.IO.File.Exists(newFilename));
-            return newFilename;
+
+            result += item.Value;
         }
 
-        public static string GetDisplayString(object value)
+        return result;
+    }
+
+    private static string GetDictionaryDisplayString(IEnumerable<KeyValuePair<string, string>> items)
+    {
+        var result = string.Empty;
+
+        foreach (var item in items)
         {
-            IEditableScripts scriptValue = value as IEditableScripts;
-            IEditableList<string> listStringValue = value as IEditableList<string>;
-            IEditableDictionary<string> dictionaryStringValue = value as IEditableDictionary<string>;
-            IEditableDictionary<IEditableScripts> dictionaryScriptValue = value as IEditableDictionary<IEditableScripts>;
-            IDataWrapper wrappedValue = value as IDataWrapper;
-            string result = null;
-
-            if (scriptValue != null)
+            if (result.Length > 0)
             {
-                result = scriptValue.DisplayString();
-            }
-            else if (listStringValue != null)
-            {
-                result = GetListDisplayString(listStringValue.DisplayItems);
-            }
-            else if (dictionaryStringValue != null)
-            {
-                result = GetDictionaryDisplayString(dictionaryStringValue.DisplayItems);
-            }
-            else if (dictionaryScriptValue != null)
-            {
-                result = GetDictionaryDisplayString(dictionaryScriptValue.DisplayItems);
-            }
-            else if (wrappedValue != null)
-            {
-                result = wrappedValue.DisplayString();
-            }
-            else if (value == null)
-            {
-                result = "(null)";
-            }
-            else
-            {
-                result = value.ToString();
+                result += ", ";
             }
 
-            return FormatAsOneLine(result);
+            result += item.Key + "=" + item.Value;
         }
 
-        static string GetListDisplayString(IEnumerable<KeyValuePair<string, string>> items)
-        {
-            string result = string.Empty;
-
-            foreach (var item in items)
-            {
-                if (result.Length > 0)
-                    result += ", ";
-                result += item.Value;
-            }
-
-            return result;
-        }
-
-        static string GetDictionaryDisplayString(IEnumerable<KeyValuePair<string, string>> items)
-        {
-            string result = string.Empty;
-
-            foreach (var item in items)
-            {
-                if (result.Length > 0)
-                    result += ", ";
-                result += item.Key + "=" + item.Value;
-            }
-
-            return result;
-        }
+        return result;
     }
 }

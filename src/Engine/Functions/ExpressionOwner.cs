@@ -1,7 +1,6 @@
-﻿using System;
-using System.Collections;
+﻿using System.Collections;
 using System.Diagnostics.CodeAnalysis;
-using System.Linq;
+using System.Globalization;
 using QuestViva.Common;
 using QuestViva.Engine.Scripts;
 
@@ -21,6 +20,7 @@ internal class ExpressionOwner(WorldModel worldModel)
             throw new Exception(
                 $"{caller} function expected {expectedType} parameter but was passed '{parameter ?? "null"}'");
         }
+
         return result;
     }
 
@@ -43,7 +43,7 @@ internal class ExpressionOwner(WorldModel worldModel)
         return worldModel.Template.GetDynamicText(template, text);
     }
 
-    public bool HasString(/* Element */ object? obj, string? property)
+    public bool HasString( /* Element */ object? obj, string? property)
     {
         ArgumentNullException.ThrowIfNull(obj);
         ArgumentNullException.ThrowIfNull(property);
@@ -51,7 +51,7 @@ internal class ExpressionOwner(WorldModel worldModel)
         return element.Fields.HasString(property);
     }
 
-    public string GetString(/* Element */ object? obj, string? property)
+    public string GetString( /* Element */ object? obj, string? property)
     {
         ArgumentNullException.ThrowIfNull(obj);
         ArgumentNullException.ThrowIfNull(property);
@@ -59,7 +59,7 @@ internal class ExpressionOwner(WorldModel worldModel)
         return element.Fields.GetString(property);
     }
 
-    public bool HasBoolean(/* Element */ object? obj, string? property)
+    public bool HasBoolean( /* Element */ object? obj, string? property)
     {
         ArgumentNullException.ThrowIfNull(obj);
         ArgumentNullException.ThrowIfNull(property);
@@ -67,15 +67,15 @@ internal class ExpressionOwner(WorldModel worldModel)
         return element.Fields.HasType<bool>(property);
     }
 
-    public bool GetBoolean(/* Element */ object? obj, string? property)
+    public bool GetBoolean( /* Element */ object? obj, string? property)
     {
         ArgumentNullException.ThrowIfNull(obj);
         ArgumentNullException.ThrowIfNull(property);
         var element = GetParameter<Element>(obj, "GetBoolean", "object");
         return element.Fields.GetAsType<bool>(property);
     }
-        
-    public bool HasInt(/* Element */ object? obj, string? property)
+
+    public bool HasInt( /* Element */ object? obj, string? property)
     {
         ArgumentNullException.ThrowIfNull(obj);
         ArgumentNullException.ThrowIfNull(property);
@@ -83,7 +83,7 @@ internal class ExpressionOwner(WorldModel worldModel)
         return element.Fields.HasType<int>(property);
     }
 
-    public int GetInt(/* Element */ object? obj, string? property)
+    public int GetInt( /* Element */ object? obj, string? property)
     {
         ArgumentNullException.ThrowIfNull(obj);
         ArgumentNullException.ThrowIfNull(property);
@@ -91,7 +91,7 @@ internal class ExpressionOwner(WorldModel worldModel)
         return element.Fields.GetAsType<int>(property);
     }
 
-    public bool HasDouble(/* Element */ object? obj, string? property)
+    public bool HasDouble( /* Element */ object? obj, string? property)
     {
         ArgumentNullException.ThrowIfNull(obj);
         ArgumentNullException.ThrowIfNull(property);
@@ -99,7 +99,7 @@ internal class ExpressionOwner(WorldModel worldModel)
         return element.Fields.HasType<double>(property);
     }
 
-    public double GetDouble(/* Element */ object? obj, string? property)
+    public double GetDouble( /* Element */ object? obj, string? property)
     {
         ArgumentNullException.ThrowIfNull(obj);
         ArgumentNullException.ThrowIfNull(property);
@@ -107,7 +107,7 @@ internal class ExpressionOwner(WorldModel worldModel)
         return element.Fields.GetAsType<double>(property);
     }
 
-    public bool HasScript(/* Element */ object? obj, string? property)
+    public bool HasScript( /* Element */ object? obj, string? property)
     {
         ArgumentNullException.ThrowIfNull(obj);
         ArgumentNullException.ThrowIfNull(property);
@@ -115,7 +115,7 @@ internal class ExpressionOwner(WorldModel worldModel)
         return element.Fields.HasType<IScript>(property);
     }
 
-    public bool HasObject(/* Element */ object? obj, string? property)
+    public bool HasObject( /* Element */ object? obj, string? property)
     {
         ArgumentNullException.ThrowIfNull(obj);
         ArgumentNullException.ThrowIfNull(property);
@@ -123,7 +123,7 @@ internal class ExpressionOwner(WorldModel worldModel)
         return element.Fields.HasType<Element>(property);
     }
 
-    public bool HasDelegateImplementation(/* Element */ object? obj, string? property)
+    public bool HasDelegateImplementation( /* Element */ object? obj, string? property)
     {
         ArgumentNullException.ThrowIfNull(obj);
         ArgumentNullException.ThrowIfNull(property);
@@ -131,7 +131,7 @@ internal class ExpressionOwner(WorldModel worldModel)
         return element.Fields.HasType<DelegateImplementation>(property);
     }
 
-    public object GetAttribute(/* Element */ object? obj, string? property)
+    public object GetAttribute( /* Element */ object? obj, string? property)
     {
         ArgumentNullException.ThrowIfNull(obj);
         ArgumentNullException.ThrowIfNull(property);
@@ -139,7 +139,7 @@ internal class ExpressionOwner(WorldModel worldModel)
         return element.Fields.Get(property);
     }
 
-    public bool HasAttribute(/* Element */ object? obj, string? property)
+    public bool HasAttribute( /* Element */ object? obj, string? property)
     {
         ArgumentNullException.ThrowIfNull(obj);
         ArgumentNullException.ThrowIfNull(property);
@@ -147,14 +147,14 @@ internal class ExpressionOwner(WorldModel worldModel)
         return element.Fields.Exists(property, true);
     }
 
-    public QuestList<string> GetAttributeNames(/* Element */ object? obj, bool includeInheritedAttributes)
+    public QuestList<string> GetAttributeNames( /* Element */ object? obj, bool includeInheritedAttributes)
     {
         ArgumentNullException.ThrowIfNull(obj);
         var element = GetParameter<Element>(obj, "GetAttributeNames", "object");
         return new QuestList<string>(element.Fields.GetAttributeNames(includeInheritedAttributes));
     }
 
-    public string? GetExitByLink(/* Element */ object? from, /* Element */ object? to)
+    public string? GetExitByLink( /* Element */ object? from, /* Element */ object? to)
     {
         ArgumentNullException.ThrowIfNull(from);
         ArgumentNullException.ThrowIfNull(to);
@@ -165,7 +165,7 @@ internal class ExpressionOwner(WorldModel worldModel)
             select e.Name).FirstOrDefault();
     }
 
-    public string? GetExitByName(/* Element */ object? parent, string? name)
+    public string? GetExitByName( /* Element */ object? parent, string? name)
     {
         ArgumentNullException.ThrowIfNull(parent);
         ArgumentNullException.ThrowIfNull(name);
@@ -175,7 +175,7 @@ internal class ExpressionOwner(WorldModel worldModel)
             select e.Name).FirstOrDefault();
     }
 
-    public bool Contains(/* Element */ object? parent, /* Element */ object? name)
+    public bool Contains( /* Element */ object? parent, /* Element */ object? name)
     {
         ArgumentNullException.ThrowIfNull(parent);
         ArgumentNullException.ThrowIfNull(name);
@@ -219,7 +219,7 @@ internal class ExpressionOwner(WorldModel worldModel)
         return new QuestDictionary<object>();
     }
 
-    public bool ListContains(/* IQuestList */ object? list, object? item)
+    public bool ListContains( /* IQuestList */ object? list, object? item)
     {
         ArgumentNullException.ThrowIfNull(list);
         var questList = GetParameter<IQuestList>(list, "ListContains", "list");
@@ -234,6 +234,7 @@ internal class ExpressionOwner(WorldModel worldModel)
         {
             result.Add(item);
         }
+
         return result;
     }
 
@@ -245,6 +246,7 @@ internal class ExpressionOwner(WorldModel worldModel)
         {
             result.Add(item);
         }
+
         return result;
     }
 
@@ -256,6 +258,7 @@ internal class ExpressionOwner(WorldModel worldModel)
         {
             result.Add(item);
         }
+
         return result;
     }
 
@@ -265,22 +268,25 @@ internal class ExpressionOwner(WorldModel worldModel)
         foreach (var item in worldModel.GetAllObjects())
         {
             if (item.Type == ObjectType.Command)
+            {
                 result.Add(item);
+            }
         }
+
         return result;
     }
 
-    public int ListCount(/* ICollection */ object? list)
+    public int ListCount( /* ICollection */ object? list)
     {
         ArgumentNullException.ThrowIfNull(list);
         var questList = GetParameter<ICollection>(list, "ListCount", "list");
         return questList.Count;
     }
 
-    public object ListItem(/* IQuestList */ object? list, int index)
+    public object ListItem( /* IQuestList */ object? list, int index)
     {
         ArgumentNullException.ThrowIfNull(list);
-        
+
         var questList = GetParameter<IQuestList>(list, "ListItem", "list");
 
         try
@@ -290,14 +296,15 @@ internal class ExpressionOwner(WorldModel worldModel)
         catch (ArgumentOutOfRangeException ex)
         {
             throw new Exception(
-                $"ListItem: index {index} is out of range for this list ({questList.Count} items, last index is {questList.Count - 1})", ex);
+                $"ListItem: index {index} is out of range for this list ({questList.Count} items, last index is {questList.Count - 1})",
+                ex);
         }
     }
 
-    public string? StringListItem(/* IQuestList */ object? list, int index)
+    public string? StringListItem( /* IQuestList */ object? list, int index)
     {
         ArgumentNullException.ThrowIfNull(list);
-        
+
         var questList = GetParameter<IQuestList>(list, "StringListItem", "list");
 
         try
@@ -307,14 +314,15 @@ internal class ExpressionOwner(WorldModel worldModel)
         catch (ArgumentOutOfRangeException ex)
         {
             throw new Exception(
-                $"StringListItem: index {index} is out of range for this list ({questList.Count} items, last index is {questList.Count - 1})", ex);
+                $"StringListItem: index {index} is out of range for this list ({questList.Count} items, last index is {questList.Count - 1})",
+                ex);
         }
     }
 
-    public Element? ObjectListItem(/* IQuestList */ object? list, int index)
+    public Element? ObjectListItem( /* IQuestList */ object? list, int index)
     {
         ArgumentNullException.ThrowIfNull(list);
-        
+
         var questList = GetParameter<IQuestList>(list, "ObjectListItem", "list");
 
         try
@@ -324,7 +332,8 @@ internal class ExpressionOwner(WorldModel worldModel)
         catch (ArgumentOutOfRangeException ex)
         {
             throw new Exception(
-                $"ObjectListItem: index {index} is out of range for this list ({questList.Count} items, last index is {questList.Count - 1})", ex);
+                $"ObjectListItem: index {index} is out of range for this list ({questList.Count} items, last index is {questList.Count - 1})",
+                ex);
         }
     }
 
@@ -346,7 +355,7 @@ internal class ExpressionOwner(WorldModel worldModel)
         return result;
     }
 
-    public string TypeOf(/* Element */ object? obj, string attribute)
+    public string TypeOf( /* Element */ object? obj, string attribute)
     {
         ArgumentNullException.ThrowIfNull(obj);
         var element = GetParameter<Element>(obj, "TypeOf", "object");
@@ -364,7 +373,7 @@ internal class ExpressionOwner(WorldModel worldModel)
         };
     }
 
-    public object RunDelegateFunction(/* Element */ object? obj, string? del, params object[] parameters)
+    public object RunDelegateFunction( /* Element */ object? obj, string? del, params object[] parameters)
     {
         ArgumentNullException.ThrowIfNull(obj);
         ArgumentNullException.ThrowIfNull(del);
@@ -381,7 +390,7 @@ internal class ExpressionOwner(WorldModel worldModel)
         var cnt = 0;
         foreach (var p in parameters)
         {
-            paramValues.Add((string)impl.Definition.Fields[FieldDefinitions.ParamNames][cnt], p);
+            paramValues.Add((string) impl.Definition.Fields[FieldDefinitions.ParamNames][cnt], p);
             cnt++;
         }
 
@@ -407,7 +416,7 @@ internal class ExpressionOwner(WorldModel worldModel)
         ArgumentNullException.ThrowIfNull(regexPattern);
         ArgumentNullException.ThrowIfNull(input);
         ArgumentNullException.ThrowIfNull(cacheId);
-        
+
         return Utility.IsRegexMatch(regexPattern, input, worldModel.RegexCache, cacheId);
     }
 
@@ -415,7 +424,7 @@ internal class ExpressionOwner(WorldModel worldModel)
     {
         ArgumentNullException.ThrowIfNull(regexPattern);
         ArgumentNullException.ThrowIfNull(input);
-        
+
         return Utility.GetMatchStrength(regexPattern, input);
     }
 
@@ -424,7 +433,7 @@ internal class ExpressionOwner(WorldModel worldModel)
         ArgumentNullException.ThrowIfNull(regexPattern);
         ArgumentNullException.ThrowIfNull(input);
         ArgumentNullException.ThrowIfNull(cacheId);
-        
+
         return Utility.GetMatchStrength(regexPattern, input, worldModel.RegexCache, cacheId);
     }
 
@@ -441,42 +450,42 @@ internal class ExpressionOwner(WorldModel worldModel)
         ArgumentNullException.ThrowIfNull(regexPattern);
         ArgumentNullException.ThrowIfNull(input);
         ArgumentNullException.ThrowIfNull(cacheId);
-        
+
         return Utility.Populate(regexPattern, input, worldModel.RegexCache, cacheId);
     }
 
-    public object? DictionaryItem(/* IDictionary */ object? obj, string? key)
+    public object? DictionaryItem( /* IDictionary */ object? obj, string? key)
     {
         ArgumentNullException.ThrowIfNull(obj);
         ArgumentNullException.ThrowIfNull(key);
-        
+
         var dictionary = GetParameter<IDictionary>(obj, "DictionaryItem", "dictionary");
         return dictionary[key];
     }
 
-    public string? StringDictionaryItem(/* IDictionary */ object? obj, string? key)
+    public string? StringDictionaryItem( /* IDictionary */ object? obj, string? key)
     {
         ArgumentNullException.ThrowIfNull(obj);
         ArgumentNullException.ThrowIfNull(key);
-        
+
         var dictionary = GetParameter<IDictionary>(obj, "StringDictionaryItem", "dictionary");
         return dictionary[key] as string;
     }
 
-    public Element? ObjectDictionaryItem(/* IDictionary */ object? obj, string? key)
+    public Element? ObjectDictionaryItem( /* IDictionary */ object? obj, string? key)
     {
         ArgumentNullException.ThrowIfNull(obj);
         ArgumentNullException.ThrowIfNull(key);
-        
+
         var dictionary = GetParameter<IDictionary>(obj, "ObjectDictionaryItem", "dictionary");
         return dictionary[key] as Element;
     }
 
-    public IScript? ScriptDictionaryItem(/* IDictionary */ object? obj, string? key)
+    public IScript? ScriptDictionaryItem( /* IDictionary */ object? obj, string? key)
     {
         ArgumentNullException.ThrowIfNull(obj);
         ArgumentNullException.ThrowIfNull(key);
-        
+
         var dictionary = GetParameter<IDictionary>(obj, "ScriptDictionaryItem", "dictionary");
         return dictionary[key] as IScript;
     }
@@ -485,11 +494,13 @@ internal class ExpressionOwner(WorldModel worldModel)
     {
         ArgumentNullException.ThrowIfNull(caption);
         ArgumentNullException.ThrowIfNull(options);
-        
+
         if (worldModel.Version >= WorldModelVersion.v540)
         {
-            throw new Exception("The 'ShowMenu' function is not supported for games written for Quest 5.4 or later. Use the 'show menu' script command instead.");
+            throw new Exception(
+                "The 'ShowMenu' function is not supported for games written for Quest 5.4 or later. Use the 'show menu' script command instead.");
         }
+
         return worldModel.DisplayMenu(caption, options, allowCancel, false);
     }
 
@@ -497,19 +508,21 @@ internal class ExpressionOwner(WorldModel worldModel)
     {
         ArgumentNullException.ThrowIfNull(caption);
         ArgumentNullException.ThrowIfNull(options);
-        
+
         if (worldModel.Version >= WorldModelVersion.v540)
         {
-            throw new Exception("The 'ShowMenu' function is not supported for games written for Quest 5.4 or later. Use the 'show menu' script command instead.");
+            throw new Exception(
+                "The 'ShowMenu' function is not supported for games written for Quest 5.4 or later. Use the 'show menu' script command instead.");
         }
+
         return worldModel.DisplayMenu(caption, options, allowCancel, false);
     }
 
-    public bool DictionaryContains(/* IDictionary */ object? obj, string? key)
+    public bool DictionaryContains( /* IDictionary */ object? obj, string? key)
     {
         ArgumentNullException.ThrowIfNull(obj);
         ArgumentNullException.ThrowIfNull(key);
-        
+
         var dictionary = GetParameter<IDictionary>(obj, "DictionaryContains", "dictionary");
         return dictionary.Contains(key);
     }
@@ -524,23 +537,23 @@ internal class ExpressionOwner(WorldModel worldModel)
     public int ToInt(string? number)
     {
         ArgumentNullException.ThrowIfNull(number);
-        return int.Parse(number, System.Globalization.CultureInfo.InvariantCulture);
+        return int.Parse(number, CultureInfo.InvariantCulture);
     }
 
     public double ToDouble(string? number)
     {
         ArgumentNullException.ThrowIfNull(number);
-        return double.Parse(number, System.Globalization.CultureInfo.InvariantCulture);
+        return double.Parse(number, CultureInfo.InvariantCulture);
     }
 
     public string ToString(int number)
     {
-        return number.ToString(System.Globalization.CultureInfo.InvariantCulture);
+        return number.ToString(CultureInfo.InvariantCulture);
     }
 
     public string ToString(double number)
     {
-        return number.ToString(System.Globalization.CultureInfo.InvariantCulture);
+        return number.ToString(CultureInfo.InvariantCulture);
     }
 
     public string? ToString(object? obj)
@@ -559,17 +572,19 @@ internal class ExpressionOwner(WorldModel worldModel)
     {
         ArgumentNullException.ThrowIfNull(number);
         return double.TryParse(number,
-            System.Globalization.NumberStyles.AllowDecimalPoint |
-            System.Globalization.NumberStyles.AllowLeadingSign,
-            System.Globalization.CultureInfo.InvariantCulture, out _);
+            NumberStyles.AllowDecimalPoint |
+            NumberStyles.AllowLeadingSign,
+            CultureInfo.InvariantCulture, out _);
     }
 
     public string GetInput()
     {
         if (worldModel.Version >= WorldModelVersion.v540)
         {
-            throw new Exception("The 'GetInput' function is not supported for games written for Quest 5.4 or later. Use the 'get input' script command instead.");
+            throw new Exception(
+                "The 'GetInput' function is not supported for games written for Quest 5.4 or later. Use the 'get input' script command instead.");
         }
+
         return worldModel.GetNextCommandInput(false);
     }
 
@@ -577,14 +592,22 @@ internal class ExpressionOwner(WorldModel worldModel)
     public string GetFileURL(string? filename)
     {
         ArgumentNullException.ThrowIfNull(filename);
-        if (filename.Contains("..")) throw new Exception("Invalid filename");
+        if (filename.Contains(".."))
+        {
+            throw new Exception("Invalid filename");
+        }
+
         return worldModel.GetExternalUrl(filename);
     }
 
     public string? GetFileData(string? filename)
     {
         ArgumentNullException.ThrowIfNull(filename);
-        if (filename.Contains("..")) throw new Exception("Invalid filename");
+        if (filename.Contains(".."))
+        {
+            throw new Exception("Invalid filename");
+        }
+
         return worldModel.GetResourceData(filename);
     }
 
@@ -611,8 +634,10 @@ internal class ExpressionOwner(WorldModel worldModel)
         ArgumentNullException.ThrowIfNull(caption);
         if (worldModel.Version >= WorldModelVersion.v540)
         {
-            throw new Exception("The 'Ask' function is not supported for games written for Quest 5.4 or later. Use the 'ask' script command instead.");
+            throw new Exception(
+                "The 'Ask' function is not supported for games written for Quest 5.4 or later. Use the 'ask' script command instead.");
         }
+
         return worldModel.ShowQuestion(caption);
     }
 
@@ -638,14 +663,18 @@ internal class ExpressionOwner(WorldModel worldModel)
     public object Eval(string? expression, /* IDictionary */ object? obj)
     {
         ArgumentNullException.ThrowIfNull(expression);
-        var parameters = (obj == null) ? null : GetParameter<IDictionary>(obj, "Eval", "dictionary");
+        var parameters = obj == null ? null : GetParameter<IDictionary>(obj, "Eval", "dictionary");
         var expr = new ExpressionDynamic(expression, new ScriptContext(worldModel));
         var context = new Context();
-        if (parameters != null) context.Parameters = new Parameters(parameters);
+        if (parameters != null)
+        {
+            context.Parameters = new Parameters(parameters);
+        }
+
         return expr.Execute(context);
     }
 
-    public Element Clone(/* Element */ object? obj)
+    public Element Clone( /* Element */ object? obj)
     {
         ArgumentNullException.ThrowIfNull(obj);
         var element = GetParameter<Element>(obj, "Clone", "object");
@@ -653,7 +682,7 @@ internal class ExpressionOwner(WorldModel worldModel)
         return newElement;
     }
 
-    public Element ShallowClone(/* Element */ object? obj)
+    public Element ShallowClone( /* Element */ object? obj)
     {
         ArgumentNullException.ThrowIfNull(obj);
         var element = GetParameter<Element>(obj, "Clone", "object");
@@ -661,7 +690,7 @@ internal class ExpressionOwner(WorldModel worldModel)
         return newElement;
     }
 
-    public bool DoesInherit(/* Element */ object? obj, string? typeName)
+    public bool DoesInherit( /* Element */ object? obj, string? typeName)
     {
         ArgumentNullException.ThrowIfNull(obj);
         ArgumentNullException.ThrowIfNull(typeName);
@@ -732,27 +761,29 @@ internal class ExpressionOwner(WorldModel worldModel)
         return list.Exclude(excludeList);
     }
 
-    public QuestList<Element> GetAllChildObjects(/* Element */ object? obj)
+    public QuestList<Element> GetAllChildObjects( /* Element */ object? obj)
     {
         ArgumentNullException.ThrowIfNull(obj);
         var element = GetParameter<Element>(obj, "GetAllChildObjects", "object");
         return GetAllChildren(element, ObjectType.Object);
     }
 
-    private QuestList<Element> GetAllChildren(/* Element */ object? obj, ObjectType type)
+    private QuestList<Element> GetAllChildren( /* Element */ object? obj, ObjectType type)
     {
         ArgumentNullException.ThrowIfNull(obj);
         var element = GetParameter<Element>(obj, "GetAllChildren", "object");
         var result = new QuestList<Element>();
-        foreach (var child in worldModel.Elements.GetDirectChildren(element).Where(e => e.ElemType == ElementType.Object && e.Type == type))
+        foreach (var child in worldModel.Elements.GetDirectChildren(element)
+                     .Where(e => e.ElemType == ElementType.Object && e.Type == type))
         {
             result.Add(child);
             result.AddRange(GetAllChildren(child, type));
         }
+
         return result;
     }
 
-    public QuestList<Element> GetDirectChildren(/* Element */ object? obj)
+    public QuestList<Element> GetDirectChildren( /* Element */ object? obj)
     {
         ArgumentNullException.ThrowIfNull(obj);
         var element = GetParameter<Element>(obj, "GetDirectChildren", "object");
@@ -766,34 +797,35 @@ internal class ExpressionOwner(WorldModel worldModel)
         return worldModel.State != GameState.Finished;
     }
 
-    public QuestList<Element> ObjectListSort(/* QuestList<Element> */ object? obj, params string[] attribute)
+    public QuestList<Element> ObjectListSort( /* QuestList<Element> */ object? obj, params string[] attribute)
     {
         ArgumentNullException.ThrowIfNull(obj);
         var list = GetParameter<QuestList<Element>>(obj, "ObjectListSort", "objectlist");
         var result = list.OrderBy(e => e.Fields.Get(attribute[0]));
         for (var i = 1; i < attribute.Length; i++)
         {
-            var idx = i;    // need a local copy of i for the lambda
+            var idx = i; // need a local copy of i for the lambda
             result = result.ThenBy(e => e.Fields.Get(attribute[idx]));
         }
+
         return new QuestList<Element>(result);
     }
 
-    public QuestList<Element> ObjectListSortDescending(/* QuestList<Element> */ object? obj, params string[] attribute)
+    public QuestList<Element> ObjectListSortDescending( /* QuestList<Element> */ object? obj, params string[] attribute)
     {
         ArgumentNullException.ThrowIfNull(obj);
         var list = GetParameter<QuestList<Element>>(obj, "ObjectListSortDescending", "objectlist");
         return new QuestList<Element>(ObjectListSort(list, attribute).Reverse());
     }
 
-    public QuestList<string> StringListSort(/* QuestList<string> */ object? obj)
+    public QuestList<string> StringListSort( /* QuestList<string> */ object? obj)
     {
         ArgumentNullException.ThrowIfNull(obj);
         var list = GetParameter<QuestList<string>>(obj, "StringListSort", "objectlist");
         return new QuestList<string>(list.OrderBy(item => item));
     }
 
-    public QuestList<string> StringListSortDescending(/* QuestList<string> */ object? obj)
+    public QuestList<string> StringListSortDescending( /* QuestList<string> */ object? obj)
     {
         ArgumentNullException.ThrowIfNull(obj);
         var list = GetParameter<QuestList<string>>(obj, "StringListSortDescending", "objectlist");
@@ -807,6 +839,7 @@ internal class ExpressionOwner(WorldModel worldModel)
         {
             return worldModel.PlayerUi.GetUIOption(option);
         }
+
         throw new Exception($"Unrecognised UI option name '{optionName}'");
     }
 }

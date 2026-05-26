@@ -9,7 +9,9 @@ public static class PlayTokenValidator
     {
         var parts = token.Split('.');
         if (parts.Length != 2)
+        {
             return false;
+        }
 
         byte[] payloadBytes;
         byte[] providedSignature;
@@ -27,21 +29,29 @@ public static class PlayTokenValidator
         var computedSignature = HMACSHA256.HashData(key, payloadBytes);
 
         if (!CryptographicOperations.FixedTimeEquals(computedSignature, providedSignature))
+        {
             return false;
+        }
 
         var payload = Encoding.UTF8.GetString(payloadBytes);
         var lastColon = payload.LastIndexOf(':');
         if (lastColon < 0)
+        {
             return false;
+        }
 
         var gameIdPart = payload[..lastColon];
         var timestampPart = payload[(lastColon + 1)..];
 
         if (gameIdPart != $"play:{gameId}")
+        {
             return false;
+        }
 
         if (!long.TryParse(timestampPart, out var timestamp))
+        {
             return false;
+        }
 
         var tokenTime = DateTimeOffset.FromUnixTimeSeconds(timestamp);
         var age = DateTimeOffset.UtcNow - tokenTime;

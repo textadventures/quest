@@ -1,28 +1,28 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk.Web">
 
     <PropertyGroup>
-      <TargetFramework>net10.0</TargetFramework>
-      <Nullable>enable</Nullable>
-      <ImplicitUsings>enable</ImplicitUsings>
-      <LangVersion>default</LangVersion>
-      <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
-      <RootNamespace>QuestViva.WebPlayer</RootNamespace>
-      <UserSecretsId>67a0cc0d-be42-4748-bca0-6677e48f776d</UserSecretsId>
-  </PropertyGroup>
+        <TargetFramework>net10.0</TargetFramework>
+        <Nullable>enable</Nullable>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <LangVersion>default</LangVersion>
+        <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
+        <RootNamespace>QuestViva.WebPlayer</RootNamespace>
+        <UserSecretsId>67a0cc0d-be42-4748-bca0-6677e48f776d</UserSecretsId>
+    </PropertyGroup>
 
     <ItemGroup>
-      <PackageReference Include="Microsoft.ApplicationInsights.AspNetCore" Version="3.1.0" />
-      <PackageReference Include="OpenTelemetry.Api" Version="1.15.3" />
+        <PackageReference Include="Microsoft.ApplicationInsights.AspNetCore" Version="3.1.0"/>
+        <PackageReference Include="OpenTelemetry.Api" Version="1.15.3"/>
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\PlayerCore\PlayerCore.csproj" />
+        <ProjectReference Include="..\PlayerCore\PlayerCore.csproj"/>
     </ItemGroup>
 
     <ItemGroup>
-      <Content Include="..\..\.dockerignore">
-        <Link>.dockerignore</Link>
-      </Content>
+        <Content Include="..\..\.dockerignore">
+            <Link>.dockerignore</Link>
+        </Content>
     </ItemGroup>
 
 </Project>

@@ -7,10 +7,10 @@ namespace QuestViva.EngineTests;
 
 public abstract class ExpressionTestsBase
 {
-    protected abstract bool UseNCalc { get; } 
-    
     private const string ObjectName = "object";
+
     private const string ChildName = "child";
+
     // object names can contain spaces, so this must be handled in expressions
     private const string OtherObjectName = "other object";
 
@@ -28,12 +28,13 @@ public abstract class ExpressionTestsBase
 
     private const string BoolAttributeName = "boolattribute";
     private const bool BoolAttributeValue = true;
-
-    private WorldModel _worldModel;
+    private Element _child;
+    private Element _object;
     private ScriptContext _scriptContext;
     private ScriptFactory _scriptFactory;
-    private Element _object;
-    private Element _child;
+
+    private WorldModel _worldModel;
+    protected abstract bool UseNCalc { get; }
 
     [TestInitialize]
     public void Setup()
@@ -268,7 +269,7 @@ public abstract class ExpressionTestsBase
         const string expression = "CurrentDateUTC()";
         var result = RunExpression<int>(expression);
         var now = DateTimeOffset.UtcNow;
-        var expected = (int)now.ToUnixTimeSeconds();
+        var expected = (int) now.ToUnixTimeSeconds();
         Math.Abs(result - expected).ShouldBeLessThan(2);
     }
 }

@@ -1,8 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Threading.Tasks;
 using QuestViva.Common;
 using QuestViva.Engine;
 using QuestViva.Legacy;
@@ -11,17 +6,195 @@ namespace QuestViva.PlayerCore;
 
 public class GameQuery(string filename)
 {
-    private PlayerHelper _helper;
-    private readonly GameQueryUi _dummyUi = new GameQueryUi();
+    private readonly GameQueryUi _dummyUi = new();
     private readonly List<string> _errors = [];
     private IGame _game;
+    private PlayerHelper _helper;
     private V4Game _v4Game;
     private WorldModel _v5Game;
-    
-    private class Config : IConfig
+
+    public string GameName => _dummyUi.GameName;
+
+    public int ASLVersion
     {
-        public bool UseNCalc => false;
+        get
+        {
+            if (_v4Game != null)
+            {
+                return _v4Game.ASLVersion;
+            }
+
+            if (_v5Game != null)
+            {
+                return _v5Game.ASLVersion;
+            }
+
+            throw new InvalidOperationException();
+        }
     }
+
+    public bool IsGamebook
+    {
+        get
+        {
+            if (_v4Game != null)
+            {
+                return false;
+            }
+
+            if (_v5Game != null)
+            {
+                return _v5Game.IsGamebook;
+            }
+
+            throw new InvalidOperationException();
+        }
+    }
+
+    public string GameId => _game.GameID;
+
+    public string Category
+    {
+        get
+        {
+            if (_v4Game != null)
+            {
+                return null;
+            }
+
+            if (_v5Game != null)
+            {
+                return _v5Game.Category;
+            }
+
+            throw new InvalidOperationException();
+        }
+    }
+
+    public string Description
+    {
+        get
+        {
+            if (_v4Game != null)
+            {
+                return null;
+            }
+
+            if (_v5Game != null)
+            {
+                return _v5Game.Description;
+            }
+
+            throw new InvalidOperationException();
+        }
+    }
+
+    public string CoverResourceName
+    {
+        get
+        {
+            if (_v4Game != null)
+            {
+                return null;
+            }
+
+            if (_v5Game != null)
+            {
+                return _v5Game.Cover;
+            }
+
+            throw new InvalidOperationException();
+        }
+    }
+
+    /// <summary>
+    ///     The language ID from the LanguageId template (e.g. "en", "de", "fr").
+    ///     Returns null for V4 games and for V5 games that don't set the LanguageId template.
+    ///     When null, callers can use <see cref="GameName" /> and <see cref="Description" /> for language detection.
+    /// </summary>
+    public string LanguageId
+    {
+        get
+        {
+            if (_v4Game != null)
+            {
+                return null;
+            }
+
+            if (_v5Game != null)
+            {
+                return _v5Game.LanguageId;
+            }
+
+            throw new InvalidOperationException();
+        }
+    }
+
+    /// <summary>
+    ///     A sample of the game's prose text, collected from object and room description fields.
+    ///     Intended for use with language detection when <see cref="LanguageId" /> is null.
+    ///     Returns null for V4 games.
+    /// </summary>
+    public string GameTextSample
+    {
+        get
+        {
+            if (_v4Game != null)
+            {
+                return null;
+            }
+
+            if (_v5Game != null)
+            {
+                var parts = new List<string>();
+                foreach (var obj in _v5Game.Objects)
+                {
+                    if (obj.Fields.HasString("description"))
+                    {
+                        parts.Add(obj.Fields.GetString("description"));
+                    }
+                }
+
+                return parts.Count > 0 ? string.Join(" ", parts) : null;
+            }
+
+            throw new InvalidOperationException();
+        }
+    }
+
+    /// <summary>
+    ///     All rooms and objects defined in the game itself, excluding anything inherited from Core libraries.
+    ///     Returns null for V4 games.
+    /// </summary>
+    public IReadOnlyList<GameObjectInfo> GameObjects
+    {
+        get
+        {
+            if (_v4Game != null)
+            {
+                return null;
+            }
+
+            if (_v5Game != null)
+            {
+                return _v5Game.Objects
+                    .Where(obj => obj.Type == ObjectType.Object
+                                  && !obj.MetaFields[MetaFieldDefinitions.Library])
+                    .Select(obj => new GameObjectInfo(
+                        obj.Name,
+                        obj.Fields.HasString("alias") ? obj.Fields.GetString("alias") : null,
+                        obj.Parent?.Name,
+                        obj.Fields.HasString("description") ? obj.Fields.GetString("description") : null
+                    ))
+                    .ToList()
+                    .AsReadOnly();
+            }
+
+            throw new InvalidOperationException();
+        }
+    }
+
+    public IEnumerable<string> Errors => _errors.AsReadOnly();
 
     public async Task<bool> Initialise()
     {
@@ -32,10 +205,10 @@ public class GameQuery(string filename)
         {
             return false;
         }
-        
+
         var factory = new WorldModelFactory(new Config());
         var gameLauncher = new GameLauncher(factory);
-        
+
         _game = gameLauncher.GetGame(gameData, null);
         _v4Game = _game as V4Game;
         _v5Game = _game as WorldModel;
@@ -59,177 +232,19 @@ public class GameQuery(string filename)
         return true;
     }
 
-    public string GameName => _dummyUi.GameName;
-
-    public int ASLVersion
+    public IEnumerable<string> GetResourceNames()
     {
-        get
-        {
-            if (_v4Game != null)
-            {
-                return _v4Game.ASLVersion;
-            }
-            if (_v5Game != null)
-            {
-                return _v5Game.ASLVersion;
-            }
-            throw new InvalidOperationException();
-        }
+        return _game.GetResourceNames();
     }
-
-    public bool IsGamebook
-    {
-        get
-        {
-            if (_v4Game != null)
-            {
-                return false;
-            }
-            if (_v5Game != null)
-            {
-                return _v5Game.IsGamebook;
-            }
-            throw new InvalidOperationException();
-        }
-    }
-
-    public string GameId => _game.GameID;
-
-    public string Category
-    {
-        get
-        {
-            if (_v4Game != null)
-            {
-                return null;
-            }
-            if (_v5Game != null)
-            {
-                return _v5Game.Category;
-            }
-            throw new InvalidOperationException();
-        }
-    }
-
-    public string Description
-    {
-        get
-        {
-            if (_v4Game != null)
-            {
-                return null;
-            }
-            if (_v5Game != null)
-            {
-                return _v5Game.Description;
-            }
-            throw new InvalidOperationException();
-        }
-    }
-
-    public string CoverResourceName
-    {
-        get
-        {
-            if (_v4Game != null)
-            {
-                return null;
-            }
-            if (_v5Game != null)
-            {
-                return _v5Game.Cover;
-            }
-            throw new InvalidOperationException();
-        }
-    }
-
-    /// <summary>
-    /// The language ID from the LanguageId template (e.g. "en", "de", "fr").
-    /// Returns null for V4 games and for V5 games that don't set the LanguageId template.
-    /// When null, callers can use <see cref="GameName"/> and <see cref="Description"/> for language detection.
-    /// </summary>
-    public string LanguageId
-    {
-        get
-        {
-            if (_v4Game != null)
-            {
-                return null;
-            }
-            if (_v5Game != null)
-            {
-                return _v5Game.LanguageId;
-            }
-            throw new InvalidOperationException();
-        }
-    }
-
-    /// <summary>
-    /// A sample of the game's prose text, collected from object and room description fields.
-    /// Intended for use with language detection when <see cref="LanguageId"/> is null.
-    /// Returns null for V4 games.
-    /// </summary>
-    public string GameTextSample
-    {
-        get
-        {
-            if (_v4Game != null)
-            {
-                return null;
-            }
-            if (_v5Game != null)
-            {
-                var parts = new List<string>();
-                foreach (var obj in _v5Game.Objects)
-                {
-                    if (obj.Fields.HasString("description"))
-                    {
-                        parts.Add(obj.Fields.GetString("description"));
-                    }
-                }
-                return parts.Count > 0 ? string.Join(" ", parts) : null;
-            }
-            throw new InvalidOperationException();
-        }
-    }
-
-    /// <summary>
-    /// All rooms and objects defined in the game itself, excluding anything inherited from Core libraries.
-    /// Returns null for V4 games.
-    /// </summary>
-    public IReadOnlyList<GameObjectInfo> GameObjects
-    {
-        get
-        {
-            if (_v4Game != null)
-            {
-                return null;
-            }
-            if (_v5Game != null)
-            {
-                return _v5Game.Objects
-                    .Where(obj => obj.Type == ObjectType.Object
-                               && !obj.MetaFields[MetaFieldDefinitions.Library])
-                    .Select(obj => new GameObjectInfo(
-                        Name: obj.Name,
-                        Alias: obj.Fields.HasString("alias") ? obj.Fields.GetString("alias") : null,
-                        ParentName: obj.Parent?.Name,
-                        Description: obj.Fields.HasString("description") ? obj.Fields.GetString("description") : null
-                    ))
-                    .ToList()
-                    .AsReadOnly();
-            }
-            throw new InvalidOperationException();
-        }
-    }
-
-    public IEnumerable<string> Errors => _errors.AsReadOnly();
-
-    public IEnumerable<string> GetResourceNames() => _game.GetResourceNames();
 
     public Stream GetResource(string resourceName)
     {
         return _game.GetResourceStream(resourceName);
+    }
+
+    private class Config : IConfig
+    {
+        public bool UseNCalc => false;
     }
 
     private class GameQueryUi : IPlayerHelperUI
@@ -271,7 +286,7 @@ public class GameQuery(string filename)
         public void SetWindowMenu(MenuData menuData)
         {
         }
-        
+
         public void PlaySound(string filename, bool synchronous, bool looped)
         {
         }

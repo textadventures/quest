@@ -1,43 +1,46 @@
-﻿namespace QuestViva.EditorCoreTests
+﻿namespace QuestViva.EditorCoreTests;
+
+public class EditorTreeItem
 {
-    public class EditorTreeItem
+    public string Key;
+    public EditorTreeItem Parent;
+    public string Text;
+}
+
+public class EditorTreeData
+{
+    private readonly Dictionary<string, EditorTreeItem> m_items = new();
+    private bool m_frozen = true;
+
+    public void Clear()
     {
-        public EditorTreeItem Parent = null;
-        public string Key;
-        public string Text;
+        m_items.Clear();
     }
 
-    public class EditorTreeData
+    public void Add(string key, string text, string parent)
     {
-        private Dictionary<string, EditorTreeItem> m_items = new Dictionary<string, EditorTreeItem>();
-        private bool m_frozen = true;
+        var parentItem = parent == null ? null : m_items[parent];
+        var newItem = new EditorTreeItem {Key = key, Parent = parentItem, Text = text};
+        Add(newItem);
+    }
 
-        public void Clear()
+    public void Add(EditorTreeItem item)
+    {
+        if (m_frozen)
         {
-            m_items.Clear();
+            throw new InvalidOperationException("Can't add to tree when frozen - expected BeginUpdate event first.");
         }
 
-        public void Add(string key, string text, string parent)
-        {
-            EditorTreeItem parentItem = (parent == null) ? null : m_items[parent];
-            EditorTreeItem newItem = new EditorTreeItem { Key = key, Parent = parentItem, Text = text };
-            Add(newItem);
-        }
+        m_items.Add(item.Key, item);
+    }
 
-        public void Add(EditorTreeItem item)
-        {
-            if (m_frozen) throw new InvalidOperationException("Can't add to tree when frozen - expected BeginUpdate event first.");
-            m_items.Add(item.Key, item);
-        }
+    public void BeginUpdate()
+    {
+        m_frozen = false;
+    }
 
-        public void BeginUpdate()
-        {
-            m_frozen = false;
-        }
-
-        public void EndUpdate()
-        {
-            m_frozen = true;
-        }
+    public void EndUpdate()
+    {
+        m_frozen = true;
     }
 }

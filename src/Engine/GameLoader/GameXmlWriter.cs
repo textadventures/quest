@@ -1,20 +1,14 @@
-﻿using System;
-using System.Text;
+﻿using System.Text;
 using System.Xml;
 
 namespace QuestViva.Engine.GameLoader;
 
 internal class GameXmlWriter
 {
-    internal class GameXmlWriterOptions
-    {
-        public bool IncludeWalkthrough { get; init; }
-    }
+    public const string IndentChars = "  ";
 
     private readonly StringBuilder _output;
     private readonly XmlWriter _writer;
-
-    public const string IndentChars = "  ";
 
     public GameXmlWriter(SaveMode mode, GameXmlWriterOptions? options = null)
     {
@@ -29,10 +23,16 @@ internal class GameXmlWriter
         _writer = XmlWriter.Create(_output, settings);
         options ??= new GameXmlWriterOptions
         {
-            IncludeWalkthrough = (mode != SaveMode.Package)
+            IncludeWalkthrough = mode != SaveMode.Package
         };
         Options = options;
     }
+
+    public int IndentLevel { get; private set; }
+
+    public SaveMode Mode { get; }
+
+    public GameXmlWriterOptions Options { get; }
 
     public void WriteComment(string text)
     {
@@ -63,11 +63,12 @@ internal class GameXmlWriter
         // be indented correctly.
         if (text.Contains(Environment.NewLine))
         {
-            for (int i = 0; i < IndentLevel - 1; i++)
+            for (var i = 0; i < IndentLevel - 1; i++)
             {
                 text += IndentChars;
             }
         }
+
         if (UseCDATA(text))
         {
             _writer.WriteCData(text);
@@ -98,9 +99,8 @@ internal class GameXmlWriter
         return _output.ToString();
     }
 
-    public int IndentLevel { get; private set; }
-
-    public SaveMode Mode { get; }
-
-    public GameXmlWriterOptions Options { get; }
+    internal class GameXmlWriterOptions
+    {
+        public bool IncludeWalkthrough { get; init; }
+    }
 }

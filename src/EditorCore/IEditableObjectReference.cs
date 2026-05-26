@@ -1,7 +1,6 @@
-﻿namespace QuestViva.EditorCore
+﻿namespace QuestViva.EditorCore;
+
+public interface IEditableObjectReference : IDataWrapper
 {
-    public interface IEditableObjectReference : IDataWrapper
-    {
-        string Reference { get; set; }
-    }
+    string Reference { get; set; }
 }

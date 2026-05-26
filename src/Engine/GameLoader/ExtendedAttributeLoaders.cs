@@ -1,10 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Reflection;
 using System.Xml;
 using System.Xml.Linq;
 using QuestViva.Engine.Types;
 using QuestViva.Utility;
+
 // ReSharper disable UnusedType.Local
 
 // AttributeLoaders load properties which are stored in the XML as simple values.
@@ -14,20 +13,12 @@ namespace QuestViva.Engine.GameLoader;
 
 internal partial class GameLoader
 {
-    private interface IExtendedAttributeLoader
-    {
-        string AppliesTo { get; }
-        void Load(XmlReader reader, Element current);
-        GameLoader GameLoader { set; }
-        bool SupportsMode(LoadMode mode);
-    }
-
     private void AddExtendedAttributeLoaders(LoadMode mode)
     {
-        foreach (var t in Classes.GetImplementations(System.Reflection.Assembly.GetExecutingAssembly(),
+        foreach (var t in Classes.GetImplementations(Assembly.GetExecutingAssembly(),
                      typeof(IExtendedAttributeLoader)))
         {
-            AddExtendedAttributeLoader((IExtendedAttributeLoader)Activator.CreateInstance(t)!, mode);
+            AddExtendedAttributeLoader((IExtendedAttributeLoader) Activator.CreateInstance(t)!, mode);
         }
     }
 
@@ -42,17 +33,21 @@ internal partial class GameLoader
         loader.GameLoader = this;
     }
 
+    private interface IExtendedAttributeLoader
+    {
+        string AppliesTo { get; }
+        GameLoader GameLoader { set; }
+        void Load(XmlReader reader, Element current);
+        bool SupportsMode(LoadMode mode);
+    }
+
     private abstract class ExtendedAttributeLoaderBase : IExtendedAttributeLoader
     {
         public abstract string AppliesTo { get; }
 
         public abstract void Load(XmlReader reader, Element current);
 
-        public required GameLoader GameLoader
-        {
-            get;
-            set;
-        }
+        public required GameLoader GameLoader { get; set; }
 
         public virtual bool SupportsMode(LoadMode mode)
         {
@@ -66,6 +61,14 @@ internal partial class GameLoader
     {
         public override string AppliesTo => "scriptdictionary";
 
+        public object GetValue(XElement xml)
+        {
+            var xmlReader = xml.CreateReader();
+            // move to first sub-element
+            xmlReader.Read();
+            return new LazyScriptDictionary(LoadScriptDictionary(xmlReader, null, "value"));
+        }
+
         public override void Load(XmlReader reader, Element current)
         {
             var currentXmlElementName = reader.Name;
@@ -73,10 +76,14 @@ internal partial class GameLoader
             current.Fields.LazyFields.AddScriptDictionary(currentXmlElementName, result);
         }
 
-        private Dictionary<string, string> LoadScriptDictionary(XmlReader reader, Element? current, string xmlElementName)
+        private Dictionary<string, string> LoadScriptDictionary(XmlReader reader, Element? current,
+            string xmlElementName)
         {
             var newDictionary = new Dictionary<string, string>();
-            if (reader.IsEmptyElement) return newDictionary;
+            if (reader.IsEmptyElement)
+            {
+                return newDictionary;
+            }
 
             var nestCount = 1;
             string? key = null;
@@ -99,6 +106,7 @@ internal partial class GameLoader
                             throw new InvalidOperationException(
                                 $"Invalid element '{reader.Name}' in scriptdictionary block for '{(current == null ? "(nested)" : current.Name)}.{xmlElementName}' - expected only 'item' elements");
                         }
+
                         break;
                     case XmlNodeType.EndElement:
                         if (reader.Name == "item")
@@ -119,6 +127,7 @@ internal partial class GameLoader
 
                             throw new InvalidOperationException($"Expected closing tag '{xmlElementName}'");
                         }
+
                         break;
                     case XmlNodeType.Text:
                     case XmlNodeType.CDATA:
@@ -129,19 +138,16 @@ internal partial class GameLoader
 
             throw new Exception("Unexpected end of XML data");
         }
-
-        public object GetValue(XElement xml)
-        {
-            var xmlReader = xml.CreateReader();
-            // move to first sub-element
-            xmlReader.Read();
-            return new LazyScriptDictionary(LoadScriptDictionary(xmlReader, null, "value"));
-        }
     }
 
     private class StringListLoader : ExtendedAttributeLoaderBase, IValueLoader
     {
         public override string AppliesTo => "stringlist";
+
+        public object GetValue(XElement xml)
+        {
+            return new QuestList<string>(xml.Elements("value").Select(e => e.Value));
+        }
 
         public override void Load(XmlReader reader, Element current)
         {
@@ -149,16 +155,16 @@ internal partial class GameLoader
             var values = xml.Elements("value").Select(e => e.Value);
             current.Fields.Set(reader.Name, new QuestList<string>(values));
         }
-
-        public object GetValue(XElement xml)
-        {
-            return new QuestList<string>(xml.Elements("value").Select(e => e.Value));
-        }
     }
 
     private class ListLoader : ExtendedAttributeLoaderBase, IValueLoader
     {
         public override string AppliesTo => "list";
+
+        public object GetValue(XElement xml)
+        {
+            return LoadQuestList(xml);
+        }
 
         public override void Load(XmlReader reader, Element current)
         {
@@ -179,12 +185,8 @@ internal partial class GameLoader
 
                 result.Add(value);
             }
-            return result;
-        }
 
-        public object GetValue(XElement xml)
-        {
-            return LoadQuestList(xml);
+            return result;
         }
     }
 
@@ -217,7 +219,8 @@ internal partial class GameLoader
                 }
                 else if (result.ContainsKey(key.Value))
                 {
-                    GameLoader.AddError(string.Format("Duplicate key '{1}' in dictionary for '{0}'", errorSource, key.Value));
+                    GameLoader.AddError(string.Format("Duplicate key '{1}' in dictionary for '{0}'", errorSource,
+                        key.Value));
                 }
                 else
                 {
@@ -236,12 +239,18 @@ internal partial class GameLoader
             return result;
         }
 
-        protected abstract void AddResultToDictionary(IDictionary<string, T?> dictionary, string key, XElement xmlValue);
+        protected abstract void
+            AddResultToDictionary(IDictionary<string, T?> dictionary, string key, XElement xmlValue);
     }
 
     private class StringDictionaryLoader : DictionaryLoaderBase<string>, IValueLoader
     {
         public override string AppliesTo => "stringdictionary";
+
+        public object GetValue(XElement xml)
+        {
+            return new QuestDictionary<string?>(LoadDictionaryFromXElement(xml, "(nested stringdictionary)"));
+        }
 
         public override void Load(XmlReader reader, Element current)
         {
@@ -249,12 +258,8 @@ internal partial class GameLoader
             current.Fields.Set(reader.Name, new QuestDictionary<string?>(result));
         }
 
-        public object GetValue(XElement xml)
-        {
-            return new QuestDictionary<string?>(LoadDictionaryFromXElement(xml, "(nested stringdictionary)"));
-        }
-
-        protected override void AddResultToDictionary(IDictionary<string, string?> dictionary, string key, XElement xmlValue)
+        protected override void AddResultToDictionary(IDictionary<string, string?> dictionary, string key,
+            XElement xmlValue)
         {
             var value = GameLoader.GetTemplate(xmlValue.Value);
             dictionary.Add(key, value);
@@ -265,18 +270,19 @@ internal partial class GameLoader
     {
         public override string AppliesTo => "objectdictionary";
 
+        public object GetValue(XElement xml)
+        {
+            return new LazyObjectDictionary(LoadDictionaryFromXElement(xml, "(nested objectdictionary)"));
+        }
+
         public override void Load(XmlReader reader, Element current)
         {
             var result = LoadDictionary(reader, current.Name);
             current.Fields.LazyFields.AddObjectDictionary(reader.Name, result);
         }
 
-        public object GetValue(XElement xml)
-        {
-            return new LazyObjectDictionary(LoadDictionaryFromXElement(xml, "(nested objectdictionary)"));
-        }
-
-        protected override void AddResultToDictionary(IDictionary<string, string?> dictionary, string key, XElement xmlValue)
+        protected override void AddResultToDictionary(IDictionary<string, string?> dictionary, string key,
+            XElement xmlValue)
         {
             dictionary.Add(key, xmlValue.Value);
         }
@@ -286,23 +292,24 @@ internal partial class GameLoader
     {
         public override string AppliesTo => "dictionary";
 
+        public object GetValue(XElement xml)
+        {
+            return new QuestDictionary<object?>(LoadDictionaryFromXElement(xml, "(nested dictionary)"));
+        }
+
         public override void Load(XmlReader reader, Element current)
         {
             var result = LoadDictionary(reader, current.Name);
             current.Fields.Set(reader.Name, new QuestDictionary<object?>(result));
         }
 
-        protected override void AddResultToDictionary(IDictionary<string, object?> dictionary, string key, XElement xmlValue)
+        protected override void AddResultToDictionary(IDictionary<string, object?> dictionary, string key,
+            XElement xmlValue)
         {
             var typeAttr = xmlValue.Attribute("type");
             var type = typeAttr?.Value;
             var value = GameLoader.ReadXmlValue(type, xmlValue);
             dictionary.Add(key, value);
-        }
-
-        public object GetValue(XElement xml)
-        {
-            return new QuestDictionary<object?>(LoadDictionaryFromXElement(xml, "(nested dictionary)"));
         }
     }
 }

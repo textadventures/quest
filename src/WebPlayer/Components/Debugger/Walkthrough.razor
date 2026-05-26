@@ -1,5 +1,4 @@
 @using QuestViva.Common
-
 <style scoped>
     .pane {
         flex: 1;
@@ -42,7 +41,7 @@
     {
         selectedWalkthrough = item.walkthrough;
     }
-    
+
     private void RunWalkthrough()
     {
         if (selectedWalkthrough != null)
@@ -50,4 +49,5 @@
             OnRunWalkthrough.InvokeAsync(selectedWalkthrough);
         }
     }
+
 }

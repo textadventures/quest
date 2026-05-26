@@ -3,7 +3,6 @@ using System.Text;
 using Microsoft.VisualBasic;
 using Microsoft.VisualBasic.CompilerServices;
 using QuestViva.Common;
-using QuestViva.Utility;
 using Strings = Microsoft.VisualBasic.Strings;
 using Constants = Microsoft.VisualBasic.Constants;
 
@@ -11,6 +10,220 @@ namespace QuestViva.Legacy;
 
 public partial class V4Game
 {
+    private string m_menuResponse;
+
+    public int ASLVersion { get; private set; }
+
+    public byte[] Save(string html)
+    {
+        var ctx = new Context();
+        string saveData;
+
+        if (ASLVersion >= 391)
+        {
+            ExecuteScript(_beforeSaveScript, ctx);
+        }
+
+        if (ASLVersion >= 280)
+        {
+            saveData = MakeRestoreData();
+        }
+        else
+        {
+            saveData = MakeRestoreDataV2();
+        }
+
+        return Encoding.GetEncoding(1252).GetBytes(saveData);
+    }
+
+    public void Begin()
+    {
+        var runnerThread = new Thread(DoBegin);
+        ChangeState(State.Working);
+        runnerThread.Start();
+
+        lock (_stateLock)
+        {
+            while ((_state == State.Working) & !_gameFinished)
+            {
+                Monitor.Wait(_stateLock);
+            }
+        }
+    }
+
+    public List<string> Errors => new();
+
+    public void Finish()
+    {
+        GameFinished();
+    }
+
+    public event FinishedHandler Finished;
+
+    public event ErrorHandler LogError;
+
+    public event PrintTextHandler PrintText;
+
+    public void SendCommand(string command)
+    {
+        SendCommand(command, 0, null);
+    }
+
+    public void SendCommand(string command, int elapsedTime, IDictionary<string, string> metadata)
+    {
+        // The processing of commands is done in a separate thread, so things like the "enter" command can
+        // lock the thread while waiting for further input. After starting to process the command, we wait
+        // for something to happen before returning from the SendCommand call - either the command will have
+        // finished processing, or perhaps a prompt has been printed and now the game is waiting for further
+        // user input after hitting an "enter" script command.
+
+        if (!_readyForCommand)
+        {
+            return;
+        }
+
+        var runnerThread =
+            new Thread(ProcessCommandInNewThread);
+        ChangeState(State.Working);
+        runnerThread.Start(command);
+
+        WaitForStateChange(State.Working);
+
+        if (elapsedTime > 0)
+        {
+            Tick(elapsedTime);
+        }
+        else
+        {
+            RaiseNextTimerTickRequest();
+        }
+    }
+
+    public void SendEvent(string eventName, string param)
+    {
+    }
+
+    public event UpdateListHandler UpdateList;
+
+    public async Task<bool> Initialise(IPlayer player)
+    {
+        _player = player;
+        if (_saveData != null)
+        {
+            return await OpenGame(_saveData);
+        }
+
+        return await InitialiseGame(_gameData);
+    }
+
+    public void Tick(int elapsedTime)
+    {
+        int i;
+        var timerScripts = new List<string>();
+
+        Debug.Print("Tick: " + elapsedTime);
+
+        var loopTo = _numberTimers;
+        for (i = 1; i <= loopTo; i++)
+        {
+            if (_timers[i].TimerActive)
+            {
+                if (_timers[i].BypassThisTurn)
+                {
+                    // don't trigger timer during the turn it was first enabled
+                    _timers[i].BypassThisTurn = false;
+                }
+                else
+                {
+                    _timers[i].TimerTicks = _timers[i].TimerTicks + elapsedTime;
+
+                    if (_timers[i].TimerTicks >= _timers[i].TimerInterval)
+                    {
+                        _timers[i].TimerTicks = 0;
+                        timerScripts.Add(_timers[i].TimerAction);
+                    }
+                }
+            }
+        }
+
+        if (timerScripts.Count > 0)
+        {
+            var runnerThread =
+                new Thread(RunTimersInNewThread);
+
+            ChangeState(State.Working);
+            runnerThread.Start(timerScripts);
+            WaitForStateChange(State.Working);
+        }
+
+        RaiseNextTimerTickRequest();
+    }
+
+    public void FinishWait()
+    {
+        if (_state != State.Waiting)
+        {
+            return;
+        }
+
+        var runnerThread = new Thread(FinishWaitInNewThread);
+        ChangeState(State.Working);
+        runnerThread.Start();
+        WaitForStateChange(State.Working);
+    }
+
+    public void FinishPause()
+    {
+        FinishWait();
+    }
+
+    public void SetMenuResponse(string response)
+    {
+        var runnerThread =
+            new Thread(SetMenuResponseInNewThread);
+        ChangeState(State.Working);
+        runnerThread.Start(response);
+        WaitForStateChange(State.Working);
+    }
+
+    public IEnumerable<string> GetExternalScripts()
+    {
+        return null;
+    }
+
+    public IEnumerable<string> GetExternalStylesheets()
+    {
+        return null;
+    }
+
+    public event Action<int> RequestNextTimerTick;
+
+    public Stream GetResourceStream(string file)
+    {
+        if (file == "_game.cas")
+        {
+            return new MemoryStream(GetResourcelessCAS());
+        }
+
+        return GetResourceStreamInternal(file);
+    }
+
+    public string GameID => null;
+
+    public IEnumerable<string> GetResourceNames()
+    {
+        for (int i = 1, loopTo = _numResources; i <= loopTo; i++)
+        {
+            // Resources are always extracted with lowercase filenames (see ExtractFile)
+            yield return _resources[i].ResourceName.ToLowerInvariant();
+        }
+
+        if (_numResources > 0)
+        {
+            yield return "_game.cas";
+        }
+    }
+
     private void RestoreGameData(string fileData)
     {
         string appliesTo;
@@ -331,7 +544,7 @@ public partial class V4Game
             }
         }
 
-        if (exists == false)
+        if (!exists)
         {
             _numberNumericVariables = _numberNumericVariables + 1;
             numNumber = _numberNumericVariables;
@@ -1924,7 +2137,7 @@ public partial class V4Game
             }
         }
 
-        if (descTagExist == false)
+        if (!descTagExist)
         {
             // Look in the "define game" block:
             for (int i = gameBlock.StartLine + 1, loopTo7 = gameBlock.EndLine - 1; i <= loopTo7; i++)
@@ -1938,7 +2151,7 @@ public partial class V4Game
             }
         }
 
-        if (descTagExist == false)
+        if (!descTagExist)
         {
             // Remove final newline:
             roomDisplayText = Strings.Left(roomDisplayText, Strings.Len(roomDisplayText) - 2);
@@ -2563,17 +2776,17 @@ public partial class V4Game
     private async Task<bool> OpenGame(Stream saveData)
     {
         string[] lines = null;
-        
+
         _gameLoadMethod = "loaded";
-        
+
         var prevQsgVersion = false;
-        
+
         using var reader = new StreamReader(saveData, Encoding.GetEncoding(1252));
         var fileData = await reader.ReadToEndAsync();
 
         // Check version
         var savedQsgVersion = Strings.Left(fileData, 10);
-        
+
         if (BeginsWith(savedQsgVersion, "QUEST200.1"))
         {
             prevQsgVersion = true;
@@ -2582,7 +2795,7 @@ public partial class V4Game
         {
             return false;
         }
-        
+
         if (prevQsgVersion)
         {
             lines = fileData.Split([Constants.vbCrLf, Constants.vbLf], StringSplitOptions.None);
@@ -2591,19 +2804,19 @@ public partial class V4Game
         {
             InitFileData(fileData);
             GetNextChunk();
-        
+
             // This previously contained the original game filename, but we don't need this now as we always get
             // the original game data when the game is initialised.
             var _ = GetNextChunk();
         }
 
         var result = await InitialiseGame(_gameData, true);
-        
-        if (result == false)
+
+        if (!result)
         {
             return false;
         }
-        
+
         if (!prevQsgVersion)
         {
             // Open Quest 3.0 saved game file
@@ -2614,9 +2827,9 @@ public partial class V4Game
         else
         {
             // Open Quest 2.x saved game file
-        
+
             _currentRoom = lines[3];
-        
+
             // Start at line 5 as line 4 is always "!c"
             var lineNumber = 5;
 
@@ -2632,7 +2845,7 @@ public partial class V4Game
                     scp = Strings.InStr(data, ";");
                     name = Strings.Trim(Strings.Left(data, scp - 1));
                     var cdat = Conversions.ToInteger(Strings.Right(data, Strings.Len(data) - scp));
-        
+
                     for (int i = 1, loopTo = _numCollectables; i <= loopTo; i++)
                     {
                         if ((_collectables[i].Name ?? "") == (name ?? ""))
@@ -2654,7 +2867,7 @@ public partial class V4Game
                     scp = Strings.InStr(data, ";");
                     name = Strings.Trim(Strings.Left(data, scp - 1));
                     cdatb = IsYes(Strings.Right(data, Strings.Len(data) - scp));
-        
+
                     for (int i = 1, loopTo1 = _numberItems; i <= loopTo1; i++)
                     {
                         if ((_items[i].Name ?? "") == (name ?? ""))
@@ -2679,12 +2892,12 @@ public partial class V4Game
                     scp = Strings.InStr(data, ";");
                     scp2 = Strings.InStr(scp + 1, data, ";");
                     scp3 = Strings.InStr(scp2 + 1, data, ";");
-        
+
                     name = Strings.Trim(Strings.Left(data, scp - 1));
                     cdatb = IsYes(Strings.Mid(data, scp + 1, scp2 - scp - 1));
                     visible = IsYes(Strings.Mid(data, scp2 + 1, scp3 - scp2 - 1));
                     room = Strings.Trim(Strings.Mid(data, scp3 + 1));
-        
+
                     for (int i = 1, loopTo2 = _numberObjs; i <= loopTo2; i++)
                     {
                         if (((_objs[i].ObjectName ?? "") == (name ?? "")) & !_objs[i].Loaded)
@@ -2698,7 +2911,7 @@ public partial class V4Game
                     }
                 }
             } while (data != "!p");
-        
+
             do
             {
                 data = lines[lineNumber];
@@ -2708,12 +2921,12 @@ public partial class V4Game
                     scp = Strings.InStr(data, ";");
                     scp2 = Strings.InStr(scp + 1, data, ";");
                     scp3 = Strings.InStr(scp2 + 1, data, ";");
-        
+
                     name = Strings.Trim(Strings.Left(data, scp - 1));
                     cdatb = IsYes(Strings.Mid(data, scp + 1, scp2 - scp - 1));
                     visible = IsYes(Strings.Mid(data, scp2 + 1, scp3 - scp2 - 1));
                     room = Strings.Trim(Strings.Mid(data, scp3 + 1));
-        
+
                     for (int i = 1, loopTo3 = _numberChars; i <= loopTo3; i++)
                     {
                         if ((_chars[i].ObjectName ?? "") == (name ?? ""))
@@ -2726,7 +2939,7 @@ public partial class V4Game
                     }
                 }
             } while (data != "!s");
-        
+
             do
             {
                 data = lines[lineNumber];
@@ -2736,11 +2949,11 @@ public partial class V4Game
                     scp = Strings.InStr(data, ";");
                     name = Strings.Trim(Strings.Left(data, scp - 1));
                     data = Strings.Right(data, Strings.Len(data) - scp);
-        
+
                     SetStringContents(name, data, _nullContext);
                 }
             } while (data != "!n");
-        
+
             do
             {
                 data = lines[lineNumber];
@@ -2750,35 +2963,13 @@ public partial class V4Game
                     scp = Strings.InStr(data, ";");
                     name = Strings.Trim(Strings.Left(data, scp - 1));
                     data = Strings.Right(data, Strings.Len(data) - scp);
-        
+
                     SetNumericVariableContents(name, Conversion.Val(data), _nullContext);
                 }
             } while (data != "!e");
         }
-        
+
         return true;
-    }
-
-    public byte[] Save(string html)
-    {
-        var ctx = new Context();
-        string saveData;
-
-        if (ASLVersion >= 391)
-        {
-            ExecuteScript(_beforeSaveScript, ctx);
-        }
-
-        if (ASLVersion >= 280)
-        {
-            saveData = MakeRestoreData();
-        }
-        else
-        {
-            saveData = MakeRestoreDataV2();
-        }
-
-        return Encoding.GetEncoding(1252).GetBytes(saveData);
     }
 
     private string MakeRestoreDataV2()
@@ -3747,7 +3938,7 @@ public partial class V4Game
             descTagExist = false;
         }
 
-        if (descTagExist == false)
+        if (!descTagExist)
         {
             // Look in the "define game" block:
             for (int i = gameBlock.StartLine + 1, loopTo1 = gameBlock.EndLine - 1; i <= loopTo1; i++)
@@ -3778,7 +3969,7 @@ public partial class V4Game
 
         if (!noPrint)
         {
-            if (descTagExist == false)
+            if (!descTagExist)
             {
                 // Remove final vbCrLf:
                 roomDisplayText = Strings.Left(roomDisplayText, Strings.Len(roomDisplayText) - 2);
@@ -3917,7 +4108,7 @@ public partial class V4Game
             }
         }
 
-        if ((_collectables[id].Value == 0d) & (_collectables[id].DisplayWhenZero == false))
+        if ((_collectables[id].Value == 0d) & !_collectables[id].DisplayWhenZero)
         {
             display = "<null>";
         }
@@ -4043,7 +4234,7 @@ public partial class V4Game
             }
         }
 
-        if (!string.IsNullOrEmpty(_beforeTurnScript) & (globalOverride == false))
+        if (!string.IsNullOrEmpty(_beforeTurnScript) & !globalOverride)
         {
             ExecuteScript(_beforeTurnScript, newCtx);
         }
@@ -4434,7 +4625,7 @@ public partial class V4Game
             }
 
             // was set to NullThread here for some reason
-            if (!string.IsNullOrEmpty(_afterTurnScript) & (globalOverride == false))
+            if (!string.IsNullOrEmpty(_afterTurnScript) & !globalOverride)
             {
                 ExecuteScript(_afterTurnScript, ctx);
             }
@@ -4533,7 +4724,7 @@ public partial class V4Game
             {
                 if ((Strings.LCase(_items[i].Name) ?? "") == (Strings.LCase(item) ?? ""))
                 {
-                    if (_items[i].Got == false)
+                    if (!_items[i].Got)
                     {
                         notGot = true;
                         i = _numberItems;
@@ -4654,7 +4845,7 @@ public partial class V4Game
             var block = GetThingBlock(character, _currentRoom, type);
 
             if (((block.StartLine == 0) & (block.EndLine == 0)) |
-                (IsAvailable(character + "@" + _currentRoom, type, ctx) == false))
+                !IsAvailable(character + "@" + _currentRoom, type, ctx))
             {
                 PlayerErrorMessage(PlayerError.BadCharacter, ctx);
                 return;
@@ -4770,7 +4961,7 @@ public partial class V4Game
                 if (lookLine != "<unfound>")
                 {
                     // Check for availability
-                    if (IsAvailable(item, Thing.Object, ctx) == false)
+                    if (!IsAvailable(item, Thing.Object, ctx))
                     {
                         lookLine = "<unfound>";
                     }
@@ -4782,7 +4973,7 @@ public partial class V4Game
 
                     if (lookLine != "<unfound>")
                     {
-                        if (IsAvailable(item, Thing.Character, ctx) == false)
+                        if (!IsAvailable(item, Thing.Character, ctx))
                         {
                             lookLine = "<unfound>";
                         }
@@ -4932,7 +5123,7 @@ public partial class V4Game
             if ((line != "<unfound>") & (line != "<undefined>"))
             {
                 // Character exists; but is it available??
-                if (IsAvailable(cmd + "@" + _currentRoom, type, ctx) == false)
+                if (!IsAvailable(cmd + "@" + _currentRoom, type, ctx))
                 {
                     line = "<undefined>";
                 }
@@ -5173,7 +5364,7 @@ public partial class V4Game
             {
                 if ((Strings.LCase(_items[i].Name) ?? "") == (Strings.LCase(useItem) ?? ""))
                 {
-                    if (_items[i].Got == false)
+                    if (!_items[i].Got)
                     {
                         notGotItem = true;
                         i = _numberItems;
@@ -5356,7 +5547,7 @@ public partial class V4Game
             if ((useDeclareLine != "<unfound>") & (useDeclareLine != "<undefined>") & !string.IsNullOrEmpty(useOn))
             {
                 // Check for object availablity
-                if (IsAvailable(useOn, Thing.Object, ctx) == false)
+                if (!IsAvailable(useOn, Thing.Object, ctx))
                 {
                     useDeclareLine = "<undefined>";
                 }
@@ -5369,7 +5560,7 @@ public partial class V4Game
                 if (useDeclareLine != "<undefined>")
                 {
                     // Check for character availability
-                    if (IsAvailable(useOn, Thing.Character, ctx) == false)
+                    if (!IsAvailable(useOn, Thing.Character, ctx))
                     {
                         useDeclareLine = "<undefined>";
                     }
@@ -5925,7 +6116,7 @@ public partial class V4Game
             {
                 ctx.FunctionReturnValue = GetParameter(scriptLine, ctx);
             }
-            else if (BeginsWith(scriptLine, "'") == false)
+            else if (!BeginsWith(scriptLine, "'"))
             {
                 LogASLError("Unrecognized keyword. Line reads: '" + Strings.Trim(ReportErrorLine(scriptLine)) + "'",
                     LogType.WarningError);
@@ -6273,7 +6464,7 @@ public partial class V4Game
         LogASLError("Opening file " + gameData.Filename + " on " + DateTime.Now, LogType.Init);
 
         // Parse file and find where the 'define' blocks are:
-        if (await ParseFile(gameData) == false)
+        if (!await ParseFile(gameData))
         {
             LogASLError("Unable to open file", LogType.Init);
             var err = "Unable to open " + gameData.Filename;
@@ -6578,8 +6769,8 @@ public partial class V4Game
         if (!_outPutOn)
         {
             return;
-        } 
-        
+        }
+
         var printString = "";
 
         if (string.IsNullOrEmpty(txt))
@@ -6792,7 +6983,7 @@ public partial class V4Game
                     }
 
                     // lastitem set when nextcomma=0, above.
-                    while (lastItem != true);
+                    while (!lastItem);
 
                     _numCollectables = _numCollectables - 1;
                 }
@@ -6849,7 +7040,7 @@ public partial class V4Game
                     }
 
                     // lastitem set when nextcomma=0, above.
-                    while (lastItem != true);
+                    while (!lastItem);
 
                     _numberItems = _numberItems - 1;
                 }
@@ -6906,7 +7097,7 @@ public partial class V4Game
                     }
 
                     // lastitem set when nextcomma=0, above.
-                    while (lastItem != true);
+                    while (!lastItem);
                 }
             }
         }
@@ -7572,12 +7763,6 @@ public partial class V4Game
         }
     }
 
-    private class PlayerCanAccessObjectResult
-    {
-        public bool CanAccessObject;
-        public string ErrorMsg;
-    }
-
     private PlayerCanAccessObjectResult PlayerCanAccessObject(int id, List<int> colObjects = null)
     {
         // Called to see if a player can interact with an object (take it, open it etc.).
@@ -7782,21 +7967,6 @@ public partial class V4Game
         roomExit.SetIsLocked(@lock);
     }
 
-    public void Begin()
-    {
-        var runnerThread = new Thread(DoBegin);
-        ChangeState(State.Working);
-        runnerThread.Start();
-
-        lock (_stateLock)
-        {
-            while ((_state == State.Working) & !_gameFinished)
-            {
-                Monitor.Wait(_stateLock);
-            }
-        }
-    }
-
     private void DoBegin()
     {
         var gameBlock = GetDefineBlock("game");
@@ -7912,54 +8082,6 @@ public partial class V4Game
         ChangeState(State.Ready);
     }
 
-    public List<string> Errors => new();
-
-    public void Finish()
-    {
-        GameFinished();
-    }
-
-    public event FinishedHandler Finished;
-
-    public event ErrorHandler LogError;
-
-    public event PrintTextHandler PrintText;
-
-    public void SendCommand(string command)
-    {
-        SendCommand(command, 0, null);
-    }
-
-    public void SendCommand(string command, int elapsedTime, IDictionary<string, string> metadata)
-    {
-        // The processing of commands is done in a separate thread, so things like the "enter" command can
-        // lock the thread while waiting for further input. After starting to process the command, we wait
-        // for something to happen before returning from the SendCommand call - either the command will have
-        // finished processing, or perhaps a prompt has been printed and now the game is waiting for further
-        // user input after hitting an "enter" script command.
-
-        if (!_readyForCommand)
-        {
-            return;
-        }
-
-        var runnerThread =
-            new Thread(ProcessCommandInNewThread);
-        ChangeState(State.Working);
-        runnerThread.Start(command);
-
-        WaitForStateChange(State.Working);
-
-        if (elapsedTime > 0)
-        {
-            Tick(elapsedTime);
-        }
-        else
-        {
-            RaiseNextTimerTickRequest();
-        }
-    }
-
     private void WaitForStateChange(State changedFromState)
     {
         lock (_stateLock)
@@ -7987,23 +8109,6 @@ public partial class V4Game
             LogException(ex);
             ChangeState(State.Ready);
         }
-    }
-
-    public void SendEvent(string eventName, string param)
-    {
-    }
-
-    public event UpdateListHandler UpdateList;
-
-    public async Task<bool> Initialise(IPlayer player)
-    {
-        _player = player;
-        if (_saveData != null)
-        {
-            return await OpenGame(_saveData);
-        }
-
-        return await InitialiseGame(_gameData);
     }
 
     private void GameFinished()
@@ -8078,49 +8183,6 @@ public partial class V4Game
         return GetResourceLines(libCode);
     }
 
-    public void Tick(int elapsedTime)
-    {
-        int i;
-        var timerScripts = new List<string>();
-
-        Debug.Print("Tick: " + elapsedTime);
-
-        var loopTo = _numberTimers;
-        for (i = 1; i <= loopTo; i++)
-        {
-            if (_timers[i].TimerActive)
-            {
-                if (_timers[i].BypassThisTurn)
-                {
-                    // don't trigger timer during the turn it was first enabled
-                    _timers[i].BypassThisTurn = false;
-                }
-                else
-                {
-                    _timers[i].TimerTicks = _timers[i].TimerTicks + elapsedTime;
-
-                    if (_timers[i].TimerTicks >= _timers[i].TimerInterval)
-                    {
-                        _timers[i].TimerTicks = 0;
-                        timerScripts.Add(_timers[i].TimerAction);
-                    }
-                }
-            }
-        }
-
-        if (timerScripts.Count > 0)
-        {
-            var runnerThread =
-                new Thread(RunTimersInNewThread);
-
-            ChangeState(State.Working);
-            runnerThread.Start(timerScripts);
-            WaitForStateChange(State.Working);
-        }
-
-        RaiseNextTimerTickRequest();
-    }
-
     private void RunTimersInNewThread(object scripts)
     {
         var scriptList = (List<string>) scripts;
@@ -8190,19 +8252,6 @@ public partial class V4Game
         }
     }
 
-    public void FinishWait()
-    {
-        if (_state != State.Waiting)
-        {
-            return;
-        }
-
-        var runnerThread = new Thread(FinishWaitInNewThread);
-        ChangeState(State.Working);
-        runnerThread.Start();
-        WaitForStateChange(State.Working);
-    }
-
     private void FinishWaitInNewThread()
     {
         lock (_waitLock)
@@ -8210,13 +8259,6 @@ public partial class V4Game
             Monitor.PulseAll(_waitLock);
         }
     }
-
-    public void FinishPause()
-    {
-        FinishWait();
-    }
-
-    private string m_menuResponse;
 
     private string ShowMenu(MenuData menuData)
     {
@@ -8229,15 +8271,6 @@ public partial class V4Game
         }
 
         return m_menuResponse;
-    }
-
-    public void SetMenuResponse(string response)
-    {
-        var runnerThread =
-            new Thread(SetMenuResponseInNewThread);
-        ChangeState(State.Working);
-        runnerThread.Start(response);
-        WaitForStateChange(State.Working);
     }
 
     private void SetMenuResponseInNewThread(object response)
@@ -8255,50 +8288,16 @@ public partial class V4Game
         LogError?.Invoke(ex);
     }
 
-    public IEnumerable<string> GetExternalScripts()
-    {
-        return null;
-    }
-
-    public IEnumerable<string> GetExternalStylesheets()
-    {
-        return null;
-    }
-
-    public event Action<int> RequestNextTimerTick;
-
-    public int ASLVersion { get; private set; }
-
-    public Stream GetResourceStream(string file)
-    {
-        if (file == "_game.cas")
-        {
-            return new MemoryStream(GetResourcelessCAS());
-        }
-
-        return GetResourceStreamInternal(file);
-    }
-
-    public string GameID => null;
-
-    public IEnumerable<string> GetResourceNames()
-    {
-        for (int i = 1, loopTo = _numResources; i <= loopTo; i++)
-        {
-            // Resources are always extracted with lowercase filenames (see ExtractFile)
-            yield return _resources[i].ResourceName.ToLowerInvariant();
-        }
-
-        if (_numResources > 0)
-        {
-            yield return "_game.cas";
-        }
-    }
-
     private byte[] GetResourcelessCAS()
     {
         throw new NotImplementedException();
         // var fileData = File.ReadAllText(_resourceFile, Encoding.GetEncoding(1252));
         // return Encoding.GetEncoding(1252).GetBytes(Strings.Left(fileData, _startCatPos - 1));
+    }
+
+    private class PlayerCanAccessObjectResult
+    {
+        public bool CanAccessObject;
+        public string ErrorMsg;
     }
 }

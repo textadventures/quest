@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿
 // ReSharper disable UnusedType.Local
 
 namespace QuestViva.Engine.GameLoader;
@@ -17,16 +15,20 @@ internal partial class GameSaver
             writer.WriteAttributeString("name", e.Name);
             if (e.Fields[FieldDefinitions.ParamNames] != null && e.Fields[FieldDefinitions.ParamNames].Count > 0)
             {
-                writer.WriteAttributeString("parameters", string.Join(", ", e.Fields[FieldDefinitions.ParamNames].ToArray()));
+                writer.WriteAttributeString("parameters",
+                    string.Join(", ", e.Fields[FieldDefinitions.ParamNames].ToArray()));
             }
+
             if (!string.IsNullOrEmpty(e.Fields[FieldDefinitions.ReturnType]))
             {
                 writer.WriteAttributeString("type", e.Fields[FieldDefinitions.ReturnType]);
             }
+
             if (e.Fields[FieldDefinitions.Script] != null)
             {
                 writer.WriteString(GameSaver.SaveScript(writer, e.Fields[FieldDefinitions.Script], 0));
             }
+
             writer.WriteEndElement();
         }
     }
@@ -58,7 +60,8 @@ internal partial class GameSaver
 
             writer.WriteStartElement("delegate");
             writer.WriteAttributeString("name", e.Name);
-            writer.WriteAttributeString("parameters", string.Join(", ", e.Fields[FieldDefinitions.ParamNames].ToArray()));
+            writer.WriteAttributeString("parameters",
+                string.Join(", ", e.Fields[FieldDefinitions.ParamNames].ToArray()));
             writer.WriteAttributeString("type", e.Fields[FieldDefinitions.ReturnType]);
             writer.WriteEndElement();
         }
@@ -95,9 +98,9 @@ internal partial class GameSaver
 
     private class EditorsSaver : IElementsSaver
     {
+        private readonly EditorControlSaver _controlSaver = new();
         private readonly EditorSaver _editorSaver = new();
         private readonly EditorTabSaver _tabSaver = new();
-        private readonly EditorControlSaver _controlSaver = new();
 
         public ElementType AppliesTo => ElementType.Editor;
 
@@ -110,15 +113,19 @@ internal partial class GameSaver
             foreach (var editor in allEditors.Where(e => !e.MetaFields[MetaFieldDefinitions.Library]))
             {
                 _editorSaver.StartSave(writer, editor);
-                foreach (var tab in allTabs.Where(t => t.Parent == editor).OrderBy(t => t.MetaFields[MetaFieldDefinitions.SortIndex]))
+                foreach (var tab in allTabs.Where(t => t.Parent == editor)
+                             .OrderBy(t => t.MetaFields[MetaFieldDefinitions.SortIndex]))
                 {
                     _tabSaver.StartSave(writer, tab);
-                    foreach (var control in allControls.Where(c => c.Parent == tab).OrderBy(c => c.MetaFields[MetaFieldDefinitions.SortIndex]))
+                    foreach (var control in allControls.Where(c => c.Parent == tab)
+                                 .OrderBy(c => c.MetaFields[MetaFieldDefinitions.SortIndex]))
                     {
                         _controlSaver.Save(writer, control);
                     }
+
                     _tabSaver.EndSave(writer);
                 }
+
                 _editorSaver.EndSave(writer);
             }
         }
@@ -169,6 +176,8 @@ internal partial class GameSaver
 
         public override ElementType AppliesTo => ElementType.EditorTab;
 
+        public override bool AutoSave => false;
+
         public void StartSave(GameXmlWriter writer, Element e)
         {
             writer.WriteStartElement("tab");
@@ -184,8 +193,6 @@ internal partial class GameSaver
         {
             throw new NotImplementedException();
         }
-
-        public override bool AutoSave => false;
     }
 
     private class EditorControlSaver : ElementSaverBase
@@ -197,14 +204,14 @@ internal partial class GameSaver
 
         public override ElementType AppliesTo => ElementType.EditorControl;
 
+        public override bool AutoSave => false;
+
         public override void Save(GameXmlWriter writer, Element e)
         {
             writer.WriteStartElement("control");
             SaveFields(writer, e);
             writer.WriteEndElement();
         }
-
-        public override bool AutoSave => false;
     }
 
     private class WalkthroughsSaver : IElementsSaver
@@ -215,7 +222,11 @@ internal partial class GameSaver
 
         public void Save(GameXmlWriter writer, WorldModel worldModel)
         {
-            if (!writer.Options.IncludeWalkthrough) return;
+            if (!writer.Options.IncludeWalkthrough)
+            {
+                return;
+            }
+
             foreach (var walkThrough in worldModel.Elements.GetElements(ElementType.Walkthrough)
                          .Where(e => e.Parent == null))
             {
@@ -223,11 +234,17 @@ internal partial class GameSaver
             }
         }
 
+        public GameSaver GameSaver
+        {
+            set => _walkthroughSaver.GameSaver = value;
+        }
+
         private void SaveElementAndChildren(GameXmlWriter writer, WorldModel worldModel, Element walkThrough)
         {
             _walkthroughSaver.StartSave(writer, walkThrough);
 
-            IEnumerable<Element> orderedChildren = from child in worldModel.Elements.GetElements(ElementType.Walkthrough)
+            IEnumerable<Element> orderedChildren =
+                from child in worldModel.Elements.GetElements(ElementType.Walkthrough)
                 where child.Parent == walkThrough
                 orderby child.MetaFields[MetaFieldDefinitions.SortIndex]
                 select child;
@@ -238,11 +255,6 @@ internal partial class GameSaver
             }
 
             _walkthroughSaver.EndSave(writer);
-        }
-
-        public GameSaver GameSaver
-        {
-            set => _walkthroughSaver.GameSaver = value;
         }
     }
 
@@ -274,7 +286,8 @@ internal partial class GameSaver
             result += Environment.NewLine;
 
             writer.WriteStartElement("steps");
-            writer.WriteAttributeString("type", GameSaver.Version <= WorldModelVersion.v530 ? "list" : "simplestringlist");
+            writer.WriteAttributeString("type",
+                GameSaver.Version <= WorldModelVersion.v530 ? "list" : "simplestringlist");
             writer.WriteString(result);
             writer.WriteEndElement();
         }
@@ -292,7 +305,11 @@ internal partial class GameSaver
         public override void Save(GameXmlWriter writer, Element e)
         {
             var filename = e.Fields[FieldDefinitions.Filename];
-            if (string.IsNullOrEmpty(filename)) return;
+            if (string.IsNullOrEmpty(filename))
+            {
+                return;
+            }
+
             writer.WriteStartElement("include");
             writer.WriteAttributeString("ref", filename);
             writer.WriteEndElement();
@@ -320,7 +337,11 @@ internal partial class GameSaver
         public override void Save(GameXmlWriter writer, Element e)
         {
             var filename = e.Fields[FieldDefinitions.Src];
-            if (string.IsNullOrEmpty(filename)) return;
+            if (string.IsNullOrEmpty(filename))
+            {
+                return;
+            }
+
             writer.WriteStartElement("javascript");
             writer.WriteAttributeString("src", filename);
             writer.WriteEndElement();

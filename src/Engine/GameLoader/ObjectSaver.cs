@@ -1,7 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Reflection;
 using QuestViva.Utility;
+
 // ReSharper disable UnusedType.Local
 
 namespace QuestViva.Engine.GameLoader;
@@ -57,13 +56,15 @@ internal partial class GameSaver
             AddIgnoreField("parent");
         }
 
+        public override ElementType AppliesTo => ElementType.Object;
+
         protected override void Initialise()
         {
             // Use Reflection to create instances of all IObjectSavers
-            foreach (var t in Classes.GetImplementations(System.Reflection.Assembly.GetExecutingAssembly(),
+            foreach (var t in Classes.GetImplementations(Assembly.GetExecutingAssembly(),
                          typeof(IObjectSaver)))
             {
-                AddSaver((IObjectSaver)Activator.CreateInstance(t)!);
+                AddSaver((IObjectSaver) Activator.CreateInstance(t)!);
             }
         }
 
@@ -72,8 +73,6 @@ internal partial class GameSaver
             saver.ObjectSaver = this;
             _savers.Add(saver.AppliesTo, saver);
         }
-
-        public override ElementType AppliesTo => ElementType.Object;
 
         public override void Save(GameXmlWriter writer, Element e)
         {
@@ -90,8 +89,9 @@ internal partial class GameSaver
         {
             if (!_savers.TryGetValue(e.Type, out saver!))
             {
-                throw new Exception("ERROR: No ObjectSaver for type " + e.Type.ToString());
+                throw new Exception("ERROR: No ObjectSaver for type " + e.Type);
             }
+
             return true;
         }
 
@@ -118,16 +118,20 @@ internal partial class GameSaver
 
         protected override bool CanSaveTypeName(GameXmlWriter writer, string type, Element e)
         {
-            if (!base.CanSaveTypeName(writer, type, e)) return false;
+            if (!base.CanSaveTypeName(writer, type, e))
+            {
+                return false;
+            }
+
             return e.Type != ObjectType.Command || !e.Fields[FieldDefinitions.IsVerb] || type != "defaultverb";
         }
 
         private interface IObjectSaver
         {
             ObjectType AppliesTo { get; }
+            ObjectSaver ObjectSaver { set; }
             void StartSave(GameXmlWriter writer, Element e);
             void EndSave(GameXmlWriter writer, Element e);
-            ObjectSaver ObjectSaver { set; }
             bool CanSaveAttribute(string attribute);
         }
 
@@ -135,25 +139,21 @@ internal partial class GameSaver
         {
             private readonly List<string> _ignoreAttributes = [];
 
-            protected void AddIgnoreField(string field)
-            {
-                _ignoreAttributes.Add(field);
-            }
-
             public abstract ObjectType AppliesTo { get; }
 
             public abstract void StartSave(GameXmlWriter writer, Element e);
             public abstract void EndSave(GameXmlWriter writer, Element e);
 
-            public required ObjectSaver ObjectSaver
-            {
-                get;
-                set;
-            }
+            public required ObjectSaver ObjectSaver { get; set; }
 
             public bool CanSaveAttribute(string attribute)
             {
                 return !_ignoreAttributes.Contains(attribute);
+            }
+
+            protected void AddIgnoreField(string field)
+            {
+                _ignoreAttributes.Add(field);
             }
         }
 
@@ -213,6 +213,7 @@ internal partial class GameSaver
                 {
                     writer.WriteAttributeString("name", e.Name);
                 }
+
                 ObjectSaver.SaveFields(writer, e);
             }
 
@@ -240,14 +241,17 @@ internal partial class GameSaver
                 {
                     writer.WriteAttributeString("name", e.Name);
                 }
+
                 if (!string.IsNullOrEmpty(e.Fields[FieldDefinitions.Alias]))
                 {
                     writer.WriteAttributeString("alias", e.Fields[FieldDefinitions.Alias]);
                 }
+
                 if (e.Fields[FieldDefinitions.To] != null)
                 {
                     writer.WriteAttributeString("to", e.Fields[FieldDefinitions.To].Name);
                 }
+
                 ObjectSaver.SaveFields(writer, e);
             }
 
@@ -273,6 +277,7 @@ internal partial class GameSaver
                 {
                     writer.WriteAttributeString("name", e.Name);
                 }
+
                 ObjectSaver.SaveFields(writer, e);
             }
 
