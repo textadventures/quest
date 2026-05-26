@@ -296,6 +296,7 @@
       <SubType>UserControl</SubType>
     </Compile>
     <Compile Include="WindowHelpers.cs" />
+    <Compile Include="XamlIconRenderer.cs" />
     <EmbeddedResource Include="InputWindow.de.resx">
       <DependentUpon>InputWindow.cs</DependentUpon>
     </EmbeddedResource>

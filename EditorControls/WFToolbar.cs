@@ -60,7 +60,7 @@ namespace TextAdventures.Quest.EditorControls
                 string xamlName;
                 if (_toolbarXamlNames.TryGetValue(item.Name, out xamlName))
                 {
-                    var bmp = WFListEditor.RenderXaml(xamlName, size);
+                    var bmp = XamlIconRenderer.RenderXaml(xamlName, size);
                     if (bmp != null)
                     {
                         var old = item.Image;
