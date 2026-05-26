@@ -4,6 +4,7 @@ export class ServerFileAdapter implements FileAdapter {
     constructor(
         private readonly _gameId: string,
         private readonly _filename: string,
+        readonly previewUrl: string | null,
     ) {}
 
     get filename() { return this._filename; }
@@ -63,6 +64,7 @@ export async function loadFromServer(gameId: string): Promise<LoadedFile> {
     const disposition = resp.headers.get("Content-Disposition") ?? "";
     const match = /filename[^;=\n]*=['"]?([^'";\n]+)['"]?/.exec(disposition);
     const filename = match?.[1]?.trim() ?? `${gameId}.aslx`;
+    const previewUrl = resp.headers.get("X-Preview-Url");
     const bytes = new Uint8Array(await resp.arrayBuffer());
-    return { bytes, adapter: new ServerFileAdapter(gameId, filename) };
+    return { bytes, adapter: new ServerFileAdapter(gameId, filename, previewUrl) };
 }

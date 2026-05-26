@@ -92,6 +92,7 @@ export class BrowserFileAdapter implements FileAdapter {
     ) {}
 
     get filename() { return this._filename; }
+    readonly previewUrl: string | null = null;
 
     // Whether assets are on the real filesystem (vs OPFS-only)
     get assetsOnDisk(): boolean { return this._mode.kind === "directory"; }

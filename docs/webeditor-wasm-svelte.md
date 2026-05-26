@@ -116,7 +116,7 @@ src/WebEditor/
 │   │   ├── editor-store.ts # Svelte stores + wrappers for all WASM calls
 │   │   └── types.ts        # TreeNode, ControlInfo, TabInfo, EditorDataResponse, ScriptNodeData, …
 │   ├── components/
-│   │   ├── Toolbar.svelte         # AppBar: title, filename, undo/redo/save
+│   │   ├── Toolbar.svelte         # AppBar: title, filename, undo/redo/save/preview
 │   │   ├── TreePanel.svelte       # Skeleton TreeView (flat→hierarchy conversion)
 │   │   ├── PropertyEditor.svelte  # Typed controls with tab navigation
 │   │   ├── ScriptEditor.svelte    # Visual script editor (recursive); code view; copy/paste
@@ -189,6 +189,7 @@ loadFromServer(gameId: string): Promise<LoadedFile>  // fetches from /api/editor
 interface FileAdapter {
   readonly filename: string
   readonly canSaveAs: boolean
+  readonly previewUrl: string | null   // null for local mode; server-provided URL for online mode
   saveFile(data: Uint8Array | string): Promise<void>
   saveFileAs(data: Uint8Array | string, suggestedName?: string): Promise<string | null>  // returns new filename or null if cancelled
   putAsset(key: string, data: Blob): Promise<void>
@@ -199,6 +200,11 @@ interface FileAdapter {
 ```
 
 `saveFileAs` returns the filename that was saved to (so the toolbar can update), or `null` if the user cancelled.
+
+`previewUrl` is exposed as a Svelte store and drives the Preview button in the toolbar:
+
+- **Server mode**: the server returns the player URL in the `X-Preview-Url` response header when loading the game. Clicking Preview saves the game then opens the URL in a new tab (the existing WebPlayer handles rendering).
+- **Local mode**: `previewUrl` is `null`. Clicking Preview shows an inline banner explaining that local games must be tested in the Quest desktop app. The WebEditor cannot run a local game preview in the browser because the WASM player was removed — the Engine uses OS threads (via `Task.Run`) that are incompatible with the browser's no-shared-memory WASM model. Fixing this requires migrating the expression evaluator from Ciloci.Flee to NCalc (async-safe), which is still in progress.
 
 ### Unsaved changes
 

@@ -18,6 +18,7 @@ export function openAddModal(type: "room" | "object" | "function" | "timer" | "w
 }
 export const gameFilename = writable<string | null>(null);
 export const canSaveAs = writable(false);
+export const previewUrl = writable<string | null>(null);
 export const treeNodes = writable<TreeNode[]>([]);
 export const selectedKey = writable<string | null>(null);
 export const selectedData = writable<EditorDataResponse | null>(null);
@@ -39,6 +40,7 @@ export async function openGame(bytes: Uint8Array, filename: string, adapter: Fil
     _bridge = await loadWasm();
     _adapter = adapter;
     canSaveAs.set(adapter.canSaveAs);
+    previewUrl.set(adapter.previewUrl);
     loadingStatus.set("Loading game…");
     // Double rAF ensures the browser actually paints the status update before
     // Initialise blocks the JS thread (C# WASM calls are synchronous).

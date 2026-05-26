@@ -2,7 +2,8 @@
     import { AppBar } from "@skeletonlabs/skeleton-svelte";
     import { PUBLIC_WEBEDITOR_VERSION } from "$env/static/public";
     import {
-        gameFilename, isDirty, saveGame, saveGameAs, canSaveAs, undo, redo, canUndo, canRedo,
+        gameFilename, isDirty, saveGame, saveGameAs, canSaveAs, previewUrl,
+        undo, redo, canUndo, canRedo,
         treeNodes, selectedKey, openAddModal,
         createExit, createTurnScript, createCommand, createVerb,
         createIncludedLibrary, createJavascript,
@@ -11,6 +12,7 @@
     import type { TreeNode } from "$lib/types";
 
     let saving = $state(false);
+    let showPreviewHelp = $state(false);
 
     async function handleSave() {
         saving = true;
@@ -20,6 +22,15 @@
     async function handleSaveAs() {
         saving = true;
         try { await saveGameAs(); } finally { saving = false; }
+    }
+
+    async function handlePreview() {
+        if ($previewUrl) {
+            await saveGame();
+            window.open($previewUrl, "_blank");
+        } else {
+            showPreviewHelp = !showPreviewHelp;
+        }
     }
 
     // Derive the currently selected tree node
@@ -123,7 +134,23 @@
                     {#if $canSaveAs}
                         <button type="button" class="btn btn-sm preset-outlined-primary-500" onclick={handleSaveAs} disabled={saving} title="Save As">Save As…</button>
                     {/if}
+                    {#if $gameFilename}
+                        <button type="button" class="btn btn-sm preset-outlined-secondary-500" onclick={handlePreview} title="Preview game">▶ Preview</button>
+                    {/if}
                 </div>
             </AppBar.Trail>
         </AppBar.Toolbar>
     </AppBar>
+
+{#if showPreviewHelp}
+    <div class="bg-surface-100-900 border-b border-surface-200-800 px-4 py-3 text-sm flex items-start gap-3">
+        <span class="text-warning-500 text-base">ℹ</span>
+        <div>
+            <strong>To preview your game:</strong> Open it in the
+            <a href="https://textadventures.co.uk/quest" target="_blank" rel="noopener" class="anchor">Quest desktop app</a>,
+            which can run games directly from your local files.
+            Online preview is only available when editing a game saved on textadventures.co.uk.
+        </div>
+        <button type="button" class="ml-auto text-surface-500-400 hover:text-surface-900-50" onclick={() => showPreviewHelp = false}>✕</button>
+    </div>
+{/if}

@@ -6,6 +6,7 @@ export interface AssetInfo {
 export interface FileAdapter {
     readonly filename: string;
     readonly canSaveAs: boolean;
+    readonly previewUrl: string | null;
     saveFile(data: Uint8Array | string): Promise<void>;
     // Returns the filename that was saved to, or null if the user cancelled.
     saveFileAs(data: Uint8Array | string, suggestedName?: string): Promise<string | null>;
