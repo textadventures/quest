@@ -18,6 +18,9 @@
     };
 
     let dialogEl: HTMLDivElement;
+    let inputEl: HTMLInputElement;
+
+    $effect(() => { inputEl?.focus(); });
 
     let name = $state("");
     let error = $state("");
@@ -60,13 +63,12 @@
 
         <div class="flex flex-col gap-1">
             <label for="element-name" class="text-xs text-surface-500-400">Name</label>
-            <!-- svelte-ignore a11y_autofocus -->
             <input
                 id="element-name"
                 type="text"
                 class={"input bg-white px-2 py-1 text-sm" + (error ? " !border-error-500" : "")}
+                bind:this={inputEl}
                 bind:value={name}
-                autofocus
                 placeholder="Enter a name..."
             />
             {#if error}
