@@ -4,7 +4,7 @@
     import { goto } from "$app/navigation";
     import { base } from "$app/paths";
     import { get } from "svelte/store";
-    import { isLoaded, addElementModal, createRoom, createObject, createFunction, createTimer } from "$lib/editor-store";
+    import { isLoaded, addElementModal, createRoom, createObject, createFunction, createTimer, createWalkthrough, createTemplate, createDynamicTemplate, createObjectType } from "$lib/editor-store";
     import Toolbar from "$components/Toolbar.svelte";
     import TreePanel from "$components/TreePanel.svelte";
     import PropertyEditor from "$components/PropertyEditor.svelte";
@@ -25,6 +25,10 @@
         else if (mode.type === "object") createObject(name, mode.parent);
         else if (mode.type === "function") createFunction(name);
         else if (mode.type === "timer") createTimer(name);
+        else if (mode.type === "walkthrough") createWalkthrough(name);
+        else if (mode.type === "template") createTemplate(name);
+        else if (mode.type === "dynamictemplate") createDynamicTemplate(name);
+        else if (mode.type === "type") createObjectType(name);
     }
 </script>
 

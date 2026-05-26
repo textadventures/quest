@@ -64,7 +64,14 @@ export interface WasmBridge {
   CreateTurnScript(parent: string): string
   CreateCommand(parent: string): string
   CreateVerb(parent: string): string
+  CreateWalkthrough(name: string, parent: string): string
+  CreateTemplate(name: string): string
+  CreateDynamicTemplate(name: string): string
+  CreateObjectType(name: string): string
+  CreateIncludedLibrary(): string
+  CreateJavascript(): string
   DeleteElement(key: string): void
+  SwapElements(key1: string, key2: string): string
 }
 
 let _bridge: WasmBridge | null = null;

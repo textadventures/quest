@@ -3,7 +3,7 @@ import { loadWasm } from "./wasm";
 import type { WasmBridge } from "./wasm";
 import type { TreeNode, EditorDataResponse, ScriptBlockData, ScriptCommandCategoriesData, IfExpressionTemplateData, IfExpressionTemplate, FullAttributeData } from "./types";
 
-export type AddElementModalState = { type: "room" | "object" | "function" | "timer"; parent: string | null } | null;
+export type AddElementModalState = { type: "room" | "object" | "function" | "timer" | "walkthrough" | "template" | "dynamictemplate" | "type"; parent: string | null } | null;
 
 let _bridge: WasmBridge | null = null;
 
@@ -11,7 +11,7 @@ export const isLoaded = writable(false);
 export const loadingStatus = writable<string | null>(null);
 export const addElementModal = writable<AddElementModalState>(null);
 
-export function openAddModal(type: "room" | "object" | "function" | "timer", parent: string | null) {
+export function openAddModal(type: "room" | "object" | "function" | "timer" | "walkthrough" | "template" | "dynamictemplate" | "type", parent: string | null) {
     addElementModal.set({ type, parent });
 }
 export const gameFilename = writable<string | null>(null);
@@ -486,6 +486,36 @@ export function createVerb(parent: string | null): string {
     return afterCreate(_bridge.CreateVerb(parent ?? ""));
 }
 
+export function createWalkthrough(name: string): string {
+    if (!_bridge) return "error:not loaded";
+    return afterCreate(_bridge.CreateWalkthrough(name, ""));
+}
+
+export function createTemplate(name: string): string {
+    if (!_bridge) return "error:not loaded";
+    return afterCreate(_bridge.CreateTemplate(name));
+}
+
+export function createDynamicTemplate(name: string): string {
+    if (!_bridge) return "error:not loaded";
+    return afterCreate(_bridge.CreateDynamicTemplate(name));
+}
+
+export function createObjectType(name: string): string {
+    if (!_bridge) return "error:not loaded";
+    return afterCreate(_bridge.CreateObjectType(name));
+}
+
+export function createIncludedLibrary(): string {
+    if (!_bridge) return "error:not loaded";
+    return afterCreate(_bridge.CreateIncludedLibrary());
+}
+
+export function createJavascript(): string {
+    if (!_bridge) return "error:not loaded";
+    return afterCreate(_bridge.CreateJavascript());
+}
+
 export function deleteElement(key: string) {
     if (!_bridge) return;
     _bridge.DeleteElement(key);
@@ -493,4 +523,11 @@ export function deleteElement(key: string) {
     selectedData.set(null);
     refreshTree();
     refreshUndoRedo();
+}
+
+export function swapElements(key1: string, key2: string): string {
+    if (!_bridge) return "error";
+    const result = _bridge.SwapElements(key1, key2);
+    if (result === "ok") refreshTree();
+    return result;
 }
