@@ -1,7 +1,7 @@
 import { writable, get } from "svelte/store";
 import { loadWasm } from "./wasm";
 import type { WasmBridge } from "./wasm";
-import type { TreeNode, EditorDataResponse, ScriptBlockData, ScriptCommandCategoriesData, IfExpressionTemplateData, IfExpressionTemplate } from "./types";
+import type { TreeNode, EditorDataResponse, ScriptBlockData, ScriptCommandCategoriesData, IfExpressionTemplateData, IfExpressionTemplate, FullAttributeData } from "./types";
 
 export type AddElementModalState = { type: "room" | "object" | "function" | "timer"; parent: string | null } | null;
 
@@ -18,6 +18,7 @@ export const gameFilename = writable<string | null>(null);
 export const treeNodes = writable<TreeNode[]>([]);
 export const selectedKey = writable<string | null>(null);
 export const selectedData = writable<EditorDataResponse | null>(null);
+export const fullAttributeData = writable<FullAttributeData | null>(null);
 export const canUndo = writable(false);
 export const canRedo = writable(false);
 export const scriptVersion = writable(0);
@@ -35,7 +36,7 @@ export async function openGame(file: File): Promise<boolean> {
     loadingStatus.set("Loading game…");
     // Double rAF ensures the browser actually paints the status update before
     // Initialise blocks the JS thread (C# WASM calls are synchronous).
-    await new Promise<void>(resolve => requestAnimationFrame(() => requestAnimationFrame(resolve)));
+    await new Promise<void>(resolve => requestAnimationFrame(() => requestAnimationFrame(() => resolve())));
     const ok = await _bridge.Initialise(bytes, file.name);
     loadingStatus.set(null);
     if (ok) {
@@ -56,6 +57,8 @@ export function selectNode(key: string) {
     selectedKey.set(key);
     const json = _bridge.GetEditorData(key);
     selectedData.set(json ? JSON.parse(json) : null);
+    const attrJson = _bridge.GetFullAttributeData(key);
+    fullAttributeData.set(attrJson ? JSON.parse(attrJson) : null);
 }
 
 export function setAttribute(elementKey: string, attribute: string, controlType: string, value: string): string {
@@ -140,6 +143,110 @@ export function updateListItem(elementKey: string, attribute: string, key: strin
     if (!_bridge) return "error";
     const result = _bridge.UpdateListItem(elementKey, attribute, key, value);
     refreshSelectedData();
+    refreshUndoRedo();
+    return result;
+}
+
+// ── Attributes editor functions ─────────────────────────────────────────────
+
+export function removeAttribute(elementKey: string, attribute: string): string {
+    if (!_bridge) return "error";
+    const result = _bridge.RemoveAttribute(elementKey, attribute);
+    if (result === "ok") refreshSelectedData();
+    refreshUndoRedo();
+    return result;
+}
+
+export function addInheritedType(elementKey: string, typeName: string): string {
+    if (!_bridge) return "error";
+    const result = _bridge.AddInheritedType(elementKey, typeName);
+    if (result === "ok") refreshSelectedData();
+    refreshUndoRedo();
+    return result;
+}
+
+export function removeInheritedType(elementKey: string, typeName: string): string {
+    if (!_bridge) return "error";
+    const result = _bridge.RemoveInheritedType(elementKey, typeName);
+    if (result === "ok") refreshSelectedData();
+    refreshUndoRedo();
+    return result;
+}
+
+export function getTypeNames(): string[] {
+    if (!_bridge) return [];
+    try { return JSON.parse(_bridge.GetTypeNames()); }
+    catch { return []; }
+}
+
+export function addDictItem(elementKey: string, attribute: string, key: string, value: string): string {
+    if (!_bridge) return "error";
+    const result = _bridge.AddDictionaryItem(elementKey, attribute, key, value);
+    if (result === "ok") refreshSelectedData();
+    refreshUndoRedo();
+    return result;
+}
+
+export function removeDictItem(elementKey: string, attribute: string, key: string): string {
+    if (!_bridge) return "error";
+    const result = _bridge.RemoveDictionaryItem(elementKey, attribute, key);
+    if (result === "ok") refreshSelectedData();
+    refreshUndoRedo();
+    return result;
+}
+
+export function updateDictItem(elementKey: string, attribute: string, key: string, value: string): string {
+    if (!_bridge) return "error";
+    const result = _bridge.UpdateDictionaryItem(elementKey, attribute, key, value);
+    if (result === "ok") refreshSelectedData();
+    refreshUndoRedo();
+    return result;
+}
+
+export function makeScriptEditable(elementKey: string, attribute: string): string {
+    if (!_bridge) return "error";
+    const result = _bridge.MakeScriptEditable(elementKey, attribute);
+    if (result === "ok") { refreshSelectedData(); bumpScriptVersion(); }
+    refreshUndoRedo();
+    return result;
+}
+
+export function makeScriptDictEditable(elementKey: string, attribute: string): string {
+    if (!_bridge) return "error";
+    const result = _bridge.MakeScriptDictEditable(elementKey, attribute);
+    if (result === "ok") { refreshSelectedData(); bumpScriptVersion(); }
+    refreshUndoRedo();
+    return result;
+}
+
+export function addScriptDictItem(elementKey: string, attribute: string, key: string): string {
+    if (!_bridge) return "error";
+    const result = _bridge.AddScriptDictionaryItem(elementKey, attribute, key);
+    if (result === "ok") { refreshSelectedData(); bumpScriptVersion(); }
+    refreshUndoRedo();
+    return result;
+}
+
+export function removeScriptDictItem(elementKey: string, attribute: string, key: string): string {
+    if (!_bridge) return "error";
+    const result = _bridge.RemoveScriptDictionaryItem(elementKey, attribute, key);
+    if (result === "ok") { refreshSelectedData(); bumpScriptVersion(); }
+    refreshUndoRedo();
+    return result;
+}
+
+export function changeAttributeType(elementKey: string, attribute: string, newType: string): string {
+    if (!_bridge) return "error";
+    const result = _bridge.ChangeAttributeType(elementKey, attribute, newType);
+    if (result === "ok") refreshSelectedData();
+    refreshUndoRedo();
+    return result;
+}
+
+export function setPatternAttribute(elementKey: string, attribute: string, pattern: string): string {
+    if (!_bridge) return "error";
+    const result = _bridge.SetPatternAttribute(elementKey, attribute, pattern);
+    if (result === "ok") refreshSelectedData();
     refreshUndoRedo();
     return result;
 }
@@ -312,6 +419,8 @@ function refreshSelectedData() {
     if (!_bridge || !key) return;
     const json = _bridge.GetEditorData(key);
     selectedData.set(json ? JSON.parse(json) : null);
+    const attrJson = _bridge.GetFullAttributeData(key);
+    fullAttributeData.set(attrJson ? JSON.parse(attrJson) : null);
 }
 
 function refreshTree() {

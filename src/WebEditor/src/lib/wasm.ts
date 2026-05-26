@@ -38,6 +38,21 @@ export interface WasmBridge {
   AddListItem(elementKey: string, attribute: string, value: string): string
   RemoveListItem(elementKey: string, attribute: string, key: string): string
   UpdateListItem(elementKey: string, attribute: string, key: string, value: string): string
+  // Attributes editor API
+  GetFullAttributeData(elementKey: string): string | null
+  RemoveAttribute(elementKey: string, attribute: string): string
+  AddInheritedType(elementKey: string, typeName: string): string
+  RemoveInheritedType(elementKey: string, typeName: string): string
+  GetTypeNames(): string
+  AddDictionaryItem(elementKey: string, attribute: string, key: string, value: string): string
+  RemoveDictionaryItem(elementKey: string, attribute: string, key: string): string
+  UpdateDictionaryItem(elementKey: string, attribute: string, key: string, value: string): string
+  MakeScriptEditable(elementKey: string, attribute: string): string
+  MakeScriptDictEditable(elementKey: string, attribute: string): string
+  AddScriptDictionaryItem(elementKey: string, attribute: string, key: string): string
+  RemoveScriptDictionaryItem(elementKey: string, attribute: string, key: string): string
+  ChangeAttributeType(elementKey: string, attribute: string, newType: string): string
+  SetPatternAttribute(elementKey: string, attribute: string, pattern: string): string
   // Element creation / deletion
   ValidateName(name: string): string
   GetUniqueName(baseName: string): string

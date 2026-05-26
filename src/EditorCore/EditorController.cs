@@ -1132,6 +1132,26 @@ namespace QuestViva.EditorCore
             return newValue;
         }
 
+        public void MakeScriptDictionaryEditable(string parent, string attribute)
+        {
+            Element element = m_worldModel.Elements.Get(parent);
+            QuestDictionary<IScript> existing = element.Fields.GetAsType<QuestDictionary<IScript>>(attribute);
+            if (existing == null) return;
+
+            WorldModel.UndoLogger.StartTransaction($"Copy {attribute} to {parent}");
+            try
+            {
+                QuestDictionary<IScript> newDict = new QuestDictionary<IScript>();
+                foreach (var kvp in existing)
+                    newDict.Add(kvp.Key, (IScript)kvp.Value.Clone());
+                element.Fields.Set(attribute, newDict);
+            }
+            finally
+            {
+                WorldModel.UndoLogger.EndTransaction();
+            }
+        }
+
         public IEditableObjectReference CreateNewEditableObjectReference(string parent, string attribute, bool useTransaction)
         {
             if (useTransaction)

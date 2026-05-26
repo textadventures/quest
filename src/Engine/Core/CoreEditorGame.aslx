@@ -1017,7 +1017,6 @@
     <tab>
       <caption>[EditorGameAttributes]</caption>
       <advanced/>
-      <desktop/>
 
       <control>
         <controltype>stringdictionary</controltype>

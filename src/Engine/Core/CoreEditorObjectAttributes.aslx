@@ -3,7 +3,6 @@
     <parent>_ObjectEditor</parent>
     <caption>[EditorObjectAttributesAttributes]</caption>
     <advanced/>
-    <desktop/>
 
     <control>
       <controltype>stringdictionary</controltype>
