@@ -155,16 +155,17 @@ The browser cannot read files from the local filesystem directly.
 - JS reads it as `ArrayBuffer`, converts to `Uint8Array`, passes to `Initialise`
 - Save triggers a download via a temporary `<a>` with an object URL
 
-**Option B (implemented)** — File System Access API with download fallback
-- `loadLocalFile()` in `src/lib/filesystem/browser-adapter.ts` uses `showOpenFilePicker` on Chrome/Edge for direct read/write with no download prompt; the returned `FileSystemFileHandle` is stored on the adapter so subsequent saves overwrite the file in place
-- Safari/Firefox fallback: `<input type="file">` open + download save (programmatic `input.click()` triggered from the same user-gesture context)
-- `showSaveFilePicker` used for Save As on supporting browsers; updates the stored handle so future saves go to the new location; returns the new filename so the toolbar updates immediately
-- `canSaveAs: boolean` on the adapter interface gates the Save As button — false for server mode where the concept doesn't apply
+**Option B (implemented)** — File System Access API (`showDirectoryPicker`)
+- The user opens a **game folder**, not just a single file. `openDirectory()` calls `showDirectoryPicker({ mode: "readwrite" })` and scans for `.aslx` files inside. If exactly one is found it auto-loads; if multiple (split-file games, custom libraries) the open page shows a file picker within the folder.
+- `BrowserFileAdapter` holds a `FileSystemDirectoryHandle`; saves write the `.aslx` back to the same folder (no download prompt). `saveFileAs` uses `showSaveFilePicker({ startIn: dir })` so it opens in the right folder by default.
+- The directory model is necessary because the FSA API deliberately provides no path from a `FileSystemFileHandle` to its parent — you cannot reach sibling asset files from a file handle alone.
+- Non-FSA browsers (Firefox): `loadLocalFile()` falls back to `<input type="file">` + download save. A clear notice directs users to a supported browser for full asset support.
 
 **Option C (partially implemented)** — Asset storage
-- `putAsset` / `getAsset` / `listAssets` / `deleteAsset` on `BrowserFileAdapter` read/write to OPFS under a per-session UUID key
-- `ServerFileAdapter` delegates asset operations to `/api/editor/games/{gameId}/assets` REST endpoints (see `textadventures-api.md`)
-- Service Worker to intercept asset URL requests during game preview is **not yet implemented** — assets stored in OPFS are not yet resolvable as URLs inside the player
+- **Directory mode** (`BrowserFileAdapter`): `putAsset` / `getAsset` / `listAssets` / `deleteAsset` are real sibling files on disk inside the game folder. Assets persist across sessions, are portable (the desktop editor and other tools find them), and require no upload to any server.
+- **Fallback mode** (`BrowserFileAdapter`): assets go to OPFS under a per-session UUID. They survive the session but cannot be extracted or used outside the browser. Asset upload is disabled in this mode — there is nowhere persistent to put them that the user can retrieve later.
+- **Server mode** (`ServerFileAdapter`): asset operations hit `/api/editor/games/{gameId}/assets` REST endpoints (see `docs/textadventures-api.md`). This is a transitional path for games already hosted on textadventures.co.uk; the intent is that local directory mode becomes the primary workflow.
+- Service Worker to intercept asset URL requests during game preview is **not yet implemented** — assets are stored correctly but are not yet resolvable as URLs inside the player preview.
 
 **Option D (future)** — Electron wrapper
 - Electron exposes Node.js `fs` to the renderer via `contextBridge` + IPC handlers in the main process — do **not** attempt to use the File System Access API inside Electron, which has known parity bugs (missing persistent permissions, broken directory iteration)
