@@ -11,12 +11,13 @@
 
     let { elementKey, attribute, value, isLocked = false }: Props = $props();
 
-    let keys = $derived.by<string[]>(() => {
+    let items = $derived.by<{key: string, value: string}[]>(() => {
         try {
-            const items = JSON.parse(value ?? "[]") as {key: string, value: string}[];
-            return items.map(i => i.key);
+            return JSON.parse(value ?? "[]") as {key: string, value: string}[];
         } catch { return []; }
     });
+
+    let keys = $derived(items.map(i => i.key));
 
     let expandedKeys = $state(new Set<string>());
     let newKey = $state("");
@@ -49,8 +50,8 @@
         </div>
     {/if}
     {#if isLocked}
-        {#each keys as key (key)}
-            <div class="border border-surface-200-800 rounded px-2 py-1 text-xs text-surface-400-500 opacity-60">{key} <span class="italic">(script)</span></div>
+        {#each items as item (item.key)}
+            <div class="border border-surface-200-800 rounded px-2 py-1 text-xs text-surface-400-500 opacity-60"><span class="font-medium">{item.key}</span> = <span class="italic">{item.value || "(empty)"}</span></div>
         {/each}
     {:else}
         {#each keys as key (key)}
