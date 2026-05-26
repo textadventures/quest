@@ -50,15 +50,15 @@
     // ── Add actions ────────────────────────────────────────────────────────────
 
     let isObjectList = $derived(nodeTypes.includes("room") || nodeTypes.includes("object"));
-    let showRoomButton = $derived(!isHeaderNode && isObjectList);
+    let showRoomButton = $derived(isObjectList);
 
     let addLabel = $derived(
         nodeTypes.includes("function") ? "Add Function" :
         nodeTypes.includes("timer") ? "Add Timer" :
         nodeTypes.includes("verb") ? "Add Verb" :
         nodeTypes.includes("command") ? "Add Command" :
-        isHeaderNode ? "Add Room" :
-        "Add Object"
+        isObjectList ? "Add Object" :
+        null
     );
 
     function addPrimary() {
@@ -67,7 +67,7 @@
         else if (nodeTypes.includes("timer")) openAddModal("timer", null);
         else if (nodeTypes.includes("verb")) createVerb(parent);
         else if (nodeTypes.includes("command")) createCommand(parent);
-        else openAddModal(isHeaderNode ? "room" : "object", parent);
+        else if (isObjectList) openAddModal("object", parent);
     }
 
     function addRoom() {
@@ -118,11 +118,13 @@
 <div class="flex flex-col w-full px-3 py-2">
     <!-- Add toolbar -->
     <div class="flex items-center gap-1 mb-2">
+        {#if addLabel !== null}
         <button
             type="button"
             class="btn btn-sm preset-outlined-primary-500 text-xs py-0.5"
             onclick={addPrimary}
         >+ {addLabel}</button>
+        {/if}
         {#if showRoomButton}
             <button
                 type="button"
