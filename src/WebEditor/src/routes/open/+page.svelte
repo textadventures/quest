@@ -8,11 +8,11 @@
     let error = $state<string | null>(null);
 
     async function handleOpen() {
-        loading = true;
         error = null;
         try {
             const loaded = await loadLocalFile();
-            if (!loaded) { loading = false; return; }
+            if (!loaded) return;
+            loading = true;
             const ok = await openGame(loaded.bytes, loaded.adapter.filename, loaded.adapter);
             if (ok) {
                 goto(base || "/");
