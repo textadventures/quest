@@ -4,7 +4,7 @@
     import { goto } from "$app/navigation";
     import { base } from "$app/paths";
     import { get } from "svelte/store";
-    import { isLoaded, loadingStatus, addElementModal, openGame, createRoom, createObject, createFunction, createTimer, createWalkthrough, createTemplate, createDynamicTemplate, createObjectType } from "$lib/editor-store";
+    import { isLoaded, isDirty, loadingStatus, addElementModal, openGame, createRoom, createObject, createFunction, createTimer, createWalkthrough, createTemplate, createDynamicTemplate, createObjectType } from "$lib/editor-store";
     import { loadFromServer } from "$lib/filesystem/server-adapter";
     import Toolbar from "$components/Toolbar.svelte";
     import TreePanel from "$components/TreePanel.svelte";
@@ -12,6 +12,13 @@
     import AddElementModal from "$components/AddElementModal.svelte";
 
     let serverLoadError = $state<string | null>(null);
+
+    $effect(() => {
+        if (!$isDirty) return;
+        function handleBeforeUnload(e: BeforeUnloadEvent) { e.preventDefault(); }
+        window.addEventListener("beforeunload", handleBeforeUnload);
+        return () => window.removeEventListener("beforeunload", handleBeforeUnload);
+    });
 
     onMount(() => {
         const gameId = new URLSearchParams(window.location.search).get("game");
