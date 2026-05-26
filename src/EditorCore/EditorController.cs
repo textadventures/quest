@@ -213,6 +213,7 @@ public sealed class EditorController : IDisposable
     public event EventHandler<ElementRefreshedEventArgs> ElementRefreshed;
     public event EventHandler<UpdateUndoListEventArgs> UndoListUpdated;
     public event EventHandler<UpdateUndoListEventArgs> RedoListUpdated;
+    public event EventHandler Dirty;
     public event EventHandler<LoadStatusEventArgs> LoadStatus;
     public event EventHandler<LibrariesUpdatedEventArgs> LibrariesUpdated;
 
@@ -239,6 +240,7 @@ public sealed class EditorController : IDisposable
         WorldModel.ElementRefreshed += m_worldModel_ElementRefreshed;
         WorldModel.ElementMetaFieldUpdated += m_worldModel_ElementMetaFieldUpdated;
         WorldModel.UndoLogger.TransactionsUpdated += UndoLogger_TransactionsUpdated;
+        WorldModel.UndoLogger.TransactionCommitted += (_, _) => Dirty?.Invoke(this, EventArgs.Empty);
         WorldModel.Elements.ElementRenamed += Elements_ElementRenamed;
         WorldModel.LoadStatus += m_worldModel_LoadStatus;
 

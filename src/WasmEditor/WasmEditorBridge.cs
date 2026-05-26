@@ -124,6 +124,7 @@ public partial class WasmEditorBridge
     private static bool _isRebuilding;
     private static bool _suppressTreeEvents;
     private static string? _pendingRenameNewKey;
+    private static bool _isDirty;
 
     [JSExport]
     public static async Task<bool> Initialise(byte[] gameFileBytes, string filename)
@@ -174,8 +175,11 @@ public partial class WasmEditorBridge
             }
         };
 
+        _controller.Dirty += (_, _) => { _isDirty = true; };
+
         var provider = new ByteArrayGameDataProvider(gameFileBytes, filename);
         var ok = await _controller.Initialise(new WasmConfig(), provider);
+        _isDirty = false;
         if (ok)
         {
             _controller.UpdateTree();
@@ -381,8 +385,13 @@ public partial class WasmEditorBridge
     [JSExport]
     public static string Save()
     {
-        return _controller?.Save() ?? string.Empty;
+        var xml = _controller?.Save() ?? string.Empty;
+        _isDirty = false;
+        return xml;
     }
+
+    [JSExport]
+    public static bool IsDirty() => _isDirty;
 
     [JSExport]
     public static bool CanUndo()

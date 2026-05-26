@@ -1,11 +1,13 @@
 import { writable, get } from "svelte/store";
 import { loadWasm } from "./wasm";
 import type { WasmBridge } from "./wasm";
+import type { FileAdapter } from "./filesystem/types";
 import type { TreeNode, EditorDataResponse, ScriptBlockData, ScriptCommandCategoriesData, IfExpressionTemplateData, IfExpressionTemplate, FullAttributeData } from "./types";
 
 export type AddElementModalState = { type: "room" | "object" | "function" | "timer" | "walkthrough" | "template" | "dynamictemplate" | "type"; parent: string | null } | null;
 
 let _bridge: WasmBridge | null = null;
+let _adapter: FileAdapter | null = null;
 
 export const isLoaded = writable(false);
 export const loadingStatus = writable<string | null>(null);
@@ -15,35 +17,41 @@ export function openAddModal(type: "room" | "object" | "function" | "timer" | "w
     addElementModal.set({ type, parent });
 }
 export const gameFilename = writable<string | null>(null);
+export const canSaveAs = writable(false);
+export const previewUrl = writable<string | null>(null);
 export const treeNodes = writable<TreeNode[]>([]);
 export const selectedKey = writable<string | null>(null);
 export const selectedData = writable<EditorDataResponse | null>(null);
 export const fullAttributeData = writable<FullAttributeData | null>(null);
 export const canUndo = writable(false);
 export const canRedo = writable(false);
+export const isDirty = writable(false);
 export const scriptVersion = writable(0);
 export const scriptClipboardHasContent = writable(false);
 
 function refreshUndoRedo() {
     canUndo.set(_bridge?.CanUndo() ?? false);
     canRedo.set(_bridge?.CanRedo() ?? false);
+    isDirty.set(_bridge?.IsDirty() ?? false);
 }
 
-export async function openGame(file: File): Promise<boolean> {
+export async function openGame(bytes: Uint8Array, filename: string, adapter: FileAdapter): Promise<boolean> {
     loadingStatus.set("Starting editor…");
-    const bytes = new Uint8Array(await file.arrayBuffer());
     _bridge = await loadWasm();
+    _adapter = adapter;
+    canSaveAs.set(adapter.canSaveAs);
+    previewUrl.set(adapter.previewUrl);
     loadingStatus.set("Loading game…");
     // Double rAF ensures the browser actually paints the status update before
     // Initialise blocks the JS thread (C# WASM calls are synchronous).
     await new Promise<void>(resolve => requestAnimationFrame(() => requestAnimationFrame(() => resolve())));
-    const ok = await _bridge.Initialise(bytes, file.name);
+    const ok = await _bridge.Initialise(bytes, filename);
     loadingStatus.set(null);
     if (ok) {
         const nodes: TreeNode[] = JSON.parse(_bridge.GetTreeNodes());
         treeNodes.set(nodes);
         isLoaded.set(true);
-        gameFilename.set(file.name);
+        gameFilename.set(filename);
         refreshUndoRedo();
         scriptClipboardHasContent.set(false);
         const gameNode = nodes.find(n => n.nodeType === "game");
@@ -101,8 +109,17 @@ export function setDropdownType(elementKey: string, controlId: string, selectedT
     return result;
 }
 
-export function saveGame(): string {
-    return _bridge?.Save() ?? "";
+export async function saveGame(): Promise<void> {
+    if (!_bridge || !_adapter) return;
+    await _adapter.saveFile(_bridge.Save()); // Save() clears _isDirty in the bridge
+    isDirty.set(false);
+}
+
+export async function saveGameAs(): Promise<void> {
+    if (!_bridge || !_adapter) return;
+    const newName = await _adapter.saveFileAs(_bridge.Save()); // Save() clears _isDirty in the bridge
+    if (newName) gameFilename.set(newName);
+    isDirty.set(false);
 }
 
 export function undo() {
