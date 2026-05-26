@@ -237,7 +237,7 @@
         if (attr.type === "scriptdictionary") {
             try {
                 const items = JSON.parse(attr.value) as {key: string, value: string}[];
-                return `(dict: ${items.length})`;
+                return items.map(i => `${i.key}=${i.value}`).join(", ") || "(empty dict)";
             } catch { /* fall through */ }
         }
         return attr.value;
