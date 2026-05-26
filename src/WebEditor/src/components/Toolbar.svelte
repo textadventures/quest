@@ -5,6 +5,7 @@
         gameFilename, saveGame, undo, redo, canUndo, canRedo,
         treeNodes, selectedKey, openAddModal,
         createExit, createTurnScript, createCommand, createVerb,
+        createIncludedLibrary, createJavascript,
         deleteElement,
     } from "$lib/editor-store";
     import type { TreeNode } from "$lib/types";
@@ -37,6 +38,12 @@
         { label: "Add Room", action: () => openAddModal("room", null) },
         { label: "Add Function", action: () => openAddModal("function", null) },
         { label: "Add Timer", action: () => openAddModal("timer", null) },
+        { label: "Add Walkthrough", action: () => openAddModal("walkthrough", null) },
+        { label: "Add Template", action: () => openAddModal("template", null) },
+        { label: "Add Dynamic Template", action: () => openAddModal("dynamictemplate", null) },
+        { label: "Add Type", action: () => openAddModal("type", null) },
+        { label: "Add Library", action: () => createIncludedLibrary() },
+        { label: "Add JavaScript", action: () => createJavascript() },
         // Context-sensitive: when a room or object is selected
         ...(nt === "room" || nt === "object" ? [
             { label: `Add Object in "${selectedNode!.text}"`, action: () => openAddModal("object", selectedNode!.key) },
