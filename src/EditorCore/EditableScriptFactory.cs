@@ -18,7 +18,6 @@ namespace QuestViva.EditorCore
             CreateString = editor.Fields.GetString("create");
             AdderDisplayString = editor.Fields.GetString("add");
             IsVisibleInSimpleMode = !editor.Fields.GetAsType<bool>("advanced");
-            IsDesktopOnly = editor.Fields.GetAsType<bool>("desktop");
             CommonButton = editor.Fields.GetString("common");
             var expression = editor.Fields.GetString("onlydisplayif");
             if (expression != null)
@@ -37,7 +36,6 @@ namespace QuestViva.EditorCore
         public string CreateString { get; private set; }
         public string AdderDisplayString { get; private set; }
         public bool IsVisibleInSimpleMode { get; private set; }
-        public bool IsDesktopOnly { get; private set; }
         public string CommonButton { get; private set; }
         public int Order { get; private set; }
     }

@@ -753,7 +753,6 @@ public partial class WasmEditorBridge
         var scriptData = _controller.GetScriptEditorData();
         var grouped = scriptData
             .Where(kv => !string.IsNullOrEmpty(kv.Value.Category)
-                      && !kv.Value.IsDesktopOnly
                       && kv.Value.IsVisible()
                       && !string.IsNullOrEmpty(kv.Value.CreateString))
             .GroupBy(kv => kv.Value.Category)

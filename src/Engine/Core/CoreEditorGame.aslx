@@ -38,7 +38,6 @@
         <controltype>label</controltype>
         <caption>[EditorGameTheGameIDbelow]</caption>
         <advanced/>
-        <desktop/>
       </control>
 
       <control>
@@ -46,7 +45,6 @@
         <caption>[EditorGameGameID]</caption>
         <attribute>gameid</attribute>
         <advanced/>
-        <desktop/>
       </control>
 
       <control>
@@ -173,16 +171,9 @@
         <controltype>checkbox</controltype>
         <caption>[EditorGameWriteLogToFile]</caption>
         <attribute>writelogtofile</attribute>
-        <desktop/>
       </control>
     </tab>
 
-    
-    
-    
-    
-    
-    
     <tab>
       <caption>[EditorGameDisplay]</caption>
 
