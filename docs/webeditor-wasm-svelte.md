@@ -207,7 +207,7 @@ interface FileAdapter {
 
 ### Server-side API (textadventures.co.uk)
 
-`ServerFileAdapter` expects the API described in `src/WebEditor/textadventures-api.md`. When the editor is opened with `?game={guid}`, it auto-loads via `loadFromServer` and uses `ServerFileAdapter` for all subsequent saves and asset operations. The server API uses the user's existing session cookie — no token exchange needed.
+`ServerFileAdapter` expects the API described in `docs/textadventures-api.md`. When the editor is opened with `?game={guid}`, it auto-loads via `loadFromServer` and uses `ServerFileAdapter` for all subsequent saves and asset operations. The server API uses the user's existing session cookie — no token exchange needed.
 
 ---
 
