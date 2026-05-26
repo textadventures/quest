@@ -1,6 +1,7 @@
 <script lang="ts">
     import { fullAttributeData, selectedKey, removeAttribute, addInheritedType, removeInheritedType, getTypeNames, setAttribute, setObjectReference, changeAttributeType, setPatternAttribute, getObjectNames } from "$lib/editor-store";
     import type { AttributeDataItem } from "$lib/types";
+    import { Switch } from "@skeletonlabs/skeleton-svelte";
     import ScriptEditor from "./ScriptEditor.svelte";
     import ListEditor from "./ListEditor.svelte";
     import DictionaryEditor from "./DictionaryEditor.svelte";
@@ -396,16 +397,15 @@
                         {#if attr.type === "null"}
                             <p class="text-surface-400-500 italic">(no value)</p>
                         {:else if attr.type === "boolean"}
-                            <label class="flex items-center gap-2 cursor-pointer">
-                                <input
-                                    type="checkbox"
-                                    class="checkbox"
-                                    checked={editingBool}
-                                    disabled={attr.isDefaultType}
-                                    onchange={(e) => { editingBool = (e.target as HTMLInputElement).checked; onBoolChange(editingBool); }}
-                                />
-                                <span>{editingBool ? "True" : "False"}</span>
-                            </label>
+                            <Switch
+                                checked={editingBool}
+                                disabled={attr.isDefaultType}
+                                onCheckedChange={(e) => { editingBool = e.checked; onBoolChange(editingBool); }}
+                            >
+                                <Switch.Control><Switch.Thumb /></Switch.Control>
+                                <Switch.HiddenInput />
+                                <Switch.Label>{editingBool ? "True" : "False"}</Switch.Label>
+                            </Switch>
                         {:else if attr.type === "script"}
                             <div class="min-h-48">
                                 {#if $selectedKey}
