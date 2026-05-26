@@ -84,8 +84,6 @@ type FallbackMode  = { kind: "fallback";  opfsKey: string };
 type Mode = DirectoryMode | FallbackMode;
 
 export class BrowserFileAdapter implements FileAdapter {
-    readonly canSaveAs = true;
-
     constructor(
         private _filename: string,
         private _mode: Mode,
@@ -93,6 +91,9 @@ export class BrowserFileAdapter implements FileAdapter {
 
     get filename() { return this._filename; }
     readonly previewUrl: string | null = null;
+
+    // Save As is only meaningful in directory mode — in fallback mode both save paths trigger a download.
+    get canSaveAs(): boolean { return this._mode.kind === "directory"; }
 
     // Whether assets are on the real filesystem (vs OPFS-only)
     get assetsOnDisk(): boolean { return this._mode.kind === "directory"; }

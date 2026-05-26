@@ -104,7 +104,7 @@
             Open game file
         </button>
         <p class="text-sm text-surface-500-400 max-w-[40ch] text-center">
-            For full support including image assets, use Chrome, Edge, or Safari 15.2+.
+            For full support including image assets, use Chrome or Edge.
         </p>
     {/if}
 
