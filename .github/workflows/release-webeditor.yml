@@ -31,6 +31,14 @@ jobs:
         env:
           PUBLIC_WEBEDITOR_VERSION: ${{ github.ref_name }}
 
+      - name: Pin WebEditor version in textadventures.co.uk
+        run: |
+          curl -s -o /dev/null -w "%{http_code}" -X PATCH \
+            -H "Authorization: token ${{ secrets.TA_DEPLOY_PAT }}" \
+            -H "Accept: application/vnd.github.v3+json" \
+            "https://api.github.com/repos/alexwarren/textadventures.co.uk/actions/variables/WEBEDITOR_VERSION" \
+            -d "{\"name\":\"WEBEDITOR_VERSION\",\"value\":\"${{ github.ref_name }}\"}"
+
       - name: Trigger textadventures.co.uk deployment
         uses: peter-evans/repository-dispatch@v3
         with:
