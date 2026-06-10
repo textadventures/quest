@@ -4,15 +4,16 @@ nav_order: 99
 parent: "Release Notes"
 ---
 
-The current release is Quest 5.10, available from [textadventures.co.uk/quest](https://textadventures.co.uk/quest). Quest 5.10 is fully compatible with games made in older versions.
+The current release is available from [textadventures.co.uk/quest](https://textadventures.co.uk/quest). It is fully compatible with games made in older versions, so always use the latest version if you can.
 
-Older versions are provided here for reference — for example, if you need to compare behaviour against a specific version.
+Older versions are provided here for reference — for example, if you need to compare behaviour against a specific version, or if you want to run Quest on an older version of Windows.
 
 ## Quest 5.x
 
 | Version | Released | Download |
 |---------|----------|----------|
-| Quest 5.10 | 19 May 2026 | [quest-5.10.0.exe](https://github.com/textadventures/quest/releases/download/v5.10.0/quest-5.10.0.exe) |
+| Quest 5.10.1 | 10 June 2026 | [quest-5.10.1.exe](https://github.com/textadventures/quest/releases/download/v5.10.1/quest-5.10.1.exe) |
+| Quest 5.10.0 | 19 May 2026 | [quest-5.10.0.exe](https://github.com/textadventures/quest/releases/download/v5.10.0/quest-5.10.0.exe) |
 | Quest 5.9 | 2 Feb 2025 | [quest590.exe](https://github.com/textadventures/quest/releases/download/v5.9/quest590.exe) |
 | Quest 5.8 | 20 Jul 2018 | [quest580.exe](https://github.com/textadventures/quest/releases/download/5.8.0/quest580.exe) |
 | Quest 5.7.2 | 1 Feb 2018 | [quest572.exe](https://github.com/textadventures/quest/releases/download/5.7.2/quest572.exe) |
