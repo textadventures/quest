@@ -1,5 +1,5 @@
-#define QuestVersion '5.10.0'
-#define QuestVersionInfo '5.10.0.1'
+#define QuestVersion '5.10.1'
+#define QuestVersionInfo '5.10.1.0'
 
 [Setup]
 AppName=Quest
