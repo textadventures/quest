@@ -8,6 +8,8 @@ Public Class PublishWindow
 
     Public Sub New(sourceFilename As String, controller As EditorController)
 
+        If Application.OpenForms.Count > 0 Then Me.Font = Application.OpenForms(0).Font
+
         ' This call is required by the designer.
         InitializeComponent()
 

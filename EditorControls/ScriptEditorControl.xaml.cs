@@ -745,10 +745,13 @@ namespace TextAdventures.Quest.EditorControls
         private void EnsureTextEditor()
         {
             if (textEditor != null) return;
+            double codeViewFontSize = System.Windows.Forms.Application.OpenForms.Count > 0
+                ? System.Windows.Forms.Application.OpenForms[0].Font.SizeInPoints * 96.0 / 72.0
+                : 10.0 * 96.0 / 72.0;
             textEditor = new TextEditor
             {
                 FontFamily = new FontFamily("Consolas, Courier New"),
-                FontSize = 10.0 * 96.0 / 72.0,
+                FontSize = codeViewFontSize,
                 VerticalScrollBarVisibility = ScrollBarVisibility.Auto,
                 HorizontalScrollBarVisibility = ScrollBarVisibility.Auto,
                 MaxHeight = 500,

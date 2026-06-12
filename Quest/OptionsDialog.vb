@@ -11,6 +11,8 @@ Public Class OptionsDialog
         InitializeComponent()
 
         ' Add any initialization after the InitializeComponent() call.
+        Dim pad As Integer = CInt(6 * DeviceDpi / 96.0F)
+        ctlTabs.Padding = New System.Drawing.Point(pad, pad \ 2)
         fontFamily = Options.Instance.GetStringValue(OptionNames.FontFamily)
         fontSize = Options.Instance.GetSingleValue(OptionNames.FontSize)
         fontStyle = DirectCast(Options.Instance.GetIntValue(OptionNames.FontStyle), FontStyle)
@@ -22,6 +24,7 @@ Public Class OptionsDialog
         txtGamesFolder.Text = Options.Instance.GetStringValue(OptionNames.GamesFolder)
         chkPlaySounds.Checked = Options.Instance.GetBooleanValue(OptionNames.PlaySounds)
         chkUseSAPI.Checked = Options.Instance.GetBooleanValue(OptionNames.UseSAPI)
+        nudEditorFontSize.Value = CDec(Options.Instance.GetSingleValue(OptionNames.EditorUIFontSize))
         UpdateSampleText()
     End Sub
 
@@ -54,6 +57,8 @@ Public Class OptionsDialog
 
         End If
 
+        Dim editorFontSizeChanged As Boolean = (CSng(nudEditorFontSize.Value) <> Options.Instance.GetSingleValue(OptionNames.EditorUIFontSize))
+
         Options.Instance.SetBooleanValue(OptionNames.UseGameColours, chkUseDefaultColours.Checked)
         Options.Instance.SetColourValue(OptionNames.ForegroundColour, cmdForeground.BackColor)
         Options.Instance.SetColourValue(OptionNames.BackgroundColour, cmdBackground.BackColor)
@@ -65,7 +70,18 @@ Public Class OptionsDialog
         Options.Instance.SetStringValue(OptionNames.GamesFolder, txtGamesFolder.Text)
         Options.Instance.SetBooleanValue(OptionNames.PlaySounds, chkPlaySounds.Checked)
         Options.Instance.SetBooleanValue(OptionNames.UseSAPI, chkUseSAPI.Checked)
+        Options.Instance.SetSingleValue(OptionNames.EditorUIFontSize, CSng(nudEditorFontSize.Value))
         Me.Hide()
+
+        If editorFontSizeChanged Then
+            Dim result As MsgBoxResult = MsgBox(
+                "The editor UI font size will take effect after restarting Quest." & Environment.NewLine & Environment.NewLine &
+                "Would you like to restart now?",
+                MsgBoxStyle.YesNo Or MsgBoxStyle.Question, "Quest")
+            If result = MsgBoxResult.Yes Then
+                Application.Restart()
+            End If
+        End If
     End Sub
 
     Private Sub MoveDownloadFolder(oldFolder As String, newFolder As String)

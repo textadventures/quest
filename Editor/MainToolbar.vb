@@ -487,6 +487,11 @@ Public Class MainToolbar
         {"butLogError", "LogError"}
     }
 
+    Protected Overrides Sub ScaleControl(factor As System.Drawing.SizeF, specified As BoundsSpecified)
+        ' Don't let font-size scaling change our height — ScaleToolbarImages() owns that.
+        MyBase.ScaleControl(factor, specified And Not BoundsSpecified.Height)
+    End Sub
+
     Protected Overrides Sub OnHandleCreated(e As EventArgs)
         MyBase.OnHandleCreated(e)
         ScaleToolbarImages()
@@ -505,7 +510,9 @@ Public Class MainToolbar
 
         For Each item In ctlToolStrip.Items.Cast(Of ToolStripItem)()
             If TypeOf item Is ToolStripSeparator Then Continue For
-            item.Margin = New System.Windows.Forms.Padding(2, 1, 2, 2)
+            item.AutoSize = True
+            item.Padding = New System.Windows.Forms.Padding(CInt(4 * scale), 2, CInt(4 * scale), 2)
+            item.Margin = New System.Windows.Forms.Padding(2, item.Margin.Top, 2, item.Margin.Bottom)
             Dim svgName As String = Nothing
             If _svgNames.TryGetValue(item.Name, svgName) Then
                 Dim rendered = RenderXaml(svgName, size)
@@ -517,7 +524,9 @@ Public Class MainToolbar
             End If
         Next
 
-        Height = ctlToolStrip.Height
+        ctlToolStrip.PerformLayout()
+        Height = CInt(48 * DeviceDpi / 96.0F)
+
     End Sub
 
     Private Shared Function RenderXaml(name As String, size As Integer) As System.Drawing.Bitmap

@@ -34,4 +34,16 @@ Public Class LoadingControl
     Public Sub Clear()
         lblStatus.Text = ""
     End Sub
+
+    Private Const LogoDesignHeight As Integer = 385
+
+    Protected Overrides Sub OnLayout(levent As System.Windows.Forms.LayoutEventArgs)
+        MyBase.OnLayout(levent)
+        ' Keep logo height proportional to screen DPI only — not the user's font-size
+        ' preference. The guard prevents the resulting re-layout from looping.
+        Dim target As Integer = CInt(LogoDesignHeight * DeviceDpi / 96.0F)
+        If PictureBox1 IsNot Nothing AndAlso PictureBox1.Height <> target Then
+            PictureBox1.Height = target
+        End If
+    End Sub
 End Class

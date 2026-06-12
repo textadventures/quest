@@ -1,5 +1,10 @@
 Public Class About
 
+    Public Sub New()
+        If Application.OpenForms.Count > 0 Then Me.Font = Application.OpenForms(0).Font
+        InitializeComponent()
+    End Sub
+
     Private Sub About_Load(sender As System.Object, e As System.EventArgs) Handles MyBase.Load
         Dim ApplicationTitle As String
         If My.Application.Info.Title <> "" Then
@@ -9,6 +14,7 @@ Public Class About
         End If
         Dim Abouttext As String = Me.Text
         Me.Text = String.Format(Abouttext + " {0}", ApplicationTitle)
+        lblTitle.Font = New Font(Me.Font, FontStyle.Bold)
         lblTitle.Text = String.Format("{0} {1}", My.Application.Info.ProductName, Constants.QuestVersion)
         lblBuild.Text = String.Format("Build {0}", My.Application.Info.Version.ToString)
 

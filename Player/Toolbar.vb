@@ -37,6 +37,10 @@
         Next
     End Sub
 
+    Protected Overrides Sub ScaleControl(factor As System.Drawing.SizeF, specified As BoundsSpecified)
+        MyBase.ScaleControl(factor, specified And Not BoundsSpecified.Height)
+    End Sub
+
     Protected Overrides Sub OnHandleCreated(e As EventArgs)
         MyBase.OnHandleCreated(e)
         ApplyToolbarIcons(DeviceDpi)
@@ -52,6 +56,10 @@
         Dim size = Math.Max(16, CInt(16 * scale))
         ctlToolStrip.ImageScalingSize = New System.Drawing.Size(size, size)
         For Each item As ToolStripItem In ctlToolStrip.Items
+            If TypeOf item Is ToolStripSeparator Then Continue For
+            item.AutoSize = True
+            item.Padding = New System.Windows.Forms.Padding(CInt(4 * scale), 2, CInt(4 * scale), 2)
+            item.Margin = New System.Windows.Forms.Padding(2, item.Margin.Top, 2, item.Margin.Bottom)
             Dim xamlName As String = Nothing
             If _toolbarXamlNames.TryGetValue(item.Name, xamlName) Then
                 Dim bmp = TextAdventures.Quest.Controls.Menu.RenderXaml(xamlName, size)
@@ -62,6 +70,8 @@
                 End If
             End If
         Next
+        ctlToolStrip.PerformLayout()
+        Height = CInt(48 * DeviceDpi / 96.0F)
     End Sub
 
     Private Sub HandleClick(sender As Object, e As System.EventArgs)

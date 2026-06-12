@@ -694,6 +694,7 @@ Public Class Editor
     Public Function CreateNewGame() As String
         Dim templates As Dictionary(Of String, TemplateData) = EditorController.GetAvailableTemplates()
         Dim newGameWindow As New NewGameWindow
+        newGameWindow.Font = Me.Font
         newGameWindow.SetAvailableTemplates(templates)
         newGameWindow.ShowDialog()
 

@@ -64,6 +64,7 @@ Partial Class MainToolbar
         '
         Me.ctlToolStrip.BackColor = System.Drawing.Color.Transparent
         resources.ApplyResources(Me.ctlToolStrip, "ctlToolStrip")
+        Me.ctlToolStrip.AutoSize = False
         Me.ctlToolStrip.ImageScalingSize = New System.Drawing.Size(16, 16)
         Me.ctlToolStrip.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.butNew, Me.butOpen, Me.butSave, Me.ToolStripSeparator1, Me.butCut, Me.butCopy, Me.butPaste, Me.butDelete, Me.ToolStripSeparator4, Me.butFind, Me.butReplace, Me.ToolStripSeparator6, Me.butUndoSimple, Me.butRedoSimple, Me.butUndo, Me.butRedo, Me.ToolStripSeparator3, Me.butAddPage, Me.butAddRoom, Me.butAddObject, Me.ToolStripSeparator2, Me.butBack, Me.butForward, Me.ToolStripSeparator8, Me.butPlay, Me.butCode, Me.ToolStripSeparator5, Me.butHelp, Me.butLogError, Me.ToolStripSeparator7})
         Me.ctlToolStrip.Name = "ctlToolStrip"

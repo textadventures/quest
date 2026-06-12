@@ -271,9 +271,7 @@
   <data name="lblTitle.Dock" type="System.Windows.Forms.DockStyle, System.Windows.Forms">
     <value>Top</value>
   </data>
-  <data name="lblTitle.Font" type="System.Drawing.Font, System.Drawing">
-    <value>Microsoft Sans Serif, 8.25pt, style=Bold</value>
-  </data>
+
   <data name="lblTitle.Location" type="System.Drawing.Point, System.Drawing">
     <value>0, 0</value>
   </data>

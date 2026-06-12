@@ -75,7 +75,11 @@ namespace TextAdventures.Quest.EditorControls
             int iconSize = Math.Max(16, (int)(16 * scale));
 
             ToolStripLabel2.AutoSize = true;
+            ToolStripLabel2.Font = this.Font;
             lblAttributesTitle.AutoSize = true;
+            lblAttributesTitle.Font = this.Font;
+            toolStripLabel1.AutoSize = true;
+            toolStripLabel1.Font = this.Font;
 
             ApplyStripIcons(ctlTypesToolStrip, _typesXamlNames, iconSize);
             ApplyStripIcons(ctlToolStrip, _attrsXamlNames, iconSize);

@@ -56,7 +56,7 @@
         AddMenuData("publish", MenuMode.Editor)
         AddMenuData("find", MenuMode.Editor)
         AddMenuData("replace", MenuMode.Editor)
-        AddMenuData("options", MenuMode.GameBrowser, MenuMode.Player)
+        AddMenuData("options", MenuMode.GameBrowser, MenuMode.Player, MenuMode.Editor)
         AddMenuData("simplemode", MenuMode.Editor)
         AddMenuData("codeview", MenuMode.Editor)
         AddMenuData("wordwrap", MenuMode.Editor)
