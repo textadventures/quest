@@ -58,6 +58,8 @@
         For Each item As ToolStripItem In ctlToolStrip.Items
             If TypeOf item Is ToolStripSeparator Then Continue For
             item.AutoSize = True
+            item.Padding = New System.Windows.Forms.Padding(6, 2, 6, 2)
+            item.Margin = New System.Windows.Forms.Padding(2, item.Margin.Top, 2, item.Margin.Bottom)
             Dim xamlName As String = Nothing
             If _toolbarXamlNames.TryGetValue(item.Name, xamlName) Then
                 Dim bmp = TextAdventures.Quest.Controls.Menu.RenderXaml(xamlName, size)
@@ -68,7 +70,8 @@
                 End If
             End If
         Next
-        Height = ctlToolStrip.PreferredSize.Height
+        ctlToolStrip.PerformLayout()
+        Height = CInt(48 * DeviceDpi / 96.0F)
     End Sub
 
     Private Sub HandleClick(sender As Object, e As System.EventArgs)

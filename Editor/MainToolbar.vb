@@ -511,7 +511,8 @@ Public Class MainToolbar
         For Each item In ctlToolStrip.Items.Cast(Of ToolStripItem)()
             If TypeOf item Is ToolStripSeparator Then Continue For
             item.AutoSize = True
-            item.Margin = New System.Windows.Forms.Padding(2, 1, 2, 2)
+            item.Padding = New System.Windows.Forms.Padding(6, 2, 6, 2)
+            item.Margin = New System.Windows.Forms.Padding(2, item.Margin.Top, 2, item.Margin.Bottom)
             Dim svgName As String = Nothing
             If _svgNames.TryGetValue(item.Name, svgName) Then
                 Dim rendered = RenderXaml(svgName, size)
@@ -523,7 +524,8 @@ Public Class MainToolbar
             End If
         Next
 
-        Height = ctlToolStrip.PreferredSize.Height
+        ctlToolStrip.PerformLayout()
+        Height = CInt(48 * DeviceDpi / 96.0F)
 
     End Sub
 
