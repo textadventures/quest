@@ -56,6 +56,8 @@
         Dim size = Math.Max(16, CInt(16 * scale))
         ctlToolStrip.ImageScalingSize = New System.Drawing.Size(size, size)
         For Each item As ToolStripItem In ctlToolStrip.Items
+            If TypeOf item Is ToolStripSeparator Then Continue For
+            item.AutoSize = True
             Dim xamlName As String = Nothing
             If _toolbarXamlNames.TryGetValue(item.Name, xamlName) Then
                 Dim bmp = TextAdventures.Quest.Controls.Menu.RenderXaml(xamlName, size)
@@ -66,6 +68,7 @@
                 End If
             End If
         Next
+        Height = ctlToolStrip.PreferredSize.Height
     End Sub
 
     Private Sub HandleClick(sender As Object, e As System.EventArgs)
