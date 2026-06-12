@@ -58,7 +58,7 @@
         For Each item As ToolStripItem In ctlToolStrip.Items
             If TypeOf item Is ToolStripSeparator Then Continue For
             item.AutoSize = True
-            item.Padding = New System.Windows.Forms.Padding(6, 2, 6, 2)
+            item.Padding = New System.Windows.Forms.Padding(CInt(4 * scale), 2, CInt(4 * scale), 2)
             item.Margin = New System.Windows.Forms.Padding(2, item.Margin.Top, 2, item.Margin.Bottom)
             Dim xamlName As String = Nothing
             If _toolbarXamlNames.TryGetValue(item.Name, xamlName) Then

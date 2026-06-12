@@ -511,7 +511,7 @@ Public Class MainToolbar
         For Each item In ctlToolStrip.Items.Cast(Of ToolStripItem)()
             If TypeOf item Is ToolStripSeparator Then Continue For
             item.AutoSize = True
-            item.Padding = New System.Windows.Forms.Padding(6, 2, 6, 2)
+            item.Padding = New System.Windows.Forms.Padding(CInt(4 * scale), 2, CInt(4 * scale), 2)
             item.Margin = New System.Windows.Forms.Padding(2, item.Margin.Top, 2, item.Margin.Bottom)
             Dim svgName As String = Nothing
             If _svgNames.TryGetValue(item.Name, svgName) Then
