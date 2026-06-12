@@ -81,9 +81,9 @@ Partial Class OptionsDialog
         'ctlTabs
         '
         resources.ApplyResources(Me.ctlTabs, "ctlTabs")
+        Me.ctlTabs.Controls.Add(Me.TabPage3)
         Me.ctlTabs.Controls.Add(Me.TabPage1)
         Me.ctlTabs.Controls.Add(Me.TabPage2)
-        Me.ctlTabs.Controls.Add(Me.TabPage3)
         Me.ctlTabs.Name = "ctlTabs"
         Me.ctlTabs.SelectedIndex = 0
         '
@@ -217,15 +217,15 @@ Partial Class OptionsDialog
         Me.TabPage3.BackColor = System.Drawing.SystemColors.Window
         Me.TabPage3.Name = "TabPage3"
         Me.TabPage3.Padding = New System.Windows.Forms.Padding(4, 4, 4, 4)
-        Me.TabPage3.Text = "Editor"
-        Me.TabPage3.TabIndex = 2
+        Me.TabPage3.Text = "General"
+        Me.TabPage3.TabIndex = 0
         '
         'lblEditorFontSize
         '
         Me.lblEditorFontSize.AutoSize = True
         Me.lblEditorFontSize.Location = New System.Drawing.Point(8, 17)
         Me.lblEditorFontSize.Name = "lblEditorFontSize"
-        Me.lblEditorFontSize.Text = "Editor UI font size (pt):"
+        Me.lblEditorFontSize.Text = "UI font size (pt):"
         '
         'nudEditorFontSize
         '
