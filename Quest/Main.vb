@@ -16,6 +16,12 @@ Public Class Main
 
         LoadLanguage()
 
+        ' Apply saved UI font size before InitializeComponent so WinForms auto-scaling
+        ' uses it as the base font when laying out controls.
+        Dim uiFontSize As Single = Single.Parse(
+            DirectCast(TextAdventures.Utility.Registry.GetSetting("Quest", "Settings", "EditorUIFontSize", "9"), String))
+        Me.Font = New System.Drawing.Font("Segoe UI", uiFontSize)
+
         ' This call is required by the Windows Form Designer.
         InitializeComponent()
 

@@ -46,9 +46,15 @@ Partial Class OptionsDialog
         Me.txtGamesFolder = New System.Windows.Forms.TextBox()
         Me.Label1 = New System.Windows.Forms.Label()
         Me.dlgFolderBrowser = New System.Windows.Forms.FolderBrowserDialog()
+        Me.TabPage3 = New System.Windows.Forms.TabPage()
+        Me.lblEditorFontSize = New System.Windows.Forms.Label()
+        Me.nudEditorFontSize = New System.Windows.Forms.NumericUpDown()
+        Me.lblEditorFontSizeNote = New System.Windows.Forms.Label()
         Me.ctlTabs.SuspendLayout()
         Me.TabPage1.SuspendLayout()
         Me.TabPage2.SuspendLayout()
+        Me.TabPage3.SuspendLayout()
+        CType(Me.nudEditorFontSize, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.SuspendLayout()
         '
         'cmdCancel
@@ -77,6 +83,7 @@ Partial Class OptionsDialog
         resources.ApplyResources(Me.ctlTabs, "ctlTabs")
         Me.ctlTabs.Controls.Add(Me.TabPage1)
         Me.ctlTabs.Controls.Add(Me.TabPage2)
+        Me.ctlTabs.Controls.Add(Me.TabPage3)
         Me.ctlTabs.Name = "ctlTabs"
         Me.ctlTabs.SelectedIndex = 0
         '
@@ -202,6 +209,41 @@ Partial Class OptionsDialog
         resources.ApplyResources(Me.Label1, "Label1")
         Me.Label1.Name = "Label1"
         '
+        'TabPage3
+        '
+        Me.TabPage3.Controls.Add(Me.lblEditorFontSize)
+        Me.TabPage3.Controls.Add(Me.nudEditorFontSize)
+        Me.TabPage3.Controls.Add(Me.lblEditorFontSizeNote)
+        Me.TabPage3.BackColor = System.Drawing.SystemColors.Window
+        Me.TabPage3.Name = "TabPage3"
+        Me.TabPage3.Padding = New System.Windows.Forms.Padding(4, 4, 4, 4)
+        Me.TabPage3.Text = "Editor"
+        Me.TabPage3.TabIndex = 2
+        '
+        'lblEditorFontSize
+        '
+        Me.lblEditorFontSize.AutoSize = True
+        Me.lblEditorFontSize.Location = New System.Drawing.Point(8, 17)
+        Me.lblEditorFontSize.Name = "lblEditorFontSize"
+        Me.lblEditorFontSize.Text = "Editor UI font size (pt):"
+        '
+        'nudEditorFontSize
+        '
+        Me.nudEditorFontSize.Location = New System.Drawing.Point(160, 13)
+        Me.nudEditorFontSize.Name = "nudEditorFontSize"
+        Me.nudEditorFontSize.Size = New System.Drawing.Size(60, 22)
+        Me.nudEditorFontSize.Minimum = 7
+        Me.nudEditorFontSize.Maximum = 16
+        Me.nudEditorFontSize.Value = 9
+        '
+        'lblEditorFontSizeNote
+        '
+        Me.lblEditorFontSizeNote.AutoSize = True
+        Me.lblEditorFontSizeNote.Location = New System.Drawing.Point(8, 50)
+        Me.lblEditorFontSizeNote.ForeColor = System.Drawing.SystemColors.GrayText
+        Me.lblEditorFontSizeNote.Name = "lblEditorFontSizeNote"
+        Me.lblEditorFontSizeNote.Text = "Changes take effect after restarting Quest."
+        '
         'OptionsDialog
         '
         Me.AcceptButton = Me.cmdOK
@@ -221,6 +263,9 @@ Partial Class OptionsDialog
         Me.TabPage1.PerformLayout()
         Me.TabPage2.ResumeLayout(False)
         Me.TabPage2.PerformLayout()
+        Me.TabPage3.ResumeLayout(False)
+        Me.TabPage3.PerformLayout()
+        CType(Me.nudEditorFontSize, System.ComponentModel.ISupportInitialize).EndInit()
         Me.ResumeLayout(False)
 
     End Sub
@@ -247,4 +292,8 @@ Partial Class OptionsDialog
     Friend WithEvents lblLink As Label
     Friend WithEvents cmdLink As Button
     Friend WithEvents chkUseDefaultColours As CheckBox
+    Friend WithEvents TabPage3 As System.Windows.Forms.TabPage
+    Friend WithEvents lblEditorFontSize As System.Windows.Forms.Label
+    Friend WithEvents nudEditorFontSize As System.Windows.Forms.NumericUpDown
+    Friend WithEvents lblEditorFontSizeNote As System.Windows.Forms.Label
 End Class

@@ -12,6 +12,7 @@ Public Enum OptionNames
     GamesFolder
     PlaySounds
     UseSAPI
+    EditorUIFontSize
 End Enum
 
 Public Class Options
@@ -39,7 +40,8 @@ Public Class Options
                         "Quest Games",
                         "Downloaded Games")},
         {OptionNames.PlaySounds, True.ToString()},
-        {OptionNames.UseSAPI, False.ToString()}
+        {OptionNames.UseSAPI, False.ToString()},
+        {OptionNames.EditorUIFontSize, "9"}
     }
 
     Public Event OptionChanged(optionName As OptionNames)
