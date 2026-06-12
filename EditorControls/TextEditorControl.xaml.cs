@@ -49,6 +49,15 @@ namespace TextAdventures.Quest.EditorControls
         {
             InitializeComponent();
 
+            this.Loaded += (s, e) =>
+            {
+                if (System.Windows.Forms.Application.OpenForms.Count > 0)
+                {
+                    double pts = System.Windows.Forms.Application.OpenForms[0].Font.SizeInPoints;
+                    textEditor.FontSize = pts * 96.0 / 72.0;
+                }
+            };
+
             m_helper = new ControlDataHelper<string>(this);
             m_helper.Options.Scrollable = true;
             m_helper.Initialise += new Action(m_helper_Initialise);
