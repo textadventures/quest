@@ -104,6 +104,7 @@ Partial Class OptionsDialog
         resources.ApplyResources(Me.TabPage1, "TabPage1")
         Me.TabPage1.BackColor = System.Drawing.SystemColors.Window
         Me.TabPage1.Name = "TabPage1"
+        Me.TabPage1.Padding = New System.Windows.Forms.Padding(8, 8, 8, 8)
         Me.TabPage1.UseVisualStyleBackColor = False
         '
         'chkUseSAPI
@@ -188,6 +189,7 @@ Partial Class OptionsDialog
         resources.ApplyResources(Me.TabPage2, "TabPage2")
         Me.TabPage2.BackColor = System.Drawing.SystemColors.Window
         Me.TabPage2.Name = "TabPage2"
+        Me.TabPage2.Padding = New System.Windows.Forms.Padding(8, 8, 8, 8)
         Me.TabPage2.UseVisualStyleBackColor = False
         '
         'cmdGamesFolder
@@ -216,7 +218,7 @@ Partial Class OptionsDialog
         Me.TabPage3.Controls.Add(Me.lblEditorFontSizeNote)
         Me.TabPage3.BackColor = System.Drawing.SystemColors.Window
         Me.TabPage3.Name = "TabPage3"
-        Me.TabPage3.Padding = New System.Windows.Forms.Padding(4, 4, 4, 4)
+        Me.TabPage3.Padding = New System.Windows.Forms.Padding(8, 8, 8, 8)
         Me.TabPage3.Text = "General"
         Me.TabPage3.TabIndex = 0
         '

@@ -16,6 +16,9 @@ namespace TextAdventures.Quest.EditorControls
 
         public InputWindow()
         {
+            if (System.Windows.Forms.Application.OpenForms.Count > 0)
+                this.Font = System.Windows.Forms.Application.OpenForms[0].Font;
+
             InitializeComponent();
 
             using (Graphics g = this.CreateGraphics())
@@ -24,8 +27,9 @@ namespace TextAdventures.Quest.EditorControls
                 dpiY = g.DpiY;
             }
 
+            this.AutoScaleMode = AutoScaleMode.None;
             ShowDropdown(false);
-            m_activeControl = txtInput;            
+            m_activeControl = txtInput;
         }
 
         private void cmdOK_Click(System.Object sender, System.EventArgs e)
@@ -43,17 +47,32 @@ namespace TextAdventures.Quest.EditorControls
 
         private void ShowDropdown(bool visible)
         {
-            if (visible)
-            {
-                this.Height = (int)Math.Round(162 * (dpiY / 96));
-            }
-            else
-            {
-                this.Height = (int)Math.Round(127 * (dpiY / 96));
-            }
+            float s = dpiY / 96f;
+            int pad = (int)(10 * s);
+            int w = ClientSize.Width - 2 * pad;
+
+            lblPrompt.SetBounds(pad, pad, w, lblPrompt.PreferredHeight);
+            txtInput.SetBounds(pad, lblPrompt.Bottom + pad / 2, w, txtInput.Height);
+            lstInputAutoComplete.SetBounds(pad, txtInput.Top, w, txtInput.Height);
 
             lblDropdownCaption.Visible = visible;
             lstDropdown.Visible = visible;
+
+            int contentBottom = txtInput.Bottom;
+            if (visible)
+            {
+                lblDropdownCaption.SetBounds(pad, contentBottom + pad / 2, w, lblDropdownCaption.Height);
+                lstDropdown.SetBounds(pad, lblDropdownCaption.Bottom + (int)(4 * s), w, lstDropdown.Height);
+                contentBottom = lstDropdown.Bottom;
+            }
+
+            int btnH = (int)(28 * s);
+            int btnW = (int)(100 * s);
+            int formClientH = contentBottom + pad + btnH + pad;
+            ClientSize = new Size(ClientSize.Width, formClientH);
+
+            cmdOK.SetBounds(ClientSize.Width - pad - btnW, formClientH - pad - btnH, btnW, btnH);
+            cmdCancel.SetBounds(cmdOK.Left - pad / 2 - btnW, cmdOK.Top, btnW, btnH);
         }
 
         public void SetDropdown(string caption, IEnumerable<string> items, string defaultSelection)

@@ -183,9 +183,7 @@
   <data name="ToolStripLabel2.AutoSize" type="System.Boolean, mscorlib">
     <value>False</value>
   </data>
-  <data name="ToolStripLabel2.Font" type="System.Drawing.Font, System.Drawing">
-    <value>Segoe UI, 8pt</value>
-  </data>
+
   <data name="ToolStripLabel2.Size" type="System.Drawing.Size, System.Drawing">
     <value>150, 22</value>
   </data>
@@ -318,9 +316,7 @@
   <data name="lblAttributesTitle.AutoSize" type="System.Boolean, mscorlib">
     <value>False</value>
   </data>
-  <data name="lblAttributesTitle.Font" type="System.Drawing.Font, System.Drawing">
-    <value>Segoe UI, 8pt</value>
-  </data>
+
   <data name="lblAttributesTitle.Size" type="System.Drawing.Size, System.Drawing">
     <value>150, 22</value>
   </data>
@@ -438,9 +434,7 @@
   <metadata name="toolStrip.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
     <value>420, 17</value>
   </metadata>
-  <data name="toolStripLabel1.Font" type="System.Drawing.Font, System.Drawing">
-    <value>Segoe UI, 8pt</value>
-  </data>
+
   <data name="toolStripLabel1.Size" type="System.Drawing.Size, System.Drawing">
     <value>93, 22</value>
   </data>

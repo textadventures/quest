@@ -32,6 +32,9 @@ namespace TextAdventures.Quest.EditorControls
 
         public PopOut()
         {
+            if (System.Windows.Forms.Application.OpenForms.Count > 0)
+                this.FontSize = System.Windows.Forms.Application.OpenForms[0].Font.SizeInPoints * 96.0 / 72.0;
+
             InitializeComponent();
             this.Loaded += PopOut_Loaded;
         }

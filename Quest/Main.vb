@@ -455,6 +455,7 @@ Public Class Main
 
     Private Sub ShowOptions()
         Dim optionsForm As New OptionsDialog
+        optionsForm.Font = Me.Font
         optionsForm.ShowDialog()
     End Sub
 

@@ -11,6 +11,8 @@ Public Class OptionsDialog
         InitializeComponent()
 
         ' Add any initialization after the InitializeComponent() call.
+        Dim pad As Integer = CInt(6 * DeviceDpi / 96.0F)
+        ctlTabs.Padding = New System.Drawing.Point(pad, pad \ 2)
         fontFamily = Options.Instance.GetStringValue(OptionNames.FontFamily)
         fontSize = Options.Instance.GetSingleValue(OptionNames.FontSize)
         fontStyle = DirectCast(Options.Instance.GetIntValue(OptionNames.FontStyle), FontStyle)

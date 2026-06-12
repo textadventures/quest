@@ -10,6 +10,9 @@ namespace TextAdventures.Quest.EditorControls
     {
         public ScriptEditorPopOut()
         {
+            if (System.Windows.Forms.Application.OpenForms.Count > 0)
+                this.FontSize = System.Windows.Forms.Application.OpenForms[0].Font.SizeInPoints * 96.0 / 72.0;
+
             InitializeComponent();
             ctlScriptEditor.HidePopOutButton();
             this.Closed += ScriptEditorPopOut_Closed;
