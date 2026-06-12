@@ -36,6 +36,7 @@ Partial Class Toolbar
         'ctlToolStrip
         '
         resources.ApplyResources(Me.ctlToolStrip, "ctlToolStrip")
+        Me.ctlToolStrip.Dock = System.Windows.Forms.DockStyle.Fill
         Me.ctlToolStrip.BackColor = System.Drawing.Color.Transparent
         Me.ctlToolStrip.ImageScalingSize = New System.Drawing.Size(16, 16)
         Me.ctlToolStrip.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.butStop, Me.butRestart, Me.butWalkthrough, Me.butDebugger, Me.butLog, Me.butHTML})

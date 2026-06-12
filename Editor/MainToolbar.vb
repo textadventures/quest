@@ -487,6 +487,11 @@ Public Class MainToolbar
         {"butLogError", "LogError"}
     }
 
+    Protected Overrides Sub ScaleControl(factor As System.Drawing.SizeF, specified As BoundsSpecified)
+        ' Don't let font-size scaling change our height — ScaleToolbarImages() owns that.
+        MyBase.ScaleControl(factor, specified And Not BoundsSpecified.Height)
+    End Sub
+
     Protected Overrides Sub OnHandleCreated(e As EventArgs)
         MyBase.OnHandleCreated(e)
         ScaleToolbarImages()
