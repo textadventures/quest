@@ -101,6 +101,8 @@ internal record AttributeDataItem(
 
 internal record FullAttributeData(List<AttributeDataItem> Attributes, List<AttributeDataItem> InheritedTypes);
 
+internal record GameTemplateInfo(string Id, string Label, string Type);
+
 [JsonSourceGenerationOptions(PropertyNamingPolicy = JsonKnownNamingPolicy.CamelCase)]
 [JsonSerializable(typeof(List<TreeNodeData>))]
 [JsonSerializable(typeof(EditorDataResponse))]
@@ -112,6 +114,7 @@ internal record FullAttributeData(List<AttributeDataItem> Attributes, List<Attri
 [JsonSerializable(typeof(int[]))]
 [JsonSerializable(typeof(List<ListItemData>))]
 [JsonSerializable(typeof(FullAttributeData))]
+[JsonSerializable(typeof(List<GameTemplateInfo>))]
 internal partial class WasmEditorJsonContext : JsonSerializerContext
 {
 }
@@ -2688,5 +2691,26 @@ public partial class WasmEditorBridge
 
         return new ControlInfo(attribute, ctrl.ControlType, ctrl.Caption ?? ctrl.GetString("selfcaption"), options,
             null, null, textProcessorCommands, addPrompt);
+    }
+
+    [JSExport]
+    public static string GetGameTemplates()
+    {
+        var templates = EditorController.GetAvailableTemplates()
+            .Values
+            .OrderBy(t => t.Type)
+            .ThenBy(t => t.TemplateName)
+            .Select(t => new GameTemplateInfo(
+                t.ResourceName,
+                t.TemplateName,
+                t.Type == EditorStyle.GameBook ? "gamebook" : "textadventure"))
+            .ToList();
+        return JsonSerializer.Serialize(templates, WasmEditorJsonContext.Default.ListGameTemplateInfo);
+    }
+
+    [JSExport]
+    public static string CreateGameFromTemplate(string templateId, string gameName)
+    {
+        return EditorController.CreateNewGameFile(templateId, gameName);
     }
 }

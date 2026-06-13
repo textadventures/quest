@@ -18,7 +18,7 @@ const ASLX_FILE_TYPE = {
     accept: { "application/xml": [".aslx"] as `.${string}`[] },
 };
 
-// ── Loaders ──────────────────────────────────────────────────────────────────
+// ── Loaders / creators ───────────────────────────────────────────────────────
 
 export function hasFSA(): boolean {
     return "showDirectoryPicker" in window;
@@ -75,6 +75,38 @@ export function loadLocalFile(): Promise<LoadedFile | null> {
         input.addEventListener("cancel", () => resolve(null), { once: true });
         input.click();
     });
+}
+
+/**
+ * Creates a new game file with the given content.
+ *
+ * FSA path: opens a directory picker, writes the file, and returns a LoadedFile
+ * so the editor can open it immediately. Returns null if the user cancels the picker.
+ *
+ * Non-FSA path: triggers a download and returns "downloaded" so the caller can
+ * show a message telling the user to open the file with the Open button.
+ */
+export async function createLocalGame(
+    filename: string,
+    content: string,
+): Promise<{ kind: "opened"; loaded: LoadedFile } | { kind: "downloaded" } | null> {
+    if (hasFSA()) {
+        try {
+            const dir = await showDirectoryPicker({ mode: "readwrite" });
+            const fh = await dir.getFileHandle(filename, { create: true });
+            await writeToHandle(fh, content);
+            const bytes = new TextEncoder().encode(content);
+            return {
+                kind: "opened",
+                loaded: { bytes, adapter: new BrowserFileAdapter(filename, { kind: "directory", dir }) },
+            };
+        } catch (err: unknown) {
+            if (err instanceof Error && err.name === "AbortError") return null;
+            throw err;
+        }
+    }
+    triggerDownload(content, filename);
+    return { kind: "downloaded" };
 }
 
 // ── Adapter ───────────────────────────────────────────────────────────────────
