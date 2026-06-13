@@ -2275,8 +2275,9 @@ public sealed class EditorController : IDisposable
 
     private static void AddTemplateData(Dictionary<string, TemplateData> templates, string resourceName)
     {
-        // TODO: Tidy up default template name
-        var templateName = resourceName;
+        // Default to the stem of the resource name (e.g. "Dansk" from "QuestViva.Engine.Core.Templates.Dansk.template")
+        var stem = resourceName[(resourceName.LastIndexOf('.', resourceName.Length - ".template".Length - 1) + 1)..^".template".Length];
+        var templateName = stem;
         var templateEditorStyle = EditorStyle.TextAdventure;
 
         var stream = WorldModel.GetEmbeddedResourceStream(resourceName);
