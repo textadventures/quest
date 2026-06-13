@@ -3,7 +3,7 @@
     import { base } from "$app/paths";
     import { openGame, loadingStatus } from "$lib/editor-store";
     import { hasFSA, openDirectory, loadFileFromDirectory, loadLocalFile, createLocalGame } from "$lib/filesystem/browser-adapter";
-    import { createNewGame, getGameTemplates, loadFromServer } from "$lib/filesystem/server-adapter";
+    import { createNewGame, getGameTemplates } from "$lib/filesystem/server-adapter";
     import type { GameTemplate } from "$lib/filesystem/server-adapter";
     import { loadWasm } from "$lib/wasm";
 
@@ -142,14 +142,11 @@
         creatingServer = true;
         try {
             const gameId = await createNewGame(trimmed, selectedTemplateId);
-            const loaded = await loadFromServer(gameId);
-            const ok = await openGame(loaded.bytes, loaded.adapter.filename, loaded.adapter);
-            if (ok) { goto(`${base || ""}/?game=${gameId}`); return; }
-            createServerError = "Failed to load new game.";
+            goto(`${base || ""}/?game=${gameId}`);
         } catch (err) {
             createServerError = String(err);
+            creatingServer = false;
         }
-        creatingServer = false;
     }
 
     const creating = $derived(creatingLocal || creatingServer);
