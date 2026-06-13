@@ -3,7 +3,8 @@
     import { base } from "$app/paths";
     import { openGame, loadingStatus } from "$lib/editor-store";
     import { hasFSA, openDirectory, loadFileFromDirectory, loadLocalFile } from "$lib/filesystem/browser-adapter";
-    import { createNewGame, loadFromServer, LANGUAGES } from "$lib/filesystem/server-adapter";
+    import { createNewGame, getGameTemplates, loadFromServer } from "$lib/filesystem/server-adapter";
+    import type { GameTemplate } from "$lib/filesystem/server-adapter";
 
     let loading = $state(false);
     let error = $state<string | null>(null);
@@ -14,10 +15,33 @@
 
     // Create new game form
     let createName = $state("");
-    let createType = $state<"textadventure" | "gamebook">("textadventure");
-    let createLanguage = $state("English");
+    let templates = $state<GameTemplate[]>([]);
+    let selectedTemplateId = $state("");
     let creating = $state(false);
     let createError = $state<string | null>(null);
+
+    // Derived views into the template list
+    let textAdventureTemplates = $derived(templates.filter(t => t.type === "textadventure"));
+    let gamebookTemplates = $derived(templates.filter(t => t.type === "gamebook"));
+    let selectedTemplate = $derived(templates.find(t => t.id === selectedTemplateId) ?? null);
+
+    // Load templates lazily when the section is first needed — WASM must be loaded
+    let templatesLoading = $state(false);
+    let templatesError = $state<string | null>(null);
+
+    async function ensureTemplates() {
+        if (templates.length > 0 || templatesLoading) return;
+        templatesLoading = true;
+        try {
+            templates = await getGameTemplates();
+            // Default to English text adventure
+            const defaultTemplate = templates.find(t => t.label === "English") ?? templates[0];
+            if (defaultTemplate) selectedTemplateId = defaultTemplate.id;
+        } catch (err) {
+            templatesError = String(err);
+        }
+        templatesLoading = false;
+    }
 
     async function handleOpenFolder() {
         error = null;
@@ -80,9 +104,10 @@
         createError = null;
         const trimmed = createName.trim();
         if (!trimmed) { createError = "Please enter a game name."; return; }
+        if (!selectedTemplateId) { createError = "Please select a template."; return; }
         creating = true;
         try {
-            const gameId = await createNewGame(trimmed, createType, createLanguage);
+            const gameId = await createNewGame(trimmed, selectedTemplateId);
             const loaded = await loadFromServer(gameId);
             const ok = await openGame(loaded.bytes, loaded.adapter.filename, loaded.adapter);
             if (ok) { goto(base || "/"); return; }
@@ -143,54 +168,76 @@
 
             <p class="text-surface-500-400 text-sm font-medium self-start">Create new game</p>
 
-            <div class="flex flex-col gap-3 w-full">
-                <input
-                    type="text"
-                    class="input"
-                    placeholder="Game name"
-                    bind:value={createName}
-                    onkeydown={(e) => e.key === "Enter" && handleCreateGame()}
-                />
+            {#if templatesError}
+                <p class="text-error-500 text-sm">{templatesError}</p>
+            {:else}
+                <div class="flex flex-col gap-3 w-full">
+                    <input
+                        type="text"
+                        class="input"
+                        placeholder="Game name"
+                        bind:value={createName}
+                        onfocus={ensureTemplates}
+                        onkeydown={(e) => e.key === "Enter" && handleCreateGame()}
+                    />
 
-                <div class="flex gap-4">
-                    <label class="flex items-center gap-2 cursor-pointer">
-                        <input type="radio" class="radio" bind:group={createType} value="textadventure" />
-                        <span class="text-sm">Text adventure</span>
-                    </label>
-                    <label class="flex items-center gap-2 cursor-pointer">
-                        <input type="radio" class="radio" bind:group={createType} value="gamebook" />
-                        <span class="text-sm">Gamebook</span>
-                    </label>
+                    {#if templatesLoading}
+                        <div class="flex items-center gap-2 text-surface-500-400 text-sm">
+                            <div class="size-4 rounded-full border-2 border-surface-300-700 border-t-primary-500 animate-spin"></div>
+                            Loading templates...
+                        </div>
+                    {:else if templates.length > 0}
+                        <div class="flex flex-col gap-1">
+                            <p class="text-sm text-surface-500-400">Game type</p>
+                            <div class="flex gap-4">
+                                {#each [{ value: "textadventure", label: "Text adventure" }, { value: "gamebook", label: "Gamebook" }] as type (type.value)}
+                                    <label class="flex items-center gap-2 cursor-pointer">
+                                        <input
+                                            type="radio"
+                                            class="radio"
+                                            name="gametype"
+                                            checked={selectedTemplate?.type === type.value}
+                                            onchange={() => {
+                                                const list = type.value === "gamebook" ? gamebookTemplates : textAdventureTemplates;
+                                                selectedTemplateId = list[0]?.id ?? "";
+                                            }}
+                                        />
+                                        <span class="text-sm">{type.label}</span>
+                                    </label>
+                                {/each}
+                            </div>
+                        </div>
+
+                        {#if selectedTemplate?.type === "textadventure" && textAdventureTemplates.length > 1}
+                            <select class="select" bind:value={selectedTemplateId}>
+                                {#each textAdventureTemplates as t (t.id)}
+                                    <option value={t.id}>{t.label}</option>
+                                {/each}
+                            </select>
+                        {/if}
+                    {/if}
+
+                    {#if creating}
+                        <div class="flex items-center gap-3">
+                            <div class="size-5 rounded-full border-2 border-surface-300-700 border-t-primary-500 animate-spin"></div>
+                            <span class="text-surface-500-400 text-sm">{$loadingStatus || "Creating..."}</span>
+                        </div>
+                    {:else}
+                        <button
+                            type="button"
+                            class="btn preset-filled-primary-500 w-full"
+                            onclick={handleCreateGame}
+                            disabled={!createName.trim()}
+                        >
+                            Create game
+                        </button>
+                    {/if}
+
+                    {#if createError}
+                        <p class="text-error-500 text-sm">{createError}</p>
+                    {/if}
                 </div>
-
-                {#if createType === "textadventure"}
-                    <select class="select" bind:value={createLanguage}>
-                        {#each LANGUAGES as lang (lang.id)}
-                            <option value={lang.id}>{lang.label}</option>
-                        {/each}
-                    </select>
-                {/if}
-
-                {#if creating}
-                    <div class="flex items-center gap-3">
-                        <div class="size-5 rounded-full border-2 border-surface-300-700 border-t-primary-500 animate-spin"></div>
-                        <span class="text-surface-500-400 text-sm">{$loadingStatus || "Creating..."}</span>
-                    </div>
-                {:else}
-                    <button
-                        type="button"
-                        class="btn preset-filled-primary-500 w-full"
-                        onclick={handleCreateGame}
-                        disabled={!createName.trim()}
-                    >
-                        Create game
-                    </button>
-                {/if}
-
-                {#if createError}
-                    <p class="text-error-500 text-sm">{createError}</p>
-                {/if}
-            </div>
+            {/if}
         </div>
     {/if}
 </main>

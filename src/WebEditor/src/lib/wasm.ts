@@ -73,6 +73,9 @@ export interface WasmBridge {
   CreateJavascript(): string
   DeleteElement(key: string): void
   SwapElements(key1: string, key2: string): string
+  // New game
+  GetGameTemplates(): string
+  CreateGameFromTemplate(templateId: string, gameName: string): string
 }
 
 let _bridge: WasmBridge | null = null;
