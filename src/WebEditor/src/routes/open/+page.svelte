@@ -2,9 +2,10 @@
     import { goto } from "$app/navigation";
     import { base } from "$app/paths";
     import { openGame, loadingStatus } from "$lib/editor-store";
-    import { hasFSA, openDirectory, loadFileFromDirectory, loadLocalFile } from "$lib/filesystem/browser-adapter";
+    import { hasFSA, openDirectory, loadFileFromDirectory, loadLocalFile, createLocalGame } from "$lib/filesystem/browser-adapter";
     import { createNewGame, getGameTemplates, loadFromServer } from "$lib/filesystem/server-adapter";
     import type { GameTemplate } from "$lib/filesystem/server-adapter";
+    import { loadWasm } from "$lib/wasm";
 
     let loading = $state(false);
     let error = $state<string | null>(null);
@@ -13,34 +14,41 @@
     let pendingDir = $state<FileSystemDirectoryHandle | null>(null);
     let pendingFiles = $state<string[]>([]);
 
-    // Create new game form
+    // Create new game form (shared)
     let createName = $state("");
     let templates = $state<GameTemplate[]>([]);
     let selectedTemplateId = $state("");
-    let creating = $state(false);
-    let createError = $state<string | null>(null);
-
-    // Derived views into the template list
-    let textAdventureTemplates = $derived(templates.filter(t => t.type === "textadventure"));
-    let gamebookTemplates = $derived(templates.filter(t => t.type === "gamebook"));
-    let selectedTemplate = $derived(templates.find(t => t.id === selectedTemplateId) ?? null);
-
-    // Load templates lazily when the section is first needed — WASM must be loaded
     let templatesLoading = $state(false);
     let templatesError = $state<string | null>(null);
+
+    let selectedTemplate = $derived(templates.find(t => t.id === selectedTemplateId) ?? null);
+    let textAdventureTemplates = $derived(templates.filter(t => t.type === "textadventure"));
+    let gamebookTemplates = $derived(templates.filter(t => t.type === "gamebook"));
+
+    // Local creation state
+    let creatingLocal = $state(false);
+    let createLocalError = $state<string | null>(null);
+    let localDownloaded = $state(false);
+
+    // Server creation state
+    let creatingServer = $state(false);
+    let createServerError = $state<string | null>(null);
 
     async function ensureTemplates() {
         if (templates.length > 0 || templatesLoading) return;
         templatesLoading = true;
         try {
             templates = await getGameTemplates();
-            // Default to English text adventure
             const defaultTemplate = templates.find(t => t.label === "English") ?? templates[0];
             if (defaultTemplate) selectedTemplateId = defaultTemplate.id;
         } catch (err) {
             templatesError = String(err);
         }
         templatesLoading = false;
+    }
+
+    function safeFilename(name: string): string {
+        return (name.replace(/[^a-zA-Z0-9 _-]/g, "").trim() || "game") + ".aslx";
     }
 
     async function handleOpenFolder() {
@@ -100,23 +108,51 @@
         loading = false;
     }
 
-    async function handleCreateGame() {
-        createError = null;
+    async function handleCreateLocal() {
+        createLocalError = null;
+        localDownloaded = false;
         const trimmed = createName.trim();
-        if (!trimmed) { createError = "Please enter a game name."; return; }
-        if (!selectedTemplateId) { createError = "Please select a template."; return; }
-        creating = true;
+        if (!trimmed) { createLocalError = "Please enter a game name."; return; }
+        if (!selectedTemplateId) { createLocalError = "Please select a template."; return; }
+        creatingLocal = true;
+        try {
+            const bridge = await loadWasm();
+            const content = bridge.CreateGameFromTemplate(selectedTemplateId, trimmed);
+            const result = await createLocalGame(safeFilename(trimmed), content);
+            if (result === null) {
+                // user cancelled directory picker — do nothing
+            } else if (result.kind === "opened") {
+                const ok = await openGame(result.loaded.bytes, result.loaded.adapter.filename, result.loaded.adapter);
+                if (ok) { goto(base || "/"); return; }
+                createLocalError = "Failed to load new game.";
+            } else {
+                localDownloaded = true;
+            }
+        } catch (err) {
+            createLocalError = String(err);
+        }
+        creatingLocal = false;
+    }
+
+    async function handleCreateServer() {
+        createServerError = null;
+        const trimmed = createName.trim();
+        if (!trimmed) { createServerError = "Please enter a game name."; return; }
+        if (!selectedTemplateId) { createServerError = "Please select a template."; return; }
+        creatingServer = true;
         try {
             const gameId = await createNewGame(trimmed, selectedTemplateId);
             const loaded = await loadFromServer(gameId);
             const ok = await openGame(loaded.bytes, loaded.adapter.filename, loaded.adapter);
             if (ok) { goto(base || "/"); return; }
-            createError = "Failed to load new game.";
+            createServerError = "Failed to load new game.";
         } catch (err) {
-            createError = String(err);
+            createServerError = String(err);
         }
-        creating = false;
+        creatingServer = false;
     }
+
+    const creating = $derived(creatingLocal || creatingServer);
 </script>
 
 <main class="flex flex-col items-center justify-center min-h-svh gap-6 p-8">
@@ -145,6 +181,8 @@
         </div>
     {:else}
         <div class="flex flex-col items-center gap-4 w-full max-w-sm">
+
+            <!-- Open existing game -->
             <p class="text-surface-500-400 text-sm font-medium self-start">Open existing game</p>
 
             {#if hasFSA()}
@@ -166,6 +204,7 @@
 
             <hr class="w-full border-surface-300-700 my-2" />
 
+            <!-- Create new game -->
             <p class="text-surface-500-400 text-sm font-medium self-start">Create new game</p>
 
             {#if templatesError}
@@ -178,7 +217,8 @@
                         placeholder="Game name"
                         bind:value={createName}
                         onfocus={ensureTemplates}
-                        onkeydown={(e) => e.key === "Enter" && handleCreateGame()}
+                        onkeydown={(e) => { if (e.key === "Enter") handleCreateLocal(); }}
+                        disabled={creating}
                     />
 
                     {#if templatesLoading}
@@ -197,6 +237,7 @@
                                             class="radio"
                                             name="gametype"
                                             checked={selectedTemplate?.type === type.value}
+                                            disabled={creating}
                                             onchange={() => {
                                                 const list = type.value === "gamebook" ? gamebookTemplates : textAdventureTemplates;
                                                 selectedTemplateId = list[0]?.id ?? "";
@@ -209,7 +250,7 @@
                         </div>
 
                         {#if selectedTemplate?.type === "textadventure" && textAdventureTemplates.length > 1}
-                            <select class="select" bind:value={selectedTemplateId}>
+                            <select class="select" bind:value={selectedTemplateId} disabled={creating}>
                                 {#each textAdventureTemplates as t (t.id)}
                                     <option value={t.id}>{t.label}</option>
                                 {/each}
@@ -223,21 +264,43 @@
                             <span class="text-surface-500-400 text-sm">{$loadingStatus || "Creating..."}</span>
                         </div>
                     {:else}
-                        <button
-                            type="button"
-                            class="btn preset-filled-primary-500 w-full"
-                            onclick={handleCreateGame}
-                            disabled={!createName.trim()}
-                        >
-                            Create game
-                        </button>
+                        <div class="flex gap-2">
+                            <button
+                                type="button"
+                                class="btn preset-filled-primary-500 flex-1"
+                                onclick={handleCreateLocal}
+                                disabled={!createName.trim()}
+                                title={hasFSA() ? "Choose a folder to save your game in" : "Download the game file"}
+                            >
+                                {hasFSA() ? "Save to my computer" : "Download"}
+                            </button>
+                            <button
+                                type="button"
+                                class="btn preset-outlined-primary-500 flex-1"
+                                onclick={handleCreateServer}
+                                disabled={!createName.trim()}
+                                title="Save to textadventures.co.uk"
+                            >
+                                Save to server
+                            </button>
+                        </div>
                     {/if}
 
-                    {#if createError}
-                        <p class="text-error-500 text-sm">{createError}</p>
+                    {#if localDownloaded}
+                        <p class="text-sm text-surface-500-400">
+                            Game file downloaded. Use <strong>Open game file</strong> above to open it.
+                        </p>
+                    {/if}
+
+                    {#if createLocalError}
+                        <p class="text-error-500 text-sm">{createLocalError}</p>
+                    {/if}
+                    {#if createServerError}
+                        <p class="text-error-500 text-sm">{createServerError}</p>
                     {/if}
                 </div>
             {/if}
+
         </div>
     {/if}
 </main>
