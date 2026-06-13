@@ -144,7 +144,7 @@
             const gameId = await createNewGame(trimmed, selectedTemplateId);
             const loaded = await loadFromServer(gameId);
             const ok = await openGame(loaded.bytes, loaded.adapter.filename, loaded.adapter);
-            if (ok) { goto(base || "/"); return; }
+            if (ok) { goto(`${base || ""}/?game=${gameId}`); return; }
             createServerError = "Failed to load new game.";
         } catch (err) {
             createServerError = String(err);
