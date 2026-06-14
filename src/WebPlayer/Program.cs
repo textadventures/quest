@@ -34,7 +34,13 @@ builder.Services.AddSingleton<GameSessionTracker>();
 
 if (!string.IsNullOrEmpty(builder.Configuration["ApplicationInsights:ConnectionString"]))
 {
-    builder.Services.AddApplicationInsightsTelemetry();
+    builder.Services.AddApplicationInsightsTelemetry(options =>
+    {
+        if (float.TryParse(builder.Configuration["ApplicationInsights:SamplingRatio"], out var ratio))
+        {
+            options.SamplingRatio = ratio;
+        }
+    });
 }
 
 var app = builder.Build();
