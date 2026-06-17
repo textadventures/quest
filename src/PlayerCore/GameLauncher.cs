@@ -1,7 +1,4 @@
 ﻿#nullable enable
-using System;
-using System.IO;
-using System.Linq;
 using QuestViva.Common;
 using QuestViva.Engine;
 using QuestViva.Legacy;
@@ -21,7 +18,7 @@ public class GameLauncher(WorldModelFactory worldModelFactory)
             case ".asl":
             case ".cas":
             case ".qsg":
-                V4Game game = new V4Game(gameData, saveData);
+                var game = new V4Game(gameData, saveData);
                 return game;
             case ".zip":
                 // TODO
@@ -36,7 +33,7 @@ public class GameLauncher(WorldModelFactory worldModelFactory)
     // https://docs.microsoft.com/en-us/dotnet/standard/io/how-to-compress-and-extract-files
     // https://learn.microsoft.com/en-us/dotnet/api/system.io.compression.zipfile?view=net-9.0
     // We already use this in WorldModel/WorldModel/GameLoader/PackageReader.cs
-        
+
     // private static IASL GetGameFromZip(string filename, string libraryFolder, out string tempDir)
     // {
     //     string gameFile = UnzipAndGetGameFile(filename, out tempDir);
@@ -65,14 +62,15 @@ public class GameLauncher(WorldModelFactory worldModelFactory)
 
     private static string? SearchForGameFile(string dir, params string[] exts)
     {
-        foreach (string ext in exts)
+        foreach (var ext in exts)
         {
-            string[] result = Directory.GetFiles(dir, "*." + ext, SearchOption.AllDirectories);
+            var result = Directory.GetFiles(dir, "*." + ext, SearchOption.AllDirectories);
             if (result.Any())
             {
                 return result[0];
             }
         }
+
         return null;
     }
 }

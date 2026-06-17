@@ -1,33 +1,33 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-	<PropertyGroup>
-		<TargetFramework>net10.0</TargetFramework>
-		<ImplicitUsings>enable</ImplicitUsings>
-		<Nullable>disable</Nullable>
+    <PropertyGroup>
+        <TargetFramework>net10.0</TargetFramework>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>disable</Nullable>
 
-		<IsPackable>false</IsPackable>
-		<IsTestProject>true</IsTestProject>
+        <IsPackable>false</IsPackable>
+        <IsTestProject>true</IsTestProject>
 
-		<RootNamespace>QuestViva.EditorCoreTests</RootNamespace>
-		<LangVersion>default</LangVersion>
-	</PropertyGroup>
+        <RootNamespace>QuestViva.EditorCoreTests</RootNamespace>
+        <LangVersion>default</LangVersion>
+    </PropertyGroup>
 
-	<ItemGroup>
-		<PackageReference Include="coverlet.collector" Version="8.0.0">
-		  <PrivateAssets>all</PrivateAssets>
-		  <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-		</PackageReference>
-		<PackageReference Include="Microsoft.NET.Test.Sdk" Version="18.0.1" />
-		<PackageReference Include="MSTest.TestAdapter" Version="3.7.3" />
-		<PackageReference Include="MSTest.TestFramework" Version="3.7.3" />
-	</ItemGroup>
+    <ItemGroup>
+        <PackageReference Include="coverlet.collector" Version="8.0.0">
+            <PrivateAssets>all</PrivateAssets>
+            <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+        </PackageReference>
+        <PackageReference Include="Microsoft.NET.Test.Sdk" Version="18.0.1"/>
+        <PackageReference Include="MSTest.TestAdapter" Version="3.7.3"/>
+        <PackageReference Include="MSTest.TestFramework" Version="3.7.3"/>
+    </ItemGroup>
 
-	<ItemGroup>
-		<Using Include="Microsoft.VisualStudio.TestTools.UnitTesting" />
-	</ItemGroup>
-	<ItemGroup>
-		<ProjectReference Include="..\..\src\EditorCore\EditorCore.csproj" />
-	</ItemGroup>
-	<ItemGroup>
-		<EmbeddedResource Include="test.aslx" />
-	</ItemGroup>
+    <ItemGroup>
+        <Using Include="Microsoft.VisualStudio.TestTools.UnitTesting"/>
+    </ItemGroup>
+    <ItemGroup>
+        <ProjectReference Include="..\..\src\EditorCore\EditorCore.csproj"/>
+    </ItemGroup>
+    <ItemGroup>
+        <EmbeddedResource Include="test.aslx"/>
+    </ItemGroup>
 </Project>

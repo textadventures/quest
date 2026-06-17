@@ -1,68 +1,69 @@
 ﻿#nullable disable
-using System;
-using System.Collections.Generic;
 using QuestViva.Engine.Scripts;
 
-namespace QuestViva.Engine
-{
-    public class Callback
-    {
-        public Callback(IScript script, Context context)
-        {
-            Script = script;
-            Context = context;
-        }
+namespace QuestViva.Engine;
 
-        public IScript Script { get; private set; }
-        public Context Context { get; private set; }
+public class Callback
+{
+    public Callback(IScript script, Context context)
+    {
+        Script = script;
+        Context = context;
     }
 
-    internal class CallbackManager
+    public IScript Script { get; private set; }
+    public Context Context { get; private set; }
+}
+
+internal class CallbackManager
+{
+    public enum CallbackTypes
     {
-        public enum CallbackTypes
+        Menu,
+        Wait,
+        Question,
+        GetInput
+    }
+
+    private readonly Dictionary<CallbackTypes, Callback> m_callbacks = new();
+    private List<Callback> m_onReadyCallbacks = new();
+
+    public void Push(CallbackTypes type, Callback callback, string exception = "Callback already exists")
+    {
+        if (m_callbacks.ContainsKey(type))
         {
-            Menu,
-            Wait,
-            Question,
-            GetInput
+            throw new InvalidOperationException(exception);
         }
 
-        private Dictionary<CallbackTypes, Callback> m_callbacks = new Dictionary<CallbackTypes, Callback>();
-        private List<Callback> m_onReadyCallbacks = new List<Callback>();
+        m_callbacks[type] = callback;
+    }
 
-        public void Push(CallbackTypes type, Callback callback, string exception = "Callback already exists")
+    public Callback Pop(CallbackTypes type)
+    {
+        if (!m_callbacks.ContainsKey(type))
         {
-            if (m_callbacks.ContainsKey(type))
-            {
-                throw new InvalidOperationException(exception);
-            }
-
-            m_callbacks[type] = callback;
+            return null;
         }
 
-        public Callback Pop(CallbackTypes type)
-        {
-            if (!m_callbacks.ContainsKey(type)) return null;
-            Callback result = m_callbacks[type];
-            m_callbacks.Remove(type);
-            return result;
-        }
+        var result = m_callbacks[type];
+        m_callbacks.Remove(type);
+        return result;
+    }
 
-        public bool AnyOutstanding()
-        {
-            return m_callbacks.Count > 0;
-        }
+    public bool AnyOutstanding()
+    {
+        return m_callbacks.Count > 0;
+    }
 
-        public void AddOnReadyCallback(Callback callback)
-        {
-            m_onReadyCallbacks.Add(callback);
-        }
+    public void AddOnReadyCallback(Callback callback)
+    {
+        m_onReadyCallbacks.Add(callback);
+    }
 
-        public IEnumerable<Callback> FlushOnReadyCallbacks()
-        {
-            List<Callback> currentList = m_onReadyCallbacks;
-            m_onReadyCallbacks = new List<Callback>();
-            return currentList;
-        }
+    public IEnumerable<Callback> FlushOnReadyCallbacks()
+    {
+        var currentList = m_onReadyCallbacks;
+        m_onReadyCallbacks = new List<Callback>();
+        return currentList;
     }
 }

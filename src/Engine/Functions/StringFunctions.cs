@@ -1,7 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
-using QuestViva.Utility;
+﻿using System.Diagnostics.CodeAnalysis;
+using Microsoft.VisualBasic;
 
 namespace QuestViva.Engine.Functions;
 
@@ -10,22 +8,22 @@ public static class StringFunctions
 {
     public static string Left(string? input, int length)
     {
-        return Microsoft.VisualBasic.Strings.Left(input, length);
+        return Strings.Left(input, length);
     }
 
     public static string Right(string? input, int length)
     {
-        return Microsoft.VisualBasic.Strings.Right(input, length);
+        return Strings.Right(input, length);
     }
 
     public static string? Mid(string? input, int start)
     {
-        return Microsoft.VisualBasic.Strings.Mid(input, start);
+        return Strings.Mid(input, start);
     }
 
     public static string Mid(string? input, int start, int length)
     {
-        return Microsoft.VisualBasic.Strings.Mid(input, start, length);
+        return Strings.Mid(input, start, length);
     }
 
     public static string UCase(string? input)
@@ -42,32 +40,32 @@ public static class StringFunctions
 
     public static int LengthOf(string? input)
     {
-        return Microsoft.VisualBasic.Strings.Len(input);
+        return Strings.Len(input);
     }
 
     public static string? CapFirst(string? input)
     {
-        return Strings.CapFirst(input);
+        return QuestViva.Utility.Strings.CapFirst(input);
     }
 
     public static int Instr(string? input, string? search)
     {
-        return Microsoft.VisualBasic.Strings.InStr(input, search);
+        return Strings.InStr(input, search);
     }
 
     public static int Instr(int start, string? input, string? search)
     {
-        return Microsoft.VisualBasic.Strings.InStr(start, input, search);
+        return Strings.InStr(start, input, search);
     }
 
     public static int InstrRev(string? input, string? search)
     {
-        return Microsoft.VisualBasic.Strings.InStrRev(input, search);
+        return Strings.InStrRev(input, search);
     }
 
     public static int InstrRev(int start, string? input, string? search)
     {
-        return Microsoft.VisualBasic.Strings.InStrRev( input, search, start);
+        return Strings.InStrRev(input, search, start);
     }
 
     public static bool StartsWith(string? input, string? search)
@@ -105,7 +103,7 @@ public static class StringFunctions
 
     public static bool IsNumeric(string? input)
     {
-        return Strings.IsNumeric(input);
+        return QuestViva.Utility.Strings.IsNumeric(input);
     }
 
     public static string Replace(string? input, string? oldString, string? newString)
@@ -115,30 +113,30 @@ public static class StringFunctions
         ArgumentNullException.ThrowIfNull(newString);
         return input.Replace(oldString, newString);
     }
-        
+
     public static string Trim(string? input)
     {
-        return Microsoft.VisualBasic.Strings.Trim(input);
+        return Strings.Trim(input);
     }
 
     public static string LTrim(string? input)
     {
-        return Microsoft.VisualBasic.Strings.LTrim(input);
+        return Strings.LTrim(input);
     }
-        
+
     public static string RTrim(string? input)
     {
-        return Microsoft.VisualBasic.Strings.RTrim(input);
+        return Strings.RTrim(input);
     }
-        
+
     public static int Asc(string? input)
     {
         ArgumentNullException.ThrowIfNull(input);
-        return Microsoft.VisualBasic.Strings.Asc(input);
+        return Strings.Asc(input);
     }
 
     public static string Chr(int input)
     {
-        return Microsoft.VisualBasic.Strings.Chr(input).ToString();
+        return Strings.Chr(input).ToString();
     }
 }

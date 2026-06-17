@@ -1,135 +1,102 @@
-﻿using System;
-using System.Collections.Generic;
+﻿namespace QuestViva.EditorCore;
 
-namespace QuestViva.EditorCore
+public class AttributeSubEditorControlData : IEditorControl
 {
-    public class AttributeSubEditorControlData:IEditorControl
+    private static readonly Dictionary<string, string> s_allTypes = new()
     {
-        private static Dictionary<string, string> s_allTypes = new Dictionary<string, string> {
-            {"string","String"},
-            {"boolean","Boolean"},
-            {"int","Integer"},
-            {"double","Double"},
-            {"script","Script"},
-            {"stringlist","String List"},
-            {"object","Object"},
-            {"simplepattern","Command pattern"},
-            {"stringdictionary","String dictionary"},
-            {"scriptdictionary","Script dictionary"},
-            {"null","Null"}
-        };
+        {"string", "String"},
+        {"boolean", "Boolean"},
+        {"int", "Integer"},
+        {"double", "Double"},
+        {"script", "Script"},
+        {"stringlist", "String List"},
+        {"object", "Object"},
+        {"simplepattern", "Command pattern"},
+        {"stringdictionary", "String dictionary"},
+        {"scriptdictionary", "Script dictionary"},
+        {"null", "Null"}
+    };
 
-        private string m_attribute;
+    public AttributeSubEditorControlData(string attribute)
+    {
+        Attribute = attribute;
+    }
 
-        public AttributeSubEditorControlData(string attribute)
+    protected virtual Dictionary<string, string> AllowedTypes => s_allTypes;
+
+    public string Attribute { get; }
+
+    public string Caption => null;
+
+    public string ControlType => null;
+
+    public bool Expand => false;
+
+    public bool GetBool(string tag)
+    {
+        return false;
+    }
+
+    public IDictionary<string, string> GetDictionary(string tag)
+    {
+        if (tag == "types")
         {
-            m_attribute = attribute;
+            return AllowedTypes;
         }
 
-        protected virtual Dictionary<string, string> AllowedTypes
+        if (tag == "editors")
         {
-            get { return s_allTypes; }
+            return null;
         }
 
-        public string Attribute
-        {
-            get { return m_attribute; }
-        }
+        throw new NotImplementedException();
+    }
 
-        public string Caption
-        {
-            get { return null; }
-        }
+    public int? GetInt(string tag)
+    {
+        return null;
+    }
 
-        public string ControlType
-        {
-            get { return null; }
-        }
+    public double? GetDouble(string tag)
+    {
+        return null;
+    }
 
-        public bool Expand
-        {
-            get { return false; }
-        }
+    public IEnumerable<string> GetListString(string tag)
+    {
+        throw new NotImplementedException();
+    }
 
-        public bool GetBool(string tag)
+    public virtual string GetString(string tag)
+    {
+        switch (tag)
         {
-            return false;
-        }
-
-        public IDictionary<string, string> GetDictionary(string tag)
-        {
-            if (tag == "types")
-            {
-                return AllowedTypes;
-            }
-            if (tag == "editors")
-            {
+            case "checkbox":
+                return "True";
+            case "editprompt":
+            case "valueprompt":
+                return "Please enter a value";
+            //return L.T("EditorPleaseEnterValue");
+            case "keyprompt":
+                return "Please enter a key";
+            //return L.T("EditorPleaseEnterKey");
+            default:
                 return null;
-            }
-            throw new NotImplementedException();
-        }
-
-        public int? GetInt(string tag)
-        {
-            return null;
-        }
-
-        public double? GetDouble(string tag)
-        {
-            return null;
-        }
-
-        public IEnumerable<string> GetListString(string tag)
-        {
-            throw new NotImplementedException();
-        }
-
-        public virtual string GetString(string tag)
-        {
-            switch (tag)
-            {
-                case "checkbox":
-                    return "True";
-                case "editprompt":
-                case "valueprompt":
-                    return "Please enter a value";
-                    //return L.T("EditorPleaseEnterValue");
-                case "keyprompt":
-                    return "Please enter a key";
-                    //return L.T("EditorPleaseEnterKey");
-                default:
-                    return null;
-            }
-        }
-
-        public int? Height
-        {
-            get { return null; }
-        }
-
-        public bool IsControlVisible(IEditorData data)
-        {
-            return true;
-        }
-
-        public int? Width
-        {
-            get { return null; }
-        }
-
-        public IEditorDefinition Parent
-        {
-            get { return null; }
-        }
-
-        public bool IsControlVisibleInSimpleMode
-        {
-            get { return true; }
-        }
-
-        public string Id
-        {
-            get { throw new NotImplementedException(); }
         }
     }
+
+    public int? Height => null;
+
+    public bool IsControlVisible(IEditorData data)
+    {
+        return true;
+    }
+
+    public int? Width => null;
+
+    public IEditorDefinition Parent => null;
+
+    public bool IsControlVisibleInSimpleMode => true;
+
+    public string Id => throw new NotImplementedException();
 }

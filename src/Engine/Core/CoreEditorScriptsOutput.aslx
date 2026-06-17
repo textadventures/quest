@@ -150,7 +150,6 @@
     <create>ClearFramePicture</create>
     <add>[EditorScriptsOutputClearframe]</add>
     <advanced/>
-    <desktop/>
     <onlydisplayif>GetString(game, "_editorstyle") = null and GetBoolean(game, "feature_pictureframe")</onlydisplayif>
 
     <control>
@@ -706,7 +705,6 @@
     <appliesto>insert</appliesto>
     <display>Insert HTML from file #0</display>
     <advanced/>
-    <desktop/>
 
     <control>
       <controltype>label</controltype>
@@ -730,7 +728,6 @@
     <create>Log ("")</create>
     <add>[EditorScriptsOutputLog]</add>
     <advanced/>
-    <desktop/>
 
     <control>
       <controltype>label</controltype>

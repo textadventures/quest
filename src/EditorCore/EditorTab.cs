@@ -1,59 +1,44 @@
-﻿using System.Collections.Generic;
-using QuestViva.Engine;
+﻿using QuestViva.Engine;
 
-namespace QuestViva.EditorCore
+namespace QuestViva.EditorCore;
+
+internal class EditorTab : IEditorTab
 {
-    internal class EditorTab : IEditorTab
+    private readonly Dictionary<string, IEditorControl> m_controls;
+    private readonly Element m_source;
+    private readonly EditorVisibilityHelper m_visibilityHelper;
+
+    public EditorTab(EditorDefinition parent, WorldModel worldModel, Element source)
     {
-        private Dictionary<string, IEditorControl> m_controls = null;
-        private string m_caption;
-        private EditorVisibilityHelper m_visibilityHelper;
-        private Element m_source;
+        m_controls = new Dictionary<string, IEditorControl>();
+        Caption = source.Fields.GetString("caption");
+        IsTabVisibleInSimpleMode = !source.Fields.GetAsType<bool>("advanced");
 
-        public EditorTab(EditorDefinition parent, WorldModel worldModel, Element source)
+        foreach (var e in worldModel.Elements.GetElements(ElementType.EditorControl))
         {
-            m_controls = new Dictionary<string, IEditorControl>();
-            m_caption = source.Fields.GetString("caption");
-            IsTabVisibleInSimpleMode = !source.Fields.GetAsType<bool>("advanced");
-
-            foreach (Element e in worldModel.Elements.GetElements(ElementType.EditorControl))
+            if (e.Parent == source)
             {
-                if (e.Parent == source)
-                {
-                    m_controls.Add(e.Name, new EditorControl(parent, worldModel, e));
-                }
-            }
-            m_visibilityHelper = new EditorVisibilityHelper(parent, worldModel, source);
-            m_source = source;
-        }
-
-        public string Caption
-        {
-            get
-            {
-                return m_caption;
+                m_controls.Add(e.Name, new EditorControl(parent, worldModel, e));
             }
         }
 
-        public IEnumerable<IEditorControl> Controls
-        {
-            get { return m_controls.Values; }
-        }
+        m_visibilityHelper = new EditorVisibilityHelper(parent, worldModel, source);
+        m_source = source;
+    }
 
-        public bool IsTabVisible(IEditorData data)
-        {
-            return m_visibilityHelper.IsVisible(data);
-        }
+    public string Caption { get; }
 
-        public bool IsTabVisibleInSimpleMode
-        {
-            get;
-            private set;
-        }
+    public IEnumerable<IEditorControl> Controls => m_controls.Values;
 
-        public bool GetBool(string tag)
-        {
-            return m_source.Fields.GetAsType<bool>(tag);
-        }
+    public bool IsTabVisible(IEditorData data)
+    {
+        return m_visibilityHelper.IsVisible(data);
+    }
+
+    public bool IsTabVisibleInSimpleMode { get; }
+
+    public bool GetBool(string tag)
+    {
+        return m_source.Fields.GetAsType<bool>(tag);
     }
 }

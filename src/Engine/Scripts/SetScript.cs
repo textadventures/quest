@@ -1,314 +1,307 @@
 ﻿#nullable disable
-using System;
-using System.Collections.Generic;
 using QuestViva.Engine.Functions;
 
-namespace QuestViva.Engine.Scripts
+namespace QuestViva.Engine.Scripts;
+
+public class SetScriptConstructor : IScriptConstructor
 {
-    public class SetScriptConstructor : IScriptConstructor
+    public string Keyword => "=";
+
+    public IScript Create(string script, ScriptContext scriptContext)
     {
-        public string Keyword
+        var isScript = false;
+        var offset = 0;
+        int eqPos;
+
+        // hide text within string expressions
+        var obscuredScript = Utility.ObscureStrings(script);
+        var bracePos = obscuredScript.IndexOf('{');
+        if (bracePos != -1)
         {
-            get { return "="; }
+            // only want to look for = and => before any other scripts which may
+            // be defined on the same line, for example procedure calls of type
+            //     MyProcedureCall (5) { some other script }
+
+            obscuredScript = obscuredScript.Substring(0, bracePos);
         }
 
-        public IScript Create(string script, ScriptContext scriptContext)
+        eqPos = obscuredScript.IndexOf("=>");
+        if (eqPos != -1)
         {
-            bool isScript = false;
-            int offset = 0;
-            int eqPos;
+            isScript = true;
+            offset = 1;
+        }
+        else
+        {
+            eqPos = obscuredScript.IndexOf('=');
+        }
 
-            // hide text within string expressions
-            string obscuredScript = Utility.ObscureStrings(script);
-            int bracePos = obscuredScript.IndexOf('{');
-            if (bracePos != -1)
+        if (eqPos != -1)
+        {
+            var appliesTo = script.Substring(0, eqPos);
+            var value = script.Substring(eqPos + 1 + offset).Trim();
+
+            string variable;
+            var expr = GetAppliesTo(scriptContext, appliesTo, out variable);
+
+            if (!WorldModel.EditMode && WorldModel.Version >= WorldModelVersion.v530)
             {
-                // only want to look for = and => before any other scripts which may
-                // be defined on the same line, for example procedure calls of type
-                //     MyProcedureCall (5) { some other script }
-
-                obscuredScript = obscuredScript.Substring(0, bracePos);
-            }
-
-            eqPos = obscuredScript.IndexOf("=>");
-            if (eqPos != -1)
-            {
-                isScript = true;
-                offset = 1;
-            }
-            else
-            {
-                eqPos = obscuredScript.IndexOf('=');
-            }
-
-            if (eqPos != -1)
-            {
-                string appliesTo = script.Substring(0, eqPos);
-                string value = script.Substring(eqPos + 1 + offset).Trim();
-
-                string variable;
-                IFunction<Element> expr = GetAppliesTo(scriptContext, appliesTo, out variable);
-
-                if (!WorldModel.EditMode && WorldModel.Version >= WorldModelVersion.v530)
+                if (expr == null)
                 {
-                    if (expr == null)
+                    if (!Utility.IsValidFieldName(variable))
                     {
-                        if (!Utility.IsValidFieldName(variable))
-                        {
-                            string error = string.Format("Invalid variable name '{0}' in '{1}'", variable, script);
-                            throw new Exception(error);
-                        }
+                        var error = string.Format("Invalid variable name '{0}' in '{1}'", variable, script);
+                        throw new Exception(error);
                     }
-                    else
-                    {
-                        if (!Utility.IsValidAttributeName(variable))
-                        {
-                            string error = string.Format("Invalid attribute name '{0}' in '{1}'", variable, script);
-                            throw new Exception(error);
-                        }
-                    }
-                }
-
-                if (!isScript)
-                {
-                    return new SetExpressionScript(this, scriptContext, expr, variable, new Expression<object>(value, scriptContext));
                 }
                 else
                 {
-                    return new SetScriptScript(this, scriptContext, expr, variable, ScriptFactory.CreateScript(value));
+                    if (!Utility.IsValidAttributeName(variable))
+                    {
+                        var error = string.Format("Invalid attribute name '{0}' in '{1}'", variable, script);
+                        throw new Exception(error);
+                    }
                 }
             }
 
-            return null;
+            if (!isScript)
+            {
+                return new SetExpressionScript(this, scriptContext, expr, variable,
+                    new Expression<object>(value, scriptContext));
+            }
+
+            return new SetScriptScript(this, scriptContext, expr, variable, ScriptFactory.CreateScript(value));
         }
 
-        internal IFunction<Element> GetAppliesTo(ScriptContext scriptContext, string value, out string variable)
-        {
-            string var = Utility.ConvertVariablesToFleeFormat(value).Trim();
-            string obj;
-            Utility.ResolveObjectDotAttribute(var, out obj, out variable);
-            return (obj == null) ? null : new Expression<Element>(obj, scriptContext);
-        }
-
-        public IScriptFactory ScriptFactory { get; set; }
-
-        public WorldModel WorldModel { get; set; }
+        return null;
     }
 
-    public abstract class SetScriptBase : ScriptBase
+    public IScriptFactory ScriptFactory { get; set; }
+
+    public WorldModel WorldModel { get; set; }
+
+    internal IFunction<Element> GetAppliesTo(ScriptContext scriptContext, string value, out string variable)
     {
-        protected ScriptContext m_scriptContext;
-        private WorldModel m_worldModel;
-        private IFunction<Element> m_appliesTo;
-        private string m_property;
-        private SetScriptConstructor m_constructor;
+        var var = Utility.ConvertVariablesToFleeFormat(value).Trim();
+        string obj;
+        Utility.ResolveObjectDotAttribute(var, out obj, out variable);
+        return obj == null ? null : new Expression<Element>(obj, scriptContext);
+    }
+}
 
-        internal SetScriptBase(SetScriptConstructor constructor, ScriptContext scriptContext, IFunction<Element> appliesTo, string property)
-        {
-            m_constructor = constructor;
-            m_worldModel = constructor.WorldModel;
-            m_scriptContext = scriptContext;
-            AppliesTo = appliesTo;
-            Property = property;
-        }
+public abstract class SetScriptBase : ScriptBase
+{
+    private IFunction<Element> m_appliesTo;
+    private string m_property;
+    protected ScriptContext m_scriptContext;
 
-        protected IFunction<Element> AppliesTo
-        {
-            get { return m_appliesTo; }
-            private set
-            {
-                m_appliesTo = value;
-                AddAttributeNameToWorldModel();
-            }
-        }
-
-        protected string Property
-        {
-            get { return m_property; }
-            private set
-            {
-                m_property = value;
-                AddAttributeNameToWorldModel();
-            }
-        }
-
-        private void AddAttributeNameToWorldModel()
-        {
-            if (AppliesTo != null && Property != null)
-            {
-                m_worldModel.AddAttributeName(Property);
-            }
-        }
-
-        public override void Execute(Context c)
-        {
-            object result = GetResult(c);
-
-            if (AppliesTo != null)
-            {
-                // we're setting an object property
-                Element obj = AppliesTo.Execute(c);
-                obj.Fields.Set(Property, result);
-            }
-            else
-            {
-                // we're setting a local variable
-                c.Parameters[Property] = result;
-            }
-        }
-
-        public override string Save()
-        {
-            string result;
-
-            if (AppliesTo != null)
-            {
-                result = AppliesTo.Save() + "." + Property;
-            }
-            else
-            {
-                result = Property;
-            }
-
-            result += GetEqualsString + GetSaveString();
-
-            return result;
-        }
-
-        public override object GetParameter(int index)
-        {
-            switch (index)
-            {
-                case 0:
-                    return AppliesTo == null ? Property : AppliesTo.Save() + "." + Property;
-                case 1:
-                    return GetValue();
-                default:
-                    throw new ArgumentOutOfRangeException();
-            }
-        }
-
-        public override void SetParameterInternal(int index, object value)
-        {
-            switch (index)
-            {
-                case 0:
-                    string variable;
-                    AppliesTo = m_constructor.GetAppliesTo(m_scriptContext, (string)value, out variable);
-                    Property = variable;
-                    break;
-                case 1:
-                    SetValue((string)value);
-                    break;
-                default:
-                    throw new ArgumentOutOfRangeException();
-            }
-        }
-
-        public override IEnumerable<string> GetDefinedVariables()
-        {
-            if (AppliesTo == null)
-            {
-                // If AppliesTo is null, then this is an expression setting a simple variable value
-                return new List<string> { Property };
-            }
-            return base.GetDefinedVariables();
-        }
-
-        protected abstract object GetResult(Context c);
-        protected abstract string GetEqualsString { get; }
-        protected abstract string GetSaveString();
-        protected abstract object GetValue();
-        protected abstract void SetValue(string newValue);
-        protected WorldModel WorldModel { get { return m_worldModel; } }
-        protected SetScriptConstructor Constructor { get { return m_constructor; } }
+    internal SetScriptBase(SetScriptConstructor constructor, ScriptContext scriptContext, IFunction<Element> appliesTo,
+        string property)
+    {
+        Constructor = constructor;
+        WorldModel = constructor.WorldModel;
+        m_scriptContext = scriptContext;
+        AppliesTo = appliesTo;
+        Property = property;
     }
 
-    public class SetExpressionScript : SetScriptBase
+    protected IFunction<Element> AppliesTo
     {
-        private Expression<object> m_expr;
-
-        public SetExpressionScript(SetScriptConstructor constructor, ScriptContext scriptContext, IFunction<Element> appliesTo, string property, Expression<object> expr)
-            : base(constructor, scriptContext, appliesTo, property)
+        get => m_appliesTo;
+        private set
         {
-            m_expr = expr;
-        }
-
-        protected override ScriptBase CloneScript()
-        {
-            return new SetExpressionScript(Constructor, m_scriptContext, AppliesTo == null ? null : AppliesTo.Clone(), Property, (Expression<object>)m_expr.Clone());
-        }
-
-        protected override object GetResult(Context c)
-        {
-            return m_expr.Execute(c);
-        }
-
-        protected override string GetSaveString()
-        {
-            return m_expr.Save();
-        }
-
-        protected override string GetEqualsString
-        {
-            get { return " = "; }
-        }
-
-        protected override void SetValue(string newValue)
-        {
-            m_expr = new Expression<object>(newValue, m_scriptContext);
-        }
-
-        public override string Keyword { get { return "="; } }
-
-        protected override object GetValue()
-        {
-            return m_expr.Save();
+            m_appliesTo = value;
+            AddAttributeNameToWorldModel();
         }
     }
 
-    public class SetScriptScript : SetScriptBase
+    protected string Property
     {
-        private IScript m_script;
-        private IScriptFactory m_scriptFactory;
-
-        public SetScriptScript(SetScriptConstructor constructor, ScriptContext scriptContext, IFunction<Element> appliesTo, string property, IScript script)
-            : base(constructor, scriptContext, appliesTo, property)
+        get => m_property;
+        private set
         {
-            m_script = script;
-            m_scriptFactory = constructor.ScriptFactory;
+            m_property = value;
+            AddAttributeNameToWorldModel();
+        }
+    }
+
+    protected abstract string GetEqualsString { get; }
+    protected WorldModel WorldModel { get; }
+
+    protected SetScriptConstructor Constructor { get; }
+
+    private void AddAttributeNameToWorldModel()
+    {
+        if (AppliesTo != null && Property != null)
+        {
+            WorldModel.AddAttributeName(Property);
+        }
+    }
+
+    public override void Execute(Context c)
+    {
+        var result = GetResult(c);
+
+        if (AppliesTo != null)
+        {
+            // we're setting an object property
+            var obj = AppliesTo.Execute(c);
+            obj.Fields.Set(Property, result);
+        }
+        else
+        {
+            // we're setting a local variable
+            c.Parameters[Property] = result;
+        }
+    }
+
+    public override string Save()
+    {
+        string result;
+
+        if (AppliesTo != null)
+        {
+            result = AppliesTo.Save() + "." + Property;
+        }
+        else
+        {
+            result = Property;
         }
 
-        protected override ScriptBase CloneScript()
+        result += GetEqualsString + GetSaveString();
+
+        return result;
+    }
+
+    public override object GetParameter(int index)
+    {
+        switch (index)
         {
-            return new SetScriptScript(Constructor, m_scriptContext, AppliesTo == null ? null : AppliesTo.Clone(), Property, (IScript)m_script.Clone());
+            case 0:
+                return AppliesTo == null ? Property : AppliesTo.Save() + "." + Property;
+            case 1:
+                return GetValue();
+            default:
+                throw new ArgumentOutOfRangeException();
+        }
+    }
+
+    protected override void SetParameterInternal(int index, object value)
+    {
+        switch (index)
+        {
+            case 0:
+                string variable;
+                AppliesTo = Constructor.GetAppliesTo(m_scriptContext, (string) value, out variable);
+                Property = variable;
+                break;
+            case 1:
+                SetValue((string) value);
+                break;
+            default:
+                throw new ArgumentOutOfRangeException();
+        }
+    }
+
+    public override IEnumerable<string> GetDefinedVariables()
+    {
+        if (AppliesTo == null)
+        {
+            // If AppliesTo is null, then this is an expression setting a simple variable value
+            return new List<string> {Property};
         }
 
-        protected override object GetResult(Context c)
-        {
-            return m_script;
-        }
+        return base.GetDefinedVariables();
+    }
 
-        protected override string GetSaveString()
-        {
-            return SaveScript("", m_script).Trim();
-        }
+    protected abstract object GetResult(Context c);
+    protected abstract string GetSaveString();
+    protected abstract object GetValue();
+    protected abstract void SetValue(string newValue);
+}
 
-        protected override string GetEqualsString
-        {
-            get { return " => "; }
-        }
+public class SetExpressionScript : SetScriptBase
+{
+    private Expression<object> m_expr;
 
-        protected override void SetValue(string newValue)
-        {
-            m_script = m_scriptFactory.CreateScript(newValue);
-        }
+    public SetExpressionScript(SetScriptConstructor constructor, ScriptContext scriptContext,
+        IFunction<Element> appliesTo, string property, Expression<object> expr)
+        : base(constructor, scriptContext, appliesTo, property)
+    {
+        m_expr = expr;
+    }
 
-        public override string Keyword { get { return "=>"; } }
+    protected override string GetEqualsString => " = ";
 
-        protected override object GetValue()
-        {
-            return m_script;
-        }
+    public override string Keyword => "=";
+
+    protected override ScriptBase CloneScript()
+    {
+        return new SetExpressionScript(Constructor, m_scriptContext, AppliesTo == null ? null : AppliesTo.Clone(),
+            Property, (Expression<object>) m_expr.Clone());
+    }
+
+    protected override object GetResult(Context c)
+    {
+        return m_expr.Execute(c);
+    }
+
+    protected override string GetSaveString()
+    {
+        return m_expr.Save();
+    }
+
+    protected override void SetValue(string newValue)
+    {
+        m_expr = new Expression<object>(newValue, m_scriptContext);
+    }
+
+    protected override object GetValue()
+    {
+        return m_expr.Save();
+    }
+}
+
+public class SetScriptScript : SetScriptBase
+{
+    private readonly IScriptFactory m_scriptFactory;
+    private IScript m_script;
+
+    public SetScriptScript(SetScriptConstructor constructor, ScriptContext scriptContext, IFunction<Element> appliesTo,
+        string property, IScript script)
+        : base(constructor, scriptContext, appliesTo, property)
+    {
+        m_script = script;
+        m_scriptFactory = constructor.ScriptFactory;
+    }
+
+    protected override string GetEqualsString => " => ";
+
+    public override string Keyword => "=>";
+
+    protected override ScriptBase CloneScript()
+    {
+        return new SetScriptScript(Constructor, m_scriptContext, AppliesTo == null ? null : AppliesTo.Clone(), Property,
+            (IScript) m_script.Clone());
+    }
+
+    protected override object GetResult(Context c)
+    {
+        return m_script;
+    }
+
+    protected override string GetSaveString()
+    {
+        return SaveScript("", m_script).Trim();
+    }
+
+    protected override void SetValue(string newValue)
+    {
+        m_script = m_scriptFactory.CreateScript(newValue);
+    }
+
+    protected override object GetValue()
+    {
+        return m_script;
     }
 }

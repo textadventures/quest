@@ -1,29 +1,28 @@
-﻿body
-{
+﻿body {
     font-family: Arial, Helvetica, sans-serif;
     overflow-y: scroll;
     background-attachment: fixed;
 }
+
 html,
-body
-{
+body {
     margin: 0px;
     height: 100%;
 }
-a.cmdlink
-{
+
+a.cmdlink {
     text-decoration: underline;
     color: Blue;
     cursor: pointer;
 }
-a.cmdlink.disabled
-{
+
+a.cmdlink.disabled {
     text-decoration: inherit;
     color: inherit !important;
     cursor: inherit;
 }
-div#gameBorder
-{
+
+div#gameBorder {
     max-width: 950px;
     margin-left: auto;
     margin-right: auto;
@@ -32,29 +31,29 @@ div#gameBorder
     margin-top: 0;
     min-height: 100%;
 }
-div#gamePanel
-{
+
+div#gamePanel {
     position: sticky;
     top: 32px;
     padding-top: 2px;
     text-align: center;
     display: none;
 }
-div#gridPanel
-{
+
+div#gridPanel {
     position: sticky;
     top: 32px;
     padding: 0;
     overflow: hidden;
     display: none;
 }
-div#gameContent
-{
+
+div#gameContent {
     padding: 30px 20px 0px 20px;
     min-height: 100%;
 }
-div#gamePanes
-{
+
+div#gamePanes {
     position: fixed;
     float: right;
     width: 216px;
@@ -67,8 +66,7 @@ div#gamePanes
     margin-left: 255px;
 }
 
-div#qv-status
-{
+div#qv-status {
     height: 30px;
     position: fixed;
     top: 0px;
@@ -81,178 +79,182 @@ div#qv-status
     padding: 0;
     display: none;
 }
-div#location
-{
+
+div#location {
     display: none;
     padding-left: 4px;
     padding-top: 4px;
 }
-div#controlButtons
-{
+
+div#controlButtons {
     float: right;
 }
-.hiddenbutton
-{
+
+.hiddenbutton {
     display: none;
 }
-#dialog
-{
+
+#dialog {
     display: none;
 }
-#msgbox
-{
+
+#msgbox {
     display: none;
 }
-.compassbutton
-{
+
+.compassbutton {
     margin-right: 0;
     height: 35px;
     width: 35px;
 }
-#statusVars
-{
+
+#statusVars {
     padding: 4px;
     max-height: 140px;
 }
-#gamePanesFinished
-{
+
+#gamePanesFinished {
     display: none;
 }
-#cmdSave
-{
+
+#cmdSave {
     margin-top: 0px;
 }
-div#divOutput
-{
+
+div#divOutput {
     margin-top: 20px;
     min-height: 100%;
 }
-div#txtCommandDiv
-{
+
+div#txtCommandDiv {
     height: 40px;
     display: none;
 }
-div#txtCommandContainer
-{
+
+div#txtCommandContainer {
     display: flex;
     flex-direction: row;
     align-items: center;
 }
-#txtCommand
-{
+
+#txtCommand {
     font-size: 20px;
     vertical-align: bottom;
     padding: 6px;
     flex-grow: 1;
 }
-#txtCommandSpacer
-{
+
+#txtCommandSpacer {
     height: 10px;
 }
-div#controlButtons .ui-button
-{
+
+div#controlButtons .ui-button {
     font-size: 10px !important;
 }
-.verbButtons
-{
+
+.verbButtons {
     text-align: center;
 }
-.verbButtons .ui-button
-{
+
+.verbButtons .ui-button {
     font-size: 10px !important;
     margin: 5px;
 }
-#compassTable .ui-button
-{
+
+#compassTable .ui-button {
     font-family: Arial, Helvetica, sans-serif;
     font-size: 10px !important;
     border: 2px solid #C5DBEC;
 }
-#compassTable .ui-button-disabled
-{
+
+#compassTable .ui-button-disabled {
     border: 1px solid #C5DBEC;
     background: inherit;
 }
-.ui-accordion .ui-accordion-content
-{
+
+.ui-accordion .ui-accordion-content {
     padding: 0;
 }
-.ui-accordion-header
-{
+
+.ui-accordion-header {
     font-size: 12px;
     margin-top: 10px !important;
 }
-h3 .ui-icon
-{
+
+h3 .ui-icon {
     position: absolute;
 }
-h3 .accordion-header-text
-{
+
+h3 .accordion-header-text {
     padding-left: 1.8em;
 }
-#gamePanes .ui-widget
-{
+
+#gamePanes .ui-widget {
     font-size: 12px;
 }
-#endWaitLink
-{
+
+#endWaitLink {
     font-size: 16px;
     font-weight: bold;
 }
-.ui-selecting
-{
+
+.ui-selecting {
     background: #FECA40;
 }
-.ui-selected
-{
+
+.ui-selected {
     background: #F39814;
     color: white;
 }
-.elementListWrapper
-{
+
+.elementListWrapper {
     max-height: 200px;
     overflow-y: scroll;
 }
-.elementList
-{
+
+.elementList {
     list-style-type: none;
     margin: 0;
     padding: 0;
 }
-.elementList li
-{
+
+.elementList li {
     padding: 3px;
     cursor: default;
 }
-div#gamePanel img
-{
+
+div#gamePanel img {
     max-width: 100%;
 }
-div#divOutput img
-{
+
+div#divOutput img {
     max-width: 100%;
 }
+
 div.jjmenu {
-    font-size:12px;
-    position:absolute;
-    background:#fffef0;
-    border-bottom:2px solid gray;
-    border-right:1px solid gray;
-    padding:0px;
+    font-size: 12px;
+    position: absolute;
+    background: #fffef0;
+    border-bottom: 2px solid gray;
+    border-right: 1px solid gray;
+    padding: 0px;
 }
+
 div.jj_menu_item {
-    color:black;
-    border:1px solid gray;
-    border-bottom:none;
+    color: black;
+    border: 1px solid gray;
+    border-bottom: none;
     background: white;
-    cursor:pointer;
+    cursor: pointer;
 }
+
 div.jj_menu_item span {
-    display:block;
-    padding:4px;
+    display: block;
+    padding: 4px;
 }
+
 div.jj_menu_item_hover {
-    background:#e4e4e4;	
+    background: #e4e4e4;
 }
 
 #cmdShowPanes {
@@ -261,7 +263,7 @@ div.jj_menu_item_hover {
 
 #sidebar {
     display: none;
-    position: fixed;   /* fixed position to overlay content */
+    position: fixed; /* fixed position to overlay content */
     top: 32px;
     right: 0;
     width: 220px;

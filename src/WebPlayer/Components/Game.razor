@@ -1,8 +1,8 @@
+@rendermode InteractiveServer
 @using QuestViva.Common
 @using QuestViva.PlayerCore
 @using QuestViva.WebPlayer.Components.Debugger
 @using QuestViva.WebPlayer.Models
-@rendermode InteractiveServer
 @implements IDisposable
 @inject GameLauncher GameLauncher
 @inject GameSessionTracker GameSessionTracker
@@ -12,8 +12,8 @@
     <script type="text/javascript" src="/res/lib/jquery-2.1.1.min.js" crossorigin="anonymous"></script>
     <script type="text/javascript" src="/res/lib/jquery-ui.min.js" crossorigin="anonymous"></script>
     <script type="text/javascript" src="/res/lib/jquery.multi-open-accordion-1.5.3.js" crossorigin="anonymous"></script>
-    <link rel="Stylesheet" type="text/css" href="/res/lib/jquery-ui.min.css" />
-    <link rel="Stylesheet" type="text/css" href="/res/playercore.css?v=@VersionInfo.Version" />
+    <link rel="Stylesheet" type="text/css" href="/res/lib/jquery-ui.min.css"/>
+    <link rel="Stylesheet" type="text/css" href="/res/playercore.css?v=@VersionInfo.Version"/>
     <script type="text/javascript" src="/res/playercore.js?v=@VersionInfo.Version" crossorigin="anonymous"></script>
     <script type="text/javascript" src="player.js?v=@VersionInfo.Version" crossorigin="anonymous"></script>
     <script type="text/javascript" src="playerweb.js?v=@VersionInfo.Version" crossorigin="anonymous"></script>
@@ -45,10 +45,10 @@
 @code {
     [Parameter] public required IGameDataProvider GameDataProvider { get; set; }
     [Parameter] public required Func<GameData, IResourceUrlProvider> ResourceUrlProvider { get; set; }
-    [Parameter] public required bool EnableDebug { get; set; } = false;
+    [Parameter] public required bool EnableDebug { get; set; }
     [Parameter] public bool EnableSave { get; set; } = true;
     private static MarkupString UiHtml => (MarkupString) PlayerHelper.GetUiResourceString("playercore.htm");
-    private Player? Player { get; set; } = null;
+    private Player? Player { get; set; }
     private GameData? gameData;
     private IGame? game;
     private IGameDebug? gameDebug;
@@ -57,13 +57,13 @@
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
         if (!firstRender) return;
-        
+
         gameData = await GameDataProvider.GetData();
         if (gameData == null) return;
-        
+
         await JS.InvokeVoidAsync("WebPlayer.setGameId", gameData.GameId);
         await JS.InvokeVoidAsync("WebPlayer.initSlotsDialog");
-        
+
         saves = await JS.InvokeAsync<SaveSlot[]>("WebPlayer.listSaves");
         if (saves.Length > 0)
         {
@@ -79,7 +79,7 @@
     private async Task StartGame(Stream? saveData)
     {
         if (gameData == null) return;
-        
+
         await JS.InvokeVoidAsync("WebPlayer.closeSlots");
 
         if (game != null)
@@ -93,22 +93,22 @@
         if (game == null) return;
 
         GameSessionTracker.GameStarted();
-        
+
         var resourceUrlProvider = ResourceUrlProvider(gameData);
-        
+
         Player = new Player(game, resourceUrlProvider, JS);
         if (resourceUrlProvider is LocalResourceUrlProvider localResourceProvider)
         {
             LocalResources.AddResourceStreamProvider(localResourceProvider.ResourcesId, Player.GetResourceStream);
         }
-        
+
         await JS.InvokeVoidAsync("WebPlayer.initUI");
 
         if (!EnableSave)
         {
             await JS.InvokeVoidAsync("WebPlayer.setCanSave", false);
         }
-        
+
         var result = await Player.Initialise();
 
         if (result)

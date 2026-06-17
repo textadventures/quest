@@ -1,6 +1,4 @@
 #nullable disable
-using System;
-using System.Linq;
 using System.Reflection;
 using NCalc;
 using NCalc.Cache;
@@ -11,7 +9,7 @@ using QuestViva.Engine.Scripts;
 
 namespace QuestViva.Engine.Expressions;
 
-public class NcalcExpressionEvaluator<T>: IExpressionEvaluator<T>, IDynamicExpressionEvaluator
+public class NcalcExpressionEvaluator<T> : IExpressionEvaluator<T>, IDynamicExpressionEvaluator
 {
     private readonly ScriptContext _scriptContext;
     private readonly Expression _nCalcExpression;
@@ -21,13 +19,13 @@ public class NcalcExpressionEvaluator<T>: IExpressionEvaluator<T>, IDynamicExpre
     {
         _scriptContext = scriptContext;
         _expressionOwner = new ExpressionOwner(scriptContext.WorldModel);
-        
+
         _nCalcExpression = new Expression(expression,
             new ExpressionContext(ExpressionOptions.NoStringTypeCoercion, null),
             QuestNCalcExpressionFactory.GetInstance(),
             LogicalExpressionCache.GetInstance(),
             new EvaluationVisitorFactory());
-        
+
         _nCalcExpression.EvaluateFunction += EvaluateFunction;
         _nCalcExpression.EvaluateParameter += EvaluateParameter;
     }
@@ -45,14 +43,17 @@ public class NcalcExpressionEvaluator<T>: IExpressionEvaluator<T>, IDynamicExpre
         // Converting ints to generic doubles is fun
         if (typeof(T) == typeof(double) && result is int i)
         {
-            return (T)(object)(double)i;
+            return (T) (object) (double) i;
         }
 
-        return (T)result;
+        return (T) result;
     }
 
     // NCalc returns Int64 for integer literals; coerce to Int32 to match engine expectations.
-    private static object CoerceLong(object value) => value is long l ? (int)l : value;
+    private static object CoerceLong(object value)
+    {
+        return value is long l ? (int) l : value;
+    }
 
     private Context _context;
 
@@ -64,7 +65,7 @@ public class NcalcExpressionEvaluator<T>: IExpressionEvaluator<T>, IDynamicExpre
             args.Result = tryMath.result;
             return;
         }
-        
+
         args.Result = ResolveVariable(name);
     }
 
@@ -112,20 +113,25 @@ public class NcalcExpressionEvaluator<T>: IExpressionEvaluator<T>, IDynamicExpre
         }
         else
         {
-            if (obj == null) throw new Exception($"Unknown object or variable '{name}'");
+            if (obj == null)
+            {
+                throw new Exception($"Unknown object or variable '{name}'");
+            }
 
             var value = ResolveVariable(obj);
             if (value is not Element instance)
             {
                 throw new Exception($"Variable does not refer to an object: '{obj}'");
             }
+
             fields = instance.Fields;
         }
     }
 
     private void EvaluateFunction(string name, FunctionArgs args)
     {
-        var tryExpressionOwner = EvaluateFunctionFromType(typeof(ExpressionOwner), _expressionOwner, name, args.Parameters);
+        var tryExpressionOwner =
+            EvaluateFunctionFromType(typeof(ExpressionOwner), _expressionOwner, name, args.Parameters);
         if (tryExpressionOwner.handled)
         {
             args.Result = tryExpressionOwner.result;
@@ -145,7 +151,7 @@ public class NcalcExpressionEvaluator<T>: IExpressionEvaluator<T>, IDynamicExpre
             args.Result = tryStringFunctions.result;
             return;
         }
-        
+
         var tryDateTimeFunctions = EvaluateFunctionFromType(typeof(DateTimeFunctions), null, name, args.Parameters);
         if (tryDateTimeFunctions.handled)
         {
@@ -156,8 +162,9 @@ public class NcalcExpressionEvaluator<T>: IExpressionEvaluator<T>, IDynamicExpre
         args.Result = EvaluateAslFunction(name, args);
     }
 
-    #nullable enable
-    private static (bool handled, object? result) EvaluateFunctionFromType(Type type, object instance, string name, Expression[] parameters)
+#nullable enable
+    private static (bool handled, object? result) EvaluateFunctionFromType(Type type, object instance, string name,
+        Expression[] parameters)
     {
         var methods = type.GetMethods()
             .Where(m => m.IsPublic && m.Name.Equals(name, StringComparison.InvariantCultureIgnoreCase))
@@ -187,7 +194,9 @@ public class NcalcExpressionEvaluator<T>: IExpressionEvaluator<T>, IDynamicExpre
 
             // We must have at least as many arguments as the fixed parameters.
             if (evaluatedArgs.Length < fixedParamCount)
+            {
                 continue;
+            }
 
             var fixedArgsMatch = true;
             for (var i = 0; i < fixedParamCount; i++)
@@ -203,7 +212,9 @@ public class NcalcExpressionEvaluator<T>: IExpressionEvaluator<T>, IDynamicExpre
             }
 
             if (!fixedArgsMatch)
+            {
                 continue;
+            }
 
             // We assume here that all extra arguments (if any) can be converted to the element type.
             var elementType = ps.Last().ParameterType.GetElementType()!;
@@ -222,7 +233,9 @@ public class NcalcExpressionEvaluator<T>: IExpressionEvaluator<T>, IDynamicExpre
             }
 
             if (!fixedArgsMatch)
+            {
                 continue;
+            }
 
             // Build the new arguments list: fixed parameters + one array for the params parameter.
             var newArgs = evaluatedArgs.Take(fixedParamCount)
@@ -243,7 +256,7 @@ public class NcalcExpressionEvaluator<T>: IExpressionEvaluator<T>, IDynamicExpre
 
         return (true, methodNoParams.Invoke(instance, evaluatedArgs));
     }
-    #nullable disable
+#nullable disable
 
     private static (bool handled, object result) EvaluateVariableFromType(Type type, string name)
     {
@@ -251,14 +264,14 @@ public class NcalcExpressionEvaluator<T>: IExpressionEvaluator<T>, IDynamicExpre
             .GetFields(BindingFlags.Public | BindingFlags.Static)
             .Where(f => f.IsLiteral && !f.IsInitOnly)
             .ToArray();
-        
+
         var field = fields.FirstOrDefault(f => f.Name.Equals(name, StringComparison.InvariantCultureIgnoreCase));
-        
+
         if (field == null)
         {
             return (false, null);
         }
-        
+
         return (true, field.GetRawConstantValue());
     }
 
@@ -291,7 +304,7 @@ public class NcalcExpressionEvaluator<T>: IExpressionEvaluator<T>, IDynamicExpre
 
         foreach (var val in args.Parameters)
         {
-            parameters.Add((string)proc.Fields[FieldDefinitions.ParamNames][cnt], val.Evaluate());
+            parameters.Add((string) proc.Fields[FieldDefinitions.ParamNames][cnt], val.Evaluate());
             cnt++;
         }
 

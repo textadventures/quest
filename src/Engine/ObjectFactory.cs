@@ -1,535 +1,520 @@
 ﻿#nullable disable
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using QuestViva.Common;
 
-namespace QuestViva.Engine
+namespace QuestViva.Engine;
+
+public interface IElementFactory
 {
-    public interface IElementFactory
+    ElementType CreateElementType { get; }
+    WorldModel WorldModel { set; }
+    event EventHandler<ObjectsUpdatedEventArgs> ObjectsUpdated;
+    Element Create(string name, bool addToUndoLog);
+    Element Create(string name);
+    Element Create();
+    void DestroyElement(string elementName);
+    void DestroyElementSilent(string elementName);
+    Element CloneElement(Element elementToClone, string newElementName);
+}
+
+public abstract class ElementFactoryBase : IElementFactory
+{
+    protected string FriendlyElementTypeName => ((ElementTypeInfo) typeof(ElementType)
+        .GetField(CreateElementType.ToString()).GetCustomAttributes(typeof(ElementTypeInfo), false)[0]).Name;
+
+    public event EventHandler<ObjectsUpdatedEventArgs> ObjectsUpdated;
+
+    public abstract ElementType CreateElementType { get; }
+
+    public virtual Element Create(string name)
     {
-        event EventHandler<ObjectsUpdatedEventArgs> ObjectsUpdated;
-        ElementType CreateElementType { get; }
-        Element Create(string name, bool addToUndoLog);
-        Element Create(string name);
-        Element Create();
-        void DestroyElement(string elementName);
-        void DestroyElementSilent(string elementName);
-        Element CloneElement(Element elementToClone, string newElementName);
-        WorldModel WorldModel { set; }
+        return Create(name, true);
     }
 
-    public abstract class ElementFactoryBase : IElementFactory
+    public virtual Element Create(string name, bool addToUndoLog)
     {
-        public event EventHandler<ObjectsUpdatedEventArgs> ObjectsUpdated;
+        return CreateInternal(name, addToUndoLog, null);
+    }
 
-        public abstract ElementType CreateElementType { get; }
+    public virtual Element Create()
+    {
+        var id = WorldModel.GetUniqueId();
+        return Create(id);
+    }
 
-        public virtual Element Create(string name)
+    public Element CloneElement(Element elementToClone, string newElementName)
+    {
+        return CreateInternal(newElementName, true, null, elementToClone: elementToClone);
+    }
+
+    public WorldModel WorldModel { get; set; }
+
+    public void DestroyElement(string elementName)
+    {
+        DestroyElement(elementName, false);
+    }
+
+    public void DestroyElementSilent(string elementName)
+    {
+        DestroyElement(elementName, true);
+    }
+
+    protected Element CreateInternal(string name, bool addToUndoLog, Action<Element> extraInitialisation,
+        IList<string> initialTypes = null, IDictionary<string, object> initialFields = null,
+        Element elementToClone = null)
+    {
+        Element newElement;
+
+        if (elementToClone == null)
         {
-            return Create(name, true);
+            newElement = new Element(WorldModel);
+        }
+        else
+        {
+            newElement = new Element(WorldModel, elementToClone);
         }
 
-        public virtual Element Create(string name, bool addToUndoLog)
+        if (addToUndoLog)
         {
-            return CreateInternal(name, addToUndoLog, null);
+            WorldModel.UndoLogger.AddUndoAction(() => new CreateDestroyLogEntry(name, CreateElementType, newElement,
+                true, NotifyAddedElement, NotifyRemovedElement));
         }
 
-        protected Element CreateInternal(string name, bool addToUndoLog, Action<Element> extraInitialisation, IList<string> initialTypes = null, IDictionary<string, object> initialFields = null, Element elementToClone = null)
+        try
         {
-            Element newElement;
+            WorldModel.Elements.Add(CreateElementType, name, newElement);
+        }
+        catch (ArgumentException e)
+        {
+            throw new Exception(string.Format("Cannot add {0} '{1}': {2}", FriendlyElementTypeName, name, e.Message),
+                e);
+        }
 
-            if (elementToClone == null)
+        newElement.Name = name;
+        newElement.ElemType = CreateElementType;
+
+        if (elementToClone != null && CreateElementType == ElementType.Object)
+        {
+            newElement.Type = elementToClone.Type;
+        }
+
+        if (extraInitialisation != null)
+        {
+            extraInitialisation.Invoke(newElement);
+        }
+
+        if (initialTypes != null)
+        {
+            foreach (var type in initialTypes)
             {
-                newElement = new Element(WorldModel);
+                newElement.Fields.AddTypeUndoable(WorldModel.Elements.Get(ElementType.ObjectType, type));
+            }
+        }
+
+        if (initialFields != null)
+        {
+            foreach (var field in initialFields)
+            {
+                newElement.Fields.Set(field.Key, field.Value);
+            }
+        }
+
+        newElement.FinishedInitialisation();
+
+        WorldModel.UpdateElementSortOrder(newElement);
+
+        NotifyAddedElement(name);
+
+        return newElement;
+    }
+
+    protected void NotifyAddedElement(string elementName)
+    {
+        if (ObjectsUpdated != null)
+        {
+            ObjectsUpdated(this, new ObjectsUpdatedEventArgs {Added = elementName});
+        }
+    }
+
+    protected void NotifyRemovedElement(string elementName)
+    {
+        if (ObjectsUpdated != null)
+        {
+            ObjectsUpdated(this, new ObjectsUpdatedEventArgs {Removed = elementName});
+        }
+    }
+
+    private void DestroyElement(string elementName, bool silent)
+    {
+        try
+        {
+            var destroy = WorldModel.Elements.Get(elementName);
+
+            // get all child elements and delete them too, so they'll be correctly recreated
+            // by an undo. We call .ToList() so we get the full list before iterating through it,
+            // as the list will change as we destroy child elements.
+            IEnumerable<Element> childElements =
+                WorldModel.Elements.GetElements().Where(e => e.Parent == destroy).ToList();
+
+            foreach (var child in childElements)
+            {
+                DestroyElement(child.Name, silent);
+            }
+
+            RemoveReferences(destroy);
+
+            if (!silent)
+            {
+                AddDestroyToUndoLog(destroy, destroy.Type);
+            }
+
+            WorldModel.RemoveElement(CreateElementType, elementName);
+            NotifyRemovedElement(elementName);
+        }
+        catch (Exception e)
+        {
+            throw new Exception(string.Format("Cannot destroy element '{0}': {1}", elementName, e.Message), e);
+        }
+    }
+
+    protected virtual void RemoveReferences(Element destroyedElement)
+    {
+        foreach (var e in WorldModel.Elements.GetElements())
+        {
+            e.Fields.RemoveReferencesTo(destroyedElement);
+        }
+    }
+
+    private void AddDestroyToUndoLog(Element appliesTo, ObjectType type)
+    {
+        WorldModel.UndoLogger.AddUndoAction(() => new CreateDestroyLogEntry(appliesTo.Name, appliesTo.ElemType,
+            appliesTo, false, NotifyAddedElement, NotifyRemovedElement));
+    }
+
+    protected class CreateDestroyLogEntry : UndoLogger.IUndoAction
+    {
+        private readonly bool m_create;
+        private readonly Element m_element;
+        private readonly string m_name;
+        private readonly Action<string> m_notifyAdded;
+        private readonly Action<string> m_notifyRemoved;
+        private readonly ElementType m_type;
+
+        public CreateDestroyLogEntry(string name, ElementType type, Element element, bool create,
+            Action<string> notifyAdded, Action<string> notifyRemoved)
+        {
+            m_name = name;
+            m_type = type;
+            m_create = create;
+            m_element = element;
+            m_notifyAdded = notifyAdded;
+            m_notifyRemoved = notifyRemoved;
+        }
+
+        public void DoUndo(WorldModel worldModel)
+        {
+            if (m_create)
+            {
+                DestroyElement(worldModel);
             }
             else
             {
-                newElement = new Element(WorldModel, elementToClone);
+                CreateElement(worldModel);
             }
+        }
 
-            if (addToUndoLog)
+        public void DoRedo(WorldModel worldModel)
+        {
+            if (m_create)
             {
-                WorldModel.UndoLogger.AddUndoAction(() => new CreateDestroyLogEntry(name, CreateElementType, newElement, true, NotifyAddedElement, NotifyRemovedElement));
+                CreateElement(worldModel);
             }
-
-            try
+            else
             {
-                WorldModel.Elements.Add(CreateElementType, name, newElement);
+                DestroyElement(worldModel);
             }
-            catch (ArgumentException e)
-            {
-                throw new Exception(string.Format("Cannot add {0} '{1}': {2}", FriendlyElementTypeName, name, e.Message), e);
-            }
+        }
 
-            newElement.Name = name;
-            newElement.ElemType = CreateElementType;
+        private void CreateElement(WorldModel worldModel)
+        {
+            worldModel.Elements.Add(m_type, m_name, m_element);
+            m_notifyAdded(m_name);
+        }
 
-            if (elementToClone != null && CreateElementType == ElementType.Object)
-            {
-                newElement.Type = elementToClone.Type;
-            }
+        private void DestroyElement(WorldModel worldModel)
+        {
+            worldModel.Elements.Remove(m_type, m_name);
+            m_notifyRemoved(m_name);
+        }
+    }
+}
 
-            if (extraInitialisation != null)
-            {
-                extraInitialisation.Invoke(newElement);
-            }
+public class ObjectFactory : ElementFactoryBase
+{
+    public override ElementType CreateElementType => ElementType.Object;
 
-            if (initialTypes != null)
+    public override Element Create(string name)
+    {
+        return CreateObject(name);
+    }
+
+    public Element CreateObject(string objectName)
+    {
+        return CreateObject(objectName, ObjectType.Object);
+    }
+
+    public Element CreateObject(string objectName, ObjectType type)
+    {
+        return CreateObject(objectName, type, true);
+    }
+
+    public Element CreateObject(ObjectType type, IList<string> initialTypes, IDictionary<string, object> initialFields)
+    {
+        var id = type == ObjectType.Exit ? WorldModel.GetUniqueId("exit") : WorldModel.GetUniqueId();
+        return CreateObject(id, type, true, initialTypes, initialFields);
+    }
+
+    internal Element CreateObject(string objectName, ObjectType type, bool addToUndoLog,
+        IList<string> initialTypes = null, IDictionary<string, object> initialFields = null)
+    {
+        var defaultType = WorldModel.DefaultTypeNames[type];
+
+        if (WorldModel.State == GameState.Running)
+        {
+            if (WorldModel.Elements.ContainsKey(ElementType.ObjectType, defaultType))
             {
-                foreach (string type in initialTypes)
+                if (initialTypes == null)
                 {
-                    newElement.Fields.AddTypeUndoable(WorldModel.Elements.Get(ElementType.ObjectType, type));
-                }
-            }
-
-            if (initialFields != null)
-            {
-                foreach (var field in initialFields)
-                {
-                    newElement.Fields.Set(field.Key, field.Value);
-                }
-            }
-
-            newElement.FinishedInitialisation();
-
-            WorldModel.UpdateElementSortOrder(newElement);
-
-            NotifyAddedElement(name);
-
-            return newElement;
-        }
-
-        public virtual Element Create()
-        {
-            string id = WorldModel.GetUniqueId();
-            return Create(id);
-        }
-
-        public Element CloneElement(Element elementToClone, string newElementName)
-        {
-            return CreateInternal(newElementName, true, null, elementToClone: elementToClone);
-        }
-
-        protected string FriendlyElementTypeName
-        {
-            get
-            {
-                return ((ElementTypeInfo)(typeof(ElementType).GetField(CreateElementType.ToString()).GetCustomAttributes(typeof(ElementTypeInfo), false)[0])).Name;
-            }
-        }
-
-        public WorldModel WorldModel { get; set; }
-
-        protected void NotifyAddedElement(string elementName)
-        {
-            if (ObjectsUpdated != null) ObjectsUpdated(this, new ObjectsUpdatedEventArgs { Added = elementName });
-        }
-
-        protected void NotifyRemovedElement(string elementName)
-        {
-            if (ObjectsUpdated != null) ObjectsUpdated(this, new ObjectsUpdatedEventArgs { Removed = elementName });
-        }
-
-        public void DestroyElement(string elementName)
-        {
-            DestroyElement(elementName, false);
-        }
-
-        public void DestroyElementSilent(string elementName)
-        {
-            DestroyElement(elementName, true);
-        }
-
-        private void DestroyElement(string elementName, bool silent)
-        {
-            try
-            {
-                Element destroy = WorldModel.Elements.Get(elementName);
-
-                // get all child elements and delete them too, so they'll be correctly recreated
-                // by an undo. We call .ToList() so we get the full list before iterating through it,
-                // as the list will change as we destroy child elements.
-                IEnumerable<Element> childElements = WorldModel.Elements.GetElements().Where(e => e.Parent == destroy).ToList();
-
-                foreach (Element child in childElements)
-                {
-                    DestroyElement(child.Name, silent);
+                    initialTypes = new List<string>();
                 }
 
-                RemoveReferences(destroy);
-
-                if (!silent) AddDestroyToUndoLog(destroy, destroy.Type);
-                WorldModel.RemoveElement(CreateElementType, elementName);
-                NotifyRemovedElement(elementName);
-            }
-            catch (Exception e)
-            {
-                throw new Exception(string.Format("Cannot destroy element '{0}': {1}", elementName, e.Message), e);
+                initialTypes.Insert(0, defaultType);
             }
         }
 
-        protected virtual void RemoveReferences(Element destroyedElement)
+        var newObject = CreateInternal(objectName, true, newElement => newElement.Type = type, initialTypes,
+            initialFields);
+
+        if (WorldModel.State != GameState.Running)
         {
-            foreach (Element e in WorldModel.Elements.GetElements())
-            {
-                e.Fields.RemoveReferencesTo(destroyedElement);
-            }
+            newObject.Fields.LazyFields.AddDefaultType(defaultType);
         }
 
-        private void AddDestroyToUndoLog(Element appliesTo, ObjectType type)
-        {
-            WorldModel.UndoLogger.AddUndoAction(() => new CreateDestroyLogEntry(appliesTo.Name, appliesTo.ElemType, appliesTo, false, NotifyAddedElement, NotifyRemovedElement));
-        }
-
-        protected class CreateDestroyLogEntry : UndoLogger.IUndoAction
-        {
-            private string m_name;
-            private ElementType m_type;
-            private bool m_create;
-            private Element m_element;
-            private Action<string> m_notifyAdded;
-            private Action<string> m_notifyRemoved;
-
-            public CreateDestroyLogEntry(string name, ElementType type, Element element, bool create, Action<string> notifyAdded, Action<string> notifyRemoved)
-            {
-                m_name = name;
-                m_type = type;
-                m_create = create;
-                m_element = element;
-                m_notifyAdded = notifyAdded;
-                m_notifyRemoved = notifyRemoved;
-            }
-
-            private void CreateElement(WorldModel worldModel)
-            {
-                worldModel.Elements.Add(m_type, m_name, m_element);
-                m_notifyAdded(m_name);
-            }
-
-            private void DestroyElement(WorldModel worldModel)
-            {
-                worldModel.Elements.Remove(m_type, m_name);
-                m_notifyRemoved(m_name);
-            }
-
-            public void DoUndo(WorldModel worldModel)
-            {
-                if (m_create)
-                {
-                    DestroyElement(worldModel);
-                }
-                else
-                {
-                    CreateElement(worldModel);
-                }
-            }
-
-            public void DoRedo(WorldModel worldModel)
-            {
-                if (m_create)
-                {
-                    CreateElement(worldModel);
-                }
-                else
-                {
-                    DestroyElement(worldModel);
-                }
-            }
-        }
+        return newObject;
     }
 
-    public class ObjectFactory : ElementFactoryBase
+    public Element CreateObject(string objectName, Element parent)
     {
-        public override ElementType CreateElementType { get { return ElementType.Object; } }
+        var newObject = CreateObject(objectName);
+        newObject.Parent = parent;
+        return newObject;
+    }
 
-        public override Element Create(string name)
+    public Element CreateCommand()
+    {
+        var id = WorldModel.GetUniqueId();
+        return CreateCommand(id);
+    }
+
+    public Element CreateCommand(string id)
+    {
+        var newCommand = CreateObject(id, ObjectType.Command);
+        newCommand.Type = ObjectType.Command;
+        return newCommand;
+    }
+
+    public Element CreateTurnScript(string id, Element parent)
+    {
+        var anonymous = false;
+        if (string.IsNullOrEmpty(id))
         {
-            return CreateObject(name);
+            anonymous = true;
+            id = WorldModel.GetUniqueId();
         }
 
-        public Element CreateObject(string objectName)
+        var newTurnScript = CreateObject(id, ObjectType.TurnScript);
+        newTurnScript.Type = ObjectType.TurnScript;
+        newTurnScript.Parent = parent;
+        if (anonymous)
         {
-            return CreateObject(objectName, ObjectType.Object);
+            newTurnScript.Fields[FieldDefinitions.Anonymous] = true;
         }
 
-        public Element CreateObject(string objectName, ObjectType type)
-        {
-            return CreateObject(objectName, type, true);
-        }
+        return newTurnScript;
+    }
 
-        public Element CreateObject(ObjectType type, IList<string> initialTypes, IDictionary<string, object> initialFields)
-        {
-            string id = (type == ObjectType.Exit) ? WorldModel.GetUniqueId("exit") : WorldModel.GetUniqueId();
-            return CreateObject(id, type, true, initialTypes, initialFields);
-        }
+    public Element CreateExit(string exitName, Element fromRoom, Element toRoom, string initialType)
+    {
+        return CreateExit(null, exitName, fromRoom, toRoom, initialType);
+    }
 
-        internal Element CreateObject(string objectName, ObjectType type, bool addToUndoLog, IList<string> initialTypes = null, IDictionary<string, object> initialFields = null)
+    public Element CreateExit(string exitID, string exitName, Element fromRoom, Element toRoom, string initialType)
+    {
+        var anonymous = false;
+        if (string.IsNullOrEmpty(exitID))
         {
-            string defaultType = WorldModel.DefaultTypeNames[type];
-
-            if (WorldModel.State == GameState.Running)
+            exitID = WorldModel.GetUniqueId("exit");
+            if (WorldModel.ObjectExists(exitID))
             {
-                if (WorldModel.Elements.ContainsKey(ElementType.ObjectType, defaultType))
-                {
-                    if (initialTypes == null) initialTypes = new List<string>();
-                    initialTypes.Insert(0, defaultType);
-                }
+                exitID = WorldModel.GetUniqueId(exitID);
             }
 
-            Element newObject = base.CreateInternal(objectName, true, newElement => newElement.Type = type, initialTypes, initialFields);
+            anonymous = true;
+        }
 
-            if (WorldModel.State != GameState.Running)
+        if (string.IsNullOrEmpty(initialType))
+        {
+            initialType = null;
+        }
+
+        var newExit = CreateObject(exitID, ObjectType.Exit, true,
+            initialType == null ? null : new List<string> {initialType});
+        newExit.Fields[FieldDefinitions.Alias] = exitName;
+        newExit.Parent = fromRoom;
+        newExit.Fields[FieldDefinitions.To] = toRoom;
+        newExit.Type = ObjectType.Exit;
+        if (anonymous)
+        {
+            newExit.Fields[FieldDefinitions.Anonymous] = true;
+        }
+
+        return newExit;
+    }
+
+    public Element CreateExitLazy(string exitName, Element fromRoom, string toRoom)
+    {
+        var newExit = CreateExit(exitName, fromRoom, null, null);
+        InitLazyExit(newExit, toRoom);
+        return newExit;
+    }
+
+    public Element CreateExitLazy(string exitID, string exitName, Element fromRoom, string toRoom)
+    {
+        var newExit = CreateExit(exitID, exitName, fromRoom, null, null);
+        InitLazyExit(newExit, toRoom);
+        return newExit;
+    }
+
+    private void InitLazyExit(Element exit, string toRoom)
+    {
+        if (toRoom != null)
+        {
+            exit.Fields.LazyFields.AddObjectField("to", toRoom);
+        }
+    }
+}
+
+internal class ObjectTypeFactory : ElementFactoryBase
+{
+    public override ElementType CreateElementType => ElementType.ObjectType;
+
+    public override Element Create(string name)
+    {
+        var newType = base.Create(name);
+        if (!WorldModel.EditMode)
+        {
+            newType.Fields.MutableFieldsLocked = true;
+        }
+
+        return newType;
+    }
+
+    protected override void RemoveReferences(Element destroyedElement)
+    {
+        // When deleting an object type, we must also remove references to the deleted type
+        // from other elements.
+
+        foreach (var e in WorldModel.Elements.GetElements())
+        {
+            if (e.Fields.InheritsType(destroyedElement))
             {
-                newObject.Fields.LazyFields.AddDefaultType(defaultType);
-            }
-
-            return newObject;
-        }
-
-        public Element CreateObject(string objectName, Element parent)
-        {
-            Element newObject = CreateObject(objectName);
-            newObject.Parent = parent;
-            return newObject;
-        }
-
-        public Element CreateCommand()
-        {
-            string id = WorldModel.GetUniqueId();
-            return CreateCommand(id);
-        }
-
-        public Element CreateCommand(string id)
-        {
-            Element newCommand = CreateObject(id, ObjectType.Command);
-            newCommand.Type = ObjectType.Command;
-            return newCommand;
-        }
-
-        public Element CreateTurnScript(string id, Element parent)
-        {
-            bool anonymous = false;
-            if (string.IsNullOrEmpty(id))
-            {
-                anonymous = true;
-                id = WorldModel.GetUniqueId();
-            }
-            Element newTurnScript = CreateObject(id, ObjectType.TurnScript);
-            newTurnScript.Type = ObjectType.TurnScript;
-            newTurnScript.Parent = parent;
-            if (anonymous)
-            {
-                newTurnScript.Fields[FieldDefinitions.Anonymous] = true;
-            }
-            return newTurnScript;
-        }
-
-        public Element CreateExit(string exitName, Element fromRoom, Element toRoom, string initialType)
-        {
-            return CreateExit(null, exitName, fromRoom, toRoom, initialType);
-        }
-
-        public Element CreateExit(string exitID, string exitName, Element fromRoom, Element toRoom, string initialType)
-        {
-            bool anonymous = false;
-            if (string.IsNullOrEmpty(exitID))
-            {
-                exitID = WorldModel.GetUniqueId("exit");
-                if (WorldModel.ObjectExists(exitID)) exitID = WorldModel.GetUniqueId(exitID);
-                anonymous = true;
-            }
-            if (string.IsNullOrEmpty(initialType)) initialType = null;
-            Element newExit = CreateObject(exitID, ObjectType.Exit, true, initialType == null ? null : new List<string> { initialType });
-            newExit.Fields[FieldDefinitions.Alias] = exitName;
-            newExit.Parent = fromRoom;
-            newExit.Fields[FieldDefinitions.To] = toRoom;
-            newExit.Type = ObjectType.Exit;
-            if (anonymous)
-            {
-                newExit.Fields[FieldDefinitions.Anonymous] = true;
-            }
-            return newExit;
-        }
-
-        public Element CreateExitLazy(string exitName, Element fromRoom, string toRoom)
-        {
-            Element newExit = CreateExit(exitName, fromRoom, null, null);
-            InitLazyExit(newExit, toRoom);
-            return newExit;
-        }
-
-        public Element CreateExitLazy(string exitID, string exitName, Element fromRoom, string toRoom)
-        {
-            Element newExit = CreateExit(exitID, exitName, fromRoom, null, null);
-            InitLazyExit(newExit, toRoom);
-            return newExit;
-        }
-
-        private void InitLazyExit(Element exit, string toRoom)
-        {
-            if (toRoom != null)
-            {
-                exit.Fields.LazyFields.AddObjectField("to", toRoom);
+                e.Fields.RemoveTypeUndoable(destroyedElement);
             }
         }
-    }
 
-    internal class ObjectTypeFactory : ElementFactoryBase
+        base.RemoveReferences(destroyedElement);
+    }
+}
+
+internal class EditorFactory : ElementFactoryBase
+{
+    public override ElementType CreateElementType => ElementType.Editor;
+}
+
+internal class EditorTabFactory : ElementFactoryBase
+{
+    public override ElementType CreateElementType => ElementType.EditorTab;
+}
+
+internal class EditorControlFactory : ElementFactoryBase
+{
+    public override ElementType CreateElementType => ElementType.EditorControl;
+}
+
+internal class FunctionFactory : ElementFactoryBase
+{
+    public override ElementType CreateElementType => ElementType.Function;
+}
+
+internal class DelegateFactory : ElementFactoryBase
+{
+    public override ElementType CreateElementType => ElementType.Delegate;
+}
+
+internal class TemplateFactory : ElementFactoryBase
+{
+    public override ElementType CreateElementType => ElementType.Template;
+}
+
+internal class DynamicTemplateFactory : ElementFactoryBase
+{
+    public override ElementType CreateElementType => ElementType.DynamicTemplate;
+}
+
+internal abstract class SingleElementFactory : ElementFactoryBase
+{
+    public override Element Create(string name)
     {
-        public override ElementType CreateElementType
+        if (WorldModel.Elements.Count(CreateElementType) >= 1)
         {
-            get { return ElementType.ObjectType; }
+            throw new InvalidOperationException(string.Format("There can only be one '{0}' element",
+                FriendlyElementTypeName));
         }
 
-        public override Element Create(string name)
-        {
-            Element newType = base.Create(name);
-            if (!WorldModel.EditMode)
-            {
-                newType.Fields.MutableFieldsLocked = true;
-            }
-            return newType;
-        }
-
-        protected override void RemoveReferences(Element destroyedElement)
-        {
-            // When deleting an object type, we must also remove references to the deleted type
-            // from other elements.
-
-            foreach (Element e in WorldModel.Elements.GetElements())
-            {
-                if (e.Fields.InheritsType(destroyedElement))
-                {
-                    e.Fields.RemoveTypeUndoable(destroyedElement);
-                }
-            }
-
-            base.RemoveReferences(destroyedElement);
-        }
+        return base.Create(name);
     }
+}
 
-    internal class EditorFactory : ElementFactoryBase
-    {
-        public override ElementType CreateElementType
-        {
-            get { return ElementType.Editor; }
-        }
-    }
+internal class WalkthroughFactory : ElementFactoryBase
+{
+    public override ElementType CreateElementType => ElementType.Walkthrough;
+}
 
-    internal class EditorTabFactory : ElementFactoryBase
-    {
-        public override ElementType CreateElementType
-        {
-            get { return ElementType.EditorTab; }
-        }
-    }
+internal class IncludedLibraryFactory : ElementFactoryBase
+{
+    public override ElementType CreateElementType => ElementType.IncludedLibrary;
+}
 
-    internal class EditorControlFactory : ElementFactoryBase
-    {
-        public override ElementType CreateElementType
-        {
-            get { return ElementType.EditorControl; }
-        }
-    }
+internal class ImpliedTypeFactory : ElementFactoryBase
+{
+    public override ElementType CreateElementType => ElementType.ImpliedType;
+}
 
-    internal class FunctionFactory : ElementFactoryBase
-    {
-        public override ElementType CreateElementType
-        {
-            get { return ElementType.Function; }
-        }
-    }
+internal class JavascriptReferenceFactory : ElementFactoryBase
+{
+    public override ElementType CreateElementType => ElementType.Javascript;
+}
 
-    internal class DelegateFactory : ElementFactoryBase
-    {
-        public override ElementType CreateElementType
-        {
-            get { return ElementType.Delegate; }
-        }
-    }
+internal class TimerFactory : ElementFactoryBase
+{
+    public override ElementType CreateElementType => ElementType.Timer;
+}
 
-    internal class TemplateFactory : ElementFactoryBase
-    {
-        public override ElementType CreateElementType
-        {
-            get { return ElementType.Template; }
-        }
-    }
+internal class ResourceFactory : ElementFactoryBase
+{
+    public override ElementType CreateElementType => ElementType.Resource;
+}
 
-    internal class DynamicTemplateFactory : ElementFactoryBase
-    {
-        public override ElementType CreateElementType
-        {
-            get { return ElementType.DynamicTemplate; }
-        }
-    }
-
-    internal abstract class SingleElementFactory : ElementFactoryBase
-    {
-        public override Element Create(string name)
-        {
-            if (WorldModel.Elements.Count(CreateElementType) >= 1)
-            {
-                throw new InvalidOperationException(string.Format("There can only be one '{0}' element", FriendlyElementTypeName));
-            }
-            return base.Create(name);
-        }
-    }
-
-    internal class WalkthroughFactory : ElementFactoryBase
-    {
-        public override ElementType CreateElementType
-        {
-            get { return ElementType.Walkthrough; }
-        }
-    }
-
-    internal class IncludedLibraryFactory : ElementFactoryBase
-    {
-        public override ElementType CreateElementType
-        {
-            get { return ElementType.IncludedLibrary; }
-        }
-    }
-
-    internal class ImpliedTypeFactory : ElementFactoryBase
-    {
-        public override ElementType CreateElementType
-        {
-            get { return ElementType.ImpliedType; }
-        }
-    }
-
-    internal class JavascriptReferenceFactory : ElementFactoryBase
-    {
-        public override ElementType CreateElementType
-        {
-            get { return ElementType.Javascript; }
-        }
-    }
-
-    internal class TimerFactory : ElementFactoryBase
-    {
-        public override ElementType CreateElementType
-        {
-            get { return ElementType.Timer; }
-        }
-    }
-
-    internal class ResourceFactory : ElementFactoryBase
-    {
-        public override ElementType CreateElementType
-        {
-            get { return ElementType.Resource; }
-        }
-    }
-
-    internal class OutputFactory : ElementFactoryBase
-    {
-        public override ElementType CreateElementType
-        {
-            get { return ElementType.Output; }
-        }
-    }
+internal class OutputFactory : ElementFactoryBase
+{
+    public override ElementType CreateElementType => ElementType.Output;
 }

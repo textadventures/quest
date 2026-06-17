@@ -11,14 +11,14 @@
     "lint": "eslint ."
   },
   "dependencies": {
-    "@astrojs/starlight": "^0.39.2",
-    "astro": "^6.3.5",
-    "sharp": "^0.34.5"
+    "@astrojs/starlight": "^0.40.0",
+    "astro": "^6.4.7",
+    "sharp": "^0.35.1"
   },
   "devDependencies": {
     "@eslint/compat": "^2.1.0",
     "@eslint/js": "^10.0.1",
-    "eslint": "^10.4.0",
-    "typescript-eslint": "^8.59.4"
+    "eslint": "^10.5.0",
+    "typescript-eslint": "^8.61.1"
   }
 }

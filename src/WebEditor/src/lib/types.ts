@@ -27,6 +27,9 @@ export interface ControlInfo {
   subAttribute: string | null
   textProcessorCommands: TextProcessorCommand[] | null
   addPrompt: string | null
+  elementType?: string | null
+  objectType?: string | null
+  listFilter?: string | null
 }
 
 export interface TabInfo {
@@ -105,4 +108,18 @@ export interface IfExpressionTemplateData {
 export interface IfExpressionTemplate {
   name: string
   createExpression: string
+}
+
+export interface AttributeDataItem {
+  name: string
+  value: string | null
+  isInherited: boolean
+  source: string
+  isDefaultType: boolean
+  type: string
+}
+
+export interface FullAttributeData {
+  attributes: AttributeDataItem[]
+  inheritedTypes: AttributeDataItem[]
 }

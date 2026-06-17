@@ -1,7 +1,5 @@
 #nullable disable
-using System;
-using System.Collections.Generic;
-using System.Linq;
+using System.Globalization;
 using Ciloci.Flee;
 using QuestViva.Engine.Functions;
 using QuestViva.Engine.Scripts;
@@ -15,7 +13,7 @@ public class FleeExpressionContext
     public FleeExpressionContext(WorldModel worldModel)
     {
         _worldModel = worldModel;
-        
+
         ExpressionContext = new ExpressionContext(_worldModel.ExpressionOwner);
         ExpressionContext.Imports.AddType(typeof(StringFunctions));
         ExpressionContext.Imports.AddType(typeof(Math));
@@ -25,8 +23,11 @@ public class FleeExpressionContext
         ExpressionContext.Variables.ResolveVariableValue += Variables_ResolveVariableValue;
         ExpressionContext.Variables.ResolveFunction += Variables_ResolveFunction;
         ExpressionContext.Variables.InvokeFunction += Variables_InvokeFunction;
-        ExpressionContext.Options.ParseCulture = System.Globalization.CultureInfo.InvariantCulture;
+        ExpressionContext.Options.ParseCulture = CultureInfo.InvariantCulture;
     }
+
+    public Context ExecutionContext { get; set; }
+    public ExpressionContext ExpressionContext { get; }
 
     private void Variables_ResolveFunction(object sender, ResolveFunctionEventArgs e)
     {
@@ -35,6 +36,7 @@ public class FleeExpressionContext
             e.ReturnType = typeof(bool);
             return;
         }
+
         var proc = _worldModel.Procedure(e.FunctionName);
         if (proc != null)
         {
@@ -46,16 +48,17 @@ public class FleeExpressionContext
     {
         if (e.FunctionName == "IsDefined")
         {
-            e.Result = ExecutionContext.Parameters.ContainsKey((string)e.Arguments[0]);
+            e.Result = ExecutionContext.Parameters.ContainsKey((string) e.Arguments[0]);
             return;
         }
+
         var proc = _worldModel.Procedure(e.FunctionName);
         var parameters = new Parameters();
         var cnt = 0;
 
         foreach (var val in e.Arguments)
         {
-            parameters.Add((string)proc.Fields[FieldDefinitions.ParamNames][cnt], val);
+            parameters.Add((string) proc.Fields[FieldDefinitions.ParamNames][cnt], val);
             cnt++;
         }
 
@@ -76,7 +79,7 @@ public class FleeExpressionContext
     private Type GetVariableType(string variable)
     {
         var value = ResolveVariable(variable);
-        return (value == null) ? typeof(object) : value.GetType();
+        return value == null ? typeof(object) : value.GetType();
     }
 
     public bool HaveVariableTypesChanged(string[] variables, Dictionary<string, Type> typesCache)
@@ -131,17 +134,18 @@ public class FleeExpressionContext
         }
         else
         {
-            if (obj == null) throw new Exception($"Unknown object or variable '{name}'");
+            if (obj == null)
+            {
+                throw new Exception($"Unknown object or variable '{name}'");
+            }
 
             var value = ResolveVariable(obj);
             if (value is not Element instance)
             {
                 throw new Exception($"Variable does not refer to an object: '{obj}'");
             }
+
             fields = instance.Fields;
         }
     }
-    
-    public Context ExecutionContext { get; set; }
-    public ExpressionContext ExpressionContext { get; }
 }

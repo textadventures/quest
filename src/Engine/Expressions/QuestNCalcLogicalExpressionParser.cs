@@ -1,9 +1,5 @@
 // Based on https://github.com/ncalc/ncalc/blob/master/src/NCalc.Core/Parser/LogicalExpressionParser.cs
 
-#nullable enable
-
-using System;
-using System.Linq;
 using ExtendedNumerics;
 using NCalc;
 using NCalc.Domain;
@@ -11,22 +7,20 @@ using NCalc.Exceptions;
 using NCalc.Parser;
 using Parlot;
 using Parlot.Fluent;
-using static Parlot.Fluent.Parsers;
 using Identifier = NCalc.Domain.Identifier;
 
 namespace QuestViva.Engine.Expressions;
 
 /// <summary>
-/// Class responsible for parsing strings into <see cref="LogicalExpression"/> objects.
+///     Class responsible for parsing strings into <see cref="LogicalExpression" /> objects.
 /// </summary>
 public static class QuestNCalcLogicalExpressionParser
 {
+    private const string InvalidTokenMessage = "Invalid token in expression";
     private static readonly Parser<LogicalExpression> Parser;
 
     private static readonly ValueExpression True = new(true);
     private static readonly ValueExpression False = new(false);
-
-    private const string InvalidTokenMessage = "Invalid token in expression";
 
     static QuestNCalcLogicalExpressionParser()
     {
@@ -59,7 +53,7 @@ public static class QuestNCalcLogicalExpressionParser
         var expression = Deferred<LogicalExpression>();
 
         var exponentNumberPart =
-            Literals.Text("e", true).SkipAnd(Literals.Integer(NumberOptions.AllowLeadingSign))
+            Literals.Text("e", true).SkipAnd(Literals.Integer())
                 .ThenElse<long?>(x => x, null);
 
         // [integral_value]['.'decimal_value}]['e'exponent_value]
@@ -70,14 +64,16 @@ public static class QuestNCalcLogicalExpressionParser
                             .And(ZeroOrOne(Literals.Integer(NumberOptions.None)).ThenElse<long?>(x => x, 0))
                             .Then(x =>
                             {
-                                if (x is { Item1: 0, Item2: 0 })
+                                if (x is {Item1: 0, Item2: 0})
+                                {
                                     throw new NCalcParserException(InvalidTokenMessage);
+                                }
 
                                 return (x.Item1, x.Item2);
                             }))
                         .And(exponentNumberPart)
                         .Then(x => (0L, x.Item1.Item1, x.Item1.Item2, x.Item2)),
-                    Literals.Integer(NumberOptions.AllowLeadingSign)
+                    Literals.Integer()
                         .And(Literals.Char('.')
                             .SkipAnd(ZeroOrMany(Literals.Char('0')).ThenElse(x => x.Count, 0))
                             .And(ZeroOrOne(Literals.Integer(NumberOptions.None)))
@@ -87,10 +83,10 @@ public static class QuestNCalcLogicalExpressionParser
                 ))
                 .Then<LogicalExpression>((ctx, x) =>
                 {
-                    long integralValue = x.Item1;
-                    int zeroCount = x.Item2;
-                    long? decimalPart = x.Item3;
-                    long? exponentPart = x.Item4;
+                    var integralValue = x.Item1;
+                    var zeroCount = x.Item2;
+                    var decimalPart = x.Item3;
+                    var exponentPart = x.Item4;
 
                     double result = integralValue;
 
@@ -110,16 +106,22 @@ public static class QuestNCalcLogicalExpressionParser
                         var res = BigDecimal.Multiply(left, right);
 
                         if (res > double.MaxValue)
+                        {
                             result = double.PositiveInfinity;
+                        }
                         else if (res < double.MinValue)
+                        {
                             result = double.NegativeInfinity;
+                        }
                         else
-                            result = (double)res;
+                        {
+                            result = (double) res;
+                        }
                     }
 
-                    if (((LogicalExpressionParserContext)ctx).Options.HasFlag(ExpressionOptions.DecimalAsDefault))
+                    if (((LogicalExpressionParserContext) ctx).Options.HasFlag(ExpressionOptions.DecimalAsDefault))
                     {
-                        return new ValueExpression((decimal)result);
+                        return new ValueExpression((decimal) result);
                     }
 
                     if (decimalPart != null || exponentPart != null)
@@ -127,7 +129,7 @@ public static class QuestNCalcLogicalExpressionParser
                         return new ValueExpression(result);
                     }
 
-                    return new ValueExpression((long)result);
+                    return new ValueExpression((long) result);
                 });
 
         var comma = Terms.Char(',');
@@ -204,7 +206,7 @@ public static class QuestNCalcLogicalExpressionParser
         var function = identifier
             .And(list)
             .Then<LogicalExpression>(x =>
-                new Function(new Identifier(x.Item1.ToString()!), (LogicalExpressionList)x.Item2));
+                new Function(new Identifier(x.Item1.ToString()!), (LogicalExpressionList) x.Item2));
 
         var booleanTrue = Terms.Text("true", true)
             .Then<LogicalExpression>(True);
@@ -212,11 +214,11 @@ public static class QuestNCalcLogicalExpressionParser
             .Then<LogicalExpression>(False);
 
         var singleQuotesStringValue =
-            Terms.String(quotes: StringLiteralQuotes.Single)
+            Terms.String(StringLiteralQuotes.Single)
                 .Then<LogicalExpression>((ctx, value) =>
                 {
                     if (value.Length == 1 &&
-                        ((LogicalExpressionParserContext)ctx).Options.HasFlag(ExpressionOptions.AllowCharValues))
+                        ((LogicalExpressionParserContext) ctx).Options.HasFlag(ExpressionOptions.AllowCharValues))
                     {
                         return new ValueExpression(value.Span[0]);
                     }
@@ -226,7 +228,7 @@ public static class QuestNCalcLogicalExpressionParser
 
         var doubleQuotesStringValue =
             Terms
-                .String(quotes: StringLiteralQuotes.Double)
+                .String(StringLiteralQuotes.Double)
                 .Then<LogicalExpression>(value => new ValueExpression(value.ToString()!));
 
         var stringValue = OneOf(singleQuotesStringValue, doubleQuotesStringValue);
@@ -268,8 +270,8 @@ public static class QuestNCalcLogicalExpressionParser
         });
 
         // dateAndTime => number/number/number number:number:number
-        var dateAndTime = dateDefinition.AndSkip(Literals.WhiteSpace()).And(timeDefinition).Then<LogicalExpression>(
-            dateTime =>
+        var dateAndTime = dateDefinition.AndSkip(Literals.WhiteSpace()).And(timeDefinition)
+            .Then<LogicalExpression>(dateTime =>
             {
                 if (DateTime.TryParse(
                         $"{dateTime.Item1}/{dateTime.Item2}/{dateTime.Item3} {dateTime.Item4.Item1}:{dateTime.Item4.Item2}:{dateTime.Item4.Item3}",
@@ -307,16 +309,16 @@ public static class QuestNCalcLogicalExpressionParser
             .Pattern(Character.IsHexDigit, 32, 32);
 
         var guidWithHyphens = eightHexSequence
-                .AndSkip(minus)
-                .And(fourHexSequence)
-                .AndSkip(minus)
-                .And(fourHexSequence)
-                .AndSkip(minus)
-                .And(fourHexSequence)
-                .AndSkip(minus)
-                .And(twelveHexSequence)
+            .AndSkip(minus)
+            .And(fourHexSequence)
+            .AndSkip(minus)
+            .And(fourHexSequence)
+            .AndSkip(minus)
+            .And(fourHexSequence)
+            .AndSkip(minus)
+            .And(twelveHexSequence)
             .Then<LogicalExpression>(g =>
-                    new ValueExpression(Guid.Parse(g.Item1.ToString() + g.Item2 + g.Item3 + g.Item4 + g.Item5)));
+                new ValueExpression(Guid.Parse(g.Item1.ToString() + g.Item2 + g.Item3 + g.Item4 + g.Item5)));
 
         var guidWithoutHyphens = thirtyTwoHexSequence
             .AndSkip(Not(decimalOrDoubleNumber))
@@ -354,7 +356,7 @@ public static class QuestNCalcLogicalExpressionParser
                 }
                 else
                 {
-                    for (int i = x.Item2.Count - 1; i > 0; i--)
+                    for (var i = x.Item2.Count - 1; i > 0; i--)
                     {
                         result = new BinaryExpression(BinaryExpressionType.Exponentiation, x.Item2[i - 1].Item2,
                             x.Item2[i].Item2);
@@ -483,14 +485,20 @@ public static class QuestNCalcLogicalExpressionParser
 
     public static LogicalExpression Parse(LogicalExpressionParserContext context)
     {
-        if (Parser.TryParse(context, out LogicalExpression result, out ParseError? error))
+        if (Parser.TryParse(context, out var result, out var error))
+        {
             return result;
+        }
 
         string message;
         if (error != null)
+        {
             message = $"{error.Message} at position {error.Position}";
+        }
         else
+        {
             message = $"Error parsing the expression at position {context.Scanner.Cursor.Position}";
+        }
 
         throw new NCalcParserException(message);
     }

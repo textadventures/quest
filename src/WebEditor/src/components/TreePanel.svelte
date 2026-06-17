@@ -4,6 +4,7 @@
     import {
         treeNodes, selectedKey, selectNode,
         openAddModal, createExit, createTurnScript, createCommand, createVerb,
+        createIncludedLibrary, createJavascript,
         deleteElement,
     } from "$lib/editor-store";
     import type { TreeNode } from "$lib/types";
@@ -150,6 +151,12 @@
             else if (id === "_timers") opts.push({ label: "Add Timer", action: () => openAddModal("timer", null) });
             else if (id === "_gameVerbs") opts.push({ label: "Add Verb", action: () => createVerb(null) });
             else if (id === "_gameCommands") opts.push({ label: "Add Command", action: () => createCommand(null) });
+            else if (id === "_walkthrough") opts.push({ label: "Add Walkthrough", action: () => openAddModal("walkthrough", null) });
+            else if (id === "_template") opts.push({ label: "Add Template", action: () => openAddModal("template", null) });
+            else if (id === "_dynamictemplate") opts.push({ label: "Add Dynamic Template", action: () => openAddModal("dynamictemplate", null) });
+            else if (id === "_objecttype") opts.push({ label: "Add Type", action: () => openAddModal("type", null) });
+            else if (id === "_include") opts.push({ label: "Add Library", action: () => createIncludedLibrary() });
+            else if (id === "_javascript") opts.push({ label: "Add JavaScript", action: () => createJavascript() });
         } else if (nt === "room") {
             opts.push(
                 { label: "Add Object here", action: () => openAddModal("object", id) },

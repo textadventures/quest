@@ -7,6 +7,7 @@ export interface WasmBridge {
   SetObjectReference(elementKey: string, attribute: string, objectName: string): string
   SetDropdownType(elementKey: string, controlId: string, selectedType: string): string
   Save(): string
+  IsDirty(): boolean
   CanUndo(): boolean
   CanRedo(): boolean
   Undo(): void
@@ -38,6 +39,21 @@ export interface WasmBridge {
   AddListItem(elementKey: string, attribute: string, value: string): string
   RemoveListItem(elementKey: string, attribute: string, key: string): string
   UpdateListItem(elementKey: string, attribute: string, key: string, value: string): string
+  // Attributes editor API
+  GetFullAttributeData(elementKey: string): string | null
+  RemoveAttribute(elementKey: string, attribute: string): string
+  AddInheritedType(elementKey: string, typeName: string): string
+  RemoveInheritedType(elementKey: string, typeName: string): string
+  GetTypeNames(): string
+  AddDictionaryItem(elementKey: string, attribute: string, key: string, value: string): string
+  RemoveDictionaryItem(elementKey: string, attribute: string, key: string): string
+  UpdateDictionaryItem(elementKey: string, attribute: string, key: string, value: string): string
+  MakeScriptEditable(elementKey: string, attribute: string): string
+  MakeScriptDictEditable(elementKey: string, attribute: string): string
+  AddScriptDictionaryItem(elementKey: string, attribute: string, key: string): string
+  RemoveScriptDictionaryItem(elementKey: string, attribute: string, key: string): string
+  ChangeAttributeType(elementKey: string, attribute: string, newType: string): string
+  SetPatternAttribute(elementKey: string, attribute: string, pattern: string): string
   // Element creation / deletion
   ValidateName(name: string): string
   GetUniqueName(baseName: string): string
@@ -49,7 +65,17 @@ export interface WasmBridge {
   CreateTurnScript(parent: string): string
   CreateCommand(parent: string): string
   CreateVerb(parent: string): string
+  CreateWalkthrough(name: string, parent: string): string
+  CreateTemplate(name: string): string
+  CreateDynamicTemplate(name: string): string
+  CreateObjectType(name: string): string
+  CreateIncludedLibrary(): string
+  CreateJavascript(): string
   DeleteElement(key: string): void
+  SwapElements(key1: string, key2: string): string
+  // New game
+  GetGameTemplates(): string
+  CreateGameFromTemplate(templateId: string, gameName: string): string
 }
 
 let _bridge: WasmBridge | null = null;

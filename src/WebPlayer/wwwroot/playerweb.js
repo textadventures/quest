@@ -6,19 +6,19 @@ class WebPlayer {
     static setDotNetHelper(value) {
         WebPlayer.dotNetHelper = value;
     }
-    
+
     static setGameId(id) {
         WebPlayer.gameId = id;
     }
-    
+
     static listSaves = async () => {
         return await GameSaver.listSaves();
     }
-    
+
     static loadSlot = async (slot) => {
         return await GameSaver.load(slot);
     }
-    
+
     static initSlotsDialog() {
         const slots = document.getElementById("questVivaSlots");
         slots.addEventListener('cancel', (event) => {
@@ -37,7 +37,7 @@ class WebPlayer {
             }
         }, true);
     }
-    
+
     static showSlots(cancellable) {
         const slots = document.getElementById("questVivaSlots");
         WebPlayer.slotsDialogCanBeClosed = cancellable;
@@ -48,16 +48,16 @@ class WebPlayer {
         const slots = document.getElementById("questVivaSlots");
         slots.close();
     }
-    
+
     static closeDebugger() {
         const dialog = document.getElementById("questVivaDebugger");
         dialog.close();
     }
-    
+
     static initUI() {
         initPlayerUI();
     }
-    
+
     static setCanDebug(value) {
         const cmdDebug = document.getElementById("cmdDebug");
         cmdDebug.style.display = value ? "initial" : "none";
@@ -70,16 +70,16 @@ class WebPlayer {
             window.saveGame = () => addText("Disabled");
         }
     }
-    
+
     static setAnimateScroll(value) {
         _animateScroll = value;
     }
-    
+
     static async sendCommand(command, tickCount, metadata) {
         await WebPlayer.dotNetHelper.invokeMethodAsync("UiSendCommandAsync", command, tickCount, metadata);
         canSendCommand = true;
     }
-    
+
     static runJs(scripts) {
         // We need globalEval so that calls which add functions add them to the global scope.
         // e.g. spondre evals strings like "function blah() { ... }" which need to be in the global scope so
@@ -97,32 +97,32 @@ class WebPlayer {
     static async uiChoice(choice) {
         await WebPlayer.dotNetHelper.invokeMethodAsync("UiChoiceAsync", choice);
     }
-    
+
     static async uiChoiceCancel() {
         await WebPlayer.dotNetHelper.invokeMethodAsync("UiChoiceCancelAsync");
     }
-    
+
     static async uiTick(tickCount) {
         await WebPlayer.dotNetHelper.invokeMethodAsync("UiTickAsync", tickCount);
     }
-    
+
     static async uiEndWait() {
         await WebPlayer.dotNetHelper.invokeMethodAsync("UiEndWaitAsync");
     }
-    
+
     static async uiEndPause() {
         await WebPlayer.dotNetHelper.invokeMethodAsync("UiEndPauseAsync");
     }
-    
+
     static async uiSetQuestionResponse(response) {
         await WebPlayer.dotNetHelper.invokeMethodAsync("UiSetQuestionResponseAsync", response);
     }
-    
+
     static async uiSendEvent(eventName, param) {
         await WebPlayer.dotNetHelper.invokeMethodAsync("UiSendEventAsync", eventName, param);
         canSendCommand = true;
     }
-    
+
     static async uiSaveGame(html) {
         return await WebPlayer.dotNetHelper.invokeMethodAsync("UiSaveGameAsync", html);
     }

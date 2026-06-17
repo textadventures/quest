@@ -1,38 +1,24 @@
 ﻿#nullable disable
-namespace QuestViva.Engine.Scripts
+namespace QuestViva.Engine.Scripts;
+
+internal class DelegateImplementation
 {
-    class DelegateImplementation
+    public DelegateImplementation(string typeName, Element def, Element impl)
     {
-        private Element m_delegateDef;
-        private Element m_implementation;
-        private string m_typeName;
+        Definition = def;
+        Implementation = impl;
+        TypeName = typeName;
+    }
 
-        public DelegateImplementation(string typeName, Element def, Element impl)
-        {
-            m_delegateDef = def;
-            m_implementation = impl;
-            m_typeName = typeName;
-        }
+    public Element Definition { get; }
 
-        public Element Definition
-        {
-            get { return m_delegateDef; }
-        }
+    public Element Implementation { get; }
 
-        public Element Implementation
-        {
-            get { return m_implementation; }
-        }
+    public string TypeName { get; }
 
-        public string TypeName
-        {
-            get { return m_typeName; }
-        }
-
-        public override string ToString()
-        {
-            var script = m_implementation.Fields[FieldDefinitions.Script];
-            return script == null ? string.Empty : script.ToString();
-        }
+    public override string ToString()
+    {
+        var script = Implementation.Fields[FieldDefinitions.Script];
+        return script == null ? string.Empty : script.ToString();
     }
 }

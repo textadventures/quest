@@ -1,73 +1,66 @@
 ﻿#nullable disable
-using System;
+namespace QuestViva.Engine.Scripts;
 
-namespace QuestViva.Engine.Scripts
+public class CommentScriptConstructor : IScriptConstructor
 {
-    public class CommentScriptConstructor : IScriptConstructor
+    public string Keyword => "//";
+
+    public IScript Create(string script, ScriptContext scriptContext)
     {
-        public string Keyword
-        {
-            get { return "//"; }
-        }
-
-        public IScript Create(string script, ScriptContext scriptContext)
-        {
-            return new CommentScript(script.Substring(2).Trim());
-        }
-
-        public IScriptFactory ScriptFactory { set { } }
-
-        public WorldModel WorldModel { get; set; }
+        return new CommentScript(script.Substring(2).Trim());
     }
 
-    public class CommentScript : ScriptBase
+    public IScriptFactory ScriptFactory
     {
-        private string m_comment;
+        set { }
+    }
 
-        public CommentScript(string comment)
+    public WorldModel WorldModel { get; set; }
+}
+
+public class CommentScript : ScriptBase
+{
+    private string m_comment;
+
+    public CommentScript(string comment)
+    {
+        m_comment = comment;
+    }
+
+    public override string Keyword => "//";
+
+    protected override ScriptBase CloneScript()
+    {
+        return new CommentScript(m_comment);
+    }
+
+    public override void Execute(Context c)
+    {
+    }
+
+    public override string Save()
+    {
+        return "// " + string.Join(Environment.NewLine + "// ",
+            m_comment.Split(new[] {"\n"}, StringSplitOptions.RemoveEmptyEntries));
+    }
+
+    public override object GetParameter(int index)
+    {
+        return m_comment;
+    }
+
+    protected override void SetParameterInternal(int index, object value)
+    {
+        m_comment = (string) value;
+    }
+
+    public void AddLine(string line)
+    {
+        if (!line.StartsWith("//"))
         {
-            m_comment = comment;
+            throw new ArgumentException("Expected comment line: " + line);
         }
 
-        protected override ScriptBase CloneScript()
-        {
-            return new CommentScript(m_comment);
-        }
-
-        public override void Execute(Context c)
-        {
-        }
-
-        public override string Save()
-        {
-            return "// " + string.Join(Environment.NewLine + "// ", m_comment.Split(new string[] { "\n" }, StringSplitOptions.RemoveEmptyEntries));
-        }
-
-        public override object GetParameter(int index)
-        {
-            return m_comment;
-        }
-
-        public override void SetParameterInternal(int index, object value)
-        {
-            m_comment = (string)value;
-        }
-
-        public override string Keyword
-        {
-            get
-            {
-                return "//";
-            }
-        }
-
-        public void AddLine(string line)
-        {
-            if (!line.StartsWith("//"))
-            {
-                throw new ArgumentException("Expected comment line: " + line);
-            }
-            m_comment += Environment.NewLine + line.Substring(2).Trim();
-        }
+        m_comment += Environment.NewLine + line.Substring(2).Trim();
     }
 }

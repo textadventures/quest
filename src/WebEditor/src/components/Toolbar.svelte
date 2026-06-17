@@ -1,22 +1,36 @@
 <script lang="ts">
     import { AppBar } from "@skeletonlabs/skeleton-svelte";
+    import { PUBLIC_WEBEDITOR_VERSION } from "$env/static/public";
     import {
-        gameFilename, saveGame, undo, redo, canUndo, canRedo,
+        gameFilename, isDirty, saveGame, saveGameAs, canSaveAs, previewUrl,
+        undo, redo, canUndo, canRedo,
         treeNodes, selectedKey, openAddModal,
         createExit, createTurnScript, createCommand, createVerb,
+        createIncludedLibrary, createJavascript,
         deleteElement,
     } from "$lib/editor-store";
     import type { TreeNode } from "$lib/types";
 
-    function handleSave() {
-        const xml = saveGame();
-        const blob = new Blob([xml], { type: "application/xml" });
-        const url = URL.createObjectURL(blob);
-        const a = document.createElement("a");
-        a.href = url;
-        a.download = $gameFilename ?? "game.aslx";
-        a.click();
-        URL.revokeObjectURL(url);
+    let saving = $state(false);
+    let showPreviewHelp = $state(false);
+
+    async function handleSave() {
+        saving = true;
+        try { await saveGame(); } finally { saving = false; }
+    }
+
+    async function handleSaveAs() {
+        saving = true;
+        try { await saveGameAs(); } finally { saving = false; }
+    }
+
+    async function handlePreview() {
+        if ($previewUrl) {
+            await saveGame();
+            window.open($previewUrl, "_blank");
+        } else {
+            showPreviewHelp = !showPreviewHelp;
+        }
     }
 
     // Derive the currently selected tree node
@@ -36,6 +50,12 @@
         { label: "Add Room", action: () => openAddModal("room", null) },
         { label: "Add Function", action: () => openAddModal("function", null) },
         { label: "Add Timer", action: () => openAddModal("timer", null) },
+        { label: "Add Walkthrough", action: () => openAddModal("walkthrough", null) },
+        { label: "Add Template", action: () => openAddModal("template", null) },
+        { label: "Add Dynamic Template", action: () => openAddModal("dynamictemplate", null) },
+        { label: "Add Type", action: () => openAddModal("type", null) },
+        { label: "Add Library", action: () => createIncludedLibrary() },
+        { label: "Add JavaScript", action: () => createJavascript() },
         // Context-sensitive: when a room or object is selected
         ...(nt === "room" || nt === "object" ? [
             { label: `Add Object in "${selectedNode!.text}"`, action: () => openAddModal("object", selectedNode!.key) },
@@ -71,8 +91,11 @@
         <AppBar.Toolbar class="grid-cols-[auto_1fr_auto]">
             <AppBar.Lead>
                 <span class="font-semibold">Quest Viva Editor</span>
+                {#if PUBLIC_WEBEDITOR_VERSION}
+                    <span class="ml-2 text-xs text-surface-500-400">{PUBLIC_WEBEDITOR_VERSION.replace('webeditor-', '')}</span>
+                {/if}
                 {#if $gameFilename}
-                    <span class="ml-3 text-sm text-surface-500-400">{$gameFilename}</span>
+                    <span class="ml-3 text-sm text-surface-500-400">{$gameFilename}{#if $isDirty} *{/if}</span>
                 {/if}
             </AppBar.Lead>
             <AppBar.Trail>
@@ -107,8 +130,27 @@
                     {/if}
                     <button type="button" class="btn btn-sm preset-outlined-primary-500" onclick={undo} disabled={!$canUndo} title="Undo">↩ Undo</button>
                     <button type="button" class="btn btn-sm preset-outlined-primary-500" onclick={redo} disabled={!$canRedo} title="Redo">↪ Redo</button>
-                    <button type="button" class="btn btn-sm preset-filled-primary-500" onclick={handleSave} title="Save">💾 Save</button>
+                    <button type="button" class="btn btn-sm preset-filled-primary-500" onclick={handleSave} disabled={saving} title="Save">💾 Save</button>
+                    {#if $canSaveAs}
+                        <button type="button" class="btn btn-sm preset-outlined-primary-500" onclick={handleSaveAs} disabled={saving} title="Save As">Save As…</button>
+                    {/if}
+                    {#if $gameFilename}
+                        <button type="button" class="btn btn-sm preset-outlined-secondary-500" onclick={handlePreview} title="Preview game">▶ Preview</button>
+                    {/if}
                 </div>
             </AppBar.Trail>
         </AppBar.Toolbar>
     </AppBar>
+
+{#if showPreviewHelp}
+    <div class="bg-surface-100-900 border-b border-surface-200-800 px-4 py-3 text-sm flex items-start gap-3">
+        <span class="text-warning-500 text-base">ℹ</span>
+        <div>
+            <strong>To preview your game:</strong> Open it in the
+            <a href="https://textadventures.co.uk/quest" target="_blank" rel="noopener" class="anchor">Quest desktop app</a>,
+            which can run games directly from your local files.
+            Online preview is only available when editing a game saved on textadventures.co.uk.
+        </div>
+        <button type="button" class="ml-auto text-surface-500-400 hover:text-surface-900-50" onclick={() => showPreviewHelp = false}>✕</button>
+    </div>
+{/if}

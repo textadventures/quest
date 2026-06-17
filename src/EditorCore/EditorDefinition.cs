@@ -1,160 +1,124 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using QuestViva.Engine;
+﻿using QuestViva.Engine;
 
-namespace QuestViva.EditorCore
+namespace QuestViva.EditorCore;
+
+internal class EditorDefinition : IEditorDefinition
 {
-    internal class EditorDefinition : IEditorDefinition
+    private readonly Dictionary<string, IEditorControl> m_controls;
+    private readonly Dictionary<string, FilterGroup> m_filterGroups = new();
+
+    private readonly Dictionary<string, IEditorTab> m_tabs;
+
+    public EditorDefinition(WorldModel worldModel, Element source)
     {
-        private class Filter
+        m_tabs = new Dictionary<string, IEditorTab>();
+        m_controls = new Dictionary<string, IEditorControl>();
+        AppliesTo = source.Fields.GetString("appliesto");
+        Pattern = source.Fields.GetString("pattern");
+        OriginalPattern = source.Fields.GetString(FieldDefinitions.OriginalPattern.Property);
+        Description = source.Fields.GetString("description");
+        Create = source.Fields.GetString("create");
+        ExpressionType = source.Fields.GetString("expressiontype");
+
+        foreach (var e in worldModel.Elements.GetElements(ElementType.EditorTab))
         {
-            private List<string> m_attributes = new List<string>();
-            private string m_filterName;
-
-            public List<string> Attributes { get { return m_attributes; } }
-            public string Name { get { return m_filterName; } }
-
-            public Filter(string name)
+            if (e.Parent == source)
             {
-                m_filterName = name;
+                m_tabs.Add(e.Name, new EditorTab(this, worldModel, e));
             }
         }
 
-        private class FilterGroup
+        foreach (var e in worldModel.Elements.GetElements(ElementType.EditorControl))
         {
-            private Dictionary<string, Filter> m_filters = new Dictionary<string, Filter>();
-            private string m_filterGroupName;
-
-            public Dictionary<string, Filter> Filters { get { return m_filters; } }
-            public string Name { get { return m_filterGroupName; } }
-
-            public FilterGroup(string name)
+            if (e.Parent == source)
             {
-                m_filterGroupName = name;
+                m_controls.Add(e.Name, new EditorControl(this, worldModel, e));
             }
         }
+    }
 
-        private Dictionary<string, IEditorTab> m_tabs = null;
-        private Dictionary<string, IEditorControl> m_controls = null;
-        private string m_appliesTo = null;
-        private string m_pattern = null;
-        private string m_originalPattern = null;
-        private string m_description = null;
-        private string m_create = null;
-        private string m_expressionType = null;
-        private Dictionary<string, FilterGroup> m_filterGroups = new Dictionary<string, FilterGroup>();
+    public string AppliesTo { get; }
 
-        public EditorDefinition(WorldModel worldModel, Element source)
+    public string Pattern { get; }
+
+    public string Create { get; }
+
+    public string ExpressionType { get; }
+
+    public string OriginalPattern { get; }
+
+    public string Description { get; }
+
+    public IDictionary<string, IEditorTab> Tabs => m_tabs;
+
+    public IEnumerable<IEditorControl> Controls => m_controls.Values;
+
+    public string GetDefaultFilterName(string filterGroupName, IEditorData data)
+    {
+        var filterGroup = m_filterGroups[filterGroupName];
+        var candidates = new List<Filter>();
+
+        foreach (var filter in filterGroup.Filters.Values)
         {
-            m_tabs = new Dictionary<string, IEditorTab>();
-            m_controls = new Dictionary<string, IEditorControl>();
-            m_appliesTo = source.Fields.GetString("appliesto");
-            m_pattern = source.Fields.GetString("pattern");
-            m_originalPattern = source.Fields.GetString(FieldDefinitions.OriginalPattern.Property);
-            m_description = source.Fields.GetString("description");
-            m_create = source.Fields.GetString("create");
-            m_expressionType = source.Fields.GetString("expressiontype");
-
-            foreach (Element e in worldModel.Elements.GetElements(ElementType.EditorTab))
+            foreach (var attribute in filter.Attributes)
             {
-                if (e.Parent == source)
+                if (data.GetAttribute(attribute) != null)
                 {
-                    m_tabs.Add(e.Name, new EditorTab(this, worldModel, e));
-                }
-            }
-
-            foreach (Element e in worldModel.Elements.GetElements(ElementType.EditorControl))
-            {
-                if (e.Parent == source)
-                {
-                    m_controls.Add(e.Name, new EditorControl(this, worldModel, e));
+                    candidates.Add(filter);
+                    break;
                 }
             }
         }
 
-        public string AppliesTo
+        // If there is only one candidate then we have our result
+        if (candidates.Count == 1)
         {
-            get { return m_appliesTo; }
+            return candidates[0].Name;
         }
 
-        public string Pattern
+        // Otherwise just default to the first filter
+        return filterGroup.Filters.First().Value.Name;
+    }
+
+    internal void RegisterFilter(string filterGroupName, string filterName, string attribute)
+    {
+        if (!m_filterGroups.ContainsKey(filterGroupName))
         {
-            get { return m_pattern; }
+            m_filterGroups.Add(filterGroupName, new FilterGroup(filterGroupName));
         }
 
-        public string OriginalPattern
+        var filterGroup = m_filterGroups[filterGroupName];
+
+        if (!filterGroup.Filters.ContainsKey(filterName))
         {
-            get { return m_originalPattern; }
+            filterGroup.Filters.Add(filterName, new Filter(filterName));
         }
 
-        public string Description
+        var filter = filterGroup.Filters[filterName];
+        filter.Attributes.Add(attribute);
+    }
+
+    private class Filter
+    {
+        public Filter(string name)
         {
-            get { return m_description; }
+            Name = name;
         }
 
-        public string Create
+        public List<string> Attributes { get; } = new();
+
+        public string Name { get; }
+    }
+
+    private class FilterGroup
+    {
+        public FilterGroup(string name)
         {
-            get { return m_create; }
+            Name = name;
         }
 
-        public string ExpressionType
-        {
-            get { return m_expressionType; }
-        }
+        public Dictionary<string, Filter> Filters { get; } = new();
 
-        public IDictionary<string, IEditorTab> Tabs
-        {
-            get { return m_tabs; }
-        }
-
-        public IEnumerable<IEditorControl> Controls
-        {
-            get { return m_controls.Values; }
-        }
-
-        internal void RegisterFilter(string filterGroupName, string filterName, string attribute)
-        {
-            if (!m_filterGroups.ContainsKey(filterGroupName))
-            {
-                m_filterGroups.Add(filterGroupName, new FilterGroup(filterGroupName));
-            }
-
-            FilterGroup filterGroup = m_filterGroups[filterGroupName];
-
-            if (!filterGroup.Filters.ContainsKey(filterName))
-            {
-                filterGroup.Filters.Add(filterName, new Filter(filterName));
-            }
-
-            Filter filter = filterGroup.Filters[filterName];
-            filter.Attributes.Add(attribute);
-        }
-
-        public string GetDefaultFilterName(string filterGroupName, IEditorData data)
-        {
-            FilterGroup filterGroup = m_filterGroups[filterGroupName];
-            List<Filter> candidates = new List<Filter>();
-
-            foreach (Filter filter in filterGroup.Filters.Values)
-            {
-                foreach (string attribute in filter.Attributes)
-                {
-                    if (data.GetAttribute(attribute) != null)
-                    {
-                        candidates.Add(filter);
-                        break;
-                    }
-                }
-            }
-
-            // If there is only one candidate then we have our result
-            if (candidates.Count == 1)
-            {
-                return candidates[0].Name;
-            }
-
-            // Otherwise just default to the first filter
-            return filterGroup.Filters.First().Value.Name;
-        }
+        public string Name { get; }
     }
 }

@@ -19,6 +19,10 @@ const mimeTypes: Record<string, string> = {
   '.pdb': 'application/octet-stream',
 }
 
+// Set VITE_API_PROXY=http://localhost:5043 (or your local textadventures.co.uk URL) to proxy
+// /api requests during development. Not needed in production (same-origin).
+const apiProxy = process.env.VITE_API_PROXY
+
 export default defineConfig({
   plugins: [
     tailwindcss(),
@@ -48,6 +52,9 @@ export default defineConfig({
     headers: {
       'Cross-Origin-Opener-Policy': 'same-origin',
       'Cross-Origin-Embedder-Policy': 'require-corp',
-    }
+    },
+    proxy: apiProxy ? {
+      '/api': { target: apiProxy, changeOrigin: true },
+    } : undefined,
   }
 })

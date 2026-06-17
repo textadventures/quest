@@ -1,5 +1,4 @@
 @using QuestViva.Common
-
 <style scoped>
     dialog {
         border: none;
@@ -21,13 +20,13 @@
         flex-direction: column;
         height: 100%;
     }
-    
+
     .debugger-main {
         flex: 1;
         display: flex;
         overflow: hidden;
     }
-    
+
     .close-button {
         align-self: flex-end;
         margin: 10px;
@@ -86,9 +85,10 @@
         await CloseDialog();
         await OnRunWalkthrough.InvokeAsync(name);
     }
-    
+
     private async Task CloseDialog()
     {
         await JS.InvokeVoidAsync("WebPlayer.closeDebugger");
     }
+
 }

@@ -1,133 +1,112 @@
 ﻿#nullable disable
-using System;
-using System.Collections.Generic;
 using QuestViva.Engine.Functions;
 
-namespace QuestViva.Engine.Scripts
+namespace QuestViva.Engine.Scripts;
+
+public class UndoScriptConstructor : ScriptConstructorBase
 {
-    public class UndoScriptConstructor : ScriptConstructorBase
+    public override string Keyword => "undo";
+
+    protected override int[] ExpectedParameters
     {
-        public override string Keyword
-        {
-            get { return "undo"; }
-        }
-
-        protected override IScript CreateInt(List<string> parameters, ScriptContext scriptContext)
-        {
-            return new UndoScript(WorldModel);
-        }
-
-        protected override int[] ExpectedParameters
-        {
-            get { return new int[] { 0 }; }
-        }
+        get { return new[] {0}; }
     }
 
-    public class UndoScript : ScriptBase
+    protected override IScript CreateInt(List<string> parameters, ScriptContext scriptContext)
     {
-        private WorldModel m_worldModel;
+        return new UndoScript(WorldModel);
+    }
+}
 
-        public UndoScript(WorldModel worldModel)
-        {
-            m_worldModel = worldModel;
-        }
+public class UndoScript : ScriptBase
+{
+    private readonly WorldModel m_worldModel;
 
-        protected override ScriptBase CloneScript()
-        {
-            return new UndoScript(m_worldModel);
-        }
-
-        public override void Execute(Context c)
-        {
-            m_worldModel.UndoLogger.RollbackTransaction();
-        }
-
-        public override string Save()
-        {
-            return "undo";
-        }
-
-        public override string Keyword
-        {
-            get
-            {
-                return "undo";
-            }
-        }
-
-        public override object GetParameter(int index)
-        {
-            throw new ArgumentOutOfRangeException();
-        }
-
-        public override void SetParameterInternal(int index, object value)
-        {
-            throw new ArgumentOutOfRangeException();
-        }
+    public UndoScript(WorldModel worldModel)
+    {
+        m_worldModel = worldModel;
     }
 
-    public class StartTransactionConstructor : ScriptConstructorBase
+    public override string Keyword => "undo";
+
+    protected override ScriptBase CloneScript()
     {
-        public override string Keyword
-        {
-            get { return "start transaction"; }
-        }
-
-        protected override IScript CreateInt(List<string> parameters, ScriptContext scriptContext)
-        {
-            return new StartTransactionScript(scriptContext, new Expression<string>(parameters[0], scriptContext));
-        }
-
-        protected override int[] ExpectedParameters
-        {
-            get { return new int[] { 1 }; }
-        }
+        return new UndoScript(m_worldModel);
     }
 
-    public class StartTransactionScript : ScriptBase
+    public override void Execute(Context c)
     {
-        private ScriptContext m_scriptContext;
-        private WorldModel m_worldModel;
-        private IFunction<string> m_command;
+        m_worldModel.UndoLogger.RollbackTransaction();
+    }
 
-        public StartTransactionScript(ScriptContext scriptContext, IFunction<string> command)
-        {
-            m_scriptContext = scriptContext;
-            m_worldModel = scriptContext.WorldModel;
-            m_command = command;
-        }
+    public override string Save()
+    {
+        return "undo";
+    }
 
-        protected override ScriptBase CloneScript()
-        {
-            return new StartTransactionScript(m_scriptContext, m_command.Clone());
-        }
+    public override object GetParameter(int index)
+    {
+        throw new ArgumentOutOfRangeException();
+    }
 
-        public override void Execute(Context c)
-        {
-            m_worldModel.UndoLogger.RollTransaction(m_command.Execute(c));
-        }
+    protected override void SetParameterInternal(int index, object value)
+    {
+        throw new ArgumentOutOfRangeException();
+    }
+}
 
-        public override string Save()
-        {
-            return SaveScript("start transaction", m_command.Save());
-        }
+public class StartTransactionConstructor : ScriptConstructorBase
+{
+    public override string Keyword => "start transaction";
 
-        public override string Keyword
-        {
-            get
-            {
-                return "start transaction";
-            }
-        }
+    protected override int[] ExpectedParameters
+    {
+        get { return new[] {1}; }
+    }
 
-        public override object GetParameter(int index)
-        {
-            return m_command.Save();
-        }
+    protected override IScript CreateInt(List<string> parameters, ScriptContext scriptContext)
+    {
+        return new StartTransactionScript(scriptContext, new Expression<string>(parameters[0], scriptContext));
+    }
+}
 
-        public override void SetParameterInternal(int index, object value)
-        {
-            m_command = new Expression<string>((string)value, m_scriptContext);
-        }
+public class StartTransactionScript : ScriptBase
+{
+    private readonly ScriptContext m_scriptContext;
+    private readonly WorldModel m_worldModel;
+    private IFunction<string> m_command;
+
+    public StartTransactionScript(ScriptContext scriptContext, IFunction<string> command)
+    {
+        m_scriptContext = scriptContext;
+        m_worldModel = scriptContext.WorldModel;
+        m_command = command;
+    }
+
+    public override string Keyword => "start transaction";
+
+    protected override ScriptBase CloneScript()
+    {
+        return new StartTransactionScript(m_scriptContext, m_command.Clone());
+    }
+
+    public override void Execute(Context c)
+    {
+        m_worldModel.UndoLogger.RollTransaction(m_command.Execute(c));
+    }
+
+    public override string Save()
+    {
+        return SaveScript("start transaction", m_command.Save());
+    }
+
+    public override object GetParameter(int index)
+    {
+        return m_command.Save();
+    }
+
+    protected override void SetParameterInternal(int index, object value)
+    {
+        m_command = new Expression<string>((string) value, m_scriptContext);
     }
 }

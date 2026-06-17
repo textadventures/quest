@@ -4,53 +4,13 @@ namespace QuestViva.Legacy;
 
 public partial class V4Game
 {
-    private class WalkthroughList : IWalkthroughs
-    {
-        private readonly Dictionary<string, IWalkthrough> _walkthroughs = new();
-        
-        public WalkthroughList(V4Game game)
-        {
-            if (game._defineBlocks == null)
-            {
-                return;
-            }
-            
-            foreach (var section in game._defineBlocks.Skip(1))
-            {
-                var startLine = game._lines[section.StartLine];
-                
-                if (!startLine.StartsWith("define text <walkthrough"))
-                {
-                    continue;
-                }
+    private IWalkthroughs _walkthroughs;
 
-                var name = game.GetParameter(startLine, game._nullContext, false);
-
-                var steps = new List<string>();
-                for (var i = section.StartLine + 1; i < section.EndLine; i++)
-                {
-                    steps.Add(game._lines[i].Trim());
-                }
-                
-                var walkthrough = new Walkthrough(steps.ToArray());
-                
-                _walkthroughs.Add(name, walkthrough);
-            }
-        }
-        
-        public IDictionary<string, IWalkthrough> Walkthroughs => _walkthroughs;
-    }
-
-    private class Walkthrough(string[] steps) : IWalkthrough
-    {
-        public string[] Steps => steps;
-    }
-    
     public bool DebugEnabled => true;
-    #pragma warning disable CS0067
+#pragma warning disable CS0067
     public event EventHandler<ObjectsUpdatedEventArgs> ObjectsUpdated;
-    #pragma warning restore CS0067
-    
+#pragma warning restore CS0067
+
     public List<string> GetObjects(string type)
     {
         switch (type)
@@ -95,13 +55,30 @@ public partial class V4Game
         }
     }
 
+    public List<string> DebuggerObjectTypes =>
+    [
+        "Variables",
+        "Game",
+        "Rooms",
+        "Objects",
+        "Exits",
+        "Timers"
+    ];
+
+    public IWalkthroughs Walkthroughs => _walkthroughs ??= new WalkthroughList(this);
+
+    public bool Assert(string expression)
+    {
+        return ExecuteConditions(expression, _nullContext);
+    }
+
     private DebugData GetVariableDebugData(VariableType[] variable)
     {
         if (variable == null || variable.Length == 0)
         {
             return DebugData.Empty;
         }
-        
+
         var data = variable
             .Skip(1)
             .Select(v => new KeyValuePair<string, DebugDataItem>(v.VariableName,
@@ -119,7 +96,7 @@ public partial class V4Game
         {
             return DebugData.Empty;
         }
-        
+
         var data = obj
             .Properties
             .Skip(1)
@@ -145,20 +122,45 @@ public partial class V4Game
         };
     }
 
-    public List<string> DebuggerObjectTypes => [
-        "Variables",
-        "Game",
-        "Rooms",
-        "Objects",
-        "Exits",
-        "Timers"
-    ];
-
-    private IWalkthroughs _walkthroughs;
-    public IWalkthroughs Walkthroughs => _walkthroughs ??= new WalkthroughList(this);
-
-    public bool Assert(string expression)
+    private class WalkthroughList : IWalkthroughs
     {
-        return ExecuteConditions(expression, _nullContext);
+        private readonly Dictionary<string, IWalkthrough> _walkthroughs = new();
+
+        public WalkthroughList(V4Game game)
+        {
+            if (game._defineBlocks == null)
+            {
+                return;
+            }
+
+            foreach (var section in game._defineBlocks.Skip(1))
+            {
+                var startLine = game._lines[section.StartLine];
+
+                if (!startLine.StartsWith("define text <walkthrough"))
+                {
+                    continue;
+                }
+
+                var name = game.GetParameter(startLine, game._nullContext, false);
+
+                var steps = new List<string>();
+                for (var i = section.StartLine + 1; i < section.EndLine; i++)
+                {
+                    steps.Add(game._lines[i].Trim());
+                }
+
+                var walkthrough = new Walkthrough(steps.ToArray());
+
+                _walkthroughs.Add(name, walkthrough);
+            }
+        }
+
+        public IDictionary<string, IWalkthrough> Walkthroughs => _walkthroughs;
+    }
+
+    private class Walkthrough(string[] steps) : IWalkthrough
+    {
+        public string[] Steps => steps;
     }
 }

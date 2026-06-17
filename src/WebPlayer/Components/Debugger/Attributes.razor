@@ -1,5 +1,4 @@
 @using QuestViva.Common
-
 <style scoped>
     .right-pane {
         flex: 1;
@@ -58,9 +57,10 @@
 
         base.OnParametersSet();
     }
-    
+
     private void OnObjectSelected((int index, string objName) item)
     {
         selectedObject = item.objName;
     }
+
 }

@@ -1,6 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Reflection;
+using QuestViva.Common;
 using QuestViva.Engine.Scripts;
 using QuestViva.Utility;
 
@@ -15,9 +14,9 @@ public enum SaveMode
 
 internal partial class GameSaver
 {
-    private readonly WorldModel _worldModel;
-    private readonly Dictionary<ElementType, IElementsSaver> _elementsSavers = new();
     private readonly Dictionary<ElementType, IElementSaver> _elementSavers = new();
+    private readonly Dictionary<ElementType, IElementsSaver> _elementsSavers = new();
+    private readonly WorldModel _worldModel;
     private Dictionary<string, string>? _impliedTypes;
     private SaveMode _mode;
 
@@ -26,17 +25,17 @@ internal partial class GameSaver
         _worldModel = worldModel;
 
         // Use Reflection to create instances of all IElementSavers (save individual elements)
-        foreach (var t in Classes.GetImplementations(System.Reflection.Assembly.GetExecutingAssembly(),
+        foreach (var t in Classes.GetImplementations(Assembly.GetExecutingAssembly(),
                      typeof(IElementSaver)))
         {
-            AddElementSaver((IElementSaver)Activator.CreateInstance(t)!);
+            AddElementSaver((IElementSaver) Activator.CreateInstance(t)!);
         }
 
         // Use Reflection to create instances of all IElementsSavers (save all elements of a type)
-        foreach (var t in Classes.GetImplementations(System.Reflection.Assembly.GetExecutingAssembly(),
+        foreach (var t in Classes.GetImplementations(Assembly.GetExecutingAssembly(),
                      typeof(IElementsSaver)))
         {
-            AddElementsSaver((IElementsSaver)Activator.CreateInstance(t)!);
+            AddElementsSaver((IElementsSaver) Activator.CreateInstance(t)!);
         }
     }
 
@@ -60,19 +59,21 @@ internal partial class GameSaver
         GameXmlWriter.GameXmlWriterOptions? options = null;
         if (includeWalkthrough.HasValue)
         {
-            options = new GameXmlWriter.GameXmlWriterOptions { IncludeWalkthrough = includeWalkthrough.Value };
+            options = new GameXmlWriter.GameXmlWriterOptions {IncludeWalkthrough = includeWalkthrough.Value};
         }
+
         var writer = new GameXmlWriter(mode, options);
 
         UpdateImpliedTypesCache();
-            
-        writer.WriteComment($"Saved by Quest Viva {Common.VersionInfo.Version}");
+
+        writer.WriteComment($"Saved by Quest Viva {VersionInfo.Version}");
         writer.WriteStartElement("asl");
         if (mode == SaveMode.Editor)
         {
             _worldModel.Version = WorldModelVersion.v580;
             _worldModel.VersionString = "580";
         }
+
         writer.WriteAttributeString("version", _worldModel.VersionString);
 
         if (mode == SaveMode.SavedGame)
@@ -104,7 +105,7 @@ internal partial class GameSaver
                 }
                 else
                 {
-                    throw new Exception("ERROR: No ElementSaver for type " + t.ToString());
+                    throw new Exception("ERROR: No ElementSaver for type " + t);
                 }
             }
         }
@@ -124,8 +125,16 @@ internal partial class GameSaver
             case SaveMode.Editor:
                 return !e.MetaFields[MetaFieldDefinitions.Library];
             case SaveMode.Package:
-                if (e.ElemType == ElementType.IncludedLibrary) return false;
-                if (e.MetaFields[MetaFieldDefinitions.EditorLibrary]) return false;
+                if (e.ElemType == ElementType.IncludedLibrary)
+                {
+                    return false;
+                }
+
+                if (e.MetaFields[MetaFieldDefinitions.EditorLibrary])
+                {
+                    return false;
+                }
+
                 return true;
             default:
                 throw new Exception("SaveMode not implemented");
@@ -170,29 +179,46 @@ internal partial class GameSaver
     private interface IElementsSaver
     {
         ElementType AppliesTo { get; }
-        void Save(GameXmlWriter writer, WorldModel worldModel);
         GameSaver GameSaver { set; }
+        void Save(GameXmlWriter writer, WorldModel worldModel);
     }
 
     private interface IElementSaver
     {
         ElementType AppliesTo { get; }
-        void Save(GameXmlWriter writer, Element e);
         GameSaver GameSaver { set; }
         bool AutoSave { get; }
+        void Save(GameXmlWriter writer, Element e);
     }
 
     private abstract class ElementSaverBase : IElementSaver
     {
+        private readonly List<string> _ignoreFields = [];
         private FieldSaver? _fieldSaver;
         private GameSaver? _gameSaver;
-        private readonly List<string> _ignoreFields = [];
 
         protected ElementSaverBase()
         {
             AddIgnoreField("name");
             AddIgnoreField("elementtype");
         }
+
+        public abstract ElementType AppliesTo { get; }
+
+        public abstract void Save(GameXmlWriter writer, Element e);
+
+        public GameSaver GameSaver
+        {
+            get => _gameSaver!;
+            set
+            {
+                _gameSaver = value;
+                _fieldSaver = new FieldSaver(_gameSaver);
+                Initialise();
+            }
+        }
+
+        public virtual bool AutoSave => true;
 
         protected void AddIgnoreField(string name)
         {
@@ -253,24 +279,8 @@ internal partial class GameSaver
             {
                 return false;
             }
+
             return !WorldModel.DefaultTypeNames.ContainsValue(type);
         }
-
-        public abstract ElementType AppliesTo { get; }
-
-        public abstract void Save(GameXmlWriter writer, Element e);
-
-        public GameSaver GameSaver
-        {
-            get => _gameSaver!;
-            set
-            {
-                _gameSaver = value;
-                _fieldSaver = new FieldSaver(_gameSaver);
-                Initialise();
-            }
-        }
-
-        public virtual bool AutoSave => true;
     }
 }

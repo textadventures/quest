@@ -2,97 +2,97 @@
 using Microsoft.VisualBasic;
 using Microsoft.VisualBasic.CompilerServices;
 using QuestViva.Common;
-using Constants = Microsoft.VisualBasic.Constants; 
+using Constants = Microsoft.VisualBasic.Constants;
 
 namespace QuestViva.Legacy;
 
 public partial class V4Game : IGame, IGameDebug
 {
-    private Dictionary<string, Dictionary<string, string>> _defineBlockParams;
-    private string _openErrorReport;
     private readonly string[] _casKeywords = new string[256]; // Tokenised CAS keywords
-    private string[] _lines; // Stores the lines of the ASL script/definitions
-    private DefineBlock[] _defineBlocks; // Stores the start and end lines of each 'define' section
-    private int _numberSections; // Number of define sections
-    private string _gameName; // The name of the game
-    internal Context _nullContext = new();
-    private ChangeLog _changeLogRooms;
-    private ChangeLog _changeLogObjects;
-    private PropertiesActions _defaultProperties;
-    private PropertiesActions _defaultRoomProperties;
-    internal RoomType[] _rooms;
-    internal int _numberRooms;
-    private VariableType[] _numericVariable;
-    private int _numberNumericVariables;
-    private VariableType[] _stringVariable;
-    private int _numberStringVariables;
-    private SynonymType[] _synonyms;
-    private int _numberSynonyms;
-    private ItemType[] _items;
-    private ObjectType[] _chars;
-    internal ObjectType[] _objs;
-    private int _numberChars;
-    internal int _numberObjs;
-    private int _numberItems;
-    internal string _currentRoom;
-    private Collectable[] _collectables;
-    private int _numCollectables;
-    private string _defaultFontName;
-    private double _defaultFontSize;
+    private readonly object _commandLock = new();
+    private readonly GameChangeDataType _gameChangeData = new();
+    private readonly GameData _gameData;
+    private readonly Dictionary<ListType, List<string>> _listVerbs = new();
+    private readonly List<string> _log = new();
+    private readonly int _numSkipCheckFiles;
+    private readonly string[] _playerErrorMessageString = new string[39];
+    private readonly Random _random = new();
+    private readonly Stream _saveData;
+    private readonly string[] _skipCheckFile;
+    private readonly object _stateLock = new();
+    private readonly TextFormatter _textFormatter = new();
+    private readonly object _waitLock = new();
+    private string _afterTurnScript;
     private bool _autoIntro;
+    private string _badCmdAfter;
+    private string _badCmdBefore;
+    private string _beforeSaveScript;
+    private string _beforeTurnScript;
+    private string _casFileData;
+    private ChangeLog _changeLogObjects;
+    private ChangeLog _changeLogRooms;
+    private ObjectType[] _chars;
+    private int _choiceNumber;
+    private Collectable[] _collectables;
     private bool _commandOverrideModeOn;
     private string _commandOverrideVariable;
-    private string _afterTurnScript;
-    private string _beforeTurnScript;
-    private bool _outPutOn;
-    private int _choiceNumber;
-    private string _gameLoadMethod;
-    private TimerType[] _timers;
-    private int _numberTimers;
-    private int _numDisplayStrings;
-    private int _numDisplayNumerics;
-    private bool _gameFullyLoaded;
-    private readonly GameChangeDataType _gameChangeData = new();
-    private int _lastIt;
-    private ItType _lastItMode;
-    private int _thisTurnIt;
-    private ItType _thisTurnItMode;
-    private string _badCmdBefore;
-    private string _badCmdAfter;
-    private int _numResources;
-    private ResourceType[] _resources;
-    private bool _hasResources;
-    private int _resourceOffset;
-    private int _startCatPos;
-    private bool _useAbbreviations;
-    private bool _loadedFromQsg;
-    private string _beforeSaveScript;
-    private string _onLoadScript;
-    private readonly int _numSkipCheckFiles;
-    private readonly string[] _skipCheckFile;
     private List<ListData> _compassExits = new();
-    private List<ListData> _gotoExits = new();
-    private readonly TextFormatter _textFormatter = new();
-    private readonly List<string> _log = new();
-    private string _casFileData;
-    private readonly object _commandLock = new();
-    private readonly object _stateLock = new();
-    private State _state = State.Ready;
-    private readonly object _waitLock = new();
-    private bool _readyForCommand = true;
-    private bool _gameLoading;
-    private readonly Random _random = new();
-    private readonly string[] _playerErrorMessageString = new string[39];
-    private readonly Dictionary<ListType, List<string>> _listVerbs = new();
-    private readonly GameData _gameData;
-    private readonly Stream _saveData;
-    private IPlayer _player;
-    private bool _gameFinished;
-    private bool _gameIsRestoring;
-    private bool _useStaticFrameForPictures;
+    internal string _currentRoom;
+    private string _defaultFontName;
+    private double _defaultFontSize;
+    private PropertiesActions _defaultProperties;
+    private PropertiesActions _defaultRoomProperties;
+    private Dictionary<string, Dictionary<string, string>> _defineBlockParams;
+    private DefineBlock[] _defineBlocks; // Stores the start and end lines of each 'define' section
     private string _fileData;
     private int _fileDataPos;
+    private bool _gameFinished;
+    private bool _gameFullyLoaded;
+    private bool _gameIsRestoring;
+    private bool _gameLoading;
+    private string _gameLoadMethod;
+    private string _gameName; // The name of the game
+    private List<ListData> _gotoExits = new();
+    private bool _hasResources;
+    private ItemType[] _items;
+    private int _lastIt;
+    private ItType _lastItMode;
+    private string[] _lines; // Stores the lines of the ASL script/definitions
+    private bool _loadedFromQsg;
+    internal Context _nullContext = new();
+    private int _numberChars;
+    private int _numberItems;
+    private int _numberNumericVariables;
+    internal int _numberObjs;
+    internal int _numberRooms;
+    private int _numberSections; // Number of define sections
+    private int _numberStringVariables;
+    private int _numberSynonyms;
+    private int _numberTimers;
+    private int _numCollectables;
+    private int _numDisplayNumerics;
+    private int _numDisplayStrings;
+    private VariableType[] _numericVariable;
+    private int _numResources;
+    internal ObjectType[] _objs;
+    private string _onLoadScript;
+    private string _openErrorReport;
+    private bool _outPutOn;
+    private IPlayer _player;
     private bool _questionResponse;
+    private bool _readyForCommand = true;
+    private int _resourceOffset;
+    private ResourceType[] _resources;
+    internal RoomType[] _rooms;
+    private int _startCatPos;
+    private State _state = State.Ready;
+    private VariableType[] _stringVariable;
+    private SynonymType[] _synonyms;
+    private int _thisTurnIt;
+    private ItType _thisTurnItMode;
+    private TimerType[] _timers;
+    private bool _useAbbreviations;
+    private bool _useStaticFrameForPictures;
 
     public V4Game(GameData gameData, Stream saveData)
     {
@@ -109,6 +109,11 @@ public partial class V4Game : IGame, IGameDebug
         _skipCheckFile[1] = "bargain.cas";
         _skipCheckFile[2] = "easymoney.asl";
         _skipCheckFile[3] = "musicvf1.cas";
+    }
+
+    void IGame.SetQuestionResponse(bool response)
+    {
+        SetQuestionResponse(response);
     }
 
     private string RemoveFormatting(string s)
@@ -1284,7 +1289,7 @@ public partial class V4Game : IGame, IGameDebug
     {
         var enc = new UTF8Encoding();
         var resFile = enc.GetString(res);
-        
+
         return resFile.Split(["\r\n", "\n"], StringSplitOptions.None);
     }
 
@@ -1306,7 +1311,7 @@ public partial class V4Game : IGame, IGameDebug
         var filename = gameData.Filename;
 
         _defineBlockParams = new Dictionary<string, Dictionary<string, string>>();
-        
+
         var ext = Path.GetExtension(filename).ToLowerInvariant();
 
         switch (ext)
@@ -1386,11 +1391,11 @@ public partial class V4Game : IGame, IGameDebug
 
                     libFoundThisSweep = true;
                     string[] libResourceLines = null;
-                        
+
                     LogASLError(" - Searching for " + libFileName + " (game path)", LogType.Init);
 
                     var libStream = _gameData.GetAdjacentFile(libFileName);
-                        
+
                     if (libStream == null)
                     {
                         // File was not found; try standard Quest libraries (stored here as resources)
@@ -1416,7 +1421,7 @@ public partial class V4Game : IGame, IGameDebug
                     {
                         var libData = await new StreamReader(libStream).ReadToEndAsync();
                         var libDataLines = libData.Split(["\r\n", "\n", "\r"], StringSplitOptions.None);
-                            
+
                         foreach (var line in libDataLines)
                         {
                             libLines = libLines + 1;
@@ -3761,13 +3766,13 @@ public partial class V4Game : IGame, IGameDebug
             LogASLError("Unable to extract '" + file + "' - not present in resources.", LogType.WarningError);
             return null;
         }
-        
+
         // Extract file from cached CAS data
         var fileData = Strings.Mid(_casFileData, startPos, length);
         var encoding = Encoding.GetEncoding(1252);
         var bytes = encoding.GetBytes(fileData);
         var stream = new MemoryStream(bytes);
-        
+
         return stream;
     }
 
@@ -4321,7 +4326,7 @@ public partial class V4Game : IGame, IGameDebug
             }
         }
 
-        if ((((twoPlaces == false) &
+        if (((!twoPlaces &
               (((Strings.LCase(_objs[id].ContainerRoom) ?? "") == (Strings.LCase(firstPlace) ?? "")) |
                string.IsNullOrEmpty(firstPlace))) |
              (twoPlaces & (((Strings.LCase(_objs[id].ContainerRoom) ?? "") == (Strings.LCase(firstPlace) ?? "")) |
@@ -4557,12 +4562,6 @@ public partial class V4Game : IGame, IGameDebug
         }
 
         return false;
-    }
-
-    private class ArrayResult
-    {
-        public string Name;
-        public int Index;
     }
 
     private ArrayResult GetArrayIndex(string varName, Context ctx)
@@ -4821,7 +4820,7 @@ public partial class V4Game : IGame, IGameDebug
             var mnu = new MenuData(question, menuItems, false);
             var response = ShowMenu(mnu);
 
-            _choiceNumber = Conversions.ToInteger((string) response);
+            _choiceNumber = Conversions.ToInteger(response);
 
             SetStringContents("quest.lastobject", _objs[idNumbers[_choiceNumber]].ObjectName, ctx);
 
@@ -5312,7 +5311,7 @@ public partial class V4Game : IGame, IGameDebug
                         _defaultProperties.Actions[j].Script);
                 }
             }
-            
+
             if (!_gameLoading)
             {
                 UpdateObjectList(ctx);
@@ -5491,7 +5490,7 @@ public partial class V4Game : IGame, IGameDebug
         {
             LogASLError("Invalid direction in 'create exit " + exitData + "'", LogType.WarningError);
         }
-        
+
         if (!_gameLoading)
         {
             // Update quest.doorways variables
@@ -5934,12 +5933,12 @@ public partial class V4Game : IGame, IGameDebug
             }
         }
 
-        if ((found == false) & errorReport)
+        if (!found & errorReport)
         {
             LogASLError("No such character/object '" + obj + "'.", LogType.UserError);
         }
 
-        if (found == false)
+        if (!found)
         {
             result = false;
         }
@@ -6689,7 +6688,7 @@ public partial class V4Game : IGame, IGameDebug
             var currentBit = Strings.Mid(parameter, pos, varPos - pos);
             result = result + currentBit;
 
-            if (finished == false)
+            if (!finished)
             {
                 var nextPos = Strings.InStr(varPos + 1, parameter, convertChar);
 
@@ -7374,11 +7373,6 @@ public partial class V4Game : IGame, IGameDebug
         WaitForStateChange(State.Working);
     }
 
-    void IGame.SetQuestionResponse(bool response)
-    {
-        SetQuestionResponse(response);
-    }
-
     private void SetQuestionResponseInNewThread(object response)
     {
         _questionResponse = (bool) response;
@@ -7760,5 +7754,11 @@ public partial class V4Game : IGame, IGameDebug
         }
 
         PlayMedia(filename, sync, looped);
+    }
+
+    private class ArrayResult
+    {
+        public int Index;
+        public string Name;
     }
 }

@@ -6,6 +6,13 @@ public class GameSessionTracker
 
     public int ActiveGames => _activeGames;
 
-    public void GameStarted() => Interlocked.Increment(ref _activeGames);
-    public void GameEnded() => Interlocked.Decrement(ref _activeGames);
+    public void GameStarted()
+    {
+        Interlocked.Increment(ref _activeGames);
+    }
+
+    public void GameEnded()
+    {
+        Interlocked.Decrement(ref _activeGames);
+    }
 }

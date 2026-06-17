@@ -1,26 +1,26 @@
-using System;
-using System.Collections.Generic;
-using System.Threading;
-using System.Threading.Tasks;
 using QuestViva.Common;
 
 namespace QuestViva.PlayerCore;
 
 internal class WalkthroughRunner(IGameDebug game, string walkthrough)
 {
-    private readonly IGame _game = (IGame)game;
+    public delegate Task ClearBufferEventHandler();
+
+    public delegate Task OutputEventHandler(string text);
+
+    private readonly IGame _game = (IGame) game;
+    private bool _cancelled;
+    private IDictionary<string, string> _menuOptions;
+    private bool _pausing;
     private bool _showingMenu;
     private bool _showingQuestion;
     private bool _waiting;
-    private bool _pausing;
-    private IDictionary<string, string> _menuOptions;
-    private bool _cancelled;
+
+    public int Steps => game.Walkthroughs.Walkthroughs[walkthrough].Steps.Length;
 
     public event OutputEventHandler Output;
-    public delegate Task OutputEventHandler(string text);
 
     public event ClearBufferEventHandler ClearBuffer;
-    public delegate Task ClearBufferEventHandler();
 
     public async Task Run()
     {
@@ -32,7 +32,7 @@ internal class WalkthroughRunner(IGameDebug game, string walkthrough)
             {
                 break;
             }
-            
+
             if (_showingMenu)
             {
                 SetMenuResponse(cmd);
@@ -105,8 +105,8 @@ internal class WalkthroughRunner(IGameDebug game, string walkthrough)
                     _pausing = false;
                     FinishPause();
                 }
-            }
-            while ((_waiting || _pausing) && !_cancelled);
+            } while ((_waiting || _pausing) && !_cancelled);
+
             Thread.Sleep(delay);
         }
     }
@@ -195,8 +195,6 @@ internal class WalkthroughRunner(IGameDebug game, string walkthrough)
     {
         Output?.Invoke(text);
     }
-
-    public int Steps => game.Walkthroughs.Walkthroughs[walkthrough].Steps.Length;
 
     public void Cancel()
     {

@@ -222,7 +222,6 @@
         <controltype>label</controltype>
         <caption>[EditorGameTheGameIDbelow]</caption>
         <advanced/>
-        <desktop/>
       </control>
 
       <control>
@@ -230,7 +229,6 @@
         <caption>[EditorGameGameID]</caption>
         <attribute>gameid</attribute>
         <advanced/>
-        <desktop/>
       </control>
 
       <control>

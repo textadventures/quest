@@ -1,142 +1,139 @@
 ﻿#nullable disable
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using QuestViva.Engine.Functions;
 
-namespace QuestViva.Engine.Scripts
+namespace QuestViva.Engine.Scripts;
+
+public class ShowMenuScriptConstructor : IScriptConstructor
 {
-    public class ShowMenuScriptConstructor : IScriptConstructor
+    public string Keyword => "show menu";
+
+    public IScript Create(string script, ScriptContext scriptContext)
     {
-        public string Keyword
+        string afterExpr;
+        var param = Utility.GetParameter(script, out afterExpr);
+        var callback = Utility.GetScript(afterExpr);
+
+        var parameters = Utility.SplitParameter(param).ToArray();
+        if (parameters.Count() != 3)
         {
-            get { return "show menu"; }
+            throw new Exception(string.Format("'show menu' script should have 3 parameters: 'show menu ({0})'", param));
         }
 
-        public IScript Create(string script, ScriptContext scriptContext)
-        {
-            string afterExpr;
-            string param = Utility.GetParameter(script, out afterExpr);
-            string callback = Utility.GetScript(afterExpr);
+        var callbackScript = ScriptFactory.CreateScript(callback);
 
-            string[] parameters = Utility.SplitParameter(param).ToArray();
-            if (parameters.Count() != 3)
-            {
-                throw new Exception(string.Format("'show menu' script should have 3 parameters: 'show menu ({0})'", param));
-            }
-            IScript callbackScript = ScriptFactory.CreateScript(callback);
-
-            return new ShowMenuScript(scriptContext, ScriptFactory, new Expression<string>(parameters[0], scriptContext), new ExpressionDynamic(parameters[1], scriptContext), new Expression<bool>(parameters[2], scriptContext), callbackScript);
-        }
-
-        public IScriptFactory ScriptFactory { get; set; }
-
-        public WorldModel WorldModel { get; set; }
+        return new ShowMenuScript(scriptContext, ScriptFactory, new Expression<string>(parameters[0], scriptContext),
+            new ExpressionDynamic(parameters[1], scriptContext), new Expression<bool>(parameters[2], scriptContext),
+            callbackScript);
     }
 
-    public class ShowMenuScript : ScriptBase
+    public IScriptFactory ScriptFactory { get; set; }
+
+    public WorldModel WorldModel { get; set; }
+}
+
+public class ShowMenuScript : ScriptBase
+{
+    private readonly IScript m_callbackScript;
+    private readonly ScriptContext m_scriptContext;
+    private readonly IScriptFactory m_scriptFactory;
+    private readonly WorldModel m_worldModel;
+    private IFunction<bool> m_allowCancel;
+    private IFunction<string> m_caption;
+    private IFunctionDynamic m_options;
+
+    public ShowMenuScript(ScriptContext scriptContext, IScriptFactory scriptFactory, IFunction<string> caption,
+        IFunctionDynamic options, IFunction<bool> allowCancel, IScript callbackScript)
     {
-        private ScriptContext m_scriptContext;
-        private WorldModel m_worldModel;
-        private IFunction<string> m_caption;
-        private IFunctionDynamic m_options;
-        private IFunction<bool> m_allowCancel;
-        private IScript m_callbackScript;
-        private IScriptFactory m_scriptFactory;
+        m_scriptContext = scriptContext;
+        m_worldModel = scriptContext.WorldModel;
+        m_scriptFactory = scriptFactory;
+        m_caption = caption;
+        m_options = options;
+        m_allowCancel = allowCancel;
+        m_callbackScript = callbackScript;
+    }
 
-        public ShowMenuScript(ScriptContext scriptContext, IScriptFactory scriptFactory, IFunction<string> caption, IFunctionDynamic options, IFunction<bool> allowCancel, IScript callbackScript)
+    public override string Keyword => "show menu";
+
+    protected override ScriptBase CloneScript()
+    {
+        return new ShowMenuScript(m_scriptContext, m_scriptFactory, m_caption.Clone(), m_options.Clone(),
+            m_allowCancel.Clone(), (IScript) m_callbackScript.Clone());
+    }
+
+    public override void Execute(Context c)
+    {
+        var options = m_options.Execute(c);
+        var stringListOptions = options as IList<string>;
+        var stringDictionaryOptions = options as IDictionary<string, string>;
+
+        if (stringListOptions != null)
         {
-            m_scriptContext = scriptContext;
-            m_worldModel = scriptContext.WorldModel;
-            m_scriptFactory = scriptFactory;
-            m_caption = caption;
-            m_options = options;
-            m_allowCancel = allowCancel;
-            m_callbackScript = callbackScript;
-        }
-
-        protected override ScriptBase CloneScript()
-        {
-            return new ShowMenuScript(m_scriptContext, m_scriptFactory, m_caption.Clone(), m_options.Clone(), m_allowCancel.Clone(), (IScript)m_callbackScript.Clone());
-        }
-
-        public override void Execute(Context c)
-        {
-            object options = m_options.Execute(c);
-            IList<string> stringListOptions = options as IList<string>;
-            IDictionary<string, string> stringDictionaryOptions = options as IDictionary<string, string>;
-
-            if (stringListOptions != null)
+            if (stringListOptions.Count == 0)
             {
-                if (stringListOptions.Count == 0)
-                {
-                    throw new Exception("No menu options specified");
-                }
-                m_worldModel.DisplayMenuAsync(m_caption.Execute(c), stringListOptions, m_allowCancel.Execute(c), m_callbackScript, c);
+                throw new Exception("No menu options specified");
             }
-            else if (stringDictionaryOptions != null)
-            {
-                if (stringDictionaryOptions.Count == 0)
-                {
-                    throw new Exception("No menu options specified");
-                }
-                m_worldModel.DisplayMenuAsync(m_caption.Execute(c), stringDictionaryOptions, m_allowCancel.Execute(c), m_callbackScript, c);
-            }
-            else
-            {
-                throw new Exception("Unknown menu options type");
-            }
-        }
 
-        public override string Save()
-        {
-            return SaveScript("show menu", m_callbackScript, m_caption.Save(), m_options.Save(), m_allowCancel.Save());
+            m_worldModel.DisplayMenuAsync(m_caption.Execute(c), stringListOptions, m_allowCancel.Execute(c),
+                m_callbackScript, c);
         }
-
-        public override object GetParameter(int index)
+        else if (stringDictionaryOptions != null)
         {
-            switch (index)
+            if (stringDictionaryOptions.Count == 0)
             {
-                case 0:
-                    return m_caption.Save();
-                case 1:
-                    return m_options.Save();
-                case 2:
-                    return m_allowCancel.Save();
-                case 3:
-                    return m_callbackScript;
-                default:
-                    throw new ArgumentOutOfRangeException();
+                throw new Exception("No menu options specified");
             }
+
+            m_worldModel.DisplayMenuAsync(m_caption.Execute(c), stringDictionaryOptions, m_allowCancel.Execute(c),
+                m_callbackScript, c);
         }
-
-        public override void SetParameterInternal(int index, object value)
+        else
         {
-            switch (index)
-            {
-                case 0:
-                    m_caption = new Expression<string>((string)value, m_scriptContext);
-                    break;
-                case 1:
-                    m_options = new ExpressionDynamic((string)value, m_scriptContext);
-                    break;
-                case 2:
-                    m_allowCancel = new Expression<bool>((string)value, m_scriptContext);
-                    break;
-                case 3:
-                    // any updates to the script should change the script itself - nothing should cause SetParameter to be triggered.
-                    throw new InvalidOperationException("Attempt to use SetParameter to change the script of a 'show menu' command");
-                default:
-                    throw new ArgumentOutOfRangeException();
-            }
+            throw new Exception("Unknown menu options type");
         }
+    }
 
-        public override string Keyword
+    public override string Save()
+    {
+        return SaveScript("show menu", m_callbackScript, m_caption.Save(), m_options.Save(), m_allowCancel.Save());
+    }
+
+    public override object GetParameter(int index)
+    {
+        switch (index)
         {
-            get
-            {
-                return "show menu";
-            }
+            case 0:
+                return m_caption.Save();
+            case 1:
+                return m_options.Save();
+            case 2:
+                return m_allowCancel.Save();
+            case 3:
+                return m_callbackScript;
+            default:
+                throw new ArgumentOutOfRangeException();
+        }
+    }
+
+    protected override void SetParameterInternal(int index, object value)
+    {
+        switch (index)
+        {
+            case 0:
+                m_caption = new Expression<string>((string) value, m_scriptContext);
+                break;
+            case 1:
+                m_options = new ExpressionDynamic((string) value, m_scriptContext);
+                break;
+            case 2:
+                m_allowCancel = new Expression<bool>((string) value, m_scriptContext);
+                break;
+            case 3:
+                // any updates to the script should change the script itself - nothing should cause SetParameter to be triggered.
+                throw new InvalidOperationException(
+                    "Attempt to use SetParameter to change the script of a 'show menu' command");
+            default:
+                throw new ArgumentOutOfRangeException();
         }
     }
 }

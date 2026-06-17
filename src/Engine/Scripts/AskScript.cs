@@ -1,104 +1,83 @@
-﻿#nullable disable
-using System;
-using System.Linq;
-using QuestViva.Engine.Functions;
+﻿using QuestViva.Engine.Functions;
 
-namespace QuestViva.Engine.Scripts
+namespace QuestViva.Engine.Scripts;
+
+public class AskScriptConstructor : IScriptConstructor
 {
-    public class AskScriptConstructor : IScriptConstructor
+    public string Keyword => "ask";
+
+    public IScript Create(string script, ScriptContext scriptContext)
     {
-        public string Keyword
+        var param = Utility.GetParameter(script, out var afterExpr);
+        var callback = Utility.GetScript(afterExpr);
+
+        var parameters = Utility.SplitParameter(param).ToArray();
+        if (parameters.Count() != 1)
         {
-            get { return "ask"; }
+            throw new Exception($"'ask' script should have 1 parameter: 'ask ({param})'");
         }
 
-        public IScript Create(string script, ScriptContext scriptContext)
-        {
-            string afterExpr;
-            string param = Utility.GetParameter(script, out afterExpr);
-            string callback = Utility.GetScript(afterExpr);
+        var callbackScript = ScriptFactory.CreateScript(callback);
 
-            string[] parameters = Utility.SplitParameter(param).ToArray();
-            if (parameters.Count() != 1)
-            {
-                throw new Exception(string.Format("'ask' script should have 1 parameter: 'ask ({0})'", param));
-            }
-            IScript callbackScript = ScriptFactory.CreateScript(callback);
-
-            return new AskScript(scriptContext, ScriptFactory, new Expression<string>(parameters[0], scriptContext), callbackScript);
-        }
-
-        public IScriptFactory ScriptFactory { get; set; }
-
-        public WorldModel WorldModel { get; set; }
+        return new AskScript(scriptContext, ScriptFactory, new Expression<string>(parameters[0], scriptContext),
+            callbackScript);
     }
 
-    public class AskScript : ScriptBase
+    public required IScriptFactory ScriptFactory { get; set; }
+
+    public required WorldModel WorldModel { get; set; }
+}
+
+public class AskScript(
+    ScriptContext scriptContext,
+    IScriptFactory scriptFactory,
+    IFunction<string> caption,
+    IScript callbackScript)
+    : ScriptBase
+{
+    private readonly WorldModel _worldModel = scriptContext.WorldModel;
+    private IFunction<string> _caption = caption;
+
+    public override string Keyword => "ask";
+
+    protected override ScriptBase CloneScript()
     {
-        private ScriptContext m_scriptContext;
-        private WorldModel m_worldModel;
-        private IFunction<string> m_caption;
-        private IScript m_callbackScript;
-        private IScriptFactory m_scriptFactory;
+        return new AskScript(scriptContext, scriptFactory, _caption.Clone(), (IScript) callbackScript.Clone());
+    }
 
-        public AskScript(ScriptContext scriptContext, IScriptFactory scriptFactory, IFunction<string> caption, IScript callbackScript)
-        {
-            m_scriptContext = scriptContext;
-            m_worldModel = scriptContext.WorldModel;
-            m_scriptFactory = scriptFactory;
-            m_caption = caption;
-            m_callbackScript = callbackScript;
-        }
+    public override void Execute(Context c)
+    {
+        _worldModel.ShowQuestionAsync(_caption.Execute(c), callbackScript, c);
+    }
 
-        protected override ScriptBase CloneScript()
-        {
-            return new AskScript(m_scriptContext, m_scriptFactory, m_caption.Clone(), (IScript)m_callbackScript.Clone());
-        }
+    public override string Save()
+    {
+        return SaveScript("ask", callbackScript, _caption.Save());
+    }
 
-        public override void Execute(Context c)
+    public override object GetParameter(int index)
+    {
+        switch (index)
         {
-            m_worldModel.ShowQuestionAsync(m_caption.Execute(c), m_callbackScript, c);
+            case 0:
+                return _caption.Save();
+            case 1:
+                return callbackScript;
+            default:
+                throw new ArgumentOutOfRangeException();
         }
+    }
 
-        public override string Save()
+    protected override void SetParameterInternal(int index, object value)
+    {
+        _caption = index switch
         {
-            return SaveScript("ask", m_callbackScript, m_caption.Save());
-        }
-
-        public override object GetParameter(int index)
-        {
-            switch (index)
-            {
-                case 0:
-                    return m_caption.Save();
-                case 1:
-                    return m_callbackScript;
-                default:
-                    throw new ArgumentOutOfRangeException();
-            }
-        }
-
-        public override void SetParameterInternal(int index, object value)
-        {
-            switch (index)
-            {
-                case 0:
-                    m_caption = new Expression<string>((string)value, m_scriptContext);
-                    break;
-                case 1:
-                    // any updates to the script should change the script itself - nothing should cause SetParameter to be triggered.
-                    throw new InvalidOperationException("Attempt to use SetParameter to change the script of an 'ask' command");
-                default:
-                    throw new ArgumentOutOfRangeException();
-            }
-        }
-
-        public override string Keyword
-        {
-            get
-            {
-                return "ask";
-            }
-        }
+            0 => new Expression<string>((string) value, scriptContext),
+            1 =>
+                // any updates to the script should change the script itself - nothing should cause SetParameter to be triggered.
+                throw new InvalidOperationException(
+                    "Attempt to use SetParameter to change the script of an 'ask' command"),
+            _ => throw new ArgumentOutOfRangeException()
+        };
     }
 }

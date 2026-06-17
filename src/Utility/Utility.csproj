@@ -1,12 +1,13 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-  <PropertyGroup>
-    <TargetFramework>net10.0</TargetFramework>
-    <OutputType>Library</OutputType>
-    <RootNamespace>QuestViva.Utility</RootNamespace>
-    <LangVersion>default</LangVersion>
-  </PropertyGroup>
-  <ItemGroup>
-    <PackageReference Include="System.Data.DataSetExtensions" Version="4.5.0" />
-    <PackageReference Include="Newtonsoft.Json" Version="13.0.4" />
-  </ItemGroup>
+    <PropertyGroup>
+        <TargetFramework>net10.0</TargetFramework>
+        <OutputType>Library</OutputType>
+        <RootNamespace>QuestViva.Utility</RootNamespace>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <LangVersion>default</LangVersion>
+    </PropertyGroup>
+    <ItemGroup>
+        <PackageReference Include="System.Data.DataSetExtensions" Version="4.5.0"/>
+        <PackageReference Include="Newtonsoft.Json" Version="13.0.4"/>
+    </ItemGroup>
 </Project>

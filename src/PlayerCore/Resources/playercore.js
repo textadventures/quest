@@ -12,7 +12,7 @@ var beginningOfCurrentTurnScrollPosition = 0;
 function initPlayerUI() {
     const gameBorder = document.getElementById("gameBorder");
     gameBorder.style.display = "block";
-    
+
     addPaperScript();
 
     $("#txtCommand").bind("inview", function (event, visible) {
@@ -31,20 +31,20 @@ function initPlayerUI() {
     });
 
     $("button").button();
-    $("#gamePanesRunning").multiOpenAccordion({ active: [0, 1, 2, 3] });
+    $("#gamePanesRunning").multiOpenAccordion({active: [0, 1, 2, 3]});
     showStatusVisible(false);
 
     const cmdSave = document.getElementById("cmdSave");
     cmdSave.addEventListener("click", async () => {
         await GameSaver.save();
     });
-    
+
     const cmdDebug = document.getElementById("cmdDebug");
     cmdDebug.addEventListener("click", () => {
         const dialog = document.getElementById("questVivaDebugger");
         dialog.showModal();
     });
-    
+
     $("#lstInventory").selectable({
         selected: function (event, ui) {
             $(ui.selected).siblings().removeClass("ui-selected");
@@ -60,34 +60,34 @@ function initPlayerUI() {
     });
 
     $("#cmdCompassNW").button({
-        icons: { primary: "ui-icon-arrowthick-1-nw" }
+        icons: {primary: "ui-icon-arrowthick-1-nw"}
     });
     $("#cmdCompassN").button({
-        icons: { primary: "ui-icon-arrowthick-1-n" }
+        icons: {primary: "ui-icon-arrowthick-1-n"}
     });
     $("#cmdCompassNE").button({
-        icons: { primary: "ui-icon-arrowthick-1-ne" }
+        icons: {primary: "ui-icon-arrowthick-1-ne"}
     });
     $("#cmdCompassW").button({
-        icons: { primary: "ui-icon-arrowthick-1-w" }
+        icons: {primary: "ui-icon-arrowthick-1-w"}
     });
     $("#cmdCompassE").button({
-        icons: { primary: "ui-icon-arrowthick-1-e" }
+        icons: {primary: "ui-icon-arrowthick-1-e"}
     });
     $("#cmdCompassSW").button({
-        icons: { primary: "ui-icon-arrowthick-1-sw" }
+        icons: {primary: "ui-icon-arrowthick-1-sw"}
     });
     $("#cmdCompassS").button({
-        icons: { primary: "ui-icon-arrowthick-1-s" }
+        icons: {primary: "ui-icon-arrowthick-1-s"}
     });
     $("#cmdCompassSE").button({
-        icons: { primary: "ui-icon-arrowthick-1-se" }
+        icons: {primary: "ui-icon-arrowthick-1-se"}
     });
     $("#cmdCompassU").button({
-        icons: { primary: "ui-icon-triangle-1-n" }
+        icons: {primary: "ui-icon-triangle-1-n"}
     });
     $("#cmdCompassD").button({
-        icons: { primary: "ui-icon-triangle-1-s" }
+        icons: {primary: "ui-icon-triangle-1-s"}
     });
     // fix to make compass button icons centred
     $(".compassbutton span").css("left", "0.8em");
@@ -96,7 +96,7 @@ function initPlayerUI() {
         sendCommand($("#txtCommand").val());
         $("#txtCommand").val("");
     });
-    
+
     $(document).on("click", "a", function (e) {
         var href = $(this).attr("href");
         if (href) {
@@ -114,13 +114,13 @@ function initPlayerUI() {
             return false;
         }
     });
-    
+
     $(document).on("click", ".exitlink", function () {
         if (!$(this).hasClass("disabled")) {
             sendCommand($(this).attr("data-command"));
         }
     });
-    
+
     $(document).on("click", ".commandlink", function () {
         var $this = $(this);
         if (!$this.hasClass("disabled") && canSendCommand) {
@@ -138,17 +138,17 @@ function initPlayerUI() {
     const gameContent = document.getElementById("gameContent");
     const gamePanel = document.getElementById("gamePanel");
     const gridPanel = document.getElementById("gridPanel");
-    
+
     cmdShowPanes.addEventListener("click", function () {
         sidebar.style.display = (sidebar.style.display === "block") ? "none" : "block";
     });
-    
+
     let gameWidth = 950;
     let arePanesVisible = true;
-    
+
     const isWindowWide = () => window.innerWidth > gameWidth;
     let wasWide = isWindowWide();
-    
+
     const doLayout = () => {
         let isWide = isWindowWide();
 
@@ -183,13 +183,13 @@ function initPlayerUI() {
 
         wasWide = isWide;
     }
-    
+
     window.addEventListener("resize", doLayout);
-    
+
     window.setGameWidth = function (width) {
         const gameBorder = document.getElementById("gameBorder");
         gameBorder.style.maxWidth = width + "px";
-        
+
         const status = document.getElementById("qv-status");
         status.style.maxWidth = (width - 2) + "px";
 
@@ -203,8 +203,7 @@ function initPlayerUI() {
 
         if (visible) {
             $("#gamePanes").show();
-        }
-        else {
+        } else {
             $("#gamePanes").hide();
         }
         doLayout();
@@ -220,7 +219,7 @@ function initPlayerUI() {
                     }
                 }
             } catch (e) {
-                continue;
+
             }
         }
     };
@@ -231,11 +230,11 @@ function initPlayerUI() {
             scrollToEnd();
         }, 100);
     };
-    
+
     doLayout();
     ui_init();
     updateStatusVisibility();
-    
+
     if (document.layers) document.captureEvents(Event.MOUSEDOWN);
 
     $("#txtCommand").focus();
@@ -250,8 +249,7 @@ function showStatusVisible(visible) {
         $("#statusVars").show();
         $("#statusVarsAccordion").show();
         $("#statusVarsLabel").show();
-    }
-    else {
+    } else {
         $("#statusVars").hide();
         $("#statusVarsAccordion").hide();
         $("#statusVarsLabel").hide();
@@ -286,7 +284,7 @@ function beginPause(ms) {
 function endPause() {
     _pauseMode = false;
     $("#txtCommandDiv").show();
-    
+
     // TODO: This is WebPlayer-specific, so shouldn't be in this shared file
     window.setTimeout(async function () {
         await WebPlayer.uiEndPause();
@@ -339,15 +337,21 @@ function showQuestion(title) {
         buttons: [
             {
                 text: "Yes",
-                click: function () { msgboxSubmit(true); }
+                click: function () {
+                    msgboxSubmit(true);
+                }
             },
             {
                 text: "No",
-                click: function () { msgboxSubmit(false); }
+                click: function () {
+                    msgboxSubmit(false);
+                }
             }
         ],
         closeOnEscape: false,
-        open: function (event, ui) { $(".ui-dialog-titlebar-close").hide(); }    // suppresses "close" button
+        open: function (event, ui) {
+            $(".ui-dialog-titlebar-close").hide();
+        }    // suppresses "close" button
     };
 
     $("#msgbox").dialog(msgboxOptions);
@@ -357,8 +361,7 @@ function showQuestion(title) {
 function uiShow(element) {
     if (element == "#gamePanes") {
         panesVisible(true);
-    }
-    else {
+    } else {
         $(element).show();
         updateStatusVisibility();
     }
@@ -367,8 +370,7 @@ function uiShow(element) {
 function uiHide(element) {
     if (element == "#gamePanes") {
         panesVisible(false);
-    }
-    else {
+    } else {
         $(element).hide();
         updateStatusVisibility();
     }
@@ -398,12 +400,10 @@ function isElementVisible(element) {
 var _animateScroll = true;
 
 function scrollToEnd() {
-    if (!_animateScroll)
-    {
+    if (!_animateScroll) {
         $('html,body').scrollTop(document.body.scrollHeight);
-    }
-    else {
-        $('html,body').animate({ scrollTop: document.body.scrollHeight }, 'fast');
+    } else {
+        $('html,body').animate({scrollTop: document.body.scrollHeight}, 'fast');
     }
     $("#txtCommand").focus();
 }
@@ -438,8 +438,7 @@ function setBackground(col) {
 function setPanelContents(html) {
     if (html.length > 0) {
         $("#gamePanel").show()
-    }
-    else {
+    } else {
         $("#gamePanel").hide()
     }
     $("#gamePanel").html(html);
@@ -478,8 +477,7 @@ function updateCompass(listData) {
 function updateDir(directions, label, dir) {
     if ($.inArray(dir, directions) == -1) {
         $("#cmdCompass" + label).button("disable");
-    }
-    else {
+    } else {
         $("#cmdCompass" + label).button("enable");
     }
 }
@@ -507,8 +505,7 @@ function updateStatus(text) {
     if (text.length > 0) {
         showStatusVisible(true);
         $("#statusVars").html(text.replace(/\n/g, "<br/>"));
-    }
-    else {
+    } else {
         showStatusVisible(false);
     }
 }
@@ -518,9 +515,9 @@ function setForeground(col) {
 
 function setCompassDirections(directions) {
     if (typeof directions === "string") {
-      _compassDirs = directions.split(";")
+        _compassDirs = directions.split(";")
     } else {
-      _compassDirs = directions;
+        _compassDirs = directions;
     }
     $("#cmdCompassNW").attr("title", _compassDirs[0]);
     $("#cmdCompassN").attr("title", _compassDirs[1]);
@@ -607,7 +604,7 @@ function updateList(listName, listData) {
     if (selectSize < 3) selectSize = 3;
     if (selectSize > 12) selectSize = 12;
     $(listElement).attr("size", selectSize);
-    
+
     if (!foundPreviousSelection) {
         for (var i = 1; i <= verbButtonCount; i++) {
             var target = $("#" + buttonPrefix + i);
@@ -726,7 +723,7 @@ function setCurrentDiv(div) {
     $("#outputData").attr("data-currentdiv", div);
 }
 
-var _divCount = -1; 
+var _divCount = -1;
 
 function getDivCount() {
     if (_divCount < 1) {
@@ -817,6 +814,7 @@ function disableAllCommandLinks() {
 
 var saveClearedText = false;
 var clearedOnce = false;
+
 function clearScreen() {
     $("#outputData").appendTo($("body"));
     if (!saveClearedText) {
@@ -834,7 +832,7 @@ function clearScreen() {
         }
         clearedOnce = true;
         $('#divOutput').children().addClass('clearedScreen');
-        $('.clearedScreen').attr('id',null);
+        $('.clearedScreen').attr('id', null);
         $('#divOutput').css('min-height', 0);
         createNewDiv('left');
         beginningOfCurrentTurnScrollPosition = 0;
@@ -852,10 +850,10 @@ function showScrollback() {
     addText(scrollbackDivString);
     var scrollbackDialog = $("#scrollback-dialog").dialog({
         autoOpen: false,
-        width: (window.innerWidth || document.documentElement.clientWidth || 
-document.body.clientWidth) - 100,
-        height: (window.innerHeight|| document.documentElement.clientHeight|| 
-document.body.clientHeight) - 100,
+        width: (window.innerWidth || document.documentElement.clientWidth ||
+            document.body.clientWidth) - 100,
+        height: (window.innerHeight || document.documentElement.clientHeight ||
+            document.body.clientHeight) - 100,
         title: "Scrollback",
         buttons: {
             Ok: function () {
@@ -867,7 +865,7 @@ document.body.clientHeight) - 100,
                 printScrollbackDiv();
             },
         },
-        show: { effect: "fadeIn", duration: 500 },
+        show: {effect: "fadeIn", duration: 500},
         modal: true,
     });
     $('#scrollbackdata').html($('#divOutput').html());
@@ -1012,15 +1010,17 @@ function EndOutputSection(name) {
 function HideOutputSection(name) {
     EndOutputSection(name);
     $("." + name + " a").attr("onclick", "");
-    setTimeout(function() {
-        $("." + name).hide(250, function () { $(this).remove(); });
+    setTimeout(function () {
+        $("." + name).hide(250, function () {
+            $(this).remove();
+        });
         // Added by The Pixie, 04/Oct/17
         // This should close the gap when the menu is hidden
-        $("#divOutput").animate({'min-height':0}, 250);
+        $("#divOutput").animate({'min-height': 0}, 250);
     }, 250);
 }
 
-var TextFX = new function() {
+var TextFX = new function () {
     var fxCount = 0;
 
     function addFx(text, font, color, size) {
@@ -1031,42 +1031,159 @@ var TextFX = new function() {
         return $("#fx" + fxCount);
     }
 
-    this.Typewriter = function(text, speed, font, color, size) {
+    this.Typewriter = function (text, speed, font, color, size) {
         var el = addFx(text, font, color, size);
         el.typewriter(speed);
     }
 
-    this.Unscramble = function(text, speed, reveal, font, color, size) {
+    this.Unscramble = function (text, speed, reveal, font, color, size) {
         var el = addFx(text, font, color, size);
         el.unscramble(speed, reveal);
     }
 }
 
 function colourNameToHex(colour) {
-    var colours = { "aliceblue": "#f0f8ff", "antiquewhite": "#faebd7", "aqua": "#00ffff", "aquamarine": "#7fffd4", "azure": "#f0ffff",
-        "beige": "#f5f5dc", "bisque": "#ffe4c4", "black": "#000000", "blanchedalmond": "#ffebcd", "blue": "#0000ff", "blueviolet": "#8a2be2", "brown": "#a52a2a", "burlywood": "#deb887",
-        "cadetblue": "#5f9ea0", "chartreuse": "#7fff00", "chocolate": "#d2691e", "coral": "#ff7f50", "cornflowerblue": "#6495ed", "cornsilk": "#fff8dc", "crimson": "#dc143c", "cyan": "#00ffff",
-        "darkblue": "#00008b", "darkcyan": "#008b8b", "darkgoldenrod": "#b8860b", "darkgray": "#a9a9a9", "darkgreen": "#006400", "darkkhaki": "#bdb76b", "darkmagenta": "#8b008b", "darkolivegreen": "#556b2f",
-        "darkorange": "#ff8c00", "darkorchid": "#9932cc", "darkred": "#8b0000", "darksalmon": "#e9967a", "darkseagreen": "#8fbc8f", "darkslateblue": "#483d8b", "darkslategray": "#2f4f4f", "darkturquoise": "#00ced1",
-        "darkviolet": "#9400d3", "deeppink": "#ff1493", "deepskyblue": "#00bfff", "dimgray": "#696969", "dodgerblue": "#1e90ff",
-        "firebrick": "#b22222", "floralwhite": "#fffaf0", "forestgreen": "#228b22", "fuchsia": "#ff00ff",
-        "gainsboro": "#dcdcdc", "ghostwhite": "#f8f8ff", "gold": "#ffd700", "goldenrod": "#daa520", "gray": "#808080", "green": "#008000", "greenyellow": "#adff2f",
-        "honeydew": "#f0fff0", "hotpink": "#ff69b4",
-        "indianred ": "#cd5c5c", "indigo ": "#4b0082", "ivory": "#fffff0", "khaki": "#f0e68c",
-        "lavender": "#e6e6fa", "lavenderblush": "#fff0f5", "lawngreen": "#7cfc00", "lemonchiffon": "#fffacd", "lightblue": "#add8e6", "lightcoral": "#f08080", "lightcyan": "#e0ffff", "lightgoldenrodyellow": "#fafad2",
-        "lightgrey": "#d3d3d3", "lightgreen": "#90ee90", "lightpink": "#ffb6c1", "lightsalmon": "#ffa07a", "lightseagreen": "#20b2aa", "lightskyblue": "#87cefa", "lightslategray": "#778899", "lightsteelblue": "#b0c4de",
-        "lightyellow": "#ffffe0", "lime": "#00ff00", "limegreen": "#32cd32", "linen": "#faf0e6",
-        "magenta": "#ff00ff", "maroon": "#800000", "mediumaquamarine": "#66cdaa", "mediumblue": "#0000cd", "mediumorchid": "#ba55d3", "mediumpurple": "#9370d8", "mediumseagreen": "#3cb371", "mediumslateblue": "#7b68ee",
-        "mediumspringgreen": "#00fa9a", "mediumturquoise": "#48d1cc", "mediumvioletred": "#c71585", "midnightblue": "#191970", "mintcream": "#f5fffa", "mistyrose": "#ffe4e1", "moccasin": "#ffe4b5",
-        "navajowhite": "#ffdead", "navy": "#000080",
-        "oldlace": "#fdf5e6", "olive": "#808000", "olivedrab": "#6b8e23", "orange": "#ffa500", "orangered": "#ff4500", "orchid": "#da70d6",
-        "palegoldenrod": "#eee8aa", "palegreen": "#98fb98", "paleturquoise": "#afeeee", "palevioletred": "#d87093", "papayawhip": "#ffefd5", "peachpuff": "#ffdab9", "peru": "#cd853f", "pink": "#ffc0cb", "plum": "#dda0dd", "powderblue": "#b0e0e6", "purple": "#800080",
-        "red": "#ff0000", "rosybrown": "#bc8f8f", "royalblue": "#4169e1",
-        "saddlebrown": "#8b4513", "salmon": "#fa8072", "sandybrown": "#f4a460", "seagreen": "#2e8b57", "seashell": "#fff5ee", "sienna": "#a0522d", "silver": "#c0c0c0", "skyblue": "#87ceeb", "slateblue": "#6a5acd", "slategray": "#708090", "snow": "#fffafa", "springgreen": "#00ff7f", "steelblue": "#4682b4",
-        "tan": "#d2b48c", "teal": "#008080", "thistle": "#d8bfd8", "tomato": "#ff6347", "turquoise": "#40e0d0",
+    var colours = {
+        "aliceblue": "#f0f8ff",
+        "antiquewhite": "#faebd7",
+        "aqua": "#00ffff",
+        "aquamarine": "#7fffd4",
+        "azure": "#f0ffff",
+        "beige": "#f5f5dc",
+        "bisque": "#ffe4c4",
+        "black": "#000000",
+        "blanchedalmond": "#ffebcd",
+        "blue": "#0000ff",
+        "blueviolet": "#8a2be2",
+        "brown": "#a52a2a",
+        "burlywood": "#deb887",
+        "cadetblue": "#5f9ea0",
+        "chartreuse": "#7fff00",
+        "chocolate": "#d2691e",
+        "coral": "#ff7f50",
+        "cornflowerblue": "#6495ed",
+        "cornsilk": "#fff8dc",
+        "crimson": "#dc143c",
+        "cyan": "#00ffff",
+        "darkblue": "#00008b",
+        "darkcyan": "#008b8b",
+        "darkgoldenrod": "#b8860b",
+        "darkgray": "#a9a9a9",
+        "darkgreen": "#006400",
+        "darkkhaki": "#bdb76b",
+        "darkmagenta": "#8b008b",
+        "darkolivegreen": "#556b2f",
+        "darkorange": "#ff8c00",
+        "darkorchid": "#9932cc",
+        "darkred": "#8b0000",
+        "darksalmon": "#e9967a",
+        "darkseagreen": "#8fbc8f",
+        "darkslateblue": "#483d8b",
+        "darkslategray": "#2f4f4f",
+        "darkturquoise": "#00ced1",
+        "darkviolet": "#9400d3",
+        "deeppink": "#ff1493",
+        "deepskyblue": "#00bfff",
+        "dimgray": "#696969",
+        "dodgerblue": "#1e90ff",
+        "firebrick": "#b22222",
+        "floralwhite": "#fffaf0",
+        "forestgreen": "#228b22",
+        "fuchsia": "#ff00ff",
+        "gainsboro": "#dcdcdc",
+        "ghostwhite": "#f8f8ff",
+        "gold": "#ffd700",
+        "goldenrod": "#daa520",
+        "gray": "#808080",
+        "green": "#008000",
+        "greenyellow": "#adff2f",
+        "honeydew": "#f0fff0",
+        "hotpink": "#ff69b4",
+        "indianred ": "#cd5c5c",
+        "indigo ": "#4b0082",
+        "ivory": "#fffff0",
+        "khaki": "#f0e68c",
+        "lavender": "#e6e6fa",
+        "lavenderblush": "#fff0f5",
+        "lawngreen": "#7cfc00",
+        "lemonchiffon": "#fffacd",
+        "lightblue": "#add8e6",
+        "lightcoral": "#f08080",
+        "lightcyan": "#e0ffff",
+        "lightgoldenrodyellow": "#fafad2",
+        "lightgrey": "#d3d3d3",
+        "lightgreen": "#90ee90",
+        "lightpink": "#ffb6c1",
+        "lightsalmon": "#ffa07a",
+        "lightseagreen": "#20b2aa",
+        "lightskyblue": "#87cefa",
+        "lightslategray": "#778899",
+        "lightsteelblue": "#b0c4de",
+        "lightyellow": "#ffffe0",
+        "lime": "#00ff00",
+        "limegreen": "#32cd32",
+        "linen": "#faf0e6",
+        "magenta": "#ff00ff",
+        "maroon": "#800000",
+        "mediumaquamarine": "#66cdaa",
+        "mediumblue": "#0000cd",
+        "mediumorchid": "#ba55d3",
+        "mediumpurple": "#9370d8",
+        "mediumseagreen": "#3cb371",
+        "mediumslateblue": "#7b68ee",
+        "mediumspringgreen": "#00fa9a",
+        "mediumturquoise": "#48d1cc",
+        "mediumvioletred": "#c71585",
+        "midnightblue": "#191970",
+        "mintcream": "#f5fffa",
+        "mistyrose": "#ffe4e1",
+        "moccasin": "#ffe4b5",
+        "navajowhite": "#ffdead",
+        "navy": "#000080",
+        "oldlace": "#fdf5e6",
+        "olive": "#808000",
+        "olivedrab": "#6b8e23",
+        "orange": "#ffa500",
+        "orangered": "#ff4500",
+        "orchid": "#da70d6",
+        "palegoldenrod": "#eee8aa",
+        "palegreen": "#98fb98",
+        "paleturquoise": "#afeeee",
+        "palevioletred": "#d87093",
+        "papayawhip": "#ffefd5",
+        "peachpuff": "#ffdab9",
+        "peru": "#cd853f",
+        "pink": "#ffc0cb",
+        "plum": "#dda0dd",
+        "powderblue": "#b0e0e6",
+        "purple": "#800080",
+        "red": "#ff0000",
+        "rosybrown": "#bc8f8f",
+        "royalblue": "#4169e1",
+        "saddlebrown": "#8b4513",
+        "salmon": "#fa8072",
+        "sandybrown": "#f4a460",
+        "seagreen": "#2e8b57",
+        "seashell": "#fff5ee",
+        "sienna": "#a0522d",
+        "silver": "#c0c0c0",
+        "skyblue": "#87ceeb",
+        "slateblue": "#6a5acd",
+        "slategray": "#708090",
+        "snow": "#fffafa",
+        "springgreen": "#00ff7f",
+        "steelblue": "#4682b4",
+        "tan": "#d2b48c",
+        "teal": "#008080",
+        "thistle": "#d8bfd8",
+        "tomato": "#ff6347",
+        "turquoise": "#40e0d0",
         "violet": "#ee82ee",
-        "wheat": "#f5deb3", "white": "#ffffff", "whitesmoke": "#f5f5f5",
-        "yellow": "#ffff00", "yellowgreen": "#9acd32"
+        "wheat": "#f5deb3",
+        "white": "#ffffff",
+        "whitesmoke": "#f5f5f5",
+        "yellow": "#ffff00",
+        "yellowgreen": "#9acd32"
     };
 
     if (typeof colours[colour.toLowerCase()] != 'undefined')
@@ -1165,12 +1282,12 @@ function endsWith(str, suffix) {
 // interface details like this - at least not while playercore.htm is part of the runtime instead of being supplied
 // by the library.
 function setCss(element, cssString) {
-  el = $(element);
-  ary = cssString.split(";");
-  for (i = 0; i < ary.length; i++) {
-    ary2 = ary[i].split(':');
-    el.css(ary2[0], ary2[1]);
-  }
+    el = $(element);
+    ary = cssString.split(";");
+    for (i = 0; i < ary.length; i++) {
+        ary2 = ary[i].split(':');
+        el.css(ary2[0], ary2[1]);
+    }
 }
 
 function addScript(text) {
@@ -1178,24 +1295,23 @@ function addScript(text) {
 }
 
 function colourBlend(colour1, colour2) {
-  $('#gamePanes').css('background-color', 'transparent');
-  $('#gameBorder').css('background-color', 'transparent');
-  body = $('body');
-  body.css('background-color', colour1);
-  body.css('background-image', 'linear-gradient(to bottom,  ' + colour1 + ', ' + colour2 + ')');
-  body.css('background-image', '-webkit-linear-gradient(top,  ' + colour1 + ', ' + colour2 + ')');
-  body.css('background-attachment', 'fixed');
-  body.css('background-position', 'left bottom');
+    $('#gamePanes').css('background-color', 'transparent');
+    $('#gameBorder').css('background-color', 'transparent');
+    body = $('body');
+    body.css('background-color', colour1);
+    body.css('background-image', 'linear-gradient(to bottom,  ' + colour1 + ', ' + colour2 + ')');
+    body.css('background-image', '-webkit-linear-gradient(top,  ' + colour1 + ', ' + colour2 + ')');
+    body.css('background-attachment', 'fixed');
+    body.css('background-position', 'left bottom');
 }
 
 
-
 elements = [
-  '#statusVarsLabel', '#statusVarsAccordion',// '#statusVars',
-  '#inventoryLabel', '#inventoryAccordion', '#inventoryAccordion.ui-widget-content',
-  '#placesObjectsLabel', '#placesObjectsAccordion', '#placesObjectsAccordion.ui-widget-content',
-  '#compassLabel', '#compassAccordion', '.ui-button', //'.ui-button-text',
-  '#commandPane', '#customStatusPane'
+    '#statusVarsLabel', '#statusVarsAccordion',// '#statusVars',
+    '#inventoryLabel', '#inventoryAccordion', '#inventoryAccordion.ui-widget-content',
+    '#placesObjectsLabel', '#placesObjectsAccordion', '#placesObjectsAccordion.ui-widget-content',
+    '#compassLabel', '#compassAccordion', '.ui-button', //'.ui-button-text',
+    '#commandPane', '#customStatusPane'
 ];
 
 dirs = ['N', 'E', 'S', 'W', 'NW', 'NE', 'SW', 'SE', 'U', 'In', 'D', 'Out'];
@@ -1203,64 +1319,64 @@ dirs = ['N', 'E', 'S', 'W', 'NW', 'NE', 'SW', 'SE', 'U', 'In', 'D', 'Out'];
 commandColour = 'orange'
 
 function setElement(name, fore, back) {
-  el = $(name);
-  el.css('background', back);
-  el.css('color', fore);
-  el.css('border', 'solid 1px ' + fore);
-  if (endsWith(name, "Accordion")) {
-    el.css('border-top', 'none');
-  }
+    el = $(name);
+    el.css('background', back);
+    el.css('color', fore);
+    el.css('border', 'solid 1px ' + fore);
+    if (endsWith(name, "Accordion")) {
+        el.css('border-top', 'none');
+    }
 }
 
 function setCompass(name, fore, back) {
-  el = $('#cmdCompass' + name);
-  el.css('background', back);
-  el.css('border', '2px solid ' + fore);
+    el = $('#cmdCompass' + name);
+    el.css('background', back);
+    el.css('border', '2px solid ' + fore);
 }
 
 function setPanes(fore, back, secFore, secBack, highlight) {
-  if (arguments.length == 2) {
-    secFore = back;
-    secBack = fore;
-  }
-  if (arguments.length < 5) {
-    highlight = 'orange'
-  }
-  commandColour = fore;
-  for (i = 0; i < elements.length; i++) {
-    setElement(elements[i], fore, back);
-  }
-  for (i = 0; i < dirs.length; i++) {
-    setElement(dirs[i], fore, back);
-  }
+    if (arguments.length == 2) {
+        secFore = back;
+        secBack = fore;
+    }
+    if (arguments.length < 5) {
+        highlight = 'orange'
+    }
+    commandColour = fore;
+    for (i = 0; i < elements.length; i++) {
+        setElement(elements[i], fore, back);
+    }
+    for (i = 0; i < dirs.length; i++) {
+        setElement(dirs[i], fore, back);
+    }
 
-  var head = $('head');
-  head.append('<style>.ui-button-text { color: ' + fore + ';}</style>');
-  head.append('<style>.ui-state-active { color: ' + fore + ';}</style>');
-  head.append('<style>.ui-widget-content { color: ' + fore + ';}</style>');
-  head.append('<style>.ui-widget-header .ui-state-default { background-color: ' + secBack + ';}</style>');
-  head.append('<style>.ui-selecting { color: ' + secFore + '; background-color: ' + highlight + ';}</style>');
-  head.append('<style>.ui-selected { color: ' + secFore + '; background-color: ' + secBack + ';}</style>');
+    var head = $('head');
+    head.append('<style>.ui-button-text { color: ' + fore + ';}</style>');
+    head.append('<style>.ui-state-active { color: ' + fore + ';}</style>');
+    head.append('<style>.ui-widget-content { color: ' + fore + ';}</style>');
+    head.append('<style>.ui-widget-header .ui-state-default { background-color: ' + secBack + ';}</style>');
+    head.append('<style>.ui-selecting { color: ' + secFore + '; background-color: ' + highlight + ';}</style>');
+    head.append('<style>.ui-selected { color: ' + secFore + '; background-color: ' + secBack + ';}</style>');
 
-  //$('.ui-button-text').css('color', fore);
-  //$('.ui-state-active').css('color', fore);
-  //$('.ui-widget-content').css('color', fore);
-  
+    //$('.ui-button-text').css('color', fore);
+    //$('.ui-state-active').css('color', fore);
+    //$('.ui-widget-content').css('color', fore);
+
 }
 
 function setCommands(s, colour) {
-  if (arguments.length == 2) commandColour = colour;
-  ary = s.split(";");
-  el = $('#commandPaneHeading');
-  el.empty();
-  for (i = 0; i < ary.length; i++) {
-      ary2 = ary[i].split(":");
-      comm = ary2[0];
-      commLower = ary2[0].toLowerCase().replace(/ /g, "_");
-      commComm = (ary2.length == 2 ? ary2[1] : ary2[0]).toLowerCase();
-      //alert("ary[i]=" + ary[i] + ", Comm=" + comm + ", commComm=" + commComm + ", ary2[0].length=" + ary2.length);
-      el.append(' <span id="' + commLower + '_command_button"  class="accordion-header-text" style="padding:5px;"><a id="verblink' + commLower + '" class="cmdlink commandlink" style="text-decoration:none;color:' + commandColour + ';font-size:12pt;" data-elementid="" data-command="' + commComm + '">' + comm + '</a></span> ');
-  }
+    if (arguments.length == 2) commandColour = colour;
+    ary = s.split(";");
+    el = $('#commandPaneHeading');
+    el.empty();
+    for (i = 0; i < ary.length; i++) {
+        ary2 = ary[i].split(":");
+        comm = ary2[0];
+        commLower = ary2[0].toLowerCase().replace(/ /g, "_");
+        commComm = (ary2.length == 2 ? ary2[1] : ary2[0]).toLowerCase();
+        //alert("ary[i]=" + ary[i] + ", Comm=" + comm + ", commComm=" + commComm + ", ary2[0].length=" + ary2.length);
+        el.append(' <span id="' + commLower + '_command_button"  class="accordion-header-text" style="padding:5px;"><a id="verblink' + commLower + '" class="cmdlink commandlink" style="text-decoration:none;color:' + commandColour + ';font-size:12pt;" data-elementid="" data-command="' + commComm + '">' + comm + '</a></span> ');
+    }
 }
 
 function setCustomStatus(s) {
@@ -1268,17 +1384,17 @@ function setCustomStatus(s) {
     el.html(s);
 }
 
-        
+
 // ----------------------------------        
-        
-        
+
+
 $(function () {
     $("#gridPanel").mousewheel(function (e, delta) {
         gridApi.zoomIn(delta);
         return false;
     });
 });
-    
+
 // ***********
 // Section added by KV
 
@@ -1288,7 +1404,7 @@ function isMobilePlayer() {
         return true;
     }
     return false;
-};
+}
 
 function showPopup(title, text) {
     $('#msgboxCaption').html(text);
@@ -1298,17 +1414,19 @@ function showPopup(title, text) {
         autoOpen: false,
         title: title,
         buttons: [
-			{
-			    text: 'OK',
-			    click: function () { $(this).dialog('close'); }
-			},
+            {
+                text: 'OK',
+                click: function () {
+                    $(this).dialog('close');
+                }
+            },
         ],
         closeOnEscape: false,
     };
 
     $('#msgbox').dialog(msgboxOptions);
     $('#msgbox').dialog('open');
-};
+}
 
 function showPopupCustomSize(title, text, width, height) {
     $('#msgboxCaption').html(text);
@@ -1320,17 +1438,19 @@ function showPopupCustomSize(title, text, width, height) {
         width: width,
         height: height,
         buttons: [
-			{
-			    text: 'OK',
-			    click: function () { $(this).dialog('close'); }
-			},
+            {
+                text: 'OK',
+                click: function () {
+                    $(this).dialog('close');
+                }
+            },
         ],
         closeOnEscape: false,
     };
 
     $('#msgbox').dialog(msgboxOptions);
     $('#msgbox').dialog('open');
-};
+}
 
 function showPopupFullscreen(title, text) {
     $('#msgboxCaption').html(text);
@@ -1342,17 +1462,19 @@ function showPopupFullscreen(title, text) {
         width: $(window).width(),
         height: $(window).height(),
         buttons: [
-			{
-			    text: 'OK',
-			    click: function () { $(this).dialog('close'); }
-			},
+            {
+                text: 'OK',
+                click: function () {
+                    $(this).dialog('close');
+                }
+            },
         ],
         closeOnEscape: false,
     };
 
     $('#msgbox').dialog(msgboxOptions);
     $('#msgbox').dialog('open');
-};
+}
 
 // Log functions
 // In-game HTML log introduced in 5.8. Deprecated in 5.9
@@ -1360,112 +1482,113 @@ function showPopupFullscreen(title, text) {
 
 var logVar = "";
 
-function addLogEntry(data){
-  // Do nothing.
+function addLogEntry(data) {
+    // Do nothing.
 }
 
 var displayedInGameLogWarning = false;
-function showLog(){
-  // In-game HTML log introduced in 5.8. Removed in 5.9
-  if (!displayedInGameLogWarning) {
-    console.warning("The in-game HTML log feature has been removed.")
-    displayedInGameLogWarning = true;
-  }
-  // Do nothing.
+
+function showLog() {
+    // In-game HTML log introduced in 5.8. Removed in 5.9
+    if (!displayedInGameLogWarning) {
+        console.warning("The in-game HTML log feature has been removed.")
+        displayedInGameLogWarning = true;
+    }
+    // Do nothing.
 }
 
-function setupLogDiv(){
-  // Do nothing.
+function setupLogDiv() {
+    // Do nothing.
 }
 
-function showLogDiv(){
-  // Do nothing.
+function showLogDiv() {
+    // Do nothing.
 }
 
-function hideLogDiv(){
-  // Do nothing.
+function hideLogDiv() {
+    // Do nothing.
 }
 
-function printLogDiv(){
-  // Do nothing.
+function printLogDiv() {
+    // Do nothing.
 }
 
-function saveLog(){
-  // Do nothing.
+function saveLog() {
+    // Do nothing.
 }
 
 // The transcript uses this function.
-function getTimeAndDateForLog(){
+function getTimeAndDateForLog() {
     var date = new Date();
-    var currentDateTime = date.toLocaleString('en-US', { timeZoneName: 'short' }).replace(/,/g, "").replace(/[A-Z][A-Z][A-Z].*/g, "");
+    var currentDateTime = date.toLocaleString('en-US', {timeZoneName: 'short'}).replace(/,/g, "").replace(/[A-Z][A-Z][A-Z].*/g, "");
     return currentDateTime;
 }
 
 // **********************************
 // TRANSCRIPT FUNCTIONS
 
-function writeToTranscript(text){
-  if (!noTranscript && savingTranscript) {
-    var faker = document.createElement('div');
-    faker.innerHTML = text;
-    text = faker.innerHTML;
-    for (var key in Object.keys(faker.getElementsByTagName('img'))){
-      var elem = faker.getElementsByTagName('img')[key];
-      if (elem != null) {
-        var altProp = $(faker.getElementsByTagName('img')[key]).attr('alt') || "";
-        text = text.replace(elem.outerHTML, altProp) || text;
-      }
+function writeToTranscript(text) {
+    if (!noTranscript && savingTranscript) {
+        var faker = document.createElement('div');
+        faker.innerHTML = text;
+        text = faker.innerHTML;
+        for (var key in Object.keys(faker.getElementsByTagName('img'))) {
+            var elem = faker.getElementsByTagName('img')[key];
+            if (elem != null) {
+                var altProp = $(faker.getElementsByTagName('img')[key]).attr('alt') || "";
+                text = text.replace(elem.outerHTML, altProp) || text;
+            }
+        }
+        for (var key in Object.keys(faker.getElementsByTagName('area'))) {
+            var elem = faker.getElementsByTagName('area')[key];
+            if (elem != null) {
+                var altProp = $(faker.getElementsByTagName('area')[key]).attr('alt') || "";
+                text = text.replace(elem.outerHTML, altProp) || text;
+            }
+        }
+        for (var key in Object.keys(faker.getElementsByTagName('input'))) {
+            var elem = faker.getElementsByTagName('input')[key];
+            if (elem != null) {
+                var altProp = $(faker.getElementsByTagName('input')[key]).attr('alt') || "";
+                text = text.replace(elem.outerHTML, altProp) || text;
+            }
+        }
+        WriteToTranscript(transcriptName + "___SCRIPTDATA___" + $("<div>" + text.replace(/<br\/>/g, "@@@NEW_LINE@@@").replace(/<br>/g, "@@@NEW_LINE@@@").replace(/<br \/>/g, "@@@NEW_LINE@@@").replace("&nbsp;", " ") + "</div>").text());
     }
-    for (var key in Object.keys(faker.getElementsByTagName('area'))){
-      var elem = faker.getElementsByTagName('area')[key];
-      if (elem != null) {
-        var altProp = $(faker.getElementsByTagName('area')[key]).attr('alt') || "";
-        text = text.replace(elem.outerHTML, altProp) || text;
-      }
+}
+
+function enableTranscript(name) {
+    if (noTranscript) return;
+    transcriptName = name || transcriptName || gameName;
+    savingTranscript = true;
+}
+
+function disableTranscript() {
+    savingTranscript = false;
+}
+
+function killTranscript() {
+    noTranscript = true;
+    disableTranscript();
+}
+
+function setTranscriptStatus(status) {
+    switch (status) {
+        case "enabled":
+            var name = transcriptName || gameName;
+            enableTranscript(name);
+            break;
+        case "disabled":
+            disableTranscript();
+            break;
+        case "prohibited":
+        case "none":
+        case "killed":
+            killTranscript();
+            break;
+        case "allowed":
+            noTranscript = false;
     }
-    for (var key in Object.keys(faker.getElementsByTagName('input'))){
-      var elem = faker.getElementsByTagName('input')[key];
-      if (elem != null) {
-        var altProp = $(faker.getElementsByTagName('input')[key]).attr('alt') || "";
-        text = text.replace(elem.outerHTML, altProp) || text;
-      }
-    }
-    WriteToTranscript(transcriptName + "___SCRIPTDATA___" + $("<div>" + text.replace(/<br\/>/g,"@@@NEW_LINE@@@").replace(/<br>/g,"@@@NEW_LINE@@@").replace(/<br \/>/g,"@@@NEW_LINE@@@").replace("&nbsp;"," ") + "</div>").text());
-  }
-}
-
-function enableTranscript(name){
-  if (noTranscript) return;
-  transcriptName = name || transcriptName || gameName;
-  savingTranscript = true;
-}
-
-function disableTranscript(){
-  savingTranscript = false;
-}
-
-function killTranscript(){
-  noTranscript = true;
-  disableTranscript();
-}
-
-function setTranscriptStatus(status){
-  switch (status){
-    case "enabled":
-      var name = transcriptName || gameName;
-      enableTranscript(name);
-      break;
-    case "disabled":
-      disableTranscript();
-      break;
-    case "prohibited":
-    case "none":
-    case "killed":
-      killTranscript();
-      break;
-    case "allowed":
-      noTranscript = false;
-  }
 }
 
 var showedSaveTranscriptWarning = false;
@@ -1474,18 +1597,18 @@ var showedSaveTranscriptWarning = false;
  * This function was missing from the webplayer in Quest 5.8.0
  * Leaving this here as a fallback
 */
-function SaveTranscript(text){
-  if(!showedSaveTranscriptWarning){
-    console.log("[QUEST]: SaveTranscript has been deprecated. Using writeToTranscript instead.");
-    showedSaveTranscriptWarning = true;
-  }
-  writeToTranscript(text);  
+function SaveTranscript(text) {
+    if (!showedSaveTranscriptWarning) {
+        console.log("[QUEST]: SaveTranscript has been deprecated. Using writeToTranscript instead.");
+        showedSaveTranscriptWarning = true;
+    }
+    writeToTranscript(text);
 }
 
 var transcriptUrl = 'TranscriptViewer/index.html';
 
 // Another fallback to avoid errors
-function showTranscript(){
+function showTranscript() {
     addTextAndScroll('Your transcripts are saved to the localStorage in your browser. You can view, download, or delete them here: <a href="' + transcriptUrl + '" target="_blank">Your Transcripts</a><br/>');
 }
 
@@ -1493,31 +1616,32 @@ function replaceTranscriptString(data) {
     // Added in 5.8, and never worked properly.
     // Do nothing.
 }
+
 function printTranscriptDiv() {
     // Added in 5.8, and never worked properly.
     // Do nothing.
 }
 
-function reviveTranscript(){
-  noTranscript = false;
+function reviveTranscript() {
+    noTranscript = false;
 }
 
-function getDateAndTimeForTranscript(){
-  return new Date().toLocaleString(navigator.language, { timeZoneName: 'short' });
+function getDateAndTimeForTranscript() {
+    return new Date().toLocaleString(navigator.language, {timeZoneName: 'short'});
 }
 
-function printTranscriptDateAndTime(){
-  addTextAndScroll('<b>DATE AND TIME:</b> ' + getDateAndTimeForTranscript());
+function printTranscriptDateAndTime() {
+    addTextAndScroll('<b>DATE AND TIME:</b> ' + getDateAndTimeForTranscript());
 }
 
-function loadTranscriptNameInputVal(){
-  $('input#txtCommand').val(transcriptName);
+function loadTranscriptNameInputVal() {
+    $('input#txtCommand').val(transcriptName);
 }
 
 // ***********************************
 
-function disableMenuOutputSection (el){
-  $('.' + el + ' .cmdlink').addClass('disabled').attr('onclick',null);
+function disableMenuOutputSection(el) {
+    $('.' + el + ' .cmdlink').addClass('disabled').attr('onclick', null);
 }
 
 
@@ -1638,7 +1762,7 @@ function Grid_DrawShape(id, border, fill, opacity) {
     var types = ['DOMMouseScroll', 'mousewheel'];
 
     if ($.event.fixHooks) {
-        for (var i = types.length; i; ) {
+        for (var i = types.length; i;) {
             $.event.fixHooks[types[--i]] = $.event.mouseHooks;
         }
     }
@@ -1646,7 +1770,7 @@ function Grid_DrawShape(id, border, fill, opacity) {
     $.event.special.mousewheel = {
         setup: function () {
             if (this.addEventListener) {
-                for (var i = types.length; i; ) {
+                for (var i = types.length; i;) {
                     this.addEventListener(types[--i], handler, false);
                 }
             } else {
@@ -1656,7 +1780,7 @@ function Grid_DrawShape(id, border, fill, opacity) {
 
         teardown: function () {
             if (this.removeEventListener) {
-                for (var i = types.length; i; ) {
+                for (var i = types.length; i;) {
                     this.removeEventListener(types[--i], handler, false);
                 }
             } else {
@@ -1677,13 +1801,18 @@ function Grid_DrawShape(id, border, fill, opacity) {
 
 
     function handler(event) {
-        var orgEvent = event || window.event, args = [].slice.call(arguments, 1), delta = 0, returnValue = true, deltaX = 0, deltaY = 0;
+        var orgEvent = event || window.event, args = [].slice.call(arguments, 1), delta = 0, returnValue = true,
+            deltaX = 0, deltaY = 0;
         event = $.event.fix(orgEvent);
         event.type = "mousewheel";
 
         // Old school scrollwheel delta
-        if (orgEvent.wheelDelta) { delta = orgEvent.wheelDelta / 120; }
-        if (orgEvent.detail) { delta = -orgEvent.detail / 3; }
+        if (orgEvent.wheelDelta) {
+            delta = orgEvent.wheelDelta / 120;
+        }
+        if (orgEvent.detail) {
+            delta = -orgEvent.detail / 3;
+        }
 
         // New school multidimensional scroll (touchpads) deltas
         deltaY = delta;
@@ -1695,8 +1824,12 @@ function Grid_DrawShape(id, border, fill, opacity) {
         }
 
         // Webkit
-        if (orgEvent.wheelDeltaY !== undefined) { deltaY = orgEvent.wheelDeltaY / 120; }
-        if (orgEvent.wheelDeltaX !== undefined) { deltaX = -1 * orgEvent.wheelDeltaX / 120; }
+        if (orgEvent.wheelDeltaY !== undefined) {
+            deltaY = orgEvent.wheelDeltaY / 120;
+        }
+        if (orgEvent.wheelDeltaX !== undefined) {
+            deltaX = -1 * orgEvent.wheelDeltaX / 120;
+        }
 
         // Add event and delta to the front of the arguments
         args.unshift(event, delta, deltaX, deltaY);
@@ -1816,7 +1949,7 @@ function Grid_DrawShape(id, border, fill, opacity) {
 
     $.event.special.inview = {
         add: function (data) {
-            inviewObjects[data.guid + "-" + this[expando]] = { data: data, $element: $(this) };
+            inviewObjects[data.guid + "-" + this[expando]] = {data: data, $element: $(this)};
 
             // Use setInterval in order to also make sure this captures elements within
             // "overflow:scroll" elements or elements that appeared in the dom tree due to
@@ -1834,7 +1967,10 @@ function Grid_DrawShape(id, border, fill, opacity) {
         },
 
         remove: function (data) {
-            try { delete inviewObjects[data.guid + "-" + this[expando]]; } catch (e) { }
+            try {
+                delete inviewObjects[data.guid + "-" + this[expando]];
+            } catch (e) {
+            }
 
             // Clear interval when we no longer have any elements listening
             if ($.isEmptyObject(inviewObjects)) {
@@ -1845,7 +1981,7 @@ function Grid_DrawShape(id, border, fill, opacity) {
     };
 
     function getViewportSize() {
-        var mode, domObject, size = { height: w.innerHeight, width: w.innerWidth };
+        var mode, domObject, size = {height: w.innerHeight, width: w.innerWidth};
 
         // if this is correct then return it. iPad has compat Mode, so will
         // go into check clientHeight/clientWidth (which has the wrong value).
@@ -1854,7 +1990,7 @@ function Grid_DrawShape(id, border, fill, opacity) {
             if (mode || !$.support.boxModel) { // IE, Gecko
                 domObject = mode === 'CSS1Compat' ?
                     documentElement : // Standards
-                  d.body; // Quirks
+                    d.body; // Quirks
                 size = {
                     height: domObject.clientHeight,
                     width: domObject.clientWidth
@@ -1893,7 +2029,7 @@ function Grid_DrawShape(id, border, fill, opacity) {
                 }
 
                 var $element = $($elements[i]),
-                    elementSize = { height: $element.height(), width: $element.width() },
+                    elementSize = {height: $element.height(), width: $element.width()},
                     elementOffset = $element.offset(),
                     inView = $element.data('inview'),
                     visiblePartX,
@@ -1914,11 +2050,11 @@ function Grid_DrawShape(id, border, fill, opacity) {
                     elementOffset.left + elementSize.width > viewportOffset.left &&
                     elementOffset.left < viewportOffset.left + viewportSize.width) {
                     visiblePartX = (viewportOffset.left > elementOffset.left ?
-                      'right' : (viewportOffset.left + viewportSize.width) < (elementOffset.left + elementSize.width) ?
-                      'left' : 'both');
+                        'right' : (viewportOffset.left + viewportSize.width) < (elementOffset.left + elementSize.width) ?
+                            'left' : 'both');
                     visiblePartY = (viewportOffset.top > elementOffset.top ?
-                      'bottom' : (viewportOffset.top + viewportSize.height) < (elementOffset.top + elementSize.height) ?
-                      'top' : 'both');
+                        'bottom' : (viewportOffset.top + viewportSize.height) < (elementOffset.top + elementSize.height) ?
+                            'top' : 'both');
                     visiblePartsMerged = visiblePartX + "-" + visiblePartY;
                     if (!inView || inView !== visiblePartsMerged) {
                         $element.data('inview', visiblePartsMerged).trigger('inview', [true, visiblePartX, visiblePartY]);
@@ -1952,8 +2088,10 @@ function Grid_DrawShape(id, border, fill, opacity) {
  */
 
 (function ($) {
-    
-    $(document).click(function (event) { if (event.button != 2) $("div[id^=jjmenu]").remove(); });
+
+    $(document).click(function (event) {
+        if (event.button != 2) $("div[id^=jjmenu]").remove();
+    });
 
     $.fn.jjmenu = function (param) {
         this.click(function (event) {
@@ -1964,7 +2102,7 @@ function Grid_DrawShape(id, border, fill, opacity) {
             return false;
         });
     };
-    
+
     $.fn.jjmenu_popup = function (param) {
         var el = this;
 
@@ -1976,7 +2114,7 @@ function Grid_DrawShape(id, border, fill, opacity) {
 
         m.className = "jjmenu";
         m.id = "jjmenu_main";
-        $(m).css({ display: 'none' });
+        $(m).css({display: 'none'});
         $(document.body).append(m);
 
         positionMenu();
@@ -1999,7 +2137,7 @@ function Grid_DrawShape(id, border, fill, opacity) {
             var pos = $(el).offset();
             var t = pos.top;
             var l = pos.left;
-            $(m).css({ position: "absolute", top: t + "px", left: l + "px" });
+            $(m).css({position: "absolute", top: t + "px", left: l + "px"});
         }
 
         function checkPosition() {
@@ -2013,10 +2151,10 @@ function Grid_DrawShape(id, border, fill, opacity) {
 
             var xPos = positionTop - $(window).scrollTop();
 
-            $(m).css({ left: "0px" });
+            $(m).css({left: "0px"});
             var menuHeight = $(m).outerHeight();
             var menuWidth = $(m).outerWidth();
-            $(m).css({ left: positionLeft + "px" });
+            $(m).css({left: positionLeft + "px"});
 
             var nleft = positionLeft;
             if (positionLeft + menuWidth > $(window).width()) {
@@ -2049,7 +2187,7 @@ function Grid_DrawShape(id, border, fill, opacity) {
                 ntop = parseInt(positionTop, 10);
             }
 
-            $(m).css({ "top": ntop + "px", "left": nleft + "px" });
+            $(m).css({"top": ntop + "px", "left": nleft + "px"});
         }
 
         function showMenu() {
@@ -2060,11 +2198,11 @@ function Grid_DrawShape(id, border, fill, opacity) {
         function putItem(n) {
             var item = document.createElement('div');
             $(item).hover(function () {
-                $(this).addClass("jj_menu_item_hover");
-            },
-            function () {
-                $(this).removeClass("jj_menu_item_hover");
-            });
+                    $(this).addClass("jj_menu_item_hover");
+                },
+                function () {
+                    $(this).removeClass("jj_menu_item_hover");
+                });
 
             $(item).click(function (event) {
                 event.stopPropagation();
@@ -2085,8 +2223,9 @@ function Grid_DrawShape(id, border, fill, opacity) {
 })(jQuery);
 
 function whereAmI() {
-  ASLEvent("WhereAmI", platform);
+    ASLEvent("WhereAmI", platform);
 }
+
 var platform = "desktop";
 
 const GameSaver = (() => {
@@ -2097,7 +2236,7 @@ const GameSaver = (() => {
             request.onupgradeneeded = () => {
                 const db = request.result;
                 if (!db.objectStoreNames.contains('saves')) {
-                    db.createObjectStore('saves', { keyPath: ['gameId', 'slotIndex'] });
+                    db.createObjectStore('saves', {keyPath: ['gameId', 'slotIndex']});
                 }
             };
 
@@ -2141,7 +2280,7 @@ const GameSaver = (() => {
         };
 
         store.put(entry);
-        
+
         return tx.complete || tx.done || new Promise((res, rej) => {
             tx.oncomplete = res;
             tx.onerror = rej;
@@ -2182,9 +2321,9 @@ const GameSaver = (() => {
             request.onerror = () => reject(request.error);
         });
     }
-    
+
     let persistenceRequested = false;
-    
+
     return {
         save: async () => {
             const saveData = $("#divOutput").html();
@@ -2200,7 +2339,7 @@ const GameSaver = (() => {
         listSaves: async () => {
             return await listSaves(WebPlayer.gameId);
         },
-        load: async(slotIndex) => {
+        load: async (slotIndex) => {
             return await loadGame(WebPlayer.gameId, slotIndex);
         }
     }

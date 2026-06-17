@@ -1,53 +1,53 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-	<PropertyGroup>
-		<TargetFramework>net10.0</TargetFramework>
-		<ImplicitUsings>enable</ImplicitUsings>
-		<Nullable>disable</Nullable>
+    <PropertyGroup>
+        <TargetFramework>net10.0</TargetFramework>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>disable</Nullable>
 
-		<IsPackable>false</IsPackable>
-		<IsTestProject>true</IsTestProject>
+        <IsPackable>false</IsPackable>
+        <IsTestProject>true</IsTestProject>
 
-		<LangVersion>default</LangVersion>
-		<RootNamespace>QuestViva.EngineTests</RootNamespace>
-	</PropertyGroup>
+        <LangVersion>default</LangVersion>
+        <RootNamespace>QuestViva.EngineTests</RootNamespace>
+    </PropertyGroup>
 
-	<ItemGroup>
-		<PackageReference Include="coverlet.collector" Version="8.0.0">
-		  <PrivateAssets>all</PrivateAssets>
-		  <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-		</PackageReference>
-		<PackageReference Include="Microsoft.NET.Test.Sdk" Version="18.0.1" />
-		<PackageReference Include="MSTest.TestAdapter" Version="3.7.3" />
-		<PackageReference Include="MSTest.TestFramework" Version="3.7.3" />
-	</ItemGroup>
+    <ItemGroup>
+        <PackageReference Include="coverlet.collector" Version="8.0.0">
+            <PrivateAssets>all</PrivateAssets>
+            <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+        </PackageReference>
+        <PackageReference Include="Microsoft.NET.Test.Sdk" Version="18.0.1"/>
+        <PackageReference Include="MSTest.TestAdapter" Version="3.7.3"/>
+        <PackageReference Include="MSTest.TestFramework" Version="3.7.3"/>
+    </ItemGroup>
 
-	<ItemGroup>
-		<Using Include="Microsoft.VisualStudio.TestTools.UnitTesting" />
-	</ItemGroup>
+    <ItemGroup>
+        <Using Include="Microsoft.VisualStudio.TestTools.UnitTesting"/>
+    </ItemGroup>
 
-	<ItemGroup>
-		<ProjectReference Include="..\..\src\Common\Common.csproj" />
-		<ProjectReference Include="..\..\src\Utility\Utility.csproj" />
-		<ProjectReference Include="..\..\src\Engine\Engine.csproj" />
-	</ItemGroup>
-	<ItemGroup>
-		<None Update="savetest.aslx">
-			<SubType>Designer</SubType>
-			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
-		</None>
-		<None Update="walkthrough.aslx">
-			<SubType>Designer</SubType>
-		</None>
-	</ItemGroup>
-	<ItemGroup>
-		<PackageReference Include="Moq" Version="4.20.72" />
-		<PackageReference Include="Shouldly" Version="4.3.0" />
-		<PackageReference Include="System.Data.DataSetExtensions" Version="4.5.0" />
-	</ItemGroup>
-	<ItemGroup>
-	  <Reference Include="Ciloci.Flee">
-	    <HintPath>..\..\libs\Ciloci.Flee.dll</HintPath>
-	  </Reference>
-	</ItemGroup>
+    <ItemGroup>
+        <ProjectReference Include="..\..\src\Common\Common.csproj"/>
+        <ProjectReference Include="..\..\src\Utility\Utility.csproj"/>
+        <ProjectReference Include="..\..\src\Engine\Engine.csproj"/>
+    </ItemGroup>
+    <ItemGroup>
+        <None Update="savetest.aslx">
+            <SubType>Designer</SubType>
+            <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+        </None>
+        <None Update="walkthrough.aslx">
+            <SubType>Designer</SubType>
+        </None>
+    </ItemGroup>
+    <ItemGroup>
+        <PackageReference Include="Moq" Version="4.20.72"/>
+        <PackageReference Include="Shouldly" Version="4.3.0"/>
+        <PackageReference Include="System.Data.DataSetExtensions" Version="4.5.0"/>
+    </ItemGroup>
+    <ItemGroup>
+        <Reference Include="Ciloci.Flee">
+            <HintPath>..\..\libs\Ciloci.Flee.dll</HintPath>
+        </Reference>
+    </ItemGroup>
 </Project>

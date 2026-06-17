@@ -100,7 +100,6 @@
 
     <tab>
       <caption>[EditorVerbAttributes]</caption>
-      <desktop/>
 
       <control>
         <controltype>attributes</controltype>

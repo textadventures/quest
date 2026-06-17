@@ -1,28 +1,28 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Globalization;
+using System.Reflection;
 using System.Text.RegularExpressions;
 using QuestViva.Engine.Scripts;
 using QuestViva.Engine.Types;
 using QuestViva.Utility;
+
 // ReSharper disable UnusedType.Local
 
 namespace QuestViva.Engine.GameLoader;
 
 internal partial class FieldSaver
 {
-    private readonly Dictionary<Type, IFieldSaver> _savers = new();
     private readonly GameSaver _saver;
+    private readonly Dictionary<Type, IFieldSaver> _savers = new();
 
     public FieldSaver(GameSaver saver)
     {
         _saver = saver;
 
         // Use Reflection to create instances of all IFieldSavers
-        foreach (var t in Classes.GetImplementations(System.Reflection.Assembly.GetExecutingAssembly(),
+        foreach (var t in Classes.GetImplementations(Assembly.GetExecutingAssembly(),
                      typeof(IFieldSaver)))
         {
-            AddSaver((IFieldSaver)Activator.CreateInstance(t)!);
+            AddSaver((IFieldSaver) Activator.CreateInstance(t)!);
         }
     }
 
@@ -31,7 +31,10 @@ internal partial class FieldSaver
         var ignore = (saver.MinVersion.HasValue && saver.MinVersion.Value > _saver.Version)
                      || (saver.MaxVersion.HasValue && saver.MaxVersion.Value < _saver.Version);
 
-        if (ignore) return;
+        if (ignore)
+        {
+            return;
+        }
 
         _savers.Add(saver.AppliesTo, saver);
         saver.GameSaver = _saver;
@@ -40,7 +43,11 @@ internal partial class FieldSaver
 
     public void Save(GameXmlWriter writer, Element element, string attribute, object? value)
     {
-        if (value == null) return;
+        if (value == null)
+        {
+            return;
+        }
+
         if (TryGetSaver(value.GetType(), out var saver))
         {
             try
@@ -61,7 +68,11 @@ internal partial class FieldSaver
 
     private void SaveValue(GameXmlWriter writer, string xmlElementName, object? value)
     {
-        if (value == null) return;
+        if (value == null)
+        {
+            return;
+        }
+
         if (TryGetSaver(value.GetType(), out var saver))
         {
             saver.Save(writer, xmlElementName, value);
@@ -74,7 +85,10 @@ internal partial class FieldSaver
 
     private bool TryGetSaver(Type type, out IFieldSaver saver)
     {
-        if (_savers.TryGetValue(type, out saver!)) return true;
+        if (_savers.TryGetValue(type, out saver!))
+        {
+            return true;
+        }
 
         foreach (var s in _savers.Where(s => s.Key.IsAssignableFrom(type)))
         {
@@ -88,23 +102,35 @@ internal partial class FieldSaver
     private interface IFieldSaver
     {
         Type AppliesTo { get; }
-        void Save(GameXmlWriter writer, Element element, string attribute, object value);
-        void Save(GameXmlWriter writer, string xmlElementName, object value);
         GameSaver GameSaver { set; }
         FieldSaver FieldSaver { set; }
         WorldModelVersion? MinVersion { get; }
         WorldModelVersion? MaxVersion { get; }
+        void Save(GameXmlWriter writer, Element element, string attribute, object value);
+        void Save(GameXmlWriter writer, string xmlElementName, object value);
     }
 
     private abstract partial class FieldSaverBase : IFieldSaver
     {
         public abstract Type AppliesTo { get; }
         public abstract void Save(GameXmlWriter writer, Element? element, string attribute, object value);
-        
+
+        public void Save(GameXmlWriter writer, string xmlElementName, object value)
+        {
+            Save(writer, null, xmlElementName, value);
+        }
+
+        public required GameSaver GameSaver { get; set; }
+        public required FieldSaver FieldSaver { get; set; }
+
+        public virtual WorldModelVersion? MinVersion => null;
+        public virtual WorldModelVersion? MaxVersion => null;
+
         [GeneratedRegex("^[A-Za-z0-9]*$")]
         private static partial Regex OnlyLettersAndNumbers();
 
-        protected void WriteAttribute(GameXmlWriter writer, Element? element, string attribute, string type, string value)
+        protected void WriteAttribute(GameXmlWriter writer, Element? element, string attribute, string type,
+            string value)
         {
             if (!OnlyLettersAndNumbers().IsMatch(attribute))
             {
@@ -119,24 +145,15 @@ internal partial class FieldSaver
                 //      <myattribute ... />
                 writer.WriteStartElement(attribute);
             }
+
             if (element == null || !GameSaver.IsImpliedType(element, attribute, type) || value.Length == 0)
             {
                 writer.WriteAttributeString("type", type);
             }
+
             writer.WriteString(value);
             writer.WriteEndElement();
         }
-
-        public void Save(GameXmlWriter writer, string xmlElementName, object value)
-        {
-            Save(writer, null, xmlElementName, value);
-        }
-
-        public required GameSaver GameSaver { get; set; }
-        public required FieldSaver FieldSaver { get; set; }
-
-        public virtual WorldModelVersion? MinVersion => null;
-        public virtual WorldModelVersion? MaxVersion => null;
     }
 
     private class StringSaver : FieldSaverBase
@@ -145,7 +162,7 @@ internal partial class FieldSaver
 
         public override void Save(GameXmlWriter writer, Element? element, string attribute, object value)
         {
-            var strValue = (string)value;
+            var strValue = (string) value;
             WriteAttribute(writer, element, attribute, "string", strValue);
         }
     }
@@ -156,7 +173,7 @@ internal partial class FieldSaver
 
         public override void Save(GameXmlWriter writer, Element? element, string attribute, object value)
         {
-            var boolVal = (bool)value;
+            var boolVal = (bool) value;
             if (boolVal)
             {
                 if (attribute.Contains(' '))
@@ -183,7 +200,7 @@ internal partial class FieldSaver
 
         public override void Save(GameXmlWriter writer, Element? element, string attribute, object value)
         {
-            var list = (QuestList<string>)value;
+            var list = (QuestList<string>) value;
             var saveString = string.Join("; ", list.ToArray());
             WriteAttribute(writer, element, attribute, "list", saveString);
         }
@@ -203,7 +220,7 @@ internal partial class FieldSaver
                 writer.WriteAttributeString("type", "stringlist");
             }
 
-            var list = (QuestList<string>)value;
+            var list = (QuestList<string>) value;
 
             foreach (var item in list)
             {
@@ -211,13 +228,14 @@ internal partial class FieldSaver
                 writer.WriteString(item);
                 writer.WriteEndElement();
             }
+
             writer.WriteEndElement();
         }
     }
 
     private class ListSaver : FieldSaverBase
     {
-        public override Type AppliesTo => typeof (QuestList<object>);
+        public override Type AppliesTo => typeof(QuestList<object>);
 
         public override void Save(GameXmlWriter writer, Element? element, string attribute, object value)
         {
@@ -227,12 +245,13 @@ internal partial class FieldSaver
                 writer.WriteAttributeString("type", "list");
             }
 
-            var list = (QuestList<object>)value;
+            var list = (QuestList<object>) value;
 
             foreach (var item in list)
             {
                 FieldSaver.SaveValue(writer, "value", item);
             }
+
             writer.WriteEndElement();
         }
     }
@@ -241,13 +260,13 @@ internal partial class FieldSaver
     {
         public override Type AppliesTo => typeof(QuestDictionary<string>);
 
+        public override WorldModelVersion? MaxVersion => WorldModelVersion.v530;
+
         public override void Save(GameXmlWriter writer, Element? element, string attribute, object value)
         {
-            var dictionary = (QuestDictionary<string>)value;
+            var dictionary = (QuestDictionary<string>) value;
             WriteAttribute(writer, element, attribute, "stringdictionary", dictionary.SaveString());
         }
-
-        public override WorldModelVersion? MaxVersion => WorldModelVersion.v530;
     }
 
     private class ObjectListSaver : FieldSaverBase
@@ -256,7 +275,7 @@ internal partial class FieldSaver
 
         public override void Save(GameXmlWriter writer, Element? element, string attribute, object value)
         {
-            var list = (QuestList<Element>)value;
+            var list = (QuestList<Element>) value;
             var saveString = string.Join("; ", list.Select(e => e.Name));
             WriteAttribute(writer, element, attribute, "objectlist", saveString);
         }
@@ -266,15 +285,12 @@ internal partial class FieldSaver
     {
         public override Type AppliesTo => typeof(QuestDictionary<Element>);
 
+        public override WorldModelVersion? MaxVersion => WorldModelVersion.v530;
+
         public override void Save(GameXmlWriter writer, Element? element, string attribute, object value)
         {
-            var dictionary = (QuestDictionary<Element>)value;
+            var dictionary = (QuestDictionary<Element>) value;
             WriteAttribute(writer, element, attribute, "objectdictionary", dictionary.SaveString(o => o.Name));
-        }
-
-        public override WorldModelVersion? MaxVersion
-        {
-            get { return WorldModelVersion.v530; }
         }
     }
 
@@ -294,7 +310,7 @@ internal partial class FieldSaver
                 writer.WriteAttributeString("type", TypeName);
             }
 
-            var dictionary = (QuestDictionary<T>)value;
+            var dictionary = (QuestDictionary<T>) value;
 
             foreach (var item in dictionary)
             {
@@ -305,6 +321,7 @@ internal partial class FieldSaver
                 WriteXml(writer, item.Value);
                 writer.WriteEndElement();
             }
+
             writer.WriteEndElement();
         }
 
@@ -361,12 +378,12 @@ internal partial class FieldSaver
     {
         public override Type AppliesTo => typeof(QuestDictionary<object>);
 
+        public override WorldModelVersion? MaxVersion => WorldModelVersion.v530;
+
         public override void Save(GameXmlWriter writer, Element? element, string attribute, object value)
         {
             // Do nothing - objectdictionaries are not saved for ASL 530 and earlier.
         }
-
-        public override WorldModelVersion? MaxVersion => WorldModelVersion.v530;
     }
 
     private class ScriptSaver : FieldSaverBase
@@ -375,7 +392,7 @@ internal partial class FieldSaver
 
         public override void Save(GameXmlWriter writer, Element? element, string attribute, object value)
         {
-            var script = (IScript)value;
+            var script = (IScript) value;
             var savedScript = GameSaver.SaveScript(writer, script, 1);
             WriteAttribute(writer, element, attribute, "script", savedScript);
         }
@@ -387,7 +404,7 @@ internal partial class FieldSaver
 
         public override void Save(GameXmlWriter writer, Element? element, string attribute, object value)
         {
-            var number = (int)value;
+            var number = (int) value;
             WriteAttribute(writer, element, attribute, "int", number.ToString());
         }
     }
@@ -398,8 +415,8 @@ internal partial class FieldSaver
 
         public override void Save(GameXmlWriter writer, Element? element, string attribute, object value)
         {
-            var number = (double)value;
-            WriteAttribute(writer, element, attribute, "double", number.ToString(System.Globalization.CultureInfo.InvariantCulture));
+            var number = (double) value;
+            WriteAttribute(writer, element, attribute, "double", number.ToString(CultureInfo.InvariantCulture));
         }
     }
 
@@ -409,8 +426,9 @@ internal partial class FieldSaver
 
         public override void Save(GameXmlWriter writer, Element? element, string attribute, object value)
         {
-            var impl = (DelegateImplementation)value;
-            WriteAttribute(writer, element, attribute, impl.Definition.Name, GameSaver.SaveScript(writer, impl.Implementation.Fields[FieldDefinitions.Script], 1));
+            var impl = (DelegateImplementation) value;
+            WriteAttribute(writer, element, attribute, impl.Definition.Name,
+                GameSaver.SaveScript(writer, impl.Implementation.Fields[FieldDefinitions.Script], 1));
         }
     }
 
@@ -420,7 +438,7 @@ internal partial class FieldSaver
 
         public override void Save(GameXmlWriter writer, Element? element, string attribute, object value)
         {
-            var pattern = (EditorCommandPattern)value;
+            var pattern = (EditorCommandPattern) value;
             WriteAttribute(writer, element, attribute, "simplepattern", pattern.Pattern);
         }
     }
@@ -439,7 +457,7 @@ internal partial class FieldSaver
                 writer.WriteAttributeString("type", "scriptdictionary");
             }
 
-            var dictionary = (QuestDictionary<IScript>)value;
+            var dictionary = (QuestDictionary<IScript>) value;
 
             foreach (var item in dictionary)
             {
@@ -448,6 +466,7 @@ internal partial class FieldSaver
                 writer.WriteString(GameSaver.SaveScript(writer, item.Value, 0));
                 writer.WriteEndElement();
             }
+
             writer.WriteEndElement();
         }
 
@@ -469,7 +488,7 @@ internal partial class FieldSaver
 
         public override void Save(GameXmlWriter writer, Element? element, string attribute, object value)
         {
-            WriteAttribute(writer, element, attribute, "object", ((Element)value).Name);
+            WriteAttribute(writer, element, attribute, "object", ((Element) value).Name);
         }
     }
 }

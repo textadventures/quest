@@ -27,7 +27,7 @@ public class GameQueryTests
         var result = await query.Initialise();
         Assert.IsFalse(result);
     }
-    
+
     [TestMethod]
     public async Task TestValidQuest()
     {
@@ -85,7 +85,7 @@ public class GameQueryTests
         Assert.IsTrue(result);
         Assert.IsNull(query.GameObjects);
     }
-    
+
     [TestMethod]
     public async Task TestInvalidQuest()
     {
@@ -106,7 +106,7 @@ public class GameQueryTests
         Assert.IsTrue(resources.Contains("game.aslx"));
         Assert.IsTrue(resources.Contains("aw.jpg"));
         Assert.IsTrue(resources.Contains("ta.png"));
-        
+
         var stream = query.GetResource("aw.jpg");
         using var ms = new MemoryStream();
         await stream.CopyToAsync(ms);

@@ -116,7 +116,7 @@ src/WebEditor/
 │   │   ├── editor-store.ts # Svelte stores + wrappers for all WASM calls
 │   │   └── types.ts        # TreeNode, ControlInfo, TabInfo, EditorDataResponse, ScriptNodeData, …
 │   ├── components/
-│   │   ├── Toolbar.svelte         # AppBar: title, filename, undo/redo/save
+│   │   ├── Toolbar.svelte         # AppBar: title, filename, undo/redo/save/preview
 │   │   ├── TreePanel.svelte       # Skeleton TreeView (flat→hierarchy conversion)
 │   │   ├── PropertyEditor.svelte  # Typed controls with tab navigation
 │   │   ├── ScriptEditor.svelte    # Visual script editor (recursive); code view; copy/paste
@@ -148,45 +148,73 @@ The Vite dev server sets `Cross-Origin-Opener-Policy: same-origin` and `Cross-Or
 
 ## File handling
 
-The browser cannot read files from the local filesystem directly. Currently implemented: **Option A**.
+The browser cannot read files from the local filesystem directly.
 
-**Option A (implemented)** — File picker open, download save
+**Option A (superseded)** — File picker open, download save
 - User opens a file via `<input type="file">`
 - JS reads it as `ArrayBuffer`, converts to `Uint8Array`, passes to `Initialise`
 - Save triggers a download via a temporary `<a>` with an object URL
 
-**Option B (future)** — File System Access API + OPFS
-- Chrome/Edge: use `showOpenFilePicker` / `showSaveFilePicker` for direct read/write to the user's real files without a download prompt; store recent file handles in IndexedDB for "recent files"
-- Safari/Firefox: fall back to `<input type="file">` open + download save (no persistent handle)
-- Consider using [`browser-fs-access`](https://github.com/GoogleChromeLabs/browser-fs-access) (Google Chrome Labs, ~5KB) rather than hand-rolling the feature detection — the Squiffy editor has already done this (see [squiffy#215](https://github.com/textadventures/squiffy/issues/215))
-- OPFS (Origin Private File System) for auto-save: supported on Chrome, Safari 15.2+, Firefox 111+; game files live in browser private storage with no prompts after initial import
+**Option B (implemented)** — File System Access API (`showDirectoryPicker`)
+- The user opens a **game folder**, not just a single file. `openDirectory()` calls `showDirectoryPicker({ mode: "readwrite" })` and scans for `.aslx` files inside. If exactly one is found it auto-loads; if multiple (split-file games, custom libraries) the open page shows a file picker within the folder.
+- `BrowserFileAdapter` holds a `FileSystemDirectoryHandle`; saves write the `.aslx` back to the same folder (no download prompt). `saveFileAs` uses `showSaveFilePicker({ startIn: dir })` so it opens in the right folder by default.
+- The directory model is necessary because the FSA API deliberately provides no path from a `FileSystemFileHandle` to its parent — you cannot reach sibling asset files from a file handle alone.
+- Non-FSA browsers (Firefox): `loadLocalFile()` falls back to `<input type="file">` + download save. A clear notice directs users to a supported browser for full asset support.
 
-**Option C (future)** — Asset storage for images
-- Images referenced in game files need to survive across sessions and be resolvable during preview
-- Store blobs in OPFS (preferred over raw IndexedDB for binary assets)
-- A Service Worker intercepts requests for asset URLs during preview and serves from OPFS
-- This avoids needing a server round-trip for user-uploaded images
+**Option C (partially implemented)** — Asset storage
+- **Directory mode** (`BrowserFileAdapter`): `putAsset` / `getAsset` / `listAssets` / `deleteAsset` are real sibling files on disk inside the game folder. Assets persist across sessions, are portable (the desktop editor and other tools find them), and require no upload to any server.
+- **Fallback mode** (`BrowserFileAdapter`): assets go to OPFS under a per-session UUID. They survive the session but cannot be extracted or used outside the browser. Asset upload is disabled in this mode — there is nowhere persistent to put them that the user can retrieve later.
+- **Server mode** (`ServerFileAdapter`): asset operations hit `/api/editor/games/{gameId}/assets` REST endpoints (see `docs/textadventures-api.md`). This is a transitional path for games already hosted on textadventures.co.uk; the intent is that local directory mode becomes the primary workflow.
+- Service Worker to intercept asset URL requests during game preview is **not yet implemented** — assets are stored correctly but are not yet resolvable as URLs inside the player preview.
 
 **Option D (future)** — Electron wrapper
-- Electron exposes Node.js `fs` to the renderer via `contextBridge`
-- A thin adapter (~20 lines) behind a common `FileAdapter` interface would allow the same Svelte code to work in both browser PWA and Electron
-- See shared adapter design below
+- Electron exposes Node.js `fs` to the renderer via `contextBridge` + IPC handlers in the main process — do **not** attempt to use the File System Access API inside Electron, which has known parity bugs (missing persistent permissions, broken directory iteration)
+- Implement `ElectronFileAdapter` in `src/lib/filesystem/electron-adapter.ts`; the renderer calls `window.electronFileAdapter` via `contextBridge`; the main process handles `fs.readFile` / `fs.writeFile` via `ipcRenderer.invoke`
+- No Svelte code changes needed — the adapter is swapped at load time
 
-**Shared filesystem adapter** (future, coordinate with Squiffy)
+### FileAdapter interface
 
-Both Quest WebEditor and Squiffy face the same three-tier file system problem (File System Access API → OPFS → Electron `fs`). The intent is to extract a shared TypeScript package rather than duplicate the pattern. Proposed interface:
+Implemented in `src/WebEditor/src/lib/filesystem/`. The module has no Svelte or Quest-specific imports — plain TypeScript only, so it can be extracted into a shared package when Squiffy becomes a second consumer.
+
+**Loaders** produce a `{ bytes, adapter }` pair. `openFile` is not part of the adapter — it is a separate concern (only local-file loading needs a picker):
+
+```typescript
+loadLocalFile(): Promise<LoadedFile | null>      // FSA API or <input> fallback
+loadFromServer(gameId: string): Promise<LoadedFile>  // fetches from /api/editor/games/{gameId}
+```
+
+**Adapter interface:**
 
 ```typescript
 interface FileAdapter {
-  openFile(opts?: OpenOptions): Promise<FileContent | null>
-  saveFile(data: Uint8Array | string): Promise<boolean>
-  saveFileAs(data: Uint8Array | string, suggestedName?: string): Promise<boolean>
+  readonly filename: string
+  readonly canSaveAs: boolean
+  readonly previewUrl: string | null   // null for local mode; server-provided URL for online mode
+  saveFile(data: Uint8Array | string): Promise<void>
+  saveFileAs(data: Uint8Array | string, suggestedName?: string): Promise<string | null>  // returns new filename or null if cancelled
   putAsset(key: string, data: Blob): Promise<void>
   getAsset(key: string): Promise<Blob | null>
+  listAssets(): Promise<AssetInfo[]>
+  deleteAsset(key: string): Promise<void>
 }
 ```
 
-Factory functions: `createBrowserAdapter()`, `createOPFSAdapter()`, `createElectronAdapter()`.
+`saveFileAs` returns the filename that was saved to (so the toolbar can update), or `null` if the user cancelled.
+
+`previewUrl` is exposed as a Svelte store and drives the Preview button in the toolbar:
+
+- **Server mode**: the server returns the player URL in the `X-Preview-Url` response header when loading the game. Clicking Preview saves the game then opens the URL in a new tab (the existing WebPlayer handles rendering).
+- **Local mode**: `previewUrl` is `null`. Clicking Preview shows an inline banner explaining that local games must be tested in the Quest desktop app. The WebEditor cannot run a local game preview in the browser because the WASM player was removed — the Engine uses OS threads (via `Task.Run`) that are incompatible with the browser's no-shared-memory WASM model. Fixing this requires migrating the expression evaluator from Ciloci.Flee to NCalc (async-safe), which is still in progress.
+
+### Unsaved changes
+
+`UndoLogger` fires `TransactionCommitted` when a transaction records actual changes (not on no-op transactions or undo/redo). `EditorController` surfaces this as a `Dirty` event — matching the v5 desktop editor pattern. The bridge sets `_isDirty = true` on `Dirty` and clears it in `Save()`. The `isDirty` Svelte store drives a `*` indicator in the toolbar filename. A `beforeunload` handler on the editor page triggers the browser's native "unsaved changes" prompt if the tab is closed or navigated away while dirty.
+
+**Known limitation**: undoing all changes back to the last-saved state does not clear dirty — the `*` stays until the next explicit save. Fixing this requires either XML hash comparison on undo or a generation-counter approach; deferred as a future improvement.
+
+### Server-side API (textadventures.co.uk)
+
+`ServerFileAdapter` expects the API described in `docs/textadventures-api.md`. When the editor is opened with `?game={guid}`, it auto-loads via `loadFromServer` and uses `ServerFileAdapter` for all subsequent saves and asset operations. The server API uses the user's existing session cookie — no token exchange needed.
 
 ---
 
@@ -329,5 +357,5 @@ Blockly is ~800KB and requires a TypeScript bridge layer to synchronise the bloc
 - **Live C# → JS events**: Currently tree state is snapshot-based (collected at init). As editing adds/removes/renames nodes, the bridge will need to push updates to JS rather than relying on a full re-fetch.
 - **Build integration**: Should `WasmEditor` output be served by `WebPlayer` (embedded SPA) or deployed separately?
 - **Auth / server-side storage**: Is cloud save in scope? Affects whether the editor stays purely client-side.
-- **Shared filesystem adapter**: Extract a common `FileAdapter` TypeScript package shared with Squiffy (see File handling section and [squiffy#215](https://github.com/textadventures/squiffy/issues/215)).
-- **Electron wrapper**: Both Quest and Squiffy editors are candidates for an Electron app. The `FileAdapter` interface is the seam; `createElectronAdapter()` would be a thin IPC shim. Decide whether to build one Electron shell that hosts both, or separate apps.
+- **Shared filesystem adapter**: Implement `src/lib/filesystem/` here first (see File handling section and [squiffy#215](https://github.com/textadventures/squiffy/issues/215)); extract into a published package when Squiffy becomes the second consumer.
+- **Electron wrapper**: Both Quest and Squiffy editors are candidates for an Electron app. The `FileAdapter` interface is the seam; `createElectronAdapter()` bridges to Node.js `fs` via `contextBridge` IPC. Decide whether to build one Electron shell that hosts both, or separate apps.

@@ -19,8 +19,10 @@ public class PlayTokenValidatorTests
         return $"{Base64UrlEncode(payloadBytes)}.{Base64UrlEncode(signature)}";
     }
 
-    private static string Base64UrlEncode(byte[] bytes) =>
-        Convert.ToBase64String(bytes).Replace('+', '-').Replace('/', '_').TrimEnd('=');
+    private static string Base64UrlEncode(byte[] bytes)
+    {
+        return Convert.ToBase64String(bytes).Replace('+', '-').Replace('/', '_').TrimEnd('=');
+    }
 
     [TestMethod]
     public void ValidToken_ReturnsTrue()
