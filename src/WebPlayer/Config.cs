@@ -12,6 +12,7 @@ public class WebPlayerConfig
     public HomeOptions? Home { get; set; }
     public DevOptions? Dev { get; set; }
     public TextAdventuresOptions? TextAdventures { get; set; }
+    public EditorOptions? Editor { get; set; }
 }
 
 public class HomeOptions
@@ -24,6 +25,12 @@ public class HomeOptions
 public class DevOptions
 {
     public bool Enabled { get; set; }
+}
+
+public class EditorOptions
+{
+    public bool Enabled { get; set; }
+    public string? BlobStorageRoot { get; set; }
 }
 
 public class TextAdventuresOptions
@@ -54,4 +61,5 @@ public class Config(IOptionsMonitor<WebPlayerConfig> optionsMonitor) : IConfig, 
 
     public bool UseNCalc => ConfigValue.UseNCalc;
     public string TextAdventuresApiRoot => ConfigValue.TextAdventures?.ApiRoot ?? string.Empty;
+    public string EditorBlobStorageRoot => ConfigValue.Editor?.BlobStorageRoot ?? "https://textadventures.blob.core.windows.net/editorgames/";
 }
