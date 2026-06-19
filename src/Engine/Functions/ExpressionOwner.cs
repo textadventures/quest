@@ -773,14 +773,20 @@ internal class ExpressionOwner(WorldModel worldModel)
         ArgumentNullException.ThrowIfNull(obj);
         var element = GetParameter<Element>(obj, "GetAllChildren", "object");
         var result = new QuestList<Element>();
+        var visited = new HashSet<Element>();
+        CollectChildren(element, type, result, visited);
+        return result;
+    }
+
+    private void CollectChildren(Element element, ObjectType type, QuestList<Element> result, HashSet<Element> visited)
+    {
         foreach (var child in worldModel.Elements.GetDirectChildren(element)
                      .Where(e => e.ElemType == ElementType.Object && e.Type == type))
         {
+            if (!visited.Add(child)) continue;
             result.Add(child);
-            result.AddRange(GetAllChildren(child, type));
+            CollectChildren(child, type, result, visited);
         }
-
-        return result;
     }
 
     public QuestList<Element> GetDirectChildren( /* Element */ object? obj)
