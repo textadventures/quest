@@ -725,12 +725,15 @@ public partial class WorldModel : IGame, IGameDebug
 
     public static bool ObjectContains(Element parent, Element searchObj)
     {
-        if (searchObj.Parent == null)
+        var visited = new HashSet<Element>();
+        var current = searchObj.Parent;
+        while (current != null)
         {
-            return false;
+            if (current == parent) return true;
+            if (!visited.Add(current)) return false;
+            current = current.Parent;
         }
-
-        return searchObj.Parent == parent || ObjectContains(parent, searchObj.Parent);
+        return false;
     }
 
     internal string DisplayMenu(string caption, IDictionary<string, string> options, bool allowCancel, bool async)

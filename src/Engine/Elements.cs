@@ -163,25 +163,19 @@ public class Elements
 
     public IEnumerable<Element> GetChildElements(Element parent)
     {
-        foreach (var e in m_allElements.Values)
+        var visited = new HashSet<Element> { parent };
+        return CollectChildElements(parent, visited);
+    }
+
+    private IEnumerable<Element> CollectChildElements(Element parent, HashSet<Element> visited)
+    {
+        foreach (var e in m_allElements.Values.Where(e => e.Parent == parent))
         {
-            if (e.Parent == parent)
+            if (!visited.Add(e)) continue;
+            yield return e;
+            foreach (var child in CollectChildElements(e, visited))
             {
-                if (e == parent)
-                {
-                    throw new InvalidOperationException("Object's parent is set to self");
-                }
-
-                yield return e;
-                foreach (var child in GetChildElements(e))
-                {
-                    if (child == parent)
-                    {
-                        throw new InvalidOperationException("Circular parent");
-                    }
-
-                    yield return child;
-                }
+                yield return child;
             }
         }
     }
