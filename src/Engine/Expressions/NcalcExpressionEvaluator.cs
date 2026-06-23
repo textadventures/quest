@@ -4,6 +4,7 @@ using NCalc;
 using NCalc.Cache;
 using NCalc.Factories;
 using NCalc.Handlers;
+using QuestViva.Engine;
 using QuestViva.Engine.Functions;
 using QuestViva.Engine.Scripts;
 
@@ -14,11 +15,13 @@ public class NcalcExpressionEvaluator<T> : IExpressionEvaluator<T>, IDynamicExpr
     private readonly ScriptContext _scriptContext;
     private readonly Expression _nCalcExpression;
     private readonly ExpressionOwner _expressionOwner;
+    private readonly string _expression;
 
     public NcalcExpressionEvaluator(string expression, ScriptContext scriptContext)
     {
         _scriptContext = scriptContext;
         _expressionOwner = new ExpressionOwner(scriptContext.WorldModel);
+        _expression = Utility.ConvertFleeFormatToVariables(expression);
 
         _nCalcExpression = new Expression(expression,
             new ExpressionContext { Options = ExpressionOptions.NoStringTypeCoercion },
@@ -37,15 +40,23 @@ public class NcalcExpressionEvaluator<T> : IExpressionEvaluator<T>, IDynamicExpr
     public T Evaluate(Context c)
     {
         _context = c;
-        var result = CoerceLong(_nCalcExpression.Evaluate());
-
-        // Converting ints to generic doubles is fun
-        if (typeof(T) == typeof(double) && result is int i)
+        try
         {
-            return (T) (object) (double) i;
-        }
+            var result = CoerceLong(_nCalcExpression.Evaluate());
 
-        return (T) result;
+            // Converting ints to generic doubles is fun
+            if (typeof(T) == typeof(double) && result is int i)
+            {
+                return (T) (object) (double) i;
+            }
+
+            return (T) result;
+        }
+        catch (Exception ex)
+        {
+            var innerMessage = ex.InnerException?.Message ?? ex.Message;
+            throw new Exception($"Error evaluating expression '{_expression}': {innerMessage}", ex);
+        }
     }
 
     // NCalc returns Int64 for integer literals; coerce to Int32 to match engine expectations.
@@ -56,12 +67,22 @@ public class NcalcExpressionEvaluator<T> : IExpressionEvaluator<T>, IDynamicExpr
 
     private Context _context;
 
+    // Set to true while evaluating cast()'s type argument so EvaluateParameter
+    // returns the identifier name as a string rather than trying to resolve it as a variable.
+    private bool _evaluatingCastType;
+
     private void EvaluateParameter(string name, ParameterEventArgs args)
     {
         var tryMath = EvaluateVariableFromType(typeof(Math), name);
         if (tryMath.handled)
         {
             args.Result = tryMath.result;
+            return;
+        }
+
+        if (_evaluatingCastType)
+        {
+            args.Result = name.ToLowerInvariant();
             return;
         }
 
@@ -278,6 +299,75 @@ public class NcalcExpressionEvaluator<T> : IExpressionEvaluator<T>, IDynamicExpr
 
     private object EvaluateAslFunction(string name, FunctionEventArgs args)
     {
+        if (name == "__Quest_MethodCall__")
+        {
+            if (args.Parameters.Count < 2)
+                throw new Exception("__Quest_MethodCall__ requires at least 2 arguments");
+            var receiver = CoerceLong(args.Parameters.Evaluate(0));
+            var methodName = args.Parameters.Evaluate(1) as string
+                ?? throw new Exception("__Quest_MethodCall__ second argument must be a string method name");
+            var methodArgs = Enumerable.Range(2, args.Parameters.Count - 2)
+                .Select(i => CoerceLong(args.Parameters.Evaluate(i)))
+                .ToArray();
+            var argTypes = methodArgs.Select(a => a?.GetType() ?? typeof(object)).ToArray();
+            var method = receiver?.GetType().GetMethod(methodName, argTypes)
+                ?? throw new Exception($"Method '{methodName}' not found on '{receiver?.GetType().Name}'");
+            return method.Invoke(receiver, methodArgs);
+        }
+
+        if (name == "__Quest_Index__")
+        {
+            if (args.Parameters.Count != 2)
+                throw new Exception("Subscript operator requires exactly 2 operands");
+            var collection = args.Parameters.Evaluate(0);
+            var key = CoerceLong(args.Parameters.Evaluate(1));
+            if (collection is IQuestList)
+                return _expressionOwner.ListItem(collection, (int) key);
+            return _expressionOwner.DictionaryItem(collection, key?.ToString());
+        }
+
+        if (name.Equals("cast", StringComparison.InvariantCultureIgnoreCase))
+        {
+            if (args.Parameters.Count != 2)
+                throw new Exception("cast() expects 2 parameters: value and type");
+            var value = CoerceLong(args.Parameters.Evaluate(0));
+            _evaluatingCastType = true;
+            object typeArg;
+            try { typeArg = args.Parameters.Evaluate(1); }
+            finally { _evaluatingCastType = false; }
+            var typeName = typeArg as string
+                ?? throw new Exception("cast() second parameter must be a type name (int, double, string, bool)");
+            return typeName switch
+            {
+                "boolean" => Convert.ToBoolean(value),
+                "byte" => Convert.ToByte(value),
+                "sbyte" => Convert.ToSByte(value),
+                "short" => Convert.ToInt16(value),
+                "ushort" => Convert.ToUInt16(value),
+                "int" => (int) Convert.ToDouble(value),
+                "uint" => Convert.ToUInt32(value),
+                "long" => Convert.ToInt64(value),
+                "ulong" => Convert.ToUInt64(value),
+                "single" => Convert.ToSingle(value),
+                "double" => Convert.ToDouble(value),
+                "decimal" => Convert.ToDecimal(value),
+                "char" => Convert.ToChar(value),
+                "object" => value,
+                "string" => Convert.ToString(value),
+                _ => throw new Exception($"cast(): unknown type '{typeName}'")
+            };
+        }
+
+        if (name.Equals("if", StringComparison.InvariantCultureIgnoreCase))
+        {
+            if (args.Parameters.Count != 3)
+            {
+                throw new Exception("'if' function expects 3 parameters: condition, trueValue, falseValue");
+            }
+            var condition = args.Parameters.Evaluate(0);
+            return condition is true ? args.Parameters.Evaluate(1) : args.Parameters.Evaluate(2);
+        }
+
         if (name == "IsDefined")
         {
             if (args.Parameters.Count != 1)

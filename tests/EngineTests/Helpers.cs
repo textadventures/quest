@@ -18,9 +18,9 @@ internal static class Helpers
         return new WorldModel(config);
     }
 
-    public static WorldModel CreateWorldModel(GameData gameData)
+    public static WorldModel CreateWorldModel(GameData gameData, bool useNCalc = false)
     {
-        var config = new Config(false);
+        var config = new Config(useNCalc);
         return new WorldModel(config, gameData, null);
     }
 }

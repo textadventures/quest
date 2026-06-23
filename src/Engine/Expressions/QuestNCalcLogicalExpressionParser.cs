@@ -33,7 +33,8 @@ public static class QuestNCalcLogicalExpressionParser
          * shift          => additive ( ( "<<" | ">>" ) additive )* ;
          * additive       => multiplicative ( ( "-" | "+" ) multiplicative )* ;
          * multiplicative => exponential ( "/" | "*" | "%") exponential )* ;
-         * exponential    => unary ( "**" ) unary )* ;
+         * exponential    => postfix ( "**" postfix )* ;
+         * postfix        => primary ( "[" expression "]" | "." identifier "(" arguments ")" )* ;
          * unary          => ( "-" | "not" | "!" ) primary
          *
          * primary        => NUMBER
@@ -154,6 +155,7 @@ public static class QuestNCalcLogicalExpressionParser
         var exponent = Terms.Text("**");
         var openParen = Terms.Char('(');
         var closeParen = Terms.Char(')');
+        var dot = Terms.Char('.');
         var openBrace = Terms.Char('[');
         var closeBrace = Terms.Char(']');
         var openCurlyBrace = Terms.Char('{');
@@ -339,8 +341,36 @@ public static class QuestNCalcLogicalExpressionParser
             identifierExpression,
             list);
 
+        // postfix => primary ( "[" expression "]" | "." identifier "(" args ")" )* ;
+        // Handles Quest's list/dictionary subscript syntax: list[0], dict[key], func()[0]
+        // and instance method call syntax: str.StartsWith("x"), func().Method(args)
+        var subscriptSuffix = openBrace.SkipAnd(expression).AndSkip(closeBrace)
+            .Then<Func<LogicalExpression, LogicalExpression>>(index =>
+                receiver => new Function(new Identifier("__Quest_Index__"),
+                    new LogicalExpressionList([receiver, index])));
+
+        var methodCallSuffix = dot.SkipAnd(identifier).And(list)
+            .Then<Func<LogicalExpression, LogicalExpression>>(x =>
+            {
+                var methodName = x.Item1.ToString()!;
+                var args = (LogicalExpressionList)x.Item2;
+                return receiver => new Function(new Identifier("__Quest_MethodCall__"),
+                    new LogicalExpressionList([receiver, new ValueExpression(methodName), ..args]));
+            });
+
+        var postfix = primary.And(ZeroOrMany(OneOf(subscriptSuffix, methodCallSuffix)))
+            .Then<LogicalExpression>(x =>
+            {
+                var result = x.Item1;
+                foreach (var transform in x.Item2)
+                {
+                    result = transform(result);
+                }
+                return result;
+            });
+
         // exponential => unary ( "**" unary )* ;
-        var exponential = primary.And(ZeroOrMany(exponent.And(primary)))
+        var exponential = postfix.And(ZeroOrMany(exponent.And(postfix)))
             .Then(static x =>
             {
                 LogicalExpression result = null!;

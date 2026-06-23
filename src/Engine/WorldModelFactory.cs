@@ -4,8 +4,16 @@ namespace QuestViva.Engine;
 
 public class WorldModelFactory(IConfig config)
 {
-    public WorldModel Create(GameData gameData, Stream? saveData)
+    public WorldModel Create(GameData gameData, Stream? saveData, bool? useNCalcOverride = null)
     {
-        return new WorldModel(config, gameData, saveData);
+        IConfig effectiveConfig = useNCalcOverride.HasValue
+            ? new OverrideNCalcConfig(useNCalcOverride.Value)
+            : config;
+        return new WorldModel(effectiveConfig, gameData, saveData);
+    }
+
+    private sealed class OverrideNCalcConfig(bool useNCalc) : IConfig
+    {
+        public bool UseNCalc => useNCalc;
     }
 }

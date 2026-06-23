@@ -1,4 +1,5 @@
 @rendermode InteractiveServer
+@using Microsoft.AspNetCore.WebUtilities
 @using QuestViva.Common
 @using QuestViva.PlayerCore
 @using QuestViva.WebPlayer.Components.Debugger
@@ -7,6 +8,9 @@
 @inject GameLauncher GameLauncher
 @inject GameSessionTracker GameSessionTracker
 @inject IJSRuntime JS
+@inject ILogger<Game> Logger
+@inject NavigationManager Navigation
+@inject IConfig Config
 
 <HeadContent>
     <script type="text/javascript" src="/res/lib/jquery-2.1.1.min.js" crossorigin="anonymous"></script>
@@ -88,10 +92,16 @@
             GameSessionTracker.GameEnded();
         }
 
-        game = GameLauncher.GetGame(gameData, saveData);
+        var query = QueryHelpers.ParseQuery(new Uri(Navigation.Uri).Query);
+        bool? useNCalcOverride = query.TryGetValue("ncalc", out var ncalcParam)
+            ? bool.TryParse(ncalcParam, out var ncalcValue) ? ncalcValue : null
+            : null;
+
+        game = GameLauncher.GetGame(gameData, saveData, useNCalcOverride);
 
         if (game == null) return;
 
+        game.LogError += ex => Logger.LogError(ex, "Game error in {GameId}", gameData.GameId);
         GameSessionTracker.GameStarted();
 
         var resourceUrlProvider = ResourceUrlProvider(gameData);
@@ -113,6 +123,8 @@
 
         if (result)
         {
+            var useNCalc = useNCalcOverride ?? Config.UseNCalc;
+            await JS.InvokeVoidAsync("console.log", $"NCalc: {useNCalc}");
             gameDebug = game as IGameDebug;
             await JS.InvokeVoidAsync("WebPlayer.setCanDebug", EnableDebug && gameDebug != null);
             StateHasChanged();

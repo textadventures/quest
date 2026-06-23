@@ -28,6 +28,8 @@ public abstract class ExpressionTestsBase
 
     private const string BoolAttributeName = "boolattribute";
     private const bool BoolAttributeValue = true;
+
+    private const string DictAttributeName = "dictattribute";
     private Element _child;
     private Element _object;
     private ScriptContext _scriptContext;
@@ -48,6 +50,7 @@ public abstract class ExpressionTestsBase
         _object.Fields.Set(IntAttributeName, IntAttributeValue);
         _object.Fields.Set(BoolAttributeName, BoolAttributeValue);
         _object.Fields.Set(DoubleAttributeName, DoubleAttributeValue);
+        _object.Fields.Set(DictAttributeName, new QuestDictionary<string> { { "key1", "val1" }, { "key2", "val2" } });
 
         _child = _worldModel.GetElementFactory(ElementType.Object).Create("child");
         _child.Parent = _object;
@@ -213,6 +216,93 @@ public abstract class ExpressionTestsBase
         result.ShouldBe(expectedResult);
     }
 
+    [DataTestMethod]
+    [DataRow("1 < 2", true)]
+    [DataRow("2 < 1", false)]
+    [DataRow("1 < 1", false)]
+    [DataRow("2 > 1", true)]
+    [DataRow("1 > 2", false)]
+    [DataRow("1 > 1", false)]
+    [DataRow("1 <= 1", true)]
+    [DataRow("1 <= 2", true)]
+    [DataRow("2 <= 1", false)]
+    [DataRow("1 >= 1", true)]
+    [DataRow("2 >= 1", true)]
+    [DataRow("1 >= 2", false)]
+    [DataRow($"{ObjectName}.{IntAttributeName} > 0", true)]
+    [DataRow($"{ObjectName}.{IntAttributeName} < 100", true)]
+    [DataRow($"{ObjectName}.{IntAttributeName} >= 42", true)]
+    [DataRow($"{ObjectName}.{IntAttributeName} <= 42", true)]
+    public void TestComparisonOperators(string expression, bool expectedResult)
+    {
+        var result = RunExpression<bool>(expression);
+        result.ShouldBe(expectedResult);
+    }
+
+    [DataTestMethod]
+    [DataRow("LCase(\"ABC\")", "abc")]
+    [DataRow("LCase(\"Hello World\")", "hello world")]
+    [DataRow("LengthOf(\"hello\")", 5)]
+    [DataRow("LengthOf(\"\")", 0)]
+    [DataRow("Mid(\"hello\", 2)", "ello")]
+    [DataRow("Mid(\"hello\", 2, 3)", "ell")]
+    [DataRow("Right(\"abcdef\", 3)", "def")]
+    [DataRow("Instr(\"hello world\", \"world\")", 7)]
+    [DataRow("Instr(\"hello world\", \"xyz\")", 0)]
+    [DataRow("EndsWith(\"hello\", \"lo\")", true)]
+    [DataRow("EndsWith(\"hello\", \"he\")", false)]
+    [DataRow("StartsWith(\"hello\", \"he\")", true)]
+    [DataRow("StartsWith(\"hello\", \"lo\")", false)]
+    [DataRow("Replace(\"hello world\", \"world\", \"there\")", "hello there")]
+    [DataRow("Trim(\"  hello  \")", "hello")]
+    [DataRow("IsNumeric(\"42\")", true)]
+    [DataRow("IsNumeric(\"abc\")", false)]
+    public void TestStringFunctions(string expression, object expectedResult)
+    {
+        var result = RunExpressionGeneric(expression);
+        result.ShouldBe(expectedResult);
+    }
+
+    [DataTestMethod]
+    [DataRow($"GetBoolean({ObjectName}, \"{BoolAttributeName}\")", true)]
+    [DataRow($"GetString({ObjectName}, \"{AttributeName}\")", AttributeValue)]
+    [DataRow($"GetInt({ObjectName}, \"{IntAttributeName}\")", IntAttributeValue)]
+    public void TestGetAttributeFunctions(string expression, object expectedResult)
+    {
+        var result = RunExpressionGeneric(expression);
+        result.ShouldBe(expectedResult);
+    }
+
+    [TestMethod]
+    public void TestGetDouble()
+    {
+        var result = RunExpressionGeneric($"GetDouble({ObjectName}, \"{DoubleAttributeName}\")");
+        ((double)result).ShouldBe(DoubleAttributeValue, 0.000001);
+    }
+
+    [DataTestMethod]
+    [DataRow($"DictionaryContains({ObjectName}.{DictAttributeName}, \"key1\")", true)]
+    [DataRow($"DictionaryContains({ObjectName}.{DictAttributeName}, \"missing\")", false)]
+    [DataRow($"DictionaryCount({ObjectName}.{DictAttributeName})", 2)]
+    [DataRow($"StringDictionaryItem({ObjectName}.{DictAttributeName}, \"key1\")", "val1")]
+    [DataRow($"StringDictionaryItem({ObjectName}.{DictAttributeName}, \"key2\")", "val2")]
+    public void TestDictionaryFunctions(string expression, object expectedResult)
+    {
+        var result = RunExpressionGeneric(expression);
+        result.ShouldBe(expectedResult);
+    }
+
+    [DataTestMethod]
+    [DataRow("ToInt(\"42\")", 42)]
+    [DataRow("ToDouble(\"3.14\")", 3.14)]
+    [DataRow("ToString(42)", "42")]
+    [DataRow("ToString(3.14)", "3.14")]
+    public void TestTypeConversionFunctions(string expression, object expectedResult)
+    {
+        var result = RunExpressionGeneric(expression);
+        result.ShouldBe(expectedResult);
+    }
+
     [TestMethod]
     public void TestCallingNewStringListFunction()
     {
@@ -229,6 +319,115 @@ public abstract class ExpressionTestsBase
         resultList.Count.ShouldBe(2);
         resultList[0].ShouldBe("a");
         resultList[1].ShouldBe("b");
+    }
+
+    [TestMethod]
+    public void TestListIndexingSyntax()
+    {
+        if (!UseNCalc) return; // FLEE handles [] natively; this verifies the NCalc parser extension
+
+        var list = new QuestList<string>(["alpha", "beta", "gamma"]);
+        var expr = new Expression<string>("mylist[0]", _scriptContext);
+        var c = new Context { Parameters = new Parameters { { "mylist", list } } };
+        expr.Execute(c).ShouldBe("alpha");
+
+        expr = new Expression<string>("mylist[2]", _scriptContext);
+        expr.Execute(c).ShouldBe("gamma");
+    }
+
+    [TestMethod]
+    public void TestListIndexingWithVariableIndex()
+    {
+        if (!UseNCalc) return; // FLEE handles [] natively; this verifies the NCalc parser extension
+
+        var list = new QuestList<string>(["alpha", "beta", "gamma"]);
+        var expr = new Expression<string>("mylist[idx]", _scriptContext);
+        var c = new Context { Parameters = new Parameters { { "mylist", list }, { "idx", 1 } } };
+        expr.Execute(c).ShouldBe("beta");
+    }
+
+    [TestMethod]
+    public void TestDictionaryIndexingSyntax()
+    {
+        if (!UseNCalc) return; // FLEE handles [] natively; this verifies the NCalc parser extension
+
+        var dict = new QuestDictionary<string> { { "foo", "bar" }, { "baz", "qux" } };
+        var expr = new Expression<string>("mydict[\"foo\"]", _scriptContext);
+        var c = new Context { Parameters = new Parameters { { "mydict", dict } } };
+        expr.Execute(c).ShouldBe("bar");
+    }
+
+    [TestMethod]
+    public void TestDictionaryIndexingWithVariableKey()
+    {
+        if (!UseNCalc) return; // FLEE handles [] natively; this verifies the NCalc parser extension
+
+        var dict = new QuestDictionary<string> { { "foo", "bar" }, { "baz", "qux" } };
+        var expr = new Expression<string>("mydict[k]", _scriptContext);
+        var c = new Context { Parameters = new Parameters { { "mydict", dict }, { "k", "baz" } } };
+        expr.Execute(c).ShouldBe("qux");
+    }
+
+    [TestMethod]
+    public void TestMethodCallSyntax()
+    {
+        if (!UseNCalc) return; // FLEE handles instance method calls natively; this verifies the NCalc parser extension
+
+        RunExpressionGeneric("\"hello world\".StartsWith(\"hello\")").ShouldBe(true);
+        RunExpressionGeneric("\"hello world\".EndsWith(\"world\")").ShouldBe(true);
+        RunExpressionGeneric("\"hello world\".Contains(\"lo wo\")").ShouldBe(true);
+        RunExpressionGeneric("\"hello world\".ToUpper()").ShouldBe("HELLO WORLD");
+    }
+
+    [TestMethod]
+    public void TestSplitFunction()
+    {
+        var result = RunExpressionGeneric("Split(\"a,b,c\", \",\")");
+        var resultList = result.ShouldBeAssignableTo<QuestList<string>>();
+        resultList.Count.ShouldBe(3);
+        resultList[0].ShouldBe("a");
+        resultList[1].ShouldBe("b");
+        resultList[2].ShouldBe("c");
+    }
+
+    [TestMethod]
+    public void TestJoinFunction()
+    {
+        var list = new QuestList<string>(["x", "y", "z"]);
+        var expr = new Expression<string>("Join(mylist, \",\")", _scriptContext);
+        var c = new Context { Parameters = new Parameters { { "mylist", list } } };
+        expr.Execute(c).ShouldBe("x,y,z");
+    }
+
+    [DataTestMethod]
+    [DataRow("cast(3.7, int)", 3)]
+    [DataRow("cast(3, double)", 3.0)]
+    [DataRow("cast(3, single)", 3.0f)]
+    [DataRow("1 + cast(2.9, int)", 3)]
+    public void TestCastFunction(string expression, object expectedResult)
+    {
+        RunExpressionGeneric(expression).ShouldBe(expectedResult);
+    }
+
+    [DataTestMethod]
+    [DataRow("if(true, \"yes\", \"no\")", "yes")]
+    [DataRow("if(false, \"yes\", \"no\")", "no")]
+    [DataRow("if(1 = 1, \"yes\", \"no\")", "yes")]
+    [DataRow("if(1 = 2, \"yes\", \"no\")", "no")]
+    public void TestIfFunction(string expression, string expectedResult)
+    {
+        RunExpression<string>(expression).ShouldBe(expectedResult);
+    }
+
+    [TestMethod]
+    public void TestIsDefinedFunction()
+    {
+        var expr = new Expression<bool>("IsDefined(\"myvar\")", _scriptContext);
+        var c = new Context { Parameters = new Parameters { { "myvar", 42 } } };
+        expr.Execute(c).ShouldBeTrue();
+
+        var c2 = new Context { Parameters = new Parameters() };
+        expr.Execute(c2).ShouldBeFalse();
     }
 
     [TestMethod]
