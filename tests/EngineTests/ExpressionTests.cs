@@ -369,6 +369,17 @@ public abstract class ExpressionTestsBase
     }
 
     [TestMethod]
+    public void TestMethodCallSyntax()
+    {
+        if (!UseNCalc) return; // FLEE handles instance method calls natively; this verifies the NCalc parser extension
+
+        RunExpressionGeneric("\"hello world\".StartsWith(\"hello\")").ShouldBe(true);
+        RunExpressionGeneric("\"hello world\".EndsWith(\"world\")").ShouldBe(true);
+        RunExpressionGeneric("\"hello world\".Contains(\"lo wo\")").ShouldBe(true);
+        RunExpressionGeneric("\"hello world\".ToUpper()").ShouldBe("HELLO WORLD");
+    }
+
+    [TestMethod]
     public void TestSplitFunction()
     {
         var result = RunExpressionGeneric("Split(\"a,b,c\", \",\")");

@@ -299,6 +299,22 @@ public class NcalcExpressionEvaluator<T> : IExpressionEvaluator<T>, IDynamicExpr
 
     private object EvaluateAslFunction(string name, FunctionEventArgs args)
     {
+        if (name == "__Quest_MethodCall__")
+        {
+            if (args.Parameters.Count < 2)
+                throw new Exception("__Quest_MethodCall__ requires at least 2 arguments");
+            var receiver = CoerceLong(args.Parameters.Evaluate(0));
+            var methodName = args.Parameters.Evaluate(1) as string
+                ?? throw new Exception("__Quest_MethodCall__ second argument must be a string method name");
+            var methodArgs = Enumerable.Range(2, args.Parameters.Count - 2)
+                .Select(i => CoerceLong(args.Parameters.Evaluate(i)))
+                .ToArray();
+            var argTypes = methodArgs.Select(a => a?.GetType() ?? typeof(object)).ToArray();
+            var method = receiver?.GetType().GetMethod(methodName, argTypes)
+                ?? throw new Exception($"Method '{methodName}' not found on '{receiver?.GetType().Name}'");
+            return method.Invoke(receiver, methodArgs);
+        }
+
         if (name == "__Quest_Index__")
         {
             if (args.Parameters.Count != 2)
