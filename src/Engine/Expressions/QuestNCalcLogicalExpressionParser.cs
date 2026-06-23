@@ -2,12 +2,11 @@
 
 using ExtendedNumerics;
 using NCalc;
-using NCalc.Domain;
 using NCalc.Exceptions;
 using NCalc.Parser;
 using Parlot;
 using Parlot.Fluent;
-using Identifier = NCalc.Domain.Identifier;
+using Identifier = NCalc.Identifier;
 
 namespace QuestViva.Engine.Expressions;
 
@@ -119,7 +118,7 @@ public static class QuestNCalcLogicalExpressionParser
                         }
                     }
 
-                    if (((LogicalExpressionParserContext) ctx).Options.HasFlag(ExpressionOptions.DecimalAsDefault))
+                    if (((LogicalExpressionParserContext) ctx).ParserOptions.DecimalAsDefault)
                     {
                         return new ValueExpression((decimal) result);
                     }
@@ -218,7 +217,7 @@ public static class QuestNCalcLogicalExpressionParser
                 .Then<LogicalExpression>((ctx, value) =>
                 {
                     if (value.Length == 1 &&
-                        ((LogicalExpressionParserContext) ctx).Options.HasFlag(ExpressionOptions.AllowCharValues))
+                        ((LogicalExpressionParserContext) ctx).ParserOptions.AllowCharValues)
                     {
                         return new ValueExpression(value.Span[0]);
                     }

@@ -23,7 +23,7 @@
         <ProjectReference Include="..\Utility\Utility.csproj"/>
     </ItemGroup>
     <ItemGroup>
-        <PackageReference Include="NCalcSync" Version="5.11.0"/>
+        <PackageReference Include="NCalcSync" Version="6.3.0"/>
         <PackageReference Include="System.Data.DataSetExtensions" Version="4.5.0"/>
     </ItemGroup>
     <ItemGroup>
