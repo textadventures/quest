@@ -1,10 +1,10 @@
 #nullable disable
 using System.Reflection;
-using System.Text.RegularExpressions;
 using NCalc;
 using NCalc.Cache;
 using NCalc.Factories;
 using NCalc.Handlers;
+using QuestViva.Engine;
 using QuestViva.Engine.Functions;
 using QuestViva.Engine.Scripts;
 
@@ -17,17 +17,10 @@ public class NcalcExpressionEvaluator<T> : IExpressionEvaluator<T>, IDynamicExpr
     private readonly ExpressionOwner _expressionOwner;
     private readonly string _expression;
 
-    // Matches Quest's list-indexing syntax: name[index] or name[variable]
-    private static readonly Regex s_listIndexer = new(@"(\w+)\[(\w+)\]", RegexOptions.Compiled);
-
-    private static string PreprocessExpression(string expression) =>
-        s_listIndexer.Replace(expression, m => $"ListItem({m.Groups[1].Value}, {m.Groups[2].Value})");
-
     public NcalcExpressionEvaluator(string expression, ScriptContext scriptContext)
     {
         _scriptContext = scriptContext;
         _expressionOwner = new ExpressionOwner(scriptContext.WorldModel);
-        expression = PreprocessExpression(expression);
         _expression = Utility.ConvertFleeFormatToVariables(expression);
 
         _nCalcExpression = new Expression(expression,
@@ -296,6 +289,17 @@ public class NcalcExpressionEvaluator<T> : IExpressionEvaluator<T>, IDynamicExpr
 
     private object EvaluateAslFunction(string name, FunctionEventArgs args)
     {
+        if (name == "__Quest_Index__")
+        {
+            if (args.Parameters.Count != 2)
+                throw new Exception("Subscript operator requires exactly 2 operands");
+            var collection = args.Parameters.Evaluate(0);
+            var key = CoerceLong(args.Parameters.Evaluate(1));
+            if (collection is IQuestList)
+                return _expressionOwner.ListItem(collection, (int) key);
+            return _expressionOwner.DictionaryItem(collection, key?.ToString());
+        }
+
         if (name.Equals("if", StringComparison.InvariantCultureIgnoreCase))
         {
             if (args.Parameters.Count != 3)

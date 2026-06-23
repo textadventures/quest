@@ -339,8 +339,22 @@ public static class QuestNCalcLogicalExpressionParser
             identifierExpression,
             list);
 
+        // postfix => primary ("[" expression "]")* ;
+        // Handles Quest's list/dictionary subscript syntax: list[0], dict[key], func()[0]
+        var postfix = primary.And(ZeroOrMany(openBrace.SkipAnd(expression).AndSkip(closeBrace)))
+            .Then<LogicalExpression>(x =>
+            {
+                var result = x.Item1;
+                foreach (var index in x.Item2)
+                {
+                    result = new Function(new Identifier("__Quest_Index__"),
+                        new LogicalExpressionList([result, index]));
+                }
+                return result;
+            });
+
         // exponential => unary ( "**" unary )* ;
-        var exponential = primary.And(ZeroOrMany(exponent.And(primary)))
+        var exponential = postfix.And(ZeroOrMany(exponent.And(postfix)))
             .Then(static x =>
             {
                 LogicalExpression result = null!;

@@ -324,8 +324,7 @@ public abstract class ExpressionTestsBase
     [TestMethod]
     public void TestListIndexingSyntax()
     {
-        // FLEE handles list[n] natively but requires its type context; this tests NCalc's preprocessor
-        if (!UseNCalc) return;
+        if (!UseNCalc) return; // FLEE handles [] natively; this verifies the NCalc parser extension
 
         var list = new QuestList<string>(["alpha", "beta", "gamma"]);
         var expr = new Expression<string>("mylist[0]", _scriptContext);
@@ -339,13 +338,34 @@ public abstract class ExpressionTestsBase
     [TestMethod]
     public void TestListIndexingWithVariableIndex()
     {
-        // FLEE handles list[n] natively but requires its type context; this tests NCalc's preprocessor
-        if (!UseNCalc) return;
+        if (!UseNCalc) return; // FLEE handles [] natively; this verifies the NCalc parser extension
 
         var list = new QuestList<string>(["alpha", "beta", "gamma"]);
         var expr = new Expression<string>("mylist[idx]", _scriptContext);
         var c = new Context { Parameters = new Parameters { { "mylist", list }, { "idx", 1 } } };
         expr.Execute(c).ShouldBe("beta");
+    }
+
+    [TestMethod]
+    public void TestDictionaryIndexingSyntax()
+    {
+        if (!UseNCalc) return; // FLEE handles [] natively; this verifies the NCalc parser extension
+
+        var dict = new QuestDictionary<string> { { "foo", "bar" }, { "baz", "qux" } };
+        var expr = new Expression<string>("mydict[\"foo\"]", _scriptContext);
+        var c = new Context { Parameters = new Parameters { { "mydict", dict } } };
+        expr.Execute(c).ShouldBe("bar");
+    }
+
+    [TestMethod]
+    public void TestDictionaryIndexingWithVariableKey()
+    {
+        if (!UseNCalc) return; // FLEE handles [] natively; this verifies the NCalc parser extension
+
+        var dict = new QuestDictionary<string> { { "foo", "bar" }, { "baz", "qux" } };
+        var expr = new Expression<string>("mydict[k]", _scriptContext);
+        var c = new Context { Parameters = new Parameters { { "mydict", dict }, { "k", "baz" } } };
+        expr.Execute(c).ShouldBe("qux");
     }
 
     [TestMethod]
