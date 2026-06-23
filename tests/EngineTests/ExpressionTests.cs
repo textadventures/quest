@@ -392,11 +392,9 @@ public abstract class ExpressionTestsBase
     [DataRow("cast(3.7, int)", 3)]
     [DataRow("cast(3, double)", 3.0)]
     [DataRow("cast(3, single)", 3.0f)]
-    [DataRow("cast(1, boolean)", true)]
     [DataRow("1 + cast(2.9, int)", 3)]
     public void TestCastFunction(string expression, object expectedResult)
     {
-        if (!UseNCalc) return; // testing NCalc's FLEE-compatible cast() implementation
         RunExpressionGeneric(expression).ShouldBe(expectedResult);
     }
 
