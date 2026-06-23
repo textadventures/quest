@@ -391,7 +391,6 @@ public abstract class ExpressionTestsBase
     [DataTestMethod]
     [DataRow("cast(3.7, int)", 3)]
     [DataRow("cast(3, double)", 3.0)]
-    [DataRow("cast(42, string)", "42")]
     [DataRow("1 + cast(2.9, int)", 3)]
     public void TestCastFunction(string expression, object expectedResult)
     {

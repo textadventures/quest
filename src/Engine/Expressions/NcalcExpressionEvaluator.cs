@@ -325,7 +325,6 @@ public class NcalcExpressionEvaluator<T> : IExpressionEvaluator<T>, IDynamicExpr
             {
                 "int" or "integer" or "long" => (int) Convert.ToDouble(value),
                 "double" or "float" => Convert.ToDouble(value),
-                "string" => Convert.ToString(value),
                 "bool" or "boolean" => Convert.ToBoolean(value),
                 "object" => value,
                 _ => throw new Exception($"cast(): unknown type '{typeName}'")
