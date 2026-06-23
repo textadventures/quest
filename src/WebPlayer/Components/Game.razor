@@ -7,6 +7,7 @@
 @inject GameLauncher GameLauncher
 @inject GameSessionTracker GameSessionTracker
 @inject IJSRuntime JS
+@inject ILogger<Game> Logger
 
 <HeadContent>
     <script type="text/javascript" src="/res/lib/jquery-2.1.1.min.js" crossorigin="anonymous"></script>
@@ -92,6 +93,7 @@
 
         if (game == null) return;
 
+        game.LogError += ex => Logger.LogError(ex, "Game error in {GameId}", gameData.GameId);
         GameSessionTracker.GameStarted();
 
         var resourceUrlProvider = ResourceUrlProvider(gameData);

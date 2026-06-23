@@ -1133,6 +1133,7 @@ public partial class WorldModel : IGame, IGameDebug
         {
             // TODO: Add some way of nicely showing script errors to the user (should be higher up the callstack)
             Print("Error running script: " + Utility.SafeXML(ex.Message));
+            LogException(ex);
         }
 
         return null;
