@@ -322,6 +322,33 @@ public abstract class ExpressionTestsBase
     }
 
     [TestMethod]
+    public void TestListIndexingSyntax()
+    {
+        // FLEE handles list[n] natively but requires its type context; this tests NCalc's preprocessor
+        if (!UseNCalc) return;
+
+        var list = new QuestList<string>(["alpha", "beta", "gamma"]);
+        var expr = new Expression<string>("mylist[0]", _scriptContext);
+        var c = new Context { Parameters = new Parameters { { "mylist", list } } };
+        expr.Execute(c).ShouldBe("alpha");
+
+        expr = new Expression<string>("mylist[2]", _scriptContext);
+        expr.Execute(c).ShouldBe("gamma");
+    }
+
+    [TestMethod]
+    public void TestListIndexingWithVariableIndex()
+    {
+        // FLEE handles list[n] natively but requires its type context; this tests NCalc's preprocessor
+        if (!UseNCalc) return;
+
+        var list = new QuestList<string>(["alpha", "beta", "gamma"]);
+        var expr = new Expression<string>("mylist[idx]", _scriptContext);
+        var c = new Context { Parameters = new Parameters { { "mylist", list }, { "idx", 1 } } };
+        expr.Execute(c).ShouldBe("beta");
+    }
+
+    [TestMethod]
     public void TestSplitFunction()
     {
         var result = RunExpressionGeneric("Split(\"a,b,c\", \",\")");

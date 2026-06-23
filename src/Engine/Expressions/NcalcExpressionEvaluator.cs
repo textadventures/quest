@@ -1,5 +1,6 @@
 #nullable disable
 using System.Reflection;
+using System.Text.RegularExpressions;
 using NCalc;
 using NCalc.Cache;
 using NCalc.Factories;
@@ -16,10 +17,17 @@ public class NcalcExpressionEvaluator<T> : IExpressionEvaluator<T>, IDynamicExpr
     private readonly ExpressionOwner _expressionOwner;
     private readonly string _expression;
 
+    // Matches Quest's list-indexing syntax: name[index] or name[variable]
+    private static readonly Regex s_listIndexer = new(@"(\w+)\[(\w+)\]", RegexOptions.Compiled);
+
+    private static string PreprocessExpression(string expression) =>
+        s_listIndexer.Replace(expression, m => $"ListItem({m.Groups[1].Value}, {m.Groups[2].Value})");
+
     public NcalcExpressionEvaluator(string expression, ScriptContext scriptContext)
     {
         _scriptContext = scriptContext;
         _expressionOwner = new ExpressionOwner(scriptContext.WorldModel);
+        expression = PreprocessExpression(expression);
         _expression = Utility.ConvertFleeFormatToVariables(expression);
 
         _nCalcExpression = new Expression(expression,
