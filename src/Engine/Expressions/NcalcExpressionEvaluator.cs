@@ -323,10 +323,21 @@ public class NcalcExpressionEvaluator<T> : IExpressionEvaluator<T>, IDynamicExpr
                 ?? throw new Exception("cast() second parameter must be a type name (int, double, string, bool)");
             return typeName switch
             {
-                "int" or "integer" or "long" => (int) Convert.ToDouble(value),
-                "double" or "float" => Convert.ToDouble(value),
-                "bool" or "boolean" => Convert.ToBoolean(value),
+                "boolean" => Convert.ToBoolean(value),
+                "byte" => Convert.ToByte(value),
+                "sbyte" => Convert.ToSByte(value),
+                "short" => Convert.ToInt16(value),
+                "ushort" => Convert.ToUInt16(value),
+                "int" => (int) Convert.ToDouble(value),
+                "uint" => Convert.ToUInt32(value),
+                "long" => Convert.ToInt64(value),
+                "ulong" => Convert.ToUInt64(value),
+                "single" => Convert.ToSingle(value),
+                "double" => Convert.ToDouble(value),
+                "decimal" => Convert.ToDecimal(value),
+                "char" => Convert.ToChar(value),
                 "object" => value,
+                "string" => Convert.ToString(value),
                 _ => throw new Exception($"cast(): unknown type '{typeName}'")
             };
         }
