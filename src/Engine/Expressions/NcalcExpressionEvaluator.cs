@@ -21,10 +21,9 @@ public class NcalcExpressionEvaluator<T> : IExpressionEvaluator<T>, IDynamicExpr
         _expressionOwner = new ExpressionOwner(scriptContext.WorldModel);
 
         _nCalcExpression = new Expression(expression,
-            new ExpressionContext(ExpressionOptions.NoStringTypeCoercion, null),
+            new ExpressionContext { Options = ExpressionOptions.NoStringTypeCoercion },
             QuestNCalcExpressionFactory.GetInstance(),
-            LogicalExpressionCache.GetInstance(),
-            new EvaluationVisitorFactory());
+            LogicalExpressionCache.GetInstance());
 
         _nCalcExpression.EvaluateFunction += EvaluateFunction;
         _nCalcExpression.EvaluateParameter += EvaluateParameter;
@@ -57,7 +56,7 @@ public class NcalcExpressionEvaluator<T> : IExpressionEvaluator<T>, IDynamicExpr
 
     private Context _context;
 
-    private void EvaluateParameter(string name, ParameterArgs args)
+    private void EvaluateParameter(string name, ParameterEventArgs args)
     {
         var tryMath = EvaluateVariableFromType(typeof(Math), name);
         if (tryMath.handled)
@@ -128,7 +127,7 @@ public class NcalcExpressionEvaluator<T> : IExpressionEvaluator<T>, IDynamicExpr
         }
     }
 
-    private void EvaluateFunction(string name, FunctionArgs args)
+    private void EvaluateFunction(string name, FunctionEventArgs args)
     {
         var tryExpressionOwner =
             EvaluateFunctionFromType(typeof(ExpressionOwner), _expressionOwner, name, args.Parameters);
@@ -163,8 +162,8 @@ public class NcalcExpressionEvaluator<T> : IExpressionEvaluator<T>, IDynamicExpr
     }
 
 #nullable enable
-    private static (bool handled, object? result) EvaluateFunctionFromType(Type type, object instance, string name,
-        Expression[] parameters)
+    private static (bool handled, object? result) EvaluateFunctionFromType(Type type, object? instance, string name,
+        FunctionData parameters)
     {
         var methods = type.GetMethods()
             .Where(m => m.IsPublic && m.Name.Equals(name, StringComparison.InvariantCultureIgnoreCase))
@@ -175,7 +174,9 @@ public class NcalcExpressionEvaluator<T> : IExpressionEvaluator<T>, IDynamicExpr
             return (false, null);
         }
 
-        var evaluatedArgs = parameters.Select(p => CoerceLong(p.Evaluate())).ToArray();
+        var evaluatedArgs = Enumerable.Range(0, parameters.Count)
+            .Select(i => CoerceLong(parameters.Evaluate(i)))
+            .ToArray();
 
         // First, try to find a method with a params parameter.
         var paramsMethods = methods
@@ -275,16 +276,16 @@ public class NcalcExpressionEvaluator<T> : IExpressionEvaluator<T>, IDynamicExpr
         return (true, field.GetRawConstantValue());
     }
 
-    private object EvaluateAslFunction(string name, FunctionArgs args)
+    private object EvaluateAslFunction(string name, FunctionEventArgs args)
     {
         if (name == "IsDefined")
         {
-            if (args.Parameters.Length != 1)
+            if (args.Parameters.Count != 1)
             {
                 throw new Exception("IsDefined function expects 1 parameter");
             }
 
-            if (args.Parameters[0].Evaluate() is not string variableName)
+            if (args.Parameters.Evaluate(0) is not string variableName)
             {
                 throw new Exception("IsDefined function expects a string parameter");
             }
@@ -300,12 +301,10 @@ public class NcalcExpressionEvaluator<T> : IExpressionEvaluator<T>, IDynamicExpr
         }
 
         var parameters = new Parameters();
-        var cnt = 0;
 
-        foreach (var val in args.Parameters)
+        for (var cnt = 0; cnt < args.Parameters.Count; cnt++)
         {
-            parameters.Add((string) proc.Fields[FieldDefinitions.ParamNames][cnt], val.Evaluate());
-            cnt++;
+            parameters.Add((string) proc.Fields[FieldDefinitions.ParamNames][cnt], args.Parameters.Evaluate(cnt));
         }
 
         return _scriptContext.WorldModel.RunProcedure(name, parameters, true);

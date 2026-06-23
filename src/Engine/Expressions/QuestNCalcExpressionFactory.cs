@@ -2,8 +2,8 @@
 
 using System.Globalization;
 using NCalc;
-using NCalc.Domain;
 using NCalc.Exceptions;
+using NCalc.Extensions;
 using NCalc.Factories;
 using NCalc.Parser;
 
@@ -18,7 +18,8 @@ public class QuestNCalcExpressionFactory : ILogicalExpressionFactory
     {
         try
         {
-            var parserContext = new LogicalExpressionParserContext(expression, options);
+            var parserOptions = LogicalExpressionParserOptionsExtensions.Create(options, CultureInfo.InvariantCulture);
+            var parserContext = new LogicalExpressionParserContext(expression, parserOptions, ct);
             var logicalExpression = QuestNCalcLogicalExpressionParser.Parse(parserContext);
 
             return logicalExpression ?? throw new ArgumentNullException(nameof(logicalExpression));
