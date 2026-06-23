@@ -341,6 +341,16 @@ public abstract class ExpressionTestsBase
         expr.Execute(c).ShouldBe("x,y,z");
     }
 
+    [DataTestMethod]
+    [DataRow("if(true, \"yes\", \"no\")", "yes")]
+    [DataRow("if(false, \"yes\", \"no\")", "no")]
+    [DataRow("if(1 = 1, \"yes\", \"no\")", "yes")]
+    [DataRow("if(1 = 2, \"yes\", \"no\")", "no")]
+    public void TestIfFunction(string expression, string expectedResult)
+    {
+        RunExpression<string>(expression).ShouldBe(expectedResult);
+    }
+
     [TestMethod]
     public void TestIsDefinedFunction()
     {

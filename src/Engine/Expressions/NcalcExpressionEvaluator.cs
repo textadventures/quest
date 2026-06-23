@@ -14,11 +14,13 @@ public class NcalcExpressionEvaluator<T> : IExpressionEvaluator<T>, IDynamicExpr
     private readonly ScriptContext _scriptContext;
     private readonly Expression _nCalcExpression;
     private readonly ExpressionOwner _expressionOwner;
+    private readonly string _expression;
 
     public NcalcExpressionEvaluator(string expression, ScriptContext scriptContext)
     {
         _scriptContext = scriptContext;
         _expressionOwner = new ExpressionOwner(scriptContext.WorldModel);
+        _expression = Utility.ConvertFleeFormatToVariables(expression);
 
         _nCalcExpression = new Expression(expression,
             new ExpressionContext { Options = ExpressionOptions.NoStringTypeCoercion },
@@ -37,15 +39,23 @@ public class NcalcExpressionEvaluator<T> : IExpressionEvaluator<T>, IDynamicExpr
     public T Evaluate(Context c)
     {
         _context = c;
-        var result = CoerceLong(_nCalcExpression.Evaluate());
-
-        // Converting ints to generic doubles is fun
-        if (typeof(T) == typeof(double) && result is int i)
+        try
         {
-            return (T) (object) (double) i;
-        }
+            var result = CoerceLong(_nCalcExpression.Evaluate());
 
-        return (T) result;
+            // Converting ints to generic doubles is fun
+            if (typeof(T) == typeof(double) && result is int i)
+            {
+                return (T) (object) (double) i;
+            }
+
+            return (T) result;
+        }
+        catch (Exception ex)
+        {
+            var innerMessage = ex.InnerException?.Message ?? ex.Message;
+            throw new Exception($"Error evaluating expression '{_expression}': {innerMessage}", ex);
+        }
     }
 
     // NCalc returns Int64 for integer literals; coerce to Int32 to match engine expectations.
@@ -278,6 +288,16 @@ public class NcalcExpressionEvaluator<T> : IExpressionEvaluator<T>, IDynamicExpr
 
     private object EvaluateAslFunction(string name, FunctionEventArgs args)
     {
+        if (name.Equals("if", StringComparison.InvariantCultureIgnoreCase))
+        {
+            if (args.Parameters.Count != 3)
+            {
+                throw new Exception("'if' function expects 3 parameters: condition, trueValue, falseValue");
+            }
+            var condition = args.Parameters.Evaluate(0);
+            return condition is true ? args.Parameters.Evaluate(1) : args.Parameters.Evaluate(2);
+        }
+
         if (name == "IsDefined")
         {
             if (args.Parameters.Count != 1)
