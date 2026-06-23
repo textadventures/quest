@@ -67,12 +67,22 @@ public class NcalcExpressionEvaluator<T> : IExpressionEvaluator<T>, IDynamicExpr
 
     private Context _context;
 
+    // Set to true while evaluating cast()'s type argument so EvaluateParameter
+    // returns the identifier name as a string rather than trying to resolve it as a variable.
+    private bool _evaluatingCastType;
+
     private void EvaluateParameter(string name, ParameterEventArgs args)
     {
         var tryMath = EvaluateVariableFromType(typeof(Math), name);
         if (tryMath.handled)
         {
             args.Result = tryMath.result;
+            return;
+        }
+
+        if (_evaluatingCastType)
+        {
+            args.Result = name.ToLowerInvariant();
             return;
         }
 
@@ -298,6 +308,28 @@ public class NcalcExpressionEvaluator<T> : IExpressionEvaluator<T>, IDynamicExpr
             if (collection is IQuestList)
                 return _expressionOwner.ListItem(collection, (int) key);
             return _expressionOwner.DictionaryItem(collection, key?.ToString());
+        }
+
+        if (name.Equals("cast", StringComparison.InvariantCultureIgnoreCase))
+        {
+            if (args.Parameters.Count != 2)
+                throw new Exception("cast() expects 2 parameters: value and type");
+            var value = CoerceLong(args.Parameters.Evaluate(0));
+            _evaluatingCastType = true;
+            object typeArg;
+            try { typeArg = args.Parameters.Evaluate(1); }
+            finally { _evaluatingCastType = false; }
+            var typeName = typeArg as string
+                ?? throw new Exception("cast() second parameter must be a type name (int, double, string, bool)");
+            return typeName switch
+            {
+                "int" or "integer" or "long" => (int) Convert.ToDouble(value),
+                "double" or "float" => Convert.ToDouble(value),
+                "string" => Convert.ToString(value),
+                "bool" or "boolean" => Convert.ToBoolean(value),
+                "object" => value,
+                _ => throw new Exception($"cast(): unknown type '{typeName}'")
+            };
         }
 
         if (name.Equals("if", StringComparison.InvariantCultureIgnoreCase))
