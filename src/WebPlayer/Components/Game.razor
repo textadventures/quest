@@ -10,6 +10,7 @@
 @inject IJSRuntime JS
 @inject ILogger<Game> Logger
 @inject NavigationManager Navigation
+@inject IConfig Config
 
 <HeadContent>
     <script type="text/javascript" src="/res/lib/jquery-2.1.1.min.js" crossorigin="anonymous"></script>
@@ -122,6 +123,8 @@
 
         if (result)
         {
+            var useNCalc = useNCalcOverride ?? Config.UseNCalc;
+            await JS.InvokeVoidAsync("console.log", $"NCalc: {useNCalc}");
             gameDebug = game as IGameDebug;
             await JS.InvokeVoidAsync("WebPlayer.setCanDebug", EnableDebug && gameDebug != null);
             StateHasChanged();
