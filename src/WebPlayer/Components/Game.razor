@@ -1,4 +1,5 @@
 @rendermode InteractiveServer
+@using Microsoft.AspNetCore.WebUtilities
 @using QuestViva.Common
 @using QuestViva.PlayerCore
 @using QuestViva.WebPlayer.Components.Debugger
@@ -8,6 +9,7 @@
 @inject GameSessionTracker GameSessionTracker
 @inject IJSRuntime JS
 @inject ILogger<Game> Logger
+@inject NavigationManager Navigation
 
 <HeadContent>
     <script type="text/javascript" src="/res/lib/jquery-2.1.1.min.js" crossorigin="anonymous"></script>
@@ -89,7 +91,12 @@
             GameSessionTracker.GameEnded();
         }
 
-        game = GameLauncher.GetGame(gameData, saveData);
+        var query = QueryHelpers.ParseQuery(new Uri(Navigation.Uri).Query);
+        bool? useNCalcOverride = query.TryGetValue("ncalc", out var ncalcParam)
+            ? bool.TryParse(ncalcParam, out var ncalcValue) ? ncalcValue : null
+            : null;
+
+        game = GameLauncher.GetGame(gameData, saveData, useNCalcOverride);
 
         if (game == null) return;
 
