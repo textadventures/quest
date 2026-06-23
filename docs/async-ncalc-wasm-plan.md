@@ -6,7 +6,7 @@ Quest Viva's Engine currently uses thread-blocking to "pause" script execution w
 waiting for player input (menus, questions, `wait` commands). This is done via
 `Monitor.Wait()/Pulse()` in `WorldModel.cs`. The goal is to replace this with
 `async/await`, which eliminates the need for background threads and makes the Engine
-compatible with Blazor WebAssembly.
+compatible with a browser-hosted WASM player.
 
 The NCalc → async NCalc → no threads → WASM chain is the right path. The expression
 evaluator isn't where threads are primarily used, but async NCalc is a necessary link
@@ -76,12 +76,66 @@ in the player becomes `await`-based or disappears.
 
 ---
 
-## Phase 5 — WasmPlayer
+## Phase 5 — Legacy asyncification
 
-- A `WasmPlayer` project analogous to `WasmEditor` (Blazor WASM + `[JSExport]` bridge)
-- Wire it up with `WasmConfig` (already sets `UseNCalc = true`)
-- No threads required — the entire game loop runs on the browser's main thread, yielding at `await` on user-input `TaskCompletionSource` tasks
-- JS calls `SetMenuResponse()` etc. from browser events → `TCS.SetResult()` → game coroutine resumes
+Legacy (`src/Legacy/`) implements its own Q4 format interpreter (`V4Game.cs`) rather than
+sharing the Engine's script execution pipeline. Quest 4 scripting is much more limited
+than ASLX, so the surface area is a fraction of the Engine work — but it needs the same
+treatment (replace blocking waits with `TaskCompletionSource`, make execution methods
+async).
+
+Do this in the same phase as the Engine rather than after, so the stack isn't partially
+threaded when the WasmPlayer is built.
+
+---
+
+## Phase 6 — WasmPlayer
+
+The UI approach should follow WasmEditor (pure JS + C# WASM DLL) rather than Blazor
+WASM. Reasons:
+
+- **Consistent with WasmEditor** — same build pipeline, same `WasmConfig`, same
+  deployment model
+- **Smaller and faster** — no Blazor framework overhead on top of the .NET WASM runtime
+- **Game output is already HTML** — PlayerCore renders rich HTML output; the JS layer
+  just needs to route it into a container, not render it
+- **CDN / Electron target** — a pure JS shell is portable to both; Blazor WASM is not
+
+### WasmPlayer project
+
+- `WasmPlayer` project targeting `browser-wasm`, analogous to `WasmEditor`
+- `WasmPlayerBridge.cs` — `[JSExport]` entry points for starting a game, sending player
+  input, answering menus/questions
+- Wire up with `WasmConfig` (already sets `UseNCalc = true`)
+- Game loop runs on the browser's main thread, yielding at `await` on
+  `TaskCompletionSource` tasks when waiting for player input
+- JS calls `SetMenuResponse()` etc. from UI events → `TCS.SetResult()` → game coroutine
+  resumes
+
+### Key design task: `[JSImport]` callback interface
+
+Unlike WasmEditor (where JS calls C# and C# returns data), the player's primary
+communication direction is **C# → JS**: every line of output, sound, menu, and turn
+completion needs to be pushed to the UI in real time. This requires `[JSImport]`
+callbacks — not yet implemented in WasmEditor, but essential for the player.
+
+Define this interface upfront before building the bridge. Events to cover:
+
+- Text/HTML output (`Print`)
+- Sound (`PlaySound`, `StopSound`)
+- Show menu / ask question (pause game, await response)
+- Turn begin / turn end (for UI state like disabling input mid-turn)
+- Game over
+
+### JS frontend
+
+A lightweight Svelte (or vanilla JS) frontend analogous to `src/WebEditor/`:
+
+- Renders game output HTML into a scrolling panel
+- Routes player text input and UI responses back to `[JSExport]` methods on the bridge
+- Loads the game file via the same `FileAdapter` interface as WebEditor (reuse or extract
+  into a shared package)
+- Handles audio via jPlayer (already embedded in PlayerCore) or a JS replacement
 
 ---
 
@@ -90,4 +144,4 @@ in the player becomes `await`-based or disappears.
 - **Flee must be removed or shimmed first** — it has no async path. This migration is a good forcing function to finish removing Flee entirely.
 - **Tests will need updating** — existing tests call `Execute()` synchronously. Moving to `ExecuteAsync()` means test infrastructure changes too.
 - **Callback manager overlap** — there's already a partial callback-based async mechanism (`CallbackManager`, `StartWaitAsync`). Phase 3 should decide whether to unify these or remove the old path outright.
-- **WASM threading** — Blazor WASM has experimental multi-threading (behind a flag, requires `SharedArrayBuffer`), but the goal is to not need it. Single-threaded async is the cleaner target.
+- **SharedArrayBuffer** — even with Quest's own threading removed, the .NET WASM runtime uses `SharedArrayBuffer` internally (for the GC). The COOP/COEP headers required by WasmEditor will be needed for WasmPlayer too. Confirm the CDN target serves these headers.
