@@ -489,7 +489,7 @@ public abstract class ExpressionTestsBase
         expr.Execute(c).ShouldBe(15);
     }
 
-[DataTestMethod]
+    [DataTestMethod]
     [DataRow("0xFF", 255)]
     [DataRow("0x10", 16)]
     [DataRow("0xABCDEF", 11259375)]
