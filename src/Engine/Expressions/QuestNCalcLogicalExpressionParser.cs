@@ -33,7 +33,7 @@ public static class QuestNCalcLogicalExpressionParser
          * shift          => additive ( ( "<<" | ">>" ) additive )* ;
          * additive       => multiplicative ( ( "-" | "+" ) multiplicative )* ;
          * multiplicative => exponential ( "/" | "*" | "%") exponential )* ;
-         * exponential    => postfix ( "**" | "^" postfix )* ;
+         * exponential    => postfix ( "^" postfix )* ;
          * postfix        => primary ( "[" expression "]" | "." identifier "(" arguments ")" )* ;
          * unary          => ( "-" | "not" | "!" ) primary
          *
@@ -152,8 +152,7 @@ public static class QuestNCalcLogicalExpressionParser
         var leftShift = Terms.Text("<<");
         var rightShift = Terms.Text(">>");
 
-        // "^" is FLEE's exponentiation operator; "**" is NCalc's. Both mean the same here.
-        var exponent = OneOf(Terms.Text("**"), Terms.Text("^"));
+        var exponent = Terms.Text("^"); // FLEE's exponentiation operator
         var openParen = Terms.Char('(');
         var closeParen = Terms.Char(')');
         var dot = Terms.Char('.');
@@ -372,7 +371,7 @@ public static class QuestNCalcLogicalExpressionParser
         // Deferred so exponential can reference unary (its right operand) before unary is defined.
         var unary = Deferred<LogicalExpression>();
 
-        // exponential => unary ( "**" | "^" unary )* ;
+        // exponential => unary ( "^" unary )* ;
         // Right operand is unary (not postfix) so that e.g. "e ^ -x" parses correctly.
         var exponential = postfix.And(ZeroOrMany(exponent.And(unary)))
             .Then(static x =>

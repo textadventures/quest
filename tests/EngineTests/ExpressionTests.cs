@@ -331,13 +331,6 @@ public abstract class ExpressionTestsBase
     }
 
     [TestMethod]
-    public void TestNCalcExponentiationOperator()
-    {
-        if (!UseNCalc) return; // "**" is NCalc syntax; FLEE uses "^" which is tested in TestDoubleExpressions
-        RunExpression<double>("2 ** 3").ShouldBe(8.0);
-    }
-
-    [TestMethod]
     public void TestListIndexingSyntax()
     {
         if (!UseNCalc) return; // FLEE handles [] natively; this verifies the NCalc parser extension
