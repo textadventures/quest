@@ -159,6 +159,10 @@ public abstract class ExpressionTestsBase
     [DataRow("true or true", true)]
     [DataRow("false or true", true)]
     [DataRow("false or false", false)]
+    [DataRow("true xor true", false)]
+    [DataRow("true xor false", true)]
+    [DataRow("false xor true", true)]
+    [DataRow("false xor false", false)]
     [DataRow($"{ObjectName}.{BoolAttributeName}", BoolAttributeValue)]
     [DataRow($"not {ObjectName}.{BoolAttributeName}", !BoolAttributeValue)]
     [DataRow("1 = 1", true)]
@@ -193,6 +197,8 @@ public abstract class ExpressionTestsBase
     [DataRow("ListContains(AllObjects(), object)", true)]
     [DataRow("listcontains(allobjects(), object)", true)]
     [DataRow("CustomBooleanFunction(true, false)", true)]
+    [DataRow($"{OtherObjectName} = {OtherObjectName} and (true xor false)", true)]
+    [DataRow($"{OtherObjectName} = {OtherObjectName} and (false xor false)", false)]
     public void TestBooleanExpressions(string expression, bool expectedResult)
     {
         var result = RunExpression<bool>(expression);

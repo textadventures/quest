@@ -27,7 +27,7 @@ public static class QuestNCalcLogicalExpressionParser
          * Grammar:
          * expression     => ternary ( ( "-" | "+" ) ternary )* ;
          * ternary        => logical ( "?" logical ":" logical)?
-         * logical        => equality ( ( "and" | "or" ) equality )* ;
+         * logical        => equality ( ( "and" | "or" | "xor" ) equality )* ;
          * equality       => relational ( ( "=" | "!=" | ... ) relational )* ;
          * relational     => shift ( ( ">=" | ">" | ... ) shift )* ;
          * shift          => additive ( ( "<<" | ">>" ) additive )* ;
@@ -467,22 +467,39 @@ public static class QuestNCalcLogicalExpressionParser
             (not, value => new UnaryExpression(UnaryExpressionType.Not, value))
         );
 
-        var andParser = and.Then(BinaryExpressionType.And)
-            .Or(bitwiseAnd.Then(BinaryExpressionType.BitwiseAnd));
+        var andParser = and.Then<Func<LogicalExpression, LogicalExpression, LogicalExpression>>(
+                _ => (a, b) => new BinaryExpression(BinaryExpressionType.And, a, b))
+            .Or(bitwiseAnd.Then<Func<LogicalExpression, LogicalExpression, LogicalExpression>>(
+                _ => (a, b) => new BinaryExpression(BinaryExpressionType.BitwiseAnd, a, b)));
 
-        var orParser = or.Then(BinaryExpressionType.Or)
-            .Or(bitwiseOr.Then(BinaryExpressionType.BitwiseOr));
+        var orParser = or.Then<Func<LogicalExpression, LogicalExpression, LogicalExpression>>(
+                _ => (a, b) => new BinaryExpression(BinaryExpressionType.Or, a, b))
+            .Or(bitwiseOr.Then<Func<LogicalExpression, LogicalExpression, LogicalExpression>>(
+                _ => (a, b) => new BinaryExpression(BinaryExpressionType.BitwiseOr, a, b)));
 
-        var xorParser = bitwiseXOr.Then(BinaryExpressionType.BitwiseXOr);
+        // "xor" text keyword → logical XOR: (a or b) and not (a and b), to avoid type issues
+        // with BitwiseXOr which returns UInt64 when applied to booleans.
+        // "^" symbol → bitwise XOR (integer/bool raw bitwise operation).
+        var xorParser = OneOf(
+            Terms.Text("XOR", true).Then<Func<LogicalExpression, LogicalExpression, LogicalExpression>>(
+                _ => (a, b) =>
+                {
+                    var aOrB = new BinaryExpression(BinaryExpressionType.Or, a, b);
+                    var aAndB = new BinaryExpression(BinaryExpressionType.And, a, b);
+                    return new BinaryExpression(BinaryExpressionType.And, aOrB,
+                        new UnaryExpression(UnaryExpressionType.Not, aAndB));
+                }),
+            bitwiseXOr.Then<Func<LogicalExpression, LogicalExpression, LogicalExpression>>(
+                _ => (a, b) => new BinaryExpression(BinaryExpressionType.BitwiseXOr, a, b)));
 
-        // logical => equality ( ( "and" | "or" ) equality )* ;
+        // logical => equality ( ( "and" | "or" | "xor" ) equality )* ;
         var logical = notOperator.And(ZeroOrMany(OneOf(andParser, orParser, xorParser).And(notOperator)))
-            .Then(static x =>
+            .Then(x =>
             {
                 var result = x.Item1;
-                foreach (var op in x.Item2)
+                foreach (var (combiner, right) in x.Item2)
                 {
-                    result = new BinaryExpression(op.Item1, result, op.Item2);
+                    result = combiner(result, right);
                 }
 
                 return result;
