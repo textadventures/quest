@@ -139,6 +139,9 @@ public abstract class ExpressionTestsBase
     [DataRow("Sqrt(4)", 2.0)]
     [DataRow("sqrt(4)", 2.0)]
     [DataRow("Abs(-5)", 5.0)]
+    [DataRow("2 ^ 3", 8.0)]
+    [DataRow("2 ^ -1", 0.5)]
+    [DataRow("E ^ -1", 1.0 / Math.E)]
     public void TestDoubleExpressions(string expression, double expectedResult)
     {
         var result = RunExpression<double>(expression);
@@ -159,6 +162,10 @@ public abstract class ExpressionTestsBase
     [DataRow("true or true", true)]
     [DataRow("false or true", true)]
     [DataRow("false or false", false)]
+    [DataRow("true xor true", false)]
+    [DataRow("true xor false", true)]
+    [DataRow("false xor true", true)]
+    [DataRow("false xor false", false)]
     [DataRow($"{ObjectName}.{BoolAttributeName}", BoolAttributeValue)]
     [DataRow($"not {ObjectName}.{BoolAttributeName}", !BoolAttributeValue)]
     [DataRow("1 = 1", true)]
@@ -193,6 +200,8 @@ public abstract class ExpressionTestsBase
     [DataRow("ListContains(AllObjects(), object)", true)]
     [DataRow("listcontains(allobjects(), object)", true)]
     [DataRow("CustomBooleanFunction(true, false)", true)]
+    [DataRow($"{OtherObjectName} = {OtherObjectName} and (true xor false)", true)]
+    [DataRow($"{OtherObjectName} = {OtherObjectName} and (false xor false)", false)]
     public void TestBooleanExpressions(string expression, bool expectedResult)
     {
         var result = RunExpression<bool>(expression);
@@ -470,6 +479,39 @@ public abstract class ExpressionTestsBase
         var now = DateTimeOffset.UtcNow;
         var expected = (int) now.ToUnixTimeSeconds();
         Math.Abs(result - expected).ShouldBeLessThan(2);
+    }
+
+    [TestMethod]
+    public void TestUnicodeIdentifiers()
+    {
+        var expr = new Expression<int>("sérgio + fósforo", _scriptContext);
+        var c = new Context { Parameters = new Parameters { { "sérgio", 10 }, { "fósforo", 5 } } };
+        expr.Execute(c).ShouldBe(15);
+    }
+
+    [DataTestMethod]
+    [DataRow("0xFF", 255)]
+    [DataRow("0x10", 16)]
+    [DataRow("0xABCDEF", 11259375)]
+    [DataRow("0xFF + 1", 256)]
+    [DataRow("0x10u", 16)]
+    [DataRow("42u", 42)]
+    [DataRow("100L", 100)]
+    public void TestFleeCompatNumericLiterals(string expression, int expectedResult)
+    {
+        if (!UseNCalc) return;
+        RunExpression<int>(expression).ShouldBe(expectedResult);
+    }
+
+    [DataTestMethod]
+    [DataRow("1.5f", 1.5)]
+    [DataRow("2.0m", 2.0)]
+    [DataRow("3.14d", 3.14)]
+    public void TestFleeCompatRealSuffixes(string expression, double expectedResult)
+    {
+        if (!UseNCalc) return;
+        var result = RunExpression<double>(expression);
+        Math.Abs(result - expectedResult).ShouldBeLessThan(0.000001);
     }
 }
 

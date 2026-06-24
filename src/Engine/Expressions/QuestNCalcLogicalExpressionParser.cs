@@ -27,13 +27,13 @@ public static class QuestNCalcLogicalExpressionParser
          * Grammar:
          * expression     => ternary ( ( "-" | "+" ) ternary )* ;
          * ternary        => logical ( "?" logical ":" logical)?
-         * logical        => equality ( ( "and" | "or" ) equality )* ;
+         * logical        => equality ( ( "and" | "or" | "xor" ) equality )* ;
          * equality       => relational ( ( "=" | "!=" | ... ) relational )* ;
          * relational     => shift ( ( ">=" | ">" | ... ) shift )* ;
          * shift          => additive ( ( "<<" | ">>" ) additive )* ;
          * additive       => multiplicative ( ( "-" | "+" ) multiplicative )* ;
          * multiplicative => exponential ( "/" | "*" | "%") exponential )* ;
-         * exponential    => postfix ( "**" postfix )* ;
+         * exponential    => postfix ( "^" postfix )* ;
          * postfix        => primary ( "[" expression "]" | "." identifier "(" arguments ")" )* ;
          * unary          => ( "-" | "not" | "!" ) primary
          *
@@ -152,7 +152,7 @@ public static class QuestNCalcLogicalExpressionParser
         var leftShift = Terms.Text("<<");
         var rightShift = Terms.Text(">>");
 
-        var exponent = Terms.Text("**");
+        var exponent = Terms.Text("^"); // FLEE's exponentiation operator
         var openParen = Terms.Char('(');
         var closeParen = Terms.Char(')');
         var dot = Terms.Char('.');
@@ -164,7 +164,9 @@ public static class QuestNCalcLogicalExpressionParser
         var colon = Terms.Char(':');
         var semicolon = Terms.Char(';');
 
-        var identifier = Terms.Identifier();
+        // extraStart/extraPart extend the default ASCII-only identifier to include Unicode letters,
+        // so that object names like "sérgio" or "fósforo" (used in non-English Quest games) are valid.
+        var identifier = Terms.Identifier(extraStart: char.IsLetter, extraPart: char.IsLetterOrDigit);
 
         var not = OneOf(
             Terms.Text("NOT", true).AndSkip(OneOf(Literals.WhiteSpace().Or(Not(AnyCharBefore(openParen))))),
@@ -174,7 +176,6 @@ public static class QuestNCalcLogicalExpressionParser
 
         var bitwiseAnd = Terms.Text("&");
         var bitwiseOr = Terms.Text("|");
-        var bitwiseXOr = Terms.Text("^");
         var bitwiseNot = Terms.Text("~");
 
         // "(" expression ")"
@@ -327,10 +328,30 @@ public static class QuestNCalcLogicalExpressionParser
 
         var guid = OneOf(guidWithHyphens, guidWithoutHyphens);
 
+        // FLEE hex integer literal: 0x[0-9a-fA-F]+ with optional u/l suffix (suffix ignored for type)
+        var hexLiteralSuffix = Literals.Pattern(c => c is 'u' or 'U' or 'l' or 'L', 1, 2);
+        var hexLiteral = Terms.Text("0x", true)
+            .SkipAnd(Literals.Pattern(Character.IsHexDigit, 1))
+            .AndSkip(ZeroOrOne(hexLiteralSuffix))
+            .Then<LogicalExpression>(hexSpan =>
+            {
+                var value = Convert.ToUInt64(hexSpan.ToString(), 16);
+                if (value <= int.MaxValue) return new ValueExpression((int)value);
+                if (value <= long.MaxValue) return new ValueExpression((long)value);
+                return new ValueExpression(unchecked((long)value));
+            });
+
+        // FLEE numeric type suffix (u, l, ul, lu, f, d, m) — consumed and ignored; type is
+        // determined by the number format, not the suffix.
+        var numericLiteralSuffix = Literals.Pattern(
+            c => c is 'u' or 'U' or 'l' or 'L' or 'f' or 'F' or 'd' or 'D' or 'm' or 'M', 1, 2);
+        var numberWithOptionalSuffix = number.AndSkip(ZeroOrOne(numericLiteralSuffix));
+
         // primary => GUID | NUMBER | identifier| DateTime | string | function | boolean | groupExpression | list ;
         var primary = OneOf(
             guid,
-            number,
+            hexLiteral,
+            numberWithOptionalSuffix,
             decimalOrDoubleNumber,
             booleanTrue,
             booleanFalse,
@@ -369,8 +390,12 @@ public static class QuestNCalcLogicalExpressionParser
                 return result;
             });
 
-        // exponential => unary ( "**" unary )* ;
-        var exponential = postfix.And(ZeroOrMany(exponent.And(postfix)))
+        // Deferred so exponential can reference unary (its right operand) before unary is defined.
+        var unary = Deferred<LogicalExpression>();
+
+        // exponential => unary ( "^" unary )* ;
+        // Right operand is unary (not postfix) so that e.g. "e ^ -x" parses correctly.
+        var exponential = postfix.And(ZeroOrMany(exponent.And(unary)))
             .Then(static x =>
             {
                 LogicalExpression result = null!;
@@ -397,10 +422,9 @@ public static class QuestNCalcLogicalExpressionParser
                 return result;
             });
 
-        // ( "-" | "not" ) unary | primary;
-        var unary = exponential.Unary(
-            // This is where Quest's parser differs from the NCalc default, as we handle "not" further down.
-            // (not, value => new UnaryExpression(UnaryExpressionType.Not, value)),
+        // ( "-" | "~" ) unary | exponential;
+        // This is where Quest's parser differs from the NCalc default, as we handle "not" further down.
+        unary.Parser = exponential.Unary(
             (minus, value => new UnaryExpression(UnaryExpressionType.Negate, value)),
             (bitwiseNot, value => new UnaryExpression(UnaryExpressionType.BitwiseNot, value))
         );
@@ -467,22 +491,36 @@ public static class QuestNCalcLogicalExpressionParser
             (not, value => new UnaryExpression(UnaryExpressionType.Not, value))
         );
 
-        var andParser = and.Then(BinaryExpressionType.And)
-            .Or(bitwiseAnd.Then(BinaryExpressionType.BitwiseAnd));
+        var andParser = and.Then<Func<LogicalExpression, LogicalExpression, LogicalExpression>>(
+                _ => (a, b) => new BinaryExpression(BinaryExpressionType.And, a, b))
+            .Or(bitwiseAnd.Then<Func<LogicalExpression, LogicalExpression, LogicalExpression>>(
+                _ => (a, b) => new BinaryExpression(BinaryExpressionType.BitwiseAnd, a, b)));
 
-        var orParser = or.Then(BinaryExpressionType.Or)
-            .Or(bitwiseOr.Then(BinaryExpressionType.BitwiseOr));
+        var orParser = or.Then<Func<LogicalExpression, LogicalExpression, LogicalExpression>>(
+                _ => (a, b) => new BinaryExpression(BinaryExpressionType.Or, a, b))
+            .Or(bitwiseOr.Then<Func<LogicalExpression, LogicalExpression, LogicalExpression>>(
+                _ => (a, b) => new BinaryExpression(BinaryExpressionType.BitwiseOr, a, b)));
 
-        var xorParser = bitwiseXOr.Then(BinaryExpressionType.BitwiseXOr);
+        // "xor" text keyword → logical XOR: (a or b) and not (a and b), to avoid type issues
+        // with BitwiseXOr which returns UInt64 when applied to booleans.
+        // Note: "^" is exponentiation (FLEE compat), not XOR.
+        var xorParser = Terms.Text("XOR", true).Then<Func<LogicalExpression, LogicalExpression, LogicalExpression>>(
+            _ => (a, b) =>
+            {
+                var aOrB = new BinaryExpression(BinaryExpressionType.Or, a, b);
+                var aAndB = new BinaryExpression(BinaryExpressionType.And, a, b);
+                return new BinaryExpression(BinaryExpressionType.And, aOrB,
+                    new UnaryExpression(UnaryExpressionType.Not, aAndB));
+            });
 
-        // logical => equality ( ( "and" | "or" ) equality )* ;
+        // logical => equality ( ( "and" | "or" | "xor" ) equality )* ;
         var logical = notOperator.And(ZeroOrMany(OneOf(andParser, orParser, xorParser).And(notOperator)))
-            .Then(static x =>
+            .Then(x =>
             {
                 var result = x.Item1;
-                foreach (var op in x.Item2)
+                foreach (var (combiner, right) in x.Item2)
                 {
-                    result = new BinaryExpression(op.Item1, result, op.Item2);
+                    result = combiner(result, right);
                 }
 
                 return result;
