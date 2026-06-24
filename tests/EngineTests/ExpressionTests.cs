@@ -481,7 +481,16 @@ public abstract class ExpressionTestsBase
         Math.Abs(result - expected).ShouldBeLessThan(2);
     }
 
-    [DataTestMethod]
+    [TestMethod]
+    public void TestUnicodeIdentifiers()
+    {
+        if (!UseNCalc) return;  // FLEE parity: non-ASCII object/attribute names (e.g. Portuguese games)
+        var expr = new Expression<int>("sérgio + fósforo", _scriptContext);
+        var c = new Context { Parameters = new Parameters { { "sérgio", 10 }, { "fósforo", 5 } } };
+        expr.Execute(c).ShouldBe(15);
+    }
+
+[DataTestMethod]
     [DataRow("0xFF", 255)]
     [DataRow("0x10", 16)]
     [DataRow("0xABCDEF", 11259375)]

@@ -164,7 +164,9 @@ public static class QuestNCalcLogicalExpressionParser
         var colon = Terms.Char(':');
         var semicolon = Terms.Char(';');
 
-        var identifier = Terms.Identifier();
+        // extraStart/extraPart extend the default ASCII-only identifier to include Unicode letters,
+        // so that object names like "sérgio" or "fósforo" (common in non-English FLEE games) are valid.
+        var identifier = Terms.Identifier(extraStart: char.IsLetter, extraPart: char.IsLetterOrDigit);
 
         var not = OneOf(
             Terms.Text("NOT", true).AndSkip(OneOf(Literals.WhiteSpace().Or(Not(AnyCharBefore(openParen))))),
