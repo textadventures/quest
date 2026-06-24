@@ -480,6 +480,31 @@ public abstract class ExpressionTestsBase
         var expected = (int) now.ToUnixTimeSeconds();
         Math.Abs(result - expected).ShouldBeLessThan(2);
     }
+
+    [DataTestMethod]
+    [DataRow("0xFF", 255)]
+    [DataRow("0x10", 16)]
+    [DataRow("0xABCDEF", 11259375)]
+    [DataRow("0xFF + 1", 256)]
+    [DataRow("0x10u", 16)]
+    [DataRow("42u", 42)]
+    [DataRow("100L", 100)]
+    public void TestFleeCompatNumericLiterals(string expression, int expectedResult)
+    {
+        if (!UseNCalc) return;
+        RunExpression<int>(expression).ShouldBe(expectedResult);
+    }
+
+    [DataTestMethod]
+    [DataRow("1.5f", 1.5)]
+    [DataRow("2.0m", 2.0)]
+    [DataRow("3.14d", 3.14)]
+    public void TestFleeCompatRealSuffixes(string expression, double expectedResult)
+    {
+        if (!UseNCalc) return;
+        var result = RunExpression<double>(expression);
+        Math.Abs(result - expectedResult).ShouldBeLessThan(0.000001);
+    }
 }
 
 [TestClass]

@@ -326,10 +326,30 @@ public static class QuestNCalcLogicalExpressionParser
 
         var guid = OneOf(guidWithHyphens, guidWithoutHyphens);
 
+        // FLEE hex integer literal: 0x[0-9a-fA-F]+ with optional u/l suffix (suffix ignored for type)
+        var hexLiteralSuffix = Literals.Pattern(c => c is 'u' or 'U' or 'l' or 'L', 1, 2);
+        var hexLiteral = Terms.Text("0x", true)
+            .SkipAnd(Literals.Pattern(Character.IsHexDigit, 1))
+            .AndSkip(ZeroOrOne(hexLiteralSuffix))
+            .Then<LogicalExpression>(hexSpan =>
+            {
+                var value = Convert.ToUInt64(hexSpan.ToString(), 16);
+                if (value <= int.MaxValue) return new ValueExpression((int)value);
+                if (value <= long.MaxValue) return new ValueExpression((long)value);
+                return new ValueExpression(unchecked((long)value));
+            });
+
+        // FLEE numeric type suffix (u, l, ul, lu, f, d, m) — consumed and ignored; type is
+        // determined by the number format, not the suffix.
+        var numericLiteralSuffix = Literals.Pattern(
+            c => c is 'u' or 'U' or 'l' or 'L' or 'f' or 'F' or 'd' or 'D' or 'm' or 'M', 1, 2);
+        var numberWithOptionalSuffix = number.AndSkip(ZeroOrOne(numericLiteralSuffix));
+
         // primary => GUID | NUMBER | identifier| DateTime | string | function | boolean | groupExpression | list ;
         var primary = OneOf(
             guid,
-            number,
+            hexLiteral,
+            numberWithOptionalSuffix,
             decimalOrDoubleNumber,
             booleanTrue,
             booleanFalse,
