@@ -369,8 +369,12 @@ public static class QuestNCalcLogicalExpressionParser
                 return result;
             });
 
+        // Deferred so exponential can reference unary (its right operand) before unary is defined.
+        var unary = Deferred<LogicalExpression>();
+
         // exponential => unary ( "**" | "^" unary )* ;
-        var exponential = postfix.And(ZeroOrMany(exponent.And(postfix)))
+        // Right operand is unary (not postfix) so that e.g. "e ^ -x" parses correctly.
+        var exponential = postfix.And(ZeroOrMany(exponent.And(unary)))
             .Then(static x =>
             {
                 LogicalExpression result = null!;
@@ -397,10 +401,9 @@ public static class QuestNCalcLogicalExpressionParser
                 return result;
             });
 
-        // ( "-" | "not" ) unary | primary;
-        var unary = exponential.Unary(
-            // This is where Quest's parser differs from the NCalc default, as we handle "not" further down.
-            // (not, value => new UnaryExpression(UnaryExpressionType.Not, value)),
+        // ( "-" | "~" ) unary | exponential;
+        // This is where Quest's parser differs from the NCalc default, as we handle "not" further down.
+        unary.Parser = exponential.Unary(
             (minus, value => new UnaryExpression(UnaryExpressionType.Negate, value)),
             (bitwiseNot, value => new UnaryExpression(UnaryExpressionType.BitwiseNot, value))
         );

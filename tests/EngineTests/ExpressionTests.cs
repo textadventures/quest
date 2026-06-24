@@ -140,6 +140,7 @@ public abstract class ExpressionTestsBase
     [DataRow("sqrt(4)", 2.0)]
     [DataRow("Abs(-5)", 5.0)]
     [DataRow("2 ^ 3", 8.0)]
+    [DataRow("2 ^ -1", 0.5)]
     [DataRow("E ^ -1", 1.0 / Math.E)]
     public void TestDoubleExpressions(string expression, double expectedResult)
     {
