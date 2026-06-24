@@ -165,7 +165,7 @@ public static class QuestNCalcLogicalExpressionParser
         var semicolon = Terms.Char(';');
 
         // extraStart/extraPart extend the default ASCII-only identifier to include Unicode letters,
-        // so that object names like "sérgio" or "fósforo" (common in non-English FLEE games) are valid.
+        // so that object names like "sérgio" or "fósforo" (used in non-English Quest games) are valid.
         var identifier = Terms.Identifier(extraStart: char.IsLetter, extraPart: char.IsLetterOrDigit);
 
         var not = OneOf(
