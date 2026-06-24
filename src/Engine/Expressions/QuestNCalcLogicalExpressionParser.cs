@@ -33,7 +33,7 @@ public static class QuestNCalcLogicalExpressionParser
          * shift          => additive ( ( "<<" | ">>" ) additive )* ;
          * additive       => multiplicative ( ( "-" | "+" ) multiplicative )* ;
          * multiplicative => exponential ( "/" | "*" | "%") exponential )* ;
-         * exponential    => postfix ( "**" postfix )* ;
+         * exponential    => postfix ( "**" | "^" postfix )* ;
          * postfix        => primary ( "[" expression "]" | "." identifier "(" arguments ")" )* ;
          * unary          => ( "-" | "not" | "!" ) primary
          *
@@ -152,7 +152,8 @@ public static class QuestNCalcLogicalExpressionParser
         var leftShift = Terms.Text("<<");
         var rightShift = Terms.Text(">>");
 
-        var exponent = Terms.Text("**");
+        // "^" is FLEE's exponentiation operator; "**" is NCalc's. Both mean the same here.
+        var exponent = OneOf(Terms.Text("**"), Terms.Text("^"));
         var openParen = Terms.Char('(');
         var closeParen = Terms.Char(')');
         var dot = Terms.Char('.');
@@ -174,7 +175,6 @@ public static class QuestNCalcLogicalExpressionParser
 
         var bitwiseAnd = Terms.Text("&");
         var bitwiseOr = Terms.Text("|");
-        var bitwiseXOr = Terms.Text("^");
         var bitwiseNot = Terms.Text("~");
 
         // "(" expression ")"
@@ -369,7 +369,7 @@ public static class QuestNCalcLogicalExpressionParser
                 return result;
             });
 
-        // exponential => unary ( "**" unary )* ;
+        // exponential => unary ( "**" | "^" unary )* ;
         var exponential = postfix.And(ZeroOrMany(exponent.And(postfix)))
             .Then(static x =>
             {
@@ -479,18 +479,15 @@ public static class QuestNCalcLogicalExpressionParser
 
         // "xor" text keyword → logical XOR: (a or b) and not (a and b), to avoid type issues
         // with BitwiseXOr which returns UInt64 when applied to booleans.
-        // "^" symbol → bitwise XOR (integer/bool raw bitwise operation).
-        var xorParser = OneOf(
-            Terms.Text("XOR", true).Then<Func<LogicalExpression, LogicalExpression, LogicalExpression>>(
-                _ => (a, b) =>
-                {
-                    var aOrB = new BinaryExpression(BinaryExpressionType.Or, a, b);
-                    var aAndB = new BinaryExpression(BinaryExpressionType.And, a, b);
-                    return new BinaryExpression(BinaryExpressionType.And, aOrB,
-                        new UnaryExpression(UnaryExpressionType.Not, aAndB));
-                }),
-            bitwiseXOr.Then<Func<LogicalExpression, LogicalExpression, LogicalExpression>>(
-                _ => (a, b) => new BinaryExpression(BinaryExpressionType.BitwiseXOr, a, b)));
+        // Note: "^" is exponentiation (FLEE compat), not XOR.
+        var xorParser = Terms.Text("XOR", true).Then<Func<LogicalExpression, LogicalExpression, LogicalExpression>>(
+            _ => (a, b) =>
+            {
+                var aOrB = new BinaryExpression(BinaryExpressionType.Or, a, b);
+                var aAndB = new BinaryExpression(BinaryExpressionType.And, a, b);
+                return new BinaryExpression(BinaryExpressionType.And, aOrB,
+                    new UnaryExpression(UnaryExpressionType.Not, aAndB));
+            });
 
         // logical => equality ( ( "and" | "or" | "xor" ) equality )* ;
         var logical = notOperator.And(ZeroOrMany(OneOf(andParser, orParser, xorParser).And(notOperator)))

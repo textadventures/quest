@@ -139,6 +139,8 @@ public abstract class ExpressionTestsBase
     [DataRow("Sqrt(4)", 2.0)]
     [DataRow("sqrt(4)", 2.0)]
     [DataRow("Abs(-5)", 5.0)]
+    [DataRow("2 ^ 3", 8.0)]
+    [DataRow("E ^ -1", 1.0 / Math.E)]
     public void TestDoubleExpressions(string expression, double expectedResult)
     {
         var result = RunExpression<double>(expression);
@@ -325,6 +327,13 @@ public abstract class ExpressionTestsBase
         resultList.Count.ShouldBe(2);
         resultList[0].ShouldBe("a");
         resultList[1].ShouldBe("b");
+    }
+
+    [TestMethod]
+    public void TestNCalcExponentiationOperator()
+    {
+        if (!UseNCalc) return; // "**" is NCalc syntax; FLEE uses "^" which is tested in TestDoubleExpressions
+        RunExpression<double>("2 ** 3").ShouldBe(8.0);
     }
 
     [TestMethod]
