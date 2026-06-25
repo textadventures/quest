@@ -268,7 +268,6 @@ public sealed class QuestList<T> : IMutableField, IQuestList, IList<T>, ICollect
     /// <returns></returns>
     public static QuestList<T> operator +(QuestList<T> list1, QuestList<T> list2)
     {
-        //System.Diagnostics.Debug.Assert(false, "Operators on lists are deprecated");
         if (list1 == null)
         {
             return new QuestList<T>(list2);
@@ -304,7 +303,6 @@ public sealed class QuestList<T> : IMutableField, IQuestList, IList<T>, ICollect
     /// <returns></returns>
     public static QuestList<T> operator +(QuestList<T> list, T element)
     {
-        //System.Diagnostics.Debug.Assert(false, "Operators on lists are deprecated");
         var result = new QuestList<T>(list);
         result.Add(element);
         return result;
@@ -318,7 +316,6 @@ public sealed class QuestList<T> : IMutableField, IQuestList, IList<T>, ICollect
     /// <returns></returns>
     public static QuestList<T> operator +(T element, QuestList<T> list)
     {
-        //System.Diagnostics.Debug.Assert(false, "Operators on lists are deprecated");
         var result = new QuestList<T>();
         result.Add(element);
         result.AddRange(list);
@@ -327,7 +324,6 @@ public sealed class QuestList<T> : IMutableField, IQuestList, IList<T>, ICollect
 
     public static QuestList<T> operator -(QuestList<T> list, T element)
     {
-        //System.Diagnostics.Debug.Assert(false, "Operators on lists are deprecated");
         var result = new QuestList<T>(list);
         result.Remove(element);
         return result;

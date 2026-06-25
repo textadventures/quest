@@ -536,6 +536,71 @@ public abstract class ExpressionTestsBase
         var result = expr.Execute(c).ShouldBeAssignableTo<QuestList<Element>>();
         result.Count.ShouldBe(2);
     }
+
+    [TestMethod]
+    public void TestListPlusList()
+    {
+        var list1 = new QuestList<string>(["a", "b"]);
+        var list2 = new QuestList<string>(["c", "d"]);
+        var expr = new ExpressionDynamic("list1 + list2", _scriptContext);
+        var c = new Context { Parameters = new Parameters { { "list1", list1 }, { "list2", list2 } } };
+        var result = expr.Execute(c).ShouldBeAssignableTo<QuestList<string>>();
+        result.ShouldBe(["a", "b", "c", "d"]);
+    }
+
+    [TestMethod]
+    public void TestElementPlusList()
+    {
+        var list = new QuestList<Element>([_child]);
+        var expr = new ExpressionDynamic("myobj + mylist", _scriptContext);
+        var c = new Context { Parameters = new Parameters { { "mylist", list }, { "myobj", _object } } };
+        var result = expr.Execute(c).ShouldBeAssignableTo<QuestList<Element>>();
+        result.Count.ShouldBe(2);
+        result[0].ShouldBe(_object);
+        result[1].ShouldBe(_child);
+    }
+
+    [TestMethod]
+    public void TestListTimesListUnionDedup()
+    {
+        var list1 = new QuestList<string>(["a", "b", "c"]);
+        var list2 = new QuestList<string>(["b", "c", "d"]);
+        var expr = new ExpressionDynamic("list1 * list2", _scriptContext);
+        var c = new Context { Parameters = new Parameters { { "list1", list1 }, { "list2", list2 } } };
+        var result = expr.Execute(c).ShouldBeAssignableTo<QuestList<string>>();
+        result.ShouldBe(["a", "b", "c", "d"]);
+    }
+
+    [DataTestMethod]
+    [DataRow("5 / 2", 2)]
+    [DataRow("6 / 2", 3)]
+    [DataRow("7 / 2", 3)]
+    [DataRow("100 / 10", 10)]
+    [DataRow("-7 / 2", -3)]
+    public void TestIntegerDivision(string expression, int expectedResult)
+    {
+        RunExpression<int>(expression).ShouldBe(expectedResult);
+    }
+
+    [TestMethod]
+    public void TestIntegerDivisionWithVariables()
+    {
+        // Exercises the NumberToWords pattern: int attribute / int literal
+        var expr = new ExpressionDynamic("number / 100", _scriptContext);
+        var c = new Context { Parameters = new Parameters { { "number", 342 } } };
+        var result = expr.Execute(c);
+        result.ShouldBe(3);
+    }
+
+    [TestMethod]
+    public void TestIntegerDivisionThenModulo()
+    {
+        // Mirrors the tens = (number / 10) % 10 pattern in NumberToWords
+        var expr = new ExpressionDynamic("(number / 10) % 10", _scriptContext);
+        var c = new Context { Parameters = new Parameters { { "number", 42 } } };
+        var result = expr.Execute(c);
+        result.ShouldBe(4);
+    }
 }
 
 [TestClass]
