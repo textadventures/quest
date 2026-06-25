@@ -309,13 +309,8 @@ public class NcalcExpressionEvaluator<T> : IExpressionEvaluator<T>, IDynamicExpr
     // so we intercept binary operations on non-standard types and dispatch via reflection.
     private void EvaluateBinary(BinaryEventArgs args)
     {
-        var left = args.LeftValue();
-        var right = args.RightValue();
-
-        // Let NCalc handle standard numeric/bool/string/null operations natively
-        if (IsStandardNCalcType(left) && IsStandardNCalcType(right))
-            return;
-
+        // Check operator type BEFORE evaluating args to preserve short-circuit evaluation
+        // for And/Or: calling LeftValue()/RightValue() forces eager evaluation of both sides.
         var operatorName = args.BinaryExpression.Type switch
         {
             BinaryExpressionType.Plus => "op_Addition",
@@ -327,6 +322,13 @@ public class NcalcExpressionEvaluator<T> : IExpressionEvaluator<T>, IDynamicExpr
         };
 
         if (operatorName == null) return;
+
+        var left = args.LeftValue();
+        var right = args.RightValue();
+
+        // Let NCalc handle standard numeric/bool/string/null operations natively
+        if (IsStandardNCalcType(left) && IsStandardNCalcType(right))
+            return;
 
         var leftType = left?.GetType();
         var rightType = right?.GetType();
