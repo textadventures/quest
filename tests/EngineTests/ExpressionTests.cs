@@ -87,11 +87,25 @@ public abstract class ExpressionTestsBase
         return expr.Execute(c);
     }
 
+    private async Task<T> RunExpressionAsync<T>(string expression)
+    {
+        var expr = new Expression<T>(expression, _scriptContext);
+        var c = new Context();
+        return await expr.ExecuteAsync(c);
+    }
+
     private object RunExpressionGeneric(string expression)
     {
         var expr = new ExpressionDynamic(expression, _scriptContext);
         var c = new Context();
         return expr.Execute(c);
+    }
+
+    private async Task<object> RunExpressionGenericAsync(string expression)
+    {
+        var expr = new ExpressionDynamic(expression, _scriptContext);
+        var c = new Context();
+        return await expr.ExecuteAsync(c);
     }
 
     [DataTestMethod]
@@ -633,6 +647,28 @@ public abstract class ExpressionTestsBase
         var expr = new Expression<bool>("mystr = myobj", _scriptContext);
         var c = new Context { Parameters = new Parameters { { "mystr", "somestring" }, { "myobj", _object } } };
         expr.Execute(c).ShouldBe(false);
+    }
+
+    [DataTestMethod]
+    [DataRow("\"hello world\"", "hello world")]
+    [DataRow("CustomStringFunction(\"b\", \"c\")", "abc")]
+    [DataRow("if(true, \"yes\", \"no\")", "yes")]
+    [DataRow("if(false, \"yes\", \"no\")", "no")]
+    public async Task TestStringExpressionsAsync(string expression, string expectedResult)
+    {
+        if (!UseNCalc) return; // async path is NCalc-only; FLEE shims to sync
+        var result = await RunExpressionAsync<string>(expression);
+        result.ShouldBe(expectedResult);
+    }
+
+    [DataTestMethod]
+    [DataRow("1 + 2", 3)]
+    [DataRow("CustomIntFunction(1, 2)", 3)]
+    public async Task TestIntExpressionsAsync(string expression, int expectedResult)
+    {
+        if (!UseNCalc) return; // async path is NCalc-only; FLEE shims to sync
+        var result = await RunExpressionAsync<int>(expression);
+        result.ShouldBe(expectedResult);
     }
 }
 

@@ -43,6 +43,8 @@ public class FleeExpressionEvaluator<T>(string expression, ScriptContext scriptC
                 $"Error evaluating expression '{Utility.ConvertFleeFormatToVariables(expression)}': {ex.Message}", ex);
         }
     }
+
+    public Task<T> EvaluateAsync(Context c) => Task.FromResult(Evaluate(c));
 }
 
 public class FleeDynamicExpressionEvaluator(string expression, ScriptContext scriptContext)
@@ -84,4 +86,6 @@ public class FleeDynamicExpressionEvaluator(string expression, ScriptContext scr
                 $"Error evaluating expression '{Utility.ConvertFleeFormatToVariables(expression)}': {ex.Message}", ex);
         }
     }
+
+    public Task<object> EvaluateAsync(Context c) => Task.FromResult(Evaluate(c));
 }
