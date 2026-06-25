@@ -616,6 +616,24 @@ public abstract class ExpressionTestsBase
         var result = expr.Execute(c);
         result.ShouldBe(4);
     }
+
+    [TestMethod]
+    public void TestObjectEqualToStringReturnsFalse()
+    {
+        // Cross-type equality (Element vs string) must return false, not throw IConvertible.
+        var expr = new Expression<bool>("myobj = \"somestring\"", _scriptContext);
+        var c = new Context { Parameters = new Parameters { { "myobj", _object } } };
+        expr.Execute(c).ShouldBe(false);
+    }
+
+    [TestMethod]
+    public void TestStringEqualToObjectReturnsFalse()
+    {
+        // Cross-type equality (string vs Element) must return false, not throw IConvertible.
+        var expr = new Expression<bool>("mystr = myobj", _scriptContext);
+        var c = new Context { Parameters = new Parameters { { "mystr", "somestring" }, { "myobj", _object } } };
+        expr.Execute(c).ShouldBe(false);
+    }
 }
 
 [TestClass]

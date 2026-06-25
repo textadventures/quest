@@ -311,6 +311,8 @@ public class NcalcExpressionEvaluator<T> : IExpressionEvaluator<T>, IDynamicExpr
     {
         // Check operator type BEFORE evaluating args to preserve short-circuit evaluation
         // for And/Or: calling LeftValue()/RightValue() forces eager evaluation of both sides.
+        var isEquality = args.BinaryExpression.Type is BinaryExpressionType.Equal or BinaryExpressionType.NotEqual;
+
         var operatorName = args.BinaryExpression.Type switch
         {
             BinaryExpressionType.Plus => "op_Addition",
@@ -321,10 +323,21 @@ public class NcalcExpressionEvaluator<T> : IExpressionEvaluator<T>, IDynamicExpr
             _ => null
         };
 
-        if (operatorName == null) return;
+        if (operatorName == null && !isEquality) return;
 
         var left = args.LeftValue();
         var right = args.RightValue();
+
+        // NCalc's internal equality logic calls Convert.ChangeType() which requires IConvertible.
+        // Element doesn't implement IConvertible, so intercept equality/inequality for non-standard
+        // types and use Equals() instead — matching FLEE's behaviour of returning false for
+        // cross-type comparisons (e.g. string vs Element, or Element vs string).
+        if (isEquality && (!IsStandardNCalcType(left) || !IsStandardNCalcType(right)))
+        {
+            var equal = Equals(left, right);
+            args.Result = args.BinaryExpression.Type == BinaryExpressionType.Equal ? equal : !equal;
+            return;
+        }
 
         // NCalc always returns Double for /, but FLEE compiled to IL where int/int = int.
         // Intercept integer division to match FLEE's behavior.
