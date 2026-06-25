@@ -333,8 +333,7 @@ public abstract class ExpressionTestsBase
     [TestMethod]
     public void TestListIndexingSyntax()
     {
-        if (!UseNCalc) return; // FLEE handles [] natively; this verifies the NCalc parser extension
-
+        if (!UseNCalc) return; // FLEE infers QuestList element type as Object, can't return String
         var list = new QuestList<string>(["alpha", "beta", "gamma"]);
         var expr = new Expression<string>("mylist[0]", _scriptContext);
         var c = new Context { Parameters = new Parameters { { "mylist", list } } };
@@ -347,8 +346,7 @@ public abstract class ExpressionTestsBase
     [TestMethod]
     public void TestListIndexingWithVariableIndex()
     {
-        if (!UseNCalc) return; // FLEE handles [] natively; this verifies the NCalc parser extension
-
+        if (!UseNCalc) return; // FLEE infers QuestList element type as Object, can't return String
         var list = new QuestList<string>(["alpha", "beta", "gamma"]);
         var expr = new Expression<string>("mylist[idx]", _scriptContext);
         var c = new Context { Parameters = new Parameters { { "mylist", list }, { "idx", 1 } } };
@@ -358,8 +356,6 @@ public abstract class ExpressionTestsBase
     [TestMethod]
     public void TestDictionaryIndexingSyntax()
     {
-        if (!UseNCalc) return; // FLEE handles [] natively; this verifies the NCalc parser extension
-
         var dict = new QuestDictionary<string> { { "foo", "bar" }, { "baz", "qux" } };
         var expr = new Expression<string>("mydict[\"foo\"]", _scriptContext);
         var c = new Context { Parameters = new Parameters { { "mydict", dict } } };
@@ -369,8 +365,6 @@ public abstract class ExpressionTestsBase
     [TestMethod]
     public void TestDictionaryIndexingWithVariableKey()
     {
-        if (!UseNCalc) return; // FLEE handles [] natively; this verifies the NCalc parser extension
-
         var dict = new QuestDictionary<string> { { "foo", "bar" }, { "baz", "qux" } };
         var expr = new Expression<string>("mydict[k]", _scriptContext);
         var c = new Context { Parameters = new Parameters { { "mydict", dict }, { "k", "baz" } } };
@@ -380,12 +374,21 @@ public abstract class ExpressionTestsBase
     [TestMethod]
     public void TestMethodCallSyntax()
     {
-        if (!UseNCalc) return; // FLEE handles instance method calls natively; this verifies the NCalc parser extension
-
         RunExpressionGeneric("\"hello world\".StartsWith(\"hello\")").ShouldBe(true);
         RunExpressionGeneric("\"hello world\".EndsWith(\"world\")").ShouldBe(true);
         RunExpressionGeneric("\"hello world\".Contains(\"lo wo\")").ShouldBe(true);
         RunExpressionGeneric("\"hello world\".ToUpper()").ShouldBe("HELLO WORLD");
+    }
+
+    [TestMethod]
+    public void TestMethodCallWithNullArg()
+    {
+        // When a method arg is null, NCalc's GetMethod(name, [typeof(object)]) won't find
+        // List<Element>.Contains(Element), so the null-arg fallback must kick in.
+        // AllObjects() as receiver avoids the ConvertVariablesToFleeFormat (\w\.\w) mangling.
+        var expr = new Expression<bool>("AllObjects().Contains(nullobj)", _scriptContext);
+        var c = new Context { Parameters = new Parameters { { "nullobj", null } } };
+        expr.Execute(c).ShouldBeFalse();
     }
 
     [TestMethod]
@@ -494,24 +497,36 @@ public abstract class ExpressionTestsBase
     [DataRow("0x10", 16)]
     [DataRow("0xABCDEF", 11259375)]
     [DataRow("0xFF + 1", 256)]
+    public void TestFleeCompatHexLiterals(string expression, int expectedResult)
+    {
+        RunExpression<int>(expression).ShouldBe(expectedResult);
+    }
+
+    [DataTestMethod]
     [DataRow("0x10u", 16)]
     [DataRow("42u", 42)]
     [DataRow("100L", 100)]
-    public void TestFleeCompatNumericLiterals(string expression, int expectedResult)
+    public void TestFleeCompatIntegerSuffixes(string expression, int expectedResult)
     {
-        if (!UseNCalc) return;
+        if (!UseNCalc) return; // FLEE returns UInt32/Int64 for u/L suffixes; NCalc normalises to int
         RunExpression<int>(expression).ShouldBe(expectedResult);
     }
 
     [DataTestMethod]
     [DataRow("1.5f", 1.5)]
-    [DataRow("2.0m", 2.0)]
     [DataRow("3.14d", 3.14)]
     public void TestFleeCompatRealSuffixes(string expression, double expectedResult)
     {
-        if (!UseNCalc) return;
         var result = RunExpression<double>(expression);
         Math.Abs(result - expectedResult).ShouldBeLessThan(0.000001);
+    }
+
+    [TestMethod]
+    public void TestFleeCompatDecimalSuffix()
+    {
+        if (!UseNCalc) return; // FLEE returns Decimal for m suffix; NCalc normalises to double
+        var result = RunExpression<double>("2.0m");
+        Math.Abs(result - 2.0).ShouldBeLessThan(0.000001);
     }
 
     [TestMethod]
@@ -535,6 +550,71 @@ public abstract class ExpressionTestsBase
         var c = new Context { Parameters = new Parameters { { "mylist", list }, { "myobj", _child } } };
         var result = expr.Execute(c).ShouldBeAssignableTo<QuestList<Element>>();
         result.Count.ShouldBe(2);
+    }
+
+    [TestMethod]
+    public void TestListPlusList()
+    {
+        var list1 = new QuestList<string>(["a", "b"]);
+        var list2 = new QuestList<string>(["c", "d"]);
+        var expr = new ExpressionDynamic("list1 + list2", _scriptContext);
+        var c = new Context { Parameters = new Parameters { { "list1", list1 }, { "list2", list2 } } };
+        var result = expr.Execute(c).ShouldBeAssignableTo<QuestList<string>>();
+        result.ShouldBe(["a", "b", "c", "d"]);
+    }
+
+    [TestMethod]
+    public void TestElementPlusList()
+    {
+        var list = new QuestList<Element>([_child]);
+        var expr = new ExpressionDynamic("myobj + mylist", _scriptContext);
+        var c = new Context { Parameters = new Parameters { { "mylist", list }, { "myobj", _object } } };
+        var result = expr.Execute(c).ShouldBeAssignableTo<QuestList<Element>>();
+        result.Count.ShouldBe(2);
+        result[0].ShouldBe(_object);
+        result[1].ShouldBe(_child);
+    }
+
+    [TestMethod]
+    public void TestListTimesListUnionDedup()
+    {
+        var list1 = new QuestList<string>(["a", "b", "c"]);
+        var list2 = new QuestList<string>(["b", "c", "d"]);
+        var expr = new ExpressionDynamic("list1 * list2", _scriptContext);
+        var c = new Context { Parameters = new Parameters { { "list1", list1 }, { "list2", list2 } } };
+        var result = expr.Execute(c).ShouldBeAssignableTo<QuestList<string>>();
+        result.ShouldBe(["a", "b", "c", "d"]);
+    }
+
+    [DataTestMethod]
+    [DataRow("5 / 2", 2)]
+    [DataRow("6 / 2", 3)]
+    [DataRow("7 / 2", 3)]
+    [DataRow("100 / 10", 10)]
+    [DataRow("-7 / 2", -3)]
+    public void TestIntegerDivision(string expression, int expectedResult)
+    {
+        RunExpression<int>(expression).ShouldBe(expectedResult);
+    }
+
+    [TestMethod]
+    public void TestIntegerDivisionWithVariables()
+    {
+        // Exercises the NumberToWords pattern: int attribute / int literal
+        var expr = new ExpressionDynamic("number / 100", _scriptContext);
+        var c = new Context { Parameters = new Parameters { { "number", 342 } } };
+        var result = expr.Execute(c);
+        result.ShouldBe(3);
+    }
+
+    [TestMethod]
+    public void TestIntegerDivisionThenModulo()
+    {
+        // Mirrors the tens = (number / 10) % 10 pattern in NumberToWords
+        var expr = new ExpressionDynamic("(number / 10) % 10", _scriptContext);
+        var c = new Context { Parameters = new Parameters { { "number", 42 } } };
+        var result = expr.Execute(c);
+        result.ShouldBe(4);
     }
 }
 

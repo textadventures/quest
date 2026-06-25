@@ -326,6 +326,15 @@ public class NcalcExpressionEvaluator<T> : IExpressionEvaluator<T>, IDynamicExpr
         var left = args.LeftValue();
         var right = args.RightValue();
 
+        // NCalc always returns Double for /, but FLEE compiled to IL where int/int = int.
+        // Intercept integer division to match FLEE's behavior.
+        if (args.BinaryExpression.Type == BinaryExpressionType.Div
+            && IsIntegerType(left) && IsIntegerType(right))
+        {
+            args.Result = Convert.ToInt64(left) / Convert.ToInt64(right);
+            return;
+        }
+
         // Let NCalc handle standard numeric/bool/string/null operations natively
         if (IsStandardNCalcType(left) && IsStandardNCalcType(right))
             return;
@@ -346,6 +355,9 @@ public class NcalcExpressionEvaluator<T> : IExpressionEvaluator<T>, IDynamicExpr
 
     private static bool IsStandardNCalcType(object value) =>
         value is null or int or long or double or float or decimal or byte or short or uint or ulong or ushort or sbyte or bool or string;
+
+    private static bool IsIntegerType(object value) =>
+        value is int or long or byte or short or uint or ulong or ushort or sbyte;
 
     private static MethodInfo TryFindOperatorOverload(Type declaringType, string operatorName, Type leftType, Type rightType)
     {
@@ -391,8 +403,33 @@ public class NcalcExpressionEvaluator<T> : IExpressionEvaluator<T>, IDynamicExpr
                 .Select(i => CoerceLong(args.Parameters.Evaluate(i)))
                 .ToArray();
             var argTypes = methodArgs.Select(a => a?.GetType() ?? typeof(object)).ToArray();
-            var method = receiver?.GetType().GetMethod(methodName, argTypes)
-                ?? throw new Exception($"Method '{methodName}' not found on '{receiver?.GetType().Name}'");
+            var method = receiver?.GetType().GetMethod(methodName, argTypes);
+
+            if (method == null && methodArgs.Any(a => a == null))
+            {
+                method = receiver?.GetType().GetMethods()
+                    .Where(m => m.Name == methodName)
+                    .FirstOrDefault(m =>
+                    {
+                        var ps = m.GetParameters();
+                        if (ps.Length != methodArgs.Length) return false;
+                        for (var i = 0; i < methodArgs.Length; i++)
+                        {
+                            if (methodArgs[i] == null)
+                            {
+                                if (ps[i].ParameterType.IsValueType &&
+                                    Nullable.GetUnderlyingType(ps[i].ParameterType) == null)
+                                    return false;
+                                continue;
+                            }
+                            if (!ps[i].ParameterType.IsInstanceOfType(methodArgs[i])) return false;
+                        }
+                        return true;
+                    });
+            }
+
+            if (method == null)
+                throw new Exception($"Method '{methodName}' not found on '{receiver?.GetType().Name}'");
             return method.Invoke(receiver, methodArgs);
         }
 
