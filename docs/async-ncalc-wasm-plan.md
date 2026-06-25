@@ -52,29 +52,74 @@ alongside `Execute()`, so tests and the editor continue working unchanged.
 - `WorldModel` gains `RunScriptAsync` and `RunProcedureAsync` parallel variants
 - `NcalcExpressionEvaluator.EvaluateAslFunctionAsync` now uses `RunProcedureAsync` (no more `.GetAwaiter().GetResult()` in the async path)
 - Pause-inducing scripts (`WaitScript`, `ShowMenuScript`, `AskScript`, etc.) still fall through to the sync shim — they'll be wired up properly in Phase 3
+- `AsyncScriptTests` added to exercise the async execution path end-to-end
 - Branch: `async-ncalc`
+
+---
+
+## Phase 2b — Flip the driver ✅
+
+The async script path was exercised in tests but not in production. Rather than a "big
+bang" switch, the production driver was flipped with a single-line change:
+
+```csharp
+// WorldModel.cs — private core RunScript now delegates to RunScriptAsync
+private object? RunScript(IScript script, Context c, bool expectResult)
+{
+    return RunScriptAsync(script, c, expectResult).GetAwaiter().GetResult();
+}
+```
+
+Every execution path (`RunProcedure`, all `RunScript` overloads, timer callbacks,
+`SendEvent`, `TryFinishTurn`, callbacks) bottoms out at this private core, so a single
+change routes all script execution through `ExecuteAsync`.
+
+Pause-inducing scripts still fall through to the sync shim — `Execute(c)` blocks on
+`Monitor.Wait` as before, and returns `Task.CompletedTask` (already complete), so the
+`await` resumes synchronously on the same thread. **No observable behaviour change**, but
+now 99% of script execution — every `if`, loop, function call, and switch — runs through
+`ExecuteAsync` in production.
+
+Why `.GetAwaiter().GetResult()` doesn't deadlock here: all tasks in the current chain
+complete synchronously (the shim blocks the thread before returning, not after), so no
+async continuation is ever posted to a synchronization context. Even on the ASP.NET Core
+request thread (e.g. `SendEvent`), there is no thread switch and therefore no deadlock
+risk.
+
+Branch: `async-ncalc`
 
 ---
 
 ## Phase 3 — Replace Monitor-based blocking
 
-In `WorldModel.cs`, replace:
+The remaining work to eliminate all thread-blocking:
 
-```csharp
-// current
-lock (_waitForResponseLock) { Monitor.Wait(_waitForResponseLock); }
+1. **Proper `ExecuteAsync` on pause scripts** — `WaitScript`, `ShowMenuScript`,
+   `AskScript`, `GetInputScript` currently fall through to the sync shim. Each needs a
+   real `override async Task ExecuteAsync(Context c)` that `await`s a
+   `TaskCompletionSource` instead of calling `Execute`.
 
-// new
-_inputTcs = new TaskCompletionSource();
-await _inputTcs.Task;
-```
+2. **Replace `Monitor.Wait/Pulse` with `TaskCompletionSource`** in `WorldModel.cs`:
 
-The response handlers (`SetMenuResponse`, `SetQuestionResponse`, `SetWaitFinished`) call
-`_inputTcs.SetResult()` instead of `Monitor.Pulse()`. `DoInNewThreadAndWait()` is
-deleted.
+   ```csharp
+   // current
+   lock (_waitForResponseLock) { Monitor.Wait(_waitForResponseLock); }
 
-The `ThreadState` enum and `_threadLock` go away entirely. `WaitUntilFinishedWorking()`
-in the player becomes `await`-based or disappears.
+   // new
+   _inputTcs = new TaskCompletionSource();
+   await _inputTcs.Task;
+   ```
+
+   The response handlers (`SetMenuResponse`, `SetQuestionResponse`, `FinishWait`) call
+   `_inputTcs.SetResult()` instead of `Monitor.Pulse()`. `DoInNewThreadAndWait()` is
+   deleted.
+
+3. **Thread state cleanup** — `ThreadState` enum and `_threadLock` go away entirely.
+   `WaitUntilFinishedWorking()` in the player becomes `await`-based or disappears.
+
+At this point `GetAwaiter().GetResult()` in the driver core can also be removed — the
+sync `RunScript` wrapper either disappears or is kept as a true fire-and-forget for legacy
+callers (edit mode etc.) that don't need the async path.
 
 ---
 
@@ -82,7 +127,8 @@ in the player becomes `await`-based or disappears.
 
 - `PlayerCore`'s `GameLauncher` and turn-processing become async end-to-end
 - `WebPlayer`'s Blazor components `await` turn execution rather than blocking
-- The existing callback-based path (`CallbackManager`) can be simplified since `async/await` subsumes the callback pattern
+- The existing callback-based path (`CallbackManager`) can be simplified since
+  `async/await` subsumes the callback pattern
 
 ---
 
@@ -151,7 +197,7 @@ A lightweight Svelte (or vanilla JS) frontend analogous to `src/WebEditor/`:
 
 ## Notes and risks
 
-- **Flee must be removed before Phase 3** — it has no async path. The parallel-interface approach keeps it working for now, but once the async path is the live path, Flee will need to be gone. This migration is a good forcing function to finish removing it.
-- **Tests are unaffected so far** — the parallel-interface approach (Option A) means all existing tests continue calling `Execute()` synchronously. Async-specific test coverage will be needed once Phase 3 makes `ExecuteAsync` the live path.
+- **Flee must be removed before Phase 3** — it has no async path. The parallel-interface approach keeps it working for now, but `FleeExpressionEvaluator` only has `Task.FromResult` shims and can't truly await. Since Phase 2b flipped the driver, Flee is already running through `ExecuteAsync` (via the sync shim) in production — but Phase 3 will require removing it entirely before the pause scripts can actually `await`.
+- **Tests now cover the async path** — `AsyncScriptTests` drives all control-flow scripts via `RunProcedureAsync`. The sync tests still pass unchanged (the `RunScript` core now routes through `RunScriptAsync` internally).
 - **Callback manager overlap** — there's already a partial callback-based async mechanism (`CallbackManager`, `StartWaitAsync`). Phase 3 should decide whether to unify these or remove the old path outright.
 - **SharedArrayBuffer** — even with Quest's own threading removed, the .NET WASM runtime uses `SharedArrayBuffer` internally (for the GC). The COOP/COEP headers required by WasmEditor will be needed for WasmPlayer too. Confirm the CDN target serves these headers.

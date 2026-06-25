@@ -1174,24 +1174,7 @@ public partial class WorldModel : IGame, IGameDebug
 
     private object? RunScript(IScript script, Context c, bool expectResult)
     {
-        try
-        {
-            script.Execute(c);
-            if (expectResult && c.ReturnValue is NoReturnValue)
-            {
-                throw new Exception("Function did not return a value");
-            }
-
-            return c.ReturnValue;
-        }
-        catch (Exception ex)
-        {
-            // TODO: Add some way of nicely showing script errors to the user (should be higher up the callstack)
-            Print("Error running script: " + Utility.SafeXML(ex.Message));
-            LogException(ex);
-        }
-
-        return null;
+        return RunScriptAsync(script, c, expectResult).GetAwaiter().GetResult();
     }
 
     public Element AddProcedure(string name)
