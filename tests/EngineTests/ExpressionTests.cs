@@ -513,6 +513,29 @@ public abstract class ExpressionTestsBase
         var result = RunExpression<double>(expression);
         Math.Abs(result - expectedResult).ShouldBeLessThan(0.000001);
     }
+
+    [TestMethod]
+    public void TestListMinusElement()
+    {
+        // QuestList<T> defines operator-, which FLEE resolves via IL compilation.
+        // NCalc needs the EvaluateBinary hook to dispatch to the C# operator overload.
+        var list = new QuestList<Element>([_object, _child]);
+        var expr = new ExpressionDynamic("mylist - myobj", _scriptContext);
+        var c = new Context { Parameters = new Parameters { { "mylist", list }, { "myobj", _object } } };
+        var result = expr.Execute(c).ShouldBeAssignableTo<QuestList<Element>>();
+        result.Count.ShouldBe(1);
+        result[0].ShouldBe(_child);
+    }
+
+    [TestMethod]
+    public void TestListPlusElement()
+    {
+        var list = new QuestList<Element>([_object]);
+        var expr = new ExpressionDynamic("mylist + myobj", _scriptContext);
+        var c = new Context { Parameters = new Parameters { { "mylist", list }, { "myobj", _child } } };
+        var result = expr.Execute(c).ShouldBeAssignableTo<QuestList<Element>>();
+        result.Count.ShouldBe(2);
+    }
 }
 
 [TestClass]

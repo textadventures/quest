@@ -30,6 +30,7 @@ public class NcalcExpressionEvaluator<T> : IExpressionEvaluator<T>, IDynamicExpr
 
         _nCalcExpression.EvaluateFunction += EvaluateFunction;
         _nCalcExpression.EvaluateParameter += EvaluateParameter;
+        _nCalcExpression.EvaluateBinary += EvaluateBinary;
     }
 
     object IDynamicExpressionEvaluator.Evaluate(Context c)
@@ -270,6 +271,29 @@ public class NcalcExpressionEvaluator<T> : IExpressionEvaluator<T>, IDynamicExpr
         var types = evaluatedArgs.Select(a => a?.GetType() ?? typeof(object)).ToArray();
         var methodNoParams = Type.DefaultBinder!.SelectMethod(BindingFlags.Default, methods, types, null);
 
+        // DefaultBinder can't match when null args produce typeof(object) as a stand-in type.
+        // Fall back to the first overload where all non-null args are type-compatible.
+        if (methodNoParams == null && evaluatedArgs.Any(a => a == null))
+        {
+            methodNoParams = methods.OfType<MethodBase>().FirstOrDefault(m =>
+            {
+                var ps = m.GetParameters();
+                if (ps.Length != evaluatedArgs.Length) return false;
+                for (var i = 0; i < evaluatedArgs.Length; i++)
+                {
+                    if (evaluatedArgs[i] == null)
+                    {
+                        if (ps[i].ParameterType.IsValueType &&
+                            Nullable.GetUnderlyingType(ps[i].ParameterType) == null)
+                            return false;
+                        continue;
+                    }
+                    if (!ps[i].ParameterType.IsInstanceOfType(evaluatedArgs[i])) return false;
+                }
+                return true;
+            });
+        }
+
         if (methodNoParams == null)
         {
             throw new Exception(
@@ -279,6 +303,63 @@ public class NcalcExpressionEvaluator<T> : IExpressionEvaluator<T>, IDynamicExpr
         return (true, methodNoParams.Invoke(instance, evaluatedArgs));
     }
 #nullable disable
+
+    // FLEE compiled expressions to IL so C# operator overloads (e.g. QuestList<T> - Element)
+    // resolved automatically. NCalc evaluates at runtime and doesn't use operator overloads,
+    // so we intercept binary operations on non-standard types and dispatch via reflection.
+    private void EvaluateBinary(BinaryEventArgs args)
+    {
+        // Check operator type BEFORE evaluating args to preserve short-circuit evaluation
+        // for And/Or: calling LeftValue()/RightValue() forces eager evaluation of both sides.
+        var operatorName = args.BinaryExpression.Type switch
+        {
+            BinaryExpressionType.Plus => "op_Addition",
+            BinaryExpressionType.Minus => "op_Subtraction",
+            BinaryExpressionType.Times => "op_Multiply",
+            BinaryExpressionType.Div => "op_Division",
+            BinaryExpressionType.Modulo => "op_Modulus",
+            _ => null
+        };
+
+        if (operatorName == null) return;
+
+        var left = args.LeftValue();
+        var right = args.RightValue();
+
+        // Let NCalc handle standard numeric/bool/string/null operations natively
+        if (IsStandardNCalcType(left) && IsStandardNCalcType(right))
+            return;
+
+        var leftType = left?.GetType();
+        var rightType = right?.GetType();
+
+        foreach (var declaringType in new[] { leftType, rightType }.Where(t => t != null).Distinct())
+        {
+            var method = TryFindOperatorOverload(declaringType, operatorName, leftType, rightType);
+            if (method != null)
+            {
+                args.Result = method.Invoke(null, new[] { left, right });
+                return;
+            }
+        }
+    }
+
+    private static bool IsStandardNCalcType(object value) =>
+        value is null or int or long or double or float or decimal or byte or short or uint or ulong or ushort or sbyte or bool or string;
+
+    private static MethodInfo TryFindOperatorOverload(Type declaringType, string operatorName, Type leftType, Type rightType)
+    {
+        foreach (var method in declaringType.GetMethods(BindingFlags.Public | BindingFlags.Static)
+            .Where(m => m.Name == operatorName))
+        {
+            var ps = method.GetParameters();
+            if (ps.Length != 2) continue;
+            if (leftType != null && !ps[0].ParameterType.IsAssignableFrom(leftType)) continue;
+            if (rightType != null && !ps[1].ParameterType.IsAssignableFrom(rightType)) continue;
+            return method;
+        }
+        return null;
+    }
 
     private static (bool handled, object result) EvaluateVariableFromType(Type type, string name)
     {
