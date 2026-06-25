@@ -639,8 +639,8 @@ public class NcalcExpressionEvaluator<T> : IExpressionEvaluator<T>, IDynamicExpr
             return _context.Parameters.ContainsKey(variableName);
         }
 
-        return RunQuestProcedure(name, args.Parameters.Count,
-            i => args.Parameters.EvaluateAsync(i).GetAwaiter().GetResult());
+        return await RunQuestProcedureAsync(name, args.Parameters.Count,
+            i => args.Parameters.EvaluateAsync(i));
     }
 
     private object RunQuestProcedure(string name, int argCount, Func<int, object> evaluateArg)
@@ -660,6 +660,25 @@ public class NcalcExpressionEvaluator<T> : IExpressionEvaluator<T>, IDynamicExpr
         }
 
         return _scriptContext.WorldModel.RunProcedure(name, parameters, true);
+    }
+
+    private async Task<object> RunQuestProcedureAsync(string name, int argCount, Func<int, Task<object>> evaluateArgAsync)
+    {
+        var proc = _scriptContext.WorldModel.Procedure(name);
+
+        if (proc == null)
+        {
+            throw new Exception($"Unknown function '{name}'");
+        }
+
+        var parameters = new Parameters();
+
+        for (var cnt = 0; cnt < argCount; cnt++)
+        {
+            parameters.Add((string) proc.Fields[FieldDefinitions.ParamNames][cnt], await evaluateArgAsync(cnt));
+        }
+
+        return await _scriptContext.WorldModel.RunProcedureAsync(name, parameters, true);
     }
 
     private static object DispatchMethodCall(object receiver, string methodName, object[] methodArgs)

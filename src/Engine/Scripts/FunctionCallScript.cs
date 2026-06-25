@@ -151,6 +151,62 @@ public class FunctionCallScript : ScriptBase, IFunctionCallScript
         }
     }
 
+    public override async Task ExecuteAsync(Context c)
+    {
+        if ((m_parameters.Parameters == null || m_parameters.Parameters.Count == 0) && m_paramFunction == null)
+        {
+            await m_worldModel.RunProcedureAsync(m_procedure);
+        }
+        else
+        {
+            var paramValues = new Parameters();
+            var proc = m_worldModel.Procedure(m_procedure);
+
+            var paramNames = proc.Fields[FieldDefinitions.ParamNames];
+
+            var paramCount = m_parameters.Parameters.Count;
+            if (m_paramFunction != null)
+            {
+                paramCount++;
+            }
+
+            if (paramCount > paramNames.Count)
+            {
+                throw new Exception(string.Format(
+                    "Too many parameters passed to {0} function - {1} passed, but only {2} expected",
+                    m_procedure,
+                    paramCount,
+                    paramNames.Count));
+            }
+
+            if (m_worldModel.Version >= WorldModelVersion.v520)
+            {
+                if (paramCount < paramNames.Count)
+                {
+                    throw new Exception(string.Format(
+                        "Too few parameters passed to {0} function - only {1} passed, but {2} expected",
+                        m_procedure,
+                        paramCount,
+                        paramNames.Count));
+                }
+            }
+
+            var cnt = 0;
+            foreach (var f in m_parameters.Parameters)
+            {
+                paramValues.Add((string) paramNames[cnt], f.Execute(c));
+                cnt++;
+            }
+
+            if (m_paramFunction != null)
+            {
+                paramValues.Add((string) paramNames[cnt], m_paramFunction);
+            }
+
+            await m_worldModel.RunProcedureAsync(m_procedure, paramValues, false);
+        }
+    }
+
     public override string Keyword => "(function)" + m_procedure;
 
     public override string Save()

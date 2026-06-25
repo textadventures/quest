@@ -202,6 +202,12 @@ public class LazyLoadScript : IScript, IIfScript, IFirstTimeScript, IMultiScript
         m_script.Execute(c);
     }
 
+    public Task ExecuteAsync(Context c)
+    {
+        Initialise();
+        return m_script.ExecuteAsync(c);
+    }
+
     public string Line
     {
         get

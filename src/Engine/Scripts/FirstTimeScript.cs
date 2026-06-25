@@ -89,6 +89,23 @@ public class FirstTimeScript : ScriptBase, IFirstTimeScript
         }
     }
 
+    public override async Task ExecuteAsync(Context c)
+    {
+        if (!m_hasRun)
+        {
+            m_hasRun = true;
+            m_worldModel.UndoLogger.AddUndoAction(() => new UndoFirstTime(this));
+            await m_firstTimeScript.ExecuteAsync(c);
+        }
+        else
+        {
+            if (m_otherwiseScript != null)
+            {
+                await m_otherwiseScript.ExecuteAsync(c);
+            }
+        }
+    }
+
     public override string Save()
     {
         if (m_worldModel.EditMode || !m_hasRun)

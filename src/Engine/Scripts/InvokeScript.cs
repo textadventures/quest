@@ -68,6 +68,19 @@ public class InvokeScript : ScriptBase
         }
     }
 
+    public override async Task ExecuteAsync(Context c)
+    {
+        var script = m_script.Execute(c);
+        if (m_parameters == null)
+        {
+            await m_worldModel.RunScriptAsync(script);
+        }
+        else
+        {
+            await m_worldModel.RunScriptAsync(script, new Parameters(m_parameters.Execute(c)));
+        }
+    }
+
     public override string Save()
     {
         var parameters = m_parameters == null ? null : m_parameters.Save();

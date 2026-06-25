@@ -79,6 +79,20 @@ public class DoActionScript : ScriptBase
         }
     }
 
+    public override async Task ExecuteAsync(Context c)
+    {
+        var obj = m_obj.Execute(c);
+        var action = obj.GetAction(m_action.Execute(c));
+        if (m_parameters == null)
+        {
+            await m_worldModel.RunScriptAsync(action, obj);
+        }
+        else
+        {
+            await m_worldModel.RunScriptAsync(action, new Parameters(m_parameters.Execute(c)), obj);
+        }
+    }
+
     public override string Save()
     {
         var parameters = m_parameters == null ? null : m_parameters.Save();
