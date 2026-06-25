@@ -333,8 +333,7 @@ public abstract class ExpressionTestsBase
     [TestMethod]
     public void TestListIndexingSyntax()
     {
-        if (!UseNCalc) return; // FLEE handles [] natively; this verifies the NCalc parser extension
-
+        if (!UseNCalc) return; // FLEE infers QuestList element type as Object, can't return String
         var list = new QuestList<string>(["alpha", "beta", "gamma"]);
         var expr = new Expression<string>("mylist[0]", _scriptContext);
         var c = new Context { Parameters = new Parameters { { "mylist", list } } };
@@ -347,8 +346,7 @@ public abstract class ExpressionTestsBase
     [TestMethod]
     public void TestListIndexingWithVariableIndex()
     {
-        if (!UseNCalc) return; // FLEE handles [] natively; this verifies the NCalc parser extension
-
+        if (!UseNCalc) return; // FLEE infers QuestList element type as Object, can't return String
         var list = new QuestList<string>(["alpha", "beta", "gamma"]);
         var expr = new Expression<string>("mylist[idx]", _scriptContext);
         var c = new Context { Parameters = new Parameters { { "mylist", list }, { "idx", 1 } } };
@@ -358,8 +356,6 @@ public abstract class ExpressionTestsBase
     [TestMethod]
     public void TestDictionaryIndexingSyntax()
     {
-        if (!UseNCalc) return; // FLEE handles [] natively; this verifies the NCalc parser extension
-
         var dict = new QuestDictionary<string> { { "foo", "bar" }, { "baz", "qux" } };
         var expr = new Expression<string>("mydict[\"foo\"]", _scriptContext);
         var c = new Context { Parameters = new Parameters { { "mydict", dict } } };
@@ -369,8 +365,6 @@ public abstract class ExpressionTestsBase
     [TestMethod]
     public void TestDictionaryIndexingWithVariableKey()
     {
-        if (!UseNCalc) return; // FLEE handles [] natively; this verifies the NCalc parser extension
-
         var dict = new QuestDictionary<string> { { "foo", "bar" }, { "baz", "qux" } };
         var expr = new Expression<string>("mydict[k]", _scriptContext);
         var c = new Context { Parameters = new Parameters { { "mydict", dict }, { "k", "baz" } } };
@@ -380,8 +374,6 @@ public abstract class ExpressionTestsBase
     [TestMethod]
     public void TestMethodCallSyntax()
     {
-        if (!UseNCalc) return; // FLEE handles instance method calls natively; this verifies the NCalc parser extension
-
         RunExpressionGeneric("\"hello world\".StartsWith(\"hello\")").ShouldBe(true);
         RunExpressionGeneric("\"hello world\".EndsWith(\"world\")").ShouldBe(true);
         RunExpressionGeneric("\"hello world\".Contains(\"lo wo\")").ShouldBe(true);
@@ -505,24 +497,36 @@ public abstract class ExpressionTestsBase
     [DataRow("0x10", 16)]
     [DataRow("0xABCDEF", 11259375)]
     [DataRow("0xFF + 1", 256)]
+    public void TestFleeCompatHexLiterals(string expression, int expectedResult)
+    {
+        RunExpression<int>(expression).ShouldBe(expectedResult);
+    }
+
+    [DataTestMethod]
     [DataRow("0x10u", 16)]
     [DataRow("42u", 42)]
     [DataRow("100L", 100)]
-    public void TestFleeCompatNumericLiterals(string expression, int expectedResult)
+    public void TestFleeCompatIntegerSuffixes(string expression, int expectedResult)
     {
-        if (!UseNCalc) return;
+        if (!UseNCalc) return; // FLEE returns UInt32/Int64 for u/L suffixes; NCalc normalises to int
         RunExpression<int>(expression).ShouldBe(expectedResult);
     }
 
     [DataTestMethod]
     [DataRow("1.5f", 1.5)]
-    [DataRow("2.0m", 2.0)]
     [DataRow("3.14d", 3.14)]
     public void TestFleeCompatRealSuffixes(string expression, double expectedResult)
     {
-        if (!UseNCalc) return;
         var result = RunExpression<double>(expression);
         Math.Abs(result - expectedResult).ShouldBeLessThan(0.000001);
+    }
+
+    [TestMethod]
+    public void TestFleeCompatDecimalSuffix()
+    {
+        if (!UseNCalc) return; // FLEE returns Decimal for m suffix; NCalc normalises to double
+        var result = RunExpression<double>("2.0m");
+        Math.Abs(result - 2.0).ShouldBeLessThan(0.000001);
     }
 
     [TestMethod]
