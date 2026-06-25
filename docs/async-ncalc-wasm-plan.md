@@ -23,26 +23,36 @@ event loop at `await` points rather than blocking a thread.
 
 ---
 
-## Phase 1 — Async NCalc
+## Phase 1 — Async NCalc ✅
 
-- Swap `NCalcSync` for NCalc's async package (`NCalc` with async expression support)
-- Add `EvaluateAsync(Context c)` to `IExpression<T>` alongside (or replacing) `Evaluate()`
-- Update `NcalcExpressionEvaluator` to use NCalc's async `EvaluateAsync()` with an async `EvaluateFunction` handler
-- `FleeExpressionEvaluator` gets a shim (wraps sync call in `Task.FromResult`) since Flee has no async path — it stays working but is on the way out
+- Swapped `NCalcSync` for `NCalcAsync` (both redirect to `NCalc.Core`, which already has `EvaluateAsync`, `EvaluateAsyncFunction`, and `EvaluateBinaryAsync` events)
+- Added `EvaluateAsync(Context c)` to `IExpressionEvaluator<T>` and `IDynamicExpressionEvaluator` (removed `out` covariance from `IExpressionEvaluator<T>` since `Task<T>` is invariant)
+- `NcalcExpressionEvaluator` registers async event handlers and implements `EvaluateAsync` using NCalc's async path with full async parameter evaluation (`EvaluateAslFunctionAsync`, `EvaluateFunctionFromTypeAsync`, `EvaluateBinaryAsync`)
+- `FleeExpressionEvaluator` gets `Task.FromResult` shims since Flee has no async path — it stays working but is on the way out
+- `Expression<T>` and `ExpressionDynamic` expose `ExecuteAsync` methods
+- Branch: `async-ncalc`
 
 ---
 
-## Phase 2 — Async script interface
+## Phase 2 — Async script interface ✅
 
-This is the bulk of the work.
+Chose **parallel interface** (Option A): `Task ExecuteAsync(Context c)` added to `IScript`
+alongside `Execute()`, so tests and the editor continue working unchanged.
 
-- Add `Task ExecuteAsync(Context c)` to `IScript` (keep `Execute()` alongside during migration so tests/editor don't break immediately)
-- Propagate async through: `ScriptFactory` → `MultiScript` → individual script classes (`WaitScript`, `ShowMenuScript`, `AskScript`, etc.) in `src/Engine/Scripts/`
-- At each await point that currently calls `Monitor.Wait()`, instead `await` a `TaskCompletionSource.Task`
-
-Risk: this touches every `IScript` implementation and is hard to do incrementally. Worth
-deciding up front whether to run a parallel async interface during migration or do a hard
-cutover.
+- `ScriptBase` has a virtual default shim: `Execute(c); return Task.CompletedTask;`
+- All control-flow scripts have proper async overrides:
+  - `MultiScript` — loops and `await`s each child
+  - `IfScript` — sync condition evaluation, async branches
+  - `ForScript`, `WhileScript`, `ForEachScript` — sync bounds/condition, async loop body
+  - `SwitchScript` (including inner `SwitchCases`) — sync expression, async matched case
+  - `FirstTimeScript` — async branch scripts
+  - `FunctionCallScript` — calls `RunProcedureAsync`
+  - `RunDelegateScript`, `DoActionScript`, `InvokeScript` — call `RunScriptAsync`
+  - `LazyLoadScript` — delegates to inner script's `ExecuteAsync`
+- `WorldModel` gains `RunScriptAsync` and `RunProcedureAsync` parallel variants
+- `NcalcExpressionEvaluator.EvaluateAslFunctionAsync` now uses `RunProcedureAsync` (no more `.GetAwaiter().GetResult()` in the async path)
+- Pause-inducing scripts (`WaitScript`, `ShowMenuScript`, `AskScript`, etc.) still fall through to the sync shim — they'll be wired up properly in Phase 3
+- Branch: `async-ncalc`
 
 ---
 
@@ -141,7 +151,7 @@ A lightweight Svelte (or vanilla JS) frontend analogous to `src/WebEditor/`:
 
 ## Notes and risks
 
-- **Flee must be removed or shimmed first** — it has no async path. This migration is a good forcing function to finish removing Flee entirely.
-- **Tests will need updating** — existing tests call `Execute()` synchronously. Moving to `ExecuteAsync()` means test infrastructure changes too.
+- **Flee must be removed before Phase 3** — it has no async path. The parallel-interface approach keeps it working for now, but once the async path is the live path, Flee will need to be gone. This migration is a good forcing function to finish removing it.
+- **Tests are unaffected so far** — the parallel-interface approach (Option A) means all existing tests continue calling `Execute()` synchronously. Async-specific test coverage will be needed once Phase 3 makes `ExecuteAsync` the live path.
 - **Callback manager overlap** — there's already a partial callback-based async mechanism (`CallbackManager`, `StartWaitAsync`). Phase 3 should decide whether to unify these or remove the old path outright.
 - **SharedArrayBuffer** — even with Quest's own threading removed, the .NET WASM runtime uses `SharedArrayBuffer` internally (for the GC). The COOP/COEP headers required by WasmEditor will be needed for WasmPlayer too. Confirm the CDN target serves these headers.
