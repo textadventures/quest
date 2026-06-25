@@ -391,9 +391,7 @@ public abstract class ExpressionTestsBase
     [TestMethod]
     public void TestMethodCallWithNullArg()
     {
-        if (!UseNCalc) return; // FLEE handles instance method calls natively; this verifies the NCalc parser extension
-
-        // When a method arg is null, GetMethod(name, [typeof(object)]) won't find
+        // When a method arg is null, NCalc's GetMethod(name, [typeof(object)]) won't find
         // List<Element>.Contains(Element), so the null-arg fallback must kick in.
         // AllObjects() as receiver avoids the ConvertVariablesToFleeFormat (\w\.\w) mangling.
         var expr = new Expression<bool>("AllObjects().Contains(nullobj)", _scriptContext);
