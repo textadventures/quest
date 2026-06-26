@@ -362,9 +362,10 @@ public static class QuestNCalcLogicalExpressionParser
             identifierExpression,
             list);
 
-        // postfix => primary ( "[" expression "]" | "." identifier "(" args ")" )* ;
-        // Handles Quest's list/dictionary subscript syntax: list[0], dict[key], func()[0]
-        // and instance method call syntax: str.StartsWith("x"), func().Method(args)
+        // postfix => primary ( "[" expression "]" | "." identifier "(" args ")" | "." identifier )* ;
+        // Handles Quest's list/dictionary subscript syntax: list[0], dict[key], func()[0],
+        // instance method call syntax: str.StartsWith("x"), func().Method(args), and
+        // property access on a function return value: ObjectListItem(list, i).parent
         var subscriptSuffix = openBrace.SkipAnd(expression).AndSkip(closeBrace)
             .Then<Func<LogicalExpression, LogicalExpression>>(index =>
                 receiver => new Function(new Identifier("__Quest_Index__"),
@@ -379,7 +380,17 @@ public static class QuestNCalcLogicalExpressionParser
                     new LogicalExpressionList([receiver, new ValueExpression(methodName), ..args]));
             });
 
-        var postfix = primary.And(ZeroOrMany(OneOf(subscriptSuffix, methodCallSuffix)))
+        // Must come after methodCallSuffix in OneOf so that ".method(args)" is not mistakenly
+        // consumed as just a property access.
+        var propertyAccessSuffix = dot.SkipAnd(identifier)
+            .Then<Func<LogicalExpression, LogicalExpression>>(propName =>
+            {
+                var propertyName = propName.ToString()!;
+                return receiver => new Function(new Identifier("__Quest_PropertyAccess__"),
+                    new LogicalExpressionList([receiver, new ValueExpression(propertyName)]));
+            });
+
+        var postfix = primary.And(ZeroOrMany(OneOf(subscriptSuffix, methodCallSuffix, propertyAccessSuffix)))
             .Then<LogicalExpression>(x =>
             {
                 var result = x.Item1;
