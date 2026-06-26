@@ -1,17 +1,17 @@
-﻿using Moq;
+using Moq;
 using QuestViva.Common;
 
 namespace QuestViva.EngineTests;
 
-public abstract class WalkthroughBase
+[TestClass]
+public class Walkthrough
 {
-    protected abstract bool UseNCalc { get; }
-
-    protected async Task RunWalkthroughInternal()
+    [TestMethod]
+    public async Task RunWalkthrough()
     {
         var gameDataProvider = new FileGameDataProvider(Path.Combine("..", "..", "..", "walkthrough.aslx"));
         var gameData = await gameDataProvider.GetData();
-        var worldModel = Helpers.CreateWorldModel(gameData, UseNCalc);
+        var worldModel = Helpers.CreateWorldModel(gameData);
 
         worldModel.LogError += ex => throw ex;
 
@@ -32,22 +32,4 @@ public abstract class WalkthroughBase
             }
         }
     }
-}
-
-[TestClass]
-public class Walkthrough : WalkthroughBase
-{
-    protected override bool UseNCalc => false;
-
-    [TestMethod]
-    public async Task RunWalkthrough() => await RunWalkthroughInternal();
-}
-
-[TestClass]
-public class NCalcWalkthrough : WalkthroughBase
-{
-    protected override bool UseNCalc => true;
-
-    [TestMethod]
-    public async Task RunWalkthrough() => await RunWalkthroughInternal();
 }

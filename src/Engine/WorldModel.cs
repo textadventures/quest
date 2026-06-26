@@ -35,7 +35,6 @@ public partial class WorldModel : IGame, IGameDebug
     private static List<string>? FunctionNames;
     private readonly List<string> _attributeNames = [];
     private readonly CallbackManager _callbacks = new();
-    private readonly IConfig _config;
     private readonly Dictionary<string, ElementType> _debuggerElementTypes = new();
     private readonly Dictionary<string, ObjectType> _debuggerObjectTypes = new();
     private readonly Dictionary<ElementType, IElementFactory> _elementFactories = new();
@@ -70,13 +69,13 @@ public partial class WorldModel : IGame, IGameDebug
         }
     }
 
-    internal WorldModel(IConfig config)
+    internal WorldModel()
         // ReSharper disable once IntroduceOptionalParameters.Global
-        : this(config, null, null)
+        : this(null, null)
     {
     }
 
-    public WorldModel(IConfig config, GameData? gameData, Stream? saveData)
+    public WorldModel(GameData? gameData, Stream? saveData)
     {
         ExpressionOwner = new ExpressionOwner(this);
         Template = new Template(this);
@@ -84,7 +83,6 @@ public partial class WorldModel : IGame, IGameDebug
         ObjectFactory = (ObjectFactory) _elementFactories[ElementType.Object];
 
         InitialiseDebuggerObjectTypes();
-        _config = config;
         _gameData = gameData;
         _saveData = saveData;
         Elements = new Elements();
@@ -103,8 +101,6 @@ public partial class WorldModel : IGame, IGameDebug
         {ObjectType.Game, "defaultgame"},
         {ObjectType.TurnScript, "defaultturnscript"}
     };
-
-    public bool UseNCalc => _config.UseNCalc;
 
     public Element Game { get; }
 

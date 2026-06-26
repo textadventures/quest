@@ -206,7 +206,7 @@ public class GameQuery(string filename)
             return false;
         }
 
-        var factory = new WorldModelFactory(new Config());
+        var factory = new WorldModelFactory();
         var gameLauncher = new GameLauncher(factory);
 
         _game = gameLauncher.GetGame(gameData, null);
@@ -240,11 +240,6 @@ public class GameQuery(string filename)
     public Stream GetResource(string resourceName)
     {
         return _game.GetResourceStream(resourceName);
-    }
-
-    private class Config : IConfig
-    {
-        public bool UseNCalc => true;
     }
 
     private class GameQueryUi : IPlayerHelperUI

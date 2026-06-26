@@ -1,4 +1,3 @@
-using QuestViva.Common;
 using QuestViva.Engine;
 using QuestViva.PlayerCore;
 using QuestViva.WebPlayer;
@@ -18,7 +17,6 @@ builder.Services.AddRazorComponents()
 
 builder.Services.Configure<WebPlayerConfig>(builder.Configuration);
 builder.Services.AddSingleton<Config>();
-builder.Services.AddSingleton<IConfig>(sp => sp.GetRequiredService<Config>());
 builder.Services.AddSingleton<ITextAdventuresConfig>(sp => sp.GetRequiredService<Config>());
 builder.Services.AddSingleton<WorldModelFactory>();
 builder.Services.AddSingleton<GameLauncher>();

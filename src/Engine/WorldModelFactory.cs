@@ -2,18 +2,10 @@ using QuestViva.Common;
 
 namespace QuestViva.Engine;
 
-public class WorldModelFactory(IConfig config)
+public class WorldModelFactory
 {
-    public WorldModel Create(GameData gameData, Stream? saveData, bool? useNCalcOverride = null)
+    public WorldModel Create(GameData gameData, Stream? saveData)
     {
-        IConfig effectiveConfig = useNCalcOverride.HasValue
-            ? new OverrideNCalcConfig(useNCalcOverride.Value)
-            : config;
-        return new WorldModel(effectiveConfig, gameData, saveData);
-    }
-
-    private sealed class OverrideNCalcConfig(bool useNCalc) : IConfig
-    {
-        public bool UseNCalc => useNCalc;
+        return new WorldModel(gameData, saveData);
     }
 }

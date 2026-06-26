@@ -3,24 +3,15 @@ using QuestViva.Engine;
 
 namespace QuestViva.EngineTests;
 
-internal class Config(bool useNCalc) : IConfig
-{
-    public string HomeFile { get; }
-    public bool DevEnabled { get; }
-    public bool UseNCalc => useNCalc;
-}
-
 internal static class Helpers
 {
-    public static WorldModel CreateWorldModel(bool useNCalc = true)
+    public static WorldModel CreateWorldModel()
     {
-        var config = new Config(useNCalc);
-        return new WorldModel(config);
+        return new WorldModel();
     }
 
-    public static WorldModel CreateWorldModel(GameData gameData, bool useNCalc = true)
+    public static WorldModel CreateWorldModel(GameData gameData)
     {
-        var config = new Config(useNCalc);
-        return new WorldModel(config, gameData, null);
+        return new WorldModel(gameData, null);
     }
 }

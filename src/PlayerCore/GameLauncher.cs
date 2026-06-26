@@ -7,14 +7,14 @@ namespace QuestViva.PlayerCore;
 
 public class GameLauncher(WorldModelFactory worldModelFactory)
 {
-    public IGame? GetGame(GameData gameData, Stream? saveData, bool? useNCalcOverride = null)
+    public IGame? GetGame(GameData gameData, Stream? saveData)
     {
         switch (Path.GetExtension(gameData.Filename).ToLower())
         {
             case ".aslx":
             case ".quest":
             case ".quest-save":
-                return worldModelFactory.Create(gameData, saveData, useNCalcOverride);
+                return worldModelFactory.Create(gameData, saveData);
             case ".asl":
             case ".cas":
             case ".qsg":
