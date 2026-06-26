@@ -1,5 +1,4 @@
-#nullable disable
-using QuestViva.Common;
+﻿using QuestViva.Common;
 using QuestViva.Engine.Functions;
 
 namespace QuestViva.Engine.Scripts;
@@ -27,9 +26,9 @@ public class ShowMenuScriptConstructor : IScriptConstructor
             callbackScript);
     }
 
-    public IScriptFactory ScriptFactory { get; set; }
+    public required IScriptFactory ScriptFactory { get; set; }
 
-    public WorldModel WorldModel { get; set; }
+    public required WorldModel WorldModel { get; set; }
 }
 
 public class ShowMenuScript : ScriptBase

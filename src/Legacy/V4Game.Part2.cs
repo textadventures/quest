@@ -178,7 +178,7 @@ public partial class V4Game
         return FinishWait();
     }
 
-    public Task SetMenuResponse(string? response)
+    public Task SetMenuResponse(string response)
     {
         var runnerThread =
             new Thread(SetMenuResponseInNewThread);
