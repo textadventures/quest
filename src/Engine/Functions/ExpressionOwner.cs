@@ -490,7 +490,7 @@ internal class ExpressionOwner(WorldModel worldModel)
         return dictionary[key] as IScript;
     }
 
-    public string ShowMenu(string? caption, QuestDictionary<string>? options, bool allowCancel)
+    public async Task<string> ShowMenu(string? caption, QuestDictionary<string>? options, bool allowCancel)
     {
         ArgumentNullException.ThrowIfNull(caption);
         ArgumentNullException.ThrowIfNull(options);
@@ -499,17 +499,17 @@ internal class ExpressionOwner(WorldModel worldModel)
         worldModel.PlayerUi.ShowMenu(menuData);
         worldModel._menuTcs = new TaskCompletionSource<string?>();
         worldModel.SignalTurnSuspended();
-        var result = worldModel._menuTcs.Task.GetAwaiter().GetResult();
+        var result = await worldModel._menuTcs.Task;
         if (result != null) worldModel.Print(" - " + options[result]);
         return result ?? string.Empty;
     }
 
-    public string ShowMenu(string? caption, QuestList<string>? options, bool allowCancel)
+    public async Task<string> ShowMenu(string? caption, QuestList<string>? options, bool allowCancel)
     {
         ArgumentNullException.ThrowIfNull(caption);
         ArgumentNullException.ThrowIfNull(options);
         var optionsDict = options.ToDictionary(o => o);
-        return ShowMenu(caption, new QuestDictionary<string>(optionsDict), allowCancel);
+        return await ShowMenu(caption, new QuestDictionary<string>(optionsDict), allowCancel);
     }
 
     public bool DictionaryContains( /* IDictionary */ object? obj, string? key)
@@ -571,12 +571,12 @@ internal class ExpressionOwner(WorldModel worldModel)
             CultureInfo.InvariantCulture, out _);
     }
 
-    public string GetInput()
+    public async Task<string> GetInput()
     {
         worldModel._commandOverride = true;
         worldModel._commandInputTcs = new TaskCompletionSource<string>();
         worldModel.SignalTurnSuspended();
-        var result = worldModel._commandInputTcs.Task.GetAwaiter().GetResult();
+        var result = await worldModel._commandInputTcs.Task;
         worldModel._commandOverride = false;
         return result;
     }
@@ -622,13 +622,13 @@ internal class ExpressionOwner(WorldModel worldModel)
         return worldModel.GetUniqueElementName(name);
     }
 
-    public bool Ask(string? caption)
+    public async Task<bool> Ask(string? caption)
     {
         ArgumentNullException.ThrowIfNull(caption);
         worldModel.PlayerUi.ShowQuestion(caption);
         worldModel._questionTcs = new TaskCompletionSource<bool>();
         worldModel.SignalTurnSuspended();
-        return worldModel._questionTcs.Task.GetAwaiter().GetResult();
+        return await worldModel._questionTcs.Task;
     }
 
     public int GetRandomInt(int min, int max)

@@ -447,7 +447,6 @@ public partial class WorldModel : IGame, IGameDebug
 
     private async Task TickAsyncInternal(int elapsedTime)
     {
-        _turnSuspendedTcs = new();
         try
         {
             var scripts = _timerRunner!.TickAndGetScripts(elapsedTime);
@@ -460,10 +459,6 @@ public partial class WorldModel : IGame, IGameDebug
         catch (Exception ex)
         {
             LogException(ex);
-        }
-        finally
-        {
-            SignalTurnSuspended(scroll: false);
         }
     }
 
