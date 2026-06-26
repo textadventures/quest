@@ -244,7 +244,7 @@ public class GameQuery(string filename)
 
     private class Config : IConfig
     {
-        public bool UseNCalc => false;
+        public bool UseNCalc => true;
     }
 
     private class GameQueryUi : IPlayerHelperUI

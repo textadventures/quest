@@ -23,11 +23,11 @@ public interface IGame
     event ErrorHandler? LogError;
     void Finish();
     byte[] Save(string html);
-    void FinishWait();
-    void FinishPause();
+    Task FinishWait();
+    Task FinishPause();
 
-    void SetMenuResponse(string? response);
-    void SetQuestionResponse(bool response);
+    Task SetMenuResponse(string? response);
+    Task SetQuestionResponse(bool response);
 
     event Action<int>? RequestNextTimerTick;
     void Tick(int elapsedTime);

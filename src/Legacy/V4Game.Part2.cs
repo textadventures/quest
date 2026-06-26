@@ -159,31 +159,33 @@ public partial class V4Game
         RaiseNextTimerTickRequest();
     }
 
-    public void FinishWait()
+    public Task FinishWait()
     {
         if (_state != State.Waiting)
         {
-            return;
+            return Task.CompletedTask;
         }
 
         var runnerThread = new Thread(FinishWaitInNewThread);
         ChangeState(State.Working);
         runnerThread.Start();
         WaitForStateChange(State.Working);
+        return Task.CompletedTask;
     }
 
-    public void FinishPause()
+    public Task FinishPause()
     {
-        FinishWait();
+        return FinishWait();
     }
 
-    public void SetMenuResponse(string response)
+    public Task SetMenuResponse(string? response)
     {
         var runnerThread =
             new Thread(SetMenuResponseInNewThread);
         ChangeState(State.Working);
         runnerThread.Start(response);
         WaitForStateChange(State.Working);
+        return Task.CompletedTask;
     }
 
     public IEnumerable<string> GetExternalScripts()

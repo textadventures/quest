@@ -8,11 +8,6 @@
         <Nullable>enable</Nullable>
     </PropertyGroup>
     <ItemGroup>
-        <Reference Include="Ciloci.Flee">
-            <HintPath>..\..\libs\Ciloci.Flee.dll</HintPath>
-        </Reference>
-    </ItemGroup>
-    <ItemGroup>
         <None Update="Core\Languages\EditorDeutsch.aslx">
             <CopyToOutputDirectory>Always</CopyToOutputDirectory>
             <SubType>Designer</SubType>

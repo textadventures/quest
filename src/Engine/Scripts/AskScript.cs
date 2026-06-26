@@ -47,7 +47,18 @@ public class AskScript(
 
     public override void Execute(Context c)
     {
-        _worldModel.ShowQuestionAsync(_caption.Execute(c), callbackScript, c);
+        ExecuteAsync(c).GetAwaiter().GetResult();
+    }
+
+    public override async Task ExecuteAsync(Context c)
+    {
+        var caption = _caption.Execute(c);
+        _worldModel.PlayerUi.ShowQuestion(caption);
+        _worldModel._questionTcs = new TaskCompletionSource<bool>();
+        _worldModel.SignalTurnSuspended();
+        var response = await _worldModel._questionTcs.Task;
+        c.Parameters["result"] = response;
+        await _worldModel.RunScriptAsync(callbackScript, c);
     }
 
     public override string Save()

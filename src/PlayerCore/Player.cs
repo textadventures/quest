@@ -474,6 +474,17 @@ public class Player : IPlayerHelperUI
         await ClearBuffer();
     }
 
+    private async Task UiActionAsync(Func<Task> action)
+    {
+        if (Finished)
+        {
+            return;
+        }
+
+        await action();
+        await ClearBuffer();
+    }
+
     public async Task UiSendCommandAsync(string command, int tickCount, IDictionary<string, string> metadata)
     {
         await UiActionAsync(() => PlayerHelper.SendCommand(command, tickCount, metadata));

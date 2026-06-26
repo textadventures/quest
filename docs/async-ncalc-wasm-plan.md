@@ -90,7 +90,7 @@ Branch: `async-ncalc`
 
 ---
 
-## Phase 3 — Replace Monitor-based blocking
+## Phase 3 — Replace Monitor-based blocking ✅
 
 The remaining work to eliminate all thread-blocking:
 

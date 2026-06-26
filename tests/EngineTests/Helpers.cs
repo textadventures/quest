@@ -12,13 +12,13 @@ internal class Config(bool useNCalc) : IConfig
 
 internal static class Helpers
 {
-    public static WorldModel CreateWorldModel(bool useNCalc = false)
+    public static WorldModel CreateWorldModel(bool useNCalc = true)
     {
         var config = new Config(useNCalc);
         return new WorldModel(config);
     }
 
-    public static WorldModel CreateWorldModel(GameData gameData, bool useNCalc = false)
+    public static WorldModel CreateWorldModel(GameData gameData, bool useNCalc = true)
     {
         var config = new Config(useNCalc);
         return new WorldModel(config, gameData, null);

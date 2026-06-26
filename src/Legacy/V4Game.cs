@@ -111,9 +111,10 @@ public partial class V4Game : IGame, IGameDebug
         _skipCheckFile[3] = "musicvf1.cas";
     }
 
-    void IGame.SetQuestionResponse(bool response)
+    Task IGame.SetQuestionResponse(bool response)
     {
         SetQuestionResponse(response);
+        return Task.CompletedTask;
     }
 
     private string RemoveFormatting(string s)

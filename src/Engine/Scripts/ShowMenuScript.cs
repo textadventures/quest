@@ -1,4 +1,5 @@
-﻿#nullable disable
+#nullable disable
+using QuestViva.Common;
 using QuestViva.Engine.Functions;
 
 namespace QuestViva.Engine.Scripts;
@@ -63,34 +64,47 @@ public class ShowMenuScript : ScriptBase
 
     public override void Execute(Context c)
     {
+        ExecuteAsync(c).GetAwaiter().GetResult();
+    }
+
+    public override async Task ExecuteAsync(Context c)
+    {
+        var caption = m_caption.Execute(c);
         var options = m_options.Execute(c);
-        var stringListOptions = options as IList<string>;
-        var stringDictionaryOptions = options as IDictionary<string, string>;
+        var allowCancel = m_allowCancel.Execute(c);
 
-        if (stringListOptions != null)
+        IDictionary<string, string> optionsDictionary;
+        if (options is IList<string> stringListOptions)
         {
-            if (stringListOptions.Count == 0)
-            {
-                throw new Exception("No menu options specified");
-            }
-
-            m_worldModel.DisplayMenuAsync(m_caption.Execute(c), stringListOptions, m_allowCancel.Execute(c),
-                m_callbackScript, c);
+            if (stringListOptions.Count == 0) throw new Exception("No menu options specified");
+            optionsDictionary = stringListOptions.ToDictionary(o => o);
         }
-        else if (stringDictionaryOptions != null)
+        else if (options is IDictionary<string, string> stringDictionaryOptions)
         {
-            if (stringDictionaryOptions.Count == 0)
-            {
-                throw new Exception("No menu options specified");
-            }
-
-            m_worldModel.DisplayMenuAsync(m_caption.Execute(c), stringDictionaryOptions, m_allowCancel.Execute(c),
-                m_callbackScript, c);
+            if (stringDictionaryOptions.Count == 0) throw new Exception("No menu options specified");
+            optionsDictionary = stringDictionaryOptions;
         }
         else
         {
             throw new Exception("Unknown menu options type");
         }
+
+        m_worldModel.Print(caption);
+        var menuData = new MenuData(caption, optionsDictionary, allowCancel);
+        m_worldModel.PlayerUi.ShowMenu(menuData);
+
+        m_worldModel._menuTcs = new TaskCompletionSource<string?>();
+        m_worldModel.SignalTurnSuspended();
+        var response = await m_worldModel._menuTcs.Task;
+
+        if (response != null)
+        {
+            m_worldModel.Print(" - " + optionsDictionary[response]);
+        }
+
+        c.Parameters["result"] = response;
+        await m_worldModel.RunScriptAsync(m_callbackScript, c);
+
     }
 
     public override string Save()
@@ -129,7 +143,6 @@ public class ShowMenuScript : ScriptBase
                 m_allowCancel = new Expression<bool>((string) value, m_scriptContext);
                 break;
             case 3:
-                // any updates to the script should change the script itself - nothing should cause SetParameter to be triggered.
                 throw new InvalidOperationException(
                     "Attempt to use SetParameter to change the script of a 'show menu' command");
             default:

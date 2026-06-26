@@ -1,4 +1,4 @@
-﻿#nullable disable
+#nullable disable
 namespace QuestViva.Engine.Scripts;
 
 public class WaitScriptConstructor : IScriptConstructor
@@ -40,7 +40,17 @@ public class WaitScript : ScriptBase
 
     public override void Execute(Context c)
     {
-        m_worldModel.StartWaitAsync(m_callbackScript, c);
+        ExecuteAsync(c).GetAwaiter().GetResult();
+    }
+
+    public override async Task ExecuteAsync(Context c)
+    {
+        m_worldModel.PlayerUi.DoWait();
+        m_worldModel._waitTcs = new TaskCompletionSource();
+        m_worldModel.SignalTurnSuspended();
+        await m_worldModel._waitTcs.Task;
+        if (m_callbackScript != null)
+            await m_worldModel.RunScriptAsync(m_callbackScript, c);
     }
 
     public override string Save()
@@ -64,7 +74,6 @@ public class WaitScript : ScriptBase
         switch (index)
         {
             case 0:
-                // any updates to the script should change the script itself - nothing should cause SetParameter to be triggered.
                 throw new InvalidOperationException(
                     "Attempt to use SetParameter to change the script of a 'wait' command");
             default:

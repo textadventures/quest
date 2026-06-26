@@ -35,14 +35,7 @@ public class Expression<T> : ExpressionBase, IFunction<T>
     public Expression(string expression, ScriptContext scriptContext)
         : base(expression, scriptContext)
     {
-        if (scriptContext.WorldModel.UseNCalc)
-        {
-            _expressionEvaluator = new NcalcExpressionEvaluator<T>(Expression, ScriptContext);
-        }
-        else
-        {
-            _expressionEvaluator = new FleeExpressionEvaluator<T>(Expression, ScriptContext);
-        }
+        _expressionEvaluator = new NcalcExpressionEvaluator<T>(Expression, ScriptContext);
     }
 
     public IFunction<T> Clone()
@@ -73,14 +66,7 @@ public class ExpressionDynamic : ExpressionBase, IFunctionDynamic
     public ExpressionDynamic(string expression, ScriptContext scriptContext)
         : base(expression, scriptContext)
     {
-        if (scriptContext.WorldModel.UseNCalc)
-        {
-            _dynamicExpressionEvaluator = new NcalcExpressionEvaluator<object>(Expression, ScriptContext);
-        }
-        else
-        {
-            _dynamicExpressionEvaluator = new FleeDynamicExpressionEvaluator(Expression, ScriptContext);
-        }
+        _dynamicExpressionEvaluator = new NcalcExpressionEvaluator<object>(Expression, ScriptContext);
     }
 
     public IFunctionDynamic Clone()
