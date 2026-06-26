@@ -5,7 +5,8 @@ using Shouldly;
 
 namespace QuestViva.EngineTests;
 
-public abstract class ExpressionTestsBase
+[TestClass]
+public class ExpressionTests
 {
     private const string ObjectName = "object";
 
@@ -36,12 +37,11 @@ public abstract class ExpressionTestsBase
     private ScriptFactory _scriptFactory;
 
     private WorldModel _worldModel;
-    protected abstract bool UseNCalc { get; }
 
     [TestInitialize]
     public void Setup()
     {
-        _worldModel = Helpers.CreateWorldModel(UseNCalc);
+        _worldModel = Helpers.CreateWorldModel();
         _scriptContext = new ScriptContext(_worldModel);
         _scriptFactory = new ScriptFactory(_worldModel);
 
@@ -348,7 +348,6 @@ public abstract class ExpressionTestsBase
     [TestMethod]
     public void TestListIndexingSyntax()
     {
-        if (!UseNCalc) return; // FLEE infers QuestList element type as Object, can't return String
         var list = new QuestList<string>(["alpha", "beta", "gamma"]);
         var expr = new Expression<string>("mylist[0]", _scriptContext);
         var c = new Context { Parameters = new Parameters { { "mylist", list } } };
@@ -361,7 +360,6 @@ public abstract class ExpressionTestsBase
     [TestMethod]
     public void TestListIndexingWithVariableIndex()
     {
-        if (!UseNCalc) return; // FLEE infers QuestList element type as Object, can't return String
         var list = new QuestList<string>(["alpha", "beta", "gamma"]);
         var expr = new Expression<string>("mylist[idx]", _scriptContext);
         var c = new Context { Parameters = new Parameters { { "mylist", list }, { "idx", 1 } } };
@@ -523,7 +521,6 @@ public abstract class ExpressionTestsBase
     [DataRow("100L", 100)]
     public void TestFleeCompatIntegerSuffixes(string expression, int expectedResult)
     {
-        if (!UseNCalc) return; // FLEE returns UInt32/Int64 for u/L suffixes; NCalc normalises to int
         RunExpression<int>(expression).ShouldBe(expectedResult);
     }
 
@@ -539,7 +536,6 @@ public abstract class ExpressionTestsBase
     [TestMethod]
     public void TestFleeCompatDecimalSuffix()
     {
-        if (!UseNCalc) return; // FLEE returns Decimal for m suffix; NCalc normalises to double
         var result = RunExpression<double>("2.0m");
         Math.Abs(result - 2.0).ShouldBeLessThan(0.000001);
     }
@@ -657,7 +653,6 @@ public abstract class ExpressionTestsBase
     [DataRow("if(false, \"yes\", \"no\")", "no")]
     public async Task TestStringExpressionsAsync(string expression, string expectedResult)
     {
-        if (!UseNCalc) return; // async path is NCalc-only; FLEE shims to sync
         var result = await RunExpressionAsync<string>(expression);
         result.ShouldBe(expectedResult);
     }
@@ -667,20 +662,7 @@ public abstract class ExpressionTestsBase
     [DataRow("CustomIntFunction(1, 2)", 3)]
     public async Task TestIntExpressionsAsync(string expression, int expectedResult)
     {
-        if (!UseNCalc) return; // async path is NCalc-only; FLEE shims to sync
         var result = await RunExpressionAsync<int>(expression);
         result.ShouldBe(expectedResult);
     }
-}
-
-[TestClass]
-public class NCalcExpressionTests : ExpressionTestsBase
-{
-    protected override bool UseNCalc => true;
-}
-
-[TestClass]
-public class FleeExpressionTests : ExpressionTestsBase
-{
-    protected override bool UseNCalc => false;
 }

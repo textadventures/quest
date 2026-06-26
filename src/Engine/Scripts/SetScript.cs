@@ -246,6 +246,20 @@ public class SetExpressionScript : SetScriptBase
         return m_expr.Execute(c);
     }
 
+    public override async Task ExecuteAsync(Context c)
+    {
+        var result = await m_expr.ExecuteAsync(c);
+        if (AppliesTo != null)
+        {
+            var obj = AppliesTo.Execute(c);
+            obj.Fields.Set(Property, result);
+        }
+        else
+        {
+            c.Parameters[Property] = result;
+        }
+    }
+
     protected override string GetSaveString()
     {
         return m_expr.Save();

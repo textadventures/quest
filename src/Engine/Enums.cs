@@ -8,13 +8,6 @@ public enum GameState
     Finished
 }
 
-public enum ThreadState
-{
-    Ready,
-    Working,
-    Waiting
-}
-
 public enum UpdateSource
 {
     System,

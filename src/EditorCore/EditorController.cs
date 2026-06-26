@@ -229,12 +229,12 @@ public sealed class EditorController : IDisposable
     //     newThread.Start();
     // }
 
-    public async Task<bool> Initialise(IConfig config, IGameDataProvider gameDataProvider, bool partialInit = false)
+    public async Task<bool> Initialise(IGameDataProvider gameDataProvider, bool partialInit = false)
     {
         m_lastelementscutout = false;
         var gameData = await gameDataProvider.GetData();
         Filename = gameData?.Filename ?? string.Empty;
-        WorldModel = new WorldModel(config, gameData, null);
+        WorldModel = new WorldModel(gameData, null);
         m_scriptFactory = new ScriptFactory(WorldModel);
         WorldModel.ElementFieldUpdated += m_worldModel_ElementFieldUpdated;
         WorldModel.ElementRefreshed += m_worldModel_ElementRefreshed;

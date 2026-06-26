@@ -1,7 +1,6 @@
 ﻿#nullable disable
 using System.Reflection;
 using System.Text.RegularExpressions;
-using Ciloci.Flee;
 using QuestViva.Engine.Scripts;
 using QuestViva.Utility;
 
@@ -174,11 +173,6 @@ public partial class ScriptFactory : IScriptFactory
                                 {
                                     lastFirstTime = newScript;
                                 }
-                            }
-                            catch (ExpressionCompileException ex)
-                            {
-                                AddError(string.Format("Error compiling expression in '{0}': {1}", line, ex.Message));
-                                addedError = true;
                             }
                             catch (Exception ex)
                             {

@@ -15,7 +15,7 @@ public class AsyncScriptTests
     [TestInitialize]
     public void Setup()
     {
-        _worldModel = Helpers.CreateWorldModel(useNCalc: true);
+        _worldModel = Helpers.CreateWorldModel();
         _scriptContext = new ScriptContext(_worldModel);
         _scriptFactory = new ScriptFactory(_worldModel);
         _obj = _worldModel.GetElementFactory(ElementType.Object).Create("obj");

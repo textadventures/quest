@@ -4,13 +4,6 @@ using QuestViva.EditorCore;
 
 namespace QuestViva.EditorCoreTests;
 
-public class Config : IConfig
-{
-    public string HomeFile { get; }
-    public bool DevEnabled { get; }
-    public bool UseNCalc => false;
-}
-
 [TestClass]
 public abstract class EditorControllerTestBase
 {
@@ -33,7 +26,7 @@ public abstract class EditorControllerTestBase
         Controller.UndoListUpdated += m_controller_UndoListUpdated;
         Controller.RedoListUpdated += m_controller_RedoListUpdated;
         var bytes = GetResourceBytes("QuestViva.EditorCoreTests.test.aslx");
-        await Controller.Initialise(new Config(), new ByteArrayGameDataProvider(bytes, "test.aslx"));
+        await Controller.Initialise(new ByteArrayGameDataProvider(bytes, "test.aslx"));
         DoExtraInitialisation();
     }
 

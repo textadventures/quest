@@ -71,6 +71,11 @@ public class RequestScript : ScriptBase
 
     public override void Execute(Context c)
     {
+        ExecuteAsync(c).GetAwaiter().GetResult();
+    }
+
+    public override async Task ExecuteAsync(Context c)
+    {
         var data = m_data.Execute(c);
 
         // TO DO: Replace with dictionary mapping the enum to lambda functions
@@ -186,7 +191,7 @@ public class RequestScript : ScriptBase
                 int ms;
                 if (int.TryParse(data, out ms))
                 {
-                    m_worldModel.StartPause(ms);
+                    await m_worldModel.DoPauseAsync(ms);
                 }
 
                 break;
@@ -197,7 +202,7 @@ public class RequestScript : ScriptBase
                         "The 'Wait' request is not supported for games written for Quest 5.4 or later. Use the 'wait' script command instead.");
                 }
 
-                m_worldModel.StartWait();
+                await m_worldModel.DoWaitAsync();
                 break;
             case Request.SetInterfaceString:
                 var args = data.Split('=');

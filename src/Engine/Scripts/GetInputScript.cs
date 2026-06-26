@@ -41,7 +41,18 @@ public class GetInputScript : ScriptBase
 
     public override void Execute(Context c)
     {
-        m_worldModel.GetNextCommandInputAsync(m_callbackScript, c);
+        ExecuteAsync(c).GetAwaiter().GetResult();
+    }
+
+    public override async Task ExecuteAsync(Context c)
+    {
+        m_worldModel._commandOverride = true;
+        m_worldModel._commandInputTcs = new TaskCompletionSource<string>();
+        m_worldModel.SignalTurnSuspended();
+        var result = await m_worldModel._commandInputTcs.Task;
+        m_worldModel._commandOverride = false;
+        c.Parameters["result"] = result;
+        await m_worldModel.RunScriptAsync(m_callbackScript, c);
     }
 
     public override string Save()

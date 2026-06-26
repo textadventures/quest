@@ -48,8 +48,26 @@ public class PlaySoundScript : ScriptBase
 
     public override void Execute(Context c)
     {
+        ExecuteAsync(c).GetAwaiter().GetResult();
+    }
+
+    public override async Task ExecuteAsync(Context c)
+    {
         var filename = m_filename.Execute(c);
-        m_worldModel.PlaySound(filename, m_synchronous.Execute(c), m_loop.Execute(c));
+        var synchronous = m_synchronous.Execute(c);
+        var loop = m_loop.Execute(c);
+
+        if (synchronous)
+        {
+            m_worldModel._waitTcs = new TaskCompletionSource();
+            m_worldModel.PlayerUi.PlaySound(filename, true, loop);
+            m_worldModel.SignalTurnSuspended();
+            await m_worldModel._waitTcs.Task;
+        }
+        else
+        {
+            m_worldModel.PlayerUi.PlaySound(filename, false, loop);
+        }
     }
 
     public override string Save()

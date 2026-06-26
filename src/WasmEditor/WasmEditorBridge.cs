@@ -181,7 +181,7 @@ public partial class WasmEditorBridge
         _controller.Dirty += (_, _) => { _isDirty = true; };
 
         var provider = new ByteArrayGameDataProvider(gameFileBytes, filename);
-        var ok = await _controller.Initialise(new WasmConfig(), provider);
+        var ok = await _controller.Initialise(provider);
         _isDirty = false;
         if (ok)
         {

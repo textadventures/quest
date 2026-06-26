@@ -490,32 +490,26 @@ internal class ExpressionOwner(WorldModel worldModel)
         return dictionary[key] as IScript;
     }
 
-    public string ShowMenu(string? caption, QuestDictionary<string>? options, bool allowCancel)
+    public async Task<string> ShowMenu(string? caption, QuestDictionary<string>? options, bool allowCancel)
     {
         ArgumentNullException.ThrowIfNull(caption);
         ArgumentNullException.ThrowIfNull(options);
-
-        if (worldModel.Version >= WorldModelVersion.v540)
-        {
-            throw new Exception(
-                "The 'ShowMenu' function is not supported for games written for Quest 5.4 or later. Use the 'show menu' script command instead.");
-        }
-
-        return worldModel.DisplayMenu(caption, options, allowCancel, false);
+        worldModel.Print(caption);
+        var menuData = new MenuData(caption, options, allowCancel);
+        worldModel.PlayerUi.ShowMenu(menuData);
+        worldModel._menuTcs = new TaskCompletionSource<string?>();
+        worldModel.SignalTurnSuspended();
+        var result = await worldModel._menuTcs.Task;
+        if (result != null) worldModel.Print(" - " + options[result]);
+        return result ?? string.Empty;
     }
 
-    public string ShowMenu(string? caption, QuestList<string>? options, bool allowCancel)
+    public async Task<string> ShowMenu(string? caption, QuestList<string>? options, bool allowCancel)
     {
         ArgumentNullException.ThrowIfNull(caption);
         ArgumentNullException.ThrowIfNull(options);
-
-        if (worldModel.Version >= WorldModelVersion.v540)
-        {
-            throw new Exception(
-                "The 'ShowMenu' function is not supported for games written for Quest 5.4 or later. Use the 'show menu' script command instead.");
-        }
-
-        return worldModel.DisplayMenu(caption, options, allowCancel, false);
+        var optionsDict = options.ToDictionary(o => o);
+        return await ShowMenu(caption, new QuestDictionary<string>(optionsDict), allowCancel);
     }
 
     public bool DictionaryContains( /* IDictionary */ object? obj, string? key)
@@ -577,15 +571,14 @@ internal class ExpressionOwner(WorldModel worldModel)
             CultureInfo.InvariantCulture, out _);
     }
 
-    public string GetInput()
+    public async Task<string> GetInput()
     {
-        if (worldModel.Version >= WorldModelVersion.v540)
-        {
-            throw new Exception(
-                "The 'GetInput' function is not supported for games written for Quest 5.4 or later. Use the 'get input' script command instead.");
-        }
-
-        return worldModel.GetNextCommandInput(false);
+        worldModel._commandOverride = true;
+        worldModel._commandInputTcs = new TaskCompletionSource<string>();
+        worldModel.SignalTurnSuspended();
+        var result = await worldModel._commandInputTcs.Task;
+        worldModel._commandOverride = false;
+        return result;
     }
 
     // ReSharper disable once InconsistentNaming
@@ -629,16 +622,13 @@ internal class ExpressionOwner(WorldModel worldModel)
         return worldModel.GetUniqueElementName(name);
     }
 
-    public bool Ask(string? caption)
+    public async Task<bool> Ask(string? caption)
     {
         ArgumentNullException.ThrowIfNull(caption);
-        if (worldModel.Version >= WorldModelVersion.v540)
-        {
-            throw new Exception(
-                "The 'Ask' function is not supported for games written for Quest 5.4 or later. Use the 'ask' script command instead.");
-        }
-
-        return worldModel.ShowQuestion(caption);
+        worldModel.PlayerUi.ShowQuestion(caption);
+        worldModel._questionTcs = new TaskCompletionSource<bool>();
+        worldModel.SignalTurnSuspended();
+        return await worldModel._questionTcs.Task;
     }
 
     public int GetRandomInt(int min, int max)
