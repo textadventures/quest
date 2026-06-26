@@ -127,6 +127,18 @@ public class MultiScript : ScriptBase, IScriptParent, IMultiScript
         }
     }
 
+    public override async Task ExecuteAsync(Context c)
+    {
+        foreach (var script in m_scripts)
+        {
+            await script.ExecuteAsync(c);
+            if (c.IsReturned)
+            {
+                break;
+            }
+        }
+    }
+
     public override string Line
     {
         get

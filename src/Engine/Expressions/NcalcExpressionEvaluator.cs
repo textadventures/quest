@@ -31,11 +31,18 @@ public class NcalcExpressionEvaluator<T> : IExpressionEvaluator<T>, IDynamicExpr
         _nCalcExpression.EvaluateFunction += EvaluateFunction;
         _nCalcExpression.EvaluateParameter += EvaluateParameter;
         _nCalcExpression.EvaluateBinary += EvaluateBinary;
+        _nCalcExpression.EvaluateAsyncFunction += EvaluateFunctionAsync;
+        _nCalcExpression.EvaluateBinaryAsync += EvaluateBinaryAsync;
     }
 
     object IDynamicExpressionEvaluator.Evaluate(Context c)
     {
         return Evaluate(c);
+    }
+
+    async Task<object> IDynamicExpressionEvaluator.EvaluateAsync(Context c)
+    {
+        return await EvaluateAsync(c);
     }
 
     public T Evaluate(Context c)
@@ -46,6 +53,27 @@ public class NcalcExpressionEvaluator<T> : IExpressionEvaluator<T>, IDynamicExpr
             var result = CoerceLong(_nCalcExpression.Evaluate());
 
             // Converting ints to generic doubles is fun
+            if (typeof(T) == typeof(double) && result is int i)
+            {
+                return (T) (object) (double) i;
+            }
+
+            return (T) result;
+        }
+        catch (Exception ex)
+        {
+            var innerMessage = ex.InnerException?.Message ?? ex.Message;
+            throw new Exception($"Error evaluating expression '{_expression}': {innerMessage}", ex);
+        }
+    }
+
+    public async Task<T> EvaluateAsync(Context c)
+    {
+        _context = c;
+        try
+        {
+            var result = CoerceLong(await _nCalcExpression.EvaluateAsync());
+
             if (typeof(T) == typeof(double) && result is int i)
             {
                 return (T) (object) (double) i;
@@ -183,23 +211,78 @@ public class NcalcExpressionEvaluator<T> : IExpressionEvaluator<T>, IDynamicExpr
         args.Result = EvaluateAslFunction(name, args);
     }
 
+    private async Task EvaluateFunctionAsync(string name, FunctionEventArgs args)
+    {
+        var tryExpressionOwner =
+            await EvaluateFunctionFromTypeAsync(typeof(ExpressionOwner), _expressionOwner, name, args.Parameters);
+        if (tryExpressionOwner.handled)
+        {
+            args.Result = tryExpressionOwner.result;
+            return;
+        }
+
+        var tryMath = await EvaluateFunctionFromTypeAsync(typeof(Math), null, name, args.Parameters);
+        if (tryMath.handled)
+        {
+            args.Result = tryMath.result;
+            return;
+        }
+
+        var tryStringFunctions = await EvaluateFunctionFromTypeAsync(typeof(StringFunctions), null, name, args.Parameters);
+        if (tryStringFunctions.handled)
+        {
+            args.Result = tryStringFunctions.result;
+            return;
+        }
+
+        var tryDateTimeFunctions = await EvaluateFunctionFromTypeAsync(typeof(DateTimeFunctions), null, name, args.Parameters);
+        if (tryDateTimeFunctions.handled)
+        {
+            args.Result = tryDateTimeFunctions.result;
+            return;
+        }
+
+        args.Result = await EvaluateAslFunctionAsync(name, args);
+    }
+
 #nullable enable
     private static (bool handled, object? result) EvaluateFunctionFromType(Type type, object? instance, string name,
         FunctionData parameters)
     {
-        var methods = type.GetMethods()
-            .Where(m => m.IsPublic && m.Name.Equals(name, StringComparison.InvariantCultureIgnoreCase))
-            .ToArray<MethodBase>();
-
-        if (methods.Length == 0)
-        {
-            return (false, null);
-        }
+        var methods = GetPublicMethodsByName(type, name);
+        if (methods == null) return (false, null);
 
         var evaluatedArgs = Enumerable.Range(0, parameters.Count)
             .Select(i => CoerceLong(parameters.Evaluate(i)))
             .ToArray();
 
+        return DispatchToMethod(methods, instance, name, evaluatedArgs);
+    }
+
+    private static async Task<(bool handled, object? result)> EvaluateFunctionFromTypeAsync(Type type, object? instance,
+        string name, FunctionData parameters)
+    {
+        var methods = GetPublicMethodsByName(type, name);
+        if (methods == null) return (false, null);
+
+        var evaluatedArgs = await Task.WhenAll(
+            Enumerable.Range(0, parameters.Count)
+                .Select(async i => CoerceLong(await parameters.EvaluateAsync(i))));
+
+        return DispatchToMethod(methods, instance, name, evaluatedArgs);
+    }
+
+    private static MethodBase[]? GetPublicMethodsByName(Type type, string name)
+    {
+        var methods = type.GetMethods()
+            .Where(m => m.IsPublic && m.Name.Equals(name, StringComparison.InvariantCultureIgnoreCase))
+            .ToArray<MethodBase>();
+        return methods.Length == 0 ? null : methods;
+    }
+
+    private static (bool handled, object? result) DispatchToMethod(MethodBase[] methods, object? instance, string name,
+        object?[] evaluatedArgs)
+    {
         // First, try to find a method with a params parameter.
         var paramsMethods = methods
             .Where(m =>
@@ -328,6 +411,33 @@ public class NcalcExpressionEvaluator<T> : IExpressionEvaluator<T>, IDynamicExpr
         var left = args.LeftValue();
         var right = args.RightValue();
 
+        HandleBinaryResult(args, isEquality, operatorName, left, right);
+    }
+
+    private async Task EvaluateBinaryAsync(BinaryEventArgs args)
+    {
+        var isEquality = args.BinaryExpression.Type is BinaryExpressionType.Equal or BinaryExpressionType.NotEqual;
+
+        var operatorName = args.BinaryExpression.Type switch
+        {
+            BinaryExpressionType.Plus => "op_Addition",
+            BinaryExpressionType.Minus => "op_Subtraction",
+            BinaryExpressionType.Times => "op_Multiply",
+            BinaryExpressionType.Div => "op_Division",
+            BinaryExpressionType.Modulo => "op_Modulus",
+            _ => null
+        };
+
+        if (operatorName == null && !isEquality) return;
+
+        var left = await args.LeftValueAsync();
+        var right = await args.RightValueAsync();
+
+        HandleBinaryResult(args, isEquality, operatorName, left, right);
+    }
+
+    private static void HandleBinaryResult(BinaryEventArgs args, bool isEquality, string operatorName, object left, object right)
+    {
         // NCalc's internal equality logic calls Convert.ChangeType() which requires IConvertible.
         // Element doesn't implement IConvertible, so intercept equality/inequality for non-standard
         // types and use Equals() instead — matching FLEE's behaviour of returning false for
@@ -415,35 +525,7 @@ public class NcalcExpressionEvaluator<T> : IExpressionEvaluator<T>, IDynamicExpr
             var methodArgs = Enumerable.Range(2, args.Parameters.Count - 2)
                 .Select(i => CoerceLong(args.Parameters.Evaluate(i)))
                 .ToArray();
-            var argTypes = methodArgs.Select(a => a?.GetType() ?? typeof(object)).ToArray();
-            var method = receiver?.GetType().GetMethod(methodName, argTypes);
-
-            if (method == null && methodArgs.Any(a => a == null))
-            {
-                method = receiver?.GetType().GetMethods()
-                    .Where(m => m.Name == methodName)
-                    .FirstOrDefault(m =>
-                    {
-                        var ps = m.GetParameters();
-                        if (ps.Length != methodArgs.Length) return false;
-                        for (var i = 0; i < methodArgs.Length; i++)
-                        {
-                            if (methodArgs[i] == null)
-                            {
-                                if (ps[i].ParameterType.IsValueType &&
-                                    Nullable.GetUnderlyingType(ps[i].ParameterType) == null)
-                                    return false;
-                                continue;
-                            }
-                            if (!ps[i].ParameterType.IsInstanceOfType(methodArgs[i])) return false;
-                        }
-                        return true;
-                    });
-            }
-
-            if (method == null)
-                throw new Exception($"Method '{methodName}' not found on '{receiver?.GetType().Name}'");
-            return method.Invoke(receiver, methodArgs);
+            return DispatchMethodCall(receiver, methodName, methodArgs);
         }
 
         if (name == "__Quest_PropertyAccess__")
@@ -486,25 +568,7 @@ public class NcalcExpressionEvaluator<T> : IExpressionEvaluator<T>, IDynamicExpr
             finally { _evaluatingCastType = false; }
             var typeName = typeArg as string
                 ?? throw new Exception("cast() second parameter must be a type name (int, double, string, bool)");
-            return typeName switch
-            {
-                "boolean" => Convert.ToBoolean(value),
-                "byte" => Convert.ToByte(value),
-                "sbyte" => Convert.ToSByte(value),
-                "short" => Convert.ToInt16(value),
-                "ushort" => Convert.ToUInt16(value),
-                "int" => (int) Convert.ToDouble(value),
-                "uint" => Convert.ToUInt32(value),
-                "long" => Convert.ToInt64(value),
-                "ulong" => Convert.ToUInt64(value),
-                "single" => Convert.ToSingle(value),
-                "double" => Convert.ToDouble(value),
-                "decimal" => Convert.ToDecimal(value),
-                "char" => Convert.ToChar(value),
-                "object" => value,
-                "string" => Convert.ToString(value),
-                _ => throw new Exception($"cast(): unknown type '{typeName}'")
-            };
+            return CastValue(value, typeName);
         }
 
         if (name.Equals("if", StringComparison.InvariantCultureIgnoreCase))
@@ -532,6 +596,73 @@ public class NcalcExpressionEvaluator<T> : IExpressionEvaluator<T>, IDynamicExpr
             return _context.Parameters.ContainsKey(variableName);
         }
 
+        return RunQuestProcedure(name, args.Parameters.Count, i => args.Parameters.Evaluate(i));
+    }
+
+    private async Task<object> EvaluateAslFunctionAsync(string name, FunctionEventArgs args)
+    {
+        if (name == "__Quest_MethodCall__")
+        {
+            if (args.Parameters.Count < 2)
+                throw new Exception("__Quest_MethodCall__ requires at least 2 arguments");
+            var receiver = CoerceLong(await args.Parameters.EvaluateAsync(0));
+            var methodName = await args.Parameters.EvaluateAsync(1) as string
+                ?? throw new Exception("__Quest_MethodCall__ second argument must be a string method name");
+            var methodArgs = await Task.WhenAll(Enumerable.Range(2, args.Parameters.Count - 2)
+                .Select(async i => CoerceLong(await args.Parameters.EvaluateAsync(i))));
+            return DispatchMethodCall(receiver, methodName, methodArgs);
+        }
+
+        if (name == "__Quest_Index__")
+        {
+            if (args.Parameters.Count != 2)
+                throw new Exception("Subscript operator requires exactly 2 operands");
+            var collection = await args.Parameters.EvaluateAsync(0);
+            var key = CoerceLong(await args.Parameters.EvaluateAsync(1));
+            if (collection is IQuestList)
+                return _expressionOwner.ListItem(collection, (int) key);
+            return _expressionOwner.DictionaryItem(collection, key?.ToString());
+        }
+
+        if (name.Equals("cast", StringComparison.InvariantCultureIgnoreCase))
+        {
+            if (args.Parameters.Count != 2)
+                throw new Exception("cast() expects 2 parameters: value and type");
+            var value = CoerceLong(await args.Parameters.EvaluateAsync(0));
+            _evaluatingCastType = true;
+            object typeArg;
+            try { typeArg = await args.Parameters.EvaluateAsync(1); }
+            finally { _evaluatingCastType = false; }
+            var typeName = typeArg as string
+                ?? throw new Exception("cast() second parameter must be a type name (int, double, string, bool)");
+            return CastValue(value, typeName);
+        }
+
+        if (name.Equals("if", StringComparison.InvariantCultureIgnoreCase))
+        {
+            if (args.Parameters.Count != 3)
+                throw new Exception("'if' function expects 3 parameters: condition, trueValue, falseValue");
+            var condition = await args.Parameters.EvaluateAsync(0);
+            return condition is true
+                ? await args.Parameters.EvaluateAsync(1)
+                : await args.Parameters.EvaluateAsync(2);
+        }
+
+        if (name == "IsDefined")
+        {
+            if (args.Parameters.Count != 1)
+                throw new Exception("IsDefined function expects 1 parameter");
+            if (await args.Parameters.EvaluateAsync(0) is not string variableName)
+                throw new Exception("IsDefined function expects a string parameter");
+            return _context.Parameters.ContainsKey(variableName);
+        }
+
+        return await RunQuestProcedureAsync(name, args.Parameters.Count,
+            i => args.Parameters.EvaluateAsync(i));
+    }
+
+    private object RunQuestProcedure(string name, int argCount, Func<int, object> evaluateArg)
+    {
         var proc = _scriptContext.WorldModel.Procedure(name);
 
         if (proc == null)
@@ -541,11 +672,83 @@ public class NcalcExpressionEvaluator<T> : IExpressionEvaluator<T>, IDynamicExpr
 
         var parameters = new Parameters();
 
-        for (var cnt = 0; cnt < args.Parameters.Count; cnt++)
+        for (var cnt = 0; cnt < argCount; cnt++)
         {
-            parameters.Add((string) proc.Fields[FieldDefinitions.ParamNames][cnt], args.Parameters.Evaluate(cnt));
+            parameters.Add((string) proc.Fields[FieldDefinitions.ParamNames][cnt], evaluateArg(cnt));
         }
 
         return _scriptContext.WorldModel.RunProcedure(name, parameters, true);
     }
+
+    private async Task<object> RunQuestProcedureAsync(string name, int argCount, Func<int, Task<object>> evaluateArgAsync)
+    {
+        var proc = _scriptContext.WorldModel.Procedure(name);
+
+        if (proc == null)
+        {
+            throw new Exception($"Unknown function '{name}'");
+        }
+
+        var parameters = new Parameters();
+
+        for (var cnt = 0; cnt < argCount; cnt++)
+        {
+            parameters.Add((string) proc.Fields[FieldDefinitions.ParamNames][cnt], await evaluateArgAsync(cnt));
+        }
+
+        return await _scriptContext.WorldModel.RunProcedureAsync(name, parameters, true);
+    }
+
+    private static object DispatchMethodCall(object receiver, string methodName, object[] methodArgs)
+    {
+        var argTypes = methodArgs.Select(a => a?.GetType() ?? typeof(object)).ToArray();
+        var method = receiver?.GetType().GetMethod(methodName, argTypes);
+
+        if (method == null && methodArgs.Any(a => a == null))
+        {
+            method = receiver?.GetType().GetMethods()
+                .Where(m => m.Name == methodName)
+                .FirstOrDefault(m =>
+                {
+                    var ps = m.GetParameters();
+                    if (ps.Length != methodArgs.Length) return false;
+                    for (var i = 0; i < methodArgs.Length; i++)
+                    {
+                        if (methodArgs[i] == null)
+                        {
+                            if (ps[i].ParameterType.IsValueType &&
+                                Nullable.GetUnderlyingType(ps[i].ParameterType) == null)
+                                return false;
+                            continue;
+                        }
+                        if (!ps[i].ParameterType.IsInstanceOfType(methodArgs[i])) return false;
+                    }
+                    return true;
+                });
+        }
+
+        if (method == null)
+            throw new Exception($"Method '{methodName}' not found on '{receiver?.GetType().Name}'");
+        return method.Invoke(receiver, methodArgs);
+    }
+
+    private static object CastValue(object value, string typeName) => typeName switch
+    {
+        "boolean" => Convert.ToBoolean(value),
+        "byte" => Convert.ToByte(value),
+        "sbyte" => Convert.ToSByte(value),
+        "short" => Convert.ToInt16(value),
+        "ushort" => Convert.ToUInt16(value),
+        "int" => (int) Convert.ToDouble(value),
+        "uint" => Convert.ToUInt32(value),
+        "long" => Convert.ToInt64(value),
+        "ulong" => Convert.ToUInt64(value),
+        "single" => Convert.ToSingle(value),
+        "double" => Convert.ToDouble(value),
+        "decimal" => Convert.ToDecimal(value),
+        "char" => Convert.ToChar(value),
+        "object" => value,
+        "string" => Convert.ToString(value),
+        _ => throw new Exception($"cast(): unknown type '{typeName}'")
+    };
 }

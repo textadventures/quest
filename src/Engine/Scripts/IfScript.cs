@@ -450,6 +450,32 @@ public class IfScript : ScriptBase, IIfScript
         }
     }
 
+    public override async Task ExecuteAsync(Context c)
+    {
+        if (Expression.Execute(c))
+        {
+            await ThenScript.ExecuteAsync(c);
+            return;
+        }
+
+        if (m_elseIfScript != null)
+        {
+            foreach (ElseIfScript elseIfScript in m_elseIfScript)
+            {
+                if (elseIfScript.Expression.Execute(c))
+                {
+                    await elseIfScript.Script.ExecuteAsync(c);
+                    return;
+                }
+            }
+        }
+
+        if (ElseScript != null)
+        {
+            await ElseScript.ExecuteAsync(c);
+        }
+    }
+
     public override string Save()
     {
         var result = SaveScript("if", ThenScript, Expression.Save());

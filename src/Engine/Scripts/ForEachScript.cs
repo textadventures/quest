@@ -90,6 +90,40 @@ public class ForEachScript : ScriptBase
         }
     }
 
+    public override async Task ExecuteAsync(Context c)
+    {
+        var result = m_list.Execute(c);
+        IEnumerable resultList = null;
+
+        if (m_scriptContext.WorldModel.Version < WorldModelVersion.v530 || !(result is string))
+        {
+            var resultDictionary = result as IDictionary;
+            if (resultDictionary != null)
+            {
+                resultList = resultDictionary.Keys;
+            }
+            else
+            {
+                resultList = result as IEnumerable;
+            }
+        }
+
+        if (resultList == null)
+        {
+            throw new Exception(string.Format("Cannot foreach over '{0}' as it is not a list", result));
+        }
+
+        foreach (var variable in resultList)
+        {
+            c.Parameters[m_variable] = variable;
+            await m_loopScript.ExecuteAsync(c);
+            if (c.IsReturned)
+            {
+                break;
+            }
+        }
+    }
+
     public override string Save()
     {
         return SaveScript("foreach", m_loopScript, m_variable, m_list.Save());

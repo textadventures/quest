@@ -131,6 +131,17 @@ public class SwitchScript : ScriptBase
         }
     }
 
+    public override async Task ExecuteAsync(Context c)
+    {
+        var result = m_expr.Execute(c);
+        var success = await m_cases.ExecuteAsync(c, result.ToString());
+
+        if (!success && m_default != null)
+        {
+            await m_default.ExecuteAsync(c);
+        }
+    }
+
     public override string Save()
     {
         var result = SaveScript("switch", m_expr.Save()) + " {" + Environment.NewLine;
@@ -247,6 +258,22 @@ public class SwitchScript : ScriptBase
                 if (result == expr.Execute(c).ToString())
                 {
                     switchCase.Value.Execute(c);
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
+        public async Task<bool> ExecuteAsync(Context c, string result)
+        {
+            foreach (var switchCase in CasesAsQuestDictionary)
+            {
+                var expr = m_compiledExpressions[switchCase.Key];
+
+                if (result == expr.Execute(c).ToString())
+                {
+                    await switchCase.Value.ExecuteAsync(c);
                     return true;
                 }
             }

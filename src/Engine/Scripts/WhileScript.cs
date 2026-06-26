@@ -64,6 +64,18 @@ public class WhileScript : ScriptBase
         }
     }
 
+    public override async Task ExecuteAsync(Context c)
+    {
+        while (m_expression.Execute(c))
+        {
+            await m_loopScript.ExecuteAsync(c);
+            if (c.IsReturned)
+            {
+                break;
+            }
+        }
+    }
+
     public override string Save()
     {
         return SaveScript("while", m_loopScript, m_expression.Save());

@@ -1068,6 +1068,11 @@ public partial class WorldModel : IGame, IGameDebug
         RunScript(script, (Parameters?) null, false);
     }
 
+    public Task RunScriptAsync(IScript script)
+    {
+        return RunScriptAsync(script, (Parameters?) null, false);
+    }
+
     /// <summary>
     ///     Use this version of RunScript when executing an object action. Set thisElement to the object whose action it is.
     /// </summary>
@@ -1078,14 +1083,29 @@ public partial class WorldModel : IGame, IGameDebug
         RunScript(script, null, false, thisElement);
     }
 
+    public Task RunScriptAsync(IScript script, Element thisElement)
+    {
+        return RunScriptAsync(script, null, false, thisElement);
+    }
+
     public void RunScript(IScript script, Parameters parameters)
     {
         RunScript(script, parameters, false);
     }
 
+    public Task RunScriptAsync(IScript script, Parameters parameters)
+    {
+        return RunScriptAsync(script, parameters, false);
+    }
+
     public void RunScript(IScript script, Parameters parameters, Element thisElement)
     {
         RunScript(script, parameters, false, thisElement);
+    }
+
+    public Task RunScriptAsync(IScript script, Parameters parameters, Element thisElement)
+    {
+        return RunScriptAsync(script, parameters, false, thisElement);
     }
 
     public object RunDelegateScript(IScript script, Parameters parameters, Element thisElement)
@@ -1096,6 +1116,41 @@ public partial class WorldModel : IGame, IGameDebug
     private object? RunScript(IScript script, Parameters? parameters, bool expectResult)
     {
         return RunScript(script, parameters, expectResult, null);
+    }
+
+    private Task<object?> RunScriptAsync(IScript script, Parameters? parameters, bool expectResult,
+        Element? thisElement = null)
+    {
+        var c = new Context();
+        parameters ??= new Parameters();
+        if (thisElement != null)
+        {
+            parameters.Add("this", thisElement);
+        }
+
+        c.Parameters = parameters;
+        return RunScriptAsync(script, c, expectResult);
+    }
+
+    private async Task<object?> RunScriptAsync(IScript script, Context c, bool expectResult)
+    {
+        try
+        {
+            await script.ExecuteAsync(c);
+            if (expectResult && c.ReturnValue is NoReturnValue)
+            {
+                throw new Exception("Function did not return a value");
+            }
+
+            return c.ReturnValue;
+        }
+        catch (Exception ex)
+        {
+            Print("Error running script: " + Utility.SafeXML(ex.Message));
+            LogException(ex);
+        }
+
+        return null;
     }
 
     private object? RunScript(IScript script, Parameters? parameters, bool expectResult, Element? thisElement)
@@ -1119,24 +1174,7 @@ public partial class WorldModel : IGame, IGameDebug
 
     private object? RunScript(IScript script, Context c, bool expectResult)
     {
-        try
-        {
-            script.Execute(c);
-            if (expectResult && c.ReturnValue is NoReturnValue)
-            {
-                throw new Exception("Function did not return a value");
-            }
-
-            return c.ReturnValue;
-        }
-        catch (Exception ex)
-        {
-            // TODO: Add some way of nicely showing script errors to the user (should be higher up the callstack)
-            Print("Error running script: " + Utility.SafeXML(ex.Message));
-            LogException(ex);
-        }
-
-        return null;
+        return RunScriptAsync(script, c, expectResult).GetAwaiter().GetResult();
     }
 
     public Element AddProcedure(string name)
@@ -1162,6 +1200,11 @@ public partial class WorldModel : IGame, IGameDebug
     public void RunProcedure(string name)
     {
         RunProcedure(name, false);
+    }
+
+    public Task RunProcedureAsync(string name)
+    {
+        return RunProcedureAsync(name, null, false);
     }
 
     private object? RunProcedure(string name, bool expectResult)
@@ -1198,6 +1241,37 @@ public partial class WorldModel : IGame, IGameDebug
             }
 
             return RunScript(function.Fields[FieldDefinitions.Script], parameters, expectResult);
+        }
+
+        Print($"Error - no such procedure '{name}'");
+        return null;
+    }
+
+    public async Task<object?> RunProcedureAsync(string name, Parameters? parameters, bool expectResult)
+    {
+        if (Elements.ContainsKey(ElementType.Function, name))
+        {
+            var function = Elements.Get(ElementType.Function, name);
+
+            var parametersInvalid = false;
+            if (Version == WorldModelVersion.v520)
+            {
+                parametersInvalid = parameters == null && function.Fields[FieldDefinitions.ParamNames].Count > 0;
+            }
+            else if (Version >= WorldModelVersion.v530)
+            {
+                parametersInvalid = (parameters == null || parameters.Count == 0) &&
+                                    function.Fields[FieldDefinitions.ParamNames].Count > 0;
+            }
+
+            if (parametersInvalid)
+            {
+                throw new Exception(string.Format("No parameters passed to {0} function - expected {1} parameters",
+                    name,
+                    function.Fields[FieldDefinitions.ParamNames].Count));
+            }
+
+            return await RunScriptAsync(function.Fields[FieldDefinitions.Script], parameters, expectResult);
         }
 
         Print($"Error - no such procedure '{name}'");
