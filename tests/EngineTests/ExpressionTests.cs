@@ -218,6 +218,7 @@ public abstract class ExpressionTestsBase
     [DataRow("GetObject(\"object\")", "object")]
     [DataRow("GetObject(\"invalid\")", "null")]
     [DataRow("ObjectListItem(AllObjects(), 0)", "object")]
+    [DataRow("GetObject(\"child\").parent", "object")]
     public void TestObjectExpressions(string expression, string expectedElementName)
     {
         var result = RunExpressionGeneric(expression);

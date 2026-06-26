@@ -446,6 +446,24 @@ public class NcalcExpressionEvaluator<T> : IExpressionEvaluator<T>, IDynamicExpr
             return method.Invoke(receiver, methodArgs);
         }
 
+        if (name == "__Quest_PropertyAccess__")
+        {
+            if (args.Parameters.Count != 2)
+                throw new Exception("__Quest_PropertyAccess__ requires exactly 2 arguments");
+            var receiver = args.Parameters.Evaluate(0);
+            var propertyName = args.Parameters.Evaluate(1) as string
+                ?? throw new Exception("__Quest_PropertyAccess__ second argument must be a property name string");
+            if (receiver is Element element)
+            {
+                return element.Fields.Exists(propertyName, true) ? element.Fields.Get(propertyName) : null;
+            }
+            var prop = receiver?.GetType().GetProperty(propertyName,
+                BindingFlags.Public | BindingFlags.Instance | BindingFlags.IgnoreCase);
+            if (prop != null)
+                return prop.GetValue(receiver);
+            throw new Exception($"Property '{propertyName}' not found on '{receiver?.GetType().Name}'");
+        }
+
         if (name == "__Quest_Index__")
         {
             if (args.Parameters.Count != 2)
