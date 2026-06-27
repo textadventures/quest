@@ -66,45 +66,6 @@ public partial class Template
         return null;
     }
 
-    public string GetDynamicText(string t, params Element[] obj)
-    {
-        Parameters parameters;
-
-        if (obj.Length == 1)
-        {
-            parameters = new Parameters("object", obj[0]);
-        }
-        else
-        {
-            parameters = new Parameters();
-            for (var i = 0; i < obj.Length; i++)
-            {
-                parameters.Add("object" + (i + 1), obj[i]);
-            }
-        }
-
-        return GetDynamicTextInternal(t, parameters);
-    }
-
-    public string GetDynamicText(string t, string text)
-    {
-        return GetDynamicTextInternal(t, new Parameters("text", text));
-    }
-
-    private string GetDynamicTextInternal(string t, Parameters parameters)
-    {
-        // if there is no dynamictemplate of this name, return the "ordinary" template instead.
-        if (!m_worldModel.Elements.ContainsKey(ElementType.DynamicTemplate, t))
-        {
-            return GetText(t);
-        }
-
-        var c = new Context();
-        c.Parameters = parameters;
-        var template = m_worldModel.Elements.Get(ElementType.DynamicTemplate, t);
-        return template.Fields[FieldDefinitions.Function].Execute(c);
-    }
-
     public Task<string> GetDynamicTextAsync(string t, params Element[] obj)
     {
         Parameters parameters;

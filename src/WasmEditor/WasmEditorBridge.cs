@@ -198,7 +198,7 @@ public partial class WasmEditorBridge
     }
 
     [JSExport]
-    public static string? GetEditorData(string key)
+    public static async Task<string?> GetEditorData(string key)
     {
         if (_controller == null)
         {
@@ -230,13 +230,13 @@ public partial class WasmEditorBridge
             var def = _controller.GetEditorDefinition(editorName);
             foreach (var tab in def.Tabs.Values)
             {
-                if (data != null && !tab.IsTabVisible(data))
+                if (data != null && !await tab.IsTabVisible(data))
                 {
                     continue;
                 }
 
                 var visibleControls = data != null
-                    ? tab.Controls.Where(c => c.IsControlVisible(data)).ToList()
+                    ? await FilterVisibleAsync(tab.Controls, data)
                     : tab.Controls.ToList();
                 if (data != null)
                 {
@@ -247,7 +247,7 @@ public partial class WasmEditorBridge
             }
 
             var visibleTopControls = data != null
-                ? def.Controls.Where(c => c.IsControlVisible(data)).ToList()
+                ? await FilterVisibleAsync(def.Controls, data)
                 : def.Controls.ToList();
             if (data != null)
             {
@@ -409,14 +409,14 @@ public partial class WasmEditorBridge
     }
 
     [JSExport]
-    public static void Undo()
+    public static async Task Undo()
     {
         if (_controller == null || !_controller.GetUndoItems().Any())
         {
             return;
         }
 
-        _controller.Undo();
+        await _controller.Undo();
     }
 
     [JSExport]
@@ -591,6 +591,19 @@ public partial class WasmEditorBridge
         {
             return ex.Message;
         }
+    }
+
+    private static async Task<List<IEditorControl>> FilterVisibleAsync(IEnumerable<IEditorControl> controls, IEditorData data)
+    {
+        var result = new List<IEditorControl>();
+        foreach (var c in controls)
+        {
+            if (await c.IsControlVisible(data))
+            {
+                result.Add(c);
+            }
+        }
+        return result;
     }
 
     private static IEditableList<string> EnsureLocalList(IEditorData data, string attribute, IEditableList<string> list)
@@ -1268,7 +1281,7 @@ public partial class WasmEditorBridge
     }
 
     [JSExport]
-    public static string GetScriptCommandCategories()
+    public static async Task<string> GetScriptCommandCategories()
     {
         if (_controller == null)
         {
@@ -1276,10 +1289,17 @@ public partial class WasmEditorBridge
         }
 
         var scriptData = _controller.GetScriptEditorData();
-        var grouped = scriptData
-            .Where(kv => !string.IsNullOrEmpty(kv.Value.Category)
-                         && kv.Value.IsVisible()
-                         && !string.IsNullOrEmpty(kv.Value.CreateString))
+        var visibleEntries = new List<KeyValuePair<string, EditableScriptData>>();
+        foreach (var kv in scriptData)
+        {
+            if (!string.IsNullOrEmpty(kv.Value.Category)
+                && await kv.Value.IsVisible()
+                && !string.IsNullOrEmpty(kv.Value.CreateString))
+            {
+                visibleEntries.Add(kv);
+            }
+        }
+        var grouped = visibleEntries
             .GroupBy(kv => kv.Value.Category)
             .Select(g => new ScriptCategoryInfo(
                 g.Key,

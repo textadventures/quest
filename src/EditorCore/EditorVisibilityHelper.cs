@@ -53,7 +53,7 @@ internal class EditorVisibilityHelper
         }
     }
 
-    public bool IsVisible(IEditorData data)
+    public async Task<bool> IsVisible(IEditorData data)
     {
         if (m_alwaysVisible)
         {
@@ -68,7 +68,7 @@ internal class EditorVisibilityHelper
             var result = false;
             try
             {
-                result = m_visibilityExpression.Execute(context);
+                result = await m_visibilityExpression.ExecuteAsync(context);
             }
             catch
             {

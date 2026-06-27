@@ -33,19 +33,9 @@ public class NcalcExpressionEvaluator<T> : IExpressionEvaluator<T>, IDynamicExpr
         _nCalcExpression.EvaluateBinaryAsync += EvaluateBinaryAsync;
     }
 
-    object IDynamicExpressionEvaluator.Evaluate(Context c)
-    {
-        return Evaluate(c);
-    }
-
     async Task<object> IDynamicExpressionEvaluator.EvaluateAsync(Context c)
     {
         return await EvaluateAsync(c);
-    }
-
-    public T Evaluate(Context c)
-    {
-        return EvaluateAsync(c).GetAwaiter().GetResult();
     }
 
     public async Task<T> EvaluateAsync(Context c)
