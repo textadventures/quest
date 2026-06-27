@@ -9,7 +9,6 @@ namespace QuestViva.Legacy;
 public partial class V4Game : IGame, IGameDebug
 {
     private readonly string[] _casKeywords = new string[256]; // Tokenised CAS keywords
-    private readonly object _commandLock = new();
     private readonly GameChangeDataType _gameChangeData = new();
     private readonly GameData _gameData;
     private readonly Dictionary<ListType, List<string>> _listVerbs = new();
@@ -19,9 +18,7 @@ public partial class V4Game : IGame, IGameDebug
     private readonly Random _random = new();
     private readonly Stream _saveData;
     private readonly string[] _skipCheckFile;
-    private readonly object _stateLock = new();
     private readonly TextFormatter _textFormatter = new();
-    private readonly object _waitLock = new();
     private string _afterTurnScript;
     private bool _autoIntro;
     private string _badCmdAfter;
@@ -81,11 +78,13 @@ public partial class V4Game : IGame, IGameDebug
     private IPlayer _player;
     private bool _questionResponse;
     private bool _readyForCommand = true;
+    private TaskCompletionSource? _turnSuspendedTcs;
+    private TaskCompletionSource? _waitTcs;
+    private TaskCompletionSource? _commandTcs;
     private int _resourceOffset;
     private ResourceType[] _resources;
     internal RoomType[] _rooms;
     private int _startCatPos;
-    private State _state = State.Ready;
     private VariableType[] _stringVariable;
     private SynonymType[] _synonyms;
     private int _thisTurnIt;
@@ -111,10 +110,12 @@ public partial class V4Game : IGame, IGameDebug
         _skipCheckFile[3] = "musicvf1.cas";
     }
 
-    Task IGame.SetQuestionResponse(bool response)
+    async Task IGame.SetQuestionResponse(bool response)
     {
-        SetQuestionResponse(response);
-        return Task.CompletedTask;
+        _questionResponse = response;
+        _turnSuspendedTcs = new TaskCompletionSource();
+        _waitTcs?.TrySetResult();
+        await _turnSuspendedTcs.Task;
     }
 
     private string RemoveFormatting(string s)
@@ -219,7 +220,7 @@ public partial class V4Game : IGame, IGameDebug
         return s;
     }
 
-    private bool CheckSections()
+    private async Task<bool> CheckSections()
     {
         int defines, braces;
         var checkLine = "";
@@ -274,7 +275,7 @@ public partial class V4Game : IGame, IGameDebug
 
                 if ((Strings.Left(_lines[i], 1) != "'") & !skipBlock)
                 {
-                    checkLine = ObliterateParameters(_lines[i]);
+                    checkLine = await ObliterateParameters(_lines[i]);
                     if (BeginsWith(checkLine, "'<ERROR;"))
                     {
                         // ObliterateParameters denotes a mismatched $, ( etc.
@@ -328,7 +329,7 @@ public partial class V4Game : IGame, IGameDebug
         return !hasErrors;
     }
 
-    private bool ConvertFriendlyIfs()
+    private async Task<bool> ConvertFriendlyIfs()
     {
         // Converts
         // if (%something% < 3) then ...
@@ -349,7 +350,7 @@ public partial class V4Game : IGame, IGameDebug
 
         for (int i = 1, loopTo = Information.UBound(_lines); i <= loopTo; i++)
         {
-            obscureLine = ObliterateParameters(_lines[i]);
+            obscureLine = await ObliterateParameters(_lines[i]);
             convPos = Strings.InStr(obscureLine, "if (");
             if (convPos == 0)
             {
@@ -527,7 +528,7 @@ public partial class V4Game : IGame, IGameDebug
         return false;
     }
 
-    private void ConvertMultiLineSections()
+    private async Task ConvertMultiLineSections()
     {
         int startLine, braceCount;
         string thisLine, lineToAdd;
@@ -697,7 +698,7 @@ public partial class V4Game : IGame, IGameDebug
                         for (int k = j, loopTo5 = _defineBlocks[i].StartLine + 1; k >= loopTo5; k -= 1)
                         {
                             if (BeginsWith(_lines[k], "if ") |
-                                (Strings.InStr(ObliterateParameters(_lines[k]), " if ") != 0))
+                                (Strings.InStr(await ObliterateParameters(_lines[k]), " if ") != 0))
                             {
                                 _lines[k] = _lines[k] + " " + Strings.Trim(_lines[j]);
                                 _lines[j] = "";
@@ -710,7 +711,7 @@ public partial class V4Game : IGame, IGameDebug
         }
     }
 
-    private bool ErrorCheck()
+    private async Task<bool> ErrorCheck()
     {
         // Parses ASL script for errors. Returns TRUE if OK;
         // False if a critical error is encountered.
@@ -835,7 +836,7 @@ public partial class V4Game : IGame, IGameDebug
         return Strings.Trim(Strings.Mid(s, eop + 1));
     }
 
-    private string ObliterateParameters(string s)
+    private async Task<string> ObliterateParameters(string s)
     {
         bool inParameter;
         var exitCharacter = "";
@@ -981,7 +982,7 @@ public partial class V4Game : IGame, IGameDebug
         return outputLine;
     }
 
-    private void RemoveComments()
+    private async Task RemoveComments()
     {
         int aposPos;
         var inTextBlock = default(bool);
@@ -1022,7 +1023,7 @@ public partial class V4Game : IGame, IGameDebug
                 {
                     if (Strings.InStr(_lines[i], "'") > 0)
                     {
-                        oblitLine = ObliterateParameters(_lines[i]);
+                        oblitLine = await ObliterateParameters(_lines[i]);
                         if (!BeginsWith(oblitLine, "'<ERROR;"))
                         {
                             aposPos = Strings.InStr(oblitLine, "'");
@@ -1043,7 +1044,7 @@ public partial class V4Game : IGame, IGameDebug
                     else
                     {
                         // we look for " '", not "'" in synonyms lines
-                        aposPos = Strings.InStr(ObliterateParameters(_lines[i]), " '");
+                        aposPos = Strings.InStr(await ObliterateParameters(_lines[i]), " '");
                         if (aposPos != 0)
                         {
                             _lines[i] = Strings.Trim(Strings.Left(_lines[i], aposPos - 1));
@@ -1113,7 +1114,7 @@ public partial class V4Game : IGame, IGameDebug
         return keyword;
     }
 
-    private void ConvertMultiLines()
+    private async Task ConvertMultiLines()
     {
         // Goes through each section capable of containing
         // script commands and puts any multiple-line script commands
@@ -1142,7 +1143,7 @@ public partial class V4Game : IGame, IGameDebug
             }
         }
 
-        RemoveComments();
+        await RemoveComments();
     }
 
     private DefineBlock GetDefineBlock(string blockname)
@@ -1184,7 +1185,7 @@ public partial class V4Game : IGame, IGameDebug
         return result;
     }
 
-    private DefineBlock DefineBlockParam(string blockname, string param)
+    private async Task<DefineBlock> DefineBlockParam(string blockname, string param)
     {
         // Returns the start and end points of a named block
 
@@ -1212,7 +1213,7 @@ public partial class V4Game : IGame, IGameDebug
 
                 if ((blockType ?? "") == (blockname ?? ""))
                 {
-                    var blockKey = GetParameter(_lines[_defineBlocks[i].StartLine], _nullContext, false);
+                    var blockKey = await GetParameter(_lines[_defineBlocks[i].StartLine], _nullContext, false);
 
                     blockKey = "k" + blockKey;
 
@@ -1365,7 +1366,7 @@ public partial class V4Game : IGame, IGameDebug
                     continue;
                 }
 
-                var libFileName = GetParameter(_lines[i], _nullContext);
+                var libFileName = await GetParameter(_lines[i], _nullContext);
                 // Clear !include statement
                 _lines[i] = "";
                 var libraryAlreadyIncluded = false;
@@ -1453,7 +1454,7 @@ public partial class V4Game : IGame, IGameDebug
                         {
                             if (BeginsWith(libCode[c], "!asl-version "))
                             {
-                                libVer = Conversions.ToInteger(GetParameter(libCode[c], _nullContext));
+                                libVer = Conversions.ToInteger(await GetParameter(libCode[c], _nullContext));
                                 break;
                             }
                         }
@@ -1617,7 +1618,7 @@ public partial class V4Game : IGame, IGameDebug
                             else if (BeginsWith(libCode[c], "!addto type "))
                             {
                                 var inDefTypeBlock = 0;
-                                var typeBlockName = Strings.LCase(GetParameter(libCode[c], _nullContext));
+                                var typeBlockName = Strings.LCase(await GetParameter(libCode[c], _nullContext));
                                 var loopTo8 = Information.UBound(_lines);
                                 for (d = 1; d <= loopTo8; d++)
                                 {
@@ -1729,11 +1730,11 @@ public partial class V4Game : IGame, IGameDebug
         }
 
         // RemoveComments called within ConvertMultiLines
-        ConvertMultiLines();
+        await ConvertMultiLines();
 
         if (!skipCheck)
         {
-            if (!CheckSections())
+            if (!await CheckSections())
             {
                 return false;
             }
@@ -1803,12 +1804,12 @@ public partial class V4Game : IGame, IGameDebug
             return false;
         }
 
-        ConvertMultiLineSections();
+        await ConvertMultiLineSections();
 
-        var hasErrors = ConvertFriendlyIfs();
+        var hasErrors = await ConvertFriendlyIfs();
         if (!hasErrors)
         {
-            hasErrors = ErrorCheck();
+            hasErrors = await ErrorCheck();
         }
 
         if (hasErrors)
@@ -1854,7 +1855,7 @@ public partial class V4Game : IGame, IGameDebug
         _player.Log(err);
     }
 
-    internal string GetParameter(string s, Context ctx, bool convertStringVariables = true)
+    internal async Task<string> GetParameter(string s, Context ctx, bool convertStringVariables = true)
     {
         // Returns the parameters between < and > in a string
         string newParam;
@@ -1876,15 +1877,15 @@ public partial class V4Game : IGame, IGameDebug
         {
             if (ASLVersion >= 320)
             {
-                newParam = ConvertParameter(
-                    ConvertParameter(ConvertParameter(retrParam, "#", ConvertType.Strings, ctx), "%",
+                newParam = await ConvertParameter(
+                    await ConvertParameter(await ConvertParameter(retrParam, "#", ConvertType.Strings, ctx), "%",
                         ConvertType.Numeric, ctx), "$", ConvertType.Functions, ctx);
             }
             else if (!(Strings.Left(retrParam, 9) == "~Internal"))
             {
-                newParam = ConvertParameter(
-                    ConvertParameter(
-                        ConvertParameter(ConvertParameter(retrParam, "#", ConvertType.Strings, ctx), "%",
+                newParam = await ConvertParameter(
+                    await ConvertParameter(
+                        await ConvertParameter(await ConvertParameter(retrParam, "#", ConvertType.Strings, ctx), "%",
                             ConvertType.Numeric, ctx), "~", ConvertType.Collectables, ctx), "$", ConvertType.Functions,
                     ctx);
             }
@@ -1898,7 +1899,7 @@ public partial class V4Game : IGame, IGameDebug
             newParam = retrParam;
         }
 
-        return EvaluateInlineExpressions(newParam);
+        return await EvaluateInlineExpressions(newParam);
     }
 
     private void AddLine(string line)
@@ -2109,7 +2110,7 @@ public partial class V4Game : IGame, IGameDebug
         return s;
     }
 
-    private void DoAddRemove(int childId, int parentId, bool add, Context ctx)
+    private async Task DoAddRemove(int childId, int parentId, bool add, Context ctx)
     {
         if (add)
         {
@@ -2129,10 +2130,10 @@ public partial class V4Game : IGame, IGameDebug
             AddToObjectProperties("seen", parentId, ctx);
         }
 
-        UpdateVisibilityInContainers(ctx, _objs[parentId].ObjectName);
+        await UpdateVisibilityInContainers(ctx, _objs[parentId].ObjectName);
     }
 
-    private void DoLook(int id, Context ctx, bool showExamineError = false, bool showDefaultDescription = true)
+    private async Task DoLook(int id, Context ctx, bool showExamineError = false, bool showDefaultDescription = true)
     {
         string objectContents;
         var foundLook = false;
@@ -2143,7 +2144,7 @@ public partial class V4Game : IGame, IGameDebug
         if (ASLVersion >= 391)
         {
             AddToObjectProperties("seen", id, ctx);
-            UpdateVisibilityInContainers(ctx, _objs[id].ObjectName);
+            await UpdateVisibilityInContainers(ctx, _objs[id].ObjectName);
         }
 
         // First look for action, then look
@@ -2158,7 +2159,7 @@ public partial class V4Game : IGame, IGameDebug
             if (o.Actions[i].ActionName == "look")
             {
                 foundLook = true;
-                ExecuteScript(o.Actions[i].Script, ctx);
+                await ExecuteScript(o.Actions[i].Script, ctx);
                 break;
             }
         }
@@ -2170,7 +2171,7 @@ public partial class V4Game : IGame, IGameDebug
                 if (o.Properties[i].PropertyName == "look")
                 {
                     // do this odd RetrieveParameter stuff to convert any variables
-                    Print(GetParameter("<" + o.Properties[i].PropertyValue + ">", ctx), ctx);
+                    await Print(await GetParameter("<" + o.Properties[i].PropertyValue + ">", ctx), ctx);
                     foundLook = true;
                     break;
                 }
@@ -2187,11 +2188,11 @@ public partial class V4Game : IGame, IGameDebug
 
                     if (Strings.Left(lookLine, 1) == "<")
                     {
-                        Print(GetParameter(_lines[i], ctx), ctx);
+                        await Print(await GetParameter(_lines[i], ctx), ctx);
                     }
                     else
                     {
-                        ExecuteScript(lookLine, ctx, id);
+                        await ExecuteScript(lookLine, ctx, id);
                     }
 
                     foundLook = true;
@@ -2201,7 +2202,7 @@ public partial class V4Game : IGame, IGameDebug
 
         if (ASLVersion >= 391)
         {
-            objectContents = ListContents(id, ctx);
+            objectContents = await ListContents(id, ctx);
         }
         else
         {
@@ -2226,24 +2227,24 @@ public partial class V4Game : IGame, IGameDebug
 
             if (string.IsNullOrEmpty(objectContents))
             {
-                PlayerErrorMessage(err, ctx);
+                await PlayerErrorMessage(err, ctx);
             }
         }
 
         if (!string.IsNullOrEmpty(objectContents) & (objectContents != "<script>"))
         {
-            Print(objectContents, ctx);
+            await Print(objectContents, ctx);
         }
     }
 
-    private void DoOpenClose(int id, bool open, bool showLook, Context ctx)
+    private async Task DoOpenClose(int id, bool open, bool showLook, Context ctx)
     {
         if (open)
         {
             AddToObjectProperties("opened", id, ctx);
             if (showLook)
             {
-                DoLook(id, ctx, showDefaultDescription: false);
+                await DoLook(id, ctx, showDefaultDescription: false);
             }
         }
         else
@@ -2251,10 +2252,10 @@ public partial class V4Game : IGame, IGameDebug
             AddToObjectProperties("not opened", id, ctx);
         }
 
-        UpdateVisibilityInContainers(ctx, _objs[id].ObjectName);
+        await UpdateVisibilityInContainers(ctx, _objs[id].ObjectName);
     }
 
-    private string EvaluateInlineExpressions(string s)
+    private async Task<string> EvaluateInlineExpressions(string s)
     {
         // Evaluates in-line expressions e.g. msg <Hello, did you know that 2 + 2 = {2+2}?>
 
@@ -2323,7 +2324,7 @@ public partial class V4Game : IGame, IGameDebug
         return resultLine;
     }
 
-    private void ExecAddRemove(string cmd, Context ctx)
+    private async Task ExecAddRemove(string cmd, Context ctx)
     {
         int childId;
         string childName;
@@ -2384,7 +2385,7 @@ public partial class V4Game : IGame, IGameDebug
 
         if (childLength < 0)
         {
-            PlayerErrorMessage(PlayerError.BadCommand, ctx);
+            await PlayerErrorMessage(PlayerError.BadCommand, ctx);
             _badCmdBefore = verb;
             return;
         }
@@ -2395,7 +2396,7 @@ public partial class V4Game : IGame, IGameDebug
 
         if ((ASLVersion >= 392) & doAdd)
         {
-            childId = Disambiguate(childName, _currentRoom + ";inventory", ctx);
+            childId = await Disambiguate(childName, _currentRoom + ";inventory", ctx);
 
             if (childId > 0)
             {
@@ -2406,10 +2407,10 @@ public partial class V4Game : IGame, IGameDebug
                 else
                 {
                     // Player is not carrying the object they referred to. So, first take the object.
-                    Print("(first taking " + _objs[childId].Article + ")", ctx);
+                    await Print("(first taking " + _objs[childId].Article + ")", ctx);
                     // Try to take the object
                     ctx.AllowRealNamesInCommand = true;
-                    ExecCommand("take " + _objs[childId].ObjectName, ctx, false, dontSetIt: true);
+                    await ExecCommand("take " + _objs[childId].ObjectName, ctx, false, dontSetIt: true);
 
                     if (_objs[childId].ContainerRoom == "inventory")
                     {
@@ -2427,7 +2428,7 @@ public partial class V4Game : IGame, IGameDebug
             {
                 if (childId != -2)
                 {
-                    PlayerErrorMessage(PlayerError.NoItem, ctx);
+                    await PlayerErrorMessage(PlayerError.NoItem, ctx);
                 }
 
                 _badCmdBefore = verb;
@@ -2437,13 +2438,13 @@ public partial class V4Game : IGame, IGameDebug
 
         else
         {
-            childId = Disambiguate(childName, "inventory;" + _currentRoom, ctx);
+            childId = await Disambiguate(childName, "inventory;" + _currentRoom, ctx);
 
             if (childId <= 0)
             {
                 if (childId != -2)
                 {
-                    PlayerErrorMessage(PlayerError.BadThing, ctx);
+                    await PlayerErrorMessage(PlayerError.BadThing, ctx);
                 }
 
                 _badCmdBefore = verb;
@@ -2454,7 +2455,7 @@ public partial class V4Game : IGame, IGameDebug
         if (noParentSpecified & doAdd)
         {
             SetStringContents("quest.error.article", _objs[childId].Article, ctx);
-            PlayerErrorMessage(PlayerError.BadPut, ctx);
+            await PlayerErrorMessage(PlayerError.BadPut, ctx);
             return;
         }
 
@@ -2471,13 +2472,13 @@ public partial class V4Game : IGame, IGameDebug
         {
             parentName = Strings.Trim(Strings.Mid(cmd, sepPos + sepLen));
 
-            parentId = Disambiguate(parentName, _currentRoom + ";inventory", ctx);
+            parentId = await Disambiguate(parentName, _currentRoom + ";inventory", ctx);
 
             if (parentId <= 0)
             {
                 if (parentId != -2)
                 {
-                    PlayerErrorMessage(PlayerError.BadThing, ctx);
+                    await PlayerErrorMessage(PlayerError.BadThing, ctx);
                 }
 
                 _badCmdBefore = Strings.Left(cmd, sepPos + sepLen);
@@ -2491,7 +2492,7 @@ public partial class V4Game : IGame, IGameDebug
 
             if (!IsYes(GetObjectProperty("parent", childId, true, false)))
             {
-                PlayerErrorMessage(PlayerError.CantRemove, ctx);
+                await PlayerErrorMessage(PlayerError.CantRemove, ctx);
                 return;
             }
 
@@ -2506,11 +2507,11 @@ public partial class V4Game : IGame, IGameDebug
         {
             if (doAdd)
             {
-                PlayerErrorMessage(PlayerError.CantPut, ctx);
+                await PlayerErrorMessage(PlayerError.CantPut, ctx);
             }
             else
             {
-                PlayerErrorMessage(PlayerError.CantRemove, ctx);
+                await PlayerErrorMessage(PlayerError.CantRemove, ctx);
             }
 
             return;
@@ -2523,7 +2524,7 @@ public partial class V4Game : IGame, IGameDebug
             if (doAdd & ((Strings.LCase(GetObjectProperty("parent", childId, false, false)) ?? "") ==
                          (Strings.LCase(_objs[parentId].ObjectName) ?? "")))
             {
-                PlayerErrorMessage(PlayerError.AlreadyPut, ctx);
+                await PlayerErrorMessage(PlayerError.AlreadyPut, ctx);
             }
         }
 
@@ -2533,11 +2534,11 @@ public partial class V4Game : IGame, IGameDebug
         {
             if (doAdd)
             {
-                PlayerErrorMessage_ExtendInfo(PlayerError.CantPut, ctx, canAccessObject.ErrorMsg);
+                await PlayerErrorMessage_ExtendInfo(PlayerError.CantPut, ctx, canAccessObject.ErrorMsg);
             }
             else
             {
-                PlayerErrorMessage_ExtendInfo(PlayerError.CantRemove, ctx, canAccessObject.ErrorMsg);
+                await PlayerErrorMessage_ExtendInfo(PlayerError.CantRemove, ctx, canAccessObject.ErrorMsg);
             }
 
             return;
@@ -2548,11 +2549,11 @@ public partial class V4Game : IGame, IGameDebug
         {
             if (doAdd)
             {
-                PlayerErrorMessage_ExtendInfo(PlayerError.CantPut, ctx, canAccessParent.ErrorMsg);
+                await PlayerErrorMessage_ExtendInfo(PlayerError.CantPut, ctx, canAccessParent.ErrorMsg);
             }
             else
             {
-                PlayerErrorMessage_ExtendInfo(PlayerError.CantRemove, ctx, canAccessParent.ErrorMsg);
+                await PlayerErrorMessage_ExtendInfo(PlayerError.CantRemove, ctx, canAccessParent.ErrorMsg);
             }
 
             return;
@@ -2566,11 +2567,11 @@ public partial class V4Game : IGame, IGameDebug
             // Not a surface and not open, so can't add to this closed container.
             if (doAdd)
             {
-                PlayerErrorMessage(PlayerError.CantPut, ctx);
+                await PlayerErrorMessage(PlayerError.CantPut, ctx);
             }
             else
             {
-                PlayerErrorMessage(PlayerError.CantRemove, ctx);
+                await PlayerErrorMessage(PlayerError.CantRemove, ctx);
             }
 
             return;
@@ -2593,7 +2594,7 @@ public partial class V4Game : IGame, IGameDebug
         if (foundAction)
         {
             SetStringContents("quest." + Strings.LCase(action) + ".object.name", _objs[childId].ObjectName, ctx);
-            ExecuteScript(actionScript, ctx, parentId);
+            await ExecuteScript(actionScript, ctx, parentId);
         }
         else
         {
@@ -2605,11 +2606,11 @@ public partial class V4Game : IGame, IGameDebug
                 // Show error message
                 if (doAdd)
                 {
-                    PlayerErrorMessage(PlayerError.CantPut, ctx);
+                    await PlayerErrorMessage(PlayerError.CantPut, ctx);
                 }
                 else
                 {
-                    PlayerErrorMessage(PlayerError.CantRemove, ctx);
+                    await PlayerErrorMessage(PlayerError.CantRemove, ctx);
                 }
             }
             else
@@ -2620,24 +2621,24 @@ public partial class V4Game : IGame, IGameDebug
                     // Show default message
                     if (doAdd)
                     {
-                        PlayerErrorMessage(PlayerError.DefaultPut, ctx);
+                        await PlayerErrorMessage(PlayerError.DefaultPut, ctx);
                     }
                     else
                     {
-                        PlayerErrorMessage(PlayerError.DefaultRemove, ctx);
+                        await PlayerErrorMessage(PlayerError.DefaultRemove, ctx);
                     }
                 }
                 else
                 {
-                    Print(textToPrint, ctx);
+                    await Print(textToPrint, ctx);
                 }
 
-                DoAddRemove(childId, parentId, doAdd, ctx);
+                await DoAddRemove(childId, parentId, doAdd, ctx);
             }
         }
     }
 
-    private void ExecAddRemoveScript(string parameter, bool add, Context ctx)
+    private async Task ExecAddRemoveScript(string parameter, bool add, Context ctx)
     {
         int childId, parentId = default;
         string commandName;
@@ -2689,16 +2690,16 @@ public partial class V4Game : IGame, IGameDebug
                 return;
             }
 
-            DoAddRemove(childId, parentId, add, ctx);
+            await DoAddRemove(childId, parentId, add, ctx);
         }
         else
         {
             AddToObjectProperties("not parent", childId, ctx);
-            UpdateVisibilityInContainers(ctx, _objs[parentId].ObjectName);
+            await UpdateVisibilityInContainers(ctx, _objs[parentId].ObjectName);
         }
     }
 
-    private void ExecOpenClose(string cmd, Context ctx)
+    private async Task ExecOpenClose(string cmd, Context ctx)
     {
         int id;
         string name;
@@ -2723,13 +2724,13 @@ public partial class V4Game : IGame, IGameDebug
 
         name = GetEverythingAfter(cmd, action + " ");
 
-        id = Disambiguate(name, _currentRoom + ";inventory", ctx);
+        id = await Disambiguate(name, _currentRoom + ";inventory", ctx);
 
         if (id <= 0)
         {
             if (id != -2)
             {
-                PlayerErrorMessage(PlayerError.BadThing, ctx);
+                await PlayerErrorMessage(PlayerError.BadThing, ctx);
             }
 
             _badCmdBefore = action;
@@ -2744,11 +2745,11 @@ public partial class V4Game : IGame, IGameDebug
         {
             if (doOpen)
             {
-                PlayerErrorMessage(PlayerError.CantOpen, ctx);
+                await PlayerErrorMessage(PlayerError.CantOpen, ctx);
             }
             else
             {
-                PlayerErrorMessage(PlayerError.CantClose, ctx);
+                await PlayerErrorMessage(PlayerError.CantClose, ctx);
             }
 
             return;
@@ -2761,14 +2762,14 @@ public partial class V4Game : IGame, IGameDebug
         if (doOpen & isOpen)
         {
             // Object is already open
-            PlayerErrorMessage(PlayerError.AlreadyOpen, ctx);
+            await PlayerErrorMessage(PlayerError.AlreadyOpen, ctx);
             return;
         }
 
         if (!doOpen & !isOpen)
         {
             // Object is already closed
-            PlayerErrorMessage(PlayerError.AlreadyClosed, ctx);
+            await PlayerErrorMessage(PlayerError.AlreadyClosed, ctx);
             return;
         }
 
@@ -2779,11 +2780,11 @@ public partial class V4Game : IGame, IGameDebug
         {
             if (doOpen)
             {
-                PlayerErrorMessage_ExtendInfo(PlayerError.CantOpen, ctx, canAccessObject.ErrorMsg);
+                await PlayerErrorMessage_ExtendInfo(PlayerError.CantOpen, ctx, canAccessObject.ErrorMsg);
             }
             else
             {
-                PlayerErrorMessage_ExtendInfo(PlayerError.CantClose, ctx, canAccessObject.ErrorMsg);
+                await PlayerErrorMessage_ExtendInfo(PlayerError.CantClose, ctx, canAccessObject.ErrorMsg);
             }
 
             return;
@@ -2805,7 +2806,7 @@ public partial class V4Game : IGame, IGameDebug
 
         if (foundAction)
         {
-            ExecuteScript(actionScript, ctx, id);
+            await ExecuteScript(actionScript, ctx, id);
         }
         else
         {
@@ -2817,11 +2818,11 @@ public partial class V4Game : IGame, IGameDebug
                 // Show error message
                 if (doOpen)
                 {
-                    PlayerErrorMessage(PlayerError.CantOpen, ctx);
+                    await PlayerErrorMessage(PlayerError.CantOpen, ctx);
                 }
                 else
                 {
-                    PlayerErrorMessage(PlayerError.CantClose, ctx);
+                    await PlayerErrorMessage(PlayerError.CantClose, ctx);
                 }
             }
             else
@@ -2832,24 +2833,24 @@ public partial class V4Game : IGame, IGameDebug
                     // Show default message
                     if (doOpen)
                     {
-                        PlayerErrorMessage(PlayerError.DefaultOpen, ctx);
+                        await PlayerErrorMessage(PlayerError.DefaultOpen, ctx);
                     }
                     else
                     {
-                        PlayerErrorMessage(PlayerError.DefaultClose, ctx);
+                        await PlayerErrorMessage(PlayerError.DefaultClose, ctx);
                     }
                 }
                 else
                 {
-                    Print(textToPrint, ctx);
+                    await Print(textToPrint, ctx);
                 }
 
-                DoOpenClose(id, doOpen, true, ctx);
+                await DoOpenClose(id, doOpen, true, ctx);
             }
         }
     }
 
-    private void ExecuteSelectCase(string script, Context ctx)
+    private async Task ExecuteSelectCase(string script, Context ctx)
     {
         // ScriptLine passed will look like this:
         // select case <whatever> do <!intprocX>
@@ -2863,9 +2864,9 @@ public partial class V4Game : IGame, IGameDebug
             return;
         }
 
-        var blockName = GetParameter(afterLine, ctx);
-        var block = DefineBlockParam("procedure", blockName);
-        var checkValue = GetParameter(script, ctx);
+        var blockName = await GetParameter(afterLine, ctx);
+        var block = await DefineBlockParam("procedure", blockName);
+        var checkValue = await GetParameter(script, ctx);
         var caseMatch = false;
 
         for (int i = block.StartLine + 1, loopTo = block.EndLine - 1; i <= loopTo; i++)
@@ -2888,7 +2889,7 @@ public partial class V4Game : IGame, IGameDebug
                     }
                     else
                     {
-                        var thisCase = GetParameter(_lines[i], ctx);
+                        var thisCase = await GetParameter(_lines[i], ctx);
                         var finished = false;
 
                         do
@@ -2916,7 +2917,7 @@ public partial class V4Game : IGame, IGameDebug
 
                     if (caseMatch)
                     {
-                        ExecuteScript(caseScript, ctx);
+                        await ExecuteScript(caseScript, ctx);
                         return;
                     }
                 }
@@ -2924,7 +2925,7 @@ public partial class V4Game : IGame, IGameDebug
         }
     }
 
-    private bool ExecVerb(string cmd, Context ctx, bool libCommands = false)
+    private async Task<bool> ExecVerb(string cmd, Context ctx, bool libCommands = false)
     {
         DefineBlock gameBlock;
         var foundVerb = false;
@@ -2952,7 +2953,7 @@ public partial class V4Game : IGame, IGameDebug
         {
             if (BeginsWith(_lines[i], verbTag))
             {
-                verbsList = GetParameter(_lines[i], ctx);
+                verbsList = await GetParameter(_lines[i], ctx);
 
                 // The property or action the verb uses is either after a colon,
                 // or it's the first (or only) verb on the line.
@@ -3010,13 +3011,13 @@ public partial class V4Game : IGame, IGameDebug
 
         if (foundVerb)
         {
-            id = Disambiguate(verbObject, "inventory;" + _currentRoom, ctx);
+            id = await Disambiguate(verbObject, "inventory;" + _currentRoom, ctx);
 
             if (id < 0)
             {
                 if (id != -2)
                 {
-                    PlayerErrorMessage(PlayerError.BadThing, ctx);
+                    await PlayerErrorMessage(PlayerError.BadThing, ctx);
                 }
 
                 _badCmdBefore = thisVerb;
@@ -3042,7 +3043,7 @@ public partial class V4Game : IGame, IGameDebug
                 if (!string.IsNullOrEmpty(thisScript))
                     // Avoid an RTE "this array is fixed or temporarily locked"
                 {
-                    ExecuteScript(thisScript, ctx, id);
+                    await ExecuteScript(thisScript, ctx, id);
                 }
 
                 if (!foundAction)
@@ -3053,7 +3054,7 @@ public partial class V4Game : IGame, IGameDebug
                         if ((Strings.LCase(o.Properties[i].PropertyName) ?? "") == (verbProperty ?? ""))
                         {
                             foundAction = true;
-                            Print(o.Properties[i].PropertyValue, ctx);
+                            await Print(o.Properties[i].PropertyValue, ctx);
                             break;
                         }
                     }
@@ -3062,7 +3063,7 @@ public partial class V4Game : IGame, IGameDebug
                 if (!foundAction)
                     // Execute the default script from the verb definition
                 {
-                    ExecuteScript(script, ctx);
+                    await ExecuteScript(script, ctx);
                 }
             }
         }
@@ -3294,7 +3295,7 @@ public partial class V4Game : IGame, IGameDebug
         return res;
     }
 
-    private string ListContents(int id, Context ctx)
+    private async Task<string> ListContents(int id, Context ctx)
     {
         // Returns a formatted list of the contents of a container.
         // If the list action causes a script to be run instead, ListContents
@@ -3313,7 +3314,7 @@ public partial class V4Game : IGame, IGameDebug
         {
             // Container is closed, so return "list closed" property if there is one.
 
-            if (DoAction(id, "list closed", ctx, false))
+            if (await DoAction(id, "list closed", ctx, false))
             {
                 return "<script>";
             }
@@ -3345,7 +3346,7 @@ public partial class V4Game : IGame, IGameDebug
         {
             // Check if list property is set.
 
-            if (DoAction(id, "list", ctx, false))
+            if (await DoAction(id, "list", ctx, false))
             {
                 return "<script>";
             }
@@ -3422,7 +3423,7 @@ public partial class V4Game : IGame, IGameDebug
 
         // Container is empty, so return "list empty" property if there is one.
 
-        if (DoAction(id, "list empty", ctx, false))
+        if (await DoAction(id, "list empty", ctx, false))
         {
             return "<script>";
         }
@@ -3453,7 +3454,7 @@ public partial class V4Game : IGame, IGameDebug
         return result;
     }
 
-    private void ProcessListInfo(string line, int id)
+    private async Task ProcessListInfo(string line, int id)
     {
         var listInfo = new TextAction();
         var propName = "";
@@ -3461,7 +3462,7 @@ public partial class V4Game : IGame, IGameDebug
         if (BeginsWith(line, "list closed <"))
         {
             listInfo.Type = TextActionType.Text;
-            listInfo.Data = GetParameter(line, _nullContext);
+            listInfo.Data = await GetParameter(line, _nullContext);
             propName = "list closed";
         }
         else if (Strings.Trim(line) == "list closed off")
@@ -3480,7 +3481,7 @@ public partial class V4Game : IGame, IGameDebug
         else if (BeginsWith(line, "list empty <"))
         {
             listInfo.Type = TextActionType.Text;
-            listInfo.Data = GetParameter(line, _nullContext);
+            listInfo.Data = await GetParameter(line, _nullContext);
             propName = "list empty";
         }
         else if (Strings.Trim(line) == "list empty off")
@@ -3504,7 +3505,7 @@ public partial class V4Game : IGame, IGameDebug
         else if (BeginsWith(line, "list <"))
         {
             listInfo.Type = TextActionType.Text;
-            listInfo.Data = GetParameter(line, _nullContext);
+            listInfo.Data = await GetParameter(line, _nullContext);
             propName = "list";
         }
         else if (BeginsWith(line, "list "))
@@ -3522,7 +3523,7 @@ public partial class V4Game : IGame, IGameDebug
             }
             else
             {
-                AddToObjectActions("<" + propName + "> " + listInfo.Data, id, _nullContext);
+                await AddToObjectActions("<" + propName + "> " + listInfo.Data, id, _nullContext);
             }
         }
     }
@@ -3577,7 +3578,7 @@ public partial class V4Game : IGame, IGameDebug
         PrintText?.Invoke(_textFormatter.OutputHTML(text));
     }
 
-    private void DestroyExit(string exitData, Context ctx)
+    private async Task DestroyExit(string exitData, Context ctx)
     {
         var fromRoom = "";
         var toRoom = "";
@@ -3653,7 +3654,7 @@ public partial class V4Game : IGame, IGameDebug
         }
 
         // Update quest.* vars and obj list
-        ShowRoomInfo(_currentRoom, ctx, true);
+        await ShowRoomInfo(_currentRoom, ctx, true);
         UpdateObjectList(ctx);
 
         AddToChangeLog("room " + fromRoom, "destroy exit " + toRoom);
@@ -3664,28 +3665,31 @@ public partial class V4Game : IGame, IGameDebug
         _player.ClearScreen();
     }
 
-    private void DoWait()
+    private void SignalTurnSuspended()
     {
-        _player.DoWait();
-        ChangeState(State.Waiting);
-
-        lock (_waitLock)
-        {
-            Monitor.Wait(_waitLock);
-        }
+        _readyForCommand = true;
+        _turnSuspendedTcs?.TrySetResult();
     }
 
-    private void ExecuteFlag(string line, Context ctx)
+    private async Task DoWaitAsync()
+    {
+        _player.DoWait();
+        _waitTcs = new TaskCompletionSource();
+        SignalTurnSuspended();
+        await _waitTcs.Task;
+    }
+
+    private async Task ExecuteFlag(string line, Context ctx)
     {
         var propertyString = "";
 
         if (BeginsWith(line, "on "))
         {
-            propertyString = GetParameter(line, ctx);
+            propertyString = await GetParameter(line, ctx);
         }
         else if (BeginsWith(line, "off "))
         {
-            propertyString = "not " + GetParameter(line, ctx);
+            propertyString = "not " + await GetParameter(line, ctx);
         }
 
         // Game object always has ObjID 1
@@ -3698,11 +3702,11 @@ public partial class V4Game : IGame, IGameDebug
         return GetObjectProperty(flag, 1, true) == "yes";
     }
 
-    private void ExecuteIncDec(string line, Context ctx)
+    private async Task ExecuteIncDec(string line, Context ctx)
     {
         string variable;
         double change;
-        var param = GetParameter(line, ctx);
+        var param = await GetParameter(line, ctx);
 
         var sc = Strings.InStr(param, ";");
         if (sc == 0)
@@ -3851,7 +3855,7 @@ public partial class V4Game : IGame, IGameDebug
         changeLog.AddItem(ref appliesTo, ref element, ref changeData);
     }
 
-    private void AddToGiveInfo(int id, string giveData)
+    private async Task AddToGiveInfo(int id, string giveData)
     {
         GiveType giveType;
         string actionName;
@@ -3887,7 +3891,7 @@ public partial class V4Game : IGame, IGameDebug
 
         if (Strings.Left(Strings.Trim(giveData), 1) == "<")
         {
-            var name = GetParameter(giveData, _nullContext);
+            var name = await GetParameter(giveData, _nullContext);
             var dataId = default(int);
 
             actionName = actionName + "'" + name + "'";
@@ -3922,12 +3926,12 @@ public partial class V4Game : IGame, IGameDebug
         }
     }
 
-    internal void AddToObjectActions(string actionInfo, int id, Context ctx)
+    internal async Task AddToObjectActions(string actionInfo, int id, Context ctx)
     {
         var actionNum = default(int);
         var foundExisting = false;
 
-        var name = Strings.LCase(GetParameter(actionInfo, ctx));
+        var name = Strings.LCase(await GetParameter(actionInfo, ctx));
         var ep = Strings.InStr(actionInfo, ">");
         if (ep == Strings.Len(actionInfo))
         {
@@ -4081,8 +4085,8 @@ public partial class V4Game : IGame, IGameDebug
 
                     if (_gameFullyLoaded)
                     {
-                        UpdateObjectList(ctx);
-                        UpdateItems(ctx);
+                        _ = UpdateObjectList(ctx);
+                        _ = UpdateItems(ctx);
                     }
 
                     break;
@@ -4223,7 +4227,7 @@ public partial class V4Game : IGame, IGameDebug
         } while (Strings.Len(Strings.Trim(propertyInfo)) != 0);
     }
 
-    private void AddToUseInfo(int id, string useData)
+    private async Task AddToUseInfo(int id, string useData)
     {
         UseType useType;
 
@@ -4252,7 +4256,7 @@ public partial class V4Game : IGame, IGameDebug
 
         if (Strings.Left(Strings.Trim(useData), 1) == "<")
         {
-            var objectName = GetParameter(useData, _nullContext);
+            var objectName = await GetParameter(useData, _nullContext);
             var dataId = default(int);
             var found = false;
 
@@ -4291,9 +4295,9 @@ public partial class V4Game : IGame, IGameDebug
         return Strings.UCase(Strings.Left(s, 1)) + Strings.Mid(s, 2);
     }
 
-    private string ConvertVarsIn(string s, Context ctx)
+    private async Task<string> ConvertVarsIn(string s, Context ctx)
     {
-        return GetParameter("<" + s + ">", ctx);
+        return await GetParameter("<" + s + ">", ctx);
     }
 
     private bool DisambObjHere(Context ctx, int id, string firstPlace, bool twoPlaces = false, string secondPlace = "",
@@ -4403,22 +4407,22 @@ public partial class V4Game : IGame, IGameDebug
         UpdateObjectList(ctx);
     }
 
-    private void ExecOops(string correction, Context ctx)
+    private async Task ExecOops(string correction, Context ctx)
     {
         if (!string.IsNullOrEmpty(_badCmdBefore))
         {
             if (string.IsNullOrEmpty(_badCmdAfter))
             {
-                ExecCommand(_badCmdBefore + " " + correction, ctx, false);
+                await ExecCommand(_badCmdBefore + " " + correction, ctx, false);
             }
             else
             {
-                ExecCommand(_badCmdBefore + " " + correction + " " + _badCmdAfter, ctx, false);
+                await ExecCommand(_badCmdBefore + " " + correction + " " + _badCmdAfter, ctx, false);
             }
         }
     }
 
-    private void ExecType(string typeData, Context ctx)
+    private async Task ExecType(string typeData, Context ctx)
     {
         var id = default(int);
         var found = default(bool);
@@ -4455,7 +4459,7 @@ public partial class V4Game : IGame, IGameDebug
         Array.Resize(ref o.TypesIncluded, o.NumberTypesIncluded + 1);
         o.TypesIncluded[o.NumberTypesIncluded] = typeName;
 
-        var propertyData = GetPropertiesInType(typeName);
+        var propertyData = await GetPropertiesInType(typeName);
         AddToObjectProperties(propertyData.Properties, id, ctx);
         for (int i = 1, loopTo1 = propertyData.NumberActions; i <= loopTo1; i++)
         {
@@ -4592,7 +4596,7 @@ public partial class V4Game : IGame, IGameDebug
         return result;
     }
 
-    internal int Disambiguate(string name, string containedIn, Context ctx, bool isExit = false)
+    internal async Task<int> Disambiguate(string name, string containedIn, Context ctx, bool isExit = false)
     {
         // Returns object ID being referred to by player.
         // Returns -1 if object doesn't exist, calling function
@@ -4658,7 +4662,7 @@ public partial class V4Game : IGame, IGameDebug
                 return _lastIt;
             }
 
-            PlayerErrorMessage(PlayerError.BadPronoun, ctx);
+            await PlayerErrorMessage(PlayerError.BadPronoun, ctx);
             return -2;
         }
 
@@ -4672,7 +4676,7 @@ public partial class V4Game : IGame, IGameDebug
                 return _lastIt;
             }
 
-            PlayerErrorMessage(PlayerError.BadPronoun, ctx);
+            await PlayerErrorMessage(PlayerError.BadPronoun, ctx);
             return -2;
         }
 
@@ -4686,7 +4690,7 @@ public partial class V4Game : IGame, IGameDebug
                 return _lastIt;
             }
 
-            PlayerErrorMessage(PlayerError.BadPronoun, ctx);
+            await PlayerErrorMessage(PlayerError.BadPronoun, ctx);
             return -2;
         }
 
@@ -4796,7 +4800,7 @@ public partial class V4Game : IGame, IGameDebug
             descriptionText = new string[numberCorresIds + 1];
 
             var question = "Please select which " + name + " you mean:";
-            Print("- |i" + question + "|xi", ctx);
+            await Print("- |i" + question + "|xi", ctx);
 
             var menuItems = new Dictionary<string, string>();
 
@@ -4819,7 +4823,7 @@ public partial class V4Game : IGame, IGameDebug
             }
 
             var mnu = new MenuData(question, menuItems, false);
-            var response = ShowMenu(mnu);
+            var response = await ShowMenuAsync(mnu);
 
             _choiceNumber = Conversions.ToInteger(response);
 
@@ -4847,7 +4851,7 @@ public partial class V4Game : IGame, IGameDebug
                 }
             }
 
-            Print("- " + descriptionText[_choiceNumber] + "|n", ctx);
+            await Print("- " + descriptionText[_choiceNumber] + "|n", ctx);
 
             return idNumbers[_choiceNumber];
         }
@@ -4857,14 +4861,14 @@ public partial class V4Game : IGame, IGameDebug
         return -1;
     }
 
-    private string DisplayStatusVariableInfo(int id, VarType type, Context ctx)
+    private async Task<string> DisplayStatusVariableInfo(int id, VarType type, Context ctx)
     {
         var displayData = "";
         int ep;
 
         if (type == VarType.String)
         {
-            displayData = ConvertVarsIn(_stringVariable[id].DisplayString, ctx);
+            displayData = await ConvertVarsIn(_stringVariable[id].DisplayString, ctx);
             ep = Strings.InStr(displayData, "!");
 
             if (ep != 0)
@@ -4881,7 +4885,7 @@ public partial class V4Game : IGame, IGameDebug
                 return "";
             }
 
-            displayData = ConvertVarsIn(_numericVariable[id].DisplayString, ctx);
+            displayData = await ConvertVarsIn(_numericVariable[id].DisplayString, ctx);
             ep = Strings.InStr(displayData, "!");
 
             if (ep != 0)
@@ -4912,7 +4916,7 @@ public partial class V4Game : IGame, IGameDebug
         return displayData;
     }
 
-    internal bool DoAction(int id, string action, Context ctx, bool logError = true)
+    internal async Task<bool> DoAction(int id, string action, Context ctx, bool logError = true)
     {
         var found = default(bool);
         var script = "";
@@ -4942,7 +4946,7 @@ public partial class V4Game : IGame, IGameDebug
         var newCtx = CopyContext(ctx);
         newCtx.CallingObjectId = id;
 
-        ExecuteScript(script, newCtx, id);
+        await ExecuteScript(script, newCtx, id);
 
         return true;
     }
@@ -4962,7 +4966,7 @@ public partial class V4Game : IGame, IGameDebug
         return false;
     }
 
-    private void ExecForEach(string scriptLine, Context ctx)
+    private async Task ExecForEach(string scriptLine, Context ctx)
     {
         string inLocation, scriptToRun;
         var isExit = default(bool);
@@ -5017,7 +5021,7 @@ public partial class V4Game : IGame, IGameDebug
         }
         else
         {
-            inLocation = Strings.LCase(GetParameter(scriptLine, ctx));
+            inLocation = Strings.LCase(await GetParameter(scriptLine, ctx));
             var bracketPos = Strings.InStr(scriptLine, ">");
             scriptToRun = Strings.Trim(Strings.Mid(scriptLine, bracketPos + 1));
         }
@@ -5030,13 +5034,13 @@ public partial class V4Game : IGame, IGameDebug
                 if ((_objs[i].IsRoom == isRoom) & (_objs[i].IsExit == isExit))
                 {
                     SetStringContents("quest.thing", _objs[i].ObjectName, ctx);
-                    ExecuteScript(scriptToRun, ctx);
+                    await ExecuteScript(scriptToRun, ctx);
                 }
             }
         }
     }
 
-    private void ExecuteAction(string data, Context ctx)
+    private async Task ExecuteAction(string data, Context ctx)
     {
         string actionName;
         string script;
@@ -5045,7 +5049,7 @@ public partial class V4Game : IGame, IGameDebug
         var foundExisting = false;
         var foundObject = false;
 
-        var param = GetParameter(data, ctx);
+        var param = await GetParameter(data, ctx);
         var scp = Strings.InStr(param, ";");
         if (scp == 0)
         {
@@ -5108,7 +5112,7 @@ public partial class V4Game : IGame, IGameDebug
         ObjectActionUpdate(id, actionName, script);
     }
 
-    private bool ExecuteCondition(string condition, Context ctx)
+    private async Task<bool> ExecuteCondition(string condition, Context ctx)
     {
         bool result = default, thisNot;
 
@@ -5124,47 +5128,47 @@ public partial class V4Game : IGame, IGameDebug
 
         if (BeginsWith(condition, "got "))
         {
-            result = ExecuteIfGot(GetParameter(condition, ctx));
+            result = ExecuteIfGot(await GetParameter(condition, ctx));
         }
         else if (BeginsWith(condition, "has "))
         {
-            result = ExecuteIfHas(GetParameter(condition, ctx));
+            result = ExecuteIfHas(await GetParameter(condition, ctx));
         }
         else if (BeginsWith(condition, "ask "))
         {
-            result = ExecuteIfAsk(GetParameter(condition, ctx));
+            result = await ExecuteIfAskAsync(await GetParameter(condition, ctx));
         }
         else if (BeginsWith(condition, "is "))
         {
-            result = ExecuteIfIs(GetParameter(condition, ctx));
+            result = ExecuteIfIs(await GetParameter(condition, ctx));
         }
         else if (BeginsWith(condition, "here "))
         {
-            result = ExecuteIfHere(GetParameter(condition, ctx), ctx);
+            result = ExecuteIfHere(await GetParameter(condition, ctx), ctx);
         }
         else if (BeginsWith(condition, "exists "))
         {
-            result = ExecuteIfExists(GetParameter(condition, ctx), false);
+            result = ExecuteIfExists(await GetParameter(condition, ctx), false);
         }
         else if (BeginsWith(condition, "real "))
         {
-            result = ExecuteIfExists(GetParameter(condition, ctx), true);
+            result = ExecuteIfExists(await GetParameter(condition, ctx), true);
         }
         else if (BeginsWith(condition, "property "))
         {
-            result = ExecuteIfProperty(GetParameter(condition, ctx));
+            result = ExecuteIfProperty(await GetParameter(condition, ctx));
         }
         else if (BeginsWith(condition, "action "))
         {
-            result = ExecuteIfAction(GetParameter(condition, ctx));
+            result = ExecuteIfAction(await GetParameter(condition, ctx));
         }
         else if (BeginsWith(condition, "type "))
         {
-            result = ExecuteIfType(GetParameter(condition, ctx));
+            result = ExecuteIfType(await GetParameter(condition, ctx));
         }
         else if (BeginsWith(condition, "flag "))
         {
-            result = ExecuteIfFlag(GetParameter(condition, ctx));
+            result = ExecuteIfFlag(await GetParameter(condition, ctx));
         }
 
         if (thisNot)
@@ -5175,12 +5179,12 @@ public partial class V4Game : IGame, IGameDebug
         return result;
     }
 
-    private bool ExecuteConditions(string list, Context ctx)
+    private async Task<bool> ExecuteConditions(string list, Context ctx)
     {
         var conditions = default(string[]);
         var numConditions = 0;
         var operations = default(string[]);
-        var obscuredConditionList = ObliterateParameters(list);
+        var obscuredConditionList = await ObliterateParameters(list);
         var pos = 1;
         var isFinalCondition = false;
 
@@ -5218,7 +5222,7 @@ public partial class V4Game : IGame, IGameDebug
 
         for (int i = 1, loopTo = numConditions; i <= loopTo; i++)
         {
-            var thisResult = ExecuteCondition(conditions[i], ctx);
+            var thisResult = await ExecuteCondition(conditions[i], ctx);
 
             if (operations[i - 1] == "AND")
             {
@@ -5233,13 +5237,13 @@ public partial class V4Game : IGame, IGameDebug
         return result;
     }
 
-    private void ExecuteCreate(string data, Context ctx)
+    private async Task ExecuteCreate(string data, Context ctx)
     {
         string newName;
 
         if (BeginsWith(data, "room "))
         {
-            newName = GetParameter(data, ctx);
+            newName = await GetParameter(data, ctx);
             _numberRooms = _numberRooms + 1;
             Array.Resize(ref _rooms, _numberRooms + 1);
             _rooms[_numberRooms] = new RoomType();
@@ -5273,7 +5277,7 @@ public partial class V4Game : IGame, IGameDebug
 
         else if (BeginsWith(data, "object "))
         {
-            var paramData = GetParameter(data, ctx);
+            var paramData = await GetParameter(data, ctx);
             var scp = Strings.InStr(paramData, ";");
             string containerRoom;
 
@@ -5321,17 +5325,17 @@ public partial class V4Game : IGame, IGameDebug
 
         else if (BeginsWith(data, "exit "))
         {
-            ExecuteCreateExit(data, ctx);
+            await ExecuteCreateExit(data, ctx);
         }
     }
 
-    private void ExecuteCreateExit(string data, Context ctx)
+    private async Task ExecuteCreateExit(string data, Context ctx)
     {
         string scrRoom;
         var destRoom = "";
         var destId = default(int);
         var exitData = GetEverythingAfter(data, "exit ");
-        var newName = GetParameter(data, ctx);
+        var newName = await GetParameter(data, ctx);
         var scp = Strings.InStr(newName, ";");
 
         if (ASLVersion < 410)
@@ -5415,7 +5419,7 @@ public partial class V4Game : IGame, IGameDebug
         {
             saveData = Strings.Left(exitData, paramPos - 1);
             // We do this so the changelog doesn't contain unconverted variable names
-            saveData = saveData + "<" + GetParameter(exitData, ctx) + ">";
+            saveData = saveData + "<" + await GetParameter(exitData, ctx) + ">";
         }
 
         AddToChangeLog("room " + _rooms[srcId].RoomName, "exit " + saveData);
@@ -5424,7 +5428,7 @@ public partial class V4Game : IGame, IGameDebug
 
         if (ASLVersion >= 410)
         {
-            r.Exits.AddExitFromCreateScript(exitData, ref ctx);
+            await r.Exits.AddExitFromCreateScript(exitData, ctx);
         }
         else if (BeginsWith(exitData, "north "))
         {
@@ -5495,7 +5499,7 @@ public partial class V4Game : IGame, IGameDebug
         if (!_gameLoading)
         {
             // Update quest.doorways variables
-            ShowRoomInfo(_currentRoom, ctx, true);
+           await ShowRoomInfo(_currentRoom, ctx, true);
 
             UpdateObjectList(ctx);
 
@@ -5519,12 +5523,12 @@ public partial class V4Game : IGame, IGameDebug
         }
     }
 
-    private void ExecDrop(string obj, Context ctx)
+    private async Task ExecDrop(string obj, Context ctx)
     {
         bool found;
         int parentId = default, id;
 
-        id = Disambiguate(obj, "inventory", ctx);
+        id = await Disambiguate(obj, "inventory", ctx);
 
         if (id > 0)
         {
@@ -5541,11 +5545,11 @@ public partial class V4Game : IGame, IGameDebug
             {
                 if (ASLVersion >= 391)
                 {
-                    PlayerErrorMessage(PlayerError.NoItem, ctx);
+                    await PlayerErrorMessage(PlayerError.NoItem, ctx);
                 }
                 else
                 {
-                    PlayerErrorMessage(PlayerError.BadDrop, ctx);
+                    await PlayerErrorMessage(PlayerError.BadDrop, ctx);
                 }
             }
 
@@ -5597,11 +5601,11 @@ public partial class V4Game : IGame, IGameDebug
                     parentDisplayName = _objs[parentId].ObjectName;
                 }
 
-                Print("(first removing " + _objs[id].Article + " from " + parentDisplayName + ")", ctx);
+                await Print("(first removing " + _objs[id].Article + " from " + parentDisplayName + ")", ctx);
 
                 // Try to remove the object
                 ctx.AllowRealNamesInCommand = true;
-                ExecCommand("remove " + _objs[id].ObjectName, ctx, false, dontSetIt: true);
+                await ExecCommand("remove " + _objs[id].ObjectName, ctx, false, dontSetIt: true);
 
                 if (!string.IsNullOrEmpty(GetObjectProperty("parent", id, false, false)))
                     // removing the object failed
@@ -5613,56 +5617,56 @@ public partial class V4Game : IGame, IGameDebug
 
         if (!dropFound)
         {
-            PlayerErrorMessage(PlayerError.DefaultDrop, ctx);
-            PlayerItem(_objs[id].ObjectName, false, ctx);
+            await PlayerErrorMessage(PlayerError.DefaultDrop, ctx);
+            await PlayerItem(_objs[id].ObjectName, false, ctx);
         }
         else if (BeginsWith(dropStatement, "everywhere"))
         {
-            PlayerItem(_objs[id].ObjectName, false, ctx);
+            await PlayerItem(_objs[id].ObjectName, false, ctx);
             if (Strings.InStr(dropStatement, "<") != 0)
             {
-                Print(GetParameter(dropStatement, ctx), ctx);
+                await Print(await GetParameter(dropStatement, ctx), ctx);
             }
             else
             {
-                PlayerErrorMessage(PlayerError.DefaultDrop, ctx);
+                await PlayerErrorMessage(PlayerError.DefaultDrop, ctx);
             }
         }
         else if (BeginsWith(dropStatement, "nowhere"))
         {
             if (Strings.InStr(dropStatement, "<") != 0)
             {
-                Print(GetParameter(dropStatement, ctx), ctx);
+                await Print(await GetParameter(dropStatement, ctx), ctx);
             }
             else
             {
-                PlayerErrorMessage(PlayerError.CantDrop, ctx);
+                await PlayerErrorMessage(PlayerError.CantDrop, ctx);
             }
         }
         else
         {
-            ExecuteScript(dropStatement, ctx);
+            await ExecuteScript(dropStatement, ctx);
         }
     }
 
-    private void ExecExamine(string command, Context ctx)
+    private async Task ExecExamine(string command, Context ctx)
     {
         var item = Strings.LCase(Strings.Trim(GetEverythingAfter(command, "examine ")));
 
         if (string.IsNullOrEmpty(item))
         {
-            PlayerErrorMessage(PlayerError.BadExamine, ctx);
+            await PlayerErrorMessage(PlayerError.BadExamine, ctx);
             _badCmdBefore = "examine";
             return;
         }
 
-        var id = Disambiguate(item, _currentRoom + ";inventory", ctx);
+        var id = await Disambiguate(item, _currentRoom + ";inventory", ctx);
 
         if (id <= 0)
         {
             if (id != -2)
             {
-                PlayerErrorMessage(PlayerError.BadThing, ctx);
+                await PlayerErrorMessage(PlayerError.BadThing, ctx);
             }
 
             _badCmdBefore = "examine";
@@ -5676,7 +5680,7 @@ public partial class V4Game : IGame, IGameDebug
         {
             if (o.Actions[i].ActionName == "examine")
             {
-                ExecuteScript(o.Actions[i].Script, ctx, id);
+                await ExecuteScript(o.Actions[i].Script, ctx, id);
                 return;
             }
         }
@@ -5686,7 +5690,7 @@ public partial class V4Game : IGame, IGameDebug
         {
             if (o.Properties[i].PropertyName == "examine")
             {
-                Print(o.Properties[i].PropertyValue, ctx);
+                await Print(o.Properties[i].PropertyValue, ctx);
                 return;
             }
         }
@@ -5699,21 +5703,21 @@ public partial class V4Game : IGame, IGameDebug
                 var action = Strings.Trim(GetEverythingAfter(_lines[i], "examine "));
                 if (Strings.Left(action, 1) == "<")
                 {
-                    Print(GetParameter(_lines[i], ctx), ctx);
+                    await Print(await GetParameter(_lines[i], ctx), ctx);
                 }
                 else
                 {
-                    ExecuteScript(action, ctx, id);
+                    await ExecuteScript(action, ctx, id);
                 }
 
                 return;
             }
         }
 
-        DoLook(id, ctx, true);
+        await DoLook(id, ctx, true);
     }
 
-    private void ExecMoveThing(string data, Thing type, Context ctx)
+    private async Task ExecMoveThing(string data, Thing type, Context ctx)
     {
         var scp = Strings.InStr(data, ";");
         var name = Strings.Trim(Strings.Left(data, scp - 1));
@@ -5721,7 +5725,7 @@ public partial class V4Game : IGame, IGameDebug
         MoveThing(name, place, type, ctx);
     }
 
-    private void ExecProperty(string data, Context ctx)
+    private async Task ExecProperty(string data, Context ctx)
     {
         var id = default(int);
         var found = default(bool);
@@ -5755,7 +5759,7 @@ public partial class V4Game : IGame, IGameDebug
         AddToObjectProperties(properties, id, ctx);
     }
 
-    private void ExecuteDo(string procedureName, Context ctx)
+    private async Task ExecuteDo(string procedureName, Context ctx)
     {
         var newCtx = CopyContext(ctx);
         var numParameters = 0;
@@ -5802,7 +5806,7 @@ public partial class V4Game : IGame, IGameDebug
             }
         }
 
-        var block = DefineBlockParam("procedure", procedureName);
+        var block = await DefineBlockParam("procedure", procedureName);
         if ((block.StartLine == 0) & (block.EndLine == 0))
         {
             LogASLError("No such procedure " + procedureName, LogType.WarningError);
@@ -5813,18 +5817,18 @@ public partial class V4Game : IGame, IGameDebug
             {
                 if (!useNewCtx)
                 {
-                    ExecuteScript(_lines[i], ctx);
+                    await ExecuteScript(_lines[i], ctx);
                 }
                 else
                 {
-                    ExecuteScript(_lines[i], newCtx);
+                    await ExecuteScript(_lines[i], newCtx);
                     ctx.DontProcessCommand = newCtx.DontProcessCommand;
                 }
             }
         }
     }
 
-    private void ExecuteDoAction(string data, Context ctx)
+    private async Task ExecuteDoAction(string data, Context ctx)
     {
         var id = default(int);
 
@@ -5855,7 +5859,7 @@ public partial class V4Game : IGame, IGameDebug
             return;
         }
 
-        DoAction(id, actionName, ctx);
+        await DoAction(id, actionName, ctx);
     }
 
     private bool ExecuteIfHere(string obj, Context ctx)
@@ -5987,7 +5991,7 @@ public partial class V4Game : IGame, IGameDebug
         return GetObjectProperty(propertyName, id, true) == "yes";
     }
 
-    private void ExecuteRepeat(string data, Context ctx)
+    private async Task ExecuteRepeat(string data, Context ctx)
     {
         bool repeatWhileTrue;
         var repeatScript = "";
@@ -6032,9 +6036,9 @@ public partial class V4Game : IGame, IGameDebug
 
         do
         {
-            if (ExecuteConditions(conditions, ctx) == repeatWhileTrue)
+            if (await ExecuteConditions(conditions, ctx) == repeatWhileTrue)
             {
-                ExecuteScript(repeatScript, ctx);
+                await ExecuteScript(repeatScript, ctx);
             }
             else
             {
@@ -6093,25 +6097,25 @@ public partial class V4Game : IGame, IGameDebug
         }
 
         CheckCollectable(id);
-        UpdateItems(ctx);
+        _ = UpdateItems(ctx);
     }
 
-    private void ExecuteWait(string waitLine, Context ctx)
+    private async Task ExecuteWaitAsync(string waitLine, Context ctx)
     {
         if (!string.IsNullOrEmpty(waitLine))
         {
-            Print(GetParameter(waitLine, ctx), ctx);
+            await Print(await GetParameter(waitLine, ctx), ctx);
         }
         else if (ASLVersion >= 410)
         {
-            PlayerErrorMessage(PlayerError.DefaultWait, ctx);
+            await PlayerErrorMessage(PlayerError.DefaultWait, ctx);
         }
         else
         {
-            Print("|nPress a key to continue...", ctx);
+            await Print("|nPress a key to continue...", ctx);
         }
 
-        DoWait();
+        await DoWaitAsync();
     }
 
     private void InitFileData(string fileData)
@@ -6140,9 +6144,9 @@ public partial class V4Game : IGame, IGameDebug
         return result;
     }
 
-    private ActionType GetObjectActions(string actionInfo)
+    private async Task<ActionType> GetObjectActions(string actionInfo)
     {
-        var name = Strings.LCase(GetParameter(actionInfo, _nullContext));
+        var name = Strings.LCase(await GetParameter(actionInfo, _nullContext));
         var ep = Strings.InStr(actionInfo, ">");
         if (ep == Strings.Len(actionInfo))
         {
@@ -6157,7 +6161,7 @@ public partial class V4Game : IGame, IGameDebug
         return result;
     }
 
-    private int GetObjectId(string name, Context ctx, string room = "")
+    private async Task<int> GetObjectId(string name, Context ctx, string room = "")
     {
         var id = default(int);
         var found = false;
@@ -6182,7 +6186,7 @@ public partial class V4Game : IGame, IGameDebug
 
         if (!found & (ASLVersion >= 280))
         {
-            id = Disambiguate(name, room, ctx);
+            id = await Disambiguate(name, room, ctx);
             if (id > 0)
             {
                 found = true;
@@ -6250,7 +6254,7 @@ public partial class V4Game : IGame, IGameDebug
         return "";
     }
 
-    private PropertiesActions GetPropertiesInType(string type, bool err = true)
+    private async Task<PropertiesActions> GetPropertiesInType(string type, bool err = true)
     {
         var blockId = default(int);
         var propertyList = new PropertiesActions();
@@ -6260,7 +6264,7 @@ public partial class V4Game : IGame, IGameDebug
         {
             if (BeginsWith(_lines[_defineBlocks[i].StartLine], "define type"))
             {
-                if ((Strings.LCase(GetParameter(_lines[_defineBlocks[i].StartLine], _nullContext)) ?? "") ==
+                if ((Strings.LCase(await GetParameter(_lines[_defineBlocks[i].StartLine], _nullContext)) ?? "") ==
                     (Strings.LCase(type) ?? ""))
                 {
                     blockId = i;
@@ -6286,8 +6290,8 @@ public partial class V4Game : IGame, IGameDebug
         {
             if (BeginsWith(_lines[i], "type "))
             {
-                var typeName = Strings.LCase(GetParameter(_lines[i], _nullContext));
-                var newProperties = GetPropertiesInType(typeName);
+                var typeName = Strings.LCase(await GetParameter(_lines[i], _nullContext));
+                var newProperties = await GetPropertiesInType(typeName);
                 propertyList.Properties = propertyList.Properties + newProperties.Properties;
                 Array.Resize(ref propertyList.Actions, propertyList.NumberActions + newProperties.NumberActions + 1);
                 for (int j = propertyList.NumberActions + 1,
@@ -6326,11 +6330,11 @@ public partial class V4Game : IGame, IGameDebug
                 propertyList.NumberActions = propertyList.NumberActions + 1;
                 Array.Resize(ref propertyList.Actions, propertyList.NumberActions + 1);
                 propertyList.Actions[propertyList.NumberActions] =
-                    GetObjectActions(GetEverythingAfter(_lines[i], "action "));
+                    await GetObjectActions(GetEverythingAfter(_lines[i], "action "));
             }
             else if (BeginsWith(_lines[i], "properties "))
             {
-                propertyList.Properties = propertyList.Properties + GetParameter(_lines[i], _nullContext) + ";";
+                propertyList.Properties = propertyList.Properties + await GetParameter(_lines[i], _nullContext) + ";";
             }
             else if (!string.IsNullOrEmpty(Strings.Trim(_lines[i])))
             {
@@ -6360,7 +6364,7 @@ public partial class V4Game : IGame, IGameDebug
         return 0;
     }
 
-    private TextAction GetTextOrScript(string textScript)
+    private async Task<TextAction> GetTextOrScript(string textScript)
     {
         var result = new TextAction();
         textScript = Strings.Trim(textScript);
@@ -6368,7 +6372,7 @@ public partial class V4Game : IGame, IGameDebug
         if (Strings.Left(textScript, 1) == "<")
         {
             result.Type = TextActionType.Text;
-            result.Data = GetParameter(textScript, _nullContext);
+            result.Data = await GetParameter(textScript, _nullContext);
         }
         else
         {
@@ -6648,26 +6652,23 @@ public partial class V4Game : IGame, IGameDebug
             }
         }
 
-        UpdateObjectList(ctx);
+        _ = UpdateObjectList(ctx);
 
         if (BeginsWith(Strings.LCase(room), "inventory") | BeginsWith(Strings.LCase(oldRoom), "inventory"))
         {
-            UpdateItems(ctx);
+            _ = UpdateItems(ctx);
         }
     }
 
-    public void Pause(int duration)
+    public async Task PauseAsync(int duration)
     {
         _player.DoPause(duration);
-        ChangeState(State.Waiting);
-
-        lock (_waitLock)
-        {
-            Monitor.Wait(_waitLock);
-        }
+        _waitTcs = new TaskCompletionSource();
+        SignalTurnSuspended();
+        await _waitTcs.Task;
     }
 
-    private string ConvertParameter(string parameter, string convertChar, ConvertType action, Context ctx)
+    private async Task<string> ConvertParameter(string parameter, string convertChar, ConvertType action, Context ctx)
     {
         // Returns a string with functions, string and
         // numeric variables executed or converted as
@@ -6712,8 +6713,8 @@ public partial class V4Game : IGame, IGameDebug
                 }
                 else if (action == ConvertType.Functions)
                 {
-                    varName = EvaluateInlineExpressions(varName);
-                    result = result + DoFunction(varName, ctx);
+                    varName = await EvaluateInlineExpressions(varName);
+                    result = result + await DoFunction(varName, ctx);
                 }
                 else if (action == ConvertType.Numeric)
                 {
@@ -6731,7 +6732,7 @@ public partial class V4Game : IGame, IGameDebug
         return result;
     }
 
-    private string DoFunction(string data, Context ctx)
+    private async Task<string> DoFunction(string data, Context ctx)
     {
         string name, parameter;
         var intFuncResult = "";
@@ -6757,12 +6758,12 @@ public partial class V4Game : IGame, IGameDebug
         }
 
         DefineBlock block;
-        block = DefineBlockParam("function", name);
+        block = await DefineBlockParam("function", name);
 
         if ((block.StartLine == 0) & (block.EndLine == 0))
         {
             // Function does not exist; try an internal function.
-            intFuncResult = DoInternalFunction(name, parameter, ctx);
+            intFuncResult = await DoInternalFunction(name, parameter, ctx);
             if (intFuncResult == "__NOTDEFINED")
             {
                 LogASLError("No such function '" + name + "'", LogType.WarningError);
@@ -6812,14 +6813,14 @@ public partial class V4Game : IGame, IGameDebug
 
         for (int i = block.StartLine + 1, loopTo = block.EndLine - 1; i <= loopTo; i++)
         {
-            ExecuteScript(_lines[i], newCtx);
+            await ExecuteScript(_lines[i], newCtx);
             result = newCtx.FunctionReturnValue;
         }
 
         return result;
     }
 
-    private string DoInternalFunction(string name, string parameter, Context ctx)
+    private async Task<string> DoInternalFunction(string name, string parameter, Context ctx)
     {
         var parameters = default(string[]);
         var untrimmedParameters = default(string[]);
@@ -6860,14 +6861,14 @@ public partial class V4Game : IGame, IGameDebug
 
         if (name == "displayname")
         {
-            objId = GetObjectId(parameters[1], ctx);
+            objId = await GetObjectId(parameters[1], ctx);
             if (objId == -1)
             {
                 LogASLError("Object '" + parameters[1] + "' does not exist", LogType.WarningError);
                 return "!";
             }
 
-            return _objs[GetObjectId(parameters[1], ctx)].ObjectAlias;
+            return _objs[await GetObjectId(parameters[1], ctx)].ObjectAlias;
         }
 
         if (name == "numberparameters")
@@ -6895,7 +6896,7 @@ public partial class V4Game : IGame, IGameDebug
         if (name == "gettag")
             // Deprecated
         {
-            return FindStatement(DefineBlockParam("room", parameters[1]), parameters[2]);
+            return await FindStatement(await DefineBlockParam("room", parameters[1]), parameters[2]);
         }
 
         if (name == "objectname")
@@ -7156,15 +7157,15 @@ public partial class V4Game : IGame, IGameDebug
         {
             if (numParameters == 3)
             {
-                objId = Disambiguate(parameters[1], parameters[2] + ";" + parameters[3], ctx);
+                objId = await Disambiguate(parameters[1], parameters[2] + ";" + parameters[3], ctx);
             }
             else if (numParameters == 2)
             {
-                objId = Disambiguate(parameters[1], parameters[2], ctx);
+                objId = await Disambiguate(parameters[1], parameters[2], ctx);
             }
             else
             {
-                objId = Disambiguate(parameters[1], _currentRoom + ";inventory", ctx);
+                objId = await Disambiguate(parameters[1], _currentRoom + ";inventory", ctx);
             }
 
             if (objId <= -1)
@@ -7205,12 +7206,12 @@ public partial class V4Game : IGame, IGameDebug
         return "__NOTDEFINED";
     }
 
-    private void ExecFor(string line, Context ctx)
+    private async Task ExecFor(string line, Context ctx)
     {
         // See if this is a "for each" loop:
         if (BeginsWith(line, "each "))
         {
-            ExecForEach(GetEverythingAfter(line, "each "), ctx);
+            await ExecForEach(GetEverythingAfter(line, "each "), ctx);
             return;
         }
 
@@ -7218,7 +7219,7 @@ public partial class V4Game : IGame, IGameDebug
         // for <variable; startvalue; endvalue> script
         int endValue;
         int stepValue;
-        var forData = GetParameter(line, ctx);
+        var forData = await GetParameter(line, ctx);
 
         // Extract individual components:
         var scp1 = Strings.InStr(forData, ";");
@@ -7245,7 +7246,7 @@ public partial class V4Game : IGame, IGameDebug
              i += stepValue)
         {
             SetNumericVariableContents(counterVariable, i, ctx);
-            ExecuteScript(loopScript, ctx);
+            await ExecuteScript(loopScript, ctx);
             i = GetNumericContents(counterVariable, ctx);
         }
     }
@@ -7353,36 +7354,16 @@ public partial class V4Game : IGame, IGameDebug
         }
     }
 
-    private bool ExecuteIfAsk(string question)
+    private async Task<bool> ExecuteIfAskAsync(string question)
     {
         _player.ShowQuestion(question);
-        ChangeState(State.Waiting);
-
-        lock (_waitLock)
-        {
-            Monitor.Wait(_waitLock);
-        }
-
+        _waitTcs = new TaskCompletionSource();
+        SignalTurnSuspended();
+        await _waitTcs.Task;
         return _questionResponse;
     }
 
-    private void SetQuestionResponse(bool response)
-    {
-        var runnerThread = new Thread(SetQuestionResponseInNewThread);
-        ChangeState(State.Working);
-        runnerThread.Start(response);
-        WaitForStateChange(State.Working);
-    }
 
-    private void SetQuestionResponseInNewThread(object response)
-    {
-        _questionResponse = (bool) response;
-
-        lock (_waitLock)
-        {
-            Monitor.PulseAll(_waitLock);
-        }
-    }
 
     private bool ExecuteIfGot(string item)
     {
@@ -7665,14 +7646,14 @@ public partial class V4Game : IGame, IGameDebug
         return Conversion.Val(_numericVariable[numNumber].VariableContents[arrayIndex]);
     }
 
-    internal void PlayerErrorMessage(PlayerError e, Context ctx)
+    internal async Task PlayerErrorMessage(PlayerError e, Context ctx)
     {
-        Print(GetErrorMessage(e, ctx), ctx);
+        await Print(await GetErrorMessage(e, ctx), ctx);
     }
 
-    private void PlayerErrorMessage_ExtendInfo(PlayerError e, Context ctx, string extraInfo)
+    private async Task PlayerErrorMessage_ExtendInfo(PlayerError e, Context ctx, string extraInfo)
     {
-        var message = GetErrorMessage(e, ctx);
+        var message = await GetErrorMessage(e, ctx);
 
         if (!string.IsNullOrEmpty(extraInfo))
         {
@@ -7684,52 +7665,41 @@ public partial class V4Game : IGame, IGameDebug
             message = message + " - " + extraInfo + ".";
         }
 
-        Print(message, ctx);
+        await Print(message, ctx);
     }
 
-    private string GetErrorMessage(PlayerError e, Context ctx)
+    private async Task<string> GetErrorMessage(PlayerError e, Context ctx)
     {
-        return ConvertParameter(
-            ConvertParameter(ConvertParameter(_playerErrorMessageString[(int) e], "%", ConvertType.Numeric, ctx), "$",
+        return await ConvertParameter(
+            await ConvertParameter(await ConvertParameter(_playerErrorMessageString[(int) e], "%", ConvertType.Numeric, ctx), "$",
                 ConvertType.Functions, ctx), "#", ConvertType.Strings, ctx);
     }
 
-    private void PlayMedia(string filename)
+    private async Task PlayMediaAsync(string filename)
     {
-        PlayMedia(filename, false, false);
+        await PlayMediaAsync(filename, false, false);
     }
 
-    private void PlayMedia(string filename, bool sync, bool looped)
+    private async Task PlayMediaAsync(string filename, bool sync, bool looped)
     {
         if (filename.Length == 0)
         {
             _player.StopSound();
+            return;
         }
-        else
+
+        if (looped & sync) sync = false;
+        _player.PlaySound(filename, sync, looped);
+
+        if (sync)
         {
-            if (looped & sync)
-            {
-                sync = false; // Can't loop and sync at the same time, that would just hang!
-            }
-
-            _player.PlaySound(filename, sync, looped);
-
-            if (sync)
-            {
-                ChangeState(State.Waiting);
-            }
-
-            if (sync)
-            {
-                lock (_waitLock)
-                {
-                    Monitor.Wait(_waitLock);
-                }
-            }
+            _waitTcs = new TaskCompletionSource();
+            SignalTurnSuspended();
+            await _waitTcs.Task;
         }
     }
 
-    private void PlayWav(string parameter)
+    private async Task PlayWavAsync(string parameter)
     {
         var sync = false;
         var looped = false;
@@ -7754,7 +7724,7 @@ public partial class V4Game : IGame, IGameDebug
             filename = filename + ".wav";
         }
 
-        PlayMedia(filename, sync, looped);
+        await PlayMediaAsync(filename, sync, looped);
     }
 
     private class ArrayResult

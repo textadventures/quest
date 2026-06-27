@@ -22,4 +22,8 @@
         <ProjectReference Include="..\Utility\Utility.csproj"/>
     </ItemGroup>
 
+    <ItemGroup>
+        <SupportedPlatform Include="browser" />
+    </ItemGroup>
+
 </Project>

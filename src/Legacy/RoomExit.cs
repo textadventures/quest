@@ -53,9 +53,9 @@ internal class RoomExit
         return _game.GetObjectProperty(propertyName, _objId, true, false) == "yes";
     }
 
-    private void SetAction(string actionName, string value)
+    private async Task SetAction(string actionName, string value)
     {
-        _game.AddToObjectActions("<" + actionName + "> " + value, _objId, _game._nullContext);
+        await _game.AddToObjectActions("<" + actionName + "> " + value, _objId, _game._nullContext);
     }
 
     public void SetToRoom(string value)
@@ -79,11 +79,11 @@ internal class RoomExit
         return GetExitProperty("prefix");
     }
 
-    public void SetScript(string value)
+    public async Task SetScript(string value)
     {
         if (Strings.Len(value) > 0)
         {
-            SetAction("script", value);
+            await SetAction("script", value);
         }
     }
 
@@ -161,15 +161,15 @@ internal class RoomExit
         return GetExitProperty("lockmessage");
     }
 
-    private void RunAction(ref string actionName, ref V4Game.Context ctx)
+    private async Task RunAction(string actionName, V4Game.Context ctx)
     {
-        _game.DoAction(_objId, actionName, ctx);
+        await _game.DoAction(_objId, actionName, ctx);
     }
 
-    internal void RunScript(ref V4Game.Context ctx)
+    internal async Task RunScript(V4Game.Context ctx)
     {
         var argactionName = "script";
-        RunAction(ref argactionName, ref ctx);
+        await RunAction(argactionName, ctx);
     }
 
     private void UpdateObjectName()
@@ -237,26 +237,26 @@ internal class RoomExit
         _objName = objName;
     }
 
-    internal void Go(ref V4Game.Context ctx)
+    internal async Task Go(V4Game.Context ctx)
     {
         if (GetIsLocked())
         {
             if (GetExitPropertyBool("lockmessage"))
             {
-                _game.Print(GetExitProperty("lockmessage"), ctx);
+                await _game.Print(GetExitProperty("lockmessage"), ctx);
             }
             else
             {
-                _game.PlayerErrorMessage(V4Game.PlayerError.Locked, ctx);
+                await _game.PlayerErrorMessage(V4Game.PlayerError.Locked, ctx);
             }
         }
         else if (IsScript())
         {
-            RunScript(ref ctx);
+            await RunScript(ctx);
         }
         else
         {
-            _game.PlayGame(GetToRoom(), ctx);
+            await _game.PlayGame(GetToRoom(), ctx);
         }
     }
 }

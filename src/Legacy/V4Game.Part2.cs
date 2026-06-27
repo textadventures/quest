@@ -21,7 +21,7 @@ public partial class V4Game
 
         if (ASLVersion >= 391)
         {
-            ExecuteScript(_beforeSaveScript, ctx);
+            ExecuteScript(_beforeSaveScript, ctx).GetAwaiter().GetResult();
         }
 
         if (ASLVersion >= 280)
@@ -38,17 +38,7 @@ public partial class V4Game
 
     public void Begin()
     {
-        var runnerThread = new Thread(DoBegin);
-        ChangeState(State.Working);
-        runnerThread.Start();
-
-        lock (_stateLock)
-        {
-            while ((_state == State.Working) & !_gameFinished)
-            {
-                Monitor.Wait(_stateLock);
-            }
-        }
+        _ = DoBeginAsync();
     }
 
     public List<string> Errors => new();
@@ -69,36 +59,15 @@ public partial class V4Game
         return SendCommand(command, 0, null);
     }
 
-    public Task SendCommand(string command, int elapsedTime, IDictionary<string, string> metadata)
+    public async Task SendCommand(string command, int elapsedTime, IDictionary<string, string> metadata)
     {
-        // The processing of commands is done in a separate thread, so things like the "enter" command can
-        // lock the thread while waiting for further input. After starting to process the command, we wait
-        // for something to happen before returning from the SendCommand call - either the command will have
-        // finished processing, or perhaps a prompt has been printed and now the game is waiting for further
-        // user input after hitting an "enter" script command.
-
-        if (!_readyForCommand)
-        {
-            return Task.CompletedTask;
-        }
-
-        var runnerThread =
-            new Thread(ProcessCommandInNewThread);
-        ChangeState(State.Working);
-        runnerThread.Start(command);
-
-        WaitForStateChange(State.Working);
-
-        if (elapsedTime > 0)
-        {
-            Tick(elapsedTime);
-        }
-        else
-        {
-            RaiseNextTimerTickRequest();
-        }
-
-        return Task.CompletedTask;
+        if (!_readyForCommand) return;
+        _readyForCommand = false;
+        _turnSuspendedTcs = new TaskCompletionSource();
+        _ = HandleCommandAsync(command);
+        await _turnSuspendedTcs.Task;
+        if (elapsedTime > 0) await Tick(elapsedTime);
+        else RaiseNextTimerTickRequest();
     }
 
     public Task SendEvent(string eventName, string param)
@@ -119,7 +88,7 @@ public partial class V4Game
         return await InitialiseGame(_gameData);
     }
 
-    public Task Tick(int elapsedTime)
+    public async Task Tick(int elapsedTime)
     {
         int i;
         var timerScripts = new List<string>();
@@ -151,45 +120,29 @@ public partial class V4Game
 
         if (timerScripts.Count > 0)
         {
-            var runnerThread =
-                new Thread(RunTimersInNewThread);
-
-            ChangeState(State.Working);
-            runnerThread.Start(timerScripts);
-            WaitForStateChange(State.Working);
+            _turnSuspendedTcs = new TaskCompletionSource();
+            _ = RunTimersAsync(timerScripts);
+            await _turnSuspendedTcs.Task;
         }
 
         RaiseNextTimerTickRequest();
-        return Task.CompletedTask;
     }
 
-    public Task FinishWait()
+    public async Task FinishWait()
     {
-        if (_state != State.Waiting)
-        {
-            return Task.CompletedTask;
-        }
-
-        var runnerThread = new Thread(FinishWaitInNewThread);
-        ChangeState(State.Working);
-        runnerThread.Start();
-        WaitForStateChange(State.Working);
-        return Task.CompletedTask;
+        _turnSuspendedTcs = new TaskCompletionSource();
+        _waitTcs?.TrySetResult();
+        await _turnSuspendedTcs.Task;
     }
 
-    public Task FinishPause()
-    {
-        return FinishWait();
-    }
+    public Task FinishPause() => FinishWait();
 
-    public Task SetMenuResponse(string response)
+    public async Task SetMenuResponse(string? response)
     {
-        var runnerThread =
-            new Thread(SetMenuResponseInNewThread);
-        ChangeState(State.Working);
-        runnerThread.Start(response);
-        WaitForStateChange(State.Working);
-        return Task.CompletedTask;
+        m_menuResponse = response;
+        _turnSuspendedTcs = new TaskCompletionSource();
+        _waitTcs?.TrySetResult();
+        await _turnSuspendedTcs.Task;
     }
 
     public IEnumerable<string> GetExternalScripts()
@@ -230,7 +183,7 @@ public partial class V4Game
         }
     }
 
-    private void RestoreGameData(string fileData)
+    private async Task RestoreGameData(string fileData)
     {
         string appliesTo;
         var data = "";
@@ -278,7 +231,7 @@ public partial class V4Game
                 // workaround bug where duplicate "create" entries appear in the restore data
                 if (!createdObjects.Contains(createData))
                 {
-                    ExecuteCreate("object <" + createData + ">", _nullContext);
+                    await ExecuteCreate("object <" + createData + ">", _nullContext);
                     createdObjects.Add(createData);
                 }
             }
@@ -327,11 +280,11 @@ public partial class V4Game
 
             if (BeginsWith(data, "exit "))
             {
-                ExecuteCreate(data, _nullContext);
+                await ExecuteCreate(data, _nullContext);
             }
             else if (data == "create")
             {
-                ExecuteCreate("room <" + appliesTo + ">", _nullContext);
+                await ExecuteCreate("room <" + appliesTo + ">", _nullContext);
             }
             else if (BeginsWith(data, "destroy exit "))
             {
@@ -351,7 +304,7 @@ public partial class V4Game
             }
             else if (BeginsWith(d.Change, "action "))
             {
-                AddToObjectActions(GetEverythingAfter(d.Change, "action "), GetObjectIdNoAlias(d.AppliesTo),
+                await AddToObjectActions(GetEverythingAfter(d.Change, "action "), GetObjectIdNoAlias(d.AppliesTo),
                     _nullContext);
             }
         }
@@ -573,16 +526,16 @@ public partial class V4Game
         if (!string.IsNullOrEmpty(_numericVariable[numNumber].OnChangeScript) & !_gameIsRestoring)
         {
             var script = _numericVariable[numNumber].OnChangeScript;
-            ExecuteScript(script, ctx);
+            _ = ExecuteScript(script, ctx);
         }
 
         if (!string.IsNullOrEmpty(_numericVariable[numNumber].DisplayString))
         {
-            UpdateStatusVars(ctx);
+            _ = UpdateStatusVars(ctx);
         }
     }
 
-    private void SetOpenClose(string name, bool open, Context ctx)
+    private async Task SetOpenClose(string name, bool open, Context ctx)
     {
         string cmd;
 
@@ -602,7 +555,7 @@ public partial class V4Game
             return;
         }
 
-        DoOpenClose(id, open, false, ctx);
+        await DoOpenClose(id, open, false, ctx);
     }
 
     private void SetTimerState(string name, bool state)
@@ -620,7 +573,7 @@ public partial class V4Game
         LogASLError("No such timer '" + name + "'", LogType.WarningError);
     }
 
-    private SetResult SetUnknownVariableType(string variableData, Context ctx)
+    private async Task<SetResult> SetUnknownVariableType(string variableData, Context ctx)
     {
         var scp = Strings.InStr(variableData, ";");
         if (scp == 0)
@@ -667,11 +620,11 @@ public partial class V4Game
         return SetResult.Unfound;
     }
 
-    private string SetUpChoiceForm(string blockName, Context ctx)
+    private async Task<string> SetUpChoiceForm(string blockName, Context ctx)
     {
         // Returns script to execute from choice block
-        var block = DefineBlockParam("selection", blockName);
-        var prompt = FindStatement(block, "info");
+        var block = await DefineBlockParam("selection", blockName);
+        var prompt = await FindStatement(block, "info");
 
         var menuOptions = new Dictionary<string, string>();
         var menuScript = new Dictionary<string, string>();
@@ -680,22 +633,22 @@ public partial class V4Game
         {
             if (BeginsWith(_lines[i], "choice "))
             {
-                menuOptions.Add(i.ToString(), GetParameter(_lines[i], ctx));
+                menuOptions.Add(i.ToString(), await GetParameter(_lines[i], ctx));
                 menuScript.Add(i.ToString(),
                     Strings.Trim(Strings.Right(_lines[i], Strings.Len(_lines[i]) - Strings.InStr(_lines[i], ">"))));
             }
         }
 
-        Print("- |i" + prompt + "|xi", ctx);
+        await Print("- |i" + prompt + "|xi", ctx);
 
         var mnu = new MenuData(prompt, menuOptions, false);
-        var choice = ShowMenu(mnu);
+        var choice = await ShowMenuAsync(mnu);
 
-        Print("- " + menuOptions[choice] + "|n", ctx);
+        await Print("- " + menuOptions[choice] + "|n", ctx);
         return menuScript[choice];
     }
 
-    private void SetUpDefaultFonts()
+    private async Task SetUpDefaultFonts()
     {
         // Sets up default fonts
         var gameblock = GetDefineBlock("game");
@@ -707,7 +660,7 @@ public partial class V4Game
         {
             if (BeginsWith(_lines[i], "default fontname "))
             {
-                var name = GetParameter(_lines[i], _nullContext);
+                var name = await GetParameter(_lines[i], _nullContext);
                 if (!string.IsNullOrEmpty(name))
                 {
                     _defaultFontName = name;
@@ -715,7 +668,7 @@ public partial class V4Game
             }
             else if (BeginsWith(_lines[i], "default fontsize "))
             {
-                var size = Conversions.ToInteger(GetParameter(_lines[i], _nullContext));
+                var size = Conversions.ToInteger(await GetParameter(_lines[i], _nullContext));
                 if (size != 0)
                 {
                     _defaultFontSize = size;
@@ -724,7 +677,7 @@ public partial class V4Game
         }
     }
 
-    private void SetUpDisplayVariables()
+    private async Task SetUpDisplayVariables()
     {
         for (int i = GetDefineBlock("game").StartLine + 1, loopTo = GetDefineBlock("game").EndLine - 1;
              i <= loopTo;
@@ -735,7 +688,7 @@ public partial class V4Game
                 var variable = new VariableType();
                 variable.VariableContents = new string[1];
 
-                variable.VariableName = GetParameter(_lines[i], _nullContext);
+                variable.VariableName = await GetParameter(_lines[i], _nullContext);
                 variable.DisplayString = "";
                 variable.NoZeroDisplay = false;
                 variable.OnChangeScript = "";
@@ -771,11 +724,11 @@ public partial class V4Game
                             variable.NoZeroDisplay = true;
                         }
 
-                        variable.DisplayString = GetParameter(_lines[i], _nullContext, false);
+                        variable.DisplayString = await GetParameter(_lines[i], _nullContext, false);
                     }
                     else if (BeginsWith(_lines[i], "value "))
                     {
-                        variable.VariableContents[0] = GetParameter(_lines[i], _nullContext);
+                        variable.VariableContents[0] = await GetParameter(_lines[i], _nullContext);
                     }
                 } while (Strings.Trim(_lines[i]) != "end define");
 
@@ -805,7 +758,7 @@ public partial class V4Game
         }
     }
 
-    private void SetUpGameObject()
+    private async Task SetUpGameObject()
     {
         _numberObjs = 1;
         _objs = new ObjectType[2];
@@ -829,15 +782,15 @@ public partial class V4Game
                 }
                 else if (BeginsWith(_lines[i], "properties "))
                 {
-                    AddToObjectProperties(GetParameter(_lines[i], _nullContext), _numberObjs, _nullContext);
+                    AddToObjectProperties(await GetParameter(_lines[i], _nullContext), _numberObjs, _nullContext);
                 }
                 else if (BeginsWith(_lines[i], "type "))
                 {
                     o.NumberTypesIncluded = o.NumberTypesIncluded + 1;
                     Array.Resize(ref o.TypesIncluded, o.NumberTypesIncluded + 1);
-                    o.TypesIncluded[o.NumberTypesIncluded] = GetParameter(_lines[i], _nullContext);
+                    o.TypesIncluded[o.NumberTypesIncluded] = await GetParameter(_lines[i], _nullContext);
 
-                    var propertyData = GetPropertiesInType(GetParameter(_lines[i], _nullContext));
+                    var propertyData = await GetPropertiesInType(await GetParameter(_lines[i], _nullContext));
                     AddToObjectProperties(propertyData.Properties, _numberObjs, _nullContext);
                     for (int k = 1, loopTo1 = propertyData.NumberActions; k <= loopTo1; k++)
                     {
@@ -847,7 +800,7 @@ public partial class V4Game
                 }
                 else if (BeginsWith(_lines[i], "action "))
                 {
-                    AddToObjectActions(GetEverythingAfter(_lines[i], "action "), _numberObjs, _nullContext);
+                    await AddToObjectActions(GetEverythingAfter(_lines[i], "action "), _numberObjs, _nullContext);
                 }
             }
             else if (Strings.Trim(_lines[i]) == "end define")
@@ -857,7 +810,7 @@ public partial class V4Game
         }
     }
 
-    private void SetUpMenus()
+    private async Task SetUpMenus()
     {
         var exists = false;
         var menuTitle = "";
@@ -870,12 +823,12 @@ public partial class V4Game
                 if (exists)
                 {
                     LogASLError(
-                        "Can't load menu '" + GetParameter(_lines[_defineBlocks[i].StartLine], _nullContext) +
+                        "Can't load menu '" + await GetParameter(_lines[_defineBlocks[i].StartLine], _nullContext) +
                         "' - only one menu can be added.", LogType.WarningError);
                 }
                 else
                 {
-                    menuTitle = GetParameter(_lines[_defineBlocks[i].StartLine], _nullContext);
+                    menuTitle = await GetParameter(_lines[_defineBlocks[i].StartLine], _nullContext);
 
                     for (int j = _defineBlocks[i].StartLine + 1, loopTo1 = _defineBlocks[i].EndLine - 1;
                          j <= loopTo1;
@@ -944,7 +897,7 @@ public partial class V4Game
         }
     }
 
-    private void SetUpRoomData()
+    private async Task SetUpRoomData()
     {
         var defaultProperties = new PropertiesActions();
 
@@ -955,7 +908,7 @@ public partial class V4Game
             if (Strings.Trim(_lines[_defineBlocks[i].StartLine]) == "define type <defaultroom>")
             {
                 defaultExists = true;
-                defaultProperties = GetPropertiesInType("defaultroom");
+                defaultProperties = await GetPropertiesInType("defaultroom");
                 break;
             }
         }
@@ -974,7 +927,7 @@ public partial class V4Game
 
                 var r = _rooms[_numberRooms];
 
-                r.RoomName = GetParameter(_lines[_defineBlocks[i].StartLine], _nullContext);
+                r.RoomName = await GetParameter(_lines[_defineBlocks[i].StartLine], _nullContext);
                 _objs[_numberObjs].ObjectName = r.RoomName;
                 _objs[_numberObjs].IsRoom = true;
                 _objs[_numberObjs].CorresRoom = r.RoomName;
@@ -1020,7 +973,7 @@ public partial class V4Game
 
                     if ((ASLVersion >= 280) & BeginsWith(_lines[j], "alias "))
                     {
-                        r.RoomAlias = GetParameter(_lines[j], _nullContext);
+                        r.RoomAlias = await GetParameter(_lines[j], _nullContext);
                         _objs[_numberObjs].ObjectAlias = r.RoomAlias;
                         if (ASLVersion >= 350)
                         {
@@ -1029,7 +982,7 @@ public partial class V4Game
                     }
                     else if ((ASLVersion >= 280) & BeginsWith(_lines[j], "description "))
                     {
-                        r.Description = GetTextOrScript(GetEverythingAfter(_lines[j], "description "));
+                        r.Description = await GetTextOrScript(GetEverythingAfter(_lines[j], "description "));
                         if (ASLVersion >= 350)
                         {
                             if (r.Description.Type == TextActionType.Script)
@@ -1044,7 +997,7 @@ public partial class V4Game
                     }
                     else if (BeginsWith(_lines[j], "out "))
                     {
-                        r.Out.Text = GetParameter(_lines[j], _nullContext);
+                        r.Out.Text = await GetParameter(_lines[j], _nullContext);
                         r.Out.Script = Strings.Trim(Strings.Mid(_lines[j], Strings.InStr(_lines[j], ">") + 1));
                         if (ASLVersion >= 350)
                         {
@@ -1058,7 +1011,7 @@ public partial class V4Game
                     }
                     else if (BeginsWith(_lines[j], "east "))
                     {
-                        r.East = GetTextOrScript(GetEverythingAfter(_lines[j], "east "));
+                        r.East = await GetTextOrScript(GetEverythingAfter(_lines[j], "east "));
                         if (ASLVersion >= 350)
                         {
                             if (r.East.Type == TextActionType.Script)
@@ -1073,7 +1026,7 @@ public partial class V4Game
                     }
                     else if (BeginsWith(_lines[j], "west "))
                     {
-                        r.West = GetTextOrScript(GetEverythingAfter(_lines[j], "west "));
+                        r.West = await GetTextOrScript(GetEverythingAfter(_lines[j], "west "));
                         if (ASLVersion >= 350)
                         {
                             if (r.West.Type == TextActionType.Script)
@@ -1088,7 +1041,7 @@ public partial class V4Game
                     }
                     else if (BeginsWith(_lines[j], "north "))
                     {
-                        r.North = GetTextOrScript(GetEverythingAfter(_lines[j], "north "));
+                        r.North = await GetTextOrScript(GetEverythingAfter(_lines[j], "north "));
                         if (ASLVersion >= 350)
                         {
                             if (r.North.Type == TextActionType.Script)
@@ -1103,7 +1056,7 @@ public partial class V4Game
                     }
                     else if (BeginsWith(_lines[j], "south "))
                     {
-                        r.South = GetTextOrScript(GetEverythingAfter(_lines[j], "south "));
+                        r.South = await GetTextOrScript(GetEverythingAfter(_lines[j], "south "));
                         if (ASLVersion >= 350)
                         {
                             if (r.South.Type == TextActionType.Script)
@@ -1118,7 +1071,7 @@ public partial class V4Game
                     }
                     else if (BeginsWith(_lines[j], "northeast "))
                     {
-                        r.NorthEast = GetTextOrScript(GetEverythingAfter(_lines[j], "northeast "));
+                        r.NorthEast = await GetTextOrScript(GetEverythingAfter(_lines[j], "northeast "));
                         if (ASLVersion >= 350)
                         {
                             if (r.NorthEast.Type == TextActionType.Script)
@@ -1133,7 +1086,7 @@ public partial class V4Game
                     }
                     else if (BeginsWith(_lines[j], "northwest "))
                     {
-                        r.NorthWest = GetTextOrScript(GetEverythingAfter(_lines[j], "northwest "));
+                        r.NorthWest = await GetTextOrScript(GetEverythingAfter(_lines[j], "northwest "));
                         if (ASLVersion >= 350)
                         {
                             if (r.NorthWest.Type == TextActionType.Script)
@@ -1148,7 +1101,7 @@ public partial class V4Game
                     }
                     else if (BeginsWith(_lines[j], "southeast "))
                     {
-                        r.SouthEast = GetTextOrScript(GetEverythingAfter(_lines[j], "southeast "));
+                        r.SouthEast = await GetTextOrScript(GetEverythingAfter(_lines[j], "southeast "));
                         if (ASLVersion >= 350)
                         {
                             if (r.SouthEast.Type == TextActionType.Script)
@@ -1163,7 +1116,7 @@ public partial class V4Game
                     }
                     else if (BeginsWith(_lines[j], "southwest "))
                     {
-                        r.SouthWest = GetTextOrScript(GetEverythingAfter(_lines[j], "southwest "));
+                        r.SouthWest = await GetTextOrScript(GetEverythingAfter(_lines[j], "southwest "));
                         if (ASLVersion >= 350)
                         {
                             if (r.SouthWest.Type == TextActionType.Script)
@@ -1178,7 +1131,7 @@ public partial class V4Game
                     }
                     else if (BeginsWith(_lines[j], "up "))
                     {
-                        r.Up = GetTextOrScript(GetEverythingAfter(_lines[j], "up "));
+                        r.Up = await GetTextOrScript(GetEverythingAfter(_lines[j], "up "));
                         if (ASLVersion >= 350)
                         {
                             if (r.Up.Type == TextActionType.Script)
@@ -1193,7 +1146,7 @@ public partial class V4Game
                     }
                     else if (BeginsWith(_lines[j], "down "))
                     {
-                        r.Down = GetTextOrScript(GetEverythingAfter(_lines[j], "down "));
+                        r.Down = await GetTextOrScript(GetEverythingAfter(_lines[j], "down "));
                         if (ASLVersion >= 350)
                         {
                             if (r.Down.Type == TextActionType.Script)
@@ -1208,7 +1161,7 @@ public partial class V4Game
                     }
                     else if ((ASLVersion >= 280) & BeginsWith(_lines[j], "indescription "))
                     {
-                        r.InDescription = GetParameter(_lines[j], _nullContext);
+                        r.InDescription = await GetParameter(_lines[j], _nullContext);
                         if (ASLVersion >= 350)
                         {
                             AddToObjectProperties("indescription=" + r.InDescription, _numberObjs, _nullContext);
@@ -1216,7 +1169,7 @@ public partial class V4Game
                     }
                     else if ((ASLVersion >= 280) & BeginsWith(_lines[j], "look "))
                     {
-                        r.Look = GetParameter(_lines[j], _nullContext);
+                        r.Look = await GetParameter(_lines[j], _nullContext);
                         if (ASLVersion >= 350)
                         {
                             AddToObjectProperties("look=" + r.Look, _numberObjs, _nullContext);
@@ -1224,7 +1177,7 @@ public partial class V4Game
                     }
                     else if (BeginsWith(_lines[j], "prefix "))
                     {
-                        r.Prefix = GetParameter(_lines[j], _nullContext);
+                        r.Prefix = await GetParameter(_lines[j], _nullContext);
                         if (ASLVersion >= 350)
                         {
                             AddToObjectProperties("prefix=" + r.Prefix, _numberObjs, _nullContext);
@@ -1240,7 +1193,7 @@ public partial class V4Game
                         r.NumberCommands = r.NumberCommands + 1;
                         Array.Resize(ref r.Commands, r.NumberCommands + 1);
                         r.Commands[r.NumberCommands] = new UserDefinedCommandType();
-                        r.Commands[r.NumberCommands].CommandText = GetParameter(_lines[j], _nullContext, false);
+                        r.Commands[r.NumberCommands].CommandText = await GetParameter(_lines[j], _nullContext, false);
                         r.Commands[r.NumberCommands].CommandScript =
                             Strings.Trim(Strings.Mid(_lines[j], Strings.InStr(_lines[j], ">") + 1));
                     }
@@ -1249,7 +1202,7 @@ public partial class V4Game
                         r.NumberPlaces = r.NumberPlaces + 1;
                         Array.Resize(ref r.Places, r.NumberPlaces + 1);
                         r.Places[r.NumberPlaces] = new PlaceType();
-                        var placeData = GetParameter(_lines[j], _nullContext);
+                        var placeData = await GetParameter(_lines[j], _nullContext);
                         var scp = Strings.InStr(placeData, ";");
                         if (scp == 0)
                         {
@@ -1269,22 +1222,22 @@ public partial class V4Game
                         r.NumberUse = r.NumberUse + 1;
                         Array.Resize(ref r.Use, r.NumberUse + 1);
                         r.Use[r.NumberUse] = new ScriptText();
-                        r.Use[r.NumberUse].Text = GetParameter(_lines[j], _nullContext);
+                        r.Use[r.NumberUse].Text = await GetParameter(_lines[j], _nullContext);
                         r.Use[r.NumberUse].Script =
                             Strings.Trim(Strings.Mid(_lines[j], Strings.InStr(_lines[j], ">") + 1));
                     }
                     else if (BeginsWith(_lines[j], "properties "))
                     {
-                        AddToObjectProperties(GetParameter(_lines[j], _nullContext), _numberObjs, _nullContext);
+                        AddToObjectProperties(await GetParameter(_lines[j], _nullContext), _numberObjs, _nullContext);
                     }
                     else if (BeginsWith(_lines[j], "type "))
                     {
                         _objs[_numberObjs].NumberTypesIncluded = _objs[_numberObjs].NumberTypesIncluded + 1;
                         Array.Resize(ref _objs[_numberObjs].TypesIncluded, _objs[_numberObjs].NumberTypesIncluded + 1);
                         _objs[_numberObjs].TypesIncluded[_objs[_numberObjs].NumberTypesIncluded] =
-                            GetParameter(_lines[j], _nullContext);
+                            await GetParameter(_lines[j], _nullContext);
 
-                        var propertyData = GetPropertiesInType(GetParameter(_lines[j], _nullContext));
+                        var propertyData = await GetPropertiesInType(await GetParameter(_lines[j], _nullContext));
                         AddToObjectProperties(propertyData.Properties, _numberObjs, _nullContext);
                         for (int k = 1, loopTo4 = propertyData.NumberActions; k <= loopTo4; k++)
                         {
@@ -1294,7 +1247,7 @@ public partial class V4Game
                     }
                     else if (BeginsWith(_lines[j], "action "))
                     {
-                        AddToObjectActions(GetEverythingAfter(_lines[j], "action "), _numberObjs, _nullContext);
+                        await AddToObjectActions(GetEverythingAfter(_lines[j], "action "), _numberObjs, _nullContext);
                     }
                     else if (BeginsWith(_lines[j], "beforeturn "))
                     {
@@ -1311,7 +1264,7 @@ public partial class V4Game
         }
     }
 
-    private void SetUpSynonyms()
+    private async Task SetUpSynonyms()
     {
         var block = GetDefineBlock("synonyms");
         _numberSynonyms = 0;
@@ -1362,7 +1315,7 @@ public partial class V4Game
         }
     }
 
-    private void SetUpTimers()
+    private async Task SetUpTimers()
     {
         for (int i = 1, loopTo = _numberSections; i <= loopTo; i++)
         {
@@ -1371,7 +1324,7 @@ public partial class V4Game
                 _numberTimers = _numberTimers + 1;
                 Array.Resize(ref _timers, _numberTimers + 1);
                 _timers[_numberTimers] = new TimerType();
-                _timers[_numberTimers].TimerName = GetParameter(_lines[_defineBlocks[i].StartLine], _nullContext);
+                _timers[_numberTimers].TimerName = await GetParameter(_lines[_defineBlocks[i].StartLine], _nullContext);
                 _timers[_numberTimers].TimerActive = false;
 
                 for (int j = _defineBlocks[i].StartLine + 1, loopTo1 = _defineBlocks[i].EndLine - 1; j <= loopTo1; j++)
@@ -1379,7 +1332,7 @@ public partial class V4Game
                     if (BeginsWith(_lines[j], "interval "))
                     {
                         _timers[_numberTimers].TimerInterval =
-                            Conversions.ToInteger(GetParameter(_lines[j], _nullContext));
+                            Conversions.ToInteger(await GetParameter(_lines[j], _nullContext));
                     }
                     else if (BeginsWith(_lines[j], "action "))
                     {
@@ -1398,7 +1351,7 @@ public partial class V4Game
         }
     }
 
-    private void SetUpTurnScript()
+    private async Task SetUpTurnScript()
     {
         var block = GetDefineBlock("game");
 
@@ -1420,7 +1373,7 @@ public partial class V4Game
         }
     }
 
-    private void SetUpUserDefinedPlayerErrors()
+    private async Task SetUpUserDefinedPlayerErrors()
     {
         // goes through "define game" block and sets stored error
         // messages accordingly
@@ -1432,7 +1385,7 @@ public partial class V4Game
         {
             if (BeginsWith(_lines[i], "error "))
             {
-                var errorInfo = GetParameter(_lines[i], _nullContext, false);
+                var errorInfo = await GetParameter(_lines[i], _nullContext, false);
                 var scp = Strings.InStr(errorInfo, ";");
                 var errorName = Strings.Left(errorInfo, scp - 1);
                 var errorMsg = Strings.Trim(Strings.Mid(errorInfo, scp + 1));
@@ -1656,7 +1609,7 @@ public partial class V4Game
         }
     }
 
-    private void SetVisibility(string thing, Thing type, bool visible, Context ctx)
+    private async Task SetVisibility(string thing, Thing type, bool visible, Context ctx)
     {
         // Sets visibilty of objects and characters        
 
@@ -1734,7 +1687,7 @@ public partial class V4Game
             }
         }
 
-        UpdateObjectList(ctx);
+        await UpdateObjectList(ctx);
     }
 
     private void ShowPictureInText(string filename)
@@ -1751,7 +1704,7 @@ public partial class V4Game
         }
     }
 
-    private void ShowRoomInfoV2(string room)
+    private async Task ShowRoomInfoV2(string room)
     {
         // ShowRoomInfo for Quest 2.x games
 
@@ -1781,7 +1734,7 @@ public partial class V4Game
 
         // find the room
         DefineBlock roomBlock;
-        roomBlock = DefineBlockParam("room", room);
+        roomBlock = await DefineBlockParam("room", room);
         bool finishedFindingCommas;
 
         charsViewable = "";
@@ -1792,7 +1745,7 @@ public partial class V4Game
         {
             if (BeginsWith(_lines[i], "alias"))
             {
-                aliasName = GetParameter(_lines[i], _nullContext);
+                aliasName = await GetParameter(_lines[i], _nullContext);
                 i = roomBlock.EndLine;
             }
         }
@@ -1803,7 +1756,7 @@ public partial class V4Game
         }
 
         // see if room has a prefix
-        prefix = FindStatement(roomBlock, "prefix");
+        prefix = await FindStatement(roomBlock, "prefix");
         if (string.IsNullOrEmpty(prefix))
         {
             prefixAlias = "|cr" + aliasName + "|cb";
@@ -1822,7 +1775,7 @@ public partial class V4Game
         {
             if (BeginsWith(_lines[i], "indescription"))
             {
-                inDesc = Strings.Trim(GetParameter(_lines[i], _nullContext));
+                inDesc = Strings.Trim(await GetParameter(_lines[i], _nullContext));
                 i = roomBlock.EndLine;
             }
         }
@@ -1967,7 +1920,7 @@ public partial class V4Game
         {
             if (BeginsWith(_lines[i], "out"))
             {
-                doorways = GetParameter(_lines[i], _nullContext);
+                doorways = await GetParameter(_lines[i], _nullContext);
             }
 
             if (BeginsWith(_lines[i], "north "))
@@ -2014,7 +1967,7 @@ public partial class V4Game
             if (BeginsWith(_lines[i], "place"))
             {
                 // remove any prefix semicolon from printed text
-                place = GetParameter(_lines[i], _nullContext);
+                place = await GetParameter(_lines[i], _nullContext);
                 placeNoFormat = place; // Used in object list - no formatting or prefix
                 if (Strings.InStr(place, ";") > 0)
                 {
@@ -2035,12 +1988,12 @@ public partial class V4Game
         if (!string.IsNullOrEmpty(doorways))
         {
             // see if outside has an alias
-            outside = DefineBlockParam("room", doorways);
+            outside = await DefineBlockParam("room", doorways);
             for (int i = outside.StartLine + 1, loopTo5 = outside.EndLine - 1; i <= loopTo5; i++)
             {
                 if (BeginsWith(_lines[i], "alias"))
                 {
-                    aliasOut = GetParameter(_lines[i], _nullContext);
+                    aliasOut = await GetParameter(_lines[i], _nullContext);
                     i = outside.EndLine;
                 }
             }
@@ -2161,7 +2114,7 @@ public partial class V4Game
         {
             // Remove final newline:
             roomDisplayText = Strings.Left(roomDisplayText, Strings.Len(roomDisplayText) - 2);
-            Print(roomDisplayText, _nullContext);
+            await Print(roomDisplayText, _nullContext);
         }
         else
         {
@@ -2172,15 +2125,15 @@ public partial class V4Game
             descLine = GetEverythingAfter(Strings.Trim(descLine), "description ");
             if (Strings.Left(descLine, 1) == "<")
             {
-                Print(GetParameter(descLine, _nullContext), _nullContext);
+                await Print(await GetParameter(descLine, _nullContext), _nullContext);
             }
             else
             {
-                ExecuteScript(descLine, _nullContext);
+                await ExecuteScript(descLine, _nullContext);
             }
         }
 
-        UpdateObjectList(_nullContext);
+        await UpdateObjectList(_nullContext);
 
         defineBlock = 0;
 
@@ -2199,14 +2152,14 @@ public partial class V4Game
 
             if (BeginsWith(_lines[i], "look") & (defineBlock == 0))
             {
-                lookString = GetParameter(_lines[i], _nullContext);
+                lookString = await GetParameter(_lines[i], _nullContext);
                 i = roomBlock.EndLine;
             }
         }
 
         if (!string.IsNullOrEmpty(lookString))
         {
-            Print(lookString, _nullContext);
+            await Print(lookString, _nullContext);
         }
     }
 
@@ -2230,14 +2183,14 @@ public partial class V4Game
         }
     }
 
-    private void ExecExec(string scriptLine, Context ctx)
+    private async Task ExecExec(string scriptLine, Context ctx)
     {
         if (ctx.CancelExec)
         {
             return;
         }
 
-        var execLine = GetParameter(scriptLine, ctx);
+        var execLine = await GetParameter(scriptLine, ctx);
         var newCtx = CopyContext(ctx);
         newCtx.StackCounter = newCtx.StackCounter + 1;
 
@@ -2257,7 +2210,7 @@ public partial class V4Game
         {
             try
             {
-                ExecCommand(execLine, newCtx, false);
+                await ExecCommand(execLine, newCtx, false);
             }
             catch
             {
@@ -2273,7 +2226,7 @@ public partial class V4Game
             var r = Strings.Trim(Strings.Mid(execLine, scp + 1));
             if (r == "normal")
             {
-                ExecCommand(ex, newCtx, false, false);
+                await ExecCommand(ex, newCtx, false, false);
             }
             else
             {
@@ -2311,7 +2264,7 @@ public partial class V4Game
         SetStringContents(idx.Name, value, ctx, idx.Index);
     }
 
-    private bool ExecUserCommand(string cmd, Context ctx, bool libCommands = false)
+    private async Task<bool> ExecUserCommand(string cmd, Context ctx, bool libCommands = false)
     {
         // Executes a user-defined command. If unavailable, returns
         // false.
@@ -2381,7 +2334,7 @@ public partial class V4Game
             {
                 if (BeginsWith(_lines[i], commandTag))
                 {
-                    commandList = GetParameter(_lines[i], ctx, false);
+                    commandList = await GetParameter(_lines[i], ctx, false);
                     int ep;
                     var exitFor1 = false;
                     do
@@ -2419,21 +2372,21 @@ public partial class V4Game
 
         if (foundCommand)
         {
-            if (GetCommandParameters(cmd, commandLine, ctx))
+            if (await GetCommandParameters(cmd, commandLine, ctx))
             {
-                ExecuteScript(script, ctx);
+                await ExecuteScript(script, ctx);
             }
         }
 
         return foundCommand;
     }
 
-    private void ExecuteChoose(string section, Context ctx)
+    private async Task ExecuteChoose(string section, Context ctx)
     {
-        ExecuteScript(SetUpChoiceForm(section, ctx), ctx);
+        await ExecuteScript(await SetUpChoiceForm(section, ctx), ctx);
     }
 
-    private bool GetCommandParameters(string test, string required, Context ctx)
+    private async Task<bool> GetCommandParameters(string test, string required, Context ctx)
     {
         // Gets parameters from line. For example, if 'required'
         // is "read #1#" and 'test' is "read sign", #1# returns
@@ -2518,17 +2471,17 @@ public partial class V4Game
             if (BeginsWith(varName[i], "@"))
             {
                 varName[i] = GetEverythingAfter(varName[i], "@");
-                var id = Disambiguate(curChunk, _currentRoom + ";" + "inventory", ctx);
+                var id = await Disambiguate(curChunk, _currentRoom + ";" + "inventory", ctx);
 
                 if (id == -1)
                 {
                     if (ASLVersion >= 391)
                     {
-                        PlayerErrorMessage(PlayerError.BadThing, ctx);
+                        await PlayerErrorMessage(PlayerError.BadThing, ctx);
                     }
                     else
                     {
-                        PlayerErrorMessage(PlayerError.BadItem, ctx);
+                        await PlayerErrorMessage(PlayerError.BadItem, ctx);
                     }
 
                     // The Mid$(...,2) and Left$(...,2) removes the initial/final "."
@@ -2557,7 +2510,7 @@ public partial class V4Game
         return success;
     }
 
-    private string GetGender(string character, bool capitalise, Context ctx)
+    private async Task<string> GetGender(string character, bool capitalise, Context ctx)
     {
         string result;
 
@@ -2575,7 +2528,7 @@ public partial class V4Game
             }
             else
             {
-                result = GetParameter(resultLine, ctx) + " ";
+                result = await GetParameter(resultLine, ctx) + " ";
             }
         }
 
@@ -2827,7 +2780,7 @@ public partial class V4Game
         {
             // Open Quest 3.0 saved game file
             _gameLoading = true;
-            RestoreGameData(fileData);
+            await RestoreGameData(fileData);
             _gameLoading = false;
         }
         else
@@ -3038,7 +2991,7 @@ public partial class V4Game
         return string.Join(Constants.vbCrLf, lines);
     }
 
-    private void SetAvailability(string thingString, bool exists, Context ctx, Thing type = Thing.Object)
+    private async Task SetAvailability(string thingString, bool exists, Context ctx, Thing type = Thing.Object)
     {
         // Sets availability of objects (and characters in ASL<281)
 
@@ -3115,8 +3068,8 @@ public partial class V4Game
             }
         }
 
-        UpdateItems(ctx);
-        UpdateObjectList(ctx);
+        await UpdateItems(ctx);
+        await UpdateObjectList(ctx);
     }
 
     internal void SetStringContents(string name, string value, Context ctx, int arrayIndex = 0)
@@ -3187,16 +3140,16 @@ public partial class V4Game
         if (!string.IsNullOrEmpty(_stringVariable[id].OnChangeScript))
         {
             var script = _stringVariable[id].OnChangeScript;
-            ExecuteScript(script, ctx);
+            _ = ExecuteScript(script, ctx);
         }
 
         if (!string.IsNullOrEmpty(_stringVariable[id].DisplayString))
         {
-            UpdateStatusVars(ctx);
+            _ = UpdateStatusVars(ctx);
         }
     }
 
-    private void SetUpCharObjectInfo()
+    private async Task SetUpCharObjectInfo()
     {
         var defaultProperties = new PropertiesActions();
 
@@ -3209,7 +3162,7 @@ public partial class V4Game
             if (Strings.Trim(_lines[_defineBlocks[i].StartLine]) == "define type <default>")
             {
                 defaultExists = true;
-                defaultProperties = GetPropertiesInType("default");
+                defaultProperties = await GetPropertiesInType("default");
                 break;
             }
         }
@@ -3229,7 +3182,7 @@ public partial class V4Game
 
             if (BeginsWith(_lines[block.StartLine], "define room"))
             {
-                origContainerRoomName = GetParameter(_lines[block.StartLine], _nullContext);
+                origContainerRoomName = await GetParameter(_lines[block.StartLine], _nullContext);
             }
             else
             {
@@ -3257,7 +3210,7 @@ public partial class V4Game
 
                     var o = _objs[_numberObjs];
 
-                    o.ObjectName = GetParameter(_lines[j], _nullContext);
+                    o.ObjectName = await GetParameter(_lines[j], _nullContext);
                     o.ObjectAlias = o.ObjectName;
                     o.DefinitionSectionStart = j;
                     o.ContainerRoom = containerRoomName;
@@ -3297,11 +3250,11 @@ public partial class V4Game
                         }
                         else if (BeginsWith(_lines[j], "startin ") & (containerRoomName == "__UNKNOWN"))
                         {
-                            containerRoomName = GetParameter(_lines[j], _nullContext);
+                            containerRoomName = await GetParameter(_lines[j], _nullContext);
                         }
                         else if (BeginsWith(_lines[j], "prefix "))
                         {
-                            o.Prefix = GetParameter(_lines[j], _nullContext) + " ";
+                            o.Prefix = await GetParameter(_lines[j], _nullContext) + " ";
                             if (ASLVersion >= 311)
                             {
                                 AddToObjectProperties("prefix=" + o.Prefix, _numberObjs, _nullContext);
@@ -3309,7 +3262,7 @@ public partial class V4Game
                         }
                         else if (BeginsWith(_lines[j], "suffix "))
                         {
-                            o.Suffix = GetParameter(_lines[j], _nullContext);
+                            o.Suffix = await GetParameter(_lines[j], _nullContext);
                             if (ASLVersion >= 311)
                             {
                                 AddToObjectProperties("suffix=" + o.Suffix, _numberObjs, _nullContext);
@@ -3325,7 +3278,7 @@ public partial class V4Game
                         }
                         else if (BeginsWith(_lines[j], "alias "))
                         {
-                            o.ObjectAlias = GetParameter(_lines[j], _nullContext);
+                            o.ObjectAlias = await GetParameter(_lines[j], _nullContext);
                             if (ASLVersion >= 311)
                             {
                                 AddToObjectProperties("alias=" + o.ObjectAlias, _numberObjs, _nullContext);
@@ -3333,11 +3286,11 @@ public partial class V4Game
                         }
                         else if (BeginsWith(_lines[j], "alt "))
                         {
-                            AddToObjectAltNames(GetParameter(_lines[j], _nullContext), _numberObjs);
+                            AddToObjectAltNames(await GetParameter(_lines[j], _nullContext), _numberObjs);
                         }
                         else if (BeginsWith(_lines[j], "detail "))
                         {
-                            o.Detail = GetParameter(_lines[j], _nullContext);
+                            o.Detail = await GetParameter(_lines[j], _nullContext);
                             if (ASLVersion >= 311)
                             {
                                 AddToObjectProperties("detail=" + o.Detail, _numberObjs, _nullContext);
@@ -3345,7 +3298,7 @@ public partial class V4Game
                         }
                         else if (BeginsWith(_lines[j], "gender "))
                         {
-                            o.Gender = GetParameter(_lines[j], _nullContext);
+                            o.Gender = await GetParameter(_lines[j], _nullContext);
                             if (ASLVersion >= 311)
                             {
                                 AddToObjectProperties("gender=" + o.Gender, _numberObjs, _nullContext);
@@ -3353,7 +3306,7 @@ public partial class V4Game
                         }
                         else if (BeginsWith(_lines[j], "article "))
                         {
-                            o.Article = GetParameter(_lines[j], _nullContext);
+                            o.Article = await GetParameter(_lines[j], _nullContext);
                             if (ASLVersion >= 311)
                             {
                                 AddToObjectProperties("article=" + o.Article, _numberObjs, _nullContext);
@@ -3371,7 +3324,7 @@ public partial class V4Game
                         }
                         else if (BeginsWith(_lines[j], "displaytype "))
                         {
-                            o.DisplayType = GetParameter(_lines[j], _nullContext);
+                            o.DisplayType = await GetParameter(_lines[j], _nullContext);
                             if (ASLVersion >= 311)
                             {
                                 AddToObjectProperties("displaytype=" + o.DisplayType, _numberObjs, _nullContext);
@@ -3384,7 +3337,7 @@ public partial class V4Game
                                 restOfLine = GetEverythingAfter(_lines[j], "look ");
                                 if (Strings.Left(restOfLine, 1) == "<")
                                 {
-                                    AddToObjectProperties("look=" + GetParameter(_lines[j], _nullContext), _numberObjs,
+                                    AddToObjectProperties("look=" + await GetParameter(_lines[j], _nullContext), _numberObjs,
                                         _nullContext);
                                 }
                                 else
@@ -3400,7 +3353,7 @@ public partial class V4Game
                                 restOfLine = GetEverythingAfter(_lines[j], "examine ");
                                 if (Strings.Left(restOfLine, 1) == "<")
                                 {
-                                    AddToObjectProperties("examine=" + GetParameter(_lines[j], _nullContext),
+                                    AddToObjectProperties("examine=" + await GetParameter(_lines[j], _nullContext),
                                         _numberObjs, _nullContext);
                                 }
                                 else
@@ -3414,7 +3367,7 @@ public partial class V4Game
                             restOfLine = GetEverythingAfter(_lines[j], "speak ");
                             if (Strings.Left(restOfLine, 1) == "<")
                             {
-                                AddToObjectProperties("speak=" + GetParameter(_lines[j], _nullContext), _numberObjs,
+                                AddToObjectProperties("speak=" + await GetParameter(_lines[j], _nullContext), _numberObjs,
                                     _nullContext);
                             }
                             else
@@ -3424,15 +3377,15 @@ public partial class V4Game
                         }
                         else if (BeginsWith(_lines[j], "properties "))
                         {
-                            AddToObjectProperties(GetParameter(_lines[j], _nullContext), _numberObjs, _nullContext);
+                            AddToObjectProperties(await GetParameter(_lines[j], _nullContext), _numberObjs, _nullContext);
                         }
                         else if (BeginsWith(_lines[j], "type "))
                         {
                             o.NumberTypesIncluded = o.NumberTypesIncluded + 1;
                             Array.Resize(ref o.TypesIncluded, o.NumberTypesIncluded + 1);
-                            o.TypesIncluded[o.NumberTypesIncluded] = GetParameter(_lines[j], _nullContext);
+                            o.TypesIncluded[o.NumberTypesIncluded] = await GetParameter(_lines[j], _nullContext);
 
-                            var PropertyData = GetPropertiesInType(GetParameter(_lines[j], _nullContext));
+                            var PropertyData = await GetPropertiesInType(await GetParameter(_lines[j], _nullContext));
                             AddToObjectProperties(PropertyData.Properties, _numberObjs, _nullContext);
                             for (int k = 1, loopTo4 = PropertyData.NumberActions; k <= loopTo4; k++)
                             {
@@ -3451,15 +3404,15 @@ public partial class V4Game
                         }
                         else if (BeginsWith(_lines[j], "action "))
                         {
-                            AddToObjectActions(GetEverythingAfter(_lines[j], "action "), _numberObjs, _nullContext);
+                            await AddToObjectActions(GetEverythingAfter(_lines[j], "action "), _numberObjs, _nullContext);
                         }
                         else if (BeginsWith(_lines[j], "use "))
                         {
-                            AddToUseInfo(_numberObjs, GetEverythingAfter(_lines[j], "use "));
+                            await AddToUseInfo(_numberObjs, GetEverythingAfter(_lines[j], "use "));
                         }
                         else if (BeginsWith(_lines[j], "give "))
                         {
-                            AddToGiveInfo(_numberObjs, GetEverythingAfter(_lines[j], "give "));
+                            await AddToGiveInfo(_numberObjs, GetEverythingAfter(_lines[j], "give "));
                         }
                         else if (Strings.Trim(_lines[j]) == "take")
                         {
@@ -3471,9 +3424,9 @@ public partial class V4Game
                             if (Strings.Left(GetEverythingAfter(_lines[j], "take "), 1) == "<")
                             {
                                 o.Take.Type = TextActionType.Text;
-                                o.Take.Data = GetParameter(_lines[j], _nullContext);
+                                o.Take.Data = await GetParameter(_lines[j], _nullContext);
 
-                                AddToObjectProperties("take=" + GetParameter(_lines[j], _nullContext), _numberObjs,
+                                AddToObjectProperties("take=" + await GetParameter(_lines[j], _nullContext), _numberObjs,
                                     _nullContext);
                             }
                             else
@@ -3522,7 +3475,7 @@ public partial class V4Game
                         {
                             if (Strings.Left(GetEverythingAfter(_lines[j], "open "), 1) == "<")
                             {
-                                AddToObjectProperties("open=" + GetParameter(_lines[j], _nullContext), _numberObjs,
+                                AddToObjectProperties("open=" + await GetParameter(_lines[j], _nullContext), _numberObjs,
                                     _nullContext);
                             }
                             else
@@ -3539,7 +3492,7 @@ public partial class V4Game
                         {
                             if (Strings.Left(GetEverythingAfter(_lines[j], "close "), 1) == "<")
                             {
-                                AddToObjectProperties("close=" + GetParameter(_lines[j], _nullContext), _numberObjs,
+                                AddToObjectProperties("close=" + await GetParameter(_lines[j], _nullContext), _numberObjs,
                                     _nullContext);
                             }
                             else
@@ -3556,7 +3509,7 @@ public partial class V4Game
                         {
                             if (Strings.Left(GetEverythingAfter(_lines[j], "add "), 1) == "<")
                             {
-                                AddToObjectProperties("add=" + GetParameter(_lines[j], _nullContext), _numberObjs,
+                                AddToObjectProperties("add=" + await GetParameter(_lines[j], _nullContext), _numberObjs,
                                     _nullContext);
                             }
                             else
@@ -3573,7 +3526,7 @@ public partial class V4Game
                         {
                             if (Strings.Left(GetEverythingAfter(_lines[j], "remove "), 1) == "<")
                             {
-                                AddToObjectProperties("remove=" + GetParameter(_lines[j], _nullContext), _numberObjs,
+                                AddToObjectProperties("remove=" + await GetParameter(_lines[j], _nullContext), _numberObjs,
                                     _nullContext);
                             }
                             else
@@ -3584,12 +3537,12 @@ public partial class V4Game
                         }
                         else if (BeginsWith(_lines[j], "parent "))
                         {
-                            AddToObjectProperties("parent=" + GetParameter(_lines[j], _nullContext), _numberObjs,
+                            AddToObjectProperties("parent=" + await GetParameter(_lines[j], _nullContext), _numberObjs,
                                 _nullContext);
                         }
                         else if (BeginsWith(_lines[j], "list"))
                         {
-                            ProcessListInfo(_lines[j], _numberObjs);
+                            await ProcessListInfo(_lines[j], _numberObjs);
                         }
                     } while (Strings.Trim(_lines[j]) != "end define");
 
@@ -3605,7 +3558,7 @@ public partial class V4Game
                     _numberChars = _numberChars + 1;
                     Array.Resize(ref _chars, _numberChars + 1);
                     _chars[_numberChars] = new ObjectType();
-                    _chars[_numberChars].ObjectName = GetParameter(_lines[j], _nullContext);
+                    _chars[_numberChars].ObjectName = await GetParameter(_lines[j], _nullContext);
                     _chars[_numberChars].DefinitionSectionStart = j;
                     _chars[_numberChars].ContainerRoom = "";
                     _chars[_numberChars].Visible = true;
@@ -3620,15 +3573,15 @@ public partial class V4Game
                         }
                         else if (BeginsWith(_lines[j], "startin ") & (containerRoomName == "__UNKNOWN"))
                         {
-                            containerRoomName = GetParameter(_lines[j], _nullContext);
+                            containerRoomName = await GetParameter(_lines[j], _nullContext);
                         }
                         else if (BeginsWith(_lines[j], "prefix "))
                         {
-                            _chars[_numberChars].Prefix = GetParameter(_lines[j], _nullContext) + " ";
+                            _chars[_numberChars].Prefix = await GetParameter(_lines[j], _nullContext) + " ";
                         }
                         else if (BeginsWith(_lines[j], "suffix "))
                         {
-                            _chars[_numberChars].Suffix = " " + GetParameter(_lines[j], _nullContext);
+                            _chars[_numberChars].Suffix = " " + await GetParameter(_lines[j], _nullContext);
                         }
                         else if (Strings.Trim(_lines[j]) == "invisible")
                         {
@@ -3636,11 +3589,11 @@ public partial class V4Game
                         }
                         else if (BeginsWith(_lines[j], "alias "))
                         {
-                            _chars[_numberChars].ObjectAlias = GetParameter(_lines[j], _nullContext);
+                            _chars[_numberChars].ObjectAlias = await GetParameter(_lines[j], _nullContext);
                         }
                         else if (BeginsWith(_lines[j], "detail "))
                         {
-                            _chars[_numberChars].Detail = GetParameter(_lines[j], _nullContext);
+                            _chars[_numberChars].Detail = await GetParameter(_lines[j], _nullContext);
                         }
 
                         _chars[_numberChars].ContainerRoom = containerRoomName;
@@ -3655,40 +3608,40 @@ public partial class V4Game
             }
         }
 
-        UpdateVisibilityInContainers(_nullContext);
+        await UpdateVisibilityInContainers(_nullContext);
     }
 
-    private void ShowGameAbout(Context ctx)
+    private async Task ShowGameAbout(Context ctx)
     {
-        var version = FindStatement(GetDefineBlock("game"), "game version");
-        var author = FindStatement(GetDefineBlock("game"), "game author");
-        var copyright = FindStatement(GetDefineBlock("game"), "game copyright");
-        var info = FindStatement(GetDefineBlock("game"), "game info");
+        var version = await FindStatement(GetDefineBlock("game"), "game version");
+        var author = await FindStatement(GetDefineBlock("game"), "game author");
+        var copyright = await FindStatement(GetDefineBlock("game"), "game copyright");
+        var info = await FindStatement(GetDefineBlock("game"), "game info");
 
-        Print("|bGame name:|cl  " + _gameName + "|cb|xb", ctx);
+        await Print("|bGame name:|cl  " + _gameName + "|cb|xb", ctx);
         if (!string.IsNullOrEmpty(version))
         {
-            Print("|bVersion:|xb    " + version, ctx);
+            await Print("|bVersion:|xb    " + version, ctx);
         }
 
         if (!string.IsNullOrEmpty(author))
         {
-            Print("|bAuthor:|xb     " + author, ctx);
+            await Print("|bAuthor:|xb     " + author, ctx);
         }
 
         if (!string.IsNullOrEmpty(copyright))
         {
-            Print("|bCopyright:|xb  " + copyright, ctx);
+            await Print("|bCopyright:|xb  " + copyright, ctx);
         }
 
         if (!string.IsNullOrEmpty(info))
         {
-            Print("", ctx);
-            Print(info, ctx);
+            await Print("", ctx);
+            await Print(info, ctx);
         }
     }
 
-    private void ShowPicture(string filename)
+    private async Task ShowPicture(string filename)
     {
         // In Quest 4.x this function would be used for showing a picture in a popup window, but
         // this is no longer supported - ALL images are displayed in-line with the game text. Any
@@ -3710,17 +3663,17 @@ public partial class V4Game
 
         if (caption.Length > 0)
         {
-            Print(caption, _nullContext);
+            await Print(caption, _nullContext);
         }
 
         ShowPictureInText(filename);
     }
 
-    private void ShowRoomInfo(string room, Context ctx, bool noPrint = false)
+    private async Task ShowRoomInfo(string room, Context ctx, bool noPrint = false)
     {
         if (ASLVersion < 280)
         {
-            ShowRoomInfoV2(room);
+            await ShowRoomInfoV2(room);
             return;
         }
 
@@ -3955,7 +3908,7 @@ public partial class V4Game
                     descTagExist = true;
                     if (Strings.Left(descLine, 1) == "<")
                     {
-                        descLine = GetParameter(descLine, ctx);
+                        descLine = await GetParameter(descLine, ctx);
                         descType = (int) TextActionType.Text;
                     }
                     else
@@ -3979,10 +3932,10 @@ public partial class V4Game
             {
                 // Remove final vbCrLf:
                 roomDisplayText = Strings.Left(roomDisplayText, Strings.Len(roomDisplayText) - 2);
-                Print(roomDisplayText, ctx);
+                await Print(roomDisplayText, ctx);
                 if (!string.IsNullOrEmpty(doorwayString))
                 {
-                    Print(doorwayString, ctx);
+                    await Print(doorwayString, ctx);
                 }
             }
             // execute description tag:
@@ -3991,14 +3944,14 @@ public partial class V4Game
 
             else if (descType == (int) TextActionType.Text)
             {
-                Print(descLine, ctx);
+                await Print(descLine, ctx);
             }
             else
             {
-                ExecuteScript(descLine, ctx);
+                await ExecuteScript(descLine, ctx);
             }
 
-            UpdateObjectList(ctx);
+            await UpdateObjectList(ctx);
 
             // SHOW "LOOK" DESCRIPTION **************************************************
 
@@ -4006,7 +3959,7 @@ public partial class V4Game
             {
                 if (!string.IsNullOrEmpty(lookDesc))
                 {
-                    Print(lookDesc, ctx);
+                    await Print(lookDesc, ctx);
                 }
             }
         }
@@ -4122,10 +4075,10 @@ public partial class V4Game
         return display;
     }
 
-    private void DisplayTextSection(string section, Context ctx)
+    private async Task DisplayTextSection(string section, Context ctx)
     {
         DefineBlock block;
-        block = DefineBlockParam("text", section);
+        block = await DefineBlockParam("text", section);
 
         if (block.StartLine == 0)
         {
@@ -4137,21 +4090,21 @@ public partial class V4Game
             if (ASLVersion >= 392)
             {
                 // Convert string variables etc.
-                Print(GetParameter("<" + _lines[i] + ">", ctx), ctx);
+                await Print(await GetParameter("<" + _lines[i] + ">", ctx), ctx);
             }
             else
             {
-                Print(_lines[i], ctx);
+                await Print(_lines[i], ctx);
             }
         }
 
-        Print("", ctx);
+        await Print("", ctx);
     }
 
     // Returns true if the system is ready to process a new command after completion - so it will be
     // in most cases, except when ExecCommand just caused an "enter" script command to complete
 
-    private bool ExecCommand(string input, Context ctx, bool echo = true, bool runUserCommand = true,
+    private async Task<bool> ExecCommand(string input, Context ctx, bool echo = true, bool runUserCommand = true,
         bool dontSetIt = false)
     {
         string parameter;
@@ -4169,25 +4122,22 @@ public partial class V4Game
 
         var cmd = Strings.LCase(input);
 
-        lock (_commandLock)
+        if (_commandOverrideModeOn)
         {
-            if (_commandOverrideModeOn)
-            {
-                // Commands have been overridden for this command,
-                // so put input into previously specified variable
-                // and exit:
+            // Commands have been overridden for this command,
+            // so put input into previously specified variable
+            // and exit:
 
-                SetStringContents(_commandOverrideVariable, input, ctx);
-                Monitor.PulseAll(_commandLock);
-                return false;
-            }
+            SetStringContents(_commandOverrideVariable, input, ctx);
+            _commandTcs!.TrySetResult();
+            return false;
         }
 
         bool userCommandReturn;
 
         if (echo)
         {
-            Print("> " + input, ctx);
+            await Print("> " + input, ctx);
         }
 
         input = Strings.LCase(input);
@@ -4230,19 +4180,19 @@ public partial class V4Game
             {
                 if (BeginsWith(_rooms[roomID].BeforeTurnScript, "override"))
                 {
-                    ExecuteScript(GetEverythingAfter(_rooms[roomID].BeforeTurnScript, "override"), newCtx);
+                    await ExecuteScript(GetEverythingAfter(_rooms[roomID].BeforeTurnScript, "override"), newCtx);
                     globalOverride = true;
                 }
                 else
                 {
-                    ExecuteScript(_rooms[roomID].BeforeTurnScript, newCtx);
+                    await ExecuteScript(_rooms[roomID].BeforeTurnScript, newCtx);
                 }
             }
         }
 
         if (!string.IsNullOrEmpty(_beforeTurnScript) & !globalOverride)
         {
-            ExecuteScript(_beforeTurnScript, newCtx);
+            await ExecuteScript(_beforeTurnScript, newCtx);
         }
 
         // In executing BeforeTurn script, "dontprocess" sets ctx.DontProcessCommand,
@@ -4255,23 +4205,23 @@ public partial class V4Game
             userCommandReturn = false;
             if (runUserCommand)
             {
-                userCommandReturn = ExecUserCommand(input, ctx);
+                userCommandReturn = await ExecUserCommand(input, ctx);
 
                 if (!userCommandReturn)
                 {
-                    userCommandReturn = ExecVerb(input, ctx);
+                    userCommandReturn = await ExecVerb(input, ctx);
                 }
 
                 if (!userCommandReturn)
                 {
                     // Try command defined by a library
-                    userCommandReturn = ExecUserCommand(input, ctx, true);
+                    userCommandReturn = await ExecUserCommand(input, ctx, true);
                 }
 
                 if (!userCommandReturn)
                 {
                     // Try verb defined by a library
-                    userCommandReturn = ExecVerb(input, ctx, true);
+                    userCommandReturn = await ExecVerb(input, ctx, true);
                 }
             }
 
@@ -4290,21 +4240,21 @@ public partial class V4Game
             if (CmdStartsWith(input, "speak to "))
             {
                 parameter = GetEverythingAfter(input, "speak to ");
-                ExecSpeak(parameter, ctx);
+                await ExecSpeak(parameter, ctx);
             }
             else if (CmdStartsWith(input, "talk to "))
             {
                 parameter = GetEverythingAfter(input, "talk to ");
-                ExecSpeak(parameter, ctx);
+                await ExecSpeak(parameter, ctx);
             }
             else if ((cmd == "exit") | (cmd == "out") | (cmd == "leave"))
             {
-                GoDirection("out", ctx);
+                await GoDirection("out", ctx);
                 _lastIt = 0;
             }
             else if ((cmd == "north") | (cmd == "south") | (cmd == "east") | (cmd == "west"))
             {
-                GoDirection(input, ctx);
+                await GoDirection(input, ctx);
                 _lastIt = 0;
             }
             else if ((cmd == "n") | (cmd == "s") | (cmd == "w") | (cmd == "e"))
@@ -4313,22 +4263,22 @@ public partial class V4Game
                 {
                     case 1:
                     {
-                        GoDirection("north", ctx);
+                        await GoDirection("north", ctx);
                         break;
                     }
                     case 2:
                     {
-                        GoDirection("south", ctx);
+                        await GoDirection("south", ctx);
                         break;
                     }
                     case 3:
                     {
-                        GoDirection("west", ctx);
+                        await GoDirection("west", ctx);
                         break;
                     }
                     case 4:
                     {
-                        GoDirection("east", ctx);
+                        await GoDirection("east", ctx);
                         break;
                     }
                 }
@@ -4339,67 +4289,67 @@ public partial class V4Game
                      (cmd == "go ne") |
                      (cmd == "go northeast") | (cmd == "go north-east") | (cmd == "go north east"))
             {
-                GoDirection("northeast", ctx);
+                await GoDirection("northeast", ctx);
                 _lastIt = 0;
             }
             else if ((cmd == "nw") | (cmd == "northwest") | (cmd == "north-west") | (cmd == "north west") |
                      (cmd == "go nw") |
                      (cmd == "go northwest") | (cmd == "go north-west") | (cmd == "go north west"))
             {
-                GoDirection("northwest", ctx);
+                await GoDirection("northwest", ctx);
                 _lastIt = 0;
             }
             else if ((cmd == "se") | (cmd == "southeast") | (cmd == "south-east") | (cmd == "south east") |
                      (cmd == "go se") |
                      (cmd == "go southeast") | (cmd == "go south-east") | (cmd == "go south east"))
             {
-                GoDirection("southeast", ctx);
+                await GoDirection("southeast", ctx);
                 _lastIt = 0;
             }
             else if ((cmd == "sw") | (cmd == "southwest") | (cmd == "south-west") | (cmd == "south west") |
                      (cmd == "go sw") |
                      (cmd == "go southwest") | (cmd == "go south-west") | (cmd == "go south west"))
             {
-                GoDirection("southwest", ctx);
+                await GoDirection("southwest", ctx);
                 _lastIt = 0;
             }
             else if ((cmd == "up") | (cmd == "u"))
             {
-                GoDirection("up", ctx);
+                await GoDirection("up", ctx);
                 _lastIt = 0;
             }
             else if ((cmd == "down") | (cmd == "d"))
             {
-                GoDirection("down", ctx);
+                await GoDirection("down", ctx);
                 _lastIt = 0;
             }
             else if (CmdStartsWith(input, "go "))
             {
                 if (ASLVersion >= 410)
                 {
-                    _rooms[GetRoomID(_currentRoom, ctx)].Exits.ExecuteGo(input, ref ctx);
+                    _rooms[GetRoomID(_currentRoom, ctx)].Exits.ExecuteGo(input, ctx);
                 }
                 else
                 {
                     parameter = GetEverythingAfter(input, "go ");
                     if (parameter == "out")
                     {
-                        GoDirection("out", ctx);
+                        await GoDirection("out", ctx);
                     }
                     else if ((parameter == "north") | (parameter == "south") | (parameter == "east") |
                              (parameter == "west") |
                              (parameter == "up") | (parameter == "down"))
                     {
-                        GoDirection(parameter, ctx);
+                        await GoDirection(parameter, ctx);
                     }
                     else if (BeginsWith(parameter, "to "))
                     {
                         parameter = GetEverythingAfter(parameter, "to ");
-                        GoToPlace(parameter, ctx);
+                        await GoToPlace(parameter, ctx);
                     }
                     else
                     {
-                        PlayerErrorMessage(PlayerError.BadGo, ctx);
+                        await PlayerErrorMessage(PlayerError.BadGo, ctx);
                     }
                 }
 
@@ -4408,96 +4358,96 @@ public partial class V4Game
             else if (CmdStartsWith(input, "give "))
             {
                 parameter = GetEverythingAfter(input, "give ");
-                ExecGive(parameter, ctx);
+                await ExecGive(parameter, ctx);
             }
             else if (CmdStartsWith(input, "take "))
             {
                 parameter = GetEverythingAfter(input, "take ");
-                ExecTake(parameter, ctx);
+                await ExecTake(parameter, ctx);
             }
             else if (CmdStartsWith(input, "drop ") & (ASLVersion >= 280))
             {
                 parameter = GetEverythingAfter(input, "drop ");
-                ExecDrop(parameter, ctx);
+                await ExecDrop(parameter, ctx);
             }
             else if (CmdStartsWith(input, "get "))
             {
                 parameter = GetEverythingAfter(input, "get ");
-                ExecTake(parameter, ctx);
+                await ExecTake(parameter, ctx);
             }
             else if (CmdStartsWith(input, "pick up "))
             {
                 parameter = GetEverythingAfter(input, "pick up ");
-                ExecTake(parameter, ctx);
+                await ExecTake(parameter, ctx);
             }
             else if ((cmd == "pick it up") | (cmd == "pick them up") | (cmd == "pick this up") |
                      (cmd == "pick that up") |
                      (cmd == "pick these up") | (cmd == "pick those up") | (cmd == "pick him up") |
                      (cmd == "pick her up"))
             {
-                ExecTake(Strings.Mid(cmd, 6, Strings.InStr(7, cmd, " ") - 6), ctx);
+                await ExecTake(Strings.Mid(cmd, 6, Strings.InStr(7, cmd, " ") - 6), ctx);
             }
             else if (CmdStartsWith(input, "look "))
             {
-                ExecLook(input, ctx);
+                await ExecLook(input, ctx);
             }
             else if (CmdStartsWith(input, "l "))
             {
-                ExecLook("look " + GetEverythingAfter(input, "l "), ctx);
+                await ExecLook("look " + GetEverythingAfter(input, "l "), ctx);
             }
             else if (CmdStartsWith(input, "examine "))
             {
                 if (ASLVersion >= 280)
                 {
-                    ExecExamine(input, ctx);
+                    await ExecExamine(input, ctx);
                 }
                 else
                 {
-                    ExecLook("look " + GetEverythingAfter(input, "examine "), ctx);
+                    await ExecLook("look " + GetEverythingAfter(input, "examine "), ctx);
                 }
             }
             else if (CmdStartsWith(input, "x "))
             {
                 if (ASLVersion >= 280)
                 {
-                    ExecExamine("examine " + GetEverythingAfter(input, "x "), ctx);
+                    await ExecExamine("examine " + GetEverythingAfter(input, "x "), ctx);
                 }
                 else
                 {
-                    ExecLook("look " + GetEverythingAfter(input, "x "), ctx);
+                    await ExecLook("look " + GetEverythingAfter(input, "x "), ctx);
                 }
             }
             else if ((cmd == "l") | (cmd == "look"))
             {
-                ExecLook("look", ctx);
+                await ExecLook("look", ctx);
             }
             else if ((cmd == "x") | (cmd == "examine"))
             {
-                ExecExamine("examine", ctx);
+                await ExecExamine("examine", ctx);
             }
             else if (CmdStartsWith(input, "use "))
             {
-                ExecUse(input, ctx);
+                await ExecUse(input, ctx);
             }
             else if (CmdStartsWith(input, "open ") & (ASLVersion >= 391))
             {
-                ExecOpenClose(input, ctx);
+                await ExecOpenClose(input, ctx);
             }
             else if (CmdStartsWith(input, "close ") & (ASLVersion >= 391))
             {
-                ExecOpenClose(input, ctx);
+                await ExecOpenClose(input, ctx);
             }
             else if (CmdStartsWith(input, "put ") & (ASLVersion >= 391))
             {
-                ExecAddRemove(input, ctx);
+                await ExecAddRemove(input, ctx);
             }
             else if (CmdStartsWith(input, "add ") & (ASLVersion >= 391))
             {
-                ExecAddRemove(input, ctx);
+                await ExecAddRemove(input, ctx);
             }
             else if (CmdStartsWith(input, "remove ") & (ASLVersion >= 391))
             {
-                ExecAddRemove(input, ctx);
+                await ExecAddRemove(input, ctx);
             }
             else if (cmd == "save")
             {
@@ -4509,11 +4459,11 @@ public partial class V4Game
             }
             else if (BeginsWith(cmd, "help"))
             {
-                ShowHelp(ctx);
+                await ShowHelp(ctx);
             }
             else if (cmd == "about")
             {
-                ShowGameAbout(ctx);
+                await ShowGameAbout(ctx);
             }
             else if (cmd == "clear")
             {
@@ -4524,7 +4474,7 @@ public partial class V4Game
                 // TO DO: This is temporary, would be better to have a log viewer built in to Player
                 foreach (var logEntry in _log)
                 {
-                    Print(logEntry, ctx);
+                    await Print(logEntry, ctx);
                 }
             }
             else if ((cmd == "inventory") | (cmd == "inv") | (cmd == "i"))
@@ -4588,24 +4538,24 @@ public partial class V4Game
                         invList = Strings.Left(invList, lastComma - 1) + " and" + Strings.Mid(invList, lastComma + 1);
                     }
 
-                    Print("You are carrying:|n" + invList + ".", ctx);
+                    await Print("You are carrying:|n" + invList + ".", ctx);
                 }
                 else
                 {
-                    Print("You are not carrying anything.", ctx);
+                    await Print("You are not carrying anything.", ctx);
                 }
             }
             else if (CmdStartsWith(input, "oops "))
             {
-                ExecOops(GetEverythingAfter(input, "oops "), ctx);
+                await ExecOops(GetEverythingAfter(input, "oops "), ctx);
             }
             else if (CmdStartsWith(input, "the "))
             {
-                ExecOops(GetEverythingAfter(input, "the "), ctx);
+                await ExecOops(GetEverythingAfter(input, "the "), ctx);
             }
             else
             {
-                PlayerErrorMessage(PlayerError.BadCommand, ctx);
+                await PlayerErrorMessage(PlayerError.BadCommand, ctx);
             }
         }
 
@@ -4620,12 +4570,12 @@ public partial class V4Game
                 {
                     if (BeginsWith(_rooms[roomID].AfterTurnScript, "override"))
                     {
-                        ExecuteScript(GetEverythingAfter(_rooms[roomID].AfterTurnScript, "override"), ctx);
+                        await ExecuteScript(GetEverythingAfter(_rooms[roomID].AfterTurnScript, "override"), ctx);
                         globalOverride = true;
                     }
                     else
                     {
-                        ExecuteScript(_rooms[roomID].AfterTurnScript, ctx);
+                        await ExecuteScript(_rooms[roomID].AfterTurnScript, ctx);
                     }
                 }
             }
@@ -4633,11 +4583,11 @@ public partial class V4Game
             // was set to NullThread here for some reason
             if (!string.IsNullOrEmpty(_afterTurnScript) & !globalOverride)
             {
-                ExecuteScript(_afterTurnScript, ctx);
+                await ExecuteScript(_afterTurnScript, ctx);
             }
         }
 
-        Print("", ctx);
+        await Print("", ctx);
 
         if (!dontSetIt)
         {
@@ -4665,7 +4615,7 @@ public partial class V4Game
         return BeginsWith(Strings.Trim(cmd), startsWith);
     }
 
-    private void ExecGive(string giveString, Context ctx)
+    private async Task ExecGive(string giveString, Context ctx)
     {
         var article = "";
         string item, character;
@@ -4679,7 +4629,7 @@ public partial class V4Game
             toPos = Strings.InStr(giveString, " the ");
             if (toPos == 0)
             {
-                PlayerErrorMessage(PlayerError.BadGive, ctx);
+                await PlayerErrorMessage(PlayerError.BadGive, ctx);
                 return;
             }
 
@@ -4704,11 +4654,11 @@ public partial class V4Game
         // First see if player has "ItemToGive":
         if (ASLVersion >= 280)
         {
-            id = Disambiguate(item, "inventory", ctx);
+            id = await Disambiguate(item, "inventory", ctx);
 
             if (id == -1)
             {
-                PlayerErrorMessage(PlayerError.NoItem, ctx);
+                await PlayerErrorMessage(PlayerError.NoItem, ctx);
                 _badCmdBefore = "give";
                 _badCmdAfter = "to " + character;
                 return;
@@ -4744,7 +4694,7 @@ public partial class V4Game
 
             if (notGot)
             {
-                PlayerErrorMessage(PlayerError.NoItem, ctx);
+                await PlayerErrorMessage(PlayerError.NoItem, ctx);
                 return;
             }
         }
@@ -4754,7 +4704,7 @@ public partial class V4Game
             var foundScript = false;
             var foundObject = false;
 
-            var giveToId = Disambiguate(character, _currentRoom, ctx);
+            var giveToId = await Disambiguate(character, _currentRoom, ctx);
             if (giveToId > 0)
             {
                 foundObject = true;
@@ -4764,7 +4714,7 @@ public partial class V4Game
             {
                 if (giveToId != -2)
                 {
-                    PlayerErrorMessage(PlayerError.BadCharacter, ctx);
+                    await PlayerErrorMessage(PlayerError.BadCharacter, ctx);
                 }
 
                 _badCmdBefore = "give " + item + " to";
@@ -4831,7 +4781,7 @@ public partial class V4Game
 
             if (foundScript)
             {
-                ExecuteScript(script, ctx, id);
+                await ExecuteScript(script, ctx, id);
             }
             else
             {
@@ -4842,7 +4792,7 @@ public partial class V4Game
                 SetStringContents("quest.error.gender", gender, ctx);
 
                 SetStringContents("quest.error.article", article, ctx);
-                PlayerErrorMessage(PlayerError.ItemUnwanted, ctx);
+                await PlayerErrorMessage(PlayerError.ItemUnwanted, ctx);
             }
         }
         else
@@ -4853,7 +4803,7 @@ public partial class V4Game
             if (((block.StartLine == 0) & (block.EndLine == 0)) |
                 !IsAvailable(character + "@" + _currentRoom, type, ctx))
             {
-                PlayerErrorMessage(PlayerError.BadCharacter, ctx);
+                await PlayerErrorMessage(PlayerError.BadCharacter, ctx);
                 return;
             }
 
@@ -4867,7 +4817,7 @@ public partial class V4Game
             {
                 if (BeginsWith(_lines[i], "give"))
                 {
-                    var ItemCheck = GetParameter(_lines[i], ctx);
+                    var ItemCheck = await GetParameter(_lines[i], ctx);
                     if ((Strings.LCase(ItemCheck) ?? "") == (Strings.LCase(item) ?? ""))
                     {
                         giveLine = i;
@@ -4883,24 +4833,24 @@ public partial class V4Game
                 }
 
                 SetStringContents("quest.error.charactername", realName, ctx);
-                SetStringContents("quest.error.gender", Strings.Trim(GetGender(character, true, ctx)), ctx);
+                SetStringContents("quest.error.gender", Strings.Trim(await GetGender(character, true, ctx)), ctx);
                 SetStringContents("quest.error.article", article, ctx);
-                PlayerErrorMessage(PlayerError.ItemUnwanted, ctx);
+                await PlayerErrorMessage(PlayerError.ItemUnwanted, ctx);
                 return;
             }
 
             // now, execute the statement on GiveLine
-            ExecuteScript(GetSecondChunk(_lines[giveLine]), ctx);
+            await ExecuteScript(GetSecondChunk(_lines[giveLine]), ctx);
         }
     }
 
-    private void ExecLook(string lookLine, Context ctx)
+    private async Task ExecLook(string lookLine, Context ctx)
     {
         string item;
 
         if (Strings.Trim(lookLine) == "look")
         {
-            ShowRoomInfo(_currentRoom, ctx);
+            await ShowRoomInfo(_currentRoom, ctx);
         }
         else
         {
@@ -4940,20 +4890,20 @@ public partial class V4Game
 
             if (ASLVersion >= 280)
             {
-                var id = Disambiguate(item, "inventory;" + _currentRoom, ctx);
+                var id = await Disambiguate(item, "inventory;" + _currentRoom, ctx);
 
                 if (id <= 0)
                 {
                     if (id != -2)
                     {
-                        PlayerErrorMessage(PlayerError.BadThing, ctx);
+                        await PlayerErrorMessage(PlayerError.BadThing, ctx);
                     }
 
                     _badCmdBefore = "look at";
                     return;
                 }
 
-                DoLook(id, ctx);
+                await DoLook(id, ctx);
             }
             else
             {
@@ -4987,37 +4937,37 @@ public partial class V4Game
 
                     if (lookLine == "<unfound>")
                     {
-                        PlayerErrorMessage(PlayerError.BadThing, ctx);
+                        await PlayerErrorMessage(PlayerError.BadThing, ctx);
                         return;
                     }
 
                     if (lookLine == "<undefined>")
                     {
-                        PlayerErrorMessage(PlayerError.DefaultLook, ctx);
+                        await PlayerErrorMessage(PlayerError.DefaultLook, ctx);
                         return;
                     }
                 }
                 else if (lookLine == "<undefined>")
                 {
-                    PlayerErrorMessage(PlayerError.DefaultLook, ctx);
+                    await PlayerErrorMessage(PlayerError.DefaultLook, ctx);
                     return;
                 }
 
                 var lookData = Strings.Trim(GetEverythingAfter(Strings.Trim(lookLine), "look "));
                 if (Strings.Left(lookData, 1) == "<")
                 {
-                    var LookText = GetParameter(lookLine, ctx);
-                    Print(LookText, ctx);
+                    var LookText = await GetParameter(lookLine, ctx);
+                    await Print(LookText, ctx);
                 }
                 else
                 {
-                    ExecuteScript(lookData, ctx);
+                    await ExecuteScript(lookData, ctx);
                 }
             }
         }
     }
 
-    private void ExecSpeak(string cmd, Context ctx)
+    private async Task ExecSpeak(string cmd, Context ctx)
     {
         if (BeginsWith(cmd, "the "))
         {
@@ -5034,12 +4984,12 @@ public partial class V4Game
         {
             var speakLine = "";
 
-            var ObjID = Disambiguate(name, "inventory;" + _currentRoom, ctx);
+            var ObjID = await Disambiguate(name, "inventory;" + _currentRoom, ctx);
             if (ObjID <= 0)
             {
                 if (ObjID != -2)
                 {
-                    PlayerErrorMessage(PlayerError.BadThing, ctx);
+                    await PlayerErrorMessage(PlayerError.BadThing, ctx);
                 }
 
                 _badCmdBefore = "speak to";
@@ -5095,7 +5045,7 @@ public partial class V4Game
             {
                 SetStringContents("quest.error.gender",
                     Strings.UCase(Strings.Left(_objs[ObjID].Gender, 1)) + Strings.Mid(_objs[ObjID].Gender, 2), ctx);
-                PlayerErrorMessage(PlayerError.DefaultSpeak, ctx);
+                await PlayerErrorMessage(PlayerError.DefaultSpeak, ctx);
                 return;
             }
 
@@ -5103,19 +5053,19 @@ public partial class V4Game
 
             if (BeginsWith(speakLine, "<"))
             {
-                var text = GetParameter(speakLine, ctx);
+                var text = await GetParameter(speakLine, ctx);
                 if (ASLVersion >= 350)
                 {
-                    Print(text, ctx);
+                    await Print(text, ctx);
                 }
                 else
                 {
-                    Print('"' + text + '"', ctx);
+                    await Print('"' + text + '"', ctx);
                 }
             }
             else
             {
-                ExecuteScript(speakLine, ctx, ObjID);
+                await ExecuteScript(speakLine, ctx, ObjID);
             }
         }
 
@@ -5137,33 +5087,33 @@ public partial class V4Game
 
             if (line == "<undefined>")
             {
-                PlayerErrorMessage(PlayerError.BadCharacter, ctx);
+                await PlayerErrorMessage(PlayerError.BadCharacter, ctx);
             }
             else if (line == "<unfound>")
             {
-                SetStringContents("quest.error.gender", Strings.Trim(GetGender(cmd, true, ctx)), ctx);
+                SetStringContents("quest.error.gender", Strings.Trim(await GetGender(cmd, true, ctx)), ctx);
                 SetStringContents("quest.error.charactername", cmd, ctx);
-                PlayerErrorMessage(PlayerError.DefaultSpeak, ctx);
+                await PlayerErrorMessage(PlayerError.DefaultSpeak, ctx);
             }
             else if (BeginsWith(data, "<"))
             {
-                data = GetParameter(line, ctx);
-                Print('"' + data + '"', ctx);
+                data = await GetParameter(line, ctx);
+                await Print('"' + data + '"', ctx);
             }
             else
             {
-                ExecuteScript(data, ctx);
+                await ExecuteScript(data, ctx);
             }
         }
     }
 
-    private void ExecTake(string item, Context ctx)
+    private async Task ExecTake(string item, Context ctx)
     {
         var parentID = default(int);
         string parentDisplayName;
         var foundItem = true;
         var foundTake = false;
-        var id = Disambiguate(item, _currentRoom, ctx);
+        var id = await Disambiguate(item, _currentRoom, ctx);
 
         if (id < 0)
         {
@@ -5180,24 +5130,24 @@ public partial class V4Game
             {
                 if (ASLVersion >= 410)
                 {
-                    id = Disambiguate(item, "inventory", ctx);
+                    id = await Disambiguate(item, "inventory", ctx);
                     if (id >= 0)
                     {
                         // Player already has this item
-                        PlayerErrorMessage(PlayerError.AlreadyTaken, ctx);
+                        await PlayerErrorMessage(PlayerError.AlreadyTaken, ctx);
                     }
                     else
                     {
-                        PlayerErrorMessage(PlayerError.BadThing, ctx);
+                        await PlayerErrorMessage(PlayerError.BadThing, ctx);
                     }
                 }
                 else if (ASLVersion >= 391)
                 {
-                    PlayerErrorMessage(PlayerError.BadThing, ctx);
+                    await PlayerErrorMessage(PlayerError.BadThing, ctx);
                 }
                 else
                 {
-                    PlayerErrorMessage(PlayerError.BadItem, ctx);
+                    await PlayerErrorMessage(PlayerError.BadItem, ctx);
                 }
             }
 
@@ -5214,7 +5164,7 @@ public partial class V4Game
             var canAccessObject = PlayerCanAccessObject(id);
             if (!canAccessObject.CanAccessObject)
             {
-                PlayerErrorMessage_ExtendInfo(PlayerError.BadTake, ctx, canAccessObject.ErrorMsg);
+                await PlayerErrorMessage_ExtendInfo(PlayerError.BadTake, ctx, canAccessObject.ErrorMsg);
                 return;
             }
 
@@ -5240,11 +5190,11 @@ public partial class V4Game
                     parentDisplayName = _objs[parentID].ObjectName;
                 }
 
-                Print("(first removing " + _objs[id].Article + " from " + parentDisplayName + ")", ctx);
+                await Print("(first removing " + _objs[id].Article + " from " + parentDisplayName + ")", ctx);
 
                 // Try to remove the object
                 ctx.AllowRealNamesInCommand = true;
-                ExecCommand("remove " + _objs[id].ObjectName, ctx, false, dontSetIt: true);
+                await ExecCommand("remove " + _objs[id].ObjectName, ctx, false, dontSetIt: true);
 
                 if (!string.IsNullOrEmpty(GetObjectProperty("parent", id, false, false)))
                 {
@@ -5255,21 +5205,21 @@ public partial class V4Game
 
             if (t.Type == TextActionType.Default)
             {
-                PlayerErrorMessage(PlayerError.DefaultTake, ctx);
-                PlayerItem(item, true, ctx, id);
+                await PlayerErrorMessage(PlayerError.DefaultTake, ctx);
+                await PlayerItem(item, true, ctx, id);
             }
             else if (t.Type == TextActionType.Text)
             {
-                Print(t.Data, ctx);
-                PlayerItem(item, true, ctx, id);
+                await Print(t.Data, ctx);
+                await PlayerItem(item, true, ctx, id);
             }
             else if (t.Type == TextActionType.Script)
             {
-                ExecuteScript(t.Data, ctx, id);
+                await ExecuteScript(t.Data, ctx, id);
             }
             else
             {
-                PlayerErrorMessage(PlayerError.BadTake, ctx);
+                await PlayerErrorMessage(PlayerError.BadTake, ctx);
             }
         }
         else
@@ -5282,7 +5232,7 @@ public partial class V4Game
                 if (BeginsWith(_lines[i], "take"))
                 {
                     var script = Strings.Trim(GetEverythingAfter(Strings.Trim(_lines[i]), "take"));
-                    ExecuteScript(script, ctx, id);
+                    await ExecuteScript(script, ctx, id);
                     foundTake = true;
                     i = _objs[id].DefinitionSectionEnd;
                 }
@@ -5290,12 +5240,12 @@ public partial class V4Game
 
             if (!foundTake)
             {
-                PlayerErrorMessage(PlayerError.BadTake, ctx);
+                await PlayerErrorMessage(PlayerError.BadTake, ctx);
             }
         }
     }
 
-    private void ExecUse(string useLine, Context ctx)
+    private async Task ExecUse(string useLine, Context ctx)
     {
         int endOnWith;
         var useDeclareLine = "";
@@ -5336,7 +5286,7 @@ public partial class V4Game
         {
             var foundItem = false;
 
-            id = Disambiguate(useItem, "inventory", ctx);
+            id = await Disambiguate(useItem, "inventory", ctx);
             if (id > 0)
             {
                 foundItem = true;
@@ -5346,7 +5296,7 @@ public partial class V4Game
             {
                 if (id != -2)
                 {
-                    PlayerErrorMessage(PlayerError.NoItem, ctx);
+                    await PlayerErrorMessage(PlayerError.NoItem, ctx);
                 }
 
                 if (string.IsNullOrEmpty(useOn))
@@ -5384,7 +5334,7 @@ public partial class V4Game
 
             if (notGotItem)
             {
-                PlayerErrorMessage(PlayerError.NoItem, ctx);
+                await PlayerErrorMessage(PlayerError.NoItem, ctx);
                 return;
             }
         }
@@ -5427,14 +5377,14 @@ public partial class V4Game
             {
                 foundUseOnObject = false;
 
-                useOnObjectId = Disambiguate(useOn, _currentRoom, ctx);
+                useOnObjectId = await Disambiguate(useOn, _currentRoom, ctx);
                 if (useOnObjectId > 0)
                 {
                     foundUseOnObject = true;
                 }
                 else
                 {
-                    useOnObjectId = Disambiguate(useOn, "inventory", ctx);
+                    useOnObjectId = await Disambiguate(useOn, "inventory", ctx);
                     if (useOnObjectId > 0)
                     {
                         foundUseOnObject = true;
@@ -5445,7 +5395,7 @@ public partial class V4Game
                 {
                     if (useOnObjectId != -2)
                     {
-                        PlayerErrorMessage(PlayerError.BadThing, ctx);
+                        await PlayerErrorMessage(PlayerError.BadThing, ctx);
                     }
 
                     _badCmdBefore = "use " + useItem + " on";
@@ -5512,18 +5462,18 @@ public partial class V4Game
 
             if (foundUseScript)
             {
-                ExecuteScript(useScript, ctx, id);
+                await ExecuteScript(useScript, ctx, id);
             }
             else
             {
-                PlayerErrorMessage(PlayerError.DefaultUse, ctx);
+                await PlayerErrorMessage(PlayerError.DefaultUse, ctx);
             }
         }
         else
         {
             if (!string.IsNullOrEmpty(useOn))
             {
-                useDeclareLine = RetrLineParam("object", useOn, "use", useItem, ctx);
+                useDeclareLine = await RetrLineParam("object", useOn, "use", useItem, ctx);
             }
             else
             {
@@ -5540,12 +5490,12 @@ public partial class V4Game
 
                 if (!found)
                 {
-                    useDeclareLine = FindLine(GetDefineBlock("game"), "use", useItem);
+                    useDeclareLine = await FindLine(GetDefineBlock("game"), "use", useItem);
                 }
 
                 if (!found & string.IsNullOrEmpty(useDeclareLine))
                 {
-                    PlayerErrorMessage(PlayerError.DefaultUse, ctx);
+                    await PlayerErrorMessage(PlayerError.DefaultUse, ctx);
                     return;
                 }
             }
@@ -5561,7 +5511,7 @@ public partial class V4Game
 
             if (useDeclareLine == "<undefined>")
             {
-                useDeclareLine = RetrLineParam("character", useOn, "use", useItem, ctx);
+                useDeclareLine = await RetrLineParam("character", useOn, "use", useItem, ctx);
 
                 if (useDeclareLine != "<undefined>")
                 {
@@ -5574,29 +5524,29 @@ public partial class V4Game
 
                 if (useDeclareLine == "<undefined>")
                 {
-                    PlayerErrorMessage(PlayerError.BadThing, ctx);
+                    await PlayerErrorMessage(PlayerError.BadThing, ctx);
                     return;
                 }
 
                 if (useDeclareLine == "<unfound>")
                 {
-                    PlayerErrorMessage(PlayerError.DefaultUse, ctx);
+                    await PlayerErrorMessage(PlayerError.DefaultUse, ctx);
                     return;
                 }
             }
             else if (useDeclareLine == "<unfound>")
             {
-                PlayerErrorMessage(PlayerError.DefaultUse, ctx);
+                await PlayerErrorMessage(PlayerError.DefaultUse, ctx);
                 return;
             }
 
             var script = Strings.Right(useDeclareLine,
                 Strings.Len(useDeclareLine) - Strings.InStr(useDeclareLine, ">"));
-            ExecuteScript(script, ctx);
+            await ExecuteScript(script, ctx);
         }
     }
 
-    private void ObjectActionUpdate(int id, string name, string script, bool noUpdate = false)
+    private async Task ObjectActionUpdate(int id, string name, string script, bool noUpdate = false)
     {
         string objectName;
         int sp, ep;
@@ -5611,7 +5561,7 @@ public partial class V4Game
             }
             else if (name == "use")
             {
-                AddToUseInfo(id, script);
+                await AddToUseInfo(id, script);
             }
             else if (name == "gain")
             {
@@ -5636,11 +5586,11 @@ public partial class V4Game
 
                     objectName = Strings.Mid(name, sp + 1, ep - sp - 1);
 
-                    AddToUseInfo(id, Strings.Trim(Strings.Left(name, sp - 1)) + " <" + objectName + "> " + script);
+                    await AddToUseInfo(id, Strings.Trim(Strings.Left(name, sp - 1)) + " <" + objectName + "> " + script);
                 }
                 else
                 {
-                    AddToUseInfo(id, name + " " + script);
+                    await AddToUseInfo(id, name + " " + script);
                 }
             }
             else if (BeginsWith(name, "give "))
@@ -5658,11 +5608,11 @@ public partial class V4Game
 
                     objectName = Strings.Mid(name, sp + 1, ep - sp - 1);
 
-                    AddToGiveInfo(id, Strings.Trim(Strings.Left(name, sp - 1)) + " <" + objectName + "> " + script);
+                    await AddToGiveInfo(id, Strings.Trim(Strings.Left(name, sp - 1)) + " <" + objectName + "> " + script);
                 }
                 else
                 {
-                    AddToGiveInfo(id, name + " " + script);
+                    await AddToGiveInfo(id, name + " " + script);
                 }
             }
         }
@@ -5674,10 +5624,10 @@ public partial class V4Game
         }
     }
 
-    private void ExecuteIf(string scriptLine, Context ctx)
+    private async Task ExecuteIf(string scriptLine, Context ctx)
     {
         var ifLine = Strings.Trim(GetEverythingAfter(Strings.Trim(scriptLine), "if "));
-        var obscuredLine = ObliterateParameters(ifLine);
+        var obscuredLine = await ObliterateParameters(ifLine);
         var thenPos = Strings.InStr(obscuredLine, "then");
 
         if (thenPos == 0)
@@ -5723,17 +5673,17 @@ public partial class V4Game
             elseScript = Strings.Mid(elseScript, 2, Strings.Len(elseScript) - 2);
         }
 
-        if (ExecuteConditions(conditions, ctx))
+        if (await ExecuteConditions(conditions, ctx))
         {
-            ExecuteScript(thenScript, ctx);
+            await ExecuteScript(thenScript, ctx);
         }
         else if (elsePos != 0)
         {
-            ExecuteScript(elseScript, ctx);
+            await ExecuteScript(elseScript, ctx);
         }
     }
 
-    private void ExecuteScript(string scriptLine, Context ctx, int newCallingObjectId = 0)
+    private async Task ExecuteScript(string scriptLine, Context ctx, int newCallingObjectId = 0)
     {
         try
         {
@@ -5763,7 +5713,7 @@ public partial class V4Game
                     var curScriptLine = Strings.Trim(Strings.Mid(scriptLine, curPos, crLfPos - curPos));
                     if ((curScriptLine ?? "") != Constants.vbCrLf)
                     {
-                        ExecuteScript(curScriptLine, ctx);
+                        await ExecuteScript(curScriptLine, ctx);
                     }
 
                     curPos = crLfPos + 2;
@@ -5779,55 +5729,55 @@ public partial class V4Game
 
             if (BeginsWith(scriptLine, "if "))
             {
-                ExecuteIf(scriptLine, ctx);
+                await ExecuteIf(scriptLine, ctx);
             }
             else if (BeginsWith(scriptLine, "select case "))
             {
-                ExecuteSelectCase(scriptLine, ctx);
+                await ExecuteSelectCase(scriptLine, ctx);
             }
             else if (BeginsWith(scriptLine, "choose "))
             {
-                ExecuteChoose(GetParameter(scriptLine, ctx), ctx);
+                await ExecuteChoose(await GetParameter(scriptLine, ctx), ctx);
             }
             else if (BeginsWith(scriptLine, "set "))
             {
-                ExecuteSet(GetEverythingAfter(scriptLine, "set "), ctx);
+                await ExecuteSet(GetEverythingAfter(scriptLine, "set "), ctx);
             }
             else if (BeginsWith(scriptLine, "inc ") | BeginsWith(scriptLine, "dec "))
             {
-                ExecuteIncDec(scriptLine, ctx);
+                await ExecuteIncDec(scriptLine, ctx);
             }
             else if (BeginsWith(scriptLine, "say "))
             {
-                Print('"' + GetParameter(scriptLine, ctx) + '"', ctx);
+                await Print('"' + await GetParameter(scriptLine, ctx) + '"', ctx);
             }
             else if (BeginsWith(scriptLine, "do "))
             {
-                ExecuteDo(GetParameter(scriptLine, ctx), ctx);
+                await ExecuteDo(await GetParameter(scriptLine, ctx), ctx);
             }
             else if (BeginsWith(scriptLine, "doaction "))
             {
-                ExecuteDoAction(GetParameter(scriptLine, ctx), ctx);
+                await ExecuteDoAction(await GetParameter(scriptLine, ctx), ctx);
             }
             else if (BeginsWith(scriptLine, "give "))
             {
-                PlayerItem(GetParameter(scriptLine, ctx), true, ctx);
+                await PlayerItem(await GetParameter(scriptLine, ctx), true, ctx);
             }
             else if (BeginsWith(scriptLine, "lose ") | BeginsWith(scriptLine, "drop "))
             {
-                PlayerItem(GetParameter(scriptLine, ctx), false, ctx);
+                await PlayerItem(await GetParameter(scriptLine, ctx), false, ctx);
             }
             else if (BeginsWith(scriptLine, "msg "))
             {
-                Print(GetParameter(scriptLine, ctx), ctx);
+                await Print(await GetParameter(scriptLine, ctx), ctx);
             }
             else if (BeginsWith(scriptLine, "speak "))
             {
-                Speak(GetParameter(scriptLine, ctx));
+                Speak(await GetParameter(scriptLine, ctx));
             }
             else if (BeginsWith(scriptLine, "helpmsg "))
             {
-                Print(GetParameter(scriptLine, ctx), ctx);
+                await Print(await GetParameter(scriptLine, ctx), ctx);
             }
             else if (Strings.Trim(Strings.LCase(scriptLine)) == "helpclose")
             {
@@ -5835,31 +5785,31 @@ public partial class V4Game
             // This command does nothing in the Quest 5 player, as there is no separate help window
             else if (BeginsWith(scriptLine, "goto "))
             {
-                PlayGame(GetParameter(scriptLine, ctx), ctx);
+                await PlayGame(await GetParameter(scriptLine, ctx), ctx);
             }
             else if (BeginsWith(scriptLine, "playerwin"))
             {
-                FinishGame(StopType.Win, ctx);
+                await FinishGame(StopType.Win, ctx);
             }
             else if (BeginsWith(scriptLine, "playerlose"))
             {
-                FinishGame(StopType.Lose, ctx);
+                await FinishGame(StopType.Lose, ctx);
             }
             else if (Strings.Trim(Strings.LCase(scriptLine)) == "stop")
             {
-                FinishGame(StopType.Null, ctx);
+                await FinishGame(StopType.Null, ctx);
             }
             else if (BeginsWith(scriptLine, "playwav "))
             {
-                PlayWav(GetParameter(scriptLine, ctx));
+                await PlayWavAsync(await GetParameter(scriptLine, ctx));
             }
             else if (BeginsWith(scriptLine, "playmidi "))
             {
-                PlayMedia(GetParameter(scriptLine, ctx));
+                await PlayMediaAsync(await GetParameter(scriptLine, ctx));
             }
             else if (BeginsWith(scriptLine, "playmp3 "))
             {
-                PlayMedia(GetParameter(scriptLine, ctx));
+                await PlayMediaAsync(await GetParameter(scriptLine, ctx));
             }
             else if (Strings.Trim(Strings.LCase(scriptLine)) == "picture close")
             {
@@ -5869,167 +5819,167 @@ public partial class V4Game
                      ((ASLVersion >= 282) & (ASLVersion < 390) & BeginsWith(scriptLine, "picture ")) |
                      ((ASLVersion < 282) & BeginsWith(scriptLine, "show ")))
             {
-                ShowPicture(GetParameter(scriptLine, ctx));
+                await ShowPicture(await GetParameter(scriptLine, ctx));
             }
             else if ((ASLVersion >= 390) & BeginsWith(scriptLine, "picture "))
             {
-                ShowPictureInText(GetParameter(scriptLine, ctx));
+                ShowPictureInText(await GetParameter(scriptLine, ctx));
             }
             else if (BeginsWith(scriptLine, "animate persist "))
             {
-                ShowPicture(GetParameter(scriptLine, ctx));
+                await ShowPicture(await GetParameter(scriptLine, ctx));
             }
             else if (BeginsWith(scriptLine, "animate "))
             {
-                ShowPicture(GetParameter(scriptLine, ctx));
+                await ShowPicture(await GetParameter(scriptLine, ctx));
             }
             else if (BeginsWith(scriptLine, "extract "))
             {
-                ExtractFile(GetParameter(scriptLine, ctx));
+                ExtractFile(await GetParameter(scriptLine, ctx));
             }
             else if ((ASLVersion < 281) & BeginsWith(scriptLine, "hideobject "))
             {
-                SetAvailability(GetParameter(scriptLine, ctx), false, ctx);
+                await SetAvailability(await GetParameter(scriptLine, ctx), false, ctx);
             }
             else if ((ASLVersion < 281) & BeginsWith(scriptLine, "showobject "))
             {
-                SetAvailability(GetParameter(scriptLine, ctx), true, ctx);
+                await SetAvailability(await GetParameter(scriptLine, ctx), true, ctx);
             }
             else if ((ASLVersion < 281) & BeginsWith(scriptLine, "moveobject "))
             {
-                ExecMoveThing(GetParameter(scriptLine, ctx), Thing.Object, ctx);
+                await ExecMoveThing(await GetParameter(scriptLine, ctx), Thing.Object, ctx);
             }
             else if ((ASLVersion < 281) & BeginsWith(scriptLine, "hidechar "))
             {
-                SetAvailability(GetParameter(scriptLine, ctx), false, ctx, Thing.Character);
+                await SetAvailability(await GetParameter(scriptLine, ctx), false, ctx, Thing.Character);
             }
             else if ((ASLVersion < 281) & BeginsWith(scriptLine, "showchar "))
             {
-                SetAvailability(GetParameter(scriptLine, ctx), true, ctx, Thing.Character);
+                await SetAvailability(await GetParameter(scriptLine, ctx), true, ctx, Thing.Character);
             }
             else if ((ASLVersion < 281) & BeginsWith(scriptLine, "movechar "))
             {
-                ExecMoveThing(GetParameter(scriptLine, ctx), Thing.Character, ctx);
+                await ExecMoveThing(await GetParameter(scriptLine, ctx), Thing.Character, ctx);
             }
             else if ((ASLVersion < 281) & BeginsWith(scriptLine, "revealobject "))
             {
-                SetVisibility(GetParameter(scriptLine, ctx), Thing.Object, true, ctx);
+                await SetVisibility(await GetParameter(scriptLine, ctx), Thing.Object, true, ctx);
             }
             else if ((ASLVersion < 281) & BeginsWith(scriptLine, "concealobject "))
             {
-                SetVisibility(GetParameter(scriptLine, ctx), Thing.Object, false, ctx);
+                await SetVisibility(await GetParameter(scriptLine, ctx), Thing.Object, false, ctx);
             }
             else if ((ASLVersion < 281) & BeginsWith(scriptLine, "revealchar "))
             {
-                SetVisibility(GetParameter(scriptLine, ctx), Thing.Character, true, ctx);
+                await SetVisibility(await GetParameter(scriptLine, ctx), Thing.Character, true, ctx);
             }
             else if ((ASLVersion < 281) & BeginsWith(scriptLine, "concealchar "))
             {
-                SetVisibility(GetParameter(scriptLine, ctx), Thing.Character, false, ctx);
+                await SetVisibility(await GetParameter(scriptLine, ctx), Thing.Character, false, ctx);
             }
             else if ((ASLVersion >= 281) & BeginsWith(scriptLine, "hide "))
             {
-                SetAvailability(GetParameter(scriptLine, ctx), false, ctx);
+                await SetAvailability(await GetParameter(scriptLine, ctx), false, ctx);
             }
             else if ((ASLVersion >= 281) & BeginsWith(scriptLine, "show "))
             {
-                SetAvailability(GetParameter(scriptLine, ctx), true, ctx);
+                await SetAvailability(await GetParameter(scriptLine, ctx), true, ctx);
             }
             else if ((ASLVersion >= 281) & BeginsWith(scriptLine, "move "))
             {
-                ExecMoveThing(GetParameter(scriptLine, ctx), Thing.Object, ctx);
+                await ExecMoveThing(await GetParameter(scriptLine, ctx), Thing.Object, ctx);
             }
             else if ((ASLVersion >= 281) & BeginsWith(scriptLine, "reveal "))
             {
-                SetVisibility(GetParameter(scriptLine, ctx), Thing.Object, true, ctx);
+                await SetVisibility(await GetParameter(scriptLine, ctx), Thing.Object, true, ctx);
             }
             else if ((ASLVersion >= 281) & BeginsWith(scriptLine, "conceal "))
             {
-                SetVisibility(GetParameter(scriptLine, ctx), Thing.Object, false, ctx);
+                await SetVisibility(await GetParameter(scriptLine, ctx), Thing.Object, false, ctx);
             }
             else if ((ASLVersion >= 391) & BeginsWith(scriptLine, "open "))
             {
-                SetOpenClose(GetParameter(scriptLine, ctx), true, ctx);
+                await SetOpenClose(await GetParameter(scriptLine, ctx), true, ctx);
             }
             else if ((ASLVersion >= 391) & BeginsWith(scriptLine, "close "))
             {
-                SetOpenClose(GetParameter(scriptLine, ctx), false, ctx);
+                await SetOpenClose(await GetParameter(scriptLine, ctx), false, ctx);
             }
             else if ((ASLVersion >= 391) & BeginsWith(scriptLine, "add "))
             {
-                ExecAddRemoveScript(GetParameter(scriptLine, ctx), true, ctx);
+                await ExecAddRemoveScript(await GetParameter(scriptLine, ctx), true, ctx);
             }
             else if ((ASLVersion >= 391) & BeginsWith(scriptLine, "remove "))
             {
-                ExecAddRemoveScript(GetParameter(scriptLine, ctx), false, ctx);
+                await ExecAddRemoveScript(await GetParameter(scriptLine, ctx), false, ctx);
             }
             else if (BeginsWith(scriptLine, "clone "))
             {
-                ExecClone(GetParameter(scriptLine, ctx), ctx);
+                ExecClone(await GetParameter(scriptLine, ctx), ctx);
             }
             else if (BeginsWith(scriptLine, "exec "))
             {
-                ExecExec(scriptLine, ctx);
+                await ExecExec(scriptLine, ctx);
             }
             else if (BeginsWith(scriptLine, "setstring "))
             {
-                ExecSetString(GetParameter(scriptLine, ctx), ctx);
+                ExecSetString(await GetParameter(scriptLine, ctx), ctx);
             }
             else if (BeginsWith(scriptLine, "setvar "))
             {
-                ExecSetVar(GetParameter(scriptLine, ctx), ctx);
+                ExecSetVar(await GetParameter(scriptLine, ctx), ctx);
             }
             else if (BeginsWith(scriptLine, "for "))
             {
-                ExecFor(GetEverythingAfter(scriptLine, "for "), ctx);
+                await ExecFor(GetEverythingAfter(scriptLine, "for "), ctx);
             }
             else if (BeginsWith(scriptLine, "property "))
             {
-                ExecProperty(GetParameter(scriptLine, ctx), ctx);
+                await ExecProperty(await GetParameter(scriptLine, ctx), ctx);
             }
             else if (BeginsWith(scriptLine, "type "))
             {
-                ExecType(GetParameter(scriptLine, ctx), ctx);
+                await ExecType(await GetParameter(scriptLine, ctx), ctx);
             }
             else if (BeginsWith(scriptLine, "action "))
             {
-                ExecuteAction(GetEverythingAfter(scriptLine, "action "), ctx);
+                await ExecuteAction(GetEverythingAfter(scriptLine, "action "), ctx);
             }
             else if (BeginsWith(scriptLine, "flag "))
             {
-                ExecuteFlag(GetEverythingAfter(scriptLine, "flag "), ctx);
+                await ExecuteFlag(GetEverythingAfter(scriptLine, "flag "), ctx);
             }
             else if (BeginsWith(scriptLine, "create "))
             {
-                ExecuteCreate(GetEverythingAfter(scriptLine, "create "), ctx);
+                await ExecuteCreate(GetEverythingAfter(scriptLine, "create "), ctx);
             }
             else if (BeginsWith(scriptLine, "destroy exit "))
             {
-                DestroyExit(GetParameter(scriptLine, ctx), ctx);
+                DestroyExit(await GetParameter(scriptLine, ctx), ctx);
             }
             else if (BeginsWith(scriptLine, "repeat "))
             {
-                ExecuteRepeat(GetEverythingAfter(scriptLine, "repeat "), ctx);
+                await ExecuteRepeat(GetEverythingAfter(scriptLine, "repeat "), ctx);
             }
             else if (BeginsWith(scriptLine, "enter "))
             {
-                ExecuteEnter(scriptLine, ctx);
+                await ExecuteEnterAsync(scriptLine, ctx);
             }
             else if (BeginsWith(scriptLine, "displaytext "))
             {
-                DisplayTextSection(GetParameter(scriptLine, ctx), ctx);
+                await DisplayTextSection(await GetParameter(scriptLine, ctx), ctx);
             }
             else if (BeginsWith(scriptLine, "helpdisplaytext "))
             {
-                DisplayTextSection(GetParameter(scriptLine, ctx), ctx);
+                await DisplayTextSection(await GetParameter(scriptLine, ctx), ctx);
             }
             else if (BeginsWith(scriptLine, "font "))
             {
-                SetFont(GetParameter(scriptLine, ctx));
+                SetFont(await GetParameter(scriptLine, ctx));
             }
             else if (BeginsWith(scriptLine, "pause "))
             {
-                Pause(Conversions.ToInteger(GetParameter(scriptLine, ctx)));
+                await PauseAsync(Conversions.ToInteger(await GetParameter(scriptLine, ctx)));
             }
             else if (Strings.Trim(Strings.LCase(scriptLine)) == "clear")
             {
@@ -6041,11 +5991,11 @@ public partial class V4Game
             // This command does nothing in the Quest 5 player, as there is no separate help window
             else if (BeginsWith(scriptLine, "background "))
             {
-                SetBackground(GetParameter(scriptLine, ctx));
+                SetBackground(await GetParameter(scriptLine, ctx));
             }
             else if (BeginsWith(scriptLine, "foreground "))
             {
-                SetForeground(GetParameter(scriptLine, ctx));
+                SetForeground(await GetParameter(scriptLine, ctx));
             }
             else if (Strings.Trim(Strings.LCase(scriptLine)) == "nointro")
             {
@@ -6053,11 +6003,11 @@ public partial class V4Game
             }
             else if (BeginsWith(scriptLine, "debug "))
             {
-                LogASLError(GetParameter(scriptLine, ctx));
+                LogASLError(await GetParameter(scriptLine, ctx));
             }
             else if (BeginsWith(scriptLine, "mailto "))
             {
-                var emailAddress = GetParameter(scriptLine, ctx);
+                var emailAddress = await GetParameter(scriptLine, ctx);
                 PrintText?.Invoke("<a target=\"_blank\" href=\"mailto:" + emailAddress + "\">" + emailAddress + "</a>");
             }
             else if (BeginsWith(scriptLine, "shell ") & (ASLVersion < 410))
@@ -6070,21 +6020,21 @@ public partial class V4Game
             }
             else if (BeginsWith(scriptLine, "wait"))
             {
-                ExecuteWait(Strings.Trim(GetEverythingAfter(Strings.Trim(scriptLine), "wait")), ctx);
+                await ExecuteWaitAsync(Strings.Trim(GetEverythingAfter(Strings.Trim(scriptLine), "wait")), ctx);
             }
             else if (BeginsWith(scriptLine, "timeron "))
             {
-                SetTimerState(GetParameter(scriptLine, ctx), true);
+                SetTimerState(await GetParameter(scriptLine, ctx), true);
             }
             else if (BeginsWith(scriptLine, "timeroff "))
             {
-                SetTimerState(GetParameter(scriptLine, ctx), false);
+                SetTimerState(await GetParameter(scriptLine, ctx), false);
             }
             else if (Strings.Trim(Strings.LCase(scriptLine)) == "outputon")
             {
                 _outPutOn = true;
-                UpdateObjectList(ctx);
-                UpdateItems(ctx);
+                await UpdateObjectList(ctx);
+                await UpdateItems(ctx);
             }
             else if (Strings.Trim(Strings.LCase(scriptLine)) == "outputoff")
             {
@@ -6100,11 +6050,11 @@ public partial class V4Game
             }
             else if (BeginsWith(scriptLine, "lock "))
             {
-                ExecuteLock(GetParameter(scriptLine, ctx), true);
+                ExecuteLock(await GetParameter(scriptLine, ctx), true);
             }
             else if (BeginsWith(scriptLine, "unlock "))
             {
-                ExecuteLock(GetParameter(scriptLine, ctx), false);
+                ExecuteLock(await GetParameter(scriptLine, ctx), false);
             }
             else if (BeginsWith(scriptLine, "playmod ") & (ASLVersion < 410))
             {
@@ -6120,7 +6070,7 @@ public partial class V4Game
             }
             else if (BeginsWith(scriptLine, "return "))
             {
-                ctx.FunctionReturnValue = GetParameter(scriptLine, ctx);
+                ctx.FunctionReturnValue = await GetParameter(scriptLine, ctx);
             }
             else if (!BeginsWith(scriptLine, "'"))
             {
@@ -6130,41 +6080,30 @@ public partial class V4Game
         }
         catch
         {
-            Print("[An internal error occurred]", ctx);
+            await Print("[An internal error occurred]", ctx);
             LogASLError(
                 Information.Err().Number + " - '" + Information.Err().Description +
                 "' occurred processing script line '" + scriptLine + "'", LogType.InternalError);
         }
     }
 
-    private void ExecuteEnter(string scriptLine, Context ctx)
+    private async Task ExecuteEnterAsync(string scriptLine, Context ctx)
     {
         _commandOverrideModeOn = true;
-        _commandOverrideVariable = GetParameter(scriptLine, ctx);
-
-        // Now, wait for CommandOverrideModeOn to be set
-        // to False by ExecCommand. Execution can then resume.
-
-        ChangeState(State.Waiting, true);
-
-        lock (_commandLock)
-        {
-            Monitor.Wait(_commandLock);
-        }
-
+        _commandOverrideVariable = await GetParameter(scriptLine, ctx);
+        _commandTcs = new TaskCompletionSource();
+        SignalTurnSuspended();
+        await _commandTcs.Task;
         _commandOverrideModeOn = false;
-
-        // State will have been changed to Working when the user typed their response,
-        // and will be set back to Ready when the call to ExecCommand has finished
     }
 
-    private void ExecuteSet(string setInstruction, Context ctx)
+    private async Task ExecuteSet(string setInstruction, Context ctx)
     {
         if (ASLVersion >= 280)
         {
             if (BeginsWith(setInstruction, "interval "))
             {
-                var interval = GetParameter(setInstruction, ctx);
+                var interval = await GetParameter(setInstruction, ctx);
                 var scp = Strings.InStr(interval, ";");
                 if (scp == 0)
                 {
@@ -6193,19 +6132,19 @@ public partial class V4Game
             }
             else if (BeginsWith(setInstruction, "string "))
             {
-                ExecSetString(GetParameter(setInstruction, ctx), ctx);
+                ExecSetString(await GetParameter(setInstruction, ctx), ctx);
             }
             else if (BeginsWith(setInstruction, "numeric "))
             {
-                ExecSetVar(GetParameter(setInstruction, ctx), ctx);
+                ExecSetVar(await GetParameter(setInstruction, ctx), ctx);
             }
             else if (BeginsWith(setInstruction, "collectable "))
             {
-                ExecuteSetCollectable(GetParameter(setInstruction, ctx), ctx);
+                ExecuteSetCollectable(await GetParameter(setInstruction, ctx), ctx);
             }
             else
             {
-                var result = SetUnknownVariableType(GetParameter(setInstruction, ctx), ctx);
+                var result = await SetUnknownVariableType(await GetParameter(setInstruction, ctx), ctx);
                 if (result == SetResult.Error)
                 {
                     LogASLError("Error on setting 'set " + setInstruction + "'", LogType.WarningError);
@@ -6218,11 +6157,11 @@ public partial class V4Game
         }
         else
         {
-            ExecuteSetCollectable(GetParameter(setInstruction, ctx), ctx);
+            ExecuteSetCollectable(await GetParameter(setInstruction, ctx), ctx);
         }
     }
 
-    private string FindStatement(DefineBlock block, string statement)
+    private async Task<string> FindStatement(DefineBlock block, string statement)
     {
         // Finds a statement within a given block of lines
 
@@ -6242,14 +6181,14 @@ public partial class V4Game
             if (BeginsWith(_lines[i], statement))
             {
                 // Return the parameters between < and > :
-                return GetParameter(_lines[i], _nullContext);
+                return await GetParameter(_lines[i], _nullContext);
             }
         }
 
         return "";
     }
 
-    private string FindLine(DefineBlock block, string statement, string statementParam)
+    private async Task<string> FindLine(DefineBlock block, string statement, string statementParam)
     {
         // Finds a statement within a given block of lines
 
@@ -6268,7 +6207,7 @@ public partial class V4Game
             // that is begin searched for
             if (BeginsWith(_lines[i], statement))
             {
-                if ((Strings.UCase(Strings.Trim(GetParameter(_lines[i], _nullContext))) ?? "") ==
+                if ((Strings.UCase(Strings.Trim(await GetParameter(_lines[i], _nullContext))) ?? "") ==
                     (Strings.UCase(Strings.Trim(statementParam)) ?? ""))
                 {
                     return Strings.Trim(_lines[i]);
@@ -6299,7 +6238,7 @@ public partial class V4Game
         return Strings.Trim(Strings.Mid(line, endOfFirstBit, lengthOfKeyword));
     }
 
-    private void GoDirection(string direction, Context ctx)
+    private async Task GoDirection(string direction, Context ctx)
     {
         // leaves the current room in direction specified by
         // 'direction'
@@ -6314,7 +6253,7 @@ public partial class V4Game
 
         if (ASLVersion >= 410)
         {
-            _rooms[id].Exits.ExecuteGo(direction, ref ctx);
+            _rooms[id].Exits.ExecuteGo(direction, ctx);
             return;
         }
 
@@ -6376,7 +6315,7 @@ public partial class V4Game
 
         if ((dirData.Type == TextActionType.Script) & !string.IsNullOrEmpty(dirData.Data))
         {
-            ExecuteScript(dirData.Data, ctx);
+            await ExecuteScript(dirData.Data, ctx);
         }
         else if (!string.IsNullOrEmpty(dirData.Data))
         {
@@ -6387,19 +6326,19 @@ public partial class V4Game
                 newRoom = Strings.Trim(Strings.Mid(newRoom, scp + 1));
             }
 
-            PlayGame(newRoom, ctx);
+            await PlayGame(newRoom, ctx);
         }
         else if (direction == "out")
         {
-            PlayerErrorMessage(PlayerError.DefaultOut, ctx);
+            await PlayerErrorMessage(PlayerError.DefaultOut, ctx);
         }
         else
         {
-            PlayerErrorMessage(PlayerError.BadPlace, ctx);
+            await PlayerErrorMessage(PlayerError.BadPlace, ctx);
         }
     }
 
-    private void GoToPlace(string place, Context ctx)
+    private async Task GoToPlace(string place, Context ctx)
     {
         // leaves the current room in direction specified by
         // 'direction'
@@ -6438,17 +6377,17 @@ public partial class V4Game
             {
                 var s = Strings.Trim(Strings.Right(destination,
                     Strings.Len(destination) - Strings.InStr(destination, ";")));
-                ExecuteScript(s, ctx);
+                await ExecuteScript(s, ctx);
             }
             else
             {
-                PlayGame(destination, ctx);
+                await PlayGame(destination, ctx);
             }
         }
 
         if (disallowed)
         {
-            PlayerErrorMessage(PlayerError.BadPlace, ctx);
+            await PlayerErrorMessage(PlayerError.BadPlace, ctx);
         }
     }
 
@@ -6482,7 +6421,7 @@ public partial class V4Game
                 err = err + ":" + Constants.vbCrLf + Constants.vbCrLf + _openErrorReport;
             }
 
-            Print("Error: " + err, _nullContext);
+            await Print("Error: " + err, _nullContext);
             return false;
         }
 
@@ -6495,7 +6434,7 @@ public partial class V4Game
         {
             if (BeginsWith(_lines[i], "asl-version "))
             {
-                aslVersion = GetParameter(_lines[i], _nullContext);
+                aslVersion = await GetParameter(_lines[i], _nullContext);
             }
         }
 
@@ -6532,14 +6471,14 @@ public partial class V4Game
         }
 
         // Get the name of the game:
-        _gameName = GetParameter(_lines[GetDefineBlock("game").StartLine], _nullContext);
+        _gameName = await GetParameter(_lines[GetDefineBlock("game").StartLine], _nullContext);
 
         _player.UpdateGameName(_gameName);
         _player.Show("Panes");
         _player.Show("Location");
         _player.Show("Command");
 
-        SetUpGameObject();
+        await SetUpGameObject();
         SetUpOptions();
 
         for (int i = GetDefineBlock("game").StartLine + 1, loopTo1 = GetDefineBlock("game").EndLine - 1;
@@ -6558,12 +6497,12 @@ public partial class V4Game
 
         SetDefaultPlayerErrorMessages();
 
-        SetUpSynonyms();
-        SetUpRoomData();
+        await SetUpSynonyms();
+        await SetUpRoomData();
 
         if (ASLVersion >= 410)
         {
-            SetUpExits();
+            await SetUpExits();
         }
 
         if (ASLVersion < 280)
@@ -6571,33 +6510,33 @@ public partial class V4Game
             // Set up an array containing the names of all the items
             // used in the game, based on the possitems statement
             // of the 'define game' block.
-            SetUpItemArrays();
+            await SetUpItemArrays();
         }
 
         if (ASLVersion < 280)
         {
             // Now, go through the 'startitems' statement and set up
             // the items array so we start with those items mentioned.
-            SetUpStartItems();
+            await SetUpStartItems();
         }
 
         // Set up collectables.
-        SetUpCollectables();
+        await SetUpCollectables();
 
-        SetUpDisplayVariables();
+        await SetUpDisplayVariables();
 
         // Set up characters and objects.
-        SetUpCharObjectInfo();
-        SetUpUserDefinedPlayerErrors();
-        SetUpDefaultFonts();
-        SetUpTurnScript();
-        SetUpTimers();
-        SetUpMenus();
+        await SetUpCharObjectInfo();
+        await SetUpUserDefinedPlayerErrors();
+        await SetUpDefaultFonts();
+        await SetUpTurnScript();
+        await SetUpTimers();
+        await SetUpMenus();
 
         LogASLError("Finished loading file.", LogType.Init);
 
-        _defaultRoomProperties = GetPropertiesInType("defaultroom", false);
-        _defaultProperties = GetPropertiesInType("default", false);
+        _defaultRoomProperties = await GetPropertiesInType("defaultroom", false);
+        _defaultProperties = await GetPropertiesInType("default", false);
 
         return true;
     }
@@ -6652,7 +6591,7 @@ public partial class V4Game
         return "";
     }
 
-    private void PlayerItem(string item, bool got, Context ctx, int objId = 0)
+    private async Task PlayerItem(string item, bool got, Context ctx, int objId = 0)
     {
         // Gives the player an item (if got=True) or takes an
         // item away from the player (if got=False).
@@ -6691,7 +6630,7 @@ public partial class V4Game
 
                     if (!string.IsNullOrEmpty(_objs[objId].GainScript))
                     {
-                        ExecuteScript(_objs[objId].GainScript, ctx);
+                        await ExecuteScript(_objs[objId].GainScript, ctx);
                     }
                 }
                 else
@@ -6700,7 +6639,7 @@ public partial class V4Game
 
                     if (!string.IsNullOrEmpty(_objs[objId].LoseScript))
                     {
-                        ExecuteScript(_objs[objId].LoseScript, ctx);
+                        await ExecuteScript(_objs[objId].LoseScript, ctx);
                     }
                 }
 
@@ -6713,8 +6652,8 @@ public partial class V4Game
             }
             else
             {
-                UpdateItems(ctx);
-                UpdateObjectList(ctx);
+                await UpdateItems(ctx);
+                await UpdateObjectList(ctx);
             }
         }
         else
@@ -6728,11 +6667,11 @@ public partial class V4Game
                 }
             }
 
-            UpdateItems(ctx);
+            await UpdateItems(ctx);
         }
     }
 
-    internal void PlayGame(string room, Context ctx)
+    internal async Task PlayGame(string room, Context ctx)
     {
         // plays the specified room
 
@@ -6753,15 +6692,15 @@ public partial class V4Game
             AddToObjectProperties("visited", _rooms[id].ObjId, ctx);
         }
 
-        ShowRoomInfo(room, ctx);
-        UpdateItems(ctx);
+        await ShowRoomInfo(room, ctx);
+        await UpdateItems(ctx);
 
         // Find script lines and execute them.
 
         if (!string.IsNullOrEmpty(_rooms[id].Script))
         {
             var script = _rooms[id].Script;
-            ExecuteScript(script, ctx);
+            await ExecuteScript(script, ctx);
         }
 
         if (ASLVersion >= 410)
@@ -6770,7 +6709,7 @@ public partial class V4Game
         }
     }
 
-    internal void Print(string txt, Context ctx)
+    internal async Task Print(string txt, Context ctx)
     {
         if (!_outPutOn)
         {
@@ -6795,7 +6734,7 @@ public partial class V4Game
                     printString = "";
                     printThis = false;
                     i = i + 1;
-                    ExecuteScript("wait <>", ctx);
+                    await DoWaitAsync();
                 }
 
                 else if (Strings.Mid(txt, i, 2) == "|c")
@@ -6818,7 +6757,7 @@ public partial class V4Game
                             printString = "";
                             printThis = false;
                             i = i + 1;
-                            ExecuteScript("clear", ctx);
+                            DoClear();
                             break;
                         }
                     }
@@ -6866,7 +6805,7 @@ public partial class V4Game
         return "<unfound>";
     }
 
-    private string RetrLineParam(string blockType, string param, string line, string lineParam, Context ctx)
+    private async Task<string> RetrLineParam(string blockType, string param, string line, string lineParam, Context ctx)
     {
         DefineBlock searchblock;
 
@@ -6887,7 +6826,7 @@ public partial class V4Game
         for (int i = searchblock.StartLine + 1, loopTo = searchblock.EndLine - 1; i <= loopTo; i++)
         {
             if (BeginsWith(_lines[i], line) &&
-                (Strings.LCase(GetParameter(_lines[i], ctx)) ?? "") == (Strings.LCase(lineParam) ?? ""))
+                (Strings.LCase(await GetParameter(_lines[i], ctx)) ?? "") == (Strings.LCase(lineParam) ?? ""))
             {
                 return Strings.Trim(_lines[i]);
             }
@@ -6896,7 +6835,7 @@ public partial class V4Game
         return "<unfound>";
     }
 
-    private void SetUpCollectables()
+    private async Task SetUpCollectables()
     {
         var lastItem = false;
 
@@ -6912,7 +6851,7 @@ public partial class V4Game
         {
             if (BeginsWith(_lines[a], "collectables "))
             {
-                var collectables = Strings.Trim(GetParameter(_lines[a], _nullContext, false));
+                var collectables = Strings.Trim(await GetParameter(_lines[a], _nullContext, false));
 
                 // if collectables is a null string, there are no
                 // collectables. Otherwise, there is one more object than
@@ -6997,7 +6936,7 @@ public partial class V4Game
         }
     }
 
-    private void SetUpItemArrays()
+    private async Task SetUpItemArrays()
     {
         var lastItem = false;
 
@@ -7012,7 +6951,7 @@ public partial class V4Game
         {
             if (BeginsWith(_lines[a], "possitems ") | BeginsWith(_lines[a], "items "))
             {
-                var possItems = GetParameter(_lines[a], _nullContext);
+                var possItems = await GetParameter(_lines[a], _nullContext);
 
                 if (!string.IsNullOrEmpty(possItems))
                 {
@@ -7054,7 +6993,7 @@ public partial class V4Game
         }
     }
 
-    private void SetUpStartItems()
+    private async Task SetUpStartItems()
     {
         var lastItem = false;
 
@@ -7064,7 +7003,7 @@ public partial class V4Game
         {
             if (BeginsWith(_lines[a], "startitems "))
             {
-                var startItems = GetParameter(_lines[a], _nullContext);
+                var startItems = await GetParameter(_lines[a], _nullContext);
 
                 if (!string.IsNullOrEmpty(startItems))
                 {
@@ -7109,29 +7048,29 @@ public partial class V4Game
         }
     }
 
-    private void ShowHelp(Context ctx)
+    private async Task ShowHelp(Context ctx)
     {
         // In Quest 4 and below, the help text displays in a separate window. In Quest 5, it displays
         // in the same window as the game text.
-        Print("|b|cl|s14Quest Quick Help|xb|cb|s00", ctx);
-        Print("", ctx);
-        Print(
+        await Print("|b|cl|s14Quest Quick Help|xb|cb|s00", ctx);
+        await Print("", ctx);
+        await Print(
             "|cl|bMoving|xb|cb Press the direction buttons in the 'Compass' pane, or type |bGO NORTH|xb, |bSOUTH|xb, |bE|xb, etc. |xn",
             ctx);
-        Print(
+        await Print(
             "To go into a place, type |bGO TO ...|xb . To leave a place, type |bOUT, EXIT|xb or |bLEAVE|xb, or press the '|crOUT|cb' button.|n",
             ctx);
-        Print(
+        await Print(
             "|cl|bObjects and Characters|xb|cb Use |bTAKE ...|xb, |bGIVE ... TO ...|xb, |bTALK|xb/|bSPEAK TO ...|xb, |bUSE ... ON|xb/|bWITH ...|xb, |bLOOK AT ...|xb, etc.|n",
             ctx);
-        Print("|cl|bExit Quest|xb|cb Type |bQUIT|xb to leave Quest.|n", ctx);
-        Print(
+        await Print("|cl|bExit Quest|xb|cb Type |bQUIT|xb to leave Quest.|n", ctx);
+        await Print(
             "|cl|bMisc|xb|cb Type |bABOUT|xb to get information on the current game. The next turn after referring to an object or character, you can use |bIT|xb, |bHIM|xb etc. as appropriate to refer to it/him/etc. again. If you make a mistake when typing an object's name, type |bOOPS|xb followed by your correction.|n",
             ctx);
-        Print(
+        await Print(
             "|cl|bKeyboard shortcuts|xb|cb Press the |crup arrow|cb and |crdown arrow|cb to scroll through commands you have already typed in. Press |crEsc|cb to clear the command box.|n|n",
             ctx);
-        Print("Further information is available by selecting |iQuest Documentation|xi from the |iHelp|xi menu.", ctx);
+        await Print("Further information is available by selecting |iQuest Documentation|xi from the |iHelp|xi menu.", ctx);
     }
 
     private void ReadCatalog(string data)
@@ -7412,7 +7351,7 @@ public partial class V4Game
         return roomDisplayText;
     }
 
-    private void UpdateItems(Context ctx)
+    private async Task UpdateItems(Context ctx)
     {
         // displays the items a player has
         var invList = new List<ListData>();
@@ -7458,7 +7397,7 @@ public partial class V4Game
 
         if (ASLVersion >= 284)
         {
-            UpdateStatusVars(ctx);
+            await UpdateStatusVars(ctx);
         }
         else if (_numCollectables > 0)
         {
@@ -7482,21 +7421,21 @@ public partial class V4Game
         }
     }
 
-    private void FinishGame(StopType stopType, Context ctx)
+    private async Task FinishGame(StopType stopType, Context ctx)
     {
         if (stopType == StopType.Win)
         {
-            DisplayTextSection("win", ctx);
+            await DisplayTextSection("win", ctx);
         }
         else if (stopType == StopType.Lose)
         {
-            DisplayTextSection("lose", ctx);
+            await DisplayTextSection("lose", ctx);
         }
 
         GameFinished();
     }
 
-    private void UpdateObjectList(Context ctx)
+    private async Task UpdateObjectList(Context ctx)
     {
         // Updates object list
         string shownPlaceName;
@@ -7518,7 +7457,7 @@ public partial class V4Game
 
         // find the room
         DefineBlock roomBlock;
-        roomBlock = DefineBlockParam("room", _currentRoom);
+        roomBlock = await DefineBlockParam("room", _currentRoom);
 
         // FIND CHARACTERS ===
         if (ASLVersion < 281)
@@ -7665,7 +7604,7 @@ public partial class V4Game
         UpdateList?.Invoke(ListType.ExitsList, mergedList);
     }
 
-    private void UpdateStatusVars(Context ctx)
+    private async Task UpdateStatusVars(Context ctx)
     {
         string displayData;
         var status = "";
@@ -7674,7 +7613,7 @@ public partial class V4Game
         {
             for (int i = 1, loopTo = _numDisplayStrings; i <= loopTo; i++)
             {
-                displayData = DisplayStatusVariableInfo(i, VarType.String, ctx);
+                displayData = await DisplayStatusVariableInfo(i, VarType.String, ctx);
 
                 if (!string.IsNullOrEmpty(displayData))
                 {
@@ -7692,7 +7631,7 @@ public partial class V4Game
         {
             for (int i = 1, loopTo1 = _numDisplayNumerics; i <= loopTo1; i++)
             {
-                displayData = DisplayStatusVariableInfo(i, VarType.Numeric, ctx);
+                displayData = await DisplayStatusVariableInfo(i, VarType.Numeric, ctx);
                 if (!string.IsNullOrEmpty(displayData))
                 {
                     if (status.Length > 0)
@@ -7708,7 +7647,7 @@ public partial class V4Game
         _player.SetStatusText(status);
     }
 
-    private void UpdateVisibilityInContainers(Context ctx, string onlyParent = "")
+    private async Task UpdateVisibilityInContainers(Context ctx, string onlyParent = "")
     {
         // Use OnlyParent to only update objects that are contained by a specific parent
 
@@ -7758,11 +7697,11 @@ public partial class V4Game
                         // Otherwise, only if the parent has been seen, AND is either open or transparent,
                         // then the contents are available.
 
-                        SetAvailability(_objs[i].ObjectName, true, ctx);
+                        await SetAvailability(_objs[i].ObjectName, true, ctx);
                     }
                     else
                     {
-                        SetAvailability(_objs[i].ObjectName, false, ctx);
+                        await SetAvailability(_objs[i].ObjectName, false, ctx);
                     }
                 }
             }
@@ -7882,7 +7821,7 @@ public partial class V4Game
         return placeList;
     }
 
-    private void SetUpExits()
+    private async Task SetUpExits()
     {
         // Exits have to be set up after all the rooms have been initialised
 
@@ -7890,7 +7829,7 @@ public partial class V4Game
         {
             if (BeginsWith(_lines[_defineBlocks[i].StartLine], "define room "))
             {
-                var roomName = GetParameter(_lines[_defineBlocks[i].StartLine], _nullContext);
+                var roomName = await GetParameter(_lines[_defineBlocks[i].StartLine], _nullContext);
                 var roomId = GetRoomID(roomName, _nullContext);
 
                 for (int j = _defineBlocks[i].StartLine + 1, loopTo1 = _defineBlocks[i].EndLine - 1; j <= loopTo1; j++)
@@ -7973,7 +7912,7 @@ public partial class V4Game
         roomExit.SetIsLocked(@lock);
     }
 
-    private void DoBegin()
+    private async Task DoBeginAsync()
     {
         var gameBlock = GetDefineBlock("game");
         var ctx = new Context();
@@ -7987,7 +7926,7 @@ public partial class V4Game
         {
             if (BeginsWith(_lines[i], "background "))
             {
-                SetBackground(GetParameter(_lines[i], _nullContext));
+                SetBackground(await GetParameter(_lines[i], _nullContext));
             }
         }
 
@@ -7997,7 +7936,7 @@ public partial class V4Game
         {
             if (BeginsWith(_lines[i], "foreground "))
             {
-                SetForeground(GetParameter(_lines[i], _nullContext));
+                SetForeground(await GetParameter(_lines[i], _nullContext));
             }
         }
 
@@ -8021,7 +7960,7 @@ public partial class V4Game
                     if (BeginsWith(_lines[i], "lib startscript "))
                     {
                         ctx = _nullContext;
-                        ExecuteScript(Strings.Trim(GetEverythingAfter(Strings.Trim(_lines[i]), "lib startscript ")),
+                        await ExecuteScript(Strings.Trim(GetEverythingAfter(Strings.Trim(_lines[i]), "lib startscript ")),
                             ctx);
                     }
                 }
@@ -8032,12 +7971,12 @@ public partial class V4Game
                 if (BeginsWith(_lines[i], "startscript "))
                 {
                     ctx = _nullContext;
-                    ExecuteScript(Strings.Trim(GetEverythingAfter(Strings.Trim(_lines[i]), "startscript")), ctx);
+                    await ExecuteScript(Strings.Trim(GetEverythingAfter(Strings.Trim(_lines[i]), "startscript")), ctx);
                 }
                 else if (BeginsWith(_lines[i], "lib startscript ") & (ASLVersion < 311))
                 {
                     ctx = _nullContext;
-                    ExecuteScript(Strings.Trim(GetEverythingAfter(Strings.Trim(_lines[i]), "lib startscript ")), ctx);
+                    await ExecuteScript(Strings.Trim(GetEverythingAfter(Strings.Trim(_lines[i]), "lib startscript ")), ctx);
                 }
             }
         }
@@ -8047,7 +7986,7 @@ public partial class V4Game
         // Display intro text
         if (_autoIntro & (_gameLoadMethod == "normal"))
         {
-            DisplayTextSection("intro", _nullContext);
+            await DisplayTextSection("intro", _nullContext);
         }
 
         // Start game from room specified by "start" statement
@@ -8056,90 +7995,64 @@ public partial class V4Game
         {
             if (BeginsWith(_lines[i], "start "))
             {
-                startRoom = GetParameter(_lines[i], _nullContext);
+                startRoom = await GetParameter(_lines[i], _nullContext);
             }
         }
 
         if (!_loadedFromQsg)
         {
             ctx = _nullContext;
-            PlayGame(startRoom, ctx);
-            Print("", _nullContext);
+            await PlayGame(startRoom, ctx);
+            await Print("", _nullContext);
         }
         else
         {
-            UpdateItems(_nullContext);
+            await UpdateItems(_nullContext);
 
-            Print("Restored saved game", _nullContext);
-            Print("", _nullContext);
-            PlayGame(_currentRoom, _nullContext);
-            Print("", _nullContext);
+            await Print("Restored saved game", _nullContext);
+            await Print("", _nullContext);
+            await PlayGame(_currentRoom, _nullContext);
+            await Print("", _nullContext);
 
             if (ASLVersion >= 391)
             {
                 // For ASL>=391, OnLoad is now run for all games.
                 ctx = _nullContext;
-                ExecuteScript(_onLoadScript, ctx);
+                await ExecuteScript(_onLoadScript, ctx);
             }
         }
 
         RaiseNextTimerTickRequest();
 
-        ChangeState(State.Ready);
+        SignalTurnSuspended();
     }
 
-    private void WaitForStateChange(State changedFromState)
-    {
-        lock (_stateLock)
-        {
-            while ((_state == changedFromState) & !_gameFinished)
-            {
-                Monitor.Wait(_stateLock);
-            }
-        }
-    }
 
-    private void ProcessCommandInNewThread(object command)
-    {
-        // Process command, and change state to Ready if the command finished processing
 
+    private async Task HandleCommandAsync(string command)
+    {
         try
         {
-            if (ExecCommand((string) command, new Context()))
-            {
-                ChangeState(State.Ready);
-            }
+            await ExecCommand(command, new Context());
         }
         catch (Exception ex)
         {
             LogException(ex);
-            ChangeState(State.Ready);
+        }
+        finally
+        {
+            SignalTurnSuspended();
         }
     }
 
     private void GameFinished()
     {
         _gameFinished = true;
-
         Finished?.Invoke();
-
-        ChangeState(State.Finished);
-
-        // In case we're in the middle of processing an "enter" command, nudge the thread along
-        lock (_commandLock)
-        {
-            Monitor.PulseAll(_commandLock);
-        }
-
-        lock (_waitLock)
-        {
-            Monitor.PulseAll(_waitLock);
-        }
-
-        lock (_stateLock)
-        {
-            Monitor.PulseAll(_stateLock);
-        }
+        _readyForCommand = false;
+        _waitTcs?.TrySetResult();
+        _commandTcs?.TrySetResult();
+        _turnSuspendedTcs?.TrySetResult();
     }
 
     private Stream GetResourceStreamInternal(string filename)
@@ -8189,15 +8102,13 @@ public partial class V4Game
         return GetResourceLines(libCode);
     }
 
-    private void RunTimersInNewThread(object scripts)
+    private async Task RunTimersAsync(List<string> timerScripts)
     {
-        var scriptList = (List<string>) scripts;
-
-        foreach (var script in scriptList)
+        foreach (var script in timerScripts)
         {
             try
             {
-                ExecuteScript(script, _nullContext);
+                await ExecuteScript(script, _nullContext);
             }
             catch (Exception ex)
             {
@@ -8205,7 +8116,7 @@ public partial class V4Game
             }
         }
 
-        ChangeState(State.Ready);
+        SignalTurnSuspended();
     }
 
     private void RaiseNextTimerTickRequest()
@@ -8242,52 +8153,20 @@ public partial class V4Game
         RequestNextTimerTick?.Invoke(nextTrigger);
     }
 
-    private void ChangeState(State newState)
-    {
-        var acceptCommands = newState == State.Ready;
-        ChangeState(newState, acceptCommands);
-    }
 
-    private void ChangeState(State newState, bool acceptCommands)
-    {
-        _readyForCommand = acceptCommands;
-        lock (_stateLock)
-        {
-            _state = newState;
-            Monitor.PulseAll(_stateLock);
-        }
-    }
 
-    private void FinishWaitInNewThread()
-    {
-        lock (_waitLock)
-        {
-            Monitor.PulseAll(_waitLock);
-        }
-    }
 
-    private string ShowMenu(MenuData menuData)
+
+    private async Task<string?> ShowMenuAsync(MenuData menuData)
     {
         _player.ShowMenu(menuData);
-        ChangeState(State.Waiting);
-
-        lock (_waitLock)
-        {
-            Monitor.Wait(_waitLock);
-        }
-
+        _waitTcs = new TaskCompletionSource();
+        SignalTurnSuspended();
+        await _waitTcs.Task;
         return m_menuResponse;
     }
 
-    private void SetMenuResponseInNewThread(object response)
-    {
-        m_menuResponse = (string) response;
 
-        lock (_waitLock)
-        {
-            Monitor.PulseAll(_waitLock);
-        }
-    }
 
     private void LogException(Exception ex)
     {

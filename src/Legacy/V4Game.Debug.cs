@@ -69,7 +69,7 @@ public partial class V4Game
 
     public bool Assert(string expression)
     {
-        return ExecuteConditions(expression, _nullContext);
+        return ExecuteConditions(expression, _nullContext).GetAwaiter().GetResult();
     }
 
     private DebugData GetVariableDebugData(VariableType[] variable)
@@ -142,7 +142,7 @@ public partial class V4Game
                     continue;
                 }
 
-                var name = game.GetParameter(startLine, game._nullContext, false);
+                var name = game.GetParameter(startLine, game._nullContext, false).GetAwaiter().GetResult();
 
                 var steps = new List<string>();
                 for (var i = section.StartLine + 1; i < section.EndLine; i++)
