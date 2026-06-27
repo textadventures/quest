@@ -437,11 +437,6 @@
       <caption>[EditorGameInterface]</caption>
 
       <control>
-        <controltype>label</controltype>
-        <caption>[EditorGameYoucanuseany]</caption>
-      </control>
-
-      <control>
         <controltype>title</controltype>
         <caption>[EditorGameMap]</caption>
       </control>
