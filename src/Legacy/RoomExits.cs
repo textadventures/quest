@@ -301,16 +301,19 @@ internal class RoomExits
         }
     }
 
-    internal void GetAvailableDirectionsDescription(ref string description, ref string list)
+    internal async Task<(string description, string list)> GetAvailableDirectionsDescription()
     {
         RoomExit roomExit;
         int count;
         string descPrefix;
         string orString;
+        string description;
+        string list;
 
         descPrefix = "You can go";
         orString = "or";
 
+        description = "";
         list = "";
         count = 0;
 
@@ -339,12 +342,14 @@ internal class RoomExits
             }
         }
 
-        _game.SetStringContents("quest.doorways", description, _game._nullContext);
+        await _game.SetStringContents("quest.doorways", description, _game._nullContext);
 
         if (count > 0)
         {
             description = descPrefix + " " + description + ".";
         }
+
+        return (description, list);
     }
 
     public string GetDirectionName(ref V4Game.Direction dir)
