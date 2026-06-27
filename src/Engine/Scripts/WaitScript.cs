@@ -38,11 +38,6 @@ public class WaitScript : ScriptBase
         return new WaitScript(m_worldModel, m_scriptFactory, (IScript) m_callbackScript.Clone());
     }
 
-    public override void Execute(Context c)
-    {
-        ExecuteAsync(c).GetAwaiter().GetResult();
-    }
-
     public override Task ExecuteAsync(Context c)
     {
         m_worldModel.PlayerUi.DoWait();

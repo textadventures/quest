@@ -424,32 +424,6 @@ public class IfScript : ScriptBase, IIfScript
 
     #region IScript Members
 
-    public override void Execute(Context c)
-    {
-        if (Expression.Execute(c))
-        {
-            ThenScript.Execute(c);
-            return;
-        }
-
-        if (m_elseIfScript != null)
-        {
-            foreach (ElseIfScript elseIfScript in m_elseIfScript)
-            {
-                if (elseIfScript.Expression.Execute(c))
-                {
-                    elseIfScript.Script.Execute(c);
-                    return;
-                }
-            }
-        }
-
-        if (ElseScript != null)
-        {
-            ElseScript.Execute(c);
-        }
-    }
-
     public override async Task ExecuteAsync(Context c)
     {
         if (Expression.Execute(c))

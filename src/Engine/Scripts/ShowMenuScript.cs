@@ -61,11 +61,6 @@ public class ShowMenuScript : ScriptBase
             m_allowCancel.Clone(), (IScript) m_callbackScript.Clone());
     }
 
-    public override void Execute(Context c)
-    {
-        ExecuteAsync(c).GetAwaiter().GetResult();
-    }
-
     public override Task ExecuteAsync(Context c)
     {
         var caption = m_caption.Execute(c);

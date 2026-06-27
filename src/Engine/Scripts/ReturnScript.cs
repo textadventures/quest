@@ -38,7 +38,7 @@ public class ReturnScript : ScriptBase
         return new ReturnScript(m_scriptContext, m_returnValue.Clone());
     }
 
-    public override void Execute(Context c)
+    public override Task ExecuteAsync(Context c)
     {
         c.ReturnValue = m_returnValue.Execute(c);
         // Leaving this set to v550 for backwards compatibility
@@ -47,6 +47,7 @@ public class ReturnScript : ScriptBase
         {
             c.IsReturned = true;
         }
+        return Task.CompletedTask;
     }
 
     public override string Save()

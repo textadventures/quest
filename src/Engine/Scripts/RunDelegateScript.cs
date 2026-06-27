@@ -70,35 +70,6 @@ public class RunDelegateScript : ScriptBase
         return new RunDelegateScript(m_scriptContext, m_appliesTo.Clone(), m_delegate.Clone(), m_parameters.Parameters);
     }
 
-    public override void Execute(Context c)
-    {
-        if (m_parameters == null)
-        {
-            throw new NotImplementedException();
-        }
-
-        var obj = m_appliesTo.Execute(c);
-        var delName = m_delegate.Execute(c);
-        var impl = obj.Fields.Get(delName) as DelegateImplementation;
-
-        if (impl == null)
-        {
-            throw new Exception(
-                string.Format("Object '{0}' has no delegate implementation '{1}'", obj.Name, m_delegate));
-        }
-
-        var paramValues = new Parameters();
-
-        var cnt = 0;
-        foreach (var f in m_parameters.Parameters)
-        {
-            paramValues.Add((string) impl.Definition.Fields[FieldDefinitions.ParamNames][cnt], f.Execute(c));
-            cnt++;
-        }
-
-        m_worldModel.RunScript(impl.Implementation.Fields[FieldDefinitions.Script], paramValues, obj);
-    }
-
     public override async Task ExecuteAsync(Context c)
     {
         if (m_parameters == null)

@@ -59,7 +59,7 @@ public class CreateScript : ScriptBase
         return new CreateScript(m_scriptContext, m_expr.Clone(), m_type.Clone());
     }
 
-    public override void Execute(Context c)
+    public override Task ExecuteAsync(Context c)
     {
         if (m_type == null)
         {
@@ -70,6 +70,7 @@ public class CreateScript : ScriptBase
             m_worldModel.ObjectFactory.CreateObject(m_expr.Execute(c), ObjectType.Object, true,
                 new List<string> {m_type.Execute(c)});
         }
+        return Task.CompletedTask;
     }
 
     public override string Save()
@@ -198,10 +199,11 @@ public class CreateExitScript : ScriptBase
             m_initialType.Clone(), m_id.Clone());
     }
 
-    public override void Execute(Context c)
+    public override Task ExecuteAsync(Context c)
     {
         m_worldModel.ObjectFactory.CreateExit(m_id == null ? null : m_id.Execute(c), m_name.Execute(c),
             m_from.Execute(c), m_to.Execute(c), m_initialType == null ? null : m_initialType.Execute(c));
+        return Task.CompletedTask;
     }
 
     public override string Save()
@@ -299,9 +301,10 @@ public class CreateTimerScript : ScriptBase
     }
 
 
-    public override void Execute(Context c)
+    public override Task ExecuteAsync(Context c)
     {
         m_worldModel.GetElementFactory(ElementType.Timer).Create(m_expr.Execute(c));
+        return Task.CompletedTask;
     }
 
     public override string Save()
@@ -355,9 +358,10 @@ public class CreateTurnScript : ScriptBase
         return new CreateTurnScript(m_scriptContext, m_expr.Clone());
     }
 
-    public override void Execute(Context c)
+    public override Task ExecuteAsync(Context c)
     {
         m_worldModel.ObjectFactory.CreateTurnScript(m_expr.Execute(c), null);
+        return Task.CompletedTask;
     }
 
     public override string Save()

@@ -39,11 +39,6 @@ public class GetInputScript : ScriptBase
         return new GetInputScript(m_scriptContext, m_scriptFactory, (IScript) m_callbackScript.Clone());
     }
 
-    public override void Execute(Context c)
-    {
-        ExecuteAsync(c).GetAwaiter().GetResult();
-    }
-
     public override Task ExecuteAsync(Context c)
     {
         m_worldModel._commandOverride = true;

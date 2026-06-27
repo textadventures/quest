@@ -91,66 +91,6 @@ public class FunctionCallScript : ScriptBase, IFunctionCallScript
 
     public event EventHandler<ScriptUpdatedEventArgs> FunctionCallParametersUpdated;
 
-    public override void Execute(Context c)
-    {
-        if ((m_parameters.Parameters == null || m_parameters.Parameters.Count == 0) && m_paramFunction == null)
-        {
-            m_worldModel.RunProcedure(m_procedure);
-        }
-        else
-        {
-            var paramValues = new Parameters();
-            var proc = m_worldModel.Procedure(m_procedure);
-
-            var paramNames = proc.Fields[FieldDefinitions.ParamNames];
-
-            var paramCount = m_parameters.Parameters.Count;
-            if (m_paramFunction != null)
-            {
-                paramCount++;
-            }
-
-            if (paramCount > paramNames.Count)
-            {
-                throw new Exception(string.Format(
-                    "Too many parameters passed to {0} function - {1} passed, but only {2} expected",
-                    m_procedure,
-                    paramCount,
-                    paramNames.Count));
-            }
-
-            if (m_worldModel.Version >= WorldModelVersion.v520)
-            {
-                // Only check for too few parameters for games for Quest 5.2 or later, as previous Quest versions
-                // would ignore this (but would usually still fail when the function was run, as the required
-                // variable wouldn't exist)
-
-                if (paramCount < paramNames.Count)
-                {
-                    throw new Exception(string.Format(
-                        "Too few parameters passed to {0} function - only {1} passed, but {2} expected",
-                        m_procedure,
-                        paramCount,
-                        paramNames.Count));
-                }
-            }
-
-            var cnt = 0;
-            foreach (var f in m_parameters.Parameters)
-            {
-                paramValues.Add((string) paramNames[cnt], f.Execute(c));
-                cnt++;
-            }
-
-            if (m_paramFunction != null)
-            {
-                paramValues.Add((string) paramNames[cnt], m_paramFunction);
-            }
-
-            m_worldModel.RunProcedure(m_procedure, paramValues, false);
-        }
-    }
-
     public override async Task ExecuteAsync(Context c)
     {
         if ((m_parameters.Parameters == null || m_parameters.Parameters.Count == 0) && m_paramFunction == null)

@@ -32,9 +32,10 @@ public class FinishScript : ScriptBase
         return new FinishScript(m_worldModel);
     }
 
-    public override void Execute(Context c)
+    public override Task ExecuteAsync(Context c)
     {
         m_worldModel.FinishGame();
+        return Task.CompletedTask;
     }
 
     public override string Save()

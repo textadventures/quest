@@ -65,20 +65,6 @@ public class DoActionScript : ScriptBase
             m_parameters == null ? null : m_parameters.Clone());
     }
 
-    public override void Execute(Context c)
-    {
-        var obj = m_obj.Execute(c);
-        var action = obj.GetAction(m_action.Execute(c));
-        if (m_parameters == null)
-        {
-            m_worldModel.RunScript(action, obj);
-        }
-        else
-        {
-            m_worldModel.RunScript(action, new Parameters(m_parameters.Execute(c)), obj);
-        }
-    }
-
     public override async Task ExecuteAsync(Context c)
     {
         var obj = m_obj.Execute(c);

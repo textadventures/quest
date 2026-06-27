@@ -46,11 +46,6 @@ public class PlaySoundScript : ScriptBase
         return new PlaySoundScript(m_scriptContext, m_filename.Clone(), m_synchronous.Clone(), m_loop.Clone());
     }
 
-    public override void Execute(Context c)
-    {
-        ExecuteAsync(c).GetAwaiter().GetResult();
-    }
-
     public override async Task ExecuteAsync(Context c)
     {
         var filename = m_filename.Execute(c);
@@ -140,9 +135,10 @@ public class StopSoundScript : ScriptBase
         return new StopSoundScript(m_worldModel);
     }
 
-    public override void Execute(Context c)
+    public override Task ExecuteAsync(Context c)
     {
         m_worldModel.PlayerUi.StopSound();
+        return Task.CompletedTask;
     }
 
     public override string Save()

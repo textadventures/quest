@@ -34,9 +34,10 @@ public class UndoScript : ScriptBase
         return new UndoScript(m_worldModel);
     }
 
-    public override void Execute(Context c)
+    public override Task ExecuteAsync(Context c)
     {
         m_worldModel.UndoLogger.RollbackTransaction();
+        return Task.CompletedTask;
     }
 
     public override string Save()
@@ -90,9 +91,10 @@ public class StartTransactionScript : ScriptBase
         return new StartTransactionScript(m_scriptContext, m_command.Clone());
     }
 
-    public override void Execute(Context c)
+    public override Task ExecuteAsync(Context c)
     {
         m_worldModel.UndoLogger.RollTransaction(m_command.Execute(c));
+        return Task.CompletedTask;
     }
 
     public override string Save()

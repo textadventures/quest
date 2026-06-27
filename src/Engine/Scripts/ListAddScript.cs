@@ -42,7 +42,7 @@ public class ListAddScript : ScriptBase
         return new ListAddScript(m_scriptContext, m_list.Clone(), m_value.Clone());
     }
 
-    public override void Execute(Context c)
+    public override Task ExecuteAsync(Context c)
     {
         var result = m_list.Execute(c) as IQuestList;
 
@@ -54,6 +54,7 @@ public class ListAddScript : ScriptBase
         {
             throw new Exception("Unrecognised list type");
         }
+        return Task.CompletedTask;
     }
 
     public override string Save()
@@ -129,7 +130,7 @@ public class ListRemoveScript : ScriptBase
         return new ListRemoveScript(m_scriptContext, m_list.Clone(), m_value.Clone());
     }
 
-    public override void Execute(Context c)
+    public override Task ExecuteAsync(Context c)
     {
         var result = m_list.Execute(c) as IQuestList;
 
@@ -141,6 +142,7 @@ public class ListRemoveScript : ScriptBase
         {
             throw new Exception("Unrecognised list type");
         }
+        return Task.CompletedTask;
     }
 
     public override string Save()

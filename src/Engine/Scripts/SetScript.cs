@@ -138,7 +138,7 @@ public abstract class SetScriptBase : ScriptBase
         }
     }
 
-    public override void Execute(Context c)
+    public override async Task ExecuteAsync(Context c)
     {
         var result = GetResult(c);
 
@@ -146,7 +146,7 @@ public abstract class SetScriptBase : ScriptBase
         {
             // we're setting an object property
             var obj = AppliesTo.Execute(c);
-            obj.Fields.Set(Property, result);
+            await obj.SetFieldAsync(Property, result);
         }
         else
         {
@@ -252,7 +252,7 @@ public class SetExpressionScript : SetScriptBase
         if (AppliesTo != null)
         {
             var obj = AppliesTo.Execute(c);
-            obj.Fields.Set(Property, result);
+            await obj.SetFieldAsync(Property, result);
         }
         else
         {
