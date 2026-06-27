@@ -105,6 +105,42 @@ public partial class Template
         return template.Fields[FieldDefinitions.Function].Execute(c);
     }
 
+    public Task<string> GetDynamicTextAsync(string t, params Element[] obj)
+    {
+        Parameters parameters;
+        if (obj.Length == 1)
+        {
+            parameters = new Parameters("object", obj[0]);
+        }
+        else
+        {
+            parameters = new Parameters();
+            for (var i = 0; i < obj.Length; i++)
+            {
+                parameters.Add("object" + (i + 1), obj[i]);
+            }
+        }
+        return GetDynamicTextInternalAsync(t, parameters);
+    }
+
+    public Task<string> GetDynamicTextAsync(string t, string text)
+    {
+        return GetDynamicTextInternalAsync(t, new Parameters("text", text));
+    }
+
+    private async Task<string> GetDynamicTextInternalAsync(string t, Parameters parameters)
+    {
+        if (!m_worldModel.Elements.ContainsKey(ElementType.DynamicTemplate, t))
+        {
+            return GetText(t);
+        }
+
+        var c = new Context();
+        c.Parameters = parameters;
+        var template = m_worldModel.Elements.Get(ElementType.DynamicTemplate, t);
+        return await template.Fields[FieldDefinitions.Function].ExecuteAsync(c);
+    }
+
     internal Element AddVerbTemplate(string c, string text, string filename)
     {
         Element template;
