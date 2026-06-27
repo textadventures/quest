@@ -50,15 +50,32 @@ public class AskScript(
         ExecuteAsync(c).GetAwaiter().GetResult();
     }
 
-    public override async Task ExecuteAsync(Context c)
+    public override Task ExecuteAsync(Context c)
     {
         var caption = _caption.Execute(c);
         _worldModel.PlayerUi.ShowQuestion(caption);
         _worldModel._questionTcs = new TaskCompletionSource<bool>();
+        _worldModel.BeginPendingCallback();
         _worldModel.SignalTurnSuspended();
-        var response = await _worldModel._questionTcs.Task;
-        c.Parameters["result"] = response;
-        await _worldModel.RunScriptAsync(callbackScript, c);
+        _ = AwaitResponseAndRunCallbackAsync(c);
+        return Task.CompletedTask;
+    }
+
+    private async Task AwaitResponseAndRunCallbackAsync(Context c)
+    {
+        try
+        {
+            var response = await _worldModel._questionTcs!.Task;
+            c.Parameters["result"] = response;
+            await _worldModel.RunScriptAsync(callbackScript, c);
+        }
+        catch (OperationCanceledException) { }
+        catch (Exception ex) { _worldModel.LogException(ex); }
+        finally
+        {
+            await _worldModel.EndPendingCallbackAsync();
+            _worldModel.SignalTurnSuspended();
+        }
     }
 
     public override string Save()

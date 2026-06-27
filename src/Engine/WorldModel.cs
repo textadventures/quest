@@ -34,7 +34,6 @@ public partial class WorldModel : IGame, IGameDebug
 
     private static List<string>? FunctionNames;
     private readonly List<string> _attributeNames = [];
-    private readonly CallbackManager _callbacks = new();
     private readonly Dictionary<string, ElementType> _debuggerElementTypes = new();
     private readonly Dictionary<string, ObjectType> _debuggerObjectTypes = new();
     private readonly Dictionary<ElementType, IElementFactory> _elementFactories = new();
@@ -58,6 +57,11 @@ public partial class WorldModel : IGame, IGameDebug
     internal TaskCompletionSource<string>? _commandInputTcs;
     internal TaskCompletionSource? _pauseTcs;
     private TaskCompletionSource _turnSuspendedTcs = new();
+
+    // Tracks show menu / ask / get input callbacks that fire-and-forget their response handling.
+    // on ready defers until this reaches zero.
+    private int _pendingCallbackCount;
+    private readonly List<(IScript Script, Context Context)> _onReadyQueue = [];
 
     private Walkthroughs? _walkthroughs;
 
@@ -250,7 +254,7 @@ public partial class WorldModel : IGame, IGameDebug
 
     public List<string> Errors { get; private set; } = [];
 
-    public void SendCommand(string command, int elapsedTime, IDictionary<string, string> metadata)
+    public Task SendCommand(string command, int elapsedTime, IDictionary<string, string> metadata)
     {
         if (_timerRunner == null)
         {
@@ -262,16 +266,20 @@ public partial class WorldModel : IGame, IGameDebug
             _timerRunner.IncrementTime(elapsedTime);
         }
 
+        // HandleCommandAsyncInternal sets _turnSuspendedTcs synchronously before its first real await,
+        // so capturing .Task after the fire-and-forget start is safe.
         _ = HandleCommandAsyncInternal(command, metadata);
 
         if (elapsedTime > 0)
         {
-            Tick(0);
+            _ = Tick(0);
         }
         else
         {
             SendNextTimerRequest();
         }
+
+        return _turnSuspendedTcs.Task;
     }
 
     private async Task HandleCommandAsyncInternal(string command, IDictionary<string, string> metadata)
@@ -319,12 +327,12 @@ public partial class WorldModel : IGame, IGameDebug
         }
     }
 
-    public void SendCommand(string command)
+    public Task SendCommand(string command)
     {
-        SendCommand(command, 0, ReadOnlyDictionary<string, string>.Empty);
+        return SendCommand(command, 0, ReadOnlyDictionary<string, string>.Empty);
     }
 
-    public void SendEvent(string eventName, string param)
+    public async Task SendEvent(string eventName, string param)
     {
         Elements.TryGetValue(ElementType.Function, eventName, out var handler);
 
@@ -336,14 +344,14 @@ public partial class WorldModel : IGame, IGameDebug
 
         var parameters = new Parameters {{(string) handler.Fields[FieldDefinitions.ParamNames][0], param}};
 
-        RunProcedure(eventName, parameters, false);
+        await RunProcedureAsync(eventName, parameters, false);
 
         switch (Version)
         {
             case < WorldModelVersion.v540:
                 return;
             case < WorldModelVersion.v580:
-                TryFinishTurnAsync().GetAwaiter().GetResult();
+                await TryFinishTurnAsync();
                 break;
         }
 
@@ -425,7 +433,7 @@ public partial class WorldModel : IGame, IGameDebug
         return Encoding.UTF8.GetBytes(saveData);
     }
 
-    public void Tick(int elapsedTime)
+    public Task Tick(int elapsedTime)
     {
         if (_timerRunner == null)
         {
@@ -434,11 +442,12 @@ public partial class WorldModel : IGame, IGameDebug
 
         if (State == GameState.Finished)
         {
-            return;
+            return Task.CompletedTask;
         }
 
-        _ = TickAsyncInternal(elapsedTime);
+        var task = TickAsyncInternal(elapsedTime);
         SendNextTimerRequest();
+        return task;
     }
 
     private async Task TickAsyncInternal(int elapsedTime)
@@ -563,6 +572,7 @@ public partial class WorldModel : IGame, IGameDebug
         _commandInputTcs?.TrySetCanceled();
         _pauseTcs?.TrySetCanceled();
         _turnSuspendedTcs.TrySetResult();
+        _onReadyQueue.Clear();
 
         RequestNextTimerTick?.Invoke(0);
         Finished?.Invoke();
@@ -1311,7 +1321,7 @@ public partial class WorldModel : IGame, IGameDebug
         PlayerUi.RunScript("scrollToEnd", null);
     }
 
-    private void LogException(Exception ex)
+    internal void LogException(Exception ex)
     {
         LogError?.Invoke(ex);
     }
@@ -1406,12 +1416,6 @@ public partial class WorldModel : IGame, IGameDebug
 
     private async Task TryFinishTurnAsync()
     {
-        var onReadyScripts = _callbacks.FlushOnReadyCallbacks();
-        foreach (var cb in onReadyScripts)
-        {
-            await RunScriptAsync(cb.Script, cb.Context, false);
-        }
-
         if (!Elements.ContainsKey(ElementType.Function, "FinishTurn")) return;
         try
         {
@@ -1423,13 +1427,9 @@ public partial class WorldModel : IGame, IGameDebug
         }
     }
 
-    private async Task TryRunOnFinallyScriptsAsync()
+    private Task TryRunOnFinallyScriptsAsync()
     {
-        var onReadyScripts = _callbacks.FlushOnReadyCallbacks();
-        foreach (var cb in onReadyScripts)
-        {
-            await RunScriptAsync(cb.Script, cb.Context, false);
-        }
+        return Task.CompletedTask;
     }
 
     public bool CreatePackage(string filename, bool includeWalkthrough, out string error,
@@ -1483,8 +1483,29 @@ public partial class WorldModel : IGame, IGameDebug
 
     internal void AddOnReady(IScript callback, Context c)
     {
-        // In async mode, on ready always runs immediately (no outstanding callbacks)
-        RunScript(callback, c);
+        if (_pendingCallbackCount > 0)
+        {
+            _onReadyQueue.Add((callback, c));
+        }
+        else
+        {
+            RunScript(callback, c);
+        }
+    }
+
+    internal void BeginPendingCallback() => _pendingCallbackCount++;
+
+    internal async Task EndPendingCallbackAsync()
+    {
+        _pendingCallbackCount--;
+        while (_pendingCallbackCount == 0 && _onReadyQueue.Count > 0 && State != GameState.Finished)
+        {
+            var (script, context) = _onReadyQueue[0];
+            _onReadyQueue.RemoveAt(0);
+            await RunScriptAsync(script, context);
+            // RunScriptAsync may have called BeginPendingCallback (e.g. via show menu inside on ready);
+            // if so, stop flushing — the new callback's EndPendingCallbackAsync will continue.
+        }
     }
 
     public string? GetResourceData(string filename)

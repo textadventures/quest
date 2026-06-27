@@ -64,12 +64,12 @@ public partial class V4Game
 
     public event PrintTextHandler PrintText;
 
-    public void SendCommand(string command)
+    public Task SendCommand(string command)
     {
-        SendCommand(command, 0, null);
+        return SendCommand(command, 0, null);
     }
 
-    public void SendCommand(string command, int elapsedTime, IDictionary<string, string> metadata)
+    public Task SendCommand(string command, int elapsedTime, IDictionary<string, string> metadata)
     {
         // The processing of commands is done in a separate thread, so things like the "enter" command can
         // lock the thread while waiting for further input. After starting to process the command, we wait
@@ -79,7 +79,7 @@ public partial class V4Game
 
         if (!_readyForCommand)
         {
-            return;
+            return Task.CompletedTask;
         }
 
         var runnerThread =
@@ -97,10 +97,13 @@ public partial class V4Game
         {
             RaiseNextTimerTickRequest();
         }
+
+        return Task.CompletedTask;
     }
 
-    public void SendEvent(string eventName, string param)
+    public Task SendEvent(string eventName, string param)
     {
+        return Task.CompletedTask;
     }
 
     public event UpdateListHandler UpdateList;
@@ -116,7 +119,7 @@ public partial class V4Game
         return await InitialiseGame(_gameData);
     }
 
-    public void Tick(int elapsedTime)
+    public Task Tick(int elapsedTime)
     {
         int i;
         var timerScripts = new List<string>();
@@ -157,6 +160,7 @@ public partial class V4Game
         }
 
         RaiseNextTimerTickRequest();
+        return Task.CompletedTask;
     }
 
     public Task FinishWait()

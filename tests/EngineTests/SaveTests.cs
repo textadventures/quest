@@ -22,7 +22,7 @@ public class SaveTests
 
         worldModel.Begin();
 
-        worldModel.SendCommand("update");
+        await worldModel.SendCommand("update");
 
         var tempFilename = Path.GetTempFileName();
         var saveData = worldModel.Save(SaveMode.SavedGame, html: null);
@@ -45,7 +45,7 @@ public class SaveTests
             }
             else
             {
-                worldModel.SendCommand(cmd);
+                await worldModel.SendCommand(cmd);
             }
         }
 

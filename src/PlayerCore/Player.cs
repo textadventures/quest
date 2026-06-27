@@ -487,7 +487,7 @@ public class Player : IPlayerHelperUI
 
     public async Task UiSendCommandAsync(string command, int tickCount, IDictionary<string, string> metadata)
     {
-        await UiActionAsync(() => PlayerHelper.SendCommand(command, tickCount, metadata));
+        await UiActionAsync(async () => await PlayerHelper.SendCommand(command, tickCount, metadata));
     }
 
     public async Task UiEndWaitAsync()
@@ -512,7 +512,7 @@ public class Player : IPlayerHelperUI
 
     public async Task UiTickAsync(int tickCount)
     {
-        await UiActionAsync(() => PlayerHelper.Game.Tick(tickCount));
+        await UiActionAsync(async () => await PlayerHelper.Game.Tick(tickCount));
     }
 
     public async Task UiSetQuestionResponseAsync(bool response)
@@ -522,7 +522,7 @@ public class Player : IPlayerHelperUI
 
     public async Task UiSendEventAsync(string eventName, string param)
     {
-        await UiActionAsync(() => PlayerHelper.Game.SendEvent(eventName, param));
+        await UiActionAsync(async () => await PlayerHelper.Game.SendEvent(eventName, param));
     }
 
     public Task<byte[]> UiSaveGameAsync(string html)

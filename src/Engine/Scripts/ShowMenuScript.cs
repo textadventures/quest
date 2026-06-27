@@ -66,7 +66,7 @@ public class ShowMenuScript : ScriptBase
         ExecuteAsync(c).GetAwaiter().GetResult();
     }
 
-    public override async Task ExecuteAsync(Context c)
+    public override Task ExecuteAsync(Context c)
     {
         var caption = m_caption.Execute(c);
         var options = m_options.Execute(c);
@@ -93,17 +93,29 @@ public class ShowMenuScript : ScriptBase
         m_worldModel.PlayerUi.ShowMenu(menuData);
 
         m_worldModel._menuTcs = new TaskCompletionSource<string?>();
+        m_worldModel.BeginPendingCallback();
         m_worldModel.SignalTurnSuspended();
-        var response = await m_worldModel._menuTcs.Task;
+        _ = AwaitResponseAndRunCallbackAsync(c, optionsDictionary);
+        return Task.CompletedTask;
+    }
 
-        if (response != null)
+    private async Task AwaitResponseAndRunCallbackAsync(Context c, IDictionary<string, string> optionsDictionary)
+    {
+        try
         {
-            m_worldModel.Print(" - " + optionsDictionary[response]);
+            var response = await m_worldModel._menuTcs!.Task;
+            if (response != null)
+                m_worldModel.Print(" - " + optionsDictionary[response]);
+            c.Parameters["result"] = response;
+            await m_worldModel.RunScriptAsync(m_callbackScript, c);
         }
-
-        c.Parameters["result"] = response;
-        await m_worldModel.RunScriptAsync(m_callbackScript, c);
-
+        catch (OperationCanceledException) { }
+        catch (Exception ex) { m_worldModel.LogException(ex); }
+        finally
+        {
+            await m_worldModel.EndPendingCallbackAsync();
+            m_worldModel.SignalTurnSuspended();
+        }
     }
 
     public override string Save()

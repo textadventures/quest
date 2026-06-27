@@ -44,15 +44,32 @@ public class GetInputScript : ScriptBase
         ExecuteAsync(c).GetAwaiter().GetResult();
     }
 
-    public override async Task ExecuteAsync(Context c)
+    public override Task ExecuteAsync(Context c)
     {
         m_worldModel._commandOverride = true;
         m_worldModel._commandInputTcs = new TaskCompletionSource<string>();
+        m_worldModel.BeginPendingCallback();
         m_worldModel.SignalTurnSuspended();
-        var result = await m_worldModel._commandInputTcs.Task;
-        m_worldModel._commandOverride = false;
-        c.Parameters["result"] = result;
-        await m_worldModel.RunScriptAsync(m_callbackScript, c);
+        _ = AwaitResponseAndRunCallbackAsync(c);
+        return Task.CompletedTask;
+    }
+
+    private async Task AwaitResponseAndRunCallbackAsync(Context c)
+    {
+        try
+        {
+            var result = await m_worldModel._commandInputTcs.Task;
+            m_worldModel._commandOverride = false;
+            c.Parameters["result"] = result;
+            await m_worldModel.RunScriptAsync(m_callbackScript, c);
+        }
+        catch (OperationCanceledException) { }
+        catch (Exception ex) { m_worldModel.LogException(ex); }
+        finally
+        {
+            await m_worldModel.EndPendingCallbackAsync();
+            m_worldModel.SignalTurnSuspended();
+        }
     }
 
     public override string Save()

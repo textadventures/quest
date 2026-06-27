@@ -68,7 +68,7 @@ internal class WalkthroughRunner(IGameDebug game, string walkthrough)
                 var eventData = cmd.Substring(6).Split([';'], 2);
                 var eventName = eventData[0];
                 var param = eventData[1];
-                _game.SendEvent(eventName, param);
+                await _game.SendEvent(eventName, param);
             }
             else if (cmd.StartsWith("runtime:"))
             {
@@ -79,7 +79,7 @@ internal class WalkthroughRunner(IGameDebug game, string walkthrough)
             }
             else
             {
-                _game.SendCommand(cmd);
+                await _game.SendCommand(cmd);
             }
 
             if (ClearBuffer != null)

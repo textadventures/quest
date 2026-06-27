@@ -28,7 +28,7 @@ public class Walkthrough
             }
             else
             {
-                worldModel.SendCommand(cmd);
+                await worldModel.SendCommand(cmd);
             }
         }
     }

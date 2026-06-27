@@ -14,9 +14,9 @@ public interface IGame
     string GameID { get; }
     Task<bool> Initialise(IPlayer player);
     void Begin();
-    void SendCommand(string command);
-    void SendCommand(string command, int elapsedTime, IDictionary<string, string> metadata);
-    void SendEvent(string eventName, string param);
+    Task SendCommand(string command);
+    Task SendCommand(string command, int elapsedTime, IDictionary<string, string> metadata);
+    Task SendEvent(string eventName, string param);
     event PrintTextHandler? PrintText;
     event UpdateListHandler? UpdateList;
     event FinishedHandler? Finished;
@@ -30,7 +30,7 @@ public interface IGame
     Task SetQuestionResponse(bool response);
 
     event Action<int>? RequestNextTimerTick;
-    void Tick(int elapsedTime);
+    Task Tick(int elapsedTime);
 
     IEnumerable<string>? GetExternalScripts();
     IEnumerable<string>? GetExternalStylesheets();

@@ -402,9 +402,9 @@ public class PlayerHelper
         return output;
     }
 
-    public void SendCommand(string command, int tickCount, IDictionary<string, string> metadata)
+    public Task SendCommand(string command, int tickCount, IDictionary<string, string> metadata)
     {
-        Game.SendCommand(command, tickCount, metadata);
+        return Game.SendCommand(command, tickCount, metadata);
     }
 
     public void SetForeground(string colour)

@@ -114,12 +114,26 @@ eliminated as part of Phase 4.
 
 ---
 
-## Phase 4 — Async player surface
+## Phase 4 — Async player surface ✅
 
-- `PlayerCore`'s `GameLauncher` and turn-processing become async end-to-end
-- `WebPlayer`'s Blazor components `await` turn execution rather than blocking
-- The existing callback-based path (`CallbackManager`) can be simplified since
-  `async/await` subsumes the callback pattern
+- `IGame.SendCommand`, `IGame.SendEvent`, and `IGame.Tick` now return `Task` instead of
+  `void`, completing the async surface of the game interface
+- `WorldModel.SendCommand` fires `HandleCommandAsyncInternal` as before but now returns
+  `_turnSuspendedTcs.Task` — the caller awaits this and only proceeds (flushing the JS
+  buffer) once the turn has suspended (either finished or waiting for player input)
+- `WorldModel.SendEvent` uses `await RunProcedureAsync` instead of `.GetAwaiter().GetResult()`
+- `WorldModel.Tick` returns the `TickAsyncInternal` task directly instead of fire-and-forgetting
+- `Player.UiSendCommandAsync`, `UiTickAsync`, `UiSendEventAsync` now use the
+  `Func<Task>` overload of `UiActionAsync`, so `ClearBuffer()` is correctly deferred until
+  the awaited turn work completes
+- `PlayerHelper.SendCommand` returns `Task`
+- `WalkthroughRunner` awaits `SendCommand` and `SendEvent` calls
+- `CallbackManager` removed — `AddOnReadyCallback` was never called, so the flush loops
+  in `TryFinishTurnAsync` / `TryRunOnFinallyScriptsAsync` were always no-ops; `Callback.cs`
+  deleted, `TryRunOnFinallyScriptsAsync` returns `Task.CompletedTask`
+- `V4Game` (Legacy) keeps its sync/thread implementation but wraps each method to return
+  `Task.CompletedTask` after the blocking work completes — Phase 5 will replace the threads
+- Tests in `EngineTests`, `LegacyTests` updated to `await` the new `Task`-returning calls
 
 ---
 
