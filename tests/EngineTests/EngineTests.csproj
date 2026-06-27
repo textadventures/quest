@@ -32,6 +32,9 @@
         <ProjectReference Include="..\..\src\Engine\Engine.csproj"/>
     </ItemGroup>
     <ItemGroup>
+        <None Update="callbacktest.aslx">
+            <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+        </None>
         <None Update="savetest.aslx">
             <SubType>Designer</SubType>
             <CopyToOutputDirectory>Always</CopyToOutputDirectory>

@@ -185,10 +185,13 @@ public partial class WorldModel : IGame, IGameDebug
         return result;
     }
 
-    public void Begin()
+    public void Begin() => _ = BeginAsync();
+
+    public Task BeginAsync()
     {
         _ = BeginInternalAsync();
         SendNextTimerRequest();
+        return _turnSuspendedTcs.Task;
     }
 
     private async Task BeginInternalAsync()

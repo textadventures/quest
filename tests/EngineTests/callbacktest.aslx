@@ -1,0 +1,47 @@
+<asl version="580">
+  <include ref="English.aslx" />
+  <include ref="Core.aslx" />
+  <game name="callbacktest"/>
+  <object name="start">
+    <object name="player">
+      <inherit name="defaultplayer" />
+    </object>
+  </object>
+
+  <!-- GetInput() function form: script suspends until user responds -->
+  <command name="cmd_getinput">
+    <pattern>getinput</pattern>
+    <script>
+      msg ("before input")
+      x = GetInput()
+      msg ("got: " + x)
+    </script>
+  </command>
+
+  <!-- get input script form: script continues past the block; callback runs after response -->
+  <command name="cmd_getinputscript">
+    <pattern>getinputscript</pattern>
+    <script>
+      msg ("before input")
+      get input {
+        msg ("got: " + result)
+      }
+      msg ("after input block")
+    </script>
+  </command>
+
+  <!-- wait: script continues past the block; callback and on ready run after key press -->
+  <command name="cmd_wait">
+    <pattern>testwait</pattern>
+    <script>
+      msg ("before wait")
+      wait {
+        msg ("wait done")
+      }
+      msg ("after wait block")
+      on ready {
+        msg ("on ready")
+      }
+    </script>
+  </command>
+</asl>
