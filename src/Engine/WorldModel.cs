@@ -285,6 +285,7 @@ public partial class WorldModel : IGame, IGameDebug
     private async Task HandleCommandAsyncInternal(string command, IDictionary<string, string> metadata)
     {
         _turnSuspendedTcs = new();
+        var commandWasOverridden = false;
         try
         {
             if (!_commandOverride)
@@ -313,6 +314,7 @@ public partial class WorldModel : IGame, IGameDebug
             }
             else
             {
+                commandWasOverridden = true;
                 _commandOverride = false;
                 _commandInputTcs?.TrySetResult(command);
             }
@@ -323,7 +325,11 @@ public partial class WorldModel : IGame, IGameDebug
         }
         finally
         {
-            SignalTurnSuspended();
+            // When command was overridden (get input / GetInput function), the callback fires
+            // asynchronously via AwaitResponseAndRunCallbackAsync, which calls SignalTurnSuspended()
+            // in its own finally after the callback script runs. Signaling here would complete the
+            // turn before the callback output is produced, causing it to appear only on the next turn.
+            if (!commandWasOverridden) SignalTurnSuspended();
         }
     }
 
