@@ -45,7 +45,7 @@ internal class WalkthroughRunner(IGameDebug game, string walkthrough)
             {
                 var expr = cmd.Substring(7);
                 WriteLine("<br><b>Assert:</b> " + expr);
-                if (game.Assert(expr))
+                if (await game.AssertAsync(expr))
                 {
                     WriteLine("<br><span style=\"color:green\"><b>Pass</b></span>");
                 }

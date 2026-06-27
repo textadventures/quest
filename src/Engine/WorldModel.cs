@@ -518,11 +518,11 @@ public partial class WorldModel : IGame, IGameDebug
         return Elements.Get(el).GetDebugData();
     }
 
-    public bool Assert(string expr)
+    public Task<bool> AssertAsync(string expr)
     {
         var expression = new Expression<bool>(expr, new ScriptContext(this));
         var c = new Context();
-        return expression.Execute(c);
+        return Task.FromResult(expression.Execute(c));
     }
 
     public event EventHandler<ElementFieldUpdatedEventArgs>? ElementFieldUpdated;

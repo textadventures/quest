@@ -24,7 +24,7 @@ public class Walkthrough
             if (cmd.StartsWith("assert:"))
             {
                 var expr = cmd.Substring(7);
-                Assert.IsTrue(worldModel.Assert(expr), expr);
+                Assert.IsTrue(await worldModel.AssertAsync(expr), expr);
             }
             else
             {
