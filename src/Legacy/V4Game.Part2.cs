@@ -526,6 +526,9 @@ public partial class V4Game
         if (!string.IsNullOrEmpty(_numericVariable[numNumber].OnChangeScript) & !_gameIsRestoring)
         {
             var script = _numericVariable[numNumber].OnChangeScript;
+            // TODO: SetNumericVariableContents should be async Task so this can be awaited.
+            // Fire-and-forget is wrong if the OnChangeScript contains a pause/wait/menu.
+            // See https://github.com/textadventures/quest/issues/1765
             _ = ExecuteScript(script, ctx);
         }
 
@@ -3140,6 +3143,9 @@ public partial class V4Game
         if (!string.IsNullOrEmpty(_stringVariable[id].OnChangeScript))
         {
             var script = _stringVariable[id].OnChangeScript;
+            // TODO: SetStringContents should be async Task so this can be awaited.
+            // Fire-and-forget is wrong if the OnChangeScript contains a pause/wait/menu.
+            // See https://github.com/textadventures/quest/issues/1765
             _ = ExecuteScript(script, ctx);
         }
 
