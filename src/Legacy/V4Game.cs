@@ -2114,12 +2114,12 @@ public partial class V4Game : IGame, IGameDebug
     {
         if (add)
         {
-            AddToObjectProperties("parent=" + _objs[parentId].ObjectName, childId, ctx);
+            await AddToObjectProperties("parent=" + _objs[parentId].ObjectName, childId, ctx);
             _objs[childId].ContainerRoom = _objs[parentId].ContainerRoom;
         }
         else
         {
-            AddToObjectProperties("not parent", childId, ctx);
+            await AddToObjectProperties("not parent", childId, ctx);
         }
 
         if (ASLVersion >= 410)
@@ -2127,7 +2127,7 @@ public partial class V4Game : IGame, IGameDebug
             // container "seen". Otherwise we could try to "look at" the
             // object we just put in the container and have disambigution fail!
         {
-            AddToObjectProperties("seen", parentId, ctx);
+            await AddToObjectProperties("seen", parentId, ctx);
         }
 
         await UpdateVisibilityInContainers(ctx, _objs[parentId].ObjectName);
@@ -2143,7 +2143,7 @@ public partial class V4Game : IGame, IGameDebug
 
         if (ASLVersion >= 391)
         {
-            AddToObjectProperties("seen", id, ctx);
+            await AddToObjectProperties("seen", id, ctx);
             await UpdateVisibilityInContainers(ctx, _objs[id].ObjectName);
         }
 
@@ -2241,7 +2241,7 @@ public partial class V4Game : IGame, IGameDebug
     {
         if (open)
         {
-            AddToObjectProperties("opened", id, ctx);
+            await AddToObjectProperties("opened", id, ctx);
             if (showLook)
             {
                 await DoLook(id, ctx, showDefaultDescription: false);
@@ -2249,7 +2249,7 @@ public partial class V4Game : IGame, IGameDebug
         }
         else
         {
-            AddToObjectProperties("not opened", id, ctx);
+            await AddToObjectProperties("not opened", id, ctx);
         }
 
         await UpdateVisibilityInContainers(ctx, _objs[id].ObjectName);
@@ -2694,7 +2694,7 @@ public partial class V4Game : IGame, IGameDebug
         }
         else
         {
-            AddToObjectProperties("not parent", childId, ctx);
+            await AddToObjectProperties("not parent", childId, ctx);
             await UpdateVisibilityInContainers(ctx, _objs[parentId].ObjectName);
         }
     }
@@ -3499,7 +3499,7 @@ public partial class V4Game : IGame, IGameDebug
 
         else if (Strings.Trim(line) == "list off")
         {
-            AddToObjectProperties("not list", id, _nullContext);
+            await AddToObjectProperties("not list", id, _nullContext);
             return;
         }
         else if (BeginsWith(line, "list <"))
@@ -3519,7 +3519,7 @@ public partial class V4Game : IGame, IGameDebug
         {
             if (listInfo.Type == TextActionType.Text)
             {
-                AddToObjectProperties(propName + "=" + listInfo.Data, id, _nullContext);
+                await AddToObjectProperties(propName + "=" + listInfo.Data, id, _nullContext);
             }
             else
             {
@@ -3655,7 +3655,7 @@ public partial class V4Game : IGame, IGameDebug
 
         // Update quest.* vars and obj list
         await ShowRoomInfo(_currentRoom, ctx, true);
-        UpdateObjectList(ctx);
+        await UpdateObjectList(ctx);
 
         AddToChangeLog("room " + fromRoom, "destroy exit " + toRoom);
     }
@@ -3693,7 +3693,7 @@ public partial class V4Game : IGame, IGameDebug
         }
 
         // Game object always has ObjID 1
-        AddToObjectProperties(propertyString, 1, ctx);
+        await AddToObjectProperties(propertyString, 1, ctx);
     }
 
     private bool ExecuteIfFlag(string flag)
@@ -3781,7 +3781,7 @@ public partial class V4Game : IGame, IGameDebug
         return stream;
     }
 
-    private void AddObjectAction(int id, string name, string script, bool noUpdate = false)
+    private async Task AddObjectAction(int id, string name, string script, bool noUpdate = false)
     {
         // Use NoUpdate in e.g. AddToGiveInfo, otherwise ObjectActionUpdate will call
         // AddToGiveInfo again leading to a big loop
@@ -3812,7 +3812,7 @@ public partial class V4Game : IGame, IGameDebug
         o.Actions[actionNum].ActionName = name;
         o.Actions[actionNum].Script = script;
 
-        ObjectActionUpdate(id, name, script, noUpdate);
+        await ObjectActionUpdate(id, name, script, noUpdate);
     }
 
     private void AddToChangeLog(string appliesTo, string changeData)
@@ -3869,7 +3869,7 @@ public partial class V4Game : IGame, IGameDebug
             if (BeginsWith(giveData, "anything "))
             {
                 o.GiveToAnything = GetEverythingAfter(giveData, "anything ");
-                AddObjectAction(id, "give to anything", o.GiveToAnything, true);
+                await AddObjectAction(id, "give to anything", o.GiveToAnything, true);
                 return;
             }
 
@@ -3880,7 +3880,7 @@ public partial class V4Game : IGame, IGameDebug
         {
             o.GiveAnything = GetEverythingAfter(giveData, "anything ");
 
-            AddObjectAction(id, "give anything", o.GiveAnything, true);
+            await AddObjectAction(id, "give anything", o.GiveAnything, true);
             return;
         }
         else
@@ -3922,7 +3922,7 @@ public partial class V4Game : IGame, IGameDebug
             o.GiveData[dataId].GiveScript = Strings.Mid(giveData, EP + 2);
 
             actionScript = o.GiveData[dataId].GiveScript;
-            AddObjectAction(id, actionName, actionScript, true);
+            await AddObjectAction(id, actionName, actionScript, true);
         }
     }
 
@@ -3964,7 +3964,7 @@ public partial class V4Game : IGame, IGameDebug
         o.Actions[actionNum].ActionName = name;
         o.Actions[actionNum].Script = script;
 
-        ObjectActionUpdate(id, name, script);
+        await ObjectActionUpdate(id, name, script);
     }
 
     private void AddToObjectAltNames(string altNames, int id)
@@ -3992,7 +3992,7 @@ public partial class V4Game : IGame, IGameDebug
         } while (!string.IsNullOrEmpty(Strings.Trim(altNames)));
     }
 
-    internal void AddToObjectProperties(string propertyInfo, int id, Context ctx)
+    internal async Task AddToObjectProperties(string propertyInfo, int id, Context ctx)
     {
         if (id == 0)
         {
@@ -4146,7 +4146,7 @@ public partial class V4Game : IGame, IGameDebug
                     o.DisplayType = value;
                     if (_gameFullyLoaded)
                     {
-                        UpdateObjectList(ctx);
+                        await UpdateObjectList(ctx);
                     }
 
                     break;
@@ -4179,7 +4179,7 @@ public partial class V4Game : IGame, IGameDebug
 
                     if (_gameFullyLoaded)
                     {
-                        UpdateObjectList(ctx);
+                        await UpdateObjectList(ctx);
                     }
 
                     break;
@@ -4197,7 +4197,7 @@ public partial class V4Game : IGame, IGameDebug
 
                     if (_gameFullyLoaded)
                     {
-                        UpdateObjectList(ctx);
+                        await UpdateObjectList(ctx);
                     }
 
                     break;
@@ -4349,7 +4349,7 @@ public partial class V4Game : IGame, IGameDebug
         return false;
     }
 
-    private void ExecClone(string cloneString, Context ctx)
+    private async Task ExecClone(string cloneString, Context ctx)
     {
         int id;
         string newName, cloneTo;
@@ -4404,7 +4404,7 @@ public partial class V4Game : IGame, IGameDebug
             AddToChangeLog("object " + newName, "create " + _objs[_numberObjs].ContainerRoom);
         }
 
-        UpdateObjectList(ctx);
+        await UpdateObjectList(ctx);
     }
 
     private async Task ExecOops(string correction, Context ctx)
@@ -4460,10 +4460,10 @@ public partial class V4Game : IGame, IGameDebug
         o.TypesIncluded[o.NumberTypesIncluded] = typeName;
 
         var propertyData = await GetPropertiesInType(typeName);
-        AddToObjectProperties(propertyData.Properties, id, ctx);
+        await AddToObjectProperties(propertyData.Properties, id, ctx);
         for (int i = 1, loopTo1 = propertyData.NumberActions; i <= loopTo1; i++)
         {
-            AddObjectAction(id, propertyData.Actions[i].ActionName, propertyData.Actions[i].Script);
+            await AddObjectAction(id, propertyData.Actions[i].ActionName, propertyData.Actions[i].Script);
         }
 
         // New as of Quest 4.0. Fixes bug that "if type" would fail for any
@@ -5109,7 +5109,7 @@ public partial class V4Game : IGame, IGameDebug
         o.Actions[actionNum].ActionName = actionName;
         o.Actions[actionNum].Script = script;
 
-        ObjectActionUpdate(id, actionName, script);
+        await ObjectActionUpdate(id, actionName, script);
     }
 
     private async Task<bool> ExecuteCondition(string condition, Context ctx)
@@ -5263,10 +5263,10 @@ public partial class V4Game : IGame, IGameDebug
 
             if (ASLVersion >= 410)
             {
-                AddToObjectProperties(_defaultRoomProperties.Properties, _numberObjs, ctx);
+                await AddToObjectProperties(_defaultRoomProperties.Properties, _numberObjs, ctx);
                 for (int j = 1, loopTo = _defaultRoomProperties.NumberActions; j <= loopTo; j++)
                 {
-                    AddObjectAction(_numberObjs, _defaultRoomProperties.Actions[j].ActionName,
+                    await AddObjectAction(_numberObjs, _defaultRoomProperties.Actions[j].ActionName,
                         _defaultRoomProperties.Actions[j].Script);
                 }
 
@@ -5309,17 +5309,17 @@ public partial class V4Game : IGame, IGameDebug
 
             if (ASLVersion >= 410)
             {
-                AddToObjectProperties(_defaultProperties.Properties, _numberObjs, ctx);
+                await AddToObjectProperties(_defaultProperties.Properties, _numberObjs, ctx);
                 for (int j = 1, loopTo1 = _defaultProperties.NumberActions; j <= loopTo1; j++)
                 {
-                    AddObjectAction(_numberObjs, _defaultProperties.Actions[j].ActionName,
+                    await AddObjectAction(_numberObjs, _defaultProperties.Actions[j].ActionName,
                         _defaultProperties.Actions[j].Script);
                 }
             }
 
             if (!_gameLoading)
             {
-                UpdateObjectList(ctx);
+                await UpdateObjectList(ctx);
             }
         }
 
@@ -5501,7 +5501,7 @@ public partial class V4Game : IGame, IGameDebug
             // Update quest.doorways variables
            await ShowRoomInfo(_currentRoom, ctx, true);
 
-            UpdateObjectList(ctx);
+            await UpdateObjectList(ctx);
 
             if (ASLVersion < 410)
             {
@@ -5756,7 +5756,7 @@ public partial class V4Game : IGame, IGameDebug
             return;
         }
 
-        AddToObjectProperties(properties, id, ctx);
+        await AddToObjectProperties(properties, id, ctx);
     }
 
     private async Task ExecuteDo(string procedureName, Context ctx)

@@ -140,11 +140,11 @@ internal class RoomExits
         }
 
         roomExit.SetParent(this);
-        roomExit.SetDirection(thisDir);
+        await roomExit.SetDirection(thisDir);
 
         if (_game.BeginsWith(tag, "locked "))
         {
-            roomExit.SetIsLocked(true);
+            await roomExit.SetIsLocked(true);
             tag = _game.GetEverythingAfter(tag, "locked ");
         }
 
@@ -162,32 +162,32 @@ internal class RoomExits
         if (Strings.Len(afterParam) > 0)
         {
             // Script exit
-            roomExit.SetScript(afterParam);
+            await roomExit.SetScript(afterParam);
 
             if (thisDir == V4Game.Direction.None)
             {
                 // A place exit with a script still has a ToRoom
-                roomExit.SetToRoom(@params[0]);
+                await roomExit.SetToRoom(@params[0]);
 
                 // and may have a lock message
                 if (Information.UBound(@params) > 0)
                 {
-                    roomExit.SetLockMessage(@params[1]);
+                    await roomExit.SetLockMessage(@params[1]);
                 }
             }
             // A directional exit with a script may have no parameter.
             // If it does have a parameter it will be a lock message.
             else if (param)
             {
-                roomExit.SetLockMessage(@params[0]);
+                await roomExit.SetLockMessage(@params[0]);
             }
         }
         else
         {
-            roomExit.SetToRoom(@params[0]);
+            await roomExit.SetToRoom(@params[0]);
             if (Information.UBound(@params) > 0)
             {
-                roomExit.SetLockMessage(@params[1]);
+                await roomExit.SetLockMessage(@params[1]);
             }
         }
 
