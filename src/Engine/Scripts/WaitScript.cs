@@ -43,14 +43,31 @@ public class WaitScript : ScriptBase
         ExecuteAsync(c).GetAwaiter().GetResult();
     }
 
-    public override async Task ExecuteAsync(Context c)
+    public override Task ExecuteAsync(Context c)
     {
         m_worldModel.PlayerUi.DoWait();
         m_worldModel._waitTcs = new TaskCompletionSource();
+        m_worldModel.BeginPendingCallback();
         m_worldModel.SignalTurnSuspended();
-        await m_worldModel._waitTcs.Task;
-        if (m_callbackScript != null)
-            await m_worldModel.RunScriptAsync(m_callbackScript, c);
+        _ = AwaitWaitAndRunCallbackAsync(c);
+        return Task.CompletedTask;
+    }
+
+    private async Task AwaitWaitAndRunCallbackAsync(Context c)
+    {
+        try
+        {
+            await m_worldModel._waitTcs.Task;
+            if (m_callbackScript != null)
+                await m_worldModel.RunScriptAsync(m_callbackScript, c);
+        }
+        catch (OperationCanceledException) { }
+        catch (Exception ex) { m_worldModel.LogException(ex); }
+        finally
+        {
+            await m_worldModel.EndPendingCallbackAsync();
+            m_worldModel.SignalTurnSuspended();
+        }
     }
 
     public override string Save()
