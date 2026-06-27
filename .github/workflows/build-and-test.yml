@@ -9,10 +9,6 @@ on:
       - "site/**"
   pull_request:
     branches: [ "main" ]
-    paths:
-      - "src/**"
-      - "tests/**"
-      - "site/**"
   workflow_dispatch:
 
 jobs:
