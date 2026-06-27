@@ -359,14 +359,14 @@ public partial class V4Game
             if (varUbound == 0)
             {
                 data = GetNextChunk();
-                SetStringContents(appliesTo, data, _nullContext);
+                await SetStringContents(appliesTo, data, _nullContext);
             }
             else
             {
                 for (int j = 0, loopTo8 = varUbound; j <= loopTo8; j++)
                 {
                     data = GetNextChunk();
-                    SetStringContents(appliesTo, data, _nullContext, j);
+                    await SetStringContents(appliesTo, data, _nullContext, j);
                 }
             }
         }
@@ -382,14 +382,14 @@ public partial class V4Game
             if (varUbound == 0)
             {
                 data = GetNextChunk();
-                SetNumericVariableContents(appliesTo, Conversion.Val(data), _nullContext);
+                await SetNumericVariableContents(appliesTo, Conversion.Val(data), _nullContext);
             }
             else
             {
                 for (int j = 0, loopTo10 = varUbound; j <= loopTo10; j++)
                 {
                     data = GetNextChunk();
-                    SetNumericVariableContents(appliesTo, Conversion.Val(data), _nullContext, j);
+                    await SetNumericVariableContents(appliesTo, Conversion.Val(data), _nullContext, j);
                 }
             }
         }
@@ -474,7 +474,7 @@ public partial class V4Game
         _player.SetFontSize(size.ToString());
     }
 
-    private void SetNumericVariableContents(string name, double content, Context ctx, int arrayIndex = 0)
+    private async Task SetNumericVariableContents(string name, double content, Context ctx, int arrayIndex = 0)
     {
         var numNumber = default(int);
         var exists = false;
@@ -526,15 +526,12 @@ public partial class V4Game
         if (!string.IsNullOrEmpty(_numericVariable[numNumber].OnChangeScript) & !_gameIsRestoring)
         {
             var script = _numericVariable[numNumber].OnChangeScript;
-            // TODO: SetNumericVariableContents should be async Task so this can be awaited.
-            // Fire-and-forget is wrong if the OnChangeScript contains a pause/wait/menu.
-            // See https://github.com/textadventures/quest/issues/1765
-            _ = ExecuteScript(script, ctx);
+            await ExecuteScript(script, ctx);
         }
 
         if (!string.IsNullOrEmpty(_numericVariable[numNumber].DisplayString))
         {
-            _ = UpdateStatusVars(ctx);
+            await UpdateStatusVars(ctx);
         }
     }
 
@@ -597,7 +594,7 @@ public partial class V4Game
         {
             if ((Strings.LCase(_stringVariable[i].VariableName) ?? "") == (Strings.LCase(name) ?? ""))
             {
-                ExecSetString(variableData, ctx);
+                await ExecSetString(variableData, ctx);
                 return SetResult.Found;
             }
         }
@@ -606,7 +603,7 @@ public partial class V4Game
         {
             if ((Strings.LCase(_numericVariable[i].VariableName) ?? "") == (Strings.LCase(name) ?? ""))
             {
-                ExecSetVar(variableData, ctx);
+                await ExecSetVar(variableData, ctx);
                 return SetResult.Found;
             }
         }
@@ -1806,7 +1803,7 @@ public partial class V4Game
 
         _player.LocationUpdated(prefixAliasNoFormat);
 
-        SetStringContents("quest.formatroom", prefixAliasNoFormat, _nullContext);
+        await SetStringContents("quest.formatroom", prefixAliasNoFormat, _nullContext);
 
         // FIND CHARACTERS ===
 
@@ -1823,13 +1820,13 @@ public partial class V4Game
         if (charsFound == 0)
         {
             charsViewable = "There is nobody here.";
-            SetStringContents("quest.characters", "", _nullContext);
+            await SetStringContents("quest.characters", "", _nullContext);
         }
         else
         {
             // chop off final comma and add full stop (.)
             charList = Strings.Left(charsViewable, Strings.Len(charsViewable) - 2);
-            SetStringContents("quest.characters", charList, _nullContext);
+            await SetStringContents("quest.characters", charList, _nullContext);
 
             // if more than one character, add "and" before
             // last one:
@@ -1902,15 +1899,15 @@ public partial class V4Game
             }
 
             objsViewable = "There is " + objListString + " here.";
-            SetStringContents("quest.objects",
+            await SetStringContents("quest.objects",
                 Strings.Left(noFormatObjsViewable, Strings.Len(noFormatObjsViewable) - 2), _nullContext);
-            SetStringContents("quest.formatobjects", objListString, _nullContext);
+            await SetStringContents("quest.formatobjects", objListString, _nullContext);
             roomDisplayText = roomDisplayText + objsViewable + Constants.vbCrLf;
         }
         else
         {
-            SetStringContents("quest.objects", "", _nullContext);
-            SetStringContents("quest.formatobjects", "", _nullContext);
+            await SetStringContents("quest.objects", "", _nullContext);
+            await SetStringContents("quest.formatobjects", "", _nullContext);
         }
 
         // FIND DOORWAYS
@@ -2008,11 +2005,11 @@ public partial class V4Game
 
             roomDisplayText = roomDisplayText + "You can go out to " + aliasOut + "." + Constants.vbCrLf;
             possDir = possDir + "o";
-            SetStringContents("quest.doorways.out", aliasOut, _nullContext);
+            await SetStringContents("quest.doorways.out", aliasOut, _nullContext);
         }
         else
         {
-            SetStringContents("quest.doorways.out", "", _nullContext);
+            await SetStringContents("quest.doorways.out", "", _nullContext);
         }
 
         bool finished;
@@ -2041,11 +2038,11 @@ public partial class V4Game
             }
 
             roomDisplayText = roomDisplayText + "You can go " + nsew + "." + Constants.vbCrLf;
-            SetStringContents("quest.doorways.dirs", nsew, _nullContext);
+            await SetStringContents("quest.doorways.dirs", nsew, _nullContext);
         }
         else
         {
-            SetStringContents("quest.doorways.dirs", "", _nullContext);
+            await SetStringContents("quest.doorways.dirs", "", _nullContext);
         }
 
         UpdateDirButtons(possDir, _nullContext);
@@ -2077,11 +2074,11 @@ public partial class V4Game
             }
 
             roomDisplayText = roomDisplayText + "You can go to " + places + "." + Constants.vbCrLf;
-            SetStringContents("quest.doorways.places", places, _nullContext);
+            await SetStringContents("quest.doorways.places", places, _nullContext);
         }
         else
         {
-            SetStringContents("quest.doorways.places", "", _nullContext);
+            await SetStringContents("quest.doorways.places", "", _nullContext);
         }
 
         // Print RoomDisplayText if there is no "description" tag,
@@ -2238,7 +2235,7 @@ public partial class V4Game
         }
     }
 
-    private void ExecSetString(string info, Context ctx)
+    private async Task ExecSetString(string info, Context ctx)
     {
         // Sets string contents from a script parameter.
         // Eg <string1;contents> sets string variable string1
@@ -2264,7 +2261,7 @@ public partial class V4Game
         }
 
         var idx = GetArrayIndex(name, ctx);
-        SetStringContents(idx.Name, value, ctx, idx.Index);
+        await SetStringContents(idx.Name, value, ctx, idx.Index);
     }
 
     private async Task<bool> ExecUserCommand(string cmd, Context ctx, bool libCommands = false)
@@ -2501,12 +2498,12 @@ public partial class V4Game
                 }
                 else
                 {
-                    SetStringContents(varName[i], _objs[id].ObjectName, ctx, arrayIndex);
+                    await SetStringContents(varName[i], _objs[id].ObjectName, ctx, arrayIndex);
                 }
             }
             else
             {
-                SetStringContents(varName[i], curChunk, ctx, arrayIndex);
+                await SetStringContents(varName[i], curChunk, ctx, arrayIndex);
             }
         }
 
@@ -2912,7 +2909,7 @@ public partial class V4Game
                     name = Strings.Trim(Strings.Left(data, scp - 1));
                     data = Strings.Right(data, Strings.Len(data) - scp);
 
-                    SetStringContents(name, data, _nullContext);
+                    await SetStringContents(name, data, _nullContext);
                 }
             } while (data != "!n");
 
@@ -2926,7 +2923,7 @@ public partial class V4Game
                     name = Strings.Trim(Strings.Left(data, scp - 1));
                     data = Strings.Right(data, Strings.Len(data) - scp);
 
-                    SetNumericVariableContents(name, Conversion.Val(data), _nullContext);
+                    await SetNumericVariableContents(name, Conversion.Val(data), _nullContext);
                 }
             } while (data != "!e");
         }
@@ -3075,7 +3072,7 @@ public partial class V4Game
         await UpdateObjectList(ctx);
     }
 
-    internal void SetStringContents(string name, string value, Context ctx, int arrayIndex = 0)
+    internal async Task SetStringContents(string name, string value, Context ctx, int arrayIndex = 0)
     {
         var id = default(int);
         var exists = false;
@@ -3143,15 +3140,12 @@ public partial class V4Game
         if (!string.IsNullOrEmpty(_stringVariable[id].OnChangeScript))
         {
             var script = _stringVariable[id].OnChangeScript;
-            // TODO: SetStringContents should be async Task so this can be awaited.
-            // Fire-and-forget is wrong if the OnChangeScript contains a pause/wait/menu.
-            // See https://github.com/textadventures/quest/issues/1765
-            _ = ExecuteScript(script, ctx);
+            await ExecuteScript(script, ctx);
         }
 
         if (!string.IsNullOrEmpty(_stringVariable[id].DisplayString))
         {
-            _ = UpdateStatusVars(ctx);
+            await UpdateStatusVars(ctx);
         }
     }
 
@@ -3756,7 +3750,7 @@ public partial class V4Game
 
         _player.LocationUpdated(Strings.UCase(Strings.Left(roomAlias, 1)) + Strings.Mid(roomAlias, 2));
 
-        SetStringContents("quest.formatroom", roomDisplayNameNoFormat, ctx);
+        await SetStringContents("quest.formatroom", roomDisplayNameNoFormat, ctx);
 
         // SHOW OBJECTS *************************************************************
 
@@ -3810,20 +3804,20 @@ public partial class V4Game
 
         if (visibleObjectsList.Count > 0)
         {
-            SetStringContents("quest.formatobjects", visibleObjects, ctx);
+            await SetStringContents("quest.formatobjects", visibleObjects, ctx);
             visibleObjects = "There is " + visibleObjects + " here.";
-            SetStringContents("quest.objects", visibleObjectsNoFormat, ctx);
+            await SetStringContents("quest.objects", visibleObjectsNoFormat, ctx);
             roomDisplayText = roomDisplayText + visibleObjects + Constants.vbCrLf;
         }
         else
         {
-            SetStringContents("quest.objects", "", ctx);
-            SetStringContents("quest.formatobjects", "", ctx);
+            await SetStringContents("quest.objects", "", ctx);
+            await SetStringContents("quest.formatobjects", "", ctx);
         }
 
         // SHOW EXITS ***************************************************************
 
-        doorwayString = UpdateDoorways(id, ctx);
+        doorwayString = await UpdateDoorways(id, ctx);
 
         if (ASLVersion < 410)
         {
@@ -3856,11 +3850,11 @@ public partial class V4Game
                 }
 
                 roomDisplayText = roomDisplayText + "You can go to " + placeList + "." + Constants.vbCrLf;
-                SetStringContents("quest.doorways.places", placeList, ctx);
+                await SetStringContents("quest.doorways.places", placeList, ctx);
             }
             else
             {
-                SetStringContents("quest.doorways.places", "", ctx);
+                await SetStringContents("quest.doorways.places", "", ctx);
             }
         }
 
@@ -3880,7 +3874,7 @@ public partial class V4Game
             lookDesc = objLook;
         }
 
-        SetStringContents("quest.lookdesc", lookDesc, ctx);
+        await SetStringContents("quest.lookdesc", lookDesc, ctx);
 
 
         // FIND DESCRIPTION TAG, OR ACTION ******************************************
@@ -4134,7 +4128,7 @@ public partial class V4Game
             // so put input into previously specified variable
             // and exit:
 
-            SetStringContents(_commandOverrideVariable, input, ctx);
+            await SetStringContents(_commandOverrideVariable, input, ctx);
             _commandTcs!.TrySetResult();
             return false;
         }
@@ -4148,7 +4142,7 @@ public partial class V4Game
 
         input = Strings.LCase(input);
 
-        SetStringContents("quest.originalcommand", input, ctx);
+        await SetStringContents("quest.originalcommand", input, ctx);
 
         var newCommand = " " + input + " ";
 
@@ -4172,7 +4166,7 @@ public partial class V4Game
         // strip starting and ending spaces
         input = Strings.Mid(newCommand, 2, Strings.Len(newCommand) - 2);
 
-        SetStringContents("quest.command", input, ctx);
+        await SetStringContents("quest.command", input, ctx);
 
         // Execute any "beforeturn" script:
 
@@ -4770,7 +4764,7 @@ public partial class V4Game
                 if (!string.IsNullOrEmpty(script))
                 {
                     foundScript = true;
-                    SetStringContents("quest.give.object.name", _objs[id].ObjectName, ctx);
+                    await SetStringContents("quest.give.object.name", _objs[id].ObjectName, ctx);
                 }
             }
 
@@ -4781,7 +4775,7 @@ public partial class V4Game
                 if (!string.IsNullOrEmpty(script))
                 {
                     foundScript = true;
-                    SetStringContents("quest.give.object.name", _objs[giveToId].ObjectName, ctx);
+                    await SetStringContents("quest.give.object.name", _objs[giveToId].ObjectName, ctx);
                 }
             }
 
@@ -4791,13 +4785,13 @@ public partial class V4Game
             }
             else
             {
-                SetStringContents("quest.error.charactername", _objs[giveToId].ObjectName, ctx);
+                await SetStringContents("quest.error.charactername", _objs[giveToId].ObjectName, ctx);
 
                 var gender = Strings.Trim(_objs[giveToId].Gender);
                 gender = Strings.UCase(Strings.Left(gender, 1)) + Strings.Mid(gender, 2);
-                SetStringContents("quest.error.gender", gender, ctx);
+                await SetStringContents("quest.error.gender", gender, ctx);
 
-                SetStringContents("quest.error.article", article, ctx);
+                await SetStringContents("quest.error.article", article, ctx);
                 await PlayerErrorMessage(PlayerError.ItemUnwanted, ctx);
             }
         }
@@ -4838,9 +4832,9 @@ public partial class V4Game
                     article = "it";
                 }
 
-                SetStringContents("quest.error.charactername", realName, ctx);
-                SetStringContents("quest.error.gender", Strings.Trim(await GetGender(character, true, ctx)), ctx);
-                SetStringContents("quest.error.article", article, ctx);
+                await SetStringContents("quest.error.charactername", realName, ctx);
+                await SetStringContents("quest.error.gender", Strings.Trim(await GetGender(character, true, ctx)), ctx);
+                await SetStringContents("quest.error.article", article, ctx);
                 await PlayerErrorMessage(PlayerError.ItemUnwanted, ctx);
                 return;
             }
@@ -5049,7 +5043,7 @@ public partial class V4Game
 
             if (!foundSpeak)
             {
-                SetStringContents("quest.error.gender",
+                await SetStringContents("quest.error.gender",
                     Strings.UCase(Strings.Left(_objs[ObjID].Gender, 1)) + Strings.Mid(_objs[ObjID].Gender, 2), ctx);
                 await PlayerErrorMessage(PlayerError.DefaultSpeak, ctx);
                 return;
@@ -5097,8 +5091,8 @@ public partial class V4Game
             }
             else if (line == "<unfound>")
             {
-                SetStringContents("quest.error.gender", Strings.Trim(await GetGender(cmd, true, ctx)), ctx);
-                SetStringContents("quest.error.charactername", cmd, ctx);
+                await SetStringContents("quest.error.gender", Strings.Trim(await GetGender(cmd, true, ctx)), ctx);
+                await SetStringContents("quest.error.charactername", cmd, ctx);
                 await PlayerErrorMessage(PlayerError.DefaultSpeak, ctx);
             }
             else if (BeginsWith(data, "<"))
@@ -5161,7 +5155,7 @@ public partial class V4Game
             return;
         }
 
-        SetStringContents("quest.error.article", _objs[id].Article, ctx);
+        await SetStringContents("quest.error.article", _objs[id].Article, ctx);
 
         var isInContainer = false;
 
@@ -5450,7 +5444,7 @@ public partial class V4Game
                     if (!string.IsNullOrEmpty(useScript))
                     {
                         foundUseScript = true;
-                        SetStringContents("quest.use.object.name", _objs[id].ObjectName, ctx);
+                        await SetStringContents("quest.use.object.name", _objs[id].ObjectName, ctx);
                     }
                 }
 
@@ -5461,7 +5455,7 @@ public partial class V4Game
                     if (!string.IsNullOrEmpty(useScript))
                     {
                         foundUseScript = true;
-                        SetStringContents("quest.use.object.name", _objs[useOnObjectId].ObjectName, ctx);
+                        await SetStringContents("quest.use.object.name", _objs[useOnObjectId].ObjectName, ctx);
                     }
                 }
             }
@@ -5929,11 +5923,11 @@ public partial class V4Game
             }
             else if (BeginsWith(scriptLine, "setstring "))
             {
-                ExecSetString(await GetParameter(scriptLine, ctx), ctx);
+                await ExecSetString(await GetParameter(scriptLine, ctx), ctx);
             }
             else if (BeginsWith(scriptLine, "setvar "))
             {
-                ExecSetVar(await GetParameter(scriptLine, ctx), ctx);
+                await ExecSetVar(await GetParameter(scriptLine, ctx), ctx);
             }
             else if (BeginsWith(scriptLine, "for "))
             {
@@ -6138,11 +6132,11 @@ public partial class V4Game
             }
             else if (BeginsWith(setInstruction, "string "))
             {
-                ExecSetString(await GetParameter(setInstruction, ctx), ctx);
+                await ExecSetString(await GetParameter(setInstruction, ctx), ctx);
             }
             else if (BeginsWith(setInstruction, "numeric "))
             {
-                ExecSetVar(await GetParameter(setInstruction, ctx), ctx);
+                await ExecSetVar(await GetParameter(setInstruction, ctx), ctx);
             }
             else if (BeginsWith(setInstruction, "collectable "))
             {
@@ -6691,7 +6685,7 @@ public partial class V4Game
 
         _currentRoom = room;
 
-        SetStringContents("quest.currentroom", room, ctx);
+        await SetStringContents("quest.currentroom", room, ctx);
 
         if ((ASLVersion >= 391) & (ASLVersion < 410))
         {
@@ -7174,7 +7168,7 @@ public partial class V4Game
         exitList.Add(new ListData(name, _listVerbs[ListType.ExitsList]));
     }
 
-    private string UpdateDoorways(int roomId, Context ctx)
+    private async Task<string> UpdateDoorways(int roomId, Context ctx)
     {
         var roomDisplayText = "";
         var outPlace = "";
@@ -7196,7 +7190,7 @@ public partial class V4Game
 
         if (ASLVersion >= 410)
         {
-            _rooms[roomId].Exits.GetAvailableDirectionsDescription(ref roomDisplayText, ref directions);
+            (roomDisplayText, directions) = await _rooms[roomId].Exits.GetAvailableDirectionsDescription();
         }
         else
         {
@@ -7304,19 +7298,19 @@ public partial class V4Game
                 directions = directions + "o";
                 if (ASLVersion >= 280)
                 {
-                    SetStringContents("quest.doorways.out", outPlaceName, ctx);
+                    await SetStringContents("quest.doorways.out", outPlaceName, ctx);
                 }
                 else
                 {
-                    SetStringContents("quest.doorways.out", outPlaceAlias, ctx);
+                    await SetStringContents("quest.doorways.out", outPlaceAlias, ctx);
                 }
 
-                SetStringContents("quest.doorways.out.display", outPlaceAlias, ctx);
+                await SetStringContents("quest.doorways.out.display", outPlaceAlias, ctx);
             }
             else
             {
-                SetStringContents("quest.doorways.out", "", ctx);
-                SetStringContents("quest.doorways.out.display", "", ctx);
+                await SetStringContents("quest.doorways.out", "", ctx);
+                await SetStringContents("quest.doorways.out.display", "", ctx);
             }
 
             if (!string.IsNullOrEmpty(nsew))
@@ -7344,11 +7338,11 @@ public partial class V4Game
                 }
 
                 roomDisplayText = roomDisplayText + "You can go " + nsew + ".";
-                SetStringContents("quest.doorways.dirs", nsew, ctx);
+                await SetStringContents("quest.doorways.dirs", nsew, ctx);
             }
             else
             {
-                SetStringContents("quest.doorways.dirs", "", ctx);
+                await SetStringContents("quest.doorways.dirs", "", ctx);
             }
         }
 
@@ -7482,13 +7476,13 @@ public partial class V4Game
 
             if (charsFound == 0)
             {
-                SetStringContents("quest.characters", "", ctx);
+                await SetStringContents("quest.characters", "", ctx);
             }
             else
             {
                 // chop off final comma and add full stop (.)
                 charList = Strings.Left(charsViewable, Strings.Len(charsViewable) - 2);
-                SetStringContents("quest.characters", charList, ctx);
+                await SetStringContents("quest.characters", charList, ctx);
             }
         }
 
@@ -7530,14 +7524,14 @@ public partial class V4Game
         {
             objListString = Strings.Left(objsViewable, Strings.Len(objsViewable) - 2);
             noFormatObjListString = Strings.Left(noFormatObjsViewable, Strings.Len(noFormatObjsViewable) - 2);
-            SetStringContents("quest.objects",
+            await SetStringContents("quest.objects",
                 Strings.Left(noFormatObjsViewable, Strings.Len(noFormatObjsViewable) - 2), ctx);
-            SetStringContents("quest.formatobjects", objListString, ctx);
+            await SetStringContents("quest.formatobjects", objListString, ctx);
         }
         else
         {
-            SetStringContents("quest.objects", "", ctx);
-            SetStringContents("quest.formatobjects", "", ctx);
+            await SetStringContents("quest.objects", "", ctx);
+            await SetStringContents("quest.formatobjects", "", ctx);
         }
 
         // FIND DOORWAYS

@@ -2454,7 +2454,7 @@ public partial class V4Game : IGame, IGameDebug
 
         if (noParentSpecified & doAdd)
         {
-            SetStringContents("quest.error.article", _objs[childId].Article, ctx);
+            await SetStringContents("quest.error.article", _objs[childId].Article, ctx);
             await PlayerErrorMessage(PlayerError.BadPut, ctx);
             return;
         }
@@ -2593,7 +2593,7 @@ public partial class V4Game : IGame, IGameDebug
 
         if (foundAction)
         {
-            SetStringContents("quest." + Strings.LCase(action) + ".object.name", _objs[childId].ObjectName, ctx);
+            await SetStringContents("quest." + Strings.LCase(action) + ".object.name", _objs[childId].ObjectName, ctx);
             await ExecuteScript(actionScript, ctx, parentId);
         }
         else
@@ -3024,7 +3024,7 @@ public partial class V4Game : IGame, IGameDebug
             }
             else
             {
-                SetStringContents("quest.error.article", _objs[id].Article, ctx);
+                await SetStringContents("quest.error.article", _objs[id].Article, ctx);
 
                 var foundAction = false;
 
@@ -3736,7 +3736,7 @@ public partial class V4Game : IGame, IGameDebug
         }
 
         var arrayIndex = GetArrayIndex(variable, ctx);
-        SetNumericVariableContents(arrayIndex.Name, value, ctx, arrayIndex.Index);
+        await SetNumericVariableContents(arrayIndex.Name, value, ctx, arrayIndex.Index);
     }
 
     private Stream ExtractFile(string file)
@@ -4620,7 +4620,7 @@ public partial class V4Game : IGame, IGameDebug
 
         name = Strings.Trim(name);
 
-        SetStringContents("quest.lastobject", "", ctx);
+        await SetStringContents("quest.lastobject", "", ctx);
 
         if (Strings.InStr(containedIn, ";") != 0)
         {
@@ -4643,7 +4643,7 @@ public partial class V4Game : IGame, IGameDebug
                 {
                     if ((Strings.LCase(_objs[i].ObjectName) ?? "") == (Strings.LCase(name) ?? ""))
                     {
-                        SetStringContents("quest.lastobject", _objs[i].ObjectName, ctx);
+                        await SetStringContents("quest.lastobject", _objs[i].ObjectName, ctx);
                         return i;
                     }
                 }
@@ -4654,11 +4654,11 @@ public partial class V4Game : IGame, IGameDebug
         if ((name == "it") | (name == "them") | (name == "this") | (name == "those") | (name == "these") |
             (name == "that"))
         {
-            SetStringContents("quest.error.pronoun", name, ctx);
+            await SetStringContents("quest.error.pronoun", name, ctx);
             if ((_lastIt != 0) & (_lastItMode == ItType.Inanimate) &
                 DisambObjHere(ctx, _lastIt, firstPlace, twoPlaces, secondPlace))
             {
-                SetStringContents("quest.lastobject", _objs[_lastIt].ObjectName, ctx);
+                await SetStringContents("quest.lastobject", _objs[_lastIt].ObjectName, ctx);
                 return _lastIt;
             }
 
@@ -4668,11 +4668,11 @@ public partial class V4Game : IGame, IGameDebug
 
         if (name == "him")
         {
-            SetStringContents("quest.error.pronoun", name, ctx);
+            await SetStringContents("quest.error.pronoun", name, ctx);
             if ((_lastIt != 0) & (_lastItMode == ItType.Male) &
                 DisambObjHere(ctx, _lastIt, firstPlace, twoPlaces, secondPlace))
             {
-                SetStringContents("quest.lastobject", _objs[_lastIt].ObjectName, ctx);
+                await SetStringContents("quest.lastobject", _objs[_lastIt].ObjectName, ctx);
                 return _lastIt;
             }
 
@@ -4682,11 +4682,11 @@ public partial class V4Game : IGame, IGameDebug
 
         if (name == "her")
         {
-            SetStringContents("quest.error.pronoun", name, ctx);
+            await SetStringContents("quest.error.pronoun", name, ctx);
             if ((_lastIt != 0) & (_lastItMode == ItType.Female) &
                 DisambObjHere(ctx, _lastIt, firstPlace, twoPlaces, secondPlace))
             {
-                SetStringContents("quest.lastobject", _objs[_lastIt].ObjectName, ctx);
+                await SetStringContents("quest.lastobject", _objs[_lastIt].ObjectName, ctx);
                 return _lastIt;
             }
 
@@ -4769,7 +4769,7 @@ public partial class V4Game : IGame, IGameDebug
 
         if (numberCorresIds == 1)
         {
-            SetStringContents("quest.lastobject", _objs[idNumbers[1]].ObjectName, ctx);
+            await SetStringContents("quest.lastobject", _objs[idNumbers[1]].ObjectName, ctx);
             _thisTurnIt = idNumbers[1];
 
             switch (_objs[idNumbers[1]].Article ?? "")
@@ -4827,7 +4827,7 @@ public partial class V4Game : IGame, IGameDebug
 
             _choiceNumber = Conversions.ToInteger(response);
 
-            SetStringContents("quest.lastobject", _objs[idNumbers[_choiceNumber]].ObjectName, ctx);
+            await SetStringContents("quest.lastobject", _objs[idNumbers[_choiceNumber]].ObjectName, ctx);
 
             _thisTurnIt = idNumbers[_choiceNumber];
 
@@ -4857,7 +4857,7 @@ public partial class V4Game : IGame, IGameDebug
         }
 
         _thisTurnIt = _lastIt;
-        SetStringContents("quest.error.object", name, ctx);
+        await SetStringContents("quest.error.object", name, ctx);
         return -1;
     }
 
@@ -5033,7 +5033,7 @@ public partial class V4Game : IGame, IGameDebug
             {
                 if ((_objs[i].IsRoom == isRoom) & (_objs[i].IsExit == isExit))
                 {
-                    SetStringContents("quest.thing", _objs[i].ObjectName, ctx);
+                    await SetStringContents("quest.thing", _objs[i].ObjectName, ctx);
                     await ExecuteScript(scriptToRun, ctx);
                 }
             }
@@ -5507,18 +5507,18 @@ public partial class V4Game : IGame, IGameDebug
             {
                 if ((_currentRoom ?? "") == (_rooms[srcId].RoomName ?? ""))
                 {
-                    UpdateDoorways(srcId, ctx);
+                    await UpdateDoorways(srcId, ctx);
                 }
                 else if ((_currentRoom ?? "") == (_rooms[destId].RoomName ?? ""))
                 {
-                    UpdateDoorways(destId, ctx);
+                    await UpdateDoorways(destId, ctx);
                 }
             }
             else
             {
                 // Don't have DestID in ASL410 CreateExit code, so just UpdateDoorways
                 // for current room anyway.
-                UpdateDoorways(GetRoomID(_currentRoom, ctx), ctx);
+                await UpdateDoorways(GetRoomID(_currentRoom, ctx), ctx);
             }
         }
     }
@@ -5582,7 +5582,7 @@ public partial class V4Game : IGame, IGameDebug
             }
         }
 
-        SetStringContents("quest.error.article", _objs[id].Article, ctx);
+        await SetStringContents("quest.error.article", _objs[id].Article, ctx);
 
         if (!dropFound | BeginsWith(dropStatement, "everywhere"))
         {
@@ -6791,7 +6791,7 @@ public partial class V4Game : IGame, IGameDebug
                 var scp = Strings.InStr(pos, parameter, ";");
 
                 var parameterData = Strings.Trim(Strings.Mid(parameter, pos, scp - pos));
-                SetStringContents("quest.function.parameter." + Strings.Trim(Conversion.Str(numParameters)),
+                await SetStringContents("quest.function.parameter." + Strings.Trim(Conversion.Str(numParameters)),
                     parameterData, ctx);
 
                 newCtx.NumParameters = numParameters;
@@ -6801,11 +6801,11 @@ public partial class V4Game : IGame, IGameDebug
                 pos = scp + 1;
             } while (pos < Strings.Len(parameter));
 
-            SetStringContents("quest.function.numparameters", Strings.Trim(Conversion.Str(numParameters)), ctx);
+            await SetStringContents("quest.function.numparameters", Strings.Trim(Conversion.Str(numParameters)), ctx);
         }
         else
         {
-            SetStringContents("quest.function.numparameters", "0", ctx);
+            await SetStringContents("quest.function.numparameters", "0", ctx);
             newCtx.NumParameters = 0;
         }
 
@@ -7245,13 +7245,13 @@ public partial class V4Game : IGame, IGameDebug
              (double) stepValue >= 0 ? i <= loopTo : i >= loopTo;
              i += stepValue)
         {
-            SetNumericVariableContents(counterVariable, i, ctx);
+            await SetNumericVariableContents(counterVariable, i, ctx);
             await ExecuteScript(loopScript, ctx);
             i = GetNumericContents(counterVariable, ctx);
         }
     }
 
-    private void ExecSetVar(string varInfo, Context ctx)
+    private async Task ExecSetVar(string varInfo, Context ctx)
     {
         // Sets variable contents from a script parameter.
         // Eg <var1;7> sets numeric variable var1
@@ -7346,7 +7346,7 @@ public partial class V4Game : IGame, IGameDebug
                 }
             }
 
-            SetNumericVariableContents(idx.Name, Conversion.Val(varCont), ctx, idx.Index);
+            await SetNumericVariableContents(idx.Name, Conversion.Val(varCont), ctx, idx.Index);
         }
         catch
         {
