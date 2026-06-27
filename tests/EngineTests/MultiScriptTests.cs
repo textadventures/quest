@@ -49,7 +49,7 @@ public class MultiScriptTests
     }
 
     [TestMethod]
-    public void TestMultiScriptSwap()
+    public async Task TestMultiScriptSwap()
     {
         var multiScript = CreateMultiScript("line 1", "line 2", "line 3", "line 4");
 
@@ -65,7 +65,7 @@ public class MultiScriptTests
 
         // Undo - should be back to original
 
-        m_worldModel.UndoLogger.Undo();
+        await m_worldModel.UndoLogger.Undo();
         Assert.AreEqual("line 1;line 2;line 3;line 4", GetLinesString(multiScript));
 
         // Redo - lines 2 and 3 swapped again
@@ -75,7 +75,7 @@ public class MultiScriptTests
 
         // Undo - should be back to original
 
-        m_worldModel.UndoLogger.Undo();
+        await m_worldModel.UndoLogger.Undo();
         Assert.AreEqual("line 1;line 2;line 3;line 4", GetLinesString(multiScript));
 
         // Now swap two non-consecutive elements, lines 1 and 4
@@ -90,7 +90,7 @@ public class MultiScriptTests
 
         // Undo - should be back to original
 
-        m_worldModel.UndoLogger.Undo();
+        await m_worldModel.UndoLogger.Undo();
         Assert.AreEqual("line 1;line 2;line 3;line 4", GetLinesString(multiScript));
     }
 }

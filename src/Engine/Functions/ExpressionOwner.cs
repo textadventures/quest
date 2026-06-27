@@ -644,13 +644,13 @@ internal class ExpressionOwner(WorldModel worldModel)
         return _random.NextDouble();
     }
 
-    public object Eval(string? expression)
+    public Task<object> Eval(string? expression)
     {
         ArgumentNullException.ThrowIfNull(expression);
         return Eval(expression, null);
     }
 
-    public object Eval(string? expression, /* IDictionary */ object? obj)
+    public Task<object> Eval(string? expression, /* IDictionary */ object? obj)
     {
         ArgumentNullException.ThrowIfNull(expression);
         var parameters = obj == null ? null : GetParameter<IDictionary>(obj, "Eval", "dictionary");
@@ -661,7 +661,7 @@ internal class ExpressionOwner(WorldModel worldModel)
             context.Parameters = new Parameters(parameters);
         }
 
-        return expr.Execute(context);
+        return expr.ExecuteAsync(context);
     }
 
     public Element Clone( /* Element */ object? obj)

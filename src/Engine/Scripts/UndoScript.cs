@@ -36,8 +36,7 @@ public class UndoScript : ScriptBase
 
     public override Task ExecuteAsync(Context c)
     {
-        m_worldModel.UndoLogger.RollbackTransaction();
-        return Task.CompletedTask;
+        return m_worldModel.UndoLogger.RollbackTransaction();
     }
 
     public override string Save()

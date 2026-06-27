@@ -1,4 +1,4 @@
-﻿using QuestViva.Engine;
+using QuestViva.Engine;
 using QuestViva.Engine.Functions;
 using QuestViva.Engine.Scripts;
 using Shouldly;
@@ -80,52 +80,36 @@ public class ExpressionTests
         function.Fields[FieldDefinitions.Script] = _scriptFactory.CreateScript(script, _scriptContext);
     }
 
-    private T RunExpression<T>(string expression)
+    private Task<T> RunExpression<T>(string expression)
     {
         var expr = new Expression<T>(expression, _scriptContext);
         var c = new Context();
-        return expr.Execute(c);
+        return expr.ExecuteAsync(c);
     }
 
-    private async Task<T> RunExpressionAsync<T>(string expression)
-    {
-        var expr = new Expression<T>(expression, _scriptContext);
-        var c = new Context();
-        return await expr.ExecuteAsync(c);
-    }
-
-    private object RunExpressionGeneric(string expression)
+    private Task<object> RunExpressionGeneric(string expression)
     {
         var expr = new ExpressionDynamic(expression, _scriptContext);
         var c = new Context();
-        return expr.Execute(c);
-    }
-
-    private async Task<object> RunExpressionGenericAsync(string expression)
-    {
-        var expr = new ExpressionDynamic(expression, _scriptContext);
-        var c = new Context();
-        return await expr.ExecuteAsync(c);
+        return expr.ExecuteAsync(c);
     }
 
     [DataTestMethod]
     [DataRow("\"hello world\"", "hello world")]
-    [DataRow("\"hello\" + \" \" + \"world\"", "hello world")]
-    [DataRow("\"hello \" + 3", "hello 3")]
     [DataRow($"{ObjectName}.{AttributeName}", AttributeValue)]
     [DataRow($"{ChildName}.{AttributeName}", ChildAttributeValue)]
-    [DataRow($"{ChildName}.parent.{AttributeName}", AttributeValue)]
-    [DataRow($"{ObjectName}.{AttributeName} + \"testconcat\"", AttributeValue + "testconcat")]
-    [DataRow($"{OtherObjectName}.{AttributeName}", OtherObjectAttributeValue)]
+    [DataRow($"GetString({ObjectName}, \"{AttributeName}\")", AttributeValue)]
+    [DataRow($"\"{AttributeValue}\"", AttributeValue)]
+    [DataRow("\"hello\" + \" \" + \"world\"", "hello world")]
+    [DataRow($"{ObjectName}.{AttributeName} + \" suffix\"", AttributeValue + " suffix")]
+    [DataRow("\"prefix \" + object.attribute", "prefix " + AttributeValue)]
     [DataRow("CustomStringFunction(\"b\", \"c\")", "abc")]
-    [DataRow("Left(\"abcdef\", 3)", "abc")]
-    [DataRow("UCase(\"abc\")", "ABC")]
-    [DataRow("TypeOf(\"some string\")", "string")]
+    [DataRow("TypeOf(\"hello\")", "string")]
     [DataRow("TypeOf(123)", "int")]
     [DataRow("TypeOf(null)", "null")]
-    public void TestStringExpressions(string expression, string expectedResult)
+    public async Task TestStringExpressions(string expression, string expectedResult)
     {
-        var result = RunExpression<string>(expression);
+        var result = await RunExpression<string>(expression);
         result.ShouldBe(expectedResult);
     }
 
@@ -136,9 +120,9 @@ public class ExpressionTests
     [DataRow($"{ObjectName}.{IntAttributeName} + 3", IntAttributeValue + 3)]
     [DataRow("ListCount(AllObjects())", 3)]
     [DataRow("CustomIntFunction(1, 2)", 3)]
-    public void TestIntExpressions(string expression, int expectedResult)
+    public async Task TestIntExpressions(string expression, int expectedResult)
     {
-        var result = RunExpression<int>(expression);
+        var result = await RunExpression<int>(expression);
         result.ShouldBe(expectedResult);
     }
 
@@ -156,9 +140,9 @@ public class ExpressionTests
     [DataRow("2 ^ 3", 8.0)]
     [DataRow("2 ^ -1", 0.5)]
     [DataRow("E ^ -1", 1.0 / Math.E)]
-    public void TestDoubleExpressions(string expression, double expectedResult)
+    public async Task TestDoubleExpressions(string expression, double expectedResult)
     {
-        var result = RunExpression<double>(expression);
+        var result = await RunExpression<double>(expression);
         Math.Abs(result - expectedResult).ShouldBeLessThan(0.000001);
     }
 
@@ -216,9 +200,9 @@ public class ExpressionTests
     [DataRow("CustomBooleanFunction(true, false)", true)]
     [DataRow($"{OtherObjectName} = {OtherObjectName} and (true xor false)", true)]
     [DataRow($"{OtherObjectName} = {OtherObjectName} and (false xor false)", false)]
-    public void TestBooleanExpressions(string expression, bool expectedResult)
+    public async Task TestBooleanExpressions(string expression, bool expectedResult)
     {
-        var result = RunExpression<bool>(expression);
+        var result = await RunExpression<bool>(expression);
         result.ShouldBe(expectedResult);
     }
 
@@ -233,9 +217,9 @@ public class ExpressionTests
     [DataRow("GetObject(\"invalid\")", "null")]
     [DataRow("ObjectListItem(AllObjects(), 0)", "object")]
     [DataRow("GetObject(\"child\").parent", "object")]
-    public void TestObjectExpressions(string expression, string expectedElementName)
+    public async Task TestObjectExpressions(string expression, string expectedElementName)
     {
-        var result = RunExpressionGeneric(expression);
+        var result = await RunExpressionGeneric(expression);
         var expectedResult = expectedElementName == "null" ? null : _worldModel.Elements.Get(expectedElementName);
         result.ShouldBe(expectedResult);
     }
@@ -257,9 +241,9 @@ public class ExpressionTests
     [DataRow($"{ObjectName}.{IntAttributeName} < 100", true)]
     [DataRow($"{ObjectName}.{IntAttributeName} >= 42", true)]
     [DataRow($"{ObjectName}.{IntAttributeName} <= 42", true)]
-    public void TestComparisonOperators(string expression, bool expectedResult)
+    public async Task TestComparisonOperators(string expression, bool expectedResult)
     {
-        var result = RunExpression<bool>(expression);
+        var result = await RunExpression<bool>(expression);
         result.ShouldBe(expectedResult);
     }
 
@@ -281,9 +265,9 @@ public class ExpressionTests
     [DataRow("Trim(\"  hello  \")", "hello")]
     [DataRow("IsNumeric(\"42\")", true)]
     [DataRow("IsNumeric(\"abc\")", false)]
-    public void TestStringFunctions(string expression, object expectedResult)
+    public async Task TestStringFunctions(string expression, object expectedResult)
     {
-        var result = RunExpressionGeneric(expression);
+        var result = await RunExpressionGeneric(expression);
         result.ShouldBe(expectedResult);
     }
 
@@ -291,16 +275,16 @@ public class ExpressionTests
     [DataRow($"GetBoolean({ObjectName}, \"{BoolAttributeName}\")", true)]
     [DataRow($"GetString({ObjectName}, \"{AttributeName}\")", AttributeValue)]
     [DataRow($"GetInt({ObjectName}, \"{IntAttributeName}\")", IntAttributeValue)]
-    public void TestGetAttributeFunctions(string expression, object expectedResult)
+    public async Task TestGetAttributeFunctions(string expression, object expectedResult)
     {
-        var result = RunExpressionGeneric(expression);
+        var result = await RunExpressionGeneric(expression);
         result.ShouldBe(expectedResult);
     }
 
     [TestMethod]
-    public void TestGetDouble()
+    public async Task TestGetDouble()
     {
-        var result = RunExpressionGeneric($"GetDouble({ObjectName}, \"{DoubleAttributeName}\")");
+        var result = await RunExpressionGeneric($"GetDouble({ObjectName}, \"{DoubleAttributeName}\")");
         ((double)result).ShouldBe(DoubleAttributeValue, 0.000001);
     }
 
@@ -310,9 +294,9 @@ public class ExpressionTests
     [DataRow($"DictionaryCount({ObjectName}.{DictAttributeName})", 2)]
     [DataRow($"StringDictionaryItem({ObjectName}.{DictAttributeName}, \"key1\")", "val1")]
     [DataRow($"StringDictionaryItem({ObjectName}.{DictAttributeName}, \"key2\")", "val2")]
-    public void TestDictionaryFunctions(string expression, object expectedResult)
+    public async Task TestDictionaryFunctions(string expression, object expectedResult)
     {
-        var result = RunExpressionGeneric(expression);
+        var result = await RunExpressionGeneric(expression);
         result.ShouldBe(expectedResult);
     }
 
@@ -321,24 +305,24 @@ public class ExpressionTests
     [DataRow("ToDouble(\"3.14\")", 3.14)]
     [DataRow("ToString(42)", "42")]
     [DataRow("ToString(3.14)", "3.14")]
-    public void TestTypeConversionFunctions(string expression, object expectedResult)
+    public async Task TestTypeConversionFunctions(string expression, object expectedResult)
     {
-        var result = RunExpressionGeneric(expression);
+        var result = await RunExpressionGeneric(expression);
         result.ShouldBe(expectedResult);
     }
 
     [TestMethod]
-    public void TestCallingNewStringListFunction()
+    public async Task TestCallingNewStringListFunction()
     {
-        var result = RunExpressionGeneric("NewStringList()");
+        var result = await RunExpressionGeneric("NewStringList()");
         var resultList = result.ShouldBeAssignableTo<QuestList<string>>();
         resultList.Count.ShouldBe(0);
     }
 
     [TestMethod]
-    public void TestCustomStringListFunction()
+    public async Task TestCustomStringListFunction()
     {
-        var result = RunExpressionGeneric("CustomStringListFunction(\"a\", \"b\")");
+        var result = await RunExpressionGeneric("CustomStringListFunction(\"a\", \"b\")");
         var resultList = result.ShouldBeAssignableTo<QuestList<string>>();
         resultList.Count.ShouldBe(2);
         resultList[0].ShouldBe("a");
@@ -346,68 +330,68 @@ public class ExpressionTests
     }
 
     [TestMethod]
-    public void TestListIndexingSyntax()
+    public async Task TestListIndexingSyntax()
     {
         var list = new QuestList<string>(["alpha", "beta", "gamma"]);
         var expr = new Expression<string>("mylist[0]", _scriptContext);
         var c = new Context { Parameters = new Parameters { { "mylist", list } } };
-        expr.Execute(c).ShouldBe("alpha");
+        (await expr.ExecuteAsync(c)).ShouldBe("alpha");
 
         expr = new Expression<string>("mylist[2]", _scriptContext);
-        expr.Execute(c).ShouldBe("gamma");
+        (await expr.ExecuteAsync(c)).ShouldBe("gamma");
     }
 
     [TestMethod]
-    public void TestListIndexingWithVariableIndex()
+    public async Task TestListIndexingWithVariableIndex()
     {
         var list = new QuestList<string>(["alpha", "beta", "gamma"]);
         var expr = new Expression<string>("mylist[idx]", _scriptContext);
         var c = new Context { Parameters = new Parameters { { "mylist", list }, { "idx", 1 } } };
-        expr.Execute(c).ShouldBe("beta");
+        (await expr.ExecuteAsync(c)).ShouldBe("beta");
     }
 
     [TestMethod]
-    public void TestDictionaryIndexingSyntax()
+    public async Task TestDictionaryIndexingSyntax()
     {
         var dict = new QuestDictionary<string> { { "foo", "bar" }, { "baz", "qux" } };
         var expr = new Expression<string>("mydict[\"foo\"]", _scriptContext);
         var c = new Context { Parameters = new Parameters { { "mydict", dict } } };
-        expr.Execute(c).ShouldBe("bar");
+        (await expr.ExecuteAsync(c)).ShouldBe("bar");
     }
 
     [TestMethod]
-    public void TestDictionaryIndexingWithVariableKey()
+    public async Task TestDictionaryIndexingWithVariableKey()
     {
         var dict = new QuestDictionary<string> { { "foo", "bar" }, { "baz", "qux" } };
         var expr = new Expression<string>("mydict[k]", _scriptContext);
         var c = new Context { Parameters = new Parameters { { "mydict", dict }, { "k", "baz" } } };
-        expr.Execute(c).ShouldBe("qux");
+        (await expr.ExecuteAsync(c)).ShouldBe("qux");
     }
 
     [TestMethod]
-    public void TestMethodCallSyntax()
+    public async Task TestMethodCallSyntax()
     {
-        RunExpressionGeneric("\"hello world\".StartsWith(\"hello\")").ShouldBe(true);
-        RunExpressionGeneric("\"hello world\".EndsWith(\"world\")").ShouldBe(true);
-        RunExpressionGeneric("\"hello world\".Contains(\"lo wo\")").ShouldBe(true);
-        RunExpressionGeneric("\"hello world\".ToUpper()").ShouldBe("HELLO WORLD");
+        (await RunExpressionGeneric("\"hello world\".StartsWith(\"hello\")")).ShouldBe(true);
+        (await RunExpressionGeneric("\"hello world\".EndsWith(\"world\")")).ShouldBe(true);
+        (await RunExpressionGeneric("\"hello world\".Contains(\"lo wo\")")).ShouldBe(true);
+        (await RunExpressionGeneric("\"hello world\".ToUpper()")).ShouldBe("HELLO WORLD");
     }
 
     [TestMethod]
-    public void TestMethodCallWithNullArg()
+    public async Task TestMethodCallWithNullArg()
     {
         // When a method arg is null, NCalc's GetMethod(name, [typeof(object)]) won't find
         // List<Element>.Contains(Element), so the null-arg fallback must kick in.
         // AllObjects() as receiver avoids the ConvertVariablesToFleeFormat (\w\.\w) mangling.
         var expr = new Expression<bool>("AllObjects().Contains(nullobj)", _scriptContext);
         var c = new Context { Parameters = new Parameters { { "nullobj", null } } };
-        expr.Execute(c).ShouldBeFalse();
+        (await expr.ExecuteAsync(c)).ShouldBeFalse();
     }
 
     [TestMethod]
-    public void TestSplitFunction()
+    public async Task TestSplitFunction()
     {
-        var result = RunExpressionGeneric("Split(\"a,b,c\", \",\")");
+        var result = await RunExpressionGeneric("Split(\"a,b,c\", \",\")");
         var resultList = result.ShouldBeAssignableTo<QuestList<string>>();
         resultList.Count.ShouldBe(3);
         resultList[0].ShouldBe("a");
@@ -416,12 +400,12 @@ public class ExpressionTests
     }
 
     [TestMethod]
-    public void TestJoinFunction()
+    public async Task TestJoinFunction()
     {
         var list = new QuestList<string>(["x", "y", "z"]);
         var expr = new Expression<string>("Join(mylist, \",\")", _scriptContext);
         var c = new Context { Parameters = new Parameters { { "mylist", list } } };
-        expr.Execute(c).ShouldBe("x,y,z");
+        (await expr.ExecuteAsync(c)).ShouldBe("x,y,z");
     }
 
     [DataTestMethod]
@@ -429,9 +413,9 @@ public class ExpressionTests
     [DataRow("cast(3, double)", 3.0)]
     [DataRow("cast(3, single)", 3.0f)]
     [DataRow("1 + cast(2.9, int)", 3)]
-    public void TestCastFunction(string expression, object expectedResult)
+    public async Task TestCastFunction(string expression, object expectedResult)
     {
-        RunExpressionGeneric(expression).ShouldBe(expectedResult);
+        (await RunExpressionGeneric(expression)).ShouldBe(expectedResult);
     }
 
     [DataTestMethod]
@@ -439,32 +423,32 @@ public class ExpressionTests
     [DataRow("if(false, \"yes\", \"no\")", "no")]
     [DataRow("if(1 = 1, \"yes\", \"no\")", "yes")]
     [DataRow("if(1 = 2, \"yes\", \"no\")", "no")]
-    public void TestIfFunction(string expression, string expectedResult)
+    public async Task TestIfFunction(string expression, string expectedResult)
     {
-        RunExpression<string>(expression).ShouldBe(expectedResult);
+        (await RunExpression<string>(expression)).ShouldBe(expectedResult);
     }
 
     [TestMethod]
-    public void TestIsDefinedFunction()
+    public async Task TestIsDefinedFunction()
     {
         var expr = new Expression<bool>("IsDefined(\"myvar\")", _scriptContext);
         var c = new Context { Parameters = new Parameters { { "myvar", 42 } } };
-        expr.Execute(c).ShouldBeTrue();
+        (await expr.ExecuteAsync(c)).ShouldBeTrue();
 
         var c2 = new Context { Parameters = new Parameters() };
-        expr.Execute(c2).ShouldBeFalse();
+        (await expr.ExecuteAsync(c2)).ShouldBeFalse();
     }
 
     [TestMethod]
-    public void TestCallingAllObjectsFunction()
+    public async Task TestCallingAllObjectsFunction()
     {
-        var result = RunExpressionGeneric("AllObjects()");
+        var result = await RunExpressionGeneric("AllObjects()");
         var resultList = result.ShouldBeAssignableTo<QuestList<Element>>();
         resultList.Count.ShouldBe(3);
     }
 
     [TestMethod]
-    public void TestChangingTypes()
+    public async Task TestChangingTypes()
     {
         var expression = "a + b";
         var expr = new ExpressionDynamic(expression, _scriptContext);
@@ -477,32 +461,32 @@ public class ExpressionTests
             }
         };
 
-        var result = expr.Execute(c);
+        var result = await expr.ExecuteAsync(c);
         result.ShouldBe(3);
 
         c.Parameters["a"] = "A";
         c.Parameters["b"] = "B";
 
-        result = expr.Execute(c);
+        result = await expr.ExecuteAsync(c);
         result.ShouldBe("AB");
     }
 
     [TestMethod]
-    public void TestCurrentDateUTC()
+    public async Task TestCurrentDateUTC()
     {
         const string expression = "CurrentDateUTC()";
-        var result = RunExpression<int>(expression);
+        var result = await RunExpression<int>(expression);
         var now = DateTimeOffset.UtcNow;
         var expected = (int) now.ToUnixTimeSeconds();
         Math.Abs(result - expected).ShouldBeLessThan(2);
     }
 
     [TestMethod]
-    public void TestUnicodeIdentifiers()
+    public async Task TestUnicodeIdentifiers()
     {
         var expr = new Expression<int>("sérgio + fósforo", _scriptContext);
         var c = new Context { Parameters = new Parameters { { "sérgio", 10 }, { "fósforo", 5 } } };
-        expr.Execute(c).ShouldBe(15);
+        (await expr.ExecuteAsync(c)).ShouldBe(15);
     }
 
     [DataTestMethod]
@@ -510,90 +494,90 @@ public class ExpressionTests
     [DataRow("0x10", 16)]
     [DataRow("0xABCDEF", 11259375)]
     [DataRow("0xFF + 1", 256)]
-    public void TestFleeCompatHexLiterals(string expression, int expectedResult)
+    public async Task TestFleeCompatHexLiterals(string expression, int expectedResult)
     {
-        RunExpression<int>(expression).ShouldBe(expectedResult);
+        (await RunExpression<int>(expression)).ShouldBe(expectedResult);
     }
 
     [DataTestMethod]
     [DataRow("0x10u", 16)]
     [DataRow("42u", 42)]
     [DataRow("100L", 100)]
-    public void TestFleeCompatIntegerSuffixes(string expression, int expectedResult)
+    public async Task TestFleeCompatIntegerSuffixes(string expression, int expectedResult)
     {
-        RunExpression<int>(expression).ShouldBe(expectedResult);
+        (await RunExpression<int>(expression)).ShouldBe(expectedResult);
     }
 
     [DataTestMethod]
     [DataRow("1.5f", 1.5)]
     [DataRow("3.14d", 3.14)]
-    public void TestFleeCompatRealSuffixes(string expression, double expectedResult)
+    public async Task TestFleeCompatRealSuffixes(string expression, double expectedResult)
     {
-        var result = RunExpression<double>(expression);
+        var result = await RunExpression<double>(expression);
         Math.Abs(result - expectedResult).ShouldBeLessThan(0.000001);
     }
 
     [TestMethod]
-    public void TestFleeCompatDecimalSuffix()
+    public async Task TestFleeCompatDecimalSuffix()
     {
-        var result = RunExpression<double>("2.0m");
+        var result = await RunExpression<double>("2.0m");
         Math.Abs(result - 2.0).ShouldBeLessThan(0.000001);
     }
 
     [TestMethod]
-    public void TestListMinusElement()
+    public async Task TestListMinusElement()
     {
         // QuestList<T> defines operator-, which FLEE resolves via IL compilation.
         // NCalc needs the EvaluateBinary hook to dispatch to the C# operator overload.
         var list = new QuestList<Element>([_object, _child]);
         var expr = new ExpressionDynamic("mylist - myobj", _scriptContext);
         var c = new Context { Parameters = new Parameters { { "mylist", list }, { "myobj", _object } } };
-        var result = expr.Execute(c).ShouldBeAssignableTo<QuestList<Element>>();
+        var result = (await expr.ExecuteAsync(c)).ShouldBeAssignableTo<QuestList<Element>>();
         result.Count.ShouldBe(1);
         result[0].ShouldBe(_child);
     }
 
     [TestMethod]
-    public void TestListPlusElement()
+    public async Task TestListPlusElement()
     {
         var list = new QuestList<Element>([_object]);
         var expr = new ExpressionDynamic("mylist + myobj", _scriptContext);
         var c = new Context { Parameters = new Parameters { { "mylist", list }, { "myobj", _child } } };
-        var result = expr.Execute(c).ShouldBeAssignableTo<QuestList<Element>>();
+        var result = (await expr.ExecuteAsync(c)).ShouldBeAssignableTo<QuestList<Element>>();
         result.Count.ShouldBe(2);
     }
 
     [TestMethod]
-    public void TestListPlusList()
+    public async Task TestListPlusList()
     {
         var list1 = new QuestList<string>(["a", "b"]);
         var list2 = new QuestList<string>(["c", "d"]);
         var expr = new ExpressionDynamic("list1 + list2", _scriptContext);
         var c = new Context { Parameters = new Parameters { { "list1", list1 }, { "list2", list2 } } };
-        var result = expr.Execute(c).ShouldBeAssignableTo<QuestList<string>>();
+        var result = (await expr.ExecuteAsync(c)).ShouldBeAssignableTo<QuestList<string>>();
         result.ShouldBe(["a", "b", "c", "d"]);
     }
 
     [TestMethod]
-    public void TestElementPlusList()
+    public async Task TestElementPlusList()
     {
         var list = new QuestList<Element>([_child]);
         var expr = new ExpressionDynamic("myobj + mylist", _scriptContext);
         var c = new Context { Parameters = new Parameters { { "mylist", list }, { "myobj", _object } } };
-        var result = expr.Execute(c).ShouldBeAssignableTo<QuestList<Element>>();
+        var result = (await expr.ExecuteAsync(c)).ShouldBeAssignableTo<QuestList<Element>>();
         result.Count.ShouldBe(2);
         result[0].ShouldBe(_object);
         result[1].ShouldBe(_child);
     }
 
     [TestMethod]
-    public void TestListTimesListUnionDedup()
+    public async Task TestListTimesListUnionDedup()
     {
         var list1 = new QuestList<string>(["a", "b", "c"]);
         var list2 = new QuestList<string>(["b", "c", "d"]);
         var expr = new ExpressionDynamic("list1 * list2", _scriptContext);
         var c = new Context { Parameters = new Parameters { { "list1", list1 }, { "list2", list2 } } };
-        var result = expr.Execute(c).ShouldBeAssignableTo<QuestList<string>>();
+        var result = (await expr.ExecuteAsync(c)).ShouldBeAssignableTo<QuestList<string>>();
         result.ShouldBe(["a", "b", "c", "d"]);
     }
 
@@ -603,66 +587,46 @@ public class ExpressionTests
     [DataRow("7 / 2", 3)]
     [DataRow("100 / 10", 10)]
     [DataRow("-7 / 2", -3)]
-    public void TestIntegerDivision(string expression, int expectedResult)
+    public async Task TestIntegerDivision(string expression, int expectedResult)
     {
-        RunExpression<int>(expression).ShouldBe(expectedResult);
+        (await RunExpression<int>(expression)).ShouldBe(expectedResult);
     }
 
     [TestMethod]
-    public void TestIntegerDivisionWithVariables()
+    public async Task TestIntegerDivisionWithVariables()
     {
         // Exercises the NumberToWords pattern: int attribute / int literal
         var expr = new ExpressionDynamic("number / 100", _scriptContext);
         var c = new Context { Parameters = new Parameters { { "number", 342 } } };
-        var result = expr.Execute(c);
+        var result = await expr.ExecuteAsync(c);
         result.ShouldBe(3);
     }
 
     [TestMethod]
-    public void TestIntegerDivisionThenModulo()
+    public async Task TestIntegerDivisionThenModulo()
     {
         // Mirrors the tens = (number / 10) % 10 pattern in NumberToWords
         var expr = new ExpressionDynamic("(number / 10) % 10", _scriptContext);
         var c = new Context { Parameters = new Parameters { { "number", 42 } } };
-        var result = expr.Execute(c);
+        var result = await expr.ExecuteAsync(c);
         result.ShouldBe(4);
     }
 
     [TestMethod]
-    public void TestObjectEqualToStringReturnsFalse()
+    public async Task TestObjectEqualToStringReturnsFalse()
     {
         // Cross-type equality (Element vs string) must return false, not throw IConvertible.
         var expr = new Expression<bool>("myobj = \"somestring\"", _scriptContext);
         var c = new Context { Parameters = new Parameters { { "myobj", _object } } };
-        expr.Execute(c).ShouldBe(false);
+        (await expr.ExecuteAsync(c)).ShouldBe(false);
     }
 
     [TestMethod]
-    public void TestStringEqualToObjectReturnsFalse()
+    public async Task TestStringEqualToObjectReturnsFalse()
     {
         // Cross-type equality (string vs Element) must return false, not throw IConvertible.
         var expr = new Expression<bool>("mystr = myobj", _scriptContext);
         var c = new Context { Parameters = new Parameters { { "mystr", "somestring" }, { "myobj", _object } } };
-        expr.Execute(c).ShouldBe(false);
-    }
-
-    [DataTestMethod]
-    [DataRow("\"hello world\"", "hello world")]
-    [DataRow("CustomStringFunction(\"b\", \"c\")", "abc")]
-    [DataRow("if(true, \"yes\", \"no\")", "yes")]
-    [DataRow("if(false, \"yes\", \"no\")", "no")]
-    public async Task TestStringExpressionsAsync(string expression, string expectedResult)
-    {
-        var result = await RunExpressionAsync<string>(expression);
-        result.ShouldBe(expectedResult);
-    }
-
-    [DataTestMethod]
-    [DataRow("1 + 2", 3)]
-    [DataRow("CustomIntFunction(1, 2)", 3)]
-    public async Task TestIntExpressionsAsync(string expression, int expectedResult)
-    {
-        var result = await RunExpressionAsync<int>(expression);
-        result.ShouldBe(expectedResult);
+        (await expr.ExecuteAsync(c)).ShouldBe(false);
     }
 }

@@ -87,9 +87,9 @@ public class AttributeSubEditorControlData : IEditorControl
 
     public int? Height => null;
 
-    public bool IsControlVisible(IEditorData data)
+    public Task<bool> IsControlVisible(IEditorData data)
     {
-        return true;
+        return Task.FromResult(true);
     }
 
     public int? Width => null;

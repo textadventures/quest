@@ -403,9 +403,9 @@ public class IfExpressionControlDefinition : IEditorControl
         throw new NotImplementedException();
     }
 
-    public bool IsControlVisible(IEditorData data)
+    public Task<bool> IsControlVisible(IEditorData data)
     {
-        return true;
+        return Task.FromResult(true);
     }
 
     public IEditorDefinition Parent => null;

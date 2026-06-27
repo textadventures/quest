@@ -43,11 +43,6 @@ public class Expression<T> : ExpressionBase, IFunction<T>
         return new Expression<T>(Expression, ScriptContext);
     }
 
-    public T Execute(Context c)
-    {
-        return _expressionEvaluator.Evaluate(c);
-    }
-
     public Task<T> ExecuteAsync(Context c)
     {
         return _expressionEvaluator.EvaluateAsync(c);
@@ -72,11 +67,6 @@ public class ExpressionDynamic : ExpressionBase, IFunctionDynamic
     public IFunctionDynamic Clone()
     {
         return new ExpressionDynamic(Expression, ScriptContext);
-    }
-
-    public object Execute(Context c)
-    {
-        return _dynamicExpressionEvaluator.Evaluate(c);
     }
 
     public Task<object> ExecuteAsync(Context c)

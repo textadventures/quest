@@ -870,7 +870,7 @@ public sealed class EditorController : IDisposable
         return ScriptFactory.ScriptData;
     }
 
-    public IEnumerable<string> GetAllScriptEditorCategories(bool showAll = false)
+    public Task<IEnumerable<string>> GetAllScriptEditorCategories(bool showAll = false)
     {
         return ScriptFactory.GetCategories(SimpleMode, showAll);
     }
@@ -936,16 +936,16 @@ public sealed class EditorController : IDisposable
         WorldModel.UndoLogger.EndTransaction();
     }
 
-    public void Undo()
+    public Task Undo()
     {
-        WorldModel.UndoLogger.Undo();
+        return WorldModel.UndoLogger.Undo();
     }
 
-    public void Undo(int count)
+    public async Task Undo(int count)
     {
         for (var i = 0; i < count; i++)
         {
-            WorldModel.UndoLogger.Undo();
+            await WorldModel.UndoLogger.Undo();
         }
     }
 
