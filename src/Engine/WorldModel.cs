@@ -427,10 +427,10 @@ public partial class WorldModel : IGame, IGameDebug
         return result;
     }
 
-    public byte[] Save(string html)
+    public Task<byte[]> SaveAsync(string html)
     {
         var saveData = Save(SaveMode.SavedGame, html: html);
-        return Encoding.UTF8.GetBytes(saveData);
+        return Task.FromResult(Encoding.UTF8.GetBytes(saveData));
     }
 
     public Task Tick(int elapsedTime)
@@ -518,11 +518,11 @@ public partial class WorldModel : IGame, IGameDebug
         return Elements.Get(el).GetDebugData();
     }
 
-    public bool Assert(string expr)
+    public Task<bool> AssertAsync(string expr)
     {
         var expression = new Expression<bool>(expr, new ScriptContext(this));
         var c = new Context();
-        return expression.Execute(c);
+        return Task.FromResult(expression.Execute(c));
     }
 
     public event EventHandler<ElementFieldUpdatedEventArgs>? ElementFieldUpdated;

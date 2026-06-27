@@ -137,16 +137,29 @@ eliminated as part of Phase 4.
 
 ---
 
-## Phase 5 — Legacy asyncification
+## Phase 5 — Legacy asyncification ✅
 
 Legacy (`src/Legacy/`) implements its own Q4 format interpreter (`V4Game.cs`) rather than
-sharing the Engine's script execution pipeline. Quest 4 scripting is much more limited
-than ASLX, so the surface area is a fraction of the Engine work — but it needs the same
-treatment (replace blocking waits with `TaskCompletionSource`, make execution methods
-async).
+sharing the Engine's script execution pipeline. The entire interpreter was made async — no
+background threads, no blocking waits — making it fully WASM-compatible.
 
-Do this in the same phase as the Engine rather than after, so the stack isn't partially
-threaded when the WasmPlayer is built.
+- **`TaskCompletionSource` trio** replaces all threading machinery:
+  - `_turnSuspendedTcs` — signals the IGame caller (SendCommand/Tick) that the turn has suspended
+  - `_waitTcs` — awaited by pause points (DoWait, Pause, ShowMenu, ExecuteIfAsk, PlayMedia sync)
+  - `_commandTcs` — awaited by `ExecuteEnter` (ASL `enter` keyword)
+- **`SignalTurnSuspended()`** helper sets `_readyForCommand = true` and fires `_turnSuspendedTcs`
+- **All `Monitor.Wait/Pulse`, `SemaphoreSlim`, `Task.Run`, `new Thread()`** removed
+- **`ExecuteScript` and `ExecCommand`** are now `async Task` / `async Task<bool>` — the entire
+  recursive descent interpreter propagates async (55+ methods made async across V4Game.cs,
+  V4Game.Part2.cs, RoomExit.cs, RoomExits.cs)
+- **Pause points** (`DoWaitAsync`, `PauseAsync`, `ShowMenuAsync`, `ExecuteIfAskAsync`,
+  `PlayMediaAsync`, `ExecuteEnterAsync`, `ExecuteWaitAsync`) create `_waitTcs`, call
+  `SignalTurnSuspended()`, then `await _waitTcs.Task` — exact same pattern as the Engine
+- **IGame methods** (`SendCommand`, `Tick`, `FinishWait`, `SetMenuResponse`, `SetQuestionResponse`)
+  create `_turnSuspendedTcs`, fire the async work, `await _turnSuspendedTcs.Task`
+- **`Begin()`** remains `void` / fire-and-forget (`_ = DoBeginAsync()`) matching WorldModel
+- **`Legacy.csproj`** has `<SupportedPlatform Include="browser" />` — zero CA1416 warnings confirm
+  no remaining browser-incompatible calls
 
 ---
 

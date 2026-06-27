@@ -55,7 +55,7 @@ internal class RoomExits
         _regenerateAllExits = true;
     }
 
-    public void AddExitFromTag(string tag)
+    public async Task AddExitFromTag(string tag)
     {
         V4Game.Direction thisDir;
         var roomExit = (RoomExit) null;
@@ -140,17 +140,17 @@ internal class RoomExits
         }
 
         roomExit.SetParent(this);
-        roomExit.SetDirection(thisDir);
+        await roomExit.SetDirection(thisDir);
 
         if (_game.BeginsWith(tag, "locked "))
         {
-            roomExit.SetIsLocked(true);
+            await roomExit.SetIsLocked(true);
             tag = _game.GetEverythingAfter(tag, "locked ");
         }
 
         if (Strings.Left(Strings.Trim(tag), 1) == "<")
         {
-            @params = Strings.Split(_game.GetParameter(tag, _game._nullContext), ";");
+            @params = Strings.Split(await _game.GetParameter(tag, _game._nullContext), ";");
             afterParam = Strings.Trim(Strings.Mid(tag, Strings.InStr(tag, ">") + 1));
             param = true;
         }
@@ -162,32 +162,32 @@ internal class RoomExits
         if (Strings.Len(afterParam) > 0)
         {
             // Script exit
-            roomExit.SetScript(afterParam);
+            await roomExit.SetScript(afterParam);
 
             if (thisDir == V4Game.Direction.None)
             {
                 // A place exit with a script still has a ToRoom
-                roomExit.SetToRoom(@params[0]);
+                await roomExit.SetToRoom(@params[0]);
 
                 // and may have a lock message
                 if (Information.UBound(@params) > 0)
                 {
-                    roomExit.SetLockMessage(@params[1]);
+                    await roomExit.SetLockMessage(@params[1]);
                 }
             }
             // A directional exit with a script may have no parameter.
             // If it does have a parameter it will be a lock message.
             else if (param)
             {
-                roomExit.SetLockMessage(@params[0]);
+                await roomExit.SetLockMessage(@params[0]);
             }
         }
         else
         {
-            roomExit.SetToRoom(@params[0]);
+            await roomExit.SetToRoom(@params[0]);
             if (Information.UBound(@params) > 0)
             {
-                roomExit.SetLockMessage(@params[1]);
+                await roomExit.SetLockMessage(@params[1]);
             }
         }
 
@@ -197,7 +197,7 @@ internal class RoomExits
         }
     }
 
-    internal void AddExitFromCreateScript(string script, ref V4Game.Context ctx)
+    internal async Task AddExitFromCreateScript(string script, V4Game.Context ctx)
     {
         // sScript is the "create exit ..." script, but without the "create exit" at the beginning.
         // So it's very similar to creating an exit from a tag, except we have the source room
@@ -221,7 +221,7 @@ internal class RoomExits
         // to
         // north <dest_room>
 
-        param = _game.GetParameter(script, ctx);
+        param = await _game.GetParameter(script, ctx);
         @params = Strings.Split(param, ";");
 
         paramStart = Strings.InStr(script, "<");
@@ -233,13 +233,13 @@ internal class RoomExits
             if (Information.UBound(@params) == 0)
             {
                 // Script directional exit
-                AddExitFromTag(Strings.Trim(Strings.Left(script, paramStart - 1)) + " " +
+                await AddExitFromTag(Strings.Trim(Strings.Left(script, paramStart - 1)) + " " +
                                Strings.Trim(Strings.Mid(script, paramEnd + 1)));
             }
             else
             {
                 // "Normal" directional exit
-                AddExitFromTag(Strings.Trim(Strings.Left(script, paramStart - 1)) + " <" + Strings.Trim(@params[1]) +
+                await AddExitFromTag(Strings.Trim(Strings.Left(script, paramStart - 1)) + " <" + Strings.Trim(@params[1]) +
                                ">");
             }
         }
@@ -253,7 +253,7 @@ internal class RoomExits
             }
 
             // Place exit so add "place" tag at the beginning
-            AddExitFromTag("place <" + Strings.Trim(@params[1]) + Strings.Mid(script, paramEnd));
+            await AddExitFromTag("place <" + Strings.Trim(@params[1]) + Strings.Mid(script, paramEnd));
         }
     }
 
@@ -272,7 +272,7 @@ internal class RoomExits
         return _places;
     }
 
-    internal void ExecuteGo(string cmd, ref V4Game.Context ctx)
+    internal async Task ExecuteGo(string cmd, V4Game.Context ctx)
     {
         // This will handle "n", "go east", "go [to] library" etc.
 
@@ -288,16 +288,16 @@ internal class RoomExits
             cmd = _game.GetEverythingAfter(cmd, "go ");
         }
 
-        lExitID = _game.Disambiguate(cmd, _game._currentRoom, ctx, true);
+        lExitID = await _game.Disambiguate(cmd, _game._currentRoom, ctx, true);
 
         if (lExitID == -1)
         {
-            _game.PlayerErrorMessage(V4Game.PlayerError.BadPlace, ctx);
+            await _game.PlayerErrorMessage(V4Game.PlayerError.BadPlace, ctx);
         }
         else
         {
             oExit = GetExitByObjectId(ref lExitID);
-            oExit.Go(ref ctx);
+            await oExit.Go(ctx);
         }
     }
 

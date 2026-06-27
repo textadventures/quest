@@ -22,7 +22,7 @@ public interface IGame
     event FinishedHandler? Finished;
     event ErrorHandler? LogError;
     void Finish();
-    byte[] Save(string html);
+    Task<byte[]> SaveAsync(string html);
     Task FinishWait();
     Task FinishPause();
 

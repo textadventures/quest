@@ -14,7 +14,7 @@ public interface IGameDebug
     event EventHandler<ObjectsUpdatedEventArgs>? ObjectsUpdated;
     List<string> GetObjects(string type);
     DebugData GetDebugData(string tab, string obj);
-    bool Assert(string expression);
+    Task<bool> AssertAsync(string expression);
 }
 
 public class DebugDataItem
