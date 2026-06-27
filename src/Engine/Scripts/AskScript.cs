@@ -45,15 +45,14 @@ public class AskScript(
         return new AskScript(scriptContext, scriptFactory, _caption.Clone(), (IScript) callbackScript.Clone());
     }
 
-    public override Task ExecuteAsync(Context c)
+    public override async Task ExecuteAsync(Context c)
     {
-        var caption = _caption.Execute(c);
+        var caption = await _caption.ExecuteAsync(c);
         _worldModel.PlayerUi.ShowQuestion(caption);
         _worldModel._questionTcs = new TaskCompletionSource<bool>();
         _worldModel.BeginPendingCallback();
         _worldModel.SignalTurnSuspended();
         _ = AwaitResponseAndRunCallbackAsync(c);
-        return Task.CompletedTask;
     }
 
     private async Task AwaitResponseAndRunCallbackAsync(Context c)

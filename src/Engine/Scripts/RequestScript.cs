@@ -71,7 +71,7 @@ public class RequestScript : ScriptBase
 
     public override async Task ExecuteAsync(Context c)
     {
-        var data = m_data.Execute(c);
+        var data = await m_data.ExecuteAsync(c);
 
         // TO DO: Replace with dictionary mapping the enum to lambda functions
         switch (m_request)

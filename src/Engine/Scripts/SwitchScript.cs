@@ -119,7 +119,7 @@ public class SwitchScript : ScriptBase
 
     public override async Task ExecuteAsync(Context c)
     {
-        var result = m_expr.Execute(c);
+        var result = await m_expr.ExecuteAsync(c);
         var success = await m_cases.ExecuteAsync(c, result.ToString());
 
         if (!success && m_default != null)
@@ -241,7 +241,7 @@ public class SwitchScript : ScriptBase
             {
                 var expr = m_compiledExpressions[switchCase.Key];
 
-                if (result == expr.Execute(c).ToString())
+                if (result == (await expr.ExecuteAsync(c)).ToString())
                 {
                     await switchCase.Value.ExecuteAsync(c);
                     return true;

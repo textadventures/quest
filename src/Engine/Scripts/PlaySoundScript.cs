@@ -48,9 +48,9 @@ public class PlaySoundScript : ScriptBase
 
     public override async Task ExecuteAsync(Context c)
     {
-        var filename = m_filename.Execute(c);
-        var synchronous = m_synchronous.Execute(c);
-        var loop = m_loop.Execute(c);
+        var filename = await m_filename.ExecuteAsync(c);
+        var synchronous = await m_synchronous.ExecuteAsync(c);
+        var loop = await m_loop.ExecuteAsync(c);
 
         if (synchronous)
         {

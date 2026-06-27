@@ -38,9 +38,9 @@ public class PictureScript : ScriptBase
         return new PictureScript(m_scriptContext, m_filename.Clone());
     }
 
-    public override Task ExecuteAsync(Context c)
+    public override async Task ExecuteAsync(Context c)
     {
-        var filename = m_filename.Execute(c);
+        var filename = await m_filename.ExecuteAsync(c);
 
         if (m_worldModel.Version >= WorldModelVersion.v540)
         {
@@ -51,7 +51,6 @@ public class PictureScript : ScriptBase
             m_worldModel.PlayerUi.ShowPicture(filename);
             ((LegacyOutputLogger) m_worldModel.OutputLogger).AddPicture(filename);
         }
-        return Task.CompletedTask;
     }
 
     public override string Save()

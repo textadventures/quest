@@ -30,17 +30,17 @@ internal class ExpressionOwner(WorldModel worldModel)
         return worldModel.Template.GetText(template);
     }
 
-    public string DynamicTemplate(string? template, params Element[] obj)
+    public Task<string> DynamicTemplate(string? template, params Element[] obj)
     {
         ArgumentNullException.ThrowIfNull(template);
-        return worldModel.Template.GetDynamicText(template, obj);
+        return worldModel.Template.GetDynamicTextAsync(template, obj);
     }
 
-    public string DynamicTemplate(string? template, string? text)
+    public Task<string> DynamicTemplate(string? template, string? text)
     {
         ArgumentNullException.ThrowIfNull(template);
         ArgumentNullException.ThrowIfNull(text);
-        return worldModel.Template.GetDynamicText(template, text);
+        return worldModel.Template.GetDynamicTextAsync(template, text);
     }
 
     public bool HasString( /* Element */ object? obj, string? property)
