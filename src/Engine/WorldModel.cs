@@ -427,10 +427,10 @@ public partial class WorldModel : IGame, IGameDebug
         return result;
     }
 
-    public byte[] Save(string html)
+    public Task<byte[]> SaveAsync(string html)
     {
         var saveData = Save(SaveMode.SavedGame, html: html);
-        return Encoding.UTF8.GetBytes(saveData);
+        return Task.FromResult(Encoding.UTF8.GetBytes(saveData));
     }
 
     public Task Tick(int elapsedTime)

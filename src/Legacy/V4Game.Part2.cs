@@ -14,14 +14,14 @@ public partial class V4Game
 
     public int ASLVersion { get; private set; }
 
-    public byte[] Save(string html)
+    public async Task<byte[]> SaveAsync(string html)
     {
         var ctx = new Context();
         string saveData;
 
         if (ASLVersion >= 391)
         {
-            ExecuteScript(_beforeSaveScript, ctx).GetAwaiter().GetResult();
+            await ExecuteScript(_beforeSaveScript, ctx);
         }
 
         if (ASLVersion >= 280)

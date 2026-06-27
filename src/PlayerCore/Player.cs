@@ -527,7 +527,7 @@ public class Player : IPlayerHelperUI
 
     public Task<byte[]> UiSaveGameAsync(string html)
     {
-        return Task.FromResult(PlayerHelper.Game.Save(html));
+        return PlayerHelper.Game.SaveAsync(html);
     }
 
     private Task Runner_Output(string text)
