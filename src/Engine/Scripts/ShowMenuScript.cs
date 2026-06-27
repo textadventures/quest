@@ -61,11 +61,11 @@ public class ShowMenuScript : ScriptBase
             m_allowCancel.Clone(), (IScript) m_callbackScript.Clone());
     }
 
-    public override Task ExecuteAsync(Context c)
+    public override async Task ExecuteAsync(Context c)
     {
-        var caption = m_caption.Execute(c);
-        var options = m_options.Execute(c);
-        var allowCancel = m_allowCancel.Execute(c);
+        var caption = await m_caption.ExecuteAsync(c);
+        var options = await m_options.ExecuteAsync(c);
+        var allowCancel = await m_allowCancel.ExecuteAsync(c);
 
         IDictionary<string, string> optionsDictionary;
         if (options is IList<string> stringListOptions)
@@ -91,7 +91,6 @@ public class ShowMenuScript : ScriptBase
         m_worldModel.BeginPendingCallback();
         m_worldModel.SignalTurnSuspended();
         _ = AwaitResponseAndRunCallbackAsync(c, optionsDictionary);
-        return Task.CompletedTask;
     }
 
     private async Task AwaitResponseAndRunCallbackAsync(Context c, IDictionary<string, string> optionsDictionary)

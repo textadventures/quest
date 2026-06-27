@@ -531,7 +531,7 @@ public partial class WorldModel : IGame, IGameDebug
     {
         var expression = new Expression<bool>(expr, new ScriptContext(this));
         var c = new Context();
-        return Task.FromResult(expression.Execute(c));
+        return expression.ExecuteAsync(c);
     }
 
     public event EventHandler<ElementFieldUpdatedEventArgs>? ElementFieldUpdated;

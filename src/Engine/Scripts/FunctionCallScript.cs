@@ -134,7 +134,7 @@ public class FunctionCallScript : ScriptBase, IFunctionCallScript
             var cnt = 0;
             foreach (var f in m_parameters.Parameters)
             {
-                paramValues.Add((string) paramNames[cnt], f.Execute(c));
+                paramValues.Add((string) paramNames[cnt], await f.ExecuteAsync(c));
                 cnt++;
             }
 

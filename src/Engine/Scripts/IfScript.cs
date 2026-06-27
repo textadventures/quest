@@ -426,7 +426,7 @@ public class IfScript : ScriptBase, IIfScript
 
     public override async Task ExecuteAsync(Context c)
     {
-        if (Expression.Execute(c))
+        if (await Expression.ExecuteAsync(c))
         {
             await ThenScript.ExecuteAsync(c);
             return;
@@ -436,7 +436,7 @@ public class IfScript : ScriptBase, IIfScript
         {
             foreach (ElseIfScript elseIfScript in m_elseIfScript)
             {
-                if (elseIfScript.Expression.Execute(c))
+                if (await elseIfScript.Expression.ExecuteAsync(c))
                 {
                     await elseIfScript.Script.ExecuteAsync(c);
                     return;

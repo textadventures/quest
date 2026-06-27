@@ -91,10 +91,9 @@ public class StartTransactionScript : ScriptBase
         return new StartTransactionScript(m_scriptContext, m_command.Clone());
     }
 
-    public override Task ExecuteAsync(Context c)
+    public override async Task ExecuteAsync(Context c)
     {
-        m_worldModel.UndoLogger.RollTransaction(m_command.Execute(c));
-        return Task.CompletedTask;
+        m_worldModel.UndoLogger.RollTransaction(await m_command.ExecuteAsync(c));
     }
 
     public override string Save()

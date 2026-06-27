@@ -55,7 +55,7 @@ public class ForEachScript : ScriptBase
 
     public override async Task ExecuteAsync(Context c)
     {
-        var result = m_list.Execute(c);
+        var result = await m_list.ExecuteAsync(c);
         IEnumerable resultList = null;
 
         if (m_scriptContext.WorldModel.Version < WorldModelVersion.v530 || !(result is string))

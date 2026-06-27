@@ -46,8 +46,8 @@ public class SetFieldScript : ScriptBase
 
     public override async Task ExecuteAsync(Context c)
     {
-        var obj = m_obj.Execute(c);
-        await obj.SetFieldAsync(m_field.Execute(c), m_value.Execute(c));
+        var obj = await m_obj.ExecuteAsync(c);
+        await obj.SetFieldAsync(await m_field.ExecuteAsync(c), await m_value.ExecuteAsync(c));
     }
 
     public override string Save()

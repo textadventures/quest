@@ -145,7 +145,7 @@ public abstract class SetScriptBase : ScriptBase
         if (AppliesTo != null)
         {
             // we're setting an object property
-            var obj = AppliesTo.Execute(c);
+            var obj = await AppliesTo.ExecuteAsync(c);
             await obj.SetFieldAsync(Property, result);
         }
         else
@@ -251,7 +251,7 @@ public class SetExpressionScript : SetScriptBase
         var result = await m_expr.ExecuteAsync(c);
         if (AppliesTo != null)
         {
-            var obj = AppliesTo.Execute(c);
+            var obj = await AppliesTo.ExecuteAsync(c);
             await obj.SetFieldAsync(Property, result);
         }
         else

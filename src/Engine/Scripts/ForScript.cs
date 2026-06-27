@@ -87,9 +87,9 @@ public class ForScript : ScriptBase
 
     public override async Task ExecuteAsync(Context c)
     {
-        var from = m_from.Execute(c);
-        var to = m_to.Execute(c);
-        var step = m_step == null ? 1 : m_step.Execute(c);
+        var from = await m_from.ExecuteAsync(c);
+        var to = await m_to.ExecuteAsync(c);
+        var step = m_step == null ? 1 : await m_step.ExecuteAsync(c);
         int count;
         c.Parameters[m_variable] = 0;
 

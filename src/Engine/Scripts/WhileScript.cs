@@ -54,7 +54,7 @@ public class WhileScript : ScriptBase
 
     public override async Task ExecuteAsync(Context c)
     {
-        while (m_expression.Execute(c))
+        while (await m_expression.ExecuteAsync(c))
         {
             await m_loopScript.ExecuteAsync(c);
             if (c.IsReturned)

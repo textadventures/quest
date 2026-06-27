@@ -61,23 +61,22 @@ public class JSScript : ScriptBase
             m_parameters == null ? null : new List<IFunctionDynamic>(m_parameters));
     }
 
-    public override Task ExecuteAsync(Context c)
+    public override async Task ExecuteAsync(Context c)
     {
         if (string.IsNullOrEmpty(m_function))
         {
-            return Task.CompletedTask;
+            return;
         }
 
         if (m_parameters != null)
         {
-            var paramValues = m_parameters.Select(p => p.Execute(c));
-            m_scriptContext.WorldModel.PlayerUi.RunScript(m_function, paramValues.ToArray());
+            var paramValues = await Task.WhenAll(m_parameters.Select(p => p.ExecuteAsync(c)));
+            m_scriptContext.WorldModel.PlayerUi.RunScript(m_function, paramValues);
         }
         else
         {
             m_scriptContext.WorldModel.PlayerUi.RunScript(m_function, null);
         }
-        return Task.CompletedTask;
     }
 
     public override string Save()

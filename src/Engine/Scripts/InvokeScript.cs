@@ -57,14 +57,14 @@ public class InvokeScript : ScriptBase
 
     public override async Task ExecuteAsync(Context c)
     {
-        var script = m_script.Execute(c);
+        var script = await m_script.ExecuteAsync(c);
         if (m_parameters == null)
         {
             await m_worldModel.RunScriptAsync(script);
         }
         else
         {
-            await m_worldModel.RunScriptAsync(script, new Parameters(m_parameters.Execute(c)));
+            await m_worldModel.RunScriptAsync(script, new Parameters(await m_parameters.ExecuteAsync(c)));
         }
     }
 
