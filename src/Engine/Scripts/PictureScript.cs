@@ -38,7 +38,7 @@ public class PictureScript : ScriptBase
         return new PictureScript(m_scriptContext, m_filename.Clone());
     }
 
-    public override void Execute(Context c)
+    public override Task ExecuteAsync(Context c)
     {
         var filename = m_filename.Execute(c);
 
@@ -51,6 +51,7 @@ public class PictureScript : ScriptBase
             m_worldModel.PlayerUi.ShowPicture(filename);
             ((LegacyOutputLogger) m_worldModel.OutputLogger).AddPicture(filename);
         }
+        return Task.CompletedTask;
     }
 
     public override string Save()

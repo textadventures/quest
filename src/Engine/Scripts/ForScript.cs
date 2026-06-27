@@ -85,36 +85,6 @@ public class ForScript : ScriptBase
         m_loopScript.Parent = Parent;
     }
 
-    public override void Execute(Context c)
-    {
-        var from = m_from.Execute(c);
-        var to = m_to.Execute(c);
-        var step = m_step == null ? 1 : m_step.Execute(c);
-        int count;
-        c.Parameters[m_variable] = 0;
-
-        for (count = from; (step > 0 && count <= to) || (step < 0 && count >= to); count += step)
-        {
-            c.Parameters[m_variable] = count;
-            m_loopScript.Execute(c);
-            if (c.IsReturned)
-            {
-                break;
-            }
-
-            var newCount = c.Parameters[m_variable];
-            if (newCount is int)
-            {
-                count = (int) newCount;
-            }
-            else
-            {
-                // The type of the count variable has changed, so abort the loop
-                break;
-            }
-        }
-    }
-
     public override async Task ExecuteAsync(Context c)
     {
         var from = m_from.Execute(c);

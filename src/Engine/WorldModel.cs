@@ -946,34 +946,17 @@ public partial class WorldModel : IGame, IGameDebug
         await _pauseTcs.Task;
     }
 
-    public void RunScript(IScript script)
-    {
-        RunScript(script, (Parameters?) null, false);
-    }
-
     public Task RunScriptAsync(IScript script)
     {
         return RunScriptAsync(script, (Parameters?) null, false);
     }
 
     /// <summary>
-    ///     Use this version of RunScript when executing an object action. Set thisElement to the object whose action it is.
+    ///     Use this version of RunScriptAsync when executing an object action. Set thisElement to the object whose action it is.
     /// </summary>
-    /// <param name="script"></param>
-    /// <param name="thisElement"></param>
-    public void RunScript(IScript script, Element thisElement)
-    {
-        RunScript(script, null, false, thisElement);
-    }
-
     public Task RunScriptAsync(IScript script, Element thisElement)
     {
         return RunScriptAsync(script, null, false, thisElement);
-    }
-
-    public void RunScript(IScript script, Parameters parameters)
-    {
-        RunScript(script, parameters, false);
     }
 
     public Task RunScriptAsync(IScript script, Parameters parameters)
@@ -981,24 +964,14 @@ public partial class WorldModel : IGame, IGameDebug
         return RunScriptAsync(script, parameters, false);
     }
 
-    public void RunScript(IScript script, Parameters parameters, Element thisElement)
-    {
-        RunScript(script, parameters, false, thisElement);
-    }
-
     public Task RunScriptAsync(IScript script, Parameters parameters, Element thisElement)
     {
         return RunScriptAsync(script, parameters, false, thisElement);
     }
 
-    public object RunDelegateScript(IScript script, Parameters parameters, Element thisElement)
+    public Task<object?> RunDelegateScriptAsync(IScript script, Parameters parameters, Element thisElement)
     {
-        return RunScript(script, parameters, true, thisElement)!;
-    }
-
-    private object? RunScript(IScript script, Parameters? parameters, bool expectResult)
-    {
-        return RunScript(script, parameters, expectResult, null);
+        return RunScriptAsync(script, parameters, true, thisElement);
     }
 
     private Task<object?> RunScriptAsync(IScript script, Parameters? parameters, bool expectResult,
@@ -1053,11 +1026,6 @@ public partial class WorldModel : IGame, IGameDebug
         c.Parameters = parameters;
 
         return RunScript(script, c, expectResult);
-    }
-
-    private void RunScript(IScript script, Context c)
-    {
-        RunScript(script, c, false);
     }
 
     private object? RunScript(IScript script, Context c, bool expectResult)
@@ -1128,7 +1096,7 @@ public partial class WorldModel : IGame, IGameDebug
                     function.Fields[FieldDefinitions.ParamNames].Count));
             }
 
-            return RunScript(function.Fields[FieldDefinitions.Script], parameters, expectResult);
+            return RunScript(function.Fields[FieldDefinitions.Script], parameters, expectResult, null);
         }
 
         Print($"Error - no such procedure '{name}'");
@@ -1490,16 +1458,14 @@ public partial class WorldModel : IGame, IGameDebug
         movedElement.MetaFields[MetaFieldDefinitions.SortIndex] = maxIndex + 1;
     }
 
-    internal void AddOnReady(IScript callback, Context c)
+    internal Task AddOnReady(IScript callback, Context c)
     {
         if (_pendingCallbackCount > 0)
         {
             _onReadyQueue.Add((callback, c));
+            return Task.CompletedTask;
         }
-        else
-        {
-            RunScript(callback, c);
-        }
+        return RunScriptAsync(callback, c);
     }
 
     internal void BeginPendingCallback() => _pendingCallbackCount++;

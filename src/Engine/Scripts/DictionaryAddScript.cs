@@ -47,7 +47,7 @@ public class DictionaryAddScript : ScriptBase
         return new DictionaryAddScript(m_scriptContext, m_dictionary.Clone(), m_key.Clone(), m_value.Clone());
     }
 
-    public override void Execute(Context c)
+    public override Task ExecuteAsync(Context c)
     {
         var result = m_dictionary.Execute(c) as IDictionary;
 
@@ -59,6 +59,7 @@ public class DictionaryAddScript : ScriptBase
         {
             throw new Exception("Unrecognised dictionary type");
         }
+        return Task.CompletedTask;
     }
 
     public override string Save()
@@ -139,7 +140,7 @@ public class DictionaryRemoveScript : ScriptBase
         return new DictionaryRemoveScript(m_scriptContext, m_dictionary.Clone(), m_key.Clone());
     }
 
-    public override void Execute(Context c)
+    public override Task ExecuteAsync(Context c)
     {
         var result = m_dictionary.Execute(c) as IDictionary;
 
@@ -151,6 +152,7 @@ public class DictionaryRemoveScript : ScriptBase
         {
             throw new Exception("Unrecognised dictionary type");
         }
+        return Task.CompletedTask;
     }
 
     public override string Save()

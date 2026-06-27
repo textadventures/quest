@@ -55,19 +55,6 @@ public class InvokeScript : ScriptBase
         return new InvokeScript(m_scriptContext, m_script.Clone(), m_parameters == null ? null : m_parameters.Clone());
     }
 
-    public override void Execute(Context c)
-    {
-        var script = m_script.Execute(c);
-        if (m_parameters == null)
-        {
-            m_worldModel.RunScript(script);
-        }
-        else
-        {
-            m_worldModel.RunScript(script, new Parameters(m_parameters.Execute(c)));
-        }
-    }
-
     public override async Task ExecuteAsync(Context c)
     {
         var script = m_script.Execute(c);

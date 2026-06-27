@@ -61,11 +61,11 @@ public class JSScript : ScriptBase
             m_parameters == null ? null : new List<IFunctionDynamic>(m_parameters));
     }
 
-    public override void Execute(Context c)
+    public override Task ExecuteAsync(Context c)
     {
         if (string.IsNullOrEmpty(m_function))
         {
-            return;
+            return Task.CompletedTask;
         }
 
         if (m_parameters != null)
@@ -77,6 +77,7 @@ public class JSScript : ScriptBase
         {
             m_scriptContext.WorldModel.PlayerUi.RunScript(m_function, null);
         }
+        return Task.CompletedTask;
     }
 
     public override string Save()

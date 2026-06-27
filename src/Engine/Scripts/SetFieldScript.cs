@@ -44,10 +44,11 @@ public class SetFieldScript : ScriptBase
         return new SetFieldScript(m_scriptContext, m_obj.Clone(), m_field.Clone(), m_value.Clone());
     }
 
-    public override void Execute(Context c)
+    public override Task ExecuteAsync(Context c)
     {
         var obj = m_obj.Execute(c);
         obj.Fields.Set(m_field.Execute(c), m_value.Execute(c));
+        return Task.CompletedTask;
     }
 
     public override string Save()

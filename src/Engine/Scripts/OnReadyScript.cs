@@ -39,9 +39,9 @@ public class OnReadyScript : ScriptBase
         return new OnReadyScript(m_scriptContext, m_scriptFactory, (IScript) m_callbackScript.Clone());
     }
 
-    public override void Execute(Context c)
+    public override Task ExecuteAsync(Context c)
     {
-        m_worldModel.AddOnReady(m_callbackScript, c);
+        return m_worldModel.AddOnReady(m_callbackScript, c);
     }
 
     public override string Save()

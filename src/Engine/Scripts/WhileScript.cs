@@ -52,18 +52,6 @@ public class WhileScript : ScriptBase
         m_loopScript.Parent = Parent;
     }
 
-    public override void Execute(Context c)
-    {
-        while (m_expression.Execute(c))
-        {
-            m_loopScript.Execute(c);
-            if (c.IsReturned)
-            {
-                break;
-            }
-        }
-    }
-
     public override async Task ExecuteAsync(Context c)
     {
         while (m_expression.Execute(c))

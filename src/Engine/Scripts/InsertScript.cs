@@ -38,7 +38,7 @@ public class InsertScript : ScriptBase
         return new InsertScript(m_scriptContext, m_filename.Clone());
     }
 
-    public override void Execute(Context c)
+    public override Task ExecuteAsync(Context c)
     {
         if (m_worldModel.Version >= WorldModelVersion.v540)
         {
@@ -53,19 +53,20 @@ public class InsertScript : ScriptBase
             // in Player and WebPlayer.
             if (filename.ToLower() == "frame.htm")
             {
-                return;
+                return Task.CompletedTask;
             }
         }
 
         var stream = m_worldModel.GetResourceStream(filename);
         if (stream == null)
         {
-            return;
+            return Task.CompletedTask;
         }
 
         using var reader = new StreamReader(stream);
         var html = reader.ReadToEnd();
         m_worldModel.PlayerUi.WriteHTML(html);
+        return Task.CompletedTask;
     }
 
     public override string Save()

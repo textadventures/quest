@@ -138,7 +138,7 @@ public abstract class SetScriptBase : ScriptBase
         }
     }
 
-    public override void Execute(Context c)
+    public override Task ExecuteAsync(Context c)
     {
         var result = GetResult(c);
 
@@ -153,6 +153,7 @@ public abstract class SetScriptBase : ScriptBase
             // we're setting a local variable
             c.Parameters[Property] = result;
         }
+        return Task.CompletedTask;
     }
 
     public override string Save()

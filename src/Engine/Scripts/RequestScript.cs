@@ -69,11 +69,6 @@ public class RequestScript : ScriptBase
         return new RequestScript(m_scriptContext, m_request.ToString(), m_data.Clone());
     }
 
-    public override void Execute(Context c)
-    {
-        ExecuteAsync(c).GetAwaiter().GetResult();
-    }
-
     public override async Task ExecuteAsync(Context c)
     {
         var data = m_data.Execute(c);

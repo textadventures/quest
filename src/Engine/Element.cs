@@ -219,7 +219,7 @@ public class Element : IComparable
             if (Fields.HasType<IScript>(changedScript))
             {
                 var parameters = new Parameters("oldvalue", e.OldValue);
-                m_worldModel.RunScript(Fields.GetAsType<IScript>(changedScript), parameters, this);
+                _ = m_worldModel.RunScriptAsync(Fields.GetAsType<IScript>(changedScript), parameters, this);
             }
         }
     }

@@ -373,7 +373,7 @@ internal class ExpressionOwner(WorldModel worldModel)
         };
     }
 
-    public object RunDelegateFunction( /* Element */ object? obj, string? del, params object[] parameters)
+    public async Task<object?> RunDelegateFunction( /* Element */ object? obj, string? del, params object[] parameters)
     {
         ArgumentNullException.ThrowIfNull(obj);
         ArgumentNullException.ThrowIfNull(del);
@@ -394,7 +394,7 @@ internal class ExpressionOwner(WorldModel worldModel)
             cnt++;
         }
 
-        return worldModel.RunDelegateScript(impl.Implementation.Fields[FieldDefinitions.Script], paramValues, element);
+        return await worldModel.RunDelegateScriptAsync(impl.Implementation.Fields[FieldDefinitions.Script], paramValues, element);
     }
 
     // ReSharper disable once InconsistentNaming

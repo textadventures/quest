@@ -34,8 +34,9 @@ public class CommentScript : ScriptBase
         return new CommentScript(m_comment);
     }
 
-    public override void Execute(Context c)
+    public override Task ExecuteAsync(Context c)
     {
+        return Task.CompletedTask;
     }
 
     public override string Save()

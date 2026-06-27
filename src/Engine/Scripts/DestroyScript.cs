@@ -38,7 +38,7 @@ public class DestroyScript : ScriptBase
         return new DestroyScript(m_scriptContext, m_expr.Clone());
     }
 
-    public override void Execute(Context c)
+    public override Task ExecuteAsync(Context c)
     {
         var elementName = m_expr.Execute(c);
         var element = m_worldModel.Elements.Get(elementName);
@@ -51,6 +51,7 @@ public class DestroyScript : ScriptBase
             throw new InvalidOperationException(
                 string.Format("Unable to destroy element of type {0}", element.ElemType));
         }
+        return Task.CompletedTask;
     }
 
     public override string Save()

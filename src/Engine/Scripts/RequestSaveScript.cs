@@ -40,9 +40,10 @@ public class RequestSaveScript : ScriptBase
         return new RequestSaveScript(m_worldModel);
     }
 
-    public override void Execute(Context c)
+    public override Task ExecuteAsync(Context c)
     {
         m_worldModel.PlayerUi.RequestSave(null);
+        return Task.CompletedTask;
     }
 
     public override string Save()

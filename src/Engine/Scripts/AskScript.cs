@@ -45,11 +45,6 @@ public class AskScript(
         return new AskScript(scriptContext, scriptFactory, _caption.Clone(), (IScript) callbackScript.Clone());
     }
 
-    public override void Execute(Context c)
-    {
-        ExecuteAsync(c).GetAwaiter().GetResult();
-    }
-
     public override Task ExecuteAsync(Context c)
     {
         var caption = _caption.Execute(c);
