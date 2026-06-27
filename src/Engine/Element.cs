@@ -213,13 +213,19 @@ public class Element : IComparable
     private void Fields_AttributeChanged(object sender, AttributeChangedEventArgs e)
     {
         m_worldModel.NotifyElementFieldUpdate(this, e.Property, e.Value, false);
+    }
+
+    internal async Task SetFieldAsync(string fieldName, object value)
+    {
+        var oldValue = Fields.Get(fieldName);
+        Fields.Set(fieldName, value);
         if (!m_worldModel.EditMode)
         {
-            var changedScript = "changed" + e.Property;
-            if (Fields.HasType<IScript>(changedScript))
+            var changedScriptName = "changed" + fieldName;
+            if (Fields.HasType<IScript>(changedScriptName))
             {
-                var parameters = new Parameters("oldvalue", e.OldValue);
-                m_worldModel.RunScriptAsync(Fields.GetAsType<IScript>(changedScript), parameters, this).GetAwaiter().GetResult();
+                var parameters = new Parameters("oldvalue", oldValue);
+                await m_worldModel.RunScriptAsync(Fields.GetAsType<IScript>(changedScriptName), parameters, this);
             }
         }
     }
