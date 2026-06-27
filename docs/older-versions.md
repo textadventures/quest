@@ -31,7 +31,7 @@ Older versions are provided here for reference — for example, if you need to c
 | Quest 5.2 | 12 May 2012 | [quest520.exe](https://media.textadventures.co.uk/downloads/archive/quest520.exe) |
 | Quest 5.1.1 | 13 Feb 2012 | [quest511.exe](https://media.textadventures.co.uk/downloads/archive/quest511.exe) |
 | Quest 5.1 | 11 Jan 2012 | [quest510.exe](https://media.textadventures.co.uk/downloads/archive/quest510.exe) |
-| Quest 5.0.2 | | [quest502.exe](https://media.textadventures.co.uk/downloads/archive/quest502.exe) |
+| Quest 5.0.2 | 8 Dec 2011 | [quest502.exe](https://media.textadventures.co.uk/downloads/archive/quest502.exe) |
 | Quest 5.0.1 | 13 Oct 2011 | [quest501.exe](https://media.textadventures.co.uk/downloads/archive/quest501.exe) |
 | Quest 5.0 | 30 Aug 2011 | [quest500.exe](https://media.textadventures.co.uk/downloads/archive/quest500.exe) |
 
