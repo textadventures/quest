@@ -137,7 +137,7 @@ public partial class V4Game
 
     public Task FinishPause() => FinishWait();
 
-    public async Task SetMenuResponse(string? response)
+    public async Task SetMenuResponse(string response)
     {
         m_menuResponse = response;
         _turnSuspendedTcs = new TaskCompletionSource();
@@ -8157,7 +8157,7 @@ public partial class V4Game
 
 
 
-    private async Task<string?> ShowMenuAsync(MenuData menuData)
+    private async Task<string> ShowMenuAsync(MenuData menuData)
     {
         _player.ShowMenu(menuData);
         _waitTcs = new TaskCompletionSource();

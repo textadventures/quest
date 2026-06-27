@@ -78,9 +78,9 @@ public partial class V4Game : IGame, IGameDebug
     private IPlayer _player;
     private bool _questionResponse;
     private bool _readyForCommand = true;
-    private TaskCompletionSource? _turnSuspendedTcs;
-    private TaskCompletionSource? _waitTcs;
-    private TaskCompletionSource? _commandTcs;
+    private TaskCompletionSource _turnSuspendedTcs;
+    private TaskCompletionSource _waitTcs;
+    private TaskCompletionSource _commandTcs;
     private int _resourceOffset;
     private ResourceType[] _resources;
     internal RoomType[] _rooms;
