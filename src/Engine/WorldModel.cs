@@ -1411,14 +1411,24 @@ public partial class WorldModel : IGame, IGameDebug
         movedElement.MetaFields[MetaFieldDefinitions.SortIndex] = maxIndex + 1;
     }
 
-    internal Task AddOnReady(IScript callback, Context c)
+    internal async Task AddOnReady(IScript callback, Context c)
     {
         if (_pendingCallbackCount > 0)
         {
             _onReadyQueue.Add((callback, c));
-            return Task.CompletedTask;
+            return;
         }
-        return RunScriptAsync(callback, c);
+        // Increment the pending count before running so that any nested 'on ready'
+        // statements encountered during execution are queued rather than recursed into.
+        BeginPendingCallback();
+        try
+        {
+            await RunScriptAsync(callback, c);
+        }
+        finally
+        {
+            await EndPendingCallbackAsync();
+        }
     }
 
     internal void BeginPendingCallback() => _pendingCallbackCount++;
