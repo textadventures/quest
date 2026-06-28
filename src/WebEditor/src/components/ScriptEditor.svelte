@@ -79,10 +79,9 @@
             nextSelection = null;
         }
         if (categories.length === 0) {
-            const cats = getScriptCommandCategories();
-            if (cats) {
-                categories = cats.categories;
-            }
+            void getScriptCommandCategories().then(cats => {
+                if (cats) categories = cats.categories;
+            });
         }
         if (objectNames.length === 0) {
             const names = getObjectNames();

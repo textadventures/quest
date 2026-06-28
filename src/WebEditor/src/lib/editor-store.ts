@@ -55,15 +55,15 @@ export async function openGame(bytes: Uint8Array, filename: string, adapter: Fil
         refreshUndoRedo();
         scriptClipboardHasContent.set(false);
         const gameNode = nodes.find(n => n.nodeType === "game");
-        if (gameNode) selectNode(gameNode.key);
+        if (gameNode) await selectNode(gameNode.key);
     }
     return ok;
 }
 
-export function selectNode(key: string) {
+export async function selectNode(key: string) {
     if (!_bridge) return;
     selectedKey.set(key);
-    const json = _bridge.GetEditorData(key);
+    const json = await _bridge.GetEditorData(key);
     selectedData.set(json ? JSON.parse(json) : null);
     const attrJson = _bridge.GetFullAttributeData(key);
     fullAttributeData.set(attrJson ? JSON.parse(attrJson) : null);
@@ -122,8 +122,8 @@ export async function saveGameAs(): Promise<void> {
     isDirty.set(false);
 }
 
-export function undo() {
-    _bridge?.Undo();
+export async function undo() {
+    if (_bridge) await _bridge.Undo();
     refreshTree();
     refreshSelectedData();
     refreshUndoRedo();
@@ -403,10 +403,10 @@ export function removeElseIf(elementKey: string, attribute: string, containerPat
     return result;
 }
 
-export function getScriptCommandCategories(): ScriptCommandCategoriesData | null {
+export async function getScriptCommandCategories(): Promise<ScriptCommandCategoriesData | null> {
     if (!_bridge) return null;
-    const json = _bridge.GetScriptCommandCategories();
-    return json ? JSON.parse(json) : null;
+    try { return JSON.parse(await _bridge.GetScriptCommandCategories()); }
+    catch { return null; }
 }
 
 export function getObjectNames(): string[] | null {
@@ -432,9 +432,13 @@ export function getIfExpressionTemplateData(expression: string): IfExpressionTem
 }
 
 function refreshSelectedData() {
+    void refreshSelectedDataAsync();
+}
+
+async function refreshSelectedDataAsync() {
     const key = get(selectedKey);
     if (!_bridge || !key) return;
-    const json = _bridge.GetEditorData(key);
+    const json = await _bridge.GetEditorData(key);
     selectedData.set(json ? JSON.parse(json) : null);
     const attrJson = _bridge.GetFullAttributeData(key);
     fullAttributeData.set(attrJson ? JSON.parse(attrJson) : null);
@@ -458,7 +462,7 @@ export function getUniqueName(baseName: string): string {
 function afterCreate(result: string): string {
     if (result.startsWith("error:")) return result;
     refreshTree();
-    selectNode(result);
+    void selectNode(result);
     refreshUndoRedo();
     return result;
 }
