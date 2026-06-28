@@ -494,13 +494,13 @@ internal class ExpressionOwner(WorldModel worldModel)
     {
         ArgumentNullException.ThrowIfNull(caption);
         ArgumentNullException.ThrowIfNull(options);
-        worldModel.Print(caption);
+        await worldModel.PrintAsync(caption);
         var menuData = new MenuData(caption, options, allowCancel);
         worldModel.PlayerUi.ShowMenu(menuData);
         worldModel._menuTcs = new TaskCompletionSource<string?>();
         worldModel.SignalTurnSuspended();
         var result = await worldModel._menuTcs.Task;
-        if (result != null) worldModel.Print(" - " + options[result]);
+        if (result != null) await worldModel.PrintAsync(" - " + options[result]);
         return result ?? string.Empty;
     }
 

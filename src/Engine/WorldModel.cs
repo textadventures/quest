@@ -221,14 +221,14 @@ public partial class WorldModel : IGame, IGameDebug
             }
 
             await TryRunOnFinallyScriptsAsync();
-            UpdateLists();
+            await UpdateListsAsync();
 
             if (_loadedFromSaved)
             {
                 var output = Elements.GetSingle(ElementType.Output);
                 if (output == null)
                 {
-                    Print("Loaded saved game");
+                    await PrintAsync("Loaded saved game");
                 }
                 else if (Version >= WorldModelVersion.v540)
                 {
@@ -295,8 +295,8 @@ public partial class WorldModel : IGame, IGameDebug
             {
                 if (Version < WorldModelVersion.v520)
                 {
-                    Print("");
-                    Print("> " + Utility.SafeXML(command));
+                    await PrintAsync("");
+                    await PrintAsync("> " + Utility.SafeXML(command));
                 }
 
                 await RunProcedureAsync("HandleCommand", new Parameters(new Dictionary<string, object>
@@ -312,7 +312,7 @@ public partial class WorldModel : IGame, IGameDebug
 
                 if (State != GameState.Finished)
                 {
-                    UpdateLists();
+                    await UpdateListsAsync();
                 }
             }
             else
@@ -347,7 +347,7 @@ public partial class WorldModel : IGame, IGameDebug
 
         if (handler == null)
         {
-            Print($"Error - no handler for event '{eventName}'");
+            await PrintAsync($"Error - no handler for event '{eventName}'");
             return;
         }
 
@@ -366,7 +366,7 @@ public partial class WorldModel : IGame, IGameDebug
 
         if (State != GameState.Finished)
         {
-            UpdateLists();
+            await UpdateListsAsync();
         }
 
         SendNextTimerRequest();
@@ -468,7 +468,7 @@ public partial class WorldModel : IGame, IGameDebug
             {
                 await RunScriptAsync(timerScript.Value, timerScript.Key);
             }
-            UpdateLists();
+            await UpdateListsAsync();
         }
         catch (Exception ex)
         {
@@ -615,18 +615,28 @@ public partial class WorldModel : IGame, IGameDebug
         return _elementFactories[t];
     }
 
-    public void PrintTemplate(string t)
+    public Task PrintTemplateAsync(string t)
     {
-        Print(Template.GetText(t));
+        return PrintAsync(Template.GetText(t));
     }
 
     public void Print(string text, bool linebreak = true)
+    {
+        if (EditMode) return;
+        if (PrintText != null)
+        {
+            PrintText(linebreak ? "<output>" + text + "</output>" : "<output nobr=\"true\">" + text + "</output>");
+        }
+        _legacyOutputLogger?.AddText(text, linebreak);
+    }
+
+    public async Task PrintAsync(string text, bool linebreak = true)
     {
         if (!EditMode && Version >= WorldModelVersion.v540 && Elements.ContainsKey(ElementType.Function, "OutputText"))
         {
             try
             {
-                RunProcedure("OutputText", new Parameters(new Dictionary<string, string> {{"text", text}}), false);
+                await RunProcedureAsync("OutputText", new Parameters(new Dictionary<string, string> {{"text", text}}), false);
             }
             catch (Exception ex)
             {
@@ -656,11 +666,11 @@ public partial class WorldModel : IGame, IGameDebug
         return new QuestList<Element>(Elements.Objects);
     }
 
-    private QuestList<Element> GetObjectsInScope(string scopeFunction)
+    private async Task<QuestList<Element>> GetObjectsInScopeAsync(string scopeFunction)
     {
         if (Elements.ContainsKey(ElementType.Function, scopeFunction))
         {
-            return (QuestList<Element>?) RunProcedure(scopeFunction, true) ?? new QuestList<Element>();
+            return (QuestList<Element>?) await RunProcedureAsync(scopeFunction, null, true) ?? new QuestList<Element>();
         }
 
         throw new Exception($"No function '{scopeFunction}'");
@@ -778,7 +788,7 @@ public partial class WorldModel : IGame, IGameDebug
         _loadedFromSaved = true;
     }
 
-    private void UpdateStatusVariables()
+    private async Task UpdateStatusVariablesAsync()
     {
         if (!Elements.ContainsKey(ElementType.Function, "UpdateStatusAttributes"))
         {
@@ -787,7 +797,7 @@ public partial class WorldModel : IGame, IGameDebug
 
         try
         {
-            RunProcedure("UpdateStatusAttributes");
+            await RunProcedureAsync("UpdateStatusAttributes");
         }
         catch (Exception ex)
         {
@@ -795,20 +805,20 @@ public partial class WorldModel : IGame, IGameDebug
         }
     }
 
-    private void UpdateLists()
+    private async Task UpdateListsAsync()
     {
-        UpdateObjectsList();
-        UpdateExitsList();
-        UpdateStatusVariables();
+        await UpdateObjectsListAsync();
+        await UpdateExitsListAsync();
+        await UpdateStatusVariablesAsync();
     }
 
-    private void UpdateObjectsList()
+    private async Task UpdateObjectsListAsync()
     {
-        UpdateObjectsList("GetPlacesObjectsList", ListType.ObjectsList);
-        UpdateObjectsList("ScopeInventory", ListType.InventoryList);
+        await UpdateObjectsListAsync("GetPlacesObjectsList", ListType.ObjectsList);
+        await UpdateObjectsListAsync("ScopeInventory", ListType.InventoryList);
     }
 
-    private void UpdateObjectsList(string scope, ListType listType)
+    private async Task UpdateObjectsListAsync(string scope, ListType listType)
     {
         if (UpdateList == null)
         {
@@ -816,25 +826,25 @@ public partial class WorldModel : IGame, IGameDebug
         }
 
         var objects = new List<ListData>();
-        foreach (var obj in GetObjectsInScope(scope))
+        foreach (var obj in await GetObjectsInScopeAsync(scope))
         {
             if (Version <= WorldModelVersion.v520 || !Elements.ContainsKey(ElementType.Function, "GetDisplayVerbs"))
             {
                 if (scope == "ScopeInventory")
                 {
-                    objects.Add(new ListData(GetListDisplayAlias(obj), obj.Fields[FieldDefinitions.InventoryVerbs],
-                        obj.Name, GetDisplayAlias(obj)));
+                    objects.Add(new ListData(await GetListDisplayAliasAsync(obj), obj.Fields[FieldDefinitions.InventoryVerbs],
+                        obj.Name, await GetDisplayAliasAsync(obj)));
                 }
                 else
                 {
-                    objects.Add(new ListData(GetListDisplayAlias(obj), obj.Fields[FieldDefinitions.DisplayVerbs],
-                        obj.Name, GetDisplayAlias(obj)));
+                    objects.Add(new ListData(await GetListDisplayAliasAsync(obj), obj.Fields[FieldDefinitions.DisplayVerbs],
+                        obj.Name, await GetDisplayAliasAsync(obj)));
                 }
             }
             else
             {
                 objects.Add(
-                    new ListData(GetListDisplayAlias(obj), GetDisplayVerbs(obj), obj.Name, GetDisplayAlias(obj)));
+                    new ListData(await GetListDisplayAliasAsync(obj), await GetDisplayVerbsAsync(obj), obj.Name, await GetDisplayAliasAsync(obj)));
             }
         }
 
@@ -843,43 +853,46 @@ public partial class WorldModel : IGame, IGameDebug
         // directional exits so they only display in the compass)
         if (scope == "GetPlacesObjectsList")
         {
-            objects.AddRange(GetExitsListData());
+            objects.AddRange(await GetExitsListDataAsync());
         }
 
         UpdateList(listType, objects);
     }
 
-    private void UpdateExitsList()
+    private async Task UpdateExitsListAsync()
     {
-        UpdateList?.Invoke(ListType.ExitsList, GetExitsListData());
+        if (UpdateList != null)
+        {
+            UpdateList(ListType.ExitsList, await GetExitsListDataAsync());
+        }
     }
 
-    private string GetListDisplayAlias(Element obj)
+    private async Task<string> GetListDisplayAliasAsync(Element obj)
     {
         if (Elements.ContainsKey(ElementType.Function, "GetListDisplayAlias"))
         {
-            return (string) RunProcedure("GetListDisplayAlias", new Parameters("obj", obj), true)!;
+            return (string) (await RunProcedureAsync("GetListDisplayAlias", new Parameters("obj", obj), true))!;
         }
 
-        return GetDisplayAlias(obj);
+        return await GetDisplayAliasAsync(obj);
     }
 
-    private string GetDisplayAlias(Element obj)
+    private async Task<string> GetDisplayAliasAsync(Element obj)
     {
         if (Elements.ContainsKey(ElementType.Function, "GetDisplayAlias"))
         {
-            return (string) RunProcedure("GetDisplayAlias", new Parameters("obj", obj), true)!;
+            return (string) (await RunProcedureAsync("GetDisplayAlias", new Parameters("obj", obj), true))!;
         }
 
         return obj.Name;
     }
 
-    private IEnumerable<string> GetDisplayVerbs(Element obj)
+    private async Task<IEnumerable<string>> GetDisplayVerbsAsync(Element obj)
     {
-        return (QuestList<string>) RunProcedure("GetDisplayVerbs", new Parameters("object", obj), true)!;
+        return (QuestList<string>) (await RunProcedureAsync("GetDisplayVerbs", new Parameters("object", obj), true))!;
     }
 
-    private List<ListData> GetExitsListData()
+    private async Task<List<ListData>> GetExitsListDataAsync()
     {
         var exits = new List<ListData>();
         var scopeFunction = "ScopeExits";
@@ -888,7 +901,7 @@ public partial class WorldModel : IGame, IGameDebug
             scopeFunction = "GetExitsList";
         }
 
-        foreach (var exit in GetObjectsInScope(scopeFunction))
+        foreach (var exit in await GetObjectsInScopeAsync(scopeFunction))
         {
             IEnumerable<string> verbs;
             if (Version <= WorldModelVersion.v520 || !Elements.ContainsKey(ElementType.Function, "GetDisplayVerbs"))
@@ -897,10 +910,10 @@ public partial class WorldModel : IGame, IGameDebug
             }
             else
             {
-                verbs = GetDisplayVerbs(exit);
+                verbs = await GetDisplayVerbsAsync(exit);
             }
 
-            exits.Add(new ListData(GetListDisplayAlias(exit), verbs, exit.Name, GetDisplayAlias(exit)));
+            exits.Add(new ListData(await GetListDisplayAliasAsync(exit), verbs, exit.Name, await GetDisplayAliasAsync(exit)));
         }
 
         return exits;
@@ -1007,30 +1020,11 @@ public partial class WorldModel : IGame, IGameDebug
         }
         catch (Exception ex)
         {
-            Print("Error running script: " + Utility.SafeXML(ex.Message));
+            await PrintAsync("Error running script: " + Utility.SafeXML(ex.Message));
             LogException(ex);
         }
 
         return null;
-    }
-
-    private object? RunScript(IScript script, Parameters? parameters, bool expectResult, Element? thisElement)
-    {
-        var c = new Context();
-        parameters ??= new Parameters();
-        if (thisElement != null)
-        {
-            parameters.Add("this", thisElement);
-        }
-
-        c.Parameters = parameters;
-
-        return RunScript(script, c, expectResult);
-    }
-
-    private object? RunScript(IScript script, Context c, bool expectResult)
-    {
-        return RunScriptAsync(script, c, expectResult).GetAwaiter().GetResult();
     }
 
     public Element AddProcedure(string name)
@@ -1053,22 +1047,12 @@ public partial class WorldModel : IGame, IGameDebug
         return del;
     }
 
-    public void RunProcedure(string name)
-    {
-        RunProcedure(name, false);
-    }
-
     public Task RunProcedureAsync(string name)
     {
         return RunProcedureAsync(name, null, false);
     }
 
-    private object? RunProcedure(string name, bool expectResult)
-    {
-        return RunProcedure(name, null, expectResult);
-    }
-
-    public object? RunProcedure(string name, Parameters? parameters, bool expectResult)
+    public async Task<object?> RunProcedureAsync(string name, Parameters? parameters, bool expectResult)
     {
         if (Elements.ContainsKey(ElementType.Function, name))
         {
@@ -1096,41 +1080,10 @@ public partial class WorldModel : IGame, IGameDebug
                     function.Fields[FieldDefinitions.ParamNames].Count));
             }
 
-            return RunScript(function.Fields[FieldDefinitions.Script], parameters, expectResult, null);
-        }
-
-        Print($"Error - no such procedure '{name}'");
-        return null;
-    }
-
-    public async Task<object?> RunProcedureAsync(string name, Parameters? parameters, bool expectResult)
-    {
-        if (Elements.ContainsKey(ElementType.Function, name))
-        {
-            var function = Elements.Get(ElementType.Function, name);
-
-            var parametersInvalid = false;
-            if (Version == WorldModelVersion.v520)
-            {
-                parametersInvalid = parameters == null && function.Fields[FieldDefinitions.ParamNames].Count > 0;
-            }
-            else if (Version >= WorldModelVersion.v530)
-            {
-                parametersInvalid = (parameters == null || parameters.Count == 0) &&
-                                    function.Fields[FieldDefinitions.ParamNames].Count > 0;
-            }
-
-            if (parametersInvalid)
-            {
-                throw new Exception(string.Format("No parameters passed to {0} function - expected {1} parameters",
-                    name,
-                    function.Fields[FieldDefinitions.ParamNames].Count));
-            }
-
             return await RunScriptAsync(function.Fields[FieldDefinitions.Script], parameters, expectResult);
         }
 
-        Print($"Error - no such procedure '{name}'");
+        await PrintAsync($"Error - no such procedure '{name}'");
         return null;
     }
 

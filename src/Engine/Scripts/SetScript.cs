@@ -228,11 +228,13 @@ public class SetExpressionScript : SetScriptBase
         var result = await m_expr.ExecuteAsync(c);
         if (AppliesTo != null)
         {
+            // we're setting an object property
             var obj = await AppliesTo.ExecuteAsync(c);
             await obj.SetFieldAsync(Property, result);
         }
         else
         {
+            // we're setting a local variable
             c.Parameters[Property] = result;
         }
     }
@@ -280,11 +282,13 @@ public class SetScriptScript : SetScriptBase
     {
         if (AppliesTo != null)
         {
+            // we're setting an object property
             var obj = await AppliesTo.ExecuteAsync(c);
             await obj.SetFieldAsync(Property, m_script);
         }
         else
         {
+            // we're setting a local variable
             c.Parameters[Property] = m_script;
         }
     }

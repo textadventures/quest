@@ -58,6 +58,9 @@ public class ForEachScript : ScriptBase
         var result = await m_list.ExecuteAsync(c);
         IEnumerable resultList = null;
 
+        // Cannot foreach over strings as of Quest 5.3, as the Char data type is not supported (retained functionality
+        // for pre-5.3 to prevent breaking existing scripts)
+
         if (m_scriptContext.WorldModel.Version < WorldModelVersion.v530 || !(result is string))
         {
             var resultDictionary = result as IDictionary;

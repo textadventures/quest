@@ -83,7 +83,7 @@ public class ShowMenuScript : ScriptBase
             throw new Exception("Unknown menu options type");
         }
 
-        m_worldModel.Print(caption);
+        await m_worldModel.PrintAsync(caption);
         var menuData = new MenuData(caption, optionsDictionary, allowCancel);
         m_worldModel.PlayerUi.ShowMenu(menuData);
 
@@ -99,7 +99,7 @@ public class ShowMenuScript : ScriptBase
         {
             var response = await m_worldModel._menuTcs!.Task;
             if (response != null)
-                m_worldModel.Print(" - " + optionsDictionary[response]);
+                await m_worldModel.PrintAsync(" - " + optionsDictionary[response]);
             c.Parameters["result"] = response;
             await m_worldModel.RunScriptAsync(m_callbackScript, c);
         }
