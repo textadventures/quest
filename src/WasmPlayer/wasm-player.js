@@ -107,7 +107,7 @@ window.WebPlayer = {
 var Bridge;
 
 async function initWasmPlayer(gameFileUrl, filename) {
-    const { dotnet } = await import('./_framework/dotnet.js');
+    const { dotnet } = await import('./dotnet.js');
 
     const runtime = await dotnet.create();
     const { setModuleImports, getAssemblyExports, getConfig } = runtime;
