@@ -8,6 +8,8 @@ on:
 jobs:
   release:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
     steps:
       - uses: actions/checkout@v4
 
@@ -30,6 +32,16 @@ jobs:
         working-directory: src/WebEditor
         env:
           PUBLIC_WEBEDITOR_VERSION: ${{ github.ref_name }}
+
+      - name: Package artifacts
+        run: |
+          (cd src/WasmEditor/bin/Release/net10.0/browser-wasm/AppBundle && zip -r $GITHUB_WORKSPACE/AppBundle.zip .)
+          (cd src/WebEditor/build && zip -r $GITHUB_WORKSPACE/WebEditor.zip .)
+
+      - name: Create GitHub Release
+        run: gh release create ${{ github.ref_name }} AppBundle.zip WebEditor.zip --title "${{ github.ref_name }}"
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Pin WebEditor version in textadventures.co.uk
         run: |
