@@ -163,7 +163,7 @@ background threads, no blocking waits — making it fully WASM-compatible.
 
 ---
 
-## Phase 6 — WasmPlayer
+## Phase 6 — WasmPlayer 🚧
 
 The UI approach should follow WasmEditor (pure JS + C# WASM DLL) rather than Blazor
 WASM. Reasons:

@@ -16,6 +16,7 @@
     </ItemGroup>
     <ItemGroup>
         <EmbeddedResource Include="Resources\grid.js"/>
+        <EmbeddedResource Include="Resources\player.js"/>
         <EmbeddedResource Include="Resources\lib\images\ui-bg_flat_0_aaaaaa_40x100.png"/>
         <EmbeddedResource Include="Resources\lib\images\ui-bg_flat_55_fbec88_40x100.png"/>
         <EmbeddedResource Include="Resources\lib\images\ui-bg_glass_75_d0e5f5_1x400.png"/>
