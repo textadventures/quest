@@ -3,8 +3,10 @@
         <TargetFramework>net10.0</TargetFramework>
         <OutputType>Library</OutputType>
         <RootNamespace>QuestViva.Utility</RootNamespace>
+        <PackageId>QuestViva.Utility</PackageId>
         <ImplicitUsings>enable</ImplicitUsings>
         <LangVersion>default</LangVersion>
+        <Description>Helper functions and language utilities for Quest Viva, an open-source text adventure game engine.</Description>
     </PropertyGroup>
     <ItemGroup>
         <PackageReference Include="System.Data.DataSetExtensions" Version="4.5.0"/>

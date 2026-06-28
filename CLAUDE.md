@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-Quest Viva is an open-source system for creating and playing text adventure games. It's a .NET 9.0 C# application (v6.0.0-beta.9), the modern successor to Quest 5. The main deliverable is a web-based game player built with ASP.NET Core and Blazor.
+Quest Viva is an open-source system for creating and playing text adventure games. It's a .NET 10.0 C# application, the modern successor to Quest 5. The main deliverable is a web-based game player built with ASP.NET Core and Blazor.
 
 ## Build & Test Commands
 
@@ -75,9 +75,9 @@ If you forgot to update `VERSION`, the script will fail locally because the tag 
 
 ## Key Technical Details
 
-- Target framework: .NET 9.0 with nullable reference types enabled
-- Expression evaluation uses `Ciloci.Flee` or `NCalcSync` (migrating from the former to the latter)
+- Target framework: .NET 10.0 with nullable reference types enabled
+- Expression evaluation uses `NCalcAsync`
 - Game files use `.aslx` (XML-based) format; legacy `.asl` format also supported
 - Version is stored in the `VERSION` file and embedded as a resource via Common.csproj
 - CI runs on GitHub Actions (build-and-test on push/PR to main for `src/` and `tests/` changes)
-- The `legacy/` directory contains parts of the Quest 5 codebase (.NET Framework) that haven't yet been migrated to .NET 9 — primarily the desktop apps and ASP.NET web apps. It is not part of the active solution
+- Library packages (`QuestViva.Common`, `QuestViva.Utility`, `QuestViva.Engine`, `QuestViva.Legacy`, `QuestViva.PlayerCore`) are published to NuGet.org on each release tag via the `nuget-publish` workflow

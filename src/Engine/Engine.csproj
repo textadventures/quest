@@ -3,9 +3,11 @@
         <TargetFramework>net10.0</TargetFramework>
         <OutputType>Library</OutputType>
         <RootNamespace>QuestViva.Engine</RootNamespace>
+        <PackageId>QuestViva.Engine</PackageId>
         <ImplicitUsings>enable</ImplicitUsings>
         <LangVersion>default</LangVersion>
         <Nullable>enable</Nullable>
+        <Description>Core game interpreter for Quest Viva — script execution, expression evaluation, game loading, and built-in functions for text adventure games.</Description>
     </PropertyGroup>
     <ItemGroup>
         <None Update="Core\Languages\EditorDeutsch.aslx">
