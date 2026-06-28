@@ -101,7 +101,7 @@ public class UndoLogger
         {
             if (m_worldModel.Template.TemplateExists(NothingToUndoTemplate))
             {
-                m_worldModel.PrintTemplate("NothingToUndo");
+                await m_worldModel.PrintTemplateAsync("NothingToUndo");
             }
             else
             {
@@ -185,7 +185,7 @@ public class UndoLogger
             {
                 if (worldModel.Template.DynamicTemplateExists(undoTurnTemplate))
                 {
-                    worldModel.Print(await worldModel.Template.GetDynamicTextAsync(undoTurnTemplate, Description));
+                    await worldModel.PrintAsync(await worldModel.Template.GetDynamicTextAsync(undoTurnTemplate, Description));
                 }
             }
 
