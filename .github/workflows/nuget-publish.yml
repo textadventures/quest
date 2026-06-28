@@ -7,6 +7,8 @@ on:
 jobs:
   publish:
     runs-on: ubuntu-latest
+    permissions:
+      id-token: write
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -41,5 +43,11 @@ jobs:
             dotnet pack "$project" --no-build --configuration Release -p:Version=${{ env.VERSION }} --output nupkgs
           done
 
+      - name: Get short-lived NuGet API key
+        uses: NuGet/login@v1
+        id: login
+        with:
+          user: ${{ secrets.NUGET_USERNAME }}
+
       - name: Push to NuGet.org
-        run: dotnet nuget push "nupkgs/*.nupkg" --api-key ${{ secrets.NUGET_API_KEY }} --source https://api.nuget.org/v3/index.json
+        run: dotnet nuget push "nupkgs/*.nupkg" --api-key ${{ steps.login.outputs.NUGET_API_KEY }} --source https://api.nuget.org/v3/index.json
