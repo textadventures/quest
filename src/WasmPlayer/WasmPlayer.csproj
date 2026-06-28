@@ -11,33 +11,27 @@
     <ItemGroup>
         <ProjectReference Include="..\PlayerCore\PlayerCore.csproj"/>
     </ItemGroup>
-    <ItemGroup>
-        <!-- Static player assets copied into AppBundle at publish time -->
-        <Content Include="..\PlayerCore\Resources\player.js" Link="player.js" CopyToPublishDirectory="PreserveNewest"/>
-        <Content Include="..\PlayerCore\Resources\playercore.js" Link="playercore.js" CopyToPublishDirectory="PreserveNewest"/>
-        <Content Include="..\PlayerCore\Resources\playercore.css" Link="playercore.css" CopyToPublishDirectory="PreserveNewest"/>
-        <Content Include="..\PlayerCore\Resources\grid.js" Link="grid.js" CopyToPublishDirectory="PreserveNewest"/>
-        <Content Include="..\PlayerCore\Resources\lib\jquery-2.1.1.min.js" Link="lib\jquery-2.1.1.min.js" CopyToPublishDirectory="PreserveNewest"/>
-        <Content Include="..\PlayerCore\Resources\lib\jquery-ui.min.js" Link="lib\jquery-ui.min.js" CopyToPublishDirectory="PreserveNewest"/>
-        <Content Include="..\PlayerCore\Resources\lib\jquery-ui.min.css" Link="lib\jquery-ui.min.css" CopyToPublishDirectory="PreserveNewest"/>
-        <Content Include="..\PlayerCore\Resources\lib\jquery.multi-open-accordion-1.5.3.js" Link="lib\jquery.multi-open-accordion-1.5.3.js" CopyToPublishDirectory="PreserveNewest"/>
-        <Content Include="..\PlayerCore\Resources\lib\paper.js" Link="lib\paper.js" CopyToPublishDirectory="PreserveNewest"/>
-        <Content Include="..\PlayerCore\Resources\lib\images\ui-bg_flat_0_aaaaaa_40x100.png" Link="lib\images\ui-bg_flat_0_aaaaaa_40x100.png" CopyToPublishDirectory="PreserveNewest"/>
-        <Content Include="..\PlayerCore\Resources\lib\images\ui-bg_flat_55_fbec88_40x100.png" Link="lib\images\ui-bg_flat_55_fbec88_40x100.png" CopyToPublishDirectory="PreserveNewest"/>
-        <Content Include="..\PlayerCore\Resources\lib\images\ui-bg_glass_75_d0e5f5_1x400.png" Link="lib\images\ui-bg_glass_75_d0e5f5_1x400.png" CopyToPublishDirectory="PreserveNewest"/>
-        <Content Include="..\PlayerCore\Resources\lib\images\ui-bg_glass_85_dfeffc_1x400.png" Link="lib\images\ui-bg_glass_85_dfeffc_1x400.png" CopyToPublishDirectory="PreserveNewest"/>
-        <Content Include="..\PlayerCore\Resources\lib\images\ui-bg_glass_95_fef1ec_1x400.png" Link="lib\images\ui-bg_glass_95_fef1ec_1x400.png" CopyToPublishDirectory="PreserveNewest"/>
-        <Content Include="..\PlayerCore\Resources\lib\images\ui-bg_gloss-wave_55_5c9ccc_500x100.png" Link="lib\images\ui-bg_gloss-wave_55_5c9ccc_500x100.png" CopyToPublishDirectory="PreserveNewest"/>
-        <Content Include="..\PlayerCore\Resources\lib\images\ui-bg_inset-hard_100_f5f8f9_1x100.png" Link="lib\images\ui-bg_inset-hard_100_f5f8f9_1x100.png" CopyToPublishDirectory="PreserveNewest"/>
-        <Content Include="..\PlayerCore\Resources\lib\images\ui-bg_inset-hard_100_fcfdfd_1x100.png" Link="lib\images\ui-bg_inset-hard_100_fcfdfd_1x100.png" CopyToPublishDirectory="PreserveNewest"/>
-        <Content Include="..\PlayerCore\Resources\lib\images\ui-icons_217bc0_256x240.png" Link="lib\images\ui-icons_217bc0_256x240.png" CopyToPublishDirectory="PreserveNewest"/>
-        <Content Include="..\PlayerCore\Resources\lib\images\ui-icons_2e83ff_256x240.png" Link="lib\images\ui-icons_2e83ff_256x240.png" CopyToPublishDirectory="PreserveNewest"/>
-        <Content Include="..\PlayerCore\Resources\lib\images\ui-icons_469bdd_256x240.png" Link="lib\images\ui-icons_469bdd_256x240.png" CopyToPublishDirectory="PreserveNewest"/>
-        <Content Include="..\PlayerCore\Resources\lib\images\ui-icons_6da8d5_256x240.png" Link="lib\images\ui-icons_6da8d5_256x240.png" CopyToPublishDirectory="PreserveNewest"/>
-        <Content Include="..\PlayerCore\Resources\lib\images\ui-icons_cd0a0a_256x240.png" Link="lib\images\ui-icons_cd0a0a_256x240.png" CopyToPublishDirectory="PreserveNewest"/>
-        <Content Include="..\PlayerCore\Resources\lib\images\ui-icons_d8e7f3_256x240.png" Link="lib\images\ui-icons_d8e7f3_256x240.png" CopyToPublishDirectory="PreserveNewest"/>
-        <Content Include="..\PlayerCore\Resources\lib\images\ui-icons_f9bd01_256x240.png" Link="lib\images\ui-icons_f9bd01_256x240.png" CopyToPublishDirectory="PreserveNewest"/>
-        <Content Include="index.html" CopyToPublishDirectory="PreserveNewest"/>
-        <Content Include="wasm-player.js" CopyToPublishDirectory="PreserveNewest"/>
-    </ItemGroup>
+    <!-- Copy static player assets into the AppBundle after it is assembled -->
+    <Target Name="CopyPlayerAssetsToAppBundle" AfterTargets="_WasmGenerateAppBundle">
+        <PropertyGroup>
+            <_PCRes>$(MSBuildThisFileDirectory)..\PlayerCore\Resources\</_PCRes>
+        </PropertyGroup>
+        <ItemGroup>
+            <_FlatAssets Include="$(_PCRes)player.js"/>
+            <_FlatAssets Include="$(_PCRes)playercore.js"/>
+            <_FlatAssets Include="$(_PCRes)playercore.css"/>
+            <_FlatAssets Include="$(_PCRes)grid.js"/>
+            <_FlatAssets Include="$(MSBuildThisFileDirectory)wasm-player.js"/>
+            <_FlatAssets Include="$(MSBuildThisFileDirectory)index.html"/>
+            <_LibAssets Include="$(_PCRes)lib\jquery-2.1.1.min.js"/>
+            <_LibAssets Include="$(_PCRes)lib\jquery-ui.min.js"/>
+            <_LibAssets Include="$(_PCRes)lib\jquery-ui.min.css"/>
+            <_LibAssets Include="$(_PCRes)lib\jquery.multi-open-accordion-1.5.3.js"/>
+            <_LibAssets Include="$(_PCRes)lib\paper.js"/>
+            <_ImageAssets Include="$(_PCRes)lib\images\*.png"/>
+        </ItemGroup>
+        <Copy SourceFiles="@(_FlatAssets)" DestinationFolder="$(WasmAppDir)"/>
+        <Copy SourceFiles="@(_LibAssets)" DestinationFolder="$(WasmAppDir)lib\"/>
+        <Copy SourceFiles="@(_ImageAssets)" DestinationFolder="$(WasmAppDir)lib\images\"/>
+    </Target>
 </Project>
