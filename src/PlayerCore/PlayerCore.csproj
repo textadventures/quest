@@ -3,8 +3,10 @@
         <TargetFramework>net10.0</TargetFramework>
         <OutputType>Library</OutputType>
         <RootNamespace>QuestViva.PlayerCore</RootNamespace>
+        <PackageId>QuestViva.PlayerCore</PackageId>
         <ImplicitUsings>enable</ImplicitUsings>
         <LangVersion>default</LangVersion>
+        <Description>Game player runtime for Quest Viva — load and query .aslx text adventure game files.</Description>
     </PropertyGroup>
     <ItemGroup>
         <ProjectReference Include="..\Legacy\Legacy.csproj"/>
