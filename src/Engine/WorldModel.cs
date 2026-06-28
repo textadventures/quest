@@ -1058,6 +1058,10 @@ public partial class WorldModel : IGame, IGameDebug
         {
             var function = Elements.Get(ElementType.Function, name);
 
+            // Only check for too few parameters for games for Quest 5.2 or later, as previous Quest versions
+            // would ignore this (but would usually still fail when the function was run, as the required
+            // variable wouldn't exist). For Quest 5.3, an additional check if parameters is non-null but empty.
+
             var parametersInvalid = false;
             if (Version == WorldModelVersion.v520)
             {

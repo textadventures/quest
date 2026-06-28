@@ -120,6 +120,7 @@ public class SwitchScript : ScriptBase
     public override async Task ExecuteAsync(Context c)
     {
         var result = await m_expr.ExecuteAsync(c);
+        // using .ToString() here as an object comparison of ints won't work
         var success = await m_cases.ExecuteAsync(c, result.ToString());
 
         if (!success && m_default != null)

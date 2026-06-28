@@ -109,6 +109,7 @@ public class ForScript : ScriptBase
             }
             else
             {
+                // The type of the count variable has changed, so abort the loop
                 break;
             }
         }
