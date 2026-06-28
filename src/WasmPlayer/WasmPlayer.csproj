@@ -7,6 +7,9 @@
         <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
         <Nullable>enable</Nullable>
         <LangVersion>default</LangVersion>
+        <!-- Engine uses reflection-based type discovery (Classes.GetImplementations + Activator.CreateInstance).
+             Trimming removes the constructors it can't statically trace. Disable until we add explicit roots. -->
+        <PublishTrimmed>false</PublishTrimmed>
     </PropertyGroup>
     <ItemGroup>
         <ProjectReference Include="..\PlayerCore\PlayerCore.csproj"/>
