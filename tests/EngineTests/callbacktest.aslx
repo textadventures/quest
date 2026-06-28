@@ -44,4 +44,22 @@
       }
     </script>
   </command>
+
+  <!-- nested on ready: inner on ready should queue and run after the outer callback
+       completes, not nested inside it. Before the AddOnReady fix this would either
+       produce the wrong order (inner before "outer after") or stack-overflow when
+       the nesting was unbounded. -->
+  <command name="cmd_nested_on_ready">
+    <pattern>nestedonready</pattern>
+    <script>
+      on ready {
+        msg ("outer before")
+        on ready {
+          msg ("inner")
+        }
+        msg ("outer after")
+      }
+      msg ("after block")
+    </script>
+  </command>
 </asl>

@@ -134,4 +134,26 @@ public class CallbackTests
         phase2.ShouldContain("wait done");
         phase2.ShouldContain("on ready");
     }
+
+    // An 'on ready' encountered inside another 'on ready' callback should be queued
+    // and run after the outer callback completes — not nested inside it.
+    // Without the AddOnReady fix, the old code ran inner callbacks immediately (nested),
+    // producing "outer before" → "inner" → "outer after". The fix makes it sequential:
+    // "outer before" → "outer after" → "inner". Unbounded nesting without the fix also
+    // risks a stack overflow.
+    [TestMethod]
+    public async Task OnReady_NestedCallback_RunsAfterOuterCompletes()
+    {
+        var driver = await GameDriver.LoadAsync("callbacktest.aslx");
+
+        var output = await driver.SendCommandAsync("nestedonready");
+        output.ShouldContain("outer before");
+        output.ShouldContain("outer after");
+        output.ShouldContain("inner");
+        output.ShouldContain("after block");
+        // Key ordering assertion: inner on ready must run after the outer callback
+        // finishes ("outer after"), not nested inside it.
+        var list = output.ToList();
+        list.IndexOf("outer after").ShouldBeLessThan(list.IndexOf("inner"));
+    }
 }
