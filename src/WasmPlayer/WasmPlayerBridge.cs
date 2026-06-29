@@ -1,10 +1,12 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices.JavaScript;
 using System.Text.Json;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 using QuestViva.Common;
 using QuestViva.Engine;
@@ -99,7 +101,7 @@ public partial class WasmPlayerBridge
         if (_game == null || _ui == null || _ui.IsFinished) return;
         IDictionary<string, string> metadata = string.IsNullOrEmpty(metadataJson)
             ? new Dictionary<string, string>()
-            : JsonSerializer.Deserialize<Dictionary<string, string>>(metadataJson)
+            : JsonSerializer.Deserialize(metadataJson, WasmJsonContext.Default.DictionaryStringString)
               ?? new Dictionary<string, string>();
         await _game.SendCommand(command, tickCount, metadata);
         _ui.FlushText();
@@ -284,7 +286,7 @@ public partial class WasmPlayerBridge
                     && args[0] is string listName
                     && args[1] is Dictionary<string, string> items)
                 {
-                    JsUpdateList(listName, JsonSerializer.Serialize(items));
+                    JsUpdateList(listName, JsonSerializer.Serialize(items, WasmJsonContext.Default.DictionaryStringString));
                 }
                 else if (identifier == "updateCompass"
                          && args?.Length == 1
@@ -343,7 +345,11 @@ public partial class WasmPlayerBridge
 
         // IPlayer
         void IPlayer.ShowMenu(MenuData menuData) =>
-            JsShowMenu(menuData.Caption, JsonSerializer.Serialize(menuData.Options), menuData.AllowCancel);
+            JsShowMenu(menuData.Caption,
+                JsonSerializer.Serialize(
+                    menuData.Options as Dictionary<string, string> ?? new Dictionary<string, string>(menuData.Options),
+                    WasmJsonContext.Default.DictionaryStringString),
+                menuData.AllowCancel);
 
         void IPlayer.DoWait() => JsBeginWait();
 
@@ -397,9 +403,25 @@ public partial class WasmPlayerBridge
         {
             FlushText();
             var serializedArgs = string.Join(',',
-                parameters?.Select(arg => JsonSerializer.Serialize(arg)) ?? System.Array.Empty<string>());
+                parameters?.Select(SerializeJsArg) ?? System.Array.Empty<string>());
             JsRunScript($"{function}({serializedArgs})");
         }
+
+        private static string SerializeJsArg(object? arg) => arg switch
+        {
+            null => "null",
+            string s => JsonSerializer.Serialize(s, WasmJsonContext.Default.String),
+            bool b => b ? "true" : "false",
+            int i => i.ToString(CultureInfo.InvariantCulture),
+            long l => l.ToString(CultureInfo.InvariantCulture),
+            double d => d.ToString(CultureInfo.InvariantCulture),
+            float f => f.ToString(CultureInfo.InvariantCulture),
+            IDictionary<string, string> dict => JsonSerializer.Serialize(
+                dict as Dictionary<string, string> ?? new Dictionary<string, string>(dict),
+                WasmJsonContext.Default.DictionaryStringString),
+            IEnumerable<string> list => JsonSerializer.Serialize(list.ToArray(), WasmJsonContext.Default.StringArray),
+            _ => JsonSerializer.Serialize(arg.ToString() ?? "", WasmJsonContext.Default.String),
+        };
 
         void IPlayer.Quit() { }
 
@@ -424,7 +446,7 @@ public partial class WasmPlayerBridge
         }
 
         void IPlayer.SetCompassDirections(IEnumerable<string> dirs) =>
-            JsSetCompassDirections(JsonSerializer.Serialize(dirs));
+            JsSetCompassDirections(JsonSerializer.Serialize(dirs.ToArray(), WasmJsonContext.Default.StringArray));
 
         void IPlayer.SetInterfaceString(string name, string text) =>
             JsSetInterfaceString(name, text);
@@ -437,3 +459,8 @@ public partial class WasmPlayerBridge
             option is UIOption.UseGameColours or UIOption.UseGameFont ? "true" : null;
     }
 }
+
+[JsonSerializable(typeof(Dictionary<string, string>))]
+[JsonSerializable(typeof(string[]))]
+[JsonSerializable(typeof(string))]
+internal partial class WasmJsonContext : JsonSerializerContext { }

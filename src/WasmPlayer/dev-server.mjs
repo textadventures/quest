@@ -9,7 +9,9 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
-const appBundleDir = path.resolve(__dirname, 'bin/Debug/net10.0/browser-wasm/AppBundle');
+const isRelease = process.argv.includes('--release');
+const config = isRelease ? 'Release' : 'Debug';
+const appBundleDir = path.resolve(__dirname, `bin/${config}/net10.0/browser-wasm/AppBundle`);
 const examplesDir = path.resolve(__dirname, '../../examples');
 const port = 5175;
 
@@ -64,7 +66,8 @@ const server = http.createServer((req, res) => {
 });
 
 server.listen(port, () => {
-  console.log(`WasmPlayer dev server running at http://localhost:${port}/`);
+  console.log(`WasmPlayer dev server (${config}) running at http://localhost:${port}/`);
+  console.log(`Serving: ${appBundleDir}`);
   console.log(`Try: http://localhost:${port}/?game=/examples/simple.aslx`);
   console.log('Press Ctrl+C to stop.');
 });

@@ -162,7 +162,7 @@ function initPlayerUI() {
             gameContent.style.width = (gameWidth - 250) + "px";
             gamePanel.style.width = (gameWidth - 220) + "px";
             gridPanel.style.width = (gameWidth - 220) + "px";
-            if (window.paper) paper.view.viewSize.width = gameWidth - 220;
+            if (window.paper && paper.view) paper.view.viewSize.width = gameWidth - 220;
         } else {
             if (wasWide) {
                 sidebar.style.display = "none";
@@ -175,7 +175,7 @@ function initPlayerUI() {
             gameContent.style.width = "initial";
             gamePanel.style.width = "100%";
             gridPanel.style.width = "100%";
-            if (window.paper) paper.view.viewSize.width = window.innerWidth;
+            if (window.paper && paper.view) paper.view.viewSize.width = window.innerWidth;
         }
 
         const newPanelImageMaxHeight = `${(window.innerHeight - 30) * 0.5}px`;
