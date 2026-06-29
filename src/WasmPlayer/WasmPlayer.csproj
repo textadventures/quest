@@ -1,0 +1,42 @@
+<Project Sdk="Microsoft.NET.Sdk">
+    <PropertyGroup>
+        <TargetFramework>net10.0</TargetFramework>
+        <RuntimeIdentifier>browser-wasm</RuntimeIdentifier>
+        <OutputType>Exe</OutputType>
+        <RootNamespace>QuestViva.WasmPlayer</RootNamespace>
+        <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+        <Nullable>enable</Nullable>
+        <LangVersion>default</LangVersion>
+        <RunAOTCompilation>true</RunAOTCompilation>
+    </PropertyGroup>
+    <ItemGroup>
+        <ProjectReference Include="..\PlayerCore\PlayerCore.csproj"/>
+    </ItemGroup>
+    <ItemGroup>
+        <TrimmerRootDescriptor Include="WasmPlayer.linker.xml" />
+    </ItemGroup>
+    <!-- Copy static player assets into the AppBundle after it is assembled -->
+    <Target Name="CopyPlayerAssetsToAppBundle" AfterTargets="_WasmGenerateAppBundle">
+        <PropertyGroup>
+            <_PCRes>$(MSBuildThisFileDirectory)..\PlayerCore\Resources\</_PCRes>
+        </PropertyGroup>
+        <ItemGroup>
+            <_FlatAssets Include="$(_PCRes)playercore.htm"/>
+            <_FlatAssets Include="$(_PCRes)player.js"/>
+            <_FlatAssets Include="$(_PCRes)playercore.js"/>
+            <_FlatAssets Include="$(_PCRes)playercore.css"/>
+            <_FlatAssets Include="$(_PCRes)grid.js"/>
+            <_FlatAssets Include="$(MSBuildThisFileDirectory)wasm-player.js"/>
+            <_FlatAssets Include="$(MSBuildThisFileDirectory)index.html"/>
+            <_LibAssets Include="$(_PCRes)lib\jquery-2.1.1.min.js"/>
+            <_LibAssets Include="$(_PCRes)lib\jquery-ui.min.js"/>
+            <_LibAssets Include="$(_PCRes)lib\jquery-ui.min.css"/>
+            <_LibAssets Include="$(_PCRes)lib\jquery.multi-open-accordion-1.5.3.js"/>
+            <_LibAssets Include="$(_PCRes)lib\paper.js"/>
+            <_ImageAssets Include="$(_PCRes)lib\images\*.png"/>
+        </ItemGroup>
+        <Copy SourceFiles="@(_FlatAssets)" DestinationFolder="$(WasmAppDir)"/>
+        <Copy SourceFiles="@(_LibAssets)" DestinationFolder="$(WasmAppDir)lib\"/>
+        <Copy SourceFiles="@(_ImageAssets)" DestinationFolder="$(WasmAppDir)lib\images\"/>
+    </Target>
+</Project>

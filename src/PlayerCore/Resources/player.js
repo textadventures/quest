@@ -112,10 +112,9 @@ function sendCommand(text, metadata) {
     canSendCommand = false;
     markScrollPosition();
 
-    // TODO: See if setTimeout is still needed here
-    window.setTimeout(async function () {
-        await WebPlayer.sendCommand(text, getTickCountAndStopTimer(), metadata);
-    }, 100);
+    window.setTimeout(function () {
+        WebPlayer.sendCommand(text, getTickCountAndStopTimer(), metadata);
+    }, 0);
 }
 
 function ASLEvent(event, parameter) {

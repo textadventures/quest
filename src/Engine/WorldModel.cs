@@ -63,6 +63,8 @@ public partial class WorldModel : IGame, IGameDebug
     private int _pendingCallbackCount;
     private readonly List<(IScript Script, Context Context)> _onReadyQueue = [];
 
+    private bool _reportingScriptError;
+
     private Walkthroughs? _walkthroughs;
 
     static WorldModel()
@@ -1020,7 +1022,18 @@ public partial class WorldModel : IGame, IGameDebug
         }
         catch (Exception ex)
         {
-            await PrintAsync("Error running script: " + Utility.SafeXML(ex.Message));
+            if (!_reportingScriptError)
+            {
+                _reportingScriptError = true;
+                try
+                {
+                    await PrintAsync("Error running script: " + Utility.SafeXML(ex.Message));
+                }
+                finally
+                {
+                    _reportingScriptError = false;
+                }
+            }
             LogException(ex);
         }
 

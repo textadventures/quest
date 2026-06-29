@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<linker>
+  <!--
+    Engine uses reflection-based type discovery: Classes.GetImplementations(Assembly.GetExecutingAssembly(), typeof(T))
+    followed by Activator.CreateInstance(t) for 8+ interfaces (IElementFactory, IScriptConstructor, IAttributeLoader,
+    IValueLoader, IXmlLoader, IExtendedAttributeLoader, IElementSaver, IElementsSaver, IObjectSaver, IFieldSaver).
+    The trimmer can't trace these reflection paths, so we preserve the entire Engine assembly.
+  -->
+  <assembly fullname="Engine" preserve="all" />
+</linker>
