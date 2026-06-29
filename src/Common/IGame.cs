@@ -46,14 +46,14 @@ public interface IPlayer
     void DoPause(int ms);
     void ShowQuestion(string caption);
     void SetWindowMenu(MenuData menuData);
-    void PlaySound(string filename, bool synchronous, bool looped);
+    Task PlaySoundAsync(string filename, bool synchronous, bool looped);
     void StopSound();
     void WriteHTML(string html);
-    string GetURL(string filename);
+    Task<string> GetUrlAsync(string filename);
     void LocationUpdated(string location);
     void UpdateGameName(string name);
     void ClearScreen();
-    void ShowPicture(string filename);
+    Task ShowPictureAsync(string filename);
     void SetPanesVisible(string data);
     void SetStatusText(string text);
     void SetBackground(string colour);

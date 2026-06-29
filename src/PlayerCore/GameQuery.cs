@@ -282,8 +282,9 @@ public class GameQuery(string filename)
         {
         }
 
-        public void PlaySound(string filename, bool synchronous, bool looped)
+        public Task PlaySoundAsync(string filename, bool synchronous, bool looped)
         {
+            return Task.CompletedTask;
         }
 
         public void StopSound()
@@ -294,7 +295,7 @@ public class GameQuery(string filename)
         {
         }
 
-        public string GetURL(string file)
+        public Task<string> GetUrlAsync(string file)
         {
             throw new NotImplementedException();
         }
@@ -312,8 +313,9 @@ public class GameQuery(string filename)
         {
         }
 
-        public void ShowPicture(string filename)
+        public Task ShowPictureAsync(string filename)
         {
+            return Task.CompletedTask;
         }
 
         public void SetPanesVisible(string data)

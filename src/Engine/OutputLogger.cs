@@ -88,7 +88,7 @@ internal class LegacyOutputLogger : IOutputLogger
         m_text.Append(string.Format("<output_setfontsize size=\"{0}\"/>", fontSize));
     }
 
-    public void DisplayOutput(string text)
+    public async Task DisplayOutputAsync(string text)
     {
         text = "<output>" + text + "</output>";
         var output = new StringBuilder();
@@ -115,7 +115,7 @@ internal class LegacyOutputLogger : IOutputLogger
                             var filename = reader.GetAttribute("filename");
                             if (filename != null)
                             {
-                                m_worldModel.PlayerUi.ShowPicture(filename);
+                                await m_worldModel.PlayerUi.ShowPictureAsync(filename);
                             }
 
                             break;

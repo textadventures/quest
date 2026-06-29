@@ -1690,17 +1690,17 @@ public partial class V4Game
         await UpdateObjectList(ctx);
     }
 
-    private void ShowPictureInText(string filename)
+    private async Task ShowPictureInTextAsync(string filename)
     {
         if (!_useStaticFrameForPictures)
         {
-            _player.ShowPicture(filename);
+            await _player.ShowPictureAsync(filename);
         }
         else
         {
             // Workaround for a particular game which expects pictures to be in a popup window -
             // use the static picture frame feature so that image is not cleared
-            _player.SetPanelContents("<img src=\"" + _player.GetURL(filename) + "\" onload=\"setPanelHeight()\"/>");
+            _player.SetPanelContents("<img src=\"" + await _player.GetUrlAsync(filename) + "\" onload=\"setPanelHeight()\"/>");
         }
     }
 
@@ -3666,7 +3666,7 @@ public partial class V4Game
             await Print(caption, _nullContext);
         }
 
-        ShowPictureInText(filename);
+        await ShowPictureInTextAsync(filename);
     }
 
     private async Task ShowRoomInfo(string room, Context ctx, bool noPrint = false)
@@ -5823,7 +5823,7 @@ public partial class V4Game
             }
             else if ((ASLVersion >= 390) & BeginsWith(scriptLine, "picture "))
             {
-                ShowPictureInText(await GetParameter(scriptLine, ctx));
+                await ShowPictureInTextAsync(await GetParameter(scriptLine, ctx));
             }
             else if (BeginsWith(scriptLine, "animate persist "))
             {

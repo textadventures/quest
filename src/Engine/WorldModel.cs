@@ -240,7 +240,7 @@ public partial class WorldModel : IGame, IGameDebug
                 }
                 else if (_legacyOutputLogger != null)
                 {
-                    _legacyOutputLogger.DisplayOutput(output.Fields.GetString("text"));
+                    await _legacyOutputLogger.DisplayOutputAsync(output.Fields.GetString("text"));
                 }
             }
 
@@ -1182,9 +1182,9 @@ public partial class WorldModel : IGame, IGameDebug
         throw new Exception("Library file not found: " + filename);
     }
 
-    internal string GetExternalUrl(string file)
+    internal async Task<string> GetExternalUrlAsync(string file)
     {
-        return PlayerUi.GetURL(file);
+        return await PlayerUi.GetUrlAsync(file);
     }
 
     public IEnumerable<string> GetAvailableLibraries()
