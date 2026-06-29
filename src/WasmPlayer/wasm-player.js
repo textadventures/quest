@@ -106,8 +106,24 @@ window.WebPlayer = {
 // Exported bridge reference — set once WASM is loaded.
 var Bridge;
 
+function addPaperScript() {
+    const canvas = document.getElementById('gridCanvas');
+    const gridPanel = document.getElementById('gridPanel');
+    if (canvas instanceof HTMLCanvasElement && gridPanel) {
+        gridPanel.appendChild(canvas);
+        canvas.style.display = '';
+        if (window.paper && paper.view) {
+            paper.view.viewSize = new paper.Size(canvas.clientWidth, canvas.clientHeight);
+        }
+    }
+}
+
 async function initWasmPlayer(gameFileUrl, filename) {
-    const { dotnet } = await import('./_framework/dotnet.js');
+    const [htmResponse, { dotnet }] = await Promise.all([
+        fetch('playercore.htm'),
+        import('./_framework/dotnet.js'),
+    ]);
+    document.body.innerHTML = await htmResponse.text();
 
     const runtime = await dotnet.create();
     const { setModuleImports, getAssemblyExports, getConfig } = runtime;

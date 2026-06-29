@@ -21,6 +21,7 @@
             <_PCRes>$(MSBuildThisFileDirectory)..\PlayerCore\Resources\</_PCRes>
         </PropertyGroup>
         <ItemGroup>
+            <_FlatAssets Include="$(_PCRes)playercore.htm"/>
             <_FlatAssets Include="$(_PCRes)player.js"/>
             <_FlatAssets Include="$(_PCRes)playercore.js"/>
             <_FlatAssets Include="$(_PCRes)playercore.css"/>
