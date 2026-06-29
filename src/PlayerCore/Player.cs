@@ -140,7 +140,7 @@ public class Player : IPlayerHelperUI
             Runner.BeginWait();
         }
 
-        var url = await GetURL(filename);
+        var url = await GetUrlAsync(filename);
 
         AddJavaScriptToBuffer(
             "playSound",
@@ -161,7 +161,7 @@ public class Player : IPlayerHelperUI
 
     Task<string> IPlayer.GetUrlAsync(string file)
     {
-        return GetURL(file);
+        return GetUrlAsync(file);
     }
 
     void IPlayer.LocationUpdated(string location)
@@ -183,7 +183,7 @@ public class Player : IPlayerHelperUI
     async Task IPlayer.ShowPictureAsync(string filename)
     {
         OutputText(PlayerHelper.ClearBuffer());
-        var url = await GetURL(filename);
+        var url = await GetUrlAsync(filename);
         OutputText($"<img src=\"{url}\" onload=\"scrollToEnd();\" /><br />");
     }
 
@@ -391,7 +391,7 @@ public class Player : IPlayerHelperUI
         Finished = true;
     }
 
-    private Task<string> GetURL(string file)
+    private Task<string> GetUrlAsync(string file)
     {
         // TODO: Is this only relevant for the local resource provider? If so move the logic there.
         // We might be running on a case-sensitive file system, so look up the correct casing
@@ -428,7 +428,7 @@ public class Player : IPlayerHelperUI
 
         foreach (var script in scripts)
         {
-            var url = await GetURL(script);
+            var url = await GetUrlAsync(script);
             await JSRuntime.InvokeVoidAsync("addExternalScript", url);
         }
     }
