@@ -131,7 +131,7 @@ async function setupPaperJs() {
     paper.PaperScript.evaluate(code, paper);
 }
 
-async function initWasmPlayer(gameFileUrl, filename) {
+async function initWasmPlayer(gameBytes, filename, bc = null) {
     const [htmResponse, { dotnet }] = await Promise.all([
         fetch('playercore.htm'),
         import('./_framework/dotnet.js'),
@@ -183,13 +183,6 @@ async function initWasmPlayer(gameFileUrl, filename) {
     const exports = await getAssemblyExports(config.mainAssemblyName);
     Bridge = exports.QuestViva.WasmPlayer.WasmPlayerBridge;
 
-    const response = await fetch(gameFileUrl);
-    if (!response.ok) {
-        document.body.innerHTML = `<p>Failed to load game: ${response.statusText}</p>`;
-        return;
-    }
-    const gameBytes = new Uint8Array(await response.arrayBuffer());
-
     const ok = await Bridge.Initialise(gameBytes, filename);
     if (!ok) {
         console.error('[Quest] Failed to initialise game');
@@ -207,6 +200,19 @@ async function initWasmPlayer(gameFileUrl, filename) {
 
 (function () {
     const params = new URLSearchParams(window.location.search);
+
+    if (params.get('source') === 'editor') {
+        const bc = new BroadcastChannel('quest-preview');
+        bc.postMessage({ type: 'ready' });
+        bc.onmessage = async ({ data }) => {
+            if (data.type === 'game') {
+                bc.onmessage = null;   // hand off to resource handler (Phase 3)
+                await initWasmPlayer(data.bytes, data.filename, bc);
+            }
+        };
+        return;
+    }
+
     const gameUrl = params.get('game');
     if (!gameUrl) {
         document.addEventListener('DOMContentLoaded', () => {
@@ -215,5 +221,13 @@ async function initWasmPlayer(gameFileUrl, filename) {
         return;
     }
     const filename = gameUrl.split('/').pop() || 'game.aslx';
-    initWasmPlayer(gameUrl, filename).catch(e => console.error('[Quest] Init failed:', e));
+    (async () => {
+        const response = await fetch(gameUrl);
+        if (!response.ok) {
+            document.body.innerHTML = `<p>Failed to load game: ${response.statusText}</p>`;
+            return;
+        }
+        const gameBytes = new Uint8Array(await response.arrayBuffer());
+        await initWasmPlayer(gameBytes, filename);
+    })().catch(e => console.error('[Quest] Init failed:', e));
 })();
