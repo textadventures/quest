@@ -4,12 +4,12 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-Quest Viva is an open-source system for creating and playing text adventure games. It's a .NET 10.0 C# application, the modern successor to Quest 5. The main deliverable is a web-based game player built with ASP.NET Core and Blazor.
+Quest Viva is an open-source system for creating and playing text adventure games. It's a .NET 10.0 C# application, the modern successor to Quest 5. There are two player implementations: **WebPlayer** (ASP.NET Core + Blazor Server, Docker-deployed) and **WasmPlayer** (pure browser-WASM, AOT-compiled, no server required — the long-term direction).
 
 ## Build & Test Commands
 
 ```bash
-# Build
+# Build (full solution)
 dotnet build --configuration Release
 
 # Run all tests
@@ -21,8 +21,19 @@ dotnet test tests/EngineTests
 # Run a specific test
 dotnet test tests/EngineTests --filter "FullyQualifiedName~TestMethodName"
 
-# Run with Docker
+# Run WebPlayer with Docker
 docker compose up --build    # WebPlayer on http://localhost:8080
+
+# Build WasmPlayer (Debug — fast interpreter mode)
+dotnet build src/WasmPlayer/WasmPlayer.csproj
+
+# Build WasmPlayer (Release — AOT compiled, ~15s)
+dotnet build --configuration Release src/WasmPlayer/WasmPlayer.csproj
+
+# Run WasmPlayer dev server (requires COOP/COEP headers for SharedArrayBuffer)
+node src/WasmPlayer/dev-server.mjs              # Debug build
+node src/WasmPlayer/dev-server.mjs --release    # Release/AOT build
+# Open: http://localhost:5175/?game=/examples/simple.aslx
 ```
 
 Tests use MSTest with Moq (mocking) and Shouldly (assertions).
@@ -45,7 +56,7 @@ The solution (`QuestViva.sln`) has a layered architecture:
 
 ```
 WebPlayer (ASP.NET Core + Blazor Server)  ─┐
-WasmPlayer (Blazor WebAssembly)            ─┤
+WasmPlayer (browser-wasm, AOT)             ─┤
                                             ├─► PlayerCore ─► Engine ─► Utility ─► Common
 EditorCore ─────────────────────────────────┘        │
                                                      └─► Legacy
@@ -60,7 +71,7 @@ EditorCore ───────────────────────
 - **EditorCore** — Game editor logic (non-UI)
 - **Legacy** — Quest 4 (and earlier) backward-compatibility layer with embedded `.lib`/`.dat` files
 - **WebPlayer** — ASP.NET Core web app with Blazor Razor components (`Game.razor`, `Slots.razor`, debugger)
-- **WasmPlayer** — WebAssembly variant of the player
+- **WasmPlayer** — Pure browser-WASM player (`browser-wasm` target, AOT-compiled). Uses `JSImport`/`JSExport` for JS interop. Serves as a static site with no server-side .NET required. IL trimming is enabled; `WasmPlayer.linker.xml` preserves the Engine assembly (which uses reflection-based type discovery).
 
 **Test projects in `tests/`:** EngineTests, PlayerCoreTests, EditorCoreTests, UtilityTests, LegacyTests
 
