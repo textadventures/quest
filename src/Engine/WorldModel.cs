@@ -1184,6 +1184,11 @@ public partial class WorldModel : IGame, IGameDebug
 
     internal async Task<string> GetExternalUrlAsync(string file)
     {
+        if (file.Contains(".."))
+        {
+            throw new Exception("Invalid filename");
+        }
+
         return await PlayerUi.GetUrlAsync(file);
     }
 
@@ -1461,6 +1466,11 @@ public partial class WorldModel : IGame, IGameDebug
 
     public string? GetResourceData(string filename)
     {
+        if (filename.Contains(".."))
+        {
+            throw new Exception("Invalid filename");
+        }
+
         var stream = GetResourceStream(filename);
         if (stream == null)
         {

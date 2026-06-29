@@ -585,22 +585,12 @@ internal class ExpressionOwner(WorldModel worldModel)
     public async Task<string> GetFileURL(string? filename)
     {
         ArgumentNullException.ThrowIfNull(filename);
-        if (filename.Contains(".."))
-        {
-            throw new Exception("Invalid filename");
-        }
-
         return await worldModel.GetExternalUrlAsync(filename);
     }
 
     public string? GetFileData(string? filename)
     {
         ArgumentNullException.ThrowIfNull(filename);
-        if (filename.Contains(".."))
-        {
-            throw new Exception("Invalid filename");
-        }
-
         return worldModel.GetResourceData(filename);
     }
 

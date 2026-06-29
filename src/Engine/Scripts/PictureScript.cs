@@ -44,7 +44,7 @@ public class PictureScript : ScriptBase
 
         if (m_worldModel.Version >= WorldModelVersion.v540)
         {
-            await m_worldModel.PrintAsync("<img src=\"" + await m_worldModel.ExpressionOwner.GetFileURL(filename) + "\" />");
+            await m_worldModel.PrintAsync("<img src=\"" + await m_worldModel.GetExternalUrlAsync(filename) + "\" />");
         }
         else
         {
