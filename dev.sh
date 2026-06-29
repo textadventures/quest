@@ -40,7 +40,7 @@ node src/WasmPlayer/dev-server.mjs &
 PLAYER_PID=$!
 
 VITE_ENV=(
-    "PUBLIC_WASM_PLAYER_URL=http://localhost:5175/"
+    "PUBLIC_WASM_PLAYER_URL=http://localhost:5174/player/"
 )
 if [[ -n "$API_PROXY" ]]; then
     VITE_ENV+=("VITE_API_PROXY=$API_PROXY")
