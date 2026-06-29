@@ -40,17 +40,6 @@ public partial class WasmPlayerBridge
         _helper = new PlayerHelper(_game, _ui);
         _ui.SetHelper(_helper);
 
-        foreach (var name in _game.GetResourceNames())
-        {
-            var stream = _game.GetResourceStream(name);
-            if (stream == null) continue;
-            using var ms = new MemoryStream();
-            await stream.CopyToAsync(ms);
-            var mimeType = PlayerHelper.GetContentType(name);
-            var dataUrl = JsRegisterResource(name, mimeType, Convert.ToBase64String(ms.ToArray()));
-            _ui.RegisterResourceUrl(name, dataUrl);
-        }
-
         _game.LogError += ex =>
         {
             _ui.OutputText("[Sorry, an error occurred]");
@@ -66,6 +55,17 @@ public partial class WasmPlayerBridge
             _ui.OutputText(string.Join("<br/>", errors) + "<br/>");
             _ui.FlushText();
             return false;
+        }
+
+        foreach (var name in _game.GetResourceNames())
+        {
+            var stream = _game.GetResourceStream(name);
+            if (stream == null) continue;
+            using var ms = new MemoryStream();
+            await stream.CopyToAsync(ms);
+            var mimeType = PlayerHelper.GetContentType(name);
+            var dataUrl = JsRegisterResource(name, mimeType, Convert.ToBase64String(ms.ToArray()));
+            _ui.RegisterResourceUrl(name, dataUrl);
         }
 
         var scripts = _game.GetExternalScripts();
