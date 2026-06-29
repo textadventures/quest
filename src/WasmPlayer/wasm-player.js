@@ -118,6 +118,19 @@ function addPaperScript() {
     }
 }
 
+async function setupPaperJs() {
+    if (!window.paper) return;
+    const canvas = document.createElement('canvas');
+    canvas.id = 'gridCanvas';
+    canvas.width = 700;
+    canvas.height = 300;
+    canvas.style.display = 'none';
+    document.body.appendChild(canvas);
+    paper.setup(canvas);
+    const code = await fetch('grid.js').then(r => r.text());
+    paper.PaperScript.evaluate(code, paper);
+}
+
 async function initWasmPlayer(gameFileUrl, filename) {
     const [htmResponse, { dotnet }] = await Promise.all([
         fetch('playercore.htm'),
@@ -185,6 +198,8 @@ async function initWasmPlayer(gameFileUrl, filename) {
         console.error('[Quest] Failed to initialise game');
         return;
     }
+
+    await setupPaperJs();
 
     WebPlayer.gameId = Bridge.GetGameId();
     WebPlayer.initUI();
