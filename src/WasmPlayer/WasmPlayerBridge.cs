@@ -36,7 +36,7 @@ public partial class WasmPlayerBridge
         _game = launcher.GetGame(gameData, null);
         if (_game == null) return false;
 
-        _ui = new WasmPlayerUi(gameData.GameId);
+        _ui = new WasmPlayerUi(gameData.GameId, _game);
         _helper = new PlayerHelper(_game, _ui);
         _ui.SetHelper(_helper);
 
@@ -55,17 +55,6 @@ public partial class WasmPlayerBridge
             _ui.OutputText(string.Join("<br/>", errors) + "<br/>");
             _ui.FlushText();
             return false;
-        }
-
-        foreach (var name in _game.GetResourceNames())
-        {
-            var stream = _game.GetResourceStream(name);
-            if (stream == null) continue;
-            using var ms = new MemoryStream();
-            await stream.CopyToAsync(ms);
-            var mimeType = PlayerHelper.GetContentType(name);
-            var dataUrl = JsRegisterResource(name, mimeType, Convert.ToBase64String(ms.ToArray()));
-            _ui.RegisterResourceUrl(name, dataUrl);
         }
 
         var scripts = _game.GetExternalScripts();
@@ -219,9 +208,6 @@ public partial class WasmPlayerBridge
     [JSImport("requestNextTimerTick", "wasm-player")]
     internal static partial void JsRequestNextTimerTick(int seconds);
 
-    [JSImport("registerResource", "wasm-player")]
-    internal static partial string JsRegisterResource(string filename, string mimeType, string base64);
-
     [JSImport("uiShow", "wasm-player")]
     internal static partial void JsUiShow(string element);
 
@@ -271,14 +257,16 @@ public partial class WasmPlayerBridge
     {
         private readonly Dictionary<string, string> _resourceUrls = new(StringComparer.OrdinalIgnoreCase);
         private readonly ListHandler _listHandler;
+        private readonly IGame _game;
         private PlayerHelper? _helper;
 
         public string GameId { get; }
         public bool IsFinished { get; private set; }
 
-        public WasmPlayerUi(string gameId)
+        public WasmPlayerUi(string gameId, IGame game)
         {
             GameId = gameId;
+            _game = game;
             _listHandler = new ListHandler((identifier, args) =>
             {
                 if (identifier == "updateList"
@@ -299,14 +287,20 @@ public partial class WasmPlayerBridge
 
         public void SetHelper(PlayerHelper helper) => _helper = helper;
 
-        public void RegisterResourceUrl(string filename, string dataUrl) =>
-            _resourceUrls[filename] = dataUrl;
-
         public string GetURL(string filename)
         {
-            var match = _resourceUrls.Keys
-                .FirstOrDefault(k => string.Equals(k, filename, System.StringComparison.OrdinalIgnoreCase));
-            return match != null ? _resourceUrls[match] : filename;
+            if (_resourceUrls.TryGetValue(filename, out var cached))
+                return cached;
+
+            var stream = _game.GetResourceStream(filename);
+            if (stream == null) return filename;
+
+            using var ms = new MemoryStream();
+            stream.CopyTo(ms);
+            var mimeType = PlayerHelper.GetContentType(filename);
+            var dataUrl = $"data:{mimeType};base64,{Convert.ToBase64String(ms.ToArray())}";
+            _resourceUrls[filename] = dataUrl;
+            return dataUrl;
         }
 
         public void FlushText()
