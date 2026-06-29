@@ -55,13 +55,13 @@ public class PlaySoundScript : ScriptBase
         if (synchronous)
         {
             m_worldModel._waitTcs = new TaskCompletionSource();
-            m_worldModel.PlayerUi.PlaySound(filename, true, loop);
+            await m_worldModel.PlayerUi.PlaySoundAsync(filename, true, loop);
             m_worldModel.SignalTurnSuspended();
             await m_worldModel._waitTcs.Task;
         }
         else
         {
-            m_worldModel.PlayerUi.PlaySound(filename, false, loop);
+            await m_worldModel.PlayerUi.PlaySoundAsync(filename, false, loop);
         }
     }
 

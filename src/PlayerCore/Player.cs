@@ -132,7 +132,7 @@ public class Player : IPlayerHelperUI
         // Do nothing - only implemented for desktop player
     }
 
-    void IPlayer.PlaySound(string filename, bool synchronous, bool looped)
+    async Task IPlayer.PlaySoundAsync(string filename, bool synchronous, bool looped)
     {
         if (Runner != null && synchronous)
         {
@@ -140,7 +140,7 @@ public class Player : IPlayerHelperUI
             Runner.BeginWait();
         }
 
-        var url = GetURL(filename);
+        var url = await GetUrlAsync(filename);
 
         AddJavaScriptToBuffer(
             "playSound",
@@ -159,9 +159,9 @@ public class Player : IPlayerHelperUI
         OutputText(html);
     }
 
-    string IPlayer.GetURL(string file)
+    Task<string> IPlayer.GetUrlAsync(string file)
     {
-        return GetURL(file);
+        return GetUrlAsync(file);
     }
 
     void IPlayer.LocationUpdated(string location)
@@ -180,10 +180,10 @@ public class Player : IPlayerHelperUI
         AddJavaScriptToBuffer("clearScreen");
     }
 
-    void IPlayer.ShowPicture(string filename)
+    async Task IPlayer.ShowPictureAsync(string filename)
     {
         OutputText(PlayerHelper.ClearBuffer());
-        var url = GetURL(filename);
+        var url = await GetUrlAsync(filename);
         OutputText($"<img src=\"{url}\" onload=\"scrollToEnd();\" /><br />");
     }
 
@@ -391,14 +391,14 @@ public class Player : IPlayerHelperUI
         Finished = true;
     }
 
-    private string GetURL(string file)
+    private Task<string> GetUrlAsync(string file)
     {
         // TODO: Is this only relevant for the local resource provider? If so move the logic there.
         // We might be running on a case-sensitive file system, so look up the correct casing
         var resource = PlayerHelper.Game.GetResourceNames()
             .FirstOrDefault(n => string.Equals(n, file, StringComparison.InvariantCultureIgnoreCase));
 
-        return ResourceUrlProvider.GetUrl(resource ?? file);
+        return Task.FromResult(ResourceUrlProvider.GetUrl(resource ?? file));
     }
 
     private static string? GetElementId(string code)
@@ -428,7 +428,7 @@ public class Player : IPlayerHelperUI
 
         foreach (var script in scripts)
         {
-            var url = GetURL(script);
+            var url = await GetUrlAsync(script);
             await JSRuntime.InvokeVoidAsync("addExternalScript", url);
         }
     }

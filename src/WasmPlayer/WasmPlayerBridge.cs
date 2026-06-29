@@ -61,7 +61,7 @@ public partial class WasmPlayerBridge
         if (scripts != null)
         {
             foreach (var script in scripts)
-                JsAddExternalScript(_ui.GetURL(script));
+                JsAddExternalScript(await _ui.GetUrlAsync(script));
         }
 
         var stylesheets = _game.GetExternalStylesheets();
@@ -287,20 +287,20 @@ public partial class WasmPlayerBridge
 
         public void SetHelper(PlayerHelper helper) => _helper = helper;
 
-        public string GetURL(string filename)
+        public Task<string> GetUrlAsync(string filename)
         {
             if (_resourceUrls.TryGetValue(filename, out var cached))
-                return cached;
+                return Task.FromResult(cached);
 
             var stream = _game.GetResourceStream(filename);
-            if (stream == null) return filename;
+            if (stream == null) return Task.FromResult(filename);
 
             using var ms = new MemoryStream();
             stream.CopyTo(ms);
             var mimeType = PlayerHelper.GetContentType(filename);
             var dataUrl = $"data:{mimeType};base64,{Convert.ToBase64String(ms.ToArray())}";
             _resourceUrls[filename] = dataUrl;
-            return dataUrl;
+            return Task.FromResult(dataUrl);
         }
 
         public void FlushText()
@@ -353,14 +353,14 @@ public partial class WasmPlayerBridge
 
         void IPlayer.SetWindowMenu(MenuData menuData) { }
 
-        void IPlayer.PlaySound(string filename, bool synchronous, bool looped) =>
-            JsPlaySound(GetURL(filename), synchronous, looped);
+        async Task IPlayer.PlaySoundAsync(string filename, bool synchronous, bool looped) =>
+            JsPlaySound(await GetUrlAsync(filename), synchronous, looped);
 
         void IPlayer.StopSound() => JsStopSound();
 
         void IPlayer.WriteHTML(string html) => OutputText(html);
 
-        string IPlayer.GetURL(string filename) => GetURL(filename);
+        Task<string> IPlayer.GetUrlAsync(string filename) => GetUrlAsync(filename);
 
         void IPlayer.LocationUpdated(string location) => JsUpdateLocation(location);
 
@@ -372,10 +372,10 @@ public partial class WasmPlayerBridge
             JsClearScreen();
         }
 
-        void IPlayer.ShowPicture(string filename)
+        async Task IPlayer.ShowPictureAsync(string filename)
         {
             FlushText();
-            OutputText($"<img src=\"{GetURL(filename)}\" onload=\"scrollToEnd();\" /><br />");
+            OutputText($"<img src=\"{await GetUrlAsync(filename)}\" onload=\"scrollToEnd();\" /><br />");
         }
 
         void IPlayer.SetPanesVisible(string data) => JsPanesVisible(data == "on");

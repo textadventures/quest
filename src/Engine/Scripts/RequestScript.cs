@@ -87,7 +87,7 @@ public class RequestScript : ScriptBase
                 m_worldModel.OutputLogger.Clear();
                 break;
             case Request.ShowPicture:
-                m_worldModel.PlayerUi.ShowPicture(data);
+                await m_worldModel.PlayerUi.ShowPictureAsync(data);
                 // TO DO: Picture should be added to the OutputLogger, but the data we
                 // get here includes the full path/URL - we want the original filename
                 // only, so this would be a breaking change.

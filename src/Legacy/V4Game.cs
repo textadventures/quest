@@ -7689,7 +7689,7 @@ public partial class V4Game : IGame, IGameDebug
         }
 
         if (looped & sync) sync = false;
-        _player.PlaySound(filename, sync, looped);
+        await _player.PlaySoundAsync(filename, sync, looped);
 
         if (sync)
         {

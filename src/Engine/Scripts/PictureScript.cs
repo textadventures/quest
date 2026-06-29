@@ -44,11 +44,11 @@ public class PictureScript : ScriptBase
 
         if (m_worldModel.Version >= WorldModelVersion.v540)
         {
-            await m_worldModel.PrintAsync("<img src=\"" + m_worldModel.ExpressionOwner.GetFileURL(filename) + "\" />");
+            await m_worldModel.PrintAsync("<img src=\"" + await m_worldModel.GetExternalUrlAsync(filename) + "\" />");
         }
         else
         {
-            m_worldModel.PlayerUi.ShowPicture(filename);
+            await m_worldModel.PlayerUi.ShowPictureAsync(filename);
             ((LegacyOutputLogger) m_worldModel.OutputLogger).AddPicture(filename);
         }
     }

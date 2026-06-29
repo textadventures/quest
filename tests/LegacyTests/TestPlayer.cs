@@ -47,8 +47,9 @@ internal class TestPlayer : IPlayer
     {
     }
 
-    public void PlaySound(string filename, bool synchronous, bool looped)
+    public Task PlaySoundAsync(string filename, bool synchronous, bool looped)
     {
+        return Task.CompletedTask;
     }
 
     public void StopSound()
@@ -74,8 +75,9 @@ internal class TestPlayer : IPlayer
     {
     }
 
-    public void ShowPicture(string filename)
+    public Task ShowPictureAsync(string filename)
     {
+        return Task.CompletedTask;
     }
 
     public void SetPanesVisible(string data)
@@ -139,9 +141,9 @@ internal class TestPlayer : IPlayer
     {
     }
 
-    public string GetURL(string file)
+    public Task<string> GetUrlAsync(string file)
     {
-        return file;
+        return Task.FromResult(file);
     }
 
     public void DoPause(int ms)

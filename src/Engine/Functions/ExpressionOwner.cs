@@ -582,25 +582,15 @@ internal class ExpressionOwner(WorldModel worldModel)
     }
 
     // ReSharper disable once InconsistentNaming
-    public string GetFileURL(string? filename)
+    public async Task<string> GetFileURL(string? filename)
     {
         ArgumentNullException.ThrowIfNull(filename);
-        if (filename.Contains(".."))
-        {
-            throw new Exception("Invalid filename");
-        }
-
-        return worldModel.GetExternalUrl(filename);
+        return await worldModel.GetExternalUrlAsync(filename);
     }
 
     public string? GetFileData(string? filename)
     {
         ArgumentNullException.ThrowIfNull(filename);
-        if (filename.Contains(".."))
-        {
-            throw new Exception("Invalid filename");
-        }
-
         return worldModel.GetResourceData(filename);
     }
 
