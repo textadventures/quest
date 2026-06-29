@@ -160,9 +160,6 @@ async function initWasmPlayer(gameFileUrl, filename) {
         updateCompass: (data) => updateCompass(data),
         gameFinished: () => gameFinished(),
         requestNextTimerTick: (seconds) => requestNextTimerTick(seconds),
-        registerResource: (filename, mimeType, base64) => {
-            return `data:${mimeType || 'application/octet-stream'};base64,${base64}`;
-        },
         uiShow: (element) => uiShow(element),
         uiHide: (element) => uiHide(element),
         addExternalScript: (url) => addExternalScript(url),

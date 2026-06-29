@@ -22,7 +22,7 @@ internal class PackageReader
 
     public class ReadResult
     {
-        private readonly Dictionary<string, byte[]> _files = new();
+        private readonly Dictionary<string, byte[]> _files = new(StringComparer.OrdinalIgnoreCase);
 
         public readonly Stream GameFile;
 
@@ -33,16 +33,15 @@ internal class PackageReader
                 var entryName = entry.FullName;
                 var memoryStream = new MemoryStream();
                 entry.Open().CopyTo(memoryStream);
-                _files.Add(entryName, memoryStream.ToArray());
+                _files.TryAdd(entryName, memoryStream.ToArray());
             }
 
             GameFile = gameFile;
         }
 
-        public Stream GetFile(string filename)
+        public Stream? GetFile(string filename)
         {
-            var bytes = _files[filename];
-            return new MemoryStream(bytes);
+            return _files.TryGetValue(filename, out var bytes) ? new MemoryStream(bytes) : null;
         }
 
         public IEnumerable<string> GetFileNames()

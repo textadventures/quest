@@ -96,7 +96,7 @@ public partial class WorldModel : IGame, IGameDebug
         Game = ObjectFactory.CreateObject("game", ObjectType.Game);
     }
 
-    public Func<string, Stream>? ResourceGetter { get; internal set; }
+    public Func<string, Stream?>? ResourceGetter { get; internal set; }
     public Func<IEnumerable<string>>? GetResourceNames { get; internal set; }
 
     internal static Dictionary<ObjectType, string> DefaultTypeNames { get; } = new()
