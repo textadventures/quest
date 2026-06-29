@@ -1,8 +1,9 @@
 <script lang="ts">
     import { AppBar } from "@skeletonlabs/skeleton-svelte";
-    import { PUBLIC_WEBEDITOR_VERSION } from "$env/static/public";
+    import { PUBLIC_WEBEDITOR_VERSION, PUBLIC_WASM_PLAYER_URL } from "$env/static/public";
     import {
         gameFilename, isDirty, saveGame, saveGameAs, canSaveAs, previewUrl,
+        previewInWasmPlayer,
         undo, redo, canUndo, canRedo,
         treeNodes, selectedKey, openAddModal,
         createExit, createTurnScript, createCommand, createVerb,
@@ -11,8 +12,9 @@
     } from "$lib/editor-store";
     import type { TreeNode } from "$lib/types";
 
+    const wasmPlayerUrl = PUBLIC_WASM_PLAYER_URL || '/player/';
+
     let saving = $state(false);
-    let showPreviewHelp = $state(false);
 
     async function handleSave() {
         saving = true;
@@ -29,7 +31,7 @@
             await saveGame();
             window.open($previewUrl, "_blank");
         } else {
-            showPreviewHelp = !showPreviewHelp;
+            await previewInWasmPlayer(wasmPlayerUrl);
         }
     }
 
@@ -142,15 +144,3 @@
         </AppBar.Toolbar>
     </AppBar>
 
-{#if showPreviewHelp}
-    <div class="bg-surface-100-900 border-b border-surface-200-800 px-4 py-3 text-sm flex items-start gap-3">
-        <span class="text-warning-500 text-base">ℹ</span>
-        <div>
-            <strong>To preview your game:</strong> Open it in the
-            <a href="https://textadventures.co.uk/quest" target="_blank" rel="noopener" class="anchor">Quest desktop app</a>,
-            which can run games directly from your local files.
-            Online preview is only available when editing a game saved on textadventures.co.uk.
-        </div>
-        <button type="button" class="ml-auto text-surface-500-400 hover:text-surface-900-50" onclick={() => showPreviewHelp = false}>✕</button>
-    </div>
-{/if}
