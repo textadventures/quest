@@ -53,8 +53,14 @@ export default defineConfig({
       'Cross-Origin-Opener-Policy': 'same-origin',
       'Cross-Origin-Embedder-Policy': 'require-corp',
     },
-    proxy: apiProxy ? {
-      '/api': { target: apiProxy, changeOrigin: true },
-    } : undefined,
+    proxy: {
+      // Proxy WasmPlayer through the same origin so BroadcastChannel works between editor and player tabs.
+      '/player': {
+        target: 'http://localhost:5175',
+        changeOrigin: true,
+        rewrite: (path) => path.replace(/^\/player/, ''),
+      },
+      ...(apiProxy ? { '/api': { target: apiProxy, changeOrigin: true } } : {}),
+    },
   }
 })

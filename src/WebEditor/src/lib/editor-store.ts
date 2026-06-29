@@ -109,6 +109,39 @@ export function setDropdownType(elementKey: string, controlId: string, selectedT
     return result;
 }
 
+function blobToDataUrl(blob: Blob): Promise<string> {
+    return new Promise((resolve) => {
+        const reader = new FileReader();
+        reader.onload = () => resolve(reader.result as string);
+        reader.readAsDataURL(blob);
+    });
+}
+
+export async function previewInWasmPlayer(wasmPlayerUrl: string): Promise<void> {
+    if (!_bridge || !_adapter) return;
+
+    const xml = _bridge.Save();
+    isDirty.set(false);
+    const bytes = new TextEncoder().encode(xml);
+    const filename = _adapter.filename;
+    const adapter = _adapter;
+
+    window.open(wasmPlayerUrl + '?source=editor', '_blank');
+    const bc = new BroadcastChannel('quest-preview');
+
+    bc.onmessage = async ({ data }) => {
+        if (data.type === 'ready') {
+            bc.postMessage({ type: 'game', bytes, filename });
+        } else if (data.type === 'resource-request') {
+            const blob = await adapter.getAsset(data.name);
+            if (blob) {
+                const dataUrl = await blobToDataUrl(blob);
+                bc.postMessage({ type: 'resource-response', id: data.id, dataUrl });
+            }
+        }
+    };
+}
+
 export async function saveGame(): Promise<void> {
     if (!_bridge || !_adapter) return;
     await _adapter.saveFile(_bridge.Save()); // Save() clears _isDirty in the bridge
