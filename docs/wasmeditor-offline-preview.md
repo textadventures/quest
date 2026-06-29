@@ -46,26 +46,19 @@ This requires `GetURL` (the engine's resource URL resolver) to be async. See Pha
 
 ## Phases
 
-### Phase 1 — Make `GetURL` async
+### Phase 1 — Make `GetUrlAsync` async ✅
 
-**Goal:** Pure refactor, no behaviour change. Propagate `async`/`Task<string>` through the resource URL resolution stack so that Phase 3's on-demand proxy can await a BroadcastChannel response from inside `GetURL`.
+**Goal:** Pure refactor, no behaviour change. Propagate `async`/`Task<string>` through the resource URL resolution stack so that Phase 3's on-demand proxy can await a BroadcastChannel response from inside `GetUrlAsync`.
 
-**Files to change:**
+**Changes made:**
 
-| File | Change |
-|------|--------|
-| `src/Common/IGame.cs` | `string GetURL(string)` → `Task<string> GetURL(string)` |
-| `src/Engine/WorldModel.cs` | `GetExternalUrl` → `async Task<string>` |
-| `src/Engine/Functions/ExpressionOwner.cs` | `GetFileURL` → `async Task<string>` |
-| `src/Engine/Scripts/PictureScript.cs` | `await` the now-async `GetFileURL` call (already in `ExecuteAsync`) |
-| `src/PlayerCore/Player.cs` | `GetURL`, `PlaySound`, `ShowPicture` → async |
-| `src/PlayerCore/GameQuery.cs` | `GetURL` → async |
-| `src/WasmPlayer/WasmPlayerBridge.cs` | `WasmPlayerUi.GetURL` → `async Task<string>` |
-| `src/Legacy/V4Game.Part2.cs` | One `GetURL` call site — check whether it is already in an async context |
-
-The `IPlayer.PlaySound` and `IPlayer.ShowPicture` interface methods call `GetURL` in their implementations. These become `Task`-returning; their callers are all in `ExecuteAsync` script methods so no sync-context issues are expected.
-
-**Done when:** All tests pass with no behaviour change.
+- `IPlayer`: `GetURL` → `Task<string> GetUrlAsync`, `PlaySound` → `Task PlaySoundAsync`, `ShowPicture` → `Task ShowPictureAsync`
+- `WorldModel.GetExternalUrlAsync` — async wrapper around `PlayerUi.GetUrlAsync`; path traversal (`..`) guard moved here from `ExpressionOwner`
+- `ExpressionOwner.GetFileURL` — kept as game-facing name (discovered by reflection); delegates to `GetExternalUrlAsync`
+- `PictureScript` — calls `GetExternalUrlAsync` directly (bypasses `ExpressionOwner`)
+- `PlaySoundScript`, `RequestScript`, `OutputLogger.DisplayOutputAsync` — `await` the now-async calls
+- `Player`, `WasmPlayerUi`, `GameQueryUi`, `TestPlayer` — updated implementations
+- `V4Game` / `V4Game.Part2` — `ShowPictureInTextAsync`, `PlaySoundAsync` call sites updated
 
 ---
 
