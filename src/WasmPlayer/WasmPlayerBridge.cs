@@ -244,6 +244,9 @@ public partial class WasmPlayerBridge
     [JSImport("consoleLog", "wasm-player")]
     internal static partial void JsConsoleLog(string message);
 
+    [JSImport("getResourceUrl", "wasm-player")]
+    internal static partial Task<string> JsGetResourceUrl(string filename);
+
     // ── Inner UI class ───────────────────────────────────────────────────────
 
     private static readonly Dictionary<string, string> ElementMap = new()
@@ -287,20 +290,25 @@ public partial class WasmPlayerBridge
 
         public void SetHelper(PlayerHelper helper) => _helper = helper;
 
-        public Task<string> GetUrlAsync(string filename)
+        public async Task<string> GetUrlAsync(string filename)
         {
             if (_resourceUrls.TryGetValue(filename, out var cached))
-                return Task.FromResult(cached);
+                return cached;
 
             var stream = _game.GetResourceStream(filename);
-            if (stream == null) return Task.FromResult(filename);
+            if (stream != null)
+            {
+                using var ms = new MemoryStream();
+                stream.CopyTo(ms);
+                var mimeType = PlayerHelper.GetContentType(filename);
+                var dataUrl = $"data:{mimeType};base64,{Convert.ToBase64String(ms.ToArray())}";
+                _resourceUrls[filename] = dataUrl;
+                return dataUrl;
+            }
 
-            using var ms = new MemoryStream();
-            stream.CopyTo(ms);
-            var mimeType = PlayerHelper.GetContentType(filename);
-            var dataUrl = $"data:{mimeType};base64,{Convert.ToBase64String(ms.ToArray())}";
-            _resourceUrls[filename] = dataUrl;
-            return Task.FromResult(dataUrl);
+            var url = await JsGetResourceUrl(filename);
+            _resourceUrls[filename] = url;
+            return url;
         }
 
         public void FlushText()

@@ -6,6 +6,18 @@ var platform = "wasmplayer";
 
 var _audio = null;
 
+const pendingResources = new Map();
+let editorChannel = null;
+
+function getResourceUrl(name) {
+    if (!editorChannel) return Promise.resolve(name);
+    return new Promise(resolve => {
+        const id = crypto.randomUUID();
+        pendingResources.set(id, resolve);
+        editorChannel.postMessage({ type: 'resource-request', name, id });
+    });
+}
+
 function ui_init() { }
 
 function sendEndWait() {
@@ -175,6 +187,7 @@ async function initWasmPlayer(gameBytes, filename, bc = null) {
         setPanelContents: (html) => setPanelContents(html),
         consoleError: (msg) => console.error('[Quest]', msg),
         consoleLog: (msg) => console.log('[Quest]', msg),
+        getResourceUrl: (name) => getResourceUrl(name),
     });
 
     await runtime.runMain();
@@ -182,6 +195,16 @@ async function initWasmPlayer(gameBytes, filename, bc = null) {
     const config = getConfig();
     const exports = await getAssemblyExports(config.mainAssemblyName);
     Bridge = exports.QuestViva.WasmPlayer.WasmPlayerBridge;
+
+    if (bc) {
+        editorChannel = bc;
+        bc.onmessage = ({ data }) => {
+            if (data.type === 'resource-response') {
+                pendingResources.get(data.id)?.(data.dataUrl);
+                pendingResources.delete(data.id);
+            }
+        };
+    }
 
     const ok = await Bridge.Initialise(gameBytes, filename);
     if (!ok) {
