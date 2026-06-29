@@ -117,20 +117,26 @@ function blobToDataUrl(blob: Blob): Promise<string> {
     });
 }
 
+let _previewChannel: BroadcastChannel | null = null;
+
 export async function previewInWasmPlayer(wasmPlayerUrl: string): Promise<void> {
     if (!_bridge || !_adapter) return;
 
-    const xml = _bridge.Save();
-    isDirty.set(false);
-    const bytes = new TextEncoder().encode(xml);
+    // Close stale channel so old bytes aren't sent to a new preview window.
+    _previewChannel?.close();
+
     const filename = _adapter.filename;
     const adapter = _adapter;
 
     window.open(wasmPlayerUrl + '?source=editor', '_blank');
     const bc = new BroadcastChannel('quest-preview');
+    _previewChannel = bc;
 
     bc.onmessage = async ({ data }) => {
         if (data.type === 'ready') {
+            // Serialize fresh on every 'ready' so WasmPlayer refreshes also pick up latest edits.
+            if (!_bridge) return;
+            const bytes = new TextEncoder().encode(_bridge.Save());
             bc.postMessage({ type: 'game', bytes, filename });
         } else if (data.type === 'resource-request') {
             const blob = await adapter.getAsset(data.name);
