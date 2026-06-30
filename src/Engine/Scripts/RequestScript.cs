@@ -129,11 +129,11 @@ public class RequestScript : ScriptBase
                 var functionName = jsArgs[0];
                 if (jsArgs.Length == 0)
                 {
-                    m_worldModel.PlayerUi.RunScript(functionName, null);
+                    await m_worldModel.PlayerUi.RunScriptAsync(functionName, null);
                 }
                 else
                 {
-                    m_worldModel.PlayerUi.RunScript(functionName, jsArgs.Skip(1).ToArray());
+                    await m_worldModel.PlayerUi.RunScriptAsync(functionName, jsArgs.Skip(1).ToArray());
                 }
 
                 break;

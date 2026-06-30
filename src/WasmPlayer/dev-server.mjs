@@ -2,6 +2,11 @@
 // Dev server for WasmPlayer — serves the Debug AppBundle with required COOP/COEP headers.
 // Run: node dev-server.mjs
 // Then open: http://localhost:5175/?game=/examples/simple.aslx
+//
+// Proxy routes (dev only — avoids CORS issues during local development):
+//   /api/                        → https://textadventures.co.uk/api/
+//                                  (rewrites SourceGameUrl in JSON responses)
+//   /game-resource/<encoded-url> → fetches the game file from the encoded URL
 
 import http from 'node:http';
 import fs from 'node:fs';
@@ -45,7 +50,7 @@ function serveFile(res, filePath) {
   });
 }
 
-const server = http.createServer((req, res) => {
+const server = http.createServer(async (req, res) => {
   // Required for SharedArrayBuffer used by the .NET WASM runtime
   res.setHeader('Cross-Origin-Opener-Policy', 'same-origin');
   res.setHeader('Cross-Origin-Embedder-Policy', 'require-corp');
@@ -57,6 +62,62 @@ const server = http.createServer((req, res) => {
     const filePath = path.join(examplesDir, urlPath.slice('/examples/'.length));
     if (!filePath.startsWith(examplesDir)) { res.writeHead(403); res.end(); return; }
     serveFile(res, filePath);
+    return;
+  }
+
+  // Serve quest-config.js with a dev-local API root so requests route through this proxy.
+  // In production the deployed quest-config.js carries the absolute textadventures.co.uk URL.
+  if (urlPath === '/quest-config.js') {
+    const body = `window.QuestVivaConfig = { textAdventuresApiRoot: '/api/' };\n`;
+    res.writeHead(200, { 'Content-Type': 'application/javascript', 'Cache-Control': 'no-cache' });
+    res.end(body);
+    return;
+  }
+
+  // Proxy /api/ → https://textadventures.co.uk/api/.
+  // Rewrites SourceGameUrl in JSON responses so the game file also comes through this proxy.
+  if (urlPath.startsWith('/api/')) {
+    try {
+      const target = `https://textadventures.co.uk${urlPath}`;
+      const apiRes = await fetch(target);
+      const contentType = apiRes.headers.get('content-type') ?? 'application/json';
+      let body = await apiRes.text();
+      if (contentType.includes('application/json')) {
+        try {
+          const json = JSON.parse(body);
+          if (json.sourceGameUrl) {
+            json.sourceGameUrl = `/game-resource/${encodeURIComponent(json.sourceGameUrl)}`;
+          }
+          if (json.resourceRoot) {
+            json.resourceRoot = `/game-resource/${encodeURIComponent(json.resourceRoot)}`;
+          }
+          body = JSON.stringify(json);
+        } catch { /* leave body as-is if JSON parse fails */ }
+      }
+      res.writeHead(apiRes.status, { 'Content-Type': contentType, 'Cache-Control': 'no-cache' });
+      res.end(body);
+    } catch (e) {
+      res.writeHead(502);
+      res.end(`Proxy error: ${e.message}`);
+    }
+    return;
+  }
+
+  // Proxy /game-resource/<encoded-url> → fetch the actual game file.
+  // Used because the direct game file URL may also be blocked by CORS in dev.
+  if (urlPath.startsWith('/game-resource/')) {
+    const targetUrl = decodeURIComponent(urlPath.slice('/game-resource/'.length));
+    try {
+      const gameRes = await fetch(targetUrl);
+      res.writeHead(gameRes.status, {
+        'Content-Type': gameRes.headers.get('content-type') ?? 'application/octet-stream',
+        'Cache-Control': 'no-cache',
+      });
+      res.end(Buffer.from(await gameRes.arrayBuffer()));
+    } catch (e) {
+      res.writeHead(502);
+      res.end(`Proxy error: ${e.message}`);
+    }
     return;
   }
 

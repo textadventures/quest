@@ -26,6 +26,7 @@
             <_FlatAssets Include="$(_PCRes)grid.js"/>
             <_FlatAssets Include="$(MSBuildThisFileDirectory)wasm-player.js"/>
             <_FlatAssets Include="$(MSBuildThisFileDirectory)index.html"/>
+            <_FlatAssets Include="$(MSBuildThisFileDirectory)quest-config.js"/>
             <_LibAssets Include="$(_PCRes)lib\jquery-2.1.1.min.js"/>
             <_LibAssets Include="$(_PCRes)lib\jquery-ui.min.js"/>
             <_LibAssets Include="$(_PCRes)lib\jquery-ui.min.css"/>

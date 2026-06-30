@@ -233,8 +233,8 @@ public partial class WorldModel : IGame, IGameDebug
                 }
                 else if (Version >= WorldModelVersion.v540)
                 {
-                    PlayerUi.RunScript("loadHtml", [output.Fields.GetString("html")]);
-                    PlayerUi.RunScript("markScrollPosition", null);
+                    await PlayerUi.RunScriptAsync("loadHtml", [output.Fields.GetString("html")]);
+                    await PlayerUi.RunScriptAsync("markScrollPosition", null);
                     ScrollToEnd();
                 }
                 else if (_legacyOutputLogger != null)
@@ -1281,7 +1281,7 @@ public partial class WorldModel : IGame, IGameDebug
 
     private void ScrollToEnd()
     {
-        PlayerUi.RunScript("scrollToEnd", null);
+        _ = PlayerUi.RunScriptAsync("scrollToEnd", null);
     }
 
     internal void LogException(Exception ex)

@@ -10,7 +10,7 @@ namespace QuestViva.EngineTests;
 /// <summary>
 /// Drives a v580+ WorldModel and captures output one interaction step at a time, so tests can
 /// assert that specific text appeared before vs. after a wait / get-input / etc.
-/// For v580+ games, text reaches the player via IPlayer.RunScript("addText", [html]) rather than
+/// For v580+ games, text reaches the player via IPlayer.RunScriptAsync("addText", [html]) rather than
 /// the PrintText event, so we intercept the mock player to capture it.
 /// </summary>
 internal sealed class GameDriver
@@ -25,7 +25,7 @@ internal sealed class GameDriver
     {
         _worldModel = worldModel;
         playerMock
-            .Setup(p => p.RunScript(It.IsAny<string>(), It.IsAny<object[]>()))
+            .Setup(p => p.RunScriptAsync(It.IsAny<string>(), It.IsAny<object[]>()))
             .Callback<string, object[]>((fn, args) =>
             {
                 if (fn == "addText" && args?.Length > 0 && args[0] is string html)
@@ -34,7 +34,8 @@ internal sealed class GameDriver
                     if (!string.IsNullOrEmpty(text))
                         _batch.Add(text);
                 }
-            });
+            })
+            .Returns(Task.CompletedTask);
         worldModel.LogError += ex => _scriptError = ex;
     }
 

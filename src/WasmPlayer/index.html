@@ -12,8 +12,168 @@
     <script type="text/javascript" src="playercore.js"></script>
     <script type="text/javascript" src="player.js"></script>
     <script type="text/javascript" src="lib/paper.js"></script>
+    <script type="text/javascript" src="quest-config.js"></script>
     <script type="text/javascript" src="wasm-player.js"></script>
+    <style>
+        #qv-start {
+            position: fixed;
+            inset: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #0a0b12;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+            padding: 1rem;
+            box-sizing: border-box;
+        }
+        #qv-card {
+            background: #111220;
+            border: 1px solid rgba(139, 124, 246, 0.25);
+            border-radius: 16px;
+            padding: 2.5rem 2rem;
+            width: 100%;
+            max-width: 440px;
+            box-shadow: 0 0 60px rgba(139, 124, 246, 0.08), 0 8px 40px rgba(0, 0, 0, 0.6);
+        }
+        #qv-card h1 {
+            font-family: Georgia, 'Times New Roman', serif;
+            color: #e2e0ff;
+            font-size: 2rem;
+            margin: 0 0 0.2rem;
+            font-weight: normal;
+            letter-spacing: 0.01em;
+        }
+        #qv-card h1 .gem {
+            color: #8b7cf6;
+            margin-right: 0.3em;
+        }
+        #qv-tagline {
+            color: #5a5b7a;
+            font-size: 0.9rem;
+            margin: 0 0 2rem;
+        }
+        .qv-label {
+            display: block;
+            color: #5a5b7a;
+            font-size: 0.72rem;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            margin-bottom: 0.5rem;
+        }
+        #qv-file-btn {
+            width: 100%;
+            padding: 0.8rem 1rem;
+            background: rgba(139, 124, 246, 0.08);
+            border: 1px solid rgba(139, 124, 246, 0.2);
+            border-radius: 10px;
+            color: #b8b4e8;
+            font-size: 0.9rem;
+            font-family: inherit;
+            cursor: pointer;
+            text-align: left;
+            transition: background 0.15s, border-color 0.15s;
+            box-sizing: border-box;
+        }
+        #qv-file-btn:hover {
+            background: rgba(139, 124, 246, 0.14);
+            border-color: rgba(139, 124, 246, 0.4);
+        }
+        #qv-file-input { display: none; }
+        .qv-or {
+            text-align: center;
+            color: #2e2f45;
+            font-size: 0.85rem;
+            margin: 1.25rem 0;
+            position: relative;
+        }
+        .qv-or::before, .qv-or::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            width: 42%;
+            height: 1px;
+            background: #1e1f30;
+        }
+        .qv-or::before { left: 0; }
+        .qv-or::after { right: 0; }
+        #qv-url-row {
+            display: flex;
+            gap: 0.5rem;
+        }
+        #qv-url-input {
+            flex: 1;
+            padding: 0.75rem 0.9rem;
+            background: #0d0e1a;
+            border: 1px solid #1e1f30;
+            border-radius: 10px;
+            color: #c8c6e8;
+            font-size: 0.9rem;
+            font-family: inherit;
+            outline: none;
+            min-width: 0;
+            transition: border-color 0.15s;
+        }
+        #qv-url-input:focus { border-color: rgba(139, 124, 246, 0.5); }
+        #qv-url-input::placeholder { color: #2e2f45; }
+        #qv-url-btn {
+            padding: 0.75rem 1.1rem;
+            background: #8b7cf6;
+            border: none;
+            border-radius: 10px;
+            color: #fff;
+            font-size: 0.9rem;
+            font-family: inherit;
+            font-weight: 600;
+            cursor: pointer;
+            white-space: nowrap;
+            transition: background 0.15s;
+        }
+        #qv-url-btn:hover { background: #7a6ae4; }
+        #qv-error {
+            display: none;
+            background: rgba(220, 60, 60, 0.08);
+            border: 1px solid rgba(220, 60, 60, 0.25);
+            border-radius: 10px;
+            padding: 0.9rem 1rem;
+            margin-bottom: 1.5rem;
+            color: #f87171;
+            font-size: 0.88rem;
+            line-height: 1.6;
+        }
+        #qv-error a { color: #93c5fd; }
+        #qv-loading-msg {
+            display: none;
+            color: #5a5b7a;
+            font-size: 0.88rem;
+            margin-top: 1.25rem;
+            text-align: center;
+        }
+    </style>
 </head>
 <body>
+<div id="qv-start">
+    <div id="qv-card">
+        <h1><span class="gem">&#9672;</span>Quest Viva</h1>
+        <p id="qv-tagline">Play text adventure games</p>
+
+        <div id="qv-error"></div>
+
+        <div id="qv-pickers">
+            <span class="qv-label">Open a game file</span>
+            <button id="qv-file-btn" type="button">&#128193; Choose file (.quest, .aslx, .asl, .cas)</button>
+            <input type="file" id="qv-file-input" accept=".quest,.aslx,.asl,.cas">
+
+            <div class="qv-or">or</div>
+
+            <label class="qv-label" for="qv-url-input">Load from URL</label>
+            <div id="qv-url-row">
+                <input type="url" id="qv-url-input" placeholder="https://&hellip;" autocomplete="off" spellcheck="false">
+                <button id="qv-url-btn" type="button">Load</button>
+            </div>
+        </div>
+
+        <p id="qv-loading-msg">Loading&hellip;</p>
+    </div>
+</div>
 </body>
 </html>
