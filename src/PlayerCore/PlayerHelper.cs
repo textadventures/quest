@@ -1,6 +1,7 @@
 ﻿using System.Globalization;
 using System.Reflection;
 using System.Text.Json;
+using System.Text.Json.Serialization;
 using System.Xml;
 using QuestViva.Common;
 
@@ -471,7 +472,7 @@ public class PlayerHelper
         {
             convertedList.Add(
                 $"k{count}",
-                JsonSerializer.Serialize(data)
+                JsonSerializer.Serialize(data, PlayerCoreJsonContext.Default.ListData)
             );
             count++;
         }
@@ -488,18 +489,20 @@ public class PlayerHelper
     {
         var result = new CommandData();
 
-        var values = JsonSerializer.Deserialize<Dictionary<string, JsonElement>>(data);
-        if (values.TryGetValue("command", out var commandEl))
-        {
-            result.Command = commandEl.GetString();
-        }
+        using var doc = JsonDocument.Parse(data);
+        var root = doc.RootElement;
 
-        if (values.TryGetValue("metadata", out var metadataEl))
+        if (root.TryGetProperty("command", out var commandEl))
+            result.Command = commandEl.GetString();
+
+        if (root.TryGetProperty("metadata", out var metadataEl))
         {
             var metadataString = metadataEl.GetString();
             if (metadataString != null)
             {
-                result.Metadata = JsonSerializer.Deserialize<Dictionary<string, string>>(metadataString);
+                using var metaDoc = JsonDocument.Parse(metadataString);
+                result.Metadata = metaDoc.RootElement.EnumerateObject()
+                    .ToDictionary(p => p.Name, p => p.Value.GetString() ?? "");
             }
         }
 
@@ -518,3 +521,6 @@ public class PlayerHelper
         public IDictionary<string, string> Metadata { get; set; }
     }
 }
+
+[JsonSerializable(typeof(ListData))]
+internal partial class PlayerCoreJsonContext : JsonSerializerContext { }
