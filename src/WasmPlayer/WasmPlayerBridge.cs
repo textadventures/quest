@@ -61,7 +61,7 @@ public partial class WasmPlayerBridge
         if (scripts != null)
         {
             foreach (var script in scripts)
-                JsAddExternalScript(await _ui.GetUrlAsync(script));
+                await JsAddExternalScript(await _ui.GetUrlAsync(script));
         }
 
         var stylesheets = _game.GetExternalStylesheets();
@@ -215,7 +215,7 @@ public partial class WasmPlayerBridge
     internal static partial void JsUiHide(string element);
 
     [JSImport("addExternalScript", "wasm-player")]
-    internal static partial void JsAddExternalScript(string url);
+    internal static partial Task JsAddExternalScript(string url);
 
     [JSImport("addExternalStylesheet", "wasm-player")]
     internal static partial void JsAddExternalStylesheet(string url);
