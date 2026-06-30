@@ -382,7 +382,7 @@ public class ExpressionTests
     {
         // When a method arg is null, NCalc's GetMethod(name, [typeof(object)]) won't find
         // List<Element>.Contains(Element), so the null-arg fallback must kick in.
-        // AllObjects() as receiver avoids the ConvertVariablesToFleeFormat (\w\.\w) mangling.
+        // AllObjects() as receiver avoids dot-notation parsing since the receiver is a function call.
         var expr = new Expression<bool>("AllObjects().Contains(nullobj)", _scriptContext);
         var c = new Context { Parameters = new Parameters { { "nullobj", null } } };
         (await expr.ExecuteAsync(c)).ShouldBeFalse();

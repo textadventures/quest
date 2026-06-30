@@ -19,7 +19,6 @@ public class MismatchingQuotesException : Exception
 
 public static partial class Utility
 {
-    private const string k_dotReplacementString = "___DOT___";
     private const string k_spaceReplacementString = "___SPACE___";
 
     public static readonly string[] DisallowedAttributes =
@@ -200,84 +199,17 @@ public static partial class Utility
         return result;
     }
 
-    public static void ResolveVariableName(ref string name, out string obj, out string variable)
-    {
-        name = ResolveElementName(name);
-        var eqPos = name.IndexOf(k_dotReplacementString);
-        if (eqPos == -1)
-        {
-            obj = null;
-            variable = name;
-            return;
-        }
-
-        obj = name[..eqPos];
-        variable = name[(eqPos + k_dotReplacementString.Length)..];
-    }
-
-    public static void ResolveObjectDotAttribute(string name, out string obj, out string variable)
-    {
-        variable = ConvertVariablesToFleeFormat(ResolveElementName(name));
-        StringBuilder sb = null;
-
-        do
-        {
-            if (!ContainsUnresolvedDotNotation(variable))
-            {
-                continue;
-            }
-
-            // We may have been passed in something like someobj.parent.someproperty
-            ResolveVariableName(ref variable, out var nestedObj, out variable);
-
-            if (nestedObj == null)
-            {
-                continue;
-            }
-
-            if (sb == null)
-            {
-                sb = new StringBuilder();
-            }
-            else
-            {
-                sb.Append('.');
-            }
-
-            sb.Append(nestedObj);
-        } while (ContainsUnresolvedDotNotation(variable));
-
-        obj = sb?.ToString();
-    }
-
     public static string ResolveElementName(string name)
     {
         return name.Replace(k_spaceReplacementString, " ");
     }
 
-    // private static Regex s_convertVariables = new System.Text.RegularExpressions.Regex(@"(\w)\.([a-zA-Z])");
-    [GeneratedRegex(@"(\w)\.([a-zA-Z])")]
-    private static partial Regex s_convertVariables();
-
     [GeneratedRegex(@"//")]
     private static partial Regex s_detectComments();
 
-    /// <summary>
-    ///     FLEE doesn't allow us to have control over dot notation i.e. "object.property",
-    ///     so instead we handle "object_property". Use this function to convert dot to underscore.
-    /// </summary>
-    /// <param name="expression"></param>
-    /// <returns></returns>
-    public static string ConvertVariablesToFleeFormat(string expression)
+    public static string DecodeIdentifierSpaces(string expression)
     {
-        var result = ReplaceRegexMatchesRespectingQuotes(expression, s_convertVariables(),
-            "$1" + k_dotReplacementString + "$2", false);
-        return ConvertVariableNamesWithSpaces(result);
-    }
-
-    public static string ConvertFleeFormatToVariables(string expression)
-    {
-        return expression.Replace(k_dotReplacementString, ".").Replace(k_spaceReplacementString, " ");
+        return expression.Replace(k_spaceReplacementString, " ");
     }
 
     private static string ReplaceRegexMatchesRespectingQuotes(string input, Regex regex, string replaceWith,
@@ -286,7 +218,7 @@ public static partial class Utility
         return ReplaceRespectingQuotes(input, replaceInsideQuote, text => regex.Replace(text, replaceWith));
     }
 
-    private static string ConvertVariableNamesWithSpaces(string input)
+    public static string EncodeIdentifierSpaces(string input)
     {
         return ReplaceRespectingQuotes(input, false, text =>
         {
@@ -527,11 +459,6 @@ public static partial class Utility
         }
 
         return result.ToString();
-    }
-
-    public static bool ContainsUnresolvedDotNotation(string input)
-    {
-        return input.Contains(k_dotReplacementString);
     }
 
     public static bool IsRegexMatch(string regexPattern, string input)

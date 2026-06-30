@@ -22,7 +22,7 @@ public class NcalcExpressionEvaluator<T> : IExpressionEvaluator<T>, IDynamicExpr
     {
         _scriptContext = scriptContext;
         _expressionOwner = new ExpressionOwner(scriptContext.WorldModel);
-        _expression = Utility.ConvertFleeFormatToVariables(expression);
+        _expression = Utility.DecodeIdentifierSpaces(expression);
 
         _nCalcExpression = new Expression(expression,
             new ExpressionContext { Options = ExpressionOptions.NoStringTypeCoercion },
@@ -92,61 +92,15 @@ public class NcalcExpressionEvaluator<T> : IExpressionEvaluator<T>, IDynamicExpr
 
     private object ResolveVariable(string name)
     {
-        if (name == "null")
-        {
-            return null;
-        }
+        if (name == "null") return null;
 
         if (_context.Parameters?.ContainsKey(name) == true)
-        {
             return _context.Parameters[name];
-        }
 
         if (_scriptContext.WorldModel.TryResolveExpressionElement(Utility.ResolveElementName(name), out var result))
-        {
             return result;
-        }
 
-        ResolveVariableName(name, out var fields, out var variable);
-
-        do
-        {
-            if (!Utility.ContainsUnresolvedDotNotation(variable))
-            {
-                continue;
-            }
-
-            // We may have been passed in something like someobj.parent.someproperty
-            Utility.ResolveVariableName(ref variable, out var nestedObj, out variable);
-            fields = fields.GetObject(nestedObj).Fields;
-        } while (Utility.ContainsUnresolvedDotNotation(variable));
-
-        return !fields.Exists(variable, true) ? null : fields.Get(variable);
-    }
-
-    private void ResolveVariableName(string name, out Fields fields, out string variable)
-    {
-        Utility.ResolveVariableName(ref name, out var obj, out variable);
-
-        if (_scriptContext.WorldModel.TryResolveExpressionElement(name, out var result))
-        {
-            fields = result.Fields;
-        }
-        else
-        {
-            if (obj == null)
-            {
-                throw new Exception($"Unknown object or variable '{name}'");
-            }
-
-            var value = ResolveVariable(obj);
-            if (value is not Element instance)
-            {
-                throw new Exception($"Variable does not refer to an object: '{obj}'");
-            }
-
-            fields = instance.Fields;
-        }
+        throw new Exception($"Unknown object or variable '{name}'");
     }
 
     private async Task EvaluateFunctionAsync(string name, FunctionEventArgs args)
