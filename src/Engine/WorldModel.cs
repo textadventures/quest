@@ -543,11 +543,26 @@ public partial class WorldModel : IGame, IGameDebug
 
     private void InitialiseElementFactories()
     {
-        foreach (var t in Classes.GetImplementations(Assembly.GetExecutingAssembly(),
-                     typeof(IElementFactory)))
-        {
-            AddElementFactory((IElementFactory) Activator.CreateInstance(t)!);
-        }
+        IElementFactory[] factories =
+        [
+            new ObjectFactory(),
+            new ObjectTypeFactory(),
+            new EditorFactory(),
+            new EditorTabFactory(),
+            new EditorControlFactory(),
+            new FunctionFactory(),
+            new DelegateFactory(),
+            new TemplateFactory(),
+            new DynamicTemplateFactory(),
+            new WalkthroughFactory(),
+            new IncludedLibraryFactory(),
+            new ImpliedTypeFactory(),
+            new JavascriptReferenceFactory(),
+            new TimerFactory(),
+            new ResourceFactory(),
+            new OutputFactory(),
+        ];
+        foreach (var f in factories) AddElementFactory(f);
     }
 
     private void AddElementFactory(IElementFactory factory)

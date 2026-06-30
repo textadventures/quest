@@ -1,7 +1,7 @@
 ﻿using System.Globalization;
 using System.Reflection;
+using System.Text.Json;
 using System.Xml;
-using Newtonsoft.Json;
 using QuestViva.Common;
 
 namespace QuestViva.PlayerCore;
@@ -471,7 +471,7 @@ public class PlayerHelper
         {
             convertedList.Add(
                 $"k{count}",
-                JsonConvert.SerializeObject(data)
+                JsonSerializer.Serialize(data)
             );
             count++;
         }
@@ -488,18 +488,18 @@ public class PlayerHelper
     {
         var result = new CommandData();
 
-        var values = JsonConvert.DeserializeObject<Dictionary<string, object>>(data);
-        if (values.ContainsKey("command"))
+        var values = JsonSerializer.Deserialize<Dictionary<string, JsonElement>>(data);
+        if (values.TryGetValue("command", out var commandEl))
         {
-            result.Command = values["command"].ToString();
+            result.Command = commandEl.GetString();
         }
 
-        if (values.ContainsKey("metadata"))
+        if (values.TryGetValue("metadata", out var metadataEl))
         {
-            var metadataString = values["metadata"] as string;
+            var metadataString = metadataEl.GetString();
             if (metadataString != null)
             {
-                result.Metadata = JsonConvert.DeserializeObject<Dictionary<string, string>>(metadataString);
+                result.Metadata = JsonSerializer.Deserialize<Dictionary<string, string>>(metadataString);
             }
         }
 

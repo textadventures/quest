@@ -1,7 +1,4 @@
-﻿using System.Reflection;
-using QuestViva.Utility;
-
-// ReSharper disable UnusedType.Local
+﻿// ReSharper disable UnusedType.Local
 
 namespace QuestViva.Engine.GameLoader;
 
@@ -27,7 +24,7 @@ internal partial class GameSaver
             }
         }
 
-        public required GameSaver GameSaver { get; set; }
+        public GameSaver GameSaver { get; set; } = null!;
 
         private void SaveObjectAndChildren(GameXmlWriter writer, Element[] allObjects, Element e, ObjectSaver saver)
         {
@@ -60,12 +57,15 @@ internal partial class GameSaver
 
         protected override void Initialise()
         {
-            // Use Reflection to create instances of all IObjectSavers
-            foreach (var t in Classes.GetImplementations(Assembly.GetExecutingAssembly(),
-                         typeof(IObjectSaver)))
-            {
-                AddSaver((IObjectSaver) Activator.CreateInstance(t)!);
-            }
+            IObjectSaver[] savers =
+            [
+                new CommandSaver(),
+                new ExitElementSaver(),
+                new GameElementSaver(),
+                new ObjectElementSaver(),
+                new TurnScriptElementSaver(),
+            ];
+            foreach (var saver in savers) AddSaver(saver);
         }
 
         private void AddSaver(IObjectSaver saver)
@@ -144,7 +144,7 @@ internal partial class GameSaver
             public abstract void StartSave(GameXmlWriter writer, Element e);
             public abstract void EndSave(GameXmlWriter writer, Element e);
 
-            public required ObjectSaver ObjectSaver { get; set; }
+            public ObjectSaver ObjectSaver { get; set; } = null!;
 
             public bool CanSaveAttribute(string attribute)
             {

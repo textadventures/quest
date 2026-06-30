@@ -23,9 +23,9 @@ public class AskScriptConstructor : IScriptConstructor
             callbackScript);
     }
 
-    public required IScriptFactory ScriptFactory { get; set; }
+    public IScriptFactory ScriptFactory { get; set; } = null!;
 
-    public required WorldModel WorldModel { get; set; }
+    public WorldModel WorldModel { get; set; } = null!;
 }
 
 public class AskScript(

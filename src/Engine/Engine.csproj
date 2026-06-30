@@ -19,6 +19,11 @@
         <SupportedPlatform Include="browser"/>
     </ItemGroup>
     <ItemGroup>
+        <AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleToAttribute">
+            <_Parameter1>QuestViva.EngineTests</_Parameter1>
+        </AssemblyAttribute>
+    </ItemGroup>
+    <ItemGroup>
         <ProjectReference Include="..\Common\Common.csproj"/>
         <ProjectReference Include="..\Utility\Utility.csproj"/>
     </ItemGroup>
