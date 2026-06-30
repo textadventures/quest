@@ -5,7 +5,7 @@ using Shouldly;
 namespace QuestViva.EngineTests;
 
 [TestClass]
-public class FilesTests
+public class UtilityTests
 {
     [TestMethod]
     public void TestDottedPropertiesNotEncoded()
