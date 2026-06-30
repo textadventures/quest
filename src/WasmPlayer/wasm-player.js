@@ -8,8 +8,10 @@ var _audio = null;
 
 const pendingResources = new Map();
 let editorChannel = null;
+let resourceRoot = null;
 
 function getResourceUrl(name) {
+    if (resourceRoot) return Promise.resolve(resourceRoot + name);
     if (!editorChannel) return Promise.resolve(name);
     return new Promise(resolve => {
         const id = crypto.randomUUID();
@@ -221,6 +223,90 @@ async function initWasmPlayer(gameBytes, filename, bc = null) {
     Bridge.Begin();
 }
 
+// ── Start screen helpers ──────────────────────────────────────────────────────
+
+function _esc(str) {
+    return String(str)
+        .replace(/&/g, '&amp;').replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+}
+
+function showLoading() {
+    const pickers = document.getElementById('qv-pickers');
+    const msg = document.getElementById('qv-loading-msg');
+    if (pickers) pickers.style.display = 'none';
+    if (msg) msg.style.display = '';
+}
+
+function showError(downloadUrl) {
+    const pickers = document.getElementById('qv-pickers');
+    const msg = document.getElementById('qv-loading-msg');
+    const errorEl = document.getElementById('qv-error');
+    if (msg) msg.style.display = 'none';
+    if (pickers) pickers.style.display = '';
+    if (!errorEl) return;
+    let html = '<strong>Couldn\'t load the game.</strong> '
+        + 'The server may not allow this player to load the file directly (CORS restriction).';
+    if (downloadUrl) {
+        html += ' <a href="' + _esc(downloadUrl) + '" target="_blank" rel="noopener">'
+            + 'Open the file in a new tab</a> to save it, then open it with the file picker below.';
+    } else {
+        html += ' You can try opening a saved copy of the game file instead.';
+    }
+    errorEl.innerHTML = html;
+    errorEl.style.display = '';
+    wireStartScreen();
+}
+
+let _startScreenWired = false;
+function wireStartScreen() {
+    if (_startScreenWired) return;
+    _startScreenWired = true;
+
+    const fileBtn = document.getElementById('qv-file-btn');
+    const fileInput = document.getElementById('qv-file-input');
+    const urlInput = document.getElementById('qv-url-input');
+    const urlBtn = document.getElementById('qv-url-btn');
+    if (!fileBtn) return;
+
+    fileBtn.addEventListener('click', () => fileInput.click());
+    fileInput.addEventListener('change', () => {
+        const file = fileInput.files?.[0];
+        if (!file) return;
+        showLoading();
+        const reader = new FileReader();
+        reader.onload = () => initWasmPlayer(new Uint8Array(reader.result), file.name)
+            .catch(() => showError(null));
+        reader.readAsArrayBuffer(file);
+    });
+
+    async function doLoadUrl() {
+        const url = urlInput.value.trim();
+        if (!url) return;
+        const errorEl = document.getElementById('qv-error');
+        if (errorEl) errorEl.style.display = 'none';
+        showLoading();
+        try {
+            const { bytes, filename } = await fetchGameBytes(url);
+            await initWasmPlayer(bytes, filename);
+        } catch {
+            showError(url);
+        }
+    }
+    urlBtn.addEventListener('click', doLoadUrl);
+    urlInput.addEventListener('keydown', e => { if (e.key === 'Enter') doLoadUrl(); });
+}
+
+async function fetchGameBytes(url) {
+    const response = await fetch(url);
+    if (!response.ok) throw new Error(`HTTP ${response.status}`);
+    const bytes = new Uint8Array(await response.arrayBuffer());
+    const filename = (response.url || url).split('/').pop()?.split('?')[0] || 'game.aslx';
+    return { bytes, filename };
+}
+
+// ── Boot ─────────────────────────────────────────────────────────────────────
+
 (function () {
     const params = new URLSearchParams(window.location.search);
 
@@ -229,28 +315,59 @@ async function initWasmPlayer(gameBytes, filename, bc = null) {
         bc.postMessage({ type: 'ready' });
         bc.onmessage = async ({ data }) => {
             if (data.type === 'game') {
-                bc.onmessage = null;   // hand off to resource handler (Phase 3)
+                bc.onmessage = null;
                 await initWasmPlayer(data.bytes, data.filename, bc);
             }
         };
         return;
     }
 
+    const id = params.get('id');
     const gameUrl = params.get('game');
-    if (!gameUrl) {
-        document.addEventListener('DOMContentLoaded', () => {
-            document.body.innerHTML = '<p style="font-family:sans-serif;padding:2em">No game specified. Add <code>?game=path/to/game.aslx</code> to the URL.</p>';
+
+    if (id) {
+        // Start API fetch immediately; wire DOM once it's ready.
+        let resolvedSourceUrl = null;
+        const gamePromise = (async () => {
+            const apiRoot = window.QuestVivaConfig?.textAdventuresApiRoot
+                ?? 'https://textadventures.co.uk/api/';
+            const apiResponse = await fetch(`${apiRoot}game/${id}`);
+            if (!apiResponse.ok) throw new Error(`API: HTTP ${apiResponse.status}`);
+            const { sourceGameUrl, resourceRoot: resRoot } = await apiResponse.json();
+            resolvedSourceUrl = sourceGameUrl;
+            resourceRoot = resRoot || null;
+            const { bytes, filename } = await fetchGameBytes(sourceGameUrl);
+            return { bytes, filename };
+        })();
+
+        document.addEventListener('DOMContentLoaded', async () => {
+            showLoading();
+            try {
+                const { bytes, filename } = await gamePromise;
+                await initWasmPlayer(bytes, filename);
+            } catch {
+                showError(resolvedSourceUrl);
+            }
         });
         return;
     }
-    const filename = gameUrl.split('/').pop() || 'game.aslx';
-    (async () => {
-        const response = await fetch(gameUrl);
-        if (!response.ok) {
-            document.body.innerHTML = `<p>Failed to load game: ${response.statusText}</p>`;
-            return;
-        }
-        const gameBytes = new Uint8Array(await response.arrayBuffer());
-        await initWasmPlayer(gameBytes, filename);
-    })().catch(e => console.error('[Quest] Init failed:', e));
+
+    if (gameUrl) {
+        // Start fetch immediately; wire DOM once it's ready.
+        const gamePromise = fetchGameBytes(gameUrl);
+
+        document.addEventListener('DOMContentLoaded', async () => {
+            showLoading();
+            try {
+                const { bytes, filename } = await gamePromise;
+                await initWasmPlayer(bytes, filename);
+            } catch {
+                showError(gameUrl);
+            }
+        });
+        return;
+    }
+
+    // No game specified — show start screen and wire up controls.
+    document.addEventListener('DOMContentLoaded', wireStartScreen);
 })();
