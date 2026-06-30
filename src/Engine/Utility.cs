@@ -2,7 +2,6 @@
 using System.Diagnostics.CodeAnalysis;
 using System.Text;
 using System.Text.RegularExpressions;
-using QuestViva.Utility;
 
 namespace QuestViva.Engine;
 
@@ -577,7 +576,7 @@ public static partial class Utility
         foreach (var groupName in regex.GetGroupNames())
         {
             // exclude group names like "0", we only want the explicitly named groups
-            if (!Strings.IsNumeric(groupName))
+            if (!int.TryParse(groupName, out _))
             {
                 var groupMatch = regex.Match(input).Groups[groupName].Value;
                 lengthOfTextMatchedByGroups += groupMatch.Length;
@@ -609,7 +608,7 @@ public static partial class Utility
 
         foreach (var groupName in regex.GetGroupNames())
         {
-            if (!Strings.IsNumeric(groupName))
+            if (!int.TryParse(groupName, out _))
             {
                 var groupMatch = regex.Match(input).Groups[groupName].Value;
                 result.Add(groupName, groupMatch);

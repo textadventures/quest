@@ -7,7 +7,6 @@ using QuestViva.Common;
 using QuestViva.Engine.Functions;
 using QuestViva.Engine.GameLoader;
 using QuestViva.Engine.Scripts;
-using QuestViva.Utility;
 
 namespace QuestViva.Engine;
 
@@ -1225,7 +1224,8 @@ public partial class WorldModel : IGame, IGameDebug
 
     private void AddFilesInPathToList(List<string> list, string path, bool recurse, string searchPattern = "*.aslx")
     {
-        path = Files.RemoveFileColonPrefix(path);
+        if (path.StartsWith(@"file:\")) path = path[6..];
+        else if (path.StartsWith("file:")) path = path[5..];
         var option = recurse ? SearchOption.AllDirectories : SearchOption.TopDirectoryOnly;
         foreach (var result in Directory.GetFiles(path, searchPattern, option))
         {

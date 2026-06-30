@@ -12,17 +12,16 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <EmbeddedResource Include="Libraries\net.lib"/>
-        <EmbeddedResource Include="Libraries\q3ext.qlb"/>
-        <EmbeddedResource Include="Libraries\quest.dat"/>
-        <EmbeddedResource Include="Libraries\standard.lib"/>
-        <EmbeddedResource Include="Libraries\stdverbs.lib"/>
-        <EmbeddedResource Include="Libraries\Typelib.qlb"/>
+        <EmbeddedResource Include="Libraries\net.lib" />
+        <EmbeddedResource Include="Libraries\q3ext.qlb" />
+        <EmbeddedResource Include="Libraries\quest.dat" />
+        <EmbeddedResource Include="Libraries\standard.lib" />
+        <EmbeddedResource Include="Libraries\stdverbs.lib" />
+        <EmbeddedResource Include="Libraries\Typelib.qlb" />
     </ItemGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\Common\Common.csproj"/>
-        <ProjectReference Include="..\Utility\Utility.csproj"/>
+        <ProjectReference Include="..\Common\Common.csproj" />
     </ItemGroup>
 
     <ItemGroup>

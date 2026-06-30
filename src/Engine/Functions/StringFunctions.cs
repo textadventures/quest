@@ -45,7 +45,7 @@ public static class StringFunctions
 
     public static string? CapFirst(string? input)
     {
-        return QuestViva.Utility.Strings.CapFirst(input);
+        return string.IsNullOrEmpty(input) ? input : input[..1].ToUpper() + input[1..];
     }
 
     public static int Instr(string? input, string? search)
@@ -103,7 +103,7 @@ public static class StringFunctions
 
     public static bool IsNumeric(string? input)
     {
-        return QuestViva.Utility.Strings.IsNumeric(input);
+        return Information.IsNumeric(input);
     }
 
     public static string Replace(string? input, string? oldString, string? newString)

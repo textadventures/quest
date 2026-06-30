@@ -1,7 +1,6 @@
 ﻿#nullable disable
 using QuestViva.Common;
 using QuestViva.Engine.Scripts;
-using QuestViva.Utility;
 
 namespace QuestViva.Engine;
 
@@ -277,7 +276,7 @@ public class Element : IComparable
 
     public override string ToString()
     {
-        return string.Format("{0}: {1}", Strings.CapFirst(TypeString), Name);
+        return string.Format("{0}: {1}", string.IsNullOrEmpty(TypeString) ? TypeString : TypeString[..1].ToUpper() + TypeString[1..], Name);
     }
 
     internal void FinishedInitialisation()
