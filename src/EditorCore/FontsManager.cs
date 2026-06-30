@@ -1,11 +1,17 @@
-﻿using System.Net;
-using Newtonsoft.Json;
+using System.Net.Http;
+using System.Text.Json;
+using System.Text.Json.Serialization;
 
 namespace QuestViva.EditorCore;
 
+[JsonSerializable(typeof(FontsManager.WebFontsResult))]
+internal partial class FontsManagerJsonContext : JsonSerializerContext { }
+
 internal class FontsManager
 {
-    private readonly List<string> m_basefonts = new()
+    private static readonly HttpClient s_client = new();
+
+    private readonly List<string> _basefonts = new()
     {
         "Georgia, serif",
         "'Palatino Linotype', 'Book Antiqua', Palatino, serif",
@@ -22,56 +28,44 @@ internal class FontsManager
         "'Lucida Console', Monaco, monospace"
     };
 
-    private readonly WebClient m_client;
-
-    private List<string> m_webFonts = new()
-    {
-        string.Empty
-    };
+    private List<string> _webFonts = new() { string.Empty };
 
     public FontsManager()
     {
-        // TODO: Use HttpClient
-#pragma warning disable SYSLIB0014
-        m_client = new WebClient();
-#pragma warning restore SYSLIB0014
-        m_client.DownloadStringCompleted += m_client_DownloadStringCompleted;
-        m_client.Proxy = null;
-        m_client.DownloadStringAsync(
-            new Uri("https://www.googleapis.com/webfonts/v1/webfonts?key=AIzaSyDs93IH2UgudQK5IyNSdvKnm1N8TIYzlcM"));
+        _ = FetchWebFontsAsync();
     }
 
-    private void m_client_DownloadStringCompleted(object sender, DownloadStringCompletedEventArgs e)
+    private async Task FetchWebFontsAsync()
     {
-        if (e.Error == null)
+        try
         {
-            var result = JsonConvert.DeserializeObject<WebFontsResult>(e.Result);
-            m_webFonts = new List<string>(result.items.Select(i => i.family));
-            m_webFonts.Insert(0, string.Empty);
+            var json = await s_client.GetStringAsync(
+                "https://www.googleapis.com/webfonts/v1/webfonts?key=AIzaSyDs93IH2UgudQK5IyNSdvKnm1N8TIYzlcM");
+            var result = JsonSerializer.Deserialize(json, FontsManagerJsonContext.Default.WebFontsResult);
+            if (result?.items != null)
+            {
+                _webFonts = new List<string>(result.items.Select(i => i.family));
+                _webFonts.Insert(0, string.Empty);
+            }
         }
+        catch { }
     }
 
-    public List<string> GetBaseFonts()
+    public List<string> GetBaseFonts() => _basefonts;
+
+    public List<string> GetWebFonts() => _webFonts;
+
+    internal class WebFontResult
     {
-        return m_basefonts;
+        public string kind { get; set; } = string.Empty;
+        public string family { get; set; } = string.Empty;
+        public List<string> variants { get; set; } = new();
+        public List<string> subsets { get; set; } = new();
     }
 
-    public List<string> GetWebFonts()
+    internal class WebFontsResult
     {
-        return m_webFonts;
-    }
-
-    private class WebFontResult
-    {
-        public string kind { get; set; }
-        public string family { get; set; }
-        public List<string> variants { get; set; }
-        public List<string> subsets { get; set; }
-    }
-
-    private class WebFontsResult
-    {
-        public string kind { get; set; }
-        public List<WebFontResult> items { get; set; }
+        public string kind { get; set; } = string.Empty;
+        public List<WebFontResult> items { get; set; } = new();
     }
 }

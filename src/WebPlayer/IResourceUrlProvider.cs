@@ -1,4 +1,4 @@
-namespace QuestViva.PlayerCore;
+namespace QuestViva.WebPlayer;
 
 public interface IResourceUrlProvider
 {

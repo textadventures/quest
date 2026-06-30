@@ -1,8 +1,6 @@
 ﻿#nullable disable
-using System.Reflection;
 using System.Text.RegularExpressions;
 using QuestViva.Engine.Scripts;
-using QuestViva.Utility;
 
 namespace QuestViva.Engine;
 
@@ -25,12 +23,50 @@ public partial class ScriptFactory : IScriptFactory
     {
         WorldModel = worldModel;
 
-        // Use Reflection to create instances of all IScriptConstructors
-        foreach (var t in Classes.GetImplementations(Assembly.GetExecutingAssembly(),
-                     typeof(IScriptConstructor)))
-        {
-            AddConstructor((IScriptConstructor) Activator.CreateInstance(t));
-        }
+        IScriptConstructor[] constructors =
+        [
+            new AskScriptConstructor(),
+            new CommentScriptConstructor(),
+            new CreateExitScriptConstructor(),
+            new CreateScriptConstructor(),
+            new CreateTimerScriptConstructor(),
+            new CreateTurnScriptConstructor(),
+            new DestroyScriptConstructor(),
+            new DictionaryAddScriptConstructor(),
+            new DictionaryRemoveScriptConstructor(),
+            new DoScriptConstructor(),
+            new ErrorScriptConstructor(),
+            new FinishScriptConstructor(),
+            new FirstTimeScriptConstructor(),
+            new ForEachScriptConstructor(),
+            new ForScriptConstructor(),
+            new GetInputScriptConstructor(),
+            new IfScriptConstructor(),
+            new InsertScriptConstructor(),
+            new InvokeScriptConstructor(),
+            new JSScriptConstructor(),
+            new ListAddScriptConstructor(),
+            new ListRemoveScriptConstructor(),
+            new MsgScriptConstructor(),
+            new OnReadyScriptConstructor(),
+            new PictureScriptConstructor(),
+            new PlaySoundScriptConstructor(),
+            new RequestSaveScriptConstructor(),
+            new RequestScriptConstructor(),
+            new RequestSpeakScriptConstructor(),
+            new ReturnScriptConstructor(),
+            new RunDelegateScriptConstructor(),
+            new SetFieldScriptConstructor(),
+            new SetScriptConstructor(),
+            new ShowMenuScriptConstructor(),
+            new StartTransactionConstructor(),
+            new StopSoundScriptConstructor(),
+            new SwitchScriptConstructor(),
+            new UndoScriptConstructor(),
+            new WaitScriptConstructor(),
+            new WhileScriptConstructor(),
+        ];
+        foreach (var c in constructors) AddConstructor(c);
 
         m_setConstructor = (SetScriptConstructor) InitScriptConstructor(new SetScriptConstructor());
         m_procConstructor = (FunctionCallScriptConstructor) InitScriptConstructor(new FunctionCallScriptConstructor());

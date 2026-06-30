@@ -7,7 +7,6 @@ using QuestViva.Common;
 using QuestViva.Engine.Functions;
 using QuestViva.Engine.GameLoader;
 using QuestViva.Engine.Scripts;
-using QuestViva.Utility;
 
 namespace QuestViva.Engine;
 
@@ -543,11 +542,26 @@ public partial class WorldModel : IGame, IGameDebug
 
     private void InitialiseElementFactories()
     {
-        foreach (var t in Classes.GetImplementations(Assembly.GetExecutingAssembly(),
-                     typeof(IElementFactory)))
-        {
-            AddElementFactory((IElementFactory) Activator.CreateInstance(t)!);
-        }
+        IElementFactory[] factories =
+        [
+            new ObjectFactory(),
+            new ObjectTypeFactory(),
+            new EditorFactory(),
+            new EditorTabFactory(),
+            new EditorControlFactory(),
+            new FunctionFactory(),
+            new DelegateFactory(),
+            new TemplateFactory(),
+            new DynamicTemplateFactory(),
+            new WalkthroughFactory(),
+            new IncludedLibraryFactory(),
+            new ImpliedTypeFactory(),
+            new JavascriptReferenceFactory(),
+            new TimerFactory(),
+            new ResourceFactory(),
+            new OutputFactory(),
+        ];
+        foreach (var f in factories) AddElementFactory(f);
     }
 
     private void AddElementFactory(IElementFactory factory)
@@ -1210,7 +1224,8 @@ public partial class WorldModel : IGame, IGameDebug
 
     private void AddFilesInPathToList(List<string> list, string path, bool recurse, string searchPattern = "*.aslx")
     {
-        path = Files.RemoveFileColonPrefix(path);
+        if (path.StartsWith(@"file:\")) path = path[6..];
+        else if (path.StartsWith("file:")) path = path[5..];
         var option = recurse ? SearchOption.AllDirectories : SearchOption.TopDirectoryOnly;
         foreach (var result in Directory.GetFiles(path, searchPattern, option))
         {

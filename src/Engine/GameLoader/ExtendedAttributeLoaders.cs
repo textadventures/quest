@@ -1,8 +1,6 @@
-﻿using System.Reflection;
-using System.Xml;
+﻿using System.Xml;
 using System.Xml.Linq;
 using QuestViva.Engine.Types;
-using QuestViva.Utility;
 
 // ReSharper disable UnusedType.Local
 
@@ -15,11 +13,16 @@ internal partial class GameLoader
 {
     private void AddExtendedAttributeLoaders(LoadMode mode)
     {
-        foreach (var t in Classes.GetImplementations(Assembly.GetExecutingAssembly(),
-                     typeof(IExtendedAttributeLoader)))
-        {
-            AddExtendedAttributeLoader((IExtendedAttributeLoader) Activator.CreateInstance(t)!, mode);
-        }
+        IExtendedAttributeLoader[] loaders =
+        [
+            new DictionaryLoader(),
+            new ListLoader(),
+            new ObjectDictionaryLoader(),
+            new ScriptDictionaryLoader(),
+            new StringDictionaryLoader(),
+            new StringListLoader(),
+        ];
+        foreach (var loader in loaders) AddExtendedAttributeLoader(loader, mode);
     }
 
     private void AddExtendedAttributeLoader(IExtendedAttributeLoader loader, LoadMode mode)
@@ -47,7 +50,7 @@ internal partial class GameLoader
 
         public abstract void Load(XmlReader reader, Element current);
 
-        public required GameLoader GameLoader { get; set; }
+        public GameLoader GameLoader { get; set; } = null!;
 
         public virtual bool SupportsMode(LoadMode mode)
         {

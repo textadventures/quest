@@ -1,7 +1,6 @@
 ﻿#nullable disable
 using QuestViva.Common;
 using QuestViva.Engine.Scripts;
-using QuestViva.Utility;
 
 namespace QuestViva.Engine;
 
@@ -80,7 +79,7 @@ public class Element : IComparable
         }
 
         s_elemTypeStrings = new Dictionary<ElementType, string>();
-        foreach (ElementType t in Enum.GetValues(typeof(ElementType)))
+        foreach (ElementType t in Enum.GetValues<ElementType>())
         {
             s_elemTypeStrings.Add(t,
                 ((ElementTypeInfo) typeof(ElementType).GetField(t.ToString())
@@ -277,7 +276,7 @@ public class Element : IComparable
 
     public override string ToString()
     {
-        return string.Format("{0}: {1}", Strings.CapFirst(TypeString), Name);
+        return string.Format("{0}: {1}", string.IsNullOrEmpty(TypeString) ? TypeString : TypeString[..1].ToUpper() + TypeString[1..], Name);
     }
 
     internal void FinishedInitialisation()

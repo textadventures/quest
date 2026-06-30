@@ -3,7 +3,9 @@ using System.Text.Json;
 using Microsoft.JSInterop;
 using QuestViva.Common;
 
-namespace QuestViva.PlayerCore;
+using QuestViva.PlayerCore;
+
+namespace QuestViva.WebPlayer;
 
 public class Player : IPlayerHelperUI
 {

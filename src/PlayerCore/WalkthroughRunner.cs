@@ -2,7 +2,7 @@ using QuestViva.Common;
 
 namespace QuestViva.PlayerCore;
 
-internal class WalkthroughRunner(IGameDebug game, string walkthrough)
+public class WalkthroughRunner(IGameDebug game, string walkthrough)
 {
     public delegate Task ClearBufferEventHandler();
 

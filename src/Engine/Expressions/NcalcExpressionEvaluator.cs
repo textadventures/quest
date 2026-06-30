@@ -1,4 +1,5 @@
 #nullable disable
+using System.Diagnostics.CodeAnalysis;
 using System.Reflection;
 using NCalc;
 using NCalc.Cache;
@@ -183,7 +184,7 @@ public class NcalcExpressionEvaluator<T> : IExpressionEvaluator<T>, IDynamicExpr
     }
 
 #nullable enable
-    private static async Task<(bool handled, object? result)> EvaluateFunctionFromTypeAsync(Type type, object? instance,
+    private static async Task<(bool handled, object? result)> EvaluateFunctionFromTypeAsync([DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicMethods)] Type type, object? instance,
         string name, FunctionData parameters)
     {
         var methods = GetPublicMethodsByName(type, name);
@@ -197,12 +198,14 @@ public class NcalcExpressionEvaluator<T> : IExpressionEvaluator<T>, IDynamicExpr
         if (handled && result is Task task)
         {
             await task;
+#pragma warning disable IL2075 // Task<T>.Result is a BCL property, always available at runtime
             result = task.GetType().GetProperty("Result")?.GetValue(task);
+#pragma warning restore IL2075
         }
         return (handled, result);
     }
 
-    private static MethodBase[]? GetPublicMethodsByName(Type type, string name)
+    private static MethodBase[]? GetPublicMethodsByName([DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicMethods)] Type type, string name)
     {
         var methods = type.GetMethods()
             .Where(m => m.IsPublic && m.Name.Equals(name, StringComparison.InvariantCultureIgnoreCase))
@@ -255,7 +258,9 @@ public class NcalcExpressionEvaluator<T> : IExpressionEvaluator<T>, IDynamicExpr
             // We assume here that all extra arguments (if any) can be converted to the element type.
             var elementType = ps.Last().ParameterType.GetElementType()!;
             var paramsCount = evaluatedArgs.Length - fixedParamCount;
+#pragma warning disable IL3050 // elementType is derived from a statically-typed parameter reflection; safe in this context
             var paramsArray = Array.CreateInstance(elementType, paramsCount);
+#pragma warning restore IL3050
             for (var i = 0; i < paramsCount; i++)
             {
                 var arg = evaluatedArgs[fixedParamCount + i];
@@ -373,7 +378,10 @@ public class NcalcExpressionEvaluator<T> : IExpressionEvaluator<T>, IDynamicExpr
 
         foreach (var declaringType in new[] { leftType, rightType }.Where(t => t != null).Distinct())
         {
+            // types exposed to scripts are rooted in ScriptDispatchRoots.cs
+#pragma warning disable IL2072
             var method = TryFindOperatorOverload(declaringType, operatorName, leftType, rightType);
+#pragma warning restore IL2072
             if (method != null)
             {
                 args.Result = method.Invoke(null, new[] { left, right });
@@ -388,7 +396,7 @@ public class NcalcExpressionEvaluator<T> : IExpressionEvaluator<T>, IDynamicExpr
     private static bool IsIntegerType(object value) =>
         value is int or long or byte or short or uint or ulong or ushort or sbyte;
 
-    private static MethodInfo TryFindOperatorOverload(Type declaringType, string operatorName, Type leftType, Type rightType)
+    private static MethodInfo TryFindOperatorOverload([DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicMethods)] Type declaringType, string operatorName, Type leftType, Type rightType)
     {
         foreach (var method in declaringType.GetMethods(BindingFlags.Public | BindingFlags.Static)
             .Where(m => m.Name == operatorName))
@@ -402,7 +410,7 @@ public class NcalcExpressionEvaluator<T> : IExpressionEvaluator<T>, IDynamicExpr
         return null;
     }
 
-    private static (bool handled, object result) EvaluateVariableFromType(Type type, string name)
+    private static (bool handled, object result) EvaluateVariableFromType([DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicFields)] Type type, string name)
     {
         var fields = type
             .GetFields(BindingFlags.Public | BindingFlags.Static)
@@ -444,8 +452,10 @@ public class NcalcExpressionEvaluator<T> : IExpressionEvaluator<T>, IDynamicExpr
             {
                 return element.Fields.Exists(propertyName, true) ? element.Fields.Get(propertyName) : null;
             }
+#pragma warning disable IL2075 // script-accessible types are explicitly rooted in ScriptDispatchRoots.cs
             var prop = receiver?.GetType().GetProperty(propertyName,
                 BindingFlags.Public | BindingFlags.Instance | BindingFlags.IgnoreCase);
+#pragma warning restore IL2075
             if (prop != null)
                 return prop.GetValue(receiver);
             throw new Exception($"Property '{propertyName}' not found on '{receiver?.GetType().Name}'");
@@ -521,6 +531,8 @@ public class NcalcExpressionEvaluator<T> : IExpressionEvaluator<T>, IDynamicExpr
     private static object DispatchMethodCall(object receiver, string methodName, object[] methodArgs)
     {
         var argTypes = methodArgs.Select(a => a?.GetType() ?? typeof(object)).ToArray();
+        // script-accessible types are explicitly rooted in ScriptDispatchRoots.cs
+#pragma warning disable IL2075
         var method = receiver?.GetType().GetMethod(methodName, argTypes);
 
         if (method == null && methodArgs.Any(a => a == null))
@@ -545,6 +557,7 @@ public class NcalcExpressionEvaluator<T> : IExpressionEvaluator<T>, IDynamicExpr
                     return true;
                 });
         }
+#pragma warning restore IL2075
 
         if (method == null)
             throw new Exception($"Method '{methodName}' not found on '{receiver?.GetType().Name}'");

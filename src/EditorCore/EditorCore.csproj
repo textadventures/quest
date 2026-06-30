@@ -5,13 +5,14 @@
         <RootNamespace>QuestViva.EditorCore</RootNamespace>
         <ImplicitUsings>enable</ImplicitUsings>
         <LangVersion>default</LangVersion>
+        <IsAotCompatible>true</IsAotCompatible>
     </PropertyGroup>
     <ItemGroup>
-        <ProjectReference Include="..\Common\Common.csproj"/>
-        <ProjectReference Include="..\Utility\Utility.csproj"/>
-        <ProjectReference Include="..\Engine\Engine.csproj"/>
+        <SupportedPlatform Include="browser"/>
     </ItemGroup>
     <ItemGroup>
-        <PackageReference Include="Newtonsoft.Json" Version="13.0.4"/>
+        <ProjectReference Include="..\Common\Common.csproj" />
+        <ProjectReference Include="..\Engine\Engine.csproj" />
     </ItemGroup>
+
 </Project>

@@ -1,9 +1,7 @@
 ﻿using System.Globalization;
-using System.Reflection;
 using System.Text.RegularExpressions;
 using System.Xml.Linq;
 using QuestViva.Engine.Types;
-using QuestViva.Utility;
 
 // ReSharper disable UnusedType.Local
 
@@ -15,17 +13,43 @@ internal partial class GameLoader
 
     private void AddLoaders(LoadMode mode)
     {
-        foreach (var t in Classes.GetImplementations(Assembly.GetExecutingAssembly(),
-                     typeof(IAttributeLoader)))
-        {
-            AddLoader((IAttributeLoader) Activator.CreateInstance(t)!, mode);
-        }
+        IAttributeLoader[] attributeLoaders =
+        [
+            new BooleanLoader(),
+            new DoubleLoader(),
+            new EditorSimplePatternLoader(), // Edit mode only (SupportsMode returns false for Play)
+            new IntLoader(),
+            new ListExtensionLoader(),
+            new ObjectListLoader(),
+            new ObjectReferenceLoader(),
+            new ScriptLoader(),
+            new SimpleObjectDictionaryLoader(),
+            new SimplePatternLoader(),       // Play mode only (SupportsMode returns false for Edit)
+            new SimpleStringDictionaryLoader(),
+            new SimpleStringListLoader(),
+            new StringLoader(),
+        ];
+        foreach (var loader in attributeLoaders) AddLoader(loader, mode);
 
-        foreach (var t in Classes.GetImplementations(Assembly.GetExecutingAssembly(),
-                     typeof(IValueLoader)))
-        {
-            AddValueLoader((IValueLoader) Activator.CreateInstance(t)!);
-        }
+        IValueLoader[] valueLoaders =
+        [
+            // from AttributeLoaders
+            new BooleanLoader(),
+            new DoubleLoader(),
+            new IntLoader(),
+            new ObjectListLoader(),
+            new ObjectReferenceLoader(),
+            new ScriptLoader(),
+            new StringLoader(),
+            // from ExtendedAttributeLoaders
+            new DictionaryLoader(),
+            new ListLoader(),
+            new ObjectDictionaryLoader(),
+            new ScriptDictionaryLoader(),
+            new StringDictionaryLoader(),
+            new StringListLoader(),
+        ];
+        foreach (var loader in valueLoaders) AddValueLoader(loader);
     }
 
     private void AddLoader(IAttributeLoader loader, LoadMode mode)
