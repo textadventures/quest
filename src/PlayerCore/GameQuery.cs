@@ -338,8 +338,9 @@ public class GameQuery(string filename)
         {
         }
 
-        public void RunScript(string function, object[] parameters)
+        public Task RunScriptAsync(string function, object[] parameters)
         {
+            return Task.CompletedTask;
         }
 
         public void Quit()

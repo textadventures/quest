@@ -184,6 +184,7 @@ async function initWasmPlayer(gameBytes, filename, bc = null) {
             const globalEval = window.eval;
             try { globalEval(call); } catch (e) { console.error(e); }
         },
+        jsYield: () => new Promise(resolve => setTimeout(resolve, 0)),
         setCompassDirections: (dirsJson) => setCompassDirections(JSON.parse(dirsJson)),
         setInterfaceString: (name, text) => setInterfaceString(name, text),
         setPanelContents: (html) => setPanelContents(html),

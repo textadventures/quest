@@ -215,12 +215,13 @@ public class Player : IPlayerHelperUI
         PlayerHelper.SetLinkForeground(colour);
     }
 
-    void IPlayer.RunScript(string function, object[]? parameters)
+    Task IPlayer.RunScriptAsync(string function, object[]? parameters)
     {
         // Clear text buffer before running custom JavaScript, otherwise text written
         // before now may appear after inserted HTML.
         OutputText(PlayerHelper.ClearBuffer());
         AddJavaScriptToBuffer(function, parameters);
+        return Task.CompletedTask;
     }
 
     void IPlayer.Quit()

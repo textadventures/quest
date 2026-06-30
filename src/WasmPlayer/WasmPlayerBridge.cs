@@ -229,6 +229,9 @@ public partial class WasmPlayerBridge
     [JSImport("runScript", "wasm-player")]
     internal static partial void JsRunScript(string call);
 
+    [JSImport("jsYield", "wasm-player")]
+    internal static partial Task JsYield();
+
     [JSImport("setCompassDirections", "wasm-player")]
     internal static partial void JsSetCompassDirections(string dirsJson);
 
@@ -401,9 +404,10 @@ public partial class WasmPlayerBridge
 
         void IPlayer.SetLinkForeground(string colour) => _helper?.SetLinkForeground(colour);
 
-        void IPlayer.RunScript(string function, object[]? parameters)
+        async Task IPlayer.RunScriptAsync(string function, object[]? parameters)
         {
             FlushText();
+            await JsYield();
             var serializedArgs = string.Join(',',
                 parameters?.Select(SerializeJsArg) ?? System.Array.Empty<string>());
             JsRunScript($"{function}({serializedArgs})");

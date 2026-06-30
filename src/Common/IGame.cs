@@ -59,7 +59,7 @@ public interface IPlayer
     void SetBackground(string colour);
     void SetForeground(string colour);
     void SetLinkForeground(string colour);
-    void RunScript(string function, object[]? parameters);
+    Task RunScriptAsync(string function, object[]? parameters);
     void Quit();
     void SetFont(string fontName);
     void SetFontSize(string fontSize);
