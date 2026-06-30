@@ -9,7 +9,7 @@ public class Elements
 
     internal Elements()
     {
-        foreach (ElementType t in Enum.GetValues(typeof(ElementType)))
+        foreach (ElementType t in Enum.GetValues<ElementType>())
         {
             m_elements.Add(t, new Dictionary<string, Element>());
             m_elementsLists.Add(t, new List<Element>());

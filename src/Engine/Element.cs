@@ -80,7 +80,7 @@ public class Element : IComparable
         }
 
         s_elemTypeStrings = new Dictionary<ElementType, string>();
-        foreach (ElementType t in Enum.GetValues(typeof(ElementType)))
+        foreach (ElementType t in Enum.GetValues<ElementType>())
         {
             s_elemTypeStrings.Add(t,
                 ((ElementTypeInfo) typeof(ElementType).GetField(t.ToString())

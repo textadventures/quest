@@ -12,9 +12,7 @@
     <ItemGroup>
         <ProjectReference Include="..\PlayerCore\PlayerCore.csproj"/>
     </ItemGroup>
-    <ItemGroup>
-        <TrimmerRootDescriptor Include="WasmPlayer.linker.xml" />
-    </ItemGroup>
+
     <!-- Copy static player assets into the AppBundle after it is assembled -->
     <Target Name="CopyPlayerAssetsToAppBundle" AfterTargets="_WasmGenerateAppBundle">
         <PropertyGroup>

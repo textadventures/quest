@@ -7,6 +7,7 @@
         <ImplicitUsings>enable</ImplicitUsings>
         <LangVersion>default</LangVersion>
         <Nullable>enable</Nullable>
+        <IsAotCompatible>true</IsAotCompatible>
         <Description>Core game interpreter for Quest Viva — script execution, expression evaluation, game loading, and built-in functions for text adventure games.</Description>
     </PropertyGroup>
     <ItemGroup>

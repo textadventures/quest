@@ -1,6 +1,8 @@
 using Microsoft.JSInterop;
 
-namespace QuestViva.PlayerCore;
+using QuestViva.PlayerCore;
+
+namespace QuestViva.WebPlayer;
 
 public class BlazorJSInterop(Player player)
 {

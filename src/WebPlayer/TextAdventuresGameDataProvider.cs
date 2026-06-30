@@ -2,7 +2,9 @@
 using System.Net.Http.Json;
 using QuestViva.Common;
 
-namespace QuestViva.PlayerCore;
+using QuestViva.PlayerCore;
+
+namespace QuestViva.WebPlayer;
 
 public class TextAdventuresGameDataProvider(ITextAdventuresConfig config, HttpClient client, string id)
     : IGameDataProvider

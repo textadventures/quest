@@ -6,6 +6,7 @@
         <PackageId>QuestViva.PlayerCore</PackageId>
         <ImplicitUsings>enable</ImplicitUsings>
         <LangVersion>default</LangVersion>
+        <IsAotCompatible>true</IsAotCompatible>
         <Description>Game player runtime for Quest Viva — load and query .aslx text adventure game files.</Description>
     </PropertyGroup>
     <ItemGroup>
@@ -40,8 +41,5 @@
         <EmbeddedResource Include="Resources\playercore.css"/>
         <EmbeddedResource Include="Resources\playercore.htm"/>
         <EmbeddedResource Include="Resources\playercore.js"/>
-    </ItemGroup>
-    <ItemGroup>
-        <PackageReference Include="Microsoft.JSInterop" Version="10.0.3"/>
     </ItemGroup>
 </Project>
