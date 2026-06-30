@@ -557,7 +557,7 @@ public sealed class EditorController : IDisposable
         ClearTree(this, new EventArgs());
         InitialiseTreeStructure();
 
-        foreach (ElementType type in Enum.GetValues(typeof(ElementType)))
+        foreach (ElementType type in Enum.GetValues<ElementType>())
         {
             foreach (var o in WorldModel.Elements.GetElements(type).Where(e => e.Parent == null))
             {
