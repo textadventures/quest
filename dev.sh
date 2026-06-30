@@ -2,9 +2,10 @@
 # Start the local editor+player dev environment.
 #
 # Usage:
-#   ./dev.sh [--api-proxy <url>]
+#   ./dev.sh [--release] [--api-proxy <url>]
 #
 # Options:
+#   --release           Build in Release mode (AOT-compiled WasmPlayer, ~15s extra)
 #   --api-proxy <url>   Proxy /api requests to <url> (e.g. http://localhost:5043
 #                       for a local textadventures.co.uk instance)
 #
@@ -18,25 +19,39 @@ SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 cd "$SCRIPT_DIR"
 
 API_PROXY=""
+RELEASE=false
 while [[ $# -gt 0 ]]; do
     case "$1" in
+        --release) RELEASE=true; shift;;
         --api-proxy) API_PROXY="$2"; shift 2;;
         *) echo "Unknown argument: $1" >&2; exit 1;;
     esac
 done
 
 echo "Building WasmEditor..."
-dotnet build src/WasmEditor/WasmEditor.csproj
+if [[ "$RELEASE" == true ]]; then
+    dotnet build src/WasmEditor/WasmEditor.csproj --configuration Release
+else
+    dotnet build src/WasmEditor/WasmEditor.csproj
+fi
 
 echo ""
 echo "Building WasmPlayer..."
-dotnet build src/WasmPlayer/WasmPlayer.csproj
+if [[ "$RELEASE" == true ]]; then
+    dotnet build src/WasmPlayer/WasmPlayer.csproj --configuration Release
+else
+    dotnet build src/WasmPlayer/WasmPlayer.csproj
+fi
 
 echo ""
 echo "Starting dev servers..."
 echo ""
 
-node src/WasmPlayer/dev-server.mjs &
+if [[ "$RELEASE" == true ]]; then
+    node src/WasmPlayer/dev-server.mjs --release &
+else
+    node src/WasmPlayer/dev-server.mjs &
+fi
 PLAYER_PID=$!
 
 VITE_ENV=(

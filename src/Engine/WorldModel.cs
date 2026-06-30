@@ -334,6 +334,11 @@ public partial class WorldModel : IGame, IGameDebug
             // in its own finally after the callback script runs. Signaling here would complete the
             // turn before the callback output is produced, causing it to appear only on the next turn.
             if (!commandWasOverridden) SignalTurnSuspended();
+            // SendCommand calls SendNextTimerRequest() synchronously before HandleCommandAsyncInternal
+            // has run, so any SetTimeout() registered during the command (e.g. after the first JS yield)
+            // is missed. Calling it here ensures the timer request reflects timers registered by the
+            // command script.
+            SendNextTimerRequest();
         }
     }
 
