@@ -1,26 +1,22 @@
-﻿using QuestViva.Engine;
+﻿using System.Text.RegularExpressions;
+using QuestViva.Engine;
+using Shouldly;
 
 namespace QuestViva.EngineTests;
 
 [TestClass]
-public class FilesTests
+public class UtilityTests
 {
     [TestMethod]
-    public void TestConvertDottedProperties()
+    public void TestDottedPropertiesNotEncoded()
     {
-        Assert.AreEqual("obj___DOT___prop", Engine.Utility.ConvertVariablesToFleeFormat("obj.prop"));
-        Assert.AreEqual("obj1___DOT___prop, obj2___DOT___prop",
-            Engine.Utility.ConvertVariablesToFleeFormat("obj1.prop, obj2.prop"));
-        Assert.AreEqual("(\"myfile.html\")", Engine.Utility.ConvertVariablesToFleeFormat("(\"myfile.html\")"));
-        Assert.AreEqual("\"myfile.html\"", Engine.Utility.ConvertVariablesToFleeFormat("\"myfile.html\""));
-        Assert.AreEqual("obj1___DOT___prop \"test.html\" obj2___DOT___prop",
-            Engine.Utility.ConvertVariablesToFleeFormat("obj1.prop \"test.html\" obj2.prop"));
-    }
-
-    [TestMethod]
-    public void TestDecimalPointsNotConvertedToDottedProperties()
-    {
-        Assert.AreEqual("3.141", Engine.Utility.ConvertVariablesToFleeFormat("3.141"));
+        // Dots in obj.prop expressions are now handled natively by the NCalc parser postfix rule.
+        Assert.AreEqual("obj.prop", Engine.Utility.EncodeIdentifierSpaces("obj.prop"));
+        Assert.AreEqual("obj1.prop, obj2.prop",
+            Engine.Utility.EncodeIdentifierSpaces("obj1.prop, obj2.prop"));
+        Assert.AreEqual("(\"myfile.html\")", Engine.Utility.EncodeIdentifierSpaces("(\"myfile.html\")"));
+        Assert.AreEqual("\"myfile.html\"", Engine.Utility.EncodeIdentifierSpaces("\"myfile.html\""));
+        Assert.AreEqual("3.141", Engine.Utility.EncodeIdentifierSpaces("3.141"));
     }
 
     [TestMethod]
@@ -103,23 +99,23 @@ public class FilesTests
     [TestMethod]
     public void TestConvertVariableNamesWithSpaces()
     {
-        Assert.AreEqual("my___SPACE___variable", Engine.Utility.ConvertVariablesToFleeFormat("my variable"));
+        Assert.AreEqual("my___SPACE___variable", Engine.Utility.EncodeIdentifierSpaces("my variable"));
         Assert.AreEqual("my___SPACE___variable, other___SPACE___variable",
-            Engine.Utility.ConvertVariablesToFleeFormat("my variable, other variable"));
+            Engine.Utility.EncodeIdentifierSpaces("my variable, other variable"));
         Assert.AreEqual("my___SPACE___variable, \"some text\", other___SPACE___variable",
-            Engine.Utility.ConvertVariablesToFleeFormat("my variable, \"some text\", other variable"));
+            Engine.Utility.EncodeIdentifierSpaces("my variable, \"some text\", other variable"));
         Assert.AreEqual("my___SPACE___long___SPACE___variable___SPACE___name",
-            Engine.Utility.ConvertVariablesToFleeFormat("my long variable name"));
+            Engine.Utility.EncodeIdentifierSpaces("my long variable name"));
     }
 
     [TestMethod]
     public void TestNamesNearKeywordsNotConverted()
     {
-        Assert.AreEqual("not my___SPACE___variable", Engine.Utility.ConvertVariablesToFleeFormat("not my variable"));
+        Assert.AreEqual("not my___SPACE___variable", Engine.Utility.EncodeIdentifierSpaces("not my variable"));
         Assert.AreEqual("my___SPACE___variable or other___SPACE___variable",
-            Engine.Utility.ConvertVariablesToFleeFormat("my variable or other variable"));
+            Engine.Utility.EncodeIdentifierSpaces("my variable or other variable"));
         Assert.AreEqual("(not SomeFunction(\"hello there\"))",
-            Engine.Utility.ConvertVariablesToFleeFormat("(not SomeFunction(\"hello there\"))"));
+            Engine.Utility.EncodeIdentifierSpaces("(not SomeFunction(\"hello there\"))"));
     }
 
     [TestMethod]
@@ -153,57 +149,62 @@ public class FilesTests
     }
 
     [TestMethod]
-    public void TestResolveObjectDotAttribute_Variable()
+    public void TestSplitParameter_UnmatchedClosingBracket()
     {
-        var name = "somevar";
-        string obj;
-        string variable;
-        Engine.Utility.ResolveObjectDotAttribute(name, out obj, out variable);
-        Assert.AreEqual(null, obj);
-        Assert.AreEqual("somevar", variable);
+        var result = Engine.Utility.SplitParameter("a), b");
+        result.Count.ShouldBe(2);
+        result[0].ShouldBe("a)");
+        result[1].ShouldBe("b");
     }
 
     [TestMethod]
-    public void TestResolveObjectDotAttribute_OneObject()
+    public void TestConvertVerbSimplePattern_EscapesVerbMetacharacters()
     {
-        var name = "someobject.somevar";
-        string obj;
-        string variable;
-        Engine.Utility.ResolveObjectDotAttribute(name, out obj, out variable);
-        Assert.AreEqual("someobject", obj);
-        Assert.AreEqual("somevar", variable);
+        var pattern = Engine.Utility.ConvertVerbSimplePattern("pick.up", null);
+        var regex = new Regex(pattern, RegexOptions.IgnoreCase);
+        regex.IsMatch("pick.up book").ShouldBeTrue();
+        regex.IsMatch("pickXup book").ShouldBeFalse();
     }
 
     [TestMethod]
-    public void TestResolveObjectDotAttribute_TwoObjects()
+    public void TestConvertVerbSimplePattern_EscapesSeparatorMetacharacters()
     {
-        var name = "someobject.anotherobject.somevar";
-        string obj;
-        string variable;
-        Engine.Utility.ResolveObjectDotAttribute(name, out obj, out variable);
-        Assert.AreEqual("someobject.anotherobject", obj);
-        Assert.AreEqual("somevar", variable);
+        var pattern = Engine.Utility.ConvertVerbSimplePattern("put", "with;a.k.a.");
+        var regex = new Regex(pattern, RegexOptions.IgnoreCase);
+
+        // Literal separator "a.k.a." should populate object2
+        var literalSep = regex.Match("put book a.k.a. box");
+        literalSep.Success.ShouldBeTrue();
+        literalSep.Groups["object2"].Value.ShouldBe("box");
+
+        // "aXkXaX" should NOT be treated as the separator (dot is not a wildcard)
+        var wildcardSep = regex.Match("put book aXkXaX box");
+        wildcardSep.Success.ShouldBeTrue();
+        wildcardSep.Groups["object2"].Value.ShouldBe(""); // absorbed into object, not a separator match
     }
 
     [TestMethod]
-    public void TestResolveObjectDotAttribute_ThreeObjects()
+    public void TestIndentScript()
     {
-        var name = "someobject.anotherobject.thirdobject.somevar";
-        string obj;
-        string variable;
-        Engine.Utility.ResolveObjectDotAttribute(name, out obj, out variable);
-        Assert.AreEqual("someobject.anotherobject.thirdobject", obj);
-        Assert.AreEqual("somevar", variable);
+        var script = "if (true) {\nmsg(\"hello\")\n}";
+        var result = Engine.Utility.IndentScript(script, 0, "  ");
+        result.ShouldBe(
+            Environment.NewLine +
+            "if (true) {" + Environment.NewLine +
+            "  msg(\"hello\")" + Environment.NewLine +
+            "}" + Environment.NewLine);
     }
 
     [TestMethod]
-    public void TestResolveObjectDotAttribute_ThreeObjectsAndSpaces()
+    public void TestIndentScript_IgnoresBracesInStrings()
     {
-        var name = "some object.another object.thirdobject.some var";
-        string obj;
-        string variable;
-        Engine.Utility.ResolveObjectDotAttribute(name, out obj, out variable);
-        Assert.AreEqual("some object.another object.thirdobject", obj);
-        Assert.AreEqual("some var", variable);
+        // A '{' inside a string literal must not increase the indent level for subsequent lines
+        var script = "msg(\"before { after\")\nmsg(\"end\")";
+        var result = Engine.Utility.IndentScript(script, 0, "  ");
+        result.ShouldBe(
+            Environment.NewLine +
+            "msg(\"before { after\")" + Environment.NewLine +
+            "msg(\"end\")" + Environment.NewLine);
     }
+
 }

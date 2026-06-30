@@ -16,7 +16,7 @@ public abstract class ExpressionBase
         OriginalExpression = expression;
         if (!scriptContext.WorldModel.EditMode)
         {
-            expression = Utility.ConvertVariablesToFleeFormat(expression);
+            expression = Utility.EncodeIdentifierSpaces(expression);
         }
 
         Expression = expression;

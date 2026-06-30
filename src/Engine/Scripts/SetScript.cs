@@ -82,10 +82,15 @@ public class SetScriptConstructor : IScriptConstructor
 
     internal IFunction<Element> GetAppliesTo(ScriptContext scriptContext, string value, out string variable)
     {
-        var var = Utility.ConvertVariablesToFleeFormat(value).Trim();
-        string obj;
-        Utility.ResolveObjectDotAttribute(var, out obj, out variable);
-        return obj == null ? null : new Expression<Element>(obj, scriptContext);
+        value = value.Trim();
+        var dotPos = value.LastIndexOf('.');
+        if (dotPos == -1)
+        {
+            variable = Utility.ResolveElementName(value);
+            return null;
+        }
+        variable = value[(dotPos + 1)..];
+        return new Expression<Element>(value[..dotPos], scriptContext);
     }
 }
 

@@ -20,7 +20,7 @@ public class EditableScriptData
         var expression = editor.Fields.GetString("onlydisplayif");
         if (expression != null)
         {
-            m_visibilityExpression = new Expression<bool>(Engine.Utility.ConvertVariablesToFleeFormat(expression),
+            m_visibilityExpression = new Expression<bool>(Engine.Utility.EncodeIdentifierSpaces(expression),
                 new ScriptContext(worldModel, true));
         }
     }

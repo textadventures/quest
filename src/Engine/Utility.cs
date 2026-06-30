@@ -1,5 +1,6 @@
 ﻿#nullable disable
 using System.Diagnostics.CodeAnalysis;
+using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 
@@ -19,13 +20,13 @@ public class MismatchingQuotesException : Exception
 
 public static partial class Utility
 {
-    private const string k_dotReplacementString = "___DOT___";
     private const string k_spaceReplacementString = "___SPACE___";
 
     public static readonly string[] DisallowedAttributes =
         {"object", "command", "turnscript", "game", "exit", "type", "finish"};
 
     private static readonly List<string> s_keywords = new() {"and", "or", "xor", "not", "if", "in"};
+    private static readonly HashSet<string> s_keywordsSet = new(s_keywords);
 
     private static readonly string[] s_listSplitDelimiters = new[] {"; ", ";"};
 
@@ -179,7 +180,7 @@ public static partial class Utility
 
                         if (c == ')')
                         {
-                            bracketCount--;
+                            bracketCount = Math.Max(0, bracketCount - 1);
                         }
 
                         if (bracketCount == 0 && c == ',')
@@ -200,85 +201,13 @@ public static partial class Utility
         return result;
     }
 
-    public static void ResolveVariableName(ref string name, out string obj, out string variable)
-    {
-        name = ResolveElementName(name);
-        var eqPos = name.IndexOf(k_dotReplacementString);
-        if (eqPos == -1)
-        {
-            obj = null;
-            variable = name;
-            return;
-        }
-
-        obj = name[..eqPos];
-        variable = name[(eqPos + k_dotReplacementString.Length)..];
-    }
-
-    public static void ResolveObjectDotAttribute(string name, out string obj, out string variable)
-    {
-        variable = ConvertVariablesToFleeFormat(ResolveElementName(name));
-        StringBuilder sb = null;
-
-        do
-        {
-            if (!ContainsUnresolvedDotNotation(variable))
-            {
-                continue;
-            }
-
-            // We may have been passed in something like someobj.parent.someproperty
-            ResolveVariableName(ref variable, out var nestedObj, out variable);
-
-            if (nestedObj == null)
-            {
-                continue;
-            }
-
-            if (sb == null)
-            {
-                sb = new StringBuilder();
-            }
-            else
-            {
-                sb.Append('.');
-            }
-
-            sb.Append(nestedObj);
-        } while (ContainsUnresolvedDotNotation(variable));
-
-        obj = sb?.ToString();
-    }
-
     public static string ResolveElementName(string name)
     {
         return name.Replace(k_spaceReplacementString, " ");
     }
 
-    // private static Regex s_convertVariables = new System.Text.RegularExpressions.Regex(@"(\w)\.([a-zA-Z])");
-    [GeneratedRegex(@"(\w)\.([a-zA-Z])")]
-    private static partial Regex s_convertVariables();
-
     [GeneratedRegex(@"//")]
     private static partial Regex s_detectComments();
-
-    /// <summary>
-    ///     FLEE doesn't allow us to have control over dot notation i.e. "object.property",
-    ///     so instead we handle "object_property". Use this function to convert dot to underscore.
-    /// </summary>
-    /// <param name="expression"></param>
-    /// <returns></returns>
-    public static string ConvertVariablesToFleeFormat(string expression)
-    {
-        var result = ReplaceRegexMatchesRespectingQuotes(expression, s_convertVariables(),
-            "$1" + k_dotReplacementString + "$2", false);
-        return ConvertVariableNamesWithSpaces(result);
-    }
-
-    public static string ConvertFleeFormatToVariables(string expression)
-    {
-        return expression.Replace(k_dotReplacementString, ".").Replace(k_spaceReplacementString, " ");
-    }
 
     private static string ReplaceRegexMatchesRespectingQuotes(string input, Regex regex, string replaceWith,
         bool replaceInsideQuote)
@@ -286,7 +215,7 @@ public static partial class Utility
         return ReplaceRespectingQuotes(input, replaceInsideQuote, text => regex.Replace(text, replaceWith));
     }
 
-    private static string ConvertVariableNamesWithSpaces(string input)
+    public static string EncodeIdentifierSpaces(string input)
     {
         return ReplaceRespectingQuotes(input, false, text =>
         {
@@ -334,23 +263,12 @@ public static partial class Utility
 
     private static bool IsSplitVariableName(string word1, string word2)
     {
-        if (!(s_wordRegex1().IsMatch(word1) && s_wordRegex2().IsMatch(word2)))
-        {
-            return false;
-        }
+        var match1 = s_wordRegex1().Match(word1);
+        var match2 = s_wordRegex2().Match(word2);
 
-        var word1last = s_wordRegex1().Match(word1).Groups[1].Value;
-        var word2first = s_wordRegex2().Match(word2).Groups[1].Value;
-
-        if (s_keywords.Contains(word1last))
-        {
-            return false;
-        }
-
-        if (s_keywords.Contains(word2first))
-        {
-            return false;
-        }
+        if (!match1.Success || !match2.Success) return false;
+        if (s_keywordsSet.Contains(match1.Groups[1].Value)) return false;
+        if (s_keywordsSet.Contains(match2.Groups[1].Value)) return false;
 
         return true;
     }
@@ -529,11 +447,6 @@ public static partial class Utility
         return result.ToString();
     }
 
-    public static bool ContainsUnresolvedDotNotation(string input)
-    {
-        return input.Contains(k_dotReplacementString);
-    }
-
     public static bool IsRegexMatch(string regexPattern, string input)
     {
         var regex = new Regex(regexPattern, RegexOptions.IgnoreCase);
@@ -558,10 +471,9 @@ public static partial class Utility
 
     private static int GetMatchStrengthInternal(Regex regex, string input)
     {
-        if (!regex.IsMatch(input))
-        {
+        var match = regex.Match(input);
+        if (!match.Success)
             throw new Exception(string.Format("String '{0}' is not a match for Regex '{1}'", input, regex));
-        }
 
         // The idea is that you have a regex like
         //          look at (?<object>.*)
@@ -578,8 +490,7 @@ public static partial class Utility
             // exclude group names like "0", we only want the explicitly named groups
             if (!int.TryParse(groupName, out _))
             {
-                var groupMatch = regex.Match(input).Groups[groupName].Value;
-                lengthOfTextMatchedByGroups += groupMatch.Length;
+                lengthOfTextMatchedByGroups += match.Groups[groupName].Value.Length;
             }
         }
 
@@ -599,10 +510,9 @@ public static partial class Utility
 
     private static QuestDictionary<string> PopulateInternal(Regex regex, string input)
     {
-        if (!regex.IsMatch(input))
-        {
+        var match = regex.Match(input);
+        if (!match.Success)
             throw new Exception(string.Format("String '{0}' is not a match for Regex '{1}'", input, regex));
-        }
 
         var result = new QuestDictionary<string>();
 
@@ -610,8 +520,7 @@ public static partial class Utility
         {
             if (!int.TryParse(groupName, out _))
             {
-                var groupMatch = regex.Match(input).Groups[groupName].Value;
-                result.Add(groupName, groupMatch);
+                result.Add(groupName, match.Groups[groupName].Value);
             }
         }
 
@@ -632,7 +541,7 @@ public static partial class Utility
 
         if (!string.IsNullOrEmpty(separator))
         {
-            separatorRegex = "(" + string.Join("|", separator.Split(';').Select(s => s.Trim())) + ")";
+            separatorRegex = "(" + string.Join("|", separator.Split(';').Select(s => Regex.Escape(s.Trim()))) + ")";
         }
 
         foreach (var verb in verbs)
@@ -647,11 +556,11 @@ public static partial class Utility
             string textToAdd;
             if (verb.Contains("#object#"))
             {
-                textToAdd = "^" + verb.Replace("#object#", objectRegex);
+                textToAdd = "^" + string.Join(objectRegex, verb.Split("#object#").Select(Regex.Escape));
             }
             else
             {
-                textToAdd = "^" + verb + " " + objectRegex;
+                textToAdd = "^" + Regex.Escape(verb) + " " + objectRegex;
             }
 
             if (separatorRegex != null)
@@ -743,61 +652,62 @@ public static partial class Utility
     public static string IndentScript(string script, int indentLevel, string indentChars)
     {
         var lines = SplitIntoLines(script);
-        var result = Environment.NewLine;
+        var sb = new StringBuilder();
+        sb.Append(Environment.NewLine);
 
         foreach (var line in lines)
         {
-            AddLine(ref result, ref indentLevel, line, indentChars);
+            AddLine(sb, ref indentLevel, line, indentChars);
         }
 
-        return result;
+        return sb.ToString();
     }
 
-    private static void AddLine(ref string result, ref int indentLevel, string line, string indentChars)
+    private static void AddLine(StringBuilder result, ref int indentLevel, string line, string indentChars)
     {
-        if (line.Length == 0)
-        {
-            return;
-        }
+        if (line.Length == 0) return;
 
         if (line.StartsWith("}"))
         {
             // if line starts with closing brace, de-indent, put the brace on a line on its own,
             // then resume with the rest of the line.
             indentLevel--;
-            result += GetIndentChars(indentLevel, indentChars) + "}" + Environment.NewLine;
-            AddLine(ref result, ref indentLevel, line[1..], indentChars);
+            result.Append(GetIndentChars(indentLevel, indentChars));
+            result.Append('}');
+            result.Append(Environment.NewLine);
+            AddLine(result, ref indentLevel, line[1..], indentChars);
             return;
         }
 
         // Add this line at the current indent level
-        result += GetIndentChars(indentLevel, indentChars) + line + Environment.NewLine;
+        result.Append(GetIndentChars(indentLevel, indentChars));
+        result.Append(line);
+        result.Append(Environment.NewLine);
 
-        // Now work out the indent level for the following line
-        for (var i = 0; i < line.Length; i++)
+        // Work out the indent level for the following line, ignoring braces inside strings.
+        var inString = false;
+        var i = 0;
+        while (i < line.Length)
         {
-            var curChar = line.Substring(i, 1);
-            if (curChar == "{")
+            var c = line[i];
+            if (inString)
             {
-                indentLevel++;
+                if (c == '\\') i++; // skip escaped character
+                else if (c == '"') inString = false;
             }
-
-            if (curChar == "}")
+            else
             {
-                indentLevel--;
+                if (c == '"') inString = true;
+                else if (c == '{') indentLevel++;
+                else if (c == '}') indentLevel--;
             }
+            i++;
         }
     }
 
     public static string GetIndentChars(int indentLevel, string indentChars)
     {
-        var indentString = string.Empty;
-
-        for (var i = 0; i < indentLevel; i++)
-        {
-            indentString += indentChars;
-        }
-
-        return indentString;
+        if (indentLevel <= 0) return string.Empty;
+        return string.Concat(Enumerable.Repeat(indentChars, indentLevel));
     }
 }
