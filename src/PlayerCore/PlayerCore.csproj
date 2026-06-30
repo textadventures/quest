@@ -10,6 +10,9 @@
         <Description>Game player runtime for Quest Viva — load and query .aslx text adventure game files.</Description>
     </PropertyGroup>
     <ItemGroup>
+        <SupportedPlatform Include="browser"/>
+    </ItemGroup>
+    <ItemGroup>
         <ProjectReference Include="..\Legacy\Legacy.csproj"/>
         <ProjectReference Include="..\Common\Common.csproj"/>
         <ProjectReference Include="..\Utility\Utility.csproj"/>

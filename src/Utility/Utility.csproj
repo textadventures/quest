@@ -10,6 +10,9 @@
         <Description>Helper functions and language utilities for Quest Viva, an open-source text adventure game engine.</Description>
     </PropertyGroup>
     <ItemGroup>
+        <SupportedPlatform Include="browser"/>
+    </ItemGroup>
+    <ItemGroup>
         <PackageReference Include="System.Data.DataSetExtensions" Version="4.5.0"/>
     </ItemGroup>
 </Project>

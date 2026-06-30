@@ -11,6 +11,9 @@
         <Description>Shared types and interfaces for Quest Viva, an open-source text adventure game engine.</Description>
     </PropertyGroup>
     <ItemGroup>
+        <SupportedPlatform Include="browser"/>
+    </ItemGroup>
+    <ItemGroup>
         <EmbeddedResource Include="..\..\VERSION">
             <Link>VERSION</Link>
         </EmbeddedResource>
