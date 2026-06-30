@@ -5,6 +5,7 @@
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>disable</Nullable>
         <RootNamespace>QuestViva.Legacy</RootNamespace>
+        <IsAotCompatible>true</IsAotCompatible>
         <PackageId>QuestViva.Legacy</PackageId>
         <LangVersion>default</LangVersion>
         <Description>Quest 4 and earlier backward-compatibility layer for Quest Viva, an open-source text adventure game engine.</Description>

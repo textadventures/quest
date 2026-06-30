@@ -3,6 +3,7 @@
         <TargetFramework>net10.0</TargetFramework>
         <OutputType>Library</OutputType>
         <RootNamespace>QuestViva.Utility</RootNamespace>
+        <IsAotCompatible>true</IsAotCompatible>
         <PackageId>QuestViva.Utility</PackageId>
         <ImplicitUsings>enable</ImplicitUsings>
         <LangVersion>default</LangVersion>
