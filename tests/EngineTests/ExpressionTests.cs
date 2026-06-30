@@ -113,6 +113,14 @@ public class ExpressionTests
         result.ShouldBe(expectedResult);
     }
 
+    [TestMethod]
+    public async Task TestPropertyAccess_AttributeNameWithSpace()
+    {
+        _object.Fields.Set("my attr", "spacedvalue");
+        var result = await RunExpression<string>("object.my attr");
+        result.ShouldBe("spacedvalue");
+    }
+
     [DataTestMethod]
     [DataRow("1", 1)]
     [DataRow("1 + 2", 3)]

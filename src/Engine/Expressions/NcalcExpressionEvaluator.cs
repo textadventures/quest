@@ -22,7 +22,7 @@ public class NcalcExpressionEvaluator<T> : IExpressionEvaluator<T>, IDynamicExpr
     {
         _scriptContext = scriptContext;
         _expressionOwner = new ExpressionOwner(scriptContext.WorldModel);
-        _expression = Utility.DecodeIdentifierSpaces(expression);
+        _expression = Utility.ResolveElementName(expression);
 
         _nCalcExpression = new Expression(expression,
             new ExpressionContext { Options = ExpressionOptions.NoStringTypeCoercion },
@@ -404,7 +404,8 @@ public class NcalcExpressionEvaluator<T> : IExpressionEvaluator<T>, IDynamicExpr
                 ?? throw new Exception("__Quest_PropertyAccess__ second argument must be a property name string");
             if (receiver is Element element)
             {
-                return element.Fields.Exists(propertyName, true) ? element.Fields.Get(propertyName) : null;
+                var fieldName = Utility.ResolveElementName(propertyName);
+                return element.Fields.Exists(fieldName, true) ? element.Fields.Get(fieldName) : null;
             }
 #pragma warning disable IL2075 // script-accessible types are explicitly rooted in ScriptDispatchRoots.cs
             var prop = receiver?.GetType().GetProperty(propertyName,

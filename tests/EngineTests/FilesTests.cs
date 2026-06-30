@@ -1,4 +1,6 @@
-﻿using QuestViva.Engine;
+﻿using System.Text.RegularExpressions;
+using QuestViva.Engine;
+using Shouldly;
 
 namespace QuestViva.EngineTests;
 
@@ -144,6 +146,65 @@ public class FilesTests
             Engine.Utility.GetParameter("msg (\"parameter 1\", \"parameter 2\")"));
         Assert.AreEqual("\"parameter with a bracket ) in a string\"",
             Engine.Utility.GetParameter("msg (\"parameter with a bracket ) in a string\")"));
+    }
+
+    [TestMethod]
+    public void TestSplitParameter_UnmatchedClosingBracket()
+    {
+        var result = Engine.Utility.SplitParameter("a), b");
+        result.Count.ShouldBe(2);
+        result[0].ShouldBe("a)");
+        result[1].ShouldBe("b");
+    }
+
+    [TestMethod]
+    public void TestConvertVerbSimplePattern_EscapesVerbMetacharacters()
+    {
+        var pattern = Engine.Utility.ConvertVerbSimplePattern("pick.up", null);
+        var regex = new Regex(pattern, RegexOptions.IgnoreCase);
+        regex.IsMatch("pick.up book").ShouldBeTrue();
+        regex.IsMatch("pickXup book").ShouldBeFalse();
+    }
+
+    [TestMethod]
+    public void TestConvertVerbSimplePattern_EscapesSeparatorMetacharacters()
+    {
+        var pattern = Engine.Utility.ConvertVerbSimplePattern("put", "with;a.k.a.");
+        var regex = new Regex(pattern, RegexOptions.IgnoreCase);
+
+        // Literal separator "a.k.a." should populate object2
+        var literalSep = regex.Match("put book a.k.a. box");
+        literalSep.Success.ShouldBeTrue();
+        literalSep.Groups["object2"].Value.ShouldBe("box");
+
+        // "aXkXaX" should NOT be treated as the separator (dot is not a wildcard)
+        var wildcardSep = regex.Match("put book aXkXaX box");
+        wildcardSep.Success.ShouldBeTrue();
+        wildcardSep.Groups["object2"].Value.ShouldBe(""); // absorbed into object, not a separator match
+    }
+
+    [TestMethod]
+    public void TestIndentScript()
+    {
+        var script = "if (true) {\nmsg(\"hello\")\n}";
+        var result = Engine.Utility.IndentScript(script, 0, "  ");
+        result.ShouldBe(
+            Environment.NewLine +
+            "if (true) {" + Environment.NewLine +
+            "  msg(\"hello\")" + Environment.NewLine +
+            "}" + Environment.NewLine);
+    }
+
+    [TestMethod]
+    public void TestIndentScript_IgnoresBracesInStrings()
+    {
+        // A '{' inside a string literal must not increase the indent level for subsequent lines
+        var script = "msg(\"before { after\")\nmsg(\"end\")";
+        var result = Engine.Utility.IndentScript(script, 0, "  ");
+        result.ShouldBe(
+            Environment.NewLine +
+            "msg(\"before { after\")" + Environment.NewLine +
+            "msg(\"end\")" + Environment.NewLine);
     }
 
 }
