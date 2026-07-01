@@ -70,7 +70,9 @@ public class JSScript : ScriptBase
 
         if (m_parameters != null)
         {
-            var paramValues = await Task.WhenAll(m_parameters.Select(p => p.ExecuteAsync(c)));
+            var paramValues = new object[m_parameters.Count];
+            for (var i = 0; i < m_parameters.Count; i++)
+                paramValues[i] = await m_parameters[i].ExecuteAsync(c);
             await m_scriptContext.WorldModel.PlayerUi.RunScriptAsync(m_function, paramValues);
         }
         else

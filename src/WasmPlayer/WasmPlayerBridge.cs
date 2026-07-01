@@ -466,10 +466,17 @@ public partial class WasmPlayerBridge
 
         void IPlayer.SetLinkForeground(string colour) => _helper?.SetLinkForeground(colour);
 
+        private static long _lastYieldMs = 0;
+
         async Task IPlayer.RunScriptAsync(string function, object[]? parameters)
         {
             FlushBuffer();
-            await JsYield();
+            var now = Environment.TickCount64;
+            if (now - _lastYieldMs >= 16)
+            {
+                _lastYieldMs = now;
+                await JsYield();
+            }
 
             // Strip newlines from string parameters — some games depend on this (matching WebPlayer behaviour)
             var processedParams = parameters?.Select(p =>

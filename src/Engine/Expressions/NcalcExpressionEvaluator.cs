@@ -144,9 +144,9 @@ public class NcalcExpressionEvaluator<T> : IExpressionEvaluator<T>, IDynamicExpr
         var methods = GetPublicMethodsByName(type, name);
         if (methods == null) return (false, null);
 
-        var evaluatedArgs = await Task.WhenAll(
-            Enumerable.Range(0, parameters.Count)
-                .Select(async i => CoerceLong(await parameters.EvaluateAsync(i))));
+        var evaluatedArgs = new object?[parameters.Count];
+        for (var i = 0; i < parameters.Count; i++)
+            evaluatedArgs[i] = CoerceLong(await parameters.EvaluateAsync(i));
 
         var (handled, result) = DispatchToMethod(methods, instance, name, evaluatedArgs);
         if (handled && result is Task task)
@@ -159,12 +159,20 @@ public class NcalcExpressionEvaluator<T> : IExpressionEvaluator<T>, IDynamicExpr
         return (handled, result);
     }
 
+    private static readonly Dictionary<(Type, string), MethodBase[]?> s_methodCache = new();
+
     private static MethodBase[]? GetPublicMethodsByName([DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicMethods)] Type type, string name)
     {
+        var key = (type, name);
+        if (s_methodCache.TryGetValue(key, out var cached))
+            return cached;
+
         var methods = type.GetMethods()
             .Where(m => m.IsPublic && m.Name.Equals(name, StringComparison.InvariantCultureIgnoreCase))
             .ToArray<MethodBase>();
-        return methods.Length == 0 ? null : methods;
+        var result = methods.Length == 0 ? null : methods;
+        s_methodCache[key] = result;
+        return result;
     }
 
     private static (bool handled, object? result) DispatchToMethod(MethodBase[] methods, object? instance, string name,
@@ -390,8 +398,9 @@ public class NcalcExpressionEvaluator<T> : IExpressionEvaluator<T>, IDynamicExpr
             var receiver = CoerceLong(await args.Parameters.EvaluateAsync(0));
             var methodName = await args.Parameters.EvaluateAsync(1) as string
                 ?? throw new Exception("__Quest_MethodCall__ second argument must be a string method name");
-            var methodArgs = await Task.WhenAll(Enumerable.Range(2, args.Parameters.Count - 2)
-                .Select(async i => CoerceLong(await args.Parameters.EvaluateAsync(i))));
+            var methodArgs = new object?[args.Parameters.Count - 2];
+            for (var i = 0; i < methodArgs.Length; i++)
+                methodArgs[i] = CoerceLong(await args.Parameters.EvaluateAsync(i + 2));
             return DispatchMethodCall(receiver, methodName, methodArgs);
         }
 
