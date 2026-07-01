@@ -5,7 +5,7 @@ export default {
   preprocess: vitePreprocess(),
   kit: {
     adapter: adapter({ fallback: 'index.html' }),
-    paths: { base: '/questviva' },
+    paths: { base: process.env.BASE_PATH ?? '' },
     alias: {
       $components: 'src/components'
     }

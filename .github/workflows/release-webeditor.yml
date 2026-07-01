@@ -32,6 +32,7 @@ jobs:
         working-directory: src/WebEditor
         env:
           PUBLIC_WEBEDITOR_VERSION: ${{ github.ref_name }}
+          BASE_PATH: /questviva
 
       - name: Package artifacts
         run: |

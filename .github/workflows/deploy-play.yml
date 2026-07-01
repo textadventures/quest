@@ -1,0 +1,66 @@
+name: Deploy play.questviva.com
+
+on:
+  push:
+    branches: [ "main" ]
+    paths:
+      - "src/WasmEditor/**"
+      - "src/WebEditor/**"
+      - "src/WasmPlayer/**"
+      - "src/PlayerCore/**"
+      - "src/EditorCore/**"
+      - "src/Engine/**"
+      - "src/Common/**"
+      - "src/Utility/**"
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      deployments: write
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '10.0.x'
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Install .NET WASM workload
+        run: dotnet workload install wasm-tools
+
+      - name: Build WasmEditor
+        run: dotnet build src/WasmEditor/WasmEditor.csproj -c Release
+
+      - name: Build WasmPlayer
+        run: dotnet build src/WasmPlayer/WasmPlayer.csproj -c Release
+
+      - name: Build WebEditor
+        run: npm ci && npm run build
+        working-directory: src/WebEditor
+        env:
+          PUBLIC_WEBEDITOR_VERSION: ${{ github.sha }}
+
+      - name: Assemble deploy directory
+        run: |
+          mkdir -p deploy/AppBundle deploy/player
+          cp -r src/WebEditor/build/. deploy/
+          cp -r src/WasmEditor/bin/Release/net10.0/browser-wasm/AppBundle/. deploy/AppBundle/
+          cp -r src/WasmPlayer/bin/Release/net10.0/browser-wasm/AppBundle/. deploy/player/
+          cat > deploy/_headers <<'EOF'
+          /*
+            Cross-Origin-Opener-Policy: same-origin
+            Cross-Origin-Embedder-Policy: require-corp
+          EOF
+
+      - name: Deploy to Cloudflare Pages
+        uses: cloudflare/wrangler-action@v3
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          command: pages deploy deploy --project-name=play-questviva --branch=main
