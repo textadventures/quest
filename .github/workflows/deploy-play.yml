@@ -63,6 +63,9 @@ jobs:
 
           /AppBundle/_framework/*
             Cache-Control: no-cache
+
+          /*.js
+            Content-Type: application/javascript; charset=utf-8
           EOF
 
       - name: Deploy to Cloudflare Pages
