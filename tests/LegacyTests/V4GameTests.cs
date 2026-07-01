@@ -18,7 +18,7 @@ public class V4GameTests
         m_game = new V4Game(gameData, null);
         m_game.PrintText += m_player.PrintText;
         await m_game.Initialise(m_player);
-        m_game.Begin();
+        await m_game.Begin();
     }
 
     [TestMethod]

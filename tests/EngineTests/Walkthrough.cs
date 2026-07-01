@@ -17,7 +17,7 @@ public class Walkthrough
 
         var player = new Mock<IPlayer>();
         await worldModel.Initialise(player.Object);
-        worldModel.Begin();
+        await worldModel.Begin();
 
         foreach (var cmd in worldModel.Walkthroughs.Walkthroughs["debug"].Steps)
         {

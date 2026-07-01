@@ -398,7 +398,7 @@ public class NcalcExpressionEvaluator<T> : IExpressionEvaluator<T>, IDynamicExpr
             var receiver = CoerceLong(await args.Parameters.EvaluateAsync(0));
             var methodName = await args.Parameters.EvaluateAsync(1) as string
                 ?? throw new Exception("__Quest_MethodCall__ second argument must be a string method name");
-            var methodArgs = new object?[args.Parameters.Count - 2];
+            var methodArgs = new object[args.Parameters.Count - 2];
             for (var i = 0; i < methodArgs.Length; i++)
                 methodArgs[i] = CoerceLong(await args.Parameters.EvaluateAsync(i + 2));
             return DispatchMethodCall(receiver, methodName, methodArgs);
