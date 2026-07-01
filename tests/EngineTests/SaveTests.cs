@@ -20,7 +20,7 @@ public class SaveTests
         var success = await worldModel.Initialise(player.Object);
         Assert.IsTrue(success, "Initialisation failed");
 
-        worldModel.Begin();
+        await worldModel.Begin();
 
         await worldModel.SendCommand("update");
 
@@ -34,7 +34,7 @@ public class SaveTests
         success = await savedGameWorldModel.Initialise(player.Object);
         Assert.IsTrue(success, "Initialisation failed");
 
-        savedGameWorldModel.Begin();
+        await savedGameWorldModel.Begin();
 
         foreach (var cmd in worldModel.Walkthroughs.Walkthroughs["verify"].Steps)
         {

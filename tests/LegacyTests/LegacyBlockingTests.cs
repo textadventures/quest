@@ -23,7 +23,7 @@ public class LegacyBlockingTests
         _game = new V4Game(gameData, null);
         _game.PrintText += _player.PrintText;
         await _game.Initialise(_player);
-        _game.Begin();
+        await _game.Begin();
     }
 
     // wait blocks the script until FinishWait() is called; "Done" must not
