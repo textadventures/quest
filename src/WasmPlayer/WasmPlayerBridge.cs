@@ -470,8 +470,21 @@ public partial class WasmPlayerBridge
         {
             FlushBuffer();
             await JsYield();
+
+            // Strip newlines from string parameters — some games depend on this (matching WebPlayer behaviour)
+            var processedParams = parameters?.Select(p =>
+                p is string s ? (object)s.Replace("\r", "").Replace("\n", "") : p).ToArray();
+
+            // When function is "eval", pass the code directly rather than wrapping it in eval(...)
+            // so it runs in global scope (matching WebPlayer behaviour; e.g. spondre defines global functions this way)
+            if (function == "eval" && processedParams is [string evalCode])
+            {
+                JsRunScript(evalCode);
+                return;
+            }
+
             var serializedArgs = string.Join(',',
-                parameters?.Select(SerializeJsArg) ?? System.Array.Empty<string>());
+                processedParams?.Select(SerializeJsArg) ?? System.Array.Empty<string>());
             JsRunScript($"{function}({serializedArgs})");
         }
 
