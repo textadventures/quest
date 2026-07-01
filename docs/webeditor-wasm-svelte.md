@@ -355,7 +355,7 @@ Blockly is ~800KB and requires a TypeScript bridge layer to synchronise the bloc
 
 - **EditorCore API cleanup**: `EditorMode` (Desktop/Web distinction) and `AddControlType`/`GetControlType` (.NET UI control registration) are dead weight now the only consumer is Svelte. Remove in a future cleanup pass.
 - **Live C# → JS events**: Currently tree state is snapshot-based (collected at init). As editing adds/removes/renames nodes, the bridge will need to push updates to JS rather than relying on a full re-fetch.
-- **Build integration**: Should `WasmEditor` output be served by `WebPlayer` (embedded SPA) or deployed separately?
-- **Auth / server-side storage**: Is cloud save in scope? Affects whether the editor stays purely client-side.
+- **Build integration**: Should `WasmEditor` output be served by `WebPlayer` (embedded SPA) or deployed separately? — resolved, see [deployment-domains.md](./deployment-domains.md): deployed separately, own subdomain (`play.questviva.com`).
+- **Auth / server-side storage**: Is cloud save in scope? Affects whether the editor stays purely client-side. — resolved, see [deployment-domains.md](./deployment-domains.md): cloud sync stays in scope, but only on textadventures.co.uk (same-origin with existing auth); `play.questviva.com` stays local-only.
 - **Shared filesystem adapter**: Implement `src/lib/filesystem/` here first (see File handling section and [squiffy#215](https://github.com/textadventures/squiffy/issues/215)); extract into a published package when Squiffy becomes the second consumer.
 - **Electron wrapper**: Both Quest and Squiffy editors are candidates for an Electron app. The `FileAdapter` interface is the seam; `createElectronAdapter()` bridges to Node.js `fs` via `contextBridge` IPC. Decide whether to build one Electron shell that hosts both, or separate apps.
