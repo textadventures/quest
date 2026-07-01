@@ -57,6 +57,12 @@ jobs:
           /*
             Cross-Origin-Opener-Policy: same-origin
             Cross-Origin-Embedder-Policy: require-corp
+
+          /player/_framework/*
+            Cache-Control: no-cache
+
+          /AppBundle/_framework/*
+            Cache-Control: no-cache
           EOF
 
       - name: Deploy to Cloudflare Pages
