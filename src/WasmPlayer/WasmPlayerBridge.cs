@@ -47,13 +47,13 @@ public partial class WasmPlayerBridge
         };
         _game.UpdateList += (listType, items) => _ui.HandleUpdateList(listType, items);
         _game.Finished += () => _ui.HandleFinished();
-        _game.RequestNextTimerTick += seconds => JsRequestNextTimerTick(seconds);
+        _game.RequestNextTimerTick += seconds => _ui.SetPendingTimerTick(seconds);
 
         var (ok, errors) = await _helper.Initialise(_ui);
         if (!ok)
         {
             _ui.OutputText(string.Join("<br/>", errors) + "<br/>");
-            _ui.FlushText();
+            _ui.FlushBuffer();
             return false;
         }
 
@@ -78,10 +78,11 @@ public partial class WasmPlayerBridge
     public static string GetGameId() => _ui?.GameId ?? string.Empty;
 
     [JSExport]
-    public static void Begin()
+    public static async Task Begin()
     {
-        _game?.Begin();
-        _ui?.FlushText();
+        if (_game == null || _ui == null) return;
+        await _game.Begin();
+        _ui.FlushBuffer();
     }
 
     [JSExport]
@@ -93,7 +94,7 @@ public partial class WasmPlayerBridge
             : JsonSerializer.Deserialize(metadataJson, WasmJsonContext.Default.DictionaryStringString)
               ?? new Dictionary<string, string>();
         await _game.SendCommand(command, tickCount, metadata);
-        _ui.FlushText();
+        _ui.FlushBuffer();
     }
 
     [JSExport]
@@ -101,7 +102,7 @@ public partial class WasmPlayerBridge
     {
         if (_game == null || _ui == null || _ui.IsFinished) return;
         await _game.SendEvent(eventName, param);
-        _ui.FlushText();
+        _ui.FlushBuffer();
     }
 
     [JSExport]
@@ -109,7 +110,7 @@ public partial class WasmPlayerBridge
     {
         if (_game == null || _ui == null) return;
         await _game.FinishWait();
-        _ui.FlushText();
+        _ui.FlushBuffer();
     }
 
     [JSExport]
@@ -117,7 +118,7 @@ public partial class WasmPlayerBridge
     {
         if (_game == null || _ui == null) return;
         await _game.FinishPause();
-        _ui.FlushText();
+        _ui.FlushBuffer();
     }
 
     [JSExport]
@@ -125,7 +126,7 @@ public partial class WasmPlayerBridge
     {
         if (_game == null || _ui == null) return;
         await _game.SetMenuResponse(response);
-        _ui.FlushText();
+        _ui.FlushBuffer();
     }
 
     [JSExport]
@@ -133,7 +134,7 @@ public partial class WasmPlayerBridge
     {
         if (_game == null || _ui == null) return;
         await _game.SetQuestionResponse(response);
-        _ui.FlushText();
+        _ui.FlushBuffer();
     }
 
     [JSExport]
@@ -141,7 +142,7 @@ public partial class WasmPlayerBridge
     {
         if (_game == null || _ui == null || _ui.IsFinished) return;
         await _game.Tick(elapsedTime);
-        _ui.FlushText();
+        _ui.FlushBuffer();
     }
 
     [JSExport]
@@ -266,6 +267,11 @@ public partial class WasmPlayerBridge
         private readonly IGame _game;
         private PlayerHelper? _helper;
 
+        // Buffered JS calls — flushed at turn end or before any interactive call.
+        private readonly List<Action> _uiBuffer = new();
+        // Only the last requestNextTimerTick per turn matters; older ones are stale.
+        private int? _pendingTimerTick = null;
+
         public string GameId { get; }
         public bool IsFinished { get; private set; }
 
@@ -280,13 +286,14 @@ public partial class WasmPlayerBridge
                     && args[0] is string listName
                     && args[1] is Dictionary<string, string> items)
                 {
-                    JsUpdateList(listName, JsonSerializer.Serialize(items, WasmJsonContext.Default.DictionaryStringString));
+                    var json = JsonSerializer.Serialize(items, WasmJsonContext.Default.DictionaryStringString);
+                    _uiBuffer.Add(() => JsUpdateList(listName, json));
                 }
                 else if (identifier == "updateCompass"
                          && args?.Length == 1
                          && args[0] is string compassData)
                 {
-                    JsUpdateCompass(compassData);
+                    _uiBuffer.Add(() => JsUpdateCompass(compassData));
                 }
             });
         }
@@ -314,6 +321,39 @@ public partial class WasmPlayerBridge
             return url;
         }
 
+        // Flush accumulated PlayerHelper text into the buffer (preserving ordering
+        // relative to other buffered calls), then execute every buffered call and
+        // emit the pending timer tick if one exists.
+        public void FlushBuffer()
+        {
+            if (_helper != null)
+                OutputText(_helper.ClearBuffer());
+
+            var actions = _uiBuffer.ToArray();
+            _uiBuffer.Clear();
+
+            foreach (var action in actions)
+                action();
+
+            if (_pendingTimerTick.HasValue)
+            {
+                JsRequestNextTimerTick(_pendingTimerTick.Value);
+                _pendingTimerTick = null;
+            }
+        }
+
+        // Flush the buffer before an interactive call that suspends C# waiting for
+        // a JS response — the JS side must see all preceding output first.
+        private void FlushBeforeInteraction()
+        {
+            FlushBuffer();
+        }
+
+        public void SetPendingTimerTick(int seconds)
+        {
+            _pendingTimerTick = seconds;
+        }
+
         public void FlushText()
         {
             if (_helper == null) return;
@@ -325,7 +365,7 @@ public partial class WasmPlayerBridge
 
         public void HandleFinished()
         {
-            JsGameFinished();
+            _uiBuffer.Add(JsGameFinished);
             IsFinished = true;
         }
 
@@ -333,39 +373,56 @@ public partial class WasmPlayerBridge
         public void OutputText(string text)
         {
             if (text.Length == 0) return;
-            // NOTE: Some existing games depend on newlines being stripped here.
             text = text.Replace("\n", "").Replace("\r", "");
-            JsAddTextAndScroll(text);
+            _uiBuffer.Add(() => JsAddTextAndScroll(text));
         }
 
         public void SetAlignment(string alignment)
         {
             if (alignment.Length == 0) alignment = "left";
             FlushText();
-            JsCreateNewDiv(alignment);
+            _uiBuffer.Add(() => JsCreateNewDiv(alignment));
         }
 
         public void BindMenu(string linkid, string verbs, string text, string elementId) =>
-            JsBindMenu(linkid, verbs, text, elementId);
+            _uiBuffer.Add(() => JsBindMenu(linkid, verbs, text, elementId));
 
         // IPlayer
-        void IPlayer.ShowMenu(MenuData menuData) =>
+        void IPlayer.ShowMenu(MenuData menuData)
+        {
+            FlushBeforeInteraction();
             JsShowMenu(menuData.Caption,
                 JsonSerializer.Serialize(
                     menuData.Options as Dictionary<string, string> ?? new Dictionary<string, string>(menuData.Options),
                     WasmJsonContext.Default.DictionaryStringString),
                 menuData.AllowCancel);
+        }
 
-        void IPlayer.DoWait() => JsBeginWait();
+        void IPlayer.DoWait()
+        {
+            FlushBeforeInteraction();
+            JsBeginWait();
+        }
 
-        void IPlayer.DoPause(int ms) => JsBeginPause(ms);
+        void IPlayer.DoPause(int ms)
+        {
+            FlushBeforeInteraction();
+            JsBeginPause(ms);
+        }
 
-        void IPlayer.ShowQuestion(string caption) => JsShowQuestion(caption);
+        void IPlayer.ShowQuestion(string caption)
+        {
+            FlushBeforeInteraction();
+            JsShowQuestion(caption);
+        }
 
         void IPlayer.SetWindowMenu(MenuData menuData) { }
 
-        async Task IPlayer.PlaySoundAsync(string filename, bool synchronous, bool looped) =>
+        async Task IPlayer.PlaySoundAsync(string filename, bool synchronous, bool looped)
+        {
+            FlushBeforeInteraction();
             JsPlaySound(await GetUrlAsync(filename), synchronous, looped);
+        }
 
         void IPlayer.StopSound() => JsStopSound();
 
@@ -373,32 +430,37 @@ public partial class WasmPlayerBridge
 
         Task<string> IPlayer.GetUrlAsync(string filename) => GetUrlAsync(filename);
 
-        void IPlayer.LocationUpdated(string location) => JsUpdateLocation(location);
+        void IPlayer.LocationUpdated(string location) =>
+            _uiBuffer.Add(() => JsUpdateLocation(location));
 
-        void IPlayer.UpdateGameName(string name) => JsSetGameName(name);
+        void IPlayer.UpdateGameName(string name) =>
+            _uiBuffer.Add(() => JsSetGameName(name));
 
         void IPlayer.ClearScreen()
         {
             FlushText();
-            JsClearScreen();
+            _uiBuffer.Add(JsClearScreen);
         }
 
         async Task IPlayer.ShowPictureAsync(string filename)
         {
             FlushText();
-            OutputText($"<img src=\"{await GetUrlAsync(filename)}\" onload=\"scrollToEnd();\" /><br />");
+            var url = await GetUrlAsync(filename);
+            _uiBuffer.Add(() => JsAddTextAndScroll($"<img src=\"{url}\" onload=\"scrollToEnd();\" /><br />"));
         }
 
-        void IPlayer.SetPanesVisible(string data) => JsPanesVisible(data == "on");
+        void IPlayer.SetPanesVisible(string data) =>
+            _uiBuffer.Add(() => JsPanesVisible(data == "on"));
 
         void IPlayer.SetStatusText(string text) =>
-            JsUpdateStatus(text.Replace(System.Environment.NewLine, "<br />"));
+            _uiBuffer.Add(() => JsUpdateStatus(text.Replace(System.Environment.NewLine, "<br />")));
 
-        void IPlayer.SetBackground(string colour) => JsSetBackground(colour);
+        void IPlayer.SetBackground(string colour) =>
+            _uiBuffer.Add(() => JsSetBackground(colour));
 
         void IPlayer.SetForeground(string colour)
         {
-            JsSetForeground(colour);
+            _uiBuffer.Add(() => JsSetForeground(colour));
             _helper?.SetForeground(colour);
         }
 
@@ -406,7 +468,7 @@ public partial class WasmPlayerBridge
 
         async Task IPlayer.RunScriptAsync(string function, object[]? parameters)
         {
-            FlushText();
+            FlushBuffer();
             await JsYield();
             var serializedArgs = string.Join(',',
                 parameters?.Select(SerializeJsArg) ?? System.Array.Empty<string>());
@@ -442,22 +504,23 @@ public partial class WasmPlayerBridge
         void IPlayer.Show(string element)
         {
             if (ElementMap.TryGetValue(element, out var jsElement))
-                JsUiShow(jsElement);
+                _uiBuffer.Add(() => JsUiShow(jsElement));
         }
 
         void IPlayer.Hide(string element)
         {
             if (ElementMap.TryGetValue(element, out var jsElement))
-                JsUiHide(jsElement);
+                _uiBuffer.Add(() => JsUiHide(jsElement));
         }
 
         void IPlayer.SetCompassDirections(IEnumerable<string> dirs) =>
-            JsSetCompassDirections(JsonSerializer.Serialize(dirs.ToArray(), WasmJsonContext.Default.StringArray));
+            _uiBuffer.Add(() => JsSetCompassDirections(JsonSerializer.Serialize(dirs.ToArray(), WasmJsonContext.Default.StringArray)));
 
         void IPlayer.SetInterfaceString(string name, string text) =>
-            JsSetInterfaceString(name, text);
+            _uiBuffer.Add(() => JsSetInterfaceString(name, text));
 
-        void IPlayer.SetPanelContents(string html) => JsSetPanelContents(html);
+        void IPlayer.SetPanelContents(string html) =>
+            _uiBuffer.Add(() => JsSetPanelContents(html));
 
         void IPlayer.Log(string text) => JsConsoleLog(text);
 

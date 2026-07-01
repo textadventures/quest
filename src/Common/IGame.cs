@@ -13,7 +13,7 @@ public interface IGame
     List<string> Errors { get; }
     string GameID { get; }
     Task<bool> Initialise(IPlayer player);
-    void Begin();
+    Task Begin();
     Task SendCommand(string command);
     Task SendCommand(string command, int elapsedTime, IDictionary<string, string> metadata);
     Task SendEvent(string eventName, string param);

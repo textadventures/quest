@@ -307,7 +307,7 @@ public class Player : IPlayerHelperUI
             await RegisterExternalScripts();
             RegisterExternalStylesheets();
 
-            PlayerHelper.Game.Begin();
+            _ = PlayerHelper.Game.Begin();
         }
         else
         {
