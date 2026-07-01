@@ -186,7 +186,7 @@ public partial class WorldModel : IGame, IGameDebug
         return result;
     }
 
-    public void Begin() => _ = BeginAsync();
+    public Task Begin() => BeginAsync();
 
     public Task BeginAsync()
     {
@@ -329,16 +329,15 @@ public partial class WorldModel : IGame, IGameDebug
         }
         finally
         {
+            // Send the timer request BEFORE signalling turn suspended, so that Bridge.FlushBuffer()
+            // (which runs synchronously inside TrySetResult) sees the correct post-command timer state
+            // rather than the stale value from Tick(0) which ran before the command script executed.
+            SendNextTimerRequest();
             // When command was overridden (get input / GetInput function), the callback fires
             // asynchronously via AwaitResponseAndRunCallbackAsync, which calls SignalTurnSuspended()
             // in its own finally after the callback script runs. Signaling here would complete the
             // turn before the callback output is produced, causing it to appear only on the next turn.
             if (!commandWasOverridden) SignalTurnSuspended();
-            // SendCommand calls SendNextTimerRequest() synchronously before HandleCommandAsyncInternal
-            // has run, so any SetTimeout() registered during the command (e.g. after the first JS yield)
-            // is missed. Calling it here ensures the timer request reflects timers registered by the
-            // command script.
-            SendNextTimerRequest();
         }
     }
 

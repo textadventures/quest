@@ -36,9 +36,9 @@ public partial class V4Game
         return Encoding.GetEncoding(1252).GetBytes(saveData);
     }
 
-    public void Begin()
+    public async Task Begin()
     {
-        _ = DoBeginAsync();
+        await DoBeginAsync();
     }
 
     public List<string> Errors => new();

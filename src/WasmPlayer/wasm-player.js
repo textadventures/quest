@@ -221,7 +221,7 @@ async function initWasmPlayer(gameBytes, filename, bc = null) {
     WebPlayer.initUI();
     WebPlayer.setCanSave(true);
 
-    Bridge.Begin();
+    await Bridge.Begin();
 }
 
 // ── Start screen helpers ──────────────────────────────────────────────────────
