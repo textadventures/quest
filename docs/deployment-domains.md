@@ -13,8 +13,13 @@ WasmPlayer must be same-origin with WasmEditor wherever it's deployed, so that t
 ```
 questviva.com              — unchanged: Astro/Starlight docs + marketing site (site/)
 play.questviva.com         — new: WasmEditor + WasmPlayer, local-only
-                              (no login, no Azure) — bare homepage has
-                              Play / Create sections, desktop-app style
+                              (no login, no Azure)
+                              /editor — WebEditor
+                              /player — WasmPlayer
+                              /       — empty for now; will become a
+                                        Play / Create homepage, desktop-
+                                        app style, linking to the two
+                                        paths above
 textadventures.co.uk       — existing: WasmEditor + WasmPlayer, same bundle
                               as play.questviva.com, but with cloud sync
                               enabled (same-origin with existing session
@@ -38,16 +43,16 @@ Rather than hiding features per domain, show a persistent, unambiguous per-game 
 
 ## Status
 
-Shipped 2026-07-01 (PR #1800):
+Shipped 2026-07-01 (PR #1800, #1802):
 
 - `.github/workflows/deploy-play.yml` builds WasmEditor, WasmPlayer, and WebEditor in GitHub Actions and pushes the combined output to Cloudflare Pages via `wrangler pages deploy` — confirming the build-pipeline choice below worked first try, no Cloudflare-native build needed.
-- `src/WebEditor/svelte.config.js` base path is now configurable via `BASE_PATH` (root for play.questviva.com, `/questviva` still preserved for textadventures.co.uk via `release-webeditor.yml`).
-- `play.questviva.com` is live: root serves the existing WebEditor open/create flow, `/player/` serves the existing WasmPlayer landing page. This is the **placeholder home** — no unified Play/Create landing page yet, per agreed scope.
-- Verified: COOP/COEP headers present on all paths, `/AppBundle/_framework/dotnet.js` loads, custom domain resolves.
+- `src/WebEditor/svelte.config.js` base path is now configurable via `BASE_PATH` (`/editor` for play.questviva.com, `/questviva` still preserved for textadventures.co.uk via `release-webeditor.yml`).
+- `play.questviva.com` is live at its final path layout: `/editor` (WebEditor) and `/player` (WasmPlayer). Root is intentionally empty (404) rather than defaulting to either app — an initial pass put WasmPlayer at root to match the domain name, but that would have meant moving it back to `/player` again once the real homepage landed, breaking any links shared in the interim. Giving both apps stable paths from the start means root only changes once, when the homepage is built.
+- Verified: COOP/COEP headers present on all paths, `/AppBundle/_framework/dotnet.js` loads, custom domain resolves, `/editor` and `/player` both serve correctly.
 
-Subdomain name: settled on `play.questviva.com` (favoured over `app.questviva.com`: shared game links are the more common cold-audience touchpoint than editor entry, and the eventual bare homepage's Play/Create split covers the editor discovery case).
+Subdomain name: settled on `play.questviva.com` (favoured over `app.questviva.com`: shared game links are the more common cold-audience touchpoint than editor entry, and the eventual homepage's Play/Create split covers the editor discovery case).
 
 ## Follow-ups (not in this pass)
 
-- **Unified Play/Create homepage** — replace the placeholder (WebEditor at root, WasmPlayer at `/player/`) with the desktop-app-style landing page described above.
-- **Template list needs a WASM export** — `/open`'s "create new game from template" calls `getGameTemplates()` → `/api/editor/games` on textadventures.co.uk (`src/WebEditor/src/lib/filesystem/server-adapter.ts`), which isn't reachable cross-origin from play.questviva.com. "Open existing file/folder" is unaffected. Fix: add a `GetGameTemplates()` WASM bridge export (mirroring the existing `CreateGameFromTemplate`) so template listing needs no server round-trip.
+- **Play/Create homepage at root** — a small standalone page (no WASM needed) linking to `/player` and `/editor`, desktop-app style. Shared game links (`?game=<url>`) should route straight to `/player` rather than through the splash.
+- **Template list needs a WASM export** — `/editor/open`'s "create new game from template" calls `getGameTemplates()` → `/api/editor/games` on textadventures.co.uk (`src/WebEditor/src/lib/filesystem/server-adapter.ts`), which isn't reachable cross-origin from play.questviva.com. "Open existing file/folder" is unaffected. Fix: add a `GetGameTemplates()` WASM bridge export (mirroring the existing `CreateGameFromTemplate`) so template listing needs no server round-trip.
