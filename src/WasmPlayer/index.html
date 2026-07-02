@@ -4,6 +4,21 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Quest Viva</title>
+    <script type="text/javascript">
+        // Runs before the start screen is parsed, so when a game is specified via the
+        // URL we paint straight into the loading state — otherwise the file/URL
+        // pickers render for a frame before showLoading() gets a chance to hide them.
+        (function () {
+            var params = new URLSearchParams(location.search);
+            if (params.get('id') || params.get('game') || params.get('source') === 'editor') {
+                document.documentElement.classList.add('qv-booting');
+            }
+        })();
+    </script>
+    <style type="text/css">
+        html.qv-booting #qv-pickers { display: none; }
+        html.qv-booting #qv-loading-msg { display: flex; }
+    </style>
     <script type="text/javascript" src="lib/jquery-2.1.1.min.js"></script>
     <script type="text/javascript" src="lib/jquery-ui.min.js"></script>
     <script type="text/javascript" src="lib/jquery.multi-open-accordion-1.5.3.js"></script>
@@ -54,7 +69,10 @@
             </div>
         </div>
 
-        <p id="qv-loading-msg" class="hidden text-surface-500 text-sm text-center">Loading&hellip;</p>
+        <div id="qv-loading-msg" class="hidden flex-col items-center gap-3 text-surface-500 text-sm text-center">
+            <div class="animate-spin rounded-full h-8 w-8 border-2 border-surface-400-600 border-t-transparent" aria-hidden="true"></div>
+            <span>Loading&hellip;</span>
+        </div>
     </div>
 </div>
 </body>
