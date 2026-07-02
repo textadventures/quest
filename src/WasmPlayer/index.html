@@ -4,6 +4,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Quest Viva</title>
+    <link rel="icon" type="image/svg+xml" href="favicon.svg" />
     <script type="text/javascript">
         // Runs before the start screen is parsed, so when a game is specified via the
         // URL we paint straight into the loading state — otherwise the file/URL
@@ -39,8 +40,10 @@
 <div id="qv-start" class="qv-chrome">
     <div class="card preset-filled-surface-100-900 w-full max-w-md p-8 space-y-6" data-theme="wintry">
         <div>
-            <h1 class="h2"><span class="text-primary-500">&#9672;</span> Quest Viva</h1>
-            <p class="text-surface-600-400 text-sm mt-1">Play text adventure games</p>
+            <h1 class="h2 flex items-center gap-2">
+                <img src="favicon.svg" alt="" class="h-7 w-7" />
+                Quest Viva
+            </h1>
         </div>
 
         <div id="qv-error" class="hidden card preset-tonal-error p-4 text-sm"></div>
