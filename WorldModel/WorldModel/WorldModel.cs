@@ -1731,15 +1731,7 @@ namespace TextAdventures.Quest
             // When this happens, its SortIndex MetaField must be updated so that it
             // is at the end of the list of children.
 
-            int maxIndex = -1;
-
-            foreach (Element sibling in m_elements.GetDirectChildren(movedElement.Parent))
-            {
-                int thisSortIndex = sibling.MetaFields[MetaFieldDefinitions.SortIndex];
-                if (thisSortIndex > maxIndex) maxIndex = thisSortIndex;
-            }
-
-            movedElement.MetaFields[MetaFieldDefinitions.SortIndex] = maxIndex + 1;
+            movedElement.MetaFields[MetaFieldDefinitions.SortIndex] = m_elements.GetNextSortIndex(movedElement.Parent);
         }
 
         public bool Assert(string expr)

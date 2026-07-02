@@ -412,6 +412,13 @@ namespace TextAdventures.Quest
                 throw new ArgumentException(string.Format("Parent of element '{0}' cannot be set to itself", m_element.Name));
             }
 
+            if (changed && name == "parent")
+            {
+                // Keep Elements' parent -> children index in sync with every parent reassignment,
+                // not just the ones that also update sort order below.
+                m_worldModel.Elements.UpdateParentIndex(m_element, oldValue as Element, value as Element);
+            }
+
             if (m_worldModel.Version >= WorldModelVersion.v530 && value == null)
             {
                 m_attributes.Remove(name);
