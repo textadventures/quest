@@ -5,8 +5,11 @@ import { fileURLToPath } from 'node:url'
 import { join, extname } from 'node:path'
 import { readFile } from 'node:fs/promises'
 
+// Set WASM_CONFIG=Release to serve the AOT-compiled AppBundle instead of the Debug/interpreter one
+// (e.g. for profiling, where AOT gives per-method native frames instead of one opaque interpreter loop).
+const wasmConfig = process.env.WASM_CONFIG === 'Release' ? 'Release' : 'Debug'
 const appBundleDir = fileURLToPath(
-  new URL('../WasmEditor/bin/Debug/net10.0/browser-wasm/AppBundle', import.meta.url)
+  new URL(`../WasmEditor/bin/${wasmConfig}/net10.0/browser-wasm/AppBundle`, import.meta.url)
 )
 
 const mimeTypes: Record<string, string> = {
