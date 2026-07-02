@@ -32,6 +32,7 @@ const mimeTypes = {
   '.blat': 'application/octet-stream',
   '.aslx': 'application/xml',
   '.asl': 'text/plain',
+  '.svg': 'image/svg+xml',
 };
 
 function serveFile(res, filePath) {

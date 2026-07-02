@@ -150,7 +150,7 @@ async function initWasmPlayer(gameBytes, filename, bc = null) {
         fetch('playercore.htm'),
         import('./_framework/dotnet.js'),
     ]);
-    document.body.innerHTML = await htmResponse.text();
+    const playerHtml = await htmResponse.text();
 
     const runtime = await dotnet.create();
     const { setModuleImports, getAssemblyExports, getConfig } = runtime;
@@ -212,8 +212,13 @@ async function initWasmPlayer(gameBytes, filename, bc = null) {
     const ok = await Bridge.Initialise(gameBytes, filename);
     if (!ok) {
         console.error('[Quest] Failed to initialise game');
-        return;
+        throw new Error('Failed to initialise game');
     }
+
+    // Only swap in the game UI once everything has succeeded — keeps the start
+    // screen's loading spinner on screen for the whole WASM boot + game-parse
+    // sequence instead of cutting to a blank page while that runs.
+    document.body.innerHTML = playerHtml;
 
     await setupPaperJs();
 
@@ -236,7 +241,7 @@ function showLoading() {
     const pickers = document.getElementById('qv-pickers');
     const msg = document.getElementById('qv-loading-msg');
     if (pickers) pickers.style.display = 'none';
-    if (msg) msg.style.display = '';
+    if (msg) msg.style.display = 'flex';
 }
 
 function showError(downloadUrl) {
@@ -244,7 +249,10 @@ function showError(downloadUrl) {
     const msg = document.getElementById('qv-loading-msg');
     const errorEl = document.getElementById('qv-error');
     if (msg) msg.style.display = 'none';
-    if (pickers) pickers.style.display = '';
+    // Explicit 'block' (not '') so this wins over the html.qv-booting CSS that
+    // hides #qv-pickers by default when a game was specified on the URL — an
+    // inline style always beats an external stylesheet rule, cleared or not.
+    if (pickers) pickers.style.display = 'block';
     if (!errorEl) return;
     let html = '<strong>Couldn\'t load the game.</strong> '
         + 'The server may not allow this player to load the file directly (CORS restriction).';
@@ -255,7 +263,9 @@ function showError(downloadUrl) {
         html += ' You can try opening a saved copy of the game file instead.';
     }
     errorEl.innerHTML = html;
-    errorEl.style.display = '';
+    // 'block', not '' — errorEl carries the .hidden class, so clearing the
+    // inline style would fall back to that (display:none) instead of showing.
+    errorEl.style.display = 'block';
     wireStartScreen();
 }
 
