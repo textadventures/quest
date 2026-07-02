@@ -11,7 +11,7 @@
         // pickers render for a frame before showLoading() gets a chance to hide them.
         (function () {
             var params = new URLSearchParams(location.search);
-            if (params.get('id') || params.get('game') || params.get('source') === 'editor') {
+            if (params.get('id') || params.get('url') || params.get('source') === 'editor') {
                 document.documentElement.classList.add('qv-booting');
             }
         })();

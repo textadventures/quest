@@ -33,7 +33,7 @@ dotnet build --configuration Release src/WasmPlayer/WasmPlayer.csproj
 # Run WasmPlayer dev server (requires COOP/COEP headers for SharedArrayBuffer)
 node src/WasmPlayer/dev-server.mjs              # Debug build
 node src/WasmPlayer/dev-server.mjs --release    # Release/AOT build
-# Open: http://localhost:5175/?game=/examples/simple.aslx
+# Open: http://localhost:5175/?url=/examples/simple.aslx
 ```
 
 Tests use MSTest with Moq (mocking) and Shouldly (assertions).

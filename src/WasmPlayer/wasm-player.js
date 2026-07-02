@@ -244,7 +244,7 @@ function showLoading() {
     if (msg) msg.style.display = 'flex';
 }
 
-function showError(downloadUrl) {
+function showError(downloadUrl, isLocalFile) {
     const pickers = document.getElementById('qv-pickers');
     const msg = document.getElementById('qv-loading-msg');
     const errorEl = document.getElementById('qv-error');
@@ -254,13 +254,19 @@ function showError(downloadUrl) {
     // inline style always beats an external stylesheet rule, cleared or not.
     if (pickers) pickers.style.display = 'block';
     if (!errorEl) return;
-    let html = '<strong>Couldn\'t load the game.</strong> '
-        + 'The server may not allow this player to load the file directly (CORS restriction).';
-    if (downloadUrl) {
-        html += ' <a href="' + _esc(downloadUrl) + '" target="_blank" rel="noopener">'
-            + 'Open the file in a new tab</a> to save it, then open it with the file picker below.';
+    let html;
+    if (isLocalFile) {
+        html = '<strong>Couldn\'t open that file.</strong> '
+            + 'It doesn\'t look like a Quest game file (.quest, .aslx, .asl or .cas). Choose a different file below.';
+    } else if (downloadUrl) {
+        html = '<strong>Couldn\'t load the game from that URL.</strong> '
+            + 'The site hosting it likely isn\'t configured to allow other sites to fetch the file directly '
+            + '(a CORS restriction) &mdash; this is a limitation of the hosting site, not something wrong with your download. '
+            + '<a class="anchor" href="' + _esc(downloadUrl) + '" target="_blank" rel="noopener">'
+            + 'Open the file in a new tab</a>, save it to your computer, then load it with the file picker below.';
     } else {
-        html += ' You can try opening a saved copy of the game file instead.';
+        html = '<strong>Couldn\'t load the game.</strong> '
+            + 'Try opening a saved copy of the game file instead, using the file picker below.';
     }
     errorEl.innerHTML = html;
     // 'block', not '' — errorEl carries the .hidden class, so clearing the
@@ -287,7 +293,7 @@ function wireStartScreen() {
         showLoading();
         const reader = new FileReader();
         reader.onload = () => initWasmPlayer(new Uint8Array(reader.result), file.name)
-            .catch(() => showError(null));
+            .catch(() => showError(null, true));
         reader.readAsArrayBuffer(file);
     });
 
@@ -334,7 +340,7 @@ async function fetchGameBytes(url) {
     }
 
     const id = params.get('id');
-    const gameUrl = params.get('game');
+    const gameUrl = params.get('url');
 
     if (id) {
         // Start API fetch immediately; wire DOM once it's ready.
