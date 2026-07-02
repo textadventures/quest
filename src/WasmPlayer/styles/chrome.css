@@ -1,0 +1,39 @@
+/* Source for the "app chrome" stylesheet — the start screen, and (soon) the
+   debugger and save-slot manager. Anything built from this file only takes
+   effect inside a `.qv-chrome` container; see scripts/scope-css.mjs for how
+   that containment is enforced. This must never be linked as-is (unscoped) —
+   always build via `npm run build`, which produces generated/chrome.css.
+
+   Utility/component classes (`btn`, `card`, `flex`, ...) are deliberately
+   NOT prefixed. Tailwind's `prefix()` was tried first, but it silently
+   drops the `--color-*-100-900`-style light-dark pair variables that
+   Skeleton's `@utility` blocks (e.g. preset-filled-*) depend on — a
+   tree-shaking bug in tailwindcss v4.3's CLI, confirmed by comparing output
+   with/without prefix(). `@scope` (below) already fully contains these
+   rules to `.qv-chrome` subtrees, which is the isolation that actually
+   matters here — nothing outside `.qv-chrome` can be affected either way,
+   so the prefix would only have guarded against an unprefixed class
+   accidentally matching something *inside* `.qv-chrome`, which nothing
+   currently does. */
+
+@import 'tailwindcss';
+@import '@skeletonlabs/skeleton';
+@import '@skeletonlabs/skeleton/themes/wintry';
+
+/* Hand-written rules for elements that carry the `.qv-chrome` scope-root
+   class itself. Bare selectors inside `@scope (.qv-chrome)` only ever match
+   *descendants* of the root (see scripts/scope-css.mjs), so the root can't
+   be styled with `qv:`-prefixed utility classes — it needs `:scope` written
+   explicitly instead. Keep this list short; put everything else (colors,
+   spacing, components) on a descendant so it can use Skeleton/Tailwind.
+   `#qv-start` here is the start screen's own root — a future debugger or
+   save-slot manager root would get its own `:scope#id` rule alongside it. */
+:scope#qv-start {
+    position: fixed;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 1rem;
+    background: var(--color-surface-950);
+}
