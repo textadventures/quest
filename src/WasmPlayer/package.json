@@ -1,0 +1,14 @@
+{
+  "name": "quest-wasm-player-chrome",
+  "version": "0.0.1",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "tailwindcss -i styles/chrome.css -o generated/chrome.css --minify && node scripts/scope-css.mjs generated/chrome.css"
+  },
+  "devDependencies": {
+    "@skeletonlabs/skeleton": "^4.15.2",
+    "@tailwindcss/cli": "^4.2.4",
+    "tailwindcss": "^4.2.4"
+  }
+}
