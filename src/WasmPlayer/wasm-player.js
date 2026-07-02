@@ -275,6 +275,19 @@ function showError(downloadUrl, isLocalFile) {
     wireStartScreen();
 }
 
+// Keeps the address bar in sync with the game that's actually loaded (or being
+// attempted), so a refresh reproduces it. `name`/`value` set the active source
+// param; both `id` and `url` are cleared first since only one can be current.
+function setLocationParam(name, value) {
+    const params = new URLSearchParams(window.location.search);
+    params.delete('id');
+    params.delete('url');
+    if (name) params.set(name, value);
+    const query = params.toString();
+    const newUrl = window.location.pathname + (query ? `?${query}` : '') + window.location.hash;
+    history.replaceState(null, '', newUrl);
+}
+
 let _startScreenWired = false;
 function wireStartScreen() {
     if (_startScreenWired) return;
@@ -290,6 +303,7 @@ function wireStartScreen() {
     fileInput.addEventListener('change', () => {
         const file = fileInput.files?.[0];
         if (!file) return;
+        setLocationParam(null);
         showLoading();
         const reader = new FileReader();
         reader.onload = () => initWasmPlayer(new Uint8Array(reader.result), file.name)
@@ -306,6 +320,7 @@ function wireStartScreen() {
         try {
             const { bytes, filename } = await fetchGameBytes(url);
             await initWasmPlayer(bytes, filename);
+            setLocationParam('url', url);
         } catch {
             showError(url);
         }
