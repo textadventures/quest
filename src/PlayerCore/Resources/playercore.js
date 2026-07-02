@@ -30,7 +30,7 @@ function initPlayerUI() {
         }
     });
 
-    $("button").button();
+    $("#gameBorder button").button();
     $("#gamePanesRunning").multiOpenAccordion({active: [0, 1, 2, 3]});
     showStatusVisible(false);
 
