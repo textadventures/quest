@@ -37,3 +37,31 @@
     padding: 1rem;
     background: var(--color-surface-950);
 }
+
+/* Save/load manager — a native <dialog>, shown via showModal() so the
+   browser centers and backdrops it; only border/sizing need overriding
+   since Tailwind's preflight reset strips the UA default dialog styling. */
+:scope#qv-saves {
+    border: none;
+    border-radius: 0.75rem;
+    padding: 0;
+    max-width: 28rem;
+    width: 100%;
+}
+
+:scope#qv-saves::backdrop {
+    background: rgb(0 0 0 / 0.5);
+}
+
+/* data-mode="boot" is the lightweight Continue/New-Game prompt shown before
+   a game starts — hide the full manager's controls (name input, save/delete,
+   file import/export) so only "start new" + a plain Load list remain. */
+:scope#qv-saves[data-mode="boot"] .qv-manage-only,
+:scope#qv-saves[data-mode="boot"] [data-delete-slot] {
+    display: none;
+}
+
+:scope#qv-saves[data-mode="manage"] [data-mode-text="boot"],
+:scope#qv-saves[data-mode="manage"] .qv-boot-only {
+    display: none;
+}

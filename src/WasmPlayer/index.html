@@ -78,5 +78,34 @@
         </div>
     </div>
 </div>
+
+<dialog id="qv-saves" class="qv-chrome" data-mode="boot">
+    <div class="card preset-filled-surface-100-900 w-full p-6 space-y-4" data-theme="wintry">
+        <h2 class="h3" data-mode-text="boot">Continue your game?</h2>
+        <h2 class="h3 qv-manage-only" data-mode-text="manage">Save / Load</h2>
+
+        <div id="qv-saves-error" class="hidden card preset-tonal-error p-3 text-sm"></div>
+
+        <button id="qv-saves-start-new" type="button" class="qv-boot-only btn preset-tonal-primary w-full justify-start">
+            Start from the beginning
+        </button>
+
+        <ul id="qv-saves-list" class="space-y-2"></ul>
+
+        <div class="qv-manage-only space-y-3">
+            <hr class="hr">
+            <div class="flex gap-2">
+                <input id="qv-saves-name-input" class="input" type="text" placeholder="Save name" autocomplete="off">
+                <button id="qv-saves-save-new" type="button" class="btn preset-filled-primary-500">Save new</button>
+            </div>
+            <div class="flex gap-2">
+                <button id="qv-saves-download" type="button" class="btn preset-tonal-primary flex-1">Save to file</button>
+                <button id="qv-saves-upload-btn" type="button" class="btn preset-tonal-primary flex-1">Load from file</button>
+                <input type="file" id="qv-saves-file-input" class="hidden" accept=".quest-save">
+            </div>
+            <button id="qv-saves-close" type="button" class="btn preset-tonal-surface w-full">Close</button>
+        </div>
+    </div>
+</dialog>
 </body>
 </html>

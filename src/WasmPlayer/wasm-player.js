@@ -10,6 +10,19 @@ const pendingResources = new Map();
 let editorChannel = null;
 let resourceRoot = null;
 
+// The *original* game bytes/filename for the current session — always the
+// primary game file, never a save. Saves are loaded as an overlay on top of
+// these via Bridge.InitialiseWithSave, so resource lookups (images/sounds
+// bundled in a .quest package) keep working. Set once per boot in startGame()
+// and never reassigned by a slot/file load.
+let originalGameBytes = null;
+let originalGameFilename = null;
+let isLegacyGame = false;
+
+function computeGameId(filename) {
+    return filename.split('/').pop();
+}
+
 function getResourceUrl(name) {
     if (resourceRoot) return Promise.resolve(resourceRoot + name);
     if (!editorChannel) return Promise.resolve(name);
@@ -113,8 +126,6 @@ window.WebPlayer = {
         return bytes;
     },
 
-    listSaves: async () => GameSaver.listSaves(),
-    loadSlot: async (slot) => GameSaver.load(slot),
 };
 
 // Exported bridge reference — set once WASM is loaded.
@@ -145,7 +156,7 @@ async function setupPaperJs() {
     paper.PaperScript.evaluate(code, paper);
 }
 
-async function initWasmPlayer(gameBytes, filename, bc = null) {
+async function initWasmPlayer(gameBytes, filename, bc = null, saveBytes = null) {
     const [htmResponse, { dotnet }] = await Promise.all([
         fetch('playercore.htm'),
         import('./_framework/dotnet.js'),
@@ -209,24 +220,87 @@ async function initWasmPlayer(gameBytes, filename, bc = null) {
         };
     }
 
-    const ok = await Bridge.Initialise(gameBytes, filename);
+    const ok = saveBytes
+        ? await Bridge.InitialiseWithSave(gameBytes, filename, saveBytes)
+        : await Bridge.Initialise(gameBytes, filename);
     if (!ok) {
         console.error('[Quest] Failed to initialise game');
         throw new Error('Failed to initialise game');
     }
+
+    // #qv-saves is a sibling of #qv-start in the static markup, so it would
+    // otherwise be destroyed by the innerHTML swap below along with the rest
+    // of the start screen — detach it first and re-append it right after, so
+    // a failure in between (nothing throws here today, but keep the window
+    // tight) can't strand it permanently out of the DOM.
+    const savesDialogEl = document.getElementById('qv-saves');
+    savesDialogEl?.remove();
 
     // Only swap in the game UI once everything has succeeded — keeps the start
     // screen's loading spinner on screen for the whole WASM boot + game-parse
     // sequence instead of cutting to a blank page while that runs.
     document.body.innerHTML = playerHtml;
 
+    if (savesDialogEl) document.body.appendChild(savesDialogEl);
+
     await setupPaperJs();
 
-    WebPlayer.gameId = Bridge.GetGameId();
+    WebPlayer.onSaveClick = isLegacyGame
+        ? () => GameSaver.save()
+        : () => openSavesDialog('manage');
     WebPlayer.initUI();
     WebPlayer.setCanSave(true);
 
     await Bridge.Begin();
+}
+
+// Reloads a save on top of the already-booted WASM runtime — used for
+// in-game Load, so it must NOT repeat WebPlayer.initUI()/setupPaperJs():
+// those rebind #cmdSave/#cmdDebug click handlers, jQuery-UI widgets, etc.
+// unconditionally, and doing that twice on the same live DOM would
+// double-bind every one of them.
+async function restartGame(saveBytes) {
+    document.getElementById('qv-saves')?.close();
+    resetGameOutput();
+
+    const ok = await Bridge.InitialiseWithSave(originalGameBytes, originalGameFilename, saveBytes);
+    if (!ok) {
+        showSavesError('Failed to load that save.');
+        return;
+    }
+    WebPlayer.setCanSave(true);
+    await Bridge.Begin();
+}
+
+// Wraps initWasmPlayer with the boot-time "Continue / New Game" prompt: if
+// saves already exist for this game, ask before committing to either the
+// fresh game or a chosen save. Used by all boot entry points below.
+async function startGame(bytes, filename, bc = null, gameIdOverride = null) {
+    originalGameBytes = bytes;
+    originalGameFilename = filename;
+    isLegacyGame = /\.(asl|cas)$/i.test(filename);
+    // gameIdOverride lets callers with a stronger identity than the filename
+    // (e.g. the Text Adventures API's stable game id) use it instead.
+    const gameId = gameIdOverride || computeGameId(filename);
+    WebPlayer.gameId = gameId;
+
+    let saveBytes = null;
+    // Editor-preview sessions (bc) and legacy games are excluded: a preview's
+    // filename is transient/reused per edit (prompting every reload would be
+    // noisy and would fragment saves under a churny id), and legacy .asl/.cas
+    // saves aren't self-contained enough for the full slot manager (see plan).
+    if (!bc && !isLegacyGame) {
+        let saves = [];
+        try { saves = await GameSaver.listSaves(gameId); } catch { saves = []; }
+        if (saves.length > 0) {
+            const choice = await openSavesDialog('boot', gameId);
+            if (choice.type === 'load') {
+                saveBytes = await GameSaver.load(choice.slotIndex, gameId);
+            }
+        }
+    }
+
+    await initWasmPlayer(bytes, filename, bc, saveBytes);
 }
 
 // ── Start screen helpers ──────────────────────────────────────────────────────
@@ -235,6 +309,161 @@ function _esc(str) {
     return String(str)
         .replace(/&/g, '&amp;').replace(/</g, '&lt;')
         .replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+}
+
+// ── Save/load manager (#qv-saves) ─────────────────────────────────────────────
+// One dialog, two modes: "boot" (the lightweight Continue/New-Game prompt,
+// shown before a game starts if saves already exist) and "manage" (the
+// persistent in-game Save/Load manager, opened via the Save button).
+
+let savesDialogWired = false;
+let bootChoiceResolve = null;
+
+function showSavesError(message) {
+    const el = document.getElementById('qv-saves-error');
+    if (!el) return;
+    el.textContent = message;
+    el.style.display = 'block';
+}
+
+function hideSavesError() {
+    const el = document.getElementById('qv-saves-error');
+    if (el) el.style.display = 'none';
+}
+
+function renderSavesList(saves, mode) {
+    const list = document.getElementById('qv-saves-list');
+    if (!list) return;
+    if (!saves.length) {
+        list.innerHTML = '<li class="text-sm text-surface-500">No saved games yet.</li>';
+        return;
+    }
+    list.innerHTML = saves.map(s => {
+        const ts = s.timestamp ? _esc(new Date(s.timestamp).toLocaleString()) : '';
+        const deleteBtn = mode === 'manage'
+            ? `<button type="button" class="btn-icon preset-tonal-error" data-delete-slot="${s.slotIndex}" aria-label="Delete">&times;</button>`
+            : '';
+        return `<li class="flex items-center justify-between gap-2">`
+            + `<button type="button" class="anchor text-left flex-1" data-slot="${s.slotIndex}">${_esc(s.name)}${ts ? ' — ' + ts : ''}</button>`
+            + deleteBtn
+            + `</li>`;
+    }).join('');
+}
+
+async function downloadSaveToFile() {
+    const bytes = await WebPlayer.uiSaveGame($("#divOutput").html());
+    const blob = new Blob([bytes], { type: 'application/xml' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = WebPlayer.gameId.replace(/\.[^.]+$/, '') + '.quest-save';
+    a.click();
+    URL.revokeObjectURL(url);
+}
+
+// A .quest-save only carries state, not resources — it must be paired with
+// the currently-loaded game's original bytes to load safely (see plan). The
+// save's root <asl original="..."> attribute records which game it's for;
+// refuse the load if it doesn't match what's currently running.
+async function loadSaveFromFile(file) {
+    const bytes = new Uint8Array(await file.arrayBuffer());
+    let originalAttr = null;
+    try {
+        const text = new TextDecoder('utf-8').decode(bytes);
+        const xml = new DOMParser().parseFromString(text, 'application/xml');
+        originalAttr = xml.documentElement?.getAttribute('original') ?? null;
+    } catch { /* falls through to the mismatch error below */ }
+
+    if (!originalAttr || computeGameId(originalAttr) !== WebPlayer.gameId) {
+        showSavesError('This save is for a different game — open that game first, then try again.');
+        return;
+    }
+    hideSavesError();
+    await restartGame(bytes);
+}
+
+function ensureSavesDialogWired() {
+    if (savesDialogWired) return;
+    savesDialogWired = true;
+
+    const dlg = document.getElementById('qv-saves');
+    if (!dlg) return;
+
+    // Non-cancellable while a boot-time choice is pending (matches WebPlayer's
+    // Slots dialog); freely closable otherwise.
+    dlg.addEventListener('cancel', (e) => {
+        if (bootChoiceResolve) e.preventDefault();
+    });
+
+    document.getElementById('qv-saves-start-new').addEventListener('click', () => {
+        if (!bootChoiceResolve) return;
+        const resolve = bootChoiceResolve;
+        bootChoiceResolve = null;
+        dlg.close();
+        resolve({ type: 'new' });
+    });
+
+    document.getElementById('qv-saves-list').addEventListener('click', async (e) => {
+        const loadBtn = e.target.closest('[data-slot]');
+        if (loadBtn) {
+            const slotIndex = Number(loadBtn.dataset.slot);
+            if (bootChoiceResolve) {
+                const resolve = bootChoiceResolve;
+                bootChoiceResolve = null;
+                dlg.close();
+                resolve({ type: 'load', slotIndex });
+            } else {
+                const bytes = await GameSaver.load(slotIndex, WebPlayer.gameId);
+                await restartGame(bytes);
+            }
+            return;
+        }
+        const delBtn = e.target.closest('[data-delete-slot]');
+        if (delBtn) {
+            await GameSaver.deleteSlot(Number(delBtn.dataset.deleteSlot), WebPlayer.gameId);
+            renderSavesList(await GameSaver.listSaves(WebPlayer.gameId), 'manage');
+        }
+    });
+
+    document.getElementById('qv-saves-save-new').addEventListener('click', async () => {
+        const input = document.getElementById('qv-saves-name-input');
+        await GameSaver.save(input.value.trim() || undefined);
+        input.value = '';
+        renderSavesList(await GameSaver.listSaves(WebPlayer.gameId), 'manage');
+    });
+
+    document.getElementById('qv-saves-download').addEventListener('click', downloadSaveToFile);
+
+    const uploadBtn = document.getElementById('qv-saves-upload-btn');
+    const fileInput = document.getElementById('qv-saves-file-input');
+    uploadBtn.addEventListener('click', () => fileInput.click());
+    fileInput.addEventListener('change', async () => {
+        const file = fileInput.files?.[0];
+        fileInput.value = '';
+        if (file) await loadSaveFromFile(file);
+    });
+
+    document.getElementById('qv-saves-close').addEventListener('click', () => dlg.close());
+}
+
+// mode: 'boot' resolves {type:'new'} or {type:'load', slotIndex} once the
+// user picks; 'manage' just opens the persistent manager (callers act via
+// the wired-up click handlers above, nothing to await).
+async function openSavesDialog(mode, gameId = WebPlayer.gameId) {
+    ensureSavesDialogWired();
+    const dlg = document.getElementById('qv-saves');
+    hideSavesError();
+    dlg.dataset.mode = mode;
+    renderSavesList(await GameSaver.listSaves(gameId), mode);
+
+    if (mode === 'boot') {
+        return new Promise(resolve => {
+            bootChoiceResolve = resolve;
+            dlg.showModal();
+        });
+    }
+
+    dlg.showModal();
 }
 
 function showLoading() {
@@ -306,7 +535,7 @@ function wireStartScreen() {
         setLocationParam(null);
         showLoading();
         const reader = new FileReader();
-        reader.onload = () => initWasmPlayer(new Uint8Array(reader.result), file.name)
+        reader.onload = () => startGame(new Uint8Array(reader.result), file.name)
             .catch(() => showError(null, true));
         reader.readAsArrayBuffer(file);
     });
@@ -319,7 +548,7 @@ function wireStartScreen() {
         showLoading();
         try {
             const { bytes, filename } = await fetchGameBytes(url);
-            await initWasmPlayer(bytes, filename);
+            await startGame(bytes, filename);
             setLocationParam('url', url);
         } catch {
             showError(url);
@@ -348,7 +577,7 @@ async function fetchGameBytes(url) {
         bc.onmessage = async ({ data }) => {
             if (data.type === 'game') {
                 bc.onmessage = null;
-                await initWasmPlayer(data.bytes, data.filename, bc);
+                await startGame(data.bytes, data.filename, bc);
             }
         };
         return;
@@ -376,7 +605,7 @@ async function fetchGameBytes(url) {
             showLoading();
             try {
                 const { bytes, filename } = await gamePromise;
-                await initWasmPlayer(bytes, filename);
+                await startGame(bytes, filename, null, id);
             } catch {
                 showError(resolvedSourceUrl);
             }
@@ -392,7 +621,7 @@ async function fetchGameBytes(url) {
             showLoading();
             try {
                 const { bytes, filename } = await gamePromise;
-                await initWasmPlayer(bytes, filename);
+                await startGame(bytes, filename);
             } catch {
                 showError(gameUrl);
             }
