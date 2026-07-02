@@ -1442,10 +1442,7 @@ public partial class WorldModel : IGame, IGameDebug
         // When this happens, its SortIndex MetaField must be updated so that it
         // is at the end of the list of children.
 
-        var maxIndex = Elements.GetDirectChildren(movedElement.Parent)
-            .Select(sibling => sibling.MetaFields[MetaFieldDefinitions.SortIndex]).Prepend(-1).Max();
-
-        movedElement.MetaFields[MetaFieldDefinitions.SortIndex] = maxIndex + 1;
+        movedElement.MetaFields[MetaFieldDefinitions.SortIndex] = Elements.GetNextSortIndex(movedElement.Parent);
     }
 
     internal async Task AddOnReady(IScript callback, Context c)

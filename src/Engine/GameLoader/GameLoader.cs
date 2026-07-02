@@ -166,8 +166,6 @@ internal partial class GameLoader
 
     private void LoadXml(Stream scanStream, XmlReader reader)
     {
-        var timer = Stopwatch.StartNew();
-
         Element? current = null;
         IXmlLoader? currentLoader = null;
 

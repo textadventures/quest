@@ -256,6 +256,7 @@ public class Element : IComparable
             throw new ArgumentException($"Parent of element '{Name}' cannot be set to itself");
         }
 
+        m_worldModel.Elements.UpdateParentIndex(this, _parent, parent);
         _parent = parent;
     }
 
