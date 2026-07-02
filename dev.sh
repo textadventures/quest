@@ -57,6 +57,9 @@ PLAYER_PID=$!
 VITE_ENV=(
     "PUBLIC_WASM_PLAYER_URL=http://localhost:5174/player/"
 )
+if [[ "$RELEASE" == true ]]; then
+    VITE_ENV+=("WASM_CONFIG=Release")
+fi
 if [[ -n "$API_PROXY" ]]; then
     VITE_ENV+=("VITE_API_PROXY=$API_PROXY")
 fi
