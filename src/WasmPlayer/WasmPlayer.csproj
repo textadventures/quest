@@ -34,6 +34,7 @@
             <_FlatAssets Include="$(MSBuildThisFileDirectory)wasm-player.js"/>
             <_FlatAssets Include="$(MSBuildThisFileDirectory)index.html"/>
             <_FlatAssets Include="$(MSBuildThisFileDirectory)favicon.svg"/>
+            <_FlatAssets Include="$(MSBuildThisFileDirectory)logo.svg"/>
             <_FlatAssets Include="$(MSBuildThisFileDirectory)quest-config.js"/>
             <_FlatAssets Include="$(MSBuildThisFileDirectory)generated\chrome.css"/>
             <_LibAssets Include="$(_PCRes)lib\jquery-2.1.1.min.js"/>
