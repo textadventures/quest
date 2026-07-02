@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 // Dev server for WasmPlayer — serves the Debug AppBundle with required COOP/COEP headers.
 // Run: node dev-server.mjs
-// Then open: http://localhost:5175/?game=/examples/simple.aslx
+// Then open: http://localhost:5175/?url=/examples/simple.aslx
 //
 // Proxy routes (dev only — avoids CORS issues during local development):
 //   /api/                        → https://textadventures.co.uk/api/
@@ -130,6 +130,6 @@ const server = http.createServer(async (req, res) => {
 server.listen(port, () => {
   console.log(`WasmPlayer dev server (${config}) running at http://localhost:${port}/`);
   console.log(`Serving: ${appBundleDir}`);
-  console.log(`Try: http://localhost:${port}/?game=/examples/simple.aslx`);
+  console.log(`Try: http://localhost:${port}/?url=/examples/simple.aslx`);
   console.log('Press Ctrl+C to stop.');
 });

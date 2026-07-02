@@ -54,5 +54,5 @@ Subdomain name: settled on `play.questviva.com` (favoured over `app.questviva.co
 
 ## Follow-ups (not in this pass)
 
-- **Play/Create homepage at root** — a small standalone page (no WASM needed) linking to `/player` and `/editor`, desktop-app style. Shared game links (`?game=<url>`) should route straight to `/player` rather than through the splash.
+- **Play/Create homepage at root** — a small standalone page (no WASM needed) linking to `/player` and `/editor`, desktop-app style. Shared game links (`?url=<url>`) should route straight to `/player` rather than through the splash.
 - **Template list needs a WASM export** — `/editor/open`'s "create new game from template" calls `getGameTemplates()` → `/api/editor/games` on textadventures.co.uk (`src/WebEditor/src/lib/filesystem/server-adapter.ts`), which isn't reachable cross-origin from play.questviva.com. "Open existing file/folder" is unaffected. Fix: add a `GetGameTemplates()` WASM bridge export (mirroring the existing `CreateGameFromTemplate`) so template listing needs no server round-trip.
