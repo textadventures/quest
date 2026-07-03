@@ -170,6 +170,7 @@ public partial class WorldModel : IGame, IGameDebug
         _turnSuspendedTcs = new();
         tcs?.TrySetResult(response);
         await _turnSuspendedTcs.Task;
+        if (State != GameState.Finished) await UpdateListsAsync();
     }
 
     public async Task<bool> Initialise(IPlayer player)
@@ -389,6 +390,7 @@ public partial class WorldModel : IGame, IGameDebug
         _turnSuspendedTcs = new();
         tcs?.TrySetResult();
         await _turnSuspendedTcs.Task;
+        if (State != GameState.Finished) await UpdateListsAsync();
     }
 
     public async Task FinishPause()
@@ -397,6 +399,7 @@ public partial class WorldModel : IGame, IGameDebug
         _turnSuspendedTcs = new();
         tcs?.TrySetResult();
         await _turnSuspendedTcs.Task;
+        if (State != GameState.Finished) await UpdateListsAsync();
     }
 
     public IEnumerable<string> GetExternalScripts()
@@ -487,6 +490,7 @@ public partial class WorldModel : IGame, IGameDebug
         _turnSuspendedTcs = new();
         tcs?.TrySetResult(response);
         await _turnSuspendedTcs.Task;
+        if (State != GameState.Finished) await UpdateListsAsync();
     }
 
     public Stream? GetResourceStream(string filename)
@@ -836,6 +840,49 @@ public partial class WorldModel : IGame, IGameDebug
     {
         await UpdateObjectsListAsync("GetPlacesObjectsList", ListType.ObjectsList);
         await UpdateObjectsListAsync("ScopeInventory", ListType.InventoryList);
+        await UpdateElementMenuVerbsAsync();
+    }
+
+    // Unlike GetPlacesObjectsList (which excludes scenery so it isn't double-listed in the
+    // room's auto-generated object list), this covers every object the player can currently
+    // see or is carrying - including scenery - so that inline {object:} links in output text
+    // always have "live" display verbs available for their pop-up menu, regardless of whether
+    // the object also appears in the room's object list.
+    private async Task UpdateElementMenuVerbsAsync()
+    {
+        if (UpdateList == null)
+        {
+            return;
+        }
+
+        var heldObjects = await GetObjectsInScopeAsync("ScopeInventory");
+        var held = new HashSet<Element>(heldObjects);
+
+        var objects = new List<ListData>();
+        var seen = new HashSet<Element>();
+        foreach (var obj in heldObjects.Concat(await GetObjectsInScopeAsync("ScopeVisibleNotHeld")))
+        {
+            if (!seen.Add(obj))
+            {
+                continue;
+            }
+
+            IEnumerable<string> verbs;
+            if (Version <= WorldModelVersion.v520 || !Elements.ContainsKey(ElementType.Function, "GetDisplayVerbs"))
+            {
+                verbs = held.Contains(obj)
+                    ? obj.Fields[FieldDefinitions.InventoryVerbs]
+                    : obj.Fields[FieldDefinitions.DisplayVerbs];
+            }
+            else
+            {
+                verbs = await GetDisplayVerbsAsync(obj);
+            }
+
+            objects.Add(new ListData(await GetListDisplayAliasAsync(obj), verbs, obj.Name, await GetDisplayAliasAsync(obj)));
+        }
+
+        UpdateList(ListType.ElementMenuVerbs, objects);
     }
 
     private async Task UpdateObjectsListAsync(string scope, ListType listType)

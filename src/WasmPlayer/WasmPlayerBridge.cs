@@ -200,6 +200,9 @@ public partial class WasmPlayerBridge
     [JSImport("updateList", "wasm-player")]
     internal static partial void JsUpdateList(string listName, string itemsJson);
 
+    [JSImport("updateObjectLinks", "wasm-player")]
+    internal static partial void JsUpdateObjectLinks(string verbsJson);
+
     [JSImport("updateCompass", "wasm-player")]
     internal static partial void JsUpdateCompass(string data);
 
@@ -294,6 +297,13 @@ public partial class WasmPlayerBridge
                          && args[0] is string compassData)
                 {
                     _uiBuffer.Add(() => JsUpdateCompass(compassData));
+                }
+                else if (identifier == "updateObjectLinks"
+                         && args?.Length == 1
+                         && args[0] is Dictionary<string, string> verbsData)
+                {
+                    var json = JsonSerializer.Serialize(verbsData, WasmJsonContext.Default.DictionaryStringString);
+                    _uiBuffer.Add(() => JsUpdateObjectLinks(json));
                 }
             });
         }
