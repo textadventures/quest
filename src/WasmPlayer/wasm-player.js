@@ -172,6 +172,7 @@ async function initWasmPlayer(gameBytes, filename, bc = null) {
         setForeground: (colour) => setForeground(colour),
         updateList: (listName, itemsJson) => updateList(listName, JSON.parse(itemsJson)),
         updateCompass: (data) => updateCompass(data),
+        updateObjectLinks: (verbsJson) => updateObjectLinks(JSON.parse(verbsJson)),
         gameFinished: () => gameFinished(),
         requestNextTimerTick: (seconds) => requestNextTimerTick(seconds),
         uiShow: (element) => uiShow(element),
