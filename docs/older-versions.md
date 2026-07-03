@@ -12,7 +12,8 @@ Older versions are provided here for reference — for example, if you need to c
 
 | Version | Released | Download |
 |---------|----------|----------|
-| Quest 5.10.1 | 10 June 2026 | [quest-5.10.1.exe](https://github.com/textadventures/quest/releases/download/v5.10.1/quest-5.10.1.exe) |
+| Quest 5.10.2 | 3 Jul 2026 | [quest-5.10.2.exe](https://github.com/textadventures/quest/releases/download/v5.10.2/quest-5.10.2.exe) |
+| Quest 5.10.1 | 10 Jun 2026 | [quest-5.10.1.exe](https://github.com/textadventures/quest/releases/download/v5.10.1/quest-5.10.1.exe) |
 | Quest 5.10.0 | 19 May 2026 | [quest-5.10.0.exe](https://github.com/textadventures/quest/releases/download/v5.10.0/quest-5.10.0.exe) |
 | Quest 5.9 | 2 Feb 2025 | [quest590.exe](https://github.com/textadventures/quest/releases/download/v5.9/quest590.exe) |
 | Quest 5.8 | 20 Jul 2018 | [quest580.exe](https://github.com/textadventures/quest/releases/download/5.8.0/quest580.exe) |
