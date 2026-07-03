@@ -8,7 +8,6 @@ FROM mcr.microsoft.com/dotnet/sdk:10.0 AS build
 ARG BUILD_CONFIGURATION=Release
 WORKDIR /src
 COPY ["src/WebPlayer/WebPlayer.csproj", "src/WebPlayer/"]
-COPY ["src/Utility/Utility.csproj", "src/Utility/"]
 COPY ["src/Legacy/Legacy.csproj", "src/Legacy/"]
 COPY ["src/Common/Common.csproj", "src/Common/"]
 COPY ["src/Engine/Engine.csproj", "src/Engine/"]

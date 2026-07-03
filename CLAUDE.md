@@ -57,7 +57,7 @@ The solution (`QuestViva.sln`) has a layered architecture:
 ```
 WebPlayer (ASP.NET Core + Blazor Server)  ─┐
 WasmPlayer (browser-wasm, AOT)             ─┤
-                                            ├─► PlayerCore ─► Engine ─► Utility ─► Common
+                                            ├─► PlayerCore ─► Engine ─► Common
 EditorCore ─────────────────────────────────┘        │
                                                      └─► Legacy
 ```
@@ -65,7 +65,6 @@ EditorCore ───────────────────────
 **Key projects in `src/`:**
 
 - **Common** — Shared types and interfaces used across all projects
-- **Utility** — Helper functions and language utilities
 - **Engine** — Core game interpreter: script execution, expression evaluation, game loading, built-in functions. Contains embedded `.aslx` files (game templates, language definitions) in `Core/`
 - **PlayerCore** — Game player runtime that wraps Engine. Contains embedded UI resources (HTML, CSS, JS including jQuery UI, jPlayer)
 - **EditorCore** — Game editor logic (non-UI)
@@ -91,4 +90,4 @@ If you forgot to update `VERSION`, the script will fail locally because the tag 
 - Game files use `.aslx` (XML-based) format; legacy `.asl` format also supported
 - Version is stored in the `VERSION` file and embedded as a resource via Common.csproj
 - CI runs on GitHub Actions (build-and-test on push/PR to main for `src/` and `tests/` changes)
-- Library packages (`QuestViva.Common`, `QuestViva.Utility`, `QuestViva.Engine`, `QuestViva.Legacy`, `QuestViva.PlayerCore`) are published to NuGet.org on each release tag via the `nuget-publish` workflow
+- Library packages (`QuestViva.Common`, `QuestViva.Engine`, `QuestViva.Legacy`, `QuestViva.PlayerCore`) are published to NuGet.org on each release tag via the `nuget-publish` workflow

@@ -39,7 +39,7 @@ jobs:
 
       - name: Pack
         run: |
-          for project in src/Common src/Utility src/Engine src/Legacy src/PlayerCore; do
+          for project in src/Common src/Engine src/Legacy src/PlayerCore; do
             dotnet pack "$project" --no-build --configuration Release -p:Version=${{ env.VERSION }} --output nupkgs
           done
 
