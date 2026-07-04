@@ -161,11 +161,16 @@
     }
 
     // A .quest-save only carries state, not bundled resources — it must be
-    // paired with the currently-loaded game to load safely. The save's root
-    // <asl original="..."> attribute records which game it's for (this is
-    // WorldModel.Filename at save time, i.e. gameData.Filename — not
-    // gameData.GameId, which for production games is a stable API id rather
-    // than a filename); refuse the load if it doesn't match.
+    // paired with the currently-loaded game to load safely. Prefer the
+    // game's own embedded identity (IGame.GameID, the <gameid> element in
+    // its save/definition XML — a stable IFID regardless of how/where the
+    // game was loaded) over the loading filename: filename is often
+    // generic/shared (e.g. always "game.aslx" for every
+    // textadventures.co.uk game), so it can neither confirm a same-game
+    // match nor tell different games apart reliably in that case. GameID is
+    // null for legacy .asl/.cas games (V4Game has no IFID concept), so fall
+    // back to filename there — unlike WasmPlayer, WebPlayer's manager isn't
+    // restricted to modern games.
     private async Task LoadSaveFromFile(IBrowserFile file)
     {
         if (gameData == null) return;
@@ -178,18 +183,23 @@
         ms.Position = 0;
 
         string? originalAttr = null;
+        string? uploadedIfid = null;
         try
         {
             var doc = await XDocument.LoadAsync(ms, LoadOptions.None, CancellationToken.None);
             originalAttr = doc.Root?.Attribute("original")?.Value;
+            uploadedIfid = doc.Root?.Element("game")?.Element("gameid")?.Value;
         }
         catch
         {
             // falls through to the mismatch error below
         }
 
-        if (string.IsNullOrEmpty(originalAttr) ||
-            !string.Equals(Path.GetFileName(originalAttr), Path.GetFileName(gameData.Filename), StringComparison.OrdinalIgnoreCase))
+        var currentIdentity = !string.IsNullOrEmpty(game?.GameID) ? game.GameID : Path.GetFileName(gameData.Filename);
+        var uploadedIdentity = !string.IsNullOrEmpty(uploadedIfid) ? uploadedIfid
+            : !string.IsNullOrEmpty(originalAttr) ? Path.GetFileName(originalAttr) : null;
+
+        if (uploadedIdentity == null || !string.Equals(currentIdentity, uploadedIdentity, StringComparison.OrdinalIgnoreCase))
         {
             saveManagerError = "This save is for a different game — open that game first, then try again.";
             StateHasChanged();
