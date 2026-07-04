@@ -203,8 +203,14 @@
 
         // A fresh GameData wrapping a new copy of the cached bytes each call —
         // see the comment in OnAfterRenderAsync on why gameData.Data itself
-        // can't be reused across more than one launch.
-        var launchGameData = new GameData(new MemoryStream(originalGameBytes), gameData.GameId, gameData.Filename, GameDataProvider);
+        // can't be reused across more than one launch. IsCompiled/ResourceRoot
+        // are set by the original provider (e.g. TextAdventuresGameDataProvider)
+        // and must be carried over too, or resource-url resolution breaks.
+        var launchGameData = new GameData(new MemoryStream(originalGameBytes), gameData.GameId, gameData.Filename, GameDataProvider)
+        {
+            IsCompiled = gameData.IsCompiled,
+            ResourceRoot = gameData.ResourceRoot,
+        };
 
         game = GameLauncher.GetGame(launchGameData, saveData);
 
