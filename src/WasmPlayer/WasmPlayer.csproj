@@ -14,7 +14,9 @@
     </ItemGroup>
 
     <!-- Build the scoped Skeleton/Tailwind "app chrome" stylesheet (start screen, debugger,
-         save-slot manager) from styles/chrome.css before it gets copied into the AppBundle. -->
+         save-slot manager) from styles/chrome.css, and splice the curated icon sprite (see
+         scripts/build-icons.mjs) into generated/index.html, before either gets copied into
+         the AppBundle. -->
     <Target Name="BuildChromeCss" BeforeTargets="CopyPlayerAssetsToAppBundle">
         <Exec Command="npm install" WorkingDirectory="$(MSBuildThisFileDirectory)" Condition="!Exists('$(MSBuildThisFileDirectory)node_modules')"/>
         <Exec Command="npm run build" WorkingDirectory="$(MSBuildThisFileDirectory)"/>
@@ -32,7 +34,7 @@
             <_FlatAssets Include="$(_PCRes)playercore.css"/>
             <_FlatAssets Include="$(_PCRes)grid.js"/>
             <_FlatAssets Include="$(MSBuildThisFileDirectory)wasm-player.js"/>
-            <_FlatAssets Include="$(MSBuildThisFileDirectory)index.html"/>
+            <_FlatAssets Include="$(MSBuildThisFileDirectory)generated\index.html"/>
             <_FlatAssets Include="$(MSBuildThisFileDirectory)favicon.svg"/>
             <_FlatAssets Include="$(MSBuildThisFileDirectory)logo.svg"/>
             <_FlatAssets Include="$(MSBuildThisFileDirectory)quest-config.js"/>

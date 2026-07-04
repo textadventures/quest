@@ -4,11 +4,12 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "build": "tailwindcss -i styles/chrome.css -o generated/chrome.css --minify && node scripts/scope-css.mjs generated/chrome.css"
+    "build": "tailwindcss -i styles/chrome.css -o generated/chrome.css --minify && node scripts/scope-css.mjs generated/chrome.css && node scripts/build-icons.mjs"
   },
   "devDependencies": {
     "@skeletonlabs/skeleton": "^4.15.2",
     "@tailwindcss/cli": "^4.2.4",
+    "lucide-static": "^1.23.0",
     "tailwindcss": "^4.2.4"
   }
 }
