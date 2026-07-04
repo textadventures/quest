@@ -78,7 +78,8 @@ public enum ListType
 {
     InventoryList,
     ExitsList,
-    ObjectsList
+    ObjectsList,
+    ElementMenuVerbs
 }
 
 public enum UIOption

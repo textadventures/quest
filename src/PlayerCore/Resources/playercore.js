@@ -743,7 +743,7 @@ function bindMenu(linkid, verbs, text, elementId) {
 }
 
 function buildMenuOptions(verbs, text, elementId) {
-    var verbsList = verbs.split("/");
+    var verbsList = verbs ? verbs.split("/") : [];
     var options = [];
     var metadata = {};
     metadata[text] = elementId;
@@ -2121,6 +2121,19 @@ function Grid_DrawShape(id, border, fill, opacity) {
     $.fn.jjmenu_popup = function (param) {
         var el = this;
 
+        if (typeof param === "undefined") {
+            var verbs = el.data("verbs");
+            if (!verbs) {
+                // No live verb data for this element yet (or it was never made
+                // available server-side) - nothing to show, so bail out rather
+                // than crashing on an undefined verb list.
+                return;
+            }
+            var text = el.html();
+            var elementId = el.data("elementid");
+            param = buildMenuOptions(verbs, text, elementId);
+        }
+
         $("div[id^=jjmenu_main]").remove();
 
         var m = document.createElement('div');
@@ -2133,13 +2146,6 @@ function Grid_DrawShape(id, border, fill, opacity) {
         $(document.body).append(m);
 
         positionMenu();
-
-        if (typeof param === "undefined") {
-            var verbs = el.data("verbs");
-            var text = el.html();
-            var elementId = el.data("elementid");
-            param = buildMenuOptions(verbs, text, elementId);
-        }
 
         for (var i in param) {
             putItem(param[i]);
