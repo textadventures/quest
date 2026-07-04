@@ -424,6 +424,8 @@ function ensureSavesDialogWired() {
         }
         const delBtn = e.target.closest('[data-delete-slot]');
         if (delBtn) {
+            const name = delBtn.closest('li')?.querySelector('[data-slot]')?.textContent ?? 'this save';
+            if (!confirm(`Delete "${name}"? This can't be undone.`)) return;
             await GameSaver.deleteSlot(Number(delBtn.dataset.deleteSlot), WebPlayer.gameId);
             renderSavesList(await GameSaver.listSaves(WebPlayer.gameId), 'manage');
         }

@@ -81,8 +81,11 @@
 
 <dialog id="qv-saves" class="qv-chrome" data-mode="boot">
     <div class="card preset-filled-surface-100-900 w-full p-6 space-y-4" data-theme="wintry">
-        <h2 class="h3" data-mode-text="boot">Continue your game?</h2>
-        <h2 class="h3 qv-manage-only" data-mode-text="manage">Save / Load</h2>
+        <div class="flex items-start justify-between gap-4">
+            <h2 class="h3" data-mode-text="boot">Continue your game?</h2>
+            <h2 class="h3 qv-manage-only" data-mode-text="manage">Save / Load</h2>
+            <button id="qv-saves-close" type="button" class="qv-manage-only btn-icon preset-tonal-surface" aria-label="Close">&times;</button>
+        </div>
 
         <div id="qv-saves-error" class="hidden card preset-tonal-error p-3 text-sm"></div>
 
@@ -103,7 +106,6 @@
                 <button id="qv-saves-upload-btn" type="button" class="btn preset-tonal-primary flex-1">Load from file</button>
                 <input type="file" id="qv-saves-file-input" class="hidden" accept=".quest-save">
             </div>
-            <button id="qv-saves-close" type="button" class="btn preset-tonal-surface w-full">Close</button>
         </div>
     </div>
 </dialog>

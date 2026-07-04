@@ -28,6 +28,19 @@
    spacing, components) on a descendant so it can use Skeleton/Tailwind.
    `#qv-start` here is the start screen's own root — a future debugger or
    save-slot manager root would get its own `:scope#id` rule alongside it. */
+/* The loaded game can restyle <body> directly (Quest's Core library does
+   `JS.setCss("body", "font-family:...;color:...;font-size:...")` at startup
+   so games can pick their own narrative font/colours). `@scope` only limits
+   which elements Tailwind/Skeleton's *selectors* can match — it doesn't stop
+   ordinary CSS inheritance, so without this, the chrome would inherit
+   whatever font the current game happens to set. Skeleton's own utility
+   classes (btn, input, anchor, ...) already set their own color/font-size
+   explicitly, so font-family is the only property that needs resetting here. */
+:scope#qv-start,
+:scope#qv-saves {
+    font-family: var(--font-sans);
+}
+
 :scope#qv-start {
     position: fixed;
     inset: 0;
