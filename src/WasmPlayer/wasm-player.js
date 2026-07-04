@@ -368,8 +368,16 @@ async function downloadSaveToFile() {
 
 // A .quest-save only carries state, not resources — it must be paired with
 // the currently-loaded game's original bytes to load safely (see plan). The
-// save's root <asl original="..."> attribute records which game it's for;
-// refuse the load if it doesn't match what's currently running.
+// save's root <asl original="..."> attribute records the *filename* the game
+// was loaded with (WorldModel.Filename at save time, e.g. "game.aslx" for an
+// API-fetched game) — compare against originalGameFilename, not
+// WebPlayer.gameId. Those two diverge for ?id= boots specifically, since
+// gameId there is overridden to the stable API id (for IndexedDB slot
+// keying) while the filename stays whatever the fetch URL's last segment
+// was. Comparing against the filename also happens to make this match
+// correctly against a save downloaded from WebPlayer for the same
+// textadventures.co.uk game, since both fetch from the same URL shape and
+// so land on the same filename.
 async function loadSaveFromFile(file) {
     const bytes = new Uint8Array(await file.arrayBuffer());
     let originalAttr = null;
@@ -379,7 +387,7 @@ async function loadSaveFromFile(file) {
         originalAttr = xml.documentElement?.getAttribute('original') ?? null;
     } catch { /* falls through to the mismatch error below */ }
 
-    if (!originalAttr || computeGameId(originalAttr) !== WebPlayer.gameId) {
+    if (!originalAttr || computeGameId(originalAttr) !== computeGameId(originalGameFilename)) {
         showSavesError('This save is for a different game — open that game first, then try again.');
         return;
     }
@@ -569,7 +577,19 @@ async function fetchGameBytes(url) {
     const response = await fetch(url);
     if (!response.ok) throw new Error(`HTTP ${response.status}`);
     const bytes = new Uint8Array(await response.arrayBuffer());
-    const filename = (response.url || url).split('/').pop()?.split('?')[0] || 'game.aslx';
+    let filename = (response.url || url).split('/').pop()?.split('?')[0] || 'game.aslx';
+    // dev-server.mjs's CORS-avoidance proxy rewrites the Text Adventures API's
+    // sourceGameUrl to /game-resource/<url-encoded-real-url>, so the "last
+    // segment" above is that encoded string, not a real filename, in local
+    // dev only. Detect and decode so the derived filename (used both for
+    // GameLauncher's extension-based dispatch and the save-file "original"
+    // cross-check) matches what production — no proxy — actually produces.
+    try {
+        const decoded = decodeURIComponent(filename);
+        if (decoded !== filename && decoded.includes('/')) {
+            filename = decoded.split('/').pop()?.split('?')[0] || filename;
+        }
+    } catch { /* not a valid encoded URL, keep filename as-is */ }
     return { bytes, filename };
 }
 
