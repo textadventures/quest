@@ -39,6 +39,16 @@ class WebPlayer {
         return await GameSaver.deleteSlot(slotIndex);
     }
 
+    // Clears stale transcript/div-tracking state from any previously-running
+    // game before a mid-session restart (Start from the beginning / Load) —
+    // without this, #divOutput keeps whatever the last game wrote, and the
+    // new game's output gets appended after it instead of replacing it.
+    // A fresh page load doesn't need this (the div starts empty already),
+    // so it's harmless to call unconditionally at the top of every StartGame.
+    static resetOutput() {
+        resetGameOutput();
+    }
+
     static async downloadSaveAsFile(filename) {
         const bytes = await WebPlayer.uiSaveGame($("#divOutput").html());
         const blob = new Blob([bytes], {type: 'application/xml'});

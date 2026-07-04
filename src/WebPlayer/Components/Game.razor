@@ -214,6 +214,12 @@
 
         if (game != null)
         {
+            // Clear the previous game's transcript before swapping it out —
+            // a no-op on the very first call (the div is already empty then),
+            // but essential for a mid-session restart (Start from the
+            // beginning / Load), or the new game's output gets appended
+            // after the old one instead of replacing it.
+            await JS.InvokeVoidAsync("WebPlayer.resetOutput");
             game.Finish();
             GameSessionTracker.GameEnded();
         }
