@@ -30,14 +30,14 @@ function initPlayerUI() {
         }
     });
 
-    $("button").button();
+    $("#gameBorder button").button();
     $("#gamePanesRunning").multiOpenAccordion({active: [0, 1, 2, 3]});
     showStatusVisible(false);
 
     const cmdSave = document.getElementById("cmdSave");
-    cmdSave.addEventListener("click", async () => {
+    cmdSave.addEventListener("click", window.WebPlayer?.onSaveClick ?? (async () => {
         await GameSaver.save();
-    });
+    }));
 
     const cmdDebug = document.getElementById("cmdDebug");
     cmdDebug.addEventListener("click", () => {
@@ -841,6 +841,21 @@ function clearScreen() {
         }, 100);
     }
     $("#outputData").appendTo($("#divOutput"));
+}
+
+// Hard-resets output/transcript state so a different game/save can start
+// clean without a full page reload (used by WasmPlayer's in-game Load,
+// where _currentDiv/_divCount would otherwise still point at divs from the
+// game that just got torn down).
+function resetGameOutput() {
+    _outputSections = [];
+    _currentDiv = null;
+    _divCount = -1;
+    saveClearedText = false;
+    clearedOnce = false;
+    beginningOfCurrentTurnScrollPosition = 0;
+    $("#divOutput").css("min-height", 0).html("");
+    createNewDiv("left");
 }
 
 // Scrollback functions added by KV
@@ -2328,25 +2343,50 @@ const GameSaver = (() => {
         });
     }
 
+    async function deleteSaveSlot(gameId, slotIndex) {
+        const db = await openDatabase();
+        const tx = db.transaction('saves', 'readwrite');
+        const store = tx.objectStore('saves');
+        store.delete([gameId, slotIndex]);
+
+        return tx.complete || tx.done || new Promise((res, rej) => {
+            tx.oncomplete = res;
+            tx.onerror = rej;
+        });
+    }
+
+    async function nextSlotIndex(gameId) {
+        const existing = await listSaves(gameId);
+        return existing.length ? Math.max(...existing.map(s => s.slotIndex)) + 1 : 0;
+    }
+
     let persistenceRequested = false;
 
     return {
-        save: async () => {
+        save: async (name) => {
+            const gameId = WebPlayer.gameId;
             const saveData = $("#divOutput").html();
             const result = await WebPlayer.uiSaveGame(saveData);
-            await saveGame(WebPlayer.gameId, 0, result,
-                "Saved game at " + new Date().toISOString().replace('T', ' ').substring(0, 19));
+            const slotIndex = await nextSlotIndex(gameId);
+            // Locale-formatted (not ISO) so it reads naturally wherever it's shown —
+            // WebPlayer's Slots list shows only the name, with no separate timestamp.
+            const label = name || "Saved game — " + new Date().toLocaleString();
+            await saveGame(gameId, slotIndex, result, label);
             addText("Game saved.<br>");
             if (!persistenceRequested) {
                 await ensurePersistentStorage();
                 persistenceRequested = true;
             }
+            return {slotIndex, name: label};
         },
-        listSaves: async () => {
-            return await listSaves(WebPlayer.gameId);
+        listSaves: async (gameId = WebPlayer.gameId) => {
+            return await listSaves(gameId);
         },
-        load: async (slotIndex) => {
-            return await loadGame(WebPlayer.gameId, slotIndex);
+        load: async (slotIndex, gameId = WebPlayer.gameId) => {
+            return await loadGame(gameId, slotIndex);
+        },
+        deleteSlot: async (slotIndex, gameId = WebPlayer.gameId) => {
+            return await deleteSaveSlot(gameId, slotIndex);
         }
     }
 })();

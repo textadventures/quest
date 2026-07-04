@@ -26,14 +26,35 @@ public partial class WasmPlayerBridge
     [JSExport]
     public static async Task<bool> Initialise(byte[] gameFileBytes, string filename)
     {
-        _game?.Finish();
-
         var provider = new ByteArrayGameDataProvider(gameFileBytes, filename);
         var gameData = await provider.GetData();
         if (gameData == null) return false;
 
+        return await InitialiseCore(gameData, null);
+    }
+
+    // Loads a game with a save applied on top, for resuming a save-slot or an
+    // imported .quest-save file — gameFileBytes/filename are always the
+    // *original* game (never the save itself), so resource lookups (images,
+    // sounds bundled in a .quest package) keep working; only saveBytes carries
+    // the save's state overlay. See GameLauncher.GetGame(gameData, saveData).
+    [JSExport]
+    public static async Task<bool> InitialiseWithSave(byte[] gameFileBytes, string filename, byte[] saveBytes)
+    {
+        var provider = new ByteArrayGameDataProvider(gameFileBytes, filename);
+        var gameData = await provider.GetData();
+        if (gameData == null) return false;
+
+        using var saveStream = new MemoryStream(saveBytes);
+        return await InitialiseCore(gameData, saveStream);
+    }
+
+    private static async Task<bool> InitialiseCore(GameData gameData, Stream? saveData)
+    {
+        _game?.Finish();
+
         var launcher = new GameLauncher(new WorldModelFactory());
-        _game = launcher.GetGame(gameData, null);
+        _game = launcher.GetGame(gameData, saveData);
         if (_game == null) return false;
 
         _ui = new WasmPlayerUi(gameData.GameId, _game);
@@ -76,6 +97,15 @@ public partial class WasmPlayerBridge
 
     [JSExport]
     public static string GetGameId() => _ui?.GameId ?? string.Empty;
+
+    // The game's own embedded identity (IFID, the <gameid> element in its
+    // .aslx/save XML) — stable regardless of how/where the game was loaded
+    // from, unlike GetGameId()/the loading filename, which for
+    // textadventures.co.uk games is always "game.aslx" no matter which game
+    // it actually is. Used to tell genuinely different games apart when
+    // validating an uploaded save file.
+    [JSExport]
+    public static string GetGameIfid() => _game?.GameID ?? string.Empty;
 
     [JSExport]
     public static async Task Begin()

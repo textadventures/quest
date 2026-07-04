@@ -52,7 +52,8 @@
             <div>
                 <span class="label-text text-xs uppercase tracking-wide text-surface-500">Open a game file</span>
                 <button id="qv-file-btn" type="button" class="btn preset-tonal-primary w-full justify-start mt-2">
-                    &#128193; Choose file (.quest, .aslx, .asl, .cas)
+                    <svg class="qv-icon" aria-hidden="true"><use href="#folder-open"></use></svg>
+                    Choose file (.quest, .aslx, .asl, .cas)
                 </button>
                 <input type="file" id="qv-file-input" class="hidden" accept=".quest,.aslx,.asl,.cas">
             </div>
@@ -78,5 +79,44 @@
         </div>
     </div>
 </div>
+
+<dialog id="qv-saves" class="qv-chrome" data-mode="boot">
+    <!-- ICONS_SPRITE: spliced in at build time by scripts/build-icons.mjs (into
+         generated/index.html) — a hidden <symbol> defs block, kept inside
+         #qv-saves so it survives the dialog's detach/reattach around the
+         document.body.innerHTML swap in wasm-player.js. Cross-document SVG
+         <use href="file.svg#id"> isn't reliably supported (notably not in
+         Chrome), so the sprite must live in the same document as its <use>s. -->
+    <div class="card preset-filled-surface-100-900 w-full p-6 space-y-4" data-theme="wintry">
+        <div class="flex items-start justify-between gap-4">
+            <h2 class="h3" data-mode-text="boot">Continue your game?</h2>
+            <h2 class="h3 qv-manage-only" data-mode-text="manage">Save / Load</h2>
+            <button id="qv-saves-close" type="button" class="qv-manage-only btn-icon preset-tonal-surface" aria-label="Close">
+                <svg class="qv-icon" aria-hidden="true"><use href="#x"></use></svg>
+            </button>
+        </div>
+
+        <div id="qv-saves-error" class="hidden card preset-tonal-error p-3 text-sm"></div>
+
+        <button id="qv-saves-start-new" type="button" class="qv-boot-only btn preset-tonal-primary w-full justify-start">
+            Start from the beginning
+        </button>
+
+        <ul id="qv-saves-list" class="space-y-2"></ul>
+
+        <div class="qv-manage-only space-y-3">
+            <hr class="hr">
+            <div class="flex gap-2">
+                <input id="qv-saves-name-input" class="input" type="text" placeholder="Save name" autocomplete="off">
+                <button id="qv-saves-save-new" type="button" class="btn preset-filled-primary-500">Save new</button>
+            </div>
+            <div class="flex gap-2">
+                <button id="qv-saves-download" type="button" class="btn preset-tonal-primary flex-1">Save to file</button>
+                <button id="qv-saves-upload-btn" type="button" class="btn preset-tonal-primary flex-1">Load from file</button>
+                <input type="file" id="qv-saves-file-input" class="hidden" accept=".quest-save">
+            </div>
+        </div>
+    </div>
+</dialog>
 </body>
 </html>

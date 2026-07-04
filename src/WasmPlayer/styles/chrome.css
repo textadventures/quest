@@ -28,6 +28,19 @@
    spacing, components) on a descendant so it can use Skeleton/Tailwind.
    `#qv-start` here is the start screen's own root — a future debugger or
    save-slot manager root would get its own `:scope#id` rule alongside it. */
+/* The loaded game can restyle <body> directly (Quest's Core library does
+   `JS.setCss("body", "font-family:...;color:...;font-size:...")` at startup
+   so games can pick their own narrative font/colours). `@scope` only limits
+   which elements Tailwind/Skeleton's *selectors* can match — it doesn't stop
+   ordinary CSS inheritance, so without this, the chrome would inherit
+   whatever font the current game happens to set. Skeleton's own utility
+   classes (btn, input, anchor, ...) already set their own color/font-size
+   explicitly, so font-family is the only property that needs resetting here. */
+:scope#qv-start,
+:scope#qv-saves {
+    font-family: var(--font-sans);
+}
+
 :scope#qv-start {
     position: fixed;
     inset: 0;
@@ -36,4 +49,46 @@
     justify-content: center;
     padding: 1rem;
     background: var(--color-surface-950);
+}
+
+/* Save/load manager — a native <dialog>, shown via showModal() so the
+   browser centers and backdrops it; only border/sizing need overriding
+   since Tailwind's preflight reset strips the UA default dialog styling. */
+:scope#qv-saves {
+    border: none;
+    border-radius: 0.75rem;
+    padding: 0;
+    max-width: 28rem;
+    width: 100%;
+}
+
+:scope#qv-saves::backdrop {
+    background: rgb(0 0 0 / 0.5);
+}
+
+/* data-mode="boot" is the lightweight Continue/New-Game prompt shown before
+   a game starts — hide the full manager's controls (name input, save/delete,
+   file import/export) so only "start new" + a plain Load list remain. */
+:scope#qv-saves[data-mode="boot"] .qv-manage-only,
+:scope#qv-saves[data-mode="boot"] [data-delete-slot] {
+    display: none;
+}
+
+:scope#qv-saves[data-mode="manage"] [data-mode-text="boot"],
+:scope#qv-saves[data-mode="manage"] .qv-boot-only {
+    display: none;
+}
+
+/* Icons reference generated/icons.svg (a curated subset of Lucide's sprite,
+   see scripts/build-icons.mjs) via <use>. Lucide's per-icon SVG files carry
+   these presentation attributes on their own root <svg> — <symbol>/<use>
+   doesn't preserve that, so the consuming element needs them again here. */
+.qv-icon {
+    width: 1.25rem;
+    height: 1.25rem;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 2;
+    stroke-linecap: round;
+    stroke-linejoin: round;
 }
