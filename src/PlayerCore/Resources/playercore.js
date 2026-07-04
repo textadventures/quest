@@ -2368,7 +2368,9 @@ const GameSaver = (() => {
             const saveData = $("#divOutput").html();
             const result = await WebPlayer.uiSaveGame(saveData);
             const slotIndex = await nextSlotIndex(gameId);
-            const label = name || "Saved game at " + new Date().toISOString().replace('T', ' ').substring(0, 19);
+            // Locale-formatted (not ISO) so it reads naturally wherever it's shown —
+            // WebPlayer's Slots list shows only the name, with no separate timestamp.
+            const label = name || "Saved game — " + new Date().toLocaleString();
             await saveGame(gameId, slotIndex, result, label);
             addText("Game saved.<br>");
             if (!persistenceRequested) {

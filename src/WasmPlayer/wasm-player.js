@@ -339,13 +339,16 @@ function renderSavesList(saves, mode) {
         list.innerHTML = '<li class="text-sm text-surface-500">No saved games yet.</li>';
         return;
     }
+    // s.name already carries a human-readable date/time when the user didn't
+    // type a custom one (see GameSaver.save's default label) — don't also
+    // render s.timestamp separately, or the same moment shows up twice in
+    // two different formats.
     list.innerHTML = saves.map(s => {
-        const ts = s.timestamp ? _esc(new Date(s.timestamp).toLocaleString()) : '';
         const deleteBtn = mode === 'manage'
             ? `<button type="button" class="btn-icon preset-tonal-error" data-delete-slot="${s.slotIndex}" aria-label="Delete">&times;</button>`
             : '';
         return `<li class="flex items-center justify-between gap-2">`
-            + `<button type="button" class="anchor text-left flex-1" data-slot="${s.slotIndex}">${_esc(s.name)}${ts ? ' — ' + ts : ''}</button>`
+            + `<button type="button" class="anchor text-left flex-1" data-slot="${s.slotIndex}">${_esc(s.name)}</button>`
             + deleteBtn
             + `</li>`;
     }).join('');
