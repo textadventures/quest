@@ -9,6 +9,30 @@ var placesObjectsVerbs = null;
 var verbButtonCount = 9;
 var beginningOfCurrentTurnScrollPosition = 0;
 
+// Tracks whether the player has made progress since the game started/loaded
+// that hasn't been saved anywhere (slot or file) yet, so an accidental
+// refresh/close can warn before silently discarding it (see beforeunload
+// listener below). suppressUnsavedProgressWarning lets WasmPlayer's
+// editor-preview mode (which relies on manual reloads to pick up new edits —
+// see wasm-player.js) opt out, since every reload there would otherwise
+// trigger the native "leave site?" prompt.
+var hasUnsavedProgress = false;
+var suppressUnsavedProgressWarning = false;
+
+function markUnsavedProgress() {
+    hasUnsavedProgress = true;
+}
+
+function clearUnsavedProgress() {
+    hasUnsavedProgress = false;
+}
+
+window.addEventListener("beforeunload", function (e) {
+    if (!hasUnsavedProgress || suppressUnsavedProgressWarning) return;
+    e.preventDefault();
+    e.returnValue = "";
+});
+
 function initPlayerUI() {
     const gameBorder = document.getElementById("gameBorder");
     gameBorder.style.display = "block";
@@ -856,6 +880,7 @@ function resetGameOutput() {
     beginningOfCurrentTurnScrollPosition = 0;
     $("#divOutput").css("min-height", 0).html("");
     createNewDiv("left");
+    clearUnsavedProgress();
 }
 
 // Scrollback functions added by KV
@@ -2373,6 +2398,7 @@ const GameSaver = (() => {
             const label = name || "Saved game — " + new Date().toLocaleString();
             await saveGame(gameId, slotIndex, result, label);
             addText("Game saved.<br>");
+            clearUnsavedProgress();
             if (!persistenceRequested) {
                 await ensurePersistentStorage();
                 persistenceRequested = true;

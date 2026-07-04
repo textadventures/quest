@@ -58,6 +58,7 @@ class WebPlayer {
         a.download = filename;
         a.click();
         URL.revokeObjectURL(url);
+        clearUnsavedProgress();
     }
 
     static initSlotsDialog() {
