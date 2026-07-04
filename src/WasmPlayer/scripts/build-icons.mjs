@@ -20,7 +20,7 @@ import { fileURLToPath } from 'node:url';
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const root = path.resolve(__dirname, '..');
 
-const ICONS = ['x', 'trash-2'];
+const ICONS = ['x', 'trash-2', 'folder-open'];
 
 const sprite = fs.readFileSync(path.join(root, 'node_modules/lucide-static/sprite.svg'), 'utf8');
 
