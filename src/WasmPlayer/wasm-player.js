@@ -367,27 +367,33 @@ async function downloadSaveToFile() {
 }
 
 // A .quest-save only carries state, not resources — it must be paired with
-// the currently-loaded game's original bytes to load safely (see plan). The
-// save's root <asl original="..."> attribute records the *filename* the game
-// was loaded with (WorldModel.Filename at save time, e.g. "game.aslx" for an
-// API-fetched game) — compare against originalGameFilename, not
-// WebPlayer.gameId. Those two diverge for ?id= boots specifically, since
-// gameId there is overridden to the stable API id (for IndexedDB slot
-// keying) while the filename stays whatever the fetch URL's last segment
-// was. Comparing against the filename also happens to make this match
-// correctly against a save downloaded from WebPlayer for the same
-// textadventures.co.uk game, since both fetch from the same URL shape and
-// so land on the same filename.
+// the currently-loaded game's original bytes to load safely (see plan).
+// Identity check: prefer the game's own embedded IFID (<gameid> in the save
+// XML / Bridge.GetGameIfid() for the running game) over the loading
+// filename — filename is often generic/shared (every textadventures.co.uk
+// game's original attribute is literally "game.aslx" no matter which game
+// it is), so it can tell neither "same game, different session" nor
+// "different game entirely" apart reliably. IFID is stable regardless of
+// how/where the game was loaded from, so it also makes a save downloaded
+// from WebPlayer for a textadventures.co.uk game load correctly here. Only
+// falls back to the filename if either side lacks an ifid (shouldn't happen
+// for modern games — legacy .asl/.cas are excluded from this whole feature).
 async function loadSaveFromFile(file) {
     const bytes = new Uint8Array(await file.arrayBuffer());
     let originalAttr = null;
+    let uploadedIfid = null;
     try {
         const text = new TextDecoder('utf-8').decode(bytes);
         const xml = new DOMParser().parseFromString(text, 'application/xml');
         originalAttr = xml.documentElement?.getAttribute('original') ?? null;
+        uploadedIfid = xml.querySelector('game > gameid')?.textContent?.trim() || null;
     } catch { /* falls through to the mismatch error below */ }
 
-    if (!originalAttr || computeGameId(originalAttr) !== computeGameId(originalGameFilename)) {
+    const currentIfid = Bridge.GetGameIfid();
+    const currentIdentity = currentIfid || computeGameId(originalGameFilename);
+    const uploadedIdentity = uploadedIfid || (originalAttr && computeGameId(originalAttr));
+
+    if (!uploadedIdentity || currentIdentity.toLowerCase() !== uploadedIdentity.toLowerCase()) {
         showSavesError('This save is for a different game — open that game first, then try again.');
         return;
     }
