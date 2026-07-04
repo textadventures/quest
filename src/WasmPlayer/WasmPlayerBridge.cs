@@ -98,6 +98,15 @@ public partial class WasmPlayerBridge
     [JSExport]
     public static string GetGameId() => _ui?.GameId ?? string.Empty;
 
+    // The game's own embedded identity (IFID, the <gameid> element in its
+    // .aslx/save XML) — stable regardless of how/where the game was loaded
+    // from, unlike GetGameId()/the loading filename, which for
+    // textadventures.co.uk games is always "game.aslx" no matter which game
+    // it actually is. Used to tell genuinely different games apart when
+    // validating an uploaded save file.
+    [JSExport]
+    public static string GetGameIfid() => _game?.GameID ?? string.Empty;
+
     [JSExport]
     public static async Task Begin()
     {
