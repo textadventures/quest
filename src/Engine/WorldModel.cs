@@ -858,9 +858,13 @@ public partial class WorldModel : IGame, IGameDebug
         var heldObjects = await GetObjectsInScopeAsync("ScopeInventory");
         var held = new HashSet<Element>(heldObjects);
 
+        var visibleNotHeld = Elements.ContainsKey(ElementType.Function, "ScopeVisibleNotHeld")
+            ? await GetObjectsInScopeAsync("ScopeVisibleNotHeld")
+            : new QuestList<Element>();
+
         var objects = new List<ListData>();
         var seen = new HashSet<Element>();
-        foreach (var obj in heldObjects.Concat(await GetObjectsInScopeAsync("ScopeVisibleNotHeld")))
+        foreach (var obj in heldObjects.Concat(visibleNotHeld))
         {
             if (!seen.Add(obj))
             {
