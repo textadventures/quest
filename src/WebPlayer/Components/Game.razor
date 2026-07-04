@@ -139,8 +139,25 @@
     private async Task DownloadSaveToFile()
     {
         if (gameData == null) return;
-        var filename = Path.GetFileNameWithoutExtension(gameData.Filename) + ".quest-save";
+        // GameId, not Filename — for textadventures.co.uk games, Filename is
+        // always literally "game.aslx" (the last segment of the fetched
+        // resource URL), while GameId is the actual game id and much more
+        // useful for telling downloaded saves apart. GetFileNameWithoutExtension
+        // strips a trailing .aslx/.quest for the file-based providers (whose
+        // GameId is filename-derived, extension and all) and is a no-op for
+        // opaque ids; it also takes just the last path-like segment, which
+        // helps if GameId is ever a raw URL (UrlGameDataProvider without an
+        // explicit id, e.g. the editor-preview path) — SanitizeFilename then
+        // mops up any remaining filesystem-unsafe characters.
+        var filename = SanitizeFilename(Path.GetFileNameWithoutExtension(gameData.GameId)) + ".quest-save";
         await JS.InvokeVoidAsync("WebPlayer.downloadSaveAsFile", filename);
+    }
+
+    private static string SanitizeFilename(string name)
+    {
+        var invalid = Path.GetInvalidFileNameChars();
+        var sanitized = new string(name.Select(c => invalid.Contains(c) ? '_' : c).ToArray());
+        return sanitized.Length > 0 ? sanitized : "game";
     }
 
     // A .quest-save only carries state, not bundled resources — it must be
