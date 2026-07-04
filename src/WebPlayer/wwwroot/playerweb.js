@@ -1,10 +1,22 @@
 class WebPlayer {
     static dotNetHelper;
+    static gameDotNetHelper;
     static gameId;
     static slotsDialogCanBeClosed = false;
 
+    // Fixed at class-definition time (not set conditionally later), so there's
+    // no ordering/race concern with when initPlayerUI() binds #cmdSave's click
+    // handler to this — matches the shared onSaveClick hook in playercore.js.
+    static onSaveClick = async () => {
+        await WebPlayer.gameDotNetHelper?.invokeMethodAsync("OpenSaveManager");
+    }
+
     static setDotNetHelper(value) {
         WebPlayer.dotNetHelper = value;
+    }
+
+    static setGameDotNetHelper(value) {
+        WebPlayer.gameDotNetHelper = value;
     }
 
     static setGameId(id) {
@@ -17,6 +29,25 @@ class WebPlayer {
 
     static loadSlot = async (slot) => {
         return await GameSaver.load(slot);
+    }
+
+    static saveNew = async (name) => {
+        return await GameSaver.save(name || undefined);
+    }
+
+    static deleteSlot = async (slotIndex) => {
+        return await GameSaver.deleteSlot(slotIndex);
+    }
+
+    static async downloadSaveAsFile(filename) {
+        const bytes = await WebPlayer.uiSaveGame($("#divOutput").html());
+        const blob = new Blob([bytes], {type: 'application/xml'});
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = filename;
+        a.click();
+        URL.revokeObjectURL(url);
     }
 
     static initSlotsDialog() {

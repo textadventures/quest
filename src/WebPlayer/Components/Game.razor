@@ -1,4 +1,5 @@
 @rendermode InteractiveServer
+@using System.Xml.Linq
 @using QuestViva.Common
 @using QuestViva.PlayerCore
 @using QuestViva.WebPlayer.Components.Debugger
@@ -42,9 +43,15 @@
 
 @UiHtml
 
-<Slots Saves="@saves" OnStart="() => StartGame(null)" OnLoad="@LoadGame"></Slots>
+<Slots Saves="@saves" ManageMode="@manageMode" ErrorMessage="@saveManagerError"
+       OnStart="() => StartGame(null)" OnLoad="@LoadGame"
+       OnSaveNew="@SaveNew" OnDelete="@DeleteSlot"
+       OnDownload="@DownloadSaveToFile" OnUploadFile="@LoadSaveFromFile"
+       OnClose="@CloseSaveManager"></Slots>
 
 @code {
+    private const long MaxSaveFileBytes = 50 * 1024 * 1024;
+
     [Parameter] public required IGameDataProvider GameDataProvider { get; set; }
     [Parameter] public required Func<GameData, IResourceUrlProvider> ResourceUrlProvider { get; set; }
     [Parameter] public required bool EnableDebug { get; set; }
@@ -55,6 +62,10 @@
     private IGame? game;
     private IGameDebug? gameDebug;
     private SaveSlot[] saves = [];
+    private bool manageMode;
+    private string? saveManagerError;
+    private DotNetObjectReference<Game>? gameDotNetRef;
+    private byte[]? originalGameBytes;
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
@@ -63,12 +74,31 @@
         gameData = await GameDataProvider.GetData();
         if (gameData == null) return;
 
+        // Cached once here rather than read directly from gameData.Data on every
+        // StartGame call: GameLoader.Load() consumes the stream it's given (its
+        // XmlTextReader.Close() closes the underlying stream too), so reusing
+        // gameData.Data across more than one StartGame call throws "Cannot
+        // access a closed Stream" on the second+ attempt. Previously harmless,
+        // since StartGame was only ever called once per session — the new
+        // in-game reload-to-a-different-save capability is what first exercises
+        // calling it again against the same gameData.
+        await using (gameData.Data)
+        {
+            using var ms = new MemoryStream();
+            await gameData.Data.CopyToAsync(ms);
+            originalGameBytes = ms.ToArray();
+        }
+
         await JS.InvokeVoidAsync("WebPlayer.setGameId", gameData.GameId);
         await JS.InvokeVoidAsync("WebPlayer.initSlotsDialog");
+
+        gameDotNetRef = DotNetObjectReference.Create(this);
+        await JS.InvokeVoidAsync("WebPlayer.setGameDotNetHelper", gameDotNetRef);
 
         saves = await JS.InvokeAsync<SaveSlot[]>("WebPlayer.listSaves");
         if (saves.Length > 0)
         {
+            manageMode = false;
             await JS.InvokeVoidAsync("WebPlayer.showSlots", false);
             StateHasChanged();
         }
@@ -78,9 +108,90 @@
         }
     }
 
-    private async Task StartGame(Stream? saveData)
+    [JSInvokable]
+    public async Task OpenSaveManager()
+    {
+        saves = await JS.InvokeAsync<SaveSlot[]>("WebPlayer.listSaves");
+        manageMode = true;
+        saveManagerError = null;
+        StateHasChanged();
+        await JS.InvokeVoidAsync("WebPlayer.showSlots", true);
+    }
+
+    private async Task SaveNew(string? name)
+    {
+        await JS.InvokeVoidAsync("WebPlayer.saveNew", name);
+        saves = await JS.InvokeAsync<SaveSlot[]>("WebPlayer.listSaves");
+        StateHasChanged();
+    }
+
+    private async Task DeleteSlot(int slotIndex)
+    {
+        var name = saves.FirstOrDefault(s => s.SlotIndex == slotIndex)?.Name ?? "this save";
+        var confirmed = await JS.InvokeAsync<bool>("confirm", $"Delete \"{name}\"? This can't be undone.");
+        if (!confirmed) return;
+
+        await JS.InvokeVoidAsync("WebPlayer.deleteSlot", slotIndex);
+        saves = await JS.InvokeAsync<SaveSlot[]>("WebPlayer.listSaves");
+        StateHasChanged();
+    }
+
+    private async Task DownloadSaveToFile()
     {
         if (gameData == null) return;
+        var filename = Path.GetFileNameWithoutExtension(gameData.Filename) + ".quest-save";
+        await JS.InvokeVoidAsync("WebPlayer.downloadSaveAsFile", filename);
+    }
+
+    // A .quest-save only carries state, not bundled resources — it must be
+    // paired with the currently-loaded game to load safely. The save's root
+    // <asl original="..."> attribute records which game it's for (this is
+    // WorldModel.Filename at save time, i.e. gameData.Filename — not
+    // gameData.GameId, which for production games is a stable API id rather
+    // than a filename); refuse the load if it doesn't match.
+    private async Task LoadSaveFromFile(IBrowserFile file)
+    {
+        if (gameData == null) return;
+
+        var ms = new MemoryStream();
+        await using (var browserStream = file.OpenReadStream(MaxSaveFileBytes))
+        {
+            await browserStream.CopyToAsync(ms);
+        }
+        ms.Position = 0;
+
+        string? originalAttr = null;
+        try
+        {
+            var doc = await XDocument.LoadAsync(ms, LoadOptions.None, CancellationToken.None);
+            originalAttr = doc.Root?.Attribute("original")?.Value;
+        }
+        catch
+        {
+            // falls through to the mismatch error below
+        }
+
+        if (string.IsNullOrEmpty(originalAttr) ||
+            !string.Equals(Path.GetFileName(originalAttr), Path.GetFileName(gameData.Filename), StringComparison.OrdinalIgnoreCase))
+        {
+            saveManagerError = "This save is for a different game — open that game first, then try again.";
+            StateHasChanged();
+            return;
+        }
+
+        saveManagerError = null;
+        ms.Position = 0;
+        await StartGame(ms);
+    }
+
+    private async Task CloseSaveManager()
+    {
+        await JS.InvokeVoidAsync("WebPlayer.closeSlots");
+    }
+
+    private async Task StartGame(Stream? saveData)
+    {
+        if (gameData == null || originalGameBytes == null) return;
 
         await JS.InvokeVoidAsync("WebPlayer.closeSlots");
 
@@ -90,14 +201,19 @@
             GameSessionTracker.GameEnded();
         }
 
-        game = GameLauncher.GetGame(gameData, saveData);
+        // A fresh GameData wrapping a new copy of the cached bytes each call —
+        // see the comment in OnAfterRenderAsync on why gameData.Data itself
+        // can't be reused across more than one launch.
+        var launchGameData = new GameData(new MemoryStream(originalGameBytes), gameData.GameId, gameData.Filename, GameDataProvider);
+
+        game = GameLauncher.GetGame(launchGameData, saveData);
 
         if (game == null) return;
 
         game.LogError += ex => Logger.LogError(ex, "Game error in {GameId}", gameData.GameId);
         GameSessionTracker.GameStarted();
 
-        var resourceUrlProvider = ResourceUrlProvider(gameData);
+        var resourceUrlProvider = ResourceUrlProvider(launchGameData);
 
         Player = new Player(game, resourceUrlProvider, JS);
         if (resourceUrlProvider is LocalResourceUrlProvider localResourceProvider)
@@ -142,6 +258,8 @@
             game.Finish();
             GameSessionTracker.GameEnded();
         }
+
+        gameDotNetRef?.Dispose();
     }
 
 }
