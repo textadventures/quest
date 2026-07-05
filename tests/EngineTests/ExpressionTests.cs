@@ -122,13 +122,27 @@ public class ExpressionTests
     }
 
     [TestMethod]
+    public async Task TestPropertyAccess_AttributeNameStartingWithTrueOrFalse()
+    {
+        // A property name after a dot is captured directly from the raw identifier text by
+        // QuestNCalcLogicalExpressionParser's propertyAccessSuffix rule (see
+        // src/Engine/Expressions/QuestNCalcLogicalExpressionParser.cs) rather than going
+        // through the primary-expression parser, so this path never had the true/false bug -
+        // this just documents that it keeps working.
+        _object.Fields.Set("trueattribute", "val1");
+        var result = await RunExpression<string>("object.trueattribute");
+        result.ShouldBe("val1");
+    }
+
+    [TestMethod]
     public async Task TestObjectNameStartingWithTrueOrFalse()
     {
-        // Regression test: NCalc's lexer greedily matches "true"/"false" as boolean
-        // literals even mid-identifier, so a multi-word object name starting with
-        // "True"/"False" used to fail to parse once its spaces were placeholder-joined
-        // into a single token. Bracket-quoting (see Utility.EncodeIdentifierSpaces) fixes
-        // this, for both multi-word and single-word names.
+        // Regression test: QuestNCalcLogicalExpressionParser's primary rule tried
+        // booleanTrue/booleanFalse before identifierExpression, and Parlot's OneOf returns on
+        // the first partial match - so "Truecoat" matched "true" as a boolean literal and left
+        // "coat" dangling, and a multi-word name like "True North Cave" (placeholder-joined
+        // into "True___SPACE___North___SPACE___Cave" before hitting the parser) failed the
+        // same way. Fixed at the grammar level by requiring a word boundary after true/false.
         const string trueObjectName = "True North Cave";
         const string falseObjectName = "Falsework";
         var trueObject = _worldModel.GetElementFactory(ElementType.Object).Create(trueObjectName);

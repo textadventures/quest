@@ -210,9 +210,15 @@ public static class QuestNCalcLogicalExpressionParser
             .Then<LogicalExpression>(x =>
                 new Function(new Identifier(x.Item1.ToString()!), (LogicalExpressionList) x.Item2));
 
-        var booleanTrue = Terms.Text("true", true)
+        // Require a word boundary after "true"/"false" so they aren't matched as a prefix of a
+        // longer identifier (e.g. "Truecoat", "false1") - Parlot's OneOf tries alternatives in
+        // order and returns on the first partial match, so without this, "Truecoat" would match
+        // booleanTrue against "True" and leave "coat" dangling, causing a parse error further on.
+        var identifierContinuation = Literals.Pattern(c => char.IsLetterOrDigit(c) || c == '_');
+
+        var booleanTrue = Terms.Text("true", true).AndSkip(Not(identifierContinuation))
             .Then<LogicalExpression>(True);
-        var booleanFalse = Terms.Text("false", true)
+        var booleanFalse = Terms.Text("false", true).AndSkip(Not(identifierContinuation))
             .Then<LogicalExpression>(False);
 
         var singleQuotesStringValue =
