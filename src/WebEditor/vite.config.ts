@@ -39,9 +39,6 @@ export default defineConfig({
             const data = await readFile(filePath)
             const ext = extname(filePath)
             res.setHeader('Content-Type', mimeTypes[ext] ?? 'application/octet-stream')
-            // Required for SharedArrayBuffer used by the .NET WASM runtime
-            res.setHeader('Cross-Origin-Opener-Policy', 'same-origin')
-            res.setHeader('Cross-Origin-Embedder-Policy', 'require-corp')
             res.end(data)
           } catch {
             next()
@@ -52,10 +49,6 @@ export default defineConfig({
   ],
   server: {
     port: 5174,
-    headers: {
-      'Cross-Origin-Opener-Policy': 'same-origin',
-      'Cross-Origin-Embedder-Policy': 'require-corp',
-    },
     proxy: {
       // Proxy WasmPlayer through the same origin so BroadcastChannel works between editor and player tabs.
       '/player': {

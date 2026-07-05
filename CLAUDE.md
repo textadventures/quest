@@ -30,7 +30,7 @@ dotnet build src/WasmPlayer/WasmPlayer.csproj
 # Build WasmPlayer (Release — AOT compiled, ~15s)
 dotnet build --configuration Release src/WasmPlayer/WasmPlayer.csproj
 
-# Run WasmPlayer dev server (requires COOP/COEP headers for SharedArrayBuffer)
+# Run WasmPlayer dev server
 node src/WasmPlayer/dev-server.mjs              # Debug build
 node src/WasmPlayer/dev-server.mjs --release    # Release/AOT build
 # Open: http://localhost:5175/?url=/examples/simple.aslx

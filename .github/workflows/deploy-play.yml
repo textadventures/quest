@@ -57,10 +57,6 @@ jobs:
           cp -r src/WasmEditor/bin/Release/net10.0/browser-wasm/AppBundle/. deploy/AppBundle/
           cp -r src/WasmPlayer/bin/Release/net10.0/browser-wasm/AppBundle/. deploy/player/
           cat > deploy/_headers <<'EOF'
-          /*
-            Cross-Origin-Opener-Policy: same-origin
-            Cross-Origin-Embedder-Policy: require-corp
-
           /player/_framework/*
             Cache-Control: no-cache
 

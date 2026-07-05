@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-// Dev server for WasmPlayer — serves the Debug AppBundle with required COOP/COEP headers.
+// Dev server for WasmPlayer — serves the Debug AppBundle.
 // Run: node dev-server.mjs
 // Then open: http://localhost:5175/?url=/examples/simple.aslx
 //
@@ -52,10 +52,6 @@ function serveFile(res, filePath) {
 }
 
 const server = http.createServer(async (req, res) => {
-  // Required for SharedArrayBuffer used by the .NET WASM runtime
-  res.setHeader('Cross-Origin-Opener-Policy', 'same-origin');
-  res.setHeader('Cross-Origin-Embedder-Policy', 'require-corp');
-
   let urlPath = req.url?.split('?')[0] ?? '/';
   if (urlPath === '/') urlPath = '/index.html';
 

@@ -519,6 +519,30 @@ async function openSavesDialog(mode, gameId = WebPlayer.gameId) {
     dlg.showModal();
 }
 
+// Nothing here can ever work over file:// — the runtime fetches its own
+// resources (playercore.htm, the dotnet WASM runtime) via relative URLs,
+// and browsers refuse those fetches from a file: origin (each file: URL is
+// treated as a unique, opaque origin with no ability to fetch even its own
+// sibling files). Caught up front, before any load is attempted, so the
+// user gets an accurate explanation instead of the generic "not a valid
+// game file" message that fetch failures would otherwise produce.
+function showFileProtocolError() {
+    document.documentElement.classList.remove('qv-booting');
+    const pickers = document.getElementById('qv-pickers');
+    const msg = document.getElementById('qv-loading-msg');
+    const errorEl = document.getElementById('qv-error');
+    if (msg) msg.style.display = 'none';
+    if (pickers) pickers.style.display = 'none';
+    if (!errorEl) return;
+    errorEl.innerHTML = '<strong>This can\'t run from a local file.</strong> '
+        + 'You\'ve opened index.html directly from disk (a file:// address). Browsers block the web features this '
+        + 'player needs &mdash; fetching its own files and running WebAssembly &mdash; when a page is loaded that way, '
+        + 'so no game will load no matter which one you pick. '
+        + 'Serve this folder over http(s) instead: for example, run <code>npx serve</code> in this folder and open '
+        + 'the http://localhost address it prints, or upload the files to any web host.';
+    errorEl.style.display = 'block';
+}
+
 function showLoading() {
     const pickers = document.getElementById('qv-pickers');
     const msg = document.getElementById('qv-loading-msg');
@@ -664,6 +688,11 @@ async function fetchGameBytes(url) {
 // ── Boot ─────────────────────────────────────────────────────────────────────
 
 (function () {
+    if (window.location.protocol === 'file:') {
+        document.addEventListener('DOMContentLoaded', showFileProtocolError);
+        return;
+    }
+
     const params = new URLSearchParams(window.location.search);
 
     if (params.get('source') === 'editor') {
