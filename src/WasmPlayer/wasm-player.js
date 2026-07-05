@@ -17,7 +17,6 @@ let resourceRoot = null;
 // and never reassigned by a slot/file load.
 let originalGameBytes = null;
 let originalGameFilename = null;
-let isLegacyGame = false;
 
 function computeGameId(filename) {
     return filename.split('/').pop();
@@ -247,9 +246,7 @@ async function initWasmPlayer(gameBytes, filename, bc = null, saveBytes = null) 
 
     await setupPaperJs();
 
-    WebPlayer.onSaveClick = isLegacyGame
-        ? () => GameSaver.save()
-        : () => openSavesDialog('manage');
+    WebPlayer.onSaveClick = () => openSavesDialog('manage');
     WebPlayer.initUI();
     // Editor-preview sessions (bc) don't offer saving at all — these are
     // transient test runs launched from the game editor, not real play
@@ -286,18 +283,16 @@ async function restartGame(saveBytes) {
 async function startGame(bytes, filename, bc = null, gameIdOverride = null) {
     originalGameBytes = bytes;
     originalGameFilename = filename;
-    isLegacyGame = /\.(asl|cas)$/i.test(filename);
     // gameIdOverride lets callers with a stronger identity than the filename
     // (e.g. the Text Adventures API's stable game id) use it instead.
     const gameId = gameIdOverride || computeGameId(filename);
     WebPlayer.gameId = gameId;
 
     let saveBytes = null;
-    // Editor-preview sessions (bc) and legacy games are excluded: a preview's
-    // filename is transient/reused per edit (prompting every reload would be
-    // noisy and would fragment saves under a churny id), and legacy .asl/.cas
-    // saves aren't self-contained enough for the full slot manager (see plan).
-    if (!bc && !isLegacyGame) {
+    // Editor-preview sessions (bc) are excluded: a preview's filename is
+    // transient/reused per edit, so prompting every reload would be noisy
+    // and would fragment saves under a churny id.
+    if (!bc) {
         let saves = [];
         try { saves = await GameSaver.listSaves(gameId); } catch { saves = []; }
         if (saves.length > 0) {
@@ -384,10 +379,23 @@ async function downloadSaveToFile() {
 // "different game entirely" apart reliably. IFID is stable regardless of
 // how/where the game was loaded from, so it also makes a save downloaded
 // from WebPlayer for a textadventures.co.uk game load correctly here. Only
-// falls back to the filename if either side lacks an ifid (shouldn't happen
-// for modern games — legacy .asl/.cas are excluded from this whole feature).
+// falls back to the filename if either side lacks an ifid (rare for modern
+// games). Legacy .asl/.cas games skip the check altogether: V4Game.GameID is
+// hardcoded null (no ifid concept) *and* their save data is raw restore-data
+// text, not XML, so it carries no "original"/gameid to fall back to either —
+// there's simply nothing reliable to cross-check. The engine's own
+// save-format validation (V4Game's "QUEST300"/"QUEST200.1" header check) is
+// the safety net there instead, same tradeoff WebPlayer's equivalent check
+// already makes.
 async function loadSaveFromFile(file) {
     const bytes = new Uint8Array(await file.arrayBuffer());
+
+    if (/\.(asl|cas)$/i.test(originalGameFilename)) {
+        hideSavesError();
+        await restartGame(bytes);
+        return;
+    }
+
     let originalAttr = null;
     let uploadedIfid = null;
     try {

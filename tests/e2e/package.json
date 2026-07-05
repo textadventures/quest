@@ -1,0 +1,10 @@
+{
+  "name": "quest-e2e",
+  "version": "0.0.1",
+  "private": true,
+  "type": "module",
+  "description": "Playwright browser-driven verification scripts for WebPlayer/WasmPlayer manual QA — not part of the dotnet test suite.",
+  "devDependencies": {
+    "playwright": "^1.55.0"
+  }
+}
