@@ -110,6 +110,12 @@ class WebPlayer {
         cmdSave.style.display = value ? "initial" : "none";
         if (!value) {
             window.saveGame = () => addText("Disabled");
+            // Saving disabled means this is the legacy editor's preview page
+            // (Editor.razor sets EnableSave="false"), which the editor reloads
+            // on every edit — without this, that reload would trigger the
+            // beforeunload warning added for issue #1741 on every single one.
+            // Matches WasmPlayer's editor-preview suppression in wasm-player.js.
+            suppressUnsavedProgressWarning = true;
         }
     }
 
