@@ -5,13 +5,16 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Quest Viva</title>
     <link rel="icon" type="image/svg+xml" href="favicon.svg" />
+    <script type="text/javascript" src="quest-config.js"></script>
     <script type="text/javascript">
         // Runs before the start screen is parsed, so when a game is specified via the
-        // URL we paint straight into the loading state — otherwise the file/URL
-        // pickers render for a frame before showLoading() gets a chance to hide them.
+        // URL (or a defaultGameUrl is configured) we paint straight into the loading
+        // state — otherwise the file/URL pickers render for a frame before
+        // showLoading() gets a chance to hide them.
         (function () {
             var params = new URLSearchParams(location.search);
-            if (params.get('id') || params.get('url') || params.get('source') === 'editor') {
+            if (params.get('id') || params.get('url') || params.get('source') === 'editor'
+                || window.QuestVivaConfig?.defaultGameUrl) {
                 document.documentElement.classList.add('qv-booting');
             }
         })();
@@ -33,7 +36,6 @@
     <script type="text/javascript" src="playercore.js"></script>
     <script type="text/javascript" src="player.js"></script>
     <script type="text/javascript" src="lib/paper.js"></script>
-    <script type="text/javascript" src="quest-config.js"></script>
     <!-- VERSION_SCRIPT: spliced in at build time by scripts/inject-version.mjs
          (into generated/index.html) — sets window.QuestVivaVersion from the
          repo-root VERSION file before wasm-player.js runs. -->
