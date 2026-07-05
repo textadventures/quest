@@ -88,6 +88,7 @@ window.WebPlayer = {
     setCanSave(value) {
         const cmdSave = document.getElementById("cmdSave");
         if (cmdSave) cmdSave.style.display = value ? "initial" : "none";
+        canSave = value;
         if (!value) window.saveGame = () => addText("Disabled");
     },
 
@@ -250,13 +251,17 @@ async function initWasmPlayer(gameBytes, filename, bc = null, saveBytes = null) 
         ? () => GameSaver.save()
         : () => openSavesDialog('manage');
     WebPlayer.initUI();
-    WebPlayer.setCanSave(true);
+    // Editor-preview sessions (bc) don't offer saving at all — these are
+    // transient test runs launched from the game editor, not real play
+    // sessions worth persisting.
+    WebPlayer.setCanSave(!bc);
 
     await Bridge.Begin();
 }
 
-// Reloads a save on top of the already-booted WASM runtime — used for
-// in-game Load, so it must NOT repeat WebPlayer.initUI()/setupPaperJs():
+// Reloads a save (or, with saveBytes null, the fresh original game) on top
+// of the already-booted WASM runtime — used for in-game Load and "Start
+// from the beginning", so it must NOT repeat WebPlayer.initUI()/setupPaperJs():
 // those rebind #cmdSave/#cmdDebug click handlers, jQuery-UI widgets, etc.
 // unconditionally, and doing that twice on the same live DOM would
 // double-bind every one of them.
@@ -264,7 +269,9 @@ async function restartGame(saveBytes) {
     document.getElementById('qv-saves')?.close();
     resetGameOutput();
 
-    const ok = await Bridge.InitialiseWithSave(originalGameBytes, originalGameFilename, saveBytes);
+    const ok = saveBytes
+        ? await Bridge.InitialiseWithSave(originalGameBytes, originalGameFilename, saveBytes)
+        : await Bridge.Initialise(originalGameBytes, originalGameFilename);
     if (!ok) {
         showSavesError('Failed to load that save.');
         return;
@@ -364,6 +371,7 @@ async function downloadSaveToFile() {
     a.download = WebPlayer.gameId.replace(/\.[^.]+$/, '') + '.quest-save';
     a.click();
     URL.revokeObjectURL(url);
+    clearUnsavedProgress();
 }
 
 // A .quest-save only carries state, not resources — it must be paired with
@@ -415,11 +423,16 @@ function ensureSavesDialogWired() {
     });
 
     document.getElementById('qv-saves-start-new').addEventListener('click', () => {
-        if (!bootChoiceResolve) return;
-        const resolve = bootChoiceResolve;
-        bootChoiceResolve = null;
-        dlg.close();
-        resolve({ type: 'new' });
+        if (bootChoiceResolve) {
+            const resolve = bootChoiceResolve;
+            bootChoiceResolve = null;
+            dlg.close();
+            resolve({ type: 'new' });
+            return;
+        }
+        // Manage mode: restarting mid-session, matches WebPlayer's Slots
+        // "Start from the beginning" button (no confirm() there either).
+        restartGame(null);
     });
 
     document.getElementById('qv-saves-list').addEventListener('click', async (e) => {

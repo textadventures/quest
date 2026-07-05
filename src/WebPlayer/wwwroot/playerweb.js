@@ -58,6 +58,7 @@ class WebPlayer {
         a.download = filename;
         a.click();
         URL.revokeObjectURL(url);
+        clearUnsavedProgress();
     }
 
     static initSlotsDialog() {
@@ -107,6 +108,7 @@ class WebPlayer {
     static setCanSave(value) {
         const cmdSave = document.getElementById("cmdSave");
         cmdSave.style.display = value ? "initial" : "none";
+        canSave = value;
         if (!value) {
             window.saveGame = () => addText("Disabled");
         }

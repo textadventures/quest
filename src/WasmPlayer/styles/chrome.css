@@ -74,8 +74,7 @@
     display: none;
 }
 
-:scope#qv-saves[data-mode="manage"] [data-mode-text="boot"],
-:scope#qv-saves[data-mode="manage"] .qv-boot-only {
+:scope#qv-saves[data-mode="manage"] [data-mode-text="boot"] {
     display: none;
 }
 

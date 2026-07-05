@@ -29,6 +29,7 @@ function setUpSessionLog() {
 var _waitingForSoundToFinish = false;
 
 function msgboxSubmit(response) {
+    markUnsavedProgress();
     $("#msgbox").dialog("close");
     window.setTimeout(async function () {
         await WebPlayer.uiSetQuestionResponse(response);
@@ -84,6 +85,7 @@ function showMenu(title, options, allowCancel) {
 function dialogSelect() {
     _menuSelection = $("#dialogOptions").val();
     if (_menuSelection.length > 0) {
+        markUnsavedProgress();
         $("#dialog").dialog("close");
         window.setTimeout(function () {
             WebPlayer.uiChoice(_menuSelection);
@@ -111,6 +113,7 @@ function sendCommand(text, metadata) {
     if (_pauseMode || _waitingForSoundToFinish || _waitMode || !canSendCommand) return;
     canSendCommand = false;
     markScrollPosition();
+    markUnsavedProgress();
 
     window.setTimeout(function () {
         WebPlayer.sendCommand(text, getTickCountAndStopTimer(), metadata);
@@ -118,6 +121,7 @@ function sendCommand(text, metadata) {
 }
 
 function ASLEvent(event, parameter) {
+    markUnsavedProgress();
     window.setTimeout(async function () {
         await WebPlayer.uiSendEvent(event, "" + parameter);
     }, 1);
