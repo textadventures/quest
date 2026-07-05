@@ -4,7 +4,7 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "build": "tailwindcss -i styles/chrome.css -o generated/chrome.css --minify && node scripts/scope-css.mjs generated/chrome.css && node scripts/build-icons.mjs"
+    "build": "tailwindcss -i styles/chrome.css -o generated/chrome.css --minify && node scripts/scope-css.mjs generated/chrome.css && node scripts/build-icons.mjs && node scripts/inject-version.mjs"
   },
   "devDependencies": {
     "@skeletonlabs/skeleton": "^4.15.2",
