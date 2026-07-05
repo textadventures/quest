@@ -203,7 +203,7 @@ public static partial class Utility
 
     public static string ResolveElementName(string name)
     {
-        return name.Replace(k_spaceReplacementString, " ");
+        return name.Replace(k_spaceReplacementString, " ").Replace("[", "").Replace("]", "");
     }
 
     [GeneratedRegex(@"//")]
@@ -223,34 +223,102 @@ public static partial class Utility
             // "my variable = 12" becomes "my", "variable", "=", "12".
             // If any two adjacent elements end and begin with word characters,
             // (in this case, "my" and "variable" because "y" and "v" match
-            // regex "\w"), then we remove the space and replace it with
-            // our space placeholder. However, if one of the two words is a
-            // keyword ("and", "not" etc.), we don't convert it.
+            // regex "\w"), then those words belong to a single identifier and get
+            // merged into one run. However, if one of the two words is a
+            // keyword ("and", "not" etc.), we don't merge them.
             var words = text.Split(' ');
 
             if (words.Length == 1)
             {
-                return words[0];
+                return ProtectBooleanLiteralPrefix(words[0]);
             }
 
-            var result = new StringBuilder(words[0]);
+            var result = new StringBuilder();
+            var run = new List<string> {words[0]};
+            var runContainsDot = words[0].Contains('.');
+
+            void FlushRun()
+            {
+                if (run.Count == 1)
+                {
+                    result.Append(ProtectBooleanLiteralPrefix(run[0]));
+                }
+                else if (runContainsDot)
+                {
+                    // NCalc's own tokenizer already splits on '.', so a run that
+                    // contains a dot (e.g. an "obj.attribute name" property access)
+                    // must keep using the inert placeholder rather than brackets -
+                    // wrapping it in brackets would swallow the '.' as a literal
+                    // character instead of leaving it as NCalc's property-access operator.
+                    result.Append(string.Join(k_spaceReplacementString, run));
+                }
+                else
+                {
+                    // Bracket-quoting is how NCalc lets an identifier contain spaces.
+                    // Unlike the placeholder trick, it also protects names that start
+                    // with "true"/"false" - NCalc's lexer otherwise matches those as
+                    // boolean literals even mid-identifier. Non-word characters (e.g. a
+                    // trailing comma from a function-call argument list) at the run's
+                    // edges must stay outside the brackets, or NCalc reads them as part
+                    // of the identifier name.
+                    var leadingPunct = s_leadingNonWord().Match(run[0]).Value;
+                    var trailingPunct = s_trailingNonWord().Match(run[^1]).Value;
+                    run[0] = run[0][leadingPunct.Length..];
+                    run[^1] = run[^1][..^trailingPunct.Length];
+
+                    result.Append(leadingPunct)
+                        .Append('[').Append(string.Join(' ', run)).Append(']')
+                        .Append(trailingPunct);
+                }
+
+                run.Clear();
+                runContainsDot = false;
+            }
 
             for (var i = 1; i < words.Length; i++)
             {
                 if (IsSplitVariableName(words[i - 1], words[i]))
                 {
-                    result.Append(k_spaceReplacementString);
+                    run.Add(words[i]);
+                    runContainsDot |= words[i].Contains('.');
                 }
                 else
                 {
+                    FlushRun();
                     result.Append(' ');
+                    run.Add(words[i]);
+                    runContainsDot = words[i].Contains('.');
                 }
-
-                result.Append(words[i]);
             }
+
+            FlushRun();
 
             return result.ToString();
         });
+    }
+
+    // NCalc's lexer matches "true"/"false" as a boolean literal even when it's just the
+    // start of a longer identifier (e.g. "Truecoat", "false1"), so those still need
+    // bracket-quoting even though they never merge with a neighboring word. An identifier
+    // that is *exactly* "true"/"false" (with nothing else following) must stay unbracketed,
+    // since it's meant to be evaluated as the boolean literal, not looked up as a name.
+    [GeneratedRegex(@"^(true|false)\w", RegexOptions.IgnoreCase)]
+    private static partial Regex s_startsWithBooleanLiteralPrefix();
+
+    private static string ProtectBooleanLiteralPrefix(string word)
+    {
+        var leadingPunct = s_leadingNonWord().Match(word).Value;
+        if (leadingPunct.Length == word.Length)
+        {
+            return word;
+        }
+
+        var trailingPunct = s_trailingNonWord().Match(word).Value;
+        var core = word.Substring(leadingPunct.Length, word.Length - leadingPunct.Length - trailingPunct.Length);
+
+        return s_startsWithBooleanLiteralPrefix().IsMatch(core)
+            ? leadingPunct + "[" + core + "]" + trailingPunct
+            : word;
     }
 
     // Given two words e.g. "my" and "variable", see if they together comprise a variable name
@@ -260,6 +328,12 @@ public static partial class Utility
 
     [GeneratedRegex(@"^(\w+)")]
     private static partial Regex s_wordRegex2();
+
+    [GeneratedRegex(@"^\W*")]
+    private static partial Regex s_leadingNonWord();
+
+    [GeneratedRegex(@"\W*$")]
+    private static partial Regex s_trailingNonWord();
 
     private static bool IsSplitVariableName(string word1, string word2)
     {

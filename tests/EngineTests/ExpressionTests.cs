@@ -121,6 +121,32 @@ public class ExpressionTests
         result.ShouldBe("spacedvalue");
     }
 
+    [TestMethod]
+    public async Task TestObjectNameStartingWithTrueOrFalse()
+    {
+        // Regression test: NCalc's lexer greedily matches "true"/"false" as boolean
+        // literals even mid-identifier, so a multi-word object name starting with
+        // "True"/"False" used to fail to parse once its spaces were placeholder-joined
+        // into a single token. Bracket-quoting (see Utility.EncodeIdentifierSpaces) fixes
+        // this, for both multi-word and single-word names.
+        const string trueObjectName = "True North Cave";
+        const string falseObjectName = "Falsework";
+        var trueObject = _worldModel.GetElementFactory(ElementType.Object).Create(trueObjectName);
+        var falseObject = _worldModel.GetElementFactory(ElementType.Object).Create(falseObjectName);
+
+        (await RunExpressionGeneric(trueObjectName)).ShouldBe(trueObject);
+        (await RunExpressionGeneric(falseObjectName)).ShouldBe(falseObject);
+
+        (await RunExpression<bool>($"{trueObjectName} = {trueObjectName}")).ShouldBeTrue();
+        (await RunExpression<bool>($"{falseObjectName} = {falseObjectName}")).ShouldBeTrue();
+        (await RunExpression<bool>($"{trueObjectName} = {falseObjectName}")).ShouldBeFalse();
+
+        // Actual boolean literals must still evaluate as booleans, unaffected by the fix.
+        (await RunExpression<bool>("true")).ShouldBeTrue();
+        (await RunExpression<bool>("false")).ShouldBeFalse();
+        (await RunExpression<bool>($"{trueObjectName} <> null and true")).ShouldBeTrue();
+    }
+
     [DataTestMethod]
     [DataRow("1", 1)]
     [DataRow("1 + 2", 3)]

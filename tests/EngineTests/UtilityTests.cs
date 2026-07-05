@@ -99,23 +99,53 @@ public class UtilityTests
     [TestMethod]
     public void TestConvertVariableNamesWithSpaces()
     {
-        Assert.AreEqual("my___SPACE___variable", Engine.Utility.EncodeIdentifierSpaces("my variable"));
-        Assert.AreEqual("my___SPACE___variable, other___SPACE___variable",
+        // Multi-word identifiers are now bracket-quoted (NCalc's native syntax for
+        // identifiers containing spaces), rather than joined with a placeholder -
+        // this also protects names starting with "true"/"false" from being
+        // misread as boolean literals by NCalc's lexer.
+        Assert.AreEqual("[my variable]", Engine.Utility.EncodeIdentifierSpaces("my variable"));
+        Assert.AreEqual("[my variable], [other variable]",
             Engine.Utility.EncodeIdentifierSpaces("my variable, other variable"));
-        Assert.AreEqual("my___SPACE___variable, \"some text\", other___SPACE___variable",
+        Assert.AreEqual("[my variable], \"some text\", [other variable]",
             Engine.Utility.EncodeIdentifierSpaces("my variable, \"some text\", other variable"));
-        Assert.AreEqual("my___SPACE___long___SPACE___variable___SPACE___name",
+        Assert.AreEqual("[my long variable name]",
             Engine.Utility.EncodeIdentifierSpaces("my long variable name"));
     }
 
     [TestMethod]
     public void TestNamesNearKeywordsNotConverted()
     {
-        Assert.AreEqual("not my___SPACE___variable", Engine.Utility.EncodeIdentifierSpaces("not my variable"));
-        Assert.AreEqual("my___SPACE___variable or other___SPACE___variable",
+        Assert.AreEqual("not [my variable]", Engine.Utility.EncodeIdentifierSpaces("not my variable"));
+        Assert.AreEqual("[my variable] or [other variable]",
             Engine.Utility.EncodeIdentifierSpaces("my variable or other variable"));
         Assert.AreEqual("(not SomeFunction(\"hello there\"))",
             Engine.Utility.EncodeIdentifierSpaces("(not SomeFunction(\"hello there\"))"));
+    }
+
+    [TestMethod]
+    public void TestNamesStartingWithTrueOrFalseNotMisreadAsBooleanLiterals()
+    {
+        // Regression test: NCalc's lexer greedily matches "true"/"false" as boolean
+        // literals even when they're just a prefix of a longer identifier, so a
+        // placeholder-joined multi-word name (e.g. "True___SPACE___North___SPACE___Cave")
+        // used to fail to parse. Bracket-quoting sidesteps this entirely.
+        Assert.AreEqual("[True North Cave]",
+            Engine.Utility.EncodeIdentifierSpaces("True North Cave"));
+        Assert.AreEqual("[False Summit]", Engine.Utility.EncodeIdentifierSpaces("False Summit"));
+
+        // Single-word identifiers starting with "true"/"false" hit the same NCalc bug
+        // even though there's no space to encode, so they need bracketing too.
+        Assert.AreEqual("[Truecoat]", Engine.Utility.EncodeIdentifierSpaces("Truecoat"));
+        Assert.AreEqual("[Falsework]", Engine.Utility.EncodeIdentifierSpaces("Falsework"));
+
+        // Actual boolean literals - exact "true"/"false", any case, alone - must stay
+        // unbracketed so they still evaluate as booleans, not identifier lookups.
+        Assert.AreEqual("true", Engine.Utility.EncodeIdentifierSpaces("true"));
+        Assert.AreEqual("false", Engine.Utility.EncodeIdentifierSpaces("false"));
+        Assert.AreEqual("True", Engine.Utility.EncodeIdentifierSpaces("True"));
+        Assert.AreEqual("FALSE", Engine.Utility.EncodeIdentifierSpaces("FALSE"));
+        Assert.AreEqual("[Truecoat] = true and false <> [Falsework]",
+            Engine.Utility.EncodeIdentifierSpaces("Truecoat = true and false <> Falsework"));
     }
 
     [TestMethod]
