@@ -88,6 +88,7 @@ window.WebPlayer = {
     setCanSave(value) {
         const cmdSave = document.getElementById("cmdSave");
         if (cmdSave) cmdSave.style.display = value ? "initial" : "none";
+        canSave = value;
         if (!value) window.saveGame = () => addText("Disabled");
     },
 
@@ -250,7 +251,10 @@ async function initWasmPlayer(gameBytes, filename, bc = null, saveBytes = null) 
         ? () => GameSaver.save()
         : () => openSavesDialog('manage');
     WebPlayer.initUI();
-    WebPlayer.setCanSave(true);
+    // Editor-preview sessions (bc) don't offer saving at all — see the
+    // "Editor-preview sessions" comment in startGame() for why a churny,
+    // per-edit-reused filename can't safely back a save slot.
+    WebPlayer.setCanSave(!bc);
 
     await Bridge.Begin();
 }
@@ -283,10 +287,6 @@ async function startGame(bytes, filename, bc = null, gameIdOverride = null) {
     originalGameBytes = bytes;
     originalGameFilename = filename;
     isLegacyGame = /\.(asl|cas)$/i.test(filename);
-    // Editor-preview authors reload the preview tab to pick up every edit
-    // (see the comment below) — without this, the beforeunload warning added
-    // for issue #1741 would nag on every single one of those reloads.
-    if (bc) suppressUnsavedProgressWarning = true;
     // gameIdOverride lets callers with a stronger identity than the filename
     // (e.g. the Text Adventures API's stable game id) use it instead.
     const gameId = gameIdOverride || computeGameId(filename);

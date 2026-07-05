@@ -12,12 +12,15 @@ var beginningOfCurrentTurnScrollPosition = 0;
 // Tracks whether the player has made progress since the game started/loaded
 // that hasn't been saved anywhere (slot or file) yet, so an accidental
 // refresh/close can warn before silently discarding it (see beforeunload
-// listener below). suppressUnsavedProgressWarning lets WasmPlayer's
-// editor-preview mode (which relies on manual reloads to pick up new edits —
-// see wasm-player.js) opt out, since every reload there would otherwise
-// trigger the native "leave site?" prompt.
+// listener below). canSave mirrors the last value passed to
+// WebPlayer.setCanSave (both playerweb.js's and wasm-player.js's versions
+// keep this in sync) — if saving isn't even offered, there's nothing the
+// player could do about unsaved progress, so the warning is pointless. This
+// is what keeps the legacy editor's preview page (Editor.razor's
+// EnableSave="false") and WasmPlayer's editor-preview mode — both of which
+// reload on every edit — from being nagged by the warning on every reload.
 var hasUnsavedProgress = false;
-var suppressUnsavedProgressWarning = false;
+var canSave = true;
 
 function markUnsavedProgress() {
     hasUnsavedProgress = true;
@@ -28,7 +31,7 @@ function clearUnsavedProgress() {
 }
 
 window.addEventListener("beforeunload", function (e) {
-    if (!hasUnsavedProgress || suppressUnsavedProgressWarning) return;
+    if (!hasUnsavedProgress || !canSave) return;
     e.preventDefault();
     e.returnValue = "";
 });
