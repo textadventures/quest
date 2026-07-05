@@ -708,7 +708,9 @@ async function fetchGameBytes(url) {
     }
 
     const id = params.get('id');
-    const gameUrl = params.get('url');
+    // A URL-supplied game always wins over the configured default, so authors
+    // testing/sharing a specific ?url= link aren't stuck on their own game.
+    const gameUrl = params.get('url') || window.QuestVivaConfig?.defaultGameUrl;
 
     if (id) {
         // Start API fetch immediately; wire DOM once it's ready.
