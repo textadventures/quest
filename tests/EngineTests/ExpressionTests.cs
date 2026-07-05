@@ -121,6 +121,46 @@ public class ExpressionTests
         result.ShouldBe("spacedvalue");
     }
 
+    [TestMethod]
+    public async Task TestPropertyAccess_AttributeNameStartingWithTrueOrFalse()
+    {
+        // A property name after a dot is captured directly from the raw identifier text by
+        // QuestNCalcLogicalExpressionParser's propertyAccessSuffix rule (see
+        // src/Engine/Expressions/QuestNCalcLogicalExpressionParser.cs) rather than going
+        // through the primary-expression parser, so this path never had the true/false bug -
+        // this just documents that it keeps working.
+        _object.Fields.Set("trueattribute", "val1");
+        var result = await RunExpression<string>("object.trueattribute");
+        result.ShouldBe("val1");
+    }
+
+    [TestMethod]
+    public async Task TestObjectNameStartingWithTrueOrFalse()
+    {
+        // Regression test: QuestNCalcLogicalExpressionParser's primary rule tried
+        // booleanTrue/booleanFalse before identifierExpression, and Parlot's OneOf returns on
+        // the first partial match - so "Truecoat" matched "true" as a boolean literal and left
+        // "coat" dangling, and a multi-word name like "True North Cave" (placeholder-joined
+        // into "True___SPACE___North___SPACE___Cave" before hitting the parser) failed the
+        // same way. Fixed at the grammar level by requiring a word boundary after true/false.
+        const string trueObjectName = "True North Cave";
+        const string falseObjectName = "Falsework";
+        var trueObject = _worldModel.GetElementFactory(ElementType.Object).Create(trueObjectName);
+        var falseObject = _worldModel.GetElementFactory(ElementType.Object).Create(falseObjectName);
+
+        (await RunExpressionGeneric(trueObjectName)).ShouldBe(trueObject);
+        (await RunExpressionGeneric(falseObjectName)).ShouldBe(falseObject);
+
+        (await RunExpression<bool>($"{trueObjectName} = {trueObjectName}")).ShouldBeTrue();
+        (await RunExpression<bool>($"{falseObjectName} = {falseObjectName}")).ShouldBeTrue();
+        (await RunExpression<bool>($"{trueObjectName} = {falseObjectName}")).ShouldBeFalse();
+
+        // Actual boolean literals must still evaluate as booleans, unaffected by the fix.
+        (await RunExpression<bool>("true")).ShouldBeTrue();
+        (await RunExpression<bool>("false")).ShouldBeFalse();
+        (await RunExpression<bool>($"{trueObjectName} <> null and true")).ShouldBeTrue();
+    }
+
     [DataTestMethod]
     [DataRow("1", 1)]
     [DataRow("1 + 2", 3)]
