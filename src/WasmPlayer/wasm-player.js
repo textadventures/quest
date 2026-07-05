@@ -2,6 +2,17 @@
 // Defines the WebPlayer object surface that playercore.js / player.js call into,
 // then initialises the .NET WASM runtime and wires up [JSImport] callbacks.
 
+// Printed as soon as this script runs (i.e. as the start screen appears) —
+// window.QuestVivaVersion comes from the repo-root VERSION file, spliced in
+// at build time by scripts/inject-version.mjs, so this doesn't need to wait
+// for the WASM runtime to boot (which only happens once a game loads).
+console.log(
+    '%cQuest Viva %c' + (window.QuestVivaVersion || 'dev') + '\n%chttps://questviva.com',
+    'font-weight:700;font-size:14px;color:#0ea5e9',
+    'font-weight:400;color:#64748b',
+    'color:#64748b'
+);
+
 var platform = "wasmplayer";
 
 var _audio = null;

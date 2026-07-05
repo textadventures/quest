@@ -34,6 +34,9 @@
     <script type="text/javascript" src="player.js"></script>
     <script type="text/javascript" src="lib/paper.js"></script>
     <script type="text/javascript" src="quest-config.js"></script>
+    <!-- VERSION_SCRIPT: spliced in at build time by scripts/inject-version.mjs
+         (into generated/index.html) — sets window.QuestVivaVersion from the
+         repo-root VERSION file before wasm-player.js runs. -->
     <script type="text/javascript" src="wasm-player.js"></script>
 </head>
 <body>
