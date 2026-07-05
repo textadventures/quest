@@ -515,7 +515,18 @@ function showLoading() {
     if (msg) msg.style.display = 'flex';
 }
 
-function showError(downloadUrl, isLocalFile) {
+// Maps an HTTP status code to a short, specific reason. Only used when the
+// fetch actually reached a server and got a response — a blocked/failed
+// fetch (CORS, DNS, offline) never gets this far and has no status at all.
+function _describeHttpStatus(status) {
+    if (status === 404) return 'the file wasn\'t found there (404 Not Found)';
+    if (status === 401 || status === 403) return `access to it was denied (${status})`;
+    if (status >= 500) return `the server hosting it reported an error (HTTP ${status})`;
+    if (status >= 400) return `the request was rejected (HTTP ${status})`;
+    return `the server responded with HTTP ${status}`;
+}
+
+function showError(downloadUrl, isLocalFile, error) {
     const pickers = document.getElementById('qv-pickers');
     const msg = document.getElementById('qv-loading-msg');
     const errorEl = document.getElementById('qv-error');
@@ -529,10 +540,25 @@ function showError(downloadUrl, isLocalFile) {
     if (isLocalFile) {
         html = '<strong>Couldn\'t open that file.</strong> '
             + 'It doesn\'t look like a Quest game file (.quest, .aslx, .asl or .cas). Choose a different file below.';
+    } else if (Number.isInteger(error?.status)) {
+        // We got a real HTTP response, so we know exactly why it failed —
+        // no need to guess at CORS. downloadUrl may still be unknown here
+        // (e.g. the TextAdventures API lookup itself 404'd before we ever
+        // learned the game's source URL), so the link is optional.
+        html = '<strong>Couldn\'t load the game.</strong> '
+            + `When we asked for it, ${_describeHttpStatus(error.status)}. `
+            + (downloadUrl
+                ? '<a class="anchor" href="' + _esc(downloadUrl) + '" target="_blank" rel="noopener">'
+                    + 'Open the link</a> to double-check the URL, or load a saved copy with the file picker below.'
+                : 'Double-check the address, or load a saved copy of the game file with the file picker below.');
     } else if (downloadUrl) {
+        // fetch() itself failed before any response came back. The browser
+        // gives no way to tell apart a CORS block, DNS failure, or being
+        // offline in this case, so we can only name the likely suspects.
         html = '<strong>Couldn\'t load the game from that URL.</strong> '
-            + 'The site hosting it likely isn\'t configured to allow other sites to fetch the file directly '
-            + '(a CORS restriction) &mdash; this is a limitation of the hosting site, not something wrong with your download. '
+            + 'This is usually because the site hosting it isn\'t configured to allow other sites to fetch the file directly '
+            + '(a CORS restriction), but it could also be a network problem or a bad address '
+            + '&mdash; this is a limitation of the hosting site or your connection, not something wrong with your download. '
             + '<a class="anchor" href="' + _esc(downloadUrl) + '" target="_blank" rel="noopener">'
             + 'Open the file in a new tab</a>, save it to your computer, then load it with the file picker below.';
     } else {
@@ -592,8 +618,8 @@ function wireStartScreen() {
             const { bytes, filename } = await fetchGameBytes(url);
             await startGame(bytes, filename);
             setLocationParam('url', url);
-        } catch {
-            showError(url);
+        } catch (err) {
+            showError(url, false, err);
         }
     }
     urlBtn.addEventListener('click', doLoadUrl);
@@ -602,7 +628,11 @@ function wireStartScreen() {
 
 async function fetchGameBytes(url) {
     const response = await fetch(url);
-    if (!response.ok) throw new Error(`HTTP ${response.status}`);
+    if (!response.ok) {
+        const err = new Error(`HTTP ${response.status}`);
+        err.status = response.status;
+        throw err;
+    }
     const bytes = new Uint8Array(await response.arrayBuffer());
     let filename = (response.url || url).split('/').pop()?.split('?')[0] || 'game.aslx';
     // dev-server.mjs's CORS-avoidance proxy rewrites the Text Adventures API's
@@ -647,7 +677,11 @@ async function fetchGameBytes(url) {
             const apiRoot = window.QuestVivaConfig?.textAdventuresApiRoot
                 ?? 'https://textadventures.co.uk/api/';
             const apiResponse = await fetch(`${apiRoot}game/${id}`);
-            if (!apiResponse.ok) throw new Error(`API: HTTP ${apiResponse.status}`);
+            if (!apiResponse.ok) {
+                const err = new Error(`API: HTTP ${apiResponse.status}`);
+                err.status = apiResponse.status;
+                throw err;
+            }
             const { sourceGameUrl, resourceRoot: resRoot } = await apiResponse.json();
             resolvedSourceUrl = sourceGameUrl;
             resourceRoot = resRoot || null;
@@ -660,8 +694,8 @@ async function fetchGameBytes(url) {
             try {
                 const { bytes, filename } = await gamePromise;
                 await startGame(bytes, filename, null, id);
-            } catch {
-                showError(resolvedSourceUrl);
+            } catch (err) {
+                showError(resolvedSourceUrl, false, err);
             }
         });
         return;
@@ -676,8 +710,8 @@ async function fetchGameBytes(url) {
             try {
                 const { bytes, filename } = await gamePromise;
                 await startGame(bytes, filename);
-            } catch {
-                showError(gameUrl);
+            } catch (err) {
+                showError(gameUrl, false, err);
             }
         });
         return;
