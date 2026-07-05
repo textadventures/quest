@@ -107,7 +107,7 @@ Output lands in `src/WasmEditor/bin/Debug/net10.0/browser-wasm/AppBundle/`. The 
 src/WebEditor/
 ├── eslint.config.mjs
 ├── svelte.config.js        # adapter-static, $components alias
-├── vite.config.ts          # AppBundle middleware, COOP/COEP headers
+├── vite.config.ts          # AppBundle middleware
 ├── src/
 │   ├── app.css             # @import tailwindcss + skeleton + cerberus theme
 │   ├── app.html            # data-theme="cerberus"
@@ -137,8 +137,6 @@ Requires a WasmEditor Debug build first (see above), then:
 cd src/WebEditor
 npm run dev     # http://localhost:5174
 ```
-
-The Vite dev server sets `Cross-Origin-Opener-Policy: same-origin` and `Cross-Origin-Embedder-Policy: require-corp` headers, which are required for the .NET WASM runtime's use of `SharedArrayBuffer`.
 
 ### WASM loading
 
