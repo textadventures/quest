@@ -251,9 +251,12 @@ async function initWasmPlayer(gameBytes, filename, bc = null, saveBytes = null) 
         ? () => GameSaver.save()
         : () => openSavesDialog('manage');
     WebPlayer.initUI();
-    // Editor-preview sessions (bc) don't offer saving at all — see the
-    // "Editor-preview sessions" comment in startGame() for why a churny,
-    // per-edit-reused filename can't safely back a save slot.
+    // Editor-preview sessions (bc) don't offer saving at all — these are
+    // transient test runs launched from the game editor, not real play
+    // sessions worth persisting. The boot-time Continue/Load prompt is
+    // skipped for bc sessions for a related but narrower reason (a churny,
+    // per-edit-reused filename can't safely identify a save slot) — see the
+    // "Editor-preview sessions" comment in startGame() below.
     WebPlayer.setCanSave(!bc);
 
     await Bridge.Begin();
