@@ -232,6 +232,32 @@ async function initWasmPlayer(gameBytes, filename, bc = null, saveBytes = null) 
         };
     }
 
+    // Swap in the game UI *before* Initialise/Begin run, not after. Initialise
+    // registers the game's external <javascript> resources (RegisterExternalScripts),
+    // and games commonly use those to manipulate the game UI's own DOM (e.g.
+    // inserting a custom pane next to the built-in Inventory/Status panes). If
+    // the swap happens later, those scripts execute while the start screen is
+    // still showing, find none of the elements they're looking for, and
+    // silently no-op — a real game, "A Stranger Unregarded", does exactly this
+    // with a custom Inventory2 pane that never appeared because of this
+    // ordering.
+    //
+    // #qv-start is a fixed, full-viewport overlay (see chrome.css), so keeping
+    // it in the DOM on top of the freshly-swapped-in game UI still covers the
+    // screen exactly as before — the loading spinner/error UI's visible
+    // behaviour is unchanged. #qv-saves is a sibling of #qv-start in the
+    // static markup, so it'd also be destroyed by the innerHTML swap —
+    // detach both first and re-append them right after.
+    const startScreenEl = document.getElementById('qv-start');
+    const savesDialogEl = document.getElementById('qv-saves');
+    startScreenEl?.remove();
+    savesDialogEl?.remove();
+
+    document.body.innerHTML = playerHtml;
+
+    if (startScreenEl) document.body.appendChild(startScreenEl);
+    if (savesDialogEl) document.body.appendChild(savesDialogEl);
+
     const ok = saveBytes
         ? await Bridge.InitialiseWithSave(gameBytes, filename, saveBytes)
         : await Bridge.Initialise(gameBytes, filename);
@@ -240,20 +266,9 @@ async function initWasmPlayer(gameBytes, filename, bc = null, saveBytes = null) 
         throw new Error('Failed to initialise game');
     }
 
-    // #qv-saves is a sibling of #qv-start in the static markup, so it would
-    // otherwise be destroyed by the innerHTML swap below along with the rest
-    // of the start screen — detach it first and re-append it right after, so
-    // a failure in between (nothing throws here today, but keep the window
-    // tight) can't strand it permanently out of the DOM.
-    const savesDialogEl = document.getElementById('qv-saves');
-    savesDialogEl?.remove();
-
-    // Only swap in the game UI once everything has succeeded — keeps the start
-    // screen's loading spinner on screen for the whole WASM boot + game-parse
-    // sequence instead of cutting to a blank page while that runs.
-    document.body.innerHTML = playerHtml;
-
-    if (savesDialogEl) document.body.appendChild(savesDialogEl);
+    // Now that startup has actually succeeded, remove the start screen overlay
+    // to reveal the game UI underneath.
+    startScreenEl?.remove();
 
     await setupPaperJs();
 

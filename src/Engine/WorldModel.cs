@@ -50,6 +50,20 @@ public partial class WorldModel : IGame, IGameDebug
     private GameSaver? _saver;
     private TimerRunner? _timerRunner;
 
+    // Guards against re-entering the engine while the initial InitInterface/
+    // StartGame sequence (kicked off by BeginAsync but not yet complete) is
+    // still running. Games can trigger this via a JS-raised event mid-startup
+    // (e.g. a device-detection script that calls ASLEvent(...), which schedules
+    // a real `setTimeout` a few ms out) — WasmPlayer's cooperative single-
+    // threaded scheduling lets that fire and call back into SendEvent/Tick
+    // while, say, InitVerbsList hasn't run yet. Blazor Server's synchronization
+    // context doesn't allow that interleaving, which is why this only bites
+    // WasmPlayer. Tick can just be dropped (Begin() reschedules the next one
+    // itself); SendEvent has real one-time semantics so it's queued in
+    // _deferredEvents and replayed once Begin() completes instead.
+    private bool _beginInProgress;
+    private readonly Queue<(string eventName, string param)> _deferredEvents = new();
+
     internal TaskCompletionSource? _waitTcs;
     internal TaskCompletionSource<string?>? _menuTcs;
     internal TaskCompletionSource<bool>? _questionTcs;
@@ -199,6 +213,7 @@ public partial class WorldModel : IGame, IGameDebug
     private async Task BeginInternalAsync()
     {
         _turnSuspendedTcs = new();
+        _beginInProgress = true;
         try
         {
             _timerRunner = new TimerRunner(this, !_loadedFromSaved);
@@ -253,6 +268,13 @@ public partial class WorldModel : IGame, IGameDebug
         }
         finally
         {
+            _beginInProgress = false;
+            while (_deferredEvents.Count > 0)
+            {
+                var (eventName, param) = _deferredEvents.Dequeue();
+                await SendEventCore(eventName, param);
+            }
+
             SignalTurnSuspended();
         }
     }
@@ -347,7 +369,18 @@ public partial class WorldModel : IGame, IGameDebug
         return SendCommand(command, 0, ReadOnlyDictionary<string, string>.Empty);
     }
 
-    public async Task SendEvent(string eventName, string param)
+    public Task SendEvent(string eventName, string param)
+    {
+        if (_beginInProgress)
+        {
+            _deferredEvents.Enqueue((eventName, param));
+            return Task.CompletedTask;
+        }
+
+        return SendEventCore(eventName, param);
+    }
+
+    private async Task SendEventCore(string eventName, string param)
     {
         Elements.TryGetValue(ElementType.Function, eventName, out var handler);
 
@@ -459,6 +492,15 @@ public partial class WorldModel : IGame, IGameDebug
 
         if (State == GameState.Finished)
         {
+            return Task.CompletedTask;
+        }
+
+        if (_beginInProgress)
+        {
+            // A stale/early tick raced the still-running Begin() sequence (see
+            // _beginInProgress). Drop it — BeginInternalAsync calls
+            // SendNextTimerRequest() itself once it completes, so the next tick
+            // gets scheduled correctly from actual post-startup state.
             return Task.CompletedTask;
         }
 
