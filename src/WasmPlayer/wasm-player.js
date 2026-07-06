@@ -130,11 +130,8 @@ window.WebPlayer = {
     },
 
     async uiSaveGame(html) {
-        const base64 = await Bridge.SaveGame(html);
-        const binary = atob(base64);
-        const bytes = new Uint8Array(binary.length);
-        for (let i = 0; i < binary.length; i++) bytes[i] = binary.charCodeAt(i);
-        return bytes;
+        await Bridge.PrepareSaveGame(html);
+        return Bridge.GetSaveGameBytes();
     },
 
 };
@@ -232,6 +229,32 @@ async function initWasmPlayer(gameBytes, filename, bc = null, saveBytes = null) 
         };
     }
 
+    // Swap in the game UI *before* Initialise/Begin run, not after. Initialise
+    // registers the game's external <javascript> resources (RegisterExternalScripts),
+    // and games commonly use those to manipulate the game UI's own DOM (e.g.
+    // inserting a custom pane next to the built-in Inventory/Status panes). If
+    // the swap happens later, those scripts execute while the start screen is
+    // still showing, find none of the elements they're looking for, and
+    // silently no-op — a real game, "A Stranger Unregarded", does exactly this
+    // with a custom Inventory2 pane that never appeared because of this
+    // ordering.
+    //
+    // #qv-start is a fixed, full-viewport overlay (see chrome.css), so keeping
+    // it in the DOM on top of the freshly-swapped-in game UI still covers the
+    // screen exactly as before — the loading spinner/error UI's visible
+    // behaviour is unchanged. #qv-saves is a sibling of #qv-start in the
+    // static markup, so it'd also be destroyed by the innerHTML swap —
+    // detach both first and re-append them right after.
+    const startScreenEl = document.getElementById('qv-start');
+    const savesDialogEl = document.getElementById('qv-saves');
+    startScreenEl?.remove();
+    savesDialogEl?.remove();
+
+    document.body.innerHTML = playerHtml;
+
+    if (startScreenEl) document.body.appendChild(startScreenEl);
+    if (savesDialogEl) document.body.appendChild(savesDialogEl);
+
     const ok = saveBytes
         ? await Bridge.InitialiseWithSave(gameBytes, filename, saveBytes)
         : await Bridge.Initialise(gameBytes, filename);
@@ -240,20 +263,9 @@ async function initWasmPlayer(gameBytes, filename, bc = null, saveBytes = null) 
         throw new Error('Failed to initialise game');
     }
 
-    // #qv-saves is a sibling of #qv-start in the static markup, so it would
-    // otherwise be destroyed by the innerHTML swap below along with the rest
-    // of the start screen — detach it first and re-append it right after, so
-    // a failure in between (nothing throws here today, but keep the window
-    // tight) can't strand it permanently out of the DOM.
-    const savesDialogEl = document.getElementById('qv-saves');
-    savesDialogEl?.remove();
-
-    // Only swap in the game UI once everything has succeeded — keeps the start
-    // screen's loading spinner on screen for the whole WASM boot + game-parse
-    // sequence instead of cutting to a blank page while that runs.
-    document.body.innerHTML = playerHtml;
-
-    if (savesDialogEl) document.body.appendChild(savesDialogEl);
+    // Now that startup has actually succeeded, remove the start screen overlay
+    // to reveal the game UI underneath.
+    startScreenEl?.remove();
 
     await setupPaperJs();
 
@@ -332,6 +344,38 @@ function _esc(str) {
 
 let savesDialogWired = false;
 let bootChoiceResolve = null;
+
+// Waits for the browser to actually paint the current frame. WasmPlayer's
+// WASM runtime is single-threaded and the engine's SaveAsync does its work
+// synchronously (no genuine await inside it) — so a DOM update made right
+// before calling into it sits queued but unpainted for the entire blocking
+// call, since the one JS/UI thread has no chance to render until that call
+// returns. Awaiting two animation frames forces a real yield back to the
+// browser first, so a "Saving…" label actually reaches the screen before the
+// blocking work starts, instead of only flashing briefly at the very end.
+function nextPaint() {
+    return new Promise(resolve => requestAnimationFrame(() => requestAnimationFrame(resolve)));
+}
+
+// Disables a button and (if given) swaps its label for the duration of an
+// async op, so slower saves (a big transcript, IndexedDB contention, low-end
+// devices) read as "working" rather than an unresponsive click — there was
+// previously no feedback at all between clicking Save and the list
+// refreshing. busyText is omitted for icon-only buttons (e.g. delete), whose
+// content is an <svg>, not text — overwriting textContent would destroy it.
+async function withBusyButton(button, busyText, fn) {
+    const originalText = button.textContent;
+    const wasDisabled = button.disabled;
+    button.disabled = true;
+    if (busyText) button.textContent = busyText;
+    await nextPaint();
+    try {
+        return await fn();
+    } finally {
+        button.disabled = wasDisabled;
+        if (busyText) button.textContent = originalText;
+    }
+}
 
 function showSavesError(message) {
     const el = document.getElementById('qv-saves-error');
@@ -473,19 +517,24 @@ function ensureSavesDialogWired() {
         if (delBtn) {
             const name = delBtn.closest('li')?.querySelector('[data-slot]')?.textContent ?? 'this save';
             if (!confirm(`Delete "${name}"? This can't be undone.`)) return;
-            await GameSaver.deleteSlot(Number(delBtn.dataset.deleteSlot), WebPlayer.gameId);
+            await withBusyButton(delBtn, '', async () => {
+                await GameSaver.deleteSlot(Number(delBtn.dataset.deleteSlot), WebPlayer.gameId);
+            });
             renderSavesList(await GameSaver.listSaves(WebPlayer.gameId), 'manage');
         }
     });
 
-    document.getElementById('qv-saves-save-new').addEventListener('click', async () => {
+    document.getElementById('qv-saves-save-new').addEventListener('click', async (e) => {
         const input = document.getElementById('qv-saves-name-input');
-        await GameSaver.save(input.value.trim() || undefined);
+        await withBusyButton(e.currentTarget, 'Saving…', async () => {
+            await GameSaver.save(input.value.trim() || undefined);
+        });
         input.value = '';
         renderSavesList(await GameSaver.listSaves(WebPlayer.gameId), 'manage');
     });
 
-    document.getElementById('qv-saves-download').addEventListener('click', downloadSaveToFile);
+    document.getElementById('qv-saves-download').addEventListener('click', (e) =>
+        withBusyButton(e.currentTarget, 'Saving…', downloadSaveToFile));
 
     const uploadBtn = document.getElementById('qv-saves-upload-btn');
     const fileInput = document.getElementById('qv-saves-file-input');
