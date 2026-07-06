@@ -79,6 +79,6 @@ jobs:
 
       - name: Attach WasmPlayer build to GitHub Release
         if: github.ref_type == 'tag'
-        run: gh release create ${{ github.ref_name }} WasmPlayer.zip --title "${{ github.ref_name }}" --notes "Quest Viva ${{ github.ref_name }}"
+        run: gh release create ${{ github.ref_name }} WasmPlayer.zip --title "${{ github.ref_name }}" --generate-notes
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}

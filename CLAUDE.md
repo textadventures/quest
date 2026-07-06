@@ -76,12 +76,14 @@ EditorCore ───────────────────────
 
 ## Releasing
 
-1. Update the `VERSION` file on `main` and push
-2. Run `./release.sh`
+1. Open a PR that updates the `VERSION` file
+2. Merge it to `main`
 
-This creates and pushes a git tag (e.g. `v6.0.0-beta.12`) which triggers the `docker-publish` GitHub Actions workflow. That workflow verifies the tag matches the `VERSION` file, then builds and pushes the Docker image tagged with that version. The version is also embedded in the binary at build time and displayed at `/about`.
+Merging a `VERSION` change to `main` triggers the `auto-tag` GitHub Actions workflow, which creates and pushes a git tag (e.g. `v6.0.0-beta.12`) if one doesn't already exist for that version. The tag push in turn triggers `docker-publish`, `nuget-publish`, and `deploy-play`, which build/push the Docker image, publish NuGet packages, deploy play.questviva.com, and attach a GitHub Release with auto-generated notes. The version is also embedded in the binary at build time and displayed at `/about`.
 
-If you forgot to update `VERSION`, the script will fail locally because the tag for the old version already exists.
+`auto-tag` pushes using the `RELEASE_PAT` repo secret (a PAT with Contents read/write), not the default `GITHUB_TOKEN` — tags pushed with `GITHUB_TOKEN` don't trigger other workflows, so a PAT is required for the tag-triggered workflows to fire.
+
+`./release.sh` still works as a manual fallback if you need to tag from a clean local `main` directly (e.g. if `auto-tag` is broken). If you forgot to update `VERSION` before running it, the script will fail locally because the tag for the old version already exists.
 
 ## Key Technical Details
 

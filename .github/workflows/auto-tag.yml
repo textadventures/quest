@@ -1,0 +1,33 @@
+name: Auto-tag release
+
+# Runs whenever the VERSION file changes on main. Creates and pushes the git
+# tag that docker-publish.yml, nuget-publish.yml, and deploy-play.yml key off
+# of, so merging a VERSION-bump PR is the release — no manual release.sh run
+# needed.
+on:
+  push:
+    branches: [main]
+    paths: ['VERSION']
+
+jobs:
+  tag:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          token: ${{ secrets.RELEASE_PAT }}
+
+      - name: Create and push tag if it doesn't exist yet
+        run: |
+          VERSION="$(cat VERSION)"
+          TAG="v$VERSION"
+          if git ls-remote --tags origin | grep -q "refs/tags/$TAG\$"; then
+            echo "Tag $TAG already exists, skipping."
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git tag "$TAG"
+          git push origin "$TAG"
+          echo "Pushed $TAG"
