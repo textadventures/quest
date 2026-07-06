@@ -41,7 +41,7 @@
     <Debugger Game="@gameDebug" OnRunWalkthrough="RunWalkthrough"></Debugger>
 }
 
-@UiHtml
+<div id="qv-player-chrome">@UiHtml</div>
 
 <Slots Saves="@saves" ManageMode="@manageMode" ErrorMessage="@saveManagerError"
        OnStart="() => StartGame(null)" OnLoad="@LoadGame"
@@ -237,11 +237,19 @@
 
         if (game != null)
         {
-            // Clear the previous game's transcript before swapping it out —
-            // a no-op on the very first call (the div is already empty then),
-            // but essential for a mid-session restart (Start from the
-            // beginning / Load), or the new game's output gets appended
-            // after the old one instead of replacing it.
+            // A mid-session restart (Start from the beginning / Load) reuses
+            // this same live DOM — Blazor's diff never touches @UiHtml again
+            // once rendered once, since its content is a constant string, so
+            // nothing here resets it for us. Without resetPlayerUi, whatever
+            // the previous game's own <javascript> resources injected
+            // elsewhere in the chrome (e.g. a custom sidebar pane) survives
+            // into the new session, and since RegisterExternalScripts runs
+            // again on every Initialise, the game re-adds another one on top
+            // of it. Reset the whole chrome to a pristine copy first, then
+            // resetOutput to clear the JS-side output-tracking state
+            // (_currentDiv/_divCount in playercore.js) that innerHTML alone
+            // doesn't touch.
+            await JS.InvokeVoidAsync("WebPlayer.resetPlayerUi", PlayerHelper.GetUiResourceString("playercore.htm"));
             await JS.InvokeVoidAsync("WebPlayer.resetOutput");
             game.Finish();
             GameSessionTracker.GameEnded();

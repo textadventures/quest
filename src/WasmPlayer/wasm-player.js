@@ -28,6 +28,11 @@ let resourceRoot = null;
 // and never reassigned by a slot/file load.
 let originalGameBytes = null;
 let originalGameFilename = null;
+// The pristine player chrome markup (playercore.htm), fetched once at boot
+// and reused verbatim by restartGame() so a mid-session restart gets exactly
+// the same clean slate as the initial boot, instead of the previous game's
+// live DOM (see swapInPlayerUi()).
+let originalPlayerHtml = null;
 
 function computeGameId(filename) {
     return filename.split('/').pop();
@@ -164,12 +169,36 @@ async function setupPaperJs() {
     paper.PaperScript.evaluate(code, paper);
 }
 
+// Replaces document.body with a fresh copy of the player chrome, preserving
+// #qv-start/#qv-saves (the static markup's overlays, which live outside the
+// swapped-in playerHtml and would otherwise be destroyed by the innerHTML
+// assignment). Used both for the initial boot and for a mid-session restart
+// ("Start from the beginning" / Load) — a restart must get a genuinely new
+// DOM, not just a cleared output pane, because games commonly use their
+// external <javascript> resources to inject their own elements elsewhere in
+// the chrome (e.g. a custom sidebar pane). Those run again on every restart
+// (RegisterExternalScripts fires on every Initialise call), so anything short
+// of a full DOM reset here leaves the previous run's injected elements in
+// place for the new run to duplicate.
+function swapInPlayerUi() {
+    const startScreenEl = document.getElementById('qv-start');
+    const savesDialogEl = document.getElementById('qv-saves');
+    startScreenEl?.remove();
+    savesDialogEl?.remove();
+
+    document.body.innerHTML = originalPlayerHtml;
+
+    if (startScreenEl) document.body.appendChild(startScreenEl);
+    if (savesDialogEl) document.body.appendChild(savesDialogEl);
+    return startScreenEl;
+}
+
 async function initWasmPlayer(gameBytes, filename, bc = null, saveBytes = null) {
     const [htmResponse, { dotnet }] = await Promise.all([
         fetch('playercore.htm'),
         import('./_framework/dotnet.js'),
     ]);
-    const playerHtml = await htmResponse.text();
+    originalPlayerHtml = await htmResponse.text();
 
     const runtime = await dotnet.create();
     const { setModuleImports, getAssemblyExports, getConfig } = runtime;
@@ -242,18 +271,8 @@ async function initWasmPlayer(gameBytes, filename, bc = null, saveBytes = null) 
     // #qv-start is a fixed, full-viewport overlay (see chrome.css), so keeping
     // it in the DOM on top of the freshly-swapped-in game UI still covers the
     // screen exactly as before — the loading spinner/error UI's visible
-    // behaviour is unchanged. #qv-saves is a sibling of #qv-start in the
-    // static markup, so it'd also be destroyed by the innerHTML swap —
-    // detach both first and re-append them right after.
-    const startScreenEl = document.getElementById('qv-start');
-    const savesDialogEl = document.getElementById('qv-saves');
-    startScreenEl?.remove();
-    savesDialogEl?.remove();
-
-    document.body.innerHTML = playerHtml;
-
-    if (startScreenEl) document.body.appendChild(startScreenEl);
-    if (savesDialogEl) document.body.appendChild(savesDialogEl);
+    // behaviour is unchanged.
+    const startScreenEl = swapInPlayerUi();
 
     const ok = saveBytes
         ? await Bridge.InitialiseWithSave(gameBytes, filename, saveBytes)
@@ -281,12 +300,19 @@ async function initWasmPlayer(gameBytes, filename, bc = null, saveBytes = null) 
 
 // Reloads a save (or, with saveBytes null, the fresh original game) on top
 // of the already-booted WASM runtime — used for in-game Load and "Start
-// from the beginning", so it must NOT repeat WebPlayer.initUI()/setupPaperJs():
-// those rebind #cmdSave/#cmdDebug click handlers, jQuery-UI widgets, etc.
-// unconditionally, and doing that twice on the same live DOM would
-// double-bind every one of them.
+// from the beginning". Rebuilds the player chrome from scratch via
+// swapInPlayerUi() (same as the initial boot) rather than just clearing the
+// output pane: RegisterExternalScripts fires again on every Initialise call,
+// and games commonly use their external <javascript> resources to inject
+// their own elements into the chrome (e.g. a custom sidebar pane) — without a
+// full DOM reset here, that injected element from the previous run is still
+// sitting in the (undisturbed) sidebar when the script re-runs and adds
+// another one. A fresh DOM means initUI()/setupPaperJs() are being bound to
+// brand-new elements each time, not the same live ones, so this isn't the
+// double-binding repeat-init the old comment here used to warn about.
 async function restartGame(saveBytes) {
     document.getElementById('qv-saves')?.close();
+    swapInPlayerUi();
     resetGameOutput();
 
     const ok = saveBytes
@@ -296,6 +322,9 @@ async function restartGame(saveBytes) {
         showSavesError('Failed to load that save.');
         return;
     }
+
+    await setupPaperJs();
+    WebPlayer.initUI();
     WebPlayer.setCanSave(true);
     await Bridge.Begin();
 }

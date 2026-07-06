@@ -18,6 +18,7 @@ const isRelease = process.argv.includes('--release');
 const config = isRelease ? 'Release' : 'Debug';
 const appBundleDir = path.resolve(__dirname, `bin/${config}/net10.0/browser-wasm/AppBundle`);
 const examplesDir = path.resolve(__dirname, '../../examples');
+const e2eFixturesDir = path.resolve(__dirname, '../../tests/e2e/fixtures');
 const port = 5175;
 
 const mimeTypes = {
@@ -58,6 +59,18 @@ const server = http.createServer(async (req, res) => {
   if (urlPath.startsWith('/examples/')) {
     const filePath = path.join(examplesDir, urlPath.slice('/examples/'.length));
     if (!filePath.startsWith(examplesDir)) { res.writeHead(403); res.end(); return; }
+    serveFile(res, filePath);
+    return;
+  }
+
+  // Serves e2e regression-test fixture games (tests/e2e/fixtures/*.aslx) the
+  // same way /examples/ does. Also checked as a fallback for bare resource
+  // requests below (e.g. a fixture's <javascript src="foo.js">) — the
+  // ?url= boot path never sets a resourceRoot, so those resolve relative to
+  // this server's own origin rather than alongside the .aslx file.
+  if (urlPath.startsWith('/e2e-fixtures/')) {
+    const filePath = path.join(e2eFixturesDir, urlPath.slice('/e2e-fixtures/'.length));
+    if (!filePath.startsWith(e2eFixturesDir)) { res.writeHead(403); res.end(); return; }
     serveFile(res, filePath);
     return;
   }
@@ -115,6 +128,15 @@ const server = http.createServer(async (req, res) => {
       res.writeHead(502);
       res.end(`Proxy error: ${e.message}`);
     }
+    return;
+  }
+
+  // A fixture's own external resources (e.g. restart-test.js) are requested
+  // bare, relative to this server's origin — see the /e2e-fixtures/ comment
+  // above. Check there before falling back to the AppBundle.
+  const fixtureFilePath = path.join(e2eFixturesDir, urlPath);
+  if (fixtureFilePath.startsWith(e2eFixturesDir) && fs.existsSync(fixtureFilePath)) {
+    serveFile(res, fixtureFilePath);
     return;
   }
 
