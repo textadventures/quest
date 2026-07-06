@@ -176,12 +176,28 @@ function saveGame() {
     }, 100);
 }
 
+// A restart (Start from the beginning / Load) re-runs Initialise() on the
+// same live document rather than a fresh page load, and Initialise()
+// unconditionally re-registers the game's external scripts. A real <script
+// src> only ever runs once per document, so re-adding the same URL here would
+// re-execute the game's setup code against DOM it already set up on the
+// previous run (e.g. a custom sidebar pane), producing duplicates. Dedupe by
+// URL so each script tag still only truly executes once per document, same
+// as normal page-load semantics.
+var _loadedExternalScripts = new Set();
+
 function addExternalScript(url) {
+    if (_loadedExternalScripts.has(url)) return Promise.resolve();
+    _loadedExternalScripts.add(url);
+
     return new Promise((resolve, reject) => {
         const script = document.createElement("script");
         script.src = url;
         script.onload = () => resolve();
-        script.onerror = () => reject(new Error(`Failed to load script: ${url}`));
+        script.onerror = () => {
+            _loadedExternalScripts.delete(url);
+            reject(new Error(`Failed to load script: ${url}`));
+        };
         document.head.appendChild(script);
     });
 }

@@ -49,6 +49,19 @@ class WebPlayer {
         resetGameOutput();
     }
 
+    // Replaces the #qv-player-chrome container (everything Game.razor's
+    // @UiHtml renders — #gameBorder, #dialog, #msgbox) with a fresh copy of
+    // playercore.htm, ahead of a mid-session restart. Blazor never re-renders
+    // this content itself (the underlying string is a constant, so its diff
+    // sees no change across renders), so anything a game's own <javascript>
+    // resources injected into the chrome during the previous session (e.g. a
+    // custom sidebar pane) would otherwise still be sitting there when
+    // RegisterExternalScripts re-runs the game's setup code on the new
+    // session and it adds another one.
+    static resetPlayerUi(html) {
+        document.getElementById("qv-player-chrome").innerHTML = html;
+    }
+
     static async downloadSaveAsFile(filename) {
         const bytes = await WebPlayer.uiSaveGame($("#divOutput").html());
         const blob = new Blob([bytes], {type: 'application/xml'});
