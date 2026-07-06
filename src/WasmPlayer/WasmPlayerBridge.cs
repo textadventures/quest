@@ -175,13 +175,20 @@ public partial class WasmPlayerBridge
         _ui.FlushBuffer();
     }
 
+    // Split in two because the JS interop source generator doesn't support
+    // Task<byte[]> as a JSExport return type (only plain, synchronous byte[]
+    // — see SYSLIB1072). PrepareSaveGame does the (possibly awaited) work and
+    // stashes the result; GetSaveGameBytes hands it back synchronously.
+    private static byte[]? _pendingSaveBytes;
+
     [JSExport]
-    public static async Task<string> SaveGame(string html)
+    public static async Task PrepareSaveGame(string html)
     {
-        if (_game == null) return string.Empty;
-        var bytes = await _game.SaveAsync(html);
-        return Convert.ToBase64String(bytes);
+        _pendingSaveBytes = _game == null ? [] : await _game.SaveAsync(html);
     }
+
+    [JSExport]
+    public static byte[] GetSaveGameBytes() => _pendingSaveBytes ?? [];
 
     // ── C# → JS imports ─────────────────────────────────────────────────────
 
