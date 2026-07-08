@@ -185,6 +185,7 @@ public partial class WorldModel : IGame, IGameDebug
         tcs?.TrySetResult(response);
         await _turnSuspendedTcs.Task;
         if (State != GameState.Finished) await UpdateListsAsync();
+        SendNextTimerRequest();
     }
 
     public async Task<bool> Initialise(IPlayer player)
@@ -424,6 +425,7 @@ public partial class WorldModel : IGame, IGameDebug
         tcs?.TrySetResult();
         await _turnSuspendedTcs.Task;
         if (State != GameState.Finished) await UpdateListsAsync();
+        SendNextTimerRequest();
     }
 
     public async Task FinishPause()
@@ -433,6 +435,7 @@ public partial class WorldModel : IGame, IGameDebug
         tcs?.TrySetResult();
         await _turnSuspendedTcs.Task;
         if (State != GameState.Finished) await UpdateListsAsync();
+        SendNextTimerRequest();
     }
 
     public IEnumerable<string> GetExternalScripts()
@@ -533,6 +536,7 @@ public partial class WorldModel : IGame, IGameDebug
         tcs?.TrySetResult(response);
         await _turnSuspendedTcs.Task;
         if (State != GameState.Finished) await UpdateListsAsync();
+        SendNextTimerRequest();
     }
 
     public Stream? GetResourceStream(string filename)
