@@ -45,6 +45,23 @@
     </script>
   </command>
 
+  <!-- wait callback creates a timer via SetTimeout: after FinishWait resolves the outer
+       wait, the newly-created/enabled timer must be picked up so the host is told when
+       to next call Tick(). Regression test for a bug where FinishWait/FinishPause/
+       SetQuestionResponse/SetMenuResponse didn't re-request the next timer tick. -->
+  <command name="cmd_wait_timer">
+    <pattern>testwaittimer</pattern>
+    <script>
+      msg ("before wait")
+      wait {
+        msg ("wait done")
+        SetTimeout (5) {
+          msg ("timer fired")
+        }
+      }
+    </script>
+  </command>
+
   <!-- nested on ready: inner on ready should queue and run after the outer callback
        completes, not nested inside it. Before the AddOnReady fix this would either
        produce the wrong order (inner before "outer after") or stack-overflow when

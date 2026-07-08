@@ -18,6 +18,7 @@ internal sealed class GameDriver
     private readonly WorldModel _worldModel;
     private List<string> _batch = [];
     private Exception _scriptError;
+    public List<int> RequestedTimerTicks { get; } = [];
 
     private static readonly Regex StripTags = new(@"<[^>]+>", RegexOptions.Compiled);
 
@@ -37,6 +38,7 @@ internal sealed class GameDriver
             })
             .Returns(Task.CompletedTask);
         worldModel.LogError += ex => _scriptError = ex;
+        worldModel.RequestNextTimerTick += seconds => RequestedTimerTicks.Add(seconds);
     }
 
     public static async Task<GameDriver> LoadAsync(string filename)
@@ -71,6 +73,7 @@ internal sealed class GameDriver
     {
         _batch = [];
         _scriptError = null;
+        RequestedTimerTicks.Clear();
         await _worldModel.SendCommand(command);
         return TakeBatch();
     }
@@ -79,6 +82,7 @@ internal sealed class GameDriver
     {
         _batch = [];
         _scriptError = null;
+        RequestedTimerTicks.Clear();
         await _worldModel.FinishWait();
         return TakeBatch();
     }
@@ -134,6 +138,23 @@ public class CallbackTests
         var phase2 = await driver.FinishWaitAsync();
         phase2.ShouldContain("wait done");
         phase2.ShouldContain("on ready");
+    }
+
+    // A timer created inside a wait callback (e.g. via SetTimeout) must cause the host
+    // to be told when to next call Tick(), otherwise the timer never fires. Regression
+    // test for a bug where FinishWait didn't re-request the next timer tick after running
+    // its callback, so a timer created there would silently never run on WebPlayer/WasmPlayer
+    // (which rely on the RequestNextTimerTick event, unlike a desktop player polling a clock).
+    [TestMethod]
+    public async Task Wait_CallbackCreatesTimer_RequestsNextTimerTick()
+    {
+        var driver = await GameDriver.LoadAsync("callbacktest.aslx");
+
+        await driver.SendCommandAsync("testwaittimer");
+
+        var phase2 = await driver.FinishWaitAsync();
+        phase2.ShouldContain("wait done");
+        driver.RequestedTimerTicks.ShouldContain(5);
     }
 
     // An 'on ready' encountered inside another 'on ready' callback should be queued
