@@ -34,6 +34,9 @@
         <None Update="callbacktest.aslx">
             <CopyToOutputDirectory>Always</CopyToOutputDirectory>
         </None>
+        <None Update="recursiontest.aslx">
+            <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+        </None>
         <None Update="v500test.aslx">
             <CopyToOutputDirectory>Always</CopyToOutputDirectory>
         </None>

@@ -1,0 +1,29 @@
+<asl version="580">
+  <include ref="English.aslx" />
+  <include ref="Core.aslx" />
+  <game name="recursiontest"/>
+  <object name="start">
+    <object name="player">
+      <inherit name="defaultplayer" />
+    </object>
+  </object>
+
+  <!-- A changed<field> script that sets the field it's watching recurses into itself
+       every time, with no base case. Regression test for the WorldModel.RunScriptAsync
+       depth guard: this must fail with a catchable script error instead of overflowing
+       the stack and crashing the whole process. -->
+  <object name="widget">
+    <counter type="int">0</counter>
+    <changedcounter type="script">
+      this.counter = this.counter + 1
+    </changedcounter>
+  </object>
+
+  <command name="cmd_trigger_recursion">
+    <pattern>triggerrecursion</pattern>
+    <script>
+      widget.counter = 1
+      msg ("after trigger")
+    </script>
+  </command>
+</asl>
