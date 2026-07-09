@@ -78,6 +78,15 @@ internal sealed class GameDriver
         return TakeBatch();
     }
 
+    public async Task<IReadOnlyList<string>> SendCommandAsync(string command, int elapsedTime)
+    {
+        _batch = [];
+        _scriptError = null;
+        RequestedTimerTicks.Clear();
+        await _worldModel.SendCommand(command, elapsedTime, new Dictionary<string, string>());
+        return TakeBatch();
+    }
+
     public async Task<IReadOnlyList<string>> FinishWaitAsync()
     {
         _batch = [];
@@ -155,6 +164,25 @@ public class CallbackTests
         var phase2 = await driver.FinishWaitAsync();
         phase2.ShouldContain("wait done");
         driver.RequestedTimerTicks.ShouldContain(5);
+    }
+
+    // SendCommand(elapsedTime > 0) must run the elapsed-time-triggered timer script to
+    // completion before running the command script, not launch both concurrently. Regression
+    // test for a bug where the two ran as a fire-and-forget race, both reading/mutating the
+    // same Elements/Fields collections — on a real thread pool (WebPlayer) this could corrupt
+    // a collection ("Operations that change non-concurrent collections must have exclusive
+    // access"), permanently breaking that game session until the process restarted.
+    [TestMethod]
+    public async Task SendCommand_ElapsedTimeTriggersTimer_TimerRunsBeforeCommand()
+    {
+        var driver = await GameDriver.LoadAsync("callbacktest.aslx");
+
+        var output = await driver.SendCommandAsync("testtimerrace", 5);
+
+        output.ShouldContain("timer ran");
+        output.ShouldContain("command ran");
+        var list = output.ToList();
+        list.IndexOf("timer ran").ShouldBeLessThan(list.IndexOf("command ran"));
     }
 
     // An 'on ready' encountered inside another 'on ready' callback should be queued
