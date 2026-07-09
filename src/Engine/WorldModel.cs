@@ -78,6 +78,12 @@ public partial class WorldModel : IGame, IGameDebug
 
     private bool _reportingScriptError;
 
+    // Guards against unbounded script recursion (e.g. a "changed<field>" script that sets the
+    // field it's watching) blowing the stack with a StackOverflowException, which cannot be
+    // caught and kills the whole process/all connected players in WebPlayer.
+    private const int MaxScriptExecutionDepth = 200;
+    private int _scriptExecutionDepth;
+
     private Walkthroughs? _walkthroughs;
 
     static WorldModel()
@@ -1127,6 +1133,13 @@ public partial class WorldModel : IGame, IGameDebug
 
     private async Task<object?> RunScriptAsync(IScript script, Context c, bool expectResult)
     {
+        if (_scriptExecutionDepth >= MaxScriptExecutionDepth)
+        {
+            throw new Exception(
+                $"Script execution depth exceeded {MaxScriptExecutionDepth} - this usually means a script is recursing infinitely (e.g. a \"changed<field>\" script that sets the field it's watching)");
+        }
+
+        _scriptExecutionDepth++;
         try
         {
             await script.ExecuteAsync(c);
@@ -1152,6 +1165,10 @@ public partial class WorldModel : IGame, IGameDebug
                 }
             }
             LogException(ex);
+        }
+        finally
+        {
+            _scriptExecutionDepth--;
         }
 
         return null;
