@@ -282,7 +282,7 @@ public partial class WorldModel : IGame, IGameDebug
 
     public List<string> Errors { get; private set; } = [];
 
-    public Task SendCommand(string command, int elapsedTime, IDictionary<string, string> metadata)
+    public async Task SendCommand(string command, int elapsedTime, IDictionary<string, string> metadata)
     {
         if (_timerRunner == null)
         {
@@ -292,22 +292,24 @@ public partial class WorldModel : IGame, IGameDebug
         if (elapsedTime > 0)
         {
             _timerRunner.IncrementTime(elapsedTime);
-        }
-
-        // HandleCommandAsyncInternal sets _turnSuspendedTcs synchronously before its first real await,
-        // so capturing .Task after the fire-and-forget start is safe.
-        _ = HandleCommandAsyncInternal(command, metadata);
-
-        if (elapsedTime > 0)
-        {
-            _ = Tick(0);
+            // Run any timer scripts the elapsed time triggers to completion before starting the
+            // command, rather than racing them via fire-and-forget: both this and
+            // HandleCommandAsyncInternal read/mutate the same Elements/Fields collections, and running
+            // them concurrently can corrupt that state (observed as "Operations that change
+            // non-concurrent collections must have exclusive access" on WebPlayer, where commands can
+            // genuinely run on separate threads - WasmPlayer's single-threaded runtime masked this).
+            await Tick(0);
         }
         else
         {
             SendNextTimerRequest();
         }
 
-        return _turnSuspendedTcs.Task;
+        // HandleCommandAsyncInternal sets _turnSuspendedTcs synchronously before its first real await,
+        // so capturing .Task after the fire-and-forget start is safe.
+        _ = HandleCommandAsyncInternal(command, metadata);
+
+        await _turnSuspendedTcs.Task;
     }
 
     private async Task HandleCommandAsyncInternal(string command, IDictionary<string, string> metadata)

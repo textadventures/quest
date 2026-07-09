@@ -79,4 +79,21 @@
       msg ("after block")
     </script>
   </command>
+
+  <!-- Fires as soon as elapsed time reaches its 5-second interval. Used to verify that
+       SendCommand runs elapsed-time-triggered timer scripts to completion before the
+       command itself runs, rather than racing the two. -->
+  <timer name="racetimer">
+    <enabled type="boolean">true</enabled>
+    <interval type="int">5</interval>
+    <script>
+      msg ("timer ran")
+    </script>
+  </timer>
+  <command name="cmd_timerrace">
+    <pattern>testtimerrace</pattern>
+    <script>
+      msg ("command ran")
+    </script>
+  </command>
 </asl>
