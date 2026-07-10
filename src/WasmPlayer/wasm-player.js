@@ -88,6 +88,46 @@ function finishSync(showCommandDiv) {
     }, 100);
 }
 
+// Chrome (and others) block unmuted audio until the page has "user
+// activation". A click through to this page (e.g. a target=_blank Play
+// button) does transfer that activation across the navigation, but it
+// doesn't reliably survive WasmPlayer's boot sequence (fetching the game,
+// booting the AOT WASM runtime) for a slow-enough load — by the time the
+// game's start logic tries to play a sound, the activation can already be
+// gone, and the browser silently rejects it. Only relevant for games that
+// might play a sound before the player has had any chance to interact with
+// the page themselves (typing a command is itself a fresh activation).
+function activationLikelyGranted() {
+    return !('userActivation' in navigator) || navigator.userActivation.hasBeenActive;
+}
+
+// Shows a "click to begin" prompt in the still-visible start screen and
+// waits for it, so the resulting click is a fresh, same-page activation —
+// but only when it's actually needed (see activationLikelyGranted) and only
+// for games that could plausibly play a sound before the player interacts
+// (see Bridge.GameLikelyPlaysSound). Call before Bridge.Begin() and before
+// the start screen overlay is removed.
+async function maybeGateOnActivation(gameBytes) {
+    if (activationLikelyGranted()) return;
+
+    let usesSound = true;
+    try { usesSound = Bridge.GameLikelyPlaysSound(gameBytes); } catch { /* don't block boot on detection failure */ }
+    if (!usesSound) return;
+
+    const pickers = document.getElementById('qv-pickers');
+    const msg = document.getElementById('qv-loading-msg');
+    const gate = document.getElementById('qv-clicktobegin');
+    if (pickers) pickers.style.display = 'none';
+    if (msg) msg.style.display = 'none';
+    if (gate) gate.style.display = 'flex';
+
+    await new Promise(resolve => {
+        document.getElementById('qv-clicktobegin-btn')?.addEventListener('click', resolve, { once: true });
+    });
+
+    if (gate) gate.style.display = 'none';
+}
+
 // The WebPlayer object — same surface API as playerweb.js so that playercore.js
 // and player.js can call into it without modification.
 window.WebPlayer = {
@@ -282,6 +322,8 @@ async function initWasmPlayer(gameBytes, filename, bc = null, saveBytes = null) 
         throw new Error('Failed to initialise game');
     }
 
+    await maybeGateOnActivation(gameBytes);
+
     // Now that startup has actually succeeded, remove the start screen overlay
     // to reveal the game UI underneath.
     startScreenEl?.remove();
@@ -322,6 +364,8 @@ async function restartGame(saveBytes) {
         showSavesError('Failed to load that save.');
         return;
     }
+
+    await maybeGateOnActivation(originalGameBytes);
 
     await setupPaperJs();
     WebPlayer.initUI();

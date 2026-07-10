@@ -41,7 +41,7 @@ public class PlayerHelper
         s_mimeTypes.Add(".bmp", "image/bmp");
         s_mimeTypes.Add(".png", "image/png");
         s_mimeTypes.Add(".wav", "audio/wav");
-        s_mimeTypes.Add(".mp3", "audio/mpeg3");
+        s_mimeTypes.Add(".mp3", "audio/mpeg");
         s_mimeTypes.Add(".ogg", "audio/ogg");
         s_mimeTypes.Add(".js", "application/javascript");
         s_mimeTypes.Add(".ttf", "application/font-woff");
