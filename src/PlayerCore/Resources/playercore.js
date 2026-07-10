@@ -269,6 +269,23 @@ function initPlayerUI() {
 
 function loadHtml(html) {
     $("#divOutput").html(html);
+    // The injected HTML carries its own divOutputAlign<N> ids from whenever the
+    // game was saved, but _currentDiv/_divCount (used by addText/createNewDiv)
+    // are untouched by the line above. If a div was already created before this
+    // ran (e.g. WasmPlayer's in-session restore resets output and creates div 1
+    // before loadHtml overwrites #divOutput with the restored transcript),
+    // _currentDiv keeps pointing at that now-detached node — every future
+    // addText() call then silently appends to an invisible div instead of the
+    // page, even though the command that produced it succeeded. Resetting here
+    // makes the next addText() start a fresh div (via its getCurrentDiv()==null
+    // check), numbered past whatever the restored transcript already used.
+    _currentDiv = null;
+    var maxDivId = 0;
+    $("#divOutput [id^='divOutputAlign']").each(function () {
+        var n = parseInt(this.id.slice("divOutputAlign".length), 10);
+        if (n > maxDivId) maxDivId = n;
+    });
+    setDivCount(maxDivId);
 }
 
 function showStatusVisible(visible) {
