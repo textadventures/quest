@@ -49,6 +49,44 @@ public partial class WasmPlayerBridge
         return await InitialiseCore(gameData, saveStream);
     }
 
+    private static readonly string[] AudioExtensions = [".mp3", ".wav", ".ogg"];
+
+    // Heuristic used to decide whether to gate the boot-time autoplay
+    // permission check on a click (see wasm-player.js's maybeGateOnActivation) —
+    // does this game plausibly play a sound before the player has had a
+    // chance to interact with the page? Not a proof of reachability from
+    // start/beforeenter specifically vs. only from a player command; a
+    // false positive just costs one extra click, a false negative silently
+    // breaks the game's audio, so this deliberately rounds towards
+    // over-detecting.
+    [JSExport]
+    public static bool GameLikelyPlaysSound(byte[] gameFileBytes)
+    {
+        if (_game == null) return true; // conservative default
+
+        // Primary signal: any bundled audio resource, regardless of format.
+        // Works for .quest zip packages and Legacy .asl/.cas alike, since
+        // both populate GetResourceNames() from their own self-contained
+        // archive — no script-syntax assumptions needed here at all.
+        var resourceNames = _game.GetResourceNames();
+        if (resourceNames.Any(name =>
+                AudioExtensions.Contains(Path.GetExtension(name), StringComparer.OrdinalIgnoreCase)))
+        {
+            return true;
+        }
+
+        // Fallback: GetResourceNames() is only empty when the game was
+        // loaded as plain aslx text with no local resource archive at all —
+        // a bare .aslx file, or textadventures.co.uk's remote-resource-mode
+        // (resourceRoot) API path. Both are guaranteed modern aslx script
+        // text (Legacy games are always self-contained archives, so they
+        // never reach here), so searching for the literal "play sound"
+        // script keyword (PlaySoundScriptConstructor.Keyword) is reliable
+        // in this branch only.
+        var source = System.Text.Encoding.UTF8.GetString(gameFileBytes);
+        return source.Contains("play sound", StringComparison.OrdinalIgnoreCase);
+    }
+
     private static async Task<bool> InitialiseCore(GameData gameData, Stream? saveData)
     {
         _game?.Finish();
