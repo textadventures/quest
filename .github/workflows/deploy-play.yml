@@ -1,7 +1,11 @@
-name: Deploy play.questviva.com
+name: Deploy play.questviva.com and WebEditor
 
 # Runs when release.sh tags a version (e.g. v6.0.0-beta.30), keeping
 # play.questviva.com on the same release cadence as the WebPlayer Docker image.
+# Tag pushes also attach WasmPlayer/AppBundle/WebEditor build artifacts to the
+# GitHub Release and dispatch a deploy to textadventures.co.uk, so a single
+# release cadence drives both play.questviva.com and the WebEditor on
+# textadventures.co.uk.
 on:
   push:
     tags: ['v*']
@@ -77,8 +81,43 @@ jobs:
       - name: Package WasmPlayer artifact
         run: (cd src/WasmPlayer/bin/Release/net10.0/browser-wasm/AppBundle && zip -r $GITHUB_WORKSPACE/WasmPlayer.zip .)
 
-      - name: Attach WasmPlayer build to GitHub Release
+      # WebEditor's build bakes BASE_PATH into its assets, so it needs a second
+      # build for textadventures.co.uk's /questviva path (WasmEditor's output
+      # isn't BASE_PATH-sensitive, so the earlier build is reused as-is).
+      - name: Build WebEditor for textadventures.co.uk
         if: github.ref_type == 'tag'
-        run: gh release create ${{ github.ref_name }} WasmPlayer.zip --title "${{ github.ref_name }}" --generate-notes
+        run: npm run build
+        working-directory: src/WebEditor
+        env:
+          PUBLIC_WEBEDITOR_VERSION: ${{ github.ref_name }}
+          BASE_PATH: /questviva
+
+      - name: Package editor artifacts for textadventures.co.uk
+        if: github.ref_type == 'tag'
+        run: |
+          (cd src/WasmEditor/bin/Release/net10.0/browser-wasm/AppBundle && zip -r $GITHUB_WORKSPACE/AppBundle.zip .)
+          (cd src/WebEditor/build && zip -r $GITHUB_WORKSPACE/WebEditor.zip .)
+
+      - name: Attach player and editor builds to GitHub Release
+        if: github.ref_type == 'tag'
+        run: gh release create ${{ github.ref_name }} WasmPlayer.zip AppBundle.zip WebEditor.zip --title "${{ github.ref_name }}" --generate-notes
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Pin WebEditor version in textadventures.co.uk
+        if: github.ref_type == 'tag'
+        run: |
+          curl -s -o /dev/null -w "%{http_code}" -X PATCH \
+            -H "Authorization: token ${{ secrets.TA_DEPLOY_PAT }}" \
+            -H "Accept: application/vnd.github.v3+json" \
+            "https://api.github.com/repos/alexwarren/textadventures.co.uk/actions/variables/WEBEDITOR_VERSION" \
+            -d "{\"name\":\"WEBEDITOR_VERSION\",\"value\":\"${{ github.ref_name }}\"}"
+
+      - name: Trigger textadventures.co.uk deployment
+        if: github.ref_type == 'tag'
+        uses: peter-evans/repository-dispatch@v3
+        with:
+          token: ${{ secrets.TA_DEPLOY_PAT }}
+          repository: alexwarren/textadventures.co.uk
+          event-type: webeditor-release
+          client-payload: '{"tag": "${{ github.ref_name }}"}'

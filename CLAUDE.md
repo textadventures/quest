@@ -85,6 +85,8 @@ Merging a `VERSION` change to `main` triggers the `auto-tag` GitHub Actions work
 
 `./release.sh` still works as a manual fallback if you need to tag from a clean local `main` directly (e.g. if `auto-tag` is broken). If you forgot to update `VERSION` before running it, the script will fail locally because the tag for the old version already exists.
 
+Same tag also drives the WebEditor deploy on textadventures.co.uk: `deploy-play` builds WebEditor a second time (with `BASE_PATH=/questviva` instead of `/editor`), attaches `AppBundle.zip`/`WebEditor.zip` alongside `WasmPlayer.zip` to the GitHub Release, then dispatches a `webeditor-release` `repository_dispatch` event (using the `TA_DEPLOY_PAT` secret) to `alexwarren/textadventures.co.uk`, which downloads those release assets and redeploys. There used to be a separate `release-webeditor.yml` workflow keyed off `webeditor-v*` tags — that's gone now; regular `v*` releases are the only release cadence for both.
+
 ## Key Technical Details
 
 - Target framework: .NET 10.0 with nullable reference types enabled
