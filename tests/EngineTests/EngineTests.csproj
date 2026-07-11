@@ -37,6 +37,9 @@
         <None Update="recursiontest.aslx">
             <CopyToOutputDirectory>Always</CopyToOutputDirectory>
         </None>
+        <None Update="duplicatetemplatetest.aslx">
+            <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+        </None>
         <None Update="v500test.aslx">
             <CopyToOutputDirectory>Always</CopyToOutputDirectory>
         </None>
