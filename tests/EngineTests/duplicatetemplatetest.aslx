@@ -1,0 +1,5 @@
+<asl version="580">
+  <template name="DupeTemplate">English value</template>
+  <game name="duplicatetemplatetest"/>
+  <template name="DupeTemplate">German value</template>
+</asl>

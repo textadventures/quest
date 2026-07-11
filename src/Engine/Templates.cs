@@ -18,11 +18,14 @@ public partial class Template
     internal Element AddTemplate(string templateName, string text, bool isCommandTemplate, bool isBaseTemplate = false)
     {
         // if a template is marked as IsBaseTemplate, it's from the base .aslx file so shouldn't be overwritten
-        // by an equivalent library definition
+        // by an equivalent library definition. But a later base-template definition (e.g. a second
+        // <template> for the same name further down the same base file, as produced by old Quest 5.8
+        // exports that inline a full library per language one after another) must still win over an
+        // earlier one from the same scan - only non-base (library) definitions are blocked here.
         Element existingTemplate;
         if (m_templateLookup.TryGetValue(templateName, out existingTemplate))
         {
-            if (existingTemplate.Fields[FieldDefinitions.IsBaseTemplate])
+            if (existingTemplate.Fields[FieldDefinitions.IsBaseTemplate] && !isBaseTemplate)
             {
                 return null;
             }
