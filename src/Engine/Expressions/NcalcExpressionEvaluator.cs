@@ -92,7 +92,7 @@ public class NcalcExpressionEvaluator<T> : IExpressionEvaluator<T>, IDynamicExpr
 
     private object ResolveVariable(string name)
     {
-        if (name == "null") return null;
+        if (name.Equals("null", StringComparison.InvariantCultureIgnoreCase)) return null;
 
         if (_context.Parameters?.ContainsKey(name) == true)
             return _context.Parameters[name];
