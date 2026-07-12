@@ -149,6 +149,8 @@ public sealed class EditorController : IDisposable
 
     public string GameName => WorldModel.Game.Fields.GetString("gamename");
 
+    public string GameId => WorldModel.GameID;
+
     internal EditableScriptFactory ScriptFactory { get; private set; }
 
     internal WorldModel WorldModel { get; private set; }

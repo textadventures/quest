@@ -8,6 +8,7 @@ export interface WasmBridge {
   SetDropdownType(elementKey: string, controlId: string, selectedType: string): string
   Save(): string
   IsDirty(): boolean
+  GetGameId(): string
   CanUndo(): boolean
   CanRedo(): boolean
   Undo(): Promise<void>

@@ -399,6 +399,9 @@ public partial class WasmEditorBridge
     public static bool IsDirty() => _isDirty;
 
     [JSExport]
+    public static string GetGameId() => _controller?.GameId ?? string.Empty;
+
+    [JSExport]
     public static bool CanUndo()
     {
         return _controller?.GetUndoItems().Any() ?? false;
