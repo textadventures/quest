@@ -323,8 +323,19 @@ public class Player : IPlayerHelperUI
         return PlayerHelper.Game.GetResourceStream(filename);
     }
 
+    // JavaScriptBuffer is only flushed after a *successful* turn (see ClearBuffer/UiActionAsync
+    // below). If a game session gets stuck retrying failed turns indefinitely, this buffer would
+    // otherwise grow without bound and eventually OOM the whole (shared, multi-tenant) process.
+    // This is a backstop, not the main fix - see WorldModel's script-error circuit breaker.
+    private const int MaxJavaScriptBufferSize = 10_000;
+
     private void AddJavaScriptToBuffer(string identifier, params object?[]? args)
     {
+        if (JavaScriptBuffer.Count >= MaxJavaScriptBufferSize)
+        {
+            return;
+        }
+
         if (args != null)
         {
             for (var i = 0; i < args.Length; i++)

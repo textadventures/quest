@@ -71,6 +71,25 @@ public partial class WorldModel : IGame, IGameDebug
     internal TaskCompletionSource? _pauseTcs;
     private TaskCompletionSource _turnSuspendedTcs = new();
 
+    // Every prompt (wait/menu/ask/get input) reuses a single TCS field, replacing it each time
+    // it's shown. If a new prompt is triggered before a previous one resolves (e.g. via 'on ready'
+    // reentrancy), the old field gets silently overwritten and whatever was awaiting it - along
+    // with its _scriptExecutionDepth increment - is orphaned forever, permanently wedging the
+    // depth guard for the rest of the session. Cancelling the outgoing TCS before replacing it
+    // ensures every prompt is resolved one way or another; callers already handle
+    // OperationCanceledException from these awaits (see FinishGame, which does the same thing).
+    internal static TaskCompletionSource BeginPrompt(ref TaskCompletionSource? field)
+    {
+        field?.TrySetCanceled();
+        return field = new TaskCompletionSource();
+    }
+
+    internal static TaskCompletionSource<T> BeginPrompt<T>(ref TaskCompletionSource<T>? field)
+    {
+        field?.TrySetCanceled();
+        return field = new TaskCompletionSource<T>();
+    }
+
     // Tracks show menu / ask / get input callbacks that fire-and-forget their response handling.
     // on ready defers until this reaches zero.
     private int _pendingCallbackCount;
@@ -83,6 +102,20 @@ public partial class WorldModel : IGame, IGameDebug
     // caught and kills the whole process/all connected players in WebPlayer.
     private const int MaxScriptExecutionDepth = 200;
     private int _scriptExecutionDepth;
+
+    // If something has left the game in a state where a script fails the same way every time it
+    // runs (e.g. the depth guard above is permanently tripped by corrupted game state), the catch
+    // block that reports each failure runs again on every subsequent turn forever, with nothing to
+    // stop it. That's cheap per call, but with no upper bound on how many turns get attempted,
+    // output/log buffers that are only cleared after a *successful* turn (see WebPlayer's
+    // Player.ClearJavaScriptBuffer) grow without limit. This is a session-lifetime total, not a
+    // consecutive/streak count that resets on the next unrelated successful script call (which
+    // happens constantly during ordinary turns) - a genuinely wedged session fails this many times
+    // in short order regardless, while a normal session with the odd one-off script bug never gets
+    // close.
+    private const int MaxScriptErrors = 20;
+    private int _scriptErrorCount;
+    private bool _scriptErrorsFatal;
 
     private Walkthroughs? _walkthroughs;
 
@@ -1071,17 +1104,17 @@ public partial class WorldModel : IGame, IGameDebug
     internal async Task DoWaitAsync()
     {
         PlayerUi.DoWait();
-        _waitTcs = new TaskCompletionSource();
+        var tcs = BeginPrompt(ref _waitTcs);
         SignalTurnSuspended();
-        await _waitTcs.Task;
+        await tcs.Task;
     }
 
     internal async Task DoPauseAsync(int ms)
     {
         PlayerUi.DoPause(ms);
-        _pauseTcs = new TaskCompletionSource();
+        var tcs = BeginPrompt(ref _pauseTcs);
         SignalTurnSuspended();
-        await _pauseTcs.Task;
+        await tcs.Task;
     }
 
     public Task RunScriptAsync(IScript script)
@@ -1133,6 +1166,11 @@ public partial class WorldModel : IGame, IGameDebug
 
     private async Task<object?> RunScriptAsync(IScript script, Context c, bool expectResult)
     {
+        if (_scriptErrorsFatal)
+        {
+            return null;
+        }
+
         if (_scriptExecutionDepth >= MaxScriptExecutionDepth)
         {
             throw new Exception(
@@ -1152,7 +1190,17 @@ public partial class WorldModel : IGame, IGameDebug
         }
         catch (Exception ex)
         {
-            if (!_reportingScriptError)
+            LogException(ex);
+
+            if (++_scriptErrorCount >= MaxScriptErrors)
+            {
+                // The session is unrecoverably wedged (every script execution is failing the
+                // same way). Stop here rather than let it keep failing forever: end the game so
+                // WebPlayer/WasmPlayer stop sending it any further work.
+                _scriptErrorsFatal = true;
+                FinishGame();
+            }
+            else if (!_reportingScriptError)
             {
                 _reportingScriptError = true;
                 try
@@ -1164,7 +1212,6 @@ public partial class WorldModel : IGame, IGameDebug
                     _reportingScriptError = false;
                 }
             }
-            LogException(ex);
         }
         finally
         {

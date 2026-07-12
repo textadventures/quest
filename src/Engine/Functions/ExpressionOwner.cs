@@ -497,9 +497,9 @@ internal class ExpressionOwner(WorldModel worldModel)
         await worldModel.PrintAsync(caption);
         var menuData = new MenuData(caption, options, allowCancel);
         worldModel.PlayerUi.ShowMenu(menuData);
-        worldModel._menuTcs = new TaskCompletionSource<string?>();
+        var tcs = WorldModel.BeginPrompt(ref worldModel._menuTcs);
         worldModel.SignalTurnSuspended();
-        var result = await worldModel._menuTcs.Task;
+        var result = await tcs.Task;
         if (result != null) await worldModel.PrintAsync(" - " + options[result]);
         return result ?? string.Empty;
     }
@@ -574,9 +574,9 @@ internal class ExpressionOwner(WorldModel worldModel)
     public async Task<string> GetInput()
     {
         worldModel._commandOverride = true;
-        worldModel._commandInputTcs = new TaskCompletionSource<string>();
+        var tcs = WorldModel.BeginPrompt(ref worldModel._commandInputTcs);
         worldModel.SignalTurnSuspended();
-        var result = await worldModel._commandInputTcs.Task;
+        var result = await tcs.Task;
         worldModel._commandOverride = false;
         return result;
     }
@@ -616,9 +616,9 @@ internal class ExpressionOwner(WorldModel worldModel)
     {
         ArgumentNullException.ThrowIfNull(caption);
         worldModel.PlayerUi.ShowQuestion(caption);
-        worldModel._questionTcs = new TaskCompletionSource<bool>();
+        var tcs = WorldModel.BeginPrompt(ref worldModel._questionTcs);
         worldModel.SignalTurnSuspended();
-        return await worldModel._questionTcs.Task;
+        return await tcs.Task;
     }
 
     public int GetRandomInt(int min, int max)

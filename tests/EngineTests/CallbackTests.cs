@@ -19,6 +19,7 @@ internal sealed class GameDriver
     private List<string> _batch = [];
     private Exception _scriptError;
     public List<int> RequestedTimerTicks { get; } = [];
+    public GameState State => _worldModel.State;
 
     private static readonly Regex StripTags = new(@"<[^>]+>", RegexOptions.Compiled);
 
