@@ -30,6 +30,7 @@ export interface ControlInfo {
   elementType?: string | null
   objectType?: string | null
   listFilter?: string | null
+  source?: string | null
 }
 
 export interface TabInfo {
@@ -50,6 +51,7 @@ export interface ScriptControlData {
   value: string | null
   simpleEditor: string | null
   simpleLabel: string | null
+  source: string | null
   options: ControlOption[] | null
   scripts: ScriptNodeData[] | null
 }

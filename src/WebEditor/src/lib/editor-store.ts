@@ -1,7 +1,7 @@
 import { writable, get } from "svelte/store";
 import { loadWasm } from "./wasm";
 import type { WasmBridge } from "./wasm";
-import type { FileAdapter } from "./filesystem/types";
+import type { AssetInfo, FileAdapter } from "./filesystem/types";
 import type { TreeNode, EditorDataResponse, ScriptBlockData, ScriptCommandCategoriesData, IfExpressionTemplateData, IfExpressionTemplate, FullAttributeData } from "./types";
 
 export type AddElementModalState = { type: "room" | "object" | "function" | "timer" | "walkthrough" | "template" | "dynamictemplate" | "type"; parent: string | null } | null;
@@ -27,6 +27,8 @@ export const canRedo = writable(false);
 export const isDirty = writable(false);
 export const scriptVersion = writable(0);
 export const scriptClipboardHasContent = writable(false);
+export const assets = writable<AssetInfo[]>([]);
+export const assetManagerOpen = writable(false);
 
 function refreshUndoRedo() {
     canUndo.set(_bridge?.CanUndo() ?? false);
@@ -45,6 +47,7 @@ export async function openGame(bytes: Uint8Array, filename: string, adapter: Fil
     await new Promise<void>(resolve => requestAnimationFrame(() => requestAnimationFrame(() => resolve())));
     const ok = await _bridge.Initialise(bytes, filename);
     loadingStatus.set(null);
+    clearAssetUrlCache();
     if (ok) {
         const nodes: TreeNode[] = JSON.parse(_bridge.GetTreeNodes());
         treeNodes.set(nodes);
@@ -52,6 +55,7 @@ export async function openGame(bytes: Uint8Array, filename: string, adapter: Fil
         gameFilename.set(filename);
         refreshUndoRedo();
         scriptClipboardHasContent.set(false);
+        await refreshAssets();
         const gameNode = nodes.find(n => n.nodeType === "game");
         if (gameNode) await selectNode(gameNode.key);
     }
@@ -173,6 +177,99 @@ export function redo() {
     refreshSelectedData();
     refreshUndoRedo();
     scriptVersion.update(n => n + 1);
+}
+
+// ── Assets ───────────────────────────────────────────────────────────────────
+
+const IMAGE_EXTENSIONS = new Set(["jpg", "jpeg", "png", "gif", "webp", "bmp", "svg"]);
+
+// Unscoped classification (no <source> filter in play) — used by the standalone
+// asset manager, which lists everything rather than filtering to one control's kind.
+export function isImageAsset(filename: string): boolean {
+    const dot = filename.lastIndexOf(".");
+    return dot >= 0 && IMAGE_EXTENSIONS.has(filename.slice(dot + 1).toLowerCase());
+}
+
+export interface AssetFilter {
+    // For the upload <input accept="...">. Empty string means no restriction.
+    accept: string;
+    kind: "image" | "other";
+    matches(filename: string): boolean;
+}
+
+// Parses a Quest editor <source> filter like "*.jpg;*.jpeg;*.png;*.gif" or
+// "*.wav;*.mp3" (already resolved from any [TemplateName] reference by the
+// bridge) into something usable for filtering the asset list and restricting
+// uploads. A missing/empty source (shouldn't happen for the known "file"
+// controls, but defensive) falls back to permissive: show everything, no
+// thumbnail.
+export function parseAssetSource(source: string | null | undefined): AssetFilter {
+    const exts = (source ?? "")
+        .split(";")
+        .map(s => s.trim().replace(/^\*/, "").replace(/^\./, "").toLowerCase())
+        .filter(s => s.length > 0);
+    if (exts.length === 0) {
+        return { accept: "", kind: "other", matches: () => true };
+    }
+    const extSet = new Set(exts);
+    return {
+        accept: exts.map(e => `.${e}`).join(","),
+        kind: exts.every(e => IMAGE_EXTENSIONS.has(e)) ? "image" : "other",
+        matches: (filename: string) => {
+            const dot = filename.lastIndexOf(".");
+            return dot >= 0 && extSet.has(filename.slice(dot + 1).toLowerCase());
+        },
+    };
+}
+
+export async function refreshAssets(): Promise<void> {
+    assets.set(_adapter ? await _adapter.listAssets() : []);
+}
+
+export async function uploadAsset(file: File): Promise<void> {
+    if (!_adapter) return;
+    await _adapter.putAsset(file.name, file);
+    releaseAssetUrl(file.name); // in case this overwrote an asset with a cached object URL
+    await refreshAssets();
+}
+
+export async function deleteAssetByKey(key: string): Promise<void> {
+    if (!_adapter) return;
+    await _adapter.deleteAsset(key);
+    releaseAssetUrl(key);
+    await refreshAssets();
+}
+
+const assetUrlCache = new Map<string, string>();
+
+function releaseAssetUrl(key: string) {
+    const cached = assetUrlCache.get(key);
+    if (cached) {
+        URL.revokeObjectURL(cached);
+        assetUrlCache.delete(key);
+    }
+}
+
+function clearAssetUrlCache() {
+    for (const url of assetUrlCache.values()) URL.revokeObjectURL(url);
+    assetUrlCache.clear();
+}
+
+// Resolves an asset key to something usable as an <img src>. Server-mode
+// assets already have a fetchable url from listAssets(); local-mode assets
+// are read as a Blob and turned into a cached object URL (released when the
+// asset changes or a new game is opened).
+export async function resolveAssetUrl(key: string): Promise<string | null> {
+    if (!key || !_adapter) return null;
+    const info = get(assets).find(a => a.key === key);
+    if (info?.url) return info.url;
+    const cached = assetUrlCache.get(key);
+    if (cached) return cached;
+    const blob = await _adapter.getAsset(key);
+    if (!blob) return null;
+    const url = URL.createObjectURL(blob);
+    assetUrlCache.set(key, url);
+    return url;
 }
 
 // ── List editor functions ────────────────────────────────────────────────────

@@ -32,7 +32,8 @@ internal record ControlInfo(
     string? AddPrompt = null,
     string? ElementType = null,
     string? ObjectType = null,
-    string? ListFilter = null);
+    string? ListFilter = null,
+    string? Source = null);
 
 internal record TabInfo(string? Caption, List<ControlInfo> Controls);
 
@@ -48,6 +49,7 @@ internal record ScriptControlData(
     string? Value,
     string? SimpleEditor,
     string? SimpleLabel,
+    string? Source,
     List<ControlOption>? Options,
     List<ScriptNodeData>? Scripts
 );
@@ -2503,6 +2505,7 @@ public partial class WasmEditorBridge
         }
 
         string? simpleLabel = null;
+        string? source = null;
 
         if (ctrl.ControlType == "expression")
         {
@@ -2510,6 +2513,7 @@ public partial class WasmEditorBridge
             var simpleEditorTag = ctrl.GetString("simpleeditor");
             // If <simpleeditor> is absent but <simple> is set, default simple editor is a textbox
             simpleEditor = simpleEditorTag ?? (simpleLabel != null ? "textbox" : null);
+            source = ctrl.GetString("source");
 
             if (simpleEditor == "dropdown")
             {
@@ -2552,6 +2556,7 @@ public partial class WasmEditorBridge
             value,
             simpleEditor,
             simpleLabel,
+            source,
             options,
             nestedScripts
         );
@@ -2708,9 +2713,10 @@ public partial class WasmEditorBridge
         }
 
         var addPrompt = ctrl.ControlType == "list" ? ctrl.GetString("editprompt") : null;
+        var source = ctrl.ControlType == "file" ? ctrl.GetString("source") : null;
 
         return new ControlInfo(attribute, ctrl.ControlType, ctrl.Caption ?? ctrl.GetString("selfcaption"), options,
-            null, null, textProcessorCommands, addPrompt);
+            null, null, textProcessorCommands, addPrompt, Source: source);
     }
 
     [JSExport]

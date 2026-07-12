@@ -1,6 +1,7 @@
 <script lang="ts">
     import ScriptEditor from "./ScriptEditor.svelte";
     import AddScriptModal from "./AddScriptModal.svelte";
+    import AssetPicker from "./AssetPicker.svelte";
     import {
         scriptVersion,
         scriptClipboardHasContent,
@@ -598,6 +599,13 @@
                         class="input text-xs py-0 px-1 min-w-12 max-w-24"
                         value={ctrl.value ?? "0"}
                         onchange={(e) => onSetParam(scriptIndex, ctrl.attribute!, (e.target as HTMLInputElement).value)}
+                    />
+                {:else if ctrl.simpleEditor === "file"}
+                    <AssetPicker
+                        value={toSimpleDisplay(ctrl)}
+                        source={ctrl.source}
+                        onchange={(v) => onSimpleValueChange(scriptIndex, ctrl, v)}
+                        class="input text-xs py-0 px-1 min-w-16 max-w-48"
                     />
                 {:else}
                     <!-- textbox (default for message, text, colour, etc.) -->

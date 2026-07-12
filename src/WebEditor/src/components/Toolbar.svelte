@@ -9,6 +9,7 @@
         createExit, createTurnScript, createCommand, createVerb,
         createIncludedLibrary, createJavascript,
         deleteElement,
+        assetManagerOpen,
     } from "$lib/editor-store";
     import type { TreeNode } from "$lib/types";
 
@@ -125,6 +126,7 @@
                             title={"Delete " + (selectedNode?.text ?? "")}
                         >Delete</button>
                     {/if}
+                    <button type="button" class="btn btn-sm preset-outlined-primary-500" onclick={() => assetManagerOpen.set(true)} title="Manage assets">🖼 Assets</button>
                     <button type="button" class="btn btn-sm preset-outlined-primary-500" onclick={undo} disabled={!$canUndo} title="Undo">↩ Undo</button>
                     <button type="button" class="btn btn-sm preset-outlined-primary-500" onclick={redo} disabled={!$canRedo} title="Redo">↪ Redo</button>
                     <button type="button" class="btn btn-sm preset-filled-primary-500" onclick={handleSave} disabled={saving} title="Save">💾 Save</button>
