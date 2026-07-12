@@ -1,11 +1,12 @@
 name: Deploy play.questviva.com and WebEditor
 
-# Runs when release.sh tags a version (e.g. v6.0.0-beta.30), keeping
-# play.questviva.com on the same release cadence as the WebPlayer Docker image.
-# Tag pushes also attach WasmPlayer/AppBundle/WebEditor build artifacts to the
-# GitHub Release and dispatch a deploy to textadventures.co.uk, so a single
-# release cadence drives both play.questviva.com and the WebEditor on
-# textadventures.co.uk.
+# Runs when a version tag is pushed (e.g. v6.0.0-beta.30, normally via
+# release-please merging its release PR), keeping play.questviva.com on the
+# same release cadence as the WebPlayer Docker image. Tag pushes also attach
+# WasmPlayer/AppBundle/WebEditor build artifacts to the GitHub Release
+# release-please already created and dispatch a deploy to
+# textadventures.co.uk, so a single release cadence drives both
+# play.questviva.com and the WebEditor on textadventures.co.uk.
 on:
   push:
     tags: ['v*']
@@ -99,8 +100,11 @@ jobs:
           (cd src/WebEditor/build && zip -r $GITHUB_WORKSPACE/WebEditor.zip .)
 
       - name: Attach player and editor builds to GitHub Release
+        # release-please creates the GitHub Release itself (with changelog-based
+        # notes) before pushing the tag that triggers this workflow, so just
+        # upload assets to it rather than creating a new one.
         if: github.ref_type == 'tag'
-        run: gh release create ${{ github.ref_name }} WasmPlayer.zip AppBundle.zip WebEditor.zip --title "${{ github.ref_name }}" --generate-notes
+        run: gh release upload ${{ github.ref_name }} WasmPlayer.zip AppBundle.zip WebEditor.zip --clobber
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
