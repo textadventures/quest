@@ -247,7 +247,7 @@
                     type="button"
                     class="btn preset-outlined-primary-500 w-full"
                     onclick={() => handlePickFile(file)}
-                >{file}</button>
+                >{file.slice(file.lastIndexOf("/") + 1)}</button>
             {/each}
             <button
                 type="button"

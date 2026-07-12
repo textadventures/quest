@@ -80,6 +80,22 @@ export async function createLocalDraft(gameId: string, filename: string, bytes: 
 
 export type ZipEntries = Record<string, Uint8Array>;
 
+// Zipping a folder in Finder ("Compress") adds a __MACOSX/ sidecar directory
+// with AppleDouble resource-fork files (._Foo.aslx) mirroring every real entry,
+// plus sometimes a bare .DS_Store — none of these are real game content.
+function isMacZipJunk(name: string): boolean {
+    const base = name.slice(name.lastIndexOf("/") + 1);
+    return name.startsWith("__MACOSX/") || base.startsWith("._") || base === ".DS_Store";
+}
+
+// Zipping a folder also means every entry is prefixed with that folder's name
+// (e.g. "Test June/Gamebook.aslx"). OPFS filenames can't contain "/" — flatten
+// to the basename, matching the flat, single-directory model FSA mode already
+// assumes (games don't have nested asset subfolders).
+function basename(name: string): string {
+    return name.slice(name.lastIndexOf("/") + 1);
+}
+
 // Imports a picked File — a plain .aslx, or a .zip (our own export, or any zip a
 // user put together by hand) — into a new local draft, keyed by the gameid found
 // inside the chosen game file. A zip may contain more than one .aslx (split-file
@@ -100,7 +116,7 @@ export async function createLocalDraftFromFile(file: File): Promise<
 
     const entries = unzipSync(raw);
     const names = Object.keys(entries)
-        .filter(name => !name.endsWith("/") && name.toLowerCase().endsWith(".aslx"))
+        .filter(name => !name.endsWith("/") && !isMacZipJunk(name) && name.toLowerCase().endsWith(".aslx"))
         .sort();
     if (names.length === 0) throw new Error("No .aslx game file found in the zip.");
     if (names.length > 1) return { kind: "chooseEntry", entries, names };
@@ -109,14 +125,14 @@ export async function createLocalDraftFromFile(file: File): Promise<
     // Our own exports always use the fixed ZIP_GAME_ENTRY name internally (see
     // editor-store.exportGame) — recover the nicer original display name from the
     // outer zip filename in that case rather than showing "game.aslx" everywhere.
-    const displayFilename = entryName === ZIP_GAME_ENTRY ? file.name.replace(/\.zip$/i, ".aslx") : entryName;
+    const displayFilename = entryName === ZIP_GAME_ENTRY ? file.name.replace(/\.zip$/i, ".aslx") : basename(entryName);
     return { kind: "opened", ...(await openZipEntry(entries, entryName, displayFilename)) };
 }
 
 // Continues an import after the user picked which .aslx entry to open from a
 // multi-file zip (see the "chooseEntry" case above).
 export function createLocalDraftFromZipEntry(entries: ZipEntries, gameEntryName: string) {
-    return openZipEntry(entries, gameEntryName);
+    return openZipEntry(entries, gameEntryName, basename(gameEntryName));
 }
 
 async function openZipEntry(
@@ -131,8 +147,8 @@ async function openZipEntry(
 
     const adapter = await createLocalDraft(gameId, displayFilename, gameBytes);
     for (const [name, bytes] of Object.entries(entries)) {
-        if (name === gameEntryName || name.endsWith("/")) continue;
-        await adapter.putAsset(name, new Blob([new Uint8Array(bytes)]));
+        if (name === gameEntryName || name.endsWith("/") || isMacZipJunk(name)) continue;
+        await adapter.putAsset(basename(name), new Blob([new Uint8Array(bytes)]));
     }
     return { bytes: gameBytes, adapter };
 }

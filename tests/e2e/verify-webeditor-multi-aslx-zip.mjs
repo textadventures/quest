@@ -3,7 +3,11 @@
 // together by hand rather than one produced by Export) should show a picker to
 // choose which one to open as the main game — same UX as the FSA folder-open
 // flow's "multiple game files found" picker — instead of only ever recognizing
-// a fixed "game.aslx" entry name.
+// a fixed "game.aslx" entry name. Also simulates a real macOS Finder "Compress"
+// zip of a folder: entries prefixed with the folder name, plus a __MACOSX/
+// sidecar directory of AppleDouble resource-fork files and a .DS_Store — both
+// of which used to make it into the picker and then fail to load with
+// "TypeError: Name is invalid" (OPFS filenames can't contain "/").
 //
 // Requires the WebEditor dev server running against a Release WasmEditor build.
 import { firefox } from 'playwright';
@@ -21,12 +25,18 @@ const baseAslx = readFileSync(new URL('./fixtures/restart-test.aslx', import.met
 function withGameId(gameId) {
     return baseAslx.replace('<game name="Simple">', `<game name="Simple">\n    <gameid>${gameId}</gameid>`);
 }
+// Folder-prefixed, like a real "Compress" of a folder, plus __MACOSX/ junk —
+// this is what actually broke: OPFS can't take "/" in a filename, and the
+// AppleDouble ._*.aslx sidecars were showing up in the picker as if real.
 const zipPath = '/tmp/webeditor-multi-aslx-test.zip';
 writeFileSync(zipPath, zipSync({
-    'Main.aslx': new TextEncoder().encode(withGameId('11111111-1111-1111-1111-111111111111')),
-    'Library.aslx': new TextEncoder().encode(withGameId('22222222-2222-2222-2222-222222222222')),
-    'readme.txt': new TextEncoder().encode('not a game file'),
-    'restart-test.js': readFileSync(new URL('./fixtures/restart-test.js', import.meta.url)),
+    'Test Folder/Main.aslx': new TextEncoder().encode(withGameId('11111111-1111-1111-1111-111111111111')),
+    'Test Folder/Library.aslx': new TextEncoder().encode(withGameId('22222222-2222-2222-2222-222222222222')),
+    'Test Folder/readme.txt': new TextEncoder().encode('not a game file'),
+    'Test Folder/restart-test.js': readFileSync(new URL('./fixtures/restart-test.js', import.meta.url)),
+    '__MACOSX/Test Folder/._Main.aslx': new Uint8Array([0, 5, 22, 7]),
+    '__MACOSX/Test Folder/._Library.aslx': new Uint8Array([0, 5, 22, 7]),
+    '.DS_Store': new Uint8Array([0, 1, 2, 3]),
 }));
 
 const browser = await firefox.launch();
