@@ -1,0 +1,22 @@
+name: release-please
+
+# Maintains an up-to-date "release PR" that bumps VERSION and CHANGELOG.md
+# from Conventional Commits-formatted PR titles merged to main. Merging that
+# release PR is the release: this job tags it directly (v6.0.0-beta.N), which
+# in turn triggers docker-publish.yml, nuget-publish.yml, and deploy-play.yml
+# — no manual release.sh run needed.
+on:
+  push:
+    branches: [main]
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  release-please:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: googleapis/release-please-action@v4
+        with:
+          token: ${{ secrets.RELEASE_PAT }}
