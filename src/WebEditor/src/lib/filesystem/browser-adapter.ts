@@ -122,7 +122,6 @@ export class BrowserFileAdapter implements FileAdapter {
     ) {}
 
     get filename() { return this._filename; }
-    readonly previewUrl: string | null = null;
 
     // Save As is only meaningful in directory mode — in fallback mode both save paths trigger a download.
     get canSaveAs(): boolean { return this._mode.kind === "directory"; }

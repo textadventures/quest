@@ -2,7 +2,7 @@
     import { AppBar } from "@skeletonlabs/skeleton-svelte";
     import { PUBLIC_WEBEDITOR_VERSION, PUBLIC_WASM_PLAYER_URL } from "$env/static/public";
     import {
-        gameFilename, isDirty, saveGame, saveGameAs, canSaveAs, previewUrl,
+        gameFilename, isDirty, saveGame, saveGameAs, canSaveAs,
         previewInWasmPlayer,
         undo, redo, canUndo, canRedo,
         treeNodes, selectedKey, openAddModal,
@@ -27,12 +27,7 @@
     }
 
     async function handlePreview() {
-        if ($previewUrl) {
-            await saveGame();
-            window.open($previewUrl, "_blank");
-        } else {
-            await previewInWasmPlayer(wasmPlayerUrl);
-        }
+        await previewInWasmPlayer(wasmPlayerUrl);
     }
 
     // Derive the currently selected tree node
