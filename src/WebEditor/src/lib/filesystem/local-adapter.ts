@@ -2,10 +2,6 @@ import { unzipSync } from "fflate";
 import type { AssetInfo, FileAdapter } from "./types";
 import { resolveOpfsDir, removeOpfsFile, removeOpfsDir, writeOpfsFile } from "./opfs-writer";
 
-// Fixed entry name for the game file inside an exported project zip (see
-// editor-store.exportGame) — independent of the draft's own display filename.
-export const ZIP_GAME_ENTRY = "game.aslx";
-
 // Local drafts live in OPFS under games/<gameId>/, alongside the game's own asset
 // files and a small meta.json used by the drafts list so it doesn't need to load
 // each game through WASM just to show a filename.
@@ -122,11 +118,7 @@ export async function createLocalDraftFromFile(file: File): Promise<
     if (names.length > 1) return { kind: "chooseEntry", entries, names };
 
     const [entryName] = names;
-    // Our own exports always use the fixed ZIP_GAME_ENTRY name internally (see
-    // editor-store.exportGame) — recover the nicer original display name from the
-    // outer zip filename in that case rather than showing "game.aslx" everywhere.
-    const displayFilename = entryName === ZIP_GAME_ENTRY ? file.name.replace(/\.zip$/i, ".aslx") : basename(entryName);
-    return { kind: "opened", ...(await openZipEntry(entries, entryName, displayFilename)) };
+    return { kind: "opened", ...(await openZipEntry(entries, entryName, basename(entryName))) };
 }
 
 // Continues an import after the user picked which .aslx entry to open from a

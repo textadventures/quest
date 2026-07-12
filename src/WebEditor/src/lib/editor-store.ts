@@ -3,7 +3,7 @@ import { zipSync } from "fflate";
 import { loadWasm } from "./wasm";
 import type { WasmBridge } from "./wasm";
 import type { AssetInfo, FileAdapter } from "./filesystem/types";
-import { LocalDraftAdapter, ZIP_GAME_ENTRY } from "./filesystem/local-adapter";
+import { LocalDraftAdapter } from "./filesystem/local-adapter";
 import { triggerDownload } from "./filesystem/download";
 import type { TreeNode, EditorDataResponse, ScriptBlockData, ScriptCommandCategoriesData, IfExpressionTemplateData, IfExpressionTemplate, FullAttributeData } from "./types";
 
@@ -193,7 +193,7 @@ export async function exportGame(): Promise<void> {
     const gameXml = _bridge.Save(); // Save() clears _isDirty in the bridge
     isDirty.set(false);
     const zipEntries: Record<string, Uint8Array> = {
-        [ZIP_GAME_ENTRY]: new TextEncoder().encode(gameXml),
+        [_adapter.filename]: new TextEncoder().encode(gameXml),
     };
     for (const asset of await _adapter.listAssets()) {
         const blob = await _adapter.getAsset(asset.key);
