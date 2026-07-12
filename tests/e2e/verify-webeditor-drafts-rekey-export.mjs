@@ -58,8 +58,8 @@ try {
         page.waitForEvent('filechooser'),
         dialog.locator('button:has-text("Upload")').click(),
     ]);
-    await fileChooser.setFiles(fileURLToPath(new URL('./fixtures/restart-test.aslx', import.meta.url)));
-    await dialog.locator('text=restart-test.aslx').waitFor({ timeout: 10000 });
+    await fileChooser.setFiles(fileURLToPath(new URL('./fixtures/restart-test.js', import.meta.url)));
+    await dialog.locator('text=restart-test.js').waitFor({ timeout: 10000 });
     await dialog.locator('button:has-text("Close")').click();
 
     const [download] = await Promise.all([
@@ -83,7 +83,7 @@ try {
     await fileChooser2.setFiles(zipPath);
     await page.waitForSelector('button:has-text("🖼 Assets")', { timeout: 30000 });
     await page.click('button:has-text("🖼 Assets")');
-    const assetRestored = await page.locator('div[role="dialog"]').locator('text=restart-test.aslx').isVisible();
+    const assetRestored = await page.locator('div[role="dialog"]').locator('text=restart-test.js').isVisible();
     console.log('asset restored after export/import round trip:', assetRestored);
     if (!assetRestored) throw new Error('Asset missing after re-importing exported zip');
     console.log('export/import PASS');

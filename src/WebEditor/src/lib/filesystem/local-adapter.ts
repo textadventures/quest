@@ -78,30 +78,61 @@ export async function createLocalDraft(gameId: string, filename: string, bytes: 
     return adapter;
 }
 
-// Imports a picked File — either a plain .aslx, or a .zip previously produced by
-// editor-store.exportGame() (game.aslx entry + loose asset entries) — into a new
-// local draft, keyed by the gameid found inside the game file.
-export async function createLocalDraftFromFile(file: File): Promise<{ bytes: Uint8Array; adapter: LocalDraftAdapter }> {
+export type ZipEntries = Record<string, Uint8Array>;
+
+// Imports a picked File — a plain .aslx, or a .zip (our own export, or any zip a
+// user put together by hand) — into a new local draft, keyed by the gameid found
+// inside the chosen game file. A zip may contain more than one .aslx (split-file
+// games, custom libraries) — in that case the caller needs to ask the user which
+// one to open, same as the FSA folder-picker does for a multi-.aslx directory.
+export async function createLocalDraftFromFile(file: File): Promise<
+    | { kind: "opened"; bytes: Uint8Array; adapter: LocalDraftAdapter }
+    | { kind: "chooseEntry"; entries: ZipEntries; names: string[] }
+> {
     const raw = new Uint8Array(await file.arrayBuffer());
 
     if (!file.name.toLowerCase().endsWith(".zip")) {
         const gameId = parseGameIdFromAslx(new TextDecoder().decode(raw));
         if (!gameId) throw new Error("Could not find a gameid in the imported file.");
         const adapter = await createLocalDraft(gameId, file.name, raw);
-        return { bytes: raw, adapter };
+        return { kind: "opened", bytes: raw, adapter };
     }
 
     const entries = unzipSync(raw);
-    const gameBytes = entries[ZIP_GAME_ENTRY];
-    if (!gameBytes) throw new Error(`Zip file is missing ${ZIP_GAME_ENTRY} — not a game export.`);
+    const names = Object.keys(entries)
+        .filter(name => !name.endsWith("/") && name.toLowerCase().endsWith(".aslx"))
+        .sort();
+    if (names.length === 0) throw new Error("No .aslx game file found in the zip.");
+    if (names.length > 1) return { kind: "chooseEntry", entries, names };
+
+    const [entryName] = names;
+    // Our own exports always use the fixed ZIP_GAME_ENTRY name internally (see
+    // editor-store.exportGame) — recover the nicer original display name from the
+    // outer zip filename in that case rather than showing "game.aslx" everywhere.
+    const displayFilename = entryName === ZIP_GAME_ENTRY ? file.name.replace(/\.zip$/i, ".aslx") : entryName;
+    return { kind: "opened", ...(await openZipEntry(entries, entryName, displayFilename)) };
+}
+
+// Continues an import after the user picked which .aslx entry to open from a
+// multi-file zip (see the "chooseEntry" case above).
+export function createLocalDraftFromZipEntry(entries: ZipEntries, gameEntryName: string) {
+    return openZipEntry(entries, gameEntryName);
+}
+
+async function openZipEntry(
+    entries: ZipEntries,
+    gameEntryName: string,
+    displayFilename: string = gameEntryName,
+): Promise<{ bytes: Uint8Array; adapter: LocalDraftAdapter }> {
+    const gameBytes = entries[gameEntryName];
+    if (!gameBytes) throw new Error(`Zip is missing ${gameEntryName}.`);
     const gameId = parseGameIdFromAslx(new TextDecoder().decode(gameBytes));
     if (!gameId) throw new Error("Could not find a gameid in the imported file.");
 
-    const filename = file.name.replace(/\.zip$/i, ".aslx");
-    const adapter = await createLocalDraft(gameId, filename, gameBytes);
+    const adapter = await createLocalDraft(gameId, displayFilename, gameBytes);
     for (const [name, bytes] of Object.entries(entries)) {
-        if (name === ZIP_GAME_ENTRY || name.endsWith("/")) continue;
-        await adapter.putAsset(name, new Blob([bytes]));
+        if (name === gameEntryName || name.endsWith("/")) continue;
+        await adapter.putAsset(name, new Blob([new Uint8Array(bytes)]));
     }
     return { bytes: gameBytes, adapter };
 }
@@ -174,7 +205,9 @@ export class LocalDraftAdapter implements FileAdapter {
         if (!dir) return [];
         const assets: AssetInfo[] = [];
         for await (const [name, handle] of dir as unknown as AsyncIterable<[string, FileSystemHandle]>) {
-            if (handle.kind !== "file" || name === this._filename || name === "meta.json") continue;
+            // Sibling .aslx files (split-file games, included libraries) aren't
+            // assets, same as BrowserFileAdapter's directory-mode listAssets.
+            if (handle.kind !== "file" || name === "meta.json" || name.toLowerCase().endsWith(".aslx")) continue;
             assets.push({ key: name, url: "" });
         }
         return assets;

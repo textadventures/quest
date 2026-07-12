@@ -7,16 +7,19 @@
     import type { GameTemplate } from "$lib/filesystem/server-adapter";
     import { pickFile } from "$lib/filesystem/file-picker";
     import {
-        listLocalDrafts, loadLocalDraft, deleteLocalDraft, createLocalDraft, createLocalDraftFromFile, parseGameIdFromAslx,
+        listLocalDrafts, loadLocalDraft, deleteLocalDraft, createLocalDraft, createLocalDraftFromFile,
+        createLocalDraftFromZipEntry, parseGameIdFromAslx,
     } from "$lib/filesystem/local-adapter";
-    import type { LocalDraftSummary } from "$lib/filesystem/local-adapter";
+    import type { LocalDraftSummary, ZipEntries } from "$lib/filesystem/local-adapter";
     import { loadWasm } from "$lib/wasm";
 
     let loading = $state(false);
     let error = $state<string | null>(null);
 
-    // Set when a directory was opened but contained multiple .aslx files
+    // Set when a directory (FSA) or an imported zip (local drafts) contained
+    // multiple .aslx files — pendingFiles holds the names to choose from either way.
     let pendingDir = $state<FileSystemDirectoryHandle | null>(null);
+    let pendingZip = $state<ZipEntries | null>(null);
     let pendingFiles = $state<string[]>([]);
 
     // Local drafts (OPFS, non-FSA browsers only)
@@ -95,11 +98,27 @@
     }
 
     async function handlePickFile(filename: string) {
-        if (!pendingDir) return;
-        const dir = pendingDir;
-        pendingDir = null;
-        pendingFiles = [];
-        await loadFrom(dir, filename);
+        if (pendingDir) {
+            const dir = pendingDir;
+            pendingDir = null;
+            pendingFiles = [];
+            await loadFrom(dir, filename);
+        } else if (pendingZip) {
+            const entries = pendingZip;
+            pendingZip = null;
+            pendingFiles = [];
+            loading = true;
+            error = null;
+            try {
+                const { bytes, adapter } = await createLocalDraftFromZipEntry(entries, filename);
+                const ok = await openGame(bytes, adapter.filename, adapter);
+                if (ok) { goto(base || "/"); return; }
+                error = "Failed to load game file.";
+            } catch (err) {
+                error = String(err);
+            }
+            loading = false;
+        }
     }
 
     async function loadFrom(dir: FileSystemDirectoryHandle, filename: string) {
@@ -122,8 +141,14 @@
             const file = await pickFile(".aslx,.zip");
             if (!file) return;
             loading = true;
-            const { bytes, adapter } = await createLocalDraftFromFile(file);
-            const ok = await openGame(bytes, adapter.filename, adapter);
+            const result = await createLocalDraftFromFile(file);
+            loading = false;
+            if (result.kind === "chooseEntry") {
+                pendingZip = result.entries;
+                pendingFiles = result.names;
+                return;
+            }
+            const ok = await openGame(result.bytes, result.adapter.filename, result.adapter);
             if (ok) { goto(base || "/"); return; }
             error = "Failed to load game file.";
         } catch (err) {
@@ -227,7 +252,7 @@
             <button
                 type="button"
                 class="btn preset-outlined-surface-500 w-full"
-                onclick={() => { pendingDir = null; pendingFiles = []; }}
+                onclick={() => { pendingDir = null; pendingZip = null; pendingFiles = []; }}
             >Cancel</button>
         </div>
     {:else}

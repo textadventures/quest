@@ -41,7 +41,7 @@ async function run() {
 
     // Upload an asset via the standalone asset manager.
     await page.click('button:has-text("🖼 Assets")');
-    const fixturePath = join(dirname(fileURLToPath(import.meta.url)), 'fixtures', 'restart-test.aslx');
+    const fixturePath = join(dirname(fileURLToPath(import.meta.url)), 'fixtures', 'restart-test.js');
     // Reuse an existing small fixture file as arbitrary asset bytes — content doesn't matter, just persistence.
     const dialog = page.locator('div[role="dialog"]');
     const [fileChooser] = await Promise.all([
@@ -63,7 +63,7 @@ async function run() {
     await page.click('button:has-text("Local Draft Test.aslx")');
     await page.waitForSelector('button:has-text("🖼 Assets")', { timeout: 30000 });
     await page.click('button:has-text("🖼 Assets")');
-    const assetVisible = await page.locator('div[role="dialog"]').locator('text=restart-test.aslx').isVisible();
+    const assetVisible = await page.locator('div[role="dialog"]').locator('text=restart-test.js').isVisible();
     console.log(`[${browserType}] asset still present after reload:`, assetVisible);
     if (!assetVisible) throw new Error('Asset did not survive reload — OPFS orphaning bug still present');
 
