@@ -87,7 +87,7 @@ public class ShowMenuScript : ScriptBase
         var menuData = new MenuData(caption, optionsDictionary, allowCancel);
         m_worldModel.PlayerUi.ShowMenu(menuData);
 
-        m_worldModel._menuTcs = new TaskCompletionSource<string?>();
+        WorldModel.BeginPrompt(ref m_worldModel._menuTcs);
         m_worldModel.BeginPendingCallback();
         m_worldModel.SignalTurnSuspended();
         _ = AwaitResponseAndRunCallbackAsync(c, optionsDictionary);

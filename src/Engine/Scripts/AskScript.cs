@@ -49,7 +49,7 @@ public class AskScript(
     {
         var caption = await _caption.ExecuteAsync(c);
         _worldModel.PlayerUi.ShowQuestion(caption);
-        _worldModel._questionTcs = new TaskCompletionSource<bool>();
+        WorldModel.BeginPrompt(ref _worldModel._questionTcs);
         _worldModel.BeginPendingCallback();
         _worldModel.SignalTurnSuspended();
         _ = AwaitResponseAndRunCallbackAsync(c);

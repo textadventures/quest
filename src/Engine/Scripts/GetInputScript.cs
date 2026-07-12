@@ -42,7 +42,7 @@ public class GetInputScript : ScriptBase
     public override Task ExecuteAsync(Context c)
     {
         m_worldModel._commandOverride = true;
-        m_worldModel._commandInputTcs = new TaskCompletionSource<string>();
+        WorldModel.BeginPrompt(ref m_worldModel._commandInputTcs);
         m_worldModel.BeginPendingCallback();
         m_worldModel.SignalTurnSuspended();
         _ = AwaitResponseAndRunCallbackAsync(c);

@@ -41,7 +41,7 @@ public class WaitScript : ScriptBase
     public override Task ExecuteAsync(Context c)
     {
         m_worldModel.PlayerUi.DoWait();
-        m_worldModel._waitTcs = new TaskCompletionSource();
+        WorldModel.BeginPrompt(ref m_worldModel._waitTcs);
         m_worldModel.BeginPendingCallback();
         m_worldModel.SignalTurnSuspended();
         _ = AwaitWaitAndRunCallbackAsync(c);
