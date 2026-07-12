@@ -13,6 +13,9 @@ export interface FileAdapter {
     getAsset(key: string): Promise<Blob | null>;
     listAssets(): Promise<AssetInfo[]>;
     deleteAsset(key: string): Promise<void>;
+    // Only implemented by adapters keyed by GameId (LocalDraftAdapter) — moves
+    // storage to a new key when the game's gameid field changes mid-edit.
+    rekey?(newGameId: string): Promise<void>;
 }
 
 export interface LoadedFile {

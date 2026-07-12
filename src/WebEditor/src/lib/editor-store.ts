@@ -1,13 +1,17 @@
 import { writable, get } from "svelte/store";
+import { zipSync } from "fflate";
 import { loadWasm } from "./wasm";
 import type { WasmBridge } from "./wasm";
 import type { AssetInfo, FileAdapter } from "./filesystem/types";
+import { LocalDraftAdapter, ZIP_GAME_ENTRY } from "./filesystem/local-adapter";
+import { triggerDownload } from "./filesystem/download";
 import type { TreeNode, EditorDataResponse, ScriptBlockData, ScriptCommandCategoriesData, IfExpressionTemplateData, IfExpressionTemplate, FullAttributeData } from "./types";
 
 export type AddElementModalState = { type: "room" | "object" | "function" | "timer" | "walkthrough" | "template" | "dynamictemplate" | "type"; parent: string | null } | null;
 
 let _bridge: WasmBridge | null = null;
 let _adapter: FileAdapter | null = null;
+let _loadedGameId: string | null = null;
 
 export const isLoaded = writable(false);
 export const loadingStatus = writable<string | null>(null);
@@ -18,6 +22,7 @@ export function openAddModal(type: "room" | "object" | "function" | "timer" | "w
 }
 export const gameFilename = writable<string | null>(null);
 export const canSaveAs = writable(false);
+export const canExport = writable(false);
 export const treeNodes = writable<TreeNode[]>([]);
 export const selectedKey = writable<string | null>(null);
 export const selectedData = writable<EditorDataResponse | null>(null);
@@ -41,6 +46,7 @@ export async function openGame(bytes: Uint8Array, filename: string, adapter: Fil
     _bridge = await loadWasm();
     _adapter = adapter;
     canSaveAs.set(adapter.canSaveAs);
+    canExport.set(adapter instanceof LocalDraftAdapter);
     loadingStatus.set("Loading game…");
     // Double rAF ensures the browser actually paints the status update before
     // Initialise blocks the JS thread (C# WASM calls are synchronous).
@@ -49,6 +55,7 @@ export async function openGame(bytes: Uint8Array, filename: string, adapter: Fil
     loadingStatus.set(null);
     clearAssetUrlCache();
     if (ok) {
+        _loadedGameId = _bridge.GetGameId() || null;
         const nodes: TreeNode[] = JSON.parse(_bridge.GetTreeNodes());
         treeNodes.set(nodes);
         isLoaded.set(true);
@@ -152,8 +159,21 @@ export async function previewInWasmPlayer(wasmPlayerUrl: string): Promise<void> 
 
 export async function saveGame(): Promise<void> {
     if (!_bridge || !_adapter) return;
+    await rekeyIfGameIdChanged();
     await _adapter.saveFile(_bridge.Save()); // Save() clears _isDirty in the bridge
     isDirty.set(false);
+}
+
+// If the user regenerated the gameid field (PropertyEditor.svelte's "Generate"
+// button) since load, a GameId-keyed adapter (LocalDraftAdapter) needs to move
+// its OPFS storage to the new key before the next write, or the old draft is
+// orphaned and a new, empty one silently starts under the new id.
+async function rekeyIfGameIdChanged(): Promise<void> {
+    if (!_bridge || !_adapter?.rekey) return;
+    const currentGameId = _bridge.GetGameId();
+    if (!currentGameId || currentGameId === _loadedGameId) return;
+    await _adapter.rekey(currentGameId);
+    _loadedGameId = currentGameId;
 }
 
 export async function saveGameAs(): Promise<void> {
@@ -161,6 +181,27 @@ export async function saveGameAs(): Promise<void> {
     const newName = await _adapter.saveFileAs(_bridge.Save()); // Save() clears _isDirty in the bridge
     if (newName) gameFilename.set(newName);
     isDirty.set(false);
+}
+
+// Bundles the current game plus its assets into a downloadable .zip — the local
+// draft's equivalent of "save a copy to a real file" since there's no disk file
+// to save as. Uses a plain zip (not the .quest publish format): .quest packaging
+// bundles included libraries into the .aslx itself, which is right for playback
+// but would fork the game from its templates if re-imported for further editing.
+export async function exportGame(): Promise<void> {
+    if (!_bridge || !(_adapter instanceof LocalDraftAdapter)) return;
+    const gameXml = _bridge.Save(); // Save() clears _isDirty in the bridge
+    isDirty.set(false);
+    const zipEntries: Record<string, Uint8Array> = {
+        [ZIP_GAME_ENTRY]: new TextEncoder().encode(gameXml),
+    };
+    for (const asset of await _adapter.listAssets()) {
+        const blob = await _adapter.getAsset(asset.key);
+        if (blob) zipEntries[asset.key] = new Uint8Array(await blob.arrayBuffer());
+    }
+    const zipBytes = zipSync(zipEntries);
+    const exportName = _adapter.filename.replace(/\.aslx$/i, "") + ".zip";
+    triggerDownload(zipBytes, exportName);
 }
 
 export async function undo() {
