@@ -6,6 +6,7 @@
     import AttributesEditor from "./AttributesEditor.svelte";
     import ListEditor from "./ListEditor.svelte";
     import ElementsList from "./ElementsList.svelte";
+    import AssetPicker from "./AssetPicker.svelte";
 
     let activeTab = $state<string | null>(null);
     let lastKey = $state<string | null>(null);
@@ -217,7 +218,11 @@
             >Generate</button>
         </div>
     {:else if ctrl.controlType === "file"}
-        <em class="text-xs text-surface-400-500">File picker not yet implemented</em>
+        <AssetPicker
+            value={attrValue(ctrl.attribute!) ?? ""}
+            source={ctrl.source}
+            onchange={(v) => onTextChange(ctrl.attribute!, ctrl.controlType, v)}
+        />
     {:else if ctrl.controlType === "list" && ctrl.attribute && $selectedKey}
         <ListEditor elementKey={$selectedKey} attribute={ctrl.attribute} value={attrValue(ctrl.attribute)} addPrompt={ctrl.addPrompt ?? undefined} />
     {:else if ctrl.controlType === "stringdictionary" && ctrl.attribute}
