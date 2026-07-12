@@ -76,14 +76,17 @@ EditorCore ───────────────────────
 
 ## Releasing
 
-1. Open a PR that updates the `VERSION` file
-2. Merge it to `main`
+Releases are managed by [release-please](https://github.com/googleapis/release-please) (`.github/workflows/release-please.yml`, config in `release-please-config.json` / `.release-please-manifest.json`). There's no manual `VERSION`-bump PR:
 
-Merging a `VERSION` change to `main` triggers the `auto-tag` GitHub Actions workflow, which creates and pushes a git tag (e.g. `v6.0.0-beta.12`) if one doesn't already exist for that version. The tag push in turn triggers `docker-publish`, `nuget-publish`, and `deploy-play`, which build/push the Docker image, publish NuGet packages, deploy play.questviva.com, and attach a GitHub Release with auto-generated notes. The version is also embedded in the binary at build time and displayed at `/about`.
+1. PRs must have a [Conventional Commits](https://www.conventionalcommits.org/)-prefixed title (`fix:`, `feat:`, `chore:`, etc.) — enforced by `pr-title-lint.yml`. Since PRs are squash-merged, the PR title becomes the commit message on `main` that release-please parses.
+2. Every push to `main` updates a standing "release PR" that bumps `VERSION` and `CHANGELOG.md` from the commits merged since the last release.
+3. Merging that release PR *is* the release: release-please tags it directly (e.g. `v6.0.0-beta.36`), which triggers `docker-publish`, `nuget-publish`, and `deploy-play`, which build/push the Docker image, publish NuGet packages, deploy play.questviva.com, and attach a GitHub Release with a changelog generated from the PR titles. The version is also embedded in the binary at build time and displayed at `/about`.
 
-`auto-tag` pushes using the `RELEASE_PAT` repo secret (a PAT with Contents read/write), not the default `GITHUB_TOKEN` — tags pushed with `GITHUB_TOKEN` don't trigger other workflows, so a PAT is required for the tag-triggered workflows to fire.
+The version stays a perpetual `6.0.0-beta.N` — `release-please-config.json` uses the `prerelease` versioning strategy with `prerelease-type: beta`, so every release just increments the trailing beta number regardless of commit type (fix/feat/breaking), and it will never auto-graduate out of beta. To cut `6.0.0` for real, that needs an explicit `Release-As:` commit footer or a config change.
 
-`./release.sh` still works as a manual fallback if you need to tag from a clean local `main` directly (e.g. if `auto-tag` is broken). If you forgot to update `VERSION` before running it, the script will fail locally because the tag for the old version already exists.
+release-please pushes using the `RELEASE_PAT` repo secret (a PAT with Contents read/write), not the default `GITHUB_TOKEN` — tags pushed with `GITHUB_TOKEN` don't trigger other workflows, so a PAT is required for the tag-triggered workflows to fire.
+
+`./release.sh` still works as a manual fallback if you need to tag from a clean local `main` directly (e.g. if `release-please` is broken). If you forgot to update `VERSION` before running it, the script will fail locally because the tag for the old version already exists.
 
 Same tag also drives the WebEditor deploy on textadventures.co.uk: `deploy-play` builds WebEditor a second time (with `BASE_PATH=/questviva` instead of `/editor`), attaches `AppBundle.zip`/`WebEditor.zip` alongside `WasmPlayer.zip` to the GitHub Release, then dispatches a `webeditor-release` `repository_dispatch` event (using the `TA_DEPLOY_PAT` secret) to `alexwarren/textadventures.co.uk`, which downloads those release assets and redeploys. There used to be a separate `release-webeditor.yml` workflow keyed off `webeditor-v*` tags — that's gone now; regular `v*` releases are the only release cadence for both.
 
