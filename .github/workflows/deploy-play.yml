@@ -54,6 +54,7 @@ jobs:
         env:
           PUBLIC_WEBEDITOR_VERSION: ${{ github.sha }}
           BASE_PATH: /editor
+          PUBLIC_HAS_SERVER: false
 
       - name: Assemble deploy directory
         run: |
@@ -92,6 +93,7 @@ jobs:
         env:
           PUBLIC_WEBEDITOR_VERSION: ${{ github.ref_name }}
           BASE_PATH: /questviva
+          PUBLIC_HAS_SERVER: true
 
       - name: Package editor artifacts for textadventures.co.uk
         if: github.ref_type == 'tag'

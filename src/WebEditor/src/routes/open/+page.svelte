@@ -1,6 +1,7 @@
 <script lang="ts">
     import { goto } from "$app/navigation";
     import { base } from "$app/paths";
+    import { PUBLIC_HAS_SERVER } from "$env/static/public";
     import { openGame, loadingStatus } from "$lib/editor-store";
     import { hasFSA, openDirectory, loadFileFromDirectory, createLocalGame } from "$lib/filesystem/browser-adapter";
     import { createNewGame, getGameTemplates } from "$lib/filesystem/server-adapter";
@@ -12,6 +13,8 @@
     } from "$lib/filesystem/local-adapter";
     import type { LocalDraftSummary, ZipEntries } from "$lib/filesystem/local-adapter";
     import { loadWasm } from "$lib/wasm";
+
+    const hasServer = PUBLIC_HAS_SERVER === "true";
 
     let loading = $state(false);
     let error = $state<string | null>(null);
@@ -375,22 +378,24 @@
                         <div class="flex gap-2">
                             <button
                                 type="button"
-                                class="btn preset-filled-primary-500 flex-1"
+                                class="btn flex-1 {hasServer ? 'preset-outlined-primary-500' : 'preset-filled-primary-500'}"
                                 onclick={handleCreateLocal}
                                 disabled={!createName.trim()}
                                 title={hasFSA() ? "Choose a folder to save your game in" : "Save as a local draft in this browser"}
                             >
                                 {hasFSA() ? "Save to my computer" : "Create local draft"}
                             </button>
-                            <button
-                                type="button"
-                                class="btn preset-outlined-primary-500 flex-1"
-                                onclick={handleCreateServer}
-                                disabled={!createName.trim()}
-                                title="Save to textadventures.co.uk"
-                            >
-                                Save to server
-                            </button>
+                            {#if hasServer}
+                                <button
+                                    type="button"
+                                    class="btn preset-filled-primary-500 flex-1"
+                                    onclick={handleCreateServer}
+                                    disabled={!createName.trim()}
+                                    title="Save to textadventures.co.uk"
+                                >
+                                    Save to server
+                                </button>
+                            {/if}
                         </div>
                     {/if}
 
