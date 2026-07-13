@@ -7,7 +7,10 @@
 # Options:
 #   --release           Build in Release mode (AOT-compiled WasmPlayer, ~15s extra)
 #   --api-proxy <url>   Proxy /api requests to <url> (e.g. http://localhost:5043
-#                       for a local textadventures.co.uk instance)
+#                       for a local textadventures.co.uk instance). Also switches
+#                       the editor to server-save-only mode (textadventures.co.uk
+#                       behaviour) instead of the default local-only mode
+#                       (play.questviva.com behaviour).
 #
 # Servers started:
 #   http://localhost:5174   WasmEditor (Vite / SvelteKit)
@@ -62,6 +65,7 @@ if [[ "$RELEASE" == true ]]; then
 fi
 if [[ -n "$API_PROXY" ]]; then
     VITE_ENV+=("VITE_API_PROXY=$API_PROXY")
+    VITE_ENV+=("PUBLIC_HAS_SERVER=true")
 fi
 
 env "${VITE_ENV[@]}" npm --prefix src/WebEditor run dev &
