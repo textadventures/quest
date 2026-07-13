@@ -110,6 +110,48 @@ Deletes an asset file.
 
 **Errors:** `401`, `403`, `404`
 
+---
+
+### POST /api/editor/games
+
+Creates a new server-side game from a name and `.aslx` file. Used when starting a new game while
+in online mode (as opposed to opening an existing one via `?game={gameId}`).
+
+**Request:**
+- `Content-Type: multipart/form-data`
+- Field `name`: the game name
+- Field `file`: the `.aslx` content
+
+**Response:**
+- Status: `201 Created`
+- Body:
+```json
+{ "gameId": 123 }
+```
+
+---
+
+### POST /api/editor/games/{gameId}/publish
+
+Uploads a compiled `.quest` package (built client-side via `Packager.CreatePackage`, see
+[webeditor-wasm-svelte.md](./webeditor-wasm-svelte.md#publish)) and stages it for submission to
+the site's public-listing flow.
+
+**Request:**
+- `Content-Type: application/octet-stream` (or similar)
+- Body: the raw `.quest` file bytes
+
+**Response:**
+- Status: `204 No Content` on success
+
+**Errors:** `401`, `403`, `404`
+
+The uploaded bytes are held server-side in a short-lived (15-minute) cache keyed by `gameId`, not
+written to blob storage — it's a one-shot handoff to the page load that follows. After a
+successful upload, the client should navigate to `/create/publish/{gameId}`, which reads the
+cached package once, shows the submission form (title/description/category/cover/visibility) for
+a first publish, or updates the existing listing if the game was already published.
+
 ## Entry point from textadventures.co.uk
 
 When a user clicks "Edit" on one of their games, redirect them to:

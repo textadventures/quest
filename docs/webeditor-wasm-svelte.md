@@ -6,7 +6,8 @@ Core editing is done and in daily use: open/create a game, browse and edit the t
 attributes and scripts (visual + code view), add/delete every element type, undo/redo, save
 locally (File System Access API, with an `<input>`/download fallback) or to
 textadventures.co.uk, upload/browse/delete image and sound assets, back up/restore local drafts
-as a `.zip`, publish a `.quest` package, and preview in WasmPlayer.
+as a `.zip`, publish a `.quest` package (and, for server-mode games, submit it straight to
+textadventures.co.uk's listing flow), and preview in WasmPlayer.
 See [Remaining work](#remaining-work) below for what's left.
 
 ## Architecture
@@ -226,7 +227,7 @@ The toolbar's Preview button opens WasmPlayer (`previewInWasmPlayer` in `editor-
 
 `ServerFileAdapter` expects the API described in `docs/textadventures-api.md`. When the editor is opened with `?game={guid}`, it auto-loads via `loadFromServer` and uses `ServerFileAdapter` for all subsequent saves and asset operations. The server API uses the user's existing session cookie — no token exchange needed.
 
-`docs/textadventures-api.md` is slightly behind the real implementation in the sibling `textadventures.co.uk` repo (`TextAdventures.Web/Controllers/EditorApiController.cs`) — that repo also has `POST /api/editor/games` (create a new server-side game from name + `.aslx`) which isn't documented yet. Worth reconciling when picking up the Publish phase 2 work below, since it touches the same controller.
+`docs/textadventures-api.md` documents the full `EditorApiController.cs` surface, including `POST /api/editor/games` (create) and `POST /api/editor/games/{gameId}/publish` (Publish phase 2, see below).
 
 ---
 
@@ -234,7 +235,8 @@ The toolbar's Preview button opens WasmPlayer (`previewInWasmPlayer` in `editor-
 
 Naming note: the OPFS zip round-trip described under [File handling](#file-handling) is called **Backup** (and **Import** on the way back in) — a plain zip of `game.aslx` + loose assets, meant for re-editing. **Publish** is a different, distinct feature: producing a `.quest` package (the format v5's desktop editor called "Publish to file" — included libraries inlined into the `.aslx`, not re-editable) and, optionally, submitting that package to textadventures.co.uk. These two used to share the name "Export"; they don't anymore.
 
-Publish has two phases, one implemented in this repo already, one still cross-repo:
+Publish has two phases, both implemented and working end-to-end (tested against the live
+textadventures.co.uk submission flow):
 
 ### Phase 1: build the `.quest` package (this repo — done)
 
@@ -250,34 +252,35 @@ WebEditor UI: a "Publish…" toolbar action (shown whenever a game is loaded, lo
 
 **Known gap, deferred deliberately**: multi-file/library games (a `.aslx` that itself includes sibling library files on disk) are rare in WebEditor today and out of scope for v1 — only assets the `FileAdapter` knows about get bundled.
 
-### Phase 2: submit to textadventures.co.uk (cross-repo: quest + textadventures.co.uk — not started)
+### Phase 2: submit to textadventures.co.uk (cross-repo: quest + textadventures.co.uk — done)
 
-This isn't a file-format problem — it's textadventures.co.uk's existing public-listing/submission flow, and most of it is **already built and wired, just waiting for a `.quest` file to be uploaded to it** (phase 1 above now produces that file, but nothing yet uploads it there):
+This reuses textadventures.co.uk's existing public-listing/submission flow rather than building a
+new one:
 
 - `TextAdventures.Web/Controllers/CreateController.cs` has `Publish(int id)`, whose comment reads *"Used only by Quest WebEditor, which redirects here after publishing game output to Azure"* — it forwards to `SubmitController.QuestWebEditor(id)`.
-- `Views/Submit/Quest.razor` downloads `{editorGameDir}/Output/{gamename}.quest` from blob storage, parses it via the existing `GameQuery` reader (same one used by the classic manual-upload flow), and either shows the `GameDetails` submission form (title/description/category/cover/visibility) for a first publish, or calls `SubmitService.UpdateGameFile` to update an already-published listing (tracked via `EditorGame.PublishId`).
+- `Views/Submit/Quest.razor` loads the compiled package and either shows the `GameDetails` submission form (title/description/category/cover/visibility) for a first publish, or calls `SubmitService.UpdateGameFile` to update an already-published listing (tracked via `EditorGame.PublishId`).
 - Category, tags, and visibility (`Game.IsVisible`) all reuse the same infrastructure as the classic upload and old v5-desktop-editor publish paths — no new data model needed.
-- **The one missing piece is server-side**: `EditorApiController.cs` has no endpoint to accept an uploaded compiled package. It needs something like `POST /api/editor/games/{gameId}/publish` that stores the uploaded bytes at the blob path `Quest.razor` already reads from (`{editorGameDir}/Output/{gamename}.quest`).
-- **quest (this repo)**: extend the Publish modal so that, when `ServerFileAdapter` is active (local-mode games have no `gameId` to attach a listing to), it POSTs the `CreatePublishPackage()` output to the new endpoint above instead of (or in addition to) downloading it, then navigates to `/create/publish/{gameId}` on textadventures.co.uk.
-- Local-mode users aren't blocked by any of this: they can already Publish a `.quest` file and use the site's existing classic manual "submit a game" upload page.
+- **Server-side (textadventures.co.uk)**: `EditorApiController.PostPublish` (`POST /api/editor/games/{gameId}/publish`) accepts the uploaded compiled bytes. Rather than writing to the blob path the legacy `quest.textadventures.co.uk` editor uses (`{editorGameDir}/Output/{gamename}.quest`), it hands them off via `PublishedQuestCache` — a short-lived (15-minute) `IMemoryCache` entry keyed by `editorGameId`. This is a deliberate one-shot handoff rather than a durable blob write: the POST and the subsequent `/Create/Publish/{gameId}` page load are two separate HTTP requests (not one live Blazor circuit, unlike the classic upload flow), so `Quest.razor` needs *some* server-side state to bridge them, but the bytes don't need to outlive that one redirect. `Quest.razor` checks `PublishedQuestCache.TryGet` first (removing the entry once read) and falls back to the legacy blob-storage path only if nothing's cached — so both the new WebEditor and the legacy editor funnel through the same `GameQuery`/`GameDetails`/`SubmitService` code from there.
+- **quest (this repo)**: `publishGame()` in `editor-store.ts` — when `ServerFileAdapter` is active (local-mode games have no `gameId` to attach a listing to) — POSTs the `CreatePublishPackage()` output to `/api/editor/games/{gameId}/publish`, then navigates to `/create/publish/{gameId}` on textadventures.co.uk. Local-mode games still just download the `.quest` file and rely on the site's existing classic manual "submit a game" upload page.
 
-Since the counterpart repo lives outside this one, this section should be treated as the plan of record for both sides — update it here if the shape changes, since `docs/textadventures-api.md` in this repo is the only place that spec is written down for someone working purely in `quest`.
+Since the counterpart repo lives outside this one, `docs/textadventures-api.md` in this repo is the
+only place the endpoint is documented for someone working purely in `quest` — see its `POST
+/api/editor/games/{gameId}/publish` entry.
 
 ---
 
 ## Remaining work
 
-Core editing, element CRUD, script editing, save/load (local + server), new-game-from-template, preview, and asset management (upload/browse/delete, plus pickers for both attribute-level and script-level file controls) are all done. What's left, roughly in the order it'll likely get tackled:
+Core editing, element CRUD, script editing, save/load (local + server), new-game-from-template, preview, asset management (upload/browse/delete, plus pickers for both attribute-level and script-level file controls), and Publish (both building the `.quest` package and submitting it to textadventures.co.uk) are all done. What's left, roughly in the order it'll likely get tackled:
 
-1. **Publish** — phase 1 done (see [Publish](#publish) above): `Packager.CreatePackage` (Engine), the bridge staging methods, and the WebEditor "Publish…" toolbar action all build and download a working `.quest` package, covered by `PackagerTests.cs`. Phase 2 — submitting that package to textadventures.co.uk — is not started; it's a small cross-repo addition since the site's submission flow already exists and is just waiting on a server-side upload endpoint.
-2. **Raw ASLX (whole-file) editor** — a CodeMirror 6 XML view as a top-level toggle, for parity with the v5 desktop editor's raw code view. Round-trips through save/reload; needs a clear "you are editing raw XML, this bypasses validation" warning. CodeMirror 6 has built-in XML highlighting, so no custom grammar is needed; Monaco is the alternative if a more VS Code–like experience is wanted at the cost of bundle size.
-3. **Dirty flag doesn't clear on undo to saved state** — see [Unsaved changes](#unsaved-changes) above.
-4. **Richer room-exits dialog** — deferred from the add/delete-elements work; exits are currently created anonymously and edited like any other element rather than through a dedicated exits tab.
-5. **`EditorController.AddControlType`/`GetControlType`** — dead code now the only consumer is Svelte (the `EditorMode` Desktop/Web split itself was already removed). Cleanup, not urgent.
-6. **Live JS push events** (`[JSImport]`) — see [Not yet implemented](#not-yet-implemented). Only matters if/when the editor needs push-based updates (e.g. background operations, collaboration); not needed for anything currently planned.
-7. **Electron wrapper** — future; see Option D above and [Open questions](#open-questions).
-8. **WebEditor e2e coverage** (Playwright, `tests/e2e`) — this is the real gap, not a "WasmEditorBridge unit test project". `WasmEditor.csproj` targets `<RuntimeIdentifier>browser-wasm</RuntimeIdentifier>` with `OutputType>Exe`, which a normal MSTest project can't reference the way `EditorCoreTests` references `EditorCore.csproj` — there's no in-process host to unit-test the `[JSExport]` boundary itself. Most of the ~65 bridge methods are thin pass-throughs to `EditorController`, which already has decent coverage (`EditableListTests`, `EditableScriptTests`, `EditorControllerTests`, etc.); what's actually untested is the JS↔WASM marshaling boundary and end-to-end UI wiring, which only a real browser driving the built `AppBundle` can exercise — i.e. Playwright, extending the existing pattern in `tests/e2e` (currently WebPlayer/WasmPlayer verification scripts only). Independent of item 1; not a prerequisite for it. (The Asset UI work verified this approach informally — a throwaway Playwright script driving the built AppBundle via the non-FSA `<input type="file">` fallback path worked well for exercising the picker/upload/preview flow end-to-end; formalizing that into `tests/e2e` is what this item is.)
-9. **Blockly** — future; see [Blockly (future)](#blockly-future) below.
+1. **Raw ASLX (whole-file) editor** — a CodeMirror 6 XML view as a top-level toggle, for parity with the v5 desktop editor's raw code view. Round-trips through save/reload; needs a clear "you are editing raw XML, this bypasses validation" warning. CodeMirror 6 has built-in XML highlighting, so no custom grammar is needed; Monaco is the alternative if a more VS Code–like experience is wanted at the cost of bundle size.
+2. **Dirty flag doesn't clear on undo to saved state** — see [Unsaved changes](#unsaved-changes) above.
+3. **Richer room-exits dialog** — deferred from the add/delete-elements work; exits are currently created anonymously and edited like any other element rather than through a dedicated exits tab.
+4. **`EditorController.AddControlType`/`GetControlType`** — dead code now the only consumer is Svelte (the `EditorMode` Desktop/Web split itself was already removed). Cleanup, not urgent.
+5. **Live JS push events** (`[JSImport]`) — see [Not yet implemented](#not-yet-implemented). Only matters if/when the editor needs push-based updates (e.g. background operations, collaboration); not needed for anything currently planned.
+6. **Electron wrapper** — future; see Option D above and [Open questions](#open-questions).
+7. **WebEditor e2e coverage** (Playwright, `tests/e2e`) — this is the real gap, not a "WasmEditorBridge unit test project". `WasmEditor.csproj` targets `<RuntimeIdentifier>browser-wasm</RuntimeIdentifier>` with `OutputType>Exe`, which a normal MSTest project can't reference the way `EditorCoreTests` references `EditorCore.csproj` — there's no in-process host to unit-test the `[JSExport]` boundary itself. Most of the ~65 bridge methods are thin pass-throughs to `EditorController`, which already has decent coverage (`EditableListTests`, `EditableScriptTests`, `EditorControllerTests`, etc.); what's actually untested is the JS↔WASM marshaling boundary and end-to-end UI wiring, which only a real browser driving the built `AppBundle` can exercise — i.e. Playwright, extending the existing pattern in `tests/e2e` (currently WebPlayer/WasmPlayer verification scripts only). (The Asset UI work verified this approach informally — a throwaway Playwright script driving the built AppBundle via the non-FSA `<input type="file">` fallback path worked well for exercising the picker/upload/preview flow end-to-end; formalizing that into `tests/e2e` is what this item is.)
+8. **Blockly** — future; see [Blockly (future)](#blockly-future) below.
 
 ---
 
