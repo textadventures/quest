@@ -74,11 +74,15 @@ EditorCore ───────────────────────
 
 **Test projects in `tests/`:** EngineTests, PlayerCoreTests, EditorCoreTests, UtilityTests, LegacyTests
 
+## Git Workflow
+
+`main` is a protected branch (required status check `build_and_test`, required PR review, `enforce_admins` on) — direct pushes are rejected outright, including from repo admins. All changes, however small, go through a feature branch + PR.
+
 ## Releasing
 
 Releases are managed by [release-please](https://github.com/googleapis/release-please) (`.github/workflows/release-please.yml`, config in `release-please-config.json` / `.release-please-manifest.json`). There's no manual `VERSION`-bump PR:
 
-1. PRs must have a [Conventional Commits](https://www.conventionalcommits.org/)-prefixed title (`fix:`, `feat:`, `chore:`, etc.) — enforced by `pr-title-lint.yml`. Since PRs are squash-merged, the PR title becomes the commit message on `main` that release-please parses.
+1. PRs must have a [Conventional Commits](https://www.conventionalcommits.org/)-prefixed title (`fix:`, `feat:`, `chore:`, etc.) — enforced by `pr-title-lint.yml`, which also restricts the optional scope (e.g. `feat(WebEditor): ...`) to an exact-case allowlist of project names, so scoped changelog entries cluster and capitalize consistently. Since PRs are squash-merged, the PR title becomes the commit message on `main` that release-please parses.
 2. Every push to `main` updates a standing "release PR" that bumps `VERSION` and `CHANGELOG.md` from the commits merged since the last release.
 3. Merging that release PR *is* the release: release-please tags it directly (e.g. `v6.0.0-beta.36`), which triggers `docker-publish`, `nuget-publish`, and `deploy-play`, which build/push the Docker image, publish NuGet packages, deploy play.questviva.com, and attach a GitHub Release with a changelog generated from the PR titles. The version is also embedded in the binary at build time and displayed at `/about`.
 
