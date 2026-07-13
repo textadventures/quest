@@ -39,7 +39,7 @@ Cloud sync needs to be same-origin with the existing auth session/API (no cross-
 
 ## Avoiding local-vs-synced confusion
 
-Rather than hiding features per domain, show a persistent, unambiguous per-game storage indicator in the editor UI — "On this device" vs "In your Quest account" — so it's always clear where a given game lives.
+Superseded 2026-07-13: rather than a per-game storage indicator, the two domains now hide the storage option that doesn't apply to them. `play.questviva.com` never shows "Save to server" (no backend to save to). `textadventures.co.uk` shows *only* "Save to server" — no local create/open/import/drafts — with a link out to `play.questviva.com/editor/` for anyone who wants local storage instead. This is deliberate: cloud sync on textadventures.co.uk is expected to be deprecated eventually in favour of local-first everywhere, so no new local games should be seeded there. Gated by a `PUBLIC_HAS_SERVER` build-time flag set per deployment in `deploy-play.yml` (see `src/WebEditor/src/routes/open/+page.svelte`).
 
 ## Status
 
@@ -55,4 +55,5 @@ Subdomain name: settled on `play.questviva.com` (favoured over `app.questviva.co
 ## Follow-ups (not in this pass)
 
 - **Play/Create homepage at root** — a small standalone page (no WASM needed) linking to `/player` and `/editor`, desktop-app style. Shared game links (`?url=<url>`) should route straight to `/player` rather than through the splash.
-- **Template list needs a WASM export** — `/editor/open`'s "create new game from template" calls `getGameTemplates()` → `/api/editor/games` on textadventures.co.uk (`src/WebEditor/src/lib/filesystem/server-adapter.ts`), which isn't reachable cross-origin from play.questviva.com. "Open existing file/folder" is unaffected. Fix: add a `GetGameTemplates()` WASM bridge export (mirroring the existing `CreateGameFromTemplate`) so template listing needs no server round-trip.
+
+Done: template listing now calls a `GetGameTemplates()` WASM bridge export (mirroring `CreateGameFromTemplate`), so it needs no server round-trip and works cross-origin on play.questviva.com.
