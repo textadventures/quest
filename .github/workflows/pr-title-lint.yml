@@ -21,7 +21,8 @@ jobs:
         with:
           # Scope is optional (requireScope unset), but when given it must
           # match a project name exactly, so it clusters and capitalizes
-          # consistently in the release-please changelog.
+          # consistently in the release-please changelog. "main" is included
+          # because release-please's own PR titles are "chore(main): release X.Y.Z".
           scopes: |
             Common
             Engine
@@ -33,3 +34,4 @@ jobs:
             WebEditor
             WasmEditor
             Site
+            main
