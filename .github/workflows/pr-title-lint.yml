@@ -18,3 +18,18 @@ jobs:
       - uses: amannn/action-semantic-pull-request@v5
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          # Scope is optional (requireScope unset), but when given it must
+          # match a project name exactly, so it clusters and capitalizes
+          # consistently in the release-please changelog.
+          scopes: |
+            Common
+            Engine
+            EditorCore
+            PlayerCore
+            Legacy
+            WebPlayer
+            WasmPlayer
+            WebEditor
+            WasmEditor
+            Site
