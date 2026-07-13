@@ -402,7 +402,7 @@
                         </div>
 
                         {#if hasServer}
-                            <p class="text-xs text-surface-500-400 max-w-[40ch] text-center">
+                            <p class="text-xs text-surface-500-400 max-w-[40ch] text-center self-center">
                                 Want to keep this game only on your own device? Use the
                                 <a class="anchor" href="https://play.questviva.com/editor/">play.questviva.com editor</a> instead.
                             </p>
