@@ -18,7 +18,7 @@
          scripts/build-icons.mjs) into generated/index.html, before either gets copied into
          the AppBundle. -->
     <Target Name="BuildChromeCss" BeforeTargets="CopyPlayerAssetsToAppBundle">
-        <Exec Command="npm install" WorkingDirectory="$(MSBuildThisFileDirectory)" Condition="!Exists('$(MSBuildThisFileDirectory)node_modules')"/>
+        <Exec Command="npm ci" WorkingDirectory="$(MSBuildThisFileDirectory)" Condition="!Exists('$(MSBuildThisFileDirectory)node_modules')"/>
         <Exec Command="npm run build" WorkingDirectory="$(MSBuildThisFileDirectory)"/>
     </Target>
 
