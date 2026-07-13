@@ -4,6 +4,7 @@ import { loadWasm } from "./wasm";
 import type { WasmBridge } from "./wasm";
 import type { AssetInfo, FileAdapter } from "./filesystem/types";
 import { LocalDraftAdapter } from "./filesystem/local-adapter";
+import { ServerFileAdapter } from "./filesystem/server-adapter";
 import { triggerDownload } from "./filesystem/download";
 import type { TreeNode, EditorDataResponse, ScriptBlockData, ScriptCommandCategoriesData, IfExpressionTemplateData, IfExpressionTemplate, FullAttributeData } from "./types";
 
@@ -23,6 +24,7 @@ export function openAddModal(type: "room" | "object" | "function" | "timer" | "w
 export const gameFilename = writable<string | null>(null);
 export const canSaveAs = writable(false);
 export const canBackup = writable(false);
+export const canPublishToServer = writable(false);
 export const treeNodes = writable<TreeNode[]>([]);
 export const selectedKey = writable<string | null>(null);
 export const selectedData = writable<EditorDataResponse | null>(null);
@@ -48,6 +50,7 @@ export async function openGame(bytes: Uint8Array, filename: string, adapter: Fil
     _adapter = adapter;
     canSaveAs.set(adapter.canSaveAs);
     canBackup.set(adapter instanceof LocalDraftAdapter);
+    canPublishToServer.set(adapter instanceof ServerFileAdapter);
     loadingStatus.set("Loading game…");
     // Double rAF ensures the browser actually paints the status update before
     // Initialise blocks the JS thread (C# WASM calls are synchronous).
@@ -206,12 +209,14 @@ export async function backupGame(): Promise<void> {
 }
 
 // Builds a .quest package (game.aslx with included libraries inlined, plus every
-// known asset) and downloads it — the same package format the v5 desktop editor
-// called "Publish to file". Works identically for local and server-mode games,
-// since it only touches the FileAdapter interface. Submitting the package to
-// textadventures.co.uk is a separate, not-yet-built step for server-mode games;
-// local-mode users can already use the site's classic manual upload page with the
-// downloaded file.
+// known asset) — the same package format the v5 desktop editor called "Publish to
+// file". Works identically for local and server-mode games while staging, since
+// staging only touches the FileAdapter interface; the two modes diverge only in
+// what happens to the finished bytes:
+//   - server mode: POST to textadventures.co.uk's publish endpoint, then navigate
+//     there to complete the submission (category/tags/visibility form).
+//   - local mode: trigger a browser download; the user can use the site's classic
+//     manual "submit a game" upload page with the downloaded file.
 export async function publishGame(includeWalkthrough: boolean): Promise<void> {
     if (!_bridge || !_adapter) return;
     for (const asset of await _adapter.listAssets()) {
@@ -220,6 +225,18 @@ export async function publishGame(includeWalkthrough: boolean): Promise<void> {
     }
     const packageBytes = _bridge.CreatePublishPackage(includeWalkthrough);
     if (packageBytes.length === 0) throw new Error("Failed to build the .quest package.");
+
+    if (_adapter instanceof ServerFileAdapter) {
+        const resp = await fetch(`/api/editor/games/${_adapter.gameId}/publish`, {
+            method: "POST",
+            headers: { "Content-Type": "application/octet-stream" },
+            body: new Blob([packageBytes.slice()]),
+        });
+        if (!resp.ok) throw new Error(`Publish failed: ${resp.status} ${resp.statusText}`);
+        window.location.href = `/create/publish/${_adapter.gameId}`;
+        return;
+    }
+
     const publishName = _adapter.filename.replace(/\.aslx$/i, "") + ".quest";
     triggerDownload(packageBytes, publishName);
 }

@@ -1,5 +1,5 @@
 <script lang="ts">
-    import { publishGame } from "$lib/editor-store";
+    import { publishGame, canPublishToServer } from "$lib/editor-store";
 
     interface Props {
         oncancel: () => void;
@@ -47,8 +47,13 @@
         </div>
 
         <p class="text-sm text-surface-500-400">
-            Builds a <code>.quest</code> package (game file plus assets) and downloads it. Use the
-            site's manual "submit a game" page to publish it on textadventures.co.uk.
+            {#if $canPublishToServer}
+                Builds a <code>.quest</code> package (game file plus assets) and submits it to
+                textadventures.co.uk, where you'll fill in title, description, category and visibility.
+            {:else}
+                Builds a <code>.quest</code> package (game file plus assets) and downloads it. Use the
+                site's manual "submit a game" page to publish it on textadventures.co.uk.
+            {/if}
         </p>
 
         <label class="flex items-center gap-2 text-sm">
@@ -63,6 +68,6 @@
             class="btn btn-sm preset-filled-primary-500 self-start"
             onclick={handlePublish}
             disabled={publishing}
-        >{publishing ? "Publishing…" : "Publish…"}</button>
+        >{publishing ? "Publishing…" : $canPublishToServer ? "Publish to textadventures.co.uk…" : "Publish…"}</button>
     </div>
 </div>

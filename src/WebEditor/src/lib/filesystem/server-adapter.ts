@@ -33,6 +33,7 @@ export class ServerFileAdapter implements FileAdapter {
     ) {}
 
     get filename() { return this._filename; }
+    get gameId() { return this._gameId; }
     readonly canSaveAs = false;
 
     async saveFile(data: Uint8Array | string): Promise<void> {
