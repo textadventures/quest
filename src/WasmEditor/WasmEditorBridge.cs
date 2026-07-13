@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
+using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices.JavaScript;
 using System.Text.Json;
@@ -400,6 +401,38 @@ public partial class WasmEditorBridge
 
     [JSExport]
     public static string GetGameId() => _controller?.GameId ?? string.Empty;
+
+    // [JSExport] can't marshal an array of blobs in one call, so assets are staged one
+    // at a time (same shape as the dirty-flag polling above) then consumed by
+    // CreatePublishPackage, which also clears the staged list whether or not it succeeds.
+    private static readonly List<EditorController.PackageIncludeFile> PendingPublishAssets = [];
+
+    [JSExport]
+    public static void AddPublishAsset(string filename, byte[] data)
+    {
+        PendingPublishAssets.Add(new EditorController.PackageIncludeFile
+        {
+            Filename = filename,
+            Content = new MemoryStream(data)
+        });
+    }
+
+    // Returns the .quest package bytes, or an empty array on failure — a real package
+    // is never empty since it always contains at least the game.aslx entry.
+    [JSExport]
+    public static byte[] CreatePublishPackage(bool includeWalkthrough)
+    {
+        var assets = PendingPublishAssets.ToArray();
+        PendingPublishAssets.Clear();
+        if (_controller == null)
+        {
+            return [];
+        }
+
+        using var stream = new MemoryStream();
+        var result = _controller.Publish(null, includeWalkthrough, assets, stream);
+        return result.Valid ? stream.ToArray() : [];
+    }
 
     [JSExport]
     public static bool CanUndo()

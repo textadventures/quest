@@ -4,6 +4,7 @@ import { loadWasm } from "./wasm";
 import type { WasmBridge } from "./wasm";
 import type { AssetInfo, FileAdapter } from "./filesystem/types";
 import { LocalDraftAdapter } from "./filesystem/local-adapter";
+import { ServerFileAdapter } from "./filesystem/server-adapter";
 import { triggerDownload } from "./filesystem/download";
 import type { TreeNode, EditorDataResponse, ScriptBlockData, ScriptCommandCategoriesData, IfExpressionTemplateData, IfExpressionTemplate, FullAttributeData } from "./types";
 
@@ -22,7 +23,8 @@ export function openAddModal(type: "room" | "object" | "function" | "timer" | "w
 }
 export const gameFilename = writable<string | null>(null);
 export const canSaveAs = writable(false);
-export const canExport = writable(false);
+export const canBackup = writable(false);
+export const canPublishToServer = writable(false);
 export const treeNodes = writable<TreeNode[]>([]);
 export const selectedKey = writable<string | null>(null);
 export const selectedData = writable<EditorDataResponse | null>(null);
@@ -34,6 +36,7 @@ export const scriptVersion = writable(0);
 export const scriptClipboardHasContent = writable(false);
 export const assets = writable<AssetInfo[]>([]);
 export const assetManagerOpen = writable(false);
+export const publishModalOpen = writable(false);
 
 function refreshUndoRedo() {
     canUndo.set(_bridge?.CanUndo() ?? false);
@@ -46,7 +49,8 @@ export async function openGame(bytes: Uint8Array, filename: string, adapter: Fil
     _bridge = await loadWasm();
     _adapter = adapter;
     canSaveAs.set(adapter.canSaveAs);
-    canExport.set(adapter instanceof LocalDraftAdapter);
+    canBackup.set(adapter instanceof LocalDraftAdapter);
+    canPublishToServer.set(adapter instanceof ServerFileAdapter);
     loadingStatus.set("Loading game…");
     // Double rAF ensures the browser actually paints the status update before
     // Initialise blocks the JS thread (C# WASM calls are synchronous).
@@ -188,7 +192,7 @@ export async function saveGameAs(): Promise<void> {
 // to save as. Uses a plain zip (not the .quest publish format): .quest packaging
 // bundles included libraries into the .aslx itself, which is right for playback
 // but would fork the game from its templates if re-imported for further editing.
-export async function exportGame(): Promise<void> {
+export async function backupGame(): Promise<void> {
     if (!_bridge || !(_adapter instanceof LocalDraftAdapter)) return;
     const gameXml = _bridge.Save(); // Save() clears _isDirty in the bridge
     isDirty.set(false);
@@ -200,8 +204,41 @@ export async function exportGame(): Promise<void> {
         if (blob) zipEntries[asset.key] = new Uint8Array(await blob.arrayBuffer());
     }
     const zipBytes = zipSync(zipEntries);
-    const exportName = _adapter.filename.replace(/\.aslx$/i, "") + ".zip";
-    triggerDownload(zipBytes, exportName);
+    const backupName = _adapter.filename.replace(/\.aslx$/i, "") + ".zip";
+    triggerDownload(zipBytes, backupName);
+}
+
+// Builds a .quest package (game.aslx with included libraries inlined, plus every
+// known asset) — the same package format the v5 desktop editor called "Publish to
+// file". Works identically for local and server-mode games while staging, since
+// staging only touches the FileAdapter interface; the two modes diverge only in
+// what happens to the finished bytes:
+//   - server mode: POST to textadventures.co.uk's publish endpoint, then navigate
+//     there to complete the submission (category/tags/visibility form).
+//   - local mode: trigger a browser download; the user can use the site's classic
+//     manual "submit a game" upload page with the downloaded file.
+export async function publishGame(includeWalkthrough: boolean): Promise<void> {
+    if (!_bridge || !_adapter) return;
+    for (const asset of await _adapter.listAssets()) {
+        const blob = await _adapter.getAsset(asset.key);
+        if (blob) _bridge.AddPublishAsset(asset.key, new Uint8Array(await blob.arrayBuffer()));
+    }
+    const packageBytes = _bridge.CreatePublishPackage(includeWalkthrough);
+    if (packageBytes.length === 0) throw new Error("Failed to build the .quest package.");
+
+    if (_adapter instanceof ServerFileAdapter) {
+        const resp = await fetch(`/api/editor/games/${_adapter.gameId}/publish`, {
+            method: "POST",
+            headers: { "Content-Type": "application/octet-stream" },
+            body: new Blob([packageBytes.slice()]),
+        });
+        if (!resp.ok) throw new Error(`Publish failed: ${resp.status} ${resp.statusText}`);
+        window.location.href = `/create/publish/${_adapter.gameId}`;
+        return;
+    }
+
+    const publishName = _adapter.filename.replace(/\.aslx$/i, "") + ".quest";
+    triggerDownload(packageBytes, publishName);
 }
 
 export async function undo() {

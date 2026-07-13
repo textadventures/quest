@@ -270,8 +270,8 @@
                     Import game file
                 </button>
                 <p class="text-sm text-surface-500-400 max-w-[40ch] text-center">
-                    Accepts a .aslx file or a .zip exported from here. Imported games are stored in this
-                    browser as a local draft — use <strong>Export</strong> in the editor to save a copy to disk.
+                    Accepts a .aslx file or a .zip backed up from here. Imported games are stored in this
+                    browser as a local draft — use <strong>Backup</strong> in the editor to save a copy to disk.
                 </p>
             {/if}
 
