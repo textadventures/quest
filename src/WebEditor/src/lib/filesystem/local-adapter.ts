@@ -92,7 +92,7 @@ function basename(name: string): string {
     return name.slice(name.lastIndexOf("/") + 1);
 }
 
-// Imports a picked File — a plain .aslx, or a .zip (our own export, or any zip a
+// Imports a picked File — a plain .aslx, or a .zip (our own backup, or any zip a
 // user put together by hand) — into a new local draft, keyed by the gameid found
 // inside the chosen game file. A zip may contain more than one .aslx (split-file
 // games, custom libraries) — in that case the caller needs to ask the user which
@@ -178,7 +178,7 @@ export class LocalDraftAdapter implements FileAdapter {
     get filename() { return this._filename; }
     get gameId() { return this._gameId; }
 
-    // No real "save as" for a local draft — Export (see editor-store.exportGame) is
+    // No real "save as" for a local draft — Backup (see editor-store.backupGame) is
     // the equivalent of taking a copy out to a real file.
     readonly canSaveAs = false;
 

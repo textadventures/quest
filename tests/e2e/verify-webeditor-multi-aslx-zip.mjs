@@ -1,6 +1,6 @@
 // Ad-hoc manual verification, Firefox: importing a .zip that contains more than
 // one .aslx file (split-file games, custom libraries, or just a zip a user put
-// together by hand rather than one produced by Export) should show a picker to
+// together by hand rather than one produced by Backup) should show a picker to
 // choose which one to open as the main game — same UX as the FSA folder-open
 // flow's "multiple game files found" picker — instead of only ever recognizing
 // a fixed "game.aslx" entry name. Also simulates a real macOS Finder "Compress"

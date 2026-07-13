@@ -2,7 +2,8 @@
     import { AppBar } from "@skeletonlabs/skeleton-svelte";
     import { PUBLIC_WEBEDITOR_VERSION, PUBLIC_WASM_PLAYER_URL } from "$env/static/public";
     import {
-        gameFilename, isDirty, saveGame, saveGameAs, canSaveAs, exportGame, canExport,
+        gameFilename, isDirty, saveGame, saveGameAs, canSaveAs, backupGame, canBackup,
+        publishModalOpen,
         previewInWasmPlayer,
         undo, redo, canUndo, canRedo,
         treeNodes, selectedKey, openAddModal,
@@ -27,9 +28,9 @@
         try { await saveGameAs(); } finally { saving = false; }
     }
 
-    async function handleExport() {
+    async function handleBackup() {
         saving = true;
-        try { await exportGame(); } finally { saving = false; }
+        try { await backupGame(); } finally { saving = false; }
     }
 
     async function handlePreview() {
@@ -138,10 +139,11 @@
                     {#if $canSaveAs}
                         <button type="button" class="btn btn-sm preset-outlined-primary-500" onclick={handleSaveAs} disabled={saving} title="Save As">Save As…</button>
                     {/if}
-                    {#if $canExport}
-                        <button type="button" class="btn btn-sm preset-outlined-primary-500" onclick={handleExport} disabled={saving} title="Download a .zip copy of this game and its assets">Export…</button>
+                    {#if $canBackup}
+                        <button type="button" class="btn btn-sm preset-outlined-primary-500" onclick={handleBackup} disabled={saving} title="Download a .zip copy of this game and its assets">Backup…</button>
                     {/if}
                     {#if $gameFilename}
+                        <button type="button" class="btn btn-sm preset-outlined-primary-500" onclick={() => publishModalOpen.set(true)} title="Build a .quest package for distribution">Publish…</button>
                         <button type="button" class="btn btn-sm preset-outlined-secondary-500" onclick={handlePreview} title="Preview game">▶ Preview</button>
                     {/if}
                 </div>

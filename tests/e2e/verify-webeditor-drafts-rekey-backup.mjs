@@ -7,7 +7,7 @@
 //    "Generate" button) and saving must move the OPFS draft to the new key, not
 //    fork a second empty draft under it — asserted by the drafts list staying at
 //    exactly one entry.
-// 2. Export/Import round trip: Export bundles the game + assets into a .zip;
+// 2. Backup/Import round trip: Backup bundles the game + assets into a .zip;
 //    deleting the local draft and re-importing that same .zip must restore both
 //    the game content and the asset.
 //
@@ -50,8 +50,8 @@ try {
     if (after !== 1) throw new Error(`Rekey forked the draft: expected 1, got ${after}`);
     console.log('rekey PASS');
 
-    // --- Scenario 2: Export / Import round trip ---
-    await createDraft('Export Test');
+    // --- Scenario 2: Backup / Import round trip ---
+    await createDraft('Backup Test');
     await page.click('button:has-text("🖼 Assets")');
     const dialog = page.locator('div[role="dialog"]');
     const [fileChooser] = await Promise.all([
@@ -64,13 +64,13 @@ try {
 
     const [download] = await Promise.all([
         page.waitForEvent('download'),
-        page.click('button:has-text("Export")'),
+        page.click('button:has-text("Backup")'),
     ]);
-    const zipPath = `/tmp/webeditor-export-test-${Date.now()}.zip`;
+    const zipPath = `/tmp/webeditor-backup-test-${Date.now()}.zip`;
     await download.saveAs(zipPath);
-    console.log('exported zip saved to', zipPath);
+    console.log('backup zip saved to', zipPath);
 
-    // Delete the draft, then re-import the exported zip.
+    // Delete the draft, then re-import the backed-up zip.
     await page.goto(`${baseUrl}/open`);
     page.once('dialog', d => d.accept());
     await page.click('button:has-text("Delete")');
@@ -84,14 +84,14 @@ try {
     await page.waitForSelector('button:has-text("🖼 Assets")', { timeout: 30000 });
     await page.click('button:has-text("🖼 Assets")');
     const assetRestored = await page.locator('div[role="dialog"]').locator('text=restart-test.js').isVisible();
-    console.log('asset restored after export/import round trip:', assetRestored);
-    if (!assetRestored) throw new Error('Asset missing after re-importing exported zip');
-    console.log('export/import PASS');
+    console.log('asset restored after backup/import round trip:', assetRestored);
+    if (!assetRestored) throw new Error('Asset missing after re-importing backed-up zip');
+    console.log('backup/import PASS');
 
     console.log('ALL PASS');
 } catch (err) {
     console.error('FAIL:', err.message);
-    await page.screenshot({ path: '/tmp/webeditor-rekey-export-failure.png' });
+    await page.screenshot({ path: '/tmp/webeditor-rekey-backup-failure.png' });
     process.exitCode = 1;
 } finally {
     await browser.close();
