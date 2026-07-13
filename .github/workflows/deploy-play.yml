@@ -19,7 +19,7 @@ jobs:
       contents: write
       deployments: write
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
 
       - name: Verify tag matches VERSION file
         if: github.ref_type == 'tag'
@@ -31,11 +31,11 @@ jobs:
             exit 1
           fi
 
-      - uses: actions/setup-dotnet@v4
+      - uses: actions/setup-dotnet@v5
         with:
           dotnet-version: '10.0.x'
 
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@v6
         with:
           node-version: '22'
 
@@ -73,7 +73,7 @@ jobs:
           EOF
 
       - name: Deploy to Cloudflare Pages
-        uses: cloudflare/wrangler-action@v3
+        uses: cloudflare/wrangler-action@v4
         with:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
@@ -119,7 +119,7 @@ jobs:
 
       - name: Trigger textadventures.co.uk deployment
         if: github.ref_type == 'tag'
-        uses: peter-evans/repository-dispatch@v3
+        uses: peter-evans/repository-dispatch@v4
         with:
           token: ${{ secrets.TA_DEPLOY_PAT }}
           repository: alexwarren/textadventures.co.uk
