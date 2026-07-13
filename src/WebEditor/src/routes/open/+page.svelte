@@ -1,6 +1,7 @@
 <script lang="ts">
     import { goto } from "$app/navigation";
     import { base } from "$app/paths";
+    import { PUBLIC_HAS_SERVER } from "$env/static/public";
     import { openGame, loadingStatus } from "$lib/editor-store";
     import { hasFSA, openDirectory, loadFileFromDirectory, createLocalGame } from "$lib/filesystem/browser-adapter";
     import { createNewGame, getGameTemplates } from "$lib/filesystem/server-adapter";
@@ -12,6 +13,8 @@
     } from "$lib/filesystem/local-adapter";
     import type { LocalDraftSummary, ZipEntries } from "$lib/filesystem/local-adapter";
     import { loadWasm } from "$lib/wasm";
+
+    const hasServer = PUBLIC_HAS_SERVER === "true";
 
     let loading = $state(false);
     let error = $state<string | null>(null);
@@ -258,59 +261,61 @@
     {:else}
         <div class="flex flex-col items-center gap-4 w-full max-w-sm">
 
-            <!-- Open existing game -->
-            <p class="text-surface-500-400 text-sm font-medium self-start">Open existing game</p>
+            {#if !hasServer}
+                <!-- Open existing game -->
+                <p class="text-surface-500-400 text-sm font-medium self-start">Open existing game</p>
 
-            {#if hasFSA()}
-                <button type="button" class="btn preset-filled-primary-500 w-full" onclick={handleOpenFolder}>
-                    Open game folder
-                </button>
-            {:else}
-                <button type="button" class="btn preset-filled-primary-500 w-full" onclick={handleImportFile}>
-                    Import game file
-                </button>
-                <p class="text-sm text-surface-500-400 max-w-[40ch] text-center">
-                    Accepts a .aslx file or a .zip backed up from here. Imported games are stored in this
-                    browser as a local draft — use <strong>Backup</strong> in the editor to save a copy to disk.
-                </p>
-            {/if}
-
-            {#if error}
-                <p class="text-error-500 text-sm">{error}</p>
-            {/if}
-
-            {#if !hasFSA() && drafts.length > 0}
-                <hr class="w-full border-surface-300-700 my-2" />
-                <p class="text-surface-500-400 text-sm font-medium self-start">Your local drafts</p>
-                <div class="flex flex-col gap-2 w-full">
-                    {#each drafts as draft (draft.gameId)}
-                        <div class="flex items-center gap-2 w-full">
-                            <button
-                                type="button"
-                                class="btn btn-sm preset-outlined-primary-500 flex-1 justify-between"
-                                onclick={() => handleOpenDraft(draft.gameId)}
-                            >
-                                <span>{draft.filename}</span>
-                                <span class="text-surface-500-400">{relativeTime(draft.lastModified)}</span>
-                            </button>
-                            <button
-                                type="button"
-                                class="btn btn-sm preset-outlined-error-500"
-                                title="Delete draft"
-                                onclick={() => handleDeleteDraft(draft.gameId, draft.filename)}
-                            >Delete</button>
-                        </div>
-                    {/each}
-                </div>
-                {#if isSafari}
-                    <p class="text-xs text-surface-500-400 max-w-[40ch] text-center">
-                        Safari may clear local drafts if you don't open this site for a week or more —
-                        export a backup of anything important.
+                {#if hasFSA()}
+                    <button type="button" class="btn preset-filled-primary-500 w-full" onclick={handleOpenFolder}>
+                        Open game folder
+                    </button>
+                {:else}
+                    <button type="button" class="btn preset-filled-primary-500 w-full" onclick={handleImportFile}>
+                        Import game file
+                    </button>
+                    <p class="text-sm text-surface-500-400 max-w-[40ch] text-center">
+                        Accepts a .aslx file or a .zip backed up from here. Imported games are stored in this
+                        browser as a local draft — use <strong>Backup</strong> in the editor to save a copy to disk.
                     </p>
                 {/if}
-            {/if}
 
-            <hr class="w-full border-surface-300-700 my-2" />
+                {#if error}
+                    <p class="text-error-500 text-sm">{error}</p>
+                {/if}
+
+                {#if !hasFSA() && drafts.length > 0}
+                    <hr class="w-full border-surface-300-700 my-2" />
+                    <p class="text-surface-500-400 text-sm font-medium self-start">Your local drafts</p>
+                    <div class="flex flex-col gap-2 w-full">
+                        {#each drafts as draft (draft.gameId)}
+                            <div class="flex items-center gap-2 w-full">
+                                <button
+                                    type="button"
+                                    class="btn btn-sm preset-outlined-primary-500 flex-1 justify-between"
+                                    onclick={() => handleOpenDraft(draft.gameId)}
+                                >
+                                    <span>{draft.filename}</span>
+                                    <span class="text-surface-500-400">{relativeTime(draft.lastModified)}</span>
+                                </button>
+                                <button
+                                    type="button"
+                                    class="btn btn-sm preset-outlined-error-500"
+                                    title="Delete draft"
+                                    onclick={() => handleDeleteDraft(draft.gameId, draft.filename)}
+                                >Delete</button>
+                            </div>
+                        {/each}
+                    </div>
+                    {#if isSafari}
+                        <p class="text-xs text-surface-500-400 max-w-[40ch] text-center">
+                            Safari may clear local drafts if you don't open this site for a week or more —
+                            export a backup of anything important.
+                        </p>
+                    {/if}
+                {/if}
+
+                <hr class="w-full border-surface-300-700 my-2" />
+            {/if}
 
             <!-- Create new game -->
             <p class="text-surface-500-400 text-sm font-medium self-start">Create new game</p>
@@ -373,25 +378,35 @@
                         </div>
                     {:else}
                         <div class="flex gap-2">
-                            <button
-                                type="button"
-                                class="btn preset-filled-primary-500 flex-1"
-                                onclick={handleCreateLocal}
-                                disabled={!createName.trim()}
-                                title={hasFSA() ? "Choose a folder to save your game in" : "Save as a local draft in this browser"}
-                            >
-                                {hasFSA() ? "Save to my computer" : "Create local draft"}
-                            </button>
-                            <button
-                                type="button"
-                                class="btn preset-outlined-primary-500 flex-1"
-                                onclick={handleCreateServer}
-                                disabled={!createName.trim()}
-                                title="Save to textadventures.co.uk"
-                            >
-                                Save to server
-                            </button>
+                            {#if hasServer}
+                                <button
+                                    type="button"
+                                    class="btn preset-filled-primary-500 flex-1"
+                                    onclick={handleCreateServer}
+                                    disabled={!createName.trim()}
+                                    title="Save to textadventures.co.uk"
+                                >
+                                    Save to server
+                                </button>
+                            {:else}
+                                <button
+                                    type="button"
+                                    class="btn preset-filled-primary-500 flex-1"
+                                    onclick={handleCreateLocal}
+                                    disabled={!createName.trim()}
+                                    title={hasFSA() ? "Choose a folder to save your game in" : "Save as a local draft in this browser"}
+                                >
+                                    {hasFSA() ? "Save to my computer" : "Create local draft"}
+                                </button>
+                            {/if}
                         </div>
+
+                        {#if hasServer}
+                            <p class="text-xs text-surface-500-400 max-w-[40ch] text-center self-center">
+                                Want to keep this game only on your own device? Use the
+                                <a class="anchor" href="https://play.questviva.com/editor/">play.questviva.com editor</a> instead.
+                            </p>
+                        {/if}
                     {/if}
 
                     {#if createLocalError}
