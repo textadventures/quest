@@ -52,6 +52,7 @@
     },
     "linux": {
       "category": "Utility",
+      "executableArgs": ["--no-sandbox"],
       "target": [
         {
           "target": "AppImage",
