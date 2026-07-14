@@ -32,12 +32,13 @@
         "to": "app-static"
       }
     ],
+    "afterSign": "scripts/adhoc-sign.js",
     "mac": {
       "category": "public.app-category.productivity",
       "target": [
         {
           "target": "dmg",
-          "arch": ["arm64", "x64"]
+          "arch": ["arm64"]
         }
       ]
     },
@@ -54,7 +55,7 @@
       "target": [
         {
           "target": "AppImage",
-          "arch": ["x64"]
+          "arch": ["x64", "arm64"]
         }
       ]
     }
