@@ -33,5 +33,6 @@ jobs:
             WasmPlayer
             WebEditor
             WasmEditor
+            ElectronApp
             Site
             main

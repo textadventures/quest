@@ -22,3 +22,11 @@ export interface LoadedFile {
     bytes: Uint8Array;
     adapter: FileAdapter;
 }
+
+// Real on-disk folders (BrowserFileAdapter, ElectronFileAdapter) can pick up
+// Finder-generated sidecar files that were never game assets — filter these
+// out of listAssets() wherever a real directory is being scanned, same as
+// local-adapter.ts already does for zip imports (isMacZipJunk).
+export function isJunkAssetName(name: string): boolean {
+    return name === ".DS_Store" || name.startsWith("._");
+}

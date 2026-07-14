@@ -4,6 +4,8 @@
     import { PUBLIC_HAS_SERVER } from "$env/static/public";
     import { openGame, loadingStatus } from "$lib/editor-store";
     import { hasFSA, openDirectory, loadFileFromDirectory, createLocalGame } from "$lib/filesystem/browser-adapter";
+    import { openElectronDirectory, loadElectronFile, createElectronGame } from "$lib/filesystem/electron-adapter";
+    import { isElectron } from "$lib/runtime";
     import { createNewGame, getGameTemplates } from "$lib/filesystem/server-adapter";
     import type { GameTemplate } from "$lib/filesystem/server-adapter";
     import { pickFile } from "$lib/filesystem/file-picker";
@@ -16,21 +18,29 @@
 
     const hasServer = PUBLIC_HAS_SERVER === "true";
 
+    // Electron always uses window.electronApp (Node fs via IPC), never FSA —
+    // its Chromium supports showDirectoryPicker, but docs/electron-desktop-app.md
+    // flags known parity bugs there (missing persistent permissions, broken
+    // directory iteration). Checked once; doesn't change during the session.
+    const nativeFolder = isElectron() || hasFSA();
+
     let loading = $state(false);
     let error = $state<string | null>(null);
 
-    // Set when a directory (FSA) or an imported zip (local drafts) contained
-    // multiple .aslx files — pendingFiles holds the names to choose from either way.
+    // Set when a directory (FSA or Electron) or an imported zip (local drafts)
+    // contained multiple .aslx files — pendingFiles holds the names to choose
+    // from either way.
     let pendingDir = $state<FileSystemDirectoryHandle | null>(null);
+    let pendingElectronDir = $state<string | null>(null);
     let pendingZip = $state<ZipEntries | null>(null);
     let pendingFiles = $state<string[]>([]);
 
-    // Local drafts (OPFS, non-FSA browsers only)
+    // Local drafts (OPFS, non-FSA/non-Electron browsers only)
     let drafts = $state<LocalDraftSummary[]>([]);
     const isSafari = typeof navigator !== "undefined" && /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
 
     async function refreshDrafts() {
-        if (hasFSA()) return;
+        if (nativeFolder) return;
         drafts = (await listLocalDrafts()).sort((a, b) => b.lastModified - a.lastModified);
     }
     void refreshDrafts();
@@ -81,6 +91,7 @@
     }
 
     async function handleOpenFolder() {
+        if (isElectron()) return handleOpenFolderElectron();
         error = null;
         try {
             const result = await openDirectory();
@@ -100,12 +111,37 @@
         }
     }
 
+    async function handleOpenFolderElectron() {
+        error = null;
+        try {
+            const result = await openElectronDirectory();
+            if (!result) return;
+            if (result.files.length === 0) {
+                error = "No .aslx files found in this folder.";
+                return;
+            }
+            if (result.files.length === 1) {
+                await loadFromElectron(result.dirPath, result.files[0]);
+            } else {
+                pendingElectronDir = result.dirPath;
+                pendingFiles = result.files;
+            }
+        } catch (err) {
+            error = String(err);
+        }
+    }
+
     async function handlePickFile(filename: string) {
         if (pendingDir) {
             const dir = pendingDir;
             pendingDir = null;
             pendingFiles = [];
             await loadFrom(dir, filename);
+        } else if (pendingElectronDir) {
+            const dirPath = pendingElectronDir;
+            pendingElectronDir = null;
+            pendingFiles = [];
+            await loadFromElectron(dirPath, filename);
         } else if (pendingZip) {
             const entries = pendingZip;
             pendingZip = null;
@@ -129,6 +165,20 @@
         error = null;
         try {
             const loaded = await loadFileFromDirectory(dir, filename);
+            const ok = await openGame(loaded.bytes, loaded.adapter.filename, loaded.adapter);
+            if (ok) { goto(base || "/"); return; }
+            error = "Failed to load game file.";
+        } catch (err) {
+            error = String(err);
+        }
+        loading = false;
+    }
+
+    async function loadFromElectron(dirPath: string, filename: string) {
+        loading = true;
+        error = null;
+        try {
+            const loaded = await loadElectronFile(dirPath, filename);
             const ok = await openGame(loaded.bytes, loaded.adapter.filename, loaded.adapter);
             if (ok) { goto(base || "/"); return; }
             error = "Failed to load game file.";
@@ -194,7 +244,15 @@
             const bridge = await loadWasm();
             const content = bridge.CreateGameFromTemplate(selectedTemplateId, trimmed);
             const filename = safeFilename(trimmed);
-            if (hasFSA()) {
+            if (isElectron()) {
+                const result = await createElectronGame(filename, content);
+                if (result) {
+                    const ok = await openGame(result.bytes, result.adapter.filename, result.adapter);
+                    if (ok) { goto(base || "/"); return; }
+                    createLocalError = "Failed to load new game.";
+                }
+                // result === null: user cancelled the directory picker — do nothing
+            } else if (hasFSA()) {
                 const result = await createLocalGame(filename, content);
                 if (result) {
                     const ok = await openGame(result.loaded.bytes, result.loaded.adapter.filename, result.loaded.adapter);
@@ -255,7 +313,7 @@
             <button
                 type="button"
                 class="btn preset-outlined-surface-500 w-full"
-                onclick={() => { pendingDir = null; pendingZip = null; pendingFiles = []; }}
+                onclick={() => { pendingDir = null; pendingElectronDir = null; pendingZip = null; pendingFiles = []; }}
             >Cancel</button>
         </div>
     {:else}
@@ -265,7 +323,7 @@
                 <!-- Open existing game -->
                 <p class="text-surface-500-400 text-sm font-medium self-start">Open existing game</p>
 
-                {#if hasFSA()}
+                {#if nativeFolder}
                     <button type="button" class="btn preset-filled-primary-500 w-full" onclick={handleOpenFolder}>
                         Open game folder
                     </button>
@@ -283,7 +341,7 @@
                     <p class="text-error-500 text-sm">{error}</p>
                 {/if}
 
-                {#if !hasFSA() && drafts.length > 0}
+                {#if !nativeFolder && drafts.length > 0}
                     <hr class="w-full border-surface-300-700 my-2" />
                     <p class="text-surface-500-400 text-sm font-medium self-start">Your local drafts</p>
                     <div class="flex flex-col gap-2 w-full">
@@ -394,9 +452,9 @@
                                     class="btn preset-filled-primary-500 flex-1"
                                     onclick={handleCreateLocal}
                                     disabled={!createName.trim()}
-                                    title={hasFSA() ? "Choose a folder to save your game in" : "Save as a local draft in this browser"}
+                                    title={nativeFolder ? "Choose a folder to save your game in" : "Save as a local draft in this browser"}
                                 >
-                                    {hasFSA() ? "Save to my computer" : "Create local draft"}
+                                    {nativeFolder ? "Save to my computer" : "Create local draft"}
                                 </button>
                             {/if}
                         </div>

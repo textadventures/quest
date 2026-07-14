@@ -1,4 +1,4 @@
-import type { AssetInfo, FileAdapter, LoadedFile } from "./types";
+import { isJunkAssetName, type AssetInfo, type FileAdapter, type LoadedFile } from "./types";
 import { toBlob, triggerDownload } from "./download";
 
 // FSA globals — not in the TS DOM lib at this target version
@@ -139,7 +139,7 @@ export class BrowserFileAdapter implements FileAdapter {
         try {
             const assets: AssetInfo[] = [];
             for await (const [name, handle] of this._dir) {
-                if (handle.kind === "file" && !name.toLowerCase().endsWith(".aslx")) {
+                if (handle.kind === "file" && !name.toLowerCase().endsWith(".aslx") && !isJunkAssetName(name)) {
                     assets.push({ key: name, url: "" });
                 }
             }
