@@ -2,8 +2,9 @@ name: Publish Electron desktop app
 
 # Runs when a version tag is pushed (e.g. v6.0.0-beta.30, normally via
 # release-please merging its release PR), same trigger as docker-publish.yml,
-# nuget-publish.yml, and deploy-play.yml — attaches unsigned macOS DMGs to the
-# GitHub Release release-please already created. See docs/electron-desktop-app.md.
+# nuget-publish.yml, and deploy-play.yml — builds on all three OSes and
+# attaches the unsigned installers/AppImage to the GitHub Release
+# release-please already created. See docs/electron-desktop-app.md.
 on:
   push:
     tags: ['v*']
@@ -11,7 +12,17 @@ on:
 
 jobs:
   publish:
-    runs-on: macos-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: macos-latest
+            artifact-glob: "*.dmg"
+          - os: windows-latest
+            artifact-glob: "*.exe"
+          - os: ubuntu-latest
+            artifact-glob: "*.AppImage"
+    runs-on: ${{ matrix.os }}
     permissions:
       contents: write
     steps:
@@ -19,6 +30,7 @@ jobs:
 
       - name: Verify tag matches VERSION file
         if: github.ref_type == 'tag'
+        shell: bash
         run: |
           TAG_VERSION="${GITHUB_REF_NAME#v}"
           FILE_VERSION="$(cat VERSION)"
@@ -56,14 +68,23 @@ jobs:
           PUBLIC_HAS_SERVER: false
 
       - name: Build and package Electron app
-        run: npm ci && WASM_CONFIG=Release npm run dist
+        run: npm ci && npm run dist
         working-directory: src/ElectronApp
+        env:
+          # copy-static.mjs defaults to Debug; the AOT/Release AppBundles are
+          # what's actually built above, so it needs to look there instead.
+          # Set via env (not inline `VAR=value` shell syntax) since the
+          # windows-latest runner in this matrix defaults to pwsh, not bash.
+          WASM_CONFIG: Release
 
-      - name: Attach DMGs to GitHub Release
+      - name: Attach build to GitHub Release
         # release-please creates the GitHub Release itself (with changelog-based
         # notes) before pushing the tag that triggers this workflow, so just
-        # upload assets to it rather than creating a new one.
+        # upload assets to it rather than creating a new one. shell: bash so
+        # the glob is expanded consistently (incl. on windows-latest, via Git
+        # Bash) rather than relying on gh itself or pwsh to expand it.
         if: github.ref_type == 'tag'
-        run: gh release upload ${{ github.ref_name }} src/ElectronApp/release/*.dmg --clobber
+        shell: bash
+        run: gh release upload ${{ github.ref_name }} src/ElectronApp/release/${{ matrix.artifact-glob }} --clobber
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}

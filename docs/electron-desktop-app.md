@@ -216,8 +216,13 @@ Native AOT is the better long-term target; it also eliminates the cold-start JIT
 
 ### Platform targets
 
-- macOS (arm64 + x64 universal binary)
-- Windows (x64) — adds NSIS or Squirrel installer; slightly more packaging complexity
+All three built and published by `electron-publish.yml` (see Releasing below) — unsigned everywhere for now.
+
+- macOS (arm64 + x64) — DMG
+- Windows (x64) — NSIS installer
+- Linux (x64) — AppImage (single-file, no distro-specific packaging)
+
+`src/ElectronApp/scripts/dist.mjs` invokes electron-builder's Node API (`build({ config: { extraMetadata: { version } } })`) directly rather than its CLI, so injecting the repo's real `VERSION` at package time doesn't rely on `$(cat ...)` shell command substitution — that's bash-only and breaks under the `pwsh` shell `windows-latest` runners default to. `WASM_CONFIG=Release` (set via the GitHub Actions step's `env:`, not inline shell syntax, for the same cross-platform reason) points `copy-static.mjs` at the Release AppBundles instead of its Debug default.
 
 ---
 

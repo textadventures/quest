@@ -9,7 +9,7 @@
     "copy-static": "node scripts/copy-static.mjs",
     "build": "npm run build:ts && npm run copy-static",
     "start": "npm run build && electron .",
-    "dist": "npm run build && electron-builder -c.extraMetadata.version=$(cat ../../VERSION)"
+    "dist": "npm run build && node scripts/dist.mjs"
   },
   "devDependencies": {
     "@types/node": "^25.0.0",
@@ -38,6 +38,23 @@
         {
           "target": "dmg",
           "arch": ["arm64", "x64"]
+        }
+      ]
+    },
+    "win": {
+      "target": [
+        {
+          "target": "nsis",
+          "arch": ["x64"]
+        }
+      ]
+    },
+    "linux": {
+      "category": "Utility",
+      "target": [
+        {
+          "target": "AppImage",
+          "arch": ["x64"]
         }
       ]
     }
