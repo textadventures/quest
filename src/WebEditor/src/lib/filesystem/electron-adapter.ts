@@ -1,4 +1,4 @@
-import type { AssetInfo, FileAdapter } from "./types";
+import { isJunkAssetName, type AssetInfo, type FileAdapter } from "./types";
 
 const ASLX_FILTER = [{ name: "Quest game files", extensions: ["aslx"] }];
 
@@ -87,7 +87,7 @@ export class ElectronFileAdapter implements FileAdapter {
     async listAssets(): Promise<AssetInfo[]> {
         const entries = await electronApp().fs.readDir(this.dirPath);
         return entries
-            .filter((e) => e.isFile && !e.name.toLowerCase().endsWith(".aslx"))
+            .filter((e) => e.isFile && !e.name.toLowerCase().endsWith(".aslx") && !isJunkAssetName(e.name))
             .map((e) => ({ key: e.name, url: "" }));
     }
 

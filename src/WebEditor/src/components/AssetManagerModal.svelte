@@ -1,10 +1,16 @@
 <script lang="ts">
-    import { assets, uploadAsset, deleteAssetByKey, resolveAssetUrl, isImageAsset } from "$lib/editor-store";
+    import { onMount } from "svelte";
+    import { assets, refreshAssets, uploadAsset, deleteAssetByKey, resolveAssetUrl, isImageAsset } from "$lib/editor-store";
 
     interface Props {
         oncancel: () => void;
     }
     const { oncancel }: Props = $props();
+
+    // The asset list is otherwise only refreshed on upload/delete — files
+    // dropped into the game folder from outside the app (Finder, etc.) would
+    // never show up until the next edit. Re-scan whenever this modal opens.
+    onMount(() => { void refreshAssets(); });
 
     let thumbUrls = $state<Record<string, string>>({});
 

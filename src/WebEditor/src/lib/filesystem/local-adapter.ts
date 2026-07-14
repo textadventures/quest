@@ -1,5 +1,5 @@
 import { unzipSync } from "fflate";
-import type { AssetInfo, FileAdapter } from "./types";
+import { isJunkAssetName, type AssetInfo, type FileAdapter } from "./types";
 import { resolveOpfsDir, removeOpfsFile, removeOpfsDir, writeOpfsFile } from "./opfs-writer";
 
 // Local drafts live in OPFS under games/<gameId>/, alongside the game's own asset
@@ -81,7 +81,7 @@ export type ZipEntries = Record<string, Uint8Array>;
 // plus sometimes a bare .DS_Store — none of these are real game content.
 function isMacZipJunk(name: string): boolean {
     const base = name.slice(name.lastIndexOf("/") + 1);
-    return name.startsWith("__MACOSX/") || base.startsWith("._") || base === ".DS_Store";
+    return name.startsWith("__MACOSX/") || isJunkAssetName(base);
 }
 
 // Zipping a folder also means every entry is prefixed with that folder's name
