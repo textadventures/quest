@@ -65,9 +65,9 @@ electron/
 - Surface the chosen port to renderers via `ipcMain` / `contextBridge`
 
 **Window management:**
-- Editor window: loads the WebEditor SPA (served as a local file or via a local static server)
-- Player windows: navigate to `http://localhost:{port}/?game={encodedPath}` — one window per game session, or a single reusable player window
-- Open player window from editor Toolbar "Preview" button via IPC
+- Editor window: loads the WebEditor SPA over a local loopback HTTP server (`src/ElectronApp/src/static-server.ts`) — not `file://` (fetch of `.wasm`/`.dll` assets over `file://` hits CORS/mime-type issues in Chromium) and not a custom protocol. The server binds `127.0.0.1:0` (random free port, same trick as LocalPlayer's own port selection below) and serves the same three-directory layout `deploy-play.yml` already produces for play.questviva.com — `editor/` (WebEditor build) at `/`, `AppBundle/` (WasmEditor) at `/AppBundle/`, `player/` (WasmPlayer, Phase 1) or LocalPlayer (Phase 2) at `/player/`.
+- Player windows: Phase 1 navigates a second `BrowserWindow` to `http://127.0.0.1:{port}/player/` (bundled WasmPlayer); Phase 2 switches this to LocalPlayer's `http://localhost:{port}/?game={encodedPath}`.
+- Phase 1's Preview button needs no IPC round-trip at all: `previewInWasmPlayer()` (`editor-store.ts`) already does a plain `window.open('/player/?source=editor', ...)` and talks to it over `BroadcastChannel('quest-preview')` — both work unchanged against the loopback origin. `editorWindow.webContents.setWindowOpenHandler` in `main.ts` just needs to `{ action: "allow" }` same-origin `/player/` popups (and send anything else to `shell.openExternal`) for that `window.open` call to become the player `BrowserWindow`.
 
 ### contextBridge API (`preload.ts`)
 
@@ -90,63 +90,56 @@ window.electronApp = {
     saveFile(options: { defaultPath?, filters? }): Promise<string | null>        // returns path
   },
 
-  // Player backend
-  player: {
-    getPort(): Promise<number>
-    openGame(gamePath: string): Promise<void>   // opens a new player window
-  },
-
   // Shell
   shell: {
     openExternal(url: string): Promise<void>
+  },
+
+  // Path join, resolved in preload.ts itself (no Node "path" module — sandboxed
+  // preload only gets a polyfilled subset of Node built-ins), separator style
+  // detected from dirPath rather than process.platform.
+  path: {
+    join(...segments: string[]): string
   }
 }
 ```
+
+No `player.*` API yet — Phase 1's Preview button needs no IPC at all (see Window management above); a `player.openGame(gamePath)` entry will be added in Phase 2 once LocalPlayer replaces WasmPlayer as the preview target and a specific game path becomes meaningful to pass across.
 
 ### ElectronFileAdapter
 
-Implements the `FileAdapter` interface defined in `src/WebEditor/src/lib/filesystem/` (see `webeditor-wasm-svelte.md`). Registered at startup when `window.electronApp` is present.
+Implemented in `src/WebEditor/src/lib/filesystem/electron-adapter.ts`, matching the `FileAdapter` interface (`src/WebEditor/src/lib/filesystem/types.ts`) — same flat single-directory shape as `BrowserFileAdapter` (the FSA adapter), just backed by `window.electronApp.fs`/`.dialog` instead of FSA handles:
 
 ```typescript
-// src/WebEditor/src/lib/filesystem/electron-adapter.ts
-
 export class ElectronFileAdapter implements FileAdapter {
-  constructor(private readonly dirPath: string, private readonly _filename: string) {}
+  constructor(private readonly dirPath: string, private _filename: string) {}
 
+  get filename() { return this._filename }
   readonly canSaveAs = true
-  readonly previewUrl = null   // player opened via IPC, not a URL
 
   async saveFile(data: Uint8Array | string): Promise<void> {
-    await window.electronApp.fs.writeFile(this.filePath, data)
+    await electronApp().fs.writeFile(this.resolve(this._filename), data)
   }
 
   async saveFileAs(data: Uint8Array | string, suggestedName?: string): Promise<string | null> {
-    const path = await window.electronApp.dialog.saveFile({
-      defaultPath: join(this.dirPath, suggestedName ?? this._filename)
+    const path = await electronApp().dialog.saveFile({
+      defaultPath: this.resolve(suggestedName ?? this._filename),
+      filters: ASLX_FILTER,
     })
     if (!path) return null
-    await window.electronApp.fs.writeFile(path, data)
-    return basename(path)
+    await electronApp().fs.writeFile(path, data)
+    this._filename = basename(path)
+    return this._filename
   }
 
-  // Asset operations: read/write sibling files in dirPath
-  async putAsset(key: string, data: Blob): Promise<void> {
-    await window.electronApp.fs.writeFile(join(this.dirPath, key), new Uint8Array(await data.arrayBuffer()))
-  }
-  async getAsset(key: string): Promise<Blob | null> {
-    try {
-      const bytes = await window.electronApp.fs.readFile(join(this.dirPath, key))
-      return new Blob([bytes])
-    } catch { return null }
-  }
-  async listAssets(): Promise<AssetInfo[]> { /* readDir, filter non-.aslx files */ }
-  async deleteAsset(key: string): Promise<void> {
-    await window.electronApp.fs.unlink(join(this.dirPath, key))
-  }
+  // putAsset/getAsset/listAssets/deleteAsset: same resolve(key) pattern,
+  // reading/writing sibling files in dirPath via window.electronApp.fs
 }
 ```
 
-`previewUrl` is `null` in Electron mode. The Toolbar "Preview" button calls `window.electronApp.player.openGame(filePath)` instead of opening a URL tab. This sends an IPC message to the main process, which either navigates the existing player window or opens a new one.
+A new `isElectron()` helper (`src/WebEditor/src/lib/runtime.ts`) is checked in `open/+page.svelte` **before** `hasFSA()` — Electron's Chromium does support `showDirectoryPicker`, but per the note below it must not be used there, so Electron always takes the `ElectronFileAdapter` branch regardless of FSA availability.
+
+There is no adapter-level "preview URL" concept — see Window management above for how Preview actually works (unchanged `window.open` + `BroadcastChannel`, just allowed through `setWindowOpenHandler`).
 
 **Note:** Do not use the File System Access API inside Electron — it has known parity bugs (missing persistent permissions, broken directory iteration in some Electron versions). The contextBridge + Node.js `fs` approach is more reliable.
 
@@ -230,14 +223,17 @@ Native AOT is the better long-term target; it also eliminates the cold-start JIT
 
 ## Phased delivery
 
-### Phase 1 — Editor wrapper (no player backend)
+### Phase 1 — Editor wrapper (no player backend) — implemented
 
 Electron shell with WebEditor + ElectronFileAdapter. No LocalPlayer process.
 
 - Open a game folder via `dialog.openDirectory` → `ElectronFileAdapter`
 - Full edit/save/undo/redo via WasmEditor (unchanged)
-- Preview button disabled or shows "coming soon"
-- Proves the Electron packaging pipeline and file adapter before tackling the backend
+- **Preview is functional**, not "coming soon" — reuses the existing WasmPlayer + `BroadcastChannel` preview mechanism unchanged (see Window management above); LocalPlayer replaces WasmPlayer as the preview target in Phase 2, with no changes needed on the WebEditor side
+- All three static bundles (WebEditor build, WasmEditor AppBundle, WasmPlayer AppBundle) served from one loopback HTTP server (`src/ElectronApp/src/static-server.ts`) so they share an origin — same three-directory layout as `deploy-play.yml`
+- Proves the Electron packaging pipeline and file adapter before tackling the native backend
+
+`src/ElectronApp/` — `main.ts` (window/lifecycle), `static-server.ts`, `preload.ts`, `ipc/{fs,dialog,shell}.ts`, `scripts/copy-static.mjs` (assembles `resources/app-static/{editor,AppBundle,player}` from the WebEditor/WasmEditor/WasmPlayer build outputs, mirroring `deploy-play.yml`'s `cp -r` steps). CI: `build_electron` job in `.github/workflows/build-and-test.yml`, modeled on `build_webeditor`.
 
 ### Phase 2 — Native player backend
 
@@ -257,11 +253,13 @@ Switch LocalPlayer publish to Native AOT. Integrate `electron-updater` for silen
 
 ---
 
+## Resolved decisions
+
+- **One app or two?** Resolved: single combined app. The editor opens a player window for preview; a home screen (Phase 3) also lets you play games without editing. Simpler packaging/installer story, matches the Quest 5 desktop precedent. This only actually constrains Phase 3 scaffolding; Phase 1/2 work is unaffected either way.
+- **WebPlayer vs. LocalPlayer**: Resolved: build LocalPlayer, do not bundle WebPlayer/Blazor Server. Reusing WebPlayer would pull in the Blazor/SignalR circuit + reconnection machinery — built for unreliable remote connections, not localhost — and would rule out Native AOT (Phase 4), locking in the larger self-contained runtime and slower cold start. It would also mean growing, rather than sunsetting, the Blazor/SignalR dependency the rest of the project is moving away from (see WasmPlayer as the long-term WebPlayer replacement). The Electron-specific surface (contextBridge, file adapter, dialogs) is identical under either backend, so bundling WebPlayer would not actually reduce the number of paths to test.
+- **Signing/notarization**: macOS — get an Apple Developer account and notarize as part of the CI pipeline; low admin overhead. Windows — defer EV code-signing; ship unsigned betas for now (SmartScreen warning), consistent with the existing unsigned Windows desktop build. Revisit if it becomes a real adoption blocker.
+
 ## Open questions
 
-- **One app or two?** Should the Quest editor and Quest player be a single combined app (the editor opens a player window for preview; a home screen also lets you play games without editing) or separate apps? A combined app is the simpler packaging story and matches the Quest 5 desktop precedent; separate apps give a cleaner UX for players who have no interest in editing.
-- **WebPlayer vs. LocalPlayer**: Rather than building LocalPlayer from scratch, could we adapt WebPlayer (Blazor Server) to bind to localhost and be spawned by Electron? This reuses all existing WebPlayer code at the cost of pulling in the Blazor/SignalR stack, and rules out Native AOT (Blazor Server is not AOT-compatible).
 - **WasmEditor vs. LocalEditor**: The editor currently uses WasmEditor (EditorCore in WASM) for EditorCore operations. While editing is user-paced, WASM overhead could still affect responsiveness for large games (loading, tree navigation, undo/redo chains). A native alternative would be to extend the LocalPlayer backend (or a shared `LocalBackend` process) to also expose an EditorCore API, removing WASM from the editor entirely. This would mean one backend process serving both editor and player, but adds complexity to the protocol and the backend project.
 - **Offline asset resolution in player**: Assets (images, audio) referenced by game files need to be resolvable as URLs inside the player BrowserWindow. Since the LocalPlayer serves files from the local filesystem on its port, this is straightforward — but the path rewriting logic may differ from the WebPlayer CDN-based asset URLs.
-- **macOS notarization**: Apple requires apps distributed outside the App Store to be notarized. The `.NET` native binary must be signed and notarized as part of the build pipeline. This adds an Apple Developer account requirement and a CI notarize step.
-- **Windows code signing**: Similarly, Windows SmartScreen warnings require an EV code-signing certificate for a clean install experience.

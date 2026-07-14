@@ -71,6 +71,9 @@ EditorCore ───────────────────────
 - **Legacy** — Quest 4 (and earlier) backward-compatibility layer with embedded `.lib`/`.dat` files
 - **WebPlayer** — ASP.NET Core web app with Blazor Razor components (`Game.razor`, `Slots.razor`, debugger)
 - **WasmPlayer** — Pure browser-WASM player (`browser-wasm` target, AOT-compiled). Uses `JSImport`/`JSExport` for JS interop. Serves as a static site with no server-side .NET required. IL trimming is enabled; `WasmPlayer.linker.xml` preserves the Engine assembly (which uses reflection-based type discovery).
+- **WasmEditor** — Browser-WASM bridge (`browser-wasm` target) exposing `EditorCore` to the WebEditor SvelteKit frontend via `[JSExport]` (see `WasmEditorBridge.cs`)
+- **WebEditor** (`src/WebEditor/`) — SvelteKit SPA (adapter-static) frontend for the game editor; talks to WasmEditor over the JS/WASM boundary and to `FileAdapter` implementations (`src/lib/filesystem/`) for storage (FSA, OPFS local drafts, server, Electron). See `docs/webeditor-wasm-svelte.md`
+- **ElectronApp** (`src/ElectronApp/`) — Electron main-process shell (desktop app) wrapping the WebEditor SPA over a local loopback HTTP server; no Svelte/UI code of its own. See `docs/electron-desktop-app.md`
 
 **Test projects in `tests/`:** EngineTests, PlayerCoreTests, EditorCoreTests, UtilityTests, LegacyTests
 
