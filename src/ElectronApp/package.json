@@ -32,6 +32,7 @@
         "to": "app-static"
       }
     ],
+    "afterSign": "scripts/adhoc-sign.js",
     "mac": {
       "category": "public.app-category.productivity",
       "target": [
