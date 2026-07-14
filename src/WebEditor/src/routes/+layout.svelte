@@ -23,7 +23,14 @@
                 case "new-game":
                 case "open-folder": {
                     if (get(isDirty) && !confirm("You have unsaved changes. Discard them and continue?")) return;
-                    void goto(action === "open-folder" ? `${base}/open?action=open` : `${base}/open`);
+                    // goto() to the exact URL already showing is a no-op in SvelteKit —
+                    // no navigation event fires, so nothing happens when the menu
+                    // action is triggered while already sitting on /open. A per-click
+                    // nonce guarantees a real navigation every time; routes/open/+page.svelte
+                    // reacts to it via $app/state's page (not onMount), which re-runs on
+                    // every navigation, remount or not.
+                    const query = action === "open-folder" ? `?action=open&t=${Date.now()}` : "";
+                    void goto(`${base}/open${query}`);
                     break;
                 }
                 case "save":

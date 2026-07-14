@@ -1,6 +1,6 @@
 <script lang="ts">
-    import { onMount } from "svelte";
     import { goto } from "$app/navigation";
+    import { page } from "$app/state";
     import { base } from "$app/paths";
     import { PUBLIC_HAS_SERVER } from "$env/static/public";
     import { openGame, loadingStatus } from "$lib/editor-store";
@@ -47,11 +47,20 @@
     void refreshDrafts();
 
     // Electron's File > Open Game Folder… menu item (see +layout.svelte's
-    // menu.onAction) lands here with ?action=open so it pops the native
-    // directory picker immediately, instead of making the user click the
-    // "Open game folder" button after already choosing this route.
-    onMount(() => {
-        if (nativeFolder && new URLSearchParams(window.location.search).get("action") === "open") {
+    // menu.onAction) lands here with ?action=open&t=<nonce> so it pops the
+    // native directory picker immediately, instead of making the user click
+    // the "Open game folder" button after already choosing this route. A
+    // reactive $effect (not onMount) because the menu can fire while this
+    // page is already mounted — e.g. the user is already sitting at /open —
+    // and SvelteKit doesn't remount a page for a same-route, query-only
+    // navigation; the nonce is what makes goto() to "the same" URL actually
+    // navigate at all, and this effect is what notices it once it does.
+    let handledOpenNonce = "";
+    $effect(() => {
+        const params = page.url.searchParams;
+        const nonce = params.get("t");
+        if (nativeFolder && params.get("action") === "open" && nonce !== handledOpenNonce) {
+            handledOpenNonce = nonce ?? "";
             void handleOpenFolder();
         }
     });
