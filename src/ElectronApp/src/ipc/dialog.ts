@@ -25,7 +25,13 @@ export function registerDialogHandlers(): void {
 
     ipcMain.handle("dialog:openDirectory", async (_event, options?: { defaultPath?: string }) => {
         const win = focusedOrFirstWindow();
-        const opts = { properties: ["openDirectory" as const], defaultPath: options?.defaultPath };
+        // createDirectory (macOS) / promptToCreate (Windows) — without these,
+        // showOpenDialog's directory picker has no "New Folder" affordance,
+        // unlike the browser's showDirectoryPicker(), which always has one.
+        const opts = {
+            properties: ["openDirectory" as const, "createDirectory" as const, "promptToCreate" as const],
+            defaultPath: options?.defaultPath,
+        };
         const result = win ? await dialog.showOpenDialog(win, opts) : await dialog.showOpenDialog(opts);
         return result.canceled || result.filePaths.length === 0 ? null : result.filePaths[0];
     });
