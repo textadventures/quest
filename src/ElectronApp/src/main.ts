@@ -10,6 +10,13 @@ import { registerShellHandlers } from "./ipc/shell";
 // possible so it's correct whether packaged or run via `electron .`.
 app.setName("Quest Viva");
 
+// macOS's About panel shows "Version {CFBundleShortVersionString} ({CFBundleVersion})"
+// — the parenthetical is meant for a separate build number, but electron-builder's
+// -c.extraMetadata.version sets both plist fields to the same VERSION string
+// (this project has no separate build-number concept), so it reads as a literal
+// duplicate. Empty version suppresses the parenthetical rather than showing "()"
+app.setAboutPanelOptions({ version: "" });
+
 // Packaged: resources/app-static ships via electron-builder's extraResources.
 // Dev: `npm run build` copies the same three directories here directly (see
 // scripts/copy-static.mjs) — one code path for both.
