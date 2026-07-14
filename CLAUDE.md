@@ -87,7 +87,7 @@ Releases are managed by [release-please](https://github.com/googleapis/release-p
 
 1. PRs must have a [Conventional Commits](https://www.conventionalcommits.org/)-prefixed title (`fix:`, `feat:`, `chore:`, etc.) — enforced by `pr-title-lint.yml`, which also restricts the optional scope (e.g. `feat(WebEditor): ...`) to an exact-case allowlist of project names, so scoped changelog entries cluster and capitalize consistently. Since PRs are squash-merged, the PR title becomes the commit message on `main` that release-please parses.
 2. Every push to `main` updates a standing "release PR" that bumps `VERSION` and `CHANGELOG.md` from the commits merged since the last release.
-3. Merging that release PR *is* the release: release-please tags it directly (e.g. `v6.0.0-beta.36`), which triggers `docker-publish`, `nuget-publish`, and `deploy-play`, which build/push the Docker image, publish NuGet packages, deploy play.questviva.com, and attach a GitHub Release with a changelog generated from the PR titles. The version is also embedded in the binary at build time and displayed at `/about`.
+3. Merging that release PR *is* the release: release-please tags it directly (e.g. `v6.0.0-beta.36`), which triggers `docker-publish`, `nuget-publish`, `deploy-play`, and `electron-publish`, which build/push the Docker image, publish NuGet packages, deploy play.questviva.com, package the Electron desktop app, and attach a GitHub Release with a changelog generated from the PR titles. The version is also embedded in the binary at build time and displayed at `/about`.
 
 The version stays a perpetual `6.0.0-beta.N` — `release-please-config.json` uses the `prerelease` versioning strategy with `prerelease-type: beta`, so every release just increments the trailing beta number regardless of commit type (fix/feat/breaking), and it will never auto-graduate out of beta. To cut `6.0.0` for real, that needs an explicit `Release-As:` commit footer or a config change.
 
@@ -96,6 +96,8 @@ release-please pushes using the `RELEASE_PAT` repo secret (a PAT with Contents r
 `./release.sh` still works as a manual fallback if you need to tag from a clean local `main` directly (e.g. if `release-please` is broken). If you forgot to update `VERSION` before running it, the script will fail locally because the tag for the old version already exists.
 
 Same tag also drives the WebEditor deploy on textadventures.co.uk: `deploy-play` builds WebEditor a second time (with `BASE_PATH=/questviva` instead of `/editor`), attaches `AppBundle.zip`/`WebEditor.zip` alongside `WasmPlayer.zip` to the GitHub Release, then dispatches a `webeditor-release` `repository_dispatch` event (using the `TA_DEPLOY_PAT` secret) to `alexwarren/textadventures.co.uk`, which downloads those release assets and redeploys. There used to be a separate `release-webeditor.yml` workflow keyed off `webeditor-v*` tags — that's gone now; regular `v*` releases are the only release cadence for both.
+
+`electron-publish` (`macos-latest`, needed for DMG building) builds WasmEditor/WasmPlayer/WebEditor again in Release, packages `src/ElectronApp` (`WASM_CONFIG=Release npm run dist`, which also injects the tag's `VERSION` via electron-builder's `-c.extraMetadata.version`), and attaches the resulting unsigned macOS DMGs to the same GitHub Release. Unsigned until Apple Developer/notarization is set up (see `docs/electron-desktop-app.md`'s Resolved decisions); no Windows target yet.
 
 ## Key Technical Details
 
