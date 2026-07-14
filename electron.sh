@@ -56,4 +56,13 @@ echo "Launching Quest Viva desktop app..."
 echo ""
 # `npm --prefix ... exec` doesn't chdir the invoked command (unlike `npm run`),
 # and electron needs "." to resolve to src/ElectronApp/package.json — so cd directly.
-(cd src/ElectronApp && npx electron .)
+#
+# --no-sandbox on Linux: the SUID chrome-sandbox helper needs root ownership +
+# mode 4755, which a plain `npm install` never sets up, so an un-repaired
+# checkout aborts with a FATAL setuid_sandbox_host.cc error before any window
+# opens. Must be a real argv flag, not app.commandLine.appendSwitch() from
+# main.ts — Chromium's zygote/sandbox-host check runs during native startup,
+# before Electron loads and executes the app's JS at all.
+LAUNCH_ARGS=()
+[[ "$(uname -s)" == "Linux" ]] && LAUNCH_ARGS+=(--no-sandbox)
+(cd src/ElectronApp && npx electron . "${LAUNCH_ARGS[@]}")

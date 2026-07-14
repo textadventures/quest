@@ -5,16 +5,6 @@ import { registerFsHandlers } from "./ipc/fs";
 import { registerDialogHandlers } from "./ipc/dialog";
 import { registerShellHandlers } from "./ipc/shell";
 
-// AppImage has no root-run install step to chown+chmod the setuid chrome-sandbox
-// helper (unlike a .deb/.rpm postinst), and FUSE mounts are commonly `nosuid`
-// regardless — so the sandbox helper can't work for a packaged Linux build.
-// Same failure shows up unpackaged (`electron .`) if node_modules/electron's
-// chrome-sandbox isn't root-owned mode 4755. Disabling it is the standard
-// mitigation other AppImage-packaged Electron apps use.
-if (process.platform === "linux") {
-    app.commandLine.appendSwitch("no-sandbox");
-}
-
 // Without this, Electron's default macOS menu ("About "/"Quit ") falls back
 // to package.json's "name" ("quest-viva-desktop") in dev — set as early as
 // possible so it's correct whether packaged or run via `electron .`.
