@@ -218,9 +218,9 @@ Native AOT is the better long-term target; it also eliminates the cold-start JIT
 
 All three built and published by `electron-publish.yml` (see Releasing below) — unsigned everywhere for now.
 
-- macOS (arm64 + x64) — DMG
+- macOS (arm64 only) — DMG. Dropped x64: Apple's own Rosetta-deprecation warning (shown when launching an Intel build on Apple Silicon) means new Intel binaries would be investing in a platform Apple is already sunsetting, and there's no existing Intel user base for this app to preserve.
 - Windows (x64) — NSIS installer
-- Linux (x64) — AppImage (single-file, no distro-specific packaging)
+- Linux (x64 + arm64) — AppImage (single-file, no distro-specific packaging). No "universal" option here unlike macOS — ELF has no fat-binary equivalent to Mach-O's, and none of the common Linux packaging formats (AppImage, deb, rpm, Snap, Flatpak) support single-file multi-arch execution; publishing separate per-arch artifacts is the standard approach, not a workaround.
 
 `src/ElectronApp/scripts/dist.mjs` invokes electron-builder's Node API (`build({ config: { extraMetadata: { version } } })`) directly rather than its CLI, so injecting the repo's real `VERSION` at package time doesn't rely on `$(cat ...)` shell command substitution — that's bash-only and breaks under the `pwsh` shell `windows-latest` runners default to. `WASM_CONFIG=Release` (set via the GitHub Actions step's `env:`, not inline shell syntax, for the same cross-platform reason) points `copy-static.mjs` at the Release AppBundles instead of its Debug default.
 
