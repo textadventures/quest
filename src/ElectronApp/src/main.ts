@@ -5,6 +5,11 @@ import { registerFsHandlers } from "./ipc/fs";
 import { registerDialogHandlers } from "./ipc/dialog";
 import { registerShellHandlers } from "./ipc/shell";
 
+// Without this, Electron's default macOS menu ("About "/"Quit ") falls back
+// to package.json's "name" ("quest-viva-desktop") in dev — set as early as
+// possible so it's correct whether packaged or run via `electron .`.
+app.setName("Quest Viva");
+
 // Packaged: resources/app-static ships via electron-builder's extraResources.
 // Dev: `npm run build` copies the same three directories here directly (see
 // scripts/copy-static.mjs) — one code path for both.
@@ -19,6 +24,7 @@ let staticServer: StaticServerHandle | null = null;
 
 function createEditorWindow(port: number): void {
     editorWindow = new BrowserWindow({
+        title: "Quest Viva",
         width: 1280,
         height: 860,
         webPreferences: {
@@ -27,6 +33,12 @@ function createEditorWindow(port: number): void {
             nodeIntegration: false,
         },
     });
+
+    // WebEditor's own <title> ("Quest Viva Editor") is correct for the
+    // browser build, where it's the only app; the desktop app covers editing
+    // and playing, so it's just "Quest Viva" here — override the page's title
+    // instead of changing the shared app.html tag.
+    editorWindow.on("page-title-updated", (event) => event.preventDefault());
 
     // The editor's Preview button calls window.open('/player/...') unchanged
     // from the browser build (see previewInWasmPlayer() in editor-store.ts) —
