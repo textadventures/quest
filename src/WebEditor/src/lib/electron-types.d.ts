@@ -32,11 +32,19 @@ interface ElectronPathApi {
     join(...segments: string[]): string;
 }
 
+// action is one of MenuAction in ElectronApp's src/main.ts ("new-game" |
+// "open-folder" | "save" | "save-as") — kept as a plain string since these
+// are separate npm projects with no shared type.
+interface ElectronMenuApi {
+    onAction(callback: (action: string) => void): () => void;
+}
+
 interface ElectronApi {
     fs: ElectronFsApi;
     dialog: ElectronDialogApi;
     shell: ElectronShellApi;
     path: ElectronPathApi;
+    menu: ElectronMenuApi;
 }
 
 declare global {

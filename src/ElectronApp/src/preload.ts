@@ -44,4 +44,16 @@ contextBridge.exposeInMainWorld("electronApp", {
     path: {
         join: joinPath,
     },
+    menu: {
+        // Backs the native File menu built in main.ts's buildAppMenu() — action
+        // is one of MenuAction there ("new-game" | "open-folder" | "save" |
+        // "save-as"), kept as a plain string here since preload has no import
+        // from main's module graph. Returns an unsubscribe so +layout.svelte's
+        // onMount can clean up on HMR/teardown.
+        onAction: (callback: (action: string) => void): (() => void) => {
+            const listener = (_event: Electron.IpcRendererEvent, action: string) => callback(action);
+            ipcRenderer.on("menu-action", listener);
+            return () => ipcRenderer.removeListener("menu-action", listener);
+        },
+    },
 });

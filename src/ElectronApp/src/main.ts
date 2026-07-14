@@ -1,9 +1,19 @@
-import { app, BrowserWindow, shell } from "electron";
+import { app, BrowserWindow, Menu, shell, type MenuItemConstructorOptions } from "electron";
 import path from "node:path";
 import { startStaticServer, type StaticServerHandle } from "./static-server";
 import { registerFsHandlers } from "./ipc/fs";
 import { registerDialogHandlers } from "./ipc/dialog";
 import { registerShellHandlers } from "./ipc/shell";
+
+// AppImage has no root-run install step to chown+chmod the setuid chrome-sandbox
+// helper (unlike a .deb/.rpm postinst), and FUSE mounts are commonly `nosuid`
+// regardless — so the sandbox helper can't work for a packaged Linux build.
+// Same failure shows up unpackaged (`electron .`) if node_modules/electron's
+// chrome-sandbox isn't root-owned mode 4755. Disabling it is the standard
+// mitigation other AppImage-packaged Electron apps use.
+if (process.platform === "linux") {
+    app.commandLine.appendSwitch("no-sandbox");
+}
 
 // Without this, Electron's default macOS menu ("About "/"Quit ") falls back
 // to package.json's "name" ("quest-viva-desktop") in dev — set as early as
@@ -28,6 +38,60 @@ function staticRoot(): string {
 
 let editorWindow: BrowserWindow | null = null;
 let staticServer: StaticServerHandle | null = null;
+
+// Mirrors the union WebEditor's src/routes/+layout.svelte switches on (see
+// window.electronApp.menu.onAction in preload.ts) — the two sides can't share
+// a type since they're separate npm projects, so keep them in sync by hand.
+type MenuAction = "new-game" | "open-folder" | "save" | "save-as";
+
+function sendMenuAction(action: MenuAction): void {
+    editorWindow?.webContents.send("menu-action", action);
+}
+
+// Everything the editor itself can do (New/Open/Save/Save As) has to round-trip
+// to the renderer — that's where WasmEditor and the file adapters live, main
+// only owns the native chrome around it. Built once for every platform (rather
+// than only patching non-darwin's missing About, as an earlier pass here did)
+// so File/Save exist at all: without a menu at all, WebEditor's own UI has no
+// "switch to a different project" affordance short of a full page reload.
+function buildAppMenu(): Menu {
+    const isMac = process.platform === "darwin";
+    const template: MenuItemConstructorOptions[] = [
+        ...(isMac ? [{ role: "appMenu" as const }] : []),
+        {
+            label: "File",
+            submenu: [
+                { label: "New Game…", accelerator: "CmdOrCtrl+N", click: () => sendMenuAction("new-game") },
+                { label: "Open Game Folder…", accelerator: "CmdOrCtrl+O", click: () => sendMenuAction("open-folder") },
+                { type: "separator" },
+                { label: "Save", accelerator: "CmdOrCtrl+S", click: () => sendMenuAction("save") },
+                { label: "Save As…", accelerator: "CmdOrCtrl+Shift+S", click: () => sendMenuAction("save-as") },
+                ...(isMac ? [] : [{ type: "separator" as const }, { role: "quit" as const }]),
+            ],
+        },
+        { role: "editMenu" },
+        { role: "viewMenu" },
+        { role: "windowMenu" },
+        {
+            role: "help",
+            // A submenu with at least one real item, on every platform — an
+            // *explicit* empty array ([]) here crashes Cocoa's menu code
+            // outright on mac (that's why an earlier pass left it unset
+            // there), but a non-empty one renders fine and is what makes the
+            // Help menu show up at all on mac (0 items = Cocoa hides the
+            // whole top-level entry). On mac, About already lives in the
+            // appMenu role above, so it's just the docs link there; elsewhere
+            // it's the only place About can go, so both are added.
+            submenu: [
+                { label: "Quest Viva Documentation", click: () => void shell.openExternal("https://questviva.com") },
+                ...(isMac ? [] : [{ type: "separator" as const }, { role: "about" as const }]),
+            ],
+        },
+    ];
+    return Menu.buildFromTemplate(template);
+}
+
+Menu.setApplicationMenu(buildAppMenu());
 
 function createEditorWindow(port: number): void {
     editorWindow = new BrowserWindow({

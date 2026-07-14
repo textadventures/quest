@@ -1,4 +1,5 @@
 <script lang="ts">
+    import { onMount } from "svelte";
     import { goto } from "$app/navigation";
     import { base } from "$app/paths";
     import { PUBLIC_HAS_SERVER } from "$env/static/public";
@@ -44,6 +45,16 @@
         drafts = (await listLocalDrafts()).sort((a, b) => b.lastModified - a.lastModified);
     }
     void refreshDrafts();
+
+    // Electron's File > Open Game Folder… menu item (see +layout.svelte's
+    // menu.onAction) lands here with ?action=open so it pops the native
+    // directory picker immediately, instead of making the user click the
+    // "Open game folder" button after already choosing this route.
+    onMount(() => {
+        if (nativeFolder && new URLSearchParams(window.location.search).get("action") === "open") {
+            void handleOpenFolder();
+        }
+    });
 
     function relativeTime(ms: number): string {
         const mins = Math.round((Date.now() - ms) / 60000);
