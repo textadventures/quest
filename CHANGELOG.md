@@ -1,5 +1,18 @@
 # Changelog
 
+## [6.0.0-beta.39](https://github.com/textadventures/quest/compare/v6.0.0-beta.38...v6.0.0-beta.39) (2026-07-14)
+
+
+### Features
+
+* **ElectronApp:** Phase 1 desktop app ([#1865](https://github.com/textadventures/quest/issues/1865)) ([acd6769](https://github.com/textadventures/quest/commit/acd6769c66d36b8bd824601986c9634b9f0f5463))
+* **WebEditor:** split local vs server-save UI per deployment domain ([#1862](https://github.com/textadventures/quest/issues/1862)) ([4f5ed69](https://github.com/textadventures/quest/commit/4f5ed69fb42b9da4da4d56f86def8966a6781f9c))
+
+
+### Bug Fixes
+
+* allow "main" scope in PR title lint ([#1864](https://github.com/textadventures/quest/issues/1864)) ([f127012](https://github.com/textadventures/quest/commit/f127012f96bf8bb66958c8b8ad9a752b970b3f36))
+
 ## [6.0.0-beta.38](https://github.com/textadventures/quest/compare/v6.0.0-beta.37...v6.0.0-beta.38) (2026-07-13)
 
 
