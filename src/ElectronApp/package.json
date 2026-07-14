@@ -2,13 +2,14 @@
   "name": "quest-viva-desktop",
   "version": "0.0.1",
   "private": true,
+  "author": "Alex Warren",
   "main": "dist/main.js",
   "scripts": {
     "build:ts": "tsc -p tsconfig.json",
     "copy-static": "node scripts/copy-static.mjs",
     "build": "npm run build:ts && npm run copy-static",
     "start": "npm run build && electron .",
-    "dist": "npm run build && electron-builder"
+    "dist": "npm run build && electron-builder -c.extraMetadata.version=$(cat ../../VERSION)"
   },
   "devDependencies": {
     "@types/node": "^25.0.0",
