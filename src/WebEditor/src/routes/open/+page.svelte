@@ -503,25 +503,33 @@
                                     Save to server
                                 </button>
                             {:else}
-                                <button
-                                    type="button"
-                                    class="btn preset-filled-primary-500 flex-1"
-                                    onclick={handleCreateLocal}
-                                    disabled={!createName.trim()}
-                                    title={isElectronApp ? "Choose a folder to save your game in" : "Save as a local draft in this browser"}
-                                >
-                                    {isElectronApp ? "Save to my computer" : "Create local draft"}
-                                </button>
-                                {#if canUseFSA}
+                                <div class="flex flex-col gap-1 flex-1">
                                     <button
                                         type="button"
-                                        class="btn preset-outlined-primary-500 flex-1"
-                                        onclick={handleCreateLocalFolder}
+                                        class="btn preset-filled-primary-500 w-full"
+                                        onclick={handleCreateLocal}
                                         disabled={!createName.trim()}
-                                        title="Choose a folder on your computer to save your game in"
+                                        title={isElectronApp ? "Choose a folder to save your game in" : "Save as a local draft in this browser"}
                                     >
-                                        Save to folder…
+                                        {isElectronApp ? "Save to my computer" : "Create local draft"}
                                     </button>
+                                    {#if !isElectronApp}
+                                        <p class="text-xs text-surface-500-400 text-center">Stored in this browser only</p>
+                                    {/if}
+                                </div>
+                                {#if canUseFSA}
+                                    <div class="flex flex-col gap-1 flex-1">
+                                        <button
+                                            type="button"
+                                            class="btn preset-outlined-primary-500 w-full"
+                                            onclick={handleCreateLocalFolder}
+                                            disabled={!createName.trim()}
+                                            title="Choose a folder on your computer to save your game in"
+                                        >
+                                            Save to folder…
+                                        </button>
+                                        <p class="text-xs text-surface-500-400 text-center">You'll choose a folder on this device</p>
+                                    </div>
                                 {/if}
                             {/if}
                         </div>

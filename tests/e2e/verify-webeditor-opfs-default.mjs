@@ -23,6 +23,13 @@ async function run() {
     await page.waitForSelector('button:has-text("Save to folder…")', { timeout: 5000 });
     console.log('PASS: "Save to folder…" secondary FSA button is present');
 
+    // Each create button should have its own storage-location caption below
+    // it, so it's clear what "Create local draft" vs. "Save to folder…"
+    // actually means storage-wise, not just naming-wise.
+    await page.waitForSelector('text=Stored in this browser only', { timeout: 5000 });
+    await page.waitForSelector("text=You'll choose a folder on this device", { timeout: 5000 });
+    console.log('PASS: storage-location captions shown under each create button');
+
     // Primary open button should be "Import game file", with "Open game
     // folder" offered as a secondary option.
     await page.waitForSelector('button:has-text("Import game file")', { timeout: 5000 });
