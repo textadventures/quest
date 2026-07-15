@@ -63,6 +63,13 @@ echo ""
 # opens. Must be a real argv flag, not app.commandLine.appendSwitch() from
 # main.ts — Chromium's zygote/sandbox-host check runs during native startup,
 # before Electron loads and executes the app's JS at all.
-LAUNCH_ARGS=()
-[[ "$(uname -s)" == "Linux" ]] && LAUNCH_ARGS+=(--no-sandbox)
-(cd src/ElectronApp && npx electron . "${LAUNCH_ARGS[@]}")
+#
+# Branching instead of an empty LAUNCH_ARGS=() array expanded via
+# "${LAUNCH_ARGS[@]}" — macOS ships bash 3.2 by default (last GPLv2 release),
+# which treats that expansion as an unbound variable under `set -u` when the
+# array is empty; bash 4.4+ (Linux, homebrew bash) doesn't have this quirk.
+if [[ "$(uname -s)" == "Linux" ]]; then
+    (cd src/ElectronApp && npx electron . --no-sandbox)
+else
+    (cd src/ElectronApp && npx electron .)
+fi
