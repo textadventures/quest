@@ -1,5 +1,24 @@
 # Changelog
 
+## [6.0.0-beta.40](https://github.com/textadventures/quest/compare/v6.0.0-beta.39...v6.0.0-beta.40) (2026-07-15)
+
+
+### Features
+
+* **ElectronApp:** native menu bar (File/Save/Help) + Linux sandbox fix ([#1868](https://github.com/textadventures/quest/issues/1868)) ([92ce64f](https://github.com/textadventures/quest/commit/92ce64f6cb302cbfcda50d03cb661092739a6cdb))
+* **ElectronApp:** new game creates its own folder ([#1873](https://github.com/textadventures/quest/issues/1873)) ([369f098](https://github.com/textadventures/quest/commit/369f098fea55dfca88c919e27ce514336f874191))
+* **ElectronApp:** recently opened games list ([#1871](https://github.com/textadventures/quest/issues/1871)) ([2938810](https://github.com/textadventures/quest/commit/29388108cb4ada4dab0435577921a95ae1c3f4f4))
+* **WebEditor:** autosave instead of explicit Save button ([#1877](https://github.com/textadventures/quest/issues/1877)) ([39e881b](https://github.com/textadventures/quest/commit/39e881b1af15a826cac3e9903ecf23d7a235786a))
+* **WebEditor:** default to OPFS local drafts on all browsers ([#1870](https://github.com/textadventures/quest/issues/1870)) ([d588754](https://github.com/textadventures/quest/commit/d588754703943675474bcaa692beed5cee98fb9f))
+* **WebEditor:** Open screen cleanup and backup-reminder banner ([#1876](https://github.com/textadventures/quest/issues/1876)) ([f65c8cf](https://github.com/textadventures/quest/commit/f65c8cf42d6c7d1eb73604c2e761f9d9e8c9d40b))
+
+
+### Bug Fixes
+
+* **ElectronApp:** arm64 Linux, mac x64 drop, ad-hoc signing ([#1866](https://github.com/textadventures/quest/issues/1866)) ([924fe85](https://github.com/textadventures/quest/commit/924fe856477a6978ef7681e40fba611d7849729d))
+* **ElectronApp:** improve app icon legibility at small sizes ([#1874](https://github.com/textadventures/quest/issues/1874)) ([8810042](https://github.com/textadventures/quest/commit/8810042a20ddf89f618f6b21472ce0315e92244e))
+* unbound LAUNCH_ARGS under macOS's default bash 3.2 in electron.sh ([#1872](https://github.com/textadventures/quest/issues/1872)) ([8d79377](https://github.com/textadventures/quest/commit/8d79377cf33736d5c1989433a11e514f2906051f))
+
 ## [6.0.0-beta.39](https://github.com/textadventures/quest/compare/v6.0.0-beta.38...v6.0.0-beta.39) (2026-07-14)
 
 
