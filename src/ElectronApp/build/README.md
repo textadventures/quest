@@ -1,10 +1,14 @@
 # App icon
 
-`icon.icns` (macOS) and `icon.ico` (Windows) are generated from the same
-">QV" mark used for the WebPlayer/site favicon (`site/src/assets/quest-viva.svg`,
-the 1024×1024 master; `favicon.svg` elsewhere in the repo is a downscaled
-256×256 copy of the same artwork). Linux's AppImage icon is auto-derived from
-`icon.icns` by electron-builder — no separate file needed.
+`icon.icns` (macOS) and `icon.ico` (Windows) are generated from `icon-source.svg`
+in this directory — a "QV" monogram (the same letterforms as the WebPlayer/site
+favicon's ">QV" wordmark, `site/src/assets/quest-viva.svg`) filled onto a solid
+rounded-square so it survives being shrunk to dock/taskbar sizes, where the
+transparent wordmark used to read as a thin, drab, grey-dominated strip. The
+chevron is dropped deliberately — at 16–32px the three-glyph wordmark had no
+room left for the letters. The site favicon and inline wordmark are untouched;
+`icon-source.svg` only feeds the desktop app icon. Linux's AppImage icon is
+auto-derived from `icon.icns` by electron-builder — no separate file needed.
 
 This directory is electron-builder's default `build resources` location
 (`directories.buildResources`, unset here so it uses the "build" default) —
@@ -14,7 +18,7 @@ To regenerate after a design change (needs `rsvg-convert` — `brew install
 librsvg` — plus macOS's `iconutil` and ImageMagick's `magick`):
 
 ```bash
-SRC=../../../site/src/assets/quest-viva.svg
+SRC=icon-source.svg
 mkdir -p icon.iconset ico-src
 
 # macOS iconset (iconutil's required filenames/sizes)
