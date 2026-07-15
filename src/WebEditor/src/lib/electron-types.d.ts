@@ -37,11 +37,25 @@ interface ElectronPathsApi {
     defaultGamesDir(): Promise<string>;
 }
 
+interface ElectronRecentGame {
+    dirPath: string;
+    filename: string;
+    lastOpened: number;
+}
+
+interface ElectronRecentApi {
+    list(): Promise<ElectronRecentGame[]>;
+    add(dirPath: string, filename: string): Promise<ElectronRecentGame[]>;
+    remove(dirPath: string, filename: string): Promise<ElectronRecentGame[]>;
+    onChanged(callback: () => void): () => void;
+}
+
 // action is one of MenuAction in ElectronApp's src/main.ts ("new-game" |
 // "open-file" | "save" | "save-as") — kept as a plain string since these
 // are separate npm projects with no shared type.
 interface ElectronMenuApi {
     onAction(callback: (action: string) => void): () => void;
+    onOpenRecent(callback: (game: { dirPath: string; filename: string }) => void): () => void;
 }
 
 interface ElectronApi {
@@ -50,6 +64,7 @@ interface ElectronApi {
     shell: ElectronShellApi;
     path: ElectronPathApi;
     paths: ElectronPathsApi;
+    recent: ElectronRecentApi;
     menu: ElectronMenuApi;
 }
 

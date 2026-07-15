@@ -42,6 +42,32 @@ function electronApp() {
     return window.electronApp!;
 }
 
+// Mirrors ElectronRecentGame in electron-types.d.ts — not imported by name
+// since that type lives inside a `declare global` block, not a module export.
+export interface RecentGame {
+    dirPath: string;
+    filename: string;
+    lastOpened: number;
+}
+
+export async function listRecentGames(): Promise<RecentGame[]> {
+    return electronApp().recent.list();
+}
+
+export async function removeRecentGame(dirPath: string, filename: string): Promise<void> {
+    await electronApp().recent.remove(dirPath, filename);
+}
+
+// Best-effort: the recent list is a convenience, so a tracking failure should
+// never surface as an error on the actual open/create/save-as it followed.
+async function trackRecent(dirPath: string, filename: string): Promise<void> {
+    try {
+        await electronApp().recent.add(dirPath, filename);
+    } catch {
+        // ignore
+    }
+}
+
 /**
  * FileAdapter backed by Electron's contextBridge (Node fs via IPC), for the
  * desktop app. Same flat single-directory model as BrowserFileAdapter — no
@@ -73,6 +99,7 @@ export class ElectronFileAdapter implements FileAdapter {
         if (!path) return null;
         await electronApp().fs.writeFile(path, data);
         this._filename = basename(path);
+        void trackRecent(dirname(path), this._filename);
         return this._filename;
     }
 
@@ -117,6 +144,7 @@ export async function openElectronFile(): Promise<{ dirPath: string; filename: s
 
 export async function loadElectronFile(dirPath: string, filename: string): Promise<{ bytes: Uint8Array; adapter: ElectronFileAdapter }> {
     const bytes = await electronApp().fs.readFile(electronApp().path.join(dirPath, filename));
+    void trackRecent(dirPath, filename);
     return { bytes, adapter: new ElectronFileAdapter(dirPath, filename) };
 }
 
@@ -167,5 +195,6 @@ export async function createElectronGame(
     await electronApp().fs.mkdir(dirPath);
     const filePath = electronApp().path.join(dirPath, filename);
     await electronApp().fs.writeFile(filePath, content);
+    void trackRecent(dirPath, filename);
     return { bytes: new TextEncoder().encode(content), adapter: new ElectronFileAdapter(dirPath, filename) };
 }

@@ -18,7 +18,7 @@
     // project" button of its own.
     onMount(() => {
         if (!isElectron()) return;
-        return window.electronApp!.menu.onAction((action) => {
+        const unsubscribeAction = window.electronApp!.menu.onAction((action) => {
             switch (action) {
                 case "new-game":
                 case "open-file": {
@@ -41,6 +41,19 @@
                     break;
             }
         });
+        // Native "Open Recent" submenu (ElectronApp's main.ts) — same
+        // dirty-check + nonce-navigation pattern as open-folder above, just
+        // carrying a specific game to load; routes/open/+page.svelte's
+        // $effect reads dir/file/t off the query string and does the actual load.
+        const unsubscribeRecent = window.electronApp!.menu.onOpenRecent((game) => {
+            if (get(isDirty) && !confirm("You have unsaved changes. Discard them and continue?")) return;
+            const query = `?action=open-recent&dir=${encodeURIComponent(game.dirPath)}&file=${encodeURIComponent(game.filename)}&t=${Date.now()}`;
+            void goto(`${base}/open${query}`);
+        });
+        return () => {
+            unsubscribeAction();
+            unsubscribeRecent();
+        };
     });
 </script>
 
