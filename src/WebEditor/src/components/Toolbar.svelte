@@ -14,7 +14,7 @@
     } from "$lib/editor-store";
     import type { TreeNode } from "$lib/types";
 
-    const wasmPlayerUrl = PUBLIC_WASM_PLAYER_URL || '/player/';
+    const wasmPlayerUrl = PUBLIC_WASM_PLAYER_URL || "/player/";
 
     let saving = $state(false);
 
@@ -92,62 +92,62 @@
 </script>
 
 <AppBar>
-        <AppBar.Toolbar class="grid-cols-[auto_1fr_auto]">
-            <AppBar.Lead>
-                <span class="font-semibold">Quest Viva Editor</span>
-                {#if PUBLIC_WEBEDITOR_VERSION}
-                    <span class="ml-2 text-xs text-surface-500-400">{PUBLIC_WEBEDITOR_VERSION}</span>
-                {/if}
-                {#if $gameFilename}
-                    <span class="ml-3 text-sm text-surface-500-400">{$gameFilename}{#if $isDirty} *{/if}</span>
-                {/if}
-            </AppBar.Lead>
-            <AppBar.Trail>
-                <div class="flex gap-2 items-center">
-                    <!-- Add dropdown -->
-                    <div class="add-dropdown relative">
-                        <button
-                            type="button"
-                            class="btn btn-sm preset-outlined-primary-500"
-                            onclick={toggleAdd}
-                            title="Add element"
-                        >+ Add ▾</button>
-                        {#if addOpen}
-                            <div class="absolute right-0 top-full z-[999] mt-1 w-56 bg-surface-50-950 border border-surface-200-800 rounded shadow-lg py-1">
-                                {#each addOptions as opt (opt.label)}
-                                    <button
-                                        class="w-full text-left px-3 py-1.5 text-xs hover:bg-surface-200-800"
-                                        onclick={() => doAdd(opt.action)}
-                                    >{opt.label}</button>
-                                {/each}
-                            </div>
-                        {/if}
-                    </div>
-                    <!-- Delete button -->
-                    {#if canDelete}
-                        <button
-                            type="button"
-                            class="btn btn-sm preset-outlined-error-500"
-                            onclick={() => deleteElement(selectedNode!.key)}
-                            title={"Delete " + (selectedNode?.text ?? "")}
-                        >Delete</button>
-                    {/if}
-                    <button type="button" class="btn btn-sm preset-outlined-primary-500" onclick={() => assetManagerOpen.set(true)} title="Manage assets">🖼 Assets</button>
-                    <button type="button" class="btn btn-sm preset-outlined-primary-500" onclick={undo} disabled={!$canUndo} title="Undo">↩ Undo</button>
-                    <button type="button" class="btn btn-sm preset-outlined-primary-500" onclick={redo} disabled={!$canRedo} title="Redo">↪ Redo</button>
-                    <button type="button" class="btn btn-sm preset-filled-primary-500" onclick={handleSave} disabled={saving} title="Save">💾 Save</button>
-                    {#if $canSaveAs}
-                        <button type="button" class="btn btn-sm preset-outlined-primary-500" onclick={handleSaveAs} disabled={saving} title="Save As">Save As…</button>
-                    {/if}
-                    {#if $canBackup}
-                        <button type="button" class="btn btn-sm preset-outlined-primary-500" onclick={handleBackup} disabled={saving} title="Download a .zip copy of this game and its assets">Backup…</button>
-                    {/if}
-                    {#if $gameFilename}
-                        <button type="button" class="btn btn-sm preset-outlined-primary-500" onclick={() => publishModalOpen.set(true)} title="Build a .quest package for distribution">Publish…</button>
-                        <button type="button" class="btn btn-sm preset-outlined-secondary-500" onclick={handlePreview} title="Preview game">▶ Preview</button>
+    <AppBar.Toolbar class="grid-cols-[auto_1fr_auto]">
+        <AppBar.Lead>
+            <span class="font-semibold">Quest Viva Editor</span>
+            {#if PUBLIC_WEBEDITOR_VERSION}
+                <span class="ml-2 text-xs text-surface-500-400">{PUBLIC_WEBEDITOR_VERSION}</span>
+            {/if}
+            {#if $gameFilename}
+                <span class="ml-3 text-sm text-surface-500-400">{$gameFilename}{#if $isDirty} *{/if}</span>
+            {/if}
+        </AppBar.Lead>
+        <AppBar.Trail>
+            <div class="flex gap-2 items-center">
+                <!-- Add dropdown -->
+                <div class="add-dropdown relative">
+                    <button
+                        type="button"
+                        class="btn btn-sm preset-outlined-primary-500"
+                        onclick={toggleAdd}
+                        title="Add element"
+                    >+ Add ▾</button>
+                    {#if addOpen}
+                        <div class="absolute right-0 top-full z-[999] mt-1 w-56 bg-surface-50-950 border border-surface-200-800 rounded shadow-lg py-1">
+                            {#each addOptions as opt (opt.label)}
+                                <button
+                                    class="w-full text-left px-3 py-1.5 text-xs hover:bg-surface-200-800"
+                                    onclick={() => doAdd(opt.action)}
+                                >{opt.label}</button>
+                            {/each}
+                        </div>
                     {/if}
                 </div>
-            </AppBar.Trail>
-        </AppBar.Toolbar>
-    </AppBar>
+                <!-- Delete button -->
+                {#if canDelete}
+                    <button
+                        type="button"
+                        class="btn btn-sm preset-outlined-error-500"
+                        onclick={() => deleteElement(selectedNode!.key)}
+                        title={"Delete " + (selectedNode?.text ?? "")}
+                    >Delete</button>
+                {/if}
+                <button type="button" class="btn btn-sm preset-outlined-primary-500" onclick={() => assetManagerOpen.set(true)} title="Manage assets">🖼 Assets</button>
+                <button type="button" class="btn btn-sm preset-outlined-primary-500" onclick={undo} disabled={!$canUndo} title="Undo">↩ Undo</button>
+                <button type="button" class="btn btn-sm preset-outlined-primary-500" onclick={redo} disabled={!$canRedo} title="Redo">↪ Redo</button>
+                <button type="button" class="btn btn-sm preset-filled-primary-500" onclick={handleSave} disabled={saving} title="Save">💾 Save</button>
+                {#if $canSaveAs}
+                    <button type="button" class="btn btn-sm preset-outlined-primary-500" onclick={handleSaveAs} disabled={saving} title="Save As">Save As…</button>
+                {/if}
+                {#if $canBackup}
+                    <button type="button" class="btn btn-sm preset-outlined-primary-500" onclick={handleBackup} disabled={saving} title="Download a .zip copy of this game and its assets">Backup…</button>
+                {/if}
+                {#if $gameFilename}
+                    <button type="button" class="btn btn-sm preset-outlined-primary-500" onclick={() => publishModalOpen.set(true)} title="Build a .quest package for distribution">Publish…</button>
+                    <button type="button" class="btn btn-sm preset-outlined-secondary-500" onclick={handlePreview} title="Preview game">▶ Preview</button>
+                {/if}
+            </div>
+        </AppBar.Trail>
+    </AppBar.Toolbar>
+</AppBar>
 

@@ -119,8 +119,8 @@
                         onclick={() => { selectedCategoryIndex = ci; }}
                         class="w-full text-left px-4 py-2.5 text-sm transition-colors {
                             selectedCategoryIndex === ci
-                                ? 'font-semibold text-primary-600-400 bg-primary-100 dark:bg-primary-900/40'
-                                : 'text-surface-700-300 hover:bg-surface-100-900'
+                                ? "font-semibold text-primary-600-400 bg-primary-100 dark:bg-primary-900/40"
+                                : "text-surface-700-300 hover:bg-surface-100-900"
                         }"
                     >{cat.name}</button>
                 {/each}
@@ -137,11 +137,11 @@
                             ondblclick={() => { selectedCommand = cmd; onOk(); }}
                             class="w-full text-left px-5 py-2 text-sm flex items-center gap-3 transition-colors {
                                 isSelected
-                                    ? 'bg-primary-100 dark:bg-primary-900/40 text-primary-700 dark:text-primary-300 font-medium'
-                                    : 'text-surface-700-300 hover:bg-surface-100-900'
+                                    ? "bg-primary-100 dark:bg-primary-900/40 text-primary-700 dark:text-primary-300 font-medium"
+                                    : "text-surface-700-300 hover:bg-surface-100-900"
                             }"
                         >
-                            <span class="w-4 flex-shrink-0 text-primary-500 {isSelected ? 'opacity-100' : 'opacity-0'}">●</span>
+                            <span class="w-4 flex-shrink-0 text-primary-500 {isSelected ? "opacity-100" : "opacity-0"}">●</span>
                             {cmd.add}
                         </button>
                     {/each}

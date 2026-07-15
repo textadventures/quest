@@ -28,7 +28,7 @@
     let items = $derived(
         $treeNodes.filter(n =>
             nodeTypes.includes(n.nodeType) &&
-            (showAll || n.parent === elementKey)
+                (showAll || n.parent === elementKey)
         )
     );
 
@@ -54,17 +54,17 @@
 
     let addLabel = $derived(
         nodeTypes.includes("function") ? "Add Function" :
-        nodeTypes.includes("timer") ? "Add Timer" :
-        nodeTypes.includes("verb") ? "Add Verb" :
-        nodeTypes.includes("command") ? "Add Command" :
-        nodeTypes.includes("walkthrough") ? "Add Walkthrough" :
-        nodeTypes.includes("template") ? "Add Template" :
-        nodeTypes.includes("dynamictemplate") ? "Add Dynamic Template" :
-        nodeTypes.includes("type") ? "Add Type" :
-        nodeTypes.includes("include") ? "Add Library" :
-        nodeTypes.includes("javascript") ? "Add JavaScript" :
-        isObjectList ? "Add Object" :
-        null
+            nodeTypes.includes("timer") ? "Add Timer" :
+                nodeTypes.includes("verb") ? "Add Verb" :
+                nodeTypes.includes("command") ? "Add Command" :
+                nodeTypes.includes("walkthrough") ? "Add Walkthrough" :
+                nodeTypes.includes("template") ? "Add Template" :
+                nodeTypes.includes("dynamictemplate") ? "Add Dynamic Template" :
+                nodeTypes.includes("type") ? "Add Type" :
+                nodeTypes.includes("include") ? "Add Library" :
+                nodeTypes.includes("javascript") ? "Add JavaScript" :
+                isObjectList ? "Add Object" :
+                null
     );
 
     function addPrimary() {
@@ -131,11 +131,11 @@
     <!-- Add toolbar -->
     <div class="flex items-center gap-1 mb-2">
         {#if addLabel !== null}
-        <button
-            type="button"
-            class="btn btn-sm preset-outlined-primary-500 text-xs py-0.5"
-            onclick={addPrimary}
-        >+ {addLabel}</button>
+            <button
+                type="button"
+                class="btn btn-sm preset-outlined-primary-500 text-xs py-0.5"
+                onclick={addPrimary}
+            >+ {addLabel}</button>
         {/if}
         {#if showRoomButton}
             <button

@@ -122,16 +122,16 @@
     }
 
     function isSimpleValue(ctrl: ScriptControlData): boolean {
-        const v = ctrl.value ?? '';
+        const v = ctrl.value ?? "";
         switch (ctrl.simpleEditor) {
-            case 'boolean':
-                return v === 'true' || v === 'false';
-            case 'number':
-            case 'numberdouble':
-                return v !== '' && Number.isFinite(Number(v));
-            case 'objects':
+            case "boolean":
+                return v === "true" || v === "false";
+            case "number":
+            case "numberdouble":
+                return v !== "" && Number.isFinite(Number(v));
+            case "objects":
                 // Bare identifier (object name) or empty — not a complex expression
-                return v === '' || /^[a-zA-Z_][a-zA-Z0-9_]*$/.test(v);
+                return v === "" || /^[a-zA-Z_][a-zA-Z0-9_]*$/.test(v);
             default:
                 // textbox, dropdown, file: simple when value is a quoted string literal
                 return v.length >= 2 && v.startsWith('"') && v.endsWith('"');
@@ -146,29 +146,29 @@
     }
 
     function toSimpleDisplay(ctrl: ScriptControlData): string {
-        const v = ctrl.value ?? '';
+        const v = ctrl.value ?? "";
         switch (ctrl.simpleEditor) {
-            case 'boolean':
-            case 'number':
-            case 'numberdouble':
-            case 'objects':
+            case "boolean":
+            case "number":
+            case "numberdouble":
+            case "objects":
                 return v;
             default: {
-                if (v.length < 2) return '';
-                return v.slice(1, -1).replace(/<br\/>/g, '\n').replace(/\\"/g, '"');
+                if (v.length < 2) return "";
+                return v.slice(1, -1).replace(/<br\/>/g, "\n").replace(/\\"/g, '"');
             }
         }
     }
 
     function fromSimpleToExpression(simpleValue: string, simpleEditor: string): string {
         switch (simpleEditor) {
-            case 'boolean':
-            case 'number':
-            case 'numberdouble':
-            case 'objects':
+            case "boolean":
+            case "number":
+            case "numberdouble":
+            case "objects":
                 return simpleValue;
             default: {
-                const escaped = simpleValue.replace(/"/g, '\\"').replace(/\n/g, '<br/>');
+                const escaped = simpleValue.replace(/"/g, '\\"').replace(/\n/g, "<br/>");
                 return `"${escaped}"`;
             }
         }
@@ -193,12 +193,12 @@
         // If the current value is not a valid simple value, reset to a default simple value
         if (!isSimpleValue(ctrl)) {
             switch (ctrl.simpleEditor) {
-                case 'boolean':
-                    onSetParam(scriptIndex, ctrl.attribute!, 'true');
+                case "boolean":
+                    onSetParam(scriptIndex, ctrl.attribute!, "true");
                     break;
-                case 'number':
-                case 'numberdouble':
-                    onSetParam(scriptIndex, ctrl.attribute!, '0');
+                case "number":
+                case "numberdouble":
+                    onSetParam(scriptIndex, ctrl.attribute!, "0");
                     break;
                 default:
                     onSetParam(scriptIndex, ctrl.attribute!, '""');
@@ -213,7 +213,7 @@
     function buildTemplateExpression(tmpl: IfExpressionTemplateData, changedName: string, changedValue: string): string {
         let result = tmpl.originalPattern;
         for (const ctrl of tmpl.controls) {
-            const value = ctrl.name === changedName ? changedValue : (ctrl.value ?? '');
+            const value = ctrl.name === changedName ? changedValue : (ctrl.value ?? "");
             result = result.replace(`#${ctrl.name}#`, value);
         }
         return result;
@@ -247,12 +247,12 @@
 
     function onCopySelected() {
         copyScripts(elementKey, attribute, containerPath, sortedSelection());
-        // no scriptVersion bump — selection intentionally preserved after copy
+    // no scriptVersion bump — selection intentionally preserved after copy
     }
 
     function onCutSelected() {
         cutScripts(elementKey, attribute, containerPath, sortedSelection());
-        // selectedIndices cleared by $effect when scriptVersion bumps
+    // selectedIndices cleared by $effect when scriptVersion bumps
     }
 
     function onDeleteSelected() {

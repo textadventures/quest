@@ -334,14 +334,14 @@
                             <tr
                                 class="border-b border-surface-100-900 cursor-pointer outline-none
                                     focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-primary-500
-                                    {isSelected ? 'bg-primary-100-900' : 'hover:bg-surface-100-900'}
-                                    {dimmed ? 'text-surface-400-500' : ''}"
+                                    {isSelected ? "bg-primary-100-900" : "hover:bg-surface-100-900"}
+                                    {dimmed ? "text-surface-400-500" : ""}"
                                 tabindex={isSelected ? 0 : -1}
                                 data-attr={attr.name}
                                 onclick={() => onSelectAttribute(attr)}
                                 onkeydown={(e) => onAttrRowKeydown(e, attr)}
                             >
-                                <td class="py-0.5 px-3 truncate max-w-36 {!dimmed ? 'font-medium' : ''}" title={attr.name}>{attr.name}</td>
+                                <td class="py-0.5 px-3 truncate max-w-36 {!dimmed ? "font-medium" : ""}" title={attr.name}>{attr.name}</td>
                                 <td class="py-0.5 px-3 max-w-40 truncate" title={attr.value ?? ""}>{displayValue(attr)}</td>
                                 <td class="py-0.5 px-3 text-surface-400-500 truncate" title={attr.source}>{attr.source}</td>
                                 <td class="py-0.5 pr-2 text-right">
