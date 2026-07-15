@@ -6,6 +6,8 @@ WasmPlayer runs the game engine inside the browser's WebAssembly sandbox. The WA
 
 Running a native .NET process locally and connecting to it from Electron's Chromium renderer gives full engine performance, while the UI (editor + player frontend) remains unchanged web technology.
 
+A second, independent motivation: an "upgrade path" for existing Quest 5 desktop users. That audience is used to a native Windows app and shouldn't be told "you now have to use a website" — a Quest Viva desktop app gives them a comparable thing to move to, regardless of whether it's WASM- or native-backed under the hood.
+
 ---
 
 ## Target architecture
@@ -240,13 +242,15 @@ Electron shell with WebEditor + ElectronFileAdapter. No LocalPlayer process.
 
 `src/ElectronApp/` — `main.ts` (window/lifecycle), `static-server.ts`, `preload.ts`, `ipc/{fs,dialog,shell}.ts`, `scripts/copy-static.mjs` (assembles `resources/app-static/{editor,AppBundle,player}` from the WebEditor/WasmEditor/WasmPlayer build outputs, mirroring `deploy-play.yml`'s `cp -r` steps). CI: `build_electron` job in `.github/workflows/build-and-test.yml`, modeled on `build_webeditor`.
 
-### Phase 2 — Native player backend
+### Phase 2 — Native player backend — deferred
 
 LocalPlayer project + backend lifecycle in Electron main process.
 
 - LocalPlayer spawns on a random port, Electron opens a player BrowserWindow
 - "Preview" in the editor saves the game then triggers `player.openGame(path)` via IPC
 - Player window navigates to `http://localhost:{port}/?game={path}`
+
+**Deferred 2026-07-15.** Nobody is complaining about WasmPlayer performance yet — unsurprising, since the app has no real usage yet, so there's no signal that the Release/AOT build's interpretation overhead is actually a felt problem rather than a theoretical one. Convenience/offline access and the Quest 5 upgrade path (see Motivation) are the load-bearing reasons for the app right now, and both are already delivered by Phase 1. Building LocalPlayer now would mean maintaining and testing a second player runtime (in addition to WasmPlayer, which the [long-term architecture direction](../CLAUDE.md) already commits to as the web player) against no concrete complaint. Revisit if a specific game or script pattern surfaces a real, felt performance problem — at that point Phase 2 can be picked up as originally scoped, nothing here blocks it.
 
 ### Phase 3 — Standalone game launcher
 
