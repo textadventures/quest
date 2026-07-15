@@ -1,11 +1,15 @@
 <script lang="ts">
+    import { onMount } from "svelte";
     import { goto } from "$app/navigation";
     import { page } from "$app/state";
     import { base } from "$app/paths";
     import { PUBLIC_HAS_SERVER } from "$env/static/public";
     import { openGame, loadingStatus } from "$lib/editor-store";
     import { hasFSA, openDirectory, loadFileFromDirectory, createLocalGame } from "$lib/filesystem/browser-adapter";
-    import { openElectronDirectory, loadElectronFile, createElectronGame } from "$lib/filesystem/electron-adapter";
+    import {
+        openElectronDirectory, loadElectronFile, createElectronGame, listRecentGames, removeRecentGame,
+    } from "$lib/filesystem/electron-adapter";
+    import type { RecentGame } from "$lib/filesystem/electron-adapter";
     import { isElectron } from "$lib/runtime";
     import { createNewGame, getGameTemplates } from "$lib/filesystem/server-adapter";
     import type { GameTemplate } from "$lib/filesystem/server-adapter";
@@ -46,6 +50,25 @@
     }
     void refreshDrafts();
 
+    // Recently opened/created/saved-as game folders (Electron only — tracked
+    // by electron-adapter.ts on every successful load/create/saveAs).
+    let recentGames = $state<RecentGame[]>([]);
+
+    async function refreshRecentGames() {
+        if (!isElectron()) return;
+        recentGames = await listRecentGames();
+    }
+    void refreshRecentGames();
+
+    // Recent-list changes that originate outside this page (the native
+    // "Clear Recent" menu item) have no other way to reach an already-mounted
+    // /open page — the page's own Remove button updates recentGames directly
+    // and doesn't rely on this.
+    onMount(() => {
+        if (!isElectron()) return;
+        return window.electronApp!.recent.onChanged(() => void refreshRecentGames());
+    });
+
     // Electron's File > Open Game Folder… menu item (see +layout.svelte's
     // menu.onAction) lands here with ?action=open&t=<nonce> so it pops the
     // native directory picker immediately, instead of making the user click
@@ -55,13 +78,25 @@
     // and SvelteKit doesn't remount a page for a same-route, query-only
     // navigation; the nonce is what makes goto() to "the same" URL actually
     // navigate at all, and this effect is what notices it once it does.
+    // The native "Open Recent" submenu reuses the same nonce mechanism —
+    // ?action=open-recent&dir=...&file=...&t=<nonce>, set by +layout.svelte's
+    // onOpenRecent handler — instead of a second menu→renderer IPC round trip.
     let handledOpenNonce = "";
     $effect(() => {
         const params = page.url.searchParams;
         const nonce = params.get("t");
-        if (nativeFolder && params.get("action") === "open" && nonce !== handledOpenNonce) {
+        if (!nativeFolder || nonce === handledOpenNonce) return;
+        const action = params.get("action");
+        if (action === "open") {
             handledOpenNonce = nonce ?? "";
             void handleOpenFolder();
+        } else if (action === "open-recent") {
+            const dirPath = params.get("dir");
+            const filename = params.get("file");
+            if (dirPath && filename) {
+                handledOpenNonce = nonce ?? "";
+                void loadFromElectron(dirPath, filename);
+            }
         }
     });
 
@@ -72,6 +107,10 @@
         const hours = Math.round(mins / 60);
         if (hours < 24) return `${hours}h ago`;
         return `${Math.round(hours / 24)}d ago`;
+    }
+
+    function folderName(dirPath: string): string {
+        return dirPath.split(/[\\/]/).pop() || dirPath;
     }
 
     // Create new game form (shared)
@@ -254,6 +293,12 @@
         await refreshDrafts();
     }
 
+    // Removes a Recent entry only — never touches the actual file on disk.
+    async function handleRemoveRecent(game: RecentGame) {
+        await removeRecentGame(game.dirPath, game.filename);
+        await refreshRecentGames();
+    }
+
     async function handleCreateLocal() {
         createLocalError = null;
         const trimmed = createName.trim();
@@ -271,7 +316,7 @@
                     if (ok) { goto(base || "/"); return; }
                     createLocalError = "Failed to load new game.";
                 }
-                // result === null: user cancelled the directory picker — do nothing
+            // result === null: user cancelled the directory picker — do nothing
             } else if (hasFSA()) {
                 const result = await createLocalGame(filename, content);
                 if (result) {
@@ -359,6 +404,31 @@
 
                 {#if error}
                     <p class="text-error-500 text-sm">{error}</p>
+                {/if}
+
+                {#if isElectron() && recentGames.length > 0}
+                    <hr class="w-full border-surface-300-700 my-2" />
+                    <p class="text-surface-500-400 text-sm font-medium self-start">Recent</p>
+                    <div class="flex flex-col gap-2 w-full">
+                        {#each recentGames as game (game.dirPath + "/" + game.filename)}
+                            <div class="flex items-center gap-2 w-full">
+                                <button
+                                    type="button"
+                                    class="btn btn-sm preset-outlined-primary-500 flex-1 justify-between"
+                                    onclick={() => loadFromElectron(game.dirPath, game.filename)}
+                                >
+                                    <span>{game.filename}</span>
+                                    <span class="text-surface-500-400 text-xs truncate max-w-[16ch]">{folderName(game.dirPath)} · {relativeTime(game.lastOpened)}</span>
+                                </button>
+                                <button
+                                    type="button"
+                                    class="btn btn-sm preset-outlined-error-500"
+                                    title="Remove from Recent"
+                                    onclick={() => handleRemoveRecent(game)}
+                                >Remove</button>
+                            </div>
+                        {/each}
+                    </div>
                 {/if}
 
                 {#if !nativeFolder && drafts.length > 0}

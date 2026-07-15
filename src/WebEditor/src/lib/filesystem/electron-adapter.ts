@@ -31,10 +31,41 @@ function basename(p: string): string {
     return p.split(/[\\/]/).pop() ?? p;
 }
 
+function dirname(p: string): string {
+    const idx = Math.max(p.lastIndexOf("/"), p.lastIndexOf("\\"));
+    return idx >= 0 ? p.slice(0, idx) : "";
+}
+
 function electronApp() {
     // Only ever constructed when isElectron() is true (see open/+page.svelte),
     // so window.electronApp is always present here.
     return window.electronApp!;
+}
+
+// Mirrors ElectronRecentGame in electron-types.d.ts — not imported by name
+// since that type lives inside a `declare global` block, not a module export.
+export interface RecentGame {
+    dirPath: string;
+    filename: string;
+    lastOpened: number;
+}
+
+export async function listRecentGames(): Promise<RecentGame[]> {
+    return electronApp().recent.list();
+}
+
+export async function removeRecentGame(dirPath: string, filename: string): Promise<void> {
+    await electronApp().recent.remove(dirPath, filename);
+}
+
+// Best-effort: the recent list is a convenience, so a tracking failure should
+// never surface as an error on the actual open/create/save-as it followed.
+async function trackRecent(dirPath: string, filename: string): Promise<void> {
+    try {
+        await electronApp().recent.add(dirPath, filename);
+    } catch {
+        // ignore
+    }
 }
 
 /**
@@ -68,6 +99,7 @@ export class ElectronFileAdapter implements FileAdapter {
         if (!path) return null;
         await electronApp().fs.writeFile(path, data);
         this._filename = basename(path);
+        void trackRecent(dirname(path), this._filename);
         return this._filename;
     }
 
@@ -115,6 +147,7 @@ export async function openElectronDirectory(): Promise<{ dirPath: string; files:
 
 export async function loadElectronFile(dirPath: string, filename: string): Promise<{ bytes: Uint8Array; adapter: ElectronFileAdapter }> {
     const bytes = await electronApp().fs.readFile(electronApp().path.join(dirPath, filename));
+    void trackRecent(dirPath, filename);
     return { bytes, adapter: new ElectronFileAdapter(dirPath, filename) };
 }
 
@@ -131,5 +164,6 @@ export async function createElectronGame(
     if (!dirPath) return null;
     const filePath = electronApp().path.join(dirPath, filename);
     await electronApp().fs.writeFile(filePath, content);
+    void trackRecent(dirPath, filename);
     return { bytes: new TextEncoder().encode(content), adapter: new ElectronFileAdapter(dirPath, filename) };
 }
