@@ -81,7 +81,7 @@ try {
     // wrongly popped a real native picker, this would hang and time out
     // rather than silently pass.
     await win.waitForSelector('text=Text adventure', { timeout: 10000 });
-    await win.click('button:has-text("Save to my computer")');
+    await win.click('button:has-text("Create")');
     await win.waitForSelector('button:has-text("Assets")', { timeout: 30000 });
 
     const questGamesDir = join(fakeDocumentsDir, 'Quest Games');
@@ -96,7 +96,7 @@ try {
     await win.waitForSelector('input[placeholder="Game name"]', { timeout: 10000 });
     await win.fill('input[placeholder="Game name"]', 'Game A');
     await win.waitForSelector('text=Text adventure', { timeout: 10000 });
-    await win.click('button:has-text("Save to my computer")');
+    await win.click('button:has-text("Create")');
     const errorLocator = win.locator('text=already exists');
     await errorLocator.waitFor({ timeout: 10000 });
     console.log('PASS: creating "Game A" again at the default location shows an "already exists" error');
@@ -116,7 +116,7 @@ try {
         { timeout: 10000 },
     );
     await win.fill('input[placeholder="Game name"]', 'Game B');
-    await win.click('button:has-text("Save to my computer")');
+    await win.click('button:has-text("Create")');
     await win.waitForSelector('button:has-text("Assets")', { timeout: 30000 });
     const gameBAslx = join(customLocationDir, 'Game B', 'Game B.aslx');
     const gameBCreated = existsSync(gameBAslx);

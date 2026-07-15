@@ -481,7 +481,7 @@
                                     disabled={!createName.trim()}
                                     title={isElectron() ? "Choose where to create your game's folder" : nativeFolder ? "Choose a folder to save your game in" : "Save as a local draft in this browser"}
                                 >
-                                    {nativeFolder ? "Save to my computer" : "Create local draft"}
+                                    {isElectron() ? "Create" : nativeFolder ? "Save to my computer" : "Create local draft"}
                                 </button>
                             {/if}
                         </div>

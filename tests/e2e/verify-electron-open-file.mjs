@@ -69,7 +69,7 @@ try {
     await win.waitForSelector('text=Text adventure', { timeout: 10000 });
     await win.click('button:has-text("Change location…")');
     await win.waitForFunction((dir) => document.body.innerText.includes(dir), gamesRoot, { timeout: 10000 });
-    await win.click('button:has-text("Save to my computer")');
+    await win.click('button:has-text("Create")');
     await win.waitForSelector('button:has-text("Assets")', { timeout: 30000 });
 
     const gameDir = join(gamesRoot, 'First');
