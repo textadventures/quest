@@ -5,10 +5,20 @@
     import { get } from "svelte/store";
     import { goto } from "$app/navigation";
     import { base } from "$app/paths";
+    import { PUBLIC_WEBEDITOR_VERSION } from "$env/static/public";
     import { isDirty, isLoaded, saveGame, saveGameAs } from "$lib/editor-store";
     import { isElectron } from "$lib/runtime";
 
     let { children }: { children: Snippet } = $props();
+
+    // Printed once on load, same style as WasmPlayer's console banner — the
+    // header no longer shows the version, so this is the only place to find it.
+    console.log(
+        "%cQuest Viva Editor %c" + (PUBLIC_WEBEDITOR_VERSION || "dev") + "\n%chttps://questviva.com",
+        "font-weight:700;font-size:14px;color:#0ea5e9",
+        "font-weight:400;color:#64748b",
+        "color:#64748b"
+    );
 
     // Backs the desktop app's native File menu (see ElectronApp's main.ts /
     // preload.ts) — the menu itself can't touch editor-store, so it sends an

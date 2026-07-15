@@ -4,6 +4,7 @@ import tailwindcss from '@tailwindcss/vite'
 import { fileURLToPath } from 'node:url'
 import { join, extname } from 'node:path'
 import { readFile } from 'node:fs/promises'
+import { readFileSync } from 'node:fs'
 
 // Set WASM_CONFIG=Release to serve the AOT-compiled AppBundle instead of the Debug/interpreter one
 // (e.g. for profiling, where AOT gives per-method native frames instead of one opaque interpreter loop).
@@ -25,6 +26,18 @@ const mimeTypes: Record<string, string> = {
 // Set VITE_API_PROXY=http://localhost:5043 (or your local textadventures.co.uk URL) to proxy
 // /api requests during development. Not needed in production (same-origin).
 const apiProxy = process.env.VITE_API_PROXY
+
+// CI workflows set PUBLIC_WEBEDITOR_VERSION explicitly (to github.sha or github.ref_name);
+// locally it's blank, so fall back to the repo-root VERSION file — the same source
+// WasmPlayer's inject-version.mjs uses — so `npm run dev`/plain `npm run build` show a real version too.
+if (!process.env.PUBLIC_WEBEDITOR_VERSION) {
+  try {
+    const versionFile = fileURLToPath(new URL('../../VERSION', import.meta.url))
+    process.env.PUBLIC_WEBEDITOR_VERSION = readFileSync(versionFile, 'utf8').trim()
+  } catch {
+    // no VERSION file to read — banner falls back to "dev"
+  }
+}
 
 export default defineConfig({
   plugins: [
