@@ -436,18 +436,6 @@
                         disabled={creating}
                     />
 
-                    {#if isElectron()}
-                        <p class="text-xs text-surface-500-400 -mt-2">
-                            Will be created in: <span class="font-mono">{previewPath || "…"}</span>
-                            <button
-                                type="button"
-                                class="anchor"
-                                onclick={handleChangeLocation}
-                                disabled={creating}
-                            >Change location…</button>
-                        </p>
-                    {/if}
-
                     {#if templatesLoading}
                         <div class="flex items-center gap-2 text-surface-500-400 text-sm">
                             <div class="size-4 rounded-full border-2 border-surface-300-700 border-t-primary-500 animate-spin"></div>
@@ -514,6 +502,14 @@
                                 </button>
                             {/if}
                         </div>
+
+                        {#if isElectron()}
+                            <p class="text-xs text-surface-500-400 text-center self-center">
+                                Will be created in:<br />
+                                <span class="font-mono">{previewPath || "…"}</span>
+                                <button type="button" class="anchor" onclick={handleChangeLocation}>Change location…</button>
+                            </p>
+                        {/if}
 
                         {#if hasServer}
                             <p class="text-xs text-surface-500-400 max-w-[40ch] text-center self-center">
