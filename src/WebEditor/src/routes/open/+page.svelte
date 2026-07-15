@@ -27,9 +27,7 @@
     // FSA folder access (Open game folder / Save to folder) is offered as a
     // secondary option on capable browsers — OPFS local drafts are the default
     // everywhere else so trying the editor doesn't start with a "give this
-    // website access to a folder" prompt. See docs/electron-desktop-app.md's
-    // Motivation section and MEMORY project_electron_desktop_kickoff for why
-    // Electron itself stays folder-only rather than using OPFS.
+    // website access to a folder" prompt.
     const canUseFSA = !isElectronApp && hasFSA();
 
     let loading = $state(false);
