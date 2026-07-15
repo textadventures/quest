@@ -5,7 +5,10 @@
     import { PUBLIC_HAS_SERVER } from "$env/static/public";
     import { openGame, loadingStatus } from "$lib/editor-store";
     import { hasFSA, openDirectory, loadFileFromDirectory, createLocalGame } from "$lib/filesystem/browser-adapter";
-    import { openElectronDirectory, loadElectronFile, createElectronGame } from "$lib/filesystem/electron-adapter";
+    import {
+        openElectronDirectory, loadElectronFile, createElectronGame, getDefaultGamesDir, pickGameLocation,
+        sanitizeFolderName, joinGamePath,
+    } from "$lib/filesystem/electron-adapter";
     import { isElectron } from "$lib/runtime";
     import { createNewGame, getGameTemplates } from "$lib/filesystem/server-adapter";
     import type { GameTemplate } from "$lib/filesystem/server-adapter";
@@ -88,6 +91,22 @@
     // Local creation state
     let creatingLocal = $state(false);
     let createLocalError = $state<string | null>(null);
+
+    // Electron's new-game location — defaults to Documents/Quest Games
+    // (matches Quest 5's desktop editor) unless the user picks somewhere
+    // else via "Change location…". electronParentDir stays null until they
+    // do, so the preview below always reflects whichever is actually in play.
+    let defaultGamesDir = $state("");
+    let electronParentDir = $state<string | null>(null);
+    if (isElectron()) void getDefaultGamesDir().then(dir => defaultGamesDir = dir);
+    let electronGamesDir = $derived(electronParentDir ?? defaultGamesDir);
+    let previewFolderName = $derived(sanitizeFolderName(createName.trim()));
+    let previewPath = $derived(electronGamesDir ? joinGamePath(electronGamesDir, previewFolderName) : "");
+
+    async function handleChangeLocation() {
+        const picked = await pickGameLocation(electronGamesDir || undefined);
+        if (picked) electronParentDir = picked;
+    }
 
     // Server creation state
     let creatingServer = $state(false);
@@ -265,16 +284,18 @@
             const content = bridge.CreateGameFromTemplate(selectedTemplateId, trimmed);
             const filename = safeFilename(trimmed);
             if (isElectron()) {
-                const result = await createElectronGame(filename, content);
-                if (result) {
-                    const ok = await openGame(result.bytes, result.adapter.filename, result.adapter);
-                    if (ok) { goto(base || "/"); return; }
-                    createLocalError = "Failed to load new game.";
-                }
-                // result === null: user cancelled the location picker — do nothing.
-                // createElectronGame() can also throw (e.g. a folder with that
-                // name already exists there) — caught by this function's outer
-                // try/catch below, same as every other error path here.
+                // Falls back to a fresh fetch on the off chance the mount-time
+                // getDefaultGamesDir() call (see electronGamesDir) hasn't
+                // resolved yet — cheap IPC round trip, not worth blocking the
+                // form on at mount.
+                const parentDir = electronGamesDir || await getDefaultGamesDir();
+                const result = await createElectronGame(parentDir, filename, content);
+                const ok = await openGame(result.bytes, result.adapter.filename, result.adapter);
+                if (ok) { goto(base || "/"); return; }
+                createLocalError = "Failed to load new game.";
+                // A thrown error (e.g. a folder with that name already exists
+                // at parentDir) is caught by this function's outer try/catch
+                // below, same as every other error path here.
             } else if (hasFSA()) {
                 const result = await createLocalGame(filename, content);
                 if (result) {
@@ -414,6 +435,18 @@
                         onkeydown={(e) => { if (e.key === "Enter") handleCreateLocal(); }}
                         disabled={creating}
                     />
+
+                    {#if isElectron()}
+                        <p class="text-xs text-surface-500-400 -mt-2">
+                            Will be created in: <span class="font-mono">{previewPath || "…"}</span>
+                            <button
+                                type="button"
+                                class="anchor"
+                                onclick={handleChangeLocation}
+                                disabled={creating}
+                            >Change location…</button>
+                        </p>
+                    {/if}
 
                     {#if templatesLoading}
                         <div class="flex items-center gap-2 text-surface-500-400 text-sm">

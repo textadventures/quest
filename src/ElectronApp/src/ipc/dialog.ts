@@ -23,20 +23,27 @@ export function registerDialogHandlers(): void {
         return result.canceled || result.filePaths.length === 0 ? null : result.filePaths[0];
     });
 
-    ipcMain.handle("dialog:openDirectory", async (_event, options?: { defaultPath?: string; title?: string; buttonLabel?: string }) => {
+    ipcMain.handle("dialog:openDirectory", async (_event, options?: { defaultPath?: string; title?: string; message?: string; buttonLabel?: string }) => {
         const win = focusedOrFirstWindow();
         // createDirectory (macOS) / promptToCreate (Windows) — without these,
         // showOpenDialog's directory picker has no "New Folder" affordance,
         // unlike the browser's showDirectoryPicker(), which always has one.
         //
-        // title/buttonLabel let a caller clarify what's actually being picked
-        // — e.g. createElectronGame() below picks a *parent* location (it
-        // creates its own subfolder inside), which reads as a plain "open a
-        // game folder" picker otherwise.
+        // title/message/buttonLabel let a caller clarify what's actually
+        // being picked — e.g. createElectronGame() below picks a *parent*
+        // location (it creates its own subfolder inside), which reads as a
+        // plain "open a game folder" picker otherwise. `title` sets the
+        // dialog window's title on Windows/Linux, but macOS's NSOpenPanel
+        // doesn't render a custom title at all (an AppKit/HIG restriction,
+        // not something Electron can override) — `message`, a macOS-only
+        // option that renders as a label above the file list, is what
+        // actually shows there. Pass both; each is a no-op where the other
+        // platform ignores it.
         const opts = {
             properties: ["openDirectory" as const, "createDirectory" as const, "promptToCreate" as const],
             defaultPath: options?.defaultPath,
             title: options?.title,
+            message: options?.message,
             buttonLabel: options?.buttonLabel,
         };
         const result = win ? await dialog.showOpenDialog(win, opts) : await dialog.showOpenDialog(opts);

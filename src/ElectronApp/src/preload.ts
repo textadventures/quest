@@ -33,7 +33,7 @@ contextBridge.exposeInMainWorld("electronApp", {
     dialog: {
         openFile: (options?: { filters?: FileFilter[]; defaultPath?: string }): Promise<string | null> =>
             ipcRenderer.invoke("dialog:openFile", options),
-        openDirectory: (options?: { defaultPath?: string; title?: string; buttonLabel?: string }): Promise<string | null> =>
+        openDirectory: (options?: { defaultPath?: string; title?: string; message?: string; buttonLabel?: string }): Promise<string | null> =>
             ipcRenderer.invoke("dialog:openDirectory", options),
         saveFile: (options?: { defaultPath?: string; filters?: FileFilter[] }): Promise<string | null> =>
             ipcRenderer.invoke("dialog:saveFile", options),
@@ -43,6 +43,9 @@ contextBridge.exposeInMainWorld("electronApp", {
     },
     path: {
         join: joinPath,
+    },
+    paths: {
+        defaultGamesDir: (): Promise<string> => ipcRenderer.invoke("paths:defaultGamesDir"),
     },
     menu: {
         // Backs the native File menu built in main.ts's buildAppMenu() — action

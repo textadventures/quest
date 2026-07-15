@@ -37,6 +37,13 @@ function electronApp() {
     return window.electronApp!;
 }
 
+// Exposed so callers (open/+page.svelte's new-game location preview) never
+// need to reach into window.electronApp directly — every other Electron
+// access in this codebase goes through this file.
+export function joinGamePath(...segments: string[]): string {
+    return electronApp().path.join(...segments);
+}
+
 /**
  * FileAdapter backed by Electron's contextBridge (Node fs via IPC), for the
  * desktop app. Same flat single-directory model as BrowserFileAdapter — no
@@ -118,29 +125,52 @@ export async function loadElectronFile(dirPath: string, filename: string): Promi
     return { bytes, adapter: new ElectronFileAdapter(dirPath, filename) };
 }
 
-/**
- * Creates a new game file with the given content. Unlike browser-adapter.ts's
- * createLocalGame() (FSA, which has no way to create a folder itself — the
- * picker's target *is* the game folder), this picks a parent location and
- * creates a new subfolder named after the game inside it, IDE-"new project"
- * style — matches how a folder-per-game is expected to work on desktop
- * without making the user pre-create an empty folder by hand first.
- *
- * Returns null if the user cancels the location picker. Throws if a folder
- * with that name already exists at the chosen location (caller surfaces this
- * as an error — see open/+page.svelte's handleCreateLocal — rather than
- * silently reusing or renaming it, since either could put new content in an
- * existing, unrelated folder).
- */
-export async function createElectronGame(
-    filename: string,
-    content: string,
-): Promise<{ bytes: Uint8Array; adapter: ElectronFileAdapter } | null> {
-    const parentDir = await electronApp().dialog.openDirectory({
+// Documents/Quest Games — matches Quest 5's desktop editor, which proposes
+// this as the default new-game location rather than always prompting.
+export async function getDefaultGamesDir(): Promise<string> {
+    return electronApp().paths.defaultGamesDir();
+}
+
+// Escape hatch from the default games dir, for a new game that should live
+// somewhere else (a synced folder, a different drive, ...). Returns null if
+// the user cancels — caller keeps whatever location it already had.
+export async function pickGameLocation(defaultPath?: string): Promise<string | null> {
+    return electronApp().dialog.openDirectory({
+        defaultPath,
         title: "Choose a location for your new game",
+        // macOS's NSOpenPanel doesn't render a custom title at all — message
+        // (darwin-only) is what actually shows there; see dialog.ts.
+        message: "Choose a location for your new game",
         buttonLabel: "Select Folder",
     });
-    if (!parentDir) return null;
+}
+
+// Same sanitization as safeFilename() in open/+page.svelte, minus the .aslx
+// suffix — used both to name the new subfolder and to preview it to the user
+// before they commit (see open/+page.svelte's previewFolderName).
+export function sanitizeFolderName(name: string): string {
+    return name.replace(/[^a-zA-Z0-9 _-]/g, "").trim() || "game";
+}
+
+/**
+ * Creates a new game file with the given content, inside a new subfolder
+ * named after the game under parentDir — IDE-"new project" style — instead
+ * of writing directly into parentDir the way browser-adapter.ts's
+ * createLocalGame() (FSA) has to (there's no way to create a folder via the
+ * FSA picker itself — the picker's target *is* the game folder).
+ *
+ * Throws if a folder with that name already exists under parentDir (caller
+ * surfaces this as an error — see open/+page.svelte's handleCreateLocal —
+ * rather than silently reusing or renaming it, since either could put new
+ * content in an existing, unrelated folder).
+ */
+export async function createElectronGame(
+    parentDir: string,
+    filename: string,
+    content: string,
+): Promise<{ bytes: Uint8Array; adapter: ElectronFileAdapter }> {
+    // filename is already sanitized (safeFilename() in open/+page.svelte),
+    // so this is just stripping the extension, not re-sanitizing.
     const folderName = filename.replace(/\.aslx$/i, "");
     const dirPath = electronApp().path.join(parentDir, folderName);
     if (await electronApp().fs.exists(dirPath)) {

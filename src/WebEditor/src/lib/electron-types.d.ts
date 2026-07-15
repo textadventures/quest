@@ -20,7 +20,7 @@ interface ElectronFsApi {
 
 interface ElectronDialogApi {
     openFile(options?: { filters?: ElectronFileFilter[]; defaultPath?: string }): Promise<string | null>;
-    openDirectory(options?: { defaultPath?: string; title?: string; buttonLabel?: string }): Promise<string | null>;
+    openDirectory(options?: { defaultPath?: string; title?: string; message?: string; buttonLabel?: string }): Promise<string | null>;
     saveFile(options?: { defaultPath?: string; filters?: ElectronFileFilter[] }): Promise<string | null>;
 }
 
@@ -30,6 +30,11 @@ interface ElectronShellApi {
 
 interface ElectronPathApi {
     join(...segments: string[]): string;
+}
+
+interface ElectronPathsApi {
+    // Documents/Quest Games — matches Quest 5's desktop editor default.
+    defaultGamesDir(): Promise<string>;
 }
 
 // action is one of MenuAction in ElectronApp's src/main.ts ("new-game" |
@@ -44,6 +49,7 @@ interface ElectronApi {
     dialog: ElectronDialogApi;
     shell: ElectronShellApi;
     path: ElectronPathApi;
+    paths: ElectronPathsApi;
     menu: ElectronMenuApi;
 }
 

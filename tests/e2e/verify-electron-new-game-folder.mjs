@@ -1,15 +1,24 @@
-// Ad-hoc manual verification for Electron's IDE-style "new game creates its
-// own folder" flow: createElectronGame() now picks a *parent* location and
-// creates a subfolder named after the game inside it, rather than requiring
-// the user to pre-create and pick the exact target folder. Also checks the
-// "a folder with that name already exists there" error path.
+// Ad-hoc manual verification for Electron's "new game" folder flow:
+// - Defaults to Documents/Quest Games (matches Quest 5's desktop editor) with
+//   no dialog at all — createElectronGame() creates a subfolder named after
+//   the game inside it, IDE "new project" style.
+// - The /open page shows a live "Will be created in: ..." preview as the
+//   user types, before they've created anything.
+// - "Change location…" lets the user override the parent folder via a real
+//   picker.
+// - Creating a second game with the same name at the same location errors
+//   instead of silently overwriting.
+//
+// Stubs Electron's app.getPath('documents') to a throwaway temp dir for the
+// whole run — otherwise the "default location" cases would actually write
+// into the real user's ~/Documents/Quest Games on whatever machine runs this.
 //
 // Uses Playwright's _electron launcher against the already-built
 // src/ElectronApp/dist — run the build steps in electron.sh once first
 // (dotnet build WasmEditor/WasmPlayer Debug, npm run build in WebEditor and
 // ElectronApp) so dist/ and resources/app-static exist.
 import { _electron as electron } from 'playwright';
-import { mkdtempSync, mkdirSync, existsSync, readdirSync, rmSync } from 'node:fs';
+import { mkdtempSync, existsSync, readdirSync, rmSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { createRequire } from 'node:module';
@@ -18,7 +27,8 @@ const electronAppDir = join(import.meta.dirname, '..', '..', 'src', 'ElectronApp
 const electronExecutablePath = createRequire(join(electronAppDir, 'package.json'))('electron');
 
 const userDataDir = mkdtempSync(join(tmpdir(), 'quest-electron-userdata-'));
-const parentDir = mkdtempSync(join(tmpdir(), 'quest-electron-parent-'));
+const fakeDocumentsDir = mkdtempSync(join(tmpdir(), 'quest-electron-documents-'));
+const customLocationDir = mkdtempSync(join(tmpdir(), 'quest-electron-customloc-'));
 
 let app;
 try {
@@ -26,15 +36,18 @@ try {
         executablePath: electronExecutablePath,
         args: [electronAppDir, `--user-data-dir=${userDataDir}`],
     });
+
+    // Stub app.getPath('documents') before the renderer gets a chance to call
+    // paths:defaultGamesDir (fired on /open's mount) — real launch.getPath
+    // for every other name (userData, etc.) is left untouched.
+    await app.evaluate(({ app: electronAppSingleton }, fakeDocs) => {
+        const original = electronAppSingleton.getPath.bind(electronAppSingleton);
+        electronAppSingleton.getPath = (name) => (name === 'documents' ? fakeDocs : original(name));
+    }, fakeDocumentsDir);
+
     const win = await app.firstWindow();
     win.on('pageerror', err => console.log('[pageerror]', err.message));
     win.on('console', msg => { if (msg.type() === 'error') console.log('[console.error]', msg.text()); });
-
-    async function stubParentDirPicker() {
-        await app.evaluate(({ dialog }, dir) => {
-            dialog.showOpenDialog = async () => ({ canceled: false, filePaths: [dir] });
-        }, parentDir);
-    }
 
     async function clickMenuItem(...labelPath) {
         await app.evaluate(({ Menu }, path) => {
@@ -49,53 +62,67 @@ try {
         }, labelPath);
     }
 
-    // 1. Create "Game A" — parentDir itself should NOT get the .aslx directly;
-    // a "Game A" subfolder should appear inside it instead.
+    // 1. Fresh /open, type a name — the preview should show Documents/Quest
+    // Games (the stubbed fake one) with no dialog involved at all.
     await win.waitForSelector('button:has-text("Open game folder")', { timeout: 30000 });
-    await stubParentDirPicker();
     await win.fill('input[placeholder="Game name"]', 'Game A');
+    const previewLocator = win.locator('text=Will be created in:');
+    await previewLocator.waitFor({ timeout: 10000 });
+    const previewText = await previewLocator.innerText();
+    console.log('Preview text:', previewText);
+    const previewLooksRight = previewText.includes('Quest Games') && previewText.includes('Game A') && previewText.includes(fakeDocumentsDir);
+    console.log('PASS: preview shows Documents/Quest Games/Game A under the stubbed Documents dir:', previewLooksRight);
+    if (!previewLooksRight) throw new Error(`Unexpected preview text: ${previewText}`);
+
+    // 2. Create it — no dialog stub in place for this step, so if the code
+    // wrongly popped a real native picker, this would hang and time out
+    // rather than silently pass.
     await win.waitForSelector('text=Text adventure', { timeout: 10000 });
     await win.click('button:has-text("Save to my computer")');
     await win.waitForSelector('button:has-text("Assets")', { timeout: 30000 });
 
-    const parentEntries = readdirSync(parentDir);
-    console.log('parentDir entries after create:', parentEntries);
-    const gotSubfolder = parentEntries.includes('Game A') && !parentEntries.some(e => e.endsWith('.aslx'));
-    console.log('PASS: "Game A" subfolder created, no .aslx directly in parentDir:', gotSubfolder);
-    if (!gotSubfolder) throw new Error(`Expected only a "Game A" subfolder in ${parentDir}, got: ${parentEntries.join(', ')}`);
+    const questGamesDir = join(fakeDocumentsDir, 'Quest Games');
+    const gameAAslx = join(questGamesDir, 'Game A', 'Game A.aslx');
+    const gameACreated = existsSync(gameAAslx);
+    console.log('PASS: Game A created at Documents/Quest Games/Game A with no dialog shown:', gameACreated);
+    if (!gameACreated) throw new Error(`Expected ${gameAAslx} to exist`);
 
-    const subfolderEntries = readdirSync(join(parentDir, 'Game A'));
-    const gotAslx = subfolderEntries.includes('Game A.aslx');
-    console.log('PASS: "Game A.aslx" written inside the new subfolder:', gotAslx, subfolderEntries);
-    if (!gotAslx) throw new Error(`Expected Game A.aslx inside the subfolder, got: ${subfolderEntries.join(', ')}`);
-
-    // 2. Create a second game with the SAME name at the SAME parent location
-    // — should error, not silently overwrite or crash.
+    // 3. Creating "Game A" again at the same (default) location should
+    // error, not overwrite.
     await clickMenuItem('File', 'New Game…');
     await win.waitForSelector('input[placeholder="Game name"]', { timeout: 10000 });
-    await stubParentDirPicker();
     await win.fill('input[placeholder="Game name"]', 'Game A');
     await win.waitForSelector('text=Text adventure', { timeout: 10000 });
     await win.click('button:has-text("Save to my computer")');
     const errorLocator = win.locator('text=already exists');
     await errorLocator.waitFor({ timeout: 10000 });
-    const errorShown = await errorLocator.isVisible();
-    console.log('PASS: creating "Game A" again at the same location shows an "already exists" error:', errorShown);
-    if (!errorShown) throw new Error('Expected an "already exists" error, none shown');
+    console.log('PASS: creating "Game A" again at the default location shows an "already exists" error');
     const stillOnOpenPage = await win.isVisible('button:has-text("Open game folder")');
-    console.log('PASS: still on /open after the collision error (no crash, no false navigation):', stillOnOpenPage);
     if (!stillOnOpenPage) throw new Error('Expected to remain on /open after the collision error');
 
-    // 3. A different game name at the same parent location should succeed
-    // (proves the collision check is scoped to the folder name, not the
-    // whole parent directory).
-    await stubParentDirPicker();
+    // 4. "Change location…" opens a real picker (stubbed here) and overrides
+    // the target for this game — Game B should land in customLocationDir,
+    // not under Documents/Quest Games.
+    await app.evaluate(({ dialog }, dir) => {
+        dialog.showOpenDialog = async () => ({ canceled: false, filePaths: [dir] });
+    }, customLocationDir);
+    await win.click('button:has-text("Change location…")');
+    await win.waitForFunction(
+        (expected) => document.body.innerText.includes(expected),
+        customLocationDir,
+        { timeout: 10000 },
+    );
     await win.fill('input[placeholder="Game name"]', 'Game B');
     await win.click('button:has-text("Save to my computer")');
     await win.waitForSelector('button:has-text("Assets")', { timeout: 30000 });
-    const gameBExists = existsSync(join(parentDir, 'Game B', 'Game B.aslx'));
-    console.log('PASS: "Game B" created successfully alongside "Game A":', gameBExists);
-    if (!gameBExists) throw new Error('Expected Game B.aslx inside its own subfolder');
+    const gameBAslx = join(customLocationDir, 'Game B', 'Game B.aslx');
+    const gameBCreated = existsSync(gameBAslx);
+    console.log('PASS: Game B created at the chosen custom location instead of Quest Games:', gameBCreated);
+    if (!gameBCreated) throw new Error(`Expected ${gameBAslx} to exist`);
+    const questGamesEntries = readdirSync(questGamesDir);
+    const gameBNotInDefault = !questGamesEntries.includes('Game B');
+    console.log('PASS: Game B is NOT under Documents/Quest Games:', gameBNotInDefault, questGamesEntries);
+    if (!gameBNotInDefault) throw new Error('Game B should not have landed in the default Quest Games folder');
 
     console.log('PASS: all checks passed');
 } catch (err) {
@@ -104,5 +131,6 @@ try {
 } finally {
     await app?.close();
     rmSync(userDataDir, { recursive: true, force: true });
-    rmSync(parentDir, { recursive: true, force: true });
+    rmSync(fakeDocumentsDir, { recursive: true, force: true });
+    rmSync(customLocationDir, { recursive: true, force: true });
 }

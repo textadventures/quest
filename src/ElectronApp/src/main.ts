@@ -4,6 +4,7 @@ import { startStaticServer, type StaticServerHandle } from "./static-server";
 import { registerFsHandlers } from "./ipc/fs";
 import { registerDialogHandlers } from "./ipc/dialog";
 import { registerShellHandlers } from "./ipc/shell";
+import { registerPathsHandlers } from "./ipc/paths";
 
 // Without this, Electron's default macOS menu ("About "/"Quit ") falls back
 // to package.json's "name" ("quest-viva-desktop") in dev — set as early as
@@ -125,6 +126,7 @@ app.whenReady().then(async () => {
     registerFsHandlers();
     registerDialogHandlers();
     registerShellHandlers();
+    registerPathsHandlers();
 
     const root = staticRoot();
     staticServer = await startStaticServer({
