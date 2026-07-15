@@ -332,13 +332,13 @@
                 // resolved yet — cheap IPC round trip, not worth blocking the
                 // form on at mount.
                 const parentDir = electronGamesDir || await getDefaultGamesDir();
+                // Errors here (e.g. a folder with that name already exists at
+                // parentDir) are caught by this function's outer try/catch below,
+                // same as every other error path in this function.
                 const result = await createElectronGame(parentDir, file.filename, file.content);
                 const ok = await openGame(result.bytes, result.adapter.filename, result.adapter);
                 if (ok) { goto(base || "/"); return; }
                 createLocalError = "Failed to load new game.";
-            // A thrown error (e.g. a folder with that name already exists
-            // at parentDir) is caught by this function's outer try/catch
-            // below, same as every other error path here.
             } else {
                 const gameId = parseGameIdFromAslx(file.content);
                 if (!gameId) { createLocalError = "New game is missing a gameid."; creatingLocal = false; return; }
@@ -363,12 +363,12 @@
             const file = await buildNewGameFile();
             if (!file) { creatingLocal = false; return; }
             const result = await createLocalGame(file.filename, file.content);
+            // result === null: user cancelled the directory picker — do nothing
             if (result) {
                 const ok = await openGame(result.loaded.bytes, result.loaded.adapter.filename, result.loaded.adapter);
                 if (ok) { goto(base || "/"); return; }
                 createLocalError = "Failed to load new game.";
             }
-        // result === null: user cancelled the directory picker — do nothing
         } catch (err) {
             createLocalError = String(err);
         }

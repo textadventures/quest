@@ -1,4 +1,5 @@
 <script lang="ts">
+    import { SvelteSet } from "svelte/reactivity";
     import { addScriptDictItem, removeScriptDictItem, makeScriptDictEditable } from "$lib/editor-store";
     import ScriptEditor from "./ScriptEditor.svelte";
 
@@ -19,22 +20,20 @@
 
     let keys = $derived(items.map(i => i.key));
 
-    let expandedKeys = $state(new Set<string>());
+    const expandedKeys = new SvelteSet<string>();
     let newKey = $state("");
 
     function onAdd() {
         const k = newKey.trim();
         if (k) {
             const result = addScriptDictItem(elementKey, attribute, k);
-            if (result === "ok") expandedKeys = new Set([...expandedKeys, k]);
+            if (result === "ok") expandedKeys.add(k);
             newKey = "";
         }
     }
 
     function toggleExpanded(key: string) {
-        const next = new Set(expandedKeys);
-        if (next.has(key)) next.delete(key); else next.add(key);
-        expandedKeys = next;
+        if (expandedKeys.has(key)) expandedKeys.delete(key); else expandedKeys.add(key);
     }
 </script>
 

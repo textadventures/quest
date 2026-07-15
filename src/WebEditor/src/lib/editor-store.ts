@@ -141,21 +141,21 @@ export async function previewInWasmPlayer(wasmPlayerUrl: string): Promise<void> 
     const filename = _adapter.filename;
     const adapter = _adapter;
 
-    window.open(wasmPlayerUrl + '?source=editor', '_blank');
-    const bc = new BroadcastChannel('quest-preview');
+    window.open(wasmPlayerUrl + "?source=editor", "_blank");
+    const bc = new BroadcastChannel("quest-preview");
     _previewChannel = bc;
 
     bc.onmessage = async ({ data }) => {
-        if (data.type === 'ready') {
+        if (data.type === "ready") {
             // Serialize fresh on every 'ready' so WasmPlayer refreshes also pick up latest edits.
             if (!_bridge) return;
             const bytes = new TextEncoder().encode(_bridge.Save());
-            bc.postMessage({ type: 'game', bytes, filename });
-        } else if (data.type === 'resource-request') {
+            bc.postMessage({ type: "game", bytes, filename });
+        } else if (data.type === "resource-request") {
             const blob = await adapter.getAsset(data.name);
             if (blob) {
                 const dataUrl = await blobToDataUrl(blob);
-                bc.postMessage({ type: 'resource-response', id: data.id, dataUrl });
+                bc.postMessage({ type: "resource-response", id: data.id, dataUrl });
             }
         }
     };
