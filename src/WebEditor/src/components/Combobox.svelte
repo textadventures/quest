@@ -22,7 +22,7 @@
 
     // Reset highlight when filtered list changes
     $effect(() => {
-        filtered; // track
+        void filtered; // track
         activeIndex = -1;
     });
 

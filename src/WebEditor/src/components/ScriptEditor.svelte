@@ -1,4 +1,5 @@
 <script lang="ts">
+    import { SvelteSet } from "svelte/reactivity";
     import ScriptEditor from "./ScriptEditor.svelte";
     import AddScriptModal from "./AddScriptModal.svelte";
     import AssetPicker from "./AssetPicker.svelte";
@@ -62,12 +63,12 @@
     let isRoot = $derived(initialData === null);
     let codeViewMode = $state(false);
     let scriptCode = $state("");
-    let selectedIndices = $state(new Set<number>());
+    const selectedIndices = new SvelteSet<number>();
     // Set before a move mutation so the $effect restores it instead of clearing
     let nextSelection: Set<number> | null = null;
     // Tracks which expression controls the user has explicitly forced into expression mode,
     // overriding the default simple-mode detection based on value shape.
-    let expressionOverrides = $state(new Set<string>());
+    const expressionOverrides = new SvelteSet<string>();
     let objectNames = $state<string[]>([]);
     let ifTemplates = $state<IfExpressionTemplate[]>([]);
 
@@ -76,7 +77,8 @@
         const version = $scriptVersion; // track for reactivity on undo/redo
         if (isRoot) {
             scriptData = version >= 0 ? getScriptData(elementKey, attribute) : null;
-            selectedIndices = nextSelection ?? new Set();
+            selectedIndices.clear();
+            for (const i of nextSelection ?? []) selectedIndices.add(i);
             nextSelection = null;
         }
         if (categories.length === 0) {
@@ -103,7 +105,7 @@
         if (isRoot) {
             scriptData = getScriptData(elementKey, attribute);
         }
-        expressionOverrides = new Set();
+        expressionOverrides.clear();
     }
 
     function mutate(fn: () => string): boolean {
@@ -175,13 +177,11 @@
     }
 
     function setExpressionOverride(scriptIndex: number, attr: string) {
-        expressionOverrides = new Set(expressionOverrides).add(exprKey(scriptIndex, attr));
+        expressionOverrides.add(exprKey(scriptIndex, attr));
     }
 
     function clearExpressionOverride(scriptIndex: number, attr: string) {
-        const next = new Set(expressionOverrides);
-        next.delete(exprKey(scriptIndex, attr));
-        expressionOverrides = next;
+        expressionOverrides.delete(exprKey(scriptIndex, attr));
     }
 
     function onSwitchToExpression(scriptIndex: number, ctrl: ScriptControlData) {
@@ -240,9 +240,7 @@
     }
 
     function toggleSelection(i: number, checked: boolean) {
-        const next = new Set(selectedIndices);
-        if (checked) next.add(i); else next.delete(i);
-        selectedIndices = next;
+        if (checked) selectedIndices.add(i); else selectedIndices.delete(i);
     }
 
     function onCopySelected() {
@@ -368,7 +366,6 @@
             onchange={(e) => onCodeViewSave((e.target as HTMLTextAreaElement).value)}
         ></textarea>
     {:else}
-        <!-- svelte-ignore a11y_no_noninteractive_element_interactions -->
         <div role="region" inert={isLocked || undefined} class={isLocked ? "opacity-60" : ""}>
             {#each scripts() as script, i (script.id)}
                 <div class="group relative border border-surface-200-800 rounded mb-1 bg-surface-50-950 flex items-start">
@@ -672,11 +669,9 @@
                     onchange={(e) => {
                         const v = (e.target as HTMLSelectElement).value;
                         if (v === "expression") {
-                            expressionOverrides = new Set(expressionOverrides).add(exprKey);
+                            expressionOverrides.add(exprKey);
                         } else {
-                            const next = new Set(expressionOverrides);
-                            next.delete(exprKey);
-                            expressionOverrides = next;
+                            expressionOverrides.delete(exprKey);
                             const tpl = ifTemplates.find(t => t.name === v);
                             if (tpl) onSetIfExpr(i, tpl.createExpression);
                         }
@@ -754,11 +749,9 @@
                         onchange={(e) => {
                             const v = (e.target as HTMLSelectElement).value;
                             if (v === "expression") {
-                                expressionOverrides = new Set(expressionOverrides).add(eiExprKey);
+                                expressionOverrides.add(eiExprKey);
                             } else {
-                                const next = new Set(expressionOverrides);
-                                next.delete(eiExprKey);
-                                expressionOverrides = next;
+                                expressionOverrides.delete(eiExprKey);
                                 const tpl = ifTemplates.find(t => t.name === v);
                                 if (tpl) onSetElseIfExpr(i, ei, tpl.createExpression);
                             }

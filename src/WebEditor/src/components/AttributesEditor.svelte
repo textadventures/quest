@@ -243,9 +243,6 @@
         return attr.value;
     }
 
-    function typeLabel(type: string): string {
-        return TYPE_OPTIONS.find(o => o.value === type)?.label ?? type;
-    }
 </script>
 
 <div class="flex flex-col flex-1 min-h-0 text-xs">
@@ -263,7 +260,7 @@
                 </tr>
             </thead>
             <tbody>
-                {#each $fullAttributeData?.inheritedTypes ?? [] as t}
+                {#each $fullAttributeData?.inheritedTypes ?? [] as t (t.name)}
                     <tr class="border-b border-surface-100-900">
                         <td class="py-0.5 px-3">{t.name}</td>
                         <td class="py-0.5 px-3 text-surface-400-500">{t.source}</td>
@@ -291,7 +288,7 @@
                                 bind:value={addTypeValue}
                             >
                                 <option value="">Add type…</option>
-                                {#each availableTypes() as t}
+                                {#each availableTypes() as t (t)}
                                     <option value={t}>{t}</option>
                                 {/each}
                             </select>
@@ -328,7 +325,7 @@
                         </tr>
                     </thead>
                     <tbody bind:this={attrTbodyEl}>
-                        {#each $fullAttributeData?.attributes ?? [] as attr}
+                        {#each $fullAttributeData?.attributes ?? [] as attr (attr.name)}
                             {@const dimmed = attr.isInherited || attr.isDefaultType}
                             {@const isSelected = selectedAttrName === attr.name}
                             <tr
@@ -395,7 +392,7 @@
                             onchange={(e) => onChangeType((e.target as HTMLSelectElement).value)}
                             disabled={attr.isDefaultType}
                         >
-                            {#each TYPE_OPTIONS as opt}
+                            {#each TYPE_OPTIONS as opt (opt.value)}
                                 <option value={opt.value}>{opt.label}</option>
                             {/each}
                         </select>
@@ -441,7 +438,7 @@
                                 disabled={attr.isDefaultType}
                                 onchange={(e) => onObjectChange((e.target as HTMLSelectElement).value)}
                             >
-                                {#each objectNames as name}
+                                {#each objectNames as name (name)}
                                     <option value={name}>{name}</option>
                                 {/each}
                             </select>

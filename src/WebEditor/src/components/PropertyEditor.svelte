@@ -132,7 +132,7 @@
 
 {#snippet textProcessorPanel(commands: TextProcessorCommand[], attribute: string, controlType: string)}
     <div class="flex flex-col gap-0.5 shrink-0">
-        {#each commands as cmd}
+        {#each commands as cmd (cmd.command)}
             <div class="flex items-center gap-1">
                 <button
                     type="button"

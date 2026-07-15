@@ -72,7 +72,6 @@
     }
 </script>
 
-<!-- svelte-ignore a11y_no_noninteractive_element_interactions -->
 <div
     bind:this={dialogEl}
     role="dialog"

@@ -1,4 +1,5 @@
 <script lang="ts">
+    import { SvelteSet } from "svelte/reactivity";
     import { treeNodes, selectedKey, selectNode, deleteElement, openAddModal, createVerb, createCommand, createIncludedLibrary, createJavascript, swapElements } from "$lib/editor-store";
 
     interface Props {
@@ -34,7 +35,7 @@
 
     // ── Selection ──────────────────────────────────────────────────────────────
 
-    let selectedKeys = $state(new Set<string>());
+    const selectedKeys = new SvelteSet<string>();
 
     // Derive selection in item-list order, excluding any stale keys (deleted items)
     let activeSelection = $derived(
@@ -42,9 +43,7 @@
     );
 
     function toggleSelect(key: string, checked: boolean) {
-        const next = new Set(selectedKeys);
-        if (checked) next.add(key); else next.delete(key);
-        selectedKeys = next;
+        if (checked) selectedKeys.add(key); else selectedKeys.delete(key);
     }
 
     // ── Add actions ────────────────────────────────────────────────────────────
@@ -115,15 +114,13 @@
             if ($selectedKey === key) selectNode(elementKey);
             deleteElement(key);
         }
-        selectedKeys = new Set();
+        selectedKeys.clear();
     }
 
     function onDeleteItem(key: string) {
         if ($selectedKey === key) selectNode(elementKey);
         deleteElement(key);
-        const next = new Set(selectedKeys);
-        next.delete(key);
-        selectedKeys = next;
+        selectedKeys.delete(key);
     }
 </script>
 
