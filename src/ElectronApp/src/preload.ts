@@ -1,4 +1,5 @@
 import { contextBridge, ipcRenderer } from "electron";
+import type { RecentGame } from "./recent-games";
 
 interface FileFilter {
     name: string;
@@ -44,6 +45,21 @@ contextBridge.exposeInMainWorld("electronApp", {
     path: {
         join: joinPath,
     },
+    recent: {
+        list: (): Promise<RecentGame[]> => ipcRenderer.invoke("recent:list"),
+        add: (dirPath: string, filename: string): Promise<RecentGame[]> => ipcRenderer.invoke("recent:add", dirPath, filename),
+        remove: (dirPath: string, filename: string): Promise<RecentGame[]> => ipcRenderer.invoke("recent:remove", dirPath, filename),
+        // Fires whenever the recent list changes from outside the /open page
+        // itself — e.g. the native "Clear Recent" menu item, which mutates
+        // the list entirely in the main process with no renderer round trip
+        // otherwise. The /open page's own Remove button already updates its
+        // local state directly and doesn't need this.
+        onChanged: (callback: () => void): (() => void) => {
+            const listener = () => callback();
+            ipcRenderer.on("recent-games-changed", listener);
+            return () => ipcRenderer.removeListener("recent-games-changed", listener);
+        },
+    },
     menu: {
         // Backs the native File menu built in main.ts's buildAppMenu() — action
         // is one of MenuAction there ("new-game" | "open-folder" | "save" |
@@ -54,6 +70,14 @@ contextBridge.exposeInMainWorld("electronApp", {
             const listener = (_event: Electron.IpcRendererEvent, action: string) => callback(action);
             ipcRenderer.on("menu-action", listener);
             return () => ipcRenderer.removeListener("menu-action", listener);
+        },
+        // Fired when the user picks an entry from the native "Open Recent"
+        // submenu (main.ts's sendOpenRecentGame) — a separate channel from
+        // onAction since it carries a payload rather than a fixed action name.
+        onOpenRecent: (callback: (game: { dirPath: string; filename: string }) => void): (() => void) => {
+            const listener = (_event: Electron.IpcRendererEvent, game: { dirPath: string; filename: string }) => callback(game);
+            ipcRenderer.on("open-recent-game", listener);
+            return () => ipcRenderer.removeListener("open-recent-game", listener);
         },
     },
 });

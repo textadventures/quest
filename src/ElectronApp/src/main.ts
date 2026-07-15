@@ -4,6 +4,8 @@ import { startStaticServer, type StaticServerHandle } from "./static-server";
 import { registerFsHandlers } from "./ipc/fs";
 import { registerDialogHandlers } from "./ipc/dialog";
 import { registerShellHandlers } from "./ipc/shell";
+import { registerRecentHandlers } from "./ipc/recent";
+import { listRecentGames, clearRecentGames, type RecentGame } from "./recent-games";
 
 // Without this, Electron's default macOS menu ("About "/"Quit ") falls back
 // to package.json's "name" ("quest-viva-desktop") in dev — set as early as
@@ -38,14 +40,35 @@ function sendMenuAction(action: MenuAction): void {
     editorWindow?.webContents.send("menu-action", action);
 }
 
+// Renderer has no fixed "open this specific game" action string (unlike
+// MenuAction) since it needs to carry a path — a dedicated channel instead of
+// overloading sendMenuAction/onAction with a payload.
+function sendOpenRecentGame(game: RecentGame): void {
+    editorWindow?.webContents.send("open-recent-game", { dirPath: game.dirPath, filename: game.filename });
+}
+
 // Everything the editor itself can do (New/Open/Save/Save As) has to round-trip
 // to the renderer — that's where WasmEditor and the file adapters live, main
 // only owns the native chrome around it. Built once for every platform (rather
 // than only patching non-darwin's missing About, as an earlier pass here did)
 // so File/Save exist at all: without a menu at all, WebEditor's own UI has no
 // "switch to a different project" affordance short of a full page reload.
-function buildAppMenu(): Menu {
+//
+// Takes the current recent-games list rather than reading it itself, so it
+// stays a pure template builder — refreshMenu() below is what re-derives the
+// list and re-applies the menu whenever it changes.
+function buildAppMenu(recentGames: RecentGame[]): Menu {
     const isMac = process.platform === "darwin";
+    const openRecentSubmenu: MenuItemConstructorOptions[] = recentGames.length > 0
+        ? [
+            ...recentGames.map((game): MenuItemConstructorOptions => ({
+                label: `${game.filename} — ${path.basename(game.dirPath)}`,
+                click: () => sendOpenRecentGame(game),
+            })),
+            { type: "separator" },
+            { label: "Clear Recent", click: () => { void clearRecentGames().then(refreshMenu); } },
+        ]
+        : [{ label: "No Recent Games", enabled: false }];
     const template: MenuItemConstructorOptions[] = [
         ...(isMac ? [{ role: "appMenu" as const }] : []),
         {
@@ -53,6 +76,7 @@ function buildAppMenu(): Menu {
             submenu: [
                 { label: "New Game…", accelerator: "CmdOrCtrl+N", click: () => sendMenuAction("new-game") },
                 { label: "Open Game Folder…", accelerator: "CmdOrCtrl+O", click: () => sendMenuAction("open-folder") },
+                { label: "Open Recent", submenu: openRecentSubmenu },
                 { type: "separator" },
                 { label: "Save", accelerator: "CmdOrCtrl+S", click: () => sendMenuAction("save") },
                 { label: "Save As…", accelerator: "CmdOrCtrl+Shift+S", click: () => sendMenuAction("save-as") },
@@ -81,7 +105,16 @@ function buildAppMenu(): Menu {
     return Menu.buildFromTemplate(template);
 }
 
-Menu.setApplicationMenu(buildAppMenu());
+// Re-reads the recent-games list from disk and re-applies the app menu —
+// called once at startup and again after every recent:add/remove (via
+// registerRecentHandlers' onChange) and after "Clear Recent". Also notifies
+// the renderer: the /open page's own Remove button already updates its local
+// state directly, but a change that originates in the main process (Clear
+// Recent) has no other way to reach an already-mounted /open page.
+async function refreshMenu(): Promise<void> {
+    Menu.setApplicationMenu(buildAppMenu(await listRecentGames()));
+    editorWindow?.webContents.send("recent-games-changed");
+}
 
 function createEditorWindow(port: number): void {
     editorWindow = new BrowserWindow({
@@ -125,6 +158,8 @@ app.whenReady().then(async () => {
     registerFsHandlers();
     registerDialogHandlers();
     registerShellHandlers();
+    registerRecentHandlers(() => void refreshMenu());
+    await refreshMenu();
 
     const root = staticRoot();
     staticServer = await startStaticServer({
