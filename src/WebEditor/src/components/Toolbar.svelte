@@ -2,7 +2,7 @@
     import { AppBar } from "@skeletonlabs/skeleton-svelte";
     import { PUBLIC_WASM_PLAYER_URL } from "$env/static/public";
     import {
-        gameFilename, isDirty, saveGame, saveGameAs, canSaveAs, backupGame, canBackup,
+        gameFilename, isDirty, isSaving, saveError, retrySave, saveGameAs, canSaveAs, backupGame, canBackup,
         publishModalOpen,
         previewInWasmPlayer,
         undo, redo, canUndo, canRedo,
@@ -17,11 +17,6 @@
     const wasmPlayerUrl = PUBLIC_WASM_PLAYER_URL || "/player/";
 
     let saving = $state(false);
-
-    async function handleSave() {
-        saving = true;
-        try { await saveGame(); } finally { saving = false; }
-    }
 
     async function handleSaveAs() {
         saving = true;
@@ -96,7 +91,19 @@
         <AppBar.Lead>
             <span class="font-semibold">Quest Viva Editor</span>
             {#if $gameFilename}
-                <span class="ml-3 text-sm text-surface-500-400">{$gameFilename}{#if $isDirty} *{/if}</span>
+                <span class="ml-3 text-sm text-surface-500-400">{$gameFilename}</span>
+            {/if}
+            {#if $saveError}
+                <button
+                    type="button"
+                    class="ml-3 text-sm text-error-500 underline"
+                    onclick={() => retrySave()}
+                    title={$saveError}
+                >⚠ Save failed — Retry</button>
+            {:else if $isSaving || $isDirty}
+                <span class="ml-3 text-sm text-surface-500-400">Saving…</span>
+            {:else if $gameFilename}
+                <span class="ml-3 text-sm text-surface-500-400">Saved</span>
             {/if}
         </AppBar.Lead>
         <AppBar.Trail>
@@ -132,7 +139,6 @@
                 <button type="button" class="btn btn-sm preset-outlined-primary-500" onclick={() => assetManagerOpen.set(true)} title="Manage assets">🖼 Assets</button>
                 <button type="button" class="btn btn-sm preset-outlined-primary-500" onclick={undo} disabled={!$canUndo} title="Undo">↩ Undo</button>
                 <button type="button" class="btn btn-sm preset-outlined-primary-500" onclick={redo} disabled={!$canRedo} title="Redo">↪ Redo</button>
-                <button type="button" class="btn btn-sm preset-filled-primary-500" onclick={handleSave} disabled={saving} title="Save">💾 Save</button>
                 {#if $canSaveAs}
                     <button type="button" class="btn btn-sm preset-outlined-primary-500" onclick={handleSaveAs} disabled={saving} title="Save As">Save As…</button>
                 {/if}

@@ -4,7 +4,7 @@
     import { goto } from "$app/navigation";
     import { base } from "$app/paths";
     import { get } from "svelte/store";
-    import { isLoaded, isDirty, loadingStatus, addElementModal, assetManagerOpen, publishModalOpen, openGame, createRoom, createObject, createFunction, createTimer, createWalkthrough, createTemplate, createDynamicTemplate, createObjectType } from "$lib/editor-store";
+    import { isLoaded, isDirty, saveGame, loadingStatus, addElementModal, assetManagerOpen, publishModalOpen, openGame, createRoom, createObject, createFunction, createTimer, createWalkthrough, createTemplate, createDynamicTemplate, createObjectType } from "$lib/editor-store";
     import { loadFromServer } from "$lib/filesystem/server-adapter";
     import Toolbar from "$components/Toolbar.svelte";
     import BackupBanner from "$components/BackupBanner.svelte";
@@ -16,20 +16,36 @@
 
     let serverLoadError = $state<string | null>(null);
 
+    // Best-effort: force any focused field to commit and flush it to storage
+    // before the tab actually goes away. Can't be awaited here — the page may
+    // already be gone by the time an async write settles — so the beforeunload
+    // warning below stays as the real safety net for that narrow window.
     $effect(() => {
         if (!$isDirty) return;
-        function handleBeforeUnload(e: BeforeUnloadEvent) { e.preventDefault(); }
+        function handleBeforeUnload(e: BeforeUnloadEvent) {
+            void saveGame();
+            e.preventDefault();
+        }
         window.addEventListener("beforeunload", handleBeforeUnload);
         return () => window.removeEventListener("beforeunload", handleBeforeUnload);
     });
 
     onMount(() => {
+        // Covers tab switches, backgrounding, and the mobile-Safari-style tab
+        // closes that don't reliably fire beforeunload.
+        function handleVisibilityChange() {
+            if (document.hidden && get(isDirty)) void saveGame();
+        }
+        document.addEventListener("visibilitychange", handleVisibilityChange);
+
         const gameId = new URLSearchParams(window.location.search).get("game");
         if (gameId) {
             loadGameFromServer(gameId);
         } else if (!get(isLoaded)) {
             goto(`${base}/open`);
         }
+
+        return () => document.removeEventListener("visibilitychange", handleVisibilityChange);
     });
 
     async function loadGameFromServer(gameId: string) {
