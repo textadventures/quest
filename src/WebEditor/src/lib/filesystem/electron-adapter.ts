@@ -119,16 +119,34 @@ export async function loadElectronFile(dirPath: string, filename: string): Promi
 }
 
 /**
- * Creates a new game file with the given content — mirrors
- * browser-adapter.ts's createLocalGame() (FSA). Returns null if the user
- * cancels the directory picker.
+ * Creates a new game file with the given content. Unlike browser-adapter.ts's
+ * createLocalGame() (FSA, which has no way to create a folder itself — the
+ * picker's target *is* the game folder), this picks a parent location and
+ * creates a new subfolder named after the game inside it, IDE-"new project"
+ * style — matches how a folder-per-game is expected to work on desktop
+ * without making the user pre-create an empty folder by hand first.
+ *
+ * Returns null if the user cancels the location picker. Throws if a folder
+ * with that name already exists at the chosen location (caller surfaces this
+ * as an error — see open/+page.svelte's handleCreateLocal — rather than
+ * silently reusing or renaming it, since either could put new content in an
+ * existing, unrelated folder).
  */
 export async function createElectronGame(
     filename: string,
     content: string,
 ): Promise<{ bytes: Uint8Array; adapter: ElectronFileAdapter } | null> {
-    const dirPath = await electronApp().dialog.openDirectory();
-    if (!dirPath) return null;
+    const parentDir = await electronApp().dialog.openDirectory({
+        title: "Choose a location for your new game",
+        buttonLabel: "Select Folder",
+    });
+    if (!parentDir) return null;
+    const folderName = filename.replace(/\.aslx$/i, "");
+    const dirPath = electronApp().path.join(parentDir, folderName);
+    if (await electronApp().fs.exists(dirPath)) {
+        throw new Error(`A folder named "${folderName}" already exists there — choose a different game name or a different location.`);
+    }
+    await electronApp().fs.mkdir(dirPath);
     const filePath = electronApp().path.join(dirPath, filename);
     await electronApp().fs.writeFile(filePath, content);
     return { bytes: new TextEncoder().encode(content), adapter: new ElectronFileAdapter(dirPath, filename) };

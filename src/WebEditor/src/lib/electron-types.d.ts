@@ -20,7 +20,7 @@ interface ElectronFsApi {
 
 interface ElectronDialogApi {
     openFile(options?: { filters?: ElectronFileFilter[]; defaultPath?: string }): Promise<string | null>;
-    openDirectory(options?: { defaultPath?: string }): Promise<string | null>;
+    openDirectory(options?: { defaultPath?: string; title?: string; buttonLabel?: string }): Promise<string | null>;
     saveFile(options?: { defaultPath?: string; filters?: ElectronFileFilter[] }): Promise<string | null>;
 }
 

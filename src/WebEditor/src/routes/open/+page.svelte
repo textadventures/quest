@@ -271,7 +271,10 @@
                     if (ok) { goto(base || "/"); return; }
                     createLocalError = "Failed to load new game.";
                 }
-                // result === null: user cancelled the directory picker — do nothing
+                // result === null: user cancelled the location picker — do nothing.
+                // createElectronGame() can also throw (e.g. a folder with that
+                // name already exists there) — caught by this function's outer
+                // try/catch below, same as every other error path here.
             } else if (hasFSA()) {
                 const result = await createLocalGame(filename, content);
                 if (result) {
@@ -472,7 +475,7 @@
                                     class="btn preset-filled-primary-500 flex-1"
                                     onclick={handleCreateLocal}
                                     disabled={!createName.trim()}
-                                    title={nativeFolder ? "Choose a folder to save your game in" : "Save as a local draft in this browser"}
+                                    title={isElectron() ? "Choose where to create your game's folder" : nativeFolder ? "Choose a folder to save your game in" : "Save as a local draft in this browser"}
                                 >
                                     {nativeFolder ? "Save to my computer" : "Create local draft"}
                                 </button>
