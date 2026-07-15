@@ -6,7 +6,7 @@
     import { openGame, loadingStatus } from "$lib/editor-store";
     import { hasFSA, openDirectory, loadFileFromDirectory, createLocalGame } from "$lib/filesystem/browser-adapter";
     import {
-        openElectronDirectory, loadElectronFile, createElectronGame, getDefaultGamesDir, pickGameLocation,
+        openElectronFile, loadElectronFile, createElectronGame, getDefaultGamesDir, pickGameLocation,
     } from "$lib/filesystem/electron-adapter";
     import { isElectron } from "$lib/runtime";
     import { createNewGame, getGameTemplates } from "$lib/filesystem/server-adapter";
@@ -30,11 +30,11 @@
     let loading = $state(false);
     let error = $state<string | null>(null);
 
-    // Set when a directory (FSA or Electron) or an imported zip (local drafts)
-    // contained multiple .aslx files — pendingFiles holds the names to choose
-    // from either way.
+    // Set when a directory (FSA) or an imported zip (local drafts) contained
+    // multiple .aslx files — pendingFiles holds the names to choose from
+    // either way. Electron has no equivalent case: openElectronFile() picks
+    // one exact file directly, no folder-then-disambiguate step.
     let pendingDir = $state<FileSystemDirectoryHandle | null>(null);
-    let pendingElectronDir = $state<string | null>(null);
     let pendingZip = $state<ZipEntries | null>(null);
     let pendingFiles = $state<string[]>([]);
 
@@ -48,10 +48,10 @@
     }
     void refreshDrafts();
 
-    // Electron's File > Open Game Folder… menu item (see +layout.svelte's
+    // Electron's File > Open Game… menu item (see +layout.svelte's
     // menu.onAction) lands here with ?action=open&t=<nonce> so it pops the
-    // native directory picker immediately, instead of making the user click
-    // the "Open game folder" button after already choosing this route. A
+    // native file picker immediately, instead of making the user click
+    // the "Open game…" button after already choosing this route. A
     // reactive $effect (not onMount) because the menu can fire while this
     // page is already mounted — e.g. the user is already sitting at /open —
     // and SvelteKit doesn't remount a page for a same-route, query-only
@@ -127,7 +127,7 @@
     }
 
     async function handleOpenFolder() {
-        if (isElectron()) return handleOpenFolderElectron();
+        if (isElectron()) return handleOpenFileElectron();
         error = null;
         try {
             const result = await openDirectory();
@@ -147,21 +147,12 @@
         }
     }
 
-    async function handleOpenFolderElectron() {
+    async function handleOpenFileElectron() {
         error = null;
         try {
-            const result = await openElectronDirectory();
+            const result = await openElectronFile();
             if (!result) return;
-            if (result.files.length === 0) {
-                error = "No .aslx files found in this folder.";
-                return;
-            }
-            if (result.files.length === 1) {
-                await loadFromElectron(result.dirPath, result.files[0]);
-            } else {
-                pendingElectronDir = result.dirPath;
-                pendingFiles = result.files;
-            }
+            await loadFromElectron(result.dirPath, result.filename);
         } catch (err) {
             error = String(err);
         }
@@ -173,11 +164,6 @@
             pendingDir = null;
             pendingFiles = [];
             await loadFrom(dir, filename);
-        } else if (pendingElectronDir) {
-            const dirPath = pendingElectronDir;
-            pendingElectronDir = null;
-            pendingFiles = [];
-            await loadFromElectron(dirPath, filename);
         } else if (pendingZip) {
             const entries = pendingZip;
             pendingZip = null;
@@ -354,7 +340,7 @@
             <button
                 type="button"
                 class="btn preset-outlined-surface-500 w-full"
-                onclick={() => { pendingDir = null; pendingElectronDir = null; pendingZip = null; pendingFiles = []; }}
+                onclick={() => { pendingDir = null; pendingZip = null; pendingFiles = []; }}
             >Cancel</button>
         </div>
     {:else}
@@ -366,7 +352,7 @@
 
                 {#if nativeFolder}
                     <button type="button" class="btn preset-filled-primary-500 w-full" onclick={handleOpenFolder}>
-                        Open game folder
+                        {isElectron() ? "Open game…" : "Open game folder"}
                     </button>
                 {:else}
                     <button type="button" class="btn preset-filled-primary-500 w-full" onclick={handleImportFile}>

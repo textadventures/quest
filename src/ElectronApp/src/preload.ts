@@ -49,7 +49,7 @@ contextBridge.exposeInMainWorld("electronApp", {
     },
     menu: {
         // Backs the native File menu built in main.ts's buildAppMenu() — action
-        // is one of MenuAction there ("new-game" | "open-folder" | "save" |
+        // is one of MenuAction there ("new-game" | "open-file" | "save" |
         // "save-as"), kept as a plain string here since preload has no import
         // from main's module graph. Returns an unsubscribe so +layout.svelte's
         // onMount can clean up on HMR/teardown.

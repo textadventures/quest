@@ -67,7 +67,7 @@ try {
     // game's own subfolder — "Change location…" only ever changes the
     // parent, so showing the child folder name next to it read as if that
     // were also choosable.
-    await win.waitForSelector('button:has-text("Open game folder")', { timeout: 30000 });
+    await win.waitForSelector('button:has-text("Open game…")', { timeout: 30000 });
     await win.fill('input[placeholder="Game name"]', 'Game A');
     const previewLocator = win.locator('text=Will be created as a new folder in:');
     await previewLocator.waitFor({ timeout: 10000 });
@@ -100,7 +100,7 @@ try {
     const errorLocator = win.locator('text=already exists');
     await errorLocator.waitFor({ timeout: 10000 });
     console.log('PASS: creating "Game A" again at the default location shows an "already exists" error');
-    const stillOnOpenPage = await win.isVisible('button:has-text("Open game folder")');
+    const stillOnOpenPage = await win.isVisible('button:has-text("Open game…")');
     if (!stillOnOpenPage) throw new Error('Expected to remain on /open after the collision error');
 
     // 4. "Change location…" opens a real picker (stubbed here) and overrides

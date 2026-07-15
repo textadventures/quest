@@ -31,6 +31,11 @@ function basename(p: string): string {
     return p.split(/[\\/]/).pop() ?? p;
 }
 
+function dirname(p: string): string {
+    const idx = Math.max(p.lastIndexOf("/"), p.lastIndexOf("\\"));
+    return idx >= 0 ? p.slice(0, idx) : "";
+}
+
 function electronApp() {
     // Only ever constructed when isElectron() is true (see open/+page.svelte),
     // so window.electronApp is always present here.
@@ -97,20 +102,17 @@ export class ElectronFileAdapter implements FileAdapter {
 }
 
 /**
- * Opens a game folder via the native directory dialog, scans it for .aslx
- * files, and returns the folder plus the filenames found — mirrors
- * browser-adapter.ts's openDirectory() (FSA) so open/+page.svelte can reuse
- * the same single/multiple-file branching for either backend.
+ * Opens a specific .aslx file via the native file picker. Unlike FSA (which
+ * grants permission at the folder level, so browser-adapter.ts's
+ * openDirectory() has to pick a whole folder and then disambiguate if there's
+ * more than one .aslx inside it), Electron's real filesystem access has no
+ * such constraint — the user can pick the exact game file directly, the same
+ * as File > Open in any other desktop app.
  */
-export async function openElectronDirectory(): Promise<{ dirPath: string; files: string[] } | null> {
-    const dirPath = await electronApp().dialog.openDirectory();
-    if (!dirPath) return null;
-    const entries = await electronApp().fs.readDir(dirPath);
-    const files = entries
-        .filter((e) => e.isFile && e.name.toLowerCase().endsWith(".aslx"))
-        .map((e) => e.name)
-        .sort();
-    return { dirPath, files };
+export async function openElectronFile(): Promise<{ dirPath: string; filename: string } | null> {
+    const filePath = await electronApp().dialog.openFile({ filters: ASLX_FILTER });
+    if (!filePath) return null;
+    return { dirPath: dirname(filePath), filename: basename(filePath) };
 }
 
 export async function loadElectronFile(dirPath: string, filename: string): Promise<{ bytes: Uint8Array; adapter: ElectronFileAdapter }> {

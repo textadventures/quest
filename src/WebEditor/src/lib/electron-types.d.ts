@@ -38,7 +38,7 @@ interface ElectronPathsApi {
 }
 
 // action is one of MenuAction in ElectronApp's src/main.ts ("new-game" |
-// "open-folder" | "save" | "save-as") — kept as a plain string since these
+// "open-file" | "save" | "save-as") — kept as a plain string since these
 // are separate npm projects with no shared type.
 interface ElectronMenuApi {
     onAction(callback: (action: string) => void): () => void;
