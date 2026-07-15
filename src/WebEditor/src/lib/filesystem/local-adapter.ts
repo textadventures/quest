@@ -10,6 +10,16 @@ const ROOT = ["games"];
 interface DraftMeta {
     filename: string;
     lastModified: number;
+    // Counts saveFile() calls — the create/import flow's initial write is #1, so
+    // this is >1 only once the user has actually made and saved an edit. Gates
+    // the backup banner (see shouldShowBackupBanner) behind real activity rather
+    // than showing it the instant an empty game is created.
+    saveCount?: number;
+    // When the backup banner was last resolved — an actual backup, or an
+    // explicit Dismiss — so a reminder can resurface after some time has passed.
+    // Lives on the draft itself, not localStorage, so it travels with the draft
+    // and disappears along with it on delete.
+    backupBannerResolvedAt?: number;
 }
 
 function dirPath(gameId: string): string[] {
@@ -30,6 +40,27 @@ async function readMeta(gameId: string): Promise<DraftMeta | null> {
 
 async function writeMeta(gameId: string, meta: DraftMeta): Promise<void> {
     await writeOpfsFile(dirPath(gameId), "meta.json", new TextEncoder().encode(JSON.stringify(meta)));
+}
+
+// The initial creation/import write counts as save #1 — wait for at least one
+// more real save (i.e. an actual edit) before ever showing the banner.
+const ACTIVITY_THRESHOLD_SAVES = 2;
+// Once resolved (backed up or dismissed), don't ask again until this much time
+// has passed — matches the "Safari may clear local drafts after a week" notice
+// on the Open screen, since that's the point real data-loss risk starts to rise.
+const REMINDER_AFTER_MS = 7 * 24 * 60 * 60 * 1000;
+
+export async function shouldShowBackupBanner(gameId: string): Promise<boolean> {
+    const meta = await readMeta(gameId);
+    if (!meta || (meta.saveCount ?? 0) < ACTIVITY_THRESHOLD_SAVES) return false;
+    if (meta.backupBannerResolvedAt == null) return true;
+    return Date.now() - meta.backupBannerResolvedAt >= REMINDER_AFTER_MS;
+}
+
+export async function markBackupBannerResolved(gameId: string): Promise<void> {
+    const meta = await readMeta(gameId);
+    if (!meta) return;
+    await writeMeta(gameId, { ...meta, backupBannerResolvedAt: Date.now() });
 }
 
 export interface LocalDraftSummary {
@@ -185,7 +216,16 @@ export class LocalDraftAdapter implements FileAdapter {
     async saveFile(data: Uint8Array | string): Promise<void> {
         const bytes = typeof data === "string" ? new TextEncoder().encode(data) : data;
         await writeOpfsFile(dirPath(this._gameId), this._filename, bytes);
-        await writeMeta(this._gameId, { filename: this._filename, lastModified: Date.now() });
+        // Preserve the existing meta (saveCount, backupBannerResolvedAt) rather than
+        // overwriting wholesale — this runs on every save, so clobbering here would
+        // silently reset the backup-banner state on the very next edit.
+        const existing = await readMeta(this._gameId);
+        await writeMeta(this._gameId, {
+            ...existing,
+            filename: this._filename,
+            lastModified: Date.now(),
+            saveCount: (existing?.saveCount ?? 0) + 1,
+        });
     }
 
     async saveFileAs(data: Uint8Array | string): Promise<string | null> {

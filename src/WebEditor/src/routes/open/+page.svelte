@@ -35,6 +35,30 @@
     // website access to a folder" prompt.
     const canUseFSA = !isElectronApp && hasFSA();
 
+    // Explanation for "Import game file" — kept out of the page as a
+    // click-to-open popover (see importHelpOpen) rather than a permanent
+    // paragraph so the open screen isn't dominated by fine print. A native
+    // title tooltip doesn't work here: it never triggers on click/tap, so
+    // touch users (and impatient mouse users) never see it. Scoped to just
+    // this button — the "open a folder" case is covered by the button below
+    // it, and the backup reminder lives in the editor itself instead (see
+    // Toolbar.svelte), where it's actually actionable.
+    const importHelpText = [
+        "Accepts a .aslx file, or a .zip backed up from here.",
+        "Imported games are stored as a local draft in this browser.",
+    ];
+
+    let importHelpOpen = $state(false);
+
+    $effect(() => {
+        if (!importHelpOpen) return;
+        function onOutside(e: MouseEvent) {
+            if (!(e.target as HTMLElement).closest(".import-help")) importHelpOpen = false;
+        }
+        document.addEventListener("mousedown", onOutside);
+        return () => document.removeEventListener("mousedown", onOutside);
+    });
+
     let loading = $state(false);
     let error = $state<string | null>(null);
 
@@ -429,19 +453,37 @@
                         {isElectron() ? "Open game…" : "Open game folder"}
                     </button>
                 {:else}
-                    <button type="button" class="btn preset-filled-primary-500 w-full" onclick={handleImportFile}>
-                        Import game file
-                    </button>
+                    <div class="flex items-center gap-2 w-full">
+                        <button type="button" class="btn preset-filled-primary-500 flex-1" onclick={handleImportFile}>
+                            Import game file
+                        </button>
+                        <div class="import-help relative shrink-0">
+                            <button
+                                type="button"
+                                class="btn-icon preset-outlined-surface-500"
+                                onclick={() => importHelpOpen = !importHelpOpen}
+                                aria-label="About importing games"
+                            >
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="size-4">
+                                    <circle cx="12" cy="12" r="10" />
+                                    <path d="M12 16v-4" />
+                                    <path d="M12 8h.01" />
+                                </svg>
+                            </button>
+                            {#if importHelpOpen}
+                                <div class="absolute right-0 top-full z-[999] mt-1 w-64 bg-surface-50-950 border border-surface-200-800 rounded shadow-lg p-3 flex flex-col gap-2 text-sm text-surface-700-300 text-left">
+                                    {#each importHelpText as line (line)}
+                                        <p>{line}</p>
+                                    {/each}
+                                </div>
+                            {/if}
+                        </div>
+                    </div>
                     {#if canUseFSA}
                         <button type="button" class="btn preset-outlined-primary-500 w-full" onclick={handleOpenFolder}>
                             Open game folder
                         </button>
                     {/if}
-                    <p class="text-sm text-surface-500-400 max-w-[40ch] text-center">
-                        Accepts a .aslx file or a .zip backed up from here. Imported games are stored in this
-                        browser as a local draft — use <strong>Backup</strong> in the editor to save a copy to disk.
-                        {#if canUseFSA}Or open a folder on your computer to edit it there directly.{/if}
-                    </p>
                 {/if}
 
                 {#if error}

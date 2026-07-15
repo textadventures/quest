@@ -7,6 +7,7 @@
     import { isLoaded, isDirty, loadingStatus, addElementModal, assetManagerOpen, publishModalOpen, openGame, createRoom, createObject, createFunction, createTimer, createWalkthrough, createTemplate, createDynamicTemplate, createObjectType } from "$lib/editor-store";
     import { loadFromServer } from "$lib/filesystem/server-adapter";
     import Toolbar from "$components/Toolbar.svelte";
+    import BackupBanner from "$components/BackupBanner.svelte";
     import TreePanel from "$components/TreePanel.svelte";
     import PropertyEditor from "$components/PropertyEditor.svelte";
     import AddElementModal from "$components/AddElementModal.svelte";
@@ -69,6 +70,7 @@
 {:else if $isLoaded}
     <div class="flex flex-col h-svh overflow-hidden">
         <Toolbar />
+        <BackupBanner />
         <div class="flex flex-1 overflow-hidden">
             <TreePanel />
             <PropertyEditor />

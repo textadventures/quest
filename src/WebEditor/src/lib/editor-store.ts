@@ -3,7 +3,7 @@ import { zipSync } from "fflate";
 import { loadWasm } from "./wasm";
 import type { WasmBridge } from "./wasm";
 import type { AssetInfo, FileAdapter } from "./filesystem/types";
-import { LocalDraftAdapter } from "./filesystem/local-adapter";
+import { LocalDraftAdapter, shouldShowBackupBanner, markBackupBannerResolved } from "./filesystem/local-adapter";
 import { ServerFileAdapter } from "./filesystem/server-adapter";
 import { triggerDownload } from "./filesystem/download";
 import type { TreeNode, EditorDataResponse, ScriptBlockData, ScriptCommandCategoriesData, IfExpressionTemplateData, IfExpressionTemplate, FullAttributeData } from "./types";
@@ -24,6 +24,7 @@ export function openAddModal(type: "room" | "object" | "function" | "timer" | "w
 export const gameFilename = writable<string | null>(null);
 export const canSaveAs = writable(false);
 export const canBackup = writable(false);
+export const showBackupBanner = writable(false);
 export const canPublishToServer = writable(false);
 export const treeNodes = writable<TreeNode[]>([]);
 export const selectedKey = writable<string | null>(null);
@@ -51,6 +52,7 @@ export async function openGame(bytes: Uint8Array, filename: string, adapter: Fil
     canSaveAs.set(adapter.canSaveAs);
     canBackup.set(adapter instanceof LocalDraftAdapter);
     canPublishToServer.set(adapter instanceof ServerFileAdapter);
+    showBackupBanner.set(adapter instanceof LocalDraftAdapter && await shouldShowBackupBanner(adapter.gameId));
     loadingStatus.set("Loading game…");
     // Double rAF ensures the browser actually paints the status update before
     // Initialise blocks the JS thread (C# WASM calls are synchronous).
@@ -166,6 +168,12 @@ export async function saveGame(): Promise<void> {
     await rekeyIfGameIdChanged();
     await _adapter.saveFile(_bridge.Save()); // Save() clears _isDirty in the bridge
     isDirty.set(false);
+    // Re-check rather than only at load: this is what lets the banner appear the
+    // moment a fresh local draft crosses the activity threshold, instead of
+    // waiting for the user to close and reopen it.
+    if (_adapter instanceof LocalDraftAdapter) {
+        showBackupBanner.set(await shouldShowBackupBanner(_adapter.gameId));
+    }
 }
 
 // If the user regenerated the gameid field (PropertyEditor.svelte's "Generate"
@@ -206,6 +214,15 @@ export async function backupGame(): Promise<void> {
     const zipBytes = zipSync(zipEntries);
     const backupName = _adapter.filename.replace(/\.aslx$/i, "") + ".zip";
     triggerDownload(zipBytes, backupName);
+    showBackupBanner.set(false);
+    await markBackupBannerResolved(_adapter.gameId);
+}
+
+// The banner's own "Dismiss" action — distinct from backupGame() above, which
+// also silences the banner as a side effect of an actual backup.
+export async function dismissBackupBanner(): Promise<void> {
+    showBackupBanner.set(false);
+    if (_adapter instanceof LocalDraftAdapter) await markBackupBannerResolved(_adapter.gameId);
 }
 
 // Builds a .quest package (game.aslx with included libraries inlined, plus every
