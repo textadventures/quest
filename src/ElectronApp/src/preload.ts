@@ -34,7 +34,7 @@ contextBridge.exposeInMainWorld("electronApp", {
     dialog: {
         openFile: (options?: { filters?: FileFilter[]; defaultPath?: string }): Promise<string | null> =>
             ipcRenderer.invoke("dialog:openFile", options),
-        openDirectory: (options?: { defaultPath?: string }): Promise<string | null> =>
+        openDirectory: (options?: { defaultPath?: string; title?: string; message?: string; buttonLabel?: string }): Promise<string | null> =>
             ipcRenderer.invoke("dialog:openDirectory", options),
         saveFile: (options?: { defaultPath?: string; filters?: FileFilter[] }): Promise<string | null> =>
             ipcRenderer.invoke("dialog:saveFile", options),
@@ -44,6 +44,9 @@ contextBridge.exposeInMainWorld("electronApp", {
     },
     path: {
         join: joinPath,
+    },
+    paths: {
+        defaultGamesDir: (): Promise<string> => ipcRenderer.invoke("paths:defaultGamesDir"),
     },
     recent: {
         list: (): Promise<RecentGame[]> => ipcRenderer.invoke("recent:list"),
@@ -62,7 +65,7 @@ contextBridge.exposeInMainWorld("electronApp", {
     },
     menu: {
         // Backs the native File menu built in main.ts's buildAppMenu() — action
-        // is one of MenuAction there ("new-game" | "open-folder" | "save" |
+        // is one of MenuAction there ("new-game" | "open-file" | "save" |
         // "save-as"), kept as a plain string here since preload has no import
         // from main's module graph. Returns an unsubscribe so +layout.svelte's
         // onMount can clean up on HMR/teardown.

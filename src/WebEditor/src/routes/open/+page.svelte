@@ -7,7 +7,8 @@
     import { openGame, loadingStatus } from "$lib/editor-store";
     import { hasFSA, openDirectory, loadFileFromDirectory, createLocalGame } from "$lib/filesystem/browser-adapter";
     import {
-        openElectronDirectory, loadElectronFile, createElectronGame, listRecentGames, removeRecentGame,
+        openElectronFile, loadElectronFile, createElectronGame, getDefaultGamesDir, pickGameLocation,
+        listRecentGames, removeRecentGame,
     } from "$lib/filesystem/electron-adapter";
     import type { RecentGame } from "$lib/filesystem/electron-adapter";
     import { isElectron } from "$lib/runtime";
@@ -37,11 +38,11 @@
     let loading = $state(false);
     let error = $state<string | null>(null);
 
-    // Set when a directory (FSA or Electron) or an imported zip (local drafts)
-    // contained multiple .aslx files — pendingFiles holds the names to choose
-    // from either way.
+    // Set when a directory (FSA) or an imported zip (local drafts) contained
+    // multiple .aslx files — pendingFiles holds the names to choose from
+    // either way. Electron has no equivalent case: openElectronFile() picks
+    // one exact file directly, no folder-then-disambiguate step.
     let pendingDir = $state<FileSystemDirectoryHandle | null>(null);
-    let pendingElectronDir = $state<string | null>(null);
     let pendingZip = $state<ZipEntries | null>(null);
     let pendingFiles = $state<string[]>([]);
 
@@ -74,10 +75,10 @@
         return window.electronApp!.recent.onChanged(() => void refreshRecentGames());
     });
 
-    // Electron's File > Open Game Folder… menu item (see +layout.svelte's
+    // Electron's File > Open Game… menu item (see +layout.svelte's
     // menu.onAction) lands here with ?action=open&t=<nonce> so it pops the
-    // native directory picker immediately, instead of making the user click
-    // the "Open game folder" button after already choosing this route. A
+    // native file picker immediately, instead of making the user click
+    // the "Open game…" button after already choosing this route. A
     // reactive $effect (not onMount) because the menu can fire while this
     // page is already mounted — e.g. the user is already sitting at /open —
     // and SvelteKit doesn't remount a page for a same-route, query-only
@@ -133,6 +134,20 @@
     let creatingLocal = $state(false);
     let createLocalError = $state<string | null>(null);
 
+    // Electron's new-game location — defaults to Documents/Quest Games
+    // (matches Quest 5's desktop editor) unless the user picks somewhere
+    // else via "Change location…". electronParentDir stays null until they
+    // do, so the preview below always reflects whichever is actually in play.
+    let defaultGamesDir = $state("");
+    let electronParentDir = $state<string | null>(null);
+    if (isElectron()) void getDefaultGamesDir().then(dir => defaultGamesDir = dir);
+    let electronGamesDir = $derived(electronParentDir ?? defaultGamesDir);
+
+    async function handleChangeLocation() {
+        const picked = await pickGameLocation(electronGamesDir || undefined);
+        if (picked) electronParentDir = picked;
+    }
+
     // Server creation state
     let creatingServer = $state(false);
     let createServerError = $state<string | null>(null);
@@ -155,7 +170,7 @@
     }
 
     async function handleOpenFolder() {
-        if (isElectron()) return handleOpenFolderElectron();
+        if (isElectron()) return handleOpenFileElectron();
         error = null;
         try {
             const result = await openDirectory();
@@ -175,21 +190,12 @@
         }
     }
 
-    async function handleOpenFolderElectron() {
+    async function handleOpenFileElectron() {
         error = null;
         try {
-            const result = await openElectronDirectory();
+            const result = await openElectronFile();
             if (!result) return;
-            if (result.files.length === 0) {
-                error = "No .aslx files found in this folder.";
-                return;
-            }
-            if (result.files.length === 1) {
-                await loadFromElectron(result.dirPath, result.files[0]);
-            } else {
-                pendingElectronDir = result.dirPath;
-                pendingFiles = result.files;
-            }
+            await loadFromElectron(result.dirPath, result.filename);
         } catch (err) {
             error = String(err);
         }
@@ -201,11 +207,6 @@
             pendingDir = null;
             pendingFiles = [];
             await loadFrom(dir, filename);
-        } else if (pendingElectronDir) {
-            const dirPath = pendingElectronDir;
-            pendingElectronDir = null;
-            pendingFiles = [];
-            await loadFromElectron(dirPath, filename);
         } else if (pendingZip) {
             const entries = pendingZip;
             pendingZip = null;
@@ -326,13 +327,18 @@
             const file = await buildNewGameFile();
             if (!file) { creatingLocal = false; return; }
             if (isElectronApp) {
-                const result = await createElectronGame(file.filename, file.content);
-                if (result) {
-                    const ok = await openGame(result.bytes, result.adapter.filename, result.adapter);
-                    if (ok) { goto(base || "/"); return; }
-                    createLocalError = "Failed to load new game.";
-                }
-            // result === null: user cancelled the directory picker — do nothing
+                // Falls back to a fresh fetch on the off chance the mount-time
+                // getDefaultGamesDir() call (see electronGamesDir) hasn't
+                // resolved yet — cheap IPC round trip, not worth blocking the
+                // form on at mount.
+                const parentDir = electronGamesDir || await getDefaultGamesDir();
+                const result = await createElectronGame(parentDir, file.filename, file.content);
+                const ok = await openGame(result.bytes, result.adapter.filename, result.adapter);
+                if (ok) { goto(base || "/"); return; }
+                createLocalError = "Failed to load new game.";
+            // A thrown error (e.g. a folder with that name already exists
+            // at parentDir) is caught by this function's outer try/catch
+            // below, same as every other error path here.
             } else {
                 const gameId = parseGameIdFromAslx(file.content);
                 if (!gameId) { createLocalError = "New game is missing a gameid."; creatingLocal = false; return; }
@@ -408,7 +414,7 @@
             <button
                 type="button"
                 class="btn preset-outlined-surface-500 w-full"
-                onclick={() => { pendingDir = null; pendingElectronDir = null; pendingZip = null; pendingFiles = []; }}
+                onclick={() => { pendingDir = null; pendingZip = null; pendingFiles = []; }}
             >Cancel</button>
         </div>
     {:else}
@@ -420,7 +426,7 @@
 
                 {#if isElectronApp}
                     <button type="button" class="btn preset-filled-primary-500 w-full" onclick={handleOpenFolder}>
-                        Open game folder
+                        {isElectron() ? "Open game…" : "Open game folder"}
                     </button>
                 {:else}
                     <button type="button" class="btn preset-filled-primary-500 w-full" onclick={handleImportFile}>
@@ -582,9 +588,9 @@
                                         class="btn preset-filled-primary-500 w-full"
                                         onclick={handleCreateLocal}
                                         disabled={!createName.trim()}
-                                        title={isElectronApp ? "Choose a folder to save your game in" : "Save as a local draft in this browser"}
+                                        title={isElectronApp ? "Choose where to create your game's folder" : "Save as a local draft in this browser"}
                                     >
-                                        {isElectronApp ? "Save to my computer" : "Create local draft"}
+                                        {isElectronApp ? "Create" : "Create local draft"}
                                     </button>
                                     {#if !isElectronApp}
                                         <p class="text-xs text-surface-500-400 text-center">Stored in this browser only</p>
@@ -606,6 +612,14 @@
                                 {/if}
                             {/if}
                         </div>
+
+                        {#if isElectron()}
+                            <p class="text-xs text-surface-500-400 text-center self-center">
+                                Will be created as a new folder in:<br />
+                                <span class="font-mono">{electronGamesDir || "…"}</span>
+                                <button type="button" class="anchor" onclick={handleChangeLocation}>Change location…</button>
+                            </p>
+                        {/if}
 
                         {#if hasServer}
                             <p class="text-xs text-surface-500-400 max-w-[40ch] text-center self-center">

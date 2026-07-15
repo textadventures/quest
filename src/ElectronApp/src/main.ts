@@ -4,6 +4,7 @@ import { startStaticServer, type StaticServerHandle } from "./static-server";
 import { registerFsHandlers } from "./ipc/fs";
 import { registerDialogHandlers } from "./ipc/dialog";
 import { registerShellHandlers } from "./ipc/shell";
+import { registerPathsHandlers } from "./ipc/paths";
 import { registerRecentHandlers } from "./ipc/recent";
 import { listRecentGames, clearRecentGames, type RecentGame } from "./recent-games";
 
@@ -34,7 +35,7 @@ let staticServer: StaticServerHandle | null = null;
 // Mirrors the union WebEditor's src/routes/+layout.svelte switches on (see
 // window.electronApp.menu.onAction in preload.ts) — the two sides can't share
 // a type since they're separate npm projects, so keep them in sync by hand.
-type MenuAction = "new-game" | "open-folder" | "save" | "save-as";
+type MenuAction = "new-game" | "open-file" | "save" | "save-as";
 
 function sendMenuAction(action: MenuAction): void {
     editorWindow?.webContents.send("menu-action", action);
@@ -75,7 +76,7 @@ function buildAppMenu(recentGames: RecentGame[]): Menu {
             label: "File",
             submenu: [
                 { label: "New Game…", accelerator: "CmdOrCtrl+N", click: () => sendMenuAction("new-game") },
-                { label: "Open Game Folder…", accelerator: "CmdOrCtrl+O", click: () => sendMenuAction("open-folder") },
+                { label: "Open Game…", accelerator: "CmdOrCtrl+O", click: () => sendMenuAction("open-file") },
                 { label: "Open Recent", submenu: openRecentSubmenu },
                 { type: "separator" },
                 { label: "Save", accelerator: "CmdOrCtrl+S", click: () => sendMenuAction("save") },
@@ -158,6 +159,7 @@ app.whenReady().then(async () => {
     registerFsHandlers();
     registerDialogHandlers();
     registerShellHandlers();
+    registerPathsHandlers();
     registerRecentHandlers(() => void refreshMenu());
     await refreshMenu();
 
