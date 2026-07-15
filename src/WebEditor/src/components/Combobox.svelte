@@ -16,6 +16,8 @@
     let activeIndex = $state(-1);
     let listboxEl = $state<HTMLDivElement | null>(null);
 
+    let hasEmptyOption = $derived(options.some(o => o.value === ""));
+
     $effect(() => {
         if (!open) inputValue = value;
     });
@@ -57,6 +59,13 @@
     function handleFocus() {
         inputValue = "";
         open = true;
+    }
+
+    function handleClick() {
+        if (!open) {
+            inputValue = "";
+            open = true;
+        }
     }
 
     function handleBlur() {
@@ -111,8 +120,10 @@
         aria-activedescendant={activeDescendant}
         aria-controls="{uid}-listbox"
         class={className}
+        placeholder={value === "" && hasEmptyOption ? "(none)" : ""}
         value={inputValue}
         onfocus={handleFocus}
+        onclick={handleClick}
         onblur={handleBlur}
         oninput={handleInput}
         onkeydown={handleKeydown}
@@ -135,7 +146,7 @@
                     onmousedown={(e) => { e.preventDefault(); select(opt.value); }}
                     onmouseenter={() => { activeIndex = i; }}
                 >
-                    {opt.label || opt.value}
+                    {opt.label || opt.value || "(none)"}
                 </div>
             {/each}
         </div>

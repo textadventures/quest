@@ -1,6 +1,6 @@
 <script lang="ts">
     import { AppBar } from "@skeletonlabs/skeleton-svelte";
-    import { PUBLIC_WEBEDITOR_VERSION, PUBLIC_WASM_PLAYER_URL } from "$env/static/public";
+    import { PUBLIC_WASM_PLAYER_URL } from "$env/static/public";
     import {
         gameFilename, isDirty, saveGame, saveGameAs, canSaveAs, backupGame, canBackup,
         publishModalOpen,
@@ -95,9 +95,6 @@
     <AppBar.Toolbar class="grid-cols-[auto_1fr_auto]">
         <AppBar.Lead>
             <span class="font-semibold">Quest Viva Editor</span>
-            {#if PUBLIC_WEBEDITOR_VERSION}
-                <span class="ml-2 text-xs text-surface-500-400">{PUBLIC_WEBEDITOR_VERSION}</span>
-            {/if}
             {#if $gameFilename}
                 <span class="ml-3 text-sm text-surface-500-400">{$gameFilename}{#if $isDirty} *{/if}</span>
             {/if}
