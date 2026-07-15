@@ -42,10 +42,19 @@ export const publishModalOpen = writable(false);
 function refreshUndoRedo() {
     canUndo.set(_bridge?.CanUndo() ?? false);
     canRedo.set(_bridge?.CanRedo() ?? false);
-    isDirty.set(_bridge?.IsDirty() ?? false);
+    const dirty = _bridge?.IsDirty() ?? false;
+    isDirty.set(dirty);
+    if (dirty) scheduleAutosave();
 }
 
 export async function openGame(bytes: Uint8Array, filename: string, adapter: FileAdapter): Promise<boolean> {
+    // Defensive reset: callers that switch games mid-session (Electron's menu
+    // actions) already await saveGame() to flush the previous game first, so
+    // this should always be a no-op in practice — but a leftover timer here
+    // would otherwise fire against the wrong _bridge/_adapter below.
+    cancelPendingAutosave();
+    isSaving.set(false);
+    saveError.set(null);
     loadingStatus.set("Starting editor…");
     _bridge = await loadWasm();
     _adapter = adapter;
@@ -163,16 +172,91 @@ export async function previewInWasmPlayer(wasmPlayerUrl: string): Promise<void> 
     };
 }
 
-export async function saveGame(): Promise<void> {
+// ── Autosave ─────────────────────────────────────────────────────────────────
+// Edits already commit into the WASM model synchronously as they're made (see
+// setAttribute etc. below, all wired to onchange/blur in the components) —
+// that's what gives the v5-style "saved as you navigate" feel at the model
+// layer. This section is only responsible for debouncing *persistence* of
+// that already-current model out to the FileAdapter (disk/OPFS/server),
+// instead of requiring an explicit Save click.
+
+export const isSaving = writable(false);
+export const saveError = writable<string | null>(null);
+
+const AUTOSAVE_DEBOUNCE_MS = 800;
+const RETRY_DELAYS_MS = [5000, 15000, 30000];
+
+let _autosaveTimer: ReturnType<typeof setTimeout> | null = null;
+let _retryTimer: ReturnType<typeof setTimeout> | null = null;
+let _retryAttempt = 0;
+let _saveInFlight: Promise<void> | null = null;
+let _resaveQueued = false;
+
+function cancelPendingAutosave(): void {
+    if (_autosaveTimer !== null) { clearTimeout(_autosaveTimer); _autosaveTimer = null; }
+    if (_retryTimer !== null) { clearTimeout(_retryTimer); _retryTimer = null; }
+}
+
+function scheduleAutosave(): void {
+    if (_autosaveTimer !== null) clearTimeout(_autosaveTimer);
+    _autosaveTimer = setTimeout(() => {
+        _autosaveTimer = null;
+        void persistNow();
+    }, AUTOSAVE_DEBOUNCE_MS);
+}
+
+// Transient failures (e.g. ServerFileAdapter's PUT hitting a network blip)
+// get a few automatic retries with backoff; scheduleRetry() is a no-op if one
+// is already pending so a burst of failures doesn't stack up timers.
+function scheduleRetry(): void {
+    if (_retryTimer !== null) return;
+    const delay = RETRY_DELAYS_MS[Math.min(_retryAttempt, RETRY_DELAYS_MS.length - 1)];
+    _retryAttempt++;
+    _retryTimer = setTimeout(() => {
+        _retryTimer = null;
+        void persistNow();
+    }, delay);
+}
+
+// Serializes the bridge and writes it via the adapter. A caller that arrives
+// while a save is already in flight (autosave firing right as a manual flush
+// is in progress, say) folds into a single follow-up save afterwards rather
+// than racing two concurrent writes to the same target.
+export function persistNow(): Promise<void> {
+    if (_saveInFlight) {
+        _resaveQueued = true;
+        return _saveInFlight;
+    }
+    _saveInFlight = doPersist().finally(() => {
+        _saveInFlight = null;
+        const queued = _resaveQueued;
+        _resaveQueued = false;
+        if (queued && get(isDirty)) void persistNow();
+    });
+    return _saveInFlight;
+}
+
+async function doPersist(): Promise<void> {
     if (!_bridge || !_adapter) return;
-    await rekeyIfGameIdChanged();
-    await _adapter.saveFile(_bridge.Save()); // Save() clears _isDirty in the bridge
-    isDirty.set(false);
-    // Re-check rather than only at load: this is what lets the banner appear the
-    // moment a fresh local draft crosses the activity threshold, instead of
-    // waiting for the user to close and reopen it.
-    if (_adapter instanceof LocalDraftAdapter) {
-        showBackupBanner.set(await shouldShowBackupBanner(_adapter.gameId));
+    isSaving.set(true);
+    try {
+        await rekeyIfGameIdChanged();
+        await _adapter.saveFile(_bridge.Save()); // Save() clears _isDirty in the bridge
+        isDirty.set(false);
+        saveError.set(null);
+        _retryAttempt = 0;
+        if (_retryTimer !== null) { clearTimeout(_retryTimer); _retryTimer = null; }
+        // Re-check rather than only at load: this is what lets the banner appear the
+        // moment a fresh local draft crosses the activity threshold, instead of
+        // waiting for the user to close and reopen it.
+        if (_adapter instanceof LocalDraftAdapter) {
+            showBackupBanner.set(await shouldShowBackupBanner(_adapter.gameId));
+        }
+    } catch (err) {
+        saveError.set(err instanceof Error ? err.message : "Save failed");
+        scheduleRetry();
+    } finally {
+        isSaving.set(false);
     }
 }
 
@@ -188,11 +272,31 @@ async function rekeyIfGameIdChanged(): Promise<void> {
     _loadedGameId = currentGameId;
 }
 
+// Forces any in-progress field edit to commit (blur fires its onchange) and
+// flushes it to storage immediately, bypassing the debounce. Used for the
+// Electron "Save" menu action, and awaited before navigating away to a
+// different game or on tab hide/close, so nothing is left stranded in the
+// debounce window.
+export async function saveGame(): Promise<void> {
+    (document.activeElement as HTMLElement | null)?.blur();
+    cancelPendingAutosave();
+    if (get(isDirty)) await persistNow();
+}
+
+// The status pill's "Retry" action after a failed autosave.
+export function retrySave(): Promise<void> {
+    cancelPendingAutosave();
+    return persistNow();
+}
+
 export async function saveGameAs(): Promise<void> {
     if (!_bridge || !_adapter) return;
+    (document.activeElement as HTMLElement | null)?.blur();
+    cancelPendingAutosave();
     const newName = await _adapter.saveFileAs(_bridge.Save()); // Save() clears _isDirty in the bridge
     if (newName) gameFilename.set(newName);
     isDirty.set(false);
+    saveError.set(null);
 }
 
 // Bundles the current game plus its assets into a downloadable .zip — the local
@@ -202,8 +306,10 @@ export async function saveGameAs(): Promise<void> {
 // but would fork the game from its templates if re-imported for further editing.
 export async function backupGame(): Promise<void> {
     if (!_bridge || !(_adapter instanceof LocalDraftAdapter)) return;
+    cancelPendingAutosave();
     const gameXml = _bridge.Save(); // Save() clears _isDirty in the bridge
     isDirty.set(false);
+    saveError.set(null);
     const zipEntries: Record<string, Uint8Array> = {
         [_adapter.filename]: new TextEncoder().encode(gameXml),
     };
