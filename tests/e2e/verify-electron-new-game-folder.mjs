@@ -62,16 +62,19 @@ try {
         }, labelPath);
     }
 
-    // 1. Fresh /open, type a name — the preview should show Documents/Quest
-    // Games (the stubbed fake one) with no dialog involved at all.
+    // 1. Fresh /open, type a name — the preview should show the *parent*
+    // folder only (Documents/Quest Games, the stubbed fake one), not the
+    // game's own subfolder — "Change location…" only ever changes the
+    // parent, so showing the child folder name next to it read as if that
+    // were also choosable.
     await win.waitForSelector('button:has-text("Open game folder")', { timeout: 30000 });
     await win.fill('input[placeholder="Game name"]', 'Game A');
-    const previewLocator = win.locator('text=Will be created in:');
+    const previewLocator = win.locator('text=Will be created as a new folder in:');
     await previewLocator.waitFor({ timeout: 10000 });
     const previewText = await previewLocator.innerText();
     console.log('Preview text:', previewText);
-    const previewLooksRight = previewText.includes('Quest Games') && previewText.includes('Game A') && previewText.includes(fakeDocumentsDir);
-    console.log('PASS: preview shows Documents/Quest Games/Game A under the stubbed Documents dir:', previewLooksRight);
+    const previewLooksRight = previewText.includes('Quest Games') && previewText.includes(fakeDocumentsDir) && !previewText.includes('Game A');
+    console.log('PASS: preview shows only the parent Documents/Quest Games dir, not a "Game A" child:', previewLooksRight);
     if (!previewLooksRight) throw new Error(`Unexpected preview text: ${previewText}`);
 
     // 2. Create it — no dialog stub in place for this step, so if the code

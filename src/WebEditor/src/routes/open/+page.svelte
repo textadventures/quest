@@ -7,7 +7,6 @@
     import { hasFSA, openDirectory, loadFileFromDirectory, createLocalGame } from "$lib/filesystem/browser-adapter";
     import {
         openElectronDirectory, loadElectronFile, createElectronGame, getDefaultGamesDir, pickGameLocation,
-        sanitizeFolderName, joinGamePath,
     } from "$lib/filesystem/electron-adapter";
     import { isElectron } from "$lib/runtime";
     import { createNewGame, getGameTemplates } from "$lib/filesystem/server-adapter";
@@ -100,8 +99,6 @@
     let electronParentDir = $state<string | null>(null);
     if (isElectron()) void getDefaultGamesDir().then(dir => defaultGamesDir = dir);
     let electronGamesDir = $derived(electronParentDir ?? defaultGamesDir);
-    let previewFolderName = $derived(sanitizeFolderName(createName.trim()));
-    let previewPath = $derived(electronGamesDir ? joinGamePath(electronGamesDir, previewFolderName) : "");
 
     async function handleChangeLocation() {
         const picked = await pickGameLocation(electronGamesDir || undefined);
@@ -505,8 +502,8 @@
 
                         {#if isElectron()}
                             <p class="text-xs text-surface-500-400 text-center self-center">
-                                Will be created in:<br />
-                                <span class="font-mono">{previewPath || "…"}</span>
+                                Will be created as a new folder in:<br />
+                                <span class="font-mono">{electronGamesDir || "…"}</span>
                                 <button type="button" class="anchor" onclick={handleChangeLocation}>Change location…</button>
                             </p>
                         {/if}

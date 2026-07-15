@@ -37,13 +37,6 @@ function electronApp() {
     return window.electronApp!;
 }
 
-// Exposed so callers (open/+page.svelte's new-game location preview) never
-// need to reach into window.electronApp directly — every other Electron
-// access in this codebase goes through this file.
-export function joinGamePath(...segments: string[]): string {
-    return electronApp().path.join(...segments);
-}
-
 /**
  * FileAdapter backed by Electron's contextBridge (Node fs via IPC), for the
  * desktop app. Same flat single-directory model as BrowserFileAdapter — no
@@ -143,13 +136,6 @@ export async function pickGameLocation(defaultPath?: string): Promise<string | n
         message: "Choose a location for your new game",
         buttonLabel: "Select Folder",
     });
-}
-
-// Same sanitization as safeFilename() in open/+page.svelte, minus the .aslx
-// suffix — used both to name the new subfolder and to preview it to the user
-// before they commit (see open/+page.svelte's previewFolderName).
-export function sanitizeFolderName(name: string): string {
-    return name.replace(/[^a-zA-Z0-9 _-]/g, "").trim() || "game";
 }
 
 /**
