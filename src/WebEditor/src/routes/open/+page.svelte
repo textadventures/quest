@@ -27,7 +27,12 @@
     // its Chromium supports showDirectoryPicker, but docs/electron-desktop-app.md
     // flags known parity bugs there (missing persistent permissions, broken
     // directory iteration). Checked once; doesn't change during the session.
-    const nativeFolder = isElectron() || hasFSA();
+    const isElectronApp = isElectron();
+    // FSA folder access (Open game folder / Save to folder) is offered as a
+    // secondary option on capable browsers — OPFS local drafts are the default
+    // everywhere else so trying the editor doesn't start with a "give this
+    // website access to a folder" prompt.
+    const canUseFSA = !isElectronApp && hasFSA();
 
     let loading = $state(false);
     let error = $state<string | null>(null);
@@ -40,12 +45,12 @@
     let pendingZip = $state<ZipEntries | null>(null);
     let pendingFiles = $state<string[]>([]);
 
-    // Local drafts (OPFS, non-FSA/non-Electron browsers only)
+    // Local drafts (OPFS) — every non-Electron browser, regardless of FSA support.
     let drafts = $state<LocalDraftSummary[]>([]);
     const isSafari = typeof navigator !== "undefined" && /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
 
     async function refreshDrafts() {
-        if (nativeFolder) return;
+        if (isElectronApp) return;
         drafts = (await listLocalDrafts()).sort((a, b) => b.lastModified - a.lastModified);
     }
     void refreshDrafts();
@@ -85,7 +90,7 @@
     $effect(() => {
         const params = page.url.searchParams;
         const nonce = params.get("t");
-        if (!nativeFolder || nonce === handledOpenNonce) return;
+        if (!isElectronApp || nonce === handledOpenNonce) return;
         const action = params.get("action");
         if (action === "open") {
             handledOpenNonce = nonce ?? "";
@@ -299,40 +304,65 @@
         await refreshRecentGames();
     }
 
+    // Shared by both create paths below — validates the form and renders the
+    // template through WASM. Returns null (with createLocalError already set)
+    // if the form isn't ready yet.
+    async function buildNewGameFile(): Promise<{ filename: string; content: string } | null> {
+        const trimmed = createName.trim();
+        if (!trimmed) { createLocalError = "Please enter a game name."; return null; }
+        if (!selectedTemplateId) { createLocalError = "Please select a template."; return null; }
+        const bridge = await loadWasm();
+        const content = bridge.CreateGameFromTemplate(selectedTemplateId, trimmed);
+        return { filename: safeFilename(trimmed), content };
+    }
+
+    // Default create path: Electron → native folder (its only storage mode);
+    // every other browser → an OPFS local draft, regardless of FSA support,
+    // so trying the editor never opens with a folder-permission prompt.
     async function handleCreateLocal() {
         createLocalError = null;
-        const trimmed = createName.trim();
-        if (!trimmed) { createLocalError = "Please enter a game name."; return; }
-        if (!selectedTemplateId) { createLocalError = "Please select a template."; return; }
         creatingLocal = true;
         try {
-            const bridge = await loadWasm();
-            const content = bridge.CreateGameFromTemplate(selectedTemplateId, trimmed);
-            const filename = safeFilename(trimmed);
-            if (isElectron()) {
-                const result = await createElectronGame(filename, content);
+            const file = await buildNewGameFile();
+            if (!file) { creatingLocal = false; return; }
+            if (isElectronApp) {
+                const result = await createElectronGame(file.filename, file.content);
                 if (result) {
                     const ok = await openGame(result.bytes, result.adapter.filename, result.adapter);
                     if (ok) { goto(base || "/"); return; }
                     createLocalError = "Failed to load new game.";
                 }
             // result === null: user cancelled the directory picker — do nothing
-            } else if (hasFSA()) {
-                const result = await createLocalGame(filename, content);
-                if (result) {
-                    const ok = await openGame(result.loaded.bytes, result.loaded.adapter.filename, result.loaded.adapter);
-                    if (ok) { goto(base || "/"); return; }
-                    createLocalError = "Failed to load new game.";
-                }
-            // result === null: user cancelled the directory picker — do nothing
             } else {
-                const gameId = parseGameIdFromAslx(content);
+                const gameId = parseGameIdFromAslx(file.content);
                 if (!gameId) { createLocalError = "New game is missing a gameid."; creatingLocal = false; return; }
-                const adapter = await createLocalDraft(gameId, filename, content);
-                const ok = await openGame(new TextEncoder().encode(content), filename, adapter);
+                const adapter = await createLocalDraft(gameId, file.filename, file.content);
+                const ok = await openGame(new TextEncoder().encode(file.content), file.filename, adapter);
                 if (ok) { goto(base || "/"); return; }
                 createLocalError = "Failed to load new game.";
             }
+        } catch (err) {
+            createLocalError = String(err);
+        }
+        creatingLocal = false;
+    }
+
+    // Secondary create path, FSA-capable browsers only: saves straight to a
+    // folder on disk instead of an OPFS draft — offered alongside, not instead
+    // of, handleCreateLocal() (see canUseFSA).
+    async function handleCreateLocalFolder() {
+        createLocalError = null;
+        creatingLocal = true;
+        try {
+            const file = await buildNewGameFile();
+            if (!file) { creatingLocal = false; return; }
+            const result = await createLocalGame(file.filename, file.content);
+            if (result) {
+                const ok = await openGame(result.loaded.bytes, result.loaded.adapter.filename, result.loaded.adapter);
+                if (ok) { goto(base || "/"); return; }
+                createLocalError = "Failed to load new game.";
+            }
+        // result === null: user cancelled the directory picker — do nothing
         } catch (err) {
             createLocalError = String(err);
         }
@@ -388,7 +418,7 @@
                 <!-- Open existing game -->
                 <p class="text-surface-500-400 text-sm font-medium self-start">Open existing game</p>
 
-                {#if nativeFolder}
+                {#if isElectronApp}
                     <button type="button" class="btn preset-filled-primary-500 w-full" onclick={handleOpenFolder}>
                         Open game folder
                     </button>
@@ -396,9 +426,15 @@
                     <button type="button" class="btn preset-filled-primary-500 w-full" onclick={handleImportFile}>
                         Import game file
                     </button>
+                    {#if canUseFSA}
+                        <button type="button" class="btn preset-outlined-primary-500 w-full" onclick={handleOpenFolder}>
+                            Open game folder
+                        </button>
+                    {/if}
                     <p class="text-sm text-surface-500-400 max-w-[40ch] text-center">
                         Accepts a .aslx file or a .zip backed up from here. Imported games are stored in this
                         browser as a local draft — use <strong>Backup</strong> in the editor to save a copy to disk.
+                        {#if canUseFSA}Or open a folder on your computer to edit it there directly.{/if}
                     </p>
                 {/if}
 
@@ -406,7 +442,7 @@
                     <p class="text-error-500 text-sm">{error}</p>
                 {/if}
 
-                {#if isElectron() && recentGames.length > 0}
+                {#if isElectronApp && recentGames.length > 0}
                     <hr class="w-full border-surface-300-700 my-2" />
                     <p class="text-surface-500-400 text-sm font-medium self-start">Recent</p>
                     <div class="flex flex-col gap-2 w-full">
@@ -431,7 +467,7 @@
                     </div>
                 {/if}
 
-                {#if !nativeFolder && drafts.length > 0}
+                {#if !isElectronApp && drafts.length > 0}
                     <hr class="w-full border-surface-300-700 my-2" />
                     <p class="text-surface-500-400 text-sm font-medium self-start">Your local drafts</p>
                     <div class="flex flex-col gap-2 w-full">
@@ -527,25 +563,47 @@
                     {:else}
                         <div class="flex gap-2">
                             {#if hasServer}
-                                <button
-                                    type="button"
-                                    class="btn preset-filled-primary-500 flex-1"
-                                    onclick={handleCreateServer}
-                                    disabled={!createName.trim()}
-                                    title="Save to textadventures.co.uk"
-                                >
-                                    Save to server
-                                </button>
+                                <div class="flex flex-col gap-1 flex-1">
+                                    <button
+                                        type="button"
+                                        class="btn preset-filled-primary-500 w-full"
+                                        onclick={handleCreateServer}
+                                        disabled={!createName.trim()}
+                                        title="Save to textadventures.co.uk"
+                                    >
+                                        Save to server
+                                    </button>
+                                    <p class="text-xs text-surface-500-400 text-center">Saved to your textadventures.co.uk account</p>
+                                </div>
                             {:else}
-                                <button
-                                    type="button"
-                                    class="btn preset-filled-primary-500 flex-1"
-                                    onclick={handleCreateLocal}
-                                    disabled={!createName.trim()}
-                                    title={nativeFolder ? "Choose a folder to save your game in" : "Save as a local draft in this browser"}
-                                >
-                                    {nativeFolder ? "Save to my computer" : "Create local draft"}
-                                </button>
+                                <div class="flex flex-col gap-1 flex-1">
+                                    <button
+                                        type="button"
+                                        class="btn preset-filled-primary-500 w-full"
+                                        onclick={handleCreateLocal}
+                                        disabled={!createName.trim()}
+                                        title={isElectronApp ? "Choose a folder to save your game in" : "Save as a local draft in this browser"}
+                                    >
+                                        {isElectronApp ? "Save to my computer" : "Create local draft"}
+                                    </button>
+                                    {#if !isElectronApp}
+                                        <p class="text-xs text-surface-500-400 text-center">Stored in this browser only</p>
+                                    {/if}
+                                </div>
+                                {#if canUseFSA}
+                                    <div class="flex flex-col gap-1 flex-1">
+                                        <button
+                                            type="button"
+                                            class="btn preset-outlined-primary-500 w-full"
+                                            onclick={handleCreateLocalFolder}
+                                            disabled={!createName.trim()}
+                                            title="Choose a folder on your computer to save your game in"
+                                        >
+                                            Save to folder…
+                                        </button>
+                                        <p class="text-xs text-surface-500-400 text-center">You'll choose a folder on this device</p>
+                                    </div>
+                                {/if}
                             {/if}
                         </div>
 
