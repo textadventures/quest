@@ -244,13 +244,13 @@
     }
 
     function onCopySelected() {
+        // no scriptVersion bump — selection intentionally preserved after copy
         copyScripts(elementKey, attribute, containerPath, sortedSelection());
-    // no scriptVersion bump — selection intentionally preserved after copy
     }
 
     function onCutSelected() {
+        // selectedIndices cleared by $effect when scriptVersion bumps
         cutScripts(elementKey, attribute, containerPath, sortedSelection());
-    // selectedIndices cleared by $effect when scriptVersion bumps
     }
 
     function onDeleteSelected() {
