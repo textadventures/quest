@@ -91,11 +91,11 @@ public class FunctionCallScript : ScriptBase, IFunctionCallScript
 
     public event EventHandler<ScriptUpdatedEventArgs> FunctionCallParametersUpdated;
 
-    public override void Execute(Context c)
+    public override async Task ExecuteAsync(Context c)
     {
         if ((m_parameters.Parameters == null || m_parameters.Parameters.Count == 0) && m_paramFunction == null)
         {
-            m_worldModel.RunProcedure(m_procedure);
+            await m_worldModel.RunProcedureAsync(m_procedure);
         }
         else
         {
@@ -121,10 +121,6 @@ public class FunctionCallScript : ScriptBase, IFunctionCallScript
 
             if (m_worldModel.Version >= WorldModelVersion.v520)
             {
-                // Only check for too few parameters for games for Quest 5.2 or later, as previous Quest versions
-                // would ignore this (but would usually still fail when the function was run, as the required
-                // variable wouldn't exist)
-
                 if (paramCount < paramNames.Count)
                 {
                     throw new Exception(string.Format(
@@ -138,7 +134,7 @@ public class FunctionCallScript : ScriptBase, IFunctionCallScript
             var cnt = 0;
             foreach (var f in m_parameters.Parameters)
             {
-                paramValues.Add((string) paramNames[cnt], f.Execute(c));
+                paramValues.Add((string) paramNames[cnt], await f.ExecuteAsync(c));
                 cnt++;
             }
 
@@ -147,7 +143,7 @@ public class FunctionCallScript : ScriptBase, IFunctionCallScript
                 paramValues.Add((string) paramNames[cnt], m_paramFunction);
             }
 
-            m_worldModel.RunProcedure(m_procedure, paramValues, false);
+            await m_worldModel.RunProcedureAsync(m_procedure, paramValues, false);
         }
     }
 

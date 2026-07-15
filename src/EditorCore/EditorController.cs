@@ -149,6 +149,8 @@ public sealed class EditorController : IDisposable
 
     public string GameName => WorldModel.Game.Fields.GetString("gamename");
 
+    public string GameId => WorldModel.GameID;
+
     internal EditableScriptFactory ScriptFactory { get; private set; }
 
     internal WorldModel WorldModel { get; private set; }
@@ -229,12 +231,12 @@ public sealed class EditorController : IDisposable
     //     newThread.Start();
     // }
 
-    public async Task<bool> Initialise(IConfig config, IGameDataProvider gameDataProvider, bool partialInit = false)
+    public async Task<bool> Initialise(IGameDataProvider gameDataProvider, bool partialInit = false)
     {
         m_lastelementscutout = false;
         var gameData = await gameDataProvider.GetData();
         Filename = gameData?.Filename ?? string.Empty;
-        WorldModel = new WorldModel(config, gameData, null);
+        WorldModel = new WorldModel(gameData, null);
         m_scriptFactory = new ScriptFactory(WorldModel);
         WorldModel.ElementFieldUpdated += m_worldModel_ElementFieldUpdated;
         WorldModel.ElementRefreshed += m_worldModel_ElementRefreshed;
@@ -557,7 +559,7 @@ public sealed class EditorController : IDisposable
         ClearTree(this, new EventArgs());
         InitialiseTreeStructure();
 
-        foreach (ElementType type in Enum.GetValues(typeof(ElementType)))
+        foreach (ElementType type in Enum.GetValues<ElementType>())
         {
             foreach (var o in WorldModel.Elements.GetElements(type).Where(e => e.Parent == null))
             {
@@ -870,7 +872,7 @@ public sealed class EditorController : IDisposable
         return ScriptFactory.ScriptData;
     }
 
-    public IEnumerable<string> GetAllScriptEditorCategories(bool showAll = false)
+    public Task<IEnumerable<string>> GetAllScriptEditorCategories(bool showAll = false)
     {
         return ScriptFactory.GetCategories(SimpleMode, showAll);
     }
@@ -936,16 +938,16 @@ public sealed class EditorController : IDisposable
         WorldModel.UndoLogger.EndTransaction();
     }
 
-    public void Undo()
+    public Task Undo()
     {
-        WorldModel.UndoLogger.Undo();
+        return WorldModel.UndoLogger.Undo();
     }
 
-    public void Undo(int count)
+    public async Task Undo(int count)
     {
         for (var i = 0; i < count; i++)
         {
-            WorldModel.UndoLogger.Undo();
+            await WorldModel.UndoLogger.Undo();
         }
     }
 

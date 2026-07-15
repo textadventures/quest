@@ -1,4 +1,4 @@
-﻿using Microsoft.VisualBasic;
+using Microsoft.VisualBasic;
 using Microsoft.VisualBasic.CompilerServices;
 
 namespace QuestViva.Legacy;
@@ -26,9 +26,9 @@ internal class RoomExit
         o.Exists = true;
     }
 
-    private void SetExitProperty(string propertyName, string value)
+    private async Task SetExitProperty(string propertyName, string value)
     {
-        _game.AddToObjectProperties(propertyName + "=" + value, _objId, _game._nullContext);
+        await _game.AddToObjectProperties(propertyName + "=" + value, _objId, _game._nullContext);
     }
 
     private string GetExitProperty(string propertyName)
@@ -36,7 +36,7 @@ internal class RoomExit
         return _game.GetObjectProperty(propertyName, _objId, false, false);
     }
 
-    private void SetExitPropertyBool(string propertyName, bool value)
+    private async Task SetExitPropertyBool(string propertyName, bool value)
     {
         string sPropertyString;
         sPropertyString = propertyName;
@@ -45,7 +45,7 @@ internal class RoomExit
             sPropertyString = "not " + sPropertyString;
         }
 
-        _game.AddToObjectProperties(sPropertyString, _objId, _game._nullContext);
+        await _game.AddToObjectProperties(sPropertyString, _objId, _game._nullContext);
     }
 
     private bool GetExitPropertyBool(string propertyName)
@@ -53,15 +53,15 @@ internal class RoomExit
         return _game.GetObjectProperty(propertyName, _objId, true, false) == "yes";
     }
 
-    private void SetAction(string actionName, string value)
+    private async Task SetAction(string actionName, string value)
     {
-        _game.AddToObjectActions("<" + actionName + "> " + value, _objId, _game._nullContext);
+        await _game.AddToObjectActions("<" + actionName + "> " + value, _objId, _game._nullContext);
     }
 
-    public void SetToRoom(string value)
+    public async Task SetToRoom(string value)
     {
-        SetExitProperty("to", value);
-        UpdateObjectName();
+        await SetExitProperty("to", value);
+        await UpdateObjectName();
     }
 
     public string GetToRoom()
@@ -69,9 +69,9 @@ internal class RoomExit
         return GetExitProperty("to");
     }
 
-    public void SetPrefix(string value)
+    public async Task SetPrefix(string value)
     {
-        SetExitProperty("prefix", value);
+        await SetExitProperty("prefix", value);
     }
 
     public string GetPrefix()
@@ -79,11 +79,11 @@ internal class RoomExit
         return GetExitProperty("prefix");
     }
 
-    public void SetScript(string value)
+    public async Task SetScript(string value)
     {
         if (Strings.Len(value) > 0)
         {
-            SetAction("script", value);
+            await SetAction("script", value);
         }
     }
 
@@ -92,12 +92,12 @@ internal class RoomExit
         return _game.HasAction(_objId, "script");
     }
 
-    public void SetDirection(V4Game.Direction value)
+    public async Task SetDirection(V4Game.Direction value)
     {
         _direction = value;
         if (value != V4Game.Direction.None)
         {
-            UpdateObjectName();
+            await UpdateObjectName();
         }
     }
 
@@ -141,9 +141,9 @@ internal class RoomExit
         return _displayName;
     }
 
-    public void SetIsLocked(bool value)
+    public async Task SetIsLocked(bool value)
     {
-        SetExitPropertyBool("locked", value);
+        await SetExitPropertyBool("locked", value);
     }
 
     public bool GetIsLocked()
@@ -151,9 +151,9 @@ internal class RoomExit
         return GetExitPropertyBool("locked");
     }
 
-    public void SetLockMessage(string value)
+    public async Task SetLockMessage(string value)
     {
-        SetExitProperty("lockmessage", value);
+        await SetExitProperty("lockmessage", value);
     }
 
     public string GetLockMessage()
@@ -161,18 +161,18 @@ internal class RoomExit
         return GetExitProperty("lockmessage");
     }
 
-    private void RunAction(ref string actionName, ref V4Game.Context ctx)
+    private async Task RunAction(string actionName, V4Game.Context ctx)
     {
-        _game.DoAction(_objId, actionName, ctx);
+        await _game.DoAction(_objId, actionName, ctx);
     }
 
-    internal void RunScript(ref V4Game.Context ctx)
+    internal async Task RunScript(V4Game.Context ctx)
     {
         var argactionName = "script";
-        RunAction(ref argactionName, ref ctx);
+        await RunAction(argactionName, ctx);
     }
 
-    private void UpdateObjectName()
+    private async Task UpdateObjectName()
     {
         string objName;
         var lastExitId = default(int);
@@ -210,7 +210,7 @@ internal class RoomExit
             }
 
             lastExitId = lastExitId + 1;
-            _game.AddToObjectProperties("quest.lastexitid=" + lastExitId, _parent.GetObjId(), _game._nullContext);
+            await _game.AddToObjectProperties("quest.lastexitid=" + lastExitId, _parent.GetObjId(), _game._nullContext);
             objName = objName + ".exit" + lastExitId;
 
             if (GetRoomId() == 0)
@@ -228,7 +228,7 @@ internal class RoomExit
             }
 
             _game._objs[_objId].ObjectAlias = _displayName;
-            SetPrefix(_game._rooms[GetRoomId()].Prefix);
+            await SetPrefix(_game._rooms[GetRoomId()].Prefix);
         }
 
         _game._objs[_objId].ObjectName = objName;
@@ -237,26 +237,26 @@ internal class RoomExit
         _objName = objName;
     }
 
-    internal void Go(ref V4Game.Context ctx)
+    internal async Task Go(V4Game.Context ctx)
     {
         if (GetIsLocked())
         {
             if (GetExitPropertyBool("lockmessage"))
             {
-                _game.Print(GetExitProperty("lockmessage"), ctx);
+                await _game.Print(GetExitProperty("lockmessage"), ctx);
             }
             else
             {
-                _game.PlayerErrorMessage(V4Game.PlayerError.Locked, ctx);
+                await _game.PlayerErrorMessage(V4Game.PlayerError.Locked, ctx);
             }
         }
         else if (IsScript())
         {
-            RunScript(ref ctx);
+            await RunScript(ctx);
         }
         else
         {
-            _game.PlayGame(GetToRoom(), ctx);
+            await _game.PlayGame(GetToRoom(), ctx);
         }
     }
 }

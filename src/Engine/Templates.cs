@@ -18,11 +18,14 @@ public partial class Template
     internal Element AddTemplate(string templateName, string text, bool isCommandTemplate, bool isBaseTemplate = false)
     {
         // if a template is marked as IsBaseTemplate, it's from the base .aslx file so shouldn't be overwritten
-        // by an equivalent library definition
+        // by an equivalent library definition. But a later base-template definition (e.g. a second
+        // <template> for the same name further down the same base file, as produced by old Quest 5.8
+        // exports that inline a full library per language one after another) must still win over an
+        // earlier one from the same scan - only non-base (library) definitions are blocked here.
         Element existingTemplate;
         if (m_templateLookup.TryGetValue(templateName, out existingTemplate))
         {
-            if (existingTemplate.Fields[FieldDefinitions.IsBaseTemplate])
+            if (existingTemplate.Fields[FieldDefinitions.IsBaseTemplate] && !isBaseTemplate)
             {
                 return null;
             }
@@ -66,10 +69,9 @@ public partial class Template
         return null;
     }
 
-    public string GetDynamicText(string t, params Element[] obj)
+    public Task<string> GetDynamicTextAsync(string t, params Element[] obj)
     {
         Parameters parameters;
-
         if (obj.Length == 1)
         {
             parameters = new Parameters("object", obj[0]);
@@ -82,18 +84,16 @@ public partial class Template
                 parameters.Add("object" + (i + 1), obj[i]);
             }
         }
-
-        return GetDynamicTextInternal(t, parameters);
+        return GetDynamicTextInternalAsync(t, parameters);
     }
 
-    public string GetDynamicText(string t, string text)
+    public Task<string> GetDynamicTextAsync(string t, string text)
     {
-        return GetDynamicTextInternal(t, new Parameters("text", text));
+        return GetDynamicTextInternalAsync(t, new Parameters("text", text));
     }
 
-    private string GetDynamicTextInternal(string t, Parameters parameters)
+    private async Task<string> GetDynamicTextInternalAsync(string t, Parameters parameters)
     {
-        // if there is no dynamictemplate of this name, return the "ordinary" template instead.
         if (!m_worldModel.Elements.ContainsKey(ElementType.DynamicTemplate, t))
         {
             return GetText(t);
@@ -102,7 +102,7 @@ public partial class Template
         var c = new Context();
         c.Parameters = parameters;
         var template = m_worldModel.Elements.Get(ElementType.DynamicTemplate, t);
-        return template.Fields[FieldDefinitions.Function].Execute(c);
+        return await template.Fields[FieldDefinitions.Function].ExecuteAsync(c);
     }
 
     internal Element AddVerbTemplate(string c, string text, string filename)

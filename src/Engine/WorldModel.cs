@@ -7,7 +7,6 @@ using QuestViva.Common;
 using QuestViva.Engine.Functions;
 using QuestViva.Engine.GameLoader;
 using QuestViva.Engine.Scripts;
-using QuestViva.Utility;
 
 namespace QuestViva.Engine;
 
@@ -34,34 +33,89 @@ public partial class WorldModel : IGame, IGameDebug
 
     private static List<string>? FunctionNames;
     private readonly List<string> _attributeNames = [];
-    private readonly CallbackManager _callbacks = new();
-    private readonly object _commandOverrideLock = new();
-    private readonly IConfig _config;
     private readonly Dictionary<string, ElementType> _debuggerElementTypes = new();
     private readonly Dictionary<string, ObjectType> _debuggerObjectTypes = new();
     private readonly Dictionary<ElementType, IElementFactory> _elementFactories = new();
     private readonly GameData? _gameData;
     private readonly Dictionary<string, int> _nextUniqueId = new();
     private readonly Stream? _saveData;
-    private readonly object _threadLock = new();
 
-    private readonly object _waitForResponseLock = new();
-
-    private bool _commandOverride;
-    private string? _commandOverrideInput;
+    internal bool _commandOverride;
 
     private LegacyOutputLogger? _legacyOutputLogger;
 
     private bool _loadedFromSaved;
-    private IDictionary<string, string>? _menuOptions;
-    private string? _menuResponse;
     private IPlayer? _playerUi;
 
-    private bool _questionResponse;
-
     private GameSaver? _saver;
-    private ThreadState _threadState = ThreadState.Ready;
     private TimerRunner? _timerRunner;
+
+    // Guards against re-entering the engine while the initial InitInterface/
+    // StartGame sequence (kicked off by BeginAsync but not yet complete) is
+    // still running. Games can trigger this via a JS-raised event mid-startup
+    // (e.g. a device-detection script that calls ASLEvent(...), which schedules
+    // a real `setTimeout` a few ms out) — WasmPlayer's cooperative single-
+    // threaded scheduling lets that fire and call back into SendEvent/Tick
+    // while, say, InitVerbsList hasn't run yet. Blazor Server's synchronization
+    // context doesn't allow that interleaving, which is why this only bites
+    // WasmPlayer. Tick can just be dropped (Begin() reschedules the next one
+    // itself); SendEvent has real one-time semantics so it's queued in
+    // _deferredEvents and replayed once Begin() completes instead.
+    private bool _beginInProgress;
+    private readonly Queue<(string eventName, string param)> _deferredEvents = new();
+
+    internal TaskCompletionSource? _waitTcs;
+    internal TaskCompletionSource<string?>? _menuTcs;
+    internal TaskCompletionSource<bool>? _questionTcs;
+    internal TaskCompletionSource<string>? _commandInputTcs;
+    internal TaskCompletionSource? _pauseTcs;
+    private TaskCompletionSource _turnSuspendedTcs = new();
+
+    // Every prompt (wait/menu/ask/get input) reuses a single TCS field, replacing it each time
+    // it's shown. If a new prompt is triggered before a previous one resolves (e.g. via 'on ready'
+    // reentrancy), the old field gets silently overwritten and whatever was awaiting it - along
+    // with its _scriptExecutionDepth increment - is orphaned forever, permanently wedging the
+    // depth guard for the rest of the session. Cancelling the outgoing TCS before replacing it
+    // ensures every prompt is resolved one way or another; callers already handle
+    // OperationCanceledException from these awaits (see FinishGame, which does the same thing).
+    internal static TaskCompletionSource BeginPrompt(ref TaskCompletionSource? field)
+    {
+        field?.TrySetCanceled();
+        return field = new TaskCompletionSource();
+    }
+
+    internal static TaskCompletionSource<T> BeginPrompt<T>(ref TaskCompletionSource<T>? field)
+    {
+        field?.TrySetCanceled();
+        return field = new TaskCompletionSource<T>();
+    }
+
+    // Tracks show menu / ask / get input callbacks that fire-and-forget their response handling.
+    // on ready defers until this reaches zero.
+    private int _pendingCallbackCount;
+    private readonly List<(IScript Script, Context Context)> _onReadyQueue = [];
+
+    private bool _reportingScriptError;
+
+    // Guards against unbounded script recursion (e.g. a "changed<field>" script that sets the
+    // field it's watching) blowing the stack with a StackOverflowException, which cannot be
+    // caught and kills the whole process/all connected players in WebPlayer.
+    private const int MaxScriptExecutionDepth = 200;
+    private int _scriptExecutionDepth;
+
+    // If something has left the game in a state where a script fails the same way every time it
+    // runs (e.g. the depth guard above is permanently tripped by corrupted game state), the catch
+    // block that reports each failure runs again on every subsequent turn forever, with nothing to
+    // stop it. That's cheap per call, but with no upper bound on how many turns get attempted,
+    // output/log buffers that are only cleared after a *successful* turn (see WebPlayer's
+    // Player.ClearJavaScriptBuffer) grow without limit. This is a session-lifetime total, not a
+    // consecutive/streak count that resets on the next unrelated successful script call (which
+    // happens constantly during ordinary turns) - a genuinely wedged session fails this many times
+    // in short order regardless, while a normal session with the odd one-off script bug never gets
+    // close.
+    private const int MaxScriptErrors = 20;
+    private int _scriptErrorCount;
+    private bool _scriptErrorsFatal;
 
     private Walkthroughs? _walkthroughs;
 
@@ -73,13 +127,13 @@ public partial class WorldModel : IGame, IGameDebug
         }
     }
 
-    internal WorldModel(IConfig config)
+    internal WorldModel()
         // ReSharper disable once IntroduceOptionalParameters.Global
-        : this(config, null, null)
+        : this(null, null)
     {
     }
 
-    public WorldModel(IConfig config, GameData? gameData, Stream? saveData)
+    public WorldModel(GameData? gameData, Stream? saveData)
     {
         ExpressionOwner = new ExpressionOwner(this);
         Template = new Template(this);
@@ -87,7 +141,6 @@ public partial class WorldModel : IGame, IGameDebug
         ObjectFactory = (ObjectFactory) _elementFactories[ElementType.Object];
 
         InitialiseDebuggerObjectTypes();
-        _config = config;
         _gameData = gameData;
         _saveData = saveData;
         Elements = new Elements();
@@ -95,7 +148,7 @@ public partial class WorldModel : IGame, IGameDebug
         Game = ObjectFactory.CreateObject("game", ObjectType.Game);
     }
 
-    public Func<string, Stream>? ResourceGetter { get; internal set; }
+    public Func<string, Stream?>? ResourceGetter { get; internal set; }
     public Func<IEnumerable<string>>? GetResourceNames { get; internal set; }
 
     internal static Dictionary<ObjectType, string> DefaultTypeNames { get; } = new()
@@ -106,8 +159,6 @@ public partial class WorldModel : IGame, IGameDebug
         {ObjectType.Game, "defaultgame"},
         {ObjectType.TurnScript, "defaultturnscript"}
     };
-
-    public bool UseNCalc => _config.UseNCalc;
 
     public Element Game { get; }
 
@@ -166,32 +217,14 @@ public partial class WorldModel : IGame, IGameDebug
     public event FinishedHandler? Finished;
     public event ErrorHandler? LogError;
 
-    public void SetMenuResponse(string? response)
+    public async Task SetMenuResponse(string? response)
     {
-        var menuCallback = _callbacks.Pop(CallbackManager.CallbackTypes.Menu);
-        if (menuCallback != null)
-        {
-            if (response != null)
-            {
-                Print(" - " + _menuOptions![response]);
-            }
-
-            menuCallback.Context.Parameters["result"] = response;
-            _menuOptions = null;
-            DoInNewThreadAndWait(() => { RunCallbackAndFinishTurn(menuCallback); });
-        }
-        else
-        {
-            DoInNewThreadAndWait(() =>
-            {
-                _menuResponse = response;
-
-                lock (_waitForResponseLock)
-                {
-                    Monitor.Pulse(_waitForResponseLock);
-                }
-            });
-        }
+        var tcs = _menuTcs;
+        _turnSuspendedTcs = new();
+        tcs?.TrySetResult(response);
+        await _turnSuspendedTcs.Task;
+        if (State != GameState.Finished) await UpdateListsAsync();
+        SendNextTimerRequest();
     }
 
     public async Task<bool> Initialise(IPlayer player)
@@ -208,71 +241,87 @@ public partial class WorldModel : IGame, IGameDebug
         return result;
     }
 
-    public void Begin()
+    public Task Begin() => BeginAsync();
+
+    public Task BeginAsync()
     {
-        DoInNewThreadAndWait(() =>
-        {
-            try
-            {
-                _timerRunner = new TimerRunner(this, !_loadedFromSaved);
-                if (Version <= WorldModelVersion.v540)
-                {
-                    PlayerUi.Show("Panes");
-                    PlayerUi.Show("Location");
-                    PlayerUi.Show("Command");
-                }
-
-                if (Elements.ContainsKey(ElementType.Function, "InitInterface"))
-                {
-                    RunProcedure("InitInterface");
-                }
-
-                if (!_loadedFromSaved)
-                {
-                    if (Elements.ContainsKey(ElementType.Function, "StartGame"))
-                    {
-                        RunProcedure("StartGame");
-                    }
-                }
-
-                TryRunOnFinallyScripts();
-                UpdateLists();
-                if (_loadedFromSaved)
-                {
-                    var output = Elements.GetSingle(ElementType.Output);
-                    if (output == null)
-                    {
-                        Print("Loaded saved game");
-                    }
-                    else if (Version >= WorldModelVersion.v540)
-                    {
-                        PlayerUi.RunScript("loadHtml", [output.Fields.GetString("html")]);
-                        PlayerUi.RunScript("markScrollPosition", null);
-                        ScrollToEnd();
-                    }
-                    else if (_legacyOutputLogger != null)
-                    {
-                        _legacyOutputLogger.DisplayOutput(output.Fields.GetString("text"));
-                    }
-                }
-
-                SendNextTimerRequest();
-            }
-            catch (Exception ex)
-            {
-                LogException(ex);
-                Finish();
-            }
-
-            ChangeThreadState(ThreadState.Ready);
-        });
-
+        _ = BeginInternalAsync();
         SendNextTimerRequest();
+        return _turnSuspendedTcs.Task;
+    }
+
+    private async Task BeginInternalAsync()
+    {
+        _turnSuspendedTcs = new();
+        _beginInProgress = true;
+        try
+        {
+            _timerRunner = new TimerRunner(this, !_loadedFromSaved);
+            if (Version <= WorldModelVersion.v540)
+            {
+                PlayerUi.Show("Panes");
+                PlayerUi.Show("Location");
+                PlayerUi.Show("Command");
+            }
+
+            if (Elements.ContainsKey(ElementType.Function, "InitInterface"))
+            {
+                await RunProcedureAsync("InitInterface");
+            }
+
+            if (!_loadedFromSaved)
+            {
+                if (Elements.ContainsKey(ElementType.Function, "StartGame"))
+                {
+                    await RunProcedureAsync("StartGame");
+                }
+            }
+
+            await TryRunOnFinallyScriptsAsync();
+            await UpdateListsAsync();
+
+            if (_loadedFromSaved)
+            {
+                var output = Elements.GetSingle(ElementType.Output);
+                if (output == null)
+                {
+                    await PrintAsync("Loaded saved game");
+                }
+                else if (Version >= WorldModelVersion.v540)
+                {
+                    await PlayerUi.RunScriptAsync("loadHtml", [output.Fields.GetString("html")]);
+                    await PlayerUi.RunScriptAsync("markScrollPosition", null);
+                    ScrollToEnd();
+                }
+                else if (_legacyOutputLogger != null)
+                {
+                    await _legacyOutputLogger.DisplayOutputAsync(output.Fields.GetString("text"));
+                }
+            }
+
+            SendNextTimerRequest();
+        }
+        catch (Exception ex)
+        {
+            LogException(ex);
+            Finish();
+        }
+        finally
+        {
+            _beginInProgress = false;
+            while (_deferredEvents.Count > 0)
+            {
+                var (eventName, param) = _deferredEvents.Dequeue();
+                await SendEventCore(eventName, param);
+            }
+
+            SignalTurnSuspended();
+        }
     }
 
     public List<string> Errors { get; private set; } = [];
 
-    public void SendCommand(string command, int elapsedTime, IDictionary<string, string> metadata)
+    public async Task SendCommand(string command, int elapsedTime, IDictionary<string, string> metadata)
     {
         if (_timerRunner == null)
         {
@@ -282,106 +331,123 @@ public partial class WorldModel : IGame, IGameDebug
         if (elapsedTime > 0)
         {
             _timerRunner.IncrementTime(elapsedTime);
-        }
-
-        DoInNewThreadAndWait(() =>
-        {
-            if (!_commandOverride)
-            {
-                if (Version < WorldModelVersion.v520)
-                {
-                    Print("");
-                    Print("> " + Utility.SafeXML(command));
-                }
-
-                try
-                {
-                    RunProcedure("HandleCommand", new Parameters(new Dictionary<string, object>
-                    {
-                        {"command", command},
-                        {"metadata", new QuestDictionary<string>(metadata)}
-                    }), false);
-                    if (Version < WorldModelVersion.v580)
-                    {
-                        TryFinishTurn();
-                    }
-
-                    if (State != GameState.Finished)
-                    {
-                        UpdateLists();
-                    }
-                }
-                catch (Exception ex)
-                {
-                    LogException(ex);
-                }
-
-                ChangeThreadState(ThreadState.Ready);
-            }
-            else
-            {
-                var getInputCallback = _callbacks.Pop(CallbackManager.CallbackTypes.GetInput);
-                if (getInputCallback != null)
-                {
-                    _commandOverride = false;
-                    getInputCallback.Context.Parameters["result"] = command;
-                    RunCallbackAndFinishTurn(getInputCallback);
-                }
-                else
-                {
-                    _commandOverrideInput = command;
-
-                    lock (_commandOverrideLock)
-                    {
-                        Monitor.Pulse(_commandOverrideLock);
-                    }
-                }
-            }
-        });
-
-        if (elapsedTime > 0)
-        {
-            // we increase the timer counter above, before the command has been run,
-            // so we pass in 0 here
-            Tick(0);
+            // Run any timer scripts the elapsed time triggers to completion before starting the
+            // command, rather than racing them via fire-and-forget: both this and
+            // HandleCommandAsyncInternal read/mutate the same Elements/Fields collections, and running
+            // them concurrently can corrupt that state (observed as "Operations that change
+            // non-concurrent collections must have exclusive access" on WebPlayer, where commands can
+            // genuinely run on separate threads - WasmPlayer's single-threaded runtime masked this).
+            await Tick(0);
         }
         else
         {
             SendNextTimerRequest();
         }
+
+        // HandleCommandAsyncInternal sets _turnSuspendedTcs synchronously before its first real await,
+        // so capturing .Task after the fire-and-forget start is safe.
+        _ = HandleCommandAsyncInternal(command, metadata);
+
+        await _turnSuspendedTcs.Task;
     }
 
-    public void SendCommand(string command)
+    private async Task HandleCommandAsyncInternal(string command, IDictionary<string, string> metadata)
     {
-        SendCommand(command, 0, ReadOnlyDictionary<string, string>.Empty);
+        _turnSuspendedTcs = new();
+        var commandWasOverridden = false;
+        try
+        {
+            if (!_commandOverride)
+            {
+                if (Version < WorldModelVersion.v520)
+                {
+                    await PrintAsync("");
+                    await PrintAsync("> " + Utility.SafeXML(command));
+                }
+
+                await RunProcedureAsync("HandleCommand", new Parameters(new Dictionary<string, object>
+                {
+                    {"command", command},
+                    {"metadata", new QuestDictionary<string>(metadata)}
+                }), false);
+
+                if (Version < WorldModelVersion.v580)
+                {
+                    await TryFinishTurnAsync();
+                }
+
+                if (State != GameState.Finished)
+                {
+                    await UpdateListsAsync();
+                }
+            }
+            else
+            {
+                commandWasOverridden = true;
+                _commandOverride = false;
+                _commandInputTcs?.TrySetResult(command);
+            }
+        }
+        catch (Exception ex)
+        {
+            LogException(ex);
+        }
+        finally
+        {
+            // Send the timer request BEFORE signalling turn suspended, so that Bridge.FlushBuffer()
+            // (which runs synchronously inside TrySetResult) sees the correct post-command timer state
+            // rather than the stale value from Tick(0) which ran before the command script executed.
+            SendNextTimerRequest();
+            // When command was overridden (get input / GetInput function), the callback fires
+            // asynchronously via AwaitResponseAndRunCallbackAsync, which calls SignalTurnSuspended()
+            // in its own finally after the callback script runs. Signaling here would complete the
+            // turn before the callback output is produced, causing it to appear only on the next turn.
+            if (!commandWasOverridden) SignalTurnSuspended();
+        }
     }
 
-    public void SendEvent(string eventName, string param)
+    public Task SendCommand(string command)
+    {
+        return SendCommand(command, 0, ReadOnlyDictionary<string, string>.Empty);
+    }
+
+    public Task SendEvent(string eventName, string param)
+    {
+        if (_beginInProgress)
+        {
+            _deferredEvents.Enqueue((eventName, param));
+            return Task.CompletedTask;
+        }
+
+        return SendEventCore(eventName, param);
+    }
+
+    private async Task SendEventCore(string eventName, string param)
     {
         Elements.TryGetValue(ElementType.Function, eventName, out var handler);
 
         if (handler == null)
         {
-            Print($"Error - no handler for event '{eventName}'");
+            await PrintAsync($"Error - no handler for event '{eventName}'");
             return;
         }
 
         var parameters = new Parameters {{(string) handler.Fields[FieldDefinitions.ParamNames][0], param}};
 
-        RunProcedure(eventName, parameters, false);
+        await RunProcedureAsync(eventName, parameters, false);
 
         switch (Version)
         {
             case < WorldModelVersion.v540:
                 return;
             case < WorldModelVersion.v580:
-                TryFinishTurn();
+                await TryFinishTurnAsync();
                 break;
         }
 
         if (State != GameState.Finished)
         {
-            UpdateLists();
+            await UpdateListsAsync();
         }
 
         SendNextTimerRequest();
@@ -392,39 +458,25 @@ public partial class WorldModel : IGame, IGameDebug
         FinishGame();
     }
 
-    public void FinishWait()
+    public async Task FinishWait()
     {
-        var waitCallback = _callbacks.Pop(CallbackManager.CallbackTypes.Wait);
-        if (waitCallback != null)
-        {
-            DoInNewThreadAndWait(() => { RunCallbackAndFinishTurn(waitCallback); });
-        }
-        else
-        {
-            if (State == GameState.Finished)
-            {
-                return;
-            }
-
-            DoInNewThreadAndWait(() =>
-            {
-                lock (_waitForResponseLock)
-                {
-                    Monitor.Pulse(_waitForResponseLock);
-                }
-            });
-        }
+        if (State == GameState.Finished) return;
+        var tcs = _waitTcs;
+        _turnSuspendedTcs = new();
+        tcs?.TrySetResult();
+        await _turnSuspendedTcs.Task;
+        if (State != GameState.Finished) await UpdateListsAsync();
+        SendNextTimerRequest();
     }
 
-    public void FinishPause()
+    public async Task FinishPause()
     {
-        DoInNewThreadAndWait(() =>
-        {
-            lock (_waitForResponseLock)
-            {
-                Monitor.Pulse(_waitForResponseLock);
-            }
-        });
+        var tcs = _pauseTcs;
+        _turnSuspendedTcs = new();
+        tcs?.TrySetResult();
+        await _turnSuspendedTcs.Task;
+        if (State != GameState.Finished) await UpdateListsAsync();
+        SendNextTimerRequest();
     }
 
     public IEnumerable<string> GetExternalScripts()
@@ -469,13 +521,13 @@ public partial class WorldModel : IGame, IGameDebug
         return result;
     }
 
-    public byte[] Save(string html)
+    public Task<byte[]> SaveAsync(string html)
     {
         var saveData = Save(SaveMode.SavedGame, html: html);
-        return Encoding.UTF8.GetBytes(saveData);
+        return Task.FromResult(Encoding.UTF8.GetBytes(saveData));
     }
 
-    public void Tick(int elapsedTime)
+    public Task Tick(int elapsedTime)
     {
         if (_timerRunner == null)
         {
@@ -484,53 +536,48 @@ public partial class WorldModel : IGame, IGameDebug
 
         if (State == GameState.Finished)
         {
-            return;
+            return Task.CompletedTask;
         }
 
-        DoInNewThreadAndWait(() =>
+        if (_beginInProgress)
         {
-            try
-            {
-                var scripts = _timerRunner.TickAndGetScripts(elapsedTime);
+            // A stale/early tick raced the still-running Begin() sequence (see
+            // _beginInProgress). Drop it — BeginInternalAsync calls
+            // SendNextTimerRequest() itself once it completes, so the next tick
+            // gets scheduled correctly from actual post-startup state.
+            return Task.CompletedTask;
+        }
 
-                foreach (var timerScript in scripts)
-                {
-                    RunScript(timerScript.Value, timerScript.Key);
-                }
-
-                UpdateLists();
-            }
-            catch (Exception ex)
-            {
-                LogException(ex);
-            }
-
-            ChangeThreadState(ThreadState.Ready, false);
-        });
-
+        var task = TickAsyncInternal(elapsedTime);
         SendNextTimerRequest();
+        return task;
     }
 
-    public void SetQuestionResponse(bool response)
+    private async Task TickAsyncInternal(int elapsedTime)
     {
-        var questionCallback = _callbacks.Pop(CallbackManager.CallbackTypes.Question);
-        if (questionCallback != null)
+        try
         {
-            questionCallback.Context.Parameters["result"] = response;
-            DoInNewThreadAndWait(() => { RunCallbackAndFinishTurn(questionCallback); });
-        }
-        else
-        {
-            DoInNewThreadAndWait(() =>
+            var scripts = _timerRunner!.TickAndGetScripts(elapsedTime);
+            foreach (var timerScript in scripts)
             {
-                _questionResponse = response;
-
-                lock (_waitForResponseLock)
-                {
-                    Monitor.Pulse(_waitForResponseLock);
-                }
-            });
+                await RunScriptAsync(timerScript.Value, timerScript.Key);
+            }
+            await UpdateListsAsync();
         }
+        catch (Exception ex)
+        {
+            LogException(ex);
+        }
+    }
+
+    public async Task SetQuestionResponse(bool response)
+    {
+        var tcs = _questionTcs;
+        _turnSuspendedTcs = new();
+        tcs?.TrySetResult(response);
+        await _turnSuspendedTcs.Task;
+        if (State != GameState.Finished) await UpdateListsAsync();
+        SendNextTimerRequest();
     }
 
     public Stream? GetResourceStream(string filename)
@@ -576,11 +623,11 @@ public partial class WorldModel : IGame, IGameDebug
         return Elements.Get(el).GetDebugData();
     }
 
-    public bool Assert(string expr)
+    public Task<bool> AssertAsync(string expr)
     {
         var expression = new Expression<bool>(expr, new ScriptContext(this));
         var c = new Context();
-        return expression.Execute(c);
+        return expression.ExecuteAsync(c);
     }
 
     public event EventHandler<ElementFieldUpdatedEventArgs>? ElementFieldUpdated;
@@ -590,11 +637,26 @@ public partial class WorldModel : IGame, IGameDebug
 
     private void InitialiseElementFactories()
     {
-        foreach (var t in Classes.GetImplementations(Assembly.GetExecutingAssembly(),
-                     typeof(IElementFactory)))
-        {
-            AddElementFactory((IElementFactory) Activator.CreateInstance(t)!);
-        }
+        IElementFactory[] factories =
+        [
+            new ObjectFactory(),
+            new ObjectTypeFactory(),
+            new EditorFactory(),
+            new EditorTabFactory(),
+            new EditorControlFactory(),
+            new FunctionFactory(),
+            new DelegateFactory(),
+            new TemplateFactory(),
+            new DynamicTemplateFactory(),
+            new WalkthroughFactory(),
+            new IncludedLibraryFactory(),
+            new ImpliedTypeFactory(),
+            new JavascriptReferenceFactory(),
+            new TimerFactory(),
+            new ResourceFactory(),
+            new OutputFactory(),
+        ];
+        foreach (var f in factories) AddElementFactory(f);
     }
 
     private void AddElementFactory(IElementFactory factory)
@@ -623,22 +685,14 @@ public partial class WorldModel : IGame, IGameDebug
     {
         State = GameState.Finished;
 
-        // Pulse all locks in case we're in the middle of waiting for player input for GetInput() etc.
-
-        lock (_commandOverrideLock)
-        {
-            Monitor.PulseAll(_commandOverrideLock);
-        }
-
-        lock (_threadLock)
-        {
-            Monitor.PulseAll(_threadLock);
-        }
-
-        lock (_waitForResponseLock)
-        {
-            Monitor.PulseAll(_waitForResponseLock);
-        }
+        // Cancel all pending TCS so awaiting code can unblock
+        _waitTcs?.TrySetCanceled();
+        _menuTcs?.TrySetCanceled();
+        _questionTcs?.TrySetCanceled();
+        _commandInputTcs?.TrySetCanceled();
+        _pauseTcs?.TrySetCanceled();
+        _turnSuspendedTcs.TrySetResult();
+        _onReadyQueue.Clear();
 
         RequestNextTimerTick?.Invoke(0);
         Finished?.Invoke();
@@ -672,18 +726,28 @@ public partial class WorldModel : IGame, IGameDebug
         return _elementFactories[t];
     }
 
-    public void PrintTemplate(string t)
+    public Task PrintTemplateAsync(string t)
     {
-        Print(Template.GetText(t));
+        return PrintAsync(Template.GetText(t));
     }
 
     public void Print(string text, bool linebreak = true)
+    {
+        if (EditMode) return;
+        if (PrintText != null)
+        {
+            PrintText(linebreak ? "<output>" + text + "</output>" : "<output nobr=\"true\">" + text + "</output>");
+        }
+        _legacyOutputLogger?.AddText(text, linebreak);
+    }
+
+    public async Task PrintAsync(string text, bool linebreak = true)
     {
         if (!EditMode && Version >= WorldModelVersion.v540 && Elements.ContainsKey(ElementType.Function, "OutputText"))
         {
             try
             {
-                RunProcedure("OutputText", new Parameters(new Dictionary<string, string> {{"text", text}}), false);
+                await RunProcedureAsync("OutputText", new Parameters(new Dictionary<string, string> {{"text", text}}), false);
             }
             catch (Exception ex)
             {
@@ -713,11 +777,11 @@ public partial class WorldModel : IGame, IGameDebug
         return new QuestList<Element>(Elements.Objects);
     }
 
-    private QuestList<Element> GetObjectsInScope(string scopeFunction)
+    private async Task<QuestList<Element>> GetObjectsInScopeAsync(string scopeFunction)
     {
         if (Elements.ContainsKey(ElementType.Function, scopeFunction))
         {
-            return (QuestList<Element>?) RunProcedure(scopeFunction, true) ?? new QuestList<Element>();
+            return (QuestList<Element>?) await RunProcedureAsync(scopeFunction, null, true) ?? new QuestList<Element>();
         }
 
         throw new Exception($"No function '{scopeFunction}'");
@@ -725,63 +789,17 @@ public partial class WorldModel : IGame, IGameDebug
 
     public static bool ObjectContains(Element parent, Element searchObj)
     {
-        if (searchObj.Parent == null)
+        var visited = new HashSet<Element>();
+        var current = searchObj.Parent;
+        while (current != null)
         {
-            return false;
+            if (current == parent) return true;
+            if (!visited.Add(current)) return false;
+            current = current.Parent;
         }
-
-        return searchObj.Parent == parent || ObjectContains(parent, searchObj.Parent);
+        return false;
     }
 
-    internal string DisplayMenu(string caption, IDictionary<string, string> options, bool allowCancel, bool async)
-    {
-        Print(caption);
-
-        var menuData = new MenuData(caption, options, allowCancel);
-        _menuOptions = options;
-
-        PlayerUi.ShowMenu(menuData);
-
-        if (async)
-        {
-            return string.Empty;
-        }
-
-        _callbacks.Pop(CallbackManager.CallbackTypes.Menu);
-        _menuOptions = null;
-
-        ChangeThreadState(ThreadState.Waiting);
-
-        lock (_waitForResponseLock)
-        {
-            Monitor.Wait(_waitForResponseLock);
-        }
-
-        ChangeThreadState(ThreadState.Working);
-
-        return _menuResponse!;
-    }
-
-    internal string DisplayMenu(string caption, IList<string> options, bool allowCancel, bool async)
-    {
-        var optionsDictionary = options.ToDictionary(option => option);
-        return DisplayMenu(caption, optionsDictionary, allowCancel, async);
-    }
-
-    internal void DisplayMenuAsync(string caption, IList<string> options, bool allowCancel, IScript callback, Context c)
-    {
-        _callbacks.Push(CallbackManager.CallbackTypes.Menu, new Callback(callback, c),
-            "Only one menu can be shown at a time.");
-        DisplayMenu(caption, options, allowCancel, true);
-    }
-
-    internal void DisplayMenuAsync(string caption, IDictionary<string, string> options, bool allowCancel,
-        IScript callback, Context c)
-    {
-        _callbacks.Push(CallbackManager.CallbackTypes.Menu, new Callback(callback, c),
-            "Only one menu can be shown at a time.");
-        DisplayMenu(caption, options, allowCancel, true);
-    }
 
     public bool ObjectExists(string name)
     {
@@ -881,7 +899,7 @@ public partial class WorldModel : IGame, IGameDebug
         _loadedFromSaved = true;
     }
 
-    private void UpdateStatusVariables()
+    private async Task UpdateStatusVariablesAsync()
     {
         if (!Elements.ContainsKey(ElementType.Function, "UpdateStatusAttributes"))
         {
@@ -890,7 +908,7 @@ public partial class WorldModel : IGame, IGameDebug
 
         try
         {
-            RunProcedure("UpdateStatusAttributes");
+            await RunProcedureAsync("UpdateStatusAttributes");
         }
         catch (Exception ex)
         {
@@ -898,20 +916,67 @@ public partial class WorldModel : IGame, IGameDebug
         }
     }
 
-    private void UpdateLists()
+    private async Task UpdateListsAsync()
     {
-        UpdateObjectsList();
-        UpdateExitsList();
-        UpdateStatusVariables();
+        await UpdateObjectsListAsync();
+        await UpdateExitsListAsync();
+        await UpdateStatusVariablesAsync();
     }
 
-    private void UpdateObjectsList()
+    private async Task UpdateObjectsListAsync()
     {
-        UpdateObjectsList("GetPlacesObjectsList", ListType.ObjectsList);
-        UpdateObjectsList("ScopeInventory", ListType.InventoryList);
+        await UpdateObjectsListAsync("GetPlacesObjectsList", ListType.ObjectsList);
+        await UpdateObjectsListAsync("ScopeInventory", ListType.InventoryList);
+        await UpdateElementMenuVerbsAsync();
     }
 
-    private void UpdateObjectsList(string scope, ListType listType)
+    // Unlike GetPlacesObjectsList (which excludes scenery so it isn't double-listed in the
+    // room's auto-generated object list), this covers every object the player can currently
+    // see or is carrying - including scenery - so that inline {object:} links in output text
+    // always have "live" display verbs available for their pop-up menu, regardless of whether
+    // the object also appears in the room's object list.
+    private async Task UpdateElementMenuVerbsAsync()
+    {
+        if (UpdateList == null)
+        {
+            return;
+        }
+
+        var heldObjects = await GetObjectsInScopeAsync("ScopeInventory");
+        var held = new HashSet<Element>(heldObjects);
+
+        var visibleNotHeld = Elements.ContainsKey(ElementType.Function, "ScopeVisibleNotHeld")
+            ? await GetObjectsInScopeAsync("ScopeVisibleNotHeld")
+            : new QuestList<Element>();
+
+        var objects = new List<ListData>();
+        var seen = new HashSet<Element>();
+        foreach (var obj in heldObjects.Concat(visibleNotHeld))
+        {
+            if (!seen.Add(obj))
+            {
+                continue;
+            }
+
+            IEnumerable<string> verbs;
+            if (Version <= WorldModelVersion.v520 || !Elements.ContainsKey(ElementType.Function, "GetDisplayVerbs"))
+            {
+                verbs = held.Contains(obj)
+                    ? obj.Fields[FieldDefinitions.InventoryVerbs]
+                    : obj.Fields[FieldDefinitions.DisplayVerbs];
+            }
+            else
+            {
+                verbs = await GetDisplayVerbsAsync(obj);
+            }
+
+            objects.Add(new ListData(await GetListDisplayAliasAsync(obj), verbs, obj.Name, await GetDisplayAliasAsync(obj)));
+        }
+
+        UpdateList(ListType.ElementMenuVerbs, objects);
+    }
+
+    private async Task UpdateObjectsListAsync(string scope, ListType listType)
     {
         if (UpdateList == null)
         {
@@ -919,25 +984,25 @@ public partial class WorldModel : IGame, IGameDebug
         }
 
         var objects = new List<ListData>();
-        foreach (var obj in GetObjectsInScope(scope))
+        foreach (var obj in await GetObjectsInScopeAsync(scope))
         {
             if (Version <= WorldModelVersion.v520 || !Elements.ContainsKey(ElementType.Function, "GetDisplayVerbs"))
             {
                 if (scope == "ScopeInventory")
                 {
-                    objects.Add(new ListData(GetListDisplayAlias(obj), obj.Fields[FieldDefinitions.InventoryVerbs],
-                        obj.Name, GetDisplayAlias(obj)));
+                    objects.Add(new ListData(await GetListDisplayAliasAsync(obj), obj.Fields[FieldDefinitions.InventoryVerbs],
+                        obj.Name, await GetDisplayAliasAsync(obj)));
                 }
                 else
                 {
-                    objects.Add(new ListData(GetListDisplayAlias(obj), obj.Fields[FieldDefinitions.DisplayVerbs],
-                        obj.Name, GetDisplayAlias(obj)));
+                    objects.Add(new ListData(await GetListDisplayAliasAsync(obj), obj.Fields[FieldDefinitions.DisplayVerbs],
+                        obj.Name, await GetDisplayAliasAsync(obj)));
                 }
             }
             else
             {
                 objects.Add(
-                    new ListData(GetListDisplayAlias(obj), GetDisplayVerbs(obj), obj.Name, GetDisplayAlias(obj)));
+                    new ListData(await GetListDisplayAliasAsync(obj), await GetDisplayVerbsAsync(obj), obj.Name, await GetDisplayAliasAsync(obj)));
             }
         }
 
@@ -946,43 +1011,46 @@ public partial class WorldModel : IGame, IGameDebug
         // directional exits so they only display in the compass)
         if (scope == "GetPlacesObjectsList")
         {
-            objects.AddRange(GetExitsListData());
+            objects.AddRange(await GetExitsListDataAsync());
         }
 
         UpdateList(listType, objects);
     }
 
-    private void UpdateExitsList()
+    private async Task UpdateExitsListAsync()
     {
-        UpdateList?.Invoke(ListType.ExitsList, GetExitsListData());
+        if (UpdateList != null)
+        {
+            UpdateList(ListType.ExitsList, await GetExitsListDataAsync());
+        }
     }
 
-    private string GetListDisplayAlias(Element obj)
+    private async Task<string> GetListDisplayAliasAsync(Element obj)
     {
         if (Elements.ContainsKey(ElementType.Function, "GetListDisplayAlias"))
         {
-            return (string) RunProcedure("GetListDisplayAlias", new Parameters("obj", obj), true)!;
+            return (string) (await RunProcedureAsync("GetListDisplayAlias", new Parameters("obj", obj), true))!;
         }
 
-        return GetDisplayAlias(obj);
+        return await GetDisplayAliasAsync(obj);
     }
 
-    private string GetDisplayAlias(Element obj)
+    private async Task<string> GetDisplayAliasAsync(Element obj)
     {
         if (Elements.ContainsKey(ElementType.Function, "GetDisplayAlias"))
         {
-            return (string) RunProcedure("GetDisplayAlias", new Parameters("obj", obj), true)!;
+            return (string) (await RunProcedureAsync("GetDisplayAlias", new Parameters("obj", obj), true))!;
         }
 
         return obj.Name;
     }
 
-    private IEnumerable<string> GetDisplayVerbs(Element obj)
+    private async Task<IEnumerable<string>> GetDisplayVerbsAsync(Element obj)
     {
-        return (QuestList<string>) RunProcedure("GetDisplayVerbs", new Parameters("object", obj), true)!;
+        return (QuestList<string>) (await RunProcedureAsync("GetDisplayVerbs", new Parameters("object", obj), true))!;
     }
 
-    private List<ListData> GetExitsListData()
+    private async Task<List<ListData>> GetExitsListDataAsync()
     {
         var exits = new List<ListData>();
         var scopeFunction = "ScopeExits";
@@ -991,7 +1059,7 @@ public partial class WorldModel : IGame, IGameDebug
             scopeFunction = "GetExitsList";
         }
 
-        foreach (var exit in GetObjectsInScope(scopeFunction))
+        foreach (var exit in await GetObjectsInScopeAsync(scopeFunction))
         {
             IEnumerable<string> verbs;
             if (Version <= WorldModelVersion.v520 || !Elements.ContainsKey(ElementType.Function, "GetDisplayVerbs"))
@@ -1000,10 +1068,10 @@ public partial class WorldModel : IGame, IGameDebug
             }
             else
             {
-                verbs = GetDisplayVerbs(exit);
+                verbs = await GetDisplayVerbsAsync(exit);
             }
 
-            exits.Add(new ListData(GetListDisplayAlias(exit), verbs, exit.Name, GetDisplayAlias(exit)));
+            exits.Add(new ListData(await GetListDisplayAliasAsync(exit), verbs, exit.Name, await GetDisplayAliasAsync(exit)));
         }
 
         return exits;
@@ -1024,78 +1092,61 @@ public partial class WorldModel : IGame, IGameDebug
         return Elements.Get(el).Fields.GetDebugDataItem(attribute);
     }
 
-    public void StartWait()
+    internal void SignalTurnSuspended(bool scroll = true)
     {
-        _callbacks.Pop(CallbackManager.CallbackTypes.Wait);
-        PlayerUi.DoWait();
-
-        ChangeThreadState(ThreadState.Waiting);
-
-        lock (_waitForResponseLock)
+        if (scroll && Version >= WorldModelVersion.v540)
         {
-            Monitor.Wait(_waitForResponseLock);
+            ScrollToEnd();
         }
-
-        ChangeThreadState(ThreadState.Working);
+        _turnSuspendedTcs.TrySetResult();
     }
 
-    public void StartWaitAsync(IScript callback, Context c)
+    internal async Task DoWaitAsync()
     {
-        _callbacks.Push(CallbackManager.CallbackTypes.Wait, new Callback(callback, c),
-            "Only one wait can be in progress at a time.");
         PlayerUi.DoWait();
+        var tcs = BeginPrompt(ref _waitTcs);
+        SignalTurnSuspended();
+        await tcs.Task;
     }
 
-    public void StartPause(int ms)
+    internal async Task DoPauseAsync(int ms)
     {
         PlayerUi.DoPause(ms);
-
-        ChangeThreadState(ThreadState.Waiting);
-
-        lock (_waitForResponseLock)
-        {
-            Monitor.Wait(_waitForResponseLock);
-        }
-
-        ChangeThreadState(ThreadState.Working);
+        var tcs = BeginPrompt(ref _pauseTcs);
+        SignalTurnSuspended();
+        await tcs.Task;
     }
 
-    public void RunScript(IScript script)
+    public Task RunScriptAsync(IScript script)
     {
-        RunScript(script, (Parameters?) null, false);
+        return RunScriptAsync(script, (Parameters?) null, false);
     }
 
     /// <summary>
-    ///     Use this version of RunScript when executing an object action. Set thisElement to the object whose action it is.
+    ///     Use this version of RunScriptAsync when executing an object action. Set thisElement to the object whose action it is.
     /// </summary>
-    /// <param name="script"></param>
-    /// <param name="thisElement"></param>
-    public void RunScript(IScript script, Element thisElement)
+    public Task RunScriptAsync(IScript script, Element thisElement)
     {
-        RunScript(script, null, false, thisElement);
+        return RunScriptAsync(script, null, false, thisElement);
     }
 
-    public void RunScript(IScript script, Parameters parameters)
+    public Task RunScriptAsync(IScript script, Parameters parameters)
     {
-        RunScript(script, parameters, false);
+        return RunScriptAsync(script, parameters, false);
     }
 
-    public void RunScript(IScript script, Parameters parameters, Element thisElement)
+    public Task RunScriptAsync(IScript script, Parameters parameters, Element thisElement)
     {
-        RunScript(script, parameters, false, thisElement);
+        return RunScriptAsync(script, parameters, false, thisElement);
     }
 
-    public object RunDelegateScript(IScript script, Parameters parameters, Element thisElement)
+    public Task<object?> RunDelegateScriptAsync(IScript script, Parameters parameters, Element thisElement)
     {
-        return RunScript(script, parameters, true, thisElement)!;
+        return RunScriptAsync(script, parameters, true, thisElement);
     }
 
-    private object? RunScript(IScript script, Parameters? parameters, bool expectResult)
-    {
-        return RunScript(script, parameters, expectResult, null);
-    }
-
-    private object? RunScript(IScript script, Parameters? parameters, bool expectResult, Element? thisElement)
+    private Task<object?> RunScriptAsync(IScript script, Parameters? parameters, bool expectResult,
+        Element? thisElement = null)
     {
         var c = new Context();
         parameters ??= new Parameters();
@@ -1105,20 +1156,31 @@ public partial class WorldModel : IGame, IGameDebug
         }
 
         c.Parameters = parameters;
-
-        return RunScript(script, c, expectResult);
+        return RunScriptAsync(script, c, expectResult);
     }
 
-    private void RunScript(IScript script, Context c)
+    internal Task RunScriptAsync(IScript script, Context c)
     {
-        RunScript(script, c, false);
+        return RunScriptAsync(script, c, false);
     }
 
-    private object? RunScript(IScript script, Context c, bool expectResult)
+    private async Task<object?> RunScriptAsync(IScript script, Context c, bool expectResult)
     {
+        if (_scriptErrorsFatal)
+        {
+            return null;
+        }
+
+        if (_scriptExecutionDepth >= MaxScriptExecutionDepth)
+        {
+            throw new Exception(
+                $"Script execution depth exceeded {MaxScriptExecutionDepth} - this usually means a script is recursing infinitely (e.g. a \"changed<field>\" script that sets the field it's watching)");
+        }
+
+        _scriptExecutionDepth++;
         try
         {
-            script.Execute(c);
+            await script.ExecuteAsync(c);
             if (expectResult && c.ReturnValue is NoReturnValue)
             {
                 throw new Exception("Function did not return a value");
@@ -1128,8 +1190,32 @@ public partial class WorldModel : IGame, IGameDebug
         }
         catch (Exception ex)
         {
-            // TODO: Add some way of nicely showing script errors to the user (should be higher up the callstack)
-            Print("Error running script: " + Utility.SafeXML(ex.Message));
+            LogException(ex);
+
+            if (++_scriptErrorCount >= MaxScriptErrors)
+            {
+                // The session is unrecoverably wedged (every script execution is failing the
+                // same way). Stop here rather than let it keep failing forever: end the game so
+                // WebPlayer/WasmPlayer stop sending it any further work.
+                _scriptErrorsFatal = true;
+                FinishGame();
+            }
+            else if (!_reportingScriptError)
+            {
+                _reportingScriptError = true;
+                try
+                {
+                    await PrintAsync("Error running script: " + Utility.SafeXML(ex.Message));
+                }
+                finally
+                {
+                    _reportingScriptError = false;
+                }
+            }
+        }
+        finally
+        {
+            _scriptExecutionDepth--;
         }
 
         return null;
@@ -1155,17 +1241,12 @@ public partial class WorldModel : IGame, IGameDebug
         return del;
     }
 
-    public void RunProcedure(string name)
+    public Task RunProcedureAsync(string name)
     {
-        RunProcedure(name, false);
+        return RunProcedureAsync(name, null, false);
     }
 
-    private object? RunProcedure(string name, bool expectResult)
-    {
-        return RunProcedure(name, null, expectResult);
-    }
-
-    public object? RunProcedure(string name, Parameters? parameters, bool expectResult)
+    public async Task<object?> RunProcedureAsync(string name, Parameters? parameters, bool expectResult)
     {
         if (Elements.ContainsKey(ElementType.Function, name))
         {
@@ -1193,10 +1274,10 @@ public partial class WorldModel : IGame, IGameDebug
                     function.Fields[FieldDefinitions.ParamNames].Count));
             }
 
-            return RunScript(function.Fields[FieldDefinitions.Script], parameters, expectResult);
+            return await RunScriptAsync(function.Fields[FieldDefinitions.Script], parameters, expectResult);
         }
 
-        Print($"Error - no such procedure '{name}'");
+        await PrintAsync($"Error - no such procedure '{name}'");
         return null;
     }
 
@@ -1282,9 +1363,14 @@ public partial class WorldModel : IGame, IGameDebug
         throw new Exception("Library file not found: " + filename);
     }
 
-    internal string GetExternalUrl(string file)
+    internal async Task<string> GetExternalUrlAsync(string file)
     {
-        return PlayerUi.GetURL(file);
+        if (file.Contains(".."))
+        {
+            throw new Exception("Invalid filename");
+        }
+
+        return await PlayerUi.GetUrlAsync(file);
     }
 
     public IEnumerable<string> GetAvailableLibraries()
@@ -1305,7 +1391,8 @@ public partial class WorldModel : IGame, IGameDebug
 
     private void AddFilesInPathToList(List<string> list, string path, bool recurse, string searchPattern = "*.aslx")
     {
-        path = Files.RemoveFileColonPrefix(path);
+        if (path.StartsWith(@"file:\")) path = path[6..];
+        else if (path.StartsWith("file:")) path = path[5..];
         var option = recurse ? SearchOption.AllDirectories : SearchOption.TopDirectoryOnly;
         foreach (var result in Directory.GetFiles(path, searchPattern, option))
         {
@@ -1361,59 +1448,10 @@ public partial class WorldModel : IGame, IGameDebug
 
     private void ScrollToEnd()
     {
-        PlayerUi.RunScript("scrollToEnd", null);
+        _ = PlayerUi.RunScriptAsync("scrollToEnd", null);
     }
 
-    private void ChangeThreadState(ThreadState newState, bool scroll = true)
-    {
-        if (scroll && Version >= WorldModelVersion.v540 &&
-            (newState == ThreadState.Ready || newState == ThreadState.Waiting))
-        {
-            ScrollToEnd();
-        }
-
-        if (newState == ThreadState.Waiting && State == GameState.Finished)
-        {
-            throw new Exception("Game is finished");
-        }
-
-        _threadState = newState;
-        lock (_threadLock)
-        {
-            Monitor.PulseAll(_threadLock);
-        }
-    }
-
-    private void WaitUntilFinishedWorking()
-    {
-        lock (_threadLock)
-        {
-            while (_threadState == ThreadState.Working)
-            {
-                Monitor.Wait(_threadLock);
-            }
-        }
-    }
-
-    private void DoInNewThreadAndWait(Action routine)
-    {
-        // Action wrappedRoutine = () =>
-        // {
-        //     try
-        //     {
-        //         routine();
-        //     }
-        //     catch { }
-        // };
-
-        ChangeThreadState(ThreadState.Working);
-        // Thread newThread = new Thread(new ThreadStart(wrappedRoutine));
-        var newThread = new Thread(new ThreadStart(routine));
-        newThread.Start();
-        WaitUntilFinishedWorking();
-    }
-
-    private void LogException(Exception ex)
+    internal void LogException(Exception ex)
     {
         LogError?.Invoke(ex);
     }
@@ -1489,37 +1527,6 @@ public partial class WorldModel : IGame, IGameDebug
         }
     }
 
-    internal string GetNextCommandInput(bool async)
-    {
-        _commandOverride = true;
-
-        if (async)
-        {
-            return string.Empty;
-        }
-
-        _callbacks.Pop(CallbackManager.CallbackTypes.GetInput);
-
-        ChangeThreadState(ThreadState.Waiting);
-
-        lock (_commandOverrideLock)
-        {
-            Monitor.Wait(_commandOverrideLock);
-        }
-
-        ChangeThreadState(ThreadState.Working);
-
-        _commandOverride = false;
-        return _commandOverrideInput!;
-    }
-
-    internal void GetNextCommandInputAsync(IScript callback, Context c)
-    {
-        _callbacks.Push(CallbackManager.CallbackTypes.GetInput, new Callback(callback, c),
-            "Only one 'get input' can be in progress at a time");
-        GetNextCommandInput(true);
-    }
-
     private void SendNextTimerRequest()
     {
         if (_timerRunner == null)
@@ -1537,66 +1544,12 @@ public partial class WorldModel : IGame, IGameDebug
         Debug.Print("Request next timer in {0}", next);
     }
 
-    internal bool ShowQuestion(string caption)
+    private async Task TryFinishTurnAsync()
     {
-        _callbacks.Pop(CallbackManager.CallbackTypes.Question);
-        PlayerUi.ShowQuestion(caption);
-
-        ChangeThreadState(ThreadState.Waiting);
-
-        lock (_waitForResponseLock)
-        {
-            Monitor.Wait(_waitForResponseLock);
-        }
-
-        ChangeThreadState(ThreadState.Working);
-
-        return _questionResponse;
-    }
-
-    internal void ShowQuestionAsync(string caption, IScript callback, Context c)
-    {
-        _callbacks.Push(CallbackManager.CallbackTypes.Question, new Callback(callback, c),
-            "Only one question can be asked at a time.");
-        PlayerUi.ShowQuestion(caption);
-    }
-
-    private void RunCallbackAndFinishTurn(Callback callback)
-    {
+        if (!Elements.ContainsKey(ElementType.Function, "FinishTurn")) return;
         try
         {
-            RunScript(callback.Script, callback.Context);
-            TryFinishTurn();
-            if (State != GameState.Finished)
-            {
-                UpdateLists();
-            }
-        }
-        catch (Exception ex)
-        {
-            LogException(ex);
-        }
-
-        ChangeThreadState(ThreadState.Ready);
-        SendNextTimerRequest();
-    }
-
-    private void TryFinishTurn()
-    {
-        TryRunOnFinallyScripts();
-        if (_callbacks.AnyOutstanding())
-        {
-            return;
-        }
-
-        if (!Elements.ContainsKey(ElementType.Function, "FinishTurn"))
-        {
-            return;
-        }
-
-        try
-        {
-            RunProcedure("FinishTurn");
+            await RunProcedureAsync("FinishTurn");
         }
         catch (Exception ex)
         {
@@ -1604,18 +1557,9 @@ public partial class WorldModel : IGame, IGameDebug
         }
     }
 
-    private void TryRunOnFinallyScripts()
+    private Task TryRunOnFinallyScriptsAsync()
     {
-        if (_callbacks.AnyOutstanding())
-        {
-            return;
-        }
-
-        var onReadyScripts = _callbacks.FlushOnReadyCallbacks();
-        foreach (var callback in onReadyScripts)
-        {
-            RunScript(callback.Script, callback.Context);
-        }
+        return Task.CompletedTask;
     }
 
     public bool CreatePackage(string filename, bool includeWalkthrough, out string error,
@@ -1643,22 +1587,6 @@ public partial class WorldModel : IGame, IGameDebug
         return FunctionNames.AsReadOnly();
     }
 
-    public void PlaySound(string filename, bool sync, bool looped)
-    {
-        PlayerUi.PlaySound(filename, sync, looped);
-        if (!sync)
-        {
-            return;
-        }
-
-        ChangeThreadState(ThreadState.Waiting);
-
-        lock (_waitForResponseLock)
-        {
-            Monitor.Wait(_waitForResponseLock);
-        }
-    }
-
     internal void UpdateElementSortOrder(Element movedElement)
     {
         // There's no need to worry about element sort order when playing the game, unless this is an element that can be seen by the
@@ -1677,26 +1605,51 @@ public partial class WorldModel : IGame, IGameDebug
         // When this happens, its SortIndex MetaField must be updated so that it
         // is at the end of the list of children.
 
-        var maxIndex = Elements.GetDirectChildren(movedElement.Parent)
-            .Select(sibling => sibling.MetaFields[MetaFieldDefinitions.SortIndex]).Prepend(-1).Max();
-
-        movedElement.MetaFields[MetaFieldDefinitions.SortIndex] = maxIndex + 1;
+        movedElement.MetaFields[MetaFieldDefinitions.SortIndex] = Elements.GetNextSortIndex(movedElement.Parent);
     }
 
-    internal void AddOnReady(IScript callback, Context c)
+    internal async Task AddOnReady(IScript callback, Context c)
     {
-        if (!_callbacks.AnyOutstanding())
+        if (_pendingCallbackCount > 0)
         {
-            RunScript(callback, c);
+            _onReadyQueue.Add((callback, c));
+            return;
         }
-        else
+        // Increment the pending count before running so that any nested 'on ready'
+        // statements encountered during execution are queued rather than recursed into.
+        BeginPendingCallback();
+        try
         {
-            _callbacks.AddOnReadyCallback(new Callback(callback, c));
+            await RunScriptAsync(callback, c);
+        }
+        finally
+        {
+            await EndPendingCallbackAsync();
+        }
+    }
+
+    internal void BeginPendingCallback() => _pendingCallbackCount++;
+
+    internal async Task EndPendingCallbackAsync()
+    {
+        _pendingCallbackCount--;
+        while (_pendingCallbackCount == 0 && _onReadyQueue.Count > 0 && State != GameState.Finished)
+        {
+            var (script, context) = _onReadyQueue[0];
+            _onReadyQueue.RemoveAt(0);
+            await RunScriptAsync(script, context);
+            // RunScriptAsync may have called BeginPendingCallback (e.g. via show menu inside on ready);
+            // if so, stop flushing — the new callback's EndPendingCallbackAsync will continue.
         }
     }
 
     public string? GetResourceData(string filename)
     {
+        if (filename.Contains(".."))
+        {
+            throw new Exception("Invalid filename");
+        }
+
         var stream = GetResourceStream(filename);
         if (stream == null)
         {

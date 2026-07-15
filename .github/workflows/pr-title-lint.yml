@@ -1,0 +1,38 @@
+name: Lint PR title
+
+# PRs are squash-merged, so the PR title becomes the commit message on main
+# that release-please parses to decide what changed and how to version it.
+# This enforces the Conventional Commits prefix (fix:, feat:, chore:, etc.)
+# that release-please needs to do that.
+on:
+  pull_request_target:
+    types: [opened, edited, synchronize, reopened]
+
+permissions:
+  pull-requests: read
+
+jobs:
+  lint-pr-title:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: amannn/action-semantic-pull-request@v5
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          # Scope is optional (requireScope unset), but when given it must
+          # match a project name exactly, so it clusters and capitalizes
+          # consistently in the release-please changelog. "main" is included
+          # because release-please's own PR titles are "chore(main): release X.Y.Z".
+          scopes: |
+            Common
+            Engine
+            EditorCore
+            PlayerCore
+            Legacy
+            WebPlayer
+            WasmPlayer
+            WebEditor
+            WasmEditor
+            ElectronApp
+            Site
+            main

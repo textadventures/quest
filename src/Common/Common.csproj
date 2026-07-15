@@ -6,7 +6,13 @@
         <ImplicitUsings>enable</ImplicitUsings>
         <LangVersion>default</LangVersion>
         <RootNamespace>QuestViva.Common</RootNamespace>
+        <IsAotCompatible>true</IsAotCompatible>
+        <PackageId>QuestViva.Common</PackageId>
+        <Description>Shared types and interfaces for Quest Viva, an open-source text adventure game engine.</Description>
     </PropertyGroup>
+    <ItemGroup>
+        <SupportedPlatform Include="browser"/>
+    </ItemGroup>
     <ItemGroup>
         <EmbeddedResource Include="..\..\VERSION">
             <Link>VERSION</Link>

@@ -236,9 +236,9 @@
                     <button
                         type="button"
                         tabindex="-1"
-                        class="flex-shrink-0 size-4 flex items-center justify-center transition-transform duration-150 {expandedIds.includes(node.id) ? 'rotate-90' : ''}"
+                        class="flex-shrink-0 size-4 flex items-center justify-center transition-transform duration-150 {expandedIds.includes(node.id) ? "rotate-90" : ""}"
                         onclick={(e) => { e.stopPropagation(); toggleExpand(node.id); }}
-                        aria-label={expandedIds.includes(node.id) ? 'Collapse' : 'Expand'}
+                        aria-label={expandedIds.includes(node.id) ? "Collapse" : "Expand"}
                     >
                         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="size-4"><polyline points="9 18 15 12 9 6" /></svg>
                     </button>

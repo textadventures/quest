@@ -94,7 +94,7 @@ internal class EditorControl : IEditorControl
         return m_source.Fields.GetAsType<double>(tag);
     }
 
-    public bool IsControlVisible(IEditorData data)
+    public Task<bool> IsControlVisible(IEditorData data)
     {
         return m_visibilityHelper.IsVisible(data);
     }

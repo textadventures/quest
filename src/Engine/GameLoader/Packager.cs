@@ -1,80 +1,45 @@
-﻿namespace QuestViva.Engine.GameLoader;
+using System.IO.Compression;
+using System.Text;
+
+namespace QuestViva.Engine.GameLoader;
 
 internal class Packager(WorldModel worldModel)
 {
-    private WorldModel _worldModel = worldModel;
+    private readonly WorldModel _worldModel = worldModel;
 
     public bool CreatePackage(string filename, bool includeWalkthrough, out string error,
         IEnumerable<WorldModel.PackageIncludeFile> includeFiles, Stream outputStream)
     {
-        // TODO
-        throw new NotImplementedException();
+        error = string.Empty;
 
-        // error = string.Empty;
-        //
-        // try
-        // {
-        //     string data = m_worldModel.Save(SaveMode.Package, includeWalkthrough);
-        //     string baseFolder = Path.GetDirectoryName(m_worldModel.Filename);
-        //
-        //     using (ZipFile zip = new ZipFile(Encoding.UTF8))
-        //     {
-        //         zip.AddEntry("game.aslx", data, Encoding.UTF8);
-        //
-        //         if (includeFiles == null)
-        //         {
-        //             var fileTypesToInclude = m_worldModel.Game.Fields[FieldDefinitions.PublishFileExtensions] ??
-        //                                  "*.jpg;*.jpeg;*.png;*.gif;*.js;*.wav;*.mp3;*.htm;*.html;*.svg";
-        //
-        //             foreach (var file in m_worldModel.GetAvailableExternalFiles(fileTypesToInclude))
-        //             {
-        //                 zip.AddFile(Path.Combine(baseFolder, file), "");
-        //             }
-        //         }
-        //         else
-        //         {
-        //             foreach (var file in includeFiles)
-        //             {
-        //                 zip.AddEntry(file.Filename, file.Content);
-        //             }
-        //         }
-        //         
-        //         AddLibraryResources(zip, baseFolder, ElementType.Javascript);
-        //         AddLibraryResources(zip, baseFolder, ElementType.Resource);
-        //
-        //         if (filename != null)
-        //         {
-        //             zip.Save(filename);
-        //         }
-        //         else if (outputStream != null)
-        //         {
-        //             zip.Save(outputStream);
-        //         }
-        //     }
-        // }
-        // catch (Exception ex)
-        // {
-        //     error = ex.Message;
-        //     return false;
-        // }
-        //
-        // return true;
+        try
+        {
+            var data = _worldModel.Save(SaveMode.Package, includeWalkthrough);
+
+            using var stream = filename != null ? File.Create(filename) : outputStream;
+            using (var zip = new ZipArchive(stream, ZipArchiveMode.Create, leaveOpen: true))
+            {
+                var gameEntry = zip.CreateEntry("game.aslx", CompressionLevel.Optimal);
+                using (var entryStream = gameEntry.Open())
+                using (var writer = new StreamWriter(entryStream, Encoding.UTF8))
+                {
+                    writer.Write(data);
+                }
+
+                foreach (var file in includeFiles)
+                {
+                    var fileEntry = zip.CreateEntry(file.Filename, CompressionLevel.Optimal);
+                    using var fileEntryStream = fileEntry.Open();
+                    file.Content.CopyTo(fileEntryStream);
+                }
+            }
+        }
+        catch (Exception ex)
+        {
+            error = ex.Message;
+            return false;
+        }
+
+        return true;
     }
-
-    // TODO
-    // private void AddLibraryResources(ZipFile zip, string baseFolder, ElementType elementType)
-    // {
-    //     foreach (Element e in m_worldModel.Elements.GetElements(elementType))
-    //     {
-    //         if (e.MetaFields[MetaFieldDefinitions.Library])
-    //         {
-    //             string libFolder = Path.GetDirectoryName(e.MetaFields[MetaFieldDefinitions.Filename]);
-    //             libFolder = TextAdventures.Utility.Utility.RemoveFileColonPrefix(libFolder);
-    //             if (libFolder != baseFolder)
-    //             {
-    //                 zip.AddFile(Path.Combine(libFolder, e.Fields[FieldDefinitions.Src]), "");
-    //             }
-    //         }
-    //     }
-    // }
 }

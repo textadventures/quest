@@ -1,4 +1,5 @@
 @rendermode InteractiveServer
+@using System.Xml.Linq
 @using QuestViva.Common
 @using QuestViva.PlayerCore
 @using QuestViva.WebPlayer.Components.Debugger
@@ -7,6 +8,8 @@
 @inject GameLauncher GameLauncher
 @inject GameSessionTracker GameSessionTracker
 @inject IJSRuntime JS
+@inject ILogger<Game> Logger
+@inject NavigationManager Navigation
 
 <HeadContent>
     <script type="text/javascript" src="/res/lib/jquery-2.1.1.min.js" crossorigin="anonymous"></script>
@@ -15,7 +18,7 @@
     <link rel="Stylesheet" type="text/css" href="/res/lib/jquery-ui.min.css"/>
     <link rel="Stylesheet" type="text/css" href="/res/playercore.css?v=@VersionInfo.Version"/>
     <script type="text/javascript" src="/res/playercore.js?v=@VersionInfo.Version" crossorigin="anonymous"></script>
-    <script type="text/javascript" src="player.js?v=@VersionInfo.Version" crossorigin="anonymous"></script>
+    <script type="text/javascript" src="/res/player.js?v=@VersionInfo.Version" crossorigin="anonymous"></script>
     <script type="text/javascript" src="playerweb.js?v=@VersionInfo.Version" crossorigin="anonymous"></script>
     <script>
         function addPaperScript() {
@@ -38,11 +41,17 @@
     <Debugger Game="@gameDebug" OnRunWalkthrough="RunWalkthrough"></Debugger>
 }
 
-@UiHtml
+<div id="qv-player-chrome">@UiHtml</div>
 
-<Slots Saves="@saves" OnStart="() => StartGame(null)" OnLoad="@LoadGame"></Slots>
+<Slots Saves="@saves" ManageMode="@manageMode" ErrorMessage="@saveManagerError"
+       OnStart="() => StartGame(null)" OnLoad="@LoadGame"
+       OnSaveNew="@SaveNew" OnDelete="@DeleteSlot"
+       OnDownload="@DownloadSaveToFile" OnUploadFile="@LoadSaveFromFile"
+       OnClose="@CloseSaveManager"></Slots>
 
 @code {
+    private const long MaxSaveFileBytes = 50 * 1024 * 1024;
+
     [Parameter] public required IGameDataProvider GameDataProvider { get; set; }
     [Parameter] public required Func<GameData, IResourceUrlProvider> ResourceUrlProvider { get; set; }
     [Parameter] public required bool EnableDebug { get; set; }
@@ -53,6 +62,10 @@
     private IGame? game;
     private IGameDebug? gameDebug;
     private SaveSlot[] saves = [];
+    private bool manageMode;
+    private string? saveManagerError;
+    private DotNetObjectReference<Game>? gameDotNetRef;
+    private byte[]? originalGameBytes;
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
@@ -61,12 +74,31 @@
         gameData = await GameDataProvider.GetData();
         if (gameData == null) return;
 
+        // Cached once here rather than read directly from gameData.Data on every
+        // StartGame call: GameLoader.Load() consumes the stream it's given (its
+        // XmlTextReader.Close() closes the underlying stream too), so reusing
+        // gameData.Data across more than one StartGame call throws "Cannot
+        // access a closed Stream" on the second+ attempt. Previously harmless,
+        // since StartGame was only ever called once per session — the new
+        // in-game reload-to-a-different-save capability is what first exercises
+        // calling it again against the same gameData.
+        await using (gameData.Data)
+        {
+            using var ms = new MemoryStream();
+            await gameData.Data.CopyToAsync(ms);
+            originalGameBytes = ms.ToArray();
+        }
+
         await JS.InvokeVoidAsync("WebPlayer.setGameId", gameData.GameId);
         await JS.InvokeVoidAsync("WebPlayer.initSlotsDialog");
+
+        gameDotNetRef = DotNetObjectReference.Create(this);
+        await JS.InvokeVoidAsync("WebPlayer.setGameDotNetHelper", gameDotNetRef);
 
         saves = await JS.InvokeAsync<SaveSlot[]>("WebPlayer.listSaves");
         if (saves.Length > 0)
         {
+            manageMode = false;
             await JS.InvokeVoidAsync("WebPlayer.showSlots", false);
             StateHasChanged();
         }
@@ -76,25 +108,172 @@
         }
     }
 
-    private async Task StartGame(Stream? saveData)
+    [JSInvokable]
+    public async Task OpenSaveManager()
+    {
+        saves = await JS.InvokeAsync<SaveSlot[]>("WebPlayer.listSaves");
+        manageMode = true;
+        saveManagerError = null;
+        StateHasChanged();
+        await JS.InvokeVoidAsync("WebPlayer.showSlots", true);
+    }
+
+    private async Task SaveNew(string? name)
+    {
+        await JS.InvokeVoidAsync("WebPlayer.saveNew", name);
+        saves = await JS.InvokeAsync<SaveSlot[]>("WebPlayer.listSaves");
+        StateHasChanged();
+    }
+
+    private async Task DeleteSlot(int slotIndex)
+    {
+        var name = saves.FirstOrDefault(s => s.SlotIndex == slotIndex)?.Name ?? "this save";
+        var confirmed = await JS.InvokeAsync<bool>("confirm", $"Delete \"{name}\"? This can't be undone.");
+        if (!confirmed) return;
+
+        await JS.InvokeVoidAsync("WebPlayer.deleteSlot", slotIndex);
+        saves = await JS.InvokeAsync<SaveSlot[]>("WebPlayer.listSaves");
+        StateHasChanged();
+    }
+
+    private async Task DownloadSaveToFile()
     {
         if (gameData == null) return;
+        // GameId, not Filename — for textadventures.co.uk games, Filename is
+        // always literally "game.aslx" (the last segment of the fetched
+        // resource URL), while GameId is the actual game id and much more
+        // useful for telling downloaded saves apart. GetFileNameWithoutExtension
+        // strips a trailing .aslx/.quest for the file-based providers (whose
+        // GameId is filename-derived, extension and all) and is a no-op for
+        // opaque ids; it also takes just the last path-like segment, which
+        // helps if GameId is ever a raw URL (UrlGameDataProvider without an
+        // explicit id, e.g. the editor-preview path) — SanitizeFilename then
+        // mops up any remaining filesystem-unsafe characters.
+        var filename = SanitizeFilename(Path.GetFileNameWithoutExtension(gameData.GameId)) + ".quest-save";
+        await JS.InvokeVoidAsync("WebPlayer.downloadSaveAsFile", filename);
+    }
+
+    private static string SanitizeFilename(string name)
+    {
+        var invalid = Path.GetInvalidFileNameChars();
+        var sanitized = new string(name.Select(c => invalid.Contains(c) ? '_' : c).ToArray());
+        return sanitized.Length > 0 ? sanitized : "game";
+    }
+
+    // A .quest-save only carries state, not bundled resources — it must be
+    // paired with the currently-loaded game to load safely. Prefer the
+    // game's own embedded identity (IGame.GameID, the <gameid> element in
+    // its save/definition XML — a stable IFID regardless of how/where the
+    // game was loaded) over the loading filename: filename is often
+    // generic/shared (e.g. always "game.aslx" for every
+    // textadventures.co.uk game), so it can neither confirm a same-game
+    // match nor tell different games apart reliably in that case.
+    //
+    // Legacy .asl/.cas games skip this check entirely: GameID is hardcoded
+    // null for V4Game (no IFID concept), *and* their save data is raw
+    // Quest-4 restore-data text (V4Game.SaveAsync -> MakeRestoreData(),
+    // header "QUEST300"/"QUEST200.1"), not XML at all — XDocument.LoadAsync
+    // throws on it, so originalAttr/uploadedIfid always end up null and the
+    // mismatch error would fire even for a genuinely matching save. There's
+    // nothing reliable to cross-check for those, so trust the upload and let
+    // V4Game.OpenGame's own header-version check reject anything that isn't
+    // actually a legacy save (surfaced as a StartGame failure) instead.
+    private async Task LoadSaveFromFile(IBrowserFile file)
+    {
+        if (gameData == null) return;
+
+        var ms = new MemoryStream();
+        await using (var browserStream = file.OpenReadStream(MaxSaveFileBytes))
+        {
+            await browserStream.CopyToAsync(ms);
+        }
+        ms.Position = 0;
+
+        var isLegacyGame = gameData.Filename.EndsWith(".asl", StringComparison.OrdinalIgnoreCase)
+            || gameData.Filename.EndsWith(".cas", StringComparison.OrdinalIgnoreCase);
+        if (!isLegacyGame)
+        {
+            string? originalAttr = null;
+            string? uploadedIfid = null;
+            try
+            {
+                var doc = await XDocument.LoadAsync(ms, LoadOptions.None, CancellationToken.None);
+                originalAttr = doc.Root?.Attribute("original")?.Value;
+                uploadedIfid = doc.Root?.Element("game")?.Element("gameid")?.Value;
+            }
+            catch
+            {
+                // falls through to the mismatch error below
+            }
+
+            var currentIdentity = !string.IsNullOrEmpty(game?.GameID) ? game.GameID : Path.GetFileName(gameData.Filename);
+            var uploadedIdentity = !string.IsNullOrEmpty(uploadedIfid) ? uploadedIfid
+                : !string.IsNullOrEmpty(originalAttr) ? Path.GetFileName(originalAttr) : null;
+
+            if (uploadedIdentity == null || !string.Equals(currentIdentity, uploadedIdentity, StringComparison.OrdinalIgnoreCase))
+            {
+                saveManagerError = "This save is for a different game — open that game first, then try again.";
+                StateHasChanged();
+                return;
+            }
+
+            ms.Position = 0;
+        }
+
+        saveManagerError = null;
+        await StartGame(ms);
+    }
+
+    private async Task CloseSaveManager()
+    {
+        await JS.InvokeVoidAsync("WebPlayer.closeSlots");
+    }
+
+    private async Task StartGame(Stream? saveData)
+    {
+        if (gameData == null || originalGameBytes == null) return;
 
         await JS.InvokeVoidAsync("WebPlayer.closeSlots");
 
         if (game != null)
         {
+            // A mid-session restart (Start from the beginning / Load) reuses
+            // this same live DOM — Blazor's diff never touches @UiHtml again
+            // once rendered once, since its content is a constant string, so
+            // nothing here resets it for us. Without resetPlayerUi, whatever
+            // the previous game's own <javascript> resources injected
+            // elsewhere in the chrome (e.g. a custom sidebar pane) survives
+            // into the new session, and since RegisterExternalScripts runs
+            // again on every Initialise, the game re-adds another one on top
+            // of it. Reset the whole chrome to a pristine copy first, then
+            // resetOutput to clear the JS-side output-tracking state
+            // (_currentDiv/_divCount in playercore.js) that innerHTML alone
+            // doesn't touch.
+            await JS.InvokeVoidAsync("WebPlayer.resetPlayerUi", PlayerHelper.GetUiResourceString("playercore.htm"));
+            await JS.InvokeVoidAsync("WebPlayer.resetOutput");
             game.Finish();
             GameSessionTracker.GameEnded();
         }
 
-        game = GameLauncher.GetGame(gameData, saveData);
+        // A fresh GameData wrapping a new copy of the cached bytes each call —
+        // see the comment in OnAfterRenderAsync on why gameData.Data itself
+        // can't be reused across more than one launch. IsCompiled/ResourceRoot
+        // are set by the original provider (e.g. TextAdventuresGameDataProvider)
+        // and must be carried over too, or resource-url resolution breaks.
+        var launchGameData = new GameData(new MemoryStream(originalGameBytes), gameData.GameId, gameData.Filename, GameDataProvider)
+        {
+            IsCompiled = gameData.IsCompiled,
+            ResourceRoot = gameData.ResourceRoot,
+        };
+
+        game = GameLauncher.GetGame(launchGameData, saveData);
 
         if (game == null) return;
 
+        game.LogError += ex => Logger.LogError(ex, "Game error in {GameId}", gameData.GameId);
         GameSessionTracker.GameStarted();
 
-        var resourceUrlProvider = ResourceUrlProvider(gameData);
+        var resourceUrlProvider = ResourceUrlProvider(launchGameData);
 
         Player = new Player(game, resourceUrlProvider, JS);
         if (resourceUrlProvider is LocalResourceUrlProvider localResourceProvider)
@@ -139,6 +318,8 @@
             game.Finish();
             GameSessionTracker.GameEnded();
         }
+
+        gameDotNetRef?.Dispose();
     }
 
 }

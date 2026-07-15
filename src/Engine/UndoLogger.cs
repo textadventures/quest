@@ -79,21 +79,21 @@ public class UndoLogger
         m_currentTransaction.AddUndoAction(getAction());
     }
 
-    public void RollbackTransaction()
+    public async Task RollbackTransaction()
     {
         if (m_logging)
         {
             EndTransaction();
         }
 
-        Undo();
+        await Undo();
         if (m_currentTransaction != null)
         {
             m_currentTransaction = m_currentTransaction.PreviousTransaction;
         }
     }
 
-    public void Undo()
+    public async Task Undo()
     {
         const string NothingToUndoTemplate = "NothingToUndo";
 
@@ -101,7 +101,7 @@ public class UndoLogger
         {
             if (m_worldModel.Template.TemplateExists(NothingToUndoTemplate))
             {
-                m_worldModel.PrintTemplate("NothingToUndo");
+                await m_worldModel.PrintTemplateAsync("NothingToUndo");
             }
             else
             {
@@ -112,7 +112,7 @@ public class UndoLogger
         }
 
         var undoTransaction = m_undoTransactions.Pop();
-        undoTransaction.DoUndo(m_worldModel);
+        await undoTransaction.DoUndo(m_worldModel);
         m_redoTransactions.Push(undoTransaction);
         OnTransactionsUpdated();
     }
@@ -177,7 +177,7 @@ public class UndoLogger
             m_attributes.Add(action);
         }
 
-        public void DoUndo(WorldModel worldModel)
+        public async Task DoUndo(WorldModel worldModel)
         {
             const string undoTurnTemplate = "UndoTurn";
             m_attributes.Reverse();
@@ -185,7 +185,7 @@ public class UndoLogger
             {
                 if (worldModel.Template.DynamicTemplateExists(undoTurnTemplate))
                 {
-                    worldModel.Print(worldModel.Template.GetDynamicText(undoTurnTemplate, Description));
+                    await worldModel.PrintAsync(await worldModel.Template.GetDynamicTextAsync(undoTurnTemplate, Description));
                 }
             }
 

@@ -30,17 +30,17 @@ internal class ExpressionOwner(WorldModel worldModel)
         return worldModel.Template.GetText(template);
     }
 
-    public string DynamicTemplate(string? template, params Element[] obj)
+    public Task<string> DynamicTemplate(string? template, params Element[] obj)
     {
         ArgumentNullException.ThrowIfNull(template);
-        return worldModel.Template.GetDynamicText(template, obj);
+        return worldModel.Template.GetDynamicTextAsync(template, obj);
     }
 
-    public string DynamicTemplate(string? template, string? text)
+    public Task<string> DynamicTemplate(string? template, string? text)
     {
         ArgumentNullException.ThrowIfNull(template);
         ArgumentNullException.ThrowIfNull(text);
-        return worldModel.Template.GetDynamicText(template, text);
+        return worldModel.Template.GetDynamicTextAsync(template, text);
     }
 
     public bool HasString( /* Element */ object? obj, string? property)
@@ -373,7 +373,7 @@ internal class ExpressionOwner(WorldModel worldModel)
         };
     }
 
-    public object RunDelegateFunction( /* Element */ object? obj, string? del, params object[] parameters)
+    public async Task<object?> RunDelegateFunction( /* Element */ object? obj, string? del, params object[] parameters)
     {
         ArgumentNullException.ThrowIfNull(obj);
         ArgumentNullException.ThrowIfNull(del);
@@ -394,7 +394,7 @@ internal class ExpressionOwner(WorldModel worldModel)
             cnt++;
         }
 
-        return worldModel.RunDelegateScript(impl.Implementation.Fields[FieldDefinitions.Script], paramValues, element);
+        return await worldModel.RunDelegateScriptAsync(impl.Implementation.Fields[FieldDefinitions.Script], paramValues, element);
     }
 
     // ReSharper disable once InconsistentNaming
@@ -490,32 +490,26 @@ internal class ExpressionOwner(WorldModel worldModel)
         return dictionary[key] as IScript;
     }
 
-    public string ShowMenu(string? caption, QuestDictionary<string>? options, bool allowCancel)
+    public async Task<string> ShowMenu(string? caption, QuestDictionary<string>? options, bool allowCancel)
     {
         ArgumentNullException.ThrowIfNull(caption);
         ArgumentNullException.ThrowIfNull(options);
-
-        if (worldModel.Version >= WorldModelVersion.v540)
-        {
-            throw new Exception(
-                "The 'ShowMenu' function is not supported for games written for Quest 5.4 or later. Use the 'show menu' script command instead.");
-        }
-
-        return worldModel.DisplayMenu(caption, options, allowCancel, false);
+        await worldModel.PrintAsync(caption);
+        var menuData = new MenuData(caption, options, allowCancel);
+        worldModel.PlayerUi.ShowMenu(menuData);
+        var tcs = WorldModel.BeginPrompt(ref worldModel._menuTcs);
+        worldModel.SignalTurnSuspended();
+        var result = await tcs.Task;
+        if (result != null) await worldModel.PrintAsync(" - " + options[result]);
+        return result ?? string.Empty;
     }
 
-    public string ShowMenu(string? caption, QuestList<string>? options, bool allowCancel)
+    public async Task<string> ShowMenu(string? caption, QuestList<string>? options, bool allowCancel)
     {
         ArgumentNullException.ThrowIfNull(caption);
         ArgumentNullException.ThrowIfNull(options);
-
-        if (worldModel.Version >= WorldModelVersion.v540)
-        {
-            throw new Exception(
-                "The 'ShowMenu' function is not supported for games written for Quest 5.4 or later. Use the 'show menu' script command instead.");
-        }
-
-        return worldModel.DisplayMenu(caption, options, allowCancel, false);
+        var optionsDict = options.ToDictionary(o => o);
+        return await ShowMenu(caption, new QuestDictionary<string>(optionsDict), allowCancel);
     }
 
     public bool DictionaryContains( /* IDictionary */ object? obj, string? key)
@@ -577,37 +571,26 @@ internal class ExpressionOwner(WorldModel worldModel)
             CultureInfo.InvariantCulture, out _);
     }
 
-    public string GetInput()
+    public async Task<string> GetInput()
     {
-        if (worldModel.Version >= WorldModelVersion.v540)
-        {
-            throw new Exception(
-                "The 'GetInput' function is not supported for games written for Quest 5.4 or later. Use the 'get input' script command instead.");
-        }
-
-        return worldModel.GetNextCommandInput(false);
+        worldModel._commandOverride = true;
+        var tcs = WorldModel.BeginPrompt(ref worldModel._commandInputTcs);
+        worldModel.SignalTurnSuspended();
+        var result = await tcs.Task;
+        worldModel._commandOverride = false;
+        return result;
     }
 
     // ReSharper disable once InconsistentNaming
-    public string GetFileURL(string? filename)
+    public async Task<string> GetFileURL(string? filename)
     {
         ArgumentNullException.ThrowIfNull(filename);
-        if (filename.Contains(".."))
-        {
-            throw new Exception("Invalid filename");
-        }
-
-        return worldModel.GetExternalUrl(filename);
+        return await worldModel.GetExternalUrlAsync(filename);
     }
 
     public string? GetFileData(string? filename)
     {
         ArgumentNullException.ThrowIfNull(filename);
-        if (filename.Contains(".."))
-        {
-            throw new Exception("Invalid filename");
-        }
-
         return worldModel.GetResourceData(filename);
     }
 
@@ -629,16 +612,13 @@ internal class ExpressionOwner(WorldModel worldModel)
         return worldModel.GetUniqueElementName(name);
     }
 
-    public bool Ask(string? caption)
+    public async Task<bool> Ask(string? caption)
     {
         ArgumentNullException.ThrowIfNull(caption);
-        if (worldModel.Version >= WorldModelVersion.v540)
-        {
-            throw new Exception(
-                "The 'Ask' function is not supported for games written for Quest 5.4 or later. Use the 'ask' script command instead.");
-        }
-
-        return worldModel.ShowQuestion(caption);
+        worldModel.PlayerUi.ShowQuestion(caption);
+        var tcs = WorldModel.BeginPrompt(ref worldModel._questionTcs);
+        worldModel.SignalTurnSuspended();
+        return await tcs.Task;
     }
 
     public int GetRandomInt(int min, int max)
@@ -654,13 +634,13 @@ internal class ExpressionOwner(WorldModel worldModel)
         return _random.NextDouble();
     }
 
-    public object Eval(string? expression)
+    public Task<object> Eval(string? expression)
     {
         ArgumentNullException.ThrowIfNull(expression);
         return Eval(expression, null);
     }
 
-    public object Eval(string? expression, /* IDictionary */ object? obj)
+    public Task<object> Eval(string? expression, /* IDictionary */ object? obj)
     {
         ArgumentNullException.ThrowIfNull(expression);
         var parameters = obj == null ? null : GetParameter<IDictionary>(obj, "Eval", "dictionary");
@@ -671,7 +651,7 @@ internal class ExpressionOwner(WorldModel worldModel)
             context.Parameters = new Parameters(parameters);
         }
 
-        return expr.Execute(context);
+        return expr.ExecuteAsync(context);
     }
 
     public Element Clone( /* Element */ object? obj)
@@ -773,14 +753,20 @@ internal class ExpressionOwner(WorldModel worldModel)
         ArgumentNullException.ThrowIfNull(obj);
         var element = GetParameter<Element>(obj, "GetAllChildren", "object");
         var result = new QuestList<Element>();
+        var visited = new HashSet<Element>();
+        CollectChildren(element, type, result, visited);
+        return result;
+    }
+
+    private void CollectChildren(Element element, ObjectType type, QuestList<Element> result, HashSet<Element> visited)
+    {
         foreach (var child in worldModel.Elements.GetDirectChildren(element)
                      .Where(e => e.ElemType == ElementType.Object && e.Type == type))
         {
+            if (!visited.Add(child)) continue;
             result.Add(child);
-            result.AddRange(GetAllChildren(child, type));
+            CollectChildren(child, type, result, visited);
         }
-
-        return result;
     }
 
     public QuestList<Element> GetDirectChildren( /* Element */ object? obj)

@@ -70,15 +70,15 @@ public class RunDelegateScript : ScriptBase
         return new RunDelegateScript(m_scriptContext, m_appliesTo.Clone(), m_delegate.Clone(), m_parameters.Parameters);
     }
 
-    public override void Execute(Context c)
+    public override async Task ExecuteAsync(Context c)
     {
         if (m_parameters == null)
         {
             throw new NotImplementedException();
         }
 
-        var obj = m_appliesTo.Execute(c);
-        var delName = m_delegate.Execute(c);
+        var obj = await m_appliesTo.ExecuteAsync(c);
+        var delName = await m_delegate.ExecuteAsync(c);
         var impl = obj.Fields.Get(delName) as DelegateImplementation;
 
         if (impl == null)
@@ -92,11 +92,11 @@ public class RunDelegateScript : ScriptBase
         var cnt = 0;
         foreach (var f in m_parameters.Parameters)
         {
-            paramValues.Add((string) impl.Definition.Fields[FieldDefinitions.ParamNames][cnt], f.Execute(c));
+            paramValues.Add((string) impl.Definition.Fields[FieldDefinitions.ParamNames][cnt], await f.ExecuteAsync(c));
             cnt++;
         }
 
-        m_worldModel.RunScript(impl.Implementation.Fields[FieldDefinitions.Script], paramValues, obj);
+        await m_worldModel.RunScriptAsync(impl.Implementation.Fields[FieldDefinitions.Script], paramValues, obj);
     }
 
     public override string Save()

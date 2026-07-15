@@ -1,16 +1,19 @@
 export interface WasmBridge {
   Initialise(bytes: Uint8Array, filename: string): Promise<boolean>
   GetTreeNodes(): string
-  GetEditorData(key: string): string | null
+  GetEditorData(key: string): Promise<string | null>
   SetAttribute(elementKey: string, attribute: string, controlType: string, value: string): string
   SetMultiType(elementKey: string, attribute: string, newType: string): string
   SetObjectReference(elementKey: string, attribute: string, objectName: string): string
   SetDropdownType(elementKey: string, controlId: string, selectedType: string): string
   Save(): string
   IsDirty(): boolean
+  GetGameId(): string
+  AddPublishAsset(filename: string, data: Uint8Array): void
+  CreatePublishPackage(includeWalkthrough: boolean): Uint8Array
   CanUndo(): boolean
   CanRedo(): boolean
-  Undo(): void
+  Undo(): Promise<void>
   Redo(): void
   // Script editor API
   GetScriptCode(elementKey: string, attribute: string): string
@@ -31,7 +34,7 @@ export interface WasmBridge {
   AddElseIf(elementKey: string, attribute: string, containerPath: string, scriptIndex: number): string
   RemoveElse(elementKey: string, attribute: string, containerPath: string, scriptIndex: number): string
   RemoveElseIf(elementKey: string, attribute: string, containerPath: string, scriptIndex: number, elseIfIndex: number): string
-  GetScriptCommandCategories(): string
+  GetScriptCommandCategories(): Promise<string>
   GetObjectNames(): string
   GetIfExpressionTemplates(): string
   GetIfExpressionTemplateData(expression: string): string | null

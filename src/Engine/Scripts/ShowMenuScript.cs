@@ -1,4 +1,4 @@
-﻿#nullable disable
+﻿using QuestViva.Common;
 using QuestViva.Engine.Functions;
 
 namespace QuestViva.Engine.Scripts;
@@ -26,9 +26,9 @@ public class ShowMenuScriptConstructor : IScriptConstructor
             callbackScript);
     }
 
-    public IScriptFactory ScriptFactory { get; set; }
+    public IScriptFactory ScriptFactory { get; set; } = null!;
 
-    public WorldModel WorldModel { get; set; }
+    public WorldModel WorldModel { get; set; } = null!;
 }
 
 public class ShowMenuScript : ScriptBase
@@ -61,35 +61,54 @@ public class ShowMenuScript : ScriptBase
             m_allowCancel.Clone(), (IScript) m_callbackScript.Clone());
     }
 
-    public override void Execute(Context c)
+    public override async Task ExecuteAsync(Context c)
     {
-        var options = m_options.Execute(c);
-        var stringListOptions = options as IList<string>;
-        var stringDictionaryOptions = options as IDictionary<string, string>;
+        var caption = await m_caption.ExecuteAsync(c);
+        var options = await m_options.ExecuteAsync(c);
+        var allowCancel = await m_allowCancel.ExecuteAsync(c);
 
-        if (stringListOptions != null)
+        IDictionary<string, string> optionsDictionary;
+        if (options is IList<string> stringListOptions)
         {
-            if (stringListOptions.Count == 0)
-            {
-                throw new Exception("No menu options specified");
-            }
-
-            m_worldModel.DisplayMenuAsync(m_caption.Execute(c), stringListOptions, m_allowCancel.Execute(c),
-                m_callbackScript, c);
+            if (stringListOptions.Count == 0) throw new Exception("No menu options specified");
+            optionsDictionary = stringListOptions.ToDictionary(o => o);
         }
-        else if (stringDictionaryOptions != null)
+        else if (options is IDictionary<string, string> stringDictionaryOptions)
         {
-            if (stringDictionaryOptions.Count == 0)
-            {
-                throw new Exception("No menu options specified");
-            }
-
-            m_worldModel.DisplayMenuAsync(m_caption.Execute(c), stringDictionaryOptions, m_allowCancel.Execute(c),
-                m_callbackScript, c);
+            if (stringDictionaryOptions.Count == 0) throw new Exception("No menu options specified");
+            optionsDictionary = stringDictionaryOptions;
         }
         else
         {
             throw new Exception("Unknown menu options type");
+        }
+
+        await m_worldModel.PrintAsync(caption);
+        var menuData = new MenuData(caption, optionsDictionary, allowCancel);
+        m_worldModel.PlayerUi.ShowMenu(menuData);
+
+        WorldModel.BeginPrompt(ref m_worldModel._menuTcs);
+        m_worldModel.BeginPendingCallback();
+        m_worldModel.SignalTurnSuspended();
+        _ = AwaitResponseAndRunCallbackAsync(c, optionsDictionary);
+    }
+
+    private async Task AwaitResponseAndRunCallbackAsync(Context c, IDictionary<string, string> optionsDictionary)
+    {
+        try
+        {
+            var response = await m_worldModel._menuTcs!.Task;
+            if (response != null)
+                await m_worldModel.PrintAsync(" - " + optionsDictionary[response]);
+            c.Parameters["result"] = response;
+            await m_worldModel.RunScriptAsync(m_callbackScript, c);
+        }
+        catch (OperationCanceledException) { }
+        catch (Exception ex) { m_worldModel.LogException(ex); }
+        finally
+        {
+            await m_worldModel.EndPendingCallbackAsync();
+            m_worldModel.SignalTurnSuspended();
         }
     }
 
@@ -129,7 +148,6 @@ public class ShowMenuScript : ScriptBase
                 m_allowCancel = new Expression<bool>((string) value, m_scriptContext);
                 break;
             case 3:
-                // any updates to the script should change the script itself - nothing should cause SetParameter to be triggered.
                 throw new InvalidOperationException(
                     "Attempt to use SetParameter to change the script of a 'show menu' command");
             default:

@@ -5,8 +5,11 @@ import { fileURLToPath } from 'node:url'
 import { join, extname } from 'node:path'
 import { readFile } from 'node:fs/promises'
 
+// Set WASM_CONFIG=Release to serve the AOT-compiled AppBundle instead of the Debug/interpreter one
+// (e.g. for profiling, where AOT gives per-method native frames instead of one opaque interpreter loop).
+const wasmConfig = process.env.WASM_CONFIG === 'Release' ? 'Release' : 'Debug'
 const appBundleDir = fileURLToPath(
-  new URL('../WasmEditor/bin/Debug/net10.0/browser-wasm/AppBundle', import.meta.url)
+  new URL(`../WasmEditor/bin/${wasmConfig}/net10.0/browser-wasm/AppBundle`, import.meta.url)
 )
 
 const mimeTypes: Record<string, string> = {
@@ -36,9 +39,6 @@ export default defineConfig({
             const data = await readFile(filePath)
             const ext = extname(filePath)
             res.setHeader('Content-Type', mimeTypes[ext] ?? 'application/octet-stream')
-            // Required for SharedArrayBuffer used by the .NET WASM runtime
-            res.setHeader('Cross-Origin-Opener-Policy', 'same-origin')
-            res.setHeader('Cross-Origin-Embedder-Policy', 'require-corp')
             res.end(data)
           } catch {
             next()
@@ -49,12 +49,14 @@ export default defineConfig({
   ],
   server: {
     port: 5174,
-    headers: {
-      'Cross-Origin-Opener-Policy': 'same-origin',
-      'Cross-Origin-Embedder-Policy': 'require-corp',
+    proxy: {
+      // Proxy WasmPlayer through the same origin so BroadcastChannel works between editor and player tabs.
+      '/player': {
+        target: 'http://localhost:5175',
+        changeOrigin: true,
+        rewrite: (path) => path.replace(/^\/player/, ''),
+      },
+      ...(apiProxy ? { '/api': { target: apiProxy, changeOrigin: true } } : {}),
     },
-    proxy: apiProxy ? {
-      '/api': { target: apiProxy, changeOrigin: true },
-    } : undefined,
   }
 })

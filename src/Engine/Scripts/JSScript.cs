@@ -61,7 +61,7 @@ public class JSScript : ScriptBase
             m_parameters == null ? null : new List<IFunctionDynamic>(m_parameters));
     }
 
-    public override void Execute(Context c)
+    public override async Task ExecuteAsync(Context c)
     {
         if (string.IsNullOrEmpty(m_function))
         {
@@ -70,12 +70,14 @@ public class JSScript : ScriptBase
 
         if (m_parameters != null)
         {
-            var paramValues = m_parameters.Select(p => p.Execute(c));
-            m_scriptContext.WorldModel.PlayerUi.RunScript(m_function, paramValues.ToArray());
+            var paramValues = new object[m_parameters.Count];
+            for (var i = 0; i < m_parameters.Count; i++)
+                paramValues[i] = await m_parameters[i].ExecuteAsync(c);
+            await m_scriptContext.WorldModel.PlayerUi.RunScriptAsync(m_function, paramValues);
         }
         else
         {
-            m_scriptContext.WorldModel.PlayerUi.RunScript(m_function, null);
+            await m_scriptContext.WorldModel.PlayerUi.RunScriptAsync(m_function, null);
         }
     }
 

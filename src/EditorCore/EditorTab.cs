@@ -30,7 +30,7 @@ internal class EditorTab : IEditorTab
 
     public IEnumerable<IEditorControl> Controls => m_controls.Values;
 
-    public bool IsTabVisible(IEditorData data)
+    public Task<bool> IsTabVisible(IEditorData data)
     {
         return m_visibilityHelper.IsVisible(data);
     }

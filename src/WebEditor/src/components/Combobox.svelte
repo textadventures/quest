@@ -24,7 +24,7 @@
 
     // Reset highlight when filtered list changes
     $effect(() => {
-        filtered; // track
+        void filtered; // track
         activeIndex = -1;
     });
 
@@ -41,7 +41,7 @@
             ? options
             : options.filter(o =>
                 o.label.toLowerCase().includes(inputValue.toLowerCase()) ||
-                o.value.toLowerCase().includes(inputValue.toLowerCase())
+                    o.value.toLowerCase().includes(inputValue.toLowerCase())
             )
     );
 
@@ -142,7 +142,7 @@
                     role="option"
                     tabindex="-1"
                     aria-selected={opt.value === value}
-                    class="px-2 py-1 text-xs cursor-pointer {i === activeIndex ? 'bg-primary-100 dark:bg-primary-900' : 'hover:bg-surface-100-900'} {opt.value === value ? 'font-medium' : ''}"
+                    class="px-2 py-1 text-xs cursor-pointer {i === activeIndex ? "bg-primary-100 dark:bg-primary-900" : "hover:bg-surface-100-900"} {opt.value === value ? "font-medium" : ""}"
                     onmousedown={(e) => { e.preventDefault(); select(opt.value); }}
                     onmouseenter={() => { activeIndex = i; }}
                 >

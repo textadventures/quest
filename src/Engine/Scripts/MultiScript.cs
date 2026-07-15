@@ -115,11 +115,11 @@ public class MultiScript : ScriptBase, IScriptParent, IMultiScript
 
     public IEnumerable<IScript> Scripts => m_scripts.AsReadOnly();
 
-    public override void Execute(Context c)
+    public override async Task ExecuteAsync(Context c)
     {
         foreach (var script in m_scripts)
         {
-            script.Execute(c);
+            await script.ExecuteAsync(c);
             if (c.IsReturned)
             {
                 break;

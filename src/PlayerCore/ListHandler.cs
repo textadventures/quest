@@ -11,6 +11,18 @@ public class ListHandler(Action<string, object?[]?> addJavaScriptToBuffer)
 
     public void UpdateList(ListType listType, List<ListData> items)
     {
+        // ElementMenuVerbs isn't cached/deduplicated like the other lists: it exists to sync
+        // data-verbs onto whichever inline {object:} links currently exist in the DOM, and new
+        // links can appear (e.g. after a "wait" block reveals text) even when the underlying
+        // verb data hasn't changed since the last push - a no-op push would then wrongly get
+        // suppressed and the newly-added link would never receive its verbs.
+        if (listType == ListType.ElementMenuVerbs)
+        {
+            _lists[listType] = items;
+            SendUpdatedList(listType);
+            return;
+        }
+
         bool listChanged;
         if (!_lists.TryGetValue(listType, out var list))
         {
@@ -38,6 +50,12 @@ public class ListHandler(Action<string, object?[]?> addJavaScriptToBuffer)
             return;
         }
 
+        if (listType == ListType.ElementMenuVerbs)
+        {
+            SendElementMenuVerbs(_lists[ListType.ElementMenuVerbs]);
+            return;
+        }
+
         var listName = listType switch
         {
             ListType.InventoryList => "inventory",
@@ -57,6 +75,20 @@ public class ListHandler(Action<string, object?[]?> addJavaScriptToBuffer)
     {
         var data = string.Join("/", list.Select(l => l.Text));
         AddJavaScriptToBuffer("updateCompass", [data]);
+    }
+
+    private void SendElementMenuVerbs(List<ListData> list)
+    {
+        var data = new Dictionary<string, string>();
+        foreach (var item in list)
+        {
+            if (item.ElementId != null)
+            {
+                data[item.ElementId] = PlayerHelper.VerbString(item.Verbs);
+            }
+        }
+
+        AddJavaScriptToBuffer("updateObjectLinks", [data]);
     }
 
     private class ListDataComparer : IEqualityComparer<ListData>

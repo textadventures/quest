@@ -38,9 +38,9 @@ public class ReturnScript : ScriptBase
         return new ReturnScript(m_scriptContext, m_returnValue.Clone());
     }
 
-    public override void Execute(Context c)
+    public override async Task ExecuteAsync(Context c)
     {
-        c.ReturnValue = m_returnValue.Execute(c);
+        c.ReturnValue = await m_returnValue.ExecuteAsync(c);
         // Leaving this set to v550 for backwards compatibility
         // Some things do not work in 550 games when this is changed to 580
         if (m_worldModel.Version >= WorldModelVersion.v550)

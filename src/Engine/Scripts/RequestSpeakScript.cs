@@ -48,9 +48,9 @@ public class RequestSpeakScript : ScriptBase
         return new RequestSpeakScript(m_scriptContext, m_function.Clone());
     }
 
-    public override void Execute(Context c)
+    public override async Task ExecuteAsync(Context c)
     {
-        var result = m_function.Execute(c);
+        var result = await m_function.ExecuteAsync(c);
         m_worldModel.PlayerUi.Speak(result.ToString());
     }
 

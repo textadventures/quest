@@ -1,6 +1,4 @@
 using Microsoft.Extensions.Options;
-using QuestViva.Common;
-using QuestViva.PlayerCore;
 
 // ReSharper disable ClassNeverInstantiated.Global
 
@@ -8,10 +6,10 @@ namespace QuestViva.WebPlayer;
 
 public class WebPlayerConfig
 {
-    public bool UseNCalc { get; set; }
     public HomeOptions? Home { get; set; }
     public DevOptions? Dev { get; set; }
     public TextAdventuresOptions? TextAdventures { get; set; }
+    public EditorOptions? Editor { get; set; }
 }
 
 public class HomeOptions
@@ -26,6 +24,12 @@ public class DevOptions
     public bool Enabled { get; set; }
 }
 
+public class EditorOptions
+{
+    public bool Enabled { get; set; }
+    public string? BlobStorageRoot { get; set; }
+}
+
 public class TextAdventuresOptions
 {
     public bool Enabled { get; set; }
@@ -38,7 +42,7 @@ public class TextAdventuresOptions
     public int PlayTokenMaxAgeMinutes { get; set; } = 1440;
 }
 
-public class Config(IOptionsMonitor<WebPlayerConfig> optionsMonitor) : IConfig, ITextAdventuresConfig
+public class Config(IOptionsMonitor<WebPlayerConfig> optionsMonitor) : ITextAdventuresConfig
 {
     private WebPlayerConfig ConfigValue => optionsMonitor.CurrentValue;
     public string? HomeFile => ConfigValue.Home?.File;
@@ -52,6 +56,6 @@ public class Config(IOptionsMonitor<WebPlayerConfig> optionsMonitor) : IConfig, 
     public string? SessionTokenSecret => ConfigValue.TextAdventures?.SessionTokenSecret;
     public int PlayTokenMaxAgeMinutes => ConfigValue.TextAdventures?.PlayTokenMaxAgeMinutes ?? 1440;
 
-    public bool UseNCalc => ConfigValue.UseNCalc;
     public string TextAdventuresApiRoot => ConfigValue.TextAdventures?.ApiRoot ?? string.Empty;
+    public string EditorBlobStorageRoot => ConfigValue.Editor?.BlobStorageRoot ?? "https://textadventures.blob.core.windows.net/editorgames/";
 }

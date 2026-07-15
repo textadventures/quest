@@ -1,4 +1,3 @@
-using QuestViva.Common;
 using QuestViva.Engine;
 using QuestViva.PlayerCore;
 using QuestViva.WebPlayer;
@@ -18,7 +17,6 @@ builder.Services.AddRazorComponents()
 
 builder.Services.Configure<WebPlayerConfig>(builder.Configuration);
 builder.Services.AddSingleton<Config>();
-builder.Services.AddSingleton<IConfig>(sp => sp.GetRequiredService<Config>());
 builder.Services.AddSingleton<ITextAdventuresConfig>(sp => sp.GetRequiredService<Config>());
 builder.Services.AddSingleton<WorldModelFactory>();
 builder.Services.AddSingleton<GameLauncher>();
@@ -49,11 +47,8 @@ var app = builder.Build();
 if (!app.Environment.IsDevelopment())
 {
     app.UseExceptionHandler("/Error", true);
-    // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
     app.UseHsts();
 }
-
-app.UseHttpsRedirection();
 
 app.UseStaticFiles();
 app.UseAntiforgery();

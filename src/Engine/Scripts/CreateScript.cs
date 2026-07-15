@@ -59,16 +59,16 @@ public class CreateScript : ScriptBase
         return new CreateScript(m_scriptContext, m_expr.Clone(), m_type.Clone());
     }
 
-    public override void Execute(Context c)
+    public override async Task ExecuteAsync(Context c)
     {
         if (m_type == null)
         {
-            m_worldModel.ObjectFactory.CreateObject(m_expr.Execute(c));
+            m_worldModel.ObjectFactory.CreateObject(await m_expr.ExecuteAsync(c));
         }
         else
         {
-            m_worldModel.ObjectFactory.CreateObject(m_expr.Execute(c), ObjectType.Object, true,
-                new List<string> {m_type.Execute(c)});
+            m_worldModel.ObjectFactory.CreateObject(await m_expr.ExecuteAsync(c), ObjectType.Object, true,
+                new List<string> {await m_type.ExecuteAsync(c)});
         }
     }
 
@@ -198,10 +198,10 @@ public class CreateExitScript : ScriptBase
             m_initialType.Clone(), m_id.Clone());
     }
 
-    public override void Execute(Context c)
+    public override async Task ExecuteAsync(Context c)
     {
-        m_worldModel.ObjectFactory.CreateExit(m_id == null ? null : m_id.Execute(c), m_name.Execute(c),
-            m_from.Execute(c), m_to.Execute(c), m_initialType == null ? null : m_initialType.Execute(c));
+        m_worldModel.ObjectFactory.CreateExit(m_id == null ? null : await m_id.ExecuteAsync(c), await m_name.ExecuteAsync(c),
+            await m_from.ExecuteAsync(c), await m_to.ExecuteAsync(c), m_initialType == null ? null : await m_initialType.ExecuteAsync(c));
     }
 
     public override string Save()
@@ -299,9 +299,9 @@ public class CreateTimerScript : ScriptBase
     }
 
 
-    public override void Execute(Context c)
+    public override async Task ExecuteAsync(Context c)
     {
-        m_worldModel.GetElementFactory(ElementType.Timer).Create(m_expr.Execute(c));
+        m_worldModel.GetElementFactory(ElementType.Timer).Create(await m_expr.ExecuteAsync(c));
     }
 
     public override string Save()
@@ -355,9 +355,9 @@ public class CreateTurnScript : ScriptBase
         return new CreateTurnScript(m_scriptContext, m_expr.Clone());
     }
 
-    public override void Execute(Context c)
+    public override async Task ExecuteAsync(Context c)
     {
-        m_worldModel.ObjectFactory.CreateTurnScript(m_expr.Execute(c), null);
+        m_worldModel.ObjectFactory.CreateTurnScript(await m_expr.ExecuteAsync(c), null);
     }
 
     public override string Save()

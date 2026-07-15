@@ -1,4 +1,5 @@
-import type { AssetInfo, FileAdapter, LoadedFile } from "./types";
+import { isJunkAssetName, type AssetInfo, type FileAdapter, type LoadedFile } from "./types";
+import { toBlob, triggerDownload } from "./download";
 
 // FSA globals — not in the TS DOM lib at this target version
 declare function showDirectoryPicker(options?: {
@@ -53,28 +54,7 @@ export async function loadFileFromDirectory(dir: FileSystemDirectoryHandle, file
     const fh = await dir.getFileHandle(filename);
     const file = await fh.getFile();
     const bytes = new Uint8Array(await file.arrayBuffer());
-    return { bytes, adapter: new BrowserFileAdapter(filename, { kind: "directory", dir }) };
-}
-
-/**
- * Fallback path (<input type="file">): no directory access, so assets go to
- * OPFS for the session only. Called directly from a user-gesture handler —
- * no prior await in the call chain so the programmatic click is permitted.
- */
-export function loadLocalFile(): Promise<LoadedFile | null> {
-    return new Promise((resolve) => {
-        const input = document.createElement("input");
-        input.type = "file";
-        input.accept = ".aslx";
-        input.addEventListener("change", async () => {
-            const file = input.files?.[0];
-            if (!file) { resolve(null); return; }
-            const bytes = new Uint8Array(await file.arrayBuffer());
-            resolve({ bytes, adapter: new BrowserFileAdapter(file.name, { kind: "fallback", opfsKey: crypto.randomUUID() }) });
-        }, { once: true });
-        input.addEventListener("cancel", () => resolve(null), { once: true });
-        input.click();
-    });
+    return { bytes, adapter: new BrowserFileAdapter(filename, dir) };
 }
 
 /**
@@ -82,61 +62,40 @@ export function loadLocalFile(): Promise<LoadedFile | null> {
  *
  * FSA path: opens a directory picker, writes the file, and returns a LoadedFile
  * so the editor can open it immediately. Returns null if the user cancels the picker.
- *
- * Non-FSA path: triggers a download and returns "downloaded" so the caller can
- * show a message telling the user to open the file with the Open button.
  */
 export async function createLocalGame(
     filename: string,
     content: string,
-): Promise<{ kind: "opened"; loaded: LoadedFile } | { kind: "downloaded" } | null> {
-    if (hasFSA()) {
-        try {
-            const dir = await showDirectoryPicker({ mode: "readwrite" });
-            const fh = await dir.getFileHandle(filename, { create: true });
-            await writeToHandle(fh, content);
-            const bytes = new TextEncoder().encode(content);
-            return {
-                kind: "opened",
-                loaded: { bytes, adapter: new BrowserFileAdapter(filename, { kind: "directory", dir }) },
-            };
-        } catch (err: unknown) {
-            if (err instanceof Error && err.name === "AbortError") return null;
-            throw err;
-        }
+): Promise<{ kind: "opened"; loaded: LoadedFile } | null> {
+    try {
+        const dir = await showDirectoryPicker({ mode: "readwrite" });
+        const fh = await dir.getFileHandle(filename, { create: true });
+        await writeToHandle(fh, content);
+        const bytes = new TextEncoder().encode(content);
+        return {
+            kind: "opened",
+            loaded: { bytes, adapter: new BrowserFileAdapter(filename, dir) },
+        };
+    } catch (err: unknown) {
+        if (err instanceof Error && err.name === "AbortError") return null;
+        throw err;
     }
-    triggerDownload(content, filename);
-    return { kind: "downloaded" };
 }
 
 // ── Adapter ───────────────────────────────────────────────────────────────────
 
-type DirectoryMode = { kind: "directory"; dir: FileSystemDirectoryHandle };
-type FallbackMode  = { kind: "fallback";  opfsKey: string };
-type Mode = DirectoryMode | FallbackMode;
-
 export class BrowserFileAdapter implements FileAdapter {
     constructor(
         private _filename: string,
-        private _mode: Mode,
+        private _dir: FileSystemDirectoryHandle,
     ) {}
 
     get filename() { return this._filename; }
-    readonly previewUrl: string | null = null;
-
-    // Save As is only meaningful in directory mode — in fallback mode both save paths trigger a download.
-    get canSaveAs(): boolean { return this._mode.kind === "directory"; }
-
-    // Whether assets are on the real filesystem (vs OPFS-only)
-    get assetsOnDisk(): boolean { return this._mode.kind === "directory"; }
+    readonly canSaveAs = true;
 
     async saveFile(data: Uint8Array | string): Promise<void> {
-        if (this._mode.kind === "directory") {
-            const fh = await this._mode.dir.getFileHandle(this._filename, { create: true });
-            await writeToHandle(fh, data);
-            return;
-        }
-        triggerDownload(data, this._filename);
+        const fh = await this._dir.getFileHandle(this._filename, { create: true });
+        await writeToHandle(fh, data);
     }
 
     async saveFileAs(data: Uint8Array | string, suggestedName?: string): Promise<string | null> {
@@ -146,7 +105,7 @@ export class BrowserFileAdapter implements FileAdapter {
                     suggestedName: suggestedName ?? this._filename,
                     types: [ASLX_FILE_TYPE],
                     // Start in the game folder so the user doesn't have to navigate there
-                    ...(this._mode.kind === "directory" ? { startIn: this._mode.dir } : {}),
+                    startIn: this._dir,
                 });
                 await writeToHandle(handle, data);
                 this._filename = handle.name;
@@ -162,15 +121,7 @@ export class BrowserFileAdapter implements FileAdapter {
     }
 
     async putAsset(key: string, data: Blob): Promise<void> {
-        if (this._mode.kind === "directory") {
-            const fh = await this._mode.dir.getFileHandle(key, { create: true });
-            const writable = await fh.createWritable();
-            await writable.write(data);
-            await writable.close();
-            return;
-        }
-        const dir = await getOpfsGameDir(this._mode.opfsKey);
-        const fh = await dir.getFileHandle(key, { create: true });
+        const fh = await this._dir.getFileHandle(key, { create: true });
         const writable = await fh.createWritable();
         await writable.write(data);
         await writable.close();
@@ -178,11 +129,7 @@ export class BrowserFileAdapter implements FileAdapter {
 
     async getAsset(key: string): Promise<Blob | null> {
         try {
-            if (this._mode.kind === "directory") {
-                return await (await this._mode.dir.getFileHandle(key)).getFile();
-            }
-            const dir = await getOpfsGameDir(this._mode.opfsKey);
-            return await (await dir.getFileHandle(key)).getFile();
+            return await (await this._dir.getFileHandle(key)).getFile();
         } catch {
             return null;
         }
@@ -191,16 +138,9 @@ export class BrowserFileAdapter implements FileAdapter {
     async listAssets(): Promise<AssetInfo[]> {
         try {
             const assets: AssetInfo[] = [];
-            if (this._mode.kind === "directory") {
-                for await (const [name, handle] of this._mode.dir) {
-                    if (handle.kind === "file" && !name.toLowerCase().endsWith(".aslx")) {
-                        assets.push({ key: name, url: "" });
-                    }
-                }
-            } else {
-                const dir = await getOpfsGameDir(this._mode.opfsKey);
-                for await (const [name, handle] of dir) {
-                    if (handle.kind === "file") assets.push({ key: name, url: "" });
+            for await (const [name, handle] of this._dir) {
+                if (handle.kind === "file" && !name.toLowerCase().endsWith(".aslx") && !isJunkAssetName(name)) {
+                    assets.push({ key: name, url: "" });
                 }
             }
             return assets;
@@ -210,39 +150,14 @@ export class BrowserFileAdapter implements FileAdapter {
     }
 
     async deleteAsset(key: string): Promise<void> {
-        if (this._mode.kind === "directory") {
-            await this._mode.dir.removeEntry(key);
-            return;
-        }
-        const dir = await getOpfsGameDir(this._mode.opfsKey);
-        await dir.removeEntry(key);
+        await this._dir.removeEntry(key);
     }
 }
 
 // ── Helpers ───────────────────────────────────────────────────────────────────
 
-function triggerDownload(data: Uint8Array | string, filename: string) {
-    const url = URL.createObjectURL(toBlob(data));
-    const a = document.createElement("a");
-    a.href = url;
-    a.download = filename;
-    a.click();
-    URL.revokeObjectURL(url);
-}
-
-function toBlob(data: Uint8Array | string): Blob {
-    return typeof data === "string"
-        ? new Blob([data], { type: "application/xml" })
-        : new Blob([data.slice()]);
-}
-
 async function writeToHandle(handle: FileSystemFileHandle, data: Uint8Array | string): Promise<void> {
     const writable = await handle.createWritable();
     await writable.write(toBlob(data));
     await writable.close();
-}
-
-async function getOpfsGameDir(opfsKey: string): Promise<FileSystemDirectoryHandle> {
-    const root = await navigator.storage.getDirectory();
-    return root.getDirectoryHandle(opfsKey, { create: true });
 }

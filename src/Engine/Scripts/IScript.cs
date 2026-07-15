@@ -55,7 +55,7 @@ public interface IScript : IMutableField
     string? Line { get; set; }
     string Keyword { get; }
     IScriptParent Parent { get; set; }
-    void Execute(Context c);
+    Task ExecuteAsync(Context c);
     string Save();
     void SetParameter(int index, object value);
     void SetParameterSilent(int index, object value);
@@ -87,7 +87,7 @@ public abstract class ScriptBase : IScript, IMutableField
 
     public Element? Owner { get; set; }
 
-    public abstract void Execute(Context c);
+    public abstract Task ExecuteAsync(Context c);
 
     public abstract string Save();
 

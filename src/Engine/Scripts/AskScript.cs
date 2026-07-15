@@ -23,9 +23,9 @@ public class AskScriptConstructor : IScriptConstructor
             callbackScript);
     }
 
-    public required IScriptFactory ScriptFactory { get; set; }
+    public IScriptFactory ScriptFactory { get; set; } = null!;
 
-    public required WorldModel WorldModel { get; set; }
+    public WorldModel WorldModel { get; set; } = null!;
 }
 
 public class AskScript(
@@ -45,9 +45,31 @@ public class AskScript(
         return new AskScript(scriptContext, scriptFactory, _caption.Clone(), (IScript) callbackScript.Clone());
     }
 
-    public override void Execute(Context c)
+    public override async Task ExecuteAsync(Context c)
     {
-        _worldModel.ShowQuestionAsync(_caption.Execute(c), callbackScript, c);
+        var caption = await _caption.ExecuteAsync(c);
+        _worldModel.PlayerUi.ShowQuestion(caption);
+        WorldModel.BeginPrompt(ref _worldModel._questionTcs);
+        _worldModel.BeginPendingCallback();
+        _worldModel.SignalTurnSuspended();
+        _ = AwaitResponseAndRunCallbackAsync(c);
+    }
+
+    private async Task AwaitResponseAndRunCallbackAsync(Context c)
+    {
+        try
+        {
+            var response = await _worldModel._questionTcs!.Task;
+            c.Parameters["result"] = response;
+            await _worldModel.RunScriptAsync(callbackScript, c);
+        }
+        catch (OperationCanceledException) { }
+        catch (Exception ex) { _worldModel.LogException(ex); }
+        finally
+        {
+            await _worldModel.EndPendingCallbackAsync();
+            _worldModel.SignalTurnSuspended();
+        }
     }
 
     public override string Save()

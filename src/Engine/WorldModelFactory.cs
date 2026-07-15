@@ -2,10 +2,10 @@ using QuestViva.Common;
 
 namespace QuestViva.Engine;
 
-public class WorldModelFactory(IConfig config)
+public class WorldModelFactory
 {
     public WorldModel Create(GameData gameData, Stream? saveData)
     {
-        return new WorldModel(config, gameData, saveData);
+        return new WorldModel(gameData, saveData);
     }
 }

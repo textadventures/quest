@@ -9,6 +9,33 @@ var placesObjectsVerbs = null;
 var verbButtonCount = 9;
 var beginningOfCurrentTurnScrollPosition = 0;
 
+// Tracks whether the player has made progress since the game started/loaded
+// that hasn't been saved anywhere (slot or file) yet, so an accidental
+// refresh/close can warn before silently discarding it (see beforeunload
+// listener below). canSave mirrors the last value passed to
+// WebPlayer.setCanSave (both playerweb.js's and wasm-player.js's versions
+// keep this in sync) — if saving isn't even offered, there's nothing the
+// player could do about unsaved progress, so the warning is pointless. This
+// is what keeps the legacy editor's preview page (Editor.razor's
+// EnableSave="false") and WasmPlayer's editor-preview mode — both of which
+// reload on every edit — from being nagged by the warning on every reload.
+var hasUnsavedProgress = false;
+var canSave = true;
+
+function markUnsavedProgress() {
+    hasUnsavedProgress = true;
+}
+
+function clearUnsavedProgress() {
+    hasUnsavedProgress = false;
+}
+
+window.addEventListener("beforeunload", function (e) {
+    if (!hasUnsavedProgress || !canSave) return;
+    e.preventDefault();
+    e.returnValue = "";
+});
+
 function initPlayerUI() {
     const gameBorder = document.getElementById("gameBorder");
     gameBorder.style.display = "block";
@@ -30,14 +57,14 @@ function initPlayerUI() {
         }
     });
 
-    $("button").button();
+    $("#gameBorder button").button();
     $("#gamePanesRunning").multiOpenAccordion({active: [0, 1, 2, 3]});
     showStatusVisible(false);
 
     const cmdSave = document.getElementById("cmdSave");
-    cmdSave.addEventListener("click", async () => {
+    cmdSave.addEventListener("click", window.WebPlayer?.onSaveClick ?? (async () => {
         await GameSaver.save();
-    });
+    }));
 
     const cmdDebug = document.getElementById("cmdDebug");
     cmdDebug.addEventListener("click", () => {
@@ -162,7 +189,7 @@ function initPlayerUI() {
             gameContent.style.width = (gameWidth - 250) + "px";
             gamePanel.style.width = (gameWidth - 220) + "px";
             gridPanel.style.width = (gameWidth - 220) + "px";
-            if (window.paper) paper.view.viewSize.width = gameWidth - 220;
+            if (window.paper && paper.view) paper.view.viewSize.width = gameWidth - 220;
         } else {
             if (wasWide) {
                 sidebar.style.display = "none";
@@ -175,7 +202,7 @@ function initPlayerUI() {
             gameContent.style.width = "initial";
             gamePanel.style.width = "100%";
             gridPanel.style.width = "100%";
-            if (window.paper) paper.view.viewSize.width = window.innerWidth;
+            if (window.paper && paper.view) paper.view.viewSize.width = window.innerWidth;
         }
 
         const newPanelImageMaxHeight = `${(window.innerHeight - 30) * 0.5}px`;
@@ -242,6 +269,23 @@ function initPlayerUI() {
 
 function loadHtml(html) {
     $("#divOutput").html(html);
+    // The injected HTML carries its own divOutputAlign<N> ids from whenever the
+    // game was saved, but _currentDiv/_divCount (used by addText/createNewDiv)
+    // are untouched by the line above. If a div was already created before this
+    // ran (e.g. WasmPlayer's in-session restore resets output and creates div 1
+    // before loadHtml overwrites #divOutput with the restored transcript),
+    // _currentDiv keeps pointing at that now-detached node — every future
+    // addText() call then silently appends to an invisible div instead of the
+    // page, even though the command that produced it succeeded. Resetting here
+    // makes the next addText() start a fresh div (via its getCurrentDiv()==null
+    // check), numbered past whatever the restored transcript already used.
+    _currentDiv = null;
+    var maxDivId = 0;
+    $("#divOutput [id^='divOutputAlign']").each(function () {
+        var n = parseInt(this.id.slice("divOutputAlign".length), 10);
+        if (n > maxDivId) maxDivId = n;
+    });
+    setDivCount(maxDivId);
 }
 
 function showStatusVisible(visible) {
@@ -743,7 +787,7 @@ function bindMenu(linkid, verbs, text, elementId) {
 }
 
 function buildMenuOptions(verbs, text, elementId) {
-    var verbsList = verbs.split("/");
+    var verbsList = verbs ? verbs.split("/") : [];
     var options = [];
     var metadata = {};
     metadata[text] = elementId;
@@ -841,6 +885,22 @@ function clearScreen() {
         }, 100);
     }
     $("#outputData").appendTo($("#divOutput"));
+}
+
+// Hard-resets output/transcript state so a different game/save can start
+// clean without a full page reload (used by WasmPlayer's in-game Load,
+// where _currentDiv/_divCount would otherwise still point at divs from the
+// game that just got torn down).
+function resetGameOutput() {
+    _outputSections = [];
+    _currentDiv = null;
+    _divCount = -1;
+    saveClearedText = false;
+    clearedOnce = false;
+    beginningOfCurrentTurnScrollPosition = 0;
+    $("#divOutput").css("min-height", 0).html("");
+    createNewDiv("left");
+    clearUnsavedProgress();
 }
 
 // Scrollback functions added by KV
@@ -2106,6 +2166,19 @@ function Grid_DrawShape(id, border, fill, opacity) {
     $.fn.jjmenu_popup = function (param) {
         var el = this;
 
+        if (typeof param === "undefined") {
+            var verbs = el.data("verbs");
+            if (!verbs) {
+                // No live verb data for this element yet (or it was never made
+                // available server-side) - nothing to show, so bail out rather
+                // than crashing on an undefined verb list.
+                return;
+            }
+            var text = el.html();
+            var elementId = el.data("elementid");
+            param = buildMenuOptions(verbs, text, elementId);
+        }
+
         $("div[id^=jjmenu_main]").remove();
 
         var m = document.createElement('div');
@@ -2118,13 +2191,6 @@ function Grid_DrawShape(id, border, fill, opacity) {
         $(document.body).append(m);
 
         positionMenu();
-
-        if (typeof param === "undefined") {
-            var verbs = el.data("verbs");
-            var text = el.html();
-            var elementId = el.data("elementid");
-            param = buildMenuOptions(verbs, text, elementId);
-        }
 
         for (var i in param) {
             putItem(param[i]);
@@ -2322,25 +2388,51 @@ const GameSaver = (() => {
         });
     }
 
+    async function deleteSaveSlot(gameId, slotIndex) {
+        const db = await openDatabase();
+        const tx = db.transaction('saves', 'readwrite');
+        const store = tx.objectStore('saves');
+        store.delete([gameId, slotIndex]);
+
+        return tx.complete || tx.done || new Promise((res, rej) => {
+            tx.oncomplete = res;
+            tx.onerror = rej;
+        });
+    }
+
+    async function nextSlotIndex(gameId) {
+        const existing = await listSaves(gameId);
+        return existing.length ? Math.max(...existing.map(s => s.slotIndex)) + 1 : 0;
+    }
+
     let persistenceRequested = false;
 
     return {
-        save: async () => {
+        save: async (name) => {
+            const gameId = WebPlayer.gameId;
             const saveData = $("#divOutput").html();
             const result = await WebPlayer.uiSaveGame(saveData);
-            await saveGame(WebPlayer.gameId, 0, result,
-                "Saved game at " + new Date().toISOString().replace('T', ' ').substring(0, 19));
+            const slotIndex = await nextSlotIndex(gameId);
+            // Locale-formatted (not ISO) so it reads naturally wherever it's shown —
+            // WebPlayer's Slots list shows only the name, with no separate timestamp.
+            const label = name || "Saved game — " + new Date().toLocaleString();
+            await saveGame(gameId, slotIndex, result, label);
             addText("Game saved.<br>");
+            clearUnsavedProgress();
             if (!persistenceRequested) {
                 await ensurePersistentStorage();
                 persistenceRequested = true;
             }
+            return {slotIndex, name: label};
         },
-        listSaves: async () => {
-            return await listSaves(WebPlayer.gameId);
+        listSaves: async (gameId = WebPlayer.gameId) => {
+            return await listSaves(gameId);
         },
-        load: async (slotIndex) => {
-            return await loadGame(WebPlayer.gameId, slotIndex);
+        load: async (slotIndex, gameId = WebPlayer.gameId) => {
+            return await loadGame(gameId, slotIndex);
+        },
+        deleteSlot: async (slotIndex, gameId = WebPlayer.gameId) => {
+            return await deleteSaveSlot(gameId, slotIndex);
         }
     }
 })();

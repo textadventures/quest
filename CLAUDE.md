@@ -4,12 +4,12 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-Quest Viva is an open-source system for creating and playing text adventure games. It's a .NET 9.0 C# application (v6.0.0-beta.9), the modern successor to Quest 5. The main deliverable is a web-based game player built with ASP.NET Core and Blazor.
+Quest Viva is an open-source system for creating and playing text adventure games. It's a .NET 10.0 C# application, the modern successor to Quest 5. There are two player implementations: **WebPlayer** (ASP.NET Core + Blazor Server, Docker-deployed) and **WasmPlayer** (pure browser-WASM, AOT-compiled, no server required — the long-term direction).
 
 ## Build & Test Commands
 
 ```bash
-# Build
+# Build (full solution)
 dotnet build --configuration Release
 
 # Run all tests
@@ -21,8 +21,19 @@ dotnet test tests/EngineTests
 # Run a specific test
 dotnet test tests/EngineTests --filter "FullyQualifiedName~TestMethodName"
 
-# Run with Docker
+# Run WebPlayer with Docker
 docker compose up --build    # WebPlayer on http://localhost:8080
+
+# Build WasmPlayer (Debug — fast interpreter mode)
+dotnet build src/WasmPlayer/WasmPlayer.csproj
+
+# Build WasmPlayer (Release — AOT compiled, ~15s)
+dotnet build --configuration Release src/WasmPlayer/WasmPlayer.csproj
+
+# Run WasmPlayer dev server
+node src/WasmPlayer/dev-server.mjs              # Debug build
+node src/WasmPlayer/dev-server.mjs --release    # Release/AOT build
+# Open: http://localhost:5175/?url=/examples/simple.aslx
 ```
 
 Tests use MSTest with Moq (mocking) and Shouldly (assertions).
@@ -45,8 +56,8 @@ The solution (`QuestViva.sln`) has a layered architecture:
 
 ```
 WebPlayer (ASP.NET Core + Blazor Server)  ─┐
-WasmPlayer (Blazor WebAssembly)            ─┤
-                                            ├─► PlayerCore ─► Engine ─► Utility ─► Common
+WasmPlayer (browser-wasm, AOT)             ─┤
+                                            ├─► PlayerCore ─► Engine ─► Common
 EditorCore ─────────────────────────────────┘        │
                                                      └─► Legacy
 ```
@@ -54,30 +65,45 @@ EditorCore ───────────────────────
 **Key projects in `src/`:**
 
 - **Common** — Shared types and interfaces used across all projects
-- **Utility** — Helper functions and language utilities
 - **Engine** — Core game interpreter: script execution, expression evaluation, game loading, built-in functions. Contains embedded `.aslx` files (game templates, language definitions) in `Core/`
 - **PlayerCore** — Game player runtime that wraps Engine. Contains embedded UI resources (HTML, CSS, JS including jQuery UI, jPlayer)
 - **EditorCore** — Game editor logic (non-UI)
 - **Legacy** — Quest 4 (and earlier) backward-compatibility layer with embedded `.lib`/`.dat` files
 - **WebPlayer** — ASP.NET Core web app with Blazor Razor components (`Game.razor`, `Slots.razor`, debugger)
-- **WasmPlayer** — WebAssembly variant of the player
+- **WasmPlayer** — Pure browser-WASM player (`browser-wasm` target, AOT-compiled). Uses `JSImport`/`JSExport` for JS interop. Serves as a static site with no server-side .NET required. IL trimming is enabled; `WasmPlayer.linker.xml` preserves the Engine assembly (which uses reflection-based type discovery).
+- **WasmEditor** — Browser-WASM bridge (`browser-wasm` target) exposing `EditorCore` to the WebEditor SvelteKit frontend via `[JSExport]` (see `WasmEditorBridge.cs`)
+- **WebEditor** (`src/WebEditor/`) — SvelteKit SPA (adapter-static) frontend for the game editor; talks to WasmEditor over the JS/WASM boundary and to `FileAdapter` implementations (`src/lib/filesystem/`) for storage (FSA, OPFS local drafts, server, Electron). See `docs/webeditor-wasm-svelte.md`
+- **ElectronApp** (`src/ElectronApp/`) — Electron main-process shell (desktop app) wrapping the WebEditor SPA over a local loopback HTTP server; no Svelte/UI code of its own. See `docs/electron-desktop-app.md`
 
 **Test projects in `tests/`:** EngineTests, PlayerCoreTests, EditorCoreTests, UtilityTests, LegacyTests
 
+## Git Workflow
+
+`main` is a protected branch (required status check `build_and_test`, required PR review, `enforce_admins` on) — direct pushes are rejected outright, including from repo admins. All changes, however small, go through a feature branch + PR.
+
 ## Releasing
 
-1. Update the `VERSION` file on `main` and push
-2. Run `./release.sh`
+Releases are managed by [release-please](https://github.com/googleapis/release-please) (`.github/workflows/release-please.yml`, config in `release-please-config.json` / `.release-please-manifest.json`). There's no manual `VERSION`-bump PR:
 
-This creates and pushes a git tag (e.g. `v6.0.0-beta.12`) which triggers the `docker-publish` GitHub Actions workflow. That workflow verifies the tag matches the `VERSION` file, then builds and pushes the Docker image tagged with that version. The version is also embedded in the binary at build time and displayed at `/about`.
+1. PRs must have a [Conventional Commits](https://www.conventionalcommits.org/)-prefixed title (`fix:`, `feat:`, `chore:`, etc.) — enforced by `pr-title-lint.yml`, which also restricts the optional scope (e.g. `feat(WebEditor): ...`) to an exact-case allowlist of project names, so scoped changelog entries cluster and capitalize consistently. Since PRs are squash-merged, the PR title becomes the commit message on `main` that release-please parses.
+2. Every push to `main` updates a standing "release PR" that bumps `VERSION` and `CHANGELOG.md` from the commits merged since the last release.
+3. Merging that release PR *is* the release: release-please tags it directly (e.g. `v6.0.0-beta.36`), which triggers `docker-publish`, `nuget-publish`, `deploy-play`, and `electron-publish`, which build/push the Docker image, publish NuGet packages, deploy play.questviva.com, package the Electron desktop app, and attach a GitHub Release with a changelog generated from the PR titles. The version is also embedded in the binary at build time and displayed at `/about`.
 
-If you forgot to update `VERSION`, the script will fail locally because the tag for the old version already exists.
+The version stays a perpetual `6.0.0-beta.N` — `release-please-config.json` uses the `prerelease` versioning strategy with `prerelease-type: beta`, so every release just increments the trailing beta number regardless of commit type (fix/feat/breaking), and it will never auto-graduate out of beta. To cut `6.0.0` for real, that needs an explicit `Release-As:` commit footer or a config change.
+
+release-please pushes using the `RELEASE_PAT` repo secret (a PAT with Contents read/write), not the default `GITHUB_TOKEN` — tags pushed with `GITHUB_TOKEN` don't trigger other workflows, so a PAT is required for the tag-triggered workflows to fire.
+
+`./release.sh` still works as a manual fallback if you need to tag from a clean local `main` directly (e.g. if `release-please` is broken). If you forgot to update `VERSION` before running it, the script will fail locally because the tag for the old version already exists.
+
+Same tag also drives the WebEditor deploy on textadventures.co.uk: `deploy-play` builds WebEditor a second time (with `BASE_PATH=/questviva` instead of `/editor`), attaches `AppBundle.zip`/`WebEditor.zip` alongside `WasmPlayer.zip` to the GitHub Release, then dispatches a `webeditor-release` `repository_dispatch` event (using the `TA_DEPLOY_PAT` secret) to `alexwarren/textadventures.co.uk`, which downloads those release assets and redeploys. There used to be a separate `release-webeditor.yml` workflow keyed off `webeditor-v*` tags — that's gone now; regular `v*` releases are the only release cadence for both.
+
+`electron-publish` (`macos-latest`, needed for DMG building) builds WasmEditor/WasmPlayer/WebEditor again in Release, packages `src/ElectronApp` (`WASM_CONFIG=Release npm run dist`, which also injects the tag's `VERSION` via electron-builder's `-c.extraMetadata.version`), and attaches the resulting unsigned macOS DMGs to the same GitHub Release. Unsigned until Apple Developer/notarization is set up (see `docs/electron-desktop-app.md`'s Resolved decisions); no Windows target yet.
 
 ## Key Technical Details
 
-- Target framework: .NET 9.0 with nullable reference types enabled
-- Expression evaluation uses `Ciloci.Flee` or `NCalcSync` (migrating from the former to the latter)
+- Target framework: .NET 10.0 with nullable reference types enabled
+- Expression evaluation uses `NCalcAsync`
 - Game files use `.aslx` (XML-based) format; legacy `.asl` format also supported
 - Version is stored in the `VERSION` file and embedded as a resource via Common.csproj
 - CI runs on GitHub Actions (build-and-test on push/PR to main for `src/` and `tests/` changes)
-- The `legacy/` directory contains parts of the Quest 5 codebase (.NET Framework) that haven't yet been migrated to .NET 9 — primarily the desktop apps and ASP.NET web apps. It is not part of the active solution
+- Library packages (`QuestViva.Common`, `QuestViva.Engine`, `QuestViva.Legacy`, `QuestViva.PlayerCore`) are published to NuGet.org on each release tag via the `nuget-publish` workflow

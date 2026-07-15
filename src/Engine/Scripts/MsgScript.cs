@@ -42,10 +42,10 @@ public class MsgScript : ScriptBase
         return new MsgScript(m_scriptContext, m_function.Clone());
     }
 
-    public override void Execute(Context c)
+    public override async Task ExecuteAsync(Context c)
     {
-        var result = m_function.Execute(c);
-        m_worldModel.Print(result.ToString());
+        var result = await m_function.ExecuteAsync(c);
+        await m_worldModel.PrintAsync(result.ToString());
     }
 
     public override string Save()

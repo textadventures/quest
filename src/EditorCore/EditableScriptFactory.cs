@@ -20,7 +20,7 @@ public class EditableScriptData
         var expression = editor.Fields.GetString("onlydisplayif");
         if (expression != null)
         {
-            m_visibilityExpression = new Expression<bool>(Engine.Utility.ConvertVariablesToFleeFormat(expression),
+            m_visibilityExpression = new Expression<bool>(Engine.Utility.EncodeIdentifierSpaces(expression),
                 new ScriptContext(worldModel, true));
         }
     }
@@ -33,9 +33,9 @@ public class EditableScriptData
     public string CommonButton { get; private set; }
     public int Order { get; private set; }
 
-    public bool IsVisible()
+    public async Task<bool> IsVisible()
     {
-        return m_visibilityExpression == null || m_visibilityExpression.Execute(new Context());
+        return m_visibilityExpression == null || await m_visibilityExpression.ExecuteAsync(new Context());
     }
 }
 
@@ -107,15 +107,10 @@ internal class EditableScriptFactory
         return CreateEditableScript(script);
     }
 
-    internal IEnumerable<string> GetCategories(bool simpleModeOnly, bool showAll)
+    internal async Task<IEnumerable<string>> GetCategories(bool simpleModeOnly, bool showAll)
     {
         var result = new List<string>();
         IEnumerable<EditableScriptData> values = ScriptData.Values;
-        if (!showAll)
-        {
-            values = values.Where(v => v.IsVisible());
-        }
-
         if (simpleModeOnly)
         {
             values = values.Where(v => v.IsVisibleInSimpleMode);
@@ -123,6 +118,11 @@ internal class EditableScriptFactory
 
         foreach (var data in values)
         {
+            if (!showAll && !await data.IsVisible())
+            {
+                continue;
+            }
+
             if (!result.Contains(data.Category))
             {
                 result.Add(data.Category);

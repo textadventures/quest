@@ -52,11 +52,11 @@ public class WhileScript : ScriptBase
         m_loopScript.Parent = Parent;
     }
 
-    public override void Execute(Context c)
+    public override async Task ExecuteAsync(Context c)
     {
-        while (m_expression.Execute(c))
+        while (await m_expression.ExecuteAsync(c))
         {
-            m_loopScript.Execute(c);
+            await m_loopScript.ExecuteAsync(c);
             if (c.IsReturned)
             {
                 break;

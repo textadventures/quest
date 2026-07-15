@@ -6,6 +6,7 @@
     import AttributesEditor from "./AttributesEditor.svelte";
     import ListEditor from "./ListEditor.svelte";
     import ElementsList from "./ElementsList.svelte";
+    import AssetPicker from "./AssetPicker.svelte";
 
     let activeTab = $state<string | null>(null);
     let lastKey = $state<string | null>(null);
@@ -62,8 +63,8 @@
     }
 
     function insertTextProcessorText(attribute: string, controlType: string, insertBefore: string, insertAfter: string, event: MouseEvent) {
-        const wrapper = (event.target as HTMLElement).closest('.richtext-wrap');
-        const textarea = wrapper?.querySelector('textarea') as HTMLTextAreaElement | null;
+        const wrapper = (event.target as HTMLElement).closest(".richtext-wrap");
+        const textarea = wrapper?.querySelector("textarea") as HTMLTextAreaElement | null;
         if (!textarea) return;
         const start = textarea.selectionStart ?? 0;
         const end = textarea.selectionEnd ?? 0;
@@ -131,7 +132,7 @@
 
 {#snippet textProcessorPanel(commands: TextProcessorCommand[], attribute: string, controlType: string)}
     <div class="flex flex-col gap-0.5 shrink-0">
-        {#each commands as cmd}
+        {#each commands as cmd (cmd.command)}
             <div class="flex items-center gap-1">
                 <button
                     type="button"
@@ -217,11 +218,15 @@
             >Generate</button>
         </div>
     {:else if ctrl.controlType === "file"}
-        <em class="text-xs text-surface-400-500">File picker not yet implemented</em>
+        <AssetPicker
+            value={attrValue(ctrl.attribute!) ?? ""}
+            source={ctrl.source}
+            onchange={(v) => onTextChange(ctrl.attribute!, ctrl.controlType, v)}
+        />
     {:else if ctrl.controlType === "list" && ctrl.attribute && $selectedKey}
         <ListEditor elementKey={$selectedKey} attribute={ctrl.attribute} value={attrValue(ctrl.attribute)} addPrompt={ctrl.addPrompt ?? undefined} />
     {:else if ctrl.controlType === "stringdictionary" && ctrl.attribute}
-        {@const items = (() => { try { return JSON.parse(attrValue(ctrl.attribute) ?? "[]") as {key: string, value: string}[] } catch { return [] } })()}
+        {@const items = (() => { try { return JSON.parse(attrValue(ctrl.attribute) ?? "[]") as {key: string, value: string}[]; } catch { return []; } })()}
         {@const dk = ctrl.attribute}
         <div class="flex flex-col gap-1 w-full">
             {#each items as item (item.key)}
@@ -254,7 +259,7 @@
                         <button
                             type="button"
                             class="text-xs flex-1 text-left px-1.5 py-0.5 hover:text-primary-600-400 truncate"
-                            onclick={() => { editingItem = {attribute: dk, key: item.key, value: item.value}; }}
+                            onclick={() => { editingItem = { attribute: dk, key: item.key, value: item.value }; }}
                         >{item.value}</button>
                     {/if}
                     <button
@@ -270,18 +275,18 @@
                     class="input text-xs py-0.5 px-1.5 w-24 flex-shrink-0"
                     placeholder={ctrl.caption ? "Key" : "Key"}
                     value={newDictItems[dk]?.key ?? ""}
-                    oninput={(e) => { newDictItems[dk] = {...(newDictItems[dk] ?? {key: "", value: ""}), key: (e.target as HTMLInputElement).value}; }}
+                    oninput={(e) => { newDictItems[dk] = { ...(newDictItems[dk] ?? { key: "", value: "" }), key: (e.target as HTMLInputElement).value }; }}
                 />
                 <input
                     type="text"
                     class="input text-xs py-0.5 px-1.5 flex-1"
                     placeholder="Value"
                     value={newDictItems[dk]?.value ?? ""}
-                    oninput={(e) => { newDictItems[dk] = {...(newDictItems[dk] ?? {key: "", value: ""}), value: (e.target as HTMLInputElement).value}; }}
+                    oninput={(e) => { newDictItems[dk] = { ...(newDictItems[dk] ?? { key: "", value: "" }), value: (e.target as HTMLInputElement).value }; }}
                     onkeydown={(e) => {
                         if (e.key === "Enter" && $selectedKey && newDictItems[dk]?.key?.trim()) {
                             addDictItem($selectedKey, dk, newDictItems[dk].key.trim(), newDictItems[dk].value ?? "");
-                            newDictItems[dk] = {key: "", value: ""};
+                            newDictItems[dk] = { key: "", value: "" };
                         }
                     }}
                 />
@@ -291,7 +296,7 @@
                     onclick={() => {
                         if ($selectedKey && newDictItems[dk]?.key?.trim()) {
                             addDictItem($selectedKey, dk, newDictItems[dk].key.trim(), newDictItems[dk].value ?? "");
-                            newDictItems[dk] = {key: "", value: ""};
+                            newDictItems[dk] = { key: "", value: "" };
                         }
                     }}
                 >Add</button>
@@ -446,8 +451,8 @@
                     {@render controlOnly(ctrl)}
                 </div>
             {:else}
-                <div class="flex {isMultiline ? 'items-start' : 'items-center'} gap-2 px-3 py-1.5 min-h-8">
-                    <span class="text-xs text-surface-600-400 w-32 flex-shrink-0 {isMultiline ? 'pt-0.5' : ''}">{label}:</span>
+                <div class="flex {isMultiline ? "items-start" : "items-center"} gap-2 px-3 py-1.5 min-h-8">
+                    <span class="text-xs text-surface-600-400 w-32 flex-shrink-0 {isMultiline ? "pt-0.5" : ""}">{label}:</span>
                     {@render controlOnly(ctrl)}
                 </div>
             {/if}

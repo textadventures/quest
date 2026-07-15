@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
+using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices.JavaScript;
 using System.Text.Json;
@@ -32,7 +33,8 @@ internal record ControlInfo(
     string? AddPrompt = null,
     string? ElementType = null,
     string? ObjectType = null,
-    string? ListFilter = null);
+    string? ListFilter = null,
+    string? Source = null);
 
 internal record TabInfo(string? Caption, List<ControlInfo> Controls);
 
@@ -48,6 +50,7 @@ internal record ScriptControlData(
     string? Value,
     string? SimpleEditor,
     string? SimpleLabel,
+    string? Source,
     List<ControlOption>? Options,
     List<ScriptNodeData>? Scripts
 );
@@ -181,7 +184,7 @@ public partial class WasmEditorBridge
         _controller.Dirty += (_, _) => { _isDirty = true; };
 
         var provider = new ByteArrayGameDataProvider(gameFileBytes, filename);
-        var ok = await _controller.Initialise(new WasmConfig(), provider);
+        var ok = await _controller.Initialise(provider);
         _isDirty = false;
         if (ok)
         {
@@ -198,7 +201,7 @@ public partial class WasmEditorBridge
     }
 
     [JSExport]
-    public static string? GetEditorData(string key)
+    public static async Task<string?> GetEditorData(string key)
     {
         if (_controller == null)
         {
@@ -230,13 +233,13 @@ public partial class WasmEditorBridge
             var def = _controller.GetEditorDefinition(editorName);
             foreach (var tab in def.Tabs.Values)
             {
-                if (data != null && !tab.IsTabVisible(data))
+                if (data != null && !await tab.IsTabVisible(data))
                 {
                     continue;
                 }
 
                 var visibleControls = data != null
-                    ? tab.Controls.Where(c => c.IsControlVisible(data)).ToList()
+                    ? await FilterVisibleAsync(tab.Controls, data)
                     : tab.Controls.ToList();
                 if (data != null)
                 {
@@ -247,7 +250,7 @@ public partial class WasmEditorBridge
             }
 
             var visibleTopControls = data != null
-                ? def.Controls.Where(c => c.IsControlVisible(data)).ToList()
+                ? await FilterVisibleAsync(def.Controls, data)
                 : def.Controls.ToList();
             if (data != null)
             {
@@ -397,6 +400,41 @@ public partial class WasmEditorBridge
     public static bool IsDirty() => _isDirty;
 
     [JSExport]
+    public static string GetGameId() => _controller?.GameId ?? string.Empty;
+
+    // [JSExport] can't marshal an array of blobs in one call, so assets are staged one
+    // at a time (same shape as the dirty-flag polling above) then consumed by
+    // CreatePublishPackage, which also clears the staged list whether or not it succeeds.
+    private static readonly List<EditorController.PackageIncludeFile> PendingPublishAssets = [];
+
+    [JSExport]
+    public static void AddPublishAsset(string filename, byte[] data)
+    {
+        PendingPublishAssets.Add(new EditorController.PackageIncludeFile
+        {
+            Filename = filename,
+            Content = new MemoryStream(data)
+        });
+    }
+
+    // Returns the .quest package bytes, or an empty array on failure — a real package
+    // is never empty since it always contains at least the game.aslx entry.
+    [JSExport]
+    public static byte[] CreatePublishPackage(bool includeWalkthrough)
+    {
+        var assets = PendingPublishAssets.ToArray();
+        PendingPublishAssets.Clear();
+        if (_controller == null)
+        {
+            return [];
+        }
+
+        using var stream = new MemoryStream();
+        var result = _controller.Publish(null, includeWalkthrough, assets, stream);
+        return result.Valid ? stream.ToArray() : [];
+    }
+
+    [JSExport]
     public static bool CanUndo()
     {
         return _controller?.GetUndoItems().Any() ?? false;
@@ -409,14 +447,14 @@ public partial class WasmEditorBridge
     }
 
     [JSExport]
-    public static void Undo()
+    public static async Task Undo()
     {
         if (_controller == null || !_controller.GetUndoItems().Any())
         {
             return;
         }
 
-        _controller.Undo();
+        await _controller.Undo();
     }
 
     [JSExport]
@@ -591,6 +629,19 @@ public partial class WasmEditorBridge
         {
             return ex.Message;
         }
+    }
+
+    private static async Task<List<IEditorControl>> FilterVisibleAsync(IEnumerable<IEditorControl> controls, IEditorData data)
+    {
+        var result = new List<IEditorControl>();
+        foreach (var c in controls)
+        {
+            if (await c.IsControlVisible(data))
+            {
+                result.Add(c);
+            }
+        }
+        return result;
     }
 
     private static IEditableList<string> EnsureLocalList(IEditorData data, string attribute, IEditableList<string> list)
@@ -1268,7 +1319,7 @@ public partial class WasmEditorBridge
     }
 
     [JSExport]
-    public static string GetScriptCommandCategories()
+    public static async Task<string> GetScriptCommandCategories()
     {
         if (_controller == null)
         {
@@ -1276,10 +1327,17 @@ public partial class WasmEditorBridge
         }
 
         var scriptData = _controller.GetScriptEditorData();
-        var grouped = scriptData
-            .Where(kv => !string.IsNullOrEmpty(kv.Value.Category)
-                         && kv.Value.IsVisible()
-                         && !string.IsNullOrEmpty(kv.Value.CreateString))
+        var visibleEntries = new List<KeyValuePair<string, EditableScriptData>>();
+        foreach (var kv in scriptData)
+        {
+            if (!string.IsNullOrEmpty(kv.Value.Category)
+                && await kv.Value.IsVisible()
+                && !string.IsNullOrEmpty(kv.Value.CreateString))
+            {
+                visibleEntries.Add(kv);
+            }
+        }
+        var grouped = visibleEntries
             .GroupBy(kv => kv.Value.Category)
             .Select(g => new ScriptCategoryInfo(
                 g.Key,
@@ -2483,6 +2541,7 @@ public partial class WasmEditorBridge
         }
 
         string? simpleLabel = null;
+        string? source = null;
 
         if (ctrl.ControlType == "expression")
         {
@@ -2490,6 +2549,7 @@ public partial class WasmEditorBridge
             var simpleEditorTag = ctrl.GetString("simpleeditor");
             // If <simpleeditor> is absent but <simple> is set, default simple editor is a textbox
             simpleEditor = simpleEditorTag ?? (simpleLabel != null ? "textbox" : null);
+            source = ctrl.GetString("source");
 
             if (simpleEditor == "dropdown")
             {
@@ -2532,6 +2592,7 @@ public partial class WasmEditorBridge
             value,
             simpleEditor,
             simpleLabel,
+            source,
             options,
             nestedScripts
         );
@@ -2688,9 +2749,10 @@ public partial class WasmEditorBridge
         }
 
         var addPrompt = ctrl.ControlType == "list" ? ctrl.GetString("editprompt") : null;
+        var source = ctrl.ControlType == "file" ? ctrl.GetString("source") : null;
 
         return new ControlInfo(attribute, ctrl.ControlType, ctrl.Caption ?? ctrl.GetString("selfcaption"), options,
-            null, null, textProcessorCommands, addPrompt);
+            null, null, textProcessorCommands, addPrompt, Source: source);
     }
 
     [JSExport]

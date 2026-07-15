@@ -42,13 +42,13 @@ public class ListAddScript : ScriptBase
         return new ListAddScript(m_scriptContext, m_list.Clone(), m_value.Clone());
     }
 
-    public override void Execute(Context c)
+    public override async Task ExecuteAsync(Context c)
     {
-        var result = m_list.Execute(c) as IQuestList;
+        var result = await m_list.ExecuteAsync(c) as IQuestList;
 
         if (result != null)
         {
-            result.Add(m_value.Execute(c));
+            result.Add(await m_value.ExecuteAsync(c));
         }
         else
         {
@@ -129,13 +129,13 @@ public class ListRemoveScript : ScriptBase
         return new ListRemoveScript(m_scriptContext, m_list.Clone(), m_value.Clone());
     }
 
-    public override void Execute(Context c)
+    public override async Task ExecuteAsync(Context c)
     {
-        var result = m_list.Execute(c) as IQuestList;
+        var result = await m_list.ExecuteAsync(c) as IQuestList;
 
         if (result != null)
         {
-            result.Remove(m_value.Execute(c));
+            result.Remove(await m_value.ExecuteAsync(c));
         }
         else
         {

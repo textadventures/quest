@@ -46,10 +46,27 @@ public class PlaySoundScript : ScriptBase
         return new PlaySoundScript(m_scriptContext, m_filename.Clone(), m_synchronous.Clone(), m_loop.Clone());
     }
 
-    public override void Execute(Context c)
+    public override async Task ExecuteAsync(Context c)
     {
-        var filename = m_filename.Execute(c);
-        m_worldModel.PlaySound(filename, m_synchronous.Execute(c), m_loop.Execute(c));
+        var filename = await m_filename.ExecuteAsync(c);
+        var synchronous = await m_synchronous.ExecuteAsync(c);
+        var loop = await m_loop.ExecuteAsync(c);
+
+        if (synchronous)
+        {
+            var tcs = WorldModel.BeginPrompt(ref m_worldModel._waitTcs);
+            await m_worldModel.PlayerUi.PlaySoundAsync(filename, true, loop);
+            m_worldModel.SignalTurnSuspended();
+            try
+            {
+                await tcs.Task;
+            }
+            catch (OperationCanceledException) { }
+        }
+        else
+        {
+            await m_worldModel.PlayerUi.PlaySoundAsync(filename, false, loop);
+        }
     }
 
     public override string Save()
@@ -122,9 +139,10 @@ public class StopSoundScript : ScriptBase
         return new StopSoundScript(m_worldModel);
     }
 
-    public override void Execute(Context c)
+    public override Task ExecuteAsync(Context c)
     {
         m_worldModel.PlayerUi.StopSound();
+        return Task.CompletedTask;
     }
 
     public override string Save()

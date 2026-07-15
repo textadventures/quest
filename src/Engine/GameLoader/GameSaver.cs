@@ -1,7 +1,5 @@
-﻿using System.Reflection;
-using QuestViva.Common;
+﻿using QuestViva.Common;
 using QuestViva.Engine.Scripts;
-using QuestViva.Utility;
 
 namespace QuestViva.Engine.GameLoader;
 
@@ -24,19 +22,34 @@ internal partial class GameSaver
     {
         _worldModel = worldModel;
 
-        // Use Reflection to create instances of all IElementSavers (save individual elements)
-        foreach (var t in Classes.GetImplementations(Assembly.GetExecutingAssembly(),
-                     typeof(IElementSaver)))
-        {
-            AddElementSaver((IElementSaver) Activator.CreateInstance(t)!);
-        }
+        IElementSaver[] elementSavers =
+        [
+            new DelegateSaver(),
+            new DynamicTemplateSaver(),
+            new EditorControlSaver(),
+            new EditorSaver(),
+            new EditorTabSaver(),
+            new FunctionSaver(),
+            new ImpliedTypeSaver(),
+            new IncludeSaver(),
+            new JavascriptSaver(),
+            new ObjectSaver(),
+            new ObjectTypeSaver(),
+            new OutputSaver(),
+            new ResourceSaver(),
+            new TemplateSaver(),
+            new TimerSaver(),
+            new WalkthroughSaver(),
+        ];
+        foreach (var saver in elementSavers) AddElementSaver(saver);
 
-        // Use Reflection to create instances of all IElementsSavers (save all elements of a type)
-        foreach (var t in Classes.GetImplementations(Assembly.GetExecutingAssembly(),
-                     typeof(IElementsSaver)))
-        {
-            AddElementsSaver((IElementsSaver) Activator.CreateInstance(t)!);
-        }
+        IElementsSaver[] elementsSavers =
+        [
+            new EditorsSaver(),
+            new ObjectsSaver(),
+            new WalkthroughsSaver(),
+        ];
+        foreach (var saver in elementsSavers) AddElementsSaver(saver);
     }
 
     public WorldModelVersion Version => _worldModel.Version;

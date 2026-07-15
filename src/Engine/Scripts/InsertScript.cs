@@ -38,7 +38,7 @@ public class InsertScript : ScriptBase
         return new InsertScript(m_scriptContext, m_filename.Clone());
     }
 
-    public override void Execute(Context c)
+    public override async Task ExecuteAsync(Context c)
     {
         if (m_worldModel.Version >= WorldModelVersion.v540)
         {
@@ -46,7 +46,7 @@ public class InsertScript : ScriptBase
                 "The 'insert' script command is not supported for games written for Quest 5.4 or later. You can output HTML directly using the 'msg' command instead.");
         }
 
-        var filename = m_filename.Execute(c);
+        var filename = await m_filename.ExecuteAsync(c);
         if (m_worldModel.Version == WorldModelVersion.v500)
         {
             // v500 games used Frame.htm for static panel feature. This is now implemented natively

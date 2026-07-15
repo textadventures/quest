@@ -16,7 +16,7 @@ public abstract class ExpressionBase
         OriginalExpression = expression;
         if (!scriptContext.WorldModel.EditMode)
         {
-            expression = Utility.ConvertVariablesToFleeFormat(expression);
+            expression = Utility.EncodeIdentifierSpaces(expression);
         }
 
         Expression = expression;
@@ -35,14 +35,7 @@ public class Expression<T> : ExpressionBase, IFunction<T>
     public Expression(string expression, ScriptContext scriptContext)
         : base(expression, scriptContext)
     {
-        if (scriptContext.WorldModel.UseNCalc)
-        {
-            _expressionEvaluator = new NcalcExpressionEvaluator<T>(Expression, ScriptContext);
-        }
-        else
-        {
-            _expressionEvaluator = new FleeExpressionEvaluator<T>(Expression, ScriptContext);
-        }
+        _expressionEvaluator = new NcalcExpressionEvaluator<T>(Expression, ScriptContext);
     }
 
     public IFunction<T> Clone()
@@ -50,9 +43,9 @@ public class Expression<T> : ExpressionBase, IFunction<T>
         return new Expression<T>(Expression, ScriptContext);
     }
 
-    public T Execute(Context c)
+    public Task<T> ExecuteAsync(Context c)
     {
-        return _expressionEvaluator.Evaluate(c);
+        return _expressionEvaluator.EvaluateAsync(c);
     }
 
     public string Save()
@@ -68,14 +61,7 @@ public class ExpressionDynamic : ExpressionBase, IFunctionDynamic
     public ExpressionDynamic(string expression, ScriptContext scriptContext)
         : base(expression, scriptContext)
     {
-        if (scriptContext.WorldModel.UseNCalc)
-        {
-            _dynamicExpressionEvaluator = new NcalcExpressionEvaluator<object>(Expression, ScriptContext);
-        }
-        else
-        {
-            _dynamicExpressionEvaluator = new FleeDynamicExpressionEvaluator(Expression, ScriptContext);
-        }
+        _dynamicExpressionEvaluator = new NcalcExpressionEvaluator<object>(Expression, ScriptContext);
     }
 
     public IFunctionDynamic Clone()
@@ -83,9 +69,9 @@ public class ExpressionDynamic : ExpressionBase, IFunctionDynamic
         return new ExpressionDynamic(Expression, ScriptContext);
     }
 
-    public object Execute(Context c)
+    public Task<object> ExecuteAsync(Context c)
     {
-        return _dynamicExpressionEvaluator.Evaluate(c);
+        return _dynamicExpressionEvaluator.EvaluateAsync(c);
     }
 
     public string Save()

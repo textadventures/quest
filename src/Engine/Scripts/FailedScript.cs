@@ -17,7 +17,7 @@ internal class FailedScript : ScriptBase
         return new FailedScript(m_script);
     }
 
-    public override void Execute(Context c)
+    public override Task ExecuteAsync(Context c)
     {
         throw new NotImplementedException();
     }

@@ -65,17 +65,17 @@ public class DoActionScript : ScriptBase
             m_parameters == null ? null : m_parameters.Clone());
     }
 
-    public override void Execute(Context c)
+    public override async Task ExecuteAsync(Context c)
     {
-        var obj = m_obj.Execute(c);
-        var action = obj.GetAction(m_action.Execute(c));
+        var obj = await m_obj.ExecuteAsync(c);
+        var action = obj.GetAction(await m_action.ExecuteAsync(c));
         if (m_parameters == null)
         {
-            m_worldModel.RunScript(action, obj);
+            await m_worldModel.RunScriptAsync(action, obj);
         }
         else
         {
-            m_worldModel.RunScript(action, new Parameters(m_parameters.Execute(c)), obj);
+            await m_worldModel.RunScriptAsync(action, new Parameters(await m_parameters.ExecuteAsync(c)), obj);
         }
     }
 

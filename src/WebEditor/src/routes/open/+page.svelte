@@ -1,18 +1,123 @@
 <script lang="ts">
+    import { onMount } from "svelte";
     import { goto } from "$app/navigation";
+    import { page } from "$app/state";
     import { base } from "$app/paths";
+    import { PUBLIC_HAS_SERVER } from "$env/static/public";
     import { openGame, loadingStatus } from "$lib/editor-store";
-    import { hasFSA, openDirectory, loadFileFromDirectory, loadLocalFile, createLocalGame } from "$lib/filesystem/browser-adapter";
+    import { hasFSA, openDirectory, loadFileFromDirectory, createLocalGame } from "$lib/filesystem/browser-adapter";
+    import {
+        openElectronFile, loadElectronFile, createElectronGame, getDefaultGamesDir, pickGameLocation,
+        listRecentGames, removeRecentGame,
+    } from "$lib/filesystem/electron-adapter";
+    import type { RecentGame } from "$lib/filesystem/electron-adapter";
+    import { isElectron } from "$lib/runtime";
     import { createNewGame, getGameTemplates } from "$lib/filesystem/server-adapter";
     import type { GameTemplate } from "$lib/filesystem/server-adapter";
+    import { pickFile } from "$lib/filesystem/file-picker";
+    import {
+        listLocalDrafts, loadLocalDraft, deleteLocalDraft, createLocalDraft, createLocalDraftFromFile,
+        createLocalDraftFromZipEntry, parseGameIdFromAslx,
+    } from "$lib/filesystem/local-adapter";
+    import type { LocalDraftSummary, ZipEntries } from "$lib/filesystem/local-adapter";
     import { loadWasm } from "$lib/wasm";
+
+    const hasServer = PUBLIC_HAS_SERVER === "true";
+
+    // Electron always uses window.electronApp (Node fs via IPC), never FSA —
+    // its Chromium supports showDirectoryPicker, but docs/electron-desktop-app.md
+    // flags known parity bugs there (missing persistent permissions, broken
+    // directory iteration). Checked once; doesn't change during the session.
+    const isElectronApp = isElectron();
+    // FSA folder access (Open game folder / Save to folder) is offered as a
+    // secondary option on capable browsers — OPFS local drafts are the default
+    // everywhere else so trying the editor doesn't start with a "give this
+    // website access to a folder" prompt.
+    const canUseFSA = !isElectronApp && hasFSA();
 
     let loading = $state(false);
     let error = $state<string | null>(null);
 
-    // Set when a directory was opened but contained multiple .aslx files
+    // Set when a directory (FSA) or an imported zip (local drafts) contained
+    // multiple .aslx files — pendingFiles holds the names to choose from
+    // either way. Electron has no equivalent case: openElectronFile() picks
+    // one exact file directly, no folder-then-disambiguate step.
     let pendingDir = $state<FileSystemDirectoryHandle | null>(null);
+    let pendingZip = $state<ZipEntries | null>(null);
     let pendingFiles = $state<string[]>([]);
+
+    // Local drafts (OPFS) — every non-Electron browser, regardless of FSA support.
+    let drafts = $state<LocalDraftSummary[]>([]);
+    const isSafari = typeof navigator !== "undefined" && /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
+
+    async function refreshDrafts() {
+        if (isElectronApp) return;
+        drafts = (await listLocalDrafts()).sort((a, b) => b.lastModified - a.lastModified);
+    }
+    void refreshDrafts();
+
+    // Recently opened/created/saved-as game folders (Electron only — tracked
+    // by electron-adapter.ts on every successful load/create/saveAs).
+    let recentGames = $state<RecentGame[]>([]);
+
+    async function refreshRecentGames() {
+        if (!isElectron()) return;
+        recentGames = await listRecentGames();
+    }
+    void refreshRecentGames();
+
+    // Recent-list changes that originate outside this page (the native
+    // "Clear Recent" menu item) have no other way to reach an already-mounted
+    // /open page — the page's own Remove button updates recentGames directly
+    // and doesn't rely on this.
+    onMount(() => {
+        if (!isElectron()) return;
+        return window.electronApp!.recent.onChanged(() => void refreshRecentGames());
+    });
+
+    // Electron's File > Open Game… menu item (see +layout.svelte's
+    // menu.onAction) lands here with ?action=open&t=<nonce> so it pops the
+    // native file picker immediately, instead of making the user click
+    // the "Open game…" button after already choosing this route. A
+    // reactive $effect (not onMount) because the menu can fire while this
+    // page is already mounted — e.g. the user is already sitting at /open —
+    // and SvelteKit doesn't remount a page for a same-route, query-only
+    // navigation; the nonce is what makes goto() to "the same" URL actually
+    // navigate at all, and this effect is what notices it once it does.
+    // The native "Open Recent" submenu reuses the same nonce mechanism —
+    // ?action=open-recent&dir=...&file=...&t=<nonce>, set by +layout.svelte's
+    // onOpenRecent handler — instead of a second menu→renderer IPC round trip.
+    let handledOpenNonce = "";
+    $effect(() => {
+        const params = page.url.searchParams;
+        const nonce = params.get("t");
+        if (!isElectronApp || nonce === handledOpenNonce) return;
+        const action = params.get("action");
+        if (action === "open") {
+            handledOpenNonce = nonce ?? "";
+            void handleOpenFolder();
+        } else if (action === "open-recent") {
+            const dirPath = params.get("dir");
+            const filename = params.get("file");
+            if (dirPath && filename) {
+                handledOpenNonce = nonce ?? "";
+                void loadFromElectron(dirPath, filename);
+            }
+        }
+    });
+
+    function relativeTime(ms: number): string {
+        const mins = Math.round((Date.now() - ms) / 60000);
+        if (mins < 1) return "just now";
+        if (mins < 60) return `${mins}m ago`;
+        const hours = Math.round(mins / 60);
+        if (hours < 24) return `${hours}h ago`;
+        return `${Math.round(hours / 24)}d ago`;
+    }
+
+    function folderName(dirPath: string): string {
+        return dirPath.split(/[\\/]/).pop() || dirPath;
+    }
 
     // Create new game form (shared)
     let createName = $state("");
@@ -28,7 +133,20 @@
     // Local creation state
     let creatingLocal = $state(false);
     let createLocalError = $state<string | null>(null);
-    let localDownloaded = $state(false);
+
+    // Electron's new-game location — defaults to Documents/Quest Games
+    // (matches Quest 5's desktop editor) unless the user picks somewhere
+    // else via "Change location…". electronParentDir stays null until they
+    // do, so the preview below always reflects whichever is actually in play.
+    let defaultGamesDir = $state("");
+    let electronParentDir = $state<string | null>(null);
+    if (isElectron()) void getDefaultGamesDir().then(dir => defaultGamesDir = dir);
+    let electronGamesDir = $derived(electronParentDir ?? defaultGamesDir);
+
+    async function handleChangeLocation() {
+        const picked = await pickGameLocation(electronGamesDir || undefined);
+        if (picked) electronParentDir = picked;
+    }
 
     // Server creation state
     let creatingServer = $state(false);
@@ -52,6 +170,7 @@
     }
 
     async function handleOpenFolder() {
+        if (isElectron()) return handleOpenFileElectron();
         error = null;
         try {
             const result = await openDirectory();
@@ -71,12 +190,39 @@
         }
     }
 
+    async function handleOpenFileElectron() {
+        error = null;
+        try {
+            const result = await openElectronFile();
+            if (!result) return;
+            await loadFromElectron(result.dirPath, result.filename);
+        } catch (err) {
+            error = String(err);
+        }
+    }
+
     async function handlePickFile(filename: string) {
-        if (!pendingDir) return;
-        const dir = pendingDir;
-        pendingDir = null;
-        pendingFiles = [];
-        await loadFrom(dir, filename);
+        if (pendingDir) {
+            const dir = pendingDir;
+            pendingDir = null;
+            pendingFiles = [];
+            await loadFrom(dir, filename);
+        } else if (pendingZip) {
+            const entries = pendingZip;
+            pendingZip = null;
+            pendingFiles = [];
+            loading = true;
+            error = null;
+            try {
+                const { bytes, adapter } = await createLocalDraftFromZipEntry(entries, filename);
+                const ok = await openGame(bytes, adapter.filename, adapter);
+                if (ok) { goto(base || "/"); return; }
+                error = "Failed to load game file.";
+            } catch (err) {
+                error = String(err);
+            }
+            loading = false;
+        }
     }
 
     async function loadFrom(dir: FileSystemDirectoryHandle, filename: string) {
@@ -93,12 +239,11 @@
         loading = false;
     }
 
-    async function handleOpenFile() {
+    async function loadFromElectron(dirPath: string, filename: string) {
+        loading = true;
         error = null;
         try {
-            const loaded = await loadLocalFile();
-            if (!loaded) return;
-            loading = true;
+            const loaded = await loadElectronFile(dirPath, filename);
             const ok = await openGame(loaded.bytes, loaded.adapter.filename, loaded.adapter);
             if (ok) { goto(base || "/"); return; }
             error = "Failed to load game file.";
@@ -108,25 +253,121 @@
         loading = false;
     }
 
+    async function handleImportFile() {
+        error = null;
+        try {
+            const file = await pickFile(".aslx,.zip");
+            if (!file) return;
+            loading = true;
+            const result = await createLocalDraftFromFile(file);
+            loading = false;
+            if (result.kind === "chooseEntry") {
+                pendingZip = result.entries;
+                pendingFiles = result.names;
+                return;
+            }
+            const ok = await openGame(result.bytes, result.adapter.filename, result.adapter);
+            if (ok) { goto(base || "/"); return; }
+            error = "Failed to load game file.";
+        } catch (err) {
+            error = String(err);
+        }
+        loading = false;
+    }
+
+    async function handleOpenDraft(gameId: string) {
+        error = null;
+        loading = true;
+        try {
+            const loaded = await loadLocalDraft(gameId);
+            if (!loaded) {
+                error = "Could not open that draft.";
+            } else {
+                const ok = await openGame(loaded.bytes, loaded.adapter.filename, loaded.adapter);
+                if (ok) { goto(base || "/"); return; }
+                error = "Failed to load game file.";
+            }
+        } catch (err) {
+            error = String(err);
+        }
+        loading = false;
+    }
+
+    async function handleDeleteDraft(gameId: string, filename: string) {
+        if (!confirm(`Delete the local draft "${filename}"? This can't be undone.`)) return;
+        await deleteLocalDraft(gameId);
+        await refreshDrafts();
+    }
+
+    // Removes a Recent entry only — never touches the actual file on disk.
+    async function handleRemoveRecent(game: RecentGame) {
+        await removeRecentGame(game.dirPath, game.filename);
+        await refreshRecentGames();
+    }
+
+    // Shared by both create paths below — validates the form and renders the
+    // template through WASM. Returns null (with createLocalError already set)
+    // if the form isn't ready yet.
+    async function buildNewGameFile(): Promise<{ filename: string; content: string } | null> {
+        const trimmed = createName.trim();
+        if (!trimmed) { createLocalError = "Please enter a game name."; return null; }
+        if (!selectedTemplateId) { createLocalError = "Please select a template."; return null; }
+        const bridge = await loadWasm();
+        const content = bridge.CreateGameFromTemplate(selectedTemplateId, trimmed);
+        return { filename: safeFilename(trimmed), content };
+    }
+
+    // Default create path: Electron → native folder (its only storage mode);
+    // every other browser → an OPFS local draft, regardless of FSA support,
+    // so trying the editor never opens with a folder-permission prompt.
     async function handleCreateLocal() {
         createLocalError = null;
-        localDownloaded = false;
-        const trimmed = createName.trim();
-        if (!trimmed) { createLocalError = "Please enter a game name."; return; }
-        if (!selectedTemplateId) { createLocalError = "Please select a template."; return; }
         creatingLocal = true;
         try {
-            const bridge = await loadWasm();
-            const content = bridge.CreateGameFromTemplate(selectedTemplateId, trimmed);
-            const result = await createLocalGame(safeFilename(trimmed), content);
-            if (result === null) {
-                // user cancelled directory picker — do nothing
-            } else if (result.kind === "opened") {
-                const ok = await openGame(result.loaded.bytes, result.loaded.adapter.filename, result.loaded.adapter);
+            const file = await buildNewGameFile();
+            if (!file) { creatingLocal = false; return; }
+            if (isElectronApp) {
+                // Falls back to a fresh fetch on the off chance the mount-time
+                // getDefaultGamesDir() call (see electronGamesDir) hasn't
+                // resolved yet — cheap IPC round trip, not worth blocking the
+                // form on at mount.
+                const parentDir = electronGamesDir || await getDefaultGamesDir();
+                // Errors here (e.g. a folder with that name already exists at
+                // parentDir) are caught by this function's outer try/catch below,
+                // same as every other error path in this function.
+                const result = await createElectronGame(parentDir, file.filename, file.content);
+                const ok = await openGame(result.bytes, result.adapter.filename, result.adapter);
                 if (ok) { goto(base || "/"); return; }
                 createLocalError = "Failed to load new game.";
             } else {
-                localDownloaded = true;
+                const gameId = parseGameIdFromAslx(file.content);
+                if (!gameId) { createLocalError = "New game is missing a gameid."; creatingLocal = false; return; }
+                const adapter = await createLocalDraft(gameId, file.filename, file.content);
+                const ok = await openGame(new TextEncoder().encode(file.content), file.filename, adapter);
+                if (ok) { goto(base || "/"); return; }
+                createLocalError = "Failed to load new game.";
+            }
+        } catch (err) {
+            createLocalError = String(err);
+        }
+        creatingLocal = false;
+    }
+
+    // Secondary create path, FSA-capable browsers only: saves straight to a
+    // folder on disk instead of an OPFS draft — offered alongside, not instead
+    // of, handleCreateLocal() (see canUseFSA).
+    async function handleCreateLocalFolder() {
+        createLocalError = null;
+        creatingLocal = true;
+        try {
+            const file = await buildNewGameFile();
+            if (!file) { creatingLocal = false; return; }
+            const result = await createLocalGame(file.filename, file.content);
+            // result === null: user cancelled the directory picker — do nothing
+            if (result) {
+                const ok = await openGame(result.loaded.bytes, result.loaded.adapter.filename, result.loaded.adapter);
+                if (ok) { goto(base || "/"); return; }
+                createLocalError = "Failed to load new game.";
             }
         } catch (err) {
             createLocalError = String(err);
@@ -168,38 +409,103 @@
                     type="button"
                     class="btn preset-outlined-primary-500 w-full"
                     onclick={() => handlePickFile(file)}
-                >{file}</button>
+                >{file.slice(file.lastIndexOf("/") + 1)}</button>
             {/each}
             <button
                 type="button"
                 class="btn preset-outlined-surface-500 w-full"
-                onclick={() => { pendingDir = null; pendingFiles = []; }}
+                onclick={() => { pendingDir = null; pendingZip = null; pendingFiles = []; }}
             >Cancel</button>
         </div>
     {:else}
         <div class="flex flex-col items-center gap-4 w-full max-w-sm">
 
-            <!-- Open existing game -->
-            <p class="text-surface-500-400 text-sm font-medium self-start">Open existing game</p>
+            {#if !hasServer}
+                <!-- Open existing game -->
+                <p class="text-surface-500-400 text-sm font-medium self-start">Open existing game</p>
 
-            {#if hasFSA()}
-                <button type="button" class="btn preset-filled-primary-500 w-full" onclick={handleOpenFolder}>
-                    Open game folder
-                </button>
-            {:else}
-                <button type="button" class="btn preset-filled-primary-500 w-full" onclick={handleOpenFile}>
-                    Open game file
-                </button>
-                <p class="text-sm text-surface-500-400 max-w-[40ch] text-center">
-                    For full support including image assets, use Chrome or Edge.
-                </p>
+                {#if isElectronApp}
+                    <button type="button" class="btn preset-filled-primary-500 w-full" onclick={handleOpenFolder}>
+                        {isElectron() ? "Open game…" : "Open game folder"}
+                    </button>
+                {:else}
+                    <button type="button" class="btn preset-filled-primary-500 w-full" onclick={handleImportFile}>
+                        Import game file
+                    </button>
+                    {#if canUseFSA}
+                        <button type="button" class="btn preset-outlined-primary-500 w-full" onclick={handleOpenFolder}>
+                            Open game folder
+                        </button>
+                    {/if}
+                    <p class="text-sm text-surface-500-400 max-w-[40ch] text-center">
+                        Accepts a .aslx file or a .zip backed up from here. Imported games are stored in this
+                        browser as a local draft — use <strong>Backup</strong> in the editor to save a copy to disk.
+                        {#if canUseFSA}Or open a folder on your computer to edit it there directly.{/if}
+                    </p>
+                {/if}
+
+                {#if error}
+                    <p class="text-error-500 text-sm">{error}</p>
+                {/if}
+
+                {#if isElectronApp && recentGames.length > 0}
+                    <hr class="w-full border-surface-300-700 my-2" />
+                    <p class="text-surface-500-400 text-sm font-medium self-start">Recent</p>
+                    <div class="flex flex-col gap-2 w-full">
+                        {#each recentGames as game (game.dirPath + "/" + game.filename)}
+                            <div class="flex items-center gap-2 w-full">
+                                <button
+                                    type="button"
+                                    class="btn btn-sm preset-outlined-primary-500 flex-1 justify-between"
+                                    onclick={() => loadFromElectron(game.dirPath, game.filename)}
+                                >
+                                    <span>{game.filename}</span>
+                                    <span class="text-surface-500-400 text-xs truncate max-w-[16ch]">{folderName(game.dirPath)} · {relativeTime(game.lastOpened)}</span>
+                                </button>
+                                <button
+                                    type="button"
+                                    class="btn btn-sm preset-outlined-error-500"
+                                    title="Remove from Recent"
+                                    onclick={() => handleRemoveRecent(game)}
+                                >Remove</button>
+                            </div>
+                        {/each}
+                    </div>
+                {/if}
+
+                {#if !isElectronApp && drafts.length > 0}
+                    <hr class="w-full border-surface-300-700 my-2" />
+                    <p class="text-surface-500-400 text-sm font-medium self-start">Your local drafts</p>
+                    <div class="flex flex-col gap-2 w-full">
+                        {#each drafts as draft (draft.gameId)}
+                            <div class="flex items-center gap-2 w-full">
+                                <button
+                                    type="button"
+                                    class="btn btn-sm preset-outlined-primary-500 flex-1 justify-between"
+                                    onclick={() => handleOpenDraft(draft.gameId)}
+                                >
+                                    <span>{draft.filename}</span>
+                                    <span class="text-surface-500-400">{relativeTime(draft.lastModified)}</span>
+                                </button>
+                                <button
+                                    type="button"
+                                    class="btn btn-sm preset-outlined-error-500"
+                                    title="Delete draft"
+                                    onclick={() => handleDeleteDraft(draft.gameId, draft.filename)}
+                                >Delete</button>
+                            </div>
+                        {/each}
+                    </div>
+                    {#if isSafari}
+                        <p class="text-xs text-surface-500-400 max-w-[40ch] text-center">
+                            Safari may clear local drafts if you don't open this site for a week or more —
+                            export a backup of anything important.
+                        </p>
+                    {/if}
+                {/if}
+
+                <hr class="w-full border-surface-300-700 my-2" />
             {/if}
-
-            {#if error}
-                <p class="text-error-500 text-sm">{error}</p>
-            {/if}
-
-            <hr class="w-full border-surface-300-700 my-2" />
 
             <!-- Create new game -->
             <p class="text-surface-500-400 text-sm font-medium self-start">Create new game</p>
@@ -262,31 +568,65 @@
                         </div>
                     {:else}
                         <div class="flex gap-2">
-                            <button
-                                type="button"
-                                class="btn preset-filled-primary-500 flex-1"
-                                onclick={handleCreateLocal}
-                                disabled={!createName.trim()}
-                                title={hasFSA() ? "Choose a folder to save your game in" : "Download the game file"}
-                            >
-                                {hasFSA() ? "Save to my computer" : "Download"}
-                            </button>
-                            <button
-                                type="button"
-                                class="btn preset-outlined-primary-500 flex-1"
-                                onclick={handleCreateServer}
-                                disabled={!createName.trim()}
-                                title="Save to textadventures.co.uk"
-                            >
-                                Save to server
-                            </button>
+                            {#if hasServer}
+                                <div class="flex flex-col gap-1 flex-1">
+                                    <button
+                                        type="button"
+                                        class="btn preset-filled-primary-500 w-full"
+                                        onclick={handleCreateServer}
+                                        disabled={!createName.trim()}
+                                        title="Save to textadventures.co.uk"
+                                    >
+                                        Save to server
+                                    </button>
+                                    <p class="text-xs text-surface-500-400 text-center">Saved to your textadventures.co.uk account</p>
+                                </div>
+                            {:else}
+                                <div class="flex flex-col gap-1 flex-1">
+                                    <button
+                                        type="button"
+                                        class="btn preset-filled-primary-500 w-full"
+                                        onclick={handleCreateLocal}
+                                        disabled={!createName.trim()}
+                                        title={isElectronApp ? "Choose where to create your game's folder" : "Save as a local draft in this browser"}
+                                    >
+                                        {isElectronApp ? "Create" : "Create local draft"}
+                                    </button>
+                                    {#if !isElectronApp}
+                                        <p class="text-xs text-surface-500-400 text-center">Stored in this browser only</p>
+                                    {/if}
+                                </div>
+                                {#if canUseFSA}
+                                    <div class="flex flex-col gap-1 flex-1">
+                                        <button
+                                            type="button"
+                                            class="btn preset-outlined-primary-500 w-full"
+                                            onclick={handleCreateLocalFolder}
+                                            disabled={!createName.trim()}
+                                            title="Choose a folder on your computer to save your game in"
+                                        >
+                                            Save to folder…
+                                        </button>
+                                        <p class="text-xs text-surface-500-400 text-center">You'll choose a folder on this device</p>
+                                    </div>
+                                {/if}
+                            {/if}
                         </div>
-                    {/if}
 
-                    {#if localDownloaded}
-                        <p class="text-sm text-surface-500-400">
-                            Game file downloaded. Use <strong>Open game file</strong> above to open it.
-                        </p>
+                        {#if isElectron()}
+                            <p class="text-xs text-surface-500-400 text-center self-center">
+                                Will be created as a new folder in:<br />
+                                <span class="font-mono">{electronGamesDir || "…"}</span>
+                                <button type="button" class="anchor" onclick={handleChangeLocation}>Change location…</button>
+                            </p>
+                        {/if}
+
+                        {#if hasServer}
+                            <p class="text-xs text-surface-500-400 max-w-[40ch] text-center self-center">
+                                Want to keep this game only on your own device? Use the
+                                <a class="anchor" href="https://play.questviva.com/editor/">play.questviva.com editor</a> instead.
+                            </p>
+                        {/if}
                     {/if}
 
                     {#if createLocalError}

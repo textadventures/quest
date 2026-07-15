@@ -82,10 +82,15 @@ public class SetScriptConstructor : IScriptConstructor
 
     internal IFunction<Element> GetAppliesTo(ScriptContext scriptContext, string value, out string variable)
     {
-        var var = Utility.ConvertVariablesToFleeFormat(value).Trim();
-        string obj;
-        Utility.ResolveObjectDotAttribute(var, out obj, out variable);
-        return obj == null ? null : new Expression<Element>(obj, scriptContext);
+        value = value.Trim();
+        var dotPos = value.LastIndexOf('.');
+        if (dotPos == -1)
+        {
+            variable = Utility.ResolveElementName(value);
+            return null;
+        }
+        variable = value[(dotPos + 1)..];
+        return new Expression<Element>(value[..dotPos], scriptContext);
     }
 }
 
@@ -135,23 +140,6 @@ public abstract class SetScriptBase : ScriptBase
         if (AppliesTo != null && Property != null)
         {
             WorldModel.AddAttributeName(Property);
-        }
-    }
-
-    public override void Execute(Context c)
-    {
-        var result = GetResult(c);
-
-        if (AppliesTo != null)
-        {
-            // we're setting an object property
-            var obj = AppliesTo.Execute(c);
-            obj.Fields.Set(Property, result);
-        }
-        else
-        {
-            // we're setting a local variable
-            c.Parameters[Property] = result;
         }
     }
 
@@ -214,7 +202,6 @@ public abstract class SetScriptBase : ScriptBase
         return base.GetDefinedVariables();
     }
 
-    protected abstract object GetResult(Context c);
     protected abstract string GetSaveString();
     protected abstract object GetValue();
     protected abstract void SetValue(string newValue);
@@ -241,9 +228,20 @@ public class SetExpressionScript : SetScriptBase
             Property, (Expression<object>) m_expr.Clone());
     }
 
-    protected override object GetResult(Context c)
+    public override async Task ExecuteAsync(Context c)
     {
-        return m_expr.Execute(c);
+        var result = await m_expr.ExecuteAsync(c);
+        if (AppliesTo != null)
+        {
+            // we're setting an object property
+            var obj = await AppliesTo.ExecuteAsync(c);
+            await obj.SetFieldAsync(Property, result);
+        }
+        else
+        {
+            // we're setting a local variable
+            c.Parameters[Property] = result;
+        }
     }
 
     protected override string GetSaveString()
@@ -285,9 +283,19 @@ public class SetScriptScript : SetScriptBase
             (IScript) m_script.Clone());
     }
 
-    protected override object GetResult(Context c)
+    public override async Task ExecuteAsync(Context c)
     {
-        return m_script;
+        if (AppliesTo != null)
+        {
+            // we're setting an object property
+            var obj = await AppliesTo.ExecuteAsync(c);
+            await obj.SetFieldAsync(Property, m_script);
+        }
+        else
+        {
+            // we're setting a local variable
+            c.Parameters[Property] = m_script;
+        }
     }
 
     protected override string GetSaveString()

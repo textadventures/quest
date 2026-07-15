@@ -13,24 +13,24 @@ public interface IGame
     List<string> Errors { get; }
     string GameID { get; }
     Task<bool> Initialise(IPlayer player);
-    void Begin();
-    void SendCommand(string command);
-    void SendCommand(string command, int elapsedTime, IDictionary<string, string> metadata);
-    void SendEvent(string eventName, string param);
+    Task Begin();
+    Task SendCommand(string command);
+    Task SendCommand(string command, int elapsedTime, IDictionary<string, string> metadata);
+    Task SendEvent(string eventName, string param);
     event PrintTextHandler? PrintText;
     event UpdateListHandler? UpdateList;
     event FinishedHandler? Finished;
     event ErrorHandler? LogError;
     void Finish();
-    byte[] Save(string html);
-    void FinishWait();
-    void FinishPause();
+    Task<byte[]> SaveAsync(string html);
+    Task FinishWait();
+    Task FinishPause();
 
-    void SetMenuResponse(string? response);
-    void SetQuestionResponse(bool response);
+    Task SetMenuResponse(string? response);
+    Task SetQuestionResponse(bool response);
 
     event Action<int>? RequestNextTimerTick;
-    void Tick(int elapsedTime);
+    Task Tick(int elapsedTime);
 
     IEnumerable<string>? GetExternalScripts();
     IEnumerable<string>? GetExternalStylesheets();
@@ -46,20 +46,20 @@ public interface IPlayer
     void DoPause(int ms);
     void ShowQuestion(string caption);
     void SetWindowMenu(MenuData menuData);
-    void PlaySound(string filename, bool synchronous, bool looped);
+    Task PlaySoundAsync(string filename, bool synchronous, bool looped);
     void StopSound();
     void WriteHTML(string html);
-    string GetURL(string filename);
+    Task<string> GetUrlAsync(string filename);
     void LocationUpdated(string location);
     void UpdateGameName(string name);
     void ClearScreen();
-    void ShowPicture(string filename);
+    Task ShowPictureAsync(string filename);
     void SetPanesVisible(string data);
     void SetStatusText(string text);
     void SetBackground(string colour);
     void SetForeground(string colour);
     void SetLinkForeground(string colour);
-    void RunScript(string function, object[]? parameters);
+    Task RunScriptAsync(string function, object[]? parameters);
     void Quit();
     void SetFont(string fontName);
     void SetFontSize(string fontSize);
@@ -78,7 +78,8 @@ public enum ListType
 {
     InventoryList,
     ExitsList,
-    ObjectsList
+    ObjectsList,
+    ElementMenuVerbs
 }
 
 public enum UIOption

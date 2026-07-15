@@ -9,10 +9,6 @@ on:
       - "site/**"
   pull_request:
     branches: [ "main" ]
-    paths:
-      - "src/**"
-      - "tests/**"
-      - "site/**"
   workflow_dispatch:
 
 jobs:
@@ -21,10 +17,10 @@ jobs:
 
     steps:
       - name: Check out repository code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
 
       - name: Set up Node.js
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v6
         with:
           node-version: 'lts/*'
           cache: 'npm'
@@ -38,17 +34,120 @@ jobs:
         run: npm run build
         working-directory: site
 
+  build_webeditor:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out repository code
+        uses: actions/checkout@v7
+
+      # Matches the node-version deploy-play.yml uses to build WebEditor for
+      # release, so a lockfile that only resolves cleanly on a contributor's
+      # local platform gets caught here instead of on release day.
+      - name: Set up Node.js
+        uses: actions/setup-node@v6
+        with:
+          node-version: '22'
+          cache: 'npm'
+          cache-dependency-path: src/WebEditor/package-lock.json
+
+      - name: Install dependencies
+        run: npm ci
+        working-directory: src/WebEditor
+
+      - name: Build
+        run: npm run build
+        working-directory: src/WebEditor
+        env:
+          PUBLIC_WEBEDITOR_VERSION: ${{ github.sha }}
+          BASE_PATH: /editor
+
+  lint_webeditor:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out repository code
+        uses: actions/checkout@v7
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v6
+        with:
+          node-version: '22'
+          cache: 'npm'
+          cache-dependency-path: src/WebEditor/package-lock.json
+
+      - name: Install dependencies
+        run: npm ci
+        working-directory: src/WebEditor
+
+      - name: Lint
+        run: npm run lint
+        working-directory: src/WebEditor
+
+      - name: Type check
+        run: npm run check
+        working-directory: src/WebEditor
+
+  build_electron:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out repository code
+        uses: actions/checkout@v7
+
+      - name: Set up .NET
+        uses: actions/setup-dotnet@v5
+        with:
+          dotnet-version: '10.0.x'
+
+      - name: Install wasm-tools workload
+        run: dotnet workload install wasm-tools
+
+      # Debug builds are enough to prove the Electron build pipeline (and its
+      # static-asset assembly step) works — Release/AOT is a packaging-time
+      # concern, not a per-PR one.
+      - name: Build WasmEditor
+        run: dotnet build src/WasmEditor/WasmEditor.csproj -c Debug
+
+      - name: Build WasmPlayer
+        run: dotnet build src/WasmPlayer/WasmPlayer.csproj -c Debug
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v6
+        with:
+          node-version: '22'
+          cache: 'npm'
+          cache-dependency-path: |
+            src/WebEditor/package-lock.json
+            src/ElectronApp/package-lock.json
+
+      - name: Install WebEditor dependencies
+        run: npm ci
+        working-directory: src/WebEditor
+
+      - name: Build WebEditor
+        run: npm run build
+        working-directory: src/WebEditor
+
+      - name: Install ElectronApp dependencies
+        run: npm ci
+        working-directory: src/ElectronApp
+
+      - name: Build ElectronApp
+        run: npm run build
+        working-directory: src/ElectronApp
+
   build_and_test:
     runs-on: ubuntu-latest
 
     steps:
       # Check out the repo so the workflow can access it
       - name: Check out repository code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
 
       # Set up the .NET SDK (change to the specific version you’re using)
       - name: Set up .NET
-        uses: actions/setup-dotnet@v4
+        uses: actions/setup-dotnet@v5
         with:
           dotnet-version: '10.0.x'
 

@@ -8,13 +8,19 @@ updates:
       site-dependencies:
         patterns:
           - "*"
+    commit-message:
+      prefix: "chore"
 
   - package-ecosystem: "nuget"
     directory: "/src"
     schedule:
       interval: "weekly"
+    commit-message:
+      prefix: "chore"
 
   - package-ecosystem: "nuget"
     directory: "/tests"
     schedule:
       interval: "weekly"
+    commit-message:
+      prefix: "chore"

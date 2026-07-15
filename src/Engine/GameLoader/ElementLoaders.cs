@@ -1,9 +1,7 @@
-﻿using System.Reflection;
-using System.Text.RegularExpressions;
+﻿using System.Text.RegularExpressions;
 using System.Xml;
 using QuestViva.Engine.Scripts;
 using QuestViva.Engine.Types;
-using QuestViva.Utility;
 
 // ReSharper disable UnusedType.Local
 
@@ -22,12 +20,37 @@ internal partial class GameLoader
 
     private void AddXmlLoaders(LoadMode mode)
     {
-        // Use Reflection to create instances of all IXmlLoaders
-        foreach (var t in Classes.GetImplementations(Assembly.GetExecutingAssembly(),
-                     typeof(IXmlLoader)))
-        {
-            AddXmlLoader((IXmlLoader) Activator.CreateInstance(t)!, mode);
-        }
+        IXmlLoader[] loaders =
+        [
+            new ASLElementLoader(),
+            new CommandLoader(),
+            new DelegateLoader(),
+            new DynamicTemplateLoader(),
+            new EditorControlLoader(),
+            new EditorImpliedTypeLoader(),
+            new EditorIncludeLoader(),
+            new EditorLoader(),
+            new EditorTabLoader(),
+            new ExitLoader(),
+            new FunctionLoader(),
+            new GameElementLoader(),
+            new ImpliedTypeLoader(),
+            new IncludeLoader(),
+            new InheritLoader(),
+            new JavascriptReferenceLoader(),
+            new LibraryLoader(),
+            new ObjectLoader(),
+            new OutputLoader(),
+            new ResourceLoader(),
+            new TemplateLoader(),
+            new TimerLoader(),
+            new TurnScriptLoader(),
+            new TypeLoader(),
+            new VerbLoader(),
+            new VerbTemplateLoader(),
+            new WalkthroughLoader(),
+        ];
+        foreach (var loader in loaders) AddXmlLoader(loader, mode);
 
         _defaultXmlLoader = new DefaultXmlLoader();
         InitXmlLoader(_defaultXmlLoader);

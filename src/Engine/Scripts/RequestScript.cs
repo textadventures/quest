@@ -69,9 +69,9 @@ public class RequestScript : ScriptBase
         return new RequestScript(m_scriptContext, m_request.ToString(), m_data.Clone());
     }
 
-    public override void Execute(Context c)
+    public override async Task ExecuteAsync(Context c)
     {
-        var data = m_data.Execute(c);
+        var data = await m_data.ExecuteAsync(c);
 
         // TO DO: Replace with dictionary mapping the enum to lambda functions
         switch (m_request)
@@ -87,7 +87,7 @@ public class RequestScript : ScriptBase
                 m_worldModel.OutputLogger.Clear();
                 break;
             case Request.ShowPicture:
-                m_worldModel.PlayerUi.ShowPicture(data);
+                await m_worldModel.PlayerUi.ShowPictureAsync(data);
                 // TO DO: Picture should be added to the OutputLogger, but the data we
                 // get here includes the full path/URL - we want the original filename
                 // only, so this would be a breaking change.
@@ -129,11 +129,11 @@ public class RequestScript : ScriptBase
                 var functionName = jsArgs[0];
                 if (jsArgs.Length == 0)
                 {
-                    m_worldModel.PlayerUi.RunScript(functionName, null);
+                    await m_worldModel.PlayerUi.RunScriptAsync(functionName, null);
                 }
                 else
                 {
-                    m_worldModel.PlayerUi.RunScript(functionName, jsArgs.Skip(1).ToArray());
+                    await m_worldModel.PlayerUi.RunScriptAsync(functionName, jsArgs.Skip(1).ToArray());
                 }
 
                 break;
@@ -186,7 +186,7 @@ public class RequestScript : ScriptBase
                 int ms;
                 if (int.TryParse(data, out ms))
                 {
-                    m_worldModel.StartPause(ms);
+                    await m_worldModel.DoPauseAsync(ms);
                 }
 
                 break;
@@ -197,7 +197,7 @@ public class RequestScript : ScriptBase
                         "The 'Wait' request is not supported for games written for Quest 5.4 or later. Use the 'wait' script command instead.");
                 }
 
-                m_worldModel.StartWait();
+                await m_worldModel.DoWaitAsync();
                 break;
             case Request.SetInterfaceString:
                 var args = data.Split('=');

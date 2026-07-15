@@ -1,4 +1,5 @@
 <script lang="ts">
+    import { SvelteSet } from "svelte/reactivity";
     import { treeNodes, selectedKey, selectNode, deleteElement, openAddModal, createVerb, createCommand, createIncludedLibrary, createJavascript, swapElements } from "$lib/editor-store";
 
     interface Props {
@@ -28,13 +29,13 @@
     let items = $derived(
         $treeNodes.filter(n =>
             nodeTypes.includes(n.nodeType) &&
-            (showAll || n.parent === elementKey)
+                (showAll || n.parent === elementKey)
         )
     );
 
     // ── Selection ──────────────────────────────────────────────────────────────
 
-    let selectedKeys = $state(new Set<string>());
+    const selectedKeys = new SvelteSet<string>();
 
     // Derive selection in item-list order, excluding any stale keys (deleted items)
     let activeSelection = $derived(
@@ -42,9 +43,7 @@
     );
 
     function toggleSelect(key: string, checked: boolean) {
-        const next = new Set(selectedKeys);
-        if (checked) next.add(key); else next.delete(key);
-        selectedKeys = next;
+        if (checked) selectedKeys.add(key); else selectedKeys.delete(key);
     }
 
     // ── Add actions ────────────────────────────────────────────────────────────
@@ -54,17 +53,17 @@
 
     let addLabel = $derived(
         nodeTypes.includes("function") ? "Add Function" :
-        nodeTypes.includes("timer") ? "Add Timer" :
-        nodeTypes.includes("verb") ? "Add Verb" :
-        nodeTypes.includes("command") ? "Add Command" :
-        nodeTypes.includes("walkthrough") ? "Add Walkthrough" :
-        nodeTypes.includes("template") ? "Add Template" :
-        nodeTypes.includes("dynamictemplate") ? "Add Dynamic Template" :
-        nodeTypes.includes("type") ? "Add Type" :
-        nodeTypes.includes("include") ? "Add Library" :
-        nodeTypes.includes("javascript") ? "Add JavaScript" :
-        isObjectList ? "Add Object" :
-        null
+            nodeTypes.includes("timer") ? "Add Timer" :
+                nodeTypes.includes("verb") ? "Add Verb" :
+                nodeTypes.includes("command") ? "Add Command" :
+                nodeTypes.includes("walkthrough") ? "Add Walkthrough" :
+                nodeTypes.includes("template") ? "Add Template" :
+                nodeTypes.includes("dynamictemplate") ? "Add Dynamic Template" :
+                nodeTypes.includes("type") ? "Add Type" :
+                nodeTypes.includes("include") ? "Add Library" :
+                nodeTypes.includes("javascript") ? "Add JavaScript" :
+                isObjectList ? "Add Object" :
+                null
     );
 
     function addPrimary() {
@@ -115,15 +114,13 @@
             if ($selectedKey === key) selectNode(elementKey);
             deleteElement(key);
         }
-        selectedKeys = new Set();
+        selectedKeys.clear();
     }
 
     function onDeleteItem(key: string) {
         if ($selectedKey === key) selectNode(elementKey);
         deleteElement(key);
-        const next = new Set(selectedKeys);
-        next.delete(key);
-        selectedKeys = next;
+        selectedKeys.delete(key);
     }
 </script>
 
@@ -131,11 +128,11 @@
     <!-- Add toolbar -->
     <div class="flex items-center gap-1 mb-2">
         {#if addLabel !== null}
-        <button
-            type="button"
-            class="btn btn-sm preset-outlined-primary-500 text-xs py-0.5"
-            onclick={addPrimary}
-        >+ {addLabel}</button>
+            <button
+                type="button"
+                class="btn btn-sm preset-outlined-primary-500 text-xs py-0.5"
+                onclick={addPrimary}
+            >+ {addLabel}</button>
         {/if}
         {#if showRoomButton}
             <button

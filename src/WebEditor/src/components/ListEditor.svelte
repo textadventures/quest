@@ -51,7 +51,7 @@
                 <button
                     type="button"
                     class="text-xs flex-1 text-left px-1.5 py-0.5 hover:text-primary-600-400"
-                    onclick={() => { editingItem = {key: item.key, value: item.value}; }}
+                    onclick={() => { editingItem = { key: item.key, value: item.value }; }}
                 >{item.value}</button>
             {/if}
             <button

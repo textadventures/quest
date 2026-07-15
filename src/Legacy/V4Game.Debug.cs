@@ -67,7 +67,7 @@ public partial class V4Game
 
     public IWalkthroughs Walkthroughs => _walkthroughs ??= new WalkthroughList(this);
 
-    public bool Assert(string expression)
+    public Task<bool> AssertAsync(string expression)
     {
         return ExecuteConditions(expression, _nullContext);
     }
@@ -142,7 +142,10 @@ public partial class V4Game
                     continue;
                 }
 
-                var name = game.GetParameter(startLine, game._nullContext, false);
+                var paramStart = startLine.IndexOf('<');
+                var paramEnd = startLine.IndexOf('>');
+                if (paramStart < 0 || paramEnd < 0) continue;
+                var name = startLine.Substring(paramStart + 1, paramEnd - paramStart - 1);
 
                 var steps = new List<string>();
                 for (var i = section.StartLine + 1; i < section.EndLine; i++)

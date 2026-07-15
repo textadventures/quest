@@ -1,9 +1,9 @@
 @page "/editor/{Id}/{File}"
 @using QuestViva.Common
-@using QuestViva.PlayerCore
 @attribute [RequiresConfig("Editor:Enabled")]
 @rendermode InteractiveServer
 @inject HttpClient HttpClient
+@inject Config Config
 
 <Game GameDataProvider="GetGameDataProvider()" ResourceUrlProvider="GetResourceUrlProvider" EnableDebug="true"
       EnableSave="false"></Game>
@@ -14,12 +14,12 @@
 
     private IGameDataProvider GetGameDataProvider()
     {
-        return new UrlGameDataProvider(HttpClient, $"https://textadventures.blob.core.windows.net/editorgames/{Id}/{File}");
+        return new UrlGameDataProvider(HttpClient, $"{Config.EditorBlobStorageRoot}{Id}/{File}");
     }
 
     private IResourceUrlProvider GetResourceUrlProvider(GameData gameData)
     {
-        return new RemoteResourceUrlProvider($"https://textadventures.blob.core.windows.net/editorgames/{Id}/");
+        return new RemoteResourceUrlProvider($"{Config.EditorBlobStorageRoot}{Id}/");
     }
 
 }

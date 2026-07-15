@@ -17,21 +17,32 @@
             <PrivateAssets>all</PrivateAssets>
             <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
         </PackageReference>
-        <PackageReference Include="Microsoft.NET.Test.Sdk" Version="18.0.1"/>
-        <PackageReference Include="MSTest.TestAdapter" Version="3.7.3"/>
-        <PackageReference Include="MSTest.TestFramework" Version="3.7.3"/>
+        <PackageReference Include="Microsoft.NET.Test.Sdk" Version="18.0.1" />
+        <PackageReference Include="MSTest.TestAdapter" Version="3.7.3" />
+        <PackageReference Include="MSTest.TestFramework" Version="3.7.3" />
     </ItemGroup>
 
     <ItemGroup>
-        <Using Include="Microsoft.VisualStudio.TestTools.UnitTesting"/>
+        <Using Include="Microsoft.VisualStudio.TestTools.UnitTesting" />
     </ItemGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\..\src\Common\Common.csproj"/>
-        <ProjectReference Include="..\..\src\Utility\Utility.csproj"/>
-        <ProjectReference Include="..\..\src\Engine\Engine.csproj"/>
+        <ProjectReference Include="..\..\src\Common\Common.csproj" />
+        <ProjectReference Include="..\..\src\Engine\Engine.csproj" />
     </ItemGroup>
     <ItemGroup>
+        <None Update="callbacktest.aslx">
+            <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+        </None>
+        <None Update="recursiontest.aslx">
+            <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+        </None>
+        <None Update="duplicatetemplatetest.aslx">
+            <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+        </None>
+        <None Update="v500test.aslx">
+            <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+        </None>
         <None Update="savetest.aslx">
             <SubType>Designer</SubType>
             <CopyToOutputDirectory>Always</CopyToOutputDirectory>
@@ -41,13 +52,8 @@
         </None>
     </ItemGroup>
     <ItemGroup>
-        <PackageReference Include="Moq" Version="4.20.72"/>
-        <PackageReference Include="Shouldly" Version="4.3.0"/>
-        <PackageReference Include="System.Data.DataSetExtensions" Version="4.5.0"/>
-    </ItemGroup>
-    <ItemGroup>
-        <Reference Include="Ciloci.Flee">
-            <HintPath>..\..\libs\Ciloci.Flee.dll</HintPath>
-        </Reference>
+        <PackageReference Include="Moq" Version="4.20.72" />
+        <PackageReference Include="Shouldly" Version="4.3.0" />
+        <PackageReference Include="System.Data.DataSetExtensions" Version="4.5.0" />
     </ItemGroup>
 </Project>

@@ -38,17 +38,17 @@ public class PictureScript : ScriptBase
         return new PictureScript(m_scriptContext, m_filename.Clone());
     }
 
-    public override void Execute(Context c)
+    public override async Task ExecuteAsync(Context c)
     {
-        var filename = m_filename.Execute(c);
+        var filename = await m_filename.ExecuteAsync(c);
 
         if (m_worldModel.Version >= WorldModelVersion.v540)
         {
-            m_worldModel.Print("<img src=\"" + m_worldModel.ExpressionOwner.GetFileURL(filename) + "\" />");
+            await m_worldModel.PrintAsync("<img src=\"" + await m_worldModel.GetExternalUrlAsync(filename) + "\" />");
         }
         else
         {
-            m_worldModel.PlayerUi.ShowPicture(filename);
+            await m_worldModel.PlayerUi.ShowPictureAsync(filename);
             ((LegacyOutputLogger) m_worldModel.OutputLogger).AddPicture(filename);
         }
     }

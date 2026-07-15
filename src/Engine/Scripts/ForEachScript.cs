@@ -53,9 +53,9 @@ public class ForEachScript : ScriptBase
         return new ForEachScript(m_scriptContext, m_variable, m_list.Clone(), (IScript) m_loopScript.Clone());
     }
 
-    public override void Execute(Context c)
+    public override async Task ExecuteAsync(Context c)
     {
-        var result = m_list.Execute(c);
+        var result = await m_list.ExecuteAsync(c);
         IEnumerable resultList = null;
 
         // Cannot foreach over strings as of Quest 5.3, as the Char data type is not supported (retained functionality
@@ -82,7 +82,7 @@ public class ForEachScript : ScriptBase
         foreach (var variable in resultList)
         {
             c.Parameters[m_variable] = variable;
-            m_loopScript.Execute(c);
+            await m_loopScript.ExecuteAsync(c);
             if (c.IsReturned)
             {
                 break;

@@ -117,17 +117,15 @@ public class SwitchScript : ScriptBase
         return clone;
     }
 
-    public override void Execute(Context c)
+    public override async Task ExecuteAsync(Context c)
     {
-        var result = m_expr.Execute(c);
-        var success = false;
-
+        var result = await m_expr.ExecuteAsync(c);
         // using .ToString() here as an object comparison of ints won't work
-        success = m_cases.Execute(c, result.ToString());
+        var success = await m_cases.ExecuteAsync(c, result.ToString());
 
         if (!success && m_default != null)
         {
-            m_default.Execute(c);
+            await m_default.ExecuteAsync(c);
         }
     }
 
@@ -238,15 +236,15 @@ public class SwitchScript : ScriptBase
             return result;
         }
 
-        public bool Execute(Context c, string result)
+        public async Task<bool> ExecuteAsync(Context c, string result)
         {
             foreach (var switchCase in CasesAsQuestDictionary)
             {
                 var expr = m_compiledExpressions[switchCase.Key];
 
-                if (result == expr.Execute(c).ToString())
+                if (result == (await expr.ExecuteAsync(c)).ToString())
                 {
-                    switchCase.Value.Execute(c);
+                    await switchCase.Value.ExecuteAsync(c);
                     return true;
                 }
             }

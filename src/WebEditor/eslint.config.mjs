@@ -31,6 +31,15 @@ export default defineConfig([
     },
     ...sveltePlugin.configs.recommended,
     {
+        // svelte/indent (below) supersedes the base indent rule inside .svelte
+        // files — both firing at once fight over the same lines (e.g. switch/case)
+        // and neither's --fix converges.
+        files: ["**/*.svelte"],
+        rules: {
+            indent: "off",
+        },
+    },
+    {
         files: ["**/*.svelte", "**/*.ts"],
         languageOptions: {
             globals: globals.browser,

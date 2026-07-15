@@ -1,0 +1,35 @@
+name: release-please
+
+# Maintains an up-to-date "release PR" that bumps VERSION and CHANGELOG.md
+# from Conventional Commits-formatted PR titles merged to main. Merging that
+# release PR is the release: this job tags it directly (v6.0.0-beta.N), which
+# in turn triggers docker-publish.yml, nuget-publish.yml, and deploy-play.yml
+# — no manual release.sh run needed.
+on:
+  push:
+    branches: [main]
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  release-please:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: googleapis/release-please-action@v4
+        id: release
+        with:
+          token: ${{ secrets.RELEASE_PAT }}
+
+      # release-please-config.json sets prerelease: true so the "prerelease"
+      # versioning strategy keeps bumping the trailing beta.N instead of
+      # graduating out of it (that config key drives both the version-bump
+      # logic and the GitHub Release's prerelease flag). Un-flag the release
+      # itself here so it isn't excluded from "Latest" — GitHub structurally
+      # never lets a prerelease-flagged release hold that badge.
+      - name: Mark release as latest
+        if: ${{ steps.release.outputs.release_created }}
+        env:
+          GH_TOKEN: ${{ secrets.RELEASE_PAT }}
+        run: gh release edit "${{ steps.release.outputs.tag_name }}" --prerelease=false --latest --repo ${{ github.repository }}

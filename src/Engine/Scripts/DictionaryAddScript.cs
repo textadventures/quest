@@ -47,13 +47,13 @@ public class DictionaryAddScript : ScriptBase
         return new DictionaryAddScript(m_scriptContext, m_dictionary.Clone(), m_key.Clone(), m_value.Clone());
     }
 
-    public override void Execute(Context c)
+    public override async Task ExecuteAsync(Context c)
     {
-        var result = m_dictionary.Execute(c) as IDictionary;
+        var result = await m_dictionary.ExecuteAsync(c) as IDictionary;
 
         if (result != null)
         {
-            result.Add(m_key.Execute(c), m_value.Execute(c));
+            result.Add(await m_key.ExecuteAsync(c), await m_value.ExecuteAsync(c));
         }
         else
         {
@@ -139,13 +139,13 @@ public class DictionaryRemoveScript : ScriptBase
         return new DictionaryRemoveScript(m_scriptContext, m_dictionary.Clone(), m_key.Clone());
     }
 
-    public override void Execute(Context c)
+    public override async Task ExecuteAsync(Context c)
     {
-        var result = m_dictionary.Execute(c) as IDictionary;
+        var result = await m_dictionary.ExecuteAsync(c) as IDictionary;
 
         if (result != null)
         {
-            result.Remove(m_key.Execute(c));
+            result.Remove(await m_key.ExecuteAsync(c));
         }
         else
         {

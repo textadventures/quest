@@ -1,0 +1,90 @@
+name: Publish Electron desktop app
+
+# Runs when a version tag is pushed (e.g. v6.0.0-beta.30, normally via
+# release-please merging its release PR), same trigger as docker-publish.yml,
+# nuget-publish.yml, and deploy-play.yml — builds on all three OSes and
+# attaches the unsigned installers/AppImage to the GitHub Release
+# release-please already created. See docs/electron-desktop-app.md.
+on:
+  push:
+    tags: ['v*']
+  workflow_dispatch:
+
+jobs:
+  publish:
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: macos-latest
+            artifact-glob: "*.dmg"
+          - os: windows-latest
+            artifact-glob: "*.exe"
+          - os: ubuntu-latest
+            artifact-glob: "*.AppImage"
+    runs-on: ${{ matrix.os }}
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v7
+
+      - name: Verify tag matches VERSION file
+        if: github.ref_type == 'tag'
+        shell: bash
+        run: |
+          TAG_VERSION="${GITHUB_REF_NAME#v}"
+          FILE_VERSION="$(cat VERSION)"
+          if [ "$TAG_VERSION" != "$FILE_VERSION" ]; then
+            echo "❌ Tag $GITHUB_REF_NAME does not match VERSION file ($FILE_VERSION)"
+            exit 1
+          fi
+
+      - uses: actions/setup-dotnet@v5
+        with:
+          dotnet-version: '10.0.x'
+
+      - name: Install .NET WASM workload
+        run: dotnet workload install wasm-tools
+
+      - uses: actions/setup-node@v6
+        with:
+          node-version: '22'
+          cache: 'npm'
+          cache-dependency-path: |
+            src/WebEditor/package-lock.json
+            src/ElectronApp/package-lock.json
+
+      - name: Build WasmEditor
+        run: dotnet build src/WasmEditor/WasmEditor.csproj -c Release
+
+      - name: Build WasmPlayer
+        run: dotnet build src/WasmPlayer/WasmPlayer.csproj -c Release
+
+      - name: Build WebEditor
+        run: npm ci && npm run build
+        working-directory: src/WebEditor
+        env:
+          PUBLIC_WEBEDITOR_VERSION: ${{ github.ref_name }}
+          PUBLIC_HAS_SERVER: false
+
+      - name: Build and package Electron app
+        run: npm ci && npm run dist
+        working-directory: src/ElectronApp
+        env:
+          # copy-static.mjs defaults to Debug; the AOT/Release AppBundles are
+          # what's actually built above, so it needs to look there instead.
+          # Set via env (not inline `VAR=value` shell syntax) since the
+          # windows-latest runner in this matrix defaults to pwsh, not bash.
+          WASM_CONFIG: Release
+
+      - name: Attach build to GitHub Release
+        # release-please creates the GitHub Release itself (with changelog-based
+        # notes) before pushing the tag that triggers this workflow, so just
+        # upload assets to it rather than creating a new one. shell: bash so
+        # the glob is expanded consistently (incl. on windows-latest, via Git
+        # Bash) rather than relying on gh itself or pwsh to expand it.
+        if: github.ref_type == 'tag'
+        shell: bash
+        run: gh release upload ${{ github.ref_name }} src/ElectronApp/release/${{ matrix.artifact-glob }} --clobber
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}

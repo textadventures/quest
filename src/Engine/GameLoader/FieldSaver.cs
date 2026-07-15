@@ -1,9 +1,7 @@
 ﻿using System.Globalization;
-using System.Reflection;
 using System.Text.RegularExpressions;
 using QuestViva.Engine.Scripts;
 using QuestViva.Engine.Types;
-using QuestViva.Utility;
 
 // ReSharper disable UnusedType.Local
 
@@ -18,12 +16,29 @@ internal partial class FieldSaver
     {
         _saver = saver;
 
-        // Use Reflection to create instances of all IFieldSavers
-        foreach (var t in Classes.GetImplementations(Assembly.GetExecutingAssembly(),
-                     typeof(IFieldSaver)))
-        {
-            AddSaver((IFieldSaver) Activator.CreateInstance(t)!);
-        }
+        IFieldSaver[] savers =
+        [
+            new BooleanSaver(),
+            new DelegateImplementationSaver(),
+            new DictionarySaver(),
+            new DoubleSaver(),
+            new IntSaver(),
+            new LegacyDictionarySaver(),
+            new LegacyObjectDictionarySaver(),
+            new LegacyStringDictionarySaver(),
+            new LegacyStringListSaver(),
+            new ListSaver(),
+            new ObjectDictionarySaver(),
+            new ObjectListSaver(),
+            new ObjectReferenceSaver(),
+            new ScriptDictionarySaver(),
+            new ScriptSaver(),
+            new SimplePatternSaver(),
+            new StringDictionarySaver(),
+            new StringListSaver(),
+            new StringSaver(),
+        ];
+        foreach (var s in savers) AddSaver(s);
     }
 
     private void AddSaver(IFieldSaver saver)
@@ -120,8 +135,8 @@ internal partial class FieldSaver
             Save(writer, null, xmlElementName, value);
         }
 
-        public required GameSaver GameSaver { get; set; }
-        public required FieldSaver FieldSaver { get; set; }
+        public GameSaver GameSaver { get; set; } = null!;
+        public FieldSaver FieldSaver { get; set; } = null!;
 
         public virtual WorldModelVersion? MinVersion => null;
         public virtual WorldModelVersion? MaxVersion => null;
@@ -475,8 +490,8 @@ internal partial class FieldSaver
             Save(writer, null, xmlElementName, value);
         }
 
-        public required GameSaver GameSaver { get; set; }
-        public required FieldSaver FieldSaver { get; set; }
+        public GameSaver GameSaver { get; set; } = null!;
+        public FieldSaver FieldSaver { get; set; } = null!;
 
         public WorldModelVersion? MinVersion => null;
         public WorldModelVersion? MaxVersion => null;

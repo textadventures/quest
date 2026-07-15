@@ -2,7 +2,7 @@ using QuestViva.Common;
 
 namespace QuestViva.PlayerCore;
 
-internal class WalkthroughRunner(IGameDebug game, string walkthrough)
+public class WalkthroughRunner(IGameDebug game, string walkthrough)
 {
     public delegate Task ClearBufferEventHandler();
 
@@ -35,17 +35,17 @@ internal class WalkthroughRunner(IGameDebug game, string walkthrough)
 
             if (_showingMenu)
             {
-                SetMenuResponse(cmd);
+                await SetMenuResponse(cmd);
             }
             else if (_showingQuestion)
             {
-                SetQuestionResponse(cmd);
+                await SetQuestionResponse(cmd);
             }
             else if (cmd.StartsWith("assert:"))
             {
                 var expr = cmd.Substring(7);
                 WriteLine("<br><b>Assert:</b> " + expr);
-                if (game.Assert(expr))
+                if (await game.AssertAsync(expr))
                 {
                     WriteLine("<br><span style=\"color:green\"><b>Pass</b></span>");
                 }
@@ -68,7 +68,7 @@ internal class WalkthroughRunner(IGameDebug game, string walkthrough)
                 var eventData = cmd.Substring(6).Split([';'], 2);
                 var eventName = eventData[0];
                 var param = eventData[1];
-                _game.SendEvent(eventName, param);
+                await _game.SendEvent(eventName, param);
             }
             else if (cmd.StartsWith("runtime:"))
             {
@@ -79,7 +79,7 @@ internal class WalkthroughRunner(IGameDebug game, string walkthrough)
             }
             else
             {
-                _game.SendCommand(cmd);
+                await _game.SendCommand(cmd);
             }
 
             if (ClearBuffer != null)
@@ -97,13 +97,13 @@ internal class WalkthroughRunner(IGameDebug game, string walkthrough)
                 if (_waiting)
                 {
                     _waiting = false;
-                    FinishWait();
+                    await FinishWait();
                 }
 
                 if (_pausing)
                 {
                     _pausing = false;
-                    FinishPause();
+                    await FinishPause();
                 }
             } while ((_waiting || _pausing) && !_cancelled);
 
@@ -118,7 +118,7 @@ internal class WalkthroughRunner(IGameDebug game, string walkthrough)
         _menuOptions = menu.Options;
     }
 
-    private void SetMenuResponse(string response)
+    private async Task SetMenuResponse(string response)
     {
         if (response.StartsWith("menu:"))
         {
@@ -127,7 +127,7 @@ internal class WalkthroughRunner(IGameDebug game, string walkthrough)
             WriteLine("  - " + menuResponse);
             if (_menuOptions.ContainsKey(menuResponse))
             {
-                _game.SetMenuResponse(menuResponse);
+                await _game.SetMenuResponse(menuResponse);
             }
             else
             {
@@ -146,7 +146,7 @@ internal class WalkthroughRunner(IGameDebug game, string walkthrough)
         WriteLine("Question: " + question);
     }
 
-    private void SetQuestionResponse(string response)
+    private async Task SetQuestionResponse(string response)
     {
         if (response.StartsWith("answer:"))
         {
@@ -156,10 +156,10 @@ internal class WalkthroughRunner(IGameDebug game, string walkthrough)
             switch (questionResponse)
             {
                 case "yes":
-                    _game.SetQuestionResponse(true);
+                    await _game.SetQuestionResponse(true);
                     break;
                 case "no":
-                    _game.SetQuestionResponse(false);
+                    await _game.SetQuestionResponse(false);
                     break;
                 default:
                     throw new Exception("Question response was invalid");
@@ -176,9 +176,9 @@ internal class WalkthroughRunner(IGameDebug game, string walkthrough)
         _waiting = true;
     }
 
-    private void FinishWait()
+    private async Task FinishWait()
     {
-        _game.FinishWait();
+        await _game.FinishWait();
     }
 
     public void BeginPause()
@@ -186,9 +186,9 @@ internal class WalkthroughRunner(IGameDebug game, string walkthrough)
         _pausing = true;
     }
 
-    private void FinishPause()
+    private async Task FinishPause()
     {
-        _game.FinishPause();
+        await _game.FinishPause();
     }
 
     private void WriteLine(string text)

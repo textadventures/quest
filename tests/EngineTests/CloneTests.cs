@@ -47,7 +47,7 @@ public class CloneTests
     }
 
     [TestMethod]
-    public void TestUndoCloning()
+    public async Task TestUndoCloning()
     {
         var originalObjectCount = m_worldModel.Elements.Count(ElementType.Object);
 
@@ -57,13 +57,13 @@ public class CloneTests
 
         Assert.AreEqual(originalObjectCount + 1, m_worldModel.Elements.Count(ElementType.Object));
 
-        m_worldModel.UndoLogger.Undo();
+        await m_worldModel.UndoLogger.Undo();
         Assert.AreEqual(originalObjectCount, m_worldModel.Elements.Count(ElementType.Object));
 
         m_worldModel.UndoLogger.Redo();
         Assert.AreEqual(originalObjectCount + 1, m_worldModel.Elements.Count(ElementType.Object));
 
-        m_worldModel.UndoLogger.Undo();
+        await m_worldModel.UndoLogger.Undo();
         Assert.AreEqual(originalObjectCount, m_worldModel.Elements.Count(ElementType.Object));
 
         m_worldModel.UndoLogger.Redo();
@@ -71,7 +71,7 @@ public class CloneTests
     }
 
     [TestMethod]
-    public void TestChangingClonedStringAttribute()
+    public async Task TestChangingClonedStringAttribute()
     {
         const string newAttributeValue = "newattributevalue";
 
@@ -87,14 +87,14 @@ public class CloneTests
         // Original's field value is not changed
         Assert.AreEqual(attributeValue, m_original.Fields.GetString(attributeName));
 
-        m_worldModel.UndoLogger.Undo();
+        await m_worldModel.UndoLogger.Undo();
 
         // Cloned's field value is back to original value
         Assert.AreEqual(attributeValue, clone.Fields.GetString(attributeName));
     }
 
     [TestMethod]
-    public void TestChangingClonedListAttribute()
+    public async Task TestChangingClonedListAttribute()
     {
         var clone = m_original.Clone();
 
@@ -108,7 +108,7 @@ public class CloneTests
         // Original's field value is not changed
         Assert.AreEqual(3, m_original.Fields.GetAsType<QuestList<string>>(listAttributeName).Count);
 
-        m_worldModel.UndoLogger.Undo();
+        await m_worldModel.UndoLogger.Undo();
 
         // Cloned's field value is back to original value
         Assert.AreEqual(3, clone.Fields.GetAsType<QuestList<string>>(listAttributeName).Count);
@@ -133,7 +133,7 @@ public class CloneTests
     }
 
     [TestMethod]
-    public void TestCloneElementWithChildren()
+    public async Task TestCloneElementWithChildren()
     {
         // Create a child object of the original
         const string childAttrName = "childattribute";
@@ -168,7 +168,7 @@ public class CloneTests
         Assert.AreEqual(childAttrValue, cloneChildren[0].Fields.GetString(childAttrName));
 
         // Now undo, and verify we have the original number of objects again
-        m_worldModel.UndoLogger.Undo();
+        await m_worldModel.UndoLogger.Undo();
         Assert.AreEqual(originalElementCount, m_worldModel.Elements.Count(ElementType.Object));
     }
 }

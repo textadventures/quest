@@ -38,9 +38,9 @@ public class DestroyScript : ScriptBase
         return new DestroyScript(m_scriptContext, m_expr.Clone());
     }
 
-    public override void Execute(Context c)
+    public override async Task ExecuteAsync(Context c)
     {
-        var elementName = m_expr.Execute(c);
+        var elementName = await m_expr.ExecuteAsync(c);
         var element = m_worldModel.Elements.Get(elementName);
         if (element.ElemType == ElementType.Object || element.ElemType == ElementType.Timer)
         {

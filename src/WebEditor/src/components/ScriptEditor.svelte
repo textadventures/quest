@@ -1,6 +1,8 @@
 <script lang="ts">
+    import { SvelteSet } from "svelte/reactivity";
     import ScriptEditor from "./ScriptEditor.svelte";
     import AddScriptModal from "./AddScriptModal.svelte";
+    import AssetPicker from "./AssetPicker.svelte";
     import {
         scriptVersion,
         scriptClipboardHasContent,
@@ -61,12 +63,12 @@
     let isRoot = $derived(initialData === null);
     let codeViewMode = $state(false);
     let scriptCode = $state("");
-    let selectedIndices = $state(new Set<number>());
+    const selectedIndices = new SvelteSet<number>();
     // Set before a move mutation so the $effect restores it instead of clearing
     let nextSelection: Set<number> | null = null;
     // Tracks which expression controls the user has explicitly forced into expression mode,
     // overriding the default simple-mode detection based on value shape.
-    let expressionOverrides = $state(new Set<string>());
+    const expressionOverrides = new SvelteSet<string>();
     let objectNames = $state<string[]>([]);
     let ifTemplates = $state<IfExpressionTemplate[]>([]);
 
@@ -75,14 +77,14 @@
         const version = $scriptVersion; // track for reactivity on undo/redo
         if (isRoot) {
             scriptData = version >= 0 ? getScriptData(elementKey, attribute) : null;
-            selectedIndices = nextSelection ?? new Set();
+            selectedIndices.clear();
+            for (const i of nextSelection ?? []) selectedIndices.add(i);
             nextSelection = null;
         }
         if (categories.length === 0) {
-            const cats = getScriptCommandCategories();
-            if (cats) {
-                categories = cats.categories;
-            }
+            void getScriptCommandCategories().then(cats => {
+                if (cats) categories = cats.categories;
+            });
         }
         if (objectNames.length === 0) {
             const names = getObjectNames();
@@ -103,7 +105,7 @@
         if (isRoot) {
             scriptData = getScriptData(elementKey, attribute);
         }
-        expressionOverrides = new Set();
+        expressionOverrides.clear();
     }
 
     function mutate(fn: () => string): boolean {
@@ -122,16 +124,16 @@
     }
 
     function isSimpleValue(ctrl: ScriptControlData): boolean {
-        const v = ctrl.value ?? '';
+        const v = ctrl.value ?? "";
         switch (ctrl.simpleEditor) {
-            case 'boolean':
-                return v === 'true' || v === 'false';
-            case 'number':
-            case 'numberdouble':
-                return v !== '' && Number.isFinite(Number(v));
-            case 'objects':
+            case "boolean":
+                return v === "true" || v === "false";
+            case "number":
+            case "numberdouble":
+                return v !== "" && Number.isFinite(Number(v));
+            case "objects":
                 // Bare identifier (object name) or empty — not a complex expression
-                return v === '' || /^[a-zA-Z_][a-zA-Z0-9_]*$/.test(v);
+                return v === "" || /^[a-zA-Z_][a-zA-Z0-9_]*$/.test(v);
             default:
                 // textbox, dropdown, file: simple when value is a quoted string literal
                 return v.length >= 2 && v.startsWith('"') && v.endsWith('"');
@@ -146,42 +148,40 @@
     }
 
     function toSimpleDisplay(ctrl: ScriptControlData): string {
-        const v = ctrl.value ?? '';
+        const v = ctrl.value ?? "";
         switch (ctrl.simpleEditor) {
-            case 'boolean':
-            case 'number':
-            case 'numberdouble':
-            case 'objects':
+            case "boolean":
+            case "number":
+            case "numberdouble":
+            case "objects":
                 return v;
             default: {
-                if (v.length < 2) return '';
-                return v.slice(1, -1).replace(/<br\/>/g, '\n').replace(/\\"/g, '"');
+                if (v.length < 2) return "";
+                return v.slice(1, -1).replace(/<br\/>/g, "\n").replace(/\\"/g, '"');
             }
         }
     }
 
     function fromSimpleToExpression(simpleValue: string, simpleEditor: string): string {
         switch (simpleEditor) {
-            case 'boolean':
-            case 'number':
-            case 'numberdouble':
-            case 'objects':
+            case "boolean":
+            case "number":
+            case "numberdouble":
+            case "objects":
                 return simpleValue;
             default: {
-                const escaped = simpleValue.replace(/"/g, '\\"').replace(/\n/g, '<br/>');
+                const escaped = simpleValue.replace(/"/g, '\\"').replace(/\n/g, "<br/>");
                 return `"${escaped}"`;
             }
         }
     }
 
     function setExpressionOverride(scriptIndex: number, attr: string) {
-        expressionOverrides = new Set(expressionOverrides).add(exprKey(scriptIndex, attr));
+        expressionOverrides.add(exprKey(scriptIndex, attr));
     }
 
     function clearExpressionOverride(scriptIndex: number, attr: string) {
-        const next = new Set(expressionOverrides);
-        next.delete(exprKey(scriptIndex, attr));
-        expressionOverrides = next;
+        expressionOverrides.delete(exprKey(scriptIndex, attr));
     }
 
     function onSwitchToExpression(scriptIndex: number, ctrl: ScriptControlData) {
@@ -193,12 +193,12 @@
         // If the current value is not a valid simple value, reset to a default simple value
         if (!isSimpleValue(ctrl)) {
             switch (ctrl.simpleEditor) {
-                case 'boolean':
-                    onSetParam(scriptIndex, ctrl.attribute!, 'true');
+                case "boolean":
+                    onSetParam(scriptIndex, ctrl.attribute!, "true");
                     break;
-                case 'number':
-                case 'numberdouble':
-                    onSetParam(scriptIndex, ctrl.attribute!, '0');
+                case "number":
+                case "numberdouble":
+                    onSetParam(scriptIndex, ctrl.attribute!, "0");
                     break;
                 default:
                     onSetParam(scriptIndex, ctrl.attribute!, '""');
@@ -213,7 +213,7 @@
     function buildTemplateExpression(tmpl: IfExpressionTemplateData, changedName: string, changedValue: string): string {
         let result = tmpl.originalPattern;
         for (const ctrl of tmpl.controls) {
-            const value = ctrl.name === changedName ? changedValue : (ctrl.value ?? '');
+            const value = ctrl.name === changedName ? changedValue : (ctrl.value ?? "");
             result = result.replace(`#${ctrl.name}#`, value);
         }
         return result;
@@ -240,19 +240,17 @@
     }
 
     function toggleSelection(i: number, checked: boolean) {
-        const next = new Set(selectedIndices);
-        if (checked) next.add(i); else next.delete(i);
-        selectedIndices = next;
+        if (checked) selectedIndices.add(i); else selectedIndices.delete(i);
     }
 
     function onCopySelected() {
-        copyScripts(elementKey, attribute, containerPath, sortedSelection());
         // no scriptVersion bump — selection intentionally preserved after copy
+        copyScripts(elementKey, attribute, containerPath, sortedSelection());
     }
 
     function onCutSelected() {
-        cutScripts(elementKey, attribute, containerPath, sortedSelection());
         // selectedIndices cleared by $effect when scriptVersion bumps
+        cutScripts(elementKey, attribute, containerPath, sortedSelection());
     }
 
     function onDeleteSelected() {
@@ -368,7 +366,6 @@
             onchange={(e) => onCodeViewSave((e.target as HTMLTextAreaElement).value)}
         ></textarea>
     {:else}
-        <!-- svelte-ignore a11y_no_noninteractive_element_interactions -->
         <div role="region" inert={isLocked || undefined} class={isLocked ? "opacity-60" : ""}>
             {#each scripts() as script, i (script.id)}
                 <div class="group relative border border-surface-200-800 rounded mb-1 bg-surface-50-950 flex items-start">
@@ -600,6 +597,13 @@
                         value={ctrl.value ?? "0"}
                         onchange={(e) => onSetParam(scriptIndex, ctrl.attribute!, (e.target as HTMLInputElement).value)}
                     />
+                {:else if ctrl.simpleEditor === "file"}
+                    <AssetPicker
+                        value={toSimpleDisplay(ctrl)}
+                        source={ctrl.source}
+                        onchange={(v) => onSimpleValueChange(scriptIndex, ctrl, v)}
+                        class="input text-xs py-0 px-1 min-w-16 max-w-48"
+                    />
                 {:else}
                     <!-- textbox (default for message, text, colour, etc.) -->
                     <input
@@ -665,11 +669,9 @@
                     onchange={(e) => {
                         const v = (e.target as HTMLSelectElement).value;
                         if (v === "expression") {
-                            expressionOverrides = new Set(expressionOverrides).add(exprKey);
+                            expressionOverrides.add(exprKey);
                         } else {
-                            const next = new Set(expressionOverrides);
-                            next.delete(exprKey);
-                            expressionOverrides = next;
+                            expressionOverrides.delete(exprKey);
                             const tpl = ifTemplates.find(t => t.name === v);
                             if (tpl) onSetIfExpr(i, tpl.createExpression);
                         }
@@ -747,11 +749,9 @@
                         onchange={(e) => {
                             const v = (e.target as HTMLSelectElement).value;
                             if (v === "expression") {
-                                expressionOverrides = new Set(expressionOverrides).add(eiExprKey);
+                                expressionOverrides.add(eiExprKey);
                             } else {
-                                const next = new Set(expressionOverrides);
-                                next.delete(eiExprKey);
-                                expressionOverrides = next;
+                                expressionOverrides.delete(eiExprKey);
                                 const tpl = ifTemplates.find(t => t.name === v);
                                 if (tpl) onSetElseIfExpr(i, ei, tpl.createExpression);
                             }
