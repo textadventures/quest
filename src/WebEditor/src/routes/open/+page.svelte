@@ -493,15 +493,18 @@
                     {:else}
                         <div class="flex gap-2">
                             {#if hasServer}
-                                <button
-                                    type="button"
-                                    class="btn preset-filled-primary-500 flex-1"
-                                    onclick={handleCreateServer}
-                                    disabled={!createName.trim()}
-                                    title="Save to textadventures.co.uk"
-                                >
-                                    Save to server
-                                </button>
+                                <div class="flex flex-col gap-1 flex-1">
+                                    <button
+                                        type="button"
+                                        class="btn preset-filled-primary-500 w-full"
+                                        onclick={handleCreateServer}
+                                        disabled={!createName.trim()}
+                                        title="Save to textadventures.co.uk"
+                                    >
+                                        Save to server
+                                    </button>
+                                    <p class="text-xs text-surface-500-400 text-center">Saved to your textadventures.co.uk account</p>
+                                </div>
                             {:else}
                                 <div class="flex flex-col gap-1 flex-1">
                                     <button
