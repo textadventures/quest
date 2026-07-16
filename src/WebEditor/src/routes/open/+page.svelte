@@ -240,7 +240,7 @@
             try {
                 const { bytes, adapter } = await createLocalDraftFromZipEntry(entries, filename);
                 const ok = await openGame(bytes, adapter.filename, adapter);
-                if (ok) { goto(base || "/"); return; }
+                if (ok) { goto(`${base}/edit`); return; }
                 error = "Failed to load game file.";
             } catch (err) {
                 error = String(err);
@@ -255,7 +255,7 @@
         try {
             const loaded = await loadFileFromDirectory(dir, filename);
             const ok = await openGame(loaded.bytes, loaded.adapter.filename, loaded.adapter);
-            if (ok) { goto(base || "/"); return; }
+            if (ok) { goto(`${base}/edit`); return; }
             error = "Failed to load game file.";
         } catch (err) {
             error = String(err);
@@ -269,7 +269,7 @@
         try {
             const loaded = await loadElectronFile(dirPath, filename);
             const ok = await openGame(loaded.bytes, loaded.adapter.filename, loaded.adapter);
-            if (ok) { goto(base || "/"); return; }
+            if (ok) { goto(`${base}/edit`); return; }
             error = "Failed to load game file.";
         } catch (err) {
             error = String(err);
@@ -291,7 +291,7 @@
                 return;
             }
             const ok = await openGame(result.bytes, result.adapter.filename, result.adapter);
-            if (ok) { goto(base || "/"); return; }
+            if (ok) { goto(`${base}/edit`); return; }
             error = "Failed to load game file.";
         } catch (err) {
             error = String(err);
@@ -308,7 +308,7 @@
                 error = "Could not open that draft.";
             } else {
                 const ok = await openGame(loaded.bytes, loaded.adapter.filename, loaded.adapter);
-                if (ok) { goto(base || "/"); return; }
+                if (ok) { goto(`${base}/edit`); return; }
                 error = "Failed to load game file.";
             }
         } catch (err) {
@@ -361,14 +361,14 @@
                 // same as every other error path in this function.
                 const result = await createElectronGame(parentDir, file.filename, file.content);
                 const ok = await openGame(result.bytes, result.adapter.filename, result.adapter);
-                if (ok) { goto(base || "/"); return; }
+                if (ok) { goto(`${base}/edit`); return; }
                 createLocalError = "Failed to load new game.";
             } else {
                 const gameId = parseGameIdFromAslx(file.content);
                 if (!gameId) { createLocalError = "New game is missing a gameid."; creatingLocal = false; return; }
                 const adapter = await createLocalDraft(gameId, file.filename, file.content);
                 const ok = await openGame(new TextEncoder().encode(file.content), file.filename, adapter);
-                if (ok) { goto(base || "/"); return; }
+                if (ok) { goto(`${base}/edit`); return; }
                 createLocalError = "Failed to load new game.";
             }
         } catch (err) {
@@ -390,7 +390,7 @@
             // result === null: user cancelled the directory picker — do nothing
             if (result) {
                 const ok = await openGame(result.loaded.bytes, result.loaded.adapter.filename, result.loaded.adapter);
-                if (ok) { goto(base || "/"); return; }
+                if (ok) { goto(`${base}/edit`); return; }
                 createLocalError = "Failed to load new game.";
             }
         } catch (err) {
@@ -407,7 +407,7 @@
         creatingServer = true;
         try {
             const gameId = await createNewGame(trimmed, selectedTemplateId);
-            goto(`${base || ""}/?game=${gameId}`);
+            goto(`${base}/edit?game=${gameId}`);
         } catch (err) {
             createServerError = String(err);
             creatingServer = false;

@@ -17,13 +17,12 @@
     const showHome = PUBLIC_SHOW_HOME === "true";
     const rootPath = base || "/";
 
-    // Root doubles up as both the Play tab (nothing loaded) and the editor
-    // canvas (a game loaded) — only that route needs the isLoaded check to
-    // pick between them. /open and /play/[id] never show the editor canvas,
-    // so the tab bar always belongs there regardless of isLoaded — which
-    // matters because isLoaded has no reason to reset to false just because
-    // the user navigated (e.g. browser back) away from the loaded editor.
-    const showTabs = $derived(showHome && !(page.url.pathname === rootPath && $isLoaded));
+    // The editor lives at /edit, never at root or /open — so the tab bar's
+    // visibility is a pure route check now, with no isLoaded involved. (It
+    // used to also check isLoaded, back when root doubled as both the Play
+    // tab and the editor canvas; that meant the tab bar and the page's own
+    // rendering could disagree about which one was actually showing.)
+    const showTabs = $derived(showHome && page.url.pathname !== `${base}/edit`);
 
     // Play (and its game-detail pages) are always dark, matching the look the
     // standalone Home page had before this was folded into WebEditor — Create
