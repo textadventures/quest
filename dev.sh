@@ -15,6 +15,10 @@
 # Servers started:
 #   http://localhost:5174   WasmEditor (Vite / SvelteKit)
 #   http://localhost:5175   WasmPlayer (static dev server)
+#   http://localhost:5176   Home (static dev server; proxies /player to the
+#                           WasmPlayer server above so game-card links work,
+#                           and redirects /editor to the WasmEditor server's
+#                           own origin — start here)
 
 set -euo pipefail
 
@@ -57,6 +61,9 @@ else
 fi
 PLAYER_PID=$!
 
+node src/Home/dev-server.mjs &
+HOME_PID=$!
+
 VITE_ENV=(
     "PUBLIC_WASM_PLAYER_URL=http://localhost:5174/player/"
 )
@@ -74,11 +81,12 @@ EDITOR_PID=$!
 cleanup() {
     echo ""
     echo "Shutting down..."
-    kill "$PLAYER_PID" "$EDITOR_PID" 2>/dev/null || true
-    wait "$PLAYER_PID" "$EDITOR_PID" 2>/dev/null || true
+    kill "$PLAYER_PID" "$EDITOR_PID" "$HOME_PID" 2>/dev/null || true
+    wait "$PLAYER_PID" "$EDITOR_PID" "$HOME_PID" 2>/dev/null || true
 }
 trap cleanup EXIT INT TERM
 
+echo "  Home:        http://localhost:5176/"
 echo "  WasmEditor:  http://localhost:5174"
 echo "  WasmPlayer:  http://localhost:5175/?game=/examples/simple.aslx"
 [[ -n "$API_PROXY" ]] && echo "  API proxy →  $API_PROXY"
@@ -86,4 +94,4 @@ echo ""
 echo "Ctrl+C to stop."
 echo ""
 
-wait "$PLAYER_PID" "$EDITOR_PID"
+wait "$PLAYER_PID" "$EDITOR_PID" "$HOME_PID"
