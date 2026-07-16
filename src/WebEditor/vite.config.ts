@@ -40,6 +40,11 @@ if (!process.env.PUBLIC_WEBEDITOR_VERSION) {
 }
 
 export default defineConfig({
+  // Vite clears the terminal on startup (and on file changes) by default,
+  // which wipes out dev.sh's own printed URLs (Home/WasmPlayer/WasmEditor)
+  // once Vite finishes starting last — this is the one place those URLs are
+  // visible, so keep them on screen instead.
+  clearScreen: false,
   plugins: [
     tailwindcss(),
     sveltekit(),
