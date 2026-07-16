@@ -9,6 +9,7 @@
     import { PUBLIC_WEBEDITOR_VERSION, PUBLIC_SHOW_HOME } from "$env/static/public";
     import { isLoaded, saveGame, saveGameAs } from "$lib/editor-store";
     import { isElectron } from "$lib/runtime";
+    import HomeHeader from "$components/HomeHeader.svelte";
     import HomeTabs from "$components/HomeTabs.svelte";
 
     let { children }: { children: Snippet } = $props();
@@ -23,6 +24,13 @@
     // matters because isLoaded has no reason to reset to false just because
     // the user navigated (e.g. browser back) away from the loaded editor.
     const showTabs = $derived(showHome && !(page.url.pathname === rootPath && $isLoaded));
+
+    // Play (and its game-detail pages) are always dark, matching the look the
+    // standalone Home page had before this was folded into WebEditor — Create
+    // (/open) keeps following the editor's own light/dark system preference,
+    // since forcing that too would mean redoing its markup (also used as-is
+    // by textadventures.co.uk's plain editor-open flow) to match.
+    const isPlayContext = $derived(page.url.pathname === rootPath || page.url.pathname.startsWith(`${base}/play/`));
 
     // Printed once on load, same style as WasmPlayer's console banner — the
     // header no longer shows the version, so this is the only place to find it.
@@ -88,6 +96,9 @@
 </script>
 
 {#if showTabs}
-    <HomeTabs />
+    <div class={isPlayContext ? "bg-surface-950" : ""}>
+        <HomeHeader forceDark={isPlayContext} />
+        <HomeTabs forceDark={isPlayContext} />
+    </div>
 {/if}
 {@render children()}

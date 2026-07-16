@@ -25,12 +25,15 @@
     });
 </script>
 
-<div class="flex flex-col items-center min-h-svh p-8 gap-6">
+<!-- Always dark (see +layout.svelte) — surface-950/400/800/300 are the fixed
+     dark-side members of Skeleton's paired tokens, not auto-switching ones,
+     since the OS could be in light mode regardless. -->
+<div class="flex flex-col items-center min-h-svh bg-surface-950 text-surface-100 p-8 gap-6">
     <a href="{base}/" class="anchor self-start">&larr; Back to Play</a>
 
     {#if loading}
         <div class="flex flex-col items-center gap-3 py-12">
-            <div class="size-10 rounded-full border-4 border-surface-300-700 border-t-primary-500 animate-spin"></div>
+            <div class="size-10 rounded-full border-4 border-surface-800 border-t-primary-500 animate-spin"></div>
         </div>
     {:else if error || !details}
         <p class="text-error-500 text-sm">Couldn't load this game's details.</p>
@@ -42,12 +45,12 @@
             <div class="flex flex-col gap-3 flex-1">
                 <h1 class="text-2xl font-semibold">{details.name}</h1>
                 {#if details.author}
-                    <p class="text-surface-500-400 text-sm">by {details.author}</p>
+                    <p class="text-surface-400 text-sm">by {details.author}</p>
                 {/if}
                 {#if details.tags.length > 0}
                     <div class="flex flex-wrap gap-2">
                         {#each details.tags as tag (tag)}
-                            <span class="text-xs px-2 py-1 rounded-full bg-surface-200-800 text-surface-600-300">{tag}</span>
+                            <span class="text-xs px-2 py-1 rounded-full bg-surface-800 text-surface-300">{tag}</span>
                         {/each}
                     </div>
                 {/if}
