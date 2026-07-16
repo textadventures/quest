@@ -5,6 +5,7 @@
     import { get } from "svelte/store";
     import { goto } from "$app/navigation";
     import { base } from "$app/paths";
+    import { page } from "$app/state";
     import { PUBLIC_WEBEDITOR_VERSION, PUBLIC_SHOW_HOME } from "$env/static/public";
     import { isLoaded, saveGame, saveGameAs } from "$lib/editor-store";
     import { isElectron } from "$lib/runtime";
@@ -13,6 +14,15 @@
     let { children }: { children: Snippet } = $props();
 
     const showHome = PUBLIC_SHOW_HOME === "true";
+    const rootPath = base || "/";
+
+    // Root doubles up as both the Play tab (nothing loaded) and the editor
+    // canvas (a game loaded) — only that route needs the isLoaded check to
+    // pick between them. /open and /play/[id] never show the editor canvas,
+    // so the tab bar always belongs there regardless of isLoaded — which
+    // matters because isLoaded has no reason to reset to false just because
+    // the user navigated (e.g. browser back) away from the loaded editor.
+    const showTabs = $derived(showHome && !(page.url.pathname === rootPath && $isLoaded));
 
     // Printed once on load, same style as WasmPlayer's console banner — the
     // header no longer shows the version, so this is the only place to find it.
@@ -77,7 +87,7 @@
     });
 </script>
 
-{#if showHome && !$isLoaded}
+{#if showTabs}
     <HomeTabs />
 {/if}
 {@render children()}
