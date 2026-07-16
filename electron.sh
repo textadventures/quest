@@ -40,7 +40,7 @@ dotnet build src/WasmPlayer/WasmPlayer.csproj --configuration "$DOTNET_CONFIG"
 echo ""
 echo "Building WebEditor..."
 [[ -d src/WebEditor/node_modules ]] || npm --prefix src/WebEditor install
-npm --prefix src/WebEditor run build
+PUBLIC_SHOW_HOME=true npm --prefix src/WebEditor run build
 
 echo ""
 echo "Building ElectronApp..."

@@ -40,6 +40,11 @@ if (!process.env.PUBLIC_WEBEDITOR_VERSION) {
 }
 
 export default defineConfig({
+  // Vite clears the terminal on startup (and on file changes) by default,
+  // which wipes out dev.sh's own printed URLs (Home/WasmPlayer/WasmEditor)
+  // once Vite finishes starting last — this is the one place those URLs are
+  // visible, so keep them on screen instead.
+  clearScreen: false,
   plugins: [
     tailwindcss(),
     sveltekit(),
@@ -69,7 +74,23 @@ export default defineConfig({
         changeOrigin: true,
         rewrite: (path) => path.replace(/^\/player/, ''),
       },
-      ...(apiProxy ? { '/api': { target: apiProxy, changeOrigin: true } } : {}),
+      // Vite matches proxy rules in object-key order and stops at the first
+      // startsWith() match, so the more specific /api/editor must come before
+      // the general /api below — otherwise it'd never be reached.
+      ...(apiProxy ? { '/api/editor': { target: apiProxy, changeOrigin: true } } : {}),
+      // /api and /game-resource are WasmPlayer's own literal route names (its
+      // dev-server.mjs matches on them directly), not namespaced under
+      // /player — so these are forwarded unrewritten, unlike /player above.
+      // Needed because a loaded game (/player/?id=...) pulls in WasmPlayer's
+      // own dev-only quest-config.js, which points textAdventuresApiRoot at
+      // the root-relative '/api/' — that resolves against whatever origin the
+      // browser is actually on (this Vite server, once proxied under
+      // /player/), not WasmPlayer's own, so without this the game 404s
+      // fetching itself. Every /api/* call this app itself makes is under
+      // /api/editor/* (checked via grep), so /api/editor taking priority above
+      // is safe and doesn't shadow any real editor save-API call.
+      '/api': { target: 'http://localhost:5175', changeOrigin: true },
+      '/game-resource': { target: 'http://localhost:5175', changeOrigin: true },
     },
   }
 })

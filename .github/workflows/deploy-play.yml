@@ -48,18 +48,24 @@ jobs:
       - name: Build WasmPlayer
         run: dotnet build src/WasmPlayer/WasmPlayer.csproj -c Release
 
+      # BASE_PATH is unset (defaults to root) and PUBLIC_SHOW_HOME=true — this
+      # build serves the Play/Create Home content at root and /open, plus the
+      # editor itself once a game is loaded (see src/WebEditor/src/routes/).
+      # Distinct from the textadventures.co.uk build below, which keeps
+      # BASE_PATH=/questviva and PUBLIC_SHOW_HOME unset (that origin has its
+      # own site navigation, not a game-browser homepage).
       - name: Build WebEditor
         run: npm ci && npm run build
         working-directory: src/WebEditor
         env:
           PUBLIC_WEBEDITOR_VERSION: ${{ github.sha }}
-          BASE_PATH: /editor
           PUBLIC_HAS_SERVER: false
+          PUBLIC_SHOW_HOME: true
 
       - name: Assemble deploy directory
         run: |
-          mkdir -p deploy/AppBundle deploy/player deploy/editor
-          cp -r src/WebEditor/build/. deploy/editor/
+          mkdir -p deploy/AppBundle deploy/player
+          cp -r src/WebEditor/build/. deploy/
           cp -r src/WasmEditor/bin/Release/net10.0/browser-wasm/AppBundle/. deploy/AppBundle/
           cp -r src/WasmPlayer/bin/Release/net10.0/browser-wasm/AppBundle/. deploy/player/
           cat > deploy/_headers <<'EOF'

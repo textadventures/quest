@@ -66,6 +66,11 @@ interface ElectronApi {
     paths: ElectronPathsApi;
     recent: ElectronRecentApi;
     menu: ElectronMenuApi;
+    // Not yet populated by preload.ts — "Mac" | "Windows" | "Linux", sent as
+    // analytics metadata alongside webhome_games_list/webhome_game_play (see
+    // ClientInfo on textadventures.co.uk's ApiController). Declared optional
+    // here so callers read through automatically once preload.ts adds it.
+    platform?: string;
 }
 
 declare global {

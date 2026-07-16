@@ -5,11 +5,31 @@
     import { get } from "svelte/store";
     import { goto } from "$app/navigation";
     import { base } from "$app/paths";
-    import { PUBLIC_WEBEDITOR_VERSION } from "$env/static/public";
+    import { page } from "$app/state";
+    import { PUBLIC_WEBEDITOR_VERSION, PUBLIC_SHOW_HOME } from "$env/static/public";
     import { isLoaded, saveGame, saveGameAs } from "$lib/editor-store";
     import { isElectron } from "$lib/runtime";
+    import HomeHeader from "$components/HomeHeader.svelte";
+    import HomeTabs from "$components/HomeTabs.svelte";
 
     let { children }: { children: Snippet } = $props();
+
+    const showHome = PUBLIC_SHOW_HOME === "true";
+    const rootPath = base || "/";
+
+    // The editor lives at /edit, never at root or /open — so the tab bar's
+    // visibility is a pure route check now, with no isLoaded involved. (It
+    // used to also check isLoaded, back when root doubled as both the Play
+    // tab and the editor canvas; that meant the tab bar and the page's own
+    // rendering could disagree about which one was actually showing.)
+    const showTabs = $derived(showHome && page.url.pathname !== `${base}/edit`);
+
+    // Play (and its game-detail pages) are always dark, matching the look the
+    // standalone Home page had before this was folded into WebEditor — Create
+    // (/open) keeps following the editor's own light/dark system preference,
+    // since forcing that too would mean redoing its markup (also used as-is
+    // by textadventures.co.uk's plain editor-open flow) to match.
+    const isPlayContext = $derived(page.url.pathname === rootPath || page.url.pathname.startsWith(`${base}/play/`));
 
     // Printed once on load, same style as WasmPlayer's console banner — the
     // header no longer shows the version, so this is the only place to find it.
@@ -74,4 +94,10 @@
     });
 </script>
 
+{#if showTabs}
+    <div class={isPlayContext ? "bg-surface-950" : ""}>
+        <HomeHeader forceDark={isPlayContext} />
+        <HomeTabs forceDark={isPlayContext} />
+    </div>
+{/if}
 {@render children()}

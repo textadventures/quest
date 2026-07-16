@@ -66,6 +66,7 @@ jobs:
         env:
           PUBLIC_WEBEDITOR_VERSION: ${{ github.ref_name }}
           PUBLIC_HAS_SERVER: false
+          PUBLIC_SHOW_HOME: true
 
       - name: Build and package Electron app
         run: npm ci && npm run dist
