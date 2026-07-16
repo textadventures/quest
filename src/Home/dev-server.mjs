@@ -16,11 +16,16 @@
 // already relative), which is exactly why /player can be proxied but /editor
 // can't. dev.sh starts all three together; this is the primary entry point.
 //
-// No API proxy is needed for the catalog fetch itself (unlike WasmPlayer's
-// dev-server.mjs): its CORS policy already allows any http://localhost/
-// 127.0.0.1 origin (see CorsUtility.IsAllowedGamesApiOrigin in
-// textadventures.co.uk), specifically so this page can call it directly from
-// local dev.
+// /api and /game-resource are also proxied to WasmPlayer's dev server, even
+// though they're not under /player: when a game is loaded via ?id=,
+// WasmPlayer serves its own dev-only quest-config.js (see its dev-server.mjs)
+// pointing textAdventuresApiRoot at the root-relative '/api/' — a leftover
+// CORS workaround from before CorsUtility.IsAllowedGamesApiOrigin allowed
+// direct localhost calls. That path is resolved against whatever origin the
+// browser thinks it's on (Home's, once proxied under /player/), not
+// WasmPlayer's own — so without this, /player/?id= 404s fetching the game.
+// Home's own catalog fetch doesn't need this: it calls the real
+// textadventures.co.uk API directly, which CORS already permits.
 
 import http from 'node:http';
 import fs from 'node:fs';
@@ -32,8 +37,16 @@ const repoRoot = path.resolve(__dirname, '../..');
 const port = 5176;
 
 const editorOrigin = 'http://localhost:5174';
+const wasmPlayerOrigin = 'http://localhost:5175';
 const proxies = {
-  '/player': 'http://localhost:5175',
+  // /player namespaces WasmPlayer's own root content under a prefix here, so
+  // that prefix must be stripped before forwarding (WasmPlayer itself has no
+  // concept of "/player/"). /api and /game-resource are WasmPlayer's own
+  // literal route names (its dev-server.mjs matches on them directly, e.g.
+  // `urlPath.startsWith('/api/')`) — those must be forwarded unchanged.
+  '/player': { target: wasmPlayerOrigin, stripPrefix: true },
+  '/api': { target: wasmPlayerOrigin, stripPrefix: false },
+  '/game-resource': { target: wasmPlayerOrigin, stripPrefix: false },
 };
 
 const mimeTypes = {
@@ -43,13 +56,13 @@ const mimeTypes = {
   '.svg': 'image/svg+xml',
 };
 
-async function proxyRequest(req, res, prefix, targetOrigin) {
-  const rest = req.url.slice(prefix.length) || '/';
+async function proxyRequest(req, res, prefix, { target, stripPrefix }) {
+  const rest = stripPrefix ? (req.url.slice(prefix.length) || '/') : req.url;
   try {
     // No need to forward the incoming request's headers (host, cookies, etc.)
     // — these are same-machine GETs for another dev server's own static
     // assets/HTML, not authenticated or content-negotiated requests.
-    const upstream = await fetch(`${targetOrigin}${rest}`);
+    const upstream = await fetch(`${target}${rest}`);
     const body = Buffer.from(await upstream.arrayBuffer());
     res.writeHead(upstream.status, {
       'Content-Type': upstream.headers.get('content-type') ?? 'application/octet-stream',
@@ -57,7 +70,7 @@ async function proxyRequest(req, res, prefix, targetOrigin) {
     res.end(body);
   } catch (e) {
     res.writeHead(502);
-    res.end(`Proxy error (${targetOrigin}${rest}): ${e.message}`);
+    res.end(`Proxy error (${target}${rest}): ${e.message}`);
   }
 }
 
@@ -107,7 +120,9 @@ const server = http.createServer((req, res) => {
 
 server.listen(port, () => {
   console.log(`Home dev server running at http://localhost:${port}/`);
-  console.log(`  proxying /player -> ${proxies['/player']}`);
+  for (const [prefix, { target, stripPrefix }] of Object.entries(proxies)) {
+    console.log(`  proxying ${prefix} -> ${target}${stripPrefix ? ' (prefix stripped)' : ''}`);
+  }
   console.log(`  redirecting /editor -> ${editorOrigin}`);
   console.log('Press Ctrl+C to stop.');
 });
