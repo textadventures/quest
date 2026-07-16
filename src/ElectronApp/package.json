@@ -30,6 +30,10 @@
       {
         "from": "resources/app-static",
         "to": "app-static"
+      },
+      {
+        "from": "build/icons/512x512.png",
+        "to": "icon.png"
       }
     ],
     "afterSign": "scripts/adhoc-sign.js",
@@ -51,6 +55,7 @@
       ]
     },
     "linux": {
+      "icon": "build/icons",
       "category": "Utility",
       "executableArgs": ["--no-sandbox"],
       "target": [

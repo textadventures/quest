@@ -13,13 +13,6 @@ import { listRecentGames, clearRecentGames, type RecentGame } from "./recent-gam
 // possible so it's correct whether packaged or run via `electron .`.
 app.setName("Quest Viva");
 
-// macOS's About panel shows "Version {CFBundleShortVersionString} ({CFBundleVersion})"
-// — the parenthetical is meant for a separate build number, but electron-builder's
-// -c.extraMetadata.version sets both plist fields to the same VERSION string
-// (this project has no separate build-number concept), so it reads as a literal
-// duplicate. Empty version suppresses the parenthetical rather than showing "()"
-app.setAboutPanelOptions({ version: "" });
-
 // Packaged: resources/app-static ships via electron-builder's extraResources.
 // Dev: `npm run build` copies the same three directories here directly (see
 // scripts/copy-static.mjs) — one code path for both.
@@ -27,6 +20,34 @@ function staticRoot(): string {
     return app.isPackaged
         ? path.join(process.resourcesPath, "app-static")
         : path.join(__dirname, "..", "resources", "app-static");
+}
+
+// build/icons/512x512.png ships via extraResources (as icon.png) for the
+// packaged app; dev runs against the source file directly since there's no
+// resourcesPath yet.
+function aboutIconPath(): string {
+    return app.isPackaged
+        ? path.join(process.resourcesPath, "icon.png")
+        : path.join(__dirname, "..", "build", "icons", "512x512.png");
+}
+
+if (process.platform === "darwin") {
+    // macOS's About panel shows "Version {CFBundleShortVersionString} ({CFBundleVersion})"
+    // — the parenthetical is meant for a separate build number, but electron-builder's
+    // -c.extraMetadata.version sets both plist fields to the same VERSION string
+    // (this project has no separate build-number concept), so it reads as a literal
+    // duplicate. Empty version suppresses the parenthetical rather than showing "()".
+    // Name/icon come from the app bundle itself on mac, so nothing else to set here.
+    app.setAboutPanelOptions({ version: "" });
+} else {
+    // Unlike mac, Linux/Windows have no defaults for setAboutPanelOptions —
+    // any field left unset renders blank rather than falling back to the app's
+    // own name/icon/version, so all three have to be provided explicitly.
+    app.setAboutPanelOptions({
+        applicationName: "Quest Viva",
+        applicationVersion: app.getVersion(),
+        iconPath: aboutIconPath(),
+    });
 }
 
 let editorWindow: BrowserWindow | null = null;
