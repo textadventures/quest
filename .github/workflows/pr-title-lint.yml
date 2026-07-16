@@ -34,5 +34,6 @@ jobs:
             WebEditor
             WasmEditor
             ElectronApp
+            Home
             Site
             main
