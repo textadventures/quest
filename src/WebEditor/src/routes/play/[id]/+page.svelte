@@ -29,7 +29,7 @@
      dark-side members of Skeleton's paired tokens, not auto-switching ones,
      since the OS could be in light mode regardless. -->
 <div class="flex flex-col items-center min-h-svh bg-surface-950 text-surface-100 p-8 gap-6">
-    <a href="{base}/" class="anchor self-start">&larr; Back to Play</a>
+    <a href="{base}/?view=play" class="anchor self-start">&larr; Back to Play</a>
 
     {#if loading}
         <div class="flex flex-col items-center gap-3 py-12">

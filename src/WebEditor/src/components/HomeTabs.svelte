@@ -19,7 +19,7 @@
 
 <nav class="flex gap-1 px-4 border-b {forceDark ? "border-surface-800" : "border-surface-300-700"}">
     <a
-        href={rootPath}
+        href="{rootPath}?view=play"
         class="px-4 py-3 text-sm border-b-2 transition-colors {isPlayTab
             ? `border-primary-500 ${activeText}`
             : `border-transparent ${inactiveText}`}"

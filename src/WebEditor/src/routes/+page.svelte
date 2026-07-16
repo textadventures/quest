@@ -3,6 +3,7 @@
     import { tick } from "svelte";
     import { goto } from "$app/navigation";
     import { base } from "$app/paths";
+    import { page } from "$app/state";
     import { get } from "svelte/store";
     import { PUBLIC_SHOW_HOME } from "$env/static/public";
     import { isLoaded, isDirty, saveGame, loadingStatus, addElementModal, assetManagerOpen, publishModalOpen, openGame, createRoom, createObject, createFunction, createTimer, createWalkthrough, createTemplate, createDynamicTemplate, createObjectType } from "$lib/editor-store";
@@ -17,6 +18,14 @@
     import PlayCatalog from "$components/PlayCatalog.svelte";
 
     const showHome = PUBLIC_SHOW_HOME === "true";
+
+    // isLoaded deliberately never resets just because the user navigates away
+    // from the editor (a refresh should resume your session) — but that means
+    // it can't tell "arrived here with something loaded" apart from "clicked
+    // Play/Back to Play while something happens to still be loaded in the
+    // background". HomeTabs' Play link and /play/[id]'s "Back to Play" both
+    // carry ?view=play specifically to disambiguate the latter.
+    const forcePlayView = $derived(page.url.searchParams.get("view") === "play");
 
     let serverLoadError = $state<string | null>(null);
 
@@ -89,7 +98,7 @@
         <div class="size-10 rounded-full border-4 border-surface-300-700 border-t-primary-500 animate-spin"></div>
         <p class="text-surface-500-400 text-sm">{$loadingStatus}</p>
     </main>
-{:else if $isLoaded}
+{:else if $isLoaded && !forcePlayView}
     <div class="flex flex-col h-svh overflow-hidden">
         <Toolbar />
         <BackupBanner />
