@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Quest Viva</title>
+    <link rel="icon" type="image/svg+xml" href="favicon.svg" />
+    <link rel="stylesheet" type="text/css" href="home.css" />
+    <script type="text/javascript" src="home-config.js"></script>
+</head>
+<body>
+<header class="qv-header">
+    <img src="logo.svg" alt="" class="qv-logo" />
+    <h1>Quest Viva</h1>
+</header>
+
+<nav class="qv-tabs" role="tablist">
+    <button id="qv-tab-play" class="qv-tab active" type="button" role="tab" aria-selected="true">Play</button>
+    <button id="qv-tab-create" class="qv-tab" type="button" role="tab" aria-selected="false">Create</button>
+</nav>
+
+<main>
+    <section id="qv-panel-play" class="qv-panel" role="tabpanel">
+        <div id="qv-play-loading" class="qv-status">
+            <div class="qv-spinner" aria-hidden="true"></div>
+            <span>Loading games&hellip;</span>
+        </div>
+        <div id="qv-play-error" class="qv-status qv-error hidden">
+            <p>Couldn't load the games list.</p>
+            <button id="qv-play-retry" type="button" class="qv-btn">Try again</button>
+        </div>
+        <div id="qv-play-categories"></div>
+        <p class="qv-play-footer">
+            Have a game file or a link already? <a href="player/">Open the player</a>.
+        </p>
+    </section>
+
+    <section id="qv-panel-create" class="qv-panel hidden" role="tabpanel">
+        <div class="qv-create-card">
+            <h2>Write your own text adventure</h2>
+            <p>Quest Viva's editor runs entirely in your browser &mdash; no installation, no account required.</p>
+            <a href="editor/" class="qv-btn qv-btn-primary">Open the editor</a>
+        </div>
+    </section>
+</main>
+
+<footer class="qv-footer">
+    <span id="qv-version"></span>
+</footer>
+
+<script type="text/javascript" src="home.js"></script>
+</body>
+</html>

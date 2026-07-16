@@ -59,6 +59,8 @@ jobs:
       - name: Assemble deploy directory
         run: |
           mkdir -p deploy/AppBundle deploy/player deploy/editor
+          cp -r src/Home/. deploy/
+          cp VERSION deploy/VERSION
           cp -r src/WebEditor/build/. deploy/editor/
           cp -r src/WasmEditor/bin/Release/net10.0/browser-wasm/AppBundle/. deploy/AppBundle/
           cp -r src/WasmPlayer/bin/Release/net10.0/browser-wasm/AppBundle/. deploy/player/

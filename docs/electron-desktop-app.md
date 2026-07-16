@@ -254,7 +254,12 @@ LocalPlayer project + backend lifecycle in Electron main process.
 
 ### Phase 3 — Standalone game launcher
 
-Home screen (separate from the editor) that lets users open and play `.aslx` files without editing. Potentially a curated library of downloaded/installed games.
+Planned 2026-07-16 (see [deployment-domains.md](./deployment-domains.md#follow-ups-not-in-this-pass) for the shared design with the web Play/Create homepage). Home screen (separate from the editor) that lets users open and play `.aslx` files without editing, plus browse and play games from textadventures.co.uk.
+
+- Reuses the same static Home build (Play/Create tabs) that ships at `play.questviva.com` root — served from Electron's loopback static server alongside the existing `editor`/`AppBundle`/`player` directories.
+- **Recently played**: Electron-only addition (the web version has no persistent storage to hang this off). A JSON file under `app.getPath('userData')`, read/written through the existing `contextBridge` fs API (`window.electronApp.fs`) — no new IPC surface needed, `preload.ts` already exposes generic `readFile`/`writeFile`. Appended to on every game launch (both "Play" from the catalog and "Open" of a local `.aslx` file).
+- **Play** still targets WasmPlayer for now, consistent with Phase 2 remaining deferred — a plain navigation to `/player/?id={id}` for catalog games. Local `.aslx` files are the harder case: WasmPlayer's `fetchGameBytes` uses `fetch()` against a URL, and there's no existing route for it to read an arbitrary local path, so this needs either a small local-file-serving addition to `static-server.ts` or a `postMessage`/`BroadcastChannel`-based hand-off (similar to the existing `source=editor` preview mechanism) — not yet resolved, see the routing note below.
+- Downloading a catalog game for offline play (rather than just streaming it via WasmPlayer each time) is a later increment, not needed for the first cut.
 
 ### Phase 4 — Native AOT + auto-update
 
@@ -278,3 +283,4 @@ Discovered testing the arm64 AppImage on a fresh Ubuntu VM (2026-07-14) — neit
 
 - **WasmEditor vs. LocalEditor**: The editor currently uses WasmEditor (EditorCore in WASM) for EditorCore operations. While editing is user-paced, WASM overhead could still affect responsiveness for large games (loading, tree navigation, undo/redo chains). A native alternative would be to extend the LocalPlayer backend (or a shared `LocalBackend` process) to also expose an EditorCore API, removing WASM from the editor entirely. This would mean one backend process serving both editor and player, but adds complexity to the protocol and the backend project.
 - **Offline asset resolution in player**: Assets (images, audio) referenced by game files need to be resolvable as URLs inside the player BrowserWindow. Since the LocalPlayer serves files from the local filesystem on its port, this is straightforward — but the path rewriting logic may differ from the WebPlayer CDN-based asset URLs.
+- **Home screen routing at root (Phase 3)**: today `static-server.ts` serves the editor directly at `/` (`main.ts` does `editorWindow.loadURL('http://127.0.0.1:{port}/')`), matching neither the eventual "Home at root, editor at `/editor`" layout `play.questviva.com` is moving to nor a clean place to slot in a fourth `home/` static root. Phase 3 needs `static-server.ts` to gain a `home` root serving `/`, the `editor` root to move to `/editor/` (matching `deploy-play.yml`'s layout), `copy-static.mjs` to assemble a fourth directory, and `main.ts`'s initial window to load Home instead of jumping straight into the editor — with "Create" then opening the editor window at `/editor/`. Not yet resolved.

@@ -74,6 +74,7 @@ EditorCore ───────────────────────
 - **WasmEditor** — Browser-WASM bridge (`browser-wasm` target) exposing `EditorCore` to the WebEditor SvelteKit frontend via `[JSExport]` (see `WasmEditorBridge.cs`)
 - **WebEditor** (`src/WebEditor/`) — SvelteKit SPA (adapter-static) frontend for the game editor; talks to WasmEditor over the JS/WASM boundary and to `FileAdapter` implementations (`src/lib/filesystem/`) for storage (FSA, OPFS local drafts, server, Electron). See `docs/webeditor-wasm-svelte.md`
 - **ElectronApp** (`src/ElectronApp/`) — Electron main-process shell (desktop app) wrapping the WebEditor SPA over a local loopback HTTP server; no Svelte/UI code of its own. See `docs/electron-desktop-app.md`
+- **Home** (`src/Home/`) — Play/Create landing page served at `play.questviva.com` root. Plain static HTML/CSS/JS, no build step, no WASM — the Play tab renders a game catalog fetched from textadventures.co.uk's `api/Catalog` and links out to `/player/?id=`; the Create tab links to `/editor/`. See `docs/deployment-domains.md`
 
 **Test projects in `tests/`:** EngineTests, PlayerCoreTests, EditorCoreTests, UtilityTests, LegacyTests
 
