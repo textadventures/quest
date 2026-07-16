@@ -5,11 +5,14 @@
     import { get } from "svelte/store";
     import { goto } from "$app/navigation";
     import { base } from "$app/paths";
-    import { PUBLIC_WEBEDITOR_VERSION } from "$env/static/public";
+    import { PUBLIC_WEBEDITOR_VERSION, PUBLIC_SHOW_HOME } from "$env/static/public";
     import { isLoaded, saveGame, saveGameAs } from "$lib/editor-store";
     import { isElectron } from "$lib/runtime";
+    import HomeTabs from "$components/HomeTabs.svelte";
 
     let { children }: { children: Snippet } = $props();
+
+    const showHome = PUBLIC_SHOW_HOME === "true";
 
     // Printed once on load, same style as WasmPlayer's console banner — the
     // header no longer shows the version, so this is the only place to find it.
@@ -74,4 +77,7 @@
     });
 </script>
 
+{#if showHome && !$isLoaded}
+    <HomeTabs />
+{/if}
 {@render children()}

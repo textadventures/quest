@@ -4,6 +4,7 @@
     import { goto } from "$app/navigation";
     import { base } from "$app/paths";
     import { get } from "svelte/store";
+    import { PUBLIC_SHOW_HOME } from "$env/static/public";
     import { isLoaded, isDirty, saveGame, loadingStatus, addElementModal, assetManagerOpen, publishModalOpen, openGame, createRoom, createObject, createFunction, createTimer, createWalkthrough, createTemplate, createDynamicTemplate, createObjectType } from "$lib/editor-store";
     import { loadFromServer } from "$lib/filesystem/server-adapter";
     import Toolbar from "$components/Toolbar.svelte";
@@ -13,6 +14,9 @@
     import AddElementModal from "$components/AddElementModal.svelte";
     import AssetManagerModal from "$components/AssetManagerModal.svelte";
     import PublishModal from "$components/PublishModal.svelte";
+    import PlayCatalog from "$components/PlayCatalog.svelte";
+
+    const showHome = PUBLIC_SHOW_HOME === "true";
 
     let serverLoadError = $state<string | null>(null);
 
@@ -41,7 +45,9 @@
         const gameId = new URLSearchParams(window.location.search).get("game");
         if (gameId) {
             loadGameFromServer(gameId);
-        } else if (!get(isLoaded)) {
+        } else if (!get(isLoaded) && !showHome) {
+            // When showHome is true, this state (nothing loaded, no ?game=) is
+            // the Play tab, rendered below instead of redirected away from.
             goto(`${base}/open`);
         }
 
@@ -109,4 +115,6 @@
     {#if $publishModalOpen}
         <PublishModal oncancel={() => publishModalOpen.set(false)} />
     {/if}
+{:else if showHome}
+    <PlayCatalog />
 {/if}

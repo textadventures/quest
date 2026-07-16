@@ -9,16 +9,18 @@
 #   --api-proxy <url>   Proxy /api requests to <url> (e.g. http://localhost:5043
 #                       for a local textadventures.co.uk instance). Also switches
 #                       the editor to server-save-only mode (textadventures.co.uk
-#                       behaviour) instead of the default local-only mode
-#                       (play.questviva.com behaviour).
+#                       behaviour, PUBLIC_HAS_SERVER=true) and hides the
+#                       Play/Create Home content (PUBLIC_SHOW_HOME=false) —
+#                       textadventures.co.uk has its own site navigation and
+#                       doesn't want a game-browser homepage. Default (no flag)
+#                       is play.questviva.com behaviour: local-only, Home shown.
 #
 # Servers started:
-#   http://localhost:5174   WasmEditor (Vite / SvelteKit)
+#   http://localhost:5174   WebEditor (Vite / SvelteKit) — root shows Play/Create
+#                           Home when nothing's loaded (unless --api-proxy);
+#                           /open is the Create tab's content; proxies /player
+#                           to the WasmPlayer server below (vite.config.ts)
 #   http://localhost:5175   WasmPlayer (static dev server)
-#   http://localhost:5176   Home (static dev server; proxies /player to the
-#                           WasmPlayer server above so game-card links work,
-#                           and redirects /editor to the WasmEditor server's
-#                           own origin — start here)
 
 set -euo pipefail
 
@@ -61,11 +63,16 @@ else
 fi
 PLAYER_PID=$!
 
-node src/Home/dev-server.mjs &
-HOME_PID=$!
+# --api-proxy simulates textadventures.co.uk (server-save-only, no Home).
+# Without it, this simulates play.questviva.com (local-only, Home shown).
+SHOW_HOME=true
+if [[ -n "$API_PROXY" ]]; then
+    SHOW_HOME=false
+fi
 
 VITE_ENV=(
     "PUBLIC_WASM_PLAYER_URL=http://localhost:5174/player/"
+    "PUBLIC_SHOW_HOME=$SHOW_HOME"
 )
 if [[ "$RELEASE" == true ]]; then
     VITE_ENV+=("WASM_CONFIG=Release")
@@ -81,17 +88,16 @@ EDITOR_PID=$!
 cleanup() {
     echo ""
     echo "Shutting down..."
-    kill "$PLAYER_PID" "$EDITOR_PID" "$HOME_PID" 2>/dev/null || true
-    wait "$PLAYER_PID" "$EDITOR_PID" "$HOME_PID" 2>/dev/null || true
+    kill "$PLAYER_PID" "$EDITOR_PID" 2>/dev/null || true
+    wait "$PLAYER_PID" "$EDITOR_PID" 2>/dev/null || true
 }
 trap cleanup EXIT INT TERM
 
-echo "  Home:        http://localhost:5176/"
-echo "  WasmEditor:  http://localhost:5174"
+echo "  WebEditor:   http://localhost:5174"
 echo "  WasmPlayer:  http://localhost:5175/?game=/examples/simple.aslx"
 [[ -n "$API_PROXY" ]] && echo "  API proxy →  $API_PROXY"
 echo ""
 echo "Ctrl+C to stop."
 echo ""
 
-wait "$PLAYER_PID" "$EDITOR_PID" "$HOME_PID"
+wait "$PLAYER_PID" "$EDITOR_PID"
