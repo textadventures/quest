@@ -143,6 +143,19 @@ function createEditorWindow(port: number): void {
         title: "Quest Viva",
         width: 1280,
         height: 860,
+        // BrowserWindow's `icon` option is only implemented on Linux and
+        // Windows (Electron docs), but Windows doesn't need it set here:
+        // electron-builder auto-picks up build/icon.ico for the Windows
+        // build the same way it does icon.icns for mac, so the .exe already
+        // has the icon embedded as a resource and the taskbar reads it from
+        // there. Linux has no equivalent — there's no single "the
+        // executable's icon" for an AppImage — so the window manager
+        // depends on this option instead. Without it, GNOME/Ubuntu falls
+        // back to a generic icon for the window even though the AppImage
+        // itself has the right icon in its packaged metadata.
+        // aboutIconPath() already resolves build/icons/512x512.png (dev) vs.
+        // the extraResource copy (packaged).
+        ...(process.platform === "linux" ? { icon: aboutIconPath() } : {}),
         webPreferences: {
             preload: path.join(__dirname, "preload.js"),
             contextIsolation: true,
