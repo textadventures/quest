@@ -15,6 +15,11 @@ const { execFileSync } = require("node:child_process");
 const path = require("node:path");
 
 module.exports = async function adhocSign(context) {
+    // afterSign is a global hook (package.json's "build.afterSign" isn't
+    // platform-scoped), so this also fires for the Windows/Linux builds —
+    // codesign doesn't exist there and there's no .app to sign.
+    if (context.electronPlatformName !== "darwin") return;
+
     // A real identity means electron-builder's own signing step already ran.
     if (process.env.CSC_LINK) return;
 
