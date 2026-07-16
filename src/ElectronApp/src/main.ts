@@ -143,6 +143,15 @@ function createEditorWindow(port: number): void {
         title: "Quest Viva",
         width: 1280,
         height: 860,
+        // BrowserWindow's `icon` option "is only implemented on Linux and
+        // Windows" (Electron docs) — on macOS the running app's icon comes
+        // from the .app bundle, but on Linux the window manager reads it
+        // from the live window, not from electron-builder's packaged
+        // AppImage/.desktop icon. Without this, GNOME/Ubuntu falls back to
+        // a generic icon for the window even though the AppImage itself has
+        // the right icon in its metadata. aboutIconPath() already resolves
+        // build/icons/512x512.png (dev) vs. the extraResource copy (packaged).
+        ...(process.platform !== "darwin" ? { icon: aboutIconPath() } : {}),
         webPreferences: {
             preload: path.join(__dirname, "preload.js"),
             contextIsolation: true,
