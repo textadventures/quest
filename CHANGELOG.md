@@ -1,5 +1,18 @@
 # Changelog
 
+## [6.0.0-beta.41](https://github.com/textadventures/quest/compare/v6.0.0-beta.40...v6.0.0-beta.41) (2026-07-16)
+
+
+### Features
+
+* **WebEditor:** add Play/Create home screen ([#1881](https://github.com/textadventures/quest/issues/1881)) ([0a8730d](https://github.com/textadventures/quest/commit/0a8730d22afde5df501643fc30c804d371b9aec2))
+
+
+### Bug Fixes
+
+* **ElectronApp:** Linux app icon and About panel ([#1880](https://github.com/textadventures/quest/issues/1880)) ([6e35c49](https://github.com/textadventures/quest/commit/6e35c490bfc2026075a483be2b2cf42c16f3cd16))
+* **ElectronApp:** skip ad-hoc codesign on non-macOS builds ([#1878](https://github.com/textadventures/quest/issues/1878)) ([e6fd86c](https://github.com/textadventures/quest/commit/e6fd86c458fa5c159148106ac0e8139e1ebc7da9))
+
 ## [6.0.0-beta.40](https://github.com/textadventures/quest/compare/v6.0.0-beta.39...v6.0.0-beta.40) (2026-07-15)
 
 
