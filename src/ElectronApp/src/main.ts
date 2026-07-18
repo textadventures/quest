@@ -7,7 +7,7 @@ import { registerShellHandlers } from "./ipc/shell";
 import { registerPathsHandlers } from "./ipc/paths";
 import { registerRecentHandlers } from "./ipc/recent";
 import { registerPlayerHandlers } from "./ipc/player";
-import { listRecentGames, clearRecentGames, type RecentGame } from "./recent-games";
+import { listRecentGames, clearRecentGames, type RecentGame, type RecentKind } from "./recent-games";
 
 // Without this, Electron's default macOS menu ("About "/"Quit ") falls back
 // to package.json's "name" ("quest-viva-desktop") in dev — set as early as
@@ -59,7 +59,31 @@ let staticServer: StaticServerHandle | null = null;
 // a type since they're separate npm projects, so keep them in sync by hand.
 type MenuAction = "new-game" | "open-file" | "save" | "save-as";
 
+// Every File-menu editor action is reachable even while a player window (or,
+// on mac, no window at all) is frontmost — mac has one shared app-level menu
+// bar, and Windows/Linux windows without their own menu fall back to the
+// same application menu. Without this, "New Game"/"Open Game" would silently
+// operate on an editorWindow the user isn't even looking at. Also un-minimizes:
+// show() alone doesn't un-minimize on all platforms.
+function focusEditorWindow(): void {
+    if (!editorWindow) return;
+    if (editorWindow.isMinimized()) editorWindow.restore();
+    editorWindow.show();
+    editorWindow.focus();
+}
+
+// Notifies the renderer that a recent list changed for reasons outside its
+// own control-flow (native "Clear Recent", or a mutation made through the
+// other window/tab) — an already-mounted /open page (edit-kind) or Play tab
+// (play-kind) has no other way to hear about it. Renderer-initiated
+// add/remove (Open/Remove buttons) already update local state directly and
+// don't depend on this round trip.
+function broadcastRecentChanged(kind: RecentKind): void {
+    editorWindow?.webContents.send("recent-games-changed", kind);
+}
+
 function sendMenuAction(action: MenuAction): void {
+    focusEditorWindow();
     editorWindow?.webContents.send("menu-action", action);
 }
 
@@ -67,6 +91,7 @@ function sendMenuAction(action: MenuAction): void {
 // MenuAction) since it needs to carry a path — a dedicated channel instead of
 // overloading sendMenuAction/onAction with a payload.
 function sendOpenRecentGame(game: RecentGame): void {
+    focusEditorWindow();
     editorWindow?.webContents.send("open-recent-game", { dirPath: game.dirPath, filename: game.filename });
 }
 
@@ -89,7 +114,15 @@ function buildAppMenu(recentGames: RecentGame[]): Menu {
                 click: () => sendOpenRecentGame(game),
             })),
             { type: "separator" },
-            { label: "Clear Recent", click: () => { void clearRecentGames().then(refreshMenu); } },
+            {
+                label: "Clear Recent",
+                click: () => {
+                    void clearRecentGames("edit").then(async () => {
+                        await refreshMenu();
+                        broadcastRecentChanged("edit");
+                    });
+                },
+            },
         ]
         : [{ label: "No Recent Games", enabled: false }];
     const template: MenuItemConstructorOptions[] = [
@@ -128,15 +161,15 @@ function buildAppMenu(recentGames: RecentGame[]): Menu {
     return Menu.buildFromTemplate(template);
 }
 
-// Re-reads the recent-games list from disk and re-applies the app menu —
-// called once at startup and again after every recent:add/remove (via
-// registerRecentHandlers' onChange) and after "Clear Recent". Also notifies
-// the renderer: the /open page's own Remove button already updates its local
-// state directly, but a change that originates in the main process (Clear
-// Recent) has no other way to reach an already-mounted /open page.
+// Re-reads the edit-kind recent-games list from disk and re-applies the app
+// menu — called once at startup and again after every edit-kind
+// recent:add/remove (via registerRecentHandlers' onChange) and after "Clear
+// Recent". The native "Open Recent" submenu only ever reflects the editor's
+// list — a game opened to play never belongs there, see recent-games.ts's
+// RecentKind — so play-kind changes skip this entirely (see the onChange
+// wiring in app.whenReady below).
 async function refreshMenu(): Promise<void> {
-    Menu.setApplicationMenu(buildAppMenu(await listRecentGames()));
-    editorWindow?.webContents.send("recent-games-changed");
+    Menu.setApplicationMenu(buildAppMenu(await listRecentGames("edit")));
 }
 
 function createEditorWindow(port: number): void {
@@ -239,7 +272,12 @@ app.whenReady().then(async () => {
     registerDialogHandlers();
     registerShellHandlers();
     registerPathsHandlers();
-    registerRecentHandlers(() => void refreshMenu());
+    // Edit-kind changes rebuild the native "Open Recent" submenu; both kinds
+    // also get broadcast to the renderer (see broadcastRecentChanged).
+    registerRecentHandlers((kind) => {
+        if (kind === "edit") void refreshMenu();
+        broadcastRecentChanged(kind);
+    });
     registerPlayerHandlers(() => (staticServer ? `http://127.0.0.1:${staticServer.port}` : null));
     await refreshMenu();
 

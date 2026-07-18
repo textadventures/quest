@@ -1,5 +1,5 @@
 import { contextBridge, ipcRenderer } from "electron";
-import type { RecentGame } from "./recent-games";
+import type { RecentGame, RecentKind } from "./recent-games";
 
 interface FileFilter {
     name: string;
@@ -49,16 +49,25 @@ contextBridge.exposeInMainWorld("electronApp", {
         defaultGamesDir: (): Promise<string> => ipcRenderer.invoke("paths:defaultGamesDir"),
     },
     recent: {
-        list: (): Promise<RecentGame[]> => ipcRenderer.invoke("recent:list"),
-        add: (dirPath: string, filename: string): Promise<RecentGame[]> => ipcRenderer.invoke("recent:add", dirPath, filename),
-        remove: (dirPath: string, filename: string): Promise<RecentGame[]> => ipcRenderer.invoke("recent:remove", dirPath, filename),
-        // Fires whenever the recent list changes from outside the /open page
-        // itself — e.g. the native "Clear Recent" menu item, which mutates
-        // the list entirely in the main process with no renderer round trip
-        // otherwise. The /open page's own Remove button already updates its
-        // local state directly and doesn't need this.
-        onChanged: (callback: () => void): (() => void) => {
-            const listener = () => callback();
+        // kind distinguishes the editor's Recent (backs File > Open Recent
+        // and the /open page) from the Play tab's Recently Played — see
+        // recent-games.ts's RecentKind. Two separate on-disk lists, so
+        // playing a game never pollutes the list File > Open Recent loads
+        // into the editor, and vice versa.
+        list: (kind: RecentKind): Promise<RecentGame[]> => ipcRenderer.invoke("recent:list", kind),
+        add: (kind: RecentKind, dirPath: string, filename: string): Promise<RecentGame[]> =>
+            ipcRenderer.invoke("recent:add", kind, dirPath, filename),
+        remove: (kind: RecentKind, dirPath: string, filename: string): Promise<RecentGame[]> =>
+            ipcRenderer.invoke("recent:remove", kind, dirPath, filename),
+        // Fires whenever a recent list changes from outside the page that's
+        // showing it — e.g. the native "Clear Recent" menu item (edit-kind
+        // only), which mutates the list entirely in the main process with no
+        // renderer round trip otherwise. Callback receives which kind changed
+        // so a listener can ignore updates to the other list. Pages that
+        // mutate their own list locally (e.g. a Remove button) already update
+        // their local state directly and don't need this for that path.
+        onChanged: (callback: (kind: RecentKind) => void): (() => void) => {
+            const listener = (_event: Electron.IpcRendererEvent, kind: RecentKind) => callback(kind);
             ipcRenderer.on("recent-games-changed", listener);
             return () => ipcRenderer.removeListener("recent-games-changed", listener);
         },

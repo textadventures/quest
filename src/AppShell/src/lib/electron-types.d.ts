@@ -43,11 +43,17 @@ interface ElectronRecentGame {
     lastOpened: number;
 }
 
+// "edit" = opened/created/saved-as through the editor (File > Open Recent,
+// the /open page's Recent section); "play" = opened through the Play tab's
+// file picker (that tab's own Recently Played list) — two separate lists,
+// see ElectronApp's recent-games.ts.
+type ElectronRecentKind = "edit" | "play";
+
 interface ElectronRecentApi {
-    list(): Promise<ElectronRecentGame[]>;
-    add(dirPath: string, filename: string): Promise<ElectronRecentGame[]>;
-    remove(dirPath: string, filename: string): Promise<ElectronRecentGame[]>;
-    onChanged(callback: () => void): () => void;
+    list(kind: ElectronRecentKind): Promise<ElectronRecentGame[]>;
+    add(kind: ElectronRecentKind, dirPath: string, filename: string): Promise<ElectronRecentGame[]>;
+    remove(kind: ElectronRecentKind, dirPath: string, filename: string): Promise<ElectronRecentGame[]>;
+    onChanged(callback: (kind: ElectronRecentKind) => void): () => void;
 }
 
 // action is one of MenuAction in ElectronApp's src/main.ts ("new-game" |
