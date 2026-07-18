@@ -83,8 +83,29 @@ export class ElectronFileAdapter implements FileAdapter {
     get filename() { return this._filename; }
     readonly canSaveAs = true;
 
+    // Resource names reaching getAsset() can be attacker-controlled — a
+    // downloaded game's own <javascript>/image/sound references, forwarded
+    // here verbatim from the WasmPlayer 'resource-request' handoff (see
+    // PlayCatalog.svelte and editor-store.ts's previewInWasmPlayer). window
+    // .electronApp.path.join is a plain string join with no traversal
+    // protection (see preload.ts), so without this a name like
+    // "../../../../.ssh/id_rsa" would resolve outside dirPath and getAsset
+    // would happily read it. Collapses "." / ".." segments ourselves and
+    // rejects anything that would climb above dirPath, rather than trusting
+    // the joined path.
     private resolve(name: string): string {
-        return electronApp().path.join(this.dirPath, name);
+        const sep = this.dirPath.includes("\\") && !this.dirPath.includes("/") ? "\\" : "/";
+        const segments: string[] = [];
+        for (const part of name.replace(/\\/g, "/").split("/")) {
+            if (part === "" || part === ".") continue;
+            if (part === "..") {
+                if (segments.length === 0) throw new Error(`Resource name escapes its game folder: ${name}`);
+                segments.pop();
+                continue;
+            }
+            segments.push(part);
+        }
+        return electronApp().path.join(this.dirPath, segments.join(sep));
     }
 
     async saveFile(data: Uint8Array | string): Promise<void> {
@@ -138,6 +159,18 @@ export class ElectronFileAdapter implements FileAdapter {
  */
 export async function openElectronFile(): Promise<{ dirPath: string; filename: string } | null> {
     const filePath = await electronApp().dialog.openFile({ filters: ASLX_FILTER });
+    if (!filePath) return null;
+    return { dirPath: dirname(filePath), filename: basename(filePath) };
+}
+
+// Broader than ASLX_FILTER above (which is Save/SaveAs-scoped, and the
+// editor only ever opens unpacked .aslx) — Play accepts every format
+// WasmPlayer itself can boot, matching the browser build's pickFile(".quest,
+// .aslx,.asl,.cas") in PlayCatalog.svelte.
+const PLAY_FILTER = [{ name: "Quest game files", extensions: ["quest", "aslx", "asl", "cas"] }];
+
+export async function openElectronPlayFile(): Promise<{ dirPath: string; filename: string } | null> {
+    const filePath = await electronApp().dialog.openFile({ filters: PLAY_FILTER });
     if (!filePath) return null;
     return { dirPath: dirname(filePath), filename: basename(filePath) };
 }

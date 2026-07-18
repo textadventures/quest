@@ -83,4 +83,13 @@ contextBridge.exposeInMainWorld("electronApp", {
             return () => ipcRenderer.removeListener("open-recent-game", listener);
         },
     },
+    player: {
+        // Opens a dedicated player BrowserWindow (see ipc/player.ts) rather
+        // than a renderer-driven window.open() — sidesteps the browser's
+        // popup-blocker/user-activation rules entirely (main-process window
+        // creation isn't subject to them), which is what lets Play launch
+        // straight from a single file-picker click instead of needing a
+        // second "Start" click to satisfy a fresh gesture.
+        openWindow: (request?: { id?: string }): Promise<boolean> => ipcRenderer.invoke("player:openWindow", request),
+    },
 });
