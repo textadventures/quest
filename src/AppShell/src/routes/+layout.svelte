@@ -24,6 +24,16 @@
     // rendering could disagree about which one was actually showing.)
     const showTabs = $derived(showHome && page.url.pathname !== `${base}/edit`);
 
+    // Measured so pages that vertically center their content (e.g. /open)
+    // can subtract the actual header+tabs height via the --home-bar-height
+    // custom property below, instead of centering within the full 100svh
+    // and landing too far down. bind:clientHeight re-measures on resize.
+    let homeBarHeight = $state(0);
+    $effect(() => {
+        if (showTabs) document.documentElement.style.setProperty("--home-bar-height", `${homeBarHeight}px`);
+        else document.documentElement.style.removeProperty("--home-bar-height");
+    });
+
     // Play (and its game-detail pages) are always dark, matching the look the
     // standalone Home page had before this was folded into AppShell — Create
     // (/open) keeps following the editor's own light/dark system preference,
@@ -95,7 +105,7 @@
 </script>
 
 {#if showTabs}
-    <div class={isPlayContext ? "bg-surface-950" : ""}>
+    <div class={isPlayContext ? "bg-surface-950" : ""} bind:clientHeight={homeBarHeight}>
         <HomeHeader forceDark={isPlayContext} />
         <HomeTabs forceDark={isPlayContext} />
     </div>
