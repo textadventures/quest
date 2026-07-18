@@ -1,5 +1,5 @@
 // Ad-hoc manual verification, Firefox only (the real non-FSA target browser —
-// see verify-webeditor-local-drafts.mjs for why WebKit can't stand in here in a
+// see verify-appshell-local-drafts.mjs for why WebKit can't stand in here in a
 // headless sandbox): two scenarios for the OPFS local-drafts feature that aren't
 // covered by the basic create/reload/asset-persistence check.
 //
@@ -11,7 +11,7 @@
 //    deleting the local draft and re-importing that same .zip must restore both
 //    the game content and the asset.
 //
-// Requires the WebEditor dev server running against a Release WasmEditor build.
+// Requires the AppShell dev server running against a Release WasmEditor build.
 import { firefox } from 'playwright';
 import { fileURLToPath } from 'node:url';
 
@@ -66,7 +66,7 @@ try {
         page.waitForEvent('download'),
         page.click('button:has-text("Backup")'),
     ]);
-    const zipPath = `/tmp/webeditor-backup-test-${Date.now()}.zip`;
+    const zipPath = `/tmp/appshell-backup-test-${Date.now()}.zip`;
     await download.saveAs(zipPath);
     console.log('backup zip saved to', zipPath);
 
@@ -91,7 +91,7 @@ try {
     console.log('ALL PASS');
 } catch (err) {
     console.error('FAIL:', err.message);
-    await page.screenshot({ path: '/tmp/webeditor-rekey-backup-failure.png' });
+    await page.screenshot({ path: '/tmp/appshell-rekey-backup-failure.png' });
     process.exitCode = 1;
 } finally {
     await browser.close();

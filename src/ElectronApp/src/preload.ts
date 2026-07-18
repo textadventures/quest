@@ -21,7 +21,7 @@ function joinPath(...segments: string[]): string {
 }
 
 // Matches the window.electronApp shape sketched in docs/electron-desktop-app.md
-// and consumed by src/WebEditor/src/lib/filesystem/electron-adapter.ts.
+// and consumed by src/AppShell/src/lib/filesystem/electron-adapter.ts.
 contextBridge.exposeInMainWorld("electronApp", {
     fs: {
         readFile: (path: string): Promise<Uint8Array> => ipcRenderer.invoke("fs:readFile", path),

@@ -51,7 +51,7 @@ jobs:
           node-version: '22'
           cache: 'npm'
           cache-dependency-path: |
-            src/WebEditor/package-lock.json
+            src/AppShell/package-lock.json
             src/ElectronApp/package-lock.json
 
       - name: Build WasmEditor
@@ -60,11 +60,11 @@ jobs:
       - name: Build WasmPlayer
         run: dotnet build src/WasmPlayer/WasmPlayer.csproj -c Release
 
-      - name: Build WebEditor
+      - name: Build AppShell
         run: npm ci && npm run build
-        working-directory: src/WebEditor
+        working-directory: src/AppShell
         env:
-          PUBLIC_WEBEDITOR_VERSION: ${{ github.ref_name }}
+          PUBLIC_APPSHELL_VERSION: ${{ github.ref_name }}
           PUBLIC_HAS_SERVER: false
           PUBLIC_SHOW_HOME: true
 

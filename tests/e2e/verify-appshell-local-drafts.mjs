@@ -1,18 +1,18 @@
-// Ad-hoc manual verification: WebEditor's OPFS-backed local drafts for browsers
+// Ad-hoc manual verification: AppShell's OPFS-backed local drafts for browsers
 // without the File System Access API (Firefox, Safari). Confirms a draft created
 // via the fallback path (no FSA directory picker) survives a full page reload,
 // including an uploaded asset — the bug being fixed is that the old fallback
 // stored assets in OPFS under a fresh crypto.randomUUID() every load, so a
 // reload orphaned them. Also exercises Safari's write path specifically: Safari
 // lacks FileSystemFileHandle.createWritable() and needs a worker using
-// createSyncAccessHandle() instead (see src/WebEditor/src/lib/filesystem/
+// createSyncAccessHandle() instead (see src/AppShell/src/lib/filesystem/
 // opfs-writer.worker.ts) — WebKit is the closest available local proxy for that,
 // real Safari should still be checked by hand.
 //
-// Requires the WebEditor dev server running locally against a Release WasmEditor
+// Requires the AppShell dev server running locally against a Release WasmEditor
 // build (createSyncAccessHandle needs the AOT build's real dotnet runtime bits
 // to be present, though the code path itself doesn't depend on Release vs Debug):
-//   WASM_CONFIG=Release node ../../src/WebEditor/node_modules/.bin/vite dev --root ../../src/WebEditor
+//   WASM_CONFIG=Release node ../../src/AppShell/node_modules/.bin/vite dev --root ../../src/AppShell
 import { firefox, webkit } from 'playwright';
 import { readFileSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
@@ -74,7 +74,7 @@ try {
     await run();
 } catch (err) {
     console.error(`[${browserType}] FAIL:`, err.message);
-    await page.screenshot({ path: `/tmp/webeditor-${browserType}-failure.png` });
+    await page.screenshot({ path: `/tmp/appshell-${browserType}-failure.png` });
     process.exitCode = 1;
 } finally {
     await browser.close();

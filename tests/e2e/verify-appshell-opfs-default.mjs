@@ -58,7 +58,7 @@ try {
     await run();
 } catch (err) {
     console.error('FAIL:', err.message);
-    await page.screenshot({ path: '/tmp/webeditor-chromium-opfs-default-failure.png' });
+    await page.screenshot({ path: '/tmp/appshell-chromium-opfs-default-failure.png' });
     process.exitCode = 1;
 } finally {
     await browser.close();

@@ -16,7 +16,7 @@
 #                       is play.questviva.com behaviour: local-only, Home shown.
 #
 # Servers started:
-#   http://localhost:5174   WebEditor (Vite / SvelteKit) — root shows Play/Create
+#   http://localhost:5174   AppShell (Vite / SvelteKit) — root shows Play/Create
 #                           Home when nothing's loaded (unless --api-proxy);
 #                           /open is the Create tab's content; proxies /player
 #                           to the WasmPlayer server below (vite.config.ts)
@@ -82,7 +82,7 @@ if [[ -n "$API_PROXY" ]]; then
     VITE_ENV+=("PUBLIC_HAS_SERVER=true")
 fi
 
-env "${VITE_ENV[@]}" npm --prefix src/WebEditor run dev &
+env "${VITE_ENV[@]}" npm --prefix src/AppShell run dev &
 EDITOR_PID=$!
 
 cleanup() {
@@ -93,7 +93,7 @@ cleanup() {
 }
 trap cleanup EXIT INT TERM
 
-echo "  WebEditor:   http://localhost:5174"
+echo "  AppShell:    http://localhost:5174"
 echo "  WasmPlayer:  http://localhost:5175/?game=/examples/simple.aslx"
 [[ -n "$API_PROXY" ]] && echo "  API proxy →  $API_PROXY"
 echo ""

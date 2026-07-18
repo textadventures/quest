@@ -1,4 +1,4 @@
-import { PUBLIC_WEBEDITOR_VERSION } from "$env/static/public";
+import { PUBLIC_APPSHELL_VERSION } from "$env/static/public";
 import { isElectron } from "./runtime";
 
 export interface CatalogGame {
@@ -43,7 +43,7 @@ const MAX_ASL_VERSION = 580;
 function clientInfoParams(): URLSearchParams {
     const params = new URLSearchParams();
     params.set("source", isElectron() ? "electron" : "web");
-    if (PUBLIC_WEBEDITOR_VERSION) params.set("version", PUBLIC_WEBEDITOR_VERSION);
+    if (PUBLIC_APPSHELL_VERSION) params.set("version", PUBLIC_APPSHELL_VERSION);
     const platform = window.electronApp?.platform;
     if (platform) params.set("platform", platform);
     return params;

@@ -1,4 +1,4 @@
-# WebEditor: EditorCore WASM + SvelteKit
+# AppShell: EditorCore WASM + SvelteKit
 
 ## Status
 
@@ -14,7 +14,7 @@ See [Remaining work](#remaining-work) below for what's left.
 
 ```
 Browser
-├── SvelteKit frontend  (src/WebEditor/)
+├── SvelteKit frontend  (src/AppShell/)
 │   ├── TreePanel        — game object hierarchy (Skeleton TreeView)
 │   ├── PropertyEditor   — attribute display with typed controls and tab navigation
 │   ├── ScriptEditor      — visual script editor with code view and copy/paste
@@ -95,7 +95,7 @@ Output lands in `src/WasmEditor/bin/Debug/net10.0/browser-wasm/AppBundle/`. The 
 
 ## SvelteKit frontend
 
-`src/WebEditor/` is a SvelteKit SPA (adapter-static, `fallback: 'index.html'`).
+`src/AppShell/` is a SvelteKit SPA (adapter-static, `fallback: 'index.html'`).
 
 ### Stack
 
@@ -107,7 +107,7 @@ Output lands in `src/WasmEditor/bin/Debug/net10.0/browser-wasm/AppBundle/`. The 
 ### File structure
 
 ```
-src/WebEditor/
+src/AppShell/
 ├── eslint.config.mjs
 ├── svelte.config.js        # adapter-static, $components alias
 ├── vite.config.ts          # AppBundle middleware, WasmPlayer proxy for preview
@@ -147,7 +147,7 @@ src/WebEditor/
 Requires a WasmEditor Debug build first (see above), then:
 
 ```bash
-cd src/WebEditor
+cd src/AppShell
 npm run dev     # http://localhost:5174
 ```
 
@@ -175,7 +175,7 @@ The browser cannot read files from the local filesystem directly.
 
 **Option C (implemented)** — Asset storage
 - **Directory mode** (`BrowserFileAdapter`): `putAsset` / `getAsset` / `listAssets` / `deleteAsset` are real sibling files on disk inside the game folder. Assets persist across sessions, are portable (the desktop editor and other tools find them), and require no upload to any server.
-- **Local-draft mode** (`LocalDraftAdapter`, `src/WebEditor/src/lib/filesystem/local-adapter.ts`) — Firefox and Safari, which will never ship the FSA directory picker: games and their assets live in OPFS under `games/<gameId>/`, keyed by the game's own `gameid` field rather than a per-session random id, so drafts survive a reload (the bug the per-session-UUID version of this had — assets were orphaned in OPFS every time the tab reopened, since nothing pointed back at them). `saveFile`/`putAsset` write straight to OPFS instead of triggering a download. Writes go through `opfs-writer.ts`, which picks a backend per browser: `createWritable()` directly on the main thread where supported (Firefox), or delegates to `opfs-writer.worker.ts` using `createSyncAccessHandle()` where it isn't (Safari, which never implemented `createWritable`). If the user regenerates the `gameid` field mid-edit, `LocalDraftAdapter.rekey()` moves the OPFS directory rather than orphaning it under the old id — see the `GetGameId()` bridge export and `rekeyIfGameIdChanged()` in `editor-store.ts`. Backup/Import round-trip a plain `.zip` (`game.aslx` entry + loose asset entries, built with `fflate`) — deliberately **not** the `.quest` publish format, since `.quest` packaging bundles included libraries into the `.aslx` itself, which would fork a re-imported game from its templates. (Naming: this zip round-trip is "Backup"/"Import", distinct from "Publish" below, which produces the `.quest` format.) Caveat: Safari proactively evicts unvisited-site storage after 7 days of inactivity (regardless of `navigator.storage.persist()`), so local drafts there are worth exporting as backups periodically — the open page surfaces a note about this.
+- **Local-draft mode** (`LocalDraftAdapter`, `src/AppShell/src/lib/filesystem/local-adapter.ts`) — Firefox and Safari, which will never ship the FSA directory picker: games and their assets live in OPFS under `games/<gameId>/`, keyed by the game's own `gameid` field rather than a per-session random id, so drafts survive a reload (the bug the per-session-UUID version of this had — assets were orphaned in OPFS every time the tab reopened, since nothing pointed back at them). `saveFile`/`putAsset` write straight to OPFS instead of triggering a download. Writes go through `opfs-writer.ts`, which picks a backend per browser: `createWritable()` directly on the main thread where supported (Firefox), or delegates to `opfs-writer.worker.ts` using `createSyncAccessHandle()` where it isn't (Safari, which never implemented `createWritable`). If the user regenerates the `gameid` field mid-edit, `LocalDraftAdapter.rekey()` moves the OPFS directory rather than orphaning it under the old id — see the `GetGameId()` bridge export and `rekeyIfGameIdChanged()` in `editor-store.ts`. Backup/Import round-trip a plain `.zip` (`game.aslx` entry + loose asset entries, built with `fflate`) — deliberately **not** the `.quest` publish format, since `.quest` packaging bundles included libraries into the `.aslx` itself, which would fork a re-imported game from its templates. (Naming: this zip round-trip is "Backup"/"Import", distinct from "Publish" below, which produces the `.quest` format.) Caveat: Safari proactively evicts unvisited-site storage after 7 days of inactivity (regardless of `navigator.storage.persist()`), so local drafts there are worth exporting as backups periodically — the open page surfaces a note about this.
 - **Server mode** (`ServerFileAdapter`): asset operations hit `/api/editor/games/{gameId}/assets` REST endpoints (see `docs/textadventures-api.md`).
 - `AssetPicker.svelte` (used by both `file`-type attribute controls and `simpleeditor="file"` script parameters, e.g. "Play sound"/"Show picture") and the standalone `AssetManagerModal.svelte` (opened from the toolbar's "Assets" button) both consume these adapter methods via a shared `assets` store in `editor-store.ts`. Pickers filter the asset list and restrict uploads by the control's `<source>` extension filter (resolved server-side by `WasmEditorBridge` — see the `Source` field below) — an image control won't offer a `.wav` file and vice versa; unknown control kinds fall back to showing every asset with no thumbnail.
 - Asset URL resolution inside the WasmPlayer preview does **not** need a Service Worker — an earlier version of this doc said one was required and that assets weren't resolvable in preview. That was already wrong by the time it was written: `previewInWasmPlayer()` in `editor-store.ts` implements a `resource-request`/`resource-response` protocol over a `BroadcastChannel`, and `getResourceUrl()` in `wasm-player.js` (registered as the Engine's resource-lookup callback) already consumes it, for both editor-preview and normal server-hosted play.
@@ -187,7 +187,7 @@ The browser cannot read files from the local filesystem directly.
 
 ### FileAdapter interface
 
-Implemented in `src/WebEditor/src/lib/filesystem/`. The module has no Svelte or Quest-specific imports — plain TypeScript only, so it can be extracted into a shared package when Squiffy becomes a second consumer.
+Implemented in `src/AppShell/src/lib/filesystem/`. The module has no Svelte or Quest-specific imports — plain TypeScript only, so it can be extracted into a shared package when Squiffy becomes a second consumer.
 
 **Loaders** produce a `{ bytes, adapter }` pair. `openFile` is not part of the adapter — it is a separate concern (only local-file loading needs a picker):
 
@@ -248,9 +248,9 @@ The **read** side of `.quest` already worked before this — `PackageReader.cs` 
 
 `WasmEditorBridge` follows the bridge's existing stage-then-consume pattern (same shape as the dirty-flag polling): `AddPublishAsset(string filename, byte[] data)` stages assets one at a time (`[JSExport]` doesn't cleanly marshal an array of blobs in one call), then `CreatePublishPackage(bool includeWalkthrough)` → `byte[]` consumes the staged list, calls `EditorController.Publish(null, includeWalkthrough, staged, memoryStream)`, and returns the zip bytes (empty array on failure — a real package is never empty since it always has at least `game.aslx`).
 
-WebEditor UI: a "Publish…" toolbar action (shown whenever a game is loaded, local or server mode) opens `PublishModal.svelte` with an "Include walkthrough" checkbox. `editor-store.ts`'s `publishGame()` calls `adapter.listAssets()` + `getAsset()` per file, stages them via the bridge, calls `CreatePublishPackage`, then triggers a browser download of `{gameName}.quest`. This is adapter-agnostic — identical code path for local and server-mode games, since it only touches the `FileAdapter` interface.
+AppShell UI: a "Publish…" toolbar action (shown whenever a game is loaded, local or server mode) opens `PublishModal.svelte` with an "Include walkthrough" checkbox. `editor-store.ts`'s `publishGame()` calls `adapter.listAssets()` + `getAsset()` per file, stages them via the bridge, calls `CreatePublishPackage`, then triggers a browser download of `{gameName}.quest`. This is adapter-agnostic — identical code path for local and server-mode games, since it only touches the `FileAdapter` interface.
 
-**Known gap, deferred deliberately**: multi-file/library games (a `.aslx` that itself includes sibling library files on disk) are rare in WebEditor today and out of scope for v1 — only assets the `FileAdapter` knows about get bundled.
+**Known gap, deferred deliberately**: multi-file/library games (a `.aslx` that itself includes sibling library files on disk) are rare in AppShell today and out of scope for v1 — only assets the `FileAdapter` knows about get bundled.
 
 ### Phase 2: submit to textadventures.co.uk (cross-repo: quest + textadventures.co.uk — done)
 
@@ -260,7 +260,7 @@ new one:
 - `TextAdventures.Web/Controllers/CreateController.cs` has `Publish(int id)`, whose comment reads *"Used only by Quest WebEditor, which redirects here after publishing game output to Azure"* — it forwards to `SubmitController.QuestWebEditor(id)`.
 - `Views/Submit/Quest.razor` loads the compiled package and either shows the `GameDetails` submission form (title/description/category/cover/visibility) for a first publish, or calls `SubmitService.UpdateGameFile` to update an already-published listing (tracked via `EditorGame.PublishId`).
 - Category, tags, and visibility (`Game.IsVisible`) all reuse the same infrastructure as the classic upload and old v5-desktop-editor publish paths — no new data model needed.
-- **Server-side (textadventures.co.uk)**: `EditorApiController.PostPublish` (`POST /api/editor/games/{gameId}/publish`) accepts the uploaded compiled bytes. Rather than writing to the blob path the legacy `quest.textadventures.co.uk` editor uses (`{editorGameDir}/Output/{gamename}.quest`), it hands them off via `PublishedQuestCache` — a short-lived (15-minute) `IMemoryCache` entry keyed by `editorGameId`. This is a deliberate one-shot handoff rather than a durable blob write: the POST and the subsequent `/Create/Publish/{gameId}` page load are two separate HTTP requests (not one live Blazor circuit, unlike the classic upload flow), so `Quest.razor` needs *some* server-side state to bridge them, but the bytes don't need to outlive that one redirect. `Quest.razor` checks `PublishedQuestCache.TryGet` first (removing the entry once read) and falls back to the legacy blob-storage path only if nothing's cached — so both the new WebEditor and the legacy editor funnel through the same `GameQuery`/`GameDetails`/`SubmitService` code from there.
+- **Server-side (textadventures.co.uk)**: `EditorApiController.PostPublish` (`POST /api/editor/games/{gameId}/publish`) accepts the uploaded compiled bytes. Rather than writing to the blob path the legacy `quest.textadventures.co.uk` editor uses (`{editorGameDir}/Output/{gamename}.quest`), it hands them off via `PublishedQuestCache` — a short-lived (15-minute) `IMemoryCache` entry keyed by `editorGameId`. This is a deliberate one-shot handoff rather than a durable blob write: the POST and the subsequent `/Create/Publish/{gameId}` page load are two separate HTTP requests (not one live Blazor circuit, unlike the classic upload flow), so `Quest.razor` needs *some* server-side state to bridge them, but the bytes don't need to outlive that one redirect. `Quest.razor` checks `PublishedQuestCache.TryGet` first (removing the entry once read) and falls back to the legacy blob-storage path only if nothing's cached — so both the new AppShell and the legacy editor funnel through the same `GameQuery`/`GameDetails`/`SubmitService` code from there.
 - **quest (this repo)**: `publishGame()` in `editor-store.ts` — when `ServerFileAdapter` is active (local-mode games have no `gameId` to attach a listing to) — POSTs the `CreatePublishPackage()` output to `/api/editor/games/{gameId}/publish`, then navigates to `/create/publish/{gameId}` on textadventures.co.uk. Local-mode games still just download the `.quest` file and rely on the site's existing classic manual "submit a game" upload page.
 
 Since the counterpart repo lives outside this one, `docs/textadventures-api.md` in this repo is the
@@ -279,7 +279,7 @@ Core editing, element CRUD, script editing, save/load (local + server), new-game
 4. **`EditorController.AddControlType`/`GetControlType`** — dead code now the only consumer is Svelte (the `EditorMode` Desktop/Web split itself was already removed). Cleanup, not urgent.
 5. **Live JS push events** (`[JSImport]`) — see [Not yet implemented](#not-yet-implemented). Only matters if/when the editor needs push-based updates (e.g. background operations, collaboration); not needed for anything currently planned.
 6. **Electron wrapper** — future; see Option D above and [Open questions](#open-questions).
-7. **WebEditor e2e coverage** (Playwright, `tests/e2e`) — this is the real gap, not a "WasmEditorBridge unit test project". `WasmEditor.csproj` targets `<RuntimeIdentifier>browser-wasm</RuntimeIdentifier>` with `OutputType>Exe`, which a normal MSTest project can't reference the way `EditorCoreTests` references `EditorCore.csproj` — there's no in-process host to unit-test the `[JSExport]` boundary itself. Most of the ~65 bridge methods are thin pass-throughs to `EditorController`, which already has decent coverage (`EditableListTests`, `EditableScriptTests`, `EditorControllerTests`, etc.); what's actually untested is the JS↔WASM marshaling boundary and end-to-end UI wiring, which only a real browser driving the built `AppBundle` can exercise — i.e. Playwright, extending the existing pattern in `tests/e2e` (currently WebPlayer/WasmPlayer verification scripts only). (The Asset UI work verified this approach informally — a throwaway Playwright script driving the built AppBundle via the non-FSA `<input type="file">` fallback path worked well for exercising the picker/upload/preview flow end-to-end; formalizing that into `tests/e2e` is what this item is.)
+7. **AppShell e2e coverage** (Playwright, `tests/e2e`) — this is the real gap, not a "WasmEditorBridge unit test project". `WasmEditor.csproj` targets `<RuntimeIdentifier>browser-wasm</RuntimeIdentifier>` with `OutputType>Exe`, which a normal MSTest project can't reference the way `EditorCoreTests` references `EditorCore.csproj` — there's no in-process host to unit-test the `[JSExport]` boundary itself. Most of the ~65 bridge methods are thin pass-throughs to `EditorController`, which already has decent coverage (`EditableListTests`, `EditableScriptTests`, `EditorControllerTests`, etc.); what's actually untested is the JS↔WASM marshaling boundary and end-to-end UI wiring, which only a real browser driving the built `AppBundle` can exercise — i.e. Playwright, extending the existing pattern in `tests/e2e` (currently WebPlayer/WasmPlayer verification scripts only). (The Asset UI work verified this approach informally — a throwaway Playwright script driving the built AppBundle via the non-FSA `<input type="file">` fallback path worked well for exercising the picker/upload/preview flow end-to-end; formalizing that into `tests/e2e` is what this item is.)
 8. **Blockly** — future; see [Blockly (future)](#blockly-future) below.
 
 ---

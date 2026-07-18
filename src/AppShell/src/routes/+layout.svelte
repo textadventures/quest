@@ -6,7 +6,7 @@
     import { goto } from "$app/navigation";
     import { base } from "$app/paths";
     import { page } from "$app/state";
-    import { PUBLIC_WEBEDITOR_VERSION, PUBLIC_SHOW_HOME } from "$env/static/public";
+    import { PUBLIC_APPSHELL_VERSION, PUBLIC_SHOW_HOME } from "$env/static/public";
     import { isLoaded, saveGame, saveGameAs } from "$lib/editor-store";
     import { isElectron } from "$lib/runtime";
     import HomeHeader from "$components/HomeHeader.svelte";
@@ -25,7 +25,7 @@
     const showTabs = $derived(showHome && page.url.pathname !== `${base}/edit`);
 
     // Play (and its game-detail pages) are always dark, matching the look the
-    // standalone Home page had before this was folded into WebEditor — Create
+    // standalone Home page had before this was folded into AppShell — Create
     // (/open) keeps following the editor's own light/dark system preference,
     // since forcing that too would mean redoing its markup (also used as-is
     // by textadventures.co.uk's plain editor-open flow) to match.
@@ -34,7 +34,7 @@
     // Printed once on load, same style as WasmPlayer's console banner — the
     // header no longer shows the version, so this is the only place to find it.
     console.log(
-        "%cQuest Viva Editor %c" + (PUBLIC_WEBEDITOR_VERSION || "dev") + "\n%chttps://questviva.com",
+        "%cQuest Viva Editor %c" + (PUBLIC_APPSHELL_VERSION || "dev") + "\n%chttps://questviva.com",
         "font-weight:700;font-size:14px;color:#0ea5e9",
         "font-weight:400;color:#64748b",
         "color:#64748b"

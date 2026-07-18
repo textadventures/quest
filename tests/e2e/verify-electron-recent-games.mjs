@@ -4,7 +4,7 @@
 // directly (no picker), and Remove/Clear both work. Uses Playwright's
 // _electron launcher against the already-built src/ElectronApp/dist — run
 // the build steps in electron.sh once first (dotnet build WasmEditor/WasmPlayer
-// Debug, npm run build in WebEditor and ElectronApp) so dist/ and
+// Debug, npm run build in AppShell and ElectronApp) so dist/ and
 // resources/app-static exist.
 //
 // Games are created through the app's own "Create new game" flow (with the

@@ -53,7 +53,7 @@ if (process.platform === "darwin") {
 let editorWindow: BrowserWindow | null = null;
 let staticServer: StaticServerHandle | null = null;
 
-// Mirrors the union WebEditor's src/routes/+layout.svelte switches on (see
+// Mirrors the union AppShell's src/routes/+layout.svelte switches on (see
 // window.electronApp.menu.onAction in preload.ts) — the two sides can't share
 // a type since they're separate npm projects, so keep them in sync by hand.
 type MenuAction = "new-game" | "open-file" | "save" | "save-as";
@@ -73,7 +73,7 @@ function sendOpenRecentGame(game: RecentGame): void {
 // to the renderer — that's where WasmEditor and the file adapters live, main
 // only owns the native chrome around it. Built once for every platform (rather
 // than only patching non-darwin's missing About, as an earlier pass here did)
-// so File/Save exist at all: without a menu at all, WebEditor's own UI has no
+// so File/Save exist at all: without a menu at all, AppShell's own UI has no
 // "switch to a different project" affordance short of a full page reload.
 //
 // Takes the current recent-games list rather than reading it itself, so it
@@ -163,7 +163,7 @@ function createEditorWindow(port: number): void {
         },
     });
 
-    // WebEditor's own <title> ("Quest Viva Editor") is correct for the
+    // AppShell's own <title> ("Quest Viva Editor") is correct for the
     // browser build, where it's the only app; the desktop app covers editing
     // and playing, so it's just "Quest Viva" here — override the page's title
     // instead of changing the shared app.html tag.

@@ -1,4 +1,4 @@
-// Ad-hoc manual verification for the WebEditor autosave change: the explicit
+// Ad-hoc manual verification for the AppShell autosave change: the explicit
 // Save button was removed in favor of debounced autosave-on-edit. This
 // confirms the status pill reflects the autosave lifecycle (no "Saved" pill
 // stuck at page load, "Saving…" appears after an edit, then "Saved"), and
@@ -66,7 +66,7 @@ try {
     await run();
 } catch (err) {
     console.error('FAIL:', err.message);
-    await page.screenshot({ path: '/tmp/webeditor-autosave-failure.png' });
+    await page.screenshot({ path: '/tmp/appshell-autosave-failure.png' });
     process.exitCode = 1;
 } finally {
     await browser.close();
