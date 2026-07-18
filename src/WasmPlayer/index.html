@@ -14,7 +14,7 @@
         (function () {
             var params = new URLSearchParams(location.search);
             if (params.get('id') || params.get('url') || params.get('source') === 'editor'
-                || window.QuestVivaConfig?.defaultGameUrl) {
+                || params.get('source') === 'local' || window.QuestVivaConfig?.defaultGameUrl) {
                 document.documentElement.classList.add('qv-booting');
             }
         })();
