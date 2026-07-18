@@ -417,7 +417,7 @@
     const creating = $derived(creatingLocal || creatingServer);
 </script>
 
-<main class="flex flex-col items-center justify-center min-h-svh gap-6 p-8">
+<main class="flex flex-col items-center justify-center min-h-[calc(100svh-var(--home-bar-height,0px))] gap-6 p-8">
     <h1 class="text-3xl font-semibold">Quest Viva Editor</h1>
 
     {#if loading}
