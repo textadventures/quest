@@ -42,7 +42,7 @@ async function run() {
     await page.fill('input[placeholder="Game name"]', 'Chromium OPFS Default Test');
     await page.waitForSelector('text=Text adventure', { timeout: 10000 });
     await page.click('button:has-text("Create local draft")');
-    await page.waitForSelector('button:has-text("🖼 Assets")', { timeout: 30000 });
+    await page.waitForSelector('button[title="Manage assets"]', { timeout: 30000 });
     console.log('PASS: local draft created and opened in the editor on Chromium');
 
     await page.goto(`${baseUrl}/open`);

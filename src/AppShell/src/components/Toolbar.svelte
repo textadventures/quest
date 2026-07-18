@@ -16,6 +16,20 @@
         assetManagerOpen,
     } from "$lib/editor-store";
     import type { TreeNode } from "$lib/types";
+    import Home from "@lucide/svelte/icons/home";
+    import ImageIcon from "@lucide/svelte/icons/image";
+    import Undo2 from "@lucide/svelte/icons/undo-2";
+    import Redo2 from "@lucide/svelte/icons/redo-2";
+    import Plus from "@lucide/svelte/icons/plus";
+    import ChevronDown from "@lucide/svelte/icons/chevron-down";
+    import Trash2 from "@lucide/svelte/icons/trash-2";
+    import Save from "@lucide/svelte/icons/save";
+    import Download from "@lucide/svelte/icons/download";
+    import Package from "@lucide/svelte/icons/package";
+    import Play from "@lucide/svelte/icons/play";
+    import Check from "@lucide/svelte/icons/check";
+    import LoaderCircle from "@lucide/svelte/icons/loader-circle";
+    import TriangleAlert from "@lucide/svelte/icons/triangle-alert";
 
     const wasmPlayerUrl = PUBLIC_WASM_PLAYER_URL || "/player/";
     const showHome = PUBLIC_SHOW_HOME === "true";
@@ -105,30 +119,29 @@
             {#if showHome}
                 <button
                     type="button"
-                    class="btn btn-sm preset-outlined-primary-500 mr-3"
+                    class="toolbar-icon-btn mr-2"
                     onclick={handleHome}
                     title="Back to Home"
-                >🏠 Home</button>
+                ><Home size={16} /></button>
             {/if}
-            <span class="font-semibold">Quest Viva Editor</span>
             {#if $gameFilename}
-                <span class="ml-3 text-sm text-surface-500-400">{$gameFilename}</span>
+                <span class="font-mono text-sm font-medium">{$gameFilename}</span>
             {/if}
             {#if $saveError}
                 <button
                     type="button"
-                    class="ml-3 text-sm text-error-500 underline"
+                    class="save-chip save-chip-error"
                     onclick={() => retrySave()}
                     title={$saveError}
-                >⚠ Save failed — Retry</button>
+                ><TriangleAlert size={13} /> Save failed — Retry</button>
             {:else if $isSaving || $isDirty}
-                <span class="ml-3 text-sm text-surface-500-400">Saving…</span>
+                <span class="save-chip save-chip-saving"><LoaderCircle size={13} class="animate-spin" /> Saving…</span>
             {:else if $gameFilename}
-                <span class="ml-3 text-sm text-surface-500-400">Saved</span>
+                <span class="save-chip save-chip-saved"><Check size={13} /> Saved</span>
             {/if}
         </AppBar.Lead>
         <AppBar.Trail>
-            <div class="flex gap-2 items-center">
+            <div class="flex gap-1.5 items-center">
                 <!-- Add dropdown -->
                 <div class="add-dropdown relative">
                     <button
@@ -136,7 +149,7 @@
                         class="btn btn-sm preset-outlined-primary-500"
                         onclick={toggleAdd}
                         title="Add element"
-                    >+ Add ▾</button>
+                    ><Plus size={14} /> Add <ChevronDown size={12} /></button>
                     {#if addOpen}
                         <div class="absolute right-0 top-full z-[999] mt-1 w-56 bg-surface-50-950 border border-surface-200-800 rounded shadow-lg py-1">
                             {#each addOptions as opt (opt.label)}
@@ -155,23 +168,77 @@
                         class="btn btn-sm preset-outlined-error-500"
                         onclick={() => deleteElement(selectedNode!.key)}
                         title={"Delete " + (selectedNode?.text ?? "")}
-                    >Delete</button>
+                    ><Trash2 size={14} /> Delete</button>
                 {/if}
-                <button type="button" class="btn btn-sm preset-outlined-primary-500" onclick={() => assetManagerOpen.set(true)} title="Manage assets">🖼 Assets</button>
-                <button type="button" class="btn btn-sm preset-outlined-primary-500" onclick={undo} disabled={!$canUndo} title="Undo">↩ Undo</button>
-                <button type="button" class="btn btn-sm preset-outlined-primary-500" onclick={redo} disabled={!$canRedo} title="Redo">↪ Redo</button>
+                <div class="toolbar-divider"></div>
+                <button type="button" class="toolbar-icon-btn" onclick={() => assetManagerOpen.set(true)} title="Manage assets"><ImageIcon size={16} /></button>
+                <button type="button" class="toolbar-icon-btn" onclick={undo} disabled={!$canUndo} title="Undo"><Undo2 size={16} /></button>
+                <button type="button" class="toolbar-icon-btn" onclick={redo} disabled={!$canRedo} title="Redo"><Redo2 size={16} /></button>
+                <div class="toolbar-divider"></div>
                 {#if $canSaveAs}
-                    <button type="button" class="btn btn-sm preset-outlined-primary-500" onclick={handleSaveAs} disabled={saving} title="Save As">Save As…</button>
+                    <button type="button" class="btn btn-sm preset-outlined-primary-500" onclick={handleSaveAs} disabled={saving} title="Save As"><Save size={14} /> Save As…</button>
                 {/if}
                 {#if $canBackup}
-                    <button type="button" class="btn btn-sm preset-outlined-primary-500" onclick={handleBackup} disabled={saving} title="Download a .zip copy of this game and its assets">Backup…</button>
+                    <button type="button" class="btn btn-sm preset-outlined-primary-500" onclick={handleBackup} disabled={saving} title="Download a .zip copy of this game and its assets"><Download size={14} /> Backup…</button>
                 {/if}
                 {#if $gameFilename}
-                    <button type="button" class="btn btn-sm preset-outlined-primary-500" onclick={() => publishModalOpen.set(true)} title="Build a .quest package for distribution">Publish…</button>
-                    <button type="button" class="btn btn-sm preset-outlined-secondary-500" onclick={handlePreview} title="Preview game">▶ Preview</button>
+                    <button type="button" class="btn btn-sm preset-outlined-primary-500" onclick={() => publishModalOpen.set(true)} title="Build a .quest package for distribution"><Package size={14} /> Publish…</button>
+                    <div class="toolbar-divider"></div>
+                    <button type="button" class="btn btn-sm preset-filled-primary-500" onclick={handlePreview} title="Preview game"><Play size={14} /> Preview</button>
                 {/if}
             </div>
         </AppBar.Trail>
     </AppBar.Toolbar>
 </AppBar>
+
+<style>
+    .toolbar-icon-btn {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 2rem;
+        height: 2rem;
+        border-radius: var(--radius-container);
+        color: var(--color-surface-500-400);
+    }
+    .toolbar-icon-btn:hover:not(:disabled) {
+        background-color: var(--color-surface-200-800);
+        color: var(--color-primary-500);
+    }
+    .toolbar-icon-btn:disabled {
+        opacity: 0.4;
+    }
+    .toolbar-divider {
+        width: 1px;
+        height: 1.25rem;
+        background-color: var(--color-surface-200-800);
+        margin: 0 0.25rem;
+    }
+    .save-chip {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.3rem;
+        margin-left: 0.75rem;
+        padding: 0.15rem 0.55rem 0.15rem 0.45rem;
+        border-radius: 999px;
+        font-size: 0.75rem;
+        font-weight: 600;
+        line-height: 1.4;
+    }
+    .save-chip-saved {
+        color: var(--color-success-600-400);
+        background-color: color-mix(in srgb, var(--color-success-500) 12%, transparent);
+    }
+    .save-chip-saving {
+        color: var(--color-surface-500-400);
+    }
+    .save-chip-error {
+        color: var(--color-error-500);
+        background-color: color-mix(in srgb, var(--color-error-500) 12%, transparent);
+        cursor: pointer;
+    }
+    .save-chip-error:hover {
+        text-decoration: underline;
+    }
+</style>
 
