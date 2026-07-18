@@ -498,11 +498,11 @@
                             <div class="flex items-center gap-2 w-full">
                                 <button
                                     type="button"
-                                    class="btn btn-sm preset-outlined-primary-500 flex-1 justify-between"
+                                    class="btn btn-sm preset-outlined-primary-500 flex-1 min-w-0 flex-col! items-start! h-auto! py-2 gap-0.5"
                                     onclick={() => loadFromElectron(game.dirPath, game.filename)}
                                 >
-                                    <span>{game.filename}</span>
-                                    <span class="text-surface-500-400 text-xs truncate max-w-[16ch]">{folderName(game.dirPath)} · {relativeTime(game.lastOpened)}</span>
+                                    <span class="w-full truncate text-left">{game.filename}</span>
+                                    <span class="w-full truncate text-left text-surface-500-400 text-xs">{folderName(game.dirPath)} · {relativeTime(game.lastOpened)}</span>
                                 </button>
                                 <button
                                     type="button"

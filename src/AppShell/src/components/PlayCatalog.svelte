@@ -4,7 +4,8 @@
     import { fetchCatalog, type CatalogCategory } from "$lib/home-catalog";
     import { pickFile } from "$lib/filesystem/file-picker";
     import { isElectron } from "$lib/runtime";
-    import { openElectronPlayFile, loadElectronFile } from "$lib/filesystem/electron-adapter";
+    import { openElectronPlayFile, loadElectronFile, listRecentGames, removeRecentGame } from "$lib/filesystem/electron-adapter";
+    import type { RecentGame } from "$lib/filesystem/electron-adapter";
 
     const isElectronApp = isElectron();
 
@@ -48,33 +49,40 @@
     let electronBusy = $state(false);
     let electronError = $state<string | null>(null);
 
-    // Electron: a single click launches the game — no second "Start" click
-    // needed, because the player window here is created by the *main*
-    // process (see ipc/player.ts's player:openWindow), not by this
-    // renderer's own window.open(). Renderer-driven window.open() is what
-    // forces the browser build's two-click flow below (a native file dialog
-    // and a script-driven window.open() can't share one click's activation
-    // grant — see handleBrowserStart); main-process window creation isn't
-    // subject to that at all. Also wires 'resource-request' (not just
-    // 'ready') over the handoff channel, backed by a real ElectronFileAdapter
-    // — the same mechanism editor-store.ts's previewInWasmPlayer uses — so a
-    // loose .aslx that references sibling images/sounds in its folder keeps
-    // working, not just self-contained .quest packages.
-    async function handleElectronPlay() {
-        electronError = null;
-        const picked = await openElectronPlayFile();
-        if (!picked) return;
+    // Recently played (Electron only) — mirrors Quest 5's desktop Play tab,
+    // which had its own recent list separate from the editor's. Tracked as
+    // its own "play"-kind list (see electron-adapter.ts's RecentKind) so a
+    // game opened here never shows up in File > Open Recent, which loads
+    // into the editor instead.
+    let recentPlayed = $state<RecentGame[]>([]);
 
+    async function refreshRecentPlayed() {
+        if (!isElectronApp) return;
+        recentPlayed = await listRecentGames("play");
+    }
+    void refreshRecentPlayed();
+
+    // Shared by the file-picker flow below and by clicking a Recently Played
+    // entry — loads the game's bytes/adapter, hands them to a freshly
+    // launched player window over the handoff channel, and answers its
+    // sibling-resource requests for as long as that window is open. Wires
+    // 'resource-request' (not just 'ready'), backed by a real
+    // ElectronFileAdapter — the same mechanism editor-store.ts's
+    // previewInWasmPlayer uses — so a loose .aslx that references sibling
+    // images/sounds in its folder keeps working, not just self-contained
+    // .quest packages.
+    async function playElectronFile(dirPath: string, filename: string) {
         electronBusy = true;
         try {
-            const { bytes, adapter } = await loadElectronFile(picked.dirPath, picked.filename);
+            const { bytes, adapter } = await loadElectronFile(dirPath, filename, "play");
+            void refreshRecentPlayed();
 
             playChannel?.close();
             const bc = new BroadcastChannel("quest-play-local");
             playChannel = bc;
             bc.onmessage = async ({ data }) => {
                 if (data.type === "ready") {
-                    bc.postMessage({ type: "game", bytes, filename: picked.filename });
+                    bc.postMessage({ type: "game", bytes, filename });
                 } else if (data.type === "resource-request") {
                     const blob = await adapter.getAsset(data.name);
                     if (blob) {
@@ -95,6 +103,39 @@
         } finally {
             electronBusy = false;
         }
+    }
+
+    // Electron: a single click launches the game — no second "Start" click
+    // needed, because the player window here is created by the *main*
+    // process (see ipc/player.ts's player:openWindow), not by this
+    // renderer's own window.open(). Renderer-driven window.open() is what
+    // forces the browser build's two-click flow below (a native file dialog
+    // and a script-driven window.open() can't share one click's activation
+    // grant — see handleBrowserStart); main-process window creation isn't
+    // subject to that at all.
+    async function handleElectronPlay() {
+        electronError = null;
+        const picked = await openElectronPlayFile();
+        if (!picked) return;
+        await playElectronFile(picked.dirPath, picked.filename);
+    }
+
+    async function handleRemoveRecentPlayed(game: RecentGame) {
+        await removeRecentGame(game.dirPath, game.filename, "play");
+        await refreshRecentPlayed();
+    }
+
+    function folderName(dirPath: string): string {
+        return dirPath.split(/[\\/]/).pop() || dirPath;
+    }
+
+    function relativeTime(ms: number): string {
+        const mins = Math.round((Date.now() - ms) / 60000);
+        if (mins < 1) return "just now";
+        if (mins < 60) return `${mins}m ago`;
+        const hours = Math.round(mins / 60);
+        if (hours < 24) return `${hours}h ago`;
+        return `${Math.round(hours / 24)}d ago`;
     }
 
     // ── Browser build only (isElectronApp false) ────────────────────────────
@@ -212,6 +253,33 @@
                 <p class="text-error-500 text-sm">{startError}</p>
             {/if}
         </div>
+
+        {#if isElectronApp && recentPlayed.length > 0}
+            <section class="flex flex-col gap-3 w-full max-w-sm mx-auto">
+                <h2 class="text-sm font-semibold text-surface-400 self-start">Recently played</h2>
+                <div class="flex flex-col gap-2 w-full">
+                    {#each recentPlayed as game (game.dirPath + "/" + game.filename)}
+                        <div class="flex items-center gap-2 w-full">
+                            <button
+                                type="button"
+                                class="btn btn-sm preset-outlined-primary-500 flex-1 min-w-0 flex-col! items-start! h-auto! py-2 gap-0.5"
+                                onclick={() => playElectronFile(game.dirPath, game.filename)}
+                                disabled={electronBusy}
+                            >
+                                <span class="w-full truncate text-left">{game.filename}</span>
+                                <span class="w-full truncate text-left text-surface-400 text-xs">{folderName(game.dirPath)} · {relativeTime(game.lastOpened)}</span>
+                            </button>
+                            <button
+                                type="button"
+                                class="btn btn-sm preset-outlined-error-500"
+                                title="Remove from Recently Played"
+                                onclick={() => handleRemoveRecentPlayed(game)}
+                            >Remove</button>
+                        </div>
+                    {/each}
+                </div>
+            </section>
+        {/if}
 
         {#if loading}
             <div class="flex flex-col items-center gap-3 py-12">

@@ -50,19 +50,26 @@ export interface RecentGame {
     lastOpened: number;
 }
 
-export async function listRecentGames(): Promise<RecentGame[]> {
-    return electronApp().recent.list();
+// Mirrors ElectronRecentKind. "edit" (the default below) is every editor
+// entry point — open/create/save-as, all in this file; "play" is only
+// PlayCatalog.svelte's file picker. Kept as separate lists on the main-process
+// side (see ElectronApp's recent-games.ts) precisely so a game opened to play
+// never shows up in File > Open Recent (which loads into the editor).
+export type RecentKind = "edit" | "play";
+
+export async function listRecentGames(kind: RecentKind = "edit"): Promise<RecentGame[]> {
+    return electronApp().recent.list(kind);
 }
 
-export async function removeRecentGame(dirPath: string, filename: string): Promise<void> {
-    await electronApp().recent.remove(dirPath, filename);
+export async function removeRecentGame(dirPath: string, filename: string, kind: RecentKind = "edit"): Promise<void> {
+    await electronApp().recent.remove(kind, dirPath, filename);
 }
 
 // Best-effort: the recent list is a convenience, so a tracking failure should
-// never surface as an error on the actual open/create/save-as it followed.
-async function trackRecent(dirPath: string, filename: string): Promise<void> {
+// never surface as an error on the actual open/create/save-as/play it followed.
+async function trackRecent(dirPath: string, filename: string, kind: RecentKind = "edit"): Promise<void> {
     try {
-        await electronApp().recent.add(dirPath, filename);
+        await electronApp().recent.add(kind, dirPath, filename);
     } catch {
         // ignore
     }
@@ -175,9 +182,16 @@ export async function openElectronPlayFile(): Promise<{ dirPath: string; filenam
     return { dirPath: dirname(filePath), filename: basename(filePath) };
 }
 
-export async function loadElectronFile(dirPath: string, filename: string): Promise<{ bytes: Uint8Array; adapter: ElectronFileAdapter }> {
+// kind defaults to "edit" for the /open (editor) callers; PlayCatalog.svelte
+// passes "play" explicitly so a game opened to play tracks into its own
+// Recently Played list instead of the editor's Recent — see RecentKind above.
+export async function loadElectronFile(
+    dirPath: string,
+    filename: string,
+    kind: RecentKind = "edit",
+): Promise<{ bytes: Uint8Array; adapter: ElectronFileAdapter }> {
     const bytes = await electronApp().fs.readFile(electronApp().path.join(dirPath, filename));
-    await trackRecent(dirPath, filename);
+    await trackRecent(dirPath, filename, kind);
     return { bytes, adapter: new ElectronFileAdapter(dirPath, filename) };
 }
 
