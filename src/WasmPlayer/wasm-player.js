@@ -98,6 +98,12 @@ function finishSync(showCommandDiv) {
 // might play a sound before the player has had any chance to interact with
 // the page themselves (typing a command is itself a fresh activation).
 function activationLikelyGranted() {
+    // Electron's own default autoplay policy is already unrestricted (unlike
+    // stock Chrome's), and ipc/player.ts's player windows set it explicitly —
+    // true regardless of how the window was created (in-place nav, popup, or
+    // a main-process-created window), so the gate below would only ever add
+    // friction there, never actually prevent a blocked sound.
+    if (navigator.userAgent.includes('Electron/')) return true;
     return !('userActivation' in navigator) || navigator.userActivation.hasBeenActive;
 }
 
@@ -853,14 +859,18 @@ async function fetchGameBytes(url) {
     }
 
     // AppShell's Play tab (see PlayCatalog.svelte) — the user already picked
-    // a file and clicked Start over there, so the game bytes are sitting in
-    // that tab's memory. Same handoff as the editor preview above, just with
-    // no resource-request handling: a locally picked file is never backed by
-    // a live FileAdapter to fetch assets from, only self-contained bytes (a
-    // .quest package embeds its resources; loose .aslx games fetch theirs by
-    // URL), exactly like the plain file-input path in wireStartScreen()
-    // below. A distinct channel name keeps this from cross-talking with a
-    // real editor-preview tab open at the same time.
+    // a file and clicked Start (browser build) or the window just got opened
+    // straight from the file picker (Electron, see ipc/player.ts), so the
+    // game bytes are sitting in that tab's memory. Same handoff as the editor
+    // preview above, including resource-request support: in the browser
+    // build a raw picked File has nothing to answer those with (so they just
+    // go unanswered — fine for a self-contained .quest package, which is all
+    // the plain file-input path in wireStartScreen() below ever supported
+    // either), but Electron's PlayCatalog.svelte backs the picked file with a
+    // real ElectronFileAdapter and answers them from disk, exactly like
+    // editor-store.ts's previewInWasmPlayer does for the live editor. A
+    // distinct channel name keeps this from cross-talking with a real
+    // editor-preview tab open at the same time.
     if (params.get('source') === 'local') {
         const bc = new BroadcastChannel('quest-play-local');
         bc.postMessage({ type: 'ready' });
@@ -876,9 +886,11 @@ async function fetchGameBytes(url) {
         bc.onmessage = async ({ data }) => {
             if (data.type === 'game') {
                 window.clearTimeout(timeoutId);
+                // Not closed (unlike the timeout branch above) — startGame
+                // reassigns bc.onmessage itself to keep answering
+                // 'resource-response' messages for the rest of the session.
                 bc.onmessage = null;
-                bc.close();
-                await startGame(data.bytes, data.filename);
+                await startGame(data.bytes, data.filename, bc);
             }
         };
         return;

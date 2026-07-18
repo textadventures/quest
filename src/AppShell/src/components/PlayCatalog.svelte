@@ -3,6 +3,10 @@
     import { base } from "$app/paths";
     import { fetchCatalog, type CatalogCategory } from "$lib/home-catalog";
     import { pickFile } from "$lib/filesystem/file-picker";
+    import { isElectron } from "$lib/runtime";
+    import { openElectronPlayFile, loadElectronFile } from "$lib/filesystem/electron-adapter";
+
+    const isElectronApp = isElectron();
 
     let categories = $state<CatalogCategory[] | null>(null);
     let error = $state(false);
@@ -27,11 +31,79 @@
         return "★".repeat(rounded) + "☆".repeat(5 - rounded);
     }
 
+    // Kept across handoffs (not just a local var) so a new one can close the
+    // previous — otherwise a stale channel would *also* answer a new
+    // window's 'ready' broadcast (with the wrong bytes), and would go on
+    // answering a refresh of the now-superseded old window.
+    let playChannel: BroadcastChannel | null = null;
+
+    function blobToDataUrl(blob: Blob): Promise<string> {
+        return new Promise((resolve) => {
+            const reader = new FileReader();
+            reader.onload = () => resolve(reader.result as string);
+            reader.readAsDataURL(blob);
+        });
+    }
+
+    let electronBusy = $state(false);
+    let electronError = $state<string | null>(null);
+
+    // Electron: a single click launches the game — no second "Start" click
+    // needed, because the player window here is created by the *main*
+    // process (see ipc/player.ts's player:openWindow), not by this
+    // renderer's own window.open(). Renderer-driven window.open() is what
+    // forces the browser build's two-click flow below (a native file dialog
+    // and a script-driven window.open() can't share one click's activation
+    // grant — see handleBrowserStart); main-process window creation isn't
+    // subject to that at all. Also wires 'resource-request' (not just
+    // 'ready') over the handoff channel, backed by a real ElectronFileAdapter
+    // — the same mechanism editor-store.ts's previewInWasmPlayer uses — so a
+    // loose .aslx that references sibling images/sounds in its folder keeps
+    // working, not just self-contained .quest packages.
+    async function handleElectronPlay() {
+        electronError = null;
+        const picked = await openElectronPlayFile();
+        if (!picked) return;
+
+        electronBusy = true;
+        try {
+            const { bytes, adapter } = await loadElectronFile(picked.dirPath, picked.filename);
+
+            playChannel?.close();
+            const bc = new BroadcastChannel("quest-play-local");
+            playChannel = bc;
+            bc.onmessage = async ({ data }) => {
+                if (data.type === "ready") {
+                    bc.postMessage({ type: "game", bytes, filename: picked.filename });
+                } else if (data.type === "resource-request") {
+                    const blob = await adapter.getAsset(data.name);
+                    if (blob) {
+                        const dataUrl = await blobToDataUrl(blob);
+                        bc.postMessage({ type: "resource-response", id: data.id, dataUrl });
+                    }
+                }
+            };
+
+            const opened = await window.electronApp!.player.openWindow();
+            if (!opened) {
+                electronError = "Couldn't open the player window.";
+                bc.close();
+                playChannel = null;
+            }
+        } catch (err) {
+            electronError = String(err);
+        } finally {
+            electronBusy = false;
+        }
+    }
+
+    // ── Browser build only (isElectronApp false) ────────────────────────────
     // Two deliberate clicks, not one click-through-then-another: picking the
     // file and starting the game are each their own genuine user gesture, so
     // each gets its own fresh browser activation — a single click can't do
-    // both (see handleStart) because a native file dialog and a script-driven
-    // window.open() fight over the same click's single-use activation grant.
+    // both (see handleBrowserStart) because a native file dialog and a
+    // script-driven window.open() fight over the same click's single-use
+    // activation grant.
     let pickedFile = $state<File | null>(null);
     let pickedBytes = $state<Uint8Array | null>(null);
     let pickError = $state<string | null>(null);
@@ -58,24 +130,19 @@
         startError = null;
     }
 
-    // Kept across Start calls (not just a local var) so a new Start can close
-    // the previous one — see below.
-    let playChannel: BroadcastChannel | null = null;
-
     // window.open() must be the very first thing this does — it's what
     // spends this click's activation, and awaiting anything beforehand
     // (there's nothing to await here; the bytes are already read in
     // handlePickFile) would let the popup blocker silently no-op it. Hands
-    // the bytes to the new tab over a BroadcastChannel — the same handoff
-    // editor-store.ts's previewInWasmPlayer uses for live editor previews —
-    // see wasm-player.js's `source=local` boot branch.
-    function handleStart() {
+    // the bytes to the new tab over a BroadcastChannel — see wasm-player.js's
+    // `source=local` boot branch. No resource-request handling on this path:
+    // a raw picked File has no directory to resolve sibling assets against
+    // (unlike the Electron path above), so this only really supports
+    // self-contained .quest packages.
+    function handleBrowserStart() {
         if (!pickedFile || !pickedBytes) return;
         startError = null;
 
-        // Close any previous play channel first — otherwise it would *also*
-        // answer this new tab's 'ready' broadcast (with the wrong bytes), and
-        // would go on answering a refresh of the now-superseded old tab.
         playChannel?.close();
 
         const popup = window.open(`${base}/player/?source=local`, "_blank");
@@ -116,7 +183,14 @@
 <div class="min-h-svh bg-surface-950 text-surface-100">
     <div class="flex flex-col gap-8 w-full max-w-5xl mx-auto p-8">
         <div class="flex flex-col items-center gap-2">
-            {#if !pickedFile}
+            {#if isElectronApp}
+                <button type="button" class="btn preset-outlined-primary-500" onclick={handleElectronPlay} disabled={electronBusy}>
+                    {electronBusy ? "Opening…" : "Open a game file…"}
+                </button>
+                {#if electronError}
+                    <p class="text-error-500 text-sm">{electronError}</p>
+                {/if}
+            {:else if !pickedFile}
                 <button type="button" class="btn preset-outlined-primary-500" onclick={handlePickFile}>
                     Open a game file&hellip;
                 </button>
@@ -126,15 +200,15 @@
                     <button type="button" class="btn btn-sm preset-outlined-surface-500" onclick={handleClearPicked} disabled={starting}>
                         Change
                     </button>
-                    <button type="button" class="btn preset-filled-primary-500" onclick={handleStart} disabled={starting}>
+                    <button type="button" class="btn preset-filled-primary-500" onclick={handleBrowserStart} disabled={starting}>
                         {starting ? "Starting…" : "Start ▶"}
                     </button>
                 </div>
             {/if}
-            {#if pickError}
+            {#if !isElectronApp && pickError}
                 <p class="text-error-500 text-sm">{pickError}</p>
             {/if}
-            {#if startError}
+            {#if !isElectronApp && startError}
                 <p class="text-error-500 text-sm">{startError}</p>
             {/if}
         </div>

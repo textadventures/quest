@@ -6,6 +6,7 @@ import { registerDialogHandlers } from "./ipc/dialog";
 import { registerShellHandlers } from "./ipc/shell";
 import { registerPathsHandlers } from "./ipc/paths";
 import { registerRecentHandlers } from "./ipc/recent";
+import { registerPlayerHandlers } from "./ipc/player";
 import { listRecentGames, clearRecentGames, type RecentGame } from "./recent-games";
 
 // Without this, Electron's default macOS menu ("About "/"Quit ") falls back
@@ -160,6 +161,15 @@ function createEditorWindow(port: number): void {
             preload: path.join(__dirname, "preload.js"),
             contextIsolation: true,
             nodeIntegration: false,
+            // This window never actually plays untrusted game content itself
+            // (catalog play and local-file play both go through
+            // ipc/player.ts's dedicated player windows instead, precisely to
+            // keep this window's fs/dialog-capable preload away from game
+            // content — see setWindowOpenHandler below and player.ts). Set
+            // here anyway for belt-and-suspenders consistency with every
+            // other player-window surface, rather than relying on Electron's
+            // already-permissive default.
+            autoplayPolicy: "no-user-gesture-required",
         },
     });
 
@@ -176,7 +186,22 @@ function createEditorWindow(port: number): void {
     // second app window.
     editorWindow.webContents.setWindowOpenHandler(({ url }) => {
         if (url.startsWith(`http://127.0.0.1:${port}/player/`)) {
-            return { action: "allow" };
+            return {
+                action: "allow",
+                // No preload for this popup — matches ipc/player.ts's
+                // main-process-created player windows: it's untrusted game
+                // content (games can eval their own <javascript> resources),
+                // so it must never get window.electronApp's fs/dialog bridge.
+                // autoplayPolicy explicit for the same reason as
+                // createEditorWindow's own webPreferences above.
+                overrideBrowserWindowOptions: {
+                    webPreferences: {
+                        contextIsolation: true,
+                        nodeIntegration: false,
+                        autoplayPolicy: "no-user-gesture-required",
+                    },
+                },
+            };
         }
         void shell.openExternal(url);
         return { action: "deny" };
@@ -195,6 +220,7 @@ app.whenReady().then(async () => {
     registerShellHandlers();
     registerPathsHandlers();
     registerRecentHandlers(() => void refreshMenu());
+    registerPlayerHandlers(() => (staticServer ? `http://127.0.0.1:${staticServer.port}` : null));
     await refreshMenu();
 
     const root = staticRoot();

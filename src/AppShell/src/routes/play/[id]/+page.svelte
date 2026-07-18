@@ -3,10 +3,24 @@
     import { page } from "$app/state";
     import { base } from "$app/paths";
     import { fetchGameDetails, type GameDetails } from "$lib/home-catalog";
+    import { isElectron } from "$lib/runtime";
+
+    const isElectronApp = isElectron();
 
     let details = $state<GameDetails | null>(null);
     let error = $state(false);
     let loading = $state(true);
+
+    // Electron: open a dedicated player window with no filesystem bridge
+    // (see ipc/player.ts), rather than navigating this editor window itself
+    // to /player/?id= — that in-place nav would otherwise carry this
+    // window's own window.electronApp (fs/dialog access) straight into a
+    // downloaded, third-party game's page, and Quest games can eval their
+    // own <javascript> resources (see wasm-player.js's WebPlayer.runJs).
+    function handleElectronPlay() {
+        if (!details) return;
+        void window.electronApp!.player.openWindow({ id: details.id });
+    }
 
     onMount(async () => {
         const id = page.params.id;
@@ -58,7 +72,11 @@
                     <p class="text-sm whitespace-pre-line">{details.description}</p>
                 {/if}
                 <div class="flex gap-3 mt-2">
-                    <a href="{base}/player/?id={details.id}" class="btn preset-filled-primary-500">Play</a>
+                    {#if isElectronApp}
+                        <button type="button" class="btn preset-filled-primary-500" onclick={handleElectronPlay}>Play</button>
+                    {:else}
+                        <a href="{base}/player/?id={details.id}" class="btn preset-filled-primary-500">Play</a>
+                    {/if}
                     <a href={details.url} target="_blank" rel="noopener" class="btn preset-outlined-primary-500">View on textadventures.co.uk</a>
                 </div>
             </div>

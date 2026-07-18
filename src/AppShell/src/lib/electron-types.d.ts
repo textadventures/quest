@@ -58,6 +58,14 @@ interface ElectronMenuApi {
     onOpenRecent(callback: (game: { dirPath: string; filename: string }) => void): () => void;
 }
 
+// id: catalog game (textadventures.co.uk id); omitted: a locally-picked
+// file, whose bytes/resources the caller hands over separately via the
+// 'quest-play-local' BroadcastChannel — see ipc/player.ts and
+// PlayCatalog.svelte.
+interface ElectronPlayerApi {
+    openWindow(request?: { id?: string }): Promise<boolean>;
+}
+
 interface ElectronApi {
     fs: ElectronFsApi;
     dialog: ElectronDialogApi;
@@ -66,6 +74,7 @@ interface ElectronApi {
     paths: ElectronPathsApi;
     recent: ElectronRecentApi;
     menu: ElectronMenuApi;
+    player: ElectronPlayerApi;
     // Not yet populated by preload.ts — "Mac" | "Windows" | "Linux", sent as
     // analytics metadata alongside webhome_games_list/webhome_game_play (see
     // ClientInfo on textadventures.co.uk's ApiController). Declared optional
