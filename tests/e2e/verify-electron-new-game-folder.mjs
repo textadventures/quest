@@ -62,11 +62,14 @@ try {
         }, labelPath);
     }
 
-    // 1. Fresh /open, type a name — the preview should show the *parent*
-    // folder only (Documents/Quest Games, the stubbed fake one), not the
-    // game's own subfolder — "Change location…" only ever changes the
-    // parent, so showing the child folder name next to it read as if that
-    // were also choosable.
+    // 1. Root now lands on the Play tab by default — the /open form lives
+    // behind the "Create" tab. Fresh /open, type a name — the preview should
+    // show the *parent* folder only (Documents/Quest Games, the stubbed fake
+    // one), not the game's own subfolder — "Change location…" only ever
+    // changes the parent, so showing the child folder name next to it read
+    // as if that were also choosable.
+    await win.waitForSelector('a:has-text("Create")', { timeout: 30000 });
+    await win.click('a:has-text("Create")');
     await win.waitForSelector('button:has-text("Open game…")', { timeout: 30000 });
     await win.fill('input[placeholder="Game name"]', 'Game A');
     const previewLocator = win.locator('text=Will be created as a new folder in:');

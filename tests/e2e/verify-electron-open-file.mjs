@@ -57,7 +57,11 @@ try {
         }, filePathOrDir);
     }
 
-    // 1. Button label should say "Open game…", not "Open game folder".
+    // 1. Root now lands on the Play tab (PlayCatalog) by default — the /open
+    // form lives behind the "Create" tab. Button label there should say
+    // "Open game…", not "Open game folder".
+    await win.waitForSelector('a:has-text("Create")', { timeout: 30000 });
+    await win.click('a:has-text("Create")');
     await win.waitForSelector('button:has-text("Open game…")', { timeout: 30000 });
     console.log('PASS: create-game page shows "Open game…" (not "Open game folder") on Electron');
 
