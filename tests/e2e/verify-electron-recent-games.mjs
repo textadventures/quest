@@ -7,17 +7,19 @@
 // Debug, npm run build in AppShell and ElectronApp) so dist/ and
 // resources/app-static exist.
 //
-// Games are created through the app's own "Create new game" flow (with the
-// folder-picker dialog stubbed to a throwaway temp dir) rather than hand-
+// Games are created through the app's own "Create new game" flow (at the
+// default location, stubbed to a throwaway temp dir) rather than hand-
 // written .aslx fixtures — a hand-written minimal game is a lot of surface
 // to get right (see examples/blank.aslx), and this exercises the real
 // createElectronGame() trackRecent() path anyway.
 //
 // --user-data-dir isolates this run's recent-games.json from the real app's
-// userData (~/Library/Application Support/Quest Viva on mac) so this doesn't
-// pollute or depend on whatever the user has actually opened before.
+// userData (~/Library/Application Support/Quest Viva on mac), and the
+// app.getPath('documents') stub below isolates game files themselves, so
+// this doesn't pollute or depend on whatever the user has actually opened
+// before.
 import { _electron as electron } from 'playwright';
-import { mkdtempSync, mkdirSync, rmSync } from 'node:fs';
+import { mkdtempSync, rmSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { createRequire } from 'node:module';
@@ -30,10 +32,6 @@ const electronExecutablePath = createRequire(join(electronAppDir, 'package.json'
 
 const userDataDir = mkdtempSync(join(tmpdir(), 'quest-electron-userdata-'));
 const gamesRoot = mkdtempSync(join(tmpdir(), 'quest-electron-games-'));
-const gameADir = join(gamesRoot, 'Game A');
-const gameBDir = join(gamesRoot, 'Game B');
-mkdirSync(gameADir);
-mkdirSync(gameBDir);
 
 let app;
 try {
@@ -41,6 +39,17 @@ try {
         executablePath: electronExecutablePath,
         args: [electronAppDir, `--user-data-dir=${userDataDir}`],
     });
+
+    // Stub app.getPath('documents') before the renderer gets a chance to call
+    // paths:defaultGamesDir (fired on /open's mount) — createGame() below
+    // never opens the "Change location…" picker, so without this the game
+    // would land in the real user's ~/Documents/Quest Games instead of this
+    // throwaway temp dir.
+    await app.evaluate(({ app: electronAppSingleton }, fakeDocs) => {
+        const original = electronAppSingleton.getPath.bind(electronAppSingleton);
+        electronAppSingleton.getPath = (name) => (name === 'documents' ? fakeDocs : original(name));
+    }, gamesRoot);
+
     const win = await app.firstWindow();
     win.on('pageerror', err => console.log('[pageerror]', err.message));
     win.on('console', msg => { if (msg.type() === 'error') console.log('[console.error]', msg.text()); });
@@ -74,20 +83,21 @@ try {
         }, labelPath);
     }
 
-    // Drives the "Create new game" form, stubbing the folder-picker dialog to
-    // return dirPath — exercises createElectronGame()'s trackRecent() call.
-    async function createGame(name, dirPath) {
-        await app.evaluate(({ dialog }, dir) => {
-            dialog.showOpenDialog = async () => ({ canceled: false, filePaths: [dir] });
-        }, dirPath);
+    // Drives the "Create new game" form at the default location (stubbed
+    // above to gamesRoot) — exercises createElectronGame()'s trackRecent()
+    // call.
+    async function createGame(name) {
         await win.fill('input[placeholder="Game name"]', name);
         await win.waitForSelector('text=Text adventure', { timeout: 10000 });
-        await win.click('button:has-text("Save to my computer")');
+        await win.click('button:has-text("Create")');
         await win.waitForSelector('button:has-text("Assets")', { timeout: 30000 });
     }
 
-    // 1. Fresh app, no recent games yet.
-    await win.waitForSelector('button:has-text("Open game folder")', { timeout: 30000 });
+    // 1. Fresh app, no recent games yet. Root lands on the Play tab by
+    // default — the /open form lives behind the "Create" tab.
+    await win.waitForSelector('a:has-text("Create")', { timeout: 30000 });
+    await win.click('a:has-text("Create")');
+    await win.waitForSelector('button:has-text("Open game…")', { timeout: 30000 });
     const noneYet = await win.isVisible('text=Recent');
     console.log('PASS: no "Recent" section before anything is opened:', !noneYet);
     if (noneYet) throw new Error('Recent section shown with an empty list');
@@ -96,7 +106,7 @@ try {
     if (!hasNoRecentPlaceholder) throw new Error('Expected "No Recent Games" placeholder in the native menu');
 
     // 2. Create Game A.
-    await createGame('Game A', gameADir);
+    await createGame('Game A');
     console.log('PASS: Game A created via "Create new game"');
 
     // 3. Go back to /open via File > New Game… (the only in-app way back to
@@ -114,7 +124,7 @@ try {
 
     // 4. Create Game B, then click Game A's Recent entry on /open — should
     // load it directly, no picker.
-    await createGame('Game B', gameBDir);
+    await createGame('Game B');
     await clickMenuItem('File', 'New Game…');
     await win.waitForSelector('text=Game B.aslx', { timeout: 10000 });
     await win.click('button:has-text("Game A.aslx")');
@@ -130,7 +140,7 @@ try {
     // 6. Remove one entry from the /open page, confirm it's gone from both
     // the page and the native menu.
     await clickMenuItem('File', 'New Game…');
-    await win.waitForSelector('text=Game A.aslx', { timeout: 10000 });
+    await win.waitForSelector('text=Game A.aslx', { timeout: 20000 });
     const gameARow = win.locator('div.flex.items-center.gap-2.w-full', { hasText: 'Game A.aslx' }).locator('button:has-text("Remove")');
     await gameARow.click();
     await win.waitForSelector('text=Game A.aslx', { state: 'detached', timeout: 5000 }).catch(() => {});

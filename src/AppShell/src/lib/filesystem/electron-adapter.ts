@@ -120,7 +120,7 @@ export class ElectronFileAdapter implements FileAdapter {
         if (!path) return null;
         await electronApp().fs.writeFile(path, data);
         this._filename = basename(path);
-        void trackRecent(dirname(path), this._filename);
+        await trackRecent(dirname(path), this._filename);
         return this._filename;
     }
 
@@ -177,7 +177,7 @@ export async function openElectronPlayFile(): Promise<{ dirPath: string; filenam
 
 export async function loadElectronFile(dirPath: string, filename: string): Promise<{ bytes: Uint8Array; adapter: ElectronFileAdapter }> {
     const bytes = await electronApp().fs.readFile(electronApp().path.join(dirPath, filename));
-    void trackRecent(dirPath, filename);
+    await trackRecent(dirPath, filename);
     return { bytes, adapter: new ElectronFileAdapter(dirPath, filename) };
 }
 
@@ -228,6 +228,6 @@ export async function createElectronGame(
     await electronApp().fs.mkdir(dirPath);
     const filePath = electronApp().path.join(dirPath, filename);
     await electronApp().fs.writeFile(filePath, content);
-    void trackRecent(dirPath, filename);
+    await trackRecent(dirPath, filename);
     return { bytes: new TextEncoder().encode(content), adapter: new ElectronFileAdapter(dirPath, filename) };
 }

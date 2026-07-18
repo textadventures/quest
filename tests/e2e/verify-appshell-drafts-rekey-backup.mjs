@@ -42,8 +42,11 @@ try {
     // --- Scenario 1: GameId rekey ---
     await createDraft('Rekey Test'); // exactly 1 draft now, still inside the editor
     await page.click('button:has-text("Generate")'); // regenerate gameid
-    await page.click('button:has-text("Save")');
-    await page.waitForTimeout(500); // saveFile/rekey is async, no visible loading indicator to wait on
+    // No explicit Save button anymore (debounced autosave-on-edit replaced
+    // it — see verify-appshell-autosave.mjs) — wait for the pill to cycle
+    // through the same Saving…/Saved lifecycle instead of clicking one.
+    await page.waitForSelector('text=Saving…', { timeout: 3000 });
+    await page.waitForSelector('text=Saved', { timeout: 10000 });
 
     const after = await draftCount();
     console.log('drafts after rekey + save (expect 1, not 2):', after);
