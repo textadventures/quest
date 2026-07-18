@@ -70,9 +70,16 @@ jobs:
         working-directory: tests/e2e
 
   # OPFS local-drafts behavior on non-FSA browsers, against a Release
-  # WasmEditor build — createSyncAccessHandle (Safari's write path, proxied
-  # here by WebKit) needs the AOT build's real dotnet runtime bits present.
-  appshell_opfs_firefox_webkit:
+  # WasmEditor build — createSyncAccessHandle (Safari's write path) needs the
+  # AOT build's real dotnet runtime bits present.
+  #
+  # Firefox only, not WebKit: Playwright's Linux WebKit build doesn't
+  # implement OPFS at all (navigator.storage.getDirectory is undefined there,
+  # confirmed on an actual Actions ubuntu-latest run — not a sandbox-specific
+  # flake), so verify-appshell-local-drafts.mjs's webkit variant can never
+  # pass here. It's still meant to be run by hand against real Safari
+  # locally (see that script's own header comment) — just not from Linux CI.
+  appshell_opfs_firefox:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v7
@@ -96,7 +103,7 @@ jobs:
         working-directory: src/AppShell
       - run: npm ci
         working-directory: tests/e2e
-      - run: npx playwright install --with-deps firefox webkit
+      - run: npx playwright install --with-deps firefox
         working-directory: tests/e2e
 
       - name: Start AppShell dev server (5174, Release WasmEditor)
@@ -114,8 +121,6 @@ jobs:
           done
 
       - run: node verify-appshell-local-drafts.mjs http://localhost:5174 firefox
-        working-directory: tests/e2e
-      - run: node verify-appshell-local-drafts.mjs http://localhost:5174 webkit
         working-directory: tests/e2e
       - run: node verify-appshell-drafts-rekey-backup.mjs http://localhost:5174
         working-directory: tests/e2e
