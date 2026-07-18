@@ -12,17 +12,14 @@ on:
   workflow_dispatch:
 
 jobs:
-  # AppShell (Debug WasmEditor), one Vite dev server shared by every script
-  # that doesn't need a special AppShell build/env — each script normally
-  # defaults to its own port for local ad-hoc use, but here they both get
-  # pointed at the same instance via an explicit baseUrl arg.
-  #
-  # NOT included here: verify-appshell-play-open-file.mjs and
-  # verify-appshell-play-refresh.mjs — both hang forever booting
-  # fixtures/restart-test.aslx via the Play tab's browser file-picker
-  # (?source=local), a real product bug, not CI flakiness. See
-  # https://github.com/textadventures/quest/issues/1887. Re-add once fixed,
-  # or once they're pointed at a self-contained fixture.
+  # AppShell (Debug WasmEditor) + WasmPlayer (Debug), one Vite dev server and
+  # one WasmPlayer dev server shared by every script that doesn't need a
+  # special AppShell build/env — each script normally defaults to its own
+  # port for local ad-hoc use, but here they both get pointed at the same
+  # instances via an explicit baseUrl arg. WasmPlayer is needed because
+  # verify-appshell-play-open-file.mjs and verify-appshell-play-refresh.mjs
+  # boot a game through AppShell's Play tab, which proxies /player to it (see
+  # vite.config.ts).
   appshell_chromium:
     runs-on: ubuntu-latest
     steps:
@@ -34,6 +31,7 @@ jobs:
       - run: dotnet workload install wasm-tools
 
       - run: dotnet build src/WasmEditor/WasmEditor.csproj -c Debug
+      - run: dotnet build src/WasmPlayer/WasmPlayer.csproj -c Debug
 
       - uses: actions/setup-node@v6
         with:
@@ -49,6 +47,17 @@ jobs:
         working-directory: tests/e2e
       - run: npx playwright install --with-deps chromium
         working-directory: tests/e2e
+
+      - name: Start WasmPlayer dev server (5175)
+        run: node src/WasmPlayer/dev-server.mjs &
+
+      - name: Wait for WasmPlayer dev server
+        run: |
+          for i in $(seq 1 30); do
+            curl -sf "http://localhost:5175/" > /dev/null && break
+            [ "$i" -eq 30 ] && { echo "port 5175 never came up"; exit 1; }
+            sleep 1
+          done
 
       - name: Start AppShell dev server (5174)
         run: npx vite dev --port 5174 &
@@ -67,6 +76,10 @@ jobs:
       - run: node verify-appshell-opfs-default.mjs http://localhost:5174
         working-directory: tests/e2e
       - run: node verify-appshell-autosave.mjs http://localhost:5174
+        working-directory: tests/e2e
+      - run: node verify-appshell-play-open-file.mjs http://localhost:5174
+        working-directory: tests/e2e
+      - run: node verify-appshell-play-refresh.mjs http://localhost:5174
         working-directory: tests/e2e
 
   # OPFS local-drafts behavior on non-FSA browsers, against a Release

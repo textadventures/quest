@@ -38,12 +38,35 @@ function computeGameId(filename) {
     return filename.split('/').pop();
 }
 
+// Nothing guarantees a 'resource-response' ever arrives: a raw picked File in
+// the browser build's Play-tab flow has no responder for anything beyond the
+// game file itself (see the source=local boot branch's comment), and even a
+// real responder (the editor tab, Electron's ElectronFileAdapter) can vanish
+// mid-request if that tab/window closes. Either way, without this timeout the
+// promise sits pending forever, hanging whatever engine code awaited it — so
+// fall back to the bare filename (same as the no-editorChannel case above),
+// letting the browser attempt — and if unresolvable, cleanly fail — a plain
+// relative fetch instead of hanging.
+const RESOURCE_REQUEST_TIMEOUT_MS = 5000;
+
 function getResourceUrl(name) {
     if (resourceRoot) return Promise.resolve(resourceRoot + name);
     if (!editorChannel) return Promise.resolve(name);
     return new Promise(resolve => {
         const id = crypto.randomUUID();
-        pendingResources.set(id, resolve);
+        const timeoutId = window.setTimeout(() => {
+            pendingResources.delete(id);
+            // The subsequent fetch of the bare filename will very likely also
+            // fail (and the browser will log that on its own) — but that
+            // failure alone won't explain itself, so name the actual cause
+            // here: nobody answered the resource-request handoff in time.
+            console.error(`[Quest] Timed out waiting for resource "${name}" — the tab/window that should have supplied it never answered. Falling back to a plain relative fetch, which will likely fail unless the game is self-contained.`);
+            resolve(name);
+        }, RESOURCE_REQUEST_TIMEOUT_MS);
+        pendingResources.set(id, dataUrl => {
+            window.clearTimeout(timeoutId);
+            resolve(dataUrl);
+        });
         editorChannel.postMessage({ type: 'resource-request', name, id });
     });
 }
