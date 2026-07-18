@@ -6,9 +6,9 @@
 // Prerequisites (build these first):
 //   dotnet build -c ${WASM_CONFIG:-Debug} src/WasmEditor
 //   dotnet build -c ${WASM_CONFIG:-Debug} src/WasmPlayer
-//   npm run build   (in src/WebEditor)
+//   npm run build   (in src/AppShell)
 //
-// WASM_CONFIG follows the same convention as src/WebEditor/vite.config.ts —
+// WASM_CONFIG follows the same convention as src/AppShell/vite.config.ts —
 // defaults to Debug (fast interpreter build) for local iteration; set
 // WASM_CONFIG=Release to bundle the AOT build instead.
 
@@ -21,7 +21,7 @@ const repoRoot = path.resolve(__dirname, "../../..");
 const wasmConfig = process.env.WASM_CONFIG === "Release" ? "Release" : "Debug";
 
 const sources = {
-    editor: path.join(repoRoot, "src/WebEditor/build"),
+    editor: path.join(repoRoot, "src/AppShell/build"),
     AppBundle: path.join(repoRoot, `src/WasmEditor/bin/${wasmConfig}/net10.0/browser-wasm/AppBundle`),
     player: path.join(repoRoot, `src/WasmPlayer/bin/${wasmConfig}/net10.0/browser-wasm/AppBundle`),
 };

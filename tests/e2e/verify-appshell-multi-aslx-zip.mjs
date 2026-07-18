@@ -9,7 +9,7 @@
 // of which used to make it into the picker and then fail to load with
 // "TypeError: Name is invalid" (OPFS filenames can't contain "/").
 //
-// Requires the WebEditor dev server running against a Release WasmEditor build.
+// Requires the AppShell dev server running against a Release WasmEditor build.
 import { firefox } from 'playwright';
 import { zipSync } from 'fflate';
 import { writeFileSync, readFileSync } from 'node:fs';
@@ -28,7 +28,7 @@ function withGameId(gameId) {
 // Folder-prefixed, like a real "Compress" of a folder, plus __MACOSX/ junk —
 // this is what actually broke: OPFS can't take "/" in a filename, and the
 // AppleDouble ._*.aslx sidecars were showing up in the picker as if real.
-const zipPath = '/tmp/webeditor-multi-aslx-test.zip';
+const zipPath = '/tmp/appshell-multi-aslx-test.zip';
 writeFileSync(zipPath, zipSync({
     'Test Folder/Main.aslx': new TextEncoder().encode(withGameId('11111111-1111-1111-1111-111111111111')),
     'Test Folder/Library.aslx': new TextEncoder().encode(withGameId('22222222-2222-2222-2222-222222222222')),
@@ -69,7 +69,7 @@ try {
     console.log('PASS');
 } catch (err) {
     console.error('FAIL:', err.message);
-    await page.screenshot({ path: '/tmp/webeditor-multi-aslx-failure.png' });
+    await page.screenshot({ path: '/tmp/appshell-multi-aslx-failure.png' });
     process.exitCode = 1;
 } finally {
     await browser.close();

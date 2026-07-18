@@ -4,7 +4,7 @@
 // the same change — "Saved to your textadventures.co.uk account".
 //
 // Requires a dev server started with PUBLIC_HAS_SERVER=true, e.g.:
-//   cd src/WebEditor && PUBLIC_HAS_SERVER=true npx vite dev --port 5199
+//   cd src/AppShell && PUBLIC_HAS_SERVER=true npx vite dev --port 5199
 // (dev.sh's own --api-proxy flag also sets this, but needs a real
 // textadventures.co.uk backend to proxy to — not needed just to check this
 // caption renders, since it doesn't require the templates fetch to succeed.)
@@ -33,7 +33,7 @@ try {
     await run();
 } catch (err) {
     console.error('FAIL:', err.message);
-    await page.screenshot({ path: '/tmp/webeditor-server-mode-caption-failure.png' });
+    await page.screenshot({ path: '/tmp/appshell-server-mode-caption-failure.png' });
     process.exitCode = 1;
 } finally {
     await browser.close();

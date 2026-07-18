@@ -15,7 +15,7 @@
 //
 // Uses Playwright's _electron launcher against the already-built
 // src/ElectronApp/dist — run the build steps in electron.sh once first
-// (dotnet build WasmEditor/WasmPlayer Debug, npm run build in WebEditor and
+// (dotnet build WasmEditor/WasmPlayer Debug, npm run build in AppShell and
 // ElectronApp) so dist/ and resources/app-static exist.
 import { _electron as electron } from 'playwright';
 import { mkdtempSync, existsSync, readdirSync, rmSync } from 'node:fs';

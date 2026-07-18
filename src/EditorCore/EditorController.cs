@@ -2606,7 +2606,7 @@ public sealed class EditorController : IDisposable
         return result;
     }
 
-    // TODO: Wire this up when creating new game from WebEditor
+    // TODO: Wire this up when creating new game from AppShell
     public static bool IsReservedFilename(string gameName)
     {
         var safeFilename = GenerateSafeFilename(gameName);

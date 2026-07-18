@@ -1,16 +1,16 @@
-# textadventures.co.uk API for WebEditor
+# textadventures.co.uk API for AppShell
 
-This document describes the server-side API that needs to be implemented on textadventures.co.uk to support the new Quest Viva WebEditor in "online mode".
+This document describes the server-side API that needs to be implemented on textadventures.co.uk to support the new Quest Viva AppShell in "online mode".
 
 ## Overview
 
-The new WebEditor is a static SvelteKit app (deployed on textadventures.co.uk) that runs entirely in the browser. When opened with a `?game={gameId}` URL parameter, it switches to online mode and fetches the game file from the server instead of asking the user to open a local file.
+The new AppShell is a static SvelteKit app (deployed on textadventures.co.uk) that runs entirely in the browser. When opened with a `?game={gameId}` URL parameter, it switches to online mode and fetches the game file from the server instead of asking the user to open a local file.
 
 Game IDs are GUIDs that already exist in the system (e.g. `c362e3f9-873a-4448-93e7-decb9722644c`). Game files (`.aslx`) and their assets are stored in Azure Blob Storage.
 
 ## Authentication
 
-Since the WebEditor is served from textadventures.co.uk, all API requests carry the user's existing session cookie automatically. No additional token exchange is needed.
+Since AppShell is served from textadventures.co.uk, all API requests carry the user's existing session cookie automatically. No additional token exchange is needed.
 
 All endpoints must:
 - Return `401 Unauthorized` if the user is not logged in
@@ -134,7 +134,7 @@ in online mode (as opposed to opening an existing one via `?game={gameId}`).
 ### POST /api/editor/games/{gameId}/publish
 
 Uploads a compiled `.quest` package (built client-side via `Packager.CreatePackage`, see
-[webeditor-wasm-svelte.md](./webeditor-wasm-svelte.md#publish)) and stages it for submission to
+[appshell-wasm-svelte.md](./appshell-wasm-svelte.md#publish)) and stages it for submission to
 the site's public-listing flow.
 
 **Request:**
@@ -160,10 +160,10 @@ When a user clicks "Edit" on one of their games, redirect them to:
 /editor/?game={gameId}
 ```
 
-The WebEditor will auto-load the game. If the user is not logged in, the `GET /api/editor/games/{gameId}` call will return `401` and the editor will show an error.
+AppShell will auto-load the game. If the user is not logged in, the `GET /api/editor/games/{gameId}` call will return `401` and the editor will show an error.
 
 ## Notes
 
-- The WebEditor is served as a static site from textadventures.co.uk (e.g. at `/editor/`). All API URLs are relative to the same origin, so no CORS configuration is needed.
-- The existing "play" URL scheme (`https://play.textadventures.co.uk/editor/{gameId}/...`) is unchanged — the WebEditor can still send users there to test their games.
+- AppShell is served as a static site from textadventures.co.uk (e.g. at `/editor/`). All API URLs are relative to the same origin, so no CORS configuration is needed.
+- The existing "play" URL scheme (`https://play.textadventures.co.uk/editor/{gameId}/...`) is unchanged — AppShell can still send users there to test their games.
 - Game IDs are GUIDs, which already correspond to the existing Azure Blob Storage container structure.

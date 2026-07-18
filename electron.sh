@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Build and launch the Quest Viva desktop app (Electron shell + WebEditor +
+# Build and launch the Quest Viva desktop app (Electron shell + AppShell +
 # WasmEditor/WasmPlayer), Phase 1 of docs/electron-desktop-app.md.
 #
 # Usage:
@@ -12,7 +12,7 @@
 # Unlike dev.sh, this doesn't run dev servers — it builds the static bundles
 # once, assembles them into src/ElectronApp/resources/app-static (same
 # editor/AppBundle/player layout deploy-play.yml produces), and launches the
-# packaged app. Re-run after changing WebEditor/WasmEditor/WasmPlayer source.
+# packaged app. Re-run after changing AppShell/WasmEditor/WasmPlayer source.
 
 set -euo pipefail
 
@@ -38,9 +38,9 @@ echo "Building WasmPlayer ($DOTNET_CONFIG)..."
 dotnet build src/WasmPlayer/WasmPlayer.csproj --configuration "$DOTNET_CONFIG"
 
 echo ""
-echo "Building WebEditor..."
-[[ -d src/WebEditor/node_modules ]] || npm --prefix src/WebEditor install
-PUBLIC_SHOW_HOME=true npm --prefix src/WebEditor run build
+echo "Building AppShell..."
+[[ -d src/AppShell/node_modules ]] || npm --prefix src/AppShell install
+PUBLIC_SHOW_HOME=true npm --prefix src/AppShell run build
 
 echo ""
 echo "Building ElectronApp..."

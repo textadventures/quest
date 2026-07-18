@@ -34,14 +34,14 @@ jobs:
         run: npm run build
         working-directory: site
 
-  build_webeditor:
+  build_appshell:
     runs-on: ubuntu-latest
 
     steps:
       - name: Check out repository code
         uses: actions/checkout@v7
 
-      # Matches the node-version deploy-play.yml uses to build WebEditor for
+      # Matches the node-version deploy-play.yml uses to build AppShell for
       # release, so a lockfile that only resolves cleanly on a contributor's
       # local platform gets caught here instead of on release day.
       - name: Set up Node.js
@@ -49,20 +49,20 @@ jobs:
         with:
           node-version: '22'
           cache: 'npm'
-          cache-dependency-path: src/WebEditor/package-lock.json
+          cache-dependency-path: src/AppShell/package-lock.json
 
       - name: Install dependencies
         run: npm ci
-        working-directory: src/WebEditor
+        working-directory: src/AppShell
 
       - name: Build
         run: npm run build
-        working-directory: src/WebEditor
+        working-directory: src/AppShell
         env:
-          PUBLIC_WEBEDITOR_VERSION: ${{ github.sha }}
+          PUBLIC_APPSHELL_VERSION: ${{ github.sha }}
           PUBLIC_SHOW_HOME: true
 
-  lint_webeditor:
+  lint_appshell:
     runs-on: ubuntu-latest
 
     steps:
@@ -74,19 +74,19 @@ jobs:
         with:
           node-version: '22'
           cache: 'npm'
-          cache-dependency-path: src/WebEditor/package-lock.json
+          cache-dependency-path: src/AppShell/package-lock.json
 
       - name: Install dependencies
         run: npm ci
-        working-directory: src/WebEditor
+        working-directory: src/AppShell
 
       - name: Lint
         run: npm run lint
-        working-directory: src/WebEditor
+        working-directory: src/AppShell
 
       - name: Type check
         run: npm run check
-        working-directory: src/WebEditor
+        working-directory: src/AppShell
 
   build_electron:
     runs-on: ubuntu-latest
@@ -118,16 +118,16 @@ jobs:
           node-version: '22'
           cache: 'npm'
           cache-dependency-path: |
-            src/WebEditor/package-lock.json
+            src/AppShell/package-lock.json
             src/ElectronApp/package-lock.json
 
-      - name: Install WebEditor dependencies
+      - name: Install AppShell dependencies
         run: npm ci
-        working-directory: src/WebEditor
+        working-directory: src/AppShell
 
-      - name: Build WebEditor
+      - name: Build AppShell
         run: npm run build
-        working-directory: src/WebEditor
+        working-directory: src/AppShell
         env:
           PUBLIC_SHOW_HOME: true
 

@@ -1,12 +1,12 @@
-name: Deploy play.questviva.com and WebEditor
+name: Deploy play.questviva.com and AppShell
 
 # Runs when a version tag is pushed (e.g. v6.0.0-beta.30, normally via
 # release-please merging its release PR), keeping play.questviva.com on the
 # same release cadence as the WebPlayer Docker image. Tag pushes also attach
-# WasmPlayer/AppBundle/WebEditor build artifacts to the GitHub Release
+# WasmPlayer/AppBundle/AppShell build artifacts to the GitHub Release
 # release-please already created and dispatch a deploy to
 # textadventures.co.uk, so a single release cadence drives both
-# play.questviva.com and the WebEditor on textadventures.co.uk.
+# play.questviva.com and AppShell on textadventures.co.uk.
 on:
   push:
     tags: ['v*']
@@ -50,22 +50,22 @@ jobs:
 
       # BASE_PATH is unset (defaults to root) and PUBLIC_SHOW_HOME=true — this
       # build serves the Play/Create Home content at root and /open, plus the
-      # editor itself once a game is loaded (see src/WebEditor/src/routes/).
+      # editor itself once a game is loaded (see src/AppShell/src/routes/).
       # Distinct from the textadventures.co.uk build below, which keeps
       # BASE_PATH=/questviva and PUBLIC_SHOW_HOME unset (that origin has its
       # own site navigation, not a game-browser homepage).
-      - name: Build WebEditor
+      - name: Build AppShell
         run: npm ci && npm run build
-        working-directory: src/WebEditor
+        working-directory: src/AppShell
         env:
-          PUBLIC_WEBEDITOR_VERSION: ${{ github.sha }}
+          PUBLIC_APPSHELL_VERSION: ${{ github.sha }}
           PUBLIC_HAS_SERVER: false
           PUBLIC_SHOW_HOME: true
 
       - name: Assemble deploy directory
         run: |
           mkdir -p deploy/AppBundle deploy/player
-          cp -r src/WebEditor/build/. deploy/
+          cp -r src/AppShell/build/. deploy/
           cp -r src/WasmEditor/bin/Release/net10.0/browser-wasm/AppBundle/. deploy/AppBundle/
           cp -r src/WasmPlayer/bin/Release/net10.0/browser-wasm/AppBundle/. deploy/player/
           cat > deploy/_headers <<'EOF'
@@ -89,15 +89,15 @@ jobs:
       - name: Package WasmPlayer artifact
         run: (cd src/WasmPlayer/bin/Release/net10.0/browser-wasm/AppBundle && zip -r $GITHUB_WORKSPACE/WasmPlayer.zip .)
 
-      # WebEditor's build bakes BASE_PATH into its assets, so it needs a second
+      # AppShell's build bakes BASE_PATH into its assets, so it needs a second
       # build for textadventures.co.uk's /questviva path (WasmEditor's output
       # isn't BASE_PATH-sensitive, so the earlier build is reused as-is).
-      - name: Build WebEditor for textadventures.co.uk
+      - name: Build AppShell for textadventures.co.uk
         if: github.ref_type == 'tag'
         run: npm run build
-        working-directory: src/WebEditor
+        working-directory: src/AppShell
         env:
-          PUBLIC_WEBEDITOR_VERSION: ${{ github.ref_name }}
+          PUBLIC_APPSHELL_VERSION: ${{ github.ref_name }}
           BASE_PATH: /questviva
           PUBLIC_HAS_SERVER: true
 
@@ -105,7 +105,7 @@ jobs:
         if: github.ref_type == 'tag'
         run: |
           (cd src/WasmEditor/bin/Release/net10.0/browser-wasm/AppBundle && zip -r $GITHUB_WORKSPACE/AppBundle.zip .)
-          (cd src/WebEditor/build && zip -r $GITHUB_WORKSPACE/WebEditor.zip .)
+          (cd src/AppShell/build && zip -r $GITHUB_WORKSPACE/WebEditor.zip .)
 
       - name: Attach player and editor builds to GitHub Release
         # release-please creates the GitHub Release itself (with changelog-based

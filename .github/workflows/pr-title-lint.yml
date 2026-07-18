@@ -31,7 +31,7 @@ jobs:
             Legacy
             WebPlayer
             WasmPlayer
-            WebEditor
+            AppShell
             WasmEditor
             ElectronApp
             Site

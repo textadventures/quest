@@ -2,7 +2,7 @@ import { ipcMain } from "electron";
 import { promises as fs } from "node:fs";
 
 // Backs window.electronApp.fs in preload.ts — plain Node fs/promises, no
-// abstraction beyond what ElectronFileAdapter (src/WebEditor) actually calls.
+// abstraction beyond what ElectronFileAdapter (src/AppShell) actually calls.
 export function registerFsHandlers(): void {
     ipcMain.handle("fs:readFile", async (_event, filePath: string) => {
         const buf = await fs.readFile(filePath);
