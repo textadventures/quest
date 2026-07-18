@@ -1,4 +1,4 @@
-import { app, BrowserWindow, Menu, shell, type MenuItemConstructorOptions } from "electron";
+import { app, BrowserWindow, Menu, dialog, shell, type MenuItemConstructorOptions } from "electron";
 import path from "node:path";
 import { startStaticServer, type StaticServerHandle } from "./static-server";
 import { registerFsHandlers } from "./ipc/fs";
@@ -178,6 +178,26 @@ function createEditorWindow(port: number): void {
     // and playing, so it's just "Quest Viva" here — override the page's title
     // instead of changing the shared app.html tag.
     editorWindow.on("page-title-updated", (event) => event.preventDefault());
+
+    // AppShell's edit/+page.svelte calls e.preventDefault() in its own
+    // beforeunload handler whenever there are unsaved changes — in a regular
+    // browser that triggers the native "Leave site?" confirmation, but
+    // Electron doesn't show any UI for that on its own; will-prevent-unload
+    // is the hook it gives main for exactly this. Without a handler here the
+    // window just silently refuses to close (no dialog, no feedback) and
+    // Force Quit becomes the only way out.
+    editorWindow.webContents.on("will-prevent-unload", (event) => {
+        if (!editorWindow) return;
+        const choice = dialog.showMessageBoxSync(editorWindow, {
+            type: "question",
+            buttons: ["Cancel", "Leave"],
+            defaultId: 0,
+            cancelId: 0,
+            message: "Leave without saving?",
+            detail: "You have unsaved changes. If you leave now, they'll be lost.",
+        });
+        if (choice === 1) event.preventDefault();
+    });
 
     // The editor's Preview button calls window.open('/player/...') unchanged
     // from the browser build (see previewInWasmPlayer() in editor-store.ts) —
