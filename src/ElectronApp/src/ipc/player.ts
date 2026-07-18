@@ -1,4 +1,4 @@
-import { ipcMain, BrowserWindow, shell } from "electron";
+import { ipcMain, BrowserWindow, dialog, shell } from "electron";
 
 export interface PlayerWindowRequest {
     // Catalog game (textadventures.co.uk id) vs. a locally-picked file whose
@@ -50,6 +50,23 @@ export function registerPlayerHandlers(getOrigin: () => string | null): void {
         win.webContents.setWindowOpenHandler(({ url: targetUrl }) => {
             void shell.openExternal(targetUrl);
             return { action: "deny" };
+        });
+        // playercore.js's beforeunload handler calls e.preventDefault() once
+        // hasUnsavedProgress is set (i.e. after a turn) — a real browser
+        // would show its native "Leave site?" dialog for that, but Electron
+        // gives no UI of its own; will-prevent-unload is the hook it exposes
+        // for main to provide one. Without this, the window silently refuses
+        // to close (same gap as createEditorWindow's handler in main.ts).
+        win.webContents.on("will-prevent-unload", (event) => {
+            const choice = dialog.showMessageBoxSync(win, {
+                type: "question",
+                buttons: ["Cancel", "Leave"],
+                defaultId: 0,
+                cancelId: 0,
+                message: "Leave without saving?",
+                detail: "You've made progress in this game that hasn't been saved. If you leave now, it'll be lost.",
+            });
+            if (choice === 1) event.preventDefault();
         });
         void win.loadURL(url);
         return true;
