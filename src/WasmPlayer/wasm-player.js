@@ -665,6 +665,29 @@ function showFileProtocolError() {
     errorEl.style.display = 'block';
 }
 
+// The AppShell tab that was going to hand over game bytes (see the
+// `source=local` boot branch below) turned out not to be there to answer —
+// closed, navigated away, or superseded by a newer Start click in that same
+// tab (see PlayCatalog.svelte's handleStart, which closes its previous
+// channel before opening a new one). Without this, that's a silent infinite
+// loading spinner with no way out; this at least gets the user back to a
+// working picker in the same tab.
+function showLocalHandoffTimeoutError() {
+    document.documentElement.classList.remove('qv-booting');
+    const pickers = document.getElementById('qv-pickers');
+    const msg = document.getElementById('qv-loading-msg');
+    const errorEl = document.getElementById('qv-error');
+    if (msg) msg.style.display = 'none';
+    if (pickers) pickers.style.display = 'block';
+    if (!errorEl) return;
+    errorEl.innerHTML = '<strong>Couldn\'t reconnect to Quest Viva.</strong> '
+        + 'This tab was waiting for a game from the Play tab it was opened from, but that tab has since been closed, '
+        + 'navigated away, or used to start a different game. Choose the file again below, or go back to Quest Viva '
+        + 'and click Start again.';
+    errorEl.style.display = 'block';
+    wireStartScreen();
+}
+
 function showLoading() {
     const pickers = document.getElementById('qv-pickers');
     const msg = document.getElementById('qv-loading-msg');
@@ -824,6 +847,38 @@ async function fetchGameBytes(url) {
             if (data.type === 'game') {
                 bc.onmessage = null;
                 await startGame(data.bytes, data.filename, bc);
+            }
+        };
+        return;
+    }
+
+    // AppShell's Play tab (see PlayCatalog.svelte) — the user already picked
+    // a file and clicked Start over there, so the game bytes are sitting in
+    // that tab's memory. Same handoff as the editor preview above, just with
+    // no resource-request handling: a locally picked file is never backed by
+    // a live FileAdapter to fetch assets from, only self-contained bytes (a
+    // .quest package embeds its resources; loose .aslx games fetch theirs by
+    // URL), exactly like the plain file-input path in wireStartScreen()
+    // below. A distinct channel name keeps this from cross-talking with a
+    // real editor-preview tab open at the same time.
+    if (params.get('source') === 'local') {
+        const bc = new BroadcastChannel('quest-play-local');
+        bc.postMessage({ type: 'ready' });
+        // Covers the case where nothing ever answers — see
+        // showLocalHandoffTimeoutError. 8s comfortably covers a normal
+        // same-tick reply; DOMContentLoaded hasn't necessarily fired yet
+        // when this timer is *set*, but it always has by the time it fires.
+        const timeoutId = window.setTimeout(() => {
+            bc.onmessage = null;
+            bc.close();
+            showLocalHandoffTimeoutError();
+        }, 8000);
+        bc.onmessage = async ({ data }) => {
+            if (data.type === 'game') {
+                window.clearTimeout(timeoutId);
+                bc.onmessage = null;
+                bc.close();
+                await startGame(data.bytes, data.filename);
             }
         };
         return;
