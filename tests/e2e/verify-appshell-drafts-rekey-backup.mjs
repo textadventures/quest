@@ -27,7 +27,7 @@ async function createDraft(name) {
     await page.fill('input[placeholder="Game name"]', name);
     await page.waitForSelector('text=Text adventure', { timeout: 10000 });
     await page.click('button:has-text("Create local draft")');
-    await page.waitForSelector('button:has-text("🖼 Assets")', { timeout: 30000 });
+    await page.waitForSelector('button[title="Manage assets"]', { timeout: 30000 });
 }
 
 async function draftCount() {
@@ -55,7 +55,7 @@ try {
 
     // --- Scenario 2: Backup / Import round trip ---
     await createDraft('Backup Test');
-    await page.click('button:has-text("🖼 Assets")');
+    await page.click('button[title="Manage assets"]');
     const dialog = page.locator('div[role="dialog"]');
     const [fileChooser] = await Promise.all([
         page.waitForEvent('filechooser'),
@@ -84,8 +84,8 @@ try {
         page.click('button:has-text("Import game file")'),
     ]);
     await fileChooser2.setFiles(zipPath);
-    await page.waitForSelector('button:has-text("🖼 Assets")', { timeout: 30000 });
-    await page.click('button:has-text("🖼 Assets")');
+    await page.waitForSelector('button[title="Manage assets"]', { timeout: 30000 });
+    await page.click('button[title="Manage assets"]');
     const assetRestored = await page.locator('div[role="dialog"]').locator('text=restart-test.js').isVisible();
     console.log('asset restored after backup/import round trip:', assetRestored);
     if (!assetRestored) throw new Error('Asset missing after re-importing backed-up zip');

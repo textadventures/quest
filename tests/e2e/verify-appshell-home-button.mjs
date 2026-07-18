@@ -23,13 +23,13 @@ async function run() {
     await page.fill('input[placeholder="Game name"]', 'Home Button Test');
     await page.waitForSelector('text=Text adventure', { timeout: 10000 });
     await page.click('button:has-text("Create local draft")');
-    await page.waitForSelector('button:has-text("🖼 Assets")', { timeout: 30000 });
+    await page.waitForSelector('button[title="Manage assets"]', { timeout: 30000 });
     console.log('PASS: local draft created and opened in the editor (/edit)');
 
-    await page.waitForSelector('button:has-text("🏠 Home")', { timeout: 5000 });
+    await page.waitForSelector('button[title="Back to Home"]', { timeout: 5000 });
     console.log('PASS: Home button present in the toolbar when PUBLIC_SHOW_HOME=true');
 
-    await page.click('button:has-text("🏠 Home")');
+    await page.click('button[title="Back to Home"]');
     await page.waitForURL(url => url.pathname === '/' || url.pathname === '', { timeout: 10000 });
     await page.waitForSelector('text=Open a game file…', { timeout: 10000 });
     console.log('PASS: clicking Home navigated back to root Home page (Play tab visible), url =', page.url());

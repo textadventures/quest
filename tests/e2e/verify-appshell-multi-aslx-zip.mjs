@@ -61,7 +61,7 @@ try {
     if (!mainVisible || !libVisible || readmeVisible) throw new Error('Picker did not list exactly the two .aslx entries');
 
     await page.click('button:has-text("Library.aslx")');
-    await page.waitForSelector('button:has-text("🖼 Assets")', { timeout: 30000 });
+    await page.waitForSelector('button[title="Manage assets"]', { timeout: 30000 });
     const filenameShown = await page.isVisible('text=Library.aslx');
     console.log('opened Library.aslx (preserving its real name):', filenameShown);
     if (!filenameShown) throw new Error('Did not open the chosen entry under its own filename');

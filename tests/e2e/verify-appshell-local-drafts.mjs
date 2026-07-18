@@ -35,12 +35,11 @@ async function run() {
     await page.fill('input[placeholder="Game name"]', 'Local Draft Test');
     await page.waitForSelector('text=Text adventure', { timeout: 10000 }); // templates finished loading
     await page.click('button:has-text("Create local draft")');
-    await page.waitForSelector('text=Quest Viva Editor >> visible=true', { timeout: 5000 }).catch(() => {});
-    await page.waitForSelector('button:has-text("🖼 Assets")', { timeout: 30000 });
+    await page.waitForSelector('button[title="Manage assets"]', { timeout: 30000 });
     console.log(`[${browserType}] new local draft created and opened in the editor`);
 
     // Upload an asset via the standalone asset manager.
-    await page.click('button:has-text("🖼 Assets")');
+    await page.click('button[title="Manage assets"]');
     const fixturePath = join(dirname(fileURLToPath(import.meta.url)), 'fixtures', 'restart-test.js');
     // Reuse an existing small fixture file as arbitrary asset bytes — content doesn't matter, just persistence.
     const dialog = page.locator('div[role="dialog"]');
@@ -61,8 +60,8 @@ async function run() {
     if (!draftVisible) throw new Error('Draft did not survive reload');
 
     await page.click('button:has-text("Local Draft Test.aslx")');
-    await page.waitForSelector('button:has-text("🖼 Assets")', { timeout: 30000 });
-    await page.click('button:has-text("🖼 Assets")');
+    await page.waitForSelector('button[title="Manage assets"]', { timeout: 30000 });
+    await page.click('button[title="Manage assets"]');
     const assetVisible = await page.locator('div[role="dialog"]').locator('text=restart-test.js').isVisible();
     console.log(`[${browserType}] asset still present after reload:`, assetVisible);
     if (!assetVisible) throw new Error('Asset did not survive reload — OPFS orphaning bug still present');

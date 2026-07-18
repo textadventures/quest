@@ -20,7 +20,7 @@ async function run() {
     await page.fill('input[placeholder="Game name"]', 'Autosave Test');
     await page.waitForSelector('text=Text adventure', { timeout: 10000 });
     await page.click('button:has-text("Create local draft")');
-    await page.waitForSelector('button:has-text("🖼 Assets")', { timeout: 30000 });
+    await page.waitForSelector('button[title="Manage assets"]', { timeout: 30000 });
     console.log('PASS: local draft created and opened in the editor');
 
     const saveButtonCount = await page.locator('button:has-text("💾 Save")').count();
@@ -37,7 +37,7 @@ async function run() {
     await descBox.waitFor({ timeout: 10000 });
     const marker = `Autosave marker ${Date.now()}`;
     await descBox.fill(marker);
-    await page.click('span:has-text("Quest Viva Editor")'); // blur onto something inert
+    await page.click('.toolbar-divider'); // blur onto something inert
 
     await page.waitForSelector('text=Saving…', { timeout: 3000 });
     console.log('PASS: "Saving…" pill appeared after edit, without clicking any Save button');
@@ -52,7 +52,7 @@ async function run() {
     await page.goto(`${baseUrl}/open`);
     await page.waitForSelector('text=Your local drafts', { timeout: 10000 });
     await page.click('button:has-text("Autosave Test.aslx")');
-    await page.waitForSelector('button:has-text("🖼 Assets")', { timeout: 30000 });
+    await page.waitForSelector('button[title="Manage assets"]', { timeout: 30000 });
     await page.waitForSelector('text=Saved', { timeout: 10000 });
     const persistedValue = await page.locator('textarea, input[type="text"]').first().inputValue();
     console.log('value after reload:', persistedValue);
