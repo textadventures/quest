@@ -42,7 +42,15 @@ export const isDirty = writable(false);
 // isDirty, since saveGame() blurs the focused field first — which flushes any
 // pending edit into the bridge — before checking real isDirty and persisting.
 export const isEditingField = writable(false);
-export function markFieldEditing() {
+// Not reactive state, just a plain reference — the toolbar's "Unsaved" chip
+// uses this to restore focus to whatever the author was typing in after a
+// click-to-save, since that click itself steals focus onto the chip.
+let _lastEditedElement: HTMLElement | null = null;
+export function getLastEditedElement(): HTMLElement | null {
+    return _lastEditedElement;
+}
+export function markFieldEditing(el?: HTMLElement) {
+    if (el) _lastEditedElement = el;
     isEditingField.set(true);
 }
 export function clearFieldEditing() {

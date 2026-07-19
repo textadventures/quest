@@ -24,8 +24,9 @@
     // "add new item" boxes in ListEditor/DictionaryEditor — opt out via
     // data-staging so the pill/unload guard don't treat searching as editing.
     function handleFieldInput(e: Event) {
-        if ((e.target as HTMLElement).closest("[data-staging]")) return;
-        markFieldEditing();
+        const target = e.target as HTMLElement;
+        if (target.closest("[data-staging]")) return;
+        markFieldEditing(target);
     }
 
     // Best-effort: force any focused field to commit and flush it to storage

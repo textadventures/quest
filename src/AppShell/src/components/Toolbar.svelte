@@ -5,7 +5,7 @@
     import { base } from "$app/paths";
     import { PUBLIC_WASM_PLAYER_URL, PUBLIC_SHOW_HOME } from "$env/static/public";
     import {
-        gameFilename, isLoaded, isDirty, isSaving, isEditingField, saveError, retrySave, saveGame, saveGameAs, canSaveAs, backupGame, canBackup,
+        gameFilename, isLoaded, isDirty, isSaving, isEditingField, getLastEditedElement, saveError, retrySave, saveGame, saveGameAs, canSaveAs, backupGame, canBackup,
         publishModalOpen,
         previewInWasmPlayer,
         undo, redo, canUndo, canRedo,
@@ -44,6 +44,14 @@
     async function handleHome() {
         if (get(isLoaded)) await saveGame();
         void goto(`${base}/`);
+    }
+
+    // Clicking the chip itself steals focus away from whatever field the
+    // author was mid-edit in — put it back once the save completes.
+    async function handleSaveNow() {
+        const field = getLastEditedElement();
+        await saveGame();
+        field?.focus();
     }
 
     async function handleSaveAs() {
@@ -141,7 +149,7 @@
                 <button
                     type="button"
                     class="save-chip save-chip-unsaved"
-                    onclick={() => saveGame()}
+                    onclick={handleSaveNow}
                     title="Save now"
                 ><Circle size={8} fill="currentColor" /> Unsaved</button>
             {:else if $gameFilename}
