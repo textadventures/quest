@@ -13,8 +13,6 @@ console.log(
     'color:#64748b'
 );
 
-var platform = "wasmplayer";
-
 var _audio = null;
 
 const pendingResources = new Map();
@@ -128,6 +126,30 @@ function activationLikelyGranted() {
     // friction there, never actually prevent a blocked sound.
     if (navigator.userAgent.includes('Electron/')) return true;
     return !('userActivation' in navigator) || navigator.userActivation.hasBeenActive;
+}
+
+// Attached to the api/Game/{id} fetch below as analytics metadata (see
+// ClientInfo on textadventures.co.uk's ApiController) — mirrors AppShell's
+// home-catalog.ts clientInfoParams(), which does the same for the Catalog and
+// GameDetails calls. This player window runs untrusted game content and
+// deliberately has no preload bridge (see ipc/player.ts), so unlike
+// home-catalog.ts it can't read window.electronApp.platform; Electron and its
+// host OS are instead sniffed from the UA, the same signal
+// activationLikelyGranted() above already relies on.
+function clientInfoParams() {
+    const params = new URLSearchParams();
+    const isElectron = navigator.userAgent.includes('Electron/');
+    params.set('source', isElectron ? 'electron' : 'web');
+    if (window.QuestVivaVersion) params.set('version', window.QuestVivaVersion);
+    if (isElectron) {
+        const ua = navigator.userAgent;
+        const platform = ua.includes('Macintosh') ? 'Mac'
+            : ua.includes('Windows') ? 'Windows'
+            : (ua.includes('Linux') || ua.includes('X11')) ? 'Linux'
+            : null;
+        if (platform) params.set('platform', platform);
+    }
+    return params;
 }
 
 // Shows a "click to begin" prompt in the still-visible start screen and
@@ -936,7 +958,7 @@ async function fetchGameBytes(url) {
         const gamePromise = (async () => {
             const apiRoot = window.QuestVivaConfig?.textAdventuresApiRoot
                 ?? 'https://textadventures.co.uk/api/';
-            const apiResponse = await fetch(`${apiRoot}game/${id}`);
+            const apiResponse = await fetch(`${apiRoot}game/${id}?${clientInfoParams()}`);
             if (!apiResponse.ok) {
                 const err = new Error(`API: HTTP ${apiResponse.status}`);
                 err.status = apiResponse.status;
