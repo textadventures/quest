@@ -262,7 +262,7 @@ function swapInPlayerUi() {
     return startScreenEl;
 }
 
-async function initWasmPlayer(gameBytes, filename, bc = null, saveBytes = null) {
+async function initWasmPlayer(gameBytes, filename, bc = null, saveBytes = null, isPreview = false) {
     const [htmResponse, { dotnet }] = await Promise.all([
         fetch('playercore.htm'),
         import('./_framework/dotnet.js'),
@@ -361,10 +361,14 @@ async function initWasmPlayer(gameBytes, filename, bc = null, saveBytes = null) 
 
     WebPlayer.onSaveClick = () => openSavesDialog('manage');
     WebPlayer.initUI();
-    // Editor-preview sessions (bc) don't offer saving at all — these are
-    // transient test runs launched from the game editor, not real play
-    // sessions worth persisting.
-    WebPlayer.setCanSave(!bc);
+    // Editor-preview sessions (isPreview) don't offer saving at all — by
+    // design: a save captures the whole game state, so reloading one while
+    // iterating would show stale state that doesn't reflect the developer's
+    // latest edits, and could be mistaken for saving the edits themselves.
+    // Note this is distinct from bc: a source=local play session also uses a
+    // BroadcastChannel (to hand off the picked file's bytes and answer
+    // resource requests) but is a real play session and should offer saving.
+    WebPlayer.setCanSave(!isPreview);
 
     await Bridge.Begin();
 }
@@ -405,7 +409,7 @@ async function restartGame(saveBytes) {
 // Wraps initWasmPlayer with the boot-time "Continue / New Game" prompt: if
 // saves already exist for this game, ask before committing to either the
 // fresh game or a chosen save. Used by all boot entry points below.
-async function startGame(bytes, filename, bc = null, gameIdOverride = null) {
+async function startGame(bytes, filename, bc = null, gameIdOverride = null, isPreview = false) {
     originalGameBytes = bytes;
     originalGameFilename = filename;
     // gameIdOverride lets callers with a stronger identity than the filename
@@ -414,10 +418,12 @@ async function startGame(bytes, filename, bc = null, gameIdOverride = null) {
     WebPlayer.gameId = gameId;
 
     let saveBytes = null;
-    // Editor-preview sessions (bc) are excluded: a preview's filename is
-    // transient/reused per edit, so prompting every reload would be noisy
-    // and would fragment saves under a churny id.
-    if (!bc) {
+    // Editor-preview sessions (isPreview) are excluded, same rationale as
+    // setCanSave's call site below: saving/loading is intentionally not part
+    // of the preview experience, so there's nothing to prompt about here
+    // either. A source=local play session goes through this same code path
+    // as a real play session and should get the boot prompt.
+    if (!isPreview) {
         let saves = [];
         try { saves = await GameSaver.listSaves(gameId); } catch { saves = []; }
         if (saves.length > 0) {
@@ -428,7 +434,7 @@ async function startGame(bytes, filename, bc = null, gameIdOverride = null) {
         }
     }
 
-    await initWasmPlayer(bytes, filename, bc, saveBytes);
+    await initWasmPlayer(bytes, filename, bc, saveBytes, isPreview);
 }
 
 // ── Start screen helpers ──────────────────────────────────────────────────────
@@ -875,7 +881,7 @@ async function fetchGameBytes(url) {
         bc.onmessage = async ({ data }) => {
             if (data.type === 'game') {
                 bc.onmessage = null;
-                await startGame(data.bytes, data.filename, bc);
+                await startGame(data.bytes, data.filename, bc, null, true);
             }
         };
         return;
