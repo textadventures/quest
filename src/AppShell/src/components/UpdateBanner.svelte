@@ -21,9 +21,16 @@
 </script>
 
 {#if !dismissed}
-    <div class="flex items-center gap-3 px-4 py-2 bg-primary-100-900 border-b border-primary-300-700 text-sm">
+    <!-- Fixed shades throughout (bg-primary-900, preset-outlined-surface-500),
+         not Skeleton's paired light/dark-auto-switching tokens
+         (bg-primary-100-900, preset-tonal, etc — see presets.css's use of
+         light-dark()): the Play tab is force-dark regardless of system theme
+         (unlike the editor, where BackupBanner's use of those pairs is fine),
+         so an auto-switching background/text pair here would go low-contrast
+         under a light-mode system. -->
+    <div class="flex items-center gap-3 px-4 py-2 bg-primary-900 border-b border-primary-700 text-sm">
         <span class="flex-1">Quest Viva {update.latestVersion} is available.</span>
         <a href={update.url} target="_blank" rel="noopener" class="btn btn-sm preset-filled-primary-500">Download</a>
-        <button type="button" class="btn btn-sm preset-tonal" onclick={handleDismiss}>Later</button>
+        <button type="button" class="btn btn-sm preset-outlined-surface-500" onclick={handleDismiss}>Later</button>
     </div>
 {/if}
