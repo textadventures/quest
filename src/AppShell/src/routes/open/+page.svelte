@@ -153,6 +153,13 @@
     let selectedTemplate = $derived(templates.find(t => t.id === selectedTemplateId) ?? null);
     let textAdventureTemplates = $derived(templates.filter(t => t.type === "textadventure"));
     let gamebookTemplates = $derived(templates.filter(t => t.type === "gamebook"));
+    let lastTextAdventureTemplateId = $state("");
+
+    $effect(() => {
+        if (selectedTemplate?.type === "textadventure") {
+            lastTextAdventureTemplateId = selectedTemplate.id;
+        }
+    });
 
     // Local creation state
     let creatingLocal = $state(false);
@@ -584,8 +591,13 @@
                                             checked={selectedTemplate?.type === type.value}
                                             disabled={creating}
                                             onchange={() => {
-                                                const list = type.value === "gamebook" ? gamebookTemplates : textAdventureTemplates;
-                                                selectedTemplateId = list[0]?.id ?? "";
+                                                if (type.value === "gamebook") {
+                                                    selectedTemplateId = gamebookTemplates[0]?.id ?? "";
+                                                } else {
+                                                    const preferred = textAdventureTemplates.find(t => t.id === lastTextAdventureTemplateId);
+                                                    const english = textAdventureTemplates.find(t => t.label === "English");
+                                                    selectedTemplateId = (preferred ?? english ?? textAdventureTemplates[0])?.id ?? "";
+                                                }
                                             }}
                                         />
                                         <span class="text-sm">{type.label}</span>
