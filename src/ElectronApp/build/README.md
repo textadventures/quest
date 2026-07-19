@@ -27,6 +27,28 @@ This directory is electron-builder's default `build resources` location
 it picks up `icon.icns`/`icon.ico` automatically, no explicit `icon` config
 needed for those two, unlike Linux's `icons/`.
 
+## Linux taskbar icon (separate from the icon files above)
+
+Even with a correct `icons/` set and the `BrowserWindow` `icon` option (see
+`createEditorWindow` in `src/main.ts`), GNOME/Ubuntu kept showing a generic
+"unknown executable" cog for the running app in the taskbar/dash, while the
+in-app About panel (which sets its icon directly from a file path) was fine.
+That's because the taskbar doesn't render either of those — it matches the
+running window to an installed `.desktop` launcher entry by WM_CLASS/app_id,
+and only then shows *that entry's* `Icon=`. Two identifiers have to agree for
+that match to happen, and by default they don't:
+
+- Electron's runtime app_id/WM_CLASS defaults to a slug of `app.name`
+  (`quest-viva.desktop` here) unless `desktopName` is set in `package.json`.
+- electron-builder's generated `.desktop` file's `StartupWMClass` defaults to
+  `productName` (`Quest Viva`, with a space) unless `desktopName` is set and
+  `linux.syncDesktopName` is enabled.
+
+`quest-viva.desktop` != `Quest Viva`, so no match, so cog — regardless of
+what the icon files themselves look like. `desktopName` (top-level, package.json)
++ `linux.syncDesktopName: true` makes both sides derive from the same string.
+See electron-userland/electron-builder#9103.
+
 To regenerate after a design change (needs `rsvg-convert` — `brew install
 librsvg` — plus macOS's `iconutil` and ImageMagick's `magick`):
 

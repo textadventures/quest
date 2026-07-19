@@ -21,7 +21,7 @@ jobs:
           - os: windows-latest
             artifact-glob: "*.exe"
           - os: ubuntu-latest
-            artifact-glob: "*.AppImage"
+            artifact-glob: "{*.AppImage,*.deb}"
     runs-on: ${{ matrix.os }}
     permissions:
       contents: write

@@ -2,8 +2,10 @@
   "name": "quest-viva-desktop",
   "version": "0.0.1",
   "private": true,
-  "author": "Alex Warren",
+  "author": "Alex Warren <alex@textadventures.co.uk>",
+  "homepage": "https://questviva.com",
   "main": "dist/main.js",
+  "desktopName": "quest-viva.desktop",
   "scripts": {
     "build:ts": "tsc -p tsconfig.json",
     "copy-static": "node scripts/copy-static.mjs",
@@ -58,9 +60,14 @@
       "icon": "build/icons",
       "category": "Utility",
       "executableArgs": ["--no-sandbox"],
+      "syncDesktopName": true,
       "target": [
         {
           "target": "AppImage",
+          "arch": ["x64", "arm64"]
+        },
+        {
+          "target": "deb",
           "arch": ["x64", "arm64"]
         }
       ]
