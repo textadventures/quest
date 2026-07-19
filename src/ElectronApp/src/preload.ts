@@ -20,9 +20,23 @@ function joinPath(...segments: string[]): string {
         .join(sep);
 }
 
+// Sent as analytics metadata alongside webhome_games_list/webhome_game_play
+// (see ClientInfo on textadventures.co.uk's ApiController, and
+// home-catalog.ts's clientInfoParams()). process.platform is only available
+// here in the preload context, not the sandboxed renderer.
+function hostPlatform(): "Mac" | "Windows" | "Linux" | undefined {
+    switch (process.platform) {
+        case "darwin": return "Mac";
+        case "win32": return "Windows";
+        case "linux": return "Linux";
+        default: return undefined;
+    }
+}
+
 // Matches the window.electronApp shape sketched in docs/electron-desktop-app.md
 // and consumed by src/AppShell/src/lib/filesystem/electron-adapter.ts.
 contextBridge.exposeInMainWorld("electronApp", {
+    platform: hostPlatform(),
     fs: {
         readFile: (path: string): Promise<Uint8Array> => ipcRenderer.invoke("fs:readFile", path),
         writeFile: (path: string, data: Uint8Array | string): Promise<void> => ipcRenderer.invoke("fs:writeFile", path, data),
