@@ -8,6 +8,13 @@
         <Nullable>enable</Nullable>
         <LangVersion>default</LangVersion>
         <RunAOTCompilation>true</RunAOTCompilation>
+        <!-- Release is what ships (Electron, static hosting, often offline). Shipping .pdb files
+             embeds SourceLink metadata pointing at raw.githubusercontent.com, which Chrome DevTools'
+             WASM debugger fetches from when attached — undesirable for an offline-capable app.
+             The dotnet.js/.runtime.js source maps have the same problem, pointing at dotnet/dotnet
+             on GitHub. Debug builds keep both for local dev-server debugging. -->
+        <WasmDebugLevel Condition="'$(Configuration)' == 'Release'">0</WasmDebugLevel>
+        <WasmEmitSourceMap Condition="'$(Configuration)' == 'Release'">false</WasmEmitSourceMap>
     </PropertyGroup>
     <ItemGroup>
         <ProjectReference Include="..\PlayerCore\PlayerCore.csproj"/>
