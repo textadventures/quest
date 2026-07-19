@@ -5,7 +5,7 @@
     import { base } from "$app/paths";
     import { PUBLIC_WASM_PLAYER_URL, PUBLIC_SHOW_HOME } from "$env/static/public";
     import {
-        gameFilename, isLoaded, isDirty, isSaving, saveError, retrySave, saveGame, saveGameAs, canSaveAs, backupGame, canBackup,
+        gameFilename, isLoaded, isDirty, isSaving, isEditingField, getLastEditedElement, saveError, retrySave, saveGame, saveGameAs, canSaveAs, backupGame, canBackup,
         publishModalOpen,
         previewInWasmPlayer,
         undo, redo, canUndo, canRedo,
@@ -30,6 +30,7 @@
     import Check from "@lucide/svelte/icons/check";
     import LoaderCircle from "@lucide/svelte/icons/loader-circle";
     import TriangleAlert from "@lucide/svelte/icons/triangle-alert";
+    import Circle from "@lucide/svelte/icons/circle";
 
     const wasmPlayerUrl = PUBLIC_WASM_PLAYER_URL || "/player/";
     const showHome = PUBLIC_SHOW_HOME === "true";
@@ -43,6 +44,14 @@
     async function handleHome() {
         if (get(isLoaded)) await saveGame();
         void goto(`${base}/`);
+    }
+
+    // Clicking the chip itself steals focus away from whatever field the
+    // author was mid-edit in — put it back once the save completes.
+    async function handleSaveNow() {
+        const field = getLastEditedElement();
+        await saveGame();
+        field?.focus();
     }
 
     async function handleSaveAs() {
@@ -134,8 +143,15 @@
                     onclick={() => retrySave()}
                     title={$saveError}
                 ><TriangleAlert size={13} /> Save failed — Retry</button>
-            {:else if $isSaving || $isDirty}
+            {:else if $isSaving}
                 <span class="save-chip save-chip-saving"><LoaderCircle size={13} class="animate-spin" /> Saving…</span>
+            {:else if $isDirty || $isEditingField}
+                <button
+                    type="button"
+                    class="save-chip save-chip-unsaved"
+                    onclick={handleSaveNow}
+                    title="Save now"
+                ><Circle size={8} fill="currentColor" /> Unsaved</button>
             {:else if $gameFilename}
                 <span class="save-chip save-chip-saved"><Check size={13} /> Saved</span>
             {/if}
@@ -224,6 +240,13 @@
         font-size: 0.75rem;
         font-weight: 600;
         line-height: 1.4;
+        white-space: nowrap;
+    }
+    .save-chip-saved,
+    .save-chip-saving,
+    .save-chip-unsaved {
+        min-width: 6.25rem;
+        justify-content: center;
     }
     .save-chip-saved {
         color: var(--color-success-600-400);
@@ -231,6 +254,14 @@
     }
     .save-chip-saving {
         color: var(--color-surface-500-400);
+    }
+    .save-chip-unsaved {
+        color: var(--color-warning-600-400);
+        background-color: color-mix(in srgb, var(--color-warning-500) 12%, transparent);
+        cursor: pointer;
+    }
+    .save-chip-unsaved:hover {
+        text-decoration: underline;
     }
     .save-chip-error {
         color: var(--color-error-500);

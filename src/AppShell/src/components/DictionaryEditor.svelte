@@ -76,6 +76,7 @@
             type="text"
             class="input text-xs py-0.5 px-1.5 w-20 flex-shrink-0"
             placeholder="Key"
+            data-staging
             bind:value={newKey}
             onkeydown={(e) => { if (e.key === "Enter") onAdd(); }}
         />
@@ -83,6 +84,7 @@
             type="text"
             class="input text-xs py-0.5 px-1.5 flex-1"
             placeholder="Value"
+            data-staging
             bind:value={newValue}
             onkeydown={(e) => { if (e.key === "Enter") onAdd(); }}
         />

@@ -66,6 +66,7 @@
             type="text"
             class="input text-xs py-0.5 px-1.5 flex-1"
             placeholder={addPrompt}
+            data-staging
             bind:value={newItemValue}
             onkeydown={(e) => { if (e.key === "Enter") onAdd(); }}
         />
