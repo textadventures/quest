@@ -1,15 +1,17 @@
 <script lang="ts">
     import { onMount, onDestroy } from "svelte";
     import { base } from "$app/paths";
-    import { fetchCatalog, type CatalogCategory } from "$lib/home-catalog";
+    import { fetchCatalog, type CatalogCategory, type UpdateInfo } from "$lib/home-catalog";
     import { pickFile } from "$lib/filesystem/file-picker";
     import { isElectron } from "$lib/runtime";
     import { openElectronPlayFile, loadElectronFile, listRecentGames, removeRecentGame } from "$lib/filesystem/electron-adapter";
     import type { RecentGame } from "$lib/filesystem/electron-adapter";
+    import UpdateBanner from "$components/UpdateBanner.svelte";
 
     const isElectronApp = isElectron();
 
     let categories = $state<CatalogCategory[] | null>(null);
+    let update = $state<UpdateInfo | null>(null);
     let error = $state(false);
     let loading = $state(true);
 
@@ -17,7 +19,9 @@
         loading = true;
         error = false;
         try {
-            categories = await fetchCatalog();
+            const result = await fetchCatalog();
+            categories = result.categories;
+            update = result.update;
         } catch {
             error = true;
         } finally {
@@ -222,6 +226,9 @@
      wider than 5xl shows the page's real (light-mode) background down the
      sides instead of dark. -->
 <div class="min-h-svh bg-surface-950 text-surface-100">
+    {#if isElectronApp && update}
+        <UpdateBanner {update} />
+    {/if}
     <div class="flex flex-col gap-8 w-full max-w-5xl mx-auto p-8">
         <div class="flex flex-col items-center gap-2">
             {#if isElectronApp}

@@ -15,6 +15,15 @@ export interface CatalogCategory {
     games: CatalogGame[];
 }
 
+// Present only for Electron clients running an outdated build (see
+// ApiController.Catalog on textadventures.co.uk, which compares client.Version
+// against the latest tagged GitHub release) — web builds are static-redeployed
+// on every release and are always current, so this is always null there.
+export interface UpdateInfo {
+    latestVersion: string;
+    url: string;
+}
+
 export interface GameDetails {
     id: string;
     name: string;
@@ -49,13 +58,13 @@ function clientInfoParams(): URLSearchParams {
     return params;
 }
 
-export async function fetchCatalog(): Promise<CatalogCategory[]> {
+export async function fetchCatalog(): Promise<{ categories: CatalogCategory[]; update: UpdateInfo | null }> {
     const params = clientInfoParams();
     params.set("maxAslVersion", String(MAX_ASL_VERSION));
     const response = await fetch(`${API_ROOT}/Catalog?${params}`);
     if (!response.ok) throw new Error(`HTTP ${response.status}`);
-    const data = await response.json() as { categories: CatalogCategory[] };
-    return data.categories;
+    const data = await response.json() as { categories: CatalogCategory[]; update: UpdateInfo | null };
+    return { categories: data.categories, update: data.update ?? null };
 }
 
 export async function fetchGameDetails(id: string): Promise<GameDetails> {
