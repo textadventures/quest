@@ -1,5 +1,29 @@
 # Changelog
 
+## [6.0.0-beta.42](https://github.com/textadventures/quest/compare/v6.0.0-beta.41...v6.0.0-beta.42) (2026-07-19)
+
+
+### Features
+
+* **AppShell:** add a Home button to the editor toolbar ([#1894](https://github.com/textadventures/quest/issues/1894)) ([9660dee](https://github.com/textadventures/quest/commit/9660dee6ccc63f9ca6104f8ea87ac034999e7d29))
+* **AppShell:** open a local game file from the Play tab ([#1885](https://github.com/textadventures/quest/issues/1885)) ([967864c](https://github.com/textadventures/quest/commit/967864cdb0a8c3ef947970def8daee20c984ac54))
+* **AppShell:** replace emoji icons with Lucide and tidy the editor toolbar ([#1895](https://github.com/textadventures/quest/issues/1895)) ([794f20c](https://github.com/textadventures/quest/commit/794f20cdc726b8b0ff9f66840c777f1c09af5be3))
+* **ElectronApp:** one-click local play, unrestricted autoplay, sibling resources ([#1886](https://github.com/textadventures/quest/issues/1886)) ([d94e7bb](https://github.com/textadventures/quest/commit/d94e7bb086e5949724e76b8b89bf12536def5e09))
+
+
+### Bug Fixes
+
+* **AppShell:** keep Delete button visible but disabled instead of hiding it ([#1899](https://github.com/textadventures/quest/issues/1899)) ([a4fcb29](https://github.com/textadventures/quest/commit/a4fcb29d93b143cea01c45e71fc1c43f26a19fb9))
+* **AppShell:** preserve language selection when toggling game type on Create tab ([#1897](https://github.com/textadventures/quest/issues/1897)) ([88e64fc](https://github.com/textadventures/quest/commit/88e64fc7c3e483368d793a8a827bfabac4ece1d1))
+* **AppShell:** stabilize the toolbar save-status pill ([#1898](https://github.com/textadventures/quest/issues/1898)) ([0d607c4](https://github.com/textadventures/quest/commit/0d607c4aa1609a7834e8c7fa73bf06bce2448fd1))
+* **AppShell:** stop centering the Create tab against the full viewport ([#1893](https://github.com/textadventures/quest/issues/1893)) ([0db7825](https://github.com/textadventures/quest/commit/0db78250d6dbb26922bbe962b4d3aaad00cda158))
+* drop WebKit from the e2e OPFS job, Linux WebKit has no OPFS support ([#1889](https://github.com/textadventures/quest/issues/1889)) ([ec582bc](https://github.com/textadventures/quest/commit/ec582bc04be56997742abe0700f885a02418cb6b))
+* **ElectronApp:** set BrowserWindow icon on Linux ([#1882](https://github.com/textadventures/quest/issues/1882)) ([7f03a89](https://github.com/textadventures/quest/commit/7f03a89e3018e639ec1ff67433d6691b32d8cacd))
+* **ElectronApp:** show a confirm dialog instead of silently blocking window close on unsaved changes ([#1891](https://github.com/textadventures/quest/issues/1891)) ([910f176](https://github.com/textadventures/quest/commit/910f1764c3c88566eff7f4b47acb31afe7d6c83e))
+* **ElectronApp:** split editor/play Recent lists, focus window on File menu actions ([#1892](https://github.com/textadventures/quest/issues/1892)) ([9ff1d03](https://github.com/textadventures/quest/commit/9ff1d03e6dcac653cbdc0c1f97378420f0b0b3c0))
+* **WasmPlayer:** offer saving for games launched from a local file ([#1896](https://github.com/textadventures/quest/issues/1896)) ([3d5e641](https://github.com/textadventures/quest/commit/3d5e641452f7eb39eadd2b5385ca979560d47298))
+* **WasmPlayer:** time out unanswered resource-request handoffs instead of hanging forever ([#1890](https://github.com/textadventures/quest/issues/1890)) ([fad24ab](https://github.com/textadventures/quest/commit/fad24abdbffce91d0218a0de711138bbfb438753))
+
 ## [6.0.0-beta.41](https://github.com/textadventures/quest/compare/v6.0.0-beta.40...v6.0.0-beta.41) (2026-07-16)
 
 
