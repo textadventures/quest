@@ -480,6 +480,7 @@
                 type="text"
                 placeholder="Add attribute..."
                 class="input text-xs py-0 px-1.5 h-6 flex-1 min-w-0"
+                data-staging
                 bind:value={newAttrName}
                 onkeydown={(e) => { if (e.key === "Enter") onAddAttribute(); }}
             />

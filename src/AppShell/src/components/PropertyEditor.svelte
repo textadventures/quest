@@ -274,6 +274,7 @@
                     type="text"
                     class="input text-xs py-0.5 px-1.5 w-24 flex-shrink-0"
                     placeholder={ctrl.caption ? "Key" : "Key"}
+                    data-staging
                     value={newDictItems[dk]?.key ?? ""}
                     oninput={(e) => { newDictItems[dk] = { ...(newDictItems[dk] ?? { key: "", value: "" }), key: (e.target as HTMLInputElement).value }; }}
                 />
@@ -281,6 +282,7 @@
                     type="text"
                     class="input text-xs py-0.5 px-1.5 flex-1"
                     placeholder="Value"
+                    data-staging
                     value={newDictItems[dk]?.value ?? ""}
                     oninput={(e) => { newDictItems[dk] = { ...(newDictItems[dk] ?? { key: "", value: "" }), value: (e.target as HTMLInputElement).value }; }}
                     onkeydown={(e) => {

@@ -4,7 +4,7 @@
     import { goto } from "$app/navigation";
     import { base } from "$app/paths";
     import { get } from "svelte/store";
-    import { isLoaded, isDirty, saveGame, loadingStatus, addElementModal, assetManagerOpen, publishModalOpen, openGame, createRoom, createObject, createFunction, createTimer, createWalkthrough, createTemplate, createDynamicTemplate, createObjectType } from "$lib/editor-store";
+    import { isLoaded, isDirty, isEditingField, markFieldEditing, clearFieldEditing, saveGame, loadingStatus, addElementModal, assetManagerOpen, publishModalOpen, openGame, createRoom, createObject, createFunction, createTimer, createWalkthrough, createTemplate, createDynamicTemplate, createObjectType } from "$lib/editor-store";
     import { loadFromServer } from "$lib/filesystem/server-adapter";
     import Toolbar from "$components/Toolbar.svelte";
     import BackupBanner from "$components/BackupBanner.svelte";
@@ -16,12 +16,28 @@
 
     let serverLoadError = $state<string | null>(null);
 
+    // Delegated at the panel level so every field-editing component (property
+    // panel, script editor, nested dictionary/list editors, ...) is covered
+    // without each one having to wire this up itself. "input"/"focusout" both
+    // bubble, unlike "change"/"blur". Elements the user is still just typing
+    // into to filter/stage something — not committing a value yet, e.g. the
+    // "add new item" boxes in ListEditor/DictionaryEditor — opt out via
+    // data-staging so the pill/unload guard don't treat searching as editing.
+    function handleFieldInput(e: Event) {
+        if ((e.target as HTMLElement).closest("[data-staging]")) return;
+        markFieldEditing();
+    }
+
     // Best-effort: force any focused field to commit and flush it to storage
-    // before the tab actually goes away. Can't be awaited here — the page may
-    // already be gone by the time an async write settles — so the beforeunload
-    // warning below stays as the real safety net for that narrow window.
+    // before the tab actually goes away. saveGame() itself blurs the focused
+    // field first (flushing a pending edit into the bridge via its change
+    // event) before checking isDirty, so isEditingField only needs to get the
+    // listener attached — the actual flush happens inside saveGame(). Can't be
+    // awaited here — the page may already be gone by the time an async write
+    // settles — so the beforeunload warning below stays as the real safety net
+    // for that narrow window.
     $effect(() => {
-        if (!$isDirty) return;
+        if (!$isDirty && !$isEditingField) return;
         function handleBeforeUnload(e: BeforeUnloadEvent) {
             void saveGame();
             e.preventDefault();
@@ -34,7 +50,7 @@
         // Covers tab switches, backgrounding, and the mobile-Safari-style tab
         // closes that don't reliably fire beforeunload.
         function handleVisibilityChange() {
-            if (document.hidden && get(isDirty)) void saveGame();
+            if (document.hidden && (get(isDirty) || get(isEditingField))) void saveGame();
         }
         document.addEventListener("visibilitychange", handleVisibilityChange);
 
@@ -89,7 +105,7 @@
     <div class="flex flex-col h-svh overflow-hidden">
         <Toolbar />
         <BackupBanner />
-        <div class="flex flex-1 overflow-hidden">
+        <div class="flex flex-1 overflow-hidden" oninput={handleFieldInput} onfocusout={clearFieldEditing}>
             <TreePanel />
             <PropertyEditor />
         </div>

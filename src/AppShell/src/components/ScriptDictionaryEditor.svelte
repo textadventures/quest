@@ -81,6 +81,7 @@
                 type="text"
                 class="input text-xs py-0.5 px-1.5 flex-1"
                 placeholder="Add entry key…"
+                data-staging
                 bind:value={newKey}
                 onkeydown={(e) => { if (e.key === "Enter") onAdd(); }}
             />

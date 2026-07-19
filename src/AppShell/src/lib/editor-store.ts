@@ -33,6 +33,21 @@ export const fullAttributeData = writable<FullAttributeData | null>(null);
 export const canUndo = writable(false);
 export const canRedo = writable(false);
 export const isDirty = writable(false);
+// True while a field somewhere in the editor has an in-progress, not-yet-committed
+// edit (set on input, cleared on focusout via a delegated listener in
+// edit/+page.svelte) — the underlying attribute only commits to the WASM bridge
+// on change/blur, so isDirty alone stays false while typing. Doesn't trigger
+// autosave itself (nothing has actually changed in the bridge yet), but the
+// toolbar pill and the close-tab/switch-tab guards both treat it the same as
+// isDirty, since saveGame() blurs the focused field first — which flushes any
+// pending edit into the bridge — before checking real isDirty and persisting.
+export const isEditingField = writable(false);
+export function markFieldEditing() {
+    isEditingField.set(true);
+}
+export function clearFieldEditing() {
+    isEditingField.set(false);
+}
 export const scriptVersion = writable(0);
 export const scriptClipboardHasContent = writable(false);
 export const assets = writable<AssetInfo[]>([]);
