@@ -177,15 +177,15 @@
                         </div>
                     {/if}
                 </div>
-                <!-- Delete button -->
-                {#if canDelete}
-                    <button
-                        type="button"
-                        class="btn btn-sm preset-outlined-error-500"
-                        onclick={() => deleteElement(selectedNode!.key)}
-                        title={"Delete " + (selectedNode?.text ?? "")}
-                    ><Trash2 size={14} /> Delete</button>
-                {/if}
+                <!-- Delete button: always rendered, disabled when nothing deletable is
+                     selected, so surrounding buttons don't shift as selection changes -->
+                <button
+                    type="button"
+                    class="btn btn-sm preset-outlined-error-500"
+                    onclick={() => selectedNode && deleteElement(selectedNode.key)}
+                    disabled={!canDelete}
+                    title={canDelete ? "Delete " + (selectedNode?.text ?? "") : "Delete"}
+                ><Trash2 size={14} /> Delete</button>
                 <div class="toolbar-divider"></div>
                 <button type="button" class="toolbar-icon-btn" onclick={() => assetManagerOpen.set(true)} title="Manage assets"><ImageIcon size={16} /></button>
                 <button type="button" class="toolbar-icon-btn" onclick={undo} disabled={!$canUndo} title="Undo"><Undo2 size={16} /></button>
