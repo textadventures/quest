@@ -18,10 +18,19 @@ jobs:
         include:
           - os: macos-latest
             artifact-glob: "*.dmg"
+            upload-artifact-path: "src/ElectronApp/release/*.dmg"
           - os: windows-latest
             artifact-glob: "*.exe"
+            upload-artifact-path: "src/ElectronApp/release/*.exe"
           - os: ubuntu-latest
+            # gh release upload (below) needs bash's own brace expansion, but
+            # actions/upload-artifact's glob engine doesn't expand
+            # `{*.AppImage,*.deb}` the same way — it silently matched zero
+            # files — so it gets its own newline-separated pattern list.
             artifact-glob: "{*.AppImage,*.deb}"
+            upload-artifact-path: |
+              src/ElectronApp/release/*.AppImage
+              src/ElectronApp/release/*.deb
     runs-on: ${{ matrix.os }}
     permissions:
       contents: write
@@ -106,7 +115,7 @@ jobs:
         uses: actions/upload-artifact@v7
         with:
           name: electron-${{ matrix.os }}
-          path: src/ElectronApp/release/${{ matrix.artifact-glob }}
+          path: ${{ matrix.upload-artifact-path }}
           if-no-files-found: error
 
       - name: Attach build to GitHub Release

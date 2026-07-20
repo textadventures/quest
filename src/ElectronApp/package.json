@@ -2,6 +2,7 @@
   "name": "quest-viva-desktop",
   "version": "0.0.1",
   "private": true,
+  "description": "Quest Viva desktop app — create and play text adventure games",
   "author": "Alex Warren <alex@textadventures.co.uk>",
   "homepage": "https://questviva.com",
   "main": "dist/main.js",
