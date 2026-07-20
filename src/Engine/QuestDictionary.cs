@@ -1,6 +1,7 @@
 ﻿#nullable disable
 using System.Collections;
 using System.Collections.Specialized;
+using System.Linq;
 
 namespace QuestViva.Engine;
 
@@ -603,12 +604,23 @@ public sealed class OrderedDictionary<TKey, TValue> : IOrderedDictionary<TKey, T
 
     IDictionaryEnumerator IOrderedDictionary.GetEnumerator()
     {
-        return Dictionary.GetEnumerator();
+        return new OrderedDictionaryEnumerator(List.GetEnumerator());
     }
 
     IDictionaryEnumerator IDictionary.GetEnumerator()
     {
-        return Dictionary.GetEnumerator();
+        return new OrderedDictionaryEnumerator(List.GetEnumerator());
+    }
+
+    private sealed class OrderedDictionaryEnumerator(IEnumerator<KeyValuePair<TKey, TValue>> inner)
+        : IDictionaryEnumerator
+    {
+        public DictionaryEntry Entry => new(inner.Current.Key, inner.Current.Value);
+        public object Key => inner.Current.Key;
+        public object Value => inner.Current.Value;
+        public object Current => Entry;
+        public bool MoveNext() => inner.MoveNext();
+        public void Reset() => inner.Reset();
     }
 
     IEnumerator IEnumerable.GetEnumerator()
@@ -1123,7 +1135,7 @@ public sealed class OrderedDictionary<TKey, TValue> : IOrderedDictionary<TKey, T
     ///     <see cref="OrderedDictionary{TKey,TValue}">OrderedDictionary&lt;TKey,TValue&gt;</see> continue to be reflected in
     ///     the key collection.
     /// </remarks>
-    public ICollection<TKey> Keys => Dictionary.Keys;
+    public ICollection<TKey> Keys => List.Select(kvp => kvp.Key).ToList();
 
     /// <summary>
     ///     Gets the value associated with the specified key.
@@ -1159,7 +1171,7 @@ public sealed class OrderedDictionary<TKey, TValue> : IOrderedDictionary<TKey, T
     ///     <see cref="OrderedDictionary{TKey,TValue}">OrderedDictionary&lt;TKey,TValue&gt;</see> continue to be reflected in
     ///     the value collection.
     /// </remarks>
-    public ICollection<TValue> Values => Dictionary.Values;
+    public ICollection<TValue> Values => List.Select(kvp => kvp.Value).ToList();
 
     /// <summary>
     ///     Adds the specified value to the
@@ -1331,6 +1343,6 @@ public sealed class OrderedDictionary<TKey, TValue> : IOrderedDictionary<TKey, T
 
     public IEnumerator<KeyValuePair<TKey, TValue>> GetEnumerator()
     {
-        return Dictionary.GetEnumerator();
+        return List.GetEnumerator();
     }
 }
