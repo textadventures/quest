@@ -17,7 +17,12 @@ const repoRoot = path.resolve(__dirname, "../../..");
 const version = readFileSync(path.join(repoRoot, "VERSION"), "utf8").trim();
 
 try {
-    await build({ config: { extraMetadata: { version } } });
+    // electron-builder defaults to implicit publishing when it detects CI
+    // (deprecated in v27, warns without this) — the actual GitHub Release
+    // upload is handled separately by electron-publish.yml's own
+    // `gh release upload` step, so electron-builder itself should never
+    // publish anything.
+    await build({ publish: "never", config: { extraMetadata: { version } } });
 } catch (err) {
     console.error(err);
     process.exit(1);
