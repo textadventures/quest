@@ -359,6 +359,7 @@
     {/if}
     {#if codeViewMode}
         <textarea
+            autocapitalize="off"
             class="textarea text-xs font-mono w-full"
             rows={10}
             readonly={isLocked}
@@ -546,6 +547,7 @@
             {#if !simple}
                 <input
                     type="text"
+                    autocapitalize="off"
                     class="input text-xs py-0 px-1 min-w-16 max-w-48 flex-1"
                     value={ctrl.value ?? ""}
                     onchange={(e) => onSetParam(scriptIndex, ctrl.attribute!, (e.target as HTMLInputElement).value)}
@@ -608,6 +610,7 @@
                     <!-- textbox (default for message, text, colour, etc.) -->
                     <input
                         type="text"
+                        autocapitalize="off"
                         class="input text-xs py-0 px-1 min-w-16 max-w-48 flex-1"
                         value={toSimpleDisplay(ctrl)}
                         onchange={(e) => onSimpleValueChange(scriptIndex, ctrl, (e.target as HTMLInputElement).value)}
@@ -617,6 +620,7 @@
                 <!-- Expression mode: raw expression text input -->
                 <input
                     type="text"
+                    autocapitalize="off"
                     class="input text-xs py-0 px-1 min-w-16 max-w-48 flex-1"
                     value={ctrl.value ?? ""}
                     onchange={(e) => onSetParam(scriptIndex, ctrl.attribute!, (e.target as HTMLInputElement).value)}
@@ -626,6 +630,7 @@
     {:else if ctrl.controlType === "expression" || ctrl.controlType === "textbox" || ctrl.controlType === "richtext"}
         <input
             type="text"
+            autocapitalize="off"
             class="input text-xs py-0 px-1 min-w-16 max-w-48 flex-1"
             value={ctrl.value ?? ""}
             onchange={(e) => onSetParam(scriptIndex, ctrl.attribute!, (e.target as HTMLInputElement).value)}
@@ -703,6 +708,7 @@
                     {:else}
                         <input
                             type="text"
+                            autocapitalize="off"
                             class="input text-xs py-0 px-1 min-w-16 max-w-32 flex-1"
                             placeholder={ctrl.simpleLabel ?? ctrl.name}
                             value={ctrl.value ?? ""}
@@ -716,6 +722,7 @@
             {:else}
                 <input
                     type="text"
+                    autocapitalize="off"
                     class="input text-xs py-0 px-1 min-w-24 max-w-64 flex-1"
                     value={script.expression ?? ""}
                     onchange={(e) => onSetIfExpr(i, (e.target as HTMLInputElement).value)}
@@ -782,6 +789,7 @@
                         {:else}
                             <input
                                 type="text"
+                                autocapitalize="off"
                                 class="input text-xs py-0 px-1 min-w-16 max-w-32 flex-1"
                                 placeholder={ctrl.simpleLabel ?? ctrl.name}
                                 value={ctrl.value ?? ""}
@@ -795,6 +803,7 @@
                 {:else}
                     <input
                         type="text"
+                        autocapitalize="off"
                         class="input text-xs py-0 px-1 min-w-24 max-w-64 flex-1"
                         value={elseIf.expression}
                         onchange={(e) => onSetElseIfExpr(i, ei, (e.target as HTMLInputElement).value)}

@@ -79,6 +79,7 @@
         <div class="flex items-center gap-1 mt-0.5">
             <input
                 type="text"
+                autocapitalize="off"
                 class="input text-xs py-0.5 px-1.5 flex-1"
                 placeholder="Add entry key…"
                 data-staging

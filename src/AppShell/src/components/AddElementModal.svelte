@@ -70,6 +70,7 @@
             <input
                 id="element-name"
                 type="text"
+                autocapitalize="off"
                 class={"input bg-white px-2 py-1 text-sm" + (error ? " !border-error-500" : "")}
                 bind:this={inputEl}
                 bind:value={name}

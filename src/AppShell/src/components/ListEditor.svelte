@@ -38,6 +38,7 @@
             {#if editingItem?.key === item.key}
                 <input
                     type="text"
+                    autocapitalize="off"
                     class="input text-xs py-0.5 px-1.5 flex-1"
                     value={editingItem.value}
                     oninput={(e) => { if (editingItem) editingItem.value = (e.target as HTMLInputElement).value; }}
@@ -64,6 +65,7 @@
     <div class="flex items-center gap-1 mt-0.5">
         <input
             type="text"
+            autocapitalize="off"
             class="input text-xs py-0.5 px-1.5 flex-1"
             placeholder={addPrompt}
             data-staging
