@@ -1,9 +1,10 @@
 // Verifies the Discord/GitHub links (DiscordIcon.svelte / GithubIcon.svelte)
 // appear in both places they're wired up:
 //   - HomeHeader.svelte, top-right, on the Play (/) and Create (/open) tabs
-//   - Toolbar.svelte, end of the trailing button cluster, in the editor (/edit)
-// Both are gated on PUBLIC_SHOW_HOME=true. Run against a dev server started
-// with:
+//     — only rendered when PUBLIC_SHOW_HOME=true, so this script needs it set
+//   - Toolbar.svelte, end of the trailing button cluster, in the editor
+//     (/edit) — shown unconditionally, regardless of PUBLIC_SHOW_HOME
+// Run against a dev server started with:
 //   PUBLIC_SHOW_HOME=true npm --prefix src/AppShell run dev -- --port 5180
 import { chromium } from 'playwright';
 
