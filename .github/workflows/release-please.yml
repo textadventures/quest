@@ -34,8 +34,8 @@ jobs:
       # and electron-publish.yml's macOS leg (code signing + notarization)
       # can take 15+ minutes. A public visitor hitting releases/latest during
       # that window would otherwise see a release missing some/all installers.
-      # electron-publish.yml's own final job un-drafts (and marks --latest)
-      # once every OS leg has successfully uploaded — see its "finalize" job.
+      # finalize-release.yml un-drafts (and marks --latest) once both
+      # deploy-play.yml and electron-publish.yml have succeeded.
       - name: Un-prerelease and draft the release
         if: ${{ steps.release.outputs.release_created }}
         env:

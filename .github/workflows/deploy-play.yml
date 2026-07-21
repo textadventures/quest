@@ -110,26 +110,21 @@ jobs:
       - name: Attach player and editor builds to GitHub Release
         # release-please creates the GitHub Release itself (with changelog-based
         # notes) before pushing the tag that triggers this workflow, so just
-        # upload assets to it rather than creating a new one.
+        # upload assets to it rather than creating a new one. The release is a
+        # draft at this point (see release-please.yml) — uploading assets to
+        # a draft works fine, no different from a published release.
         if: github.ref_type == 'tag'
         run: gh release upload ${{ github.ref_name }} WasmPlayer.zip AppBundle.zip WebEditor.zip --clobber
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Pin WebEditor version in textadventures.co.uk
-        if: github.ref_type == 'tag'
-        run: |
-          curl -s -o /dev/null -w "%{http_code}" -X PATCH \
-            -H "Authorization: token ${{ secrets.TA_DEPLOY_PAT }}" \
-            -H "Accept: application/vnd.github.v3+json" \
-            "https://api.github.com/repos/alexwarren/textadventures.co.uk/actions/variables/WEBEDITOR_VERSION" \
-            -d "{\"name\":\"WEBEDITOR_VERSION\",\"value\":\"${{ github.ref_name }}\"}"
-
-      - name: Trigger textadventures.co.uk deployment
-        if: github.ref_type == 'tag'
-        uses: peter-evans/repository-dispatch@v4
-        with:
-          token: ${{ secrets.TA_DEPLOY_PAT }}
-          repository: alexwarren/textadventures.co.uk
-          event-type: webeditor-release
-          client-payload: '{"tag": "${{ github.ref_name }}"}'
+      # Pinning WEBEDITOR_VERSION and dispatching textadventures.co.uk's
+      # redeploy used to happen right here, but that redeploy's own `gh
+      # release download --repo textadventures/quest` uses a plain
+      # GITHUB_TOKEN scoped to that *other* repo, which has no visibility
+      # into a still-draft release on this one — and since this job usually
+      # finishes well before electron-publish.yml's macOS leg (code signing +
+      # notarization, often 15+ minutes), the release would almost always
+      # still be a draft at this point. Both steps now live in
+      # finalize-release.yml, which only runs them once the release is
+      # confirmed public.
