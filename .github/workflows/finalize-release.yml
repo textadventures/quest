@@ -1,0 +1,126 @@
+name: Finalize release
+
+# Publishing a tagged release (un-drafting it — see release-please.yml) and
+# notifying textadventures.co.uk to redeploy both need to wait until BOTH
+# deploy-play.yml (uploads WasmPlayer.zip/AppBundle.zip/WebEditor.zip) and
+# electron-publish.yml (uploads the Windows/Mac/Linux installers across all
+# three of its OS legs) have finished successfully. Those are separate
+# workflow files, both independently triggered by the same tag push, so
+# neither can express "wait for the other" as a plain job-level `needs:`.
+# This workflow instead reacts to either one completing (workflow_run) and
+# checks whether the other has *also* already finished successfully for the
+# same commit before doing anything — so the "make it live" steps below only
+# ever run once, whichever of the two finishes last. electron-publish.yml's
+# macOS leg (code signing + notarization) is normally the long pole, often
+# 15+ minutes, while deploy-play.yml is a quick Cloudflare Pages deploy — so
+# in practice this fires shortly after electron-publish finishes, but the
+# check works either way round.
+#
+# The textadventures.co.uk redeploy dispatch moved here from deploy-play.yml
+# for the same reason: that redeploy's own `gh release download --repo
+# textadventures/quest` step (in alexwarren/textadventures.co.uk's own
+# workflow) uses a plain GITHUB_TOKEN scoped to that other repo, which has no
+# special access to this one — draft releases are only visible to callers
+# with push access to the specific repo they're in, so that download would
+# fail while this repo's release is still a draft. Firing the dispatch only
+# after this workflow has published the release avoids that race.
+on:
+  workflow_run:
+    workflows: ["Deploy play.questviva.com and AppShell", "Publish Electron desktop app"]
+    types: [completed]
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: "Tag to check/finalize (e.g. v6.0.0-beta.42) — use if the automatic check missed a release, e.g. after manually re-running a failed leg of one of the two workflows above"
+        required: true
+
+jobs:
+  finalize:
+    runs-on: ubuntu-latest
+    # workflow_run fires for *any* completed run of the two workflows above,
+    # including their own workflow_dispatch (manual/test) runs — event ==
+    # 'push' excludes those, since only a real tag push should ever finalize
+    # a release.
+    if: github.event_name == 'workflow_dispatch' || (github.event.workflow_run.conclusion == 'success' && github.event.workflow_run.event == 'push')
+    # Specifying any permissions here resets every unlisted scope to none —
+    # actions: read is required alongside contents: write since the "Check
+    # whether both workflows have succeeded" step below queries the Actions
+    # API (gh api .../actions/workflows/.../runs), not just the release API.
+    permissions:
+      contents: write
+      actions: read
+    env:
+      GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    steps:
+      - name: Resolve the tag and commit to check
+        id: ref
+        run: |
+          if [ "${{ github.event_name }}" == "workflow_dispatch" ]; then
+            TAG="${{ inputs.tag }}"
+            # Not git/ref/tags/$TAG — that returns the tag *object*'s own SHA
+            # for an annotated tag, not the commit SHA that workflow runs are
+            # keyed by. The commits endpoint resolves either tag type
+            # straight to the underlying commit.
+            SHA="$(gh api "repos/${{ github.repository }}/commits/$TAG" -q .sha)"
+          else
+            # head_branch holds the tag name (not "refs/tags/..." prefixed)
+            # for a run triggered by a tag push — GitHub Actions calls this
+            # field "branch" even when the ref pushed was a tag.
+            TAG="${{ github.event.workflow_run.head_branch }}"
+            SHA="${{ github.event.workflow_run.head_sha }}"
+          fi
+
+          if [[ ! "$TAG" =~ ^v[0-9] ]]; then
+            echo "'$TAG' doesn't look like a version tag — nothing to do."
+            echo "proceed=false" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+          echo "tag=$TAG" >> "$GITHUB_OUTPUT"
+          echo "sha=$SHA" >> "$GITHUB_OUTPUT"
+          echo "proceed=true" >> "$GITHUB_OUTPUT"
+
+      - name: Check whether both workflows have succeeded for this commit
+        id: check
+        if: steps.ref.outputs.proceed == 'true'
+        run: |
+          SHA="${{ steps.ref.outputs.sha }}"
+          deploy_conclusion=$(gh api "repos/${{ github.repository }}/actions/workflows/deploy-play.yml/runs?head_sha=$SHA&status=completed" -q '.workflow_runs[0].conclusion // "pending"')
+          electron_conclusion=$(gh api "repos/${{ github.repository }}/actions/workflows/electron-publish.yml/runs?head_sha=$SHA&status=completed" -q '.workflow_runs[0].conclusion // "pending"')
+          echo "deploy-play.yml: $deploy_conclusion, electron-publish.yml: $electron_conclusion"
+          if [ "$deploy_conclusion" == "success" ] && [ "$electron_conclusion" == "success" ]; then
+            echo "ready=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "Not ready yet (or one already failed) — nothing to do this run."
+            echo "ready=false" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Publish the release
+        id: publish
+        if: steps.check.outputs.ready == 'true'
+        run: |
+          TAG="${{ steps.ref.outputs.tag }}"
+          if [ "$(gh release view "$TAG" --repo ${{ github.repository }} --json isDraft -q .isDraft)" == "false" ]; then
+            echo "Already published (the other workflow's completion already triggered this) — nothing to do."
+            echo "just_published=false" >> "$GITHUB_OUTPUT"
+          else
+            gh release edit "$TAG" --repo ${{ github.repository }} --draft=false --latest
+            echo "just_published=true" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Pin WebEditor version in textadventures.co.uk
+        if: steps.publish.outputs.just_published == 'true'
+        run: |
+          curl -s -o /dev/null -w "%{http_code}" -X PATCH \
+            -H "Authorization: token ${{ secrets.TA_DEPLOY_PAT }}" \
+            -H "Accept: application/vnd.github.v3+json" \
+            "https://api.github.com/repos/alexwarren/textadventures.co.uk/actions/variables/WEBEDITOR_VERSION" \
+            -d "{\"name\":\"WEBEDITOR_VERSION\",\"value\":\"${{ steps.ref.outputs.tag }}\"}"
+
+      - name: Trigger textadventures.co.uk deployment
+        if: steps.publish.outputs.just_published == 'true'
+        uses: peter-evans/repository-dispatch@v4
+        with:
+          token: ${{ secrets.TA_DEPLOY_PAT }}
+          repository: alexwarren/textadventures.co.uk
+          event-type: webeditor-release
+          client-payload: '{"tag": "${{ steps.ref.outputs.tag }}"}'

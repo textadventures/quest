@@ -129,3 +129,9 @@ jobs:
         run: gh release upload ${{ github.ref_name }} src/ElectronApp/release/${{ matrix.artifact-glob }} --clobber
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      # Un-drafting the release once every installer is attached (so
+      # releases/latest and public browsing never show one with a missing
+      # installer) needs to wait on deploy-play.yml too — a separate
+      # workflow file, so it can't be expressed as a needs: dependency here.
+      # See finalize-release.yml for that coordination.
