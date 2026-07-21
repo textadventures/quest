@@ -82,5 +82,40 @@ let failed = false;
     }
 }
 
+// ── Run 3: release has no .deb — Linux label must say AppImage, not .deb ───
+{
+    const browser = await chromium.launch();
+    const page = await browser.newPage({ userAgent: 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36' });
+    page.on('pageerror', err => console.log('[pageerror]', err.message));
+    const noDebRelease = {
+        tag_name: 'v6.0.0-beta.42',
+        assets: [
+            { name: 'Quest.Viva-6.0.0-beta.42-arm64.AppImage', browser_download_url: 'https://example.com/linux-arm64.AppImage' },
+            { name: 'Quest.Viva-6.0.0-beta.42.AppImage', browser_download_url: 'https://example.com/linux.AppImage' },
+        ],
+    };
+    await page.route('https://api.github.com/repos/textadventures/quest/releases/latest', route => route.fulfill({
+        status: 200,
+        contentType: 'application/json',
+        body: JSON.stringify(noDebRelease),
+    }));
+
+    try {
+        await page.goto(`${baseUrl}/`);
+        const primary = page.locator('a:has-text("Download for Linux")');
+        await primary.waitFor({ timeout: 10000 });
+        const text = await primary.textContent();
+        if (text !== 'Download for Linux (.AppImage)') throw new Error(`expected label "Download for Linux (.AppImage)", got "${text}"`);
+        const href = await primary.getAttribute('href');
+        if (href !== 'https://example.com/linux.AppImage') throw new Error(`expected the x64 AppImage link, got ${href}`);
+        console.log('PASS: Linux label reflects the AppImage fallback when no .deb is published');
+    } catch (err) {
+        console.error('FAIL (run 3):', err.message);
+        failed = true;
+    } finally {
+        await browser.close();
+    }
+}
+
 if (failed) process.exit(1);
 console.log('ALL PASS');

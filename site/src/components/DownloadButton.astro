@@ -72,13 +72,20 @@
             return; // keep the static fallback link
         }
 
+        // Linux's label depends on which of the two actually matched — a
+        // release can ship AppImage without .deb (or vice versa;
+        // electron-publish.yml's three OS legs run independently), so
+        // hardcoding "(.deb)" would mislabel an AppImage fallback link.
+        const linuxDeb = findAsset(release.assets, ".deb", false);
+        const linuxAppImage = findAsset(release.assets, ".appimage", false);
+
         const candidates = [
             { os: "Windows", label: "Windows", asset: findAsset(release.assets, ".exe") },
             { os: "Mac", label: "Mac (Apple Silicon)", asset: findAsset(release.assets, ".dmg") },
             {
                 os: "Linux",
-                label: "Linux (.deb)",
-                asset: findAsset(release.assets, ".deb", false) ?? findAsset(release.assets, ".appimage", false),
+                label: linuxDeb ? "Linux (.deb)" : "Linux (.AppImage)",
+                asset: linuxDeb ?? linuxAppImage,
             },
         ] as const;
 
@@ -101,7 +108,12 @@
     render();
 </script>
 
-<style>
+<style is:global>
+    /* Not scoped: Astro's per-component style scoping tags a build-time hash
+       class onto elements present in this template, but the actual download
+       links are created at runtime by the <script> above (render()/makeLink())
+       — they'd never get that hash class, so a scoped :where(.astro-XXXX)
+       selector would silently never match them. */
     .download-widget {
         display: flex;
         flex-direction: column;

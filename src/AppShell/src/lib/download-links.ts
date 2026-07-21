@@ -76,13 +76,20 @@ function findAsset(assets: ReleaseAsset[], extension: string, wantArm64?: boolea
 function buildLinks(release: ReleaseResponse, detected: DetectedOs): DownloadLinks {
     const assets = release.assets;
 
+    // Linux's label depends on which of the two actually matched — a release
+    // can ship AppImage without .deb (or vice versa; electron-publish.yml's
+    // three OS legs run independently), so hardcoding "(.deb)" would mislabel
+    // an AppImage fallback link.
+    const linuxDeb = findAsset(assets, ".deb", false);
+    const linuxAppImage = findAsset(assets, ".appimage", false);
+
     const candidates: { os: Exclude<DetectedOs, null>; label: string; link: DownloadLink | null }[] = [
         { os: "Windows", label: "Windows", link: findAsset(assets, ".exe") },
         { os: "Mac", label: "Mac (Apple Silicon)", link: findAsset(assets, ".dmg") },
         {
             os: "Linux",
-            label: "Linux (.deb)",
-            link: findAsset(assets, ".deb", false) ?? findAsset(assets, ".appimage", false),
+            label: linuxDeb ? "Linux (.deb)" : "Linux (.AppImage)",
+            link: linuxDeb ?? linuxAppImage,
         },
     ];
 

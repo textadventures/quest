@@ -38,6 +38,19 @@ let failed = false;
         if (href !== 'https://example.com/mac.dmg') throw new Error(`expected mac.dmg link, got ${href}`);
         console.log('PASS: primary link matches Mac UA');
 
+        // Regression: the download links are created at runtime by the
+        // component's <script> (document.createElement), not present in the
+        // .astro template — Astro's per-component CSS scoping only tags
+        // template elements with its build-time hash class, so a scoped
+        // style block would silently never match these and every link would
+        // render identically (which is what "why does it list every
+        // platform with no visual hierarchy" looked like before the fix).
+        const primaryBg = await primary.evaluate(el => getComputedStyle(el).backgroundColor);
+        if (primaryBg === 'rgba(0, 0, 0, 0)' || primaryBg === 'transparent') {
+            throw new Error(`primary link has no background styling (got ${primaryBg}) — component CSS isn't applying to runtime-created links`);
+        }
+        console.log('PASS: primary link is visually styled (component CSS applies to runtime-created elements)');
+
         const winLink = page.locator('a:has-text("Windows")').first();
         const winHref = await winLink.getAttribute('href');
         if (winHref !== 'https://example.com/win.exe') throw new Error(`expected win.exe link, got ${winHref}`);
@@ -82,6 +95,41 @@ let failed = false;
         console.log('PASS: static fallback link survives a GitHub API failure');
     } catch (err) {
         console.error('FAIL (run 2):', err.message);
+        failed = true;
+    } finally {
+        await browser.close();
+    }
+}
+
+// ── Run 3: release has no .deb — Linux label must say AppImage, not .deb ───
+{
+    const browser = await chromium.launch();
+    const page = await browser.newPage();
+    page.on('pageerror', err => console.log('[pageerror]', err.message));
+    const noDebRelease = {
+        tag_name: 'v6.0.0-beta.42',
+        assets: [
+            { name: 'Quest.Viva-6.0.0-beta.42-arm64.AppImage', browser_download_url: 'https://example.com/linux-arm64.AppImage' },
+            { name: 'Quest.Viva-6.0.0-beta.42.AppImage', browser_download_url: 'https://example.com/linux.AppImage' },
+        ],
+    };
+    await page.route('https://api.github.com/repos/textadventures/quest/releases/latest', route => route.fulfill({
+        status: 200,
+        contentType: 'application/json',
+        body: JSON.stringify(noDebRelease),
+    }));
+
+    try {
+        await page.goto(`${baseUrl}/download/`);
+        const linuxLink = page.locator('a:has-text("Linux")');
+        await linuxLink.waitFor({ timeout: 10000 });
+        const text = await linuxLink.textContent();
+        if (text !== 'Linux (.AppImage)') throw new Error(`expected label "Linux (.AppImage)", got "${text}"`);
+        const href = await linuxLink.getAttribute('href');
+        if (href !== 'https://example.com/linux.AppImage') throw new Error(`expected the x64 AppImage link, got ${href}`);
+        console.log('PASS: Linux label reflects the AppImage fallback when no .deb is published');
+    } catch (err) {
+        console.error('FAIL (run 3):', err.message);
         failed = true;
     } finally {
         await browser.close();
