@@ -55,6 +55,8 @@ function clientInfoParams(): URLSearchParams {
     if (PUBLIC_APPSHELL_VERSION) params.set("version", PUBLIC_APPSHELL_VERSION);
     const platform = window.electronApp?.platform;
     if (platform) params.set("platform", platform);
+    const arch = window.electronApp?.arch;
+    if (arch) params.set("arch", arch);
     return params;
 }
 

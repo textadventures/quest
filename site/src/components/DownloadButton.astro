@@ -1,0 +1,128 @@
+---
+// Client-side "which installer does this visitor want" widget for
+// questviva.com's /download page. Sibling implementation:
+// src/AppShell/src/lib/download-links.ts in the quest repo (play.questviva.com's
+// Play tab) — same detect+fetch+match rules, duplicated rather than shared
+// since these are separate build pipelines (Astro vs. SvelteKit) with no
+// shared package between them.
+---
+
+<div id="download-widget" class="download-widget">
+    <a class="download-fallback-link" href="https://github.com/textadventures/quest/releases/latest">
+        All downloads (GitHub Releases)
+    </a>
+</div>
+
+<script>
+    const RELEASES_API_URL = "https://api.github.com/repos/textadventures/quest/releases/latest";
+    const RELEASES_PAGE_URL = "https://github.com/textadventures/quest/releases/latest";
+
+    interface ReleaseAsset {
+        name: string;
+        browser_download_url: string;
+    }
+    interface ReleaseResponse {
+        tag_name: string;
+        assets: ReleaseAsset[];
+    }
+
+    function detectOs(): "Windows" | "Mac" | "Linux" | null {
+        const ua = navigator.userAgent;
+        if (/Windows/.test(ua)) return "Windows";
+        if (/Mac OS X|Macintosh/.test(ua)) return "Mac";
+        if (/Linux/.test(ua)) return "Linux";
+        return null;
+    }
+
+    // Extension-based, not exact filename — see download-links.ts's sibling
+    // comment for why. wantArm64 undefined means "don't care" — needed for
+    // Mac, whose only build is arm64 (so its .dmg filename always contains
+    // "arm64"). Linux itself defaults to the x64 .deb (best desktop
+    // integration, see docs/electron-desktop-app.md in the quest repo) since
+    // arch can't be reliably sniffed from a browser.
+    function findAsset(assets: ReleaseAsset[], extension: string, wantArm64?: boolean): ReleaseAsset | null {
+        return (
+            assets.find(
+                (a) =>
+                    a.name.toLowerCase().endsWith(extension) &&
+                    (wantArm64 === undefined || a.name.toLowerCase().includes("arm64") === wantArm64),
+            ) ?? null
+        );
+    }
+
+    function makeLink(text: string, url: string, className: string): HTMLAnchorElement {
+        const a = document.createElement("a");
+        a.className = className;
+        a.href = url;
+        a.textContent = text;
+        return a;
+    }
+
+    async function render() {
+        const container = document.getElementById("download-widget");
+        if (!container) return;
+        const detected = detectOs();
+
+        let release: ReleaseResponse;
+        try {
+            const response = await fetch(RELEASES_API_URL);
+            if (!response.ok) return; // keep the static fallback link
+            release = await response.json();
+        } catch {
+            return; // keep the static fallback link
+        }
+
+        const candidates = [
+            { os: "Windows", label: "Windows", asset: findAsset(release.assets, ".exe") },
+            { os: "Mac", label: "Mac (Apple Silicon)", asset: findAsset(release.assets, ".dmg") },
+            {
+                os: "Linux",
+                label: "Linux (.deb)",
+                asset: findAsset(release.assets, ".deb", false) ?? findAsset(release.assets, ".appimage", false),
+            },
+        ] as const;
+
+        const primary = detected ? candidates.find((c) => c.os === detected) : undefined;
+        const others = candidates.filter((c) => c !== primary && c.asset);
+
+        const nodes: HTMLAnchorElement[] = [];
+        if (primary?.asset) {
+            nodes.push(makeLink(`Download for ${primary.label}`, primary.asset.browser_download_url, "download-primary-link"));
+        }
+        for (const other of others) {
+            if (!other.asset) continue;
+            nodes.push(makeLink(other.label, other.asset.browser_download_url, "download-secondary-link"));
+        }
+        nodes.push(makeLink("All downloads", RELEASES_PAGE_URL, "download-fallback-link"));
+
+        container.replaceChildren(...nodes);
+    }
+
+    render();
+</script>
+
+<style>
+    .download-widget {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 0.5rem;
+        margin-block: 1.5rem;
+    }
+
+    .download-primary-link {
+        display: inline-block;
+        padding: 0.75rem 1.5rem;
+        border-radius: 0.5rem;
+        background: var(--sl-color-accent);
+        color: var(--sl-color-black);
+        font-weight: 600;
+        text-decoration: none;
+    }
+
+    .download-secondary-link,
+    .download-fallback-link {
+        font-size: 0.875rem;
+        color: var(--sl-color-gray-3);
+    }
+</style>

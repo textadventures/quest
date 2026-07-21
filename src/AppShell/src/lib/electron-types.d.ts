@@ -93,6 +93,10 @@ interface ElectronApi {
     // textadventures.co.uk's ApiController). Optional since process.platform
     // could in principle be something outside this union (e.g. freebsd).
     platform?: "Mac" | "Windows" | "Linux";
+    // Populated by preload.ts from process.arch. Only used server-side to
+    // disambiguate Linux downloads (GetDownloadUrlAsync) — Windows/Mac
+    // electron-builder targets are each single-arch.
+    arch?: "x64" | "arm64";
 }
 
 declare global {
