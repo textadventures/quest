@@ -1,5 +1,25 @@
 # Changelog
 
+## [6.0.0-beta.43](https://github.com/textadventures/quest/compare/v6.0.0-beta.42...v6.0.0-beta.43) (2026-07-21)
+
+
+### Features
+
+* add smart desktop-app download links to play.questviva.com and questviva.com ([#1911](https://github.com/textadventures/quest/issues/1911)) ([1bf3746](https://github.com/textadventures/quest/commit/1bf3746b4a2766f979d22671b43ac47c417c7c4f))
+* **AppShell:** show a dismissible update banner for the desktop app ([#1904](https://github.com/textadventures/quest/issues/1904)) ([f2ec8fa](https://github.com/textadventures/quest/commit/f2ec8fa37080ee0d800a19f230afff2142a970ca))
+* **AppShell:** warn that the editor is in preview on the Create tab ([#1914](https://github.com/textadventures/quest/issues/1914)) ([e48f2ca](https://github.com/textadventures/quest/commit/e48f2ca7510af24f630f1f9af82516713356faf9))
+* **ElectronApp:** register file associations for .aslx/.quest/.asl/.cas ([#1907](https://github.com/textadventures/quest/issues/1907)) ([a154c0d](https://github.com/textadventures/quest/commit/a154c0d21b4b6c56a2cce364e892a099628f7908))
+* **ElectronApp:** sign and notarize macOS builds in CI ([#1905](https://github.com/textadventures/quest/issues/1905)) ([54b963a](https://github.com/textadventures/quest/commit/54b963a5055e5cd6c710e88c44ecd9f9f388b400))
+
+
+### Bug Fixes
+
+* **AppShell:** editor toolbar tweaks (Home routing, Discord/GitHub links, autocapitalize) ([#1910](https://github.com/textadventures/quest/issues/1910)) ([46889b6](https://github.com/textadventures/quest/commit/46889b64e9455af1d60a2da0f9abb387d7f7eb3e))
+* **ElectronApp:** fix Linux taskbar icon, add .deb alongside AppImage ([#1900](https://github.com/textadventures/quest/issues/1900)) ([15238a3](https://github.com/textadventures/quest/commit/15238a30400726673e05e085dc1edc0afbd46f9f))
+* **Engine:** preserve insertion order in OrderedDictionary after remove+add ([#1906](https://github.com/textadventures/quest/issues/1906)) ([d4f3941](https://github.com/textadventures/quest/commit/d4f394100863f5f6d8ebb2ce144f11a6ed9062e9))
+* send client info (source/version/platform) on game-load requests ([#1903](https://github.com/textadventures/quest/issues/1903)) ([907c8bd](https://github.com/textadventures/quest/commit/907c8bd07e4392e7dc6072d90525a0743e58567d))
+* **WasmPlayer:** stop shipping debug symbols that fetch from raw.githubusercontent.com ([#1902](https://github.com/textadventures/quest/issues/1902)) ([f132bef](https://github.com/textadventures/quest/commit/f132bef3e3fdcc1a3d25840580bdcb484bb498eb))
+
 ## [6.0.0-beta.42](https://github.com/textadventures/quest/compare/v6.0.0-beta.41...v6.0.0-beta.42) (2026-07-19)
 
 
