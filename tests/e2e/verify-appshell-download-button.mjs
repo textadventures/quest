@@ -1,7 +1,9 @@
-// Ad-hoc manual verification: the Play tab's browser-build "download the
-// desktop app" widget (DownloadButton.svelte / download-links.ts) — OS
-// detection, primary button, other-platform links, and the "all downloads"
-// fallback when the GitHub releases API call fails.
+// Ad-hoc manual verification: the header's "download the desktop app" widget
+// (DownloadButton.svelte compact mode, wired up in HomeHeader.svelte) — OS
+// detection, primary link, other-platform links, and the "all downloads"
+// fallback when the GitHub releases API call fails. Lives in the header
+// (shown on both the Play and Create tabs) rather than inline on the Play
+// tab, so every run below opens it via the icon button first.
 // Requires the dev server running: ./dev.sh
 import { chromium } from 'playwright';
 
@@ -20,7 +22,13 @@ const sampleRelease = {
 
 let failed = false;
 
-// ── Run 1: Windows UA — primary button + Mac/Linux as "other" ──────────────
+async function openDropdown(page) {
+    const toggle = page.locator('button[aria-label="Download the desktop app"]');
+    await toggle.waitFor({ timeout: 10000 });
+    await toggle.click();
+}
+
+// ── Run 1: Windows UA — primary link + Mac/Linux also listed ───────────────
 {
     const browser = await chromium.launch();
     const page = await browser.newPage({ userAgent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36' });
@@ -33,22 +41,23 @@ let failed = false;
 
     try {
         await page.goto(`${baseUrl}/`);
+        await openDropdown(page);
+
         const primary = page.locator('a:has-text("Download for Windows")');
         await primary.waitFor({ timeout: 10000 });
         const href = await primary.getAttribute('href');
         if (href !== 'https://example.com/win.exe') throw new Error(`expected win.exe link, got ${href}`);
-        console.log('PASS: primary button matches Windows UA');
+        console.log('PASS: primary link matches Windows UA');
 
         const versionLine = page.locator('text=v6.0.0-beta.42 · released');
         await versionLine.waitFor({ timeout: 5000 });
         console.log('PASS: version and release date shown');
 
-        await page.locator('button:has-text("Other platforms")').click();
         const macLink = page.locator('a:has-text("Mac (Apple Silicon)")');
         await macLink.waitFor({ timeout: 5000 });
         const macHref = await macLink.getAttribute('href');
         if (macHref !== 'https://example.com/mac.dmg') throw new Error(`expected mac.dmg link, got ${macHref}`);
-        console.log('PASS: other-platforms disclosure shows Mac link');
+        console.log('PASS: Mac link listed alongside the Windows primary');
 
         // Both Linux package formats are listed (not one silently dropped in
         // favor of the other) — Linux users get to pick.
@@ -84,10 +93,11 @@ let failed = false;
     try {
         await page.goto(`${baseUrl}/`);
         await page.waitForSelector('button:has-text("Open a game file")', { timeout: 30000 });
+        await openDropdown(page);
         const allDownloads = page.locator('a:has-text("All downloads")');
         await allDownloads.waitFor({ timeout: 5000 });
-        const primaryButtons = await page.locator('a:has-text("Download for")').count();
-        if (primaryButtons !== 0) throw new Error('a primary download button rendered despite the API failure');
+        const primaryLinks = await page.locator('a:has-text("Download for")').count();
+        if (primaryLinks !== 0) throw new Error('a primary download link rendered despite the API failure');
         console.log('PASS: only the "All downloads" fallback renders when the GitHub API call fails');
     } catch (err) {
         console.error('FAIL (run 2):', err.message);
@@ -110,6 +120,8 @@ let failed = false;
 
     try {
         await page.goto(`${baseUrl}/`);
+        await openDropdown(page);
+
         const primary = page.locator('a:has-text("Download for Linux")');
         await primary.waitFor({ timeout: 10000 });
         const text = await primary.textContent();
@@ -117,11 +129,10 @@ let failed = false;
         const href = await primary.getAttribute('href');
         if (href !== 'https://example.com/linux.deb') throw new Error(`expected linux.deb link, got ${href}`);
 
-        await page.locator('button:has-text("Other platforms")').click();
         const appImageLink = page.locator('a:has-text("Linux (.AppImage)")');
         const appImageHref = await appImageLink.getAttribute('href');
         if (appImageHref !== 'https://example.com/linux.AppImage') throw new Error(`expected linux.AppImage link, got ${appImageHref}`);
-        console.log('PASS: Linux UA gets .deb as the primary button, AppImage still offered as another option');
+        console.log('PASS: Linux UA gets .deb as the primary link, AppImage still offered as another option');
     } catch (err) {
         console.error('FAIL (run 3):', err.message);
         failed = true;
@@ -150,6 +161,8 @@ let failed = false;
 
     try {
         await page.goto(`${baseUrl}/`);
+        await openDropdown(page);
+
         const primary = page.locator('a:has-text("Download for Linux")');
         await primary.waitFor({ timeout: 10000 });
         const text = await primary.textContent();

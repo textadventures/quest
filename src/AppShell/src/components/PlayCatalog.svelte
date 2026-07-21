@@ -8,7 +8,6 @@
     import { openElectronPlayFile, loadElectronFile, listRecentGames, removeRecentGame } from "$lib/filesystem/electron-adapter";
     import type { RecentGame } from "$lib/filesystem/electron-adapter";
     import UpdateBanner from "$components/UpdateBanner.svelte";
-    import DownloadButton from "$components/DownloadButton.svelte";
 
     const isElectronApp = isElectron();
 
@@ -281,11 +280,6 @@
             {/if}
             {#if !isElectronApp && startError}
                 <p class="text-error-500 text-sm">{startError}</p>
-            {/if}
-            {#if !isElectronApp}
-                <div class="mt-2">
-                    <DownloadButton />
-                </div>
             {/if}
         </div>
 
