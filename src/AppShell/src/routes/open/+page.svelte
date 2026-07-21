@@ -21,6 +21,7 @@
     } from "$lib/filesystem/local-adapter";
     import type { LocalDraftSummary, ZipEntries } from "$lib/filesystem/local-adapter";
     import { loadWasm } from "$lib/wasm";
+    import PreviewBanner from "$components/PreviewBanner.svelte";
 
     const hasServer = PUBLIC_HAS_SERVER === "true";
 
@@ -423,6 +424,8 @@
 
     const creating = $derived(creatingLocal || creatingServer);
 </script>
+
+<PreviewBanner />
 
 <main class="flex flex-col items-center justify-center min-h-[calc(100svh-var(--home-bar-height,0px))] gap-6 p-8">
     <h1 class="text-3xl font-semibold">Quest Viva Editor</h1>
