@@ -129,3 +129,29 @@ jobs:
         run: gh release upload ${{ github.ref_name }} src/ElectronApp/release/${{ matrix.artifact-glob }} --clobber
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  finalize:
+    # release-please.yml drafts the release immediately after creating it,
+    # specifically so releases/latest and public browsing don't show an
+    # incomplete asset list while this workflow's three OS legs — especially
+    # macOS's signing+notarization, the slow one — are still uploading. This
+    # job un-drafts it once they're all done. needs: (rather than
+    # needs + if: always()) means it only runs if every leg of the publish
+    # matrix succeeded, so a build failure leaves the release as a draft
+    # rather than publishing one with a missing installer.
+    #
+    # deploy-play.yml also uploads assets to this same release (WasmPlayer.zip/
+    # AppBundle.zip/WebEditor.zip) but is a separate workflow file, so it can't
+    # be included in this needs: graph — its Cloudflare Pages deploy is fast
+    # enough that it should always finish well before this job runs, but that
+    # is an assumption, not a guarantee enforced here.
+    needs: publish
+    if: github.ref_type == 'tag'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Publish the release now that every installer is attached
+        run: gh release edit ${{ github.ref_name }} --draft=false --latest
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
