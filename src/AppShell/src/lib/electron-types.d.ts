@@ -70,6 +70,12 @@ interface ElectronMenuApi {
 // PlayCatalog.svelte.
 interface ElectronPlayerApi {
     openWindow(request?: { id?: string }): Promise<boolean>;
+    // Fired by a file-association open of a play-kind file (.quest/.asl/.cas)
+    // while a window already exists — see ElectronApp's main.ts
+    // (routeOpenedFile) and preload.ts. PlayCatalog.svelte's listener loads
+    // the file and launches a player window for it via playElectronFile,
+    // same as its own file-picker/Recently Played flows.
+    onOpenPlayFile(callback: (file: { dirPath: string; filename: string }) => void): () => void;
 }
 
 interface ElectronApi {

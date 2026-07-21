@@ -9,6 +9,30 @@ import { registerRecentHandlers } from "./ipc/recent";
 import { registerPlayerHandlers } from "./ipc/player";
 import { listRecentGames, clearRecentGames, type RecentGame, type RecentKind } from "./recent-games";
 
+let editorWindow: BrowserWindow | null = null;
+let staticServer: StaticServerHandle | null = null;
+
+// Set by the "open-file" handler below when macOS launches the app fresh via
+// a file association (double-click, "Open With…") — that event can fire
+// before editorWindow exists (even before 'ready'), so there's nothing to
+// route it to yet. whenReady's createEditorWindow call picks this up once
+// the window exists, by folding it into the window's initial URL instead of
+// an IPC send — see routeOpenedFile's comment for why cold-start and
+// warm-instance opens need different delivery mechanisms.
+let pendingOpenPath: string | null = null;
+
+// macOS-only: file-association launches ("Open With…", double-click) arrive
+// here instead of as an argv entry (Windows/Linux — see extractGameFilePath).
+// Must be registered before app.whenReady() resolves — Electron's docs note
+// mac can fire this as early as during startup, before 'ready' — hence it's
+// registered immediately after the two vars above it depends on, ahead of
+// every other statement in this file.
+app.on("open-file", (event, filePath) => {
+    event.preventDefault();
+    if (editorWindow) routeOpenedFile(filePath);
+    else pendingOpenPath = filePath;
+});
+
 // Without this, Electron's default macOS menu ("About "/"Quit ") falls back
 // to package.json's "name" ("quest-viva-desktop") in dev — set as early as
 // possible so it's correct whether packaged or run via `electron .`.
@@ -51,9 +75,6 @@ if (process.platform === "darwin") {
     });
 }
 
-let editorWindow: BrowserWindow | null = null;
-let staticServer: StaticServerHandle | null = null;
-
 // Mirrors the union AppShell's src/routes/+layout.svelte switches on (see
 // window.electronApp.menu.onAction in preload.ts) — the two sides can't share
 // a type since they're separate npm projects, so keep them in sync by hand.
@@ -93,6 +114,76 @@ function sendMenuAction(action: MenuAction): void {
 function sendOpenRecentGame(game: RecentGame): void {
     focusEditorWindow();
     editorWindow?.webContents.send("open-recent-game", { dirPath: game.dirPath, filename: game.filename });
+}
+
+// Same delivery as sendOpenRecentGame, for a file-association open of a
+// play-kind file (.quest/.asl/.cas) — PlayCatalog.svelte's onOpenPlayFile
+// listener (see preload.ts) launches a player window for it, the same as
+// its own file-picker/Recently Played flows.
+function sendOpenPlayFile(file: { dirPath: string; filename: string }): void {
+    focusEditorWindow();
+    editorWindow?.webContents.send("open-play-file", file);
+}
+
+// .aslx opens the editor (it's the unpacked source format the editor works
+// with); .quest/.asl/.cas launch the player directly — matches the split
+// PlayCatalog.svelte/electron-adapter.ts already draw between the editor's
+// Open (ASLX_FILTER, .aslx only) and Play's file picker (PLAY_FILTER, all
+// four).
+const PLAY_EXTENSIONS = new Set([".quest", ".asl", ".cas"]);
+const GAME_EXTENSIONS = new Set([".aslx", ...PLAY_EXTENSIONS]);
+
+// Windows/Linux hand the launched file to us as a plain argv entry — used
+// both for this process's own process.argv (cold start) and for the argv
+// Electron forwards from a second launch attempt (see the "second-instance"
+// handler below). The packaged exe path (argv[0]) and dev's literal "."
+// (from `electron .`) never carry a recognized extension, so both are
+// naturally skipped without special-casing them.
+function extractGameFilePath(argv: string[]): string | null {
+    for (const arg of argv) {
+        if (GAME_EXTENSIONS.has(path.extname(arg).toLowerCase())) return arg;
+    }
+    return null;
+}
+
+// Warm-instance delivery only (editorWindow already exists and has been
+// loaded/listening since the app's first launch) — called from
+// "second-instance" (Windows/Linux relaunch) and from the "open-file"
+// handler above once a window is already up. Cold-start delivery is a
+// separate mechanism (see createEditorWindow/initialUrlPath below): sending
+// over IPC immediately after constructing a fresh BrowserWindow would race
+// the page's own onMount listeners, which aren't wired up until well after
+// loadURL resolves, and the message would just be dropped.
+function routeOpenedFile(filePath: string): void {
+    const ext = path.extname(filePath).toLowerCase();
+    const dirPath = path.dirname(filePath);
+    const filename = path.basename(filePath);
+    if (ext === ".aslx") {
+        sendOpenRecentGame({ dirPath, filename, lastOpened: Date.now() });
+    } else if (PLAY_EXTENSIONS.has(ext)) {
+        sendOpenPlayFile({ dirPath, filename });
+    }
+}
+
+// Cold-start file-association open, folded into the editor window's initial
+// URL rather than delivered over IPC (see routeOpenedFile's comment) — both
+// query shapes are already handled by the target page: /open?action=
+// open-recent&... by open/+page.svelte (shared with the native "Open Recent"
+// menu), /?action=play-file&... by PlayCatalog.svelte (new, mirrors it for
+// Play).
+function initialUrlPath(filePath: string | null): string {
+    if (!filePath) return "/";
+    const ext = path.extname(filePath).toLowerCase();
+    const dirPath = path.dirname(filePath);
+    const filename = path.basename(filePath);
+    const t = Date.now();
+    if (ext === ".aslx") {
+        return `/open?action=open-recent&dir=${encodeURIComponent(dirPath)}&file=${encodeURIComponent(filename)}&t=${t}`;
+    }
+    if (PLAY_EXTENSIONS.has(ext)) {
+        return `/?action=play-file&dir=${encodeURIComponent(dirPath)}&file=${encodeURIComponent(filename)}&t=${t}`;
+    }
+    return "/";
 }
 
 // Everything the editor itself can do (New/Open/Save/Save As) has to round-trip
@@ -172,7 +263,7 @@ async function refreshMenu(): Promise<void> {
     Menu.setApplicationMenu(buildAppMenu(await listRecentGames("edit")));
 }
 
-function createEditorWindow(port: number): void {
+function createEditorWindow(port: number, initialPath?: string | null): void {
     editorWindow = new BrowserWindow({
         title: "Quest Viva",
         width: 1280,
@@ -260,45 +351,66 @@ function createEditorWindow(port: number): void {
         return { action: "deny" };
     });
 
-    void editorWindow.loadURL(`http://127.0.0.1:${port}/`);
+    void editorWindow.loadURL(`http://127.0.0.1:${port}${initialUrlPath(initialPath ?? null)}`);
 
     editorWindow.on("closed", () => {
         editorWindow = null;
     });
 }
 
-app.whenReady().then(async () => {
-    registerFsHandlers();
-    registerDialogHandlers();
-    registerShellHandlers();
-    registerPathsHandlers();
-    // Edit-kind changes rebuild the native "Open Recent" submenu; both kinds
-    // also get broadcast to the renderer (see broadcastRecentChanged).
-    registerRecentHandlers((kind) => {
-        if (kind === "edit") void refreshMenu();
-        broadcastRecentChanged(kind);
-    });
-    registerPlayerHandlers(() => (staticServer ? `http://127.0.0.1:${staticServer.port}` : null));
-    await refreshMenu();
-
-    const root = staticRoot();
-    staticServer = await startStaticServer({
-        editor: path.join(root, "editor"),
-        appBundle: path.join(root, "AppBundle"),
-        player: path.join(root, "player"),
+// Windows/Linux only have one way to "double-click a second file while the
+// app is already running": the OS launches a whole new process for it. This
+// claims the lock for the first instance and quits every later one
+// immediately — its argv (carrying the file path) is forwarded to the first
+// instance's "second-instance" event below instead. macOS never launches a
+// second process for this (Launch Services routes it to "open-file" on the
+// existing instance instead), but requesting the lock is harmless there too.
+const gotLock = app.requestSingleInstanceLock();
+if (!gotLock) {
+    app.quit();
+} else {
+    app.on("second-instance", (_event, argv) => {
+        focusEditorWindow();
+        const filePath = extractGameFilePath(argv);
+        if (filePath) routeOpenedFile(filePath);
     });
 
-    createEditorWindow(staticServer.port);
+    app.whenReady().then(async () => {
+        registerFsHandlers();
+        registerDialogHandlers();
+        registerShellHandlers();
+        registerPathsHandlers();
+        // Edit-kind changes rebuild the native "Open Recent" submenu; both kinds
+        // also get broadcast to the renderer (see broadcastRecentChanged).
+        registerRecentHandlers((kind) => {
+            if (kind === "edit") void refreshMenu();
+            broadcastRecentChanged(kind);
+        });
+        registerPlayerHandlers(() => (staticServer ? `http://127.0.0.1:${staticServer.port}` : null));
+        await refreshMenu();
 
-    app.on("activate", () => {
-        if (BrowserWindow.getAllWindows().length === 0 && staticServer) createEditorWindow(staticServer.port);
+        const root = staticRoot();
+        staticServer = await startStaticServer({
+            editor: path.join(root, "editor"),
+            appBundle: path.join(root, "AppBundle"),
+            player: path.join(root, "player"),
+        });
+
+        // Windows/Linux cold start: the launched file is this process's own
+        // argv. macOS cold start: the "open-file" handler above already
+        // captured it into pendingOpenPath (it fires before this resolves).
+        createEditorWindow(staticServer.port, pendingOpenPath ?? extractGameFilePath(process.argv));
+
+        app.on("activate", () => {
+            if (BrowserWindow.getAllWindows().length === 0 && staticServer) createEditorWindow(staticServer.port);
+        });
     });
-});
 
-app.on("window-all-closed", () => {
-    if (process.platform !== "darwin") app.quit();
-});
+    app.on("window-all-closed", () => {
+        if (process.platform !== "darwin") app.quit();
+    });
 
-app.on("before-quit", () => {
-    void staticServer?.close();
-});
+    app.on("before-quit", () => {
+        void staticServer?.close();
+    });
+}

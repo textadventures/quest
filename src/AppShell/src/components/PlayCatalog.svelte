@@ -1,6 +1,7 @@
 <script lang="ts">
     import { onMount, onDestroy } from "svelte";
     import { base } from "$app/paths";
+    import { page } from "$app/state";
     import { fetchCatalog, type CatalogCategory, type UpdateInfo } from "$lib/home-catalog";
     import { pickFile } from "$lib/filesystem/file-picker";
     import { isElectron } from "$lib/runtime";
@@ -108,6 +109,27 @@
             electronBusy = false;
         }
     }
+
+    // Electron: a file-association open of a play-kind file (.quest/.asl/.cas)
+    // lands here as a query string on root — either baked into this window's
+    // initial URL for a cold start (see ElectronApp's main.ts, initialUrlPath)
+    // or via a goto() from +layout.svelte's onOpenPlayFile listener once this
+    // page is already mounted. Same nonce-guarded pattern as open/+page.svelte's
+    // action=open-recent effect, so a repeat firing on the same file (nonce
+    // unchanged) doesn't relaunch the player.
+    let handledPlayNonce = "";
+    $effect(() => {
+        if (!isElectronApp) return;
+        const params = page.url.searchParams;
+        if (params.get("action") !== "play-file") return;
+        const nonce = params.get("t") ?? "";
+        if (nonce === handledPlayNonce) return;
+        const dirPath = params.get("dir");
+        const filename = params.get("file");
+        if (!dirPath || !filename) return;
+        handledPlayNonce = nonce;
+        void playElectronFile(dirPath, filename);
+    });
 
     // Electron: a single click launches the game — no second "Start" click
     // needed, because the player window here is created by the *main*

@@ -97,9 +97,20 @@
                 void goto(`${base}/open${query}`);
             })();
         });
+        // A play-kind file association (.quest/.asl/.cas) opened while this
+        // window already exists (ElectronApp's main.ts routeOpenedFile, via
+        // preload.ts's player.onOpenPlayFile) — routed to root with the same
+        // query shape a cold-start open uses (see main.ts's initialUrlPath),
+        // so PlayCatalog.svelte only needs one $effect to handle both. Never
+        // touches the editor's own loaded game, so no saveGame() flush first.
+        const unsubscribePlayFile = window.electronApp!.player.onOpenPlayFile((file) => {
+            const query = `?action=play-file&dir=${encodeURIComponent(file.dirPath)}&file=${encodeURIComponent(file.filename)}&t=${Date.now()}`;
+            void goto(`${rootPath}${query}`);
+        });
         return () => {
             unsubscribeAction();
             unsubscribeRecent();
+            unsubscribePlayFile();
         };
     });
 </script>

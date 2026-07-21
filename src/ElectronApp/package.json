@@ -39,6 +39,20 @@
         "to": "icon.png"
       }
     ],
+    "fileAssociations": [
+      {
+        "ext": "aslx",
+        "name": "Quest Game",
+        "description": "Quest Viva game source",
+        "role": "Editor"
+      },
+      {
+        "ext": ["quest", "asl", "cas"],
+        "name": "Quest Game",
+        "description": "Quest Viva game",
+        "role": "Viewer"
+      }
+    ],
     "afterSign": "scripts/adhoc-sign.js",
     "mac": {
       "category": "public.app-category.productivity",

@@ -114,5 +114,16 @@ contextBridge.exposeInMainWorld("electronApp", {
         // straight from a single file-picker click instead of needing a
         // second "Start" click to satisfy a fresh gesture.
         openWindow: (request?: { id?: string }): Promise<boolean> => ipcRenderer.invoke("player:openWindow", request),
+        // Fired when the OS launches or relaunches the app via a play-kind
+        // file association (.quest/.asl/.cas) while a window already exists
+        // — main.ts's routeOpenedFile sends this instead of focusing straight
+        // into a player window, since PlayCatalog.svelte needs to load the
+        // file's bytes first (see its onOpenPlayFile listener). Cold-start
+        // opens don't use this channel at all — see main.ts's initialUrlPath.
+        onOpenPlayFile: (callback: (file: { dirPath: string; filename: string }) => void): (() => void) => {
+            const listener = (_event: Electron.IpcRendererEvent, file: { dirPath: string; filename: string }) => callback(file);
+            ipcRenderer.on("open-play-file", listener);
+            return () => ipcRenderer.removeListener("open-play-file", listener);
+        },
     },
 });
