@@ -14,11 +14,14 @@ let staticServer: StaticServerHandle | null = null;
 
 // Set by the "open-file" handler below when macOS launches the app fresh via
 // a file association (double-click, "Open With…") — that event can fire
-// before editorWindow exists (even before 'ready'), so there's nothing to
-// route it to yet. whenReady's createEditorWindow call picks this up once
-// the window exists, by folding it into the window's initial URL instead of
-// an IPC send — see routeOpenedFile's comment for why cold-start and
-// warm-instance opens need different delivery mechanisms.
+// before editorWindow exists *and before staticServer exists* (even before
+// 'ready'), so there's nothing to route it to yet. whenReady's
+// createEditorWindow call picks this up once the window exists, by folding
+// it into the window's initial URL instead of an IPC send — see
+// routeOpenedFile's comment for why cold-start and warm-instance opens need
+// different delivery mechanisms. Only ever consumed there — once
+// staticServer exists, the "open-file" handler below creates windows
+// directly instead of going through this.
 let pendingOpenPath: string | null = null;
 
 // macOS-only: file-association launches ("Open With…", double-click) arrive
@@ -27,9 +30,20 @@ let pendingOpenPath: string | null = null;
 // mac can fire this as early as during startup, before 'ready' — hence it's
 // registered immediately after the two vars above it depends on, ahead of
 // every other statement in this file.
+//
+// Three cases: a window is already up (route straight to it); the app is
+// warm but every window's been closed — mac keeps the app running with no
+// windows (see window-all-closed below), so staticServer is already up and
+// a fresh window can be created immediately with the file folded into its
+// initial URL; or this is a genuine cold start (staticServer doesn't exist
+// yet), which stashes the path for whenReady's createEditorWindow call to
+// pick up. Without the middle case, a double-click while windowless would
+// silently drop the file — clicking the dock icon first (which creates a
+// blank window via "activate") was the only way to recover.
 app.on("open-file", (event, filePath) => {
     event.preventDefault();
     if (editorWindow) routeOpenedFile(filePath);
+    else if (staticServer) createEditorWindow(staticServer.port, filePath);
     else pendingOpenPath = filePath;
 });
 
