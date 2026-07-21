@@ -29,6 +29,7 @@ export interface DownloadLink {
 
 export interface DownloadLinks {
     version: string | null;
+    releaseDate: string | null;
     primary: DownloadLink | null;
     others: DownloadLink[];
     releasePage: string;
@@ -41,7 +42,16 @@ interface ReleaseAsset {
 
 interface ReleaseResponse {
     tag_name: string;
+    published_at: string;
     assets: ReleaseAsset[];
+}
+
+// Uses the visitor's own browser locale (undefined locale arg) rather than a
+// fixed format, so e.g. UK visitors see "19 Jul 2026" instead of US ordering.
+function formatReleaseDate(iso: string): string | null {
+    const date = new Date(iso);
+    if (Number.isNaN(date.getTime())) return null;
+    return date.toLocaleDateString(undefined, { year: "numeric", month: "short", day: "numeric" });
 }
 
 export type DetectedOs = "Windows" | "Mac" | "Linux" | null;
@@ -102,6 +112,7 @@ function buildLinks(release: ReleaseResponse, detected: DetectedOs): DownloadLin
 
     return {
         version: release.tag_name,
+        releaseDate: formatReleaseDate(release.published_at),
         primary,
         others,
         releasePage: RELEASES_PAGE_URL,
@@ -109,7 +120,7 @@ function buildLinks(release: ReleaseResponse, detected: DetectedOs): DownloadLin
 }
 
 function fallbackLinks(): DownloadLinks {
-    return { version: null, primary: null, others: [], releasePage: RELEASES_PAGE_URL };
+    return { version: null, releaseDate: null, primary: null, others: [], releasePage: RELEASES_PAGE_URL };
 }
 
 export async function fetchDownloadLinks(): Promise<DownloadLinks> {

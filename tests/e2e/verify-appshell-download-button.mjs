@@ -9,6 +9,7 @@ const baseUrl = process.argv[2] || 'http://localhost:5174';
 
 const sampleRelease = {
     tag_name: 'v6.0.0-beta.42',
+    published_at: '2026-07-19T07:30:55Z',
     assets: [
         { name: 'Quest.Viva.Setup.6.0.0-beta.42.exe', browser_download_url: 'https://example.com/win.exe' },
         { name: 'Quest.Viva-6.0.0-beta.42-arm64.dmg', browser_download_url: 'https://example.com/mac.dmg' },
@@ -37,6 +38,10 @@ let failed = false;
         const href = await primary.getAttribute('href');
         if (href !== 'https://example.com/win.exe') throw new Error(`expected win.exe link, got ${href}`);
         console.log('PASS: primary button matches Windows UA');
+
+        const versionLine = page.locator('text=v6.0.0-beta.42 · released');
+        await versionLine.waitFor({ timeout: 5000 });
+        console.log('PASS: version and release date shown');
 
         await page.locator('button:has-text("Other platforms")').click();
         const macLink = page.locator('a:has-text("Mac (Apple Silicon)")');
@@ -152,6 +157,12 @@ let failed = false;
         const href = await primary.getAttribute('href');
         if (href !== 'https://example.com/linux.AppImage') throw new Error(`expected the x64 AppImage link, got ${href}`);
         console.log('PASS: Linux label reflects the AppImage fallback when no .deb is published');
+
+        // No published_at on this release — version line should degrade to
+        // just the tag, not "released Invalid Date" or similar.
+        const versionText = await page.locator('p:has-text("v6.0.0-beta.42")').textContent();
+        if (versionText !== 'v6.0.0-beta.42') throw new Error(`expected bare version with no release date, got "${versionText}"`);
+        console.log('PASS: version line degrades gracefully with no published_at');
     } catch (err) {
         console.error('FAIL (run 4):', err.message);
         failed = true;

@@ -23,7 +23,17 @@
     }
     interface ReleaseResponse {
         tag_name: string;
+        published_at: string;
         assets: ReleaseAsset[];
+    }
+
+    // Uses the visitor's own browser locale (undefined locale arg) rather
+    // than a fixed format, so e.g. UK visitors see "19 Jul 2026" instead of
+    // US ordering.
+    function formatReleaseDate(iso: string): string | null {
+        const date = new Date(iso);
+        if (Number.isNaN(date.getTime())) return null;
+        return date.toLocaleDateString(undefined, { year: "numeric", month: "short", day: "numeric" });
     }
 
     function detectOs(): "Windows" | "Mac" | "Linux" | null {
@@ -90,7 +100,13 @@
         const primary = detected ? candidates.find((c) => c.os === detected && c.asset) : undefined;
         const others = candidates.filter((c) => c !== primary && c.asset);
 
-        const nodes: HTMLAnchorElement[] = [];
+        const nodes: HTMLElement[] = [];
+        const releaseDate = formatReleaseDate(release.published_at);
+        const versionText = document.createElement("p");
+        versionText.className = "download-version";
+        versionText.textContent = releaseDate ? `${release.tag_name} · released ${releaseDate}` : release.tag_name;
+        nodes.push(versionText);
+
         if (primary?.asset) {
             nodes.push(makeLink(`Download for ${primary.label}`, primary.asset.browser_download_url, "download-primary-link"));
         }
@@ -118,6 +134,12 @@
         align-items: center;
         gap: 0.5rem;
         margin-block: 1.5rem;
+    }
+
+    .download-version {
+        font-size: 0.875rem;
+        color: var(--sl-color-gray-3);
+        margin: 0;
     }
 
     .download-primary-link {

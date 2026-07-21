@@ -5,6 +5,13 @@
     let links = $state<DownloadLinks | null>(null);
     let expanded = $state(false);
 
+    // Built as one string rather than adjacent {expr}{#if} template
+    // mustaches — Svelte's whitespace trimming ate the space before "·" when
+    // it was split across a text node and an #if block.
+    let versionLine = $derived(
+        links?.version ? (links.releaseDate ? `${links.version} · released ${links.releaseDate}` : links.version) : null,
+    );
+
     onMount(async () => {
         links = await fetchDownloadLinks();
     });
@@ -12,6 +19,9 @@
 
 {#if links}
     <div class="flex flex-col items-center gap-1 text-sm">
+        {#if versionLine}
+            <p class="text-surface-500 text-xs">{versionLine}</p>
+        {/if}
         {#if links.primary}
             <a href={links.primary.url} class="btn btn-sm preset-outlined-primary-500">
                 {links.primary.label}

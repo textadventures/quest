@@ -9,6 +9,7 @@ const baseUrl = process.argv[2] || 'http://localhost:4321';
 
 const sampleRelease = {
     tag_name: 'v6.0.0-beta.42',
+    published_at: '2026-07-19T07:30:55Z',
     assets: [
         { name: 'Quest.Viva.Setup.6.0.0-beta.42.exe', browser_download_url: 'https://example.com/win.exe' },
         { name: 'Quest.Viva-6.0.0-beta.42-arm64.dmg', browser_download_url: 'https://example.com/mac.dmg' },
@@ -50,6 +51,10 @@ let failed = false;
             throw new Error(`primary link has no background styling (got ${primaryBg}) — component CSS isn't applying to runtime-created links`);
         }
         console.log('PASS: primary link is visually styled (component CSS applies to runtime-created elements)');
+
+        const versionLine = page.locator('text=v6.0.0-beta.42 · released');
+        await versionLine.waitFor({ timeout: 5000 });
+        console.log('PASS: version and release date shown');
 
         const winLink = page.locator('a:has-text("Windows")').first();
         const winHref = await winLink.getAttribute('href');
@@ -165,6 +170,12 @@ let failed = false;
         const href = await linuxLink.getAttribute('href');
         if (href !== 'https://example.com/linux.AppImage') throw new Error(`expected the x64 AppImage link, got ${href}`);
         console.log('PASS: Linux label reflects the AppImage fallback when no .deb is published');
+
+        // No published_at on this release — version line should degrade to
+        // just the tag, not "released Invalid Date" or similar.
+        const versionText = await page.locator('p.download-version').textContent();
+        if (versionText !== 'v6.0.0-beta.42') throw new Error(`expected bare version with no release date, got "${versionText}"`);
+        console.log('PASS: version line degrades gracefully with no published_at');
     } catch (err) {
         console.error('FAIL (run 4):', err.message);
         failed = true;
