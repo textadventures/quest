@@ -183,6 +183,7 @@
         {#if ctrl.textProcessorCommands?.length}
             <div class="richtext-wrap flex gap-2 w-full">
                 <textarea
+                    autocapitalize="off"
                     class="input text-xs py-0.5 px-1.5 flex-1 min-h-32 resize-y"
                     value={attrValue(ctrl.attribute!) ?? ""}
                     onchange={(e) => onTextChange(ctrl.attribute!, ctrl.controlType, (e.target as HTMLTextAreaElement).value)}
@@ -191,6 +192,7 @@
             </div>
         {:else}
             <textarea
+                autocapitalize="off"
                 class="input text-xs py-0.5 px-1.5 w-full min-h-24 resize-y"
                 value={attrValue(ctrl.attribute!) ?? ""}
                 onchange={(e) => onTextChange(ctrl.attribute!, ctrl.controlType, (e.target as HTMLTextAreaElement).value)}
@@ -199,6 +201,7 @@
     {:else if ctrl.controlType === "textbox"}
         <input
             type="text"
+            autocapitalize="off"
             class="input text-xs py-0.5 px-1.5 w-full"
             value={attrValue(ctrl.attribute!) ?? ""}
             onchange={(e) => onTextChange(ctrl.attribute!, ctrl.controlType, (e.target as HTMLInputElement).value)}
@@ -207,6 +210,7 @@
         <div class="flex items-center gap-2 w-full">
             <input
                 type="text"
+                autocapitalize="off"
                 class="input text-xs py-0.5 px-1.5 flex-1"
                 readonly
                 value={attrValue(ctrl.attribute!) ?? ""}
@@ -236,6 +240,7 @@
                     {#if isEditing}
                         <input
                             type="text"
+                            autocapitalize="off"
                             class="input text-xs py-0.5 px-1.5 flex-1"
                             use:focusOnMount
                             value={editingItem!.value}
@@ -272,6 +277,7 @@
             <div class="flex items-center gap-1 mt-0.5">
                 <input
                     type="text"
+                    autocapitalize="off"
                     class="input text-xs py-0.5 px-1.5 w-24 flex-shrink-0"
                     placeholder={ctrl.caption ? "Key" : "Key"}
                     data-staging
@@ -280,6 +286,7 @@
                 />
                 <input
                     type="text"
+                    autocapitalize="off"
                     class="input text-xs py-0.5 px-1.5 flex-1"
                     placeholder="Value"
                     data-staging
@@ -328,6 +335,7 @@
                 {#if ctrl.textProcessorCommands?.length}
                     <div class="richtext-wrap flex gap-2 w-full">
                         <textarea
+                            autocapitalize="off"
                             class="input text-xs py-0.5 px-1.5 flex-1 min-h-32 resize-y"
                             value={attrValue(ctrl.subAttribute) ?? ""}
                             onchange={(e) => onTextChange(ctrl.subAttribute!, "richtext", (e.target as HTMLTextAreaElement).value)}
@@ -336,6 +344,7 @@
                     </div>
                 {:else}
                     <textarea
+                        autocapitalize="off"
                         class="input text-xs py-0.5 px-1.5 w-full min-h-24 resize-y"
                         value={attrValue(ctrl.subAttribute) ?? ""}
                         onchange={(e) => onTextChange(ctrl.subAttribute!, "richtext", (e.target as HTMLTextAreaElement).value)}
@@ -344,6 +353,7 @@
             {:else if subEditorType === "textbox" && ctrl.subAttribute !== null}
                 <input
                     type="text"
+                    autocapitalize="off"
                     class="input text-xs py-0.5 px-1.5 w-full"
                     value={attrValue(ctrl.subAttribute) ?? ""}
                     onchange={(e) => onTextChange(ctrl.subAttribute!, "textbox", (e.target as HTMLInputElement).value)}
@@ -419,6 +429,7 @@
                     {#if ctrl.textProcessorCommands?.length}
                         <div class="richtext-wrap flex gap-2 w-full">
                             <textarea
+                                autocapitalize="off"
                                 class="input text-xs py-0.5 px-1.5 flex-1 min-h-32 resize-y"
                                 value={attrValue(ctrl.subAttribute) ?? ""}
                                 onchange={(e) => onTextChange(ctrl.subAttribute!, "richtext", (e.target as HTMLTextAreaElement).value)}
@@ -427,6 +438,7 @@
                         </div>
                     {:else}
                         <textarea
+                            autocapitalize="off"
                             class="input text-xs py-0.5 px-1.5 w-full min-h-24 resize-y"
                             value={attrValue(ctrl.subAttribute) ?? ""}
                             onchange={(e) => onTextChange(ctrl.subAttribute!, "richtext", (e.target as HTMLTextAreaElement).value)}
@@ -435,6 +447,7 @@
                 {:else if subEditorType === "textbox" && ctrl.subAttribute !== null}
                     <input
                         type="text"
+                        autocapitalize="off"
                         class="input text-xs py-0.5 px-1.5 w-full"
                         value={attrValue(ctrl.subAttribute) ?? ""}
                         onchange={(e) => onTextChange(ctrl.subAttribute!, "textbox", (e.target as HTMLInputElement).value)}

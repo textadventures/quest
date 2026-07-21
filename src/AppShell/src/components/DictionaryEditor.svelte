@@ -48,6 +48,7 @@
             {#if editingKey === item.key}
                 <input
                     type="text"
+                    autocapitalize="off"
                     class="input text-xs py-0.5 px-1.5 flex-1"
                     value={editingValue}
                     oninput={(e) => { editingValue = (e.target as HTMLInputElement).value; }}
@@ -74,6 +75,7 @@
     <div class="flex items-center gap-1 mt-0.5">
         <input
             type="text"
+            autocapitalize="off"
             class="input text-xs py-0.5 px-1.5 w-20 flex-shrink-0"
             placeholder="Key"
             data-staging
@@ -82,6 +84,7 @@
         />
         <input
             type="text"
+            autocapitalize="off"
             class="input text-xs py-0.5 px-1.5 flex-1"
             placeholder="Value"
             data-staging

@@ -114,6 +114,7 @@
 <div class="relative">
     <input
         type="text"
+        autocapitalize="off"
         role="combobox"
         aria-expanded={open}
         aria-autocomplete="list"

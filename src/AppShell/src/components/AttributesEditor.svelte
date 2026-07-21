@@ -456,6 +456,7 @@
                         {:else}
                             <!-- string, simplepattern -->
                             <textarea
+                                autocapitalize="off"
                                 class="input text-xs py-1 px-1.5 w-full resize-none"
                                 rows="4"
                                 value={editingValue}
@@ -478,6 +479,7 @@
         <div class="flex items-center gap-2 max-w-xs">
             <input
                 type="text"
+                autocapitalize="off"
                 placeholder="Add attribute..."
                 class="input text-xs py-0 px-1.5 h-6 flex-1 min-w-0"
                 data-staging

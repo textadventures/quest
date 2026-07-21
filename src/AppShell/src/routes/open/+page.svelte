@@ -565,6 +565,7 @@
                 <div class="flex flex-col gap-3 w-full">
                     <input
                         type="text"
+                        autocapitalize="off"
                         class="input"
                         placeholder="Game name"
                         bind:value={createName}
