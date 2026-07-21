@@ -43,7 +43,7 @@
     // first, matching the File > New/Open flush pattern in +layout.svelte.
     async function handleHome() {
         if (get(isLoaded)) await saveGame();
-        void goto(`${base}/`);
+        void goto(`${base}/open`);
     }
 
     // Clicking the chip itself steals focus away from whatever field the
@@ -125,36 +125,38 @@
 <AppBar>
     <AppBar.Toolbar class="grid-cols-[auto_1fr_auto]">
         <AppBar.Lead>
-            {#if showHome}
-                <button
-                    type="button"
-                    class="toolbar-icon-btn mr-2"
-                    onclick={handleHome}
-                    title="Back to Home"
-                ><Home size={16} /></button>
-            {/if}
-            {#if $gameFilename}
-                <span class="font-mono text-sm font-medium">{$gameFilename}</span>
-            {/if}
-            {#if $saveError}
-                <button
-                    type="button"
-                    class="save-chip save-chip-error"
-                    onclick={() => retrySave()}
-                    title={$saveError}
-                ><TriangleAlert size={13} /> Save failed — Retry</button>
-            {:else if $isSaving}
-                <span class="save-chip save-chip-saving"><LoaderCircle size={13} class="animate-spin" /> Saving…</span>
-            {:else if $isDirty || $isEditingField}
-                <button
-                    type="button"
-                    class="save-chip save-chip-unsaved"
-                    onclick={handleSaveNow}
-                    title="Save now"
-                ><Circle size={8} fill="currentColor" /> Unsaved</button>
-            {:else if $gameFilename}
-                <span class="save-chip save-chip-saved"><Check size={13} /> Saved</span>
-            {/if}
+            <div class="flex items-center">
+                {#if showHome}
+                    <button
+                        type="button"
+                        class="toolbar-icon-btn mr-2"
+                        onclick={handleHome}
+                        title="Back to Home"
+                    ><Home size={16} /></button>
+                {/if}
+                {#if $gameFilename}
+                    <span class="font-mono text-sm font-medium">{$gameFilename}</span>
+                {/if}
+                {#if $saveError}
+                    <button
+                        type="button"
+                        class="save-chip save-chip-error"
+                        onclick={() => retrySave()}
+                        title={$saveError}
+                    ><TriangleAlert size={13} /> Save failed — Retry</button>
+                {:else if $isSaving}
+                    <span class="save-chip save-chip-saving"><LoaderCircle size={13} class="animate-spin" /> Saving…</span>
+                {:else if $isDirty || $isEditingField}
+                    <button
+                        type="button"
+                        class="save-chip save-chip-unsaved"
+                        onclick={handleSaveNow}
+                        title="Save now"
+                    ><Circle size={8} fill="currentColor" /> Unsaved</button>
+                {:else if $gameFilename}
+                    <span class="save-chip save-chip-saved"><Check size={13} /> Saved</span>
+                {/if}
+            </div>
         </AppBar.Lead>
         <AppBar.Trail>
             <div class="flex gap-1.5 items-center">
@@ -236,7 +238,9 @@
         gap: 0.3rem;
         margin-left: 0.75rem;
         padding: 0.15rem 0.55rem 0.15rem 0.45rem;
+        border: none;
         border-radius: 999px;
+        font: inherit;
         font-size: 0.75rem;
         font-weight: 600;
         line-height: 1.4;
