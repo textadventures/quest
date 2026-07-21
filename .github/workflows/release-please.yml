@@ -26,10 +26,18 @@ jobs:
       # versioning strategy keeps bumping the trailing beta.N instead of
       # graduating out of it (that config key drives both the version-bump
       # logic and the GitHub Release's prerelease flag). Un-flag the release
-      # itself here so it isn't excluded from "Latest" — GitHub structurally
-      # never lets a prerelease-flagged release hold that badge.
-      - name: Mark release as latest
+      # itself here so it isn't structurally excluded from ever holding
+      # "Latest" — but draft it rather than publish it: deploy-play.yml and
+      # electron-publish.yml (triggered by the tag push, already fired by
+      # release-please-action's creation of this release above — drafting
+      # afterward doesn't affect that) still need to attach their installers,
+      # and electron-publish.yml's macOS leg (code signing + notarization)
+      # can take 15+ minutes. A public visitor hitting releases/latest during
+      # that window would otherwise see a release missing some/all installers.
+      # finalize-release.yml un-drafts (and marks --latest) once both
+      # deploy-play.yml and electron-publish.yml have succeeded.
+      - name: Un-prerelease and draft the release
         if: ${{ steps.release.outputs.release_created }}
         env:
           GH_TOKEN: ${{ secrets.RELEASE_PAT }}
-        run: gh release edit "${{ steps.release.outputs.tag_name }}" --prerelease=false --latest --repo ${{ github.repository }}
+        run: gh release edit "${{ steps.release.outputs.tag_name }}" --prerelease=false --draft=true --repo ${{ github.repository }}
