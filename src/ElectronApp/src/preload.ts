@@ -33,10 +33,20 @@ function hostPlatform(): "Mac" | "Windows" | "Linux" | undefined {
     }
 }
 
+// Disambiguates Linux downloads only (ApiController.Catalog's
+// GetDownloadUrlAsync) — the Windows/Mac electron-builder targets are each
+// single-arch already, so arch is meaningless there. process.arch is one of
+// Node's own values ("x64", "arm64", ...); narrowed to what electron-builder
+// actually publishes for Linux.
+function hostArch(): "x64" | "arm64" | undefined {
+    return process.arch === "x64" || process.arch === "arm64" ? process.arch : undefined;
+}
+
 // Matches the window.electronApp shape sketched in docs/electron-desktop-app.md
 // and consumed by src/AppShell/src/lib/filesystem/electron-adapter.ts.
 contextBridge.exposeInMainWorld("electronApp", {
     platform: hostPlatform(),
+    arch: hostArch(),
     fs: {
         readFile: (path: string): Promise<Uint8Array> => ipcRenderer.invoke("fs:readFile", path),
         writeFile: (path: string, data: Uint8Array | string): Promise<void> => ipcRenderer.invoke("fs:writeFile", path, data),

@@ -1,0 +1,188 @@
+// Ad-hoc manual verification: the header's "download the desktop app" widget
+// (DownloadButton.svelte compact mode, wired up in HomeHeader.svelte) — OS
+// detection, primary link, other-platform links, and the "all downloads"
+// fallback when the GitHub releases API call fails. Lives in the header
+// (shown on both the Play and Create tabs) rather than inline on the Play
+// tab, so every run below opens it via the icon button first.
+// Requires the dev server running: ./dev.sh
+import { chromium } from 'playwright';
+
+const baseUrl = process.argv[2] || 'http://localhost:5174';
+
+const sampleRelease = {
+    tag_name: 'v6.0.0-beta.42',
+    published_at: '2026-07-19T07:30:55Z',
+    assets: [
+        { name: 'Quest.Viva.Setup.6.0.0-beta.42.exe', browser_download_url: 'https://example.com/win.exe' },
+        { name: 'Quest.Viva-6.0.0-beta.42-arm64.dmg', browser_download_url: 'https://example.com/mac.dmg' },
+        { name: 'Quest.Viva-6.0.0-beta.42.deb', browser_download_url: 'https://example.com/linux.deb' },
+        { name: 'Quest.Viva-6.0.0-beta.42.AppImage', browser_download_url: 'https://example.com/linux.AppImage' },
+    ],
+};
+
+let failed = false;
+
+async function openDropdown(page) {
+    const toggle = page.locator('button[aria-label="Download the desktop app"]');
+    await toggle.waitFor({ timeout: 10000 });
+    await toggle.click();
+}
+
+// ── Run 1: Windows UA — primary link + Mac/Linux also listed ───────────────
+{
+    const browser = await chromium.launch();
+    const page = await browser.newPage({ userAgent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36' });
+    page.on('pageerror', err => console.log('[pageerror]', err.message));
+    await page.route('https://api.github.com/repos/textadventures/quest/releases/latest', route => route.fulfill({
+        status: 200,
+        contentType: 'application/json',
+        body: JSON.stringify(sampleRelease),
+    }));
+
+    try {
+        await page.goto(`${baseUrl}/`);
+        await openDropdown(page);
+
+        const primary = page.locator('a:has-text("Download for Windows")');
+        await primary.waitFor({ timeout: 10000 });
+        const href = await primary.getAttribute('href');
+        if (href !== 'https://example.com/win.exe') throw new Error(`expected win.exe link, got ${href}`);
+        console.log('PASS: primary link matches Windows UA');
+
+        const versionLine = page.locator('text=v6.0.0-beta.42 · released');
+        await versionLine.waitFor({ timeout: 5000 });
+        console.log('PASS: version and release date shown');
+
+        const macLink = page.locator('a:has-text("Mac (Apple Silicon)")');
+        await macLink.waitFor({ timeout: 5000 });
+        const macHref = await macLink.getAttribute('href');
+        if (macHref !== 'https://example.com/mac.dmg') throw new Error(`expected mac.dmg link, got ${macHref}`);
+        console.log('PASS: Mac link listed alongside the Windows primary');
+
+        // Both Linux package formats are listed (not one silently dropped in
+        // favor of the other) — Linux users get to pick.
+        const linuxDebLink = page.locator('a:has-text("Linux (.deb)")');
+        const linuxDebHref = await linuxDebLink.getAttribute('href');
+        if (linuxDebHref !== 'https://example.com/linux.deb') throw new Error(`expected linux.deb link, got ${linuxDebHref}`);
+        const linuxAppImageLink = page.locator('a:has-text("Linux (.AppImage)")');
+        const linuxAppImageHref = await linuxAppImageLink.getAttribute('href');
+        if (linuxAppImageHref !== 'https://example.com/linux.AppImage') throw new Error(`expected linux.AppImage link, got ${linuxAppImageHref}`);
+        console.log('PASS: both Linux (.deb) and Linux (.AppImage) listed as other-platform options');
+
+        const allDownloads = page.locator('a:has-text("All downloads")');
+        const allHref = await allDownloads.getAttribute('href');
+        if (allHref !== 'https://github.com/textadventures/quest/releases/latest') {
+            throw new Error(`expected releases-page fallback link, got ${allHref}`);
+        }
+        console.log('PASS: "All downloads" always links to the releases page');
+    } catch (err) {
+        console.error('FAIL (run 1):', err.message);
+        failed = true;
+    } finally {
+        await browser.close();
+    }
+}
+
+// ── Run 2: GitHub API failure — only the fallback link shows ───────────────
+{
+    const browser = await chromium.launch();
+    const page = await browser.newPage();
+    page.on('pageerror', err => console.log('[pageerror]', err.message));
+    await page.route('https://api.github.com/repos/textadventures/quest/releases/latest', route => route.fulfill({ status: 500 }));
+
+    try {
+        await page.goto(`${baseUrl}/`);
+        await page.waitForSelector('button:has-text("Open a game file")', { timeout: 30000 });
+        await openDropdown(page);
+        const allDownloads = page.locator('a:has-text("All downloads")');
+        await allDownloads.waitFor({ timeout: 5000 });
+        const primaryLinks = await page.locator('a:has-text("Download for")').count();
+        if (primaryLinks !== 0) throw new Error('a primary download link rendered despite the API failure');
+        console.log('PASS: only the "All downloads" fallback renders when the GitHub API call fails');
+    } catch (err) {
+        console.error('FAIL (run 2):', err.message);
+        failed = true;
+    } finally {
+        await browser.close();
+    }
+}
+
+// ── Run 3: Linux UA, both formats published — .deb is primary, AppImage still listed ──
+{
+    const browser = await chromium.launch();
+    const page = await browser.newPage({ userAgent: 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36' });
+    page.on('pageerror', err => console.log('[pageerror]', err.message));
+    await page.route('https://api.github.com/repos/textadventures/quest/releases/latest', route => route.fulfill({
+        status: 200,
+        contentType: 'application/json',
+        body: JSON.stringify(sampleRelease),
+    }));
+
+    try {
+        await page.goto(`${baseUrl}/`);
+        await openDropdown(page);
+
+        const primary = page.locator('a:has-text("Download for Linux")');
+        await primary.waitFor({ timeout: 10000 });
+        const text = await primary.textContent();
+        if (text !== 'Download for Linux (.deb)') throw new Error(`expected primary label "Download for Linux (.deb)", got "${text}"`);
+        const href = await primary.getAttribute('href');
+        if (href !== 'https://example.com/linux.deb') throw new Error(`expected linux.deb link, got ${href}`);
+
+        const appImageLink = page.locator('a:has-text("Linux (.AppImage)")');
+        const appImageHref = await appImageLink.getAttribute('href');
+        if (appImageHref !== 'https://example.com/linux.AppImage') throw new Error(`expected linux.AppImage link, got ${appImageHref}`);
+        console.log('PASS: Linux UA gets .deb as the primary link, AppImage still offered as another option');
+    } catch (err) {
+        console.error('FAIL (run 3):', err.message);
+        failed = true;
+    } finally {
+        await browser.close();
+    }
+}
+
+// ── Run 4: release has no .deb — Linux label must say AppImage, not .deb ───
+{
+    const browser = await chromium.launch();
+    const page = await browser.newPage({ userAgent: 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36' });
+    page.on('pageerror', err => console.log('[pageerror]', err.message));
+    const noDebRelease = {
+        tag_name: 'v6.0.0-beta.42',
+        assets: [
+            { name: 'Quest.Viva-6.0.0-beta.42-arm64.AppImage', browser_download_url: 'https://example.com/linux-arm64.AppImage' },
+            { name: 'Quest.Viva-6.0.0-beta.42.AppImage', browser_download_url: 'https://example.com/linux.AppImage' },
+        ],
+    };
+    await page.route('https://api.github.com/repos/textadventures/quest/releases/latest', route => route.fulfill({
+        status: 200,
+        contentType: 'application/json',
+        body: JSON.stringify(noDebRelease),
+    }));
+
+    try {
+        await page.goto(`${baseUrl}/`);
+        await openDropdown(page);
+
+        const primary = page.locator('a:has-text("Download for Linux")');
+        await primary.waitFor({ timeout: 10000 });
+        const text = await primary.textContent();
+        if (text !== 'Download for Linux (.AppImage)') throw new Error(`expected label "Download for Linux (.AppImage)", got "${text}"`);
+        const href = await primary.getAttribute('href');
+        if (href !== 'https://example.com/linux.AppImage') throw new Error(`expected the x64 AppImage link, got ${href}`);
+        console.log('PASS: Linux label reflects the AppImage fallback when no .deb is published');
+
+        // No published_at on this release — version line should degrade to
+        // just the tag, not "released Invalid Date" or similar.
+        const versionText = await page.locator('p:has-text("v6.0.0-beta.42")').textContent();
+        if (versionText !== 'v6.0.0-beta.42') throw new Error(`expected bare version with no release date, got "${versionText}"`);
+        console.log('PASS: version line degrades gracefully with no published_at');
+    } catch (err) {
+        console.error('FAIL (run 4):', err.message);
+        failed = true;
+    } finally {
+        await browser.close();
+    }
+}
+
+if (failed) process.exit(1);
+console.log('ALL PASS');
