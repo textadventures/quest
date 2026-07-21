@@ -31,6 +31,8 @@
     import LoaderCircle from "@lucide/svelte/icons/loader-circle";
     import TriangleAlert from "@lucide/svelte/icons/triangle-alert";
     import Circle from "@lucide/svelte/icons/circle";
+    import DiscordIcon from "$components/DiscordIcon.svelte";
+    import GithubIcon from "$components/GithubIcon.svelte";
 
     const wasmPlayerUrl = PUBLIC_WASM_PLAYER_URL || "/player/";
     const showHome = PUBLIC_SHOW_HOME === "true";
@@ -203,6 +205,11 @@
                     <button type="button" class="btn btn-sm preset-outlined-primary-500" onclick={() => publishModalOpen.set(true)} title="Build a .quest package for distribution"><Package size={14} /> Publish…</button>
                     <div class="toolbar-divider"></div>
                     <button type="button" class="btn btn-sm preset-filled-primary-500" onclick={handlePreview} title="Preview game"><Play size={14} /> Preview</button>
+                {/if}
+                {#if showHome}
+                    <div class="toolbar-divider"></div>
+                    <a href="https://textadventures.co.uk/community/discord" target="_blank" rel="noopener noreferrer" class="toolbar-icon-btn" title="Join us on Discord" aria-label="Join us on Discord"><DiscordIcon size={16} /></a>
+                    <a href="https://github.com/textadventures/quest" target="_blank" rel="noopener noreferrer" class="toolbar-icon-btn" title="View on GitHub" aria-label="View on GitHub"><GithubIcon size={16} /></a>
                 {/if}
             </div>
         </AppBar.Trail>
