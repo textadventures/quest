@@ -72,24 +72,22 @@
             return; // keep the static fallback link
         }
 
-        // Linux's label depends on which of the two actually matched — a
-        // release can ship AppImage without .deb (or vice versa;
-        // electron-publish.yml's three OS legs run independently), so
-        // hardcoding "(.deb)" would mislabel an AppImage fallback link.
-        const linuxDeb = findAsset(release.assets, ".deb", false);
-        const linuxAppImage = findAsset(release.assets, ".appimage", false);
-
+        // Linux gets two candidates, not one — .deb and AppImage are both
+        // valid choices (a release can also ship only one of the two;
+        // electron-publish.yml's three OS legs run independently), so both
+        // are listed for a Linux visitor to pick between rather than
+        // silently dropping whichever one this widget didn't prefer. Order
+        // matters: .deb listed first so it's the one picked as the
+        // primary/"Download for Linux" button when both exist (best desktop
+        // integration, see docs/electron-desktop-app.md in the quest repo).
         const candidates = [
             { os: "Windows", label: "Windows", asset: findAsset(release.assets, ".exe") },
             { os: "Mac", label: "Mac (Apple Silicon)", asset: findAsset(release.assets, ".dmg") },
-            {
-                os: "Linux",
-                label: linuxDeb ? "Linux (.deb)" : "Linux (.AppImage)",
-                asset: linuxDeb ?? linuxAppImage,
-            },
+            { os: "Linux", label: "Linux (.deb)", asset: findAsset(release.assets, ".deb", false) },
+            { os: "Linux", label: "Linux (.AppImage)", asset: findAsset(release.assets, ".appimage", false) },
         ] as const;
 
-        const primary = detected ? candidates.find((c) => c.os === detected) : undefined;
+        const primary = detected ? candidates.find((c) => c.os === detected && c.asset) : undefined;
         const others = candidates.filter((c) => c !== primary && c.asset);
 
         const nodes: HTMLAnchorElement[] = [];

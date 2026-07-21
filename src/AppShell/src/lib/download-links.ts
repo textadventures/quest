@@ -76,26 +76,24 @@ function findAsset(assets: ReleaseAsset[], extension: string, wantArm64?: boolea
 function buildLinks(release: ReleaseResponse, detected: DetectedOs): DownloadLinks {
     const assets = release.assets;
 
-    // Linux's label depends on which of the two actually matched — a release
-    // can ship AppImage without .deb (or vice versa; electron-publish.yml's
-    // three OS legs run independently), so hardcoding "(.deb)" would mislabel
-    // an AppImage fallback link.
-    const linuxDeb = findAsset(assets, ".deb", false);
-    const linuxAppImage = findAsset(assets, ".appimage", false);
-
+    // Linux gets two candidates, not one — .deb and AppImage are both valid
+    // choices (a release can also ship only one of the two;
+    // electron-publish.yml's three OS legs run independently), so both are
+    // listed for a Linux visitor to pick between rather than silently
+    // dropping whichever one this widget didn't prefer. Order matters: .deb
+    // listed first so it's the one picked as the primary/"Download for
+    // Linux" button when both exist (best desktop integration, see
+    // docs/electron-desktop-app.md).
     const candidates: { os: Exclude<DetectedOs, null>; label: string; link: DownloadLink | null }[] = [
         { os: "Windows", label: "Windows", link: findAsset(assets, ".exe") },
         { os: "Mac", label: "Mac (Apple Silicon)", link: findAsset(assets, ".dmg") },
-        {
-            os: "Linux",
-            label: linuxDeb ? "Linux (.deb)" : "Linux (.AppImage)",
-            link: linuxDeb ?? linuxAppImage,
-        },
+        { os: "Linux", label: "Linux (.deb)", link: findAsset(assets, ".deb", false) },
+        { os: "Linux", label: "Linux (.AppImage)", link: findAsset(assets, ".appimage", false) },
     ];
 
-    const primaryEntry = detected ? candidates.find((c) => c.os === detected) : undefined;
-    const primary = primaryEntry?.link
-        ? { label: `Download for ${primaryEntry.label}`, url: primaryEntry.link.url }
+    const primaryEntry = detected ? candidates.find((c) => c.os === detected && c.link) : undefined;
+    const primary = primaryEntry
+        ? { label: `Download for ${primaryEntry.label}`, url: primaryEntry.link!.url }
         : null;
 
     const others = candidates

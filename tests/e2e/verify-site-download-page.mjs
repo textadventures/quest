@@ -56,10 +56,15 @@ let failed = false;
         if (winHref !== 'https://example.com/win.exe') throw new Error(`expected win.exe link, got ${winHref}`);
         console.log('PASS: Windows listed as another platform');
 
-        const linuxLink = page.locator('a:has-text("Linux (.deb)")');
-        const linuxHref = await linuxLink.getAttribute('href');
-        if (linuxHref !== 'https://example.com/linux.deb') throw new Error(`expected linux.deb link, got ${linuxHref}`);
-        console.log('PASS: Linux listed as another platform, x64 .deb picked over AppImage');
+        // Both Linux package formats are listed (not one silently dropped in
+        // favor of the other) — Linux users get to pick.
+        const linuxDebLink = page.locator('a:has-text("Linux (.deb)")');
+        const linuxDebHref = await linuxDebLink.getAttribute('href');
+        if (linuxDebHref !== 'https://example.com/linux.deb') throw new Error(`expected linux.deb link, got ${linuxDebHref}`);
+        const linuxAppImageLink = page.locator('a:has-text("Linux (.AppImage)")');
+        const linuxAppImageHref = await linuxAppImageLink.getAttribute('href');
+        if (linuxAppImageHref !== 'https://example.com/linux.AppImage') throw new Error(`expected linux.AppImage link, got ${linuxAppImageHref}`);
+        console.log('PASS: both Linux (.deb) and Linux (.AppImage) listed as other-platform options');
 
         const allDownloads = page.locator('a:has-text("All downloads")');
         const allHref = await allDownloads.getAttribute('href');
@@ -101,7 +106,39 @@ let failed = false;
     }
 }
 
-// ── Run 3: release has no .deb — Linux label must say AppImage, not .deb ───
+// ── Run 3: Linux UA, both formats published — .deb is primary, AppImage still listed ──
+{
+    const browser = await chromium.launch();
+    const page = await browser.newPage({ userAgent: 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36' });
+    page.on('pageerror', err => console.log('[pageerror]', err.message));
+    await page.route('https://api.github.com/repos/textadventures/quest/releases/latest', route => route.fulfill({
+        status: 200,
+        contentType: 'application/json',
+        body: JSON.stringify(sampleRelease),
+    }));
+
+    try {
+        await page.goto(`${baseUrl}/download/`);
+        const primary = page.locator('a:has-text("Download for Linux")');
+        await primary.waitFor({ timeout: 10000 });
+        const text = await primary.textContent();
+        if (text !== 'Download for Linux (.deb)') throw new Error(`expected primary label "Download for Linux (.deb)", got "${text}"`);
+        const href = await primary.getAttribute('href');
+        if (href !== 'https://example.com/linux.deb') throw new Error(`expected linux.deb link, got ${href}`);
+
+        const appImageLink = page.locator('a:has-text("Linux (.AppImage)")');
+        const appImageHref = await appImageLink.getAttribute('href');
+        if (appImageHref !== 'https://example.com/linux.AppImage') throw new Error(`expected linux.AppImage link, got ${appImageHref}`);
+        console.log('PASS: Linux UA gets .deb as the primary button, AppImage still offered as another option');
+    } catch (err) {
+        console.error('FAIL (run 3):', err.message);
+        failed = true;
+    } finally {
+        await browser.close();
+    }
+}
+
+// ── Run 4: release has no .deb — Linux label must say AppImage, not .deb ───
 {
     const browser = await chromium.launch();
     const page = await browser.newPage();
@@ -129,7 +166,7 @@ let failed = false;
         if (href !== 'https://example.com/linux.AppImage') throw new Error(`expected the x64 AppImage link, got ${href}`);
         console.log('PASS: Linux label reflects the AppImage fallback when no .deb is published');
     } catch (err) {
-        console.error('FAIL (run 3):', err.message);
+        console.error('FAIL (run 4):', err.message);
         failed = true;
     } finally {
         await browser.close();
