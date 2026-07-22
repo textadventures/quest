@@ -1970,6 +1970,32 @@ public partial class WasmEditorBridge
         _controller?.DeleteElement(key, true);
     }
 
+    // Wraps every deletion in a single transaction (mirrors v5's ExitsControl.xaml.cs
+    // toolbar_DeleteClicked) so one Undo reverts all of them together — calling DeleteElement()
+    // once per key instead would open/close its own transaction each time, so Undo would only
+    // restore the last one.
+    [JSExport]
+    public static void DeleteElements(string keysJson)
+    {
+        if (_controller == null)
+        {
+            return;
+        }
+
+        var keys = JsonSerializer.Deserialize(keysJson, WasmEditorJsonContext.Default.ListString);
+        if (keys == null || keys.Count == 0)
+        {
+            return;
+        }
+
+        _controller.StartTransaction($"Delete {keys.Count} elements");
+        foreach (var key in keys)
+        {
+            _controller.DeleteElement(key, false);
+        }
+        _controller.EndTransaction();
+    }
+
     [JSExport]
     public static string SwapElements(string key1, string key2)
     {

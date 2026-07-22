@@ -917,6 +917,16 @@ export function deleteChildElement(key: string) {
     refreshUndoRedo();
 }
 
+// Same as deleteChildElement(), but wraps every deletion in one transaction — deleting them one
+// at a time would each open/close their own transaction, so a single Undo would only restore the
+// last of them.
+export function deleteChildElements(keys: string[]) {
+    if (!_bridge) return;
+    _bridge.DeleteElements(JSON.stringify(keys));
+    refreshTree();
+    refreshUndoRedo();
+}
+
 export function swapElements(key1: string, key2: string): string {
     if (!_bridge) return "error";
     const result = _bridge.SwapElements(key1, key2);

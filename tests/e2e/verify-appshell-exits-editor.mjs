@@ -174,7 +174,22 @@ async function run() {
     await page.getByRole('button', { name: 'east', exact: true }).waitFor({ timeout: 10000 });
     console.log('PASS: accepting the prompt deletes both the exit and its return exit');
 
+    // "Delete both" must be a single undo transaction — deleting the pair one call at a time would
+    // each open/close their own transaction, so a single Undo would only restore the second one.
+    // Check the "east" ghost button is gone (populated again) rather than "→ Room One" text, which
+    // is now ambiguous — Room Two's still-alive south exit (from the earlier dismissed prompt)
+    // reads the same.
+    await page.click('button[title="Undo"]');
+    const eastStillGhost = await page.getByRole('button', { name: 'east', exact: true }).count();
+    if (eastStillGhost !== 0) throw new Error('Expected Room Two\'s east exit to be restored by the single Undo');
+    await selectTreeNode('Room One');
+    await page.click('button:has-text("Exits")');
+    await page.getByRole('button', { name: '→ Room Two', exact: true }).waitFor({ timeout: 10000 });
+    console.log('PASS: a single Undo after "Delete both" restores both exits, not just one');
+
     // Create one more fresh pair (northeast/southwest) to check Cancel and Undo separately.
+    // Scoped to the "northeast" cell specifically from here on — the restored west exit above
+    // also points to Room Two, so a plain "→ Room Two" match is now ambiguous between cells.
     await selectTreeNode('Room One');
     await page.click('button:has-text("Exits")');
     await page.getByRole('button', { name: 'northeast', exact: true }).click();
@@ -183,21 +198,22 @@ async function run() {
     await page.waitForSelector('[role="option"]:has-text("Room Two")', { timeout: 5000 });
     await page.click('[role="option"]:has-text("Room Two")');
     await page.click('button:has-text("Create exit")');
-    await page.waitForSelector('text=→ Room Two', { timeout: 10000 });
+    const northeastCell = page.getByText('northeast', { exact: true }).locator('..');
+    await northeastCell.getByRole('button', { name: '→ Room Two', exact: true }).waitFor({ timeout: 10000 });
 
     // Cancel must delete nothing at all — not even the exit that was clicked on.
-    await page.getByRole('button', { name: '→ Room Two', exact: true }).locator('..').locator('button[title="Delete"]').click();
+    await northeastCell.locator('button[title="Delete"]').click();
     await respondToReciprocalPrompt('cancel');
-    await page.getByRole('button', { name: '→ Room Two', exact: true }).waitFor({ timeout: 5000 });
+    await northeastCell.getByRole('button', { name: '→ Room Two', exact: true }).waitFor({ timeout: 5000 });
     console.log('PASS: Cancel on the reciprocal prompt deletes nothing');
 
     // Now actually delete it ("Just this one"), then Undo via the toolbar — the compass grid and
     // full list must reflect the restored exit without switching tabs away and back.
-    await page.getByRole('button', { name: '→ Room Two', exact: true }).locator('..').locator('button[title="Delete"]').click();
+    await northeastCell.locator('button[title="Delete"]').click();
     await respondToReciprocalPrompt('this');
     await page.getByRole('button', { name: 'northeast', exact: true }).waitFor({ timeout: 10000 });
     await page.click('button[title="Undo"]');
-    await page.getByRole('button', { name: '→ Room Two', exact: true }).waitFor({ timeout: 10000 });
+    await northeastCell.getByRole('button', { name: '→ Room Two', exact: true }).waitFor({ timeout: 10000 });
     await page.waitForSelector('text=northeast → Room Two', { timeout: 5000 });
     console.log('PASS: Undo restores a deleted exit without needing to switch tabs away and back');
 

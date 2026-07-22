@@ -1,5 +1,5 @@
 <script lang="ts">
-    import { selectNode, deleteChildElement, swapElements, createExit, getExitsData, createExitInDirection, createLookExitInDirection, scriptVersion } from "$lib/editor-store";
+    import { selectNode, deleteChildElement, deleteChildElements, swapElements, createExit, getExitsData, createExitInDirection, createLookExitInDirection, scriptVersion } from "$lib/editor-store";
     import { chooseDialog } from "$lib/confirm";
     import type { ExitsData, CompassDirectionInfo } from "$lib/types";
     import Combobox from "./Combobox.svelte";
@@ -44,10 +44,10 @@
         return reciprocal?.key ?? null;
     }
 
-    // deleteChildElement() leaves the current selection alone (unlike deleteElement(), which
-    // always clears it) — the exit being deleted here is always a child of elementKey (the room),
-    // never the room itself, so there's nothing to reselect, and the room's own tabs/attributes
-    // don't depend on which exits it has.
+    // deleteChildElement()/deleteChildElements() leave the current selection alone (unlike
+    // deleteElement(), which always clears it) — the exit being deleted here is always a child of
+    // elementKey (the room), never the room itself, so there's nothing to reselect, and the room's
+    // own tabs/attributes don't depend on which exits it has.
     async function deleteExit(exitKey: string, alias: string | null, to: string | null, lookOnly: boolean) {
         const reciprocalKey = findReciprocalExit(alias, to, lookOnly);
         if (reciprocalKey) {
@@ -57,7 +57,13 @@
                 { label: "Delete both", value: "both" as const, danger: true },
             ]);
             if (choice === null || choice === "cancel") return;
-            if (choice === "both") deleteChildElement(reciprocalKey);
+            // One call, one transaction — deleting each separately would open/close its own
+            // transaction, so a single Undo would only bring back the last of the two.
+            if (choice === "both") {
+                deleteChildElements([reciprocalKey, exitKey]);
+                refresh(elementKey);
+                return;
+            }
         }
         deleteChildElement(exitKey);
         refresh(elementKey);

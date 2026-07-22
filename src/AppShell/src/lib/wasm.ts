@@ -78,6 +78,7 @@ export interface WasmBridge {
   CreateIncludedLibrary(): string
   CreateJavascript(): string
   DeleteElement(key: string): void
+  DeleteElements(keysJson: string): void
   SwapElements(key1: string, key2: string): string
   // New game
   GetGameTemplates(): string
