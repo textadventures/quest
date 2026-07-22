@@ -466,6 +466,27 @@ await previewPage.waitForSelector('#qv-restarting:not(.hidden)', { timeout: 2000
 const spinnerVisible = await previewPage.$eval('#qv-restarting', el => getComputedStyle(el).display !== 'none');
 check('Restarting spinner is shown while the restart is in progress', spinnerVisible);
 
+// #sidebar (Inventory/Places and Objects/Compass) and #qv-status (the top
+// toolbar) both carry a high z-index in the shared playercore.css
+// (1000/100) — #qv-restarting used to have no z-index of its own, so those
+// painted *above* it regardless of DOM order, popping through what was
+// supposed to be a fully opaque overlay. elementFromPoint at coordinates
+// inside both regions should resolve to the overlay itself (or one of its
+// own children), not something from the underlying game chrome.
+const paintOrderCheck = await previewPage.evaluate(() => {
+    const overlay = document.getElementById('qv-restarting');
+    const topAtSidebarSpot = document.elementFromPoint(window.innerWidth - 20, 100);
+    const topAtToolbarSpot = document.elementFromPoint(window.innerWidth - 20, 10);
+    return {
+        sidebarSpotIsOverlay: overlay.contains(topAtSidebarSpot) || topAtSidebarSpot === overlay,
+        toolbarSpotIsOverlay: overlay.contains(topAtToolbarSpot) || topAtToolbarSpot === overlay,
+    };
+});
+check(
+    'Restarting overlay paints above the sidebar/toolbar (not popped through by their z-index)',
+    paintOrderCheck.sidebarSpotIsOverlay && paintOrderCheck.toolbarSpotIsOverlay
+);
+
 await previewPage.waitForSelector('#txtCommand', { state: 'visible', timeout: 30000 });
 await previewPage.waitForFunction(() => document.getElementById('divOutput')?.textContent.length > 20, { timeout: 10000 });
 // Output can already be visible slightly before restartGameCore's finally

@@ -43,9 +43,21 @@
     font-family: var(--font-sans);
 }
 
+/* z-index:9999 on both this and #qv-restarting below: the shared game chrome
+   (playercore.css, not this file) gives #sidebar z-index:1000 and #qv-status
+   (the top toolbar, holding Debug/Restart) z-index:100 — both plain
+   position:fixed elements with no z-index of their own would otherwise
+   render *underneath* those regardless of DOM order (an unstyled sibling
+   with z-index:auto always loses to one with an explicit z-index, no matter
+   which comes later in the document). #qv-start isn't known to hit this in
+   practice (the sidebar is still display:none this early), but #qv-restarting
+   definitely does — a restart's sidebar panes were already visible from the
+   previous session and can become visible again mid-restart, popping in
+   front of what's supposed to be a fully opaque overlay. */
 :scope#qv-start {
     position: fixed;
     inset: 0;
+    z-index: 9999;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -66,6 +78,7 @@
 :scope#qv-restarting {
     position: fixed;
     inset: 0;
+    z-index: 9999;
     display: flex;
     align-items: center;
     justify-content: center;
