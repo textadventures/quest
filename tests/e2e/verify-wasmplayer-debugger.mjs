@@ -462,6 +462,62 @@ await previewPage.waitForFunction(() => document.getElementById('divOutput')?.te
 const outputAfterRestart = await previewPage.$eval('#divOutput', el => el.textContent);
 check('Restart brings the game back to its initial state', /You are in a kitchen/i.test(outputAfterRestart));
 
+// restartInProgress (the guard under test just below) only clears once
+// restartGame's whole async chain — including the trailing Bridge.Begin() —
+// actually settles; #divOutput can already show real content slightly
+// before that promise resolves (flushed output vs. the JS await returning
+// aren't quite the same instant). A brief pause here avoids the *next*
+// restartGame(null) call below being guarded out by this preceding button
+// click's restart rather than by the thing actually being tested.
+await previewPage.waitForTimeout(300);
+
+// ── restartGame ignores an overlapping call ─────────────────────────────────
+// Firing two restarts back-to-back (no await between) used to race — both
+// call swapInPlayerUi()/Bridge.Initialise(...) concurrently, which could
+// leave old game output on screen alongside a stale "This game has
+// finished" pane state. Calling restartGame twice with no intervening await
+// is deterministic (single-threaded JS): the second call's guard check is
+// guaranteed to see restartInProgress already set by the first,
+// synchronously, regardless of how fast/slow the actual restart happens to
+// be for this fixture.
+//
+// Verified by counting how many times document.body's children actually get
+// replaced (swapInPlayerUi's innerHTML assignment), via a MutationObserver,
+// rather than by intercepting an internal function — reassigning
+// window.<bareGlobalFnName>/an exported object's method from page.evaluate()
+// turned out not to reliably affect calls already resolved against that
+// same binding elsewhere in this script (confirmed empirically: even a
+// *single* restartGame(null) call showed 0 intercepted calls either way).
+async function countBodyMutationsDuring(page, fn) {
+    await page.evaluate(() => {
+        window.__mutCount = 0;
+        window.__mutObserver = new MutationObserver((mutations) => {
+            window.__mutCount += mutations.filter(m => m.type === 'childList').length;
+        });
+        window.__mutObserver.observe(document.body, { childList: true });
+    });
+    await fn();
+    return page.evaluate(() => {
+        window.__mutObserver.disconnect();
+        return window.__mutCount;
+    });
+}
+
+const singleRestartMutations = await countBodyMutationsDuring(previewPage, () => previewPage.evaluate(() => window.restartGame(null)));
+const doubleRestartMutations = await countBodyMutationsDuring(previewPage, () => previewPage.evaluate(() =>
+    Promise.all([window.restartGame(null), window.restartGame(null)])));
+check(
+    'A second overlapping restartGame call is ignored (guarded)',
+    doubleRestartMutations <= singleRestartMutations
+);
+
+await previewPage.waitForSelector('#txtCommand', { state: 'visible', timeout: 30000 });
+const outputAfterDoubleRestart = await previewPage.$eval('#divOutput', el => el.textContent);
+check(
+    'Game is in a coherent, playable state after an overlapping restart attempt',
+    /You are in a kitchen/i.test(outputAfterDoubleRestart) && !outputAfterDoubleRestart.includes('finished')
+);
+
 await browser.close();
 
 if (failed) {

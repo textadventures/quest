@@ -411,6 +411,19 @@ async function initWasmPlayer(gameBytes, filename, bc = null, saveBytes = null, 
     await Bridge.Begin();
 }
 
+// Guards restartGame against overlapping calls — e.g. impatiently clicking
+// Restart/"Start from the beginning" again while a slow restart (loading a
+// large game, low-end device) is still in flight. Two concurrent restarts
+// each call swapInPlayerUi() and Bridge.Initialise(...), racing to rebuild
+// the DOM and reinitialise the shared WasmPlayerBridge static game/UI state
+// out from under each other — the visible symptom was old game output left
+// on screen alongside "This game has finished" (a stale WasmPlayerUi
+// instance's HandleFinished still firing against DOM a second restart had
+// already replaced). withBusyButton (used by callers below) already disables
+// the clicked button for the duration, but this is the actual guard: it's
+// what protects restartGame itself regardless of which control called it.
+let restartInProgress = false;
+
 // Reloads a save (or, with saveBytes null, the fresh original game) on top
 // of the already-booted WASM runtime — used for in-game Load and "Start
 // from the beginning". Rebuilds the player chrome from scratch via
@@ -424,6 +437,16 @@ async function initWasmPlayer(gameBytes, filename, bc = null, saveBytes = null, 
 // brand-new elements each time, not the same live ones, so this isn't the
 // double-binding repeat-init the old comment here used to warn about.
 async function restartGame(saveBytes) {
+    if (restartInProgress) return;
+    restartInProgress = true;
+    try {
+        await restartGameCore(saveBytes);
+    } finally {
+        restartInProgress = false;
+    }
+}
+
+async function restartGameCore(saveBytes) {
     document.getElementById('qv-saves')?.close();
     swapInPlayerUi();
     resetGameOutput();
@@ -640,7 +663,7 @@ function ensureSavesDialogWired() {
         if (bootChoiceResolve) e.preventDefault();
     });
 
-    document.getElementById('qv-saves-start-new').addEventListener('click', () => {
+    document.getElementById('qv-saves-start-new').addEventListener('click', (e) => {
         if (bootChoiceResolve) {
             const resolve = bootChoiceResolve;
             bootChoiceResolve = null;
@@ -650,7 +673,13 @@ function ensureSavesDialogWired() {
         }
         // Manage mode: restarting mid-session, matches WebPlayer's Slots
         // "Start from the beginning" button (no confirm() there either).
-        restartGame(null);
+        // withBusyButton's disable+busy-label+forced-paint makes a slow
+        // restart (a large game, a low-end device) read as "working" rather
+        // than unresponsive — restartGame itself also now guards against
+        // overlapping calls (see restartInProgress's doc comment), but
+        // without this there was no visible feedback at all inviting
+        // exactly the impatient re-click that guard exists for.
+        withBusyButton(e.currentTarget, 'Restarting…', () => restartGame(null));
     });
 
     document.getElementById('qv-saves-list').addEventListener('click', async (e) => {
@@ -1343,7 +1372,19 @@ function wireDebuggerRestartButton(isPreview) {
     cmdRestart.id = 'cmdRestart';
     cmdRestart.type = 'button';
     cmdRestart.textContent = 'Restart';
-    cmdRestart.addEventListener('click', () => restartGame(null));
+    cmdRestart.addEventListener('click', (e) => {
+        // Unlike #qv-saves-start-new (inside #qv-saves, which survives
+        // swapInPlayerUi untouched — see restartGameCore), this button is
+        // itself destroyed almost immediately by swapInPlayerUi and only
+        // recreated near the end of restartGameCore, so there's no "restore
+        // it afterward" state worth preserving the way withBusyButton does
+        // elsewhere — just disable it synchronously so a double-click fired
+        // in the same tick (before the DOM swap actually runs) doesn't
+        // start a second restart. restartGame's restartInProgress guard is
+        // the real protection against overlapping restarts either way.
+        e.currentTarget.disabled = true;
+        restartGame(null);
+    });
     cmdDebug.insertAdjacentElement('afterend', cmdRestart);
     // Matches the jQuery UI ".ui-button" look cmdDebug/cmdSave already have
     // (applied to them by initPlayerUI's "$('#gameBorder button').button()"
