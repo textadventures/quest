@@ -224,13 +224,63 @@ await previewPage.click('#qv-debugger-list [data-item="player"]');
 await previewPage.waitForSelector('.qv-debugger-scroll');
 await previewPage.$eval('.qv-debugger-scroll', el => { el.scrollTop = 50; });
 const scrollBeforeRowClick = await previewPage.$eval('.qv-debugger-scroll', el => el.scrollTop);
-await previewPage.click('[data-attr-row="type"]');
+// Dispatch the click directly rather than page.click() — Playwright's
+// actionability checks scroll a target into view first if it isn't fully
+// visible, which would confound this specific assertion (scrollTop changing
+// because Playwright itself scrolled it, not because of a rendering bug).
+await previewPage.$eval('[data-attr-row="type"]', el => el.click());
 await previewPage.waitForSelector('#qv-debugger-override-input');
 const scrollAfterRowClick = await previewPage.$eval('.qv-debugger-scroll', el => el.scrollTop);
 check(
     'Clicking an attribute row preserves scroll position',
     scrollBeforeRowClick > 0 && scrollAfterRowClick === scrollBeforeRowClick
 );
+
+// ── Attribute table: sortable columns + search box ──────────────────────────
+const attrColumn = colIndex => previewPage.$$eval(
+    `#qv-debugger-attr-tbody tr td:nth-child(${colIndex})`,
+    els => els.map(el => el.textContent)
+);
+
+const defaultOrder = await attrColumn(1);
+check('Attribute column starts sorted ascending by default', JSON.stringify(defaultOrder) === JSON.stringify([...defaultOrder].sort((a, b) => a.localeCompare(b))));
+
+await previewPage.click('[data-sort-col="attribute"]');
+const descOrder = await attrColumn(1);
+check('Clicking the active sort column reverses direction', JSON.stringify(descOrder) === JSON.stringify([...defaultOrder].reverse()));
+
+const sortHeaderText = await previewPage.$eval('[data-sort-col="attribute"]', el => el.textContent);
+check('Sort indicator shows on the active column', sortHeaderText.includes('▼'));
+
+await previewPage.click('[data-sort-col="value"]');
+const valueOrder = await attrColumn(2);
+check('Sorting by Value column actually sorts by value', JSON.stringify(valueOrder) === JSON.stringify([...valueOrder].sort((a, b) => a.localeCompare(b))));
+
+await previewPage.fill('#qv-debugger-attr-search', 'pov');
+const filteredAttrs = await attrColumn(1);
+// The filter matches on attribute *value* too (not just name), so this
+// isn't just the pov_* attributes — some other attribute apparently holds
+// script/text referencing "pov" in its value. Assert the search actually
+// narrowed the list and definitely includes the obvious name matches,
+// rather than assuming every result's own name contains "pov".
+check(
+    'Search box filters the attribute table',
+    filteredAttrs.length > 0
+        && filteredAttrs.length < defaultOrder.length
+        && filteredAttrs.includes('pov_alt')
+        && filteredAttrs.includes('pov_used')
+);
+
+await previewPage.fill('#qv-debugger-attr-search', 'nonexistent-attribute-xyz');
+const noMatchText = await previewPage.$eval('#qv-debugger-attr-tbody', el => el.textContent);
+check('Search box shows a no-match message rather than an empty table', noMatchText.includes('No matching attributes'));
+
+// Selecting a *different* object should reset the leftover filter, or the
+// new object could appear to have no attributes at all for no visible reason.
+await previewPage.click('#qv-debugger-list [data-item="kitchen"]');
+await previewPage.waitForSelector('#qv-debugger-attr-tbody [data-attr-row]');
+const searchAfterObjectSwitch = await previewPage.$eval('#qv-debugger-attr-search', el => el.value);
+check('Switching objects resets the search filter', searchAfterObjectSwitch === '');
 await previewPage.click('#qv-debugger-close');
 
 // ── 5. Bad override expression → inline error, no crash ────────────────────

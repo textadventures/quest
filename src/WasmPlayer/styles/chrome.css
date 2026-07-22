@@ -188,6 +188,11 @@
 .qv-debugger-table th,
 .qv-debugger-table td {
     overflow-wrap: break-word;
+    /* Default (middle) vertical-align made a long wrapped Value visually
+       drag the same row's Attribute/Source cells down to stay centered
+       against it — top-aligning keeps the attribute name anchored to the
+       first line of its value regardless of how many lines it wraps to. */
+    vertical-align: top;
 }
 
 /* Column headers weren't visually differentiated from the body rows —
@@ -205,6 +210,16 @@
 
 #qv-debugger-detail [data-attr-row] {
     cursor: pointer;
+}
+
+#qv-debugger-detail [data-sort-col] {
+    cursor: pointer;
+    user-select: none;
+    white-space: nowrap;
+}
+
+#qv-debugger-detail [data-sort-col]:hover {
+    color: var(--color-surface-900-100);
 }
 
 /* Marks a table row as an inherited attribute (from a type, not the object

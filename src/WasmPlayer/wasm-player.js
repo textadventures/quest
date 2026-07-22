@@ -742,6 +742,16 @@ let runningWalkthroughName = null;
 // tried cramming input+button+hint into a 4th table column and it didn't
 // fit at any reasonable dialog width).
 let debuggerSelectedAttr = null;
+// Sort/filter state for the attribute table — reset whenever a different
+// object/tab is selected (renderDebuggerList's click handler / selectDebuggerTab),
+// but preserved across same-object re-renders (Apply, row selection).
+let debuggerAttrSort = { column: 'attribute', direction: 'asc' };
+let debuggerAttrSearch = '';
+// The current object's raw {attrName: DebugDataItem} data, cached so
+// re-sorting/re-filtering (every keystroke in the search box, every header
+// click) doesn't need a fresh Bridge round-trip each time — only rebuilt
+// when the object actually changes or an override is applied.
+let debuggerAttrData = null;
 
 // DebugDataItem.Value is a human-readable *display* string (Fields.cs's
 // DefaultFormatter just calls ToString() — a string has no quotes, a bool
@@ -799,15 +809,79 @@ function renderDebuggerWalkthroughDetail(name) {
         + '</div>';
 }
 
+const DEBUGGER_ATTR_COLUMNS = [
+    { key: 'attribute', label: 'Attribute' },
+    { key: 'value', label: 'Value' },
+    { key: 'source', label: 'Source' },
+];
+
+function debuggerAttrSortIndicator(column) {
+    if (debuggerAttrSort.column !== column) return '';
+    return debuggerAttrSort.direction === 'asc' ? ' ▲' : ' ▼';
+}
+
+// Applies debuggerAttrSearch (matches against the attribute name or its
+// display value) and debuggerAttrSort to debuggerAttrData's keys.
+function sortedFilteredDebuggerAttrs() {
+    const query = debuggerAttrSearch.trim().toLowerCase();
+    let attrs = Object.keys(debuggerAttrData);
+    if (query) {
+        attrs = attrs.filter(attr =>
+            attr.toLowerCase().includes(query) || debuggerAttrData[attr].Value.toLowerCase().includes(query));
+    }
+
+    const { column, direction } = debuggerAttrSort;
+    const sortKey = attr => column === 'attribute' ? attr
+        : column === 'value' ? debuggerAttrData[attr].Value
+            : (debuggerAttrData[attr].Source ?? '');
+    attrs.sort((a, b) => sortKey(a).localeCompare(sortKey(b), undefined, { sensitivity: 'base' }));
+    if (direction === 'desc') attrs.reverse();
+    return attrs;
+}
+
+// Rebuilds just the <tbody> (and the header sort indicators) — deliberately
+// not the whole panel, so re-sorting/typing in the search box doesn't touch
+// .qv-debugger-scroll (would reset its scroll position) or the search
+// <input> itself (would drop keyboard focus mid-keystroke).
+function renderDebuggerAttrRows() {
+    const tbody = document.getElementById('qv-debugger-attr-tbody');
+    if (!tbody) return;
+
+    document.querySelectorAll('#qv-debugger-detail [data-sort-col]').forEach(th => {
+        const col = th.dataset.sortCol;
+        th.textContent = DEBUGGER_ATTR_COLUMNS.find(c => c.key === col).label + debuggerAttrSortIndicator(col);
+    });
+
+    const attrs = sortedFilteredDebuggerAttrs();
+    if (!attrs.length) {
+        tbody.innerHTML = '<tr><td colspan="3" class="text-surface-500">No matching attributes.</td></tr>';
+        return;
+    }
+
+    tbody.innerHTML = attrs.map(attr => {
+        const item = debuggerAttrData[attr];
+        const classes = [item.IsInherited ? 'qv-debugger-row-inherited' : '', attr === debuggerSelectedAttr ? 'qv-debugger-row-selected' : ''];
+        return `<tr class="${classes.join(' ')}" data-attr-row="${_esc(attr)}">`
+            + `<td>${_esc(attr)}</td>`
+            + `<td>${_esc(item.Value)}</td>`
+            + `<td>${_esc(item.Source ?? '')}</td>`
+            + '</tr>';
+    }).join('');
+}
+
 // The table (which can run to a couple dozen rows for an inherited-heavy
 // object like the default player) scrolls in its own inner region
 // (.qv-debugger-scroll); the override panel is a separate, non-scrolling
 // footer so selecting a row near the top of a long table doesn't require
-// scrolling past everything else to reach the Apply button.
+// scrolling past everything else to reach the Apply button. Sorting/search
+// only ever rebuild the <tbody> (see renderDebuggerAttrRows) — this function
+// is the one that talks to the bridge and rebuilds the whole panel shell
+// (search box, sortable headers, override panel), for a genuine object
+// switch or after Apply changes the underlying data.
 function renderDebuggerAttributesDetail(tab, obj) {
     const detail = document.getElementById('qv-debugger-detail');
-    const data = JSON.parse(Bridge.GetDebugDataJson(tab, obj)).Data || {};
-    const attrs = Object.keys(data);
+    debuggerAttrData = JSON.parse(Bridge.GetDebugDataJson(tab, obj)).Data || {};
+    const attrs = Object.keys(debuggerAttrData);
 
     if (!attrs.length) {
         detail.innerHTML = '<p class="text-surface-500">No attributes.</p>';
@@ -816,24 +890,21 @@ function renderDebuggerAttributesDetail(tab, obj) {
 
     if (!attrs.includes(debuggerSelectedAttr)) debuggerSelectedAttr = null;
 
-    detail.innerHTML = '<div class="qv-debugger-scroll">'
+    detail.innerHTML = `<input type="text" class="qv-debugger-input mb-2" id="qv-debugger-attr-search" placeholder="Search attributes…" autocomplete="off" value="${_esc(debuggerAttrSearch)}">`
+        + '<div class="qv-debugger-scroll">'
         + '<table class="table qv-debugger-table"><thead><tr>'
-        + '<th>Attribute</th><th>Value</th><th>Source</th>'
-        + '</tr></thead><tbody>'
-        + attrs.map(attr => {
-            const item = data[attr];
-            const classes = [item.IsInherited ? 'qv-debugger-row-inherited' : '', attr === debuggerSelectedAttr ? 'qv-debugger-row-selected' : ''];
-            return `<tr class="${classes.join(' ')}" data-attr-row="${_esc(attr)}">`
-                + `<td>${_esc(attr)}</td>`
-                + `<td>${_esc(item.Value)}</td>`
-                + `<td>${_esc(item.Source ?? '')}</td>`
-                + '</tr>';
-        }).join('')
-        + '</tbody></table>'
+        + DEBUGGER_ATTR_COLUMNS.map(c => `<th data-sort-col="${c.key}">${_esc(c.label)}${debuggerAttrSortIndicator(c.key)}</th>`).join('')
+        + '</tr></thead><tbody id="qv-debugger-attr-tbody"></tbody></table>'
         + '</div>'
         + '<div id="qv-debugger-override" class="qv-debugger-footer"></div>';
 
-    if (debuggerSelectedAttr) renderDebuggerOverridePanel(debuggerSelectedAttr, data[debuggerSelectedAttr]);
+    renderDebuggerAttrRows();
+    document.getElementById('qv-debugger-attr-search').addEventListener('input', (e) => {
+        debuggerAttrSearch = e.target.value;
+        renderDebuggerAttrRows();
+    });
+
+    if (debuggerSelectedAttr) renderDebuggerOverridePanel(debuggerSelectedAttr, debuggerAttrData[debuggerSelectedAttr]);
 }
 
 // renderDebuggerAttributesDetail rebuilds the whole #qv-debugger-detail
@@ -898,6 +969,8 @@ function selectDebuggerTab(tab) {
     // blank "Select an item to view details."
     debuggerSelectedItem = tab === 'Walkthrough' ? runningWalkthroughName : null;
     debuggerSelectedAttr = null;
+    debuggerAttrSort = { column: 'attribute', direction: 'asc' };
+    debuggerAttrSearch = '';
     renderDebuggerTabs(JSON.parse(Bridge.GetDebuggerObjectTypesJson()));
     renderDebuggerList();
     renderDebuggerDetail();
@@ -971,15 +1044,32 @@ function ensureDebuggerWired() {
         if (!btn) return;
         debuggerSelectedItem = btn.dataset.item;
         debuggerSelectedAttr = null;
+        // Fresh sort/search state for whichever object was just selected —
+        // a leftover filter/sort from the previous object would otherwise
+        // silently carry over and could hide attributes the user expects
+        // to see (e.g. a search term that happens to match nothing here).
+        debuggerAttrSort = { column: 'attribute', direction: 'asc' };
+        debuggerAttrSearch = '';
         renderDebuggerList();
         renderDebuggerDetail();
     });
 
     document.getElementById('qv-debugger-detail').addEventListener('click', async (e) => {
+        const sortCol = e.target.closest('[data-sort-col]');
+        if (sortCol) {
+            const col = sortCol.dataset.sortCol;
+            debuggerAttrSort = debuggerAttrSort.column === col
+                ? { column: col, direction: debuggerAttrSort.direction === 'asc' ? 'desc' : 'asc' }
+                : { column: col, direction: 'asc' };
+            renderDebuggerAttrRows();
+            return;
+        }
+
         const attrRow = e.target.closest('[data-attr-row]');
         if (attrRow) {
             debuggerSelectedAttr = attrRow.dataset.attrRow;
-            withPreservedDebuggerScroll(() => renderDebuggerAttributesDetail(debuggerActiveTab, debuggerSelectedItem));
+            renderDebuggerAttrRows();
+            renderDebuggerOverridePanel(debuggerSelectedAttr, debuggerAttrData[debuggerSelectedAttr]);
             return;
         }
 
