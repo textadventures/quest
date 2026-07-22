@@ -19,6 +19,6 @@
     "@eslint/compat": "^2.1.0",
     "@eslint/js": "^10.0.1",
     "eslint": "^10.7.0",
-    "typescript-eslint": "^8.64.0"
+    "typescript-eslint": "^8.65.0"
   }
 }
