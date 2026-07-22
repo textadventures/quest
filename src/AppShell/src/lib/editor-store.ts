@@ -6,7 +6,7 @@ import type { AssetInfo, FileAdapter } from "./filesystem/types";
 import { LocalDraftAdapter, shouldShowBackupBanner, markBackupBannerResolved } from "./filesystem/local-adapter";
 import { ServerFileAdapter } from "./filesystem/server-adapter";
 import { triggerDownload } from "./filesystem/download";
-import type { TreeNode, EditorDataResponse, ScriptBlockData, ScriptCommandCategoriesData, IfExpressionTemplateData, IfExpressionTemplate, FullAttributeData } from "./types";
+import type { TreeNode, EditorDataResponse, ScriptBlockData, ScriptCommandCategoriesData, IfExpressionTemplateData, IfExpressionTemplate, FullAttributeData, ExitsData } from "./types";
 
 export type AddElementModalState = { type: "room" | "object" | "function" | "timer" | "walkthrough" | "template" | "dynamictemplate" | "type"; parent: string | null } | null;
 
@@ -908,5 +908,35 @@ export function swapElements(key1: string, key2: string): string {
     if (!_bridge) return "error";
     const result = _bridge.SwapElements(key1, key2);
     if (result === "ok") refreshTree();
+    return result;
+}
+
+// ── Exits editor ─────────────────────────────────────────────────────────────
+
+export function getExitsData(roomKey: string): ExitsData | null {
+    if (!_bridge) return null;
+    const json = _bridge.GetExitsData(roomKey);
+    return json ? JSON.parse(json) : null;
+}
+
+// Deliberately doesn't call selectNode() (unlike the create* helpers above via afterCreate) —
+// quick-creating a directional exit should keep the room itself selected/in view.
+export function createExitInDirection(roomKey: string, direction: string, to: string, createInverse: boolean): string {
+    if (!_bridge) return "error:not loaded";
+    const result = _bridge.CreateExitInDirection(roomKey, direction, to, createInverse);
+    if (!result.startsWith("error:")) {
+        refreshTree();
+        refreshUndoRedo();
+    }
+    return result;
+}
+
+export function createLookExitInDirection(roomKey: string, direction: string): string {
+    if (!_bridge) return "error:not loaded";
+    const result = _bridge.CreateLookExitInDirection(roomKey, direction);
+    if (!result.startsWith("error:")) {
+        refreshTree();
+        refreshUndoRedo();
+    }
     return result;
 }

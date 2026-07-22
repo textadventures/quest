@@ -44,6 +44,30 @@ export interface EditorDataResponse {
   controls: ControlInfo[]
 }
 
+export interface CompassDirectionInfo {
+  direction: string
+  typeKey: string
+  inverseDirection: string
+  inverseTypeKey: string
+  exitKey: string | null
+  to: string | null
+  lookOnly: boolean
+}
+
+export interface ExitRowInfo {
+  key: string
+  alias: string | null
+  to: string | null
+  lookOnly: boolean
+}
+
+export interface ExitsData {
+  compass: CompassDirectionInfo[]
+  allExits: ExitRowInfo[]
+  objects: ControlOption[]
+  allowLookExits: boolean
+}
+
 export interface ScriptControlData {
   controlType: string
   caption: string | null
