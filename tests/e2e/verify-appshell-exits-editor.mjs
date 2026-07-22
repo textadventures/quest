@@ -104,14 +104,23 @@ async function run() {
     await page.waitForSelector('text=→ Room One', { timeout: 10000 });
     console.log('PASS: Room Two automatically got the reciprocal South exit to Room One');
 
-    // Click into the exit from the compass grid — should navigate to the exit's own editor.
-    // Exact match: the full list row below also contains "→ Room One" as a substring ("south →
-    // Room One"), which a plain text= substring locator would ambiguously match too.
+    // The destination hyperlink navigates to the destination ROOM (matching v5's WPF/WebEditor
+    // behavior), not the exit itself — exact match since the full list row below also contains
+    // "→ Room One" as a substring ("south → Room One").
     await page.getByRole('button', { name: '→ Room One', exact: true }).click();
+    await page.waitForSelector('text=Setup', { timeout: 10000 });
+    const roomNameValue = await page.locator('input[type="text"]').first().inputValue();
+    if (roomNameValue !== 'Room One') throw new Error(`Expected the destination link to navigate to Room One, got "${roomNameValue}"`);
+    console.log('PASS: clicking the destination hyperlink navigates to the destination room');
+
+    // The separate pencil "Edit exit" button navigates to the exit's own editor instead.
+    await selectTreeNode('Room Two');
+    await page.click('button:has-text("Exits")');
+    await page.click('button[title="Edit exit"]');
     await page.waitForSelector('text=Exit', { timeout: 10000 });
     const toValue = await page.locator('[role="combobox"]').first().inputValue();
     if (toValue !== 'Room One') throw new Error(`Expected exit's own editor "To" field to show Room One, got "${toValue}"`);
-    console.log('PASS: clicking an existing exit navigates to its own working editor page');
+    console.log('PASS: clicking the pencil Edit button navigates to the exit\'s own working editor page');
 
     // Back on Room One, create a "look" exit (east) — no destination room, one-way.
     await selectTreeNode('Room One');
@@ -198,7 +207,10 @@ async function run() {
     await page.waitForSelector('[role="option"]:has-text("Room Two")', { timeout: 5000 });
     await page.click('[role="option"]:has-text("Room Two")');
     await page.click('button:has-text("Create exit")');
-    const northeastCell = page.getByText('northeast', { exact: true }).locator('..');
+    // Two levels up: the label span's immediate parent is now just the top row (label + pencil
+    // edit button); the outer cell div containing both rows (label row + destination/delete row)
+    // is its parent's parent.
+    const northeastCell = page.getByText('northeast', { exact: true }).locator('..').locator('..');
     await northeastCell.getByRole('button', { name: '→ Room Two', exact: true }).waitFor({ timeout: 10000 });
 
     // Cancel must delete nothing at all — not even the exit that was clicked on.

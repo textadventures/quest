@@ -3,6 +3,7 @@
     import { chooseDialog } from "$lib/confirm";
     import type { ExitsData, CompassDirectionInfo } from "$lib/types";
     import Combobox from "./Combobox.svelte";
+    import Pencil from "@lucide/svelte/icons/pencil";
 
     interface Props {
         elementKey: string;
@@ -128,14 +129,26 @@
         <div></div>
     {:else if dir.exitKey !== null}
         <div class="border border-surface-200-800 rounded p-1.5 bg-surface-50-950 min-h-14 min-w-0 flex flex-col gap-0.5">
-            <span class="text-[10px] uppercase text-surface-400-500 truncate">{dir.direction}</span>
-            <div class="flex items-center gap-1 min-w-0">
+            <div class="flex items-center justify-between gap-1 min-w-0">
+                <span class="text-[10px] uppercase text-surface-400-500 truncate">{dir.direction}</span>
                 <button
                     type="button"
-                    class="flex-1 min-w-0 text-left text-xs text-primary-600-400 hover:underline truncate"
-                    title={dir.lookOnly ? undefined : (dir.to ?? undefined)}
+                    class="text-surface-400-500 hover:text-primary-600-400 flex-shrink-0"
+                    title="Edit exit"
                     onclick={() => selectNode(dir.exitKey!)}
-                >{dir.lookOnly ? "(look)" : `→ ${dir.to}`}</button>
+                ><Pencil size={11} /></button>
+            </div>
+            <div class="flex items-center gap-1 min-w-0">
+                {#if dir.lookOnly}
+                    <span class="flex-1 min-w-0 text-xs text-surface-500-400 truncate">(look)</span>
+                {:else}
+                    <button
+                        type="button"
+                        class="flex-1 min-w-0 text-left text-xs text-primary-600-400 hover:underline truncate"
+                        title={dir.to ?? undefined}
+                        onclick={() => selectNode(dir.to!)}
+                    >→ {dir.to}</button>
+                {/if}
                 <button
                     type="button"
                     class="btn btn-sm preset-outlined-error-500 px-1 py-0 text-xs leading-none flex-shrink-0"
@@ -229,12 +242,22 @@
             {:else}
                 {#each data.allExits as exit, i (exit.key)}
                     <div class="group relative border border-surface-200-800 rounded mb-1 bg-surface-50-950 flex items-center">
-                        <button
-                            type="button"
-                            class="flex-1 text-left text-xs px-1.5 py-1 pr-20 text-primary-600-400 hover:underline truncate"
-                            onclick={() => selectNode(exit.key)}
-                        >{exit.alias ?? "(none)"} → {exit.lookOnly ? "(look)" : (exit.to ?? "(nowhere)")}</button>
+                        {#if !exit.lookOnly && exit.to}
+                            <button
+                                type="button"
+                                class="flex-1 text-left text-xs px-1.5 py-1 pr-28 text-primary-600-400 hover:underline truncate"
+                                onclick={() => selectNode(exit.to!)}
+                            >{exit.alias ?? "(none)"} → {exit.to}</button>
+                        {:else}
+                            <span class="flex-1 text-xs px-1.5 py-1 pr-28 text-surface-500-400 truncate">{exit.alias ?? "(none)"} → {exit.lookOnly ? "(look)" : "(nowhere)"}</span>
+                        {/if}
                         <div class="absolute right-1 top-1/2 -translate-y-1/2 flex gap-0.5 opacity-0 pointer-events-none group-hover:opacity-100 group-hover:pointer-events-auto transition-opacity z-10">
+                            <button
+                                type="button"
+                                class="btn btn-sm preset-outlined-primary-500 px-1 py-0 text-xs leading-none flex items-center"
+                                title="Edit exit"
+                                onclick={() => selectNode(exit.key)}
+                            ><Pencil size={12} /></button>
                             <button
                                 type="button"
                                 class="btn btn-sm preset-outlined-primary-500 px-1 py-0 text-xs leading-none"
