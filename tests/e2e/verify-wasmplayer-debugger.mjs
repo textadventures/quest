@@ -42,7 +42,11 @@ function check(label, condition) {
 // (unlike two ordinary tabs in the same real browser window/profile, which
 // is what AppShell's editor + its live-preview tab actually are), so both
 // pages here must share one explicit context or the channel can't bridge them.
-const context = await browser.newContext();
+// A generous viewport, so the movable/resizable dialog checks below have
+// enough room that clamping (staying within the viewport, see
+// applyDebuggerRect/wireDebuggerMoveResize) never kicks in and confounds an
+// exact-pixel-delta assertion.
+const context = await browser.newContext({ viewport: { width: 1400, height: 1000 } });
 const previewPage = await context.newPage();
 previewPage.on('pageerror', err => console.log('[pageerror]', err.message));
 previewPage.on('console', msg => {
@@ -300,6 +304,68 @@ await previewPage.waitForFunction(() => {
 const errorText = await previewPage.$eval('#qv-debugger-override-error', el => el.textContent);
 check('Bad override shows an inline error', errorText.length > 0);
 console.log('  error text:', errorText);
+
+// ── Movable/resizable dialog, splitter, resizable columns ──────────────────
+async function dragBy(page, handleSelector, dx, dy) {
+    const box = await page.$eval(handleSelector, el => {
+        const r = el.getBoundingClientRect();
+        return { x: r.x + r.width / 2, y: r.y + r.height / 2 };
+    });
+    await page.mouse.move(box.x, box.y);
+    await page.mouse.down();
+    await page.mouse.move(box.x + dx, box.y + dy, { steps: 5 });
+    await page.mouse.up();
+}
+
+const rectBefore = await previewPage.$eval('#questVivaDebugger', el => el.getBoundingClientRect().toJSON());
+
+await dragBy(previewPage, '#qv-debugger-titlebar', -120, 60);
+const rectAfterMove = await previewPage.$eval('#questVivaDebugger', el => el.getBoundingClientRect().toJSON());
+check(
+    'Dragging the title bar moves the dialog',
+    rectAfterMove.left === rectBefore.left - 120 && rectAfterMove.top === rectBefore.top + 60
+);
+
+await dragBy(previewPage, '#qv-debugger-resize-handle', 150, 100);
+const rectAfterResize = await previewPage.$eval('#questVivaDebugger', el => el.getBoundingClientRect().toJSON());
+check(
+    'Dragging the resize handle grows the dialog',
+    rectAfterResize.width === rectAfterMove.width + 150 && rectAfterResize.height === rectAfterMove.height + 100
+);
+
+const listWidthBefore = await previewPage.$eval('#qv-debugger-list', el => el.getBoundingClientRect().width);
+await dragBy(previewPage, '#qv-debugger-splitter', 80, 0);
+const listWidthAfter = await previewPage.$eval('#qv-debugger-list', el => el.getBoundingClientRect().width);
+check('Dragging the splitter resizes the object list pane', Math.round(listWidthAfter - listWidthBefore) === 80);
+
+// The table header (containing the resize handle) isn't sticky, so if the
+// table happens to be scrolled a long way down — e.g. clicking "parent" a
+// few steps ago auto-scrolled the (long, alphabetically-sorted) player
+// attribute list a good way down to bring that row into view — the header
+// itself can be scrolled out of the visible viewport entirely. Reset scroll
+// first so the handle is actually reachable, same idea as the "type" row
+// click earlier using el.click() directly to sidestep Playwright's
+// scroll-into-view.
+await previewPage.$eval('.qv-debugger-scroll', el => { el.scrollTop = 0; });
+
+const attrColWidthBefore = await previewPage.$eval('[data-attr-row] td:first-child', el => el.getBoundingClientRect().width);
+await dragBy(previewPage, '[data-resize-col="attribute"]', 60, 0);
+const attrColWidthAfter = await previewPage.$eval('[data-attr-row] td:first-child', el => el.getBoundingClientRect().width);
+check('Dragging a column handle resizes that column', Math.round(attrColWidthAfter - attrColWidthBefore) === 60);
+
+// Reopening should keep the same custom rect (position/size survive a
+// close/reopen, same idea as the walkthrough Running… state does).
+await previewPage.click('#qv-debugger-close');
+await previewPage.click('#cmdDebug');
+await previewPage.waitForSelector('#questVivaDebugger[open]');
+const rectAfterReopen = await previewPage.$eval('#questVivaDebugger', el => el.getBoundingClientRect().toJSON());
+check(
+    'Dialog position/size persist across close/reopen',
+    rectAfterReopen.left === rectAfterResize.left
+        && rectAfterReopen.top === rectAfterResize.top
+        && rectAfterReopen.width === rectAfterResize.width
+        && rectAfterReopen.height === rectAfterResize.height
+);
 
 // ── 6. Walkthrough runner ───────────────────────────────────────────────────
 await previewPage.click('#qv-debugger-tabs button:text("Walkthrough")');

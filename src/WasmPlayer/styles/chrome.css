@@ -79,28 +79,98 @@
     display: none;
 }
 
-/* Debugger — wider than #qv-saves to fit a two-pane object list + attribute
-   table layout; height capped so a long attribute list scrolls internally
-   rather than growing the dialog past the viewport. */
+/* Debugger — movable and resizable (wireDebuggerMoveResize in wasm-player.js
+   sets explicit left/top/width/height right after every showModal(), before
+   the first paint — see that function's doc comment). margin:0 is required
+   for those inline top/left values to actually take effect: the UA
+   stylesheet's default centering for <dialog> relies on auto margins, which
+   would otherwise still apply and fight the explicit position. No
+   max-width/fixed width here at all — every dimension is JS-driven, with
+   sensible defaults computed on first open. */
 :scope#questVivaDebugger {
     border: none;
     border-radius: 0.75rem;
     padding: 0;
-    max-width: 48rem;
-    width: 100%;
+    margin: 0;
 }
 
 :scope#questVivaDebugger::backdrop {
     background: rgb(0 0 0 / 0.5);
 }
 
-/* Fixed (not max-) height: the dialog's overall size stays constant across
-   tabs — a short Walkthrough list vs. a long attribute table used to make
-   the whole dialog visibly grow/shrink on every tab click, since only the
-   content's natural height was constrained. Both panes scroll internally
-   instead. */
+#qv-debugger-titlebar {
+    cursor: move;
+    touch-action: none;
+}
+
+/* Applied to the dialog itself (not <body> — everything in this stylesheet
+   is wrapped in `@scope (.qv-chrome)` by scope-css.mjs, and <body> is an
+   *ancestor* of .qv-chrome roots, never a descendant, so a bare `body`
+   selector here would silently never match anything; :scope is the one
+   selector @scope lets match the root itself) for the duration of any drag
+   (move/resize/splitter/column-resize — see startDebuggerDrag) so dragging
+   over table text or the title bar doesn't also highlight/select it along
+   the way. user-select:none inherits to every descendant on its own. */
+:scope.qv-debugger-drag-active {
+    user-select: none;
+}
+
+/* The resize handle needs to sit above the scrollable panes/table without
+   being clipped by their overflow:auto — absolute positioning within the
+   card (position:relative) keeps it reachable regardless of scroll state. */
+#qv-debugger-card {
+    position: relative;
+}
+
+#qv-debugger-resize-handle {
+    position: absolute;
+    right: 0;
+    bottom: 0;
+    width: 1rem;
+    height: 1rem;
+    cursor: nwse-resize;
+    touch-action: none;
+}
+
+#qv-debugger-resize-handle::before {
+    content: '';
+    position: absolute;
+    right: 0.25rem;
+    bottom: 0.25rem;
+    width: 0.5rem;
+    height: 0.5rem;
+    border-right: 2px solid var(--color-surface-400-600);
+    border-bottom: 2px solid var(--color-surface-400-600);
+}
+
+/* Draggable divider between the object/walkthrough list and the detail pane
+   (adjusts #qv-debugger-list's width — see wireDebuggerSplitter). A little
+   wider than its visible line so it's actually easy to grab. */
+#qv-debugger-splitter {
+    flex-shrink: 0;
+    width: 0.75rem;
+    margin-inline: -0.25rem;
+    cursor: col-resize;
+    touch-action: none;
+    position: relative;
+}
+
+#qv-debugger-splitter::after {
+    content: '';
+    position: absolute;
+    inset-block: 0;
+    left: 50%;
+    width: 1px;
+    background: var(--color-surface-300-700);
+}
+
+#qv-debugger-splitter:hover::after,
+#qv-debugger-splitter.qv-debugger-dragging::after {
+    background: var(--color-primary-500);
+    width: 2px;
+}
+
 #qv-debugger-list {
-    height: 24rem;
     overflow-y: auto;
 }
 
@@ -108,9 +178,11 @@
    Run controls (.qv-debugger-footer) can be pinned below the table/step
    list instead of scrolling away with it — see renderDebuggerAttributesDetail's
    doc comment for why (a long inherited-attribute table used to push the
-   Apply button off the bottom of the visible area). */
+   Apply button off the bottom of the visible area). Both panes fill
+   whatever height #qv-debugger-panes ends up with (flex:1 in the card's
+   column, which itself fills the JS-applied dialog height) rather than a
+   fixed rem value, so resizing the dialog actually grows/shrinks them. */
 #qv-debugger-detail {
-    height: 24rem;
     display: flex;
     flex-direction: column;
 }
@@ -199,6 +271,7 @@
    Tailwind's preflight reset unsets <th>'s default bold weight, so with no
    explicit styling a <thead> row just looks like another row of text. */
 .qv-debugger-table thead th {
+    position: relative;
     text-align: left;
     font-size: var(--text-xs);
     text-transform: uppercase;
@@ -206,6 +279,29 @@
     color: var(--color-surface-500);
     border-bottom: 1px solid var(--color-surface-300-700);
     padding-bottom: 0.5rem;
+}
+
+/* Resizable-column drag handle — sits on the right edge of a resizable
+   header (all but the last column; the last one just absorbs whatever width
+   is left over, see the <colgroup> built in renderDebuggerAttributesDetail).
+   Wider than its visible line for an easier grab target, same treatment as
+   #qv-debugger-splitter above. z-index keeps it grabbable over the header
+   text/sort-indicator it overlaps. */
+.qv-debugger-col-resize {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    right: -0.375rem;
+    width: 0.75rem;
+    cursor: col-resize;
+    touch-action: none;
+    z-index: 1;
+}
+
+.qv-debugger-col-resize:hover,
+.qv-debugger-col-resize.qv-debugger-dragging {
+    background: var(--color-primary-500);
+    opacity: 0.5;
 }
 
 #qv-debugger-detail [data-attr-row] {

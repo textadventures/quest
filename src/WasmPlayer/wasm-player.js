@@ -753,6 +753,166 @@ let debuggerAttrSearch = '';
 // when the object actually changes or an override is applied.
 let debuggerAttrData = null;
 
+// ── Move/resize/splitter/column-resize state ────────────────────────────────
+// All in px, all session-only (in-memory, not persisted across a page
+// reload) — a dev tool's window geometry isn't worth the complexity of
+// persisting across reloads, but it should survive closing/reopening the
+// dialog and game restarts within the same session, so these live at module
+// scope rather than being recomputed/reset on every render.
+
+const DEBUGGER_DEFAULT_WIDTH = 768;
+const DEBUGGER_DEFAULT_HEIGHT = 600;
+const DEBUGGER_MIN_WIDTH = 480;
+const DEBUGGER_MIN_HEIGHT = 360;
+const DEBUGGER_MIN_LIST_WIDTH = 100;
+const DEBUGGER_MIN_DETAIL_WIDTH = 200;
+const DEBUGGER_MIN_COLUMN_WIDTH = 60;
+
+// null until the first time the dialog is ever opened — see applyDebuggerRect.
+let debuggerRect = null;
+let debuggerListWidth = 192; // matches the old w-48 (12rem) Tailwind default
+let debuggerColWidths = { attribute: 160, value: 260 }; // 'source' just takes whatever's left
+
+// Generic pointer-drag helper — used by the title bar, resize handle,
+// splitter, and column-resize handles below. onMove receives the raw
+// pointermove event; the caller computes whatever delta it needs from
+// clientX/clientY captured at drag start. document.body.style.cursor is a
+// plain inline style (works regardless of the .qv-chrome CSS scoping); the
+// user-select:none class goes on the dialog itself, not <body> — see
+// :scope.qv-debugger-drag-active's doc comment in chrome.css for why.
+function startDebuggerDrag(startEvent, cursor, onMove, onEnd) {
+    startEvent.preventDefault();
+    const dlg = document.getElementById('questVivaDebugger');
+    dlg.classList.add('qv-debugger-drag-active');
+    document.body.style.cursor = cursor;
+
+    const move = (e) => onMove(e);
+    const end = (e) => {
+        document.removeEventListener('pointermove', move);
+        document.removeEventListener('pointerup', end);
+        dlg.classList.remove('qv-debugger-drag-active');
+        document.body.style.cursor = '';
+        if (onEnd) onEnd(e);
+    };
+
+    document.addEventListener('pointermove', move);
+    document.addEventListener('pointerup', end);
+}
+
+function clamp(value, min, max) {
+    return Math.min(Math.max(value, min), Math.max(min, max));
+}
+
+// Applied right after every showModal() (see wireDebuggerButton/restartGame's
+// call sites), before the browser gets a chance to paint — so the dialog
+// never visibly flashes at its old browser-default centered position first.
+// Computes a centered default the very first time it's called; every
+// subsequent call (reopening the dialog, or after the user drags/resizes)
+// just re-applies whatever debuggerRect currently holds.
+function applyDebuggerRect() {
+    const dlg = document.getElementById('questVivaDebugger');
+    if (!dlg) return;
+
+    if (!debuggerRect) {
+        const width = Math.min(DEBUGGER_DEFAULT_WIDTH, window.innerWidth - 40);
+        const height = Math.min(DEBUGGER_DEFAULT_HEIGHT, window.innerHeight - 40);
+        debuggerRect = {
+            left: Math.round((window.innerWidth - width) / 2),
+            top: Math.round((window.innerHeight - height) / 2),
+            width,
+            height,
+        };
+    }
+
+    dlg.style.left = `${debuggerRect.left}px`;
+    dlg.style.top = `${debuggerRect.top}px`;
+    dlg.style.width = `${debuggerRect.width}px`;
+    dlg.style.height = `${debuggerRect.height}px`;
+}
+
+function wireDebuggerMoveResize() {
+    const dlg = document.getElementById('questVivaDebugger');
+    const titlebar = document.getElementById('qv-debugger-titlebar');
+    const resizeHandle = document.getElementById('qv-debugger-resize-handle');
+
+    titlebar.addEventListener('pointerdown', (e) => {
+        if (e.target.closest('#qv-debugger-close')) return;
+        const startX = e.clientX;
+        const startY = e.clientY;
+        const { left: startLeft, top: startTop, width, height } = debuggerRect;
+
+        startDebuggerDrag(e, 'move', (moveEvent) => {
+            const left = clamp(startLeft + (moveEvent.clientX - startX), 0, window.innerWidth - width);
+            const top = clamp(startTop + (moveEvent.clientY - startY), 0, window.innerHeight - height);
+            debuggerRect = { ...debuggerRect, left, top };
+            dlg.style.left = `${left}px`;
+            dlg.style.top = `${top}px`;
+        });
+    });
+
+    resizeHandle.addEventListener('pointerdown', (e) => {
+        const startX = e.clientX;
+        const startY = e.clientY;
+        const { left, top, width: startWidth, height: startHeight } = debuggerRect;
+
+        startDebuggerDrag(e, 'nwse-resize', (moveEvent) => {
+            const width = clamp(startWidth + (moveEvent.clientX - startX), DEBUGGER_MIN_WIDTH, window.innerWidth - left);
+            const height = clamp(startHeight + (moveEvent.clientY - startY), DEBUGGER_MIN_HEIGHT, window.innerHeight - top);
+            debuggerRect = { ...debuggerRect, width, height };
+            dlg.style.width = `${width}px`;
+            dlg.style.height = `${height}px`;
+        });
+    });
+}
+
+function wireDebuggerSplitter() {
+    const splitter = document.getElementById('qv-debugger-splitter');
+    const list = document.getElementById('qv-debugger-list');
+    const panes = document.getElementById('qv-debugger-panes');
+
+    splitter.addEventListener('pointerdown', (e) => {
+        const startX = e.clientX;
+        const startWidth = list.getBoundingClientRect().width;
+        splitter.classList.add('qv-debugger-dragging');
+
+        startDebuggerDrag(e, 'col-resize', (moveEvent) => {
+            const containerWidth = panes.getBoundingClientRect().width;
+            const maxWidth = containerWidth - DEBUGGER_MIN_DETAIL_WIDTH - splitter.getBoundingClientRect().width;
+            debuggerListWidth = clamp(startWidth + (moveEvent.clientX - startX), DEBUGGER_MIN_LIST_WIDTH, maxWidth);
+            list.style.width = `${debuggerListWidth}px`;
+        }, () => splitter.classList.remove('qv-debugger-dragging'));
+    });
+}
+
+// Attribute-table column resizing — only the first two columns (Attribute,
+// Value) get a drag handle; Source just absorbs whatever width is left over
+// (see the <colgroup> built in renderDebuggerAttributesDetail), matching how
+// #qv-debugger-splitter only needs to move one boundary for a two-pane
+// layout. Wired once in ensureDebuggerWired via delegation, since the
+// handles themselves are rebuilt on every renderDebuggerAttributesDetail
+// call (a fresh object/tab, or after Apply).
+function wireDebuggerColumnResize(startEvent) {
+    const handle = startEvent.target.closest('[data-resize-col]');
+    if (!handle) return false;
+
+    const key = handle.dataset.resizeCol;
+    const table = handle.closest('table');
+    const col = table.querySelector(`col[data-col="${key}"]`);
+    if (!col) return true;
+
+    const startX = startEvent.clientX;
+    const startWidth = debuggerColWidths[key];
+    handle.classList.add('qv-debugger-dragging');
+
+    startDebuggerDrag(startEvent, 'col-resize', (moveEvent) => {
+        const width = Math.max(DEBUGGER_MIN_COLUMN_WIDTH, startWidth + (moveEvent.clientX - startX));
+        debuggerColWidths = { ...debuggerColWidths, [key]: width };
+        col.style.width = `${width}px`;
+    }, () => handle.classList.remove('qv-debugger-dragging'));
+
+    return true;
+}
+
 // DebugDataItem.Value is a human-readable *display* string (Fields.cs's
 // DefaultFormatter just calls ToString() — a string has no quotes, a bool
 // reads "True"/"False", an object reference reads as "Object: kitchen").
@@ -847,9 +1007,14 @@ function renderDebuggerAttrRows() {
     const tbody = document.getElementById('qv-debugger-attr-tbody');
     if (!tbody) return;
 
+    // Only the label <span> gets its text replaced — a resize handle
+    // (.qv-debugger-col-resize) is a sibling inside the same <th>, and
+    // setting th.textContent directly would wipe that handle out on every
+    // sort/search re-render.
     document.querySelectorAll('#qv-debugger-detail [data-sort-col]').forEach(th => {
         const col = th.dataset.sortCol;
-        th.textContent = DEBUGGER_ATTR_COLUMNS.find(c => c.key === col).label + debuggerAttrSortIndicator(col);
+        const label = th.querySelector('.qv-debugger-sort-label');
+        if (label) label.textContent = DEBUGGER_ATTR_COLUMNS.find(c => c.key === col).label + debuggerAttrSortIndicator(col);
     });
 
     const attrs = sortedFilteredDebuggerAttrs();
@@ -890,10 +1055,20 @@ function renderDebuggerAttributesDetail(tab, obj) {
 
     if (!attrs.includes(debuggerSelectedAttr)) debuggerSelectedAttr = null;
 
+    // Only Attribute/Value get an explicit <col> width + resize handle —
+    // Source (the last column) just takes whatever width table-layout:fixed
+    // leaves over, the same "only one boundary to drag" simplification
+    // wireDebuggerSplitter uses for the two-pane list/detail split.
     detail.innerHTML = `<input type="text" class="qv-debugger-input mb-2" id="qv-debugger-attr-search" placeholder="Search attributes…" autocomplete="off" value="${_esc(debuggerAttrSearch)}">`
         + '<div class="qv-debugger-scroll">'
-        + '<table class="table qv-debugger-table"><thead><tr>'
-        + DEBUGGER_ATTR_COLUMNS.map(c => `<th data-sort-col="${c.key}">${_esc(c.label)}${debuggerAttrSortIndicator(c.key)}</th>`).join('')
+        + '<table class="table qv-debugger-table">'
+        + `<colgroup><col data-col="attribute" style="width:${debuggerColWidths.attribute}px">`
+        + `<col data-col="value" style="width:${debuggerColWidths.value}px"><col data-col="source"></colgroup>`
+        + '<thead><tr>'
+        + DEBUGGER_ATTR_COLUMNS.map(c => '<th data-sort-col="' + c.key + '">'
+            + `<span class="qv-debugger-sort-label">${_esc(c.label)}${debuggerAttrSortIndicator(c.key)}</span>`
+            + (c.key === 'source' ? '' : `<span class="qv-debugger-col-resize" data-resize-col="${c.key}"></span>`)
+            + '</th>').join('')
         + '</tr></thead><tbody id="qv-debugger-attr-tbody"></tbody></table>'
         + '</div>'
         + '<div id="qv-debugger-override" class="qv-debugger-footer"></div>';
@@ -1034,6 +1209,17 @@ function ensureDebuggerWired() {
 
     document.getElementById('qv-debugger-close').addEventListener('click', () => dlg.close());
 
+    // Only needs setting once — #qv-debugger-list itself is never rebuilt
+    // (only its innerHTML, by renderDebuggerList), so this inline width
+    // survives every re-render and even a game restart (the dialog is on
+    // swapInPlayerUi's preserve-list). Subsequent changes come from dragging
+    // the splitter (wireDebuggerSplitter).
+    document.getElementById('qv-debugger-list').style.width = `${debuggerListWidth}px`;
+
+    wireDebuggerMoveResize();
+    wireDebuggerSplitter();
+    document.getElementById('qv-debugger-detail').addEventListener('pointerdown', wireDebuggerColumnResize);
+
     document.getElementById('qv-debugger-tabs').addEventListener('click', (e) => {
         const btn = e.target.closest('[data-tab]');
         if (btn) selectDebuggerTab(btn.dataset.tab);
@@ -1055,6 +1241,12 @@ function ensureDebuggerWired() {
     });
 
     document.getElementById('qv-debugger-detail').addEventListener('click', async (e) => {
+        // A completed column-resize drag (pointerdown+move+pointerup on
+        // [data-resize-col], handled separately above) still fires a
+        // trailing click on whatever's underneath — swallow it here so it
+        // doesn't also toggle that column's sort direction.
+        if (e.target.closest('[data-resize-col]')) return;
+
         const sortCol = e.target.closest('[data-sort-col]');
         if (sortCol) {
             const col = sortCol.dataset.sortCol;
@@ -1100,6 +1292,7 @@ function wireDebuggerButton() {
     if (!cmdDebug) return;
     cmdDebug.addEventListener('click', () => {
         ensureDebuggerWired();
+        applyDebuggerRect();
         debuggerActiveTab = 'Walkthrough';
         // If a walkthrough is running (started on a previous open of this
         // dialog, which fully rebuilds #qv-debugger-detail on every open —
