@@ -57,15 +57,19 @@
    same z-index tier as #qv-start (both just sit in the normal stacking
    context; qv-saves/questVivaDebugger are actual <dialog>s and always
    render above this regardless, which is fine since both are already closed
-   by the time restartGameCore shows this). Semi-transparent dark background
-   makes clear the whole page is intentionally busy, not just unresponsive. */
+   by the time restartGameCore shows this). Fully opaque, matching #qv-start
+   above — not a translucent backdrop like the dialogs' ::backdrop rules
+   below: this needs to fully mask #divOutput, which Bridge.Begin() writes to
+   progressively *before* its own JS promise resolves (i.e. before this
+   overlay gets hidden again) — a translucent background let that new
+   output visibly bleed through right at the tail end of a restart. */
 :scope#qv-restarting {
     position: fixed;
     inset: 0;
     display: flex;
     align-items: center;
     justify-content: center;
-    background: rgb(0 0 0 / 0.6);
+    background: var(--color-surface-950);
 }
 
 :scope#qv-restarting.hidden {
