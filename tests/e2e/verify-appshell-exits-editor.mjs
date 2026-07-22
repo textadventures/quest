@@ -47,13 +47,13 @@ async function run() {
     await page.click('[data-value="Room One"]');
     await page.waitForSelector('button:has-text("Exits")', { timeout: 10000 });
     await page.click('button:has-text("Exits")');
-    await page.waitForSelector('text=+ north', { timeout: 10000 });
+    await page.getByRole('button', { name: 'north', exact: true }).waitFor({ timeout: 10000 });
     console.log('PASS: Exits tab renders the compass grid (previously rendered nothing)');
 
     // Quick-create a North exit from Room One to Room Two, with the reciprocal exit.
     // Directions are lowercase captions ("north", "northwest", ...) — use exact-match role
     // queries throughout since plain text= substring matching would match "northwest" too.
-    await page.getByRole('button', { name: '+ north', exact: true }).click();
+    await page.getByRole('button', { name: 'north', exact: true }).click();
     const combobox = page.locator('[role="combobox"]');
     await combobox.click();
     await combobox.fill('Room Two');
@@ -95,7 +95,7 @@ async function run() {
     await page.click('[data-value="Room One"]');
     await page.waitForSelector('button:has-text("Exits")', { timeout: 10000 });
     await page.click('button:has-text("Exits")');
-    await page.getByRole('button', { name: '+ east', exact: true }).click();
+    await page.getByRole('button', { name: 'east', exact: true }).click();
     await page.click('text=Create a look exit instead');
     await page.waitForSelector('text=(look)', { timeout: 10000 });
     console.log('PASS: "Create a look exit instead" creates a one-way look exit with no destination');
@@ -113,7 +113,7 @@ async function run() {
     // feature. Room One itself must still be the selected tree node throughout, though.
     await page.waitForSelector('[data-value="Room One"][data-selected]', { timeout: 10000 });
     await page.click('button:has-text("Exits")');
-    await page.getByRole('button', { name: '+ north', exact: true }).waitFor({ timeout: 10000 });
+    await page.getByRole('button', { name: 'north', exact: true }).waitFor({ timeout: 10000 });
     await page.waitForSelector('text=Exits list prefix', { timeout: 3000 });
     console.log('PASS: deleting an exit removes it and keeps Room One selected');
 

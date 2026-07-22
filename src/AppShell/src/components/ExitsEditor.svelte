@@ -113,43 +113,15 @@
             </div>
         </div>
     {:else}
-        <div class="border border-dashed border-surface-300-700 rounded p-1.5 min-h-14 min-w-0 flex flex-col gap-1">
-            <button
-                type="button"
-                class="text-xs text-surface-400-500 hover:text-primary-600-400 text-left truncate"
-                onclick={() => toggleDirection(dir.direction)}
-            >{dir.direction}</button>
-            {#if openDirection === dir.direction && data}
-                <div class="flex flex-col gap-1 mt-1">
-                    <Combobox
-                        value={createTo}
-                        options={data.objects}
-                        onchange={(v) => { createTo = v; }}
-                        class="input text-xs py-0.5 px-1.5 w-full"
-                    />
-                    <label class="flex items-center gap-1.5 text-xs cursor-pointer">
-                        <input type="checkbox" class="checkbox size-3.5" bind:checked={createInverse} />
-                        Also create the return exit
-                    </label>
-                    <button
-                        type="button"
-                        class="btn btn-sm preset-outlined-primary-500 text-xs py-0.5"
-                        disabled={!createTo}
-                        onclick={() => doCreate(dir.direction)}
-                    >Create exit</button>
-                    {#if data.allowLookExits}
-                        <button
-                            type="button"
-                            class="text-xs text-surface-400-500 hover:text-primary-600-400 underline text-left"
-                            onclick={() => doCreateLook(dir.direction)}
-                        >Create a look exit instead</button>
-                    {/if}
-                    {#if warning}
-                        <p class="text-xs text-warning-600-400">{warning}</p>
-                    {/if}
-                </div>
-            {/if}
-        </div>
+        {@const isOpen = openDirection === dir.direction}
+        <button
+            type="button"
+            class="border rounded p-1.5 min-h-14 min-w-0 flex items-center text-left text-xs transition-colors
+                {isOpen
+                    ? 'border-primary-500 bg-primary-50-950 text-primary-600-400'
+                    : 'border-dashed border-surface-300-700 text-surface-400-500 hover:border-primary-400 hover:text-primary-600-400'}"
+            onclick={() => toggleDirection(dir.direction)}
+        ><span class="truncate">{dir.direction}</span></button>
     {/if}
 {/snippet}
 
@@ -167,6 +139,49 @@
                 {/each}
             </div>
         </div>
+
+        <!-- Rendered as a separate block below the grids (rather than expanding the clicked cell
+             in place) so opening/closing it never changes the grid's own layout. -->
+        {#if openDirection}
+            <div class="border border-primary-300-700 rounded p-2.5 flex flex-col gap-1.5 bg-surface-50-950 w-full max-w-xl">
+                <div class="flex items-center justify-between">
+                    <span class="text-xs font-medium text-surface-600-400">Create exit: {openDirection}</span>
+                    <button
+                        type="button"
+                        class="text-xs text-surface-400-500 hover:text-surface-600-400"
+                        onclick={() => { openDirection = null; }}
+                    >✕</button>
+                </div>
+                <Combobox
+                    value={createTo}
+                    options={data.objects}
+                    onchange={(v) => { createTo = v; }}
+                    class="input text-xs py-0.5 px-1.5 w-full"
+                />
+                <label class="flex items-center gap-1.5 text-xs cursor-pointer">
+                    <input type="checkbox" class="checkbox size-3.5" bind:checked={createInverse} />
+                    Also create the return exit
+                </label>
+                <div class="flex items-center gap-3">
+                    <button
+                        type="button"
+                        class="btn btn-sm preset-outlined-primary-500 text-xs py-0.5"
+                        disabled={!createTo}
+                        onclick={() => doCreate(openDirection!)}
+                    >Create exit</button>
+                    {#if data.allowLookExits}
+                        <button
+                            type="button"
+                            class="text-xs text-surface-400-500 hover:text-primary-600-400 underline text-left"
+                            onclick={() => doCreateLook(openDirection!)}
+                        >Create a look exit instead</button>
+                    {/if}
+                </div>
+                {#if warning}
+                    <p class="text-xs text-warning-600-400">{warning}</p>
+                {/if}
+            </div>
+        {/if}
 
         <div class="flex flex-col">
             <div class="flex items-center gap-1 mb-2">
