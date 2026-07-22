@@ -108,14 +108,16 @@ async function run() {
     await listRow.hover();
     await listRow.locator('button[title="Delete"]').click();
 
-    // Deleting resets the active tab to the first one (Setup) — same pre-existing behavior as
-    // ElementsList's delete-then-reselect-parent elsewhere in the app, not specific to this
-    // feature. Room One itself must still be the selected tree node throughout, though.
+    // Room One must stay selected AND the Exits tab must stay active — deleting an exit doesn't
+    // touch the current selection at all (unlike the generic deleteElement() used elsewhere,
+    // which always clears it), so there's no reselect for PropertyEditor to mistake for switching
+    // to a different node and reset the active tab.
     await page.waitForSelector('[data-value="Room One"][data-selected]', { timeout: 10000 });
-    await page.click('button:has-text("Exits")');
     await page.getByRole('button', { name: 'north', exact: true }).waitFor({ timeout: 10000 });
     await page.waitForSelector('text=Exits list prefix', { timeout: 3000 });
-    console.log('PASS: deleting an exit removes it and keeps Room One selected');
+    const exitsTabStillActive = await page.locator('button:has-text("Exits")').getAttribute('class');
+    if (!exitsTabStillActive?.includes('border-primary-500')) throw new Error('Expected Exits tab to remain the active tab after deleting an exit');
+    console.log('PASS: deleting an exit removes it, keeps Room One selected, and stays on the Exits tab');
 
     console.log('PASS: all checks passed');
 }

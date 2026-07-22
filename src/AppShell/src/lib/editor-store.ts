@@ -904,6 +904,19 @@ export function deleteElement(key: string) {
     refreshUndoRedo();
 }
 
+// For deleting a child of the currently-selected node (e.g. a room's exit) where the parent's own
+// tabs/attributes don't depend on that child's existence — leaves selectedKey/selectedData alone
+// so the parent stays selected and PropertyEditor's active tab doesn't reset. deleteElement() above
+// always clears the selection, which is right when the deleted item might itself be selected, but
+// briefly nulling it out here would make PropertyEditor treat the reselect as a "different node"
+// and jump back to its first tab.
+export function deleteChildElement(key: string) {
+    if (!_bridge) return;
+    _bridge.DeleteElement(key);
+    refreshTree();
+    refreshUndoRedo();
+}
+
 export function swapElements(key1: string, key2: string): string {
     if (!_bridge) return "error";
     const result = _bridge.SwapElements(key1, key2);

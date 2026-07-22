@@ -1,5 +1,5 @@
 <script lang="ts">
-    import { selectNode, deleteElement, swapElements, createExit, getExitsData, createExitInDirection, createLookExitInDirection } from "$lib/editor-store";
+    import { selectNode, deleteChildElement, swapElements, createExit, getExitsData, createExitInDirection, createLookExitInDirection } from "$lib/editor-store";
     import type { ExitsData, CompassDirectionInfo } from "$lib/types";
     import Combobox from "./Combobox.svelte";
 
@@ -19,22 +19,17 @@
         refresh(elementKey);
     });
 
-    // Takes an explicit key rather than always reading the elementKey prop — deleteExit() below
-    // needs to keep operating on the room's key even after deleteElement() has (briefly) unmounted
-    // this component, at which point the live elementKey prop is no longer reliable.
     function refresh(key: string) {
         data = getExitsData(key);
     }
 
-    // The deleted exit is always a child of elementKey (the currently-selected room), never the
-    // room itself — but deleteElement() unconditionally clears the current selection, which
-    // unmounts this component (PropertyEditor only renders it while $selectedKey is truthy). Capture
-    // the room key first so selectNode()/refresh() below don't run against a torn-down prop.
+    // deleteChildElement() leaves the current selection alone (unlike deleteElement(), which
+    // always clears it) — the exit being deleted here is always a child of elementKey (the room),
+    // never the room itself, so there's nothing to reselect, and the room's own tabs/attributes
+    // don't depend on which exits it has.
     function deleteExit(exitKey: string) {
-        const roomKey = elementKey;
-        deleteElement(exitKey);
-        void selectNode(roomKey);
-        refresh(roomKey);
+        deleteChildElement(exitKey);
+        refresh(elementKey);
     }
 
     function moveUp(index: number) {
