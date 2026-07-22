@@ -89,6 +89,24 @@
     </div>
 </div>
 
+<!-- Shown by restartGameCore (wasm-player.js) around the actual restart —
+     Bridge.Initialise re-parses the embedded Core library XML from scratch
+     every time (confirmed not cacheable), which blocks the single WASM UI
+     thread for a couple of seconds with no way for anything else to paint
+     meanwhile. A plain "Loading…" div sitting in the DOM the whole time
+     wouldn't help — see nextPaint()'s doc comment — restartGameCore
+     explicitly yields a frame after unhiding this so it's actually visible
+     before the freeze starts. Not a <dialog>: it only needs to sit above the
+     ordinary game chrome, never above qv-saves/questVivaDebugger (both
+     already closed by the time this shows — see restartGameCore). Same
+     spinner styling as #qv-loading-msg above for a consistent look. -->
+<div id="qv-restarting" class="qv-chrome hidden" role="status" aria-live="polite">
+    <div class="flex flex-col items-center gap-3 text-surface-100 text-sm text-center">
+        <div class="animate-spin rounded-full h-8 w-8 border-2 border-surface-300 border-t-transparent" aria-hidden="true"></div>
+        <span>Restarting&hellip;</span>
+    </div>
+</div>
+
 <dialog id="qv-saves" class="qv-chrome" data-mode="boot">
     <!-- ICONS_SPRITE: spliced in at build time by scripts/build-icons.mjs (into
          generated/index.html) — a hidden <symbol> defs block, kept inside
@@ -125,6 +143,40 @@
                 <input type="file" id="qv-saves-file-input" class="hidden" accept=".quest-save">
             </div>
         </div>
+    </div>
+</dialog>
+
+<!-- Debugger — only ever shown in editor-preview sessions (see wasm-player.js's
+     WebPlayer.setCanDebug call in initWasmPlayer). #cmdDebug (in playercore.htm,
+     part of the shared WebPlayer/WasmPlayer chrome) already opens this dialog
+     by id via showModal() — see playercore.js's initPlayerUI.
+
+     Position/size are entirely JS-driven (wireDebuggerMoveResize in
+     wasm-player.js applies them right after every showModal(), before the
+     first paint) rather than left to the browser's default dialog centering,
+     so the whole card is a flex column filling exactly the applied
+     width/height — #qv-debugger-panes (and List/Detail inside it) flex-fill
+     the remaining vertical space rather than a fixed rem height. -->
+<dialog id="questVivaDebugger" class="qv-chrome">
+    <div class="card preset-filled-surface-100-900 p-6 flex flex-col h-full" id="qv-debugger-card" data-theme="wintry">
+        <div id="qv-debugger-titlebar" class="flex items-start justify-between gap-4 mb-4">
+            <h2 class="h3">Debugger</h2>
+            <button id="qv-debugger-close" type="button" class="btn-icon preset-tonal-surface" aria-label="Close">
+                <svg class="qv-icon" aria-hidden="true"><use href="#x"></use></svg>
+            </button>
+        </div>
+
+        <div id="qv-debugger-tabs" class="flex flex-wrap gap-2 mb-4"></div>
+
+        <div class="flex flex-1" id="qv-debugger-panes" style="min-height:0">
+            <ul id="qv-debugger-list" class="space-y-1 shrink-0 overflow-y-auto"></ul>
+            <div id="qv-debugger-splitter" role="separator" aria-orientation="vertical" aria-label="Resize object list"></div>
+            <div id="qv-debugger-detail" class="flex-1 overflow-y-auto text-sm">
+                <p class="text-surface-500">Select an item to view details.</p>
+            </div>
+        </div>
+
+        <div id="qv-debugger-resize-handle" aria-hidden="true"></div>
     </div>
 </dialog>
 </body>

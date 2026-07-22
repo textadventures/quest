@@ -107,7 +107,7 @@ public class WalkthroughRunner(IGameDebug game, string walkthrough)
                 }
             } while ((_waiting || _pausing) && !_cancelled);
 
-            Thread.Sleep(delay);
+            await Task.Delay(delay);
         }
     }
 

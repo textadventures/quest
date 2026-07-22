@@ -133,6 +133,40 @@ public class Fields
         {typeof(List<string>), ListFormatter}
     };
 
+    // Debugger attribute-override pre-fill (see WasmPlayerBridge's debugger):
+    // unlike s_formatters above (a human-readable *display* string — an
+    // Element shows as "Object: kitchen", a string has no quotes, a bool
+    // reads "True"), this produces a value already written as valid script
+    // syntax, ready to feed straight into ScriptFactory.CreateScript for
+    // "element.attribute = <this>". Types with no entry here (lists, dicts,
+    // scripts, ...) fall back to the same display string, which isn't
+    // generally re-enterable — there's no simple literal syntax for those,
+    // so the debugger's override hint still covers that residual case.
+    private static readonly Dictionary<Type, DebugFormatDelegate> s_editFormatters = new()
+    {
+        {typeof(bool), v => (bool) v ? "true" : "false"},
+        {typeof(string), v => "\"" + ((string) v).Replace("\\", "\\\\").Replace("\"", "\\\"") + "\""},
+        {typeof(Element), v => ((Element) v).Name}
+    };
+
+    // Which value kinds the debugger's override control should even offer —
+    // the types above (their ToString() already needs the s_editFormatters
+    // rewrite to become valid script syntax) plus plain numeric types (whose
+    // ToString() already *is* valid script syntax, no rewrite needed). Lists,
+    // dictionaries, scripts etc. have no simple literal syntax to write back,
+    // so there's deliberately no entry for them here — an override textbox
+    // for those would just be a dead end.
+    private static readonly HashSet<Type> s_overridableValueTypes = new()
+    {
+        typeof(bool), typeof(string), typeof(Element),
+        typeof(int), typeof(double), typeof(long), typeof(float), typeof(decimal), typeof(short)
+    };
+
+    private static bool CanOverrideValue(object value)
+    {
+        return value == null || s_overridableValueTypes.Contains(value.GetType());
+    }
+
     private readonly Dictionary<string, object> m_attributes = new();
     private readonly Element m_element;
     private readonly Dictionary<string, IExtendableField> m_extendableFields = new();
@@ -647,6 +681,18 @@ public class Fields
         return GetFormatter(value == null ? null : value.GetType()).Invoke(value);
     }
 
+    private string FormatEditValue(object value)
+    {
+        if (value == null)
+        {
+            return "null";
+        }
+
+        return s_editFormatters.TryGetValue(value.GetType(), out var formatter)
+            ? formatter.Invoke(value)
+            : FormatDebugData(value);
+    }
+
     internal DebugData GetDebugData()
     {
         var result = new DebugData();
@@ -655,6 +701,8 @@ public class Fields
         {
             var attributeData = Get(attribute, true);
             var debugDataItem = new DebugDataItem(FormatDebugData(attributeData.Value));
+            debugDataItem.EditValue = FormatEditValue(attributeData.Value);
+            debugDataItem.CanOverride = CanOverrideValue(attributeData.Value);
             debugDataItem.Source = attributeData.Source;
             debugDataItem.IsInherited = attributeData.IsInherited;
 

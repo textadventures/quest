@@ -72,6 +72,14 @@ public partial class V4Game
         return ExecuteConditions(expression, _nullContext);
     }
 
+    // Legacy (Quest 4 and earlier) games can't be loaded from the editor, so
+    // the WasmPlayer debugger's attribute override never becomes reachable
+    // for a V4Game in practice — not worth implementing.
+    public Task<string> SetAttributeAsync(string element, string attribute, string valueExpression)
+    {
+        return Task.FromResult("Not supported for legacy games");
+    }
+
     private DebugData GetVariableDebugData(VariableType[] variable)
     {
         if (variable == null || variable.Length == 0)
