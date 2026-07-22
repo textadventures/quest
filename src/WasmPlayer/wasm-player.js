@@ -394,6 +394,7 @@ async function initWasmPlayer(gameBytes, filename, bc = null, saveBytes = null, 
     WebPlayer.onSaveClick = () => openSavesDialog('manage');
     WebPlayer.initUI();
     wireDebuggerButton();
+    wireDebuggerRestartButton(isPreview);
     // Editor-preview sessions (isPreview) don't offer saving at all — by
     // design: a save captures the whole game state, so reloading one while
     // iterating would show stale state that doesn't reflect the developer's
@@ -440,7 +441,14 @@ async function restartGame(saveBytes) {
     await setupPaperJs();
     WebPlayer.initUI();
     wireDebuggerButton();
-    WebPlayer.setCanSave(true);
+    wireDebuggerRestartButton(currentIsPreview);
+    // Used to be an unconditional true — harmless while restartGame was only
+    // ever reachable from the Saves dialog, which editor-preview sessions
+    // never had access to in the first place (Save itself is hidden there).
+    // Now that the new Restart button (wireDebuggerRestartButton) makes
+    // restartGame reachable *from* a preview session too, hardcoding true
+    // here would wrongly re-enable Save after a preview restart.
+    WebPlayer.setCanSave(!currentIsPreview);
     WebPlayer.setCanDebug(currentIsPreview && Bridge.IsDebugEnabled());
     await Bridge.Begin();
 }
@@ -760,8 +768,15 @@ let debuggerAttrData = null;
 // dialog and game restarts within the same session, so these live at module
 // scope rather than being recomputed/reset on every render.
 
-const DEBUGGER_DEFAULT_WIDTH = 768;
-const DEBUGGER_DEFAULT_HEIGHT = 600;
+// Default size scales with the viewport (roughly three-quarters of it)
+// rather than a fixed px value, so it actually uses the room available on a
+// typical editor-preview window instead of looking small in the middle of
+// it — capped at DEBUGGER_MAX_*_DEFAULT so it doesn't balloon absurdly large
+// on an oversized monitor, and floored at DEBUGGER_MIN_* (below) so it never
+// starts out smaller than the resize handle's own minimum.
+const DEBUGGER_DEFAULT_SIZE_FRACTION = 0.75;
+const DEBUGGER_MAX_DEFAULT_WIDTH = 1100;
+const DEBUGGER_MAX_DEFAULT_HEIGHT = 820;
 const DEBUGGER_MIN_WIDTH = 480;
 const DEBUGGER_MIN_HEIGHT = 360;
 const DEBUGGER_MIN_LIST_WIDTH = 100;
@@ -814,8 +829,8 @@ function applyDebuggerRect() {
     if (!dlg) return;
 
     if (!debuggerRect) {
-        const width = Math.min(DEBUGGER_DEFAULT_WIDTH, window.innerWidth - 40);
-        const height = Math.min(DEBUGGER_DEFAULT_HEIGHT, window.innerHeight - 40);
+        const width = clamp(Math.round(window.innerWidth * DEBUGGER_DEFAULT_SIZE_FRACTION), DEBUGGER_MIN_WIDTH, Math.min(DEBUGGER_MAX_DEFAULT_WIDTH, window.innerWidth - 40));
+        const height = clamp(Math.round(window.innerHeight * DEBUGGER_DEFAULT_SIZE_FRACTION), DEBUGGER_MIN_HEIGHT, Math.min(DEBUGGER_MAX_DEFAULT_HEIGHT, window.innerHeight - 40));
         debuggerRect = {
             left: Math.round((window.innerWidth - width) / 2),
             top: Math.round((window.innerHeight - height) / 2),
@@ -1305,6 +1320,36 @@ function wireDebuggerButton() {
         renderDebuggerList();
         renderDebuggerDetail();
     });
+}
+
+// Editor-preview sessions hide the Save button entirely (see
+// setCanSave(!isPreview) above) — and "Start from the beginning"/Load only
+// ever lived inside the Save/Load dialog that button opens — so a preview
+// session had no way to restart the game at all. Adds a plain "Restart"
+// button next to Debug instead, calling restartGame(null) directly (same
+// as "Start from the beginning", no confirmation there either).
+//
+// #cmdDebug (and this button, once created) is part of playercore.htm,
+// fully replaced on every boot/restart (see swapInPlayerUi) — so unlike
+// wireDebuggerButton, which just re-attaches a listener to whatever
+// #cmdDebug currently exists, this recreates the button itself from scratch
+// every time, since the old one (if any) was just destroyed along with the
+// rest of the previous playercore.htm content.
+function wireDebuggerRestartButton(isPreview) {
+    const cmdDebug = document.getElementById('cmdDebug');
+    if (!cmdDebug || !isPreview) return;
+
+    const cmdRestart = document.createElement('button');
+    cmdRestart.id = 'cmdRestart';
+    cmdRestart.type = 'button';
+    cmdRestart.textContent = 'Restart';
+    cmdRestart.addEventListener('click', () => restartGame(null));
+    cmdDebug.insertAdjacentElement('afterend', cmdRestart);
+    // Matches the jQuery UI ".ui-button" look cmdDebug/cmdSave already have
+    // (applied to them by initPlayerUI's "$('#gameBorder button').button()"
+    // — which already ran by the time this is called, so it never touches
+    // this button; do it explicitly here instead).
+    $(cmdRestart).button();
 }
 
 // Nothing here can ever work over file:// — the runtime fetches its own

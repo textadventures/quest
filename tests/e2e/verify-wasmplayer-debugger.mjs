@@ -46,7 +46,7 @@ function check(label, condition) {
 // enough room that clamping (staying within the viewport, see
 // applyDebuggerRect/wireDebuggerMoveResize) never kicks in and confounds an
 // exact-pixel-delta assertion.
-const context = await browser.newContext({ viewport: { width: 1400, height: 1000 } });
+const context = await browser.newContext({ viewport: { width: 1800, height: 1300 } });
 const previewPage = await context.newPage();
 previewPage.on('pageerror', err => console.log('[pageerror]', err.message));
 previewPage.on('console', msg => {
@@ -83,9 +83,24 @@ await previewPage.waitForTimeout(300);
 const previewDisplay = await previewPage.$eval('#cmdDebug', el => getComputedStyle(el).display);
 check('Debug button visible in an editor-preview session', previewDisplay !== 'none');
 
+// Editor-preview sessions hide Save entirely, so "Start from the beginning"
+// (which only lives inside the Save/Load dialog) was otherwise unreachable —
+// a standalone Restart button next to Debug covers that gap.
+const restartVisible = await previewPage.$eval('#cmdRestart', el => getComputedStyle(el).display !== 'none').catch(() => false);
+check('Restart button appears next to Debug in an editor-preview session', restartVisible);
+
 // ── 3. Open the dialog, check tabs ──────────────────────────────────────────
 await previewPage.click('#cmdDebug');
 await previewPage.waitForSelector('#questVivaDebugger[open]', { timeout: 5000 });
+
+// Default size should use a good chunk of the viewport (roughly 3/4) rather
+// than a small fixed size sitting in the middle of a much bigger window.
+const dialogSize = await previewPage.$eval('#questVivaDebugger', el => el.getBoundingClientRect());
+const viewport = previewPage.viewportSize();
+check(
+    'Debugger default size uses most of the viewport, not a small fixed box',
+    dialogSize.width > viewport.width * 0.6 && dialogSize.height > viewport.height * 0.6
+);
 
 const tabLabels = await previewPage.$$eval('#qv-debugger-tabs button', els => els.map(el => el.textContent));
 check('Tabs include Walkthrough/Objects/Game', ['Walkthrough', 'Objects', 'Game'].every(t => tabLabels.includes(t)));
@@ -435,6 +450,17 @@ const cancelledStatus = await previewPage.$eval('[data-walkthrough-status]', el 
 check('Cancel still works after reopening the dialog', cancelledStatus !== 'Running…');
 const cancelHiddenAfterCancel = await previewPage.$eval('[data-cancel-walkthrough]', el => el.classList.contains('hidden'));
 check('Cancel hides again after cancelling', cancelHiddenAfterCancel);
+
+// ── Restart button actually restarts the game ───────────────────────────────
+// The player was moved to livingroom via an override earlier in this run —
+// restarting should bring the game back to its real starting state (kitchen),
+// confirming this isn't just a UI no-op.
+await previewPage.click('#qv-debugger-close');
+await previewPage.click('#cmdRestart');
+await previewPage.waitForSelector('#txtCommand', { state: 'visible', timeout: 30000 });
+await previewPage.waitForFunction(() => document.getElementById('divOutput')?.textContent.length > 20, { timeout: 10000 });
+const outputAfterRestart = await previewPage.$eval('#divOutput', el => el.textContent);
+check('Restart brings the game back to its initial state', /You are in a kitchen/i.test(outputAfterRestart));
 
 await browser.close();
 
