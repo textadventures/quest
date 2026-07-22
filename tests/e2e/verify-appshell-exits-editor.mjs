@@ -11,15 +11,15 @@ const page = await browser.newPage();
 page.on('pageerror', err => console.log('[pageerror]', err.message));
 page.on('console', msg => { if (msg.type() === 'error') console.log('[console.error]', msg.text()); });
 
-// Deleting an exit that has a matching return exit prompts via a native confirm() dialog —
-// default to dismissing it (keep the reciprocal) unless a specific check below wants to accept.
-let lastDialogMessage = null;
-let dialogAction = 'dismiss';
-page.on('dialog', async dialog => {
-    lastDialogMessage = dialog.message();
-    if (dialogAction === 'accept') await dialog.accept();
-    else await dialog.dismiss();
-});
+// Deleting an exit that has a matching return exit prompts via ConfirmDialog.svelte (a custom
+// styled stand-in for window.confirm(), not a native browser dialog).
+async function respondToReciprocalPrompt(accept) {
+    const dialog = page.locator('[role="dialog"]').filter({ hasText: 'matching return exit' });
+    await dialog.waitFor({ timeout: 10000 });
+    const message = await dialog.locator('p').textContent();
+    await dialog.getByRole('button', { name: accept ? 'Delete both' : 'Just this one' }).click();
+    return message;
+}
 
 async function addRoom(name) {
     await page.click('button[title="Add element"]');
@@ -127,11 +127,10 @@ async function run() {
     await rowButton.waitFor({ timeout: 10000 });
     const listRow = rowButton.locator('..');
     await listRow.hover();
-    dialogAction = 'dismiss';
-    lastDialogMessage = null;
     await listRow.locator('button[title="Delete"]').click();
+    const dismissMessage = await respondToReciprocalPrompt(false);
     await page.waitForSelector('text=Exits list prefix', { timeout: 3000 });
-    if (!lastDialogMessage?.includes('Room Two')) throw new Error(`Expected a "delete the return exit" prompt mentioning Room Two, got: ${lastDialogMessage}`);
+    if (!dismissMessage?.includes('Room Two')) throw new Error(`Expected a "delete the return exit" prompt mentioning Room Two, got: ${dismissMessage}`);
     console.log('PASS: deleting an exit with a reciprocal prompts to also delete the return exit');
 
     // Room One must stay selected AND the Exits tab must stay active — deleting an exit doesn't
@@ -161,11 +160,10 @@ async function run() {
     await page.click('button:has-text("Create exit")');
     await page.waitForSelector('text=→ Room Two', { timeout: 10000 });
 
-    dialogAction = 'accept';
-    lastDialogMessage = null;
     await page.getByRole('button', { name: '→ Room Two', exact: true }).locator('..').locator('button[title="Delete"]').click();
+    const acceptMessage = await respondToReciprocalPrompt(true);
     await page.waitForSelector('text=Exits list prefix', { timeout: 3000 });
-    if (!lastDialogMessage) throw new Error('Expected a "delete the return exit" prompt for the west/east pair');
+    if (!acceptMessage) throw new Error('Expected a "delete the return exit" prompt for the west/east pair');
 
     // Check specifically the "east" cell went back to empty — Room Two's still-alive south exit
     // (from the dismissed prompt above) also reads "→ Room One", so that text alone is ambiguous.

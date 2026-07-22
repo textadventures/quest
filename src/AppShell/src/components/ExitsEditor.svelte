@@ -1,5 +1,6 @@
 <script lang="ts">
     import { selectNode, deleteChildElement, swapElements, createExit, getExitsData, createExitInDirection, createLookExitInDirection } from "$lib/editor-store";
+    import { confirmDialog } from "$lib/confirm";
     import type { ExitsData, CompassDirectionInfo } from "$lib/types";
     import Combobox from "./Combobox.svelte";
 
@@ -41,10 +42,11 @@
     // always clears it) — the exit being deleted here is always a child of elementKey (the room),
     // never the room itself, so there's nothing to reselect, and the room's own tabs/attributes
     // don't depend on which exits it has.
-    function deleteExit(exitKey: string, alias: string | null, to: string | null, lookOnly: boolean) {
+    async function deleteExit(exitKey: string, alias: string | null, to: string | null, lookOnly: boolean) {
         const reciprocalKey = findReciprocalExit(alias, to, lookOnly);
-        if (reciprocalKey && confirm(`"${to}" has a matching return exit back to this room. Delete that one too?`)) {
-            deleteChildElement(reciprocalKey);
+        if (reciprocalKey) {
+            const alsoDelete = await confirmDialog(`"${to}" has a matching return exit back to this room. Delete that one too?`, { confirmLabel: "Delete both", cancelLabel: "Just this one", danger: true });
+            if (alsoDelete) deleteChildElement(reciprocalKey);
         }
         deleteChildElement(exitKey);
         refresh(elementKey);
@@ -121,7 +123,7 @@
                     type="button"
                     class="btn btn-sm preset-outlined-error-500 px-1 py-0 text-xs leading-none flex-shrink-0"
                     title="Delete"
-                    onclick={() => deleteExit(dir.exitKey!, dir.direction, dir.to, dir.lookOnly)}
+                    onclick={() => void deleteExit(dir.exitKey!, dir.direction, dir.to, dir.lookOnly)}
                 >×</button>
             </div>
         </div>
@@ -131,8 +133,8 @@
             type="button"
             class="border rounded p-1.5 min-h-14 min-w-0 flex items-center text-left text-xs transition-colors
                 {isOpen
-                    ? 'border-primary-500 bg-primary-50-950 text-primary-600-400'
-                    : 'border-dashed border-surface-300-700 text-surface-400-500 hover:border-primary-400 hover:text-primary-600-400'}"
+                    ? "border-primary-500 bg-primary-50-950 text-primary-600-400"
+                    : "border-dashed border-surface-300-700 text-surface-400-500 hover:border-primary-400 hover:text-primary-600-400"}"
             onclick={() => toggleDirection(dir.direction)}
         ><span class="truncate">{dir.direction}</span></button>
     {/if}
@@ -234,7 +236,7 @@
                                 type="button"
                                 class="btn btn-sm preset-tonal-error px-1 py-0 text-xs leading-none"
                                 title="Delete"
-                                onclick={() => deleteExit(exit.key, exit.alias, exit.to, exit.lookOnly)}
+                                onclick={() => void deleteExit(exit.key, exit.alias, exit.to, exit.lookOnly)}
                             >×</button>
                         </div>
                     </div>

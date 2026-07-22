@@ -11,6 +11,7 @@
     import { isElectron } from "$lib/runtime";
     import HomeHeader from "$components/HomeHeader.svelte";
     import HomeTabs from "$components/HomeTabs.svelte";
+    import ConfirmDialog from "$components/ConfirmDialog.svelte";
 
     let { children }: { children: Snippet } = $props();
 
@@ -122,3 +123,4 @@
     </div>
 {/if}
 {@render children()}
+<ConfirmDialog />
