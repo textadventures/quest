@@ -16,7 +16,9 @@
     <h1 class="text-xl font-semibold">Quest Viva</h1>
     <div class="ml-auto flex items-center gap-1">
         {#if !isElectronApp}
-            <DownloadButton compact />
+            <div class="hidden sm:block">
+                <DownloadButton compact />
+            </div>
         {/if}
         <a
             href="https://textadventures.co.uk/community/discord"
