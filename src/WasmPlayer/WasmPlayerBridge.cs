@@ -228,6 +228,79 @@ public partial class WasmPlayerBridge
     [JSExport]
     public static byte[] GetSaveGameBytes() => _pendingSaveBytes ?? [];
 
+    // ── Debugger ─────────────────────────────────────────────────────────────
+    // Mirrors WebPlayer's Debugger.razor/Attributes.razor/Walkthrough.razor,
+    // which drive IGameDebug directly as Blazor components — WasmPlayer has no
+    // Blazor runtime, so the same data is surfaced here as JSON strings for a
+    // plain-JS dialog (see wasm-player.js) to render, following the existing
+    // convention for structured cross-boundary payloads (JsUpdateList etc).
+
+    private static IGameDebug? GameDebug => _game as IGameDebug;
+
+    [JSExport]
+    public static bool IsDebugEnabled() => GameDebug?.DebugEnabled ?? false;
+
+    [JSExport]
+    public static string GetDebuggerObjectTypesJson() =>
+        JsonSerializer.Serialize(GameDebug?.DebuggerObjectTypes.ToArray() ?? [], WasmJsonContext.Default.StringArray);
+
+    [JSExport]
+    public static string GetDebugObjectsJson(string type) =>
+        JsonSerializer.Serialize(GameDebug?.GetObjects(type).ToArray() ?? [], WasmJsonContext.Default.StringArray);
+
+    [JSExport]
+    public static string GetDebugDataJson(string tab, string obj) =>
+        JsonSerializer.Serialize(GameDebug?.GetDebugData(tab, obj) ?? DebugData.Empty, WasmJsonContext.Default.DebugData);
+
+    [JSExport]
+    public static string GetWalkthroughNamesJson() =>
+        JsonSerializer.Serialize(GameDebug?.Walkthroughs.Walkthroughs.Keys.ToArray() ?? [], WasmJsonContext.Default.StringArray);
+
+    [JSExport]
+    public static string GetWalkthroughStepsJson(string name)
+    {
+        var steps = GameDebug != null && GameDebug.Walkthroughs.Walkthroughs.TryGetValue(name, out var walkthrough)
+            ? walkthrough.Steps
+            : [];
+        return JsonSerializer.Serialize(steps, WasmJsonContext.Default.StringArray);
+    }
+
+    [JSExport]
+    public static async Task<string?> SetDebugAttribute(string element, string attribute, string valueExpression)
+    {
+        if (GameDebug == null) return "Debugging is not available for this game";
+        return await GameDebug.SetAttributeAsync(element, attribute, valueExpression);
+    }
+
+    [JSExport]
+    public static async Task<string?> RunWalkthrough(string name)
+    {
+        if (_ui == null || GameDebug == null) return "Debugging is not available for this game";
+        if (_ui.Runner != null) return "A walkthrough is already running";
+
+        var runner = new WalkthroughRunner(GameDebug, name);
+        if (runner.Steps == 0) return $"Walkthrough \"{name}\" was not found or has no steps";
+
+        _ui.Runner = runner;
+        try
+        {
+            await runner.Run();
+            return null;
+        }
+        catch (Exception ex)
+        {
+            return ex.Message;
+        }
+        finally
+        {
+            _ui.Runner = null;
+            _ui.FlushBuffer();
+        }
+    }
+
+    [JSExport]
+    public static void CancelWalkthrough() => _ui?.Runner?.Cancel();
+
     // ── C# → JS imports ─────────────────────────────────────────────────────
 
     [JSImport("addTextAndScroll", "wasm-player")]
@@ -353,6 +426,45 @@ public partial class WasmPlayerBridge
         public string GameId { get; }
         public bool IsFinished { get; private set; }
 
+        // Non-null while a debugger walkthrough is running — see RunWalkthrough
+        // JSExport. When set, IPlayer calls that would normally prompt the user
+        // (menu/wait/pause/question/synchronous sound) are instead answered by
+        // the runner's own recorded steps, exactly mirroring WebPlayer's
+        // Player.cs Runner property/branching.
+        private WalkthroughRunner? _runner;
+
+        public WalkthroughRunner? Runner
+        {
+            get => _runner;
+            set
+            {
+                if (_runner != null)
+                {
+                    _runner.Output -= RunnerOutput;
+                    _runner.ClearBuffer -= RunnerClearBuffer;
+                }
+
+                _runner = value;
+                if (_runner != null)
+                {
+                    _runner.Output += RunnerOutput;
+                    _runner.ClearBuffer += RunnerClearBuffer;
+                }
+            }
+        }
+
+        private Task RunnerOutput(string text)
+        {
+            OutputText(text);
+            return Task.CompletedTask;
+        }
+
+        private Task RunnerClearBuffer()
+        {
+            FlushBuffer();
+            return Task.CompletedTask;
+        }
+
         public WasmPlayerUi(string gameId, IGame game)
         {
             GameId = gameId;
@@ -475,6 +587,12 @@ public partial class WasmPlayerBridge
         // IPlayer
         void IPlayer.ShowMenu(MenuData menuData)
         {
+            if (Runner != null)
+            {
+                Runner.ShowMenu(menuData);
+                return;
+            }
+
             FlushBeforeInteraction();
             JsShowMenu(menuData.Caption,
                 JsonSerializer.Serialize(
@@ -485,18 +603,36 @@ public partial class WasmPlayerBridge
 
         void IPlayer.DoWait()
         {
+            if (Runner != null)
+            {
+                Runner.BeginWait();
+                return;
+            }
+
             FlushBeforeInteraction();
             JsBeginWait();
         }
 
         void IPlayer.DoPause(int ms)
         {
+            if (Runner != null)
+            {
+                Runner.BeginPause();
+                return;
+            }
+
             FlushBeforeInteraction();
             JsBeginPause(ms);
         }
 
         void IPlayer.ShowQuestion(string caption)
         {
+            if (Runner != null)
+            {
+                Runner.ShowQuestion(caption);
+                return;
+            }
+
             FlushBeforeInteraction();
             JsShowQuestion(caption);
         }
@@ -505,6 +641,12 @@ public partial class WasmPlayerBridge
 
         async Task IPlayer.PlaySoundAsync(string filename, bool synchronous, bool looped)
         {
+            if (Runner != null && synchronous)
+            {
+                synchronous = false;
+                Runner.BeginWait();
+            }
+
             FlushBeforeInteraction();
             JsPlaySound(await GetUrlAsync(filename), synchronous, looped);
         }
@@ -637,4 +779,5 @@ public partial class WasmPlayerBridge
 [JsonSerializable(typeof(Dictionary<string, string>))]
 [JsonSerializable(typeof(string[]))]
 [JsonSerializable(typeof(string))]
+[JsonSerializable(typeof(DebugData))]
 internal partial class WasmJsonContext : JsonSerializerContext { }

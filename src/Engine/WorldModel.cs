@@ -630,6 +630,28 @@ public partial class WorldModel : IGame, IGameDebug
         return expression.ExecuteAsync(c);
     }
 
+    public async Task<string?> SetAttributeAsync(string element, string attribute, string valueExpression)
+    {
+        try
+        {
+            // Call ExecuteAsync directly rather than going through the normal
+            // RunScriptAsync(IScript) path — that one is designed for scripts
+            // running as part of the game's own turn logic, so it deliberately
+            // swallows exceptions (reporting them into the transcript instead of
+            // faulting the whole turn over one bad script). AssertAsync (above)
+            // takes the same direct route for the same reason: the debugger
+            // needs the real exception back, to show inline instead of losing it
+            // into the game's own output.
+            var script = new ScriptFactory(this).CreateScript($"{element}.{attribute} = {valueExpression}");
+            await script.ExecuteAsync(new Context());
+            return null;
+        }
+        catch (Exception ex)
+        {
+            return ex.Message;
+        }
+    }
+
     public event EventHandler<ElementFieldUpdatedEventArgs>? ElementFieldUpdated;
     public event EventHandler<ElementRefreshEventArgs>? ElementRefreshed;
     public event EventHandler<ElementFieldUpdatedEventArgs>? ElementMetaFieldUpdated;

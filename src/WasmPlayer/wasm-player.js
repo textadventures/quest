@@ -261,30 +261,40 @@ async function setupPaperJs() {
 }
 
 // Replaces document.body with a fresh copy of the player chrome, preserving
-// #qv-start/#qv-saves (the static markup's overlays, which live outside the
-// swapped-in playerHtml and would otherwise be destroyed by the innerHTML
-// assignment). Used both for the initial boot and for a mid-session restart
-// ("Start from the beginning" / Load) — a restart must get a genuinely new
-// DOM, not just a cleared output pane, because games commonly use their
-// external <javascript> resources to inject their own elements elsewhere in
-// the chrome (e.g. a custom sidebar pane). Those run again on every restart
-// (RegisterExternalScripts fires on every Initialise call), so anything short
-// of a full DOM reset here leaves the previous run's injected elements in
-// place for the new run to duplicate.
+// #qv-start/#qv-saves/#questVivaDebugger (the static markup's overlays, which
+// live outside the swapped-in playerHtml and would otherwise be destroyed by
+// the innerHTML assignment). Used both for the initial boot and for a
+// mid-session restart ("Start from the beginning" / Load) — a restart must
+// get a genuinely new DOM, not just a cleared output pane, because games
+// commonly use their external <javascript> resources to inject their own
+// elements elsewhere in the chrome (e.g. a custom sidebar pane). Those run
+// again on every restart (RegisterExternalScripts fires on every Initialise
+// call), so anything short of a full DOM reset here leaves the previous run's
+// injected elements in place for the new run to duplicate.
 function swapInPlayerUi() {
     const startScreenEl = document.getElementById('qv-start');
     const savesDialogEl = document.getElementById('qv-saves');
+    const debuggerDialogEl = document.getElementById('questVivaDebugger');
     startScreenEl?.remove();
     savesDialogEl?.remove();
+    debuggerDialogEl?.remove();
 
     document.body.innerHTML = originalPlayerHtml;
 
     if (startScreenEl) document.body.appendChild(startScreenEl);
     if (savesDialogEl) document.body.appendChild(savesDialogEl);
+    if (debuggerDialogEl) document.body.appendChild(debuggerDialogEl);
     return startScreenEl;
 }
 
+// Remembered across a mid-session restart (restartGame doesn't get isPreview
+// as a parameter — it just re-initialises on top of the same boot session),
+// so the Debug button's visibility stays correct after "Start from the
+// beginning"/Load in an editor-preview session.
+let currentIsPreview = false;
+
 async function initWasmPlayer(gameBytes, filename, bc = null, saveBytes = null, isPreview = false) {
+    currentIsPreview = isPreview;
     const [htmResponse, { dotnet }] = await Promise.all([
         fetch('playercore.htm'),
         import('./_framework/dotnet.js'),
@@ -383,6 +393,7 @@ async function initWasmPlayer(gameBytes, filename, bc = null, saveBytes = null, 
 
     WebPlayer.onSaveClick = () => openSavesDialog('manage');
     WebPlayer.initUI();
+    wireDebuggerButton();
     // Editor-preview sessions (isPreview) don't offer saving at all — by
     // design: a save captures the whole game state, so reloading one while
     // iterating would show stale state that doesn't reflect the developer's
@@ -391,6 +402,10 @@ async function initWasmPlayer(gameBytes, filename, bc = null, saveBytes = null, 
     // BroadcastChannel (to hand off the picked file's bytes and answer
     // resource requests) but is a real play session and should offer saving.
     WebPlayer.setCanSave(!isPreview);
+    // Only ever shown in editor-preview sessions (see the module doc comment
+    // above the Debugger section) — never for a normal play session, even
+    // though the loaded game itself might have DebugEnabled true.
+    WebPlayer.setCanDebug(isPreview && Bridge.IsDebugEnabled());
 
     await Bridge.Begin();
 }
@@ -424,7 +439,9 @@ async function restartGame(saveBytes) {
 
     await setupPaperJs();
     WebPlayer.initUI();
+    wireDebuggerButton();
     WebPlayer.setCanSave(true);
+    WebPlayer.setCanDebug(currentIsPreview && Bridge.IsDebugEnabled());
     await Bridge.Begin();
 }
 
@@ -696,6 +713,315 @@ async function openSavesDialog(mode, gameId = WebPlayer.gameId) {
     }
 
     dlg.showModal();
+}
+
+// ── Debugger (#questVivaDebugger) ─────────────────────────────────────────────
+// Only ever opened in editor-preview sessions (see WebPlayer.setCanDebug's
+// call site in initWasmPlayer/restartGame) — element browser, per-tab
+// attribute inspector with a "hack your own game" override, and a walkthrough
+// runner. Mirrors WebPlayer's Debugger/Attributes/Walkthrough.razor, which
+// drive IGameDebug directly as Blazor components; here the same data comes
+// over the bridge as JSON (Bridge.Get*Json — see WasmPlayerBridge.cs) for
+// plain-DOM rendering instead.
+
+let debuggerWired = false;
+let debuggerActiveTab = 'Walkthrough';
+let debuggerSelectedItem = null;
+// Name of the walkthrough currently running, or null — the source of truth
+// for the Run/Cancel/status UI, *not* the DOM elements themselves. Closing
+// and reopening the dialog (or switching tabs/objects) rebuilds
+// #qv-debugger-detail from scratch, which used to silently lose whatever
+// Run/Cancel state only lived in the old (now-replaced) DOM nodes — a
+// walkthrough kept running with no way to see its status or cancel it once
+// the dialog was reopened. Every render of the Walkthrough detail panel
+// checks this instead, so it comes back correctly regardless of how many
+// times the panel gets rebuilt while a walkthrough is running.
+let runningWalkthroughName = null;
+// Which attribute row (if any) has its override panel open — a single
+// fixed panel below the table, not one input per row (an earlier version
+// tried cramming input+button+hint into a 4th table column and it didn't
+// fit at any reasonable dialog width).
+let debuggerSelectedAttr = null;
+
+// DebugDataItem.Value is a human-readable *display* string (Fields.cs's
+// DefaultFormatter just calls ToString() — a string has no quotes, a bool
+// reads "True"/"False", an object reference reads as "Object: kitchen").
+// EditValue (same object, a sibling field) is the same underlying value
+// pre-formatted as valid script syntax instead — quoted string, lowercase
+// true/false, bare object name — ready to feed straight into Apply. Only
+// shown at all when item.CanOverride is true (see Fields.cs's
+// CanOverrideValue) — lists/dicts/scripts have no simple literal syntax to
+// write back, so those get a short note instead of a dead-end textbox (see
+// renderDebuggerOverridePanel).
+const DEBUGGER_OVERRIDE_HINT = 'Edit and Apply to change this value for the rest of the session';
+
+function renderDebuggerTabs(types) {
+    const tabs = document.getElementById('qv-debugger-tabs');
+    const allTabs = ['Walkthrough', ...types];
+    tabs.innerHTML = allTabs.map(tab =>
+        `<button type="button" class="btn btn-sm ${tab === debuggerActiveTab ? 'preset-filled-primary-500' : 'preset-tonal-surface'}" data-tab="${_esc(tab)}">${_esc(tab)}</button>`
+    ).join('');
+}
+
+function renderDebuggerList() {
+    const list = document.getElementById('qv-debugger-list');
+    const items = debuggerActiveTab === 'Walkthrough'
+        ? JSON.parse(Bridge.GetWalkthroughNamesJson())
+        : JSON.parse(Bridge.GetDebugObjectsJson(debuggerActiveTab));
+
+    if (!items.length) {
+        list.innerHTML = '<li class="text-sm text-surface-500 px-2 py-1">Nothing here.</li>';
+        return;
+    }
+
+    // A plain selectable list, not hyperlinks — .qv-debugger-list-item is a
+    // block row with its own hover/selected background (shares
+    // .qv-debugger-row-selected with the attribute table below).
+    list.innerHTML = items.map(item => {
+        const selected = item === debuggerSelectedItem;
+        return `<li><button type="button" class="qv-debugger-list-item${selected ? ' qv-debugger-row-selected' : ''}" data-item="${_esc(item)}" aria-selected="${selected}">${_esc(item)}</button></li>`;
+    }).join('');
+}
+
+function renderDebuggerWalkthroughDetail(name) {
+    const detail = document.getElementById('qv-debugger-detail');
+    const steps = JSON.parse(Bridge.GetWalkthroughStepsJson(name));
+    const running = name === runningWalkthroughName;
+    detail.innerHTML = '<div class="qv-debugger-scroll">'
+        + '<ol class="list-decimal list-inside space-y-1">'
+        + steps.map(step => `<li>${_esc(step)}</li>`).join('')
+        + '</ol>'
+        + '</div>'
+        + '<div class="qv-debugger-footer flex gap-2 items-center">'
+        + `<button type="button" class="btn preset-filled-primary-500" data-run-walkthrough="${_esc(name)}"${running ? ' disabled' : ''}>Run</button>`
+        + `<button type="button" class="btn preset-tonal-surface${running ? '' : ' hidden'}" data-cancel-walkthrough>Cancel</button>`
+        + `<span class="text-sm" data-walkthrough-status>${running ? 'Running…' : ''}</span>`
+        + '</div>';
+}
+
+// The table (which can run to a couple dozen rows for an inherited-heavy
+// object like the default player) scrolls in its own inner region
+// (.qv-debugger-scroll); the override panel is a separate, non-scrolling
+// footer so selecting a row near the top of a long table doesn't require
+// scrolling past everything else to reach the Apply button.
+function renderDebuggerAttributesDetail(tab, obj) {
+    const detail = document.getElementById('qv-debugger-detail');
+    const data = JSON.parse(Bridge.GetDebugDataJson(tab, obj)).Data || {};
+    const attrs = Object.keys(data);
+
+    if (!attrs.length) {
+        detail.innerHTML = '<p class="text-surface-500">No attributes.</p>';
+        return;
+    }
+
+    if (!attrs.includes(debuggerSelectedAttr)) debuggerSelectedAttr = null;
+
+    detail.innerHTML = '<div class="qv-debugger-scroll">'
+        + '<table class="table qv-debugger-table"><thead><tr>'
+        + '<th>Attribute</th><th>Value</th><th>Source</th>'
+        + '</tr></thead><tbody>'
+        + attrs.map(attr => {
+            const item = data[attr];
+            const classes = [item.IsInherited ? 'qv-debugger-row-inherited' : '', attr === debuggerSelectedAttr ? 'qv-debugger-row-selected' : ''];
+            return `<tr class="${classes.join(' ')}" data-attr-row="${_esc(attr)}">`
+                + `<td>${_esc(attr)}</td>`
+                + `<td>${_esc(item.Value)}</td>`
+                + `<td>${_esc(item.Source ?? '')}</td>`
+                + '</tr>';
+        }).join('')
+        + '</tbody></table>'
+        + '</div>'
+        + '<div id="qv-debugger-override" class="qv-debugger-footer"></div>';
+
+    if (debuggerSelectedAttr) renderDebuggerOverridePanel(debuggerSelectedAttr, data[debuggerSelectedAttr]);
+}
+
+// renderDebuggerAttributesDetail rebuilds the whole #qv-debugger-detail
+// subtree (innerHTML), which resets .qv-debugger-scroll's scroll position to
+// 0 — fine for a genuine switch to a different object/tab (starting back at
+// the top makes sense there), but jarring for a same-object re-render:
+// selecting a row further down a long table, or re-rendering after Apply,
+// used to visibly snap the table back to the top. Callers that are
+// re-rendering the *same* object wrap the call in this so the scroll
+// position survives the rebuild.
+function withPreservedDebuggerScroll(renderFn) {
+    const before = document.querySelector('#qv-debugger-detail .qv-debugger-scroll');
+    const previousScrollTop = before ? before.scrollTop : 0;
+    renderFn();
+    const after = document.querySelector('#qv-debugger-detail .qv-debugger-scroll');
+    if (after) after.scrollTop = previousScrollTop;
+}
+
+// The single "click a row above to edit it" panel — populated for whichever
+// attribute is currently selected, instead of one input per row (see
+// debuggerSelectedAttr's doc comment). item.CanOverride is false for value
+// kinds with no simple literal syntax to write back (lists, dictionaries,
+// scripts, ...) — an override textbox for those would just be a dead end, so
+// a short note is shown instead of one (see Fields.cs's CanOverrideValue).
+function renderDebuggerOverridePanel(attr, item) {
+    const panel = document.getElementById('qv-debugger-override');
+    if (!panel) return;
+
+    if (!item.CanOverride) {
+        panel.innerHTML = `<div class="text-sm font-semibold mb-1">${_esc(attr)}</div>`
+            + '<div class="text-xs text-surface-500">This value isn\'t a simple type the debugger can override directly.</div>';
+        return;
+    }
+
+    panel.innerHTML = `<div class="text-sm font-semibold mb-2">Override <code>${_esc(attr)}</code></div>`
+        + '<div class="flex gap-2 items-center">'
+        + `<input class="qv-debugger-input flex-1" type="text" value="${_esc(item.EditValue ?? item.Value)}" id="qv-debugger-override-input">`
+        + '<button type="button" class="btn preset-tonal-primary" id="qv-debugger-override-apply">Apply</button>'
+        + '</div>'
+        + `<div class="text-xs text-surface-500 mt-1">${_esc(DEBUGGER_OVERRIDE_HINT)}</div>`
+        + '<div class="text-xs preset-tonal-error hidden mt-1" id="qv-debugger-override-error"></div>';
+}
+
+function renderDebuggerDetail() {
+    const detail = document.getElementById('qv-debugger-detail');
+    if (!debuggerSelectedItem) {
+        detail.innerHTML = '<p class="text-surface-500">Select an item to view details.</p>';
+        return;
+    }
+
+    if (debuggerActiveTab === 'Walkthrough') {
+        renderDebuggerWalkthroughDetail(debuggerSelectedItem);
+    } else {
+        renderDebuggerAttributesDetail(debuggerActiveTab, debuggerSelectedItem);
+    }
+}
+
+function selectDebuggerTab(tab) {
+    debuggerActiveTab = tab;
+    // Same reasoning as wireDebuggerButton's reopen handling: switching back
+    // to the Walkthrough tab while one is running should land on it, not a
+    // blank "Select an item to view details."
+    debuggerSelectedItem = tab === 'Walkthrough' ? runningWalkthroughName : null;
+    debuggerSelectedAttr = null;
+    renderDebuggerTabs(JSON.parse(Bridge.GetDebuggerObjectTypesJson()));
+    renderDebuggerList();
+    renderDebuggerDetail();
+}
+
+async function applyDebugAttribute(attr, value) {
+    const errorEl = document.getElementById('qv-debugger-override-error');
+    const error = await Bridge.SetDebugAttribute(debuggerSelectedItem, attr, value);
+    if (error) {
+        if (errorEl) {
+            errorEl.textContent = error;
+            errorEl.classList.remove('hidden');
+        }
+        return;
+    }
+    // Re-render so Value/Source reflect the change (and any knock-on effects
+    // the assignment had on other attributes of the same object) — the
+    // override panel stays open on the same attribute (debuggerSelectedAttr
+    // is unchanged) so applying again is a tight loop.
+    withPreservedDebuggerScroll(() => renderDebuggerAttributesDetail(debuggerActiveTab, debuggerSelectedItem));
+}
+
+// Re-queries the DOM fresh rather than capturing element references once at
+// the start of a run — the detail panel can be rebuilt from scratch one or
+// more times while a walkthrough is running (closing/reopening the dialog,
+// see wireDebuggerButton's doc comment), which would otherwise leave a
+// stale/detached reference that no longer matches anything visible.
+// [data-walkthrough-status]/[data-cancel-walkthrough] aren't name-scoped
+// (only one detail panel exists at a time), so they're only touched when the
+// panel currently on screen is actually still showing this walkthrough —
+// otherwise the status of a *different* walkthrough the user has since
+// selected would get clobbered.
+function updateWalkthroughRunUi(name, { running, status }) {
+    const runBtn = document.querySelector(`[data-run-walkthrough="${CSS.escape(name)}"]`);
+    if (runBtn) runBtn.disabled = running;
+
+    if (debuggerActiveTab !== 'Walkthrough' || debuggerSelectedItem !== name) return;
+    const cancelBtn = document.querySelector('[data-cancel-walkthrough]');
+    const statusEl = document.querySelector('[data-walkthrough-status]');
+    if (cancelBtn) cancelBtn.classList.toggle('hidden', !running);
+    if (statusEl) statusEl.textContent = status;
+}
+
+async function runSelectedWalkthrough(name) {
+    runningWalkthroughName = name;
+    updateWalkthroughRunUi(name, { running: true, status: 'Running…' });
+    try {
+        const error = await Bridge.RunWalkthrough(name);
+        updateWalkthroughRunUi(name, { running: false, status: error ? `Error: ${error}` : 'Done' });
+    } finally {
+        runningWalkthroughName = null;
+    }
+}
+
+function ensureDebuggerWired() {
+    if (debuggerWired) return;
+    debuggerWired = true;
+
+    const dlg = document.getElementById('questVivaDebugger');
+    if (!dlg) return;
+
+    document.getElementById('qv-debugger-close').addEventListener('click', () => dlg.close());
+
+    document.getElementById('qv-debugger-tabs').addEventListener('click', (e) => {
+        const btn = e.target.closest('[data-tab]');
+        if (btn) selectDebuggerTab(btn.dataset.tab);
+    });
+
+    document.getElementById('qv-debugger-list').addEventListener('click', (e) => {
+        const btn = e.target.closest('[data-item]');
+        if (!btn) return;
+        debuggerSelectedItem = btn.dataset.item;
+        debuggerSelectedAttr = null;
+        renderDebuggerList();
+        renderDebuggerDetail();
+    });
+
+    document.getElementById('qv-debugger-detail').addEventListener('click', async (e) => {
+        const attrRow = e.target.closest('[data-attr-row]');
+        if (attrRow) {
+            debuggerSelectedAttr = attrRow.dataset.attrRow;
+            withPreservedDebuggerScroll(() => renderDebuggerAttributesDetail(debuggerActiveTab, debuggerSelectedItem));
+            return;
+        }
+
+        if (e.target.closest('#qv-debugger-override-apply')) {
+            const input = document.getElementById('qv-debugger-override-input');
+            await applyDebugAttribute(debuggerSelectedAttr, input ? input.value : '');
+            return;
+        }
+
+        const runBtn = e.target.closest('[data-run-walkthrough]');
+        if (runBtn) {
+            await runSelectedWalkthrough(runBtn.dataset.runWalkthrough);
+            return;
+        }
+
+        if (e.target.closest('[data-cancel-walkthrough]')) {
+            Bridge.CancelWalkthrough();
+        }
+    });
+}
+
+// Called after every WebPlayer.initUI() — #cmdDebug is part of playercore.htm,
+// which is fully replaced on every boot/restart (see swapInPlayerUi), so its
+// showModal() listener (wired in the shared playercore.js) is fresh each time
+// and this "populate on open" listener needs re-attaching alongside it.
+function wireDebuggerButton() {
+    const cmdDebug = document.getElementById('cmdDebug');
+    if (!cmdDebug) return;
+    cmdDebug.addEventListener('click', () => {
+        ensureDebuggerWired();
+        debuggerActiveTab = 'Walkthrough';
+        // If a walkthrough is running (started on a previous open of this
+        // dialog, which fully rebuilds #qv-debugger-detail on every open —
+        // see runningWalkthroughName's doc comment), jump straight to it so
+        // its Running…/Cancel state is immediately visible again, rather
+        // than resetting to a blank "Select an item to view details."
+        debuggerSelectedItem = runningWalkthroughName;
+        debuggerSelectedAttr = null;
+        renderDebuggerTabs(JSON.parse(Bridge.GetDebuggerObjectTypesJson()));
+        renderDebuggerList();
+        renderDebuggerDetail();
+    });
 }
 
 // Nothing here can ever work over file:// — the runtime fetches its own

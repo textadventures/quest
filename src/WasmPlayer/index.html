@@ -127,5 +127,29 @@
         </div>
     </div>
 </dialog>
+
+<!-- Debugger — only ever shown in editor-preview sessions (see wasm-player.js's
+     WebPlayer.setCanDebug call in initWasmPlayer). #cmdDebug (in playercore.htm,
+     part of the shared WebPlayer/WasmPlayer chrome) already opens this dialog
+     by id via showModal() — see playercore.js's initPlayerUI. -->
+<dialog id="questVivaDebugger" class="qv-chrome">
+    <div class="card preset-filled-surface-100-900 w-full p-6 space-y-4" data-theme="wintry">
+        <div class="flex items-start justify-between gap-4">
+            <h2 class="h3">Debugger</h2>
+            <button id="qv-debugger-close" type="button" class="btn-icon preset-tonal-surface" aria-label="Close">
+                <svg class="qv-icon" aria-hidden="true"><use href="#x"></use></svg>
+            </button>
+        </div>
+
+        <div id="qv-debugger-tabs" class="flex flex-wrap gap-2"></div>
+
+        <div class="flex gap-4">
+            <ul id="qv-debugger-list" class="space-y-1 w-48 shrink-0 overflow-y-auto"></ul>
+            <div id="qv-debugger-detail" class="flex-1 overflow-y-auto text-sm">
+                <p class="text-surface-500">Select an item to view details.</p>
+            </div>
+        </div>
+    </div>
+</dialog>
 </body>
 </html>
