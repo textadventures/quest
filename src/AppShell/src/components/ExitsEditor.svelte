@@ -95,12 +95,13 @@
     {#if !dir}
         <div></div>
     {:else if dir.exitKey !== null}
-        <div class="border border-surface-200-800 rounded p-1.5 bg-surface-50-950 min-h-14 flex flex-col gap-0.5">
-            <span class="text-[10px] uppercase text-surface-400-500">{dir.direction}</span>
-            <div class="flex items-center gap-1">
+        <div class="border border-surface-200-800 rounded p-1.5 bg-surface-50-950 min-h-14 min-w-0 flex flex-col gap-0.5">
+            <span class="text-[10px] uppercase text-surface-400-500 truncate">{dir.direction}</span>
+            <div class="flex items-center gap-1 min-w-0">
                 <button
                     type="button"
-                    class="flex-1 text-left text-xs text-primary-600-400 hover:underline truncate"
+                    class="flex-1 min-w-0 text-left text-xs text-primary-600-400 hover:underline truncate"
+                    title={dir.lookOnly ? undefined : (dir.to ?? undefined)}
                     onclick={() => selectNode(dir.exitKey!)}
                 >{dir.lookOnly ? "(look)" : `→ ${dir.to}`}</button>
                 <button
@@ -112,12 +113,12 @@
             </div>
         </div>
     {:else}
-        <div class="border border-dashed border-surface-300-700 rounded p-1.5 min-h-14 flex flex-col gap-1">
+        <div class="border border-dashed border-surface-300-700 rounded p-1.5 min-h-14 min-w-0 flex flex-col gap-1">
             <button
                 type="button"
-                class="text-xs text-surface-400-500 hover:text-primary-600-400 text-left"
+                class="text-xs text-surface-400-500 hover:text-primary-600-400 text-left truncate"
                 onclick={() => toggleDirection(dir.direction)}
-            >+ {dir.direction}</button>
+            >{dir.direction}</button>
             {#if openDirection === dir.direction && data}
                 <div class="flex flex-col gap-1 mt-1">
                     <Combobox
@@ -154,13 +155,13 @@
 
 <div class="flex flex-col w-full px-3 py-2 gap-3">
     {#if data}
-        <div class="flex gap-4">
-            <div class="grid grid-cols-3 gap-1 w-48">
+        <div class="flex gap-4 w-full max-w-xl">
+            <div class="grid grid-cols-3 gap-1.5 flex-[3] min-w-0">
                 {#each compassGrid as idx (idx)}
                     {@render directionCell(idx === -1 ? null : data.compass[idx])}
                 {/each}
             </div>
-            <div class="grid grid-cols-2 gap-1 w-32">
+            <div class="grid grid-cols-2 gap-1.5 flex-[2] min-w-0">
                 {#each directionGrid as idx (idx)}
                     {@render directionCell(data.compass[idx])}
                 {/each}
