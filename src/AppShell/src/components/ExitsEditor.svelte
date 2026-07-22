@@ -23,11 +23,29 @@
         data = getExitsData(key);
     }
 
+    // Exits aren't stored as linked pairs — "also create the return exit" is a one-time
+    // convenience at creation time, not a persisted relationship — so the best a "return exit"
+    // can do is match by shape: the destination room having its own exit aliased to the inverse
+    // direction that points back to this room. Returns null for non-directional aliases (no
+    // inverse to look for) and for look exits (one-way by definition, no return exit possible).
+    function findReciprocalExit(alias: string | null, to: string | null, lookOnly: boolean): string | null {
+        if (!data || lookOnly || !alias || !to) return null;
+        const inverseDirection = data.compass.find(d => d.direction === alias)?.inverseDirection;
+        if (!inverseDirection) return null;
+        const destData = getExitsData(to);
+        const reciprocal = destData?.allExits.find(e => e.alias === inverseDirection && e.to === elementKey && !e.lookOnly);
+        return reciprocal?.key ?? null;
+    }
+
     // deleteChildElement() leaves the current selection alone (unlike deleteElement(), which
     // always clears it) — the exit being deleted here is always a child of elementKey (the room),
     // never the room itself, so there's nothing to reselect, and the room's own tabs/attributes
     // don't depend on which exits it has.
-    function deleteExit(exitKey: string) {
+    function deleteExit(exitKey: string, alias: string | null, to: string | null, lookOnly: boolean) {
+        const reciprocalKey = findReciprocalExit(alias, to, lookOnly);
+        if (reciprocalKey && confirm(`"${to}" has a matching return exit back to this room. Delete that one too?`)) {
+            deleteChildElement(reciprocalKey);
+        }
         deleteChildElement(exitKey);
         refresh(elementKey);
     }
@@ -103,7 +121,7 @@
                     type="button"
                     class="btn btn-sm preset-outlined-error-500 px-1 py-0 text-xs leading-none flex-shrink-0"
                     title="Delete"
-                    onclick={() => deleteExit(dir.exitKey!)}
+                    onclick={() => deleteExit(dir.exitKey!, dir.direction, dir.to, dir.lookOnly)}
                 >×</button>
             </div>
         </div>
@@ -216,7 +234,7 @@
                                 type="button"
                                 class="btn btn-sm preset-tonal-error px-1 py-0 text-xs leading-none"
                                 title="Delete"
-                                onclick={() => deleteExit(exit.key)}
+                                onclick={() => deleteExit(exit.key, exit.alias, exit.to, exit.lookOnly)}
                             >×</button>
                         </div>
                     </div>

@@ -11,6 +11,16 @@ const page = await browser.newPage();
 page.on('pageerror', err => console.log('[pageerror]', err.message));
 page.on('console', msg => { if (msg.type() === 'error') console.log('[console.error]', msg.text()); });
 
+// Deleting an exit that has a matching return exit prompts via a native confirm() dialog —
+// default to dismissing it (keep the reciprocal) unless a specific check below wants to accept.
+let lastDialogMessage = null;
+let dialogAction = 'dismiss';
+page.on('dialog', async dialog => {
+    lastDialogMessage = dialog.message();
+    if (dialogAction === 'accept') await dialog.accept();
+    else await dialog.dismiss();
+});
+
 async function addRoom(name) {
     await page.click('button[title="Add element"]');
     await page.click('.add-dropdown button:has-text("Add Room")', { timeout: 5000 });
@@ -18,6 +28,16 @@ async function addRoom(name) {
     await page.fill('#element-name', name);
     await page.click('[role="dialog"] button:has-text("Add")');
     await page.waitForSelector(`text=${name}`, { timeout: 10000 });
+}
+
+// A leaf node's clickable row is [data-part="item"], but once it gains a child it becomes a
+// branch whose OWN [role="treeitem"] wrapper also (confusingly) carries the same data-value on
+// its nested (always-visible) [data-part="branch-control"] AND on its hidden-when-collapsed
+// [data-part="branch-content"] — a plain [data-value="X"] selector can resolve to any of those
+// three and occasionally lands on the hidden one. Match only the two parts that are ever the
+// actual clickable row.
+async function selectTreeNode(name) {
+    await page.locator(`[data-value="${name}"][data-part="item"], [data-value="${name}"][data-part="branch-control"]`).first().click();
 }
 
 async function run() {
@@ -44,7 +64,7 @@ async function run() {
     console.log('PASS: created Room One and Room Two');
 
     // Select Room One in the tree and open its Exits tab.
-    await page.click('[data-value="Room One"]');
+    await selectTreeNode('Room One');
     await page.waitForSelector('button:has-text("Exits")', { timeout: 10000 });
     await page.click('button:has-text("Exits")');
     await page.getByRole('button', { name: 'north', exact: true }).waitFor({ timeout: 10000 });
@@ -76,7 +96,7 @@ async function run() {
     console.log('PASS: Room One stays selected after quick-create (no unwanted navigation)');
 
     // Switch to Room Two and confirm the reciprocal South exit was created.
-    await page.click('[data-value="Room Two"]');
+    await selectTreeNode('Room Two');
     await page.waitForSelector('button:has-text("Exits")', { timeout: 10000 });
     await page.click('button:has-text("Exits")');
     await page.waitForSelector('text=→ Room One', { timeout: 10000 });
@@ -92,7 +112,7 @@ async function run() {
     console.log('PASS: clicking an existing exit navigates to its own working editor page');
 
     // Back on Room One, create a "look" exit (east) — no destination room, one-way.
-    await page.click('[data-value="Room One"]');
+    await selectTreeNode('Room One');
     await page.waitForSelector('button:has-text("Exits")', { timeout: 10000 });
     await page.click('button:has-text("Exits")');
     await page.getByRole('button', { name: 'east', exact: true }).click();
@@ -100,13 +120,19 @@ async function run() {
     await page.waitForSelector('text=(look)', { timeout: 10000 });
     console.log('PASS: "Create a look exit instead" creates a one-way look exit with no destination');
 
-    // Go back to Room One and delete the north exit via the full list, room should stay selected.
+    // Go back to Room One and delete the north exit via the full list, dismissing the "delete the
+    // return exit too?" prompt (north/Room Two has a matching reciprocal — south/Room One).
     await page.click('button:has-text("Exits")');
     const rowButton = page.getByRole('button', { name: 'north → Room Two', exact: true });
     await rowButton.waitFor({ timeout: 10000 });
     const listRow = rowButton.locator('..');
     await listRow.hover();
+    dialogAction = 'dismiss';
+    lastDialogMessage = null;
     await listRow.locator('button[title="Delete"]').click();
+    await page.waitForSelector('text=Exits list prefix', { timeout: 3000 });
+    if (!lastDialogMessage?.includes('Room Two')) throw new Error(`Expected a "delete the return exit" prompt mentioning Room Two, got: ${lastDialogMessage}`);
+    console.log('PASS: deleting an exit with a reciprocal prompts to also delete the return exit');
 
     // Room One must stay selected AND the Exits tab must stay active — deleting an exit doesn't
     // touch the current selection at all (unlike the generic deleteElement() used elsewhere,
@@ -114,10 +140,39 @@ async function run() {
     // to a different node and reset the active tab.
     await page.waitForSelector('[data-value="Room One"][data-selected]', { timeout: 10000 });
     await page.getByRole('button', { name: 'north', exact: true }).waitFor({ timeout: 10000 });
-    await page.waitForSelector('text=Exits list prefix', { timeout: 3000 });
     const exitsTabStillActive = await page.locator('button:has-text("Exits")').getAttribute('class');
     if (!exitsTabStillActive?.includes('border-primary-500')) throw new Error('Expected Exits tab to remain the active tab after deleting an exit');
     console.log('PASS: deleting an exit removes it, keeps Room One selected, and stays on the Exits tab');
+
+    // Dismissing the prompt must leave the reciprocal (south/Room One) alone in Room Two.
+    await selectTreeNode('Room Two');
+    await page.click('button:has-text("Exits")');
+    await page.getByRole('button', { name: '→ Room One', exact: true }).waitFor({ timeout: 10000 });
+    console.log('PASS: dismissing the prompt leaves the return exit (south → Room One) in place');
+
+    // Now create a fresh west/east pair and accept the prompt this time — both ends should go.
+    await selectTreeNode('Room One');
+    await page.click('button:has-text("Exits")');
+    await page.getByRole('button', { name: 'west', exact: true }).click();
+    await combobox.click();
+    await combobox.fill('Room Two');
+    await page.waitForSelector('[role="option"]:has-text("Room Two")', { timeout: 5000 });
+    await page.click('[role="option"]:has-text("Room Two")');
+    await page.click('button:has-text("Create exit")');
+    await page.waitForSelector('text=→ Room Two', { timeout: 10000 });
+
+    dialogAction = 'accept';
+    lastDialogMessage = null;
+    await page.getByRole('button', { name: '→ Room Two', exact: true }).locator('..').locator('button[title="Delete"]').click();
+    await page.waitForSelector('text=Exits list prefix', { timeout: 3000 });
+    if (!lastDialogMessage) throw new Error('Expected a "delete the return exit" prompt for the west/east pair');
+
+    // Check specifically the "east" cell went back to empty — Room Two's still-alive south exit
+    // (from the dismissed prompt above) also reads "→ Room One", so that text alone is ambiguous.
+    await selectTreeNode('Room Two');
+    await page.click('button:has-text("Exits")');
+    await page.getByRole('button', { name: 'east', exact: true }).waitFor({ timeout: 10000 });
+    console.log('PASS: accepting the prompt deletes both the exit and its return exit');
 
     console.log('PASS: all checks passed');
 }
