@@ -38,7 +38,8 @@
    explicitly, so font-family is the only property that needs resetting here. */
 :scope#qv-start,
 :scope#qv-saves,
-:scope#questVivaDebugger {
+:scope#questVivaDebugger,
+:scope#qv-restarting {
     font-family: var(--font-sans);
 }
 
@@ -50,6 +51,25 @@
     justify-content: center;
     padding: 1rem;
     background: var(--color-surface-950);
+}
+
+/* Not a <dialog> (see its doc comment in index.html) — position:fixed at the
+   same z-index tier as #qv-start (both just sit in the normal stacking
+   context; qv-saves/questVivaDebugger are actual <dialog>s and always
+   render above this regardless, which is fine since both are already closed
+   by the time restartGameCore shows this). Semi-transparent dark background
+   makes clear the whole page is intentionally busy, not just unresponsive. */
+:scope#qv-restarting {
+    position: fixed;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgb(0 0 0 / 0.6);
+}
+
+:scope#qv-restarting.hidden {
+    display: none;
 }
 
 /* Save/load manager — a native <dialog>, shown via showModal() so the

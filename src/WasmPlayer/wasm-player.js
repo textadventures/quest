@@ -275,15 +275,18 @@ function swapInPlayerUi() {
     const startScreenEl = document.getElementById('qv-start');
     const savesDialogEl = document.getElementById('qv-saves');
     const debuggerDialogEl = document.getElementById('questVivaDebugger');
+    const restartingEl = document.getElementById('qv-restarting');
     startScreenEl?.remove();
     savesDialogEl?.remove();
     debuggerDialogEl?.remove();
+    restartingEl?.remove();
 
     document.body.innerHTML = originalPlayerHtml;
 
     if (startScreenEl) document.body.appendChild(startScreenEl);
     if (savesDialogEl) document.body.appendChild(savesDialogEl);
     if (debuggerDialogEl) document.body.appendChild(debuggerDialogEl);
+    if (restartingEl) document.body.appendChild(restartingEl);
     return startScreenEl;
 }
 
@@ -451,29 +454,45 @@ async function restartGameCore(saveBytes) {
     swapInPlayerUi();
     resetGameOutput();
 
-    const ok = saveBytes
-        ? await Bridge.InitialiseWithSave(originalGameBytes, originalGameFilename, saveBytes)
-        : await Bridge.Initialise(originalGameBytes, originalGameFilename);
-    if (!ok) {
-        showSavesError('Failed to load that save.');
-        return;
+    // Bridge.Initialise/Begin re-run the whole game's startup (Bridge.Initialise
+    // in particular re-parses the embedded Core library XML from scratch every
+    // time — confirmed not cacheable) with no genuine await inside either, so
+    // they block the single WASM UI thread for a couple of seconds with
+    // nothing else able to paint meanwhile — same reasoning as withBusyButton's
+    // nextPaint(). Without yielding a frame *after* unhiding the spinner and
+    // *before* that blocking work starts, it would sit queued and invisible
+    // for the whole freeze, same as if it was never shown at all.
+    const restartingEl = document.getElementById('qv-restarting');
+    restartingEl?.classList.remove('hidden');
+    await nextPaint();
+
+    try {
+        const ok = saveBytes
+            ? await Bridge.InitialiseWithSave(originalGameBytes, originalGameFilename, saveBytes)
+            : await Bridge.Initialise(originalGameBytes, originalGameFilename);
+        if (!ok) {
+            showSavesError('Failed to load that save.');
+            return;
+        }
+
+        await maybeGateOnActivation(originalGameBytes);
+
+        await setupPaperJs();
+        WebPlayer.initUI();
+        wireDebuggerButton();
+        wireDebuggerRestartButton(currentIsPreview);
+        // Used to be an unconditional true — harmless while restartGame was only
+        // ever reachable from the Saves dialog, which editor-preview sessions
+        // never had access to in the first place (Save itself is hidden there).
+        // Now that the new Restart button (wireDebuggerRestartButton) makes
+        // restartGame reachable *from* a preview session too, hardcoding true
+        // here would wrongly re-enable Save after a preview restart.
+        WebPlayer.setCanSave(!currentIsPreview);
+        WebPlayer.setCanDebug(currentIsPreview && Bridge.IsDebugEnabled());
+        await Bridge.Begin();
+    } finally {
+        restartingEl?.classList.add('hidden');
     }
-
-    await maybeGateOnActivation(originalGameBytes);
-
-    await setupPaperJs();
-    WebPlayer.initUI();
-    wireDebuggerButton();
-    wireDebuggerRestartButton(currentIsPreview);
-    // Used to be an unconditional true — harmless while restartGame was only
-    // ever reachable from the Saves dialog, which editor-preview sessions
-    // never had access to in the first place (Save itself is hidden there).
-    // Now that the new Restart button (wireDebuggerRestartButton) makes
-    // restartGame reachable *from* a preview session too, hardcoding true
-    // here would wrongly re-enable Save after a preview restart.
-    WebPlayer.setCanSave(!currentIsPreview);
-    WebPlayer.setCanDebug(currentIsPreview && Bridge.IsDebugEnabled());
-    await Bridge.Begin();
 }
 
 // Wraps initWasmPlayer with the boot-time "Continue / New Game" prompt: if

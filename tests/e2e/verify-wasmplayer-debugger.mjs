@@ -457,8 +457,25 @@ check('Cancel hides again after cancelling', cancelHiddenAfterCancel);
 // confirming this isn't just a UI no-op.
 await previewPage.click('#qv-debugger-close');
 await previewPage.click('#cmdRestart');
+
+// Bridge.Initialise/Begin block the single WASM UI thread with no chance for
+// anything else to paint, so this spinner is the only feedback a restart is
+// even happening — confirm it actually appears (not just present-but-hidden
+// in the DOM the whole time) and then goes away again once settled.
+await previewPage.waitForSelector('#qv-restarting:not(.hidden)', { timeout: 2000 });
+const spinnerVisible = await previewPage.$eval('#qv-restarting', el => getComputedStyle(el).display !== 'none');
+check('Restarting spinner is shown while the restart is in progress', spinnerVisible);
+
 await previewPage.waitForSelector('#txtCommand', { state: 'visible', timeout: 30000 });
 await previewPage.waitForFunction(() => document.getElementById('divOutput')?.textContent.length > 20, { timeout: 10000 });
+// Output can already be visible slightly before restartGameCore's finally
+// block (which hides the spinner) actually runs — flushed text and the
+// JS await returning aren't quite the same instant (same reasoning as the
+// 300ms buffer a few checks below, for restartInProgress).
+await previewPage.waitForFunction(() => document.getElementById('qv-restarting')?.classList.contains('hidden'), { timeout: 5000 });
+const spinnerHiddenAfter = await previewPage.$eval('#qv-restarting', el => getComputedStyle(el).display === 'none');
+check('Restarting spinner hides again once the restart finishes', spinnerHiddenAfter);
+
 const outputAfterRestart = await previewPage.$eval('#divOutput', el => el.textContent);
 check('Restart brings the game back to its initial state', /You are in a kitchen/i.test(outputAfterRestart));
 

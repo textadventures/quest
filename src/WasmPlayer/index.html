@@ -89,6 +89,24 @@
     </div>
 </div>
 
+<!-- Shown by restartGameCore (wasm-player.js) around the actual restart —
+     Bridge.Initialise re-parses the embedded Core library XML from scratch
+     every time (confirmed not cacheable), which blocks the single WASM UI
+     thread for a couple of seconds with no way for anything else to paint
+     meanwhile. A plain "Loading…" div sitting in the DOM the whole time
+     wouldn't help — see nextPaint()'s doc comment — restartGameCore
+     explicitly yields a frame after unhiding this so it's actually visible
+     before the freeze starts. Not a <dialog>: it only needs to sit above the
+     ordinary game chrome, never above qv-saves/questVivaDebugger (both
+     already closed by the time this shows — see restartGameCore). Same
+     spinner styling as #qv-loading-msg above for a consistent look. -->
+<div id="qv-restarting" class="qv-chrome hidden" role="status" aria-live="polite">
+    <div class="flex flex-col items-center gap-3 text-surface-100 text-sm text-center">
+        <div class="animate-spin rounded-full h-8 w-8 border-2 border-surface-300 border-t-transparent" aria-hidden="true"></div>
+        <span>Restarting&hellip;</span>
+    </div>
+</div>
+
 <dialog id="qv-saves" class="qv-chrome" data-mode="boot">
     <!-- ICONS_SPRITE: spliced in at build time by scripts/build-icons.mjs (into
          generated/index.html) — a hidden <symbol> defs block, kept inside
