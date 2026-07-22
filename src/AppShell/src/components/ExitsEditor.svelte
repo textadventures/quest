@@ -1,6 +1,6 @@
 <script lang="ts">
-    import { selectNode, deleteChildElement, swapElements, createExit, getExitsData, createExitInDirection, createLookExitInDirection } from "$lib/editor-store";
-    import { confirmDialog } from "$lib/confirm";
+    import { selectNode, deleteChildElement, swapElements, createExit, getExitsData, createExitInDirection, createLookExitInDirection, scriptVersion } from "$lib/editor-store";
+    import { chooseDialog } from "$lib/confirm";
     import type { ExitsData, CompassDirectionInfo } from "$lib/types";
     import Combobox from "./Combobox.svelte";
 
@@ -16,7 +16,13 @@
     let createInverse = $state(true);
     let warning = $state<string | null>(null);
 
+    // scriptVersion bumps on undo/redo (see editor-store.ts) — this control's exits data is
+    // fetched separately from $selectedData, which refreshSelectedData() already handles on
+    // undo/redo, so without tracking scriptVersion here an undo that recreates/removes an exit
+    // wouldn't be reflected until switching tabs away and back (same pattern ScriptEditor.svelte
+    // uses for its own separately-fetched state).
     $effect(() => {
+        void $scriptVersion;
         refresh(elementKey);
     });
 
@@ -45,8 +51,13 @@
     async function deleteExit(exitKey: string, alias: string | null, to: string | null, lookOnly: boolean) {
         const reciprocalKey = findReciprocalExit(alias, to, lookOnly);
         if (reciprocalKey) {
-            const alsoDelete = await confirmDialog(`"${to}" has a matching return exit back to this room. Delete that one too?`, { confirmLabel: "Delete both", cancelLabel: "Just this one", danger: true });
-            if (alsoDelete) deleteChildElement(reciprocalKey);
+            const choice = await chooseDialog(`"${to}" has a matching return exit back to this room. Delete that one too?`, [
+                { label: "Cancel", value: "cancel" as const },
+                { label: "Just this one", value: "this" as const },
+                { label: "Delete both", value: "both" as const, danger: true },
+            ]);
+            if (choice === null || choice === "cancel") return;
+            if (choice === "both") deleteChildElement(reciprocalKey);
         }
         deleteChildElement(exitKey);
         refresh(elementKey);

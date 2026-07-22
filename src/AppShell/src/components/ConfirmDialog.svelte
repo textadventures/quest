@@ -1,26 +1,29 @@
 <script lang="ts">
-    import { confirmState } from "$lib/confirm";
+    import { dialogState } from "$lib/confirm";
 
     let dialogEl = $state<HTMLDivElement>();
-    $effect(() => { if ($confirmState) dialogEl?.focus(); });
+    $effect(() => { if ($dialogState) dialogEl?.focus(); });
 
-    function respond(result: boolean) {
-        $confirmState?.resolve(result);
-        confirmState.set(null);
+    function respond(result: unknown) {
+        $dialogState?.resolve(result);
+        dialogState.set(null);
     }
 
+    // The last choice is treated as the primary/default action (filled button, rightmost) —
+    // matches how the 2-choice confirmDialog() wrapper orders [cancel, confirm].
     function handleKeydown(e: KeyboardEvent) {
-        if (e.key === "Escape") respond(false);
-        if (e.key === "Enter") respond(true);
+        if (!$dialogState) return;
+        if (e.key === "Escape") respond(null);
+        if (e.key === "Enter") respond($dialogState.choices.at(-1)?.value);
     }
 
     function onBackdropClick(e: MouseEvent) {
-        if (e.target === e.currentTarget) respond(false);
+        if (e.target === e.currentTarget) respond(null);
     }
 </script>
 
-{#if $confirmState}
-    {@const state = $confirmState}
+{#if $dialogState}
+    {@const state = $dialogState}
     <div
         bind:this={dialogEl}
         role="dialog"
@@ -34,11 +37,13 @@
             <p class="text-sm">{state.message}</p>
 
             <div class="flex justify-end gap-2">
-                <button class="btn btn-sm preset-tonal" onclick={() => respond(false)}>{state.cancelLabel}</button>
-                <button
-                    class={`btn btn-sm ${state.danger ? "preset-filled-error-500" : "preset-filled-primary-500"}`}
-                    onclick={() => respond(true)}
-                >{state.confirmLabel}</button>
+                {#each state.choices as choice, i (choice.label)}
+                    {@const isPrimary = i === state.choices.length - 1}
+                    <button
+                        class={`btn btn-sm ${isPrimary ? (choice.danger ? "preset-filled-error-500" : "preset-filled-primary-500") : "preset-tonal"}`}
+                        onclick={() => respond(choice.value)}
+                    >{choice.label}</button>
+                {/each}
             </div>
         </div>
     </div>

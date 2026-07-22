@@ -12,12 +12,14 @@ page.on('pageerror', err => console.log('[pageerror]', err.message));
 page.on('console', msg => { if (msg.type() === 'error') console.log('[console.error]', msg.text()); });
 
 // Deleting an exit that has a matching return exit prompts via ConfirmDialog.svelte (a custom
-// styled stand-in for window.confirm(), not a native browser dialog).
-async function respondToReciprocalPrompt(accept) {
+// styled stand-in for window.confirm(), not a native browser dialog) with three choices: Cancel
+// (delete nothing), "Just this one", or "Delete both".
+async function respondToReciprocalPrompt(choice) {
     const dialog = page.locator('[role="dialog"]').filter({ hasText: 'matching return exit' });
     await dialog.waitFor({ timeout: 10000 });
     const message = await dialog.locator('p').textContent();
-    await dialog.getByRole('button', { name: accept ? 'Delete both' : 'Just this one' }).click();
+    const label = choice === 'both' ? 'Delete both' : choice === 'this' ? 'Just this one' : 'Cancel';
+    await dialog.getByRole('button', { name: label }).click();
     return message;
 }
 
@@ -128,7 +130,7 @@ async function run() {
     const listRow = rowButton.locator('..');
     await listRow.hover();
     await listRow.locator('button[title="Delete"]').click();
-    const dismissMessage = await respondToReciprocalPrompt(false);
+    const dismissMessage = await respondToReciprocalPrompt('this');
     await page.waitForSelector('text=Exits list prefix', { timeout: 3000 });
     if (!dismissMessage?.includes('Room Two')) throw new Error(`Expected a "delete the return exit" prompt mentioning Room Two, got: ${dismissMessage}`);
     console.log('PASS: deleting an exit with a reciprocal prompts to also delete the return exit');
@@ -161,7 +163,7 @@ async function run() {
     await page.waitForSelector('text=→ Room Two', { timeout: 10000 });
 
     await page.getByRole('button', { name: '→ Room Two', exact: true }).locator('..').locator('button[title="Delete"]').click();
-    const acceptMessage = await respondToReciprocalPrompt(true);
+    const acceptMessage = await respondToReciprocalPrompt('both');
     await page.waitForSelector('text=Exits list prefix', { timeout: 3000 });
     if (!acceptMessage) throw new Error('Expected a "delete the return exit" prompt for the west/east pair');
 
@@ -171,6 +173,33 @@ async function run() {
     await page.click('button:has-text("Exits")');
     await page.getByRole('button', { name: 'east', exact: true }).waitFor({ timeout: 10000 });
     console.log('PASS: accepting the prompt deletes both the exit and its return exit');
+
+    // Create one more fresh pair (northeast/southwest) to check Cancel and Undo separately.
+    await selectTreeNode('Room One');
+    await page.click('button:has-text("Exits")');
+    await page.getByRole('button', { name: 'northeast', exact: true }).click();
+    await combobox.click();
+    await combobox.fill('Room Two');
+    await page.waitForSelector('[role="option"]:has-text("Room Two")', { timeout: 5000 });
+    await page.click('[role="option"]:has-text("Room Two")');
+    await page.click('button:has-text("Create exit")');
+    await page.waitForSelector('text=→ Room Two', { timeout: 10000 });
+
+    // Cancel must delete nothing at all — not even the exit that was clicked on.
+    await page.getByRole('button', { name: '→ Room Two', exact: true }).locator('..').locator('button[title="Delete"]').click();
+    await respondToReciprocalPrompt('cancel');
+    await page.getByRole('button', { name: '→ Room Two', exact: true }).waitFor({ timeout: 5000 });
+    console.log('PASS: Cancel on the reciprocal prompt deletes nothing');
+
+    // Now actually delete it ("Just this one"), then Undo via the toolbar — the compass grid and
+    // full list must reflect the restored exit without switching tabs away and back.
+    await page.getByRole('button', { name: '→ Room Two', exact: true }).locator('..').locator('button[title="Delete"]').click();
+    await respondToReciprocalPrompt('this');
+    await page.getByRole('button', { name: 'northeast', exact: true }).waitFor({ timeout: 10000 });
+    await page.click('button[title="Undo"]');
+    await page.getByRole('button', { name: '→ Room Two', exact: true }).waitFor({ timeout: 10000 });
+    await page.waitForSelector('text=northeast → Room Two', { timeout: 5000 });
+    console.log('PASS: Undo restores a deleted exit without needing to switch tabs away and back');
 
     console.log('PASS: all checks passed');
 }

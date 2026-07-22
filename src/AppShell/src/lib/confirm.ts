@@ -1,29 +1,45 @@
 import { writable } from "svelte/store";
 
+export interface DialogChoice<T> {
+    label: string;
+    value: T;
+    danger?: boolean;
+}
+
+interface DialogState {
+    message: string;
+    choices: DialogChoice<unknown>[];
+    resolve: (result: unknown) => void;
+}
+
+export const dialogState = writable<DialogState | null>(null);
+
+// General N-choice prompt rendered through ConfirmDialog.svelte (mounted once in +layout.svelte).
+// Resolves with the chosen value, or null if dismissed via Escape/backdrop click without choosing.
+// The store itself is untyped (a single instance is shared across every call site, each with its
+// own T) — type safety lives at the call site via this function's generic parameter.
+export function chooseDialog<T>(message: string, choices: DialogChoice<T>[]): Promise<T | null> {
+    return new Promise(resolve => {
+        dialogState.set({
+            message,
+            choices: choices as DialogChoice<unknown>[],
+            resolve: resolve as (result: unknown) => void,
+        });
+    });
+}
+
 export interface ConfirmOptions {
     confirmLabel?: string;
     cancelLabel?: string;
     danger?: boolean;
 }
 
-interface ConfirmState extends Required<ConfirmOptions> {
-    message: string;
-    resolve: (result: boolean) => void;
-}
-
-export const confirmState = writable<ConfirmState | null>(null);
-
-// Promise-based stand-in for window.confirm() — resolves true/false the same way, but renders
-// through ConfirmDialog.svelte (mounted once in +layout.svelte) so it looks like the rest of the
-// app instead of the browser's native dialog chrome.
-export function confirmDialog(message: string, options?: ConfirmOptions): Promise<boolean> {
-    return new Promise(resolve => {
-        confirmState.set({
-            message,
-            confirmLabel: options?.confirmLabel ?? "OK",
-            cancelLabel: options?.cancelLabel ?? "Cancel",
-            danger: options?.danger ?? false,
-            resolve,
-        });
-    });
+// Two-choice convenience wrapper — promise-based stand-in for window.confirm(), resolving
+// true/false the same way (Escape/backdrop dismissal counts as false, i.e. "cancel").
+export async function confirmDialog(message: string, options?: ConfirmOptions): Promise<boolean> {
+    const result = await chooseDialog(message, [
+        { label: options?.cancelLabel ?? "Cancel", value: false },
+        { label: options?.confirmLabel ?? "OK", value: true, danger: options?.danger },
+    ]);
+    return result ?? false;
 }
