@@ -5,6 +5,7 @@
     import { base } from "$app/paths";
     import { PUBLIC_HAS_SERVER } from "$env/static/public";
     import { openGame, loadingStatus } from "$lib/editor-store";
+    import { confirmDialog } from "$lib/confirm";
     import { hasFSA, openDirectory, loadFileFromDirectory, createLocalGame } from "$lib/filesystem/browser-adapter";
     import {
         openElectronFile, loadElectronFile, createElectronGame, getDefaultGamesDir, pickGameLocation,
@@ -326,7 +327,8 @@
     }
 
     async function handleDeleteDraft(gameId: string, filename: string) {
-        if (!confirm(`Delete the local draft "${filename}"? This can't be undone.`)) return;
+        const confirmed = await confirmDialog(`Delete the local draft "${filename}"? This can't be undone.`, { confirmLabel: "Delete", danger: true });
+        if (!confirmed) return;
         await deleteLocalDraft(gameId);
         await refreshDrafts();
     }

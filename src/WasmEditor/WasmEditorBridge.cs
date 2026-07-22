@@ -106,6 +106,23 @@ internal record FullAttributeData(List<AttributeDataItem> Attributes, List<Attri
 
 internal record GameTemplateInfo(string Id, string Label, string Type);
 
+internal record CompassDirectionInfo(
+    string Direction,
+    string TypeKey,
+    string InverseDirection,
+    string InverseTypeKey,
+    string? ExitKey,
+    string? To,
+    bool LookOnly);
+
+internal record ExitRowInfo(string Key, string? Alias, string? To, bool LookOnly);
+
+internal record ExitsData(
+    List<CompassDirectionInfo> Compass,
+    List<ExitRowInfo> AllExits,
+    List<ControlOption> Objects,
+    bool AllowLookExits);
+
 [JsonSourceGenerationOptions(PropertyNamingPolicy = JsonKnownNamingPolicy.CamelCase)]
 [JsonSerializable(typeof(List<TreeNodeData>))]
 [JsonSerializable(typeof(EditorDataResponse))]
@@ -118,6 +135,7 @@ internal record GameTemplateInfo(string Id, string Label, string Type);
 [JsonSerializable(typeof(List<ListItemData>))]
 [JsonSerializable(typeof(FullAttributeData))]
 [JsonSerializable(typeof(List<GameTemplateInfo>))]
+[JsonSerializable(typeof(ExitsData))]
 internal partial class WasmEditorJsonContext : JsonSerializerContext
 {
 }
@@ -1602,6 +1620,167 @@ public partial class WasmEditorBridge
         }
     }
 
+    // Index-based opposite-direction lookup into the 12-entry compass list
+    // (NW,N,NE,W,E,SW,S,SE,Up,Down,In,Out) — ported from v5's ExitsControl.xaml.cs so it stays
+    // correct regardless of the localized caption text.
+    private static readonly int[] OppositeDirs = [7, 6, 5, 4, 3, 2, 1, 0, 9, 8, 11, 10];
+
+    private static IEditorControl? FindExitsControl(string roomKey)
+    {
+        if (_controller == null)
+        {
+            return null;
+        }
+
+        var editorName = _controller.GetElementEditorName(roomKey);
+        if (editorName == null)
+        {
+            return null;
+        }
+
+        var def = _controller.GetEditorDefinition(editorName);
+        return def.Tabs.Values.SelectMany(t => t.Controls)
+            .FirstOrDefault(c => c.ControlType == "exits");
+    }
+
+    [JSExport]
+    public static string GetExitsData(string roomKey)
+    {
+        var empty = new ExitsData([], [], [], false);
+        if (_controller == null)
+        {
+            return JsonSerializer.Serialize(empty, WasmEditorJsonContext.Default.ExitsData);
+        }
+
+        var exitsControl = FindExitsControl(roomKey);
+        if (exitsControl == null)
+        {
+            return JsonSerializer.Serialize(empty, WasmEditorJsonContext.Default.ExitsData);
+        }
+
+        var directions = exitsControl.GetListString("compass").ToList();
+        var types = exitsControl.GetDictionary("compasstypes");
+
+        var compass = directions.Select((d, i) => new CompassDirectionInfo(
+            d, types[d], directions[OppositeDirs[i]], types[directions[OppositeDirs[i]]],
+            null, null, false)).ToList();
+
+        var allExits = new List<ExitRowInfo>();
+        foreach (var exitKey in _controller.GetObjectNames("exit", roomKey, true))
+        {
+            var data = _controller.GetEditorData(exitKey);
+            var to = data.GetAttribute("to") as IEditableObjectReference;
+            var alias = data.GetAttribute("alias") as string;
+            var lookOnly = data.GetAttribute("lookonly") as bool? == true;
+            allExits.Add(new ExitRowInfo(exitKey, alias, to?.Reference, lookOnly));
+
+            var dirIndex = alias != null ? directions.IndexOf(alias) : -1;
+            if (dirIndex >= 0)
+            {
+                compass[dirIndex] = compass[dirIndex] with
+                {
+                    ExitKey = exitKey, To = to?.Reference, LookOnly = lookOnly
+                };
+            }
+        }
+
+        var objects = _controller.GetObjectNames("object")
+            .Where(n => n != roomKey)
+            .OrderBy(n => n, StringComparer.CurrentCultureIgnoreCase)
+            .Select(n => new ControlOption(n, n)).ToList();
+
+        var gameData = _controller.GetEditorData("game");
+        var allowLookExits = gameData?.GetAttribute("allowlookdirections") as bool? ?? false;
+
+        var result = new ExitsData(compass, allExits, objects, allowLookExits);
+        return JsonSerializer.Serialize(result, WasmEditorJsonContext.Default.ExitsData);
+    }
+
+    [JSExport]
+    public static string CreateExitInDirection(string roomKey, string direction, string to, bool createInverse)
+    {
+        if (_controller == null)
+        {
+            return "error:Not initialised";
+        }
+
+        var exitsControl = FindExitsControl(roomKey);
+        if (exitsControl == null)
+        {
+            return "error:No exits control found";
+        }
+
+        var directions = exitsControl.GetListString("compass").ToList();
+        var types = exitsControl.GetDictionary("compasstypes");
+        var dirIndex = directions.IndexOf(direction);
+        if (dirIndex < 0)
+        {
+            return "error:Unknown direction";
+        }
+
+        var type = types[direction];
+
+        try
+        {
+            if (!createInverse)
+            {
+                return _controller.CreateNewExit(roomKey, to, direction, type, false);
+            }
+
+            var inverseDirection = directions[OppositeDirs[dirIndex]];
+            var inverseType = types[inverseDirection];
+
+            var inverseAlreadyExists = _controller.GetObjectNames("exit", to, true).Any(exitKey =>
+            {
+                var data = _controller.GetEditorData(exitKey);
+                var lookOnly = data.GetAttribute("lookonly") as bool? == true;
+                return !lookOnly && data.GetAttribute("alias") as string == inverseDirection;
+            });
+
+            if (inverseAlreadyExists)
+            {
+                var newExit = _controller.CreateNewExit(roomKey, to, direction, type, false);
+                return $"warning:An exit already exists in that direction from the destination room|{newExit}";
+            }
+
+            return _controller.CreateNewExit(roomKey, to, direction, inverseDirection, type, inverseType);
+        }
+        catch (Exception ex)
+        {
+            return $"error:{ex.Message}";
+        }
+    }
+
+    [JSExport]
+    public static string CreateLookExitInDirection(string roomKey, string direction)
+    {
+        if (_controller == null)
+        {
+            return "error:Not initialised";
+        }
+
+        var exitsControl = FindExitsControl(roomKey);
+        if (exitsControl == null)
+        {
+            return "error:No exits control found";
+        }
+
+        var types = exitsControl.GetDictionary("compasstypes");
+        if (!types.TryGetValue(direction, out var type))
+        {
+            return "error:Unknown direction";
+        }
+
+        try
+        {
+            return _controller.CreateNewExit(roomKey, null, direction, type, true);
+        }
+        catch (Exception ex)
+        {
+            return $"error:{ex.Message}";
+        }
+    }
+
     [JSExport]
     public static string CreateTurnScript(string parent)
     {
@@ -1789,6 +1968,32 @@ public partial class WasmEditorBridge
     public static void DeleteElement(string key)
     {
         _controller?.DeleteElement(key, true);
+    }
+
+    // Wraps every deletion in a single transaction (mirrors v5's ExitsControl.xaml.cs
+    // toolbar_DeleteClicked) so one Undo reverts all of them together — calling DeleteElement()
+    // once per key instead would open/close its own transaction each time, so Undo would only
+    // restore the last one.
+    [JSExport]
+    public static void DeleteElements(string keysJson)
+    {
+        if (_controller == null)
+        {
+            return;
+        }
+
+        var keys = JsonSerializer.Deserialize(keysJson, WasmEditorJsonContext.Default.ListString);
+        if (keys == null || keys.Count == 0)
+        {
+            return;
+        }
+
+        _controller.StartTransaction($"Delete {keys.Count} elements");
+        foreach (var key in keys)
+        {
+            _controller.DeleteElement(key, false);
+        }
+        _controller.EndTransaction();
     }
 
     [JSExport]

@@ -65,6 +65,9 @@ export interface WasmBridge {
   CreateFunction(name: string): string
   CreateTimer(name: string): string
   CreateExit(parent: string): string
+  GetExitsData(roomKey: string): string
+  CreateExitInDirection(roomKey: string, direction: string, to: string, createInverse: boolean): string
+  CreateLookExitInDirection(roomKey: string, direction: string): string
   CreateTurnScript(parent: string): string
   CreateCommand(parent: string): string
   CreateVerb(parent: string): string
@@ -75,6 +78,7 @@ export interface WasmBridge {
   CreateIncludedLibrary(): string
   CreateJavascript(): string
   DeleteElement(key: string): void
+  DeleteElements(keysJson: string): void
   SwapElements(key1: string, key2: string): string
   // New game
   GetGameTemplates(): string
