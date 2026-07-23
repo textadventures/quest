@@ -292,7 +292,7 @@
                 <div
                     class="flex-1 overflow-y-auto pb-2"
                     role="listbox"
-                    aria-label="Script commands in {selectedCategory?.name ?? ''}"
+                    aria-label="Script commands in {selectedCategory?.name ?? ""}"
                     tabindex="-1"
                     onkeydown={onCategoryCommandListKeydown}
                 >
