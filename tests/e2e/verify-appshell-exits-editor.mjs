@@ -51,16 +51,6 @@ async function run() {
     await page.waitForSelector('button[title="Manage assets"]', { timeout: 30000 });
     console.log('PASS: local draft created and opened in the editor');
 
-    // Enable "look" exits at the game level so the compass cell's "Create a look exit instead"
-    // shortcut is offered (it's gated on game.allowlookdirections, off by default). The "game"
-    // node is already selected by default right after load, so no tree click needed here — its
-    // bounding box spans its (already-expanded) Verbs/Commands children too, which made an
-    // explicit click on it land on the wrong row.
-    await page.click('button:has-text("Features")');
-    await page.waitForSelector('text=Directional exits can be look only', { timeout: 10000 });
-    await page.click('label:has-text("Directional exits can be look only") input[type="checkbox"]');
-    console.log('PASS: enabled "look" exits at the game level');
-
     await addRoom('Room One');
     await addRoom('Room Two');
     console.log('PASS: created Room One and Room Two');

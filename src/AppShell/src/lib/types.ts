@@ -65,7 +65,6 @@ export interface ExitsData {
   compass: CompassDirectionInfo[]
   allExits: ExitRowInfo[]
   objects: ControlOption[]
-  allowLookExits: boolean
 }
 
 export interface VerbInfo {

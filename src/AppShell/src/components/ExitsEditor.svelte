@@ -214,13 +214,11 @@
                         disabled={!createTo}
                         onclick={() => doCreate(openDirection!)}
                     >Create exit</button>
-                    {#if data.allowLookExits}
-                        <button
-                            type="button"
-                            class="text-xs text-surface-400-500 hover:text-primary-600-400 underline text-left"
-                            onclick={() => doCreateLook(openDirection!)}
-                        >Create a look exit instead</button>
-                    {/if}
+                    <button
+                        type="button"
+                        class="text-xs text-surface-400-500 hover:text-primary-600-400 underline text-left"
+                        onclick={() => doCreateLook(openDirection!)}
+                    >Create a look exit instead</button>
                 </div>
                 {#if warning}
                     <p class="text-xs text-warning-600-400">{warning}</p>

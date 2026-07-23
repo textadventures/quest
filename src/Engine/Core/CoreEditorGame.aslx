@@ -157,12 +157,6 @@
 
       <control>
         <controltype>checkbox</controltype>
-        <caption>[EditorGameAllowLookDirections]</caption>
-        <attribute>allowlookdirections</attribute>
-      </control>	  
-
-      <control>
-        <controltype>checkbox</controltype>
         <caption>[EditorGameMultipleCommands]</caption>
         <attribute>multiplecommands</attribute>
       </control>
