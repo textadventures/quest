@@ -52,7 +52,8 @@ internal record ScriptControlData(
     string? SimpleLabel,
     string? Source,
     List<ControlOption>? Options,
-    List<ScriptNodeData>? Scripts
+    List<ScriptNodeData>? Scripts,
+    string? ObjectType = null
 );
 
 internal record ElseIfClauseData(string Id, string Expression, List<ScriptNodeData> Scripts);
@@ -1382,6 +1383,18 @@ public partial class WasmEditorBridge
         }
 
         var names = _controller.GetObjectNames("object", false).ToList();
+        return JsonSerializer.Serialize(names, WasmEditorJsonContext.Default.ListString);
+    }
+
+    [JSExport]
+    public static string GetExitNames()
+    {
+        if (_controller == null)
+        {
+            return "[]";
+        }
+
+        var names = _controller.GetObjectNames("exit", false).ToList();
         return JsonSerializer.Serialize(names, WasmEditorJsonContext.Default.ListString);
     }
 
@@ -2869,6 +2882,7 @@ public partial class WasmEditorBridge
 
         string? simpleLabel = null;
         string? source = null;
+        string? objectType = null;
 
         if (ctrl.ControlType == "expression")
         {
@@ -2877,6 +2891,7 @@ public partial class WasmEditorBridge
             // If <simpleeditor> is absent but <simple> is set, default simple editor is a textbox
             simpleEditor = simpleEditorTag ?? (simpleLabel != null ? "textbox" : null);
             source = ctrl.GetString("source");
+            objectType = ctrl.GetString("objecttype");
 
             if (simpleEditor == "dropdown")
             {
@@ -2921,7 +2936,8 @@ public partial class WasmEditorBridge
             simpleLabel,
             source,
             options,
-            nestedScripts
+            nestedScripts,
+            objectType
         );
     }
 

@@ -774,6 +774,13 @@ export function getObjectNames(): string[] | null {
     } catch { return null; }
 }
 
+export function getExitNames(): string[] | null {
+    if (!_bridge) return null;
+    try {
+        return JSON.parse(_bridge.GetExitNames());
+    } catch { return null; }
+}
+
 export function getIfExpressionTemplates(): IfExpressionTemplate[] | null {
     if (!_bridge) return null;
     try {

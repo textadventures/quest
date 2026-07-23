@@ -36,6 +36,7 @@ export interface WasmBridge {
   RemoveElseIf(elementKey: string, attribute: string, containerPath: string, scriptIndex: number, elseIfIndex: number): string
   GetScriptCommandCategories(): Promise<string>
   GetObjectNames(): string
+  GetExitNames(): string
   GetIfExpressionTemplates(): string
   GetIfExpressionTemplateData(expression: string): string | null
   // List editor API

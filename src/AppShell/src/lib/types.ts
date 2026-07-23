@@ -82,6 +82,7 @@ export interface ScriptControlData {
   source: string | null
   options: ControlOption[] | null
   scripts: ScriptNodeData[] | null
+  objectType?: string | null
 }
 
 export interface ElseIfClauseData {
