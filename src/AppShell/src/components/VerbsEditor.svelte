@@ -99,6 +99,35 @@
         }
     }
 
+    // Resizable splitter (matches AttributesEditor's) — defaults wider than that one since the
+    // verbs list only needs a couple of narrow columns, so most of the width is better spent on
+    // the Behaviour panel (script/dictionary editors) rather than left as blank space.
+    let panelWidth = $state(480);
+    let isDragging = $state(false);
+    let dragStartX = 0;
+    let dragStartWidth = 0;
+
+    function onSplitterMousedown(e: MouseEvent) {
+        isDragging = true;
+        dragStartX = e.clientX;
+        dragStartWidth = panelWidth;
+        e.preventDefault();
+    }
+
+    $effect(() => {
+        if (!isDragging) return;
+        function onMousemove(e: MouseEvent) {
+            panelWidth = Math.max(180, Math.min(900, dragStartWidth + (dragStartX - e.clientX)));
+        }
+        function onMouseup() { isDragging = false; }
+        window.addEventListener("mousemove", onMousemove);
+        window.addEventListener("mouseup", onMouseup);
+        return () => {
+            window.removeEventListener("mousemove", onMousemove);
+            window.removeEventListener("mouseup", onMouseup);
+        };
+    });
+
     let newVerbPattern = $state("");
     let addError = $state<string | null>(null);
 
@@ -193,8 +222,15 @@
         </div>
     </div>
 
+    <!-- Splitter -->
+    <!-- svelte-ignore a11y_no_static_element_interactions -->
+    <div
+        class="w-1 flex-shrink-0 cursor-col-resize bg-surface-200-800 hover:bg-primary-400 transition-colors"
+        onmousedown={onSplitterMousedown}
+    ></div>
+
     <!-- Right: selected verb's behaviour -->
-    <div class="w-80 flex-shrink-0 flex flex-col overflow-hidden border-l border-surface-200-800">
+    <div class="flex-shrink-0 flex flex-col overflow-hidden border-l border-surface-200-800" style="width: {panelWidth}px">
         <div class="px-3 py-1.5 border-b border-surface-100-900 font-semibold text-surface-500-400 uppercase tracking-wide flex-shrink-0">
             Behaviour
         </div>
@@ -244,3 +280,8 @@
         {/if}
     </div>
 </div>
+
+<!-- Drag overlay: keeps col-resize cursor while dragging over other elements -->
+{#if isDragging}
+    <div class="fixed inset-0 z-50 cursor-col-resize select-none"></div>
+{/if}
