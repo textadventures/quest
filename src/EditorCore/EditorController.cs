@@ -25,6 +25,7 @@ public enum ValidationMessage
     InvalidAttributeName,
     ExceptionOccurred,
     InvalidElementName,
+    InvalidElementNameEmpty,
     CircularTypeReference,
     InvalidElementNameMultipleSpaces,
     InvalidElementNameInvalidWord,
@@ -67,7 +68,11 @@ public sealed class EditorController : IDisposable
         {ValidationMessage.ElementAlreadyExists, "An element called '{0}' already exists in this game"},
         {ValidationMessage.InvalidAttributeName, "Invalid attribute name"},
         {ValidationMessage.ExceptionOccurred, "An error occurred: {1}"},
-        {ValidationMessage.InvalidElementName, "Invalid element name"},
+        {
+            ValidationMessage.InvalidElementName,
+            "Invalid element name. {1} cannot be used — element names can only contain letters, numbers, underscores and spaces."
+        },
+        {ValidationMessage.InvalidElementNameEmpty, "Element name cannot be empty."},
         {ValidationMessage.CircularTypeReference, "Circular type reference"},
         {
             ValidationMessage.InvalidElementNameMultipleSpaces,
@@ -1813,9 +1818,19 @@ public sealed class EditorController : IDisposable
 
     private ValidationResult ValidateElementName(string name)
     {
-        if (string.IsNullOrEmpty(name) || !s_validNameRegex.IsMatch(name))
+        if (string.IsNullOrEmpty(name))
         {
-            return new ValidationResult {Valid = false, Message = ValidationMessage.InvalidElementName};
+            return new ValidationResult {Valid = false, Message = ValidationMessage.InvalidElementNameEmpty};
+        }
+
+        if (!s_validNameRegex.IsMatch(name))
+        {
+            var invalidChars = Regex.Matches(name, "[^\\w ]").Select(m => m.Value).Distinct().ToList();
+            return new ValidationResult
+            {
+                Valid = false, Message = ValidationMessage.InvalidElementName,
+                MessageData = FormatInvalidCharacterList(invalidChars)
+            };
         }
 
         if (name.StartsWith(" ") || name.EndsWith(" ") || name.Contains("  "))
@@ -1839,6 +1854,15 @@ public sealed class EditorController : IDisposable
         }
 
         return new ValidationResult {Valid = true};
+    }
+
+    // e.g. ["-"] -> "'-'", ["-", "."] -> "'-' and '.'", ["-", ".", "!"] -> "'-', '.' and '!'"
+    private static string FormatInvalidCharacterList(List<string> chars)
+    {
+        var quoted = chars.Select(c => $"'{c}'").ToList();
+        return quoted.Count == 1
+            ? quoted[0]
+            : string.Join(", ", quoted.Take(quoted.Count - 1)) + " and " + quoted[^1];
     }
 
     public ValidationResult CanAddTemplate(string name)

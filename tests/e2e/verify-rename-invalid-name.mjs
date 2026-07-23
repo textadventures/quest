@@ -58,10 +58,13 @@ async function run() {
     await nameInput.fill('new-thing');
     await nameInput.blur();
 
-    // Should show an inline validation error instead of silently accepting/discarding it.
+    // Should show an inline validation error instead of silently accepting/discarding it, and it
+    // should call out the specific offending character rather than a generic "invalid name".
     const errorText = page.locator('p.text-error-500', { hasText: /invalid/i });
     await errorText.waitFor({ timeout: 5000 });
-    console.log(`PASS: inline error shown: "${await errorText.textContent()}"`);
+    const errorMessage = await errorText.textContent();
+    if (!errorMessage?.includes("'-'")) throw new Error(`Expected the error to call out the '-' character specifically, got: "${errorMessage}"`);
+    console.log(`PASS: inline error shown, naming the specific bad character: "${errorMessage}"`);
 
     const borderClass = await nameInput.getAttribute('class');
     if (!borderClass?.includes('border-error-500')) throw new Error('Expected name input to get an error border');
