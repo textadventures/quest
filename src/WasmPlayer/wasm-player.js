@@ -287,6 +287,11 @@ function swapInPlayerUi() {
     if (savesDialogEl) document.body.appendChild(savesDialogEl);
     if (debuggerDialogEl) document.body.appendChild(debuggerDialogEl);
     if (restartingEl) document.body.appendChild(restartingEl);
+    // This is a genuinely fresh chrome (see above) — addExternalScript's
+    // dedupe-by-URL (player.js) must not carry over, or the game's external
+    // scripts silently no-op against it on the very next Initialise() call
+    // and never re-inject whatever they set up (e.g. that sidebar pane).
+    clearLoadedExternalScripts();
     return startScreenEl;
 }
 

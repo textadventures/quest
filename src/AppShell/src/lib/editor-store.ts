@@ -259,9 +259,19 @@ export function persistNow(): Promise<void> {
     return _saveInFlight;
 }
 
+// A local draft's OPFS write is often fast enough (small game, no network)
+// that isSaving flips true then false within ~10ms — well under a frame in
+// practice, so the "Saving…" pill can go completely unseen (confirmed via
+// rAF-precision polling: the class changes, but nothing ever gets painted in
+// between). Same category of issue as wasm-player.js's nextPaint() calls
+// elsewhere in this codebase — hold the visible state open for a minimum
+// stretch so it's perceptible rather than a silent flicker.
+const MIN_SAVING_VISIBLE_MS = 300;
+
 async function doPersist(): Promise<void> {
     if (!_bridge || !_adapter) return;
     isSaving.set(true);
+    const startedAt = performance.now();
     try {
         await rekeyIfGameIdChanged();
         await _adapter.saveFile(_bridge.Save()); // Save() clears _isDirty in the bridge
@@ -279,6 +289,10 @@ async function doPersist(): Promise<void> {
         saveError.set(err instanceof Error ? err.message : "Save failed");
         scheduleRetry();
     } finally {
+        const elapsed = performance.now() - startedAt;
+        if (elapsed < MIN_SAVING_VISIBLE_MS) {
+            await new Promise(resolve => setTimeout(resolve, MIN_SAVING_VISIBLE_MS - elapsed));
+        }
         isSaving.set(false);
     }
 }

@@ -74,7 +74,7 @@ try {
     await win.click('button:has-text("Change location…")');
     await win.waitForFunction((dir) => document.body.innerText.includes(dir), gamesRoot, { timeout: 10000 });
     await win.click('button:has-text("Create")');
-    await win.waitForSelector('button:has-text("Assets")', { timeout: 30000 });
+    await win.waitForSelector('button[title="Manage assets"]', { timeout: 30000 });
 
     const gameDir = join(gamesRoot, 'First');
     const firstAslx = join(gameDir, 'First.aslx');
@@ -89,7 +89,7 @@ try {
     await win.waitForSelector('button:has-text("Open game…")', { timeout: 10000 });
     await stubPicker(secondAslx);
     await win.click('button:has-text("Open game…")');
-    await win.waitForSelector('button:has-text("Assets")', { timeout: 30000 });
+    await win.waitForSelector('button[title="Manage assets"]', { timeout: 30000 });
     const multiFileScreenShown = await win.isVisible('text=Multiple game files found');
     console.log('PASS: "Second.aslx" opened directly with no multi-file disambiguation screen:', !multiFileScreenShown);
     if (multiFileScreenShown) throw new Error('Unexpected multi-file disambiguation screen for Electron');
@@ -100,7 +100,7 @@ try {
     await win.waitForSelector('button:has-text("Open game…")', { timeout: 10000 });
     await stubPicker(firstAslx);
     await clickMenuItem('File', 'Open Game…');
-    await win.waitForSelector('button:has-text("Assets")', { timeout: 30000 });
+    await win.waitForSelector('button[title="Manage assets"]', { timeout: 30000 });
     console.log('PASS: native "Open Game…" menu item opens "First.aslx" directly');
 
     console.log('PASS: all checks passed');

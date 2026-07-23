@@ -73,10 +73,16 @@ try {
     await download.saveAs(zipPath);
     console.log('backup zip saved to', zipPath);
 
-    // Delete the draft, then re-import the backed-up zip.
+    // Delete the draft, then re-import the backed-up zip. Deletion is
+    // confirmed through the app's own ConfirmDialog.svelte (a promise-based
+    // in-page modal — see lib/confirm.ts), not a native window.confirm(), so
+    // there's no browser "dialog" event to auto-accept; the confirm button
+    // (also labelled "Delete", as the primary/danger action) must be clicked
+    // directly, scoped to the dialog to avoid matching a different draft
+    // row's own "Delete" button.
     await page.goto(`${baseUrl}/open`);
-    page.once('dialog', d => d.accept());
     await page.click('button:has-text("Delete")');
+    await page.locator('div[role="dialog"] button:has-text("Delete")').click();
     await page.waitForTimeout(500);
 
     const [fileChooser2] = await Promise.all([

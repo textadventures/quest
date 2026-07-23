@@ -60,6 +60,9 @@ class WebPlayer {
     // session and it adds another one.
     static resetPlayerUi(html) {
         document.getElementById("qv-player-chrome").innerHTML = html;
+        // Fresh chrome — see clearLoadedExternalScripts (player.js) and
+        // WasmPlayer's swapInPlayerUi for why this must follow the reset.
+        clearLoadedExternalScripts();
     }
 
     static async downloadSaveAsFile(filename) {
