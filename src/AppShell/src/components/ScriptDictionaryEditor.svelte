@@ -1,6 +1,6 @@
 <script lang="ts">
     import { SvelteSet } from "svelte/reactivity";
-    import { addScriptDictItem, removeScriptDictItem, makeScriptDictEditable } from "$lib/editor-store";
+    import { addScriptDictItem, removeScriptDictItem, makeScriptDictEditable, getObjectNames } from "$lib/editor-store";
     import ScriptEditor from "./ScriptEditor.svelte";
 
     interface Props {
@@ -8,9 +8,15 @@
         attribute: string;
         value: string | null;
         isLocked?: boolean;
+        // "object" swaps the free-text "Add entry key" field for a dropdown of the game's
+        // objects — used by VerbsEditor's "Require another object" behaviour, where the key
+        // must be a real object name for the interpreter to match against. Generic attribute
+        // dictionaries (AttributesEditor) keep free-text keys, since those aren't necessarily
+        // object names.
+        keySource?: "text" | "object";
     }
 
-    let { elementKey, attribute, value, isLocked = false }: Props = $props();
+    let { elementKey, attribute, value, isLocked = false, keySource = "text" }: Props = $props();
 
     let items = $derived.by<{key: string, value: string}[]>(() => {
         try {
@@ -22,6 +28,16 @@
 
     const expandedKeys = new SvelteSet<string>();
     let newKey = $state("");
+
+    let allObjectNames = $state<string[]>([]);
+    $effect(() => {
+        if (keySource === "object") allObjectNames = getObjectNames() ?? [];
+    });
+    // Excludes the object itself (a verb requiring itself doesn't make sense) and objects
+    // already added as entries.
+    let availableObjectNames = $derived(
+        allObjectNames.filter(n => n !== elementKey && !keys.includes(n))
+    );
 
     function onAdd() {
         const k = newKey.trim();
@@ -77,18 +93,34 @@
             </div>
         {/each}
         <div class="flex items-center gap-1 mt-0.5">
-            <input
-                type="text"
-                autocapitalize="off"
-                class="input text-xs py-0.5 px-1.5 flex-1"
-                placeholder="Add entry key…"
-                data-staging
-                bind:value={newKey}
-                onkeydown={(e) => { if (e.key === "Enter") onAdd(); }}
-            />
+            {#if keySource === "object"}
+                <select
+                    class="select text-xs py-0.5 px-1.5 flex-1"
+                    aria-label="Add entry key"
+                    data-staging
+                    bind:value={newKey}
+                >
+                    <option value="">Select object…</option>
+                    {#each availableObjectNames as name (name)}
+                        <option value={name}>{name}</option>
+                    {/each}
+                </select>
+            {:else}
+                <input
+                    type="text"
+                    autocapitalize="off"
+                    class="input text-xs py-0.5 px-1.5 flex-1"
+                    placeholder="Add entry key…"
+                    aria-label="Add entry key"
+                    data-staging
+                    bind:value={newKey}
+                    onkeydown={(e) => { if (e.key === "Enter") onAdd(); }}
+                />
+            {/if}
             <button
                 type="button"
                 class="btn btn-sm preset-outlined-primary-500 text-xs px-2 py-0.5 flex-shrink-0"
+                disabled={!newKey.trim()}
                 onclick={onAdd}
             >Add</button>
         </div>

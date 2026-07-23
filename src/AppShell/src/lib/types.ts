@@ -68,6 +68,11 @@ export interface ExitsData {
   allowLookExits: boolean
 }
 
+export interface VerbInfo {
+  attribute: string
+  displayPattern: string
+}
+
 export interface ScriptControlData {
   controlType: string
   caption: string | null

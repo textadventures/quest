@@ -8,6 +8,7 @@
     import ElementsList from "./ElementsList.svelte";
     import AssetPicker from "./AssetPicker.svelte";
     import ExitsEditor from "./ExitsEditor.svelte";
+    import VerbsEditor from "./VerbsEditor.svelte";
 
     let activeTab = $state<string | null>(null);
     let lastKey = $state<string | null>(null);
@@ -398,6 +399,8 @@
         />
     {:else if ctrl.controlType === "exits" && $selectedKey}
         <ExitsEditor elementKey={$selectedKey} />
+    {:else if ctrl.controlType === "verbs" && $selectedKey}
+        <VerbsEditor elementKey={$selectedKey} />
     {:else if ctrl.attribute !== null}
         {#if ctrl.controlType === "checkbox"}
             <label class="flex items-center gap-2 px-3 py-1.5 min-h-8 cursor-pointer">

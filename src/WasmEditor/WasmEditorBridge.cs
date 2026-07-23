@@ -123,6 +123,8 @@ internal record ExitsData(
     List<ControlOption> Objects,
     bool AllowLookExits);
 
+internal record VerbInfo(string Attribute, string DisplayPattern);
+
 [JsonSourceGenerationOptions(PropertyNamingPolicy = JsonKnownNamingPolicy.CamelCase)]
 [JsonSerializable(typeof(List<TreeNodeData>))]
 [JsonSerializable(typeof(EditorDataResponse))]
@@ -136,6 +138,7 @@ internal record ExitsData(
 [JsonSerializable(typeof(FullAttributeData))]
 [JsonSerializable(typeof(List<GameTemplateInfo>))]
 [JsonSerializable(typeof(ExitsData))]
+[JsonSerializable(typeof(List<VerbInfo>))]
 internal partial class WasmEditorJsonContext : JsonSerializerContext
 {
 }
@@ -2023,6 +2026,129 @@ public partial class WasmEditorBridge
         }
 
         return "ok";
+    }
+
+    // ── Verbs editor API ─────────────────────────────────────────────────────
+
+    private static IEditorControl? FindVerbsControl(string elementKey)
+    {
+        if (_controller == null)
+        {
+            return null;
+        }
+
+        var editorName = _controller.GetElementEditorName(elementKey);
+        if (editorName == null)
+        {
+            return null;
+        }
+
+        var def = _controller.GetEditorDefinition(editorName);
+        return def.Tabs.Values.SelectMany(t => t.Controls)
+            .FirstOrDefault(c => c.ControlType == "verbs");
+    }
+
+    // Property name -> friendly display pattern (e.g. "lookin" -> "look in") for every verb
+    // defined anywhere in the game (library verbs plus any custom ones already added to any
+    // object) — used both to identify which of an object's attributes are verbs, and to build
+    // the autocomplete list when adding a new one.
+    [JSExport]
+    public static string GetVerbAttributesInfo()
+    {
+        if (_controller == null)
+        {
+            return "[]";
+        }
+
+        var verbs = _controller.GetVerbProperties()
+            .Select(kv => new VerbInfo(kv.Key, kv.Value))
+            .ToList();
+
+        return JsonSerializer.Serialize(verbs, WasmEditorJsonContext.Default.ListVerbInfo);
+    }
+
+    [JSExport]
+    public static string AddVerb(string elementKey, string verbPattern)
+    {
+        if (_controller == null)
+        {
+            return "error:Not initialised";
+        }
+
+        verbPattern = verbPattern.Trim().ToLowerInvariant();
+        if (verbPattern.Length == 0)
+        {
+            return "error:Enter a verb";
+        }
+
+        var data = _controller.GetEditorData(elementKey);
+        if (data == null)
+        {
+            return "error:No data";
+        }
+
+        var verbsControl = FindVerbsControl(elementKey);
+        var verbAttribute = _controller.GetVerbAttributeForPattern(verbPattern);
+        var isExistingVerb = _controller.IsVerbAttribute(verbAttribute);
+
+        if (!isExistingVerb)
+        {
+            var canAdd = _controller.CanAddVerb(verbPattern);
+            if (!canAdd.CanAdd)
+            {
+                var message = $"Verb would clash with the '{canAdd.ClashingCommandDisplay}' command";
+                var clashMessages = verbsControl?.GetDictionary("clashmessages");
+                if (clashMessages != null && canAdd.ClashingCommand != null &&
+                    clashMessages.TryGetValue(canAdd.ClashingCommand, out var extra))
+                {
+                    message += ". " + extra;
+                }
+
+                return $"error:{message}";
+            }
+        }
+
+        if (data.GetAttribute(verbAttribute) != null)
+        {
+            return "error:This verb has already been added";
+        }
+
+        _controller.StartTransaction($"Add '{verbPattern}' verb");
+        try
+        {
+            if (!isExistingVerb)
+            {
+                // A custom verb doesn't exist as a game-wide command yet, so create it (this is
+                // what makes the pattern actually get parsed by the player at runtime) before
+                // recording that this object handles it.
+                var newVerbId = _controller.CreateNewVerb(null, false);
+                var verbData = _controller.GetEditorData(newVerbId);
+                verbData.SetAttribute("property", verbAttribute);
+                if (verbData.GetAttribute("pattern") is IEditableCommandPattern pattern)
+                {
+                    pattern.Pattern = verbPattern;
+                }
+
+                var defaultExpressionTemplate = verbsControl?.GetString("defaultexpression");
+                if (!string.IsNullOrEmpty(defaultExpressionTemplate))
+                {
+                    verbData.SetAttribute("defaultexpression",
+                        defaultExpressionTemplate.Replace("#verb#", verbPattern));
+                }
+            }
+
+            var result = data.SetAttribute(verbAttribute, string.Empty);
+            if (!result.Valid)
+            {
+                return $"error:{result.Message}";
+            }
+
+            return $"ok:{verbAttribute}";
+        }
+        finally
+        {
+            _controller.EndTransaction();
+        }
     }
 
     // ── Attributes editor API ──────────────────────────────────────────────────
