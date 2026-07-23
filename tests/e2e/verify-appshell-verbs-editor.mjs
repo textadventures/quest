@@ -104,18 +104,35 @@ async function run() {
     await page.waitForSelector('button:has-text("Add script")', { timeout: 10000 });
     console.log('PASS: switching behaviour to "Run a script" shows the script editor');
 
-    // Switch behaviour to "Require another object".
+    // Switch behaviour to "Require another object" — the entry-key field must be an object
+    // picker (not free text), since the dictionary key has to be a real object name.
     await typeSelect.selectOption('scriptdictionary');
-    await page.waitForSelector('input[placeholder="Add entry key…"]', { timeout: 10000 });
-    console.log('PASS: switching behaviour to "Require another object" shows the script-dictionary editor');
+    const entryKeySelect = page.getByLabel('Add entry key');
+    await entryKeySelect.waitFor({ timeout: 10000 });
+    if ((await entryKeySelect.evaluate(el => el.tagName)) !== 'SELECT') throw new Error('Expected "Require another object" to offer an object-picker dropdown, not a free-text field');
+    console.log('PASS: switching behaviour to "Require another object" shows an object-picker dropdown');
 
-    // Scoped to the entry-key input's own row — a bare "Add" text match would also hit the
+    const objectOptions = await entryKeySelect.locator('option').allTextContents();
+    if (!objectOptions.includes('Room One')) throw new Error(`Expected the object picker to list "Room One", got: ${JSON.stringify(objectOptions)}`);
+    if (objectOptions.includes('Statue')) throw new Error('Expected the object picker to exclude the object itself ("Statue")');
+    console.log('PASS: object picker lists other objects and excludes the object itself');
+
+    // Scoped to the entry-key select's own row — a bare "Add" text match would also hit the
     // toolbar's "+ Add" dropdown trigger and the "Add Verb" button.
-    const entryKeyInput = page.locator('input[placeholder="Add entry key…"]');
-    await entryKeyInput.fill('key');
-    await entryKeyInput.locator('..').getByRole('button', { name: 'Add', exact: true }).click();
-    await page.getByRole('button', { name: 'key' }).waitFor({ timeout: 10000 });
+    const addEntryButton = entryKeySelect.locator('..').getByRole('button', { name: 'Add', exact: true });
+    if (!(await addEntryButton.isDisabled())) throw new Error('Expected "Add" to be disabled before an object is chosen');
+    await entryKeySelect.selectOption('Room One');
+    if (await addEntryButton.isDisabled()) throw new Error('Expected "Add" to enable once an object is chosen');
+    await addEntryButton.click();
+    // Scoped to the dictionary editor's own container (two levels up from the entry-key select)
+    // — a bare "Room One" role match also hits its tree node, which has the same accessible name.
+    const dictEditor = entryKeySelect.locator('..').locator('..');
+    await dictEditor.getByRole('button', { name: 'Room One' }).waitFor({ timeout: 10000 });
     console.log('PASS: can add an object-keyed entry under "Require another object"');
+
+    const objectOptionsAfterAdd = await entryKeySelect.locator('option').allTextContents();
+    if (objectOptionsAfterAdd.includes('Room One')) throw new Error('Expected the object picker to exclude "Room One" now that it has been added');
+    console.log('PASS: object picker excludes objects already added as entries');
 
     // Delete the verb.
     const smellRow = page.locator('tr', { hasText: 'smell' });

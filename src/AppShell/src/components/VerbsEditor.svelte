@@ -225,7 +225,7 @@
                             <ScriptEditor elementKey={elementKey} attribute={attr.name} />
                         </div>
                     {:else if attr.type === "scriptdictionary"}
-                        <ScriptDictionaryEditor elementKey={elementKey} attribute={attr.name} value={attr.value} />
+                        <ScriptDictionaryEditor elementKey={elementKey} attribute={attr.name} value={attr.value} keySource="object" />
                     {:else}
                         <textarea
                             autocapitalize="off"
