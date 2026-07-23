@@ -15,7 +15,7 @@ let nextId = 0;
 // to a specific control, which disappears the moment the user navigates away from it).
 export function showToast(text: string, kind: ToastMessage["kind"] = "error", durationMs = 6000): void {
     const id = ++nextId;
-    toasts.update(list => [...list, {id, text, kind}]);
+    toasts.update(list => [...list, { id, text, kind }]);
     setTimeout(() => {
         toasts.update(list => list.filter(t => t.id !== id));
     }, durationMs);

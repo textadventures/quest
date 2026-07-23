@@ -35,7 +35,7 @@
 
     function recordResult(attribute: string, result: string) {
         const error = result.startsWith("error:") ? result.slice("error:".length) : "";
-        attributeErrors = {...attributeErrors, [attribute]: error};
+        attributeErrors = { ...attributeErrors, [attribute]: error };
         // The inline error below the field only stays visible while this element/tab is in
         // view — a toast survives switching to a different tab or element entirely.
         if (error) showToast(error, "error");
