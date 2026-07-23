@@ -143,9 +143,6 @@
     if (HasString(game, "marginscolour")) {
       JS.setCss ("body", "background-color:" + game.marginscolour)
     }
-    if (game.turnoffsavebutton) {
-      JS.setCss ("#controlButtons", "display:none")
-    }
     if (game.turnoffcompass) {
       JS.setCss ("#compassLabel", "display:none;")
       JS.setCss ("#compassAccordion", "display:none;")

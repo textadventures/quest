@@ -45,7 +45,6 @@
     <commandcursor>&gt;</commandcursor>
     <moneyformat>$!</moneyformat>
     <classiclocation/>
-    <turnoffsavebutton type="boolean">false</turnoffsavebutton>
     <mapexitwidth type="int">1</mapexitwidth>
     <mapexitcolour>Black</mapexitcolour>
     

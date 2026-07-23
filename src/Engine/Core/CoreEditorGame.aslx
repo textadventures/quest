@@ -626,14 +626,6 @@
       </control>
       
       <control>
-        <controltype>checkbox</controltype>
-        <caption>[EditorGameHideSaveButton]</caption>
-        <attribute>turnoffsavebutton</attribute>
-        <onlydisplayif>game.showlocation</onlydisplayif>
-      </control>	  
-      
-      
-      <control>
         <controltype>title</controltype>
         <caption>[EditorGameBorderCaption]</caption>
       </control>
