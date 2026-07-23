@@ -111,7 +111,6 @@
         <controltype>title</controltype>
         <caption>[EditorExitLookinthis]</caption>
         <advanced/>
-        <onlydisplayif>game.allowlookdirections</onlydisplayif>
       </control>
 
       <control>
@@ -119,7 +118,6 @@
         <controltype>checkbox</controltype>
         <attribute>lookonly</attribute>
         <advanced/>
-        <onlydisplayif>game.allowlookdirections</onlydisplayif>
       </control>
 
       <control>
@@ -133,7 +131,6 @@
           string=textbox
         </editors>
         <advanced/>
-        <onlydisplayif>game.allowlookdirections</onlydisplayif>
       </control>
 
     </tab>

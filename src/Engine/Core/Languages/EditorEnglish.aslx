@@ -146,7 +146,6 @@
   <template name="EditorGameAnnotations">Annotations: adds a tab to rooms where authors notes can be made, not seen by players</template>
   <template name="EditorGamePrices">Prices: adds a number box to the Inventory tab for the price of the item</template>
   <template name="EditorGameInroomdescriptions">In-room descriptions: additional text which each object contributes to a room description</template>
-  <template name="EditorGameAllowLookDirections">Directional exits can be look only</template>
   <template name="EditorGameMultipleCommands">Allow input of multiple commands in one line separated by "."</template>
   <template name="EditorGameHideSaveButton">Hide the Save button on the web player</template>
   <template name="EditorGameDisplay">Display</template>

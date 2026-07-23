@@ -120,8 +120,7 @@ internal record ExitRowInfo(string Key, string? Alias, string? To, bool LookOnly
 internal record ExitsData(
     List<CompassDirectionInfo> Compass,
     List<ExitRowInfo> AllExits,
-    List<ControlOption> Objects,
-    bool AllowLookExits);
+    List<ControlOption> Objects);
 
 [JsonSourceGenerationOptions(PropertyNamingPolicy = JsonKnownNamingPolicy.CamelCase)]
 [JsonSerializable(typeof(List<TreeNodeData>))]
@@ -1646,7 +1645,7 @@ public partial class WasmEditorBridge
     [JSExport]
     public static string GetExitsData(string roomKey)
     {
-        var empty = new ExitsData([], [], [], false);
+        var empty = new ExitsData([], [], []);
         if (_controller == null)
         {
             return JsonSerializer.Serialize(empty, WasmEditorJsonContext.Default.ExitsData);
@@ -1689,10 +1688,7 @@ public partial class WasmEditorBridge
             .OrderBy(n => n, StringComparer.CurrentCultureIgnoreCase)
             .Select(n => new ControlOption(n, n)).ToList();
 
-        var gameData = _controller.GetEditorData("game");
-        var allowLookExits = gameData?.GetAttribute("allowlookdirections") as bool? ?? false;
-
-        var result = new ExitsData(compass, allExits, objects, allowLookExits);
+        var result = new ExitsData(compass, allExits, objects);
         return JsonSerializer.Serialize(result, WasmEditorJsonContext.Default.ExitsData);
     }
 
