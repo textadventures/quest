@@ -1,5 +1,28 @@
 # Changelog
 
+## [6.0.0-beta.44](https://github.com/textadventures/quest/compare/v6.0.0-beta.43...v6.0.0-beta.44) (2026-07-23)
+
+
+### Features
+
+* **AppShell:** add filter textbox and keyboard nav to the script command adder ([#1930](https://github.com/textadventures/quest/issues/1930)) ([4bc97b2](https://github.com/textadventures/quest/commit/4bc97b2ae7e3e461e1bb04aaa6f7c4ea8dcd61a8))
+* **AppShell:** add filter textbox to the elements tree ([#1929](https://github.com/textadventures/quest/issues/1929)) ([ffc9b51](https://github.com/textadventures/quest/commit/ffc9b51c91cf3427d422163ba394c148cc9b1ade))
+* **AppShell:** add object Verbs editor tab ([#1922](https://github.com/textadventures/quest/issues/1922)) ([9544266](https://github.com/textadventures/quest/commit/9544266c0255e67bf9bf82a718383a19bd6acd02))
+* **AppShell:** add room Exits editor tab ([#1920](https://github.com/textadventures/quest/issues/1920)) ([5eb09b5](https://github.com/textadventures/quest/commit/5eb09b53806098c10aebab182179bf22b670d450))
+* **WasmPlayer:** add a resizable Debugger with attribute override ([#1919](https://github.com/textadventures/quest/issues/1919)) ([3729201](https://github.com/textadventures/quest/commit/3729201901040b41d34e452df45e82ce37347273))
+
+
+### Bug Fixes
+
+* **AppShell:** hide desktop download link on mobile, fix local editor link ([#1917](https://github.com/textadventures/quest/issues/1917)) ([1146b4f](https://github.com/textadventures/quest/commit/1146b4f88133d8c32aa7c665a845ee22bf3ede2b))
+* **AppShell:** list named exits, not objects, in exit-targeted script pickers ([#1927](https://github.com/textadventures/quest/issues/1927)) ([a027890](https://github.com/textadventures/quest/commit/a027890c6478d6ade338a1e08d774db40b69d7f5))
+* **AppShell:** surface clearer validation errors when renaming an object ([#1926](https://github.com/textadventures/quest/issues/1926)) ([61aa37f](https://github.com/textadventures/quest/commit/61aa37f029bc5961e9fed70824d63ea1953d2d31))
+* bigger Electron preview window, resizable editor tree pane ([#1928](https://github.com/textadventures/quest/issues/1928)) ([c0233c1](https://github.com/textadventures/quest/commit/c0233c1bba661b99d53f221aed6eb96764b5de50))
+* **Engine:** always allow creating look-only exits ([#1923](https://github.com/textadventures/quest/issues/1923)) ([f47cddf](https://github.com/textadventures/quest/commit/f47cddfa34703c4b53e78e5d35ecd39f9a5509ad))
+* **Engine:** remove "Hide the Save button" game option ([#1925](https://github.com/textadventures/quest/issues/1925)) ([d111239](https://github.com/textadventures/quest/commit/d1112390c2d6593b14b9cdc21e0f2068e3e410ef))
+* **Engine:** remove dead "write log to file" feature ([#1924](https://github.com/textadventures/quest/issues/1924)) ([00f4aa8](https://github.com/textadventures/quest/commit/00f4aa8474278eba58c240daf74e8d6cb0b0a001))
+* resolve e2e failures across WasmPlayer restart, AppShell autosave, and Electron ([#1931](https://github.com/textadventures/quest/issues/1931)) ([e61d919](https://github.com/textadventures/quest/commit/e61d91989b619c0ae129857814e5ee63a90780e8))
+
 ## [6.0.0-beta.43](https://github.com/textadventures/quest/compare/v6.0.0-beta.42...v6.0.0-beta.43) (2026-07-21)
 
 
