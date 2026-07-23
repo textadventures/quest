@@ -202,10 +202,6 @@ function addExternalScript(url) {
     });
 }
 
-function WriteToLog(data) {
-    // Do nothing.
-}
-
 function WriteToTranscript(data) {
     if (noTranscript) {
         // Do nothing.
