@@ -16,6 +16,34 @@
 
     let serverLoadError = $state<string | null>(null);
 
+    // Session-only (not persisted across reloads), same tradeoff as
+    // WasmPlayer's debugger splitter: a panel width isn't worth the
+    // complexity of persisting, but should survive for the life of the tab.
+    let treeWidth = $state(240); // matches TreePanel's old fixed w-60
+    const TREE_MIN_WIDTH = 180;
+    const TREE_MAX_WIDTH = 600;
+
+    function handleSplitterPointerDown(e: PointerEvent) {
+        e.preventDefault();
+        const startX = e.clientX;
+        const startWidth = treeWidth;
+        document.body.style.cursor = "col-resize";
+        document.body.style.userSelect = "none";
+
+        function onMove(moveEvent: PointerEvent) {
+            const next = startWidth + (moveEvent.clientX - startX);
+            treeWidth = Math.min(TREE_MAX_WIDTH, Math.max(TREE_MIN_WIDTH, next));
+        }
+        function onUp() {
+            document.removeEventListener("pointermove", onMove);
+            document.removeEventListener("pointerup", onUp);
+            document.body.style.cursor = "";
+            document.body.style.userSelect = "";
+        }
+        document.addEventListener("pointermove", onMove);
+        document.addEventListener("pointerup", onUp);
+    }
+
     // Delegated at the panel level so every field-editing component (property
     // panel, script editor, nested dictionary/list editors, ...) is covered
     // without each one having to wire this up itself. "input"/"focusout" both
@@ -107,7 +135,13 @@
         <Toolbar />
         <BackupBanner />
         <div class="flex flex-1 overflow-hidden" oninput={handleFieldInput} onfocusout={clearFieldEditing}>
-            <TreePanel />
+            <TreePanel width={treeWidth} />
+            <div
+                role="separator"
+                aria-orientation="vertical"
+                class="w-1 shrink-0 cursor-col-resize hover:bg-primary-500/50 active:bg-primary-500/70 transition-colors"
+                onpointerdown={handleSplitterPointerDown}
+            ></div>
             <PropertyEditor />
         </div>
     </div>

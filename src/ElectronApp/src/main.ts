@@ -353,6 +353,13 @@ function createEditorWindow(port: number, initialPath?: string | null): void {
                 // autoplayPolicy explicit for the same reason as
                 // createEditorWindow's own webPreferences above.
                 overrideBrowserWindowOptions: {
+                    // Electron's BrowserWindow default (800x600) is narrower
+                    // than playercore.js's 950px gameWidth threshold, so the
+                    // side panes would start collapsed behind the
+                    // cmdShowPanes toggle button instead of docked. Wide
+                    // enough to clear that threshold with margin to spare.
+                    width: 1050,
+                    height: 850,
                     webPreferences: {
                         contextIsolation: true,
                         nodeIntegration: false,
