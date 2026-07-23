@@ -12,6 +12,7 @@
     import HomeHeader from "$components/HomeHeader.svelte";
     import HomeTabs from "$components/HomeTabs.svelte";
     import ConfirmDialog from "$components/ConfirmDialog.svelte";
+    import Toast from "$components/Toast.svelte";
 
     let { children }: { children: Snippet } = $props();
 
@@ -124,3 +125,4 @@
 {/if}
 {@render children()}
 <ConfirmDialog />
+<Toast />
