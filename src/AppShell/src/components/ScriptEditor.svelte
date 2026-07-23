@@ -25,6 +25,7 @@
         removeElseIf,
         getScriptCommandCategories,
         getObjectNames,
+        getExitNames,
         getIfExpressionTemplates,
         getIfExpressionTemplateData,
         makeScriptEditable,
@@ -70,6 +71,7 @@
     // overriding the default simple-mode detection based on value shape.
     const expressionOverrides = new SvelteSet<string>();
     let objectNames = $state<string[]>([]);
+    let exitNames = $state<string[]>([]);
     let ifTemplates = $state<IfExpressionTemplate[]>([]);
 
     // Load on mount and whenever scriptVersion bumps (undo/redo)
@@ -89,6 +91,10 @@
         if (objectNames.length === 0) {
             const names = getObjectNames();
             if (names && names.length > 0) objectNames = names;
+        }
+        if (exitNames.length === 0) {
+            const names = getExitNames();
+            if (names && names.length > 0) exitNames = names;
         }
         if (ifTemplates.length === 0) {
             const templates = getIfExpressionTemplates();
@@ -121,6 +127,10 @@
 
     function exprKey(scriptIndex: number, attr: string): string {
         return `${containerPath}/${scriptIndex}/${attr}`;
+    }
+
+    function namesForControl(ctrl: ScriptControlData): string[] {
+        return ctrl.objectType === "exit" ? exitNames : objectNames;
     }
 
     function isSimpleValue(ctrl: ScriptControlData): boolean {
@@ -578,7 +588,7 @@
                         onchange={(e) => onSimpleValueChange(scriptIndex, ctrl, (e.target as HTMLSelectElement).value)}
                     >
                         <option value=""></option>
-                        {#each objectNames as name (name)}
+                        {#each namesForControl(ctrl) as name (name)}
                             <option value={name}>{name}</option>
                         {/each}
                     </select>
