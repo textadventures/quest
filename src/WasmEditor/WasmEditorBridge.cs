@@ -321,7 +321,7 @@ public partial class WasmEditorBridge
             var result = data.SetAttribute(attribute, typedValue);
             if (!result.Valid)
             {
-                return result.Message.ToString();
+                return $"error:{EditorController.GetValidationError(result, typedValue)}";
             }
 
             return _pendingRenameNewKey != null ? $"renamed:{_pendingRenameNewKey}" : "ok";

@@ -1,5 +1,6 @@
 <script lang="ts">
     import { selectedKey, selectedData, setAttribute, setDropdownType, setMultiType, setObjectReference, addDictItem, removeDictItem, updateDictItem } from "$lib/editor-store";
+    import { showToast } from "$lib/toast";
     import type { ControlInfo, TextProcessorCommand } from "$lib/types";
     import ScriptEditor from "./ScriptEditor.svelte";
     import Combobox from "./Combobox.svelte";
@@ -14,12 +15,14 @@
     let lastKey = $state<string | null>(null);
     let editingItem = $state<{attribute: string, key: string, value: string} | null>(null);
     let newDictItems = $state<Record<string, {key: string, value: string}>>({});
+    let attributeErrors = $state<Record<string, string>>({});
 
     $effect(() => {
         const key = $selectedKey;
         const data = $selectedData;
         if (key !== lastKey) {
             lastKey = key;
+            attributeErrors = {};
             activeTab = (data && data.tabs.length > 0) ? data.tabs[0].caption : null;
         } else if (activeTab !== null) {
             // Keep activeTab valid after a data refresh (tab list is stable for the same node)
@@ -30,20 +33,28 @@
         }
     });
 
+    function recordResult(attribute: string, result: string) {
+        const error = result.startsWith("error:") ? result.slice("error:".length) : "";
+        attributeErrors = { ...attributeErrors, [attribute]: error };
+        // The inline error below the field only stays visible while this element/tab is in
+        // view — a toast survives switching to a different tab or element entirely.
+        if (error) showToast(error, "error");
+    }
+
     function onTextChange(attribute: string, controlType: string, value: string) {
-        if ($selectedKey) setAttribute($selectedKey, attribute, controlType, value);
+        if ($selectedKey) recordResult(attribute, setAttribute($selectedKey, attribute, controlType, value));
     }
 
     function onCheckboxChange(attribute: string, checked: boolean) {
-        if ($selectedKey) setAttribute($selectedKey, attribute, "checkbox", checked.toString());
+        if ($selectedKey) recordResult(attribute, setAttribute($selectedKey, attribute, "checkbox", checked.toString()));
     }
 
     function onNumberChange(attribute: string, controlType: string, value: string) {
-        if ($selectedKey) setAttribute($selectedKey, attribute, controlType, value);
+        if ($selectedKey) recordResult(attribute, setAttribute($selectedKey, attribute, controlType, value));
     }
 
     function onDropdownChange(attribute: string, value: string) {
-        if ($selectedKey) setAttribute($selectedKey, attribute, "dropdown", value);
+        if ($selectedKey) recordResult(attribute, setAttribute($selectedKey, attribute, "dropdown", value));
     }
 
     function getControlsForView(): ControlInfo[] {
@@ -204,7 +215,7 @@
         <input
             type="text"
             autocapitalize="off"
-            class="input text-xs py-0.5 px-1.5 w-full"
+            class={"input text-xs py-0.5 px-1.5 w-full" + (ctrl.attribute && attributeErrors[ctrl.attribute] ? " !border-error-500" : "")}
             value={attrValue(ctrl.attribute!) ?? ""}
             onchange={(e) => onTextChange(ctrl.attribute!, ctrl.controlType, (e.target as HTMLInputElement).value)}
         />
@@ -470,11 +481,19 @@
                 <div class="flex flex-col gap-1 px-3 py-1.5">
                     <span class="text-xs text-surface-600-400">{label}:</span>
                     {@render controlOnly(ctrl)}
+                    {#if ctrl.attribute && attributeErrors[ctrl.attribute]}
+                        <p class="text-xs text-error-500">{attributeErrors[ctrl.attribute]}</p>
+                    {/if}
                 </div>
             {:else}
-                <div class="flex {isMultiline ? "items-start" : "items-center"} gap-2 px-3 py-1.5 min-h-8">
-                    <span class="text-xs text-surface-600-400 w-32 flex-shrink-0 {isMultiline ? "pt-0.5" : ""}">{label}:</span>
-                    {@render controlOnly(ctrl)}
+                <div class="flex flex-col gap-1 px-3 py-1.5">
+                    <div class="flex {isMultiline ? "items-start" : "items-center"} gap-2 min-h-8">
+                        <span class="text-xs text-surface-600-400 w-32 flex-shrink-0 {isMultiline ? "pt-0.5" : ""}">{label}:</span>
+                        {@render controlOnly(ctrl)}
+                    </div>
+                    {#if ctrl.attribute && attributeErrors[ctrl.attribute]}
+                        <p class="text-xs text-error-500">{attributeErrors[ctrl.attribute]}</p>
+                    {/if}
                 </div>
             {/if}
         {/if}
