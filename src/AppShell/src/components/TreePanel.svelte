@@ -1,6 +1,8 @@
 <script lang="ts">
     import { untrack } from "svelte";
     import { TreeView, createTreeViewCollection } from "@skeletonlabs/skeleton-svelte";
+    import Search from "@lucide/svelte/icons/search";
+    import X from "@lucide/svelte/icons/x";
     import {
         treeNodes, selectedKey, selectNode,
         openAddModal, createExit, createTurnScript, createCommand, createVerb,
@@ -45,6 +47,51 @@
         return (byParent.get(null) ?? []).map(build);
     }
 
+    // ── Filtering ──────────────────────────────────────────────────────────────
+
+    let filterText = $state("");
+    let filterInputEl = $state<HTMLInputElement | undefined>();
+
+    // Keep a node if its own text matches, or one of its descendants does. A node
+    // that matches directly keeps its full, unfiltered subtree so authors can still
+    // browse into e.g. a matched room and see everything inside it.
+    function filterHierTree(nodes: HierNode[], query: string): HierNode[] {
+        const result: HierNode[] = [];
+        for (const node of nodes) {
+            const selfMatch = node.text.toLowerCase().includes(query);
+            if (node.children) {
+                const filteredChildren = selfMatch ? node.children : filterHierTree(node.children, query);
+                if (selfMatch || filteredChildren.length > 0) {
+                    result.push({ ...node, children: filteredChildren });
+                }
+            } else if (selfMatch) {
+                result.push(node);
+            }
+        }
+        return result;
+    }
+
+    function collectBranchIds(nodes: HierNode[]): string[] {
+        const ids: string[] = [];
+        for (const node of nodes) {
+            if (node.children) {
+                ids.push(node.id, ...collectBranchIds(node.children));
+            }
+        }
+        return ids;
+    }
+
+    let isFiltering = $derived(filterText.trim().length > 0);
+    let rawHierTree = $derived(buildHierTree($treeNodes));
+    let filteredHierTree = $derived(
+        isFiltering ? filterHierTree(rawHierTree, filterText.trim().toLowerCase()) : rawHierTree
+    );
+
+    function clearFilter() {
+        filterText = "";
+        filterInputEl?.focus();
+    }
+
     // ── Expansion state ────────────────────────────────────────────────────────
 
     let expandedIds = $state<string[]>([]);
@@ -61,6 +108,9 @@
     });
 
     function toggleExpand(id: string) {
+        // While filtering, all matching branches are force-expanded so results stay
+        // visible; manual collapse would have no visible effect, so ignore it.
+        if (isFiltering) return;
         if (expandedIds.includes(id)) {
             // If the selected node is inside this branch, select the branch itself first
             const nodeMap = new Map($treeNodes.map(n => [n.key, n]));
@@ -99,8 +149,12 @@
         createTreeViewCollection<HierNode>({
             nodeToValue: (n) => n.id,
             nodeToString: (n) => n.text,
-            rootNode: { id: "__root__", text: "", nodeType: "header", children: buildHierTree($treeNodes) },
+            rootNode: { id: "__root__", text: "", nodeType: "header", children: filteredHierTree },
         })
+    );
+
+    let effectiveExpandedIds = $derived(
+        isFiltering ? collectBranchIds(filteredHierTree) : expandedIds
     );
 
     // ── Add / delete ───────────────────────────────────────────────────────────
@@ -188,12 +242,36 @@
     <div class="px-3 py-2 text-xs font-semibold uppercase text-surface-500-400 border-b border-surface-200-800">
         Game Objects
     </div>
+    <div class="p-1.5 border-b border-surface-200-800 relative">
+        <Search class="absolute left-3.5 top-1/2 -translate-y-1/2 size-3.5 text-surface-400 pointer-events-none" />
+        <input
+            bind:this={filterInputEl}
+            type="text"
+            autocapitalize="off"
+            bind:value={filterText}
+            placeholder="Filter..."
+            aria-label="Filter game objects"
+            class="input text-xs py-1 pl-7 pr-6 w-full"
+            onkeydown={(e) => { if (e.key === "Escape" && filterText) { e.stopPropagation(); clearFilter(); } }}
+        />
+        {#if filterText}
+            <button
+                type="button"
+                class="absolute right-3 top-1/2 -translate-y-1/2 size-4 flex items-center justify-center text-surface-400 hover:text-surface-900-50"
+                onclick={clearFilter}
+                aria-label="Clear filter"
+            ><X class="size-3.5" /></button>
+        {/if}
+    </div>
+    {#if isFiltering && (collection.rootNode.children ?? []).length === 0}
+        <div class="px-3 py-2 text-xs text-surface-400">No matches</div>
+    {/if}
     <div class="flex-1 overflow-y-auto p-1 text-xs">
         <TreeView
             {collection}
             selectionMode="single"
             expandOnClick={false}
-            expandedValue={expandedIds}
+            expandedValue={effectiveExpandedIds}
             selectedValue={$selectedKey ? [$selectedKey] : []}
             onSelectionChange={(e) => { if (e.selectedValue[0]) selectNode(e.selectedValue[0]); }}
         >
@@ -238,9 +316,9 @@
                     <button
                         type="button"
                         tabindex="-1"
-                        class="flex-shrink-0 size-4 flex items-center justify-center transition-transform duration-150 {expandedIds.includes(node.id) ? "rotate-90" : ""}"
+                        class="flex-shrink-0 size-4 flex items-center justify-center transition-transform duration-150 {effectiveExpandedIds.includes(node.id) ? "rotate-90" : ""}"
                         onclick={(e) => { e.stopPropagation(); toggleExpand(node.id); }}
-                        aria-label={expandedIds.includes(node.id) ? "Collapse" : "Expand"}
+                        aria-label={effectiveExpandedIds.includes(node.id) ? "Collapse" : "Expand"}
                     >
                         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="size-4"><polyline points="9 18 15 12 9 6" /></svg>
                     </button>
