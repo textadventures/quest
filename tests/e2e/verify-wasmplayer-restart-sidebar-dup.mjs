@@ -24,8 +24,17 @@ const restart = async () => {
     await page.click('#cmdSave');
     await page.waitForSelector('#qv-saves', { state: 'visible', timeout: 10000 });
     await page.click('#qv-saves-start-new');
-    await page.waitForSelector('#txtCommand', { state: 'visible', timeout: 30000 });
-    await page.waitForTimeout(500);
+    // #txtCommand is part of the static chrome swapInPlayerUi() puts back
+    // immediately, so it's visible well before Initialise()/Begin() (which
+    // re-parses the whole Core library XML from scratch) actually finish —
+    // not a safe readiness signal, and on a loaded CI runner that work can
+    // easily outlast a flat waitForTimeout, reading the pane count before
+    // the game's StartGame (which adds it) has even run. #qv-restarting is
+    // an opaque, z-index:9999 full-viewport overlay shown for exactly the
+    // duration of that work (wasm-player.js's restartGameCore) — wait for it
+    // to appear and then disappear, which brackets the restart precisely.
+    await page.waitForSelector('#qv-restarting', { state: 'visible', timeout: 5000 });
+    await page.waitForSelector('#qv-restarting', { state: 'hidden', timeout: 30000 });
 };
 
 const initial = await countPanes();

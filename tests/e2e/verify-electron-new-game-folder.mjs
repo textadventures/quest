@@ -85,7 +85,7 @@ try {
     // rather than silently pass.
     await win.waitForSelector('text=Text adventure', { timeout: 10000 });
     await win.click('button:has-text("Create")');
-    await win.waitForSelector('button:has-text("Assets")', { timeout: 30000 });
+    await win.waitForSelector('button[title="Manage assets"]', { timeout: 30000 });
 
     const questGamesDir = join(fakeDocumentsDir, 'Quest Games');
     const gameAAslx = join(questGamesDir, 'Game A', 'Game A.aslx');
@@ -120,7 +120,7 @@ try {
     );
     await win.fill('input[placeholder="Game name"]', 'Game B');
     await win.click('button:has-text("Create")');
-    await win.waitForSelector('button:has-text("Assets")', { timeout: 30000 });
+    await win.waitForSelector('button[title="Manage assets"]', { timeout: 30000 });
     const gameBAslx = join(customLocationDir, 'Game B', 'Game B.aslx');
     const gameBCreated = existsSync(gameBAslx);
     console.log('PASS: Game B created at the chosen custom location instead of Quest Games:', gameBCreated);

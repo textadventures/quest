@@ -90,7 +90,7 @@ try {
         await win.fill('input[placeholder="Game name"]', name);
         await win.waitForSelector('text=Text adventure', { timeout: 10000 });
         await win.click('button:has-text("Create")');
-        await win.waitForSelector('button:has-text("Assets")', { timeout: 30000 });
+        await win.waitForSelector('button[title="Manage assets"]', { timeout: 30000 });
     }
 
     // 1. Fresh app, no recent games yet. Root lands on the Play tab by
@@ -128,13 +128,13 @@ try {
     await clickMenuItem('File', 'New Game…');
     await win.waitForSelector('text=Game B.aslx', { timeout: 10000 });
     await win.click('button:has-text("Game A.aslx")');
-    await win.waitForSelector('button:has-text("Assets")', { timeout: 30000 });
+    await win.waitForSelector('button[title="Manage assets"]', { timeout: 30000 });
     console.log('PASS: clicking Game A in Recent reopened it directly');
 
     // 5. Native "Open Recent" submenu click loads a game too (the nonce/query-
     // string path from +layout.svelte's onOpenRecent, not the /open page button).
     await clickMenuItem('File', 'Open Recent', 'Game B.aslx — Game B');
-    await win.waitForSelector('button:has-text("Assets")', { timeout: 30000 });
+    await win.waitForSelector('button[title="Manage assets"]', { timeout: 30000 });
     console.log('PASS: native "Open Recent" menu entry reopened Game B directly');
 
     // 6. Remove one entry from the /open page, confirm it's gone from both

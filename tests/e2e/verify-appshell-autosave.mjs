@@ -33,7 +33,11 @@ async function run() {
     // Select the game node (already selected on load) and edit its
     // description via the PropertyEditor, then blur it — this should commit
     // into the WASM model (onchange) and kick off the debounced autosave.
-    const descBox = page.locator('textarea, input[type="text"]').first();
+    // Excludes the elements-tree filter box (added after this test was
+    // written, and first in DOM order): an unscoped "first text input on the
+    // page" locator silently fills that instead, so the edit never reaches
+    // the WASM bridge — isDirty never flips and "Saving…" never appears.
+    const descBox = page.locator('textarea, input[type="text"]:not([placeholder="Filter..."])').first();
     await descBox.waitFor({ timeout: 10000 });
     const marker = `Autosave marker ${Date.now()}`;
     await descBox.fill(marker);
@@ -54,7 +58,7 @@ async function run() {
     await page.click('button:has-text("Autosave Test.aslx")');
     await page.waitForSelector('button[title="Manage assets"]', { timeout: 30000 });
     await page.waitForSelector('text=Saved', { timeout: 10000 });
-    const persistedValue = await page.locator('textarea, input[type="text"]').first().inputValue();
+    const persistedValue = await page.locator('textarea, input[type="text"]:not([placeholder="Filter..."])').first().inputValue();
     console.log('value after reload:', persistedValue);
     if (persistedValue !== marker) throw new Error(`Edit did not survive reload — expected "${marker}", got "${persistedValue}"`);
     console.log('PASS: autosaved edit survived a full page reload (persisted to OPFS)');
