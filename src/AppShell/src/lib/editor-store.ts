@@ -6,7 +6,7 @@ import type { AssetInfo, FileAdapter } from "./filesystem/types";
 import { LocalDraftAdapter, shouldShowBackupBanner, markBackupBannerResolved } from "./filesystem/local-adapter";
 import { ServerFileAdapter } from "./filesystem/server-adapter";
 import { triggerDownload } from "./filesystem/download";
-import type { TreeNode, EditorDataResponse, ScriptBlockData, ScriptCommandCategoriesData, IfExpressionTemplateData, IfExpressionTemplate, FullAttributeData, ExitsData } from "./types";
+import type { TreeNode, EditorDataResponse, ScriptBlockData, ScriptCommandCategoriesData, IfExpressionTemplateData, IfExpressionTemplate, FullAttributeData, ExitsData, VerbInfo } from "./types";
 
 export type AddElementModalState = { type: "room" | "object" | "function" | "timer" | "walkthrough" | "template" | "dynamictemplate" | "type"; parent: string | null } | null;
 
@@ -959,6 +959,27 @@ export function createLookExitInDirection(roomKey: string, direction: string): s
     const result = _bridge.CreateLookExitInDirection(roomKey, direction);
     if (!result.startsWith("error:")) {
         refreshTree();
+        refreshUndoRedo();
+    }
+    return result;
+}
+
+// ── Verbs editor ─────────────────────────────────────────────────────────────
+
+export function getVerbAttributesInfo(): VerbInfo[] {
+    if (!_bridge) return [];
+    try { return JSON.parse(_bridge.GetVerbAttributesInfo()); }
+    catch { return []; }
+}
+
+// A new custom verb also creates a game-wide command element (visible under the Commands tree
+// node), so unlike createExitInDirection() this needs refreshTree() too, not just refreshSelectedData().
+export function addVerb(elementKey: string, verbPattern: string): string {
+    if (!_bridge) return "error:not loaded";
+    const result = _bridge.AddVerb(elementKey, verbPattern);
+    if (result.startsWith("ok:")) {
+        refreshTree();
+        refreshSelectedData();
         refreshUndoRedo();
     }
     return result;
