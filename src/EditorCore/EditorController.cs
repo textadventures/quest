@@ -70,7 +70,7 @@ public sealed class EditorController : IDisposable
         {ValidationMessage.ExceptionOccurred, "An error occurred: {1}"},
         {
             ValidationMessage.InvalidElementName,
-            "Invalid element name. {1} cannot be used — element names can only contain letters, numbers, underscores and spaces."
+            "Invalid element name. {1} cannot be used - element names can only contain letters, numbers, underscores and spaces."
         },
         {ValidationMessage.InvalidElementNameEmpty, "Element name cannot be empty."},
         {ValidationMessage.CircularTypeReference, "Circular type reference"},
