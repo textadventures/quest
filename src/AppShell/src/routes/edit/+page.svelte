@@ -139,7 +139,7 @@
         <p class="text-surface-500-400 text-sm">{$loadingStatus}</p>
     </main>
 {:else if $isLoaded}
-    <div class="flex flex-col h-dvh overflow-hidden">
+    <div class="flex flex-col h-dvh overflow-hidden safe-area-inset">
         <Toolbar />
         <BackupBanner />
         <div class="flex flex-1 overflow-hidden" oninput={handleFieldInput} onfocusout={clearFieldEditing}>

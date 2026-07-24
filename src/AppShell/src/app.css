@@ -7,13 +7,30 @@
     background: light-dark(white, var(--color-surface-800));
 }
 
-/* The default 1rem top+bottom padding is a bigger cost on a short mobile
-   viewport (e.g. iPhone landscape, ~375px tall) than it's worth — shrink it
-   below md, matching the isNarrow breakpoint used throughout AppShell. */
-@media (max-width: 767px) {
+/* The default 1rem top+bottom padding is a bigger cost on a short viewport
+   than it's worth — shrink it whenever there isn't much height to spare.
+   Keyed on height (max-height), not just the isNarrow *width* breakpoint
+   used elsewhere: a phone in landscape is wider than 767px (so it correctly
+   keeps the desktop-arrangement toolbar — there's plenty of horizontal room
+   for it) but is just as height-constrained as portrait, so a width-only
+   query never applied there. */
+@media (max-width: 767px), (max-height: 500px) {
     [data-scope='app-bar'][data-part='root'] {
         padding-block: calc(var(--spacing) * 2);
     }
+}
+
+/* Inset the editor's own root container from the device's safe area — the
+   notch/Dynamic Island, home indicator, and rounded corners — which
+   app.html's viewport-fit=cover (needed to avoid a letterboxed viewport)
+   otherwise lets content render underneath and get obscured by. Landscape
+   rotates the cutout to a side edge, so this needs all four sides, not just
+   top. */
+.safe-area-inset {
+    padding-top: env(safe-area-inset-top, 0px);
+    padding-right: env(safe-area-inset-right, 0px);
+    padding-bottom: env(safe-area-inset-bottom, 0px);
+    padding-left: env(safe-area-inset-left, 0px);
 }
 
 /* Override flex-start so branches/items stretch to the full panel width */
