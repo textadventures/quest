@@ -33,6 +33,7 @@
     import Circle from "@lucide/svelte/icons/circle";
     import DiscordIcon from "$components/DiscordIcon.svelte";
     import GithubIcon from "$components/GithubIcon.svelte";
+    import DropdownMenu from "$components/DropdownMenu.svelte";
 
     const wasmPlayerUrl = PUBLIC_WASM_PLAYER_URL || "/player/";
     const showHome = PUBLIC_SHOW_HOME === "true";
@@ -108,20 +109,7 @@
         ] : []),
     ]);
 
-    let addOpen = $state(false);
 
-    function closeAdd() { addOpen = false; }
-    function toggleAdd(e: MouseEvent) { e.stopPropagation(); addOpen = !addOpen; }
-    function doAdd(action: () => void) { action(); addOpen = false; }
-
-    $effect(() => {
-        if (!addOpen) return;
-        function onOutside(e: MouseEvent) {
-            if (!(e.target as HTMLElement).closest(".add-dropdown")) closeAdd();
-        }
-        document.addEventListener("mousedown", onOutside);
-        return () => document.removeEventListener("mousedown", onOutside);
-    });
 </script>
 
 <AppBar>
@@ -163,24 +151,16 @@
         <AppBar.Trail>
             <div class="flex gap-1.5 items-center">
                 <!-- Add dropdown -->
-                <div class="add-dropdown relative">
-                    <button
-                        type="button"
-                        class="btn btn-sm preset-outlined-primary-500"
-                        onclick={toggleAdd}
-                        title="Add element"
-                    ><Plus size={14} /> Add <ChevronDown size={12} /></button>
-                    {#if addOpen}
-                        <div class="absolute right-0 top-full z-[999] mt-1 w-56 bg-surface-50-950 border border-surface-200-800 rounded shadow-lg py-1">
-                            {#each addOptions as opt (opt.label)}
-                                <button
-                                    class="w-full text-left px-3 py-1.5 text-xs hover:bg-surface-200-800"
-                                    onclick={() => doAdd(opt.action)}
-                                >{opt.label}</button>
-                            {/each}
-                        </div>
-                    {/if}
-                </div>
+                <DropdownMenu items={addOptions}>
+                    {#snippet trigger(toggle)}
+                        <button
+                            type="button"
+                            class="btn btn-sm preset-outlined-primary-500"
+                            onclick={toggle}
+                            title="Add element"
+                        ><Plus size={14} /> Add <ChevronDown size={12} /></button>
+                    {/snippet}
+                </DropdownMenu>
                 <!-- Delete button: always rendered, disabled when nothing deletable is
                      selected, so surrounding buttons don't shift as selection changes -->
                 <button
