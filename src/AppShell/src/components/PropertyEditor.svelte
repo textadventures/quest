@@ -144,7 +144,12 @@
         {@const viewControls = getControlsForView()}
         {@const hasAttributesPanel = viewControls.some(c => c.controlType === "attributes")}
         {#if hasAttributesPanel}
-            <div class="flex-1 overflow-hidden flex flex-col min-h-0">
+            <!-- Below @2xl, AttributesEditor's inherited-types/list/assignment-panel
+                 stack vertically (see AttributesEditor) and this becomes their one
+                 shared scroll container, instead of each managing its own internal
+                 scroll region — otherwise the assignment panel, opened by selecting
+                 a row, could render below the fold with no way to reach it. -->
+            <div class="flex-1 overflow-y-auto @2xl:overflow-hidden flex flex-col min-h-0">
                 {#each viewControls.filter(c => c.controlType !== "attributes") as ctrl, i (i)}
                     {@render controlRow(ctrl)}
                 {/each}

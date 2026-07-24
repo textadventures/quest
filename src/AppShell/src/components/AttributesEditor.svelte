@@ -2,6 +2,7 @@
     import { fullAttributeData, selectedKey, removeAttribute, addInheritedType, removeInheritedType, getTypeNames, setAttribute, setObjectReference, changeAttributeType, setPatternAttribute, getObjectNames } from "$lib/editor-store";
     import type { AttributeDataItem } from "$lib/types";
     import { Switch } from "@skeletonlabs/skeleton-svelte";
+    import X from "@lucide/svelte/icons/x";
     import ScriptEditor from "./ScriptEditor.svelte";
     import ListEditor from "./ListEditor.svelte";
     import DictionaryEditor from "./DictionaryEditor.svelte";
@@ -253,7 +254,7 @@
 
 </script>
 
-<div class="flex flex-col flex-1 min-h-0 text-xs">
+<div class="flex flex-col @2xl:flex-1 @2xl:min-h-0 text-xs">
     <!-- Inherited types section -->
     <div class="flex-shrink-0 border-b border-surface-200-800">
         <div class="px-3 py-1.5 border-b border-surface-100-900">
@@ -317,15 +318,16 @@
          @2xl container breakpoint (the properties pane's own width, not the
          viewport — it can be narrow on desktop too when the splitter is
          dragged in). -->
-    <div class="flex flex-col @2xl:flex-row flex-1 min-h-0">
+    <div class="flex flex-col @2xl:flex-row @2xl:flex-1 @2xl:min-h-0">
         <!-- Left: attributes list -->
-        <div class="flex flex-col flex-1 min-w-0 overflow-hidden">
+        <div class="flex flex-col @2xl:flex-1 min-w-0 @2xl:overflow-hidden">
             <div class="px-3 py-1.5 border-b border-surface-100-900 flex-shrink-0">
                 <span class="font-semibold text-surface-500-400 uppercase tracking-wide">Attributes</span>
             </div>
 
-            <!-- Scrollable table -->
-            <div class="overflow-y-auto flex-1">
+            <!-- Scrollable table (desktop only — below @2xl the whole stacked column
+                 shares one scroll container, see PropertyEditor) -->
+            <div class="@2xl:overflow-y-auto @2xl:flex-1">
                 <table class="w-full">
                     <thead class="sticky top-0 bg-surface-50-950 z-10">
                         <tr class="text-surface-400-500 border-b border-surface-200-800">
@@ -384,11 +386,20 @@
         <!-- Right: assignment panel -->
         <div
             bind:this={panelEl}
-            class="w-full @2xl:w-[var(--panel-width)] @2xl:flex-shrink-0 flex flex-col overflow-hidden"
+            class="w-full @2xl:w-[var(--panel-width)] @2xl:flex-shrink-0 flex flex-col @2xl:overflow-hidden"
             style="--panel-width: {panelWidth}px"
         >
-            <div class="px-3 py-1.5 border-b border-surface-100-900 font-semibold text-surface-500-400 uppercase tracking-wide flex-shrink-0">
-                Assignment
+            <div class="px-3 py-1.5 border-b border-surface-100-900 font-semibold text-surface-500-400 uppercase tracking-wide flex-shrink-0 flex items-center justify-between">
+                <span>Assignment</span>
+                {#if selectedAttr}
+                    <button
+                        type="button"
+                        class="normal-case text-surface-400-500 hover:text-surface-900-50"
+                        onclick={() => { selectedAttrName = null; }}
+                        title="Close"
+                        aria-label="Close"
+                    ><X size={14} /></button>
+                {/if}
             </div>
             {#if selectedAttr}
                 {@const attr = selectedAttr}

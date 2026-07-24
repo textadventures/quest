@@ -4,6 +4,7 @@
     import ScriptEditor from "./ScriptEditor.svelte";
     import ScriptDictionaryEditor from "./ScriptDictionaryEditor.svelte";
     import Combobox from "./Combobox.svelte";
+    import X from "@lucide/svelte/icons/x";
 
     interface Props {
         elementKey: string;
@@ -242,8 +243,17 @@
         class="w-full @2xl:w-[var(--panel-width)] @2xl:flex-shrink-0 flex flex-col overflow-hidden border-l border-surface-200-800"
         style="--panel-width: {panelWidth}px"
     >
-        <div class="px-3 py-1.5 border-b border-surface-100-900 font-semibold text-surface-500-400 uppercase tracking-wide flex-shrink-0">
-            Behaviour
+        <div class="px-3 py-1.5 border-b border-surface-100-900 font-semibold text-surface-500-400 uppercase tracking-wide flex-shrink-0 flex items-center justify-between">
+            <span>Behaviour</span>
+            {#if selectedAttr}
+                <button
+                    type="button"
+                    class="normal-case text-surface-400-500 hover:text-surface-900-50"
+                    onclick={() => { selectedAttrName = null; }}
+                    title="Close"
+                    aria-label="Close"
+                ><X size={14} /></button>
+            {/if}
         </div>
         {#if selectedAttr}
             {@const attr = selectedAttr}
