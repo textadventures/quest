@@ -175,12 +175,36 @@
         return () => document.removeEventListener("mousedown", onOutside);
     });
 
+    const DROPDOWN_WIDTH = 176; // matches the panel's w-44
+    const VIEWPORT_MARGIN = 8;
+
     function toggleDropdown(key: string, opts: Array<{ label: string; action: () => void }>, e: MouseEvent) {
         e.stopPropagation();
         if (dropdownKey === key) { closeDropdown(); return; }
         const rect = (e.currentTarget as HTMLElement).getBoundingClientRect();
+        // Anchoring the panel's left edge to the button's left edge (as if it
+        // always had room to extend rightward) put it mostly off-screen for
+        // the "..." button on a narrow/full-width mobile tree, since that
+        // button sits close to the viewport's own right edge. Flip to
+        // right-aligned against the button when there isn't room to the right.
+        let x = rect.left;
+        if (x + DROPDOWN_WIDTH > window.innerWidth - VIEWPORT_MARGIN) {
+            x = rect.right - DROPDOWN_WIDTH;
+        }
+        x = Math.max(VIEWPORT_MARGIN, x);
+
+        // Same idea vertically: flip to open upward if there isn't room below
+        // for a row near the bottom of the tree pane. ~28px/item is an
+        // estimate (matches the item's text-xs px-3 py-1 sizing) — good
+        // enough to decide which way to open, doesn't need to be exact.
+        const estimatedHeight = opts.length * 28 + 8;
+        let y = rect.bottom + 2;
+        if (y + estimatedHeight > window.innerHeight - VIEWPORT_MARGIN) {
+            y = Math.max(VIEWPORT_MARGIN, rect.top - estimatedHeight - 2);
+        }
+
         dropdownKey = key;
-        dropdownPos = { x: rect.left, y: rect.bottom + 2 };
+        dropdownPos = { x, y };
         dropdownOpts = opts;
     }
 

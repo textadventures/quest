@@ -391,8 +391,12 @@
                         </label>
                     {/if}
                     <div class="flex-1 min-w-0">
-                        <!-- Script row actions (hover) -->
-                        <div class="absolute right-1 top-1 flex gap-0.5 opacity-0 group-hover:opacity-100 pointer-coarse:opacity-100 transition-opacity z-10">
+                        <!-- Script row actions (hover). Root-level rows have a checkbox +
+                             selection toolbar below (Cut/Copy/Delete/Move) that already
+                             covers this on touch, so only force these always-visible
+                             (pointer-coarse:opacity-100) for nested if/for/while blocks,
+                             which have no checkbox and no other way to reorder/delete. -->
+                        <div class="absolute right-1 top-1 flex gap-0.5 opacity-0 group-hover:opacity-100 transition-opacity z-10 {isRoot ? "" : "pointer-coarse:opacity-100"}">
                             <button
                                 type="button"
                                 class="btn btn-sm preset-outlined-primary-500 px-1 py-0 text-xs leading-none"
