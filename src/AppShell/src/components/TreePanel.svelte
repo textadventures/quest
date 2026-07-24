@@ -193,6 +193,14 @@
         deleteElement(id);
     }
 
+    // TreeView's onSelectionChange only fires when the selected value actually
+    // changes, so tapping the already-selected node (e.g. after coming back
+    // from the mobile properties pane via its back button) never fires it —
+    // the tap appeared to do nothing. Handle that case directly at the row.
+    function activateIfAlreadySelected(id: string) {
+        if (id === $selectedKey) onactivate?.();
+    }
+
     function isDeletable(nt: string): boolean {
         return nt !== "header" && nt !== "game" && nt !== "other";
     }
@@ -315,7 +323,7 @@
     <TreeView.NodeProvider value={{ node, indexPath }}>
         {#if node.children}
             <TreeView.Branch>
-                <TreeView.BranchControl class="group" ondblclick={() => toggleExpand(node.id)}>
+                <TreeView.BranchControl class="group" ondblclick={() => toggleExpand(node.id)} onclick={() => activateIfAlreadySelected(node.id)}>
                     <button
                         type="button"
                         tabindex="-1"
@@ -338,7 +346,7 @@
                 </TreeView.BranchContent>
             </TreeView.Branch>
         {:else}
-            <TreeView.Item class="group flex items-center">
+            <TreeView.Item class="group flex items-center" onclick={() => activateIfAlreadySelected(node.id)}>
                 <span class="flex-1 min-w-0 truncate">{node.text}</span>
                 <span class="opacity-0 group-hover:opacity-100 pointer-coarse:opacity-100">
                     {@render nodeActions(node)}
