@@ -254,80 +254,86 @@
 
 </script>
 
-<div class="flex flex-col @2xl:flex-1 @2xl:min-h-0 text-xs">
-    <!-- Inherited types section -->
+<div class="flex flex-col flex-1 min-h-0 text-xs">
+    <!-- Inherited types section. The "Inherited types" title and the "Add
+         type…" control stay always visible (flex-shrink-0); only the rows
+         themselves get a capped, independently-scrollable region below @2xl,
+         so a long list of inherited types can't crowd out the attributes
+         list and assignment panel below it (both need real allocated space
+         of their own once stacked — see the split pane below). -->
     <div class="flex-shrink-0 border-b border-surface-200-800">
         <div class="px-3 py-1.5 border-b border-surface-100-900">
             <span class="font-semibold text-surface-500-400 uppercase tracking-wide">Inherited types</span>
         </div>
-        <table class="w-full">
-            <thead>
-                <tr class="text-surface-400-500 border-b border-surface-100-900">
-                    <th class="text-left py-1 px-3 font-medium">Name</th>
-                    <th class="text-left py-1 px-3 font-medium">Source</th>
-                    <th class="w-6"></th>
-                </tr>
-            </thead>
-            <tbody>
-                {#each $fullAttributeData?.inheritedTypes ?? [] as t (t.name)}
-                    <tr class="border-b border-surface-100-900">
-                        <td class="py-0.5 px-3">{t.name}</td>
-                        <td class="py-0.5 px-3 text-surface-400-500">{t.source}</td>
-                        <td class="py-0.5 pr-2 text-right">
-                            {#if !t.isDefaultType}
-                                <button
-                                    type="button"
-                                    class="text-error-500 hover:text-error-700"
-                                    onclick={() => onDeleteInheritedType(t.name)}
-                                    title="Remove type"
-                                >✕</button>
-                            {/if}
-                        </td>
+        <div class="max-h-28 overflow-y-auto @2xl:max-h-none @2xl:overflow-visible">
+            <table class="w-full">
+                <thead>
+                    <tr class="text-surface-400-500 border-b border-surface-100-900">
+                        <th class="text-left py-1 px-3 font-medium">Name</th>
+                        <th class="text-left py-1 px-3 font-medium">Source</th>
+                        <th class="w-6"></th>
                     </tr>
-                {:else}
-                    <tr><td colspan="3" class="py-1 px-3 text-surface-400-500 italic">No inherited types</td></tr>
-                {/each}
-            </tbody>
-            <tfoot>
-                <tr>
-                    <td colspan="3" class="px-3 py-1.5">
-                        <div class="flex items-center gap-2 max-w-xs">
-                            <select
-                                class="select text-xs py-0 px-1.5 h-6 flex-1"
-                                bind:value={addTypeValue}
-                            >
-                                <option value="">Add type…</option>
-                                {#each availableTypes() as t (t)}
-                                    <option value={t}>{t}</option>
-                                {/each}
-                            </select>
-                            <button
-                                type="button"
-                                disabled={!addTypeValue}
-                                onclick={onAddType}
-                                class="btn btn-sm preset-outlined-primary-500 text-xs px-2 py-0 h-6 flex-shrink-0"
-                            >Add</button>
-                        </div>
-                    </td>
-                </tr>
-            </tfoot>
-        </table>
+                </thead>
+                <tbody>
+                    {#each $fullAttributeData?.inheritedTypes ?? [] as t (t.name)}
+                        <tr class="border-b border-surface-100-900">
+                            <td class="py-0.5 px-3">{t.name}</td>
+                            <td class="py-0.5 px-3 text-surface-400-500">{t.source}</td>
+                            <td class="py-0.5 pr-2 text-right">
+                                {#if !t.isDefaultType}
+                                    <button
+                                        type="button"
+                                        class="text-error-500 hover:text-error-700"
+                                        onclick={() => onDeleteInheritedType(t.name)}
+                                        title="Remove type"
+                                    >✕</button>
+                                {/if}
+                            </td>
+                        </tr>
+                    {:else}
+                        <tr><td colspan="3" class="py-1 px-3 text-surface-400-500 italic">No inherited types</td></tr>
+                    {/each}
+                </tbody>
+            </table>
+        </div>
+        <div class="px-3 py-1.5">
+            <div class="flex items-center gap-2 max-w-xs">
+                <select
+                    class="select text-xs py-0 px-1.5 h-6 flex-1"
+                    bind:value={addTypeValue}
+                >
+                    <option value="">Add type…</option>
+                    {#each availableTypes() as t (t)}
+                        <option value={t}>{t}</option>
+                    {/each}
+                </select>
+                <button
+                    type="button"
+                    disabled={!addTypeValue}
+                    onclick={onAddType}
+                    class="btn btn-sm preset-outlined-primary-500 text-xs px-2 py-0 h-6 flex-shrink-0"
+                >Add</button>
+            </div>
+        </div>
     </div>
 
     <!-- Attributes section: split pane. Stacks list-above-panel below the
          @2xl container breakpoint (the properties pane's own width, not the
          viewport — it can be narrow on desktop too when the splitter is
-         dragged in). -->
-    <div class="flex flex-col @2xl:flex-row @2xl:flex-1 @2xl:min-h-0">
+         dragged in). Bounded (flex-1 min-h-0) at every width, in both
+         directions, so the list and the assignment panel each get their own
+         real allocated space and internal scroll — never "panel appended
+         after the whole list", which on a long list meant scrolling past
+         every row just to reach the panel you just opened. -->
+    <div class="flex flex-col @2xl:flex-row flex-1 min-h-0">
         <!-- Left: attributes list -->
-        <div class="flex flex-col @2xl:flex-1 min-w-0 @2xl:overflow-hidden">
+        <div class="flex flex-col flex-1 min-h-0 min-w-0 overflow-hidden">
             <div class="px-3 py-1.5 border-b border-surface-100-900 flex-shrink-0">
                 <span class="font-semibold text-surface-500-400 uppercase tracking-wide">Attributes</span>
             </div>
 
-            <!-- Scrollable table (desktop only — below @2xl the whole stacked column
-                 shares one scroll container, see PropertyEditor) -->
-            <div class="@2xl:overflow-y-auto @2xl:flex-1">
+            <!-- Scrollable table -->
+            <div class="overflow-y-auto flex-1">
                 <table class="w-full">
                     <thead class="sticky top-0 bg-surface-50-950 z-10">
                         <tr class="text-surface-400-500 border-b border-surface-200-800">
@@ -383,10 +389,20 @@
             onpointerdown={onSplitterPointerDown}
         ></div>
 
-        <!-- Right: assignment panel -->
+        <!-- Right (desktop) / bottom (stacked) panel: reserves a real, always-
+             visible share of the split area's height once a row is selected
+             (evenly with the list, both scrolling internally) — pinned in
+             place rather than trailing after the list, which on a long list
+             meant scrolling past every row to reach the panel you just
+             opened. Content-sized (not flex-1) when nothing is selected, so
+             the idle "Select an attribute…" message doesn't reserve that
+             space up front. -->
         <div
             bind:this={panelEl}
-            class="w-full @2xl:w-[var(--panel-width)] @2xl:flex-shrink-0 flex flex-col @2xl:overflow-hidden"
+            class="w-full @2xl:w-[var(--panel-width)] @2xl:flex-shrink-0 @2xl:min-h-0 flex flex-col overflow-hidden"
+            class:flex-1={!!selectedAttr}
+            class:min-h-0={!!selectedAttr}
+            class:flex-shrink-0={!selectedAttr}
             style="--panel-width: {panelWidth}px"
         >
             <div class="px-3 py-1.5 border-b border-surface-100-900 font-semibold text-surface-500-400 uppercase tracking-wide flex-shrink-0 flex items-center justify-between">
