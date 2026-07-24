@@ -12,7 +12,7 @@ page.on('console', msg => { if (msg.type() === 'error') console.log('[console.er
 
 async function addViaToolbar(menuLabel, name) {
     await page.click('button[title="Add element"]');
-    await page.locator('.add-dropdown button', { hasText: menuLabel }).click();
+    await page.locator('button', { hasText: menuLabel }).click();
     await page.fill('#element-name', name);
     await page.keyboard.press('Enter');
     await page.waitForSelector(`text=${name}`, { timeout: 10000 });
