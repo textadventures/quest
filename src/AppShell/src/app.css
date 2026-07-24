@@ -34,6 +34,14 @@
     color: inherit;
 }
 
+/* Bump hit targets for finger-sized touch input on coarse pointers (mobile/tablet) */
+@media (pointer: coarse) {
+    [data-scope='tree-view'][data-part='item'],
+    [data-scope='tree-view'][data-part='branch-control'] {
+        padding-block: calc(var(--spacing) * 2.5);
+    }
+}
+
 /* Safari ignores box-shadow on <select> elements with native appearance.
    Use a real border instead, which all browsers respect. */
 select.select {
