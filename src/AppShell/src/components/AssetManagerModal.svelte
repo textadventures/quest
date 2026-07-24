@@ -66,11 +66,11 @@
     role="dialog"
     aria-modal="true"
     tabindex="-1"
-    class="fixed inset-0 bg-black/30 flex items-center justify-center z-50"
+    class="fixed inset-0 bg-black/30 flex items-center justify-center z-50 p-4"
     onclick={onBackdropClick}
     onkeydown={handleKeydown}
 >
-    <div class="card bg-white rounded-xl shadow-xl w-[32rem] max-h-[80vh] p-6 flex flex-col gap-4">
+    <div class="card bg-white rounded-xl shadow-xl w-full max-w-[32rem] max-h-[85dvh] p-6 flex flex-col gap-4">
         <div class="flex items-center justify-between">
             <h2 class="text-base font-semibold">Assets</h2>
             <button class="btn btn-sm preset-tonal" onclick={oncancel}>Close</button>

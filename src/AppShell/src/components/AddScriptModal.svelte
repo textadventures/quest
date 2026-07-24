@@ -176,11 +176,11 @@
     role="dialog"
     aria-modal="true"
     tabindex="-1"
-    class="fixed inset-0 bg-black/30 flex items-center justify-center z-50"
+    class="fixed inset-0 bg-black/30 flex items-center justify-center z-50 p-4"
     onclick={onBackdropClick}
     onkeydown={onKeydown}
 >
-    <div class="bg-white rounded-xl shadow-xl w-[600px] h-[520px] flex flex-col overflow-hidden ring-1 ring-surface-200-800">
+    <div class="bg-white rounded-xl shadow-xl w-full max-w-[600px] h-[min(520px,85dvh)] flex flex-col overflow-hidden ring-1 ring-surface-200-800">
 
         <!-- Header -->
         <div class="px-5 py-3 flex items-center justify-between flex-shrink-0 border-b border-surface-200-800">
