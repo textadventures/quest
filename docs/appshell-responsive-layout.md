@@ -1,6 +1,6 @@
 # AppShell responsive layout plan
 
-Status: **planned, not yet implemented** (July 2026).
+Status: **implemented** (July 2026).
 
 ## Context
 
