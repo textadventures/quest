@@ -495,9 +495,9 @@
             </div>
         {:else}
             {@const label = ctrl.caption ?? ctrl.attribute}
-            {@const isLong = label.length > 20}
             {@const isMultiline = ctrl.controlType === "richtext" || ctrl.controlType === "script" || ctrl.controlType === "list" || ctrl.controlType === "stringdictionary"}
-            {#if isLong}
+            {@const stacksBelowLabel = label.length > 20 || ctrl.controlType === "script"}
+            {#if stacksBelowLabel}
                 <div class="flex flex-col gap-1 px-3 py-1.5">
                     <span class="text-xs text-surface-600-400">{label}:</span>
                     {@render controlOnly(ctrl)}
