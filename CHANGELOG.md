@@ -1,5 +1,12 @@
 # Changelog
 
+## [6.0.0-beta.45](https://github.com/textadventures/quest/compare/v6.0.0-beta.44...v6.0.0-beta.45) (2026-07-24)
+
+
+### Features
+
+* **AppShell:** responsive layout for phone/tablet screens ([#1932](https://github.com/textadventures/quest/issues/1932)) ([fab44dd](https://github.com/textadventures/quest/commit/fab44ddc86c4c9eed9e1eec90438ee3ce3da3e9f))
+
 ## [6.0.0-beta.44](https://github.com/textadventures/quest/compare/v6.0.0-beta.43...v6.0.0-beta.44) (2026-07-23)
 
 
