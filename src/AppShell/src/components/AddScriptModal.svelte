@@ -193,17 +193,21 @@
             >×</button>
         </div>
 
-        <!-- Shortcut buttons -->
+        <!-- Shortcut buttons: single row, horizontally scrollable rather than
+             wrapping — wrapping ate several lines of vertical space on a
+             narrow modal, and each row only fit one or two pills. -->
         {#if shortcuts.length > 0}
-            <div class="px-5 py-3 border-b border-surface-200-800 flex gap-2 flex-wrap flex-shrink-0">
-                <span class="text-xs font-medium text-surface-500-400 self-center mr-1">Quick add:</span>
-                {#each shortcuts as shortcut (shortcut.createString)}
-                    <button
-                        type="button"
-                        onclick={() => onShortcutClick(shortcut.createString)}
-                        class="btn btn-sm preset-outlined-primary-500 rounded-full px-4 py-1 text-sm font-medium"
-                    >{shortcut.label}</button>
-                {/each}
+            <div class="px-5 py-2 border-b border-surface-200-800 flex-shrink-0 flex items-center gap-2">
+                <span class="text-xs font-medium text-surface-500-400 flex-shrink-0">Quick add:</span>
+                <div class="flex gap-1.5 overflow-x-auto">
+                    {#each shortcuts as shortcut (shortcut.createString)}
+                        <button
+                            type="button"
+                            onclick={() => onShortcutClick(shortcut.createString)}
+                            class="btn btn-sm preset-outlined-primary-500 rounded-full px-3 py-0.5 text-xs font-medium flex-shrink-0 whitespace-nowrap"
+                        >{shortcut.label}</button>
+                    {/each}
+                </div>
             </div>
         {/if}
 
@@ -218,7 +222,7 @@
                     bind:value={filterText}
                     placeholder="Filter commands..."
                     aria-label="Filter script commands"
-                    class="input text-sm py-1.5 pl-8 pr-7 w-full"
+                    class="input text-xs py-1 pl-8 pr-7 w-full"
                 />
                 {#if filterText}
                     <button
@@ -237,7 +241,7 @@
                 <!-- Flat filtered list across all categories -->
                 <div class="flex-1 overflow-y-auto pb-2" role="listbox" aria-label="Matching script commands">
                     {#if filteredCommands.length === 0}
-                        <div class="px-5 py-3 text-sm text-surface-400">No matching commands</div>
+                        <div class="px-5 py-3 text-xs text-surface-400">No matching commands</div>
                     {/if}
                     {#each filteredCommands as cmd, idx (cmd.createString)}
                         {@const isSelected = selectedCommand?.createString === cmd.createString}
@@ -249,7 +253,7 @@
                             tabindex={isSelected ? 0 : -1}
                             onclick={() => (selectedCommand = cmd)}
                             ondblclick={() => { selectedCommand = cmd; onOk(); }}
-                            class="w-full text-left px-5 py-2 text-sm flex items-center gap-3 transition-colors {
+                            class="w-full text-left px-5 py-1.5 text-xs flex items-center gap-3 transition-colors {
                                 isSelected
                                     ? "bg-primary-100 dark:bg-primary-900/40 text-primary-700 dark:text-primary-300 font-medium"
                                     : "text-surface-700-300 hover:bg-surface-100-900"
@@ -279,7 +283,7 @@
                             aria-selected={isSelected}
                             tabindex={isSelected ? 0 : -1}
                             onclick={() => { selectedCategoryIndex = ci; }}
-                            class="w-full text-left px-4 py-2.5 text-sm transition-colors {
+                            class="w-full text-left px-4 py-1.5 text-xs transition-colors {
                                 isSelected
                                     ? "font-semibold text-primary-600-400 bg-primary-100 dark:bg-primary-900/40"
                                     : "text-surface-700-300 hover:bg-surface-100-900"
@@ -307,7 +311,7 @@
                                 tabindex={isSelected ? 0 : -1}
                                 onclick={() => (selectedCommand = cmd)}
                                 ondblclick={() => { selectedCommand = cmd; onOk(); }}
-                                class="w-full text-left px-5 py-2 text-sm flex items-center gap-3 transition-colors {
+                                class="w-full text-left px-5 py-1.5 text-xs flex items-center gap-3 transition-colors {
                                     isSelected
                                         ? "bg-primary-100 dark:bg-primary-900/40 text-primary-700 dark:text-primary-300 font-medium"
                                         : "text-surface-700-300 hover:bg-surface-100-900"
@@ -324,11 +328,11 @@
 
         <!-- Footer -->
         <div class="px-5 py-3 border-t border-surface-200-800 flex justify-end gap-3 flex-shrink-0">
-            <button type="button" onclick={onClose} class="btn preset-tonal">Cancel</button>
+            <button type="button" onclick={onClose} class="btn btn-sm preset-tonal text-xs">Cancel</button>
             <button
                 type="button"
                 onclick={onOk}
-                class="btn preset-filled-primary-500"
+                class="btn btn-sm preset-filled-primary-500 text-xs"
                 disabled={!selectedCommand}
             >OK</button>
         </div>
