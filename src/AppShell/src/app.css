@@ -7,6 +7,15 @@
     background: light-dark(white, var(--color-surface-800));
 }
 
+/* The default 1rem top+bottom padding is a bigger cost on a short mobile
+   viewport (e.g. iPhone landscape, ~375px tall) than it's worth — shrink it
+   below md, matching the isNarrow breakpoint used throughout AppShell. */
+@media (max-width: 767px) {
+    [data-scope='app-bar'][data-part='root'] {
+        padding-block: calc(var(--spacing) * 2);
+    }
+}
+
 /* Override flex-start so branches/items stretch to the full panel width */
 [data-scope='tree-view'][data-part='root'] {
     align-items: stretch;
