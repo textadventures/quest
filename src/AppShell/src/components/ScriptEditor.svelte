@@ -391,8 +391,12 @@
                         </label>
                     {/if}
                     <div class="flex-1 min-w-0">
-                        <!-- Script row actions (hover) -->
-                        <div class="absolute right-1 top-1 flex gap-0.5 opacity-0 group-hover:opacity-100 transition-opacity z-10">
+                        <!-- Script row actions (hover). Root-level rows have a checkbox +
+                             selection toolbar below (Cut/Copy/Delete/Move) that already
+                             covers this on touch, so only force these always-visible
+                             (pointer-coarse:opacity-100) for nested if/for/while blocks,
+                             which have no checkbox and no other way to reorder/delete. -->
+                        <div class="absolute right-1 top-1 flex gap-0.5 opacity-0 group-hover:opacity-100 transition-opacity z-10 {isRoot ? "" : "pointer-coarse:opacity-100"}">
                             <button
                                 type="button"
                                 class="btn btn-sm preset-outlined-primary-500 px-1 py-0 text-xs leading-none"
@@ -424,41 +428,43 @@
                 </div>
             {/each}
 
-            <!-- Selection toolbar -->
+            <!-- Selection toolbar: one horizontally-scrollable row (rather than
+                 the buttons getting clipped, or wrapping onto more lines)
+                 when it doesn't fit a narrow screen. -->
             {#if isRoot && selectedIndices.size > 0}
                 {@const sel = sortedSelection()}
-                <div class="flex items-center gap-1 mb-1 px-1 py-1 bg-surface-100-900 rounded border border-surface-200-800 text-xs">
+                <div class="flex items-center gap-1 mb-1 px-1 py-1 bg-surface-100-900/60 rounded border border-surface-200-800 text-xs overflow-x-auto">
                     <button
                         type="button"
-                        class="btn btn-sm preset-outlined-primary-500 text-xs py-0.5"
+                        class="btn btn-sm preset-outlined-primary-500 text-xs py-0.5 flex-shrink-0"
                         onclick={onCutSelected}
                     >Cut</button>
                     <button
                         type="button"
-                        class="btn btn-sm preset-outlined-primary-500 text-xs py-0.5"
+                        class="btn btn-sm preset-outlined-primary-500 text-xs py-0.5 flex-shrink-0"
                         onclick={onCopySelected}
                     >Copy</button>
                     <button
                         type="button"
-                        class="btn btn-sm preset-tonal-error text-xs py-0.5"
+                        class="btn btn-sm preset-tonal-error text-xs py-0.5 flex-shrink-0"
                         onclick={onDeleteSelected}
                     >Delete</button>
                     {#if sel.length === 1}
-                        <span class="w-px h-4 bg-surface-300-700 mx-0.5"></span>
+                        <span class="w-px h-4 bg-surface-300-700 mx-0.5 flex-shrink-0"></span>
                         <button
                             type="button"
-                            class="btn btn-sm preset-outlined-primary-500 text-xs py-0.5"
+                            class="btn btn-sm preset-outlined-primary-500 text-xs py-0.5 flex-shrink-0"
                             disabled={sel[0] === 0}
                             onclick={onMoveUpSelected}
                         >↑ Move up</button>
                         <button
                             type="button"
-                            class="btn btn-sm preset-outlined-primary-500 text-xs py-0.5"
+                            class="btn btn-sm preset-outlined-primary-500 text-xs py-0.5 flex-shrink-0"
                             disabled={sel[0] === scripts().length - 1}
                             onclick={onMoveDownSelected}
                         >↓ Move down</button>
                     {/if}
-                    <span class="ml-auto text-surface-400-500">{sel.length} selected</span>
+                    <span class="ml-auto pl-2 flex-shrink-0 text-surface-400-500">{sel.length} selected</span>
                 </div>
             {/if}
         </div>

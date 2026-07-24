@@ -10,6 +10,7 @@
     import BackupBanner from "$components/BackupBanner.svelte";
     import TreePanel from "$components/TreePanel.svelte";
     import PropertyEditor from "$components/PropertyEditor.svelte";
+    import { isNarrow } from "$lib/layout.svelte";
     import AddElementModal from "$components/AddElementModal.svelte";
     import AssetManagerModal from "$components/AssetManagerModal.svelte";
     import PublishModal from "$components/PublishModal.svelte";
@@ -22,6 +23,13 @@
     let treeWidth = $state(240); // matches TreePanel's old fixed w-60
     const TREE_MIN_WIDTH = 180;
     const TREE_MAX_WIDTH = 600;
+
+    // Mobile master-detail: tree is the full-screen home, selecting an element
+    // pushes a full-screen properties view with a back button. Not reset when
+    // isNarrow flips (e.g. rotating a tablet past the breakpoint) — resuming
+    // on whichever pane was active is less surprising than snapping back to
+    // the tree.
+    let mobilePane = $state<"tree" | "props">("tree");
 
     function handleSplitterPointerDown(e: PointerEvent) {
         e.preventDefault();
@@ -131,18 +139,30 @@
         <p class="text-surface-500-400 text-sm">{$loadingStatus}</p>
     </main>
 {:else if $isLoaded}
-    <div class="flex flex-col h-svh overflow-hidden">
+    <div class="flex flex-col h-dvh overflow-hidden safe-area-inset">
         <Toolbar />
         <BackupBanner />
         <div class="flex flex-1 overflow-hidden" oninput={handleFieldInput} onfocusout={clearFieldEditing}>
-            <TreePanel width={treeWidth} />
-            <div
-                role="separator"
-                aria-orientation="vertical"
-                class="w-1 shrink-0 cursor-col-resize hover:bg-primary-500/50 active:bg-primary-500/70 transition-colors"
-                onpointerdown={handleSplitterPointerDown}
-            ></div>
-            <PropertyEditor />
+            <!-- Both panes stay mounted (display toggled, not {#if}'d away) so tree
+                 expansion state and property tab state survive switching panes on
+                 mobile. -->
+            <div class={isNarrow.current && mobilePane !== "tree" ? "hidden" : "contents"}>
+                <TreePanel
+                    width={isNarrow.current ? undefined : treeWidth}
+                    onactivate={() => { mobilePane = "props"; }}
+                />
+            </div>
+            {#if !isNarrow.current}
+                <div
+                    role="separator"
+                    aria-orientation="vertical"
+                    class="w-1 shrink-0 cursor-col-resize hover:bg-primary-500/50 active:bg-primary-500/70 transition-colors"
+                    onpointerdown={handleSplitterPointerDown}
+                ></div>
+            {/if}
+            <div class={isNarrow.current && mobilePane !== "props" ? "hidden" : "contents"}>
+                <PropertyEditor onback={isNarrow.current ? () => { mobilePane = "tree"; } : undefined} />
+            </div>
         </div>
     </div>
 

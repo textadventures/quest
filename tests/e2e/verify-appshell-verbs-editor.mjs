@@ -13,7 +13,7 @@ page.on('console', msg => { if (msg.type() === 'error') console.log('[console.er
 
 async function addRoom(name) {
     await page.click('button[title="Add element"]');
-    await page.click('.add-dropdown button:has-text("Add Room")', { timeout: 5000 });
+    await page.click('button:has-text("Add Room")', { timeout: 5000 });
     await page.waitForSelector('#element-name');
     await page.fill('#element-name', name);
     await page.click('[role="dialog"] button:has-text("Add")');
@@ -25,7 +25,7 @@ async function addRoom(name) {
 async function addObjectIn(parentRoom, name) {
     await selectTreeNode(parentRoom);
     await page.click('button[title="Add element"]');
-    await page.click(`.add-dropdown button:has-text("Add Object in")`, { timeout: 5000 });
+    await page.click(`button:has-text("Add Object in")`, { timeout: 5000 });
     await page.waitForSelector('#element-name');
     await page.fill('#element-name', name);
     await page.click('[role="dialog"] button:has-text("Add")');

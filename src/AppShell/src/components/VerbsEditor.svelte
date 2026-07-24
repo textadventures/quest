@@ -4,6 +4,7 @@
     import ScriptEditor from "./ScriptEditor.svelte";
     import ScriptDictionaryEditor from "./ScriptDictionaryEditor.svelte";
     import Combobox from "./Combobox.svelte";
+    import X from "@lucide/svelte/icons/x";
 
     interface Props {
         elementKey: string;
@@ -99,33 +100,40 @@
         }
     }
 
-    // Resizable splitter (matches AttributesEditor's) — defaults wider than that one since the
-    // verbs list only needs a couple of narrow columns, so most of the width is better spent on
-    // the Behaviour panel (script/dictionary editors) rather than left as blank space.
+    // Resizable splitter (matches AttributesEditor's, pointer events not mouse
+    // so iPad-width touch devices can drag it) — defaults wider than that one
+    // since the verbs list only needs a couple of narrow columns, so most of
+    // the width is better spent on the Behaviour panel (script/dictionary
+    // editors) rather than left as blank space.
     let panelWidth = $state(480);
-    let isDragging = $state(false);
-    let dragStartX = 0;
-    let dragStartWidth = 0;
 
-    function onSplitterMousedown(e: MouseEvent) {
-        isDragging = true;
-        dragStartX = e.clientX;
-        dragStartWidth = panelWidth;
+    function onSplitterPointerDown(e: PointerEvent) {
         e.preventDefault();
+        const startX = e.clientX;
+        const startWidth = panelWidth;
+        document.body.style.cursor = "col-resize";
+        document.body.style.userSelect = "none";
+
+        function onMove(moveEvent: PointerEvent) {
+            const next = startWidth + (startX - moveEvent.clientX);
+            panelWidth = Math.max(180, Math.min(900, next));
+        }
+        function onUp() {
+            document.removeEventListener("pointermove", onMove);
+            document.removeEventListener("pointerup", onUp);
+            document.body.style.cursor = "";
+            document.body.style.userSelect = "";
+        }
+        document.addEventListener("pointermove", onMove);
+        document.addEventListener("pointerup", onUp);
     }
 
+    // Scroll the (possibly stacked-below) behaviour panel into view whenever a
+    // verb is selected — no-op when it's already fully visible (desktop
+    // side-by-side layout).
+    let panelEl = $state<HTMLDivElement | undefined>();
     $effect(() => {
-        if (!isDragging) return;
-        function onMousemove(e: MouseEvent) {
-            panelWidth = Math.max(180, Math.min(900, dragStartWidth + (dragStartX - e.clientX)));
-        }
-        function onMouseup() { isDragging = false; }
-        window.addEventListener("mousemove", onMousemove);
-        window.addEventListener("mouseup", onMouseup);
-        return () => {
-            window.removeEventListener("mousemove", onMousemove);
-            window.removeEventListener("mouseup", onMouseup);
-        };
+        if (selectedAttrName && panelEl) panelEl.scrollIntoView({ block: "nearest" });
     });
 
     let newVerbPattern = $state("");
@@ -151,7 +159,7 @@
     }
 </script>
 
-<div class="flex text-xs">
+<div class="flex flex-col @2xl:flex-row text-xs">
     <!-- Left: verbs list, with "Add Verb" directly beneath it. Deliberately NOT stretched to
          fill the tab's height (unlike AttributesEditor, which is normally packed with rows) —
          verbs lists are usually short or empty, and forcing this column to fill all available
@@ -222,17 +230,30 @@
         </div>
     </div>
 
-    <!-- Splitter -->
+    <!-- Splitter: desktop only -->
     <!-- svelte-ignore a11y_no_static_element_interactions -->
     <div
-        class="w-1 flex-shrink-0 cursor-col-resize bg-surface-200-800 hover:bg-primary-400 transition-colors"
-        onmousedown={onSplitterMousedown}
+        class="hidden @2xl:block w-1 flex-shrink-0 cursor-col-resize bg-surface-200-800 hover:bg-primary-400 transition-colors"
+        onpointerdown={onSplitterPointerDown}
     ></div>
 
     <!-- Right: selected verb's behaviour -->
-    <div class="flex-shrink-0 flex flex-col overflow-hidden border-l border-surface-200-800" style="width: {panelWidth}px">
-        <div class="px-3 py-1.5 border-b border-surface-100-900 font-semibold text-surface-500-400 uppercase tracking-wide flex-shrink-0">
-            Behaviour
+    <div
+        bind:this={panelEl}
+        class="w-full @2xl:w-[var(--panel-width)] @2xl:flex-shrink-0 flex flex-col overflow-hidden border-l border-surface-200-800"
+        style="--panel-width: {panelWidth}px"
+    >
+        <div class="px-3 py-1.5 border-b border-surface-100-900 font-semibold text-surface-500-400 uppercase tracking-wide flex-shrink-0 flex items-center justify-between">
+            <span>Behaviour</span>
+            {#if selectedAttr}
+                <button
+                    type="button"
+                    class="normal-case text-surface-400-500 hover:text-surface-900-50"
+                    onclick={() => { selectedAttrName = null; }}
+                    title="Close"
+                    aria-label="Close"
+                ><X size={14} /></button>
+            {/if}
         </div>
         {#if selectedAttr}
             {@const attr = selectedAttr}
@@ -280,8 +301,3 @@
         {/if}
     </div>
 </div>
-
-<!-- Drag overlay: keeps col-resize cursor while dragging over other elements -->
-{#if isDragging}
-    <div class="fixed inset-0 z-50 cursor-col-resize select-none"></div>
-{/if}

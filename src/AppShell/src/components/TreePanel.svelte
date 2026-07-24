@@ -11,7 +11,7 @@
     } from "$lib/editor-store";
     import type { TreeNode } from "$lib/types";
 
-    let { width }: { width: number } = $props();
+    let { width, onactivate }: { width?: number; onactivate?: () => void } = $props();
 
     interface HierNode {
         id: string
@@ -175,12 +175,36 @@
         return () => document.removeEventListener("mousedown", onOutside);
     });
 
+    const DROPDOWN_WIDTH = 176; // matches the panel's w-44
+    const VIEWPORT_MARGIN = 8;
+
     function toggleDropdown(key: string, opts: Array<{ label: string; action: () => void }>, e: MouseEvent) {
         e.stopPropagation();
         if (dropdownKey === key) { closeDropdown(); return; }
         const rect = (e.currentTarget as HTMLElement).getBoundingClientRect();
+        // Anchoring the panel's left edge to the button's left edge (as if it
+        // always had room to extend rightward) put it mostly off-screen for
+        // the "..." button on a narrow/full-width mobile tree, since that
+        // button sits close to the viewport's own right edge. Flip to
+        // right-aligned against the button when there isn't room to the right.
+        let x = rect.left;
+        if (x + DROPDOWN_WIDTH > window.innerWidth - VIEWPORT_MARGIN) {
+            x = rect.right - DROPDOWN_WIDTH;
+        }
+        x = Math.max(VIEWPORT_MARGIN, x);
+
+        // Same idea vertically: flip to open upward if there isn't room below
+        // for a row near the bottom of the tree pane. ~28px/item is an
+        // estimate (matches the item's text-xs px-3 py-1 sizing) — good
+        // enough to decide which way to open, doesn't need to be exact.
+        const estimatedHeight = opts.length * 28 + 8;
+        let y = rect.bottom + 2;
+        if (y + estimatedHeight > window.innerHeight - VIEWPORT_MARGIN) {
+            y = Math.max(VIEWPORT_MARGIN, rect.top - estimatedHeight - 2);
+        }
+
         dropdownKey = key;
-        dropdownPos = { x: rect.left, y: rect.bottom + 2 };
+        dropdownPos = { x, y };
         dropdownOpts = opts;
     }
 
@@ -191,6 +215,14 @@
 
     function handleDelete(id: string) {
         deleteElement(id);
+    }
+
+    // TreeView's onSelectionChange only fires when the selected value actually
+    // changes, so tapping the already-selected node (e.g. after coming back
+    // from the mobile properties pane via its back button) never fires it —
+    // the tap appeared to do nothing. Handle that case directly at the row.
+    function activateIfAlreadySelected(id: string) {
+        if (id === $selectedKey) onactivate?.();
     }
 
     function isDeletable(nt: string): boolean {
@@ -238,7 +270,10 @@
     }
 </script>
 
-<div class="flex flex-col shrink-0 border-r border-surface-200-800 bg-surface-50-950" style="width: {width}px">
+<div
+    class="flex flex-col shrink-0 border-r border-surface-200-800 bg-surface-50-950 {width === undefined ? "w-full" : ""}"
+    style={width !== undefined ? `width: ${width}px` : undefined}
+>
     <div class="px-3 py-2 text-xs font-semibold uppercase text-surface-500-400 border-b border-surface-200-800">
         Game Objects
     </div>
@@ -273,7 +308,7 @@
             expandOnClick={false}
             expandedValue={effectiveExpandedIds}
             selectedValue={$selectedKey ? [$selectedKey] : []}
-            onSelectionChange={(e) => { if (e.selectedValue[0]) selectNode(e.selectedValue[0]); }}
+            onSelectionChange={(e) => { if (e.selectedValue[0]) { selectNode(e.selectedValue[0]); onactivate?.(); } }}
         >
             {#each collection.rootNode.children ?? [] as node, i (node.id)}
                 {@render treeNode(node, [i])}
@@ -312,7 +347,7 @@
     <TreeView.NodeProvider value={{ node, indexPath }}>
         {#if node.children}
             <TreeView.Branch>
-                <TreeView.BranchControl class="group" ondblclick={() => toggleExpand(node.id)}>
+                <TreeView.BranchControl class="group" ondblclick={() => toggleExpand(node.id)} onclick={() => activateIfAlreadySelected(node.id)}>
                     <button
                         type="button"
                         tabindex="-1"
@@ -323,7 +358,7 @@
                         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="size-4"><polyline points="9 18 15 12 9 6" /></svg>
                     </button>
                     <TreeView.BranchText class="flex-1 min-w-0 truncate">{node.text}</TreeView.BranchText>
-                    <span class="opacity-0 group-hover:opacity-100">
+                    <span class="opacity-0 group-hover:opacity-100 pointer-coarse:opacity-100">
                         {@render nodeActions(node)}
                     </span>
                 </TreeView.BranchControl>
@@ -335,9 +370,9 @@
                 </TreeView.BranchContent>
             </TreeView.Branch>
         {:else}
-            <TreeView.Item class="group flex items-center">
+            <TreeView.Item class="group flex items-center" onclick={() => activateIfAlreadySelected(node.id)}>
                 <span class="flex-1 min-w-0 truncate">{node.text}</span>
-                <span class="opacity-0 group-hover:opacity-100">
+                <span class="opacity-0 group-hover:opacity-100 pointer-coarse:opacity-100">
                     {@render nodeActions(node)}
                 </span>
             </TreeView.Item>

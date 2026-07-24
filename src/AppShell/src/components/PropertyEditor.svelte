@@ -1,7 +1,9 @@
 <script lang="ts">
-    import { selectedKey, selectedData, setAttribute, setDropdownType, setMultiType, setObjectReference, addDictItem, removeDictItem, updateDictItem } from "$lib/editor-store";
+    import { selectedKey, selectedData, treeNodes, setAttribute, setDropdownType, setMultiType, setObjectReference, addDictItem, removeDictItem, updateDictItem } from "$lib/editor-store";
     import { showToast } from "$lib/toast";
     import type { ControlInfo, TextProcessorCommand } from "$lib/types";
+    import type { TreeNode } from "$lib/types";
+    import ChevronLeft from "@lucide/svelte/icons/chevron-left";
     import ScriptEditor from "./ScriptEditor.svelte";
     import Combobox from "./Combobox.svelte";
     import AttributesEditor from "./AttributesEditor.svelte";
@@ -10,6 +12,13 @@
     import AssetPicker from "./AssetPicker.svelte";
     import ExitsEditor from "./ExitsEditor.svelte";
     import VerbsEditor from "./VerbsEditor.svelte";
+
+    let { onback }: { onback?: () => void } = $props();
+
+    // Same derivation as Toolbar's selectedNode — used for the mobile back header's label.
+    let selectedNode = $derived<TreeNode | null>(
+        $treeNodes.find(n => n.key === $selectedKey) ?? null
+    );
 
     let activeTab = $state<string | null>(null);
     let lastKey = $state<string | null>(null);
@@ -100,9 +109,17 @@
     }
 </script>
 
-<div class="flex flex-col flex-1 bg-surface-50-950 overflow-hidden">
-    <div class="px-3 py-2 text-xs font-semibold uppercase text-surface-500-400 border-b border-surface-200-800">
-        Properties
+<div class="@container flex flex-col flex-1 bg-surface-50-950 overflow-hidden">
+    <div class="px-3 py-2 border-b border-surface-200-800">
+        {#if onback}
+            <button
+                type="button"
+                class="flex items-center gap-1 -ml-1 px-1 text-sm font-medium text-surface-900-50"
+                onclick={onback}
+            ><ChevronLeft size={16} /> {selectedNode?.text ?? "Properties"}</button>
+        {:else}
+            <span class="text-xs font-semibold uppercase text-surface-500-400">Properties</span>
+        {/if}
     </div>
 
     {#if $selectedKey === null}
@@ -128,10 +145,13 @@
         {@const hasAttributesPanel = viewControls.some(c => c.controlType === "attributes")}
         {#if hasAttributesPanel}
             <div class="flex-1 overflow-hidden flex flex-col min-h-0">
-                {#each viewControls.filter(c => c.controlType !== "attributes") as ctrl, i (i)}
-                    {@render controlRow(ctrl)}
-                {/each}
-                <AttributesEditor />
+                <AttributesEditor>
+                    {#snippet extraControls()}
+                        {#each viewControls.filter(c => c.controlType !== "attributes") as ctrl, i (i)}
+                            {@render controlRow(ctrl)}
+                        {/each}
+                    {/snippet}
+                </AttributesEditor>
             </div>
         {:else}
             <div class="flex-1 overflow-y-auto">
@@ -144,7 +164,7 @@
 </div>
 
 {#snippet textProcessorPanel(commands: TextProcessorCommand[], attribute: string, controlType: string)}
-    <div class="flex flex-col gap-0.5 shrink-0">
+    <div class="flex flex-col gap-0.5 shrink-0 max-h-32 overflow-y-auto @2xl:max-h-none @2xl:overflow-visible">
         {#each commands as cmd (cmd.command)}
             <div class="flex items-center gap-1">
                 <button
@@ -194,7 +214,7 @@
         </select>
     {:else if ctrl.controlType === "richtext"}
         {#if ctrl.textProcessorCommands?.length}
-            <div class="richtext-wrap flex gap-2 w-full">
+            <div class="richtext-wrap flex flex-col @2xl:flex-row gap-2 w-full">
                 <textarea
                     autocapitalize="off"
                     class="input text-xs py-0.5 px-1.5 flex-1 min-h-32 resize-y"
@@ -346,7 +366,7 @@
             </select>
             {#if subEditorType === "richtext" && ctrl.subAttribute !== null}
                 {#if ctrl.textProcessorCommands?.length}
-                    <div class="richtext-wrap flex gap-2 w-full">
+                    <div class="richtext-wrap flex flex-col @2xl:flex-row gap-2 w-full">
                         <textarea
                             autocapitalize="off"
                             class="input text-xs py-0.5 px-1.5 flex-1 min-h-32 resize-y"
@@ -444,7 +464,7 @@
                 </div>
                 {#if subEditorType === "richtext" && ctrl.subAttribute !== null}
                     {#if ctrl.textProcessorCommands?.length}
-                        <div class="richtext-wrap flex gap-2 w-full">
+                        <div class="richtext-wrap flex flex-col @2xl:flex-row gap-2 w-full">
                             <textarea
                                 autocapitalize="off"
                                 class="input text-xs py-0.5 px-1.5 flex-1 min-h-32 resize-y"
@@ -475,9 +495,9 @@
             </div>
         {:else}
             {@const label = ctrl.caption ?? ctrl.attribute}
-            {@const isLong = label.length > 20}
             {@const isMultiline = ctrl.controlType === "richtext" || ctrl.controlType === "script" || ctrl.controlType === "list" || ctrl.controlType === "stringdictionary"}
-            {#if isLong}
+            {@const stacksBelowLabel = label.length > 20 || ctrl.controlType === "script"}
+            {#if stacksBelowLabel}
                 <div class="flex flex-col gap-1 px-3 py-1.5">
                     <span class="text-xs text-surface-600-400">{label}:</span>
                     {@render controlOnly(ctrl)}

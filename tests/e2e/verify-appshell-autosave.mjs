@@ -43,7 +43,12 @@ async function run() {
     await descBox.fill(marker);
     await page.click('.toolbar-divider'); // blur onto something inert
 
-    await page.waitForSelector('text=Saving…', { timeout: 3000 });
+    // The debounce-to-save-start latency (not the pill's own visible window,
+    // which editor-store.ts's MIN_SAVING_VISIBLE_MS already holds open ~300ms)
+    // is the part that varies — measured ~700-900ms locally, but a loaded CI
+    // runner can occasionally push it past a tighter budget. 3000ms measurably
+    // flaked here (confirmed on main too, not something this branch caused).
+    await page.waitForSelector('text=Saving…', { timeout: 8000 });
     console.log('PASS: "Saving…" pill appeared after edit, without clicking any Save button');
 
     await page.waitForSelector('text=Saved', { timeout: 10000 });

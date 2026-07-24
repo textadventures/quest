@@ -44,8 +44,11 @@ try {
     await page.click('button:has-text("Generate")'); // regenerate gameid
     // No explicit Save button anymore (debounced autosave-on-edit replaced
     // it — see verify-appshell-autosave.mjs) — wait for the pill to cycle
-    // through the same Saving…/Saved lifecycle instead of clicking one.
-    await page.waitForSelector('text=Saving…', { timeout: 3000 });
+    // through the same Saving…/Saved lifecycle instead of clicking one. The
+    // debounce-to-save-start latency varies more than the ~300ms the pill
+    // itself stays visible for (editor-store.ts's MIN_SAVING_VISIBLE_MS); a
+    // tighter budget here measurably flaked (confirmed on main too).
+    await page.waitForSelector('text=Saving…', { timeout: 8000 });
     await page.waitForSelector('text=Saved', { timeout: 10000 });
 
     const after = await draftCount();
@@ -65,9 +68,15 @@ try {
     await dialog.locator('text=restart-test.js').waitFor({ timeout: 10000 });
     await dialog.locator('button:has-text("Close")').click();
 
+    // Backup… lives inside the File ▾ menu, not a standalone toolbar button
+    // (see the responsive Toolbar rework, a50f713a) — open it first. The
+    // BackupBanner's own "Backup…" button isn't a reliable alternative here:
+    // it only appears after a couple of saves (ACTIVITY_THRESHOLD_SAVES in
+    // local-adapter.ts), which this draft hasn't hit yet at this point.
+    await page.click('button:has-text("File")');
     const [download] = await Promise.all([
         page.waitForEvent('download'),
-        page.click('button:has-text("Backup")'),
+        page.click('button:has-text("Backup…")'),
     ]);
     const zipPath = `/tmp/appshell-backup-test-${Date.now()}.zip`;
     await download.saveAs(zipPath);
