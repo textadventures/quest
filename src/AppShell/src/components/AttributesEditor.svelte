@@ -1,4 +1,5 @@
 <script lang="ts">
+    import type { Snippet } from "svelte";
     import { fullAttributeData, selectedKey, removeAttribute, addInheritedType, removeInheritedType, getTypeNames, setAttribute, setObjectReference, changeAttributeType, setPatternAttribute, getObjectNames } from "$lib/editor-store";
     import type { AttributeDataItem } from "$lib/types";
     import { Switch } from "@skeletonlabs/skeleton-svelte";
@@ -7,6 +8,14 @@
     import ListEditor from "./ListEditor.svelte";
     import DictionaryEditor from "./DictionaryEditor.svelte";
     import ScriptDictionaryEditor from "./ScriptDictionaryEditor.svelte";
+
+    // Some elements (e.g. the game element's "Status attributes" string
+    // dictionary) have other controls alongside the "attributes" control on
+    // the same tab. PropertyEditor renders those and passes them in here so
+    // they share the list's scroll region instead of sitting in their own
+    // fixed-size block above it, which starved the list of space the same
+    // way "Inherited types" used to (see 913b9c6d / f1a62f5f).
+    let { extraControls }: { extraControls?: Snippet } = $props();
 
     const TYPE_OPTIONS = [
         { value: "string",           label: "String" },
@@ -273,6 +282,12 @@
              own content actually needs. -->
         <div class="flex flex-col flex-1 min-h-0 min-w-0 overflow-hidden">
             <div class="overflow-y-auto flex-1">
+                {#if extraControls}
+                    <div class="border-b border-surface-200-800">
+                        {@render extraControls()}
+                    </div>
+                {/if}
+
                 <!-- Inherited types -->
                 <div class="border-b border-surface-200-800">
                     <div class="px-3 py-1.5 border-b border-surface-100-900">

@@ -145,10 +145,13 @@
         {@const hasAttributesPanel = viewControls.some(c => c.controlType === "attributes")}
         {#if hasAttributesPanel}
             <div class="flex-1 overflow-hidden flex flex-col min-h-0">
-                {#each viewControls.filter(c => c.controlType !== "attributes") as ctrl, i (i)}
-                    {@render controlRow(ctrl)}
-                {/each}
-                <AttributesEditor />
+                <AttributesEditor>
+                    {#snippet extraControls()}
+                        {#each viewControls.filter(c => c.controlType !== "attributes") as ctrl, i (i)}
+                            {@render controlRow(ctrl)}
+                        {/each}
+                    {/snippet}
+                </AttributesEditor>
             </div>
         {:else}
             <div class="flex-1 overflow-y-auto">
