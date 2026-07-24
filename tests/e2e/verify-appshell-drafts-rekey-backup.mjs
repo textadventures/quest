@@ -44,8 +44,11 @@ try {
     await page.click('button:has-text("Generate")'); // regenerate gameid
     // No explicit Save button anymore (debounced autosave-on-edit replaced
     // it — see verify-appshell-autosave.mjs) — wait for the pill to cycle
-    // through the same Saving…/Saved lifecycle instead of clicking one.
-    await page.waitForSelector('text=Saving…', { timeout: 3000 });
+    // through the same Saving…/Saved lifecycle instead of clicking one. The
+    // debounce-to-save-start latency varies more than the ~300ms the pill
+    // itself stays visible for (editor-store.ts's MIN_SAVING_VISIBLE_MS); a
+    // tighter budget here measurably flaked (confirmed on main too).
+    await page.waitForSelector('text=Saving…', { timeout: 8000 });
     await page.waitForSelector('text=Saved', { timeout: 10000 });
 
     const after = await draftCount();
