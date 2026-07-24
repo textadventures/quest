@@ -392,7 +392,7 @@
                     {/if}
                     <div class="flex-1 min-w-0">
                         <!-- Script row actions (hover) -->
-                        <div class="absolute right-1 top-1 flex gap-0.5 opacity-0 group-hover:opacity-100 transition-opacity z-10">
+                        <div class="absolute right-1 top-1 flex gap-0.5 opacity-0 group-hover:opacity-100 pointer-coarse:opacity-100 transition-opacity z-10">
                             <button
                                 type="button"
                                 class="btn btn-sm preset-outlined-primary-500 px-1 py-0 text-xs leading-none"

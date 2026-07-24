@@ -109,7 +109,7 @@
     }
 </script>
 
-<div class="flex flex-col flex-1 bg-surface-50-950 overflow-hidden">
+<div class="@container flex flex-col flex-1 bg-surface-50-950 overflow-hidden">
     <div class="px-3 py-2 border-b border-surface-200-800">
         {#if onback}
             <button
@@ -161,7 +161,7 @@
 </div>
 
 {#snippet textProcessorPanel(commands: TextProcessorCommand[], attribute: string, controlType: string)}
-    <div class="flex flex-col gap-0.5 shrink-0">
+    <div class="flex flex-col gap-0.5 shrink-0 max-h-32 overflow-y-auto @2xl:max-h-none @2xl:overflow-visible">
         {#each commands as cmd (cmd.command)}
             <div class="flex items-center gap-1">
                 <button
@@ -211,7 +211,7 @@
         </select>
     {:else if ctrl.controlType === "richtext"}
         {#if ctrl.textProcessorCommands?.length}
-            <div class="richtext-wrap flex gap-2 w-full">
+            <div class="richtext-wrap flex flex-col @2xl:flex-row gap-2 w-full">
                 <textarea
                     autocapitalize="off"
                     class="input text-xs py-0.5 px-1.5 flex-1 min-h-32 resize-y"
@@ -363,7 +363,7 @@
             </select>
             {#if subEditorType === "richtext" && ctrl.subAttribute !== null}
                 {#if ctrl.textProcessorCommands?.length}
-                    <div class="richtext-wrap flex gap-2 w-full">
+                    <div class="richtext-wrap flex flex-col @2xl:flex-row gap-2 w-full">
                         <textarea
                             autocapitalize="off"
                             class="input text-xs py-0.5 px-1.5 flex-1 min-h-32 resize-y"
@@ -461,7 +461,7 @@
                 </div>
                 {#if subEditorType === "richtext" && ctrl.subAttribute !== null}
                     {#if ctrl.textProcessorCommands?.length}
-                        <div class="richtext-wrap flex gap-2 w-full">
+                        <div class="richtext-wrap flex flex-col @2xl:flex-row gap-2 w-full">
                             <textarea
                                 autocapitalize="off"
                                 class="input text-xs py-0.5 px-1.5 flex-1 min-h-32 resize-y"
