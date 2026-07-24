@@ -1,7 +1,9 @@
 <script lang="ts">
-    import { selectedKey, selectedData, setAttribute, setDropdownType, setMultiType, setObjectReference, addDictItem, removeDictItem, updateDictItem } from "$lib/editor-store";
+    import { selectedKey, selectedData, treeNodes, setAttribute, setDropdownType, setMultiType, setObjectReference, addDictItem, removeDictItem, updateDictItem } from "$lib/editor-store";
     import { showToast } from "$lib/toast";
     import type { ControlInfo, TextProcessorCommand } from "$lib/types";
+    import type { TreeNode } from "$lib/types";
+    import ChevronLeft from "@lucide/svelte/icons/chevron-left";
     import ScriptEditor from "./ScriptEditor.svelte";
     import Combobox from "./Combobox.svelte";
     import AttributesEditor from "./AttributesEditor.svelte";
@@ -10,6 +12,13 @@
     import AssetPicker from "./AssetPicker.svelte";
     import ExitsEditor from "./ExitsEditor.svelte";
     import VerbsEditor from "./VerbsEditor.svelte";
+
+    let { onback }: { onback?: () => void } = $props();
+
+    // Same derivation as Toolbar's selectedNode — used for the mobile back header's label.
+    let selectedNode = $derived<TreeNode | null>(
+        $treeNodes.find(n => n.key === $selectedKey) ?? null
+    );
 
     let activeTab = $state<string | null>(null);
     let lastKey = $state<string | null>(null);
@@ -101,8 +110,16 @@
 </script>
 
 <div class="flex flex-col flex-1 bg-surface-50-950 overflow-hidden">
-    <div class="px-3 py-2 text-xs font-semibold uppercase text-surface-500-400 border-b border-surface-200-800">
-        Properties
+    <div class="px-3 py-2 border-b border-surface-200-800">
+        {#if onback}
+            <button
+                type="button"
+                class="flex items-center gap-1 -ml-1 px-1 text-sm font-medium text-surface-900-50"
+                onclick={onback}
+            ><ChevronLeft size={16} /> {selectedNode?.text ?? "Properties"}</button>
+        {:else}
+            <span class="text-xs font-semibold uppercase text-surface-500-400">Properties</span>
+        {/if}
     </div>
 
     {#if $selectedKey === null}

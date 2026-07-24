@@ -11,7 +11,7 @@
     } from "$lib/editor-store";
     import type { TreeNode } from "$lib/types";
 
-    let { width }: { width: number } = $props();
+    let { width, onactivate }: { width?: number; onactivate?: () => void } = $props();
 
     interface HierNode {
         id: string
@@ -238,7 +238,10 @@
     }
 </script>
 
-<div class="flex flex-col shrink-0 border-r border-surface-200-800 bg-surface-50-950" style="width: {width}px">
+<div
+    class="flex flex-col shrink-0 border-r border-surface-200-800 bg-surface-50-950 {width === undefined ? "w-full" : ""}"
+    style={width !== undefined ? `width: ${width}px` : undefined}
+>
     <div class="px-3 py-2 text-xs font-semibold uppercase text-surface-500-400 border-b border-surface-200-800">
         Game Objects
     </div>
@@ -273,7 +276,7 @@
             expandOnClick={false}
             expandedValue={effectiveExpandedIds}
             selectedValue={$selectedKey ? [$selectedKey] : []}
-            onSelectionChange={(e) => { if (e.selectedValue[0]) selectNode(e.selectedValue[0]); }}
+            onSelectionChange={(e) => { if (e.selectedValue[0]) { selectNode(e.selectedValue[0]); onactivate?.(); } }}
         >
             {#each collection.rootNode.children ?? [] as node, i (node.id)}
                 {@render treeNode(node, [i])}
@@ -323,7 +326,7 @@
                         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="size-4"><polyline points="9 18 15 12 9 6" /></svg>
                     </button>
                     <TreeView.BranchText class="flex-1 min-w-0 truncate">{node.text}</TreeView.BranchText>
-                    <span class="opacity-0 group-hover:opacity-100">
+                    <span class="opacity-0 group-hover:opacity-100 pointer-coarse:opacity-100">
                         {@render nodeActions(node)}
                     </span>
                 </TreeView.BranchControl>
@@ -337,7 +340,7 @@
         {:else}
             <TreeView.Item class="group flex items-center">
                 <span class="flex-1 min-w-0 truncate">{node.text}</span>
-                <span class="opacity-0 group-hover:opacity-100">
+                <span class="opacity-0 group-hover:opacity-100 pointer-coarse:opacity-100">
                     {@render nodeActions(node)}
                 </span>
             </TreeView.Item>
