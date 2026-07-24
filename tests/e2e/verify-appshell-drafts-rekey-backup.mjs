@@ -65,9 +65,15 @@ try {
     await dialog.locator('text=restart-test.js').waitFor({ timeout: 10000 });
     await dialog.locator('button:has-text("Close")').click();
 
+    // Backup… lives inside the File ▾ menu, not a standalone toolbar button
+    // (see the responsive Toolbar rework, a50f713a) — open it first. The
+    // BackupBanner's own "Backup…" button isn't a reliable alternative here:
+    // it only appears after a couple of saves (ACTIVITY_THRESHOLD_SAVES in
+    // local-adapter.ts), which this draft hasn't hit yet at this point.
+    await page.click('button:has-text("File")');
     const [download] = await Promise.all([
         page.waitForEvent('download'),
-        page.click('button:has-text("Backup")'),
+        page.click('button:has-text("Backup…")'),
     ]);
     const zipPath = `/tmp/appshell-backup-test-${Date.now()}.zip`;
     await download.saveAs(zipPath);
