@@ -81,31 +81,39 @@
         objectNames = getObjectNames() ?? [];
     });
 
-    // Resizable splitter
+    // Resizable splitter (pointer events, not mouse — same pattern as
+    // routes/edit/+page.svelte's handleSplitterPointerDown, so iPad-width
+    // touch devices can drag it too)
     let panelWidth = $state(360);
-    let isDragging = $state(false);
-    let dragStartX = 0;
-    let dragStartWidth = 0;
 
-    function onSplitterMousedown(e: MouseEvent) {
-        isDragging = true;
-        dragStartX = e.clientX;
-        dragStartWidth = panelWidth;
+    function onSplitterPointerDown(e: PointerEvent) {
         e.preventDefault();
+        const startX = e.clientX;
+        const startWidth = panelWidth;
+        document.body.style.cursor = "col-resize";
+        document.body.style.userSelect = "none";
+
+        function onMove(moveEvent: PointerEvent) {
+            const next = startWidth + (startX - moveEvent.clientX);
+            panelWidth = Math.max(180, Math.min(900, next));
+        }
+        function onUp() {
+            document.removeEventListener("pointermove", onMove);
+            document.removeEventListener("pointerup", onUp);
+            document.body.style.cursor = "";
+            document.body.style.userSelect = "";
+        }
+        document.addEventListener("pointermove", onMove);
+        document.addEventListener("pointerup", onUp);
     }
 
+    // Scroll the (possibly stacked-below) assignment panel into view whenever
+    // an attribute is selected, so picking a row doesn't leave the editor
+    // off-screen below a long attributes table on a phone. A no-op when the
+    // panel is already fully visible (desktop side-by-side layout).
+    let panelEl = $state<HTMLDivElement | undefined>();
     $effect(() => {
-        if (!isDragging) return;
-        function onMousemove(e: MouseEvent) {
-            panelWidth = Math.max(180, Math.min(900, dragStartWidth + (dragStartX - e.clientX)));
-        }
-        function onMouseup() { isDragging = false; }
-        window.addEventListener("mousemove", onMousemove);
-        window.addEventListener("mouseup", onMouseup);
-        return () => {
-            window.removeEventListener("mousemove", onMousemove);
-            window.removeEventListener("mouseup", onMouseup);
-        };
+        if (selectedAttrName && panelEl) panelEl.scrollIntoView({ block: "nearest" });
     });
 
     function availableTypes(): string[] {
@@ -305,8 +313,11 @@
         </table>
     </div>
 
-    <!-- Attributes section: split pane -->
-    <div class="flex flex-1 min-h-0">
+    <!-- Attributes section: split pane. Stacks list-above-panel below the
+         @2xl container breakpoint (the properties pane's own width, not the
+         viewport — it can be narrow on desktop too when the splitter is
+         dragged in). -->
+    <div class="flex flex-col @2xl:flex-row flex-1 min-h-0">
         <!-- Left: attributes list -->
         <div class="flex flex-col flex-1 min-w-0 overflow-hidden">
             <div class="px-3 py-1.5 border-b border-surface-100-900 flex-shrink-0">
@@ -320,7 +331,7 @@
                         <tr class="text-surface-400-500 border-b border-surface-200-800">
                             <th class="text-left py-1 px-3 font-medium">Name</th>
                             <th class="text-left py-1 px-3 font-medium">Value</th>
-                            <th class="text-left py-1 px-3 font-medium">Source</th>
+                            <th class="hidden @lg:table-cell text-left py-1 px-3 font-medium">Source</th>
                             <th class="w-6"></th>
                         </tr>
                     </thead>
@@ -340,7 +351,7 @@
                             >
                                 <td class="py-0.5 px-3 truncate max-w-36 {!dimmed ? "font-medium" : ""}" title={attr.name}>{attr.name}</td>
                                 <td class="py-0.5 px-3 max-w-40 truncate" title={attr.value ?? ""}>{displayValue(attr)}</td>
-                                <td class="py-0.5 px-3 text-surface-400-500 truncate" title={attr.source}>{attr.source}</td>
+                                <td class="hidden @lg:table-cell py-0.5 px-3 text-surface-400-500 truncate" title={attr.source}>{attr.source}</td>
                                 <td class="py-0.5 pr-2 text-right">
                                     {#if canDeleteAttribute(attr)}
                                         <button
@@ -362,15 +373,20 @@
 
         </div>
 
-        <!-- Splitter -->
+        <!-- Splitter: desktop only (the @2xl split above only applies past this
+             breakpoint, where there's a row to drag between) -->
         <!-- svelte-ignore a11y_no_static_element_interactions -->
         <div
-            class="w-1 flex-shrink-0 cursor-col-resize bg-surface-200-800 hover:bg-primary-400 transition-colors"
-            onmousedown={onSplitterMousedown}
+            class="hidden @2xl:block w-1 flex-shrink-0 cursor-col-resize bg-surface-200-800 hover:bg-primary-400 transition-colors"
+            onpointerdown={onSplitterPointerDown}
         ></div>
 
         <!-- Right: assignment panel -->
-        <div class="flex-shrink-0 flex flex-col overflow-hidden" style="width: {panelWidth}px">
+        <div
+            bind:this={panelEl}
+            class="w-full @2xl:w-[var(--panel-width)] @2xl:flex-shrink-0 flex flex-col overflow-hidden"
+            style="--panel-width: {panelWidth}px"
+        >
             <div class="px-3 py-1.5 border-b border-surface-100-900 font-semibold text-surface-500-400 uppercase tracking-wide flex-shrink-0">
                 Assignment
             </div>
@@ -495,8 +511,3 @@
         </div>
     </div>
 </div>
-
-<!-- Drag overlay: keeps col-resize cursor while dragging over other elements -->
-{#if isDragging}
-    <div class="fixed inset-0 z-50 cursor-col-resize select-none"></div>
-{/if}
