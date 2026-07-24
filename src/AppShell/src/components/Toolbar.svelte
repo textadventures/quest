@@ -31,9 +31,18 @@
     import LoaderCircle from "@lucide/svelte/icons/loader-circle";
     import TriangleAlert from "@lucide/svelte/icons/triangle-alert";
     import Circle from "@lucide/svelte/icons/circle";
+    import Ellipsis from "@lucide/svelte/icons/ellipsis";
     import DiscordIcon from "$components/DiscordIcon.svelte";
     import GithubIcon from "$components/GithubIcon.svelte";
     import DropdownMenu from "$components/DropdownMenu.svelte";
+    import type { DropdownMenuItem } from "$components/DropdownMenu.svelte";
+    import { isNarrow } from "$lib/layout.svelte";
+
+    const DISCORD_URL = "https://textadventures.co.uk/community/discord";
+    const GITHUB_URL = "https://github.com/textadventures/quest";
+    function openLink(url: string) {
+        window.open(url, "_blank", "noopener,noreferrer");
+    }
 
     const wasmPlayerUrl = PUBLIC_WASM_PLAYER_URL || "/player/";
     const showHome = PUBLIC_SHOW_HOME === "true";
@@ -109,48 +118,82 @@
         ] : []),
     ]);
 
+    // File menu (desktop): Save As / Backup / Publish, each only present under
+    // the same conditions the old individual buttons used.
+    let fileMenuItems = $derived.by((): DropdownMenuItem[] => {
+        const items: DropdownMenuItem[] = [];
+        if ($canSaveAs) items.push({ label: "Save As…", action: handleSaveAs, icon: Save, disabled: saving });
+        if ($canBackup) items.push({ label: "Backup…", action: handleBackup, icon: Download, disabled: saving });
+        if ($gameFilename) items.push({ label: "Publish…", action: () => publishModalOpen.set(true), icon: Package });
+        return items;
+    });
 
+    // Overflow (⋯) menu: on desktop just the community links (reserved future
+    // home for anything that doesn't earn a top-level slot). On mobile it also
+    // absorbs everything that doesn't fit the collapsed toolbar — Delete,
+    // Assets/Undo/Redo, and the File menu's items — since Add and Preview stay
+    // as visible icon-only buttons.
+    let overflowItems = $derived.by((): DropdownMenuItem[] => {
+        const links: DropdownMenuItem[] = [
+            { label: "Discord", action: () => openLink(DISCORD_URL), icon: DiscordIcon },
+            { label: "GitHub", action: () => openLink(GITHUB_URL), icon: GithubIcon },
+        ];
+        if (!isNarrow.current) return links;
+
+        const fileItems = fileMenuItems;
+        if (fileItems.length > 0) fileItems[0] = { ...fileItems[0], divider: true };
+        links[0] = { ...links[0], divider: true };
+
+        return [
+            { label: "Delete", action: () => selectedNode && deleteElement(selectedNode.key), icon: Trash2, disabled: !canDelete },
+            { label: "Manage assets", action: () => assetManagerOpen.set(true), icon: ImageIcon, divider: true },
+            { label: "Undo", action: undo, icon: Undo2, disabled: !$canUndo },
+            { label: "Redo", action: redo, icon: Redo2, disabled: !$canRedo },
+            ...fileItems,
+            ...links,
+        ];
+    });
 </script>
 
 <AppBar>
     <AppBar.Toolbar class="grid-cols-[auto_1fr_auto]">
-        <AppBar.Lead>
-            <div class="flex items-center">
+        <AppBar.Lead class="flex-1 min-w-0">
+            <div class="flex items-center min-w-0">
                 {#if showHome}
                     <button
                         type="button"
-                        class="toolbar-icon-btn mr-2"
+                        class="toolbar-icon-btn mr-2 shrink-0"
                         onclick={handleHome}
                         title="Back to Home"
                     ><Home size={16} /></button>
                 {/if}
                 {#if $gameFilename}
-                    <span class="font-mono text-sm font-medium">{$gameFilename}</span>
+                    <span class="font-mono text-sm font-medium truncate min-w-0">{$gameFilename}</span>
                 {/if}
                 {#if $saveError}
                     <button
                         type="button"
-                        class="save-chip save-chip-error"
+                        class="save-chip save-chip-error shrink-0"
                         onclick={() => retrySave()}
                         title={$saveError}
-                    ><TriangleAlert size={13} /> Save failed — Retry</button>
+                    ><TriangleAlert size={13} /> <span class="hidden md:inline">Save failed — Retry</span></button>
                 {:else if $isSaving}
-                    <span class="save-chip save-chip-saving"><LoaderCircle size={13} class="animate-spin" /> Saving…</span>
+                    <span class="save-chip save-chip-saving shrink-0"><LoaderCircle size={13} class="animate-spin" /> <span class="hidden md:inline">Saving…</span></span>
                 {:else if $isDirty || $isEditingField}
                     <button
                         type="button"
-                        class="save-chip save-chip-unsaved"
+                        class="save-chip save-chip-unsaved shrink-0"
                         onclick={handleSaveNow}
                         title="Save now"
-                    ><Circle size={8} fill="currentColor" /> Unsaved</button>
+                    ><Circle size={8} fill="currentColor" /> <span class="hidden md:inline">Unsaved</span></button>
                 {:else if $gameFilename}
-                    <span class="save-chip save-chip-saved"><Check size={13} /> Saved</span>
+                    <span class="save-chip save-chip-saved shrink-0"><Check size={13} /> <span class="hidden md:inline">Saved</span></span>
                 {/if}
             </div>
         </AppBar.Lead>
         <AppBar.Trail>
             <div class="flex gap-1.5 items-center">
-                <!-- Add dropdown -->
+                <!-- Add dropdown: icon-only below md -->
                 <DropdownMenu items={addOptions}>
                     {#snippet trigger(toggle)}
                         <button
@@ -158,37 +201,44 @@
                             class="btn btn-sm preset-outlined-primary-500"
                             onclick={toggle}
                             title="Add element"
-                        ><Plus size={14} /> Add <ChevronDown size={12} /></button>
+                        ><Plus size={14} /> <span class="hidden md:inline">Add</span> <ChevronDown size={12} class="hidden md:inline" /></button>
                     {/snippet}
                 </DropdownMenu>
                 <!-- Delete button: always rendered, disabled when nothing deletable is
-                     selected, so surrounding buttons don't shift as selection changes -->
+                     selected, so surrounding buttons don't shift as selection changes.
+                     Desktop only — folded into the ⋯ menu on mobile. -->
                 <button
                     type="button"
-                    class="btn btn-sm preset-outlined-error-500"
+                    class="btn btn-sm preset-outlined-error-500 hidden md:inline-flex"
                     onclick={() => selectedNode && deleteElement(selectedNode.key)}
                     disabled={!canDelete}
                     title={canDelete ? "Delete " + (selectedNode?.text ?? "") : "Delete"}
                 ><Trash2 size={14} /> Delete</button>
-                <div class="toolbar-divider"></div>
-                <button type="button" class="toolbar-icon-btn" onclick={() => assetManagerOpen.set(true)} title="Manage assets"><ImageIcon size={16} /></button>
-                <button type="button" class="toolbar-icon-btn" onclick={undo} disabled={!$canUndo} title="Undo"><Undo2 size={16} /></button>
-                <button type="button" class="toolbar-icon-btn" onclick={redo} disabled={!$canRedo} title="Redo"><Redo2 size={16} /></button>
-                <div class="toolbar-divider"></div>
-                {#if $canSaveAs}
-                    <button type="button" class="btn btn-sm preset-outlined-primary-500" onclick={handleSaveAs} disabled={saving} title="Save As"><Save size={14} /> Save As…</button>
-                {/if}
-                {#if $canBackup}
-                    <button type="button" class="btn btn-sm preset-outlined-primary-500" onclick={handleBackup} disabled={saving} title="Download a .zip copy of this game and its assets"><Download size={14} /> Backup…</button>
+                <div class="toolbar-divider hidden md:block"></div>
+                <button type="button" class="toolbar-icon-btn !hidden md:!inline-flex" onclick={() => assetManagerOpen.set(true)} title="Manage assets"><ImageIcon size={16} /></button>
+                <button type="button" class="toolbar-icon-btn !hidden md:!inline-flex" onclick={undo} disabled={!$canUndo} title="Undo"><Undo2 size={16} /></button>
+                <button type="button" class="toolbar-icon-btn !hidden md:!inline-flex" onclick={redo} disabled={!$canRedo} title="Redo"><Redo2 size={16} /></button>
+                <div class="toolbar-divider hidden md:block"></div>
+                {#if fileMenuItems.length > 0}
+                    <div class="hidden md:block">
+                        <DropdownMenu items={fileMenuItems}>
+                            {#snippet trigger(toggle)}
+                                <button type="button" class="btn btn-sm preset-outlined-primary-500" onclick={toggle} disabled={saving} title="File"
+                                >File <ChevronDown size={12} /></button>
+                            {/snippet}
+                        </DropdownMenu>
+                    </div>
                 {/if}
                 {#if $gameFilename}
-                    <button type="button" class="btn btn-sm preset-outlined-primary-500" onclick={() => publishModalOpen.set(true)} title="Build a .quest package for distribution"><Package size={14} /> Publish…</button>
-                    <div class="toolbar-divider"></div>
-                    <button type="button" class="btn btn-sm preset-filled-primary-500" onclick={handlePreview} title="Preview game"><Play size={14} /> Preview</button>
+                    <button type="button" class="btn btn-sm preset-filled-primary-500" onclick={handlePreview} title="Preview game"><Play size={14} /> <span class="hidden md:inline">Preview</span></button>
                 {/if}
-                <div class="toolbar-divider"></div>
-                <a href="https://textadventures.co.uk/community/discord" target="_blank" rel="noopener noreferrer" class="toolbar-icon-btn" title="Join us on Discord" aria-label="Join us on Discord"><DiscordIcon size={16} /></a>
-                <a href="https://github.com/textadventures/quest" target="_blank" rel="noopener noreferrer" class="toolbar-icon-btn" title="View on GitHub" aria-label="View on GitHub"><GithubIcon size={16} /></a>
+                <!-- Overflow menu: community links on desktop; also Delete/Assets/
+                     Undo/Redo/File-menu items on mobile (see overflowItems) -->
+                <DropdownMenu items={overflowItems}>
+                    {#snippet trigger(toggle)}
+                        <button type="button" class="toolbar-icon-btn" onclick={toggle} title="More"><Ellipsis size={16} /></button>
+                    {/snippet}
+                </DropdownMenu>
             </div>
         </AppBar.Trail>
     </AppBar.Toolbar>
@@ -236,6 +286,13 @@
     .save-chip-unsaved {
         min-width: 6.25rem;
         justify-content: center;
+    }
+    @media (max-width: 767px) {
+        .save-chip-saved,
+        .save-chip-saving,
+        .save-chip-unsaved {
+            min-width: 0;
+        }
     }
     .save-chip-saved {
         color: var(--color-success-600-400);
