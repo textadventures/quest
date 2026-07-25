@@ -31,6 +31,7 @@ export interface ControlInfo {
   objectType?: string | null
   listFilter?: string | null
   source?: string | null
+  advanced: boolean
 }
 
 export interface TabInfo {

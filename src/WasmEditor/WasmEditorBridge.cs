@@ -34,7 +34,8 @@ internal record ControlInfo(
     string? ElementType = null,
     string? ObjectType = null,
     string? ListFilter = null,
-    string? Source = null);
+    string? Source = null,
+    bool Advanced = false);
 
 internal record TabInfo(string? Caption, List<ControlInfo> Controls);
 
@@ -3075,14 +3076,15 @@ public partial class WasmEditorBridge
 
             var caption = ctrl.Caption ?? ctrl.GetString("selfcaption");
             return new ControlInfo(ctrl.Id, ctrl.ControlType, caption, options, subEditors, ctrl.Attribute,
-                multiTpCommands);
+                multiTpCommands, Advanced: !ctrl.IsControlVisibleInSimpleMode);
         }
         else if (ctrl.ControlType == "elementslist")
         {
             return new ControlInfo(null, "elementslist", null, null, null, null, null, null,
                 ctrl.GetString("elementtype"),
                 ctrl.GetString("objecttype"),
-                ctrl.GetString("listfilter"));
+                ctrl.GetString("listfilter"),
+                Advanced: !ctrl.IsControlVisibleInSimpleMode);
         }
 
         List<TextProcessorCommand>? textProcessorCommands = null;
@@ -3095,7 +3097,8 @@ public partial class WasmEditorBridge
         var source = ctrl.ControlType == "file" ? ctrl.GetString("source") : null;
 
         return new ControlInfo(attribute, ctrl.ControlType, ctrl.Caption ?? ctrl.GetString("selfcaption"), options,
-            null, null, textProcessorCommands, addPrompt, Source: source);
+            null, null, textProcessorCommands, addPrompt, Source: source,
+            Advanced: !ctrl.IsControlVisibleInSimpleMode);
     }
 
     [JSExport]
