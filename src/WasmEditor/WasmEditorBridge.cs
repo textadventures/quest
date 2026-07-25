@@ -72,9 +72,9 @@ internal record ScriptNodeData(
 
 internal record ScriptBlockData(List<ScriptNodeData> Scripts);
 
-internal record ScriptCommandInfo(string Keyword, string Display, string Add, string CreateString);
+internal record ScriptCommandInfo(string Keyword, string Display, string Add, string CreateString, bool Advanced);
 
-internal record ScriptCategoryInfo(string Name, List<ScriptCommandInfo> Commands);
+internal record ScriptCategoryInfo(string Name, List<ScriptCommandInfo> Commands, bool Advanced);
 
 internal record ScriptCommandCategoriesData(List<ScriptCategoryInfo> Categories);
 
@@ -1363,12 +1363,18 @@ public partial class WasmEditorBridge
             .GroupBy(kv => kv.Value.Category)
             .Select(g => new ScriptCategoryInfo(
                 g.Key,
-                g.OrderBy(kv => kv.Value.Order).Select(kv => new ScriptCommandInfo(
-                    kv.Key,
-                    kv.Value.DisplayString ?? kv.Key,
-                    kv.Value.AdderDisplayString ?? kv.Key,
-                    kv.Value.CreateString!
-                )).ToList()
+                // Non-advanced commands first (in declared order), then advanced ones
+                // (also in declared order) — keeps a mixed category's everyday commands
+                // together at the top instead of interleaved with advanced ones.
+                g.OrderBy(kv => !kv.Value.IsVisibleInSimpleMode).ThenBy(kv => kv.Value.Order)
+                    .Select(kv => new ScriptCommandInfo(
+                        kv.Key,
+                        kv.Value.DisplayString ?? kv.Key,
+                        kv.Value.AdderDisplayString ?? kv.Key,
+                        kv.Value.CreateString!,
+                        !kv.Value.IsVisibleInSimpleMode
+                    )).ToList(),
+                g.All(kv => !kv.Value.IsVisibleInSimpleMode)
             ))
             .ToList();
         var data = new ScriptCommandCategoriesData(grouped);
