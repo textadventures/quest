@@ -75,6 +75,14 @@
         return data.controls;
     }
 
+    function partitionControls(controls: ControlInfo[]): { main: ControlInfo[]; advanced: ControlInfo[] } {
+        const advanced = controls.filter(c => c.advanced);
+        if (advanced.length === 0 || advanced.length === controls.length) {
+            return { main: controls, advanced: [] };
+        }
+        return { main: controls.filter(c => !c.advanced), advanced };
+    }
+
     function attrValue(attribute: string): string | null {
         return $selectedData?.attributes[attribute] ?? null;
     }
@@ -144,20 +152,24 @@
         {@const viewControls = getControlsForView()}
         {@const hasAttributesPanel = viewControls.some(c => c.controlType === "attributes")}
         {#if hasAttributesPanel}
+            {@const { main, advanced } = partitionControls(viewControls.filter(c => c.controlType !== "attributes"))}
             <div class="flex-1 overflow-hidden flex flex-col min-h-0">
                 <AttributesEditor>
                     {#snippet extraControls()}
-                        {#each viewControls.filter(c => c.controlType !== "attributes") as ctrl, i (i)}
+                        {#each main as ctrl, i (i)}
                             {@render controlRow(ctrl)}
                         {/each}
+                        {@render advancedExpander(advanced)}
                     {/snippet}
                 </AttributesEditor>
             </div>
         {:else}
+            {@const { main, advanced } = partitionControls(viewControls)}
             <div class="flex-1 overflow-y-auto">
-                {#each viewControls as ctrl, i (i)}
+                {#each main as ctrl, i (i)}
                     {@render controlRow(ctrl)}
                 {/each}
+                {@render advancedExpander(advanced)}
             </div>
         {/if}
     {/if}
@@ -407,6 +419,19 @@
         {:else}
             <em class="text-xs text-surface-400-500">null</em>
         {/if}
+    {/if}
+{/snippet}
+
+{#snippet advancedExpander(controls: ControlInfo[])}
+    {#if controls.length > 0}
+        <details class="border-t border-surface-200-800">
+            <summary class="px-3 py-1.5 text-xs font-semibold uppercase text-surface-500-400 cursor-pointer select-none">
+                Advanced
+            </summary>
+            {#each controls as ctrl, i (i)}
+                {@render controlRow(ctrl)}
+            {/each}
+        </details>
     {/if}
 {/snippet}
 

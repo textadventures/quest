@@ -47,6 +47,31 @@
         return (byParent.get(null) ?? []).map(build);
     }
 
+    // ── Empty advanced categories ────────────────────────────────────────────────
+
+    // Advanced category headers are always present in the tree data (added
+    // unconditionally by EditorController.AddTreeHeader) even when nothing of that
+    // type exists yet. An empty header is noise for everyone, not just beginners —
+    // hide these (and the "_advanced" group header itself once all of its children
+    // are hidden) until the author adds one via the Toolbar "+" menu, which doesn't
+    // depend on the header being visible. "_objects" is never hidden.
+    const HIDE_WHEN_EMPTY = new Set([
+        "_functions", "_timers", "_walkthrough",
+        "_include", "_template", "_dynamictemplate", "_objecttype", "_javascript",
+        "_advanced",
+    ]);
+
+    function pruneEmptyAdvancedCategories(nodes: HierNode[]): HierNode[] {
+        const result: HierNode[] = [];
+        for (const node of nodes) {
+            let children = node.children;
+            if (children) children = pruneEmptyAdvancedCategories(children);
+            if (HIDE_WHEN_EMPTY.has(node.id) && !children?.length) continue;
+            result.push(children ? { ...node, children } : node);
+        }
+        return result;
+    }
+
     // ── Filtering ──────────────────────────────────────────────────────────────
 
     let filterText = $state("");
@@ -82,7 +107,7 @@
     }
 
     let isFiltering = $derived(filterText.trim().length > 0);
-    let rawHierTree = $derived(buildHierTree($treeNodes));
+    let rawHierTree = $derived(pruneEmptyAdvancedCategories(buildHierTree($treeNodes)));
     let filteredHierTree = $derived(
         isFiltering ? filterHierTree(rawHierTree, filterText.trim().toLowerCase()) : rawHierTree
     );
