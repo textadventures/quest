@@ -1,20 +1,18 @@
 // Verifies workstream 2 of docs/editor-progressive-disclosure.md: the
 // advanced tree category headers (Functions, Timers, Walkthrough, and the
 // "Advanced" group's children: Included Libraries, Templates, Dynamic
-// Templates, Object Types) are always present in the tree data (added
-// unconditionally by EditorController.AddTreeHeader) but should be hidden in
-// the UI while empty, since an empty header is noise. "Objects" must never
-// be hidden, and adding the first element of a hidden type via the Toolbar
-// "+" menu (header-independent) should make its header reappear with the
-// new element selected.
+// Templates, Object Types, Javascript) are always present in the tree data
+// (added unconditionally by EditorController.AddTreeHeader) but should be
+// hidden in the UI while empty, since an empty header is noise. "Objects"
+// must never be hidden, and adding the first element of a hidden type via
+// the Toolbar "+" menu (header-independent) should make its header reappear
+// with the new element selected.
 //
 // Note: a fresh text-adventure game already includes two default libraries
 // (English.aslx, Core.aslx), so "Included Libraries" — and therefore the
 // "Advanced" group header itself — is visible even on a brand-new game;
-// Templates/Dynamic Templates/Object Types are the ones actually empty by
-// default. "Javascript" is a permanent child of "Advanced" not covered by
-// this workstream (see docs/editor-progressive-disclosure.md workstream 2),
-// so it stays visible even when empty.
+// Templates/Dynamic Templates/Object Types/Javascript are the ones actually
+// empty by default.
 import { chromium } from 'playwright';
 
 const baseUrl = process.argv[2] || 'http://localhost:5174';
@@ -49,8 +47,8 @@ try {
 
     // "Advanced" itself stays visible because "Included Libraries" (a child) already
     // has the two default libraries — expand it and confirm the genuinely-empty
-    // children (Templates/Dynamic Templates/Object Types) are hidden while
-    // "Included Libraries" and the always-shown "Javascript" are not.
+    // children (Templates/Dynamic Templates/Object Types/Javascript) are hidden
+    // while "Included Libraries" is not.
     const advancedSummary = tree.getByText('Advanced', { exact: true });
     await advancedSummary.waitFor({ state: 'visible', timeout: 5000 });
     await tree.locator('button[aria-label="Expand"]').last().click();
@@ -58,15 +56,15 @@ try {
     await tree.getByText('Included Libraries', { exact: true }).waitFor({ state: 'visible', timeout: 5000 });
     console.log('PASS: "Advanced" is visible and shows "Included Libraries" (non-empty by default)');
 
-    for (const label of ['Templates', 'Dynamic Templates', 'Object Types']) {
+    for (const label of ['Templates', 'Dynamic Templates', 'Object Types', 'Javascript']) {
         const visible = await tree.getByText(label, { exact: true }).isVisible().catch(() => false);
         if (visible) throw new Error(`Expected "${label}" to be hidden while empty, but it's visible`);
     }
-    console.log('PASS: empty Templates/Dynamic Templates/Object Types are hidden inside "Advanced"');
+    console.log('PASS: empty Templates/Dynamic Templates/Object Types/Javascript are hidden inside "Advanced"');
 
     // Add the first Function via the Toolbar "+" menu (header-independent) and confirm
     // the "Functions" header appears with the new element selected.
-    await page.getByRole('button', { name: 'Add', exact: true }).click();
+    await page.click('button[title="Add element"]');
     await page.getByRole('button', { name: 'Add Function', exact: true }).click();
     await page.fill('#element-name', 'MyFunction');
     await page.getByRole('button', { name: 'Add Function', exact: true }).click();
@@ -79,11 +77,18 @@ try {
     console.log('PASS: new function element is visible in the tree');
 
     // Other still-empty headers remain hidden.
-    for (const label of ['Timers', 'Walkthrough']) {
+    for (const label of ['Timers', 'Walkthrough', 'Javascript']) {
         const visible = await tree.getByText(label, { exact: true }).isVisible().catch(() => false);
         if (visible) throw new Error(`"${label}" should still be hidden — nothing of that type was added`);
     }
     console.log('PASS: other still-empty categories remain hidden');
+
+    // "Add JavaScript" lives under the Toolbar "+" menu too (header-independent) and
+    // should make the "Javascript" header reappear, same as Functions did above.
+    await page.click('button[title="Add element"]');
+    await page.getByRole('button', { name: 'Add JavaScript', exact: true }).click();
+    await tree.getByText('Javascript', { exact: true }).waitFor({ state: 'visible', timeout: 5000 });
+    console.log('PASS: "Javascript" header appears after adding via the Toolbar "+" menu');
 
     console.log('PASS: all checks passed');
 } catch (err) {

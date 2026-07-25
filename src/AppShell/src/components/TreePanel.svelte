@@ -57,7 +57,7 @@
     // depend on the header being visible. "_objects" is never hidden.
     const HIDE_WHEN_EMPTY = new Set([
         "_functions", "_timers", "_walkthrough",
-        "_include", "_template", "_dynamictemplate", "_objecttype",
+        "_include", "_template", "_dynamictemplate", "_objecttype", "_javascript",
         "_advanced",
     ]);
 
