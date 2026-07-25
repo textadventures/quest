@@ -9,7 +9,16 @@
         onClose: () => void;
     }
 
-    let { categories, onAdd, onClose }: Props = $props();
+    let { categories: unorderedCategories, onAdd, onClose }: Props = $props();
+
+    // Keep every command reachable, but stop presenting advanced-only categories as
+    // peers of everyday ones — order non-advanced categories first, then the advanced
+    // ones after a divider. The filter box searches all categories regardless.
+    const categories = $derived([
+        ...unorderedCategories.filter((c) => !c.advanced),
+        ...unorderedCategories.filter((c) => c.advanced),
+    ]);
+    const firstAdvancedIndex = $derived(categories.findIndex((c) => c.advanced));
 
     let dialogEl: HTMLDivElement;
 
@@ -276,6 +285,9 @@
                 >
                     {#each categories as cat, ci (ci)}
                         {@const isSelected = selectedCategoryIndex === ci}
+                        {#if ci === firstAdvancedIndex && ci > 0}
+                            <div class="px-4 py-1 text-[10px] font-semibold uppercase tracking-wide text-surface-400-500 border-t border-surface-200-800 mt-1 pt-2">Advanced</div>
+                        {/if}
                         <button
                             bind:this={categoryButtonEls[ci]}
                             type="button"

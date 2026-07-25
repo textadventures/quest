@@ -73,7 +73,7 @@ internal record ScriptBlockData(List<ScriptNodeData> Scripts);
 
 internal record ScriptCommandInfo(string Keyword, string Display, string Add, string CreateString);
 
-internal record ScriptCategoryInfo(string Name, List<ScriptCommandInfo> Commands);
+internal record ScriptCategoryInfo(string Name, List<ScriptCommandInfo> Commands, bool Advanced);
 
 internal record ScriptCommandCategoriesData(List<ScriptCategoryInfo> Categories);
 
@@ -1367,7 +1367,8 @@ public partial class WasmEditorBridge
                     kv.Value.DisplayString ?? kv.Key,
                     kv.Value.AdderDisplayString ?? kv.Key,
                     kv.Value.CreateString!
-                )).ToList()
+                )).ToList(),
+                g.All(kv => !kv.Value.IsVisibleInSimpleMode)
             ))
             .ToList();
         var data = new ScriptCommandCategoriesData(grouped);

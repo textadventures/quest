@@ -116,6 +116,7 @@ export interface ScriptCommandInfo {
 export interface ScriptCategoryInfo {
   name: string
   commands: ScriptCommandInfo[]
+  advanced: boolean
 }
 
 export interface ScriptCommandCategoriesData {
