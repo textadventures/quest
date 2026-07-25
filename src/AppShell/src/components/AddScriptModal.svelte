@@ -54,6 +54,15 @@
 
     const selectedCategory = $derived(categories[selectedCategoryIndex] ?? null);
 
+    // Within a mixed category (not already-entirely-advanced, which already got its own
+    // category-level divider above), commands are pre-sorted non-advanced-first by the
+    // bridge — find where the advanced tail starts so a divider can mark it.
+    const firstAdvancedCommandIndex = $derived(
+        selectedCategory && !selectedCategory.advanced
+            ? selectedCategory.commands.findIndex((c) => c.advanced)
+            : -1
+    );
+
     // ── Filtering ──────────────────────────────────────────────────────────────
     // While the box has text, the category sidebar + single-category list is
     // replaced by one flat list of matches across every category, each tagged
@@ -315,6 +324,9 @@
                     {#if selectedCategory}
                         {#each selectedCategory.commands as cmd, idx (cmd.createString)}
                             {@const isSelected = selectedCommand?.createString === cmd.createString}
+                            {#if idx === firstAdvancedCommandIndex && idx > 0}
+                                <div class="px-5 py-1 text-[10px] font-semibold uppercase tracking-wide text-surface-400-500 border-t border-surface-200-800 mt-1 pt-2">Advanced</div>
+                            {/if}
                             <button
                                 bind:this={rowEls[idx]}
                                 type="button"

@@ -32,8 +32,11 @@ try {
     await page.locator('[data-value="game"][data-part="branch-control"]').click();
 
     // Enable "Lightness and darkness" on the Features tab so the (entirely-advanced)
-    // Darkness script category actually has visible commands.
+    // Darkness script category actually has visible commands. The checkbox is itself
+    // <advanced/>, so (since workstream 1, #1934) it's folded into the property
+    // editor's own "Advanced" expander — open that first.
     await page.getByRole('button', { name: 'Features', exact: true }).click();
+    await page.locator('summary', { hasText: 'Advanced' }).click();
     await page.getByText('Lightness and darkness', { exact: false }).click();
 
     await page.getByRole('button', { name: 'Scripts', exact: true }).click();

@@ -112,6 +112,7 @@ export interface ScriptCommandInfo {
   display: string
   add: string
   createString: string
+  advanced: boolean
 }
 
 export interface ScriptCategoryInfo {
