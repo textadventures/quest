@@ -2,7 +2,7 @@
     import { validateName } from "$lib/editor-store";
 
     interface Props {
-        elementType: "room" | "object" | "function" | "timer" | "walkthrough" | "template" | "dynamictemplate" | "type";
+        elementType: "room" | "object" | "page" | "function" | "timer" | "walkthrough" | "template" | "dynamictemplate" | "type";
         parent?: string | null;
         onconfirm: (name: string) => void;
         oncancel: () => void;
@@ -13,6 +13,7 @@
     const labels: Record<string, string> = {
         room: "Room",
         object: "Object",
+        page: "Page",
         function: "Function",
         timer: "Timer",
         walkthrough: "Walkthrough",

@@ -8,7 +8,7 @@ import { ServerFileAdapter } from "./filesystem/server-adapter";
 import { triggerDownload } from "./filesystem/download";
 import type { TreeNode, EditorDataResponse, ScriptBlockData, ScriptCommandCategoriesData, IfExpressionTemplateData, IfExpressionTemplate, FullAttributeData, ExitsData, VerbInfo } from "./types";
 
-export type AddElementModalState = { type: "room" | "object" | "function" | "timer" | "walkthrough" | "template" | "dynamictemplate" | "type"; parent: string | null } | null;
+export type AddElementModalState = { type: "room" | "object" | "page" | "function" | "timer" | "walkthrough" | "template" | "dynamictemplate" | "type"; parent: string | null } | null;
 
 let _bridge: WasmBridge | null = null;
 let _adapter: FileAdapter | null = null;
@@ -17,8 +17,12 @@ let _loadedGameId: string | null = null;
 export const isLoaded = writable(false);
 export const loadingStatus = writable<string | null>(null);
 export const addElementModal = writable<AddElementModalState>(null);
+// Gamebook games are flat "pages" with no rooms/objects/verbs/exits — set once
+// per load from EditorController.EditorStyle (see openGame()) and used to swap
+// wording/affordances in the tree, toolbar and advanced-adders panel.
+export const isGamebook = writable(false);
 
-export function openAddModal(type: "room" | "object" | "function" | "timer" | "walkthrough" | "template" | "dynamictemplate" | "type", parent: string | null) {
+export function openAddModal(type: "room" | "object" | "page" | "function" | "timer" | "walkthrough" | "template" | "dynamictemplate" | "type", parent: string | null) {
     addElementModal.set({ type, parent });
 }
 export const gameFilename = writable<string | null>(null);
@@ -94,6 +98,7 @@ export async function openGame(bytes: Uint8Array, filename: string, adapter: Fil
     clearAssetUrlCache();
     if (ok) {
         _loadedGameId = _bridge.GetGameId() || null;
+        isGamebook.set(_bridge.IsGamebook());
         const nodes: TreeNode[] = JSON.parse(_bridge.GetTreeNodes());
         treeNodes.set(nodes);
         isLoaded.set(true);

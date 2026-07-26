@@ -1,5 +1,5 @@
 <script lang="ts">
-    import { selectedKey, selectedData, treeNodes, setAttribute, setDropdownType, setMultiType, setObjectReference, addDictItem, removeDictItem, updateDictItem, openAddModal, createIncludedLibrary, createJavascript } from "$lib/editor-store";
+    import { selectedKey, selectedData, treeNodes, isGamebook, setAttribute, setDropdownType, setMultiType, setObjectReference, addDictItem, removeDictItem, updateDictItem, openAddModal, createIncludedLibrary, createJavascript } from "$lib/editor-store";
     import { showToast } from "$lib/toast";
     import type { ControlInfo, TextProcessorCommand } from "$lib/types";
     import type { TreeNode } from "$lib/types";
@@ -27,16 +27,21 @@
     // Timers, Library, ...) stay hidden from the tree until they have their first
     // element (TreePanel's HIDE_WHEN_EMPTY), so this is the only place to add the
     // first one of each.
-    const ADVANCED_ADDERS: { label: string; action: () => void }[] = [
-        { label: "Add Function", action: () => openAddModal("function", null) },
-        { label: "Add Timer", action: () => openAddModal("timer", null) },
-        { label: "Add Walkthrough", action: () => openAddModal("walkthrough", null) },
-        { label: "Add Library", action: () => createIncludedLibrary() },
-        { label: "Add Template", action: () => openAddModal("template", null) },
-        { label: "Add Dynamic Template", action: () => openAddModal("dynamictemplate", null) },
-        { label: "Add Type", action: () => openAddModal("type", null) },
-        { label: "Add JavaScript", action: () => createJavascript() },
+    const ALL_ADVANCED_ADDERS: { label: string; action: () => void; gamebook: boolean }[] = [
+        { label: "Add Function", action: () => openAddModal("function", null), gamebook: true },
+        { label: "Add Timer", action: () => openAddModal("timer", null), gamebook: false },
+        { label: "Add Walkthrough", action: () => openAddModal("walkthrough", null), gamebook: false },
+        { label: "Add Library", action: () => createIncludedLibrary(), gamebook: true },
+        { label: "Add Template", action: () => openAddModal("template", null), gamebook: false },
+        { label: "Add Dynamic Template", action: () => openAddModal("dynamictemplate", null), gamebook: false },
+        { label: "Add Type", action: () => openAddModal("type", null), gamebook: false },
+        { label: "Add JavaScript", action: () => createJavascript(), gamebook: true },
     ];
+    // Gamebook mode only supports Function/Library/JavaScript — Timer/Walkthrough
+    // don't apply to a flat page-based game, and Template/Object Type are in
+    // EditorController's m_ignoredTypes for gamebook (adding one would create an
+    // invisible, orphaned element).
+    let ADVANCED_ADDERS = $derived(ALL_ADVANCED_ADDERS.filter(a => !$isGamebook || a.gamebook));
 
     let activeTab = $state<string | null>(null);
     let lastKey = $state<string | null>(null);

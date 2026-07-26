@@ -119,7 +119,7 @@
         await tick();
         if (!mode) return;
         if (mode.type === "room") createRoom(name, mode.parent);
-        else if (mode.type === "object") createObject(name, mode.parent);
+        else if (mode.type === "object" || mode.type === "page") createObject(name, mode.parent);
         else if (mode.type === "function") createFunction(name);
         else if (mode.type === "timer") createTimer(name);
         else if (mode.type === "walkthrough") createWalkthrough(name);

@@ -4,7 +4,7 @@
     import Search from "@lucide/svelte/icons/search";
     import X from "@lucide/svelte/icons/x";
     import {
-        treeNodes, selectedKey, selectNode,
+        treeNodes, selectedKey, selectNode, isGamebook,
         openAddModal, createExit, createTurnScript, createCommand, createVerb,
         createIncludedLibrary, createJavascript,
         deleteElement,
@@ -261,7 +261,11 @@
         const { id, text, nodeType: nt } = node;
 
         if (nt === "header") {
-            if (id === "_objects") opts.push({ label: "Add Room", action: () => openAddModal("room", null) });
+            if (id === "_objects") {
+                opts.push($isGamebook
+                    ? { label: "Add Page", action: () => openAddModal("page", null) }
+                    : { label: "Add Room", action: () => openAddModal("room", null) });
+            }
             else if (id === "_functions") opts.push({ label: "Add Function", action: () => openAddModal("function", null) });
             else if (id === "_timers") opts.push({ label: "Add Timer", action: () => openAddModal("timer", null) });
             else if (id === "_gameVerbs") opts.push({ label: "Add Verb", action: () => createVerb(null) });
@@ -302,7 +306,7 @@
     style={width !== undefined ? `width: ${width}px` : undefined}
 >
     <div class="px-3 py-2 text-xs font-semibold uppercase text-surface-500-400 border-b border-surface-200-800">
-        Game Objects
+        {$isGamebook ? "Game Pages" : "Game Objects"}
     </div>
     <div class="p-1.5 border-b border-surface-200-800 relative">
         <Search class="absolute left-3.5 top-1/2 -translate-y-1/2 size-3.5 text-surface-400 pointer-events-none" />
