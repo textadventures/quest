@@ -1,5 +1,24 @@
 # Changelog
 
+## [6.0.0-beta.45](https://github.com/textadventures/quest/compare/v6.0.0-beta.44...v6.0.0-beta.45) (2026-07-26)
+
+
+### Features
+
+* **AppShell:** demote advanced categories in the script adder ([#1936](https://github.com/textadventures/quest/issues/1936)) ([98bad1a](https://github.com/textadventures/quest/commit/98bad1aa561151b0554d0b6ee74618005a209ad7))
+* **AppShell:** fold advanced controls into a collapsed expander ([#1934](https://github.com/textadventures/quest/issues/1934)) ([dd42925](https://github.com/textadventures/quest/commit/dd42925e3130712450852dee8471177885fada38))
+* **AppShell:** hide empty advanced tree categories ([#1935](https://github.com/textadventures/quest/issues/1935)) ([63212d1](https://github.com/textadventures/quest/commit/63212d192027945bb3cd91b0436fbe34778c4ce3))
+* **AppShell:** move rare element adders into the Advanced tree node ([#1939](https://github.com/textadventures/quest/issues/1939)) ([abe98bd](https://github.com/textadventures/quest/commit/abe98bdfba2cb9cd27fe3bfe31fc5453d3bade8e))
+* **AppShell:** responsive layout for phone/tablet screens ([#1932](https://github.com/textadventures/quest/issues/1932)) ([fab44dd](https://github.com/textadventures/quest/commit/fab44ddc86c4c9eed9e1eec90438ee3ce3da3e9f))
+* **AppShell:** support Gamebook mode in the editor ([#1940](https://github.com/textadventures/quest/issues/1940)) ([7f0d9b7](https://github.com/textadventures/quest/commit/7f0d9b7bed21ed53010efe52ba906d748c51bad3))
+* **Engine:** revise advanced-flag metadata after progressive disclosure audit ([#1937](https://github.com/textadventures/quest/issues/1937)) ([7a66dae](https://github.com/textadventures/quest/commit/7a66daed1f4ea49fda3e2a25f739260c67681e13))
+
+
+### Bug Fixes
+
+* **AppShell:** reset script command scroll on category switch ([#1938](https://github.com/textadventures/quest/issues/1938)) ([8670bbb](https://github.com/textadventures/quest/commit/8670bbb810743a8a37c79f5e1ba08ce624ae9670))
+* **AppShell:** update stale empty-advanced-categories e2e test ([#1941](https://github.com/textadventures/quest/issues/1941)) ([faf24ad](https://github.com/textadventures/quest/commit/faf24adaec6c048478393317b35eed603a3d6c63))
+
 ## [6.0.0-beta.44](https://github.com/textadventures/quest/compare/v6.0.0-beta.43...v6.0.0-beta.44) (2026-07-23)
 
 
