@@ -5,8 +5,10 @@
 // (added unconditionally by EditorController.AddTreeHeader) but should be
 // hidden in the UI while empty, since an empty header is noise. "Objects"
 // must never be hidden, and adding the first element of a hidden type via
-// the Toolbar "+" menu (header-independent) should make its header reappear
-// with the new element selected.
+// the "Advanced" node's own "+ Add" buttons in the properties panel (the
+// only entry point once its own sub-headers are hidden — see
+// PropertyEditor's ADVANCED_ADDERS) should make its header reappear with the
+// new element selected.
 //
 // Note: a fresh text-adventure game already includes two default libraries
 // (English.aslx, Core.aslx), so "Included Libraries" — and therefore the
@@ -62,10 +64,10 @@ try {
     }
     console.log('PASS: empty Templates/Dynamic Templates/Object Types/Javascript are hidden inside "Advanced"');
 
-    // Add the first Function via the Toolbar "+" menu (header-independent) and confirm
-    // the "Functions" header appears with the new element selected.
-    await page.click('button[title="Add element"]');
-    await page.getByRole('button', { name: 'Add Function', exact: true }).click();
+    // Add the first Function via the "Advanced" node's own "+ Add Function" button
+    // and confirm the "Functions" header appears with the new element selected.
+    await tree.getByText('Advanced', { exact: true }).click();
+    await page.getByRole('button', { name: '+ Add Function', exact: true }).click();
     await page.fill('#element-name', 'MyFunction');
     await page.getByRole('button', { name: 'Add Function', exact: true }).click();
 
@@ -83,12 +85,14 @@ try {
     }
     console.log('PASS: other still-empty categories remain hidden');
 
-    // "Add JavaScript" lives under the Toolbar "+" menu too (header-independent) and
-    // should make the "Javascript" header reappear, same as Functions did above.
-    await page.click('button[title="Add element"]');
-    await page.getByRole('button', { name: 'Add JavaScript', exact: true }).click();
+    // "+ Add JavaScript" lives under the "Advanced" node too (creates directly, no
+    // name modal) and should make the "Javascript" header reappear, same as
+    // Functions did above. Selection moved to the new function above, so
+    // re-select "Advanced" first.
+    await tree.getByText('Advanced', { exact: true }).click();
+    await page.getByRole('button', { name: '+ Add JavaScript', exact: true }).click();
     await tree.getByText('Javascript', { exact: true }).waitFor({ state: 'visible', timeout: 5000 });
-    console.log('PASS: "Javascript" header appears after adding via the Toolbar "+" menu');
+    console.log('PASS: "Javascript" header appears after adding via the "Advanced" node');
 
     console.log('PASS: all checks passed');
 } catch (err) {
