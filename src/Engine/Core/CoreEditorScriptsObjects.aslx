@@ -144,7 +144,6 @@
     <category>[EditorScriptsObjectsObjects]</category>
     <create>RemoveObject ()</create>
     <add>[EditorScriptsObjectsRemoveobject]</add>
-    <advanced/>
 
     <control>
       <controltype>label</controltype>

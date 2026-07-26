@@ -124,7 +124,6 @@
     <category>[EditorScriptsOutputOutput]</category>
     <create>SetFramePicture ("")</create>
     <add>[EditorScriptsOutputSetframepicture]</add>
-    <advanced/>
     <onlydisplayif>GetString(game, "_editorstyle") = null and GetBoolean(game, "feature_pictureframe")</onlydisplayif>
 
     <control>
@@ -149,7 +148,6 @@
     <category>[EditorScriptsOutputOutput]</category>
     <create>ClearFramePicture</create>
     <add>[EditorScriptsOutputClearframe]</add>
-    <advanced/>
     <onlydisplayif>GetString(game, "_editorstyle") = null and GetBoolean(game, "feature_pictureframe")</onlydisplayif>
 
     <control>
@@ -347,7 +345,6 @@
     <category>[EditorScriptsOutputOutput]</category>
     <create>stop sound</create>
     <add>[EditorScriptsOutputStopsound]</add>
-    <advanced/>
 
     <control>
       <controltype>label</controltype>
@@ -604,7 +601,6 @@
     <category>[EditorScriptsOutputOutput]</category>
     <create>ShowMenu ("",,true) { }</create>
     <add>[EditorScriptsOutputShowamenu]</add>
-    <advanced/>
 
     <control>
       <controltype>label</controltype>
@@ -679,7 +675,6 @@
     <category>[EditorScriptsOutputOutput]</category>
     <create>Ask ("") { }</create>
     <add>[EditorScriptsOutputAskaquestion]</add>
-    <advanced/>
     <onlydisplayif>GetString(game, "_editorstyle") = null</onlydisplayif>
 
     <control>
