@@ -52,13 +52,15 @@
     // Advanced category headers are always present in the tree data (added
     // unconditionally by EditorController.AddTreeHeader) even when nothing of that
     // type exists yet. An empty header is noise for everyone, not just beginners —
-    // hide these (and the "_advanced" group header itself once all of its children
-    // are hidden) until the author adds one via the Toolbar "+" menu, which doesn't
-    // depend on the header being visible. "_objects" is never hidden.
+    // hide these until the author adds one via that category's own "+ Add" button
+    // (ElementsList), reached by expanding "_advanced". "_advanced" itself is
+    // never hidden even when all its children are — it's the only entry point for
+    // adding the first function/timer/walkthrough/etc. in a fresh game, so it must
+    // stay clickable regardless of what it currently contains. "_objects" is never
+    // hidden either.
     const HIDE_WHEN_EMPTY = new Set([
         "_functions", "_timers", "_walkthrough",
         "_include", "_template", "_dynamictemplate", "_objecttype", "_javascript",
-        "_advanced",
     ]);
 
     function pruneEmptyAdvancedCategories(nodes: HierNode[]): HierNode[] {

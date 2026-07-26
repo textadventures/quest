@@ -1,5 +1,5 @@
 <script lang="ts">
-    import { selectedKey, selectedData, treeNodes, setAttribute, setDropdownType, setMultiType, setObjectReference, addDictItem, removeDictItem, updateDictItem } from "$lib/editor-store";
+    import { selectedKey, selectedData, treeNodes, setAttribute, setDropdownType, setMultiType, setObjectReference, addDictItem, removeDictItem, updateDictItem, openAddModal, createIncludedLibrary, createJavascript } from "$lib/editor-store";
     import { showToast } from "$lib/toast";
     import type { ControlInfo, TextProcessorCommand } from "$lib/types";
     import type { TreeNode } from "$lib/types";
@@ -19,6 +19,24 @@
     let selectedNode = $derived<TreeNode | null>(
         $treeNodes.find(n => n.key === $selectedKey) ?? null
     );
+
+    // The "_advanced" tree header has no elementType of its own (EditorController
+    // registers it with type: null), so $selectedData is always null for it and it
+    // would otherwise fall into the generic "No properties available" state below.
+    // It still needs to be a real entry point — its sub-category headers (Functions,
+    // Timers, Library, ...) stay hidden from the tree until they have their first
+    // element (TreePanel's HIDE_WHEN_EMPTY), so this is the only place to add the
+    // first one of each.
+    const ADVANCED_ADDERS: { label: string; action: () => void }[] = [
+        { label: "Add Function", action: () => openAddModal("function", null) },
+        { label: "Add Timer", action: () => openAddModal("timer", null) },
+        { label: "Add Walkthrough", action: () => openAddModal("walkthrough", null) },
+        { label: "Add Library", action: () => createIncludedLibrary() },
+        { label: "Add Template", action: () => openAddModal("template", null) },
+        { label: "Add Dynamic Template", action: () => openAddModal("dynamictemplate", null) },
+        { label: "Add Type", action: () => openAddModal("type", null) },
+        { label: "Add JavaScript", action: () => createJavascript() },
+    ];
 
     let activeTab = $state<string | null>(null);
     let lastKey = $state<string | null>(null);
@@ -132,6 +150,16 @@
 
     {#if $selectedKey === null}
         <p class="px-3 py-4 text-sm text-surface-400-500">Select an object to view its properties.</p>
+    {:else if $selectedKey === "_advanced"}
+        <div class="flex flex-col items-start gap-1.5 px-3 py-3">
+            {#each ADVANCED_ADDERS as adder (adder.label)}
+                <button
+                    type="button"
+                    class="btn btn-sm preset-outlined-primary-500 text-xs py-0.5"
+                    onclick={adder.action}
+                >+ {adder.label}</button>
+            {/each}
+        </div>
     {:else if $selectedData === null}
         <p class="px-3 py-4 text-sm text-surface-400-500">No properties available.</p>
     {:else}

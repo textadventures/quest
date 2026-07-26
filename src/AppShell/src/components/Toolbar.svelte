@@ -11,7 +11,6 @@
         undo, redo, canUndo, canRedo,
         treeNodes, selectedKey, openAddModal,
         createExit, createTurnScript, createCommand, createVerb,
-        createIncludedLibrary, createJavascript,
         deleteElement,
         assetManagerOpen,
     } from "$lib/editor-store";
@@ -90,19 +89,14 @@
         nt !== "" && nt !== "header" && nt !== "game" && nt !== "other"
     );
 
-    // Context-sensitive add options
+    // Context-sensitive add options. Function/Timer/Walkthrough/Library/Template/
+    // Dynamic Template/Type/JavaScript live under the "Advanced" tree node instead
+    // (see PropertyEditor's ADVANCED_ADDERS) — they're rare enough that they don't
+    // earn a slot in this always-visible dropdown.
     type AddOption = { label: string; action: () => void };
     let addOptions = $derived<AddOption[]>([
         // Always available
         { label: "Add Room", action: () => openAddModal("room", null) },
-        { label: "Add Function", action: () => openAddModal("function", null) },
-        { label: "Add Timer", action: () => openAddModal("timer", null) },
-        { label: "Add Walkthrough", action: () => openAddModal("walkthrough", null) },
-        { label: "Add Template", action: () => openAddModal("template", null) },
-        { label: "Add Dynamic Template", action: () => openAddModal("dynamictemplate", null) },
-        { label: "Add Type", action: () => openAddModal("type", null) },
-        { label: "Add Library", action: () => createIncludedLibrary() },
-        { label: "Add JavaScript", action: () => createJavascript() },
         // Context-sensitive: when a room or object is selected
         ...(nt === "room" || nt === "object" ? [
             { label: `Add Object in "${selectedNode!.text}"`, action: () => openAddModal("object", selectedNode!.key) },

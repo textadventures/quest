@@ -513,11 +513,11 @@ public sealed class EditorController : IDisposable
 
         AddTreeHeader(EditorStyle.TextAdventure, ElementType.Object, "_objects", "Objects", null, false);
         AddTreeHeader(EditorStyle.GameBook, ElementType.Object, "_objects", "Pages", null, false);
-        AddTreeHeader(null, ElementType.Function, "_functions", "Functions", null, false);
-
-        AddTreeHeader(EditorStyle.TextAdventure, ElementType.Timer, "_timers", "Timers", null, false);
-        AddTreeHeader(EditorStyle.TextAdventure, ElementType.Walkthrough, "_walkthrough", "Walkthrough", null, false);
         AddTreeHeader(null, null, "_advanced", "Advanced", null, false);
+        AddTreeHeader(null, ElementType.Function, "_functions", "Functions", "_advanced", false);
+        AddTreeHeader(EditorStyle.TextAdventure, ElementType.Timer, "_timers", "Timers", "_advanced", false);
+        AddTreeHeader(EditorStyle.TextAdventure, ElementType.Walkthrough, "_walkthrough", "Walkthrough", "_advanced",
+            false);
         AddTreeHeader(null, ElementType.IncludedLibrary, "_include", "Included Libraries", "_advanced", false);
         AddTreeHeader(EditorStyle.TextAdventure, ElementType.Template, "_template", "Templates", "_advanced", false);
         AddTreeHeader(EditorStyle.TextAdventure, ElementType.DynamicTemplate, "_dynamictemplate", "Dynamic Templates",
