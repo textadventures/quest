@@ -122,7 +122,6 @@
         <controltype>checkbox</controltype>
         <caption>[EditorGameLightnessand]</caption>
         <attribute>feature_lightdark</attribute>
-        <advanced/>
       </control>
 
       <control>

@@ -176,6 +176,7 @@
     <category>[EditorScriptsTurnScriptsTurnScripts]</category>
     <create>SuppressTurnscripts</create>
     <add>[EditorScriptsTurnScriptsSuppressturnscripts]</add>
+    <advanced/>
 
     <control>
       <controltype>label</controltype>

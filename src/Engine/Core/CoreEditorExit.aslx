@@ -89,7 +89,6 @@
         <controltype>checkbox</controltype>
         <attribute>runscript</attribute>
         <onlydisplayif>not this.lookonly</onlydisplayif>
-        <advanced/>
       </control>
   
       <control>
@@ -97,7 +96,6 @@
         <controltype>script</controltype>
         <attribute>script</attribute>
         <onlydisplayif>this.runscript</onlydisplayif>
-        <advanced/>
       </control>
 
       <control>

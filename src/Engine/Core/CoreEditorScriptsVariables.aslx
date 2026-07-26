@@ -258,7 +258,6 @@
     <category>[EditorScriptsVariablesVariables]</category>
     <add>[EditorScriptsVariablesSetavariable]</add>
     <create>=</create>
-    <advanced/>
 
     <control>
       <controltype>label</controltype>

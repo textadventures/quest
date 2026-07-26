@@ -22,7 +22,6 @@
     <category>[EditorScriptsScriptsScripts]</category>
     <add>[EditorScriptsScriptsComment]</add>
     <create>// Type comment</create>
-    <advanced/>
 
     <control>
       <controltype>textbox</controltype>

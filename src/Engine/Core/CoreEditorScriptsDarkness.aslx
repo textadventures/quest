@@ -5,7 +5,6 @@
     <category>[EditorScriptsDarknessDarkness]</category>
     <create>SetDark()</create>
     <add>[EditorScriptsDarknessMakeroomdark]</add>
-    <advanced/>
     <onlydisplayif>game.feature_lightdark</onlydisplayif>
   
     <control>
@@ -27,7 +26,6 @@
     <category>[EditorScriptsDarknessDarkness]</category>
     <create>SetLight()</create>
     <add>[EditorScriptsDarknessMakeroomlight]</add>
-    <advanced/>
     <onlydisplayif>game.feature_lightdark</onlydisplayif>
   
     <control>
@@ -49,7 +47,6 @@
     <category>[EditorScriptsDarknessDarkness]</category>
     <create>SetObjectLightstrength (,"")</create>
     <add>[EditorScriptsDarknessSetobjectbrightness]</add>
-    <advanced/>
     <onlydisplayif>game.feature_lightdark</onlydisplayif>
   
     <control>
@@ -86,7 +83,6 @@
     <category>[EditorScriptsDarknessDarkness]</category>
     <create>SetExitLightstrength (,"")</create>
     <add>[EditorScriptsDarknessSetexitbrightness]</add>
-    <advanced/>
     <onlydisplayif>game.feature_lightdark</onlydisplayif>
   
     <control>
