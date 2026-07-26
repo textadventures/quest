@@ -123,7 +123,7 @@
     // Switching categories reuses the same scrollable panel, so without this the
     // command list would keep whatever scroll offset the previous category left behind.
     $effect(() => {
-        selectedCategoryIndex;
+        void selectedCategoryIndex;
         commandListEl?.scrollTo(0, 0);
     });
 
