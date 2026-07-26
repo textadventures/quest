@@ -118,6 +118,14 @@
     );
 
     let rowEls = $state<(HTMLButtonElement | undefined)[]>([]);
+    let commandListEl = $state<HTMLDivElement | undefined>();
+
+    // Switching categories reuses the same scrollable panel, so without this the
+    // command list would keep whatever scroll offset the previous category left behind.
+    $effect(() => {
+        void selectedCategoryIndex;
+        commandListEl?.scrollTo(0, 0);
+    });
 
     function moveSelection(delta: number) {
         const list = activeList;
@@ -315,6 +323,7 @@
 
                 <!-- Commands list -->
                 <div
+                    bind:this={commandListEl}
                     class="flex-1 overflow-y-auto pb-2"
                     role="listbox"
                     aria-label="Script commands in {selectedCategory?.name ?? ""}"
