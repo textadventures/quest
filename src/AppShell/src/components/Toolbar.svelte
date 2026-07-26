@@ -9,7 +9,7 @@
         publishModalOpen,
         previewInWasmPlayer,
         undo, redo, canUndo, canRedo,
-        treeNodes, selectedKey, openAddModal,
+        treeNodes, selectedKey, isGamebook, openAddModal,
         createExit, createTurnScript, createCommand, createVerb,
         deleteElement,
         assetManagerOpen,
@@ -94,7 +94,11 @@
     // (see PropertyEditor's ADVANCED_ADDERS) — they're rare enough that they don't
     // earn a slot in this always-visible dropdown.
     type AddOption = { label: string; action: () => void };
-    let addOptions = $derived<AddOption[]>([
+    // Gamebook pages are always flat (no rooms/objects/exits/verbs/commands), so
+    // the only add option is a single top-level "Add Page".
+    let addOptions = $derived<AddOption[]>($isGamebook ? [
+        { label: "Add Page", action: () => openAddModal("page", null) },
+    ] : [
         // Always available
         { label: "Add Room", action: () => openAddModal("room", null) },
         // Context-sensitive: when a room or object is selected

@@ -9,6 +9,7 @@ export interface WasmBridge {
   Save(): string
   IsDirty(): boolean
   GetGameId(): string
+  IsGamebook(): boolean
   AddPublishAsset(filename: string, data: Uint8Array): void
   CreatePublishPackage(includeWalkthrough: boolean): Uint8Array
   CanUndo(): boolean

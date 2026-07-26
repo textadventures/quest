@@ -424,6 +424,9 @@ public partial class WasmEditorBridge
     [JSExport]
     public static string GetGameId() => _controller?.GameId ?? string.Empty;
 
+    [JSExport]
+    public static bool IsGamebook() => _controller?.EditorStyle == EditorStyle.GameBook;
+
     // [JSExport] can't marshal an array of blobs in one call, so assets are staged one
     // at a time (same shape as the dirty-flag polling above) then consumed by
     // CreatePublishPackage, which also clears the staged list whether or not it succeeds.
@@ -1986,7 +1989,12 @@ public partial class WasmEditorBridge
     [JSExport]
     public static void DeleteElement(string key)
     {
-        _controller?.DeleteElement(key, true);
+        if (_controller == null || !_controller.CanDelete(key))
+        {
+            return;
+        }
+
+        _controller.DeleteElement(key, true);
     }
 
     // Wraps every deletion in a single transaction (mirrors v5's ExitsControl.xaml.cs
@@ -2010,7 +2018,10 @@ public partial class WasmEditorBridge
         _controller.StartTransaction($"Delete {keys.Count} elements");
         foreach (var key in keys)
         {
-            _controller.DeleteElement(key, false);
+            if (_controller.CanDelete(key))
+            {
+                _controller.DeleteElement(key, false);
+            }
         }
         _controller.EndTransaction();
     }
@@ -2956,6 +2967,7 @@ public partial class WasmEditorBridge
             {
                 "s_room" => "room",
                 "s_object" => "object",
+                "s_add_page" => "page",
                 "s_exit" => "exit",
                 "s_verb" => "verb",
                 "s_command" => "command",
