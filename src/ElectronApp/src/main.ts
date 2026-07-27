@@ -296,8 +296,35 @@ function buildAppMenu(recentGames: RecentGame[]): Menu {
                 { role: "resetZoom" },
                 { role: "zoomIn" },
                 { role: "zoomOut" },
-                { type: "separator" },
-                { role: "togglefullscreen" },
+                // mac only: omitted here rather than included unconditionally
+                // because of an Electron regression (39.1+) where AppKit's
+                // own automatic "Enter Full Screen" injection into any menu
+                // titled "View" no longer detects our item and skips adding
+                // its own — it used to, so before this regression an
+                // explicit item here was the only one; now it'd double up.
+                // electron/electron#49048 tracked the original report and
+                // was closed as fixed (electron/electron#49074, backported
+                // to 38.x–41.x), but electron/electron#50531 reproduced the
+                // same duplicate afterwards on 41.1.0 and is still open/
+                // unresolved as of this writing — so this workaround stays
+                // until someone confirms on a newer Electron that the
+                // official fix actually holds. Letting AppKit's automatic
+                // item be the only one sidesteps the mechanism entirely
+                // rather than depending on it. Windows/Linux have no such
+                // auto-injection, so they still need an explicit item.
+                ...(isMac ? [] : [{ type: "separator" as const }, { role: "togglefullscreen" as const }]),
+                // Hidden (visible: false) rather than left off entirely:
+                // accelerators in Electron are only live when a matching
+                // menu item exists (there's no unconditional Chromium-level
+                // F12/DevTools binding independent of the Menu), so dropping
+                // role: "toggleDevTools" outright — as an earlier pass here
+                // did — silently killed the shortcut everywhere, including
+                // in Player/Preview windows where it's supposed to work.
+                // Both common bindings are listed so either works. Safe
+                // no-op on the editor window regardless, since
+                // createEditorWindow sets devTools: false there.
+                { role: "toggleDevTools", visible: false, accelerator: "F12" },
+                { role: "toggleDevTools", visible: false, accelerator: isMac ? "Alt+Cmd+I" : "Ctrl+Shift+I" },
             ],
         },
         { role: "windowMenu" },
