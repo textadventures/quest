@@ -1,7 +1,7 @@
 <script lang="ts">
     import type { ControlOption } from "$lib/types";
 
-    let { value, options, onchange, oninput, class: className = "" }: {
+    let { value, options, onchange, oninput, class: className = "", wrapperClass = "" }: {
         value: string;
         options: ControlOption[];
         onchange: (value: string) => void;
@@ -10,6 +10,10 @@
         // state without waiting for the field to lose focus.
         oninput?: (value: string) => void;
         class?: string;
+        // Applied to the root wrapper rather than the <input> — needed when a caller's flex
+        // row relies on this component itself (not just the input inside it) to grow/shrink,
+        // since flex sizing classes on the input don't affect its own wrapping element.
+        wrapperClass?: string;
     } = $props();
 
     // Unique ID prefix for ARIA references
@@ -131,7 +135,7 @@
     }
 </script>
 
-<div class="relative">
+<div class="relative {wrapperClass}">
     <input
         bind:this={inputEl}
         type="text"

@@ -304,6 +304,7 @@
             value={attrValue(ctrl.attribute!) ?? ""}
             source={ctrl.source}
             onchange={(v) => onTextChange(ctrl.attribute!, ctrl.controlType, v)}
+            containerClass="w-full"
         />
     {:else if ctrl.controlType === "list" && ctrl.attribute && $selectedKey}
         <ListEditor elementKey={$selectedKey} attribute={ctrl.attribute} value={attrValue(ctrl.attribute)} addPrompt={ctrl.addPrompt ?? undefined} />

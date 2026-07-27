@@ -2,11 +2,16 @@
     import { assets, uploadAsset, resolveAssetUrl, parseAssetSource } from "$lib/editor-store";
     import Combobox from "./Combobox.svelte";
 
-    let { value, source = null, onchange, class: className = "input text-xs py-0.5 px-1.5 w-auto min-w-24" }: {
+    let { value, source = null, onchange, class: className = "input text-xs py-0.5 px-1.5 w-full min-w-0", containerClass = "" }: {
         value: string;
         source?: string | null;
         onchange: (value: string) => void;
         class?: string;
+        // Applied to the row div alongside the default shrink-safe layout — pass "w-full" when
+        // the caller's row has no other flexible sibling and wants this control to fill it
+        // (e.g. PropertyEditor), and leave unset for inline/wrapping layouts (e.g. ScriptEditor)
+        // where growing to fill would force everything else in the row onto the next line.
+        containerClass?: string;
     } = $props();
 
     let filter = $derived(parseAssetSource(source));
@@ -45,7 +50,7 @@
     }
 </script>
 
-<div class="flex items-center gap-1.5">
+<div class="flex items-center gap-1.5 min-w-0 {containerClass}">
     {#if filter.kind === "image" && value}
         {#if thumbUrl}
             <img src={thumbUrl} alt="" class="h-6 w-6 object-cover rounded border border-surface-200-800 shrink-0" />
@@ -55,7 +60,7 @@
     {:else if value}
         <span class="text-xs shrink-0" title={value}>📄</span>
     {/if}
-    <Combobox {value} {options} {onchange} class={className} />
+    <Combobox {value} {options} {onchange} class={className} wrapperClass="flex-1 min-w-0" />
     <button
         type="button"
         class="btn btn-sm preset-outlined-primary-500 text-xs px-1.5 py-0.5 whitespace-nowrap shrink-0"
