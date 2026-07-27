@@ -7,7 +7,7 @@
     import { base } from "$app/paths";
     import { page } from "$app/state";
     import { PUBLIC_APPSHELL_VERSION, PUBLIC_SHOW_HOME } from "$env/static/public";
-    import { isLoaded, saveGame, saveGameAs } from "$lib/editor-store";
+    import { isLoaded, saveGame, saveGameAs, undo, redo, canUndo, canRedo } from "$lib/editor-store";
     import { isElectron } from "$lib/runtime";
     import HomeHeader from "$components/HomeHeader.svelte";
     import HomeTabs from "$components/HomeTabs.svelte";
@@ -85,6 +85,18 @@
                     break;
                 case "save-as":
                     if (get(isLoaded)) void saveGameAs();
+                    break;
+                // Guarded on canUndo/canRedo rather than sent unconditionally
+                // like the actions above: EditorCore's UndoLogger throws on
+                // an empty undo/redo stack (there's no "NothingToRedo"
+                // template fallback the way Undo has), so the native menu
+                // item can't just forward blindly the way Toolbar.svelte's
+                // buttons don't — they're `disabled` on the same flags.
+                case "undo":
+                    if (get(canUndo)) void undo();
+                    break;
+                case "redo":
+                    if (get(canRedo)) void redo();
                     break;
             }
         });
