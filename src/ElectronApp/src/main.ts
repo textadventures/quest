@@ -1,4 +1,4 @@
-import { app, BrowserWindow, Menu, dialog, shell, type MenuItemConstructorOptions } from "electron";
+import { app, BrowserWindow, Menu, MenuItem, dialog, shell, type MenuItemConstructorOptions } from "electron";
 import path from "node:path";
 import { startStaticServer, type StaticServerHandle } from "./static-server";
 import { registerFsHandlers } from "./ipc/fs";
@@ -92,7 +92,7 @@ if (process.platform === "darwin") {
 // Mirrors the union AppShell's src/routes/+layout.svelte switches on (see
 // window.electronApp.menu.onAction in preload.ts) — the two sides can't share
 // a type since they're separate npm projects, so keep them in sync by hand.
-type MenuAction = "new-game" | "open-file" | "save" | "save-as";
+type MenuAction = "new-game" | "open-file" | "save" | "save-as" | "undo" | "redo";
 
 // Every File-menu editor action is reachable even while a player window (or,
 // on mac, no window at all) is frontmost — mac has one shared app-level menu
@@ -120,6 +120,28 @@ function broadcastRecentChanged(kind: RecentKind): void {
 function sendMenuAction(action: MenuAction): void {
     focusEditorWindow();
     editorWindow?.webContents.send("menu-action", action);
+}
+
+// Undo/Redo can't just forward blindly like sendMenuAction does for File
+// actions: the editor has its own app-level undo stack (EditorCore's
+// UndoLogger, exposed via editor-store's canUndo/canRedo) with no native
+// equivalent, but Cmd+Z/Cmd+Shift+Z is a single app-wide accelerator on mac
+// shared by every window. Forcing focus to the editor here (the way
+// sendMenuAction does) would mean reflexively hitting Cmd+Z while playing a
+// game in a player window yanks that window's focus away and undoes an
+// unrelated editor edit. Instead: forward to the editor only when it's
+// already the focused window; otherwise fall back to the focused window's
+// own native text-field undo/redo (e.g. text typed into the player's command
+// box), exactly like Electron's default 'undo'/'redo' roles would.
+function editorUndoRedo(action: "undo" | "redo") {
+    return (_item: MenuItem, focusedWindow: Electron.BaseWindow | undefined): void => {
+        if (focusedWindow === editorWindow) {
+            editorWindow?.webContents.send("menu-action", action);
+        } else if (focusedWindow instanceof BrowserWindow) {
+            if (action === "undo") focusedWindow.webContents.undo();
+            else focusedWindow.webContents.redo();
+        }
+    };
 }
 
 // Renderer has no fixed "open this specific game" action string (unlike
@@ -244,8 +266,67 @@ function buildAppMenu(recentGames: RecentGame[]): Menu {
                 ...(isMac ? [] : [{ type: "separator" as const }, { role: "quit" as const }]),
             ],
         },
-        { role: "editMenu" },
-        { role: "viewMenu" },
+        {
+            label: "Edit",
+            submenu: [
+                // Undo/Redo replace the role-based defaults (which only ever
+                // undo native text-field edits) with the editor's real
+                // command-stack undo — see editorUndoRedo's comment. Cut/
+                // Copy/Paste stay as plain roles: there's no app-level
+                // clipboard concept for tree/canvas content, only ordinary
+                // text fields, which the native roles already handle
+                // correctly for whichever window/field is focused.
+                { label: "Undo", accelerator: "CmdOrCtrl+Z", click: editorUndoRedo("undo") },
+                { label: "Redo", accelerator: isMac ? "Shift+Cmd+Z" : "Ctrl+Y", click: editorUndoRedo("redo") },
+                { type: "separator" },
+                { role: "cut" },
+                { role: "copy" },
+                { role: "paste" },
+            ],
+        },
+        {
+            // Hand-rolled rather than role: "viewMenu" — the default template
+            // also includes Reload/Force Reload/Toggle Developer Tools, which
+            // don't make sense for the editor window (there's nothing to
+            // "reload" from a user's perspective, and DevTools is reserved
+            // for Player windows — see createEditorWindow's devTools: false
+            // and player.ts, which leaves it at Electron's default instead).
+            label: "View",
+            submenu: [
+                { role: "resetZoom" },
+                { role: "zoomIn" },
+                { role: "zoomOut" },
+                // mac only: omitted here rather than included unconditionally
+                // because of an Electron regression (39.1+) where AppKit's
+                // own automatic "Enter Full Screen" injection into any menu
+                // titled "View" no longer detects our item and skips adding
+                // its own — it used to, so before this regression an
+                // explicit item here was the only one; now it'd double up.
+                // electron/electron#49048 tracked the original report and
+                // was closed as fixed (electron/electron#49074, backported
+                // to 38.x–41.x), but electron/electron#50531 reproduced the
+                // same duplicate afterwards on 41.1.0 and is still open/
+                // unresolved as of this writing — so this workaround stays
+                // until someone confirms on a newer Electron that the
+                // official fix actually holds. Letting AppKit's automatic
+                // item be the only one sidesteps the mechanism entirely
+                // rather than depending on it. Windows/Linux have no such
+                // auto-injection, so they still need an explicit item.
+                ...(isMac ? [] : [{ type: "separator" as const }, { role: "togglefullscreen" as const }]),
+                // Hidden (visible: false) rather than left off entirely:
+                // accelerators in Electron are only live when a matching
+                // menu item exists (there's no unconditional Chromium-level
+                // F12/DevTools binding independent of the Menu), so dropping
+                // role: "toggleDevTools" outright — as an earlier pass here
+                // did — silently killed the shortcut everywhere, including
+                // in Player/Preview windows where it's supposed to work.
+                // Both common bindings are listed so either works. Safe
+                // no-op on the editor window regardless, since
+                // createEditorWindow sets devTools: false there.
+                { role: "toggleDevTools", visible: false, accelerator: "F12" },
+                { role: "toggleDevTools", visible: false, accelerator: isMac ? "Alt+Cmd+I" : "Ctrl+Shift+I" },
+            ],
+        },
         { role: "windowMenu" },
         {
             role: "help",
@@ -308,6 +389,12 @@ function createEditorWindow(port: number, initialPath?: string | null): void {
             // other player-window surface, rather than relying on Electron's
             // already-permissive default.
             autoplayPolicy: "no-user-gesture-required",
+            // DevTools is reserved for Player windows (see player.ts, which
+            // leaves this at Electron's default true) — this blocks it
+            // outright at the webContents level, not just the menu item/F12
+            // accelerator, since `devTools: false` makes openDevTools()/
+            // toggleDevTools() no-ops too.
+            devTools: false,
         },
     });
 
