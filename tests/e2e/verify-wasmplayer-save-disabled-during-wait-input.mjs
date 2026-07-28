@@ -13,41 +13,64 @@ const page = await browser.newPage();
 page.on('console', msg => console.log('[console]', msg.type(), msg.text()));
 page.on('pageerror', err => console.log('[pageerror]', err.message));
 
-await page.goto(`${baseUrl}/?url=/examples/test.aslx`);
-await page.waitForSelector('#txtCommand', { timeout: 30000 });
-console.log('Game booted.');
-
 async function isSaveDisabled() {
     return await page.$eval('#cmdSave', el => el.disabled || el.classList.contains('ui-state-disabled'));
 }
 
-console.log('Save disabled before any command (expect false):', await isSaveDisabled());
+async function assertSaveDisabled(expected, label) {
+    const actual = await isSaveDisabled();
+    if (actual !== expected) {
+        throw new Error(`${label}: expected Save disabled=${expected}, got ${actual}`);
+    }
+    console.log(`PASS: ${label} (disabled=${actual})`);
+}
 
-// wait2 triggers a script-level wait { ... }
-await page.fill('#txtCommand', 'wait2');
-await page.press('#txtCommand', 'Enter');
-await page.waitForTimeout(500);
-console.log('Save disabled during wait() (expect true):', await isSaveDisabled());
+async function run() {
+    await page.goto(`${baseUrl}/?url=/examples/test.aslx`);
+    await page.waitForSelector('#txtCommand', { timeout: 30000 });
+    console.log('PASS: game booted');
 
-await page.click('#endWaitLink');
-await page.waitForTimeout(500);
-console.log('Save disabled after wait() ends (expect false):', await isSaveDisabled());
+    await assertSaveDisabled(false, 'Save enabled before any command');
 
-// input2 triggers a script-level get input { ... }
-await page.fill('#txtCommand', 'input2');
-await page.press('#txtCommand', 'Enter');
-await page.waitForTimeout(500);
-console.log('Save disabled during get input() (expect true):', await isSaveDisabled());
+    // wait2 triggers a script-level wait { ... }
+    await page.fill('#txtCommand', 'wait2');
+    await page.press('#txtCommand', 'Enter');
+    await page.waitForTimeout(500);
+    await assertSaveDisabled(true, 'Save disabled during wait()');
 
-await page.fill('#txtCommand', 'some answer');
-await page.press('#txtCommand', 'Enter');
-await page.waitForTimeout(500);
-console.log('Save disabled after get input() answered (expect false):', await isSaveDisabled());
+    await page.click('#endWaitLink');
+    await page.waitForTimeout(500);
+    await assertSaveDisabled(false, 'Save enabled after wait() ends');
 
-// Sanity: Save still works normally at rest
-await page.click('#cmdSave');
-await page.waitForTimeout(500);
-const dialogVisible = await page.$eval('#qv-saves', el => el.open).catch(() => null);
-console.log('Save dialog opened normally at rest (expect true):', dialogVisible);
+    // input2 triggers a script-level get input { ... }
+    await page.fill('#txtCommand', 'input2');
+    await page.press('#txtCommand', 'Enter');
+    await page.waitForTimeout(500);
+    await assertSaveDisabled(true, 'Save disabled during get input()');
 
-await browser.close();
+    await page.fill('#txtCommand', 'some answer');
+    await page.press('#txtCommand', 'Enter');
+    await page.waitForTimeout(500);
+    await assertSaveDisabled(false, 'Save enabled after get input() answered');
+
+    // Sanity: Save still works normally at rest
+    await page.click('#cmdSave');
+    await page.waitForTimeout(500);
+    const dialogVisible = await page.$eval('#qv-saves', el => el.open).catch(() => null);
+    if (dialogVisible !== true) {
+        throw new Error(`Save dialog did not open normally at rest: expected true, got ${dialogVisible}`);
+    }
+    console.log('PASS: Save dialog opened normally at rest');
+
+    console.log('PASS: all checks passed');
+}
+
+try {
+    await run();
+} catch (err) {
+    console.error('FAIL:', err.message);
+    await page.screenshot({ path: '/tmp/wasmplayer-save-disabled-during-wait-input-failure.png' });
+    process.exitCode = 1;
+} finally {
+    await browser.close();
+}
