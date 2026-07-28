@@ -110,6 +110,7 @@ export async function openGame(bytes: Uint8Array, filename: string, adapter: Fil
         gameFilename.set(filename);
         refreshUndoRedo();
         scriptClipboardHasContent.set(false);
+        cutElementKeys.set(new Set());
         await refreshAssets();
         const gameNode = nodes.find(n => n.nodeType === "game");
         if (gameNode) await selectNode(gameNode.key);
@@ -993,13 +994,21 @@ export function moveElement(key: string, newParent: string): string {
 // doesn't touch treeNodes/selectedKey/anything else Svelte would already react to.
 export const clipboardVersion = writable(0);
 
+// Keys currently staged by Cut (not yet pasted) — TreePanel dims these rows so
+// a cut element doesn't look untouched. Mirrors EditorController's own
+// m_lastelementscutout flag: cleared by Copy (a fresh copy isn't a cut) and by
+// a completed Paste (the element has landed at its new parent), set by Cut.
+export const cutElementKeys = writable<Set<string>>(new Set());
+
 export function copyElements(keys: string[]) {
     _bridge?.CopyElements(JSON.stringify(keys));
+    cutElementKeys.set(new Set());
     clipboardVersion.update(n => n + 1);
 }
 
 export function cutElements(keys: string[]) {
     _bridge?.CutElements(JSON.stringify(keys));
+    cutElementKeys.set(new Set(keys));
     clipboardVersion.update(n => n + 1);
 }
 
@@ -1011,6 +1020,7 @@ export function pasteElements(parentKey: string): string {
     if (!_bridge) return "error";
     const result = _bridge.PasteElements(parentKey);
     if (result !== "error") {
+        cutElementKeys.set(new Set());
         refreshTree();
         void selectNode(result);
         refreshUndoRedo();

@@ -9,7 +9,7 @@
         createIncludedLibrary, createJavascript,
         deleteElement,
         canMoveElement, openMoveModal, copyElements, cutElements, canPasteElements, pasteElements,
-        clipboardVersion,
+        clipboardVersion, cutElementKeys,
     } from "$lib/editor-store";
     import type { TreeNode } from "$lib/types";
 
@@ -415,7 +415,7 @@
                     >
                         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="size-4"><polyline points="9 18 15 12 9 6" /></svg>
                     </button>
-                    <TreeView.BranchText class="flex-1 min-w-0 truncate">{node.text}</TreeView.BranchText>
+                    <TreeView.BranchText class="flex-1 min-w-0 truncate {$cutElementKeys.has(node.id) ? "opacity-50 italic" : ""}">{node.text}</TreeView.BranchText>
                     <span class="opacity-0 group-hover:opacity-100 pointer-coarse:opacity-100">
                         {@render nodeActions(node)}
                     </span>
@@ -429,7 +429,7 @@
             </TreeView.Branch>
         {:else}
             <TreeView.Item class="group flex items-center" onclick={() => activateIfAlreadySelected(node.id)}>
-                <span class="flex-1 min-w-0 truncate">{node.text}</span>
+                <span class="flex-1 min-w-0 truncate {$cutElementKeys.has(node.id) ? "opacity-50 italic" : ""}">{node.text}</span>
                 <span class="opacity-0 group-hover:opacity-100 pointer-coarse:opacity-100">
                     {@render nodeActions(node)}
                 </span>
