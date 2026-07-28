@@ -202,7 +202,12 @@ function initPlayerUI() {
             gameContent.style.width = "initial";
             gamePanel.style.width = "100%";
             gridPanel.style.width = "100%";
-            if (window.paper && paper.view) paper.view.viewSize.width = window.innerWidth;
+            // "100%" here resolves to whichever is smaller: the actual window
+            // (narrow/mobile) or #gameBorder's max-width cap (a wide window with
+            // panes hidden, e.g. no places/inventory to show) — window.innerWidth
+            // alone ignored that cap and stretched the paper.js view past the
+            // visible (overflow: hidden) panel, throwing off its centering.
+            if (window.paper && paper.view) paper.view.viewSize.width = Math.min(window.innerWidth, gameWidth);
         }
 
         const newPanelImageMaxHeight = `${(window.innerHeight - 30) * 0.5}px`;
