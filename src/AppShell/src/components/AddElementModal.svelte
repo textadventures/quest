@@ -61,7 +61,7 @@
     onclick={onBackdropClick}
     onkeydown={handleKeydown}
 >
-    <div class="card bg-white rounded-xl shadow-xl w-full max-w-80 p-6 flex flex-col gap-4">
+    <div class="card bg-surface-50-950 rounded-xl shadow-xl w-full max-w-80 p-6 flex flex-col gap-4">
         <h2 class="text-base font-semibold">
             Add {labels[elementType]}{parent ? ` in "${parent}"` : ""}
         </h2>
@@ -72,7 +72,7 @@
                 id="element-name"
                 type="text"
                 autocapitalize="off"
-                class={"input bg-white px-2 py-1 text-sm" + (error ? " !border-error-500" : "")}
+                class={"input bg-surface-50-950 px-2 py-1 text-sm" + (error ? " !border-error-500" : "")}
                 bind:this={inputEl}
                 bind:value={name}
                 placeholder="Enter a name..."
