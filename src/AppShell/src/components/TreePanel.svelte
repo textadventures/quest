@@ -302,7 +302,12 @@
             );
         }
 
-        if (nt === "room" || nt === "object") {
+        // Gamebook pages ("page") are plain ElementType.Object elements underneath —
+        // v5's own desktop editor wires Cut/Copy/Paste/drag-move generically off
+        // EditorController with no gamebook-vs-textadventure gating at all (only
+        // GetPasteParent special-cases gamebook, always pasting at the flat top
+        // level), so pages get the same menu entries as rooms/objects here.
+        if (nt === "room" || nt === "object" || nt === "page") {
             if (canMoveElement(id)) {
                 opts.push(
                     { label: "Move to…", action: () => openMoveModal(id) },
