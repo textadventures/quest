@@ -25,6 +25,11 @@ export const isGamebook = writable(false);
 export function openAddModal(type: "room" | "object" | "page" | "function" | "timer" | "walkthrough" | "template" | "dynamictemplate" | "type", parent: string | null) {
     addElementModal.set({ type, parent });
 }
+// Holds the key of the element currently being moved, or null when the modal is closed.
+export const moveElementModal = writable<string | null>(null);
+export function openMoveModal(key: string) {
+    moveElementModal.set(key);
+}
 export const gameFilename = writable<string | null>(null);
 export const canSaveAs = writable(false);
 export const canBackup = writable(false);
@@ -957,6 +962,59 @@ export function swapElements(key1: string, key2: string): string {
     if (!_bridge) return "error";
     const result = _bridge.SwapElements(key1, key2);
     if (result === "ok") refreshTree();
+    return result;
+}
+
+// ── Move / cut / copy / paste ───────────────────────────────────────────────
+
+export function canMoveElement(key: string): boolean {
+    return _bridge?.CanMoveElement(key) ?? false;
+}
+
+export function getMovePossibleParents(key: string): string[] {
+    if (!_bridge) return [];
+    return JSON.parse(_bridge.GetMovePossibleParents(key));
+}
+
+export function moveElement(key: string, newParent: string): string {
+    if (!_bridge) return "error";
+    const result = _bridge.MoveElement(key, newParent);
+    if (result === "ok") {
+        refreshTree();
+        void selectNode(key);
+        refreshUndoRedo();
+    }
+    return result;
+}
+
+// Bumped by copyElements/cutElements so TreePanel's per-node "⋯" menus (computed
+// inline from nodeMenuOptions(), not driven by a store) know to recompute their
+// "Paste" entry — the clipboard lives entirely in EditorController and mutating it
+// doesn't touch treeNodes/selectedKey/anything else Svelte would already react to.
+export const clipboardVersion = writable(0);
+
+export function copyElements(keys: string[]) {
+    _bridge?.CopyElements(JSON.stringify(keys));
+    clipboardVersion.update(n => n + 1);
+}
+
+export function cutElements(keys: string[]) {
+    _bridge?.CutElements(JSON.stringify(keys));
+    clipboardVersion.update(n => n + 1);
+}
+
+export function canPasteElements(parentKey: string): boolean {
+    return _bridge?.CanPasteElements(parentKey) ?? false;
+}
+
+export function pasteElements(parentKey: string): string {
+    if (!_bridge) return "error";
+    const result = _bridge.PasteElements(parentKey);
+    if (result !== "error") {
+        refreshTree();
+        void selectNode(result);
+        refreshUndoRedo();
+    }
     return result;
 }
 

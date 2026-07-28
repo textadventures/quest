@@ -8,6 +8,8 @@
         openAddModal, createExit, createTurnScript, createCommand, createVerb,
         createIncludedLibrary, createJavascript,
         deleteElement,
+        canMoveElement, openMoveModal, copyElements, cutElements, canPasteElements, pasteElements,
+        clipboardVersion,
     } from "$lib/editor-store";
     import type { TreeNode } from "$lib/types";
 
@@ -257,6 +259,10 @@
     }
 
     function nodeMenuOptions(node: HierNode): Array<{ label: string; action: () => void }> {
+        // Read (not used) so this function's callers re-run whenever the clipboard
+        // changes — canPasteElements() below reads server-side state that Svelte
+        // has no other reactive handle on.
+        void $clipboardVersion;
         const opts: Array<{ label: string; action: () => void }> = [];
         const { id, text, nodeType: nt } = node;
 
@@ -265,6 +271,9 @@
                 opts.push($isGamebook
                     ? { label: "Add Page", action: () => openAddModal("page", null) }
                     : { label: "Add Room", action: () => openAddModal("room", null) });
+                if (canPasteElements(id)) {
+                    opts.push({ label: "Paste", action: () => pasteElements(id) });
+                }
             }
             else if (id === "_functions") opts.push({ label: "Add Function", action: () => openAddModal("function", null) });
             else if (id === "_timers") opts.push({ label: "Add Timer", action: () => openAddModal("timer", null) });
@@ -291,6 +300,19 @@
                 { label: "Add Verb", action: () => createVerb(id) },
                 { label: "Add Turn Script", action: () => createTurnScript(id) },
             );
+        }
+
+        if (nt === "room" || nt === "object") {
+            if (canMoveElement(id)) {
+                opts.push(
+                    { label: "Move to…", action: () => openMoveModal(id) },
+                    { label: "Cut", action: () => cutElements([id]) },
+                    { label: "Copy", action: () => copyElements([id]) },
+                );
+            }
+            if (canPasteElements(id)) {
+                opts.push({ label: "Paste", action: () => pasteElements(id) });
+            }
         }
 
         if (isDeletable(nt)) {

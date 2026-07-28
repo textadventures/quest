@@ -4,7 +4,7 @@
     import { goto } from "$app/navigation";
     import { base } from "$app/paths";
     import { get } from "svelte/store";
-    import { isLoaded, isDirty, isEditingField, markFieldEditing, clearFieldEditing, saveGame, loadingStatus, addElementModal, assetManagerOpen, publishModalOpen, openGame, createRoom, createObject, createFunction, createTimer, createWalkthrough, createTemplate, createDynamicTemplate, createObjectType } from "$lib/editor-store";
+    import { isLoaded, isDirty, isEditingField, markFieldEditing, clearFieldEditing, saveGame, loadingStatus, addElementModal, assetManagerOpen, publishModalOpen, openGame, createRoom, createObject, createFunction, createTimer, createWalkthrough, createTemplate, createDynamicTemplate, createObjectType, moveElementModal, moveElement } from "$lib/editor-store";
     import { loadFromServer } from "$lib/filesystem/server-adapter";
     import Toolbar from "$components/Toolbar.svelte";
     import BackupBanner from "$components/BackupBanner.svelte";
@@ -12,6 +12,7 @@
     import PropertyEditor from "$components/PropertyEditor.svelte";
     import { isNarrow } from "$lib/layout.svelte";
     import AddElementModal from "$components/AddElementModal.svelte";
+    import MoveElementModal from "$components/MoveElementModal.svelte";
     import AssetManagerModal from "$components/AssetManagerModal.svelte";
     import PublishModal from "$components/PublishModal.svelte";
 
@@ -172,6 +173,14 @@
             parent={$addElementModal.parent}
             onconfirm={handleAddConfirm}
             oncancel={() => addElementModal.set(null)}
+        />
+    {/if}
+
+    {#if $moveElementModal}
+        <MoveElementModal
+            elementKey={$moveElementModal}
+            onconfirm={(parent) => { moveElement($moveElementModal!, parent); moveElementModal.set(null); }}
+            oncancel={() => moveElementModal.set(null)}
         />
     {/if}
 

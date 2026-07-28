@@ -85,6 +85,14 @@ export interface WasmBridge {
   DeleteElement(key: string): void
   DeleteElements(keysJson: string): void
   SwapElements(key1: string, key2: string): string
+  // Move / cut / copy / paste
+  CanMoveElement(elementKey: string): boolean
+  GetMovePossibleParents(elementKey: string): string
+  MoveElement(elementKey: string, newParentKey: string): string
+  CopyElements(keysJson: string): void
+  CutElements(keysJson: string): void
+  CanPasteElements(parentKey: string): boolean
+  PasteElements(parentKey: string): string
   // New game
   GetGameTemplates(): string
   CreateGameFromTemplate(templateId: string, gameName: string): string
