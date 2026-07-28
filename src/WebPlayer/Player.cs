@@ -105,17 +105,6 @@ public class Player : IPlayerHelperUI
         }
     }
 
-    void IPlayer.DoGetInput()
-    {
-        // WalkthroughRunner already treats a "get input" answer as just the next literal
-        // command step (no mode-tracking needed there, unlike ShowMenu/ShowQuestion) - so
-        // there's nothing to notify Runner about, only the live JS UI.
-        if (Runner == null)
-        {
-            AddJavaScriptToBuffer("beginGetInput");
-        }
-    }
-
     void IPlayer.DoPause(int ms)
     {
         if (Runner != null)
@@ -299,6 +288,11 @@ public class Player : IPlayerHelperUI
         }
 
         return null;
+    }
+
+    void IPlayer.SetTurnPending(bool pending)
+    {
+        AddJavaScriptToBuffer("setTurnPending", pending);
     }
 
     void IPlayerHelperUI.OutputText(string text)

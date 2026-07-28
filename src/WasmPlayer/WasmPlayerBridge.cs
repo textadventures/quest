@@ -321,8 +321,8 @@ public partial class WasmPlayerBridge
     [JSImport("beginWait", "wasm-player")]
     internal static partial void JsBeginWait();
 
-    [JSImport("beginGetInput", "wasm-player")]
-    internal static partial void JsBeginGetInput();
+    [JSImport("setTurnPending", "wasm-player")]
+    internal static partial void JsSetTurnPending(bool pending);
 
     [JSImport("beginPause", "wasm-player")]
     internal static partial void JsBeginPause(int ms);
@@ -616,17 +616,6 @@ public partial class WasmPlayerBridge
             JsBeginWait();
         }
 
-        void IPlayer.DoGetInput()
-        {
-            // WalkthroughRunner already treats a "get input" answer as just the next literal
-            // command step (no mode-tracking needed there, unlike ShowMenu/ShowQuestion) - so
-            // there's nothing to notify Runner about, only the live JS UI.
-            if (Runner != null) return;
-
-            FlushBeforeInteraction();
-            JsBeginGetInput();
-        }
-
         void IPlayer.DoPause(int ms)
         {
             if (Runner != null)
@@ -787,6 +776,9 @@ public partial class WasmPlayerBridge
 
         string? IPlayer.GetUIOption(UIOption option) =>
             option is UIOption.UseGameColours or UIOption.UseGameFont ? "true" : null;
+
+        void IPlayer.SetTurnPending(bool pending) =>
+            _uiBuffer.Add(() => JsSetTurnPending(pending));
     }
 }
 

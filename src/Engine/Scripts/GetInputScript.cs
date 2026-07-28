@@ -41,7 +41,6 @@ public class GetInputScript : ScriptBase
 
     public override Task ExecuteAsync(Context c)
     {
-        m_worldModel.PlayerUi.DoGetInput();
         m_worldModel._commandOverride = true;
         WorldModel.BeginPrompt(ref m_worldModel._commandInputTcs);
         m_worldModel.BeginPendingCallback();

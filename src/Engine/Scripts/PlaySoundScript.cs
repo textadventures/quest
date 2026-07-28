@@ -56,12 +56,18 @@ public class PlaySoundScript : ScriptBase
         {
             var tcs = WorldModel.BeginPrompt(ref m_worldModel._waitTcs);
             await m_worldModel.PlayerUi.PlaySoundAsync(filename, true, loop);
+            m_worldModel.BeginPendingCallback();
             m_worldModel.SignalTurnSuspended();
             try
             {
                 await tcs.Task;
             }
             catch (OperationCanceledException) { }
+            finally
+            {
+                await m_worldModel.EndPendingCallbackAsync();
+                m_worldModel.SignalTurnSuspended();
+            }
         }
         else
         {

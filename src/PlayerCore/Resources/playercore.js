@@ -316,25 +316,24 @@ function setGameName(text) {
 
 var _waitMode = false;
 var _pauseMode = false;
-// Set true while the engine is suspended inside a script-level `get input()`,
-// i.e. showing a prompt whose answer isn't a normal game command. Unlike
-// _waitMode there's no separate "end" notification from the engine - the
-// player answers it by typing a line and hitting enter exactly like a normal
-// command, so sendCommand() below clears this optimistically the moment that
-// happens, the same way endWait()/sendEndWait() clears _waitMode before the
-// engine round-trip confirms it.
-var _getInputMode = false;
 
-// Saving mid-wait()/mid-get-input() silently loses the pending continuation on
-// reload (only world-model data is serialized, not "what the interpreter was
-// suspended in the middle of") - so disable Save for the duration of either,
-// same as it's already effectively unusable while _pauseMode is showing.
+// Mirrors the engine's WorldModel._pendingCallbackCount > 0: true whenever
+// anything is suspended inside a TaskCompletionSource continuation (wait(),
+// get input(), ask, show menu, pause) that a save/reload can't reconstruct -
+// only world-model data is serialized, not "what the interpreter was doing".
+// Starts true (Save disabled) until the engine's first setTurnPending(false)
+// confirms a turn has genuinely finished with nothing outstanding, including
+// chained/nested wait()s at game start - previously Save flickered briefly
+// enabled between each one, since it was only gated on the narrower _waitMode.
+var _turnPending = true;
+var _gameFinished = false;
+
 function updateSaveButtonEnabled() {
-    $("#cmdSave").button((_waitMode || _getInputMode) ? "disable" : "enable");
+    $("#cmdSave").button((_turnPending || _gameFinished) ? "disable" : "enable");
 }
 
-function beginGetInput() {
-    _getInputMode = true;
+function setTurnPending(pending) {
+    _turnPending = pending;
     updateSaveButtonEnabled();
 }
 
@@ -701,7 +700,6 @@ function beginWait() {
     $("#txtCommandPrompt").hide();
     $("#endWaitLink").show();
     markScrollPosition();
-    updateSaveButtonEnabled();
 }
 
 function endWait() {
@@ -714,10 +712,11 @@ function waitEnded() {
     $("#endWaitLink").hide();
     $("#txtCommand").show();
     $("#txtCommandPrompt").show();
-    updateSaveButtonEnabled();
 }
 
 function gameFinished() {
+    _gameFinished = true;
+    updateSaveButtonEnabled();
     disableInterface();
 }
 
