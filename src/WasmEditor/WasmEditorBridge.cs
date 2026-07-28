@@ -2055,6 +2055,84 @@ public partial class WasmEditorBridge
         return "ok";
     }
 
+    // ── Move / cut / copy / paste ───────────────────────────────────────────
+
+    [JSExport]
+    public static bool CanMoveElement(string elementKey)
+    {
+        return _controller?.CanMoveElement(elementKey) ?? false;
+    }
+
+    [JSExport]
+    public static string GetMovePossibleParents(string elementKey)
+    {
+        var parents = _controller?.GetMovePossibleParents(elementKey)?.ToList() ?? [];
+        return JsonSerializer.Serialize(parents, WasmEditorJsonContext.Default.ListString);
+    }
+
+    [JSExport]
+    public static string MoveElement(string elementKey, string newParentKey)
+    {
+        if (_controller == null || !_controller.CanMoveElement(elementKey, newParentKey))
+        {
+            return "error";
+        }
+
+        _controller.MoveElement(elementKey, newParentKey);
+        return "ok";
+    }
+
+    [JSExport]
+    public static void CopyElements(string keysJson)
+    {
+        if (_controller == null)
+        {
+            return;
+        }
+
+        var keys = JsonSerializer.Deserialize(keysJson, WasmEditorJsonContext.Default.ListString);
+        if (keys == null || keys.Count == 0)
+        {
+            return;
+        }
+
+        _controller.CopyElements(keys);
+    }
+
+    [JSExport]
+    public static void CutElements(string keysJson)
+    {
+        if (_controller == null)
+        {
+            return;
+        }
+
+        var keys = JsonSerializer.Deserialize(keysJson, WasmEditorJsonContext.Default.ListString);
+        if (keys == null || keys.Count == 0)
+        {
+            return;
+        }
+
+        _controller.CutElements(keys);
+    }
+
+    [JSExport]
+    public static bool CanPasteElements(string parentKey)
+    {
+        return _controller?.CanPaste(parentKey) ?? false;
+    }
+
+    [JSExport]
+    public static string PasteElements(string parentKey)
+    {
+        if (_controller == null || !_controller.CanPaste(parentKey))
+        {
+            return "error";
+        }
+
+        return _controller.PasteElements(parentKey) ?? "error";
+    }
+
     // ── Verbs editor API ─────────────────────────────────────────────────────
 
     private static IEditorControl? FindVerbsControl(string elementKey)

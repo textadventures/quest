@@ -8,6 +8,8 @@
         openAddModal, createExit, createTurnScript, createCommand, createVerb,
         createIncludedLibrary, createJavascript,
         deleteElement,
+        canMoveElement, openMoveModal, copyElements, cutElements, canPasteElements, pasteElements,
+        clipboardVersion, cutElementKeys,
     } from "$lib/editor-store";
     import type { TreeNode } from "$lib/types";
 
@@ -257,6 +259,10 @@
     }
 
     function nodeMenuOptions(node: HierNode): Array<{ label: string; action: () => void }> {
+        // Read (not used) so this function's callers re-run whenever the clipboard
+        // changes — canPasteElements() below reads server-side state that Svelte
+        // has no other reactive handle on.
+        void $clipboardVersion;
         const opts: Array<{ label: string; action: () => void }> = [];
         const { id, text, nodeType: nt } = node;
 
@@ -265,6 +271,9 @@
                 opts.push($isGamebook
                     ? { label: "Add Page", action: () => openAddModal("page", null) }
                     : { label: "Add Room", action: () => openAddModal("room", null) });
+                if (canPasteElements(id)) {
+                    opts.push({ label: "Paste", action: () => pasteElements(id) });
+                }
             }
             else if (id === "_functions") opts.push({ label: "Add Function", action: () => openAddModal("function", null) });
             else if (id === "_timers") opts.push({ label: "Add Timer", action: () => openAddModal("timer", null) });
@@ -291,6 +300,24 @@
                 { label: "Add Verb", action: () => createVerb(id) },
                 { label: "Add Turn Script", action: () => createTurnScript(id) },
             );
+        }
+
+        // Gamebook pages ("page") are plain ElementType.Object elements underneath —
+        // v5's own desktop editor wires Cut/Copy/Paste/drag-move generically off
+        // EditorController with no gamebook-vs-textadventure gating at all (only
+        // GetPasteParent special-cases gamebook, always pasting at the flat top
+        // level), so pages get the same menu entries as rooms/objects here.
+        if (nt === "room" || nt === "object" || nt === "page") {
+            if (canMoveElement(id)) {
+                opts.push(
+                    { label: "Move to…", action: () => openMoveModal(id) },
+                    { label: "Cut", action: () => cutElements([id]) },
+                    { label: "Copy", action: () => copyElements([id]) },
+                );
+            }
+            if (canPasteElements(id)) {
+                opts.push({ label: "Paste", action: () => pasteElements(id) });
+            }
         }
 
         if (isDeletable(nt)) {
@@ -388,7 +415,7 @@
                     >
                         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="size-4"><polyline points="9 18 15 12 9 6" /></svg>
                     </button>
-                    <TreeView.BranchText class="flex-1 min-w-0 truncate">{node.text}</TreeView.BranchText>
+                    <TreeView.BranchText class="flex-1 min-w-0 truncate {$cutElementKeys.has(node.id) ? "opacity-50 italic" : ""}">{node.text}</TreeView.BranchText>
                     <span class="opacity-0 group-hover:opacity-100 pointer-coarse:opacity-100">
                         {@render nodeActions(node)}
                     </span>
@@ -402,7 +429,7 @@
             </TreeView.Branch>
         {:else}
             <TreeView.Item class="group flex items-center" onclick={() => activateIfAlreadySelected(node.id)}>
-                <span class="flex-1 min-w-0 truncate">{node.text}</span>
+                <span class="flex-1 min-w-0 truncate {$cutElementKeys.has(node.id) ? "opacity-50 italic" : ""}">{node.text}</span>
                 <span class="opacity-0 group-hover:opacity-100 pointer-coarse:opacity-100">
                     {@render nodeActions(node)}
                 </span>
