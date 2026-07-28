@@ -19,34 +19,53 @@ const pageErrors = [];
 page.on('console', msg => console.log('[console]', msg.type(), msg.text()));
 page.on('pageerror', err => { pageErrors.push(err.message); console.log('[pageerror]', err.message); });
 
-await page.goto(`${baseUrl}/?url=/examples/test.aslx`);
-await page.waitForSelector('#txtCommand', { timeout: 30000 });
-console.log('Game booted.');
+async function run() {
+    await page.goto(`${baseUrl}/?url=/examples/test.aslx`);
+    await page.waitForSelector('#txtCommand', { timeout: 30000 });
+    console.log('PASS: game booted');
 
-// ExpressionOwner.ShowMenu() function form, via test.aslx's "menufn" command.
-await page.fill('#txtCommand', 'menufn');
-await page.press('#txtCommand', 'Enter');
-await page.waitForSelector('#dialogOptions option', { timeout: 10000 });
+    // ExpressionOwner.ShowMenu() function form, via test.aslx's "menufn" command.
+    await page.fill('#txtCommand', 'menufn');
+    await page.press('#txtCommand', 'Enter');
+    await page.waitForSelector('#dialogOptions option', { timeout: 10000 });
 
-const selectedBeforeClick = await page.$eval('#dialogOptions', el => el.value);
-console.log('Select value before clicking any option (expect non-empty, e.g. "One"):', selectedBeforeClick);
+    const selectedBeforeClick = await page.$eval('#dialogOptions', el => el.value);
+    if (!selectedBeforeClick) {
+        throw new Error(`Expected a non-empty default selection, got ${JSON.stringify(selectedBeforeClick)}`);
+    }
+    console.log(`PASS: first option is pre-selected ("${selectedBeforeClick}")`);
 
-// Reproduce the original bug: click "Select" WITHOUT first clicking an option,
-// exactly as a player would if they trusted the visually-shown default.
-await page.click('button:has-text("Select")');
-await page.waitForTimeout(300);
+    // Reproduce the original bug: click "Select" WITHOUT first clicking an option,
+    // exactly as a player would if they trusted the visually-shown default.
+    await page.click('button:has-text("Select")');
+    await page.waitForTimeout(300);
 
-console.log('Page errors after clicking Select with no manual option click (expect none):', pageErrors.length === 0 ? 'none' : pageErrors);
+    if (pageErrors.length > 0) {
+        throw new Error(`Page errors were thrown after clicking Select with no manual option click: ${pageErrors.join('; ')}`);
+    }
+    console.log('PASS: no page errors after clicking Select with no manual option click');
 
-const output = await page.$eval('#divOutput', el => el.textContent).catch(() => null);
-console.log('Output tail (expect "You chose: One"):', output?.slice(-60));
+    const output = await page.$eval('#divOutput', el => el.textContent).catch(() => null);
+    if (!output?.includes('You chose: One')) {
+        throw new Error(`Expected output to contain "You chose: One", got tail: ${output?.slice(-100)}`);
+    }
+    console.log('PASS: menu choice was submitted ("You chose: One")');
 
-const dialogStillOpen = await page.$eval('#dialog', el => $(el).dialog('isOpen')).catch(() => null);
-console.log('Dialog still open after Select (expect false):', dialogStillOpen);
+    const dialogStillOpen = await page.$eval('#dialog', el => $(el).dialog('isOpen')).catch(() => null);
+    if (dialogStillOpen !== false) {
+        throw new Error(`Expected dialog to be closed after Select, got isOpen=${dialogStillOpen}`);
+    }
+    console.log('PASS: dialog closed after Select');
 
-await browser.close();
+    console.log('PASS: all checks passed');
+}
 
-if (pageErrors.length > 0) {
-    console.log('FAILED: page errors were thrown');
-    process.exit(1);
+try {
+    await run();
+} catch (err) {
+    console.error('FAIL:', err.message);
+    await page.screenshot({ path: '/tmp/wasmplayer-showmenu-select-default-failure.png' });
+    process.exitCode = 1;
+} finally {
+    await browser.close();
 }
