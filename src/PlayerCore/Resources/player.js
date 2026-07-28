@@ -112,6 +112,10 @@ function dialogSendCancel() {
 function sendCommand(text, metadata) {
     if (_pauseMode || _waitingForSoundToFinish || _waitMode || !canSendCommand) return;
     canSendCommand = false;
+    if (_getInputMode) {
+        _getInputMode = false;
+        updateSaveButtonEnabled();
+    }
     markScrollPosition();
     markUnsavedProgress();
 
