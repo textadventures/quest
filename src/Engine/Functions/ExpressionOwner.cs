@@ -498,10 +498,19 @@ internal class ExpressionOwner(WorldModel worldModel)
         var menuData = new MenuData(caption, options, allowCancel);
         worldModel.PlayerUi.ShowMenu(menuData);
         var tcs = WorldModel.BeginPrompt(ref worldModel._menuTcs);
+        worldModel.BeginPendingCallback();
         worldModel.SignalTurnSuspended();
-        var result = await tcs.Task;
-        if (result != null) await worldModel.PrintAsync(" - " + options[result]);
-        return result ?? string.Empty;
+        try
+        {
+            var result = await tcs.Task;
+            if (result != null) await worldModel.PrintAsync(" - " + options[result]);
+            return result ?? string.Empty;
+        }
+        finally
+        {
+            await worldModel.EndPendingCallbackAsync();
+            worldModel.SignalTurnSuspended();
+        }
     }
 
     public async Task<string> ShowMenu(string? caption, QuestList<string>? options, bool allowCancel)
@@ -575,10 +584,18 @@ internal class ExpressionOwner(WorldModel worldModel)
     {
         worldModel._commandOverride = true;
         var tcs = WorldModel.BeginPrompt(ref worldModel._commandInputTcs);
+        worldModel.BeginPendingCallback();
         worldModel.SignalTurnSuspended();
-        var result = await tcs.Task;
-        worldModel._commandOverride = false;
-        return result;
+        try
+        {
+            return await tcs.Task;
+        }
+        finally
+        {
+            worldModel._commandOverride = false;
+            await worldModel.EndPendingCallbackAsync();
+            worldModel.SignalTurnSuspended();
+        }
     }
 
     // ReSharper disable once InconsistentNaming
@@ -617,8 +634,17 @@ internal class ExpressionOwner(WorldModel worldModel)
         ArgumentNullException.ThrowIfNull(caption);
         worldModel.PlayerUi.ShowQuestion(caption);
         var tcs = WorldModel.BeginPrompt(ref worldModel._questionTcs);
+        worldModel.BeginPendingCallback();
         worldModel.SignalTurnSuspended();
-        return await tcs.Task;
+        try
+        {
+            return await tcs.Task;
+        }
+        finally
+        {
+            await worldModel.EndPendingCallbackAsync();
+            worldModel.SignalTurnSuspended();
+        }
     }
 
     public int GetRandomInt(int min, int max)

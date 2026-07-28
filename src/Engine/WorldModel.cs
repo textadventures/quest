@@ -1120,6 +1120,15 @@ public partial class WorldModel : IGame, IGameDebug
         {
             ScrollToEnd();
         }
+        // Every wait()/get input()/ask/show menu call site pairs BeginPendingCallback/
+        // EndPendingCallbackAsync 1:1 with a SignalTurnSuspended call, and the two
+        // unconditional call sites (BeginInternalAsync/HandleCommandAsyncInternal's
+        // finally blocks) always run once a turn's own script execution genuinely
+        // stops - so this single hook reflects "is anything still suspended in a
+        // TaskCompletionSource continuation that a save/reload can't reconstruct"
+        // at every point that matters, including games that never hit any of these
+        // constructs at all (count stays 0 throughout, correctly reported as idle).
+        PlayerUi.SetTurnPending(_pendingCallbackCount > 0);
         _turnSuspendedTcs.TrySetResult();
     }
 
@@ -1127,16 +1136,34 @@ public partial class WorldModel : IGame, IGameDebug
     {
         PlayerUi.DoWait();
         var tcs = BeginPrompt(ref _waitTcs);
+        BeginPendingCallback();
         SignalTurnSuspended();
-        await tcs.Task;
+        try
+        {
+            await tcs.Task;
+        }
+        finally
+        {
+            await EndPendingCallbackAsync();
+            SignalTurnSuspended();
+        }
     }
 
     internal async Task DoPauseAsync(int ms)
     {
         PlayerUi.DoPause(ms);
         var tcs = BeginPrompt(ref _pauseTcs);
+        BeginPendingCallback();
         SignalTurnSuspended();
-        await tcs.Task;
+        try
+        {
+            await tcs.Task;
+        }
+        finally
+        {
+            await EndPendingCallbackAsync();
+            SignalTurnSuspended();
+        }
     }
 
     public Task RunScriptAsync(IScript script)

@@ -268,11 +268,6 @@ public class GameQuery(string filename)
             throw new NotImplementedException();
         }
 
-        public void DoGetInput()
-        {
-            throw new NotImplementedException();
-        }
-
         public void DoPause(int ms)
         {
             throw new NotImplementedException();
@@ -396,6 +391,10 @@ public class GameQuery(string filename)
         public string GetUIOption(UIOption option)
         {
             return null;
+        }
+
+        public void SetTurnPending(bool pending)
+        {
         }
     }
 }

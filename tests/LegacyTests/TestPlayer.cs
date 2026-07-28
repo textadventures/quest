@@ -38,10 +38,6 @@ internal class TestPlayer : IPlayer
         IsWaiting = true;
     }
 
-    public void DoGetInput()
-    {
-    }
-
     public void ShowQuestion(string caption)
     {
         QuestionData = caption;
@@ -170,6 +166,10 @@ internal class TestPlayer : IPlayer
     public string GetUIOption(UIOption option)
     {
         return null;
+    }
+
+    public void SetTurnPending(bool pending)
+    {
     }
 
     public void ClearBuffer()

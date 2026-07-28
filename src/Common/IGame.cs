@@ -43,7 +43,6 @@ public interface IPlayer
 {
     void ShowMenu(MenuData menuData);
     void DoWait();
-    void DoGetInput();
     void DoPause(int ms);
     void ShowQuestion(string caption);
     void SetWindowMenu(MenuData menuData);
@@ -73,6 +72,7 @@ public interface IPlayer
     void SetPanelContents(string html);
     void Log(string text);
     string? GetUIOption(UIOption option);
+    void SetTurnPending(bool pending);
 }
 
 public enum ListType
