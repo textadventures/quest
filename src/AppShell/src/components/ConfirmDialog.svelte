@@ -33,7 +33,7 @@
         onclick={onBackdropClick}
         onkeydown={handleKeydown}
     >
-        <div class="card bg-white rounded-xl shadow-xl w-80 p-6 flex flex-col gap-4">
+        <div class="card bg-surface-50-950 rounded-xl shadow-xl w-80 p-6 flex flex-col gap-4">
             <p class="text-sm">{state.message}</p>
 
             <div class="flex justify-end gap-2">

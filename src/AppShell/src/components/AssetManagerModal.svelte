@@ -70,7 +70,7 @@
     onclick={onBackdropClick}
     onkeydown={handleKeydown}
 >
-    <div class="card bg-white rounded-xl shadow-xl w-full max-w-[32rem] max-h-[85dvh] p-6 flex flex-col gap-4">
+    <div class="card bg-surface-50-950 rounded-xl shadow-xl w-full max-w-[32rem] max-h-[85dvh] p-6 flex flex-col gap-4">
         <div class="flex items-center justify-between">
             <h2 class="text-base font-semibold">Assets</h2>
             <button class="btn btn-sm preset-tonal" onclick={oncancel}>Close</button>

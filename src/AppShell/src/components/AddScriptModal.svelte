@@ -206,7 +206,7 @@
     onclick={onBackdropClick}
     onkeydown={onKeydown}
 >
-    <div class="bg-white rounded-xl shadow-xl w-full max-w-[600px] h-[min(520px,85dvh)] flex flex-col overflow-hidden ring-1 ring-surface-200-800">
+    <div class="bg-surface-50-950 rounded-xl shadow-xl w-full max-w-[600px] h-[min(520px,85dvh)] flex flex-col overflow-hidden ring-1 ring-surface-200-800">
 
         <!-- Header -->
         <div class="px-5 py-3 flex items-center justify-between flex-shrink-0 border-b border-surface-200-800">
