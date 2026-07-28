@@ -458,8 +458,8 @@
 
 {#snippet advancedExpander(controls: ControlInfo[])}
     {#if controls.length > 0}
-        <details class="border-t border-surface-200-800">
-            <summary class="px-3 py-1.5 text-xs font-semibold uppercase text-surface-500-400 cursor-pointer select-none">
+        <details class="mt-2 border-t border-surface-200-800">
+            <summary class="px-3 pt-2.5 pb-1.5 text-xs font-semibold uppercase text-surface-500-400 cursor-pointer select-none">
                 Advanced
             </summary>
             {#each controls as ctrl, i (i)}
