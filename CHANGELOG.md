@@ -1,5 +1,24 @@
 # Changelog
 
+## [6.0.0-beta.46](https://github.com/textadventures/quest/compare/v6.0.0-beta.45...v6.0.0-beta.46) (2026-07-28)
+
+
+### Features
+
+* **AppShell:** add move/cut/copy/paste for tree elements ([#1955](https://github.com/textadventures/quest/issues/1955)) ([51a8ebf](https://github.com/textadventures/quest/commit/51a8ebf594671eb280b0296ed5f5079ec2348121))
+* **ElectronApp:** clean up native Edit/View menus, reserve DevTools for Player windows ([#1944](https://github.com/textadventures/quest/issues/1944)) ([fa7378e](https://github.com/textadventures/quest/commit/fa7378e6f31ef26057f4a7cf6e729de26d5c6bf0))
+
+
+### Bug Fixes
+
+* **AppShell:** add spacing above Advanced section in property editor ([#1946](https://github.com/textadventures/quest/issues/1946)) ([af5474d](https://github.com/textadventures/quest/commit/af5474d3f154fdf3c3deeaa71c179deea961be2e))
+* **AppShell:** fix invisible text in modals in dark mode ([#1953](https://github.com/textadventures/quest/issues/1953)) ([3b1f296](https://github.com/textadventures/quest/commit/3b1f2964463d129ddba6002454979a892343258e))
+* **AppShell:** stop file-upload picker overflowing on mobile ([#1942](https://github.com/textadventures/quest/issues/1942)) ([197f665](https://github.com/textadventures/quest/commit/197f665db29415b65bcc53a69132b26593f4b044))
+* **PlayerCore:** cap map panel width to game width when panes are hidden ([#1954](https://github.com/textadventures/quest/issues/1954)) ([14551f8](https://github.com/textadventures/quest/commit/14551f884b5a18e9931a9bd67719a8469a6a62a3))
+* **PlayerCore:** stop ShowMenu dialog throwing when no option is manually clicked ([#1951](https://github.com/textadventures/quest/issues/1951)) ([5f523fe](https://github.com/textadventures/quest/commit/5f523fe1355e3935b101908d444e7b772c8eec1c))
+* **WasmPlayer:** default Save to disabled, only enable once a turn genuinely finishes ([#1950](https://github.com/textadventures/quest/issues/1950)) ([f81fe8f](https://github.com/textadventures/quest/commit/f81fe8f302079bba080c57ae7085c98097ba7df3))
+* **WasmPlayer:** disable Save while a wait()/get input() prompt is pending ([#1945](https://github.com/textadventures/quest/issues/1945)) ([ddeea26](https://github.com/textadventures/quest/commit/ddeea260307cb7441081cdbf57167261c38490b8))
+
 ## [6.0.0-beta.45](https://github.com/textadventures/quest/compare/v6.0.0-beta.44...v6.0.0-beta.45) (2026-07-26)
 
 
