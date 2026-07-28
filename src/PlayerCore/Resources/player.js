@@ -40,10 +40,17 @@ var _menuSelection = "";
 
 function showMenu(title, options, allowCancel) {
     $("#dialogOptions").empty();
+    var firstOption = true;
     $.each(options, function (key, value) {
+        // Explicitly mark the first <option> selected - a <select> visually
+        // shows its first option as selected by default, but jQuery's .val()
+        // returns null (not that option's value) unless one is actually
+        // marked with the selected attribute, which broke dialogSelect() for
+        // anyone who clicked "Select" without first clicking an option.
         $("#dialogOptions").append(
-            $("<option/>").attr("value", key).text(value)
+            $("<option/>").attr("value", key).text(value).prop("selected", firstOption)
         );
+        firstOption = false;
     });
 
     $("#dialogCaption").html(title);

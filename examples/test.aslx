@@ -150,6 +150,10 @@
         else if (command = "menu") {
             menu()
         }
+        else if (command = "menufn") {
+            options = Split("One,Two,Three,Four", ",")
+            msg ("You chose: " + ShowMenu("Please choose one of these...", options, true))
+        }
         else if (command = "event") {
             msg ("<a onclick=\"ASLEvent('FromJS','some parameter')\">Click me</a>")
         }
