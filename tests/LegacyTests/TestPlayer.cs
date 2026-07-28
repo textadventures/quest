@@ -38,6 +38,10 @@ internal class TestPlayer : IPlayer
         IsWaiting = true;
     }
 
+    public void DoGetInput()
+    {
+    }
+
     public void ShowQuestion(string caption)
     {
         QuestionData = caption;

@@ -43,6 +43,7 @@ public interface IPlayer
 {
     void ShowMenu(MenuData menuData);
     void DoWait();
+    void DoGetInput();
     void DoPause(int ms);
     void ShowQuestion(string caption);
     void SetWindowMenu(MenuData menuData);

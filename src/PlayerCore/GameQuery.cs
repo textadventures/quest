@@ -268,6 +268,11 @@ public class GameQuery(string filename)
             throw new NotImplementedException();
         }
 
+        public void DoGetInput()
+        {
+            throw new NotImplementedException();
+        }
+
         public void DoPause(int ms)
         {
             throw new NotImplementedException();
