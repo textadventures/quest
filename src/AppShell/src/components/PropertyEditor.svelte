@@ -1,10 +1,12 @@
 <script lang="ts">
-    import { selectedKey, selectedData, treeNodes, isGamebook, setAttribute, setDropdownType, setMultiType, setObjectReference, addDictItem, removeDictItem, updateDictItem, openAddModal, createIncludedLibrary, createJavascript } from "$lib/editor-store";
+    import { selectedKey, selectedData, treeNodes, isGamebook, setAttribute, setDropdownType, setMultiType, setObjectReference, addDictItem, removeDictItem, updateDictItem, getObjectNames, selectNode, createObjectSilent, openAddModal, createIncludedLibrary, createJavascript } from "$lib/editor-store";
     import { showToast } from "$lib/toast";
     import type { ControlInfo, TextProcessorCommand } from "$lib/types";
     import type { TreeNode } from "$lib/types";
     import ChevronLeft from "@lucide/svelte/icons/chevron-left";
+    import ArrowRight from "@lucide/svelte/icons/arrow-right";
     import ScriptEditor from "./ScriptEditor.svelte";
+    import ScriptDictionaryEditor from "./ScriptDictionaryEditor.svelte";
     import Combobox from "./Combobox.svelte";
     import AttributesEditor from "./AttributesEditor.svelte";
     import ListEditor from "./ListEditor.svelte";
@@ -12,6 +14,7 @@
     import AssetPicker from "./AssetPicker.svelte";
     import ExitsEditor from "./ExitsEditor.svelte";
     import VerbsEditor from "./VerbsEditor.svelte";
+    import AddElementModal from "./AddElementModal.svelte";
 
     let { onback }: { onback?: () => void } = $props();
 
@@ -48,6 +51,14 @@
     let editingItem = $state<{attribute: string, key: string, value: string} | null>(null);
     let newDictItems = $state<Record<string, {key: string, value: string}>>({});
     let attributeErrors = $state<Record<string, string>>({});
+    // Refetched whenever the selection changes, for dictionary controls whose keys are
+    // object names (e.g. gamebook page "Options" links) rather than free text.
+    let dictSourceObjectNames = $state<string[]>([]);
+    $effect(() => {
+        if ($selectedKey) dictSourceObjectNames = getObjectNames() ?? [];
+    });
+    // Which gamebookoptions control (keyed by attribute) has its "new page" dialog open.
+    let newPageModalFor = $state<string | null>(null);
 
     $effect(() => {
         const key = $selectedKey;
@@ -131,6 +142,7 @@
 
     function focusOnMount(node: HTMLElement) {
         node.focus();
+        if (node instanceof HTMLInputElement || node instanceof HTMLTextAreaElement) node.select();
     }
 
     function tabClass(caption: string | null): string {
@@ -308,9 +320,12 @@
         />
     {:else if ctrl.controlType === "list" && ctrl.attribute && $selectedKey}
         <ListEditor elementKey={$selectedKey} attribute={ctrl.attribute} value={attrValue(ctrl.attribute)} addPrompt={ctrl.addPrompt ?? undefined} />
-    {:else if ctrl.controlType === "stringdictionary" && ctrl.attribute}
+    {:else if (ctrl.controlType === "stringdictionary" || ctrl.controlType === "gamebookoptions") && ctrl.attribute}
         {@const items = (() => { try { return JSON.parse(attrValue(ctrl.attribute) ?? "[]") as {key: string, value: string}[]; } catch { return []; } })()}
         {@const dk = ctrl.attribute}
+        {@const isObjectSource = ctrl.source === "object"}
+        {@const excludedNames = new Set((ctrl.sourceExclude ?? "").split(/[;,]/).map(s => s.trim()).filter(Boolean))}
+        {@const availableObjectNames = isObjectSource ? dictSourceObjectNames.filter(n => !excludedNames.has(n) && !items.some(i => i.key === n)) : []}
         <div class="flex flex-col gap-1 w-full">
             {#each items as item (item.key)}
                 {@const isEditing = editingItem?.attribute === dk && editingItem?.key === item.key}
@@ -346,6 +361,14 @@
                             onclick={() => { editingItem = { attribute: dk, key: item.key, value: item.value }; }}
                         >{item.value}</button>
                     {/if}
+                    {#if isObjectSource}
+                        <button
+                            type="button"
+                            class="btn btn-sm preset-outlined-primary-500 text-xs px-1.5 py-0.5 flex-shrink-0"
+                            title="Go to {item.key}"
+                            onclick={() => selectNode(item.key)}
+                        ><ArrowRight size={11} /></button>
+                    {/if}
                     <button
                         type="button"
                         class="btn btn-sm preset-outlined-error-500 text-xs px-1.5 py-0.5 flex-shrink-0"
@@ -354,20 +377,36 @@
                 </div>
             {/each}
             <div class="flex items-center gap-1 mt-0.5">
-                <input
-                    type="text"
-                    autocapitalize="off"
-                    class="input text-xs py-0.5 px-1.5 w-24 flex-shrink-0"
-                    placeholder={ctrl.caption ? "Key" : "Key"}
-                    data-staging
-                    value={newDictItems[dk]?.key ?? ""}
-                    oninput={(e) => { newDictItems[dk] = { ...(newDictItems[dk] ?? { key: "", value: "" }), key: (e.target as HTMLInputElement).value }; }}
-                />
+                {#if isObjectSource}
+                    <select
+                        class="select text-xs py-0.5 px-1.5 w-24 flex-shrink-0"
+                        aria-label={ctrl.keyPrompt ?? "Key"}
+                        title={ctrl.keyPrompt ?? undefined}
+                        data-staging
+                        value={newDictItems[dk]?.key ?? ""}
+                        onchange={(e) => { newDictItems[dk] = { ...(newDictItems[dk] ?? { key: "", value: "" }), key: (e.target as HTMLSelectElement).value }; }}
+                    >
+                        <option value="">Select…</option>
+                        {#each availableObjectNames as name (name)}
+                            <option value={name}>{name}</option>
+                        {/each}
+                    </select>
+                {:else}
+                    <input
+                        type="text"
+                        autocapitalize="off"
+                        class="input text-xs py-0.5 px-1.5 w-24 flex-shrink-0"
+                        placeholder={ctrl.keyPrompt ?? "Key"}
+                        data-staging
+                        value={newDictItems[dk]?.key ?? ""}
+                        oninput={(e) => { newDictItems[dk] = { ...(newDictItems[dk] ?? { key: "", value: "" }), key: (e.target as HTMLInputElement).value }; }}
+                    />
+                {/if}
                 <input
                     type="text"
                     autocapitalize="off"
                     class="input text-xs py-0.5 px-1.5 flex-1"
-                    placeholder="Value"
+                    placeholder={ctrl.valuePrompt ?? "Value"}
                     data-staging
                     value={newDictItems[dk]?.value ?? ""}
                     oninput={(e) => { newDictItems[dk] = { ...(newDictItems[dk] ?? { key: "", value: "" }), value: (e.target as HTMLInputElement).value }; }}
@@ -388,8 +427,35 @@
                         }
                     }}
                 >Add</button>
+                {#if ctrl.controlType === "gamebookoptions"}
+                    <button
+                        type="button"
+                        class="btn btn-sm preset-outlined-primary-500 text-xs px-2 py-0.5 flex-shrink-0 whitespace-nowrap"
+                        onclick={() => { newPageModalFor = dk; }}
+                    >+ New Page</button>
+                {/if}
             </div>
         </div>
+        {#if newPageModalFor === dk}
+            <AddElementModal
+                elementType="page"
+                parent={null}
+                onconfirm={(name) => {
+                    newPageModalFor = null;
+                    if (!$selectedKey) return;
+                    const result = createObjectSilent(name, null);
+                    if (result.startsWith("error:")) {
+                        showToast(result.slice("error:".length));
+                        return;
+                    }
+                    const value = newDictItems[dk]?.value?.trim() || result;
+                    addDictItem($selectedKey, dk, result, value);
+                    newDictItems[dk] = { key: "", value: "" };
+                    editingItem = { attribute: dk, key: result, value };
+                }}
+                oncancel={() => { newPageModalFor = null; }}
+            />
+        {/if}
     {:else if ctrl.controlType === "objects" && ctrl.options}
         <Combobox
             value={attrValue(ctrl.attribute!) ?? ""}
@@ -445,6 +511,13 @@
         <div class="flex-1 min-w-0 overflow-hidden">
             <ScriptEditor elementKey={$selectedKey} attribute={ctrl.attribute} />
         </div>
+    {:else if ctrl.controlType === "scriptdictionary" && ctrl.attribute && $selectedKey}
+        <ScriptDictionaryEditor
+            elementKey={$selectedKey}
+            attribute={ctrl.attribute}
+            value={attrValue(ctrl.attribute)}
+            keySource={ctrl.source === "object" ? "object" : "text"}
+        />
     {:else}
         {#if attrValue(ctrl.attribute!) !== null}
             <span class="text-xs overflow-hidden text-ellipsis whitespace-nowrap" title={attrValue(ctrl.attribute!) ?? ""}>
@@ -554,8 +627,8 @@
             </div>
         {:else}
             {@const label = ctrl.caption ?? ctrl.attribute}
-            {@const isMultiline = ctrl.controlType === "richtext" || ctrl.controlType === "script" || ctrl.controlType === "list" || ctrl.controlType === "stringdictionary"}
-            {@const stacksBelowLabel = label.length > 20 || ctrl.controlType === "script"}
+            {@const isMultiline = ctrl.controlType === "richtext" || ctrl.controlType === "script" || ctrl.controlType === "list" || ctrl.controlType === "stringdictionary" || ctrl.controlType === "scriptdictionary" || ctrl.controlType === "gamebookoptions"}
+            {@const stacksBelowLabel = label.length > 20 || isMultiline}
             {#if stacksBelowLabel}
                 <div class="flex flex-col gap-1 px-3 py-1.5">
                     <span class="text-xs text-surface-600-400">{label}:</span>
@@ -566,8 +639,8 @@
                 </div>
             {:else}
                 <div class="flex flex-col gap-1 px-3 py-1.5">
-                    <div class="flex {isMultiline ? "items-start" : "items-center"} gap-2 min-h-8">
-                        <span class="text-xs text-surface-600-400 w-32 flex-shrink-0 {isMultiline ? "pt-0.5" : ""}">{label}:</span>
+                    <div class="flex items-center gap-2 min-h-8">
+                        <span class="text-xs text-surface-600-400 w-32 flex-shrink-0">{label}:</span>
                         {@render controlOnly(ctrl)}
                     </div>
                     {#if ctrl.attribute && attributeErrors[ctrl.attribute]}

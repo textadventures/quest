@@ -35,7 +35,10 @@ internal record ControlInfo(
     string? ObjectType = null,
     string? ListFilter = null,
     string? Source = null,
-    bool Advanced = false);
+    bool Advanced = false,
+    string? KeyPrompt = null,
+    string? ValuePrompt = null,
+    string? SourceExclude = null);
 
 internal record TabInfo(string? Caption, List<ControlInfo> Controls);
 
@@ -3190,11 +3193,16 @@ public partial class WasmEditorBridge
         }
 
         var addPrompt = ctrl.ControlType == "list" ? ctrl.GetString("editprompt") : null;
-        var source = ctrl.ControlType == "file" ? ctrl.GetString("source") : null;
+        var isDictionary = ctrl.ControlType is "stringdictionary" or "gamebookoptions";
+        var source = ctrl.ControlType == "file" || isDictionary ? ctrl.GetString("source") : null;
+        var keyPrompt = isDictionary ? ctrl.GetString("keyprompt") : null;
+        var valuePrompt = isDictionary ? ctrl.GetString("valueprompt") : null;
+        var sourceExclude = isDictionary ? ctrl.GetString("sourceexclude") : null;
 
         return new ControlInfo(attribute, ctrl.ControlType, ctrl.Caption ?? ctrl.GetString("selfcaption"), options,
             null, null, textProcessorCommands, addPrompt, Source: source,
-            Advanced: !ctrl.IsControlVisibleInSimpleMode);
+            Advanced: !ctrl.IsControlVisibleInSimpleMode,
+            KeyPrompt: keyPrompt, ValuePrompt: valuePrompt, SourceExclude: sourceExclude);
     }
 
     [JSExport]
