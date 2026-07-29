@@ -894,10 +894,10 @@ export function getUniqueName(baseName: string): string {
     return _bridge?.GetUniqueName(baseName) ?? baseName;
 }
 
-function afterCreate(result: string): string {
+function afterCreate(result: string, select = true): string {
     if (result.startsWith("error:")) return result;
     refreshTree();
-    void selectNode(result);
+    if (select) void selectNode(result);
     refreshUndoRedo();
     return result;
 }
@@ -910,6 +910,15 @@ export function createRoom(name: string, parent: string | null): string {
 export function createObject(name: string, parent: string | null): string {
     if (!_bridge) return "error:not loaded";
     return afterCreate(_bridge.CreateObject(name, parent ?? ""));
+}
+
+// Like createObject, but doesn't navigate the selection to the new element —
+// used when creating an object as a side effect of another action (e.g.
+// creating a gamebook page inline while linking to it) where the user should
+// stay on the page they were editing.
+export function createObjectSilent(name: string, parent: string | null): string {
+    if (!_bridge) return "error:not loaded";
+    return afterCreate(_bridge.CreateObject(name, parent ?? ""), false);
 }
 
 export function createFunction(name: string): string {

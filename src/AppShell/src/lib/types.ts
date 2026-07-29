@@ -32,6 +32,9 @@ export interface ControlInfo {
   listFilter?: string | null
   source?: string | null
   advanced: boolean
+  keyPrompt?: string | null
+  valuePrompt?: string | null
+  sourceExclude?: string | null
 }
 
 export interface TabInfo {
