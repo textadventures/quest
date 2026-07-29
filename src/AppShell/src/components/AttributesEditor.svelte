@@ -229,9 +229,50 @@
     }
 
     const UNDELETABLE_ATTRIBUTES = new Set(["name", "type", "elementtype"]);
+    // elementtype/type identify what kind of element this is and must never be
+    // hand-edited; name may only be renamed (via its value), never retyped.
+    const LOCKED_ATTRIBUTES = new Set(["elementtype", "type"]);
 
     function canDeleteAttribute(attr: AttributeDataItem): boolean {
         return !attr.isInherited && !UNDELETABLE_ATTRIBUTES.has(attr.name);
+    }
+
+    function isTypeLocked(attr: AttributeDataItem): boolean {
+        return attr.isDefaultType || attr.name === "name" || LOCKED_ATTRIBUTES.has(attr.name);
+    }
+
+    function isValueLocked(attr: AttributeDataItem): boolean {
+        return attr.isDefaultType || LOCKED_ATTRIBUTES.has(attr.name);
+    }
+
+    function hasChangeScript(name: string): boolean {
+        return ($fullAttributeData?.attributes ?? []).some(a => a.name === "changed" + name);
+    }
+
+    // v5's AddChangeScriptAllowed doesn't exclude inherited attributes (only
+    // read-only elements and a blank attribute name), so a change script can
+    // still be attached to a value this element currently gets from a type —
+    // e.g. adding a custom "changedopen" on top of an inherited "open".
+    function canAddChangeScript(attr: AttributeDataItem): boolean {
+        return !UNDELETABLE_ATTRIBUTES.has(attr.name) && !attr.name.startsWith("changed")
+            && !hasChangeScript(attr.name);
+    }
+
+    function canGoToChangeScript(attr: AttributeDataItem): boolean {
+        return !UNDELETABLE_ATTRIBUTES.has(attr.name) && !attr.name.startsWith("changed")
+            && hasChangeScript(attr.name);
+    }
+
+    function selectChangeScript(name: string) {
+        const changeAttrName = "changed" + name;
+        selectedAttrName = changeAttrName;
+        Promise.resolve().then(() => requestAnimationFrame(() => focusAttrRow(changeAttrName)));
+    }
+
+    function onAddChangeScript(attr: AttributeDataItem) {
+        if (!$selectedKey) return;
+        changeAttributeType($selectedKey, "changed" + attr.name, "script");
+        selectChangeScript(attr.name);
     }
 
     function isTextEditable(attr: AttributeDataItem): boolean {
@@ -445,13 +486,27 @@
                             class="select text-xs py-0 px-1.5 h-7"
                             value={attr.type}
                             onchange={(e) => onChangeType((e.target as HTMLSelectElement).value)}
-                            disabled={attr.isDefaultType}
+                            disabled={isTypeLocked(attr)}
                         >
                             {#each TYPE_OPTIONS as opt (opt.value)}
                                 <option value={opt.value}>{opt.label}</option>
                             {/each}
                         </select>
                     </div>
+
+                    {#if canAddChangeScript(attr)}
+                        <button
+                            type="button"
+                            onclick={() => onAddChangeScript(attr)}
+                            class="btn btn-sm preset-outlined-primary-500 text-xs px-2 py-0 h-6 self-start flex-shrink-0"
+                        >Add Change Script</button>
+                    {:else if canGoToChangeScript(attr)}
+                        <button
+                            type="button"
+                            onclick={() => selectChangeScript(attr.name)}
+                            class="btn btn-sm preset-outlined-surface-500 text-xs px-2 py-0 h-6 self-start flex-shrink-0"
+                        >Go to Change Script</button>
+                    {/if}
 
                     <!-- Value editor -->
                     <div class="flex flex-col gap-1">
@@ -461,7 +516,7 @@
                         {:else if attr.type === "boolean"}
                             <Switch
                                 checked={editingBool}
-                                disabled={attr.isDefaultType}
+                                disabled={isValueLocked(attr)}
                                 onCheckedChange={(e) => { editingBool = e.checked; onBoolChange(editingBool); }}
                             >
                                 <Switch.Control><Switch.Thumb /></Switch.Control>
@@ -471,12 +526,12 @@
                         {:else if attr.type === "script"}
                             <div class="min-h-48">
                                 {#if $selectedKey}
-                                    <ScriptEditor elementKey={$selectedKey} attribute={attr.name} isLocked={attr.isInherited || attr.isDefaultType} />
+                                    <ScriptEditor elementKey={$selectedKey} attribute={attr.name} isLocked={attr.isInherited || isValueLocked(attr)} />
                                 {/if}
                             </div>
                         {:else if attr.type === "scriptdictionary"}
                             {#if $selectedKey}
-                                <ScriptDictionaryEditor elementKey={$selectedKey} attribute={attr.name} value={attr.value} isLocked={attr.isInherited || attr.isDefaultType} />
+                                <ScriptDictionaryEditor elementKey={$selectedKey} attribute={attr.name} value={attr.value} isLocked={attr.isInherited || isValueLocked(attr)} />
                             {/if}
                         {:else if attr.type === "stringlist"}
                             {#if $selectedKey}
@@ -490,7 +545,7 @@
                             <select
                                 class="select text-xs py-0 px-1.5 h-7"
                                 bind:value={editingObject}
-                                disabled={attr.isDefaultType}
+                                disabled={isValueLocked(attr)}
                                 onchange={(e) => onObjectChange((e.target as HTMLSelectElement).value)}
                             >
                                 {#each objectNames as name (name)}
@@ -503,7 +558,7 @@
                                 class="input text-xs py-1 px-1.5 w-full"
                                 step={attr.type === "double" ? "any" : "1"}
                                 value={editingValue}
-                                disabled={attr.isDefaultType}
+                                disabled={isValueLocked(attr)}
                                 oninput={(e) => { editingValue = (e.target as HTMLInputElement).value; }}
                                 onblur={commitTextEdit}
                                 onkeydown={(e) => { if (e.key === "Enter") { e.preventDefault(); commitTextEdit(); } }}
@@ -515,7 +570,7 @@
                                 class="input text-xs py-1 px-1.5 w-full resize-none"
                                 rows="4"
                                 value={editingValue}
-                                disabled={attr.isDefaultType}
+                                disabled={isValueLocked(attr)}
                                 oninput={(e) => { editingValue = (e.target as HTMLTextAreaElement).value; }}
                                 onblur={commitTextEdit}
                                 onkeydown={(e) => { if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); commitTextEdit(); } }}
