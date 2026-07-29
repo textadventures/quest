@@ -917,6 +917,24 @@ public sealed class EditorController : IDisposable
         return new EditorData(WorldModel.Elements.Get(elementKey), this);
     }
 
+    // Turns a library-origin element (loaded from Core.aslx or another included library) into a
+    // normal, editable game element. On the next save this element then gets written into the
+    // user's own game file (GameSaver skips anything still flagged "library"), which is how
+    // library overriding works — the local copy shadows the library original from then on.
+    public void MakeElementLocal(string key)
+    {
+        if (GetEditorData(key) is not IEditorDataExtendedAttributeInfo data || !data.IsLibraryElement)
+        {
+            return;
+        }
+
+        WorldModel.UndoLogger.StartTransaction($"Copy '{GetDisplayName(WorldModel.Elements.Get(key))}' into game");
+        data.MakeElementLocal();
+        WorldModel.UndoLogger.EndTransaction();
+
+        AddElementToTree(WorldModel.Elements.Get(key));
+    }
+
     public IEditorData GetScriptEditorData(IEditableScript script)
     {
         switch (script.Type)

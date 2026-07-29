@@ -15,6 +15,7 @@
     import ExitsEditor from "./ExitsEditor.svelte";
     import VerbsEditor from "./VerbsEditor.svelte";
     import AddElementModal from "./AddElementModal.svelte";
+    import LibraryElementBanner from "./LibraryElementBanner.svelte";
 
     let { onback }: { onback?: () => void } = $props();
 
@@ -164,6 +165,7 @@
             <span class="text-xs font-semibold uppercase text-surface-500-400">Properties</span>
         {/if}
     </div>
+    <LibraryElementBanner />
 
     {#if $selectedKey === null}
         <p class="px-3 py-4 text-sm text-surface-400-500">Select an object to view its properties.</p>
@@ -196,9 +198,10 @@
 
         {@const viewControls = getControlsForView()}
         {@const hasAttributesPanel = viewControls.some(c => c.controlType === "attributes")}
+        {@const readOnly = $selectedData.isLibraryElement}
         {#if hasAttributesPanel}
             {@const { main, advanced } = partitionControls(viewControls.filter(c => c.controlType !== "attributes"))}
-            <div class="flex-1 overflow-hidden flex flex-col min-h-0">
+            <div class="flex-1 overflow-hidden flex flex-col min-h-0 {readOnly ? "pointer-events-none opacity-60" : ""}">
                 <AttributesEditor>
                     {#snippet extraControls()}
                         {#each main as ctrl, i (i)}
@@ -210,7 +213,7 @@
             </div>
         {:else}
             {@const { main, advanced } = partitionControls(viewControls)}
-            <div class="flex-1 overflow-y-auto">
+            <div class="flex-1 overflow-y-auto {readOnly ? "pointer-events-none opacity-60" : ""}">
                 {#each main as ctrl, i (i)}
                     {@render controlRow(ctrl)}
                 {/each}

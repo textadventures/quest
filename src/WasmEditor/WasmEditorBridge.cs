@@ -16,7 +16,7 @@ using QuestViva.Engine.Types;
 
 namespace QuestViva.WasmEditor;
 
-internal record TreeNodeData(string Key, string Text, string? Parent, string? NodeIcon, string NodeType);
+internal record TreeNodeData(string Key, string Text, string? Parent, string? NodeIcon, string NodeType, bool IsLibrary);
 
 internal record ControlOption(string Value, string Label);
 
@@ -46,7 +46,9 @@ internal record TabInfo(string? Caption, List<ControlInfo> Controls);
 internal record EditorDataResponse(
     Dictionary<string, string?> Attributes,
     List<TabInfo> Tabs,
-    List<ControlInfo> Controls);
+    List<ControlInfo> Controls,
+    bool IsLibraryElement,
+    string? Filename);
 
 internal record ScriptControlData(
     string ControlType,
@@ -291,6 +293,26 @@ public partial class WasmEditorBridge
     }
 
     [JSExport]
+    public static void SetShowLibraryElements(bool show)
+    {
+        if (_controller == null) return;
+
+        var options = new FilterOptions();
+        options.Set("libraries", show);
+        _controller.UpdateFilterOptions(options);
+        _controller.UpdateTree();
+    }
+
+    [JSExport]
+    public static string MakeElementLocal(string elementKey)
+    {
+        if (_controller == null) return "error:No game loaded.";
+
+        _controller.MakeElementLocal(elementKey);
+        return "ok";
+    }
+
+    [JSExport]
     public static async Task<string?> GetEditorData(string key)
     {
         if (_controller == null)
@@ -355,7 +377,7 @@ public partial class WasmEditorBridge
         }
 
         return JsonSerializer.Serialize(
-            new EditorDataResponse(attrs, tabs, topControls),
+            new EditorDataResponse(attrs, tabs, topControls, extended?.IsLibraryElement ?? false, extended?.Filename),
             WasmEditorJsonContext.Default.EditorDataResponse);
     }
 
@@ -3138,7 +3160,7 @@ public partial class WasmEditorBridge
             return;
         }
 
-        var node = new TreeNodeData(e.Key, e.Text, e.Parent, e.NodeIcon, GetNodeType(e.Key, e.NodeIcon));
+        var node = new TreeNodeData(e.Key, e.Text, e.Parent, e.NodeIcon, GetNodeType(e.Key, e.NodeIcon), e.IsLibraryNode);
         if (_isRebuilding)
         {
             // ClearTree already emptied the list; all keys are unique in a fresh rebuild.

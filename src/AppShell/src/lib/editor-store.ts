@@ -36,6 +36,7 @@ export const canBackup = writable(false);
 export const showBackupBanner = writable(false);
 export const canPublishToServer = writable(false);
 export const treeNodes = writable<TreeNode[]>([]);
+export const showLibraryElements = writable(false);
 export const selectedKey = writable<string | null>(null);
 export const selectedData = writable<EditorDataResponse | null>(null);
 export const fullAttributeData = writable<FullAttributeData | null>(null);
@@ -111,6 +112,7 @@ export async function openGame(bytes: Uint8Array, filename: string, adapter: Fil
         isGamebook.set(_bridge.IsGamebook());
         const nodes: TreeNode[] = JSON.parse(_bridge.GetTreeNodes());
         treeNodes.set(nodes);
+        showLibraryElements.set(false);
         isLoaded.set(true);
         gameFilename.set(filename);
         refreshUndoRedo();
@@ -148,6 +150,7 @@ export async function setGameXml(xml: string): Promise<string> {
         isGamebook.set(_bridge.IsGamebook());
         const nodes: TreeNode[] = JSON.parse(_bridge.GetTreeNodes());
         treeNodes.set(nodes);
+        showLibraryElements.set(false);
         scriptClipboardHasContent.set(false);
         cutElementKeys.set(new Set());
         await refreshAssets();
@@ -170,6 +173,24 @@ export async function selectNode(key: string) {
     selectedData.set(json ? JSON.parse(json) : null);
     const attrJson = _bridge.GetFullAttributeData(key);
     fullAttributeData.set(attrJson ? JSON.parse(attrJson) : null);
+}
+
+export function toggleShowLibraryElements(): void {
+    if (!_bridge) return;
+    const next = !get(showLibraryElements);
+    _bridge.SetShowLibraryElements(next);
+    showLibraryElements.set(next);
+    refreshTree();
+}
+
+// "Copy into your game" — turns a read-only library element (from Core.aslx or another
+// included library) into a normal, editable element of the user's own game.
+export async function makeElementLocal(key: string): Promise<void> {
+    if (!_bridge) return;
+    _bridge.MakeElementLocal(key);
+    refreshTree();
+    await refreshSelectedDataAsync();
+    refreshUndoRedo();
 }
 
 export function setAttribute(elementKey: string, attribute: string, controlType: string, value: string): string {
