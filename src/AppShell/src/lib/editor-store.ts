@@ -70,6 +70,11 @@ export const scriptClipboardHasContent = writable(false);
 export const assets = writable<AssetInfo[]>([]);
 export const assetManagerOpen = writable(false);
 export const publishModalOpen = writable(false);
+export const codeViewPanelOpen = writable(false);
+// Bumped by Toolbar's toggle button when the panel is already open, asking CodeViewPanel to
+// attempt closing — rather than the toolbar forcing codeViewPanelOpen to false directly, which
+// would silently discard any not-yet-applied raw XML edits.
+export const codeViewCloseRequested = writable(0);
 
 function refreshUndoRedo() {
     canUndo.set(_bridge?.CanUndo() ?? false);
@@ -116,6 +121,46 @@ export async function openGame(bytes: Uint8Array, filename: string, adapter: Fil
         if (gameNode) await selectNode(gameNode.key);
     }
     return ok;
+}
+
+// Read-only peek at the current game's XML for the raw Code View panel — unlike Save(), this
+// does not clear the bridge's dirty flag (it's not a save action).
+export function getGameXml(): string {
+    return _bridge?.GetGameXml() ?? "";
+}
+
+// Applies raw-XML edits from the Code View panel. SetGameXml validates the new XML against a
+// throwaway controller before touching the live one (see WasmEditorBridge.cs), so a malformed
+// edit returns "error:..." without disturbing the currently-open game. On success this reloads
+// the whole in-memory model, which mirrors openGame()'s post-load sequence — and necessarily
+// wipes Quest's own undo/redo stack, which is why the caller (CodeViewPanel) confirms with the
+// user before invoking this.
+export async function setGameXml(xml: string): Promise<string> {
+    if (!_bridge) return "error";
+    cancelPendingAutosave();
+    // Double rAF ensures the browser actually paints the caller's "Applying…" state before
+    // SetGameXml's Initialise() call blocks the JS thread (C# WASM calls are synchronous) — same
+    // pattern openGame() uses below for the equivalent reason.
+    await new Promise<void>(resolve => requestAnimationFrame(() => requestAnimationFrame(() => resolve())));
+    const result = await _bridge.SetGameXml(xml);
+    if (result === "ok") {
+        clearAssetUrlCache();
+        isGamebook.set(_bridge.IsGamebook());
+        const nodes: TreeNode[] = JSON.parse(_bridge.GetTreeNodes());
+        treeNodes.set(nodes);
+        scriptClipboardHasContent.set(false);
+        cutElementKeys.set(new Set());
+        await refreshAssets();
+        const gameNode = nodes.find(n => n.nodeType === "game");
+        if (gameNode) await selectNode(gameNode.key);
+        refreshUndoRedo();
+        // SetGameXml() resets the bridge's dirty flag after the reload (matching Initialise()'s
+        // own behavior), but the in-memory content now differs from the last persisted save, so
+        // that must be corrected here rather than trusted from refreshUndoRedo() above.
+        isDirty.set(true);
+        scheduleAutosave();
+    }
+    return result;
 }
 
 export async function selectNode(key: string) {

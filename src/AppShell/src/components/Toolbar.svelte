@@ -13,7 +13,10 @@
         createExit, createTurnScript, createCommand, createVerb,
         deleteElement,
         assetManagerOpen,
+        codeViewPanelOpen,
+        codeViewCloseRequested,
     } from "$lib/editor-store";
+    import { hasActiveCmView, cmUndo, cmRedo } from "$lib/code-editor-registry";
     import type { TreeNode } from "$lib/types";
     import Home from "@lucide/svelte/icons/home";
     import ImageIcon from "@lucide/svelte/icons/image";
@@ -31,6 +34,7 @@
     import TriangleAlert from "@lucide/svelte/icons/triangle-alert";
     import Circle from "@lucide/svelte/icons/circle";
     import Ellipsis from "@lucide/svelte/icons/ellipsis";
+    import FileCode from "@lucide/svelte/icons/file-code";
     import DiscordIcon from "$components/DiscordIcon.svelte";
     import GithubIcon from "$components/GithubIcon.svelte";
     import DropdownMenu from "$components/DropdownMenu.svelte";
@@ -76,7 +80,36 @@
     }
 
     async function handlePreview() {
+        // Without this, a field the author is still mid-typing in (not yet blurred) never
+        // commits into the bridge at all — Preview would open showing stale content, since text
+        // inputs commit on blur/change, not on every keystroke. Same flush saveGame() already
+        // does before navigating home/away; Preview just never called it.
+        await saveGame();
         await previewInWasmPlayer(wasmPlayerUrl);
+    }
+
+    // While a CodeEditor (per-script Code view, or the raw XML panel) is on screen and editable,
+    // Undo/Redo act on its own CodeMirror history instead of Quest's model — otherwise these
+    // buttons would silently undo/redo the last applied model change in the background while the
+    // author is still looking at unrelated, not-yet-committed text.
+    function handleUndo() {
+        if (get(hasActiveCmView)) { cmUndo(); return; }
+        undo();
+    }
+    function handleRedo() {
+        if (get(hasActiveCmView)) { cmRedo(); return; }
+        redo();
+    }
+
+    // Acts as a toggle: opens the raw XML panel if closed, or — if it's already open — asks it to
+    // attempt closing (CodeViewPanel prompts to Apply/Discard first when there are unsaved edits,
+    // rather than this just forcing it shut).
+    function handleToggleCodeView() {
+        if (get(codeViewPanelOpen)) {
+            codeViewCloseRequested.update(n => n + 1);
+        } else {
+            codeViewPanelOpen.set(true);
+        }
     }
 
     // Derive the currently selected tree node
@@ -143,10 +176,11 @@
         links[0] = { ...links[0], divider: true };
 
         return [
-            { label: "Delete", action: () => selectedNode && deleteElement(selectedNode.key), icon: Trash2, disabled: !canDelete },
+            { label: "Delete", action: () => selectedNode && deleteElement(selectedNode.key), icon: Trash2, disabled: $codeViewPanelOpen || !canDelete },
             { label: "Manage assets", action: () => assetManagerOpen.set(true), icon: ImageIcon, divider: true },
-            { label: "Undo", action: undo, icon: Undo2, disabled: !$canUndo },
-            { label: "Redo", action: redo, icon: Redo2, disabled: !$canRedo },
+            { label: $hasActiveCmView ? "Undo (in code editor)" : "Undo", action: handleUndo, icon: Undo2, disabled: $hasActiveCmView ? false : !$canUndo },
+            { label: $hasActiveCmView ? "Redo (in code editor)" : "Redo", action: handleRedo, icon: Redo2, disabled: $hasActiveCmView ? false : !$canRedo },
+            { label: "Raw XML code view", action: handleToggleCodeView, icon: FileCode },
             ...fileItems,
             ...links,
         ];
@@ -191,31 +225,36 @@
         </AppBar.Lead>
         <AppBar.Trail>
             <div class="flex gap-1.5 items-center">
-                <!-- Add dropdown: icon-only below md -->
+                <!-- Add dropdown: icon-only below md. Disabled while the raw XML panel is open —
+                     there's no tree selection context there, and the tree itself isn't even
+                     mounted (see edit/+page.svelte), so these actions have nothing to act on. -->
                 <DropdownMenu items={addOptions}>
                     {#snippet trigger(toggle)}
                         <button
                             type="button"
                             class="btn btn-sm preset-outlined-primary-500"
                             onclick={toggle}
+                            disabled={$codeViewPanelOpen}
                             title="Add element"
                         ><Plus size={14} /> <span class="hidden md:inline">Add</span> <ChevronDown size={12} class="hidden md:inline" /></button>
                     {/snippet}
                 </DropdownMenu>
                 <!-- Delete button: always rendered, disabled when nothing deletable is
-                     selected, so surrounding buttons don't shift as selection changes.
+                     selected (or the raw XML panel is open — see the Add dropdown above), so
+                     surrounding buttons don't shift as selection changes.
                      Desktop only — folded into the ⋯ menu on mobile. -->
                 <button
                     type="button"
                     class="btn btn-sm preset-outlined-error-500 hidden md:inline-flex"
                     onclick={() => selectedNode && deleteElement(selectedNode.key)}
-                    disabled={!canDelete}
+                    disabled={$codeViewPanelOpen || !canDelete}
                     title={canDelete ? "Delete " + (selectedNode?.text ?? "") : "Delete"}
                 ><Trash2 size={14} /> Delete</button>
                 <div class="toolbar-divider hidden md:block"></div>
                 <button type="button" class="toolbar-icon-btn !hidden md:!inline-flex" onclick={() => assetManagerOpen.set(true)} title="Manage assets"><ImageIcon size={16} /></button>
-                <button type="button" class="toolbar-icon-btn !hidden md:!inline-flex" onclick={undo} disabled={!$canUndo} title="Undo"><Undo2 size={16} /></button>
-                <button type="button" class="toolbar-icon-btn !hidden md:!inline-flex" onclick={redo} disabled={!$canRedo} title="Redo"><Redo2 size={16} /></button>
+                <button type="button" class="toolbar-icon-btn !hidden md:!inline-flex" onclick={handleUndo} disabled={$hasActiveCmView ? false : !$canUndo} title={$hasActiveCmView ? "Undo (in code editor)" : "Undo"}><Undo2 size={16} /></button>
+                <button type="button" class="toolbar-icon-btn !hidden md:!inline-flex" onclick={handleRedo} disabled={$hasActiveCmView ? false : !$canRedo} title={$hasActiveCmView ? "Redo (in code editor)" : "Redo"}><Redo2 size={16} /></button>
+                <button type="button" class="toolbar-icon-btn !hidden md:!inline-flex" onclick={handleToggleCodeView} title="Raw XML code view"><FileCode size={16} /></button>
                 <div class="toolbar-divider hidden md:block"></div>
                 {#if fileMenuItems.length > 0}
                     <div class="hidden md:block">

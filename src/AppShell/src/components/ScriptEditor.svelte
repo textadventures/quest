@@ -3,6 +3,7 @@
     import ScriptEditor from "./ScriptEditor.svelte";
     import AddScriptModal from "./AddScriptModal.svelte";
     import AssetPicker from "./AssetPicker.svelte";
+    import CodeEditor from "./CodeEditor.svelte";
     import {
         scriptVersion,
         scriptClipboardHasContent,
@@ -368,14 +369,13 @@
         </div>
     {/if}
     {#if codeViewMode}
-        <textarea
-            autocapitalize="off"
-            class="textarea text-xs font-mono w-full"
-            rows={10}
-            readonly={isLocked}
+        <CodeEditor
             value={scriptCode}
-            onchange={(e) => onCodeViewSave((e.target as HTMLTextAreaElement).value)}
-        ></textarea>
+            language="quest-script"
+            readonly={isLocked}
+            onChange={onCodeViewSave}
+            minHeight="10rem"
+        />
     {:else}
         <div role="region" inert={isLocked || undefined} class={isLocked ? "opacity-60" : ""}>
             {#each scripts() as script, i (script.id)}

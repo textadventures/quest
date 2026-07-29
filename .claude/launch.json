@@ -5,6 +5,7 @@
       "name": "AppShell",
       "runtimeExecutable": "npm",
       "runtimeArgs": ["run", "dev"],
+      "cwd": "src/AppShell",
       "port": 5174
     }
   ]

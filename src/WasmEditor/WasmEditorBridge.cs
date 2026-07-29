@@ -154,29 +154,29 @@ public partial class WasmEditorBridge
     private static string? _pendingRenameNewKey;
     private static bool _isDirty;
 
-    [JSExport]
-    public static async Task<bool> Initialise(byte[] gameFileBytes, string filename)
+    // Wires the tree/dirty events a live controller needs to keep the JS-side TreeNodes cache and
+    // _isDirty flag in sync. Shared by Initialise (wired before the initial parse, since nothing
+    // valid exists yet to protect) and SetGameXml (wired only after a candidate controller has
+    // already parsed successfully, so a failed raw-XML edit can never mutate the shared TreeNodes
+    // list for the game that's still actually loaded).
+    private static void AttachControllerEvents(EditorController controller)
     {
-        _controller?.Dispose();
-        TreeNodes.Clear();
-
-        _controller = new EditorController();
-        _controller.ClearTree += (_, _) =>
+        controller.ClearTree += (_, _) =>
         {
             TreeNodes.Clear();
             _isRebuilding = true;
         };
-        _controller.BeginTreeUpdate += (_, _) => { };
-        _controller.EndTreeUpdate += (_, _) => { _isRebuilding = false; };
-        _controller.AddedNode += OnAddedNode;
-        _controller.RemovedNode += (_, e) =>
+        controller.BeginTreeUpdate += (_, _) => { };
+        controller.EndTreeUpdate += (_, _) => { _isRebuilding = false; };
+        controller.AddedNode += OnAddedNode;
+        controller.RemovedNode += (_, e) =>
         {
             if (!_suppressTreeEvents)
             {
                 TreeNodes.RemoveAll(n => n.Key == e.Key);
             }
         };
-        _controller.RenamedNode += (_, e) =>
+        controller.RenamedNode += (_, e) =>
         {
             _pendingRenameNewKey = e.NewName;
             for (var i = 0; i < TreeNodes.Count; i++)
@@ -194,7 +194,7 @@ public partial class WasmEditorBridge
                 }
             }
         };
-        _controller.RetitledNode += (_, e) =>
+        controller.RetitledNode += (_, e) =>
         {
             var idx = TreeNodes.FindIndex(n => n.Key == e.Key);
             if (idx >= 0)
@@ -203,7 +203,17 @@ public partial class WasmEditorBridge
             }
         };
 
-        _controller.Dirty += (_, _) => { _isDirty = true; };
+        controller.Dirty += (_, _) => { _isDirty = true; };
+    }
+
+    [JSExport]
+    public static async Task<bool> Initialise(byte[] gameFileBytes, string filename)
+    {
+        _controller?.Dispose();
+        TreeNodes.Clear();
+
+        _controller = new EditorController();
+        AttachControllerEvents(_controller);
 
         var provider = new ByteArrayGameDataProvider(gameFileBytes, filename);
         var ok = await _controller.Initialise(provider);
@@ -214,6 +224,60 @@ public partial class WasmEditorBridge
         }
 
         return ok;
+    }
+
+    [JSExport]
+    public static string GetGameXml()
+    {
+        // Unlike Save(), this must not clear _isDirty — it's a read-only peek at the current
+        // in-memory state for display purposes, not a save action.
+        return _controller?.Save() ?? string.Empty;
+    }
+
+    [JSExport]
+    public static async Task<string> SetGameXml(string xml)
+    {
+        if (_controller == null)
+        {
+            return "error:No game loaded.";
+        }
+
+        var filename = _controller.Filename;
+        var bytes = System.Text.Encoding.UTF8.GetBytes(xml);
+        var provider = new ByteArrayGameDataProvider(bytes, filename);
+
+        // Parse into a throwaway controller first — the shared TreeNodes cache and _isDirty flag
+        // must not be touched (see AttachControllerEvents) and the live _controller must not be
+        // disposed until we know the new XML is actually valid, otherwise a malformed edit would
+        // destroy the game that's currently open instead of just failing to apply.
+        var candidate = new EditorController();
+        string? errorMessage = null;
+        candidate.ShowMessage += (_, e) => errorMessage = e.Message;
+
+        bool ok;
+        try
+        {
+            ok = await candidate.Initialise(provider);
+        }
+        catch (Exception ex)
+        {
+            candidate.Dispose();
+            return $"error:{ex.Message}";
+        }
+
+        if (!ok)
+        {
+            candidate.Dispose();
+            return $"error:{errorMessage ?? "Failed to parse ASLX."}";
+        }
+
+        AttachControllerEvents(candidate);
+        _controller.Dispose();
+        TreeNodes.Clear();
+        _controller = candidate;
+        _controller.UpdateTree();
+        _isDirty = false;
+        return "ok";
     }
 
     [JSExport]

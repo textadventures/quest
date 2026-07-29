@@ -12,6 +12,15 @@
     "lint:fix": "eslint src --fix"
   },
   "dependencies": {
+    "@codemirror/autocomplete": "^6.20.3",
+    "@codemirror/commands": "^6.10.4",
+    "@codemirror/lang-xml": "^6.1.0",
+    "@codemirror/language": "^6.12.4",
+    "@codemirror/search": "^6.7.1",
+    "@codemirror/state": "^6.7.1",
+    "@codemirror/view": "^6.43.7",
+    "@lezer/common": "^1.5.2",
+    "@lezer/highlight": "^1.2.3",
     "@lucide/svelte": "^1.25.0",
     "fflate": "^0.8.3"
   },

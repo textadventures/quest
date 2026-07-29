@@ -8,6 +8,8 @@ export interface WasmBridge {
   SetDropdownType(elementKey: string, controlId: string, selectedType: string): string
   Save(): string
   IsDirty(): boolean
+  GetGameXml(): string
+  SetGameXml(xml: string): Promise<string>
   GetGameId(): string
   IsGamebook(): boolean
   AddPublishAsset(filename: string, data: Uint8Array): void
