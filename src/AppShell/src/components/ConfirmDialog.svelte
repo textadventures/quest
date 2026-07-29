@@ -29,14 +29,14 @@
         role="dialog"
         aria-modal="true"
         tabindex="-1"
-        class="fixed inset-0 bg-black/30 flex items-center justify-center z-50"
+        class="fixed inset-0 bg-black/30 flex items-center justify-center z-50 p-4"
         onclick={onBackdropClick}
         onkeydown={handleKeydown}
     >
-        <div class="card bg-surface-50-950 rounded-xl shadow-xl w-80 p-6 flex flex-col gap-4">
+        <div class="card bg-surface-50-950 rounded-xl shadow-xl w-full max-w-sm p-6 flex flex-col gap-4">
             <p class="text-sm">{state.message}</p>
 
-            <div class="flex justify-end gap-2">
+            <div class="flex flex-wrap justify-end gap-2">
                 {#each state.choices as choice, i (choice.label)}
                     {@const isPrimary = i === state.choices.length - 1}
                     <button

@@ -4,12 +4,13 @@
     import { goto } from "$app/navigation";
     import { base } from "$app/paths";
     import { get } from "svelte/store";
-    import { isLoaded, isDirty, isEditingField, markFieldEditing, clearFieldEditing, saveGame, loadingStatus, addElementModal, assetManagerOpen, publishModalOpen, openGame, createRoom, createObject, createFunction, createTimer, createWalkthrough, createTemplate, createDynamicTemplate, createObjectType, moveElementModal, moveElement } from "$lib/editor-store";
+    import { isLoaded, isDirty, isEditingField, markFieldEditing, clearFieldEditing, saveGame, loadingStatus, addElementModal, assetManagerOpen, publishModalOpen, codeViewPanelOpen, openGame, createRoom, createObject, createFunction, createTimer, createWalkthrough, createTemplate, createDynamicTemplate, createObjectType, moveElementModal, moveElement } from "$lib/editor-store";
     import { loadFromServer } from "$lib/filesystem/server-adapter";
     import Toolbar from "$components/Toolbar.svelte";
     import BackupBanner from "$components/BackupBanner.svelte";
     import TreePanel from "$components/TreePanel.svelte";
     import PropertyEditor from "$components/PropertyEditor.svelte";
+    import CodeViewPanel from "$components/CodeViewPanel.svelte";
     import { isNarrow } from "$lib/layout.svelte";
     import AddElementModal from "$components/AddElementModal.svelte";
     import MoveElementModal from "$components/MoveElementModal.svelte";
@@ -144,26 +145,30 @@
         <Toolbar />
         <BackupBanner />
         <div class="flex flex-1 overflow-hidden" oninput={handleFieldInput} onfocusout={clearFieldEditing}>
-            <!-- Both panes stay mounted (display toggled, not {#if}'d away) so tree
-                 expansion state and property tab state survive switching panes on
-                 mobile. -->
-            <div class={isNarrow.current && mobilePane !== "tree" ? "hidden" : "contents"}>
-                <TreePanel
-                    width={isNarrow.current ? undefined : treeWidth}
-                    onactivate={() => { mobilePane = "props"; }}
-                />
-            </div>
-            {#if !isNarrow.current}
-                <div
-                    role="separator"
-                    aria-orientation="vertical"
-                    class="w-1 shrink-0 cursor-col-resize hover:bg-primary-500/50 active:bg-primary-500/70 transition-colors"
-                    onpointerdown={handleSplitterPointerDown}
-                ></div>
+            {#if $codeViewPanelOpen}
+                <CodeViewPanel onclose={() => codeViewPanelOpen.set(false)} />
+            {:else}
+                <!-- Both panes stay mounted (display toggled, not {#if}'d away) so tree
+                     expansion state and property tab state survive switching panes on
+                     mobile. -->
+                <div class={isNarrow.current && mobilePane !== "tree" ? "hidden" : "contents"}>
+                    <TreePanel
+                        width={isNarrow.current ? undefined : treeWidth}
+                        onactivate={() => { mobilePane = "props"; }}
+                    />
+                </div>
+                {#if !isNarrow.current}
+                    <div
+                        role="separator"
+                        aria-orientation="vertical"
+                        class="w-1 shrink-0 cursor-col-resize hover:bg-primary-500/50 active:bg-primary-500/70 transition-colors"
+                        onpointerdown={handleSplitterPointerDown}
+                    ></div>
+                {/if}
+                <div class={isNarrow.current && mobilePane !== "props" ? "hidden" : "contents"}>
+                    <PropertyEditor onback={isNarrow.current ? () => { mobilePane = "tree"; } : undefined} />
+                </div>
             {/if}
-            <div class={isNarrow.current && mobilePane !== "props" ? "hidden" : "contents"}>
-                <PropertyEditor onback={isNarrow.current ? () => { mobilePane = "tree"; } : undefined} />
-            </div>
         </div>
     </div>
 
