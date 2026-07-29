@@ -35,6 +35,7 @@ export interface ControlInfo {
   keyPrompt?: string | null
   valuePrompt?: string | null
   sourceExclude?: string | null
+  checkboxCaption?: string | null
 }
 
 export interface TabInfo {

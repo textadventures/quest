@@ -38,7 +38,8 @@ internal record ControlInfo(
     bool Advanced = false,
     string? KeyPrompt = null,
     string? ValuePrompt = null,
-    string? SourceExclude = null);
+    string? SourceExclude = null,
+    string? CheckboxCaption = null);
 
 internal record TabInfo(string? Caption, List<ControlInfo> Controls);
 
@@ -426,6 +427,9 @@ public partial class WasmEditorBridge
                 case "string":
                     data.SetAttribute(attribute, "");
                     break;
+                case "boolean":
+                    data.SetAttribute(attribute, false);
+                    break;
                 case "script":
                     _controller.CreateNewEditableScripts(elementKey, attribute, null!, false);
                     break;
@@ -798,6 +802,9 @@ public partial class WasmEditorBridge
             {
                 null => "null",
                 string => "string",
+                bool => "boolean",
+                int => "int",
+                double => "double",
                 IEditableScripts => "script",
                 IEditableObjectReference => "object",
                 _ => "null"
@@ -3239,7 +3246,7 @@ public partial class WasmEditorBridge
 
             var caption = ctrl.Caption ?? ctrl.GetString("selfcaption");
             return new ControlInfo(ctrl.Id, ctrl.ControlType, caption, options, subEditors, ctrl.Attribute,
-                multiTpCommands, Advanced: !ctrl.IsControlVisibleInSimpleMode);
+                multiTpCommands, Advanced: !ctrl.IsControlVisibleInSimpleMode, CheckboxCaption: ctrl.GetString("checkbox"));
         }
         else if (ctrl.ControlType == "elementslist")
         {

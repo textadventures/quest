@@ -505,6 +505,16 @@
                 />
             {:else if subEditorType === "script" && ctrl.subAttribute !== null && $selectedKey !== null}
                 <ScriptEditor elementKey={$selectedKey} attribute={ctrl.subAttribute} />
+            {:else if subEditorType === "boolean" && ctrl.subAttribute !== null}
+                <label class="flex items-center gap-2">
+                    <input
+                        type="checkbox"
+                        class="checkbox flex-shrink-0"
+                        checked={boolValue(ctrl.subAttribute)}
+                        onchange={(e) => onCheckboxChange(ctrl.subAttribute!, (e.target as HTMLInputElement).checked)}
+                    />
+                    <span class="text-xs text-surface-600-400">{ctrl.checkboxCaption ?? ctrl.subAttribute}</span>
+                </label>
             {/if}
         </div>
     {:else if ctrl.controlType === "script" && ctrl.attribute !== null && $selectedKey !== null}
@@ -623,6 +633,16 @@
                     />
                 {:else if subEditorType === "script" && ctrl.subAttribute !== null && $selectedKey !== null}
                     <ScriptEditor elementKey={$selectedKey} attribute={ctrl.subAttribute} />
+                {:else if subEditorType === "boolean" && ctrl.subAttribute !== null}
+                    <label class="flex items-center gap-2">
+                        <input
+                            type="checkbox"
+                            class="checkbox flex-shrink-0"
+                            checked={boolValue(ctrl.subAttribute)}
+                            onchange={(e) => onCheckboxChange(ctrl.subAttribute!, (e.target as HTMLInputElement).checked)}
+                        />
+                        <span class="text-xs text-surface-600-400">{ctrl.checkboxCaption ?? ctrl.subAttribute}</span>
+                    </label>
                 {/if}
             </div>
         {:else}
