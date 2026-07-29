@@ -148,7 +148,7 @@
     function tabClass(caption: string | null): string {
         return activeTab === caption
             ? "px-3 py-1.5 text-xs whitespace-nowrap transition-colors text-primary-600-400 border-b-2 border-primary-500 font-medium"
-            : "px-3 py-1.5 text-xs whitespace-nowrap transition-colors text-surface-500-400 hover:text-surface-900-100";
+            : "px-3 py-1.5 text-xs whitespace-nowrap transition-colors text-surface-600-400 hover:text-surface-900-100";
     }
 </script>
 
@@ -161,12 +161,12 @@
                 onclick={onback}
             ><ChevronLeft size={16} /> {selectedNode?.text ?? "Properties"}</button>
         {:else}
-            <span class="text-xs font-semibold uppercase text-surface-500-400">Properties</span>
+            <span class="text-xs font-semibold uppercase text-surface-600-400">Properties</span>
         {/if}
     </div>
 
     {#if $selectedKey === null}
-        <p class="px-3 py-4 text-sm text-surface-400-500">Select an object to view its properties.</p>
+        <p class="px-3 py-4 text-sm text-surface-600-400">Select an object to view its properties.</p>
     {:else if $selectedKey === "_advanced"}
         <div class="flex flex-col items-start gap-1.5 px-3 py-3">
             {#each ADVANCED_ADDERS as adder (adder.label)}
@@ -178,7 +178,7 @@
             {/each}
         </div>
     {:else if $selectedData === null}
-        <p class="px-3 py-4 text-sm text-surface-400-500">No properties available.</p>
+        <p class="px-3 py-4 text-sm text-surface-600-400">No properties available.</p>
     {:else}
         {#if $selectedData.tabs.length > 0}
             <div class="flex border-b border-surface-200-800 overflow-x-auto flex-shrink-0">
@@ -229,7 +229,7 @@
                     class="btn btn-sm preset-outlined-primary-500 text-xs px-2 py-0.5 w-28 justify-start"
                     onclick={(e) => insertTextProcessorText(attribute, controlType, cmd.insertBefore, cmd.insertAfter, e)}
                 >{cmd.command}</button>
-                <span class="text-xs text-surface-400-500 whitespace-nowrap">{cmd.info}</span>
+                <span class="text-xs text-surface-600-400 whitespace-nowrap">{cmd.info}</span>
             </div>
         {/each}
         <a href="https://docs.textadventures.co.uk/quest/text_processor.html" target="_blank" class="text-xs text-primary-500 underline mt-1">Text Processor help</a>
@@ -330,7 +330,7 @@
             {#each items as item (item.key)}
                 {@const isEditing = editingItem?.attribute === dk && editingItem?.key === item.key}
                 <div class="flex items-center gap-1">
-                    <span class="text-xs text-surface-500-400 w-24 flex-shrink-0 truncate" title={item.key}>{item.key}</span>
+                    <span class="text-xs text-surface-600-400 w-24 flex-shrink-0 truncate" title={item.key}>{item.key}</span>
                     {#if isEditing}
                         <input
                             type="text"
@@ -534,7 +534,7 @@
                 {attrValue(ctrl.attribute!)}
             </span>
         {:else}
-            <em class="text-xs text-surface-400-500">null</em>
+            <em class="text-xs text-surface-600-400">null</em>
         {/if}
     {/if}
 {/snippet}
@@ -542,7 +542,7 @@
 {#snippet advancedExpander(controls: ControlInfo[])}
     {#if controls.length > 0}
         <details class="mt-2 border-t border-surface-200-800">
-            <summary class="px-3 pt-2.5 pb-1.5 text-xs font-semibold uppercase text-surface-500-400 cursor-pointer select-none">
+            <summary class="px-3 pt-2.5 pb-1.5 text-xs font-semibold uppercase text-surface-600-400 cursor-pointer select-none">
                 Advanced
             </summary>
             {#each controls as ctrl, i (i)}
@@ -556,11 +556,11 @@
     {#if ctrl.controlType === "attributes"}
         <AttributesEditor />
     {:else if ctrl.controlType === "title"}
-        <div class="px-3 pt-3 pb-1 text-xs font-semibold text-surface-500-400 uppercase tracking-wide">
+        <div class="px-3 pt-3 pb-1 text-xs font-semibold text-surface-600-400 uppercase tracking-wide">
             {ctrl.caption ?? ""}
         </div>
     {:else if ctrl.controlType === "label"}
-        <div class="px-3 py-1 text-xs text-surface-500-400 italic">
+        <div class="px-3 py-1 text-xs text-surface-600-400 italic">
             {ctrl.caption ?? ""}
         </div>
     {:else if ctrl.controlType === "elementslist" && $selectedKey}

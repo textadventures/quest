@@ -48,7 +48,7 @@
         <h2 class="text-base font-semibold">Move "{elementKey}"</h2>
 
         <div class="flex flex-col gap-1">
-            <span class="text-xs text-surface-500-400">New parent</span>
+            <span class="text-xs text-surface-600-400">New parent</span>
             <Combobox
                 {options}
                 value={target}

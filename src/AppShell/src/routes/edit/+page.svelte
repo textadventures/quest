@@ -138,7 +138,7 @@
 {:else if $loadingStatus}
     <main class="flex flex-col items-center justify-center min-h-svh gap-6 p-8">
         <div class="size-10 rounded-full border-4 border-surface-300-700 border-t-primary-500 animate-spin"></div>
-        <p class="text-surface-500-400 text-sm">{$loadingStatus}</p>
+        <p class="text-surface-600-400 text-sm">{$loadingStatus}</p>
     </main>
 {:else if $isLoaded}
     <div class="flex flex-col h-dvh overflow-hidden safe-area-inset">

@@ -67,7 +67,7 @@
         </h2>
 
         <div class="flex flex-col gap-1">
-            <label for="element-name" class="text-xs text-surface-500-400">Name</label>
+            <label for="element-name" class="text-xs text-surface-600-400">Name</label>
             <input
                 id="element-name"
                 type="text"

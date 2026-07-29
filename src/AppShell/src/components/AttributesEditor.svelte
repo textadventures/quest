@@ -332,11 +332,11 @@
                 <!-- Inherited types -->
                 <div class="border-b border-surface-200-800">
                     <div class="px-3 py-1.5 border-b border-surface-100-900">
-                        <span class="font-semibold text-surface-500-400 uppercase tracking-wide">Inherited types</span>
+                        <span class="font-semibold text-surface-600-400 uppercase tracking-wide">Inherited types</span>
                     </div>
                     <table class="w-full">
                         <thead>
-                            <tr class="text-surface-400-500 border-b border-surface-100-900">
+                            <tr class="text-surface-600-400 border-b border-surface-100-900">
                                 <th class="text-left py-1 px-3 font-medium">Name</th>
                                 <th class="text-left py-1 px-3 font-medium">Source</th>
                                 <th class="w-6"></th>
@@ -346,7 +346,7 @@
                             {#each $fullAttributeData?.inheritedTypes ?? [] as t (t.name)}
                                 <tr class="border-b border-surface-100-900">
                                     <td class="py-0.5 px-3">{t.name}</td>
-                                    <td class="py-0.5 px-3 text-surface-400-500">{t.source}</td>
+                                    <td class="py-0.5 px-3 text-surface-600-400">{t.source}</td>
                                     <td class="py-0.5 pr-2 text-right">
                                         {#if !t.isDefaultType}
                                             <button
@@ -359,7 +359,7 @@
                                     </td>
                                 </tr>
                             {:else}
-                                <tr><td colspan="3" class="py-1 px-3 text-surface-400-500 italic">No inherited types</td></tr>
+                                <tr><td colspan="3" class="py-1 px-3 text-surface-600-400 italic">No inherited types</td></tr>
                             {/each}
                         </tbody>
                     </table>
@@ -386,11 +386,11 @@
 
                 <!-- Attributes -->
                 <div class="px-3 py-1.5 border-b border-surface-100-900">
-                    <span class="font-semibold text-surface-500-400 uppercase tracking-wide">Attributes</span>
+                    <span class="font-semibold text-surface-600-400 uppercase tracking-wide">Attributes</span>
                 </div>
                 <table class="w-full">
                     <thead class="sticky top-0 bg-surface-50-950 z-10">
-                        <tr class="text-surface-400-500 border-b border-surface-200-800">
+                        <tr class="text-surface-600-400 border-b border-surface-200-800">
                             <th class="text-left py-1 px-3 font-medium">Name</th>
                             <th class="text-left py-1 px-3 font-medium">Value</th>
                             <th class="hidden @lg:table-cell text-left py-1 px-3 font-medium">Source</th>
@@ -405,7 +405,7 @@
                                 class="border-b border-surface-100-900 cursor-pointer outline-none
                                     focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-primary-500
                                     {isSelected ? "bg-primary-100-900" : "hover:bg-surface-100-900"}
-                                    {dimmed ? "text-surface-400-500" : ""}"
+                                    {dimmed ? "text-surface-600-400" : ""}"
                                 tabindex={isSelected ? 0 : -1}
                                 data-attr={attr.name}
                                 onclick={() => onSelectAttribute(attr)}
@@ -413,7 +413,7 @@
                             >
                                 <td class="py-0.5 px-3 truncate max-w-36 {!dimmed ? "font-medium" : ""}" title={attr.name}>{attr.name}</td>
                                 <td class="py-0.5 px-3 max-w-40 truncate" title={attr.value ?? ""}>{displayValue(attr)}</td>
-                                <td class="hidden @lg:table-cell py-0.5 px-3 text-surface-400-500 truncate" title={attr.source}>{attr.source}</td>
+                                <td class="hidden @lg:table-cell py-0.5 px-3 text-surface-600-400 truncate" title={attr.source}>{attr.source}</td>
                                 <td class="py-0.5 pr-2 text-right">
                                     {#if canDeleteAttribute(attr)}
                                         <button
@@ -427,7 +427,7 @@
                                 </td>
                             </tr>
                         {:else}
-                            <tr><td colspan="4" class="py-2 px-3 text-surface-400-500 italic">No attributes</td></tr>
+                            <tr><td colspan="4" class="py-2 px-3 text-surface-600-400 italic">No attributes</td></tr>
                         {/each}
                     </tbody>
                 </table>
@@ -458,12 +458,12 @@
             class:flex-shrink-0={!selectedAttr}
             style="--panel-width: {panelWidth}px"
         >
-            <div class="px-3 py-1.5 border-b border-surface-100-900 font-semibold text-surface-500-400 uppercase tracking-wide flex-shrink-0 flex items-center justify-between">
+            <div class="px-3 py-1.5 border-b border-surface-100-900 font-semibold text-surface-600-400 uppercase tracking-wide flex-shrink-0 flex items-center justify-between">
                 <span>Assignment</span>
                 {#if selectedAttr}
                     <button
                         type="button"
-                        class="normal-case text-surface-400-500 hover:text-surface-900-50"
+                        class="normal-case text-surface-600-400 hover:text-surface-900-50"
                         onclick={() => { selectedAttrName = null; }}
                         title="Close"
                         aria-label="Close"
@@ -476,12 +476,12 @@
                     <div class="font-medium text-surface-700-300 truncate flex-shrink-0" title={attr.name}>{attr.name}</div>
 
                     {#if attr.isInherited || attr.isDefaultType}
-                        <p class="text-surface-400-500 italic text-xs flex-shrink-0">Inherited from <span class="font-medium">{attr.source}</span></p>
+                        <p class="text-surface-600-400 italic text-xs flex-shrink-0">Inherited from <span class="font-medium">{attr.source}</span></p>
                     {/if}
 
                     <!-- Type selector -->
                     <div class="flex flex-col gap-1 flex-shrink-0">
-                        <span class="text-surface-400-500 uppercase tracking-wide text-xs">Type</span>
+                        <span class="text-surface-600-400 uppercase tracking-wide text-xs">Type</span>
                         <select
                             class="select text-xs py-0 px-1.5 h-7"
                             value={attr.type}
@@ -510,9 +510,9 @@
 
                     <!-- Value editor -->
                     <div class="flex flex-col gap-1">
-                        <span class="text-surface-400-500 uppercase tracking-wide text-xs flex-shrink-0">Value</span>
+                        <span class="text-surface-600-400 uppercase tracking-wide text-xs flex-shrink-0">Value</span>
                         {#if attr.type === "null"}
-                            <p class="text-surface-400-500 italic">(no value)</p>
+                            <p class="text-surface-600-400 italic">(no value)</p>
                         {:else if attr.type === "boolean"}
                             <Switch
                                 checked={editingBool}
@@ -579,7 +579,7 @@
                     </div>
                 </div>
             {:else}
-                <p class="p-3 text-surface-400-500 italic">Select an attribute to edit it.</p>
+                <p class="p-3 text-surface-600-400 italic">Select an attribute to edit it.</p>
             {/if}
         </div>
     </div>

@@ -55,7 +55,7 @@
 
 <div class="flex flex-col gap-1 w-full">
     {#if isLocked}
-        <div class="flex items-center gap-2 py-1 px-2 mb-1 text-xs text-surface-400-500 italic border border-surface-200-800 rounded">
+        <div class="flex items-center gap-2 py-1 px-2 mb-1 text-xs text-surface-600-400 italic border border-surface-200-800 rounded">
             <span class="flex-1">This script dictionary is inherited — read-only.</span>
             <button
                 type="button"
@@ -66,7 +66,7 @@
     {/if}
     {#if isLocked}
         {#each items as item (item.key)}
-            <div class="border border-surface-200-800 rounded px-2 py-1 text-xs text-surface-400-500 opacity-60"><span class="font-medium">{item.key}</span> = <span class="italic">{item.value || "(empty)"}</span></div>
+            <div class="border border-surface-200-800 rounded px-2 py-1 text-xs text-surface-600-400 opacity-60"><span class="font-medium">{item.key}</span> = <span class="italic">{item.value || "(empty)"}</span></div>
         {/each}
     {:else}
         {#each keys as key (key)}
@@ -77,7 +77,7 @@
                         class="flex-1 text-left text-xs font-medium hover:text-primary-600-400"
                         onclick={() => toggleExpanded(key)}
                     >
-                        <span class="mr-1 text-surface-400-500">{expandedKeys.has(key) ? "▼" : "▶"}</span>{key}
+                        <span class="mr-1 text-surface-600-400">{expandedKeys.has(key) ? "▼" : "▶"}</span>{key}
                     </button>
                     <button
                         type="button"

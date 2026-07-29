@@ -46,7 +46,7 @@
             <button class="btn btn-sm preset-tonal" onclick={oncancel}>Close</button>
         </div>
 
-        <p class="text-sm text-surface-500-400">
+        <p class="text-sm text-surface-600-400">
             {#if $canPublishToServer}
                 Builds a <code>.quest</code> package (game file plus assets) and submits it to
                 textadventures.co.uk, where you'll fill in title, description, category and visibility.

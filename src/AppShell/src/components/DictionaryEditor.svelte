@@ -44,7 +44,7 @@
 <div class="flex flex-col gap-1 w-full">
     {#each items as item (item.key)}
         <div class="flex items-center gap-1">
-            <span class="text-xs text-surface-500-400 px-1 flex-shrink-0">{item.key}:</span>
+            <span class="text-xs text-surface-600-400 px-1 flex-shrink-0">{item.key}:</span>
             {#if editingKey === item.key}
                 <input
                     type="text"

@@ -93,7 +93,7 @@
          operation, and deserves to be at least as obvious as the initial load. -->
     <main class="flex flex-col items-center justify-center flex-1 gap-6 p-8">
         <div class="size-10 rounded-full border-4 border-surface-300-700 border-t-primary-500 animate-spin"></div>
-        <p class="text-surface-500-400 text-sm">Applying changes…</p>
+        <p class="text-surface-600-400 text-sm">Applying changes…</p>
     </main>
 {:else}
     <div class="flex flex-col flex-1 min-w-0 overflow-hidden">
