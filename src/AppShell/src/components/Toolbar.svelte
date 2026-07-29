@@ -119,7 +119,7 @@
 
     let nt = $derived(selectedNode?.nodeType ?? "");
     let canDelete = $derived(
-        nt !== "" && nt !== "header" && nt !== "game" && nt !== "other"
+        nt !== "" && nt !== "header" && nt !== "game" && nt !== "other" && !selectedNode?.isLibrary
     );
 
     // Context-sensitive add options. Function/Timer/Walkthrough/Library/Template/
@@ -134,15 +134,16 @@
     ] : [
         // Always available
         { label: "Add Room", action: () => openAddModal("room", null) },
-        // Context-sensitive: when a room or object is selected
-        ...(nt === "room" || nt === "object" ? [
+        // Context-sensitive: when a room or object is selected (but not a read-only
+        // library-origin one — same restriction as the tree's own "…" menu).
+        ...(!selectedNode?.isLibrary && (nt === "room" || nt === "object") ? [
             { label: `Add Object in "${selectedNode!.text}"`, action: () => openAddModal("object", selectedNode!.key) },
         ] : []),
-        ...(nt === "room" ? [
+        ...(!selectedNode?.isLibrary && nt === "room" ? [
             { label: `Add Room in "${selectedNode!.text}"`, action: () => openAddModal("room", selectedNode!.key) },
             { label: `Add Exit from "${selectedNode!.text}"`, action: () => createExit(selectedNode!.key) },
         ] : []),
-        ...(nt === "room" || nt === "object" ? [
+        ...(!selectedNode?.isLibrary && (nt === "room" || nt === "object") ? [
             { label: `Add Command to "${selectedNode!.text}"`, action: () => createCommand(selectedNode!.key) },
             { label: `Add Verb to "${selectedNode!.text}"`, action: () => createVerb(selectedNode!.key) },
             { label: `Add Turn Script to "${selectedNode!.text}"`, action: () => createTurnScript(selectedNode!.key) },

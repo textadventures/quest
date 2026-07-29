@@ -4,6 +4,7 @@ export interface TreeNode {
   parent: string | null
   nodeIcon: string | null
   nodeType: string
+  isLibrary: boolean
 }
 
 export interface ControlOption {
@@ -47,6 +48,8 @@ export interface EditorDataResponse {
   attributes: Record<string, string | null>
   tabs: TabInfo[]
   controls: ControlInfo[]
+  isLibraryElement: boolean
+  filename: string | null
 }
 
 export interface CompassDirectionInfo {

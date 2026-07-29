@@ -3,6 +3,10 @@
     import { TreeView, createTreeViewCollection } from "@skeletonlabs/skeleton-svelte";
     import Search from "@lucide/svelte/icons/search";
     import X from "@lucide/svelte/icons/x";
+    import SlidersHorizontal from "@lucide/svelte/icons/sliders-horizontal";
+    import Check from "@lucide/svelte/icons/check";
+    import DropdownMenu from "./DropdownMenu.svelte";
+    import type { DropdownMenuItem } from "./DropdownMenu.svelte";
     import {
         treeNodes, selectedKey, selectNode, isGamebook,
         openAddModal, createExit, createTurnScript, createCommand, createVerb,
@@ -10,6 +14,7 @@
         deleteElement,
         canMoveElement, openMoveModal, copyElements, cutElements, canPasteElements, pasteElements,
         clipboardVersion, cutElementKeys,
+        showLibraryElements, toggleShowLibraryElements,
     } from "$lib/editor-store";
     import type { TreeNode } from "$lib/types";
 
@@ -19,6 +24,7 @@
         id: string
         text: string
         nodeType: string
+        isLibrary: boolean
         children?: HierNode[]
     }
 
@@ -43,6 +49,7 @@
                 id: node.key,
                 text: node.text,
                 nodeType: node.nodeType,
+                isLibrary: node.isLibrary,
                 ...(children ? { children: children.map(build) } : {}),
             };
         };
@@ -178,7 +185,7 @@
         createTreeViewCollection<HierNode>({
             nodeToValue: (n) => n.id,
             nodeToString: (n) => n.text,
-            rootNode: { id: "__root__", text: "", nodeType: "header", children: filteredHierTree },
+            rootNode: { id: "__root__", text: "", nodeType: "header", isLibrary: false, children: filteredHierTree },
         })
     );
 
@@ -259,6 +266,11 @@
     }
 
     function nodeMenuOptions(node: HierNode): Array<{ label: string; action: () => void }> {
+        // Library-origin nodes (from Core.aslx or another included library) are read-only —
+        // the only way to act on one is the "Copy into your game" banner in the properties
+        // panel, so they get no context menu at all.
+        if (node.isLibrary) return [];
+
         // Read (not used) so this function's callers re-run whenever the clipboard
         // changes — canPasteElements() below reads server-side state that Svelte
         // has no other reactive handle on.
@@ -326,6 +338,14 @@
 
         return opts;
     }
+
+    let libraryMenuItems = $derived<DropdownMenuItem[]>([
+        {
+            label: "Show Library Elements",
+            icon: $showLibraryElements ? Check : undefined,
+            action: () => toggleShowLibraryElements(),
+        },
+    ]);
 </script>
 
 <div
@@ -335,26 +355,39 @@
     <div class="px-3 py-2 text-xs font-semibold uppercase text-surface-500-400 border-b border-surface-200-800">
         {$isGamebook ? "Game Pages" : "Game Objects"}
     </div>
-    <div class="p-1.5 border-b border-surface-200-800 relative">
-        <Search class="absolute left-3.5 top-1/2 -translate-y-1/2 size-3.5 text-surface-400 pointer-events-none" />
-        <input
-            bind:this={filterInputEl}
-            type="text"
-            autocapitalize="off"
-            bind:value={filterText}
-            placeholder="Filter..."
-            aria-label="Filter game objects"
-            class="input text-xs py-1 pl-7 pr-6 w-full"
-            onkeydown={(e) => { if (e.key === "Escape" && filterText) { e.stopPropagation(); clearFilter(); } }}
-        />
-        {#if filterText}
-            <button
-                type="button"
-                class="absolute right-3 top-1/2 -translate-y-1/2 size-4 flex items-center justify-center text-surface-400 hover:text-surface-900-50"
-                onclick={clearFilter}
-                aria-label="Clear filter"
-            ><X class="size-3.5" /></button>
-        {/if}
+    <div class="p-1.5 border-b border-surface-200-800 flex items-center gap-1">
+        <div class="relative flex-1">
+            <Search class="absolute left-3.5 top-1/2 -translate-y-1/2 size-3.5 text-surface-400 pointer-events-none" />
+            <input
+                bind:this={filterInputEl}
+                type="text"
+                autocapitalize="off"
+                bind:value={filterText}
+                placeholder="Filter..."
+                aria-label="Filter game objects"
+                class="input text-xs py-1 pl-7 pr-6 w-full"
+                onkeydown={(e) => { if (e.key === "Escape" && filterText) { e.stopPropagation(); clearFilter(); } }}
+            />
+            {#if filterText}
+                <button
+                    type="button"
+                    class="absolute right-3 top-1/2 -translate-y-1/2 size-4 flex items-center justify-center text-surface-400 hover:text-surface-900-50"
+                    onclick={clearFilter}
+                    aria-label="Clear filter"
+                ><X class="size-3.5" /></button>
+            {/if}
+        </div>
+        <DropdownMenu items={libraryMenuItems}>
+            {#snippet trigger(toggle)}
+                <button
+                    type="button"
+                    class="size-6 flex-shrink-0 flex items-center justify-center rounded {$showLibraryElements ? "text-primary-500" : "text-surface-400"} hover:text-primary-500 hover:bg-surface-200-800"
+                    onclick={toggle}
+                    title="Tree view options"
+                    aria-label="Tree view options"
+                ><SlidersHorizontal class="size-3.5" /></button>
+            {/snippet}
+        </DropdownMenu>
     </div>
     {#if isFiltering && (collection.rootNode.children ?? []).length === 0}
         <div class="px-3 py-2 text-xs text-surface-400">No matches</div>
@@ -415,7 +448,7 @@
                     >
                         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="size-4"><polyline points="9 18 15 12 9 6" /></svg>
                     </button>
-                    <TreeView.BranchText class="flex-1 min-w-0 truncate {$cutElementKeys.has(node.id) ? "opacity-50 italic" : ""}">{node.text}</TreeView.BranchText>
+                    <TreeView.BranchText class="flex-1 min-w-0 truncate {node.isLibrary ? "text-surface-600-400" : ""} {$cutElementKeys.has(node.id) ? "opacity-50 italic" : ""}">{node.text}</TreeView.BranchText>
                     <span class="opacity-0 group-hover:opacity-100 pointer-coarse:opacity-100">
                         {@render nodeActions(node)}
                     </span>
@@ -429,7 +462,7 @@
             </TreeView.Branch>
         {:else}
             <TreeView.Item class="group flex items-center" onclick={() => activateIfAlreadySelected(node.id)}>
-                <span class="flex-1 min-w-0 truncate {$cutElementKeys.has(node.id) ? "opacity-50 italic" : ""}">{node.text}</span>
+                <span class="flex-1 min-w-0 truncate {node.isLibrary ? "text-surface-600-400" : ""} {$cutElementKeys.has(node.id) ? "opacity-50 italic" : ""}">{node.text}</span>
                 <span class="opacity-0 group-hover:opacity-100 pointer-coarse:opacity-100">
                     {@render nodeActions(node)}
                 </span>
