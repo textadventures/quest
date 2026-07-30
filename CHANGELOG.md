@@ -1,5 +1,25 @@
 # Changelog
 
+## [6.0.0-beta.47](https://github.com/textadventures/quest/compare/v6.0.0-beta.46...v6.0.0-beta.47) (2026-07-30)
+
+
+### Features
+
+* add walkthrough recording and playback to the editor ([#1966](https://github.com/textadventures/quest/issues/1966)) ([6ce82e7](https://github.com/textadventures/quest/commit/6ce82e7ffc0636dbe9b4b7b57feba445ebb59052))
+* **AppShell:** add Back/Forward tree navigation history ([#1964](https://github.com/textadventures/quest/issues/1964)) ([934fd8d](https://github.com/textadventures/quest/commit/934fd8d2cbfcc0e0e652296cdc4900587b8bfb31))
+* **AppShell:** add Code View with syntax highlighting for scripts and raw XML ([#1958](https://github.com/textadventures/quest/issues/1958)) ([ab0acc6](https://github.com/textadventures/quest/commit/ab0acc6036c658d218fe5b93dffe8a0bccf0d60d))
+* **AppShell:** add Show Library Elements toggle to editor tree ([#1961](https://github.com/textadventures/quest/issues/1961)) ([b77467f](https://github.com/textadventures/quest/commit/b77467fc69b120147eb45be37c55eb5969c28632))
+* **AppShell:** redesign rich text toolbar as icons + grouped Insert menu ([#1967](https://github.com/textadventures/quest/issues/1967)) ([ae33774](https://github.com/textadventures/quest/commit/ae33774be800ddba737ee469904ae4619f82319c))
+* **WasmPlayer:** responsive, non-modal Debugger dialog that stays in sync while playing ([#1965](https://github.com/textadventures/quest/issues/1965)) ([c89f663](https://github.com/textadventures/quest/commit/c89f663b3b95aba9cc97fb3505b28aec0240ad01))
+
+
+### Bug Fixes
+
+* **AppShell:** correct Inventory take/drop editor and Attributes editor gaps ([#1960](https://github.com/textadventures/quest/issues/1960)) ([24a1eab](https://github.com/textadventures/quest/commit/24a1eab9af48c3161edf7f32242f1bfb8638b28b))
+* **AppShell:** replace invalid text-surface-400-500/500-400 utilities ([#1962](https://github.com/textadventures/quest/issues/1962)) ([7b40e3e](https://github.com/textadventures/quest/commit/7b40e3e2efe4bf998d0db3a89b37f2bd303f82ea))
+* **AppShell:** wire up the gamebook page Options link editor ([#1957](https://github.com/textadventures/quest/issues/1957)) ([6c97f4a](https://github.com/textadventures/quest/commit/6c97f4abc94fce8281e8aacd76275a8132804359))
+* **Engine:** shorten Status Attributes editor prompts to fit the UI ([#1963](https://github.com/textadventures/quest/issues/1963)) ([62c3f82](https://github.com/textadventures/quest/commit/62c3f821fecb75aa74cb05401787aacce7024d43))
+
 ## [6.0.0-beta.46](https://github.com/textadventures/quest/compare/v6.0.0-beta.45...v6.0.0-beta.46) (2026-07-28)
 
 
