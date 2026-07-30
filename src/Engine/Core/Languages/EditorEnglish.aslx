@@ -112,8 +112,8 @@
   <template name="EditorFunctionReturntype">Return type</template>
   <template name="EditorFunctionParameters">Parameters</template>
   <template name="EditorFunctionScript">Script</template>
-  <template name="EditorGameAttributesPleaseenter">Please enter the attribute name</template>
-  <template name="EditorGameAttributesPleaseenter2">Please enter the format string (blank for default)</template>
+  <template name="EditorGameAttributesPleaseenter">Attribute</template>
+  <template name="EditorGameAttributesPleaseenter2">Format string (optional)</template>
   <template name="EditorGameSetup">Setup</template>
   <template name="EditorGameGamename">Game name</template>
   <template name="EditorGameSubtitle">Subtitle</template>
@@ -270,8 +270,8 @@
   <template name="EditorObjectScripttorun">Script to run</template>
   <template name="EditorFunctionPleaseenter">Add parameter name…</template>
   <template name="EditorWalkthroughPleaseenter">Add walkthrough command…</template>
-  <template name="EditorObjectAttributesPleaseenter">Please enter the attribute name</template>
-  <template name="EditorObjectAttributesPleaseenter2">Please enter the format string (blank for default)</template>
+  <template name="EditorObjectAttributesPleaseenter">Attribute</template>
+  <template name="EditorObjectAttributesPleaseenter2">Format string (optional)</template>
   <template name="EditorScriptsScriptsPleaseenter">Please enter the case expression</template>
   <template name="EditorScriptsScriptsPleaseenter2">Add parameter…</template>
   <template name="EditorObjectAskTellAskTell">Ask/Tell</template>
