@@ -18,6 +18,7 @@
     import MapPinOff from "@lucide/svelte/icons/map-pin-off";
     import Dices from "@lucide/svelte/icons/dices";
     import ImageIcon from "@lucide/svelte/icons/image";
+    import BookOpen from "@lucide/svelte/icons/book-open";
     import LifeBuoy from "@lucide/svelte/icons/life-buoy";
     import ChevronDown from "@lucide/svelte/icons/chevron-down";
     import ListPlus from "@lucide/svelte/icons/list-plus";
@@ -147,10 +148,14 @@
 
     // Keyed by insertBefore (Quest syntax, stable across locales) rather than cmd.command
     // (a localized caption) so the toolbar icons/grouping don't depend on the editor language.
-    const FORMATTING_ICONS: Record<string, typeof Bold | undefined> = {
+    // These commands stay as always-visible buttons instead of going in the "Insert" dropdown:
+    // Bold/Italic/Underline as the most-reached-for formatting, and (gamebook mode only) Page
+    // Link since linking between pages is the core authoring action in a gamebook.
+    const PINNED_ICONS: Record<string, typeof Bold | undefined> = {
         "<b>": Bold,
         "<i>": Italic,
         "<u>": Underline,
+        "{page:": BookOpen,
     };
     const INSERT_MENU_GROUPS: Record<string, { group: string; icon: typeof Bold }> = {
         "{object:": { group: "Links", icon: LinkIcon },
@@ -183,13 +188,13 @@
         onTextChange(attribute, controlType, textarea.value);
     }
 
-    // Commands not covered by FORMATTING_ICONS go into the "Insert" dropdown, grouped by
+    // Commands not covered by PINNED_ICONS go into the "Insert" dropdown, grouped by
     // INSERT_MENU_GROUPS; anything not in that map (e.g. a future CoreEditor.aslx addition)
     // still shows up, ungrouped, under "More" rather than silently disappearing.
     function buildInsertMenuItems(commands: TextProcessorCommand[], attribute: string, controlType: string): DropdownMenuItem[] {
         const byGroup = new Map<string, TextProcessorCommand[]>();
         for (const cmd of commands) {
-            if (FORMATTING_ICONS[cmd.insertBefore]) continue;
+            if (PINNED_ICONS[cmd.insertBefore]) continue;
             const group = INSERT_MENU_GROUPS[cmd.insertBefore]?.group ?? "More";
             if (!byGroup.has(group)) byGroup.set(group, []);
             byGroup.get(group)!.push(cmd);
@@ -298,7 +303,7 @@
 {#snippet textProcessorPanel(commands: TextProcessorCommand[], attribute: string, controlType: string)}
     <div class="flex items-center gap-1 shrink-0">
         {#each commands as cmd (cmd.command)}
-            {@const Icon = FORMATTING_ICONS[cmd.insertBefore]}
+            {@const Icon = PINNED_ICONS[cmd.insertBefore]}
             {#if Icon}
                 <button
                     type="button"
