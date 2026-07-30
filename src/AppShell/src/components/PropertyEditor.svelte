@@ -5,7 +5,25 @@
     import type { TreeNode } from "$lib/types";
     import ChevronLeft from "@lucide/svelte/icons/chevron-left";
     import ArrowRight from "@lucide/svelte/icons/arrow-right";
+    import Bold from "@lucide/svelte/icons/bold";
+    import Italic from "@lucide/svelte/icons/italic";
+    import Underline from "@lucide/svelte/icons/underline";
+    import Repeat1 from "@lucide/svelte/icons/repeat-1";
+    import LinkIcon from "@lucide/svelte/icons/link";
+    import Terminal from "@lucide/svelte/icons/terminal";
+    import LogOut from "@lucide/svelte/icons/log-out";
+    import GitBranch from "@lucide/svelte/icons/git-branch";
+    import GitFork from "@lucide/svelte/icons/git-fork";
+    import MapPin from "@lucide/svelte/icons/map-pin";
+    import MapPinOff from "@lucide/svelte/icons/map-pin-off";
+    import Dices from "@lucide/svelte/icons/dices";
+    import ImageIcon from "@lucide/svelte/icons/image";
+    import LifeBuoy from "@lucide/svelte/icons/life-buoy";
+    import ChevronDown from "@lucide/svelte/icons/chevron-down";
+    import ListPlus from "@lucide/svelte/icons/list-plus";
     import ScriptEditor from "./ScriptEditor.svelte";
+    import DropdownMenu from "./DropdownMenu.svelte";
+    import type { DropdownMenuItem } from "./DropdownMenu.svelte";
     import ScriptDictionaryEditor from "./ScriptDictionaryEditor.svelte";
     import Combobox from "./Combobox.svelte";
     import AttributesEditor from "./AttributesEditor.svelte";
@@ -127,9 +145,33 @@
         return v === "True" || v === "true";
     }
 
-    function insertTextProcessorText(attribute: string, controlType: string, insertBefore: string, insertAfter: string, event: MouseEvent) {
-        const wrapper = (event.target as HTMLElement).closest(".richtext-wrap");
-        const textarea = wrapper?.querySelector("textarea") as HTMLTextAreaElement | null;
+    // Keyed by insertBefore (Quest syntax, stable across locales) rather than cmd.command
+    // (a localized caption) so the toolbar icons/grouping don't depend on the editor language.
+    const FORMATTING_ICONS: Record<string, typeof Bold | undefined> = {
+        "<b>": Bold,
+        "<i>": Italic,
+        "<u>": Underline,
+    };
+    const INSERT_MENU_GROUPS: Record<string, { group: string; icon: typeof Bold }> = {
+        "{object:": { group: "Links", icon: LinkIcon },
+        "{command:": { group: "Links", icon: Terminal },
+        "{exit:": { group: "Links", icon: LogOut },
+        "{if ": { group: "Conditions", icon: GitBranch },
+        "{if not ": { group: "Conditions", icon: GitFork },
+        "{here ": { group: "Conditions", icon: MapPin },
+        "{nothere ": { group: "Conditions", icon: MapPinOff },
+        "{once:": { group: "Other", icon: Repeat1 },
+        "{random:": { group: "Other", icon: Dices },
+        "{img:": { group: "Other", icon: ImageIcon },
+    };
+    const INSERT_MENU_GROUP_ORDER = ["Links", "Conditions", "Other", "More"];
+
+    function textProcessorTextareaId(attribute: string): string {
+        return `richtext-${attribute}`;
+    }
+
+    function insertTextProcessorText(attribute: string, controlType: string, insertBefore: string, insertAfter: string) {
+        const textarea = document.getElementById(textProcessorTextareaId(attribute)) as HTMLTextAreaElement | null;
         if (!textarea) return;
         const start = textarea.selectionStart ?? 0;
         const end = textarea.selectionEnd ?? 0;
@@ -139,6 +181,36 @@
         textarea.selectionEnd = start + insertBefore.length + selectedText.length;
         textarea.focus();
         onTextChange(attribute, controlType, textarea.value);
+    }
+
+    // Commands not covered by FORMATTING_ICONS go into the "Insert" dropdown, grouped by
+    // INSERT_MENU_GROUPS; anything not in that map (e.g. a future CoreEditor.aslx addition)
+    // still shows up, ungrouped, under "More" rather than silently disappearing.
+    function buildInsertMenuItems(commands: TextProcessorCommand[], attribute: string, controlType: string): DropdownMenuItem[] {
+        const byGroup = new Map<string, TextProcessorCommand[]>();
+        for (const cmd of commands) {
+            if (FORMATTING_ICONS[cmd.insertBefore]) continue;
+            const group = INSERT_MENU_GROUPS[cmd.insertBefore]?.group ?? "More";
+            if (!byGroup.has(group)) byGroup.set(group, []);
+            byGroup.get(group)!.push(cmd);
+        }
+        const items: DropdownMenuItem[] = [];
+        let seenGroup = false;
+        for (const group of INSERT_MENU_GROUP_ORDER) {
+            const cmds = byGroup.get(group);
+            if (!cmds) continue;
+            cmds.forEach((cmd, i) => {
+                items.push({
+                    label: cmd.command,
+                    icon: INSERT_MENU_GROUPS[cmd.insertBefore]?.icon,
+                    heading: i === 0 ? group : undefined,
+                    divider: i === 0 && seenGroup,
+                    action: () => insertTextProcessorText(attribute, controlType, cmd.insertBefore, cmd.insertAfter),
+                });
+            });
+            seenGroup = true;
+        }
+        return items;
     }
 
     function focusOnMount(node: HTMLElement) {
@@ -224,18 +296,36 @@
 </div>
 
 {#snippet textProcessorPanel(commands: TextProcessorCommand[], attribute: string, controlType: string)}
-    <div class="flex flex-col gap-0.5 shrink-0 max-h-32 overflow-y-auto @2xl:max-h-none @2xl:overflow-visible">
+    <div class="flex items-center gap-1 shrink-0">
         {#each commands as cmd (cmd.command)}
-            <div class="flex items-center gap-1">
+            {@const Icon = FORMATTING_ICONS[cmd.insertBefore]}
+            {#if Icon}
                 <button
                     type="button"
-                    class="btn btn-sm preset-outlined-primary-500 text-xs px-2 py-0.5 w-28 justify-start"
-                    onclick={(e) => insertTextProcessorText(attribute, controlType, cmd.insertBefore, cmd.insertAfter, e)}
-                >{cmd.command}</button>
-                <span class="text-xs text-surface-600-400 whitespace-nowrap">{cmd.info}</span>
-            </div>
+                    class="btn btn-sm preset-outlined-primary-500 text-xs px-2 py-0.5"
+                    title="{cmd.command} {cmd.info}"
+                    aria-label={cmd.command}
+                    onclick={() => insertTextProcessorText(attribute, controlType, cmd.insertBefore, cmd.insertAfter)}
+                ><Icon size={14} aria-hidden="true" /></button>
+            {/if}
         {/each}
-        <a href="https://docs.textadventures.co.uk/quest/text_processor.html" target="_blank" class="text-xs text-primary-500 underline mt-1">Text Processor help</a>
+        <span class="w-px h-5 bg-surface-200-800 mx-0.5"></span>
+        <DropdownMenu items={buildInsertMenuItems(commands, attribute, controlType)} align="left">
+            {#snippet trigger(toggle)}
+                <button
+                    type="button"
+                    class="btn btn-sm preset-outlined-primary-500 text-xs px-2 py-0.5 gap-1"
+                    onclick={toggle}
+                ><ListPlus size={14} aria-hidden="true" />Insert<ChevronDown size={12} aria-hidden="true" /></button>
+            {/snippet}
+        </DropdownMenu>
+        <a
+            href="https://docs.textadventures.co.uk/quest/text_processor.html"
+            target="_blank"
+            class="btn btn-sm text-xs px-2 py-0.5 text-surface-600-400 ml-auto"
+            title="Text Processor help"
+            aria-label="Text Processor help"
+        ><LifeBuoy size={14} aria-hidden="true" /></a>
     </div>
 {/snippet}
 
@@ -274,14 +364,15 @@
         </select>
     {:else if ctrl.controlType === "richtext"}
         {#if ctrl.textProcessorCommands?.length}
-            <div class="richtext-wrap flex flex-col @2xl:flex-row gap-2 w-full">
+            <div class="flex flex-col gap-1 w-full">
+                {@render textProcessorPanel(ctrl.textProcessorCommands, ctrl.attribute!, ctrl.controlType)}
                 <textarea
+                    id={textProcessorTextareaId(ctrl.attribute!)}
                     autocapitalize="off"
                     class="input text-xs py-0.5 px-1.5 flex-1 min-h-32 resize-y"
                     value={attrValue(ctrl.attribute!) ?? ""}
                     onchange={(e) => onTextChange(ctrl.attribute!, ctrl.controlType, (e.target as HTMLTextAreaElement).value)}
                 ></textarea>
-                {@render textProcessorPanel(ctrl.textProcessorCommands, ctrl.attribute!, ctrl.controlType)}
             </div>
         {:else}
             <textarea
@@ -481,14 +572,15 @@
             </select>
             {#if subEditorType === "richtext" && ctrl.subAttribute !== null}
                 {#if ctrl.textProcessorCommands?.length}
-                    <div class="richtext-wrap flex flex-col @2xl:flex-row gap-2 w-full">
+                    <div class="flex flex-col gap-1 w-full">
+                        {@render textProcessorPanel(ctrl.textProcessorCommands, ctrl.subAttribute, "richtext")}
                         <textarea
+                            id={textProcessorTextareaId(ctrl.subAttribute)}
                             autocapitalize="off"
                             class="input text-xs py-0.5 px-1.5 flex-1 min-h-32 resize-y"
                             value={attrValue(ctrl.subAttribute) ?? ""}
                             onchange={(e) => onTextChange(ctrl.subAttribute!, "richtext", (e.target as HTMLTextAreaElement).value)}
                         ></textarea>
-                        {@render textProcessorPanel(ctrl.textProcessorCommands, ctrl.subAttribute, "richtext")}
                     </div>
                 {:else}
                     <textarea
@@ -609,14 +701,15 @@
                 </div>
                 {#if subEditorType === "richtext" && ctrl.subAttribute !== null}
                     {#if ctrl.textProcessorCommands?.length}
-                        <div class="richtext-wrap flex flex-col @2xl:flex-row gap-2 w-full">
+                        <div class="flex flex-col gap-1 w-full">
+                            {@render textProcessorPanel(ctrl.textProcessorCommands, ctrl.subAttribute, "richtext")}
                             <textarea
+                                id={textProcessorTextareaId(ctrl.subAttribute)}
                                 autocapitalize="off"
                                 class="input text-xs py-0.5 px-1.5 flex-1 min-h-32 resize-y"
                                 value={attrValue(ctrl.subAttribute) ?? ""}
                                 onchange={(e) => onTextChange(ctrl.subAttribute!, "richtext", (e.target as HTMLTextAreaElement).value)}
                             ></textarea>
-                            {@render textProcessorPanel(ctrl.textProcessorCommands, ctrl.subAttribute, "richtext")}
                         </div>
                     {:else}
                         <textarea
