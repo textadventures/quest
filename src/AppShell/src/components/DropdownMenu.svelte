@@ -7,6 +7,7 @@
         icon?: Component<{ size?: number }>;
         disabled?: boolean;
         divider?: boolean;
+        heading?: string;
     }
 
     interface Props {
@@ -57,6 +58,9 @@
             {#each items as item (item.label)}
                 {#if item.divider}
                     <div class="my-1 border-t border-surface-200-800"></div>
+                {/if}
+                {#if item.heading}
+                    <div class="px-3 pt-1.5 pb-1 text-[11px] font-semibold text-surface-600-400 uppercase tracking-wide">{item.heading}</div>
                 {/if}
                 <button
                     type="button"
