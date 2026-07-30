@@ -43,7 +43,7 @@
 [data-scope='tree-view'][data-part='item'],
 [data-scope='tree-view'][data-part='branch-control'] {
     padding-inline-end: 0;
-    padding-block: calc(var(--spacing) * 1);
+    padding-block: calc(var(--spacing) * 0.5);
     cursor: pointer;
 }
 

@@ -9,6 +9,7 @@
         publishModalOpen,
         previewInWasmPlayer,
         undo, redo, canUndo, canRedo,
+        navigateBack, navigateForward, canGoBack, canGoForward,
         treeNodes, selectedKey, isGamebook, openAddModal,
         createExit, createTurnScript, createCommand, createVerb,
         deleteElement,
@@ -19,6 +20,8 @@
     import { hasActiveCmView, cmUndo, cmRedo } from "$lib/code-editor-registry";
     import type { TreeNode } from "$lib/types";
     import Home from "@lucide/svelte/icons/home";
+    import ArrowLeft from "@lucide/svelte/icons/arrow-left";
+    import ArrowRight from "@lucide/svelte/icons/arrow-right";
     import ImageIcon from "@lucide/svelte/icons/image";
     import Undo2 from "@lucide/svelte/icons/undo-2";
     import Redo2 from "@lucide/svelte/icons/redo-2";
@@ -192,6 +195,22 @@
     <AppBar.Toolbar class="grid-cols-[auto_1fr_auto]">
         <AppBar.Lead class="flex-1 min-w-0">
             <div class="flex items-center min-w-0">
+                {#if $isLoaded}
+                    <button
+                        type="button"
+                        class="toolbar-icon-btn shrink-0"
+                        onclick={() => navigateBack()}
+                        disabled={!$canGoBack}
+                        title="Back"
+                    ><ArrowLeft size={16} /></button>
+                    <button
+                        type="button"
+                        class="toolbar-icon-btn mr-2 shrink-0"
+                        onclick={() => navigateForward()}
+                        disabled={!$canGoForward}
+                        title="Forward"
+                    ><ArrowRight size={16} /></button>
+                {/if}
                 {#if showHome}
                     <button
                         type="button"

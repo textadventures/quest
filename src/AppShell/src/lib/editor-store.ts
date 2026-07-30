@@ -42,6 +42,39 @@ export const selectedData = writable<EditorDataResponse | null>(null);
 export const fullAttributeData = writable<FullAttributeData | null>(null);
 export const canUndo = writable(false);
 export const canRedo = writable(false);
+// Selection history stack (Back/Forward), independent of Quest's own model undo/redo above —
+// this just remembers which elements you've clicked through in the tree, like browser history.
+let _navHistory: string[] = [];
+let _navIndex = -1;
+let _suppressHistoryPush = false;
+export const canGoBack = writable(false);
+export const canGoForward = writable(false);
+function updateNavFlags() {
+    canGoBack.set(_navIndex > 0);
+    canGoForward.set(_navIndex >= 0 && _navIndex < _navHistory.length - 1);
+}
+// Called once a game (or a freshly reloaded model, see setGameXml) has already selected its
+// root node via selectNode() — collapses whatever that call pushed down to a single starting
+// entry, so Back/Forward don't reach across into the previous game/reload.
+function resetNavHistory(currentKey: string | null) {
+    _navHistory = currentKey ? [currentKey] : [];
+    _navIndex = _navHistory.length - 1;
+    updateNavFlags();
+}
+export async function navigateBack() {
+    if (_navIndex <= 0) return;
+    _navIndex--;
+    _suppressHistoryPush = true;
+    try { await selectNode(_navHistory[_navIndex]); } finally { _suppressHistoryPush = false; }
+    updateNavFlags();
+}
+export async function navigateForward() {
+    if (_navIndex >= _navHistory.length - 1) return;
+    _navIndex++;
+    _suppressHistoryPush = true;
+    try { await selectNode(_navHistory[_navIndex]); } finally { _suppressHistoryPush = false; }
+    updateNavFlags();
+}
 export const isDirty = writable(false);
 // True while a field somewhere in the editor has an in-progress, not-yet-committed
 // edit (set on input, cleared on focusout via a delegated listener in
@@ -121,6 +154,7 @@ export async function openGame(bytes: Uint8Array, filename: string, adapter: Fil
         await refreshAssets();
         const gameNode = nodes.find(n => n.nodeType === "game");
         if (gameNode) await selectNode(gameNode.key);
+        resetNavHistory(gameNode?.key ?? null);
     }
     return ok;
 }
@@ -156,6 +190,7 @@ export async function setGameXml(xml: string): Promise<string> {
         await refreshAssets();
         const gameNode = nodes.find(n => n.nodeType === "game");
         if (gameNode) await selectNode(gameNode.key);
+        resetNavHistory(gameNode?.key ?? null);
         refreshUndoRedo();
         // SetGameXml() resets the bridge's dirty flag after the reload (matching Initialise()'s
         // own behavior), but the in-memory content now differs from the last persisted save, so
@@ -173,6 +208,13 @@ export async function selectNode(key: string) {
     selectedData.set(json ? JSON.parse(json) : null);
     const attrJson = _bridge.GetFullAttributeData(key);
     fullAttributeData.set(attrJson ? JSON.parse(attrJson) : null);
+
+    if (!_suppressHistoryPush && _navHistory[_navIndex] !== key) {
+        _navHistory = _navHistory.slice(0, _navIndex + 1);
+        _navHistory.push(key);
+        _navIndex = _navHistory.length - 1;
+        updateNavFlags();
+    }
 }
 
 export function toggleShowLibraryElements(): void {
@@ -199,6 +241,9 @@ export function setAttribute(elementKey: string, attribute: string, controlType:
     if (result.startsWith("renamed:")) {
         const newKey = result.slice("renamed:".length);
         selectedKey.set(newKey);
+        // Renaming changes the element's key, not the element — keep Back/Forward pointing at
+        // it rather than leaving stale entries for a key that no longer resolves to anything.
+        _navHistory = _navHistory.map(k => k === elementKey ? newKey : k);
         refreshTree();
         refreshSelectedData();
         refreshUndoRedo();
@@ -1007,6 +1052,12 @@ export function deleteElement(key: string) {
     _bridge.DeleteElement(key);
     selectedKey.set(null);
     selectedData.set(null);
+    // Drop the deleted element from Back/Forward history too — it no longer resolves to
+    // anything, so leaving it in would let navigateBack/Forward select a dead key.
+    const keptBefore = _navHistory.slice(0, _navIndex + 1).filter(k => k !== key).length;
+    _navHistory = _navHistory.filter(k => k !== key);
+    _navIndex = keptBefore - 1;
+    updateNavFlags();
     refreshTree();
     refreshUndoRedo();
 }
