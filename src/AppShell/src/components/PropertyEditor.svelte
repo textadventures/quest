@@ -1,7 +1,7 @@
 <script lang="ts">
-    import { selectedKey, selectedData, treeNodes, isGamebook, setAttribute, setDropdownType, setMultiType, setObjectReference, addDictItem, removeDictItem, updateDictItem, getObjectNames, selectNode, createObjectSilent, openAddModal, createIncludedLibrary, createJavascript } from "$lib/editor-store";
+    import { selectedKey, selectedData, treeNodes, isGamebook, setAttribute, setDropdownType, setMultiType, setObjectReference, addDictItem, removeDictItem, updateDictItem, getObjectNames, getExitNames, selectNode, createObjectSilent, openAddModal, createIncludedLibrary, createJavascript } from "$lib/editor-store";
     import { showToast } from "$lib/toast";
-    import type { ControlInfo, TextProcessorCommand } from "$lib/types";
+    import type { ControlInfo, ControlOption, TextProcessorCommand } from "$lib/types";
     import type { TreeNode } from "$lib/types";
     import ChevronLeft from "@lucide/svelte/icons/chevron-left";
     import ArrowRight from "@lucide/svelte/icons/arrow-right";
@@ -25,6 +25,7 @@
     import ScriptEditor from "./ScriptEditor.svelte";
     import DropdownMenu from "./DropdownMenu.svelte";
     import type { DropdownMenuItem } from "./DropdownMenu.svelte";
+    import LinkPickerModal from "./LinkPickerModal.svelte";
     import ScriptDictionaryEditor from "./ScriptDictionaryEditor.svelte";
     import Combobox from "./Combobox.svelte";
     import AttributesEditor from "./AttributesEditor.svelte";
@@ -188,6 +189,99 @@
         onTextChange(attribute, controlType, textarea.value);
     }
 
+    function insertComposedText(attribute: string, controlType: string, range: { start: number; end: number }, text: string) {
+        const textarea = document.getElementById(textProcessorTextareaId(attribute)) as HTMLTextAreaElement | null;
+        if (!textarea) return;
+        textarea.value = textarea.value.substring(0, range.start) + text + textarea.value.substring(range.end);
+        const cursor = range.start + text.length;
+        textarea.selectionStart = cursor;
+        textarea.selectionEnd = cursor;
+        textarea.focus();
+        onTextChange(attribute, controlType, textarea.value);
+    }
+
+    // Commands whose insertBefore appears here need a target picked from a list (or an asset
+    // upload) rather than just wrapping the selection in fixed markup — matches the `source`
+    // hint the old Quest 5 editor used to decide when to pop up a picker dialog. Keyed by
+    // insertBefore for the same locale-independence reason as PINNED_ICONS/INSERT_MENU_GROUPS.
+    interface LinkCommandConfig {
+        kind: "objects" | "exits" | "pages" | "images";
+        textMode: "none" | "optional" | "required";
+        targetLabel: string;
+        textLabel?: string;
+        format: (target: string, text: string) => string;
+    }
+    const LINK_COMMANDS: Record<string, LinkCommandConfig> = {
+        "{object:": {
+            kind: "objects", textMode: "optional", targetLabel: "Object",
+            format: (target, text) => (text ? `{object:${target}:${text}}` : `{object:${target}}`),
+        },
+        "{exit:": {
+            kind: "exits", textMode: "none", targetLabel: "Exit",
+            format: (target) => `{exit:${target}}`,
+        },
+        "{here ": {
+            kind: "objects", textMode: "required", targetLabel: "Object", textLabel: "Text to show",
+            format: (target, text) => `{here ${target}:${text}}`,
+        },
+        "{nothere ": {
+            kind: "objects", textMode: "required", targetLabel: "Object", textLabel: "Text to show",
+            format: (target, text) => `{nothere ${target}:${text}}`,
+        },
+        "{img:": {
+            kind: "images", textMode: "none", targetLabel: "Image",
+            format: (target) => `{img:${target}}`,
+        },
+        "{page:": {
+            kind: "pages", textMode: "optional", targetLabel: "Page",
+            format: (target, text) => (text ? `{page:${target}:${text}}` : `{page:${target}}`),
+        },
+    };
+
+    interface ActiveLinkCommand {
+        title: string;
+        config: LinkCommandConfig;
+        options: ControlOption[];
+        initialText: string;
+        range: { start: number; end: number };
+        attribute: string;
+        controlType: string;
+    }
+    let activeLinkCommand = $state<ActiveLinkCommand | null>(null);
+
+    // Entry point for every toolbar/menu command: link commands (see LINK_COMMANDS) open the
+    // picker modal, everything else keeps the old immediate wrap-the-selection insert.
+    function activateTextProcessorCommand(cmd: TextProcessorCommand, attribute: string, controlType: string) {
+        const config = LINK_COMMANDS[cmd.insertBefore];
+        if (!config) {
+            insertTextProcessorText(attribute, controlType, cmd.insertBefore, cmd.insertAfter);
+            return;
+        }
+        const textarea = document.getElementById(textProcessorTextareaId(attribute)) as HTMLTextAreaElement | null;
+        const start = textarea?.selectionStart ?? 0;
+        const end = textarea?.selectionEnd ?? 0;
+        const options: ControlOption[] =
+            config.kind === "exits" ? (getExitNames() ?? []).map(name => ({ value: name, label: name })) :
+                config.kind === "images" ? [] :
+                    (getObjectNames() ?? []).map(name => ({ value: name, label: name }));
+        activeLinkCommand = {
+            title: cmd.command,
+            config,
+            options,
+            initialText: textarea?.value.substring(start, end) ?? "",
+            range: { start, end },
+            attribute,
+            controlType,
+        };
+    }
+
+    function confirmLinkCommand(target: string, text: string) {
+        if (!activeLinkCommand) return;
+        const { config, range, attribute, controlType } = activeLinkCommand;
+        insertComposedText(attribute, controlType, range, config.format(target, text));
+        activeLinkCommand = null;
+    }
+
     // Commands not covered by PINNED_ICONS go into the "Insert" dropdown, grouped by
     // INSERT_MENU_GROUPS; anything not in that map (e.g. a future CoreEditor.aslx addition)
     // still shows up, ungrouped, under "More" rather than silently disappearing.
@@ -209,7 +303,7 @@
                     icon: INSERT_MENU_GROUPS[cmd.insertBefore]?.icon,
                     heading: i === 0 ? group : undefined,
                     divider: i === 0 && seenGroup,
-                    action: () => insertTextProcessorText(attribute, controlType, cmd.insertBefore, cmd.insertAfter),
+                    action: () => activateTextProcessorCommand(cmd, attribute, controlType),
                 });
             });
             seenGroup = true;
@@ -299,6 +393,20 @@
     {/if}
 </div>
 
+{#if activeLinkCommand}
+    <LinkPickerModal
+        title={activeLinkCommand.title}
+        targetLabel={activeLinkCommand.config.targetLabel}
+        targetOptions={activeLinkCommand.options}
+        assetSource={activeLinkCommand.config.kind === "images" ? "*.jpg;*.jpeg;*.png;*.gif" : null}
+        textMode={activeLinkCommand.config.textMode}
+        textLabel={activeLinkCommand.config.textLabel}
+        initialText={activeLinkCommand.initialText}
+        onconfirm={confirmLinkCommand}
+        oncancel={() => { activeLinkCommand = null; }}
+    />
+{/if}
+
 {#snippet textProcessorPanel(commands: TextProcessorCommand[], attribute: string, controlType: string)}
     <div class="flex items-center gap-1 shrink-0">
         {#each commands as cmd (cmd.command)}
@@ -309,7 +417,7 @@
                     class="btn btn-sm preset-outlined-primary-500 text-xs px-2 py-0.5"
                     title="{cmd.command} {cmd.info}"
                     aria-label={cmd.command}
-                    onclick={() => insertTextProcessorText(attribute, controlType, cmd.insertBefore, cmd.insertAfter)}
+                    onclick={() => activateTextProcessorCommand(cmd, attribute, controlType)}
                 ><Icon size={14} aria-hidden="true" /></button>
             {/if}
         {/each}
