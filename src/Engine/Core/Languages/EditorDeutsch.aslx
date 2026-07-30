@@ -115,8 +115,8 @@
   <template name="EditorFunctionReturntype">Rückgabetyp</template>
   <template name="EditorFunctionParameters">Parameter</template>
   <template name="EditorFunctionScript">Skript</template>
-  <template name="EditorGameAttributesPleaseenter">Bitte geben Sie den Attributnamen ein</template>
-  <template name="EditorGameAttributesPleaseenter2">Bitte geben Sie den Attributinhalt ein (Ohne Eingabe = Standard)</template>
+  <template name="EditorGameAttributesPleaseenter">Attributname</template>
+  <template name="EditorGameAttributesPleaseenter2">Formatstring (optional)</template>
   <template name="EditorGameSetup">Konfiguration</template>
   <template name="EditorGameGamename">Spielname</template>
   <template name="EditorGameSubtitle">Untertitel</template>
@@ -268,8 +268,8 @@
   <template name="EditorObjectScripttorun">Skript zum Ausführen</template>
   <template name="EditorFunctionPleaseenter">Bitte geben Sie einen Parameternamen ein</template>
   <template name="EditorWalkthroughPleaseenter">Bitte geben Sie das Kommando für diesen Walkthrough-Schritt ein</template>
-  <template name="EditorObjectAttributesPleaseenter">Bitte geben Sie den Attributnamen ein</template>
-  <template name="EditorObjectAttributesPleaseenter2">Bitte geben Sie den Attributinhalt ein (Ohne Eingabe = Standard)</template>
+  <template name="EditorObjectAttributesPleaseenter">Attributname</template>
+  <template name="EditorObjectAttributesPleaseenter2">Formatstring (optional)</template>
   <template name="EditorScriptsScriptsPleaseenter">Bitte geben Sie den abzufragenden Inhalt ein</template>
   <template name="EditorScriptsScriptsPleaseenter2">Bitte geben Sie den Parameter ein</template>
   <template name="EditorObjectAskTellAskTell">Fragen/Reden</template>
