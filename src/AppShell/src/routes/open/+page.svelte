@@ -435,10 +435,10 @@
     {#if loading}
         <div class="flex flex-col items-center gap-3">
             <div class="size-10 rounded-full border-4 border-surface-300-700 border-t-primary-500 animate-spin"></div>
-            <p class="text-surface-500-400 text-sm">{$loadingStatus}</p>
+            <p class="text-surface-600-400 text-sm">{$loadingStatus}</p>
         </div>
     {:else if pendingFiles.length > 0}
-        <p class="text-surface-500-400">Multiple game files found — choose one to open:</p>
+        <p class="text-surface-600-400">Multiple game files found — choose one to open:</p>
         <div class="flex flex-col gap-2 w-full max-w-sm">
             {#each pendingFiles as file (file)}
                 <button
@@ -458,7 +458,7 @@
 
             {#if !hasServer}
                 <!-- Open existing game -->
-                <p class="text-surface-500-400 text-sm font-medium self-start">Open existing game</p>
+                <p class="text-surface-600-400 text-sm font-medium self-start">Open existing game</p>
 
                 {#if isElectronApp}
                     <button type="button" class="btn preset-filled-primary-500 w-full" onclick={handleOpenFolder}>
@@ -504,7 +504,7 @@
 
                 {#if isElectronApp && recentGames.length > 0}
                     <hr class="w-full border-surface-300-700 my-2" />
-                    <p class="text-surface-500-400 text-sm font-medium self-start">Recent</p>
+                    <p class="text-surface-600-400 text-sm font-medium self-start">Recent</p>
                     <div class="flex flex-col gap-2 w-full">
                         {#each recentGames as game (game.dirPath + "/" + game.filename)}
                             <div class="flex items-center gap-2 w-full">
@@ -514,7 +514,7 @@
                                     onclick={() => loadFromElectron(game.dirPath, game.filename)}
                                 >
                                     <span class="w-full truncate text-left">{game.filename}</span>
-                                    <span class="w-full truncate text-left text-surface-500-400 text-xs">{folderName(game.dirPath)} · {relativeTime(game.lastOpened)}</span>
+                                    <span class="w-full truncate text-left text-surface-600-400 text-xs">{folderName(game.dirPath)} · {relativeTime(game.lastOpened)}</span>
                                 </button>
                                 <button
                                     type="button"
@@ -529,7 +529,7 @@
 
                 {#if !isElectronApp && drafts.length > 0}
                     <hr class="w-full border-surface-300-700 my-2" />
-                    <p class="text-surface-500-400 text-sm font-medium self-start">Your local drafts</p>
+                    <p class="text-surface-600-400 text-sm font-medium self-start">Your local drafts</p>
                     <div class="flex flex-col gap-2 w-full">
                         {#each drafts as draft (draft.gameId)}
                             <div class="flex items-center gap-2 w-full">
@@ -539,7 +539,7 @@
                                     onclick={() => handleOpenDraft(draft.gameId)}
                                 >
                                     <span>{draft.filename}</span>
-                                    <span class="text-surface-500-400">{relativeTime(draft.lastModified)}</span>
+                                    <span class="text-surface-600-400">{relativeTime(draft.lastModified)}</span>
                                 </button>
                                 <button
                                     type="button"
@@ -551,7 +551,7 @@
                         {/each}
                     </div>
                     {#if isSafari}
-                        <p class="text-xs text-surface-500-400 max-w-[40ch] text-center">
+                        <p class="text-xs text-surface-600-400 max-w-[40ch] text-center">
                             Safari may clear local drafts if you don't open this site for a week or more —
                             export a backup of anything important.
                         </p>
@@ -562,7 +562,7 @@
             {/if}
 
             <!-- Create new game -->
-            <p class="text-surface-500-400 text-sm font-medium self-start">Create new game</p>
+            <p class="text-surface-600-400 text-sm font-medium self-start">Create new game</p>
 
             {#if templatesError}
                 <p class="text-error-500 text-sm">{templatesError}</p>
@@ -580,13 +580,13 @@
                     />
 
                     {#if templatesLoading}
-                        <div class="flex items-center gap-2 text-surface-500-400 text-sm">
+                        <div class="flex items-center gap-2 text-surface-600-400 text-sm">
                             <div class="size-4 rounded-full border-2 border-surface-300-700 border-t-primary-500 animate-spin"></div>
                             Loading templates...
                         </div>
                     {:else if templates.length > 0}
                         <div class="flex flex-col gap-1">
-                            <p class="text-sm text-surface-500-400">Game type</p>
+                            <p class="text-sm text-surface-600-400">Game type</p>
                             <div class="flex gap-4">
                                 {#each [{ value: "textadventure", label: "Text adventure" }, { value: "gamebook", label: "Gamebook" }] as type (type.value)}
                                     <label class="flex items-center gap-2 cursor-pointer">
@@ -624,7 +624,7 @@
                     {#if creating}
                         <div class="flex items-center gap-3">
                             <div class="size-5 rounded-full border-2 border-surface-300-700 border-t-primary-500 animate-spin"></div>
-                            <span class="text-surface-500-400 text-sm">{$loadingStatus || "Creating..."}</span>
+                            <span class="text-surface-600-400 text-sm">{$loadingStatus || "Creating..."}</span>
                         </div>
                     {:else}
                         <div class="flex gap-2">
@@ -639,7 +639,7 @@
                                     >
                                         Save to server
                                     </button>
-                                    <p class="text-xs text-surface-500-400 text-center">Saved to your textadventures.co.uk account</p>
+                                    <p class="text-xs text-surface-600-400 text-center">Saved to your textadventures.co.uk account</p>
                                 </div>
                             {:else}
                                 <div class="flex flex-col gap-1 flex-1">
@@ -653,7 +653,7 @@
                                         {isElectronApp ? "Create" : "Create local draft"}
                                     </button>
                                     {#if !isElectronApp}
-                                        <p class="text-xs text-surface-500-400 text-center">Stored in this browser only</p>
+                                        <p class="text-xs text-surface-600-400 text-center">Stored in this browser only</p>
                                     {/if}
                                 </div>
                                 {#if canUseFSA}
@@ -667,14 +667,14 @@
                                         >
                                             Save to folder…
                                         </button>
-                                        <p class="text-xs text-surface-500-400 text-center">You'll choose a folder on this device</p>
+                                        <p class="text-xs text-surface-600-400 text-center">You'll choose a folder on this device</p>
                                     </div>
                                 {/if}
                             {/if}
                         </div>
 
                         {#if isElectron()}
-                            <p class="text-xs text-surface-500-400 text-center self-center">
+                            <p class="text-xs text-surface-600-400 text-center self-center">
                                 Will be created as a new folder in:<br />
                                 <span class="font-mono">{electronGamesDir || "…"}</span>
                                 <button type="button" class="anchor" onclick={handleChangeLocation}>Change location…</button>
@@ -682,7 +682,7 @@
                         {/if}
 
                         {#if hasServer}
-                            <p class="text-xs text-surface-500-400 max-w-[40ch] text-center self-center">
+                            <p class="text-xs text-surface-600-400 max-w-[40ch] text-center self-center">
                                 Want to keep this game only on your own device? Use the
                                 <a class="anchor" href="https://play.questviva.com/open">play.questviva.com editor</a> instead.
                             </p>

@@ -290,7 +290,7 @@
         width: 2rem;
         height: 2rem;
         border-radius: var(--radius-container);
-        color: var(--color-surface-500-400);
+        color: var(--color-surface-600-400);
     }
     .toolbar-icon-btn:hover:not(:disabled) {
         background-color: var(--color-surface-200-800);
@@ -337,7 +337,7 @@
         background-color: color-mix(in srgb, var(--color-success-500) 12%, transparent);
     }
     .save-chip-saving {
-        color: var(--color-surface-500-400);
+        color: var(--color-surface-600-400);
     }
     .save-chip-unsaved {
         color: var(--color-warning-600-400);

@@ -214,7 +214,7 @@
             <button
                 type="button"
                 onclick={onClose}
-                class="text-surface-400-500 hover:text-surface-900-50 text-xl leading-none px-1 transition-colors"
+                class="text-surface-600-400 hover:text-surface-900-50 text-xl leading-none px-1 transition-colors"
                 aria-label="Close"
             >×</button>
         </div>
@@ -224,7 +224,7 @@
              narrow modal, and each row only fit one or two pills. -->
         {#if shortcuts.length > 0}
             <div class="px-5 py-2 border-b border-surface-200-800 flex-shrink-0 flex items-center gap-2">
-                <span class="text-xs font-medium text-surface-500-400 flex-shrink-0">Quick add:</span>
+                <span class="text-xs font-medium text-surface-600-400 flex-shrink-0">Quick add:</span>
                 <div class="flex gap-1.5 overflow-x-auto">
                     {#each shortcuts as shortcut (shortcut.createString)}
                         <button
@@ -303,7 +303,7 @@
                     {#each categories as cat, ci (ci)}
                         {@const isSelected = selectedCategoryIndex === ci}
                         {#if ci === firstAdvancedIndex && ci > 0}
-                            <div class="px-4 py-1 text-[10px] font-semibold uppercase tracking-wide text-surface-400-500 border-t border-surface-200-800 mt-1 pt-2">Advanced</div>
+                            <div class="px-4 py-1 text-[10px] font-semibold uppercase tracking-wide text-surface-600-400 border-t border-surface-200-800 mt-1 pt-2">Advanced</div>
                         {/if}
                         <button
                             bind:this={categoryButtonEls[ci]}
@@ -334,7 +334,7 @@
                         {#each selectedCategory.commands as cmd, idx (cmd.createString)}
                             {@const isSelected = selectedCommand?.createString === cmd.createString}
                             {#if idx === firstAdvancedCommandIndex && idx > 0}
-                                <div class="px-5 py-1 text-[10px] font-semibold uppercase tracking-wide text-surface-400-500 border-t border-surface-200-800 mt-1 pt-2">Advanced</div>
+                                <div class="px-5 py-1 text-[10px] font-semibold uppercase tracking-wide text-surface-600-400 border-t border-surface-200-800 mt-1 pt-2">Advanced</div>
                             {/if}
                             <button
                                 bind:this={rowEls[idx]}

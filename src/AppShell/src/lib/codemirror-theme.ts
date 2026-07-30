@@ -32,16 +32,16 @@ export const questEditorTheme = EditorView.theme({
         backgroundColor: "color-mix(in srgb, var(--color-primary-500) 25%, transparent)",
     },
     ".cm-activeLine": {
-        backgroundColor: "color-mix(in srgb, var(--color-surface-500-400) 10%, transparent)",
+        backgroundColor: "color-mix(in srgb, var(--color-surface-600-400) 10%, transparent)",
     },
     ".cm-gutters": {
         backgroundColor: "var(--color-surface-50-950)",
-        color: "var(--color-surface-500-400)",
+        color: "var(--color-surface-600-400)",
         border: "none",
         borderRight: "1px solid var(--color-surface-200-800)",
     },
     ".cm-activeLineGutter": {
-        backgroundColor: "color-mix(in srgb, var(--color-surface-500-400) 10%, transparent)",
+        backgroundColor: "color-mix(in srgb, var(--color-surface-600-400) 10%, transparent)",
     },
     ".cm-matchingBracket, .cm-nonmatchingBracket": {
         backgroundColor: "color-mix(in srgb, var(--color-primary-500) 20%, transparent)",
@@ -52,10 +52,10 @@ export const questEditorTheme = EditorView.theme({
 export const questHighlightStyle = HighlightStyle.define([
     { tag: t.keyword, color: "var(--color-primary-500)", fontWeight: "bold" },
     { tag: [t.string, t.attributeValue], color: "var(--color-success-600-400)" },
-    { tag: t.comment, color: "var(--color-surface-500-400)", fontStyle: "italic" },
+    { tag: t.comment, color: "var(--color-surface-600-400)", fontStyle: "italic" },
     { tag: t.number, color: "var(--color-tertiary-500)" },
     { tag: [t.tagName, t.attributeName], color: "var(--color-primary-500)" },
-    { tag: [t.bracket, t.paren, t.squareBracket, t.brace], color: "var(--color-surface-500-400)" },
+    { tag: [t.bracket, t.paren, t.squareBracket, t.brace], color: "var(--color-surface-600-400)" },
 ]);
 
 export const questEditorExtensions = [questEditorTheme, syntaxHighlighting(questHighlightStyle)];

@@ -89,7 +89,7 @@
 
         <div class="flex-1 overflow-y-auto flex flex-col gap-1">
             {#if $assets.length === 0}
-                <p class="text-xs text-surface-400-500">No assets yet.</p>
+                <p class="text-xs text-surface-600-400">No assets yet.</p>
             {/if}
             {#each $assets as asset (asset.key)}
                 <div class="flex items-center gap-2 px-1.5 py-1 rounded hover:bg-surface-100-900">

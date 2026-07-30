@@ -354,7 +354,7 @@
 
 <div class={indentClass}>
     {#if isRoot && isLocked}
-        <div class="flex items-center gap-2 py-1 px-2 mb-1 text-xs text-surface-400-500 italic border border-surface-200-800 rounded">
+        <div class="flex items-center gap-2 py-1 px-2 mb-1 text-xs text-surface-600-400 italic border border-surface-200-800 rounded">
             <span class="flex-1">This script is inherited — read-only.</span>
             <button
                 type="button"
@@ -464,7 +464,7 @@
                             onclick={onMoveDownSelected}
                         >↓ Move down</button>
                     {/if}
-                    <span class="ml-auto pl-2 flex-shrink-0 text-surface-400-500">{sel.length} selected</span>
+                    <span class="ml-auto pl-2 flex-shrink-0 text-surface-600-400">{sel.length} selected</span>
                 </div>
             {/if}
         </div>
@@ -480,7 +480,7 @@
                     onclick={() => (showAddModal = true)}
                 >+ Add script</button>
             {:else if !codeViewMode && isRoot}
-                <span class="text-xs text-surface-400-500 italic">Loading commands…</span>
+                <span class="text-xs text-surface-600-400 italic">Loading commands…</span>
             {/if}
             {#if isRoot && $scriptClipboardHasContent && !codeViewMode}
                 <button
@@ -523,7 +523,7 @@
         <!-- Nested script block for commands like for/while/foreach/firsttime -->
         <div class="w-full mt-0.5">
             {#if ctrl.caption}
-                <span class="text-surface-500-400 text-xs italic">{ctrl.caption}:</span>
+                <span class="text-surface-600-400 text-xs italic">{ctrl.caption}:</span>
             {/if}
             <ScriptEditor
                 {elementKey}
@@ -670,7 +670,7 @@
             {/each}
         </select>
     {:else}
-        <span class="text-surface-400-500 italic text-xs">[{ctrl.controlType}]</span>
+        <span class="text-surface-600-400 italic text-xs">[{ctrl.controlType}]</span>
     {/if}
 {/snippet}
 

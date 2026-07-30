@@ -145,7 +145,7 @@
 
     <!-- Item rows -->
     {#if items.length === 0}
-        <p class="text-xs text-surface-400-500 italic">No items.</p>
+        <p class="text-xs text-surface-600-400 italic">No items.</p>
     {:else}
         {#each items as item, i (item.key)}
             <div class="group relative border border-surface-200-800 rounded mb-1 bg-surface-50-950 flex items-center">
@@ -215,7 +215,7 @@
                     onclick={onMoveDownSelected}
                 >↓ Move down</button>
             {/if}
-            <span class="ml-auto text-surface-400-500">{sel.length} selected</span>
+            <span class="ml-auto text-surface-600-400">{sel.length} selected</span>
         </div>
     {/if}
 </div>

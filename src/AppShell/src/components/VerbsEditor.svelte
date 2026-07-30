@@ -167,12 +167,12 @@
          content instead, scrolling with the rest of the tab if the list ever gets long. -->
     <div class="flex flex-col flex-1 min-w-0">
         <div class="px-3 py-1.5 border-b border-surface-100-900">
-            <span class="font-semibold text-surface-500-400 uppercase tracking-wide">Verbs</span>
+            <span class="font-semibold text-surface-600-400 uppercase tracking-wide">Verbs</span>
         </div>
         <div>
             <table class="w-full">
                 <thead class="sticky top-0 bg-surface-50-950 z-10">
-                    <tr class="text-surface-400-500 border-b border-surface-200-800">
+                    <tr class="text-surface-600-400 border-b border-surface-200-800">
                         <th class="text-left py-1 px-3 font-medium">Verb</th>
                         <th class="text-left py-1 px-3 font-medium">Behaviour</th>
                         <th class="w-6"></th>
@@ -188,7 +188,7 @@
                             onclick={() => onSelectVerb(attr)}
                         >
                             <td class="py-0.5 px-3 font-medium truncate max-w-36" title={display}>{display}</td>
-                            <td class="py-0.5 px-3 text-surface-400-500">
+                            <td class="py-0.5 px-3 text-surface-600-400">
                                 {TYPE_OPTIONS.find(t => t.value === attr.type)?.label ?? attr.type}
                             </td>
                             <td class="py-0.5 pr-2 text-right">
@@ -201,7 +201,7 @@
                             </td>
                         </tr>
                     {:else}
-                        <tr><td colspan="3" class="py-2 px-3 text-surface-400-500 italic">No verbs added yet</td></tr>
+                        <tr><td colspan="3" class="py-2 px-3 text-surface-600-400 italic">No verbs added yet</td></tr>
                     {/each}
                 </tbody>
             </table>
@@ -243,12 +243,12 @@
         class="w-full @2xl:w-[var(--panel-width)] @2xl:flex-shrink-0 flex flex-col overflow-hidden border-l border-surface-200-800"
         style="--panel-width: {panelWidth}px"
     >
-        <div class="px-3 py-1.5 border-b border-surface-100-900 font-semibold text-surface-500-400 uppercase tracking-wide flex-shrink-0 flex items-center justify-between">
+        <div class="px-3 py-1.5 border-b border-surface-100-900 font-semibold text-surface-600-400 uppercase tracking-wide flex-shrink-0 flex items-center justify-between">
             <span>Behaviour</span>
             {#if selectedAttr}
                 <button
                     type="button"
-                    class="normal-case text-surface-400-500 hover:text-surface-900-50"
+                    class="normal-case text-surface-600-400 hover:text-surface-900-50"
                     onclick={() => { selectedAttrName = null; }}
                     title="Close"
                     aria-label="Close"
@@ -263,7 +263,7 @@
                 </div>
 
                 <div class="flex flex-col gap-1 flex-shrink-0">
-                    <span class="text-surface-400-500 uppercase tracking-wide text-xs">Type</span>
+                    <span class="text-surface-600-400 uppercase tracking-wide text-xs">Type</span>
                     <select
                         class="select text-xs py-0 px-1.5 h-7"
                         value={attr.type}
@@ -276,7 +276,7 @@
                 </div>
 
                 <div class="flex flex-col gap-1">
-                    <span class="text-surface-400-500 uppercase tracking-wide text-xs flex-shrink-0">Value</span>
+                    <span class="text-surface-600-400 uppercase tracking-wide text-xs flex-shrink-0">Value</span>
                     {#if attr.type === "script"}
                         <div class="min-h-48">
                             <ScriptEditor elementKey={elementKey} attribute={attr.name} />
@@ -297,7 +297,7 @@
                 </div>
             </div>
         {:else}
-            <p class="p-3 text-surface-400-500 italic">Select a verb to edit its behaviour.</p>
+            <p class="p-3 text-surface-600-400 italic">Select a verb to edit its behaviour.</p>
         {/if}
     </div>
 </div>

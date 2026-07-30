@@ -352,7 +352,7 @@
     class="flex flex-col shrink-0 border-r border-surface-200-800 bg-surface-50-950 {width === undefined ? "w-full" : ""}"
     style={width !== undefined ? `width: ${width}px` : undefined}
 >
-    <div class="px-3 py-2 text-xs font-semibold uppercase text-surface-500-400 border-b border-surface-200-800">
+    <div class="px-3 py-2 text-xs font-semibold uppercase text-surface-600-400 border-b border-surface-200-800">
         {$isGamebook ? "Game Pages" : "Game Objects"}
     </div>
     <div class="p-1.5 border-b border-surface-200-800 flex items-center gap-1">

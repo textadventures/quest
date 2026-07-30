@@ -130,17 +130,17 @@
     {:else if dir.exitKey !== null}
         <div class="border border-surface-200-800 rounded p-1.5 bg-surface-50-950 min-h-14 min-w-0 flex flex-col gap-0.5">
             <div class="flex items-center justify-between gap-1 min-w-0">
-                <span class="text-[10px] uppercase text-surface-400-500 truncate">{dir.direction}</span>
+                <span class="text-[10px] uppercase text-surface-600-400 truncate">{dir.direction}</span>
                 <button
                     type="button"
-                    class="text-surface-400-500 hover:text-primary-600-400 flex-shrink-0"
+                    class="text-surface-600-400 hover:text-primary-600-400 flex-shrink-0"
                     title="Edit exit"
                     onclick={() => selectNode(dir.exitKey!)}
                 ><Pencil size={11} /></button>
             </div>
             <div class="flex items-center gap-1 min-w-0">
                 {#if dir.lookOnly}
-                    <span class="flex-1 min-w-0 text-xs text-surface-500-400 truncate">(look)</span>
+                    <span class="flex-1 min-w-0 text-xs text-surface-600-400 truncate">(look)</span>
                 {:else}
                     <button
                         type="button"
@@ -164,7 +164,7 @@
             class="border rounded p-1.5 min-h-14 min-w-0 flex items-center text-left text-xs transition-colors
                 {isOpen
                     ? "border-primary-500 bg-primary-50-950 text-primary-600-400"
-                    : "border-dashed border-surface-300-700 text-surface-400-500 hover:border-primary-400 hover:text-primary-600-400"}"
+                    : "border-dashed border-surface-300-700 text-surface-600-400 hover:border-primary-400 hover:text-primary-600-400"}"
             onclick={() => toggleDirection(dir.direction)}
         ><span class="truncate">{dir.direction}</span></button>
     {/if}
@@ -193,7 +193,7 @@
                     <span class="text-xs font-medium text-surface-600-400">Create exit: {openDirection}</span>
                     <button
                         type="button"
-                        class="text-xs text-surface-400-500 hover:text-surface-600-400"
+                        class="text-xs text-surface-600-400 hover:text-surface-600-400"
                         onclick={() => { openDirection = null; }}
                     >✕</button>
                 </div>
@@ -216,7 +216,7 @@
                     >Create exit</button>
                     <button
                         type="button"
-                        class="text-xs text-surface-400-500 hover:text-primary-600-400 underline text-left"
+                        class="text-xs text-surface-600-400 hover:text-primary-600-400 underline text-left"
                         onclick={() => doCreateLook(openDirection!)}
                     >Create a look exit instead</button>
                 </div>
@@ -236,7 +236,7 @@
             </div>
 
             {#if data.allExits.length === 0}
-                <p class="text-xs text-surface-400-500 italic">No exits.</p>
+                <p class="text-xs text-surface-600-400 italic">No exits.</p>
             {:else}
                 {#each data.allExits as exit, i (exit.key)}
                     <div class="group relative border border-surface-200-800 rounded mb-1 bg-surface-50-950 flex items-center">
@@ -247,7 +247,7 @@
                                 onclick={() => selectNode(exit.to!)}
                             >{exit.alias ?? "(none)"} → {exit.to}</button>
                         {:else}
-                            <span class="flex-1 text-xs px-1.5 py-1 pr-28 text-surface-500-400 truncate">{exit.alias ?? "(none)"} → {exit.lookOnly ? "(look)" : "(nowhere)"}</span>
+                            <span class="flex-1 text-xs px-1.5 py-1 pr-28 text-surface-600-400 truncate">{exit.alias ?? "(none)"} → {exit.lookOnly ? "(look)" : "(nowhere)"}</span>
                         {/if}
                         <div class="absolute right-1 top-1/2 -translate-y-1/2 flex gap-0.5 opacity-0 pointer-events-none group-hover:opacity-100 group-hover:pointer-events-auto transition-opacity z-10">
                             <button
