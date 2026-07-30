@@ -211,6 +211,7 @@ window.WebPlayer = {
         const metadataJson = metadata ? JSON.stringify(metadata) : null;
         await Bridge.SendCommand(command, tickCount, metadataJson);
         canSendCommand = true;
+        refreshDebuggerAfterTurn();
     },
 
     async uiChoice(choice) { await Bridge.SetMenuResponse(choice); },
@@ -223,6 +224,7 @@ window.WebPlayer = {
     async uiSendEvent(eventName, param) {
         await Bridge.SendEvent(eventName, param);
         canSendCommand = true;
+        refreshDebuggerAfterTurn();
     },
 
     async uiSaveGame(html) {
@@ -1059,6 +1061,9 @@ function renderDebuggerTabs(types) {
     ).join('');
 }
 
+// Returns the rendered items — refreshDebuggerAfterTurn uses this to notice
+// when a turn has made the currently-selected item (an object that got
+// destroyed, a timer that finished, ...) disappear from its own list.
 function renderDebuggerList() {
     const list = document.getElementById('qv-debugger-list');
     const items = debuggerActiveTab === 'Walkthrough'
@@ -1067,7 +1072,7 @@ function renderDebuggerList() {
 
     if (!items.length) {
         list.innerHTML = '<li class="text-sm text-surface-500 px-2 py-1">Nothing here.</li>';
-        return;
+        return items;
     }
 
     // A plain selectable list, not hyperlinks — .qv-debugger-list-item is a
@@ -1077,6 +1082,7 @@ function renderDebuggerList() {
         const selected = item === debuggerSelectedItem;
         return `<li><button type="button" class="qv-debugger-list-item${selected ? ' qv-debugger-row-selected' : ''}" data-item="${_esc(item)}" aria-selected="${selected}">${_esc(item)}</button></li>`;
     }).join('');
+    return items;
 }
 
 function renderDebuggerWalkthroughDetail(name) {
@@ -1263,6 +1269,30 @@ function renderDebuggerDetail() {
     }
 }
 
+// Called after every turn (WebPlayer.sendCommand/uiSendEvent below) now that
+// the dialog is non-modal and can be left open while playing (see
+// wireDebuggerButton's doc comment) — without this, it only ever reflected
+// whatever the game's state was at the moment an object/tab was last
+// clicked, which used to be the *only* moment it could possibly go stale
+// (nothing else could run a turn while a modal dialog had the page inert).
+function refreshDebuggerAfterTurn() {
+    const dlg = document.getElementById('questVivaDebugger');
+    if (!dlg || !dlg.open) return;
+
+    // Re-list first, not just the selected item's own attributes — a turn
+    // can create/destroy objects, open new exits, add/remove timers, etc.
+    renderDebuggerTabs(JSON.parse(Bridge.GetDebuggerObjectTypesJson()));
+    const items = renderDebuggerList();
+    // The very thing being inspected can itself be the casualty of a turn
+    // (the object got destroyed, moved out of scope, or a timer fired and
+    // removed itself) — fall back to the placeholder instead of asking
+    // Bridge for debug data on something that may no longer exist.
+    if (debuggerSelectedItem && !items.includes(debuggerSelectedItem)) {
+        debuggerSelectedItem = null;
+    }
+    withPreservedDebuggerScroll(renderDebuggerDetail);
+}
+
 function selectDebuggerTab(tab) {
     debuggerActiveTab = tab;
     // Same reasoning as wireDebuggerButton's reopen handling: switching back
@@ -1334,6 +1364,18 @@ function ensureDebuggerWired() {
     if (!dlg) return;
 
     document.getElementById('qv-debugger-close').addEventListener('click', () => dlg.close());
+
+    // A *modal* dialog gets Escape-to-close for free (the browser fires a
+    // native 'cancel' event); a non-modal one — which this now always is,
+    // see wireDebuggerButton's doc comment — doesn't. Scoped to the dialog
+    // itself (not a document-level listener) so it only fires while focus is
+    // actually inside it, matching the native behavior it's standing in for
+    // and leaving Escape free to do whatever it already does elsewhere
+    // (e.g. _waitMode's body-level handler in playercore.js) the rest of the
+    // time.
+    dlg.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') dlg.close();
+    });
 
     // Only needs setting once — #qv-debugger-list itself is never rebuilt
     // (only its innerHTML, by renderDebuggerList), so this inline width
@@ -1426,6 +1468,23 @@ function wireDebuggerButton() {
     const cmdDebug = document.getElementById('cmdDebug');
     if (!cmdDebug) return;
     cmdDebug.addEventListener('click', () => {
+        // playercore.js's own click listener (registered first — see this
+        // function's doc comment — and shared with WebPlayer, whose separate
+        // Blazor Debugger.razor still wants the native modal behavior it
+        // gives) has already opened this as a *modal* dialog by the time
+        // this listener runs. Reopen it non-modally instead of touching that
+        // shared file: unlike WebPlayer's dialog, this one is resizable and
+        // movable (wireDebuggerMoveResize) rather than a fixed centered
+        // overlay, so keeping it modal only got in the way of the thing a
+        // dev tool window is actually for — leaving it open while still
+        // playing (refreshDebuggerAfterTurn keeps it in sync as turns
+        // happen). close()+show() in the same synchronous click handler,
+        // before the browser gets a chance to paint the modal state — same
+        // reasoning as applyDebuggerRect's doc comment — so there's no
+        // visible flash of the modal backdrop.
+        const dlg = document.getElementById('questVivaDebugger');
+        dlg.close();
+        dlg.show();
         ensureDebuggerWired();
         applyDebuggerRect();
         debuggerActiveTab = 'Walkthrough';

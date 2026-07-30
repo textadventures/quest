@@ -117,22 +117,37 @@
 }
 
 /* Debugger — movable and resizable (wireDebuggerMoveResize in wasm-player.js
-   sets explicit left/top/width/height right after every showModal(), before
-   the first paint — see that function's doc comment). margin:0 is required
+   sets explicit left/top/width/height right after every open, before the
+   first paint — see applyDebuggerRect's doc comment). margin:0 is required
    for those inline top/left values to actually take effect: the UA
    stylesheet's default centering for <dialog> relies on auto margins, which
    would otherwise still apply and fight the explicit position. No
    max-width/fixed width here at all — every dimension is JS-driven, with
-   sensible defaults computed on first open. */
+   sensible defaults computed on first open.
+
+   Non-modal (see wireDebuggerButton's doc comment) — a *modal* dialog is
+   promoted to the top layer and given `position:fixed` by the UA stylesheet
+   for free, so neither of those was needed while this used showModal().
+   Without that promotion, position defaults back to the UA stylesheet's
+   plain `absolute` (our JS-set left/top would drift with the page instead
+   of staying viewport-relative) and stacking falls back to normal DOM/z-index
+   order, which would put it *underneath* the shared game chrome's #sidebar
+   (playercore.css, z-index:1000) and #qv-status (z-index:100) rather than
+   above them. Both set explicitly here instead.
+
+   border + box-shadow: non-modal means no ::backdrop dimming the page
+   behind it (see wireDebuggerButton's doc comment — it's never left open
+   long enough to actually render one anyway), so without its own edge the
+   dialog had nothing visually separating it from the live game content
+   it now floats over while the player keeps playing. */
 :scope#questVivaDebugger {
-    border: none;
+    border: 1px solid var(--color-surface-300-700);
     border-radius: 0.75rem;
     padding: 0;
     margin: 0;
-}
-
-:scope#questVivaDebugger::backdrop {
-    background: rgb(0 0 0 / 0.5);
+    position: fixed;
+    z-index: 1500;
+    box-shadow: var(--shadow-xl, 0 20px 25px -5px rgb(0 0 0 / 0.15), 0 8px 10px -6px rgb(0 0 0 / 0.15));
 }
 
 #qv-debugger-titlebar {
