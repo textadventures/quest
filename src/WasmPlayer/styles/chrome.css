@@ -39,7 +39,8 @@
 :scope#qv-start,
 :scope#qv-saves,
 :scope#questVivaDebugger,
-:scope#qv-restarting {
+:scope#qv-restarting,
+:scope#qv-recording {
     font-family: var(--font-sans);
 }
 
@@ -86,6 +87,22 @@
 }
 
 :scope#qv-restarting.hidden {
+    display: none;
+}
+
+/* Non-blocking, unlike #qv-start/#qv-restarting above — floats over the top-right
+   corner of the game chrome for the duration of a recording session, but the game
+   itself stays fully interactive underneath (no inset:0, no background). Below the
+   debugger's z-index:1500 (chosen deliberately, see #questVivaDebugger below) so an
+   opened debugger dialog still renders above it if both are up at once. */
+:scope#qv-recording {
+    position: fixed;
+    top: 0.75rem;
+    right: 0.75rem;
+    z-index: 1400;
+}
+
+:scope#qv-recording.hidden {
     display: none;
 }
 

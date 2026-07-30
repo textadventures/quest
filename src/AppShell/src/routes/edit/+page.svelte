@@ -124,7 +124,7 @@
         else if (mode.type === "object" || mode.type === "page") createObject(name, mode.parent);
         else if (mode.type === "function") createFunction(name);
         else if (mode.type === "timer") createTimer(name);
-        else if (mode.type === "walkthrough") createWalkthrough(name);
+        else if (mode.type === "walkthrough") createWalkthrough(name, mode.parent);
         else if (mode.type === "template") createTemplate(name);
         else if (mode.type === "dynamictemplate") createDynamicTemplate(name);
         else if (mode.type === "type") createObjectType(name);

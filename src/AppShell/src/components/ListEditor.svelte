@@ -1,14 +1,15 @@
 <script lang="ts">
-    import { addListItem, removeListItem, updateListItem } from "$lib/editor-store";
+    import { addListItem, removeListItem, updateListItem, recordWalkthrough, playWalkthrough } from "$lib/editor-store";
 
     interface Props {
         elementKey: string;
         attribute: string;
         value: string | null;
         addPrompt?: string;
+        isWalkthrough?: boolean;
     }
 
-    let { elementKey, attribute, value, addPrompt = "Add item…" }: Props = $props();
+    let { elementKey, attribute, value, addPrompt = "Add item…", isWalkthrough = false }: Props = $props();
 
     let items = $derived.by<{key: string, value: string}[]>(() => {
         try { return JSON.parse(value ?? "[]"); } catch { return []; }
@@ -33,6 +34,23 @@
 </script>
 
 <div class="flex flex-col gap-1 w-full">
+    {#if isWalkthrough}
+        <div class="flex justify-end gap-1 mb-1">
+            <button
+                type="button"
+                class="btn btn-sm preset-outlined-primary-500 text-xs px-2 py-0.5"
+                onclick={() => playWalkthrough(elementKey)}
+                disabled={items.length === 0}
+                title="Play the game and run these steps"
+            >▶ Play</button>
+            <button
+                type="button"
+                class="btn btn-sm preset-outlined-error-500 text-xs px-2 py-0.5"
+                onclick={() => recordWalkthrough(elementKey)}
+                title="Play the game — replaying these steps first, if any — and record every further command as a new walkthrough step"
+            >● Record</button>
+        </div>
+    {/if}
     {#each items as item (item.key)}
         <div class="flex items-center gap-1">
             {#if editingItem?.key === item.key}

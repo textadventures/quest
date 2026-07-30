@@ -1,5 +1,6 @@
 import { writable, get } from "svelte/store";
 import { zipSync } from "fflate";
+import { PUBLIC_WASM_PLAYER_URL } from "$env/static/public";
 import { loadWasm } from "./wasm";
 import type { WasmBridge } from "./wasm";
 import type { AssetInfo, FileAdapter } from "./filesystem/types";
@@ -288,7 +289,7 @@ function blobToDataUrl(blob: Blob): Promise<string> {
 
 let _previewChannel: BroadcastChannel | null = null;
 
-export async function previewInWasmPlayer(wasmPlayerUrl: string): Promise<void> {
+export async function previewInWasmPlayer(wasmPlayerUrl: string, opts?: { recordWalkthrough?: string; runWalkthrough?: string }): Promise<void> {
     if (!_bridge || !_adapter) return;
 
     // Close stale channel so old bytes aren't sent to a new preview window.
@@ -306,15 +307,37 @@ export async function previewInWasmPlayer(wasmPlayerUrl: string): Promise<void> 
             // Serialize fresh on every 'ready' so WasmPlayer refreshes also pick up latest edits.
             if (!_bridge) return;
             const bytes = new TextEncoder().encode(_bridge.Save());
-            bc.postMessage({ type: "game", bytes, filename });
+            bc.postMessage({
+                type: "game",
+                bytes,
+                filename,
+                recordWalkthrough: opts?.recordWalkthrough ?? null,
+                runWalkthrough: opts?.runWalkthrough ?? null,
+            });
         } else if (data.type === "resource-request") {
             const blob = await adapter.getAsset(data.name);
             if (blob) {
                 const dataUrl = await blobToDataUrl(blob);
                 bc.postMessage({ type: "resource-response", id: data.id, dataUrl });
             }
+        } else if (data.type === "walkthrough-recorded") {
+            if (!_bridge) return;
+            _bridge.RecordWalkthroughSteps(data.name, JSON.stringify(data.steps));
+            refreshSelectedData();
+            refreshUndoRedo();
         }
     };
+}
+
+// Same default WasmPlayer URL Toolbar.svelte's Preview button uses, applied
+// here too so the walkthrough Record button (ListEditor.svelte) doesn't need
+// its own env plumbing.
+export function recordWalkthrough(elementKey: string): Promise<void> {
+    return previewInWasmPlayer(PUBLIC_WASM_PLAYER_URL || "/player/", { recordWalkthrough: elementKey });
+}
+
+export function playWalkthrough(elementKey: string): Promise<void> {
+    return previewInWasmPlayer(PUBLIC_WASM_PLAYER_URL || "/player/", { runWalkthrough: elementKey });
 }
 
 // ── Autosave ─────────────────────────────────────────────────────────────────
@@ -1017,9 +1040,9 @@ export function createVerb(parent: string | null): string {
     return afterCreate(_bridge.CreateVerb(parent ?? ""));
 }
 
-export function createWalkthrough(name: string): string {
+export function createWalkthrough(name: string, parent: string | null = null): string {
     if (!_bridge) return "error:not loaded";
-    return afterCreate(_bridge.CreateWalkthrough(name, ""));
+    return afterCreate(_bridge.CreateWalkthrough(name, parent ?? ""));
 }
 
 export function createTemplate(name: string): string {

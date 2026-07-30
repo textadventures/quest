@@ -19,6 +19,127 @@ const pendingResources = new Map();
 let editorChannel = null;
 let resourceRoot = null;
 
+// ── Walkthrough recording/playback status banner ────────────────────────────
+// Drives the #qv-recording banner (element ids kept as-is from the original
+// record-only implementation — they're internal, not user-facing) through
+// three mutually exclusive modes, all only ever entered via the 'game'
+// message's recordWalkthrough/runWalkthrough fields (AppShell's
+// ListEditor.svelte Play/Record buttons → editor-store.ts's
+// playWalkthrough/recordWalkthrough/previewInWasmPlayer) — never set for a
+// normal Play/source=local session, which never sends either field:
+//   'replay' — replaying a walkthrough's existing steps before recording
+//              continues (see beginRecordWithReplay). Banner button cancels.
+//   'record' — capturing new commands into recordedSteps (see recordStep).
+//              Banner button stops and relays them to the editor tab.
+//   'play'   — a standalone Play (see runWalkthroughStandalone), no
+//              recording follows. Banner button cancels.
+// recordedSteps is plain module state, not tied to the DOM, so it survives a
+// mid-recording restart (see swapInPlayerUi's doc comment).
+let walkthroughStatusMode = null; // null | 'replay' | 'record' | 'play'
+let recordWalkthroughName = null;
+let recordedSteps = [];
+
+function recordStep(step) {
+    if (walkthroughStatusMode !== 'record') return;
+    recordedSteps.push(step);
+    updateWalkthroughStatusUi();
+}
+
+function updateWalkthroughStatusUi() {
+    const el = document.getElementById('qv-recording');
+    if (!el) return;
+    el.classList.toggle('hidden', !walkthroughStatusMode);
+    const status = document.getElementById('qv-recording-status');
+    const stopBtn = document.getElementById('qv-recording-stop');
+    if (walkthroughStatusMode === 'replay') {
+        if (status) status.textContent = 'Replaying existing steps…';
+        stopBtn?.setAttribute('aria-label', 'Cancel replay');
+    } else if (walkthroughStatusMode === 'play') {
+        if (status) status.textContent = 'Playing…';
+        stopBtn?.setAttribute('aria-label', 'Cancel');
+    } else if (walkthroughStatusMode === 'record') {
+        if (status) {
+            const n = recordedSteps.length;
+            status.textContent = `Recording — ${n} step${n === 1 ? '' : 's'}`;
+        }
+        stopBtn?.setAttribute('aria-label', 'Stop recording');
+    }
+}
+
+function beginRecording(name) {
+    walkthroughStatusMode = 'record';
+    recordWalkthroughName = name;
+    recordedSteps = [];
+    updateWalkthroughStatusUi();
+}
+
+// Relays the captured steps back to the editor tab over the same channel used
+// to hand off the game itself — see editor-store.ts's 'walkthrough-recorded'
+// handler, which appends them onto the walkthrough element via
+// WasmEditorBridge.RecordWalkthroughSteps. Stopping only ends the *recording*
+// — the preview session itself carries on exactly as an ordinary Preview
+// would (no Save button, Debugger still available, etc.).
+function stopRecording() {
+    if (walkthroughStatusMode !== 'record' || !editorChannel) return;
+    editorChannel.postMessage({ type: 'walkthrough-recorded', name: recordWalkthroughName, steps: recordedSteps });
+    walkthroughStatusMode = null;
+    recordWalkthroughName = null;
+    recordedSteps = [];
+    updateWalkthroughStatusUi();
+}
+
+// Runs a walkthrough's existing steps (if any) before switching into live
+// recording, so re-recording into a walkthrough that already has steps
+// starts from the right game state instead of a blank slate. Must run after
+// Bridge.Begin() — WalkthroughRunner drives the game via SendCommand, which
+// needs an already-started game (current room, game.pov, etc. all set).
+// Proceeds to recording regardless of how the replay ends (finished, failed,
+// or cancelled via the banner's button — Bridge.RunWalkthrough never throws,
+// see its own try/catch) since aborting instead would leave the author with
+// no way to add new steps after a bad replay.
+async function beginRecordWithReplay(name) {
+    let stepCount = 0;
+    try {
+        stepCount = JSON.parse(Bridge.GetWalkthroughStepsJson(name)).length;
+    } catch { /* treat as no existing steps */ }
+
+    if (stepCount > 0) {
+        walkthroughStatusMode = 'replay';
+        updateWalkthroughStatusUi();
+        const error = await Bridge.RunWalkthrough(name);
+        if (error) console.error('[Quest] Walkthrough replay before recording failed:', error);
+    }
+
+    beginRecording(name);
+}
+
+// Standalone playback (the ListEditor.svelte "Play" button) — no recording
+// follows. Must run after Bridge.Begin(), same reasoning as beginRecordWithReplay.
+async function runWalkthroughStandalone(name) {
+    walkthroughStatusMode = 'play';
+    updateWalkthroughStatusUi();
+    const error = await Bridge.RunWalkthrough(name);
+    if (error) console.error('[Quest] Walkthrough playback failed:', error);
+    walkthroughStatusMode = null;
+    updateWalkthroughStatusUi();
+}
+
+function wireRecordingStopButton() {
+    document.getElementById('qv-recording-stop')?.addEventListener('click', () => {
+        if (walkthroughStatusMode === 'record') stopRecording();
+        else if (walkthroughStatusMode === 'replay' || walkthroughStatusMode === 'play') Bridge.CancelWalkthrough();
+    });
+}
+
+// Best-effort — BroadcastChannel.postMessage during pagehide isn't guaranteed
+// to be delivered, but costs nothing to attempt, so closing the tab mid-
+// recording (instead of clicking Stop) doesn't silently lose the steps.
+window.addEventListener('pagehide', () => {
+    if (walkthroughStatusMode === 'record' && editorChannel && recordedSteps.length > 0) {
+        editorChannel.postMessage({ type: 'walkthrough-recorded', name: recordWalkthroughName, steps: recordedSteps });
+    }
+});
+
 // The *original* game bytes/filename for the current session — always the
 // primary game file, never a save. Saves are loaded as an overlay on top of
 // these via Bridge.InitialiseWithSave, so resource lookups (images/sounds
@@ -211,19 +332,21 @@ window.WebPlayer = {
         const metadataJson = metadata ? JSON.stringify(metadata) : null;
         await Bridge.SendCommand(command, tickCount, metadataJson);
         canSendCommand = true;
+        recordStep(command);
         refreshDebuggerAfterTurn();
     },
 
-    async uiChoice(choice) { await Bridge.SetMenuResponse(choice); },
+    async uiChoice(choice) { await Bridge.SetMenuResponse(choice); recordStep(`menu:${choice}`); },
     async uiChoiceCancel() { await Bridge.SetMenuResponse(null); },
     async uiTick(tickCount) { await Bridge.Tick(tickCount); },
     async uiEndWait() { await Bridge.FinishWait(); },
     async uiEndPause() { await Bridge.FinishPause(); },
-    async uiSetQuestionResponse(response) { await Bridge.SetQuestionResponse(response); },
+    async uiSetQuestionResponse(response) { await Bridge.SetQuestionResponse(response); recordStep(`answer:${response ? 'yes' : 'no'}`); },
 
     async uiSendEvent(eventName, param) {
         await Bridge.SendEvent(eventName, param);
         canSendCommand = true;
+        recordStep(`event:${eventName};${param ?? ''}`);
         refreshDebuggerAfterTurn();
     },
 
@@ -263,7 +386,7 @@ async function setupPaperJs() {
 }
 
 // Replaces document.body with a fresh copy of the player chrome, preserving
-// #qv-start/#qv-saves/#questVivaDebugger (the static markup's overlays, which
+// #qv-start/#qv-saves/#questVivaDebugger/#qv-recording (the static markup's overlays, which
 // live outside the swapped-in playerHtml and would otherwise be destroyed by
 // the innerHTML assignment). Used both for the initial boot and for a
 // mid-session restart ("Start from the beginning" / Load) — a restart must
@@ -278,10 +401,12 @@ function swapInPlayerUi() {
     const savesDialogEl = document.getElementById('qv-saves');
     const debuggerDialogEl = document.getElementById('questVivaDebugger');
     const restartingEl = document.getElementById('qv-restarting');
+    const recordingEl = document.getElementById('qv-recording');
     startScreenEl?.remove();
     savesDialogEl?.remove();
     debuggerDialogEl?.remove();
     restartingEl?.remove();
+    recordingEl?.remove();
 
     document.body.innerHTML = originalPlayerHtml;
 
@@ -289,6 +414,7 @@ function swapInPlayerUi() {
     if (savesDialogEl) document.body.appendChild(savesDialogEl);
     if (debuggerDialogEl) document.body.appendChild(debuggerDialogEl);
     if (restartingEl) document.body.appendChild(restartingEl);
+    if (recordingEl) document.body.appendChild(recordingEl);
     // This is a genuinely fresh chrome (see above) — addExternalScript's
     // dedupe-by-URL (player.js) must not carry over, or the game's external
     // scripts silently no-op against it on the very next Initialise() call
@@ -303,7 +429,7 @@ function swapInPlayerUi() {
 // beginning"/Load in an editor-preview session.
 let currentIsPreview = false;
 
-async function initWasmPlayer(gameBytes, filename, bc = null, saveBytes = null, isPreview = false) {
+async function initWasmPlayer(gameBytes, filename, bc = null, saveBytes = null, isPreview = false, recordWalkthrough = null, runWalkthrough = null) {
     currentIsPreview = isPreview;
     const [htmResponse, { dotnet }] = await Promise.all([
         fetch('playercore.htm'),
@@ -406,6 +532,7 @@ async function initWasmPlayer(gameBytes, filename, bc = null, saveBytes = null, 
     WebPlayer.initUI();
     wireDebuggerButton();
     wireDebuggerRestartButton(isPreview);
+    wireRecordingStopButton();
     // Editor-preview sessions (isPreview) don't offer saving at all — by
     // design: a save captures the whole game state, so reloading one while
     // iterating would show stale state that doesn't reflect the developer's
@@ -420,6 +547,22 @@ async function initWasmPlayer(gameBytes, filename, bc = null, saveBytes = null, 
     WebPlayer.setCanDebug(isPreview && Bridge.IsDebugEnabled());
 
     await Bridge.Begin();
+
+    // Both require the game to have already started (Begin() run) — see their
+    // own doc comments — so they run after Bridge.Begin(), unlike the rest of
+    // this function's setup above. The extra tick (matching the jsYield
+    // JSImport's own setTimeout(...,0) idiom used elsewhere for the same
+    // reason) lets the JS/WASM event loop settle after Begin()'s own async
+    // engine work before issuing another engine call back-to-back — chaining
+    // straight through without it was observed to hang indefinitely.
+    if (recordWalkthrough || runWalkthrough) {
+        await new Promise(resolve => setTimeout(resolve, 0));
+    }
+    if (recordWalkthrough) {
+        await beginRecordWithReplay(recordWalkthrough);
+    } else if (runWalkthrough) {
+        await runWalkthroughStandalone(runWalkthrough);
+    }
 }
 
 // Guards restartGame against overlapping calls — e.g. impatiently clicking
@@ -506,7 +649,7 @@ async function restartGameCore(saveBytes) {
 // Wraps initWasmPlayer with the boot-time "Continue / New Game" prompt: if
 // saves already exist for this game, ask before committing to either the
 // fresh game or a chosen save. Used by all boot entry points below.
-async function startGame(bytes, filename, bc = null, gameIdOverride = null, isPreview = false) {
+async function startGame(bytes, filename, bc = null, gameIdOverride = null, isPreview = false, recordWalkthrough = null, runWalkthrough = null) {
     originalGameBytes = bytes;
     originalGameFilename = filename;
     // gameIdOverride lets callers with a stronger identity than the filename
@@ -531,7 +674,7 @@ async function startGame(bytes, filename, bc = null, gameIdOverride = null, isPr
         }
     }
 
-    await initWasmPlayer(bytes, filename, bc, saveBytes, isPreview);
+    await initWasmPlayer(bytes, filename, bc, saveBytes, isPreview, recordWalkthrough, runWalkthrough);
 }
 
 // ── Start screen helpers ──────────────────────────────────────────────────────
@@ -1748,7 +1891,7 @@ async function fetchGameBytes(url) {
         bc.onmessage = async ({ data }) => {
             if (data.type === 'game') {
                 bc.onmessage = null;
-                await startGame(data.bytes, data.filename, bc, null, true);
+                await startGame(data.bytes, data.filename, bc, null, true, data.recordWalkthrough ?? null, data.runWalkthrough ?? null);
             }
         };
         return;

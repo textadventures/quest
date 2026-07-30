@@ -107,6 +107,24 @@
     </div>
 </div>
 
+<!-- Shown by beginRecording (wasm-player.js) for the lifetime of an editor-launched
+     "Record Walkthrough" preview session (see AppShell's ListEditor.svelte Record
+     button and editor-store.ts's recordWalkthrough/previewInWasmPlayer). Non-modal
+     and non-blocking, unlike #qv-restarting above — the game stays fully playable
+     while this is up, it just floats over the chrome reporting progress. Preserved
+     across swapInPlayerUi() (a mid-session restart) the same way #qv-restarting is,
+     so a restart mid-recording doesn't lose the banner (recordedSteps itself is
+     plain JS module state and survives a restart regardless). -->
+<div id="qv-recording" class="qv-chrome hidden" role="status" aria-live="polite">
+    <div class="flex items-center gap-2 preset-filled-error-500 rounded-full px-3 py-1.5 text-sm shadow-lg">
+        <span class="inline-block h-2 w-2 rounded-full bg-current animate-pulse" aria-hidden="true"></span>
+        <span id="qv-recording-status">Recording&hellip;</span>
+        <button id="qv-recording-stop" type="button" class="btn-icon preset-tonal-surface ml-1" aria-label="Stop recording">
+            <svg class="qv-icon" aria-hidden="true"><use href="#square"></use></svg>
+        </button>
+    </div>
+</div>
+
 <dialog id="qv-saves" class="qv-chrome" data-mode="boot">
     <!-- ICONS_SPRITE: spliced in at build time by scripts/build-icons.mjs (into
          generated/index.html) — a hidden <symbol> defs block, kept inside
