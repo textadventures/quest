@@ -836,11 +836,32 @@ const DEBUGGER_MIN_HEIGHT = 360;
 const DEBUGGER_MIN_LIST_WIDTH = 100;
 const DEBUGGER_MIN_DETAIL_WIDTH = 200;
 const DEBUGGER_MIN_COLUMN_WIDTH = 60;
+// Source (the unsized, "whatever's left" column — see renderDebuggerAttributesDetail)
+// has no floor of its own otherwise: table-layout:fixed hands it literally
+// whatever pixels remain after Attribute/Value, which on a narrow dialog can
+// be smaller than common Source values like "defaultobject" need to render
+// on one line. overflow-wrap:break-word then wraps that single word
+// character-by-character, inflating the *whole row* (row height tracks its
+// tallest cell) — worse the narrower the leftover gets, all the way down to
+// a one-row table filling hundreds of pixels at the extreme. Below, this
+// becomes a min-width on the table itself so the table can never be
+// squeezed narrower than Attribute+Value+this — .qv-debugger-scroll's
+// overflow-x:auto (chrome.css) then takes over with a horizontal scrollbar
+// instead, which is a far smaller UX cost than every row ballooning.
+const DEBUGGER_MIN_SOURCE_WIDTH = 100;
 
 // null until the first time the dialog is ever opened — see applyDebuggerRect.
 let debuggerRect = null;
 let debuggerListWidth = 192; // matches the old w-48 (12rem) Tailwind default
-let debuggerColWidths = { attribute: 160, value: 260 }; // 'source' just takes whatever's left
+// Narrower starting point on a phone-width viewport (chrome.css's
+// max-width:767px breakpoint stacks the list above the table instead of
+// beside it, but even the full dialog width rarely clears 160+260=420px) —
+// still just a default the user can widen via the column-resize handles
+// (wireDebuggerColumnResize), and still small enough to require scrolling
+// for a long Value, but sized so a typical short one doesn't need it.
+let debuggerColWidths = window.innerWidth < 767
+    ? { attribute: 100, value: 140 }
+    : { attribute: 160, value: 260 }; // 'source' just takes whatever's left
 
 // Generic pointer-drag helper — used by the title bar, resize handle,
 // splitter, and column-resize handles below. onMove receives the raw
@@ -882,14 +903,44 @@ function applyDebuggerRect() {
     const dlg = document.getElementById('questVivaDebugger');
     if (!dlg) return;
 
+    // Available space after the same 40px (20px/side) margin the default
+    // sizing below already budgets for. On a narrow phone viewport this can
+    // be smaller than DEBUGGER_MIN_WIDTH/HEIGHT — clamp()'s min always wins
+    // over a smaller max, so without this the dialog would still be forced
+    // to the 480x360 floor, end up wider/taller than the viewport, and (via
+    // the centering below) get a negative left/top that pushes it off to one
+    // side instead of actually centering it.
+    const maxAvailableWidth = window.innerWidth - 40;
+    const maxAvailableHeight = window.innerHeight - 40;
+
     if (!debuggerRect) {
-        const width = clamp(Math.round(window.innerWidth * DEBUGGER_DEFAULT_SIZE_FRACTION), DEBUGGER_MIN_WIDTH, Math.min(DEBUGGER_MAX_DEFAULT_WIDTH, window.innerWidth - 40));
-        const height = clamp(Math.round(window.innerHeight * DEBUGGER_DEFAULT_SIZE_FRACTION), DEBUGGER_MIN_HEIGHT, Math.min(DEBUGGER_MAX_DEFAULT_HEIGHT, window.innerHeight - 40));
+        const width = maxAvailableWidth < DEBUGGER_MIN_WIDTH
+            ? maxAvailableWidth
+            : clamp(Math.round(window.innerWidth * DEBUGGER_DEFAULT_SIZE_FRACTION), DEBUGGER_MIN_WIDTH, Math.min(DEBUGGER_MAX_DEFAULT_WIDTH, maxAvailableWidth));
+        const height = maxAvailableHeight < DEBUGGER_MIN_HEIGHT
+            ? maxAvailableHeight
+            : clamp(Math.round(window.innerHeight * DEBUGGER_DEFAULT_SIZE_FRACTION), DEBUGGER_MIN_HEIGHT, Math.min(DEBUGGER_MAX_DEFAULT_HEIGHT, maxAvailableHeight));
         debuggerRect = {
             left: Math.round((window.innerWidth - width) / 2),
             top: Math.round((window.innerHeight - height) / 2),
             width,
             height,
+        };
+    } else {
+        // Re-clamp whatever geometry the user last left it at (dragged,
+        // resized, or just the computed default above) to the *current*
+        // viewport. debuggerRect is session-only state that otherwise only
+        // changes from explicit drags (wireDebuggerMoveResize/wireDebuggerSplitter),
+        // so reopening after a resize/orientation change would otherwise
+        // keep reapplying a stale rect sized for the old viewport and could
+        // end up partly or fully off-screen.
+        const width = Math.min(debuggerRect.width, maxAvailableWidth);
+        const height = Math.min(debuggerRect.height, maxAvailableHeight);
+        debuggerRect = {
+            width,
+            height,
+            left: clamp(debuggerRect.left, 0, Math.max(0, window.innerWidth - width)),
+            top: clamp(debuggerRect.top, 0, Math.max(0, window.innerHeight - height)),
         };
     }
 
@@ -977,6 +1028,12 @@ function wireDebuggerColumnResize(startEvent) {
         const width = Math.max(DEBUGGER_MIN_COLUMN_WIDTH, startWidth + (moveEvent.clientX - startX));
         debuggerColWidths = { ...debuggerColWidths, [key]: width };
         col.style.width = `${width}px`;
+        // Keep the table's own min-width (set in renderDebuggerAttributesDetail)
+        // in sync — otherwise widening Attribute/Value here just shrinks
+        // Source's leftover share instead of actually growing the table,
+        // reintroducing the cramped-Source wrapping this min-width exists
+        // to prevent (see DEBUGGER_MIN_SOURCE_WIDTH's doc comment).
+        table.style.minWidth = `${debuggerColWidths.attribute + debuggerColWidths.value + DEBUGGER_MIN_SOURCE_WIDTH}px`;
     }, () => handle.classList.remove('qv-debugger-dragging'));
 
     return true;
@@ -1130,7 +1187,7 @@ function renderDebuggerAttributesDetail(tab, obj) {
     // wireDebuggerSplitter uses for the two-pane list/detail split.
     detail.innerHTML = `<input type="text" class="qv-debugger-input mb-2" id="qv-debugger-attr-search" placeholder="Search attributes…" autocomplete="off" value="${_esc(debuggerAttrSearch)}">`
         + '<div class="qv-debugger-scroll">'
-        + '<table class="table qv-debugger-table">'
+        + `<table class="table qv-debugger-table" style="min-width:${debuggerColWidths.attribute + debuggerColWidths.value + DEBUGGER_MIN_SOURCE_WIDTH}px">`
         + `<colgroup><col data-col="attribute" style="width:${debuggerColWidths.attribute}px">`
         + `<col data-col="value" style="width:${debuggerColWidths.value}px"><col data-col="source"></colgroup>`
         + '<thead><tr>'
@@ -1288,6 +1345,15 @@ function ensureDebuggerWired() {
     wireDebuggerMoveResize();
     wireDebuggerSplitter();
     document.getElementById('qv-debugger-detail').addEventListener('pointerdown', wireDebuggerColumnResize);
+
+    // Keep the dialog on-screen through a live resize/orientation change
+    // (e.g. rotating a phone) too, not just the next reopen — applyDebuggerRect
+    // re-clamps debuggerRect to whatever the viewport is now. Only while the
+    // dialog is actually open; otherwise this would silently reset a resized
+    // dialog's geometry every time the window resizes for an unrelated reason.
+    window.addEventListener('resize', () => {
+        if (dlg.open) applyDebuggerRect();
+    });
 
     document.getElementById('qv-debugger-tabs').addEventListener('click', (e) => {
         const btn = e.target.closest('[data-tab]');

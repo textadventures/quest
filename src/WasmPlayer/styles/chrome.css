@@ -154,9 +154,17 @@
 
 /* The resize handle needs to sit above the scrollable panes/table without
    being clipped by their overflow:auto — absolute positioning within the
-   card (position:relative) keeps it reachable regardless of scroll state. */
+   card (position:relative) keeps it reachable regardless of scroll state.
+   container-type/-name turn this into the query container for the
+   list/detail stacking breakpoint further down — the card always fills
+   whatever width the dialog itself currently has (applyDebuggerRect's
+   default, or wherever the user has since dragged the resize handle to —
+   see wireDebuggerMoveResize), so sizing off *this* container tracks the
+   dialog's own resizable width instead of the browser window's. */
 #qv-debugger-card {
     position: relative;
+    container-type: inline-size;
+    container-name: qv-debugger-card;
 }
 
 #qv-debugger-resize-handle {
@@ -222,12 +230,29 @@
 #qv-debugger-detail {
     display: flex;
     flex-direction: column;
+    /* A touch of breathing room from the splitter — #qv-debugger-splitter's
+       negative inline margin (below) pulls its neighbours in to enlarge its
+       grab target, which otherwise left this pane's content (search input,
+       table) hugging the splitter's line with almost no visual gap. */
+    padding-left: 0.5rem;
 }
 
 .qv-debugger-scroll {
     flex: 1 1 auto;
     min-height: 0;
     overflow-y: auto;
+    /* The attribute table's colgroup gives Attribute/Value fixed pixel
+       widths (renderDebuggerAttributesDetail in wasm-player.js). Without
+       overflow-x here, a container narrower than those widths combined
+       (routine once the object list eats into a narrow dialog on mobile —
+       see the max-width:767px block below) squeezes the unsized Source
+       column down toward 0 width instead; overflow-wrap:break-word then
+       wraps its text one character per line, which can inflate that cell —
+       and with it the whole row, since row height tracks the tallest cell —
+       to hundreds of pixels for nothing longer than a normal script/value
+       string. Letting the table keep its intended widths and scroll
+       horizontally instead avoids that entirely. */
+    overflow-x: auto;
 }
 
 .qv-debugger-footer {
@@ -235,6 +260,45 @@
     border-top: 1px solid var(--color-surface-300-700);
     padding-top: 0.75rem;
     margin-top: 0.75rem;
+}
+
+/* Below this width, the dialog is too narrow to fit #qv-debugger-list's
+   default 192px alongside a usable detail pane and still leave the
+   attribute table room to breathe (192px list + the table's own
+   100px/140px/100px-min Attribute/Value/Source columns needs ~450px for the
+   panes alone, plus the card's own padding) — stack list-above-detail
+   instead of the side-by-side splitter layout so each gets the dialog's
+   full width. A *container* query against #qv-debugger-card (see its
+   container-type/-name above), not a @media viewport query — the dialog is
+   independently movable/resizable (wireDebuggerMoveResize), so its own
+   current width is what actually determines whether the side-by-side
+   layout still fits, regardless of how wide the browser window is. 640px
+   is comfortably above DEBUGGER_MIN_WIDTH (480px, wasm-player.js) so the
+   dialog's user-resizable floor always gets the stacked layout too. */
+@container qv-debugger-card (max-width: 640px) {
+    #qv-debugger-panes {
+        flex-direction: column;
+    }
+
+    /* Overrides wireDebuggerSplitter's inline width (set once in
+       ensureDebuggerWired, and again on every drag) — !important is the
+       only way to win against an inline style from a plain stylesheet
+       rule. The splitter's horizontal drag no longer applies once the two
+       panes are stacked rather than side-by-side, so it's hidden below. */
+    #qv-debugger-list {
+        width: 100% !important;
+        max-height: 40%;
+        flex-shrink: 0;
+    }
+
+    #qv-debugger-splitter {
+        display: none;
+    }
+
+    #qv-debugger-detail {
+        padding-left: 0;
+        padding-top: 0.75rem;
+    }
 }
 
 /* Left-hand object/walkthrough list — a plain selectable list (block rows
@@ -302,6 +366,17 @@
        against it — top-aligning keeps the attribute name anchored to the
        first line of its value regardless of how many lines it wraps to. */
     vertical-align: top;
+}
+
+/* .qv-debugger-scroll (the table's wrapper) flex-grows to fill whatever
+   vertical space #qv-debugger-detail has, so an object with only one or two
+   attributes leaves a lot of empty space below the last row. Without a
+   per-row boundary that empty space reads as part of the row itself (a
+   single row looking implausibly "tall") rather than as blank area past the
+   end of the table — this border makes clear where each row actually ends. */
+.qv-debugger-table tbody td {
+    padding-block: 0.375rem;
+    border-bottom: 1px solid var(--color-surface-200-800);
 }
 
 /* Column headers weren't visually differentiated from the body rows —

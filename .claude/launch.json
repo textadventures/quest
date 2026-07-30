@@ -7,6 +7,12 @@
       "runtimeArgs": ["run", "dev"],
       "cwd": "src/AppShell",
       "port": 5174
+    },
+    {
+      "name": "WasmPlayer",
+      "runtimeExecutable": "node",
+      "runtimeArgs": ["src/WasmPlayer/dev-server.mjs"],
+      "port": 5175
     }
   ]
 }
