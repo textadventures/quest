@@ -1690,7 +1690,8 @@ public sealed class EditorController : IDisposable
         }
 
         var element = WorldModel.Elements.Get(elementKey);
-        return element.ElemType == ElementType.Object && element.Type != ObjectType.Game;
+        return (element.ElemType == ElementType.Object && element.Type != ObjectType.Game)
+               || element.ElemType == ElementType.Walkthrough;
     }
 
     public bool CanMoveElement(string elementKey, string newParentKey)
@@ -1705,7 +1706,7 @@ public sealed class EditorController : IDisposable
             return false;
         }
 
-        if (newParentKey != "_objects" && !WorldModel.Elements.ContainsKey(newParentKey))
+        if (newParentKey != "_objects" && newParentKey != "_walkthrough" && !WorldModel.Elements.ContainsKey(newParentKey))
         {
             return false;
         }
@@ -1719,11 +1720,37 @@ public sealed class EditorController : IDisposable
                 return true;
             }
 
+            if (newParentKey == "_walkthrough")
+            {
+                return false;
+            }
+
             var newParent = WorldModel.Elements.Get(newParentKey);
 
             if (newParent.ElemType == ElementType.Object)
             {
                 // Can't drag a parent object onto one of its own children
+                return !WorldModel.ObjectContains(element, newParent);
+            }
+        }
+        else if (element.ElemType == ElementType.Walkthrough)
+        {
+            if (newParentKey == "_walkthrough")
+            {
+                // Can always drag a walkthrough to the "Walkthrough" header to unset its parent
+                return true;
+            }
+
+            if (newParentKey == "_objects")
+            {
+                return false;
+            }
+
+            var newParent = WorldModel.Elements.Get(newParentKey);
+
+            if (newParent.ElemType == ElementType.Walkthrough)
+            {
+                // Can't drag a parent walkthrough onto one of its own children
                 return !WorldModel.ObjectContains(element, newParent);
             }
         }
@@ -1735,7 +1762,7 @@ public sealed class EditorController : IDisposable
     {
         WorldModel.UndoLogger.StartTransaction(string.Format("Move object '{0}' to '{1}'", elementKey, newParentKey));
         var element = WorldModel.Elements.Get(elementKey);
-        var newParent = newParentKey == "_objects" ? null : WorldModel.Elements.Get(newParentKey);
+        var newParent = newParentKey is "_objects" or "_walkthrough" ? null : WorldModel.Elements.Get(newParentKey);
         element.Parent = newParent;
         WorldModel.UndoLogger.EndTransaction();
     }
@@ -1795,6 +1822,16 @@ public sealed class EditorController : IDisposable
         }
 
         var element = WorldModel.Elements.Get(elementKey);
+
+        if (element.ElemType == ElementType.Walkthrough)
+        {
+            return from possibleParent in WorldModel.Elements.GetElements(ElementType.Walkthrough)
+                where possibleParent != element
+                      && possibleParent != element.Parent
+                      && !WorldModel.ObjectContains(element, possibleParent)
+                orderby possibleParent.Name
+                select possibleParent.Name;
+        }
 
         return from possibleParent in WorldModel.Elements.GetElements(ElementType.Object)
             where possibleParent != element

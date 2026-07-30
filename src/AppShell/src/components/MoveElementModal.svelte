@@ -1,5 +1,5 @@
 <script lang="ts">
-    import { getMovePossibleParents } from "$lib/editor-store";
+    import { getMovePossibleParents, treeNodes } from "$lib/editor-store";
     import Combobox from "$components/Combobox.svelte";
     import type { ControlOption } from "$lib/types";
 
@@ -11,11 +11,15 @@
 
     const { elementKey, onconfirm, oncancel }: Props = $props();
 
-    // "_objects" un-parents the element back to the top level (mirrors MoveElement's
-    // own special-case for that key) — always offered first regardless of what
-    // GetMovePossibleParents itself returns.
+    // "_objects"/"_walkthrough" un-parent the element back to the top level (mirrors
+    // MoveElement's own special-casing of those keys) — always offered first
+    // regardless of what GetMovePossibleParents itself returns. Which sentinel
+    // applies depends on the moved element's own type.
+    let topLevelKey = $derived(
+        $treeNodes.find(n => n.key === elementKey)?.nodeType === "walkthrough" ? "_walkthrough" : "_objects"
+    );
     let options: ControlOption[] = $derived([
-        { value: "_objects", label: "(top level)" },
+        { value: topLevelKey, label: "(top level)" },
         ...getMovePossibleParents(elementKey).map(name => ({ value: name, label: name })),
     ]);
 

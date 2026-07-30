@@ -322,7 +322,7 @@
             containerClass="w-full"
         />
     {:else if ctrl.controlType === "list" && ctrl.attribute && $selectedKey}
-        <ListEditor elementKey={$selectedKey} attribute={ctrl.attribute} value={attrValue(ctrl.attribute)} addPrompt={ctrl.addPrompt ?? undefined} />
+        <ListEditor elementKey={$selectedKey} attribute={ctrl.attribute} value={attrValue(ctrl.attribute)} addPrompt={ctrl.addPrompt ?? undefined} isWalkthrough={ctrl.isWalkthrough ?? false} />
     {:else if (ctrl.controlType === "stringdictionary" || ctrl.controlType === "gamebookoptions") && ctrl.attribute}
         {@const items = (() => { try { return JSON.parse(attrValue(ctrl.attribute) ?? "[]") as {key: string, value: string}[]; } catch { return []; } })()}
         {@const dk = ctrl.attribute}

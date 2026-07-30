@@ -312,6 +312,11 @@
                 { label: "Add Verb", action: () => createVerb(id) },
                 { label: "Add Turn Script", action: () => createTurnScript(id) },
             );
+        } else if (nt === "walkthrough") {
+            opts.push({ label: "Add Walkthrough here", action: () => openAddModal("walkthrough", id) });
+            if (canMoveElement(id)) {
+                opts.push({ label: "Move to…", action: () => openMoveModal(id) });
+            }
         }
 
         // Gamebook pages ("page") are plain ElementType.Object elements underneath —

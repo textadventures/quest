@@ -39,7 +39,8 @@ internal record ControlInfo(
     string? KeyPrompt = null,
     string? ValuePrompt = null,
     string? SourceExclude = null,
-    string? CheckboxCaption = null);
+    string? CheckboxCaption = null,
+    bool IsWalkthrough = false);
 
 internal record TabInfo(string? Caption, List<ControlInfo> Controls);
 
@@ -1978,6 +1979,30 @@ public partial class WasmEditorBridge
         }
     }
 
+    // Appends steps captured by WasmPlayer's walkthrough recorder (see wasm-player.js's
+    // recordWalkthroughName/recordedSteps) onto an existing walkthrough element — the same
+    // append-not-replace behaviour as EditorController.RecordWalkthrough, which this just exposes
+    // across the JS boundary.
+    [JSExport]
+    public static string RecordWalkthroughSteps(string name, string stepsJson)
+    {
+        if (_controller == null)
+        {
+            return "error:Not initialised";
+        }
+
+        try
+        {
+            var steps = JsonSerializer.Deserialize(stepsJson, WasmEditorJsonContext.Default.ListString);
+            _controller.RecordWalkthrough(name, steps ?? []);
+            return "ok";
+        }
+        catch (Exception ex)
+        {
+            return $"error:{ex.Message}";
+        }
+    }
+
     [JSExport]
     public static string CreateTemplate(string name)
     {
@@ -3149,6 +3174,7 @@ public partial class WasmEditorBridge
                 "s_function" => "function",
                 "s_timer" => "timer",
                 "s_game" => "game",
+                "s_walk" => "walkthrough",
                 _ => "other"
             };
     }
@@ -3286,6 +3312,7 @@ public partial class WasmEditorBridge
         }
 
         var addPrompt = ctrl.ControlType == "list" ? ctrl.GetString("editprompt") : null;
+        var isWalkthrough = ctrl.ControlType == "list" && ctrl.GetBool("iswalkthrough");
         var isDictionary = ctrl.ControlType is "stringdictionary" or "gamebookoptions";
         var source = ctrl.ControlType == "file" || isDictionary ? ctrl.GetString("source") : null;
         var keyPrompt = isDictionary ? ctrl.GetString("keyprompt") : null;
@@ -3295,7 +3322,8 @@ public partial class WasmEditorBridge
         return new ControlInfo(attribute, ctrl.ControlType, ctrl.Caption ?? ctrl.GetString("selfcaption"), options,
             null, null, textProcessorCommands, addPrompt, Source: source,
             Advanced: !ctrl.IsControlVisibleInSimpleMode,
-            KeyPrompt: keyPrompt, ValuePrompt: valuePrompt, SourceExclude: sourceExclude);
+            KeyPrompt: keyPrompt, ValuePrompt: valuePrompt, SourceExclude: sourceExclude,
+            IsWalkthrough: isWalkthrough);
     }
 
     [JSExport]

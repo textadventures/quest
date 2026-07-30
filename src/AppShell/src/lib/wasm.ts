@@ -81,6 +81,7 @@ export interface WasmBridge {
   CreateCommand(parent: string): string
   CreateVerb(parent: string): string
   CreateWalkthrough(name: string, parent: string): string
+  RecordWalkthroughSteps(name: string, stepsJson: string): string
   CreateTemplate(name: string): string
   CreateDynamicTemplate(name: string): string
   CreateObjectType(name: string): string
