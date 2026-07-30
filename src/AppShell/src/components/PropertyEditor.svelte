@@ -192,17 +192,16 @@
     // INSERT_MENU_GROUPS; anything not in that map (e.g. a future CoreEditor.aslx addition)
     // still shows up, ungrouped, under "More" rather than silently disappearing.
     function buildInsertMenuItems(commands: TextProcessorCommand[], attribute: string, controlType: string): DropdownMenuItem[] {
-        const byGroup = new Map<string, TextProcessorCommand[]>();
+        const byGroup: Record<string, TextProcessorCommand[]> = {};
         for (const cmd of commands) {
             if (PINNED_ICONS[cmd.insertBefore]) continue;
             const group = INSERT_MENU_GROUPS[cmd.insertBefore]?.group ?? "More";
-            if (!byGroup.has(group)) byGroup.set(group, []);
-            byGroup.get(group)!.push(cmd);
+            (byGroup[group] ??= []).push(cmd);
         }
         const items: DropdownMenuItem[] = [];
         let seenGroup = false;
         for (const group of INSERT_MENU_GROUP_ORDER) {
-            const cmds = byGroup.get(group);
+            const cmds = byGroup[group];
             if (!cmds) continue;
             cmds.forEach((cmd, i) => {
                 items.push({
