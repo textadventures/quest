@@ -141,8 +141,8 @@ jobs:
         working-directory: tests/e2e
 
   # PUBLIC_HAS_SERVER=true (textadventures.co.uk build mode) — only checks
-  # /open's button/caption text, never enters the editor, so no WasmEditor
-  # build needed at all.
+  # /open's "existing games only" message/link, never enters the editor, so
+  # no WasmEditor build needed at all.
   appshell_server_mode:
     runs-on: ubuntu-latest
     steps:
@@ -177,7 +177,7 @@ jobs:
             sleep 1
           done
 
-      - run: node verify-appshell-server-mode-caption.mjs http://localhost:5174
+      - run: node verify-appshell-server-mode-no-create.mjs http://localhost:5174
         working-directory: tests/e2e
 
   # WasmPlayer alone, no AppShell involved.

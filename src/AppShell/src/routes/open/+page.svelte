@@ -13,7 +13,7 @@
     } from "$lib/filesystem/electron-adapter";
     import type { RecentGame } from "$lib/filesystem/electron-adapter";
     import { isElectron } from "$lib/runtime";
-    import { createNewGame, getGameTemplates } from "$lib/filesystem/server-adapter";
+    import { getGameTemplates } from "$lib/filesystem/server-adapter";
     import type { GameTemplate } from "$lib/filesystem/server-adapter";
     import { pickFile } from "$lib/filesystem/file-picker";
     import {
@@ -179,10 +179,6 @@
         const picked = await pickGameLocation(electronGamesDir || undefined);
         if (picked) electronParentDir = picked;
     }
-
-    // Server creation state
-    let creatingServer = $state(false);
-    let createServerError = $state<string | null>(null);
 
     async function ensureTemplates() {
         if (templates.length > 0 || templatesLoading) return;
@@ -408,22 +404,7 @@
         creatingLocal = false;
     }
 
-    async function handleCreateServer() {
-        createServerError = null;
-        const trimmed = createName.trim();
-        if (!trimmed) { createServerError = "Please enter a game name."; return; }
-        if (!selectedTemplateId) { createServerError = "Please select a template."; return; }
-        creatingServer = true;
-        try {
-            const gameId = await createNewGame(trimmed, selectedTemplateId);
-            goto(`${base}/edit?game=${gameId}`);
-        } catch (err) {
-            createServerError = String(err);
-            creatingServer = false;
-        }
-    }
-
-    const creating = $derived(creatingLocal || creatingServer);
+    const creating = $derived(creatingLocal);
 </script>
 
 <main class="flex flex-col items-center justify-center min-h-[calc(100svh-var(--home-bar-height,0px))] gap-6 p-8">
@@ -450,113 +431,124 @@
                 onclick={() => { pendingDir = null; pendingZip = null; pendingFiles = []; }}
             >Cancel</button>
         </div>
+    {:else if hasServer}
+        <!-- textadventures.co.uk only opens games you already have — no local
+             storage, no server-side create. New games are always seeded via
+             play.questviva.com, which needs no account. -->
+        <div class="flex flex-col items-center gap-4 w-full max-w-sm text-center">
+            <p class="text-surface-600-400">
+                This editor only opens games you already have here. To create a new game, use the
+                free play.questviva.com editor — no account needed.
+            </p>
+            <a class="btn preset-filled-primary-500" href="https://play.questviva.com/open">
+                Create a new game at play.questviva.com
+            </a>
+        </div>
     {:else}
         <div class="flex flex-col items-center gap-4 w-full max-w-sm">
 
-            {#if !hasServer}
-                <!-- Open existing game -->
-                <p class="text-surface-600-400 text-sm font-medium self-start">Open existing game</p>
+            <!-- Open existing game -->
+            <p class="text-surface-600-400 text-sm font-medium self-start">Open existing game</p>
 
-                {#if isElectronApp}
-                    <button type="button" class="btn preset-filled-primary-500 w-full" onclick={handleOpenFolder}>
-                        {isElectron() ? "Open game…" : "Open game folder"}
+            {#if isElectronApp}
+                <button type="button" class="btn preset-filled-primary-500 w-full" onclick={handleOpenFolder}>
+                    {isElectron() ? "Open game…" : "Open game folder"}
+                </button>
+            {:else}
+                <div class="flex items-center gap-2 w-full">
+                    <button type="button" class="btn preset-filled-primary-500 flex-1" onclick={handleImportFile}>
+                        Import game file
                     </button>
-                {:else}
-                    <div class="flex items-center gap-2 w-full">
-                        <button type="button" class="btn preset-filled-primary-500 flex-1" onclick={handleImportFile}>
-                            Import game file
+                    <div class="import-help relative shrink-0">
+                        <button
+                            type="button"
+                            class="btn-icon preset-outlined-surface-500"
+                            onclick={() => importHelpOpen = !importHelpOpen}
+                            aria-label="About importing games"
+                        >
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="size-4">
+                                <circle cx="12" cy="12" r="10" />
+                                <path d="M12 16v-4" />
+                                <path d="M12 8h.01" />
+                            </svg>
                         </button>
-                        <div class="import-help relative shrink-0">
+                        {#if importHelpOpen}
+                            <div class="absolute right-0 top-full z-[999] mt-1 w-64 bg-surface-50-950 border border-surface-200-800 rounded shadow-lg p-3 flex flex-col gap-2 text-sm text-surface-700-300 text-left">
+                                {#each importHelpText as line (line)}
+                                    <p>{line}</p>
+                                {/each}
+                            </div>
+                        {/if}
+                    </div>
+                </div>
+                {#if canUseFSA}
+                    <button type="button" class="btn preset-outlined-primary-500 w-full" onclick={handleOpenFolder}>
+                        Open game folder
+                    </button>
+                {/if}
+            {/if}
+
+            {#if error}
+                <p class="text-error-500 text-sm">{error}</p>
+            {/if}
+
+            {#if isElectronApp && recentGames.length > 0}
+                <hr class="w-full border-surface-300-700 my-2" />
+                <p class="text-surface-600-400 text-sm font-medium self-start">Recent</p>
+                <div class="flex flex-col gap-2 w-full">
+                    {#each recentGames as game (game.dirPath + "/" + game.filename)}
+                        <div class="flex items-center gap-2 w-full">
                             <button
                                 type="button"
-                                class="btn-icon preset-outlined-surface-500"
-                                onclick={() => importHelpOpen = !importHelpOpen}
-                                aria-label="About importing games"
+                                class="btn btn-sm preset-outlined-primary-500 flex-1 min-w-0 flex-col! items-start! h-auto! py-2 gap-0.5"
+                                onclick={() => loadFromElectron(game.dirPath, game.filename)}
                             >
-                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="size-4">
-                                    <circle cx="12" cy="12" r="10" />
-                                    <path d="M12 16v-4" />
-                                    <path d="M12 8h.01" />
-                                </svg>
+                                <span class="w-full truncate text-left">{game.filename}</span>
+                                <span class="w-full truncate text-left text-surface-600-400 text-xs">{folderName(game.dirPath)} · {relativeTime(game.lastOpened)}</span>
                             </button>
-                            {#if importHelpOpen}
-                                <div class="absolute right-0 top-full z-[999] mt-1 w-64 bg-surface-50-950 border border-surface-200-800 rounded shadow-lg p-3 flex flex-col gap-2 text-sm text-surface-700-300 text-left">
-                                    {#each importHelpText as line (line)}
-                                        <p>{line}</p>
-                                    {/each}
-                                </div>
-                            {/if}
+                            <button
+                                type="button"
+                                class="btn btn-sm preset-outlined-error-500"
+                                title="Remove from Recent"
+                                onclick={() => handleRemoveRecent(game)}
+                            >Remove</button>
                         </div>
-                    </div>
-                    {#if canUseFSA}
-                        <button type="button" class="btn preset-outlined-primary-500 w-full" onclick={handleOpenFolder}>
-                            Open game folder
-                        </button>
-                    {/if}
-                {/if}
-
-                {#if error}
-                    <p class="text-error-500 text-sm">{error}</p>
-                {/if}
-
-                {#if isElectronApp && recentGames.length > 0}
-                    <hr class="w-full border-surface-300-700 my-2" />
-                    <p class="text-surface-600-400 text-sm font-medium self-start">Recent</p>
-                    <div class="flex flex-col gap-2 w-full">
-                        {#each recentGames as game (game.dirPath + "/" + game.filename)}
-                            <div class="flex items-center gap-2 w-full">
-                                <button
-                                    type="button"
-                                    class="btn btn-sm preset-outlined-primary-500 flex-1 min-w-0 flex-col! items-start! h-auto! py-2 gap-0.5"
-                                    onclick={() => loadFromElectron(game.dirPath, game.filename)}
-                                >
-                                    <span class="w-full truncate text-left">{game.filename}</span>
-                                    <span class="w-full truncate text-left text-surface-600-400 text-xs">{folderName(game.dirPath)} · {relativeTime(game.lastOpened)}</span>
-                                </button>
-                                <button
-                                    type="button"
-                                    class="btn btn-sm preset-outlined-error-500"
-                                    title="Remove from Recent"
-                                    onclick={() => handleRemoveRecent(game)}
-                                >Remove</button>
-                            </div>
-                        {/each}
-                    </div>
-                {/if}
-
-                {#if !isElectronApp && drafts.length > 0}
-                    <hr class="w-full border-surface-300-700 my-2" />
-                    <p class="text-surface-600-400 text-sm font-medium self-start">Your local drafts</p>
-                    <div class="flex flex-col gap-2 w-full">
-                        {#each drafts as draft (draft.gameId)}
-                            <div class="flex items-center gap-2 w-full">
-                                <button
-                                    type="button"
-                                    class="btn btn-sm preset-outlined-primary-500 flex-1 justify-between"
-                                    onclick={() => handleOpenDraft(draft.gameId)}
-                                >
-                                    <span>{draft.filename}</span>
-                                    <span class="text-surface-600-400">{relativeTime(draft.lastModified)}</span>
-                                </button>
-                                <button
-                                    type="button"
-                                    class="btn btn-sm preset-outlined-error-500"
-                                    title="Delete draft"
-                                    onclick={() => handleDeleteDraft(draft.gameId, draft.filename)}
-                                >Delete</button>
-                            </div>
-                        {/each}
-                    </div>
-                    {#if isSafari}
-                        <p class="text-xs text-surface-600-400 max-w-[40ch] text-center">
-                            Safari may clear local drafts if you don't open this site for a week or more —
-                            export a backup of anything important.
-                        </p>
-                    {/if}
-                {/if}
-
-                <hr class="w-full border-surface-300-700 my-2" />
+                    {/each}
+                </div>
             {/if}
+
+            {#if !isElectronApp && drafts.length > 0}
+                <hr class="w-full border-surface-300-700 my-2" />
+                <p class="text-surface-600-400 text-sm font-medium self-start">Your local drafts</p>
+                <div class="flex flex-col gap-2 w-full">
+                    {#each drafts as draft (draft.gameId)}
+                        <div class="flex items-center gap-2 w-full">
+                            <button
+                                type="button"
+                                class="btn btn-sm preset-outlined-primary-500 flex-1 justify-between"
+                                onclick={() => handleOpenDraft(draft.gameId)}
+                            >
+                                <span>{draft.filename}</span>
+                                <span class="text-surface-600-400">{relativeTime(draft.lastModified)}</span>
+                            </button>
+                            <button
+                                type="button"
+                                class="btn btn-sm preset-outlined-error-500"
+                                title="Delete draft"
+                                onclick={() => handleDeleteDraft(draft.gameId, draft.filename)}
+                            >Delete</button>
+                        </div>
+                    {/each}
+                </div>
+                {#if isSafari}
+                    <p class="text-xs text-surface-600-400 max-w-[40ch] text-center">
+                        Safari may clear local drafts if you don't open this site for a week or more —
+                        export a backup of anything important.
+                    </p>
+                {/if}
+            {/if}
+
+            <hr class="w-full border-surface-300-700 my-2" />
 
             <!-- Create new game -->
             <p class="text-surface-600-400 text-sm font-medium self-start">Create new game</p>
@@ -625,48 +617,33 @@
                         </div>
                     {:else}
                         <div class="flex gap-2">
-                            {#if hasServer}
-                                <div class="flex flex-col gap-1 flex-1">
-                                    <button
-                                        type="button"
-                                        class="btn preset-filled-primary-500 w-full"
-                                        onclick={handleCreateServer}
-                                        disabled={!createName.trim()}
-                                        title="Save to textadventures.co.uk"
-                                    >
-                                        Save to server
-                                    </button>
-                                    <p class="text-xs text-surface-600-400 text-center">Saved to your textadventures.co.uk account</p>
-                                </div>
-                            {:else}
-                                <div class="flex flex-col gap-1 flex-1">
-                                    <button
-                                        type="button"
-                                        class="btn preset-filled-primary-500 w-full"
-                                        onclick={handleCreateLocal}
-                                        disabled={!createName.trim()}
-                                        title={isElectronApp ? "Choose where to create your game's folder" : "Save as a local draft in this browser"}
-                                    >
-                                        {isElectronApp ? "Create" : "Create local draft"}
-                                    </button>
-                                    {#if !isElectronApp}
-                                        <p class="text-xs text-surface-600-400 text-center">Stored in this browser only</p>
-                                    {/if}
-                                </div>
-                                {#if canUseFSA}
-                                    <div class="flex flex-col gap-1 flex-1">
-                                        <button
-                                            type="button"
-                                            class="btn preset-outlined-primary-500 w-full"
-                                            onclick={handleCreateLocalFolder}
-                                            disabled={!createName.trim()}
-                                            title="Choose a folder on your computer to save your game in"
-                                        >
-                                            Save to folder…
-                                        </button>
-                                        <p class="text-xs text-surface-600-400 text-center">You'll choose a folder on this device</p>
-                                    </div>
+                            <div class="flex flex-col gap-1 flex-1">
+                                <button
+                                    type="button"
+                                    class="btn preset-filled-primary-500 w-full"
+                                    onclick={handleCreateLocal}
+                                    disabled={!createName.trim()}
+                                    title={isElectronApp ? "Choose where to create your game's folder" : "Save as a local draft in this browser"}
+                                >
+                                    {isElectronApp ? "Create" : "Create local draft"}
+                                </button>
+                                {#if !isElectronApp}
+                                    <p class="text-xs text-surface-600-400 text-center">Stored in this browser only</p>
                                 {/if}
+                            </div>
+                            {#if canUseFSA}
+                                <div class="flex flex-col gap-1 flex-1">
+                                    <button
+                                        type="button"
+                                        class="btn preset-outlined-primary-500 w-full"
+                                        onclick={handleCreateLocalFolder}
+                                        disabled={!createName.trim()}
+                                        title="Choose a folder on your computer to save your game in"
+                                    >
+                                        Save to folder…
+                                    </button>
+                                    <p class="text-xs text-surface-600-400 text-center">You'll choose a folder on this device</p>
+                                </div>
                             {/if}
                         </div>
 
@@ -677,20 +654,10 @@
                                 <button type="button" class="anchor" onclick={handleChangeLocation}>Change location…</button>
                             </p>
                         {/if}
-
-                        {#if hasServer}
-                            <p class="text-xs text-surface-600-400 max-w-[40ch] text-center self-center">
-                                Want to keep this game only on your own device? Use the
-                                <a class="anchor" href="https://play.questviva.com/open">play.questviva.com editor</a> instead.
-                            </p>
-                        {/if}
                     {/if}
 
                     {#if createLocalError}
                         <p class="text-error-500 text-sm">{createLocalError}</p>
-                    {/if}
-                    {#if createServerError}
-                        <p class="text-error-500 text-sm">{createServerError}</p>
                     {/if}
                 </div>
             {/if}

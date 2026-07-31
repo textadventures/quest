@@ -12,20 +12,6 @@ export async function getGameTemplates(): Promise<GameTemplate[]> {
     return JSON.parse(bridge.GetGameTemplates()) as GameTemplate[];
 }
 
-export async function createNewGame(name: string, templateId: string): Promise<string> {
-    const bridge = await loadWasm();
-    const content = bridge.CreateGameFromTemplate(templateId, name);
-    const filename = name.replace(/[^a-zA-Z0-9 _-]/g, "").trim() || "game";
-    const file = new File([content], `${filename}.aslx`, { type: "application/xml" });
-    const form = new FormData();
-    form.append("name", name);
-    form.append("file", file);
-    const resp = await fetch("/api/editor/games", { method: "POST", body: form });
-    if (!resp.ok) throw new Error(`Failed to create game: ${resp.status} ${resp.statusText}`);
-    const data = await resp.json() as { gameId: string };
-    return data.gameId;
-}
-
 export class ServerFileAdapter implements FileAdapter {
     constructor(
         private readonly _gameId: string,
