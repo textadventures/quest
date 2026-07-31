@@ -117,9 +117,23 @@ function broadcastRecentChanged(kind: RecentKind): void {
     editorWindow?.webContents.send("recent-games-changed", kind);
 }
 
+// New Game/Open Game must work even with the editor window fully closed
+// (macOS: app stays running, menu bar stays up, no window at all) — same
+// requirement the comment on focusEditorWindow above already describes, but
+// that function (and the plain IPC send below) both silently no-op once
+// editorWindow is null, so this was never actually reachable. Save/Save
+// As/Undo/Redo have nothing to act on with no game loaded, so those stay
+// plain no-ops in that state, same as before.
 function sendMenuAction(action: MenuAction): void {
+    if (!editorWindow) {
+        if (staticServer && (action === "new-game" || action === "open-file")) {
+            const query = action === "open-file" ? `?action=open&t=${Date.now()}` : "";
+            createEditorWindow(staticServer.port, null, `/open${query}`);
+        }
+        return;
+    }
     focusEditorWindow();
-    editorWindow?.webContents.send("menu-action", action);
+    editorWindow.webContents.send("menu-action", action);
 }
 
 // Undo/Redo can't just forward blindly like sendMenuAction does for File
@@ -390,7 +404,7 @@ async function refreshMenu(): Promise<void> {
     Menu.setApplicationMenu(buildAppMenu(await listRecentGames("edit")));
 }
 
-function createEditorWindow(port: number, initialPath?: string | null): void {
+function createEditorWindow(port: number, initialPath?: string | null, initialRoute?: string): void {
     editorWindow = new BrowserWindow({
         title: "Quest Viva",
         width: 1280,
@@ -520,7 +534,11 @@ function createEditorWindow(port: number, initialPath?: string | null): void {
         return { action: "deny" };
     });
 
-    void editorWindow.loadURL(`http://127.0.0.1:${port}${initialUrlPath(initialPath ?? null)}`);
+    // initialRoute is a pre-built route (used by sendMenuAction below to land
+    // straight on /open, optionally with its own action query param) — it
+    // bypasses initialUrlPath, which only ever derives a route from a file
+    // path (file-association opens), not from an arbitrary in-app action.
+    void editorWindow.loadURL(`http://127.0.0.1:${port}${initialRoute ?? initialUrlPath(initialPath ?? null)}`);
 
     editorWindow.on("closed", () => {
         editorWindow = null;
