@@ -34,6 +34,7 @@
       <controltype>objects</controltype>
       <caption>[EditorObjectRoomDropDestination]</caption>
       <attribute>dropdestination</attribute>
+      <advanced/>
     </control>
 
     <control>

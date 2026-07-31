@@ -1,5 +1,5 @@
 <script lang="ts">
-    import { selectedKey, selectedData, treeNodes, isGamebook, setAttribute, setDropdownType, setMultiType, setObjectReference, addDictItem, removeDictItem, updateDictItem, getObjectNames, getExitNames, selectNode, createObjectSilent, openAddModal, createIncludedLibrary, createJavascript } from "$lib/editor-store";
+    import { selectedKey, selectedData, treeNodes, isGamebook, setAttribute, setDropdownType, setMultiType, setObjectReference, setSelectedFilter, addDictItem, removeDictItem, updateDictItem, getObjectNames, getExitNames, selectNode, createObjectSilent, openAddModal, createIncludedLibrary, createJavascript } from "$lib/editor-store";
     import { showToast } from "$lib/toast";
     import type { ControlInfo, ControlOption, TextProcessorCommand } from "$lib/types";
     import type { TreeNode } from "$lib/types";
@@ -494,7 +494,7 @@
                 onchange={(e) => onTextChange(ctrl.attribute!, ctrl.controlType, (e.target as HTMLTextAreaElement).value)}
             ></textarea>
         {/if}
-    {:else if ctrl.controlType === "textbox"}
+    {:else if ctrl.controlType === "textbox" || ctrl.controlType === "expression"}
         <input
             type="text"
             autocapitalize="off"
@@ -502,6 +502,16 @@
             value={attrValue(ctrl.attribute!) ?? ""}
             onchange={(e) => onTextChange(ctrl.attribute!, ctrl.controlType, (e.target as HTMLInputElement).value)}
         />
+    {:else if ctrl.controlType === "filter" && ctrl.options}
+        <select
+            class="select text-xs py-0.5 px-1.5 w-auto"
+            value={attrValue(ctrl.attribute!) ?? ""}
+            onchange={(e) => $selectedKey && setSelectedFilter($selectedKey, ctrl.subAttribute!, (e.target as HTMLSelectElement).value)}
+        >
+            {#each ctrl.options as opt (opt.value)}
+                <option value={opt.value}>{opt.label}</option>
+            {/each}
+        </select>
     {:else if ctrl.controlType === "gameid"}
         <div class="flex items-center gap-2 w-full">
             <input
@@ -780,12 +790,17 @@
             </div>
         {/if}
     {:else if ctrl.controlType === "elementslist" && $selectedKey}
-        <ElementsList
-            elementKey={$selectedKey}
-            elementType={ctrl.elementType ?? "object"}
-            objectType={ctrl.objectType}
-            listFilter={ctrl.listFilter}
-        />
+        <div class="flex flex-col gap-1">
+            {#if ctrl.caption}
+                <span class="text-xs text-surface-600-400 px-3 pt-1.5">{ctrl.caption}</span>
+            {/if}
+            <ElementsList
+                elementKey={$selectedKey}
+                elementType={ctrl.elementType ?? "object"}
+                objectType={ctrl.objectType}
+                listFilter={ctrl.listFilter}
+            />
+        </div>
     {:else if ctrl.controlType === "exits" && $selectedKey}
         <ExitsEditor elementKey={$selectedKey} />
     {:else if ctrl.controlType === "verbs" && $selectedKey}
