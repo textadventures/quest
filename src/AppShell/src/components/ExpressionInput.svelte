@@ -21,24 +21,39 @@
     let open = $state(false);
     let filter = $state("");
     let functions = $state<ExpressionFunctionInfo[]>([]);
-    // Defaults to opening downward, but flips upward when there isn't room below — same
-    // heuristic as Combobox.svelte, needed since these fields often sit near the bottom of a
-    // scrolled panel (e.g. a script's last parameter, or the last property in a tab).
-    let openUpward = $state(false);
+    // These fields commonly sit inside a scrolled panel (a script row, a property tab). An
+    // absolutely-positioned popover is still clipped by that panel's overflow regardless of
+    // z-index, so the popover is portaled to <body> (see `portal` below) and positioned with
+    // `fixed` viewport coordinates computed from the button's rect instead.
+    let popoverStyle = $state("");
 
-    function updateOpenDirection() {
+    function portal(node: HTMLElement) {
+        document.body.appendChild(node);
+        return {
+            destroy() {
+                node.remove();
+            },
+        };
+    }
+
+    // Opens downward by default, flipping upward when there isn't room below — mirrors
+    // Combobox.svelte's heuristic. Re-run on scroll/resize while open so the popover tracks the
+    // button if the underlying panel scrolls.
+    function updatePosition() {
         if (!buttonEl) return;
         const rect = buttonEl.getBoundingClientRect();
+        const approxPopoverHeight = 300;
         const spaceBelow = window.innerHeight - rect.bottom;
         const spaceAbove = rect.top;
-        openUpward = spaceBelow < 300 && spaceAbove > spaceBelow;
+        const openUpward = spaceBelow < approxPopoverHeight && spaceAbove > spaceBelow;
+        const top = openUpward ? rect.top - 4 : rect.bottom + 4;
+        popoverStyle = `position: fixed; left: ${rect.right}px; top: ${top}px; transform: translate(-100%, ${openUpward ? "-100%" : "0"});`;
     }
 
     function toggle() {
         if (!open) {
             functions = getExpressionFunctions();
             filter = "";
-            updateOpenDirection();
         }
         open = !open;
     }
@@ -76,6 +91,7 @@
 
     $effect(() => {
         if (!open) return;
+        updatePosition();
         function onOutside(e: MouseEvent) {
             const target = e.target as Node;
             if (buttonEl?.contains(target) || popoverRootEl?.contains(target)) return;
@@ -84,11 +100,20 @@
         function onKeydown(e: KeyboardEvent) {
             if (e.key === "Escape") close();
         }
+        function onReposition() {
+            updatePosition();
+        }
         document.addEventListener("mousedown", onOutside);
         document.addEventListener("keydown", onKeydown);
+        // capture:true so this also fires for scrolls inside nested scroll containers, not just
+        // the window itself.
+        window.addEventListener("scroll", onReposition, true);
+        window.addEventListener("resize", onReposition);
         return () => {
             document.removeEventListener("mousedown", onOutside);
             document.removeEventListener("keydown", onKeydown);
+            window.removeEventListener("scroll", onReposition, true);
+            window.removeEventListener("resize", onReposition);
         };
     });
 </script>
@@ -102,52 +127,52 @@
         {value}
         onchange={(e) => onchange((e.target as HTMLInputElement).value)}
     />
-    <div class="relative flex-shrink-0">
-        <button
-            bind:this={buttonEl}
-            type="button"
-            class="btn btn-sm preset-outlined-primary-500 px-1 py-0.5"
-            title="Insert object or function"
-            onclick={toggle}
-        ><Wand2 size={13} aria-hidden="true" /></button>
-        {#if open}
-            <div
-                bind:this={popoverRootEl}
-                class="absolute z-50 right-0 w-64 max-h-72 flex flex-col rounded border border-surface-200-800 bg-white dark:bg-surface-800 shadow-lg {openUpward ? "bottom-full mb-1" : "top-full mt-1"}"
-            >
-                <input
-                    type="text"
-                    autocapitalize="off"
-                    placeholder="Filter…"
-                    class="input text-xs py-1 px-2 rounded-none border-0 border-b border-surface-200-800"
-                    bind:value={filter}
-                />
-                <div class="overflow-y-auto flex-1">
-                    {#if filteredObjects.length > 0}
-                        <div class="px-2 pt-1.5 pb-0.5 text-[10px] font-semibold uppercase text-surface-600-400 sticky top-0 bg-white dark:bg-surface-800">Objects</div>
-                        {#each filteredObjects as name (name)}
-                            <button
-                                type="button"
-                                class="block w-full text-left px-2 py-1 text-xs hover:bg-surface-100-900 truncate"
-                                onclick={() => insertAtCursor(name)}
-                            >{name}</button>
-                        {/each}
-                    {/if}
-                    {#if filteredFunctions.length > 0}
-                        <div class="px-2 pt-1.5 pb-0.5 text-[10px] font-semibold uppercase text-surface-600-400 sticky top-0 bg-white dark:bg-surface-800">Functions</div>
-                        {#each filteredFunctions as fn (fn.name)}
-                            <button
-                                type="button"
-                                class="block w-full text-left px-2 py-1 text-xs hover:bg-surface-100-900 truncate"
-                                onclick={() => insertFunction(fn)}
-                            >{fn.name}<span class="text-surface-600-400">({fn.parameters.join(", ")})</span></button>
-                        {/each}
-                    {/if}
-                    {#if filteredObjects.length === 0 && filteredFunctions.length === 0}
-                        <p class="px-2 py-2 text-xs text-surface-600-400 italic">No matches.</p>
-                    {/if}
-                </div>
+    <button
+        bind:this={buttonEl}
+        type="button"
+        class="btn btn-sm preset-outlined-primary-500 px-1 py-0.5 flex-shrink-0"
+        title="Insert object or function"
+        onclick={toggle}
+    ><Wand2 size={13} aria-hidden="true" /></button>
+    {#if open}
+        <div
+            bind:this={popoverRootEl}
+            use:portal
+            style={popoverStyle}
+            class="z-50 w-64 max-h-72 flex flex-col rounded border border-surface-200-800 bg-white dark:bg-surface-800 shadow-lg"
+        >
+            <input
+                type="text"
+                autocapitalize="off"
+                placeholder="Filter…"
+                class="input text-xs py-1 px-2 rounded-none border-0 border-b border-surface-200-800"
+                bind:value={filter}
+            />
+            <div class="overflow-y-auto flex-1">
+                {#if filteredObjects.length > 0}
+                    <div class="px-2 pt-1.5 pb-0.5 text-[10px] font-semibold uppercase text-surface-600-400 sticky top-0 bg-white dark:bg-surface-800">Objects</div>
+                    {#each filteredObjects as name (name)}
+                        <button
+                            type="button"
+                            class="block w-full text-left px-2 py-1 text-xs hover:bg-surface-100-900 truncate"
+                            onclick={() => insertAtCursor(name)}
+                        >{name}</button>
+                    {/each}
+                {/if}
+                {#if filteredFunctions.length > 0}
+                    <div class="px-2 pt-1.5 pb-0.5 text-[10px] font-semibold uppercase text-surface-600-400 sticky top-0 bg-white dark:bg-surface-800">Functions</div>
+                    {#each filteredFunctions as fn (fn.name)}
+                        <button
+                            type="button"
+                            class="block w-full text-left px-2 py-1 text-xs hover:bg-surface-100-900 truncate"
+                            onclick={() => insertFunction(fn)}
+                        >{fn.name}<span class="text-surface-600-400">({fn.parameters.join(", ")})</span></button>
+                    {/each}
+                {/if}
+                {#if filteredObjects.length === 0 && filteredFunctions.length === 0}
+                    <p class="px-2 py-2 text-xs text-surface-600-400 italic">No matches.</p>
+                {/if}
             </div>
-        {/if}
-    </div>
+        </div>
+    {/if}
 </div>
