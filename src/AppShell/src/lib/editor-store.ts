@@ -7,7 +7,7 @@ import type { AssetInfo, FileAdapter } from "./filesystem/types";
 import { LocalDraftAdapter, shouldShowBackupBanner, markBackupBannerResolved } from "./filesystem/local-adapter";
 import { ServerFileAdapter } from "./filesystem/server-adapter";
 import { triggerDownload } from "./filesystem/download";
-import type { TreeNode, EditorDataResponse, ScriptBlockData, ScriptCommandCategoriesData, IfExpressionTemplateData, IfExpressionTemplate, FullAttributeData, ExitsData, VerbInfo } from "./types";
+import type { TreeNode, EditorDataResponse, ScriptBlockData, ScriptCommandCategoriesData, IfExpressionTemplateData, IfExpressionTemplate, FullAttributeData, ExitsData, VerbInfo, ExpressionFunctionInfo } from "./types";
 
 export type AddElementModalState = { type: "room" | "object" | "page" | "function" | "timer" | "walkthrough" | "template" | "dynamictemplate" | "type"; parent: string | null } | null;
 
@@ -1220,6 +1220,14 @@ export function createLookExitInDirection(roomKey: string, direction: string): s
 export function getVerbAttributesInfo(): VerbInfo[] {
     if (!_bridge) return [];
     try { return JSON.parse(_bridge.GetVerbAttributesInfo()); }
+    catch { return []; }
+}
+
+// ── Expression helper ────────────────────────────────────────────────────────
+
+export function getExpressionFunctions(): ExpressionFunctionInfo[] {
+    if (!_bridge) return [];
+    try { return JSON.parse(_bridge.GetExpressionFunctions()); }
     catch { return []; }
 }
 

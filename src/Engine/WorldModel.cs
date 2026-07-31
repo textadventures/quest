@@ -1636,6 +1636,31 @@ public partial class WorldModel : IGame, IGameDebug
         return FunctionNames.AsReadOnly();
     }
 
+    // Signatures (name + parameter names) for the built-in expression functions, reflected from
+    // the same classes GetBuiltInFunctionNames() draws from — used to power the editor's
+    // expression-insert helper. DeclaredOnly + !IsSpecialName excludes inherited object members
+    // (ToString/Equals/...) and property accessors, which GetBuiltInFunctionNames() above doesn't
+    // filter out (harmless there since only the name list is used, but would show up as bogus
+    // zero-arg "functions" here).
+    public IEnumerable<(string Name, string[] Parameters)> GetBuiltInFunctionSignatures()
+    {
+        const BindingFlags flags = BindingFlags.Public | BindingFlags.Instance | BindingFlags.Static |
+                                    BindingFlags.DeclaredOnly;
+
+        // Each GetMethods() call is made directly on a typeof(...) constant (rather than via a
+        // lambda over a Type variable) so the trimmer can see which type's members to preserve —
+        // matching GetBuiltInFunctionNames() above.
+        var methods = typeof(ExpressionOwner).GetMethods(flags)
+            .Concat(typeof(StringFunctions).GetMethods(flags))
+            .Concat(typeof(DateTimeFunctions).GetMethods(flags));
+
+        return methods
+            .Where(m => !m.IsSpecialName)
+            .Select(m => (m.Name, m.GetParameters().Select(p => p.Name ?? "").ToArray()))
+            .DistinctBy(f => f.Name)
+            .OrderBy(f => f.Name, StringComparer.Ordinal);
+    }
+
     internal void UpdateElementSortOrder(Element movedElement)
     {
         // There's no need to worry about element sort order when playing the game, unless this is an element that can be seen by the

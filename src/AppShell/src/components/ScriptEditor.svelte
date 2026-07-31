@@ -4,6 +4,7 @@
     import AddScriptModal from "./AddScriptModal.svelte";
     import AssetPicker from "./AssetPicker.svelte";
     import CodeEditor from "./CodeEditor.svelte";
+    import ExpressionInput from "./ExpressionInput.svelte";
     import {
         scriptVersion,
         scriptClipboardHasContent,
@@ -634,16 +635,22 @@
                 {/if}
             {:else}
                 <!-- Expression mode: raw expression text input -->
-                <input
-                    type="text"
-                    autocapitalize="off"
-                    class="input text-xs py-0 px-1 min-w-16 max-w-48 flex-1"
+                <ExpressionInput
                     value={ctrl.value ?? ""}
-                    onchange={(e) => onSetParam(scriptIndex, ctrl.attribute!, (e.target as HTMLInputElement).value)}
+                    onchange={(v) => onSetParam(scriptIndex, ctrl.attribute!, v)}
+                    {objectNames}
+                    class="input text-xs py-0 px-1 min-w-16 max-w-48 flex-1"
                 />
             {/if}
         {/if}
-    {:else if ctrl.controlType === "expression" || ctrl.controlType === "textbox" || ctrl.controlType === "richtext"}
+    {:else if ctrl.controlType === "expression"}
+        <ExpressionInput
+            value={ctrl.value ?? ""}
+            onchange={(v) => onSetParam(scriptIndex, ctrl.attribute!, v)}
+            {objectNames}
+            class="input text-xs py-0 px-1 min-w-16 max-w-48 flex-1"
+        />
+    {:else if ctrl.controlType === "textbox" || ctrl.controlType === "richtext"}
         <input
             type="text"
             autocapitalize="off"
@@ -736,12 +743,11 @@
                     {/if}
                 {/each}
             {:else}
-                <input
-                    type="text"
-                    autocapitalize="off"
-                    class="input text-xs py-0 px-1 min-w-24 max-w-64 flex-1"
+                <ExpressionInput
                     value={script.expression ?? ""}
-                    onchange={(e) => onSetIfExpr(i, (e.target as HTMLInputElement).value)}
+                    onchange={(v) => onSetIfExpr(i, v)}
+                    {objectNames}
+                    class="input text-xs py-0 px-1 min-w-24 max-w-64 flex-1"
                 />
             {/if}
             <span class="text-surface-600-400 select-none">then</span>
@@ -817,12 +823,11 @@
                         {/if}
                     {/each}
                 {:else}
-                    <input
-                        type="text"
-                        autocapitalize="off"
+                    <ExpressionInput
+                        value={elseIf.expression ?? ""}
+                        onchange={(v) => onSetElseIfExpr(i, ei, v)}
+                        {objectNames}
                         class="input text-xs py-0 px-1 min-w-24 max-w-64 flex-1"
-                        value={elseIf.expression}
-                        onchange={(e) => onSetElseIfExpr(i, ei, (e.target as HTMLInputElement).value)}
                     />
                 {/if}
                 <span class="text-surface-600-400 select-none">then</span>

@@ -77,6 +77,7 @@ export interface WasmBridge {
   CreateLookExitInDirection(roomKey: string, direction: string): string
   // Verbs editor API
   GetVerbAttributesInfo(): string
+  GetExpressionFunctions(): string
   AddVerb(elementKey: string, verbPattern: string): string
   CreateTurnScript(parent: string): string
   CreateCommand(parent: string): string

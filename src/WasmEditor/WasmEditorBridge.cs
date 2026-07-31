@@ -134,6 +134,8 @@ internal record ExitsData(
 
 internal record VerbInfo(string Attribute, string DisplayPattern);
 
+internal record ExpressionFunctionData(string Name, List<string> Parameters, bool IsUserDefined);
+
 [JsonSourceGenerationOptions(PropertyNamingPolicy = JsonKnownNamingPolicy.CamelCase)]
 [JsonSerializable(typeof(List<TreeNodeData>))]
 [JsonSerializable(typeof(EditorDataResponse))]
@@ -148,6 +150,7 @@ internal record VerbInfo(string Attribute, string DisplayPattern);
 [JsonSerializable(typeof(List<GameTemplateInfo>))]
 [JsonSerializable(typeof(ExitsData))]
 [JsonSerializable(typeof(List<VerbInfo>))]
+[JsonSerializable(typeof(List<ExpressionFunctionData>))]
 internal partial class WasmEditorJsonContext : JsonSerializerContext
 {
 }
@@ -2363,6 +2366,23 @@ public partial class WasmEditorBridge
             .ToList();
 
         return JsonSerializer.Serialize(verbs, WasmEditorJsonContext.Default.ListVerbInfo);
+    }
+
+    // Feeds the expression-insert helper's Functions list — built-in engine functions plus the
+    // game's own (non-library) Function elements, both with real parameter names.
+    [JSExport]
+    public static string GetExpressionFunctions()
+    {
+        if (_controller == null)
+        {
+            return "[]";
+        }
+
+        var functions = _controller.GetExpressionFunctions()
+            .Select(f => new ExpressionFunctionData(f.Name, f.Parameters.ToList(), f.IsUserDefined))
+            .ToList();
+
+        return JsonSerializer.Serialize(functions, WasmEditorJsonContext.Default.ListExpressionFunctionData);
     }
 
     [JSExport]

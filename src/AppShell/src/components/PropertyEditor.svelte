@@ -31,6 +31,7 @@
     import AttributesEditor from "./AttributesEditor.svelte";
     import ListEditor from "./ListEditor.svelte";
     import ElementsList from "./ElementsList.svelte";
+    import ExpressionInput from "./ExpressionInput.svelte";
     import AssetPicker from "./AssetPicker.svelte";
     import ExitsEditor from "./ExitsEditor.svelte";
     import VerbsEditor from "./VerbsEditor.svelte";
@@ -494,13 +495,20 @@
                 onchange={(e) => onTextChange(ctrl.attribute!, ctrl.controlType, (e.target as HTMLTextAreaElement).value)}
             ></textarea>
         {/if}
-    {:else if ctrl.controlType === "textbox" || ctrl.controlType === "expression"}
+    {:else if ctrl.controlType === "textbox"}
         <input
             type="text"
             autocapitalize="off"
             class={"input text-xs py-0.5 px-1.5 w-full" + (ctrl.attribute && attributeErrors[ctrl.attribute] ? " !border-error-500" : "")}
             value={attrValue(ctrl.attribute!) ?? ""}
             onchange={(e) => onTextChange(ctrl.attribute!, ctrl.controlType, (e.target as HTMLInputElement).value)}
+        />
+    {:else if ctrl.controlType === "expression"}
+        <ExpressionInput
+            value={attrValue(ctrl.attribute!) ?? ""}
+            onchange={(v) => onTextChange(ctrl.attribute!, ctrl.controlType, v)}
+            objectNames={dictSourceObjectNames}
+            class={"input text-xs py-0.5 px-1.5 w-full" + (ctrl.attribute && attributeErrors[ctrl.attribute] ? " !border-error-500" : "")}
         />
     {:else if ctrl.controlType === "filter" && ctrl.options}
         <select
