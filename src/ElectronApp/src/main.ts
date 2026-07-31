@@ -133,10 +133,35 @@ function sendMenuAction(action: MenuAction): void {
 // already the focused window; otherwise fall back to the focused window's
 // own native text-field undo/redo (e.g. text typed into the player's command
 // box), exactly like Electron's default 'undo'/'redo' roles would.
+//
+// Within the editor window itself, the same ambiguity exists one level down:
+// the accelerator fires before the DOM ever sees the keystroke, so it can't
+// tell "focus is on the tree/canvas" (app-level undo should apply) apart from
+// "focus is in a <textarea>/<input>/contenteditable script or richtext field"
+// (the browser's own native undo should apply instead, or app-level undo
+// would clobber in-progress text edits the native undo stack still has).
+// Ask the renderer which kind of element is currently focused before
+// deciding which undo to invoke.
+async function isTextEditingFocused(window: BrowserWindow): Promise<boolean> {
+    try {
+        return await window.webContents.executeJavaScript(
+            "(() => { const el = document.activeElement; if (!el) return false; " +
+            "return el.tagName === 'TEXTAREA' || el.tagName === 'INPUT' || el.isContentEditable; })()",
+        );
+    } catch {
+        return false;
+    }
+}
+
 function editorUndoRedo(action: "undo" | "redo") {
-    return (_item: MenuItem, focusedWindow: Electron.BaseWindow | undefined): void => {
-        if (focusedWindow === editorWindow) {
-            editorWindow?.webContents.send("menu-action", action);
+    return async (_item: MenuItem, focusedWindow: Electron.BaseWindow | undefined): Promise<void> => {
+        if (focusedWindow === editorWindow && editorWindow) {
+            if (await isTextEditingFocused(editorWindow)) {
+                if (action === "undo") editorWindow.webContents.undo();
+                else editorWindow.webContents.redo();
+            } else {
+                editorWindow.webContents.send("menu-action", action);
+            }
         } else if (focusedWindow instanceof BrowserWindow) {
             if (action === "undo") focusedWindow.webContents.undo();
             else focusedWindow.webContents.redo();
@@ -272,16 +297,23 @@ function buildAppMenu(recentGames: RecentGame[]): Menu {
                 // Undo/Redo replace the role-based defaults (which only ever
                 // undo native text-field edits) with the editor's real
                 // command-stack undo — see editorUndoRedo's comment. Cut/
-                // Copy/Paste stay as plain roles: there's no app-level
-                // clipboard concept for tree/canvas content, only ordinary
-                // text fields, which the native roles already handle
-                // correctly for whichever window/field is focused.
+                // Copy/Paste/Select All stay as plain roles: there's no
+                // app-level clipboard or selection concept for tree/canvas
+                // content, only ordinary text fields, which the native roles
+                // already handle correctly for whichever window/field is
+                // focused. Select All's role must be listed explicitly like
+                // this — Electron only auto-adds Cmd+A (and Cut/Copy/Paste)
+                // to a *default* Edit menu; once this app builds its own
+                // Edit submenu, nothing claims that accelerator unless a
+                // role item for it is present, so without one Cmd+A silently
+                // does nothing in every text field.
                 { label: "Undo", accelerator: "CmdOrCtrl+Z", click: editorUndoRedo("undo") },
                 { label: "Redo", accelerator: isMac ? "Shift+Cmd+Z" : "Ctrl+Y", click: editorUndoRedo("redo") },
                 { type: "separator" },
                 { role: "cut" },
                 { role: "copy" },
                 { role: "paste" },
+                { role: "selectAll" },
             ],
         },
         {
@@ -411,17 +443,46 @@ function createEditorWindow(port: number, initialPath?: string | null): void {
     // is the hook it gives main for exactly this. Without a handler here the
     // window just silently refuses to close (no dialog, no feedback) and
     // Force Quit becomes the only way out.
+    //
+    // Calling event.preventDefault() here is what forces the close through
+    // (its semantics: "ignore the page's beforeunload and unload anyway"),
+    // and per Electron's contract that has to happen synchronously, before
+    // this listener returns — checked immediately once the event finishes
+    // firing, with no way to come back to it later. That rules out an async
+    // confirmation dialog directly in this handler: it would return before
+    // the user answers, preventDefault() would never be called in time, and
+    // the close would just stay silently blocked (same as no handler at
+    // all), no matter what the user later picks.
+    //
+    // So instead: leave the first attempt blocked (this handler returns
+    // without calling preventDefault(), same as "Cancel" today) while an
+    // async dialog is up, and only if the user confirms, close() the window
+    // again ourselves — that re-runs the page's beforeunload and re-fires
+    // this same event, and this time forceCloseConfirmed lets it through
+    // immediately without asking again. Using the async dialog (rather than
+    // *Sync) matters beyond just this handler: the sync version blocks the
+    // entire main process — no IPC, no other window's menu actions, nothing
+    // — for as long as it's on screen; this way only this window sits idle
+    // pending an answer while the rest of the app stays responsive.
+    let forceCloseConfirmed = false;
     editorWindow.webContents.on("will-prevent-unload", (event) => {
         if (!editorWindow) return;
-        const choice = dialog.showMessageBoxSync(editorWindow, {
+        if (forceCloseConfirmed) {
+            event.preventDefault();
+            return;
+        }
+        void dialog.showMessageBox(editorWindow, {
             type: "question",
             buttons: ["Cancel", "Leave"],
             defaultId: 0,
             cancelId: 0,
             message: "Leave without saving?",
             detail: "You have unsaved changes. If you leave now, they'll be lost.",
+        }).then(({ response }) => {
+            if (response !== 1 || !editorWindow) return;
+            forceCloseConfirmed = true;
+            editorWindow.close();
         });
-        if (choice === 1) event.preventDefault();
     });
 
     // The editor's Preview button calls window.open('/player/...') unchanged

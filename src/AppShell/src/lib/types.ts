@@ -38,6 +38,7 @@ export interface ControlInfo {
   sourceExclude?: string | null
   checkboxCaption?: string | null
   isWalkthrough?: boolean
+  href?: string | null
 }
 
 export interface TabInfo {

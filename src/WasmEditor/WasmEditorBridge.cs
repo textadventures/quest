@@ -40,7 +40,8 @@ internal record ControlInfo(
     string? ValuePrompt = null,
     string? SourceExclude = null,
     string? CheckboxCaption = null,
-    bool IsWalkthrough = false);
+    bool IsWalkthrough = false,
+    string? Href = null);
 
 internal record TabInfo(string? Caption, List<ControlInfo> Controls);
 
@@ -3319,11 +3320,13 @@ public partial class WasmEditorBridge
         var valuePrompt = isDictionary ? ctrl.GetString("valueprompt") : null;
         var sourceExclude = isDictionary ? ctrl.GetString("sourceexclude") : null;
 
+        var href = ctrl.ControlType == "label" ? ctrl.GetString("href") : null;
+
         return new ControlInfo(attribute, ctrl.ControlType, ctrl.Caption ?? ctrl.GetString("selfcaption"), options,
             null, null, textProcessorCommands, addPrompt, Source: source,
             Advanced: !ctrl.IsControlVisibleInSimpleMode,
             KeyPrompt: keyPrompt, ValuePrompt: valuePrompt, SourceExclude: sourceExclude,
-            IsWalkthrough: isWalkthrough);
+            IsWalkthrough: isWalkthrough, Href: href);
     }
 
     [JSExport]
