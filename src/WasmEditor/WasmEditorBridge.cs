@@ -647,6 +647,64 @@ public partial class WasmEditorBridge
     }
 
     [JSExport]
+    public static string SetSelectedFilter(string elementKey, string filterGroupName, string filterValue)
+    {
+        if (_controller == null)
+        {
+            return "error";
+        }
+
+        var data = _controller.GetEditorData(elementKey);
+        if (data == null)
+        {
+            return "error";
+        }
+
+        // GetEditorData() returns a fresh IEditorData on every call, so the in-memory selection
+        // SetSelectedFilter() would normally record doesn't survive past this one call — the very
+        // next GetEditorData() (e.g. the refetch after this returns) starts over and falls back to
+        // GetDefaultFilterName()'s inference from which of the group's attributes is populated. So
+        // to make the choice stick, drive that same inference: populate the chosen filter's
+        // attribute (if not already) and clear the others in the group.
+        var editorName = _controller.GetElementEditorName(elementKey);
+        if (editorName == null)
+        {
+            return "error";
+        }
+
+        var def = _controller.GetEditorDefinition(editorName);
+        var groupControls = def.Tabs.Values.SelectMany(t => t.Controls)
+            .Concat(def.Controls)
+            .Where(c => c.Attribute != null && c.GetString("filtergroup") == filterGroupName)
+            .ToList();
+
+        _controller.StartTransaction($"Set {filterGroupName}");
+        try
+        {
+            foreach (var ctrl in groupControls)
+            {
+                var isSelected = ctrl.GetString("filter") == filterValue;
+                var hasValue = data.GetAttribute(ctrl.Attribute!) != null;
+                if (isSelected && !hasValue)
+                {
+                    data.SetAttribute(ctrl.Attribute!, "");
+                }
+                else if (!isSelected && hasValue)
+                {
+                    data.SetAttribute(ctrl.Attribute!, null!);
+                }
+            }
+
+            data.SetSelectedFilter(filterGroupName, filterValue);
+            return "ok";
+        }
+        finally
+        {
+            _controller.EndTransaction();
+        }
+    }
+
+    [JSExport]
     public static string AddListItem(string elementKey, string attribute, string value)
     {
         if (_controller == null)
@@ -831,8 +889,21 @@ public partial class WasmEditorBridge
                 double => "double",
                 IEditableScripts => "script",
                 IEditableObjectReference => "object",
+                IEditableCommandPattern => "simplepattern",
                 _ => "null"
             };
+        }
+
+        foreach (var ctrl in controls.Where(c => c.ControlType == "filter"))
+        {
+            var filterGroupName = ctrl.GetString("filtergroupname");
+            if (filterGroupName == null)
+            {
+                continue;
+            }
+
+            attrs[ctrl.Id] = data.GetSelectedFilter(filterGroupName)
+                ?? ctrl.Parent.GetDefaultFilterName(filterGroupName, data);
         }
     }
 
@@ -3260,6 +3331,19 @@ public partial class WasmEditorBridge
                 {
                     options = dict.Select(kv => new ControlOption(kv.Key, kv.Value)).ToList();
                 }
+                else
+                {
+                    var fonts = ctrl.GetString("source") switch
+                    {
+                        "basefonts" => _controller!.AvailableBaseFonts(),
+                        "webfonts" => _controller!.AvailableWebFonts(),
+                        _ => null
+                    };
+                    if (fonts != null)
+                    {
+                        options = fonts.Select(f => new ControlOption(f, f)).ToList();
+                    }
+                }
             }
         }
         else if (ctrl.ControlType == "dropdowntypes")
@@ -3271,6 +3355,14 @@ public partial class WasmEditorBridge
             }
 
             attribute = ctrl.Id;
+        }
+        else if (ctrl.ControlType == "filter")
+        {
+            var dict = ctrl.GetDictionary("filters");
+            options = dict?.Select(kv => new ControlOption(kv.Key, kv.Value)).ToList();
+
+            return new ControlInfo(ctrl.Id, "filter", ctrl.Caption, options, null,
+                ctrl.GetString("filtergroupname"), Advanced: !ctrl.IsControlVisibleInSimpleMode);
         }
         else if (ctrl.ControlType == "objects")
         {
@@ -3299,7 +3391,7 @@ public partial class WasmEditorBridge
         }
         else if (ctrl.ControlType == "elementslist")
         {
-            return new ControlInfo(null, "elementslist", null, null, null, null, null, null,
+            return new ControlInfo(null, "elementslist", ctrl.Caption, null, null, null, null, null,
                 ctrl.GetString("elementtype"),
                 ctrl.GetString("objecttype"),
                 ctrl.GetString("listfilter"),

@@ -271,6 +271,14 @@ export function setObjectReference(elementKey: string, attribute: string, object
     return result;
 }
 
+export function setSelectedFilter(elementKey: string, filterGroupName: string, filterValue: string): string {
+    if (!_bridge) return "error";
+    const result = _bridge.SetSelectedFilter(elementKey, filterGroupName, filterValue);
+    refreshSelectedData();
+    refreshUndoRedo();
+    return result;
+}
+
 export function setDropdownType(elementKey: string, controlId: string, selectedType: string): string {
     if (!_bridge) return "error";
     const result = _bridge.SetDropdownType(elementKey, controlId, selectedType);

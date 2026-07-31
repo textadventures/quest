@@ -1,6 +1,6 @@
 <script lang="ts">
     import { SvelteSet } from "svelte/reactivity";
-    import { treeNodes, selectedKey, selectNode, deleteElement, openAddModal, createVerb, createCommand, createIncludedLibrary, createJavascript, swapElements } from "$lib/editor-store";
+    import { treeNodes, selectedKey, selectNode, deleteElement, openAddModal, createVerb, createCommand, createTurnScript, createIncludedLibrary, createJavascript, swapElements } from "$lib/editor-store";
 
     interface Props {
         elementKey: string;
@@ -17,6 +17,7 @@
                 if (lf === "verb") return ["verb"];
                 return ["command"];
             }
+            if (ot === "turnscript") return ["turnscript"];
             return ["room", "object"];
         }
         return [et];
@@ -56,6 +57,7 @@
             nodeTypes.includes("timer") ? "Add Timer" :
                 nodeTypes.includes("verb") ? "Add Verb" :
                 nodeTypes.includes("command") ? "Add Command" :
+                nodeTypes.includes("turnscript") ? "Add Turn Script" :
                 nodeTypes.includes("walkthrough") ? "Add Walkthrough" :
                 nodeTypes.includes("template") ? "Add Template" :
                 nodeTypes.includes("dynamictemplate") ? "Add Dynamic Template" :
@@ -72,6 +74,7 @@
         else if (nodeTypes.includes("timer")) openAddModal("timer", null);
         else if (nodeTypes.includes("verb")) createVerb(parent);
         else if (nodeTypes.includes("command")) createCommand(parent);
+        else if (nodeTypes.includes("turnscript")) createTurnScript(parent ?? "");
         else if (nodeTypes.includes("walkthrough")) openAddModal("walkthrough", null);
         else if (nodeTypes.includes("template")) openAddModal("template", null);
         else if (nodeTypes.includes("dynamictemplate")) openAddModal("dynamictemplate", null);

@@ -8,6 +8,7 @@ export interface WasmBridge {
   SetMultiType(elementKey: string, attribute: string, newType: string): string
   SetObjectReference(elementKey: string, attribute: string, objectName: string): string
   SetDropdownType(elementKey: string, controlId: string, selectedType: string): string
+  SetSelectedFilter(elementKey: string, filterGroupName: string, filterValue: string): string
   Save(): string
   IsDirty(): boolean
   GetGameXml(): string
