@@ -713,11 +713,17 @@ public partial class WorldModel : IGame, IGameDebug
         _questionTcs?.TrySetCanceled();
         _commandInputTcs?.TrySetCanceled();
         _pauseTcs?.TrySetCanceled();
-        _turnSuspendedTcs.TrySetResult();
         _onReadyQueue.Clear();
 
         RequestNextTimerTick?.Invoke(0);
         Finished?.Invoke();
+
+        // Resolve last, matching SignalTurnSuspended's own ordering (side effects
+        // before the commit) - TrySetResult runs its awaiter's continuation
+        // synchronously/inline, so a caller awaiting SendCommand's turn-suspended
+        // signal would otherwise resume - and could observe player state - before
+        // Finished's own subscribers (e.g. WasmPlayer's IsFinished flag) have run.
+        _turnSuspendedTcs.TrySetResult();
     }
 
     internal string GetUniqueId(string? prefix = null)
