@@ -4,14 +4,6 @@ sidebar:
   order: 1
 ---
 
-:::caution
-Quest Viva is currently in development.
-
-What you **can** do: You can use Quest Viva to host Quest games on any website.
-
-What you **can't** (yet) do: The Editor is still under construction. So if you are looking to create a game, [please use Quest 5](https://textadventures.co.uk/quest) for now.
-:::
-
 ## What is Quest Viva?
 
 Quest Viva is the "next version" of [Quest 5](https://textadventures.co.uk/quest).
@@ -26,6 +18,8 @@ Because there's [another system](https://github.com/ThePix/QuestJS) already call
 
 ## Sounds great, how do I get started?
 
-If you want to create a game, you will still need to use [Quest 5](https://textadventures.co.uk/quest) for now.
+[Download the app](/download), or use it in your browser at [play.questviva.com](https://play.questviva.com).
 
-If you've already created a game with Quest 5, then great - you can now host your game on any website. See [Hosting your game](/guides/hosting/).
+## Where's all the documentation?
+
+The proper Quest Viva documentation is a work in progress - for now, the [Quest 5 documentation](https://docs.textadventures.co.uk/quest/) is the place to look. Quest Viva 6 is pretty much "a modern version of Quest 5" so the way you build a game is pretty much the same. The docs will be migrated to this site soon.

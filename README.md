@@ -1,46 +1,26 @@
 Quest Viva
 ==========
 
-Quest Viva is an open-source system for creating and playing text adventure games. Designed for accessibility and flexibility, Quest Viva makes it easy for anyone to create a game without needing any previous experience of programming. For those who want more control, Quest Viva also offers powerful scripting capabilities.
+Quest Viva is a powerful platform for creating text adventure games and interactive fiction. It's easy to use, and you can create games quickly - no programming required, though a powerful scripting language is there if you need it.
 
-Formerly known as Quest 5, Quest Viva is a modern cross-platform update, currently in development.
+Previously known as Quest 5, Quest Viva is a modern cross-platform update. You can download it for Windows, macOS or Linux, or use the [web app](https://play.questviva.com) in your browser, which has identical functionality.
+
+When you're ready to publish your game, you can host it on any website.
 
 ## Features
 
 - **User-Friendly Interface** - Create text adventures with an intuitive editor, no coding required.
-- **Powerful Scripting** - Extend your games with custom logic using Quest's scripting language.
-- **Cross-Platform** - Games can be played in a web browser, or offline on Windows, Mac and Linux.
+- **Powerful Scripting** - Extend your games with custom logic using Quest Viva's scripting language.
+- **Cross-Platform** - Games can be played in a web browser, or in the app on Windows, Mac and Linux.
 - **Multimedia Support** - Add images and sounds to your games, run JavaScript, and embed videos.
-- **Extensible and Open-Source** - Modify and expand Quest to suit your needs.
+- **Extensible and Open-Source** - Modify and expand Quest Viva to suit your needs.
 - **Multiple languages** - Quest Viva supports creating games in English, French, German, Spanish, Dutch, Portuguese and more.
 
 ## Getting started
 
-**⚠️⚠️⚠️ If you just want to create a game, then [please use Quest 5 for now](https://textadventures.co.uk/quest) ⚠️⚠️⚠️**
-
-### For Developers testing and contributing to Quest Viva
-
-- [Install Docker](https://www.docker.com/)
-- Clone this GitHub repository
-- Run `docker compose up --build`
+- [Download the app](https://questviva.com/download), or use it in your browser at [play.questviva.com](https://play.questviva.com).
 
 ## Community and Support
 
-- [Documentation](https://docs.textadventures.co.uk/quest)
-- For help, [join us in Discord](https://textadventures.co.uk/community/discord) or post in [Quest discussions](https://github.com/textadventures/quest/discussions)
-
----
-
-## Sample compose.yml
-
-```
-services:
-  webplayer:
-    image: ghcr.io/textadventures/quest-viva-webplayer:latest
-    ports:
-      - "8080:8080"
-    environment:
-      Home__File: "/data/game.quest"
-    volumes:
-      - "/path/to/game.quest:/data/game.quest:ro"
-```
+- [Documentation](https://questviva.com)
+- For help, [join us in Discord](https://textadventures.co.uk/community/discord) or post in [GitHub discussions](https://github.com/textadventures/quest/discussions)
