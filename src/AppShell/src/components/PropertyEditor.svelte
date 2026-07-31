@@ -767,9 +767,18 @@
             {ctrl.caption ?? ""}
         </div>
     {:else if ctrl.controlType === "label"}
-        <div class="px-3 py-1 text-xs text-surface-600-400 italic">
-            {ctrl.caption ?? ""}
-        </div>
+        {#if ctrl.href}
+            <a
+                href={ctrl.href}
+                target="_blank"
+                rel="noopener noreferrer"
+                class="block px-3 py-1 text-xs text-primary-600-400 italic hover:underline"
+            >{ctrl.caption ?? ""}</a>
+        {:else}
+            <div class="px-3 py-1 text-xs text-surface-600-400 italic">
+                {ctrl.caption ?? ""}
+            </div>
+        {/if}
     {:else if ctrl.controlType === "elementslist" && $selectedKey}
         <ElementsList
             elementKey={$selectedKey}
