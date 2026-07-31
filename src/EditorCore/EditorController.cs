@@ -2349,7 +2349,10 @@ public sealed class EditorController : IDisposable
 
         var userFunctions = WorldModel.Elements.GetElements(ElementType.Function)
             .Where(e => !e.MetaFields[MetaFieldDefinitions.Library])
-            .Select(e => (e.Name, e.Fields[FieldDefinitions.ParamNames].ToArray(), IsUserDefined: true));
+            // A freshly-created function has no ParamNames field set yet (only populated by the
+            // aslx <function parameters="..."> loader), so Fields[...] is null until the user
+            // adds a parameter.
+            .Select(e => (e.Name, e.Fields[FieldDefinitions.ParamNames]?.ToArray() ?? [], IsUserDefined: true));
 
         return builtIn.Concat(userFunctions).OrderBy(f => f.Name, StringComparer.Ordinal);
     }
