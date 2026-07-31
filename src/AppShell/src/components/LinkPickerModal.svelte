@@ -23,9 +23,10 @@
     }: Props = $props();
 
     let target = $state("");
-    // svelte-ignore state_referenced_locally -- intentional one-time snapshot: this component is
-    // always freshly mounted per link-edit invocation (see PropertyEditor's `{#if activeLinkCommand}`),
-    // so initialText never changes on an existing instance.
+    // This component is always freshly mounted per link-edit invocation (see
+    // PropertyEditor's `{#if activeLinkCommand}`), so initialText never changes
+    // on an existing instance: intentional one-time snapshot.
+    // svelte-ignore state_referenced_locally
     let text = $state(initialText);
     let textInputEl: HTMLInputElement | undefined = $state();
 
