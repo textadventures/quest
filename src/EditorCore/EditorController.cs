@@ -2339,6 +2339,21 @@ public sealed class EditorController : IDisposable
         return WorldModel.GetBuiltInFunctionNames();
     }
 
+    // Feeds the editor's expression-insert helper: built-in engine functions plus the game's own
+    // (non-library) Function elements, both with real parameter names rather than a hand-curated
+    // guess at what's useful.
+    public IEnumerable<(string Name, string[] Parameters, bool IsUserDefined)> GetExpressionFunctions()
+    {
+        var builtIn = WorldModel.GetBuiltInFunctionSignatures()
+            .Select(f => (f.Name, f.Parameters, IsUserDefined: false));
+
+        var userFunctions = WorldModel.Elements.GetElements(ElementType.Function)
+            .Where(e => !e.MetaFields[MetaFieldDefinitions.Library])
+            .Select(e => (e.Name, e.Fields[FieldDefinitions.ParamNames].ToArray(), IsUserDefined: true));
+
+        return builtIn.Concat(userFunctions).OrderBy(f => f.Name, StringComparer.Ordinal);
+    }
+
     public static Dictionary<string, TemplateData> GetAvailableTemplates()
     {
         var resources = WorldModel.GetEmbeddedResources()

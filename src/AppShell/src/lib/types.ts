@@ -19,6 +19,12 @@ export interface TextProcessorCommand {
   insertAfter: string
 }
 
+export interface ExpressionFunctionInfo {
+  name: string
+  parameters: string[]
+  isUserDefined: boolean
+}
+
 export interface ControlInfo {
   attribute: string | null
   controlType: string
