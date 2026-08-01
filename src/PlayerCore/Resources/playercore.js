@@ -159,6 +159,33 @@ function initPlayerUI() {
         }
     });
 
+    // ShowMenu (and anything built on it - Ask, disambiguation) renders each
+    // choice as a bare <a class="cmdlink" onclick="ASLEvent(...)"> baked into the
+    // game's own compiled script - unlike .commandlink, it gets no client-side
+    // disable until the engine round-trip finishes and calls back
+    // disableMenuOutputSection. That's invisible on a fast round-trip, but on a
+    // slow one (e.g. WasmPlayer on an underpowered device) it leaves a long
+    // window where an impatient second click fires another ASLEvent after the
+    // engine has already cleared game.menucallback for the first, surfacing as
+    // "Unexpected menu response". This runs after the clicked link's own inline
+    // onclick (which fires at the target phase, before bubbling reaches this
+    // document-level delegate), so it can't stop that first click, but it does
+    // disable every live menu link before any subsequent click can be
+    // processed. Exact-match selector so it only catches bare ShowMenu-style
+    // links, not the compound-class .elementmenu/.exitlink/.commandlink ones
+    // that are meant to stay clickable across multiple turns. Scoped to
+    // #divOutput (where createNewDiv/msg append everything ShowMenu prints)
+    // rather than the whole document - #endWaitLink is also a bare
+    // class="cmdlink" for its styling, but lives in the static #endWaitDiv
+    // chrome outside #divOutput and must stay clickable across repeated
+    // wait()s; disabling it after the first would silently break every wait
+    // after it. Living here (rather than in the aslx ShowMenu template) means
+    // it protects every already-published game, not just ones re-exported
+    // after a library fix.
+    $(document).on("click", "#divOutput a[class=\"cmdlink\"]", function () {
+        $("#divOutput a[class=\"cmdlink\"]").addClass("disabled").attr("onclick", null);
+    });
+
     const sidebar = document.getElementById("sidebar");
     const cmdShowPanes = document.getElementById("cmdShowPanes");
     const gamePanes = document.getElementById("gamePanes");

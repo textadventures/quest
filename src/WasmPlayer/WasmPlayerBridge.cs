@@ -112,7 +112,7 @@ public partial class WasmPlayerBridge
         if (!ok)
         {
             _ui.OutputText(string.Join("<br/>", errors) + "<br/>");
-            _ui.FlushBuffer();
+            await _ui.FlushBufferAndYieldAsync();
             return false;
         }
 
@@ -150,7 +150,7 @@ public partial class WasmPlayerBridge
     {
         if (_game == null || _ui == null) return;
         await _game.Begin();
-        _ui.FlushBuffer();
+        await _ui.FlushBufferAndYieldAsync();
     }
 
     [JSExport]
@@ -162,7 +162,7 @@ public partial class WasmPlayerBridge
             : JsonSerializer.Deserialize(metadataJson, WasmJsonContext.Default.DictionaryStringString)
               ?? new Dictionary<string, string>();
         await _game.SendCommand(command, tickCount, metadata);
-        _ui.FlushBuffer();
+        await _ui.FlushBufferAndYieldAsync();
     }
 
     [JSExport]
@@ -170,7 +170,7 @@ public partial class WasmPlayerBridge
     {
         if (_game == null || _ui == null || _ui.IsFinished) return;
         await _game.SendEvent(eventName, param);
-        _ui.FlushBuffer();
+        await _ui.FlushBufferAndYieldAsync();
     }
 
     [JSExport]
@@ -178,7 +178,7 @@ public partial class WasmPlayerBridge
     {
         if (_game == null || _ui == null) return;
         await _game.FinishWait();
-        _ui.FlushBuffer();
+        await _ui.FlushBufferAndYieldAsync();
     }
 
     [JSExport]
@@ -186,7 +186,7 @@ public partial class WasmPlayerBridge
     {
         if (_game == null || _ui == null) return;
         await _game.FinishPause();
-        _ui.FlushBuffer();
+        await _ui.FlushBufferAndYieldAsync();
     }
 
     [JSExport]
@@ -194,7 +194,7 @@ public partial class WasmPlayerBridge
     {
         if (_game == null || _ui == null) return;
         await _game.SetMenuResponse(response);
-        _ui.FlushBuffer();
+        await _ui.FlushBufferAndYieldAsync();
     }
 
     [JSExport]
@@ -202,7 +202,7 @@ public partial class WasmPlayerBridge
     {
         if (_game == null || _ui == null) return;
         await _game.SetQuestionResponse(response);
-        _ui.FlushBuffer();
+        await _ui.FlushBufferAndYieldAsync();
     }
 
     [JSExport]
@@ -210,7 +210,7 @@ public partial class WasmPlayerBridge
     {
         if (_game == null || _ui == null || _ui.IsFinished) return;
         await _game.Tick(elapsedTime);
-        _ui.FlushBuffer();
+        await _ui.FlushBufferAndYieldAsync();
     }
 
     // Split in two because the JS interop source generator doesn't support
@@ -294,7 +294,7 @@ public partial class WasmPlayerBridge
         finally
         {
             _ui.Runner = null;
-            _ui.FlushBuffer();
+            await _ui.FlushBufferAndYieldAsync();
         }
     }
 
@@ -549,6 +549,24 @@ public partial class WasmPlayerBridge
             FlushBuffer();
         }
 
+        // Like FlushBuffer, but also gives the browser event loop a tick (throttled to
+        // roughly once per 16ms/frame) after flushing — used at genuine turn boundaries
+        // (SendCommand, Tick, etc.) rather than per JS.xxx(...) call, so CSS
+        // transitions/layout have a chance to settle once per turn (originally added to
+        // fix a game whose custom UI stayed hidden after a hide/show pair — see git
+        // history on RunScriptAsync) without forcing a browser paint mid-turn for every
+        // statement a script's custom refresh issues.
+        public async Task FlushBufferAndYieldAsync()
+        {
+            FlushBuffer();
+            var now = Environment.TickCount64;
+            if (now - _lastYieldMs >= 16)
+            {
+                _lastYieldMs = now;
+                await JsYield();
+            }
+        }
+
         public void SetPendingTimerTick(int seconds)
         {
             _pendingTimerTick = seconds;
@@ -698,16 +716,16 @@ public partial class WasmPlayerBridge
 
         private static long _lastYieldMs = 0;
 
+        // Buffered rather than run immediately (matching WebPlayer's AddJavaScriptToBuffer),
+        // so a turn issuing many JS.xxx(...) calls (e.g. a game's custom status/HUD refresh)
+        // paints as one batch at end-of-turn (FlushBufferAndYieldAsync) instead of a browser
+        // repaint per call. Still throttle-yields here (without flushing) so a turn/walkthrough
+        // with many calls in a row doesn't monopolise the single WASM thread for its whole
+        // duration — e.g. RunWalkthrough's loop never awaits anything else between steps, so
+        // without this the browser couldn't process input or DevTools protocol calls until the
+        // entire walkthrough finished.
         async Task IPlayer.RunScriptAsync(string function, object[]? parameters)
         {
-            FlushBuffer();
-            var now = Environment.TickCount64;
-            if (now - _lastYieldMs >= 16)
-            {
-                _lastYieldMs = now;
-                await JsYield();
-            }
-
             // Strip newlines from string parameters — some games depend on this (matching WebPlayer behaviour)
             var processedParams = parameters?.Select(p =>
                 p is string s ? (object)s.Replace("\r", "").Replace("\n", "") : p).ToArray();
@@ -716,13 +734,21 @@ public partial class WasmPlayerBridge
             // so it runs in global scope (matching WebPlayer behaviour; e.g. spondre defines global functions this way)
             if (function == "eval" && processedParams is [string evalCode])
             {
-                JsRunScript(evalCode);
-                return;
+                _uiBuffer.Add(() => JsRunScript(evalCode));
+            }
+            else
+            {
+                var serializedArgs = string.Join(',',
+                    processedParams?.Select(SerializeJsArg) ?? System.Array.Empty<string>());
+                _uiBuffer.Add(() => JsRunScript($"{function}({serializedArgs})"));
             }
 
-            var serializedArgs = string.Join(',',
-                processedParams?.Select(SerializeJsArg) ?? System.Array.Empty<string>());
-            JsRunScript($"{function}({serializedArgs})");
+            var now = Environment.TickCount64;
+            if (now - _lastYieldMs >= 16)
+            {
+                _lastYieldMs = now;
+                await JsYield();
+            }
         }
 
         private static string SerializeJsArg(object? arg) => arg switch
