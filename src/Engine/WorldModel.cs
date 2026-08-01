@@ -91,9 +91,18 @@ public partial class WorldModel : IGame, IGameDebug
     }
 
     // Tracks show menu / ask / get input callbacks that fire-and-forget their response handling.
-    // on ready defers until this reaches zero.
+    // on ready defers while this is above zero, so it doesn't run mid-callback while state may
+    // still be inconsistent.
     private int _pendingCallbackCount;
     private readonly List<(IScript Script, Context Context)> _onReadyQueue = [];
+
+    // Guards the on-ready drain loop in EndPendingCallbackAsync against re-entry: a queued
+    // script can itself synchronously await another prompt (e.g. a synchronous "play sound",
+    // or the GetInput()/Ask()/ShowMenu() expression forms), which calls EndPendingCallbackAsync
+    // again from within the drain loop's own call stack. When that happens, the inner call must
+    // not start a second drain loop - it just decrements the count and returns, leaving the
+    // outer loop (still on the stack) to keep going.
+    private bool _isFlushingOnReadyQueue;
 
     private bool _reportingScriptError;
 
@@ -216,6 +225,7 @@ public partial class WorldModel : IGame, IGameDebug
     public event UpdateListHandler? UpdateList;
     public event FinishedHandler? Finished;
     public event ErrorHandler? LogError;
+    public event Action? TurnSuspended;
 
     public async Task SetMenuResponse(string? response)
     {
@@ -1147,6 +1157,11 @@ public partial class WorldModel : IGame, IGameDebug
         // at every point that matters, including games that never hit any of these
         // constructs at all (count stays 0 throughout, correctly reported as idle).
         PlayerUi.SetTurnPending(_pendingCallbackCount > 0);
+        // Unlike _turnSuspendedTcs.TrySetResult() below (a one-shot signal - only the first
+        // call per command actually resolves anything), this fires every time, so a buffering
+        // IPlayer can flush on every suspension boundary rather than only the first one a given
+        // command reaches.
+        TurnSuspended?.Invoke();
         _turnSuspendedTcs.TrySetResult();
     }
 
@@ -1725,13 +1740,30 @@ public partial class WorldModel : IGame, IGameDebug
     internal async Task EndPendingCallbackAsync()
     {
         _pendingCallbackCount--;
-        while (_pendingCallbackCount == 0 && _onReadyQueue.Count > 0 && State != GameState.Finished)
+
+        // Drain whenever *this* Begin/End pair resolves - not only once every other
+        // outstanding callback has also resolved. A script (e.g. get_partition_sequence-style
+        // puzzle loops) can open its next get input/wait/ask/show menu before this one's finally
+        // block runs, which keeps _pendingCallbackCount above zero indefinitely; gating the drain
+        // on it reaching zero left anything queued while such a loop is active stuck forever.
+        if (_isFlushingOnReadyQueue)
         {
-            var (script, context) = _onReadyQueue[0];
-            _onReadyQueue.RemoveAt(0);
-            await RunScriptAsync(script, context);
-            // RunScriptAsync may have called BeginPendingCallback (e.g. via show menu inside on ready);
-            // if so, stop flushing — the new callback's EndPendingCallbackAsync will continue.
+            return;
+        }
+
+        _isFlushingOnReadyQueue = true;
+        try
+        {
+            while (_onReadyQueue.Count > 0 && State != GameState.Finished)
+            {
+                var (script, context) = _onReadyQueue[0];
+                _onReadyQueue.RemoveAt(0);
+                await RunScriptAsync(script, context);
+            }
+        }
+        finally
+        {
+            _isFlushingOnReadyQueue = false;
         }
     }
 
