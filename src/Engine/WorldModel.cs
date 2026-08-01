@@ -225,6 +225,7 @@ public partial class WorldModel : IGame, IGameDebug
     public event UpdateListHandler? UpdateList;
     public event FinishedHandler? Finished;
     public event ErrorHandler? LogError;
+    public event Action? TurnSuspended;
 
     public async Task SetMenuResponse(string? response)
     {
@@ -1156,6 +1157,11 @@ public partial class WorldModel : IGame, IGameDebug
         // at every point that matters, including games that never hit any of these
         // constructs at all (count stays 0 throughout, correctly reported as idle).
         PlayerUi.SetTurnPending(_pendingCallbackCount > 0);
+        // Unlike _turnSuspendedTcs.TrySetResult() below (a one-shot signal - only the first
+        // call per command actually resolves anything), this fires every time, so a buffering
+        // IPlayer can flush on every suspension boundary rather than only the first one a given
+        // command reaches.
+        TurnSuspended?.Invoke();
         _turnSuspendedTcs.TrySetResult();
     }
 

@@ -1,0 +1,67 @@
+<asl version="580">
+
+  <include ref="English.aslx"/>
+  <include ref="Core.aslx"/>
+
+  <game name="OnReadyRecursiveGetInputTest">
+    <gridmap />
+  </game>
+
+  <object name="RoomA">
+    <inherit name="editor_room" />
+    <attr name="grid_width" type="int">2</attr>
+    <attr name="grid_length" type="int">2</attr>
+    <object name="player">
+      <inherit name="defaultplayer" />
+    </object>
+    <exit alias="east" to="RoomB">
+      <inherit name="eastdirection" />
+    </exit>
+  </object>
+
+  <object name="RoomB">
+    <inherit name="editor_room" />
+    <attr name="grid_width" type="int">2</attr>
+    <attr name="grid_length" type="int">2</attr>
+    <exit alias="west" to="RoomA">
+      <inherit name="westdirection" />
+    </exit>
+  </object>
+
+  <!-- Mirrors Giantkiller Too's Indoor Market "get_partition_sequence" puzzle
+       pattern: a loop that opens its next get input from inside the current
+       one's callback, before that callback's own finally block runs, so
+       _pendingCallbackCount never returns to zero while the loop is active.
+       Moving the player triggers changedparent -> OnEnterRoom -> on ready ->
+       JS.updateLocation, same mechanism the automatic map redraw uses. -->
+  <command name="cmd_start">
+    <pattern>startloop</pattern>
+    <script>
+      puzzle_loop
+    </script>
+  </command>
+  <function name="puzzle_loop">
+    msg ("prompt")
+    get input {
+      if (result = "a") {
+        MoveObject (player, RoomA)
+        on ready {
+          msg ("moved-onready: " + result)
+        }
+      }
+      else if (result = "b") {
+        MoveObject (player, RoomB)
+        on ready {
+          msg ("moved-onready: " + result)
+        }
+      }
+      if (result = "stop") {
+        msg ("stopped")
+      }
+      else {
+        puzzle_loop
+      }
+    }
+  </function>
+
+</asl>

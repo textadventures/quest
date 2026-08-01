@@ -21,6 +21,15 @@ public interface IGame
     event UpdateListHandler? UpdateList;
     event FinishedHandler? Finished;
     event ErrorHandler? LogError;
+
+    // Raised on every genuine suspension boundary (wait/get input/ask/show menu opening or
+    // resolving), not just once per SendCommand/Begin/etc. call - a player implementation that
+    // buffers JS calls (e.g. WasmPlayer's WasmPlayerBridge) should flush on every occurrence,
+    // not only when the outermost await returns. A script can open its *next* suspension (e.g.
+    // a puzzle loop's next get input) before the one currently resolving has finished draining
+    // deferred on-ready work, so the first signal after a command starts isn't necessarily the
+    // last one relevant to that command's own output.
+    event Action? TurnSuspended;
     void Finish();
     Task<byte[]> SaveAsync(string html);
     Task FinishWait();

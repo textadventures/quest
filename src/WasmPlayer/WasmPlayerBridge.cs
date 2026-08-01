@@ -107,6 +107,14 @@ public partial class WasmPlayerBridge
         _game.UpdateList += (listType, items) => _ui.HandleUpdateList(listType, items);
         _game.Finished += () => _ui.HandleFinished();
         _game.RequestNextTimerTick += seconds => _ui.SetPendingTimerTick(seconds);
+        // A script can open its *next* suspension (e.g. a puzzle loop's next get input) before
+        // the one currently resolving has finished draining deferred on-ready work (map redraws,
+        // JS.updateLocation, etc.) - _turnSuspendedTcs only resolves once per command, on the
+        // *first* such signal, so the FlushBufferAndYieldAsync call after `await _game.SendCommand`
+        // can fire before that later output is buffered, and it then only shows up a turn late.
+        // TurnSuspended fires on every occurrence (not just the first), so flush on each one -
+        // FlushBuffer is a cheap no-op when nothing new is buffered.
+        _game.TurnSuspended += () => _ui.FlushBuffer();
 
         var (ok, errors) = await _helper.Initialise(_ui);
         if (!ok)

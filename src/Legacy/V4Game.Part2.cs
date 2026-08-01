@@ -54,6 +54,12 @@ public partial class V4Game
 
     public event PrintTextHandler PrintText;
 
+    // Legacy V4 games have no wait/get-input/ask/show-menu suspension concept for a buffering
+    // IPlayer to flush on mid-command - never raised, but IGame requires the member.
+#pragma warning disable CS0067
+    public event Action TurnSuspended;
+#pragma warning restore CS0067
+
     public Task SendCommand(string command)
     {
         return SendCommand(command, 0, null);
