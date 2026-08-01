@@ -1,5 +1,23 @@
 # Changelog
 
+## [6.0.0-beta.48](https://github.com/textadventures/quest/compare/v6.0.0-beta.47...v6.0.0-beta.48) (2026-08-01)
+
+
+### Features
+
+* **AppShell:** add object/function insert helper for expression fields ([#1973](https://github.com/textadventures/quest/issues/1973)) ([4c10bfc](https://github.com/textadventures/quest/commit/4c10bfc889c12ff786ae86dd6df93f9eb93ba1fa))
+
+
+### Bug Fixes
+
+* **AppShell:** fix web fonts, verb pattern default, and turn scripts list ([#1972](https://github.com/textadventures/quest/issues/1972)) ([7e10c9e](https://github.com/textadventures/quest/commit/7e10c9e25600f80bc0c22f941870ba084db1bf99))
+* **AppShell:** make textadventures.co.uk editor open-only, no create ([#1971](https://github.com/textadventures/quest/issues/1971)) ([221754f](https://github.com/textadventures/quest/commit/221754f7d12c64b95fb008e9148efb7fca0e5c92))
+* **AppShell:** suppress stale svelte-check warning, fail CI on future ones ([#1970](https://github.com/textadventures/quest/issues/1970)) ([3c6edf9](https://github.com/textadventures/quest/commit/3c6edf9cff9ea94409f9fa767f1a2d544dda2050))
+* **Engine:** request the next timer tick only after Tick() fully completes ([#1976](https://github.com/textadventures/quest/issues/1976)) ([ede13cb](https://github.com/textadventures/quest/commit/ede13cb2f264cde9fb524bd9a8ca14e1c9e135eb))
+* fix editor keyboard shortcuts and unsaved-close dialog freeze ([#1968](https://github.com/textadventures/quest/issues/1968)) ([bd15a74](https://github.com/textadventures/quest/commit/bd15a7451c7feb3913ef7a426cb2f6642cf4cd50))
+* **WasmPlayer:** batch JS.* script calls instead of painting per call ([#1975](https://github.com/textadventures/quest/issues/1975)) ([2f49f03](https://github.com/textadventures/quest/commit/2f49f03e0eac4ba859ada336516e5dca84948bb2))
+* wire all tests/e2e/*.mjs scripts into e2e.yml, fix drift found along the way ([#1977](https://github.com/textadventures/quest/issues/1977)) ([df177e0](https://github.com/textadventures/quest/commit/df177e0c81b8689476579a7fdcd26110d494b93f))
+
 ## [6.0.0-beta.47](https://github.com/textadventures/quest/compare/v6.0.0-beta.46...v6.0.0-beta.47) (2026-07-30)
 
 
