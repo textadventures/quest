@@ -80,6 +80,32 @@
     </script>
   </command>
 
+  <!-- Recursive get-input loop (the "get_partition_sequence" pattern used by mini-puzzles):
+       each response opens the next get input from inside the previous one's callback, before
+       that callback returns. This keeps _pendingCallbackCount above zero indefinitely (it never
+       falls all the way back to 0 while the loop is running), so an on-ready queued during a
+       round must still run on that same round, not be gated on the count reaching zero. -->
+  <function name="puzzle_loop">
+    msg ("prompt")
+    get input {
+      on ready {
+        msg ("deferred: " + result)
+      }
+      if (result = "stop") {
+        msg ("stopped")
+      }
+      else {
+        puzzle_loop
+      }
+    }
+  </function>
+  <command name="cmd_puzzle_loop">
+    <pattern>puzzleloop</pattern>
+    <script>
+      puzzle_loop
+    </script>
+  </command>
+
   <!-- Fires as soon as elapsed time reaches its 5-second interval. Used to verify that
        SendCommand runs elapsed-time-triggered timer scripts to completion before the
        command itself runs, rather than racing the two. -->

@@ -220,6 +220,33 @@ public class CallbackTests
         list.IndexOf("outer after").ShouldBeLessThan(list.IndexOf("inner"));
     }
 
+    // Regression test for a bug (reported against Giantkiller Too's Indoor Market partition
+    // puzzle) where an on-ready queued mid-loop never ran: the loop's "get input" reopens the
+    // next prompt from inside the current callback, before that callback's own finally block
+    // decrements _pendingCallbackCount, so the count never returns to 0 while the loop is
+    // running. The old drain condition (_pendingCallbackCount == 0) meant anything queued during
+    // any round was stuck forever. Each round's on-ready must run in that same round.
+    [TestMethod]
+    public async Task OnReady_QueuedInsideRecursiveGetInputLoop_RunsEachRound()
+    {
+        var driver = await GameDriver.LoadAsync("callbacktest.aslx");
+
+        var phase1 = await driver.SendCommandAsync("puzzleloop");
+        phase1.ShouldContain("prompt");
+
+        var phase2 = await driver.SendCommandAsync("first");
+        phase2.ShouldContain("deferred: first");
+        phase2.ShouldContain("prompt");
+
+        var phase3 = await driver.SendCommandAsync("second");
+        phase3.ShouldContain("deferred: second");
+        phase3.ShouldContain("prompt");
+
+        var phase4 = await driver.SendCommandAsync("stop");
+        phase4.ShouldContain("deferred: stop");
+        phase4.ShouldContain("stopped");
+    }
+
     // Tick() used to call SendNextTimerRequest() right after *starting* (not awaiting)
     // TickAsyncInternal, unlike every other entry point (FinishWait, FinishPause,
     // SetQuestionResponse, SetMenuResponse, HandleCommandAsyncInternal, SendEventCore,
