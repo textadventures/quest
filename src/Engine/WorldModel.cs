@@ -527,7 +527,7 @@ public partial class WorldModel : IGame, IGameDebug
         return Task.FromResult(Encoding.UTF8.GetBytes(saveData));
     }
 
-    public Task Tick(int elapsedTime)
+    public async Task Tick(int elapsedTime)
     {
         if (_timerRunner == null)
         {
@@ -536,7 +536,7 @@ public partial class WorldModel : IGame, IGameDebug
 
         if (State == GameState.Finished)
         {
-            return Task.CompletedTask;
+            return;
         }
 
         if (_beginInProgress)
@@ -545,12 +545,24 @@ public partial class WorldModel : IGame, IGameDebug
             // _beginInProgress). Drop it — BeginInternalAsync calls
             // SendNextTimerRequest() itself once it completes, so the next tick
             // gets scheduled correctly from actual post-startup state.
-            return Task.CompletedTask;
+            return;
         }
 
-        var task = TickAsyncInternal(elapsedTime);
+        // SendNextTimerRequest() must run after TickAsyncInternal fully completes, not
+        // right after starting it: a timer's own script can genuinely suspend mid-execution
+        // (any msg()/JS.* call goes through IPlayer.RunScriptAsync, which real players are
+        // free to implement as a genuine async yield back to the browser) after disabling
+        // itself but before enabling the next timer in the chain - a common EnableTimer/
+        // SetTimeout pattern. Computing "next due" before that point sees no enabled timers
+        // and requests 0 - and since nothing else re-requests a tick afterwards, the JS-side
+        // interval never gets re-armed and every timer after this one in the chain silently
+        // stops firing. This is the "game just stops" bug reported for Timer/SetTimeout
+        // chains: every other entry point here (FinishWait, FinishPause,
+        // SetQuestionResponse, SetMenuResponse, HandleCommandAsyncInternal, SendEventCore,
+        // BeginInternalAsync) already requests the next tick only after its work completes;
+        // Tick() was the one exception.
+        await TickAsyncInternal(elapsedTime);
         SendNextTimerRequest();
-        return task;
     }
 
     private async Task TickAsyncInternal(int elapsedTime)

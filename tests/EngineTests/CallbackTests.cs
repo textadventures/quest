@@ -20,12 +20,15 @@ internal sealed class GameDriver
     private Exception _scriptError;
     public List<int> RequestedTimerTicks { get; } = [];
     public GameState State => _worldModel.State;
+    public WorldModel Model => _worldModel;
+    public Mock<IPlayer> PlayerMock { get; private set; }
 
     private static readonly Regex StripTags = new(@"<[^>]+>", RegexOptions.Compiled);
 
     private GameDriver(WorldModel worldModel, Mock<IPlayer> playerMock)
     {
         _worldModel = worldModel;
+        PlayerMock = playerMock;
         playerMock
             .Setup(p => p.RunScriptAsync(It.IsAny<string>(), It.IsAny<object[]>()))
             .Callback<string, object[]>((fn, args) =>
@@ -94,6 +97,15 @@ internal sealed class GameDriver
         _scriptError = null;
         RequestedTimerTicks.Clear();
         await _worldModel.FinishWait();
+        return TakeBatch();
+    }
+
+    public async Task<IReadOnlyList<string>> TickAsync(int elapsedTime)
+    {
+        _batch = [];
+        _scriptError = null;
+        RequestedTimerTicks.Clear();
+        await _worldModel.Tick(elapsedTime);
         return TakeBatch();
     }
 }
@@ -206,5 +218,53 @@ public class CallbackTests
         // finishes ("outer after"), not nested inside it.
         var list = output.ToList();
         list.IndexOf("outer after").ShouldBeLessThan(list.IndexOf("inner"));
+    }
+
+    // Tick() used to call SendNextTimerRequest() right after *starting* (not awaiting)
+    // TickAsyncInternal, unlike every other entry point (FinishWait, FinishPause,
+    // SetQuestionResponse, SetMenuResponse, HandleCommandAsyncInternal, SendEventCore,
+    // BeginInternalAsync), which all correctly request the next tick only after their
+    // work fully completes. On a real player, a timer's own script can genuinely suspend
+    // mid-execution (msg()/JS.* calls go through interop that can yield) - so if
+    // chaintimer1 disables itself, then yields, then enables chaintimer2, the premature
+    // request captures a stale snapshot with chaintimer1 already disabled and
+    // chaintimer2 not yet enabled: GetTimeUntilNextTimerRuns() sees no enabled timers and
+    // requests 0, and nothing ever re-requests afterwards - chaintimer2 silently never
+    // fires again. This is exactly the WasmPlayer-only "game just stops" bug reported for
+    // Timer/SetTimeout chains: WasmPlayer's RunScriptAsync genuinely yields via a
+    // throttled JS interop call; WebPlayer's happens not to hit the same race in practice.
+    [TestMethod]
+    public async Task Tick_TimerScriptYieldsBeforeEnablingNextTimer_RequestsCorrectNextTick()
+    {
+        var driver = await GameDriver.LoadAsync("callbacktest.aslx");
+
+        // chaintimer1 starts disabled and is enabled here (rather than from game start)
+        // so it can't collide with other tests' timers (e.g. racetimer's interval=5).
+        await driver.SendCommandAsync("enablechaintimer");
+        driver.RequestedTimerTicks.Clear();
+
+        // Simulate a real player's interop call (msg() -> JS.addText) genuinely suspending
+        // mid-script - a plain TaskCompletionSource rather than Task.Yield(), since
+        // Task.Yield()'s continuation runs on the CLR thread pool and can race the calling
+        // thread; this instead matches WasmPlayer's single-threaded JS event loop exactly,
+        // where nothing else can possibly run until this is explicitly completed below.
+        var addTextTcs = new TaskCompletionSource();
+        driver.PlayerMock
+            .Setup(p => p.RunScriptAsync("addText", It.IsAny<object[]>()))
+            .Returns(addTextTcs.Task);
+
+        var tickTask = driver.Model.Tick(2);
+
+        // chaintimer1 has run DisableTimer and is now suspended mid-msg(), before reaching
+        // EnableTimer(chaintimer2). The buggy Tick() calls SendNextTimerRequest() right here
+        // - before the timer's script has actually finished - so nothing should have been
+        // requested yet.
+        driver.RequestedTimerTicks.ShouldBeEmpty();
+
+        addTextTcs.TrySetResult();
+        await tickTask;
+
+        driver.RequestedTimerTicks.ShouldNotContain(0);
+        driver.RequestedTimerTicks.ShouldContain(3);
     }
 }

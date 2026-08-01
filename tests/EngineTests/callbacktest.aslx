@@ -96,4 +96,33 @@
       msg ("command ran")
     </script>
   </command>
+
+  <!-- Chained timers: chaintimer1 disables itself, prints (a genuine interop yield point
+       on a real player), then enables chaintimer2. If the host requests its next tick
+       before chaintimer1's whole script has finished running, it captures a stale snapshot
+       (chaintimer1 already disabled, chaintimer2 not yet enabled) and never re-arms for
+       chaintimer2 at all. -->
+  <timer name="chaintimer1">
+    <enabled type="boolean">false</enabled>
+    <interval type="int">2</interval>
+    <script>
+      DisableTimer (chaintimer1)
+      msg ("chain1 ran")
+      EnableTimer (chaintimer2)
+    </script>
+  </timer>
+  <timer name="chaintimer2">
+    <enabled type="boolean">false</enabled>
+    <interval type="int">3</interval>
+    <script>
+      msg ("chain2 ran")
+    </script>
+  </timer>
+  <command name="cmd_enable_chaintimer">
+    <pattern>enablechaintimer</pattern>
+    <script>
+      DisableTimer (racetimer)
+      EnableTimer (chaintimer1)
+    </script>
+  </command>
 </asl>
