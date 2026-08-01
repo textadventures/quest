@@ -81,6 +81,82 @@ jobs:
         working-directory: tests/e2e
       - run: node verify-appshell-play-refresh.mjs http://localhost:5174
         working-directory: tests/e2e
+      - run: node verify-advanced-tree.mjs http://localhost:5174
+        working-directory: tests/e2e
+      - run: node verify-appshell-addscript-modal-mobile.mjs http://localhost:5174
+        working-directory: tests/e2e
+      - run: node verify-appshell-advanced-controls.mjs http://localhost:5174
+        working-directory: tests/e2e
+      - run: node verify-appshell-assetpicker-mobile-overflow.mjs http://localhost:5174
+        working-directory: tests/e2e
+      - run: node verify-appshell-attributes-panel-pinned.mjs http://localhost:5174
+        working-directory: tests/e2e
+      - run: node verify-appshell-attributes-stack-scroll.mjs http://localhost:5174
+        working-directory: tests/e2e
+      - run: node verify-appshell-attributes-verbs-stack.mjs http://localhost:5174
+        working-directory: tests/e2e
+      - run: node verify-appshell-code-view.mjs http://localhost:5174
+        working-directory: tests/e2e
+      - run: node verify-appshell-download-button.mjs http://localhost:5174
+        working-directory: tests/e2e
+      - run: node verify-appshell-empty-advanced-categories.mjs http://localhost:5174
+        working-directory: tests/e2e
+      - run: node verify-appshell-exits-editor.mjs http://localhost:5174
+        working-directory: tests/e2e
+      - run: node verify-appshell-game-status-attributes-scroll.mjs http://localhost:5174
+        working-directory: tests/e2e
+      - run: node verify-appshell-gamebook-mode.mjs http://localhost:5174
+        working-directory: tests/e2e
+      - run: node verify-appshell-home-button.mjs http://localhost:5174
+        working-directory: tests/e2e
+      - run: node verify-appshell-home-header-links.mjs http://localhost:5174
+        working-directory: tests/e2e
+      - run: node verify-appshell-landscape-attributes-scroll.mjs http://localhost:5174
+        working-directory: tests/e2e
+      - run: node verify-appshell-landscape-toolbar-padding.mjs http://localhost:5174
+        working-directory: tests/e2e
+      - run: node verify-appshell-mobile-master-detail.mjs http://localhost:5174
+        working-directory: tests/e2e
+      - run: node verify-appshell-modal-sizing.mjs http://localhost:5174
+        working-directory: tests/e2e
+      - run: node verify-appshell-preview-flush.mjs http://localhost:5174
+        working-directory: tests/e2e
+      - run: node verify-appshell-responsive-toolbar.mjs http://localhost:5174
+        working-directory: tests/e2e
+      - run: node verify-appshell-richtext-stack.mjs http://localhost:5174
+        working-directory: tests/e2e
+      - run: node verify-appshell-script-adder-filter.mjs http://localhost:5174
+        working-directory: tests/e2e
+      - run: node verify-appshell-script-label-stacks-below.mjs http://localhost:5174
+        working-directory: tests/e2e
+      - run: node verify-appshell-scriptadder-advanced-categories.mjs http://localhost:5174
+        working-directory: tests/e2e
+      - run: node verify-appshell-scriptadder-advanced-commands.mjs http://localhost:5174
+        working-directory: tests/e2e
+      - run: node verify-appshell-scripteditor-row-buttons.mjs http://localhost:5174
+        working-directory: tests/e2e
+      - run: node verify-appshell-scripteditor-selection-toolbar.mjs http://localhost:5174
+        working-directory: tests/e2e
+      - run: node verify-appshell-surface-shade-fix.mjs http://localhost:5174
+        working-directory: tests/e2e
+      - run: node verify-appshell-tap-same-tree-node.mjs http://localhost:5174
+        working-directory: tests/e2e
+      - run: node verify-appshell-touch-affordances.mjs http://localhost:5174
+        working-directory: tests/e2e
+      - run: node verify-appshell-tree-dropdown-position.mjs http://localhost:5174
+        working-directory: tests/e2e
+      - run: node verify-appshell-tree-filter.mjs http://localhost:5174
+        working-directory: tests/e2e
+      - run: node verify-appshell-tree-splitter.mjs http://localhost:5174
+        working-directory: tests/e2e
+      - run: node verify-appshell-unlock-exit-picker.mjs http://localhost:5174
+        working-directory: tests/e2e
+      - run: node verify-appshell-verbs-editor.mjs http://localhost:5174
+        working-directory: tests/e2e
+      - run: node verify-rename-invalid-name.mjs http://localhost:5174
+        working-directory: tests/e2e
+      - run: node verify-update-banner-web.mjs http://localhost:5174
+        working-directory: tests/e2e
 
   # OPFS local-drafts behavior on non-FSA browsers, against a Release
   # WasmEditor build — createSyncAccessHandle (Safari's write path) needs the
@@ -216,6 +292,16 @@ jobs:
 
       - run: node verify-wasmplayer-restart-sidebar-dup.mjs http://localhost:5175
         working-directory: tests/e2e
+      - run: node verify-clientinfo-web.mjs http://localhost:5175
+        working-directory: tests/e2e
+      - run: node verify-wasmplayer-debugger.mjs http://localhost:5175
+        working-directory: tests/e2e
+      - run: node verify-wasmplayer-save-disabled-during-wait-input.mjs http://localhost:5175
+        working-directory: tests/e2e
+      - run: node verify-wasmplayer-save-turn-pending.mjs http://localhost:5175
+        working-directory: tests/e2e
+      - run: node verify-wasmplayer-showmenu-select-default.mjs http://localhost:5175
+        working-directory: tests/e2e
 
   # WebPlayer (ASP.NET Core + Blazor Server), Development mode with Dev:Enabled
   # (appsettings.Development.json already sets this — see /dev/open's
@@ -310,4 +396,55 @@ jobs:
       - run: node verify-electron-recent-games.mjs
         working-directory: tests/e2e
       - run: node verify-electron-play-local-file.mjs
+        working-directory: tests/e2e
+      - run: node verify-electron-open-game-no-window.mjs
+        working-directory: tests/e2e
+      - run: node verify-electron-selectall-textbox.mjs
+        working-directory: tests/e2e
+      - run: node verify-electron-undo-textarea.mjs
+        working-directory: tests/e2e
+      - run: node verify-electron-unsaved-close-dialog.mjs
+        working-directory: tests/e2e
+      - run: node verify-clientinfo-electron.mjs
+        working-directory: tests/e2e
+      - run: node verify-update-banner.mjs
+        working-directory: tests/e2e
+
+  # questviva.com docs/marketing site (site/, separate Astro project) —
+  # no AppShell/Engine build needed at all, just the static site itself.
+  site_chromium:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: actions/setup-node@v6
+        with:
+          node-version: '22'
+          cache: 'npm'
+          cache-dependency-path: |
+            site/package-lock.json
+            tests/e2e/package-lock.json
+
+      - run: npm ci
+        working-directory: site
+      - run: npm run build
+        working-directory: site
+      - run: npm ci
+        working-directory: tests/e2e
+      - run: npx playwright install --with-deps chromium
+        working-directory: tests/e2e
+
+      - name: Start site preview server (4321)
+        run: npx astro preview &
+        working-directory: site
+
+      - name: Wait for site preview server
+        run: |
+          for i in $(seq 1 30); do
+            curl -sf "http://localhost:4321/" > /dev/null && break
+            [ "$i" -eq 30 ] && { echo "port 4321 never came up"; exit 1; }
+            sleep 1
+          done
+
+      - run: node verify-site-download-page.mjs http://localhost:4321
         working-directory: tests/e2e

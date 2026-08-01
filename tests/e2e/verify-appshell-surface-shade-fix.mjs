@@ -14,7 +14,7 @@
 import { chromium } from 'playwright';
 
 const baseUrl = process.argv[2] || 'http://localhost:5174';
-const browser = await chromium.launch({ executablePath: process.env.CHROME_PATH || '/opt/pw-browsers/chromium' });
+const browser = await chromium.launch();
 
 async function toRgb(page, colorStr) {
     // Modern browsers may report computed color as oklch(...); normalize via

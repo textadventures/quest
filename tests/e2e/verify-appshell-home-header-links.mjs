@@ -8,7 +8,7 @@
 //   PUBLIC_SHOW_HOME=true npm --prefix src/AppShell run dev -- --port 5180
 import { chromium } from 'playwright';
 
-const baseUrl = 'http://localhost:5180';
+const baseUrl = process.argv[2] || 'http://localhost:5180';
 const expectedDiscordHref = 'https://textadventures.co.uk/community/discord';
 const expectedGithubHref = 'https://github.com/textadventures/quest';
 

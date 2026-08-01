@@ -50,8 +50,10 @@ async function run() {
     await addObjectIn('Room One', 'thing');
     console.log('PASS: created object "thing"');
 
-    // The name field is the first textbox control on the object's properties panel.
-    const nameInput = page.locator('input[type="text"]').first();
+    // The name field is labelled "Name:" on the object's properties panel — not necessarily the
+    // first input[type="text"] on the page, since TreePanel's own "Filter..." textbox (added
+    // later) also renders as input[type="text"] and sits before it in DOM order.
+    const nameInput = page.locator('span:has-text("Name:")').locator('..').locator('input[type="text"]');
     const before = await nameInput.inputValue();
     if (before !== 'thing') throw new Error(`Expected name field to show "thing", got "${before}"`);
 
@@ -93,7 +95,7 @@ async function run() {
     console.log('PASS: toast survives navigating to a different tree node');
 
     await selectTreeNode('thing');
-    const afterRevisit = await page.locator('input[type="text"]').first().inputValue();
+    const afterRevisit = await page.locator('span:has-text("Name:")').locator('..').locator('input[type="text"]').inputValue();
     if (afterRevisit !== 'thing') throw new Error(`Expected name field to revert to "thing" after reselecting, got "${afterRevisit}"`);
     console.log('PASS: name field correctly reverted to "thing" after navigating away and back');
 
