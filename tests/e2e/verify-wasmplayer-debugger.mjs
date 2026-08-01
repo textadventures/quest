@@ -217,7 +217,12 @@ check('Override applied: player.parent is now livingroom', /livingroom/i.test(pa
 await previewPage.click('#qv-debugger-close');
 await previewPage.fill('#txtCommand', 'look');
 await previewPage.press('#txtCommand', 'Enter');
-await previewPage.waitForTimeout(300);
+// A fixed sleep here was flaky under CI's slower/more loaded runner (the WASM engine hadn't
+// finished processing "look" yet) — poll for the output to actually mention livingroom instead.
+await previewPage.waitForFunction(
+    () => /livingroom/i.test(document.querySelector('#divOutput')?.textContent ?? ''),
+    { timeout: 5000 }
+).catch(() => {});
 const outputText = await previewPage.$eval('#divOutput', el => el.textContent);
 console.log('  output after look:', JSON.stringify(outputText).slice(0, 300));
 check('The live game reflects the move (output mentions livingroom)', /livingroom/i.test(outputText));

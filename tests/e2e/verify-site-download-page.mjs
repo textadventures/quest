@@ -146,7 +146,11 @@ let failed = false;
 // ── Run 4: release has no .deb — Linux label must say AppImage, not .deb ───
 {
     const browser = await chromium.launch();
-    const page = await browser.newPage();
+    // Explicit non-Linux UA: this run's assertion expects the Linux entry to render as a plain
+    // secondary link (no "Download for" prefix) — leaving userAgent unset relies on the host
+    // browser's own OS to not be detected as Linux, which broke in CI (Linux runner's default
+    // Chromium UA reports Linux, making it the *primary* button instead).
+    const page = await browser.newPage({ userAgent: 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15' });
     page.on('pageerror', err => console.log('[pageerror]', err.message));
     const noDebRelease = {
         tag_name: 'v6.0.0-beta.42',
