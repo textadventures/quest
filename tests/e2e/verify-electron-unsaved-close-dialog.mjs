@@ -48,7 +48,9 @@ async function withFreshApp(fn) {
         return await fn(app, win);
     } finally {
         app?.process().kill('SIGKILL');
-        rmSync(userDataDir, { recursive: true, force: true });
+        // SIGKILL doesn't wait for Chromium to finish its disk-cache writeback, so an immediate
+        // rmSync can hit ENOTEMPTY on Cache_Data — maxRetries/retryDelay ride out that race.
+        rmSync(userDataDir, { recursive: true, force: true, maxRetries: 5, retryDelay: 200 });
     }
 }
 
