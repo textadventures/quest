@@ -53,7 +53,7 @@ try {
     console.log('PASS: new page added flat via toolbar "Add Page"');
 
     // Delete it again — should work (it's not the player's page).
-    await page.getByText('MyNewPage', { exact: true }).click();
+    await tree.getByText('MyNewPage', { exact: true }).click();
     await page.click('button:has-text("Delete")');
     const stillThere = await tree.getByText('MyNewPage', { exact: true }).isVisible().catch(() => false);
     if (stillThere) throw new Error('MyNewPage should have been deleted');

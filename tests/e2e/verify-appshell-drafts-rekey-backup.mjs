@@ -41,6 +41,10 @@ async function draftCount() {
 try {
     // --- Scenario 1: GameId rekey ---
     await createDraft('Rekey Test'); // exactly 1 draft now, still inside the editor
+    // gameid is an <advanced/> control (CoreEditorGame.aslx) and lives inside the
+    // collapsed "Advanced" <details> expander since PropertyEditor.svelte's
+    // progressive-disclosure rework (#1934) — open it before the button is clickable.
+    await page.locator('summary', { hasText: 'Advanced' }).click();
     await page.click('button:has-text("Generate")'); // regenerate gameid
     // No explicit Save button anymore (debounced autosave-on-edit replaced
     // it — see verify-appshell-autosave.mjs) — wait for the pill to cycle

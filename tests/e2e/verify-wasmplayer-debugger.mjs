@@ -387,15 +387,19 @@ await previewPage.click('#qv-debugger-tabs button:text("Walkthrough")');
 const walkthroughItems = await previewPage.$$eval('#qv-debugger-list [data-item]', els => els.map(el => el.dataset.item));
 check('Walkthrough list includes "basic"', walkthroughItems.includes('basic'));
 
-await previewPage.click('#qv-debugger-list [data-item="basic"]');
-await previewPage.waitForSelector('[data-run-walkthrough="basic"]');
+// "slow" (2s delay, see its own use below) rather than "basic" — the cancel-visible-while-
+// running check below reads the DOM right after click() with no wait, and "basic" finishes
+// fast enough (well under a single Node<->browser round-trip) that it can already be done by
+// the time that read happens, making the check flaky.
+await previewPage.click('#qv-debugger-list [data-item="slow"]');
+await previewPage.waitForSelector('[data-run-walkthrough="slow"]');
 
 // Cancel should be hidden until a walkthrough is actually running — it was
 // previously shown at all times, a dead control before/after a run.
 const cancelHiddenBeforeRun = await previewPage.$eval('[data-cancel-walkthrough]', el => el.classList.contains('hidden'));
 check('Cancel is hidden before a walkthrough is running', cancelHiddenBeforeRun);
 
-await previewPage.click('[data-run-walkthrough="basic"]');
+await previewPage.click('[data-run-walkthrough="slow"]');
 const cancelVisibleWhileRunning = await previewPage.$eval('[data-cancel-walkthrough]', el => !el.classList.contains('hidden'));
 check('Cancel appears while the walkthrough is running', cancelVisibleWhileRunning);
 

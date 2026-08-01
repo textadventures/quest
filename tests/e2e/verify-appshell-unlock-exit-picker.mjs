@@ -72,8 +72,10 @@ async function run() {
     await page.click('button:has-text("Add script")');
     const addScriptDialog = page.locator('[role="dialog"]').filter({ hasText: 'Add Script Command' });
     await addScriptDialog.waitFor({ timeout: 10000 });
-    await addScriptDialog.getByRole('button', { name: 'Objects', exact: true }).click();
-    await addScriptDialog.getByRole('button', { name: 'Unlock exit' }).click();
+    // Category/command rows are ARIA listbox options (role="option"), not plain buttons —
+    // AddScriptModal.svelte's category and command lists are each role="listbox".
+    await addScriptDialog.getByRole('option', { name: 'Objects', exact: true }).click();
+    await addScriptDialog.getByRole('option', { name: 'Unlock exit' }).click();
     await addScriptDialog.getByRole('button', { name: 'OK', exact: true }).click();
     console.log('PASS: added an "Unlock exit" script command');
 

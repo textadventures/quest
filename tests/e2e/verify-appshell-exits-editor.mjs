@@ -81,10 +81,11 @@ async function run() {
     await page.waitForSelector('text=north → Room Two', { timeout: 5000 });
     console.log('PASS: full exit list shows the new exit');
 
-    // Room stays selected/in-view after the quick-create (no navigation away) — the "Exits list
-    // prefix" field only renders on the room's own Exits tab, so its continued presence proves
-    // selection didn't jump elsewhere.
-    await page.waitForSelector('text=Exits list prefix', { timeout: 3000 });
+    // Room stays selected/in-view after the quick-create (no navigation away) — the compass
+    // grid only renders on the room's own Exits tab, so its continued presence proves selection
+    // didn't jump elsewhere. The "north" cell is now occupied (dir.exitKey set), so it renders
+    // a "→ Room Two" link instead of a plain "north" button — check that instead.
+    await page.getByRole('button', { name: '→ Room Two', exact: true }).waitFor({ timeout: 3000 });
     console.log('PASS: Room One stays selected after quick-create (no unwanted navigation)');
 
     // Switch to Room Two and confirm the reciprocal South exit was created.
@@ -99,7 +100,9 @@ async function run() {
     // "→ Room One" as a substring ("south → Room One").
     await page.getByRole('button', { name: '→ Room One', exact: true }).click();
     await page.waitForSelector('text=Setup', { timeout: 10000 });
-    const roomNameValue = await page.locator('input[type="text"]').first().inputValue();
+    // Name field is labelled "Name:" — not necessarily the first input[type="text"] on the
+    // page, since TreePanel's own "Filter..." textbox also renders as input[type="text"].
+    const roomNameValue = await page.locator('span:has-text("Name:")').locator('..').locator('input[type="text"]').inputValue();
     if (roomNameValue !== 'Room One') throw new Error(`Expected the destination link to navigate to Room One, got "${roomNameValue}"`);
     console.log('PASS: clicking the destination hyperlink navigates to the destination room');
 
@@ -130,7 +133,7 @@ async function run() {
     await listRow.hover();
     await listRow.locator('button[title="Delete"]').click();
     const dismissMessage = await respondToReciprocalPrompt('this');
-    await page.waitForSelector('text=Exits list prefix', { timeout: 3000 });
+    await page.getByRole('button', { name: 'north', exact: true }).waitFor({ timeout: 3000 });
     if (!dismissMessage?.includes('Room Two')) throw new Error(`Expected a "delete the return exit" prompt mentioning Room Two, got: ${dismissMessage}`);
     console.log('PASS: deleting an exit with a reciprocal prompts to also delete the return exit');
 
@@ -163,7 +166,7 @@ async function run() {
 
     await page.getByRole('button', { name: '→ Room Two', exact: true }).locator('..').locator('button[title="Delete"]').click();
     const acceptMessage = await respondToReciprocalPrompt('both');
-    await page.waitForSelector('text=Exits list prefix', { timeout: 3000 });
+    await page.getByRole('button', { name: 'north', exact: true }).waitFor({ timeout: 3000 });
     if (!acceptMessage) throw new Error('Expected a "delete the return exit" prompt for the west/east pair');
 
     // Check specifically the "east" cell went back to empty — Room Two's still-alive south exit

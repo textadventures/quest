@@ -1,6 +1,12 @@
-// Verifies the richtext + text-processor side panel stacks vertically in a
-// narrow properties pane (container query, not just viewport) and stays
-// side-by-side on a wide desktop pane.
+// Verifies the richtext field's text-processor toolbar (icon buttons + grouped Insert
+// menu, PropertyEditor.svelte's textProcessorPanel snippet) renders above the textarea and
+// doesn't overflow the properties pane on a narrow mobile viewport.
+//
+// This used to check a side-by-side "richtext-wrap" panel that switched between row (desktop)
+// and column (mobile) via a container query — PR #1967 ("redesign rich text toolbar as icons +
+// grouped Insert menu") removed that layout entirely in favor of a fixed icon toolbar always
+// rendered above the textarea (see PropertyEditor.svelte's textProcessorTextareaId / the
+// `flex flex-col gap-1 w-full` wrapper), so there's no row/column distinction left to assert on.
 import { chromium } from 'playwright';
 
 const baseUrl = process.argv[2] || 'http://localhost:5174';
@@ -26,16 +32,16 @@ async function openRoomDescription(page) {
     // "← room" button, whose accessible name otherwise substring/case matches.
     await page.click('text=room');
     await page.getByRole('button', { name: /^Room$/ }).click();
-    await page.waitForSelector('.richtext-wrap', { timeout: 5000 });
+    await page.getByRole('button', { name: 'Bold' }).waitFor({ timeout: 5000 });
 }
 
 try {
     const desktopCtx = await browser.newContext({ viewport: { width: 1280, height: 800 } });
     const desktopPage = await createDraftAndGetPage(desktopCtx);
     await openRoomDescription(desktopPage);
-    const desktopFlexDir = await desktopPage.locator('.richtext-wrap').first().evaluate(el => getComputedStyle(el).flexDirection);
-    if (desktopFlexDir !== 'row') throw new Error(`Expected wide properties pane to keep richtext-wrap as row, got ${desktopFlexDir}`);
-    console.log('PASS: wide properties pane keeps richtext + text-processor side by side (row)');
+    const desktopOverflow = await desktopPage.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth);
+    if (desktopOverflow > 1) throw new Error(`Desktop pane has horizontal overflow of ${desktopOverflow}px with the richtext toolbar visible`);
+    console.log('PASS: wide properties pane renders the richtext toolbar with no horizontal overflow');
     await desktopPage.screenshot({ path: '/tmp/richtext-wide.png' });
     await desktopCtx.close();
 
@@ -44,10 +50,14 @@ try {
     await mobilePage.click('text=room');
     await mobilePage.getByRole('button', { name: /^Room$/ }).waitFor({ timeout: 5000 });
     await mobilePage.getByRole('button', { name: /^Room$/ }).click();
-    await mobilePage.waitForSelector('.richtext-wrap', { timeout: 5000 });
-    const mobileFlexDir = await mobilePage.locator('.richtext-wrap').first().evaluate(el => getComputedStyle(el).flexDirection);
-    if (mobileFlexDir !== 'column') throw new Error(`Expected narrow properties pane to stack richtext-wrap as column, got ${mobileFlexDir}`);
-    console.log('PASS: narrow properties pane stacks richtext + text-processor (column)');
+    await mobilePage.getByRole('button', { name: 'Bold' }).waitFor({ timeout: 5000 });
+    const mobileOverflow = await mobilePage.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth);
+    if (mobileOverflow > 1) throw new Error(`Mobile pane has horizontal overflow of ${mobileOverflow}px with the richtext toolbar visible`);
+    console.log('PASS: narrow properties pane renders the richtext toolbar with no horizontal overflow');
+    // Insert dropdown and help link must stay reachable, not clipped off-screen.
+    await mobilePage.getByRole('button', { name: 'Insert' }).waitFor({ state: 'visible', timeout: 5000 });
+    await mobilePage.getByRole('link', { name: 'Text Processor help' }).waitFor({ state: 'visible', timeout: 5000 });
+    console.log('PASS: Insert menu and help link stay visible on a narrow viewport');
     await mobilePage.screenshot({ path: '/tmp/richtext-narrow.png' });
     await mobileCtx.close();
 
