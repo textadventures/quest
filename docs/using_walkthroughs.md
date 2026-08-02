@@ -1,13 +1,8 @@
 ---
 title: Using walkthroughs
-nav_order: 1
-parent: "Desktop Features"
+nav_order: 20
+parent: "Coding With Quest"
 ---
-
-<div class="alert alert-info">
-Note: Walkthroughs are currently only available in the Windows desktop version of Quest.
-
-</div>
 
 What is a walkthrough?
 ----------------------

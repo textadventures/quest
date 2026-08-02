@@ -14,25 +14,14 @@ In this example, we'll store the weights of various objects by creating a new "w
 
 First, let us create a few objects we can weigh. Create three objects – flour, eggs and sugar. Make sure the object types are set correctly (either "inanimate object" or "inanimate object (plural)"). We'll use units of grams, so we'll say the flour has a weight of 500, the eggs have a weight of 250, and the sugar has a weight of 1000.
 
-The Attributes Tab (Desktop Version Only)
+The Attributes Tab
 ------------------
 
-If you are using the desktop version, you can click an object and select the Attributes tab - you'll see all the underlying data for the object. We can also use the Attributes tab to add our own custom data to any object. 
+Click an object and select the Attributes tab - you'll see all the underlying data for the object. We can also use the Attributes tab to add our own custom data to any object. 
 
 So let's give the new objects weights. First we'll set the flour's "weight" attribute to 500. To do this, select the flour object and go to the Attributes tab. We'll look at "Inherited Types" later - for now, go to the Attributes table and click the Add button. Enter the name "weight". We want to to use whole numbers for weight values, so select "Integer" from the list and enter the value "500".
 
 ![](../images/Weightflour.png "Weightflour.png")
-
-Alternatively...
--------------
-
-The Web version currently has no attributes tab, so we will have to use an alternative approach. Go to the Script tab of the game object. The bit at the top is a script that will run when the game starts, so we can set attributes there (the disadvantage is that this will get pretty messy if you have dozens of objects with a few attributes each, but for a handful, it is okay).
-
-Click "Add new script", and select "Set an object's attribute (named by an expression)" from the "Variables" category. In the first line, keep "Name", and in the other box, select the flour. For the next line, set the attribute name to "weight" (note that for once you need quotes here, but there are already provided). In the third line, for the value type "500".
-     
-![](../images/attributes_web.png "attributes_web.png")
-
-Now follow the same process to set the weights of the eggs and the sugar.
 
 Reading Attributes
 ------------------

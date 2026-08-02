@@ -4,10 +4,6 @@ nav_order: 5
 parent: "Advanced Topics"
 ---
 
-<div class="alert alert-info">
-Note: Libraries are currently only available in the Windows desktop version of Quest.
-</div>
-
 Libraries allow you to reuse elements in multiple games. That might be [object types](using_inherited_types.html), [functions](creating_functions_which_return_a_value.html), or even common objects. In fact, libraries are the basis of how Quest works - Core.aslx is a library, included by default in all Quest games. It handles much of the standard text adventure game functionality - working out which objects the player can see, handling player commands, implementing containers, and much more. This means that Quest's built-in functionality is extensible and indeed replaceable.
 
 

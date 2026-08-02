@@ -15,10 +15,10 @@ You can display as many as you want, but are limited to string, int, double and 
 Status attributes are just attributes that you tell Quest to display - there is nothing special about the attribute itself. Quest has two lists of status attributes, one for the game object and one for the player. If the player object can change, then each one gets its own list, but only the current one will be used. Therefore you should use the game one to hold game-wide values such as the time and score, and the player one for those that relate to the player, such as health and money.
 
 
-Setting up on the Desktop Version
----------------------------------
+Setting up
+----------
 
-If using the desktop version, you can set up status attributes on the _Attributes_ tab of the player or game objects.
+You can set up status attributes on the _Attributes_ tab of the player or game objects.
 
 First create the attribute as normal. Let us suppose we want a "score" attribute; click the plus sign by attributes, and type in the name. Then select it to be an "int". It can also be given an initial value, but zero is fine for here.
 
@@ -28,20 +28,6 @@ You will then be asked for the format - this is how the attribute will be displa
 
 ![](images/status2.png "status2.png")
 
-
-
-Setting up on the Web Version
---------------------------------
-
-On the web version, you will need to do this in code, in the start script of the game object.
-
-To add a status attribute, first set it up as an ordinary attribute of either the game or the player object, as shown in the yellow box below.
-
-Then, add its name to one of the string dictionary attributes "game.statusattributes" or "player.statusattributes" as appropriate. These will need to be created first (but each should only ever be created once). In the example below the player object is being used, so the first step in the red box is to create "player.statusattributes".
-
-Then the entries, each status attribute, can be added. The key in the dictionary is the name of the attribute. The value can be left blank, or you can set it to a format string as described later.
-
-![](images/status_attribute.png "status_attribute.png")
 
 
 Formatting

@@ -4,11 +4,6 @@ nav_order: 10
 parent: "Coding With Quest"
 ---
 
-<div class="alert alert-info">
-Note: As the `InitUserInterface` can only be overridden in the desktop version, using JavaScript in the web version will be problematic.
-
-</div>
-
 Introduction
 ------------
 

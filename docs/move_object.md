@@ -37,13 +37,7 @@ Limiting objects
 
 It is likely you will not want the player to move any object in this way. There will be some that cannot be moved, and some that are too small (the player can just pick them up). We will therefore flag objects that can be pushed as "shiftable".
 
-On the desktop version, go to the _Attributes_ tab of the crate, and add a new attribute, "shiftable". Set it to be a Boolean, and tick it so it is true.
-
-On the web version, go to the _Features_ tab of the crate, and make sure "Run an initialisation script for this object" is ticked. Go to the _Initialisation script_ tab, and add this code:
-
-```
-this.shiftable = true
-```
+Go to the _Attributes_ tab of the crate, and add a new attribute, "shiftable". Set it to be a Boolean, and tick it so it is true.
 
 We then need to adjust the code for the command to check for that flag:
 
@@ -97,13 +91,7 @@ else {
 
 You can also limit specific exits. 
 
-If you are using the desktop version, Go to the _Attributes_ tab of the exit, give it a new attribute, "noshifting", and type in a suitable message, such as "There is a step stopping you.".
-
-On the web version, you would have to give the exit a name, and then set its "noshifting" attribute in the game start script, like this (for an exit called "noshiftingexit"):
-
-```
-noshiftingexit.noshifting = "There is a step stopping you."
-```
+Go to the _Attributes_ tab of the exit, give it a new attribute, "noshifting", and type in a suitable message, such as "There is a step stopping you.".
 
 Then update the code:
 

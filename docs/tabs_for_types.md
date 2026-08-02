@@ -1,12 +1,8 @@
 ---
 title: Using Tabs for Types
-nav_order: 2
-parent: "Desktop Features"
+nav_order: 8
+parent: "Advanced Topics"
 ---
-
-<div class="alert alert-info">
-Note: Inherited types and tabs can currently only be edited in the Windows desktop version of Quest.
-</div>
 
 So you know all about types, from the [Using Types](using_inherited_types.html) page, right? Let us do some more. In this tutorial we will add a new tab to an object so we can easily edit attributes of objects of that type.
 

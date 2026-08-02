@@ -11,8 +11,11 @@ You don't need programming experience to get started. Quest's point-and-click ed
 
 Quest has templates for English, French, German, Spanish, Dutch, Italian, Portuguese, Russian and other languages.
 
-<a href="https://textadventures.co.uk/quest" class="btn btn-purple" target="_blank">Use Quest in your browser</a>
-[Download Quest for Windows](https://github.com/textadventures/quest/releases/download/v5.10.0/quest-5.10.0.exe){: .btn .btn-green }
+<a href="https://play.questviva.com" class="btn btn-purple" target="_blank">Use Quest Viva in your browser (beta)</a>
+
+<a href="https://questviva.com/download" class="btn btn-purple" target="_blank">Download Quest Viva 6.0 beta for Windows/Mac/Linux</a>
+
+[Download Quest 5.10.2 for Windows](https://github.com/textadventures/quest/releases/download/v5.10.2/quest-5.10.2.exe){: .btn .btn-green }
 
 ## Getting started
 
@@ -35,9 +38,8 @@ If you'd like to see what a finished Quest game looks like before diving in, bro
 
 ## Coding and advanced topics
 
-- **[Coding With Quest](coding.html)** - functions, lists, dictionaries, turnscripts, JavaScript and more
-- **[Advanced Topics](advanced.html)** - overriding functions, libraries, templates and translation
-- **[Desktop Features](desktop.html)** - walkthroughs, debugging and editor tools (Windows desktop only)
+- **[Coding With Quest](coding.html)** - functions, lists, dictionaries, turnscripts, JavaScript, testing and debugging and more
+- **[Advanced Topics](advanced.html)** - overriding functions, libraries, templates, translation and editor extensions
 
 ## Publishing
 

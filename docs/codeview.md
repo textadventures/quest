@@ -4,8 +4,6 @@ nav_order: 14
 parent: "Coding With Quest"
 ---
 
-_NOTE:_ You can only access full code view in the desktop version.
-
 It is not difficult to make changes in full code view that will cause Quest to be unable to load your game, so use with caution. It is a good idea to back up your game to another location first, just in case something goes wrong.
 
 You can create objects, functions, etc. in full code view, but it is far easier to let Quest do that for you.

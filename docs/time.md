@@ -4,7 +4,7 @@ nav_order: 14
 parent: "How To"
 ---
 
-This describes how you can track the passage of time in your game. If you are using the desktop version, you may prefer to use the [Clock Library](https://github.com/ThePix/quest/wiki/Clock-Library), which has a lot of extra functionality for timetabling events. What is described here is a simpler version, which is also suitable for the web version.
+This describes how you can track the passage of time in your game. You may prefer to use the [Clock Library](https://github.com/ThePix/quest/wiki/Clock-Library), which has a lot of extra functionality for timetabling events. What is described here is a simpler version, which is also suitable for the web version.
 
 The simplest way to track time is to say that by default, each turn is one minute (so some things will take longer). For that we need a turnscript, and we need an attribute that tracks time.
 

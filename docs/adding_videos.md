@@ -290,25 +290,6 @@ JS.eval("$('#html-video').remove();")
 ```
 
 
-### Browser Compatibility
-
-
-Another thing to worry about is browser compatibility.  
-
-Some older browsers might not play the .ogv format, and others might not play .mp4. The desktop version of Quest will not play an .mp4 from an HTML video element (as of version 5.7.2), but it will play an .ogv. On the other hand, most modern browsers will play .ogv files, but Internet Explorer and Edge will not (I think Safari will play certain types of .ogv files, if you have the proper plugin, but I'm not certain).
-
-For more information concerning this, see [here](https://en.wikipedia.org/wiki/HTML5_video#Browser_support).
-
-As a "workaround", we can include both formats.
-
-```
-s = "<video autoplay>"
-s = s + "<source src='" + GetFileURL("spinning_compass.ogv") + "' type='video/ogg' >"
-s = s + "<source src='" + GetFileURL("spinning_compass.mp4") + "' type='video/mp4' >"
-s = s + "Your browser does not support the audio tag.</video>"
-msg (s)
-```
-
 **IMPORTANT NOTE:  The video will cease to exist if the screen is cleared when using HTML tags.**
 
 

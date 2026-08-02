@@ -28,7 +28,7 @@ The verbs are held in two string list attributes, `displayverbs` and `inventoryv
 
 There are issues to be aware of. Firstly, automatically generated verbs are not in that list (another good reason to turn the feature off).
 
-Secondly, your object will only have those attributes if you have modified the lists on the Object tab. If you are using the desktop version, you can go to the Attributes tab, look for "displayverbs" in the list at the bottom. If it is in grey, your object is getting its list from its type, and if you try to add or remove something in the list during play, you will get this helpful message:
+Secondly, your object will only have those attributes if you have modified the lists on the Object tab. You can go to the Attributes tab, look for "displayverbs" in the list at the bottom. If it is in grey, your object is getting its list from its type, and if you try to add or remove something in the list during play, you will get this helpful message:
 
 ```
 Error running script: Cannot modify the contents of this list as it is defined by an inherited type. Clone it before attempting to modify.

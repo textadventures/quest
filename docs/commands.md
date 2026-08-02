@@ -17,9 +17,7 @@ Quest searches the commands starting at the bottom, so any command we add in our
 
 To add a command:
 
-- In the Windows desktop version, select “game” in the tree. Now, you can right-click on the tree and choose “Add Command”, or use the Add menu and choose “Command”.
-
-- In the web version, select “Commands” in the tree (underneath “game”). Then click the “Add” button.
+- Select “game” in the tree. Now, you can right-click on the tree and choose “Add Command”, or use the Add menu and choose “Command”.
 
 The pattern we will match against is `help`, and we just want to print something, so it will just look like this:
 

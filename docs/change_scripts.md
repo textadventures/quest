@@ -10,7 +10,7 @@ Quest has some change scripts already built in. If you change the parent attribu
 
 Change scripts can be created for attributes on any object, not just the player, by the way.
 
-As an example, let us create an attribute called "hits" on the player object. In the desktop version, you can do that on the Attributes tab by clicking Add just above the bottom box. Set it to be an integer. Once it is in the list, click on it and then click the "Add Change Script" button (the third one, a plus in a box). Quest will add a new attribute, "changedhits". Easy as that.
+As an example, let us create an attribute called "hits" on the player object. You can do that on the Attributes tab by clicking Add just above the bottom box. Set it to be an integer. Once it is in the list, click on it and then click the "Add Change Script" button (the third one, a plus in a box). Quest will add a new attribute, "changedhits". Easy as that.
 
 Now make the script display the new hit points:
 ```
@@ -22,20 +22,6 @@ Now make the script display the new hit points:
     finish
   }
 ```
-The web version has no Attributes tab, making change scripts rather harder to use. We will have to do this all in code, and to ensure it is up and running from the start, do it in the start script of the game object. Here is the code:
-```
-player.hits = 5
-player.changedhits => {
-  if (player.hits > 0) {
-    msg ("Hits points now " + player.hits)
-  }
-  else {
-    msg("You are dead!")
-    finish
-  }
-}
-```
-The first line creates the attribute, and gives it an initial value. The second line creates the change script attribute, and assigns a script to it (the `=>` assigns a script to an attribute like `=` assigns a number or string. The code in the script itself is just the same.
 
 Quest recognises an attribute as a change script if it is a script and its name starts with "changed". There are just standard scripts, and you can use them as such:
 ```
@@ -114,27 +100,13 @@ A couple of examples...
 
 Often you will find you want to constrain an attribute to a range, and change scripts offer a great way to do that. Suppose we want to track purity, as a percentage, so it can range from 0 to 100.
 
-Using the desktop version, go to the _Attributes_ tab, and select the `purity` attribute. Then click on "Add change script", and paste in this code:
+Go to the _Attributes_ tab, and select the `purity` attribute. Then click on "Add change script", and paste in this code:
 ```
 if (this.purity < 0) {
   this.purity = 0
 }
 if (this.purity > 100) {
   this.purity = 100
-}
-```
-
-For the web version, go to the initialisation script.
-
-```
-this.purity = 100
-this.changedpurity => {
-  if (this.purity < 0) {
-    this.purity = 0
-  }
-  if (this.purity > 100) {
-    this.purity = 100
-  }
 }
 ```
 

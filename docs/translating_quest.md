@@ -31,7 +31,7 @@ The solution is to name in in the Latin alphabet, and give it an alias "πέτρ
 Verbs
 -----
 
-In English, we can just put a verb with a noun to get a command, and the verbs in Quest employ this to great effect. That may not work in your language. If you are using the desktop version, you can edit the verb object. In the pattern bit, you can set a pattern just as you do with commands, so instead of "wear", you could use "put #object# on", and the verb will match PUT HAT ON.
+In English, we can just put a verb with a noun to get a command, and the verbs in Quest employ this to great effect. That may not work in your language. You can edit the verb object. In the pattern bit, you can set a pattern just as you do with commands, so instead of "wear", you could use "put #object# on", and the verb will match PUT HAT ON.
 
 
 

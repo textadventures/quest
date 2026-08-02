@@ -11,8 +11,6 @@ Most of the tutorial is applicable to both the Windows desktop version of Quest,
 
 This tutorial guides you through creating your first gamebook game. If you want to create a text adventure instead, see [the main Quest tutorial](creating_a_simple_game.html).
 
-### Windows desktop version
-
 To create a new game, open Quest and click the File menu, then Create New Game.
 
 ![](../images/Newgamemenu.png "Newgamemenu.png")
@@ -38,24 +36,6 @@ As you'll see, it's a pretty empty game at the moment. We can navigate to pages 
 ![](../images/Playblankgamebook.png "Playblankgamebook.png")
 
 You can go back to the Editor by clicking "Stop Game" in the top left of the screen. (You can hit the Escape key)
-
-### Web version
-
-To create a new game, [log in to Quest](https://textadventures.co.uk/quest/) and click "Create a new game". You'll see the "New game" form.
-
-![](../images/Webnewgamebook.png "Webnewgamebook.png")
-
-Ensure that "Gamebook" is selected. Enter a name like "Tutorial Game" and click the "Create" button. Click the link which appears, and you'll see the main Editor screen.
-
-![](../images/Webblankgamebook.png "Webblankgamebook.png")
-
-On the left is a tree showing you the pages in the gamebook, and a place to set options about the game itself. "Game" is currently selected, so that's what we can see in the pane on the right.
-
-Quest has created three example pages for us, and inside Page1 is the "player" object, which is where the game begins. You can test the game by clicking the "Play" button at the top of the screen. The game will open in a new browser tab or window.
-
-As you'll see, it's a pretty empty game at the moment. We can navigate to pages 2 and 3, but that's it.
-
-![](../images/Webplayblankgamebook.png "Webplayblankgamebook.png")
 
 Simple Mode
 -----------

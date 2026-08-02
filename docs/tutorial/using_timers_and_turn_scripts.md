@@ -54,10 +54,6 @@ For the desktop version, to set up our "turns" attribute, select the "player" ob
 
 ![](../images/Turncounter1.png "Turncounter1.png")
 
-For the web version, go to the _Scripts_ tab of the "game" object, where we set the player score as a status attribute. Now we need to add a new attribute to the player called "turns", and a new entry in the dictionary for that attribute. It'll look like this (except it should be "turns" not "turn"!): 
-
-![](../images/Turncounter.png "Turncounter.png")
-
 If you launch the game now, you should see the turns variable displayed on the right-hand side of the Quest window. We've not yet added the script to increase the value of this though, so it will always say “Turns: 0” no matter how many turns we take. Let's add this script now.
 
 ### Increasing the turn counter after each turn

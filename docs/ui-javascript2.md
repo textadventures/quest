@@ -101,7 +101,7 @@ Awkward Attributes
 
 Some attributes are difficult to change, and the usual technique just does not work. A good example is the border of the command bar. The element's ID is `txtCommand`, and it has `border` and `outline` properties, but if you set them to "none", it does not work. Why not? No idea.
 
-However, there is a way around - on the desktop anyway. If you go into full code view (press F9), you can add an attribute to the XML of the game object that includes CSS.
+However, there is a way around. If you go into full code view (press F9), you can add an attribute to the XML of the game object that includes CSS.
 
 ```
     <css><![CDATA[

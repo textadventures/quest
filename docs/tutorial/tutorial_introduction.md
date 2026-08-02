@@ -14,7 +14,7 @@ There are two versions:
 -   a web version which runs entirely in your web browser (Chrome, Edge, Safari, Firefox), without downloading any software
 -   a downloadable Windows version
 
-This tutorial applies to both versions. The versions are fundamentally the same, although the Windows version of the game editor has a few more features.
+This tutorial applies to both versions.
 
 What is a text adventure?
 -------------------------

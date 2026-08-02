@@ -5,10 +5,6 @@ parent: "Introduction to RPGs"
 ---
 
 
-If you want to create a technically complex game - and any game involving combat will be complex - you should use the desktop version of the editor if you can. Sometimes, however, that is not an option. Here, then, is how to create the zombie apocalypse on the web version.
-
-It does not have to be the zombie apocalypse, but the limitations of the web version lend themselves to a game with a limited variety of monsters. In a zombie apocalypse, you expect a lot of zombies and not much else.
-
 I am assuming you at least know how to copy-and-paste code, and that you know what the game start script is. If you do not, I would respectfully suggest you start with something simpler, and come back to this when you have more experience.
 
 
@@ -144,7 +140,7 @@ obj.armour = 20
 The player
 ----------
 
-The player needs the same attributes for combat as the zombies. If you were using the desktop version, you would set attributes on the _Attributes_ tab of the player object, but on the web version we do not have that. Prior to Quest 5.7, you would have to do this in the start script of the game object, which is fine at first, but as your game gets more complex, the script will get huge, and increasingly difficult to maintain. So instead will will set up attributes for an object in its initialisation script.
+The player needs the same attributes for combat as the zombies. You could set these directly on the _Attributes_ tab of the player object, but for a handful of attributes like this, it is often just as easy to set them in the object's initialisation script instead. Prior to Quest 5.7, you would have had to do this in the start script of the game object, which is fine at first, but as your game gets more complex, the script will get huge, and increasingly difficult to maintain. So instead we will set up attributes for an object in its initialisation script.
 
 On the player object's _Features_ tab, tick "Run an initialisation script for this object". Then go to the _Initialisation script_ tab, and put in this code, which will set its attributes.
 
@@ -259,7 +255,7 @@ A big advantage of having all attacks use this one function is that changes need
 Weapons
 -------
 
-We need a weapon to attack the zombies. We will just do one for now, but you may want several in your game. If you were using the desktop version, you would set attributes on the _Attributes_ tab, and use verbs to interact, set up on a weapon type. On the web version, we need to set attributes in an initialisation script for the item as we did with the player object, and are better off using commands, as you can have a single command to handle all the weapons.
+We need a weapon to attack the zombies. We will just do one for now, but you may want several in your game. We could set attributes on the _Attributes_ tab, and use verbs to interact, set up on a weapon type. Instead, we will set attributes in an initialisation script for the item as we did with the player object, and are better off using commands, as you can have a single command to handle all the weapons.
 
 We will add a spade; give it a description, such as "Good for whacking zombies", and tick that it can be picked up on the _Inventory_ tab. On the _Object_ tab, give it an "Alias to display..." - "Spade" (this is so we can flag it as equipped later; if you are not using the game panes, this is not required). At the bottom, in the inventory verbs, remove "Use" and add "Equip".
 

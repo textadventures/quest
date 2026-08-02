@@ -219,7 +219,7 @@ To go from `Station Two` back to `Station One`, use the same code, but put in St
 
 ### Handling player clicks
 
-You can [override](overriding.html) the `GridSquareClick` to handle the player clicking on the grid (desktop version only). This takes two parameters, the x and y coordinates.
+You can [override](overriding.html) the `GridSquareClick` to handle the player clicking on the grid. This takes two parameters, the x and y coordinates.
 
 Working out what room was clicked takes some coding... First paste this in to the function:
 

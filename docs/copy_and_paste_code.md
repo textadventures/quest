@@ -16,7 +16,7 @@ So how do you see code? Click the _Code View_ button. In the web version, this w
 
 ![](images/codeview_desktop.png "codeview_desktop.png")
 
-The desktop version also has a Code View option under the tools menu. This shows the entire game in code view, with all the XML that defines your game. It is very rare you will ever need to use it, and it does have the potential to mess up your game, so this is best ignored!
+There is also a Code View option under the tools menu. This shows the entire game in code view, with all the XML that defines your game. It is very rare you will ever need to use it, and it does have the potential to mess up your game, so this is best ignored!
 
 If you have been following the tutorial, you will already have some scripts in your game. Why not take a look at one in code view right now? Here is the "look" script for the TV (in the web version):
 

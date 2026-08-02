@@ -4,11 +4,6 @@ nav_order: 3
 parent: "Advanced Topics"
 ---
 
-<div class="alert alert-info">
-Note: Templates can currently only be changed in the Windows desktop version of Quest.
-
-</div>
-
 When a player types in a command that Quest doesn't recognise, it will by default respond "I don't understand your command". If you mis-type the name of an object, you get "I can't see that". These responses are all very well, but it might break the flow of our game if they don't fit in with the rest of the text that we've written. Fortunately, Quest provides a way for you to change all of its default responses - in fact none of the text is "hard coded" at all, which is why it is possible to create games in any language, not just English.
 
 The standard responses are all defined by **templates**, and these all exist in the **standard libraries**. These libraries contain standard game text, most of the standard behaviour in a game, all of the Editor screens - in fact a lot of Quest's functionality comes from the libraries. The libraries are .aslx files, just like your game file - a lot of Quest is written in Quest itself.

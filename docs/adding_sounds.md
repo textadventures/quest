@@ -217,26 +217,6 @@ JS.eval("$('#html-audio').remove();")
 ```
 
 
-### Browser Compatibility
-
-
-Another thing to worry about is browser compatibility.  Some older browsers might not play the .ogg format, and others might not play .mp3.
-
-The desktop version of Quest will not play an .mp3 from an HTML audio element (as of version 5.7.2), but it will play an .ogg. On the other hand, most modern browsers will play .ogg files, but Internet Explorer and Edge will not.  (I think Safari will play certain types of .ogg files, if you have the proper plugin, but I'm not certain.)
-
-For more information concerning this, see [here](https://en.wikipedia.org/wiki/HTML5_Audio#Supported_audio_coding_formats).
-
-As a "workaround", we can include both formats.
-
-```
-s = "<audio autoplay>"
-s = s + "<source src='" + GetFileURL("snd effect.ogg") + "' type='audio/ogg' >"
-s = s + "<source src='" + GetFileURL("snd effect.mp3") + "' type='audio/mp3' >"
-s = s + "Your browser does not support the audio tag.</audio>"
-msg (s)
-```
-
-
 ### Mobile Browsers
 
 For things to work in a mobile browser, we MUST include the `controls` option! The `autoplay` option will do nothing in a mobile browser, by the way.  The player must actually press 'play' on a mobile device.

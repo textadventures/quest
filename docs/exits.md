@@ -24,7 +24,7 @@ Type vs alias
 
 Quest uses the alias of the exit to decide which direction it is. The type is used when the exit is created, but does not really do anything once that has happened (it does provide an alternative name, if the alias is "east" and the type is "north", then the exit will get used for `EAST`, `E` and `N`).
 
-In the desktop version you can set the alias to any value you like, so you could have "kitchen" as a direction (you could do this in the web version by setting the exit alias in the start script, but it will be a pain if you do this for all the exits in your game). Note that the exit will then appear in the list of "Places and Objects" rather than the compass. Set the type to "Non-directional exit".
+You can set the alias to any value you like, so you could have "kitchen" as a direction. Note that the exit will then appear in the list of "Places and Objects" rather than the compass. Set the type to "Non-directional exit".
 
 
 

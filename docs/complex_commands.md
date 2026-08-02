@@ -144,7 +144,7 @@ For the first three conditions, we convert them to a if/else if/else cascade, at
 More General
 ------------
 
-Suppose there are several objects the cord might be tied to, what is the best way to handle that? What we want is a command that can handle tying the cord to any such object, so the first thing to do is to flag an object as attachable. If you are using the desktop version, go to the _Attributes_ tab of each object, and add a new attribute, "attachable", set it to be a Boolean, and tick it. Now our command can check if the object has that set, and if it does, the cord can be tied to it.
+Suppose there are several objects the cord might be tied to, what is the best way to handle that? What we want is a command that can handle tying the cord to any such object, so the first thing to do is to flag an object as attachable. Go to the _Attributes_ tab of each object, and add a new attribute, "attachable", set it to be a Boolean, and tick it. Now our command can check if the object has that set, and if it does, the cord can be tied to it.
 
 The code here has two changes. Condition number 3 now checks the attachable flag, instead of checking the object in the hook. Also, at the end, an attribute on the cord gets set to the object it is attached to, so you can test what that was if necessary (and we can check if that is set to see if the cord is attached so do not need the "tiedtohook" attribute).
 

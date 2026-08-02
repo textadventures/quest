@@ -4,10 +4,6 @@ nav_order: 2
 parent: "Advanced Topics"
 ---
 
-<div class="alert alert-info">
-Note: Inherited types can currently only be edited in the Windows desktop version of Quest.
-</div>
-
 Object types in Quest offer a way to give a group of things the same properties. 
 
 About Types

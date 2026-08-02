@@ -206,8 +206,6 @@ You can use this with any object, by the way; they will just change the alias an
 
 ### Appropriate clothing?
 
-_Note: You can only do this in the desktop version._
-
 You can [override](overriding.html) a function called `TestGarment` if you want to check a garment can be worn, for example to ensure it is not too small for the player. `TestGarment` must return a boolean, and take a single parameter; the garment. It should return true if the garment can be worn. If it cannot, it should give a message to say that, and then return false.
 
 ```
@@ -268,8 +266,6 @@ If you are using inventory limits, increase the maximum by one to allow for this
 
 
 ### No Public Nudity
-
-_Note: You can only do this in the desktop version._
 
 Let us suppose you want to ensure the player is modestly attired in public places. How might you do that? The first step is to decide what that means in game terms, and then to create a function, let us say, `IsDecent` that will test that, and return a Boolean as appropriate. How that works will depend on your game, but let us suppose there is a flag on the player "isfemale" that is true for female characters, and the important body slots are "lower" and "upper". We will also set an attribute, "private" on rooms that are private. The code might look like this:
 

@@ -1,13 +1,9 @@
 ---
 title: Debugging your game
-nav_order: 3
-parent: "Desktop Features"
+nav_order: 21
+parent: "Coding With Quest"
 ---
 
-<div class="alert alert-info">
-Note: The Debugger is currently only available in the Windows desktop version of Quest.
-
-</div>
 As you develop your games, there will be times when things happen which you didn't expect – usually because you’ve forgotten to set something up, or you've made a mistake in one of your script commands.
 
 Fortunately, Quest provides you with the Debugger, which lets you keep an eye on what's going on inside your game while you're testing it. When a game is running, you can open the Debugger from the Tools menu, or "View Debugger" from the toolbar.

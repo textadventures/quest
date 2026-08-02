@@ -104,7 +104,7 @@ https://github.com/ThePix/quest/wiki/CombatLib
 
 ### Coding a game system from scratch
 
-If you cannot use the desktop version, or just want to re-invent the wheel, we have a series of guides available:
+If you just want to re-invent the wheel, we have a series of guides available:
 
 [The Zombie Apocalypse Part 1](zombie-apocalypse-1.html)
 

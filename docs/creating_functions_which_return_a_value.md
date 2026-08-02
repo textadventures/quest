@@ -10,7 +10,7 @@ If you did the tutorial, you will already have encountered functions [here](tuto
 
 A typical use of a function in Quest is when you have several ways the player can do something. Perhaps there is a chair the player can sit on, and she might type SIT, SIT ON CHAIR or USE CHAIR. You could handle SIT as a command, SIT ON CHAIR as a verb or a command and USE CHAIR via the Use/Give feature... but they all do the same thing, so we will use a function.
 
-To create a function, go to "Functions" in the left pane, then click the Add button in the right pane (there are others ways too on the desktop version). Give it a name. The standard format is to capitalise each word, and leave out the gaps, so we will call ours "SitOnChair".
+To create a function, go to "Functions" in the left pane, then click the Add button in the right pane. Give it a name. The standard format is to capitalise each word, and leave out the gaps, so we will call ours "SitOnChair".
 
 You can add a script just as you would for a command or anything else.
 
@@ -136,4 +136,4 @@ The first line just prints a line, making it easier to see where the results are
 
 Remember to remove the code before releasing the game.
 
-For functions that do not return a value, you would need to print out something that does change. If using the desktop version, you can also use the _Debugger_ to check the current value of object attributes.
+For functions that do not return a value, you would need to print out something that does change. You can also use the _Debugger_ to check the current value of object attributes.

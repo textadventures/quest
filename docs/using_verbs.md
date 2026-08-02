@@ -29,7 +29,7 @@ Here is the script for the command:
 
 The second line is where the "sit on" verb is invoked.
 
-By the way, if your verb is multiple words (such as `sit on`) Quest will run them together into one long word, `siton`. However, some built-in verbs have been set up differently, so in this case the attribute name is just `sit`. You can check what name Quest is using by looking on the Attributes tab if you are using the desktop version.
+By the way, if your verb is multiple words (such as `sit on`) Quest will run them together into one long word, `siton`. However, some built-in verbs have been set up differently, so in this case the attribute name is just `sit`. You can check what name Quest is using by looking on the Attributes tab.
 
 This trick is also useful when you have a verb that can mean different things. You might want your game to handle these:
 
@@ -80,10 +80,6 @@ A few verbs cannot be implements, as they already mean something in Quest. "Open
 The Verb Element
 ---------------
 
-<div class="alert alert-info">
-Note: Verb elements can currently only be edited with the Windows desktop version, though they are present in all games.
-</div>
-
 The text Quest uses to match against goes into the verb element, and as Quest quietly creates these for you it is easy to miss they even exist (especially on the web version, where they are not accessible!). Look for them under the game object. Here is one for our `ROTATE` verb.
 
 ![](images/verb_element.png "verb_element.png")
@@ -105,7 +101,7 @@ If the player just types `ATTACK GOBLIN`, she will be presented with a menu of a
 
 ### Complex verbs
 
-Verbs are a simple way to add commands to your game, but they only handle commands of the form `VERB OBJECT`, such as `THROW BALL`. Or so you might think. In fact, in the desktop version you can edit the verb element to cover a lot of possible commands.
+Verbs are a simple way to add commands to your game, but they only handle commands of the form `VERB OBJECT`, such as `THROW BALL`. Or so you might think. In fact, you can edit the verb element to cover a lot of possible commands.
 
 Say we have a `HUG` command. We can implement `HUG MARY` very easily, but what about `GIVE MARY A HUG`? Sure, just use this as the pattern:
 

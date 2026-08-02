@@ -4,15 +4,7 @@ nav_order: 1
 parent: "Advanced Topics"
 ---
 
-
-<div class="alert alert-info">
-Note: Functions can currently only be overridden in the Windows desktop version of Quest.
-
-</div>
-
 A great feature of Quest is that you can create your own version of most of the built-in functions to do what you want. In object-orientate programming, this is called "overriding".
-
-
 
 How to...
 ---------

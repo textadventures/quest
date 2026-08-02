@@ -125,7 +125,7 @@ If the player types `KICK BORIS`, Quest will match it to this command, putting "
 
     "For a moment you want to " + LCase(text) + " " + object.name + ", but then you think better of it."
 
-By the way, to get `HIT` to work, you will need to disable the built-in verb. You can do that in the desktop version only, by copying the verb into your game, and then typing a load of nonsense into the pattern. The player will never type in that nonsense, so the verb will never get matched.
+By the way, to get `HIT` to work, you will need to disable the built-in verb. You can do that by copying the verb into your game, and then typing a load of nonsense into the pattern. The player will never type in that nonsense, so the verb will never get matched.
 
 
 
@@ -217,4 +217,4 @@ att = StringDictionaryItem(dict, "attribute")
 value = Eval(StringDictionaryItem(dict, "value"))
 set (obj, att, value)
 ```
-Note: _The web editor seems to have problems with complicated regex code, and will likely get confused and throw an error at the first line above, so this may be restricted to the desktop editor._
+

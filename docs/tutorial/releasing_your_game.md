@@ -35,16 +35,9 @@ Here are some things to think about before unleashing your game on an unsuspecti
 Upload as an unlisted game
 --------------------------
 
-This process is quite different, depending on whether you are using the web editor or the desktop version. By default your game will be unlisted; leave it like that for now.
+By default your game will be unlisted; leave it like that for now.
 
-### Web version
-
-In the on-line editor, click the _Publish_ button at the top right, then just follow the instructions. If you later update your game, you can click _Publish_ again, and it will be updated.
-
-
-### Desktop version
-
-This is a little more complicated, but not much. In the editor, go to _Tools - Publish_, give it a name (the same as your main file by default, but with a .quest extension), and click okay. Quest will produce a file in a subfolder of your main game called "Output".
+In the editor, go to _Tools - Publish_, give it a name (the same as your main file by default, but with a .quest extension), and click okay. Quest will produce a file in a subfolder of your main game called "Output".
 
 On textadventures.co.uk, click on _Create_ at the top, then _Upload_ game below that. Then follow the instructions.
 

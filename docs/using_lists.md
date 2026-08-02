@@ -49,7 +49,7 @@ In a certain situation you may find you cannot add or remove an item from a list
 Error running script: Cannot modify the contents of this list as it is defined by an inherited type. Clone it before attempting to modify.
 ```
 
-This typically happens when you try to modify the display or inventory verbs, but the list is actually an attribute of the type the object inherits from, rather than the object itself. If you are using the desktop version, you will be able to go to the _Attributes_ tab of the object, and will see that the attribute in question is greyed out.
+This typically happens when you try to modify the display or inventory verbs, but the list is actually an attribute of the type the object inherits from, rather than the object itself. You will be able to go to the _Attributes_ tab of the object, and will see that the attribute in question is greyed out.
 
 There are two solutions.
 

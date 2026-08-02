@@ -76,7 +76,7 @@ We potentially have a problem here, as in four turns the value of "patrolstate" 
 
 Now we can get the new room from the list. If the room is different, then we tell the player the NPC is moving, and we can use our `PrintIfHere` function to make the appropriate to where the player is.
 
-If you are using the desktop version, you can do this by setting attributes directly on the _Attributes_ tab.
+You can do this by setting attributes directly on the _Attributes_ tab.
 
 ![](images/patrol1.png "patrol1.png")
 

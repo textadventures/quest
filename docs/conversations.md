@@ -83,4 +83,4 @@ See also
 
 For a more comprehensive discussion on conversations in interactive fiction, you might like to read [this article](http://emshort.wordpress.com/how-to-play/writing-if/my-articles/conversation/)
 
-If using the desktop version, there is a [library](https://github.com/ThePix/quest/wiki/Library:-Conversations) that uses `TALK TO` together with dynamic menus.
+There is a [library](https://github.com/ThePix/quest/wiki/Library:-Conversations) that uses `TALK TO` together with dynamic menus.

@@ -35,16 +35,7 @@ Lots of things in Quest have built-in attributes; these are the attributes you c
 Setting Up Custom Attributes
 ---------------------
 
-On the desktop version you can set up attributes on the _Attributes_ tab. The lower half lists all the attributes for this object, those in grey are what it has inherited from its types (which are listed in the upper half). To add a new attribute, click "Add", give it a name, select a type (it defaults to string), and then give it a starting value.
-
-The web version does not support an _Attributes_ tab, so you need to do it differently. Go to the _Features_ tab, and tick "Run an initialisation script for this object", and then go to the _Initialisation script_ tab. Here we can set attributes in a script. Obviously you can do that using the GUI, but it is easier to show using code, and the code is trivial, so that is how I will show it here. In this example, two attributes are set:
-
-```
-this.colour = "red"
-this.size = 15
-```
-
-Each line starts with `this`, which is a special value meaning the object the script is attached to - this object. The dot says we want something attached to the object, and the next bit is the name of attribute (like objects, these can only contain numbers, letters, spaces and underscores, and must start with a letter). Then there is an equals, followed by the value. Note that _red_ is a string, so needs to start and end with double quotes. The 15 is a number, so no quotes required.
+You can set up attributes on the _Attributes_ tab. The lower half lists all the attributes for this object, those in grey are what it has inherited from its types (which are listed in the upper half). To add a new attribute, click "Add", give it a name, select a type (it defaults to string), and then give it a starting value.
 
 
 Status Attributes
