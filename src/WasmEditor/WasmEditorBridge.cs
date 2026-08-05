@@ -1527,9 +1527,14 @@ public partial class WasmEditorBridge
         var visibleEntries = new List<KeyValuePair<string, EditableScriptData>>();
         foreach (var kv in scriptData)
         {
+            // "Call function" (appliesto "()") deliberately has an empty <create> string —
+            // the function name and parameters aren't known until the user fills them in,
+            // so EditableScripts.AddNewInternal special-cases an empty/null keyword to build
+            // a blank FunctionCallScript instead of inserting literal text. Every other entry
+            // has a real create string, so this is the one explicit exception to the filter.
             if (!string.IsNullOrEmpty(kv.Value.Category)
                 && await kv.Value.IsVisible()
-                && !string.IsNullOrEmpty(kv.Value.CreateString))
+                && (!string.IsNullOrEmpty(kv.Value.CreateString) || kv.Key == "()"))
             {
                 visibleEntries.Add(kv);
             }
