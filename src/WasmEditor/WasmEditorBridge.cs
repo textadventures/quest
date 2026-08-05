@@ -62,7 +62,8 @@ internal record ScriptControlData(
     string? Source,
     List<ControlOption>? Options,
     List<ScriptNodeData>? Scripts,
-    string? ObjectType = null
+    string? ObjectType = null,
+    bool IsFunctionPicker = false
 );
 
 internal record ElseIfClauseData(string Id, string Expression, List<ScriptNodeData> Scripts);
@@ -3308,10 +3309,15 @@ public partial class WasmEditorBridge
 
         string? simpleLabel = null;
         string? source = null;
+        string? objectType = null;
         // Read for every control type, not just "expression" — e.g. Call function's plain
-        // "textbox" attribute-0 control uses <objecttype>procedure</objecttype> to ask the
-        // frontend for a function-name picker instead of a free-text box.
-        string? objectType = ctrl.GetString("objecttype");
+        // "textbox" attribute-0 control uses <functionpicker/> to ask the frontend for a
+        // dropdown of the game's user-defined functions instead of a free-text box. A
+        // dedicated tag rather than reusing <objecttype>, which elsewhere always means one
+        // of Quest's real object types (dispatched through WorldModel.GetObjectTypeForTypeString)
+        // — functions are ElementType.Function, not ElementType.Object, so that machinery
+        // doesn't apply to them and overloading the tag would be misleading.
+        var isFunctionPicker = ctrl.GetBool("functionpicker");
 
         if (ctrl.ControlType == "expression")
         {
@@ -3320,6 +3326,7 @@ public partial class WasmEditorBridge
             // If <simpleeditor> is absent but <simple> is set, default simple editor is a textbox
             simpleEditor = simpleEditorTag ?? (simpleLabel != null ? "textbox" : null);
             source = ctrl.GetString("source");
+            objectType = ctrl.GetString("objecttype");
 
             if (simpleEditor == "dropdown")
             {
@@ -3365,7 +3372,8 @@ public partial class WasmEditorBridge
             source,
             options,
             nestedScripts,
-            objectType
+            objectType,
+            isFunctionPicker
         );
     }
 

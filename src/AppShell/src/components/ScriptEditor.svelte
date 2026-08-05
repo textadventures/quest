@@ -78,7 +78,7 @@
     const expressionOverrides = new SvelteSet<string>();
     let objectNames = $state<string[]>([]);
     let exitNames = $state<string[]>([]);
-    let procedureNames = $state<string[]>([]);
+    let functionNames = $state<string[]>([]);
     let ifTemplates = $state<IfExpressionTemplate[]>([]);
 
     // Load on mount and whenever scriptVersion bumps (undo/redo)
@@ -103,9 +103,9 @@
             const names = getExitNames();
             if (names && names.length > 0) exitNames = names;
         }
-        if (procedureNames.length === 0) {
+        if (functionNames.length === 0) {
             const names = getExpressionFunctions().filter(f => f.isUserDefined).map(f => f.name);
-            if (names.length > 0) procedureNames = names;
+            if (names.length > 0) functionNames = names;
         }
         if (ifTemplates.length === 0) {
             const templates = getIfExpressionTemplates();
@@ -675,17 +675,17 @@
             {objectNames}
             class="input text-xs py-0 px-1 min-w-16 max-w-48 flex-1"
         />
-    {:else if ctrl.controlType === "textbox" && ctrl.objectType === "procedure"}
+    {:else if ctrl.controlType === "textbox" && ctrl.isFunctionPicker}
         <select
             class="select text-xs py-0 px-1 max-w-40"
             value={ctrl.value ?? ""}
             onchange={(e) => onSetParam(scriptIndex, ctrl.attribute!, (e.target as HTMLSelectElement).value)}
         >
             <option value=""></option>
-            {#if ctrl.value && !procedureNames.includes(ctrl.value)}
+            {#if ctrl.value && !functionNames.includes(ctrl.value)}
                 <option value={ctrl.value}>{ctrl.value} (not found)</option>
             {/if}
-            {#each procedureNames as name (name)}
+            {#each functionNames as name (name)}
                 <option value={name}>{name}</option>
             {/each}
         </select>
