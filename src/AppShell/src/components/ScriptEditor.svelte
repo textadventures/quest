@@ -4,6 +4,7 @@
     import AddScriptModal from "./AddScriptModal.svelte";
     import AssetPicker from "./AssetPicker.svelte";
     import CodeEditor from "./CodeEditor.svelte";
+    import Combobox from "./Combobox.svelte";
     import ExpressionInput from "./ExpressionInput.svelte";
     import {
         scriptVersion,
@@ -676,19 +677,13 @@
             class="input text-xs py-0 px-1 min-w-16 max-w-48 flex-1"
         />
     {:else if ctrl.controlType === "textbox" && ctrl.isFunctionPicker}
-        <select
-            class="select text-xs py-0 px-1 max-w-40"
+        {@const functionOptions = functionNames.map(name => ({ value: name, label: name }))}
+        <Combobox
             value={ctrl.value ?? ""}
-            onchange={(e) => onSetParam(scriptIndex, ctrl.attribute!, (e.target as HTMLSelectElement).value)}
-        >
-            <option value=""></option>
-            {#if ctrl.value && !functionNames.includes(ctrl.value)}
-                <option value={ctrl.value}>{ctrl.value} (not found)</option>
-            {/if}
-            {#each functionNames as name (name)}
-                <option value={name}>{name}</option>
-            {/each}
-        </select>
+            options={functionOptions}
+            onchange={(v) => onSetParam(scriptIndex, ctrl.attribute!, v)}
+            class="input text-xs py-0 px-1 min-w-16 max-w-48"
+        />
     {:else if ctrl.controlType === "textbox" || ctrl.controlType === "richtext"}
         <input
             type="text"
