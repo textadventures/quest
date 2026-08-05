@@ -63,7 +63,8 @@ internal record ScriptControlData(
     List<ControlOption>? Options,
     List<ScriptNodeData>? Scripts,
     string? ObjectType = null,
-    bool IsFunctionPicker = false
+    bool IsFunctionPicker = false,
+    bool IsFunctionParams = false
 );
 
 internal record ElseIfClauseData(string Id, string Expression, List<ScriptNodeData> Scripts);
@@ -135,7 +136,7 @@ internal record ExitsData(
 
 internal record VerbInfo(string Attribute, string DisplayPattern);
 
-internal record ExpressionFunctionData(string Name, List<string> Parameters, bool IsUserDefined);
+internal record ExpressionFunctionData(string Name, List<string> Parameters, bool IsUserDefined, bool IsLibrary);
 
 [JsonSourceGenerationOptions(PropertyNamingPolicy = JsonKnownNamingPolicy.CamelCase)]
 [JsonSerializable(typeof(List<TreeNodeData>))]
@@ -913,6 +914,50 @@ public partial class WasmEditorBridge
         try
         {
             list.Update(key, value);
+            return "ok";
+        }
+        catch (Exception ex)
+        {
+            return ex.Message;
+        }
+    }
+
+    // Resizes a script parameter list to an exact count, trimming or padding at the end while
+    // leaving surviving indices' values untouched. Used when the Call function picker's chosen
+    // function has a known, fixed arity (see EditorController.GetExpressionFunctions) so the
+    // parameter boxes can be relabelled with real parameter names and kept in sync with the
+    // function's declared signature, instead of requiring the generic +/- item-list UI.
+    [JSExport]
+    public static string SetScriptListItemCount(string elementKey, string attribute, string containerPath,
+        int scriptIndex, string paramAttribute, int count)
+    {
+        if (_controller == null)
+        {
+            return "error";
+        }
+
+        var list = GetScriptParamList(elementKey, attribute, containerPath, scriptIndex, paramAttribute);
+        if (list == null)
+        {
+            return "error";
+        }
+
+        try
+        {
+            var keys = list.ItemsList.Select(i => i.Key).ToList();
+            while (keys.Count > count)
+            {
+                var key = keys[^1];
+                list.Remove(key);
+                keys.RemoveAt(keys.Count - 1);
+            }
+
+            while (keys.Count < count)
+            {
+                list.Add("");
+                keys = list.ItemsList.Select(i => i.Key).ToList();
+            }
+
             return "ok";
         }
         catch (Exception ex)
@@ -2493,7 +2538,7 @@ public partial class WasmEditorBridge
         }
 
         var functions = _controller.GetExpressionFunctions()
-            .Select(f => new ExpressionFunctionData(f.Name, f.Parameters.ToList(), f.IsUserDefined))
+            .Select(f => new ExpressionFunctionData(f.Name, f.Parameters.ToList(), f.IsUserDefined, f.IsLibrary))
             .ToList();
 
         return JsonSerializer.Serialize(functions, WasmEditorJsonContext.Default.ListExpressionFunctionData);
@@ -3318,6 +3363,12 @@ public partial class WasmEditorBridge
         // — functions are ElementType.Function, not ElementType.Object, so that machinery
         // doesn't apply to them and overloading the tag would be misleading.
         var isFunctionPicker = ctrl.GetBool("functionpicker");
+        // Marks Call function's "list" parameter control (as opposed to e.g. rundelegate's,
+        // whose delegate name is a runtime expression so its arity can't be known ahead of
+        // time) so the frontend can relabel each box with the selected function's real
+        // parameter name and auto-size the box count to match its arity, instead of the
+        // generic +/- item list.
+        var isFunctionParams = ctrl.GetBool("functionparams");
 
         if (ctrl.ControlType == "expression")
         {
@@ -3373,7 +3424,8 @@ public partial class WasmEditorBridge
             options,
             nestedScripts,
             objectType,
-            isFunctionPicker
+            isFunctionPicker,
+            isFunctionParams
         );
     }
 

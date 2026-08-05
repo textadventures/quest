@@ -2346,17 +2346,20 @@ public sealed class EditorController : IDisposable
     // NOT filtered out here: a library function is exactly as callable as a game-authored one
     // (WorldModel.Procedure() doesn't distinguish them), and both consumers of this list
     // (ExpressionInput's popover, ScriptEditor's Call-function picker) are typeahead-filtered,
-    // so a larger pool isn't the UX problem a flat unfiltered dropdown would make it.
-    public IEnumerable<(string Name, string[] Parameters, bool IsUserDefined)> GetExpressionFunctions()
+    // so a larger pool isn't the UX problem a flat unfiltered dropdown would make it. IsLibrary
+    // lets those consumers group game-authored functions ahead of library/built-in ones, since
+    // a game's own functions are the more likely thing an author wants to call.
+    public IEnumerable<(string Name, string[] Parameters, bool IsUserDefined, bool IsLibrary)> GetExpressionFunctions()
     {
         var builtIn = WorldModel.GetBuiltInFunctionSignatures()
-            .Select(f => (f.Name, f.Parameters, IsUserDefined: false));
+            .Select(f => (f.Name, f.Parameters, IsUserDefined: false, IsLibrary: false));
 
         var userFunctions = WorldModel.Elements.GetElements(ElementType.Function)
             // A freshly-created function has no ParamNames field set yet (only populated by the
             // aslx <function parameters="..."> loader), so Fields[...] is null until the user
             // adds a parameter.
-            .Select(e => (e.Name, e.Fields[FieldDefinitions.ParamNames]?.ToArray() ?? [], IsUserDefined: true));
+            .Select(e => (e.Name, e.Fields[FieldDefinitions.ParamNames]?.ToArray() ?? [], IsUserDefined: true,
+                IsLibrary: e.MetaFields[MetaFieldDefinitions.Library]));
 
         return builtIn.Concat(userFunctions).OrderBy(f => f.Name, StringComparer.Ordinal);
     }

@@ -36,6 +36,7 @@
         addScriptListItem,
         removeScriptListItem,
         updateScriptListItem,
+        setScriptListItemCount,
     } from "$lib/editor-store";
     import type {
         ScriptBlockData,
@@ -44,6 +45,7 @@
         ScriptCategoryInfo,
         IfExpressionTemplateData,
         IfExpressionTemplate,
+        ExpressionFunctionInfo,
     } from "$lib/types";
 
     interface Props {
@@ -79,7 +81,11 @@
     const expressionOverrides = new SvelteSet<string>();
     let objectNames = $state<string[]>([]);
     let exitNames = $state<string[]>([]);
-    let functionNames = $state<string[]>([]);
+    // Functions callable from a Call function script (WorldModel.Procedure() only resolves aslx
+    // Function elements, not native built-ins) — kept as full ExpressionFunctionInfo, not just
+    // names, so the picker can group game-authored functions ahead of library ones and the
+    // parameter-list editor can look up a selected function's declared arity/param names.
+    let functionInfos = $state<ExpressionFunctionInfo[]>([]);
     let ifTemplates = $state<IfExpressionTemplate[]>([]);
 
     // Load on mount and whenever scriptVersion bumps (undo/redo)
@@ -104,9 +110,9 @@
             const names = getExitNames();
             if (names && names.length > 0) exitNames = names;
         }
-        if (functionNames.length === 0) {
-            const names = getExpressionFunctions().filter(f => f.isUserDefined).map(f => f.name);
-            if (names.length > 0) functionNames = names;
+        if (functionInfos.length === 0) {
+            const infos = getExpressionFunctions().filter(f => f.isUserDefined);
+            if (infos.length > 0) functionInfos = infos;
         }
         if (ifTemplates.length === 0) {
             const templates = getIfExpressionTemplates();
@@ -318,6 +324,47 @@
 
     function onSetParam(scriptIndex: number, paramName: string, value: string) {
         mutate(() => setScriptParameter(elementKey, attribute, containerPath, scriptIndex, paramName, value));
+    }
+
+    // Game-authored functions first (most likely to be what the author wants to call), then
+    // library/built-in ones — mirrors ExpressionInput's Functions grouping.
+    function functionPickerOptions(): {value: string; label: string; group: string}[] {
+        const game = functionInfos.filter(f => !f.isLibrary);
+        const library = functionInfos.filter(f => f.isLibrary);
+        return [
+            ...game.map(f => ({ value: f.name, label: f.name, group: "Game functions" })),
+            ...library.map(f => ({ value: f.name, label: f.name, group: "Library functions" })),
+        ];
+    }
+
+    // Sets the Call function picker's function-name attribute, then — if the chosen name
+    // matches a known function — resizes the sibling parameter list to that function's declared
+    // arity. Functions have a fixed parameter count (FunctionCallScript matches positionally
+    // against ParamNames, and modern game versions require an exact count), so this is safe:
+    // there's no "variable number of parameters" case to preserve a manual +/- for here, beyond
+    // names the picker doesn't recognise at all (kept on the manual list UI in paramListEditor).
+    function onSelectFunction(scriptIndex: number, paramName: string, siblingControls: ScriptControlData[], value: string) {
+        const paramsCtrl = siblingControls.find(c => c.isFunctionParams);
+        const fn = functionInfos.find(f => f.name === value);
+        mutate(() => {
+            const result = setScriptParameter(elementKey, attribute, containerPath, scriptIndex, paramName, value);
+            if (result !== "ok" || !fn || !paramsCtrl?.attribute) return result;
+            return setScriptListItemCount(elementKey, attribute, containerPath, scriptIndex, paramsCtrl.attribute, fn.parameters.length);
+        });
+    }
+
+    // The function a functionparams list control is currently showing labelled boxes for, or
+    // undefined if it's on the manual +/- fallback (name doesn't match a known function, or the
+    // list hasn't been resized to match yet — see onSelectFunction). Shared by paramListEditor
+    // (which boxes to render) and inlineControl's "With parameters:" label (hidden once the
+    // boxes are self-labelled, since the label adds nothing at that point).
+    function matchedFunctionFor(ctrl: ScriptControlData, siblingControls: ScriptControlData[]): ExpressionFunctionInfo | undefined {
+        if (!ctrl.isFunctionParams) return undefined;
+        const pickerValue = siblingControls.find(c => c.isFunctionPicker)?.value;
+        const fn = functionInfos.find(f => f.name === pickerValue);
+        if (!fn) return undefined;
+        const items = parseListItems(ctrl.value);
+        return fn.parameters.length === items.length ? fn : undefined;
     }
 
     function onAddParam(scriptIndex: number, paramAttribute: string, value: string) {
@@ -538,14 +585,18 @@
 {#snippet normalBlock(script: ScriptNodeData, i: number)}
     <div class="px-2 py-1 pr-16 flex flex-wrap items-center gap-x-1 gap-y-0.5 text-xs">
         {#each script.controls ?? [] as ctrl, ci (ci)}
-            {@render inlineControl(ctrl, i)}
+            {@render inlineControl(ctrl, i, script.controls ?? [], ci)}
         {/each}
     </div>
 {/snippet}
 
-{#snippet inlineControl(ctrl: ScriptControlData, scriptIndex: number)}
+{#snippet inlineControl(ctrl: ScriptControlData, scriptIndex: number, siblingControls: ScriptControlData[], controlIndex: number)}
     {#if ctrl.controlType === "label"}
-        <span class="text-surface-600-400 select-none">{ctrl.caption ?? ""}</span>
+        {@const nextCtrl = siblingControls[controlIndex + 1]}
+        {@const labelIsRedundant = nextCtrl?.isFunctionParams && matchedFunctionFor(nextCtrl, siblingControls) !== undefined}
+        {#if !labelIsRedundant}
+            <span class="text-surface-600-400 select-none">{ctrl.caption ?? ""}</span>
+        {/if}
     {:else if ctrl.controlType === "script" && ctrl.attribute !== null}
         <!-- Nested script block for commands like for/while/foreach/firsttime -->
         <div class="w-full mt-0.5">
@@ -561,11 +612,11 @@
             />
         </div>
     {:else if ctrl.attribute !== null}
-        {@render valueControl(ctrl, scriptIndex)}
+        {@render valueControl(ctrl, scriptIndex, siblingControls)}
     {/if}
 {/snippet}
 
-{#snippet valueControl(ctrl: ScriptControlData, scriptIndex: number)}
+{#snippet valueControl(ctrl: ScriptControlData, scriptIndex: number, siblingControls: ScriptControlData[])}
     {#if ctrl.controlType === "expression" && ctrl.simpleEditor !== null}
         {@const simple = inSimpleMode(ctrl, scriptIndex)}
         {#if ctrl.simpleEditor === "boolean"}
@@ -677,12 +728,13 @@
             class="input text-xs py-0 px-1 min-w-16 max-w-48 flex-1"
         />
     {:else if ctrl.controlType === "textbox" && ctrl.isFunctionPicker}
-        {@const functionOptions = functionNames.map(name => ({ value: name, label: name }))}
+        {@const functionOptions = functionPickerOptions()}
         <Combobox
             value={ctrl.value ?? ""}
             options={functionOptions}
-            onchange={(v) => onSetParam(scriptIndex, ctrl.attribute!, v)}
-            class="input text-xs py-0 px-1 min-w-16 max-w-48"
+            onchange={(v) => onSelectFunction(scriptIndex, ctrl.attribute!, siblingControls, v)}
+            class="input text-xs py-0 px-1"
+            wrapperClass="min-w-32 max-w-96 flex-1"
         />
     {:else if ctrl.controlType === "textbox" || ctrl.controlType === "richtext"}
         <input
@@ -693,7 +745,7 @@
             onchange={(e) => onSetParam(scriptIndex, ctrl.attribute!, (e.target as HTMLInputElement).value)}
         />
     {:else if ctrl.controlType === "list"}
-        {@render paramListEditor(ctrl, scriptIndex)}
+        {@render paramListEditor(ctrl, scriptIndex, siblingControls)}
     {:else if ctrl.controlType === "checkbox"}
         <input
             type="checkbox"
@@ -717,32 +769,52 @@
     {/if}
 {/snippet}
 
-{#snippet paramListEditor(ctrl: ScriptControlData, scriptIndex: number)}
+{#snippet paramListEditor(ctrl: ScriptControlData, scriptIndex: number, siblingControls: ScriptControlData[])}
     {@const items = parseListItems(ctrl.value)}
-    <span class="flex flex-wrap items-center gap-1">
-        {#each items as item (item.key)}
-            <span class="flex items-center gap-0.5">
-                <input
-                    type="text"
-                    autocapitalize="off"
-                    class="input text-xs py-0 px-1 w-20"
-                    value={item.value}
-                    onchange={(e) => onUpdateParam(scriptIndex, ctrl.attribute!, item.key, (e.target as HTMLInputElement).value)}
-                />
-                <button
-                    type="button"
-                    class="btn btn-sm preset-tonal-error px-1 py-0 text-xs leading-none"
-                    title="Remove parameter"
-                    onclick={() => onRemoveParam(scriptIndex, ctrl.attribute!, item.key)}
-                >×</button>
-            </span>
-        {/each}
-        <button
-            type="button"
-            class="btn btn-sm preset-outlined-primary-500 text-xs py-0 px-1.5 leading-none"
-            onclick={() => onAddParam(scriptIndex, ctrl.attribute!, "")}
-        >+ param</button>
-    </span>
+    {@const matchedFn = matchedFunctionFor(ctrl, siblingControls)}
+    {#if matchedFn}
+        <!-- Known, fixed-arity function (see onSelectFunction): one labelled box per declared
+             parameter, kept in sync with the signature, instead of the generic +/- list. -->
+        <span class="flex flex-wrap items-center gap-2">
+            {#each matchedFn.parameters as paramName, pi (pi)}
+                <span class="flex items-center gap-1">
+                    <span class="text-surface-600-400 text-[10px] whitespace-nowrap">{paramName}:</span>
+                    <input
+                        type="text"
+                        autocapitalize="off"
+                        class="input text-xs py-0 px-1 w-20"
+                        value={items[pi].value}
+                        onchange={(e) => onUpdateParam(scriptIndex, ctrl.attribute!, items[pi].key, (e.target as HTMLInputElement).value)}
+                    />
+                </span>
+            {/each}
+        </span>
+    {:else}
+        <span class="flex flex-wrap items-center gap-1">
+            {#each items as item (item.key)}
+                <span class="flex items-center gap-0.5">
+                    <input
+                        type="text"
+                        autocapitalize="off"
+                        class="input text-xs py-0 px-1 w-20"
+                        value={item.value}
+                        onchange={(e) => onUpdateParam(scriptIndex, ctrl.attribute!, item.key, (e.target as HTMLInputElement).value)}
+                    />
+                    <button
+                        type="button"
+                        class="btn btn-sm preset-tonal-error px-1 py-0 text-xs leading-none"
+                        title="Remove parameter"
+                        onclick={() => onRemoveParam(scriptIndex, ctrl.attribute!, item.key)}
+                    >×</button>
+                </span>
+            {/each}
+            <button
+                type="button"
+                class="btn btn-sm preset-outlined-primary-500 text-xs py-0 px-1.5 leading-none"
+                onclick={() => onAddParam(scriptIndex, ctrl.attribute!, "")}
+            >+ param</button>
+        </span>
+    {/if}
 {/snippet}
 
 {#snippet ifBlock(script: ScriptNodeData, i: number)}

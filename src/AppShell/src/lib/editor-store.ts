@@ -880,6 +880,14 @@ export function updateScriptListItem(elementKey: string, attribute: string, cont
     return result;
 }
 
+export function setScriptListItemCount(elementKey: string, attribute: string, containerPath: string, scriptIndex: number, paramAttribute: string, count: number): string {
+    if (!_bridge) return "error";
+    const result = _bridge.SetScriptListItemCount(elementKey, attribute, containerPath, scriptIndex, paramAttribute, count);
+    if (result === "ok") bumpScriptVersion();
+    refreshUndoRedo();
+    return result;
+}
+
 export function setIfExpression(elementKey: string, attribute: string, containerPath: string, scriptIndex: number, expression: string): string {
     if (!_bridge) return "error";
     const result = _bridge.SetIfExpression(elementKey, attribute, containerPath, scriptIndex, expression);
