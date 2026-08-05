@@ -49,6 +49,10 @@ export interface WasmBridge {
   AddListItem(elementKey: string, attribute: string, value: string): string
   RemoveListItem(elementKey: string, attribute: string, key: string): string
   UpdateListItem(elementKey: string, attribute: string, key: string, value: string): string
+  // Script parameter-list API (e.g. Call function's parameters)
+  AddScriptListItem(elementKey: string, attribute: string, containerPath: string, scriptIndex: number, paramAttribute: string, value: string): string
+  RemoveScriptListItem(elementKey: string, attribute: string, containerPath: string, scriptIndex: number, paramAttribute: string, key: string): string
+  UpdateScriptListItem(elementKey: string, attribute: string, containerPath: string, scriptIndex: number, paramAttribute: string, key: string, value: string): string
   // Attributes editor API
   GetFullAttributeData(elementKey: string): string | null
   RemoveAttribute(elementKey: string, attribute: string): string

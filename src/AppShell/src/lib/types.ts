@@ -99,6 +99,7 @@ export interface ScriptControlData {
   options: ControlOption[] | null
   scripts: ScriptNodeData[] | null
   objectType?: string | null
+  isFunctionPicker?: boolean
 }
 
 export interface ElseIfClauseData {

@@ -260,6 +260,7 @@
     <control>
       <controltype>textbox</controltype>
       <attribute>0</attribute>
+      <functionpicker/>
     </control>
 
     <control>

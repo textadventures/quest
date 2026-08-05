@@ -2339,16 +2339,20 @@ public sealed class EditorController : IDisposable
         return WorldModel.GetBuiltInFunctionNames();
     }
 
-    // Feeds the editor's expression-insert helper: built-in engine functions plus the game's own
-    // (non-library) Function elements, both with real parameter names rather than a hand-curated
-    // guess at what's useful.
+    // Feeds the editor's expression-insert helper: built-in engine functions plus every aslx
+    // Function element — the game's own, plus any from included libraries (both the always-
+    // embedded Core/English libraries and ones the author added, e.g. DiceRoll from
+    // CoreCombat.aslx). Unlike GetObjectNames() and friends, library elements are deliberately
+    // NOT filtered out here: a library function is exactly as callable as a game-authored one
+    // (WorldModel.Procedure() doesn't distinguish them), and both consumers of this list
+    // (ExpressionInput's popover, ScriptEditor's Call-function picker) are typeahead-filtered,
+    // so a larger pool isn't the UX problem a flat unfiltered dropdown would make it.
     public IEnumerable<(string Name, string[] Parameters, bool IsUserDefined)> GetExpressionFunctions()
     {
         var builtIn = WorldModel.GetBuiltInFunctionSignatures()
             .Select(f => (f.Name, f.Parameters, IsUserDefined: false));
 
         var userFunctions = WorldModel.Elements.GetElements(ElementType.Function)
-            .Where(e => !e.MetaFields[MetaFieldDefinitions.Library])
             // A freshly-created function has no ParamNames field set yet (only populated by the
             // aslx <function parameters="..."> loader), so Fields[...] is null until the user
             // adds a parameter.

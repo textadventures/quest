@@ -50,9 +50,29 @@
         popoverStyle = `position: fixed; left: ${rect.right}px; top: ${top}px; transform: translate(-100%, ${openUpward ? "-100%" : "0"});`;
     }
 
+    // A built-in function and a library-defined one can share a name (e.g. "Ask" — a native
+    // ExpressionOwner.Ask(caption) plus a CoreFunctions.aslx Ask(question, callback)). Within an
+    // expression that's not actually ambiguous: NcalcExpressionEvaluator tries the native
+    // ExpressionOwner method by name first and only falls through to WorldModel.Procedure() if no
+    // method of that name exists at all — so the built-in always shadows a same-named library
+    // function here, and listing both would (a) violate the {#each} block's per-name key and
+    // (b) offer an entry that, if inserted, wouldn't run what it appears to call.
+    function dedupeByName(fns: ExpressionFunctionInfo[]): ExpressionFunctionInfo[] {
+        // Plain object, not Map — this is a throwaway local lookup discarded when the function
+        // returns, not component state, so there's no Svelte-reactivity concern here.
+        const byName: Record<string, ExpressionFunctionInfo> = {};
+        for (const fn of fns) {
+            const existing = byName[fn.name];
+            if (!existing || (existing.isUserDefined && !fn.isUserDefined)) {
+                byName[fn.name] = fn;
+            }
+        }
+        return Object.values(byName);
+    }
+
     function toggle() {
         if (!open) {
-            functions = getExpressionFunctions();
+            functions = dedupeByName(getExpressionFunctions());
             filter = "";
         }
         open = !open;

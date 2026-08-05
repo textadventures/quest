@@ -4,6 +4,7 @@
     import AddScriptModal from "./AddScriptModal.svelte";
     import AssetPicker from "./AssetPicker.svelte";
     import CodeEditor from "./CodeEditor.svelte";
+    import Combobox from "./Combobox.svelte";
     import ExpressionInput from "./ExpressionInput.svelte";
     import {
         scriptVersion,
@@ -31,6 +32,10 @@
         getIfExpressionTemplates,
         getIfExpressionTemplateData,
         makeScriptEditable,
+        getExpressionFunctions,
+        addScriptListItem,
+        removeScriptListItem,
+        updateScriptListItem,
     } from "$lib/editor-store";
     import type {
         ScriptBlockData,
@@ -74,6 +79,7 @@
     const expressionOverrides = new SvelteSet<string>();
     let objectNames = $state<string[]>([]);
     let exitNames = $state<string[]>([]);
+    let functionNames = $state<string[]>([]);
     let ifTemplates = $state<IfExpressionTemplate[]>([]);
 
     // Load on mount and whenever scriptVersion bumps (undo/redo)
@@ -97,6 +103,10 @@
         if (exitNames.length === 0) {
             const names = getExitNames();
             if (names && names.length > 0) exitNames = names;
+        }
+        if (functionNames.length === 0) {
+            const names = getExpressionFunctions().filter(f => f.isUserDefined).map(f => f.name);
+            if (names.length > 0) functionNames = names;
         }
         if (ifTemplates.length === 0) {
             const templates = getIfExpressionTemplates();
@@ -308,6 +318,22 @@
 
     function onSetParam(scriptIndex: number, paramName: string, value: string) {
         mutate(() => setScriptParameter(elementKey, attribute, containerPath, scriptIndex, paramName, value));
+    }
+
+    function onAddParam(scriptIndex: number, paramAttribute: string, value: string) {
+        mutate(() => addScriptListItem(elementKey, attribute, containerPath, scriptIndex, paramAttribute, value));
+    }
+
+    function onRemoveParam(scriptIndex: number, paramAttribute: string, key: string) {
+        mutate(() => removeScriptListItem(elementKey, attribute, containerPath, scriptIndex, paramAttribute, key));
+    }
+
+    function onUpdateParam(scriptIndex: number, paramAttribute: string, key: string, value: string) {
+        mutate(() => updateScriptListItem(elementKey, attribute, containerPath, scriptIndex, paramAttribute, key, value));
+    }
+
+    function parseListItems(value: string | null): {key: string, value: string}[] {
+        try { return JSON.parse(value ?? "[]"); } catch { return []; }
     }
 
     function onSetIfExpr(scriptIndex: number, expression: string) {
@@ -650,6 +676,14 @@
             {objectNames}
             class="input text-xs py-0 px-1 min-w-16 max-w-48 flex-1"
         />
+    {:else if ctrl.controlType === "textbox" && ctrl.isFunctionPicker}
+        {@const functionOptions = functionNames.map(name => ({ value: name, label: name }))}
+        <Combobox
+            value={ctrl.value ?? ""}
+            options={functionOptions}
+            onchange={(v) => onSetParam(scriptIndex, ctrl.attribute!, v)}
+            class="input text-xs py-0 px-1 min-w-16 max-w-48"
+        />
     {:else if ctrl.controlType === "textbox" || ctrl.controlType === "richtext"}
         <input
             type="text"
@@ -658,6 +692,8 @@
             value={ctrl.value ?? ""}
             onchange={(e) => onSetParam(scriptIndex, ctrl.attribute!, (e.target as HTMLInputElement).value)}
         />
+    {:else if ctrl.controlType === "list"}
+        {@render paramListEditor(ctrl, scriptIndex)}
     {:else if ctrl.controlType === "checkbox"}
         <input
             type="checkbox"
@@ -679,6 +715,34 @@
     {:else}
         <span class="text-surface-600-400 italic text-xs">[{ctrl.controlType}]</span>
     {/if}
+{/snippet}
+
+{#snippet paramListEditor(ctrl: ScriptControlData, scriptIndex: number)}
+    {@const items = parseListItems(ctrl.value)}
+    <span class="flex flex-wrap items-center gap-1">
+        {#each items as item (item.key)}
+            <span class="flex items-center gap-0.5">
+                <input
+                    type="text"
+                    autocapitalize="off"
+                    class="input text-xs py-0 px-1 w-20"
+                    value={item.value}
+                    onchange={(e) => onUpdateParam(scriptIndex, ctrl.attribute!, item.key, (e.target as HTMLInputElement).value)}
+                />
+                <button
+                    type="button"
+                    class="btn btn-sm preset-tonal-error px-1 py-0 text-xs leading-none"
+                    title="Remove parameter"
+                    onclick={() => onRemoveParam(scriptIndex, ctrl.attribute!, item.key)}
+                >×</button>
+            </span>
+        {/each}
+        <button
+            type="button"
+            class="btn btn-sm preset-outlined-primary-500 text-xs py-0 px-1.5 leading-none"
+            onclick={() => onAddParam(scriptIndex, ctrl.attribute!, "")}
+        >+ param</button>
+    </span>
 {/snippet}
 
 {#snippet ifBlock(script: ScriptNodeData, i: number)}

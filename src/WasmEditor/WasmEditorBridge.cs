@@ -62,7 +62,8 @@ internal record ScriptControlData(
     string? Source,
     List<ControlOption>? Options,
     List<ScriptNodeData>? Scripts,
-    string? ObjectType = null
+    string? ObjectType = null,
+    bool IsFunctionPicker = false
 );
 
 internal record ElseIfClauseData(string Id, string Expression, List<ScriptNodeData> Scripts);
@@ -812,6 +813,114 @@ public partial class WasmEditorBridge
         }
     }
 
+    // Script-parameter-list variants of Add/Remove/UpdateListItem above. A script "list" control
+    // (e.g. Call function's parameters, FunctionCallScript attribute "1") lives inside a script
+    // tree at an arbitrary containerPath/scriptIndex rather than directly on an element, so it
+    // can't be reached via GetEditorData(elementKey) — and unlike element attributes there's no
+    // inherited/default-type variant to localize, so EnsureLocalList doesn't apply. Mutating the
+    // IEditableList<string> directly (Add/Remove/Update) is required here rather than going
+    // through script.SetParameter(paramAttribute, ...): FunctionCallScript.SetParameterInternal
+    // deliberately throws for its parameter-list index, since parameter changes must go through
+    // the list itself.
+    private static IEditableList<string>? GetScriptParamList(string elementKey, string attribute,
+        string containerPath, int scriptIndex, string paramAttribute)
+    {
+        var scripts = GetScripts(elementKey, attribute);
+        if (scripts == null)
+        {
+            return null;
+        }
+
+        var container = ResolveContainer(scripts, containerPath);
+        if (container == null || scriptIndex < 0 || scriptIndex >= container.Count)
+        {
+            return null;
+        }
+
+        var editorData = _controller!.GetScriptEditorData(container[scriptIndex]);
+        return editorData.GetAttribute(paramAttribute) as IEditableList<string>;
+    }
+
+    [JSExport]
+    public static string AddScriptListItem(string elementKey, string attribute, string containerPath,
+        int scriptIndex, string paramAttribute, string value)
+    {
+        if (_controller == null)
+        {
+            return "error";
+        }
+
+        var list = GetScriptParamList(elementKey, attribute, containerPath, scriptIndex, paramAttribute);
+        if (list == null)
+        {
+            return "error";
+        }
+
+        // No StartTransaction/EndTransaction here — EditableList<T>.Add already opens its own
+        // UndoLogger transaction, and nesting one throws ("previous transaction not finished").
+        try
+        {
+            list.Add(value);
+            return "ok";
+        }
+        catch (Exception ex)
+        {
+            return ex.Message;
+        }
+    }
+
+    [JSExport]
+    public static string RemoveScriptListItem(string elementKey, string attribute, string containerPath,
+        int scriptIndex, string paramAttribute, string key)
+    {
+        if (_controller == null)
+        {
+            return "error";
+        }
+
+        var list = GetScriptParamList(elementKey, attribute, containerPath, scriptIndex, paramAttribute);
+        if (list == null)
+        {
+            return "error";
+        }
+
+        try
+        {
+            list.Remove(key);
+            return "ok";
+        }
+        catch (Exception ex)
+        {
+            return ex.Message;
+        }
+    }
+
+    [JSExport]
+    public static string UpdateScriptListItem(string elementKey, string attribute, string containerPath,
+        int scriptIndex, string paramAttribute, string key, string value)
+    {
+        if (_controller == null)
+        {
+            return "error";
+        }
+
+        var list = GetScriptParamList(elementKey, attribute, containerPath, scriptIndex, paramAttribute);
+        if (list == null)
+        {
+            return "error";
+        }
+
+        try
+        {
+            list.Update(key, value);
+            return "ok";
+        }
+        catch (Exception ex)
+        {
+            return ex.Message;
+        }
+    }
+
     private static async Task<List<IEditorControl>> FilterVisibleAsync(IEnumerable<IEditorControl> controls, IEditorData data)
     {
         var result = new List<IEditorControl>();
@@ -1527,9 +1636,14 @@ public partial class WasmEditorBridge
         var visibleEntries = new List<KeyValuePair<string, EditableScriptData>>();
         foreach (var kv in scriptData)
         {
+            // "Call function" (appliesto "()") deliberately has an empty <create> string —
+            // the function name and parameters aren't known until the user fills them in,
+            // so EditableScripts.AddNewInternal special-cases an empty/null keyword to build
+            // a blank FunctionCallScript instead of inserting literal text. Every other entry
+            // has a real create string, so this is the one explicit exception to the filter.
             if (!string.IsNullOrEmpty(kv.Value.Category)
                 && await kv.Value.IsVisible()
-                && !string.IsNullOrEmpty(kv.Value.CreateString))
+                && (!string.IsNullOrEmpty(kv.Value.CreateString) || kv.Key == "()"))
             {
                 visibleEntries.Add(kv);
             }
@@ -3185,13 +3299,25 @@ public partial class WasmEditorBridge
             }
             else
             {
-                value = editorData.GetAttribute(ctrl.Attribute)?.ToString();
+                // SerializeAttributeValue (not a plain .ToString()) so a "list" control's
+                // IEditableList<string> — e.g. Call function's parameter list — comes through
+                // as the same [{key,value}] JSON shape ListEditor.svelte-style controls expect,
+                // instead of the useless default object.ToString().
+                value = SerializeAttributeValue(editorData.GetAttribute(ctrl.Attribute));
             }
         }
 
         string? simpleLabel = null;
         string? source = null;
         string? objectType = null;
+        // Read for every control type, not just "expression" — e.g. Call function's plain
+        // "textbox" attribute-0 control uses <functionpicker/> to ask the frontend for a
+        // dropdown of the game's user-defined functions instead of a free-text box. A
+        // dedicated tag rather than reusing <objecttype>, which elsewhere always means one
+        // of Quest's real object types (dispatched through WorldModel.GetObjectTypeForTypeString)
+        // — functions are ElementType.Function, not ElementType.Object, so that machinery
+        // doesn't apply to them and overloading the tag would be misleading.
+        var isFunctionPicker = ctrl.GetBool("functionpicker");
 
         if (ctrl.ControlType == "expression")
         {
@@ -3246,7 +3372,8 @@ public partial class WasmEditorBridge
             source,
             options,
             nestedScripts,
-            objectType
+            objectType,
+            isFunctionPicker
         );
     }
 
