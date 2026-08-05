@@ -856,6 +856,30 @@ export function setScriptParameter(elementKey: string, attribute: string, contai
     return result;
 }
 
+export function addScriptListItem(elementKey: string, attribute: string, containerPath: string, scriptIndex: number, paramAttribute: string, value: string): string {
+    if (!_bridge) return "error";
+    const result = _bridge.AddScriptListItem(elementKey, attribute, containerPath, scriptIndex, paramAttribute, value);
+    if (result === "ok") bumpScriptVersion();
+    refreshUndoRedo();
+    return result;
+}
+
+export function removeScriptListItem(elementKey: string, attribute: string, containerPath: string, scriptIndex: number, paramAttribute: string, key: string): string {
+    if (!_bridge) return "error";
+    const result = _bridge.RemoveScriptListItem(elementKey, attribute, containerPath, scriptIndex, paramAttribute, key);
+    if (result === "ok") bumpScriptVersion();
+    refreshUndoRedo();
+    return result;
+}
+
+export function updateScriptListItem(elementKey: string, attribute: string, containerPath: string, scriptIndex: number, paramAttribute: string, key: string, value: string): string {
+    if (!_bridge) return "error";
+    const result = _bridge.UpdateScriptListItem(elementKey, attribute, containerPath, scriptIndex, paramAttribute, key, value);
+    if (result === "ok") bumpScriptVersion();
+    refreshUndoRedo();
+    return result;
+}
+
 export function setIfExpression(elementKey: string, attribute: string, containerPath: string, scriptIndex: number, expression: string): string {
     if (!_bridge) return "error";
     const result = _bridge.SetIfExpression(elementKey, attribute, containerPath, scriptIndex, expression);
