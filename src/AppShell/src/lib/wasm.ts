@@ -53,6 +53,7 @@ export interface WasmBridge {
   AddScriptListItem(elementKey: string, attribute: string, containerPath: string, scriptIndex: number, paramAttribute: string, value: string): string
   RemoveScriptListItem(elementKey: string, attribute: string, containerPath: string, scriptIndex: number, paramAttribute: string, key: string): string
   UpdateScriptListItem(elementKey: string, attribute: string, containerPath: string, scriptIndex: number, paramAttribute: string, key: string, value: string): string
+  SetScriptListItemCount(elementKey: string, attribute: string, containerPath: string, scriptIndex: number, paramAttribute: string, count: number): string
   // Attributes editor API
   GetFullAttributeData(elementKey: string): string | null
   RemoveAttribute(elementKey: string, attribute: string): string

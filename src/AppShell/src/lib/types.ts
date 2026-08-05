@@ -10,6 +10,9 @@ export interface TreeNode {
 export interface ControlOption {
   value: string
   label: string
+  // Optional sticky-header grouping for Combobox.svelte, e.g. "Game functions" vs "Library
+  // functions" for the Call function picker. Consumers that don't set it get the old flat list.
+  group?: string
 }
 
 export interface TextProcessorCommand {
@@ -23,6 +26,9 @@ export interface ExpressionFunctionInfo {
   name: string
   parameters: string[]
   isUserDefined: boolean
+  // True for aslx Function elements that came from a library (Core/English or an added one)
+  // rather than the game itself. Only meaningful when isUserDefined is true.
+  isLibrary: boolean
 }
 
 export interface ControlInfo {
@@ -100,6 +106,7 @@ export interface ScriptControlData {
   scripts: ScriptNodeData[] | null
   objectType?: string | null
   isFunctionPicker?: boolean
+  isFunctionParams?: boolean
 }
 
 export interface ElseIfClauseData {

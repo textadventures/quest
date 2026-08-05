@@ -195,6 +195,9 @@
             class="z-50 max-h-48 overflow-y-auto rounded border border-surface-200-800 bg-white dark:bg-surface-800 shadow-md"
         >
             {#each filtered as opt, i (opt.value)}
+                {#if opt.group && opt.group !== filtered[i - 1]?.group}
+                    <div class="px-2 pt-1.5 pb-0.5 text-[10px] font-semibold uppercase text-surface-600-400 sticky top-0 bg-white dark:bg-surface-800">{opt.group}</div>
+                {/if}
                 <div
                     id="{uid}-opt-{i}"
                     data-idx={i}

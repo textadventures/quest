@@ -275,6 +275,7 @@
       <caption>[EditorScriptsScriptsParameters]</caption>
       <attribute>1</attribute>
       <editprompt>[EditorScriptsScriptsPleaseenter2]</editprompt>
+      <functionparams/>
     </control>
   </editor>
 

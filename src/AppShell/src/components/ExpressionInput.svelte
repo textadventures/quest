@@ -108,6 +108,10 @@
     let filteredFunctions = $derived(
         filter === "" ? functions : functions.filter(f => f.name.toLowerCase().includes(filter.toLowerCase()))
     );
+    // Game-authored functions are more likely to be what the author wants to call than a
+    // built-in or library one, so they get their own section ahead of everything else.
+    let filteredGameFunctions = $derived(filteredFunctions.filter(f => f.isUserDefined && !f.isLibrary));
+    let filteredLibraryFunctions = $derived(filteredFunctions.filter(f => !f.isUserDefined || f.isLibrary));
 
     $effect(() => {
         if (!open) return;
@@ -179,9 +183,19 @@
                         >{name}</button>
                     {/each}
                 {/if}
-                {#if filteredFunctions.length > 0}
-                    <div class="px-2 pt-1.5 pb-0.5 text-[10px] font-semibold uppercase text-surface-600-400 sticky top-0 bg-white dark:bg-surface-800">Functions</div>
-                    {#each filteredFunctions as fn (fn.name)}
+                {#if filteredGameFunctions.length > 0}
+                    <div class="px-2 pt-1.5 pb-0.5 text-[10px] font-semibold uppercase text-surface-600-400 sticky top-0 bg-white dark:bg-surface-800">Game functions</div>
+                    {#each filteredGameFunctions as fn (fn.name)}
+                        <button
+                            type="button"
+                            class="block w-full text-left px-2 py-1 text-xs hover:bg-surface-100-900 truncate"
+                            onclick={() => insertFunction(fn)}
+                        >{fn.name}<span class="text-surface-600-400">({fn.parameters.join(", ")})</span></button>
+                    {/each}
+                {/if}
+                {#if filteredLibraryFunctions.length > 0}
+                    <div class="px-2 pt-1.5 pb-0.5 text-[10px] font-semibold uppercase text-surface-600-400 sticky top-0 bg-white dark:bg-surface-800">Library &amp; built-in functions</div>
+                    {#each filteredLibraryFunctions as fn (fn.name)}
                         <button
                             type="button"
                             class="block w-full text-left px-2 py-1 text-xs hover:bg-surface-100-900 truncate"
