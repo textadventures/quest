@@ -24,19 +24,34 @@
     let activeIndex = $state(-1);
     let listboxEl = $state<HTMLDivElement | null>(null);
     let inputEl = $state<HTMLInputElement | null>(null);
-    // Defaults to opening downward, but flips upward when there isn't room below — otherwise a
-    // combobox pinned near the bottom of a panel (e.g. VerbsEditor's "Add Verb" row) renders its
-    // suggestion list past the bottom of the screen/scroll container, invisible.
-    let openUpward = $state(false);
+    // This field commonly sits inside a scrolled panel (a script row, a property tab). An
+    // absolutely-positioned popover is still clipped by that panel's overflow regardless of
+    // z-index, so the popover is portaled to <body> (see `portal` below) and positioned with
+    // `fixed` viewport coordinates computed from the input's rect instead — mirrors
+    // ExpressionInput.svelte's popover.
+    let popoverStyle = $state("");
+
+    function portal(node: HTMLElement) {
+        document.body.appendChild(node);
+        return {
+            destroy() {
+                node.remove();
+            },
+        };
+    }
 
     let hasEmptyOption = $derived(options.some(o => o.value === ""));
 
-    function updateOpenDirection() {
+    // Opens downward by default, flips upward when there isn't room below.
+    function updatePosition() {
         if (!inputEl) return;
         const rect = inputEl.getBoundingClientRect();
+        const approxPopoverHeight = 200;
         const spaceBelow = window.innerHeight - rect.bottom;
         const spaceAbove = rect.top;
-        openUpward = spaceBelow < 200 && spaceAbove > spaceBelow;
+        const openUpward = spaceBelow < approxPopoverHeight && spaceAbove > spaceBelow;
+        const top = openUpward ? rect.top - 4 : rect.bottom + 4;
+        popoverStyle = `position: fixed; left: ${rect.left}px; top: ${top}px; width: ${rect.width}px; transform: translateY(${openUpward ? "-100%" : "0"});`;
     }
 
     $effect(() => {
@@ -55,6 +70,22 @@
             const el = listboxEl.querySelector<HTMLElement>(`[data-idx="${activeIndex}"]`);
             el?.scrollIntoView({ block: "nearest" });
         }
+    });
+
+    // Re-run positioning on scroll/resize while open so the popover tracks the input if the
+    // underlying panel scrolls (capture:true so this also fires for nested scroll containers).
+    $effect(() => {
+        if (!open) return;
+        updatePosition();
+        function onReposition() {
+            updatePosition();
+        }
+        window.addEventListener("scroll", onReposition, true);
+        window.addEventListener("resize", onReposition);
+        return () => {
+            window.removeEventListener("scroll", onReposition, true);
+            window.removeEventListener("resize", onReposition);
+        };
     });
 
     let filtered = $derived(
@@ -79,14 +110,14 @@
 
     function handleFocus() {
         inputValue = "";
-        updateOpenDirection();
+        updatePosition();
         open = true;
     }
 
     function handleClick() {
         if (!open) {
             inputValue = "";
-            updateOpenDirection();
+            updatePosition();
             open = true;
         }
     }
@@ -110,7 +141,7 @@
     function handleKeydown(e: KeyboardEvent) {
         if (e.key === "ArrowDown") {
             e.preventDefault();
-            if (!open) { updateOpenDirection(); open = true; activeIndex = 0; return; }
+            if (!open) { updatePosition(); open = true; activeIndex = 0; return; }
             activeIndex = Math.min(activeIndex + 1, filtered.length - 1);
         } else if (e.key === "ArrowUp") {
             e.preventDefault();
@@ -157,9 +188,11 @@
     {#if open && filtered.length > 0}
         <div
             bind:this={listboxEl}
+            use:portal
+            style={popoverStyle}
             id="{uid}-listbox"
             role="listbox"
-            class="absolute z-50 left-0 min-w-full max-h-48 overflow-y-auto rounded border border-surface-200-800 bg-white dark:bg-surface-800 shadow-md {openUpward ? "bottom-full mb-0.5" : "top-full mt-0.5"}"
+            class="z-50 max-h-48 overflow-y-auto rounded border border-surface-200-800 bg-white dark:bg-surface-800 shadow-md"
         >
             {#each filtered as opt, i (opt.value)}
                 <div
