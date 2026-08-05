@@ -58,14 +58,16 @@
     // function here, and listing both would (a) violate the {#each} block's per-name key and
     // (b) offer an entry that, if inserted, wouldn't run what it appears to call.
     function dedupeByName(fns: ExpressionFunctionInfo[]): ExpressionFunctionInfo[] {
-        const byName = new Map<string, ExpressionFunctionInfo>();
+        // Plain object, not Map — this is a throwaway local lookup discarded when the function
+        // returns, not component state, so there's no Svelte-reactivity concern here.
+        const byName: Record<string, ExpressionFunctionInfo> = {};
         for (const fn of fns) {
-            const existing = byName.get(fn.name);
+            const existing = byName[fn.name];
             if (!existing || (existing.isUserDefined && !fn.isUserDefined)) {
-                byName.set(fn.name, fn);
+                byName[fn.name] = fn;
             }
         }
-        return [...byName.values()];
+        return Object.values(byName);
     }
 
     function toggle() {
