@@ -5,6 +5,10 @@ export interface TreeNode {
   nodeIcon: string | null
   nodeType: string
   isLibrary: boolean
+  // Authoritative — mirrors EditorController.CanDelete exactly (covers "game", the gamebook
+  // player object, and any built-in library such as Core.aslx or a language file), so the UI
+  // never needs its own guess at what's deletable.
+  canDelete: boolean
 }
 
 export interface ControlOption {

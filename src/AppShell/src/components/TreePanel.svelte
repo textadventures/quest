@@ -11,7 +11,7 @@
         treeNodes, selectedKey, selectNode, isGamebook,
         openAddModal, createExit, createTurnScript, createCommand, createVerb,
         createIncludedLibrary, openAddJavascriptModal,
-        deleteElement, isBaseLibraryNode,
+        deleteElement,
         canMoveElement, openMoveModal, copyElements, cutElements, canPasteElements, pasteElements,
         clipboardVersion, cutElementKeys,
         showLibraryElements, toggleShowLibraryElements,
@@ -25,6 +25,7 @@
         text: string
         nodeType: string
         isLibrary: boolean
+        canDelete: boolean
         children?: HierNode[]
     }
 
@@ -50,6 +51,7 @@
                 text: node.text,
                 nodeType: node.nodeType,
                 isLibrary: node.isLibrary,
+                canDelete: node.canDelete,
                 ...(children ? { children: children.map(build) } : {}),
             };
         };
@@ -185,7 +187,7 @@
         createTreeViewCollection<HierNode>({
             nodeToValue: (n) => n.id,
             nodeToString: (n) => n.text,
-            rootNode: { id: "__root__", text: "", nodeType: "header", isLibrary: false, children: filteredHierTree },
+            rootNode: { id: "__root__", text: "", nodeType: "header", isLibrary: false, canDelete: false, children: filteredHierTree },
         })
     );
 
@@ -261,12 +263,13 @@
         if (id === $selectedKey) onactivate?.();
     }
 
+    // node.canDelete is authoritative (mirrors EditorController.CanDelete exactly — "game", the
+    // gamebook player, and any built-in library are all already false there). "header" and
+    // "other" (an element type with no dedicated tree icon, e.g. ElementType.Output) are kept as
+    // an extra client-side guard since CanDelete doesn't know about tree presentation concerns.
     function isDeletable(node: HierNode): boolean {
         const { nodeType: nt } = node;
-        if (nt === "header" || nt === "game" || nt === "other") return false;
-        // Core.aslx/GamebookCore.aslx: deleting them breaks the game (see isBaseLibraryNode).
-        if (isBaseLibraryNode(node)) return false;
-        return true;
+        return nt !== "header" && nt !== "other" && node.canDelete;
     }
 
     function nodeMenuOptions(node: HierNode): Array<{ label: string; action: () => void }> {

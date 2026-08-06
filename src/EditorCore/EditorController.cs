@@ -2175,12 +2175,6 @@ public sealed class EditorController : IDisposable
         return true;
     }
 
-    // Core.aslx/GamebookCore.aslx provide the base verbs, object types and templates every game
-    // relies on — removing the <include> for one leaves the game unable to load (the element tree
-    // and large parts of script execution assume these are always present, with no null-checks).
-    private static readonly HashSet<string> k_baseLibraryFilenames =
-        new(StringComparer.OrdinalIgnoreCase) {"Core.aslx", "GamebookCore.aslx"};
-
     public bool CanDelete(string elementName)
     {
         if (!ElementExists(elementName))
@@ -2205,8 +2199,12 @@ public sealed class EditorController : IDisposable
         }
 
         var element = WorldModel.Elements.Get(elementName);
+        // Engine-shipped libraries (Core.aslx, GamebookCore.aslx, and every per-language file
+        // such as English.aslx) can't be deleted — the game can't load without them, and there's
+        // no way to re-add one short of recreating the game. A user-uploaded custom library is
+        // unaffected and stays deletable.
         if (element.ElemType == ElementType.IncludedLibrary &&
-            k_baseLibraryFilenames.Contains(element.Fields[FieldDefinitions.Filename] ?? string.Empty))
+            WorldModel.IsBuiltInLibrary(element.Fields[FieldDefinitions.Filename] ?? string.Empty))
         {
             return false;
         }

@@ -1,5 +1,6 @@
 using System.Collections.ObjectModel;
 using System.Diagnostics;
+using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -1482,6 +1483,18 @@ public partial class WorldModel : IGame, IGameDebug
         }
 
         throw new Exception("Library file not found: " + filename);
+    }
+
+    // True for any library shipped inside the Engine assembly itself (Core.aslx,
+    // GamebookCore.aslx, and every per-language file such as English.aslx) as opposed to a
+    // library the game author uploaded alongside the game — used to stop those from being
+    // deleted via the editor, since the game can't load without them and there's no "re-add"
+    // short of recreating the game from a template.
+    public static bool IsBuiltInLibrary(string filename)
+    {
+        var resources = GetEmbeddedResources();
+        return resources.Contains("QuestViva.Engine.Core." + filename, StringComparer.OrdinalIgnoreCase) ||
+               resources.Contains("QuestViva.Engine.Core.Languages." + filename, StringComparer.OrdinalIgnoreCase);
     }
 
     internal async Task<string> GetExternalUrlAsync(string file)

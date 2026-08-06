@@ -1168,15 +1168,6 @@ export function createJavascript(src: string): string {
     return afterCreate(_bridge.CreateJavascript(src));
 }
 
-// Core.aslx/GamebookCore.aslx provide every game's base verbs, object types and templates —
-// deleting the <include> for one leaves the game unable to load (mirrors the backend guard in
-// EditorController.CanDelete, which is what actually blocks the deletion; this just keeps the
-// option from appearing in the UI in the first place).
-const BASE_LIBRARY_FILENAMES = new Set(["core.aslx", "gamebookcore.aslx"]);
-export function isBaseLibraryNode(node: Pick<TreeNode, "nodeType" | "text">): boolean {
-    return node.nodeType === "include" && BASE_LIBRARY_FILENAMES.has(node.text.toLowerCase());
-}
-
 export function deleteElement(key: string) {
     if (!_bridge) return;
     _bridge.DeleteElement(key);
