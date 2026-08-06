@@ -46,7 +46,7 @@
     // Printed once on load, same style as WasmPlayer's console banner — the
     // header no longer shows the version, so this is the only place to find it.
     console.log(
-        "%cQuest Viva Editor %c" + (PUBLIC_APPSHELL_VERSION || "dev") + "\n%chttps://questviva.com",
+        "%cQuest Viva %c" + (PUBLIC_APPSHELL_VERSION || "dev") + "\n%chttps://questviva.com",
         "font-weight:700;font-size:14px;color:#0ea5e9",
         "font-weight:400;color:#64748b",
         "color:#64748b"
