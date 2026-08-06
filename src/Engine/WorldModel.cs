@@ -96,6 +96,25 @@ public partial class WorldModel : IGame, IGameDebug
     private int _pendingCallbackCount;
     private readonly List<(IScript Script, Context Context)> _onReadyQueue = [];
 
+    // Set when a pre-v580 command's (or event's) automatic FinishTurn call is pushed past a
+    // wait/ask/get input/show menu it triggered - see HandleCommandAsyncInternal. Real Quest 5
+    // has the equivalent check (m_callbacks.AnyOutstanding()) inline in its own TryFinishTurn;
+    // ported here as a deferred flag instead, discharged from EndPendingCallbackAsync once
+    // _pendingCallbackCount actually returns to zero (so a wait nested inside another wait's
+    // callback correctly holds the deferral open until both have resolved, not just the first).
+    private bool _finishTurnDeferred;
+
+    private async Task RunDeferredFinishTurnAsync()
+    {
+        if (!_finishTurnDeferred) return;
+        _finishTurnDeferred = false;
+        await TryFinishTurnAsync();
+        if (State != GameState.Finished)
+        {
+            await UpdateListsAsync();
+        }
+    }
+
     // Guards the on-ready drain loop in EndPendingCallbackAsync against re-entry: a queued
     // script can itself synchronously await another prompt (e.g. a synchronous "play sound",
     // or the GetInput()/Ask()/ShowMenu() expression forms), which calls EndPendingCallbackAsync
@@ -381,14 +400,24 @@ public partial class WorldModel : IGame, IGameDebug
                     {"metadata", new QuestDictionary<string>(metadata)}
                 }), false);
 
-                if (Version < WorldModelVersion.v580)
+                if (Version < WorldModelVersion.v580 && _pendingCallbackCount > 0)
                 {
-                    await TryFinishTurnAsync();
+                    // A wait/ask/get input/show menu triggered by this command hasn't resolved
+                    // yet - defer FinishTurn until it does (see _finishTurnDeferred), rather than
+                    // running it now against state the command's own callback hasn't reached.
+                    _finishTurnDeferred = true;
                 }
-
-                if (State != GameState.Finished)
+                else
                 {
-                    await UpdateListsAsync();
+                    if (Version < WorldModelVersion.v580)
+                    {
+                        await TryFinishTurnAsync();
+                    }
+
+                    if (State != GameState.Finished)
+                    {
+                        await UpdateListsAsync();
+                    }
                 }
             }
             else
@@ -446,18 +475,28 @@ public partial class WorldModel : IGame, IGameDebug
 
         await RunProcedureAsync(eventName, parameters, false);
 
-        switch (Version)
+        if (Version < WorldModelVersion.v540)
         {
-            case < WorldModelVersion.v540:
-                return;
-            case < WorldModelVersion.v580:
-                await TryFinishTurnAsync();
-                break;
+            return;
         }
 
-        if (State != GameState.Finished)
+        if (Version < WorldModelVersion.v580 && _pendingCallbackCount > 0)
         {
-            await UpdateListsAsync();
+            // See HandleCommandAsyncInternal - a wait/ask/get input/show menu triggered by this
+            // event hasn't resolved yet, so defer FinishTurn until it does.
+            _finishTurnDeferred = true;
+        }
+        else
+        {
+            if (Version < WorldModelVersion.v580)
+            {
+                await TryFinishTurnAsync();
+            }
+
+            if (State != GameState.Finished)
+            {
+                await UpdateListsAsync();
+            }
         }
 
         SendNextTimerRequest();
@@ -1746,24 +1785,30 @@ public partial class WorldModel : IGame, IGameDebug
         // puzzle loops) can open its next get input/wait/ask/show menu before this one's finally
         // block runs, which keeps _pendingCallbackCount above zero indefinitely; gating the drain
         // on it reaching zero left anything queued while such a loop is active stuck forever.
-        if (_isFlushingOnReadyQueue)
+        if (!_isFlushingOnReadyQueue)
         {
-            return;
-        }
-
-        _isFlushingOnReadyQueue = true;
-        try
-        {
-            while (_onReadyQueue.Count > 0 && State != GameState.Finished)
+            _isFlushingOnReadyQueue = true;
+            try
             {
-                var (script, context) = _onReadyQueue[0];
-                _onReadyQueue.RemoveAt(0);
-                await RunScriptAsync(script, context);
+                while (_onReadyQueue.Count > 0 && State != GameState.Finished)
+                {
+                    var (script, context) = _onReadyQueue[0];
+                    _onReadyQueue.RemoveAt(0);
+                    await RunScriptAsync(script, context);
+                }
+            }
+            finally
+            {
+                _isFlushingOnReadyQueue = false;
             }
         }
-        finally
+
+        // Run any FinishTurn a command/event deferred past this callback (see
+        // _finishTurnDeferred), but only once every wait/ask/get input/show menu from that turn -
+        // including ones nested inside this callback's own script - has actually resolved.
+        if (_pendingCallbackCount == 0)
         {
-            _isFlushingOnReadyQueue = false;
+            await RunDeferredFinishTurnAsync();
         }
     }
 
