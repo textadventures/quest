@@ -4,7 +4,7 @@
     import { goto } from "$app/navigation";
     import { base } from "$app/paths";
     import { get } from "svelte/store";
-    import { isLoaded, isDirty, isEditingField, markFieldEditing, clearFieldEditing, saveGame, loadingStatus, addElementModal, addJavascriptModalOpen, assetManagerOpen, publishModalOpen, codeViewPanelOpen, openGame, createRoom, createObject, createFunction, createTimer, createWalkthrough, createTemplate, createDynamicTemplate, createObjectType, createJavascript, moveElementModal, moveElement } from "$lib/editor-store";
+    import { isLoaded, isDirty, isEditingField, markFieldEditing, clearFieldEditing, saveGame, loadingStatus, addElementModal, addJavascriptModalOpen, assetManagerOpen, publishModalOpen, codeViewPanelOpen, openGame, lastOpenGameError, createRoom, createObject, createFunction, createTimer, createWalkthrough, createTemplate, createDynamicTemplate, createObjectType, createJavascript, moveElementModal, moveElement } from "$lib/editor-store";
     import { loadFromServer } from "$lib/filesystem/server-adapter";
     import Toolbar from "$components/Toolbar.svelte";
     import BackupBanner from "$components/BackupBanner.svelte";
@@ -110,7 +110,7 @@
         try {
             const loaded = await loadFromServer(gameId);
             const ok = await openGame(loaded.bytes, loaded.adapter.filename, loaded.adapter);
-            if (!ok) serverLoadError = "Failed to load game.";
+            if (!ok) serverLoadError = get(lastOpenGameError) ?? "Failed to load game.";
         } catch (err) {
             serverLoadError = String(err);
         }

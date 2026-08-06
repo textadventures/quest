@@ -127,6 +127,11 @@ function refreshUndoRedo() {
     if (dirty) scheduleAutosave();
 }
 
+// Set by openGame() whenever it returns false, so callers can show the actual reason (a missing
+// library, invalid XML, ...) instead of a generic "Failed to load game file." — see Initialise's
+// "ok"/"error:{message}" convention in WasmEditorBridge.cs.
+export const lastOpenGameError = writable<string | null>(null);
+
 export async function openGame(bytes: Uint8Array, filename: string, adapter: FileAdapter): Promise<boolean> {
     // Defensive reset: callers that switch games mid-session (Electron's menu
     // actions) already await saveGame() to flush the previous game first, so
@@ -135,6 +140,7 @@ export async function openGame(bytes: Uint8Array, filename: string, adapter: Fil
     cancelPendingAutosave();
     isSaving.set(false);
     saveError.set(null);
+    lastOpenGameError.set(null);
     loadingStatus.set("Starting editor…");
     _bridge = await loadWasm();
     _adapter = adapter;
@@ -146,9 +152,13 @@ export async function openGame(bytes: Uint8Array, filename: string, adapter: Fil
     // Double rAF ensures the browser actually paints the status update before
     // Initialise blocks the JS thread (C# WASM calls are synchronous).
     await new Promise<void>(resolve => requestAnimationFrame(() => requestAnimationFrame(() => resolve())));
-    const ok = await _bridge.Initialise(bytes, filename);
+    const result = await _bridge.Initialise(bytes, filename);
     loadingStatus.set(null);
     clearAssetUrlCache();
+    const ok = result === "ok";
+    if (!ok) {
+        lastOpenGameError.set(result.startsWith("error:") ? result.slice("error:".length) : result);
+    }
     if (ok) {
         _loadedGameId = _bridge.GetGameId() || null;
         isGamebook.set(_bridge.IsGamebook());
@@ -1156,6 +1166,15 @@ export function createIncludedLibrary(): string {
 export function createJavascript(src: string): string {
     if (!_bridge) return "error:not loaded";
     return afterCreate(_bridge.CreateJavascript(src));
+}
+
+// Core.aslx/GamebookCore.aslx provide every game's base verbs, object types and templates —
+// deleting the <include> for one leaves the game unable to load (mirrors the backend guard in
+// EditorController.CanDelete, which is what actually blocks the deletion; this just keeps the
+// option from appearing in the UI in the first place).
+const BASE_LIBRARY_FILENAMES = new Set(["core.aslx", "gamebookcore.aslx"]);
+export function isBaseLibraryNode(node: Pick<TreeNode, "nodeType" | "text">): boolean {
+    return node.nodeType === "include" && BASE_LIBRARY_FILENAMES.has(node.text.toLowerCase());
 }
 
 export function deleteElement(key: string) {

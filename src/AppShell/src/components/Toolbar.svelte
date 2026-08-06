@@ -12,7 +12,7 @@
         navigateBack, navigateForward, canGoBack, canGoForward,
         treeNodes, selectedKey, isGamebook, openAddModal,
         createExit, createTurnScript, createCommand, createVerb,
-        deleteElement,
+        deleteElement, isBaseLibraryNode,
         assetManagerOpen,
         codeViewPanelOpen,
         codeViewCloseRequested,
@@ -122,7 +122,8 @@
 
     let nt = $derived(selectedNode?.nodeType ?? "");
     let canDelete = $derived(
-        nt !== "" && nt !== "header" && nt !== "game" && nt !== "other" && !selectedNode?.isLibrary
+        nt !== "" && nt !== "header" && nt !== "game" && nt !== "other" && !selectedNode?.isLibrary &&
+        !(selectedNode && isBaseLibraryNode(selectedNode))
     );
 
     // Context-sensitive add options. Function/Timer/Walkthrough/Library/Template/

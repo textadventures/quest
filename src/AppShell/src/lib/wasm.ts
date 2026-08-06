@@ -1,5 +1,5 @@
 export interface WasmBridge {
-  Initialise(bytes: Uint8Array, filename: string): Promise<boolean>
+  Initialise(bytes: Uint8Array, filename: string): Promise<string>
   GetTreeNodes(): string
   SetShowLibraryElements(show: boolean): void
   MakeElementLocal(elementKey: string): string

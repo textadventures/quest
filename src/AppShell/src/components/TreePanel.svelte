@@ -11,7 +11,7 @@
         treeNodes, selectedKey, selectNode, isGamebook,
         openAddModal, createExit, createTurnScript, createCommand, createVerb,
         createIncludedLibrary, openAddJavascriptModal,
-        deleteElement,
+        deleteElement, isBaseLibraryNode,
         canMoveElement, openMoveModal, copyElements, cutElements, canPasteElements, pasteElements,
         clipboardVersion, cutElementKeys,
         showLibraryElements, toggleShowLibraryElements,
@@ -261,8 +261,12 @@
         if (id === $selectedKey) onactivate?.();
     }
 
-    function isDeletable(nt: string): boolean {
-        return nt !== "header" && nt !== "game" && nt !== "other";
+    function isDeletable(node: HierNode): boolean {
+        const { nodeType: nt } = node;
+        if (nt === "header" || nt === "game" || nt === "other") return false;
+        // Core.aslx/GamebookCore.aslx: deleting them breaks the game (see isBaseLibraryNode).
+        if (isBaseLibraryNode(node)) return false;
+        return true;
     }
 
     function nodeMenuOptions(node: HierNode): Array<{ label: string; action: () => void }> {
@@ -337,7 +341,7 @@
             }
         }
 
-        if (isDeletable(nt)) {
+        if (isDeletable(node)) {
             opts.push({ label: `Delete "${text}"`, action: () => handleDelete(id) });
         }
 

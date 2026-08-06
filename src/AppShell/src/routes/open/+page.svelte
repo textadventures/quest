@@ -1,10 +1,11 @@
 <script lang="ts">
     import { onMount } from "svelte";
+    import { get } from "svelte/store";
     import { goto } from "$app/navigation";
     import { page } from "$app/state";
     import { base } from "$app/paths";
     import { PUBLIC_HAS_SERVER } from "$env/static/public";
-    import { openGame, loadingStatus } from "$lib/editor-store";
+    import { openGame, loadingStatus, lastOpenGameError } from "$lib/editor-store";
     import { confirmDialog } from "$lib/confirm";
     import { hasFSA, openDirectory, loadFileFromDirectory, createLocalGame } from "$lib/filesystem/browser-adapter";
     import {
@@ -197,6 +198,13 @@
         return (name.replace(/[^a-zA-Z0-9 _-]/g, "").trim() || "game") + ".aslx";
     }
 
+    // openGame() sets lastOpenGameError with the actual reason (a missing library, invalid XML,
+    // ...) whenever it returns false — prefer that over a generic message so the user isn't just
+    // told "it failed" with no way to act on it.
+    function openGameErrorMessage(fallback: string): string {
+        return get(lastOpenGameError) ?? fallback;
+    }
+
     async function handleOpenFolder() {
         if (isElectron()) return handleOpenFileElectron();
         error = null;
@@ -245,7 +253,7 @@
                 const { bytes, adapter } = await createLocalDraftFromZipEntry(entries, filename);
                 const ok = await openGame(bytes, adapter.filename, adapter);
                 if (ok) { goto(`${base}/edit`); return; }
-                error = "Failed to load game file.";
+                error = openGameErrorMessage("Failed to load game file.");
             } catch (err) {
                 error = String(err);
             }
@@ -260,7 +268,7 @@
             const loaded = await loadFileFromDirectory(dir, filename);
             const ok = await openGame(loaded.bytes, loaded.adapter.filename, loaded.adapter);
             if (ok) { goto(`${base}/edit`); return; }
-            error = "Failed to load game file.";
+            error = openGameErrorMessage("Failed to load game file.");
         } catch (err) {
             error = String(err);
         }
@@ -274,7 +282,7 @@
             const loaded = await loadElectronFile(dirPath, filename);
             const ok = await openGame(loaded.bytes, loaded.adapter.filename, loaded.adapter);
             if (ok) { goto(`${base}/edit`); return; }
-            error = "Failed to load game file.";
+            error = openGameErrorMessage("Failed to load game file.");
         } catch (err) {
             error = String(err);
         }
@@ -296,7 +304,7 @@
             }
             const ok = await openGame(result.bytes, result.adapter.filename, result.adapter);
             if (ok) { goto(`${base}/edit`); return; }
-            error = "Failed to load game file.";
+            error = openGameErrorMessage("Failed to load game file.");
         } catch (err) {
             error = String(err);
         }
@@ -313,7 +321,7 @@
             } else {
                 const ok = await openGame(loaded.bytes, loaded.adapter.filename, loaded.adapter);
                 if (ok) { goto(`${base}/edit`); return; }
-                error = "Failed to load game file.";
+                error = openGameErrorMessage("Failed to load game file.");
             }
         } catch (err) {
             error = String(err);
@@ -367,14 +375,14 @@
                 const result = await createElectronGame(parentDir, file.filename, file.content);
                 const ok = await openGame(result.bytes, result.adapter.filename, result.adapter);
                 if (ok) { goto(`${base}/edit`); return; }
-                createLocalError = "Failed to load new game.";
+                createLocalError = openGameErrorMessage("Failed to load new game.");
             } else {
                 const gameId = parseGameIdFromAslx(file.content);
                 if (!gameId) { createLocalError = "New game is missing a gameid."; creatingLocal = false; return; }
                 const adapter = await createLocalDraft(gameId, file.filename, file.content);
                 const ok = await openGame(new TextEncoder().encode(file.content), file.filename, adapter);
                 if (ok) { goto(`${base}/edit`); return; }
-                createLocalError = "Failed to load new game.";
+                createLocalError = openGameErrorMessage("Failed to load new game.");
             }
         } catch (err) {
             createLocalError = String(err);
@@ -396,7 +404,7 @@
             if (result) {
                 const ok = await openGame(result.loaded.bytes, result.loaded.adapter.filename, result.loaded.adapter);
                 if (ok) { goto(`${base}/edit`); return; }
-                createLocalError = "Failed to load new game.";
+                createLocalError = openGameErrorMessage("Failed to load new game.");
             }
         } catch (err) {
             createLocalError = String(err);
