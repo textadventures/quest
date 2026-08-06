@@ -130,4 +130,55 @@ public class V5BlockingTests
         phase2.ShouldContain("You said yes");
         phase2.ShouldContain("This is run after asking the question");
     }
+
+    // Regression test for https://github.com/alexwarren/quest/issues/1990: for games below
+    // v580, TryFinishTurnAsync (which runs turnscripts) used to run as soon as
+    // WaitScript.ExecuteAsync returned - before the wait's callback (which moves the player
+    // to room2) had actually run. That fired room1's turnscript for a turn the player had
+    // already left, and never fired room2's turnscript for the turn the player actually
+    // arrived in. FinishTurn must be deferred until the wait callback resolves.
+    [TestMethod]
+    public async Task Wait_TurnScriptsRunAfterCallbackNotBeforeIt()
+    {
+        var driver = await V5BlockingGameDriver.LoadAsync("waitturnscripttest.aslx");
+
+        var phase1 = await driver.SendCommandAsync("movewait");
+        phase1.ShouldContain("before wait");
+        phase1.ShouldNotContain("wait done");
+        phase1.ShouldNotContain("room1 turnscript");
+        phase1.ShouldNotContain("room2 turnscript");
+
+        var phase2 = await driver.FinishWaitAsync();
+        phase2.ShouldContain("wait done");
+        phase2.ShouldNotContain("room1 turnscript");
+        phase2.ShouldContain("room2 turnscript");
+    }
+
+    // A wait callback that opens another wait (e.g. a two-beat cutscene) must resolve each
+    // key press independently, and FinishTurn/turnscripts must wait for both - not just the
+    // first - to resolve. 'wait { }' itself is fire-and-forget regardless of version (matching
+    // real Quest 5: WaitScript.Execute never blocked a thread even pre-580), so "step4" - a
+    // sibling statement after the inner wait{} block, in the same callback - runs immediately
+    // alongside "step2", not deferred until the inner wait resolves.
+    [TestMethod]
+    public async Task Wait_NestedWaitInsideCallback_EachKeyPressResolvesItsOwnStage()
+    {
+        var driver = await V5BlockingGameDriver.LoadAsync("waitturnscripttest.aslx");
+
+        var phase1 = await driver.SendCommandAsync("movewaitnested");
+        phase1.ShouldContain("step1");
+        phase1.ShouldNotContain("step2");
+
+        var phase2 = await driver.FinishWaitAsync();
+        phase2.ShouldContain("step2");
+        phase2.ShouldContain("step4");
+        phase2.ShouldNotContain("step3");
+        phase2.ShouldNotContain("room1 turnscript");
+        phase2.ShouldNotContain("room2 turnscript");
+
+        var phase3 = await driver.FinishWaitAsync();
+        phase3.ShouldContain("step3");
+        phase3.ShouldNotContain("room1 turnscript");
+        phase3.ShouldContain("room2 turnscript");
+    }
 }
