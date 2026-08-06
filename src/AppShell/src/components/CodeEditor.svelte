@@ -6,6 +6,7 @@
     import { bracketMatching, indentOnInput } from "@codemirror/language";
     import { closeBrackets, closeBracketsKeymap } from "@codemirror/autocomplete";
     import { searchKeymap } from "@codemirror/search";
+    import { javascript } from "@codemirror/lang-javascript";
     import { questScript } from "$lib/quest-script-lang";
     import { xmlWithScript } from "$lib/xml-with-script-lang";
     import { questEditorExtensions } from "$lib/codemirror-theme";
@@ -13,7 +14,7 @@
 
     interface Props {
         value: string;
-        language: "xml" | "quest-script";
+        language: "xml" | "quest-script" | "javascript";
         readonly?: boolean;
         onChange?: (value: string) => void;
         minHeight?: string;
@@ -28,8 +29,10 @@
     const languageCompartment = new Compartment();
     const readonlyCompartment = new Compartment();
 
-    function languageExtension(lang: "xml" | "quest-script") {
-        return lang === "xml" ? xmlWithScript() : questScript();
+    function languageExtension(lang: "xml" | "quest-script" | "javascript") {
+        if (lang === "xml") return xmlWithScript();
+        if (lang === "javascript") return javascript();
+        return questScript();
     }
 
     function readonlyExtension(ro: boolean) {

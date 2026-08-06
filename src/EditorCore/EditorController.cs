@@ -1677,9 +1677,10 @@ public sealed class EditorController : IDisposable
         CreateNewElement(ElementType.ObjectType, "object type", name);
     }
 
-    public string CreateNewJavascript()
+    public string CreateNewJavascript(string src)
     {
-        return CreateNewElement(ElementType.Javascript, "javascript", null);
+        return CreateNewElement(ElementType.Javascript, "javascript", null,
+            initialFields: new Dictionary<string, object> {{"src", src}});
     }
 
     public bool CanMoveElement(string elementKey)

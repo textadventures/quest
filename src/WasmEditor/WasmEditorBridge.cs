@@ -41,7 +41,9 @@ internal record ControlInfo(
     string? SourceExclude = null,
     string? CheckboxCaption = null,
     bool IsWalkthrough = false,
-    string? Href = null);
+    string? Href = null,
+    string? NewFile = null,
+    bool LockedAfterCreate = false);
 
 internal record TabInfo(string? Caption, List<ControlInfo> Controls);
 
@@ -165,6 +167,7 @@ public partial class WasmEditorBridge
     private static bool _isRebuilding;
     private static bool _suppressTreeEvents;
     private static string? _pendingRenameNewKey;
+    private static bool _pendingRetitle;
     private static bool _isDirty;
 
     // Wires the tree/dirty events a live controller needs to keep the JS-side TreeNodes cache and
@@ -213,6 +216,7 @@ public partial class WasmEditorBridge
             if (idx >= 0)
             {
                 TreeNodes[idx] = TreeNodes[idx] with {Text = e.NewTitle};
+                _pendingRetitle = true;
             }
         };
 
@@ -414,6 +418,7 @@ public partial class WasmEditorBridge
         };
 
         _pendingRenameNewKey = null;
+        _pendingRetitle = false;
         _controller.StartTransaction($"Set {attribute}");
         try
         {
@@ -423,7 +428,12 @@ public partial class WasmEditorBridge
                 return $"error:{EditorController.GetValidationError(result, typedValue)}";
             }
 
-            return _pendingRenameNewKey != null ? $"renamed:{_pendingRenameNewKey}" : "ok";
+            if (_pendingRenameNewKey != null)
+            {
+                return $"renamed:{_pendingRenameNewKey}";
+            }
+
+            return _pendingRetitle ? "retitled" : "ok";
         }
         finally
         {
@@ -2324,7 +2334,7 @@ public partial class WasmEditorBridge
     }
 
     [JSExport]
-    public static string CreateJavascript()
+    public static string CreateJavascript(string src)
     {
         if (_controller == null)
         {
@@ -2333,7 +2343,7 @@ public partial class WasmEditorBridge
 
         try
         {
-            return _controller.CreateNewJavascript();
+            return _controller.CreateNewJavascript(src);
         }
         catch (Exception ex)
         {
@@ -3446,6 +3456,11 @@ public partial class WasmEditorBridge
                 "s_timer" => "timer",
                 "s_game" => "game",
                 "s_walk" => "walkthrough",
+                "s_library" => "include",
+                "s_template" => "template",
+                "s_dynamictemplate" => "dynamictemplate",
+                "s_objecttype" => "type",
+                "s_javascript" => "javascript",
                 _ => "other"
             };
     }
@@ -3607,6 +3622,8 @@ public partial class WasmEditorBridge
         var isWalkthrough = ctrl.ControlType == "list" && ctrl.GetBool("iswalkthrough");
         var isDictionary = ctrl.ControlType is "stringdictionary" or "gamebookoptions";
         var source = ctrl.ControlType == "file" || isDictionary ? ctrl.GetString("source") : null;
+        var newFile = ctrl.ControlType == "file" ? ctrl.GetString("newfile") : null;
+        var lockedAfterCreate = ctrl.ControlType == "file" && ctrl.GetBool("lockedaftercreate");
         var keyPrompt = isDictionary ? ctrl.GetString("keyprompt") : null;
         var valuePrompt = isDictionary ? ctrl.GetString("valueprompt") : null;
         var sourceExclude = isDictionary ? ctrl.GetString("sourceexclude") : null;
@@ -3617,7 +3634,7 @@ public partial class WasmEditorBridge
             null, null, textProcessorCommands, addPrompt, Source: source,
             Advanced: !ctrl.IsControlVisibleInSimpleMode,
             KeyPrompt: keyPrompt, ValuePrompt: valuePrompt, SourceExclude: sourceExclude,
-            IsWalkthrough: isWalkthrough, Href: href);
+            IsWalkthrough: isWalkthrough, Href: href, NewFile: newFile, LockedAfterCreate: lockedAfterCreate);
     }
 
     [JSExport]

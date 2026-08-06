@@ -26,6 +26,14 @@ export const isGamebook = writable(false);
 export function openAddModal(type: "room" | "object" | "page" | "function" | "timer" | "walkthrough" | "template" | "dynamictemplate" | "type", parent: string | null) {
     addElementModal.set({ type, parent });
 }
+// A Javascript element's src (the file it points to) can't be changed after creation — see
+// PropertyEditor's "lockedAfterCreate" handling — so unlike the other adders above, creating one
+// needs an up-front modal that gets a filename (existing/uploaded/new-blank) before the element
+// ever exists, rather than creating an empty element and letting the properties panel fill it in.
+export const addJavascriptModalOpen = writable(false);
+export function openAddJavascriptModal() {
+    addJavascriptModalOpen.set(true);
+}
 // Holds the key of the element currently being moved, or null when the modal is closed.
 export const moveElementModal = writable<string | null>(null);
 export function openMoveModal(key: string) {
@@ -245,6 +253,15 @@ export function setAttribute(elementKey: string, attribute: string, controlType:
         // Renaming changes the element's key, not the element — keep Back/Forward pointing at
         // it rather than leaving stale entries for a key that no longer resolves to anything.
         _navHistory = _navHistory.map(k => k === elementKey ? newKey : k);
+        refreshTree();
+        refreshSelectedData();
+        refreshUndoRedo();
+        return "ok";
+    }
+    if (result === "retitled") {
+        // Attribute changed the element's display name without changing its key
+        // (e.g. an Included Library's filename, a Javascript element's src) — the
+        // tree label needs refreshing, but selection/history stay put.
         refreshTree();
         refreshSelectedData();
         refreshUndoRedo();
@@ -621,6 +638,37 @@ export async function uploadAsset(file: File): Promise<void> {
     if (!_adapter) return;
     await _adapter.putAsset(file.name, file);
     releaseAssetUrl(file.name); // in case this overwrote an asset with a cached object URL
+    await refreshAssets();
+}
+
+// Picks a free asset filename starting from a template like "javascript.js" —
+// used by the "+ New" affordance on file controls (e.g. CoreEditorJavascript's
+// <newfile>) so creating a second new file doesn't clobber the first. Mirrors
+// the base name if it's free, otherwise appends 1, 2, 3, … before the extension.
+export function uniqueAssetName(template: string): string {
+    const existing = new Set(get(assets).map(a => a.key));
+    if (!existing.has(template)) return template;
+    const dot = template.lastIndexOf(".");
+    const stem = dot >= 0 ? template.slice(0, dot) : template;
+    const ext = dot >= 0 ? template.slice(dot) : "";
+    let i = 1;
+    while (existing.has(`${stem}${i}${ext}`)) i++;
+    return `${stem}${i}${ext}`;
+}
+
+// Reads an asset (e.g. a .js file referenced by a Javascript element's "src"
+// attribute) as text, for controls like the JS source editor that edit file
+// content rather than the attribute value itself.
+export async function getAssetText(key: string): Promise<string | null> {
+    if (!key || !_adapter) return null;
+    const blob = await _adapter.getAsset(key);
+    return blob ? await blob.text() : null;
+}
+
+export async function putAssetText(key: string, text: string): Promise<void> {
+    if (!_adapter) return;
+    await _adapter.putAsset(key, new Blob([text], { type: "text/javascript" }));
+    releaseAssetUrl(key);
     await refreshAssets();
 }
 
@@ -1105,9 +1153,9 @@ export function createIncludedLibrary(): string {
     return afterCreate(_bridge.CreateIncludedLibrary());
 }
 
-export function createJavascript(): string {
+export function createJavascript(src: string): string {
     if (!_bridge) return "error:not loaded";
-    return afterCreate(_bridge.CreateJavascript());
+    return afterCreate(_bridge.CreateJavascript(src));
 }
 
 export function deleteElement(key: string) {

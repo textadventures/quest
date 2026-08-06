@@ -51,6 +51,8 @@ export interface ControlInfo {
   checkboxCaption?: string | null
   isWalkthrough?: boolean
   href?: string | null
+  newFile?: string | null
+  lockedAfterCreate?: boolean
 }
 
 export interface TabInfo {

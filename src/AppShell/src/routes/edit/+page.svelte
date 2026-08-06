@@ -4,7 +4,7 @@
     import { goto } from "$app/navigation";
     import { base } from "$app/paths";
     import { get } from "svelte/store";
-    import { isLoaded, isDirty, isEditingField, markFieldEditing, clearFieldEditing, saveGame, loadingStatus, addElementModal, assetManagerOpen, publishModalOpen, codeViewPanelOpen, openGame, createRoom, createObject, createFunction, createTimer, createWalkthrough, createTemplate, createDynamicTemplate, createObjectType, moveElementModal, moveElement } from "$lib/editor-store";
+    import { isLoaded, isDirty, isEditingField, markFieldEditing, clearFieldEditing, saveGame, loadingStatus, addElementModal, addJavascriptModalOpen, assetManagerOpen, publishModalOpen, codeViewPanelOpen, openGame, createRoom, createObject, createFunction, createTimer, createWalkthrough, createTemplate, createDynamicTemplate, createObjectType, createJavascript, moveElementModal, moveElement } from "$lib/editor-store";
     import { loadFromServer } from "$lib/filesystem/server-adapter";
     import Toolbar from "$components/Toolbar.svelte";
     import BackupBanner from "$components/BackupBanner.svelte";
@@ -13,6 +13,7 @@
     import CodeViewPanel from "$components/CodeViewPanel.svelte";
     import { isNarrow } from "$lib/layout.svelte";
     import AddElementModal from "$components/AddElementModal.svelte";
+    import AddJavascriptModal from "$components/AddJavascriptModal.svelte";
     import MoveElementModal from "$components/MoveElementModal.svelte";
     import AssetManagerModal from "$components/AssetManagerModal.svelte";
     import PublishModal from "$components/PublishModal.svelte";
@@ -178,6 +179,13 @@
             parent={$addElementModal.parent}
             onconfirm={handleAddConfirm}
             oncancel={() => addElementModal.set(null)}
+        />
+    {/if}
+
+    {#if $addJavascriptModalOpen}
+        <AddJavascriptModal
+            onconfirm={(src) => { addJavascriptModalOpen.set(false); createJavascript(src); }}
+            oncancel={() => addJavascriptModalOpen.set(false)}
         />
     {/if}
 
