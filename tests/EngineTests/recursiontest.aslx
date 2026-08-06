@@ -26,4 +26,31 @@
       msg ("after trigger")
     </script>
   </command>
+
+  <!-- Regression fixture: changed<field> must only fire on an actual value change, matching
+       Quest 5 semantics, so a same-value write (e.g. an "enter" script re-running MoveObject
+       into the room the player is already in) doesn't recurse forever. -->
+  <object name="watcher">
+    <hits type="int">0</hits>
+    <flag type="boolean">false</flag>
+    <changedflag type="script">
+      watcher.hits = watcher.hits + 1
+    </changedflag>
+  </object>
+
+  <command name="cmd_trigger_noop_write">
+    <pattern>triggernoop</pattern>
+    <script>
+      watcher.flag = false
+      msg ("after noop write")
+    </script>
+  </command>
+
+  <command name="cmd_trigger_real_change">
+    <pattern>triggerrealchange</pattern>
+    <script>
+      watcher.flag = not watcher.flag
+      msg ("after real change")
+    </script>
+  </command>
 </asl>

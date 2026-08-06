@@ -217,8 +217,9 @@ public class Element : IComparable
     internal async Task SetFieldAsync(string fieldName, object value)
     {
         var oldValue = Fields.Get(fieldName);
+        var changed = value == null ? oldValue != null : !value.Equals(oldValue);
         Fields.Set(fieldName, value);
-        if (!m_worldModel.EditMode)
+        if (changed && !m_worldModel.EditMode)
         {
             var changedScriptName = "changed" + fieldName;
             if (Fields.HasType<IScript>(changedScriptName))
