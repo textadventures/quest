@@ -24,6 +24,7 @@
     import type { LocalDraftSummary, ZipEntries } from "$lib/filesystem/local-adapter";
     import { loadWasm } from "$lib/wasm";
     import { triggerDownload } from "$lib/filesystem/download";
+    import { zipSync } from "fflate";
 
     const hasServer = PUBLIC_HAS_SERVER === "true";
 
@@ -337,17 +338,25 @@
         await refreshDrafts();
     }
 
-    // Reads the draft's raw stored bytes and downloads them directly — deliberately independent
-    // of openGame()/the WASM editor, so a draft that can no longer be *loaded* (e.g. hand-edited
-    // into an invalid state via Code View) can still be gotten out of the browser to fix elsewhere
-    // or send to someone for help, rather than being permanently stuck.
+    // Bundles the draft's raw stored .aslx plus its assets into a .zip, same shape as
+    // editor-store's backupGame() — but reads straight from OPFS via loadLocalDraft()/listAssets()
+    // rather than _bridge.Save(), so it's deliberately independent of openGame()/the WASM editor.
+    // That's the whole point: a draft that can no longer be *loaded* (e.g. hand-edited into an
+    // invalid state via Code View) can still be gotten out of the browser complete with its
+    // assets, to fix elsewhere or send to someone for help, rather than being permanently stuck.
     async function handleDownloadDraft(gameId: string, filename: string) {
         const loaded = await loadLocalDraft(gameId);
         if (!loaded) {
             error = "Could not read that draft.";
             return;
         }
-        triggerDownload(loaded.bytes, filename);
+        const zipEntries: Record<string, Uint8Array> = { [filename]: loaded.bytes };
+        for (const asset of await loaded.adapter.listAssets()) {
+            const blob = await loaded.adapter.getAsset(asset.key);
+            if (blob) zipEntries[asset.key] = new Uint8Array(await blob.arrayBuffer());
+        }
+        const zipBytes = zipSync(zipEntries);
+        triggerDownload(zipBytes, filename.replace(/\.aslx$/i, "") + ".zip");
     }
 
     // Removes a Recent entry only — never touches the actual file on disk.
@@ -556,7 +565,7 @@
                             <button
                                 type="button"
                                 class="btn btn-sm preset-outlined-surface-500"
-                                title="Download this draft's raw .aslx file — works even if it fails to open"
+                                title="Download this draft as a .zip (game file + assets) — works even if it fails to open"
                                 onclick={() => handleDownloadDraft(draft.gameId, draft.filename)}
                             >Download</button>
                             <button
