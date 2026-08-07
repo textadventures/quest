@@ -1,5 +1,24 @@
 # Changelog
 
+## [6.0.0-beta.49](https://github.com/textadventures/quest/compare/v6.0.0-beta.48...v6.0.0-beta.49) (2026-08-07)
+
+
+### Features
+
+* **AppShell:** add Call function to the Script Adder ([#1991](https://github.com/textadventures/quest/issues/1991)) ([03ebd7d](https://github.com/textadventures/quest/commit/03ebd7d38f3623c0ba8ec4c89c2dd7b54599ff91))
+* **AppShell:** improve Call function picker UX ([#1992](https://github.com/textadventures/quest/issues/1992)) ([dc98eef](https://github.com/textadventures/quest/commit/dc98eef0bf91a9cdcaff7c2128806258dd0cb154))
+
+
+### Bug Fixes
+
+* **AppShell:** correct console banner text and version on play.questviva.com ([#1995](https://github.com/textadventures/quest/issues/1995)) ([15afa91](https://github.com/textadventures/quest/commit/15afa91d8177f97ccac4e83b165b632739622fb8))
+* **AppShell:** fix editor bugs and rework the JavaScript element add flow ([#1996](https://github.com/textadventures/quest/issues/1996)) ([5069164](https://github.com/textadventures/quest/commit/50691648f138dac52d4a2dd80247dc56f41732a8))
+* **AppShell:** protect built-in libraries from deletion and improve load-error handling ([#1997](https://github.com/textadventures/quest/issues/1997)) ([4f282d2](https://github.com/textadventures/quest/commit/4f282d232d4e832d02207e9f9e96857006a0a785))
+* **Engine:** defer FinishTurn across a wait for pre-v580 games ([#1994](https://github.com/textadventures/quest/issues/1994)) ([b24dcbd](https://github.com/textadventures/quest/commit/b24dcbdce77e20853518ff39886fcc6bf69012f5))
+* **Engine:** gate changed&lt;attr&gt; dispatch on an actual value change ([#1993](https://github.com/textadventures/quest/issues/1993)) ([d21c316](https://github.com/textadventures/quest/commit/d21c316b94d05eba9699ca813779db07a50bead3))
+* fix CI-only flakes found running the newly-wired e2e suite ([#1978](https://github.com/textadventures/quest/issues/1978)) ([1c3b9ae](https://github.com/textadventures/quest/commit/1c3b9ae785209dd78c835e603fd09bfde994b685))
+* on-ready queue draining + WasmPlayer JS-call flush timing for recursive get-input loops ([#1980](https://github.com/textadventures/quest/issues/1980)) ([13a353a](https://github.com/textadventures/quest/commit/13a353ac4bad55cfd6cb6888012ce43c4fb909b2))
+
 ## [6.0.0-beta.48](https://github.com/textadventures/quest/compare/v6.0.0-beta.47...v6.0.0-beta.48) (2026-08-01)
 
 
