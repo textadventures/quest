@@ -1,5 +1,5 @@
 <script lang="ts">
-    import { selectedKey, selectedData, treeNodes, isGamebook, setAttribute, setDropdownType, setMultiType, setObjectReference, setSelectedFilter, addDictItem, removeDictItem, updateDictItem, getObjectNames, getExitNames, selectNode, createObjectSilent, openAddModal, createIncludedLibrary, createJavascript } from "$lib/editor-store";
+    import { selectedKey, selectedData, treeNodes, isGamebook, setAttribute, setDropdownType, setMultiType, setObjectReference, setSelectedFilter, addDictItem, removeDictItem, updateDictItem, getObjectNames, getExitNames, selectNode, createObjectSilent, openAddModal, createIncludedLibrary, openAddJavascriptModal, getAssetText, putAssetText } from "$lib/editor-store";
     import { showToast } from "$lib/toast";
     import type { ControlInfo, ControlOption, TextProcessorCommand } from "$lib/types";
     import type { TreeNode } from "$lib/types";
@@ -23,6 +23,7 @@
     import ChevronDown from "@lucide/svelte/icons/chevron-down";
     import ListPlus from "@lucide/svelte/icons/list-plus";
     import ScriptEditor from "./ScriptEditor.svelte";
+    import CodeEditor from "./CodeEditor.svelte";
     import DropdownMenu from "./DropdownMenu.svelte";
     import type { DropdownMenuItem } from "./DropdownMenu.svelte";
     import LinkPickerModal from "./LinkPickerModal.svelte";
@@ -60,7 +61,7 @@
         { label: "Add Template", action: () => openAddModal("template", null), gamebook: false },
         { label: "Add Dynamic Template", action: () => openAddModal("dynamictemplate", null), gamebook: false },
         { label: "Add Type", action: () => openAddModal("type", null), gamebook: false },
-        { label: "Add JavaScript", action: () => createJavascript(), gamebook: true },
+        { label: "Add JavaScript", action: () => openAddJavascriptModal(), gamebook: true },
     ];
     // Gamebook mode only supports Function/Library/JavaScript — Timer/Walkthrough
     // don't apply to a flat page-based game, and Template/Object Type are in
@@ -539,6 +540,8 @@
         <AssetPicker
             value={attrValue(ctrl.attribute!) ?? ""}
             source={ctrl.source}
+            creatable={!!ctrl.newFile}
+            readonly={!!(ctrl.lockedAfterCreate && attrValue(ctrl.attribute!))}
             onchange={(v) => onTextChange(ctrl.attribute!, ctrl.controlType, v)}
             containerClass="w-full"
         />
@@ -746,6 +749,25 @@
         <div class="flex-1 min-w-0 overflow-hidden">
             <ScriptEditor elementKey={$selectedKey} attribute={ctrl.attribute} />
         </div>
+    {:else if ctrl.controlType === "texteditor" && ctrl.attribute !== null}
+        {@const filename = attrValue(ctrl.attribute)}
+        <div class="w-full min-h-64">
+            {#if filename}
+                {#await getAssetText(filename)}
+                    <p class="text-xs text-surface-600-400">Loading…</p>
+                {:then content}
+                    <CodeEditor
+                        value={content ?? ""}
+                        language="javascript"
+                        onChange={(v) => putAssetText(filename, v)}
+                        minHeight="16rem"
+                        class="h-full"
+                    />
+                {/await}
+            {:else}
+                <p class="text-xs text-surface-600-400">Choose or upload a file above to edit its contents.</p>
+            {/if}
+        </div>
     {:else if ctrl.controlType === "scriptdictionary" && ctrl.attribute && $selectedKey}
         <ScriptDictionaryEditor
             elementKey={$selectedKey}
@@ -887,11 +909,13 @@
             </div>
         {:else}
             {@const label = ctrl.caption ?? ctrl.attribute}
-            {@const isMultiline = ctrl.controlType === "richtext" || ctrl.controlType === "script" || ctrl.controlType === "list" || ctrl.controlType === "stringdictionary" || ctrl.controlType === "scriptdictionary" || ctrl.controlType === "gamebookoptions"}
+            {@const isMultiline = ctrl.controlType === "richtext" || ctrl.controlType === "script" || ctrl.controlType === "texteditor" || ctrl.controlType === "list" || ctrl.controlType === "stringdictionary" || ctrl.controlType === "scriptdictionary" || ctrl.controlType === "gamebookoptions"}
             {@const stacksBelowLabel = label.length > 20 || isMultiline}
             {#if stacksBelowLabel}
                 <div class="flex flex-col gap-1 px-3 py-1.5">
-                    <span class="text-xs text-surface-600-400">{label}:</span>
+                    {#if ctrl.controlType !== "texteditor"}
+                        <span class="text-xs text-surface-600-400">{label}:</span>
+                    {/if}
                     {@render controlOnly(ctrl)}
                     {#if ctrl.attribute && attributeErrors[ctrl.attribute]}
                         <p class="text-xs text-error-500">{attributeErrors[ctrl.attribute]}</p>

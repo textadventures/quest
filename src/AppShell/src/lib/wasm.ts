@@ -93,7 +93,7 @@ export interface WasmBridge {
   CreateDynamicTemplate(name: string): string
   CreateObjectType(name: string): string
   CreateIncludedLibrary(): string
-  CreateJavascript(): string
+  CreateJavascript(src: string): string
   DeleteElement(key: string): void
   DeleteElements(keysJson: string): void
   SwapElements(key1: string, key2: string): string

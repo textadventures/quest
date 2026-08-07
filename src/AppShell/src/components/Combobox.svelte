@@ -1,7 +1,7 @@
 <script lang="ts">
     import type { ControlOption } from "$lib/types";
 
-    let { value, options, onchange, oninput, class: className = "", wrapperClass = "" }: {
+    let { value, options, onchange, oninput, onEnter, class: className = "", wrapperClass = "" }: {
         value: string;
         options: ControlOption[];
         onchange: (value: string) => void;
@@ -9,6 +9,11 @@
         // for callers that need the live typed text, e.g. to drive a submit button's disabled
         // state without waiting for the field to lose focus.
         oninput?: (value: string) => void;
+        // Fires after Enter commits a value (selecting an option or freeform typed text) — for
+        // callers that treat Enter as "confirm and proceed" (e.g. a modal's primary action),
+        // since Enter alone doesn't submit anything outside a <form>. Fires after onchange, so
+        // the caller's value is already up to date if onchange updates synchronously.
+        onEnter?: () => void;
         class?: string;
         // Applied to the root wrapper rather than the <input> — needed when a caller's flex
         // row relies on this component itself (not just the input inside it) to grow/shrink,
@@ -156,8 +161,12 @@
                 select(filtered[0].value);
             } else if (open) {
                 open = false;
-                onchange(inputValue);
+                // Mirrors handleBlur: nothing typed since focus (which clears inputValue to "")
+                // means "leave it as-is", not "clear the field" — e.g. accepting a pre-filled
+                // default by tabbing in and pressing Enter without typing over it.
+                onchange(inputValue === "" ? value : inputValue);
             }
+            onEnter?.();
         } else if (e.key === "Escape") {
             open = false;
             inputValue = value;
