@@ -8,9 +8,10 @@
         <controltype>file</controltype>
         <attribute>filename</attribute>
         <caption>[EditorIncludedLibraryFilename]</caption>
-        <source>libraries</source>
+        <source>*.aslx</source>
         <width>300</width>
         <filefiltername>Libraries</filefiltername>
+        <lockedaftercreate/>
       </control>
     </tab>
   </editor>

@@ -2370,7 +2370,7 @@ public partial class WasmEditorBridge
     }
 
     [JSExport]
-    public static string CreateIncludedLibrary()
+    public static string CreateIncludedLibrary(string filename)
     {
         if (_controller == null)
         {
@@ -2379,7 +2379,7 @@ public partial class WasmEditorBridge
 
         try
         {
-            return _controller.CreateNewIncludedLibrary();
+            return _controller.CreateNewIncludedLibrary(filename);
         }
         catch (Exception ex)
         {

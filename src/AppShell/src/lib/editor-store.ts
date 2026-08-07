@@ -7,6 +7,8 @@ import type { AssetInfo, FileAdapter } from "./filesystem/types";
 import { LocalDraftAdapter, shouldShowBackupBanner, markBackupBannerResolved } from "./filesystem/local-adapter";
 import { ServerFileAdapter } from "./filesystem/server-adapter";
 import { triggerDownload } from "./filesystem/download";
+import { confirmDialog } from "./confirm";
+import { showToast } from "./toast";
 import type { TreeNode, EditorDataResponse, ScriptBlockData, ScriptCommandCategoriesData, IfExpressionTemplateData, IfExpressionTemplate, FullAttributeData, ExitsData, VerbInfo, ExpressionFunctionInfo } from "./types";
 
 export type AddElementModalState = { type: "room" | "object" | "page" | "function" | "timer" | "walkthrough" | "template" | "dynamictemplate" | "type"; parent: string | null } | null;
@@ -33,6 +35,15 @@ export function openAddModal(type: "room" | "object" | "page" | "function" | "ti
 export const addJavascriptModalOpen = writable(false);
 export function openAddJavascriptModal() {
     addJavascriptModalOpen.set(true);
+}
+// An Included Library's filename can't be changed after creation either (same
+// lockedaftercreate as Javascript's src — see CoreEditorIncludedLibrary.aslx) and, unlike
+// Javascript, it can *only* ever point at an existing/uploaded file (a blank .aslx isn't a
+// useful library), so its adder is the same up-front-modal shape but without JS's "type a
+// new name to create a blank one" affordance.
+export const addLibraryModalOpen = writable(false);
+export function openAddLibraryModal() {
+    addLibraryModalOpen.set(true);
 }
 // Holds the key of the element currently being moved, or null when the modal is closed.
 export const moveElementModal = writable<string | null>(null);
@@ -581,20 +592,49 @@ export async function publishGame(includeWalkthrough: boolean): Promise<void> {
     triggerDownload(packageBytes, publishName);
 }
 
+// Keys of every Javascript/Included Library element currently in the tree — undo()/redo() diff
+// this before/after to find ones that just reappeared, so the missing-asset check below only
+// fires for elements the undo/redo itself brought back, not any pre-existing breakage elsewhere
+// in the game (e.g. a hand-edited or legacy save).
+function assetOwningKeys(): Set<string> {
+    return new Set(get(treeNodes).filter(n => ASSET_OWNING_NODE_TYPES.has(n.nodeType)).map(n => n.key));
+}
+
+// deleteElement()'s asset cascade (see below) happens outside WorldModel's undo system entirely —
+// undoing the element's own deletion is all Quest's Undo can do, so if that file is gone for good,
+// undo/redo can resurrect an element whose filename now points at nothing. Can't fix that (the
+// file really is gone), so at least surface it instead of leaving a silently broken element sitting
+// in the tree.
+async function warnAboutDetachedAssetOwners(beforeKeys: Set<string>): Promise<void> {
+    if (!_adapter) return;
+    const reappeared = get(treeNodes).filter(n => ASSET_OWNING_NODE_TYPES.has(n.nodeType) && !beforeKeys.has(n.key));
+    for (const node of reappeared) {
+        if (!node.text || node.text === NO_FILENAME_PLACEHOLDER) continue;
+        const blob = await _adapter.getAsset(node.text);
+        if (!blob) {
+            showToast(`"${node.text}" was restored, but its file was permanently deleted and can't be recovered — delete this element or add a new file.`);
+        }
+    }
+}
+
 export async function undo() {
+    const beforeKeys = assetOwningKeys();
     if (_bridge) await _bridge.Undo();
     refreshTree();
     refreshSelectedData();
     refreshUndoRedo();
     scriptVersion.update(n => n + 1);
+    void warnAboutDetachedAssetOwners(beforeKeys);
 }
 
 export function redo() {
+    const beforeKeys = assetOwningKeys();
     _bridge?.Redo();
     refreshTree();
     refreshSelectedData();
     refreshUndoRedo();
     scriptVersion.update(n => n + 1);
+    void warnAboutDetachedAssetOwners(beforeKeys);
 }
 
 // ── Assets ───────────────────────────────────────────────────────────────────
@@ -1158,9 +1198,9 @@ export function createObjectType(name: string): string {
     return afterCreate(_bridge.CreateObjectType(name));
 }
 
-export function createIncludedLibrary(): string {
+export function createIncludedLibrary(filename: string): string {
     if (!_bridge) return "error:not loaded";
-    return afterCreate(_bridge.CreateIncludedLibrary());
+    return afterCreate(_bridge.CreateIncludedLibrary(filename));
 }
 
 export function createJavascript(src: string): string {
@@ -1168,7 +1208,58 @@ export function createJavascript(src: string): string {
     return afterCreate(_bridge.CreateJavascript(src));
 }
 
-export function deleteElement(key: string) {
+// Javascript's src and Included Library's filename are the only element attributes that own an
+// asset outright (lockedaftercreate, one file per element — see AddJavascriptModal/AddLibraryModal),
+// and the tree label mirrors that filename exactly (EditorController.GetDisplayName), so the asset
+// key for one of these nodes is just its own text.
+const ASSET_OWNING_NODE_TYPES = new Set(["javascript", "include"]);
+
+// Finds another element of the same asset-owning type still pointing at the same file — deleting
+// this element shouldn't take the asset out from under it.
+function assetStillReferenced(key: string, nodeType: string, assetKey: string): boolean {
+    return get(treeNodes).some(n => n.key !== key && n.nodeType === nodeType && n.text === assetKey);
+}
+
+const NO_FILENAME_PLACEHOLDER = "(filename not set)"; // EditorController.GetDisplayName's fallback
+
+export async function deleteElement(key: string): Promise<void> {
+    if (!_bridge) return;
+    const node = get(treeNodes).find(n => n.key === key);
+    // Model edits are covered by Quest's own Undo, but an asset file lives outside that — its
+    // deletion is permanent, so confirm before an element delete would take one out with it. Both
+    // owning types are lockedaftercreate and only ever created with a real uploaded file (see
+    // AddJavascriptModal/AddLibraryModal), so a set filename is trusted here rather than checked
+    // against the `assets` store — included-library .aslx files are deliberately excluded from
+    // that store's listing on most adapters (LocalDraftAdapter/BrowserFileAdapter/ElectronAdapter
+    // all filter `.aslx` out of listAssets() to avoid ever surfacing the game's own file as a
+    // generic asset), so they'd never match there even though the file is real.
+    if (node && ASSET_OWNING_NODE_TYPES.has(node.nodeType) && node.text && node.text !== NO_FILENAME_PLACEHOLDER
+        && !assetStillReferenced(key, node.nodeType, node.text)) {
+        const ok = await confirmDialog(
+            `Delete "${node.text}"? This will also permanently delete that file from your assets — this can't be undone.`,
+            { confirmLabel: "Delete", danger: true },
+        );
+        if (!ok) return;
+        performDeleteElement(key);
+        // Best-effort: some adapters (e.g. ServerFileAdapter) throw on a delete that 404s, which
+        // shouldn't block the element delete above from having already gone through.
+        try { await deleteAssetByKey(node.text); } catch { /* already gone, or adapter-side 404 */ }
+        return;
+    }
+    performDeleteElement(key);
+}
+
+// Asset Manager's delete, for an asset owned by a Javascript/Included Library element — removes
+// that element too rather than leaving it pointing at a now-missing file, keeping the two in sync
+// regardless of which side (element or asset) the delete was triggered from. No confirm here: the
+// caller (AssetManagerModal) already confirmed, naming the owning element in its own message.
+export async function deleteAssetAndOwner(key: string): Promise<void> {
+    const owner = get(treeNodes).find(n => ASSET_OWNING_NODE_TYPES.has(n.nodeType) && n.text === key);
+    if (owner) performDeleteElement(owner.key);
+    await deleteAssetByKey(key);
+}
+
+function performDeleteElement(key: string) {
     if (!_bridge) return;
     _bridge.DeleteElement(key);
     selectedKey.set(null);

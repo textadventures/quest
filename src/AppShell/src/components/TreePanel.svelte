@@ -10,7 +10,7 @@
     import {
         treeNodes, selectedKey, selectNode, isGamebook,
         openAddModal, createExit, createTurnScript, createCommand, createVerb,
-        createIncludedLibrary, openAddJavascriptModal,
+        openAddLibraryModal, openAddJavascriptModal,
         deleteElement,
         canMoveElement, openMoveModal, copyElements, cutElements, canPasteElements, pasteElements,
         clipboardVersion, cutElementKeys,
@@ -302,7 +302,7 @@
             else if (id === "_template") opts.push({ label: "Add Template", action: () => openAddModal("template", null) });
             else if (id === "_dynamictemplate") opts.push({ label: "Add Dynamic Template", action: () => openAddModal("dynamictemplate", null) });
             else if (id === "_objecttype") opts.push({ label: "Add Type", action: () => openAddModal("type", null) });
-            else if (id === "_include") opts.push({ label: "Add Library", action: () => createIncludedLibrary() });
+            else if (id === "_include") opts.push({ label: "Add Library", action: () => openAddLibraryModal() });
             else if (id === "_javascript") opts.push({ label: "Add JavaScript", action: () => openAddJavascriptModal() });
         } else if (nt === "room") {
             opts.push(

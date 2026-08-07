@@ -1,5 +1,5 @@
 <script lang="ts">
-    import { selectedKey, selectedData, treeNodes, isGamebook, setAttribute, setDropdownType, setMultiType, setObjectReference, setSelectedFilter, addDictItem, removeDictItem, updateDictItem, getObjectNames, getExitNames, selectNode, createObjectSilent, openAddModal, createIncludedLibrary, openAddJavascriptModal, getAssetText, putAssetText } from "$lib/editor-store";
+    import { selectedKey, selectedData, treeNodes, isGamebook, setAttribute, setDropdownType, setMultiType, setObjectReference, setSelectedFilter, addDictItem, removeDictItem, updateDictItem, getObjectNames, getExitNames, selectNode, createObjectSilent, openAddModal, openAddLibraryModal, openAddJavascriptModal, getAssetText, putAssetText } from "$lib/editor-store";
     import { showToast } from "$lib/toast";
     import type { ControlInfo, ControlOption, TextProcessorCommand } from "$lib/types";
     import type { TreeNode } from "$lib/types";
@@ -57,7 +57,7 @@
         { label: "Add Function", action: () => openAddModal("function", null), gamebook: true },
         { label: "Add Timer", action: () => openAddModal("timer", null), gamebook: false },
         { label: "Add Walkthrough", action: () => openAddModal("walkthrough", null), gamebook: false },
-        { label: "Add Library", action: () => createIncludedLibrary(), gamebook: true },
+        { label: "Add Library", action: () => openAddLibraryModal(), gamebook: true },
         { label: "Add Template", action: () => openAddModal("template", null), gamebook: false },
         { label: "Add Dynamic Template", action: () => openAddModal("dynamictemplate", null), gamebook: false },
         { label: "Add Type", action: () => openAddModal("type", null), gamebook: false },

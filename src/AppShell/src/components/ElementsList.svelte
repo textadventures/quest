@@ -1,6 +1,6 @@
 <script lang="ts">
     import { SvelteSet } from "svelte/reactivity";
-    import { treeNodes, selectedKey, selectNode, deleteElement, openAddModal, createVerb, createCommand, createTurnScript, createIncludedLibrary, openAddJavascriptModal, swapElements } from "$lib/editor-store";
+    import { treeNodes, selectedKey, selectNode, deleteElement, openAddModal, createVerb, createCommand, createTurnScript, openAddLibraryModal, openAddJavascriptModal, swapElements } from "$lib/editor-store";
 
     interface Props {
         elementKey: string;
@@ -79,7 +79,7 @@
         else if (nodeTypes.includes("template")) openAddModal("template", null);
         else if (nodeTypes.includes("dynamictemplate")) openAddModal("dynamictemplate", null);
         else if (nodeTypes.includes("type")) openAddModal("type", null);
-        else if (nodeTypes.includes("include")) createIncludedLibrary();
+        else if (nodeTypes.includes("include")) openAddLibraryModal();
         else if (nodeTypes.includes("javascript")) openAddJavascriptModal();
         else if (isObjectList) openAddModal("object", parent);
     }
