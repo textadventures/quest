@@ -58,7 +58,7 @@ jobs:
         run: npm ci && npm run build
         working-directory: src/AppShell
         env:
-          PUBLIC_APPSHELL_VERSION: ${{ github.sha }}
+          PUBLIC_APPSHELL_VERSION: ${{ github.ref_type == 'tag' && github.ref_name || github.sha }}
           PUBLIC_HAS_SERVER: false
           PUBLIC_SHOW_HOME: true
 
