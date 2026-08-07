@@ -113,11 +113,15 @@
     }
 
     function onDeleteSelected() {
+        // Skips anything not deletable (e.g. a built-in library — see EditorController.CanDelete)
+        // rather than leaving it half-selected; DeleteElement would silently no-op on it anyway.
         for (const key of activeSelection) {
+            const item = items.find(i => i.key === key);
+            if (!item?.canDelete) continue;
             if ($selectedKey === key) selectNode(elementKey);
             deleteElement(key);
+            selectedKeys.delete(key);
         }
-        selectedKeys.clear();
     }
 
     function onDeleteItem(key: string) {
@@ -185,7 +189,8 @@
                     <button
                         type="button"
                         class="btn btn-sm preset-tonal-error px-1 py-0 text-xs leading-none"
-                        title="Delete"
+                        title={item.canDelete ? "Delete" : "This can't be deleted"}
+                        disabled={!item.canDelete}
                         onclick={() => onDeleteItem(item.key)}
                     >×</button>
                 </div>
@@ -200,6 +205,7 @@
             <button
                 type="button"
                 class="btn btn-sm preset-tonal-error text-xs py-0.5"
+                disabled={!sel.some(key => items.find(i => i.key === key)?.canDelete)}
                 onclick={onDeleteSelected}
             >Delete</button>
             {#if sel.length === 1}

@@ -2198,6 +2198,17 @@ public sealed class EditorController : IDisposable
             return false;
         }
 
+        var element = WorldModel.Elements.Get(elementName);
+        // Engine-shipped libraries (Core.aslx, GamebookCore.aslx, and every per-language file
+        // such as English.aslx) can't be deleted — the game can't load without them, and there's
+        // no way to re-add one short of recreating the game. A user-uploaded custom library is
+        // unaffected and stays deletable.
+        if (element.ElemType == ElementType.IncludedLibrary &&
+            WorldModel.IsBuiltInLibrary(element.Fields[FieldDefinitions.Filename] ?? string.Empty))
+        {
+            return false;
+        }
+
         return true;
     }
 

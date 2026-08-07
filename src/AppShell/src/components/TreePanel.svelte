@@ -25,6 +25,7 @@
         text: string
         nodeType: string
         isLibrary: boolean
+        canDelete: boolean
         children?: HierNode[]
     }
 
@@ -50,6 +51,7 @@
                 text: node.text,
                 nodeType: node.nodeType,
                 isLibrary: node.isLibrary,
+                canDelete: node.canDelete,
                 ...(children ? { children: children.map(build) } : {}),
             };
         };
@@ -185,7 +187,7 @@
         createTreeViewCollection<HierNode>({
             nodeToValue: (n) => n.id,
             nodeToString: (n) => n.text,
-            rootNode: { id: "__root__", text: "", nodeType: "header", isLibrary: false, children: filteredHierTree },
+            rootNode: { id: "__root__", text: "", nodeType: "header", isLibrary: false, canDelete: false, children: filteredHierTree },
         })
     );
 
@@ -261,8 +263,13 @@
         if (id === $selectedKey) onactivate?.();
     }
 
-    function isDeletable(nt: string): boolean {
-        return nt !== "header" && nt !== "game" && nt !== "other";
+    // node.canDelete is authoritative (mirrors EditorController.CanDelete exactly — "game", the
+    // gamebook player, and any built-in library are all already false there). "header" and
+    // "other" (an element type with no dedicated tree icon, e.g. ElementType.Output) are kept as
+    // an extra client-side guard since CanDelete doesn't know about tree presentation concerns.
+    function isDeletable(node: HierNode): boolean {
+        const { nodeType: nt } = node;
+        return nt !== "header" && nt !== "other" && node.canDelete;
     }
 
     function nodeMenuOptions(node: HierNode): Array<{ label: string; action: () => void }> {
@@ -337,7 +344,7 @@
             }
         }
 
-        if (isDeletable(nt)) {
+        if (isDeletable(node)) {
             opts.push({ label: `Delete "${text}"`, action: () => handleDelete(id) });
         }
 

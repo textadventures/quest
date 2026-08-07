@@ -16,7 +16,7 @@ using QuestViva.Engine.Types;
 
 namespace QuestViva.WasmEditor;
 
-internal record TreeNodeData(string Key, string Text, string? Parent, string? NodeIcon, string NodeType, bool IsLibrary);
+internal record TreeNodeData(string Key, string Text, string? Parent, string? NodeIcon, string NodeType, bool IsLibrary, bool CanDelete);
 
 internal record ControlOption(string Value, string Label);
 
@@ -223,24 +223,62 @@ public partial class WasmEditorBridge
         controller.Dirty += (_, _) => { _isDirty = true; };
     }
 
+    // Returns "ok" on success, or "error:{message}" — mirrors SetGameXml's convention. A raw
+    // exception (e.g. a NullReferenceException from code that assumes Core.aslx's elements are
+    // present, which isn't guaranteed if its <include> was deleted from the game) must never
+    // cross the WASM boundary uncaught: AOT trimming strips exception message resources, so the
+    // caller would otherwise see a bare "Arg_NullReferenceException" with no useful information.
     [JSExport]
-    public static async Task<bool> Initialise(byte[] gameFileBytes, string filename)
+    public static async Task<string> Initialise(byte[] gameFileBytes, string filename)
     {
         _controller?.Dispose();
         TreeNodes.Clear();
 
-        _controller = new EditorController();
-        AttachControllerEvents(_controller);
+        var controller = new EditorController();
+        string? errorMessage = null;
+        controller.ShowMessage += (_, e) => errorMessage = e.Message;
+        AttachControllerEvents(controller);
+        _controller = controller;
 
         var provider = new ByteArrayGameDataProvider(gameFileBytes, filename);
-        var ok = await _controller.Initialise(provider);
-        _isDirty = false;
-        if (ok)
+
+        bool ok;
+        try
         {
-            _controller.UpdateTree();
+            ok = await controller.Initialise(provider);
+        }
+        catch (Exception ex)
+        {
+            controller.Dispose();
+            _controller = null;
+            return $"error:{ex.Message}";
         }
 
-        return ok;
+        if (!ok)
+        {
+            // WorldModel loaded with recorded errors (e.g. a missing library file, invalid XML) —
+            // controller.Initialise already raised ShowMessage with the friendly, full list.
+            return $"error:{errorMessage ?? "Failed to load game."}";
+        }
+
+        try
+        {
+            controller.UpdateTree();
+        }
+        catch (Exception ex)
+        {
+            // The game's element graph loaded without errors, but something in it is missing or
+            // malformed enough to break tree construction — most likely a required library (e.g.
+            // Core.aslx) was removed from the game's Included Libraries. Leave the controller in
+            // place (rather than disposing it) since GetGameXml()/Save() still work off the
+            // element graph alone and don't depend on the tree having built.
+            TreeNodes.Clear();
+            _isDirty = false;
+            return $"error:This game could not be fully loaded — it may be missing a required library such as Core.aslx (technical details: {ex.Message}). Check the game's Included Libraries in Code View.";
+        }
+
+        _isDirty = false;
+        return "ok";
     }
 
     [JSExport]
@@ -292,7 +330,23 @@ public partial class WasmEditorBridge
         _controller.Dispose();
         TreeNodes.Clear();
         _controller = candidate;
-        _controller.UpdateTree();
+
+        try
+        {
+            _controller.UpdateTree();
+        }
+        catch (Exception ex)
+        {
+            // As in Initialise: the element graph parsed fine, but something in it is missing or
+            // malformed enough to break tree construction (most likely a required library like
+            // Core.aslx was removed from the XML just applied). The controller is already the
+            // live one at this point, so GetGameXml()/Save() still reflect it — but TreeNodes is
+            // left empty by UpdateTree()'s aborted run, so the tree panel stays blank until the
+            // user fixes the XML and applies again.
+            _isDirty = false;
+            return $"error:This game could not be fully loaded — it may be missing a required library such as Core.aslx (technical details: {ex.Message}). Check the game's Included Libraries in Code View.";
+        }
+
         _isDirty = false;
         return "ok";
     }
@@ -3472,7 +3526,10 @@ public partial class WasmEditorBridge
             return;
         }
 
-        var node = new TreeNodeData(e.Key, e.Text, e.Parent, e.NodeIcon, GetNodeType(e.Key, e.NodeIcon), e.IsLibraryNode);
+        // Authoritative — mirrors exactly what DeleteElement/DeleteElements will actually allow
+        // (see EditorController.CanDelete), rather than the UI guessing from node type/text.
+        var node = new TreeNodeData(e.Key, e.Text, e.Parent, e.NodeIcon, GetNodeType(e.Key, e.NodeIcon),
+            e.IsLibraryNode, _controller!.CanDelete(e.Key));
         if (_isRebuilding)
         {
             // ClearTree already emptied the list; all keys are unique in a fresh rebuild.

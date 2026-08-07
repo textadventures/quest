@@ -1,10 +1,11 @@
 <script lang="ts">
     import { onMount } from "svelte";
+    import { get } from "svelte/store";
     import { goto } from "$app/navigation";
     import { page } from "$app/state";
     import { base } from "$app/paths";
     import { PUBLIC_HAS_SERVER } from "$env/static/public";
-    import { openGame, loadingStatus } from "$lib/editor-store";
+    import { openGame, loadingStatus, lastOpenGameError } from "$lib/editor-store";
     import { confirmDialog } from "$lib/confirm";
     import { hasFSA, openDirectory, loadFileFromDirectory, createLocalGame } from "$lib/filesystem/browser-adapter";
     import {
@@ -22,6 +23,8 @@
     } from "$lib/filesystem/local-adapter";
     import type { LocalDraftSummary, ZipEntries } from "$lib/filesystem/local-adapter";
     import { loadWasm } from "$lib/wasm";
+    import { triggerDownload } from "$lib/filesystem/download";
+    import { zipSync } from "fflate";
 
     const hasServer = PUBLIC_HAS_SERVER === "true";
 
@@ -197,6 +200,13 @@
         return (name.replace(/[^a-zA-Z0-9 _-]/g, "").trim() || "game") + ".aslx";
     }
 
+    // openGame() sets lastOpenGameError with the actual reason (a missing library, invalid XML,
+    // ...) whenever it returns false — prefer that over a generic message so the user isn't just
+    // told "it failed" with no way to act on it.
+    function openGameErrorMessage(fallback: string): string {
+        return get(lastOpenGameError) ?? fallback;
+    }
+
     async function handleOpenFolder() {
         if (isElectron()) return handleOpenFileElectron();
         error = null;
@@ -245,7 +255,7 @@
                 const { bytes, adapter } = await createLocalDraftFromZipEntry(entries, filename);
                 const ok = await openGame(bytes, adapter.filename, adapter);
                 if (ok) { goto(`${base}/edit`); return; }
-                error = "Failed to load game file.";
+                error = openGameErrorMessage("Failed to load game file.");
             } catch (err) {
                 error = String(err);
             }
@@ -260,7 +270,7 @@
             const loaded = await loadFileFromDirectory(dir, filename);
             const ok = await openGame(loaded.bytes, loaded.adapter.filename, loaded.adapter);
             if (ok) { goto(`${base}/edit`); return; }
-            error = "Failed to load game file.";
+            error = openGameErrorMessage("Failed to load game file.");
         } catch (err) {
             error = String(err);
         }
@@ -274,7 +284,7 @@
             const loaded = await loadElectronFile(dirPath, filename);
             const ok = await openGame(loaded.bytes, loaded.adapter.filename, loaded.adapter);
             if (ok) { goto(`${base}/edit`); return; }
-            error = "Failed to load game file.";
+            error = openGameErrorMessage("Failed to load game file.");
         } catch (err) {
             error = String(err);
         }
@@ -296,7 +306,7 @@
             }
             const ok = await openGame(result.bytes, result.adapter.filename, result.adapter);
             if (ok) { goto(`${base}/edit`); return; }
-            error = "Failed to load game file.";
+            error = openGameErrorMessage("Failed to load game file.");
         } catch (err) {
             error = String(err);
         }
@@ -313,7 +323,7 @@
             } else {
                 const ok = await openGame(loaded.bytes, loaded.adapter.filename, loaded.adapter);
                 if (ok) { goto(`${base}/edit`); return; }
-                error = "Failed to load game file.";
+                error = openGameErrorMessage("Failed to load game file.");
             }
         } catch (err) {
             error = String(err);
@@ -326,6 +336,27 @@
         if (!confirmed) return;
         await deleteLocalDraft(gameId);
         await refreshDrafts();
+    }
+
+    // Bundles the draft's raw stored .aslx plus its assets into a .zip, same shape as
+    // editor-store's backupGame() — but reads straight from OPFS via loadLocalDraft()/listAssets()
+    // rather than _bridge.Save(), so it's deliberately independent of openGame()/the WASM editor.
+    // That's the whole point: a draft that can no longer be *loaded* (e.g. hand-edited into an
+    // invalid state via Code View) can still be gotten out of the browser complete with its
+    // assets, to fix elsewhere or send to someone for help, rather than being permanently stuck.
+    async function handleDownloadDraft(gameId: string, filename: string) {
+        const loaded = await loadLocalDraft(gameId);
+        if (!loaded) {
+            error = "Could not read that draft.";
+            return;
+        }
+        const zipEntries: Record<string, Uint8Array> = { [filename]: loaded.bytes };
+        for (const asset of await loaded.adapter.listAssets()) {
+            const blob = await loaded.adapter.getAsset(asset.key);
+            if (blob) zipEntries[asset.key] = new Uint8Array(await blob.arrayBuffer());
+        }
+        const zipBytes = zipSync(zipEntries);
+        triggerDownload(zipBytes, filename.replace(/\.aslx$/i, "") + ".zip");
     }
 
     // Removes a Recent entry only — never touches the actual file on disk.
@@ -367,14 +398,14 @@
                 const result = await createElectronGame(parentDir, file.filename, file.content);
                 const ok = await openGame(result.bytes, result.adapter.filename, result.adapter);
                 if (ok) { goto(`${base}/edit`); return; }
-                createLocalError = "Failed to load new game.";
+                createLocalError = openGameErrorMessage("Failed to load new game.");
             } else {
                 const gameId = parseGameIdFromAslx(file.content);
                 if (!gameId) { createLocalError = "New game is missing a gameid."; creatingLocal = false; return; }
                 const adapter = await createLocalDraft(gameId, file.filename, file.content);
                 const ok = await openGame(new TextEncoder().encode(file.content), file.filename, adapter);
                 if (ok) { goto(`${base}/edit`); return; }
-                createLocalError = "Failed to load new game.";
+                createLocalError = openGameErrorMessage("Failed to load new game.");
             }
         } catch (err) {
             createLocalError = String(err);
@@ -396,7 +427,7 @@
             if (result) {
                 const ok = await openGame(result.loaded.bytes, result.loaded.adapter.filename, result.loaded.adapter);
                 if (ok) { goto(`${base}/edit`); return; }
-                createLocalError = "Failed to load new game.";
+                createLocalError = openGameErrorMessage("Failed to load new game.");
             }
         } catch (err) {
             createLocalError = String(err);
@@ -531,6 +562,12 @@
                                 <span>{draft.filename}</span>
                                 <span class="text-surface-600-400">{relativeTime(draft.lastModified)}</span>
                             </button>
+                            <button
+                                type="button"
+                                class="btn btn-sm preset-outlined-surface-500"
+                                title="Download this draft as a .zip (game file + assets) — works even if it fails to open"
+                                onclick={() => handleDownloadDraft(draft.gameId, draft.filename)}
+                            >Download</button>
                             <button
                                 type="button"
                                 class="btn btn-sm preset-outlined-error-500"

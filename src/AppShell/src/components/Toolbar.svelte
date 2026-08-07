@@ -121,8 +121,12 @@
     );
 
     let nt = $derived(selectedNode?.nodeType ?? "");
+    // selectedNode.canDelete is authoritative (mirrors EditorController.CanDelete exactly —
+    // "game", the gamebook player, and any built-in library are all already false there).
+    // "header"/"other" and library-origin content are kept as extra client-side guards since
+    // CanDelete doesn't know about tree presentation concerns.
     let canDelete = $derived(
-        nt !== "" && nt !== "header" && nt !== "game" && nt !== "other" && !selectedNode?.isLibrary
+        nt !== "" && nt !== "header" && nt !== "other" && !selectedNode?.isLibrary && !!selectedNode?.canDelete
     );
 
     // Context-sensitive add options. Function/Timer/Walkthrough/Library/Template/
