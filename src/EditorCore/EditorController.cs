@@ -1653,9 +1653,10 @@ public sealed class EditorController : IDisposable
         CreateNewElement(ElementType.Walkthrough, "walkthrough", name, parent);
     }
 
-    public string CreateNewIncludedLibrary()
+    public string CreateNewIncludedLibrary(string filename)
     {
-        return CreateNewElement(ElementType.IncludedLibrary, "included library", null);
+        return CreateNewElement(ElementType.IncludedLibrary, "included library", null,
+            initialFields: new Dictionary<string, object> {{"filename", filename}});
     }
 
     public string CreateNewTemplate(string name)

@@ -253,9 +253,13 @@ export class LocalDraftAdapter implements FileAdapter {
         if (!dir) return [];
         const assets: AssetInfo[] = [];
         for await (const [name, handle] of dir as unknown as AsyncIterable<[string, FileSystemHandle]>) {
-            // Sibling .aslx files (split-file games, included libraries) aren't
-            // assets, same as BrowserFileAdapter's directory-mode listAssets.
-            if (handle.kind !== "file" || name === "meta.json" || name.toLowerCase().endsWith(".aslx")) continue;
+            // Unlike BrowserFileAdapter/ElectronAdapter (arbitrary real folders that could contain
+            // other, unrelated .aslx files a blanket filter is right to hide), this OPFS directory
+            // is exclusively owned by this one draft — the only .aslx that can ever be in here
+            // besides an uploaded Included Library file is the draft's own main file, so exclude
+            // just that by name rather than every .aslx (which used to hide library files too,
+            // leaving them untracked and un-cleanable — see AddLibraryModal/deleteElement).
+            if (handle.kind !== "file" || name === "meta.json" || name === this._filename) continue;
             assets.push({ key: name, url: "" });
         }
         return assets;

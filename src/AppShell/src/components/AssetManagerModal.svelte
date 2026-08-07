@@ -1,6 +1,7 @@
 <script lang="ts">
     import { onMount } from "svelte";
-    import { assets, refreshAssets, uploadAsset, deleteAssetByKey, resolveAssetUrl, isImageAsset } from "$lib/editor-store";
+    import { assets, treeNodes, refreshAssets, uploadAsset, deleteAssetAndOwner, resolveAssetUrl, isImageAsset } from "$lib/editor-store";
+    import { confirmDialog } from "$lib/confirm";
 
     interface Props {
         oncancel: () => void;
@@ -45,7 +46,17 @@
     }
 
     async function handleDelete(key: string) {
-        await deleteAssetByKey(key);
+        // Unlike model edits (covered by Quest's own Undo), a deleted asset is gone for good —
+        // always confirm, and call out a Javascript/Included Library element that owns this file
+        // specifically, since deleting it here takes that element down with it too (see
+        // deleteAssetAndOwner) rather than leaving it pointing at a missing file.
+        const owner = $treeNodes.find(n => (n.nodeType === "javascript" || n.nodeType === "include") && n.text === key);
+        const usageNote = owner
+            ? ` It's currently used by ${owner.nodeType === "javascript" ? "a JavaScript" : "an Included Library"} element — deleting it here will also delete that element.`
+            : "";
+        const ok = await confirmDialog(`Delete "${key}"?${usageNote} This can't be undone.`, { confirmLabel: "Delete", danger: true });
+        if (!ok) return;
+        await deleteAssetAndOwner(key);
         if (key in thumbUrls) {
             const rest = { ...thumbUrls };
             delete rest[key];

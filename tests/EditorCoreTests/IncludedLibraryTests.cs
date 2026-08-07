@@ -32,7 +32,7 @@ public class IncludedLibraryTests
         // A library the game author added themselves (not shipped with the engine) is unaffected
         // by the built-in-library guard and should remain deletable.
         var controller = await LoadTemplateController("English");
-        var key = controller.CreateNewIncludedLibrary();
+        var key = controller.CreateNewIncludedLibrary("custom.aslx");
 
         Assert.IsTrue(controller.CanDelete(key), "A custom, non-built-in library should be deletable");
 
