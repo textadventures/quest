@@ -108,27 +108,51 @@ export interface WasmBridge {
   // New game
   GetGameTemplates(): string
   CreateGameFromTemplate(templateId: string, gameName: string): string
+  // Play tab "Recently played" cover art — see WasmEditorBridge.ResolveLocalCover. Return
+  // value is a JSON-encoded LocalCoverResult ({ name, dataUrl }) or null, not a bare string —
+  // multiple of these can be in flight at once (one per recent-local-play card), so unlike
+  // most of the "returns a name, fetch the rest via a second synchronous call" pairs above,
+  // this can't stash its result in shared state between the two calls without racing.
+  ResolveLocalCover(gameFileBytes: Uint8Array, filename: string): Promise<string | null>
 }
 
 let _bridge: WasmBridge | null = null;
+// The in-flight load itself, not just its result — dotnet.js's runtime module can only be
+// created once per page (a second concurrent dotnet.create() throws "Runtime module already
+// loaded", and _bridge never gets set, permanently wedging every later caller too). A plain
+// `if (_bridge) return` guard only protects callers that arrive after the first load has
+// already finished; two callers arriving before then (e.g. several LocalFileRecentCard
+// instances resolving cover art on the same Play-tab render) would each see _bridge still
+// null and race to call create() themselves. Caching the promise makes every concurrent
+// caller await the same single load instead.
+let _loading: Promise<WasmBridge> | null = null;
 
 export async function loadWasm(): Promise<WasmBridge> {
     if (_bridge) return _bridge;
+    if (_loading) return _loading;
 
-    // dotnet.js is served at runtime by the Vite AppBundle middleware (vite.config.ts).
-    // Use new Function to prevent Vite's import-analysis plugin from trying to resolve
-    // the URL at build time — it only exists as a runtime-served file.
-    const loadModule = new Function("url", "return import(url)");
-    const { dotnet } = (await loadModule("/AppBundle/_framework/dotnet.js")) as { dotnet: any };
+    _loading = (async () => {
+        // dotnet.js is served at runtime by the Vite AppBundle middleware (vite.config.ts).
+        // Use new Function to prevent Vite's import-analysis plugin from trying to resolve
+        // the URL at build time — it only exists as a runtime-served file.
+        const loadModule = new Function("url", "return import(url)");
+        const { dotnet } = (await loadModule("/AppBundle/_framework/dotnet.js")) as { dotnet: any };
 
-    const { getAssemblyExports, getConfig, runMain } = await dotnet
-        .withDiagnosticTracing(false)
-        .create();
+        const { getAssemblyExports, getConfig, runMain } = await dotnet
+            .withDiagnosticTracing(false)
+            .create();
 
-    await runMain();
+        await runMain();
 
-    const config = getConfig();
-    const exports = await getAssemblyExports(config.mainAssemblyName);
-    _bridge = exports.QuestViva.WasmEditor.WasmEditorBridge as WasmBridge;
-    return _bridge;
+        const config = getConfig();
+        const exports = await getAssemblyExports(config.mainAssemblyName);
+        _bridge = exports.QuestViva.WasmEditor.WasmEditorBridge as WasmBridge;
+        return _bridge;
+    })();
+
+    try {
+        return await _loading;
+    } finally {
+        _loading = null;
+    }
 }

@@ -20,5 +20,6 @@
     <ItemGroup>
         <ProjectReference Include="..\EditorCore\EditorCore.csproj"/>
         <ProjectReference Include="..\Common\Common.csproj"/>
+        <ProjectReference Include="..\PlayerCore\PlayerCore.csproj"/>
     </ItemGroup>
 </Project>

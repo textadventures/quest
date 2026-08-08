@@ -40,11 +40,19 @@
     // recent-catalog-plays.ts, works everywhere) and local files (Electron only — tracked
     // via electron-adapter.ts's "play"-kind RecentGame list; there's no persistent file
     // handle across sessions in a plain browser to track this with). Both render as cards
-    // in the same grid (RecentGameCard / LocalFileRecentCard) — catalog entries first,
-    // local files after, not interleaved by timestamp (the two lists come from unrelated
-    // sources with no shared ordering guarantee worth relying on).
+    // in the same grid (RecentGameCard / LocalFileRecentCard), interleaved by timestamp —
+    // lastPlayed and lastOpened are both plain Date.now() epoch-ms, so they compare directly.
     let recentCatalogPlays = $state<RecentCatalogPlay[]>([]);
     let recentLocalPlays = $state<RecentGame[]>([]);
+
+    type RecentEntry =
+        | { kind: "catalog"; key: string; timestamp: number; game: RecentCatalogPlay }
+        | { kind: "local"; key: string; timestamp: number; game: RecentGame };
+
+    const recentEntries = $derived<RecentEntry[]>([
+        ...recentCatalogPlays.map((game): RecentEntry => ({ kind: "catalog", key: game.id, timestamp: game.lastPlayed, game })),
+        ...recentLocalPlays.map((game): RecentEntry => ({ kind: "local", key: game.dirPath + "/" + game.filename, timestamp: game.lastOpened, game })),
+    ].sort((a, b) => b.timestamp - a.timestamp));
 
     function refreshRecentCatalogPlays() {
         recentCatalogPlays = listRecentCatalogPlays();
@@ -310,18 +318,17 @@
             <p class="text-error-500 text-sm text-center">{startError}</p>
         {/if}
 
-        {#if recentCatalogPlays.length > 0 || (isElectronApp && recentLocalPlays.length > 0)}
+        {#if recentEntries.length > 0}
             <section>
-                <h2 class="text-lg font-semibold mb-3">Recently played</h2>
+                <h2 class="text-lg font-semibold mb-3">Recently Played</h2>
                 <div class="grid grid-cols-[repeat(auto-fill,minmax(150px,1fr))] gap-4">
-                    {#each recentCatalogPlays as game (game.id)}
-                        <RecentGameCard {game} onremove={() => handleRemoveRecentCatalog(game.id)} />
+                    {#each recentEntries as entry (entry.key)}
+                        {#if entry.kind === "catalog"}
+                            <RecentGameCard game={entry.game} onremove={() => handleRemoveRecentCatalog(entry.game.id)} />
+                        {:else}
+                            <LocalFileRecentCard game={entry.game} onplay={() => playLocalRecent(entry.game)} onremove={() => handleRemoveRecentLocal(entry.game)} />
+                        {/if}
                     {/each}
-                    {#if isElectronApp}
-                        {#each recentLocalPlays as game (game.dirPath + "/" + game.filename)}
-                            <LocalFileRecentCard {game} onplay={() => playLocalRecent(game)} onremove={() => handleRemoveRecentLocal(game)} />
-                        {/each}
-                    {/if}
                 </div>
             </section>
         {/if}

@@ -48,6 +48,9 @@ export interface RecentGame {
     dirPath: string;
     filename: string;
     lastOpened: number;
+    // "play"-kind only — see ElectronApp's recent-games.ts. undefined = never resolved;
+    // null = resolved, no cover; string = the resolved cover as a data: URL.
+    coverDataUrl?: string | null;
 }
 
 // Mirrors ElectronRecentKind. "edit" (the default below) is every editor
@@ -64,6 +67,15 @@ export async function listRecentGames(kind: RecentKind = "edit"): Promise<Recent
 
 export async function removeRecentGame(dirPath: string, filename: string, kind: RecentKind = "edit"): Promise<void> {
     await electronApp().recent.remove(kind, dirPath, filename);
+}
+
+export async function setRecentGameCover(
+    dirPath: string,
+    filename: string,
+    coverDataUrl: string | null,
+    kind: RecentKind = "play",
+): Promise<void> {
+    await electronApp().recent.setCover(kind, dirPath, filename, coverDataUrl);
 }
 
 // Best-effort: the recent list is a convenience, so a tracking failure should

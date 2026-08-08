@@ -6,6 +6,13 @@ export interface RecentGame {
     dirPath: string;
     filename: string;
     lastOpened: number;
+    // "play"-kind only — the game's cover art (a data: URL), resolved once when the game is
+    // played and cached here so the Play tab's Recently Played list never has to re-derive it
+    // (a full engine boot) on every app startup. Three states: undefined = never resolved yet
+    // (a legacy entry, or this session's very first add before play-time resolution finishes);
+    // null = resolved once, confirmed the game has no cover; string = the resolved data URL.
+    // See AppShell's local-cover.ts and local-play.ts.
+    coverDataUrl?: string | null;
 }
 
 // "edit" = opened/created/saved-as through the editor (/open) — backs the
@@ -37,30 +44,104 @@ async function readAll(kind: RecentKind): Promise<RecentGame[]> {
     }
 }
 
+// Writes to a temp file and renames over the real one — rename() is atomic at the OS level, so
+// a reader (readAll, possibly from a different Electron process) can never observe a
+// partially-written file, even for a large one (a cover art data: URL can be several hundred
+// KB — see RecentGame.coverDataUrl). This alone doesn't stop two of *this* process's own writes
+// from racing each other (see enqueue below for that), but it does stop a crash or a second
+// instance mid-write from corrupting the file others still read.
 async function writeAll(kind: RecentKind, games: RecentGame[]): Promise<void> {
-    await fs.writeFile(storePath(kind), JSON.stringify(games));
+    const finalPath = storePath(kind);
+    const tmpPath = `${finalPath}.tmp-${process.pid}-${Date.now()}`;
+    await fs.writeFile(tmpPath, JSON.stringify(games));
+    await fs.rename(tmpPath, finalPath);
 }
 
-export async function listRecentGames(kind: RecentKind): Promise<RecentGame[]> {
-    return readAll(kind);
+// Every read-modify-write cycle below (add/setCover/remove/clear) for a given kind is chained
+// onto this per-kind queue, so at most one is ever in flight at a time. Without this, two
+// overlapping cycles — e.g. two LocalFileRecentCards each self-healing their own cover at
+// nearly the same moment — read the same starting snapshot and then both write it back
+// separately: not just a lost update, but (before the atomic rename above) their two
+// fs.writeFile calls could genuinely interleave at the OS level and corrupt the file outright
+// (a short write's bytes followed by a stray tail fragment of a longer concurrent one — this is
+// exactly what happened once in testing: valid JSON followed by ~700KB of leaked raw base64,
+// which readAll's catch-all then silently turned into "no recent games at all").
+const writeQueues = new Map<RecentKind, Promise<unknown>>();
+
+function enqueue<T>(kind: RecentKind, task: () => Promise<T>): Promise<T> {
+    const previous = writeQueues.get(kind) ?? Promise.resolve();
+    const next = previous.then(task, task);
+    // A rejected task must not wedge the queue for later callers — but that rejection still
+    // needs to go somewhere, or Node logs an unhandled rejection warning for it. `next` itself
+    // (returned below) is that "somewhere": each caller awaits its own `next` and sees the
+    // error, so this second, ignored chain off `next` exists only to keep the *queue's* stored
+    // promise perpetually resolved for whoever chains after it.
+    writeQueues.set(kind, next.catch(() => undefined));
+    return next;
 }
 
-// Upserts by (dirPath, filename) and moves it to the front — entries are
-// always written most-recent-first, so callers don't need to re-sort.
-export async function addRecentGame(kind: RecentKind, dirPath: string, filename: string): Promise<RecentGame[]> {
-    const games = (await readAll(kind)).filter((g) => !(g.dirPath === dirPath && g.filename === filename));
-    games.unshift({ dirPath, filename, lastOpened: Date.now() });
-    const capped = games.slice(0, MAX_RECENT);
-    await writeAll(kind, capped);
-    return capped;
+// Reads are queued too — otherwise one could still land in the middle of another, unrelated
+// write's temp-file swap and briefly see a torn/former version. Queuing costs nothing here
+// (reads are cheap) and removes that window entirely.
+export function listRecentGames(kind: RecentKind): Promise<RecentGame[]> {
+    return enqueue(kind, () => readAll(kind));
 }
 
-export async function removeRecentGame(kind: RecentKind, dirPath: string, filename: string): Promise<RecentGame[]> {
-    const games = (await readAll(kind)).filter((g) => !(g.dirPath === dirPath && g.filename === filename));
-    await writeAll(kind, games);
-    return games;
+// Upserts by (dirPath, filename) and moves it to the front — entries are always written
+// most-recent-first, so callers don't need to re-sort. coverDataUrl carries forward from the
+// existing entry (if any) when replaying an already-cached game without re-resolving its cover;
+// pass it explicitly to set/refresh it (e.g. local-play.ts's play-time resolution).
+export function addRecentGame(
+    kind: RecentKind,
+    dirPath: string,
+    filename: string,
+    coverDataUrl?: string | null,
+): Promise<RecentGame[]> {
+    return enqueue(kind, async () => {
+        const games = await readAll(kind);
+        const existing = games.find((g) => g.dirPath === dirPath && g.filename === filename);
+        const remaining = games.filter((g) => g !== existing);
+        remaining.unshift({
+            dirPath,
+            filename,
+            lastOpened: Date.now(),
+            coverDataUrl: coverDataUrl !== undefined ? coverDataUrl : existing?.coverDataUrl,
+        });
+        const capped = remaining.slice(0, MAX_RECENT);
+        await writeAll(kind, capped);
+        return capped;
+    });
 }
 
-export async function clearRecentGames(kind: RecentKind): Promise<void> {
-    await writeAll(kind, []);
+// Patches just coverDataUrl on an existing entry — unlike addRecentGame, doesn't touch
+// lastOpened or reorder the list. Used to self-heal a legacy/unresolved entry (coverDataUrl
+// undefined) found sitting anywhere in the list, not just the one just played. No-op if the
+// entry's gone (e.g. removed from Recently Played while resolution was still in flight).
+export function setRecentGameCover(
+    kind: RecentKind,
+    dirPath: string,
+    filename: string,
+    coverDataUrl: string | null,
+): Promise<RecentGame[]> {
+    return enqueue(kind, async () => {
+        const games = await readAll(kind);
+        const entry = games.find((g) => g.dirPath === dirPath && g.filename === filename);
+        if (entry) {
+            entry.coverDataUrl = coverDataUrl;
+            await writeAll(kind, games);
+        }
+        return games;
+    });
+}
+
+export function removeRecentGame(kind: RecentKind, dirPath: string, filename: string): Promise<RecentGame[]> {
+    return enqueue(kind, async () => {
+        const games = (await readAll(kind)).filter((g) => !(g.dirPath === dirPath && g.filename === filename));
+        await writeAll(kind, games);
+        return games;
+    });
+}
+
+export function clearRecentGames(kind: RecentKind): Promise<void> {
+    return enqueue(kind, () => writeAll(kind, []));
 }

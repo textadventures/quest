@@ -4,7 +4,11 @@ using QuestViva.Legacy;
 
 namespace QuestViva.PlayerCore;
 
-public class GameQuery(string filename)
+// bytes is null for the WebPlayer dev Query page's normal file-path usage (reads straight off
+// disk via FileGameDataProvider); WasmEditorBridge's cover-art lookup runs in-browser with no
+// filesystem access, so it passes the game's already-read bytes and gets a ByteArrayGameDataProvider
+// instead — same GameData shape either way, just a different source stream.
+public class GameQuery(string filename, byte[] bytes = null)
 {
     private readonly GameQueryUi _dummyUi = new();
     private readonly List<string> _errors = [];
@@ -198,7 +202,9 @@ public class GameQuery(string filename)
 
     public async Task<bool> Initialise()
     {
-        var gameDataProvider = new FileGameDataProvider(filename);
+        IGameDataProvider gameDataProvider = bytes != null
+            ? new ByteArrayGameDataProvider(bytes, filename)
+            : new FileGameDataProvider(filename);
         var gameData = await gameDataProvider.GetData();
 
         if (gameData == null)

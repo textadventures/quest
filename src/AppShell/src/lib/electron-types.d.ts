@@ -41,6 +41,9 @@ interface ElectronRecentGame {
     dirPath: string;
     filename: string;
     lastOpened: number;
+    // "play"-kind only — see ElectronApp's recent-games.ts. undefined = never resolved;
+    // null = resolved, no cover; string = the resolved cover as a data: URL.
+    coverDataUrl?: string | null;
 }
 
 // "edit" = opened/created/saved-as through the editor (File > Open Recent,
@@ -51,8 +54,11 @@ type ElectronRecentKind = "edit" | "play";
 
 interface ElectronRecentApi {
     list(kind: ElectronRecentKind): Promise<ElectronRecentGame[]>;
-    add(kind: ElectronRecentKind, dirPath: string, filename: string): Promise<ElectronRecentGame[]>;
+    add(kind: ElectronRecentKind, dirPath: string, filename: string, coverDataUrl?: string | null): Promise<ElectronRecentGame[]>;
     remove(kind: ElectronRecentKind, dirPath: string, filename: string): Promise<ElectronRecentGame[]>;
+    // Patches an existing entry's coverDataUrl in place — unlike add(), doesn't bump
+    // lastOpened or reorder. Used to self-heal a legacy/unresolved entry in the background.
+    setCover(kind: ElectronRecentKind, dirPath: string, filename: string, coverDataUrl: string | null): Promise<ElectronRecentGame[]>;
     onChanged(callback: (kind: ElectronRecentKind) => void): () => void;
 }
 
