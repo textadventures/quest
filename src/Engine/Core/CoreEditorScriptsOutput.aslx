@@ -604,12 +604,17 @@
   </editor>
 
   <editor>
-    <!-- Removed from adder: superseded by the synchronous "ShowMenu(...)" expression form, now
-         reachable via the "set variable" value field's "player's choice from a menu" template
-         (see CoreEditorExpressions.aslx and WasmEditorBridge.GetExpressionTemplates("set")).
-         Still fully editable if already present. -->
+    <!-- NOT superseded by the synchronous "ShowMenu(...)" expression form (reachable via the
+         "set variable" value field's "player's choice from a menu" template) - they render
+         differently, not just sync-vs-async. This "ShowMenu (...) { }" form calls the ASLX
+         ShowMenu function in CoreFunctions.aslx (the same one the parser's disambiguation
+         prompt uses), which prints numbered "cmdlink" hyperlinks inline in the transcript. The
+         expression form instead goes through ExpressionOwner.ShowMenu -> PlayerUi.ShowMenu,
+         a jQuery UI popup dialog - see docs/issue about modernising that popup. Kept addable so
+         authors can still reach the nicer inline-link rendering. -->
     <appliesto>(function)ShowMenu</appliesto>
     <display>Show a menu</display>
+    <category>[EditorScriptsOutputOutput]</category>
     <create>ShowMenu ("",,true) { }</create>
     <add>[EditorScriptsOutputShowamenu]</add>
 
@@ -681,12 +686,15 @@
   </editor>
 
   <editor>
-    <!-- Removed from adder: unlike GetInput()/ShowMenu() (still addable above - see their
-         comments), the synchronous "Ask(...)" expression form already has a proper picker -
-         it's a CoreEditorExpressions.aslx "if condition" template, reachable today via the
-         if-condition builder's "insert template" UI. Still fully editable if already present. -->
+    <!-- NOT superseded by the synchronous "Ask(...)" expression form (reachable via the
+         if-condition builder's "player answers a yes/no question" template) - same reasoning as
+         ShowMenu above (Ask's CoreFunctions.aslx implementation just calls ShowMenu internally
+         with Yes/No options): this "Ask (...) { }" form renders inline cmdlinks, the expression
+         form pops a jQuery UI dialog via ExpressionOwner.Ask -> PlayerUi.ShowQuestion. Kept
+         addable for the nicer inline rendering. -->
     <appliesto>(function)Ask</appliesto>
     <display>Ask a question</display>
+    <category>[EditorScriptsOutputOutput]</category>
     <create>Ask ("") { }</create>
     <add>[EditorScriptsOutputAskaquestion]</add>
     <onlydisplayif>GetString(game, "_editorstyle") = null</onlydisplayif>
