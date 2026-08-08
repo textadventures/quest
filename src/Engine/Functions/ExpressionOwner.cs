@@ -494,6 +494,13 @@ internal class ExpressionOwner(WorldModel worldModel)
     {
         ArgumentNullException.ThrowIfNull(caption);
         ArgumentNullException.ThrowIfNull(options);
+
+        if (worldModel.Version >= WorldModelVersion.v540 && worldModel.Version < WorldModelVersion.v600)
+        {
+            throw new Exception(
+                "The 'ShowMenu' function is not supported for games written for Quest 5.4 or later. Use the 'show menu' script command instead, or set the game's WorldModel version to 600 or later.");
+        }
+
         await worldModel.PrintAsync(caption);
         var menuData = new MenuData(caption, options, allowCancel);
         worldModel.PlayerUi.ShowMenu(menuData);
@@ -582,6 +589,12 @@ internal class ExpressionOwner(WorldModel worldModel)
 
     public async Task<string> GetInput()
     {
+        if (worldModel.Version >= WorldModelVersion.v540 && worldModel.Version < WorldModelVersion.v600)
+        {
+            throw new Exception(
+                "The 'GetInput' function is not supported for games written for Quest 5.4 or later. Use the 'get input' script command instead, or set the game's WorldModel version to 600 or later.");
+        }
+
         worldModel._commandOverride = true;
         var tcs = WorldModel.BeginPrompt(ref worldModel._commandInputTcs);
         worldModel.BeginPendingCallback();
@@ -632,6 +645,13 @@ internal class ExpressionOwner(WorldModel worldModel)
     public async Task<bool> Ask(string? caption)
     {
         ArgumentNullException.ThrowIfNull(caption);
+
+        if (worldModel.Version >= WorldModelVersion.v540 && worldModel.Version < WorldModelVersion.v600)
+        {
+            throw new Exception(
+                "The 'Ask' function is not supported for games written for Quest 5.4 or later. Use the 'ask' script command instead, or set the game's WorldModel version to 600 or later.");
+        }
+
         worldModel.PlayerUi.ShowQuestion(caption);
         var tcs = WorldModel.BeginPrompt(ref worldModel._questionTcs);
         worldModel.BeginPendingCallback();

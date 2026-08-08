@@ -22,7 +22,8 @@ internal partial class GameLoader
         {"530", WorldModelVersion.v530},
         {"540", WorldModelVersion.v540},
         {"550", WorldModelVersion.v550},
-        {"580", WorldModelVersion.v580}
+        {"580", WorldModelVersion.v580},
+        {"600", WorldModelVersion.v600}
     };
 
     private readonly Stack<FileData> _currentFile = new();

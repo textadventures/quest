@@ -76,8 +76,8 @@ const API_ROOT = "https://textadventures.co.uk/api";
 
 // The highest ASL version this build's WasmPlayer can load — must track the
 // `Versions` dictionary in src/Engine/GameLoader/GameLoader.cs (currently maxing
-// out at 580); bump this alongside any Engine change that adds a new version.
-const MAX_ASL_VERSION = 580;
+// out at 600); bump this alongside any Engine change that adds a new version.
+const MAX_ASL_VERSION = 600;
 
 // Attached to catalog/details requests as analytics metadata (see ClientInfo
 // on textadventures.co.uk's ApiController). source/platform are free strings,

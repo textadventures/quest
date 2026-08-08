@@ -1,0 +1,58 @@
+<asl version="600">
+  <include ref="English.aslx" />
+  <include ref="Core.aslx" />
+  <game name="versiongatetest"/>
+  <object name="start">
+    <object name="player">
+      <inherit name="defaultplayer" />
+    </object>
+  </object>
+
+  <!-- ExpressionOwner.GetInput() -->
+  <command name="cmd_getinputfn">
+    <pattern>getinputfn</pattern>
+    <script>
+      x = GetInput()
+      msg ("got: " + x)
+    </script>
+  </command>
+
+  <!-- ExpressionOwner.Ask() -->
+  <command name="cmd_askfn">
+    <pattern>askfn</pattern>
+    <script>
+      if (Ask("Some question?")) {
+        msg ("ask: yes")
+      }
+      else {
+        msg ("ask: no")
+      }
+    </script>
+  </command>
+
+  <!-- ExpressionOwner.ShowMenu() -->
+  <command name="cmd_menufn">
+    <pattern>menufn</pattern>
+    <script>
+      msg ("menu: " + ShowMenu("Pick one", Split("optiona;optionb", ";"), false))
+    </script>
+  </command>
+
+  <!-- request (Wait, "") -->
+  <command name="cmd_waitrequest">
+    <pattern>waitrequest</pattern>
+    <script>
+      request (Wait, "")
+      msg ("wait done")
+    </script>
+  </command>
+
+  <!-- request (Pause, ms) -->
+  <command name="cmd_pauserequest">
+    <pattern>pauserequest</pattern>
+    <script>
+      request (Pause, "10")
+      msg ("pause done")
+    </script>
+  </command>
+</asl>

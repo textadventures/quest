@@ -8,8 +8,10 @@ using Shouldly;
 namespace QuestViva.EngineTests;
 
 /// <summary>
-/// Drives a v580+ WorldModel and captures output one interaction step at a time, so tests can
-/// assert that specific text appeared before vs. after a wait / get-input / etc.
+/// Drives a v600 WorldModel and captures output one interaction step at a time, so tests can
+/// assert that specific text appeared before vs. after a wait / get-input / etc. v600 is used
+/// (rather than v580) because this fixture also exercises the GetInput()/Ask()/ShowMenu()
+/// expression-function forms, which are gated off for v540-v580 games (see V540UndeprecationTests).
 /// For v580+ games, text reaches the player via IPlayer.RunScriptAsync("addText", [html]) rather than
 /// the PrintText event, so we intercept the mock player to capture it.
 /// </summary>
@@ -97,6 +99,33 @@ internal sealed class GameDriver
         _scriptError = null;
         RequestedTimerTicks.Clear();
         await _worldModel.FinishWait();
+        return TakeBatch();
+    }
+
+    public async Task<IReadOnlyList<string>> FinishPauseAsync()
+    {
+        _batch = [];
+        _scriptError = null;
+        RequestedTimerTicks.Clear();
+        await _worldModel.FinishPause();
+        return TakeBatch();
+    }
+
+    public async Task<IReadOnlyList<string>> SetQuestionResponseAsync(bool response)
+    {
+        _batch = [];
+        _scriptError = null;
+        RequestedTimerTicks.Clear();
+        await _worldModel.SetQuestionResponse(response);
+        return TakeBatch();
+    }
+
+    public async Task<IReadOnlyList<string>> SetMenuResponseAsync(string response)
+    {
+        _batch = [];
+        _scriptError = null;
+        RequestedTimerTicks.Clear();
+        await _worldModel.SetMenuResponse(response);
         return TakeBatch();
     }
 
