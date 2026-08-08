@@ -173,4 +173,28 @@ public class V600UndeprecationTests
         var phase2 = await v600Driver.FinishPauseAsync();
         phase2.ShouldContain("pause function done");
     }
+
+    // Regression test: WaitForKeyPress() was a Core.aslx function until it was deleted outright
+    // in 2018 (unlike Pause(), which survived but was hardcoded broken). Restored to delegate to
+    // request (Wait, ""), so it must be gated identically to the raw request form.
+    [TestMethod]
+    public async Task WaitForKeyPressFunction_ThrowsForV540ThroughV580_WorksAtV600()
+    {
+        foreach (var version in GatedVersions)
+        {
+            var driver = await GameDriver.LoadAsync("versiongatetest.aslx");
+            driver.Model.Version = version;
+
+            var ex = await Should.ThrowAsync<Exception>(() => driver.SendCommandAsync("waitforkeypressfunction"));
+            ex.InnerException.ShouldNotBeNull();
+            ex.InnerException.Message.ShouldContain(
+                "'Wait' request is not supported for games written for Quest 5.4 or later");
+        }
+
+        var v600Driver = await GameDriver.LoadAsync("versiongatetest.aslx");
+        var phase1 = await v600Driver.SendCommandAsync("waitforkeypressfunction");
+        phase1.ShouldNotContain("wait for key press function done");
+        var phase2 = await v600Driver.FinishWaitAsync();
+        phase2.ShouldContain("wait for key press function done");
+    }
 }

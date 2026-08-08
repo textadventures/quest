@@ -65,4 +65,15 @@
       msg ("pause function done")
     </script>
   </command>
+
+  <!-- WaitForKeyPress() Core.aslx function - just delegates to request (Wait, ""), same as
+       Pause() above. Also exercises calling a zero-parameter aslx-defined Function element as
+       a bare-identifier script statement (no parentheses), matching its original 2011 form. -->
+  <command name="cmd_waitforkeypressfunction">
+    <pattern>waitforkeypressfunction</pattern>
+    <script>
+      WaitForKeyPress
+      msg ("wait for key press function done")
+    </script>
+  </command>
 </asl>

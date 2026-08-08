@@ -472,10 +472,12 @@
  
  
  
-  <!-- synchronous wait function is deprecated, so can no longer be added, but still needs a friendly display for older games -->
   <editor>
     <appliesto>(function)WaitForKeyPress</appliesto>
     <display>Wait for key press</display>
+    <category>[EditorScriptsOutputOutput]</category>
+    <create>WaitForKeyPress</create>
+    <add>[EditorScriptsOutputWaitforkey]</add>
 
     <control>
       <controltype>label</controltype>
@@ -505,14 +507,6 @@
       <caption>[EditorScriptsOutputRunscript]</caption>
       <breakbefore/>
     </control>
-  </editor>
-
-  <editor>
-    <appliesto>requestwait</appliesto>
-    <display>Wait for key press</display>
-    <category>[EditorScriptsOutputOutput]</category>
-    <create>request (Wait, "")</create>
-    <add>[EditorScriptsOutputWaitforkey]</add>
   </editor>
 
   <editor>
