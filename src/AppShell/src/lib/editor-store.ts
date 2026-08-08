@@ -9,7 +9,7 @@ import { ServerFileAdapter } from "./filesystem/server-adapter";
 import { triggerDownload } from "./filesystem/download";
 import { confirmDialog } from "./confirm";
 import { showToast } from "./toast";
-import type { TreeNode, EditorDataResponse, ScriptBlockData, ScriptCommandCategoriesData, IfExpressionTemplateData, IfExpressionTemplate, FullAttributeData, ExitsData, VerbInfo, ExpressionFunctionInfo } from "./types";
+import type { TreeNode, EditorDataResponse, ScriptBlockData, ScriptCommandCategoriesData, ExpressionTemplateData, ExpressionTemplate, FullAttributeData, ExitsData, VerbInfo, ExpressionFunctionInfo } from "./types";
 
 export type AddElementModalState = { type: "room" | "object" | "page" | "function" | "timer" | "walkthrough" | "template" | "dynamictemplate" | "type"; parent: string | null } | null;
 
@@ -1078,17 +1078,17 @@ export function getExitNames(): string[] | null {
     } catch { return null; }
 }
 
-export function getIfExpressionTemplates(): IfExpressionTemplate[] | null {
+export function getExpressionTemplates(expressionType: string): ExpressionTemplate[] | null {
     if (!_bridge) return null;
     try {
-        return JSON.parse(_bridge.GetIfExpressionTemplates());
+        return JSON.parse(_bridge.GetExpressionTemplates(expressionType));
     } catch { return null; }
 }
 
-export function getIfExpressionTemplateData(expression: string): IfExpressionTemplateData | null {
+export function getExpressionTemplateData(expression: string, expressionType: string): ExpressionTemplateData | null {
     if (!_bridge) return null;
     try {
-        const json = _bridge.GetIfExpressionTemplateData(expression);
+        const json = _bridge.GetExpressionTemplateData(expression, expressionType);
         return json ? JSON.parse(json) : null;
     } catch { return null; }
 }

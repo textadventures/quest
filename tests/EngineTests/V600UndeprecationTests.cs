@@ -141,4 +141,36 @@ public class V600UndeprecationTests
         var phase2 = await v600Driver.FinishPauseAsync();
         phase2.ShouldContain("pause done");
     }
+
+    // Regression test: the Pause() Core.aslx function used to unconditionally call
+    // error("The Pause function is obsolete as of Quest 5.5") regardless of WorldModel
+    // version. It's been restored to just delegate to request (Pause, ...), so it must be
+    // gated identically to the raw request form - not hardcoded broken for every version.
+    [TestMethod]
+    public async Task PauseFunction_ThrowsForV550AndV580_WorksAtV540AndV600()
+    {
+        foreach (var version in new[] {WorldModelVersion.v550, WorldModelVersion.v580})
+        {
+            var driver = await GameDriver.LoadAsync("versiongatetest.aslx");
+            driver.Model.Version = version;
+
+            var ex = await Should.ThrowAsync<Exception>(() => driver.SendCommandAsync("pausefunction"));
+            ex.InnerException.ShouldNotBeNull();
+            ex.InnerException.Message.ShouldContain(
+                "'Pause' request is not supported for games written for Quest 5.5 or later");
+        }
+
+        var v540Driver = await GameDriver.LoadAsync("versiongatetest.aslx");
+        v540Driver.Model.Version = WorldModelVersion.v540;
+        var v540Phase1 = await v540Driver.SendCommandAsync("pausefunction");
+        v540Phase1.ShouldNotContain("pause function done");
+        var v540Phase2 = await v540Driver.FinishPauseAsync();
+        v540Phase2.ShouldContain("pause function done");
+
+        var v600Driver = await GameDriver.LoadAsync("versiongatetest.aslx");
+        var phase1 = await v600Driver.SendCommandAsync("pausefunction");
+        phase1.ShouldNotContain("pause function done");
+        var phase2 = await v600Driver.FinishPauseAsync();
+        phase2.ShouldContain("pause function done");
+    }
 }

@@ -43,8 +43,8 @@ export interface WasmBridge {
   GetScriptCommandCategories(): Promise<string>
   GetObjectNames(): string
   GetExitNames(): string
-  GetIfExpressionTemplates(): string
-  GetIfExpressionTemplateData(expression: string): string | null
+  GetExpressionTemplates(expressionType: string): string
+  GetExpressionTemplateData(expression: string, expressionType: string): string | null
   // List editor API
   AddListItem(elementKey: string, attribute: string, value: string): string
   RemoveListItem(elementKey: string, attribute: string, key: string): string

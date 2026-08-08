@@ -55,4 +55,14 @@
       msg ("pause done")
     </script>
   </command>
+
+  <!-- Pause() Core.aslx function - just delegates to request (Pause, ...), so it should be
+       gated identically (no version check of its own; RequestScript's own guard applies). -->
+  <command name="cmd_pausefunction">
+    <pattern>pausefunction</pattern>
+    <script>
+      Pause(1)
+      msg ("pause function done")
+    </script>
+  </command>
 </asl>

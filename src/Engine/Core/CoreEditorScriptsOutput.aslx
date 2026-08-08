@@ -484,9 +484,11 @@
   </editor>
 
   <editor>
+    <!-- Removed from adder: superseded by the synchronous "request (Wait, "")" form
+         below, which doesn't need a nested callback block - the script just continues
+         on the next line once the key is pressed. Still fully editable if already present. -->
     <appliesto>wait</appliesto>
     <display>Wait for key press</display>
-    <category>[EditorScriptsOutputOutput]</category>
     <create>wait { }</create>
     <add>[EditorScriptsOutputWaitforkey]</add>
     <advanced/>
@@ -506,9 +508,20 @@
   </editor>
 
   <editor>
+    <appliesto>requestwait</appliesto>
+    <display>Wait for key press</display>
+    <category>[EditorScriptsOutputOutput]</category>
+    <create>request (Wait, "")</create>
+    <add>[EditorScriptsOutputWaitforkey]</add>
+  </editor>
+
+  <editor>
+    <!-- Removed from adder: superseded by the synchronous "GetInput()" expression form, now
+         reachable via the "set variable" value field's "player's typed input" template (see
+         CoreEditorExpressions.aslx and WasmEditorBridge.GetExpressionTemplates("set")). Still
+         fully editable if already present. -->
     <appliesto>get input</appliesto>
     <display>Get input</display>
-    <category>[EditorScriptsOutputOutput]</category>
     <create>get input { }</create>
     <add>[EditorScriptsOutputGetinput]</add>
     <advanced/>
@@ -527,9 +540,10 @@
   </editor>
 
   <editor>
+    <!-- Removed from adder: see "get input" above - the synchronous "GetInput()" form now has
+         a proper picker regardless of editor style. -->
     <appliesto>(function)GetInput</appliesto>
     <display>Get input</display>
-    <category>[EditorScriptsOutputOutput]</category>
     <create>GetInput () { }</create>
     <add>[EditorScriptsOutputGetinput]</add>
     <advanced/>
@@ -596,9 +610,12 @@
   </editor>
 
   <editor>
+    <!-- Removed from adder: superseded by the synchronous "ShowMenu(...)" expression form, now
+         reachable via the "set variable" value field's "player's choice from a menu" template
+         (see CoreEditorExpressions.aslx and WasmEditorBridge.GetExpressionTemplates("set")).
+         Still fully editable if already present. -->
     <appliesto>(function)ShowMenu</appliesto>
     <display>Show a menu</display>
-    <category>[EditorScriptsOutputOutput]</category>
     <create>ShowMenu ("",,true) { }</create>
     <add>[EditorScriptsOutputShowamenu]</add>
 
@@ -670,9 +687,12 @@
   </editor>
 
   <editor>
+    <!-- Removed from adder: unlike GetInput()/ShowMenu() (still addable above - see their
+         comments), the synchronous "Ask(...)" expression form already has a proper picker -
+         it's a CoreEditorExpressions.aslx "if condition" template, reachable today via the
+         if-condition builder's "insert template" UI. Still fully editable if already present. -->
     <appliesto>(function)Ask</appliesto>
     <display>Ask a question</display>
-    <category>[EditorScriptsOutputOutput]</category>
     <create>Ask ("") { }</create>
     <add>[EditorScriptsOutputAskaquestion]</add>
     <onlydisplayif>GetString(game, "_editorstyle") = null</onlydisplayif>

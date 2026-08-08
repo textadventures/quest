@@ -697,6 +697,7 @@
   <template name="EditorScriptsTimersRunscriptafterName">Run script after a number of seconds (with name)</template>    
   <template name="EditorScriptsTimersName">Name:</template>
   <template name="EditorScriptsTimersPausefor">Pause for</template>
+  <template name="EditorScriptsTimersPausethegame">Pause the game</template>
   <template name="EditorScriptsTimersCreateatimer">Create a timer</template>
   <template name="EditorScriptsTimersCreatetimer">Create timer</template>
   <template name="EditorScriptsTurnScriptsTurnScripts">Turn Scripts</template>
@@ -796,11 +797,14 @@
   <template name="EditorExpressionsobjecthasattribute">object has attribute</template>
   <template name="EditorExpressionsobjectattribute">object attribute equals</template>
   <template name="EditorExpressionsrandomchance">random chance</template>
+  <template name="EditorExpressionsplayeranswersquestion">player answers a yes/no question</template>
   <template name="EditorExpressionsnewstringlist">new string list</template>
   <template name="EditorExpressionsnewobjectlist">new object list</template>
   <template name="EditorExpressionsnewstringdictionary">new string dictionary</template>
   <template name="EditorExpressionsnewobjectdictionary">new object dictionary</template>
   <template name="EditorExpressionsrandomnumber">random number</template>
+  <template name="EditorExpressionsgetplayerinput">player's typed input</template>
+  <template name="EditorExpressionsplayerchoosesfrommenu">player's choice from a menu</template>
   <template name="EditorExpressionsallobjects">all objects</template>
   <template name="EditorExpressionsallvisible">all visible objects</template>
   <template name="EditorExpressionstheinventory">the inventory</template>

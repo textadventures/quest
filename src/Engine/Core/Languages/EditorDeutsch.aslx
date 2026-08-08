@@ -694,6 +694,7 @@
   <template name="EditorScriptsTimersRunscriptafterName">Skript nach angegebenen Sekunden starten (mit Namen)</template>    
   <template name="EditorScriptsTimersName">Name</template>
   <template name="EditorScriptsTimersPausefor">Pause für</template>
+  <template name="EditorScriptsTimersPausethegame">Das Spiel pausieren</template>
   <template name="EditorScriptsTimersCreateatimer">Erstelle einen Timer</template>
   <template name="EditorScriptsTimersCreatetimer">Erstelle Timer</template>
   <template name="EditorScriptsTurnScriptsTurnScripts">Turn-Skripte</template>
@@ -793,11 +794,14 @@
   <template name="EditorExpressionsobjecthasattribute">Objekt besitzt Attribut</template>
   <template name="EditorExpressionsobjectattribute">Objektattributvergleich</template>
   <template name="EditorExpressionsrandomchance">Zufallsereignis</template>
+  <template name="EditorExpressionsplayeranswersquestion">Spieler beantwortet eine Ja/Nein-Frage</template>
   <template name="EditorExpressionsnewstringlist">Neue Stringliste</template>
   <template name="EditorExpressionsnewobjectlist">Neue Objektliste</template>
   <template name="EditorExpressionsnewstringdictionary">Neues String-Wörterbuch</template>
   <template name="EditorExpressionsnewobjectdictionary">Neues Objekt-Wörterbuch</template>
   <template name="EditorExpressionsrandomnumber">Zufallszahl</template>
+  <template name="EditorExpressionsgetplayerinput">die Eingabe des Spielers</template>
+  <template name="EditorExpressionsplayerchoosesfrommenu">die Auswahl des Spielers aus einem Menü</template>
   <template name="EditorExpressionsallobjects">Alle Objekte</template>
   <template name="EditorExpressionsallvisible">Alle sichtbaren Objekte</template>
   <template name="EditorExpressionstheinventory">Das Inventar</template>
