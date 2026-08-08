@@ -8,11 +8,32 @@ export interface CatalogGame {
     cover: string | null;
     thumbnail: string | null;
     rating: number;
+    isGamebook: boolean;
+    language: string;
 }
 
 export interface CatalogCategory {
     title: string;
+    // Tag slug for paging this category via fetchCategory — null for the
+    // curated homepage-style sections (Latest Games, Random Picks, etc.),
+    // which aren't a single browsable tag (see ApiController.Catalog).
+    slug: string | null;
     games: CatalogGame[];
+}
+
+export interface CategoryPage {
+    title: string;
+    games: CatalogGame[];
+    totalCount: number;
+    page: number;
+    pageCount: number;
+}
+
+export interface SearchResults {
+    games: CatalogGame[];
+    totalCount: number;
+    page: number;
+    pageCount: number;
 }
 
 // Present only for Electron clients running an outdated build (see
@@ -36,6 +57,19 @@ export interface GameDetails {
     thumbnail: string | null;
     publishedDate: string;
     url: string;
+    isGamebook: boolean;
+    language: string;
+}
+
+// Friendly display name for a game's ISO language code (e.g. "de" -> "German"),
+// falling back to the raw code if the runtime can't resolve it (Intl.DisplayNames
+// is broadly supported, but not guaranteed for every code the server sends).
+export function languageName(code: string): string {
+    try {
+        return new Intl.DisplayNames(["en"], { type: "language" }).of(code) ?? code;
+    } catch {
+        return code;
+    }
 }
 
 const API_ROOT = "https://textadventures.co.uk/api";
@@ -73,4 +107,29 @@ export async function fetchGameDetails(id: string): Promise<GameDetails> {
     const response = await fetch(`${API_ROOT}/GameDetails/${encodeURIComponent(id)}?${clientInfoParams()}`);
     if (!response.ok) throw new Error(`HTTP ${response.status}`);
     return await response.json() as GameDetails;
+}
+
+// Paginated browsing for a single category (tag) — `slug` is a CatalogCategory's
+// `slug` as returned by fetchCatalog. Mirrors ApiController.Category.
+export async function fetchCategory(slug: string, page: number): Promise<CategoryPage> {
+    const params = clientInfoParams();
+    params.set("maxAslVersion", String(MAX_ASL_VERSION));
+    params.set("category", slug);
+    params.set("page", String(page));
+    const response = await fetch(`${API_ROOT}/Category?${params}`);
+    if (!response.ok) throw new Error(`HTTP ${response.status}`);
+    return await response.json() as CategoryPage;
+}
+
+// Free-text search (with category:/platform:/language: operators, same syntax
+// as the website's own search) for the Play tab's search box. Mirrors
+// ApiController.Search.
+export async function searchGames(query: string, page: number): Promise<SearchResults> {
+    const params = clientInfoParams();
+    params.set("maxAslVersion", String(MAX_ASL_VERSION));
+    params.set("q", query);
+    params.set("page", String(page));
+    const response = await fetch(`${API_ROOT}/Search?${params}`);
+    if (!response.ok) throw new Error(`HTTP ${response.status}`);
+    return await response.json() as SearchResults;
 }

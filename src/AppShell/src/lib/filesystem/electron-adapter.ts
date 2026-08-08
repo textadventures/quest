@@ -52,7 +52,7 @@ export interface RecentGame {
 
 // Mirrors ElectronRecentKind. "edit" (the default below) is every editor
 // entry point — open/create/save-as, all in this file; "play" is only
-// PlayCatalog.svelte's file picker. Kept as separate lists on the main-process
+// play/local/+page.svelte's file picker. Kept as separate lists on the main-process
 // side (see ElectronApp's recent-games.ts) precisely so a game opened to play
 // never shows up in File > Open Recent (which loads into the editor).
 export type RecentKind = "edit" | "play";
@@ -93,7 +93,7 @@ export class ElectronFileAdapter implements FileAdapter {
     // Resource names reaching getAsset() can be attacker-controlled — a
     // downloaded game's own <javascript>/image/sound references, forwarded
     // here verbatim from the WasmPlayer 'resource-request' handoff (see
-    // PlayCatalog.svelte and editor-store.ts's previewInWasmPlayer). window
+    // play/local/+page.svelte and editor-store.ts's previewInWasmPlayer). window
     // .electronApp.path.join is a plain string join with no traversal
     // protection (see preload.ts), so without this a name like
     // "../../../../.ssh/id_rsa" would resolve outside dirPath and getAsset
@@ -173,7 +173,7 @@ export async function openElectronFile(): Promise<{ dirPath: string; filename: s
 // Broader than ASLX_FILTER above (which is Save/SaveAs-scoped, and the
 // editor only ever opens unpacked .aslx) — Play accepts every format
 // WasmPlayer itself can boot, matching the browser build's pickFile(".quest,
-// .aslx,.asl,.cas") in PlayCatalog.svelte.
+// .aslx,.asl,.cas") in play/local/+page.svelte.
 const PLAY_FILTER = [{ name: "Quest game files", extensions: ["quest", "aslx", "asl", "cas"] }];
 
 export async function openElectronPlayFile(): Promise<{ dirPath: string; filename: string } | null> {
@@ -182,7 +182,7 @@ export async function openElectronPlayFile(): Promise<{ dirPath: string; filenam
     return { dirPath: dirname(filePath), filename: basename(filePath) };
 }
 
-// kind defaults to "edit" for the /open (editor) callers; PlayCatalog.svelte
+// kind defaults to "edit" for the /open (editor) callers; play/local/+page.svelte
 // passes "play" explicitly so a game opened to play tracks into its own
 // Recently Played list instead of the editor's Recent — see RecentKind above.
 export async function loadElectronFile(
