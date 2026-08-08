@@ -1,5 +1,15 @@
 # Changelog
 
+## [6.0.0-beta.50](https://github.com/textadventures/quest/compare/v6.0.0-beta.49...v6.0.0-beta.50) (2026-08-08)
+
+
+### Features
+
+* **AppShell:** add Included Library upload flow, sync asset/element deletes ([#2001](https://github.com/textadventures/quest/issues/2001)) ([9b3d0c0](https://github.com/textadventures/quest/commit/9b3d0c0cf801413cdcf37fe4691b102a7855f975))
+* **AppShell:** match Play tab to textadventures.co.uk's catalog/search/gamebook API ([#2003](https://github.com/textadventures/quest/issues/2003)) ([dfdeeb5](https://github.com/textadventures/quest/commit/dfdeeb57674b758b8422523026f4a13361ed69de))
+* **AppShell:** show cached cover art for local Play tab recents ([#2005](https://github.com/textadventures/quest/issues/2005)) ([91e1497](https://github.com/textadventures/quest/commit/91e149773c1a1d7cd06a5aece0c274d2ea9253e1))
+* **AppShell:** unify Recently Played across catalog and local files ([#2004](https://github.com/textadventures/quest/issues/2004)) ([5e5b2c3](https://github.com/textadventures/quest/commit/5e5b2c3cd8ef64fa3e2ff5800a3a5bda9e0dd9dc))
+
 ## [6.0.0-beta.49](https://github.com/textadventures/quest/compare/v6.0.0-beta.48...v6.0.0-beta.49) (2026-08-07)
 
 
