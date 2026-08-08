@@ -1,5 +1,5 @@
 // Ad-hoc manual verification for Electron's Play tab "Open a game file…"
-// flow (PlayCatalog.svelte's handleElectronPlay): a single click on the
+// flow (PlayCatalog.svelte's handleOpenLocal): a single click on the
 // button should pick a file via the native dialog *and* launch it — no
 // separate "Start" click (unlike the browser build, which needs one to get a
 // fresh activation for its own window.open()). The launched player window is
@@ -51,15 +51,23 @@ try {
         dialog.showOpenDialog = async () => ({ canceled: false, filePaths: [fp] });
     }, aslxPath);
 
-    // Root is the Play tab (PUBLIC_SHOW_HOME=true, see electron.sh).
+    // Root is the Play tab (PUBLIC_SHOW_HOME=true, see electron.sh) — there's
+    // no separate /play/local route at all; the toolbar button calls
+    // pickAndPlayElectronFile() inline (see PlayCatalog.svelte's
+    // handleOpenLocal / lib/filesystem/local-play.ts).
     await win.waitForSelector('button:has-text("Open a game file…")', { timeout: 30000 });
     console.log('[editor] Play tab loaded, "Open a game file…" button present');
 
+    const editorUrlBeforeOpen = win.url();
     const [playerWindow] = await Promise.all([
         app.waitForEvent('window'),
         win.click('button:has-text("Open a game file…")'),
     ]);
     console.log('[editor] single click opened a new player window — no separate Start click needed');
+    if (win.url() !== editorUrlBeforeOpen) {
+        throw new Error(`Editor window navigated away instead of opening inline (${editorUrlBeforeOpen} -> ${win.url()})`);
+    }
+    console.log('PASS: editor window stayed on the Play tab — no navigation away for the manual click');
 
     playerWindow.on('pageerror', err => console.log('[player] [pageerror]', err.message));
     playerWindow.on('console', msg => { if (msg.type() === 'error') console.log('[player] [console.error]', msg.text()); });
@@ -107,6 +115,27 @@ try {
     }
     console.log('PASS: editor window itself did not navigate (still fs-bridge-capable, but never sees game content)');
     await catalogPlayerWindow.close();
+
+    // File-association deep link (?action=play-file&dir=&file=&t=) — both
+    // main.ts's initialUrlPath (cold start) and +layout.svelte's
+    // onOpenPlayFile (warm window) now land this on root instead of the old
+    // /play/local, since PlayCatalog.svelte's own $effect handles it there.
+    // Navigating the editor window straight to that URL exercises the
+    // renderer-side effect directly, without needing a real OS
+    // file-association trigger.
+    const playFileUrl = `${new URL(win.url()).origin}/?action=play-file&dir=${encodeURIComponent(gameDir)}&file=${encodeURIComponent('restart-test.aslx')}&t=${Date.now()}`;
+    const [assocPlayerWindow] = await Promise.all([
+        app.waitForEvent('window'),
+        win.goto(playFileUrl),
+    ]);
+    console.log('PASS: action=play-file landing on root opened a player window:', assocPlayerWindow.url());
+    if (win.url() !== playFileUrl) {
+        throw new Error(`Editor window ended up somewhere unexpected: ${win.url()}`);
+    }
+    assocPlayerWindow.on('pageerror', err => console.log('[player] [pageerror]', err.message));
+    await assocPlayerWindow.waitForFunction(() => document.title === 'Simple', null, { timeout: 15000 });
+    console.log('PASS: file-association game booted, document.title:', await assocPlayerWindow.title());
+    await assocPlayerWindow.close();
 
     console.log('PASS: all checks passed');
 } catch (err) {

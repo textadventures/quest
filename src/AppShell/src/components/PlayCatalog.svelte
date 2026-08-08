@@ -1,11 +1,18 @@
 <script lang="ts">
-    import { onMount } from "svelte";
+    import { onMount, onDestroy } from "svelte";
     import { base } from "$app/paths";
     import { goto } from "$app/navigation";
+    import { page } from "$app/state";
     import { fetchCatalog, type CatalogCategory, type UpdateInfo } from "$lib/home-catalog";
     import { isElectron } from "$lib/runtime";
+    import { listRecentGames, removeRecentGame, type RecentGame } from "$lib/filesystem/electron-adapter";
+    import { playElectronFile, pickAndPlayElectronFile, closeLocalPlayChannel } from "$lib/filesystem/local-play";
+    import { pickFile } from "$lib/filesystem/file-picker";
+    import { listRecentCatalogPlays, removeRecentCatalogPlay, type RecentCatalogPlay } from "$lib/recent-catalog-plays";
     import UpdateBanner from "$components/UpdateBanner.svelte";
     import GameCard from "$components/GameCard.svelte";
+    import RecentGameCard from "$components/RecentGameCard.svelte";
+    import LocalFileRecentCard from "$components/LocalFileRecentCard.svelte";
     import ChevronDown from "@lucide/svelte/icons/chevron-down";
 
     const isElectronApp = isElectron();
@@ -29,7 +36,185 @@
         }
     }
 
-    onMount(load);
+    // Recently played — merged from two sources: catalog games (tracked client-side in
+    // recent-catalog-plays.ts, works everywhere) and local files (Electron only — tracked
+    // via electron-adapter.ts's "play"-kind RecentGame list; there's no persistent file
+    // handle across sessions in a plain browser to track this with). Both render as cards
+    // in the same grid (RecentGameCard / LocalFileRecentCard) — catalog entries first,
+    // local files after, not interleaved by timestamp (the two lists come from unrelated
+    // sources with no shared ordering guarantee worth relying on).
+    let recentCatalogPlays = $state<RecentCatalogPlay[]>([]);
+    let recentLocalPlays = $state<RecentGame[]>([]);
+
+    function refreshRecentCatalogPlays() {
+        recentCatalogPlays = listRecentCatalogPlays();
+    }
+
+    async function refreshRecentLocalPlays() {
+        if (!isElectronApp) return;
+        recentLocalPlays = await listRecentGames("play");
+    }
+
+    function handleRemoveRecentCatalog(id: string) {
+        removeRecentCatalogPlay(id);
+        refreshRecentCatalogPlays();
+    }
+
+    async function handleRemoveRecentLocal(game: RecentGame) {
+        await removeRecentGame(game.dirPath, game.filename, "play");
+        await refreshRecentLocalPlays();
+    }
+
+    // Electron: a single click launches the game — no second "Start" click needed,
+    // because the player window is created by the *main* process (see ipc/player.ts's
+    // player:openWindow), not by this renderer's own window.open(). Renderer-driven
+    // window.open() is what forces the browser build's two-click flow below (a native
+    // file dialog and a script-driven window.open() can't share one click's activation
+    // grant — see handleBrowserStart); main-process window creation isn't subject to
+    // that at all, so there's no separate destination page needed here either way.
+    let electronOpenBusy = $state(false);
+    let electronOpenError = $state<string | null>(null);
+
+    async function handleOpenLocal() {
+        electronOpenError = null;
+        electronOpenBusy = true;
+        try {
+            await pickAndPlayElectronFile(refreshRecentLocalPlays);
+        } catch (err) {
+            electronOpenError = String(err);
+        } finally {
+            electronOpenBusy = false;
+        }
+    }
+
+    async function playLocalRecent(game: RecentGame) {
+        electronOpenError = null;
+        electronOpenBusy = true;
+        try {
+            await playElectronFile(game.dirPath, game.filename, refreshRecentLocalPlays);
+        } catch (err) {
+            electronOpenError = String(err);
+        } finally {
+            electronOpenBusy = false;
+        }
+    }
+
+    // Electron: a file-association open of a play-kind file (.quest/.asl/.cas) lands
+    // here as a query string — either baked into this window's initial URL for a cold
+    // start (see ElectronApp's main.ts, initialUrlPath) or via a goto() from
+    // +layout.svelte's onOpenPlayFile listener once this page is already mounted. Same
+    // nonce-guarded pattern as open/+page.svelte's action=open-recent effect, so a
+    // repeat firing on the same file (nonce unchanged) doesn't relaunch the player.
+    // There's no user gesture here to attach a picker button to, so this has to be a
+    // effect rather than a click handler — but it needs no page of its own, root is
+    // always mounted when Electron is running (PUBLIC_SHOW_HOME is always true there).
+    let handledPlayNonce = "";
+    $effect(() => {
+        if (!isElectronApp) return;
+        const params = page.url.searchParams;
+        if (params.get("action") !== "play-file") return;
+        const nonce = params.get("t") ?? "";
+        if (nonce === handledPlayNonce) return;
+        const dirPath = params.get("dir");
+        const filename = params.get("file");
+        if (!dirPath || !filename) return;
+        handledPlayNonce = nonce;
+        electronOpenError = null;
+        electronOpenBusy = true;
+        void playElectronFile(dirPath, filename, refreshRecentLocalPlays)
+            .catch((err) => { electronOpenError = String(err); })
+            .finally(() => { electronOpenBusy = false; });
+    });
+
+    // ── Browser build only (isElectronApp false) ────────────────────────────
+    // Two deliberate clicks, not one click-through-then-another: picking the file and
+    // starting the game are each their own genuine user gesture, so each gets its own
+    // fresh browser activation — a single click can't do both (see handleBrowserStart)
+    // because a native file dialog and a script-driven window.open() fight over the
+    // same click's single-use activation grant.
+    let pickedFile = $state<File | null>(null);
+    let pickedBytes = $state<Uint8Array | null>(null);
+    let pickError = $state<string | null>(null);
+    let starting = $state(false);
+    let startError = $state<string | null>(null);
+
+    // Kept across handoffs (not just a local var) so a new one can close the previous —
+    // otherwise a stale channel would *also* answer a new window's 'ready' broadcast
+    // (with the wrong bytes), and would go on answering a refresh of the now-superseded
+    // old window. Independent of local-play.ts's own Electron-only channel singleton —
+    // the browser build never touches that module.
+    let browserPlayChannel: BroadcastChannel | null = null;
+
+    async function handlePickFile() {
+        pickError = null;
+        startError = null;
+        const file = await pickFile(".quest,.aslx,.asl,.cas");
+        if (!file) return;
+        try {
+            pickedBytes = new Uint8Array(await file.arrayBuffer());
+            pickedFile = file;
+        } catch (err) {
+            pickError = String(err);
+        }
+    }
+
+    function handleClearPicked() {
+        pickedFile = null;
+        pickedBytes = null;
+        pickError = null;
+        startError = null;
+    }
+
+    // window.open() must be the very first thing this does — it's what spends this
+    // click's activation, and awaiting anything beforehand (there's nothing to await
+    // here; the bytes are already read in handlePickFile) would let the popup blocker
+    // silently no-op it. Hands the bytes to the new tab over a BroadcastChannel — see
+    // wasm-player.js's `source=local` boot branch. No resource-request handling on this
+    // path: a raw picked File has no directory to resolve sibling assets against (unlike
+    // the Electron path above), so this only really supports self-contained .quest packages.
+    function handleBrowserStart() {
+        if (!pickedFile || !pickedBytes) return;
+        startError = null;
+
+        browserPlayChannel?.close();
+
+        const popup = window.open(`${base}/player/?source=local`, "_blank");
+        if (!popup) {
+            startError = "Please allow pop-ups for this site to play the game.";
+            return;
+        }
+
+        starting = true;
+        const bytes = pickedBytes;
+        const filename = pickedFile.name;
+        const bc = new BroadcastChannel("quest-play-local");
+        browserPlayChannel = bc;
+        // Deliberately left open (not closed after the first message) — WasmPlayer
+        // re-broadcasts 'ready' on every load of that tab, including a plain refresh,
+        // so this needs to keep answering for as long as this page is still open,
+        // exactly like the never-closed editor-preview channel it mirrors.
+        bc.onmessage = ({ data }) => {
+            if (data.type === "ready") {
+                bc.postMessage({ type: "game", bytes, filename });
+                starting = false;
+                handleClearPicked();
+            }
+        };
+    }
+
+    onMount(() => {
+        void load();
+        refreshRecentCatalogPlays();
+        void refreshRecentLocalPlays();
+    });
+
+    // PlayCatalog.svelte unmounts on every navigation away from "/" (e.g. to a game's
+    // /play/{id} details page, or to the Create tab), unlike the always-mounted root
+    // layout, so channel cleanup here is load-bearing, not just defensive.
+    onDestroy(() => {
+        browserPlayChannel?.close();
+        closeLocalPlayChannel();
+    });
 
     let searchQuery = $state("");
     function handleSearch(e: SubmitEvent) {
@@ -89,8 +274,57 @@
                     <ChevronDown size={14} class="pointer-events-none absolute right-2.5 top-1/2 -translate-y-1/2 text-surface-400" />
                 </div>
             {/if}
-            <a href="{base}/play/local" class="btn preset-outlined-surface-500 whitespace-nowrap">Open a local file…</a>
+            {#if isElectronApp}
+                <button
+                    type="button"
+                    class="btn preset-outlined-surface-500 whitespace-nowrap"
+                    onclick={handleOpenLocal}
+                    disabled={electronOpenBusy}
+                >
+                    {electronOpenBusy ? "Opening…" : "Open a game file…"}
+                </button>
+            {:else if !pickedFile}
+                <button type="button" class="btn preset-outlined-surface-500 whitespace-nowrap" onclick={handlePickFile}>
+                    Open a game file&hellip;
+                </button>
+            {:else}
+                <div class="flex items-center gap-2">
+                    <span class="text-sm text-surface-300 truncate max-w-[20ch]">{pickedFile.name}</span>
+                    <button type="button" class="btn btn-sm preset-outlined-surface-500" onclick={handleClearPicked} disabled={starting}>
+                        Change
+                    </button>
+                    <button type="button" class="btn preset-filled-primary-500" onclick={handleBrowserStart} disabled={starting}>
+                        {starting ? "Starting…" : "Start ▶"}
+                    </button>
+                </div>
+            {/if}
         </div>
+
+        {#if electronOpenError}
+            <p class="text-error-500 text-sm text-center">{electronOpenError}</p>
+        {/if}
+        {#if !isElectronApp && pickError}
+            <p class="text-error-500 text-sm text-center">{pickError}</p>
+        {/if}
+        {#if !isElectronApp && startError}
+            <p class="text-error-500 text-sm text-center">{startError}</p>
+        {/if}
+
+        {#if recentCatalogPlays.length > 0 || (isElectronApp && recentLocalPlays.length > 0)}
+            <section>
+                <h2 class="text-lg font-semibold mb-3">Recently played</h2>
+                <div class="grid grid-cols-[repeat(auto-fill,minmax(150px,1fr))] gap-4">
+                    {#each recentCatalogPlays as game (game.id)}
+                        <RecentGameCard {game} onremove={() => handleRemoveRecentCatalog(game.id)} />
+                    {/each}
+                    {#if isElectronApp}
+                        {#each recentLocalPlays as game (game.dirPath + "/" + game.filename)}
+                            <LocalFileRecentCard {game} onplay={() => playLocalRecent(game)} onremove={() => handleRemoveRecentLocal(game)} />
+                        {/each}
+                    {/if}
+                </div>
+            </section>
+        {/if}
 
         {#if loading}
             <div class="flex flex-col items-center gap-3 py-12">
