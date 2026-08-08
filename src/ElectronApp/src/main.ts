@@ -192,9 +192,9 @@ function sendOpenRecentGame(game: RecentGame): void {
 }
 
 // Same delivery as sendOpenRecentGame, for a file-association open of a
-// play-kind file (.quest/.asl/.cas) — play/local/+page.svelte's
-// onOpenPlayFile listener (see preload.ts) launches a player window for it,
-// the same as its own file-picker/Recently Played flows.
+// play-kind file (.quest/.asl/.cas) — PlayCatalog.svelte's onOpenPlayFile
+// listener (see preload.ts) launches a player window for it, the same as
+// its own file-picker/Recently Played flows.
 function sendOpenPlayFile(file: { dirPath: string; filename: string }): void {
     focusEditorWindow();
     editorWindow?.webContents.send("open-play-file", file);
@@ -202,9 +202,9 @@ function sendOpenPlayFile(file: { dirPath: string; filename: string }): void {
 
 // .aslx opens the editor (it's the unpacked source format the editor works
 // with); .quest/.asl/.cas launch the player directly — matches the split
-// play/local/+page.svelte/electron-adapter.ts already draw between the
-// editor's Open (ASLX_FILTER, .aslx only) and Play's file picker
-// (PLAY_FILTER, all four).
+// PlayCatalog.svelte/electron-adapter.ts already draw between the editor's
+// Open (ASLX_FILTER, .aslx only) and Play's file picker (PLAY_FILTER, all
+// four).
 const PLAY_EXTENSIONS = new Set([".quest", ".asl", ".cas"]);
 const GAME_EXTENSIONS = new Set([".aslx", ...PLAY_EXTENSIONS]);
 
@@ -244,8 +244,8 @@ function routeOpenedFile(filePath: string): void {
 // URL rather than delivered over IPC (see routeOpenedFile's comment) — both
 // query shapes are already handled by the target page: /open?action=
 // open-recent&... by open/+page.svelte (shared with the native "Open Recent"
-// menu), /play/local?action=play-file&... by play/local/+page.svelte
-// (mirrors it for Play).
+// menu), /?action=play-file&... by PlayCatalog.svelte (mirrors it for Play —
+// root is always the Play tab in this app, PUBLIC_SHOW_HOME is always true here).
 function initialUrlPath(filePath: string | null): string {
     if (!filePath) return "/";
     const ext = path.extname(filePath).toLowerCase();
@@ -256,7 +256,7 @@ function initialUrlPath(filePath: string | null): string {
         return `/open?action=open-recent&dir=${encodeURIComponent(dirPath)}&file=${encodeURIComponent(filename)}&t=${t}`;
     }
     if (PLAY_EXTENSIONS.has(ext)) {
-        return `/play/local?action=play-file&dir=${encodeURIComponent(dirPath)}&file=${encodeURIComponent(filename)}&t=${t}`;
+        return `/?action=play-file&dir=${encodeURIComponent(dirPath)}&file=${encodeURIComponent(filename)}&t=${t}`;
     }
     return "/";
 }

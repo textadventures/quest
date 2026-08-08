@@ -67,12 +67,12 @@ interface ElectronMenuApi {
 // id: catalog game (textadventures.co.uk id); omitted: a locally-picked
 // file, whose bytes/resources the caller hands over separately via the
 // 'quest-play-local' BroadcastChannel — see ipc/player.ts and
-// routes/play/local/+page.svelte.
+// components/PlayCatalog.svelte.
 interface ElectronPlayerApi {
     openWindow(request?: { id?: string }): Promise<boolean>;
     // Fired by a file-association open of a play-kind file (.quest/.asl/.cas)
     // while a window already exists — see ElectronApp's main.ts
-    // (routeOpenedFile) and preload.ts. play/local/+page.svelte's listener
+    // (routeOpenedFile) and preload.ts. PlayCatalog.svelte's listener
     // loads the file and launches a player window for it via
     // playElectronFile, same as its own file-picker/Recently Played flows.
     onOpenPlayFile(callback: (file: { dirPath: string; filename: string }) => void): () => void;

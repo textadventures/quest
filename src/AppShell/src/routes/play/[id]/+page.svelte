@@ -4,6 +4,7 @@
     import { base } from "$app/paths";
     import { fetchGameDetails, languageName, type GameDetails } from "$lib/home-catalog";
     import { isElectron } from "$lib/runtime";
+    import { recordCatalogPlay } from "$lib/recent-catalog-plays";
 
     const isElectronApp = isElectron();
 
@@ -17,9 +18,19 @@
     // window's own window.electronApp (fs/dialog access) straight into a
     // downloaded, third-party game's page, and Quest games can eval their
     // own <javascript> resources (see wasm-player.js's WebPlayer.runJs).
+    //
+    // recordCatalogPlay is the single write site for "recently played" catalog
+    // games (see the Play tab's home page) — called here, not on page load,
+    // since only an actual Play click should count.
     function handleElectronPlay() {
         if (!details) return;
+        recordCatalogPlay(details);
         void window.electronApp!.player.openWindow({ id: details.id });
+    }
+
+    function handleBrowserPlay() {
+        if (!details) return;
+        recordCatalogPlay(details);
     }
 
     onMount(async () => {
@@ -85,7 +96,11 @@
                     {#if isElectronApp}
                         <button type="button" class="btn preset-filled-primary-500" onclick={handleElectronPlay}>Play</button>
                     {:else}
-                        <a href="{base}/player/?id={details.id}" class="btn preset-filled-primary-500">Play</a>
+                        <a
+                            href="{base}/player/?id={details.id}"
+                            class="btn preset-filled-primary-500"
+                            onclick={handleBrowserPlay}
+                        >Play</a>
                     {/if}
                     <a href={details.url} target="_blank" rel="noopener" class="btn preset-outlined-primary-500">View on textadventures.co.uk</a>
                 </div>
