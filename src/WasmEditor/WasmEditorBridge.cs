@@ -13,6 +13,7 @@ using QuestViva.Common;
 using QuestViva.EditorCore;
 using QuestViva.Engine;
 using QuestViva.Engine.Types;
+using QuestViva.PlayerCore;
 
 namespace QuestViva.WasmEditor;
 
@@ -46,6 +47,10 @@ internal record ControlInfo(
     bool LockedAfterCreate = false);
 
 internal record TabInfo(string? Caption, List<ControlInfo> Controls);
+
+// See WasmEditorBridge.ResolveLocalCover — DataUrl is null when Name is only a resource name
+// the caller must resolve itself (a plain unpacked .aslx's sibling-file cover).
+internal record LocalCoverResult(string Name, string? DataUrl);
 
 internal record EditorDataResponse(
     Dictionary<string, string?> Attributes,
@@ -155,6 +160,7 @@ internal record ExpressionFunctionData(string Name, List<string> Parameters, boo
 [JsonSerializable(typeof(ExitsData))]
 [JsonSerializable(typeof(List<VerbInfo>))]
 [JsonSerializable(typeof(List<ExpressionFunctionData>))]
+[JsonSerializable(typeof(LocalCoverResult))]
 internal partial class WasmEditorJsonContext : JsonSerializerContext
 {
 }
@@ -590,6 +596,49 @@ public partial class WasmEditorBridge
 
     [JSExport]
     public static bool IsGamebook() => _controller?.EditorStyle == EditorStyle.GameBook;
+
+    // Play tab "Recently played" cover art for local files — entirely independent of
+    // _controller (doesn't touch the currently-open editor session), a fresh GameQuery per
+    // call instead. Several of these can be in flight at once (one per recent-local-play
+    // card, resolved concurrently on the Play tab), so unlike PrepareSaveGame/GetSaveGameBytes
+    // above this can't stash its result in a shared static field for a synchronous follow-up
+    // call to collect — two overlapping calls would race over that field. Instead the whole
+    // result comes back in one shot, as a JSON LocalCoverResult: DataUrl is set when the game
+    // format embeds its own resources (.quest package, legacy .asl/.cas) and the cover was
+    // found inside; otherwise (a plain unpacked .aslx, where the cover lives as a sibling file
+    // GetResourceStream can't see — ByteArrayGameDataProvider has no filesystem access) DataUrl
+    // is null and the caller resolves Name itself via its own FileAdapter.
+    [JSExport]
+    public static async Task<string?> ResolveLocalCover(byte[] gameFileBytes, string filename)
+    {
+        try
+        {
+            var query = new GameQuery(filename, gameFileBytes);
+            if (!await query.Initialise()) return null;
+
+            var coverName = query.CoverResourceName;
+            if (string.IsNullOrEmpty(coverName)) return null;
+
+            string? dataUrl = null;
+            using (var stream = query.GetResource(coverName))
+            {
+                if (stream != null)
+                {
+                    using var ms = new MemoryStream();
+                    await stream.CopyToAsync(ms);
+                    dataUrl = $"data:{PlayerHelper.GetContentType(coverName)};base64,{Convert.ToBase64String(ms.ToArray())}";
+                }
+            }
+
+            return JsonSerializer.Serialize(new LocalCoverResult(coverName, dataUrl), WasmEditorJsonContext.Default.LocalCoverResult);
+        }
+        catch
+        {
+            // Best-effort: a malformed/unsupported local file must never break the
+            // Recently Played list, it should just keep the placeholder icon.
+            return null;
+        }
+    }
 
     // [JSExport] can't marshal an array of blobs in one call, so assets are staged one
     // at a time (same shape as the dirty-flag polling above) then consumed by

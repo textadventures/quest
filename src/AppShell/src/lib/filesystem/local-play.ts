@@ -1,4 +1,5 @@
-import { loadElectronFile, openElectronPlayFile } from "./electron-adapter";
+import { loadElectronFile, openElectronPlayFile, listRecentGames } from "./electron-adapter";
+import { resolveAndCacheCover } from "../local-cover";
 
 function blobToDataUrl(blob: Blob): Promise<string> {
     return new Promise((resolve) => {
@@ -27,6 +28,8 @@ export async function playElectronFile(dirPath: string, filename: string, onPlay
     const { bytes, adapter } = await loadElectronFile(dirPath, filename, "play");
     onPlayed?.();
 
+    void resolveCoverIfNeeded(dirPath, filename);
+
     closeLocalPlayChannel();
     const bc = new BroadcastChannel("quest-play-local");
     playChannel = bc;
@@ -47,6 +50,21 @@ export async function playElectronFile(dirPath: string, filename: string, onPlay
         bc.close();
         playChannel = null;
         throw new Error("Couldn't open the player window.");
+    }
+}
+
+// Fire-and-forget, deliberately not awaited by playElectronFile — cover resolution boots the
+// full engine just to read one field (see local-cover.ts), which must never delay the player
+// window opening. Runs in this (the main AppShell) renderer, a separate OS process from the
+// player window it just opened, so it can't make that window janky either. Skipped when this
+// file's cover is already cached — addRecentGame's carry-forward (see recent-games.ts) means
+// replaying an already-resolved game leaves its coverDataUrl untouched, so this only ever does
+// real work the first time a given local file is played.
+async function resolveCoverIfNeeded(dirPath: string, filename: string): Promise<void> {
+    const recents = await listRecentGames("play");
+    const entry = recents.find((g) => g.dirPath === dirPath && g.filename === filename);
+    if (entry && entry.coverDataUrl === undefined) {
+        await resolveAndCacheCover(dirPath, filename);
     }
 }
 

@@ -79,10 +79,12 @@ contextBridge.exposeInMainWorld("electronApp", {
         // playing a game never pollutes the list File > Open Recent loads
         // into the editor, and vice versa.
         list: (kind: RecentKind): Promise<RecentGame[]> => ipcRenderer.invoke("recent:list", kind),
-        add: (kind: RecentKind, dirPath: string, filename: string): Promise<RecentGame[]> =>
-            ipcRenderer.invoke("recent:add", kind, dirPath, filename),
+        add: (kind: RecentKind, dirPath: string, filename: string, coverDataUrl?: string | null): Promise<RecentGame[]> =>
+            ipcRenderer.invoke("recent:add", kind, dirPath, filename, coverDataUrl),
         remove: (kind: RecentKind, dirPath: string, filename: string): Promise<RecentGame[]> =>
             ipcRenderer.invoke("recent:remove", kind, dirPath, filename),
+        setCover: (kind: RecentKind, dirPath: string, filename: string, coverDataUrl: string | null): Promise<RecentGame[]> =>
+            ipcRenderer.invoke("recent:setCover", kind, dirPath, filename, coverDataUrl),
         // Fires whenever a recent list changes from outside the page that's
         // showing it — e.g. the native "Clear Recent" menu item (edit-kind
         // only), which mutates the list entirely in the main process with no
