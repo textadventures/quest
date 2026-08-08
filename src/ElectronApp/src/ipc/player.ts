@@ -2,7 +2,7 @@ import { ipcMain, BrowserWindow, dialog, shell } from "electron";
 
 export interface PlayerWindowRequest {
     // Catalog game (textadventures.co.uk id) vs. a locally-picked file whose
-    // bytes/resource-request handling PlayCatalog.svelte hands over the
+    // bytes/resource-request handling play/local/+page.svelte hands over the
     // BroadcastChannel once this window signals 'ready' — see wasm-player.js's
     // `source=local` boot branch.
     id?: string;
@@ -17,7 +17,7 @@ export interface PlayerWindowRequest {
 // executed via eval (see wasm-player.js's WebPlayer.runJs) — an untrusted
 // trust boundary that must never get window.electronApp's fs/dialog bridge.
 // A locally-picked game's sibling resources are instead resolved by
-// PlayCatalog.svelte (which *does* have fs access) answering
+// play/local/+page.svelte (which *does* have fs access) answering
 // 'resource-request' messages over the same BroadcastChannel used to hand
 // over the initial game bytes, exactly like the existing editor-preview path.
 export function registerPlayerHandlers(getOrigin: () => string | null): void {

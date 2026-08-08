@@ -1713,7 +1713,7 @@ function showFileProtocolError() {
 // The AppShell tab that was going to hand over game bytes (see the
 // `source=local` boot branch below) turned out not to be there to answer —
 // closed, navigated away, or superseded by a newer Start click in that same
-// tab (see PlayCatalog.svelte's handleStart, which closes its previous
+// tab (see play/local/+page.svelte's handleBrowserStart, which closes its previous
 // channel before opening a new one). Without this, that's a silent infinite
 // loading spinner with no way out; this at least gets the user back to a
 // working picker in the same tab.
@@ -1897,7 +1897,7 @@ async function fetchGameBytes(url) {
         return;
     }
 
-    // AppShell's Play tab (see PlayCatalog.svelte) — the user already picked
+    // AppShell's Play tab (see play/local/+page.svelte) — the user already picked
     // a file and clicked Start (browser build) or the window just got opened
     // straight from the file picker (Electron, see ipc/player.ts), so the
     // game bytes are sitting in that tab's memory. Same handoff as the editor
@@ -1905,7 +1905,7 @@ async function fetchGameBytes(url) {
     // build a raw picked File has nothing to answer those with (so they just
     // go unanswered — fine for a self-contained .quest package, which is all
     // the plain file-input path in wireStartScreen() below ever supported
-    // either), but Electron's PlayCatalog.svelte backs the picked file with a
+    // either), but Electron's play/local/+page.svelte backs the picked file with a
     // real ElectronFileAdapter and answers them from disk, exactly like
     // editor-store.ts's previewInWasmPlayer does for the live editor. A
     // distinct channel name keeps this from cross-talking with a real

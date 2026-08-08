@@ -2,7 +2,7 @@
     import { onMount } from "svelte";
     import { page } from "$app/state";
     import { base } from "$app/paths";
-    import { fetchGameDetails, type GameDetails } from "$lib/home-catalog";
+    import { fetchGameDetails, languageName, type GameDetails } from "$lib/home-catalog";
     import { isElectron } from "$lib/runtime";
 
     const isElectronApp = isElectron();
@@ -61,6 +61,16 @@
                 {#if details.author}
                     <p class="text-surface-400 text-sm">by {details.author}</p>
                 {/if}
+                <div class="flex flex-wrap gap-2">
+                    <span class="text-xs px-2 py-1 rounded-full bg-surface-800 text-surface-300">
+                        {details.isGamebook ? "Gamebook" : "Text Adventure"}
+                    </span>
+                    {#if details.language !== "en"}
+                        <span class="text-xs px-2 py-1 rounded-full bg-surface-800 text-surface-300">
+                            {languageName(details.language)}
+                        </span>
+                    {/if}
+                </div>
                 {#if details.tags.length > 0}
                     <div class="flex flex-wrap gap-2">
                         {#each details.tags as tag (tag)}
