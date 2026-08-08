@@ -71,7 +71,14 @@ internal record ScriptControlData(
     List<ScriptNodeData>? Scripts,
     string? ObjectType = null,
     bool IsFunctionPicker = false,
-    bool IsFunctionParams = false
+    bool IsFunctionParams = false,
+    // The expressionType (e.g. "set", "foreach") this control's <usetemplates> declares - see
+    // CoreEditorScriptsVariables.aslx's "=" value control and CoreEditorScriptsScripts.aslx's
+    // "foreach" list control. Null for the vast majority of "expression" controls, which have no
+    // template picker (e.g. msg's text, MoveObject's destination). "if" conditions are a special
+    // case (ScriptNodeData.Expression, not a Controls entry) but use the same "if" expressionType
+    // and the same frontend picker, via IfExpressionControlDefinition.
+    string? UseTemplates = null
 );
 
 internal record ElseIfClauseData(string Id, string Expression, List<ScriptNodeData> Scripts);
@@ -103,13 +110,13 @@ internal record ExpressionTemplateControlData(
     List<ControlOption>? Options
 );
 
-internal record IfExpressionTemplateData(
+internal record ExpressionTemplateData(
     string TemplateName,
     string OriginalPattern,
     List<ExpressionTemplateControlData> Controls
 );
 
-internal record IfExpressionTemplate(string Name, string CreateExpression);
+internal record ExpressionTemplate(string Name, string CreateExpression);
 
 internal record ListItemData(string Key, string Value);
 
@@ -151,8 +158,8 @@ internal record ExpressionFunctionData(string Name, List<string> Parameters, boo
 [JsonSerializable(typeof(ScriptBlockData))]
 [JsonSerializable(typeof(ScriptCommandCategoriesData))]
 [JsonSerializable(typeof(List<string>))]
-[JsonSerializable(typeof(List<IfExpressionTemplate>))]
-[JsonSerializable(typeof(IfExpressionTemplateData))]
+[JsonSerializable(typeof(List<ExpressionTemplate>))]
+[JsonSerializable(typeof(ExpressionTemplateData))]
 [JsonSerializable(typeof(int[]))]
 [JsonSerializable(typeof(List<ListItemData>))]
 [JsonSerializable(typeof(FullAttributeData))]
@@ -1853,28 +1860,28 @@ public partial class WasmEditorBridge
     }
 
     [JSExport]
-    public static string GetIfExpressionTemplates()
+    public static string GetExpressionTemplates(string expressionType)
     {
         if (_controller == null)
         {
             return "[]";
         }
 
-        var templates = _controller.GetExpressionEditorNames("if")
-            .Select(name => new IfExpressionTemplate(name, _controller.GetNewExpression(name)))
+        var templates = _controller.GetExpressionEditorNames(expressionType)
+            .Select(name => new ExpressionTemplate(name, _controller.GetNewExpression(name)))
             .ToList();
-        return JsonSerializer.Serialize(templates, WasmEditorJsonContext.Default.ListIfExpressionTemplate);
+        return JsonSerializer.Serialize(templates, WasmEditorJsonContext.Default.ListExpressionTemplate);
     }
 
     [JSExport]
-    public static string? GetIfExpressionTemplateData(string expression)
+    public static string? GetExpressionTemplateData(string expression, string expressionType)
     {
         if (_controller == null || string.IsNullOrEmpty(expression))
         {
             return null;
         }
 
-        var definition = _controller.GetExpressionEditorDefinition(expression, "if");
+        var definition = _controller.GetExpressionEditorDefinition(expression, expressionType);
         if (definition == null)
         {
             return null;
@@ -1883,7 +1890,7 @@ public partial class WasmEditorBridge
         IEditorData templateData;
         try
         {
-            templateData = _controller.GetExpressionEditorData(expression, "if", null!);
+            templateData = _controller.GetExpressionEditorData(expression, expressionType, null!);
         }
         catch
         {
@@ -1937,12 +1944,12 @@ public partial class WasmEditorBridge
             .ToList();
 
         return JsonSerializer.Serialize(
-            new IfExpressionTemplateData(
+            new ExpressionTemplateData(
                 definition.Description,
                 definition.OriginalPattern,
                 controls
             ),
-            WasmEditorJsonContext.Default.IfExpressionTemplateData
+            WasmEditorJsonContext.Default.ExpressionTemplateData
         );
     }
 
@@ -3483,6 +3490,8 @@ public partial class WasmEditorBridge
         // generic +/- item list.
         var isFunctionParams = ctrl.GetBool("functionparams");
 
+        string? useTemplates = null;
+
         if (ctrl.ControlType == "expression")
         {
             simpleLabel = ctrl.GetString("simple");
@@ -3491,6 +3500,7 @@ public partial class WasmEditorBridge
             simpleEditor = simpleEditorTag ?? (simpleLabel != null ? "textbox" : null);
             source = ctrl.GetString("source");
             objectType = ctrl.GetString("objecttype");
+            useTemplates = ctrl.GetString("usetemplates");
 
             if (simpleEditor == "dropdown")
             {
@@ -3538,7 +3548,8 @@ public partial class WasmEditorBridge
             nestedScripts,
             objectType,
             isFunctionPicker,
-            isFunctionParams
+            isFunctionParams,
+            useTemplates
         );
     }
 

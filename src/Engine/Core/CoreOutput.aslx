@@ -847,6 +847,10 @@
     JS.AddVimeo(id)
   </function>
 
+  <function name="WaitForKeyPress">
+    request (Wait, "")
+  </function>
+
   <function name="DisplayHttpLink" parameters="text, url, https">
     <![CDATA[
     pos = Instr(url, "://")

@@ -633,6 +633,7 @@
   <template name="EditorScriptsTimersRunscriptafterName">Ejecutar progrma después de un número de segundos (con nombre)</template>    
   <template name="EditorScriptsTimersName">Nombre:</template>
   <template name="EditorScriptsTimersPausefor">Pausar por</template>
+  <template name="EditorScriptsTimersPausethegame">Pausar el juego</template>
   <template name="EditorScriptsTimersCreateatimer">Crear un temporizador</template>
   <template name="EditorScriptsTimersCreatetimer">Crear temporizador</template>
   <template name="EditorScriptsTurnScriptsTurnScripts">Programas por turno</template>
@@ -733,11 +734,14 @@
   <template name="EditorExpressionsobjecthasattribute">el objeto tiene el atributo</template>
   <template name="EditorExpressionsobjectattribute">el atributo del objeto es igual a</template>
   <template name="EditorExpressionsrandomchance">al azar</template>
+  <template name="EditorExpressionsplayeranswersquestion">el jugador responde a una pregunta de sí/no</template>
   <template name="EditorExpressionsnewstringlist">nueva lista de textos</template>
   <template name="EditorExpressionsnewobjectlist">nueva lista de objetos</template>
   <template name="EditorExpressionsnewstringdictionary">nuevo diccionario de textos</template>
   <template name="EditorExpressionsnewobjectdictionary">nuevo diccionario de objetos</template>
   <template name="EditorExpressionsrandomnumber">número aleatorio</template>
+  <template name="EditorExpressionsgetplayerinput">el texto escrito por el jugador</template>
+  <template name="EditorExpressionsplayerchoosesfrommenu">la opción elegida por el jugador en un menú</template>
   <template name="EditorExpressionsallobjects">todos los objetos</template>
   <template name="EditorExpressionsallvisible">todos los objetos visibles</template>
   <template name="EditorExpressionstheinventory">el inventario</template>
