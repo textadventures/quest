@@ -498,7 +498,7 @@ internal class ExpressionOwner(WorldModel worldModel)
         if (worldModel.Version >= WorldModelVersion.v540 && worldModel.Version < WorldModelVersion.v600)
         {
             throw new Exception(
-                "The 'ShowMenu' function is not supported for games written for Quest 5.4 or later. Use the 'show menu' script command instead, or set the game's WorldModel version to 600 or later.");
+                "The 'ShowMenu' function is not supported for games with WorldModel version 540–580. Use the 'show menu' script command instead, or set the game's WorldModel version to 600 or later.");
         }
 
         await worldModel.PrintAsync(caption);
@@ -592,7 +592,7 @@ internal class ExpressionOwner(WorldModel worldModel)
         if (worldModel.Version >= WorldModelVersion.v540 && worldModel.Version < WorldModelVersion.v600)
         {
             throw new Exception(
-                "The 'GetInput' function is not supported for games written for Quest 5.4 or later. Use the 'get input' script command instead, or set the game's WorldModel version to 600 or later.");
+                "The 'GetInput' function is not supported for games with WorldModel version 540–580. Use the 'get input' script command instead, or set the game's WorldModel version to 600 or later.");
         }
 
         worldModel._commandOverride = true;
@@ -649,7 +649,7 @@ internal class ExpressionOwner(WorldModel worldModel)
         if (worldModel.Version >= WorldModelVersion.v540 && worldModel.Version < WorldModelVersion.v600)
         {
             throw new Exception(
-                "The 'Ask' function is not supported for games written for Quest 5.4 or later. Use the 'ask' script command instead, or set the game's WorldModel version to 600 or later.");
+                "The 'Ask' function is not supported for games with WorldModel version 540–580. Use the 'ask' script command instead, or set the game's WorldModel version to 600 or later.");
         }
 
         worldModel.PlayerUi.ShowQuestion(caption);

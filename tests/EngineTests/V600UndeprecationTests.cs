@@ -31,7 +31,7 @@ public class V600UndeprecationTests
             var ex = await Should.ThrowAsync<Exception>(() => driver.SendCommandAsync("getinputfn"));
             ex.InnerException.ShouldNotBeNull();
             ex.InnerException.Message.ShouldContain(
-                "'GetInput' function is not supported for games written for Quest 5.4 or later");
+                "'GetInput' function is not supported for games with WorldModel version 540");
         }
 
         // v530 (pre-v580) output routes through the PrintText event rather than
@@ -61,7 +61,7 @@ public class V600UndeprecationTests
             var ex = await Should.ThrowAsync<Exception>(() => driver.SendCommandAsync("askfn"));
             ex.InnerException.ShouldNotBeNull();
             ex.InnerException.Message.ShouldContain(
-                "'Ask' function is not supported for games written for Quest 5.4 or later");
+                "'Ask' function is not supported for games with WorldModel version 540");
         }
 
         var v600Driver = await GameDriver.LoadAsync("versiongatetest.aslx");
@@ -82,7 +82,7 @@ public class V600UndeprecationTests
             var ex = await Should.ThrowAsync<Exception>(() => driver.SendCommandAsync("menufn"));
             ex.InnerException.ShouldNotBeNull();
             ex.InnerException.Message.ShouldContain(
-                "'ShowMenu' function is not supported for games written for Quest 5.4 or later");
+                "'ShowMenu' function is not supported for games with WorldModel version 540");
         }
 
         var v600Driver = await GameDriver.LoadAsync("versiongatetest.aslx");
@@ -103,7 +103,7 @@ public class V600UndeprecationTests
             var ex = await Should.ThrowAsync<Exception>(() => driver.SendCommandAsync("waitrequest"));
             ex.InnerException.ShouldNotBeNull();
             ex.InnerException.Message.ShouldContain(
-                "'Wait' request is not supported for games written for Quest 5.4 or later");
+                "'Wait' request is not supported for games with WorldModel version 540");
         }
 
         var v600Driver = await GameDriver.LoadAsync("versiongatetest.aslx");
@@ -125,7 +125,7 @@ public class V600UndeprecationTests
             var ex = await Should.ThrowAsync<Exception>(() => driver.SendCommandAsync("pauserequest"));
             ex.InnerException.ShouldNotBeNull();
             ex.InnerException.Message.ShouldContain(
-                "'Pause' request is not supported for games written for Quest 5.5 or later");
+                "'Pause' request is not supported for games with WorldModel version 550");
         }
 
         var v540Driver = await GameDriver.LoadAsync("versiongatetest.aslx");
@@ -157,7 +157,7 @@ public class V600UndeprecationTests
             var ex = await Should.ThrowAsync<Exception>(() => driver.SendCommandAsync("pausefunction"));
             ex.InnerException.ShouldNotBeNull();
             ex.InnerException.Message.ShouldContain(
-                "'Pause' request is not supported for games written for Quest 5.5 or later");
+                "'Pause' request is not supported for games with WorldModel version 550");
         }
 
         var v540Driver = await GameDriver.LoadAsync("versiongatetest.aslx");
@@ -188,7 +188,7 @@ public class V600UndeprecationTests
             var ex = await Should.ThrowAsync<Exception>(() => driver.SendCommandAsync("waitforkeypressfunction"));
             ex.InnerException.ShouldNotBeNull();
             ex.InnerException.Message.ShouldContain(
-                "'Wait' request is not supported for games written for Quest 5.4 or later");
+                "'Wait' request is not supported for games with WorldModel version 540");
         }
 
         var v600Driver = await GameDriver.LoadAsync("versiongatetest.aslx");

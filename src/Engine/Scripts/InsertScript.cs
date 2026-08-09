@@ -43,7 +43,7 @@ public class InsertScript : ScriptBase
         if (m_worldModel.Version >= WorldModelVersion.v540)
         {
             throw new Exception(
-                "The 'insert' script command is not supported for games written for Quest 5.4 or later. You can output HTML directly using the 'msg' command instead.");
+                "The 'insert' script command is not supported for games with WorldModel version 540 or later. You can output HTML directly using the 'msg' command instead.");
         }
 
         var filename = await m_filename.ExecuteAsync(c);
