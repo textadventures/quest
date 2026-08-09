@@ -1,6 +1,6 @@
 import { writable, get } from "svelte/store";
 import { zipSync } from "fflate";
-import { PUBLIC_WASM_PLAYER_URL } from "$env/static/public";
+import { PUBLIC_WASM_PLAYER_URL, PUBLIC_APPSHELL_VERSION } from "$env/static/public";
 import { loadWasm } from "./wasm";
 import type { WasmBridge } from "./wasm";
 import type { AssetInfo, FileAdapter } from "./filesystem/types";
@@ -590,6 +590,64 @@ export async function publishGame(includeWalkthrough: boolean): Promise<void> {
 
     const publishName = _adapter.filename.replace(/\.aslx$/i, "") + ".quest";
     triggerDownload(packageBytes, publishName);
+}
+
+function bytesToBase64(bytes: Uint8Array): string {
+    let binary = "";
+    const chunkSize = 0x8000; // avoid a call-stack overflow from String.fromCharCode(...bytes) on a large package
+    for (let i = 0; i < bytes.length; i += chunkSize) {
+        binary += String.fromCharCode(...bytes.subarray(i, i + chunkSize));
+    }
+    return btoa(binary);
+}
+
+// Builds the same .quest package Publish… does (see publishGame above), then wraps it in a
+// single self-contained HTML file that loads the WasmPlayer runtime from jsDelivr instead of
+// needing any separate upload — see docs/wasmplayer-single-file-export.md and
+// scripts/export-embedded.mjs (the standalone CLI equivalent this mirrors step-for-step). Reuses
+// the exact WasmPlayer index.html already deployed alongside AppShell (PUBLIC_WASM_PLAYER_URL,
+// the same file the Preview button loads) as its template, so the two flavors can't drift apart.
+export async function exportSingleFile(): Promise<void> {
+    if (!_bridge || !_adapter) return;
+
+    // PUBLIC_APPSHELL_VERSION is the release tag (e.g. "v6.0.0-beta.49") in a real deployed
+    // build (see deploy-play.yml) — only there is there a matching published npm version to pin
+    // to, so this deliberately doesn't fall back to "latest" (see hosting.md's pinned-version
+    // guidance) or to a git sha in local/preview builds.
+    const version = PUBLIC_APPSHELL_VERSION?.replace(/^v/, "");
+    if (!version) throw new Error("No release version available to pin the CDN runtime to — single-file export only works in a deployed build.");
+
+    for (const asset of await _adapter.listAssets()) {
+        const blob = await _adapter.getAsset(asset.key);
+        if (blob) _bridge.AddPublishAsset(asset.key, new Uint8Array(await blob.arrayBuffer()));
+    }
+    const packageBytes = _bridge.CreatePublishPackage(false);
+    if (packageBytes.length === 0) throw new Error("Failed to build the .quest package.");
+
+    const templateUrl = `${PUBLIC_WASM_PLAYER_URL || "/player/"}index.html`;
+    const templateResponse = await fetch(templateUrl);
+    if (!templateResponse.ok) throw new Error(`Failed to fetch WasmPlayer template: HTTP ${templateResponse.status}`);
+    const template = await templateResponse.text();
+
+    const baseName = _adapter.filename.replace(/\.aslx$/i, "");
+    const embeddedFilename = baseName + ".quest";
+    const cdnBase = `https://cdn.jsdelivr.net/npm/@textadventures/quest-viva-wasmplayer@${version}/`;
+
+    // Same three transforms as export-embedded.mjs — see that file's comments for why each is
+    // needed (in particular why wasm-player.js itself, not this code, has to resolve its own
+    // dynamic import of dotnet.js via an absolute URL rather than relying on <base href> alone).
+    let html = template;
+    html = html.replace('<html lang="en">', '<html lang="en" class="qv-booting">');
+    html = html.replace("<head>", `<head>\n    <base href="${cdnBase}" />`);
+    html = html.replace('    <script type="text/javascript" src="quest-config.js"></script>\n', "");
+    const embedScript = "<script type=\"text/javascript\">\n"
+        + `        window.QuestVivaEmbeddedGame = ${JSON.stringify(bytesToBase64(packageBytes))};\n`
+        + `        window.QuestVivaEmbeddedGameFilename = ${JSON.stringify(embeddedFilename)};\n`
+        + "    </script>\n"
+        + "    <script type=\"text/javascript\" src=\"wasm-player.js\"></script>";
+    html = html.replace('<script type="text/javascript" src="wasm-player.js"></script>', embedScript);
+
+    triggerDownload(html, baseName + ".html");
 }
 
 // Keys of every Javascript/Included Library element currently in the tree — undo()/redo() diff

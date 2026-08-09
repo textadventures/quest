@@ -6,7 +6,7 @@
     import { PUBLIC_WASM_PLAYER_URL, PUBLIC_SHOW_HOME } from "$env/static/public";
     import {
         gameFilename, isLoaded, isDirty, isSaving, isEditingField, getLastEditedElement, saveError, retrySave, saveGame, saveGameAs, canSaveAs, backupGame, canBackup,
-        publishModalOpen,
+        publishModalOpen, exportSingleFile,
         previewInWasmPlayer,
         undo, redo, canUndo, canRedo,
         navigateBack, navigateForward, canGoBack, canGoForward,
@@ -18,6 +18,7 @@
         codeViewCloseRequested,
     } from "$lib/editor-store";
     import { hasActiveCmView, cmUndo, cmRedo } from "$lib/code-editor-registry";
+    import { showToast } from "$lib/toast";
     import type { TreeNode } from "$lib/types";
     import Home from "@lucide/svelte/icons/home";
     import ArrowLeft from "@lucide/svelte/icons/arrow-left";
@@ -31,6 +32,7 @@
     import Save from "@lucide/svelte/icons/save";
     import Download from "@lucide/svelte/icons/download";
     import Package from "@lucide/svelte/icons/package";
+    import Globe from "@lucide/svelte/icons/globe";
     import Play from "@lucide/svelte/icons/play";
     import Check from "@lucide/svelte/icons/check";
     import LoaderCircle from "@lucide/svelte/icons/loader-circle";
@@ -80,6 +82,11 @@
     async function handleBackup() {
         saving = true;
         try { await backupGame(); } finally { saving = false; }
+    }
+
+    async function handleExportSingleFile() {
+        saving = true;
+        try { await exportSingleFile(); } catch (err) { showToast(String(err)); } finally { saving = false; }
     }
 
     async function handlePreview() {
@@ -164,6 +171,7 @@
         if ($canSaveAs) items.push({ label: "Save As…", action: handleSaveAs, icon: Save, disabled: saving });
         if ($canBackup) items.push({ label: "Backup…", action: handleBackup, icon: Download, disabled: saving });
         if ($gameFilename) items.push({ label: "Publish…", action: () => publishModalOpen.set(true), icon: Package });
+        if ($gameFilename) items.push({ label: "Export as single file…", action: handleExportSingleFile, icon: Globe, disabled: saving });
         return items;
     });
 
