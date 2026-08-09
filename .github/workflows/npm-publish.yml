@@ -72,8 +72,13 @@ jobs:
           }
           EOF
 
+      # --tag latest is required, not just the default: npm refuses to guess a
+      # dist-tag for a prerelease-looking version (every version here — see
+      # root CLAUDE.md's Releasing section, the project never leaves beta) and
+      # errors instead. latest is the correct tag regardless, since there is
+      # no separate stable line for this package to protect "latest" from.
       - name: Publish to npm
-        run: npm publish --access public
+        run: npm publish --access public --tag latest
         working-directory: src/WasmPlayer/bin/Release/net10.0/browser-wasm/AppBundle
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
