@@ -1,0 +1,157 @@
+<asl version="580">
+  <include ref="English.aslx" />
+  <include ref="Core.aslx" />
+  <game name="ScrollFrameTest">
+  </game>
+  <object name="room">
+    <object name="player">
+    </object>
+  </object>
+  <command>
+    <pattern>showframe</pattern>
+    <script><![CDATA[
+      JS.setPanelContents ("<div id='testframe' style='height:150px;background:red;'>FRAME</div>")
+    ]]></script>
+  </command>
+  <command>
+    <pattern>shout1</pattern>
+    <script><![CDATA[
+      msg("<span id='turnmark1'></span>Turn 1 begins here.")
+      msg("Turn 1, filler line 1 of scrollable output text to pad this turn out well past one screenful.")
+      msg("Turn 1, filler line 2 of scrollable output text to pad this turn out well past one screenful.")
+      msg("Turn 1, filler line 3 of scrollable output text to pad this turn out well past one screenful.")
+      msg("Turn 1, filler line 4 of scrollable output text to pad this turn out well past one screenful.")
+      msg("Turn 1, filler line 5 of scrollable output text to pad this turn out well past one screenful.")
+      msg("Turn 1, filler line 6 of scrollable output text to pad this turn out well past one screenful.")
+      msg("Turn 1, filler line 7 of scrollable output text to pad this turn out well past one screenful.")
+      msg("Turn 1, filler line 8 of scrollable output text to pad this turn out well past one screenful.")
+      msg("Turn 1, filler line 9 of scrollable output text to pad this turn out well past one screenful.")
+      msg("Turn 1, filler line 10 of scrollable output text to pad this turn out well past one screenful.")
+      msg("Turn 1, filler line 11 of scrollable output text to pad this turn out well past one screenful.")
+      msg("Turn 1, filler line 12 of scrollable output text to pad this turn out well past one screenful.")
+      msg("Turn 1, filler line 13 of scrollable output text to pad this turn out well past one screenful.")
+      msg("Turn 1, filler line 14 of scrollable output text to pad this turn out well past one screenful.")
+      msg("Turn 1, filler line 15 of scrollable output text to pad this turn out well past one screenful.")
+      msg("Turn 1, filler line 16 of scrollable output text to pad this turn out well past one screenful.")
+      msg("Turn 1, filler line 17 of scrollable output text to pad this turn out well past one screenful.")
+      msg("Turn 1, filler line 18 of scrollable output text to pad this turn out well past one screenful.")
+      msg("Turn 1, filler line 19 of scrollable output text to pad this turn out well past one screenful.")
+      msg("Turn 1, filler line 20 of scrollable output text to pad this turn out well past one screenful.")
+      msg("Turn 1, filler line 21 of scrollable output text to pad this turn out well past one screenful.")
+      msg("Turn 1, filler line 22 of scrollable output text to pad this turn out well past one screenful.")
+      msg("Turn 1, filler line 23 of scrollable output text to pad this turn out well past one screenful.")
+      msg("Turn 1, filler line 24 of scrollable output text to pad this turn out well past one screenful.")
+      msg("Turn 1, filler line 25 of scrollable output text to pad this turn out well past one screenful.")
+      msg("Turn 1, filler line 26 of scrollable output text to pad this turn out well past one screenful.")
+      msg("Turn 1, filler line 27 of scrollable output text to pad this turn out well past one screenful.")
+      msg("Turn 1, filler line 28 of scrollable output text to pad this turn out well past one screenful.")
+      msg("Turn 1, filler line 29 of scrollable output text to pad this turn out well past one screenful.")
+      msg("Turn 1, filler line 30 of scrollable output text to pad this turn out well past one screenful.")
+      msg("Turn 1, filler line 31 of scrollable output text to pad this turn out well past one screenful.")
+      msg("Turn 1, filler line 32 of scrollable output text to pad this turn out well past one screenful.")
+      msg("Turn 1, filler line 33 of scrollable output text to pad this turn out well past one screenful.")
+      msg("Turn 1, filler line 34 of scrollable output text to pad this turn out well past one screenful.")
+      msg("Turn 1, filler line 35 of scrollable output text to pad this turn out well past one screenful.")
+      msg("Turn 1, filler line 36 of scrollable output text to pad this turn out well past one screenful.")
+      msg("Turn 1, filler line 37 of scrollable output text to pad this turn out well past one screenful.")
+      msg("Turn 1, filler line 38 of scrollable output text to pad this turn out well past one screenful.")
+      msg("Turn 1, filler line 39 of scrollable output text to pad this turn out well past one screenful.")
+      msg("Turn 1, filler line 40 of scrollable output text to pad this turn out well past one screenful.")
+      msg("Turn 1, filler line 41 of scrollable output text to pad this turn out well past one screenful.")
+      msg("Turn 1, filler line 42 of scrollable output text to pad this turn out well past one screenful.")
+      msg("Turn 1, filler line 43 of scrollable output text to pad this turn out well past one screenful.")
+      msg("Turn 1, filler line 44 of scrollable output text to pad this turn out well past one screenful.")
+      msg("Turn 1, filler line 45 of scrollable output text to pad this turn out well past one screenful.")
+      msg("Turn 1, filler line 46 of scrollable output text to pad this turn out well past one screenful.")
+      msg("Turn 1, filler line 47 of scrollable output text to pad this turn out well past one screenful.")
+      msg("Turn 1, filler line 48 of scrollable output text to pad this turn out well past one screenful.")
+      msg("Turn 1, filler line 49 of scrollable output text to pad this turn out well past one screenful.")
+      msg("Turn 1, filler line 50 of scrollable output text to pad this turn out well past one screenful.")
+      msg("Turn 1, filler line 51 of scrollable output text to pad this turn out well past one screenful.")
+      msg("Turn 1, filler line 52 of scrollable output text to pad this turn out well past one screenful.")
+      msg("Turn 1, filler line 53 of scrollable output text to pad this turn out well past one screenful.")
+      msg("Turn 1, filler line 54 of scrollable output text to pad this turn out well past one screenful.")
+      msg("Turn 1, filler line 55 of scrollable output text to pad this turn out well past one screenful.")
+      msg("Turn 1, filler line 56 of scrollable output text to pad this turn out well past one screenful.")
+      msg("Turn 1, filler line 57 of scrollable output text to pad this turn out well past one screenful.")
+      msg("Turn 1, filler line 58 of scrollable output text to pad this turn out well past one screenful.")
+      msg("Turn 1, filler line 59 of scrollable output text to pad this turn out well past one screenful.")
+      msg("Turn 1, filler line 60 of scrollable output text to pad this turn out well past one screenful.")
+    ]]></script>
+  </command>
+  <command>
+    <pattern>shout2</pattern>
+    <script><![CDATA[
+      msg("<span id='turnmark2'></span>Turn 2 begins here.")
+      msg("Turn 2, filler line 1 of scrollable output text to pad this turn out well past one screenful.")
+      msg("Turn 2, filler line 2 of scrollable output text to pad this turn out well past one screenful.")
+      msg("Turn 2, filler line 3 of scrollable output text to pad this turn out well past one screenful.")
+      msg("Turn 2, filler line 4 of scrollable output text to pad this turn out well past one screenful.")
+      msg("Turn 2, filler line 5 of scrollable output text to pad this turn out well past one screenful.")
+      msg("Turn 2, filler line 6 of scrollable output text to pad this turn out well past one screenful.")
+      msg("Turn 2, filler line 7 of scrollable output text to pad this turn out well past one screenful.")
+      msg("Turn 2, filler line 8 of scrollable output text to pad this turn out well past one screenful.")
+      msg("Turn 2, filler line 9 of scrollable output text to pad this turn out well past one screenful.")
+      msg("Turn 2, filler line 10 of scrollable output text to pad this turn out well past one screenful.")
+      msg("Turn 2, filler line 11 of scrollable output text to pad this turn out well past one screenful.")
+      msg("Turn 2, filler line 12 of scrollable output text to pad this turn out well past one screenful.")
+      msg("Turn 2, filler line 13 of scrollable output text to pad this turn out well past one screenful.")
+      msg("Turn 2, filler line 14 of scrollable output text to pad this turn out well past one screenful.")
+      msg("Turn 2, filler line 15 of scrollable output text to pad this turn out well past one screenful.")
+      msg("Turn 2, filler line 16 of scrollable output text to pad this turn out well past one screenful.")
+      msg("Turn 2, filler line 17 of scrollable output text to pad this turn out well past one screenful.")
+      msg("Turn 2, filler line 18 of scrollable output text to pad this turn out well past one screenful.")
+      msg("Turn 2, filler line 19 of scrollable output text to pad this turn out well past one screenful.")
+      msg("Turn 2, filler line 20 of scrollable output text to pad this turn out well past one screenful.")
+      msg("Turn 2, filler line 21 of scrollable output text to pad this turn out well past one screenful.")
+      msg("Turn 2, filler line 22 of scrollable output text to pad this turn out well past one screenful.")
+      msg("Turn 2, filler line 23 of scrollable output text to pad this turn out well past one screenful.")
+      msg("Turn 2, filler line 24 of scrollable output text to pad this turn out well past one screenful.")
+      msg("Turn 2, filler line 25 of scrollable output text to pad this turn out well past one screenful.")
+      msg("Turn 2, filler line 26 of scrollable output text to pad this turn out well past one screenful.")
+      msg("Turn 2, filler line 27 of scrollable output text to pad this turn out well past one screenful.")
+      msg("Turn 2, filler line 28 of scrollable output text to pad this turn out well past one screenful.")
+      msg("Turn 2, filler line 29 of scrollable output text to pad this turn out well past one screenful.")
+      msg("Turn 2, filler line 30 of scrollable output text to pad this turn out well past one screenful.")
+      msg("Turn 2, filler line 31 of scrollable output text to pad this turn out well past one screenful.")
+      msg("Turn 2, filler line 32 of scrollable output text to pad this turn out well past one screenful.")
+      msg("Turn 2, filler line 33 of scrollable output text to pad this turn out well past one screenful.")
+      msg("Turn 2, filler line 34 of scrollable output text to pad this turn out well past one screenful.")
+      msg("Turn 2, filler line 35 of scrollable output text to pad this turn out well past one screenful.")
+      msg("Turn 2, filler line 36 of scrollable output text to pad this turn out well past one screenful.")
+      msg("Turn 2, filler line 37 of scrollable output text to pad this turn out well past one screenful.")
+      msg("Turn 2, filler line 38 of scrollable output text to pad this turn out well past one screenful.")
+      msg("Turn 2, filler line 39 of scrollable output text to pad this turn out well past one screenful.")
+      msg("Turn 2, filler line 40 of scrollable output text to pad this turn out well past one screenful.")
+      msg("Turn 2, filler line 41 of scrollable output text to pad this turn out well past one screenful.")
+      msg("Turn 2, filler line 42 of scrollable output text to pad this turn out well past one screenful.")
+      msg("Turn 2, filler line 43 of scrollable output text to pad this turn out well past one screenful.")
+      msg("Turn 2, filler line 44 of scrollable output text to pad this turn out well past one screenful.")
+      msg("Turn 2, filler line 45 of scrollable output text to pad this turn out well past one screenful.")
+      msg("Turn 2, filler line 46 of scrollable output text to pad this turn out well past one screenful.")
+      msg("Turn 2, filler line 47 of scrollable output text to pad this turn out well past one screenful.")
+      msg("Turn 2, filler line 48 of scrollable output text to pad this turn out well past one screenful.")
+      msg("Turn 2, filler line 49 of scrollable output text to pad this turn out well past one screenful.")
+      msg("Turn 2, filler line 50 of scrollable output text to pad this turn out well past one screenful.")
+      msg("Turn 2, filler line 51 of scrollable output text to pad this turn out well past one screenful.")
+      msg("Turn 2, filler line 52 of scrollable output text to pad this turn out well past one screenful.")
+      msg("Turn 2, filler line 53 of scrollable output text to pad this turn out well past one screenful.")
+      msg("Turn 2, filler line 54 of scrollable output text to pad this turn out well past one screenful.")
+      msg("Turn 2, filler line 55 of scrollable output text to pad this turn out well past one screenful.")
+      msg("Turn 2, filler line 56 of scrollable output text to pad this turn out well past one screenful.")
+      msg("Turn 2, filler line 57 of scrollable output text to pad this turn out well past one screenful.")
+      msg("Turn 2, filler line 58 of scrollable output text to pad this turn out well past one screenful.")
+      msg("Turn 2, filler line 59 of scrollable output text to pad this turn out well past one screenful.")
+      msg("Turn 2, filler line 60 of scrollable output text to pad this turn out well past one screenful.")
+    ]]></script>
+  </command>
+  <walkthrough name="withframe">
+    <steps>
+      <![CDATA[
+      showframe
+      shout1
+      shout2
+      ]]>
+    </steps>
+  </walkthrough>
+</asl>

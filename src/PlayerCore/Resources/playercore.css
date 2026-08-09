@@ -2,6 +2,19 @@
     font-family: Arial, Helvetica, sans-serif;
     overflow-y: scroll;
     background-attachment: fixed;
+    /* playercore.js explicitly recomputes and sets scroll position itself on
+       every relevant DOM change (new turn, picture frame resizing — see
+       scrollToTurnStart()/setPanelHeight() in playercore.js), including
+       content inserted above the current scroll position (the sticky
+       picture frame growing once its image loads). Chrome's default scroll
+       anchoring tries to do the same job automatically to avoid a visual
+       jump, but its guess and playercore.js's own (more informed) target
+       can disagree — and since anchoring applies *before* playercore.js's
+       own correction runs, its adjustment becomes the new "current scroll
+       position" that scrollToTurnStart()'s never-scroll-backward guard then
+       treats as intentional, silently defeating the real correction.
+       Disabling it leaves scroll positioning entirely to our own logic. */
+    overflow-anchor: none;
 }
 
 html,

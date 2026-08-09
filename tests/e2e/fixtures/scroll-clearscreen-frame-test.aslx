@@ -1,0 +1,32 @@
+<asl version="580">
+  <include ref="English.aslx" />
+  <include ref="Core.aslx" />
+  <game name="ScrollClearScreenFrameTest">
+  </game>
+  <object name="room">
+    <object name="player">
+    </object>
+  </object>
+  <command>
+    <pattern>showframe</pattern>
+    <script><![CDATA[
+      JS.setPanelContents ("<div id='testframe' style='height:200px;background:red;'>FRAME</div>")
+    ]]></script>
+  </command>
+  <command>
+    <pattern>gotopage2</pattern>
+    <script><![CDATA[
+      ClearScreen
+      msg("<span id='page2mark'></span>Page 2 begins here.")
+      msg("Page 2, some more text right after the marker.")
+    ]]></script>
+  </command>
+  <walkthrough name="clearwithframe">
+    <steps>
+      <![CDATA[
+      showframe
+      gotopage2
+      ]]>
+    </steps>
+  </walkthrough>
+</asl>

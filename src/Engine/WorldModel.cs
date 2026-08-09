@@ -1186,7 +1186,17 @@ public partial class WorldModel : IGame, IGameDebug
     {
         if (scroll && Version >= WorldModelVersion.v540)
         {
+            // ScrollToEnd() must run first: it targets wherever MarkScrollPosition()
+            // was last called (the *start* of this turn's own output, set either by
+            // this method after the previous turn or by player.js/beginWait() for an
+            // interactive command/mid-turn wait). Only once that's queued do we
+            // record where this turn's output ends, ready as the target for
+            // whichever turn comes next — interactive command, walkthrough step,
+            // timer, or wait/ask/menu resumption, since they all funnel through this
+            // one hook (unlike the player.js/beginWait() JS-side calls, which only
+            // cover interactive typing and mid-turn waits).
             ScrollToEnd();
+            MarkScrollPosition();
         }
         // Every wait()/get input()/ask/show menu call site pairs BeginPendingCallback/
         // EndPendingCallbackAsync 1:1 with a SignalTurnSuspended call, and the two
@@ -1583,6 +1593,11 @@ public partial class WorldModel : IGame, IGameDebug
     private void ScrollToEnd()
     {
         _ = PlayerUi.RunScriptAsync("scrollToEnd", null);
+    }
+
+    private void MarkScrollPosition()
+    {
+        _ = PlayerUi.RunScriptAsync("markScrollPosition", null);
     }
 
     internal void LogException(Exception ex)
