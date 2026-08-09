@@ -85,12 +85,13 @@ try {
     }
     console.log('PASS: other still-empty categories remain hidden');
 
-    // "+ Add JavaScript" lives under the "Advanced" node too (creates directly, no
-    // name modal) and should make the "Javascript" header reappear, same as
-    // Functions did above. Selection moved to the new function above, so
-    // re-select "Advanced" first.
+    // "+ Add JavaScript" lives under the "Advanced" node too and should make the
+    // "Javascript" header reappear, same as Functions did above, once its confirm
+    // modal (see AddJavascriptModal) is accepted with the pre-filled filename.
+    // Selection moved to the new function above, so re-select "Advanced" first.
     await tree.getByText('Advanced', { exact: true }).click();
     await page.getByRole('button', { name: '+ Add JavaScript', exact: true }).click();
+    await page.getByRole('button', { name: 'Add JavaScript', exact: true }).click();
     await tree.getByText('Javascript', { exact: true }).waitFor({ state: 'visible', timeout: 5000 });
     console.log('PASS: "Javascript" header appears after adding via the "Advanced" node');
 

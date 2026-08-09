@@ -47,9 +47,16 @@ async function withFreshApp(fn) {
         await win.waitForSelector('a:has-text("Create"), a:has-text("Play")', { timeout: 30000 });
         return await fn(app, win);
     } finally {
-        app?.process().kill('SIGKILL');
-        // SIGKILL doesn't wait for Chromium to finish its disk-cache writeback, so an immediate
-        // rmSync can hit ENOTEMPTY on Cache_Data — maxRetries/retryDelay ride out that race.
+        const proc = app?.process();
+        if (proc && proc.exitCode === null) {
+            // kill() only sends the signal — it doesn't wait for the process to actually
+            // terminate, so without this the rmSync below could race a still-running process.
+            const exited = new Promise(resolve => proc.once('exit', resolve));
+            proc.kill('SIGKILL');
+            await exited;
+        }
+        // Even after exit, Chromium's disk-cache writeback can still be finishing up, so an
+        // immediate rmSync can hit ENOTEMPTY on Cache_Data — maxRetries/retryDelay ride out that race.
         rmSync(userDataDir, { recursive: true, force: true, maxRetries: 5, retryDelay: 200 });
     }
 }
