@@ -1,5 +1,24 @@
 # Changelog
 
+## [6.0.0-beta.50](https://github.com/textadventures/quest/compare/v6.0.0-beta.49...v6.0.0-beta.50) (2026-08-09)
+
+
+### Features
+
+* **AppShell:** add Included Library upload flow, sync asset/element deletes ([#2001](https://github.com/textadventures/quest/issues/2001)) ([9b3d0c0](https://github.com/textadventures/quest/commit/9b3d0c0cf801413cdcf37fe4691b102a7855f975))
+* **AppShell:** match Play tab to textadventures.co.uk's catalog/search/gamebook API ([#2003](https://github.com/textadventures/quest/issues/2003)) ([dfdeeb5](https://github.com/textadventures/quest/commit/dfdeeb57674b758b8422523026f4a13361ed69de))
+* **AppShell:** show cached cover art for local Play tab recents ([#2005](https://github.com/textadventures/quest/issues/2005)) ([91e1497](https://github.com/textadventures/quest/commit/91e149773c1a1d7cd06a5aece0c274d2ea9253e1))
+* **AppShell:** unify Recently Played across catalog and local files ([#2004](https://github.com/textadventures/quest/issues/2004)) ([5e5b2c3](https://github.com/textadventures/quest/commit/5e5b2c3cd8ef64fa3e2ff5800a3a5bda9e0dd9dc))
+* **Engine:** introduce WorldModelVersion 600, restore sync script support ([#2007](https://github.com/textadventures/quest/issues/2007)) ([44669ec](https://github.com/textadventures/quest/commit/44669ece57fc0711876e35a19f1f168aecae66d1))
+* **WasmPlayer:** implement single-file, CDN-linked game export ([#2012](https://github.com/textadventures/quest/issues/2012)) ([b9bc2ed](https://github.com/textadventures/quest/commit/b9bc2eda224d596fcf923e06b897a0b8f42736e0))
+
+
+### Bug Fixes
+
+* fix two unrelated e2e test flakes found in a manual run ([#2013](https://github.com/textadventures/quest/issues/2013)) ([9421df9](https://github.com/textadventures/quest/commit/9421df97fe80de655f2562922a6d455514b01865))
+* **PlayerCore:** disable autocapitalize on game command input ([#2008](https://github.com/textadventures/quest/issues/2008)) ([8399691](https://github.com/textadventures/quest/commit/839969112f2b8bc032b0983ac27688e47852a883))
+* **PlayerCore:** fix output auto-scroll stutter and picture-frame occlusion ([#2009](https://github.com/textadventures/quest/issues/2009)) ([33ce1a5](https://github.com/textadventures/quest/commit/33ce1a5ddca02ec1aab93dd1d06cd82e43756e8b))
+
 ## [6.0.0-beta.49](https://github.com/textadventures/quest/compare/v6.0.0-beta.48...v6.0.0-beta.49) (2026-08-07)
 
 
