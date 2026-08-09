@@ -1,0 +1,67 @@
+<asl version="580">
+  <include ref="English.aslx" />
+  <include ref="Core.aslx" />
+  <game name="ScrollClearScreenStaleTurnStartTest">
+  </game>
+  <object name="room">
+    <object name="player">
+    </object>
+  </object>
+  <command>
+    <pattern>gopage1</pattern>
+    <script><![CDATA[
+      msg("<span id='page1mark'></span>Page 1 begins here.")
+      msg("Page 1, filler line 1 of long output to make this page well over one screenful before the wait.")
+      msg("Page 1, filler line 2 of long output to make this page well over one screenful before the wait.")
+      msg("Page 1, filler line 3 of long output to make this page well over one screenful before the wait.")
+      msg("Page 1, filler line 4 of long output to make this page well over one screenful before the wait.")
+      msg("Page 1, filler line 5 of long output to make this page well over one screenful before the wait.")
+      msg("Page 1, filler line 6 of long output to make this page well over one screenful before the wait.")
+      msg("Page 1, filler line 7 of long output to make this page well over one screenful before the wait.")
+      msg("Page 1, filler line 8 of long output to make this page well over one screenful before the wait.")
+      msg("Page 1, filler line 9 of long output to make this page well over one screenful before the wait.")
+      msg("Page 1, filler line 10 of long output to make this page well over one screenful before the wait.")
+      msg("Page 1, filler line 11 of long output to make this page well over one screenful before the wait.")
+      msg("Page 1, filler line 12 of long output to make this page well over one screenful before the wait.")
+      msg("Page 1, filler line 13 of long output to make this page well over one screenful before the wait.")
+      msg("Page 1, filler line 14 of long output to make this page well over one screenful before the wait.")
+      msg("Page 1, filler line 15 of long output to make this page well over one screenful before the wait.")
+      msg("Page 1, filler line 16 of long output to make this page well over one screenful before the wait.")
+      msg("Page 1, filler line 17 of long output to make this page well over one screenful before the wait.")
+      msg("Page 1, filler line 18 of long output to make this page well over one screenful before the wait.")
+      msg("Page 1, filler line 19 of long output to make this page well over one screenful before the wait.")
+      msg("Page 1, filler line 20 of long output to make this page well over one screenful before the wait.")
+      msg("Page 1, filler line 21 of long output to make this page well over one screenful before the wait.")
+      msg("Page 1, filler line 22 of long output to make this page well over one screenful before the wait.")
+      msg("Page 1, filler line 23 of long output to make this page well over one screenful before the wait.")
+      msg("Page 1, filler line 24 of long output to make this page well over one screenful before the wait.")
+      msg("Page 1, filler line 25 of long output to make this page well over one screenful before the wait.")
+      msg("Page 1, filler line 26 of long output to make this page well over one screenful before the wait.")
+      msg("Page 1, filler line 27 of long output to make this page well over one screenful before the wait.")
+      msg("Page 1, filler line 28 of long output to make this page well over one screenful before the wait.")
+      msg("Page 1, filler line 29 of long output to make this page well over one screenful before the wait.")
+      msg("Page 1, filler line 30 of long output to make this page well over one screenful before the wait.")
+      msg("Page 1, filler line 31 of long output to make this page well over one screenful before the wait.")
+      msg("Page 1, filler line 32 of long output to make this page well over one screenful before the wait.")
+      msg("Page 1, filler line 33 of long output to make this page well over one screenful before the wait.")
+      msg("Page 1, filler line 34 of long output to make this page well over one screenful before the wait.")
+      msg("Page 1, filler line 35 of long output to make this page well over one screenful before the wait.")
+      msg("Page 1, filler line 36 of long output to make this page well over one screenful before the wait.")
+      msg("Page 1, filler line 37 of long output to make this page well over one screenful before the wait.")
+      msg("Page 1, filler line 38 of long output to make this page well over one screenful before the wait.")
+      msg("Page 1, filler line 39 of long output to make this page well over one screenful before the wait.")
+      msg("Page 1, filler line 40 of long output to make this page well over one screenful before the wait.")
+      wait ()
+      ClearScreen
+      msg("<span id='page2mark'></span>Page 2 begins here - a short page.")
+      msg("Just a little bit of text on this page.")
+    ]]></script>
+  </command>
+  <walkthrough name="clearafterwait">
+    <steps>
+      <![CDATA[
+      gopage1
+      ]]>
+    </steps>
+  </walkthrough>
+</asl>

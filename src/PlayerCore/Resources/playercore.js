@@ -283,10 +283,22 @@ function initPlayerUI() {
         }
     };
 
+    // Fires from the picture frame's <img onload> (SetFramePicture/
+    // JS.setPanelContents) once the image has actually finished loading and
+    // #gamePanel has its real, final height — before that, stickyOverlayHeight()
+    // only sees whatever height an unloaded <img> renders at (effectively 0),
+    // so the turn's own scrollToEnd() call (fired the moment its text and the
+    // <img> tag are added, well before the image itself has loaded) can
+    // under-count the frame and land the turn's opening line where the
+    // picture is about to appear. Re-targets scrollToTurnStart() at
+    // lastScrollTurnStart — a snapshot of whichever turn start that original
+    // call used — rather than re-reading beginningOfCurrentTurnScrollPosition,
+    // which markScrollPosition() has typically already advanced to the next
+    // turn's start by the time a real image finishes loading.
     window.setPanelHeight = function () {
         if (_showGrid) return;
         setTimeout(function () {
-            scrollToEnd();
+            scrollToTurnStart(lastScrollTurnStart);
         }, 100);
     };
 
@@ -495,13 +507,132 @@ function isElementVisible(element) {
 
 var _animateScroll = true;
 
-function scrollToEnd() {
-    if (!_animateScroll) {
-        $('html,body').scrollTop(document.body.scrollHeight);
-    } else {
-        $('html,body').animate({scrollTop: document.body.scrollHeight}, 'fast');
+// The page's own scrollable content sits behind #qv-status (fixed) and
+// whichever of #gamePanel/#gridPanel (sticky — the static picture frame
+// feature, e.g. "The Shack") is showing a picture. Once scrolled past their
+// natural flow position they float on top of whatever's beneath them, so a
+// scroll target that ignores them can land content behind the frame instead
+// of below it. #gamePanel/#gridPanel's own "top" CSS already accounts for
+// #qv-status's height (see updateStatusVisibility()), so taking the deepest
+// bottom edge of the three — rather than summing them — avoids double
+// counting #qv-status when a picture is also showing.
+function stickyOverlayHeight() {
+    var bottom = 0;
+    ["#qv-status", "#gamePanel", "#gridPanel"].forEach(function (selector) {
+        var $el = $(selector);
+        if ($el.length && isElementVisible($el)) {
+            bottom = Math.max(bottom, (parseFloat($el.css("top")) || 0) + $el.outerHeight());
+        }
+    });
+    return bottom;
+}
+
+// Snapshot of whichever turn-start position the most recent scrollToEnd()
+// call actually used, kept separately from beginningOfCurrentTurnScrollPosition
+// — see setPanelHeight()'s doc comment (above, in initPlayerUI()) for why.
+var lastScrollTurnStart = 0;
+
+// Scrolls just far enough that turnStart (the top of some turn's output)
+// lands below the fixed/sticky chrome at the top of the viewport, rather than
+// jumping straight to the bottom of the document — otherwise a long turn's
+// opening lines scroll off the top (or behind the status bar/picture frame)
+// before the player can read them. Never scrolls backward past wherever the
+// player currently is (e.g. if they've scrolled up to reread), and never
+// past the true bottom of the document.
+//
+// A turn can emit several OutputText calls, each triggering scrollToEnd(),
+// and — for a walkthrough or any other rapid burst of turns — the next one
+// can easily land while the previous call's animation is still running.
+// easeInOutCubic decelerates to a near-stop at the end of every animation;
+// restarting that curve from scratch on each interruption made the scroll
+// visibly stutter (slow down, barely move, speed up, slow down again) rather
+// than glide, with the final leg then covering whatever distance was left in
+// one comparatively large jump once nothing interrupted it further. Only the
+// very first call in a burst (starting from a stationary page) gets the
+// eased curve; anything that interrupts an already-running scroll continues
+// at the same steady rate instead of re-decelerating and re-accelerating.
+//
+// allowBackward (default false) lets the target move the scroll position
+// *up*, not just down — normally refused so that a manual scroll-up to
+// reread history doesn't get yanked back down by an unrelated later turn.
+// clearScreen() passes true: a turn that clears the screen can still hit an
+// ordinary turn-boundary scrollToEnd() call using the *pre-clear* turn start
+// (SignalTurnSuspended's own call, queued before the script that called
+// ClearScreen has necessarily finished, can still be based on wherever the
+// old, now-discarded page happened to end) — clamped against the old,
+// now-irrelevant document height, that can scroll to a wrong, much-too-far
+// position before clearScreen's own correction below runs. Since the entire
+// point of a clear is "nothing before this matters any more", its own
+// correction must be allowed to override that, forward or backward.
+function scrollToTurnStart(turnStart, allowBackward) {
+    lastScrollTurnStart = turnStart;
+
+    // A picture frame image that hasn't finished loading yet (successfully
+    // or not) doesn't have its real size yet — #gamePanel/#gridPanel's
+    // height right now is whatever an unloaded <img> renders at
+    // (effectively 0), so any target computed against it would undercount
+    // the frame and visibly place content where the picture is about to
+    // appear, needing a jump to fix once it loads. Skip for now instead:
+    // setPanelContents() wires up a load/error listener on every panel
+    // image (on top of SetFramePicture's own <img onload>) that calls back
+    // into here once the frame's real height is known, so this is never
+    // left stuck — just deferred until the answer is actually right.
+    var pendingImg = $("#gamePanel:visible img, #gridPanel:visible img").filter(function () {
+        return !this.complete;
+    })[0];
+    if (pendingImg) {
+        return;
     }
-    $("#txtCommand").focus();
+
+    if (!_animateScroll) {
+        // Used while fast-forwarding a walkthrough — always jump straight to
+        // the true end rather than following the turn-by-turn target below.
+        $('html,body').stop(true, false).scrollTop(document.body.scrollHeight);
+        focusCommandInput();
+        return;
+    }
+
+    var headerHeight = stickyOverlayHeight();
+    // turnStart is measured relative to #gameContent's own top (its height()
+    // when markScrollPosition() ran), not the page's — #gameContent isn't
+    // necessarily at page-top itself, since #gamePanel/#gridPanel (sticky,
+    // but still flow-participating) reserve real layout space above it
+    // whenever a picture is showing. Skipping this offset used to cancel out
+    // by accident whenever the frame was already showing before the turn
+    // started (its contribution to both this offset and headerHeight above
+    // were equal), which is why it went unnoticed until the frame's size
+    // changed *after* the turn had already been positioned.
+    var pageTurnStart = $("#gameContent").offset().top + turnStart;
+    var maxScrollTop = Math.max($(document).height() - $(window).height(), 0);
+    var target = Math.min(Math.max(pageTurnStart - headerHeight - 20, 0), maxScrollTop);
+    var currentScrollTop = Math.max($("body").scrollTop(), $("html").scrollTop());
+
+    if (target !== currentScrollTop && (allowBackward || target > currentScrollTop)) {
+        var wasAlreadyScrolling = $('html,body').is(":animated");
+        var distance = Math.abs(target - currentScrollTop);
+        var duration = Math.min(distance / 0.4, 2000);
+        var easing = wasAlreadyScrolling ? "linear" : "easeInOutCubic";
+        $('html,body').stop(true, false).animate({scrollTop: target}, duration, easing);
+    }
+    focusCommandInput();
+}
+
+// Plain jQuery .focus() calls the native HTMLElement.focus(), which — for an
+// element not already focused — asks the browser to scroll it into view.
+// #txtCommand sits right after all of #divOutput, so whenever it isn't
+// already focused (page just loaded, on mobile before the on-screen keyboard
+// has been tapped, focus lost to a click/selection elsewhere) that silently
+// jumped straight to the document's bottom, undoing every calculation above.
+// {preventScroll: true} keeps the input usable (typing still works
+// immediately) without fighting the scroll position we just computed.
+function focusCommandInput() {
+    document.getElementById("txtCommand")?.focus({preventScroll: true});
+}
+
+// beginningOfCurrentTurnScrollPosition is set by markScrollPosition() before
+// the turn began (see its own doc comment).
+function scrollToEnd() {
+    scrollToTurnStart(beginningOfCurrentTurnScrollPosition);
 }
 
 function SetAnimateScroll(value) {
@@ -538,6 +669,12 @@ function setPanelContents(html) {
         $("#gamePanel").hide()
     }
     $("#gamePanel").html(html);
+    // Belt-and-braces alongside SetFramePicture's own <img onload="setPanelHeight()">
+    // markup: guarantees a retry once any image here finishes loading (success
+    // or failure) even for panel HTML set directly via JS.setPanelContents that
+    // doesn't happen to include that onload itself — scrollToTurnStart() below
+    // relies on one of these eventually firing to know it's safe to scroll.
+    $("#gamePanel img").one("load error", setPanelHeight);
     setPanelHeight();
 }
 
@@ -920,8 +1057,18 @@ function clearScreen() {
         $("#divOutput").html("");
         createNewDiv("left");
         beginningOfCurrentTurnScrollPosition = 0;
+        // scrollToTurnStart(0), not a bare scrollTop(0) — the new page's
+        // content starts at #gameContent height 0, but #gameContent itself
+        // isn't necessarily at the very top of the *page*: a static picture
+        // frame (#gamePanel/#gridPanel, e.g. "The Shack") reserves real flow
+        // space above it, and jumping to page-scrollTop 0 only clears that
+        // frame if the frame is shorter than the viewport — on a small/mobile
+        // screen it very often isn't, leaving the new page's opening line
+        // rendered behind the frame. This fires on every gamebook page
+        // transition (DoPage → ClearScreen when game.clearlastpage), which
+        // includes game start (the player's first changedparent).
         setTimeout(function () {
-            $("html,body").scrollTop(0);
+            scrollToTurnStart(0, true);
         }, 100);
     } else {
         $("#divOutput").append("<hr class='clearedAbove' />");
@@ -935,7 +1082,7 @@ function clearScreen() {
         createNewDiv('left');
         beginningOfCurrentTurnScrollPosition = 0;
         setTimeout(function () {
-            $('html,body').scrollTop(0);
+            scrollToTurnStart(0, true);
         }, 100);
     }
     $("#outputData").appendTo($("#divOutput"));
