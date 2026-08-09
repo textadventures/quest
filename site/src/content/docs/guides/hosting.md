@@ -32,6 +32,18 @@ This option should work on any web host, such as Netlify - you can try [Netlify 
 - Edit `quest-config.js` to point `defaultGameUrl` to your `.quest` file
 - Upload the entire folder to your web host
 
+### Publish a single file (no download)
+
+If you don't need a fully offline copy, there's a much smaller option: a single HTML file with your game embedded in it, which loads the Quest Viva Player itself from a CDN rather than from your own hosting. Uploading one small file is all that's needed - no separate download, extraction or folder upload.
+
+In the editor, open the **File** menu and choose **Export as single file…**. This downloads one `.html` file - upload it to any web host (Netlify, GitHub Pages, your own site, etc.) and share the link.
+
+A couple of things to know about this option:
+
+- **It needs the CDN to be reachable.** The generated file loads the player from [jsDelivr](https://www.jsdelivr.com/) - if that's blocked on a visitor's network, the game won't load for them. Everything else (your game, its assets) is embedded directly in the file, so only the player itself depends on the CDN. If jsDelivr doesn't work for your audience, the same package is also published to [unpkg](https://unpkg.com/): open the exported `.html` file in a text editor, find the `<base href="https://cdn.jsdelivr.net/npm/@textadventures/quest-viva-wasmplayer@...">` line near the top, and change the URL to the same path under `https://unpkg.com/@textadventures/quest-viva-wasmplayer@...` instead.
+- **It's pinned to the Quest Viva version you exported with.** Your saved `.quest` file's own script behaviour is always preserved, however the player is updated - but the player's look and interface can still change between releases, so the export deliberately links to one exact version rather than "always the latest," to make sure it keeps looking and working the same way in the future. Re-export from the editor if you want to pick up a newer player release.
+- **This still doesn't enable double-click-from-disk play.** The file needs to be served over `http://`/`https://` (any host, or the CDN itself) - opening it directly from your computer's file system won't work, the same as every other WasmPlayer option on this page. You'll get a clear on-screen message if you try. If you need true offline play, see the [desktop app](/download/) instead.
+
 ## Host WebPlayer yourself
 
 This option requires a bit more setup, and is only recommended if you require that end users don't download your `.quest` file. For example, some people have used this option for running online treasure hunts - the `.quest` file stays on the server, so it can't be examined. See the separate [WebPlayer](/guides/webplayer/) guide.

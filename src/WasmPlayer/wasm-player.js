@@ -13,6 +13,20 @@ console.log(
     'color:#64748b'
 );
 
+// Captured synchronously while this classic script is still `document.
+// currentScript` (true only during its own initial top-level execution) —
+// used below to build an absolute URL for the dynamic `import()` of
+// dotnet.js. A relative specifier there (`import('./_framework/dotnet.js')`)
+// works when this script is same-origin, but when it's loaded cross-origin
+// (the single-file CDN-linked export, see scripts/export-embedded.mjs)
+// Chromium has no usable base URL for a relative dynamic import from a
+// classic (non-module) cross-origin script and fails the whole import with
+// "The base URL is about:blank because import() is called from a
+// CORS-cross-origin script" — confirmed empirically, `crossorigin="anonymous"`
+// on the <script> tag does not change this. Passing an absolute URL sidesteps
+// relative resolution entirely, so it works either way.
+const wasmPlayerScriptUrl = document.currentScript?.src;
+
 var _audio = null;
 
 const pendingResources = new Map();
@@ -431,9 +445,12 @@ let currentIsPreview = false;
 
 async function initWasmPlayer(gameBytes, filename, bc = null, saveBytes = null, isPreview = false, recordWalkthrough = null, runWalkthrough = null) {
     currentIsPreview = isPreview;
+    const dotnetJsUrl = wasmPlayerScriptUrl
+        ? new URL('_framework/dotnet.js', wasmPlayerScriptUrl).href
+        : './_framework/dotnet.js';
     const [htmResponse, { dotnet }] = await Promise.all([
         fetch('playercore.htm'),
-        import('./_framework/dotnet.js'),
+        import(dotnetJsUrl),
     ]);
     originalPlayerHtml = await htmResponse.text();
 
@@ -1880,6 +1897,21 @@ async function fetchGameBytes(url) {
 (function () {
     if (window.location.protocol === 'file:') {
         document.addEventListener('DOMContentLoaded', showFileProtocolError);
+        return;
+    }
+
+    // Single-file export (see scripts/export-embedded.mjs): the game bytes are
+    // inlined as base64 by a <script> tag before this one, so there's nothing
+    // to fetch at all — decode and hand straight to the same startGame() every
+    // other boot source converges on. Checked first since, unlike the sources
+    // below, an embedded export never carries any of their query params.
+    if (window.QuestVivaEmbeddedGame) {
+        const bytes = Uint8Array.from(atob(window.QuestVivaEmbeddedGame), c => c.charCodeAt(0));
+        const filename = window.QuestVivaEmbeddedGameFilename || 'game.quest';
+        document.addEventListener('DOMContentLoaded', async () => {
+            showLoading();
+            await startGame(bytes, filename);
+        });
         return;
     }
 

@@ -1,0 +1,79 @@
+name: Publish WasmPlayer to npm
+
+# Publishes the built WasmPlayer AppBundle as @textadventures/quest-viva-wasmplayer,
+# so it can be served from a CDN (jsDelivr/unpkg) for the single-file, CDN-linked
+# game export — see docs/wasmplayer-single-file-export.md. Runs as an independent
+# parallel job off the same release tag as nuget-publish.yml/deploy-play.yml/
+# electron-publish.yml (see root CLAUDE.md's Releasing section), duplicating the
+# ~15s WasmPlayer build rather than sharing artifacts across workflows.
+on:
+  push:
+    tags: ['v*']
+  # Manual escape hatch (matches deploy-play.yml/finalize-release.yml) — e.g. to
+  # retry after NPM_TOKEN expired/rotated, without needing a new tag/version.
+  # Dispatch against the existing tag itself (the "Use workflow from" ref
+  # picker in the Actions UI, or `gh workflow run npm-publish.yml --ref
+  # vX.Y.Z`) so GITHUB_REF_NAME below still resolves to that tag, same as a
+  # real tag push.
+  workflow_dispatch:
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v7
+
+      - name: Set up .NET
+        uses: actions/setup-dotnet@v5
+        with:
+          dotnet-version: '10.0.x'
+
+      - name: Install wasm-tools workload
+        run: dotnet workload install wasm-tools
+
+      - name: Set up Node
+        uses: actions/setup-node@v6
+        with:
+          node-version: '22'
+          registry-url: 'https://registry.npmjs.org'
+
+      - name: Verify tag matches VERSION file
+        run: |
+          TAG_VERSION="${GITHUB_REF_NAME#v}"
+          FILE_VERSION="$(cat VERSION)"
+          if [ "$TAG_VERSION" != "$FILE_VERSION" ]; then
+            echo "❌ Tag $GITHUB_REF_NAME does not match VERSION file ($FILE_VERSION)"
+            exit 1
+          fi
+          echo "VERSION=$FILE_VERSION" >> $GITHUB_ENV
+
+      - name: Build WasmPlayer
+        run: dotnet build src/WasmPlayer/WasmPlayer.csproj -c Release
+
+      # No package.json exists in the AppBundle output today — stamped here at
+      # publish time (analogous to how nuget-publish.yml injects -p:Version=
+      # at pack time) rather than hand-maintaining a version in a checked-in file.
+      - name: Generate package.json for the AppBundle
+        run: |
+          cat > src/WasmPlayer/bin/Release/net10.0/browser-wasm/AppBundle/package.json <<EOF
+          {
+            "name": "@textadventures/quest-viva-wasmplayer",
+            "version": "${{ env.VERSION }}",
+            "private": false,
+            "description": "Quest Viva WasmPlayer runtime (browser-WASM text adventure player), published for CDN-linked single-file game exports.",
+            "license": "MIT",
+            "homepage": "https://questviva.com",
+            "repository": {
+              "type": "git",
+              "url": "git+https://github.com/textadventures/quest.git",
+              "directory": "src/WasmPlayer"
+            }
+          }
+          EOF
+
+      - name: Publish to npm
+        run: npm publish --access public
+        working-directory: src/WasmPlayer/bin/Release/net10.0/browser-wasm/AppBundle
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
