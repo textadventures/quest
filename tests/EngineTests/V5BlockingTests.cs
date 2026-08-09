@@ -17,6 +17,8 @@ internal sealed class V5BlockingGameDriver
     private readonly WorldModel _worldModel;
     private List<string> _batch = [];
 
+    public WorldModel Model => _worldModel;
+
     private static readonly Regex OutputTag =
         new(@"<output[^>]*>(.*?)</output>", RegexOptions.Singleline | RegexOptions.Compiled);
 

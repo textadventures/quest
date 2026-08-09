@@ -77,6 +77,18 @@ EditorCore ───────────────────────
 
 **Test projects in `tests/`:** EngineTests, PlayerCoreTests, EditorCoreTests, UtilityTests, LegacyTests
 
+## Core Library Semantics (Core.aslx and friends)
+
+`Engine/Core/*.aslx` (Core.aslx, CoreOutput.aslx, CoreTimers.aslx, GamebookCore.aslx, per-language libraries, etc.) are **inlined into the game file at publish time**, not referenced live. `Packager.CreatePackage` → `WorldModel.Save(SaveMode.Package, ...)` → `GameSaver.CanSave` (`src/Engine/GameLoader/GameSaver.cs`) keeps every library-origin object/function in the saved `.quest` package except the `IncludedLibrary` reference element itself (no longer needed once its contents are inlined) — see also the `MakeElementLocal` comment in `EditorController.cs`. The same applies to the Editor's own in-progress save (`SaveMode.Editor`), which is how "library overriding" works: editing a library function makes a local copy that shadows the original from then on.
+
+**Practical consequence: a published `.quest` file is a frozen snapshot of Core library code as it existed when that game was last saved, not a live pointer to whatever ships with the current engine.** This is deliberate — it's what lets games written for old Quest/WorldModel versions keep working unmodified on newer engines/players, even after a Core library function's current body has changed, been deprecated, or been deleted outright.
+
+Implications when working on `Engine/Core/*.aslx`:
+
+- **There is no such thing as "a pre-existing bug in a published game" caused by a current Core.aslx function.** If a function's current implementation looks broken (e.g. an unconditional `error("...is obsolete...")` body, or the function missing entirely), that is very likely deliberate deprecation for *newly authored/saved* games, not a regression affecting existing ones — old games carry their own working copy of the old function, inlined at the point they were last published. Check the function's git history before describing a change as "fixing a bug" — it may instead be *undeprecating* something, which is a different, narrower claim.
+- A fix/restoration to a Core.aslx function only affects games saved (in the Editor) or newly created *after* the change lands. It cannot retroactively repair or break anything already inlined into a previously published `.quest` file.
+- Conversely, current Core.aslx bugs *do* matter for anyone editing or creating a game right now (before it's published) — the Editor loads library functions live and only inlines them on save/publish. So "restore this broken current-Core.aslx function" is a real, valid fix for the authoring experience — just describe it as that, not as a bug affecting already-shipped games.
+
 ## Git Workflow
 
 `main` is a protected branch (required status check `build_and_test`, required PR review, `enforce_admins` on) — direct pushes are rejected outright, including from repo admins. All changes, however small, go through a feature branch + PR.

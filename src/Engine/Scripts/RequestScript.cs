@@ -145,7 +145,7 @@ public class RequestScript : ScriptBase
                 if (m_worldModel.Version >= WorldModelVersion.v540)
                 {
                     throw new InvalidOperationException(
-                        "FontName request is not supported for games written for Quest 5.4 or later.");
+                        "FontName request is not supported for games with WorldModel version 540 or later.");
                 }
 
                 m_worldModel.PlayerUi.SetFont(data);
@@ -155,7 +155,7 @@ public class RequestScript : ScriptBase
                 if (m_worldModel.Version >= WorldModelVersion.v540)
                 {
                     throw new InvalidOperationException(
-                        "FontSize request is not supported for games written for Quest 5.4 or later.");
+                        "FontSize request is not supported for games with WorldModel version 540 or later.");
                 }
 
                 m_worldModel.PlayerUi.SetFontSize(data);
@@ -177,10 +177,10 @@ public class RequestScript : ScriptBase
                 m_worldModel.PlayerUi.SetStatusText(data.Replace("\n", Environment.NewLine));
                 break;
             case Request.Pause:
-                if (m_worldModel.Version >= WorldModelVersion.v550)
+                if (m_worldModel.Version >= WorldModelVersion.v550 && m_worldModel.Version < WorldModelVersion.v600)
                 {
                     throw new Exception(
-                        "The 'Pause' request is not supported for games written for Quest 5.5 or later. Use the 'SetTimeout' function instead.");
+                        "The 'Pause' request is not supported for games with WorldModel version 550–580. Use the 'SetTimeout' function instead, or set the game's WorldModel version to 600 or later.");
                 }
 
                 int ms;
@@ -191,10 +191,10 @@ public class RequestScript : ScriptBase
 
                 break;
             case Request.Wait:
-                if (m_worldModel.Version >= WorldModelVersion.v540)
+                if (m_worldModel.Version >= WorldModelVersion.v540 && m_worldModel.Version < WorldModelVersion.v600)
                 {
                     throw new Exception(
-                        "The 'Wait' request is not supported for games written for Quest 5.4 or later. Use the 'wait' script command instead.");
+                        "The 'Wait' request is not supported for games with WorldModel version 540–580. Use the 'wait' script command instead, or set the game's WorldModel version to 600 or later.");
                 }
 
                 await m_worldModel.DoWaitAsync();

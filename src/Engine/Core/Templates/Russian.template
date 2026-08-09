@@ -1,4 +1,4 @@
-<asl version="580" template="Русский">
+<asl version="600" template="Русский">
 
   <include ref="Russian.aslx"/>
   <include ref="Core.aslx"/>

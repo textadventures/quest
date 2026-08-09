@@ -416,7 +416,20 @@
       <caption>[EditorExpressionsofthetime]</caption>
     </control>
   </editor>
-  
+
+  <editor>
+    <pattern>Ask(#question#)</pattern>
+    <create>Ask("")</create>
+    <description>[EditorExpressionsplayeranswersquestion]</description>
+    <expressiontype>if</expressiontype>
+
+    <control>
+      <controltype>expression</controltype>
+      <simple>question</simple>
+      <attribute>question</attribute>
+    </control>
+  </editor>
+
   <!-- Templates for "set" -->
 
   <editor>
@@ -424,6 +437,39 @@
     <create>NewStringList()</create>
     <description>[EditorExpressionsnewstringlist]</description>
     <expressiontype>set</expressiontype>
+  </editor>
+
+  <editor>
+    <pattern>GetInput()</pattern>
+    <create>GetInput()</create>
+    <description>[EditorExpressionsgetplayerinput]</description>
+    <expressiontype>set</expressiontype>
+  </editor>
+
+  <editor>
+    <pattern><![CDATA[ShowMenu(#caption#,#options#,#allowcancel#)]]></pattern>
+    <create><![CDATA[ShowMenu("", NewStringList(), false)]]></create>
+    <description>[EditorExpressionsplayerchoosesfrommenu]</description>
+    <expressiontype>set</expressiontype>
+
+    <control>
+      <controltype>expression</controltype>
+      <simple>caption</simple>
+      <attribute>caption</attribute>
+    </control>
+
+    <control>
+      <controltype>expression</controltype>
+      <simple>options</simple>
+      <attribute>options</attribute>
+    </control>
+
+    <control>
+      <controltype>expression</controltype>
+      <simple>allow cancel</simple>
+      <simpleeditor>boolean</simpleeditor>
+      <attribute>allowcancel</attribute>
+    </control>
   </editor>
 
   <editor>

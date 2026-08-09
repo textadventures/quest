@@ -472,10 +472,12 @@
  
  
  
-  <!-- synchronous wait function is deprecated, so can no longer be added, but still needs a friendly display for older games -->
   <editor>
     <appliesto>(function)WaitForKeyPress</appliesto>
     <display>Wait for key press</display>
+    <category>[EditorScriptsOutputOutput]</category>
+    <create>WaitForKeyPress</create>
+    <add>[EditorScriptsOutputWaitforkey]</add>
 
     <control>
       <controltype>label</controltype>
@@ -484,9 +486,11 @@
   </editor>
 
   <editor>
+    <!-- Removed from adder: superseded by the synchronous "request (Wait, "")" form
+         below, which doesn't need a nested callback block - the script just continues
+         on the next line once the key is pressed. Still fully editable if already present. -->
     <appliesto>wait</appliesto>
     <display>Wait for key press</display>
-    <category>[EditorScriptsOutputOutput]</category>
     <create>wait { }</create>
     <add>[EditorScriptsOutputWaitforkey]</add>
     <advanced/>
@@ -506,9 +510,12 @@
   </editor>
 
   <editor>
+    <!-- Removed from adder: superseded by the synchronous "GetInput()" expression form, now
+         reachable via the "set variable" value field's "player's typed input" template (see
+         CoreEditorExpressions.aslx and WasmEditorBridge.GetExpressionTemplates("set")). Still
+         fully editable if already present. -->
     <appliesto>get input</appliesto>
     <display>Get input</display>
-    <category>[EditorScriptsOutputOutput]</category>
     <create>get input { }</create>
     <add>[EditorScriptsOutputGetinput]</add>
     <advanced/>
@@ -527,9 +534,10 @@
   </editor>
 
   <editor>
+    <!-- Removed from adder: see "get input" above - the synchronous "GetInput()" form now has
+         a proper picker regardless of editor style. -->
     <appliesto>(function)GetInput</appliesto>
     <display>Get input</display>
-    <category>[EditorScriptsOutputOutput]</category>
     <create>GetInput () { }</create>
     <add>[EditorScriptsOutputGetinput]</add>
     <advanced/>
@@ -596,6 +604,14 @@
   </editor>
 
   <editor>
+    <!-- NOT superseded by the synchronous "ShowMenu(...)" expression form (reachable via the
+         "set variable" value field's "player's choice from a menu" template) - they render
+         differently, not just sync-vs-async. This "ShowMenu (...) { }" form calls the ASLX
+         ShowMenu function in CoreFunctions.aslx (the same one the parser's disambiguation
+         prompt uses), which prints numbered "cmdlink" hyperlinks inline in the transcript. The
+         expression form instead goes through ExpressionOwner.ShowMenu -> PlayerUi.ShowMenu,
+         a jQuery UI popup dialog - see docs/issue about modernising that popup. Kept addable so
+         authors can still reach the nicer inline-link rendering. -->
     <appliesto>(function)ShowMenu</appliesto>
     <display>Show a menu</display>
     <category>[EditorScriptsOutputOutput]</category>
@@ -670,6 +686,12 @@
   </editor>
 
   <editor>
+    <!-- NOT superseded by the synchronous "Ask(...)" expression form (reachable via the
+         if-condition builder's "player answers a yes/no question" template) - same reasoning as
+         ShowMenu above (Ask's CoreFunctions.aslx implementation just calls ShowMenu internally
+         with Yes/No options): this "Ask (...) { }" form renders inline cmdlinks, the expression
+         form pops a jQuery UI dialog via ExpressionOwner.Ask -> PlayerUi.ShowQuestion. Kept
+         addable for the nicer inline rendering. -->
     <appliesto>(function)Ask</appliesto>
     <display>Ask a question</display>
     <category>[EditorScriptsOutputOutput]</category>

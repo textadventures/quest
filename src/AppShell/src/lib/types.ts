@@ -113,6 +113,10 @@ export interface ScriptControlData {
   objectType?: string | null
   isFunctionPicker?: boolean
   isFunctionParams?: boolean
+  // The expressionType (e.g. "set", "foreach") this control's <usetemplates> declares - see
+  // ExpressionField.svelte, which renders a template picker instead of a plain ExpressionInput
+  // when this is set and templates exist for that type.
+  useTemplates?: string | null
 }
 
 export interface ElseIfClauseData {
@@ -162,13 +166,13 @@ export interface ExpressionTemplateControlData {
   options: ControlOption[] | null
 }
 
-export interface IfExpressionTemplateData {
+export interface ExpressionTemplateData {
   templateName: string
   originalPattern: string
   controls: ExpressionTemplateControlData[]
 }
 
-export interface IfExpressionTemplate {
+export interface ExpressionTemplate {
   name: string
   createExpression: string
 }
