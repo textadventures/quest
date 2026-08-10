@@ -168,6 +168,14 @@ async function preloadAdjacentLibraryAssets(adapter: FileAdapter): Promise<void>
 }
 
 export async function openGame(bytes: Uint8Array, filename: string, adapter: FileAdapter): Promise<boolean> {
+    // A failed Initialise() below leaves WasmEditorBridge's own _controller null (see its
+    // comments) — the WASM side has already discarded whatever was loaded before this call, so
+    // if we *were* mid-session (reloadGame() re-opening the same game, or a switch to a
+    // different game), there is no good "old" state left to keep showing. Remembered before the
+    // reset below so the failure branch can tell a genuine first load (nothing to fall back to
+    // anyway) apart from a failed re-open (stale tree/isLoaded=true would otherwise silently
+    // point at a controller that no longer exists).
+    const wasAlreadyLoaded = get(isLoaded);
     // Defensive reset: callers that switch games mid-session (Electron's menu
     // actions) already await saveGame() to flush the previous game first, so
     // this should always be a no-op in practice — but a leftover timer here
@@ -194,6 +202,12 @@ export async function openGame(bytes: Uint8Array, filename: string, adapter: Fil
     const ok = result === "ok";
     if (!ok) {
         lastOpenGameError.set(result.startsWith("error:") ? result.slice("error:".length) : result);
+        // Stop rendering/interacting with the old game's now-disconnected tree — its bridge
+        // calls would otherwise silently target nothing (see the _controller comment above).
+        // A genuine first load (isLoaded was already false) has nothing to tear down here; its
+        // own caller (e.g. +page.svelte's serverLoadError, /open's inline `error`) already
+        // handles showing the failure without ever having rendered the editor in the first place.
+        if (wasAlreadyLoaded) isLoaded.set(false);
     }
     if (ok) {
         _loadedGameId = _bridge.GetGameId() || null;
@@ -222,16 +236,15 @@ export async function openGame(bytes: Uint8Array, filename: string, adapter: Fil
 // (there's no URL/session pointer back to a local-draft/FSA/Electron game —
 // only this in-memory _adapter). Flushes any pending edit first so nothing is
 // lost to the fresh Initialise() call.
+// On failure this replaces the editor with a full-screen error (see +page.svelte's fallback
+// branch, driven by isLoaded/lastOpenGameError) rather than leaving the stale tree up — the
+// re-Initialise() has already discarded whatever was loaded before, so there's nothing safe
+// left to keep displaying.
 export async function reloadGame(): Promise<boolean> {
     if (!_adapter) return false;
     await saveGame();
     const bytes = await _adapter.reload();
-    const ok = await openGame(bytes, _adapter.filename, _adapter);
-    // openGame() on failure leaves the previously-loaded tree/state displayed as-is (see its own
-    // comments) rather than tearing down the editor — right for a background game-switch failure,
-    // but silent here would make a failed Reload look like it worked. Surface it explicitly.
-    if (!ok) showToast(get(lastOpenGameError) ?? "Reload failed.", "error");
-    return ok;
+    return openGame(bytes, _adapter.filename, _adapter);
 }
 
 // Read-only peek at the current game's XML for the raw Code View panel — unlike Save(), this

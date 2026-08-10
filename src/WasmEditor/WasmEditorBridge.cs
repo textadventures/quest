@@ -270,7 +270,17 @@ public partial class WasmEditorBridge
         if (!ok)
         {
             // WorldModel loaded with recorded errors (e.g. a missing library file, invalid XML) —
-            // controller.Initialise already raised ShowMessage with the friendly, full list.
+            // controller.Initialise already raised ShowMessage with the friendly, full list. Unlike
+            // the UpdateTree failure below, there's no reason to keep this controller around: it
+            // never reached GameState.Running (WorldModel.InitialiseInternal sets State to
+            // Finished on failure), so Save()/GetGameXml() etc. would be operating on a model that
+            // was never meant to be edited. Dispose and clear it — same as the exception path
+            // above — so a caller that (bug notwithstanding) still tries to use it after a failed
+            // Initialise() gets a clear NullReferenceException instead of silently touching a dead
+            // model. The JS side (editor-store.ts's openGame) tears down its own stale UI state on
+            // this same failure rather than leaving a disconnected controller reachable at all.
+            controller.Dispose();
+            _controller = null;
             return $"error:{errorMessage ?? "Failed to load game."}";
         }
 

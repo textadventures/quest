@@ -214,4 +214,13 @@
     {#if $publishModalOpen}
         <PublishModal oncancel={() => publishModalOpen.set(false)} />
     {/if}
+{:else}
+    <!-- Reached when a mid-session re-open (reloadGame(), or /open switching to a different
+         game while one was already loaded) fails: openGame() sets isLoaded back to false rather
+         than leaving the old game's now-disconnected tree up — see its own comments. Distinct
+         from serverLoadError above, which covers only the very first load on this page. -->
+    <main class="flex flex-col items-center justify-center min-h-svh gap-6 p-8">
+        <p class="text-error-500 max-w-[40ch] text-center whitespace-pre-wrap">{$lastOpenGameError ?? "This game could not be loaded."}</p>
+        <button type="button" class="btn preset-filled-primary-500" onclick={() => goto(`${base}/open`)}>Back to Home</button>
+    </main>
 {/if}
