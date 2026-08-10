@@ -417,6 +417,18 @@ internal partial class GameLoader
 
                 var key = trimmedPair[..splitPos].Trim();
                 var dictValue = trimmedPair[(splitPos + 1)..].Trim();
+                if (result.ContainsKey(key))
+                {
+                    // QuestDictionary.Add throws ArgumentException ("Argument_AddingDuplicateWithKey")
+                    // on a duplicate key, which would otherwise escape uncaught all the way past
+                    // WorldModel.InitialiseEdit() as a raw, untranslated exception (AOT trimming
+                    // strips its message resources - see WasmEditorBridge.Initialise) instead of a
+                    // friendly, actionable error like the one immediately below for a missing '='.
+                    GameLoader.AddError(
+                        $"Duplicate key '{key}' in dictionary element '{trimmedPair}' in '{element.Name}.{attribute}'");
+                    return;
+                }
+
                 result.Add(key, dictValue);
             }
 
@@ -451,6 +463,15 @@ internal partial class GameLoader
 
                 var key = trimmedPair[..splitPos].Trim();
                 var dictValue = trimmedPair[(splitPos + 1)..].Trim();
+                if (result.ContainsKey(key))
+                {
+                    // Same duplicate-key crash risk as SimpleStringDictionaryLoader above -
+                    // Dictionary.Add throws uncaught on a repeated key instead of a friendly error.
+                    GameLoader.AddError(
+                        $"Duplicate key '{key}' in dictionary element '{trimmedPair}' in '{element.Name}.{attribute}'");
+                    return;
+                }
+
                 result.Add(key, dictValue);
             }
 
