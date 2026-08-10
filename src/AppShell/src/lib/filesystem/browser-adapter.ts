@@ -1,4 +1,4 @@
-import { isJunkAssetName, type AssetInfo, type FileAdapter, type LoadedFile } from "./types";
+import { isJunkAssetName, isLibraryAslxContent, type AssetInfo, type FileAdapter, type LoadedFile } from "./types";
 import { toBlob, triggerDownload } from "./download";
 
 // FSA globals — not in the TS DOM lib at this target version
@@ -27,15 +27,16 @@ export function hasFSA(): boolean {
 
 /**
  * FSA path: opens a directory picker and returns the handle plus all .aslx
- * filenames found inside. The caller is responsible for picking which file to
- * load if there are multiple (e.g. a multi-file game or split libraries).
+ * filenames found inside, minus any Included Library files (not directly
+ * openable as a game — see isLibraryAslxContent). The caller is responsible
+ * for picking which file to load if there are multiple (e.g. a multi-file game).
  */
 export async function openDirectory(): Promise<{ dir: FileSystemDirectoryHandle; files: string[] } | null> {
     try {
         const dir = await showDirectoryPicker({ mode: "readwrite" });
         const files: string[] = [];
         for await (const [name, handle] of dir) {
-            if (handle.kind === "file" && name.toLowerCase().endsWith(".aslx")) {
+            if (handle.kind === "file" && name.toLowerCase().endsWith(".aslx") && !(await isLibraryHandle(handle))) {
                 files.push(name);
             }
         }
@@ -43,6 +44,15 @@ export async function openDirectory(): Promise<{ dir: FileSystemDirectoryHandle;
     } catch (err: unknown) {
         if (err instanceof Error && err.name === "AbortError") return null;
         throw err;
+    }
+}
+
+// Only needs the first few hundred bytes to see the root element name.
+async function isLibraryHandle(handle: FileSystemFileHandle): Promise<boolean> {
+    try {
+        return isLibraryAslxContent(await handle.getFile().then(f => f.slice(0, 512).text()));
+    } catch {
+        return false;
     }
 }
 
