@@ -47,3 +47,14 @@ export interface LoadedFile {
 export function isJunkAssetName(name: string): boolean {
     return name === ".DS_Store" || name.startsWith("._");
 }
+
+// Included Library files are their own standalone .aslx with a <library> root
+// (no <asl>/<game> wrapper) — see GameLoader's own "not a library"/"must begin
+// with an ASL element" checks (src/Engine/GameLoader/ElementLoaders.cs,
+// GameLoader.cs). Not directly openable/playable as a game, so callers building
+// a "pick which file to open" list can use this to hide them. A plain regex
+// for the first element tag is enough here — no need for a full XML parse just
+// to read one tag name.
+export function isLibraryAslxContent(text: string): boolean {
+    return text.match(/<([a-zA-Z][\w:-]*)/)?.[1] === "library";
+}

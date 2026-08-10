@@ -1,5 +1,5 @@
 import { unzipSync } from "fflate";
-import { isJunkAssetName, type AssetInfo, type FileAdapter } from "./types";
+import { isJunkAssetName, isLibraryAslxContent, type AssetInfo, type FileAdapter } from "./types";
 import { resolveOpfsDir, removeOpfsFile, removeOpfsDir, writeOpfsFile } from "./opfs-writer";
 
 // Local drafts live in OPFS under games/<gameId>/, alongside the game's own asset
@@ -135,15 +135,15 @@ export async function createLocalDraftFromFile(file: File): Promise<
     const raw = new Uint8Array(await file.arrayBuffer());
 
     if (!file.name.toLowerCase().endsWith(".zip")) {
-        const gameId = parseGameIdFromAslx(new TextDecoder().decode(raw));
-        if (!gameId) throw new Error("Could not find a gameid in the imported file.");
-        const adapter = await createLocalDraft(gameId, file.name, raw);
-        return { kind: "opened", bytes: raw, adapter };
+        const { bytes, gameId } = ensureGameId(raw);
+        const adapter = await createLocalDraft(gameId, file.name, bytes);
+        return { kind: "opened", bytes, adapter };
     }
 
     const entries = unzipSync(raw);
     const names = Object.keys(entries)
         .filter(name => !name.endsWith("/") && !isMacZipJunk(name) && name.toLowerCase().endsWith(".aslx"))
+        .filter(name => !isLibraryAslxContent(new TextDecoder().decode(entries[name].slice(0, 512))))
         .sort();
     if (names.length === 0) throw new Error("No .aslx game file found in the zip.");
     if (names.length > 1) return { kind: "chooseEntry", entries, names };
@@ -163,10 +163,9 @@ async function openZipEntry(
     gameEntryName: string,
     displayFilename: string = gameEntryName,
 ): Promise<{ bytes: Uint8Array; adapter: LocalDraftAdapter }> {
-    const gameBytes = entries[gameEntryName];
-    if (!gameBytes) throw new Error(`Zip is missing ${gameEntryName}.`);
-    const gameId = parseGameIdFromAslx(new TextDecoder().decode(gameBytes));
-    if (!gameId) throw new Error("Could not find a gameid in the imported file.");
+    const rawGameBytes = entries[gameEntryName];
+    if (!rawGameBytes) throw new Error(`Zip is missing ${gameEntryName}.`);
+    const { bytes: gameBytes, gameId } = ensureGameId(rawGameBytes);
 
     const adapter = await createLocalDraft(gameId, displayFilename, gameBytes);
     for (const [name, bytes] of Object.entries(entries)) {
@@ -186,6 +185,28 @@ export function parseGameIdFromAslx(xmlText: string): string | null {
     } catch {
         return null;
     }
+}
+
+// Older games (pre-v500-ish exports, or anything hand-assembled) can be missing
+// <gameid> entirely — EditorController.cs does the same repair once a game is
+// already loaded through WASM (WorldModelVersion.v500 check), but the OPFS
+// draft needs a gameid up front, before WASM ever sees the file. Rather than
+// hard-erroring on import, mint one the same way the "Generate" button in
+// PropertyEditor.svelte does (crypto.randomUUID(), same v4-UUID shape as the
+// C# side's Guid.NewGuid()) and splice it into the raw XML as the first child
+// of <game>, leaving everything else in the file untouched.
+export function ensureGameId(raw: Uint8Array): { bytes: Uint8Array; gameId: string } {
+    const text = new TextDecoder().decode(raw);
+    const existing = parseGameIdFromAslx(text);
+    if (existing) return { bytes: raw, gameId: existing };
+
+    const gameTag = text.match(/<game\b[^>]*>/);
+    if (!gameTag || gameTag.index === undefined) throw new Error("Could not find a gameid in the imported file.");
+
+    const gameId = crypto.randomUUID();
+    const insertAt = gameTag.index + gameTag[0].length;
+    const patched = text.slice(0, insertAt) + `<gameid>${gameId}</gameid>` + text.slice(insertAt);
+    return { bytes: new TextEncoder().encode(patched), gameId };
 }
 
 let _persistRequested = false;
