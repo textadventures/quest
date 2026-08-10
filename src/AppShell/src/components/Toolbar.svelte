@@ -19,6 +19,8 @@
     } from "$lib/editor-store";
     import { hasActiveCmView, cmUndo, cmRedo } from "$lib/code-editor-registry";
     import { showToast } from "$lib/toast";
+    import { settingsModalOpen } from "$lib/settings-store";
+    import { t } from "$lib/i18n";
     import type { TreeNode } from "$lib/types";
     import Home from "@lucide/svelte/icons/home";
     import ArrowLeft from "@lucide/svelte/icons/arrow-left";
@@ -40,6 +42,7 @@
     import Circle from "@lucide/svelte/icons/circle";
     import Ellipsis from "@lucide/svelte/icons/ellipsis";
     import FileCode from "@lucide/svelte/icons/file-code";
+    import SettingsIcon from "@lucide/svelte/icons/settings";
     import DiscordIcon from "$components/DiscordIcon.svelte";
     import GithubIcon from "$components/GithubIcon.svelte";
     import DropdownMenu from "$components/DropdownMenu.svelte";
@@ -144,23 +147,23 @@
     // Gamebook pages are always flat (no rooms/objects/exits/verbs/commands), so
     // the only add option is a single top-level "Add Page".
     let addOptions = $derived<AddOption[]>($isGamebook ? [
-        { label: "Add Page", action: () => openAddModal("page", null) },
+        { label: t("toolbar.addPage"), action: () => openAddModal("page", null) },
     ] : [
         // Always available
-        { label: "Add Room", action: () => openAddModal("room", null) },
+        { label: t("toolbar.addRoom"), action: () => openAddModal("room", null) },
         // Context-sensitive: when a room or object is selected (but not a read-only
         // library-origin one — same restriction as the tree's own "…" menu).
         ...(!selectedNode?.isLibrary && (nt === "room" || nt === "object") ? [
-            { label: `Add Object in "${selectedNode!.text}"`, action: () => openAddModal("object", selectedNode!.key) },
+            { label: t("toolbar.addObjectIn", { name: selectedNode!.text }), action: () => openAddModal("object", selectedNode!.key) },
         ] : []),
         ...(!selectedNode?.isLibrary && nt === "room" ? [
-            { label: `Add Room in "${selectedNode!.text}"`, action: () => openAddModal("room", selectedNode!.key) },
-            { label: `Add Exit from "${selectedNode!.text}"`, action: () => createExit(selectedNode!.key) },
+            { label: t("toolbar.addRoomIn", { name: selectedNode!.text }), action: () => openAddModal("room", selectedNode!.key) },
+            { label: t("toolbar.addExitFrom", { name: selectedNode!.text }), action: () => createExit(selectedNode!.key) },
         ] : []),
         ...(!selectedNode?.isLibrary && (nt === "room" || nt === "object") ? [
-            { label: `Add Command to "${selectedNode!.text}"`, action: () => createCommand(selectedNode!.key) },
-            { label: `Add Verb to "${selectedNode!.text}"`, action: () => createVerb(selectedNode!.key) },
-            { label: `Add Turn Script to "${selectedNode!.text}"`, action: () => createTurnScript(selectedNode!.key) },
+            { label: t("toolbar.addCommandTo", { name: selectedNode!.text }), action: () => createCommand(selectedNode!.key) },
+            { label: t("toolbar.addVerbTo", { name: selectedNode!.text }), action: () => createVerb(selectedNode!.key) },
+            { label: t("toolbar.addTurnScriptTo", { name: selectedNode!.text }), action: () => createTurnScript(selectedNode!.key) },
         ] : []),
     ]);
 
@@ -168,10 +171,10 @@
     // the same conditions the old individual buttons used.
     let fileMenuItems = $derived.by((): DropdownMenuItem[] => {
         const items: DropdownMenuItem[] = [];
-        if ($canSaveAs) items.push({ label: "Save As…", action: handleSaveAs, icon: Save, disabled: saving });
-        if ($canBackup) items.push({ label: "Backup…", action: handleBackup, icon: Download, disabled: saving });
-        if ($gameFilename) items.push({ label: "Publish…", action: () => publishModalOpen.set(true), icon: Package });
-        if ($gameFilename) items.push({ label: "Export as single file…", action: handleExportSingleFile, icon: Globe, disabled: saving });
+        if ($canSaveAs) items.push({ label: t("toolbar.saveAs"), action: handleSaveAs, icon: Save, disabled: saving });
+        if ($canBackup) items.push({ label: t("toolbar.backup"), action: handleBackup, icon: Download, disabled: saving });
+        if ($gameFilename) items.push({ label: t("toolbar.publish"), action: () => publishModalOpen.set(true), icon: Package });
+        if ($gameFilename) items.push({ label: t("toolbar.exportSingleFile"), action: handleExportSingleFile, icon: Globe, disabled: saving });
         return items;
     });
 
@@ -182,8 +185,9 @@
     // as visible icon-only buttons.
     let overflowItems = $derived.by((): DropdownMenuItem[] => {
         const links: DropdownMenuItem[] = [
-            { label: "Discord", action: () => openLink(DISCORD_URL), icon: DiscordIcon },
-            { label: "GitHub", action: () => openLink(GITHUB_URL), icon: GithubIcon },
+            { label: t("toolbar.discord"), action: () => openLink(DISCORD_URL), icon: DiscordIcon },
+            { label: t("toolbar.github"), action: () => openLink(GITHUB_URL), icon: GithubIcon },
+            { label: t("common.settings"), action: () => settingsModalOpen.set(true), icon: SettingsIcon },
         ];
         if (!isNarrow.current) return links;
 
@@ -192,11 +196,11 @@
         links[0] = { ...links[0], divider: true };
 
         return [
-            { label: "Delete", action: () => selectedNode && deleteElement(selectedNode.key), icon: Trash2, disabled: $codeViewPanelOpen || !canDelete },
-            { label: "Manage assets", action: () => assetManagerOpen.set(true), icon: ImageIcon, divider: true },
-            { label: $hasActiveCmView ? "Undo (in code editor)" : "Undo", action: handleUndo, icon: Undo2, disabled: $hasActiveCmView ? false : !$canUndo },
-            { label: $hasActiveCmView ? "Redo (in code editor)" : "Redo", action: handleRedo, icon: Redo2, disabled: $hasActiveCmView ? false : !$canRedo },
-            { label: "Raw XML code view", action: handleToggleCodeView, icon: FileCode },
+            { label: t("common.delete"), action: () => selectedNode && deleteElement(selectedNode.key), icon: Trash2, disabled: $codeViewPanelOpen || !canDelete },
+            { label: t("toolbar.manageAssets"), action: () => assetManagerOpen.set(true), icon: ImageIcon, divider: true },
+            { label: $hasActiveCmView ? t("toolbar.undoInCodeEditor") : t("toolbar.undo"), action: handleUndo, icon: Undo2, disabled: $hasActiveCmView ? false : !$canUndo },
+            { label: $hasActiveCmView ? t("toolbar.redoInCodeEditor") : t("toolbar.redo"), action: handleRedo, icon: Redo2, disabled: $hasActiveCmView ? false : !$canRedo },
+            { label: t("toolbar.rawXmlCodeView"), action: handleToggleCodeView, icon: FileCode },
             ...fileItems,
             ...links,
         ];
@@ -213,14 +217,14 @@
                         class="toolbar-icon-btn shrink-0"
                         onclick={() => navigateBack()}
                         disabled={!$canGoBack}
-                        title="Back"
+                        title={t("toolbar.back")}
                     ><ArrowLeft size={16} /></button>
                     <button
                         type="button"
                         class="toolbar-icon-btn mr-2 shrink-0"
                         onclick={() => navigateForward()}
                         disabled={!$canGoForward}
-                        title="Forward"
+                        title={t("toolbar.forward")}
                     ><ArrowRight size={16} /></button>
                 {/if}
                 {#if showHome}
@@ -228,7 +232,7 @@
                         type="button"
                         class="toolbar-icon-btn mr-2 shrink-0"
                         onclick={handleHome}
-                        title="Back to Home"
+                        title={t("toolbar.backToHome")}
                     ><Home size={16} /></button>
                 {/if}
                 {#if $gameFilename}
@@ -240,18 +244,18 @@
                         class="save-chip save-chip-error shrink-0"
                         onclick={() => retrySave()}
                         title={$saveError}
-                    ><TriangleAlert size={13} /> <span class="hidden md:inline">Save failed — Retry</span></button>
+                    ><TriangleAlert size={13} /> <span class="hidden md:inline">{t("toolbar.saveFailedRetry")}</span></button>
                 {:else if $isSaving}
-                    <span class="save-chip save-chip-saving shrink-0"><LoaderCircle size={13} class="animate-spin" /> <span class="hidden md:inline">Saving…</span></span>
+                    <span class="save-chip save-chip-saving shrink-0"><LoaderCircle size={13} class="animate-spin" /> <span class="hidden md:inline">{t("toolbar.saving")}</span></span>
                 {:else if $isDirty || $isEditingField}
                     <button
                         type="button"
                         class="save-chip save-chip-unsaved shrink-0"
                         onclick={handleSaveNow}
-                        title="Save now"
-                    ><Circle size={8} fill="currentColor" /> <span class="hidden md:inline">Unsaved</span></button>
+                        title={t("toolbar.saveNow")}
+                    ><Circle size={8} fill="currentColor" /> <span class="hidden md:inline">{t("toolbar.unsaved")}</span></button>
                 {:else if $gameFilename}
-                    <span class="save-chip save-chip-saved shrink-0"><Check size={13} /> <span class="hidden md:inline">Saved</span></span>
+                    <span class="save-chip save-chip-saved shrink-0"><Check size={13} /> <span class="hidden md:inline">{t("toolbar.saved")}</span></span>
                 {/if}
             </div>
         </AppBar.Lead>
@@ -267,8 +271,8 @@
                             class="btn btn-sm preset-outlined-primary-500"
                             onclick={toggle}
                             disabled={$codeViewPanelOpen}
-                            title="Add element"
-                        ><Plus size={14} /> <span class="hidden md:inline">Add</span> <ChevronDown size={12} class="hidden md:inline" /></button>
+                            title={t("toolbar.addElement")}
+                        ><Plus size={14} /> <span class="hidden md:inline">{t("toolbar.add")}</span> <ChevronDown size={12} class="hidden md:inline" /></button>
                     {/snippet}
                 </DropdownMenu>
                 <!-- Delete button: always rendered, disabled when nothing deletable is
@@ -280,32 +284,32 @@
                     class="btn btn-sm preset-outlined-error-500 hidden md:inline-flex"
                     onclick={() => selectedNode && deleteElement(selectedNode.key)}
                     disabled={$codeViewPanelOpen || !canDelete}
-                    title={canDelete ? "Delete " + (selectedNode?.text ?? "") : "Delete"}
-                ><Trash2 size={14} /> Delete</button>
+                    title={canDelete ? t("toolbar.deleteTitleNamed", { name: selectedNode?.text ?? "" }) : t("toolbar.deleteTitle")}
+                ><Trash2 size={14} /> {t("common.delete")}</button>
                 <div class="toolbar-divider hidden md:block"></div>
-                <button type="button" class="toolbar-icon-btn !hidden md:!inline-flex" onclick={() => assetManagerOpen.set(true)} title="Manage assets"><ImageIcon size={16} /></button>
-                <button type="button" class="toolbar-icon-btn !hidden md:!inline-flex" onclick={handleUndo} disabled={$hasActiveCmView ? false : !$canUndo} title={$hasActiveCmView ? "Undo (in code editor)" : "Undo"}><Undo2 size={16} /></button>
-                <button type="button" class="toolbar-icon-btn !hidden md:!inline-flex" onclick={handleRedo} disabled={$hasActiveCmView ? false : !$canRedo} title={$hasActiveCmView ? "Redo (in code editor)" : "Redo"}><Redo2 size={16} /></button>
-                <button type="button" class="toolbar-icon-btn !hidden md:!inline-flex" onclick={handleToggleCodeView} title="Raw XML code view"><FileCode size={16} /></button>
+                <button type="button" class="toolbar-icon-btn !hidden md:!inline-flex" onclick={() => assetManagerOpen.set(true)} title={t("toolbar.manageAssets")}><ImageIcon size={16} /></button>
+                <button type="button" class="toolbar-icon-btn !hidden md:!inline-flex" onclick={handleUndo} disabled={$hasActiveCmView ? false : !$canUndo} title={$hasActiveCmView ? t("toolbar.undoInCodeEditor") : t("toolbar.undo")}><Undo2 size={16} /></button>
+                <button type="button" class="toolbar-icon-btn !hidden md:!inline-flex" onclick={handleRedo} disabled={$hasActiveCmView ? false : !$canRedo} title={$hasActiveCmView ? t("toolbar.redoInCodeEditor") : t("toolbar.redo")}><Redo2 size={16} /></button>
+                <button type="button" class="toolbar-icon-btn !hidden md:!inline-flex" onclick={handleToggleCodeView} title={t("toolbar.rawXmlCodeView")}><FileCode size={16} /></button>
                 <div class="toolbar-divider hidden md:block"></div>
                 {#if fileMenuItems.length > 0}
                     <div class="hidden md:block">
                         <DropdownMenu items={fileMenuItems}>
                             {#snippet trigger(toggle)}
-                                <button type="button" class="btn btn-sm preset-outlined-primary-500" onclick={toggle} disabled={saving} title="File"
-                                >File <ChevronDown size={12} /></button>
+                                <button type="button" class="btn btn-sm preset-outlined-primary-500" onclick={toggle} disabled={saving} title={t("toolbar.file")}
+                                >{t("toolbar.file")} <ChevronDown size={12} /></button>
                             {/snippet}
                         </DropdownMenu>
                     </div>
                 {/if}
                 {#if $gameFilename}
-                    <button type="button" class="btn btn-sm preset-filled-primary-500" onclick={handlePreview} title="Preview game"><Play size={14} /> <span class="hidden md:inline">Preview</span></button>
+                    <button type="button" class="btn btn-sm preset-filled-primary-500" onclick={handlePreview} title={t("toolbar.previewGame")}><Play size={14} /> <span class="hidden md:inline">{t("toolbar.preview")}</span></button>
                 {/if}
-                <!-- Overflow menu: community links on desktop; also Delete/Assets/
+                <!-- Overflow menu: community links + Settings on desktop; also Delete/Assets/
                      Undo/Redo/File-menu items on mobile (see overflowItems) -->
                 <DropdownMenu items={overflowItems}>
                     {#snippet trigger(toggle)}
-                        <button type="button" class="toolbar-icon-btn" onclick={toggle} title="More"><Ellipsis size={16} /></button>
+                        <button type="button" class="toolbar-icon-btn" onclick={toggle} title={t("toolbar.more")}><Ellipsis size={16} /></button>
                     {/snippet}
                 </DropdownMenu>
             </div>

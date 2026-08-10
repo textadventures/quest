@@ -1,5 +1,6 @@
 <script lang="ts">
     import { validateName } from "$lib/editor-store";
+    import { t } from "$lib/i18n";
 
     interface Props {
         elementType: "room" | "object" | "page" | "function" | "timer" | "walkthrough" | "template" | "dynamictemplate" | "type";
@@ -10,17 +11,8 @@
 
     const { elementType, parent = null, onconfirm, oncancel }: Props = $props();
 
-    const labels: Record<string, string> = {
-        room: "Room",
-        object: "Object",
-        page: "Page",
-        function: "Function",
-        timer: "Timer",
-        walkthrough: "Walkthrough",
-        template: "Template",
-        dynamictemplate: "Dynamic Template",
-        type: "Type",
-    };
+    let label = $derived(t(`addElementModal.labels.${elementType}`));
+    let heading = $derived(parent ? t("addElementModal.addHeadingIn", { label, parent }) : t("addElementModal.addHeading", { label }));
 
     let dialogEl: HTMLDivElement;
     let inputEl: HTMLInputElement;
@@ -63,11 +55,11 @@
 >
     <div class="card bg-surface-50-950 rounded-xl shadow-xl w-full max-w-80 p-6 flex flex-col gap-4">
         <h2 class="text-base font-semibold">
-            Add {labels[elementType]}{parent ? ` in "${parent}"` : ""}
+            {heading}
         </h2>
 
         <div class="flex flex-col gap-1">
-            <label for="element-name" class="text-xs text-surface-600-400">Name</label>
+            <label for="element-name" class="text-xs text-surface-600-400">{t("addElementModal.nameLabel")}</label>
             <input
                 id="element-name"
                 type="text"
@@ -75,7 +67,7 @@
                 class={"input bg-surface-50-950 px-2 py-1 text-sm" + (error ? " !border-error-500" : "")}
                 bind:this={inputEl}
                 bind:value={name}
-                placeholder="Enter a name..."
+                placeholder={t("addElementModal.namePlaceholder")}
             />
             {#if error}
                 <p class="text-xs text-error-500">{error}</p>
@@ -83,13 +75,13 @@
         </div>
 
         <div class="flex justify-end gap-2">
-            <button class="btn btn-sm preset-tonal" onclick={oncancel}>Cancel</button>
+            <button class="btn btn-sm preset-tonal" onclick={oncancel}>{t("common.cancel")}</button>
             <button
                 class="btn btn-sm preset-filled-primary-500"
                 onclick={confirm}
                 disabled={!name || !!error}
             >
-                Add {labels[elementType]}
+                {t("addElementModal.addHeading", { label })}
             </button>
         </div>
     </div>

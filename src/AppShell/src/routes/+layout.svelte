@@ -9,10 +9,12 @@
     import { PUBLIC_APPSHELL_VERSION, PUBLIC_SHOW_HOME } from "$env/static/public";
     import { isLoaded, saveGame, saveGameAs, undo, redo, canUndo, canRedo, markFileChangedExternally } from "$lib/editor-store";
     import { isElectron } from "$lib/runtime";
+    import { initI18n, localeReady } from "$lib/i18n";
     import HomeHeader from "$components/HomeHeader.svelte";
     import HomeTabs from "$components/HomeTabs.svelte";
     import ConfirmDialog from "$components/ConfirmDialog.svelte";
     import Toast from "$components/Toast.svelte";
+    import SettingsModal from "$components/SettingsModal.svelte";
 
     let { children }: { children: Snippet } = $props();
 
@@ -58,6 +60,10 @@
     // because it needs to fire — and navigate to /open — from anywhere, including
     // when a game is already loaded and the toolbar has no "open a different
     // project" button of its own.
+    onMount(() => {
+        void initI18n();
+    });
+
     onMount(() => {
         if (!isElectron()) return;
         const unsubscribeAction = window.electronApp!.menu.onAction((action) => {
@@ -134,12 +140,15 @@
     });
 </script>
 
-{#if showTabs}
-    <div class={isPlayContext ? "bg-surface-950" : ""} bind:clientHeight={homeBarHeight}>
-        <HomeHeader forceDark={isPlayContext} />
-        <HomeTabs forceDark={isPlayContext} />
-    </div>
+{#if $localeReady}
+    {#if showTabs}
+        <div class={isPlayContext ? "bg-surface-950" : ""} bind:clientHeight={homeBarHeight}>
+            <HomeHeader forceDark={isPlayContext} />
+            <HomeTabs forceDark={isPlayContext} />
+        </div>
+    {/if}
+    {@render children()}
 {/if}
-{@render children()}
 <ConfirmDialog />
 <Toast />
+<SettingsModal />
