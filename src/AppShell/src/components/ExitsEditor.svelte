@@ -4,6 +4,7 @@
     import type { ExitsData, CompassDirectionInfo } from "$lib/types";
     import Combobox from "./Combobox.svelte";
     import Pencil from "@lucide/svelte/icons/pencil";
+    import { t } from "$lib/i18n";
 
     interface Props {
         elementKey: string;
@@ -52,10 +53,10 @@
     async function deleteExit(exitKey: string, alias: string | null, to: string | null, lookOnly: boolean) {
         const reciprocalKey = findReciprocalExit(alias, to, lookOnly);
         if (reciprocalKey) {
-            const choice = await chooseDialog(`"${to}" has a matching return exit back to this room. Delete that one too?`, [
-                { label: "Cancel", value: "cancel" as const },
-                { label: "Just this one", value: "this" as const },
-                { label: "Delete both", value: "both" as const, danger: true },
+            const choice = await chooseDialog(t("exitsEditor.reciprocalDeleteConfirm", { name: to ?? "" }), [
+                { label: t("common.cancel"), value: "cancel" as const },
+                { label: t("exitsEditor.justThisOne"), value: "this" as const },
+                { label: t("exitsEditor.deleteBoth"), value: "both" as const, danger: true },
             ]);
             if (choice === null || choice === "cancel") return;
             // One call, one transaction — deleting each separately would open/close its own
@@ -134,13 +135,13 @@
                 <button
                     type="button"
                     class="text-surface-600-400 hover:text-primary-600-400 flex-shrink-0"
-                    title="Edit exit"
+                    title={t("exitsEditor.editExit")}
                     onclick={() => selectNode(dir.exitKey!)}
                 ><Pencil size={11} /></button>
             </div>
             <div class="flex items-center gap-1 min-w-0">
                 {#if dir.lookOnly}
-                    <span class="flex-1 min-w-0 text-xs text-surface-600-400 truncate">(look)</span>
+                    <span class="flex-1 min-w-0 text-xs text-surface-600-400 truncate">{t("exitsEditor.lookOnly")}</span>
                 {:else}
                     <button
                         type="button"
@@ -152,7 +153,7 @@
                 <button
                     type="button"
                     class="btn btn-sm preset-outlined-error-500 px-1 py-0 text-xs leading-none flex-shrink-0"
-                    title="Delete"
+                    title={t("common.delete")}
                     onclick={() => void deleteExit(dir.exitKey!, dir.direction, dir.to, dir.lookOnly)}
                 >×</button>
             </div>
@@ -190,7 +191,7 @@
         {#if openDirection}
             <div class="border border-primary-300-700 rounded p-2.5 flex flex-col gap-1.5 bg-surface-50-950 w-full max-w-xl">
                 <div class="flex items-center justify-between">
-                    <span class="text-xs font-medium text-surface-600-400">Create exit: {openDirection}</span>
+                    <span class="text-xs font-medium text-surface-600-400">{t("exitsEditor.createExitHeading", { direction: openDirection })}</span>
                     <button
                         type="button"
                         class="text-xs text-surface-600-400 hover:text-surface-600-400"
@@ -205,7 +206,7 @@
                 />
                 <label class="flex items-center gap-1.5 text-xs cursor-pointer">
                     <input type="checkbox" class="checkbox size-3.5" bind:checked={createInverse} />
-                    Also create the return exit
+                    {t("exitsEditor.alsoCreateReturnExit")}
                 </label>
                 <div class="flex items-center gap-3">
                     <button
@@ -213,12 +214,12 @@
                         class="btn btn-sm preset-outlined-primary-500 text-xs py-0.5"
                         disabled={!createTo}
                         onclick={() => doCreate(openDirection!)}
-                    >Create exit</button>
+                    >{t("exitsEditor.createExitButton")}</button>
                     <button
                         type="button"
                         class="text-xs text-surface-600-400 hover:text-primary-600-400 underline text-left"
                         onclick={() => doCreateLook(openDirection!)}
-                    >Create a look exit instead</button>
+                    >{t("exitsEditor.createLookExitInstead")}</button>
                 </div>
                 {#if warning}
                     <p class="text-xs text-warning-600-400">{warning}</p>
@@ -232,11 +233,11 @@
                     type="button"
                     class="btn btn-sm preset-outlined-primary-500 text-xs py-0.5"
                     onclick={addExit}
-                >+ Add Exit</button>
+                >+ {t("elementAdders.exit")}</button>
             </div>
 
             {#if data.allExits.length === 0}
-                <p class="text-xs text-surface-600-400 italic">No exits.</p>
+                <p class="text-xs text-surface-600-400 italic">{t("exitsEditor.noExits")}</p>
             {:else}
                 {#each data.allExits as exit, i (exit.key)}
                     <div class="group relative border border-surface-200-800 rounded mb-1 bg-surface-50-950 flex items-center">
@@ -245,35 +246,35 @@
                                 type="button"
                                 class="flex-1 text-left text-xs px-1.5 py-1 pr-28 text-primary-600-400 hover:underline truncate"
                                 onclick={() => selectNode(exit.to!)}
-                            >{exit.alias ?? "(none)"} → {exit.to}</button>
+                            >{exit.alias ?? t("common.none")} → {exit.to}</button>
                         {:else}
-                            <span class="flex-1 text-xs px-1.5 py-1 pr-28 text-surface-600-400 truncate">{exit.alias ?? "(none)"} → {exit.lookOnly ? "(look)" : "(nowhere)"}</span>
+                            <span class="flex-1 text-xs px-1.5 py-1 pr-28 text-surface-600-400 truncate">{exit.alias ?? t("common.none")} → {exit.lookOnly ? t("exitsEditor.lookOnly") : t("exitsEditor.nowhere")}</span>
                         {/if}
                         <div class="absolute right-1 top-1/2 -translate-y-1/2 flex gap-0.5 opacity-0 pointer-events-none group-hover:opacity-100 group-hover:pointer-events-auto transition-opacity z-10">
                             <button
                                 type="button"
                                 class="btn btn-sm preset-outlined-primary-500 px-1 py-0 text-xs leading-none flex items-center"
-                                title="Edit exit"
+                                title={t("exitsEditor.editExit")}
                                 onclick={() => selectNode(exit.key)}
                             ><Pencil size={12} /></button>
                             <button
                                 type="button"
                                 class="btn btn-sm preset-outlined-primary-500 px-1 py-0 text-xs leading-none"
-                                title="Move up"
+                                title={t("common.moveUp")}
                                 disabled={i === 0}
                                 onclick={() => moveUp(i)}
                             >↑</button>
                             <button
                                 type="button"
                                 class="btn btn-sm preset-outlined-primary-500 px-1 py-0 text-xs leading-none"
-                                title="Move down"
+                                title={t("common.moveDown")}
                                 disabled={i === data.allExits.length - 1}
                                 onclick={() => moveDown(i)}
                             >↓</button>
                             <button
                                 type="button"
                                 class="btn btn-sm preset-tonal-error px-1 py-0 text-xs leading-none"
-                                title="Delete"
+                                title={t("common.delete")}
                                 onclick={() => void deleteExit(exit.key, exit.alias, exit.to, exit.lookOnly)}
                             >×</button>
                         </div>

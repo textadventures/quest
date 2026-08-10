@@ -1,5 +1,6 @@
 <script lang="ts">
     import type { ControlOption } from "$lib/types";
+    import { t } from "$lib/i18n";
 
     let { value, options, onchange, oninput, onEnter, class: className = "", wrapperClass = "" }: {
         value: string;
@@ -186,7 +187,7 @@
         aria-activedescendant={activeDescendant}
         aria-controls="{uid}-listbox"
         class={className}
-        placeholder={value === "" && hasEmptyOption ? "(none)" : ""}
+        placeholder={value === "" && hasEmptyOption ? t("common.none") : ""}
         value={inputValue}
         onfocus={handleFocus}
         onclick={handleClick}
@@ -217,7 +218,7 @@
                     onmousedown={(e) => { e.preventDefault(); select(opt.value); }}
                     onmouseenter={() => { activeIndex = i; }}
                 >
-                    {opt.label || opt.value || "(none)"}
+                    {opt.label || opt.value || t("common.none")}
                 </div>
             {/each}
         </div>

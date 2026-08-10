@@ -210,6 +210,114 @@ async function run() {
     await page.click('div[role="dialog"] button >> nth=1');
     await page.waitForSelector('div[role="dialog"]', { state: 'detached', timeout: 10000 });
 
+    // --- AttributesEditor — via "room" (tab captions like "Attributes" are
+    // WASM-bridge-sourced, not ours, so they stay plain English and are safe
+    // to click on by text even under the xx locale). ---
+    await page.click('span:text-is("room")');
+    await page.click('button:has-text("Attributes")');
+    await page.waitForSelector('[data-attr="isroom"]', { timeout: 10000 });
+    // index 0 is PropertyEditor's own "Properties" header (same span classes,
+    // rendered above every tab's content) — AttributesEditor's own headers start at 1.
+    const attrHeaders = await page.$$eval('span.font-semibold.uppercase', els => els.map(el => el.textContent ?? ''));
+    if (attrHeaders.length < 3) throw new Error(`AttributesEditor: expected 3+ headers (incl. PropertyEditor's), found ${attrHeaders.length}`);
+    assertPseudo('AttributesEditor "Inherited types" header', attrHeaders[1]);
+    assertPseudo('AttributesEditor "Attributes" header', attrHeaders[2]);
+    const attrThs = await page.$$eval('th', els => els.map(el => el.textContent?.trim() ?? '').filter(Boolean));
+    if (attrThs.length === 0) throw new Error('AttributesEditor: no table headers found');
+    for (const text of attrThs) assertPseudo('AttributesEditor table header', text);
+    await page.click('[data-attr="isroom"]');
+    await page.waitForSelector('div.justify-between span', { timeout: 10000 });
+    assertPseudo('AttributesEditor "Assignment" header', await page.textContent('div.justify-between span'));
+    // "Add Change Script" (or "Go to Change Script") is the first button after the
+    // Assignment header — scoped so it can't match Toolbar's own pseudo buttons.
+    assertPseudo('AttributesEditor Add/Go-to Change Script button', await page.textContent('div.justify-between + div button'));
+
+    // --- ExitsEditor — via "room"'s Exits tab ---
+    await page.click('button:has-text("Exits")');
+    await page.waitForSelector('button:has-text("+")', { timeout: 10000 });
+    assertPseudoWithPrefix('ExitsEditor add-exit button', await page.textContent('button:has-text("+")'), '+ ');
+    assertPseudo('ExitsEditor "No exits" copy', await page.textContent('p.italic'));
+    // The 9-cell compass grid's first real (non-empty) direction cell — click
+    // it to open the create-exit panel and check its own chrome.
+    await page.click('.grid-cols-3 button >> nth=0');
+    await page.waitForSelector('label:has-text("[")', { timeout: 10000 });
+    const exitsHeading = (await page.textContent('.border-primary-300-700 span')) ?? '';
+    if (!exitsHeading.startsWith('[') || !exitsHeading.includes(':')) {
+        throw new Error(`ExitsEditor create-exit heading not pseudo-localized: "${exitsHeading}"`);
+    }
+    console.log(`PASS: [ExitsEditor create-exit heading] "${exitsHeading}"`);
+    assertPseudo('ExitsEditor "Also create the return exit" label', await page.textContent('label:has-text("[")'));
+    // Scoped to the "Create exit" / "Create a look exit instead" action row —
+    // excludes the panel's own bare "✕" close glyph, which (like every other
+    // ×/✕/↑/↓ glyph-only button across the app) is deliberately not translated.
+    const exitPanelButtons = await page.$$eval('.border-primary-300-700 .gap-3 button', els => els.map(el => el.textContent ?? ''));
+    if (exitPanelButtons.length !== 2) throw new Error(`ExitsEditor create-exit actions: expected 2 buttons, found ${exitPanelButtons.length}`);
+    for (const text of exitPanelButtons) assertPseudo('ExitsEditor create-exit panel action', text);
+
+    // --- ScriptEditor + AddScriptModal — via "room"'s Scripts tab ---
+    await page.click('button:has-text("Scripts")');
+    await page.waitForSelector('button:has-text("+")', { timeout: 10000 });
+    await page.click('button:has-text("+") >> nth=0'); // first "+ Add script" row
+    await page.waitForSelector('div[role="dialog"]', { timeout: 10000 });
+    assertPseudo('AddScriptModal title', await page.textContent('div[role="dialog"] h2'));
+    assertPseudo('AddScriptModal filter placeholder', await page.getAttribute('div[role="dialog"] input[type="text"]', 'placeholder'));
+    const addScriptFooter = await page.$$eval('div[role="dialog"] .border-t button', els => els.map(el => el.textContent ?? ''));
+    for (const text of addScriptFooter) assertPseudo('AddScriptModal footer button', text);
+    // Quick-add shortcuts (Print/Inventory/Move/Show/Hide/If) — click the last
+    // one (If) to exercise ScriptEditor's if/then/else rendering below.
+    const shortcutButtons = page.locator('div[role="dialog"] .rounded-full');
+    const shortcutCount = await shortcutButtons.count();
+    if (shortcutCount === 0) throw new Error('AddScriptModal: no quick-add shortcut buttons found');
+    for (const text of await shortcutButtons.allTextContents()) assertPseudo('AddScriptModal shortcut button', text);
+    await shortcutButtons.last().click();
+    await page.waitForSelector('div[role="dialog"]', { state: 'detached', timeout: 10000 });
+
+    const ifBlock = page.locator('.border.border-surface-200-800.rounded.mb-1').first();
+    const ifThenSpans = await ifBlock.locator('span.select-none').allTextContents();
+    if (ifThenSpans.length === 0) throw new Error('ScriptEditor: no if/then keyword spans found');
+    for (const text of ifThenSpans) assertPseudo('ScriptEditor if/then keyword', text);
+    // Filtered to "+"-prefixed buttons only — ifBlock's outer wrapper also contains the
+    // row's Move-up/Move-down/Delete (↑/↓/×) buttons, which a plain .first()/.last() would
+    // catch instead (their visible text is just the glyph, title attribute isn't textContent).
+    const plusButtons = ifBlock.locator('button', { hasText: '+' });
+    assertPseudoWithPrefix('ScriptEditor "+ Add script" (nested)', (await plusButtons.first().textContent()) ?? '', '+ ');
+    // "+ else" is the last "+"-prefixed button inside the if-block — click it, then
+    // re-read the if/then spans (now includes "else" as the last one).
+    await plusButtons.last().click();
+    await page.waitForTimeout(200);
+    const elseSpans = await ifBlock.locator('span.select-none').allTextContents();
+    assertPseudo('ScriptEditor "else" keyword', elseSpans[elseSpans.length - 1]);
+    // Select the if-block's own checkbox to reveal the Cut/Copy/Delete/Move/count toolbar,
+    // rendered as the block's next sibling <div>.
+    await ifBlock.locator('input[type="checkbox"]').click();
+    const scriptToolbar = ifBlock.locator('xpath=following-sibling::div[1]');
+    await scriptToolbar.waitFor({ timeout: 10000 });
+    const scriptToolbarButtons = await scriptToolbar.locator('button').allTextContents();
+    if (scriptToolbarButtons.length === 0) throw new Error('ScriptEditor: selection toolbar not found');
+    for (const text of scriptToolbarButtons) {
+        // "↑ Move up" / "↓ Move down" keep their arrow as a literal prefix outside t(),
+        // same convention as the "+ Add script" buttons throughout this app.
+        const arrowPrefix = text.trim().startsWith('↑') ? '↑ ' : text.trim().startsWith('↓') ? '↓ ' : null;
+        if (arrowPrefix) assertPseudoWithPrefix('ScriptEditor selection-toolbar button', text, arrowPrefix);
+        else assertPseudo('ScriptEditor selection-toolbar button', text);
+    }
+    assertPseudo('ScriptEditor "N selected" copy', await scriptToolbar.locator('span').last().textContent());
+
+    // --- VerbsEditor — via "player" (only "object" elements get a Verbs tab;
+    // rooms don't) — static labels only, no Combobox interaction. ---
+    await page.click('span:text-is("player")');
+    await page.click('button:has-text("Verbs")');
+    await page.waitForSelector('table', { timeout: 10000 });
+    const verbHeaders = await page.$$eval('span.font-semibold.uppercase', els => els.map(el => el.textContent ?? ''));
+    if (verbHeaders.length === 0) throw new Error('VerbsEditor: no section headers found');
+    for (const text of verbHeaders) assertPseudo('VerbsEditor header', text);
+    const verbThs = await page.$$eval('th', els => els.map(el => el.textContent?.trim() ?? '').filter(Boolean));
+    for (const text of verbThs) assertPseudo('VerbsEditor table header', text);
+    assertPseudo('VerbsEditor "No verbs added yet" copy', await page.textContent('td.italic'));
+    // Scoped to VerbsEditor's own bottom row, not Toolbar's pseudo buttons elsewhere on screen.
+    assertPseudo('VerbsEditor add-verb button', await page.textContent('.border-t.border-surface-200-800.flex.flex-col.gap-1 button'));
+    assertPseudo('VerbsEditor select-a-verb prompt', await page.textContent('p.italic'));
+
     // --- Search page — validates whichever branch (results / no games / load error) renders ---
     await page.goto(`${baseUrl}/play/search?q=quest`);
     await page.waitForSelector('form', { timeout: 30000 });

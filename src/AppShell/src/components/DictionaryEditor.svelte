@@ -1,5 +1,6 @@
 <script lang="ts">
     import { addDictItem, removeDictItem, updateDictItem } from "$lib/editor-store";
+    import { t } from "$lib/i18n";
 
     interface Props {
         elementKey: string;
@@ -77,7 +78,7 @@
             type="text"
             autocapitalize="off"
             class="input text-xs py-0.5 px-1.5 w-20 flex-shrink-0"
-            placeholder="Key"
+            placeholder={t("propertyEditor.keyFallback")}
             data-staging
             bind:value={newKey}
             onkeydown={(e) => { if (e.key === "Enter") onAdd(); }}
@@ -86,7 +87,7 @@
             type="text"
             autocapitalize="off"
             class="input text-xs py-0.5 px-1.5 flex-1"
-            placeholder="Value"
+            placeholder={t("propertyEditor.valueFallback")}
             data-staging
             bind:value={newValue}
             onkeydown={(e) => { if (e.key === "Enter") onAdd(); }}
@@ -95,6 +96,6 @@
             type="button"
             class="btn btn-sm preset-outlined-primary-500 text-xs px-2 py-0.5 flex-shrink-0"
             onclick={onAdd}
-        >Add</button>
+        >{t("common.add")}</button>
     </div>
 </div>

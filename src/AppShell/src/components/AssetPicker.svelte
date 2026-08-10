@@ -2,6 +2,7 @@
     import { assets, uploadAsset, resolveAssetUrl, parseAssetSource, putAssetText } from "$lib/editor-store";
     import Combobox from "./Combobox.svelte";
     import FileIcon from "@lucide/svelte/icons/file";
+    import { t } from "$lib/i18n";
 
     let { value, source = null, creatable = false, readonly = false, exclude = [], onchange, onEnter, class: className = "input text-xs py-0.5 px-1.5 w-full min-w-0", containerClass = "" }: {
         value: string;
@@ -86,7 +87,7 @@
         <span class="shrink-0 opacity-70" title={value}><FileIcon size={14} aria-hidden="true" /></span>
     {/if}
     {#if readonly}
-        <span class="text-xs truncate flex-1 min-w-0" title="Can't be changed after creation — add a new element to point elsewhere">{value}</span>
+        <span class="text-xs truncate flex-1 min-w-0" title={t("assetPicker.readonlyTitle")}>{value}</span>
     {:else}
         <Combobox {value} {options} onchange={handleComboboxChange} {onEnter} class={className} wrapperClass="flex-1 min-w-0" />
         <button
@@ -94,8 +95,8 @@
             class="btn btn-sm preset-outlined-primary-500 text-xs px-1.5 py-0.5 whitespace-nowrap shrink-0"
             onclick={() => inputEl?.click()}
             disabled={uploading}
-            title="Upload a new file"
-        >{uploading ? "Uploading…" : "Upload…"}</button>
+            title={t("assetPicker.uploadTitle")}
+        >{uploading ? t("assetManager.uploading") : t("assetManager.upload")}</button>
         <input bind:this={inputEl} type="file" accept={filter.accept} class="hidden" onchange={handleUpload} />
     {/if}
 </div>
