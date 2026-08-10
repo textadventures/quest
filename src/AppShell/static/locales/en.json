@@ -285,5 +285,40 @@
     "codeViewPanel.unsavedChangesMessage": "You have unsaved raw XML changes. Applying reloads the game and discards undo history.",
     "codeViewPanel.keepEditing": "Keep editing",
     "codeViewPanel.discardChanges": "Discard changes",
-    "codeViewPanel.applyChangesChoice": "Apply changes"
+    "codeViewPanel.applyChangesChoice": "Apply changes",
+
+    "common.dismiss": "Dismiss",
+    "common.reloading": "Reloading…",
+
+    "backupBanner.message": "This game is only stored in this browser — use Backup to save a copy to disk.",
+    "backupBanner.backingUp": "Backing up…",
+
+    "updateBanner.availableMessage": "Quest Viva {version} is available.",
+    "updateBanner.downloadButton": "Download",
+    "updateBanner.later": "Later",
+
+    "fileChangedBanner.message": "This file was changed outside the editor, by another program.",
+    "fileChangedBanner.reloadFromDisk": "Reload from disk",
+
+    "libraryElementBanner.message": "This element comes from a library{filename} and can't be edited directly.",
+    "libraryElementBanner.copying": "Copying…",
+    "libraryElementBanner.copyIntoGame": "Copy into your game",
+
+    "libraryReloadBanner.message": "Reload the editor to update panes for the library change you just made.",
+    "libraryReloadBanner.reloadButton": "Reload",
+
+    "publishModal.title": "Publish",
+    "publishModal.descriptionServer": "Builds a .quest package (game file plus assets) and submits it to textadventures.co.uk, where you'll fill in title, description, category and visibility.",
+    "publishModal.descriptionLocal": "Builds a .quest package (game file plus assets) and downloads it. Use the site's manual \"submit a game\" page to publish it on textadventures.co.uk.",
+    "publishModal.includeWalkthrough": "Include walkthrough",
+    "publishModal.publishing": "Publishing…",
+    "publishModal.publishToServer": "Publish to textadventures.co.uk…",
+    "publishModal.publishButton": "Publish…",
+
+    "downloadButton.titleWithLabel": "Download desktop app — {label}",
+    "downloadButton.titleGeneric": "Download the desktop app",
+    "downloadButton.desktopApp": "Desktop app",
+    "downloadButton.versionReleased": "{version} · released {date}",
+    "downloadButton.allDownloads": "All downloads",
+    "downloadButton.otherPlatforms": "Other platforms"
 }
