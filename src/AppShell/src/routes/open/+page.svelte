@@ -10,7 +10,7 @@
     import { hasFSA, openDirectory, loadFileFromDirectory, createLocalGame } from "$lib/filesystem/browser-adapter";
     import {
         openElectronFile, loadElectronFile, createElectronGame, getDefaultGamesDir, pickGameLocation,
-        listRecentGames, removeRecentGame,
+        listRecentGames, removeRecentGame, showItemInFolder,
     } from "$lib/filesystem/electron-adapter";
     import type { RecentGame } from "$lib/filesystem/electron-adapter";
     import { isElectron } from "$lib/runtime";
@@ -25,6 +25,9 @@
     import { loadWasm } from "$lib/wasm";
     import { triggerDownload } from "$lib/filesystem/download";
     import { zipSync } from "fflate";
+    import FolderOpen from "@lucide/svelte/icons/folder-open";
+    import Trash2 from "@lucide/svelte/icons/trash-2";
+    import Download from "@lucide/svelte/icons/download";
 
     const hasServer = PUBLIC_HAS_SERVER === "true";
 
@@ -146,6 +149,13 @@
     function folderName(dirPath: string): string {
         return dirPath.split(/[\\/]/).pop() || dirPath;
     }
+
+    // Matches each platform's own term for its file manager, same as any
+    // native app's "Show in Finder"/"Show in Explorer" context-menu item.
+    const electronPlatform = typeof window !== "undefined" ? window.electronApp?.platform : undefined;
+    const showInFolderLabel = electronPlatform === "Mac" ? "Show in Finder"
+        : electronPlatform === "Windows" ? "Show in Explorer"
+        : "Show in folder";
 
     // Create new game form (shared)
     let createName = $state("");
@@ -539,10 +549,18 @@
                             </button>
                             <button
                                 type="button"
-                                class="btn btn-sm preset-outlined-error-500"
+                                class="btn-icon btn-icon-sm preset-outlined-surface-500 shrink-0"
+                                title={showInFolderLabel}
+                                aria-label={showInFolderLabel}
+                                onclick={() => showItemInFolder(game.dirPath, game.filename)}
+                            ><FolderOpen size={14} /></button>
+                            <button
+                                type="button"
+                                class="btn-icon btn-icon-sm preset-outlined-error-500 shrink-0"
                                 title="Remove from Recent"
+                                aria-label="Remove from Recent"
                                 onclick={() => handleRemoveRecent(game)}
-                            >Remove</button>
+                            ><Trash2 size={14} /></button>
                         </div>
                     {/each}
                 </div>
@@ -556,24 +574,26 @@
                         <div class="flex items-center gap-2 w-full">
                             <button
                                 type="button"
-                                class="btn btn-sm preset-outlined-primary-500 flex-1 justify-between"
+                                class="btn btn-sm preset-outlined-primary-500 flex-1 min-w-0 justify-between"
                                 onclick={() => handleOpenDraft(draft.gameId)}
                             >
-                                <span>{draft.filename}</span>
-                                <span class="text-surface-600-400">{relativeTime(draft.lastModified)}</span>
+                                <span class="truncate min-w-0">{draft.filename}</span>
+                                <span class="text-surface-600-400 shrink-0">{relativeTime(draft.lastModified)}</span>
                             </button>
                             <button
                                 type="button"
-                                class="btn btn-sm preset-outlined-surface-500"
+                                class="btn-icon btn-icon-sm preset-outlined-surface-500 shrink-0"
                                 title="Download this draft as a .zip (game file + assets) — works even if it fails to open"
+                                aria-label="Download this draft as a .zip"
                                 onclick={() => handleDownloadDraft(draft.gameId, draft.filename)}
-                            >Download</button>
+                            ><Download size={14} /></button>
                             <button
                                 type="button"
-                                class="btn btn-sm preset-outlined-error-500"
+                                class="btn-icon btn-icon-sm preset-outlined-error-500 shrink-0"
                                 title="Delete draft"
+                                aria-label="Delete draft"
                                 onclick={() => handleDeleteDraft(draft.gameId, draft.filename)}
-                            >Delete</button>
+                            ><Trash2 size={14} /></button>
                         </div>
                     {/each}
                 </div>

@@ -26,6 +26,13 @@ interface ElectronDialogApi {
 
 interface ElectronShellApi {
     openExternal(url: string): Promise<void>;
+    showItemInFolder(path: string): Promise<void>;
+}
+
+interface ElectronFileWatchApi {
+    watch(dirPath: string, filenames: string[]): Promise<void>;
+    unwatch(): Promise<void>;
+    onChanged(callback: (filenames: string[]) => void): () => void;
 }
 
 interface ElectronPathApi {
@@ -91,6 +98,7 @@ interface ElectronApi {
     path: ElectronPathApi;
     paths: ElectronPathsApi;
     recent: ElectronRecentApi;
+    fileWatch: ElectronFileWatchApi;
     menu: ElectronMenuApi;
     player: ElectronPlayerApi;
     // Populated by preload.ts from process.platform (main/preload only —

@@ -9,6 +9,7 @@
     import Toolbar from "$components/Toolbar.svelte";
     import BackupBanner from "$components/BackupBanner.svelte";
     import LibraryReloadBanner from "$components/LibraryReloadBanner.svelte";
+    import FileChangedExternallyBanner from "$components/FileChangedExternallyBanner.svelte";
     import TreePanel from "$components/TreePanel.svelte";
     import PropertyEditor from "$components/PropertyEditor.svelte";
     import CodeViewPanel from "$components/CodeViewPanel.svelte";
@@ -148,6 +149,7 @@
         <Toolbar />
         <BackupBanner />
         <LibraryReloadBanner />
+        <FileChangedExternallyBanner />
         <div class="flex flex-1 overflow-hidden" oninput={handleFieldInput} onfocusout={clearFieldEditing}>
             {#if $codeViewPanelOpen}
                 <CodeViewPanel onclose={() => codeViewPanelOpen.set(false)} />
