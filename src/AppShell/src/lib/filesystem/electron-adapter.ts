@@ -164,6 +164,17 @@ export class ElectronFileAdapter implements FileAdapter {
             .map((e) => ({ key: e.name, url: "" }));
     }
 
+    // See FileAdapter.listLibraryCandidates's own comment for why this can't just be a filtered
+    // listAssets() — this folder is an arbitrary real one the user picked, so listAssets() has to
+    // hide every .aslx (an unrelated game sharing it would otherwise show up as a deletable
+    // "asset" of this one), but that means it can never also double as library discovery.
+    async listLibraryCandidates(): Promise<string[]> {
+        const entries = await electronApp().fs.readDir(this.dirPath);
+        return entries
+            .filter((e) => e.isFile && e.name.toLowerCase().endsWith(".aslx") && e.name !== this._filename)
+            .map((e) => e.name);
+    }
+
     async deleteAsset(key: string): Promise<void> {
         await electronApp().fs.unlink(this.resolve(key));
     }

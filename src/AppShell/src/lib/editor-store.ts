@@ -156,14 +156,17 @@ export const lastOpenGameError = writable<string | null>(null);
 // engine can't resolve it on its own when (re)loading. AddLibraryModal only ever uploads
 // .aslx files, so every asset with that extension is a candidate; stage them all into the WASM
 // side (WasmEditorBridge.AddAdjacentFile) before Initialise/SetGameXml runs the load that needs
-// them (see WorldModel.GetLibraryStream / ByteArrayGameDataProvider).
+// them (see WorldModel.GetLibraryStream / ByteArrayGameDataProvider). Candidate discovery goes
+// through listLibraryCandidates() rather than listAssets() — see its own comment on
+// FileAdapter for why the two can't be the same list.
 async function preloadAdjacentLibraryAssets(adapter: FileAdapter): Promise<void> {
-    const assets = await adapter.listAssets();
-    for (const asset of assets) {
-        if (!asset.key.toLowerCase().endsWith(".aslx")) continue;
-        const blob = await adapter.getAsset(asset.key);
+    const candidates = adapter.listLibraryCandidates
+        ? await adapter.listLibraryCandidates()
+        : (await adapter.listAssets()).map(a => a.key).filter(key => key.toLowerCase().endsWith(".aslx"));
+    for (const key of candidates) {
+        const blob = await adapter.getAsset(key);
         if (!blob) continue;
-        _bridge!.AddAdjacentFile(asset.key, new Uint8Array(await blob.arrayBuffer()));
+        _bridge!.AddAdjacentFile(key, new Uint8Array(await blob.arrayBuffer()));
     }
 }
 

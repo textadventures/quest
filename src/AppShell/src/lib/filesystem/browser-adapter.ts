@@ -149,6 +149,25 @@ export class BrowserFileAdapter implements FileAdapter {
         }
     }
 
+    // See FileAdapter.listLibraryCandidates's own comment for why this can't just be a filtered
+    // listAssets() — this directory is an arbitrary real folder the user picked via FSA, so
+    // listAssets() has to hide every .aslx (an unrelated game sharing it would otherwise show up
+    // as a deletable "asset" of this one), but that means it can never also double as library
+    // discovery.
+    async listLibraryCandidates(): Promise<string[]> {
+        try {
+            const libraries: string[] = [];
+            for await (const [name, handle] of this._dir) {
+                if (handle.kind === "file" && name.toLowerCase().endsWith(".aslx") && name !== this._filename) {
+                    libraries.push(name);
+                }
+            }
+            return libraries;
+        } catch {
+            return [];
+        }
+    }
+
     async deleteAsset(key: string): Promise<void> {
         await this._dir.removeEntry(key);
     }
