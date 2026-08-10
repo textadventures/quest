@@ -369,7 +369,7 @@
     </div>
     <div class="p-1.5 border-b border-surface-200-800 flex items-center gap-1">
         <div class="relative flex-1">
-            <Search class="absolute left-3.5 top-1/2 -translate-y-1/2 size-3.5 text-surface-400 pointer-events-none" />
+            <Search class="absolute left-2.5 top-1/2 -translate-y-1/2 size-3.5 text-surface-400 pointer-events-none" />
             <input
                 bind:this={filterInputEl}
                 type="text"
@@ -377,13 +377,13 @@
                 bind:value={filterText}
                 placeholder="Filter..."
                 aria-label="Filter game objects"
-                class="input text-xs py-1 pl-7 pr-6 w-full"
+                class="input text-xs py-1 pl-8 pr-7 w-full"
                 onkeydown={(e) => { if (e.key === "Escape" && filterText) { e.stopPropagation(); clearFilter(); } }}
             />
             {#if filterText}
                 <button
                     type="button"
-                    class="absolute right-3 top-1/2 -translate-y-1/2 size-4 flex items-center justify-center text-surface-400 hover:text-surface-900-50"
+                    class="absolute right-2 top-1/2 -translate-y-1/2 size-4 flex items-center justify-center text-surface-400 hover:text-surface-900-50"
                     onclick={clearFilter}
                     aria-label="Clear filter"
                 ><X class="size-3.5" /></button>
