@@ -152,6 +152,11 @@ export class BrowserFileAdapter implements FileAdapter {
     async deleteAsset(key: string): Promise<void> {
         await this._dir.removeEntry(key);
     }
+
+    async reload(): Promise<Uint8Array> {
+        const fh = await this._dir.getFileHandle(this._filename);
+        return new Uint8Array(await (await fh.getFile()).arrayBuffer());
+    }
 }
 
 // ── Helpers ───────────────────────────────────────────────────────────────────

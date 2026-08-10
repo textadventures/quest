@@ -269,6 +269,13 @@ export class LocalDraftAdapter implements FileAdapter {
         await removeOpfsFile(dirPath(this._gameId), key);
     }
 
+    async reload(): Promise<Uint8Array> {
+        const dir = await resolveOpfsDir(dirPath(this._gameId), false);
+        if (!dir) throw new Error(`Draft folder for ${this._gameId} is gone.`);
+        const fh = await dir.getFileHandle(this._filename);
+        return new Uint8Array(await (await fh.getFile()).arrayBuffer());
+    }
+
     // Moves this draft to a new OPFS directory keyed by a new GameId — needed when
     // the user regenerates the gameid field mid-edit (PropertyEditor.svelte's
     // "Generate" button), so the next save doesn't silently start a second, empty

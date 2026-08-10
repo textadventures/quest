@@ -8,6 +8,7 @@
     import { loadFromServer } from "$lib/filesystem/server-adapter";
     import Toolbar from "$components/Toolbar.svelte";
     import BackupBanner from "$components/BackupBanner.svelte";
+    import LibraryReloadBanner from "$components/LibraryReloadBanner.svelte";
     import TreePanel from "$components/TreePanel.svelte";
     import PropertyEditor from "$components/PropertyEditor.svelte";
     import CodeViewPanel from "$components/CodeViewPanel.svelte";
@@ -146,6 +147,7 @@
     <div class="flex flex-col h-dvh overflow-hidden safe-area-inset">
         <Toolbar />
         <BackupBanner />
+        <LibraryReloadBanner />
         <div class="flex flex-1 overflow-hidden" oninput={handleFieldInput} onfocusout={clearFieldEditing}>
             {#if $codeViewPanelOpen}
                 <CodeViewPanel onclose={() => codeViewPanelOpen.set(false)} />
@@ -212,4 +214,13 @@
     {#if $publishModalOpen}
         <PublishModal oncancel={() => publishModalOpen.set(false)} />
     {/if}
+{:else}
+    <!-- Reached when a mid-session re-open (reloadGame(), or /open switching to a different
+         game while one was already loaded) fails: openGame() sets isLoaded back to false rather
+         than leaving the old game's now-disconnected tree up — see its own comments. Distinct
+         from serverLoadError above, which covers only the very first load on this page. -->
+    <main class="flex flex-col items-center justify-center min-h-svh gap-6 p-8">
+        <p class="text-error-500 max-w-[40ch] text-center whitespace-pre-wrap">{$lastOpenGameError ?? "This game could not be loaded."}</p>
+        <button type="button" class="btn preset-filled-primary-500" onclick={() => goto(`${base}/open`)}>Back to Home</button>
+    </main>
 {/if}

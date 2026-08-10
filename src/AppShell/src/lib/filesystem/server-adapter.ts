@@ -68,6 +68,12 @@ export class ServerFileAdapter implements FileAdapter {
         });
         if (!resp.ok) throw new Error(`Asset delete failed: ${resp.status} ${resp.statusText}`);
     }
+
+    async reload(): Promise<Uint8Array> {
+        const resp = await fetch(`/api/editor/games/${this._gameId}`);
+        if (!resp.ok) throw new Error(`Failed to load game: ${resp.status} ${resp.statusText}`);
+        return new Uint8Array(await resp.arrayBuffer());
+    }
 }
 
 export async function loadFromServer(gameId: string): Promise<LoadedFile> {
