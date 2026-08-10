@@ -5,6 +5,7 @@
     import ScriptDictionaryEditor from "./ScriptDictionaryEditor.svelte";
     import Combobox from "./Combobox.svelte";
     import X from "@lucide/svelte/icons/x";
+    import { t } from "$lib/i18n";
 
     interface Props {
         elementKey: string;
@@ -13,9 +14,9 @@
     let { elementKey }: Props = $props();
 
     const TYPE_OPTIONS = [
-        { value: "string",           label: "Print a message" },
-        { value: "script",           label: "Run a script" },
-        { value: "scriptdictionary", label: "Require another object" },
+        { value: "string",           label: t("verbsEditor.typeOptions.printMessage") },
+        { value: "script",           label: t("verbsEditor.typeOptions.runScript") },
+        { value: "scriptdictionary", label: t("verbsEditor.typeOptions.requireObject") },
     ];
 
     // Property name -> friendly display pattern for every verb in the game. Game-wide (not
@@ -167,14 +168,14 @@
          content instead, scrolling with the rest of the tab if the list ever gets long. -->
     <div class="flex flex-col flex-1 min-w-0">
         <div class="px-3 py-1.5 border-b border-surface-100-900">
-            <span class="font-semibold text-surface-600-400 uppercase tracking-wide">Verbs</span>
+            <span class="font-semibold text-surface-600-400 uppercase tracking-wide">{t("verbsEditor.header")}</span>
         </div>
         <div>
             <table class="w-full">
                 <thead class="sticky top-0 bg-surface-50-950 z-10">
                     <tr class="text-surface-600-400 border-b border-surface-200-800">
-                        <th class="text-left py-1 px-3 font-medium">Verb</th>
-                        <th class="text-left py-1 px-3 font-medium">Behaviour</th>
+                        <th class="text-left py-1 px-3 font-medium">{t("verbsEditor.verbColumn")}</th>
+                        <th class="text-left py-1 px-3 font-medium">{t("verbsEditor.behaviour")}</th>
                         <th class="w-6"></th>
                     </tr>
                 </thead>
@@ -189,19 +190,19 @@
                         >
                             <td class="py-0.5 px-3 font-medium truncate max-w-36" title={display}>{display}</td>
                             <td class="py-0.5 px-3 text-surface-600-400">
-                                {TYPE_OPTIONS.find(t => t.value === attr.type)?.label ?? attr.type}
+                                {TYPE_OPTIONS.find(opt => opt.value === attr.type)?.label ?? attr.type}
                             </td>
                             <td class="py-0.5 pr-2 text-right">
                                 <button
                                     type="button"
                                     class="text-error-500 hover:text-error-700"
                                     onclick={(e) => onDeleteVerb(attr, e)}
-                                    title="Remove verb"
+                                    title={t("verbsEditor.removeVerb")}
                                 >✕</button>
                             </td>
                         </tr>
                     {:else}
-                        <tr><td colspan="3" class="py-2 px-3 text-surface-600-400 italic">No verbs added yet</td></tr>
+                        <tr><td colspan="3" class="py-2 px-3 text-surface-600-400 italic">{t("verbsEditor.noVerbsYet")}</td></tr>
                     {/each}
                 </tbody>
             </table>
@@ -222,7 +223,7 @@
                     disabled={!newVerbPattern.trim()}
                     onclick={onAddVerb}
                     class="btn btn-sm preset-outlined-primary-500 text-xs px-2 py-0.5 flex-shrink-0"
-                >Add Verb</button>
+                >{t("elementAdders.verb")}</button>
             </div>
             {#if addError}
                 <p class="text-xs text-error-500">{addError}</p>
@@ -244,14 +245,14 @@
         style="--panel-width: {panelWidth}px"
     >
         <div class="px-3 py-1.5 border-b border-surface-100-900 font-semibold text-surface-600-400 uppercase tracking-wide flex-shrink-0 flex items-center justify-between">
-            <span>Behaviour</span>
+            <span>{t("verbsEditor.behaviour")}</span>
             {#if selectedAttr}
                 <button
                     type="button"
                     class="normal-case text-surface-600-400 hover:text-surface-900-50"
                     onclick={() => { selectedAttrName = null; }}
-                    title="Close"
-                    aria-label="Close"
+                    title={t("common.close")}
+                    aria-label={t("common.close")}
                 ><X size={14} /></button>
             {/if}
         </div>
@@ -263,7 +264,7 @@
                 </div>
 
                 <div class="flex flex-col gap-1 flex-shrink-0">
-                    <span class="text-surface-600-400 uppercase tracking-wide text-xs">Type</span>
+                    <span class="text-surface-600-400 uppercase tracking-wide text-xs">{t("addElementModal.labels.type")}</span>
                     <select
                         class="select text-xs py-0 px-1.5 h-7"
                         value={attr.type}
@@ -276,7 +277,7 @@
                 </div>
 
                 <div class="flex flex-col gap-1">
-                    <span class="text-surface-600-400 uppercase tracking-wide text-xs flex-shrink-0">Value</span>
+                    <span class="text-surface-600-400 uppercase tracking-wide text-xs flex-shrink-0">{t("propertyEditor.valueFallback")}</span>
                     {#if attr.type === "script"}
                         <div class="min-h-48">
                             <ScriptEditor elementKey={elementKey} attribute={attr.name} />
@@ -297,7 +298,7 @@
                 </div>
             </div>
         {:else}
-            <p class="p-3 text-surface-600-400 italic">Select a verb to edit its behaviour.</p>
+            <p class="p-3 text-surface-600-400 italic">{t("verbsEditor.selectPrompt")}</p>
         {/if}
     </div>
 </div>

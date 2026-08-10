@@ -8,6 +8,7 @@
     import ListEditor from "./ListEditor.svelte";
     import DictionaryEditor from "./DictionaryEditor.svelte";
     import ScriptDictionaryEditor from "./ScriptDictionaryEditor.svelte";
+    import { t } from "$lib/i18n";
 
     // Some elements (e.g. the game element's "Status attributes" string
     // dictionary) have other controls alongside the "attributes" control on
@@ -18,17 +19,17 @@
     let { extraControls }: { extraControls?: Snippet } = $props();
 
     const TYPE_OPTIONS = [
-        { value: "string",           label: "String" },
-        { value: "boolean",          label: "Boolean" },
-        { value: "int",              label: "Integer" },
-        { value: "double",           label: "Double" },
-        { value: "script",           label: "Script" },
-        { value: "stringlist",       label: "String List" },
-        { value: "object",           label: "Object" },
-        { value: "simplepattern",    label: "Command pattern" },
-        { value: "stringdictionary", label: "String dictionary" },
-        { value: "scriptdictionary", label: "Script dictionary" },
-        { value: "null",             label: "Null" },
+        { value: "string",           label: t("attributesEditor.typeOptions.string") },
+        { value: "boolean",          label: t("attributesEditor.typeOptions.boolean") },
+        { value: "int",              label: t("attributesEditor.typeOptions.int") },
+        { value: "double",           label: t("attributesEditor.typeOptions.double") },
+        { value: "script",           label: t("attributesEditor.typeOptions.script") },
+        { value: "stringlist",       label: t("attributesEditor.typeOptions.stringlist") },
+        { value: "object",           label: t("addElementModal.labels.object") },
+        { value: "simplepattern",    label: t("attributesEditor.typeOptions.simplepattern") },
+        { value: "stringdictionary", label: t("attributesEditor.typeOptions.stringdictionary") },
+        { value: "scriptdictionary", label: t("attributesEditor.typeOptions.scriptdictionary") },
+        { value: "null",             label: t("attributesEditor.typeOptions.null") },
     ];
 
     let typeNames = $state<string[]>([]);
@@ -332,34 +333,34 @@
                 <!-- Inherited types -->
                 <div class="border-b border-surface-200-800">
                     <div class="px-3 py-1.5 border-b border-surface-100-900">
-                        <span class="font-semibold text-surface-600-400 uppercase tracking-wide">Inherited types</span>
+                        <span class="font-semibold text-surface-600-400 uppercase tracking-wide">{t("attributesEditor.inheritedTypes")}</span>
                     </div>
                     <table class="w-full">
                         <thead>
                             <tr class="text-surface-600-400 border-b border-surface-100-900">
-                                <th class="text-left py-1 px-3 font-medium">Name</th>
-                                <th class="text-left py-1 px-3 font-medium">Source</th>
+                                <th class="text-left py-1 px-3 font-medium">{t("addElementModal.nameLabel")}</th>
+                                <th class="text-left py-1 px-3 font-medium">{t("attributesEditor.sourceColumn")}</th>
                                 <th class="w-6"></th>
                             </tr>
                         </thead>
                         <tbody>
-                            {#each $fullAttributeData?.inheritedTypes ?? [] as t (t.name)}
+                            {#each $fullAttributeData?.inheritedTypes ?? [] as inheritedType (inheritedType.name)}
                                 <tr class="border-b border-surface-100-900">
-                                    <td class="py-0.5 px-3">{t.name}</td>
-                                    <td class="py-0.5 px-3 text-surface-600-400">{t.source}</td>
+                                    <td class="py-0.5 px-3">{inheritedType.name}</td>
+                                    <td class="py-0.5 px-3 text-surface-600-400">{inheritedType.source}</td>
                                     <td class="py-0.5 pr-2 text-right">
-                                        {#if !t.isDefaultType}
+                                        {#if !inheritedType.isDefaultType}
                                             <button
                                                 type="button"
                                                 class="text-error-500 hover:text-error-700"
-                                                onclick={() => onDeleteInheritedType(t.name)}
-                                                title="Remove type"
+                                                onclick={() => onDeleteInheritedType(inheritedType.name)}
+                                                title={t("attributesEditor.removeType")}
                                             >✕</button>
                                         {/if}
                                     </td>
                                 </tr>
                             {:else}
-                                <tr><td colspan="3" class="py-1 px-3 text-surface-600-400 italic">No inherited types</td></tr>
+                                <tr><td colspan="3" class="py-1 px-3 text-surface-600-400 italic">{t("attributesEditor.noInheritedTypes")}</td></tr>
                             {/each}
                         </tbody>
                     </table>
@@ -369,9 +370,9 @@
                                 class="select text-xs py-0 px-1.5 h-6 flex-1"
                                 bind:value={addTypeValue}
                             >
-                                <option value="">Add type…</option>
-                                {#each availableTypes() as t (t)}
-                                    <option value={t}>{t}</option>
+                                <option value="">{t("attributesEditor.addTypePlaceholder")}</option>
+                                {#each availableTypes() as typeName (typeName)}
+                                    <option value={typeName}>{typeName}</option>
                                 {/each}
                             </select>
                             <button
@@ -379,21 +380,21 @@
                                 disabled={!addTypeValue}
                                 onclick={onAddType}
                                 class="btn btn-sm preset-outlined-primary-500 text-xs px-2 py-0 h-6 flex-shrink-0"
-                            >Add</button>
+                            >{t("common.add")}</button>
                         </div>
                     </div>
                 </div>
 
                 <!-- Attributes -->
                 <div class="px-3 py-1.5 border-b border-surface-100-900">
-                    <span class="font-semibold text-surface-600-400 uppercase tracking-wide">Attributes</span>
+                    <span class="font-semibold text-surface-600-400 uppercase tracking-wide">{t("attributesEditor.attributesHeader")}</span>
                 </div>
                 <table class="w-full">
                     <thead class="sticky top-0 bg-surface-50-950 z-10">
                         <tr class="text-surface-600-400 border-b border-surface-200-800">
-                            <th class="text-left py-1 px-3 font-medium">Name</th>
-                            <th class="text-left py-1 px-3 font-medium">Value</th>
-                            <th class="hidden @lg:table-cell text-left py-1 px-3 font-medium">Source</th>
+                            <th class="text-left py-1 px-3 font-medium">{t("addElementModal.nameLabel")}</th>
+                            <th class="text-left py-1 px-3 font-medium">{t("propertyEditor.valueFallback")}</th>
+                            <th class="hidden @lg:table-cell text-left py-1 px-3 font-medium">{t("attributesEditor.sourceColumn")}</th>
                             <th class="w-6"></th>
                         </tr>
                     </thead>
@@ -421,13 +422,13 @@
                                             tabindex="-1"
                                             class="text-error-500 hover:text-error-700"
                                             onclick={(e) => onDeleteAttribute(attr, e)}
-                                            title="Remove attribute (or press Delete)"
+                                            title={t("attributesEditor.removeAttributeTitle")}
                                         >✕</button>
                                     {/if}
                                 </td>
                             </tr>
                         {:else}
-                            <tr><td colspan="4" class="py-2 px-3 text-surface-600-400 italic">No attributes</td></tr>
+                            <tr><td colspan="4" class="py-2 px-3 text-surface-600-400 italic">{t("attributesEditor.noAttributes")}</td></tr>
                         {/each}
                     </tbody>
                 </table>
@@ -459,14 +460,14 @@
             style="--panel-width: {panelWidth}px"
         >
             <div class="px-3 py-1.5 border-b border-surface-100-900 font-semibold text-surface-600-400 uppercase tracking-wide flex-shrink-0 flex items-center justify-between">
-                <span>Assignment</span>
+                <span>{t("attributesEditor.assignmentHeader")}</span>
                 {#if selectedAttr}
                     <button
                         type="button"
                         class="normal-case text-surface-600-400 hover:text-surface-900-50"
                         onclick={() => { selectedAttrName = null; }}
-                        title="Close"
-                        aria-label="Close"
+                        title={t("common.close")}
+                        aria-label={t("common.close")}
                     ><X size={14} /></button>
                 {/if}
             </div>
@@ -476,12 +477,12 @@
                     <div class="font-medium text-surface-700-300 truncate flex-shrink-0" title={attr.name}>{attr.name}</div>
 
                     {#if attr.isInherited || attr.isDefaultType}
-                        <p class="text-surface-600-400 italic text-xs flex-shrink-0">Inherited from <span class="font-medium">{attr.source}</span></p>
+                        <p class="text-surface-600-400 italic text-xs flex-shrink-0">{t("attributesEditor.inheritedFrom", { source: attr.source })}</p>
                     {/if}
 
                     <!-- Type selector -->
                     <div class="flex flex-col gap-1 flex-shrink-0">
-                        <span class="text-surface-600-400 uppercase tracking-wide text-xs">Type</span>
+                        <span class="text-surface-600-400 uppercase tracking-wide text-xs">{t("addElementModal.labels.type")}</span>
                         <select
                             class="select text-xs py-0 px-1.5 h-7"
                             value={attr.type}
@@ -499,20 +500,20 @@
                             type="button"
                             onclick={() => onAddChangeScript(attr)}
                             class="btn btn-sm preset-outlined-primary-500 text-xs px-2 py-0 h-6 self-start flex-shrink-0"
-                        >Add Change Script</button>
+                        >{t("attributesEditor.addChangeScript")}</button>
                     {:else if canGoToChangeScript(attr)}
                         <button
                             type="button"
                             onclick={() => selectChangeScript(attr.name)}
                             class="btn btn-sm preset-outlined-surface-500 text-xs px-2 py-0 h-6 self-start flex-shrink-0"
-                        >Go to Change Script</button>
+                        >{t("attributesEditor.goToChangeScript")}</button>
                     {/if}
 
                     <!-- Value editor -->
                     <div class="flex flex-col gap-1">
-                        <span class="text-surface-600-400 uppercase tracking-wide text-xs flex-shrink-0">Value</span>
+                        <span class="text-surface-600-400 uppercase tracking-wide text-xs flex-shrink-0">{t("propertyEditor.valueFallback")}</span>
                         {#if attr.type === "null"}
-                            <p class="text-surface-600-400 italic">(no value)</p>
+                            <p class="text-surface-600-400 italic">{t("attributesEditor.noValueParenthetical")}</p>
                         {:else if attr.type === "boolean"}
                             <Switch
                                 checked={editingBool}
@@ -521,7 +522,7 @@
                             >
                                 <Switch.Control><Switch.Thumb /></Switch.Control>
                                 <Switch.HiddenInput />
-                                <Switch.Label>{editingBool ? "True" : "False"}</Switch.Label>
+                                <Switch.Label>{editingBool ? t("common.true") : t("common.false")}</Switch.Label>
                             </Switch>
                         {:else if attr.type === "script"}
                             <div class="min-h-48">
@@ -579,7 +580,7 @@
                     </div>
                 </div>
             {:else}
-                <p class="p-3 text-surface-600-400 italic">Select an attribute to edit it.</p>
+                <p class="p-3 text-surface-600-400 italic">{t("attributesEditor.selectPrompt")}</p>
             {/if}
         </div>
     </div>
@@ -590,7 +591,7 @@
             <input
                 type="text"
                 autocapitalize="off"
-                placeholder="Add attribute..."
+                placeholder={t("attributesEditor.addAttributePlaceholder")}
                 class="input text-xs py-0 px-1.5 h-6 flex-1 min-w-0"
                 data-staging
                 bind:value={newAttrName}
@@ -601,7 +602,7 @@
                 disabled={!newAttrName.trim()}
                 onclick={onAddAttribute}
                 class="btn btn-sm preset-outlined-primary-500 text-xs px-2 py-0 h-6 flex-shrink-0"
-            >Add</button>
+            >{t("common.add")}</button>
         </div>
     </div>
 </div>

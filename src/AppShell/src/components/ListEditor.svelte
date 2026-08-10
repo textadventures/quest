@@ -1,5 +1,6 @@
 <script lang="ts">
     import { addListItem, removeListItem, updateListItem, recordWalkthrough, playWalkthrough } from "$lib/editor-store";
+    import { t } from "$lib/i18n";
 
     interface Props {
         elementKey: string;
@@ -9,7 +10,7 @@
         isWalkthrough?: boolean;
     }
 
-    let { elementKey, attribute, value, addPrompt = "Add item…", isWalkthrough = false }: Props = $props();
+    let { elementKey, attribute, value, addPrompt = t("listEditor.defaultAddPrompt"), isWalkthrough = false }: Props = $props();
 
     let items = $derived.by<{key: string, value: string}[]>(() => {
         try { return JSON.parse(value ?? "[]"); } catch { return []; }
@@ -41,14 +42,14 @@
                 class="btn btn-sm preset-outlined-primary-500 text-xs px-2 py-0.5"
                 onclick={() => playWalkthrough(elementKey)}
                 disabled={items.length === 0}
-                title="Play the game and run these steps"
-            >▶ Play</button>
+                title={t("listEditor.playTitle")}
+            >▶ {t("listEditor.playButton")}</button>
             <button
                 type="button"
                 class="btn btn-sm preset-outlined-error-500 text-xs px-2 py-0.5"
                 onclick={() => recordWalkthrough(elementKey)}
-                title="Play the game — replaying these steps first, if any — and record every further command as a new walkthrough step"
-            >● Record</button>
+                title={t("listEditor.recordTitle")}
+            >● {t("listEditor.recordButton")}</button>
         </div>
     {/if}
     {#each items as item (item.key)}
@@ -94,6 +95,6 @@
             type="button"
             class="btn btn-sm preset-outlined-primary-500 text-xs px-2 py-0.5"
             onclick={onAdd}
-        >Add</button>
+        >{t("common.add")}</button>
     </div>
 </div>

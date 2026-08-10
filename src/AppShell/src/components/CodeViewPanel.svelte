@@ -3,6 +3,7 @@
     import { getGameXml, setGameXml, codeViewCloseRequested } from "$lib/editor-store";
     import { chooseDialog, confirmDialog } from "$lib/confirm";
     import CodeEditor from "./CodeEditor.svelte";
+    import { t } from "$lib/i18n";
 
     interface Props {
         onclose: () => void;
@@ -43,8 +44,8 @@
 
     async function handleApplyButton() {
         const confirmed = await confirmDialog(
-            "Applying reloads the whole game from this text and discards undo history. Continue?",
-            { confirmLabel: "Apply", danger: true }
+            t("codeViewPanel.applyConfirmMessage"),
+            { confirmLabel: t("codeViewPanel.applyLabel"), danger: true }
         );
         if (!confirmed) return;
         if (await applyChanges()) onclose();
@@ -59,11 +60,11 @@
             return;
         }
         const choice = await chooseDialog(
-            "You have unsaved raw XML changes. Applying reloads the game and discards undo history.",
+            t("codeViewPanel.unsavedChangesMessage"),
             [
-                { label: "Keep editing", value: "keep" as const },
-                { label: "Discard changes", value: "discard" as const },
-                { label: "Apply changes", value: "apply" as const },
+                { label: t("codeViewPanel.keepEditing"), value: "keep" as const },
+                { label: t("codeViewPanel.discardChanges"), value: "discard" as const },
+                { label: t("codeViewPanel.applyChangesChoice"), value: "apply" as const },
             ]
         );
         if (choice === "discard") {
@@ -93,7 +94,7 @@
          operation, and deserves to be at least as obvious as the initial load. -->
     <main class="flex flex-col items-center justify-center flex-1 gap-6 p-8">
         <div class="size-10 rounded-full border-4 border-surface-300-700 border-t-primary-500 animate-spin"></div>
-        <p class="text-surface-600-400 text-sm">Applying changes…</p>
+        <p class="text-surface-600-400 text-sm">{t("codeViewPanel.applyingChanges")}</p>
     </main>
 {:else}
     <div class="flex flex-col flex-1 min-w-0 overflow-hidden">
@@ -109,8 +110,8 @@
         </div>
 
         <div class="flex items-center justify-end gap-2 px-4 py-2 border-t border-surface-200-800">
-            <button type="button" class="btn btn-sm preset-tonal" onclick={attemptClose}>Cancel</button>
-            <button type="button" class="btn btn-sm preset-filled-primary-500" onclick={handleApplyButton}>Apply</button>
+            <button type="button" class="btn btn-sm preset-tonal" onclick={attemptClose}>{t("common.cancel")}</button>
+            <button type="button" class="btn btn-sm preset-filled-primary-500" onclick={handleApplyButton}>{t("codeViewPanel.applyLabel")}</button>
         </div>
     </div>
 {/if}

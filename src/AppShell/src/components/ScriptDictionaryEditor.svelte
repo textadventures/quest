@@ -2,6 +2,7 @@
     import { SvelteSet } from "svelte/reactivity";
     import { addScriptDictItem, removeScriptDictItem, makeScriptDictEditable, getObjectNames } from "$lib/editor-store";
     import ScriptEditor from "./ScriptEditor.svelte";
+    import { t } from "$lib/i18n";
 
     interface Props {
         elementKey: string;
@@ -56,17 +57,17 @@
 <div class="flex flex-col gap-1 w-full">
     {#if isLocked}
         <div class="flex items-center gap-2 py-1 px-2 mb-1 text-xs text-surface-600-400 italic border border-surface-200-800 rounded">
-            <span class="flex-1">This script dictionary is inherited — read-only.</span>
+            <span class="flex-1">{t("scriptDictionaryEditor.inheritedReadOnly")}</span>
             <button
                 type="button"
                 class="btn btn-sm preset-outlined-primary-500 text-xs px-2 py-0.5 flex-shrink-0 not-italic"
                 onclick={() => makeScriptDictEditable(elementKey, attribute)}
-            >Make editable copy</button>
+            >{t("common.makeEditableCopy")}</button>
         </div>
     {/if}
     {#if isLocked}
         {#each items as item (item.key)}
-            <div class="border border-surface-200-800 rounded px-2 py-1 text-xs text-surface-600-400 opacity-60"><span class="font-medium">{item.key}</span> = <span class="italic">{item.value || "(empty)"}</span></div>
+            <div class="border border-surface-200-800 rounded px-2 py-1 text-xs text-surface-600-400 opacity-60"><span class="font-medium">{item.key}</span> = <span class="italic">{item.value || t("scriptDictionaryEditor.emptyValue")}</span></div>
         {/each}
     {:else}
         {#each keys as key (key)}
@@ -96,11 +97,11 @@
             {#if keySource === "object"}
                 <select
                     class="select text-xs py-0.5 px-1.5 flex-1"
-                    aria-label="Add entry key"
+                    aria-label={t("scriptDictionaryEditor.addEntryKeyAriaLabel")}
                     data-staging
                     bind:value={newKey}
                 >
-                    <option value="">Select object…</option>
+                    <option value="">{t("scriptDictionaryEditor.selectObjectOption")}</option>
                     {#each availableObjectNames as name (name)}
                         <option value={name}>{name}</option>
                     {/each}
@@ -110,8 +111,8 @@
                     type="text"
                     autocapitalize="off"
                     class="input text-xs py-0.5 px-1.5 flex-1"
-                    placeholder="Add entry key…"
-                    aria-label="Add entry key"
+                    placeholder={t("scriptDictionaryEditor.addEntryKeyPlaceholder")}
+                    aria-label={t("scriptDictionaryEditor.addEntryKeyAriaLabel")}
                     data-staging
                     bind:value={newKey}
                     onkeydown={(e) => { if (e.key === "Enter") onAdd(); }}
@@ -122,7 +123,7 @@
                 class="btn btn-sm preset-outlined-primary-500 text-xs px-2 py-0.5 flex-shrink-0"
                 disabled={!newKey.trim()}
                 onclick={onAdd}
-            >Add</button>
+            >{t("common.add")}</button>
         </div>
     {/if}
 </div>

@@ -1,6 +1,7 @@
 <script lang="ts">
     import Wand2 from "@lucide/svelte/icons/wand-2";
     import { getExpressionFunctions } from "$lib/editor-store";
+    import { t } from "$lib/i18n";
     import type { ExpressionFunctionInfo } from "$lib/types";
 
     interface Props {
@@ -155,7 +156,7 @@
         bind:this={buttonEl}
         type="button"
         class="btn btn-sm preset-outlined-primary-500 px-1 py-0.5 flex-shrink-0"
-        title="Insert object or function"
+        title={t("expressionInput.insertTitle")}
         onclick={toggle}
     ><Wand2 size={13} aria-hidden="true" /></button>
     {#if open}
@@ -168,13 +169,13 @@
             <input
                 type="text"
                 autocapitalize="off"
-                placeholder="Filter…"
+                placeholder={t("expressionInput.filterPlaceholder")}
                 class="input text-xs py-1 px-2 rounded-none border-0 border-b border-surface-200-800"
                 bind:value={filter}
             />
             <div class="overflow-y-auto flex-1">
                 {#if filteredObjects.length > 0}
-                    <div class="px-2 pt-1.5 pb-0.5 text-[10px] font-semibold uppercase text-surface-600-400 sticky top-0 bg-white dark:bg-surface-800">Objects</div>
+                    <div class="px-2 pt-1.5 pb-0.5 text-[10px] font-semibold uppercase text-surface-600-400 sticky top-0 bg-white dark:bg-surface-800">{t("expressionInput.objectsHeading")}</div>
                     {#each filteredObjects as name (name)}
                         <button
                             type="button"
@@ -184,7 +185,7 @@
                     {/each}
                 {/if}
                 {#if filteredGameFunctions.length > 0}
-                    <div class="px-2 pt-1.5 pb-0.5 text-[10px] font-semibold uppercase text-surface-600-400 sticky top-0 bg-white dark:bg-surface-800">Game functions</div>
+                    <div class="px-2 pt-1.5 pb-0.5 text-[10px] font-semibold uppercase text-surface-600-400 sticky top-0 bg-white dark:bg-surface-800">{t("expressionInput.gameFunctionsHeading")}</div>
                     {#each filteredGameFunctions as fn (fn.name)}
                         <button
                             type="button"
@@ -194,7 +195,7 @@
                     {/each}
                 {/if}
                 {#if filteredLibraryFunctions.length > 0}
-                    <div class="px-2 pt-1.5 pb-0.5 text-[10px] font-semibold uppercase text-surface-600-400 sticky top-0 bg-white dark:bg-surface-800">Library &amp; built-in functions</div>
+                    <div class="px-2 pt-1.5 pb-0.5 text-[10px] font-semibold uppercase text-surface-600-400 sticky top-0 bg-white dark:bg-surface-800">{t("expressionInput.libraryFunctionsHeading")}</div>
                     {#each filteredLibraryFunctions as fn (fn.name)}
                         <button
                             type="button"
@@ -204,7 +205,7 @@
                     {/each}
                 {/if}
                 {#if filteredObjects.length === 0 && filteredFunctions.length === 0}
-                    <p class="px-2 py-2 text-xs text-surface-600-400 italic">No matches.</p>
+                    <p class="px-2 py-2 text-xs text-surface-600-400 italic">{t("expressionInput.noMatches")}</p>
                 {/if}
             </div>
         </div>

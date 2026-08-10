@@ -6,6 +6,7 @@
     import CodeEditor from "./CodeEditor.svelte";
     import Combobox from "./Combobox.svelte";
     import ExpressionInput from "./ExpressionInput.svelte";
+    import { t } from "$lib/i18n";
     import {
         scriptVersion,
         scriptClipboardHasContent,
@@ -343,8 +344,8 @@
         const game = functionInfos.filter(f => !f.isLibrary);
         const library = functionInfos.filter(f => f.isLibrary);
         return [
-            ...game.map(f => ({ value: f.name, label: f.name, group: "Game functions" })),
-            ...library.map(f => ({ value: f.name, label: f.name, group: "Library functions" })),
+            ...game.map(f => ({ value: f.name, label: f.name, group: t("expressionInput.gameFunctionsHeading") })),
+            ...library.map(f => ({ value: f.name, label: f.name, group: t("scriptEditor.libraryFunctionsGroup") })),
         ];
     }
 
@@ -440,17 +441,17 @@
 <div class={indentClass}>
     {#if isRoot && isLocked}
         <div class="flex items-center gap-2 py-1 px-2 mb-1 text-xs text-surface-600-400 italic border border-surface-200-800 rounded">
-            <span class="flex-1">This script is inherited — read-only.</span>
+            <span class="flex-1">{t("scriptEditor.inheritedReadOnly")}</span>
             <button
                 type="button"
                 class="btn btn-sm preset-outlined-primary-500 text-xs px-2 py-0.5 flex-shrink-0 not-italic"
                 onclick={onToggleCodeView}
-            >{codeViewMode ? "Visual view" : "Code view"}</button>
+            >{codeViewMode ? t("scriptEditor.visualView") : t("scriptEditor.codeView")}</button>
             <button
                 type="button"
                 class="btn btn-sm preset-outlined-primary-500 text-xs px-2 py-0.5 flex-shrink-0 not-italic"
                 onclick={() => makeScriptEditable(elementKey, attribute)}
-            >Make editable copy</button>
+            >{t("common.makeEditableCopy")}</button>
         </div>
     {/if}
     {#if codeViewMode}
@@ -485,21 +486,21 @@
                             <button
                                 type="button"
                                 class="btn btn-sm preset-outlined-primary-500 px-1 py-0 text-xs leading-none"
-                                title="Move up"
+                                title={t("common.moveUp")}
                                 disabled={i === 0}
                                 onclick={() => onMoveUp(i)}
                             >↑</button>
                             <button
                                 type="button"
                                 class="btn btn-sm preset-outlined-primary-500 px-1 py-0 text-xs leading-none"
-                                title="Move down"
+                                title={t("common.moveDown")}
                                 disabled={i === scripts().length - 1}
                                 onclick={() => onMoveDown(i)}
                             >↓</button>
                             <button
                                 type="button"
                                 class="btn btn-sm preset-tonal-error px-1 py-0 text-xs leading-none"
-                                title="Delete"
+                                title={t("common.delete")}
                                 onclick={() => onDelete(i)}
                             >×</button>
                         </div>
@@ -523,17 +524,17 @@
                         type="button"
                         class="btn btn-sm preset-outlined-primary-500 text-xs py-0.5 flex-shrink-0"
                         onclick={onCutSelected}
-                    >Cut</button>
+                    >{t("common.cut")}</button>
                     <button
                         type="button"
                         class="btn btn-sm preset-outlined-primary-500 text-xs py-0.5 flex-shrink-0"
                         onclick={onCopySelected}
-                    >Copy</button>
+                    >{t("common.copy")}</button>
                     <button
                         type="button"
                         class="btn btn-sm preset-tonal-error text-xs py-0.5 flex-shrink-0"
                         onclick={onDeleteSelected}
-                    >Delete</button>
+                    >{t("common.delete")}</button>
                     {#if sel.length === 1}
                         <span class="w-px h-4 bg-surface-300-700 mx-0.5 flex-shrink-0"></span>
                         <button
@@ -541,15 +542,15 @@
                             class="btn btn-sm preset-outlined-primary-500 text-xs py-0.5 flex-shrink-0"
                             disabled={sel[0] === 0}
                             onclick={onMoveUpSelected}
-                        >↑ Move up</button>
+                        >↑ {t("common.moveUp")}</button>
                         <button
                             type="button"
                             class="btn btn-sm preset-outlined-primary-500 text-xs py-0.5 flex-shrink-0"
                             disabled={sel[0] === scripts().length - 1}
                             onclick={onMoveDownSelected}
-                        >↓ Move down</button>
+                        >↓ {t("common.moveDown")}</button>
                     {/if}
-                    <span class="ml-auto pl-2 flex-shrink-0 text-surface-600-400">{sel.length} selected</span>
+                    <span class="ml-auto pl-2 flex-shrink-0 text-surface-600-400">{t("scriptEditor.selectedCount", { count: sel.length })}</span>
                 </div>
             {/if}
         </div>
@@ -563,23 +564,23 @@
                     type="button"
                     class="btn btn-sm preset-outlined-primary-500 text-xs py-0.5"
                     onclick={() => (showAddModal = true)}
-                >+ Add script</button>
+                >+ {t("scriptEditor.addScript")}</button>
             {:else if !codeViewMode && isRoot}
-                <span class="text-xs text-surface-600-400 italic">Loading commands…</span>
+                <span class="text-xs text-surface-600-400 italic">{t("scriptEditor.loadingCommands")}</span>
             {/if}
             {#if isRoot && $scriptClipboardHasContent && !codeViewMode}
                 <button
                     type="button"
                     class="btn btn-sm preset-outlined-primary-500 text-xs py-0.5"
                     onclick={onPaste}
-                >Paste</button>
+                >{t("common.paste")}</button>
             {/if}
             {#if isRoot}
                 <button
                     type="button"
                     class="btn btn-sm preset-outlined-primary-500 text-xs py-0.5"
                     onclick={onToggleCodeView}
-                >{codeViewMode ? "Visual editor" : "Code view"}</button>
+                >{codeViewMode ? t("scriptEditor.visualEditor") : t("scriptEditor.codeView")}</button>
             {/if}
         </div>
 
@@ -645,9 +646,9 @@
                     }
                 }}
             >
-                <option value="true">yes</option>
-                <option value="false">no</option>
-                <option value="expression">expression</option>
+                <option value="true">{t("scriptEditor.yesOption")}</option>
+                <option value="false">{t("scriptEditor.noOption")}</option>
+                <option value="expression">{t("scriptEditor.expressionOption")}</option>
             </select>
             {#if !simple}
                 <input
@@ -672,8 +673,8 @@
                     }
                 }}
             >
-                <option value={ctrl.simpleLabel ?? "simple"}>{ctrl.simpleLabel ?? "simple"}</option>
-                <option value="expression">expression</option>
+                <option value={ctrl.simpleLabel ?? t("scriptEditor.simpleOption")}>{ctrl.simpleLabel ?? t("scriptEditor.simpleOption")}</option>
+                <option value="expression">{t("scriptEditor.expressionOption")}</option>
             </select>
             {#if simple}
                 {#if ctrl.simpleEditor === "objects"}
@@ -815,7 +816,7 @@
                     <button
                         type="button"
                         class="btn btn-sm preset-tonal-error px-1 py-0 text-xs leading-none"
-                        title="Remove parameter"
+                        title={t("scriptEditor.removeParameter")}
                         onclick={() => onRemoveParam(scriptIndex, ctrl.attribute!, item.key)}
                     >×</button>
                 </span>
@@ -824,7 +825,7 @@
                 type="button"
                 class="btn btn-sm preset-outlined-primary-500 text-xs py-0 px-1.5 leading-none"
                 onclick={() => onAddParam(scriptIndex, ctrl.attribute!, "")}
-            >+ param</button>
+            >+ {t("scriptEditor.addParam")}</button>
         </span>
     {/if}
 {/snippet}
@@ -855,7 +856,7 @@
                 }
             }}
         >
-            <option value="expression">expression</option>
+            <option value="expression">{t("scriptEditor.expressionOption")}</option>
             {#each templates as tpl (tpl.name)}
                 <option value={tpl.name}>{tpl.name}</option>
             {/each}
@@ -901,7 +902,7 @@
     <div class="px-2 py-1 pr-16 text-xs">
         <!-- If condition -->
         <div class="flex items-center gap-1 flex-wrap">
-            <span class="text-surface-600-400 font-medium select-none">if</span>
+            <span class="text-surface-600-400 font-medium select-none">{t("scriptEditor.ifKeyword")}</span>
             {@render expressionField(
                 script.expression ?? "",
                 (v) => onSetIfExpr(i, v),
@@ -909,7 +910,7 @@
                 `if/${i}`,
                 "input text-xs py-0 px-1 min-w-24 max-w-64 flex-1",
             )}
-            <span class="text-surface-600-400 select-none">then</span>
+            <span class="text-surface-600-400 select-none">{t("scriptEditor.thenKeyword")}</span>
         </div>
 
         <!-- Then block -->
@@ -926,7 +927,7 @@
         <!-- Else-if blocks -->
         {#each script.elseIfClauses ?? [] as elseIf, ei (elseIf.id)}
             <div class="mt-1 flex items-center gap-1 flex-wrap">
-                <span class="text-surface-600-400 font-medium select-none">else if</span>
+                <span class="text-surface-600-400 font-medium select-none">{t("scriptEditor.elseIfKeyword")}</span>
                 {@render expressionField(
                     elseIf.expression ?? "",
                     (v) => onSetElseIfExpr(i, ei, v),
@@ -934,11 +935,11 @@
                     `elseif/${i}/${ei}`,
                     "input text-xs py-0 px-1 min-w-24 max-w-64 flex-1",
                 )}
-                <span class="text-surface-600-400 select-none">then</span>
+                <span class="text-surface-600-400 select-none">{t("scriptEditor.thenKeyword")}</span>
                 <button
                     type="button"
                     class="btn btn-sm preset-tonal-error px-1 py-0 text-xs leading-none ml-auto"
-                    title="Remove else if"
+                    title={t("scriptEditor.removeElseIf")}
                     onclick={() => onRemoveElseIf(i, ei)}
                 >×</button>
             </div>
@@ -956,11 +957,11 @@
         <!-- Else block -->
         {#if script.elseScripts !== null && script.elseScripts !== undefined}
             <div class="mt-1 flex items-center gap-1">
-                <span class="text-surface-600-400 font-medium select-none">else</span>
+                <span class="text-surface-600-400 font-medium select-none">{t("scriptEditor.elseKeyword")}</span>
                 <button
                     type="button"
                     class="btn btn-sm preset-tonal-error px-1 py-0 text-xs leading-none ml-auto"
-                    title="Remove else"
+                    title={t("scriptEditor.removeElse")}
                     onclick={() => onRemoveElse(i)}
                 >×</button>
             </div>
@@ -981,13 +982,13 @@
                 type="button"
                 class="btn btn-sm preset-outlined-primary-500 text-xs py-0.5"
                 onclick={() => onAddElseIf(i)}
-            >+ else if</button>
+            >+ {t("scriptEditor.addElseIf")}</button>
             {#if script.elseScripts === null || script.elseScripts === undefined}
                 <button
                     type="button"
                     class="btn btn-sm preset-outlined-primary-500 text-xs py-0.5"
                     onclick={() => onAddElse(i)}
-                >+ else</button>
+                >+ {t("scriptEditor.addElse")}</button>
             {/if}
         </div>
     </div>
