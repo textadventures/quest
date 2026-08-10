@@ -28,6 +28,14 @@
 // both were verified by svelte-check/eslint plus manual browser review, and
 // are good candidates to add here once that flow is worth the investment.
 //
+// PR 4 added banners/modals: DownloadButton, LibraryElementBanner, and
+// PublishModal are exercised below. BackupBanner, UpdateBanner,
+// FileChangedExternallyBanner, and LibraryReloadBanner are NOT — each needs
+// state that's impractical to fake reliably from a dev-server session
+// (a real save-count threshold, live update-catalog data, Electron-only file
+// watching, and a genuine library edit, respectively). All four were verified
+// by svelte-check/eslint plus manual code review instead.
+//
 // Run against a dev server started with:
 //   PUBLIC_SHOW_HOME=true npm --prefix src/AppShell run dev -- --port 5180
 import { chromium } from 'playwright';
@@ -82,6 +90,19 @@ async function run() {
 
     await page.waitForSelector('button.home-header-link', { timeout: 30000 });
     assertPseudo('HomeHeader Settings button (Play tab)', await page.getAttribute('button.home-header-link', 'title'));
+
+    // --- DownloadButton — HomeHeader's compact "Desktop app" dropdown (only
+    // rendered outside Electron, which this dev-server check always is). ---
+    const downloadBtn = page.locator('.download-dropdown button').first();
+    await downloadBtn.waitFor({ timeout: 15000 });
+    assertPseudo('DownloadButton title', await downloadBtn.getAttribute('title'));
+    assertPseudo('DownloadButton aria-label', await downloadBtn.getAttribute('aria-label'));
+    await downloadBtn.click();
+    await page.waitForSelector('.download-dropdown .absolute', { timeout: 10000 });
+    assertPseudo('DownloadButton version line', await page.textContent('.download-dropdown .absolute p'));
+    const downloadLinks = page.locator('.download-dropdown .absolute a');
+    assertPseudo('DownloadButton "All downloads" link', await downloadLinks.last().textContent());
+    await downloadBtn.click(); // close the dropdown again
 
     // --- SettingsModal ---
     await page.click('button.home-header-link');
@@ -317,6 +338,29 @@ async function run() {
     // Scoped to VerbsEditor's own bottom row, not Toolbar's pseudo buttons elsewhere on screen.
     assertPseudo('VerbsEditor add-verb button', await page.textContent('.border-t.border-surface-200-800.flex.flex-col.gap-1 button'));
     assertPseudo('VerbsEditor select-a-verb prompt', await page.textContent('p.italic'));
+
+    // --- LibraryElementBanner — via a library-origin verb. Library verbs are
+    // hidden from the tree by default, so enable "Show Library Elements" first
+    // (TreePanel's view-options menu — the same one checked earlier). ---
+    await page.locator('button[aria-label]').first().click();
+    await page.click('.absolute button');
+    await page.click('text="drink"');
+    await page.waitForSelector('.bg-warning-100-900', { timeout: 10000 });
+    assertPseudo('LibraryElementBanner message', await page.textContent('.bg-warning-100-900 span'));
+    assertPseudo('LibraryElementBanner copy button', await page.textContent('.bg-warning-100-900 button'));
+
+    // --- PublishModal — via the toolbar's File menu (9th header button; see
+    // the Toolbar DOM-order comment near the top of this file). ---
+    await page.click('header button >> nth=9');
+    await page.waitForSelector('.absolute button', { timeout: 10000 });
+    await page.click('.absolute button >> nth=1'); // "Publish…" (Backup…, Publish…, Export as single file…)
+    await page.waitForSelector('div[role="dialog"]', { timeout: 10000 });
+    assertPseudo('PublishModal title', await page.textContent('div[role="dialog"] h2'));
+    assertPseudo('PublishModal Close button', await page.textContent('div[role="dialog"] button >> nth=0'));
+    assertPseudo('PublishModal description', await page.textContent('div[role="dialog"] p'));
+    assertPseudo('PublishModal "Include walkthrough" label', await page.textContent('div[role="dialog"] label'));
+    assertPseudo('PublishModal Publish button', await page.textContent('div[role="dialog"] button >> nth=1'));
+    await closeDialog();
 
     // --- Search page — validates whichever branch (results / no games / load error) renders ---
     await page.goto(`${baseUrl}/play/search?q=quest`);

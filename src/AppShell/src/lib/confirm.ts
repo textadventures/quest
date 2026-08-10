@@ -1,4 +1,5 @@
 import { writable } from "svelte/store";
+import { t } from "./i18n";
 
 export interface DialogChoice<T> {
     label: string;
@@ -38,8 +39,8 @@ export interface ConfirmOptions {
 // true/false the same way (Escape/backdrop dismissal counts as false, i.e. "cancel").
 export async function confirmDialog(message: string, options?: ConfirmOptions): Promise<boolean> {
     const result = await chooseDialog(message, [
-        { label: options?.cancelLabel ?? "Cancel", value: false },
-        { label: options?.confirmLabel ?? "OK", value: true, danger: options?.danger },
+        { label: options?.cancelLabel ?? t("common.cancel"), value: false },
+        { label: options?.confirmLabel ?? t("common.ok"), value: true, danger: options?.danger },
     ]);
     return result ?? false;
 }
