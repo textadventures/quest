@@ -167,6 +167,10 @@ export class ElectronFileAdapter implements FileAdapter {
     async deleteAsset(key: string): Promise<void> {
         await electronApp().fs.unlink(this.resolve(key));
     }
+
+    async reload(): Promise<Uint8Array> {
+        return electronApp().fs.readFile(this.resolve(this._filename));
+    }
 }
 
 /**

@@ -16,6 +16,12 @@ export interface FileAdapter {
     // Only implemented by adapters keyed by GameId (LocalDraftAdapter) — moves
     // storage to a new key when the game's gameid field changes mid-edit.
     rekey?(newGameId: string): Promise<void>;
+    // Re-reads this adapter's own current file from its backing store, for an
+    // in-place reload (e.g. after adding an Included Library — see
+    // LibraryReloadBanner.svelte) that re-runs WASM Initialise() without a full
+    // browser navigation. Every adapter already holds what it needs to do this
+    // with no user interaction (no picker/dialog), so it's always implemented.
+    reload(): Promise<Uint8Array>;
 }
 
 export interface LoadedFile {

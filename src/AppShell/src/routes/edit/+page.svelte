@@ -8,6 +8,7 @@
     import { loadFromServer } from "$lib/filesystem/server-adapter";
     import Toolbar from "$components/Toolbar.svelte";
     import BackupBanner from "$components/BackupBanner.svelte";
+    import LibraryReloadBanner from "$components/LibraryReloadBanner.svelte";
     import TreePanel from "$components/TreePanel.svelte";
     import PropertyEditor from "$components/PropertyEditor.svelte";
     import CodeViewPanel from "$components/CodeViewPanel.svelte";
@@ -146,6 +147,7 @@
     <div class="flex flex-col h-dvh overflow-hidden safe-area-inset">
         <Toolbar />
         <BackupBanner />
+        <LibraryReloadBanner />
         <div class="flex flex-1 overflow-hidden" oninput={handleFieldInput} onfocusout={clearFieldEditing}>
             {#if $codeViewPanelOpen}
                 <CodeViewPanel onclose={() => codeViewPanelOpen.set(false)} />

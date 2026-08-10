@@ -54,6 +54,14 @@ export const gameFilename = writable<string | null>(null);
 export const canSaveAs = writable(false);
 export const canBackup = writable(false);
 export const showBackupBanner = writable(false);
+// Set when an Included Library is added or removed: like Quest 5's desktop editor, a
+// library's own <editor>-defined panes are only picked up by EditorController.Initialise()
+// at load time (neither CreateNewIncludedLibrary nor DeleteElement re-run it), so pane
+// changes won't show up until reload.
+export const showLibraryReloadBanner = writable(false);
+export function dismissLibraryReloadBanner() {
+    showLibraryReloadBanner.set(false);
+}
 export const canPublishToServer = writable(false);
 export const treeNodes = writable<TreeNode[]>([]);
 export const showLibraryElements = writable(false);
@@ -193,6 +201,7 @@ export async function openGame(bytes: Uint8Array, filename: string, adapter: Fil
         const nodes: TreeNode[] = JSON.parse(_bridge.GetTreeNodes());
         treeNodes.set(nodes);
         showLibraryElements.set(false);
+        showLibraryReloadBanner.set(false);
         isLoaded.set(true);
         gameFilename.set(filename);
         refreshUndoRedo();
@@ -203,6 +212,25 @@ export async function openGame(bytes: Uint8Array, filename: string, adapter: Fil
         if (gameNode) await selectNode(gameNode.key);
         resetNavHistory(gameNode?.key ?? null);
     }
+    return ok;
+}
+
+// Re-initializes the currently-open game in place (re-runs WASM Initialise(),
+// picking up e.g. a newly-added library's <editor> panes — see
+// LibraryReloadBanner.svelte) without a browser navigation, so the user isn't
+// bounced back to the Create/Home picker the way a full page reload would be
+// (there's no URL/session pointer back to a local-draft/FSA/Electron game —
+// only this in-memory _adapter). Flushes any pending edit first so nothing is
+// lost to the fresh Initialise() call.
+export async function reloadGame(): Promise<boolean> {
+    if (!_adapter) return false;
+    await saveGame();
+    const bytes = await _adapter.reload();
+    const ok = await openGame(bytes, _adapter.filename, _adapter);
+    // openGame() on failure leaves the previously-loaded tree/state displayed as-is (see its own
+    // comments) rather than tearing down the editor — right for a background game-switch failure,
+    // but silent here would make a failed Reload look like it worked. Surface it explicitly.
+    if (!ok) showToast(get(lastOpenGameError) ?? "Reload failed.", "error");
     return ok;
 }
 
@@ -1276,7 +1304,9 @@ export function createObjectType(name: string): string {
 
 export function createIncludedLibrary(filename: string): string {
     if (!_bridge) return "error:not loaded";
-    return afterCreate(_bridge.CreateIncludedLibrary(filename));
+    const result = afterCreate(_bridge.CreateIncludedLibrary(filename));
+    if (!result.startsWith("error:")) showLibraryReloadBanner.set(true);
+    return result;
 }
 
 export function createJavascript(src: string): string {
@@ -1337,6 +1367,10 @@ export async function deleteAssetAndOwner(key: string): Promise<void> {
 
 function performDeleteElement(key: string) {
     if (!_bridge) return;
+    // Same staleness as adding one (see createIncludedLibrary above): a removed library's
+    // <editor> panes stay registered in m_editorDefinitions until Initialise() re-runs, so a
+    // deleted library can leave the editor showing panes for elements that no longer exist.
+    if (get(treeNodes).find(n => n.key === key)?.nodeType === "include") showLibraryReloadBanner.set(true);
     _bridge.DeleteElement(key);
     selectedKey.set(null);
     selectedData.set(null);
