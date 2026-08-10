@@ -1,6 +1,7 @@
 <script lang="ts">
     import { SvelteSet } from "svelte/reactivity";
     import { treeNodes, selectedKey, selectNode, deleteElement, openAddModal, createVerb, createCommand, createTurnScript, openAddLibraryModal, openAddJavascriptModal, swapElements } from "$lib/editor-store";
+    import { t } from "$lib/i18n";
 
     interface Props {
         elementKey: string;
@@ -53,18 +54,18 @@
     let showRoomButton = $derived(isObjectList);
 
     let addLabel = $derived(
-        nodeTypes.includes("function") ? "Add Function" :
-            nodeTypes.includes("timer") ? "Add Timer" :
-                nodeTypes.includes("verb") ? "Add Verb" :
-                nodeTypes.includes("command") ? "Add Command" :
-                nodeTypes.includes("turnscript") ? "Add Turn Script" :
-                nodeTypes.includes("walkthrough") ? "Add Walkthrough" :
-                nodeTypes.includes("template") ? "Add Template" :
-                nodeTypes.includes("dynamictemplate") ? "Add Dynamic Template" :
-                nodeTypes.includes("type") ? "Add Type" :
-                nodeTypes.includes("include") ? "Add Library" :
-                nodeTypes.includes("javascript") ? "Add JavaScript" :
-                isObjectList ? "Add Object" :
+        nodeTypes.includes("function") ? t("elementAdders.function") :
+            nodeTypes.includes("timer") ? t("elementAdders.timer") :
+                nodeTypes.includes("verb") ? t("elementAdders.verb") :
+                nodeTypes.includes("command") ? t("elementAdders.command") :
+                nodeTypes.includes("turnscript") ? t("elementAdders.turnScript") :
+                nodeTypes.includes("walkthrough") ? t("elementAdders.walkthrough") :
+                nodeTypes.includes("template") ? t("elementAdders.template") :
+                nodeTypes.includes("dynamictemplate") ? t("elementAdders.dynamicTemplate") :
+                nodeTypes.includes("type") ? t("elementAdders.type") :
+                nodeTypes.includes("include") ? t("elementAdders.library") :
+                nodeTypes.includes("javascript") ? t("elementAdders.javascript") :
+                isObjectList ? t("elementAdders.object") :
                 null
     );
 
@@ -146,13 +147,13 @@
                 type="button"
                 class="btn btn-sm preset-outlined-primary-500 text-xs py-0.5"
                 onclick={addRoom}
-            >+ Add Room</button>
+            >+ {t("elementAdders.room")}</button>
         {/if}
     </div>
 
     <!-- Item rows -->
     {#if items.length === 0}
-        <p class="text-xs text-surface-600-400 italic">No items.</p>
+        <p class="text-xs text-surface-600-400 italic">{t("elementsList.noItems")}</p>
     {:else}
         {#each items as item, i (item.key)}
             <div class="group relative border border-surface-200-800 rounded mb-1 bg-surface-50-950 flex items-center">
@@ -175,21 +176,21 @@
                     <button
                         type="button"
                         class="btn btn-sm preset-outlined-primary-500 px-1 py-0 text-xs leading-none"
-                        title="Move up"
+                        title={t("common.moveUp")}
                         disabled={i === 0}
                         onclick={() => moveUp(i)}
                     >↑</button>
                     <button
                         type="button"
                         class="btn btn-sm preset-outlined-primary-500 px-1 py-0 text-xs leading-none"
-                        title="Move down"
+                        title={t("common.moveDown")}
                         disabled={i === items.length - 1}
                         onclick={() => moveDown(i)}
                     >↓</button>
                     <button
                         type="button"
                         class="btn btn-sm preset-tonal-error px-1 py-0 text-xs leading-none"
-                        title={item.canDelete ? "Delete" : "This can't be deleted"}
+                        title={item.canDelete ? t("common.delete") : t("elementsList.cannotDelete")}
                         disabled={!item.canDelete}
                         onclick={() => onDeleteItem(item.key)}
                     >×</button>
@@ -207,7 +208,7 @@
                 class="btn btn-sm preset-tonal-error text-xs py-0.5"
                 disabled={!sel.some(key => items.find(i => i.key === key)?.canDelete)}
                 onclick={onDeleteSelected}
-            >Delete</button>
+            >{t("common.delete")}</button>
             {#if sel.length === 1}
                 {@const idx = items.findIndex(i => i.key === sel[0])}
                 <span class="w-px h-4 bg-surface-300-700 mx-0.5"></span>
@@ -216,15 +217,15 @@
                     class="btn btn-sm preset-outlined-primary-500 text-xs py-0.5"
                     disabled={idx === 0}
                     onclick={onMoveUpSelected}
-                >↑ Move up</button>
+                >↑ {t("common.moveUp")}</button>
                 <button
                     type="button"
                     class="btn btn-sm preset-outlined-primary-500 text-xs py-0.5"
                     disabled={idx === items.length - 1}
                     onclick={onMoveDownSelected}
-                >↓ Move down</button>
+                >↓ {t("common.moveDown")}</button>
             {/if}
-            <span class="ml-auto text-surface-600-400">{sel.length} selected</span>
+            <span class="ml-auto text-surface-600-400">{t("elementsList.selectedCount", { count: sel.length })}</span>
         </div>
     {/if}
 </div>

@@ -17,6 +17,7 @@
         showLibraryElements, toggleShowLibraryElements,
     } from "$lib/editor-store";
     import type { TreeNode } from "$lib/types";
+    import { t } from "$lib/i18n";
 
     let { width, onactivate }: { width?: number; onactivate?: () => void } = $props();
 
@@ -288,41 +289,41 @@
         if (nt === "header") {
             if (id === "_objects") {
                 opts.push($isGamebook
-                    ? { label: "Add Page", action: () => openAddModal("page", null) }
-                    : { label: "Add Room", action: () => openAddModal("room", null) });
+                    ? { label: t("elementAdders.page"), action: () => openAddModal("page", null) }
+                    : { label: t("elementAdders.room"), action: () => openAddModal("room", null) });
                 if (canPasteElements(id)) {
-                    opts.push({ label: "Paste", action: () => pasteElements(id) });
+                    opts.push({ label: t("common.paste"), action: () => pasteElements(id) });
                 }
             }
-            else if (id === "_functions") opts.push({ label: "Add Function", action: () => openAddModal("function", null) });
-            else if (id === "_timers") opts.push({ label: "Add Timer", action: () => openAddModal("timer", null) });
-            else if (id === "_gameVerbs") opts.push({ label: "Add Verb", action: () => createVerb(null) });
-            else if (id === "_gameCommands") opts.push({ label: "Add Command", action: () => createCommand(null) });
-            else if (id === "_walkthrough") opts.push({ label: "Add Walkthrough", action: () => openAddModal("walkthrough", null) });
-            else if (id === "_template") opts.push({ label: "Add Template", action: () => openAddModal("template", null) });
-            else if (id === "_dynamictemplate") opts.push({ label: "Add Dynamic Template", action: () => openAddModal("dynamictemplate", null) });
-            else if (id === "_objecttype") opts.push({ label: "Add Type", action: () => openAddModal("type", null) });
-            else if (id === "_include") opts.push({ label: "Add Library", action: () => openAddLibraryModal() });
-            else if (id === "_javascript") opts.push({ label: "Add JavaScript", action: () => openAddJavascriptModal() });
+            else if (id === "_functions") opts.push({ label: t("elementAdders.function"), action: () => openAddModal("function", null) });
+            else if (id === "_timers") opts.push({ label: t("elementAdders.timer"), action: () => openAddModal("timer", null) });
+            else if (id === "_gameVerbs") opts.push({ label: t("elementAdders.verb"), action: () => createVerb(null) });
+            else if (id === "_gameCommands") opts.push({ label: t("elementAdders.command"), action: () => createCommand(null) });
+            else if (id === "_walkthrough") opts.push({ label: t("elementAdders.walkthrough"), action: () => openAddModal("walkthrough", null) });
+            else if (id === "_template") opts.push({ label: t("elementAdders.template"), action: () => openAddModal("template", null) });
+            else if (id === "_dynamictemplate") opts.push({ label: t("elementAdders.dynamicTemplate"), action: () => openAddModal("dynamictemplate", null) });
+            else if (id === "_objecttype") opts.push({ label: t("elementAdders.type"), action: () => openAddModal("type", null) });
+            else if (id === "_include") opts.push({ label: t("elementAdders.library"), action: () => openAddLibraryModal() });
+            else if (id === "_javascript") opts.push({ label: t("elementAdders.javascript"), action: () => openAddJavascriptModal() });
         } else if (nt === "room") {
             opts.push(
-                { label: "Add Object here", action: () => openAddModal("object", id) },
-                { label: "Add Room here", action: () => openAddModal("room", id) },
-                { label: "Add Exit", action: () => createExit(id) },
-                { label: "Add Command", action: () => createCommand(id) },
-                { label: "Add Verb", action: () => createVerb(id) },
-                { label: "Add Turn Script", action: () => createTurnScript(id) },
+                { label: t("elementAdders.objectHere"), action: () => openAddModal("object", id) },
+                { label: t("elementAdders.roomHere"), action: () => openAddModal("room", id) },
+                { label: t("elementAdders.exit"), action: () => createExit(id) },
+                { label: t("elementAdders.command"), action: () => createCommand(id) },
+                { label: t("elementAdders.verb"), action: () => createVerb(id) },
+                { label: t("elementAdders.turnScript"), action: () => createTurnScript(id) },
             );
         } else if (nt === "object") {
             opts.push(
-                { label: "Add Command", action: () => createCommand(id) },
-                { label: "Add Verb", action: () => createVerb(id) },
-                { label: "Add Turn Script", action: () => createTurnScript(id) },
+                { label: t("elementAdders.command"), action: () => createCommand(id) },
+                { label: t("elementAdders.verb"), action: () => createVerb(id) },
+                { label: t("elementAdders.turnScript"), action: () => createTurnScript(id) },
             );
         } else if (nt === "walkthrough") {
-            opts.push({ label: "Add Walkthrough here", action: () => openAddModal("walkthrough", id) });
+            opts.push({ label: t("elementAdders.walkthroughHere"), action: () => openAddModal("walkthrough", id) });
             if (canMoveElement(id)) {
-                opts.push({ label: "Move to…", action: () => openMoveModal(id) });
+                opts.push({ label: t("common.moveTo"), action: () => openMoveModal(id) });
             }
         }
 
@@ -334,18 +335,18 @@
         if (nt === "room" || nt === "object" || nt === "page") {
             if (canMoveElement(id)) {
                 opts.push(
-                    { label: "Move to…", action: () => openMoveModal(id) },
-                    { label: "Cut", action: () => cutElements([id]) },
-                    { label: "Copy", action: () => copyElements([id]) },
+                    { label: t("common.moveTo"), action: () => openMoveModal(id) },
+                    { label: t("common.cut"), action: () => cutElements([id]) },
+                    { label: t("common.copy"), action: () => copyElements([id]) },
                 );
             }
             if (canPasteElements(id)) {
-                opts.push({ label: "Paste", action: () => pasteElements(id) });
+                opts.push({ label: t("common.paste"), action: () => pasteElements(id) });
             }
         }
 
         if (isDeletable(node)) {
-            opts.push({ label: `Delete "${text}"`, action: () => handleDelete(id) });
+            opts.push({ label: t("treePanel.deleteNamed", { name: text }), action: () => handleDelete(id) });
         }
 
         return opts;
@@ -353,7 +354,7 @@
 
     let libraryMenuItems = $derived<DropdownMenuItem[]>([
         {
-            label: "Show Library Elements",
+            label: t("treePanel.showLibraryElements"),
             icon: $showLibraryElements ? Check : undefined,
             action: () => toggleShowLibraryElements(),
         },
@@ -365,7 +366,7 @@
     style={width !== undefined ? `width: ${width}px` : undefined}
 >
     <div class="px-3 py-2 text-xs font-semibold uppercase text-surface-600-400 border-b border-surface-200-800">
-        {$isGamebook ? "Game Pages" : "Game Objects"}
+        {$isGamebook ? t("treePanel.gamePages") : t("treePanel.gameObjects")}
     </div>
     <div class="p-1.5 border-b border-surface-200-800 flex items-center gap-1">
         <div class="relative flex-1">
@@ -375,8 +376,8 @@
                 type="text"
                 autocapitalize="off"
                 bind:value={filterText}
-                placeholder="Filter..."
-                aria-label="Filter game objects"
+                placeholder={t("treePanel.filterPlaceholder")}
+                aria-label={t("treePanel.filterAriaLabel")}
                 class="input text-xs py-1 pl-8 pr-7 w-full"
                 onkeydown={(e) => { if (e.key === "Escape" && filterText) { e.stopPropagation(); clearFilter(); } }}
             />
@@ -385,7 +386,7 @@
                     type="button"
                     class="absolute right-2 top-1/2 -translate-y-1/2 size-4 flex items-center justify-center text-surface-400 hover:text-surface-900-50"
                     onclick={clearFilter}
-                    aria-label="Clear filter"
+                    aria-label={t("common.clearFilter")}
                 ><X class="size-3.5" /></button>
             {/if}
         </div>
@@ -395,14 +396,14 @@
                     type="button"
                     class="size-6 flex-shrink-0 flex items-center justify-center rounded {$showLibraryElements ? "text-primary-500" : "text-surface-400"} hover:text-primary-500 hover:bg-surface-200-800"
                     onclick={toggle}
-                    title="Tree view options"
-                    aria-label="Tree view options"
+                    title={t("treePanel.viewOptions")}
+                    aria-label={t("treePanel.viewOptions")}
                 ><SlidersHorizontal class="size-3.5" /></button>
             {/snippet}
         </DropdownMenu>
     </div>
     {#if isFiltering && (collection.rootNode.children ?? []).length === 0}
-        <div class="px-3 py-2 text-xs text-surface-400">No matches</div>
+        <div class="px-3 py-2 text-xs text-surface-400">{t("treePanel.noMatches")}</div>
     {/if}
     <div class="flex-1 overflow-y-auto p-1 text-xs">
         <TreeView
@@ -440,7 +441,7 @@
             <button
                 class="size-5 flex items-center justify-center rounded text-surface-400 hover:text-primary-500 hover:bg-surface-200-800 text-sm leading-none"
                 onclick={(e) => toggleDropdown(node.id + ":menu", opts, e)}
-                title="Options"
+                title={t("treePanel.nodeOptions")}
             >⋯</button>
         </span>
     {/if}
@@ -456,7 +457,7 @@
                         tabindex="-1"
                         class="flex-shrink-0 size-4 flex items-center justify-center transition-transform duration-150 {effectiveExpandedIds.includes(node.id) ? "rotate-90" : ""}"
                         onclick={(e) => { e.stopPropagation(); toggleExpand(node.id); }}
-                        aria-label={effectiveExpandedIds.includes(node.id) ? "Collapse" : "Expand"}
+                        aria-label={effectiveExpandedIds.includes(node.id) ? t("treePanel.collapse") : t("treePanel.expand")}
                     >
                         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="size-4"><polyline points="9 18 15 12 9 6" /></svg>
                     </button>

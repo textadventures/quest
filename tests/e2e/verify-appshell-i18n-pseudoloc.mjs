@@ -19,6 +19,15 @@
 // than by title text, since every title here is pseudo-mutated and therefore
 // not stable across xx.json regenerations.
 //
+// PR 2 added TreePanel, ElementsList, AddJavascriptModal, AddLibraryModal,
+// MoveElementModal, LinkPickerModal, and PropertyEditor's chrome strings
+// (see the elementAdders.* shared namespace reused across TreePanel,
+// ElementsList, and PropertyEditor's advanced adders). AddScriptModal and
+// LinkPickerModal aren't exercised here yet — reaching them needs a
+// script-editor/richtext-field flow that's fragile to automate reliably;
+// both were verified by svelte-check/eslint plus manual browser review, and
+// are good candidates to add here once that flow is worth the investment.
+//
 // Run against a dev server started with:
 //   PUBLIC_SHOW_HOME=true npm --prefix src/AppShell run dev -- --port 5180
 import { chromium } from 'playwright';
@@ -36,6 +45,19 @@ function assertPseudo(label, text) {
         throw new Error(`[${label}] not pseudo-localized (still English, or a raw key?): "${trimmed}"`);
     }
     console.log(`PASS: [${label}] "${trimmed}"`);
+}
+
+// For buttons like "+ {t(...)}" / "↑ {t(...)}" — a literal decorative prefix
+// kept outside the translated string by design (see ElementsList.svelte,
+// PropertyEditor.svelte's advanced adders). Only the part after the prefix
+// needs to be pseudo-localized.
+function assertPseudoWithPrefix(label, text, prefix) {
+    if (text == null) throw new Error(`[${label}] element not found`);
+    const trimmed = text.trim();
+    if (!trimmed.startsWith(prefix)) {
+        throw new Error(`[${label}] expected literal prefix "${prefix}": "${trimmed}"`);
+    }
+    assertPseudo(label, trimmed.slice(prefix.length));
 }
 
 async function assertAllTitlesPseudo(label, scopeSelector) {
@@ -110,6 +132,83 @@ async function run() {
     for (const text of assetModalButtons) assertPseudo('AssetManagerModal button', text);
     assertPseudo('AssetManagerModal "No assets yet" copy', await page.textContent('div[role="dialog"] p'));
     await closeDialog();
+
+    // --- TreePanel: filter box + view-options button ---
+    // Tree *node labels* (room, Verbs, Advanced, …) come from the WASM bridge
+    // (EditorController-assigned names), not our t() dictionary, so they stay
+    // plain English throughout this whole section even under the xx locale —
+    // only TreePanel's own chrome (buttons/menus/placeholders) is pseudo here.
+    assertPseudo('TreePanel filter placeholder', await page.getAttribute('input[placeholder]', 'placeholder'));
+    assertPseudo('TreePanel filter aria-label', await page.getAttribute('input[aria-label]', 'aria-label'));
+    const viewOptionsBtn = page.locator('button[aria-label]').first();
+    assertPseudo('TreePanel view-options title', await viewOptionsBtn.getAttribute('title'));
+    await viewOptionsBtn.click();
+    assertPseudo('TreePanel "Show Library Elements" menu item', await page.textContent('.absolute button'));
+    await page.keyboard.press('Escape');
+
+    // --- TreePanel context menu (via "room", the only movable node in a
+    // fresh draft) — exercises elementAdders.* reuse + treePanel.deleteNamed
+    // interpolation + common.moveTo/cut/copy, then opens MoveElementModal. ---
+    await page.evaluate(() => {
+        const roomText = Array.from(document.querySelectorAll('span')).find(el => el.textContent.trim() === 'room');
+        const control = roomText.closest('[data-part="branch-control"]') ?? roomText.parentElement;
+        control.querySelector('.node-actions button').click();
+    });
+    await page.waitForSelector('.tree-dropdown', { timeout: 10000 });
+    const treeMenuItems = await page.$$eval('.tree-dropdown button', els => els.map(el => el.textContent ?? ''));
+    if (treeMenuItems.length !== 10) throw new Error(`TreePanel context menu: expected 10 items (room, movable), found ${treeMenuItems.length}`);
+    for (const text of treeMenuItems) assertPseudo('TreePanel context menu item', text);
+    await page.click('.tree-dropdown button >> nth=6'); // "Move to…" — 7th item, see the 10-item assertion above
+    await page.waitForSelector('div[role="dialog"]', { timeout: 10000 });
+    assertPseudo('MoveElementModal heading', await page.textContent('div[role="dialog"] h2'));
+    assertPseudo('MoveElementModal "New parent" label', await page.textContent('div[role="dialog"] span >> nth=0'));
+    const moveModalButtons = await page.$$eval('div[role="dialog"] button', els => els.map(el => el.textContent ?? ''));
+    for (const text of moveModalButtons) assertPseudo('MoveElementModal button', text);
+    await closeDialog();
+
+    // --- ElementsList — via the always-present "Verbs" header node ---
+    await page.click('text="Verbs"');
+    await page.waitForSelector('.flex.items-center.gap-1.mb-2 button', { timeout: 10000 });
+    assertPseudoWithPrefix('ElementsList add button', await page.textContent('.flex.items-center.gap-1.mb-2 button'), '+ ');
+    assertPseudo('ElementsList "No items" copy', await page.textContent('p.italic'));
+
+    // --- Advanced adders (PropertyEditor.ALL_ADVANCED_ADDERS, shared
+    // elementAdders.* keys, fixed order: Function/Timer/Walkthrough/Library/
+    // Template/DynamicTemplate/Type/JavaScript) — also opens
+    // AddLibraryModal/AddJavascriptModal (indices 3 and 7). ---
+    await page.click('text="Advanced" >> nth=0');
+    const advancedAddersScope = '.flex.flex-col.items-start.gap-1\\.5.px-3.py-3';
+    await page.waitForSelector(`${advancedAddersScope} button`, { timeout: 10000 });
+    const advancedAdders = await page.$$eval(`${advancedAddersScope} button`, els => els.map(el => el.textContent ?? ''));
+    if (advancedAdders.length !== 8) throw new Error(`Advanced adders: expected 8 "+ Add …" buttons, found ${advancedAdders.length}`);
+    for (const text of advancedAdders) assertPseudoWithPrefix('Advanced adder button', text, '+ ');
+
+    await page.click(`${advancedAddersScope} button >> nth=3`); // Library
+    await page.waitForSelector('div[role="dialog"]', { timeout: 10000 });
+    assertPseudo('AddLibraryModal heading', await page.textContent('div[role="dialog"] h2'));
+    assertPseudo('AddLibraryModal help text', await page.textContent('div[role="dialog"] span >> nth=0'));
+    assertPseudo('AddLibraryModal "No file chosen"', await page.textContent('div[role="dialog"] span >> nth=1'));
+    const libModalButtons = await page.$$eval('div[role="dialog"] button', els => els.map(el => el.textContent ?? ''));
+    for (const text of libModalButtons) assertPseudo('AddLibraryModal button', text);
+    // Not closeDialog(): this modal's own "Upload…" button (AddLibraryModal.svelte)
+    // comes before Cancel in DOM order, unlike AddElementModal/AssetManagerModal/
+    // SettingsModal where the dismiss button is genuinely first.
+    await page.click('div[role="dialog"] button >> nth=1');
+    await page.waitForSelector('div[role="dialog"]', { state: 'detached', timeout: 10000 });
+
+    await page.click(`${advancedAddersScope} button >> nth=7`); // JavaScript
+    await page.waitForSelector('div[role="dialog"]', { timeout: 10000 });
+    assertPseudo('AddJavascriptModal heading', await page.textContent('div[role="dialog"] h2'));
+    assertPseudo('AddJavascriptModal help text', await page.textContent('div[role="dialog"] span >> nth=0'));
+    // Scoped to the modal's own footer (Cancel/Add JavaScript), not AssetPicker's
+    // upload button — AssetPicker.svelte is a separate component, PR 3 scope.
+    const jsModalButtons = await page.$$eval('div[role="dialog"] .flex.justify-end.gap-2 button', els => els.map(el => el.textContent ?? ''));
+    if (jsModalButtons.length !== 2) throw new Error(`AddJavascriptModal footer: expected 2 buttons, found ${jsModalButtons.length}`);
+    for (const text of jsModalButtons) assertPseudo('AddJavascriptModal button', text);
+    // Same reason as AddLibraryModal above: AssetPicker's own "Upload…" button
+    // (inside AddJavascriptModal.svelte) is first, Cancel is second.
+    await page.click('div[role="dialog"] button >> nth=1');
+    await page.waitForSelector('div[role="dialog"]', { state: 'detached', timeout: 10000 });
 
     // --- Search page — validates whichever branch (results / no games / load error) renders ---
     await page.goto(`${baseUrl}/play/search?q=quest`);

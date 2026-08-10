@@ -1,5 +1,6 @@
 <script lang="ts">
     import { assets, treeNodes, uniqueAssetName, putAssetText } from "$lib/editor-store";
+    import { t } from "$lib/i18n";
     import AssetPicker from "./AssetPicker.svelte";
 
     interface Props {
@@ -54,11 +55,11 @@
     onkeydown={handleKeydown}
 >
     <div class="card bg-surface-50-950 rounded-xl shadow-xl w-full max-w-96 p-6 flex flex-col gap-4">
-        <h2 class="text-base font-semibold">Add JavaScript</h2>
+        <h2 class="text-base font-semibold">{t("elementAdders.javascript")}</h2>
 
         <div class="flex flex-col gap-1">
             <span class="text-xs text-surface-600-400">
-                Pick an existing .js file, type a filename to create a new one, or upload a file.
+                {t("addJavascriptModal.helpText")}
             </span>
             <AssetPicker
                 value={src}
@@ -72,13 +73,13 @@
         </div>
 
         <div class="flex justify-end gap-2">
-            <button class="btn btn-sm preset-tonal" onclick={oncancel}>Cancel</button>
+            <button class="btn btn-sm preset-tonal" onclick={oncancel}>{t("common.cancel")}</button>
             <button
                 class="btn btn-sm preset-filled-primary-500"
                 onclick={confirm}
                 disabled={!src || confirming}
             >
-                Add JavaScript
+                {t("elementAdders.javascript")}
             </button>
         </div>
     </div>
