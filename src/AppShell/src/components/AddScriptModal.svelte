@@ -1,5 +1,6 @@
 <script lang="ts">
     import type { ScriptCategoryInfo, ScriptCommandInfo } from "$lib/types";
+    import { t } from "$lib/i18n";
     import Search from "@lucide/svelte/icons/search";
     import X from "@lucide/svelte/icons/x";
 
@@ -31,12 +32,12 @@
         "if",
     ];
     const SHORTCUT_LABELS: Record<string, string> = {
-        "msg": "Print",
-        "(function)AddToInventory": "Inventory",
-        "(function)MoveObject": "Move",
-        "(function)MakeObjectVisible": "Show",
-        "(function)MakeObjectInvisible": "Hide",
-        "if": "If",
+        "msg": t("addScriptModal.shortcuts.print"),
+        "(function)AddToInventory": t("addScriptModal.shortcuts.inventory"),
+        "(function)MoveObject": t("addScriptModal.shortcuts.move"),
+        "(function)MakeObjectVisible": t("addScriptModal.shortcuts.show"),
+        "(function)MakeObjectInvisible": t("addScriptModal.shortcuts.hide"),
+        "if": t("addScriptModal.shortcuts.if"),
     };
 
     const shortcuts = $derived(
@@ -210,12 +211,12 @@
 
         <!-- Header -->
         <div class="px-5 py-3 flex items-center justify-between flex-shrink-0 border-b border-surface-200-800">
-            <h2 class="font-semibold text-base">Add Script Command</h2>
+            <h2 class="font-semibold text-base">{t("addScriptModal.title")}</h2>
             <button
                 type="button"
                 onclick={onClose}
                 class="text-surface-600-400 hover:text-surface-900-50 text-xl leading-none px-1 transition-colors"
-                aria-label="Close"
+                aria-label={t("common.close")}
             >×</button>
         </div>
 
@@ -224,7 +225,7 @@
              narrow modal, and each row only fit one or two pills. -->
         {#if shortcuts.length > 0}
             <div class="px-5 py-2 border-b border-surface-200-800 flex-shrink-0 flex items-center gap-2">
-                <span class="text-xs font-medium text-surface-600-400 flex-shrink-0">Quick add:</span>
+                <span class="text-xs font-medium text-surface-600-400 flex-shrink-0">{t("addScriptModal.quickAdd")}</span>
                 <div class="flex gap-1.5 overflow-x-auto">
                     {#each shortcuts as shortcut (shortcut.createString)}
                         <button
@@ -246,8 +247,8 @@
                     type="text"
                     autocapitalize="off"
                     bind:value={filterText}
-                    placeholder="Filter commands..."
-                    aria-label="Filter script commands"
+                    placeholder={t("addScriptModal.filterPlaceholder")}
+                    aria-label={t("addScriptModal.filterAriaLabel")}
                     class="input text-xs py-1 pl-8 pr-7 w-full"
                 />
                 {#if filterText}
@@ -255,7 +256,7 @@
                         type="button"
                         class="absolute right-2 top-1/2 -translate-y-1/2 size-4 flex items-center justify-center text-surface-400 hover:text-surface-900-50"
                         onclick={clearFilter}
-                        aria-label="Clear filter"
+                        aria-label={t("common.clearFilter")}
                     ><X class="size-3.5" /></button>
                 {/if}
             </div>
@@ -265,9 +266,9 @@
         <div class="flex flex-1 min-h-0">
             {#if isFiltering}
                 <!-- Flat filtered list across all categories -->
-                <div class="flex-1 overflow-y-auto pb-2" role="listbox" aria-label="Matching script commands">
+                <div class="flex-1 overflow-y-auto pb-2" role="listbox" aria-label={t("addScriptModal.matchingCommandsAriaLabel")}>
                     {#if filteredCommands.length === 0}
-                        <div class="px-5 py-3 text-xs text-surface-400">No matching commands</div>
+                        <div class="px-5 py-3 text-xs text-surface-400">{t("addScriptModal.noMatches")}</div>
                     {/if}
                     {#each filteredCommands as cmd, idx (cmd.createString)}
                         {@const isSelected = selectedCommand?.createString === cmd.createString}
@@ -296,14 +297,14 @@
                 <div
                     class="w-40 border-r border-surface-200-800 overflow-y-auto flex-shrink-0"
                     role="listbox"
-                    aria-label="Script command categories"
+                    aria-label={t("addScriptModal.categoriesAriaLabel")}
                     tabindex="-1"
                     onkeydown={onCategoryListKeydown}
                 >
                     {#each categories as cat, ci (ci)}
                         {@const isSelected = selectedCategoryIndex === ci}
                         {#if ci === firstAdvancedIndex && ci > 0}
-                            <div class="px-4 py-1 text-[10px] font-semibold uppercase tracking-wide text-surface-600-400 border-t border-surface-200-800 mt-1 pt-2">Advanced</div>
+                            <div class="px-4 py-1 text-[10px] font-semibold uppercase tracking-wide text-surface-600-400 border-t border-surface-200-800 mt-1 pt-2">{t("common.advanced")}</div>
                         {/if}
                         <button
                             bind:this={categoryButtonEls[ci]}
@@ -326,7 +327,7 @@
                     bind:this={commandListEl}
                     class="flex-1 overflow-y-auto pb-2"
                     role="listbox"
-                    aria-label="Script commands in {selectedCategory?.name ?? ""}"
+                    aria-label={t("addScriptModal.commandsInCategoryAriaLabel", { category: selectedCategory?.name ?? "" })}
                     tabindex="-1"
                     onkeydown={onCategoryCommandListKeydown}
                 >
@@ -334,7 +335,7 @@
                         {#each selectedCategory.commands as cmd, idx (cmd.createString)}
                             {@const isSelected = selectedCommand?.createString === cmd.createString}
                             {#if idx === firstAdvancedCommandIndex && idx > 0}
-                                <div class="px-5 py-1 text-[10px] font-semibold uppercase tracking-wide text-surface-600-400 border-t border-surface-200-800 mt-1 pt-2">Advanced</div>
+                                <div class="px-5 py-1 text-[10px] font-semibold uppercase tracking-wide text-surface-600-400 border-t border-surface-200-800 mt-1 pt-2">{t("common.advanced")}</div>
                             {/if}
                             <button
                                 bind:this={rowEls[idx]}
@@ -361,13 +362,13 @@
 
         <!-- Footer -->
         <div class="px-5 py-3 border-t border-surface-200-800 flex justify-end gap-3 flex-shrink-0">
-            <button type="button" onclick={onClose} class="btn btn-sm preset-tonal text-xs">Cancel</button>
+            <button type="button" onclick={onClose} class="btn btn-sm preset-tonal text-xs">{t("common.cancel")}</button>
             <button
                 type="button"
                 onclick={onOk}
                 class="btn btn-sm preset-filled-primary-500 text-xs"
                 disabled={!selectedCommand}
-            >OK</button>
+            >{t("common.ok")}</button>
         </div>
     </div>
 </div>

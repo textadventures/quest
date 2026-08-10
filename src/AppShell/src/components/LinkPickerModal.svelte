@@ -1,6 +1,7 @@
 <script lang="ts">
     import Combobox from "./Combobox.svelte";
     import AssetPicker from "./AssetPicker.svelte";
+    import { t } from "$lib/i18n";
     import type { ControlOption } from "$lib/types";
 
     interface Props {
@@ -18,7 +19,7 @@
 
     const {
         title, targetLabel, targetOptions, assetSource = null,
-        textMode, textLabel = "Link text", initialText = "",
+        textMode, textLabel = t("linkPickerModal.defaultTextLabel"), initialText = "",
         onconfirm, oncancel,
     }: Props = $props();
 
@@ -82,7 +83,7 @@
                     wrapperClass="w-full"
                 />
                 {#if targetOptions.length === 0}
-                    <p class="text-xs text-surface-600-400">No {targetLabel.toLowerCase()}s found.</p>
+                    <p class="text-xs text-surface-600-400">{t("linkPickerModal.noOptionsFound", { label: targetLabel.toLowerCase() })}</p>
                 {/if}
             {/if}
         </div>
@@ -90,7 +91,7 @@
         {#if textMode !== "none"}
             <div class="flex flex-col gap-1">
                 <label for="link-picker-text" class="text-xs text-surface-600-400">
-                    {textLabel}{textMode === "optional" ? " (optional)" : ""}
+                    {textLabel}{textMode === "optional" ? t("linkPickerModal.optionalSuffix") : ""}
                 </label>
                 <input
                     id="link-picker-text"
@@ -105,12 +106,12 @@
         {/if}
 
         <div class="flex justify-end gap-2">
-            <button class="btn btn-sm preset-tonal" onclick={oncancel}>Cancel</button>
+            <button class="btn btn-sm preset-tonal" onclick={oncancel}>{t("common.cancel")}</button>
             <button
                 class="btn btn-sm preset-filled-primary-500"
                 onclick={confirm}
                 disabled={!canConfirm}
-            >Insert</button>
+            >{t("common.insert")}</button>
         </div>
     </div>
 </div>

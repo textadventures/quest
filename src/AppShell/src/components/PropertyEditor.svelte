@@ -1,6 +1,7 @@
 <script lang="ts">
     import { selectedKey, selectedData, treeNodes, isGamebook, setAttribute, setDropdownType, setMultiType, setObjectReference, setSelectedFilter, addDictItem, removeDictItem, updateDictItem, getObjectNames, getExitNames, selectNode, createObjectSilent, openAddModal, openAddLibraryModal, openAddJavascriptModal, getAssetText, putAssetText } from "$lib/editor-store";
     import { showToast } from "$lib/toast";
+    import { t } from "$lib/i18n";
     import type { ControlInfo, ControlOption, TextProcessorCommand } from "$lib/types";
     import type { TreeNode } from "$lib/types";
     import ChevronLeft from "@lucide/svelte/icons/chevron-left";
@@ -54,14 +55,14 @@
     // element (TreePanel's HIDE_WHEN_EMPTY), so this is the only place to add the
     // first one of each.
     const ALL_ADVANCED_ADDERS: { label: string; action: () => void; gamebook: boolean }[] = [
-        { label: "Add Function", action: () => openAddModal("function", null), gamebook: true },
-        { label: "Add Timer", action: () => openAddModal("timer", null), gamebook: false },
-        { label: "Add Walkthrough", action: () => openAddModal("walkthrough", null), gamebook: false },
-        { label: "Add Library", action: () => openAddLibraryModal(), gamebook: true },
-        { label: "Add Template", action: () => openAddModal("template", null), gamebook: false },
-        { label: "Add Dynamic Template", action: () => openAddModal("dynamictemplate", null), gamebook: false },
-        { label: "Add Type", action: () => openAddModal("type", null), gamebook: false },
-        { label: "Add JavaScript", action: () => openAddJavascriptModal(), gamebook: true },
+        { label: t("elementAdders.function"), action: () => openAddModal("function", null), gamebook: true },
+        { label: t("elementAdders.timer"), action: () => openAddModal("timer", null), gamebook: false },
+        { label: t("elementAdders.walkthrough"), action: () => openAddModal("walkthrough", null), gamebook: false },
+        { label: t("elementAdders.library"), action: () => openAddLibraryModal(), gamebook: true },
+        { label: t("elementAdders.template"), action: () => openAddModal("template", null), gamebook: false },
+        { label: t("elementAdders.dynamicTemplate"), action: () => openAddModal("dynamictemplate", null), gamebook: false },
+        { label: t("elementAdders.type"), action: () => openAddModal("type", null), gamebook: false },
+        { label: t("elementAdders.javascript"), action: () => openAddJavascriptModal(), gamebook: true },
     ];
     // Gamebook mode only supports Function/Library/JavaScript — Timer/Walkthrough
     // don't apply to a flat page-based game, and Template/Object Type are in
@@ -215,27 +216,27 @@
     }
     const LINK_COMMANDS: Record<string, LinkCommandConfig> = {
         "{object:": {
-            kind: "objects", textMode: "optional", targetLabel: "Object",
+            kind: "objects", textMode: "optional", targetLabel: t("addElementModal.labels.object"),
             format: (target, text) => (text ? `{object:${target}:${text}}` : `{object:${target}}`),
         },
         "{exit:": {
-            kind: "exits", textMode: "none", targetLabel: "Exit",
+            kind: "exits", textMode: "none", targetLabel: t("propertyEditor.linkTargetLabels.exit"),
             format: (target) => `{exit:${target}}`,
         },
         "{here ": {
-            kind: "objects", textMode: "required", targetLabel: "Object", textLabel: "Text to show",
+            kind: "objects", textMode: "required", targetLabel: t("addElementModal.labels.object"), textLabel: t("propertyEditor.linkTextToShow"),
             format: (target, text) => `{here ${target}:${text}}`,
         },
         "{nothere ": {
-            kind: "objects", textMode: "required", targetLabel: "Object", textLabel: "Text to show",
+            kind: "objects", textMode: "required", targetLabel: t("addElementModal.labels.object"), textLabel: t("propertyEditor.linkTextToShow"),
             format: (target, text) => `{nothere ${target}:${text}}`,
         },
         "{img:": {
-            kind: "images", textMode: "none", targetLabel: "Image",
+            kind: "images", textMode: "none", targetLabel: t("propertyEditor.linkTargetLabels.image"),
             format: (target) => `{img:${target}}`,
         },
         "{page:": {
-            kind: "pages", textMode: "optional", targetLabel: "Page",
+            kind: "pages", textMode: "optional", targetLabel: t("addElementModal.labels.page"),
             format: (target, text) => (text ? `{page:${target}:${text}}` : `{page:${target}}`),
         },
     };
@@ -332,15 +333,15 @@
                 type="button"
                 class="flex items-center gap-1 -ml-1 px-1 text-sm font-medium text-surface-900-50"
                 onclick={onback}
-            ><ChevronLeft size={16} /> {selectedNode?.text ?? "Properties"}</button>
+            ><ChevronLeft size={16} /> {selectedNode?.text ?? t("propertyEditor.propertiesFallback")}</button>
         {:else}
-            <span class="text-xs font-semibold uppercase text-surface-600-400">Properties</span>
+            <span class="text-xs font-semibold uppercase text-surface-600-400">{t("propertyEditor.propertiesFallback")}</span>
         {/if}
     </div>
     <LibraryElementBanner />
 
     {#if $selectedKey === null}
-        <p class="px-3 py-4 text-sm text-surface-600-400">Select an object to view its properties.</p>
+        <p class="px-3 py-4 text-sm text-surface-600-400">{t("propertyEditor.selectPrompt")}</p>
     {:else if $selectedKey === "_advanced"}
         <div class="flex flex-col items-start gap-1.5 px-3 py-3">
             {#each ADVANCED_ADDERS as adder (adder.label)}
@@ -352,7 +353,7 @@
             {/each}
         </div>
     {:else if $selectedData === null}
-        <p class="px-3 py-4 text-sm text-surface-600-400">No properties available.</p>
+        <p class="px-3 py-4 text-sm text-surface-600-400">{t("propertyEditor.noProperties")}</p>
     {:else}
         {#if $selectedData.tabs.length > 0}
             <div class="flex border-b border-surface-200-800 overflow-x-auto flex-shrink-0">
@@ -362,7 +363,7 @@
                         class={tabClass(tab.caption)}
                         onclick={() => { activeTab = tab.caption; }}
                     >
-                        {tab.caption ?? "Tab"}
+                        {tab.caption ?? t("propertyEditor.tabFallback")}
                     </button>
                 {/each}
             </div>
@@ -430,15 +431,15 @@
                     type="button"
                     class="btn btn-sm preset-outlined-primary-500 text-xs px-2 py-0.5 gap-1"
                     onclick={toggle}
-                ><ListPlus size={14} aria-hidden="true" />Insert<ChevronDown size={12} aria-hidden="true" /></button>
+                ><ListPlus size={14} aria-hidden="true" />{t("common.insert")}<ChevronDown size={12} aria-hidden="true" /></button>
             {/snippet}
         </DropdownMenu>
         <a
             href="https://docs.textadventures.co.uk/quest/text_processor.html"
             target="_blank"
             class="btn btn-sm text-xs px-2 py-0.5 text-surface-600-400 ml-auto"
-            title="Text Processor help"
-            aria-label="Text Processor help"
+            title={t("propertyEditor.textProcessorHelp")}
+            aria-label={t("propertyEditor.textProcessorHelp")}
         ><LifeBuoy size={14} aria-hidden="true" /></a>
     </div>
 {/snippet}
@@ -534,7 +535,7 @@
                 type="button"
                 class="btn btn-sm preset-outlined-primary-500 text-xs px-2 py-0.5 whitespace-nowrap"
                 onclick={() => onTextChange(ctrl.attribute!, "textbox", crypto.randomUUID())}
-            >Generate</button>
+            >{t("propertyEditor.generateButton")}</button>
         </div>
     {:else if ctrl.controlType === "file"}
         <AssetPicker
@@ -592,7 +593,7 @@
                         <button
                             type="button"
                             class="btn btn-sm preset-outlined-primary-500 text-xs px-1.5 py-0.5 flex-shrink-0"
-                            title="Go to {item.key}"
+                            title={t("propertyEditor.goTo", { name: item.key })}
                             onclick={() => selectNode(item.key)}
                         ><ArrowRight size={11} /></button>
                     {/if}
@@ -607,13 +608,13 @@
                 {#if isObjectSource}
                     <select
                         class="select text-xs py-0.5 px-1.5 w-24 flex-shrink-0"
-                        aria-label={ctrl.keyPrompt ?? "Key"}
+                        aria-label={ctrl.keyPrompt ?? t("propertyEditor.keyFallback")}
                         title={ctrl.keyPrompt ?? undefined}
                         data-staging
                         value={newDictItems[dk]?.key ?? ""}
                         onchange={(e) => { newDictItems[dk] = { ...(newDictItems[dk] ?? { key: "", value: "" }), key: (e.target as HTMLSelectElement).value }; }}
                     >
-                        <option value="">Select…</option>
+                        <option value="">{t("propertyEditor.selectOption")}</option>
                         {#each availableObjectNames as name (name)}
                             <option value={name}>{name}</option>
                         {/each}
@@ -623,7 +624,7 @@
                         type="text"
                         autocapitalize="off"
                         class="input text-xs py-0.5 px-1.5 w-24 flex-shrink-0"
-                        placeholder={ctrl.keyPrompt ?? "Key"}
+                        placeholder={ctrl.keyPrompt ?? t("propertyEditor.keyFallback")}
                         data-staging
                         value={newDictItems[dk]?.key ?? ""}
                         oninput={(e) => { newDictItems[dk] = { ...(newDictItems[dk] ?? { key: "", value: "" }), key: (e.target as HTMLInputElement).value }; }}
@@ -633,7 +634,7 @@
                     type="text"
                     autocapitalize="off"
                     class="input text-xs py-0.5 px-1.5 flex-1"
-                    placeholder={ctrl.valuePrompt ?? "Value"}
+                    placeholder={ctrl.valuePrompt ?? t("propertyEditor.valueFallback")}
                     data-staging
                     value={newDictItems[dk]?.value ?? ""}
                     oninput={(e) => { newDictItems[dk] = { ...(newDictItems[dk] ?? { key: "", value: "" }), value: (e.target as HTMLInputElement).value }; }}
@@ -653,13 +654,13 @@
                             newDictItems[dk] = { key: "", value: "" };
                         }
                     }}
-                >Add</button>
+                >{t("propertyEditor.addButton")}</button>
                 {#if ctrl.controlType === "gamebookoptions"}
                     <button
                         type="button"
                         class="btn btn-sm preset-outlined-primary-500 text-xs px-2 py-0.5 flex-shrink-0 whitespace-nowrap"
                         onclick={() => { newPageModalFor = dk; }}
-                    >+ New Page</button>
+                    >+ {t("propertyEditor.newPageButton")}</button>
                 {/if}
             </div>
         </div>
@@ -754,7 +755,7 @@
         <div class="w-full min-h-64">
             {#if filename}
                 {#await getAssetText(filename)}
-                    <p class="text-xs text-surface-600-400">Loading…</p>
+                    <p class="text-xs text-surface-600-400">{t("propertyEditor.loading")}</p>
                 {:then content}
                     <CodeEditor
                         value={content ?? ""}
@@ -765,7 +766,7 @@
                     />
                 {/await}
             {:else}
-                <p class="text-xs text-surface-600-400">Choose or upload a file above to edit its contents.</p>
+                <p class="text-xs text-surface-600-400">{t("propertyEditor.chooseOrUploadPrompt")}</p>
             {/if}
         </div>
     {:else if ctrl.controlType === "scriptdictionary" && ctrl.attribute && $selectedKey}
@@ -781,7 +782,7 @@
                 {attrValue(ctrl.attribute!)}
             </span>
         {:else}
-            <em class="text-xs text-surface-600-400">null</em>
+            <em class="text-xs text-surface-600-400">{t("propertyEditor.nullValue")}</em>
         {/if}
     {/if}
 {/snippet}
@@ -790,7 +791,7 @@
     {#if controls.length > 0}
         <details class="mt-2 border-t border-surface-200-800">
             <summary class="px-3 pt-2.5 pb-1.5 text-xs font-semibold uppercase text-surface-600-400 cursor-pointer select-none">
-                Advanced
+                {t("common.advanced")}
             </summary>
             {#each controls as ctrl, i (i)}
                 {@render controlRow(ctrl)}

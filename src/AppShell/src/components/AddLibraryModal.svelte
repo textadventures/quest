@@ -1,5 +1,6 @@
 <script lang="ts">
     import { treeNodes, uploadAsset } from "$lib/editor-store";
+    import { t } from "$lib/i18n";
     import FileIcon from "@lucide/svelte/icons/file";
 
     interface Props {
@@ -27,7 +28,7 @@
         target.value = "";
         if (!file) return;
         if (alreadyUsed.has(file.name)) {
-            error = `"${file.name}" is already used by another Included Library.`;
+            error = t("addLibraryModal.alreadyUsedError", { name: file.name });
             return;
         }
         uploading = true;
@@ -65,38 +66,38 @@
     onkeydown={handleKeydown}
 >
     <div class="card bg-surface-50-950 rounded-xl shadow-xl w-full max-w-96 p-6 flex flex-col gap-4">
-        <h2 class="text-base font-semibold">Add Included Library</h2>
+        <h2 class="text-base font-semibold">{t("addLibraryModal.title")}</h2>
 
         <div class="flex flex-col gap-1">
             <span class="text-xs text-surface-600-400">
-                Upload a .aslx library file.
+                {t("addLibraryModal.helpText")}
             </span>
             <div class="flex items-center gap-1.5 min-w-0">
                 {#if filename}
                     <span class="shrink-0 opacity-70"><FileIcon size={14} aria-hidden="true" /></span>
                     <span class="text-xs truncate flex-1 min-w-0" title={filename}>{filename}</span>
                 {:else}
-                    <span class="text-xs text-surface-600-400 flex-1 min-w-0">No file chosen</span>
+                    <span class="text-xs text-surface-600-400 flex-1 min-w-0">{t("addLibraryModal.noFileChosen")}</span>
                 {/if}
                 <button
                     type="button"
                     class="btn btn-sm preset-outlined-primary-500 text-xs px-1.5 py-0.5 whitespace-nowrap shrink-0"
                     onclick={() => inputEl.click()}
                     disabled={uploading}
-                >{uploading ? "Uploading…" : filename ? "Change…" : "Upload…"}</button>
+                >{uploading ? t("assetManager.uploading") : filename ? t("addLibraryModal.change") : t("assetManager.upload")}</button>
                 <input bind:this={inputEl} type="file" accept=".aslx" class="hidden" onchange={handleUpload} />
             </div>
             {#if error}<p class="text-xs text-error-500">{error}</p>{/if}
         </div>
 
         <div class="flex justify-end gap-2">
-            <button class="btn btn-sm preset-tonal" onclick={oncancel}>Cancel</button>
+            <button class="btn btn-sm preset-tonal" onclick={oncancel}>{t("common.cancel")}</button>
             <button
                 class="btn btn-sm preset-filled-primary-500"
                 onclick={confirm}
                 disabled={!filename || uploading}
             >
-                Add Library
+                {t("elementAdders.library")}
             </button>
         </div>
     </div>

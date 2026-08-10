@@ -1,5 +1,6 @@
 <script lang="ts">
     import { getMovePossibleParents, treeNodes } from "$lib/editor-store";
+    import { t } from "$lib/i18n";
     import Combobox from "$components/Combobox.svelte";
     import type { ControlOption } from "$lib/types";
 
@@ -19,7 +20,7 @@
         $treeNodes.find(n => n.key === elementKey)?.nodeType === "walkthrough" ? "_walkthrough" : "_objects"
     );
     let options: ControlOption[] = $derived([
-        { value: topLevelKey, label: "(top level)" },
+        { value: topLevelKey, label: t("moveElementModal.topLevel") },
         ...getMovePossibleParents(elementKey).map(name => ({ value: name, label: name })),
     ]);
 
@@ -49,10 +50,10 @@
     onkeydown={handleKeydown}
 >
     <div class="card bg-white rounded-xl shadow-xl w-full max-w-80 p-6 flex flex-col gap-4">
-        <h2 class="text-base font-semibold">Move "{elementKey}"</h2>
+        <h2 class="text-base font-semibold">{t("moveElementModal.heading", { name: elementKey })}</h2>
 
         <div class="flex flex-col gap-1">
-            <span class="text-xs text-surface-600-400">New parent</span>
+            <span class="text-xs text-surface-600-400">{t("moveElementModal.newParentLabel")}</span>
             <Combobox
                 {options}
                 value={target}
@@ -62,13 +63,13 @@
         </div>
 
         <div class="flex justify-end gap-2">
-            <button class="btn btn-sm preset-tonal" onclick={oncancel}>Cancel</button>
+            <button class="btn btn-sm preset-tonal" onclick={oncancel}>{t("common.cancel")}</button>
             <button
                 class="btn btn-sm preset-filled-primary-500"
                 onclick={confirm}
                 disabled={!target}
             >
-                Move
+                {t("moveElementModal.moveButton")}
             </button>
         </div>
     </div>
