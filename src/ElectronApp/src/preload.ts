@@ -65,6 +65,7 @@ contextBridge.exposeInMainWorld("electronApp", {
     },
     shell: {
         openExternal: (url: string): Promise<void> => ipcRenderer.invoke("shell:openExternal", url),
+        showItemInFolder: (path: string): Promise<void> => ipcRenderer.invoke("shell:showItemInFolder", path),
     },
     path: {
         join: joinPath,
@@ -116,6 +117,23 @@ contextBridge.exposeInMainWorld("electronApp", {
             const listener = (_event: Electron.IpcRendererEvent, game: { dirPath: string; filename: string }) => callback(game);
             ipcRenderer.on("open-recent-game", listener);
             return () => ipcRenderer.removeListener("open-recent-game", listener);
+        },
+    },
+    fileWatch: {
+        // filenames are relative to dirPath: the currently-open game file plus
+        // any adjacent .aslx included-library files (see electron-adapter.ts's
+        // computeWatchList). Each call replaces whatever was previously
+        // watched and re-baselines it against the files' current mtimes, so
+        // the app's own reads/writes never trigger a false "changed
+        // externally" notification.
+        watch: (dirPath: string, filenames: string[]): Promise<void> => ipcRenderer.invoke("fileWatch:watch", dirPath, filenames),
+        unwatch: (): Promise<void> => ipcRenderer.invoke("fileWatch:unwatch"),
+        // filenames is whichever of the watched files changed — usually just
+        // the main game file, but could be an included library instead.
+        onChanged: (callback: (filenames: string[]) => void): (() => void) => {
+            const listener = (_event: Electron.IpcRendererEvent, filenames: string[]) => callback(filenames);
+            ipcRenderer.on("file-changed-externally", listener);
+            return () => ipcRenderer.removeListener("file-changed-externally", listener);
         },
     },
     player: {

@@ -7,7 +7,7 @@
     import { base } from "$app/paths";
     import { page } from "$app/state";
     import { PUBLIC_APPSHELL_VERSION, PUBLIC_SHOW_HOME } from "$env/static/public";
-    import { isLoaded, saveGame, saveGameAs, undo, redo, canUndo, canRedo } from "$lib/editor-store";
+    import { isLoaded, saveGame, saveGameAs, undo, redo, canUndo, canRedo, markFileChangedExternally } from "$lib/editor-store";
     import { isElectron } from "$lib/runtime";
     import HomeHeader from "$components/HomeHeader.svelte";
     import HomeTabs from "$components/HomeTabs.svelte";
@@ -121,10 +121,15 @@
             const query = `?action=play-file&dir=${encodeURIComponent(file.dirPath)}&file=${encodeURIComponent(file.filename)}&t=${Date.now()}`;
             void goto(`${rootPath}${query}`);
         });
+        // Main-process file watcher (ElectronApp's ipc/file-watch.ts, armed by
+        // electron-adapter.ts) — see FileChangedExternallyBanner.svelte for
+        // the actual banner UI, rendered from edit/+page.svelte.
+        const unsubscribeFileChanged = window.electronApp!.fileWatch.onChanged(() => markFileChangedExternally());
         return () => {
             unsubscribeAction();
             unsubscribeRecent();
             unsubscribePlayFile();
+            unsubscribeFileChanged();
         };
     });
 </script>

@@ -62,6 +62,23 @@ export const showLibraryReloadBanner = writable(false);
 export function dismissLibraryReloadBanner() {
     showLibraryReloadBanner.set(false);
 }
+
+// Set when Electron's main-process file watcher (ipc/file-watch.ts, armed by
+// electron-adapter.ts) reports the currently-open game file or one of its
+// included libraries was changed by something other than this app — e.g. an
+// external text editor. Electron-only; other adapters have no equivalent of
+// "another program touched this file". See FileChangedExternallyBanner.svelte.
+export const showFileChangedExternallyBanner = writable(false);
+export function dismissFileChangedExternallyBanner() {
+    showFileChangedExternallyBanner.set(false);
+}
+// Called from +layout.svelte's electronApp().fileWatch.onChanged listener.
+// Guarded on isLoaded so a notification that arrives after the game/window
+// has already moved on (e.g. mid-navigation) doesn't pop a banner for
+// nothing to reload.
+export function markFileChangedExternally() {
+    if (get(isLoaded)) showFileChangedExternallyBanner.set(true);
+}
 export const canPublishToServer = writable(false);
 export const treeNodes = writable<TreeNode[]>([]);
 export const showLibraryElements = writable(false);
@@ -219,6 +236,7 @@ export async function openGame(bytes: Uint8Array, filename: string, adapter: Fil
         treeNodes.set(nodes);
         showLibraryElements.set(false);
         showLibraryReloadBanner.set(false);
+        showFileChangedExternallyBanner.set(false);
         isLoaded.set(true);
         gameFilename.set(filename);
         refreshUndoRedo();
@@ -246,6 +264,26 @@ export async function openGame(bytes: Uint8Array, filename: string, adapter: Fil
 export async function reloadGame(): Promise<boolean> {
     if (!_adapter) return false;
     await saveGame();
+    const bytes = await _adapter.reload();
+    return openGame(bytes, _adapter.filename, _adapter);
+}
+
+// Backs FileChangedExternallyBanner's Reload action. Deliberately does NOT
+// call saveGame() first like reloadGame() above does — the whole point here
+// is that the on-disk copy (changed by something outside this app) should
+// win, not get silently clobbered by whatever's still in memory. Confirms
+// first if there are unsaved in-editor edits, since those are what's about
+// to be discarded; openGame()'s own refreshUndoRedo() call resets isDirty
+// once the fresh copy is loaded.
+export async function reloadGameFromDisk(): Promise<boolean> {
+    if (!_adapter) return false;
+    if (get(isDirty)) {
+        const ok = await confirmDialog(
+            "This file was changed outside the editor. Reloading now will discard your unsaved changes here and load the version from disk. Continue?",
+            { confirmLabel: "Reload from disk", danger: true },
+        );
+        if (!ok) return false;
+    }
     const bytes = await _adapter.reload();
     return openGame(bytes, _adapter.filename, _adapter);
 }

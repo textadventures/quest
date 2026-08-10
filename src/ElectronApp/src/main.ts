@@ -7,6 +7,7 @@ import { registerShellHandlers } from "./ipc/shell";
 import { registerPathsHandlers } from "./ipc/paths";
 import { registerRecentHandlers } from "./ipc/recent";
 import { registerPlayerHandlers } from "./ipc/player";
+import { registerFileWatchHandlers } from "./ipc/file-watch";
 import { listRecentGames, clearRecentGames, type RecentGame, type RecentKind } from "./recent-games";
 
 let editorWindow: BrowserWindow | null = null;
@@ -574,6 +575,11 @@ if (!gotLock) {
             broadcastRecentChanged(kind);
         });
         registerPlayerHandlers(() => (staticServer ? `http://127.0.0.1:${staticServer.port}` : null));
+        // Renderer-armed (see electron-adapter.ts's arm calls) — this only ever
+        // notifies about whatever file(s) the renderer last asked to watch.
+        registerFileWatchHandlers((filenames) => {
+            editorWindow?.webContents.send("file-changed-externally", filenames);
+        });
         await refreshMenu();
 
         const root = staticRoot();

@@ -88,6 +88,34 @@ async function trackRecent(dirPath: string, filename: string, kind: RecentKind =
     }
 }
 
+// The main file plus any adjacent .aslx files — the same "any sibling .aslx
+// is a candidate included library" rule editor-store.ts's
+// preloadAdjacentLibraryAssets uses, just not filtered through listAssets()
+// (which deliberately excludes .aslx — see its own filter below).
+async function computeWatchList(dirPath: string, mainFilename: string): Promise<string[]> {
+    const entries = await electronApp().fs.readDir(dirPath);
+    const libraries = entries
+        .filter((e) => e.isFile && e.name.toLowerCase().endsWith(".aslx") && e.name !== mainFilename)
+        .map((e) => e.name);
+    return [mainFilename, ...libraries];
+}
+
+// Best-effort: (re)arms the main process's external-change watch for this
+// file and its included libraries (see ElectronApp's ipc/file-watch.ts),
+// resetting its baseline to the current on-disk state. Called after every
+// point where this adapter's own view of the file syncs with disk — initial
+// load, save, save-as, and reload — so the app's own writes are never
+// mistaken for an external change. A failure here just means external
+// changes won't be detected until the next call; not worth surfacing.
+async function armFileWatch(dirPath: string, filename: string): Promise<void> {
+    try {
+        const filenames = await computeWatchList(dirPath, filename);
+        await electronApp().fileWatch.watch(dirPath, filenames);
+    } catch {
+        // ignore
+    }
+}
+
 /**
  * FileAdapter backed by Electron's contextBridge (Node fs via IPC), for the
  * desktop app. Same flat single-directory model as BrowserFileAdapter — no
@@ -130,6 +158,7 @@ export class ElectronFileAdapter implements FileAdapter {
 
     async saveFile(data: Uint8Array | string): Promise<void> {
         await electronApp().fs.writeFile(this.resolve(this._filename), data);
+        await armFileWatch(this.dirPath, this._filename);
     }
 
     async saveFileAs(data: Uint8Array | string, suggestedName?: string): Promise<string | null> {
@@ -141,6 +170,7 @@ export class ElectronFileAdapter implements FileAdapter {
         await electronApp().fs.writeFile(path, data);
         this._filename = basename(path);
         await trackRecent(dirname(path), this._filename);
+        await armFileWatch(dirname(path), this._filename);
         return this._filename;
     }
 
@@ -180,8 +210,16 @@ export class ElectronFileAdapter implements FileAdapter {
     }
 
     async reload(): Promise<Uint8Array> {
-        return electronApp().fs.readFile(this.resolve(this._filename));
+        const bytes = await electronApp().fs.readFile(this.resolve(this._filename));
+        await armFileWatch(this.dirPath, this._filename);
+        return bytes;
     }
+}
+
+// Reveals a recent-list or currently-open game file in Finder/Explorer/the
+// platform file manager.
+export async function showItemInFolder(dirPath: string, filename: string): Promise<void> {
+    await electronApp().shell.showItemInFolder(electronApp().path.join(dirPath, filename));
 }
 
 /**
@@ -220,6 +258,7 @@ export async function loadElectronFile(
 ): Promise<{ bytes: Uint8Array; adapter: ElectronFileAdapter }> {
     const bytes = await electronApp().fs.readFile(electronApp().path.join(dirPath, filename));
     await trackRecent(dirPath, filename, kind);
+    if (kind === "edit") await armFileWatch(dirPath, filename);
     return { bytes, adapter: new ElectronFileAdapter(dirPath, filename) };
 }
 
@@ -271,5 +310,6 @@ export async function createElectronGame(
     const filePath = electronApp().path.join(dirPath, filename);
     await electronApp().fs.writeFile(filePath, content);
     await trackRecent(dirPath, filename);
+    await armFileWatch(dirPath, filename);
     return { bytes: new TextEncoder().encode(content), adapter: new ElectronFileAdapter(dirPath, filename) };
 }
