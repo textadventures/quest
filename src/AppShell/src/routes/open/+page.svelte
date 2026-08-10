@@ -520,7 +520,7 @@
             {/if}
 
             {#if error}
-                <p class="text-error-500 text-sm">{error}</p>
+                <p class="text-error-500 text-sm whitespace-pre-wrap">{error}</p>
             {/if}
 
             {#if isElectronApp && recentGames.length > 0}
@@ -694,7 +694,7 @@
                     {/if}
 
                     {#if createLocalError}
-                        <p class="text-error-500 text-sm">{createLocalError}</p>
+                        <p class="text-error-500 text-sm whitespace-pre-wrap">{createLocalError}</p>
                     {/if}
                 </div>
             {/if}

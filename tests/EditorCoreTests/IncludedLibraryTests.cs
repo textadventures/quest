@@ -39,6 +39,55 @@ public class IncludedLibraryTests
         controller.Uninitialise();
     }
 
+    // Regression test for a bug where adding a custom Included Library, saving, then reloading
+    // failed with "Library file not found" — CreateNewIncludedLibrary only records the filename
+    // (see IncludeSaver, which writes <include ref="custom.aslx"/>, not the library's content), so
+    // reloading has to fetch that content again via GetAdjacentFile. WasmEditorBridge fed
+    // ByteArrayGameDataProvider with no adjacent-file lookup at all, so any non-built-in library
+    // failed to resolve on every reload after the initial (content-free) creation.
+    [TestMethod]
+    public async Task TestCustomLibraryFailsToReloadWithoutAdjacentFileBytes()
+    {
+        var savedXml = await CreateGameWithCustomLibraryAndSave();
+        var savedBytes = Encoding.UTF8.GetBytes(savedXml);
+
+        var reloadController = new EditorController();
+        string errorMessage = null;
+        reloadController.ShowMessage += (_, e) => errorMessage = e.Message;
+
+        var ok = await reloadController.Initialise(new ByteArrayGameDataProvider(savedBytes, "test.aslx"));
+
+        Assert.IsFalse(ok, "Reload should fail when the custom library's bytes aren't supplied");
+        StringAssert.Contains(errorMessage, "Library file not found: custom.aslx");
+    }
+
+    [TestMethod]
+    public async Task TestCustomLibraryReloadsWhenAdjacentFileBytesAreSupplied()
+    {
+        var savedXml = await CreateGameWithCustomLibraryAndSave();
+        var savedBytes = Encoding.UTF8.GetBytes(savedXml);
+        var adjacentFiles = new Dictionary<string, byte[]>
+        {
+            ["custom.aslx"] = Encoding.UTF8.GetBytes("<library></library>")
+        };
+
+        var reloadController = new EditorController();
+        var ok = await reloadController.Initialise(
+            new ByteArrayGameDataProvider(savedBytes, "test.aslx", adjacentFiles));
+
+        Assert.IsTrue(ok, "Reload should succeed once the custom library's bytes are supplied");
+        reloadController.Uninitialise();
+    }
+
+    private static async Task<string> CreateGameWithCustomLibraryAndSave()
+    {
+        var controller = await LoadTemplateController("English");
+        controller.CreateNewIncludedLibrary("custom.aslx");
+        var xml = controller.Save();
+        controller.Uninitialise();
+        return xml;
+    }
+
     private static async Task AssertBuiltInLibrariesProtected(string templateName, params string[] libraryFilenames)
     {
         var keysByText = new Dictionary<string, string>();

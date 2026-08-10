@@ -143,6 +143,22 @@ function refreshUndoRedo() {
 // "ok"/"error:{message}" convention in WasmEditorBridge.cs.
 export const lastOpenGameError = writable<string | null>(null);
 
+// An Included Library element only stores its filename (<include ref="lib.aslx"/>) — the
+// library's actual content lives in the adapter's asset storage, not in the game bytes, so the
+// engine can't resolve it on its own when (re)loading. AddLibraryModal only ever uploads
+// .aslx files, so every asset with that extension is a candidate; stage them all into the WASM
+// side (WasmEditorBridge.AddAdjacentFile) before Initialise/SetGameXml runs the load that needs
+// them (see WorldModel.GetLibraryStream / ByteArrayGameDataProvider).
+async function preloadAdjacentLibraryAssets(adapter: FileAdapter): Promise<void> {
+    const assets = await adapter.listAssets();
+    for (const asset of assets) {
+        if (!asset.key.toLowerCase().endsWith(".aslx")) continue;
+        const blob = await adapter.getAsset(asset.key);
+        if (!blob) continue;
+        _bridge!.AddAdjacentFile(asset.key, new Uint8Array(await blob.arrayBuffer()));
+    }
+}
+
 export async function openGame(bytes: Uint8Array, filename: string, adapter: FileAdapter): Promise<boolean> {
     // Defensive reset: callers that switch games mid-session (Electron's menu
     // actions) already await saveGame() to flush the previous game first, so
@@ -160,6 +176,7 @@ export async function openGame(bytes: Uint8Array, filename: string, adapter: Fil
     canPublishToServer.set(adapter instanceof ServerFileAdapter);
     showBackupBanner.set(adapter instanceof LocalDraftAdapter && await shouldShowBackupBanner(adapter.gameId));
     loadingStatus.set("Loading game…");
+    await preloadAdjacentLibraryAssets(adapter);
     // Double rAF ensures the browser actually paints the status update before
     // Initialise blocks the JS thread (C# WASM calls are synchronous).
     await new Promise<void>(resolve => requestAnimationFrame(() => requestAnimationFrame(() => resolve())));
@@ -204,6 +221,7 @@ export function getGameXml(): string {
 export async function setGameXml(xml: string): Promise<string> {
     if (!_bridge) return "error";
     cancelPendingAutosave();
+    if (_adapter) await preloadAdjacentLibraryAssets(_adapter);
     // Double rAF ensures the browser actually paints the caller's "Applying…" state before
     // SetGameXml's Initialise() call blocks the JS thread (C# WASM calls are synchronous) — same
     // pattern openGame() uses below for the equivalent reason.
