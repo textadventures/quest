@@ -155,6 +155,19 @@ div#txtCommandContainer {
     vertical-align: bottom;
     padding: 6px;
     flex-grow: 1;
+    /* Reset the browser's native inset/bevel text-field chrome (most visible
+       as a chunky border in Safari, but present — just subtler — everywhere)
+       with a flat, single-tone border instead. */
+    -webkit-appearance: none;
+    appearance: none;
+    border: 1px solid #999;
+    border-radius: 3px;
+    outline: none;
+}
+
+#txtCommand:focus {
+    border-color: #4a90d9;
+    box-shadow: 0 0 0 2px rgba(74, 144, 217, 0.25);
 }
 
 #txtCommandSpacer {

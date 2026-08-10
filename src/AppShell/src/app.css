@@ -102,3 +102,23 @@ select.select:active {
     border-color: var(--color-primary-500);
     outline: none;
 }
+
+/* Safari also renders native chrome around plain text/search inputs, showing
+   through the .input box-shadow ring as an extra 3D bezel that Chrome doesn't
+   have. As above, disable native appearance and use a real border instead,
+   keyed off the same states Skeleton's ring uses for focus. [type=color] and
+   [type=range] keep their own native look and are left alone. */
+input.input:not([type='color']):not([type='range']) {
+    -webkit-appearance: none;
+    appearance: none;
+    border-width: 1px;
+    border-color: var(--color-surface-200-800);
+    box-shadow: none;
+}
+
+input.input:not([type='color']):not([type='range']):focus,
+input.input:not([type='color']):not([type='range']):focus-within,
+input.input:not([type='color']):not([type='range']):active {
+    border-color: var(--color-primary-500);
+    outline: none;
+}
