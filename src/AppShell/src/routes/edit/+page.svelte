@@ -135,7 +135,7 @@
 
 {#if serverLoadError}
     <main class="flex flex-col items-center justify-center min-h-svh gap-6 p-8">
-        <p class="text-error-500 max-w-[40ch] text-center">{serverLoadError}</p>
+        <p class="text-error-500 max-w-[40ch] text-center whitespace-pre-wrap">{serverLoadError}</p>
     </main>
 {:else if $loadingStatus}
     <main class="flex flex-col items-center justify-center min-h-svh gap-6 p-8">

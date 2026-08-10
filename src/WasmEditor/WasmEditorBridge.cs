@@ -253,7 +253,7 @@ public partial class WasmEditorBridge
         AttachControllerEvents(controller);
         _controller = controller;
 
-        var provider = new ByteArrayGameDataProvider(gameFileBytes, filename);
+        var provider = new ByteArrayGameDataProvider(gameFileBytes, filename, TakePendingAdjacentFiles());
 
         bool ok;
         try
@@ -312,7 +312,7 @@ public partial class WasmEditorBridge
 
         var filename = _controller.Filename;
         var bytes = System.Text.Encoding.UTF8.GetBytes(xml);
-        var provider = new ByteArrayGameDataProvider(bytes, filename);
+        var provider = new ByteArrayGameDataProvider(bytes, filename, TakePendingAdjacentFiles());
 
         // Parse into a throwaway controller first — the shared TreeNodes cache and _isDirty flag
         // must not be touched (see AttachControllerEvents) and the live _controller must not be
@@ -645,6 +645,29 @@ public partial class WasmEditorBridge
             // Recently Played list, it should just keep the placeholder icon.
             return null;
         }
+    }
+
+    // Included Library elements only store a filename (<include ref="lib.aslx"/> — see
+    // IncludeSaver); the library's actual content lives in the host's asset storage (IndexedDB,
+    // OPFS, disk, ...), which this WASM module has no access to itself. So before every
+    // (re)load, the JS side fetches each candidate asset's bytes and stages them here one at a
+    // time ([JSExport] can't marshal an array of blobs in one call), the same way
+    // AddPublishAsset/PendingPublishAssets stage assets for CreatePublishPackage below.
+    // Initialise/SetGameXml consume and clear this before constructing their
+    // ByteArrayGameDataProvider, regardless of whether the load succeeds.
+    private static readonly Dictionary<string, byte[]> PendingAdjacentFiles = new();
+
+    [JSExport]
+    public static void AddAdjacentFile(string filename, byte[] data)
+    {
+        PendingAdjacentFiles[filename] = data;
+    }
+
+    private static Dictionary<string, byte[]> TakePendingAdjacentFiles()
+    {
+        var files = new Dictionary<string, byte[]>(PendingAdjacentFiles);
+        PendingAdjacentFiles.Clear();
+        return files;
     }
 
     // [JSExport] can't marshal an array of blobs in one call, so assets are staged one

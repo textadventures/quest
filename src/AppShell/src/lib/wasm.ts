@@ -1,4 +1,5 @@
 export interface WasmBridge {
+  AddAdjacentFile(filename: string, data: Uint8Array): void
   Initialise(bytes: Uint8Array, filename: string): Promise<string>
   GetTreeNodes(): string
   SetShowLibraryElements(show: boolean): void
