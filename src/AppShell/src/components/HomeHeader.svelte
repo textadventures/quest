@@ -1,9 +1,12 @@
 <script lang="ts">
     import { base } from "$app/paths";
     import { isElectron } from "$lib/runtime";
+    import { settingsModalOpen } from "$lib/settings-store";
+    import { t } from "$lib/i18n";
     import DiscordIcon from "$components/DiscordIcon.svelte";
     import GithubIcon from "$components/GithubIcon.svelte";
     import DownloadButton from "$components/DownloadButton.svelte";
+    import SettingsIcon from "@lucide/svelte/icons/settings";
 
     let { forceDark = false }: { forceDark?: boolean } = $props();
 
@@ -40,6 +43,15 @@
         >
             <GithubIcon size={18} />
         </a>
+        <button
+            type="button"
+            class="home-header-link"
+            title={t("common.settings")}
+            aria-label={t("common.settings")}
+            onclick={() => settingsModalOpen.set(true)}
+        >
+            <SettingsIcon size={18} />
+        </button>
     </div>
 </header>
 

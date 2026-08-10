@@ -1,5 +1,6 @@
 <script lang="ts">
     import { toasts, dismissToast } from "$lib/toast";
+    import { t } from "$lib/i18n";
 </script>
 
 <div class="fixed bottom-4 right-4 z-[60] flex flex-col gap-2 items-end pointer-events-none">
@@ -12,7 +13,7 @@
             <button
                 type="button"
                 class="opacity-80 hover:opacity-100 leading-none"
-                aria-label="Dismiss"
+                aria-label={t("toast.dismiss")}
                 onclick={() => dismissToast(toast.id)}
             >✕</button>
         </div>

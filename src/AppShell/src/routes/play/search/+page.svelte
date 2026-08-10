@@ -3,6 +3,7 @@
     import { goto } from "$app/navigation";
     import { base } from "$app/paths";
     import { searchGames, type CatalogGame } from "$lib/home-catalog";
+    import { t, tPlural } from "$lib/i18n";
     import GameCard from "$components/GameCard.svelte";
     import GamesPager from "$components/GamesPager.svelte";
 
@@ -63,17 +64,17 @@
 <!-- Always dark, matching the rest of /play — see +layout.svelte's isPlayContext. -->
 <div class="min-h-svh bg-surface-950 text-surface-100">
     <div class="flex flex-col gap-6 w-full max-w-5xl mx-auto p-8">
-        <a href="{base}/" class="anchor self-start">&larr; Back to Play</a>
+        <a href="{base}/" class="anchor self-start">{t("search.backToPlay")}</a>
 
         <form class="flex gap-2 w-full max-w-md mx-auto" onsubmit={handleSubmit}>
             <input
                 type="search"
                 bind:value={queryInput}
-                placeholder="Search games…"
-                title="Try category:puzzle, language:de, platform:quest-gamebook"
+                placeholder={t("search.searchPlaceholder")}
+                title={t("search.searchHint")}
                 class="input bg-surface-900 border-surface-700 text-surface-100 placeholder:text-surface-500"
             />
-            <button type="submit" class="btn preset-filled-primary-500">Search</button>
+            <button type="submit" class="btn preset-filled-primary-500">{t("search.searchButton")}</button>
         </form>
 
         {#if loading}
@@ -82,13 +83,13 @@
             </div>
         {:else if error}
             <div class="flex flex-col items-center gap-3 py-12 text-center">
-                <p class="text-error-500 text-sm">Couldn't load search results.</p>
-                <button type="button" class="btn preset-tonal" onclick={() => load(queryInput.trim(), currentPage)}>Try again</button>
+                <p class="text-error-500 text-sm">{t("search.loadError")}</p>
+                <button type="button" class="btn preset-tonal" onclick={() => load(queryInput.trim(), currentPage)}>{t("search.tryAgain")}</button>
             </div>
         {:else if searched}
-            <p class="text-surface-400 text-sm">{totalCount} result{totalCount === 1 ? "" : "s"}</p>
+            <p class="text-surface-400 text-sm">{tPlural("search.resultCount", totalCount)}</p>
             {#if games.length === 0}
-                <p class="text-surface-400 text-sm">No games found.</p>
+                <p class="text-surface-400 text-sm">{t("search.noGamesFound")}</p>
             {:else}
                 <div class="grid grid-cols-[repeat(auto-fill,minmax(150px,1fr))] gap-4">
                     {#each games as game (game.id)}

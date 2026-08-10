@@ -2,6 +2,7 @@
     import { onMount } from "svelte";
     import { assets, treeNodes, refreshAssets, uploadAsset, deleteAssetAndOwner, resolveAssetUrl, isImageAsset } from "$lib/editor-store";
     import { confirmDialog } from "$lib/confirm";
+    import { t } from "$lib/i18n";
 
     interface Props {
         oncancel: () => void;
@@ -51,10 +52,10 @@
         // specifically, since deleting it here takes that element down with it too (see
         // deleteAssetAndOwner) rather than leaving it pointing at a missing file.
         const owner = $treeNodes.find(n => (n.nodeType === "javascript" || n.nodeType === "include") && n.text === key);
-        const usageNote = owner
-            ? ` It's currently used by ${owner.nodeType === "javascript" ? "a JavaScript" : "an Included Library"} element — deleting it here will also delete that element.`
-            : "";
-        const ok = await confirmDialog(`Delete "${key}"?${usageNote} This can't be undone.`, { confirmLabel: "Delete", danger: true });
+        const messageKey = owner
+            ? (owner.nodeType === "javascript" ? "assetManager.deleteConfirm.usedByJavascript" : "assetManager.deleteConfirm.usedByLibrary")
+            : "assetManager.deleteConfirm.plain";
+        const ok = await confirmDialog(t(messageKey, { name: key }), { confirmLabel: t("common.delete"), danger: true });
         if (!ok) return;
         await deleteAssetAndOwner(key);
         if (key in thumbUrls) {
@@ -83,8 +84,8 @@
 >
     <div class="card bg-surface-50-950 rounded-xl shadow-xl w-full max-w-[32rem] max-h-[85dvh] p-6 flex flex-col gap-4">
         <div class="flex items-center justify-between">
-            <h2 class="text-base font-semibold">Assets</h2>
-            <button class="btn btn-sm preset-tonal" onclick={oncancel}>Close</button>
+            <h2 class="text-base font-semibold">{t("assetManager.title")}</h2>
+            <button class="btn btn-sm preset-tonal" onclick={oncancel}>{t("common.close")}</button>
         </div>
 
         <div class="flex items-center gap-2">
@@ -93,14 +94,14 @@
                 class="btn btn-sm preset-filled-primary-500"
                 onclick={() => inputEl.click()}
                 disabled={uploading}
-            >{uploading ? "Uploading…" : "Upload…"}</button>
+            >{uploading ? t("assetManager.uploading") : t("assetManager.upload")}</button>
             <input bind:this={inputEl} type="file" class="hidden" onchange={handleUpload} />
             {#if error}<p class="text-xs text-error-500">{error}</p>{/if}
         </div>
 
         <div class="flex-1 overflow-y-auto flex flex-col gap-1">
             {#if $assets.length === 0}
-                <p class="text-xs text-surface-600-400">No assets yet.</p>
+                <p class="text-xs text-surface-600-400">{t("assetManager.noAssets")}</p>
             {/if}
             {#each $assets as asset (asset.key)}
                 <div class="flex items-center gap-2 px-1.5 py-1 rounded hover:bg-surface-100-900">
@@ -114,7 +115,7 @@
                         type="button"
                         class="btn btn-sm preset-outlined-error-500 text-xs px-2 py-0.5"
                         onclick={() => handleDelete(asset.key)}
-                    >Delete</button>
+                    >{t("common.delete")}</button>
                 </div>
             {/each}
         </div>
