@@ -23,31 +23,10 @@ its `supported` flag once `tools/i18n/audit.mjs --strict` passes clean.
 Applies to all three layers - AppShell UI, `EditorDeutsch.aslx`,
 `Deutsch.aslx` - and to gamebook templates (`Gamebook-Deutsch.template`).
 
-Why: raised on Discord by Pertex - German software conventionally splits
-between formal "Sie" and informal "Du" address, and an AI-assisted
-translation pass had inconsistently picked "Sie" for new content (the
-gamebook template) while the rest of the project (AppShell `de.json`, the
-original `EditorDeutsch.aslx`/`Deutsch.aslx` translations) was already
-consistently "Du". Rather than offer two German variants, standardized on
-one: "Du" is the norm for German gaming/hobbyist/open-source software
+Why: "Du" is the norm for German gaming/hobbyist/open-source software
 (Steam, itch.io, Duolingo), vs. "Sie" being more the convention for
-enterprise/banking/government software - and it was already the majority
-convention in this codebase.
-
-Fixed in [#2033](https://github.com/textadventures/quest/pull/2033), which
-also closed several unrelated completeness gaps found while auditing for
-register consistency (missing `EditorDeutsch.aslx` keys, a couple of dead
-duplicate template keys, and made two implicitly-inherited player-layer
-keys explicit).
-
-Note: `ObjectCannotBeStored` in `Deutsch.aslx` was one of the two
-duplicate-name cases #2033 found - the version it kept turned out to be
-the less specific of the two (it didn't use the object's own article, e.g.
-"you can't put that there" rather than "you can't put the key there").
-[#2034](https://github.com/textadventures/quest/pull/2034) restored the
-more specific, article-aware phrasing in Du register, matching the pattern
-already used by `CantOpen`/`CantClose` and English's own version of the
-same template.
+enterprise/banking/government software - and it's the majority convention
+already in this codebase.
 
 ## English (en)
 
