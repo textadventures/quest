@@ -24,6 +24,20 @@
 
     let serverLoadError = $state<string | null>(null);
 
+    // Tracks whether this page instance has ever reached a loaded game, so the
+    // final fallback branch below can tell "mid-session reload/switch failed"
+    // (isLoaded flips back to false — a real error, see that branch's comment)
+    // apart from "haven't started loading yet" (isLoaded is still its initial
+    // false and $loadingStatus hasn't been set by openGame() yet because
+    // onMount/loadGameFromServer haven't run/resolved). Without this, that
+    // initial tick rendered the same error UI as a genuine failure — a
+    // half-second flash of "This game could not be loaded" on every open
+    // while loadFromServer's network fetch was still in flight.
+    let hasLoadedOnce = $state(false);
+    $effect(() => {
+        if ($isLoaded) hasLoadedOnce = true;
+    });
+
     // Session-only (not persisted across reloads), same tradeoff as
     // WasmPlayer's debugger splitter: a panel width isn't worth the
     // complexity of persisting, but should survive for the life of the tab.
@@ -217,7 +231,7 @@
     {#if $publishModalOpen}
         <PublishModal oncancel={() => publishModalOpen.set(false)} />
     {/if}
-{:else}
+{:else if hasLoadedOnce}
     <!-- Reached when a mid-session re-open (reloadGame(), or /open switching to a different
          game while one was already loaded) fails: openGame() sets isLoaded back to false rather
          than leaving the old game's now-disconnected tree up — see its own comments. Distinct
@@ -225,5 +239,14 @@
     <main class="flex flex-col items-center justify-center min-h-svh gap-6 p-8">
         <p class="text-error-500 max-w-[40ch] text-center whitespace-pre-wrap">{$lastOpenGameError ?? t("editPage.loadError")}</p>
         <button type="button" class="btn preset-filled-primary-500" onclick={() => goto(`${base}/open`)}>{t("editPage.backToHome")}</button>
+    </main>
+{:else}
+    <!-- The page hasn't reached any terminal state yet: onMount hasn't run/resolved far enough
+         to set $loadingStatus (e.g. loadFromServer's network fetch is still in flight) or to
+         redirect away. Show the same spinner shell as the $loadingStatus branch rather than
+         falling through to the error UI above. -->
+    <main class="flex flex-col items-center justify-center min-h-svh gap-6 p-8">
+        <div class="size-10 rounded-full border-4 border-surface-300-700 border-t-primary-500 animate-spin"></div>
+        <p class="text-surface-600-400 text-sm">{t("editorStore.startingEditor")}</p>
     </main>
 {/if}
