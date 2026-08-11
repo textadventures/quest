@@ -36,6 +36,16 @@
 // watching, and a genuine library edit, respectively). All four were verified
 // by svelte-check/eslint plus manual code review instead.
 //
+// PR 5 added the Home/Play/Create routes: HomeTabs, PlayCatalog's
+// unconditional chrome (search bar, "Open a game file…"), and open/+page.svelte's
+// h1/section labels/Import-help popover/create-form. GameCard/RecentGameCard's
+// "by {author}"/Gamebook badge, PlayCatalog's category grid and "Recently
+// Played" section, and the play/[id] and play/category/[slug] detail routes
+// all depend on live textadventures.co.uk catalog data or prior-session
+// history that a fresh dev-server context doesn't have — same
+// honest-scope-boundary treatment as PR 4's banners, these are verified via
+// svelte-check/eslint plus manual browser review instead of asserted here.
+//
 // Run against a dev server started with:
 //   PUBLIC_SHOW_HOME=true npm --prefix src/AppShell run dev -- --port 5180
 import { chromium } from 'playwright';
@@ -91,6 +101,25 @@ async function run() {
     await page.waitForSelector('button.home-header-link', { timeout: 30000 });
     assertPseudo('HomeHeader Settings button (Play tab)', await page.getAttribute('button.home-header-link', 'title'));
 
+    // --- HomeTabs (PR 5) — Play/Create nav labels ---
+    const homeTabLabels = await page.$$eval('nav a', els => els.map(el => el.textContent ?? ''));
+    if (homeTabLabels.length !== 2) throw new Error(`HomeTabs: expected 2 nav links, found ${homeTabLabels.length}`);
+    for (const text of homeTabLabels) assertPseudo('HomeTabs nav link', text);
+
+    // --- PlayCatalog (PR 5) — chrome that renders unconditionally, i.e. not
+    // dependent on the live textadventures.co.uk catalog fetch having
+    // succeeded or on any Recently Played history existing in this fresh
+    // browser context. Category grid content (GameCard "by {author}"/
+    // Gamebook badge, "See all", category/game detail pages) depends on that
+    // live catalog data, so — same honest-scope-boundary treatment as PR 4's
+    // banners — those are verified via svelte-check/eslint plus manual
+    // browser review instead of asserted here. ---
+    await page.waitForSelector('input[type="search"]', { timeout: 15000 });
+    assertPseudo('PlayCatalog search placeholder', await page.getAttribute('input[type="search"]', 'placeholder'));
+    assertPseudo('PlayCatalog search title (hint)', await page.getAttribute('input[type="search"]', 'title'));
+    assertPseudo('PlayCatalog search button', await page.textContent('form button[type="submit"]'));
+    assertPseudo('PlayCatalog "Open a game file…" button', await page.textContent('button.preset-outlined-surface-500.whitespace-nowrap'));
+
     // --- DownloadButton — HomeHeader's compact "Desktop app" dropdown (only
     // rendered outside Electron, which this dev-server check always is). ---
     const downloadBtn = page.locator('.download-dropdown button').first();
@@ -122,11 +151,45 @@ async function run() {
     await page.waitForSelector('button.home-header-link', { timeout: 30000 });
     assertPseudo('HomeHeader Settings button (Create tab)', await page.getAttribute('button.home-header-link', 'title'));
 
-    // --- Reach the editor via a local draft, to exercise Toolbar.svelte ---
-    await page.waitForSelector('button:has-text("Create local draft")', { timeout: 30000 });
-    await page.fill('input[placeholder="Game name"]', 'i18n Pseudoloc Test');
-    await page.waitForSelector('text=Text adventure', { timeout: 10000 });
-    await page.click('button:has-text("Create local draft")');
+    // --- open/+page.svelte chrome (PR 5) — h1, section labels, the Import
+    // button + its help popover, and the create-form labels below. All of
+    // these render unconditionally on a fresh browser-build /open (no
+    // server, no FSA), unlike Recent/local-drafts which depend on prior state. ---
+    // h1.text-3xl (not a bare "h1") — HomeHeader has its own "Quest Viva" <h1>
+    // (a brand name, deliberately left untranslated) earlier in the DOM.
+    await page.waitForSelector('h1.text-3xl', { timeout: 30000 });
+    assertPseudo('open/+page title', await page.textContent('h1.text-3xl'));
+    assertPseudo('open/+page "Open existing game" label', await page.textContent('p.self-start >> nth=0'));
+    // Scoped to the Import row's own container — a generic text/class match risks
+    // catching HomeHeader's DownloadButton (also pseudo-bracketed) earlier in the DOM.
+    assertPseudo('open/+page Import game file button', await page.textContent('.flex.items-center.gap-2.w-full > button.preset-filled-primary-500'));
+    assertPseudo('open/+page "About importing games" aria-label', await page.getAttribute('.import-help button', 'aria-label'));
+    await page.click('.import-help button');
+    const importHelpLines = await page.$$eval('.import-help .absolute p', els => els.map(el => el.textContent ?? ''));
+    if (importHelpLines.length !== 2) throw new Error(`open/+page import help: expected 2 lines, found ${importHelpLines.length}`);
+    for (const text of importHelpLines) assertPseudo('open/+page import help line', text);
+    await page.click('.import-help button'); // close the popover again
+
+    // --- Reach the editor via a local draft, to exercise Toolbar.svelte.
+    // Selectors below are locale-agnostic (type/name attributes, DOM position)
+    // rather than by translated text, since openPage.* strings are pseudo here. ---
+    await page.waitForSelector('input[type="text"]', { timeout: 30000 });
+    await page.fill('input[type="text"]', 'i18n Pseudoloc Test');
+    await page.waitForSelector('input[name="gametype"]', { timeout: 10000 });
+    // Scoped to its own wrapper — "Open existing game" (self-start, earlier in
+    // the DOM) shares the exact same p.text-sm.text-surface-600-400 classes,
+    // and a bare class match would silently pick that up instead.
+    assertPseudo('open/+page "Game type" label', await page.textContent('.flex.flex-col.gap-1 > p.text-sm'));
+    const gameTypeLabels = await page.$$eval('input[name="gametype"] ~ span', els => els.map(el => el.textContent ?? ''));
+    if (gameTypeLabels.length !== 2) throw new Error(`open/+page game type radios: expected 2 labels, found ${gameTypeLabels.length}`);
+    for (const text of gameTypeLabels) assertPseudo('open/+page game type radio label', text);
+    // "Create local draft" is the last filled-primary button on this branch of
+    // /open (after the earlier "Import game file" button) — not selected by
+    // its own (now pseudo) text, same reasoning as the DOM-position selectors
+    // used throughout the rest of this script.
+    assertPseudo('open/+page Create-local-draft button', await page.locator('button.preset-filled-primary-500').last().textContent());
+    assertPseudo('open/+page "Stored in this browser only" copy', await page.textContent('.flex-col.gap-1.flex-1 p.text-xs'));
+    await page.locator('button.preset-filled-primary-500').last().click();
     // .toolbar-icon-btn only exists in Toolbar.svelte — waiting on the generic
     // "header [title]" here can transiently match HomeHeader's still-mounted
     // <header> (with DownloadButton's own [title]) mid-navigation to /edit.

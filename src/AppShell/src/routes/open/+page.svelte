@@ -28,6 +28,7 @@
     import FolderOpen from "@lucide/svelte/icons/folder-open";
     import Trash2 from "@lucide/svelte/icons/trash-2";
     import Download from "@lucide/svelte/icons/download";
+    import { t } from "$lib/i18n";
 
     const hasServer = PUBLIC_HAS_SERVER === "true";
 
@@ -51,8 +52,8 @@
     // it, and the backup reminder lives in the editor itself instead (see
     // Toolbar.svelte), where it's actually actionable.
     const importHelpText = [
-        "Accepts a .aslx file, or a .zip backed up from here.",
-        "Imported games are stored as a local draft in this browser.",
+        t("openPage.importHelp1"),
+        t("openPage.importHelp2"),
     ];
 
     let importHelpOpen = $state(false);
@@ -139,11 +140,11 @@
 
     function relativeTime(ms: number): string {
         const mins = Math.round((Date.now() - ms) / 60000);
-        if (mins < 1) return "just now";
-        if (mins < 60) return `${mins}m ago`;
+        if (mins < 1) return t("common.relativeTime.justNow");
+        if (mins < 60) return t("common.relativeTime.minutesAgo", { mins });
         const hours = Math.round(mins / 60);
-        if (hours < 24) return `${hours}h ago`;
-        return `${Math.round(hours / 24)}d ago`;
+        if (hours < 24) return t("common.relativeTime.hoursAgo", { hours });
+        return t("common.relativeTime.daysAgo", { days: Math.round(hours / 24) });
     }
 
     function folderName(dirPath: string): string {
@@ -153,9 +154,9 @@
     // Matches each platform's own term for its file manager, same as any
     // native app's "Show in Finder"/"Show in Explorer" context-menu item.
     const electronPlatform = typeof window !== "undefined" ? window.electronApp?.platform : undefined;
-    const showInFolderLabel = electronPlatform === "Mac" ? "Show in Finder"
-        : electronPlatform === "Windows" ? "Show in Explorer"
-        : "Show in folder";
+    const showInFolderLabel = electronPlatform === "Mac" ? t("openPage.showInFinder")
+        : electronPlatform === "Windows" ? t("openPage.showInExplorer")
+        : t("openPage.showInFolder");
 
     // Create new game form (shared)
     let createName = $state("");
@@ -164,9 +165,9 @@
     let templatesLoading = $state(false);
     let templatesError = $state<string | null>(null);
 
-    let selectedTemplate = $derived(templates.find(t => t.id === selectedTemplateId) ?? null);
-    let textAdventureTemplates = $derived(templates.filter(t => t.type === "textadventure"));
-    let gamebookTemplates = $derived(templates.filter(t => t.type === "gamebook"));
+    let selectedTemplate = $derived(templates.find(tpl => tpl.id === selectedTemplateId) ?? null);
+    let textAdventureTemplates = $derived(templates.filter(tpl => tpl.type === "textadventure"));
+    let gamebookTemplates = $derived(templates.filter(tpl => tpl.type === "gamebook"));
     let lastTextAdventureTemplateId = $state("");
 
     $effect(() => {
@@ -198,7 +199,7 @@
         templatesLoading = true;
         try {
             templates = await getGameTemplates();
-            const defaultTemplate = templates.find(t => t.label === "English") ?? templates[0];
+            const defaultTemplate = templates.find(tpl => tpl.label === "English") ?? templates[0];
             if (defaultTemplate) selectedTemplateId = defaultTemplate.id;
         } catch (err) {
             templatesError = String(err);
@@ -224,7 +225,7 @@
             const result = await openDirectory();
             if (!result) return;
             if (result.files.length === 0) {
-                error = "No .aslx files found in this folder.";
+                error = t("openPage.noAslxFilesFound");
                 return;
             }
             if (result.files.length === 1) {
@@ -265,7 +266,7 @@
                 const { bytes, adapter } = await createLocalDraftFromZipEntry(entries, filename);
                 const ok = await openGame(bytes, adapter.filename, adapter);
                 if (ok) { goto(`${base}/edit`); return; }
-                error = openGameErrorMessage("Failed to load game file.");
+                error = openGameErrorMessage(t("openPage.failedToLoadGameFile"));
             } catch (err) {
                 error = String(err);
             }
@@ -280,7 +281,7 @@
             const loaded = await loadFileFromDirectory(dir, filename);
             const ok = await openGame(loaded.bytes, loaded.adapter.filename, loaded.adapter);
             if (ok) { goto(`${base}/edit`); return; }
-            error = openGameErrorMessage("Failed to load game file.");
+            error = openGameErrorMessage(t("openPage.failedToLoadGameFile"));
         } catch (err) {
             error = String(err);
         }
@@ -294,7 +295,7 @@
             const loaded = await loadElectronFile(dirPath, filename);
             const ok = await openGame(loaded.bytes, loaded.adapter.filename, loaded.adapter);
             if (ok) { goto(`${base}/edit`); return; }
-            error = openGameErrorMessage("Failed to load game file.");
+            error = openGameErrorMessage(t("openPage.failedToLoadGameFile"));
         } catch (err) {
             error = String(err);
         }
@@ -316,7 +317,7 @@
             }
             const ok = await openGame(result.bytes, result.adapter.filename, result.adapter);
             if (ok) { goto(`${base}/edit`); return; }
-            error = openGameErrorMessage("Failed to load game file.");
+            error = openGameErrorMessage(t("openPage.failedToLoadGameFile"));
         } catch (err) {
             error = String(err);
         }
@@ -329,11 +330,11 @@
         try {
             const loaded = await loadLocalDraft(gameId);
             if (!loaded) {
-                error = "Could not open that draft.";
+                error = t("openPage.couldNotOpenDraft");
             } else {
                 const ok = await openGame(loaded.bytes, loaded.adapter.filename, loaded.adapter);
                 if (ok) { goto(`${base}/edit`); return; }
-                error = openGameErrorMessage("Failed to load game file.");
+                error = openGameErrorMessage(t("openPage.failedToLoadGameFile"));
             }
         } catch (err) {
             error = String(err);
@@ -342,7 +343,7 @@
     }
 
     async function handleDeleteDraft(gameId: string, filename: string) {
-        const confirmed = await confirmDialog(`Delete the local draft "${filename}"? This can't be undone.`, { confirmLabel: "Delete", danger: true });
+        const confirmed = await confirmDialog(t("openPage.deleteDraftConfirm", { name: filename }), { confirmLabel: t("common.delete"), danger: true });
         if (!confirmed) return;
         await deleteLocalDraft(gameId);
         await refreshDrafts();
@@ -357,7 +358,7 @@
     async function handleDownloadDraft(gameId: string, filename: string) {
         const loaded = await loadLocalDraft(gameId);
         if (!loaded) {
-            error = "Could not read that draft.";
+            error = t("openPage.couldNotReadDraft");
             return;
         }
         const zipEntries: Record<string, Uint8Array> = { [filename]: loaded.bytes };
@@ -380,8 +381,8 @@
     // if the form isn't ready yet.
     async function buildNewGameFile(): Promise<{ filename: string; content: string } | null> {
         const trimmed = createName.trim();
-        if (!trimmed) { createLocalError = "Please enter a game name."; return null; }
-        if (!selectedTemplateId) { createLocalError = "Please select a template."; return null; }
+        if (!trimmed) { createLocalError = t("openPage.enterGameName"); return null; }
+        if (!selectedTemplateId) { createLocalError = t("openPage.selectTemplate"); return null; }
         const bridge = await loadWasm();
         const content = bridge.CreateGameFromTemplate(selectedTemplateId, trimmed);
         return { filename: safeFilename(trimmed), content };
@@ -408,14 +409,14 @@
                 const result = await createElectronGame(parentDir, file.filename, file.content);
                 const ok = await openGame(result.bytes, result.adapter.filename, result.adapter);
                 if (ok) { goto(`${base}/edit`); return; }
-                createLocalError = openGameErrorMessage("Failed to load new game.");
+                createLocalError = openGameErrorMessage(t("openPage.failedToLoadNewGame"));
             } else {
                 const gameId = parseGameIdFromAslx(file.content);
-                if (!gameId) { createLocalError = "New game is missing a gameid."; creatingLocal = false; return; }
+                if (!gameId) { createLocalError = t("openPage.missingGameId"); creatingLocal = false; return; }
                 const adapter = await createLocalDraft(gameId, file.filename, file.content);
                 const ok = await openGame(new TextEncoder().encode(file.content), file.filename, adapter);
                 if (ok) { goto(`${base}/edit`); return; }
-                createLocalError = openGameErrorMessage("Failed to load new game.");
+                createLocalError = openGameErrorMessage(t("openPage.failedToLoadNewGame"));
             }
         } catch (err) {
             createLocalError = String(err);
@@ -437,7 +438,7 @@
             if (result) {
                 const ok = await openGame(result.loaded.bytes, result.loaded.adapter.filename, result.loaded.adapter);
                 if (ok) { goto(`${base}/edit`); return; }
-                createLocalError = openGameErrorMessage("Failed to load new game.");
+                createLocalError = openGameErrorMessage(t("openPage.failedToLoadNewGame"));
             }
         } catch (err) {
             createLocalError = String(err);
@@ -449,7 +450,7 @@
 </script>
 
 <main class="flex flex-col items-center justify-center min-h-[calc(100svh-var(--home-bar-height,0px))] gap-6 p-8">
-    <h1 class="text-3xl font-semibold">Quest Viva Editor</h1>
+    <h1 class="text-3xl font-semibold">{t("openPage.title")}</h1>
 
     {#if loading}
         <div class="flex flex-col items-center gap-3">
@@ -457,7 +458,7 @@
             <p class="text-surface-600-400 text-sm">{$loadingStatus}</p>
         </div>
     {:else if pendingFiles.length > 0}
-        <p class="text-surface-600-400">Multiple game files found — choose one to open:</p>
+        <p class="text-surface-600-400">{t("openPage.multipleFilesFound")}</p>
         <div class="flex flex-col gap-2 w-full max-w-sm">
             {#each pendingFiles as file (file)}
                 <button
@@ -470,7 +471,7 @@
                 type="button"
                 class="btn preset-outlined-surface-500 w-full"
                 onclick={() => { pendingDir = null; pendingZip = null; pendingFiles = []; }}
-            >Cancel</button>
+            >{t("common.cancel")}</button>
         </div>
     {:else if hasServer}
         <!-- textadventures.co.uk only opens games you already have — no local
@@ -478,34 +479,33 @@
              play.questviva.com, which needs no account. -->
         <div class="flex flex-col items-center gap-4 w-full max-w-sm text-center">
             <p class="text-surface-600-400">
-                This editor only opens games you already have here. To create a new game, use the
-                free play.questviva.com editor — no account needed.
+                {t("openPage.serverOnlyMessage")}
             </p>
             <a class="btn preset-filled-primary-500" href="https://play.questviva.com/open">
-                Create a new game at play.questviva.com
+                {t("openPage.createAtPlayQuestviva")}
             </a>
         </div>
     {:else}
         <div class="flex flex-col items-center gap-4 w-full max-w-sm">
 
             <!-- Open existing game -->
-            <p class="text-surface-600-400 text-sm font-medium self-start">Open existing game</p>
+            <p class="text-surface-600-400 text-sm font-medium self-start">{t("openPage.openExistingGame")}</p>
 
             {#if isElectronApp}
                 <button type="button" class="btn preset-filled-primary-500 w-full" onclick={handleOpenFolder}>
-                    {isElectron() ? "Open game…" : "Open game folder"}
+                    {isElectron() ? t("openPage.openGameEllipsis") : t("openPage.openGameFolder")}
                 </button>
             {:else}
                 <div class="flex items-center gap-2 w-full">
                     <button type="button" class="btn preset-filled-primary-500 flex-1" onclick={handleImportFile}>
-                        Import game file
+                        {t("openPage.importGameFile")}
                     </button>
                     <div class="import-help relative shrink-0">
                         <button
                             type="button"
                             class="btn-icon preset-outlined-surface-500"
                             onclick={() => importHelpOpen = !importHelpOpen}
-                            aria-label="About importing games"
+                            aria-label={t("openPage.aboutImporting")}
                         >
                             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="size-4">
                                 <circle cx="12" cy="12" r="10" />
@@ -524,7 +524,7 @@
                 </div>
                 {#if canUseFSA}
                     <button type="button" class="btn preset-outlined-primary-500 w-full" onclick={handleOpenFolder}>
-                        Open game folder
+                        {t("openPage.openGameFolder")}
                     </button>
                 {/if}
             {/if}
@@ -535,7 +535,7 @@
 
             {#if isElectronApp && recentGames.length > 0}
                 <hr class="w-full border-surface-300-700 my-2" />
-                <p class="text-surface-600-400 text-sm font-medium self-start">Recent</p>
+                <p class="text-surface-600-400 text-sm font-medium self-start">{t("openPage.recent")}</p>
                 <div class="flex flex-col gap-2 w-full">
                     {#each recentGames as game (game.dirPath + "/" + game.filename)}
                         <div class="flex items-center gap-2 w-full">
@@ -557,8 +557,8 @@
                             <button
                                 type="button"
                                 class="btn-icon btn-icon-sm preset-outlined-error-500 shrink-0"
-                                title="Remove from Recent"
-                                aria-label="Remove from Recent"
+                                title={t("openPage.removeFromRecent")}
+                                aria-label={t("openPage.removeFromRecent")}
                                 onclick={() => handleRemoveRecent(game)}
                             ><Trash2 size={14} /></button>
                         </div>
@@ -568,7 +568,7 @@
 
             {#if !isElectronApp && drafts.length > 0}
                 <hr class="w-full border-surface-300-700 my-2" />
-                <p class="text-surface-600-400 text-sm font-medium self-start">Your local drafts</p>
+                <p class="text-surface-600-400 text-sm font-medium self-start">{t("openPage.yourLocalDrafts")}</p>
                 <div class="flex flex-col gap-2 w-full">
                     {#each drafts as draft (draft.gameId)}
                         <div class="flex items-center gap-2 w-full">
@@ -583,15 +583,15 @@
                             <button
                                 type="button"
                                 class="btn-icon btn-icon-sm preset-outlined-surface-500 shrink-0"
-                                title="Download this draft as a .zip (game file + assets) — works even if it fails to open"
-                                aria-label="Download this draft as a .zip"
+                                title={t("openPage.downloadDraftTitle")}
+                                aria-label={t("openPage.downloadDraftAriaLabel")}
                                 onclick={() => handleDownloadDraft(draft.gameId, draft.filename)}
                             ><Download size={14} /></button>
                             <button
                                 type="button"
                                 class="btn-icon btn-icon-sm preset-outlined-error-500 shrink-0"
-                                title="Delete draft"
-                                aria-label="Delete draft"
+                                title={t("openPage.deleteDraft")}
+                                aria-label={t("openPage.deleteDraft")}
                                 onclick={() => handleDeleteDraft(draft.gameId, draft.filename)}
                             ><Trash2 size={14} /></button>
                         </div>
@@ -599,8 +599,7 @@
                 </div>
                 {#if isSafari}
                     <p class="text-xs text-surface-600-400 max-w-[40ch] text-center">
-                        Safari may clear local drafts if you don't open this site for a week or more —
-                        export a backup of anything important.
+                        {t("openPage.safariWarning")}
                     </p>
                 {/if}
             {/if}
@@ -608,7 +607,7 @@
             <hr class="w-full border-surface-300-700 my-2" />
 
             <!-- Create new game -->
-            <p class="text-surface-600-400 text-sm font-medium self-start">Create new game</p>
+            <p class="text-surface-600-400 text-sm font-medium self-start">{t("openPage.createNewGame")}</p>
 
             {#if templatesError}
                 <p class="text-error-500 text-sm">{templatesError}</p>
@@ -618,7 +617,7 @@
                         type="text"
                         autocapitalize="off"
                         class="input"
-                        placeholder="Game name"
+                        placeholder={t("openPage.gameNamePlaceholder")}
                         bind:value={createName}
                         onfocus={ensureTemplates}
                         onkeydown={(e) => { if (e.key === "Enter") handleCreateLocal(); }}
@@ -628,13 +627,13 @@
                     {#if templatesLoading}
                         <div class="flex items-center gap-2 text-surface-600-400 text-sm">
                             <div class="size-4 rounded-full border-2 border-surface-300-700 border-t-primary-500 animate-spin"></div>
-                            Loading templates...
+                            {t("openPage.loadingTemplates")}
                         </div>
                     {:else if templates.length > 0}
                         <div class="flex flex-col gap-1">
-                            <p class="text-sm text-surface-600-400">Game type</p>
+                            <p class="text-sm text-surface-600-400">{t("openPage.gameType")}</p>
                             <div class="flex gap-4">
-                                {#each [{ value: "textadventure", label: "Text adventure" }, { value: "gamebook", label: "Gamebook" }] as type (type.value)}
+                                {#each [{ value: "textadventure", label: t("common.textAdventure") }, { value: "gamebook", label: t("common.gamebook") }] as type (type.value)}
                                     <label class="flex items-center gap-2 cursor-pointer">
                                         <input
                                             type="radio"
@@ -646,8 +645,8 @@
                                                 if (type.value === "gamebook") {
                                                     selectedTemplateId = gamebookTemplates[0]?.id ?? "";
                                                 } else {
-                                                    const preferred = textAdventureTemplates.find(t => t.id === lastTextAdventureTemplateId);
-                                                    const english = textAdventureTemplates.find(t => t.label === "English");
+                                                    const preferred = textAdventureTemplates.find(tpl => tpl.id === lastTextAdventureTemplateId);
+                                                    const english = textAdventureTemplates.find(tpl => tpl.label === "English");
                                                     selectedTemplateId = (preferred ?? english ?? textAdventureTemplates[0])?.id ?? "";
                                                 }
                                             }}
@@ -660,8 +659,8 @@
 
                         {#if selectedTemplate?.type === "textadventure" && textAdventureTemplates.length > 1}
                             <select class="select" bind:value={selectedTemplateId} disabled={creating}>
-                                {#each textAdventureTemplates as t (t.id)}
-                                    <option value={t.id}>{t.label}</option>
+                                {#each textAdventureTemplates as tpl (tpl.id)}
+                                    <option value={tpl.id}>{tpl.label}</option>
                                 {/each}
                             </select>
                         {/if}
@@ -670,7 +669,7 @@
                     {#if creating}
                         <div class="flex items-center gap-3">
                             <div class="size-5 rounded-full border-2 border-surface-300-700 border-t-primary-500 animate-spin"></div>
-                            <span class="text-surface-600-400 text-sm">{$loadingStatus || "Creating..."}</span>
+                            <span class="text-surface-600-400 text-sm">{$loadingStatus || t("openPage.creating")}</span>
                         </div>
                     {:else}
                         <div class="flex gap-2">
@@ -680,12 +679,12 @@
                                     class="btn preset-filled-primary-500 w-full"
                                     onclick={handleCreateLocal}
                                     disabled={!createName.trim()}
-                                    title={isElectronApp ? "Choose where to create your game's folder" : "Save as a local draft in this browser"}
+                                    title={isElectronApp ? t("openPage.createFolderTitle") : t("openPage.createLocalDraftTitle")}
                                 >
-                                    {isElectronApp ? "Create" : "Create local draft"}
+                                    {isElectronApp ? t("openPage.createButton") : t("openPage.createLocalDraftButton")}
                                 </button>
                                 {#if !isElectronApp}
-                                    <p class="text-xs text-surface-600-400 text-center">Stored in this browser only</p>
+                                    <p class="text-xs text-surface-600-400 text-center">{t("openPage.storedInBrowserOnly")}</p>
                                 {/if}
                             </div>
                             {#if canUseFSA}
@@ -695,20 +694,20 @@
                                         class="btn preset-outlined-primary-500 w-full"
                                         onclick={handleCreateLocalFolder}
                                         disabled={!createName.trim()}
-                                        title="Choose a folder on your computer to save your game in"
+                                        title={t("openPage.saveToFolderTitle")}
                                     >
-                                        Save to folder…
+                                        {t("openPage.saveToFolderButton")}
                                     </button>
-                                    <p class="text-xs text-surface-600-400 text-center">You'll choose a folder on this device</p>
+                                    <p class="text-xs text-surface-600-400 text-center">{t("openPage.chooseFolderOnDevice")}</p>
                                 </div>
                             {/if}
                         </div>
 
                         {#if isElectron()}
                             <p class="text-xs text-surface-600-400 text-center self-center">
-                                Will be created as a new folder in:<br />
+                                {t("openPage.willBeCreatedIn")}<br />
                                 <span class="font-mono">{electronGamesDir || "…"}</span>
-                                <button type="button" class="anchor" onclick={handleChangeLocation}>Change location…</button>
+                                <button type="button" class="anchor" onclick={handleChangeLocation}>{t("openPage.changeLocation")}</button>
                             </p>
                         {/if}
                     {/if}

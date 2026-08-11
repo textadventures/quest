@@ -2,6 +2,7 @@
     import type { RecentGame } from "$lib/filesystem/electron-adapter";
     import { resolveAndCacheCover } from "$lib/local-cover";
     import Gamepad2 from "@lucide/svelte/icons/gamepad-2";
+    import { t } from "$lib/i18n";
 
     // Electron only — there's no browser equivalent (see PlayCatalog.svelte),
     // so unlike RecentGameCard this never needs a non-Electron branch.
@@ -32,11 +33,11 @@
 
     function relativeTime(ms: number): string {
         const mins = Math.round((Date.now() - ms) / 60000);
-        if (mins < 1) return "just now";
-        if (mins < 60) return `${mins}m ago`;
+        if (mins < 1) return t("common.relativeTime.justNow");
+        if (mins < 60) return t("common.relativeTime.minutesAgo", { mins });
         const hours = Math.round(mins / 60);
-        if (hours < 24) return `${hours}h ago`;
-        return `${Math.round(hours / 24)}d ago`;
+        if (hours < 24) return t("common.relativeTime.hoursAgo", { hours });
+        return t("common.relativeTime.daysAgo", { days: Math.round(hours / 24) });
     }
 
     function handleRemove(e: MouseEvent) {
@@ -68,8 +69,8 @@
     <button
         type="button"
         class="absolute top-1 right-1 flex items-center justify-center size-6 rounded-full bg-surface-950/80 text-surface-300 hover:text-error-500 transition-colors"
-        title="Remove from Recently Played"
-        aria-label="Remove from Recently Played"
+        title={t("recentGameCard.removeTitle")}
+        aria-label={t("recentGameCard.removeTitle")}
         onclick={handleRemove}
     >
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="size-3.5">

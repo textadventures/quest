@@ -3,6 +3,7 @@
     import { languageName } from "$lib/home-catalog";
     import type { RecentCatalogPlay } from "$lib/recent-catalog-plays";
     import { isElectron } from "$lib/runtime";
+    import { t } from "$lib/i18n";
 
     let { game, onremove }: { game: RecentCatalogPlay; onremove: () => void } = $props();
 
@@ -37,11 +38,11 @@
     <div class="p-2 flex flex-col gap-1">
         <div class="text-sm font-semibold truncate">{game.name}</div>
         {#if game.author}
-            <div class="text-xs text-surface-400 truncate">by {game.author}</div>
+            <div class="text-xs text-surface-400 truncate">{t("gameCard.byAuthor", { author: game.author })}</div>
         {/if}
         <div class="flex flex-wrap gap-1">
             <span class="text-[10px] leading-none px-1.5 py-1 rounded-full bg-surface-800 text-surface-300">
-                {game.isGamebook ? "Gamebook" : "Text Adventure"}
+                {game.isGamebook ? t("common.gamebook") : t("common.textAdventure")}
             </span>
             {#if game.language !== "en"}
                 <span class="text-[10px] leading-none px-1.5 py-1 rounded-full bg-surface-800 text-surface-300">
@@ -75,8 +76,8 @@
     <button
         type="button"
         class="absolute top-1 right-1 flex items-center justify-center size-6 rounded-full bg-surface-950/80 text-surface-300 hover:text-error-500 transition-colors"
-        title="Remove from Recently Played"
-        aria-label="Remove from Recently Played"
+        title={t("recentGameCard.removeTitle")}
+        aria-label={t("recentGameCard.removeTitle")}
         onclick={handleRemove}
     >
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="size-3.5">

@@ -14,6 +14,7 @@
     import RecentGameCard from "$components/RecentGameCard.svelte";
     import LocalFileRecentCard from "$components/LocalFileRecentCard.svelte";
     import ChevronDown from "@lucide/svelte/icons/chevron-down";
+    import { t } from "$lib/i18n";
 
     const isElectronApp = isElectron();
 
@@ -188,7 +189,7 @@
 
         const popup = window.open(`${base}/player/?source=local`, "_blank");
         if (!popup) {
-            startError = "Please allow pop-ups for this site to play the game.";
+            startError = t("playCatalog.popupBlockedError");
             return;
         }
 
@@ -262,11 +263,11 @@
                 <input
                     type="search"
                     bind:value={searchQuery}
-                    placeholder="Search games…"
-                    title="Try category:puzzle, language:de, platform:quest-gamebook"
+                    placeholder={t("search.searchPlaceholder")}
+                    title={t("search.searchHint")}
                     class="input flex-1 bg-surface-900 border-surface-700 text-surface-100 placeholder:text-surface-500"
                 />
-                <button type="submit" class="btn preset-outlined-primary-500">Search</button>
+                <button type="submit" class="btn preset-outlined-primary-500">{t("search.searchButton")}</button>
             </form>
             {#if tagCategories.length > 0}
                 <div class="relative">
@@ -274,7 +275,7 @@
                         class="input appearance-none pr-8 h-full bg-surface-900 border-surface-700 text-surface-100"
                         onchange={handleCategorySelect}
                     >
-                        <option value="">Browse category…</option>
+                        <option value="">{t("playCatalog.browseCategory")}</option>
                         {#each tagCategories as category (category.slug)}
                             <option value={category.slug}>{category.title}</option>
                         {/each}
@@ -289,20 +290,20 @@
                     onclick={handleOpenLocal}
                     disabled={electronOpenBusy}
                 >
-                    {electronOpenBusy ? "Opening…" : "Open a game file…"}
+                    {electronOpenBusy ? t("playCatalog.opening") : t("playCatalog.openGameFile")}
                 </button>
             {:else if !pickedFile}
                 <button type="button" class="btn preset-outlined-surface-500 whitespace-nowrap" onclick={handlePickFile}>
-                    Open a game file&hellip;
+                    {t("playCatalog.openGameFile")}
                 </button>
             {:else}
                 <div class="flex items-center gap-2">
                     <span class="text-sm text-surface-300 truncate max-w-[20ch]">{pickedFile.name}</span>
                     <button type="button" class="btn btn-sm preset-outlined-surface-500" onclick={handleClearPicked} disabled={starting}>
-                        Change
+                        {t("playCatalog.change")}
                     </button>
                     <button type="button" class="btn preset-filled-primary-500" onclick={handleBrowserStart} disabled={starting}>
-                        {starting ? "Starting…" : "Start ▶"}
+                        {starting ? t("playCatalog.starting") : t("playCatalog.startButton") + " ▶"}
                     </button>
                 </div>
             {/if}
@@ -320,7 +321,7 @@
 
         {#if recentEntries.length > 0}
             <section>
-                <h2 class="text-lg font-semibold mb-3">Recently Played</h2>
+                <h2 class="text-lg font-semibold mb-3">{t("playCatalog.recentlyPlayed")}</h2>
                 <div class="grid grid-cols-[repeat(auto-fill,minmax(150px,1fr))] gap-4">
                     {#each recentEntries as entry (entry.key)}
                         {#if entry.kind === "catalog"}
@@ -336,12 +337,12 @@
         {#if loading}
             <div class="flex flex-col items-center gap-3 py-12">
                 <div class="size-10 rounded-full border-4 border-surface-800 border-t-primary-500 animate-spin"></div>
-                <p class="text-surface-400 text-sm">Loading games&hellip;</p>
+                <p class="text-surface-400 text-sm">{t("playCatalog.loadingGames")}</p>
             </div>
         {:else if error}
             <div class="flex flex-col items-center gap-3 py-12 text-center">
-                <p class="text-error-500 text-sm">Couldn't load the games list.</p>
-                <button type="button" class="btn preset-tonal" onclick={load}>Try again</button>
+                <p class="text-error-500 text-sm">{t("playCatalog.loadError")}</p>
+                <button type="button" class="btn preset-tonal" onclick={load}>{t("search.tryAgain")}</button>
             </div>
         {:else if categories}
             {#each categories as category (category.title)}
@@ -349,7 +350,7 @@
                     <div class="flex items-baseline justify-between mb-3">
                         <h2 class="text-lg font-semibold">{category.title}</h2>
                         {#if category.slug}
-                            <a href="{base}/play/category/{category.slug}" class="anchor text-sm">See all &rarr;</a>
+                            <a href="{base}/play/category/{category.slug}" class="anchor text-sm">{t("playCatalog.seeAll")}</a>
                         {/if}
                     </div>
                     <div class="grid grid-cols-[repeat(auto-fill,minmax(150px,1fr))] gap-4">

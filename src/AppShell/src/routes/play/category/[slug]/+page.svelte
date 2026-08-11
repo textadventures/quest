@@ -5,6 +5,7 @@
     import { fetchCategory, type CatalogGame } from "$lib/home-catalog";
     import GameCard from "$components/GameCard.svelte";
     import GamesPager from "$components/GamesPager.svelte";
+    import { t } from "$lib/i18n";
 
     let title = $state<string | null>(null);
     let games = $state<CatalogGame[]>([]);
@@ -49,7 +50,7 @@
 <!-- Always dark, matching the rest of /play — see +layout.svelte's isPlayContext. -->
 <div class="min-h-svh bg-surface-950 text-surface-100">
     <div class="flex flex-col gap-6 w-full max-w-5xl mx-auto p-8">
-        <a href="{base}/" class="anchor self-start">&larr; Back to Play</a>
+        <a href="{base}/" class="anchor self-start">{t("search.backToPlay")}</a>
 
         {#if loading}
             <div class="flex flex-col items-center gap-3 py-12">
@@ -57,12 +58,12 @@
             </div>
         {:else if error}
             <div class="flex flex-col items-center gap-3 py-12 text-center">
-                <p class="text-error-500 text-sm">Couldn't load this category.</p>
+                <p class="text-error-500 text-sm">{t("categoryPage.loadError")}</p>
                 <button
                     type="button"
                     class="btn preset-tonal"
                     onclick={() => load(page.params.slug!, currentPage)}
-                >Try again</button>
+                >{t("search.tryAgain")}</button>
             </div>
         {:else}
             <h1 class="text-lg font-semibold">
