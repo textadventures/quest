@@ -1,9 +1,6 @@
 ﻿<asl version="600" templatetype="gamebook">
 
-  <include ref="EditorEnglish.aslx"/>
   <include ref="GamebookCore.aslx"/>
-
-  <template name="LanguageId">en</template>
 
   <game name="$NAME$">
     <gameid>$ID$</gameid>

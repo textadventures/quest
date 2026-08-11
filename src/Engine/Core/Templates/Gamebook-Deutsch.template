@@ -1,9 +1,13 @@
 ﻿<asl version="600" templatetype="gamebook" template="Gamebook (Deutsch)">
 
-  <include ref="EditorDeutsch.aslx"/>
-  <include ref="GamebookCore.aslx"/>
-
+  <!-- Overrides GamebookCore.aslx's GamebookEditorLibrary/LanguageId defaults
+       (see the comment there) — these being declared directly in this
+       top-level file, rather than via another <include>, is what lets them
+       win despite GamebookCore.aslx's own baseline include running later. -->
+  <template name="GamebookEditorLibrary">EditorDeutsch.aslx</template>
   <template name="LanguageId">de</template>
+
+  <include ref="GamebookCore.aslx"/>
 
   <game name="$NAME$">
     <gameid>$ID$</gameid>

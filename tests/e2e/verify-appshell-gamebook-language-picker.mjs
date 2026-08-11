@@ -7,9 +7,20 @@
 // (dropdown + freetext, so any language code can be entered even without a
 // dedicated Editor*.aslx caption set).
 //
+// GamebookCore.aslx must keep including EditorEnglish.aslx itself (as a
+// baseline, same as before this change) — it's loaded live while editing, not
+// frozen, so any pre-existing gamebook file (which only has
+// <include ref="GamebookCore.aslx"/>, never its own top-level Editor*.aslx
+// include) would otherwise lose all its editor captions and its languageid
+// default the moment it's reopened. See the "pre-existing gamebook" section
+// below, which regression-tests exactly that scenario.
+//
 // Run against a dev server started with:
 //   npm --prefix src/AppShell run dev -- --port 5174
 import { chromium } from 'playwright';
+import { writeFileSync, mkdtempSync } from 'node:fs';
+import { tmpdir } from 'node:os';
+import { join } from 'node:path';
 
 const baseUrl = process.argv[2] || 'http://localhost:5174';
 
@@ -115,6 +126,66 @@ async function run() {
         els.map(el => el.textContent?.trim() ?? '').filter(t => t === 'Language:'));
     if (enLangLabels.length === 0) throw new Error('English gamebook: "Language:" label not found');
     console.log('PASS: [English gamebook] "Language:" label present');
+
+    // --- Pre-existing gamebook (created before this change): only
+    // <include ref="GamebookCore.aslx"/>, no top-level Editor*.aslx include,
+    // no <template name="LanguageId">. Opening it must not show unresolved
+    // "[EditorXxx]"/"[LanguageId]" bracket placeholders. ---
+    const oldGamebookAslx = `﻿<asl version="600" templatetype="gamebook">
+
+  <include ref="GamebookCore.aslx"/>
+
+  <game name="OldGamebookTest">
+    <gameid>12345678-1234-1234-1234-123456789012</gameid>
+    <version>1.0</version>
+    <firstpublished>2024</firstpublished>
+  </game>
+
+  <object name="Page1">
+    <object name="player">
+      <inherit name="defaultplayer"/>
+    </object>
+    <description>This is page 1. Type a description here, and then create links to other pages below.</description>
+    <options type="simplestringdictionary">Page2 = This link goes to page 2;Page3 = And this link goes to page 3</options>
+  </object>
+
+  <object name="Page2">
+    <description>This is page 2. Type a description here, and then create links to other pages below.</description>
+  </object>
+
+  <object name="Page3">
+    <description>This is page 3. Type a description here, and then create links to other pages below.</description>
+  </object>
+
+</asl>`;
+    const tmpDir = mkdtempSync(join(tmpdir(), 'quest-e2e-'));
+    const oldGamebookPath = join(tmpDir, 'OldGamebookTest.aslx');
+    writeFileSync(oldGamebookPath, oldGamebookAslx, 'utf8');
+
+    await page.goto(`${baseUrl}/open`);
+    await page.evaluate(() => localStorage.setItem('questviva-ui-language', 'en'));
+    await page.reload();
+    await page.waitForSelector('button.preset-filled-primary-500', { timeout: 30000 });
+    const [fileChooser] = await Promise.all([
+        page.waitForEvent('filechooser'),
+        page.click('button.preset-filled-primary-500'), // "Import game file" — first such button on a fresh /open
+    ]);
+    await fileChooser.setFiles(oldGamebookPath);
+    await page.waitForSelector('header .toolbar-icon-btn', { timeout: 30000 });
+
+    const bodyText = await page.textContent('body');
+    const unresolvedBrackets = bodyText.match(/\[(Editor|LanguageId)\w*\]/g);
+    if (unresolvedBrackets) {
+        throw new Error(`Pre-existing gamebook: unresolved template placeholder(s) found: ${JSON.stringify(unresolvedBrackets)}`);
+    }
+    console.log('PASS: [Pre-existing gamebook] no unresolved [EditorXxx]/[LanguageId] placeholders');
+
+    const oldLangValue = await page.evaluate(() => {
+        const inputs = Array.from(document.querySelectorAll('input[type="text"]'));
+        const match = inputs.find(i => i.value === 'en');
+        return match ? match.value : null;
+    });
+    assertEqual('Pre-existing gamebook languageid default', oldLangValue, 'en');
 
     console.log('PASS');
 }

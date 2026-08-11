@@ -1,7 +1,31 @@
 ﻿<library>
+  <!-- [Xxx]-in-<include ref> indirection, not a hardcoded EditorEnglish.aslx
+       include: <caption> text (and everything else read by GetTemplate) is
+       template-substituted eagerly at XML *parse* time (GameLoader.GetTemplate
+       -> Template.ReplaceTemplateText), not lazily when the editor UI reads it
+       later — so by the time GamebookCoreEditor.aslx's <caption> elements below
+       are parsed, whichever Editor*.aslx was included most recently has already
+       "won", and a later <include ref="EditorDeutsch.aslx"/> from further down
+       this same include chain can't retroactively fix already-resolved
+       captions. Routing the ref itself through a template lets
+       Gamebook-Deutsch.template swap in EditorDeutsch.aslx *before* this
+       include runs, via the same IsBaseTemplate protection LanguageId below
+       relies on (a <template> declared directly in the game's own top-level
+       file always wins over this library-origin default — see
+       GameLoader.ScanForTemplates/Templates.cs AddTemplate). Gamebook.template
+       (English) declares neither override, so old pre-existing gamebook files
+       (which only ever had <include ref="GamebookCore.aslx"/> — this
+       indirection didn't exist before) fall back to this default unchanged. -->
+  <template name="GamebookEditorLibrary">EditorEnglish.aslx</template>
+  <include ref="[GamebookEditorLibrary]"/>
   <include ref="CoreOutput.aslx"/>
   <include ref="CoreEffects.aslx"/>
   <include ref="GamebookCoreEditor.aslx"/>
+
+  <!-- Baseline default so game.languageid resolves even for a game whose own
+       file (old or new) doesn't define a LanguageId template of its own — same
+       IsBaseTemplate override mechanism as GamebookEditorLibrary above. -->
+  <template name="LanguageId">en</template>
 
   <type name="defaultgame">
     <_editorstyle>gamebook</_editorstyle>
