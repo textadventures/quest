@@ -26,7 +26,7 @@ public partial class WasmPlayerBridge
     [JSExport]
     public static async Task<bool> Initialise(byte[] gameFileBytes, string filename)
     {
-        var provider = new ByteArrayGameDataProvider(gameFileBytes, filename);
+        var provider = new ByteArrayGameDataProvider(gameFileBytes, filename, TakePendingAdjacentFiles());
         var gameData = await provider.GetData();
         if (gameData == null) return false;
 
@@ -41,12 +41,35 @@ public partial class WasmPlayerBridge
     [JSExport]
     public static async Task<bool> InitialiseWithSave(byte[] gameFileBytes, string filename, byte[] saveBytes)
     {
-        var provider = new ByteArrayGameDataProvider(gameFileBytes, filename);
+        var provider = new ByteArrayGameDataProvider(gameFileBytes, filename, TakePendingAdjacentFiles());
         var gameData = await provider.GetData();
         if (gameData == null) return false;
 
         using var saveStream = new MemoryStream(saveBytes);
         return await InitialiseCore(gameData, saveStream);
+    }
+
+    // An Included Library element only stores a filename (<include ref="lib.aslx"/> — see
+    // IncludeSaver); a custom (non-built-in) library's actual content lives in whichever host
+    // supplied the game bytes (the editor tab's adapter, an on-disk folder, ...), which this WASM
+    // module has no access to itself — see editor-store.ts's previewInWasmPlayer /
+    // local-play.ts's resolveAdjacentLibraryFiles. wasm-player.js stages each candidate's bytes
+    // here, one at a time ([JSExport] can't marshal an array of blobs in one call — mirrors
+    // WasmEditorBridge's identical AddAdjacentFile), before every Initialise/InitialiseWithSave
+    // call (including a restart), which consumes and clears this regardless of outcome.
+    private static readonly Dictionary<string, byte[]> PendingAdjacentFiles = new();
+
+    [JSExport]
+    public static void AddAdjacentFile(string filename, byte[] data)
+    {
+        PendingAdjacentFiles[filename] = data;
+    }
+
+    private static Dictionary<string, byte[]> TakePendingAdjacentFiles()
+    {
+        var files = new Dictionary<string, byte[]>(PendingAdjacentFiles);
+        PendingAdjacentFiles.Clear();
+        return files;
     }
 
     private static readonly string[] AudioExtensions = [".mp3", ".wav", ".ogg"];

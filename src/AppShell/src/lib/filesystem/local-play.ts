@@ -1,4 +1,5 @@
 import { loadElectronFile, openElectronPlayFile, listRecentGames } from "./electron-adapter";
+import type { FileAdapter } from "./types";
 import { resolveAndCacheCover } from "../local-cover";
 
 function blobToDataUrl(blob: Blob): Promise<string> {
@@ -7,6 +8,24 @@ function blobToDataUrl(blob: Blob): Promise<string> {
         reader.onload = () => resolve(reader.result as string);
         reader.readAsDataURL(blob);
     });
+}
+
+// An unpublished .aslx on disk can contain <include ref="custom.aslx"/> for a custom Included
+// Library, whose content lives in a sibling file rather than the game bytes themselves — same
+// situation editor-store.ts's preloadAdjacentLibraryAssets resolves for the editor. The player
+// window here runs as its own separate WASM module with no filesystem access, so those bytes
+// have to be resolved here and handed over alongside the game bytes (see WorldModel.GetLibraryStream).
+async function resolveAdjacentLibraryFiles(adapter: FileAdapter): Promise<Record<string, Uint8Array>> {
+    const candidates = adapter.listLibraryCandidates
+        ? await adapter.listLibraryCandidates()
+        : [];
+    const files: Record<string, Uint8Array> = {};
+    for (const key of candidates) {
+        const blob = await adapter.getAsset(key);
+        if (!blob) continue;
+        files[key] = new Uint8Array(await blob.arrayBuffer());
+    }
+    return files;
 }
 
 // Singleton, not per-caller — only one channel is ever "the current answerer" at a time
@@ -35,7 +54,8 @@ export async function playElectronFile(dirPath: string, filename: string, onPlay
     playChannel = bc;
     bc.onmessage = async ({ data }) => {
         if (data.type === "ready") {
-            bc.postMessage({ type: "game", bytes, filename });
+            const adjacentFiles = await resolveAdjacentLibraryFiles(adapter);
+            bc.postMessage({ type: "game", bytes, filename, adjacentFiles });
         } else if (data.type === "resource-request") {
             const blob = await adapter.getAsset(data.name);
             if (blob) {
