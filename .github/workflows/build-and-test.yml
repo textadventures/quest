@@ -139,6 +139,52 @@ jobs:
         run: npm run build
         working-directory: src/ElectronApp
 
+  i18n_audit:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out repository code
+        uses: actions/checkout@v7
+        with:
+          # Need the PR's base commit too, to tell a newly introduced
+          # duplicate-key translation bug (see tools/i18n/compare-duplicates.mjs)
+          # apart from a pre-existing one - not just HEAD.
+          fetch-depth: 0
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v6
+        with:
+          node-version: 'lts/*'
+
+      - name: Run i18n audit
+        run: |
+          node tools/i18n/audit.mjs >> "$GITHUB_STEP_SUMMARY"
+          node tools/i18n/audit.mjs --json > /tmp/audit-head.json
+
+      # Regression guard for languages the registry marks `supported: true`
+      # (currently en, de) - those are meant to stay at 100% coverage in
+      # every layer. Languages not yet marked supported are tracked in the
+      # summary above but don't fail the build.
+      - name: Enforce coverage for supported languages
+        run: node tools/i18n/audit.mjs --strict
+
+      # Fails only on a *newly introduced* differing-value duplicate
+      # template key (an earlier translation silently going dead - see
+      # compare-duplicates.mjs) - pre-existing ones are tracked, not gated.
+      # Skipped on push (no PR base to diff against) and gracefully skipped
+      # if the base ref predates this tool (nothing to compare against yet).
+      - name: Check for newly introduced duplicate-key bugs
+        if: github.event_name == 'pull_request'
+        run: |
+          git fetch origin ${{ github.event.pull_request.base.sha }} --depth=1
+          if git cat-file -e ${{ github.event.pull_request.base.sha }}:tools/i18n/audit.mjs 2>/dev/null; then
+            git worktree add /tmp/base-checkout ${{ github.event.pull_request.base.sha }}
+            node tools/i18n/audit.mjs --json --root /tmp/base-checkout > /tmp/audit-base.json
+            node tools/i18n/compare-duplicates.mjs /tmp/audit-base.json /tmp/audit-head.json
+          else
+            echo "Base ref predates tools/i18n/audit.mjs - nothing to compare against yet, skipping."
+          fi
+
   build_and_test:
     runs-on: ubuntu-latest
 

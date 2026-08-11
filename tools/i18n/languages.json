@@ -1,0 +1,155 @@
+{
+  "_comment": "Registry joining the three translation layers (AppShell UI json, Editor .aslx, player .aslx) plus template wiring, per language. `id` matches each player .aslx's own <template name=\"LanguageId\">. `supported: true` means all three layers (+ template) are meant to be at 100% and are regression-guarded by tools/i18n/audit.mjs in CI — see docs/i18n-style-guide.md for the register/glossary decisions behind each supported language's translations.",
+  "languages": [
+    {
+      "id": "en",
+      "displayName": "English",
+      "appShellLocale": "en.json",
+      "editorAslx": "EditorEnglish.aslx",
+      "playerAslx": "English.aslx",
+      "template": "English.template",
+      "gamebookTemplate": "Gamebook.template",
+      "supported": true
+    },
+    {
+      "id": "de",
+      "displayName": "Deutsch",
+      "appShellLocale": "de.json",
+      "editorAslx": "EditorDeutsch.aslx",
+      "playerAslx": "Deutsch.aslx",
+      "template": "Deutsch.template",
+      "gamebookTemplate": "Gamebook-Deutsch.template",
+      "supported": true
+    },
+    {
+      "id": "es",
+      "displayName": "Español",
+      "appShellLocale": null,
+      "editorAslx": "EditorEspanol.aslx",
+      "playerAslx": "Espanol.aslx",
+      "template": "Espanol.template",
+      "gamebookTemplate": null,
+      "supported": false
+    },
+    {
+      "id": "da",
+      "displayName": "Dansk",
+      "appShellLocale": null,
+      "editorAslx": null,
+      "playerAslx": "Dansk.aslx",
+      "template": "Dansk.template",
+      "gamebookTemplate": null,
+      "supported": false
+    },
+    {
+      "id": "eo",
+      "displayName": "Esperanto",
+      "appShellLocale": null,
+      "editorAslx": null,
+      "playerAslx": "Esperanto.aslx",
+      "template": "Esperanto.template",
+      "gamebookTemplate": null,
+      "supported": false
+    },
+    {
+      "id": "fr",
+      "displayName": "Français",
+      "appShellLocale": null,
+      "editorAslx": null,
+      "playerAslx": "Francais.aslx",
+      "template": "Francais.template",
+      "gamebookTemplate": null,
+      "supported": false
+    },
+    {
+      "id": "el",
+      "displayName": "Greek",
+      "appShellLocale": null,
+      "editorAslx": null,
+      "playerAslx": "Greek.aslx",
+      "template": "Greek.template",
+      "gamebookTemplate": null,
+      "supported": false
+    },
+    {
+      "id": "is",
+      "displayName": "Icelandic",
+      "appShellLocale": null,
+      "editorAslx": null,
+      "playerAslx": "Icelandic.aslx",
+      "template": "Icelandic.template",
+      "gamebookTemplate": null,
+      "supported": false
+    },
+    {
+      "id": "it",
+      "displayName": "Italiano",
+      "appShellLocale": null,
+      "editorAslx": null,
+      "playerAslx": "Italiano.aslx",
+      "template": "Italiano.template",
+      "gamebookTemplate": null,
+      "supported": false
+    },
+    {
+      "id": "nl",
+      "displayName": "Nederlands",
+      "appShellLocale": null,
+      "editorAslx": null,
+      "playerAslx": "Nederlands.aslx",
+      "template": "Nederlands.template",
+      "gamebookTemplate": null,
+      "supported": false
+    },
+    {
+      "id": "nb",
+      "displayName": "Norsk",
+      "appShellLocale": null,
+      "editorAslx": null,
+      "playerAslx": "Norsk.aslx",
+      "template": "Norsk.template",
+      "gamebookTemplate": null,
+      "supported": false
+    },
+    {
+      "id": "pt-PT",
+      "displayName": "Português (Portugal)",
+      "appShellLocale": null,
+      "editorAslx": null,
+      "playerAslx": "Portugues-Portugal.aslx",
+      "template": "Portugues-Portugal.template",
+      "gamebookTemplate": null,
+      "supported": false
+    },
+    {
+      "id": "pt-BR",
+      "displayName": "Português (Brasil)",
+      "appShellLocale": null,
+      "editorAslx": null,
+      "playerAslx": "Portugues.aslx",
+      "template": "Portugues.template",
+      "gamebookTemplate": null,
+      "supported": false
+    },
+    {
+      "id": "ro",
+      "displayName": "Română",
+      "appShellLocale": null,
+      "editorAslx": null,
+      "playerAslx": "Romana.aslx",
+      "template": "Romana.template",
+      "gamebookTemplate": null,
+      "supported": false
+    },
+    {
+      "id": "ru",
+      "displayName": "Русский",
+      "appShellLocale": null,
+      "editorAslx": null,
+      "playerAslx": "Russian.aslx",
+      "template": "Russian.template",
+      "gamebookTemplate": null,
+      "supported": false
+    }
+  ]
+}
