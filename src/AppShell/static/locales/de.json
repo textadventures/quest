@@ -158,12 +158,6 @@
     "addScriptModal.matchingCommandsAriaLabel": "Übereinstimmende Skript-Kommandos",
     "addScriptModal.categoriesAriaLabel": "Kategorien Skript-Kommandos",
     "addScriptModal.commandsInCategoryAriaLabel": "Skript-Kommandos unter {category}",
-    "addScriptModal.shortcuts.print": "Drucken",
-    "addScriptModal.shortcuts.inventory": "Inventar",
-    "addScriptModal.shortcuts.move": "Verschieben",
-    "addScriptModal.shortcuts.show": "Zeigen",
-    "addScriptModal.shortcuts.hide": "Verstecken",
-    "addScriptModal.shortcuts.if": "If",
 
     "moveElementModal.topLevel": "(oberste Ebene)",
     "moveElementModal.heading": "Verschiebe \"{name}\"",
