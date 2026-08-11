@@ -563,4 +563,11 @@
   <template name="Noted">Vermerkt.</template>
   <template name="ShowMenuResponsePrompt">>> </template>
 
+  <!-- Explicit copies of English.aslx's own values (both already reached via
+       the <include ref="English.aslx"/> above, so this changes nothing at
+       runtime) - kept explicit so this file's own key coverage is complete
+       rather than silently relying on the include fallback. -->
+  <template name="UseDefaultPrefixIfNamed">false</template>
+  <template name="LanguageSpecificObjectTypes"></template>
+
 </library>
