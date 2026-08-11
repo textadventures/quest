@@ -41,6 +41,9 @@
     "toolbar.publish": "Veröffentlichen…",
     "toolbar.exportSingleFile": "Export als einzelne Datei…",
 
+    "editorStore.startingEditor": "Editor wird gestartet…",
+    "editorStore.loadingGame": "Spiel wird geladen…",
+
     "addElementModal.labels.room": "Raum",
     "addElementModal.labels.object": "Objekt",
     "addElementModal.labels.page": "Seite",
@@ -123,6 +126,17 @@
     "treePanel.nodeOptions": "Optionen",
     "treePanel.expand": "Aufklappen",
     "treePanel.collapse": "Zuklappen",
+    "treePanel.header.objects": "Objekte",
+    "treePanel.header.pages": "Seiten",
+    "treePanel.header.functions": "Funktionen",
+    "treePanel.header.timers": "Timer",
+    "treePanel.header.walkthrough": "Komplettlösung",
+    "treePanel.header.includedLibraries": "Eingebundene Bibliotheken",
+    "treePanel.header.templates": "Vorlagen",
+    "treePanel.header.dynamicTemplates": "Dynamische Vorlagen",
+    "treePanel.header.objectTypes": "Objekttypen",
+    "treePanel.header.javascript": "Javascript",
+    "treePanel.header.commands": "Befehle",
 
     "elementsList.noItems": "Keine Elemente.",
     "elementsList.cannotDelete": "Dies kann nicht gelöscht werden",

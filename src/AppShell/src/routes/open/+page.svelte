@@ -28,7 +28,7 @@
     import FolderOpen from "@lucide/svelte/icons/folder-open";
     import Trash2 from "@lucide/svelte/icons/trash-2";
     import Download from "@lucide/svelte/icons/download";
-    import { t } from "$lib/i18n";
+    import { t, locale } from "$lib/i18n";
 
     const hasServer = PUBLIC_HAS_SERVER === "true";
 
@@ -194,12 +194,23 @@
         if (picked) electronParentDir = picked;
     }
 
+    // Game templates are labelled by their own language's name (e.g. "Deutsch", not "German" —
+    // see EditorController.AddTemplateData's stem/`template=` attribute fallback), so the UI
+    // locale needs mapping to the matching template label. Only covers locales this UI actually
+    // offers (see SUPPORTED_LOCALES); anything else falls back to English.
+    const TEMPLATE_LABEL_BY_LOCALE: Record<string, string> = { en: "English", de: "Deutsch" };
+
+    function defaultTemplateLabel(): string {
+        return TEMPLATE_LABEL_BY_LOCALE[get(locale)] ?? "English";
+    }
+
     async function ensureTemplates() {
         if (templates.length > 0 || templatesLoading) return;
         templatesLoading = true;
         try {
             templates = await getGameTemplates();
-            const defaultTemplate = templates.find(tpl => tpl.label === "English") ?? templates[0];
+            const defaultTemplate = templates.find(tpl => tpl.label === defaultTemplateLabel())
+                ?? templates.find(tpl => tpl.label === "English") ?? templates[0];
             if (defaultTemplate) selectedTemplateId = defaultTemplate.id;
         } catch (err) {
             templatesError = String(err);
@@ -646,8 +657,9 @@
                                                     selectedTemplateId = gamebookTemplates[0]?.id ?? "";
                                                 } else {
                                                     const preferred = textAdventureTemplates.find(tpl => tpl.id === lastTextAdventureTemplateId);
-                                                    const english = textAdventureTemplates.find(tpl => tpl.label === "English");
-                                                    selectedTemplateId = (preferred ?? english ?? textAdventureTemplates[0])?.id ?? "";
+                                                    const localeDefault = textAdventureTemplates.find(tpl => tpl.label === defaultTemplateLabel())
+                                                        ?? textAdventureTemplates.find(tpl => tpl.label === "English");
+                                                    selectedTemplateId = (preferred ?? localeDefault ?? textAdventureTemplates[0])?.id ?? "";
                                                 }
                                             }}
                                         />
@@ -673,10 +685,10 @@
                         </div>
                     {:else}
                         <div class="flex gap-2">
-                            <div class="flex flex-col gap-1 flex-1">
+                            <div class="flex flex-col gap-1 flex-1 min-w-0">
                                 <button
                                     type="button"
-                                    class="btn preset-filled-primary-500 w-full"
+                                    class="btn preset-filled-primary-500 w-full whitespace-normal h-auto"
                                     onclick={handleCreateLocal}
                                     disabled={!createName.trim()}
                                     title={isElectronApp ? t("openPage.createFolderTitle") : t("openPage.createLocalDraftTitle")}
@@ -688,10 +700,10 @@
                                 {/if}
                             </div>
                             {#if canUseFSA}
-                                <div class="flex flex-col gap-1 flex-1">
+                                <div class="flex flex-col gap-1 flex-1 min-w-0">
                                     <button
                                         type="button"
-                                        class="btn preset-outlined-primary-500 w-full"
+                                        class="btn preset-outlined-primary-500 w-full whitespace-normal h-auto"
                                         onclick={handleCreateLocalFolder}
                                         disabled={!createName.trim()}
                                         title={t("openPage.saveToFolderTitle")}

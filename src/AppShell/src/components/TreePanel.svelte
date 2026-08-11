@@ -31,6 +31,30 @@
     }
 
 
+    // Synthetic header nodes (key starts with "_", see WasmEditorBridge.GetNodeType) carry
+    // their label as plain English text straight from EditorController.AddTreeHeader/OnAddedNode
+    // in C#, which has no access to the frontend's i18n messages. Translate by fixed id here
+    // instead; anything not in this map (there shouldn't be any) falls back to the C# text.
+    const HEADER_LABEL_KEYS: Record<string, string> = {
+        _advanced: "common.advanced",
+        _functions: "treePanel.header.functions",
+        _timers: "treePanel.header.timers",
+        _walkthrough: "treePanel.header.walkthrough",
+        _include: "treePanel.header.includedLibraries",
+        _template: "treePanel.header.templates",
+        _dynamictemplate: "treePanel.header.dynamicTemplates",
+        _objecttype: "treePanel.header.objectTypes",
+        _javascript: "treePanel.header.javascript",
+        _gameVerbs: "verbsEditor.header",
+        _gameCommands: "treePanel.header.commands",
+    };
+
+    function headerText(node: TreeNode): string {
+        if (node.key === "_objects") return $isGamebook ? t("treePanel.header.pages") : t("treePanel.header.objects");
+        const key = HEADER_LABEL_KEYS[node.key];
+        return key ? t(key) : node.text;
+    }
+
     // Build HierNode tree from flat list
     function buildHierTree(nodes: TreeNode[]): HierNode[] {
         // Deduplicate by key (last write wins, matching C# upsert behaviour in OnAddedNode)
@@ -49,7 +73,7 @@
             const children = byParent.get(node.key);
             return {
                 id: node.key,
-                text: node.text,
+                text: node.nodeType === "header" ? headerText(node) : node.text,
                 nodeType: node.nodeType,
                 isLibrary: node.isLibrary,
                 canDelete: node.canDelete,
