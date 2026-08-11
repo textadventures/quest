@@ -13,7 +13,7 @@
   <template name="Again1">Wiederholen</template>
   <template name="Again2">g</template>
   <template name="NothingToRepeat">Es gibt nichts zu wiederholen.</template>
-  <dynamictemplate name="ObjectCannotBeStored">"Du kannst das dort nicht hineinlegen."</dynamictemplate>
+  <dynamictemplate name="ObjectCannotBeStored">"Du kannst " + object.article + " dort nicht ablegen."</dynamictemplate>
   <template name="UnresolvedObject">Ich kann das hier nicht sehen.</template>
   <template name="UnresolvedLocation">Du kannst nicht dahin gehen.</template>
   <template name="DefaultObjectDescription">Du siehst nichts Bemerkenswertes.</template>
