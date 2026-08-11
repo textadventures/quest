@@ -389,7 +389,7 @@
     "openPage.recent": "Reciente",
     "openPage.removeFromRecent": "Quitar de Recientes",
     "openPage.yourLocalDrafts": "Tus borradores locales",
-    "openPage.downloadDraftTitle": "Descarga este borrador como .zip (archivo del juego + recursos) — funciona incluso si no se puede abrir",
+    "openPage.downloadDraftTitle": "Descarga este borrador como .zip (archivo del juego + recursos)",
     "openPage.downloadDraftAriaLabel": "Descargar este borrador como .zip",
     "openPage.deleteDraft": "Eliminar borrador",
     "openPage.safariWarning": "Safari puede eliminar los borradores locales si no abres este sitio durante una semana o más — exporta un backup de todo lo importante.",

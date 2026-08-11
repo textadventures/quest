@@ -389,7 +389,7 @@
     "openPage.recent": "Zuletzt verwendet",
     "openPage.removeFromRecent": "Aus \"Zuletzt verwendet\" entfernen",
     "openPage.yourLocalDrafts": "Deine lokalen Entwürfe",
-    "openPage.downloadDraftTitle": "Diesen Entwurf als .zip herunterladen (Spieldatei + Ressourcen) — funktioniert auch, wenn er sich nicht öffnen lässt",
+    "openPage.downloadDraftTitle": "Diesen Entwurf als .zip herunterladen (Spieldatei + Ressourcen)",
     "openPage.downloadDraftAriaLabel": "Diesen Entwurf als .zip herunterladen",
     "openPage.deleteDraft": "Entwurf löschen",
     "openPage.safariWarning": "Safari kann lokale Entwürfe löschen, wenn du diese Seite eine Woche oder länger nicht öffnest — exportiere ein Backup von allem Wichtigen.",
