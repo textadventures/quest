@@ -85,6 +85,38 @@ interface ElectronMenuApi {
     onOpenRecent(callback: (game: { dirPath: string; filename: string }) => void): () => void;
 }
 
+// Mirrors CatalogGame in home-catalog.ts — kept as its own shape since
+// preload.ts's module graph is separate from AppShell's.
+interface ElectronCatalogGame {
+    id: string;
+    name: string;
+    author: string | null;
+    cover: string | null;
+    thumbnail: string | null;
+    rating: number;
+    isGamebook: boolean;
+    language: string;
+}
+
+interface ElectronRecentCatalogPlay extends ElectronCatalogGame {
+    lastPlayed: number;
+}
+
+// Persisted to a userData file (ElectronApp's catalog-plays-store.ts), not
+// localStorage — see recent-catalog-plays.ts for why.
+interface ElectronCatalogPlaysApi {
+    list(): Promise<ElectronRecentCatalogPlay[]>;
+    record(game: ElectronCatalogGame): Promise<ElectronRecentCatalogPlay[]>;
+    remove(id: string): Promise<ElectronRecentCatalogPlay[]>;
+}
+
+// Persisted to a userData file (ElectronApp's update-dismiss-store.ts), not
+// localStorage — see UpdateBanner.svelte for why.
+interface ElectronUpdateDismissApi {
+    get(): Promise<string | null>;
+    set(version: string): Promise<void>;
+}
+
 // id: catalog game (textadventures.co.uk id); omitted: a locally-picked
 // file, whose bytes/resources the caller hands over separately via the
 // 'quest-play-local' BroadcastChannel — see ipc/player.ts and
@@ -107,6 +139,8 @@ interface ElectronApi {
     paths: ElectronPathsApi;
     locale: ElectronLocaleApi;
     recent: ElectronRecentApi;
+    catalogPlays: ElectronCatalogPlaysApi;
+    updateDismiss: ElectronUpdateDismissApi;
     fileWatch: ElectronFileWatchApi;
     menu: ElectronMenuApi;
     player: ElectronPlayerApi;

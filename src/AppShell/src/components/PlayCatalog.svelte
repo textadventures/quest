@@ -55,8 +55,8 @@
         ...recentLocalPlays.map((game): RecentEntry => ({ kind: "local", key: game.dirPath + "/" + game.filename, timestamp: game.lastOpened, game })),
     ].sort((a, b) => b.timestamp - a.timestamp));
 
-    function refreshRecentCatalogPlays() {
-        recentCatalogPlays = listRecentCatalogPlays();
+    async function refreshRecentCatalogPlays() {
+        recentCatalogPlays = await listRecentCatalogPlays();
     }
 
     async function refreshRecentLocalPlays() {
@@ -64,9 +64,9 @@
         recentLocalPlays = await listRecentGames("play");
     }
 
-    function handleRemoveRecentCatalog(id: string) {
-        removeRecentCatalogPlay(id);
-        refreshRecentCatalogPlays();
+    async function handleRemoveRecentCatalog(id: string) {
+        await removeRecentCatalogPlay(id);
+        await refreshRecentCatalogPlays();
     }
 
     async function handleRemoveRecentLocal(game: RecentGame) {
@@ -213,7 +213,7 @@
 
     onMount(() => {
         void load();
-        refreshRecentCatalogPlays();
+        void refreshRecentCatalogPlays();
         void refreshRecentLocalPlays();
     });
 

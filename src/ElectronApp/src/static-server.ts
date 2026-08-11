@@ -60,23 +60,6 @@ async function resolveFile(root: string, urlPath: string, spaFallback: boolean):
     return null;
 }
 
-// Tried first, before falling back to an OS-assigned ephemeral port. Chosen
-// arbitrarily (high, unregistered, not used elsewhere in this repo) — it
-// only needs to be *a* stable port, not any particular one.
-//
-// Why this matters: this server's origin (http://127.0.0.1:{port}) is what
-// localStorage/IndexedDB partition by. A random port every launch means a
-// fresh, empty storage partition every launch too — WasmPlayer's IndexedDB
-// game saves and the "script on" transcript feature (localStorage) would
-// both silently lose all data the moment the app restarts, since the
-// previous launch's data is still on disk but under an origin nothing will
-// ever request again. Keeping the port stable across launches keeps the
-// origin (and thus that data) stable too. Falling back to an ephemeral port
-// on conflict trades that stability away only in the rare case something
-// else on the machine already holds this exact port — same behavior as
-// before this fallback existed.
-const PREFERRED_PORT = 47893;
-
 export function startStaticServer(roots: StaticServerRoots): Promise<StaticServerHandle> {
     const server = http.createServer((req, res) => {
         void (async () => {
@@ -131,8 +114,5 @@ export function startStaticServer(roots: StaticServerRoots): Promise<StaticServe
         });
     }
 
-    return listen(PREFERRED_PORT).catch((err: NodeJS.ErrnoException) => {
-        if (err.code !== "EADDRINUSE") throw err;
-        return listen(0);
-    });
+    return listen(0);
 }

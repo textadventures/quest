@@ -25,13 +25,13 @@
     // since only an actual Play click should count.
     function handleElectronPlay() {
         if (!details) return;
-        recordCatalogPlay(details);
+        void recordCatalogPlay(details);
         void window.electronApp!.player.openWindow({ id: details.id });
     }
 
     function handleBrowserPlay() {
         if (!details) return;
-        recordCatalogPlay(details);
+        void recordCatalogPlay(details);
     }
 
     onMount(async () => {

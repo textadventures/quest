@@ -9,6 +9,8 @@ import { registerRecentHandlers } from "./ipc/recent";
 import { registerPlayerHandlers } from "./ipc/player";
 import { registerTranscriptHandlers } from "./ipc/transcript";
 import { registerGameSaveHandlers } from "./ipc/gamesave";
+import { registerCatalogPlaysHandlers } from "./ipc/catalog-plays";
+import { registerUpdateDismissHandlers } from "./ipc/update-dismiss";
 import { registerFileWatchHandlers } from "./ipc/file-watch";
 import { registerLocaleHandlers } from "./ipc/locale";
 import { listRecentGames, clearRecentGames, type RecentGame, type RecentKind } from "./recent-games";
@@ -585,6 +587,8 @@ if (!gotLock) {
         registerPlayerHandlers(() => (staticServer ? `http://127.0.0.1:${staticServer.port}` : null));
         registerTranscriptHandlers();
         registerGameSaveHandlers();
+        registerCatalogPlaysHandlers();
+        registerUpdateDismissHandlers();
         // Renderer-armed (see electron-adapter.ts's arm calls) — this only ever
         // notifies about whatever file(s) the renderer last asked to watch.
         registerFileWatchHandlers((filenames) => {

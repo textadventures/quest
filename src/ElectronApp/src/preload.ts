@@ -1,5 +1,6 @@
 import { contextBridge, ipcRenderer } from "electron";
 import type { RecentGame, RecentKind } from "./recent-games";
+import type { RecentCatalogPlay } from "./catalog-plays-store";
 
 interface FileFilter {
     name: string;
@@ -142,6 +143,22 @@ contextBridge.exposeInMainWorld("electronApp", {
             ipcRenderer.on("file-changed-externally", listener);
             return () => ipcRenderer.removeListener("file-changed-externally", listener);
         },
+    },
+    catalogPlays: {
+        // Backs the Play tab's "Recently Played" catalog-game list — file storage
+        // rather than AppShell's own localStorage-based recent-catalog-plays.ts,
+        // since static-server.ts's origin isn't guaranteed to stay the same
+        // across restarts. See ElectronApp's catalog-plays-store.ts.
+        list: (): Promise<RecentCatalogPlay[]> => ipcRenderer.invoke("catalogPlays:list"),
+        record: (game: Omit<RecentCatalogPlay, "lastPlayed">): Promise<RecentCatalogPlay[]> =>
+            ipcRenderer.invoke("catalogPlays:record", game),
+        remove: (id: string): Promise<RecentCatalogPlay[]> => ipcRenderer.invoke("catalogPlays:remove", id),
+    },
+    updateDismiss: {
+        // Which update version UpdateBanner.svelte was last dismissed for — see
+        // ElectronApp's update-dismiss-store.ts for why this can't be localStorage.
+        get: (): Promise<string | null> => ipcRenderer.invoke("updateDismiss:get"),
+        set: (version: string): Promise<void> => ipcRenderer.invoke("updateDismiss:set", version),
     },
     player: {
         // Opens a dedicated player BrowserWindow (see ipc/player.ts) rather
