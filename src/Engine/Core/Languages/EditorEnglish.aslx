@@ -9,6 +9,7 @@
   <template name="EditorGBLinkForeground">Link foreground</template>
   <template name="EditorGBYouCanChange">You can change where the game starts by moving "player" to a different page.</template>
   <template name="EditorGBPage">Page</template>
+  <template name="EditorGBLanguage">Language</template>
   <template name="EditorGBName">Name</template>
   <template name="EditorGBPageType">Page type</template>
   <template name="EditorGBPageTypePicture">Picture</template>

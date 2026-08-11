@@ -110,7 +110,7 @@ public class IncludedLibraryTests
         Action<EditorController> attachExtraEvents = null)
     {
         var templates = EditorController.GetAvailableTemplates();
-        var template = templates[templateName];
+        var template = templates.Values.Single(t => t.TemplateName == templateName);
         var initialFileText = EditorController.CreateNewGameFile(template.ResourceName, "Test");
         var bytes = Encoding.UTF8.GetBytes(initialFileText);
 

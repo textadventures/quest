@@ -2420,7 +2420,7 @@ public sealed class EditorController : IDisposable
             }
         }
 
-        templates.Add(templateName, new TemplateData
+        templates.Add(resourceName, new TemplateData
         {
             ResourceName = resourceName,
             TemplateName = templateName,
@@ -2732,8 +2732,8 @@ public sealed class EditorController : IDisposable
             return false;
         }
 
-        return GetAvailableTemplates().Keys
-            .Any(name => string.Equals(name, safeFilename, StringComparison.OrdinalIgnoreCase));
+        return GetAvailableTemplates().Values
+            .Any(t => string.Equals(t.TemplateName, safeFilename, StringComparison.OrdinalIgnoreCase));
     }
 
     internal void UpdateDictionariesReferencingRenamedObject(string oldName, string newName)
