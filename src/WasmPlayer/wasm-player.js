@@ -161,6 +161,12 @@ window.addEventListener('pagehide', () => {
 // and never reassigned by a slot/file load.
 let originalGameBytes = null;
 let originalGameFilename = null;
+// Bytes for every custom (non-built-in) Included Library the game's <include ref="..."/>
+// elements need — see startGame's adjacentFiles param. Re-staged via stageAdjacentFiles()
+// before every Bridge.Initialise/InitialiseWithSave call (initial boot and restartGameCore
+// alike), since WasmPlayerBridge's own pending-file dictionary is consumed and cleared on
+// each load.
+let originalAdjacentFiles = null;
 // The pristine player chrome markup (playercore.htm), fetched once at boot
 // and reused verbatim by restartGame() so a mid-session restart gets exactly
 // the same clean slate as the initial boot, instead of the previous game's
@@ -202,6 +208,17 @@ function getResourceUrl(name) {
         });
         editorChannel.postMessage({ type: 'resource-request', name, id });
     });
+}
+
+// Stages every custom Included Library's bytes into WasmPlayerBridge (one at a time — same
+// [JSExport] array-marshalling limit as AddPublishAsset elsewhere) so the next
+// Initialise/InitialiseWithSave call can resolve <include ref="..."/> elements the Editor's
+// save left un-inlined (see WorldModel.GetLibraryStream). A no-op when the game has none.
+function stageAdjacentFiles(files) {
+    if (!files) return;
+    for (const [name, bytes] of Object.entries(files)) {
+        Bridge.AddAdjacentFile(name, bytes);
+    }
 }
 
 function ui_init() { }
@@ -443,7 +460,7 @@ function swapInPlayerUi() {
 // beginning"/Load in an editor-preview session.
 let currentIsPreview = false;
 
-async function initWasmPlayer(gameBytes, filename, bc = null, saveBytes = null, isPreview = false, recordWalkthrough = null, runWalkthrough = null) {
+async function initWasmPlayer(gameBytes, filename, bc = null, saveBytes = null, isPreview = false, recordWalkthrough = null, runWalkthrough = null, adjacentFiles = null) {
     currentIsPreview = isPreview;
     const dotnetJsUrl = wasmPlayerScriptUrl
         ? new URL('_framework/dotnet.js', wasmPlayerScriptUrl).href
@@ -529,6 +546,7 @@ async function initWasmPlayer(gameBytes, filename, bc = null, saveBytes = null, 
     // behaviour is unchanged.
     const startScreenEl = swapInPlayerUi();
 
+    stageAdjacentFiles(adjacentFiles);
     const ok = saveBytes
         ? await Bridge.InitialiseWithSave(gameBytes, filename, saveBytes)
         : await Bridge.Initialise(gameBytes, filename);
@@ -635,6 +653,7 @@ async function restartGameCore(saveBytes) {
     await nextPaint();
 
     try {
+        stageAdjacentFiles(originalAdjacentFiles);
         const ok = saveBytes
             ? await Bridge.InitialiseWithSave(originalGameBytes, originalGameFilename, saveBytes)
             : await Bridge.Initialise(originalGameBytes, originalGameFilename);
@@ -666,9 +685,10 @@ async function restartGameCore(saveBytes) {
 // Wraps initWasmPlayer with the boot-time "Continue / New Game" prompt: if
 // saves already exist for this game, ask before committing to either the
 // fresh game or a chosen save. Used by all boot entry points below.
-async function startGame(bytes, filename, bc = null, gameIdOverride = null, isPreview = false, recordWalkthrough = null, runWalkthrough = null) {
+async function startGame(bytes, filename, bc = null, gameIdOverride = null, isPreview = false, recordWalkthrough = null, runWalkthrough = null, adjacentFiles = null) {
     originalGameBytes = bytes;
     originalGameFilename = filename;
+    originalAdjacentFiles = adjacentFiles;
     // gameIdOverride lets callers with a stronger identity than the filename
     // (e.g. the Text Adventures API's stable game id) use it instead.
     const gameId = gameIdOverride || computeGameId(filename);
@@ -691,7 +711,7 @@ async function startGame(bytes, filename, bc = null, gameIdOverride = null, isPr
         }
     }
 
-    await initWasmPlayer(bytes, filename, bc, saveBytes, isPreview, recordWalkthrough, runWalkthrough);
+    await initWasmPlayer(bytes, filename, bc, saveBytes, isPreview, recordWalkthrough, runWalkthrough, adjacentFiles);
 }
 
 // ── Start screen helpers ──────────────────────────────────────────────────────
@@ -1923,7 +1943,7 @@ async function fetchGameBytes(url) {
         bc.onmessage = async ({ data }) => {
             if (data.type === 'game') {
                 bc.onmessage = null;
-                await startGame(data.bytes, data.filename, bc, null, true, data.recordWalkthrough ?? null, data.runWalkthrough ?? null);
+                await startGame(data.bytes, data.filename, bc, null, true, data.recordWalkthrough ?? null, data.runWalkthrough ?? null, data.adjacentFiles ?? null);
             }
         };
         return;
@@ -1961,7 +1981,7 @@ async function fetchGameBytes(url) {
                 // reassigns bc.onmessage itself to keep answering
                 // 'resource-response' messages for the rest of the session.
                 bc.onmessage = null;
-                await startGame(data.bytes, data.filename, bc);
+                await startGame(data.bytes, data.filename, bc, null, false, null, null, data.adjacentFiles ?? null);
             }
         };
         return;

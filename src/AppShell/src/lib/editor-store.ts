@@ -172,19 +172,29 @@ export const lastOpenGameError = writable<string | null>(null);
 // An Included Library element only stores its filename (<include ref="lib.aslx"/>) — the
 // library's actual content lives in the adapter's asset storage, not in the game bytes, so the
 // engine can't resolve it on its own when (re)loading. AddLibraryModal only ever uploads
-// .aslx files, so every asset with that extension is a candidate; stage them all into the WASM
-// side (WasmEditorBridge.AddAdjacentFile) before Initialise/SetGameXml runs the load that needs
-// them (see WorldModel.GetLibraryStream / ByteArrayGameDataProvider). Candidate discovery goes
+// .aslx files, so every asset with that extension is a candidate. Candidate discovery goes
 // through listLibraryCandidates() rather than listAssets() — see its own comment on
 // FileAdapter for why the two can't be the same list.
-async function preloadAdjacentLibraryAssets(adapter: FileAdapter): Promise<void> {
+async function resolveLibraryCandidateFiles(adapter: FileAdapter): Promise<Record<string, Uint8Array>> {
     const candidates = adapter.listLibraryCandidates
         ? await adapter.listLibraryCandidates()
         : (await adapter.listAssets()).map(a => a.key).filter(key => key.toLowerCase().endsWith(".aslx"));
+    const files: Record<string, Uint8Array> = {};
     for (const key of candidates) {
         const blob = await adapter.getAsset(key);
         if (!blob) continue;
-        _bridge!.AddAdjacentFile(key, new Uint8Array(await blob.arrayBuffer()));
+        files[key] = new Uint8Array(await blob.arrayBuffer());
+    }
+    return files;
+}
+
+// Stages resolveLibraryCandidateFiles()'s result into the WASM side (WasmEditorBridge.AddAdjacentFile)
+// before Initialise/SetGameXml runs the load that needs them (see WorldModel.GetLibraryStream /
+// ByteArrayGameDataProvider).
+async function preloadAdjacentLibraryAssets(adapter: FileAdapter): Promise<void> {
+    const files = await resolveLibraryCandidateFiles(adapter);
+    for (const [key, bytes] of Object.entries(files)) {
+        _bridge!.AddAdjacentFile(key, bytes);
     }
 }
 
@@ -454,10 +464,18 @@ export async function previewInWasmPlayer(wasmPlayerUrl: string, opts?: { record
             // Serialize fresh on every 'ready' so WasmPlayer refreshes also pick up latest edits.
             if (!_bridge) return;
             const bytes = new TextEncoder().encode(_bridge.Save());
+            // The Editor's own save (SaveMode.Editor) excludes unmodified library-origin
+            // elements, leaving only <include ref="..."/> behind (see preloadAdjacentLibraryAssets)
+            // — WasmPlayer runs in its own separate WASM module with no adapter of its own, so
+            // any custom (non-built-in) library's content has to be handed over here too, or its
+            // <include> fails to resolve with "Library file not found" as soon as the player
+            // tries to load these bytes.
+            const adjacentFiles = await resolveLibraryCandidateFiles(adapter);
             bc.postMessage({
                 type: "game",
                 bytes,
                 filename,
+                adjacentFiles,
                 recordWalkthrough: opts?.recordWalkthrough ?? null,
                 runWalkthrough: opts?.runWalkthrough ?? null,
             });
