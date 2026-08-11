@@ -7,7 +7,9 @@
     <!-- Get any undefined templates from the English library -->
 
     <template name="LanguageId">es</template>
+    <template name="UseDefaultPrefixIfNamed">false</template>
 
+	<template name="WantRestartGame">¿Estás seguro de que quieres reiniciar el juego?</template>
 	<template name="Again1">Otra vez</template>
 	<template name="Again2">O</template>
 	<template name="NothingToRepeat">No hay nada para repetir.</template>
@@ -93,6 +95,8 @@
     <template name="LockedExit">Esa dirección está bloqueada.</template>
     <dynamictemplate name="DefaultAsk">CapFirst(object.article)+ " " + object.name + " no responde."</dynamictemplate>
     <dynamictemplate name="DefaultTell">CapFirst(object.article)+ " " + object.name + " no responde."</dynamictemplate>
+    <dynamictemplate name="DefaultTellTo">WriteVerb(object, "hacer") + " nada."</dynamictemplate>
+    <dynamictemplate name="DefaultEnter">"No puedes entrar en " + object.article + " " + object.name + "."</dynamictemplate>
     <template name="NoKey">No tienes la llave.</template>
     <template name="UnlockMessage">Vale, ya está.</template>
     <template name="LockMessage">WriteVerb(object, "estar") + " cerrad" + GetSuffix(object) + " con llave."</template>
@@ -530,7 +534,6 @@
     <b>- Atajos de teclado:</b>  Pulsa arriba/abajo para localizar comandos tecleados previamente. X... es una abreviatura para EXAMINAR ...]]></template>
 
     <!-- Editor-specific templates - should eventually be moved to e.g. EditorEnglish.aslx -->
-    <template name="LanguageSpecificObjectTypes"></template>
     <!-- NOTE: To add a language-specific object type, fill in the template like this: -->
     <!--><template name="LanguageSpecificObjectTypes">masculine=Inanimate object (masculine); feminine=Inanimate object (feminine); </template>-->
     <!-- and then add <type>s masculine and feminine to the language .aslx file. The final "; " is important, don't delete it! -->
@@ -702,5 +705,16 @@
 		  return ("o")
 		}
     </function>
- 
+
+    <template name="NoTranscriptFeature">Este juego no tiene función de transcripción.</template>
+    <template name="TranscriptAlreadyEnabled">La transcripción ya está activada.</template>
+    <template name="TranscriptDisabled">Fin de la transcripción.</template>
+    <template name="TranscriptAlreadyDisabled">La transcripción ya está desactivada.</template>
+    <template name="TranscriptEnterFilename">Por favor ingresa un nombre para la transcripción.</template>
+    <dynamictemplate name="ToDisableTranscript"><![CDATA["<b><i>[  Escribe </i>" + Template("TranscriptOffAllCaps") + "<i> para desactivar la transcripción.  ]</i></b>"]]></dynamictemplate>
+    <dynamictemplate name="TranscriptEnabledMessage"><![CDATA["<hr/>Inicio de la transcripción de:<br/><b>TÍTULO: </b>" + game.gamename + "<br/><b>AUTOR: </b>" + game.author + "<br/><b>VERSIÓN: </b>" + game.version + "<br/><b>IFID: </b>" + game.gameid]]></dynamictemplate>
+    <template name="TranscriptOffAllCaps">TRANSCRIPCIÓN APAGADA</template>
+    <template name="Noted">Anotado.</template>
+    <template name="ShowMenuResponsePrompt">>> </template>
+
 </library>

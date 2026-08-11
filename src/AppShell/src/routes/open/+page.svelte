@@ -201,16 +201,16 @@
     // see EditorController.AddTemplateData's stem/`template=` attribute fallback), so the UI
     // locale needs mapping to the matching template label. Only covers locales this UI actually
     // offers (see SUPPORTED_LOCALES); anything else falls back to English.
-    const TEMPLATE_LABEL_BY_LOCALE: Record<string, string> = { en: "English", de: "Deutsch" };
+    const TEMPLATE_LABEL_BY_LOCALE: Record<string, string> = { en: "English", de: "Deutsch", es: "Español" };
 
     function defaultTemplateLabel(): string {
         return TEMPLATE_LABEL_BY_LOCALE[get(locale)] ?? "English";
     }
 
     // Same idea as TEMPLATE_LABEL_BY_LOCALE above, but Gamebook templates keep the
-    // "Gamebook" stem as their base label rather than being named after the language
-    // (there being only one non-English one so far) — see Gamebook-Deutsch.template.
-    const GAMEBOOK_TEMPLATE_LABEL_BY_LOCALE: Record<string, string> = { en: "Gamebook", de: "Gamebook (Deutsch)" };
+    // "Gamebook" stem as their base label rather than being named after the language —
+    // see Gamebook-Deutsch.template/Gamebook-Espanol.template.
+    const GAMEBOOK_TEMPLATE_LABEL_BY_LOCALE: Record<string, string> = { en: "Gamebook", de: "Gamebook (Deutsch)", es: "Gamebook (Español)" };
 
     function defaultGamebookTemplateLabel(): string {
         return GAMEBOOK_TEMPLATE_LABEL_BY_LOCALE[get(locale)] ?? "Gamebook";

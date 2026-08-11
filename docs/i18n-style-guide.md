@@ -10,7 +10,7 @@ completeness/consistency check this complements.
 Add a section here *before* starting a new language's backfill, not after -
 the whole point is to fix the decision first so an AI-assisted first pass
 doesn't have to guess and a reviewer has something concrete to check
-against. Only `en`/`de` are marked `supported: true` today (see
+against. Only `en`/`de`/`es` are marked `supported: true` today (see
 `tools/i18n/languages.json`) - bringing another language to that bar means
 completing all three translation layers (AppShell UI json, Editor `.aslx`,
 player `.aslx`) plus its template/gamebook-template wiring, then flipping
@@ -27,6 +27,19 @@ Why: "Du" is the norm for German gaming/hobbyist/open-source software
 (Steam, itch.io, Duolingo), vs. "Sie" being more the convention for
 enterprise/banking/government software - and it's the majority convention
 already in this codebase.
+
+## Spanish (es)
+
+**Register: informal "tú" throughout.** Not "usted".
+
+Applies to all three layers - AppShell UI, `EditorEspanol.aslx`,
+`Espanol.aslx` - and to gamebook templates (`Gamebook-Espanol.template`).
+
+Why: already the consistent convention in the existing Spanish
+translations before this backfill (`puedes`, `No puedes ir por ahí`, etc.)
+- no register conflict to resolve here, just kept new content consistent
+with it. "Tú" is also the norm for Spanish gaming/hobbyist software (Steam,
+Duolingo), matching the same reasoning as German above.
 
 ## English (en)
 
