@@ -347,12 +347,15 @@ async function run() {
     assertPseudo('AddScriptModal filter placeholder', await page.getAttribute('div[role="dialog"] input[type="text"]', 'placeholder'));
     const addScriptFooter = await page.$$eval('div[role="dialog"] .border-t button', els => els.map(el => el.textContent ?? ''));
     for (const text of addScriptFooter) assertPseudo('AddScriptModal footer button', text);
-    // Quick-add shortcuts (Print/Inventory/Move/Show/Hide/If) — click the last
-    // one (If) to exercise ScriptEditor's if/then/else rendering below.
+    // Quick-add shortcuts (Print/Inventory/Move/Show/Hide/If) — their labels come from
+    // the <common> field on each command's .aslx editor definition (Engine/Core/
+    // CoreEditorScripts*.aslx), the same WASM-bridge source as every other script-command
+    // label, so — like TreePanel node labels and command names elsewhere in this file —
+    // they stay plain English even under the xx pseudo-locale; only checked for presence
+    // here. Click the last one (If) to exercise ScriptEditor's if/then/else rendering below.
     const shortcutButtons = page.locator('div[role="dialog"] .rounded-full');
     const shortcutCount = await shortcutButtons.count();
     if (shortcutCount === 0) throw new Error('AddScriptModal: no quick-add shortcut buttons found');
-    for (const text of await shortcutButtons.allTextContents()) assertPseudo('AddScriptModal shortcut button', text);
     await shortcutButtons.last().click();
     await page.waitForSelector('div[role="dialog"]', { state: 'detached', timeout: 10000 });
 

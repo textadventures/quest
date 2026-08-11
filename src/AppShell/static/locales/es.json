@@ -158,12 +158,6 @@
     "addScriptModal.matchingCommandsAriaLabel": "Comandos de programa coincidentes",
     "addScriptModal.categoriesAriaLabel": "Categorías de comandos de programa",
     "addScriptModal.commandsInCategoryAriaLabel": "Comandos de programa en {category}",
-    "addScriptModal.shortcuts.print": "Imprimir",
-    "addScriptModal.shortcuts.inventory": "Inventario",
-    "addScriptModal.shortcuts.move": "Mover",
-    "addScriptModal.shortcuts.show": "Mostrar",
-    "addScriptModal.shortcuts.hide": "Ocultar",
-    "addScriptModal.shortcuts.if": "Si",
 
     "moveElementModal.topLevel": "(nivel superior)",
     "moveElementModal.heading": "Mover \"{name}\"",

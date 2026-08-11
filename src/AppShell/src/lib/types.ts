@@ -146,6 +146,7 @@ export interface ScriptCommandInfo {
   add: string
   createString: string
   advanced: boolean
+  common: string | null
 }
 
 export interface ScriptCategoryInfo {

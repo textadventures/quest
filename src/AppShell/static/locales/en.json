@@ -158,12 +158,6 @@
     "addScriptModal.matchingCommandsAriaLabel": "Matching script commands",
     "addScriptModal.categoriesAriaLabel": "Script command categories",
     "addScriptModal.commandsInCategoryAriaLabel": "Script commands in {category}",
-    "addScriptModal.shortcuts.print": "Print",
-    "addScriptModal.shortcuts.inventory": "Inventory",
-    "addScriptModal.shortcuts.move": "Move",
-    "addScriptModal.shortcuts.show": "Show",
-    "addScriptModal.shortcuts.hide": "Hide",
-    "addScriptModal.shortcuts.if": "If",
 
     "moveElementModal.topLevel": "(top level)",
     "moveElementModal.heading": "Move \"{name}\"",

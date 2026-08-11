@@ -23,31 +23,17 @@
 
     let dialogEl: HTMLDivElement;
 
-    const SHORTCUT_KEYWORDS: string[] = [
-        "msg",
-        "(function)AddToInventory",
-        "(function)MoveObject",
-        "(function)MakeObjectVisible",
-        "(function)MakeObjectInvisible",
-        "if",
-    ];
-    const SHORTCUT_LABELS: Record<string, string> = {
-        "msg": t("addScriptModal.shortcuts.print"),
-        "(function)AddToInventory": t("addScriptModal.shortcuts.inventory"),
-        "(function)MoveObject": t("addScriptModal.shortcuts.move"),
-        "(function)MakeObjectVisible": t("addScriptModal.shortcuts.show"),
-        "(function)MakeObjectInvisible": t("addScriptModal.shortcuts.hide"),
-        "if": t("addScriptModal.shortcuts.if"),
-    };
-
+    // Which commands appear as "Quick add" pills, and their labels, are driven
+    // entirely by the <common> field on the command's own .aslx editor
+    // definition (see Engine/Core/CoreEditorScripts*.aslx) — same source and
+    // language files as every other script-command label, rather than a
+    // second hardcoded list/translation kept in sync here.
     const shortcuts = $derived(
-        SHORTCUT_KEYWORDS.flatMap((keyword) => {
-            for (const cat of categories) {
-                const cmd = cat.commands.find((c) => c.keyword === keyword);
-                if (cmd) return [{ label: SHORTCUT_LABELS[keyword] ?? cmd.add, createString: cmd.createString }];
-            }
-            return [];
-        })
+        categories.flatMap((cat) =>
+            cat.commands
+                .filter((c) => c.common)
+                .map((c) => ({ label: c.common!, createString: c.createString }))
+        )
     );
 
     let selectedCategoryIndex = $state(0);
