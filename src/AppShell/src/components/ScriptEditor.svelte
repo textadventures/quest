@@ -568,7 +568,7 @@
             {:else if !codeViewMode && isRoot}
                 <span class="text-xs text-surface-600-400 italic">{t("scriptEditor.loadingCommands")}</span>
             {/if}
-            {#if isRoot && $scriptClipboardHasContent && !codeViewMode}
+            {#if $scriptClipboardHasContent && !codeViewMode}
                 <button
                     type="button"
                     class="btn btn-sm preset-outlined-primary-500 text-xs py-0.5"
