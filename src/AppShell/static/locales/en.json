@@ -389,7 +389,7 @@
     "openPage.recent": "Recent",
     "openPage.removeFromRecent": "Remove from Recent",
     "openPage.yourLocalDrafts": "Your local drafts",
-    "openPage.downloadDraftTitle": "Download this draft as a .zip (game file + assets) — works even if it fails to open",
+    "openPage.downloadDraftTitle": "Download this draft as a .zip (game file + assets)",
     "openPage.downloadDraftAriaLabel": "Download this draft as a .zip",
     "openPage.deleteDraft": "Delete draft",
     "openPage.safariWarning": "Safari may clear local drafts if you don't open this site for a week or more — export a backup of anything important.",
