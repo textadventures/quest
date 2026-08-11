@@ -23,6 +23,12 @@
 <script>
     var questTranscriptsVersion = "1.0.9";
 
+    // Electron: file storage under userData rather than localStorage — see
+    // transcript-store.ts and player.js's WriteToTranscript for why (this
+    // window's origin isn't guaranteed to stay the same across restarts).
+    // window.electronTranscripts is bridged by transcript-viewer-preload.ts.
+    var isElectron = navigator.userAgent.includes('Electron/');
+
     var wnd;
 
     var tName = "";
@@ -37,33 +43,43 @@
         return (unfixme.replace(/___SPACE___/g, " ").replace(/___SINGLE_QUOTE___/g, "'").replace(/___DOUBLE_QUOTE___/g, "\"").replace(/___COLON___/g, ":").replace(/___DOT___/g, ".").replace(/___HASH___/g, "#"));
     }
 
-    function downloadTranscript(tsn) {
+    async function getTranscriptData(name) {
+        if (isElectron) return await window.electronTranscripts.read(name);
+        return localStorage.getItem("questtranscript-" + name);
+    }
+
+    async function downloadTranscript(tsn) {
         event.stopPropagation();
-        var tscriptData = localStorage.getItem("questtranscript-" + reverseSafeHtmlId(tsn)).replace(/@@@NEW_LINE@@@/g, "\r\n") || "No transcript data found.";
+        var name = reverseSafeHtmlId(tsn);
+        var raw = await getTranscriptData(name);
+        var tscriptData = (raw || "No transcript data found.").replace(/@@@NEW_LINE@@@/g, "\r\n");
         let link = document.createElement('a');
-        link.download = reverseSafeHtmlId(tsn) + '.txt';
+        link.download = name + '.txt';
         let blob = new Blob([tscriptData], {type: 'text/plain'});
         link.href = URL.createObjectURL(blob);
         link.click();
         URL.revokeObjectURL(link.href);
     }
 
-    function openTranscript(tsn) {
+    async function openTranscript(tsn) {
         event.stopPropagation();
-        var tscriptData = localStorage.getItem("questtranscript-" + reverseSafeHtmlId(tsn)).replace(/@@@NEW_LINE@@@/g, "<br/>") || "No transcript data found.";
+        var name = reverseSafeHtmlId(tsn);
+        var raw = await getTranscriptData(name);
+        var tscriptData = (raw || "No transcript data found.").replace(/@@@NEW_LINE@@@/g, "<br/>");
         wnd = window.open("about:blank", "", "_blank");
         wnd.document.write(tscriptData);
-        wnd.document.title = reverseSafeHtmlId(tsn).replace(/questtranscript-/, "") + " - Transcript";
+        wnd.document.title = name + " - Transcript";
     }
 
-    function removeTscript(tscript) {
+    async function removeTscript(tscript) {
         event.stopPropagation();
         var result = window.confirm("Delete this transcript?");
         if (result) {
-            /* console.log(tscript); */
-            localStorage.removeItem("questtranscript-" + reverseSafeHtmlId(tscript));
+            var name = reverseSafeHtmlId(tscript);
+            if (isElectron) await window.electronTranscripts.delete(name);
+            else localStorage.removeItem("questtranscript-" + name);
             document.getElementById(tscript).style.display = "none";
-            delete choices[tscript.replace(/questtranscript-/, "")];
+            delete choices[tscript];
         }
         if (Object.keys(choices).length < 1) {
             document.getElementById("transcript-table-header").innerHTML = "You have no transcripts.";
@@ -72,22 +88,28 @@
 
     var tScriptTemplate = "<tr id=\"TRANSCRIPT_NAME\" class=\"transcript-entry-holder\" style=\"border:1px solid black; padding: 4px;\"><td class=\"transcript-name\" style=\"padding:4px\">TRANSCRIPT_DISPLAYED_NAME</td><td class=\"transcript-open-link-holder\"><button href=\"#\"  name=\"TRANSCRIPT_NAME\" onclick=\"openTranscript(this.name);\" class=\"transcript-open-link\">OPEN</button></td><td class=\"transcript-download-link-holder\"><button href=\"#\"  name=\"TRANSCRIPT_NAME\" onclick=\"downloadTranscript(this.name);\" class=\"transcript-download-link\">DOWNLOAD</button></td><td class=\"transcript-download-link-holder\"><button href=\"#\"  name=\"TRANSCRIPT_NAME\" onclick=\"removeTscript(this.name);\" class=\"transcript-delete-link\">DELETE</button></td></tr>";
 
-    function loadTable() {
+    async function loadTable() {
         if (Object.keys(choices).length > 0) {
             console.log("Ignoring call to load table. `choices` already exists.");
             return;
         }
-        if (!isLocalStorageAvailable()) {
+        if (!isElectron && !isLocalStorageAvailable()) {
             document.getElementById("transcript-table-header").innerHTML = "The transcript feature is not available in this browser.";
             return;
         }
         document.getElementById("transcript-table-header").innerHTML = "Loading...";
-        for (var e in localStorage) {
-            if (e.startsWith("questtranscript-")) {
-                var eName = e.replace(/questtranscript-/, "");
-                var safeName = getSafeHtmlId(eName);
-                choices[safeName] = tScriptTemplate.replace(/TRANSCRIPT_NAME/g, safeName).replace(/TRANSCRIPT_DISPLAYED_NAME/g, eName);
+        var names = [];
+        if (isElectron) {
+            names = await window.electronTranscripts.list();
+        } else {
+            for (var e in localStorage) {
+                if (e.startsWith("questtranscript-")) names.push(e.replace(/questtranscript-/, ""));
             }
+        }
+        for (var i = 0; i < names.length; i++) {
+            var eName = names[i];
+            var safeName = getSafeHtmlId(eName);
+            choices[safeName] = tScriptTemplate.replace(/TRANSCRIPT_NAME/g, safeName).replace(/TRANSCRIPT_DISPLAYED_NAME/g, eName);
         }
         if (Object.keys(choices).length > 0) {
             document.getElementById("transcript-table-header").innerHTML = "Your Transcripts";

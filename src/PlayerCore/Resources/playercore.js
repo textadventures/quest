@@ -2496,6 +2496,14 @@ function whereAmI() {
 var platform = "desktop";
 
 const GameSaver = (() => {
+    // Electron: file storage under userData rather than IndexedDB, since
+    // this window's origin (a local loopback port) isn't guaranteed to stay
+    // the same across restarts — see save-store.ts. window.electronGameSaves
+    // is bridged by player-preload.ts for every player window.
+    function useElectronGameSaves() {
+        return navigator.userAgent.includes('Electron/') && !!window.electronGameSaves;
+    }
+
     function openDatabase() {
         return new Promise((resolve, reject) => {
             const request = indexedDB.open('quest-viva-saves', 1);
@@ -2534,6 +2542,10 @@ const GameSaver = (() => {
     }
 
     async function saveGame(gameId, slotIndex, dataUint8Array, name) {
+        if (useElectronGameSaves()) {
+            await window.electronGameSaves.save(gameId, slotIndex, dataUint8Array, name || null);
+            return;
+        }
         const db = await openDatabase();
         const tx = db.transaction('saves', 'readwrite');
         const store = tx.objectStore('saves');
@@ -2555,6 +2567,9 @@ const GameSaver = (() => {
     }
 
     async function listSaves(gameId) {
+        if (useElectronGameSaves()) {
+            return await window.electronGameSaves.list(gameId);
+        }
         const db = await openDatabase();
         const tx = db.transaction('saves', 'readonly');
         const store = tx.objectStore('saves');
@@ -2578,6 +2593,9 @@ const GameSaver = (() => {
     }
 
     async function loadGame(gameId, slotIndex) {
+        if (useElectronGameSaves()) {
+            return await window.electronGameSaves.load(gameId, slotIndex);
+        }
         const db = await openDatabase();
         const tx = db.transaction('saves', 'readonly');
         const store = tx.objectStore('saves');
@@ -2590,6 +2608,10 @@ const GameSaver = (() => {
     }
 
     async function deleteSaveSlot(gameId, slotIndex) {
+        if (useElectronGameSaves()) {
+            await window.electronGameSaves.delete(gameId, slotIndex);
+            return;
+        }
         const db = await openDatabase();
         const tx = db.transaction('saves', 'readwrite');
         const store = tx.objectStore('saves');
