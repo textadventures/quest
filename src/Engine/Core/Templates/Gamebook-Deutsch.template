@@ -19,16 +19,16 @@
     <object name="player">
       <inherit name="defaultplayer"/>
     </object>
-    <description>Dies ist Seite 1. Geben Sie hier eine Beschreibung ein und erstellen Sie unten Links zu anderen Seiten.</description>
+    <description>Dies ist Seite 1. Gib hier eine Beschreibung ein und erstelle unten Links zu anderen Seiten.</description>
     <options type="simplestringdictionary">Page2 = Dieser Link führt zu Seite 2;Page3 = Und dieser Link führt zu Seite 3</options>
   </object>
 
   <object name="Page2">
-    <description>Dies ist Seite 2. Geben Sie hier eine Beschreibung ein und erstellen Sie unten Links zu anderen Seiten.</description>
+    <description>Dies ist Seite 2. Gib hier eine Beschreibung ein und erstelle unten Links zu anderen Seiten.</description>
   </object>
 
   <object name="Page3">
-    <description>Dies ist Seite 3. Geben Sie hier eine Beschreibung ein und erstellen Sie unten Links zu anderen Seiten.</description>
+    <description>Dies ist Seite 3. Gib hier eine Beschreibung ein und erstelle unten Links zu anderen Seiten.</description>
   </object>
 
 </asl>

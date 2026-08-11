@@ -126,10 +126,9 @@
   <template name="No">Nein</template>
   <template name="By">von</template>
   <template name="NothingToTake">Hier gibt es nichts zum nehmen.</template>
-  <template name="NothingToDrop">Sie besitzen nichts zum ablegen.</template>
-  <template name="NothingToWear">Sie besitzen nichts zum anziehen.</template>
-  <template name="NothingToRemove">Sie besitzen nichts zum ausziehen.</template>
-  <dynamictemplate name="ObjectCannotBeStored">"Sie können " + object.article + " dort nicht ablegen."</dynamictemplate>  
+  <template name="NothingToDrop">Du besitzt nichts zum ablegen.</template>
+  <template name="NothingToWear">Du besitzt nichts zum anziehen.</template>
+  <template name="NothingToRemove">Du besitzt nichts zum ausziehen.</template>
   <dynamictemplate name="WearSuccessful">"Du ziehst " + object.article + " an."</dynamictemplate>
   <dynamictemplate name="WearUnsuccessful">"Du kannst " + object.article + " nicht anziehen."</dynamictemplate>
   <dynamictemplate name="CannotWearIfNotHeld">"Du musst " + object.article + " erst haben bevor du " + object.article + " anziehen kannst."</dynamictemplate>
