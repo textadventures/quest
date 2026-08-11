@@ -44,6 +44,14 @@ interface ElectronPathsApi {
     defaultGamesDir(): Promise<string>;
 }
 
+// Persisted to a userData file (ElectronApp's locale-store.ts), not
+// localStorage — see i18n/index.ts for why Electron can't use the same
+// storage as the browser build.
+interface ElectronLocaleApi {
+    get(): Promise<string | null>;
+    set(locale: string): Promise<void>;
+}
+
 interface ElectronRecentGame {
     dirPath: string;
     filename: string;
@@ -97,6 +105,7 @@ interface ElectronApi {
     shell: ElectronShellApi;
     path: ElectronPathApi;
     paths: ElectronPathsApi;
+    locale: ElectronLocaleApi;
     recent: ElectronRecentApi;
     fileWatch: ElectronFileWatchApi;
     menu: ElectronMenuApi;

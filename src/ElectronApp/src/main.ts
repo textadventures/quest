@@ -8,6 +8,7 @@ import { registerPathsHandlers } from "./ipc/paths";
 import { registerRecentHandlers } from "./ipc/recent";
 import { registerPlayerHandlers } from "./ipc/player";
 import { registerFileWatchHandlers } from "./ipc/file-watch";
+import { registerLocaleHandlers } from "./ipc/locale";
 import { listRecentGames, clearRecentGames, type RecentGame, type RecentKind } from "./recent-games";
 
 let editorWindow: BrowserWindow | null = null;
@@ -568,6 +569,7 @@ if (!gotLock) {
         registerDialogHandlers();
         registerShellHandlers();
         registerPathsHandlers();
+        registerLocaleHandlers();
         // Edit-kind changes rebuild the native "Open Recent" submenu; both kinds
         // also get broadcast to the renderer (see broadcastRecentChanged).
         registerRecentHandlers((kind) => {
