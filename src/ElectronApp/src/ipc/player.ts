@@ -46,10 +46,44 @@ export function registerPlayerHandlers(getOrigin: () => string | null): void {
         // Games can't open further windows of their own — same-origin
         // player navigation isn't a thing a game needs, and anything else
         // (a game script's window.open to some external URL) goes to the OS
-        // browser instead of spawning another in-app window.
+        // browser instead of spawning another in-app window. The one
+        // exception is the "view transcript" link JS.showTranscript() prints
+        // (playercore.js's transcriptUrl, a same-origin relative link to
+        // TranscriptViewer/index.html): that page reads the transcript data
+        // straight out of this session's localStorage, so it has to open as
+        // an in-app window on this same origin — sending it to the OS
+        // browser would land on a *different* browser's storage jar (or, if
+        // that browser happens to be Chromium-based and somehow shared,
+        // still the wrong origin, since static-server.ts binds a fresh
+        // random port every launch) and always show "no transcripts".
         win.webContents.setWindowOpenHandler(({ url: targetUrl }) => {
+            if (targetUrl.startsWith(`${origin}/player/TranscriptViewer/`)) {
+                return {
+                    action: "allow",
+                    overrideBrowserWindowOptions: {
+                        width: 640,
+                        height: 480,
+                        webPreferences: {
+                            contextIsolation: true,
+                            nodeIntegration: false,
+                        },
+                    },
+                };
+            }
             void shell.openExternal(targetUrl);
             return { action: "deny" };
+        });
+        // TranscriptViewer/index.html's own OPEN button does
+        // window.open("about:blank", ...) + document.write(...) to display a
+        // transcript's contents — that's a *second* window.open, from the
+        // TranscriptViewer window's webContents rather than this one, so it
+        // needs its own handler. Trusted first-party content (shipped by us,
+        // not game- or web-supplied), so allow it unconditionally rather
+        // than pattern-matching about:blank.
+        win.webContents.on("did-create-window", (childWindow, details) => {
+            if (details.url.startsWith(`${origin}/player/TranscriptViewer/`)) {
+                childWindow.webContents.setWindowOpenHandler(() => ({ action: "allow" }));
+            }
         });
         // playercore.js's beforeunload handler calls e.preventDefault() once
         // hasUnsavedProgress is set (i.e. after a turn) — a real browser
