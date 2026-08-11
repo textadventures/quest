@@ -143,7 +143,7 @@
     });
 </script>
 
-<div class="flex items-center gap-1 min-w-0 flex-1">
+<div class="flex items-center gap-1 min-w-0">
     <input
         bind:this={inputEl}
         type="text"
