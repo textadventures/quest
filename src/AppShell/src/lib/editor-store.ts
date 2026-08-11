@@ -9,6 +9,7 @@ import { ServerFileAdapter } from "./filesystem/server-adapter";
 import { triggerDownload } from "./filesystem/download";
 import { confirmDialog } from "./confirm";
 import { showToast } from "./toast";
+import { t } from "./i18n";
 import type { TreeNode, EditorDataResponse, ScriptBlockData, ScriptCommandCategoriesData, ExpressionTemplateData, ExpressionTemplate, FullAttributeData, ExitsData, VerbInfo, ExpressionFunctionInfo } from "./types";
 
 export type AddElementModalState = { type: "room" | "object" | "page" | "function" | "timer" | "walkthrough" | "template" | "dynamictemplate" | "type"; parent: string | null } | null;
@@ -204,14 +205,14 @@ export async function openGame(bytes: Uint8Array, filename: string, adapter: Fil
     isSaving.set(false);
     saveError.set(null);
     lastOpenGameError.set(null);
-    loadingStatus.set("Starting editor…");
+    loadingStatus.set(t("editorStore.startingEditor"));
     _bridge = await loadWasm();
     _adapter = adapter;
     canSaveAs.set(adapter.canSaveAs);
     canBackup.set(adapter instanceof LocalDraftAdapter);
     canPublishToServer.set(adapter instanceof ServerFileAdapter);
     showBackupBanner.set(adapter instanceof LocalDraftAdapter && await shouldShowBackupBanner(adapter.gameId));
-    loadingStatus.set("Loading game…");
+    loadingStatus.set(t("editorStore.loadingGame"));
     await preloadAdjacentLibraryAssets(adapter);
     // Double rAF ensures the browser actually paints the status update before
     // Initialise blocks the JS thread (C# WASM calls are synchronous).
