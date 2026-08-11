@@ -24,12 +24,12 @@
     {
       "id": "es",
       "displayName": "Español",
-      "appShellLocale": null,
+      "appShellLocale": "es.json",
       "editorAslx": "EditorEspanol.aslx",
       "playerAslx": "Espanol.aslx",
       "template": "Espanol.template",
-      "gamebookTemplate": null,
-      "supported": false
+      "gamebookTemplate": "Gamebook-Espanol.template",
+      "supported": true
     },
     {
       "id": "da",
