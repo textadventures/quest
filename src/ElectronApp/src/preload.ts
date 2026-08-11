@@ -73,6 +73,13 @@ contextBridge.exposeInMainWorld("electronApp", {
     paths: {
         defaultGamesDir: (): Promise<string> => ipcRenderer.invoke("paths:defaultGamesDir"),
     },
+    locale: {
+        // Persisted to a userData file rather than localStorage — see
+        // ElectronApp's locale-store.ts for why (static-server.ts's
+        // ephemeral port makes localStorage's origin change every launch).
+        get: (): Promise<string | null> => ipcRenderer.invoke("locale:get"),
+        set: (locale: string): Promise<void> => ipcRenderer.invoke("locale:set", locale),
+    },
     recent: {
         // kind distinguishes the editor's Recent (backs File > Open Recent
         // and the /open page) from the Play tab's Recently Played — see

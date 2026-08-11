@@ -2,6 +2,7 @@ import { writable, get } from "svelte/store";
 import { base } from "$app/paths";
 import { DEFAULT_LOCALE, SUPPORTED_LOCALES, type Locale } from "./locales";
 import { detectDefaultLocale } from "./detect";
+import { isElectron } from "../runtime";
 
 export { DEFAULT_LOCALE, SUPPORTED_LOCALES };
 export type { Locale };
@@ -17,7 +18,19 @@ export const localeReady = writable(false);
 type Messages = Record<string, string>;
 let messages: Messages = {};
 
-function readStoredLocale(): Locale | null {
+// Electron's static server binds to a random port every launch
+// (static-server.ts's listen(0, ...)), so the page origin changes on every
+// relaunch — localStorage (origin-scoped) never survives that. Electron
+// persists the preference to a userData file instead, via IPC; see
+// ElectronApp's locale-store.ts.
+async function readStoredLocale(): Promise<Locale | null> {
+    if (isElectron()) {
+        try {
+            return (await window.electronApp!.locale.get()) as Locale | null;
+        } catch {
+            return null;
+        }
+    }
     if (typeof localStorage === "undefined") return null;
     try {
         return localStorage.getItem(STORAGE_KEY);
@@ -26,7 +39,15 @@ function readStoredLocale(): Locale | null {
     }
 }
 
-function writeStoredLocale(loc: Locale): void {
+async function writeStoredLocale(loc: Locale): Promise<void> {
+    if (isElectron()) {
+        try {
+            await window.electronApp!.locale.set(loc);
+        } catch {
+            // Losing the preference just means it's re-detected next load, not fatal.
+        }
+        return;
+    }
     if (typeof localStorage === "undefined") return;
     try {
         localStorage.setItem(STORAGE_KEY, loc);
@@ -47,7 +68,7 @@ async function fetchMessages(loc: Locale): Promise<Messages> {
 
 // Called once from +layout.svelte's onMount, before route content renders.
 export async function initI18n(): Promise<void> {
-    const stored = readStoredLocale();
+    const stored = await readStoredLocale();
     await setLocale(stored ?? detectDefaultLocale(), { persist: false });
 }
 
@@ -62,8 +83,9 @@ export async function setLocale(loc: Locale, opts: { persist?: boolean } = {}): 
     const en = loc === DEFAULT_LOCALE ? target : await fetchMessages(DEFAULT_LOCALE);
     messages = loc === DEFAULT_LOCALE ? target : { ...en, ...target };
     locale.set(loc);
+    if (typeof document !== "undefined") document.documentElement.lang = loc;
     localeReady.set(true);
-    if (opts.persist !== false) writeStoredLocale(loc);
+    if (opts.persist !== false) await writeStoredLocale(loc);
 }
 
 export function t(key: string, params?: Record<string, string | number>): string {
