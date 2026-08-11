@@ -341,8 +341,8 @@
             if (!file) return;
             loading = true;
             const result = await createLocalDraftFromFile(file);
-            loading = false;
             if (result.kind === "chooseEntry") {
+                loading = false;
                 pendingZip = result.entries;
                 pendingFiles = result.names;
                 return;
