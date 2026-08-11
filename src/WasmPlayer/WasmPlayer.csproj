@@ -52,9 +52,11 @@
             <_LibAssets Include="$(_PCRes)lib\jquery.multi-open-accordion-1.5.3.js"/>
             <_LibAssets Include="$(_PCRes)lib\paper.js"/>
             <_ImageAssets Include="$(_PCRes)lib\images\*.png"/>
+            <_TranscriptViewerAssets Include="$(MSBuildThisFileDirectory)TranscriptViewer\index.html"/>
         </ItemGroup>
         <Copy SourceFiles="@(_FlatAssets)" DestinationFolder="$(WasmAppDir)"/>
         <Copy SourceFiles="@(_LibAssets)" DestinationFolder="$(WasmAppDir)lib\"/>
         <Copy SourceFiles="@(_ImageAssets)" DestinationFolder="$(WasmAppDir)lib\images\"/>
+        <Copy SourceFiles="@(_TranscriptViewerAssets)" DestinationFolder="$(WasmAppDir)TranscriptViewer\"/>
     </Target>
 </Project>
