@@ -216,6 +216,15 @@
         return GAMEBOOK_TEMPLATE_LABEL_BY_LOCALE[get(locale)] ?? "Gamebook";
     }
 
+    // The "Gamebook" stem in a template's underlying label (see comment above) is redundant once
+    // it's showing in a list that's already scoped to the Gamebook radio option — display just the
+    // language part, matching how the Text Adventure list shows "English"/"Deutsch"/"Español" alone.
+    function gamebookTemplateDisplayLabel(label: string): string {
+        const match = /^Gamebook(?:\s*\(([^)]+)\))?$/.exec(label);
+        if (!match) return label;
+        return match[1] ?? "English";
+    }
+
     async function ensureTemplates() {
         if (templates.length > 0 || templatesLoading) return;
         templatesLoading = true;
@@ -693,7 +702,7 @@
                         {:else if selectedTemplate?.type === "gamebook" && gamebookTemplates.length > 1}
                             <select class="select" bind:value={selectedTemplateId} disabled={creating}>
                                 {#each gamebookTemplates as tpl (tpl.id)}
-                                    <option value={tpl.id}>{tpl.label}</option>
+                                    <option value={tpl.id}>{gamebookTemplateDisplayLabel(tpl.label)}</option>
                                 {/each}
                             </select>
                         {/if}
