@@ -1,5 +1,31 @@
 # Changelog
 
+## [6.0.0-beta.51](https://github.com/textadventures/quest/compare/v6.0.0-beta.50...v6.0.0-beta.51) (2026-08-11)
+
+
+### Features
+
+* add German gamebook template and editable language field ([#2032](https://github.com/textadventures/quest/issues/2032)) ([e01ae97](https://github.com/textadventures/quest/commit/e01ae97664c82e8bb563cfb07af1417a80c0a270))
+* add i18n gap-detection tooling and language registry ([#2034](https://github.com/textadventures/quest/issues/2034)) ([97b00b3](https://github.com/textadventures/quest/commit/97b00b3407165cf421ac25c307e2a495172e80d3))
+* **AppShell:** add complete German translation ([#2030](https://github.com/textadventures/quest/issues/2030)) ([90ebe2c](https://github.com/textadventures/quest/commit/90ebe2cfc6b8cb93b448b15891f570d6c0335037))
+* **AppShell:** add i18n infrastructure ([#2024](https://github.com/textadventures/quest/issues/2024)) ([45fe8b1](https://github.com/textadventures/quest/commit/45fe8b15991b2d27e6c6add310f1eb3a0e75fcdb))
+* bring Spanish to full 3-layer parity ([#2035](https://github.com/textadventures/quest/issues/2035)) ([d6f0abe](https://github.com/textadventures/quest/commit/d6f0abe676bb5ca6f4f3503a03d0e3cae2203965))
+* **ElectronApp:** reveal recent files in Finder, detect external file changes ([#2020](https://github.com/textadventures/quest/issues/2020)) ([921ba45](https://github.com/textadventures/quest/commit/921ba45c27449e6ead56bddb1c065dbde5a7ee4f))
+
+
+### Bug Fixes
+
+* **AppShell:** hide library files when opening, repair missing gameid on import ([#2022](https://github.com/textadventures/quest/issues/2022)) ([d0012ca](https://github.com/textadventures/quest/commit/d0012ca964f4a07316cdd8610c049807b4f788fc))
+* **AppShell:** resolve custom Included Library content on reload ([#2017](https://github.com/textadventures/quest/issues/2017)) ([49fb9ae](https://github.com/textadventures/quest/commit/49fb9aeea9fc7ae6b04ab70c93d68db34bb3385b))
+* **AppShell:** resolve Included Library content for Electron and FSA folders ([#2021](https://github.com/textadventures/quest/issues/2021)) ([865ce1a](https://github.com/textadventures/quest/commit/865ce1a47fff68b03aa08e22030fd94e56c95119))
+* **AppShell:** show a reload banner when an Included Library changes ([#2019](https://github.com/textadventures/quest/issues/2019)) ([7d5ec65](https://github.com/textadventures/quest/commit/7d5ec6544436984238a202f32c09023de23b21af))
+* **AppShell:** Spanish gamebook template, locale capitalization, picker labels ([#2036](https://github.com/textadventures/quest/issues/2036)) ([a3b83d2](https://github.com/textadventures/quest/commit/a3b83d24171ea4c65e7b8bd778d9b3e477c7fb2b))
+* **AppShell:** translate remaining strings and fix Create-tab button overflow ([#2031](https://github.com/textadventures/quest/issues/2031)) ([aa620d4](https://github.com/textadventures/quest/commit/aa620d4bb8ef85f4ec98737836de53f403d825f5))
+* **Engine:** don't crash on a duplicate key in a simple dictionary attribute ([#2018](https://github.com/textadventures/quest/issues/2018)) ([80c64e9](https://github.com/textadventures/quest/commit/80c64e93af305f5cb64e8c9d46339ab8ad5a6dc8))
+* **Engine:** use consistent Du register across German translations ([#2033](https://github.com/textadventures/quest/issues/2033)) ([7851024](https://github.com/textadventures/quest/commit/78510248e658b75329ef7ac8281dd39942f4cd7d))
+* flatten native input chrome and tighten tree filter icon spacing ([#2023](https://github.com/textadventures/quest/issues/2023)) ([d371869](https://github.com/textadventures/quest/commit/d37186949e5a9ad2157a824ad1904ad1dde49156))
+* **WasmPlayer:** pass --tag latest to npm publish ([#2014](https://github.com/textadventures/quest/issues/2014)) ([a93f483](https://github.com/textadventures/quest/commit/a93f4834e9e33d72e61e6682aac5a2e4997375eb))
+
 ## [6.0.0-beta.50](https://github.com/textadventures/quest/compare/v6.0.0-beta.49...v6.0.0-beta.50) (2026-08-09)
 
 
