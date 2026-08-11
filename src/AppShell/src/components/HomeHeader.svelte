@@ -28,8 +28,8 @@
             target="_blank"
             rel="noopener noreferrer"
             class="home-header-link"
-            title="Join us on Discord"
-            aria-label="Join us on Discord"
+            title={t("homeHeader.joinDiscord")}
+            aria-label={t("homeHeader.joinDiscord")}
         >
             <DiscordIcon size={18} />
         </a>
@@ -38,8 +38,8 @@
             target="_blank"
             rel="noopener noreferrer"
             class="home-header-link"
-            title="View on GitHub"
-            aria-label="View on GitHub"
+            title={t("homeHeader.viewGithub")}
+            aria-label={t("homeHeader.viewGithub")}
         >
             <GithubIcon size={18} />
         </a>

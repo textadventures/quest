@@ -20,6 +20,7 @@
     import MoveElementModal from "$components/MoveElementModal.svelte";
     import AssetManagerModal from "$components/AssetManagerModal.svelte";
     import PublishModal from "$components/PublishModal.svelte";
+    import { t } from "$lib/i18n";
 
     let serverLoadError = $state<string | null>(null);
 
@@ -113,7 +114,7 @@
         try {
             const loaded = await loadFromServer(gameId);
             const ok = await openGame(loaded.bytes, loaded.adapter.filename, loaded.adapter);
-            if (!ok) serverLoadError = get(lastOpenGameError) ?? "Failed to load game.";
+            if (!ok) serverLoadError = get(lastOpenGameError) ?? t("editPage.failedToLoadGame");
         } catch (err) {
             serverLoadError = String(err);
         }
@@ -222,7 +223,7 @@
          than leaving the old game's now-disconnected tree up — see its own comments. Distinct
          from serverLoadError above, which covers only the very first load on this page. -->
     <main class="flex flex-col items-center justify-center min-h-svh gap-6 p-8">
-        <p class="text-error-500 max-w-[40ch] text-center whitespace-pre-wrap">{$lastOpenGameError ?? "This game could not be loaded."}</p>
-        <button type="button" class="btn preset-filled-primary-500" onclick={() => goto(`${base}/open`)}>Back to Home</button>
+        <p class="text-error-500 max-w-[40ch] text-center whitespace-pre-wrap">{$lastOpenGameError ?? t("editPage.loadError")}</p>
+        <button type="button" class="btn preset-filled-primary-500" onclick={() => goto(`${base}/open`)}>{t("editPage.backToHome")}</button>
     </main>
 {/if}
