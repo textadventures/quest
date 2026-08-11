@@ -169,10 +169,13 @@
     let textAdventureTemplates = $derived(templates.filter(tpl => tpl.type === "textadventure"));
     let gamebookTemplates = $derived(templates.filter(tpl => tpl.type === "gamebook"));
     let lastTextAdventureTemplateId = $state("");
+    let lastGamebookTemplateId = $state("");
 
     $effect(() => {
         if (selectedTemplate?.type === "textadventure") {
             lastTextAdventureTemplateId = selectedTemplate.id;
+        } else if (selectedTemplate?.type === "gamebook") {
+            lastGamebookTemplateId = selectedTemplate.id;
         }
     });
 
@@ -202,6 +205,15 @@
 
     function defaultTemplateLabel(): string {
         return TEMPLATE_LABEL_BY_LOCALE[get(locale)] ?? "English";
+    }
+
+    // Same idea as TEMPLATE_LABEL_BY_LOCALE above, but Gamebook templates keep the
+    // "Gamebook" stem as their base label rather than being named after the language
+    // (there being only one non-English one so far) — see Gamebook-Deutsch.template.
+    const GAMEBOOK_TEMPLATE_LABEL_BY_LOCALE: Record<string, string> = { en: "Gamebook", de: "Gamebook (Deutsch)" };
+
+    function defaultGamebookTemplateLabel(): string {
+        return GAMEBOOK_TEMPLATE_LABEL_BY_LOCALE[get(locale)] ?? "Gamebook";
     }
 
     async function ensureTemplates() {
@@ -654,7 +666,10 @@
                                             disabled={creating}
                                             onchange={() => {
                                                 if (type.value === "gamebook") {
-                                                    selectedTemplateId = gamebookTemplates[0]?.id ?? "";
+                                                    const preferred = gamebookTemplates.find(tpl => tpl.id === lastGamebookTemplateId);
+                                                    const localeDefault = gamebookTemplates.find(tpl => tpl.label === defaultGamebookTemplateLabel())
+                                                        ?? gamebookTemplates.find(tpl => tpl.label === "Gamebook");
+                                                    selectedTemplateId = (preferred ?? localeDefault ?? gamebookTemplates[0])?.id ?? "";
                                                 } else {
                                                     const preferred = textAdventureTemplates.find(tpl => tpl.id === lastTextAdventureTemplateId);
                                                     const localeDefault = textAdventureTemplates.find(tpl => tpl.label === defaultTemplateLabel())
@@ -672,6 +687,12 @@
                         {#if selectedTemplate?.type === "textadventure" && textAdventureTemplates.length > 1}
                             <select class="select" bind:value={selectedTemplateId} disabled={creating}>
                                 {#each textAdventureTemplates as tpl (tpl.id)}
+                                    <option value={tpl.id}>{tpl.label}</option>
+                                {/each}
+                            </select>
+                        {:else if selectedTemplate?.type === "gamebook" && gamebookTemplates.length > 1}
+                            <select class="select" bind:value={selectedTemplateId} disabled={creating}>
+                                {#each gamebookTemplates as tpl (tpl.id)}
                                     <option value={tpl.id}>{tpl.label}</option>
                                 {/each}
                             </select>

@@ -448,6 +448,10 @@
         <EmbeddedResource Include="Core\Templates\Gamebook.template">
             <CopyToOutputDirectory>Always</CopyToOutputDirectory>
         </EmbeddedResource>
+        <None Remove="Core\Templates\Gamebook-Deutsch.template" />
+        <EmbeddedResource Include="Core\Templates\Gamebook-Deutsch.template">
+            <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+        </EmbeddedResource>
         <None Remove="Core\Templates\Greek.template" />
         <EmbeddedResource Include="Core\Templates\Greek.template">
             <CopyToOutputDirectory>Always</CopyToOutputDirectory>

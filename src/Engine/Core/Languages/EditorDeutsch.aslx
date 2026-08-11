@@ -12,6 +12,7 @@
   <template name="EditorGBLinkForeground">Link-Vordergrund</template>
   <template name="EditorGBYouCanChange">Du kannst den Anfang des Spiels verändern, indem du das Objekt "player" auf eine andere Seite verschiebst.</template>
   <template name="EditorGBPage">Seite</template>
+  <template name="EditorGBLanguage">Sprache</template>
   <template name="EditorGBName">Name</template>
   <template name="EditorGBPageType">Seitentyp</template>
   <template name="EditorGBPageTypePicture">Bild</template>

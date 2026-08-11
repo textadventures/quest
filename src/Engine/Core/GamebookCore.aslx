@@ -1,5 +1,4 @@
 ﻿<library>
-  <include ref="EditorEnglish.aslx"/>
   <include ref="CoreOutput.aslx"/>
   <include ref="CoreEffects.aslx"/>
   <include ref="GamebookCoreEditor.aslx"/>
@@ -18,6 +17,7 @@
     <menuhoverbackground>LightGrey</menuhoverbackground>
     <menuhoverforeground>Black</menuhoverforeground>
     <description type="string"></description>
+    <languageid>[LanguageId]</languageid>
     <setcustomwidth type="boolean">true</setcustomwidth>
     <customwidth type="int">700</customwidth>
     <setcustompadding type="boolean">false</setcustompadding>
