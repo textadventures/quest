@@ -3,11 +3,16 @@
     import { locale, setLocale, SUPPORTED_LOCALES, t } from "$lib/i18n";
 
     function displayName(code: string): string {
+        let name: string;
         try {
-            return new Intl.DisplayNames([code], { type: "language" }).of(code) ?? code;
+            name = new Intl.DisplayNames([code], { type: "language" }).of(code) ?? code;
         } catch {
-            return code;
+            name = code;
         }
+        // CLDR autonyms aren't capitalized for every language (e.g. "español"),
+        // but this list is presented like a proper-noun menu ("English", "Deutsch"),
+        // so normalize every entry to match.
+        return name.charAt(0).toUpperCase() + name.slice(1);
     }
 
     function close() {

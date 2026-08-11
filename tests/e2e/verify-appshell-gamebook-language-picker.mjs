@@ -53,7 +53,7 @@ async function createGame(name, { locale, templateLabel }) {
 }
 
 async function run() {
-    // --- German UI locale: Gamebook picker should default to "Gamebook (Deutsch)" ---
+    // --- German UI locale: Gamebook picker should default to "Deutsch" ---
     await page.goto(`${baseUrl}/open`);
     await page.evaluate(() => localStorage.setItem('questviva-ui-language', 'de'));
     await page.reload();
@@ -64,12 +64,12 @@ async function run() {
     await page.waitForSelector('select', { timeout: 10000 });
     const options = await page.$$eval('select option', els => els.map(el => el.textContent ?? ''));
     assertEqual('Gamebook template option count', options.length, 2);
-    if (!options.includes('Gamebook') || !options.includes('Gamebook (Deutsch)')) {
+    if (!options.includes('English') || !options.includes('Deutsch')) {
         throw new Error(`Gamebook template options missing expected labels: ${JSON.stringify(options)}`);
     }
     console.log(`PASS: [Gamebook template options] ${JSON.stringify(options)}`);
     const selectedLabel = await page.$eval('select', el => el.selectedOptions[0]?.textContent ?? '');
-    assertEqual('Gamebook template default (de locale)', selectedLabel, 'Gamebook (Deutsch)');
+    assertEqual('Gamebook template default (de locale)', selectedLabel, 'Deutsch');
 
     await page.locator('button.preset-filled-primary-500').last().click();
     await page.waitForSelector('header .toolbar-icon-btn', { timeout: 30000 });
@@ -114,8 +114,8 @@ async function run() {
     }
     console.log(`PASS: [German gamebook Page2 description] "${page2Text.trim()}"`);
 
-    // --- English UI locale + explicit "Gamebook" (English) template ---
-    await createGame('EnglishGamebookTest', { locale: 'en', templateLabel: 'Gamebook' });
+    // --- English UI locale + explicit "English" Gamebook template ---
+    await createGame('EnglishGamebookTest', { locale: 'en', templateLabel: 'English' });
     const enLangValue = await page.evaluate(() => {
         const inputs = Array.from(document.querySelectorAll('input[type="text"]'));
         const match = inputs.find(i => i.value === 'en');
