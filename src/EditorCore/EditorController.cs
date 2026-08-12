@@ -1703,7 +1703,8 @@ public sealed class EditorController : IDisposable
 
     public void CreateNewDynamicTemplate(string name)
     {
-        CreateNewElement(ElementType.DynamicTemplate, "dynamic template", name);
+        CreateNewElement(ElementType.DynamicTemplate, "dynamic template", name,
+            initialFields: new Dictionary<string, object> {{"text", ""}});
     }
 
     public void CreateNewType(string name)
