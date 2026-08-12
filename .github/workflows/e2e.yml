@@ -1,15 +1,24 @@
 name: e2e
 
-# Manual only, not on every push/PR — these are Playwright browser/Electron-
-# driven verification scripts (tests/e2e/*.mjs), not the dotnet test suite.
-# They drive real dev servers / a packaged Electron app end-to-end rather than
-# mocking anything, so they're slower and younger than dotnet test. Good to
-# run before cutting a release, or after touching AppShell/WasmPlayer/
-# WebPlayer/ElectronApp. Each job below matches one of the distinct local
-# setups documented in the individual scripts' header comments — see those
-# for the "why" behind each one.
+# Nightly + manual, not on every push/PR — these are Playwright browser/
+# Electron-driven verification scripts (tests/e2e/*.mjs), not the dotnet test
+# suite. They drive real dev servers / a packaged Electron app end-to-end
+# rather than mocking anything, so they're slower and younger than dotnet
+# test — worth checking regularly, but too slow to put in every PR's critical
+# path. The nightly run is what catches drift between the scripts and the UI
+# (locator text/structure changes, timing assumptions) before it piles up
+# unnoticed; workflow_dispatch is still there for an on-demand run before
+# cutting a release, or after touching AppShell/WasmPlayer/WebPlayer/
+# ElectronApp. Each job below matches one of the distinct local setups
+# documented in the individual scripts' header comments — see those for the
+# "why" behind each one.
 on:
   workflow_dispatch:
+  schedule:
+    # 03:17 UTC — off the hour to avoid the top-of-hour pile-up GitHub warns
+    # about for scheduled workflows. Runs against whatever's on main at that
+    # time regardless of whether anything changed since the last run.
+    - cron: '17 3 * * *'
 
 jobs:
   # AppShell (Debug WasmEditor) + WasmPlayer (Debug), one Vite dev server and
