@@ -4,7 +4,7 @@
     import { base } from "$app/paths";
     import { fetchGameDetails, languageName, type GameDetails } from "$lib/home-catalog";
     import { isElectron } from "$lib/runtime";
-    import { recordCatalogPlay } from "$lib/recent-catalog-plays";
+    import { recordCatalogPlay } from "$lib/recent-catalog-plays.svelte";
     import { t } from "$lib/i18n";
 
     const isElectronApp = isElectron();

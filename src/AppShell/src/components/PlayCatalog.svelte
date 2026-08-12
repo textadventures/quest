@@ -8,7 +8,7 @@
     import { listRecentGames, removeRecentGame, type RecentGame } from "$lib/filesystem/electron-adapter";
     import { playElectronFile, pickAndPlayElectronFile, closeLocalPlayChannel } from "$lib/filesystem/local-play";
     import { pickFile } from "$lib/filesystem/file-picker";
-    import { listRecentCatalogPlays, removeRecentCatalogPlay, type RecentCatalogPlay } from "$lib/recent-catalog-plays";
+    import { listRecentCatalogPlays, removeRecentCatalogPlay, type RecentCatalogPlay } from "$lib/recent-catalog-plays.svelte";
     import UpdateBanner from "$components/UpdateBanner.svelte";
     import GameCard from "$components/GameCard.svelte";
     import RecentGameCard from "$components/RecentGameCard.svelte";

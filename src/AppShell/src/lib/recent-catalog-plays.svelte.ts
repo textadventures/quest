@@ -51,7 +51,12 @@ export async function listRecentCatalogPlays(): Promise<RecentCatalogPlay[]> {
 export async function recordCatalogPlay(game: CatalogGame): Promise<void> {
     if (isElectron()) {
         try {
-            await window.electronApp!.catalogPlays.record(game);
+            // game is very likely a Svelte $state proxy (e.g. +page.svelte's `details`) —
+            // Electron's contextBridge/IPC clones arguments with the structured clone
+            // algorithm, which throws "An object could not be cloned" on a Proxy. Snapshot
+            // to a plain object first, or every call here silently no-ops (swallowed by the
+            // catch below) without ever reaching catalog-plays-store.ts.
+            await window.electronApp!.catalogPlays.record($state.snapshot(game));
         } catch {
             // ignore
         }

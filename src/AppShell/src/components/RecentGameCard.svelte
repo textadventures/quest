@@ -1,7 +1,7 @@
 <script lang="ts">
     import { base } from "$app/paths";
     import { languageName } from "$lib/home-catalog";
-    import type { RecentCatalogPlay } from "$lib/recent-catalog-plays";
+    import type { RecentCatalogPlay } from "$lib/recent-catalog-plays.svelte";
     import { isElectron } from "$lib/runtime";
     import { t } from "$lib/i18n";
 
