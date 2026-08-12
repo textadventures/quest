@@ -1,4 +1,5 @@
 import { ipcMain, BrowserWindow, dialog, shell } from "electron";
+import path from "node:path";
 
 export interface PlayerWindowRequest {
     // Catalog game (textadventures.co.uk id) vs. a locally-picked file whose
@@ -41,6 +42,11 @@ export function registerPlayerHandlers(getOrigin: () => string | null): void {
                 // wasm-player.js's Electron-UA check, which skips its
                 // "click to begin" sound-activation gate entirely here.
                 autoplayPolicy: "no-user-gesture-required",
+                // The one narrow exception to "player windows get no
+                // preload" — see player-preload.ts's comment for why
+                // writeToTranscript()/GameSaver (running inside this
+                // untrusted window) need this and why it's scoped so tightly.
+                preload: path.join(__dirname, "..", "player-preload.js"),
             },
         });
         // Games can't open further windows of their own — same-origin
@@ -66,6 +72,11 @@ export function registerPlayerHandlers(getOrigin: () => string | null): void {
                         webPreferences: {
                             contextIsolation: true,
                             nodeIntegration: false,
+                            // First-party content (not game-supplied) — gets
+                            // the fuller list/read/delete transcript bridge,
+                            // not the player window's append-only one. See
+                            // transcript-viewer-preload.ts.
+                            preload: path.join(__dirname, "..", "transcript-viewer-preload.js"),
                         },
                     },
                 };

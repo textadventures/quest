@@ -7,6 +7,10 @@ import { registerShellHandlers } from "./ipc/shell";
 import { registerPathsHandlers } from "./ipc/paths";
 import { registerRecentHandlers } from "./ipc/recent";
 import { registerPlayerHandlers } from "./ipc/player";
+import { registerTranscriptHandlers } from "./ipc/transcript";
+import { registerGameSaveHandlers } from "./ipc/gamesave";
+import { registerCatalogPlaysHandlers } from "./ipc/catalog-plays";
+import { registerUpdateDismissHandlers } from "./ipc/update-dismiss";
 import { registerFileWatchHandlers } from "./ipc/file-watch";
 import { registerLocaleHandlers } from "./ipc/locale";
 import { listRecentGames, clearRecentGames, type RecentGame, type RecentKind } from "./recent-games";
@@ -528,6 +532,10 @@ function createEditorWindow(port: number, initialPath?: string | null, initialRo
                         contextIsolation: true,
                         nodeIntegration: false,
                         autoplayPolicy: "no-user-gesture-required",
+                        // Same player-window bridge as ipc/player.ts's player
+                        // windows (transcripts + game saves) — a previewed
+                        // game can use either. See player-preload.ts's comment.
+                        preload: path.join(__dirname, "player-preload.js"),
                     },
                 },
             };
@@ -577,6 +585,10 @@ if (!gotLock) {
             broadcastRecentChanged(kind);
         });
         registerPlayerHandlers(() => (staticServer ? `http://127.0.0.1:${staticServer.port}` : null));
+        registerTranscriptHandlers();
+        registerGameSaveHandlers();
+        registerCatalogPlaysHandlers();
+        registerUpdateDismissHandlers();
         // Renderer-armed (see electron-adapter.ts's arm calls) — this only ever
         // notifies about whatever file(s) the renderer last asked to watch.
         registerFileWatchHandlers((filenames) => {
