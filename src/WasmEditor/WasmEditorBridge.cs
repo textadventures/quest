@@ -17,7 +17,7 @@ using QuestViva.PlayerCore;
 
 namespace QuestViva.WasmEditor;
 
-internal record TreeNodeData(string Key, string Text, string? Parent, string? NodeIcon, string NodeType, bool IsLibrary, bool CanDelete);
+internal record TreeNodeData(string Key, string Text, string? Parent, string NodeType, bool IsLibrary, bool CanDelete);
 
 internal record ControlOption(string Value, string Label);
 
@@ -217,10 +217,7 @@ public partial class WasmEditorBridge
             {
                 if (TreeNodes[i].Key == e.OldName)
                 {
-                    TreeNodes[i] = TreeNodes[i] with
-                    {
-                        Key = e.NewName, Text = e.NewName, NodeType = GetNodeType(e.NewName, TreeNodes[i].NodeIcon)
-                    };
+                    TreeNodes[i] = TreeNodes[i] with { Key = e.NewName, Text = e.NewName };
                 }
                 else if (TreeNodes[i].Parent == e.OldName)
                 {
@@ -3639,32 +3636,6 @@ public partial class WasmEditorBridge
         );
     }
 
-    private static string GetNodeType(string key, string? nodeIcon)
-    {
-        return key.StartsWith("_")
-            ? "header"
-            : nodeIcon switch
-            {
-                "s_room" => "room",
-                "s_object" => "object",
-                "s_add_page" => "page",
-                "s_exit" => "exit",
-                "s_verb" => "verb",
-                "s_command" => "command",
-                "s_turn" => "turnscript",
-                "s_function" => "function",
-                "s_timer" => "timer",
-                "s_game" => "game",
-                "s_walk" => "walkthrough",
-                "s_library" => "include",
-                "s_template" => "template",
-                "s_dynamictemplate" => "dynamictemplate",
-                "s_objecttype" => "type",
-                "s_javascript" => "javascript",
-                _ => "other"
-            };
-    }
-
     private static void OnAddedNode(object? sender, EditorController.AddedNodeEventArgs e)
     {
         if (_suppressTreeEvents)
@@ -3674,7 +3645,7 @@ public partial class WasmEditorBridge
 
         // Authoritative — mirrors exactly what DeleteElement/DeleteElements will actually allow
         // (see EditorController.CanDelete), rather than the UI guessing from node type/text.
-        var node = new TreeNodeData(e.Key, e.Text, e.Parent, e.NodeIcon, GetNodeType(e.Key, e.NodeIcon),
+        var node = new TreeNodeData(e.Key, e.Text, e.Parent, e.NodeType,
             e.IsLibraryNode, _controller!.CanDelete(e.Key));
         if (_isRebuilding)
         {
