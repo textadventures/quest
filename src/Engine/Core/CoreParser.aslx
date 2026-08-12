@@ -200,8 +200,15 @@
         // flags the Show page script adder itself defaults to; an author who
         // wants different flags for a specific entry point should add an
         // explicit ShowPage(...) command of their own instead.
+        //
+        // Gated on pagelinkshown (set only by ProcessTextCommand_Page when a
+        // {page:...} tag actually renders): without this, typing a page's raw
+        // object name would launch its dialogue from anywhere in the game,
+        // any time, even if no link to it was ever shown to the player - a
+        // hidden global command that has nothing to do with what a link
+        // printed on screen would actually let them click.
         targetpage = GetObject(command)
-        if (targetpage <> null and DoesInherit(targetpage, "dialoguepage")) {
+        if (targetpage <> null and DoesInherit(targetpage, "dialoguepage") and GetBoolean(targetpage, "pagelinkshown")) {
           ShowPage (targetpage, false, false)
           SuppressTurnscripts
           FinishTurn

@@ -20,6 +20,13 @@
     <visible type="boolean">false</visible>
     <runscript type="boolean">false</runscript>
     <runscriptonly type="boolean">false</runscriptonly>
+    <!-- Set the first time a {page:} link to this page is actually printed
+         (see ProcessTextCommand_Page below) - gates HandleCommand's
+         outside-a-dialogue fallback in CoreParser.aslx, so a page's raw
+         object name only becomes a de-facto command once the player has
+         genuinely been shown a link to it, not just because the page
+         object happens to exist somewhere in the game. -->
+    <pagelinkshown type="boolean">false</pagelinkshown>
   </type>
 
   <type name="pagescript">
@@ -165,6 +172,32 @@
       }
     }
     return (handled)
+    ]]>
+  </function>
+
+  <!--
+  Renders a {page:...} text-processor tag (see the "page:" entry in
+  CoreTypes.aslx's defaultgame.textprocessorcommands). This is the only place
+  a page's raw object name is ever actually shown to the player as a link
+  outside an active dialogue, so it marks the target page.pagelinkshown -
+  which is what CoreParser.aslx's HandleCommand fallback requires before it
+  will treat that raw name as a command. Delegates the actual rendering to
+  ProcessTextCommand_Command (the same handler {command:...} uses), which
+  {page:...} is otherwise identical to.
+  -->
+  <function name="ProcessTextCommand_Page" type="string" parameters="section, data">
+    <![CDATA[
+    colon = Instr(section, ":")
+    pagekey = Mid(section, colon + 1)
+    colon = Instr(pagekey, ":")
+    if (colon > 0) {
+      pagekey = Left(pagekey, colon - 1)
+    }
+    targetpage = GetObject(pagekey)
+    if (targetpage <> null and DoesInherit(targetpage, "dialoguepage")) {
+      targetpage.pagelinkshown = true
+    }
+    return (ProcessTextCommand_Command(section, data))
     ]]>
   </function>
 

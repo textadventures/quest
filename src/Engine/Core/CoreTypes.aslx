@@ -169,7 +169,7 @@
         game.textprocessorcommandresult = ProcessTextCommand_Command (section, data)
       </item>
       <item key="page:">
-        game.textprocessorcommandresult = ProcessTextCommand_Command (section, data)
+        game.textprocessorcommandresult = ProcessTextCommand_Page (section, data)
       </item>
       <item key="exit:">
         game.textprocessorcommandresult = ProcessTextCommand_Exit (section, data)

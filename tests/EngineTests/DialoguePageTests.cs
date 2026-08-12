@@ -193,6 +193,27 @@ public class DialoguePageTests
     }
 
     [TestMethod]
+    public async Task TypingAPageName_DoesNotLaunchTheDialogue_UntilALinkToItHasActuallyBeenShown()
+    {
+        var driver = await LoadGameAsync();
+
+        // Never looked at signpost - guard_intro's raw object name must not be a
+        // de-facto global command just because the page object exists somewhere in
+        // the game; only a rendered {page:...} link should reveal it.
+        var beforeOutput = string.Join("\n", await driver.SendCommandAsync("guard_intro"));
+        beforeOutput.ShouldContain("I don't understand");
+        await AssertTrueAsync(driver, "game.currentpage = null");
+        await AssertTrueAsync(driver, "not guard_intro.pagelinkshown");
+
+        // Once the link has actually been printed, the same command works.
+        await driver.SendCommandAsync("look at signpost");
+        await AssertTrueAsync(driver, "guard_intro.pagelinkshown");
+        var afterOutput = string.Join("\n", await driver.SendCommandAsync("guard_intro"));
+        afterOutput.ShouldContain("The guard eyes you suspiciously.");
+        await AssertTrueAsync(driver, "game.currentpage = guard_intro");
+    }
+
+    [TestMethod]
     public async Task SaveAndLoadMidDialogue_PreservesDialogueStateAndOptions()
     {
         var driver = await LoadGameAsync();

@@ -34,6 +34,14 @@ async function output() {
     return await page.$eval('#divOutput', el => el.textContent);
 }
 
+// #divOutput accumulates the whole transcript, so a "must not contain" check
+// against the full text would trip on unrelated earlier turns (e.g. an
+// intentional "I don't understand" from a prior negative check). Scope such
+// checks to only what's been printed since a given length checkpoint.
+async function outputSince(startLength) {
+    return (await output()).slice(startLength);
+}
+
 async function expectInOutput(text, label) {
     const out = await output();
     if (!out.includes(text)) {
@@ -47,6 +55,16 @@ async function run() {
     await page.waitForSelector('#txtCommand', { timeout: 30000 });
     console.log('PASS: game booted');
 
+    // Typing a page's raw object name before its {page:} link has ever been
+    // printed must NOT launch the dialogue - it isn't a de-facto global
+    // command just because the page object exists.
+    await sendCommand('guard_intro');
+    await expectInOutput("don't understand", 'typing a page name before its link has been shown does not launch the dialogue');
+    if ((await output()).includes('The guard eyes you suspiciously.')) {
+        throw new Error('The dialogue must not launch before the signpost link has ever been shown');
+    }
+    console.log('PASS: page name is not a global command before its link is shown');
+
     // {page:} link embedded in an ordinary object's description, clicked from
     // outside any active dialogue.
     await sendCommand('look at signpost');
@@ -55,10 +73,11 @@ async function run() {
     if (await signpostLink.count() === 0) {
         throw new Error('Expected the signpost link to be a command link (a.cmdlink[data-command="guard_intro"])');
     }
+    const beforeClickLength = (await output()).length;
     await signpostLink.first().click();
     await waitUntilCanSendCommand();
     await expectInOutput('The guard eyes you suspiciously.', 'clicking the embedded page link launches the dialogue');
-    if ((await output()).includes("don't understand")) {
+    if ((await outputSince(beforeClickLength)).includes("don't understand")) {
         throw new Error('Clicking the embedded page link must not fall through to "I don\'t understand your command."');
     }
     console.log('PASS: {page:} link in an ordinary description launches the dialogue when clicked');
