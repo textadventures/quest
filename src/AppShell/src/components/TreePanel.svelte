@@ -23,6 +23,7 @@
     import Gamepad2 from "@lucide/svelte/icons/gamepad-2";
     import Puzzle from "@lucide/svelte/icons/puzzle";
     import Folder from "@lucide/svelte/icons/folder";
+    import User from "@lucide/svelte/icons/user";
     import DropdownMenu from "./DropdownMenu.svelte";
     import type { DropdownMenuItem } from "./DropdownMenu.svelte";
     import {
@@ -114,6 +115,10 @@
 
     function nodeIcon(node: HierNode): IconComponent {
         if (node.nodeType === "header") return HEADER_ICON[node.id] ?? Folder;
+        // The player object is a plain Object element underneath (nodeType "object" in Text
+        // Adventure mode, "page" in Gamebook mode — see EditorController.GetNodeType), but it's
+        // always the single fixed "player" element key, so it gets its own icon regardless of mode.
+        if (node.id === "player") return User;
         return NODE_TYPE_ICON[node.nodeType] ?? Puzzle;
     }
 
