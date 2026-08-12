@@ -2,7 +2,6 @@ export interface TreeNode {
   key: string
   text: string
   parent: string | null
-  nodeIcon: string | null
   nodeType: string
   isLibrary: boolean
   // Authoritative — mirrors EditorController.CanDelete exactly (covers "game", the gamebook

@@ -447,7 +447,7 @@ public sealed class EditorController : IDisposable
             new AddedNodeEventArgs
             {
                 Key = key, Text = text, Parent = newParent, IsLibraryNode = false, Position = null,
-                NodeIcon = movedElement != null ? GetNodeIcon(movedElement) : null
+                NodeType = movedElement != null ? GetNodeType(movedElement) : null
             });
     }
 
@@ -548,7 +548,7 @@ public sealed class EditorController : IDisposable
                 new AddedNodeEventArgs
                 {
                     Key = key, Text = title, Parent = parent, IsLibraryNode = false, Position = null,
-                    NodeIcon = GetTreeHeaderIcon(type, key)
+                    NodeType = "header"
                 });
         }
     }
@@ -611,7 +611,7 @@ public sealed class EditorController : IDisposable
                 new AddedNodeEventArgs
                 {
                     Key = key, Text = text, Parent = parent, IsLibraryNode = isLibrary, Position = position,
-                    NodeIcon = GetNodeIcon(o)
+                    NodeType = GetNodeType(o)
                 });
 
             if (o.Name == "game" && !SimpleMode && EditorStyle == EditorStyle.TextAdventure)
@@ -620,13 +620,13 @@ public sealed class EditorController : IDisposable
                     new AddedNodeEventArgs
                     {
                         Key = k_verbs, Text = "Verbs", Parent = "game", IsLibraryNode = false, Position = null,
-                        NodeIcon = "s_verb"
+                        NodeType = "header"
                     });
                 AddedNode(this,
                     new AddedNodeEventArgs
                     {
                         Key = k_commands, Text = "Commands", Parent = "game", IsLibraryNode = false, Position = null,
-                        NodeIcon = "s_command"
+                        NodeType = "header"
                     });
             }
         }
@@ -762,63 +762,44 @@ public sealed class EditorController : IDisposable
         return GetDisplayName(WorldModel.Elements.Get(element));
     }
 
-    private string GetNodeIcon(Element o)
+    // The node-type string is consumed directly by the frontend (AppShell's TreePanel.svelte)
+    // both for behaviour (e.g. which "add" options a node offers) and for picking a tree icon —
+    // keep this as the single source of truth rather than adding another translation layer.
+    private string GetNodeType(Element o)
     {
         switch (o.ElemType)
         {
             case ElementType.Object:
                 switch (o.Type)
                 {
-                    case ObjectType.Game: return "s_game";
-                    case ObjectType.Exit: return "s_exit";
+                    case ObjectType.Game: return "game";
+                    case ObjectType.Exit: return "exit";
                     case ObjectType.Command:
-                        return o.Fields.GetAsType<bool>("isverb") ? "s_verb" : "s_command";
-                    case ObjectType.TurnScript: return "s_turn";
+                        return o.Fields.GetAsType<bool>("isverb") ? "verb" : "command";
+                    case ObjectType.TurnScript: return "turnscript";
                     case ObjectType.Object:
                         if (EditorStyle == EditorStyle.GameBook)
                         {
-                            return "s_add_page";
+                            return "page";
                         }
 
                         if (IsDialoguePage(o))
                         {
-                            return "s_add_page";
+                            return "page";
                         }
 
-                        return o.Fields.GetAsType<bool>("isroom") ? "s_room" : "s_object";
-                    default: return null;
+                        return o.Fields.GetAsType<bool>("isroom") ? "room" : "object";
+                    default: return "other";
                 }
-            case ElementType.Function: return "s_function";
-            case ElementType.Timer: return "s_timer";
-            case ElementType.Walkthrough: return "s_walk";
-            case ElementType.IncludedLibrary: return "s_library";
-            case ElementType.Template: return "s_template";
-            case ElementType.DynamicTemplate: return "s_dynamictemplate";
-            case ElementType.ObjectType: return "s_objecttype";
-            case ElementType.Javascript: return "s_javascript";
-            default: return null;
-        }
-    }
-
-    private string GetTreeHeaderIcon(ElementType? type, string key)
-    {
-        if (type == null)
-        {
-            return "s_folder";
-        }
-
-        switch (type.Value)
-        {
-            case ElementType.Object: return "s_object";
-            case ElementType.Function: return "s_function";
-            case ElementType.Timer: return "s_timer";
-            case ElementType.Walkthrough: return "s_walk";
-            case ElementType.IncludedLibrary: return "s_library";
-            case ElementType.Template: return "s_template";
-            case ElementType.DynamicTemplate: return "s_dynamictemplate";
-            case ElementType.ObjectType: return "s_objecttype";
-            case ElementType.Javascript: return "s_javascript";
-            default: return null;
+            case ElementType.Function: return "function";
+            case ElementType.Timer: return "timer";
+            case ElementType.Walkthrough: return "walkthrough";
+            case ElementType.IncludedLibrary: return "include";
+            case ElementType.Template: return "template";
+            case ElementType.DynamicTemplate: return "dynamictemplate";
+            case ElementType.ObjectType: return "type";
+            case ElementType.Javascript: return "javascript";
+            default: return "other";
         }
     }
 
@@ -2875,7 +2856,7 @@ public sealed class EditorController : IDisposable
         public string Parent { get; set; }
         public bool IsLibraryNode { get; set; }
         public int? Position { get; set; }
-        public string NodeIcon { get; set; }
+        public string NodeType { get; set; }
     }
 
     public class RemovedNodeEventArgs : EventArgs
