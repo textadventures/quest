@@ -19,6 +19,12 @@
   <template name="EditorGBPageTypeScriptText">Skript + Text</template>
   <template name="EditorGBOptionsPleaseEnterPageName">Bitte gib den Seitennamen ein</template>
   <template name="EditorGBOptionsPleaseEnterLinkText">Bitte gib den Linktext ein</template>
+  <template name="EditorScriptsPagesCategory">Seiten</template>
+  <template name="EditorScriptsPagesShowPageX">Seite #0 anzeigen</template>
+  <template name="EditorScriptsPagesShowAPage">Seite anzeigen</template>
+  <template name="EditorScriptsPagesShowPage">Seite anzeigen</template>
+  <template name="EditorScriptsPagesAllowCancel">Erlaube dem Spieler, den Dialog zu verlassen (jeder andere Befehl beendet ihn)</template>
+  <template name="EditorScriptsPagesRunTurnScripts">Turn-Skripte während des Dialogs ausführen</template>
   <template name="EditorGBAction">Aktion</template>
   <template name="EditorGBPlaySoundWhenEnterPage">Sound beim Betreten der Seite abspielen</template>
   <template name="EditorGBPlaySoundFilterName">Sound-Dateien</template>
