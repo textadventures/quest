@@ -563,6 +563,25 @@
   <template name="Noted">Vermerkt.</template>
   <template name="ShowMenuResponsePrompt">>> </template>
 
+  <!-- Player-chrome Save/Load dialog strings (WebPlayer/WasmPlayer) -->
+  <template name="SaveLoadTitle">Speichern / Laden</template>
+  <template name="ContinueYourGamePrompt">Möchtest du dein Spiel fortsetzen?</template>
+  <template name="StartFromBeginning">Von vorne beginnen</template>
+  <template name="SavedGamesHeading">Gespeicherte Spiele</template>
+  <template name="NoSavedGamesYet">Noch keine gespeicherten Spiele.</template>
+  <template name="DeleteSave">Löschen</template>
+  <template name="SaveNamePlaceholder">Name des Spielstands</template>
+  <template name="SaveNew">Neu speichern</template>
+  <template name="SaveToFile">In Datei speichern</template>
+  <template name="LoadFromFile">Aus Datei laden</template>
+  <template name="UnnamedSave">diesen Spielstand</template>
+  <template name="SaveWrongGame">Dieser Spielstand gehört zu einem anderen Spiel — öffne zuerst das passende Spiel und versuche es erneut.</template>
+  <template name="CloseDialog">Schließen</template>
+  <template name="SavingBusy">Speichert…</template>
+  <template name="RestartingBusy">Startet neu…</template>
+  <template name="DeleteSaveConfirm">„[name]“ löschen? Das kann nicht rückgängig gemacht werden.</template>
+  <template name="SavedGameDefaultLabel">Spielstand — [timestamp]</template>
+
   <!-- Explicit copies of English.aslx's own values (both already reached via
        the <include ref="English.aslx"/> above, so this changes nothing at
        runtime) - kept explicit so this file's own key coverage is complete

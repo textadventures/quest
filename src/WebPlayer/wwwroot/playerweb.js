@@ -3,6 +3,7 @@ class WebPlayer {
     static gameDotNetHelper;
     static gameId;
     static slotsDialogCanBeClosed = false;
+    static chromeStrings = null;
 
     // Fixed at class-definition time (not set conditionally later), so there's
     // no ordering/race concern with when initPlayerUI() binds #cmdSave's click
@@ -21,6 +22,11 @@ class WebPlayer {
 
     static setGameId(id) {
         WebPlayer.gameId = id;
+    }
+
+    static setChromeStrings(dict) {
+        WebPlayer.chromeStrings = dict;
+        applyChromeStrings(dict);
     }
 
     static listSaves = async () => {

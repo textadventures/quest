@@ -2495,6 +2495,31 @@ function whereAmI() {
 
 var platform = "desktop";
 
+// Applies a resolved chrome-strings dictionary (see ChromeStrings.Resolve in
+// PlayerCore, surfaced via WebPlayer.setChromeStrings/Bridge.GetChromeStringsJson,
+// or a save's snapshot - see GameSaver.save below) to every chrome element
+// tagged with a data-chrome-key* attribute, e.g. the #cmdSave button and the
+// #qv-saves/Slots dialog. dict is always fully populated (every key defaults
+// to English), so a missing key here just means dict itself is null/undefined
+// (no game loaded, no snapshot available) - existing markup is left untouched
+// in that case. Shared by both players (playercore.htm's chrome is common to
+// both), called from wasm-player.js and from WebPlayer.setChromeStrings below.
+function applyChromeStrings(dict) {
+    if (!dict) return;
+    document.querySelectorAll('[data-chrome-key]').forEach(el => {
+        const value = dict[el.dataset.chromeKey];
+        if (value) el.textContent = value;
+    });
+    document.querySelectorAll('[data-chrome-key-placeholder]').forEach(el => {
+        const value = dict[el.dataset.chromeKeyPlaceholder];
+        if (value) el.placeholder = value;
+    });
+    document.querySelectorAll('[data-chrome-key-aria-label]').forEach(el => {
+        const value = dict[el.dataset.chromeKeyAriaLabel];
+        if (value) el.setAttribute('aria-label', value);
+    });
+}
+
 const GameSaver = (() => {
     // Electron: file storage under userData rather than IndexedDB, since
     // this window's origin (a local loopback port) isn't guaranteed to stay
@@ -2542,8 +2567,9 @@ const GameSaver = (() => {
     }
 
     async function saveGame(gameId, slotIndex, dataUint8Array, name) {
+        const chromeStrings = window.WebPlayer?.chromeStrings ?? null;
         if (useElectronGameSaves()) {
-            await window.electronGameSaves.save(gameId, slotIndex, dataUint8Array, name || null);
+            await window.electronGameSaves.save(gameId, slotIndex, dataUint8Array, name || null, chromeStrings);
             return;
         }
         const db = await openDatabase();
@@ -2555,7 +2581,12 @@ const GameSaver = (() => {
             slotIndex,
             data: dataUint8Array,
             name,
-            timestamp: new Date()
+            timestamp: new Date(),
+            // Snapshot of the game's own chrome-string translations at the moment
+            // it was saved - lets the boot-time "Continue your game?" prompt show
+            // the right language next session, before anything is parsed into a
+            // WorldModel (see WebPlayer.setChromeStrings / Bridge.GetChromeStringsJson).
+            chromeStrings
         };
 
         store.put(entry);
@@ -2584,6 +2615,7 @@ const GameSaver = (() => {
                         slotIndex: entry.slotIndex,
                         name: entry.name || null,
                         timestamp: entry.timestamp || null,
+                        chromeStrings: entry.chromeStrings || null,
                     }));
 
                 resolve(slots);
@@ -2638,7 +2670,8 @@ const GameSaver = (() => {
             const slotIndex = await nextSlotIndex(gameId);
             // Locale-formatted (not ISO) so it reads naturally wherever it's shown —
             // WebPlayer's Slots list shows only the name, with no separate timestamp.
-            const label = name || "Saved game — " + new Date().toLocaleString();
+            const labelTemplate = window.WebPlayer?.chromeStrings?.SavedGameDefaultLabel || "Saved game — [timestamp]";
+            const label = name || labelTemplate.replace('[timestamp]', new Date().toLocaleString());
             await saveGame(gameId, slotIndex, result, label);
             addText("Game saved.<br>");
             clearUnsavedProgress();

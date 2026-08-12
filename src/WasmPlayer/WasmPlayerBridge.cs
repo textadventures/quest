@@ -176,6 +176,14 @@ public partial class WasmPlayerBridge
     [JSExport]
     public static string GetGameIfid() => _game?.GameID ?? string.Empty;
 
+    // Player-chrome Save/Load dialog strings, sourced from the game's own
+    // per-language Core library templates when available (see
+    // ChromeStrings.Resolve) - always returns every key, English by default,
+    // so JS never needs its own fallback table.
+    [JSExport]
+    public static string GetChromeStringsJson() =>
+        JsonSerializer.Serialize(ChromeStrings.Resolve(_game as WorldModel), WasmJsonContext.Default.DictionaryStringString);
+
     [JSExport]
     public static async Task Begin()
     {
