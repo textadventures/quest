@@ -188,7 +188,25 @@
       }
       
       if (thiscommand = null) {
-        if (HasScript(game, "unresolvedcommandhandler")) {
+        // A {page:...} link (CorePages.aslx) reached from outside any active
+        // dialogue - e.g. embedded in an ordinary object's description rather
+        // than clicked from a page's own rendered options - renders as a bare
+        // CommandLink whose command is the target page's raw object name, the
+        // same as {command:...}. game.currentpage is null here (an active
+        // dialogue's commands are already fully handled by the branch at the
+        // top of HandleCommand, before this function is ever reached), so
+        // treat that as start-the-dialogue-there instead of falling through
+        // to the unrecognised-command message below. Uses the same default
+        // flags the Show page script adder itself defaults to; an author who
+        // wants different flags for a specific entry point should add an
+        // explicit ShowPage(...) command of their own instead.
+        targetpage = GetObject(command)
+        if (targetpage <> null and DoesInherit(targetpage, "dialoguepage")) {
+          ShowPage (targetpage, false, false)
+          SuppressTurnscripts
+          FinishTurn
+        }
+        else if (HasScript(game, "unresolvedcommandhandler")) {
           params = NewDictionary()
           dictionary add(params, "command", command)
           do (game, "unresolvedcommandhandler", params)

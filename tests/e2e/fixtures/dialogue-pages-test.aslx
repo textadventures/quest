@@ -10,6 +10,12 @@
     <object name="player">
       <inherit name="defaultplayer" />
     </object>
+
+    <object name="signpost">
+      <inherit name="editor_object" />
+      <look>A sign reads: {page:guard_intro:talk to the guard}.</look>
+    </object>
+
     <object name="guard">
       <inherit name="editor_object" />
 

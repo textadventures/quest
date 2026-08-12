@@ -173,6 +173,26 @@ public class DialoguePageTests
     }
 
     [TestMethod]
+    public async Task PageLinkInObjectDescription_RendersAndLaunchesTheDialogueWhenClicked()
+    {
+        var driver = await LoadGameAsync();
+
+        // {page:guard_intro:talk to the guard} in signpost's description - not reached
+        // via any active dialogue's own rendered options.
+        var lookOutput = string.Join("\n", await driver.SendCommandAsync("look at signpost"));
+        lookOutput.ShouldContain("talk to the guard");
+        await AssertTrueAsync(driver, "game.currentpage = null");
+
+        // Clicking that link sends the target page's raw object name as an ordinary
+        // command (same as {command:...}) - previously this fell through to
+        // "I don't understand your command" instead of starting the dialogue.
+        var clickOutput = string.Join("\n", await driver.SendCommandAsync("guard_intro"));
+        clickOutput.ShouldNotContain("I don't understand");
+        clickOutput.ShouldContain("The guard eyes you suspiciously.");
+        await AssertTrueAsync(driver, "game.currentpage = guard_intro");
+    }
+
+    [TestMethod]
     public async Task SaveAndLoadMidDialogue_PreservesDialogueStateAndOptions()
     {
         var driver = await LoadGameAsync();

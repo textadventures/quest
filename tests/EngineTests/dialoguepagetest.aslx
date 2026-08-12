@@ -8,6 +8,15 @@
     <object name="player">
       <inherit name="defaultplayer" />
     </object>
+
+    <!-- A {page:} link embedded in an ordinary object's description, reached
+         from outside any active dialogue - as opposed to a page's own
+         auto-rendered options, which the "talk" commands below exercise. -->
+    <object name="signpost">
+      <inherit name="editor_object" />
+      <look>A sign reads: {page:guard_intro:talk to the guard}.</look>
+    </object>
+
     <object name="guard">
       <inherit name="editor_object" />
 
