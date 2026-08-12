@@ -717,4 +717,23 @@
     <template name="Noted">Anotado.</template>
     <template name="ShowMenuResponsePrompt">>> </template>
 
+    <!-- Player-chrome Save/Load dialog strings (WebPlayer/WasmPlayer) -->
+    <template name="SaveLoadTitle">Guardar / Cargar</template>
+    <template name="ContinueYourGamePrompt">¿Quieres continuar tu partida?</template>
+    <template name="StartFromBeginning">Empezar desde el principio</template>
+    <template name="SavedGamesHeading">Partidas guardadas</template>
+    <template name="NoSavedGamesYet">Todavía no hay partidas guardadas.</template>
+    <template name="DeleteSave">Eliminar</template>
+    <template name="SaveNamePlaceholder">Nombre de la partida</template>
+    <template name="SaveNew">Guardar nueva</template>
+    <template name="SaveToFile">Guardar en archivo</template>
+    <template name="LoadFromFile">Cargar desde archivo</template>
+    <template name="UnnamedSave">esta partida</template>
+    <template name="SaveWrongGame">Esta partida guardada es de otro juego — abre primero ese juego y vuelve a intentarlo.</template>
+    <template name="CloseDialog">Cerrar</template>
+    <template name="SavingBusy">Guardando…</template>
+    <template name="RestartingBusy">Reiniciando…</template>
+    <template name="DeleteSaveConfirm">¿Eliminar «[name]»? Esto no se puede deshacer.</template>
+    <template name="SavedGameDefaultLabel">Partida guardada — [timestamp]</template>
+
 </library>

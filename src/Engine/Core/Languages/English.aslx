@@ -508,4 +508,23 @@
   <template name="Noted">Noted.</template>
   <template name="ShowMenuResponsePrompt">>> </template>
 
+  <!-- Player-chrome Save/Load dialog strings (WebPlayer/WasmPlayer) -->
+  <template name="SaveLoadTitle">Save / Load</template>
+  <template name="ContinueYourGamePrompt">Continue your game?</template>
+  <template name="StartFromBeginning">Start from the beginning</template>
+  <template name="SavedGamesHeading">Saved games</template>
+  <template name="NoSavedGamesYet">No saved games yet.</template>
+  <template name="DeleteSave">Delete</template>
+  <template name="SaveNamePlaceholder">Save name</template>
+  <template name="SaveNew">Save new</template>
+  <template name="SaveToFile">Save to file</template>
+  <template name="LoadFromFile">Load from file</template>
+  <template name="UnnamedSave">this save</template>
+  <template name="SaveWrongGame">This save is for a different game — open that game first, then try again.</template>
+  <template name="CloseDialog">Close</template>
+  <template name="SavingBusy">Saving…</template>
+  <template name="RestartingBusy">Restarting…</template>
+  <template name="DeleteSaveConfirm">Delete "[name]"? This can't be undone.</template>
+  <template name="SavedGameDefaultLabel">Saved game — [timestamp]</template>
+
 </library>

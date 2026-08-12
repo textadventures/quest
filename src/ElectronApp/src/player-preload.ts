@@ -28,10 +28,17 @@ contextBridge.exposeInMainWorld("electronTranscripts", {
 });
 
 contextBridge.exposeInMainWorld("electronGameSaves", {
-    list: (gameId: string): Promise<{ slotIndex: number; name: string | null; timestamp: number | null }[]> =>
+    list: (
+        gameId: string,
+    ): Promise<{ slotIndex: number; name: string | null; timestamp: number | null; chromeStrings: Record<string, string> | null }[]> =>
         ipcRenderer.invoke("gamesave:list", gameId),
-    save: (gameId: string, slotIndex: number, data: Uint8Array, name: string | null): Promise<void> =>
-        ipcRenderer.invoke("gamesave:save", gameId, slotIndex, data, name),
+    save: (
+        gameId: string,
+        slotIndex: number,
+        data: Uint8Array,
+        name: string | null,
+        chromeStrings?: Record<string, string> | null,
+    ): Promise<void> => ipcRenderer.invoke("gamesave:save", gameId, slotIndex, data, name, chromeStrings),
     load: (gameId: string, slotIndex: number): Promise<Uint8Array | null> =>
         ipcRenderer.invoke("gamesave:load", gameId, slotIndex),
     delete: (gameId: string, slotIndex: number): Promise<void> => ipcRenderer.invoke("gamesave:delete", gameId, slotIndex),

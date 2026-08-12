@@ -240,6 +240,7 @@ public partial class WorldModel : IGame, IGameDebug
     public string Cover => Game.Fields[FieldDefinitions.Cover];
     public bool IsGamebook => Game.Fields[FieldDefinitions.EditorStyle] == "gamebook";
     public string? LanguageId => Template.GetText("LanguageId", false);
+    public string? GetTemplateText(string name) => Template.GetText(name, false);
     public event Action<int>? RequestNextTimerTick;
     public event PrintTextHandler? PrintText;
     public event UpdateListHandler? UpdateList;

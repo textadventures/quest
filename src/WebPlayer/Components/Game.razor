@@ -1,6 +1,7 @@
 @rendermode InteractiveServer
 @using System.Xml.Linq
 @using QuestViva.Common
+@using QuestViva.Engine
 @using QuestViva.PlayerCore
 @using QuestViva.WebPlayer.Components.Debugger
 @using QuestViva.WebPlayer.Models
@@ -47,7 +48,7 @@
        OnStart="() => StartGame(null)" OnLoad="@LoadGame"
        OnSaveNew="@SaveNew" OnDelete="@DeleteSlot"
        OnDownload="@DownloadSaveToFile" OnUploadFile="@LoadSaveFromFile"
-       OnClose="@CloseSaveManager"></Slots>
+       OnClose="@CloseSaveManager" ChromeStrings="@chromeStrings"></Slots>
 
 @code {
     private const long MaxSaveFileBytes = 50 * 1024 * 1024;
@@ -64,6 +65,7 @@
     private SaveSlot[] saves = [];
     private bool manageMode;
     private string? saveManagerError;
+    private Dictionary<string, string> chromeStrings = new(ChromeStrings.Defaults);
     private DotNetObjectReference<Game>? gameDotNetRef;
     private byte[]? originalGameBytes;
 
@@ -99,6 +101,14 @@
         if (saves.Length > 0)
         {
             manageMode = false;
+            // Nothing has been parsed into a WorldModel yet at this point, so the
+            // boot-time "Continue your game?" prompt can't read templates live -
+            // instead, pick up whichever chrome-strings snapshot was captured the
+            // last time this game was saved (see ChromeStrings.Resolve's call site
+            // below and GameSaver.save in playercore.js for where it's written).
+            var latestSnapshot = saves.OrderByDescending(s => s.Timestamp).FirstOrDefault()?.ChromeStrings;
+            if (latestSnapshot != null) chromeStrings = latestSnapshot;
+            await JS.InvokeVoidAsync("WebPlayer.setChromeStrings", chromeStrings);
             await JS.InvokeVoidAsync("WebPlayer.showSlots", false);
             StateHasChanged();
         }
@@ -127,8 +137,9 @@
 
     private async Task DeleteSlot(int slotIndex)
     {
-        var name = saves.FirstOrDefault(s => s.SlotIndex == slotIndex)?.Name ?? "this save";
-        var confirmed = await JS.InvokeAsync<bool>("confirm", $"Delete \"{name}\"? This can't be undone.");
+        var name = saves.FirstOrDefault(s => s.SlotIndex == slotIndex)?.Name ?? chromeStrings["UnnamedSave"];
+        var confirmMessage = chromeStrings["DeleteSaveConfirm"].Replace("[name]", name);
+        var confirmed = await JS.InvokeAsync<bool>("confirm", confirmMessage);
         if (!confirmed) return;
 
         await JS.InvokeVoidAsync("WebPlayer.deleteSlot", slotIndex);
@@ -212,7 +223,7 @@
 
             if (uploadedIdentity == null || !string.Equals(currentIdentity, uploadedIdentity, StringComparison.OrdinalIgnoreCase))
             {
-                saveManagerError = "This save is for a different game — open that game first, then try again.";
+                saveManagerError = chromeStrings["SaveWrongGame"];
                 StateHasChanged();
                 return;
             }
@@ -294,6 +305,8 @@
         {
             gameDebug = game as IGameDebug;
             await JS.InvokeVoidAsync("WebPlayer.setCanDebug", EnableDebug && gameDebug != null);
+            chromeStrings = ChromeStrings.Resolve(game as WorldModel);
+            await JS.InvokeVoidAsync("WebPlayer.setChromeStrings", chromeStrings);
             StateHasChanged();
         }
     }

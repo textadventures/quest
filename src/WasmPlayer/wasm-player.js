@@ -335,6 +335,7 @@ async function maybeGateOnActivation(gameBytes) {
 // and player.js can call into it without modification.
 window.WebPlayer = {
     gameId: null,
+    chromeStrings: null,
 
     initUI() { initPlayerUI(); },
 
@@ -555,6 +556,15 @@ async function initWasmPlayer(gameBytes, filename, bc = null, saveBytes = null, 
         throw new Error('Failed to initialise game');
     }
 
+    // Now that a WorldModel is live, resolve the game's own translated chrome
+    // strings (falls back to English for any key it doesn't define) and apply
+    // them to the dialog markup — this also keeps WebPlayer.chromeStrings
+    // current for the shared GameSaver in playercore.js (default save label,
+    // and the snapshot it stashes into the save record for next session's
+    // boot prompt — see startGame below).
+    WebPlayer.chromeStrings = JSON.parse(Bridge.GetChromeStringsJson());
+    applyChromeStrings(WebPlayer.chromeStrings);
+
     await maybeGateOnActivation(gameBytes);
 
     // Now that startup has actually succeeded, remove the start screen overlay
@@ -704,6 +714,15 @@ async function startGame(bytes, filename, bc = null, gameIdOverride = null, isPr
         let saves = [];
         try { saves = await GameSaver.listSaves(gameId); } catch { saves = []; }
         if (saves.length > 0) {
+            // No WorldModel exists yet at this point (the WASM runtime isn't even
+            // booted), so the boot prompt can't resolve chrome strings live -
+            // instead, reuse whichever snapshot was captured the last time this
+            // game was saved (see GameSaver.save's chromeStrings field).
+            const snapshot = saves.find(s => s.chromeStrings)?.chromeStrings;
+            if (snapshot) {
+                WebPlayer.chromeStrings = snapshot;
+                applyChromeStrings(snapshot);
+            }
             const choice = await openSavesDialog('boot', gameId);
             if (choice.type === 'load') {
                 saveBytes = await GameSaver.load(choice.slotIndex, gameId);
@@ -729,6 +748,29 @@ function _esc(str) {
 
 let savesDialogWired = false;
 let bootChoiceResolve = null;
+
+// Applies a resolved chrome-strings dictionary (see ChromeStrings.Resolve in
+// PlayerCore/WasmPlayerBridge.GetChromeStringsJson, or a save's snapshot -
+// see GameSaver.save in playercore.js) to every #qv-saves element tagged
+// with a data-chrome-key* attribute. dict is always fully populated (every
+// key defaults to English), so a missing key here just means dict itself is
+// null/undefined (no game loaded, no snapshot available) - existing markup
+// is left untouched in that case.
+function applyChromeStrings(dict) {
+    if (!dict) return;
+    document.querySelectorAll('[data-chrome-key]').forEach(el => {
+        const value = dict[el.dataset.chromeKey];
+        if (value) el.textContent = value;
+    });
+    document.querySelectorAll('[data-chrome-key-placeholder]').forEach(el => {
+        const value = dict[el.dataset.chromeKeyPlaceholder];
+        if (value) el.placeholder = value;
+    });
+    document.querySelectorAll('[data-chrome-key-aria-label]').forEach(el => {
+        const value = dict[el.dataset.chromeKeyAriaLabel];
+        if (value) el.setAttribute('aria-label', value);
+    });
+}
 
 // Waits for the browser to actually paint the current frame. WasmPlayer's
 // WASM runtime is single-threaded and the engine's SaveAsync does its work
@@ -778,16 +820,18 @@ function renderSavesList(saves, mode) {
     const list = document.getElementById('qv-saves-list');
     if (!list) return;
     if (!saves.length) {
-        list.innerHTML = '<li class="text-sm text-surface-500">No saved games yet.</li>';
+        const noSavesText = WebPlayer.chromeStrings?.NoSavedGamesYet ?? 'No saved games yet.';
+        list.innerHTML = `<li class="text-sm text-surface-500">${_esc(noSavesText)}</li>`;
         return;
     }
     // s.name already carries a human-readable date/time when the user didn't
     // type a custom one (see GameSaver.save's default label) — don't also
     // render s.timestamp separately, or the same moment shows up twice in
     // two different formats.
+    const deleteLabel = _esc(WebPlayer.chromeStrings?.DeleteSave ?? 'Delete');
     list.innerHTML = saves.map(s => {
         const deleteBtn = mode === 'manage'
-            ? `<button type="button" class="btn-icon preset-tonal-error" data-delete-slot="${s.slotIndex}" aria-label="Delete">`
+            ? `<button type="button" class="btn-icon preset-tonal-error" data-delete-slot="${s.slotIndex}" aria-label="${deleteLabel}">`
                 + `<svg class="qv-icon" aria-hidden="true"><use href="#trash-2"></use></svg></button>`
             : '';
         return `<li class="flex items-center justify-between gap-2">`
@@ -850,7 +894,8 @@ async function loadSaveFromFile(file) {
     const uploadedIdentity = uploadedIfid || (originalAttr && computeGameId(originalAttr));
 
     if (!uploadedIdentity || currentIdentity.toLowerCase() !== uploadedIdentity.toLowerCase()) {
-        showSavesError('This save is for a different game — open that game first, then try again.');
+        showSavesError(WebPlayer.chromeStrings?.SaveWrongGame
+            ?? 'This save is for a different game — open that game first, then try again.');
         return;
     }
     hideSavesError();
@@ -886,7 +931,7 @@ function ensureSavesDialogWired() {
         // overlapping calls (see restartInProgress's doc comment), but
         // without this there was no visible feedback at all inviting
         // exactly the impatient re-click that guard exists for.
-        withBusyButton(e.currentTarget, 'Restarting…', () => restartGame(null));
+        withBusyButton(e.currentTarget, WebPlayer.chromeStrings?.RestartingBusy ?? 'Restarting…', () => restartGame(null));
     });
 
     document.getElementById('qv-saves-list').addEventListener('click', async (e) => {
@@ -906,8 +951,9 @@ function ensureSavesDialogWired() {
         }
         const delBtn = e.target.closest('[data-delete-slot]');
         if (delBtn) {
-            const name = delBtn.closest('li')?.querySelector('[data-slot]')?.textContent ?? 'this save';
-            if (!confirm(`Delete "${name}"? This can't be undone.`)) return;
+            const name = delBtn.closest('li')?.querySelector('[data-slot]')?.textContent ?? (WebPlayer.chromeStrings?.UnnamedSave ?? 'this save');
+            const confirmTemplate = WebPlayer.chromeStrings?.DeleteSaveConfirm ?? 'Delete "[name]"? This can\'t be undone.';
+            if (!confirm(confirmTemplate.replace('[name]', name))) return;
             await withBusyButton(delBtn, '', async () => {
                 await GameSaver.deleteSlot(Number(delBtn.dataset.deleteSlot), WebPlayer.gameId);
             });
@@ -917,7 +963,7 @@ function ensureSavesDialogWired() {
 
     document.getElementById('qv-saves-save-new').addEventListener('click', async (e) => {
         const input = document.getElementById('qv-saves-name-input');
-        await withBusyButton(e.currentTarget, 'Saving…', async () => {
+        await withBusyButton(e.currentTarget, WebPlayer.chromeStrings?.SavingBusy ?? 'Saving…', async () => {
             await GameSaver.save(input.value.trim() || undefined);
         });
         input.value = '';
@@ -925,7 +971,7 @@ function ensureSavesDialogWired() {
     });
 
     document.getElementById('qv-saves-download').addEventListener('click', (e) =>
-        withBusyButton(e.currentTarget, 'Saving…', downloadSaveToFile));
+        withBusyButton(e.currentTarget, WebPlayer.chromeStrings?.SavingBusy ?? 'Saving…', downloadSaveToFile));
 
     const uploadBtn = document.getElementById('qv-saves-upload-btn');
     const fileInput = document.getElementById('qv-saves-file-input');

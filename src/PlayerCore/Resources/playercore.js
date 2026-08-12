@@ -2542,8 +2542,9 @@ const GameSaver = (() => {
     }
 
     async function saveGame(gameId, slotIndex, dataUint8Array, name) {
+        const chromeStrings = window.WebPlayer?.chromeStrings ?? null;
         if (useElectronGameSaves()) {
-            await window.electronGameSaves.save(gameId, slotIndex, dataUint8Array, name || null);
+            await window.electronGameSaves.save(gameId, slotIndex, dataUint8Array, name || null, chromeStrings);
             return;
         }
         const db = await openDatabase();
@@ -2555,7 +2556,12 @@ const GameSaver = (() => {
             slotIndex,
             data: dataUint8Array,
             name,
-            timestamp: new Date()
+            timestamp: new Date(),
+            // Snapshot of the game's own chrome-string translations at the moment
+            // it was saved - lets the boot-time "Continue your game?" prompt show
+            // the right language next session, before anything is parsed into a
+            // WorldModel (see WebPlayer.setChromeStrings / Bridge.GetChromeStringsJson).
+            chromeStrings
         };
 
         store.put(entry);
@@ -2584,6 +2590,7 @@ const GameSaver = (() => {
                         slotIndex: entry.slotIndex,
                         name: entry.name || null,
                         timestamp: entry.timestamp || null,
+                        chromeStrings: entry.chromeStrings || null,
                     }));
 
                 resolve(slots);
@@ -2638,7 +2645,8 @@ const GameSaver = (() => {
             const slotIndex = await nextSlotIndex(gameId);
             // Locale-formatted (not ISO) so it reads naturally wherever it's shown —
             // WebPlayer's Slots list shows only the name, with no separate timestamp.
-            const label = name || "Saved game — " + new Date().toLocaleString();
+            const labelTemplate = window.WebPlayer?.chromeStrings?.SavedGameDefaultLabel || "Saved game — [timestamp]";
+            const label = name || labelTemplate.replace('[timestamp]', new Date().toLocaleString());
             await saveGame(gameId, slotIndex, result, label);
             addText("Game saved.<br>");
             clearUnsavedProgress();

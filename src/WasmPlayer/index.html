@@ -134,16 +134,16 @@
          Chrome), so the sprite must live in the same document as its <use>s. -->
     <div class="card preset-filled-surface-100-900 w-full p-6 space-y-4" data-theme="wintry">
         <div class="flex items-start justify-between gap-4">
-            <h2 class="h3" data-mode-text="boot">Continue your game?</h2>
-            <h2 class="h3 qv-manage-only" data-mode-text="manage">Save / Load</h2>
-            <button id="qv-saves-close" type="button" class="qv-manage-only btn-icon preset-tonal-surface" aria-label="Close">
+            <h2 class="h3" data-mode-text="boot" data-chrome-key="ContinueYourGamePrompt">Continue your game?</h2>
+            <h2 class="h3 qv-manage-only" data-mode-text="manage" data-chrome-key="SaveLoadTitle">Save / Load</h2>
+            <button id="qv-saves-close" type="button" class="qv-manage-only btn-icon preset-tonal-surface" aria-label="Close" data-chrome-key-aria-label="CloseDialog">
                 <svg class="qv-icon" aria-hidden="true"><use href="#x"></use></svg>
             </button>
         </div>
 
         <div id="qv-saves-error" class="hidden card preset-tonal-error p-3 text-sm"></div>
 
-        <button id="qv-saves-start-new" type="button" class="btn preset-tonal-primary w-full justify-start">
+        <button id="qv-saves-start-new" type="button" class="btn preset-tonal-primary w-full justify-start" data-chrome-key="StartFromBeginning">
             Start from the beginning
         </button>
 
@@ -152,12 +152,12 @@
         <div class="qv-manage-only space-y-3">
             <hr class="hr">
             <div class="flex gap-2">
-                <input id="qv-saves-name-input" class="input" type="text" placeholder="Save name" autocomplete="off">
-                <button id="qv-saves-save-new" type="button" class="btn preset-filled-primary-500">Save new</button>
+                <input id="qv-saves-name-input" class="input" type="text" placeholder="Save name" autocomplete="off" data-chrome-key-placeholder="SaveNamePlaceholder">
+                <button id="qv-saves-save-new" type="button" class="btn preset-filled-primary-500" data-chrome-key="SaveNew">Save new</button>
             </div>
             <div class="flex gap-2">
-                <button id="qv-saves-download" type="button" class="btn preset-tonal-primary flex-1">Save to file</button>
-                <button id="qv-saves-upload-btn" type="button" class="btn preset-tonal-primary flex-1">Load from file</button>
+                <button id="qv-saves-download" type="button" class="btn preset-tonal-primary flex-1" data-chrome-key="SaveToFile">Save to file</button>
+                <button id="qv-saves-upload-btn" type="button" class="btn preset-tonal-primary flex-1" data-chrome-key="LoadFromFile">Load from file</button>
                 <input type="file" id="qv-saves-file-input" class="hidden" accept=".quest-save">
             </div>
         </div>

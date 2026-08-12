@@ -12,6 +12,13 @@ export interface SaveSlot {
     slotIndex: number;
     name: string | null;
     timestamp: number | null;
+    // Snapshot of the game's own translated chrome strings at the moment it
+    // was saved (see ChromeStrings.Resolve in PlayerCore) — lets the boot-time
+    // "Continue your game?" prompt show the right language next session,
+    // before anything is parsed into a WorldModel. Absent on saves made
+    // before this field existed, and on non-Electron (IndexedDB) saves — both
+    // fall back to English, no version/schema handling needed.
+    chromeStrings?: Record<string, string> | null;
 }
 
 const MANIFEST_FILE = "manifest.json";
@@ -74,13 +81,19 @@ export function listSaves(gameId: string): Promise<SaveSlot[]> {
     return enqueue(gameDirName(gameId), () => readManifest(gameId));
 }
 
-export function saveGame(gameId: string, slotIndex: number, data: Uint8Array, name: string | null): Promise<void> {
+export function saveGame(
+    gameId: string,
+    slotIndex: number,
+    data: Uint8Array,
+    name: string | null,
+    chromeStrings?: Record<string, string> | null,
+): Promise<void> {
     return enqueue(gameDirName(gameId), async () => {
         await fs.mkdir(gameDir(gameId), { recursive: true });
         await fs.writeFile(blobPath(gameId, slotIndex), data);
         const slots = await readManifest(gameId);
         const remaining = slots.filter((s) => s.slotIndex !== slotIndex);
-        remaining.push({ slotIndex, name, timestamp: Date.now() });
+        remaining.push({ slotIndex, name, timestamp: Date.now(), chromeStrings: chromeStrings ?? null });
         await writeManifest(gameId, remaining);
     });
 }

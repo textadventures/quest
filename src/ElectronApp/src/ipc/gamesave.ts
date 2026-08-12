@@ -10,8 +10,14 @@ export function registerGameSaveHandlers(): void {
 
     ipcMain.handle(
         "gamesave:save",
-        async (_event, gameId: string, slotIndex: number, data: Uint8Array, name: string | null) =>
-            saveGame(gameId, slotIndex, data, name),
+        async (
+            _event,
+            gameId: string,
+            slotIndex: number,
+            data: Uint8Array,
+            name: string | null,
+            chromeStrings?: Record<string, string> | null,
+        ) => saveGame(gameId, slotIndex, data, name, chromeStrings),
     );
 
     ipcMain.handle("gamesave:load", async (_event, gameId: string, slotIndex: number) => loadGame(gameId, slotIndex));

@@ -1,4 +1,5 @@
 @using QuestViva.WebPlayer.Models
+@using QuestViva.PlayerCore
 <style scoped>
     dialog {
         border: none;
@@ -28,13 +29,13 @@
     @if (ManageMode)
     {
         <div class="d-flex justify-content-between align-items-center">
-            <h3 class="m-0">Save / Load</h3>
-            <button type="button" class="btn-close" aria-label="Close" @onclick="() => OnClose.InvokeAsync()"></button>
+            <h3 class="m-0">@ChromeStrings["SaveLoadTitle"]</h3>
+            <button type="button" class="btn-close" aria-label="@ChromeStrings["CloseDialog"]" @onclick="() => OnClose.InvokeAsync()"></button>
         </div>
     }
     else
     {
-        <h3>Continue your game?</h3>
+        <h3>@ChromeStrings["ContinueYourGamePrompt"]</h3>
     }
 
     @if (!string.IsNullOrEmpty(ErrorMessage))
@@ -42,11 +43,11 @@
         <div class="alert alert-danger mt-2">@ErrorMessage</div>
     }
 
-    <button class="btn btn-primary mt-2" @onclick="OnStart">Start from the beginning</button>
+    <button class="btn btn-primary mt-2" @onclick="OnStart">@ChromeStrings["StartFromBeginning"]</button>
 
     @if (Saves.Any())
     {
-        <h4 class="mt-3">Saved games</h4>
+        <h4 class="mt-3">@ChromeStrings["SavedGamesHeading"]</h4>
         @foreach (var save in Saves)
         {
             var slotIndex = save.SlotIndex;
@@ -54,7 +55,7 @@
                 <button class="btn btn-link p-0 text-start" @onclick="() => OnLoad.InvokeAsync(slotIndex)">@save.Name</button>
                 @if (ManageMode)
                 {
-                    <button class="btn btn-sm btn-outline-danger" @onclick="() => OnDelete.InvokeAsync(slotIndex)">Delete</button>
+                    <button class="btn btn-sm btn-outline-danger" @onclick="() => OnDelete.InvokeAsync(slotIndex)">@ChromeStrings["DeleteSave"]</button>
                 }
             </div>
         }
@@ -64,13 +65,13 @@
     {
         <hr/>
         <div class="input-group mt-2">
-            <input class="form-control" placeholder="Save name" @bind="newSaveName"/>
-            <button class="btn btn-primary" @onclick="SaveNew">Save new</button>
+            <input class="form-control" placeholder="@ChromeStrings["SaveNamePlaceholder"]" @bind="newSaveName"/>
+            <button class="btn btn-primary" @onclick="SaveNew">@ChromeStrings["SaveNew"]</button>
         </div>
         <div class="d-flex gap-2 mt-2">
-            <button class="btn btn-outline-secondary flex-fill" @onclick="() => OnDownload.InvokeAsync()">Save to file</button>
+            <button class="btn btn-outline-secondary flex-fill" @onclick="() => OnDownload.InvokeAsync()">@ChromeStrings["SaveToFile"]</button>
             <label class="btn btn-outline-secondary flex-fill mb-0">
-                Load from file
+                @ChromeStrings["LoadFromFile"]
                 <InputFile OnChange="OnFileSelected" class="d-none" accept=".quest-save"/>
             </label>
         </div>
@@ -88,6 +89,7 @@
     [Parameter] public required SaveSlot[] Saves { get; set; } = [];
     [Parameter] public bool ManageMode { get; set; }
     [Parameter] public string? ErrorMessage { get; set; }
+    [Parameter] public IReadOnlyDictionary<string, string> ChromeStrings { get; set; } = QuestViva.PlayerCore.ChromeStrings.Defaults;
 
     private string? newSaveName;
 
