@@ -448,7 +448,7 @@ public partial class WasmEditorBridge
                     AddDropdownTypeValues(attrs, visibleControls, key, data);
                 }
 
-                tabs.Add(new TabInfo(tab.Caption, visibleControls.Select(ToControlInfo).ToList()));
+                tabs.Add(new TabInfo(tab.Caption, visibleControls.Select(c => ToControlInfo(c, key)).ToList()));
             }
 
             var visibleTopControls = data != null
@@ -459,7 +459,7 @@ public partial class WasmEditorBridge
                 AddDropdownTypeValues(attrs, visibleTopControls, key, data);
             }
 
-            topControls.AddRange(visibleTopControls.Select(ToControlInfo));
+            topControls.AddRange(visibleTopControls.Select(c => ToControlInfo(c, key)));
         }
         else if (data == null)
         {
@@ -2242,7 +2242,7 @@ public partial class WasmEditorBridge
         }
 
         var objects = _controller.GetObjectNames("object")
-            .Where(n => n != roomKey)
+            .Where(n => n != roomKey && _controller.IsRoom(n))
             .OrderBy(n => n, StringComparer.CurrentCultureIgnoreCase)
             .Select(n => new ControlOption(n, n)).ToList();
 
@@ -3700,7 +3700,7 @@ public partial class WasmEditorBridge
         }
     }
 
-    private static ControlInfo ToControlInfo(IEditorControl ctrl)
+    private static ControlInfo ToControlInfo(IEditorControl ctrl, string key)
     {
         List<ControlOption>? options = null;
         var attribute = ctrl.Attribute;
@@ -3754,7 +3754,15 @@ public partial class WasmEditorBridge
         }
         else if (ctrl.ControlType == "objects")
         {
-            var names = _controller!.GetObjectNames("object", false);
+            // Dialogue Pages opt out of world scoping (see CorePages.aslx) - they're data, not
+            // physical objects, so they never belong in an attribute-level object picker. An
+            // exit's "to" destination is further narrowed to rooms only.
+            var names = _controller!.GetObjectNames("object", false).Where(n => !_controller.IsDialoguePage(n));
+            if (ctrl.Attribute == "to" && _controller.GetObjectType(key) == "exit")
+            {
+                names = names.Where(n => _controller.IsRoom(n));
+            }
+
             options = names.Select(n => new ControlOption(n, n)).ToList();
         }
         else if (ctrl.ControlType == "multi")
