@@ -40,6 +40,7 @@ internal record ControlInfo(
     string? KeyPrompt = null,
     string? ValuePrompt = null,
     string? SourceExclude = null,
+    string? SourceType = null,
     string? CheckboxCaption = null,
     bool IsWalkthrough = false,
     string? Href = null,
@@ -2063,6 +2064,51 @@ public partial class WasmEditorBridge
     }
 
     [JSExport]
+    public static string CreatePage(string name, string? parent)
+    {
+        if (_controller == null)
+        {
+            return "error:Not initialised";
+        }
+
+        var validation = _controller.CanAdd(name);
+        if (!validation.Valid)
+        {
+            return $"error:{EditorController.GetValidationError(validation, name)}";
+        }
+
+        try
+        {
+            _controller.CreateNewPage(name, string.IsNullOrEmpty(parent) ? null : parent, null);
+            // The AddedNode event fires while the object is still a plain object - the
+            // dialoguepage type that gives it its "page" tree presentation is only added
+            // afterwards (within the same transaction), so rebuild for the correct icon.
+            _controller.UpdateTree();
+            return name;
+        }
+        catch (Exception ex)
+        {
+            return $"error:{ex.Message}";
+        }
+    }
+
+    // Object names inheriting the dialoguepage type, for controls with
+    // <sourcetype>dialoguepage</sourcetype> (the TA page tab's options control).
+    [JSExport]
+    public static string GetPageNames()
+    {
+        if (_controller == null)
+        {
+            return "[]";
+        }
+
+        var names = _controller.GetObjectNames("object", false)
+            .Where(n => _controller.IsDialoguePage(n))
+            .ToList();
+        return JsonSerializer.Serialize(names, WasmEditorJsonContext.Default.ListString);
+    }
+
+    [JSExport]
     public static string CreateFunction(string name)
     {
         if (_controller == null)
@@ -3778,13 +3824,17 @@ public partial class WasmEditorBridge
         var keyPrompt = isDictionary ? ctrl.GetString("keyprompt") : null;
         var valuePrompt = isDictionary ? ctrl.GetString("valueprompt") : null;
         var sourceExclude = isDictionary ? ctrl.GetString("sourceexclude") : null;
+        // Restricts an object-sourced dictionary control's key dropdown to objects
+        // inheriting the named type (e.g. the TA page tab's options control lists
+        // dialogue pages only - filtered by type, not location).
+        var sourceType = isDictionary ? ctrl.GetString("sourcetype") : null;
 
         var href = ctrl.ControlType == "label" ? ctrl.GetString("href") : null;
 
         return new ControlInfo(attribute, ctrl.ControlType, ctrl.Caption ?? ctrl.GetString("selfcaption"), options,
             null, null, textProcessorCommands, addPrompt, Source: source,
             Advanced: !ctrl.IsControlVisibleInSimpleMode,
-            KeyPrompt: keyPrompt, ValuePrompt: valuePrompt, SourceExclude: sourceExclude,
+            KeyPrompt: keyPrompt, ValuePrompt: valuePrompt, SourceExclude: sourceExclude, SourceType: sourceType,
             IsWalkthrough: isWalkthrough, Href: href, NewFile: newFile, LockedAfterCreate: lockedAfterCreate);
     }
 

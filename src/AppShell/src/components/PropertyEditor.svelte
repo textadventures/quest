@@ -1,5 +1,5 @@
 <script lang="ts">
-    import { selectedKey, selectedData, treeNodes, isGamebook, setAttribute, setDropdownType, setMultiType, setObjectReference, setSelectedFilter, addDictItem, removeDictItem, updateDictItem, getObjectNames, getExitNames, selectNode, createObjectSilent, openAddModal, openAddLibraryModal, openAddJavascriptModal, getAssetText, putAssetText } from "$lib/editor-store";
+    import { selectedKey, selectedData, treeNodes, isGamebook, setAttribute, setDropdownType, setMultiType, setObjectReference, setSelectedFilter, addDictItem, removeDictItem, updateDictItem, getObjectNames, getExitNames, getPageNames, selectNode, createPageSilent, openAddModal, openAddLibraryModal, openAddJavascriptModal, getAssetText, putAssetText } from "$lib/editor-store";
     import { showToast } from "$lib/toast";
     import { t } from "$lib/i18n";
     import type { ControlInfo, ControlOption, TextProcessorCommand } from "$lib/types";
@@ -76,10 +76,16 @@
     let newDictItems = $state<Record<string, {key: string, value: string}>>({});
     let attributeErrors = $state<Record<string, string>>({});
     // Refetched whenever the selection changes, for dictionary controls whose keys are
-    // object names (e.g. gamebook page "Options" links) rather than free text.
+    // object names (e.g. gamebook page "Options" links) rather than free text. The page
+    // list serves controls with sourceType "dialoguepage" (the TA page tab's options
+    // control), which select pages only — filtered by type, not location.
     let dictSourceObjectNames = $state<string[]>([]);
+    let dictSourcePageNames = $state<string[]>([]);
     $effect(() => {
-        if ($selectedKey) dictSourceObjectNames = getObjectNames() ?? [];
+        if ($selectedKey) {
+            dictSourceObjectNames = getObjectNames() ?? [];
+            dictSourcePageNames = getPageNames() ?? [];
+        }
     });
     // Which gamebookoptions control (keyed by attribute) has its "new page" dialog open.
     let newPageModalFor = $state<string | null>(null);
@@ -552,8 +558,9 @@
         {@const items = (() => { try { return JSON.parse(attrValue(ctrl.attribute) ?? "[]") as {key: string, value: string}[]; } catch { return []; } })()}
         {@const dk = ctrl.attribute}
         {@const isObjectSource = ctrl.source === "object"}
+        {@const sourcePool = ctrl.sourceType === "dialoguepage" ? dictSourcePageNames : dictSourceObjectNames}
         {@const excludedNames = new Set((ctrl.sourceExclude ?? "").split(/[;,]/).map(s => s.trim()).filter(Boolean))}
-        {@const availableObjectNames = isObjectSource ? dictSourceObjectNames.filter(n => !excludedNames.has(n) && !items.some(i => i.key === n)) : []}
+        {@const availableObjectNames = isObjectSource ? sourcePool.filter(n => !excludedNames.has(n) && !items.some(i => i.key === n)) : []}
         <div class="flex flex-col gap-1 w-full">
             {#each items as item (item.key)}
                 {@const isEditing = editingItem?.attribute === dk && editingItem?.key === item.key}
@@ -671,7 +678,7 @@
                 onconfirm={(name) => {
                     newPageModalFor = null;
                     if (!$selectedKey) return;
-                    const result = createObjectSilent(name, null);
+                    const result = createPageSilent(name, null);
                     if (result.startsWith("error:")) {
                         showToast(result.slice("error:".length));
                         return;

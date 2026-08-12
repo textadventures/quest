@@ -284,6 +284,9 @@
   </editor>
 
   <include ref="CoreEditorGame.aslx"/>
+  <!-- Before CoreEditorObject.aslx so the Page tab lands first (and is the default
+       tab) for dialogue pages - the standard object tabs exclude dialoguepage. -->
+  <include ref="CoreEditorPage.aslx"/>
   <include ref="CoreEditorObject.aslx"/>
   <include ref="CoreEditorExit.aslx"/>
   <include ref="CoreEditorCommand.aslx"/>

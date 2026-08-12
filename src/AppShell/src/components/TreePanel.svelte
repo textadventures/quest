@@ -315,6 +315,9 @@
                 opts.push($isGamebook
                     ? { label: t("elementAdders.page"), action: () => openAddModal("page", null) }
                     : { label: t("elementAdders.room"), action: () => openAddModal("room", null) });
+                if (!$isGamebook) {
+                    opts.push({ label: t("elementAdders.page"), action: () => openAddModal("page", null) });
+                }
                 if (canPasteElements(id)) {
                     opts.push({ label: t("common.paste"), action: () => pasteElements(id) });
                 }
@@ -337,13 +340,19 @@
                 { label: t("elementAdders.command"), action: () => createCommand(id) },
                 { label: t("elementAdders.verb"), action: () => createVerb(id) },
                 { label: t("elementAdders.turnScript"), action: () => createTurnScript(id) },
+                { label: t("elementAdders.pageHere"), action: () => openAddModal("page", id) },
             );
         } else if (nt === "object") {
             opts.push(
                 { label: t("elementAdders.command"), action: () => createCommand(id) },
                 { label: t("elementAdders.verb"), action: () => createVerb(id) },
                 { label: t("elementAdders.turnScript"), action: () => createTurnScript(id) },
+                { label: t("elementAdders.pageHere"), action: () => openAddModal("page", id) },
             );
+        } else if (nt === "page" && !$isGamebook) {
+            // Text Adventure dialogue pages can nest sub-pages; gamebook pages are
+            // always flat, so this adder is TA-only.
+            opts.push({ label: t("elementAdders.pageHere"), action: () => openAddModal("page", id) });
         } else if (nt === "walkthrough") {
             opts.push({ label: t("elementAdders.walkthroughHere"), action: () => openAddModal("walkthrough", id) });
             if (canMoveElement(id)) {

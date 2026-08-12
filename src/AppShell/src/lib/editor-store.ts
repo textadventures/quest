@@ -1255,6 +1255,15 @@ export function getExitNames(): string[] | null {
     } catch { return null; }
 }
 
+// Object names inheriting the dialoguepage type, for dictionary controls declaring
+// <sourcetype>dialoguepage</sourcetype> (the TA page tab's options control).
+export function getPageNames(): string[] | null {
+    if (!_bridge) return null;
+    try {
+        return JSON.parse(_bridge.GetPageNames());
+    } catch { return null; }
+}
+
 export function getExpressionTemplates(expressionType: string): ExpressionTemplate[] | null {
     if (!_bridge) return null;
     try {
@@ -1323,6 +1332,21 @@ export function createObject(name: string, parent: string | null): string {
 export function createObjectSilent(name: string, parent: string | null): string {
     if (!_bridge) return "error:not loaded";
     return afterCreate(_bridge.CreateObject(name, parent ?? ""), false);
+}
+
+// Creates a page: in a Text Adventure this is an object with the dialoguepage type
+// (see CorePages.aslx); in a gamebook, where that type doesn't exist, the bridge
+// degrades it to a plain object — so this is the right call for both modes' "page"
+// adders.
+export function createPage(name: string, parent: string | null): string {
+    if (!_bridge) return "error:not loaded";
+    return afterCreate(_bridge.CreatePage(name, parent ?? ""));
+}
+
+// See createObjectSilent — same, for pages created inline while linking to them.
+export function createPageSilent(name: string, parent: string | null): string {
+    if (!_bridge) return "error:not loaded";
+    return afterCreate(_bridge.CreatePage(name, parent ?? ""), false);
 }
 
 export function createFunction(name: string): string {

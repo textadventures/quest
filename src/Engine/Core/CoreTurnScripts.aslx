@@ -1,7 +1,7 @@
 ﻿<library>
   <function name="RunTurnScripts">
     if (IsGameRunning()) {
-      if (game.menucallback = null) {
+      if (game.menucallback = null and (game.currentpage = null or GetBoolean(game, "pageturnscripts"))) {
         foreach (turnscript, ObjectListSort(AllTurnScripts(), "name")) {
           if (GetBoolean(turnscript, "enabled")) {
             inscope = false

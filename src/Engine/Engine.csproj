@@ -182,6 +182,10 @@
         <EmbeddedResource Include="Core\CoreEditorObjectWearable.aslx">
             <CopyToOutputDirectory>Always</CopyToOutputDirectory>
         </EmbeddedResource>
+        <None Remove="Core\CoreEditorPage.aslx" />
+        <EmbeddedResource Include="Core\CoreEditorPage.aslx">
+            <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+        </EmbeddedResource>
         <None Remove="Core\CoreEditorScripts.aslx" />
         <EmbeddedResource Include="Core\CoreEditorScripts.aslx">
             <CopyToOutputDirectory>Always</CopyToOutputDirectory>
@@ -215,6 +219,10 @@
         <EmbeddedResource Include="Core\CoreEditorScriptsOutput.aslx">
             <CopyToOutputDirectory>Always</CopyToOutputDirectory>
             <SubType>Designer</SubType>
+        </EmbeddedResource>
+        <None Remove="Core\CoreEditorScriptsPages.aslx" />
+        <EmbeddedResource Include="Core\CoreEditorScriptsPages.aslx">
+            <CopyToOutputDirectory>Always</CopyToOutputDirectory>
         </EmbeddedResource>
         <None Remove="Core\CoreEditorScriptsPlayer.aslx" />
         <EmbeddedResource Include="Core\CoreEditorScriptsPlayer.aslx">
@@ -282,6 +290,10 @@
         <EmbeddedResource Include="Core\CoreOutput.aslx">
             <CopyToOutputDirectory>Always</CopyToOutputDirectory>
             <SubType>Designer</SubType>
+        </EmbeddedResource>
+        <None Remove="Core\CorePages.aslx" />
+        <EmbeddedResource Include="Core\CorePages.aslx">
+            <CopyToOutputDirectory>Always</CopyToOutputDirectory>
         </EmbeddedResource>
         <None Remove="Core\CoreParser.aslx" />
         <EmbeddedResource Include="Core\CoreParser.aslx">

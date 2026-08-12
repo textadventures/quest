@@ -29,6 +29,24 @@
         }
       }
     }
+    else if (game.currentpage <> null) {
+      // A Pages dialogue is active (see CorePages.aslx) - structurally the same
+      // intercept as the menucallback branch above, but each choice runs as a
+      // complete ordinary turn, so the game stays saveable between choices.
+      if (HandlePageTextResponse(command)) {
+        handled = true
+      }
+      else {
+        if (GetBoolean(game, "pageallowcancel")) {
+          EndPageDialogue
+        }
+        else {
+          msg ("")
+          msg ("[PageDialogueChooseOption]")
+          handled = true
+        }
+      }
+    }
     if (not handled) {
       StartTurnOutputSection    
       shownlink = false

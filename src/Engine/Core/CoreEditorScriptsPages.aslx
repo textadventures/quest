@@ -1,0 +1,54 @@
+﻿<library type="editor">
+
+  <!-- Script adder for Text Adventure dialogue pages (see CorePages.aslx). Always
+       available - GoToPage(page) is also a real function (used internally, and
+       callable from raw/advanced scripting) but isn't a separate adder entry, since
+       it's really just ShowPage without the launch flags: calling ShowPage again
+       from within a page's own script (to redirect) re-sets those flags, which is
+       harmless whether or not they change. -->
+
+  <editor>
+    <appliesto>(function)ShowPage</appliesto>
+    <display>[EditorScriptsPagesShowPageX]</display>
+    <category>[EditorScriptsPagesCategory]</category>
+    <create>ShowPage (, false, false)</create>
+    <add>[EditorScriptsPagesShowAPage]</add>
+
+    <control>
+      <controltype>label</controltype>
+      <caption>[EditorScriptsPagesShowPage]</caption>
+    </control>
+
+    <control>
+      <controltype>expression</controltype>
+      <attribute>0</attribute>
+      <simple>page</simple>
+      <simpleeditor>objects</simpleeditor>
+    </control>
+
+    <control>
+      <controltype>label</controltype>
+      <caption>[EditorScriptsPagesAllowCancel]</caption>
+      <breakbefore/>
+    </control>
+
+    <control>
+      <controltype>expression</controltype>
+      <attribute>1</attribute>
+      <simpleeditor>boolean</simpleeditor>
+    </control>
+
+    <control>
+      <controltype>label</controltype>
+      <caption>[EditorScriptsPagesRunTurnScripts]</caption>
+      <breakbefore/>
+    </control>
+
+    <control>
+      <controltype>expression</controltype>
+      <attribute>2</attribute>
+      <simpleeditor>boolean</simpleeditor>
+    </control>
+  </editor>
+
+</library>

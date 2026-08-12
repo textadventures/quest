@@ -2,6 +2,7 @@
   <tab>
     <parent>_ObjectEditor</parent>
     <caption>[EditorObjectSetupSetup]</caption>
+    <mustnotinherit>dialoguepage</mustnotinherit>
 
     <control>
       <caption>[EditorObjectSetupType]</caption>

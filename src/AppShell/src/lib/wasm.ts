@@ -75,6 +75,8 @@ export interface WasmBridge {
   GetUniqueName(baseName: string): string
   CreateRoom(name: string, parent: string): string
   CreateObject(name: string, parent: string): string
+  CreatePage(name: string, parent: string): string
+  GetPageNames(): string
   CreateFunction(name: string): string
   CreateTimer(name: string): string
   CreateExit(parent: string): string

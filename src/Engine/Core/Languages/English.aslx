@@ -507,6 +507,7 @@
   <template name="TranscriptOffAllCaps">TRANSCRIPT OFF</template>
   <template name="Noted">Noted.</template>
   <template name="ShowMenuResponsePrompt">>> </template>
+  <template name="PageDialogueChooseOption">Please choose one of the options above.</template>
 
   <!-- Player-chrome Save/Load dialog strings (WebPlayer/WasmPlayer) -->
   <template name="SaveLoadTitle">Save / Load</template>

@@ -21,6 +21,7 @@
   <include ref="CoreDescriptions.aslx"/>
   <include ref="CoreTimers.aslx"/>
   <include ref="CoreTurnScripts.aslx"/>
+  <include ref="CorePages.aslx"/>
   <include ref="CoreStatusAttributes.aslx"/>
   <include ref="CoreOutput.aslx"/>
   <include ref="CoreGrid.aslx"/>

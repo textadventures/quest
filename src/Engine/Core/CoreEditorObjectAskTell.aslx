@@ -2,7 +2,7 @@
   <tab>
     <parent>_ObjectEditor</parent>
     <caption>[EditorObjectAskTellAskTell]</caption>
-    <mustnotinherit>editor_room</mustnotinherit>
+    <mustnotinherit>editor_room; dialoguepage</mustnotinherit>
     <onlydisplayif>game.feature_asktell</onlydisplayif>
 
     <control>

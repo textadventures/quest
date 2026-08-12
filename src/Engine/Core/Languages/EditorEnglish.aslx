@@ -18,6 +18,12 @@
   <template name="EditorGBPageTypeScriptText">Script + Text</template>
   <template name="EditorGBOptionsPleaseEnterPageName">Please enter the page name</template>
   <template name="EditorGBOptionsPleaseEnterLinkText">Please enter the link text</template>
+  <template name="EditorScriptsPagesCategory">Pages</template>
+  <template name="EditorScriptsPagesShowPageX">Show page #0</template>
+  <template name="EditorScriptsPagesShowAPage">Show a page</template>
+  <template name="EditorScriptsPagesShowPage">Show page</template>
+  <template name="EditorScriptsPagesAllowCancel">Allow the player to leave the dialogue (any other command ends it)</template>
+  <template name="EditorScriptsPagesRunTurnScripts">Run turn scripts during the dialogue</template>
   <template name="EditorGBAction">Action</template>
   <template name="EditorGBPlaySoundWhenEnterPage">Play sound when entering page</template>
   <template name="EditorGBPlaySoundFilterName">Sound Files</template>

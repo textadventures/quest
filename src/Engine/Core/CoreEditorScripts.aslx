@@ -1,6 +1,7 @@
 ﻿<library>
 
   <include ref="CoreEditorScriptsOutput.aslx"/>
+  <include ref="CoreEditorScriptsPages.aslx"/>
   <include ref="CoreEditorScriptsObjects.aslx"/>
   <include ref="CoreEditorScriptsScripts.aslx"/>
   <include ref="CoreEditorScriptsVariables.aslx"/>
