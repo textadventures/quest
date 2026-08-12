@@ -217,7 +217,7 @@
   <template name="EditorGameRight">Derecha</template>
   <template name="EditorGameOptions">Opciones</template>
   <template name="EditorGameClearpicture">Quitar panel de imagen si el lugar no tiene imagen</template>
-  <template name="EditorGameScript">Programa</template>
+  <template name="EditorGameScript">Programas</template>
   <template name="EditorGameAdvancedScript">Programas Avanzados</template>
   <template name="EditorGameStartscript">Programa inicial</template>
   <template name="EditorGameTurnscripts">Programas por turno - se corren después de cada movida del jugador durante este juego</template>
@@ -421,7 +421,7 @@
   <template name="EditorObjectRoomObjectslist">Prefijo lista de objetos</template>
   <template name="EditorObjectRoomDropDestination">Objetos dejados aquí se van para</template>
   <template name="EditorObjectRoomDescription">Descripción</template>
-  <template name="EditorObjectScriptsScripts">Guiones</template>
+  <template name="EditorObjectScriptsScripts">Programas</template>
   <template name="EditorObjectScriptsBeforeentering">Antes de entrar al lugar</template>
   <template name="EditorObjectScriptsAfterentering">Después de entrar al lugar</template>
   <template name="EditorObjectScriptsAfterleaving">Después de salir del lugar</template>

@@ -41,6 +41,22 @@ translations before this backfill (`puedes`, `No puedes ir por ahí`, etc.)
 with it. "Tú" is also the norm for Spanish gaming/hobbyist software (Steam,
 Duolingo), matching the same reasoning as German above.
 
+**Glossary: "script"/"scripts" → "programa"/"programas".** Not "guión"
+(that word is the film/theatre sense of "script", not the programming
+one). Keep English's singular/plural distinction where a control's
+content is genuinely one script vs. several, but note that the Game
+editor's `EditorGameScript` tab and the Room editor's
+`EditorObjectScriptsScripts` tab both hold multiple named scripts despite
+English calling one of them "Script" - translate both as the plural
+"Programas" to match what the tab actually contains, not the English
+label literally.
+
+Found via user report 2026-08: `EditorObjectScriptsScripts` had drifted to
+"Guiones" (wrong word) while the sibling key `EditorScriptsScriptsScripts`
+- same English source text, "Scripts" - correctly said "Programas". See
+the "terminology consistency" section below for the general version of
+this failure mode and the tooling that now catches it.
+
 ## English (en)
 
 The baseline every other language is diffed against - not itself a
@@ -55,3 +71,40 @@ by checking what mainstream gaming/hobbyist software in that language
 actually uses (the same reasoning as German above), not by asking an LLM
 to guess in isolation per-string - that's exactly the failure mode that
 prompted this file.
+
+## Terminology consistency
+
+The `.aslx` language files repeat plain English words like "Scripts",
+"Background", or "Text" across dozens of unrelated `<template>` keys
+(tab captions, control labels, category names, ...). Because each key is
+translated independently - by different AI-assisted passes over time, or
+by different human contributors - the same English source text can drift
+to different words in the target language even though nothing about the
+English changed. That's what happened to Spanish's `EditorObjectScriptsScripts`
+above: it and `EditorScriptsScriptsScripts` are both literally "Scripts"
+in English, but only one of them got translated as "Programas".
+
+`tools/i18n/audit.mjs` now groups baseline keys by identical source text
+and reports, per supported language, any group whose translations don't
+all match (a "Terminology" column in the summary table, with the specific
+keys/values listed below it). This is **informational, not enforced** -
+many groups are legitimate false positives, because the same English word
+can need different translations for different grammatical contexts (e.g.
+German's "Objekt ist verschlossen" vs. "Verschlossen" for two different
+"Locked" controls, or gendered/case agreement). Treat a hit as "worth a
+second look", not "must fix":
+
+- If the surrounding context is the same concept (a tab caption vs. a
+  category caption for the same feature, like the Scripts example) -
+  it's very likely a real inconsistency. Fix it and add a glossary line
+  above so it doesn't drift back.
+- If the contexts genuinely differ (a UI verb vs. a noun, or a different
+  grammatical case/gender is required) - it's a legitimate difference.
+  No fix needed, and no need to silence it in the tool; the report is
+  cheap to skim per language.
+
+When translating (or reviewing an AI-assisted pass over) a batch of keys,
+run `node tools/i18n/audit.mjs` and check the Terminology section for the
+language you touched before calling the pass done - it's the mechanical
+check for exactly the class of bug a per-string reviewer tends to miss,
+since no single diff shows two unrelated keys side by side.

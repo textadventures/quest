@@ -79,9 +79,28 @@ function extractJsonEntries(filePath) {
   return Object.entries(obj).map(([key, value]) => ({ key, value: String(value) }));
 }
 
+// Groups baseline (English) keys that share the exact same source text, e.g.
+// EditorObjectScriptsScripts and EditorScriptsScriptsScripts both being
+// "Scripts". A translation that renders one of these as "Programas" and the
+// other as "Guiones" is very likely an inconsistency, not an intentional
+// distinction - same source term, different tabs/contexts, should still read
+// as the same word to a player/author. This is a heuristic, not a hard rule:
+// some groups legitimately need context-dependent translations, so it's
+// reported for human review rather than folded into --strict.
+function buildValueGroups(baselineEntries) {
+  const byValue = new Map();
+  for (const { key, value } of baselineEntries) {
+    if (!value) continue;
+    if (!byValue.has(value)) byValue.set(value, []);
+    byValue.get(value).push(key);
+  }
+  return [...byValue.entries()].filter(([, keys]) => keys.length > 1);
+}
+
 function analyzeLayer(layerName, baselineFile, fileField, extractFn) {
   const baselineEntries = extractFn(baselineFile);
   const baselineKeys = new Set(baselineEntries.map((e) => e.key));
+  const valueGroups = buildValueGroups(baselineEntries);
 
   const rows = [];
   for (const lang of languages) {
@@ -116,6 +135,22 @@ function analyzeLayer(layerName, baselineFile, fileField, extractFn) {
 
     const coverage = baselineKeys.size === 0 ? 100 : (100 * (baselineKeys.size - missing.length)) / baselineKeys.size;
 
+    // Last occurrence wins at runtime (see file header comment), so that's
+    // what a terminology check should compare too.
+    const lastValueByKey = new Map([...byKey.entries()].map(([k, vs]) => [k, vs[vs.length - 1]]));
+    const terminologyInconsistencies = [];
+    for (const [sourceValue, keys] of valueGroups) {
+      const present = keys.filter((k) => lastValueByKey.has(k));
+      if (present.length < 2) continue;
+      const translated = present.map((k) => lastValueByKey.get(k));
+      if (new Set(translated).size > 1) {
+        terminologyInconsistencies.push({
+          sourceValue,
+          entries: present.map((k) => ({ key: k, value: lastValueByKey.get(k) })),
+        });
+      }
+    }
+
     rows.push({
       id: lang.id,
       displayName: lang.displayName,
@@ -127,6 +162,7 @@ function analyzeLayer(layerName, baselineFile, fileField, extractFn) {
       extra,
       duplicates,
       coverage,
+      terminologyInconsistencies,
     });
   }
 
@@ -146,23 +182,36 @@ function pct(n) {
 function printMarkdown() {
   for (const layer of layers) {
     console.log(`\n## ${layer.layerName} (baseline: ${layer.baselineSize} keys)\n`);
-    console.log('| Language | Present | Coverage | Missing | Extra | Duplicates |');
-    console.log('|---|---|---|---|---|---|');
+    console.log('| Language | Present | Coverage | Missing | Extra | Duplicates | Terminology |');
+    console.log('|---|---|---|---|---|---|---|');
     for (const row of layer.rows) {
       if (!row.present) {
-        console.log(`| ${row.displayName} | ${row.missingFile ? `file missing: ${row.missingFile}` : 'no'} | — | — | — | — |`);
+        console.log(`| ${row.displayName} | ${row.missingFile ? `file missing: ${row.missingFile}` : 'no'} | — | — | — | — | — |`);
         continue;
       }
       const dupSummary = row.duplicates.length === 0
         ? '—'
         : row.duplicates.map((d) => `${d.key}${d.harmless ? '' : ' ⚠️differs'}`).join(', ');
-      console.log(`| ${row.displayName} | yes | ${pct(row.coverage)} | ${row.missingCount} | ${row.extraCount} | ${dupSummary} |`);
+      const termSummary = row.terminologyInconsistencies.length === 0 ? '—' : `${row.terminologyInconsistencies.length} ⚠️`;
+      console.log(`| ${row.displayName} | yes | ${pct(row.coverage)} | ${row.missingCount} | ${row.extraCount} | ${dupSummary} | ${termSummary} |`);
+    }
+
+    for (const row of layer.rows) {
+      if (!row.present || row.terminologyInconsistencies.length === 0) continue;
+      console.log(`\n**${row.displayName} terminology inconsistencies** (same English source text, differing translations - review for consistency, not necessarily a bug):\n`);
+      for (const { sourceValue, entries } of row.terminologyInconsistencies) {
+        const rendered = entries.map((e) => `${e.key}=${JSON.stringify(e.value)}`).join(', ');
+        console.log(`- "${sourceValue}": ${rendered}`);
+      }
     }
   }
 
   console.log('\n(Duplicates marked "⚠️differs" have occurrences with different text — the earlier one is silently');
   console.log('shadowed by the later one at runtime and is worth a human look. Duplicates without the marker have');
   console.log('identical text in every occurrence and are harmless dead weight.)');
+  console.log('\n(Terminology inconsistencies: two or more keys share identical English source text but were');
+  console.log('translated differently - often a sign one translation used a different word for the same concept.');
+  console.log('See docs/i18n-style-guide.md\'s glossary section. Informational only, not part of --strict.)');
 }
 
 // --strict only asserts the regression guard that a single checkout can know
