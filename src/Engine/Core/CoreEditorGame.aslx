@@ -146,7 +146,7 @@
         <controltype>checkbox</controltype>
         <caption>[EditorGameAdvancedScripts]</caption>
         <attribute>feature_advancedscripts</attribute>
-      </control>	  
+      </control>
 
       <control>
         <controltype>checkbox</controltype>

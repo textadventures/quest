@@ -165,6 +165,12 @@
             { label: t("toolbar.addVerbTo", { name: selectedNode!.text }), action: () => createVerb(selectedNode!.key) },
             { label: t("toolbar.addTurnScriptTo", { name: selectedNode!.text }), action: () => createTurnScript(selectedNode!.key) },
         ] : []),
+        // Text Adventure dialogue pages. Created under the selected room/object/page
+        // when there is one — the natural authoring structure for dialogue — and at
+        // the top level otherwise.
+        !selectedNode?.isLibrary && (nt === "room" || nt === "object" || nt === "page")
+            ? { label: t("toolbar.addPageIn", { name: selectedNode!.text }), action: () => openAddModal("page", selectedNode!.key) }
+            : { label: t("toolbar.addPage"), action: () => openAddModal("page", null) },
     ]);
 
     // File menu (desktop): Save As / Backup / Publish, each only present under

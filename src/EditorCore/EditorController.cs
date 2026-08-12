@@ -780,6 +780,11 @@ public sealed class EditorController : IDisposable
                             return "s_add_page";
                         }
 
+                        if (IsDialoguePage(o))
+                        {
+                            return "s_add_page";
+                        }
+
                         return o.Fields.GetAsType<bool>("isroom") ? "s_room" : "s_object";
                     default: return null;
                 }
@@ -1480,6 +1485,34 @@ public sealed class EditorController : IDisposable
         WorldModel.UndoLogger.StartTransaction(string.Format("Create object '{0}'", name));
         CreateNewObject(name, parent, "editor_object", alias);
         WorldModel.UndoLogger.EndTransaction();
+    }
+
+    // A Text Adventure dialogue page (see CorePages.aslx) is an ordinary object plus the
+    // "dialoguepage" inherited type. Gamebook games have no such type - their pages are
+    // plain objects - so this degrades to CreateNewObject there.
+    public void CreateNewPage(string name, string parent, string alias)
+    {
+        WorldModel.UndoLogger.StartTransaction(string.Format("Create page '{0}'", name));
+        CreateNewObject(name, parent, "editor_object", alias);
+        if (WorldModel.Elements.ContainsKey(ElementType.ObjectType, "dialoguepage"))
+        {
+            WorldModel.Elements.Get(ElementType.Object, name).Fields.AddTypeUndoable(
+                WorldModel.Elements.Get(ElementType.ObjectType, "dialoguepage"));
+        }
+        WorldModel.UndoLogger.EndTransaction();
+    }
+
+    public bool IsDialoguePage(string elementName)
+    {
+        return WorldModel.Elements.ContainsKey(ElementType.Object, elementName) &&
+               IsDialoguePage(WorldModel.Elements.Get(ElementType.Object, elementName));
+    }
+
+    private bool IsDialoguePage(Element o)
+    {
+        return o.Type == ObjectType.Object &&
+               WorldModel.Elements.ContainsKey(ElementType.ObjectType, "dialoguepage") &&
+               o.Fields.InheritsTypeRecursive(WorldModel.Elements.Get(ElementType.ObjectType, "dialoguepage"));
     }
 
     public void CreateNewRoom(string name, string parent, string alias)

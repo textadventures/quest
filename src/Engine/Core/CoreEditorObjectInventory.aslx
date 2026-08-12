@@ -2,7 +2,7 @@
   <tab>
     <parent>_ObjectEditor</parent>
     <caption>[EditorObjectInventoryInventory]</caption>
-    <mustnotinherit>editor_room</mustnotinherit>
+    <mustnotinherit>editor_room; dialoguepage</mustnotinherit>
 
     <control>
       <controltype>title</controltype>

@@ -30,6 +30,7 @@
         getScriptCommandCategories,
         getObjectNames,
         getExitNames,
+        getPageNames,
         getExpressionTemplates,
         getExpressionTemplateData,
         makeScriptEditable,
@@ -82,6 +83,7 @@
     const expressionOverrides = new SvelteSet<string>();
     let objectNames = $state<string[]>([]);
     let exitNames = $state<string[]>([]);
+    let pageNames = $state<string[]>([]);
     // Functions callable from a Call function script (WorldModel.Procedure() only resolves aslx
     // Function elements, not native built-ins) — kept as full ExpressionFunctionInfo, not just
     // names, so the picker can group game-authored functions ahead of library ones and the
@@ -119,6 +121,10 @@
         if (exitNames.length === 0) {
             const names = getExitNames();
             if (names && names.length > 0) exitNames = names;
+        }
+        if (pageNames.length === 0) {
+            const names = getPageNames();
+            if (names && names.length > 0) pageNames = names;
         }
         if (functionInfos.length === 0) {
             const infos = getExpressionFunctions().filter(f => f.isUserDefined);
@@ -160,7 +166,9 @@
     }
 
     function namesForControl(ctrl: ScriptControlData): string[] {
-        return ctrl.objectType === "exit" ? exitNames : objectNames;
+        if (ctrl.objectType === "exit") return exitNames;
+        if (ctrl.objectType === "page") return pageNames;
+        return objectNames;
     }
 
     function isSimpleValue(ctrl: ScriptControlData): boolean {
@@ -603,6 +611,12 @@
 {/snippet}
 
 {#snippet inlineControl(ctrl: ScriptControlData, scriptIndex: number, siblingControls: ScriptControlData[], controlIndex: number)}
+    {#if ctrl.breakBefore}
+        <!-- <breakbefore/> - a full-width, zero-height flex item forces everything after it
+             onto a new row within the controls' flex-wrap container, without needing to
+             restructure the controls around it. -->
+        <span class="basis-full h-0"></span>
+    {/if}
     {#if ctrl.controlType === "label"}
         {@const nextCtrl = siblingControls[controlIndex + 1]}
         {@const labelIsRedundant = nextCtrl?.isFunctionParams && matchedFunctionFor(nextCtrl, siblingControls) !== undefined}

@@ -1,0 +1,55 @@
+﻿<library type="editor">
+
+  <!-- Editor tab for Text Adventure dialogue pages (see CorePages.aslx) - a clone of
+       the Gamebook page tab in GamebookCoreEditor.aslx, minus the page-type variants
+       that assume the page owns the whole screen (picture, YouTube, external link,
+       sounds). The standard object tabs (Setup, Object, Inventory, ...) exclude
+       dialoguepage, so this is the page's main tab. -->
+  <tab>
+    <parent>_ObjectEditor</parent>
+    <caption>[EditorGBPage]</caption>
+    <mustinherit>dialoguepage</mustinherit>
+
+    <control>
+      <caption>[EditorGBName]</caption>
+      <controltype>textbox</controltype>
+      <attribute>name</attribute>
+      <advanced/>
+    </control>
+
+    <control>
+      <controltype>dropdowntypes</controltype>
+      <caption>[EditorGBPageType]</caption>
+      <types>*=Text; pagescript=[EditorGBPageTypeScript]; pagescripttext=[EditorGBPageTypeScriptText]</types>
+      <width>150</width>
+    </control>
+
+    <control>
+      <caption>[EditorGBPageTypeScript]</caption>
+      <controltype>script</controltype>
+      <attribute>script</attribute>
+      <mustinherit>pagescript; pagescripttext</mustinherit>
+    </control>
+
+    <control>
+      <controltype>richtext</controltype>
+      <caption>[EditorGameDescription]</caption>
+      <attribute>description</attribute>
+      <mustnotinherit>pagescript</mustnotinherit>
+      <expand/>
+    </control>
+
+    <control>
+      <controltype>gamebookoptions</controltype>
+      <caption>[EditorGameOptions]</caption>
+      <keyprompt>[EditorGBOptionsPleaseEnterPageName]</keyprompt>
+      <valueprompt>[EditorGBOptionsPleaseEnterLinkText]</valueprompt>
+      <attribute>options</attribute>
+      <source>object</source>
+      <sourcetype>dialoguepage</sourcetype>
+      <mustnotinherit>pagescript</mustnotinherit>
+    </control>
+
+  </tab>
+
+</library>

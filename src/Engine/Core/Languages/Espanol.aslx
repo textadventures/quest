@@ -716,6 +716,7 @@
     <template name="TranscriptOffAllCaps">TRANSCRIPCIÓN APAGADA</template>
     <template name="Noted">Anotado.</template>
     <template name="ShowMenuResponsePrompt">>> </template>
+    <template name="PageDialogueChooseOption">Por favor, elige una de las opciones anteriores.</template>
 
     <!-- Player-chrome Save/Load dialog strings (WebPlayer/WasmPlayer) -->
     <template name="SaveLoadTitle">Guardar / Cargar</template>

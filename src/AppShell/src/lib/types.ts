@@ -52,6 +52,7 @@ export interface ControlInfo {
   keyPrompt?: string | null
   valuePrompt?: string | null
   sourceExclude?: string | null
+  sourceType?: string | null
   checkboxCaption?: string | null
   isWalkthrough?: boolean
   href?: string | null
@@ -113,6 +114,7 @@ export interface ScriptControlData {
   objectType?: string | null
   isFunctionPicker?: boolean
   isFunctionParams?: boolean
+  breakBefore?: boolean
   // The expressionType (e.g. "set", "foreach") this control's <usetemplates> declares - see
   // ExpressionField.svelte, which renders a template picker instead of a plain ExpressionInput
   // when this is set and templates exist for that type.

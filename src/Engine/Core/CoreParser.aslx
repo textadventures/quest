@@ -29,6 +29,24 @@
         }
       }
     }
+    else if (game.currentpage <> null) {
+      // A Pages dialogue is active (see CorePages.aslx) - structurally the same
+      // intercept as the menucallback branch above, but each choice runs as a
+      // complete ordinary turn, so the game stays saveable between choices.
+      if (HandlePageTextResponse(command)) {
+        handled = true
+      }
+      else {
+        if (GetBoolean(game, "pageallowcancel")) {
+          EndPageDialogue
+        }
+        else {
+          msg ("")
+          msg ("[PageDialogueChooseOption]")
+          handled = true
+        }
+      }
+    }
     if (not handled) {
       StartTurnOutputSection    
       shownlink = false
@@ -170,7 +188,32 @@
       }
       
       if (thiscommand = null) {
-        if (HasScript(game, "unresolvedcommandhandler")) {
+        // A {page:...} link (CorePages.aslx) reached from outside any active
+        // dialogue - e.g. embedded in an ordinary object's description rather
+        // than clicked from a page's own rendered options - renders as a bare
+        // CommandLink whose command is the target page's raw object name, the
+        // same as {command:...}. game.currentpage is null here (an active
+        // dialogue's commands are already fully handled by the branch at the
+        // top of HandleCommand, before this function is ever reached), so
+        // treat that as start-the-dialogue-there instead of falling through
+        // to the unrecognised-command message below. Uses the same default
+        // flags the Show page script adder itself defaults to; an author who
+        // wants different flags for a specific entry point should add an
+        // explicit ShowPage(...) command of their own instead.
+        //
+        // Gated on pagelinkshown (set only by ProcessTextCommand_Page when a
+        // {page:...} tag actually renders): without this, typing a page's raw
+        // object name would launch its dialogue from anywhere in the game,
+        // any time, even if no link to it was ever shown to the player - a
+        // hidden global command that has nothing to do with what a link
+        // printed on screen would actually let them click.
+        targetpage = GetObject(command)
+        if (targetpage <> null and DoesInherit(targetpage, "dialoguepage") and GetBoolean(targetpage, "pagelinkshown")) {
+          ShowPage (targetpage, false, false)
+          SuppressTurnscripts
+          FinishTurn
+        }
+        else if (HasScript(game, "unresolvedcommandhandler")) {
           params = NewDictionary()
           dictionary add(params, "command", command)
           do (game, "unresolvedcommandhandler", params)

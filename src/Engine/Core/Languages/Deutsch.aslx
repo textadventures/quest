@@ -562,6 +562,7 @@
   <template name="TranscriptOffAllCaps">TRANSKRIPT AUS</template>
   <template name="Noted">Vermerkt.</template>
   <template name="ShowMenuResponsePrompt">>> </template>
+  <template name="PageDialogueChooseOption">Bitte wähle eine der oben genannten Optionen.</template>
 
   <!-- Player-chrome Save/Load dialog strings (WebPlayer/WasmPlayer) -->
   <template name="SaveLoadTitle">Speichern / Laden</template>
