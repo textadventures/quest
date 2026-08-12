@@ -1,6 +1,7 @@
 <script lang="ts">
     import { SvelteSet } from "svelte/reactivity";
-    import { treeNodes, selectedKey, selectNode, deleteElement, openAddModal, createVerb, createCommand, createTurnScript, openAddLibraryModal, openAddJavascriptModal, swapElements } from "$lib/editor-store";
+    import { treeNodes, selectedKey, selectNode, deleteElement, openAddModal, createVerb, createCommand, createTurnScript, openAddLibraryModal, openAddJavascriptModal, swapElements, isGamebook } from "$lib/editor-store";
+    import { nodeIcon } from "$lib/node-icons";
     import { t } from "$lib/i18n";
 
     interface Props {
@@ -19,7 +20,7 @@
                 return ["command"];
             }
             if (ot === "turnscript") return ["turnscript"];
-            return ["room", "object"];
+            return ["room", "object", "page"];
         }
         return [et];
     }
@@ -51,7 +52,11 @@
     // ── Add actions ────────────────────────────────────────────────────────────
 
     let isObjectList = $derived(nodeTypes.includes("room") || nodeTypes.includes("object"));
-    let showRoomButton = $derived(isObjectList);
+    // Gamebook has no room/object distinction - everything is a page (see
+    // EditorController.GetNodeType) - so it gets a single "+ Add Page" button instead of
+    // separate Add Object / Add Room / Add Page buttons.
+    let showRoomButton = $derived(isObjectList && !$isGamebook);
+    let showPageButton = $derived(isObjectList && !$isGamebook);
 
     let addLabel = $derived(
         nodeTypes.includes("function") ? t("elementAdders.function") :
@@ -65,7 +70,7 @@
                 nodeTypes.includes("type") ? t("elementAdders.type") :
                 nodeTypes.includes("include") ? t("elementAdders.library") :
                 nodeTypes.includes("javascript") ? t("elementAdders.javascript") :
-                isObjectList ? t("elementAdders.object") :
+                isObjectList ? ($isGamebook ? t("elementAdders.page") : t("elementAdders.object")) :
                 null
     );
 
@@ -82,11 +87,15 @@
         else if (nodeTypes.includes("type")) openAddModal("type", null);
         else if (nodeTypes.includes("include")) openAddLibraryModal();
         else if (nodeTypes.includes("javascript")) openAddJavascriptModal();
-        else if (isObjectList) openAddModal("object", parent);
+        else if (isObjectList) openAddModal($isGamebook ? "page" : "object", parent);
     }
 
     function addRoom() {
         openAddModal("room", isHeaderNode ? null : elementKey);
+    }
+
+    function addPage() {
+        openAddModal("page", isHeaderNode ? null : elementKey);
     }
 
     // ── Move / delete ──────────────────────────────────────────────────────────
@@ -149,6 +158,13 @@
                 onclick={addRoom}
             >+ {t("elementAdders.room")}</button>
         {/if}
+        {#if showPageButton}
+            <button
+                type="button"
+                class="btn btn-sm preset-outlined-primary-500 text-xs py-0.5"
+                onclick={addPage}
+            >+ {t("elementAdders.page")}</button>
+        {/if}
     </div>
 
     <!-- Item rows -->
@@ -168,9 +184,15 @@
                 <!-- pr-20 keeps name clear of the hover buttons (≈3×24px) -->
                 <button
                     type="button"
-                    class="flex-1 text-left text-xs px-1.5 py-1 pr-20 text-primary-600-400 hover:underline truncate"
+                    class="flex-1 flex items-center gap-1.5 text-left text-xs px-1.5 py-1 pr-20 text-primary-600-400 hover:underline truncate"
                     onclick={() => selectNode(item.key)}
-                >{item.text}</button>
+                >
+                    {#if isObjectList}
+                        {@const Icon = nodeIcon(item.key, item.nodeType)}
+                        <Icon size={13} class="flex-shrink-0 opacity-70" />
+                    {/if}
+                    <span class="truncate">{item.text}</span>
+                </button>
                 <!-- pointer-events-none when invisible so clicks reach the name button -->
                 <div class="absolute right-1 top-1/2 -translate-y-1/2 flex gap-0.5 opacity-0 pointer-events-none group-hover:opacity-100 group-hover:pointer-events-auto transition-opacity z-10">
                     <button

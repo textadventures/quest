@@ -334,6 +334,15 @@
             ? "px-3 py-1.5 text-xs whitespace-nowrap transition-colors text-primary-600-400 border-b-2 border-primary-500 font-medium"
             : "px-3 py-1.5 text-xs whitespace-nowrap transition-colors text-surface-600-400 hover:text-surface-900-100";
     }
+
+    // The "_objects" header's single tab is captioned "Objects" server-side (see
+    // CoreEditorElements.aslx's EditorElementsObjects template), which has no game-type
+    // awareness. Override the displayed label in Gamebook mode, echoing TreePanel's
+    // headerText() override for the same node - the underlying caption stays the tab identity.
+    function tabLabel(caption: string | null): string {
+        if ($selectedKey === "_objects" && $isGamebook && caption) return t("treePanel.header.pages");
+        return caption ?? t("propertyEditor.tabFallback");
+    }
 </script>
 
 <div class="@container flex flex-col flex-1 bg-surface-50-950 overflow-hidden">
@@ -373,7 +382,7 @@
                         class={tabClass(tab.caption)}
                         onclick={() => { activeTab = tab.caption; }}
                     >
-                        {tab.caption ?? t("propertyEditor.tabFallback")}
+                        {tabLabel(tab.caption)}
                     </button>
                 {/each}
             </div>

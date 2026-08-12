@@ -1,29 +1,11 @@
 <script lang="ts">
-    import { untrack, type Component } from "svelte";
+    import { untrack } from "svelte";
     import { TreeView, createTreeViewCollection } from "@skeletonlabs/skeleton-svelte";
     import Search from "@lucide/svelte/icons/search";
     import X from "@lucide/svelte/icons/x";
     import SlidersHorizontal from "@lucide/svelte/icons/sliders-horizontal";
     import Check from "@lucide/svelte/icons/check";
-    import DoorOpen from "@lucide/svelte/icons/door-open";
-    import Package from "@lucide/svelte/icons/package";
-    import FileText from "@lucide/svelte/icons/file-text";
-    import Signpost from "@lucide/svelte/icons/signpost";
-    import MessageSquare from "@lucide/svelte/icons/message-square";
-    import Terminal from "@lucide/svelte/icons/terminal";
-    import RotateCw from "@lucide/svelte/icons/rotate-cw";
-    import SquareFunction from "@lucide/svelte/icons/square-function";
-    import Timer from "@lucide/svelte/icons/timer";
-    import Route from "@lucide/svelte/icons/route";
-    import Library from "@lucide/svelte/icons/library";
-    import LayoutTemplate from "@lucide/svelte/icons/layout-template";
-    import Braces from "@lucide/svelte/icons/braces";
-    import Shapes from "@lucide/svelte/icons/shapes";
-    import FileCode from "@lucide/svelte/icons/file-code";
-    import Gamepad2 from "@lucide/svelte/icons/gamepad-2";
-    import Puzzle from "@lucide/svelte/icons/puzzle";
-    import Folder from "@lucide/svelte/icons/folder";
-    import User from "@lucide/svelte/icons/user";
+    import { nodeIcon } from "$lib/node-icons";
     import DropdownMenu from "./DropdownMenu.svelte";
     import type { DropdownMenuItem } from "./DropdownMenu.svelte";
     import {
@@ -72,54 +54,6 @@
         if (node.key === "_objects") return $isGamebook ? t("treePanel.header.pages") : t("treePanel.header.objects");
         const key = HEADER_LABEL_KEYS[node.key];
         return key ? t(key) : node.text;
-    }
-
-    type IconComponent = Component<{ size?: number; class?: string }>;
-
-    // One icon per leaf nodeType (see EditorController.GetNodeType / WasmEditorBridge.TreeNodeData).
-    const NODE_TYPE_ICON: Record<string, IconComponent> = {
-        game: Gamepad2,
-        room: DoorOpen,
-        object: Package,
-        page: FileText,
-        exit: Signpost,
-        verb: MessageSquare,
-        command: Terminal,
-        turnscript: RotateCw,
-        function: SquareFunction,
-        timer: Timer,
-        walkthrough: Route,
-        include: Library,
-        template: LayoutTemplate,
-        dynamictemplate: Braces,
-        type: Shapes,
-        javascript: FileCode,
-    };
-
-    // Every header node's nodeType is the generic "header" (see WasmEditorBridge), so headers
-    // are iconified by their fixed key instead, echoing the category they contain.
-    const HEADER_ICON: Record<string, IconComponent> = {
-        _objects: Package,
-        _advanced: Folder,
-        _functions: SquareFunction,
-        _timers: Timer,
-        _walkthrough: Route,
-        _include: Library,
-        _template: LayoutTemplate,
-        _dynamictemplate: Braces,
-        _objecttype: Shapes,
-        _javascript: FileCode,
-        _gameVerbs: MessageSquare,
-        _gameCommands: Terminal,
-    };
-
-    function nodeIcon(node: HierNode): IconComponent {
-        if (node.nodeType === "header") return HEADER_ICON[node.id] ?? Folder;
-        // The player object is a plain Object element underneath (nodeType "object" in Text
-        // Adventure mode, "page" in Gamebook mode — see EditorController.GetNodeType), but it's
-        // always the single fixed "player" element key, so it gets its own icon regardless of mode.
-        if (node.id === "player") return User;
-        return NODE_TYPE_ICON[node.nodeType] ?? Puzzle;
     }
 
     // Build HierNode tree from flat list
@@ -548,7 +482,7 @@
 {/snippet}
 
 {#snippet treeNode(node: HierNode, indexPath: number[])}
-    {@const Icon = nodeIcon(node)}
+    {@const Icon = nodeIcon(node.id, node.nodeType)}
     <TreeView.NodeProvider value={{ node, indexPath }}>
         {#if node.children}
             <TreeView.Branch>
