@@ -35,7 +35,9 @@ async function draftCount() {
     // refreshDrafts() is async (reads OPFS) — wait for it to actually settle
     // rather than counting immediately, or this races the render.
     await page.locator('text=Your local drafts').waitFor({ timeout: 5000 }).catch(() => {});
-    return page.locator('button:has-text("Delete")').count();
+    // Icon-only since #2020 — "Delete draft" only lives in its title/aria-label
+    // now, not as visible text content.
+    return page.locator('button[title="Delete draft"]').count();
 }
 
 try {
@@ -94,7 +96,7 @@ try {
     // directly, scoped to the dialog to avoid matching a different draft
     // row's own "Delete" button.
     await page.goto(`${baseUrl}/open`);
-    await page.click('button:has-text("Delete")');
+    await page.click('button[title="Delete draft"]');
     await page.locator('div[role="dialog"] button:has-text("Delete")').click();
     await page.waitForTimeout(500);
 
