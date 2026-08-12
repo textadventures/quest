@@ -93,6 +93,25 @@ try {
         await win.waitForSelector('button[title="Manage assets"]', { timeout: 30000 });
     }
 
+    // Waits for the toolbar's own filename readout (Toolbar.svelte's
+    // `{$gameFilename}` span) to show this specific file, not just for
+    // 'button[title="Manage assets"]' to be visible — that button is part of
+    // the *previous* game's still-mounted toolbar during a same-window
+    // edit-to-edit switch (Game A's editor -> Game B's editor), so it can
+    // resolve instantly, before the new game has actually finished loading.
+    // Racing ahead on that stale signal (e.g. firing another menu action
+    // while the real load is still in flight) lets the in-flight load's own
+    // goto('/edit') win later and silently clobber whatever navigation the
+    // next step expected.
+    async function waitForGameLoaded(filename) {
+        await win.waitForSelector('button[title="Manage assets"]', { timeout: 30000 });
+        await win.waitForFunction(
+            (name) => document.querySelector('.font-mono.truncate')?.textContent?.trim() === name,
+            filename,
+            { timeout: 30000 },
+        );
+    }
+
     // 1. Fresh app, no recent games yet. Root lands on the Play tab by
     // default — the /open form lives behind the "Create" tab.
     await win.waitForSelector('a:has-text("Create")', { timeout: 30000 });
@@ -128,20 +147,22 @@ try {
     await clickMenuItem('File', 'New Game…');
     await win.waitForSelector('text=Game B.aslx', { timeout: 10000 });
     await win.click('button:has-text("Game A.aslx")');
-    await win.waitForSelector('button[title="Manage assets"]', { timeout: 30000 });
+    await waitForGameLoaded('Game A.aslx');
     console.log('PASS: clicking Game A in Recent reopened it directly');
 
     // 5. Native "Open Recent" submenu click loads a game too (the nonce/query-
     // string path from +layout.svelte's onOpenRecent, not the /open page button).
     await clickMenuItem('File', 'Open Recent', 'Game B.aslx — Game B');
-    await win.waitForSelector('button[title="Manage assets"]', { timeout: 30000 });
+    await waitForGameLoaded('Game B.aslx');
     console.log('PASS: native "Open Recent" menu entry reopened Game B directly');
 
     // 6. Remove one entry from the /open page, confirm it's gone from both
     // the page and the native menu.
     await clickMenuItem('File', 'New Game…');
     await win.waitForSelector('text=Game A.aslx', { timeout: 20000 });
-    const gameARow = win.locator('div.flex.items-center.gap-2.w-full', { hasText: 'Game A.aslx' }).locator('button:has-text("Remove")');
+    // Icon-only button since #2020 — "Remove from Recent" only lives in its
+    // title/aria-label now, not as visible text content.
+    const gameARow = win.locator('div.flex.items-center.gap-2.w-full', { hasText: 'Game A.aslx' }).locator('button[title="Remove from Recent"]');
     await gameARow.click();
     await win.waitForSelector('text=Game A.aslx', { state: 'detached', timeout: 5000 }).catch(() => {});
     const gameAStillListed = await win.isVisible('text=Game A.aslx');

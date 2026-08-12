@@ -70,14 +70,16 @@ try {
     }
     console.log('PASS: "Advanced" adders are limited to Function/Library/JavaScript in gamebook mode');
 
-    // Deleting the page that contains "player" (Page1, per the Gamebook
-    // template) must be a safe no-op, not a crash/corruption.
+    // The page that contains "player" (Page1, per the Gamebook template)
+    // must not be deletable — EditorController.CanDelete refuses it, so the
+    // toolbar Delete button is disabled rather than clickable (see
+    // Toolbar.svelte's canDelete derivation).
     await tree.getByText('Page1', { exact: true }).click();
-    await page.click('button:has-text("Delete")');
-    await page.waitForTimeout(300);
+    const deleteDisabled = await page.locator('button:has-text("Delete")').isDisabled();
+    if (!deleteDisabled) throw new Error('Delete button should be disabled for Page1 (containing player)');
     const page1StillThere = await tree.getByText('Page1', { exact: true }).isVisible().catch(() => false);
     if (!page1StillThere) throw new Error('Page1 (containing player) should NOT be deletable');
-    console.log('PASS: deleting the page containing "player" is a safe no-op');
+    console.log('PASS: deleting the page containing "player" is blocked (Delete button disabled)');
 
     console.log('PASS: all gamebook-mode checks passed');
 } catch (err) {
