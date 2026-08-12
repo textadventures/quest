@@ -26,6 +26,7 @@ class WebPlayer {
 
     static setChromeStrings(dict) {
         WebPlayer.chromeStrings = dict;
+        applyChromeStrings(dict);
     }
 
     static listSaves = async () => {

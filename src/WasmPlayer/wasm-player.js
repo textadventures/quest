@@ -749,29 +749,6 @@ function _esc(str) {
 let savesDialogWired = false;
 let bootChoiceResolve = null;
 
-// Applies a resolved chrome-strings dictionary (see ChromeStrings.Resolve in
-// PlayerCore/WasmPlayerBridge.GetChromeStringsJson, or a save's snapshot -
-// see GameSaver.save in playercore.js) to every #qv-saves element tagged
-// with a data-chrome-key* attribute. dict is always fully populated (every
-// key defaults to English), so a missing key here just means dict itself is
-// null/undefined (no game loaded, no snapshot available) - existing markup
-// is left untouched in that case.
-function applyChromeStrings(dict) {
-    if (!dict) return;
-    document.querySelectorAll('[data-chrome-key]').forEach(el => {
-        const value = dict[el.dataset.chromeKey];
-        if (value) el.textContent = value;
-    });
-    document.querySelectorAll('[data-chrome-key-placeholder]').forEach(el => {
-        const value = dict[el.dataset.chromeKeyPlaceholder];
-        if (value) el.placeholder = value;
-    });
-    document.querySelectorAll('[data-chrome-key-aria-label]').forEach(el => {
-        const value = dict[el.dataset.chromeKeyAriaLabel];
-        if (value) el.setAttribute('aria-label', value);
-    });
-}
-
 // Waits for the browser to actually paint the current frame. WasmPlayer's
 // WASM runtime is single-threaded and the engine's SaveAsync does its work
 // synchronously (no genuine await inside it) — so a DOM update made right
