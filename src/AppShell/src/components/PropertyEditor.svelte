@@ -269,9 +269,13 @@
         const textarea = document.getElementById(textProcessorTextareaId(attribute)) as HTMLTextAreaElement | null;
         const start = textarea?.selectionStart ?? 0;
         const end = textarea?.selectionEnd ?? 0;
+        // Gamebook has no "dialoguepage" type - every object under _objects is a page there,
+        // so GetPageNames() (which filters by that type) would come back empty; use the plain
+        // object list in that mode, and the type-filtered one for Text Adventure's real pages.
         const options: ControlOption[] =
             config.kind === "exits" ? (getExitNames() ?? []).map(name => ({ value: name, label: name })) :
                 config.kind === "images" ? [] :
+                    config.kind === "pages" ? ((($isGamebook ? getObjectNames() : getPageNames()) ?? []).map(name => ({ value: name, label: name }))) :
                     (getObjectNames() ?? []).map(name => ({ value: name, label: name }));
         activeLinkCommand = {
             title: cmd.command,
@@ -672,13 +676,14 @@
             </div>
         </div>
         {#if newPageModalFor === dk}
+            {@const newPageParent = $treeNodes.find(n => n.key === $selectedKey)?.parent ?? null}
             <AddElementModal
                 elementType="page"
-                parent={null}
+                parent={newPageParent}
                 onconfirm={(name) => {
                     newPageModalFor = null;
                     if (!$selectedKey) return;
-                    const result = createPageSilent(name, null);
+                    const result = createPageSilent(name, newPageParent);
                     if (result.startsWith("error:")) {
                         showToast(result.slice("error:".length));
                         return;

@@ -73,6 +73,10 @@ internal record ScriptControlData(
     string? ObjectType = null,
     bool IsFunctionPicker = false,
     bool IsFunctionParams = false,
+    // <breakbefore/> - forces this control onto a new line within the inline flex-wrap row of
+    // script controls, e.g. so two adjacent checkboxes with distinct meanings (ShowPage's
+    // "allow cancel" / "run turn scripts") don't run together just because they're both short.
+    bool BreakBefore = false,
     // The expressionType (e.g. "set", "foreach") this control's <usetemplates> declares - see
     // CoreEditorScriptsVariables.aslx's "=" value control and CoreEditorScriptsScripts.aslx's
     // "foreach" list control. Null for the vast majority of "expression" controls, which have no
@@ -3569,6 +3573,7 @@ public partial class WasmEditorBridge
         // parameter name and auto-size the box count to match its arity, instead of the
         // generic +/- item list.
         var isFunctionParams = ctrl.GetBool("functionparams");
+        var breakBefore = ctrl.GetBool("breakbefore");
 
         string? useTemplates = null;
 
@@ -3629,6 +3634,7 @@ public partial class WasmEditorBridge
             objectType,
             isFunctionPicker,
             isFunctionParams,
+            breakBefore,
             useTemplates
         );
     }

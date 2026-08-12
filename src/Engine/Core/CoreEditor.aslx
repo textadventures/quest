@@ -119,6 +119,28 @@
       <value type="stringdictionary">
         <item>
           <key>command</key>
+          <value>[EditorTextProcessorPage]</value>
+        </item>
+        <item>
+          <key>insertbefore</key>
+          <value>{page:</value>
+        </item>
+        <item>
+          <key>insertafter</key>
+          <value>}</value>
+        </item>
+        <item>
+          <key>info</key>
+          <value>{page}</value>
+        </item>
+        <item>
+          <key>source</key>
+          <value>pages</value>
+        </item>
+      </value>
+      <value type="stringdictionary">
+        <item>
+          <key>command</key>
           <value>[EditorTextProcessorCommandLink]</value>
         </item>
         <item>
