@@ -788,7 +788,7 @@ public sealed class EditorController : IDisposable
                             return "page";
                         }
 
-                        return o.Fields.GetAsType<bool>("isroom") ? "room" : "object";
+                        return IsRoom(o) ? "room" : "object";
                     default: return "other";
                 }
             case ElementType.Function: return "function";
@@ -1494,6 +1494,17 @@ public sealed class EditorController : IDisposable
         return o.Type == ObjectType.Object &&
                WorldModel.Elements.ContainsKey(ElementType.ObjectType, "dialoguepage") &&
                o.Fields.InheritsTypeRecursive(WorldModel.Elements.Get(ElementType.ObjectType, "dialoguepage"));
+    }
+
+    public bool IsRoom(string elementName)
+    {
+        return WorldModel.Elements.ContainsKey(ElementType.Object, elementName) &&
+               IsRoom(WorldModel.Elements.Get(ElementType.Object, elementName));
+    }
+
+    private bool IsRoom(Element o)
+    {
+        return o.Type == ObjectType.Object && o.Fields.GetAsType<bool>("isroom");
     }
 
     public void CreateNewRoom(string name, string parent, string alias)
