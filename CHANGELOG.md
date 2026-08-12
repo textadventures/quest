@@ -1,5 +1,33 @@
 # Changelog
 
+## [6.0.0-beta.52](https://github.com/textadventures/quest/compare/v6.0.0-beta.51...v6.0.0-beta.52) (2026-08-12)
+
+
+### Features
+
+* **AppShell:** add Page support to the Objects tab ([#2058](https://github.com/textadventures/quest/issues/2058)) ([7a95f9f](https://github.com/textadventures/quest/commit/7a95f9f09f6faebd4f98f3afcf7d02c1a89c9d49))
+* **AppShell:** add tree node icons, collapse s_-prefixed icon indirection ([#2054](https://github.com/textadventures/quest/issues/2054)) ([271f6fc](https://github.com/textadventures/quest/commit/271f6fcf88e3e9df404bbaab6a378f5792214929))
+* **Engine:** add Text Adventure dialogue pages (Pages) ([#2053](https://github.com/textadventures/quest/issues/2053)) ([9aaddf0](https://github.com/textadventures/quest/commit/9aaddf0b85af367b5927303abf9e7ea51646922e))
+* translate the Save/Load dialog via per-language .aslx templates ([#2050](https://github.com/textadventures/quest/issues/2050)) ([1c6ffc0](https://github.com/textadventures/quest/commit/1c6ffc0128c9ae2612d170b676d0622d3ae8b1e6))
+* **WasmPlayer:** port TranscriptViewer to WasmPlayer, fix Electron access ([#2046](https://github.com/textadventures/quest/issues/2046)) ([00e4b97](https://github.com/textadventures/quest/commit/00e4b97a9b887adbfb4ea34b3aef05d1d9fac8b5))
+
+
+### Bug Fixes
+
+* **AppShell:** give the player object its own tree icon ([#2057](https://github.com/textadventures/quest/issues/2057)) ([aac6b75](https://github.com/textadventures/quest/commit/aac6b75de0339306e6f69a8cf4a19cc59b289335))
+* **AppShell:** show Paste on nested Add script buttons, fix if/then layout ([#2044](https://github.com/textadventures/quest/issues/2044)) ([dd9d823](https://github.com/textadventures/quest/commit/dd9d823ff1088745ddd49f833bc27febfe7869ee))
+* **AppShell:** source Script Adder shortcut labels from .aslx common field ([#2045](https://github.com/textadventures/quest/issues/2045)) ([30c62f8](https://github.com/textadventures/quest/commit/30c62f8365007ea23641d2a452e6036b641a1883))
+* **AppShell:** stop brief error flash when opening a game from server ([#2039](https://github.com/textadventures/quest/issues/2039)) ([098d4cc](https://github.com/textadventures/quest/commit/098d4cc2c0a64323a10a4bb5e2beb0af68e18b46))
+* **AppShell:** stop import loading spinner from dropping early ([#2042](https://github.com/textadventures/quest/issues/2042)) ([9898f45](https://github.com/textadventures/quest/commit/9898f450e3b7b548de5c0c47f8504678c32f0067))
+* **AppShell:** trim superfluous clause from download draft tooltip ([#2043](https://github.com/textadventures/quest/issues/2043)) ([9f15c2f](https://github.com/textadventures/quest/commit/9f15c2f7adc0f64b1777d07f2fe9675c480f9218))
+* **EditorCore:** exclude dialogue Pages from object/room pickers ([#2056](https://github.com/textadventures/quest/issues/2056)) ([a8d8549](https://github.com/textadventures/quest/commit/a8d854910b71b6ce5c3b22f7ee2e5473459f0b93))
+* **EditorCore:** initialize Text field on new Dynamic Templates ([#2055](https://github.com/textadventures/quest/issues/2055)) ([9a955cf](https://github.com/textadventures/quest/commit/9a955cfbeec43811e9490c63b1b7309e802bdf3b))
+* **ElectronApp:** move transcripts and game saves off origin-scoped browser storage ([#2047](https://github.com/textadventures/quest/issues/2047)) ([4dc3988](https://github.com/textadventures/quest/commit/4dc3988aaf12b5904f8d3c2f95e577e267176ff1))
+* **ElectronApp:** persist UI language setting across relaunches ([#2037](https://github.com/textadventures/quest/issues/2037)) ([6a11394](https://github.com/textadventures/quest/commit/6a1139461622a304e6bfe9ce29e286fd14ebc56c))
+* **Engine:** correct Spanish Scripts tab translations ([#2049](https://github.com/textadventures/quest/issues/2049)) ([98a5355](https://github.com/textadventures/quest/commit/98a5355ba17bc6ee67b853bd8a9cdd26a60cbdc2))
+* repair three e2e tests broken by stale locators and a load race ([#2051](https://github.com/textadventures/quest/issues/2051)) ([e244ac9](https://github.com/textadventures/quest/commit/e244ac9fca54241be534e0c65978c75c6381db49))
+* **WasmPlayer:** resolve custom Included Library content in Preview/Play ([#2041](https://github.com/textadventures/quest/issues/2041)) ([54ff5b5](https://github.com/textadventures/quest/commit/54ff5b55f07bf263c282ca21075145f82292adee))
+
 ## [6.0.0-beta.51](https://github.com/textadventures/quest/compare/v6.0.0-beta.50...v6.0.0-beta.51) (2026-08-11)
 
 
