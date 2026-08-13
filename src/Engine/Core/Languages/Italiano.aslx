@@ -407,10 +407,10 @@
   <template templatetype="command" name="version_cmd">^(versione|info)$</template>
 
   <template name="DefaultHelp"><![CDATA[<u>Aiuto rapido</u><br/><br/>
-      <b>- Oggetti:</b>  Prova a scrivere GUARDA (l'oggetto o la persona)..., PARLA CON..., PRENDI..., LASCIA..., APRI..., DAI (qualcosa) A (qualcuno)..., USA... (qualcosa) SU/CON (qualcuno)...<br/>
-      <b>- Inventario:</b>  Guarda sulla destra cosa stai portando con te, oppure digita: I, INV oppure INVENTORY.<br/>
-      <b>- Fatti un giro:</b>  Premi i pulsanti della bussola, oppure digita vai a NORD, SUD, E, VAI A...<br/>
-  <b>- Scorciatoie da tastiera:</b>  Premi i tasti freccia su/giù per rivedere e controllare i comandi che hai già usato. Prova X... come scorciatoia per GUARDA...]]></template>
+<b>- Oggetti:</b>  Prova a scrivere GUARDA (l'oggetto o la persona)..., PARLA CON..., PRENDI..., LASCIA..., APRI..., DAI (qualcosa) A (qualcuno)..., USA... (qualcosa) SU/CON (qualcuno)...<br/>
+<b>- Inventario:</b>  Guarda sulla destra cosa stai portando con te, oppure digita: I, INV oppure INVENTORY.<br/>
+<b>- Fatti un giro:</b>  Premi i pulsanti della bussola, oppure digita vai a NORD, SUD, E, VAI A...<br/>
+<b>- Scorciatoie da tastiera:</b>  Premi i tasti freccia su/giù per rivedere e controllare i comandi che hai già usato. Prova X... come scorciatoia per GUARDA...]]></template>
 
   <!-- Editor-specific templates - should eventually be moved to e.g. EditorEnglish.aslx -->
   <template name="LanguageSpecificObjectTypes"></template>

@@ -350,14 +350,14 @@
   <template name="DefaultXyzzy">Überraschenderweise passiert gar nichts.</template>
   <template templatetype="command" name="help">^hilfe$|^\?$</template>
   <template templatetype="command" name="save">^save$|^speichern$</template>
-  <template name="DefaultHelp"><![CDATA[<br/><u>Befehlsübersicht</u><br/><br/>
-      <b>- Häufig vorkommende Befehle:</b> UNTERSUCHE..., NIMM..., LEGE..., ÖFFNE..., GIB... AN..., BENUTZE... MIT..., SPRICH MIT..., VERWENDE...<br/>
-      <b>- Inventar:</b> getragene Gegenstände können über INV oder INVENTAR angezeigt werden.<br/>
-      <b>- Bewegung:</b>  Verwende die Buttons des Kompasses oder gib z.B. GEHE NACH NORDEN, SÜDEN oder RUNTER ein.<br/>
-      <b>- Shortcuts:</b>  'Pfeil nach oben' und 'Pfeil nach unten' lässt dich durch die bereits eingegebenen Befehle blättern.<br/>
-      X... entspricht UNTERSUCHE..., I zeigt das Inventar,
-      die Himmelrichtungen können auch über N, S, W, O, NW, SO abgekürzt werden, dazu noch H für hoch und R für runter.
-  ]]></template>
+ <template name="DefaultHelp"><![CDATA[<br/><u>Befehlsübersicht</u><br/><br/>
+<b>- Häufig vorkommende Befehle:</b> UNTERSUCHE..., NIMM..., LEGE..., ÖFFNE..., GIB... AN..., BENUTZE... MIT..., SPRICH MIT..., VERWENDE...<br/>
+<b>- Inventar:</b> getragene Gegenstände können über INV oder INVENTAR angezeigt werden.<br/>
+<b>- Bewegung:</b>  Verwende die Buttons des Kompasses oder gib z.B. GEHE NACH NORDEN, SÜDEN oder RUNTER ein.<br/>
+<b>- Shortcuts:</b>  'Pfeil nach oben' und 'Pfeil nach unten' lässt dich durch die bereits eingegebenen Befehle blättern.<br/>
+   X... entspricht UNTERSUCHE..., I zeigt das Inventar,
+   die Himmelrichtungen können auch über N, S, W, O, NW, SO abgekürzt werden, dazu noch H für hoch und R für runter.
+   ]]></template>
 
   <type name="maleobject">
     <displayverbs type="simplestringlist">[LookAt];[Take]</displayverbs>

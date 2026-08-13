@@ -271,10 +271,10 @@
   <template templatetype="command" name="save">^bjarga$</template>
 
   <template name="DefaultHelp"><![CDATA[<u>Quick Help</u><br/><br/>
-      <b>- Objects:</b>  Prófaður horfa á..., tala við..., taka..., fleygja..., opna..., gefa... skoða..., nota hlut á hlut... sofa...<br/>
-      <b>- Inventory:</b>  Skoðaðu hvaða hluti þú hefur með því að skrifa I eða hlutaskrá.<br/>
-      <b>- Moving around:</b>  Skrifaðu norður,suður,vestur eða austur ef þú vilt fara í annað herbergi.<br/>
-  <b>- Shortcuts:</b>  Til að skrifa aftur það sem þú skrifaðir áður, ýttu á örvatakkana upp eða niður.>]]></template>
+<b>- Objects:</b>  Prófaður horfa á..., tala við..., taka..., fleygja..., opna..., gefa... skoða..., nota hlut á hlut... sofa...<br/>
+<b>- Inventory:</b>  Skoðaðu hvaða hluti þú hefur með því að skrifa I eða hlutaskrá.<br/>
+<b>- Moving around:</b>  Skrifaðu norður,suður,vestur eða austur ef þú vilt fara í annað herbergi.<br/>
+<b>- Shortcuts:</b>  Til að skrifa aftur það sem þú skrifaðir áður, ýttu á örvatakkana upp eða niður.>]]></template>
 
   <template name="LanguageSpecificObjectTypes">hvorukyn=Inanimate object (hvorukyn); kvenkyn=Inanimate object (kvenkyn); karlkyn=Inanimate object (karlkyn); </template>
 

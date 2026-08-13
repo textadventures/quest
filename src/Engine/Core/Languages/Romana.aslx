@@ -253,10 +253,10 @@
   <template templatetype="command" name="save">^salvează$</template>
 
   <template name="DefaultHelp"><![CDATA[<u>Ajutor</u><br/><br/>
-      <b>- Obiecte:</b>Încearcă TE UIȚI LA..., VORBEȘTI CU..., IEI..., ARUNCI..., DESCHIZI..., DAI... LUI..., FOLOSEȘTI... PE/CU...<br/>
-      <b>- Inventar:</b>Vezi ce obiecte ai la tine, scriind I, INV sau INVENTAR.<br/>
-      <b>- Cum te miști:</b>Apasă pe butoanele de la busolă, sau scrie MERGI SPRE NORD, SUD, E, MERGI LA...<br/>
-  <b>- Scurtături:</b>Apasă butoanele cu săgeți de la tastatură pentru a derula prin comenzile pe care deja le-ai scris. Tastează X... ca o scurtătură pentru TE UIȚI LA...]]></template>
+<b>- Obiecte:</b>Încearcă TE UIȚI LA..., VORBEȘTI CU..., IEI..., ARUNCI..., DESCHIZI..., DAI... LUI..., FOLOSEȘTI... PE/CU...<br/>
+<b>- Inventar:</b>Vezi ce obiecte ai la tine, scriind I, INV sau INVENTAR.<br/>
+<b>- Cum te miști:</b>Apasă pe butoanele de la busolă, sau scrie MERGI SPRE NORD, SUD, E, MERGI LA...<br/>
+<b>- Scurtături:</b>Apasă butoanele cu săgeți de la tastatură pentru a derula prin comenzile pe care deja le-ai scris. Tastează X... ca o scurtătură pentru TE UIȚI LA...]]></template>
 
   <!-- Editor-specific templates - should eventually be moved to e.g. EditorEnglish.aslx -->
   <template name="LanguageSpecificObjectTypes"></template>

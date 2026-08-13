@@ -526,11 +526,11 @@
   <template templatetype="command" name="save">^grabar$|^salvar$</template>
   <template templatetype="command" name="tellto"><![CDATA[^(tell|ask) (?<object>.*) to (?<text>.*)$]]></template>
   <template templatetype="command" name="alttellto"><![CDATA[^(?<object>.*), (?<text>.*)$]]></template>
-  <template name="DefaultHelp"><![CDATA[<u>Ayuda rápida</u><br/><br/>
-      <b>- Objetos:</b>  Intenta MIRAR, EXAMINAR..., HABLAR CON..., COGER..., DEJAR..., ABRIR...., DAR ... A ..., USAR ... EN ...<br/>
-      <b>- Inventario:</b>  Para ver qué objetos llevas contigo, escribe:  I, INV o INVENTARIO.<br/>
-      <b>- Para moverte:</b>  Pulsa en la rosa de los vientos o escribe IR [AL] NORTE, SUR, E, ...<br/>
-  <b>- Atajos de teclado:</b>  Pulsa arriba/abajo para localizar comandos tecleados previamente. X... es una abreviatura para EXAMINAR ...]]></template>
+    <template name="DefaultHelp"><![CDATA[<u>Ayuda rápida</u><br/><br/>
+    <b>- Objetos:</b>  Intenta MIRAR, EXAMINAR..., HABLAR CON..., COGER..., DEJAR..., ABRIR...., DAR ... A ..., USAR ... EN ...<br/>
+    <b>- Inventario:</b>  Para ver qué objetos llevas contigo, escribe:  I, INV o INVENTARIO.<br/>
+    <b>- Para moverte:</b>  Pulsa en la rosa de los vientos o escribe IR [AL] NORTE, SUR, E, ...<br/>
+    <b>- Atajos de teclado:</b>  Pulsa arriba/abajo para localizar comandos tecleados previamente. X... es una abreviatura para EXAMINAR ...]]></template>
 
   <!-- Editor-specific templates - should eventually be moved to e.g. EditorEnglish.aslx -->
   <!-- NOTE: To add a language-specific object type, fill in the template like this: -->

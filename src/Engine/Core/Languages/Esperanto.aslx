@@ -243,10 +243,10 @@
   <template templatetype="command" name="help">^helpon$|^\?$</template>
   <template templatetype="command" name="save">^savu$</template>
   <template name="DefaultHelp"><![CDATA[<u>Rapida helpo</u><br/><br/>
-      <b>- Objectoj:</b>  Provu RIGARDU..., PAROLU KUN..., PRENU..., LASU..., MALFERMU..., MALFERMU..., DONU... AL..., UZU... KUN...<br/>
-      <b>- Inventario:</b> Por scii kiujn objektojn vi kunportas, tajpu I, INV aux INVENTARIO.<br/>
-      <b>- Moving around:</b>  Klaku sur la direkt-butonojn, aux tajpu IRU NORDE, SUDE, OR, IRU [AL]...<br/>
-  <b>- Rapidiloj:</b> Presu supren/malsupren por rehavi viajn atauxajn komandojn. Probu X... kiel mallongigo por RIGARDU ....]]></template>
+<b>- Objectoj:</b>  Provu RIGARDU..., PAROLU KUN..., PRENU..., LASU..., MALFERMU..., MALFERMU..., DONU... AL..., UZU... KUN...<br/>
+<b>- Inventario:</b> Por scii kiujn objektojn vi kunportas, tajpu I, INV aux INVENTARIO.<br/>
+<b>- Moving around:</b>  Klaku sur la direkt-butonojn, aux tajpu IRU NORDE, SUDE, OR, IRU [AL]...<br/>
+<b>- Rapidiloj:</b> Presu supren/malsupren por rehavi viajn atauxajn komandojn. Probu X... kiel mallongigo por RIGARDU ....]]></template>
 
   <!-- Editor-specific templates - should eventually be moved to e.g. EditorEnglish.aslx -->
   <template name="LanguageSpecificObjectTypes"></template>
