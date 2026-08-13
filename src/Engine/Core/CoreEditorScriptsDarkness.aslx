@@ -1,4 +1,4 @@
-﻿<library>
+<library>
   <editor>
     <appliesto>(function)SetDark</appliesto>
     <display>Make room (#1) dark</display>
@@ -6,7 +6,7 @@
     <create>SetDark()</create>
     <add>[EditorScriptsDarknessMakeroomdark]</add>
     <onlydisplayif>game.feature_lightdark</onlydisplayif>
-  
+
     <control>
       <controltype>label</controltype>
       <caption>[EditorScriptsDarknessMakedark]</caption>
@@ -17,9 +17,9 @@
       <attribute>0</attribute>
       <simple>room</simple>
       <simpleeditor>objects</simpleeditor>
-    </control>    
+    </control>
   </editor>
- 
+
   <editor>
     <appliesto>(function)SetLight</appliesto>
     <display>Make room (#1) light</display>
@@ -27,7 +27,7 @@
     <create>SetLight()</create>
     <add>[EditorScriptsDarknessMakeroomlight]</add>
     <onlydisplayif>game.feature_lightdark</onlydisplayif>
-  
+
     <control>
       <controltype>label</controltype>
       <caption>[EditorScriptsDarknessMakelight]</caption>
@@ -48,7 +48,7 @@
     <create>SetObjectLightstrength (,"")</create>
     <add>[EditorScriptsDarknessSetobjectbrightness]</add>
     <onlydisplayif>game.feature_lightdark</onlydisplayif>
-  
+
     <control>
       <controltype>label</controltype>
       <caption>[EditorScriptsDarknessSetbrightness]</caption>
@@ -60,7 +60,7 @@
       <simple>object</simple>
       <simpleeditor>objects</simpleeditor>
     </control>
-    
+
     <control>
       <controltype>label</controltype>
       <caption>[EditorScriptsDarknessto]</caption>
@@ -84,7 +84,7 @@
     <create>SetExitLightstrength (,"")</create>
     <add>[EditorScriptsDarknessSetexitbrightness]</add>
     <onlydisplayif>game.feature_lightdark</onlydisplayif>
-  
+
     <control>
       <controltype>label</controltype>
       <caption>[EditorScriptsDarknessSetbrightness]</caption>
@@ -97,7 +97,7 @@
       <simpleeditor>objects</simpleeditor>
       <objecttype>exit</objecttype>
     </control>
-    
+
     <control>
       <controltype>label</controltype>
       <caption>[EditorScriptsDarknessto]</caption>
@@ -113,5 +113,5 @@
        <validvalues type="simplestringlist">weak;strong;</validvalues>
      </control>
   </editor>
-  
+
 </library>

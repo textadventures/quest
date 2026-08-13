@@ -1,8 +1,8 @@
-﻿<library>
+<library>
   <!-- Get any undefined templates from the English library -->
   <include ref="English.aslx"/>
   <template name="LanguageId">nl</template>
-  
+
   <!-- Contributed by Lina Anna -->
   <template name="UnresolvedObject">Ik zie dat hier niet.</template>
   <template name="UnresolvedLocation">Je kan hier niet heen gaan.</template>
@@ -92,8 +92,6 @@
  <template name="OutButtonLabel">uit</template>
  <template name="EmptyListLabel">(leeg)</template>
  <template name="NothingSelectedLabel">(niets geselecteerd)</template>
- 
-
 
   <verbtemplate name="lookat">kijk naar</verbtemplate>
   <verbtemplate name="lookat">kijk</verbtemplate>
@@ -200,5 +198,5 @@
   <function name="GetDefaultPrefix" type="string" parameters="obj">
     return ("een")
   </function>
-  
+
 </library>

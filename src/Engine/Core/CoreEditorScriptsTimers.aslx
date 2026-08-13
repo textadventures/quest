@@ -1,4 +1,4 @@
-﻿<library>
+<library>
   <editor>
     <appliesto>(function)EnableTimer</appliesto>
     <display>Enable timer #0</display>
@@ -179,7 +179,7 @@
       <caption>[EditorScriptsTimersRunscript]</caption>
       <breakbefore/>
     </control>
-  
+
     <control>
       <controltype>label</controltype>
       <caption>[EditorScriptsTimersName]</caption>

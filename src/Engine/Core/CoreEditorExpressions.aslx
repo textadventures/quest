@@ -1,7 +1,7 @@
-﻿<library>
+<library>
 
   <implied element="editor" property="pattern" type="simplepattern"/>
-  
+
   <!-- Templates for "if" -->
 
   <editor>
@@ -71,7 +71,7 @@
       <attribute>flag</attribute>
     </control>
   </editor>
-  
+
   <editor>
     <pattern><![CDATA[GetInt(#object#, #counter#) #compare# #value#]]></pattern>
     <create><![CDATA[GetInt(, "") = 0]]></create>
@@ -209,7 +209,7 @@
       <attribute>object</attribute>
     </control>
   </editor>
- 
+
   <editor>
     <pattern>ListContains(ScopeReachable(), #object#)</pattern>
     <create>ListContains(ScopeReachable(), )</create>
@@ -524,7 +524,7 @@
     </control>
 
   </editor>
-  
+
   <!-- Templates for "foreach" -->
 
   <editor>
@@ -547,7 +547,7 @@
     <description>[EditorExpressionstheinventory]</description>
     <expressiontype>foreach</expressiontype>
   </editor>
-  
+
   <editor>
     <pattern>AllExits()</pattern>
     <create>AllExits()</create>

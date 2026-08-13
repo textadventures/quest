@@ -1,4 +1,4 @@
-﻿<library type="editor">
+<library type="editor">
 
   <!-- Script adder for Text Adventure dialogue pages (see CorePages.aslx). Always
        available - GoToPage(page) is also a real function (used internally, and

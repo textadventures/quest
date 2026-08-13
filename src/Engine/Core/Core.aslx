@@ -1,4 +1,4 @@
-﻿<library>
+<library>
 
   <delegate name="AddScript" parameters="object"/>
   <delegate name="AssociatedScope" type="objectlist"/>
@@ -29,18 +29,16 @@
   <include ref="CoreEffects.aslx"/>
   <include ref="CoreEditor.aslx"/>
   <include ref="CoreWearable.aslx"/>
-  
+
   <function name="InitInterface">
     <![CDATA[
-    // Added by KV for transcript
-    // Use JSSafe to remove any offensive characters!  - KV   May 27, 2018
+    // JSSafe removes any characters that would break the JS string literal below
     jsgamename = JSSafe(game.gamename)
     JS.eval ("var gameName = '"+jsgamename+"';var transcriptName = gameName;")
     if (GetBoolean(game,"savetranscript")){
       JS.eval("var savingTranscript = true;")
       JS.replaceTranscriptString(game.transcriptstring)
     }
-    // End of addition by KV for transcript
     if (game.setcustomwidth) {
       JS.setGameWidth (game.customwidth)
     }
@@ -71,7 +69,7 @@
     JS.setInterfaceString("EmptyListLabel", "[EmptyListLabel]")
     JS.setInterfaceString("NothingSelectedLabel", "[NothingSelectedLabel]")
     JS.setInterfaceString("TypeHereLabel", "[TypeHereLabel]")
-    JS.setInterfaceString("ContinueLabel", "[ContinueLabel]")    
+    JS.setInterfaceString("ContinueLabel", "[ContinueLabel]")
     JS.SetMenuBackground (game.menubackground)
     JS.SetMenuForeground (game.menuforeground)
     JS.SetMenuHoverBackground (game.menuhoverbackground)
@@ -101,7 +99,6 @@
         }
       }
     }
-    // Added by the Pixie
     // Note that panesVisible in playercore.js must be updated too
     // This line will get the save confirmation to appear in the right font and colour
     JS.setCss ("body", "color:" + game.defaultforeground + ";font-family:" + game.defaultfont + ";font-size:" + game.defaultfontsize + "pt;")
@@ -127,7 +124,7 @@
         JS.setCss ("#status", "border:none")
       }
       if (HasString(game, "locationbarimage")){
-        if (not Trim(game.locationbarimage) = ""){ 
+        if (not Trim(game.locationbarimage) = ""){
           url = GetFileURL(game.locationbarimage)
           JS.eval ("$('.ui-widget-header').css('background-image','url(" + url + ")');")
         }
@@ -229,7 +226,7 @@
 
   <function name="InitUserInterface">
   </function>
-  
+
   <function name="StartGame">
     <![CDATA[
     StartTurnOutputSection
@@ -286,7 +283,6 @@
       UpdateStatusAttributes
       UpdateObjectLinks
     }
-    // Added by KV to use the old JS clearScreen if the transcript is disabled
     if (GetBoolean(game, "notranscript")){
       JS.eval("transcriptEnabled = false;")
     }
@@ -294,7 +290,7 @@
     FinishTurn
     ]]>
   </function>
-  
+
   <function name="InitVerbsList">
     game.verbattributes = NewStringList()
     game.verbattributeslookup = NewObjectDictionary()
@@ -313,7 +309,7 @@
     else {
       baselist = object.displayverbs
     }
-    
+
     if (not game.autodisplayverbs or GetBoolean(object, "usestandardverblist") or not HasAttribute(game, "verbattributes")) {
       return (baselist)
     }
@@ -344,7 +340,7 @@
       }
       else {
         return (ListCombine(baselist, verbs))
-      }  
+      }
     }
   </function>
 
@@ -365,7 +361,7 @@
     newPOV.external_gender = newPOV.gender
     newPOV.external_article = newPOV.article
     newPOV.external_possessive = newPOV.possessive
-    
+
     if (not GetBoolean(newPOV, "pov_used")) {
       if (newPOV.alt = null) {
         newPOV.pov_alt = newPOV.pov_alt  // ensure we have our own copy of the list
@@ -376,11 +372,11 @@
       if (newPOV.alias <> null) {
         list add (newPOV.pov_alt, newPOV.alias)
       }
-      
+
       if (game.showmoney and not HasInt(newPOV, "money")) {
         newPOV.money = 0
       }
-      
+
       if (game.showhealth) {
         newPOV.health = 100
         newPOV.changedhealth => {
@@ -409,9 +405,7 @@
     newPOV.article = newPOV.pov_article
     newPOV.possessive = newPOV.pov_possessive
     ]]>
-  </function>  
-
-
+  </function>
 
   <function name="FinishTurn">
     if (GetBoolean(game,"runturnscripts")) {
@@ -424,9 +418,7 @@
     UpdateStatusAttributes
     CheckDarkness
     UpdateObjectLinks
-  </function>  
-
-
+  </function>
 
   <function name="WhereAmI" parameters="s">
     game.questplatform = s

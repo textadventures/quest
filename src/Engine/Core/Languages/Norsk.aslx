@@ -1,7 +1,7 @@
 <library>
   <include ref="English.aslx"/>
   <template name="LanguageId">nb</template>
-  
+
   <template name="UnresolvedObject">Kan ikke se det.</template>
   <template name="UnresolvedLocation">Du kan ikke gå dit.</template>
   <template name="DefaultObjectDescription">Ikke noe uvanlig å se.</template>
@@ -302,7 +302,7 @@
   <template name="LanguageSpecificObjectTypes">masculine=Ting (hankjønn); feminine=Ting (hunkjønn); neuter=Ting (intetkjønn); </template>
 
   <template name="EditorVerbDefaultExpression">"Du kan ikke #verb# " + object.article + "."</template>
-  
+
   <function name="GetDefaultPrefix" type="string" parameters="obj">
     return ("en")
   </function>
@@ -320,5 +320,5 @@
       }
     }
   </function>
- 
+
 </library>

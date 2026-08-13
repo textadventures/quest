@@ -11,10 +11,8 @@
       <notextprocessor/>
       <expand/>
     </control>
-  </tab>    
+  </tab>
 
-  
-  
   <tab>
     <parent>_ObjectEditor</parent>
     <caption>[EditorObjectStartscriptStartscript]</caption>
@@ -25,5 +23,5 @@
       <caption>[EditorObjectScriptsInitial]</caption>
       <attribute>_initialise_</attribute>
     </control>
-  </tab>    
+  </tab>
 </library>

@@ -1,4 +1,4 @@
-﻿<library>
+<library>
   <editor name="_ExitEditor">
     <appliesto>exit</appliesto>
 
@@ -76,7 +76,7 @@
         <attribute>locked</attribute>
         <onlydisplayif>not this.lookonly</onlydisplayif>
       </control>
-    
+
       <control>
         <caption>[EditorExitPrintmessage]</caption>
         <controltype>textbox</controltype>
@@ -90,7 +90,7 @@
         <attribute>runscript</attribute>
         <onlydisplayif>not this.lookonly</onlydisplayif>
       </control>
-  
+
       <control>
         <caption>[EditorExitScripttorun]</caption>
         <controltype>script</controltype>
@@ -157,7 +157,7 @@
         <caption>[EditorExitOffsetY]</caption>
       </control>
       -->
-      
+
     </tab>
 
     <tab>
@@ -170,14 +170,14 @@
         <caption>[EditorExitLight/Dark]</caption>
         <advanced/>
       </control>
-      
+
       <control>
         <controltype>checkbox</controltype>
         <caption>[EditorExitThisobject]</caption>
         <attribute>lightsource</attribute>
         <advanced/>
       </control>
-      
+
       <control>
         <controltype>dropdown</controltype>
         <caption>[EditorExitBrightness]</caption>
@@ -197,6 +197,6 @@
         <expand/>
       </control>
     </tab>
-    
+
   </editor>
 </library>

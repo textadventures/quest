@@ -1,4 +1,4 @@
-﻿<library>
+<library>
   <function name="UpdateStatusAttributes">
     <![CDATA[
     status = NewStringList()

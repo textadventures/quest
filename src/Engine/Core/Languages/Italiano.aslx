@@ -1,20 +1,20 @@
 <library>
- 
-<!-- 
+
+<!--
 
  Version 1.0 by Luca Salvicchi with some tips by Francesco Cordella
 
-	Cordella: ho messo ovunque + object.article + " " + object.alias + invece di lasciare cose tipo: 
-	"non puoi prender" + object.article che possono creare casini con i pronomi, tanto vale fare dire a Quest
-	la frase intera "Non puoi prendere la mela"
+  Cordella: ho messo ovunque + object.article + " " + object.alias + invece di lasciare cose tipo:
+  "non puoi prender" + object.article che possono creare casini con i pronomi, tanto vale fare dire a Quest
+  la frase intera "Non puoi prendere la mela"
 
-	Cordella: Per gli stessi motivi di cui sopra, ho eliminato qualche CapFirst, togliendo il successivo pronome/article
+  Cordella: Per gli stessi motivi di cui sopra, ho eliminato qualche CapFirst, togliendo il successivo pronome/article
 
  -->
 
   <include ref="English.aslx"/>
   <template name="LanguageId">it</template>
-  
+
   <!-- questa riga sopra, suggerita da Pertex, serve a includere anche il template inglese -->
 
   <template name="UnresolvedObject">Non vedo nulla con questo nome.</template>
@@ -32,22 +32,20 @@
   <template name="CarryingListHeader">Stai portando</template>
   <dynamictemplate name="DropSuccessful">"Lasci qui "+ object.article + " " + object.alias + "."</dynamictemplate>
   <dynamictemplate name="DropUnsuccessful">"Non puoi lasciare " + object.article + " " + object.alias + "."</dynamictemplate>
-   <!-- riga originale 
+   <!-- riga originale
    <dynamictemplate name="AlreadyTaken">"Stai gia' portando " + object.article + " " + object.alias + "."</dynamictemplate>
   -->
    <!-- riga modificata da Cordella --> <dynamictemplate name="AlreadyTaken">"Ma hai gia' con te " + object.article + " " + object.alias + "."</dynamictemplate>
-   
-   
-  <!-- riga aggiunta da Cordella -->  <dynamictemplate name="NotCarrying">"Ma non hai con te " + object.article + " " + object.alias + "."</dynamictemplate>
-   
-  
-  <dynamictemplate name="CantUse">"Non puoi usare " + object.article + " " + object.alias + "."</dynamictemplate>
-  <!-- riga originale 
-  <dynamictemplate name="DefaultSpeakTo">WriteVerb(object, "dice") + " niente."</dynamictemplate> 
-  -->
-   <!-- riga modificata -->   <dynamictemplate name="DefaultSpeakTo">"Non sembra che abbia voglia di parlare."</dynamictemplate> 
 
-	<!-- Cordella: nelle righe sopra ho messo ovunque + object.article + " " + object.alias + -->
+  <!-- riga aggiunta da Cordella -->  <dynamictemplate name="NotCarrying">"Ma non hai con te " + object.article + " " + object.alias + "."</dynamictemplate>
+
+  <dynamictemplate name="CantUse">"Non puoi usare " + object.article + " " + object.alias + "."</dynamictemplate>
+  <!-- riga originale
+  <dynamictemplate name="DefaultSpeakTo">WriteVerb(object, "dice") + " niente."</dynamictemplate>
+  -->
+   <!-- riga modificata -->   <dynamictemplate name="DefaultSpeakTo">"Non sembra che abbia voglia di parlare."</dynamictemplate>
+
+  <!-- Cordella: nelle righe sopra ho messo ovunque + object.article + " " + object.alias + -->
 
   <template name="UnrecognisedCommand">Non capisco il tuo comando.</template>
   <template name="YouAreIn">Sei in</template>
@@ -66,7 +64,7 @@
     <!-- riga sotto, da vedere -->
   <dynamictemplate name="ObjectNotOpen">"Non " + Conjugate(object, "essere") + " apert"
  GetSuffix (object) + "."</dynamictemplate>
-  
+
   <template name="NeutralGender">Esso</template>
   <template name="MaleGender">lui</template>
   <template name="FemaleGender">lei</template>
@@ -86,12 +84,12 @@
   <template name="AllObjects">tutto; ogni cosa</template>
     <template name="ParserIgnorePrefixes">il; un; un'; ad; alle; ai; agli; all'; il; la; lo; gli; le; al; i</template>
      <!-- 2 righe sotto, da vedere -->
-     
-  	<!-- Modificate da Cordella --> <dynamictemplate name="AlreadyOpen">"Ma " + WriteVerb(object, "essere") + " gia' apert" + GetSuffix (object) + "."</dynamictemplate>
-  
-	<!-- Modificate da Cordella --> <dynamictemplate name="AlreadyClosed">"Ma " + WriteVerb(object, "essere") + " gia' chius" + GetSuffix (object) + "."</dynamictemplate>
-  
-	<dynamictemplate name="CantOpen">"Non puoi aprire " + object.article + " " + object.alias + "."</dynamictemplate>
+
+    <!-- Modificate da Cordella --> <dynamictemplate name="AlreadyOpen">"Ma " + WriteVerb(object, "essere") + " gia' apert" + GetSuffix (object) + "."</dynamictemplate>
+
+  <!-- Modificate da Cordella --> <dynamictemplate name="AlreadyClosed">"Ma " + WriteVerb(object, "essere") + " gia' chius" + GetSuffix (object) + "."</dynamictemplate>
+
+  <dynamictemplate name="CantOpen">"Non puoi aprire " + object.article + " " + object.alias + "."</dynamictemplate>
   <dynamictemplate name="CantClose">"Non puoi chiudere" + object.article + " " + object.alias + "."</dynamictemplate>
   <dynamictemplate name="OpenSuccessful">"Apri " + object.article + " " + object.alias + "."</dynamictemplate>
   <dynamictemplate name="CloseSuccessful">"Chiudi " + object.article + " " + object.alias + "."</dynamictemplate>
@@ -113,10 +111,10 @@
   <template name="NoKey">Non hai la chiave.</template>
   <template name="UnlockMessage">Ok, ci riesci.</template>
   <dynamictemplate name="LockMessage">WriteVerb(object, "essere") + " bloccat" + GetSuffix (object) + " (chius" + GetSuffix (object) + " a chiave )"</dynamictemplate>
-    <!-- questa riga sotto è l'originale, mentre quella sopra l'ho modificata 
-	<template name="LockMessage">Bloccato - chiuso a chiave -.</template>
-	-->
-	
+    <!-- questa riga sotto è l'originale, mentre quella sopra l'ho modificata
+  <template name="LockMessage">Bloccato - chiuso a chiave -.</template>
+  -->
+
    <!-- righe sotto sui verbi, da vedere -->
   <dynamictemplate name="LockedObject">WriteVerb(object, "essere") + " chius" + GetSuffix (object) + " a chiave."</dynamictemplate>
   <dynamictemplate name="AlreadyLocked">WriteVerb(object, "essere") + " gia' bloccat" + GetSuffix (object) + " - chiuso a chiave -."</dynamictemplate>
@@ -138,9 +136,8 @@
   <template name="UseOnMenu">Con che cosa?</template>
   <template name="GiveToMenu">"Devi specificare a chi vuoi dare" + object.article + object.alias + "."</template>
   <template name="NoObjectsAvailable">Non vedo come.</template>
-  
-  
- <!-- righe sopra aggiunte da Cordella --> 
+
+ <!-- righe sopra aggiunte da Cordella -->
 
  <template name="CompassNW">nordovest</template>
   <template name="CompassN">nord</template>
@@ -152,10 +149,9 @@
   <template name="CompassSE">sudest</template>
   <template name="CompassUp">su</template>
   <template name="CompassDown">giu</template>
-  
-  <!-- ho cambiato tutti gli entra/esci con dentro/fuori per evitare conflitti con i verbi entra ed esci che noi italiani possiamo inserire (Cordella) --> 
 
-  
+  <!-- ho cambiato tutti gli entra/esci con dentro/fuori per evitare conflitti con i verbi entra ed esci che noi italiani possiamo inserire (Cordella) -->
+
   <template name="CompassIn">dentro</template>
   <template name="CompassOut">fuori</template>
   <template name="CompassDirectionPrefix">a</template>
@@ -184,9 +180,8 @@
   <template name="OutButtonLabel">fuori</template>
   <template name="EmptyListLabel">(vuoto)</template>
   <template name="NothingSelectedLabel">(non hai selezionato niente)</template>
-  
- <!-- Nella riga sotto ho tolto gli "entra ed esci" che noi italiani possiamo inserire come verbi nel gioco (Cordella) --> 
 
+ <!-- Nella riga sotto ho tolto gli "entra ed esci" che noi italiani possiamo inserire come verbi nel gioco (Cordella) -->
 
 <template templatetype="command" name="go"><![CDATA[^vai (?<exit>.*)$|^(?<exit>nord|est|sud|ovest|nordest|nordovest|sudest|sudovest|dentro|fuori|su|giu|n|e|s|w|ne|nw|se|sw|o|u|d)$]]></template>
   <template templatetype="command" name="lookdir"><![CDATA[^look (?<exit>nord|est|sud|ovest|nordest|nordovest|sudest|sudovest|dentro|fuori|su|giu|n|e|s|o|ne|no|se|so|o|u|d)$]]></template>
@@ -233,10 +228,9 @@
   <dynamictemplate name="DefaultGive">"Non " + object2.article + " vuole."</dynamictemplate>
   <dynamictemplate name="DefaultTellTo">"Non " + WriteVerb (object, "fare") + " niente."</dynamictemplate>
   <dynamictemplate name="FullInventory">WriteVerb (object, "essere") + " troppo pesant" + object.suffix + " da prendere."</dynamictemplate>
- 
+
    <!-- riga modificata  <dynamictemplate name="DefaultGive">"Non ha molto senso."</dynamictemplate> -->
- 
-  
+
   <verbtemplate name="hit">colpisci</verbtemplate>
   <dynamictemplate name="DefaultHit">"Non puoi colpire " + object.article + " " + object.alias + "."</dynamictemplate>
   <verbtemplate name="kill">uccidi</verbtemplate>
@@ -261,18 +255,16 @@
   <dynamictemplate name="DefaultLie">"Non puoi distenderti lì."</dynamictemplate>
   <verbtemplate name="listento">ascolta</verbtemplate>
   <dynamictemplate name="DefaultListenTo">"Ascolti, ma non emette alcun suono."</dynamictemplate>
-  
-  
+
   <!-- erano aggiunti da elvish, tolti da cordella
-  
+
   <verbtemplate name="lock">blocca</verbtemplate>
   <verbtemplate name="lock">chiudi</verbtemplate>
-  
+
   -->
-  
+
   <verbtemplate name="lock">chiudi a chiave</verbtemplate>
-  
-  
+
   <dynamictemplate name="DefaultLock">"Non puoi bloccare " + object.article + " " + object.alias + "."</dynamictemplate>
   <verbtemplate name="move">muovi</verbtemplate>
   <verbtemplate name="move">sposta</verbtemplate>
@@ -294,7 +286,6 @@
   <template name="NothingToRepeat">Non c'è niente da ripetere.</template>
   <verbtemplate name="givesingle">dai</verbtemplate>
 
-  
   <template name="NothingToTake">Non c'è niente da prendere qui.</template>
   <template name="NothingToDrop">Non hai niente da lasciare.</template>
   <template name="NothingToWear">Non hai niente da indossare.</template>
@@ -314,13 +305,13 @@
   <dynamictemplate name="RemoveFirst">"Non puoi toglierti ciò mentre indossi " + GetDisplayGarment(object) + "."</dynamictemplate>
   <template name="Wear">Indossa</template>
   <template name="Remove">Togli</template>
-	<template name="NeutralWornModifier">indossato</template>
-	<template name="MaleWornModifier">indossato</template>
-	<template name="FemaleWornModifier">indossata</template>
-	<template name="NeutralPluralWornModifier">indossati</template>
-	<template name="MalePluralWornModifier">indossati</template>
-	<template name="FemalePluralWornModifier">indossate</template>
-  
+  <template name="NeutralWornModifier">indossato</template>
+  <template name="MaleWornModifier">indossato</template>
+  <template name="FemaleWornModifier">indossata</template>
+  <template name="NeutralPluralWornModifier">indossati</template>
+  <template name="MalePluralWornModifier">indossati</template>
+  <template name="FemalePluralWornModifier">indossate</template>
+
   <template name="Nothing">niente</template>
   <template name="Eat">Mangia</template>
   <template name="UnlockMessage">Ok, ci riesci.</template>
@@ -328,14 +319,14 @@
   <template name="Yes">Si</template>
   <template name="No">No</template>
   <template name="By">di</template>
-  
+
   <template name="Score">Punteggio</template>
   <template name="Health">Salute</template>
   <template name="Money">Denaro</template>
   <template name="StatusLabel">Stato</template>
   <template name="TypeHereLabel">Batti qui:</template>
   <template name="ContinueLabel">Continua:</template>
-  
+
   <dynamictemplate name="MaxObjectsInInventory">"Non puoi portare altri oggetti."</dynamictemplate>
   <dynamictemplate name="MaxObjectsInContainer">"Non puoi mettere altri oggetti lì dentro."</dynamictemplate>
 
@@ -344,12 +335,11 @@
   <dynamictemplate name="Eaten">CapFirst(object.gender) + " mangi."</dynamictemplate>
   <dynamictemplate name="LookAtDarkness">"È troppo buio per distinguere qualcosa."</dynamictemplate>
 
-
-  <!-- la riga sotto andrebbe eliminata altrimennti confligge con 
+  <!-- la riga sotto andrebbe eliminata altrimennti confligge con
 
        siediti + preposizioni
 
-<verbtemplate name="sit">siediti</verbtemplate> 
+<verbtemplate name="sit">siediti</verbtemplate>
 
   -->
 
@@ -358,7 +348,6 @@
   <verbtemplate name="sit">siediti alla</verbtemplate>
 
    <verbtemplate name="sit">siediti sopra</verbtemplate>
-  
 
   <dynamictemplate name="DefaultSit">"Non puoi sederti lì."</dynamictemplate>
   <verbtemplate name="smell">annusa</verbtemplate>
@@ -374,10 +363,10 @@
   <verbtemplate name="tie">lega</verbtemplate>
   <dynamictemplate name="DefaultTie">"Non puoi legare " + object.article + " " + object.alias + "."</dynamictemplate>
   <verbtemplate name="touch">tocca</verbtemplate>
-  
+
   <!-- nella riga sotto, ho tolto capfirst, per evitare casini con articoli -->
   <dynamictemplate name="DefaultTouch">"Tocchi, ma non succede niente."</dynamictemplate>
-  
+
   <verbtemplate name="turnon">accendi</verbtemplate>
   <dynamictemplate name="DefaultTurnOn">"Non puoi accendere " + object.article + " " + object.alias + "."</dynamictemplate>
   <verbtemplate name="turnoff">spegni</verbtemplate>
@@ -416,7 +405,7 @@
   <template templatetype="command" name="transcript_off_cmd">^trascrizione off$|^spegni trascrizione$</template>
   <template templatetype="command" name="view_transcript_cmd">^(vedi|mostra|visualizza|) (la |)trascrizione$</template>
   <template templatetype="command" name="version_cmd">^(versione|info)$</template>
-  
+
   <template name="DefaultHelp"><![CDATA[<u>Aiuto rapido</u><br/><br/>
 <b>- Oggetti:</b>  Prova a scrivere GUARDA (l'oggetto o la persona)..., PARLA CON..., PRENDI..., LASCIA..., APRI..., DAI (qualcosa) A (qualcuno)..., USA... (qualcosa) SU/CON (qualcuno)...<br/>
 <b>- Inventario:</b>  Guarda sulla destra cosa stai portando con te, oppure digita: I, INV oppure INVENTORY.<br/>
@@ -429,7 +418,6 @@
   <!-- <template name="LanguageSpecificObjectTypes">masculine=Inanimate object (masculine); feminine=Inanimate object (feminine); </template>-->
   <!-- and then add <type>s masculine and feminine to the language .aslx file. The final "; " is important, don't delete it! -->
 
-  
    <template name="LanguageSpecificObjectTypes">masculine=Inanimate object (masculine); feminine=Inanimate object (feminine); </template>
 
   <type name="masculine">
@@ -437,21 +425,17 @@
   <article>lo</article>
   <suffix>lo</suffix>
   </type>
-  
+
   <type name="feminine">
   <gender>lei</gender>
   <article>la</article>
   </type>
-  
-    <!-- <template name="EditorVerbDefaultExpression">"Non puoi #verb# " + object.alias + "."</template> --> 
- 
-  
+
+    <!-- <template name="EditorVerbDefaultExpression">"Non puoi #verb# " + object.alias + "."</template> -->
 
  <!-- quella sopra è l'originale, la cambio con quella sotto per evitare casini con i verbi nuovi che non vengono coniugati -->
- 
- 
-<template name="EditorVerbDefaultExpression">"Non puoi."</template> 
-  
+
+<template name="EditorVerbDefaultExpression">"Non puoi."</template>
 
   <function name="GetDefaultPrefix" type="string" parameters="obj">
     if (Instr("aeiou", Left(GetDisplayAlias(obj), 1)) > 0) {
@@ -464,10 +448,10 @@
 
   <function name="WriteVerb" type="string" parameters="obj, verb">
     return (Conjugate(obj, verb))
-	<!-- OKKIO: ho cambiato la riga qui sopra. L'originale è return (CapFirst(obj.gender) + " " + Conjugate(obj, verb)) -->
+  <!-- OKKIO: ho cambiato la riga qui sopra. L'originale è return (CapFirst(obj.gender) + " " + Conjugate(obj, verb)) -->
   </function>
 
-  <!-- sotto c'è la funzione per i verbi italiani. Questa commentata è l'originale inglese 
+  <!-- sotto c'è la funzione per i verbi italiani. Questa commentata è l'originale inglese
   <function name="Conjugate" type="string" parameters="obj, verb">
     gender = obj.gender
     if (gender = "he" or gender = "she") {
@@ -515,7 +499,7 @@
           }
           default {
             return ("do")
-          }       
+          }
         }
       }
       default {
@@ -576,7 +560,7 @@
           }
           default {
             return ("do")
-          }       
+          }
         }
       }
           default {
@@ -585,9 +569,9 @@
 
     }
   </function>
-  
+
   <!-- funzione suggerita da Pertex -->
-  
+
   <function name="Conjugate2" type="string" parameters="obj,verb">
     gender = obj.gender
     switch (gender) {
@@ -609,8 +593,7 @@
     }
     return (verb)
   </function>
-  
-  
+
   <function name="GetSuffix" type="string" parameters="obj">
     if ( DoesInherit (obj, "masculine") or DoesInherit (obj, "male") ) {
        return ("o")
@@ -623,8 +606,7 @@
     } else {
        return ("")
     }
-   </function>   
-
+   </function>
 
   <function name="Possessive" parameters="owner, object" type="string">
     if (owner = game.pov) {

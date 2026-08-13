@@ -271,12 +271,12 @@
   <gender>il</gender>
   <article>le</article>
   </type>
-  
+
   <type name="feminine">
   <gender>elle</gender>
   <article>la</article>
   </type>
-  
+
   <template name="EditorVerbDefaultExpression">"Vous ne pouvez pas " + object.article + " #verb#."</template>
 
   <function name="GetDefaultPrefix" type="string" parameters="obj">
@@ -296,5 +296,5 @@
     // TO DO: This should be implemented for any verbs passed to WriteVerb in templates above
     return (verb)
   </function>
-  
+
 </library>

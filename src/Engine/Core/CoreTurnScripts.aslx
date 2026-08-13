@@ -1,4 +1,4 @@
-﻿<library>
+<library>
   <function name="RunTurnScripts">
     if (IsGameRunning()) {
       if (game.menucallback = null and (game.currentpage = null or GetBoolean(game, "pageturnscripts"))) {
@@ -20,7 +20,7 @@
       }
     }
   </function>
-  
+
   <function name="EnableTurnScript" parameters="turnscript">
     turnscript.enabled = true
   </function>

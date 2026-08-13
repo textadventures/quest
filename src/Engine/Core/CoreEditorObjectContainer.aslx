@@ -1,4 +1,4 @@
-﻿<library>
+<library>
   <tab>
     <parent>_ObjectEditor</parent>
     <caption>[EditorObjectContainerContainer]</caption>
@@ -66,8 +66,8 @@
       <controltype>label</controltype>
       <caption>[EditorObjectContainerOpenableNote]</caption>
       <mustinherit>openable</mustinherit>
-    </control>    
-    
+    </control>
+
     <control>
       <controltype>checkbox</controltype>
       <caption>[EditorObjectContainerTransparent]</caption>
@@ -136,7 +136,7 @@
       <nullable/>
       <onlydisplayif>game.feature_limitinventory</onlydisplayif>
     </control>
-  
+
     <control>
       <controltype>textbox</controltype>
       <attribute>openmsg</attribute>
@@ -171,8 +171,8 @@
       <controltype>label</controltype>
       <caption>[EditorObjectContainerContainerNote]</caption>
       <onlydisplayif>DoesInherit(this, "container_base") and not DoesInherit(this, "surface")</onlydisplayif>
-    </control>    
-    
+    </control>
+
     <control>
       <controltype>script</controltype>
       <caption>[EditorObjectContainerAddScript]</caption>
@@ -184,10 +184,7 @@
       <controltype>label</controltype>
       <caption>[EditorObjectContainerAddScriptNote]</caption>
       <onlydisplayif>DoesInherit(this, "container_base") and not DoesInherit(this, "container_limited")</onlydisplayif>
-    </control>    
-    
-    
-    
+    </control>
 
     <control>
       <controltype>title</controltype>
@@ -319,7 +316,7 @@
       <controltype>label</controltype>
       <caption>[EditorObjectContainerLockNote]</caption>
       <mustinherit>container_lockable</mustinherit>
-    </control>    
-    
+    </control>
+
   </tab>
 </library>

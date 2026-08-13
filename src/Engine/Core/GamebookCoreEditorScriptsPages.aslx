@@ -1,4 +1,4 @@
-﻿<library>
+<library>
   <editor>
     <appliesto>(function)MovePlayer</appliesto>
     <display>[EditorGBMovePlayerToX]</display>
@@ -18,7 +18,7 @@
       <simpleeditor>objects</simpleeditor>
     </control>
   </editor>
-  
+
   <editor>
     <appliesto>(function)AddPageLink</appliesto>
     <display>[EditorGBAddLinkFromXToY]</display>

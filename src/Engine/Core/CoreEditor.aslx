@@ -1,4 +1,4 @@
-﻿<library type="editor">
+<library type="editor">
 
   <implied element="control" property="height" type="int"/>
   <implied element="control" property="width" type="int"/>
@@ -19,7 +19,7 @@
   <type name="editor_player">
     <feature_player />
   </type>
-  
+
   <editor name="_RichTextControl_TextProcessorCommands">
     <data type="list">
       <value type="stringdictionary">

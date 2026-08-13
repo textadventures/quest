@@ -1,7 +1,7 @@
-﻿<library>
+<library>
 
   <implied element="editor" property="pattern" type="simplepattern"/>
-  
+
   <editor>
     <pattern>HasSeenPage(#page#)</pattern>
     <create>HasSeenPage()</create>

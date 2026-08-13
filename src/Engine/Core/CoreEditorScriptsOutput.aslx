@@ -1,4 +1,4 @@
-﻿<library>
+<library>
   <editor>
     <appliesto>msg</appliesto>
     <display>Print #0</display>
@@ -93,8 +93,8 @@
       <attribute>1</attribute>
       <simpleeditor>boolean</simpleeditor>
     </control>
-  </editor>  
-  
+  </editor>
+
   <editor>
     <appliesto>picture</appliesto>
     <display>Show picture #0</display>
@@ -400,7 +400,7 @@
       <controltype>label</controltype>
       <caption>[EditorScriptsOutputDisplaylink]</caption>
     </control>
-    
+
     <control>
       <controltype>expression</controltype>
       <attribute>0</attribute>
@@ -467,11 +467,7 @@
       <expand/>
     </control>
   </editor>
- 
- 
- 
- 
- 
+
   <editor>
     <appliesto>(function)WaitForKeyPress</appliesto>
     <display>Wait for key press</display>

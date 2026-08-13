@@ -1,13 +1,12 @@
-﻿<library>  
+<library>
   <!-- Contributed by Pertex -->
   <!-- nicht übersetzte Templates werden aus der English.aslx übernommen -->
   <include ref="English.aslx"/>
-  
+
   <!-- Contributed by SoonGames -->
   <include ref="EditorDeutsch.aslx"/>
-  
-  <template name="LanguageId">de</template>
 
+  <template name="LanguageId">de</template>
 
   <template name="WantRestartGame">Bist du sicher, dass du das Spiel neu starten willst?</template>
   <template name="Again1">Wiederholen</template>
@@ -51,22 +50,22 @@
   <template name="SwitchOn">Schalte an</template>
   <template name="SwitchOff">Schalte aus</template>
   <template name="Open">Öffne</template>
-  <template name="Close">Schließe</template> 
+  <template name="Close">Schließe</template>
   <dynamictemplate name="ObjectNotOpen">CapFirst(object.gender) + " " + GetPrefix (object,"sein") + " nicht offen."</dynamictemplate>
   <template name="NeutralGender">es</template>
   <template name="MaleGender">er</template>
   <template name="FemaleGender">sie</template>
   <template name="SelfGender">du</template>
   <template name="NeutralPluralGender">sie</template>
-  <template name="MalePluralGender">sie</template> 
-  <template name="FemalePluralGender">sie</template> 
+  <template name="MalePluralGender">sie</template>
+  <template name="FemalePluralGender">sie</template>
   <template name="NeutralArticle">es</template>
   <template name="MaleArticle">ihn</template>
   <template name="FemaleArticle">sie</template>
   <template name="SelfArticle">dich</template>
   <template name="NeutralPluralArticle">sie</template>
   <template name="MalePluralArticle">sie</template>
-  <template name="FemalePluralArticle">sie</template> 
+  <template name="FemalePluralArticle">sie</template>
   <template name="NeutralPossessive">sein</template>
   <template name="MalePossessive">sein</template>
   <template name="FemalePossessive">ihr</template>
@@ -80,7 +79,7 @@
   <template name="ParserIgnorePrefixes">der; die; das; ein; eine; einen; den;</template>
   <template name="Score">Punkte</template>
   <template name="Health">Gesundheit</template>
-  <template name="Money">Geld</template>  
+  <template name="Money">Geld</template>
   <dynamictemplate name="AlreadyOpen">CapFirst(object.gender) + " " + GetPrefix (object,"sein") +" bereits offen."</dynamictemplate>
   <dynamictemplate name="AlreadyClosed">CapFirst(object.gender) + " " + GetPrefix (object,"sein") + " bereits geschlossen."</dynamictemplate>
   <dynamictemplate name="CantOpen">"Du kannst " + object.article + " nicht öffnen."</dynamictemplate>
@@ -109,7 +108,7 @@
   <dynamictemplate name="AlreadySwitchedOn">CapFirst(object.gender) + " " + GetPrefix (object,"sein") + " bereits angeschaltet."</dynamictemplate>"
   <dynamictemplate name="AlreadySwitchedOff">CapFirst(object.gender) + " " + GetPrefix (object,"sein") + " bereits ausgeschaltet."</dynamictemplate>"
   <dynamictemplate name="SwitchedOn">"Du schaltest " + object.article + " an."</dynamictemplate>
-  <dynamictemplate name="SwitchedOff">"Du schaltest " + object.article + " aus."</dynamictemplate>  
+  <dynamictemplate name="SwitchedOff">"Du schaltest " + object.article + " aus."</dynamictemplate>
   <dynamictemplate name="Eaten">"Du isst " + object.article + "."</dynamictemplate>
   <template name="DefaultOops">Da gibt es nichts zu korrigieren.</template>
   <dynamictemplate name="ObjectDoesNotContain">CapFirst(GetDisplayAlias(object1)) + " enthält " + " " + GetPrefix (object2,"kein")  + " " + GetDisplayAlias(object2) + "."</dynamictemplate>
@@ -188,7 +187,7 @@
   <template name="InOutDirectionPrefix"></template>
   <template name="InOutDirectionSuffix"></template>
   <template name="InventoryLabel">Inventar</template>
-  <template name="StatusLabel">Status</template>  
+  <template name="StatusLabel">Status</template>
   <template name="PlacesObjectsLabel">Orte und Objekte</template>
   <template name="CompassLabel">Kompass</template>
   <template name="InButtonLabel">rein</template>
@@ -219,7 +218,7 @@
   <verbtemplate name="speakto">rede mit</verbtemplate>
   <verbtemplate name="open">öffne</verbtemplate>
   <verbtemplate name="close">schließe</verbtemplate>
-  <template templatetype="command" name="put"><![CDATA[^lege (?<object1>.*) (auf|in) (?<object2>.*)$]]></template>  
+  <template templatetype="command" name="put"><![CDATA[^lege (?<object1>.*) (auf|in) (?<object2>.*)$]]></template>
   <template templatetype="command" name="removefrom"><![CDATA[^entferne (?<object1>.*) (von|aus) (?<object2>.*)$|^nimm (?<object1>.*) (von|aus) (?<object2>.*)$]]></template>
   <template templatetype="command" name="ask"><![CDATA[^frage (?<object>.*) nach (?<text>.*)$]]></template>
   <template templatetype="command" name="tell"><![CDATA[^erzähle (?<object>.*) von (?<text>.*)$|^rede mit (?<object>.*) über (?<text>.*)$]]></template>
@@ -308,11 +307,11 @@
   <verbtemplate name="turnoff">schalte aus #object#</verbtemplate>
   <verbtemplate name="turnoff">schalt aus #object#</verbtemplate>
   <verbtemplate name="turnoff">schalte #object# aus</verbtemplate>
-  <verbtemplate name="turnoff">schalt #object# aus</verbtemplate> 
+  <verbtemplate name="turnoff">schalt #object# aus</verbtemplate>
   <verbtemplate name="turnoff">schalte ab #object#</verbtemplate>
   <verbtemplate name="turnoff">schalt ab #object#</verbtemplate>
   <verbtemplate name="turnoff">schalte #object# ab</verbtemplate>
-  <verbtemplate name="turnoff">schalt #object# ab</verbtemplate> 
+  <verbtemplate name="turnoff">schalt #object# ab</verbtemplate>
   <dynamictemplate name="DefaultTurnOff">"Du kannst dies nicht abschalten."</dynamictemplate>
   <verbtemplate name="turn">drehe</verbtemplate>
   <verbtemplate name="turn">wende</verbtemplate>
@@ -330,10 +329,10 @@
   <dynamictemplate name="DefaultUntie">"Du kannst " + object.article + " nicht lösen."</dynamictemplate>
   <template templatetype="command" name="useon"><![CDATA[^benutze (?<object1>.*) mit (?<object2>.*)$]]></template>
   <dynamictemplate name="DefaultUseOn">"Du kannst " + object2.article + " so nicht benutzen."</dynamictemplate>
-  <verbtemplate name="wear">ziehe an #object#</verbtemplate> 
-  <verbtemplate name="wear">zieh an #object#</verbtemplate> 
-  <verbtemplate name="wear">ziehe #object# an</verbtemplate> 
-  <verbtemplate name="wear">zieh #object# an</verbtemplate>   
+  <verbtemplate name="wear">ziehe an #object#</verbtemplate>
+  <verbtemplate name="wear">zieh an #object#</verbtemplate>
+  <verbtemplate name="wear">ziehe #object# an</verbtemplate>
+  <verbtemplate name="wear">zieh #object# an</verbtemplate>
   <dynamictemplate name="DefaultWear">"Du kannst " + object.article + " nicht anziehen."</dynamictemplate>
   <template templatetype="command" name="listen">^lausche$|^höre$|^hoere$</template>
   <template name="DefaultListen">Du hörst nichts Besonderes.</template>
@@ -359,7 +358,7 @@
    X... entspricht UNTERSUCHE..., I zeigt das Inventar,
    die Himmelrichtungen können auch über N, S, W, O, NW, SO abgekürzt werden, dazu noch H für hoch und R für runter.
    ]]></template>
-   
+
    <type name="maleobject">
     <displayverbs type="simplestringlist">[LookAt];[Take]</displayverbs>
     <gender>[MaleGender]</gender>
@@ -383,98 +382,97 @@
     <gender>[FemalePluralGender]</gender>
     <article>[FemalePluralArticle]</article>
   </type>
-  
-  <template name="EditorVerbDefaultExpression">"Das kannst Du nicht machen."</template>
-  
-  <function name="GetDefaultPrefix" type="string" parameters="obj">
-		return(GetPrefix(obj,"ein"))
-  </function>
-  
-	<function name="GetPrefix" type="string" parameters="obj,type">
-	<!-- type: 	"der" 	für der, die das
-				"ein"	für ein, eine, einer
-				"kein"	für kein, keine, keiner
-				"sein"	für bin, bist, ist
-				"er"	für er, sie, es
-				"ihn"   für ihn, sie, es 
-	-->			
-		if ( DoesInherit (obj, "male") or DoesInherit (obj, "maleobject") ) {
-			if (type="der") { return ("der") }
-			else if (type="ein") { return ("einen") }
-			else if (type="kein") { return ("keinen") }
-			else if (type="sein") { return ("ist") }
-			else if (type="er") { return ("er") }
-			else if (type="ihn") { return ("ihn") }
-		} else if ( DoesInherit (obj, "female") or DoesInherit (obj, "femaleobject") ) {
-			if (type="der") { return ("die") }
-			else if (type="ein") { return ("eine") }
-			else if (type="kein") { return ("keine") }
-			else if (type="sein") { return ("ist") }
-			else if (type="er") { return ("sie") }
-			else if (type="ihn") { return ("sie") }
-		} else if ( DoesInherit (obj, "maleobjectplural") or DoesInherit (obj, "maleplural") or DoesInherit (obj, "femaleobjectplural") or DoesInherit (obj, "femaleplural") or DoesInherit (obj, "plural")) {
-			if (type="der") { return ("die") }
-			else if (type="ein") { return ("") }
-			else if (type="kein") { return ("keine") }
-			else if (type="sein") { return ("sind") }
-			else if (type="er") { return ("sie") }
-			else if (type="ihn") { return ("sie") }
-		} else { 
-			if (type="der") { return ("das") }
-			else if (type="ein") { return ("ein") }
-			else if (type="kein") { return ("kein") }
-			else if (type="sein") { return ("ist") }
-			else if (type="er") { return ("es") }
-			else if (type="ihn") { return ("es") }
-		}
-	</function>	
-	
-	<function name="containerOrSurface" type="string" parameters="obj">
-	if ( DoesInherit (obj, "surface")  ){
-		return("Darauf befindet sich")
-	} else {
-		return(CapFirst(GetPrefix (obj,"er")) + " enthält")
-	}
-	</function>	
 
+  <template name="EditorVerbDefaultExpression">"Das kannst Du nicht machen."</template>
+
+  <function name="GetDefaultPrefix" type="string" parameters="obj">
+    return(GetPrefix(obj,"ein"))
+  </function>
+
+  <function name="GetPrefix" type="string" parameters="obj,type">
+  <!-- type: 	"der" 	für der, die das
+        "ein"	für ein, eine, einer
+        "kein"	für kein, keine, keiner
+        "sein"	für bin, bist, ist
+        "er"	für er, sie, es
+        "ihn"   für ihn, sie, es
+  -->
+    if ( DoesInherit (obj, "male") or DoesInherit (obj, "maleobject") ) {
+      if (type="der") { return ("der") }
+      else if (type="ein") { return ("einen") }
+      else if (type="kein") { return ("keinen") }
+      else if (type="sein") { return ("ist") }
+      else if (type="er") { return ("er") }
+      else if (type="ihn") { return ("ihn") }
+    } else if ( DoesInherit (obj, "female") or DoesInherit (obj, "femaleobject") ) {
+      if (type="der") { return ("die") }
+      else if (type="ein") { return ("eine") }
+      else if (type="kein") { return ("keine") }
+      else if (type="sein") { return ("ist") }
+      else if (type="er") { return ("sie") }
+      else if (type="ihn") { return ("sie") }
+    } else if ( DoesInherit (obj, "maleobjectplural") or DoesInherit (obj, "maleplural") or DoesInherit (obj, "femaleobjectplural") or DoesInherit (obj, "femaleplural") or DoesInherit (obj, "plural")) {
+      if (type="der") { return ("die") }
+      else if (type="ein") { return ("") }
+      else if (type="kein") { return ("keine") }
+      else if (type="sein") { return ("sind") }
+      else if (type="er") { return ("sie") }
+      else if (type="ihn") { return ("sie") }
+    } else {
+      if (type="der") { return ("das") }
+      else if (type="ein") { return ("ein") }
+      else if (type="kein") { return ("kein") }
+      else if (type="sein") { return ("ist") }
+      else if (type="er") { return ("es") }
+      else if (type="ihn") { return ("es") }
+    }
+  </function>
+
+  <function name="containerOrSurface" type="string" parameters="obj">
+  if ( DoesInherit (obj, "surface")  ){
+    return("Darauf befindet sich")
+  } else {
+    return(CapFirst(GetPrefix (obj,"er")) + " enthält")
+  }
+  </function>
 
   <function name="ToWords" parameters="number" type="string"><![CDATA[
-	if (not TypeOf(number) = "int") error ("ToWords kann nur Ganzzahlen verarbeiten") 
-	
-	getZahl_in_Worten = getZehner(Right(ToString(number), 2))
+  if (not TypeOf(number) = "int") error ("ToWords kann nur Ganzzahlen verarbeiten")
+
+  getZahl_in_Worten = getZehner(Right(ToString(number), 2))
     if (number > 99) {
-		getZahl_in_Worten = getEiner(Left(ToString(number), 1)) + "hundert" + getZahl_in_Worten
-	} ]]>
-	return (getZahl_in_Worten)
-	</function>
-	
+    getZahl_in_Worten = getEiner(Left(ToString(number), 1)) + "hundert" + getZahl_in_Worten
+  } ]]>
+  return (getZahl_in_Worten)
+  </function>
+
 <function name="getEiner" parameters="curEiner" type="string">
     getEiner = ""
-	switch (ToInt(curEiner)) {
-		case (1) {
-			getEiner = "ein"}
-		case (2) {
-			getEiner = "zwei"}
-		case (3) {
-			getEiner = "drei"}
-		case (4) {
-			getEiner = "vier"}
-		case (5) {
-			getEiner = "fünf"}
-		case (6) {
-			getEiner = "sechs"}
-		case (7) {
-			getEiner = "sieben"}
-		case (8) {
-			getEiner = "acht"}
-		case (9) {
-			getEiner = "neun"}
+  switch (ToInt(curEiner)) {
+    case (1) {
+      getEiner = "ein"}
+    case (2) {
+      getEiner = "zwei"}
+    case (3) {
+      getEiner = "drei"}
+    case (4) {
+      getEiner = "vier"}
+    case (5) {
+      getEiner = "fünf"}
+    case (6) {
+      getEiner = "sechs"}
+    case (7) {
+      getEiner = "sieben"}
+    case (8) {
+      getEiner = "acht"}
+    case (9) {
+      getEiner = "neun"}
     }
-	return (getEiner)
+  return (getEiner)
 </function>
 
-<function name="getZehner" parameters="curZehner" type="string"><![CDATA[	
-	switch (ToInt(curZehner)) {
+<function name="getZehner" parameters="curZehner" type="string"><![CDATA[
+  switch (ToInt(curZehner)) {
         case (1) {
             getZehner = "eins"}
         case (2) {
@@ -514,44 +512,44 @@
         case (19) {
             getZehner = "neunzehn"}
         default {
-			tmpEiner = getEiner(Right(curZehner, 1))
+      tmpEiner = getEiner(Right(curZehner, 1))
             if (tmpEiner <> "") {
-				tmpEiner = tmpEiner + "und"
-			}
-			switch (ToInt(Left(curZehner, 1)) * 10) {    
-				case (20) {
-					getZehner = tmpEiner + "zwanzig"}
-				case (30) {
-					getZehner = tmpEiner + "dreißig"}
-				case (40) {
-					getZehner = tmpEiner + "vierzig"}
-				case (50) {
-					getZehner = tmpEiner + "fünfzig"}
-				case (60) {
-					getZehner = tmpEiner + "sechzig"}
-				case (70) {
-					getZehner = tmpEiner + "siebzig"}
-				case (80) {
-					getZehner = tmpEiner + "achtzig"}
-				case (90) {
-					getZehner = tmpEiner + "neunzig"}
-				}
-		}
-	}
-	return (getZehner)
-	]]>
+        tmpEiner = tmpEiner + "und"
+      }
+      switch (ToInt(Left(curZehner, 1)) * 10) {
+        case (20) {
+          getZehner = tmpEiner + "zwanzig"}
+        case (30) {
+          getZehner = tmpEiner + "dreißig"}
+        case (40) {
+          getZehner = tmpEiner + "vierzig"}
+        case (50) {
+          getZehner = tmpEiner + "fünfzig"}
+        case (60) {
+          getZehner = tmpEiner + "sechzig"}
+        case (70) {
+          getZehner = tmpEiner + "siebzig"}
+        case (80) {
+          getZehner = tmpEiner + "achtzig"}
+        case (90) {
+          getZehner = tmpEiner + "neunzig"}
+        }
+    }
+  }
+  return (getZehner)
+  ]]>
 </function>
 
   <template templatetype="command" name="log_cmd">^(zeige |zeig |)(log|protokoll)$</template>
   <template templatetype="command" name="transcript_on_cmd">^(transkript|skript)( an|)$|^aktiviere (skript|transkript)$</template>
   <template templatetype="command" name="transcript_off_cmd">^(transkript|skript) aus$|^deaktiviere (skript|transkript)$</template>
   <template templatetype="command" name="view_transcript_cmd">^(zeige|zeig) (das |)(skript|transkript)$</template>
-  <template templatetype="command" name="version_cmd">^(version|info|über)$</template>  
+  <template templatetype="command" name="version_cmd">^(version|info|über)$</template>
   <verbtemplate name="enter">betrete</verbtemplate>
   <verbtemplate name="enter">gehe</verbtemplate>
   <verbtemplate name="enter">gehe in</verbtemplate>
   <dynamictemplate name="DefaultEnter">"Du kannst " + object.article + " nicht betreten."</dynamictemplate>
-  
+
   <template name="NoTranscriptFeature">Dieses Spiel unterstützt kein Transkript.</template>
   <template name="TranscriptAlreadyEnabled">Das Tanskript ist schon aktiviert.</template>
   <template name="TranscriptDisabled">Ende des Transkripts.</template>

@@ -1,8 +1,5 @@
 <library>
 
-
-
-
   <!--
   This is where command handling starts, and is called from the Quest sub-system.
   command is the text.
@@ -48,7 +45,7 @@
       }
     }
     if (not handled) {
-      StartTurnOutputSection    
+      StartTurnOutputSection
       shownlink = false
       if (game.echocommand) {
         if (metadata <> null and game.enablehyperlinks and game.echohyperlinks) {
@@ -78,7 +75,7 @@
         msg ("")
       }
       game.pov.commandmetadata = metadata
-      if (game.multiplecommands){		
+      if (game.multiplecommands){
         commands = Split(command, ".")
         if (ListCount(commands) = 1) {
           game.pov.commandqueue = null
@@ -91,13 +88,12 @@
       }
       else {
         game.pov.commandqueue = null
-        HandleSingleCommand (Trim(command))	
+        HandleSingleCommand (Trim(command))
       }
     }
     ]]>
   </function>
 
-  
   <!--
   Recursively iterates through each command in the input string, calling HandleSingleCommand
   (which in turn calls this).
@@ -129,7 +125,6 @@
     }
   </function>
 
-  
   <!--
   Handles a single command
   -->
@@ -162,10 +157,10 @@
           list add (candidates, cmd)
         }
       }
-      
+
       maxstrength = -1
       thiscommand = null
-          
+
       // Pick the best match
       foreach (candidate, candidates) {
         strength = GetMatchStrength(candidate.pattern, command, candidate.name)
@@ -186,7 +181,7 @@
           }
         }
       }
-      
+
       if (thiscommand = null) {
         // A {page:...} link (CorePages.aslx) reached from outside any active
         // dialogue - e.g. embedded in an ordinary object's description rather
@@ -230,44 +225,42 @@
     ]]>
   </function>
 
-  
   <!--
   By the time we get here, we have a single command and have matched it to a command object (thiscommand).
   We have a list of objects to match to (object1="book"; object2="table"), but now have to match the word to the object
   This does some housekeeping, then calls ResolveNextName to kick off the process
   Note: This is called by the OOPS command, and I suspect that is why varlist is sent as an attribute
-  
+
   Say the command is PUT THE HAT IN BOX, and the pattern in put #object1# in #object2#.
   varlist is object1=THE HAT;object2=BOX
   -->
   <function name="HandleSingleCommandPattern" parameters="command, thiscommand, varlist">
     // current command string
     game.pov.currentcommand = command
-    
+
     // current command object
     game.pov.currentcommandpattern = thiscommand
-    
+
     // string dictionary of variables, e.g. object1="book"; object2="table"
     game.pov.currentcommandvarlist = varlist
-    
+
     // string list of variables left to resolve
     game.pov.currentcommandvarlistqueue = NewStringList()
     foreach (key, varlist) {
       list add (game.pov.currentcommandvarlistqueue, key)
     }
-    
+
     // dictionary of resolved elements, e.g. object1=book_object; object2=table_object
     game.pov.currentcommandresolvedelements = NewDictionary()
-    
+
     // list of resolved elements, e.g. book_object; table_object
     game.pov.currentcommandresolvedobjects = NewObjectList()
-    
+
     game.pov.currentcommandunresolvedobject = null
     game.pov.currentcommandpendingvariable = null
     ResolveNextName
   </function>
-  
-  
+
   <!--
   Tries to resolve the next item in the list of objects/exts/texts with ResolveName
   If an object is recognised, AddToResolvedNames is called, and UnresolvedCommand otherwise.
@@ -402,7 +395,7 @@
       HandleNextCommandQueueItem
     }
   ]]></function>
-  
+
   <!--
   Adds var and result to game.pov.currentcommandresolvedelements
   Say the command is PUT THE HAT IN BOX, the pattern is put #object1# in #object2#, and there is an object pink_hat.
@@ -429,22 +422,21 @@
     ResolveNextName
   </function>
 
-  
   <!--
   Tries to match an object to a name, returning the object if successful.
   Say the command is PUT THE HAT IN BOX, the pattern is put #object1# in #object2#, and there is an object pink_hat.
   The first iteration, variable will be "object1", value is "THE HAT", objtype is "object"
   and the result will be the pink_hat object.
-  
+
   I think the first bit is a shortcut for when the player clicks a link with the object name, quickly matching
   against values in a dictionary.
   Uses ResolveNameInternal to actually find the object, after putting the text in lowercase.
   Also tries after stripping of prefixes (eg "the")
-  
+
   Note that variable is what was previously called var!
-  
+
   This is is the ortiginal comment for this function - I do not understand what it means about variable:
-  
+
   ResolveName function
   Parameters: variable    - for single object commands. If we show a menu, key to populate in game.pov.currentcommandresolvedelements.
                             Leave blank for multi-object commands. In this case, we add the object to game.pov.currentcommandpendingobjectlist
@@ -454,7 +446,7 @@
   <function name="ResolveName" parameters="variable, value, objtype" type="object">
     <![CDATA[
     found = false
-    
+
     if (game.pov.commandmetadata <> null) {
       if (DictionaryContains(game.pov.commandmetadata, value)) {
         result = GetObject(StringDictionaryItem(game.pov.commandmetadata, value))
@@ -466,7 +458,7 @@
         }
       }
     }
-    
+
     if (not found) {
       value = LCase(value)
       result = ResolveNameInternal(variable, value, objtype)
@@ -480,31 +472,30 @@
             result = ResolveNameInternal(variable, Mid(value, LengthOf(prefix) + 1), objtype)
           }
         }
-      
+
         if (result = null and LengthOf(variable) = 0 and not GetBoolean(game.pov, "currentcommandmultiobjectpending")) {
           UnresolvedCommand (value, game.pov.currentcommandpendingvariable)
         }
-      
+
         return (result)
       }
     }
     ]]>
   </function>
-  
-  
+
   <!--
   Tries to match an object to a name, returning the object if successful.
   Say the command is PUT THE HAT IN BOX, the pattern is put #object1# in #object2#, and there is an object pink_hat.
   The first iteration, variable will be "object1", value is "hat", objtype is "object"
   and the result will be the pink_hat object.
-  
+
   Uses GetScope get a list of possible objects from the right location, and uses ScopeVisible as a backup if that fails
   passing all these to ResolveNameFromList.
   -->
   <function name="ResolveNameInternal" parameters="variable, value, objtype" type="object">
     <![CDATA[
     game.pov.currentcommandmultiobjectpending = false
-    
+
     scope = GetScope(variable, value, objtype)
     if (HasString(game.pov.currentcommandpattern, "scope")) {
       secondaryscope = ScopeVisible()
@@ -512,11 +503,10 @@
     else {
       secondaryscope = null
     }
-    
+
     return (ResolveNameFromList(variable, value, objtype, scope, secondaryscope))
     ]]>
   </function>
-
 
   <!--
   Tries to match an object to a name, returning the object if successful.
@@ -532,7 +522,7 @@
     value = Trim(LCase(value))
     fullmatches = NewObjectList()
     partialmatches = NewObjectList()
-    
+
     foreach (obj, scope) {
       name = LCase(GetDisplayAlias(obj))
       CompareNames (name, value, obj, fullmatches, partialmatches)
@@ -542,7 +532,7 @@
         }
       }
     }
-    
+
     // allow referring to objects from the previous command by gender or article
 
     if (objtype = "object" and game.lastobjects <> null) {
@@ -555,7 +545,7 @@
     }
 
     // Also check the secondary scope, but only if we have not found anything yet
-    
+
     if (ListCount(fullmatches) = 0 and ListCount(partialmatches) = 0 and not secondaryscope = null) {
       foreach (obj, secondaryscope) {
         name = LCase(GetDisplayAlias(obj))
@@ -566,8 +556,8 @@
           }
         }
       }
-    }    
-    
+    }
+
     if (ListCount(fullmatches) = 1) {
       return (ListItem(fullmatches, 0))
     }
@@ -581,11 +571,11 @@
       // Added this line to resolve issue with new FinishTurn setup in 580
       game.disambiguating = true
       candidates = ListCompact(ListCombine(fullmatches, partialmatches))
-      
+
       if (LengthOf(variable) > 0) {
         // single object command, so after showing the menu, add the object to game.pov.currentcommandresolvedelements
         game.pov.currentcommandpendingvariable = variable
-      
+
         ShowMenu(DynamicTemplate("DisambiguateMenu", value), candidates, true) {
           varname = game.pov.currentcommandpendingvariable
           game.pov.currentcommandpendingvariable = null
@@ -596,23 +586,22 @@
       }
       else {
         // multi-object command, so after showing the menu, add the object to the list
-        
+
         game.pov.currentcommandmultiobjectpending = true
-        
+
         ShowMenu(DynamicTemplate("DisambiguateMenu", value), candidates, true) {
           if (result <> null) {
             list add (game.pov.currentcommandpendingobjectlist, GetObject(result))
             ResolveNextNameListItem
           }
-        }        
+        }
       }
-      
+
       return (null)
     }
     ]]>
   </function>
-  
-  
+
   <!--
   An alternative way to match objects to name. This is used for commands with a "multipleobjects" script, which will return
   the correct scope.
@@ -626,12 +615,12 @@
   Not sure if objtype is needed; is this relevant for anything other than objects?
 
   Original comments:
-  
+
   ResolveNameList function
   Parameters: value     - value to resolve into the object list e.g. "book", "all", "newspaper, book and magazine"
               scope     - objectlist to use if value is "all"
               objtype   - object type, must be "object" or "exit"
-              
+
   Populates game.pov.currentcommandpendingobjectlist with the object names.
   Adds "multiple" entry to game.pov.currentcommandresolvedelements if there is more than one element.
   -->
@@ -640,7 +629,7 @@
     game.pov.currentcommandpendingobjectlist = NewObjectList()
     game.pov.currentcommandpendingobjectlistunresolved = NewStringList()
     game.pov.currentcommandpendingobjecttype = objtype
-    
+
     inputlist = Split(value, ",")
     foreach (inputbase, inputlist) {
       inputlist2 = Split(inputbase, " " + Template("And") + " ")
@@ -652,7 +641,6 @@
     ]]>
   </function>
 
-  
   <!--
   Tries to resolve the next name in the list. If there are more, calls ResolveNameListItem to do the next,
   which in turn calls this.
@@ -674,7 +662,7 @@
           }
           game.pov.currentcommandpendingobjectlistunresolved = newqueue
         }
-        
+
         ResolveNameListItem(Trim(thisitem))
       }
       else {
@@ -684,13 +672,12 @@
     else {
       resolvedall = true
     }
-    
+
     if (resolvedall) {
       ResolveNameListItemFinished(game.pov.currentcommandpendingobjectlist)
     }
   </function>
 
-  
   <!--
   Tries to resolve the next name in the list. If there are more, calls ResolveNextNameListItem to do the next,
   which in turn calls this.
@@ -700,7 +687,7 @@
     <![CDATA[
     if (ListContains(game.allobjects, value)) {
       // value is "all"
-      
+
       if (not DictionaryContains(game.pov.currentcommandresolvedelements, "multiple")) {
         dictionary add (game.pov.currentcommandresolvedelements, "multiple", true)
       }
@@ -718,7 +705,6 @@
     ]]>
   </function>
 
-  
   <!--
   Calls AddToResolvedNames now they have all been done.
   -->
@@ -729,24 +715,11 @@
         dictionary add (game.pov.currentcommandresolvedelements, "multiple", true)
       }
     }
-    
+
     AddToResolvedNames(game.pov.currentcommandpendingvariable, result)
     ]]>
   </function>
 
-  
-  
-  
-  
-
-
-
-
-
-  
-  
-  
-  
   <!--
   This is called when an object cannot be resolved
   -->
@@ -754,7 +727,7 @@
     // TO DO: Update names below, we don't need these two variables
     unresolvedobject = objectname
     unresolvedkey = varname
-    
+
     if (HasString(game.pov.currentcommandpattern, "unresolved")) {
       if (ListCount(game.pov.currentcommandvarlist) > 1) {
         msg (game.pov.currentcommandpattern.unresolved + " (" + unresolvedobject + ")")
@@ -778,8 +751,7 @@
     game.unresolvedcommandvarlist = game.pov.currentcommandvarlist
     game.unresolvedcommandkey = unresolvedkey
   </function>
-  
-  
+
   <!--
   Used in the verb type
   -->
@@ -802,8 +774,7 @@
         msg (default)
       }
     }
-  </function>  
-
+  </function>
 
   <!--
   Gets a list of objects to try to match against. Exactly where that list comes from can be
@@ -908,14 +879,14 @@
       items = ObjectListCompact(items)
     }
     return (items)
-  ]]></function>  
+  ]]></function>
 
   <!--
   Extracts from the scopestring the bit relevant for this variable.
   From "object1=nothing|object2=sometext|object3=blank", "object2" is will return "sometext"
   Returns the string as is if there is no |.
   Returns "all" if it cannot work out what to do.
-  -->  
+  -->
   <function name="GetScoping" parameters="scopestring, variable" type="string">
     lst = Split(scopestring, "|")
     if (ListCount(lst) = 1) {
@@ -928,7 +899,6 @@
     }
     return ("all")
   </function>
-
 
   <!--
   Compares name (or an object) to value (what the player typed)
@@ -958,8 +928,7 @@
       }
     }
   </function>
-  
-  
+
   <!--
   This was previously used in disambiguation, but is no longer, as ShowMenu
   can now take an object list. This makes it obsolete, as I cannot imagine

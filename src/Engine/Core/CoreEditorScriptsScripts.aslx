@@ -1,4 +1,4 @@
-﻿<library>
+<library>
   <editor>
     <appliesto>@failed</appliesto>
 
@@ -6,7 +6,7 @@
       <controltype>label</controltype>
       <caption>[EditorScriptsScriptsFailedtoload]</caption>
     </control>
-    
+
     <control>
       <controltype>textbox</controltype>
       <attribute>0</attribute>
@@ -16,7 +16,7 @@
       <breakbefore/>
     </control>
   </editor>
-  
+
   <editor>
     <appliesto>//</appliesto>
     <category>[EditorScriptsScriptsScripts]</category>
@@ -32,7 +32,7 @@
     </control>
 
   </editor>
-  
+
   <editor>
     <appliesto>if</appliesto>
     <category>[EditorScriptsScriptsScripts]</category>
@@ -59,7 +59,7 @@
       <attribute>0</attribute>
       <caption>[EditorScriptsScriptsRunscript]</caption>
     </control>
-    
+
     <control>
       <controltype>label</controltype>
       <caption>[EditorScriptsScriptsOtherwise]</caption>
@@ -70,7 +70,7 @@
       <controltype>script</controltype>
       <attribute>1</attribute>
       <caption>[EditorScriptsScriptsRunscript]</caption>
-    </control>    
+    </control>
   </editor>
 
   <editor>

@@ -1,4 +1,4 @@
-﻿<library>
+<library>
   <editor>
     <appliesto>finish</appliesto>
     <display>Finish the game</display>
@@ -42,5 +42,5 @@
       <simple>text</simple>
     </control>
   </editor>
-  
+
 </library>

@@ -1,4 +1,4 @@
-﻿<library>
+<library>
   <editor name="_GameEditor">
     <appliesto>game</appliesto>
     <tab>
@@ -85,12 +85,6 @@
 
     </tab>
 
-    
-    
-    
-    
-    
-    
     <tab>
       <caption>[EditorGameFeatures]</caption>
 
@@ -134,13 +128,13 @@
         <controltype>checkbox</controltype>
         <caption>[EditorGameAnnotations]</caption>
         <attribute>feature_annotations</attribute>
-      </control>	  
+      </control>
 
       <control>
         <controltype>checkbox</controltype>
         <caption>[EditorGameAdvancedWearables]</caption>
         <attribute>feature_advancedwearables</attribute>
-      </control>	  
+      </control>
 
       <control>
         <controltype>checkbox</controltype>
@@ -159,7 +153,7 @@
         <caption>[EditorGameMultipleCommands]</caption>
         <attribute>multiplecommands</attribute>
       </control>
-    
+
     </tab>
 
     <tab>
@@ -328,18 +322,18 @@
         <attribute>deactivatecommandlinks</attribute>
         <onlydisplayif>game.enablehyperlinks</onlydisplayif>
       </control>
-      
+
       <control>
         <controltype>title</controltype>
         <caption>[EditorGameShowMenuOptionsCaption]</caption>
       </control>
-      
+
       <control>
         <controltype>checkbox</controltype>
         <caption>[EditorGameDoNotClearMenus]</caption>
         <attribute>donotclearmenus</attribute>
       </control>
-      
+
       <control>
         <controltype>checkbox</controltype>
         <caption>[EditorGameShowMenuResponses]</caption>
@@ -406,12 +400,6 @@
 
     </tab>
 
-    
-    
-    
-    
-
-    
     <tab>
       <caption>[EditorGameInterface]</caption>
 
@@ -471,8 +459,6 @@
         <attribute>respondtogridclicks</attribute>
       </control>
 
-
-      
       <control>
         <controltype>title</controltype>
         <caption>[EditorGamePanesCaption]</caption>
@@ -534,7 +520,6 @@
         <onlydisplayif>game.showpanes</onlydisplayif>
       </control>
 
-
       <control>
         <controltype>title</controltype>
         <caption>[EditorGameCommandBarCaption]</caption>
@@ -567,18 +552,16 @@
         <onlydisplayif>game.showcommandbar and not game.borderlesscursor</onlydisplayif>
       </control>
 
-      
       <control>
         <controltype>title</controltype>
         <caption>[EditorGameLocationCaption]</caption>
       </control>
-      
+
       <control>
         <controltype>checkbox</controltype>
         <caption>[EditorGameShowlocation]</caption>
         <attribute>showlocation</attribute>
       </control>
-
 
       <control>
         <controltype>file</controltype>
@@ -605,7 +588,7 @@
         <freetext/>
         <onlydisplayif>game.showlocation and not game.classiclocation</onlydisplayif>
       </control>
-      
+
       <control>
         <controltype>dropdown</controltype>
         <caption>[EditorGameLocationTextColour]</caption>
@@ -614,7 +597,7 @@
         <freetext/>
         <onlydisplayif>game.showlocation and not game.classiclocation</onlydisplayif>
       </control>
-      
+
       <control>
         <controltype>dropdown</controltype>
         <caption>[EditorGameLocationBorderColour]</caption>
@@ -623,12 +606,12 @@
         <freetext/>
         <onlydisplayif>game.showlocation and not game.classiclocation</onlydisplayif>
       </control>
-      
+
       <control>
         <controltype>title</controltype>
         <caption>[EditorGameBorderCaption]</caption>
       </control>
-      
+
       <control>
         <controltype>checkbox</controltype>
         <caption>[EditorGameShowborder]</caption>
@@ -643,8 +626,7 @@
         <freetext/>
         <onlydisplayif>game.showborder</onlydisplayif>
       </control>
-      
-      
+
       <control>
         <controltype>title</controltype>
         <caption>[EditorGameLayout]</caption>
@@ -709,7 +691,6 @@
         <advanced/>
       </control>
 
-      
       <control>
         <controltype>title</controltype>
         <caption>[EditorGamePictureOptions]</caption>
@@ -727,15 +708,9 @@
         <attribute>clearframe</attribute>
         <onlydisplayif>game.feature_pictureframe</onlydisplayif>
       </control>
-      
+
     </tab>
 
-    
-    
-    
-    
-    
-    
     <tab>
       <caption>[EditorGameScript]</caption>
       <advanced/>
@@ -760,13 +735,7 @@
       </control>
 
     </tab>
-    
-    
-    
-    
 
-
-    
     <tab>
       <onlydisplayif>game.feature_advancedscripts</onlydisplayif>
       <caption>[EditorGameAdvancedScript]</caption>
@@ -791,12 +760,6 @@
       </control>
 
     </tab>
-    
-    
-
-
-    
-    
 
     <tab>
       <caption>[EditorGameRoomDescriptions]</caption>
@@ -899,7 +862,7 @@
         <caption>[EditorGameUseYouAreIn]</caption>
         <onlydisplayif>game.autodescription</onlydisplayif>
       </control>
-           
+
       <control>
         <controltype>checkbox</controltype>
         <attribute>autodescription_youarein_newline</attribute>
@@ -913,29 +876,23 @@
         <caption>[EditorGamePutanewline2]</caption>
         <onlydisplayif>game.autodescription</onlydisplayif>
       </control>
-      
+
       <control>
         <controltype>checkbox</controltype>
         <attribute>autodescription_youcango_newline</attribute>
         <caption>[EditorGamePutanewline3]</caption>
         <onlydisplayif>game.autodescription</onlydisplayif>
       </control>
-      
+
       <control>
         <controltype>checkbox</controltype>
         <attribute>autodescription_description_newline</attribute>
         <caption>[EditorGamePutanewline4]</caption>
         <onlydisplayif>game.autodescription</onlydisplayif>
       </control>
-      
+
     </tab>
 
-    
-    
-    
-    
-    
-    
     <tab>
       <caption>[EditorGamePlayer]</caption>
       <advanced/>
@@ -968,7 +925,7 @@
         <onlydisplayif>game.showmoney</onlydisplayif>
         <width>50</width>
       </control>
-      
+
       <control>
         <controltype>stringdictionary</controltype>
         <caption>[EditorGamePlayerobjectStatus]</caption>
@@ -979,12 +936,6 @@
       </control>
     </tab>
 
-    
-    
-    
-    
-    
-    
     <tab>
       <caption>[EditorGameAttributes]</caption>
       <advanced/>
@@ -1001,7 +952,7 @@
         <controltype>attributes</controltype>
         <expand/>
       </control>
-     
+
     </tab>
 
   </editor>

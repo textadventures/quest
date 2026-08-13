@@ -1,4 +1,4 @@
-﻿<asl version="600" templatetype="gamebook" template="Gamebook (Deutsch)">
+<asl version="600" templatetype="gamebook" template="Gamebook (Deutsch)">
 
   <!-- Overrides GamebookCore.aslx's GamebookEditorLibrary/LanguageId defaults
        (see the comment there) — these being declared directly in this

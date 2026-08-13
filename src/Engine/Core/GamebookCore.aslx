@@ -1,4 +1,4 @@
-﻿<library>
+<library>
   <!-- [Xxx]-in-<include ref> indirection, not a hardcoded EditorEnglish.aslx
        include: <caption> text (and everything else read by GetTemplate) is
        template-substituted eagerly at XML *parse* time (GameLoader.GetTemplate
@@ -273,7 +273,7 @@
       if (HasString(game, "optionsoutputsection")) {
         HideOutputSection(game.optionsoutputsection)
       }
-    }    
+    }
     if (not GetBoolean(game, "continuesound")) {
       stop sound
     }
@@ -296,8 +296,8 @@
             play sound (player.parent.sound, false, false)
             game.continuesound = GetBoolean(player.parent, "continuesound")
           }
-        } 
-    
+        }
+
         if (HasString(player.parent, "picture")) {
           if (LengthOf(player.parent.picture) > 0) {
             picture (player.parent.picture)
@@ -333,12 +333,12 @@
           }
         }
         EndOutputSection (game.optionsoutputsection)
-      }  
+      }
     }
     set (player.parent, "visited", true)
     ]]>
   </function>
-  
+
   <function name="StartNewOutputSection" type="string">
     if (not HasInt(game, "lastoutputsection")) {
       game.lastoutputsection = 0
@@ -385,7 +385,7 @@
     }
     set (game, counter, GetInt(game, counter) + value)
   </function>
-  
+
   <function name="IncreaseCounter" parameters="counter">
     if (not HasInt(game, counter)) {
       set (game, counter, 0)
@@ -414,7 +414,7 @@
     RemovePageLink (source, destination)
     dictionary add (source.options, destination.name, text)
   </function>
-  
+
   <function name="RemovePageLink" parameters="source, destination">
     if (source.options = null) {
       source.options = NewStringDictionary()
@@ -428,7 +428,6 @@
     player.parent = destination
   </function>
 
-<!-- Added by KV -->
   <function name="ShowMenu" parameters="caption, options, allowCancel, callback"><![CDATA[
     outputsection = StartNewOutputSection()
     msg (caption)
@@ -472,7 +471,7 @@
     game.menucallback = callback
     game.menuoutputsection = outputsection
   ]]></function>
-  
+
   <function name="ShowMenuResponse" parameters="option">
     if (game.menucallback = null) {
       error ("Unexpected menu response")
@@ -485,30 +484,28 @@
       invoke (script, parameters)
     }
   </function>
-  
+
   <function name="EscapeQuotes" parameters="s" type="string">
     s = Replace(s, "\"", "@@@doublequote@@@")
     s = Replace(s, "\'", "@@@singlequote@@@")
     return (s)
   </function>
-  
+
   <function name="UnescapeQuotes" parameters="s" type="string">
     s = Replace(s, "@@@doublequote@@@", "\"")
     s = Replace(s, "@@@singlequote@@@", "\'")
     return (s)
   </function>
-  
+
   <function name="ClearMenu">
     HideOutputSection (game.menuoutputsection)
     game.menuoutputsection = null
     game.menuoptions = null
     game.menucallback = null
   </function>
-  
-  <!-- Added to fix issue with first release of Quest 580 -->
+
   <function name="RequestSpeak" parameters="s">
     request (Speak, s)
   </function>
-<!-- End of addition by KV -->
 
 </library>

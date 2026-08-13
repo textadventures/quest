@@ -1,4 +1,4 @@
-﻿<library>
+<library>
   <editor name="_CommandEditor">
     <appliesto>command</appliesto>
 
@@ -30,8 +30,8 @@
         <editors>
           string=textbox
         </editors>
-      </control>      
-      
+      </control>
+
       <control>
         <caption>[EditorCommandScope]</caption>
         <controltype>textbox</controltype>

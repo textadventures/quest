@@ -1,4 +1,4 @@
-﻿<library>
+<library>
   <!-- Contributed by Mihnea Firan -->
   <!-- versiune 1.5.30307 -->
   <include ref="English.aslx"/>
@@ -165,7 +165,7 @@
   <template templatetype="command" name="ask"><![CDATA[^(îl|o|îi|le) întrebi pe (?<object>.*) despre (?<text>.*)$]]></template>
   <template templatetype="command" name="tell"><![CDATA[^îi spui lui (?<object>.*) despre (?<text>.*)$]]></template>
   <template templatetype="command" name="oops"><![CDATA[^oops (?<text>.*)$]]></template>
-  
+
   <verbtemplate name="buy">cumperi</verbtemplate>
   <dynamictemplate name="DefaultBuy">"Nu " + object.article + " poți cumpăra."</dynamictemplate>
   <verbtemplate name="climb">te urci pe</verbtemplate>
@@ -290,7 +290,6 @@
     <article>[FemalePluralArticle]</article>
   </type>
 
-
   <template name="LanguageSpecificObjectTypes">
     masculin=Inanimate object (masculin);
     masculinPlural=Inanimate objects (masculin plural);
@@ -392,7 +391,6 @@
     }
   </function>
 
-  
   <function name="Descuiat" type="string" parameters="obj">
     gender = obj.gender
     if (gender = "el") {
@@ -491,7 +489,7 @@
   <function name="Conjugate" type="string" parameters="obj, verb">
     gender = obj.gender
     switch (verb) {
-    
+
       case ("este") {
         switch (gender) {
           case ("eu") {
@@ -651,7 +649,7 @@
           }
         }
       }
-      
+
       case ("miroase") {
         switch (gender) {
           case ("eu") {
@@ -680,7 +678,7 @@
           }
           default {
             return ("miroase")
-          }   
+          }
         }
       }
     }
