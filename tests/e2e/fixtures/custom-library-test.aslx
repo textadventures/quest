@@ -1,0 +1,5 @@
+<library>
+  <function name="MyLibraryGreeting">
+    <![CDATA[<msg>Hello from my library</msg>]]>
+  </function>
+</library>

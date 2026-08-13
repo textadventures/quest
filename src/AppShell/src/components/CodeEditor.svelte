@@ -1,6 +1,6 @@
 <script lang="ts">
     import { untrack } from "svelte";
-    import { EditorState, Compartment } from "@codemirror/state";
+    import { EditorState, Compartment, Transaction } from "@codemirror/state";
     import { EditorView, keymap, lineNumbers, highlightActiveLine } from "@codemirror/view";
     import { history, defaultKeymap, historyKeymap, indentWithTab } from "@codemirror/commands";
     import { bracketMatching, indentOnInput } from "@codemirror/language";
@@ -117,11 +117,16 @@
     // External value sync: only replace the doc when the incoming prop actually differs from
     // what the editor already shows, so this doesn't fight in-progress typing or clobber
     // CodeMirror's own undo stack every time onChange echoes the same text back through this prop.
+    // The replacement is explicitly non-undoable (Transaction.addToHistory.of(false)): it's a
+    // programmatic reload of the buffer, not a user edit, so it mustn't pollute the history —
+    // otherwise async file loads that land after mount (e.g. the raw XML panel or a library file
+    // fetched over the bridge) make the toolbar's Undo revert to the empty pre-load doc.
     $effect(() => {
         if (!view) return;
         if (value !== view.state.doc.toString()) {
             view.dispatch({
                 changes: { from: 0, to: view.state.doc.length, insert: value },
+                annotations: Transaction.addToHistory.of(false),
             });
         }
     });

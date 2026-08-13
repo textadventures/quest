@@ -16,6 +16,9 @@ export interface WasmBridge {
   SetGameXml(xml: string): Promise<string>
   GetGameId(): string
   IsGamebook(): boolean
+  IsBuiltInLibrary(filename: string): boolean
+  GetLibraryXml(filename: string): string | null
+  SetLibraryXml(filename: string, xml: string): Promise<string>
   AddPublishAsset(filename: string, data: Uint8Array): void
   CreatePublishPackage(includeWalkthrough: boolean): Uint8Array
   CanUndo(): boolean

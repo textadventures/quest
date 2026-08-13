@@ -13,6 +13,12 @@
         <filefiltername>Libraries</filefiltername>
         <lockedaftercreate/>
       </control>
+
+      <control>
+        <controltype>texteditor</controltype>
+        <attribute>filename</attribute>
+        <expand/>
+      </control>
     </tab>
   </editor>
 </library>
