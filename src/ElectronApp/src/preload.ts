@@ -81,6 +81,15 @@ contextBridge.exposeInMainWorld("electronApp", {
         get: (): Promise<string | null> => ipcRenderer.invoke("locale:get"),
         set: (locale: string): Promise<void> => ipcRenderer.invoke("locale:set", locale),
     },
+    theme: {
+        // Same userData-file rationale as locale above — see ElectronApp's
+        // theme-store.ts. getSync backs app.html's pre-paint inline script,
+        // which needs the stored theme synchronously to avoid a flash of the
+        // wrong theme before the Svelte app boots.
+        get: (): Promise<string | null> => ipcRenderer.invoke("theme:get"),
+        set: (theme: string): Promise<void> => ipcRenderer.invoke("theme:set", theme),
+        getSync: (): string | null => ipcRenderer.sendSync("theme:getSync"),
+    },
     recent: {
         // kind distinguishes the editor's Recent (backs File > Open Recent
         // and the /open page) from the Play tab's Recently Played — see

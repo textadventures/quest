@@ -54,7 +54,7 @@
 <!-- Always dark (see +layout.svelte) — surface-950/400/800/300 are the fixed
      dark-side members of Skeleton's paired tokens, not auto-switching ones,
      since the OS could be in light mode regardless. -->
-<div class="flex flex-col items-center min-h-svh bg-surface-950 text-surface-100 p-8 gap-6">
+<div class="play-dark flex flex-col items-center min-h-svh bg-surface-950 text-surface-100 p-8 gap-6">
     <a href="{base}/" class="anchor self-start">{t("search.backToPlay")}</a>
 
     {#if loading}

@@ -48,7 +48,7 @@
 </script>
 
 <!-- Always dark, matching the rest of /play — see +layout.svelte's isPlayContext. -->
-<div class="min-h-svh bg-surface-950 text-surface-100">
+<div class="play-dark min-h-svh bg-surface-950 text-surface-100">
     <div class="flex flex-col gap-6 w-full max-w-5xl mx-auto p-8">
         <a href="{base}/" class="anchor self-start">{t("search.backToPlay")}</a>
 

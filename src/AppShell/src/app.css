@@ -3,6 +3,22 @@
 @import '@skeletonlabs/skeleton-svelte';
 @import '@skeletonlabs/skeleton/themes/wintry';
 
+/* Dark mode is class-driven rather than Tailwind's default
+   prefers-color-scheme media query, so the Settings modal's Light/Dark/Match
+   system choice can override the OS. theme-store.ts (and app.html's pre-paint
+   inline script) toggles a .dark class on <html>; everything here — Skeleton's
+   dark: variants and the light-dark() paired tokens — keys off that class. */
+@custom-variant dark (&:where(.dark, .dark *));
+
+:root {
+    /* Explicit so a manual "Light" choice wins even when the OS is dark. */
+    color-scheme: light;
+}
+
+:root.dark {
+    color-scheme: dark;
+}
+
 [data-scope='app-bar'] {
     background: light-dark(white, var(--color-surface-800));
 }
@@ -121,4 +137,26 @@ input.input:not([type='color']):not([type='range']):focus-within,
 input.input:not([type='color']):not([type='range']):active {
     border-color: var(--color-primary-500);
     outline: none;
+}
+
+/* The /play pages are always dark even when the app theme is light (see
+   +layout.svelte's isPlayContext — PlayCatalog and the play/* routes mark
+   their roots with this class), so their form controls must stay dark too.
+   The input/select rules above and Skeleton's .input ring otherwise force the
+   theme-adaptive paired tokens (surface-200-800) on them, which would show a
+   light-mode edge around the dark controls. Same fixed-shade rationale as
+   UpdateBanner's own comment: the Play tab never switches themes. */
+.play-dark input.input:not([type='color']):not([type='range']),
+.play-dark select.input,
+.play-dark select.select {
+    border-color: var(--color-surface-700);
+    --tw-ring-color: var(--color-surface-700);
+}
+
+/* preset-tonal is a paired light-dark() preset (see Skeleton's presets.css) —
+   under a light theme it would paint a light translucent background and dark
+   text onto the always-dark Play pages. Pin it to the dark-side members. */
+.play-dark .btn.preset-tonal {
+    background-color: color-mix(in oklab, var(--color-surface-50) 5%, transparent);
+    color: var(--color-primary-50);
 }

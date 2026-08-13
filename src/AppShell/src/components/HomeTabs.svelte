@@ -8,12 +8,13 @@
     const rootPath = base || "/";
     const isPlayTab = $derived(page.url.pathname === rootPath || page.url.pathname.startsWith(`${base}/play/`));
 
-    // Tailwind's dark: variant here follows the OS colour-scheme media query
-    // (not a class toggle — see globals.css), so the auto-switching "paired"
-    // utilities (e.g. text-surface-600-400) can't be forced dark by wrapping
-    // them in a dark background; they'd still resolve to their light-mode
-    // value if the OS is in light mode. forceDark instead picks the dark-side
-    // member of each pair explicitly.
+    // The auto-switching "paired" utilities (e.g. text-surface-600-400) are
+    // light-dark() pairs that resolve against :root's color-scheme — which
+    // follows the app-wide theme (see app.css), NOT this component's own
+    // background. So a Play tab that's force-dark while the app theme is
+    // light can't be made dark by wrapping its content in a dark background;
+    // the paired utilities would still resolve to their light-mode value.
+    // forceDark instead picks the dark-side member of each pair explicitly.
     const activeText = $derived(forceDark ? "text-surface-100" : "text-surface-900-100");
     const inactiveText = $derived(forceDark ? "text-surface-400 hover:text-surface-100" : "text-surface-600-400 hover:text-surface-900-100");
 </script>

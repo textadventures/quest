@@ -85,6 +85,10 @@
 
     "settingsModal.title": "Settings",
     "settingsModal.language": "Language",
+    "settingsModal.theme": "Theme",
+    "settingsModal.themeLight": "Light",
+    "settingsModal.themeDark": "Dark",
+    "settingsModal.themeSystem": "Match system",
 
     "common.moveTo": "Move to…",
     "common.cut": "Cut",
