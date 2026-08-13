@@ -183,25 +183,16 @@
         }
 
         if (thiscommand = null) {
-          // A {page:...} link (CorePages.aslx) reached from outside any active
-          // dialogue - e.g. embedded in an ordinary object's description rather
-          // than clicked from a page's own rendered options - renders as a bare
-          // CommandLink whose command is the target page's raw object name, the
-          // same as {command:...}. game.currentpage is null here (an active
-          // dialogue's commands are already fully handled by the branch at the
-          // top of HandleCommand, before this function is ever reached), so
-          // treat that as start-the-dialogue-there instead of falling through
-          // to the unrecognised-command message below. Uses the same default
-          // flags the Show page script adder itself defaults to; an author who
-          // wants different flags for a specific entry point should add an
-          // explicit ShowPage(...) command of their own instead.
+          // A {page:...} link clicked from outside an active dialogue (CorePages.aslx)
+          // renders as a bare CommandLink using the page's raw object name, so start
+          // that page's dialogue here instead of falling through to the unrecognised-
+          // command message below. false/false matches the Show-page script adder's
+          // own defaults; an author wanting different flags should add an explicit
+          // ShowPage(...) command instead.
           //
-          // Gated on pagelinkshown (set only by ProcessTextCommand_Page when a
-          // {page:...} tag actually renders): without this, typing a page's raw
-          // object name would launch its dialogue from anywhere in the game,
-          // any time, even if no link to it was ever shown to the player - a
-          // hidden global command that has nothing to do with what a link
-          // printed on screen would actually let them click.
+          // Gated on pagelinkshown (set only when a {page:...} tag actually renders)
+          // so a page's raw object name can't be typed as a hidden global command
+          // unless a link to it was actually shown to the player.
           targetpage = GetObject(command)
           if (targetpage <> null and DoesInherit(targetpage, "dialoguepage") and GetBoolean(targetpage, "pagelinkshown")) {
             ShowPage (targetpage, false, false)
@@ -724,24 +715,20 @@
   This is called when an object cannot be resolved
   -->
   <function name="UnresolvedCommand" parameters="objectname, varname">
-    // TO DO: Update names below, we don't need these two variables
-    unresolvedobject = objectname
-    unresolvedkey = varname
-
     if (HasString(game.pov.currentcommandpattern, "unresolved")) {
       if (ListCount(game.pov.currentcommandvarlist) > 1) {
-        msg (game.pov.currentcommandpattern.unresolved + " (" + unresolvedobject + ")")
+        msg (game.pov.currentcommandpattern.unresolved + " (" + objectname + ")")
       }
       else {
         msg (game.pov.currentcommandpattern.unresolved)
       }
     }
     else if (HasScript(game.pov.currentcommandpattern, "unresolved")) {
-      do (game.pov.currentcommandpattern, "unresolved", QuickParams("object", unresolvedobject, "key", unresolvedkey))
+      do (game.pov.currentcommandpattern, "unresolved", QuickParams("object", objectname, "key", varname))
     }
     else {
       if (ListCount(game.pov.currentcommandvarlist) > 1) {
-        msg (Template("UnresolvedObject") + " (" + unresolvedobject + ")")
+        msg (Template("UnresolvedObject") + " (" + objectname + ")")
       }
       else {
         msg (Template("UnresolvedObject"))
@@ -749,7 +736,7 @@
     }
     game.unresolvedcommand = game.pov.currentcommandpattern
     game.unresolvedcommandvarlist = game.pov.currentcommandvarlist
-    game.unresolvedcommandkey = unresolvedkey
+    game.unresolvedcommandkey = varname
   </function>
 
   <!--
