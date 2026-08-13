@@ -1,9 +1,10 @@
 // Ad-hoc manual verification for the Advanced-tree progressive-disclosure
 // change: the toolbar's "Add element" dropdown should be trimmed down to
-// just "Add Room" (the advanced element types - functions, timers, etc. -
-// moved under the "Advanced" tree node instead of cluttering the toolbar),
-// and adding a function via that Advanced panel should actually produce a
-// real, selected tree node under Advanced > Functions, not just a
+// just "Add Room" and "Add Page" (the advanced element types - functions,
+// timers, etc. - moved under the "Advanced" tree node instead of cluttering
+// the toolbar, and text-adventure dialogue Pages get their own dropdown
+// entry), and adding a function via that Advanced panel should actually
+// produce a real, selected tree node under Advanced > Functions, not just a
 // silently-dropped click.
 import { chromium } from "playwright";
 
@@ -27,15 +28,17 @@ async function run() {
     // The dropdown is a sibling <div> rendered immediately after the toggle
     // button when open - scope the check to it, not the whole page, since
     // "Add Function" etc. legitimately appear elsewhere (the Advanced panel).
+    // A text adventure offers both "Add Room" and "Add Page" here; the
+    // advanced element types are what got trimmed out, not Pages.
     const addToolbarBtn = page.locator('button[title="Add element"]');
     await addToolbarBtn.click();
     await page.waitForTimeout(300);
     const addMenu = addToolbarBtn.locator("xpath=following-sibling::div[1]");
     const addMenuText = (await addMenu.innerText()).trim();
-    if (addMenuText !== "Add Room") {
-        throw new Error(`Expected toolbar Add menu to contain only "Add Room", got: ${JSON.stringify(addMenuText)}`);
+    if (addMenuText !== "Add Room\nAdd Page") {
+        throw new Error(`Expected toolbar Add menu to contain only "Add Room" and "Add Page", got: ${JSON.stringify(addMenuText)}`);
     }
-    console.log('PASS: toolbar Add dropdown is trimmed to just "Add Room"');
+    console.log('PASS: toolbar Add dropdown is trimmed to "Add Room" and "Add Page"');
     await page.keyboard.press("Escape");
 
     // Expand the Advanced tree node and confirm its panel offers the element
