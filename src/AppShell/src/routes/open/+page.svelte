@@ -5,7 +5,7 @@
     import { page } from "$app/state";
     import { base } from "$app/paths";
     import { PUBLIC_HAS_SERVER } from "$env/static/public";
-    import { openGame, loadingStatus, lastOpenGameError } from "$lib/editor-store";
+    import { openGame, loadingStatus, lastOpenGameError, lastFailedGameBytes } from "$lib/editor-store";
     import { confirmDialog } from "$lib/confirm";
     import { hasFSA, openDirectory, loadFileFromDirectory, createLocalGame } from "$lib/filesystem/browser-adapter";
     import {
@@ -563,6 +563,11 @@
 
             {#if error}
                 <p class="text-error-500 text-sm whitespace-pre-wrap">{error}</p>
+                {#if $lastFailedGameBytes}
+                    <button type="button" class="btn btn-sm preset-tonal" onclick={() => goto(`${base}/edit`)}>
+                        {t("openPage.fixInSafeMode")}
+                    </button>
+                {/if}
             {/if}
 
             {#if isElectronApp && recentGames.length > 0}
@@ -756,6 +761,11 @@
 
                     {#if createLocalError}
                         <p class="text-error-500 text-sm whitespace-pre-wrap">{createLocalError}</p>
+                        {#if $lastFailedGameBytes}
+                            <button type="button" class="btn btn-sm preset-tonal" onclick={() => goto(`${base}/edit`)}>
+                                {t("openPage.fixInSafeMode")}
+                            </button>
+                        {/if}
                     {/if}
                 </div>
             {/if}
