@@ -1,4 +1,4 @@
-﻿<library type="editor">
+<library type="editor">
 
   <implied element="control" property="height" type="int"/>
   <implied element="control" property="width" type="int"/>
@@ -282,8 +282,7 @@
         <caption>[EditorGBScriptWhenEnteringPage]</caption>
         <attribute>roomenter</attribute>
       </control>
-    </tab>   
-    
+    </tab>
 
     <tab>
       <caption>[EditorGameDisplay]</caption>

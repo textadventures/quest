@@ -279,34 +279,34 @@
   <template name="NothingToRemove">Du har ikke noget at tage af.</template>
 
   <dynamictemplate name="WearSuccessful">"Du tager " + object.article + " på."</dynamictemplate>
-	<dynamictemplate name="WearUnsuccessful">"Du kan ikke tage " + object.article + " på."</dynamictemplate>
-	<dynamictemplate name="CannotWearIfNotHeld">"Du skal tage " + object.article + ", før du kan tage " + object.article + " på."</dynamictemplate>
-	<dynamictemplate name="CannotRemoveIfNotHeld">"Du skal tage " + object.article + ", før du kan tage " + object.article + " af."</dynamictemplate>
-	<dynamictemplate name="AlreadyWearing">"Du har " + object.article + " allerede på."</dynamictemplate>
-	<dynamictemplate name="CannotRemoveIfNotWearing">"Du har " + object.article + " ikke på."</dynamictemplate>
-	<dynamictemplate name="NotRemovable">"Du kan ikke tage " + object.article + " af!"</dynamictemplate>
-	<dynamictemplate name="CannotWearOver">"Du kan ikke have den på ovenpå " + GetDisplayGarment(object) + "."</dynamictemplate>
-	<dynamictemplate name="CannotWearWith">"Du kan ikke have den på, når du i forvejen har " + GetDisplayGarment(object) + " på."</dynamictemplate>
-	<dynamictemplate name="RemoveSuccessful">"Du tager " + object.article + " af."</dynamictemplate>
-	<dynamictemplate name="RemoveFirst">"Du kan ikke tage den af, mens du stadig har " + GetDisplayGarment(object) + " på."</dynamictemplate>
-	<template name="NeutralWornModifier">båret</template>
-	<template name="MaleWornModifier">båret</template>
-	<template name="FemaleWornModifier">båret</template>
-	<template name="NeutralPluralWornModifier">båret</template>
-	<template name="MalePluralWornModifier">båret</template>
-	<template name="FemalePluralWornModifier">båret</template>
+  <dynamictemplate name="WearUnsuccessful">"Du kan ikke tage " + object.article + " på."</dynamictemplate>
+  <dynamictemplate name="CannotWearIfNotHeld">"Du skal tage " + object.article + ", før du kan tage " + object.article + " på."</dynamictemplate>
+  <dynamictemplate name="CannotRemoveIfNotHeld">"Du skal tage " + object.article + ", før du kan tage " + object.article + " af."</dynamictemplate>
+  <dynamictemplate name="AlreadyWearing">"Du har " + object.article + " allerede på."</dynamictemplate>
+  <dynamictemplate name="CannotRemoveIfNotWearing">"Du har " + object.article + " ikke på."</dynamictemplate>
+  <dynamictemplate name="NotRemovable">"Du kan ikke tage " + object.article + " af!"</dynamictemplate>
+  <dynamictemplate name="CannotWearOver">"Du kan ikke have den på ovenpå " + GetDisplayGarment(object) + "."</dynamictemplate>
+  <dynamictemplate name="CannotWearWith">"Du kan ikke have den på, når du i forvejen har " + GetDisplayGarment(object) + " på."</dynamictemplate>
+  <dynamictemplate name="RemoveSuccessful">"Du tager " + object.article + " af."</dynamictemplate>
+  <dynamictemplate name="RemoveFirst">"Du kan ikke tage den af, mens du stadig har " + GetDisplayGarment(object) + " på."</dynamictemplate>
+  <template name="NeutralWornModifier">båret</template>
+  <template name="MaleWornModifier">båret</template>
+  <template name="FemaleWornModifier">båret</template>
+  <template name="NeutralPluralWornModifier">båret</template>
+  <template name="MalePluralWornModifier">båret</template>
+  <template name="FemalePluralWornModifier">båret</template>
 
   <template name="Wear">Ifør dig</template>
   <verbtemplate name="wear">tag #object# på</verbtemplate>
-	<verbtemplate name="wear">Tag på</verbtemplate>
-	<verbtemplate name="wear">ifør dig</verbtemplate>
-	<verbtemplate name="wear">don</verbtemplate>
+  <verbtemplate name="wear">Tag på</verbtemplate>
+  <verbtemplate name="wear">ifør dig</verbtemplate>
+  <verbtemplate name="wear">don</verbtemplate>
 
   <template name="Remove">Affør dig</template>
   <verbtemplate name="remove">tag #object# af</verbtemplate>
-	<verbtemplate name="remove">Tag af</verbtemplate>
-	<verbtemplate name="remove">affør dig</verbtemplate>
-	<verbtemplate name="remove">doff</verbtemplate>
+  <verbtemplate name="remove">Tag af</verbtemplate>
+  <verbtemplate name="remove">affør dig</verbtemplate>
+  <verbtemplate name="remove">doff</verbtemplate>
 
   <template templatetype="command" name="listen">^lyt$</template>
   <template name="DefaultListen">Du kan ikke høre noget særligt.</template>

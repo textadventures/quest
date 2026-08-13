@@ -26,7 +26,7 @@
     }
     set (object, counter, GetInt(object, counter) - 1)
   </function>
-  
+
   <function name="IsSwitchedOn" parameters="object" type="boolean">
     return (GetBoolean(object, "switchedon"))
   </function>
@@ -42,7 +42,7 @@
   <function name="MovePlayer" parameters="loc">
     game.pov.parent = loc
   </function>
-  
+
   <function name="MoveObjectHere" parameters="object">
     object.parent = game.pov.parent
   </function>
@@ -66,7 +66,7 @@
   <function name="MakeExitInvisible" parameters="object">
     object.visible = false
   </function>
-  
+
   <function name="HelperOpenObject" parameters="object">
     object.isopen = true
   </function>
@@ -121,8 +121,7 @@
     }
     return (null)
   </function>
-  
-  
+
   <function name="LockExit" parameters="exit">
     exit.locked = true
   </function>
@@ -141,7 +140,7 @@
 
   <function name="SetDark" parameters="object">
     object.dark = true
-  </function>  
+  </function>
 
   <function name="SetLight" parameters="object">
     object.dark = false
@@ -161,10 +160,10 @@
       exit.lightsource = false
     } else {
       exit.lightsource = true
-    }    
+    }
     exit.lightstrength = strength
   </function>
-  
+
   <function name="ChangePOV" parameters="object">
     <![CDATA[
     if (not HasObject(object, "parent")) {
@@ -181,7 +180,6 @@
     ]]>
   </function>
 
-  
   <function name="RequestSave">
     // Deprecated
     request (RequestSave, "")
@@ -191,7 +189,6 @@
     // Deprecated
     request (Speak, s)
   </function>
-
 
   <function name="ShowMenu" parameters="caption, options, allowCancel, callback"><![CDATA[
     outputsection = StartNewOutputSection()
@@ -236,7 +233,7 @@
     game.menucallback = callback
     game.menuoutputsection = outputsection
   ]]></function>
-  
+
   <function name="ShowMenuResponse" parameters="option"><![CDATA[
     if (game.menucallback = null) {
       error ("Unexpected menu response")
@@ -268,7 +265,7 @@
       FinishTurn
     }
   ]]></function>
-  
+
   <function name="DisableMenu">
     DisableMenuOutputSection (game.menuoutputsection)
     game.menuoutputsection = null
@@ -279,13 +276,13 @@
   <function name="DisableMenuOutputSection" parameters="section">
     JS.disableMenuOutputSection (section)
   </function>
-  
+
   <function name="EscapeQuotes" parameters="s" type="string">
     s = Replace(s, "\"", "@@@doublequote@@@")
     s = Replace(s, "\'", "@@@singlequote@@@")
     return (s)
   </function>
-  
+
   <function name="UnescapeQuotes" parameters="s" type="string">
     s = Replace(s, "@@@doublequote@@@", "\"")
     s = Replace(s, "@@@singlequote@@@", "\'")
@@ -311,7 +308,7 @@
     s = Replace(s, "@", "")
     return (s)
   ]]></function>
-  
+
   <function name="HandleMenuTextResponse" parameters="input" type="boolean">
     <![CDATA[
     handled = false
@@ -394,9 +391,9 @@
         object.keycount = 1
         object.key1 = object.key
       }
-      if (not HasObject(object, "key1")) {	
-	    object.key1 = object.key
-	  }	
+      if (not HasObject(object, "key1")) {
+      object.key1 = object.key
+    }
     }
     for (x, 1, object.keycount) {
       keyname = "key" + ToString(x)
@@ -405,24 +402,21 @@
           return (false)
         }
       }
-    }  
+    }
     return (true)
   </function>
-  
+
   <function name="CreateBiExits" parameters="dir, from, to">
     create exit (dir, from, to)
     create exit (ReverseDirection(dir), to, from)
   </function>
 
- 
   <function name="Equal" parameters="value1, value2" type="boolean">
     if (not TypeOf(value1) = TypeOf(value2)) return (false)
     if (not value1 = value2) return (false)
     return (true)
   </function>
 
-
-  
   <!--  STRING UTILITIES -->
 
   <function name="ReverseDirection" parameters="dir" type="string">
@@ -449,7 +443,6 @@
     }
     return (s + str)
   ]]></function>
-
 
   <function name="Decimalise" parameters="n, places" type="string"><![CDATA[
     negative = (n < 0)
@@ -521,9 +514,9 @@
       error ("game.moneyformat expected to have either 1, 2 or 3 exclamation marks.")
     }
   ]]></function>
-  
+
   <!--  LIST UTILITIES -->
-  
+
   <function name="IndexOf" type="int" parameters="lst, item">
     for (i, 0, ListCount(lst) - 1) {
       x = ListItem(lst, i)
@@ -533,7 +526,7 @@
     }
     return (-1)
   </function>
-  
+
   <function name="ObjectListToStringList" parameters="list, att" type="stringlist">
     l = NewStringList()
     foreach (o, list) {
@@ -543,8 +536,7 @@
     }
     return (l)
   </function>
-  
-  
+
   <function name="FilterByType" parameters="lst, t" type="objectlist">
     l = NewObjectList()
     foreach (o, lst) {
@@ -553,7 +545,6 @@
     return (l)
   </function>
 
-  
   <function name="FilterByAttribute" parameters="lst, name, value" type="objectlist">
     if (not IsDefined("value")) {
       return (FilterByNotAttribute (lst, name, null))
@@ -599,8 +590,6 @@
     }
     return (l)
   </function>
-  
-  <!-- Added by KV -->
 
   <function name="AllRooms" type="objectlist">
     return (FilterByAttribute(AllObjects(),"isroom",true))
@@ -638,7 +627,7 @@
     }
   ]]>
   </function>
-  
+
   <function name="DisableHtmlLog">
     game.nohtmllog = true
   </function>
@@ -654,7 +643,7 @@
     }
     return (d)
   </function>
-  
+
   <function name="InitiateTranscript" parameters="s">
     filename = s
     game.transcriptname = game.gamename
@@ -680,18 +669,17 @@
       JS.printTranscriptDateAndTime()
     }
   ]]></function>
-  
+
   <function name="DisableTranscript">
     game.savetranscript = false
     JS.disableTranscript()
   </function>
-  
+
   <function name="KillTranscript">
     game.notranscript = true
     JS.killTranscript()
     DisableTranscript
   </function>
-  
 
   <function name="UpdateTranscriptString" parameters="data">
     if (not HasAttribute(game,"transcriptstring")){

@@ -1,4 +1,4 @@
-﻿<library>
+<library>
   <tab>
     <parent>_ObjectEditor</parent>
     <caption>[EditorObjectOptionsSwitchable]</caption>
@@ -74,7 +74,7 @@
     </control>
 
   </tab>
-  
+
   <tab>
     <parent>_ObjectEditor</parent>
     <caption>[EditorObjectOptionsEdible]</caption>
@@ -133,7 +133,7 @@
       <caption>[EditorObjectOptionsThisobject]</caption>
       <attribute>lightsource</attribute>
     </control>
-    
+
     <control>
       <mustnotinherit>editor_room</mustnotinherit>
       <controltype>dropdown</controltype>

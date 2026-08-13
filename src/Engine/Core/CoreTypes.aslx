@@ -1,4 +1,4 @@
-﻿<library>
+<library>
   <type name="defaultgame">
     <enablehyperlinks/>
     <echocommand/>
@@ -30,7 +30,7 @@
     <showpanes/>
     <showcommandbar/>
     <showlocation/>
-    
+
     <statusandcompassattop type="boolean">false</statusandcompassattop>
     <turnoffcompass type="boolean">false</turnoffcompass>
     <turnoffinventory type="boolean">false</turnoffinventory>
@@ -47,7 +47,7 @@
     <classiclocation/>
     <mapexitwidth type="int">1</mapexitwidth>
     <mapexitcolour>Black</mapexitcolour>
-    
+
     <setcustomwidth type="boolean">false</setcustomwidth>
     <customwidth type="int">950</customwidth>
     <setcustompadding type="boolean">false</setcustompadding>
@@ -362,7 +362,7 @@
     <lockmessage>[LockedExit]</lockmessage>
     <lookonly type="boolean">false</lookonly>
     <runscript type="boolean">false</runscript>
-    <lightstrength type="string"></lightstrength>  
+    <lightstrength type="string"></lightstrength>
     <grid_length type="int">1</grid_length>
     <grid_render type="boolean">false</grid_render>
     <grid_offset_x type="int">0</grid_offset_x>
@@ -477,7 +477,7 @@
       if (not IsDefined("object2")) {
         object2 = null
       }
-      
+
       switch (TypeOf(object, this.property)) {
         case ("script") {
           if (object2 = null) {
@@ -564,7 +564,7 @@
     <possessive>[MalePossessive]</possessive>
     <wornmodifier>[MaleWornModifier]</wornmodifier>
   </type>
-  
+
   <type name="namedmale">
     <inherit name="male" />
     <usedefaultprefix type="boolean">[UseDefaultPrefixIfNamed]</usedefaultprefix>
@@ -578,7 +578,7 @@
     <possessive>[FemalePossessive]</possessive>
     <wornmodifier>[FemaleWornModifier]</wornmodifier>
   </type>
-  
+
   <type name="namedfemale">
     <inherit name="female" />
     <usedefaultprefix type="boolean">[UseDefaultPrefixIfNamed]</usedefaultprefix>
@@ -669,7 +669,7 @@
         }
         activecontainer = activecontainer.parent
       }
-    
+
       children = GetDirectChildren(this)
       if (listcount(children) >= this.maxobjects) {
         correct = false
@@ -680,7 +680,7 @@
           message=DynamicTemplate("MaxObjectsInContainer", this)
         }
       }
-    
+
       if (correct = false) {
         msg (message)
       }
@@ -693,11 +693,11 @@
         else {
           object.parent = this
           msg (Template("Done"))
-        }      
+        }
       }
     </addscript>
   </type>
-  
+
   <type name="container_lockable">
     <openscript type="script">
       if (this.locked) {
@@ -794,10 +794,10 @@
           }
           this.switchedon = true
         }
-      } 
+      }
       else {
         msg(DynamicTemplate("DefaultTurnOn", this))
-      }            
+      }
     </turnon>
     <turnoff type="script">
       if (ListContains(ScopeReachable(), this)){
@@ -813,10 +813,10 @@
           }
           this.switchedon = false
         }
-      } 
+      }
       else {
         msg(DynamicTemplate("DefaultTurnOff", this))
-      }        
+      }
     </turnoff>
   </type>
 

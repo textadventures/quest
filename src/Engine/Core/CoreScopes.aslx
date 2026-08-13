@@ -1,4 +1,4 @@
-﻿<library>
+<library>
   <function name="GetPlacesObjectsList" type="objectlist">
     return (ListExclude(ScopeVisibleNotHeldNotScenery(), game.pov))
   </function>
@@ -26,11 +26,11 @@
     }
     return (result)
   </function>
-  
+
   <function name="ScopeVisibleNotHeld" type="objectlist">
     return (ScopeVisibleNotHeldForRoom(game.pov.parent))
   </function>
-  
+
   <function name="ScopeVisibleNotHeldForRoom" type="objectlist" parameters="room">
     if (room = game.pov.parent) {
       result = ListCombine(ScopeReachableNotHeldForRoom(room), ScopeVisibleNotReachableForRoom(room))
@@ -40,15 +40,15 @@
       return (ListCombine(ScopeReachableNotHeldForRoom(room), ScopeVisibleNotReachableForRoom(room)))
     }
   </function>
-  
+
   <function name="ScopeVisibleNotHeldNotScenery" type="objectlist">
     return (ScopeVisibleNotHeldNotSceneryForRoom(game.pov.parent))
   </function>
-  
+
   <function name="ScopeVisibleNotHeldNotSceneryForRoom" type="objectlist" parameters="room">
     return (RemoveSceneryObjects(ScopeVisibleNotHeldForRoom(room)))
   </function>
-  
+
   <function name="ScopeReachable" type="objectlist">
     return (ScopeReachableForRoom(game.pov.parent))
   </function>
@@ -59,14 +59,14 @@
       list add(result, game.pov)
     } else {
       result = ScopeReachableNotHeldForRoom(room)
-    }  
+    }
     return (result)
   </function>
-  
+
   <function name="ScopeVisibleNotReachable" type="objectlist">
     return (ScopeVisibleNotReachableForRoom(game.pov.parent))
   </function>
-  
+
   <function name="ScopeVisibleNotReachableForRoom" type="objectlist" parameters="room">
     result = NewObjectList()
     exclude = ScopeReachableForRoom(room)
@@ -76,10 +76,10 @@
       if (ContainsVisible(newParent, obj) and not ListContains(exclude, obj)) {
         list add(result, obj)
       }
-    }    
+    }
     return (result)
   </function>
-  
+
   <function name="GetNonTransparentParent" type="object" parameters="room">
     if (GetBoolean(room, "transparent")) {
       if (room.parent = null) {
@@ -94,11 +94,11 @@
     }
   </function>
 
-  <function name="ScopeReachableNotHeld" type="objectlist">    
+  <function name="ScopeReachableNotHeld" type="objectlist">
     return (ScopeReachableNotHeldForRoom(game.pov.parent))
   </function>
 
-  <function name="ScopeVisibleLightsource" type="objectlist" parameters="lightstrength">    
+  <function name="ScopeVisibleLightsource" type="objectlist" parameters="lightstrength">
     result = ScopeVisible()
     lightobjects = NewObjectList()
     foreach (obj, result) {
@@ -112,11 +112,11 @@
         list add(lightobjects, obj)
       }
     }
-  
+
     return (lightobjects)
   </function>
-  
-  <function name="ScopeReachableNotHeldForRoom" type="objectlist" parameters="room">    
+
+  <function name="ScopeReachableNotHeldForRoom" type="objectlist" parameters="room">
   <![CDATA[
     result = NewObjectList()
     foreach (obj, GetAllChildObjects(room)) {
@@ -136,19 +136,19 @@
   <function name="ScopeVisible" type="objectlist">
     return (ScopeVisibleForRoom(game.pov.parent))
   </function>
-  
+
   <function name="ScopeVisibleForRoom" type="objectlist" parameters="room">
     if (room = game.pov.parent) {
       return (ListCombine(ScopeVisibleNotHeldForRoom(room), ScopeInventory()))
     } else {
       return (ScopeVisibleNotHeldForRoom(room))
-    }  
+    }
   </function>
 
   <function name="ScopeExits" type="objectlist">
     return (ScopeExitsForRoom(game.pov.parent))
   </function>
-  
+
   <function name="ScopeExitsForRoom" type="objectlist" parameters="room">
     <![CDATA[
     result = NewObjectList()
@@ -169,7 +169,7 @@
     return (result)
     ]]>
   </function>
-  
+
   <function name="ScopeUnlockedExitsForRoom" parameters="room" type="objectlist">
     result = NewObjectList()
     foreach (exit, AllExits()) {
@@ -187,8 +187,8 @@
       }
     }
     return (result)
-  </function>  
-  
+  </function>
+
   <function name="ScopeCommands" type="objectlist">
     result = NewObjectList()
     foreach (command, AllCommands()) {
@@ -201,7 +201,7 @@
         }
       }
     }
-    return (result)    
+    return (result)
   </function>
 
   <function name="GetBlockingObject" type="object" parameters="obj">
@@ -225,7 +225,7 @@
     return (result)
     ]]>
   </function>
-  
+
   <function name="ContainsVisible" type="boolean" parameters="parentObj, searchObj">
     return (ContainsAccessible(parentObj, searchObj, false))
   </function>
@@ -257,7 +257,7 @@
         else {
           canAdd = CanSeeThrough(searchObj.parent)
         }
-        
+
         if (canAdd) {
           return (ContainsAccessible(parentObj, searchObj.parent, onlyReachable))
         } else {
@@ -279,8 +279,7 @@
     }
     return (result)
   </function>
-  
-  
+
   <function name="CanSeeThrough" type="boolean" parameters="obj">
     return ((GetBoolean(obj, "transparent") or CanReachThrough(obj)) and not GetBoolean(obj, "hidechildren"))
   </function>
@@ -312,7 +311,7 @@
       JS.updateCommandLinks(commands)
     }
   </function>
-  
+
   <!-- To be overriden by authors to do something useful -->
   <function name="SecondaryScopeReachableForRoom" parameters="room" type="objectlist">
     return (NewObjectList())

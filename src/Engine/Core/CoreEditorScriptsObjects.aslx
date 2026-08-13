@@ -1,4 +1,4 @@
-﻿<library>
+<library>
   <editor>
     <appliesto>(function)AddToInventory</appliesto>
     <display>Add #0 to inventory</display>
@@ -19,7 +19,7 @@
       <simpleeditor>objects</simpleeditor>
     </control>
   </editor>
-  
+
   <editor>
     <appliesto>(function)MovePlayer</appliesto>
     <display>[EditorScriptsObjectsMovePlayerto] #0</display>
@@ -37,7 +37,7 @@
       <simpleeditor>objects</simpleeditor>
     </control>
   </editor>
-  
+
   <editor>
     <appliesto>(function)MoveObject</appliesto>
     <display>Move #0 to #1</display>
@@ -368,7 +368,7 @@
       <caption>[EditorScriptsObjectsYoumustenter]</caption>
     </control>
   </editor>
-  
+
   <editor>
     <appliesto>(function)LockExit</appliesto>
     <display>Lock #0</display>
@@ -389,7 +389,7 @@
       <objecttype>exit</objecttype>
     </control>
   </editor>
-  
+
   <editor>
     <appliesto>(function)UnlockExit</appliesto>
     <display>Unlock #0</display>
@@ -409,8 +409,8 @@
       <simpleeditor>objects</simpleeditor>
       <objecttype>exit</objecttype>
     </control>
-  </editor> 
-  
+  </editor>
+
   <editor>
     <appliesto>(function)MakeExitVisible</appliesto>
     <display>Make #0 visible</display>
@@ -452,8 +452,8 @@
       <objecttype>exit</objecttype>
     </control>
 
-  </editor>  
-  
+  </editor>
+
   <editor>
     <appliesto>(function)CloneObject</appliesto>
     <display>Clone #0</display>

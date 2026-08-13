@@ -1,4 +1,4 @@
-﻿<library>
+<library>
   <editor>
     <appliesto>(function)Grid_ShowCustomLayer</appliesto>
     <display>Show/hide custom drawing layer</display>
@@ -325,7 +325,7 @@
       <simple>co-ordinate</simple>
       <simpleeditor>number</simpleeditor>
       <attribute>1</attribute>
-    </control> 
+    </control>
   </editor>
 
   <editor>

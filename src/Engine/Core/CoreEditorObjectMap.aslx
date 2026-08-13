@@ -1,4 +1,4 @@
-﻿<library>
+<library>
   <tab>
     <parent>_ObjectEditor</parent>
     <caption>[EditorObjectMapMap]</caption>
@@ -18,7 +18,7 @@
       <attribute>grid_length</attribute>
       <caption>[EditorObjectMapLength]</caption>
     </control>
-    
+
     <control>
       <controltype>dropdown</controltype>
       <caption>[EditorObjectMapFillcolour]</caption>

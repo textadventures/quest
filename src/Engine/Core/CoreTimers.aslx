@@ -1,4 +1,4 @@
-﻿<library>
+<library>
   <function name="EnableTimer" parameters="timer">
     timer.enabled = true
     timer.trigger = game.timeelapsed + timer.interval
@@ -19,7 +19,7 @@
   <function name="SetTimeout" parameters="interval, script">
     SetTimeoutID (interval, "", script)
   </function>
-  
+
   <function name="SetTimeoutID" parameters="interval, name, script">
     timername = ""
     if (name = "") {
@@ -49,5 +49,5 @@
   <function name="Pause" parameters="interval">
     request (Pause, ToString(interval * 1000))
   </function>
-  
+
 </library>

@@ -1,11 +1,11 @@
 <library>
 
   <!-- BRAZILIAN PORTUGUESE -->
-  
+
   <!-- Contributed by Ramon Dellaqia -->
 
   <include ref="English.aslx"/>
-  
+
   <!-- Get any undefined templates from the English library -->
 
   <template name="LanguageId">pt-BR</template>
@@ -107,7 +107,7 @@
   <template name="NoObjectsAvailable">Não há objeto disponível para isso.</template>
   <template name="Yes">Sim</template>
   <template name="No">Não</template>
-  
+
   <template name="CompassNW">noroeste</template>
   <template name="CompassN">norte</template>
   <template name="CompassNE">nordeste</template>
@@ -455,7 +455,7 @@
   <!-- NOTE: To add a language-specific object type, fill in the template like this: -->
   <!--><template name="LanguageSpecificObjectTypes">masculine=Inanimate object (masculine); feminine=Inanimate object (feminine); </template>-->
   <!-- and then add <type>s masculine and feminine to the language .aslx file. The final "; " is important, don't delete it! -->
-  
+
   <template name="LanguageSpecificObjectTypes">feminine=Inanimate object (feminine); feminineplural=Inanimate object (feminineplural); </template>
 
   <type name="feminine">
@@ -463,7 +463,7 @@
     <article>a</article>
     <possessive>dessa</possessive> <!-- https://github.com/textadventures/quest/issues/1175 -->
   </type>
-  
+
   <type name="feminineplural">
     <gender>essas</gender>
     <article>as</article>
@@ -483,7 +483,7 @@
     }
     else if (gender = "eles" or gender = "elas" or gender = "essas") {
       gender = "esses"
-    }	
+    }
     switch (verb) {
       case ("ser") {
         switch (gender) {
@@ -501,7 +501,7 @@
           }
           case ("esses") {
             return ("são")
-          }		  
+          }
           default {
             return ("é")
           }
@@ -526,7 +526,7 @@
           }
           default {
             return ("está")
-          }       
+          }
         }
       }
       case ("dizer") {
@@ -548,7 +548,7 @@
           }
           default {
             return ("diz")
-          }       
+          }
         }
       }
       case ("conter") {
@@ -570,7 +570,7 @@
           }
           default {
             return ("contém")
-          }       
+          }
         }
       }
             case ("aceitar") {
@@ -592,7 +592,7 @@
           }
           default {
             return ("aceita")
-          }       
+          }
         }
       }
       case ("responder") {
@@ -614,7 +614,7 @@
           }
           default {
             return ("responde")
-          }       
+          }
         }
       }
           default {
@@ -641,15 +641,15 @@
 
   <template name="Wear">Vestir</template>
   <verbtemplate name="wear">colocar #object#</verbtemplate>
-	<verbtemplate name="wear">veste</verbtemplate>
-	<verbtemplate name="wear">colocar</verbtemplate>
-	<verbtemplate name="wear">coloca</verbtemplate>
-	
+  <verbtemplate name="wear">veste</verbtemplate>
+  <verbtemplate name="wear">colocar</verbtemplate>
+  <verbtemplate name="wear">coloca</verbtemplate>
+
   <template name="Remove">Remover</template>
   <verbtemplate name="remove">Tirar #object#</verbtemplate>
-	<verbtemplate name="remove">remover</verbtemplate>
-	<verbtemplate name="remove">Tirar</verbtemplate>
-	<verbtemplate name="remove">Retirar</verbtemplate>
+  <verbtemplate name="remove">remover</verbtemplate>
+  <verbtemplate name="remove">Tirar</verbtemplate>
+  <verbtemplate name="remove">Retirar</verbtemplate>
 
   <dynamictemplate name="WearSuccessful">"Você " + object.article + " veste."</dynamictemplate>
   <dynamictemplate name="WearUnsuccessful">"Você não pode " + object.article + " usar."</dynamictemplate>
@@ -670,5 +670,5 @@
       return ("um")
     }
   </function>
-  
+
 </library>

@@ -1,4 +1,4 @@
-﻿<library>
+<library>
 
   <include ref="CoreEditorScriptsOutput.aslx"/>
   <include ref="CoreEditorScriptsPages.aslx"/>

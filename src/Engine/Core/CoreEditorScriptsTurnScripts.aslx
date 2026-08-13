@@ -1,4 +1,4 @@
-﻿<library>
+<library>
   <editor>
     <appliesto>(function)EnableTurnScript</appliesto>
     <display>Enable turn script #0</display>
@@ -149,7 +149,7 @@
       <simple>id</simple>
     </control>
   </editor>
-  
+
   <editor>
     <appliesto>create turnscript</appliesto>
     <display>Create turn script named #0</display>
@@ -169,7 +169,7 @@
       <simple>name</simple>
     </control>
   </editor>
-  
+
   <editor>
     <appliesto>(function)SuppressTurnscripts</appliesto>
     <display>Suppress turnscripts for one turn</display>

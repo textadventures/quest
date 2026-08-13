@@ -1,4 +1,4 @@
-﻿<asl version="600">
+<asl version="600">
 
   <include ref="Norsk.aslx"/>
   <include ref="Core.aslx"/>

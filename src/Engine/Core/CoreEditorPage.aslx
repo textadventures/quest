@@ -1,4 +1,4 @@
-﻿<library type="editor">
+<library type="editor">
 
   <!-- Editor tab for Text Adventure dialogue pages (see CorePages.aslx) - a clone of
        the Gamebook page tab in GamebookCoreEditor.aslx, minus the page-type variants

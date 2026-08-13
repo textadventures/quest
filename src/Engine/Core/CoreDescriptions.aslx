@@ -1,4 +1,4 @@
-﻿<library>
+<library>
   <function name="ShowRoomDescription">
     <![CDATA[
       isDark = CheckDarkness()
@@ -11,7 +11,7 @@
 
       if (game.autodescription) {
         desc = ""
-        
+
         for (i, 1, 4) {
           if (i = game.autodescription_youarein) {
             if (game.autodescription_youarein_useprefix) {
@@ -29,7 +29,7 @@
           if (i = game.autodescription_youcansee) {
             objects = FormatObjectList(game.pov.parent.objectslistprefix, GetNonTransparentParent(game.pov.parent), Template("And"), ".")
             desc = AddDescriptionLine(desc, objects)
-            
+
             if (game.autodescription_youcansee_newline) {
               msg (desc + "<br/>")
               desc = ""
@@ -38,7 +38,7 @@
           if (i = game.autodescription_youcango) {
             exits = FormatExitList(game.pov.parent.exitslistprefix, GetExitsList(), Template("Or"), ".")
             desc = AddDescriptionLine(desc, exits)
-            
+
             if (game.autodescription_youcango_newline) {
               msg (desc + "<br/>")
               desc = ""
@@ -64,7 +64,7 @@
             }
           }
         }
-        
+
         if (LengthOf(desc) > 0) {
           msg (desc)
         }
@@ -75,7 +75,7 @@
         }
         else {
           fulldesc = GetRoomDescription()
-     
+
           if (LengthOf(fulldesc) > 0) {
             msg (fulldesc)
           }
@@ -100,14 +100,14 @@
   <function name="GetRoomDescription" type="string">
     <![CDATA[
     fulldesc = ""
-    
+
     if (CheckDarkness()) {
       if (HasString(game.pov.parent, "darkroomdescription")) {
         if (LengthOf(game.pov.parent.darkroomdescription) > 0) {
           fulldesc = game.pov.parent.darkroomdescription
         }
       }
-      // Added by The Pixie to correct what appears to be a bug
+      // fall back to the default dark-room description if none was set above
       if (fulldesc = "") fulldesc = DynamicTemplate("LookAtDarkness", game.pov.parent)
     }
     else {
@@ -117,7 +117,7 @@
          }
        }
     }
-    
+
     if (game.appendobjectdescription) {
       foreach (val, ScopeVisibleNotHeld()) {
         if (HasString(val, "inroomdescription")) {
@@ -127,7 +127,7 @@
         }
       }
     }
-    
+
     return (Trim(fulldesc))
     ]]>
   </function>
@@ -149,29 +149,29 @@
         }
       }
     }
-    
+
     on ready {
       if ((not GetBoolean(game.pov.parent, "visited")) and HasScript(game.pov.parent, "beforefirstenter")) {
         do (game.pov.parent, "beforefirstenter")
       }
-  
+
       on ready {
         if (HasScript(game.pov.parent, "beforeenter")) {
           do (game.pov.parent, "beforeenter")
         }
-    
+
         on ready {
           if (game.gridmap) {
             Grid_CalculateMapCoordinates (game.pov.parent, game.pov)
             Grid_DrawPlayerInRoom (game.pov.parent)
           }
-          
+
           if (IsDefined("oldRoom")) {
             if (oldRoom <> null and game.changeroom_newline and not game.command_newline) {
               msg ("")
-            }            
+            }
           }
-          
+
           JS.updateLocation(CapFirst(GetDisplayName(game.pov.parent)))
           roomFrameExists = false
           if (HasString(game.pov.parent, "picture")) {
@@ -186,11 +186,11 @@
           if (game.showdescriptiononenter) {
             ShowRoomDescription
           }
-          
+
           if (HasScript( game, "roomenter")) {
             do (game, "roomenter")
           }
-          on ready {     
+          on ready {
             if ((not GetBoolean(game.pov.parent, "visited")) and HasScript(game.pov.parent, "firstenter")) {
               do (game.pov.parent, "firstenter")
             }
@@ -201,7 +201,7 @@
             }
             set (game.pov.parent, "visited", true)
           }
-        }  
+        }
       }
     }
     ]]>
@@ -260,7 +260,7 @@
     return (result)
     ]]>
   </function>
-  
+
   <function name="RemoveDarkObjects" type="objectlist" parameters="list">
     <![CDATA[
     result = NewObjectList()
@@ -272,12 +272,12 @@
     return (result)
     ]]>
   </function>
-  
+
   <function name="FormatExitList" type="string" parameters="preList, list, preFinal, postList">
     <![CDATA[
     result = ""
     listLength = ListCount(list)
-    
+
     if (listLength > 0) {
       count = 0
       result = preList + " "
@@ -319,10 +319,10 @@
     if (verbs <> null) {
       verbCount = ListCount(verbs)
     }
-    else {      
+    else {
       verbCount = 0
     }
-    
+
     if (type = "exit" and verbCount = 1) {
       if (not game.enablehyperlinks) {
         result = GetDisplayAlias(obj)
@@ -336,7 +336,7 @@
     else {
       result = "{object:" + obj.name + "}"
     }
-    
+
     if (not GetBoolean(obj, "usedefaultprefix")) {
       if (obj.prefix = null) {
         prefix = ""
@@ -377,14 +377,14 @@
     return (result)
   ]]>
   </function>
-  
+
   <function name="CheckDarkness" type="boolean">
     roomCheckDarkness = true
     if (GetBoolean(game.pov.parent, "dark")) {
       if (ListCount(ScopeVisibleLightsource("strong")) > 0) {
         roomCheckDarkness = false
       }
-    } 
+    }
     else {
       roomCheckDarkness = false
     }

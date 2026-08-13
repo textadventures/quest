@@ -1,12 +1,11 @@
 <library>
 
-  <!-- lookat modified by KV to include timesexamined attribute -->
   <command name="lookat" template="lookat">
     <![CDATA[
     if (GetBoolean(object, "hidechildren")) {
       object.hidechildren = false
     }
-    
+
     if (TypeOf(object, "look") = "script") {
       if (not HasAttribute(object,"timesexamined")){
         object.timesexamined = 0
@@ -19,11 +18,11 @@
       if (HasString(object, "look")) {
         lookdesc = object.look
       }
-      
+
       if (LengthOf(lookdesc) = 0) {
         lookdesc = Template("DefaultObjectDescription")
       }
-      
+
       if (GetBoolean(object, "switchedon")) {
         if (HasString(object, "switchedondesc")) {
           lookdesc = lookdesc + " " + object.switchedondesc
@@ -34,7 +33,7 @@
           lookdesc = lookdesc + " " + object.switchedoffdesc
         }
       }
-      
+
       isDark = CheckDarkness()
       if (isDark and not GetBoolean(object, "lightsource")) {
         lookdesc = DynamicTemplate("LookAtDarkness", object)
@@ -47,7 +46,7 @@
       }
       msg (lookdesc)
     }
-    
+
     ListObjectContents (object)
     ]]>
   </command>
@@ -72,7 +71,7 @@
     ]]>
   </function>
 
-  <!-- take command modified by KV to exclude objects with not_all set to true from TAKE ALL -->
+  <!-- objects with not_all set to true are excluded from TAKE ALL by scope resolution, before this script runs -->
   <command name="take" template="take">
     <allow_all />
     <scope>notheld</scope>
@@ -92,7 +91,7 @@
       }
     </script>
   </command>
-  
+
   <function name="DoTake" parameters="object, ismultiple"><![CDATA[
     prefix = ""
     if (ismultiple) {
@@ -202,7 +201,7 @@
       return (true)
     }
   </function>
-  
+
   <command name="drop" template="drop">
     <allow_all />
     <scope>inventory</scope>
@@ -245,7 +244,7 @@
       else {
         destination = game.pov.parent
       }
-      
+
       switch (TypeOf(object, "drop")) {
         case ("script") {
           if (ismultiple) {
@@ -275,13 +274,13 @@
           found = false
         }
       }
-      
+
       if (not found and dropmsg = null) dropmsg = DynamicTemplate("DropUnsuccessful", object)
-      
+
       if (LengthOf(dropmsg) > 0) {
         msg (prefix + dropmsg)
       }
-      
+
       if (HasScript(object, "ondrop")) {
          do (object, "ondrop", QuickParams("successful", not oldparent = object.parent))
       }
@@ -297,7 +296,7 @@
       return (true)
     }
   </function>
-  
+
   <function name="CreateUseMenuList" parameters="object" type="objectlist">
     objectlist = NewObjectList()
     objectlist = ScopeReachableInventory()
@@ -341,7 +340,7 @@
       }
     }
   ]]></command>
-  
+
   <command name="undo">
     <pattern type="string">[undo]</pattern>
     <script>
@@ -354,7 +353,6 @@
     <isundo/>
   </command>
 
-  
   <command name="inventory" pattern="[inventory]">
     list = FormatObjectList(Template("CarryingListHeader"), game.pov, Template("And"), ".")
     if (list = "") {
@@ -388,7 +386,7 @@
           lockmessage = Template("LockedExit")
         }
         msg (message+" "+lockmessage)
-      } 
+      }
       else {
         msg (message)
       }
@@ -415,7 +413,7 @@
       }
       else if (exit.lookonly) {
          msg (Template("UnresolvedLocation"))
-      } 
+      }
       else {
         if (HasString(exit, "message")) {
           if (not exit.message = "") {
@@ -428,9 +426,9 @@
           }
         }
         game.pov.parent = exit.to
-      }   
-    } 
-    else {   
+      }
+    }
+    else {
       msg (Template("UnresolvedLocation"))
     }
   </command>
@@ -444,7 +442,7 @@
       return (true)
     }
   </function>
-  
+
   <function name="TryOpenClose" parameters="doopen, object">
     if (doopen) {
       action = "open"
@@ -460,7 +458,7 @@
     }
     else {
       found = false
-      
+
       if (GetBoolean(object, action)) {
         if (doopen) {
           if (object.isopen) {
@@ -690,7 +688,7 @@
         }
       }
     }
-    
+
     if (not handled) {
       if (HasString(object1, "giveto")) {
         msg (object1.giveto)
@@ -715,12 +713,12 @@
         }
       }
     }
-    
+
     if (not handled) {
       msg (DynamicTemplate("DefaultGive", object2, object1))
     }
   </function>
-  
+
   <command name="useon" pattern="[useon]">
     HandleUseOn (object1, object2)
   </command>
@@ -749,7 +747,7 @@
         }
       }
     }
-    
+
     if (not handled) {
       if (HasString(object1, "selfuseon")) {
         msg (object1.selfuseon)
@@ -774,7 +772,7 @@
         }
       }
     }
-    
+
     if (not handled) {
       msg (DynamicTemplate("DefaultUseOn", object2, object1))
     }
@@ -799,12 +797,12 @@
   <function name="DoAskTell" parameters="object, text, property, defaultscript, defaulttemplate">
     <![CDATA[
     handled = false
-    
+
     maxstrength = 0
     match = null
-    
+
     text = LCase(text)
-    
+
     if (TypeOf(object, property) = "scriptdictionary") {
       dictionary = GetAttribute(object, property)
       foreach (keywords, dictionary) {
@@ -814,7 +812,7 @@
           maxstrength = strength
         }
       }
-      
+
       if (match <> null) {
         parameters = NewObjectDictionary()
         dictionary add(parameters, "this", object)
@@ -822,7 +820,7 @@
         handled = true
       }
     }
-    
+
     if (not handled) {
       if (HasScript(object, defaultscript)) {
         d = NewDictionary()
@@ -832,18 +830,18 @@
         msg (DynamicTemplate(defaulttemplate, object))
       }
     }
-    ]]>    
+    ]]>
   </function>
 
   <function name="GetKeywordsMatchStrength" parameters="keywords, input" type="int">
     // Keywords is the subject. We split it into individual words, and then see how well
     // the words in the input match the keywords.
-    
+
     keywordlist = Split(keywords, " ")
     inputlist = Split(input, " ")
-    
+
     strength = 0
-    
+
     foreach (word, inputlist) {
       foreach (keyword, keywordlist) {
         if (StartsWith(word, keyword)) {
@@ -851,7 +849,7 @@
         }
       }
     }
-    
+
     return (strength)
   </function>
 
@@ -917,7 +915,7 @@
   <command name="sleep" pattern="[sleep]">msg (Template("DefaultSleep"))</command>
   <command name="wait" pattern="[wait]">msg (Template("DefaultWait"))</command>
   <command name="xyzzy" pattern="[xyzzy]">msg (Template("DefaultXyzzy"))</command>
-  
+
   <!-- Modified to suppress turn scripts -->
   <command name="help" pattern="[help]">
     <script>
@@ -933,8 +931,6 @@
       SuppressTurnscripts
     </script>
   </command>
-  
-  <!-- added by KV -->
 
   <command name="version_cmd" pattern="[version_cmd]">
     <script><![CDATA[
@@ -1022,7 +1018,7 @@
       }
     </script>
   </command>
-  
+
   <function name="BlockingMessage" parameters="blocked, prefix" type="string">
     obj = GetBlockingObject(blocked)
     if (HasString(obj, "blockingmessage")) {

@@ -15,13 +15,13 @@
   </function>
 
   <function name="ResetCommandBarFormat">
-	<![CDATA[
+  <![CDATA[
     format = GetCommandBarFormat()
     if (GetString(game, "commandbarformat") <> format) {
       game.commandbarformat = format
       JS.setCommandBarStyle(format)
     }
-	]]>
+  ]]>
   </function>
 
   <function name="GetCommandBarFormat" type="string">
@@ -43,18 +43,18 @@
 
   <function name="GetCurrentTextFormat" type="string" parameters="colour">
     style = ""
-    
+
     if (UIOptionUseGameFont()) {
       font = GetCurrentFontFamily()
     }
     else {
       font = GetUIOption("OverrideFontName")
     }
-    
+
     if (LengthOf(font) > 0) {
       style = style + "font-family:" + font + ";"
     }
-    
+
     if (LengthOf(colour) = 0) {
       if (UIOptionUseGameColours()) {
         colour = game.defaultforeground
@@ -66,7 +66,7 @@
     if (LengthOf(colour) > 0) {
       style = style + "color:" + colour + ";"
     }
-    
+
     if (UIOptionUseGameFont()) {
       size = game.defaultfontsize
     }
@@ -76,14 +76,14 @@
     if (size > 0) {
       style = style + "font-size:" + ToString(size) + "pt;"
     }
-    
+
     return (style)
   </function>
 
   <function name="GetCurrentLinkTextFormat" type="string">
     return (GetCurrentTextFormat(GetLinkTextColour()))
   </function>
-  
+
   <function name="UIOptionUseGameFont" type="boolean">
     value = GetUIOption("UseGameFont")
     if (value = null or value = "true") {
@@ -118,8 +118,7 @@
     }
     return (params)
   </function>
-    
-    
+
   <function name="ObjectForTextProcessor" type="object" parameters="objectname">
     if (not game.text_processor_this = null and objectname = "this") {
       object = game.text_processor_this
@@ -134,11 +133,10 @@
         return (object)
       }
     }
-   
+
     return (GetObject(objectname))
   </function>
-    
-    
+
   <function name="GetLinkTextColour" type="string">
     if (UIOptionUseGameColours()) {
       return (game.defaultlinkforeground)
@@ -147,30 +145,30 @@
       return (GetUIOption("OverrideLinkForeground"))
     }
   </function>
-  
+
   <function name="ProcessText" type="string" parameters="text">
     data = NewDictionary()
     dictionary add (data, "fulltext", text)
     text = ProcessTextSection(text, data)
     return (Replace(Replace(text, "@@@open@@@", "{"), "@@@close@@@", "}"))
   </function>
-  
+
   <function name="ProcessTextSection" type="string" parameters="text, data">
     <![CDATA[
-    
+
     containsUnprocessedSection = false
-    
+
     open = Instr(text, "{")
-    
+
     if (open > 0) {
       nestCount = 1
       searchStart = open + 1
       finished = false
-      
+
       while (not finished) {
         nextOpen = Instr(searchStart, text, "{")
         nextClose = Instr(searchStart, text, "}")
-      
+
         if (nextClose > 0) {
           if (nextOpen > 0 and nextOpen < nextClose) {
             nestCount = nestCount + 1
@@ -191,14 +189,14 @@
         }
       }
     }
-    
+
     if (containsUnprocessedSection) {
       section = Mid(text, open + 1, close - open - 1)
       value = ProcessTextCommand(section, data)
       value = ProcessTextSection(value, data)
       text = Left(text, open - 1) + value + ProcessTextSection(Mid(text, close + 1), data)
     }
-    
+
     return (text)
     ]]>
   </function>
@@ -216,8 +214,8 @@
           return (result)
         }
       }
-    } 
-    
+    }
+
     dot = Instr(section, ".")
     if (dot = 0) {
       return ("@@@open@@@" + ProcessTextSection(section, data) + "@@@close@@@")
@@ -271,7 +269,7 @@
     return (ToString(eval(section, ParamsForTextProcessor())))
   ]]>
   </function>
- 
+
   <function name="ProcessTextCommand_Either" parameters="section, data" type="string">
     command = Mid(section, 8)
     l = Tsplit(command)
@@ -498,17 +496,11 @@
   ]]>
   </function>
 
-
-  
   <function name="ProcessTextCommand_Format" parameters="section, data" type="string"><![CDATA[
     html = Mid(section, 1, 1)
     section = Mid(section, 3)
     return(ProcessTextSection("<" + html + ">" + section + "</" + html + ">", data))
-  ]]></function> 
-
-
-
-
+  ]]></function>
 
   <function name="ProcessTextCommand_Colour" parameters="section, data" type="string"><![CDATA[
     ary = Split(section, ":")
@@ -523,12 +515,8 @@
     else {
       return(ProcessTextSection("<span style=\"color:" + c + ";\">" + s + "</span>", data))
     }
-  ]]></function> 
+  ]]></function>
 
-
-
-
-  
   <function name="ProcessTextCommand_Popup" parameters="section, data" type="string"><![CDATA[
     section = Mid(section, 7)
     ary = Split(section, ":")
@@ -541,9 +529,7 @@
     s = "<span  style=\"cursor:pointer;color:" + link + ";\" onclick=\"$('#" + id + "').css('display', 'block');\">" + s1 + "</span><div id=\"" + id + "\" class=\"w3-theme-border\" style=\"position:fixed;z-index:9999;display:none;cursor:pointer;left:50px;top:40%;width:40%;background-color:" + game.defaultbackground + ";border:2px solid " + game.defaultforeground + ";color:" + link + ";border-radius:5px;padding:5px;\" onclick=\"$('#" + id + "').css('display', 'none');\"><p>"
     s = s + s2 + "</p></div>"
     return(ProcessTextSection(s, data))
-  ]]></function> 
-  
-
+  ]]></function>
 
   <function name="ProcessTextCommand_Object" type="string" parameters="section, data">
     <![CDATA[
@@ -580,7 +566,7 @@
     }
     ]]>
   </function>
-  
+
   <function name="ProcessTextCommand_GetNextLinkId" type="string">
     if (not HasInt(game, "lastlinkid")) {
       game.lastlinkid = 0
@@ -626,7 +612,7 @@
     exitname = Mid(section, 6)
     exit = GetObject(exitname)
     if (exit = null) {
-      return ("@@@open@@@" + ProcessTextSection(section, data) + "@@@close@@@") 
+      return ("@@@open@@@" + ProcessTextSection(section, data) + "@@@close@@@")
     }
     else {
       verbs = GetDisplayVerbs(exit)
@@ -637,7 +623,7 @@
     }
     ]]>
   </function>
-  
+
   <function name="ProcessTextCommand_Once" type="string" parameters="section, data">
     if (not HasAttribute(game, "textprocessor_seen")) {
       game.textprocessor_seen = NewDictionary()
@@ -679,7 +665,7 @@
       return (ProcessTextSection(Mid(section, 10), data))
     }
   </function>
-  
+
   <function name="ProcessTextCommand_Random" type="string" parameters="section, data">
     elements = Mid(section, 8)
     elementslist = Tsplit(elements)
@@ -708,7 +694,7 @@
     list add(itemlist, item)
     return (itemlist)
   </function>
-  
+
   <function name="ProcessTextCommand_RandomAlias" type="string" parameters="section, data">
     objectname = Mid(section, 8)
     object = ObjectForTextProcessor(objectname)
@@ -740,9 +726,9 @@
     }
     else {
       return ("0")
-    }  
+    }
   </function>
-  
+
   <function name="ProcessTextCommand_Select" parameters="section, data" type="string"><![CDATA[
     elements = Mid(section, 8)
     elementslist = Tsplit(elements)
@@ -775,7 +761,7 @@
       }
     }
   ]]></function>
-  
+
   <function name="SetFramePicture" parameters="filename">
     <![CDATA[
     JS.setPanelContents("<img src=\"" + GetFileURL(filename) + "\" onload=\"setPanelHeight()\"/>")
@@ -855,7 +841,7 @@
     <![CDATA[
     pos = Instr(url, "://")
     if (pos > 0) {
-      url = Mid(url, pos + 3) 
+      url = Mid(url, pos + 3)
     }
     if (https) {
       url = "https://" + url
@@ -926,7 +912,7 @@
   <function name="SetAlignment" parameters="align">
     JS.createNewDiv(align)
   </function>
-  
+
   <function name="GetCurrentFontFamily" type="string">
     if (game.defaultwebfont = null) {
       return (game.defaultfont)
@@ -940,7 +926,7 @@
       }
     }
   </function>
-  
+
   <function name="FormatList" parameters="list, joiner, lastjoiner, nothing" type="string"><![CDATA[
     if (ListCount (list) = 0) {
       return (nothing)
@@ -978,11 +964,6 @@
     return (text)
   ]]></function>
 
-
-
-  
-
-  
   <function name="ToRoman" parameters="n" type="string">
     if (not TypeOf(n) = "int") error ("ToRoman can only handle ints")
 

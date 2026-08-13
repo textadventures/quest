@@ -1,8 +1,6 @@
 <library>
   <include ref="English.aslx"/>
   <template name="LanguageId">is</template>
-  
-
 
   <template name="UnresolvedObject">Ég sé þetta ekki.</template>
   <template name="UnresolvedLocation">Þú getur ekki farið þarna.</template>
@@ -280,23 +278,23 @@
 
   <template name="LanguageSpecificObjectTypes">hvorukyn=Inanimate object (hvorukyn); kvenkyn=Inanimate object (kvenkyn); karlkyn=Inanimate object (karlkyn); </template>
 
-  <type name="hvorukyn"> 
+  <type name="hvorukyn">
   <gender>það</gender>
   <article>ið</article>
   </type>
-  
+
   <type name="kvenkyn">
   <gender>hún</gender>
   <article>n</article>
   </type>
-  
+
   <type name="karlkyn">
   <gender>hann</gender>
   <article>nn</article>
   </type>
 
   <template name="EditorVerbDefaultExpression">"You can't #verb# " + object.article + "."</template>
-  
+
   <function name="GetDefaultPrefix" type="string" parameters="obj">
     return ("")
   </function>
@@ -352,7 +350,7 @@
           }
           default {
             return ("do")
-          }       
+          }
         }
       }
       default {

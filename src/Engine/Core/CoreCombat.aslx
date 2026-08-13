@@ -1,4 +1,4 @@
-﻿<library>
+<library>
   <function name="DiceRoll" parameters="dice" type="int">
     if (TypeOf(dice) = "int") return (dice)
     p1 = Instr(dice, "d")
@@ -31,16 +31,16 @@
     for (i, 1, number) {
       total = total + GetRandomInt(1, sides)
     }
-    return (total)    
+    return (total)
   </function>
-  
+
   <function name="PickOneObject" parameters="lst" type="object">
     n = ListCount(lst)
     if (n = 0) return (null)
     index = GetRandomInt(0, n - 1)
     return (ObjectListItem(lst, index))
   </function>
-  
+
   <function name="PickOneString" parameters="lst" type="string">
     if (TypeOf(lst) = "string") {
       lst = Split(lst, ";")
@@ -50,11 +50,11 @@
     index = GetRandomInt(0, n - 1)
     return (StringListItem(lst, index))
   </function>
-  
+
   <function name="PickOneChild" parameters="obj" type="object">
     return (PickOneObject(GetDirectChildren(obj)))
   </function>
-  
+
   <function name="PickOneChildOfType" parameters="room, typename" type="object">
     l = NewObjectList()
     foreach (o, GetDirectChildren(room)) {
@@ -64,15 +64,13 @@
     }
     return (PickOneObject(l))
   </function>
-    
+
   <function name="PickOneExit" parameters="room" type="object">
     return (PickOneObject(ScopeExitsForRoom (room)))
-  </function> 
-  
+  </function>
+
   <function name="PickOneUnlockedExit" parameters="room" type="object">
     return (PickOneObject(ScopeUnlockedExitsForRoom (room)))
-  </function> 
-  
-    
-  
+  </function>
+
 </library>

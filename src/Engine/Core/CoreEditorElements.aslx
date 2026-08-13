@@ -1,4 +1,4 @@
-﻿<library>
+<library>
 
   <editor>
     <appliesto>_objects</appliesto>
@@ -11,7 +11,7 @@
         <objecttype>object</objecttype>
         <expand/>
       </control>
-      
+
     </tab>
   </editor>
 
@@ -200,5 +200,5 @@
 
     </tab>
   </editor>
-  
+
 </library>

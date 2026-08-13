@@ -1,4 +1,4 @@
-﻿<library>
+<library>
   <editor>
     <appliesto>(function)SetObjectFlagOn</appliesto>
     <display>Set #0 flag #1</display>
@@ -170,15 +170,15 @@
       <controltype>label</controltype>
       <caption>[EditorScriptsVariablesto]</caption>
     </control>
-    
+
     <control>
       <controltype>expression</controltype>
       <simple>value</simple>
       <simpleeditor>number</simpleeditor>
       <attribute>1</attribute>
-    </control>    
+    </control>
   </editor>
-  
+
   <editor>
     <appliesto>(function)IncreaseCounter</appliesto>
     <display>Increase counter #0</display>
@@ -250,7 +250,6 @@
       <attribute>1</attribute>
     </control>
   </editor>
-
 
   <editor>
     <appliesto>=</appliesto>

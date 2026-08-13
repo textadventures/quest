@@ -7,13 +7,13 @@ This is first version done by Daria Mikhaylova, Yeshi Namkhai. It manages declin
 
  Moreover to accept natural language commands in Russian refering to a specific object is advisable to add more names, for instance in Accusative declination, when we open object "открыть коробка" would be not natural, gamer would rather type "открыть коробку".
 
- Keep in mind that Cyrillic may create problems with internal procedures, therefore it is advisable to keep names in Latin. For example to create verb for object you should name it in Russian, but give Attribute in Latin. 
+ Keep in mind that Cyrillic may create problems with internal procedures, therefore it is advisable to keep names in Latin. For example to create verb for object you should name it in Russian, but give Attribute in Latin.
 -->
 
   <include ref="EditorEnglish.aslx"/>
   <include ref="English.aslx"/>
   <template name="LanguageId">ru</template>
-  
+
   <template name="UnresolvedObject">Я не вижу ничего с таким названием</template>
   <template name="UnresolvedLocation">Ты не можешь туда пойти</template>
   <template name="DefaultObjectDescription">Ничего из ряда вон выходящего</template>
@@ -321,7 +321,7 @@ This is first version done by Daria Mikhaylova, Yeshi Namkhai. It manages declin
   <sCre>ёй</sCre><pCre>ями</pCre>
   <sPre>е</sPre><pPre>ях</pPre>
   </type>
- <!--Первое склонение - существительные мужского рода с окончанием -а --> 
+ <!--Первое склонение - существительные мужского рода с окончанием -а -->
   <type name="skl12">
   <gender>он</gender>
   <article>его</article>
@@ -333,7 +333,7 @@ This is first version done by Daria Mikhaylova, Yeshi Namkhai. It manages declin
   <sCre>ой</sCre><pCre>ами</pCre>
   <sPre>е</sPre><pPre>ах</pPre>
   </type>
-<!--Первое склонение - существительные женского рода с окончанием -я --> 
+<!--Первое склонение - существительные женского рода с окончанием -я -->
   <type name="skl13">
   <gender>она</gender>
   <article>ее</article>
@@ -345,7 +345,7 @@ This is first version done by Daria Mikhaylova, Yeshi Namkhai. It manages declin
   <sCre>ёй</sCre><pCre>ями</pCre>
   <sPre>е</sPre><pPre>ях</pPre>
   </type>
-<!--Первое склонение - существительные женского рода с окончанием -а --> 
+<!--Первое склонение - существительные женского рода с окончанием -а -->
   <type name="skl14">
   <gender>она</gender>
   <article>ее</article>
@@ -357,7 +357,7 @@ This is first version done by Daria Mikhaylova, Yeshi Namkhai. It manages declin
   <sCre>ой</sCre><pCre>ами</pCre>
   <sPre>е</sPre><pPre>ах</pPre>
   </type>
-<!--Второе склонение - существительные мужского рода с нулевым окончанием--> 
+<!--Второе склонение - существительные мужского рода с нулевым окончанием-->
 <type name="skl21">
   <gender>он</gender>
   <article>его</article>
@@ -369,7 +369,7 @@ This is first version done by Daria Mikhaylova, Yeshi Namkhai. It manages declin
   <sCre>ом</sCre><pCre>ами</pCre>
   <sPre>е</sPre><pPre>х</pPre>
   </type>
-<!--Второе склонение - существительные мужского рода с окончанием на мягкий знак--> 
+<!--Второе склонение - существительные мужского рода с окончанием на мягкий знак-->
 <type name="skl22">
   <gender>он</gender>
   <article>его</article>
@@ -381,7 +381,7 @@ This is first version done by Daria Mikhaylova, Yeshi Namkhai. It manages declin
   <sCre>ем</sCre><pCre>ями</pCre>
   <sPre>е</sPre><pPre>ях</pPre>
   </type>
-<!--Второе склонение - существительные среднего рода с окончанием -о--> 
+<!--Второе склонение - существительные среднего рода с окончанием -о-->
 <type name="skl23">
   <gender>оно</gender>
   <article>его</article>
@@ -393,7 +393,7 @@ This is first version done by Daria Mikhaylova, Yeshi Namkhai. It manages declin
   <sCre>ом</sCre><pCre>ами</pCre>
   <sPre>е</sPre><pPre>ах</pPre>
   </type>
-<!--Второе склонение - существительные среднего рода с окончанием -е--> 
+<!--Второе склонение - существительные среднего рода с окончанием -е-->
 <type name="skl24">
   <gender>оно</gender>
   <article>его</article>
@@ -405,7 +405,7 @@ This is first version done by Daria Mikhaylova, Yeshi Namkhai. It manages declin
   <sCre>ем</sCre><pCre>ями</pCre>
   <sPre>е</sPre><pPre>ях</pPre>
   </type>
-<!--Второе склонение - существительные женского рода, оканчивающиеся на ь--> 
+<!--Второе склонение - существительные женского рода, оканчивающиеся на ь-->
 <type name="skl31">
   <gender>она</gender>
   <article>ее</article>
@@ -433,7 +433,7 @@ This is first version done by Daria Mikhaylova, Yeshi Namkhai. It manages declin
 -->
 
   <template name="EditorVerbDefaultExpression">"Ты не можешь " + object.article + " #verb# ."</template>
-  
+
   <function name="GetDefaultPrefix" type="string" parameters="obj">
     if (Instr("aeiou", LCase(Left(GetDisplayAlias(obj), 1))) > 0) {
       return ("")
@@ -494,7 +494,7 @@ This is first version done by Daria Mikhaylova, Yeshi Namkhai. It manages declin
           }
           default {
             return ("do")
-          }       
+          }
         }
       }
       default {
@@ -530,11 +530,11 @@ This is first version done by Daria Mikhaylova, Yeshi Namkhai. It manages declin
               return (obj.sPre)
               }
             }
-          <!-- plural ? -->  
+          <!-- plural ? -->
           } else {
              return ("")
           }
-  </function> 
+  </function>
 
   <function name="GetSuffix" type="string" parameters="obj">
           if ( DoesInherit (obj, "male") ) {

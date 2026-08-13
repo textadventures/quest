@@ -1,7 +1,7 @@
-﻿<library>
+<library>
 
 <!-- Esperanto.aslx version  0.003 -->
-    
+
   <include ref="English.aslx"/>
   <template name="LanguageId">eo</template>
 
@@ -36,7 +36,7 @@
   <template name="SwitchOn">Ŝaltu</template>
   <template name="SwitchOff">Malŝaltu</template>
   <template name="Open">Malfermu</template>
-  <template name="Close">Fermu</template> 
+  <template name="Close">Fermu</template>
   <dynamictemplate name="ObjectNotOpen">CapFirst(object.name) + " ne estas malfermita."</dynamictemplate>
   <template name="NeutralGender">ĝi</template>
   <template name="MaleGender">li</template>
@@ -124,16 +124,16 @@
   <template name="OutButtonLabel">Ekstere</template>
   <template name="EmptyListLabel">(malplena)</template>
   <template name="NothingSelectedLabel">(nenion elektita)</template>
- 
+
  <template templatetype="command" name="go"><![CDATA[^iru al (?<exit>.*)o$|^iru (?<exit>.*)en$|^(?<exit>.*)e$|^(?<exit>.*)en$|^(?<exit>.*)o$|^(?<exit>nordokcident|nord|nordorient|okcident|orient|sudokcident|sud|sudorient|supr|malsupr|intern|ekster)$]]></template>
-  
+
   <template templatetype="command" name="lookdir"><![CDATA[^rigardu (?<exit>nordokcidenten|norden|nordorienten|okcidenten|orienten|sudokcidenten|suden|sudorienten|supren|malsupren|internen|eksteren|nokc|n||ok|or|sok|s|sor|sup|malsup|int|eks)$]]></template>
   <template templatetype="command" name="look">^rigardu$</template>
   <verbtemplate name="lookat">rigardu</verbtemplate>
   <verbtemplate name="lookat">r</verbtemplate>
   <verbtemplate name="lookat">observu</verbtemplate>
   <verbtemplate name="lookat">rig</verbtemplate>
-  <verbtemplate name="lookat">ri</verbtemplate> 
+  <verbtemplate name="lookat">ri</verbtemplate>
   <verbtemplate name="take">prenu</verbtemplate>
   <verbtemplate name="take">pren</verbtemplate>
   <verbtemplate name="take">pre</verbtemplate>
@@ -247,7 +247,6 @@
 <b>- Inventario:</b> Por scii kiujn objektojn vi kunportas, tajpu I, INV aux INVENTARIO.<br/>
 <b>- Moving around:</b>  Klaku sur la direkt-butonojn, aux tajpu IRU NORDE, SUDE, OR, IRU [AL]...<br/>
 <b>- Rapidiloj:</b> Presu supren/malsupren por rehavi viajn atauxajn komandojn. Probu X... kiel mallongigo por RIGARDU ....]]></template>
-
 
   <!-- Editor-specific templates - should eventually be moved to e.g. EditorEnglish.aslx -->
   <template name="LanguageSpecificObjectTypes"></template>

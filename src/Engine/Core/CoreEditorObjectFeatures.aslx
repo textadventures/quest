@@ -1,11 +1,11 @@
-﻿<library>
+<library>
   <tab>
     <parent>_ObjectEditor</parent>
     <caption>[EditorObjectFeaturesFeatures]</caption>
     <mustnotinherit>editor_room; dialoguepage</mustnotinherit>
 
     <control>
-			<controltype>label</controltype>
+      <controltype>label</controltype>
       <caption>[EditorObjectFeaturesExplanation]</caption>
     </control>
 

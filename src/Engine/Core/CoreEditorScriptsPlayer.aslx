@@ -1,4 +1,4 @@
-﻿<library>
+<library>
   <editor>
     <appliesto>(function)IncreaseScore</appliesto>
     <display>Increase score by #0</display>
@@ -82,7 +82,7 @@
       <simpleeditor>number</simpleeditor>
     </control>
   </editor>
-  
+
   <editor>
     <appliesto>(function)IncreaseMoney</appliesto>
     <display>Increase money by #0</display>
