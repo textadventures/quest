@@ -105,10 +105,15 @@
         const version = $scriptVersion; // track for reactivity on undo/redo
         if (isRoot) {
             scriptData = version >= 0 ? getScriptData(elementKey, attribute) : null;
-            selectedIndices.clear();
-            for (const i of nextSelection ?? []) selectedIndices.add(i);
-            nextSelection = null;
         }
+        // Any cut/delete/undo just removed the currently-selected rows, so a selection can't
+        // survive a scriptVersion bump — except a move, which pre-sets nextSelection (see
+        // onMoveUp/DownSelected) to shift it instead. Nested blocks (if/for/while ... then,
+        // else, etc.) have their own checkboxes and selection toolbar too, so this applies to
+        // every level, not just the root.
+        selectedIndices.clear();
+        for (const i of nextSelection ?? []) selectedIndices.add(i);
+        nextSelection = null;
         if (categories.length === 0) {
             void getScriptCommandCategories().then(cats => {
                 if (cats) categories = cats.categories;
@@ -474,23 +479,19 @@
         <div role="region" inert={isLocked || undefined} class={isLocked ? "opacity-60" : ""}>
             {#each scripts() as script, i (script.id)}
                 <div class="group relative border border-surface-200-800 rounded mb-1 bg-surface-50-950 flex items-start">
-                    {#if isRoot}
-                        <label class="flex items-start pt-1.5 pl-1.5 pr-0.5 cursor-pointer flex-shrink-0">
-                            <input
-                                type="checkbox"
-                                class="checkbox size-3.5"
-                                checked={selectedIndices.has(i)}
-                                onchange={(e) => toggleSelection(i, (e.target as HTMLInputElement).checked)}
-                            />
-                        </label>
-                    {/if}
+                    <label class="flex items-start pt-1.5 pl-1.5 pr-0.5 cursor-pointer flex-shrink-0">
+                        <input
+                            type="checkbox"
+                            class="checkbox size-3.5"
+                            checked={selectedIndices.has(i)}
+                            onchange={(e) => toggleSelection(i, (e.target as HTMLInputElement).checked)}
+                        />
+                    </label>
                     <div class="flex-1 min-w-0">
-                        <!-- Script row actions (hover). Root-level rows have a checkbox +
-                             selection toolbar below (Cut/Copy/Delete/Move) that already
-                             covers this on touch, so only force these always-visible
-                             (pointer-coarse:opacity-100) for nested if/for/while blocks,
-                             which have no checkbox and no other way to reorder/delete. -->
-                        <div class="absolute right-1 top-1 flex gap-0.5 opacity-0 group-hover:opacity-100 transition-opacity z-10 {isRoot ? "" : "pointer-coarse:opacity-100"}">
+                        <!-- Script row actions (hover). Every row also has a checkbox + selection
+                             toolbar below (Cut/Copy/Delete/Move) that already covers this on
+                             touch, so these stay hover-only at all nesting levels. -->
+                        <div class="absolute right-1 top-1 flex gap-0.5 opacity-0 group-hover:opacity-100 transition-opacity z-10">
                             <button
                                 type="button"
                                 class="btn btn-sm preset-outlined-primary-500 px-1 py-0 text-xs leading-none"
@@ -525,7 +526,7 @@
             <!-- Selection toolbar: one horizontally-scrollable row (rather than
                  the buttons getting clipped, or wrapping onto more lines)
                  when it doesn't fit a narrow screen. -->
-            {#if isRoot && selectedIndices.size > 0}
+            {#if selectedIndices.size > 0}
                 {@const sel = sortedSelection()}
                 <div class="flex items-center gap-1 mb-1 px-1 py-1 bg-surface-100-900/60 rounded border border-surface-200-800 text-xs overflow-x-auto">
                     <button
