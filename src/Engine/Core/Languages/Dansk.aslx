@@ -179,7 +179,7 @@
   <verbtemplate name="drop">læg</verbtemplate>
   <verbtemplate name="use">brug</verbtemplate>
   <verbtemplate name="speakto">tal til</verbtemplate>
- <verbtemplate name="speakto">tal med</verbtemplate>
+  <verbtemplate name="speakto">tal med</verbtemplate>
   <verbtemplate name="speakto">tal</verbtemplate>
   <verbtemplate name="speakto">tal til</verbtemplate>
   <verbtemplate name="speakto">tal</verbtemplate>
@@ -190,9 +190,9 @@
   <template templatetype="command" name="remove"><![CDATA[^fjern (?<object1>.*) fra (?<object2>.*)$]]></template>
   <template templatetype="command" name="ask"><![CDATA[^spørg (?<object>.*) om (?<text>.*)$]]></template>
   <template templatetype="command" name="tell"><![CDATA[^fortæl (?<object>.*) om (?<text>.*)$]]></template>
- <template templatetype="command" name="tellto"><![CDATA[^(bed) (?<object>.*) om at (?<text>.*)$]]></template>
- <template templatetype="command" name="alttellto"><![CDATA[^(?<object>.*), (?<text>.*)$]]></template>
- <template templatetype="command" name="oops"><![CDATA[^ups (?<text>.*)$]]></template>
+  <template templatetype="command" name="tellto"><![CDATA[^(bed) (?<object>.*) om at (?<text>.*)$]]></template>
+  <template templatetype="command" name="alttellto"><![CDATA[^(?<object>.*), (?<text>.*)$]]></template>
+  <template templatetype="command" name="oops"><![CDATA[^ups (?<text>.*)$]]></template>
 
   <verbtemplate name="buy">køb</verbtemplate>
   <dynamictemplate name="DefaultBuy">"Du kan ikke købe " + object.article + "."</dynamictemplate>
@@ -351,10 +351,10 @@
   <template name="FemalePluralWornModifier">båret</template>
 
   <template name="DefaultHelp"><![CDATA[<u>Hurtig Hjælp</u><br/><br/>
-<b>- Objecter:</b>  Prøv med SE PÅ...., TAL MED...., TAG..., LÆG..., ÅBEN..., LUK..., GIV... TIL..., BRUG..., eller BRUG... MED...<br/>
-<b>- Grej:</b>  Se hvad du bærer på ved at skrive I, INV eller INVENTORY eller se på panelet foroven til højre.<br/>
-<b>- Bevægelse:</b>  Tryk på kompasknapperne foroven til højre eller skriv GÅ MOD NORD, GÅ NORD, NORD eller N<br/>
-<b>- Genveje:</b>  Tryk på pil op eller pil ned tasterne for at vise de kommandoer du allerede har skrevet tidligere. X kan bruges som genvej til SE PÅ...]]></template>
+      <b>- Objecter:</b>  Prøv med SE PÅ...., TAL MED...., TAG..., LÆG..., ÅBEN..., LUK..., GIV... TIL..., BRUG..., eller BRUG... MED...<br/>
+      <b>- Grej:</b>  Se hvad du bærer på ved at skrive I, INV eller INVENTORY eller se på panelet foroven til højre.<br/>
+      <b>- Bevægelse:</b>  Tryk på kompasknapperne foroven til højre eller skriv GÅ MOD NORD, GÅ NORD, NORD eller N<br/>
+  <b>- Genveje:</b>  Tryk på pil op eller pil ned tasterne for at vise de kommandoer du allerede har skrevet tidligere. X kan bruges som genvej til SE PÅ...]]></template>
 
   <!-- Editor-specific templates - should eventually be moved to e.g. EditorEnglish.aslx -->
   <template name="LanguageSpecificObjectTypes"></template>

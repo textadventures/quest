@@ -1,7 +1,7 @@
 <library>
   <function name="RandomChance" parameters="percentile" type="boolean">
     <![CDATA[
-    return (GetRandomInt(1,100) <= percentile)
+      return (GetRandomInt(1,100) <= percentile)
     ]]>
   </function>
 
@@ -166,17 +166,17 @@
 
   <function name="ChangePOV" parameters="object">
     <![CDATA[
-    if (not HasObject(object, "parent")) {
-      error ("ChangePOV cannot change player to object with no parent.")
-    }
-    if (game.pov <> object) {
-      game.pov = object
-      if (game.gridmap) {
-        JS.Grid_ClearAllLayers()
-        Grid_Redraw
+      if (not HasObject(object, "parent")) {
+        error ("ChangePOV cannot change player to object with no parent.")
       }
-      OnEnterRoom (null)
-    }
+      if (game.pov <> object) {
+        game.pov = object
+        if (game.gridmap) {
+          JS.Grid_ClearAllLayers()
+          Grid_Redraw
+        }
+        OnEnterRoom (null)
+      }
     ]]>
   </function>
 
@@ -191,79 +191,79 @@
   </function>
 
   <function name="ShowMenu" parameters="caption, options, allowCancel, callback"><![CDATA[
-    outputsection = StartNewOutputSection()
-    msg (caption)
-    count = 0
-    game.menuoptionskeys = NewStringList()
-    foreach (option, options) {
-      count = count + 1
-      if (TypeOf(options) = "stringdictionary") {
-        optionText = StringDictionaryItem(options, option)
-        optiontag = option
-        style = GetCurrentLinkTextFormat()
-        list add (game.menuoptionskeys, option)
-      }
-      else if (TypeOf(option) = "string") {
-        optionText = option
-        optiontag = option
-        style = GetCurrentLinkTextFormat()
-        list add (game.menuoptionskeys, option)
-      }
-      else if (TypeOf(option) = "object") {
-        optionText = GetDisplayAlias(option)
-        optiontag = option.name
-        colour = ""
-        if (HasString(option, "linkcolour") and GetUIOption("UseGameColours") = "true") {
-          colour = option.linkcolour
+      outputsection = StartNewOutputSection()
+      msg (caption)
+      count = 0
+      game.menuoptionskeys = NewStringList()
+      foreach (option, options) {
+        count = count + 1
+        if (TypeOf(options) = "stringdictionary") {
+          optionText = StringDictionaryItem(options, option)
+          optiontag = option
+          style = GetCurrentLinkTextFormat()
+          list add (game.menuoptionskeys, option)
+        }
+        else if (TypeOf(option) = "string") {
+          optionText = option
+          optiontag = option
+          style = GetCurrentLinkTextFormat()
+          list add (game.menuoptionskeys, option)
+        }
+        else if (TypeOf(option) = "object") {
+          optionText = GetDisplayAlias(option)
+          optiontag = option.name
+          colour = ""
+          if (HasString(option, "linkcolour") and GetUIOption("UseGameColours") = "true") {
+            colour = option.linkcolour
+          }
+          else {
+            colour = GetLinkTextColour()
+          }
+          style = GetCurrentTextFormat(colour)
+          list add (game.menuoptionskeys, option.name)
         }
         else {
-          colour = GetLinkTextColour()
+          error ("ShowMenu cannot handle a " + TypeOf(option))
         }
-        style = GetCurrentTextFormat(colour)
-        list add (game.menuoptionskeys, option.name)
+        msg (count + ": <a class=\"cmdlink\" style=\"" + style + "\" onclick=\"ASLEvent('ShowMenuResponse','" + EscapeQuotes(optiontag) + "')\">" + optionText + "</a>")
       }
-      else {
-        error ("ShowMenu cannot handle a " + TypeOf(option))
-      }
-      msg (count + ": <a class=\"cmdlink\" style=\"" + style + "\" onclick=\"ASLEvent('ShowMenuResponse','" + EscapeQuotes(optiontag) + "')\">" + optionText + "</a>")
-    }
-    EndOutputSection (outputsection)
-    game.menuoptions = options
-    game.menuallowcancel = allowCancel
-    game.menucallback = callback
-    game.menuoutputsection = outputsection
+      EndOutputSection (outputsection)
+      game.menuoptions = options
+      game.menuallowcancel = allowCancel
+      game.menucallback = callback
+      game.menuoutputsection = outputsection
   ]]></function>
 
   <function name="ShowMenuResponse" parameters="option"><![CDATA[
-    if (game.menucallback = null) {
-      error ("Unexpected menu response")
-    }
-    else {
-      parameters = NewStringDictionary()
-      dictionary add (parameters, "result", UnescapeQuotes(option))
-      script = game.menucallback
-      if (GetBoolean (game, "donotclearmenus")) {
-        DisableMenu
+      if (game.menucallback = null) {
+        error ("Unexpected menu response")
       }
       else {
-        ClearMenu
-      }
-      if (not GetBoolean(game, "disambiguating")) {
-        game.runturnscripts = true
-      }
-      if (GetBoolean (game, "showmenuresponses")) {
-        if (GetBoolean (game, "disambiguating")){
-          obj = GetObject (option)
-          if (obj <> null){
-            option = GetDisplayAlias(obj)
-          }
+        parameters = NewStringDictionary()
+        dictionary add (parameters, "result", UnescapeQuotes(option))
+        script = game.menucallback
+        if (GetBoolean (game, "donotclearmenus")) {
+          DisableMenu
         }
-        msg (Template("ShowMenuResponsePrompt") + option)
+        else {
+          ClearMenu
+        }
+        if (not GetBoolean(game, "disambiguating")) {
+          game.runturnscripts = true
+        }
+        if (GetBoolean (game, "showmenuresponses")) {
+          if (GetBoolean (game, "disambiguating")){
+            obj = GetObject (option)
+            if (obj <> null){
+              option = GetDisplayAlias(obj)
+            }
+          }
+          msg (Template("ShowMenuResponsePrompt") + option)
+        }
+        game.disambiguating = false
+        invoke (script, parameters)
+        FinishTurn
       }
-      game.disambiguating = false
-      invoke (script, parameters)
-      FinishTurn
-    }
   ]]></function>
 
   <function name="DisableMenu">
@@ -290,39 +290,39 @@
   </function>
 
   <function name="JSSafe" parameters="s" type="string"><![CDATA[
-    s = Replace(s, "\"", "")
-    s = Replace(s, "\'", "")
-    s = Replace(s, " ", "")
-    s = Replace(s, ".", "")
-    s = Replace(s, ",", "")
-    s = Replace(s, "!", "")
-    s = Replace(s, "?", "")
-    s = Replace(s, "-", "")
-    s = Replace(s, "/", "")
-    s = Replace(s, "(", "")
-    s = Replace(s, ")", "")
-    s = Replace(s, "$", "")
-    s = Replace(s, "%", "")
-    s = Replace(s, "&", "")
-    s = Replace(s, "*", "")
-    s = Replace(s, "@", "")
-    return (s)
+      s = Replace(s, "\"", "")
+      s = Replace(s, "\'", "")
+      s = Replace(s, " ", "")
+      s = Replace(s, ".", "")
+      s = Replace(s, ",", "")
+      s = Replace(s, "!", "")
+      s = Replace(s, "?", "")
+      s = Replace(s, "-", "")
+      s = Replace(s, "/", "")
+      s = Replace(s, "(", "")
+      s = Replace(s, ")", "")
+      s = Replace(s, "$", "")
+      s = Replace(s, "%", "")
+      s = Replace(s, "&", "")
+      s = Replace(s, "*", "")
+      s = Replace(s, "@", "")
+      return (s)
   ]]></function>
 
   <function name="HandleMenuTextResponse" parameters="input" type="boolean">
     <![CDATA[
-    handled = false
-    if (IsInt(input)) {
-      number = ToInt(input)
-      if (number > 0 and number <= ListCount(game.menuoptionskeys)) {
-        handled = true
-        if (not GetBoolean(game, "notranscript") and GetBoolean(game, "savetranscript")){
-          JS.SaveTranscript("<span><br/>> " + SafeXML(input) + "<br/></span>")
+      handled = false
+      if (IsInt(input)) {
+        number = ToInt(input)
+        if (number > 0 and number <= ListCount(game.menuoptionskeys)) {
+          handled = true
+          if (not GetBoolean(game, "notranscript") and GetBoolean(game, "savetranscript")){
+            JS.SaveTranscript("<span><br/>> " + SafeXML(input) + "<br/></span>")
+          }
+          ShowMenuResponse(StringListItem(game.menuoptionskeys, number - 1))
         }
-        ShowMenuResponse(StringListItem(game.menuoptionskeys, number - 1))
       }
-    }
-    return (handled)
+      return (handled)
     ]]>
   </function>
 
@@ -392,8 +392,8 @@
         object.key1 = object.key
       }
       if (not HasObject(object, "key1")) {
-      object.key1 = object.key
-    }
+        object.key1 = object.key
+      }
     }
     for (x, 1, object.keycount) {
       keyname = "key" + ToString(x)
@@ -428,91 +428,91 @@
   </function>
 
   <function name="PadString" parameters="str, n, pad" type="string"><![CDATA[
-    s = ""
-    str = "" + str
-    pad = "" + pad
-    step = LengthOf(pad)
-    if (step = 0) {
-      error ("Zero length pad in PadString")
-    }
-    if (pad = " ") {
-      pad = "&nbsp;"
-    }
-    for (i, 1, n - LengthOf(str), step) {
-      s = s + pad
-    }
-    return (s + str)
+      s = ""
+      str = "" + str
+      pad = "" + pad
+      step = LengthOf(pad)
+      if (step = 0) {
+        error ("Zero length pad in PadString")
+      }
+      if (pad = " ") {
+        pad = "&nbsp;"
+      }
+      for (i, 1, n - LengthOf(str), step) {
+        s = s + pad
+      }
+      return (s + str)
   ]]></function>
 
   <function name="Decimalise" parameters="n, places" type="string"><![CDATA[
-    negative = (n < 0)
-    n = abs(n)
-    if (places = 0) {
-      return ("" + n)
-    }
-    factor = pow (10, places)
-    pounds = floor(n / factor)
-    pennies = n % factor
-    result = pounds + "." + PadString(pennies, places, 0)
-    if (negative) result = "-" + result
-    return (result)
+      negative = (n < 0)
+      n = abs(n)
+      if (places = 0) {
+        return ("" + n)
+      }
+      factor = pow (10, places)
+      pounds = floor(n / factor)
+      pennies = n % factor
+      result = pounds + "." + PadString(pennies, places, 0)
+      if (negative) result = "-" + result
+      return (result)
   ]]></function>
 
   <function name="DisplayNumber" parameters="n, control" type="string"><![CDATA[
-    n = abs(n)
-    regex = "^(?<before>\\D*)(?<padding>\\d+)(?<sep>\\D)(?<places>\\d*)(?<after>\\D*)$"
-    if (not IsRegexMatch(regex, control, "DisplayNumber")) {
-      error ("Unexpected format in DisplayNumber (" + control + "). Should be a number, followed by a single character separator, followed by a number.")
-    }
-    options = Populate(regex, control, "DisplayNumber")
-    places = ToInt(StringDictionaryItem(options, "places"))
-    padding = ToInt(StringDictionaryItem(options, "padding"))
-    if (places > 0) {
-      padding = padding + 1 + places
-    }
-    decimal = Replace(Decimalise(n, places), ".", StringDictionaryItem(options, "sep"))
-    return (StringDictionaryItem(options, "before") + PadString(decimal, padding, 0) + StringDictionaryItem(options, "after"))
+      n = abs(n)
+      regex = "^(?<before>\\D*)(?<padding>\\d+)(?<sep>\\D)(?<places>\\d*)(?<after>\\D*)$"
+      if (not IsRegexMatch(regex, control, "DisplayNumber")) {
+        error ("Unexpected format in DisplayNumber (" + control + "). Should be a number, followed by a single character separator, followed by a number.")
+      }
+      options = Populate(regex, control, "DisplayNumber")
+      places = ToInt(StringDictionaryItem(options, "places"))
+      padding = ToInt(StringDictionaryItem(options, "padding"))
+      if (places > 0) {
+        padding = padding + 1 + places
+      }
+      decimal = Replace(Decimalise(n, places), ".", StringDictionaryItem(options, "sep"))
+      return (StringDictionaryItem(options, "before") + PadString(decimal, padding, 0) + StringDictionaryItem(options, "after"))
   ]]></function>
 
   <function name="DisplayMoney" parameters="n" type="string"><![CDATA[
-    // Returns the given number formatted according to game.moneyformat
-    if (not HasString(game, "moneyformat")) {
-      error ("No format for money set in game.moneyformat.")
-    }
-    ary = Split(game.moneyformat, "!")
-    if (ListCount(ary) = 2) {
-      return (Replace(game.moneyformat, "!", "" + n))
-    }
-    else if (ListCount(ary) = 3) {
-      negative = (n < 0)
-      n = abs(n)
-      options = StringListItem(ary, 1)
-      showsign = StartsWith(options, "+")
-      if (showsign) {
-        options = Mid(options, 2)
+      // Returns the given number formatted according to game.moneyformat
+      if (not HasString(game, "moneyformat")) {
+        error ("No format for money set in game.moneyformat.")
       }
-      number = DisplayNumber(n, options)
-      if (negative) {
-        number = "-" + number
+      ary = Split(game.moneyformat, "!")
+      if (ListCount(ary) = 2) {
+        return (Replace(game.moneyformat, "!", "" + n))
       }
-      else if (not n = 0 and showsign) {
-        number = "+" + number
+      else if (ListCount(ary) = 3) {
+        negative = (n < 0)
+        n = abs(n)
+        options = StringListItem(ary, 1)
+        showsign = StartsWith(options, "+")
+        if (showsign) {
+          options = Mid(options, 2)
+        }
+        number = DisplayNumber(n, options)
+        if (negative) {
+          number = "-" + number
+        }
+        else if (not n = 0 and showsign) {
+          number = "+" + number
+        }
+        return (StringListItem(ary, 0) + number + StringListItem(ary, 2))
       }
-      return (StringListItem(ary, 0) + number + StringListItem(ary, 2))
-    }
-    else if (ListCount(ary) = 4) {
-      if (n < 0) {
-        options = StringListItem(ary, 2)
+      else if (ListCount(ary) = 4) {
+        if (n < 0) {
+          options = StringListItem(ary, 2)
+        }
+        else {
+          options = StringListItem(ary, 1)
+        }
+        number = DisplayNumber(n, options)
+        return (StringListItem(ary, 0) + number + StringListItem(ary, 3))
       }
       else {
-        options = StringListItem(ary, 1)
+        error ("game.moneyformat expected to have either 1, 2 or 3 exclamation marks.")
       }
-      number = DisplayNumber(n, options)
-      return (StringListItem(ary, 0) + number + StringListItem(ary, 3))
-    }
-    else {
-      error ("game.moneyformat expected to have either 1, 2 or 3 exclamation marks.")
-    }
   ]]></function>
 
   <!--  LIST UTILITIES -->
@@ -622,10 +622,10 @@
 
   <function name="DbgMsg" parameters="txt">
     <![CDATA[
-    if(GetBoolean(game,"debugging")){
-      msg("<br/><p style='color:blue;font-weight:bold;'>DEBUGGING:  "+txt+"</p><br/>")
-    }
-  ]]>
+      if(GetBoolean(game,"debugging")){
+        msg("<br/><p style='color:blue;font-weight:bold;'>DEBUGGING:  "+txt+"</p><br/>")
+      }
+    ]]>
   </function>
 
   <function name="DisableHtmlLog">
@@ -656,18 +656,18 @@
   </function>
 
   <function name="EnableTranscript"><![CDATA[
-    if (GetBoolean (game, "notranscript")){
-      KillTranscript
-    }
-    else {
-      if (not HasAttribute (game, "transcriptname")){
-        game.transcriptname = game.gamename
+      if (GetBoolean (game, "notranscript")){
+        KillTranscript
       }
-      game.savetranscript = true
-      JS.enableTranscript(game.transcriptname)
-      msg ("<br/>" + DynamicTemplate("TranscriptEnabledMessage"))
-      JS.printTranscriptDateAndTime()
-    }
+      else {
+        if (not HasAttribute (game, "transcriptname")){
+          game.transcriptname = game.gamename
+        }
+        game.savetranscript = true
+        JS.enableTranscript(game.transcriptname)
+        msg ("<br/>" + DynamicTemplate("TranscriptEnabledMessage"))
+        JS.printTranscriptDateAndTime()
+      }
   ]]></function>
 
   <function name="DisableTranscript">

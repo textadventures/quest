@@ -57,9 +57,9 @@
       SetTurnScript(turnscript) {
         this.turncount = this.turncount + 1
         if (this.turncount >= this.triggerturncount) {
-        this.enabled = false
-        invoke (this.timeoutscript)
-        destroy (this.name)
+          this.enabled = false
+          invoke (this.timeoutscript)
+          destroy (this.name)
         }
       }
       EnableTurnScript(turnscript)

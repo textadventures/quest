@@ -496,11 +496,11 @@
   <template templatetype="command" name="save">^gravar$|^guardar$|^salvar$</template>
 
   <template name="DefaultHelp"><![CDATA[<u>Ajuda Rápida</u><br/><br/>
-<b>- Objetos:</b>  Tente EXAMINAR..., FALAR COM..., APANHAR..., LARGAR..., ABRIR..., DAR... PARA..., USAR... NO/NA/COM...<br/>
-<b>- Inventário:</b>  Sabe que itens carregas introduzindo I, INV ou INVENTÁRIO.<br/>
-<b>- Movendo-se:</b>  Prime os botões da bússola ou introduz NORTE, SUL, ESTE, OESTE, IR PARA...<br/>
-<b>- Atalhos:</b>  Prime as teclas direcionais para cima e para baixo para rever os comandos já introduzidos. Experimenta X... como um atalho para EXAMINAR...<br/>
-<b>- Conselho:</b> Dá preferência a comandos no INFINITIVO. Embora muitos admitam o imperativo, e até o uso informal na terceira pessoa, não é regra geral.]]></template>
+      <b>- Objetos:</b>  Tente EXAMINAR..., FALAR COM..., APANHAR..., LARGAR..., ABRIR..., DAR... PARA..., USAR... NO/NA/COM...<br/>
+      <b>- Inventário:</b>  Sabe que itens carregas introduzindo I, INV ou INVENTÁRIO.<br/>
+      <b>- Movendo-se:</b>  Prime os botões da bússola ou introduz NORTE, SUL, ESTE, OESTE, IR PARA...<br/>
+      <b>- Atalhos:</b>  Prime as teclas direcionais para cima e para baixo para rever os comandos já introduzidos. Experimenta X... como um atalho para EXAMINAR...<br/>
+  <b>- Conselho:</b> Dá preferência a comandos no INFINITIVO. Embora muitos admitam o imperativo, e até o uso informal na terceira pessoa, não é regra geral.]]></template>
 
   <!-- Editor-specific templates - should eventually be moved to e.g. EditorEnglish.aslx -->
   <template name="LanguageSpecificObjectTypes"></template>
@@ -511,18 +511,18 @@
   <template name="LanguageSpecificObjectTypes">feminine=Inanimate object (feminine); feminineplural=Inanimate object (feminineplural); </template>
 
   <type name="feminine">
-  <gender>isso</gender>
-  <article>a</article>
+    <gender>isso</gender>
+    <article>a</article>
   </type>
 
   <type name="feminineplural">
-  <gender>essas</gender>
-  <article>as</article>
+    <gender>essas</gender>
+    <article>as</article>
   </type>
 
   <template name="EditorVerbDefaultExpression">"Não " + object.article + " podes #verb#."</template>
 
-<function name="WriteVerb" type="string" parameters="obj, verb">
+  <function name="WriteVerb" type="string" parameters="obj, verb">
     return (CapFirst(obj.gender) + " " + Conjugate(obj, verb))
   </function>
 
@@ -659,7 +659,7 @@
           }
         }
       }
-            case ("aceitar") {
+      case ("aceitar") {
         switch (gender) {
           case ("eu") {
             return ("aceito")
@@ -721,9 +721,9 @@
           }
         }
       }
-          default {
-       return (verb)
-       }
+      default {
+        return (verb)
+      }
 
     }
   </function>

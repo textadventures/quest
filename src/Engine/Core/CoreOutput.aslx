@@ -1,27 +1,27 @@
 <library>
   <function name="OutputText" parameters="text">
     <![CDATA[
-    OutputTextRaw(ProcessText(text))
+      OutputTextRaw(ProcessText(text))
     ]]>
   </function>
 
   <function name="OutputTextRaw" parameters="text">
     <![CDATA[
-    format = GetCurrentTextFormat("")
-    JS.addText("<span style=\"" + format + "\">" + text + "</span><br/>")
-    ResetCommandBarFormat
-    RequestSpeak (text)
+      format = GetCurrentTextFormat("")
+      JS.addText("<span style=\"" + format + "\">" + text + "</span><br/>")
+      ResetCommandBarFormat
+      RequestSpeak (text)
     ]]>
   </function>
 
   <function name="ResetCommandBarFormat">
-  <![CDATA[
-    format = GetCommandBarFormat()
-    if (GetString(game, "commandbarformat") <> format) {
-      game.commandbarformat = format
-      JS.setCommandBarStyle(format)
-    }
-  ]]>
+    <![CDATA[
+      format = GetCommandBarFormat()
+      if (GetString(game, "commandbarformat") <> format) {
+        game.commandbarformat = format
+        JS.setCommandBarStyle(format)
+      }
+    ]]>
   </function>
 
   <function name="GetCommandBarFormat" type="string">
@@ -30,14 +30,14 @@
 
   <function name="OutputTextNoBr" parameters="text">
     <![CDATA[
-    OutputTextRawNoBr(ProcessText(text))
+      OutputTextRawNoBr(ProcessText(text))
     ]]>
   </function>
 
   <function name="OutputTextRawNoBr" parameters="text">
     <![CDATA[
-    JS.addText("<span style=\"" + GetCurrentTextFormat("") + "\">" + text + "</span>")
-    RequestSpeak (text)
+      JS.addText("<span style=\"" + GetCurrentTextFormat("") + "\">" + text + "</span>")
+      RequestSpeak (text)
     ]]>
   </function>
 
@@ -156,48 +156,48 @@
   <function name="ProcessTextSection" type="string" parameters="text, data">
     <![CDATA[
 
-    containsUnprocessedSection = false
+      containsUnprocessedSection = false
 
-    open = Instr(text, "{")
+      open = Instr(text, "{")
 
-    if (open > 0) {
-      nestCount = 1
-      searchStart = open + 1
-      finished = false
+      if (open > 0) {
+        nestCount = 1
+        searchStart = open + 1
+        finished = false
 
-      while (not finished) {
-        nextOpen = Instr(searchStart, text, "{")
-        nextClose = Instr(searchStart, text, "}")
+        while (not finished) {
+          nextOpen = Instr(searchStart, text, "{")
+          nextClose = Instr(searchStart, text, "}")
 
-        if (nextClose > 0) {
-          if (nextOpen > 0 and nextOpen < nextClose) {
-            nestCount = nestCount + 1
-            searchStart = nextOpen + 1
-          }
-          else {
-            nestCount = nestCount - 1
-            searchStart = nextClose + 1
-            if (nestCount = 0) {
-              close = nextClose
-              containsUnprocessedSection = true
-              finished = true
+          if (nextClose > 0) {
+            if (nextOpen > 0 and nextOpen < nextClose) {
+              nestCount = nestCount + 1
+              searchStart = nextOpen + 1
+            }
+            else {
+              nestCount = nestCount - 1
+              searchStart = nextClose + 1
+              if (nestCount = 0) {
+                close = nextClose
+                containsUnprocessedSection = true
+                finished = true
+              }
             }
           }
-        }
-        else {
-          finished = true
+          else {
+            finished = true
+          }
         }
       }
-    }
 
-    if (containsUnprocessedSection) {
-      section = Mid(text, open + 1, close - open - 1)
-      value = ProcessTextCommand(section, data)
-      value = ProcessTextSection(value, data)
-      text = Left(text, open - 1) + value + ProcessTextSection(Mid(text, close + 1), data)
-    }
+      if (containsUnprocessedSection) {
+        section = Mid(text, open + 1, close - open - 1)
+        value = ProcessTextCommand(section, data)
+        value = ProcessTextSection(value, data)
+        text = Left(text, open - 1) + value + ProcessTextSection(Mid(text, close + 1), data)
+      }
 
-    return (text)
+      return (text)
     ]]>
   </function>
 
@@ -256,18 +256,18 @@
   </function>
 
   <function name="ProcessTextCommand_Eval" parameters="section, data" type="string">
-  <![CDATA[
-    if (StartsWith(section, "=")) {
-      section = Mid(section, 2)
-    }
-    else {
-      section = Mid(section, 6)
-    }
-    if (not IsRegexMatch("[^\\w\\s]", section, "tp_punctuation_check")) {
-      section = section + "()"
-    }
-    return (ToString(eval(section, ParamsForTextProcessor())))
-  ]]>
+    <![CDATA[
+      if (StartsWith(section, "=")) {
+        section = Mid(section, 2)
+      }
+      else {
+        section = Mid(section, 6)
+      }
+      if (not IsRegexMatch("[^\\w\\s]", section, "tp_punctuation_check")) {
+        section = section + "()"
+      }
+      return (ToString(eval(section, ParamsForTextProcessor())))
+    ]]>
   </function>
 
   <function name="ProcessTextCommand_Either" parameters="section, data" type="string">
@@ -338,232 +338,232 @@
   </function>
 
   <function name="ProcessTextCommand_If" type="string" parameters="section, data">
-  <![CDATA[
-    command = Mid(section, 4)
-    colon = Instr(command, ":")
-    if (colon = 0) {
-      return ("@@@open@@@if " + command + "@@@close@@@")
-    }
-    else {
-      text = Mid(command, colon + 1)
-      condition = Left(command, colon - 1)
-      if (not game.text_processor_this = null) condition = Replace(condition, "this", game.text_processor_this.name)
-      operator = Instr(condition, "<=")
-      if (operator <> 0) {
-        operatorlength = 2
-      }
-      if (operator = 0) {
-        operator = Instr(condition, ">=")
-        if (operator <> 0) {
-          operatorlength = 2
-        }
-      }
-      if (operator = 0) {
-        operator = Instr(condition, "<>")
-        if (operator <> 0) {
-          operatorlength = 2
-        }
-      }
-      if (operator = 0) {
-        operator = Instr(condition, "<")
-        if (operator <> 0) {
-          operatorlength = 1
-        }
-      }
-      if (operator = 0) {
-        operator = Instr(condition, ">")
-        if (operator <> 0) {
-          operatorlength = 1
-        }
-      }
-      if (operator = 0) {
-        operator = Instr(condition, "=")
-        if (operator <> 0) {
-          operatorlength = 1
-        }
-      }
-      if (operator = 0) {
-        checkfor = true
-        if (StartsWith(condition, "not ")) {
-          checkfor = false
-          condition = Mid(condition, 5)
-        }
-        dot = Instr(condition, ".")
-        if (dot = 0) {
-          result = GetBoolean(game, condition)
-        }
-        else {
-          objectname = Left(condition, dot - 1)
-          attributename = Mid(condition, dot + 1)
-          object = ObjectForTextProcessor(objectname)
-          if (object = null) {
-            result = false
-          }
-          else {
-            result = GetBoolean(object, attributename)
-          }
-        }
-        if (result = checkfor) {
-          return (ProcessTextSection(text, data))
-        }
-        else {
-          return ("")
-        }
+    <![CDATA[
+      command = Mid(section, 4)
+      colon = Instr(command, ":")
+      if (colon = 0) {
+        return ("@@@open@@@if " + command + "@@@close@@@")
       }
       else {
-        lhs = Left(condition, operator - 1)
-        rhs = Mid(condition, operator + operatorlength)
-        op = Mid(condition, operator, operatorlength)
-        dot = Instr(lhs, ".")
-        if (dot = 0) {
-          objectname = ""
-          attributename = ""
-          if (HasInt(game, lhs)) {
-            objectname = "game"
-            attributename = lhs
+        text = Mid(command, colon + 1)
+        condition = Left(command, colon - 1)
+        if (not game.text_processor_this = null) condition = Replace(condition, "this", game.text_processor_this.name)
+        operator = Instr(condition, "<=")
+        if (operator <> 0) {
+          operatorlength = 2
+        }
+        if (operator = 0) {
+          operator = Instr(condition, ">=")
+          if (operator <> 0) {
+            operatorlength = 2
+          }
+        }
+        if (operator = 0) {
+          operator = Instr(condition, "<>")
+          if (operator <> 0) {
+            operatorlength = 2
+          }
+        }
+        if (operator = 0) {
+          operator = Instr(condition, "<")
+          if (operator <> 0) {
+            operatorlength = 1
+          }
+        }
+        if (operator = 0) {
+          operator = Instr(condition, ">")
+          if (operator <> 0) {
+            operatorlength = 1
+          }
+        }
+        if (operator = 0) {
+          operator = Instr(condition, "=")
+          if (operator <> 0) {
+            operatorlength = 1
+          }
+        }
+        if (operator = 0) {
+          checkfor = true
+          if (StartsWith(condition, "not ")) {
+            checkfor = false
+            condition = Mid(condition, 5)
+          }
+          dot = Instr(condition, ".")
+          if (dot = 0) {
+            result = GetBoolean(game, condition)
           }
           else {
+            objectname = Left(condition, dot - 1)
+            attributename = Mid(condition, dot + 1)
+            object = ObjectForTextProcessor(objectname)
+            if (object = null) {
+              result = false
+            }
+            else {
+              result = GetBoolean(object, attributename)
+            }
+          }
+          if (result = checkfor) {
+            return (ProcessTextSection(text, data))
+          }
+          else {
+            return ("")
+          }
+        }
+        else {
+          lhs = Left(condition, operator - 1)
+          rhs = Mid(condition, operator + operatorlength)
+          op = Mid(condition, operator, operatorlength)
+          dot = Instr(lhs, ".")
+          if (dot = 0) {
+            objectname = ""
+            attributename = ""
+            if (HasInt(game, lhs)) {
+              objectname = "game"
+              attributename = lhs
+            }
+            else {
+              return ("@@@open@@@if " + command + "@@@close@@@")
+            }
+          }
+          else {
+            objectname = Left(lhs, dot - 1)
+            attributename = Mid(lhs, dot + 1)
+          }
+          object = ObjectForTextProcessor(objectname)
+          if (object = null) {
             return ("@@@open@@@if " + command + "@@@close@@@")
           }
-        }
-        else {
-          objectname = Left(lhs, dot - 1)
-          attributename = Mid(lhs, dot + 1)
-        }
-        object = ObjectForTextProcessor(objectname)
-        if (object = null) {
-          return ("@@@open@@@if " + command + "@@@close@@@")
-        }
-        else if (not HasAttribute(object, attributename)) {
-          return ("@@@open@@@if " + command + "@@@close@@@")
-        }
-        else {
-          value = GetAttribute(object, attributename)
-          if (TypeOf(value) = "object") {
-            value = value.name
+          else if (not HasAttribute(object, attributename)) {
+            return ("@@@open@@@if " + command + "@@@close@@@")
           }
-          if (op = "=") {
-            if (ToString(value) = rhs) {
-              return (ProcessTextSection(text, data))
+          else {
+            value = GetAttribute(object, attributename)
+            if (TypeOf(value) = "object") {
+              value = value.name
             }
-            else {
-              return ("")
+            if (op = "=") {
+              if (ToString(value) = rhs) {
+                return (ProcessTextSection(text, data))
+              }
+              else {
+                return ("")
+              }
             }
-          }
-          else if (op = "<>") {
-            if (not ToString(value) = rhs) {
-              return (ProcessTextSection(text, data))
+            else if (op = "<>") {
+              if (not ToString(value) = rhs) {
+                return (ProcessTextSection(text, data))
+              }
+              else {
+                return ("")
+              }
             }
-            else {
-              return ("")
+            else if (op = ">") {
+              if (ToDouble(ToString(value)) > ToDouble(rhs)) {
+                return (ProcessTextSection(text, data))
+              }
+              else {
+                return ("")
+              }
             }
-          }
-          else if (op = ">") {
-            if (ToDouble(ToString(value)) > ToDouble(rhs)) {
-              return (ProcessTextSection(text, data))
+            else if (op = "<") {
+              if (ToDouble(ToString(value)) < ToDouble(rhs)) {
+                return (ProcessTextSection(text, data))
+              }
+              else {
+                return ("")
+              }
             }
-            else {
-              return ("")
+            else if (op = ">=") {
+              if (ToDouble(ToString(value)) >= ToDouble(rhs)) {
+                return (ProcessTextSection(text, data))
+              }
+              else {
+                return ("")
+              }
             }
-          }
-          else if (op = "<") {
-            if (ToDouble(ToString(value)) < ToDouble(rhs)) {
-              return (ProcessTextSection(text, data))
-            }
-            else {
-              return ("")
-            }
-          }
-          else if (op = ">=") {
-            if (ToDouble(ToString(value)) >= ToDouble(rhs)) {
-              return (ProcessTextSection(text, data))
-            }
-            else {
-              return ("")
-            }
-          }
-          else if (op = "<=") {
-            if (ToDouble(ToString(value)) <= ToDouble(rhs)) {
-              return (ProcessTextSection(text, data))
-            }
-            else {
-              return ("")
+            else if (op = "<=") {
+              if (ToDouble(ToString(value)) <= ToDouble(rhs)) {
+                return (ProcessTextSection(text, data))
+              }
+              else {
+                return ("")
+              }
             }
           }
         }
       }
-    }
-  ]]>
+    ]]>
   </function>
 
   <function name="ProcessTextCommand_Format" parameters="section, data" type="string"><![CDATA[
-    html = Mid(section, 1, 1)
-    section = Mid(section, 3)
-    return(ProcessTextSection("<" + html + ">" + section + "</" + html + ">", data))
+      html = Mid(section, 1, 1)
+      section = Mid(section, 3)
+      return(ProcessTextSection("<" + html + ">" + section + "</" + html + ">", data))
   ]]></function>
 
   <function name="ProcessTextCommand_Colour" parameters="section, data" type="string"><![CDATA[
-    ary = Split(section, ":")
-    com = StringListItem(ary, 0)
-    c = StringListItem(ary, 1)
-    list remove(ary, com)
-    list remove(ary, c)
-    s = Join (ary, ":")
-    if (com = "back") {
-      return(ProcessTextSection("<span style=\"background-color:" + c + ";\">" + s + "</span>", data))
-    }
-    else {
-      return(ProcessTextSection("<span style=\"color:" + c + ";\">" + s + "</span>", data))
-    }
+      ary = Split(section, ":")
+      com = StringListItem(ary, 0)
+      c = StringListItem(ary, 1)
+      list remove(ary, com)
+      list remove(ary, c)
+      s = Join (ary, ":")
+      if (com = "back") {
+        return(ProcessTextSection("<span style=\"background-color:" + c + ";\">" + s + "</span>", data))
+      }
+      else {
+        return(ProcessTextSection("<span style=\"color:" + c + ";\">" + s + "</span>", data))
+      }
   ]]></function>
 
   <function name="ProcessTextCommand_Popup" parameters="section, data" type="string"><![CDATA[
-    section = Mid(section, 7)
-    ary = Split(section, ":")
-    s1 = StringListItem(ary, 0)
-    list remove(ary, s1)
-    s2 = Join (ary, ":")
-    id = JSSafe(s1) + GetRandomInt(0, 999999999)
-    link = game.defaultlinkforeground
-    if (HasString(game, "altlinkforeground")) link = game.altlinkforeground
-    s = "<span  style=\"cursor:pointer;color:" + link + ";\" onclick=\"$('#" + id + "').css('display', 'block');\">" + s1 + "</span><div id=\"" + id + "\" class=\"w3-theme-border\" style=\"position:fixed;z-index:9999;display:none;cursor:pointer;left:50px;top:40%;width:40%;background-color:" + game.defaultbackground + ";border:2px solid " + game.defaultforeground + ";color:" + link + ";border-radius:5px;padding:5px;\" onclick=\"$('#" + id + "').css('display', 'none');\"><p>"
-    s = s + s2 + "</p></div>"
-    return(ProcessTextSection(s, data))
+      section = Mid(section, 7)
+      ary = Split(section, ":")
+      s1 = StringListItem(ary, 0)
+      list remove(ary, s1)
+      s2 = Join (ary, ":")
+      id = JSSafe(s1) + GetRandomInt(0, 999999999)
+      link = game.defaultlinkforeground
+      if (HasString(game, "altlinkforeground")) link = game.altlinkforeground
+      s = "<span  style=\"cursor:pointer;color:" + link + ";\" onclick=\"$('#" + id + "').css('display', 'block');\">" + s1 + "</span><div id=\"" + id + "\" class=\"w3-theme-border\" style=\"position:fixed;z-index:9999;display:none;cursor:pointer;left:50px;top:40%;width:40%;background-color:" + game.defaultbackground + ";border:2px solid " + game.defaultforeground + ";color:" + link + ";border-radius:5px;padding:5px;\" onclick=\"$('#" + id + "').css('display', 'none');\"><p>"
+      s = s + s2 + "</p></div>"
+      return(ProcessTextSection(s, data))
   ]]></function>
 
   <function name="ProcessTextCommand_Object" type="string" parameters="section, data">
     <![CDATA[
-    objectname = Mid(section, 8)
-    text = ""
-    colon = Instr(objectname, ":")
-    if (colon > 0) {
-      text = Mid(objectname, colon + 1)
-      objectname = Left(objectname, colon - 1)
-    }
-    object = ObjectForTextProcessor(objectname)
-    if (object = null) {
-      return ("@@@open@@@" + ProcessTextSection(section, data) + "@@@close@@@")
-    }
-    else {
-      if (LengthOf(text) = 0) {
-        text = SafeXML(GetDisplayAlias(object))
+      objectname = Mid(section, 8)
+      text = ""
+      colon = Instr(objectname, ":")
+      if (colon > 0) {
+        text = Mid(objectname, colon + 1)
+        objectname = Left(objectname, colon - 1)
       }
-      if (game.enablehyperlinks) {
-        linkid = ProcessTextCommand_GetNextLinkId()
-        colour = ""
-        if (HasString(object, "linkcolour") and GetUIOption("UseGameColours") = "true") {
-          colour = object.linkcolour
-        }
-        else {
-          colour = GetLinkTextColour()
-        }
-        style = GetCurrentTextFormat(colour)
-        return ("<a id=\"" + linkid + "\" style=\"" + style + "\" class=\"cmdlink elementmenu\" data-elementid=\"" + object.name + "\">" + text + "</a>")
+      object = ObjectForTextProcessor(objectname)
+      if (object = null) {
+        return ("@@@open@@@" + ProcessTextSection(section, data) + "@@@close@@@")
       }
       else {
-        return (text)
+        if (LengthOf(text) = 0) {
+          text = SafeXML(GetDisplayAlias(object))
+        }
+        if (game.enablehyperlinks) {
+          linkid = ProcessTextCommand_GetNextLinkId()
+          colour = ""
+          if (HasString(object, "linkcolour") and GetUIOption("UseGameColours") = "true") {
+            colour = object.linkcolour
+          }
+          else {
+            colour = GetLinkTextColour()
+          }
+          style = GetCurrentTextFormat(colour)
+          return ("<a id=\"" + linkid + "\" style=\"" + style + "\" class=\"cmdlink elementmenu\" data-elementid=\"" + object.name + "\">" + text + "</a>")
+        }
+        else {
+          return (text)
+        }
       }
-    }
     ]]>
   </function>
 
@@ -577,50 +577,50 @@
 
   <function name="ProcessTextCommand_Command" type="string" parameters="section, data">
     <![CDATA[
-    colon = Instr(section, ":")
-    command = Mid(section, colon + 1)
-    text = command
-    colon = Instr(command, ":")
-    if (colon > 0) {
-      text = Mid(command, colon + 1)
-      command = Left(command, colon - 1)
-    }
-    style = GetCurrentLinkTextFormat()
-    candidates = NewObjectList()
-    foreach (cmd, ScopeCommands()) {
-      if (IsRegexMatch(cmd.pattern, command, cmd.name)) {
-        list add (candidates, cmd)
+      colon = Instr(section, ":")
+      command = Mid(section, colon + 1)
+      text = command
+      colon = Instr(command, ":")
+      if (colon > 0) {
+        text = Mid(command, colon + 1)
+        command = Left(command, colon - 1)
       }
-    }
-    elementid = ""
-    if (ListCount(candidates) = 1) {
-      cmd = ObjectListItem(candidates, 0)
-      elementid = cmd.name
-    }
-    linkid = ProcessTextCommand_GetNextLinkId()
-    dataattrs = ""
-    if (game.deactivatecommandlinks) {
-      dataattrs = dataattrs + "data-deactivateonclick=\"true\" "
-    }
-    dataattrs = dataattrs + "data-command=\"" + command + "\""
-    return ("<a id=\"" + linkid + "\" style=\"" + style + "\" class=\"cmdlink commandlink\" data-elementid=\"" + elementid + "\" " + dataattrs + ">" + ProcessTextSection(text, data) + "</a>")
+      style = GetCurrentLinkTextFormat()
+      candidates = NewObjectList()
+      foreach (cmd, ScopeCommands()) {
+        if (IsRegexMatch(cmd.pattern, command, cmd.name)) {
+          list add (candidates, cmd)
+        }
+      }
+      elementid = ""
+      if (ListCount(candidates) = 1) {
+        cmd = ObjectListItem(candidates, 0)
+        elementid = cmd.name
+      }
+      linkid = ProcessTextCommand_GetNextLinkId()
+      dataattrs = ""
+      if (game.deactivatecommandlinks) {
+        dataattrs = dataattrs + "data-deactivateonclick=\"true\" "
+      }
+      dataattrs = dataattrs + "data-command=\"" + command + "\""
+      return ("<a id=\"" + linkid + "\" style=\"" + style + "\" class=\"cmdlink commandlink\" data-elementid=\"" + elementid + "\" " + dataattrs + ">" + ProcessTextSection(text, data) + "</a>")
     ]]>
   </function>
 
   <function name="ProcessTextCommand_Exit" type="string" parameters="section, data">
     <![CDATA[
-    exitname = Mid(section, 6)
-    exit = GetObject(exitname)
-    if (exit = null) {
-      return ("@@@open@@@" + ProcessTextSection(section, data) + "@@@close@@@")
-    }
-    else {
-      verbs = GetDisplayVerbs(exit)
-      alias = GetDisplayAlias(exit)
-      command = LCase(StringListItem(verbs, 0)) + " " + alias
-      style = GetCurrentLinkTextFormat()
-      return ("<a style=\"" + style + "\" class=\"cmdlink exitlink\" data-elementid=\"" + exit.name + "\" data-command=\"" + command + "\">" + alias + "</a>")
-    }
+      exitname = Mid(section, 6)
+      exit = GetObject(exitname)
+      if (exit = null) {
+        return ("@@@open@@@" + ProcessTextSection(section, data) + "@@@close@@@")
+      }
+      else {
+        verbs = GetDisplayVerbs(exit)
+        alias = GetDisplayAlias(exit)
+        command = LCase(StringListItem(verbs, 0)) + " " + alias
+        style = GetCurrentLinkTextFormat()
+        return ("<a style=\"" + style + "\" class=\"cmdlink exitlink\" data-elementid=\"" + exit.name + "\" data-command=\"" + command + "\">" + alias + "</a>")
+      }
     ]]>
   </function>
 
@@ -714,8 +714,8 @@
 
   <function name="ProcessTextCommand_Img" type="string" parameters="section, data">
     <![CDATA[
-    filename = Mid(section, 5)
-    return ("<img src=\"" + GetFileURL(filename) + "\" />")
+      filename = Mid(section, 5)
+      return ("<img src=\"" + GetFileURL(filename) + "\" />")
     ]]>
   </function>
 
@@ -730,42 +730,42 @@
   </function>
 
   <function name="ProcessTextCommand_Select" parameters="section, data" type="string"><![CDATA[
-    elements = Mid(section, 8)
-    elementslist = Tsplit(elements)
-    objectandatt = StringListItem (elementslist, 0)
-    list remove (elementslist, objectandatt)
-    objectandattlist = Split(objectandatt, ".")
-    if (not ListCount (objectandattlist) = 2) {
-      return ("@@@open@@@" + ProcessTextSection(section, data) + "@@@close@@@")
-    }
-    else {
-      objectname = StringListItem(objectandattlist, 0)
-      object = ObjectForTextProcessor(objectname)
-      if (object = null) {
-        return ("@@@open@@@" + ProcessTextSection(section, data) + "@@@close@@@")
-      }
-      else if (not HasInt (object, StringListItem(objectandattlist, 1))) {
+      elements = Mid(section, 8)
+      elementslist = Tsplit(elements)
+      objectandatt = StringListItem (elementslist, 0)
+      list remove (elementslist, objectandatt)
+      objectandattlist = Split(objectandatt, ".")
+      if (not ListCount (objectandattlist) = 2) {
         return ("@@@open@@@" + ProcessTextSection(section, data) + "@@@close@@@")
       }
       else {
-        if (Instr(elements, "|") > 0) {
-          elementslist = Split(Join(elementslist, ":"), "|")
+        objectname = StringListItem(objectandattlist, 0)
+        object = ObjectForTextProcessor(objectname)
+        if (object = null) {
+          return ("@@@open@@@" + ProcessTextSection(section, data) + "@@@close@@@")
         }
-        index = GetInt(object, StringListItem(objectandattlist, 1))
-        if ((0 > index) or (index >= Listcount(elementslist))) {
+        else if (not HasInt (object, StringListItem(objectandattlist, 1))) {
           return ("@@@open@@@" + ProcessTextSection(section, data) + "@@@close@@@")
         }
         else {
-          return (ProcessTextSection(ListItem(elementslist, index), data))
+          if (Instr(elements, "|") > 0) {
+            elementslist = Split(Join(elementslist, ":"), "|")
+          }
+          index = GetInt(object, StringListItem(objectandattlist, 1))
+          if ((0 > index) or (index >= Listcount(elementslist))) {
+            return ("@@@open@@@" + ProcessTextSection(section, data) + "@@@close@@@")
+          }
+          else {
+            return (ProcessTextSection(ListItem(elementslist, index), data))
+          }
         }
       }
-    }
   ]]></function>
 
   <function name="SetFramePicture" parameters="filename">
     <![CDATA[
-    JS.setPanelContents("<img src=\"" + GetFileURL(filename) + "\" onload=\"setPanelHeight()\"/>")
-    game.panelcontents = filename
+      JS.setPanelContents("<img src=\"" + GetFileURL(filename) + "\" onload=\"setPanelHeight()\"/>")
+      game.panelcontents = filename
     ]]>
   </function>
 
@@ -819,9 +819,9 @@
 
   <function name="PrintCentered" parameters="text">
     <![CDATA[
-    SetAlignment("center")
-    msg (text)
-    SetAlignment("left")
+      SetAlignment("center")
+      msg (text)
+      SetAlignment("left")
     ]]>
   </function>
 
@@ -839,41 +839,41 @@
 
   <function name="DisplayHttpLink" parameters="text, url, https">
     <![CDATA[
-    pos = Instr(url, "://")
-    if (pos > 0) {
-      url = Mid(url, pos + 3)
-    }
-    if (https) {
-      url = "https://" + url
-    }
-    else {
-      url = "http://" + url
-    }
-    msg ("<a style=\"" + GetCurrentLinkTextFormat() + "\" href=\"" + url + "\">" + text + "</a>")
+      pos = Instr(url, "://")
+      if (pos > 0) {
+        url = Mid(url, pos + 3)
+      }
+      if (https) {
+        url = "https://" + url
+      }
+      else {
+        url = "http://" + url
+      }
+      msg ("<a style=\"" + GetCurrentLinkTextFormat() + "\" href=\"" + url + "\">" + text + "</a>")
     ]]>
   </function>
 
   <function name="DisplayMailtoLink" parameters="text, url">
     <![CDATA[
-    if (Instr(url, "mailto:") = 0) {
-      url = "mailto:" + url
-    }
-    msg ("<a style=\"" + GetCurrentLinkTextFormat() + "\" href=\"" + url + "\">" + text + "</a>")
+      if (Instr(url, "mailto:") = 0) {
+        url = "mailto:" + url
+      }
+      msg ("<a style=\"" + GetCurrentLinkTextFormat() + "\" href=\"" + url + "\">" + text + "</a>")
     ]]>
   </function>
 
   <function name="CommandLink" type="string" parameters="cmd, text">
     <![CDATA[
-    return ("{command:" + cmd + ":" + text + "}")
+      return ("{command:" + cmd + ":" + text + "}")
     ]]>
   </function>
 
   <function name="Log" parameters="text">
     <![CDATA[
-    if (not TypeOf (text) = "string") {
-      text = "[" + TypeOf(text) + "]"
-    }
-    request (Log, text)
+      if (not TypeOf (text) = "string") {
+        text = "[" + TypeOf(text) + "]"
+      }
+      request (Log, text)
     ]]>
   </function>
 
@@ -890,22 +890,22 @@
 
   <function name="DisplayList" parameters="list, numbers">
     <![CDATA[
-    if (numbers) {
-      result = "<ol>"
-    }
-    else {
-      result = "<ul>"
-    }
-    foreach (item, list) {
-      result = result + "<li>" + item + "</li>"
-    }
-    if (numbers) {
-      result = result + "</ol>"
-    }
-    else {
-      result = result + "</ul>"
-    }
-    msg (result)
+      if (numbers) {
+        result = "<ol>"
+      }
+      else {
+        result = "<ul>"
+      }
+      foreach (item, list) {
+        result = result + "<li>" + item + "</li>"
+      }
+      if (numbers) {
+        result = result + "</ol>"
+      }
+      else {
+        result = result + "</ul>"
+      }
+      msg (result)
     ]]>
   </function>
 
@@ -928,40 +928,40 @@
   </function>
 
   <function name="FormatList" parameters="list, joiner, lastjoiner, nothing" type="string"><![CDATA[
-    if (ListCount (list) = 0) {
-      return (nothing)
-    }
-    else {
-      result = ""
-      count = 0
-      listLength = ListCount(list)
-      foreach (item, list) {
-        if (TypeOf(item) = "object") {
-          result = result + GetDisplayName(item)
-        }
-        else {
-          result = result + item
-        }
-        count = count + 1
-        if (count = listLength - 1) {
-          if (not IsRegexMatch("^\\W", lastjoiner)) result = result + " "
-          result = result + lastjoiner + " "
-        }
-        else if (count < listLength) {
-          result = result + joiner + " "
-        }
+      if (ListCount (list) = 0) {
+        return (nothing)
       }
-      return (Trim (result))
-    }
+      else {
+        result = ""
+        count = 0
+        listLength = ListCount(list)
+        foreach (item, list) {
+          if (TypeOf(item) = "object") {
+            result = result + GetDisplayName(item)
+          }
+          else {
+            result = result + item
+          }
+          count = count + 1
+          if (count = listLength - 1) {
+            if (not IsRegexMatch("^\\W", lastjoiner)) result = result + " "
+            result = result + lastjoiner + " "
+          }
+          else if (count < listLength) {
+            result = result + joiner + " "
+          }
+        }
+        return (Trim (result))
+      }
   ]]></function>
 
   <function name="Spaces" parameters="number" type="string"><![CDATA[
-    game.command_successful = True
-    text = ""
-    for (x, 1, number) {
-      text = text+ "&nbsp;"
-    }
-    return (text)
+      game.command_successful = True
+      text = ""
+      for (x, 1, number) {
+        text = text+ "&nbsp;"
+      }
+      return (text)
   ]]></function>
 
   <function name="ToRoman" parameters="n" type="string">

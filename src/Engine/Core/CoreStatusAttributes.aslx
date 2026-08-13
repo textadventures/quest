@@ -1,11 +1,11 @@
 <library>
   <function name="UpdateStatusAttributes">
     <![CDATA[
-    status = NewStringList()
-    AddStatusAttributesForElement (status, game, game.statusattributes)
-    AddStatusAttributesForElement (status, game.pov, game.povstatusattributes)
-    AddStatusAttributesForElement (status, game.pov, game.pov.statusattributes)
-    JS.updateStatus (Join(status, "<br/>"))
+      status = NewStringList()
+      AddStatusAttributesForElement (status, game, game.statusattributes)
+      AddStatusAttributesForElement (status, game.pov, game.povstatusattributes)
+      AddStatusAttributesForElement (status, game.pov, game.pov.statusattributes)
+      JS.updateStatus (Join(status, "<br/>"))
     ]]>
   </function>
 
@@ -36,27 +36,27 @@
 
   <function name="InitStatusAttributes">
     <![CDATA[
-    if (game.showscore) {
-      game.score = 0
-      if (game.statusattributes = null) {
-        game.statusattributes = NewStringDictionary()
+      if (game.showscore) {
+        game.score = 0
+        if (game.statusattributes = null) {
+          game.statusattributes = NewStringDictionary()
+        }
+        dictionary add (game.statusattributes, "score", "[Score]: !")
       }
-      dictionary add (game.statusattributes, "score", "[Score]: !")
-    }
 
-    if (game.showhealth) {
-      if (game.povstatusattributes = null) {
-        game.povstatusattributes = NewStringDictionary()
+      if (game.showhealth) {
+        if (game.povstatusattributes = null) {
+          game.povstatusattributes = NewStringDictionary()
+        }
+        dictionary add (game.povstatusattributes, "health", "[Health]: !%")
       }
-      dictionary add (game.povstatusattributes, "health", "[Health]: !%")
-    }
 
-    if (game.showmoney) {
-      if (game.povstatusattributes = null) {
-        game.povstatusattributes = NewStringDictionary()
+      if (game.showmoney) {
+        if (game.povstatusattributes = null) {
+          game.povstatusattributes = NewStringDictionary()
+        }
+        dictionary add (game.povstatusattributes, "money", "[Money]: !")
       }
-      dictionary add (game.povstatusattributes, "money", "[Money]: !")
-    }
     ]]>
   </function>
 

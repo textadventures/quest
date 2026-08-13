@@ -60,52 +60,52 @@
   -->
   <function name="GoToPage" parameters="page">
     <![CDATA[
-    if (HasString(game, "pageoptionsoutputsection")) {
-      HideOutputSection (game.pageoptionsoutputsection)
-      game.pageoptionsoutputsection = null
-    }
-    game.currentpage = page
-    on ready {
-      if (GetBoolean(page, "runscript") or GetBoolean(page, "runscriptonly")) {
-        if (HasScript(page, "script")) {
-          do (page, "script")
-        }
-        else {
-          msg ("No script has been created for this page.")
-        }
+      if (HasString(game, "pageoptionsoutputsection")) {
+        HideOutputSection (game.pageoptionsoutputsection)
+        game.pageoptionsoutputsection = null
       }
-      // the script may have started a different page (or ended the dialogue), so only
-      // finish this page if it is still the current one
-      if (game.currentpage = page and not GetBoolean(page, "runscriptonly")) {
-        msg (page.description)
-        msg ("")
-        game.currentpageoptionkeys = NewStringList()
-        game.pageoptionsoutputsection = StartNewOutputSection()
-        if (TypeOf(page, "options") = "stringdictionary") {
-          foreach (key, page.options) {
-            destination = GetObject(key)
-            if (destination = null) {
-              msg (StringDictionaryItem(page.options, key) + " (broken link)")
-            }
-            else {
-              list add (game.currentpageoptionkeys, key)
-              msg (ListCount(game.currentpageoptionkeys) + ": " + CommandLink(key, StringDictionaryItem(page.options, key)))
-            }
+      game.currentpage = page
+      on ready {
+        if (GetBoolean(page, "runscript") or GetBoolean(page, "runscriptonly")) {
+          if (HasScript(page, "script")) {
+            do (page, "script")
+          }
+          else {
+            msg ("No script has been created for this page.")
           }
         }
-        EndOutputSection (game.pageoptionsoutputsection)
-        if (ListCount(game.currentpageoptionkeys) = 0) {
-          // a page with no options to choose from ends the dialogue; leave its text
-          // visible (don't hide the section - it may contain broken-link lines)
+        // the script may have started a different page (or ended the dialogue), so only
+        // finish this page if it is still the current one
+        if (game.currentpage = page and not GetBoolean(page, "runscriptonly")) {
+          msg (page.description)
+          msg ("")
+          game.currentpageoptionkeys = NewStringList()
+          game.pageoptionsoutputsection = StartNewOutputSection()
+          if (TypeOf(page, "options") = "stringdictionary") {
+            foreach (key, page.options) {
+              destination = GetObject(key)
+              if (destination = null) {
+                msg (StringDictionaryItem(page.options, key) + " (broken link)")
+              }
+              else {
+                list add (game.currentpageoptionkeys, key)
+                msg (ListCount(game.currentpageoptionkeys) + ": " + CommandLink(key, StringDictionaryItem(page.options, key)))
+              }
+            }
+          }
+          EndOutputSection (game.pageoptionsoutputsection)
+          if (ListCount(game.currentpageoptionkeys) = 0) {
+            // a page with no options to choose from ends the dialogue; leave its text
+            // visible (don't hide the section - it may contain broken-link lines)
+            ClearPageDialogueState
+          }
+        }
+        else if (game.currentpage = page and GetBoolean(page, "runscriptonly")) {
+          // a script-only page which didn't chain to another page ends the dialogue
           ClearPageDialogueState
         }
       }
-      else if (game.currentpage = page and GetBoolean(page, "runscriptonly")) {
-        // a script-only page which didn't chain to another page ends the dialogue
-        ClearPageDialogueState
-      }
-    }
-    page.visited = true
+      page.visited = true
     ]]>
   </function>
 
@@ -136,42 +136,42 @@
   -->
   <function name="HandlePageTextResponse" parameters="input" type="boolean">
     <![CDATA[
-    handled = false
-    page = game.currentpage
-    chosenkey = null
-    if (TypeOf(page, "options") = "stringdictionary") {
-      if (IsInt(input)) {
-        number = ToInt(input)
-        if (number > 0 and number <= ListCount(game.currentpageoptionkeys)) {
-          chosenkey = StringListItem(game.currentpageoptionkeys, number - 1)
+      handled = false
+      page = game.currentpage
+      chosenkey = null
+      if (TypeOf(page, "options") = "stringdictionary") {
+        if (IsInt(input)) {
+          number = ToInt(input)
+          if (number > 0 and number <= ListCount(game.currentpageoptionkeys)) {
+            chosenkey = StringListItem(game.currentpageoptionkeys, number - 1)
+          }
+        }
+        else if (DictionaryContains(page.options, input)) {
+          chosenkey = input
         }
       }
-      else if (DictionaryContains(page.options, input)) {
-        chosenkey = input
-      }
-    }
-    if (chosenkey <> null) {
-      destination = GetObject(chosenkey)
-      if (destination <> null) {
-        handled = true
-        start transaction ("page: " + chosenkey)
-        msg ("")
-        msg ("<b>" + StringDictionaryItem(page.options, chosenkey) + "</b>")
-        msg ("")
-        // decide the turn script behaviour now: by the time FinishTurn runs, a terminal
-        // page will already have cleared game.currentpage, so RunTurnScripts' own check
-        // can't cover the dialogue's final choice
-        if (GetBoolean(game, "pageturnscripts")) {
-          game.runturnscripts = true
+      if (chosenkey <> null) {
+        destination = GetObject(chosenkey)
+        if (destination <> null) {
+          handled = true
+          start transaction ("page: " + chosenkey)
+          msg ("")
+          msg ("<b>" + StringDictionaryItem(page.options, chosenkey) + "</b>")
+          msg ("")
+          // decide the turn script behaviour now: by the time FinishTurn runs, a terminal
+          // page will already have cleared game.currentpage, so RunTurnScripts' own check
+          // can't cover the dialogue's final choice
+          if (GetBoolean(game, "pageturnscripts")) {
+            game.runturnscripts = true
+          }
+          else {
+            SuppressTurnscripts
+          }
+          GoToPage (destination)
+          FinishTurn
         }
-        else {
-          SuppressTurnscripts
-        }
-        GoToPage (destination)
-        FinishTurn
       }
-    }
-    return (handled)
+      return (handled)
     ]]>
   </function>
 
@@ -187,17 +187,17 @@
   -->
   <function name="ProcessTextCommand_Page" type="string" parameters="section, data">
     <![CDATA[
-    colon = Instr(section, ":")
-    pagekey = Mid(section, colon + 1)
-    colon = Instr(pagekey, ":")
-    if (colon > 0) {
-      pagekey = Left(pagekey, colon - 1)
-    }
-    targetpage = GetObject(pagekey)
-    if (targetpage <> null and DoesInherit(targetpage, "dialoguepage")) {
-      targetpage.pagelinkshown = true
-    }
-    return (ProcessTextCommand_Command(section, data))
+      colon = Instr(section, ":")
+      pagekey = Mid(section, colon + 1)
+      colon = Instr(pagekey, ":")
+      if (colon > 0) {
+        pagekey = Left(pagekey, colon - 1)
+      }
+      targetpage = GetObject(pagekey)
+      if (targetpage <> null and DoesInherit(targetpage, "dialoguepage")) {
+        targetpage.pagelinkshown = true
+      }
+      return (ProcessTextCommand_Command(section, data))
     ]]>
   </function>
 

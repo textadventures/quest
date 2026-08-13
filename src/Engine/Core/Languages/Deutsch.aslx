@@ -350,34 +350,34 @@
   <template name="DefaultXyzzy">Überraschenderweise passiert gar nichts.</template>
   <template templatetype="command" name="help">^hilfe$|^\?$</template>
   <template templatetype="command" name="save">^save$|^speichern$</template>
- <template name="DefaultHelp"><![CDATA[<br/><u>Befehlsübersicht</u><br/><br/>
-<b>- Häufig vorkommende Befehle:</b> UNTERSUCHE..., NIMM..., LEGE..., ÖFFNE..., GIB... AN..., BENUTZE... MIT..., SPRICH MIT..., VERWENDE...<br/>
-<b>- Inventar:</b> getragene Gegenstände können über INV oder INVENTAR angezeigt werden.<br/>
-<b>- Bewegung:</b>  Verwende die Buttons des Kompasses oder gib z.B. GEHE NACH NORDEN, SÜDEN oder RUNTER ein.<br/>
-<b>- Shortcuts:</b>  'Pfeil nach oben' und 'Pfeil nach unten' lässt dich durch die bereits eingegebenen Befehle blättern.<br/>
-   X... entspricht UNTERSUCHE..., I zeigt das Inventar,
-   die Himmelrichtungen können auch über N, S, W, O, NW, SO abgekürzt werden, dazu noch H für hoch und R für runter.
-   ]]></template>
+  <template name="DefaultHelp"><![CDATA[<br/><u>Befehlsübersicht</u><br/><br/>
+      <b>- Häufig vorkommende Befehle:</b> UNTERSUCHE..., NIMM..., LEGE..., ÖFFNE..., GIB... AN..., BENUTZE... MIT..., SPRICH MIT..., VERWENDE...<br/>
+      <b>- Inventar:</b> getragene Gegenstände können über INV oder INVENTAR angezeigt werden.<br/>
+      <b>- Bewegung:</b>  Verwende die Buttons des Kompasses oder gib z.B. GEHE NACH NORDEN, SÜDEN oder RUNTER ein.<br/>
+      <b>- Shortcuts:</b>  'Pfeil nach oben' und 'Pfeil nach unten' lässt dich durch die bereits eingegebenen Befehle blättern.<br/>
+      X... entspricht UNTERSUCHE..., I zeigt das Inventar,
+      die Himmelrichtungen können auch über N, S, W, O, NW, SO abgekürzt werden, dazu noch H für hoch und R für runter.
+  ]]></template>
 
-   <type name="maleobject">
+  <type name="maleobject">
     <displayverbs type="simplestringlist">[LookAt];[Take]</displayverbs>
     <gender>[MaleGender]</gender>
     <article>[MaleArticle]</article>
   </type>
 
-   <type name="femaleobject">
+  <type name="femaleobject">
     <displayverbs type="simplestringlist">[LookAt];[Take]</displayverbs>
     <gender>[FemaleGender]</gender>
     <article>[FemaleArticle]</article>
   </type>
 
-   <type name="maleobjectplural">
+  <type name="maleobjectplural">
     <displayverbs type="simplestringlist">[LookAt];[Take]</displayverbs>
     <gender>[MalePluralGender]</gender>
     <article>[MalePluralArticle]</article>
   </type>
 
-   <type name="femaleobjectplural">
+  <type name="femaleobjectplural">
     <displayverbs type="simplestringlist">[LookAt];[Take]</displayverbs>
     <gender>[FemalePluralGender]</gender>
     <article>[FemalePluralArticle]</article>
@@ -390,7 +390,7 @@
   </function>
 
   <function name="GetPrefix" type="string" parameters="obj,type">
-  <!-- type: 	"der" 	für der, die das
+    <!-- type: 	"der" 	für der, die das
         "ein"	für ein, eine, einer
         "kein"	für kein, keine, keiner
         "sein"	für bin, bist, ist
@@ -429,116 +429,116 @@
   </function>
 
   <function name="containerOrSurface" type="string" parameters="obj">
-  if ( DoesInherit (obj, "surface")  ){
-    return("Darauf befindet sich")
-  } else {
-    return(CapFirst(GetPrefix (obj,"er")) + " enthält")
-  }
+    if ( DoesInherit (obj, "surface")  ){
+      return("Darauf befindet sich")
+    } else {
+      return(CapFirst(GetPrefix (obj,"er")) + " enthält")
+    }
   </function>
 
   <function name="ToWords" parameters="number" type="string"><![CDATA[
-  if (not TypeOf(number) = "int") error ("ToWords kann nur Ganzzahlen verarbeiten")
+      if (not TypeOf(number) = "int") error ("ToWords kann nur Ganzzahlen verarbeiten")
 
-  getZahl_in_Worten = getZehner(Right(ToString(number), 2))
-    if (number > 99) {
-    getZahl_in_Worten = getEiner(Left(ToString(number), 1)) + "hundert" + getZahl_in_Worten
-  } ]]>
-  return (getZahl_in_Worten)
+      getZahl_in_Worten = getZehner(Right(ToString(number), 2))
+      if (number > 99) {
+        getZahl_in_Worten = getEiner(Left(ToString(number), 1)) + "hundert" + getZahl_in_Worten
+    } ]]>
+    return (getZahl_in_Worten)
   </function>
 
-<function name="getEiner" parameters="curEiner" type="string">
+  <function name="getEiner" parameters="curEiner" type="string">
     getEiner = ""
-  switch (ToInt(curEiner)) {
-    case (1) {
+    switch (ToInt(curEiner)) {
+      case (1) {
       getEiner = "ein"}
-    case (2) {
+      case (2) {
       getEiner = "zwei"}
-    case (3) {
+      case (3) {
       getEiner = "drei"}
-    case (4) {
+      case (4) {
       getEiner = "vier"}
-    case (5) {
+      case (5) {
       getEiner = "fünf"}
-    case (6) {
+      case (6) {
       getEiner = "sechs"}
-    case (7) {
+      case (7) {
       getEiner = "sieben"}
-    case (8) {
+      case (8) {
       getEiner = "acht"}
-    case (9) {
+      case (9) {
       getEiner = "neun"}
     }
-  return (getEiner)
-</function>
+    return (getEiner)
+  </function>
 
-<function name="getZehner" parameters="curZehner" type="string"><![CDATA[
-  switch (ToInt(curZehner)) {
+  <function name="getZehner" parameters="curZehner" type="string"><![CDATA[
+      switch (ToInt(curZehner)) {
         case (1) {
-            getZehner = "eins"}
+        getZehner = "eins"}
         case (2) {
-            getZehner = "zwei"}
+        getZehner = "zwei"}
         case (3) {
-            getZehner = "drei"}
+        getZehner = "drei"}
         case (4) {
-            getZehner = "vier"}
+        getZehner = "vier"}
         case (5) {
-            getZehner = "fünf"}
+        getZehner = "fünf"}
         case (6) {
-            getZehner = "sechs"}
+        getZehner = "sechs"}
         case (7) {
-            getZehner = "sieben"}
+        getZehner = "sieben"}
         case (8) {
-            getZehner = "acht"}
+        getZehner = "acht"}
         case (9) {
-            getZehner = "neun"}
+        getZehner = "neun"}
         case (10) {
-            getZehner = "zehn"}
+        getZehner = "zehn"}
         case (11) {
-            getZehner = "elf"}
+        getZehner = "elf"}
         case (12) {
-            getZehner = "zwölf"}
+        getZehner = "zwölf"}
         case (13) {
-            getZehner = "dreizehn"}
+        getZehner = "dreizehn"}
         case (14) {
-            getZehner = "vierzehn"}
+        getZehner = "vierzehn"}
         case (15) {
-            getZehner = "fünfzehn"}
+        getZehner = "fünfzehn"}
         case (16) {
-            getZehner = "sechzehn"}
+        getZehner = "sechzehn"}
         case (17) {
-            getZehner = "siebzehn"}
+        getZehner = "siebzehn"}
         case (18) {
-            getZehner = "achtzehn"}
+        getZehner = "achtzehn"}
         case (19) {
-            getZehner = "neunzehn"}
+        getZehner = "neunzehn"}
         default {
-      tmpEiner = getEiner(Right(curZehner, 1))
-            if (tmpEiner <> "") {
-        tmpEiner = tmpEiner + "und"
-      }
-      switch (ToInt(Left(curZehner, 1)) * 10) {
-        case (20) {
-          getZehner = tmpEiner + "zwanzig"}
-        case (30) {
-          getZehner = tmpEiner + "dreißig"}
-        case (40) {
-          getZehner = tmpEiner + "vierzig"}
-        case (50) {
-          getZehner = tmpEiner + "fünfzig"}
-        case (60) {
-          getZehner = tmpEiner + "sechzig"}
-        case (70) {
-          getZehner = tmpEiner + "siebzig"}
-        case (80) {
-          getZehner = tmpEiner + "achtzig"}
-        case (90) {
-          getZehner = tmpEiner + "neunzig"}
+          tmpEiner = getEiner(Right(curZehner, 1))
+          if (tmpEiner <> "") {
+            tmpEiner = tmpEiner + "und"
+          }
+          switch (ToInt(Left(curZehner, 1)) * 10) {
+            case (20) {
+            getZehner = tmpEiner + "zwanzig"}
+            case (30) {
+            getZehner = tmpEiner + "dreißig"}
+            case (40) {
+            getZehner = tmpEiner + "vierzig"}
+            case (50) {
+            getZehner = tmpEiner + "fünfzig"}
+            case (60) {
+            getZehner = tmpEiner + "sechzig"}
+            case (70) {
+            getZehner = tmpEiner + "siebzig"}
+            case (80) {
+            getZehner = tmpEiner + "achtzig"}
+            case (90) {
+            getZehner = tmpEiner + "neunzig"}
+          }
         }
-    }
-  }
-  return (getZehner)
-  ]]>
-</function>
+      }
+      return (getZehner)
+    ]]>
+  </function>
 
   <template templatetype="command" name="log_cmd">^(zeige |zeig |)(log|protokoll)$</template>
   <template templatetype="command" name="transcript_on_cmd">^(transkript|skript)( an|)$|^aktiviere (skript|transkript)$</template>

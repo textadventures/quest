@@ -117,20 +117,20 @@
   </function>
 
   <function name="ScopeReachableNotHeldForRoom" type="objectlist" parameters="room">
-  <![CDATA[
-    result = NewObjectList()
-    foreach (obj, GetAllChildObjects(room)) {
-      if (ContainsReachable(room, obj) and obj <> game.pov and not Contains(game.pov, obj)) {
-        list add(result, obj)
+    <![CDATA[
+      result = NewObjectList()
+      foreach (obj, GetAllChildObjects(room)) {
+        if (ContainsReachable(room, obj) and obj <> game.pov and not Contains(game.pov, obj)) {
+          list add(result, obj)
+        }
       }
-    }
-    if (HasScript(game, "scopebackdrop")) {
-      dict = NewDictionary()
-      dictionary add (dict, "items", result)
-      do (game, "scopebackdrop", dict)
-    }
-    return (result)
-  ]]>
+      if (HasScript(game, "scopebackdrop")) {
+        dict = NewDictionary()
+        dictionary add (dict, "items", result)
+        do (game, "scopebackdrop", dict)
+      }
+      return (result)
+    ]]>
   </function>
 
   <function name="ScopeVisible" type="objectlist">
@@ -151,22 +151,22 @@
 
   <function name="ScopeExitsForRoom" type="objectlist" parameters="room">
     <![CDATA[
-    result = NewObjectList()
-    foreach (exit, AllExits()) {
-      if (exit.parent = room) {
-        if (exit.visible) {
-          if (GetBoolean(room, "darklevel")) {
-            if (GetBoolean(exit, "lightsource")) {
+      result = NewObjectList()
+      foreach (exit, AllExits()) {
+        if (exit.parent = room) {
+          if (exit.visible) {
+            if (GetBoolean(room, "darklevel")) {
+              if (GetBoolean(exit, "lightsource")) {
+                list add(result, exit)
+              }
+            }
+            else {
               list add(result, exit)
             }
           }
-          else {
-            list add(result, exit)
-          }
         }
       }
-    }
-    return (result)
+      return (result)
     ]]>
   </function>
 
@@ -216,13 +216,13 @@
 
   <function name="ListParents" type="objectlist" parameters="obj">
     <![CDATA[
-    result = NewObjectList()
-    if (obj.parent <> null) {
-      parent_as_list = NewObjectList()
-      list add (parent_as_list, obj.parent)
-      result = ListCombine(parent_as_list, ListParents(obj.parent))
-    }
-    return (result)
+      result = NewObjectList()
+      if (obj.parent <> null) {
+        parent_as_list = NewObjectList()
+        list add (parent_as_list, obj.parent)
+        result = ListCombine(parent_as_list, ListParents(obj.parent))
+      }
+      return (result)
     ]]>
   </function>
 

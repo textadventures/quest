@@ -260,21 +260,21 @@
   <template templatetype="command" name="help">^aide$|^\?$</template>
   <template templatetype="command" name="save">^sauvegarder$</template>
   <template name="DefaultHelp"><![CDATA[<br/><u>Liste des commandes principales</u><br/><br/>
-<b>- Objets :</b><br/>  REGARDER... ; PARLER... ; PRENDRE... ; DÉPOSER... ; OUVRIR... ; DONNER... À... ; UTILISER... AVEC... ; POUSSER... ; TIRER... ; METTRE... SUR/DANS... ; ENLEVER... DE... ; INTERROGER... SUR... ; DIRE À... <br/><br/>
-<b>- Inventaire :</b><br/>  Examinez votre inventaire en entrant : I, INV ou INVENTAIRE.<br/><br/>
-<b>- Déplacement :</b><br/>  Utilisez les boutons du compas, ou tapez NORD, SUD, EST, OUEST, N, S, E, O, NO, NE, H, B, INT, EXT, etc.<br/><br/>
-<b>- Raccourcis :</b><br/>  Utilisez les flèches haut et bas pour voir les commandes que vous avez déjà entrées. Notez que vous pouvez utiliser la lettre "x" plutôt que le verbe "examiner" ou "regarder".<br/>]]></template>
+      <b>- Objets :</b><br/>  REGARDER... ; PARLER... ; PRENDRE... ; DÉPOSER... ; OUVRIR... ; DONNER... À... ; UTILISER... AVEC... ; POUSSER... ; TIRER... ; METTRE... SUR/DANS... ; ENLEVER... DE... ; INTERROGER... SUR... ; DIRE À... <br/><br/>
+      <b>- Inventaire :</b><br/>  Examinez votre inventaire en entrant : I, INV ou INVENTAIRE.<br/><br/>
+      <b>- Déplacement :</b><br/>  Utilisez les boutons du compas, ou tapez NORD, SUD, EST, OUEST, N, S, E, O, NO, NE, H, B, INT, EXT, etc.<br/><br/>
+  <b>- Raccourcis :</b><br/>  Utilisez les flèches haut et bas pour voir les commandes que vous avez déjà entrées. Notez que vous pouvez utiliser la lettre "x" plutôt que le verbe "examiner" ou "regarder".<br/>]]></template>
 
   <template name="LanguageSpecificObjectTypes">masculine=Inanimate object (masculine); feminine=Inanimate object (feminine); </template>
 
   <type name="masculine">
-  <gender>il</gender>
-  <article>le</article>
+    <gender>il</gender>
+    <article>le</article>
   </type>
 
   <type name="feminine">
-  <gender>elle</gender>
-  <article>la</article>
+    <gender>elle</gender>
+    <article>la</article>
   </type>
 
   <template name="EditorVerbDefaultExpression">"Vous ne pouvez pas " + object.article + " #verb#."</template>
@@ -285,7 +285,7 @@
     }
     else {
       return ("un")
-     }
+    }
   </function>
 
   <function name="WriteVerb" type="string" parameters="obj, verb">

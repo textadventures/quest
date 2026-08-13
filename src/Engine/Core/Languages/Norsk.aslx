@@ -274,10 +274,10 @@
   <template templatetype="command" name="save">^lagre$</template>
 
   <template name="DefaultHelp"><![CDATA[<u>Hjelp</u><br/><br/>
-<b>- Objekter:</b>  Prøv å SE PÅ..., SNAKK TIL..., TA..., SLIPP..., ÅPNE..., GI... TIL..., BRUK... PÅ/MED...<br/>
-<b>- Utstyr:</b>  Se hvilke ting du bærer på ved å skrive U, UTST eller UTSTYR.<br/>
-<b>- Flytt rundt:</b>  Trykk på kompassrosen, eller skriv GÅ NORD, SØR, ØST, N, NV, GÅ TIL...<br/>
-<b>- Snarveier:</b> Bruk piltastene for å bla gjennom kommandoer du allerede har skrevet inn. Prøv X... som snarvei til SE PÅ...]]></template>
+      <b>- Objekter:</b>  Prøv å SE PÅ..., SNAKK TIL..., TA..., SLIPP..., ÅPNE..., GI... TIL..., BRUK... PÅ/MED...<br/>
+      <b>- Utstyr:</b>  Se hvilke ting du bærer på ved å skrive U, UTST eller UTSTYR.<br/>
+      <b>- Flytt rundt:</b>  Trykk på kompassrosen, eller skriv GÅ NORD, SØR, ØST, N, NV, GÅ TIL...<br/>
+  <b>- Snarveier:</b> Bruk piltastene for å bla gjennom kommandoer du allerede har skrevet inn. Prøv X... som snarvei til SE PÅ...]]></template>
 
   <!-- Editor-specific templates - should eventually be moved to e.g. EditorEnglish.aslx -->
   <!-- NOTE: To add a language-specific object type, fill in the template like this: -->

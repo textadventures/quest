@@ -1,6 +1,6 @@
 <library>
 
-<!-- Esperanto.aslx version  0.003 -->
+  <!-- Esperanto.aslx version  0.003 -->
 
   <include ref="English.aslx"/>
   <template name="LanguageId">eo</template>
@@ -125,7 +125,7 @@
   <template name="EmptyListLabel">(malplena)</template>
   <template name="NothingSelectedLabel">(nenion elektita)</template>
 
- <template templatetype="command" name="go"><![CDATA[^iru al (?<exit>.*)o$|^iru (?<exit>.*)en$|^(?<exit>.*)e$|^(?<exit>.*)en$|^(?<exit>.*)o$|^(?<exit>nordokcident|nord|nordorient|okcident|orient|sudokcident|sud|sudorient|supr|malsupr|intern|ekster)$]]></template>
+  <template templatetype="command" name="go"><![CDATA[^iru al (?<exit>.*)o$|^iru (?<exit>.*)en$|^(?<exit>.*)e$|^(?<exit>.*)en$|^(?<exit>.*)o$|^(?<exit>nordokcident|nord|nordorient|okcident|orient|sudokcident|sud|sudorient|supr|malsupr|intern|ekster)$]]></template>
 
   <template templatetype="command" name="lookdir"><![CDATA[^rigardu (?<exit>nordokcidenten|norden|nordorienten|okcidenten|orienten|sudokcidenten|suden|sudorienten|supren|malsupren|internen|eksteren|nokc|n||ok|or|sok|s|sor|sup|malsup|int|eks)$]]></template>
   <template templatetype="command" name="look">^rigardu$</template>
@@ -243,10 +243,10 @@
   <template templatetype="command" name="help">^helpon$|^\?$</template>
   <template templatetype="command" name="save">^savu$</template>
   <template name="DefaultHelp"><![CDATA[<u>Rapida helpo</u><br/><br/>
-<b>- Objectoj:</b>  Provu RIGARDU..., PAROLU KUN..., PRENU..., LASU..., MALFERMU..., MALFERMU..., DONU... AL..., UZU... KUN...<br/>
-<b>- Inventario:</b> Por scii kiujn objektojn vi kunportas, tajpu I, INV aux INVENTARIO.<br/>
-<b>- Moving around:</b>  Klaku sur la direkt-butonojn, aux tajpu IRU NORDE, SUDE, OR, IRU [AL]...<br/>
-<b>- Rapidiloj:</b> Presu supren/malsupren por rehavi viajn atauxajn komandojn. Probu X... kiel mallongigo por RIGARDU ....]]></template>
+      <b>- Objectoj:</b>  Provu RIGARDU..., PAROLU KUN..., PRENU..., LASU..., MALFERMU..., MALFERMU..., DONU... AL..., UZU... KUN...<br/>
+      <b>- Inventario:</b> Por scii kiujn objektojn vi kunportas, tajpu I, INV aux INVENTARIO.<br/>
+      <b>- Moving around:</b>  Klaku sur la direkt-butonojn, aux tajpu IRU NORDE, SUDE, OR, IRU [AL]...<br/>
+  <b>- Rapidiloj:</b> Presu supren/malsupren por rehavi viajn atauxajn komandojn. Probu X... kiel mallongigo por RIGARDU ....]]></template>
 
   <!-- Editor-specific templates - should eventually be moved to e.g. EditorEnglish.aslx -->
   <template name="LanguageSpecificObjectTypes"></template>
