@@ -1,0 +1,23 @@
+<asl version="600">
+  <include ref="English.aslx" />
+  <include ref="Core.aslx" />
+  <game name="load-error-test">
+    <start type="script">
+      msg ("start")
+    </start>
+    <object name="room">
+      <inherit name="editor_room" />
+      <object name="player">
+        <inherit name="editor_object" />
+        <inherit name="editor_player" />
+      </object>
+      <object name="person">
+        <inherit name="editor_object" />
+        <inherit name="male" />
+        <speak type="script">
+          missing_function()
+        </speak>
+      </object>
+    </object>
+  </game>
+</asl>

@@ -392,6 +392,19 @@ window.WebPlayer = {
 // Exported bridge reference — set once WASM is loaded.
 var Bridge;
 
+// The engine's load/initialise errors from the most recent Initialise call, if
+// it failed — reads the JSON exported by WasmPlayerBridge.GetInitialiseErrorsJson
+// (empty array when the last load succeeded). Used to put the real reason a game
+// failed to load on the start screen instead of a generic message.
+function getInitialiseErrors() {
+    try {
+        const parsed = JSON.parse(Bridge.GetInitialiseErrorsJson());
+        return Array.isArray(parsed) ? parsed : [];
+    } catch {
+        return [];
+    }
+}
+
 function addPaperScript() {
     const canvas = document.getElementById('gridCanvas');
     const gridPanel = document.getElementById('gridPanel');
@@ -552,8 +565,20 @@ async function initWasmPlayer(gameBytes, filename, bc = null, saveBytes = null, 
         ? await Bridge.InitialiseWithSave(gameBytes, filename, saveBytes)
         : await Bridge.Initialise(gameBytes, filename);
     if (!ok) {
-        console.error('[Quest] Failed to initialise game');
-        throw new Error('Failed to initialise game');
+        // The game file itself was fine (downloaded/picked), but the engine
+        // rejected its contents — same errors the Editor shows on load.
+        // Previously this threw, which left #qv-start (with its spinner)
+        // covering the screen forever and, on the boot paths without a
+        // catch handler (embedded export, editor preview, ?id=, ?url=),
+        // never showed the reason at all. Surface the actual errors on the
+        // start screen instead and let the caller know the game didn't start.
+        const errors = getInitialiseErrors();
+        console.error('[Quest] Failed to initialise game', errors);
+        // A live app (Play tab / editor preview) handed this game over via bc —
+        // it owns the file-picking UI, so don't re-offer the start-screen
+        // pickers; just show the error, editor-style.
+        showGameLoadError(errors, !bc);
+        return false;
     }
 
     // Now that a WorldModel is live, resolve the game's own translated chrome
@@ -608,6 +633,8 @@ async function initWasmPlayer(gameBytes, filename, bc = null, saveBytes = null, 
     } else if (runWalkthrough) {
         await runWalkthroughStandalone(runWalkthrough);
     }
+
+    return true;
 }
 
 // Guards restartGame against overlapping calls — e.g. impatiently clicking
@@ -668,7 +695,14 @@ async function restartGameCore(saveBytes) {
             ? await Bridge.InitialiseWithSave(originalGameBytes, originalGameFilename, saveBytes)
             : await Bridge.Initialise(originalGameBytes, originalGameFilename);
         if (!ok) {
-            showSavesError('Failed to load that save.');
+            // The engine rejected the game's contents again (or the save didn't
+            // apply) — include the actual error rather than the old generic
+            // "Failed to load that save.", which is wrong for a "Start from the
+            // beginning" restart whose failure has nothing to do with a save.
+            const errors = getInitialiseErrors();
+            showSavesError(errors.length
+                ? `Failed to load. ${errors.join(' ')}`
+                : 'Failed to load that save.');
             return;
         }
 
@@ -730,7 +764,12 @@ async function startGame(bytes, filename, bc = null, gameIdOverride = null, isPr
         }
     }
 
-    await initWasmPlayer(bytes, filename, bc, saveBytes, isPreview, recordWalkthrough, runWalkthrough, adjacentFiles);
+    // Returns true if the game started, false if it downloaded/picked fine but
+    // the engine rejected its contents (the error is shown on the start screen
+    // by initWasmPlayer in that case) — callers with post-success work (e.g.
+    // persisting the active URL) should key off this. Genuine setup failures
+    // (fetch, WASM boot) still throw as before.
+    return initWasmPlayer(bytes, filename, bc, saveBytes, isPreview, recordWalkthrough, runWalkthrough, adjacentFiles);
 }
 
 // ── Start screen helpers ──────────────────────────────────────────────────────
@@ -1857,6 +1896,44 @@ function showError(downloadUrl, isLocalFile, error) {
     wireStartScreen();
 }
 
+// The game file itself downloaded/picked fine but the engine rejected its
+// contents — a game-content error (parse failure, unknown function, etc.), the
+// same list the Editor surfaces on load, not a network/HTTP problem. Shows that
+// actual error text on the start screen and re-shows the pickers, so the player
+// doesn't sit on the loading spinner forever (what the old path did: it wrote
+// the errors to the output pane, which sits hidden under the #qv-start overlay,
+// then threw before the overlay was removed).
+//
+// showPickers=false is for sessions launched by the Quest Viva app itself — the
+// Play tab (source=local) and editor preview (source=editor) — where the app
+// owns the file-picking UI, so the start screen's "You can try a different file
+// below" pickers are irrelevant there. Just the error is shown, in the same
+// header+bullets format the Editor uses for a load-time error (see
+// EditorController.cs's "Failed to load game due to the following errors:"),
+// with a blank line between the header and the error message.
+function showGameLoadError(errors, showPickers = true) {
+    document.documentElement.classList.remove('qv-booting');
+    const pickers = document.getElementById('qv-pickers');
+    const msg = document.getElementById('qv-loading-msg');
+    const errorEl = document.getElementById('qv-error');
+    if (msg) msg.style.display = 'none';
+    if (pickers) pickers.style.display = showPickers ? 'block' : 'none';
+    if (!errorEl) return;
+    const list = errors.length ? errors : ['Unknown error'];
+    errorEl.style.whiteSpace = showPickers ? '' : 'pre-wrap';
+    if (showPickers) {
+        errorEl.innerHTML = '<strong>This game couldn\'t be started.</strong> '
+            + 'The game file loaded, but Quest Viva reported a problem with its contents:<br/>'
+            + list.map(_esc).join('<br/>')
+            + '<br/>You can try a different file below.';
+    } else {
+        errorEl.innerHTML = _esc('Failed to load game due to the following errors:\n\n'
+            + list.map(e => '* ' + e).join('\n'));
+    }
+    errorEl.style.display = 'block';
+    wireStartScreen();
+}
+
 // Keeps the address bar in sync with the game that's actually loaded (or being
 // attempted), so a refresh reproduces it. `name`/`value` set the active source
 // param; both `id` and `url` are cleared first since only one can be current.
@@ -1901,8 +1978,11 @@ function wireStartScreen() {
         showLoading();
         try {
             const { bytes, filename } = await fetchGameBytes(url);
-            await startGame(bytes, filename);
-            setLocationParam('url', url);
+            const ok = await startGame(bytes, filename);
+            // Don't persist the URL if the game itself failed to load — the
+            // engine error is already on screen, and keeping the URL would make
+            // a refresh re-run the same broken load.
+            if (ok) setLocationParam('url', url);
         } catch (err) {
             showError(url, false, err);
         }

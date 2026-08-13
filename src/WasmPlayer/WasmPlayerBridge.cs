@@ -21,6 +21,12 @@ public partial class WasmPlayerBridge
     private static PlayerHelper? _helper;
     private static WasmPlayerUi? _ui;
 
+    // Set when Initialise/InitialiseWithSave fails so JS can surface the same
+    // engine error text the Editor shows on load failure, instead of leaving the
+    // start-screen spinner up indefinitely with no feedback. Cleared on success
+    // (and never set when the failure happened before any load was attempted).
+    private static string[] _initialiseErrors = [];
+
     // ── JS → C# exports ─────────────────────────────────────────────────────
 
     [JSExport]
@@ -142,10 +148,16 @@ public partial class WasmPlayerBridge
         var (ok, errors) = await _helper.Initialise(_ui);
         if (!ok)
         {
+            // Stash the errors for JS to fetch (GetInitialiseErrorsJson) so it can
+            // display them on the start screen — outputting them to the game pane
+            // alone leaves them hidden under the #qv-start overlay while the JS side
+            // still thinks the game is loading.
+            _initialiseErrors = errors.ToArray();
             _ui.OutputText(string.Join("<br/>", errors) + "<br/>");
             await _ui.FlushBufferAndYieldAsync();
             return false;
         }
+        _initialiseErrors = [];
 
         var scripts = _game.GetExternalScripts();
         if (scripts != null)
@@ -166,6 +178,14 @@ public partial class WasmPlayerBridge
 
     [JSExport]
     public static string GetGameId() => _ui?.GameId ?? string.Empty;
+
+    // The engine's load/initialise errors from the most recent
+    // Initialise/InitialiseWithSave call, if it failed (empty otherwise). JS
+    // reads this when Initialise returns false to put the real reason on the
+    // start screen rather than leaving the loading spinner spinning forever.
+    [JSExport]
+    public static string GetInitialiseErrorsJson() =>
+        JsonSerializer.Serialize(_initialiseErrors, WasmJsonContext.Default.StringArray);
 
     // The game's own embedded identity (IFID, the <gameid> element in its
     // .aslx/save XML) — stable regardless of how/where the game was loaded
