@@ -680,7 +680,7 @@
       }
       if (not handled) {
         if (HasScript(object2, "giveanything")) {
-          // TO DO: Would be better to use a delegate for giveanything, but need to implement Editor support first
+          // TO DO (#2068): Would be better to use a delegate for giveanything, but need to implement Editor support first
           parameters = NewObjectDictionary()
           dictionary add (parameters, "object", object1)
           do (object2, "giveanything", parameters)
@@ -704,7 +704,7 @@
         }
         else {
           if (HasScript(object1, "givetoanything")) {
-            // TO DO: Would be better to use a delegate for givetoanything, but need to implement Editor support first
+            // TO DO (#2068): Would be better to use a delegate for givetoanything, but need to implement Editor support first
             parameters = NewObjectDictionary()
             dictionary add (parameters, "object", object2)
             do (object1, "givetoanything", parameters)
@@ -739,7 +739,7 @@
       }
       else {
         if (HasScript(object2, "useanything")) {
-          // TO DO: Would be better to use a delegate for useanything, but need to implement Editor support first
+          // TO DO (#2068): Would be better to use a delegate for useanything, but need to implement Editor support first
           parameters = NewObjectDictionary()
           dictionary add (parameters, "object", object1)
           do (object2, "useanything", parameters)
@@ -763,7 +763,7 @@
         }
         else {
           if (HasScript(object1, "selfuseanything")) {
-            // TO DO: Would be better to use a delegate for selfuseanything, but need to implement Editor support first
+            // TO DO (#2068): Would be better to use a delegate for selfuseanything, but need to implement Editor support first
             parameters = NewObjectDictionary()
             dictionary add (parameters, "object", object2)
             do (object1, "selfuseanything", parameters)

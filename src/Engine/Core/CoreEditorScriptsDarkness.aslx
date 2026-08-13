@@ -71,7 +71,7 @@
       <simple>brightness</simple>
       <simpleeditor>dropdown</simpleeditor>
       <attribute>1</attribute>
-      <!-- TO DO: Would be more user-friendly if we could use a dictionary type here (as in CoreEditorObjectSetup), but
+      <!-- TO DO (#2071): Would be more user-friendly if we could use a dictionary type here (as in CoreEditorObjectSetup), but
       this doesn't currently work in an expression control -->
       <validvalues type="simplestringlist">weak;strong;</validvalues>
     </control>
@@ -108,7 +108,7 @@
       <simple>brightness level</simple>
       <simpleeditor>dropdown</simpleeditor>
       <attribute>1</attribute>
-      <!-- TO DO: Would be more user-friendly if we could use a dictionary type here (as in CoreEditorObjectSetup), but
+      <!-- TO DO (#2071): Would be more user-friendly if we could use a dictionary type here (as in CoreEditorObjectSetup), but
        this doesn't currently work in an expression control -->
       <validvalues type="simplestringlist">weak;strong;</validvalues>
     </control>

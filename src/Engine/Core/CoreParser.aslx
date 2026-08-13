@@ -351,7 +351,7 @@
       }
       if (resolvedall) {
         // All the objects have been resolved, so now we can actually do the command
-        // TO DO: game.lastobjects should be game.pov.lastobjects
+        // TO DO (#2073): game.lastobjects should be game.pov.lastobjects
         game.lastobjects = game.pov.currentcommandresolvedobjects
         if (not DictionaryContains(game.pov.currentcommandresolvedelements, "multiple")) {
           dictionary add (game.pov.currentcommandresolvedelements, "multiple", false)
@@ -362,7 +362,7 @@
           }
         }
         if (not GetBoolean(game.pov.currentcommandpattern, "isoops")) {
-          // TO DO: game.unresolved* should be game.pov.unresolved*
+          // TO DO (#2073): game.unresolved* should be game.pov.unresolved*
           game.unresolvedcommand = null
           game.unresolvedcommandvarlist = null
           game.unresolvedcommandkey = null
@@ -457,7 +457,7 @@
           return (result)
         }
         else {
-          // TO DO: Check this behaviour. We only want to try ignoring prefixes if we have definitely got an unresolved name.
+          // TO DO (#2074): Check this behaviour. We only want to try ignoring prefixes if we have definitely got an unresolved name.
           foreach (prefix, game.parserignoreprefixes) {
             if (StartsWith(value, prefix + " ")) {
               result = ResolveNameInternal(variable, Mid(value, LengthOf(prefix) + 1), objtype)
