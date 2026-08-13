@@ -85,6 +85,10 @@
 
     "settingsModal.title": "Einstellungen",
     "settingsModal.language": "Sprache",
+    "settingsModal.theme": "Darstellung",
+    "settingsModal.themeLight": "Hell",
+    "settingsModal.themeDark": "Dunkel",
+    "settingsModal.themeSystem": "Systemeinstellung",
 
     "common.moveTo": "Verschieben nach…",
     "common.cut": "Ausschneiden",

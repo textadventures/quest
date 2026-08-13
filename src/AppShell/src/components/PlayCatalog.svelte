@@ -248,12 +248,13 @@
 
 <!-- Always dark (see +layout.svelte) — surface-950/400/800 are the fixed
      dark-side members of Skeleton's paired tokens, not auto-switching ones,
-     since the OS could be in light mode regardless. The background lives on
-     this outer, unconstrained-width div — max-w-5xl below only centers the
+     since the OS could be in light mode regardless. The play-dark class
+     scopes app.css's fixed-shade form-control overrides. The background lives
+     on this outer, unconstrained-width div — max-w-5xl below only centers the
      content column, so it must not also carry the background, or anything
      wider than 5xl shows the page's real (light-mode) background down the
      sides instead of dark. -->
-<div class="min-h-svh bg-surface-950 text-surface-100">
+<div class="play-dark min-h-svh bg-surface-950 text-surface-100">
     {#if isElectronApp && update}
         <UpdateBanner {update} />
     {/if}

@@ -52,6 +52,16 @@ interface ElectronLocaleApi {
     set(locale: string): Promise<void>;
 }
 
+// Persisted to a userData file (ElectronApp's theme-store.ts), not
+// localStorage — same reason as locale above (see theme-store.ts for why).
+// getSync is the synchronous variant app.html's pre-paint inline script uses
+// (see theme-store.ts's readThemeSync / ipc/theme.ts's "theme:getSync").
+interface ElectronThemeApi {
+    get(): Promise<string | null>;
+    set(theme: string): Promise<void>;
+    getSync(): string | null;
+}
+
 interface ElectronRecentGame {
     dirPath: string;
     filename: string;
@@ -138,6 +148,7 @@ interface ElectronApi {
     path: ElectronPathApi;
     paths: ElectronPathsApi;
     locale: ElectronLocaleApi;
+    theme: ElectronThemeApi;
     recent: ElectronRecentApi;
     catalogPlays: ElectronCatalogPlaysApi;
     updateDismiss: ElectronUpdateDismissApi;

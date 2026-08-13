@@ -10,6 +10,7 @@
     import { isLoaded, saveGame, saveGameAs, undo, redo, canUndo, canRedo, markFileChangedExternally } from "$lib/editor-store";
     import { isElectron } from "$lib/runtime";
     import { initI18n, localeReady } from "$lib/i18n";
+    import { initTheme } from "$lib/theme-store";
     import HomeHeader from "$components/HomeHeader.svelte";
     import HomeTabs from "$components/HomeTabs.svelte";
     import ConfirmDialog from "$components/ConfirmDialog.svelte";
@@ -40,9 +41,10 @@
 
     // Play (and its game-detail pages) are always dark, matching the look the
     // standalone Home page had before this was folded into AppShell — Create
-    // (/open) keeps following the editor's own light/dark system preference,
-    // since forcing that too would mean redoing its markup (also used as-is
-    // by textadventures.co.uk's plain editor-open flow) to match.
+    // (/open) keeps following the editor's own theme choice (Light/Dark/Match
+    // system, set in the Settings modal), since forcing that too would mean
+    // redoing its markup (also used as-is by textadventures.co.uk's plain
+    // editor-open flow) to match.
     const isPlayContext = $derived(page.url.pathname === rootPath || page.url.pathname.startsWith(`${base}/play/`));
 
     // Printed once on load, same style as WasmPlayer's console banner — the
@@ -62,6 +64,10 @@
     // project" button of its own.
     onMount(() => {
         void initI18n();
+    });
+
+    onMount(() => {
+        void initTheme();
     });
 
     onMount(() => {

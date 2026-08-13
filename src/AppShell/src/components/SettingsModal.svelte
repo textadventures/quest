@@ -1,6 +1,7 @@
 <script lang="ts">
     import { settingsModalOpen } from "$lib/settings-store";
     import { locale, setLocale, SUPPORTED_LOCALES, t } from "$lib/i18n";
+    import { theme, setTheme, type ThemePreference } from "$lib/theme-store";
 
     function displayName(code: string): string {
         let name: string;
@@ -35,6 +36,12 @@
         await setLocale(code);
         window.location.reload();
     }
+
+    // Unlike language, a theme change applies live — the .dark class and
+    // color-scheme toggle take effect immediately, no reload needed.
+    function handleThemeChange(e: Event) {
+        setTheme((e.target as HTMLSelectElement).value as ThemePreference);
+    }
 </script>
 
 {#if $settingsModalOpen}
@@ -63,6 +70,20 @@
                     {#each SUPPORTED_LOCALES as code (code)}
                         <option value={code}>{displayName(code)}</option>
                     {/each}
+                </select>
+            </div>
+
+            <div class="flex flex-col gap-1">
+                <label for="settings-theme" class="text-xs text-surface-600-400">{t("settingsModal.theme")}</label>
+                <select
+                    id="settings-theme"
+                    class="select bg-surface-50-950 px-2 py-1 text-sm"
+                    value={$theme}
+                    onchange={handleThemeChange}
+                >
+                    <option value="light">{t("settingsModal.themeLight")}</option>
+                    <option value="dark">{t("settingsModal.themeDark")}</option>
+                    <option value="system">{t("settingsModal.themeSystem")}</option>
                 </select>
             </div>
         </div>
