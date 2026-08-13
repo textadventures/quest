@@ -3,6 +3,7 @@
     import { assets, treeNodes, refreshAssets, uploadAsset, deleteAssetAndOwner, resolveAssetUrl, isImageAsset } from "$lib/editor-store";
     import { confirmDialog } from "$lib/confirm";
     import { t } from "$lib/i18n";
+    import FileIcon from "@lucide/svelte/icons/file";
 
     interface Props {
         oncancel: () => void;
@@ -108,7 +109,7 @@
                     {#if thumbUrls[asset.key]}
                         <img src={thumbUrls[asset.key]} alt="" class="h-8 w-8 object-cover rounded border border-surface-200-800 shrink-0" />
                     {:else}
-                        <span class="h-8 w-8 rounded border border-surface-200-800 shrink-0 flex items-center justify-center text-sm">📄</span>
+                        <span class="h-8 w-8 rounded border border-surface-200-800 shrink-0 flex items-center justify-center text-surface-500-400"><FileIcon size={16} /></span>
                     {/if}
                     <span class="text-xs flex-1 truncate" title={asset.key}>{asset.key}</span>
                     <button
