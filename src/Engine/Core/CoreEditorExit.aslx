@@ -144,7 +144,6 @@
         <caption>[EditorExitLength]</caption>
       </control>
 
-      <!--
       <control>
         <controltype>number</controltype>
         <attribute>grid_offset_x</attribute>
@@ -156,7 +155,6 @@
         <attribute>grid_offset_y</attribute>
         <caption>[EditorExitOffsetY]</caption>
       </control>
-      -->
 
     </tab>
 
