@@ -376,6 +376,103 @@ public partial class WasmEditorBridge
         return "ok";
     }
 
+    // True when a library filename refers to one shipped inside the Engine assembly (Core.aslx,
+    // GamebookCore.aslx, per-language files such as English.aslx, ...) rather than a file the
+    // game author uploaded alongside the game — see WorldModel.IsBuiltInLibrary. The Code View
+    // panel uses this to show built-in libraries read-only: they don't belong to the game, so
+    // editing them directly isn't possible (and IsBuiltInLibrary is also what stops them being
+    // deleted, see EditorController.CanDelete).
+    [JSExport]
+    public static bool IsBuiltInLibrary(string filename)
+    {
+        return WorldModel.IsBuiltInLibrary(filename);
+    }
+
+    // Returns the raw text of a built-in library (e.g. Core.aslx) for the Code View panel's
+    // read-only browsing. Custom libraries' content lives in the host's asset storage instead
+    // (see AddAdjacentFile), so the JS side reads those via its own FileAdapter — this is only
+    // for the engine-shipped ones embedded in the Engine assembly (Core.aslx, per-language files
+    // such as English.aslx, ...), resolved with the same resource names GetLibraryStream uses.
+    // Null when the library can't be found (defensive; built-in filenames always resolve).
+    [JSExport]
+    public static string? GetLibraryXml(string filename)
+    {
+        if (string.IsNullOrEmpty(filename))
+        {
+            return null;
+        }
+
+        try
+        {
+            using var stream = WorldModel.GetEmbeddedResourceStream("QuestViva.Engine.Core." + filename)
+                               ?? WorldModel.GetEmbeddedResourceStream("QuestViva.Engine.Core.Languages." + filename);
+            if (stream == null)
+            {
+                return null;
+            }
+
+            using var reader = new StreamReader(stream);
+            return reader.ReadToEnd();
+        }
+        catch
+        {
+            return null;
+        }
+    }
+
+    // Validates an edited Included Library's content without touching the live game, mirroring
+    // SetGameXml's throwaway-controller approach: the current game is serialized, this library's
+    // staged adjacent file is swapped for the new text, and a fresh EditorController tries to
+    // load the result. On "ok" the JS side commits the file to the adapter and re-Initialises
+    // the live game (libraries are consumed at load time, so the whole model has to reload to
+    // pick the change up). A malformed edit returns "error:{message}" here instead — the current
+    // game and its live controller are left completely undisturbed.
+    [JSExport]
+    public static async Task<string> SetLibraryXml(string filename, string xml)
+    {
+        if (_controller == null)
+        {
+            return "error:No game loaded.";
+        }
+
+        if (WorldModel.IsBuiltInLibrary(filename))
+        {
+            return "error:This is one of the built-in libraries that ships with the engine. It doesn't belong to your game, so it can't be edited here — copy its contents into a library of your own instead.";
+        }
+
+        var gameBytes = System.Text.Encoding.UTF8.GetBytes(_controller.Save());
+        var adjacentFiles = TakePendingAdjacentFiles();
+        adjacentFiles[filename] = System.Text.Encoding.UTF8.GetBytes(xml);
+        var provider = new ByteArrayGameDataProvider(gameBytes, _controller.Filename, adjacentFiles);
+
+        var candidate = new EditorController();
+        string? errorMessage = null;
+        candidate.ShowMessage += (_, e) => errorMessage = e.Message;
+
+        bool ok;
+        try
+        {
+            ok = await candidate.Initialise(provider);
+        }
+        catch (Exception ex)
+        {
+            candidate.Dispose();
+            return $"error:{ex.Message}";
+        }
+
+        if (!ok)
+        {
+            candidate.Dispose();
+            return $"error:{errorMessage ?? "Failed to parse ASLX."}";
+        }
+
+        // Never becomes the live controller (no AttachControllerEvents), so the shared TreeNodes
+        // cache and _isDirty flag are untouched — the game that's currently open stays exactly
+        // as it is.
+        candidate.Dispose();
+        return "ok";
+    }
+
     [JSExport]
     public static string GetTreeNodes()
     {

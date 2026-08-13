@@ -1,5 +1,5 @@
 <script lang="ts">
-    import { selectedKey, selectedData, treeNodes, isGamebook, setAttribute, setDropdownType, setMultiType, setObjectReference, setSelectedFilter, addDictItem, removeDictItem, updateDictItem, getObjectNames, getExitNames, getPageNames, selectNode, createPageSilent, openAddModal, openAddLibraryModal, openAddJavascriptModal, getAssetText, putAssetText } from "$lib/editor-store";
+    import { selectedKey, selectedData, treeNodes, isGamebook, setAttribute, setDropdownType, setMultiType, setObjectReference, setSelectedFilter, addDictItem, removeDictItem, updateDictItem, getObjectNames, getExitNames, getPageNames, selectNode, createPageSilent, openAddModal, openAddLibraryModal, openAddJavascriptModal, getAssetText, putAssetText, putLibraryAssetText, isBuiltInLibrary, getLibraryXml } from "$lib/editor-store";
     import { showToast } from "$lib/toast";
     import { t } from "$lib/i18n";
     import type { ControlInfo, ControlOption, TextProcessorCommand } from "$lib/types";
@@ -75,6 +75,20 @@
     let editingItem = $state<{attribute: string, key: string, value: string} | null>(null);
     let newDictItems = $state<Record<string, {key: string, value: string}>>({});
     let attributeErrors = $state<Record<string, string>>({});
+    // Last text written to the on-disk copy of a texteditor-bound file (JS/ASLX), so a no-op
+    // change is skipped. CodeEditor fires onChange on every blur (and Mod-s) even when the
+    // content is untouched — writing the file back anyway would be wasteful, and for library
+    // files it would wrongly raise the "reload needed" banner on a pure focus/blur with no edit.
+    let lastTexteditorWrite = $state<{ filename: string; text: string } | null>(null);
+
+    function handleTexteditorChange(filename: string, loadedContent: string, value: string) {
+        const onDisk = lastTexteditorWrite?.filename === filename ? lastTexteditorWrite.text : loadedContent;
+        if (value === onDisk) return;
+        lastTexteditorWrite = { filename, text: value };
+        void (filename.toLowerCase().endsWith(".aslx")
+            ? putLibraryAssetText(filename, value)
+            : putAssetText(filename, value));
+    }
     // Refetched whenever the selection changes, for dictionary controls whose keys are
     // object names (e.g. gamebook page "Options" links) rather than free text. The page
     // list serves controls with sourceType "dialoguepage" (the TA page tab's options
@@ -773,21 +787,46 @@
         </div>
     {:else if ctrl.controlType === "texteditor" && ctrl.attribute !== null}
         {@const filename = attrValue(ctrl.attribute)}
+        <!-- The same control type drives both file kinds: a Javascript element's src (.js — the
+             original use, editable in place) and an Included Library's filename (.aslx — see
+             CoreEditorIncludedLibrary.aslx). Library content is handled differently because it's
+             consumed at load time, not at play time: custom libraries are written via
+             putLibraryAssetText (which flags that a reload is needed), and the engine-shipped
+             built-in libraries are shown read-only since they don't belong to the game at all. -->
+        {@const isLibraryFile = !!filename && filename.toLowerCase().endsWith(".aslx")}
+        {@const builtInLibrary = isLibraryFile && !!filename && isBuiltInLibrary(filename)}
+        {@const language = isLibraryFile ? "xml" : "javascript"}
         <div class="w-full min-h-64">
-            {#if filename}
+            {#if !filename}
+                <p class="text-xs text-surface-600-400">{t("propertyEditor.chooseOrUploadPrompt")}</p>
+            {:else if builtInLibrary}
+                {@const content = filename ? getLibraryXml(filename) : null}
+                {#if content === null}
+                    <p class="text-xs text-surface-600-400">{t("propertyEditor.libraryNotReadable")}</p>
+                {:else}
+                    <div class="flex flex-col gap-1">
+                        <p class="text-xs text-surface-600-400">{t("propertyEditor.libraryReadOnly")}</p>
+                        <CodeEditor
+                            value={content}
+                            language={language}
+                            readonly
+                            minHeight="16rem"
+                            class="h-full"
+                        />
+                    </div>
+                {/if}
+            {:else}
                 {#await getAssetText(filename)}
                     <p class="text-xs text-surface-600-400">{t("propertyEditor.loading")}</p>
                 {:then content}
                     <CodeEditor
                         value={content ?? ""}
-                        language="javascript"
-                        onChange={(v) => putAssetText(filename, v)}
+                        language={language}
+                        onChange={(v) => handleTexteditorChange(filename, content ?? "", v)}
                         minHeight="16rem"
                         class="h-full"
                     />
                 {/await}
-            {:else}
-                <p class="text-xs text-surface-600-400">{t("propertyEditor.chooseOrUploadPrompt")}</p>
             {/if}
         </div>
     {:else if ctrl.controlType === "scriptdictionary" && ctrl.attribute && $selectedKey}

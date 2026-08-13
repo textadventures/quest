@@ -183,6 +183,8 @@
     "propertyEditor.goTo": "Gehe zu {name}",
     "propertyEditor.loading": "Laden…",
     "propertyEditor.chooseOrUploadPrompt": "Wähle eine Datei aus oder lade eine hoch, um deren Inhalt zu bearbeiten.",
+    "propertyEditor.libraryReadOnly": "Dies ist eine der integrierten Bibliotheken, die mit dem Editor ausgeliefert werden, und wird daher schreibgeschützt angezeigt. Sie ist kein Teil deiner Spieldatei. Kopiere, was du brauchst, stattdessen in dein eigenes Spiel.",
+    "propertyEditor.libraryNotReadable": "Diese Bibliothek konnte nicht gelesen werden.",
     "propertyEditor.textProcessorHelp": "Textprozessor-Hilfe",
     "propertyEditor.nullValue": "null",
     "propertyEditor.linkTargetLabels.exit": "Ausgang",
@@ -296,6 +298,13 @@
     "codeViewPanel.keepEditing": "Weiter bearbeiten",
     "codeViewPanel.discardChanges": "Änderungen verwerfen",
     "codeViewPanel.applyChangesChoice": "Änderungen übernehmen",
+    "codeViewPanel.fileLabel": "Datei:",
+    "codeViewPanel.gameFileGroup": "Spieldatei",
+    "codeViewPanel.librariesGroup": "Enthaltene Bibliotheken",
+    "codeViewPanel.readOnly": "schreibgeschützt",
+    "codeViewPanel.builtInReadOnlyMessage": "Dies ist eine der integrierten Bibliotheken, die mit der Engine ausgeliefert werden, und wird daher schreibgeschützt angezeigt. Sie ist kein Teil deiner Spieldatei. Kopiere, was du brauchst, stattdessen in dein eigenes Spiel.",
+    "codeViewPanel.loadingFile": "Datei wird geladen…",
+    "codeViewPanel.fileNotFound": "Diese Datei konnte nicht gelesen werden.",
 
     "common.dismiss": "Schließen",
     "common.reloading": "Neu laden…",
@@ -314,7 +323,7 @@
     "libraryElementBanner.copying": "Kopieren…",
     "libraryElementBanner.copyIntoGame": "In dein Spiel kopieren",
 
-    "libraryReloadBanner.message": "Lade den Editor neu, um die Ansichten für die soeben vorgenommene Bibliotheksänderung zu aktualisieren.",
+    "libraryReloadBanner.message": "Lade den Editor neu, um deine Bibliotheksänderungen anzuwenden.",
     "libraryReloadBanner.reloadButton": "Neu laden",
 
     "publishModal.title": "Veröffentlichen",

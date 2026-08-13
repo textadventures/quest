@@ -183,6 +183,8 @@
     "propertyEditor.goTo": "Ir a {name}",
     "propertyEditor.loading": "Cargando…",
     "propertyEditor.chooseOrUploadPrompt": "Elige o sube un archivo arriba para editar su contenido.",
+    "propertyEditor.libraryReadOnly": "Esta es una de las bibliotecas integradas que incluye el editor, por lo que se muestra en modo de solo lectura. No forma parte de tu archivo de juego. Copia lo que necesites en tu propio juego.",
+    "propertyEditor.libraryNotReadable": "No se pudo leer esa biblioteca.",
     "propertyEditor.textProcessorHelp": "Ayuda del Procesador de Texto",
     "propertyEditor.nullValue": "null",
     "propertyEditor.linkTargetLabels.exit": "Salida",
@@ -296,6 +298,13 @@
     "codeViewPanel.keepEditing": "Seguir editando",
     "codeViewPanel.discardChanges": "Descartar cambios",
     "codeViewPanel.applyChangesChoice": "Aplicar cambios",
+    "codeViewPanel.fileLabel": "Archivo:",
+    "codeViewPanel.gameFileGroup": "Archivo del juego",
+    "codeViewPanel.librariesGroup": "Bibliotecas incluidas",
+    "codeViewPanel.readOnly": "solo lectura",
+    "codeViewPanel.builtInReadOnlyMessage": "Esta es una de las bibliotecas integradas que incluye el motor, por lo que se muestra en modo de solo lectura. No forma parte de tu archivo de juego. Copia lo que necesites en tu propio juego.",
+    "codeViewPanel.loadingFile": "Cargando archivo…",
+    "codeViewPanel.fileNotFound": "No se pudo leer ese archivo.",
 
     "common.dismiss": "Descartar",
     "common.reloading": "Recargando…",
@@ -314,7 +323,7 @@
     "libraryElementBanner.copying": "Copiando…",
     "libraryElementBanner.copyIntoGame": "Copiar en tu juego",
 
-    "libraryReloadBanner.message": "Recarga el editor para actualizar los paneles con el cambio de biblioteca que acabas de hacer.",
+    "libraryReloadBanner.message": "Recarga el editor para aplicar los cambios de tu biblioteca.",
     "libraryReloadBanner.reloadButton": "Recargar",
 
     "publishModal.title": "Publicar",

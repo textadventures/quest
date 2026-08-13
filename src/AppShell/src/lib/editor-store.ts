@@ -342,6 +342,48 @@ export async function setGameXml(xml: string): Promise<string> {
     return result;
 }
 
+// Whether a library filename refers to one shipped inside the engine (Core.aslx, GamebookCore.aslx,
+// per-language files such as English.aslx, ...) rather than a file the game author uploaded
+// alongside the game — see WasmEditorBridge.IsBuiltInLibrary. The Code View panel uses this to
+// show built-in libraries read-only: they don't belong to the game, so they can't be edited.
+export function isBuiltInLibrary(filename: string): boolean {
+    return _bridge?.IsBuiltInLibrary(filename) ?? false;
+}
+
+// Reads the raw text of a built-in (engine-shipped) library for the Code View panel's read-only
+// view. Custom libraries' content lives in the adapter's asset storage instead, so that's read via
+// getAssetText() — this is only for the embedded-resource ones the WASM side can resolve.
+export function getLibraryXml(filename: string): string | null {
+    return _bridge?.GetLibraryXml(filename) ?? null;
+}
+
+// Applies raw-XML edits to an Included Library's file from the Code View panel. SetLibraryXml
+// validates the modified library against a throwaway controller before anything is committed (see
+// WasmEditorBridge.cs), so a malformed edit returns "error:..." without disturbing the
+// currently-open game. Only on a successful validation is the file written to the adapter and the
+// whole game reloaded — a library's content is consumed at load time, so the live model has to be
+// re-initialised to pick the change up. That means the same "Applying reloads the game and
+// discards undo history" tradeoff as setGameXml, which is why the caller (CodeViewPanel) confirms
+// with the user before invoking this.
+export async function setLibraryXml(filename: string, xml: string): Promise<string> {
+    if (!_bridge || !_adapter) return "error:No game loaded.";
+    cancelPendingAutosave();
+    // Stage every current library candidate so SetLibraryXml's throwaway load can resolve all the
+    // game's <include> refs — same requirement as setGameXml below.
+    await preloadAdjacentLibraryAssets(_adapter);
+    // Double rAF ensures the browser actually paints the caller's "Applying…" state before
+    // SetLibraryXml's blocking validation, same as setGameXml/openGame.
+    await new Promise<void>(resolve => requestAnimationFrame(() => requestAnimationFrame(() => resolve())));
+    const result = await _bridge.SetLibraryXml(filename, xml);
+    if (result !== "ok") return result;
+
+    // Validation passed — commit the file, then reload the live game so the change takes effect.
+    await putAssetText(filename, xml);
+    const ok = await reloadGame();
+    if (ok) return "ok";
+    return `error:${get(lastOpenGameError) ?? "Failed to reload the game after editing the library."}`;
+}
+
 export async function selectNode(key: string) {
     if (!_bridge) return;
     selectedKey.set(key);
@@ -897,6 +939,17 @@ export async function putAssetText(key: string, text: string): Promise<void> {
     await _adapter.putAsset(key, new Blob([text], { type: "text/javascript" }));
     releaseAssetUrl(key);
     await refreshAssets();
+}
+
+// Included Library text editor (PropertyEditor's texteditor control for .aslx files — the JS one
+// uses putAssetText directly). Writes the library file the same way, then flags that a reload is
+// needed: unlike a JS file, a library's content is consumed when the game loads (inlined into the
+// model — see GameSaver's library handling), so the current editor session can't see the change
+// until the user reloads via the LibraryReloadBanner, the same reason createIncludedLibrary shows
+// it. Built-in libraries are read-only in the editor and never reach here.
+export function putLibraryAssetText(filename: string, text: string): Promise<void> {
+    if (!isBuiltInLibrary(filename)) showLibraryReloadBanner.set(true);
+    return putAssetText(filename, text);
 }
 
 export async function deleteAssetByKey(key: string): Promise<void> {

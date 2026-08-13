@@ -183,6 +183,8 @@
     "propertyEditor.goTo": "Go to {name}",
     "propertyEditor.loading": "Loading…",
     "propertyEditor.chooseOrUploadPrompt": "Choose or upload a file above to edit its contents.",
+    "propertyEditor.libraryReadOnly": "This is one of the built-in libraries that ships with the editor, so it's shown read-only. It isn't part of your game file. Copy anything you need into your own game instead.",
+    "propertyEditor.libraryNotReadable": "This library couldn't be read.",
     "propertyEditor.textProcessorHelp": "Text Processor help",
     "propertyEditor.nullValue": "null",
     "propertyEditor.linkTargetLabels.exit": "Exit",
@@ -296,6 +298,13 @@
     "codeViewPanel.keepEditing": "Keep editing",
     "codeViewPanel.discardChanges": "Discard changes",
     "codeViewPanel.applyChangesChoice": "Apply changes",
+    "codeViewPanel.fileLabel": "File:",
+    "codeViewPanel.gameFileGroup": "Game file",
+    "codeViewPanel.librariesGroup": "Included libraries",
+    "codeViewPanel.readOnly": "read-only",
+    "codeViewPanel.builtInReadOnlyMessage": "This is one of the built-in libraries that ships with the engine, so it's shown read-only. It isn't part of your game file. Copy anything you need into your own game instead.",
+    "codeViewPanel.loadingFile": "Loading file…",
+    "codeViewPanel.fileNotFound": "That file couldn't be read.",
 
     "common.dismiss": "Dismiss",
     "common.reloading": "Reloading…",
@@ -314,7 +323,7 @@
     "libraryElementBanner.copying": "Copying…",
     "libraryElementBanner.copyIntoGame": "Copy into your game",
 
-    "libraryReloadBanner.message": "Reload the editor to update panes for the library change you just made.",
+    "libraryReloadBanner.message": "Reload the editor to apply your library changes.",
     "libraryReloadBanner.reloadButton": "Reload",
 
     "publishModal.title": "Publish",
