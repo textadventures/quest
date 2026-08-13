@@ -133,6 +133,18 @@
     display: none;
 }
 
+/* The save-slot titles are .anchor buttons (renderSavesList in wasm-player.js),
+   and Skeleton's .anchor sets font-size:var(--anchor-font-size) — a custom
+   property Skeleton itself defaults to `inherit`. Unlike .btn/.input/.text-sm
+   (which hard-code their own font-size), that means the slot titles would
+   inherit the current game's <body> font-size — set via JS.setCss("body", ...)
+   at startup, see the font-family note above — and render out of proportion
+   with the rest of the dialog. Pin the list to the dialog's own base size;
+   every .anchor inside it then inherits from here instead of <body>. */
+:scope#qv-saves #qv-saves-list {
+    font-size: var(--text-base);
+}
+
 /* Debugger — movable and resizable (wireDebuggerMoveResize in wasm-player.js
    sets explicit left/top/width/height right after every open, before the
    first paint — see applyDebuggerRect's doc comment). margin:0 is required
