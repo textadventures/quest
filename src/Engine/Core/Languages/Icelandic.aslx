@@ -279,18 +279,18 @@
   <template name="LanguageSpecificObjectTypes">hvorukyn=Inanimate object (hvorukyn); kvenkyn=Inanimate object (kvenkyn); karlkyn=Inanimate object (karlkyn); </template>
 
   <type name="hvorukyn">
-  <gender>það</gender>
-  <article>ið</article>
+    <gender>það</gender>
+    <article>ið</article>
   </type>
 
   <type name="kvenkyn">
-  <gender>hún</gender>
-  <article>n</article>
+    <gender>hún</gender>
+    <article>n</article>
   </type>
 
   <type name="karlkyn">
-  <gender>hann</gender>
-  <article>nn</article>
+    <gender>hann</gender>
+    <article>nn</article>
   </type>
 
   <template name="EditorVerbDefaultExpression">"You can't #verb# " + object.article + "."</template>

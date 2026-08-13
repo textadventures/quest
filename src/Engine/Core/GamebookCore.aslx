@@ -191,23 +191,23 @@
 
   <function name="StartGame">
     <![CDATA[
-    if (game.showtitle) {
-      PrintCentered ("<span style=\"font-size:260%\">" + game.gamename + "</span>")
-      if (game.subtitle <> null) {
-        if (LengthOf(game.subtitle) > 0) {
-          PrintCentered ("<span style=\"font-size:130%\">" + game.subtitle + "</span>")
+      if (game.showtitle) {
+        PrintCentered ("<span style=\"font-size:260%\">" + game.gamename + "</span>")
+        if (game.subtitle <> null) {
+          if (LengthOf(game.subtitle) > 0) {
+            PrintCentered ("<span style=\"font-size:130%\">" + game.subtitle + "</span>")
+          }
         }
-      }
-      if (game.author <> null) {
-        if (LengthOf(game.author) > 0) {
-          PrintCentered ("<br/><span style=\"font-size:140%\">" + game.author + "</span>")
+        if (game.author <> null) {
+          if (LengthOf(game.author) > 0) {
+            PrintCentered ("<br/><span style=\"font-size:140%\">" + game.author + "</span>")
+          }
         }
+        msg ("<div style=\"margin-top:20px\"></div>")
       }
-      msg ("<div style=\"margin-top:20px\"></div>")
-    }
-    game.noclear = true
-    DoPage(player.parent)
-    game.noclear = false
+      game.noclear = true
+      DoPage(player.parent)
+      game.noclear = false
     ]]>
   </function>
 
@@ -238,104 +238,104 @@
 
   <function name="HandleCommand" parameters="command">
     <![CDATA[
-    if (command = "undo") {
-      // ignore
-    }
-    else {
-      newpage = GetObject(command)
-      if (newpage = null) {
-        msg ("Error - no page named '" + command + "'")
+      if (command = "undo") {
+        // ignore
       }
       else {
-        if (not game.clearlastpage and HasAttribute(player.parent, "options")) {
-          if (DictionaryContains(player.parent.options, command)) {
-            optiontext = StringDictionaryItem(player.parent.options, command)
-            msg ("<b>" + optiontext + "</b>")
-            msg ("")
-          }
-          JS.disableAllCommandLinks()
+        newpage = GetObject(command)
+        if (newpage = null) {
+          msg ("Error - no page named '" + command + "'")
         }
-        player.parent = GetObject(command)
+        else {
+          if (not game.clearlastpage and HasAttribute(player.parent, "options")) {
+            if (DictionaryContains(player.parent.options, command)) {
+              optiontext = StringDictionaryItem(player.parent.options, command)
+              msg ("<b>" + optiontext + "</b>")
+              msg ("")
+            }
+            JS.disableAllCommandLinks()
+          }
+          player.parent = GetObject(command)
+        }
       }
-    }
     ]]>
   </function>
 
   <function name="DoPage" parameters="page">
     <![CDATA[
-    parent = player.parent
-    if (game.clearlastpage) {
-      if (not game.noclear) {
-        ClearScreen
-      }
-    }
-    else {
-      if (HasString(game, "optionsoutputsection")) {
-        HideOutputSection(game.optionsoutputsection)
-      }
-    }
-    if (not GetBoolean(game, "continuesound")) {
-      stop sound
-    }
-    if (HasScript( game, "roomenter")) {
-      do (game, "roomenter")
-    }
-    on ready {
-      if (GetBoolean(player.parent, "runscript") or GetBoolean(player.parent, "runscriptonly")) {
-        if (HasScript(player.parent, "script")) {
-          do (player.parent, "script")
-        }
-        else {
-          msg ("No script has been created for this page.")
+      parent = player.parent
+      if (game.clearlastpage) {
+        if (not game.noclear) {
+          ClearScreen
         }
       }
-      // script may have moved the player, so finish DoPage if parent has changed
-      if (parent = player.parent and not GetBoolean(player.parent, "runscriptonly")) {
-        if (HasString(player.parent, "sound")) {
-          if (LengthOf(player.parent.sound) > 0) {
-            play sound (player.parent.sound, false, false)
-            game.continuesound = GetBoolean(player.parent, "continuesound")
+      else {
+        if (HasString(game, "optionsoutputsection")) {
+          HideOutputSection(game.optionsoutputsection)
+        }
+      }
+      if (not GetBoolean(game, "continuesound")) {
+        stop sound
+      }
+      if (HasScript( game, "roomenter")) {
+        do (game, "roomenter")
+      }
+      on ready {
+        if (GetBoolean(player.parent, "runscript") or GetBoolean(player.parent, "runscriptonly")) {
+          if (HasScript(player.parent, "script")) {
+            do (player.parent, "script")
+          }
+          else {
+            msg ("No script has been created for this page.")
           }
         }
-
-        if (HasString(player.parent, "picture")) {
-          if (LengthOf(player.parent.picture) > 0) {
-            picture (player.parent.picture)
-            msg ("")
-          }
-        }
-        if (HasString(player.parent, "youtube")) {
-          if (LengthOf(player.parent.youtube) > 0) {
-            JS.AddYouTube(player.parent.youtube)
-            msg ("")
-            msg ("")
-          }
-        }
-        msg (player.parent.description)
-        msg ("")
-        msg ("")
-        game.optionsoutputsection = StartNewOutputSection()
-        if (TypeOf(player.parent, "options") = "stringdictionary") {
-          foreach (key, player.parent.options) {
-            destination = GetObject(key)
-            if (destination = null) {
-              msg (StringDictionaryItem(player.parent.options, key) + " (broken link)")
+        // script may have moved the player, so finish DoPage if parent has changed
+        if (parent = player.parent and not GetBoolean(player.parent, "runscriptonly")) {
+          if (HasString(player.parent, "sound")) {
+            if (LengthOf(player.parent.sound) > 0) {
+              play sound (player.parent.sound, false, false)
+              game.continuesound = GetBoolean(player.parent, "continuesound")
             }
-            else {
-              if (DoesInherit(destination, "link")) {
-                msg ("<a href=\"" + destination.address + "\">" + StringDictionaryItem(player.parent.options, key) + "</a>")
+          }
+
+          if (HasString(player.parent, "picture")) {
+            if (LengthOf(player.parent.picture) > 0) {
+              picture (player.parent.picture)
+              msg ("")
+            }
+          }
+          if (HasString(player.parent, "youtube")) {
+            if (LengthOf(player.parent.youtube) > 0) {
+              JS.AddYouTube(player.parent.youtube)
+              msg ("")
+              msg ("")
+            }
+          }
+          msg (player.parent.description)
+          msg ("")
+          msg ("")
+          game.optionsoutputsection = StartNewOutputSection()
+          if (TypeOf(player.parent, "options") = "stringdictionary") {
+            foreach (key, player.parent.options) {
+              destination = GetObject(key)
+              if (destination = null) {
+                msg (StringDictionaryItem(player.parent.options, key) + " (broken link)")
               }
               else {
-                msg (CommandLink(key, StringDictionaryItem(player.parent.options, key)))
+                if (DoesInherit(destination, "link")) {
+                  msg ("<a href=\"" + destination.address + "\">" + StringDictionaryItem(player.parent.options, key) + "</a>")
+                }
+                else {
+                  msg (CommandLink(key, StringDictionaryItem(player.parent.options, key)))
+                }
               }
+              msg ("")
             }
-            msg ("")
           }
+          EndOutputSection (game.optionsoutputsection)
         }
-        EndOutputSection (game.optionsoutputsection)
       }
-    }
-    set (player.parent, "visited", true)
+      set (player.parent, "visited", true)
     ]]>
   </function>
 
@@ -359,7 +359,7 @@
 
   <function name="RandomChance" parameters="percentile" type="boolean">
     <![CDATA[
-    return (GetRandomInt(1,100) <= percentile)
+      return (GetRandomInt(1,100) <= percentile)
     ]]>
   </function>
 
@@ -429,47 +429,47 @@
   </function>
 
   <function name="ShowMenu" parameters="caption, options, allowCancel, callback"><![CDATA[
-    outputsection = StartNewOutputSection()
-    msg (caption)
-    count = 0
-    game.menuoptionskeys = NewStringList()
-    foreach (option, options) {
-      count = count + 1
-      if (TypeOf(options) = "stringdictionary") {
-        optionText = StringDictionaryItem(options, option)
-        optiontag = option
-        style = GetCurrentLinkTextFormat()
-        list add (game.menuoptionskeys, option)
-      }
-      else if (TypeOf(option) = "string") {
-        optionText = option
-        optiontag = option
-        style = GetCurrentLinkTextFormat()
-        list add (game.menuoptionskeys, option)
-      }
-      else if (TypeOf(option) = "object") {
-        optionText = GetDisplayAlias(option)
-        optiontag = option.name
-        colour = ""
-        if (HasString(option, "linkcolour") and GetUIOption("UseGameColours") = "true") {
-          colour = option.linkcolour
+      outputsection = StartNewOutputSection()
+      msg (caption)
+      count = 0
+      game.menuoptionskeys = NewStringList()
+      foreach (option, options) {
+        count = count + 1
+        if (TypeOf(options) = "stringdictionary") {
+          optionText = StringDictionaryItem(options, option)
+          optiontag = option
+          style = GetCurrentLinkTextFormat()
+          list add (game.menuoptionskeys, option)
+        }
+        else if (TypeOf(option) = "string") {
+          optionText = option
+          optiontag = option
+          style = GetCurrentLinkTextFormat()
+          list add (game.menuoptionskeys, option)
+        }
+        else if (TypeOf(option) = "object") {
+          optionText = GetDisplayAlias(option)
+          optiontag = option.name
+          colour = ""
+          if (HasString(option, "linkcolour") and GetUIOption("UseGameColours") = "true") {
+            colour = option.linkcolour
+          }
+          else {
+            colour = GetLinkTextColour()
+          }
+          style = GetCurrentTextFormat(colour)
+          list add (game.menuoptionskeys, option.name)
         }
         else {
-          colour = GetLinkTextColour()
+          error ("ShowMenu cannot handle a " + TypeOf(option))
         }
-        style = GetCurrentTextFormat(colour)
-        list add (game.menuoptionskeys, option.name)
+        msg (count + ": <a class=\"cmdlink\" style=\"" + style + "\" onclick=\"ASLEvent('ShowMenuResponse','" + EscapeQuotes(optiontag) + "')\">" + optionText + "</a>")
       }
-      else {
-        error ("ShowMenu cannot handle a " + TypeOf(option))
-      }
-      msg (count + ": <a class=\"cmdlink\" style=\"" + style + "\" onclick=\"ASLEvent('ShowMenuResponse','" + EscapeQuotes(optiontag) + "')\">" + optionText + "</a>")
-    }
-    EndOutputSection (outputsection)
-    game.menuoptions = options
-    game.menuallowcancel = allowCancel
-    game.menucallback = callback
-    game.menuoutputsection = outputsection
+      EndOutputSection (outputsection)
+      game.menuoptions = options
+      game.menuallowcancel = allowCancel
+      game.menucallback = callback
+      game.menuoutputsection = outputsection
   ]]></function>
 
   <function name="ShowMenuResponse" parameters="option">

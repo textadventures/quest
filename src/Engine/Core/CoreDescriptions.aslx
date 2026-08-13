@@ -47,9 +47,9 @@
           if (i = game.autodescription_description) {
             if (HasScript(game.pov.parent, descriptionfield)) {
               if (LengthOf(desc) > 0) {
-                    msg (desc)
-                    desc = ""
-                }
+                msg (desc)
+                desc = ""
+              }
               do (game.pov.parent, descriptionfield)
               if (game.autodescription_description_newline) {
                 msg ("")
@@ -86,203 +86,142 @@
 
   <function name="AddDescriptionLine" parameters="desc, line" type="string">
     <![CDATA[
-    if (LengthOf(line) > 0) {
-      if (LengthOf(desc) > 0) {
-        msg (desc)
-        desc = ""
+      if (LengthOf(line) > 0) {
+        if (LengthOf(desc) > 0) {
+          msg (desc)
+          desc = ""
+        }
+        desc = desc + line
       }
-      desc = desc + line
-    }
-    return (desc)
+      return (desc)
     ]]>
   </function>
 
   <function name="GetRoomDescription" type="string">
     <![CDATA[
-    fulldesc = ""
+      fulldesc = ""
 
-    if (CheckDarkness()) {
-      if (HasString(game.pov.parent, "darkroomdescription")) {
-        if (LengthOf(game.pov.parent.darkroomdescription) > 0) {
-          fulldesc = game.pov.parent.darkroomdescription
+      if (CheckDarkness()) {
+        if (HasString(game.pov.parent, "darkroomdescription")) {
+          if (LengthOf(game.pov.parent.darkroomdescription) > 0) {
+            fulldesc = game.pov.parent.darkroomdescription
+          }
         }
+        // fall back to the default dark-room description if none was set above
+        if (fulldesc = "") fulldesc = DynamicTemplate("LookAtDarkness", game.pov.parent)
       }
-      // fall back to the default dark-room description if none was set above
-      if (fulldesc = "") fulldesc = DynamicTemplate("LookAtDarkness", game.pov.parent)
-    }
-    else {
-       if (HasString(game.pov.parent, "description")) {
-         if (LengthOf(game.pov.parent.description) > 0) {
-             fulldesc = game.pov.parent.description
-         }
-       }
-    }
-
-    if (game.appendobjectdescription) {
-      foreach (val, ScopeVisibleNotHeld()) {
-        if (HasString(val, "inroomdescription")) {
-          if (LengthOf(val.inroomdescription) > 0 and val <> game.pov) {
-            fulldesc = fulldesc + " " + val.inroomdescription
+      else {
+        if (HasString(game.pov.parent, "description")) {
+          if (LengthOf(game.pov.parent.description) > 0) {
+            fulldesc = game.pov.parent.description
           }
         }
       }
-    }
 
-    return (Trim(fulldesc))
+      if (game.appendobjectdescription) {
+        foreach (val, ScopeVisibleNotHeld()) {
+          if (HasString(val, "inroomdescription")) {
+            if (LengthOf(val.inroomdescription) > 0 and val <> game.pov) {
+              fulldesc = fulldesc + " " + val.inroomdescription
+            }
+          }
+        }
+      }
+
+      return (Trim(fulldesc))
     ]]>
   </function>
 
   <function name="OnEnterRoom" parameters="oldRoom">
     <![CDATA[
-    game.displayroomdescriptiononstart = false
-    if (IsDefined("oldRoom")) {
-      if (oldRoom <> null) {
-        if (game.clearscreenonroomenter) {
-          ClearScreen
-          if (not game.currentexitmessage = null) {
-            msg(game.currentexitmessage)
-            game.currentexitmessage = null
+      game.displayroomdescriptiononstart = false
+      if (IsDefined("oldRoom")) {
+        if (oldRoom <> null) {
+          if (game.clearscreenonroomenter) {
+            ClearScreen
+            if (not game.currentexitmessage = null) {
+              msg(game.currentexitmessage)
+              game.currentexitmessage = null
+            }
+          }
+          if (HasScript(oldRoom, "onexit")) {
+            do (oldRoom, "onexit")
           }
         }
-        if (HasScript(oldRoom, "onexit")) {
-          do (oldRoom, "onexit")
-        }
-      }
-    }
-
-    on ready {
-      if ((not GetBoolean(game.pov.parent, "visited")) and HasScript(game.pov.parent, "beforefirstenter")) {
-        do (game.pov.parent, "beforefirstenter")
       }
 
       on ready {
-        if (HasScript(game.pov.parent, "beforeenter")) {
-          do (game.pov.parent, "beforeenter")
+        if ((not GetBoolean(game.pov.parent, "visited")) and HasScript(game.pov.parent, "beforefirstenter")) {
+          do (game.pov.parent, "beforefirstenter")
         }
 
         on ready {
-          if (game.gridmap) {
-            Grid_CalculateMapCoordinates (game.pov.parent, game.pov)
-            Grid_DrawPlayerInRoom (game.pov.parent)
+          if (HasScript(game.pov.parent, "beforeenter")) {
+            do (game.pov.parent, "beforeenter")
           }
 
-          if (IsDefined("oldRoom")) {
-            if (oldRoom <> null and game.changeroom_newline and not game.command_newline) {
-              msg ("")
-            }
-          }
-
-          JS.updateLocation(CapFirst(GetDisplayName(game.pov.parent)))
-          roomFrameExists = false
-          if (HasString(game.pov.parent, "picture")) {
-            if (LengthOf(game.pov.parent.picture) > 0) {
-              roomFrameExists = true
-              SetFramePicture(game.pov.parent.picture)
-            }
-          }
-          if (game.clearframe and not roomFrameExists) {
-            ClearFramePicture
-          }
-          if (game.showdescriptiononenter) {
-            ShowRoomDescription
-          }
-
-          if (HasScript( game, "roomenter")) {
-            do (game, "roomenter")
-          }
           on ready {
-            if ((not GetBoolean(game.pov.parent, "visited")) and HasScript(game.pov.parent, "firstenter")) {
-              do (game.pov.parent, "firstenter")
+            if (game.gridmap) {
+              Grid_CalculateMapCoordinates (game.pov.parent, game.pov)
+              Grid_DrawPlayerInRoom (game.pov.parent)
             }
-            on ready {
-              if (HasScript(game.pov.parent, "enter")) {
-                do (game.pov.parent, "enter")
+
+            if (IsDefined("oldRoom")) {
+              if (oldRoom <> null and game.changeroom_newline and not game.command_newline) {
+                msg ("")
               }
             }
-            set (game.pov.parent, "visited", true)
+
+            JS.updateLocation(CapFirst(GetDisplayName(game.pov.parent)))
+            roomFrameExists = false
+            if (HasString(game.pov.parent, "picture")) {
+              if (LengthOf(game.pov.parent.picture) > 0) {
+                roomFrameExists = true
+                SetFramePicture(game.pov.parent.picture)
+              }
+            }
+            if (game.clearframe and not roomFrameExists) {
+              ClearFramePicture
+            }
+            if (game.showdescriptiononenter) {
+              ShowRoomDescription
+            }
+
+            if (HasScript( game, "roomenter")) {
+              do (game, "roomenter")
+            }
+            on ready {
+              if ((not GetBoolean(game.pov.parent, "visited")) and HasScript(game.pov.parent, "firstenter")) {
+                do (game.pov.parent, "firstenter")
+              }
+              on ready {
+                if (HasScript(game.pov.parent, "enter")) {
+                  do (game.pov.parent, "enter")
+                }
+              }
+              set (game.pov.parent, "visited", true)
+            }
           }
         }
       }
-    }
     ]]>
   </function>
 
   <function name="FormatObjectList" type="string" parameters="preList, parent, preFinal, postList">
     <![CDATA[
-    result = ""
-    count = 0
-    list = RemoveSceneryObjects(GetDirectChildren(parent))
-    if (CheckDarkness()) {
-      list = RemoveDarkObjects(list)
-    }
-    listLength = ListCount(list)
-    foreach (item, list) {
-      if (LengthOf(result) = 0) result = preList + " "
-      result = result + GetDisplayNameLink(item, "object")
-      if (CanSeeThrough(item)) {
-        result = result + FormatObjectList(" (" + item.contentsprefix, item, preFinal, ")")
-      }
-      count = count + 1
-      if (count = listLength - 1) {
-        result = result + " " + preFinal + " "
-      }
-      else if (count < listLength) {
-        result = result + ", "
-      }
-      else {
-        result = result + postList
-      }
-    }
-    return (result)
-  ]]>
-  </function>
-
-  <function name="RemoveSceneryObjects" type="objectlist" parameters="list">
-    <![CDATA[
-    result = NewObjectList()
-    foreach (obj, list) {
-      if (not obj.scenery and obj <> game.pov and obj.visible) {
-        list add (result, obj)
-      }
-    }
-    return (result)
-    ]]>
-  </function>
-
-  <function name="RemoveLookOnlyExits" type="objectlist" parameters="list">
-    <![CDATA[
-    result = NewObjectList()
-    foreach (obj, list) {
-      if (not obj.lookonly) {
-        list add (result, obj)
-      }
-    }
-    return (result)
-    ]]>
-  </function>
-
-  <function name="RemoveDarkObjects" type="objectlist" parameters="list">
-    <![CDATA[
-    result = NewObjectList()
-    foreach (obj, list) {
-      if (GetBoolean(obj, "lightsource") or obj.parent = game.pov) {
-        list add(result, obj)
-      }
-    }
-    return (result)
-    ]]>
-  </function>
-
-  <function name="FormatExitList" type="string" parameters="preList, list, preFinal, postList">
-    <![CDATA[
-    result = ""
-    listLength = ListCount(list)
-
-    if (listLength > 0) {
+      result = ""
       count = 0
-      result = preList + " "
+      list = RemoveSceneryObjects(GetDirectChildren(parent))
+      if (CheckDarkness()) {
+        list = RemoveDarkObjects(list)
+      }
+      listLength = ListCount(list)
       foreach (item, list) {
-        result = result + GetDisplayNameLink(item, "exit")
+        if (LengthOf(result) = 0) result = preList + " "
+        result = result + GetDisplayNameLink(item, "object")
+        if (CanSeeThrough(item)) {
+          result = result + FormatObjectList(" (" + item.contentsprefix, item, preFinal, ")")
+        }
         count = count + 1
         if (count = listLength - 1) {
           result = result + " " + preFinal + " "
@@ -290,23 +229,84 @@
         else if (count < listLength) {
           result = result + ", "
         }
+        else {
+          result = result + postList
+        }
       }
-      result = result + postList
-    }
-    return (result)
-  ]]>
+      return (result)
+    ]]>
+  </function>
+
+  <function name="RemoveSceneryObjects" type="objectlist" parameters="list">
+    <![CDATA[
+      result = NewObjectList()
+      foreach (obj, list) {
+        if (not obj.scenery and obj <> game.pov and obj.visible) {
+          list add (result, obj)
+        }
+      }
+      return (result)
+    ]]>
+  </function>
+
+  <function name="RemoveLookOnlyExits" type="objectlist" parameters="list">
+    <![CDATA[
+      result = NewObjectList()
+      foreach (obj, list) {
+        if (not obj.lookonly) {
+          list add (result, obj)
+        }
+      }
+      return (result)
+    ]]>
+  </function>
+
+  <function name="RemoveDarkObjects" type="objectlist" parameters="list">
+    <![CDATA[
+      result = NewObjectList()
+      foreach (obj, list) {
+        if (GetBoolean(obj, "lightsource") or obj.parent = game.pov) {
+          list add(result, obj)
+        }
+      }
+      return (result)
+    ]]>
+  </function>
+
+  <function name="FormatExitList" type="string" parameters="preList, list, preFinal, postList">
+    <![CDATA[
+      result = ""
+      listLength = ListCount(list)
+
+      if (listLength > 0) {
+        count = 0
+        result = preList + " "
+        foreach (item, list) {
+          result = result + GetDisplayNameLink(item, "exit")
+          count = count + 1
+          if (count = listLength - 1) {
+            result = result + " " + preFinal + " "
+          }
+          else if (count < listLength) {
+            result = result + ", "
+          }
+        }
+        result = result + postList
+      }
+      return (result)
+    ]]>
   </function>
 
   <function name="GetDisplayAlias" type="string" parameters="obj">
     <![CDATA[
-    if (HasString(obj, "alias")) {
-      result = obj.alias
-    }
-    else {
-      result = obj.name
-    }
-    return (result)
-  ]]>
+      if (HasString(obj, "alias")) {
+        result = obj.alias
+      }
+      else {
+        result = obj.name
+      }
+      return (result)
+    ]]>
   </function>
 
   <function name="GetDisplayName" type="string" parameters="obj">
@@ -314,52 +314,52 @@
   </function>
 
   <function name="GetDisplayNameLink" type="string" parameters="obj, type">
-  <![CDATA[
-    verbs = GetDisplayVerbs(obj)
-    if (verbs <> null) {
-      verbCount = ListCount(verbs)
-    }
-    else {
-      verbCount = 0
-    }
-
-    if (type = "exit" and verbCount = 1) {
-      if (not game.enablehyperlinks) {
-        result = GetDisplayAlias(obj)
-      } else {
-        result = "{exit:" + obj.name + "}"
+    <![CDATA[
+      verbs = GetDisplayVerbs(obj)
+      if (verbs <> null) {
+        verbCount = ListCount(verbs)
       }
-    }
-    else if (type = "") {
-      result = GetDisplayAlias(obj)
-    }
-    else {
-      result = "{object:" + obj.name + "}"
-    }
+      else {
+        verbCount = 0
+      }
 
-    if (not GetBoolean(obj, "usedefaultprefix")) {
-      if (obj.prefix = null) {
+      if (type = "exit" and verbCount = 1) {
+        if (not game.enablehyperlinks) {
+          result = GetDisplayAlias(obj)
+        } else {
+          result = "{exit:" + obj.name + "}"
+        }
+      }
+      else if (type = "") {
+        result = GetDisplayAlias(obj)
+      }
+      else {
+        result = "{object:" + obj.name + "}"
+      }
+
+      if (not GetBoolean(obj, "usedefaultprefix")) {
+        if (obj.prefix = null) {
+          prefix = ""
+        }
+        else {
+          prefix = obj.prefix
+        }
+      }
+      else if (type = "exit") {
         prefix = ""
       }
       else {
-        prefix = obj.prefix
+        prefix = GetDefaultPrefix(obj)
       }
-    }
-    else if (type = "exit") {
-      prefix = ""
-    }
-    else {
-      prefix = GetDefaultPrefix(obj)
-    }
-    if (LengthOf(prefix) > 0) prefix = prefix + " "
-    result = prefix + result
-    if (not GetBoolean(obj, "usedefaultprefix") and HasString(obj, "suffix")) {
-      if (LengthOf(obj.suffix) > 0) {
-        result = result + " " + obj.suffix
+      if (LengthOf(prefix) > 0) prefix = prefix + " "
+      result = prefix + result
+      if (not GetBoolean(obj, "usedefaultprefix") and HasString(obj, "suffix")) {
+        if (LengthOf(obj.suffix) > 0) {
+          result = result + " " + obj.suffix
+        }
       }
-    }
-    return (result)
-  ]]>
+      return (result)
+    ]]>
   </function>
 
   <function name="ObjectLink" type="string" parameters="obj">
@@ -368,14 +368,14 @@
 
   <function name="GetListDisplayAlias" type="string" parameters="obj">
     <![CDATA[
-    if (HasString(obj, "listalias")) {
-      result = obj.listalias
-    }
-    else {
-      result = GetDisplayAlias(obj)
-    }
-    return (result)
-  ]]>
+      if (HasString(obj, "listalias")) {
+        result = obj.listalias
+      }
+      else {
+        result = GetDisplayAlias(obj)
+      }
+      return (result)
+    ]]>
   </function>
 
   <function name="CheckDarkness" type="boolean">

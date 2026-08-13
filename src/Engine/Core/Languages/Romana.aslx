@@ -272,19 +272,19 @@
     <article>[MaleArticle]</article>
   </type>
 
-   <type name="femaleobject">
+  <type name="femaleobject">
     <displayverbs type="list">[LookAt];[Take]</displayverbs>
     <gender>[FemaleGender]</gender>
     <article>[FemaleArticle]</article>
   </type>
 
-   <type name="maleobjectplural">
+  <type name="maleobjectplural">
     <displayverbs type="list">[LookAt];[Take]</displayverbs>
     <gender>[MalePluralGender]</gender>
     <article>[MalePluralArticle]</article>
   </type>
 
-   <type name="femaleobjectplural">
+  <type name="femaleobjectplural">
     <displayverbs type="list">[LookAt];[Take]</displayverbs>
     <gender>[FemalePluralGender]</gender>
     <article>[FemalePluralArticle]</article>
@@ -319,15 +319,15 @@
 
   <function name="GetDefaultPrefix" type="string" parameters="obj">
     gender = obj.gender
-        if (gender = "el") {
-          return ("un")
-        }
-        else if (gender = "ea") {
-          return ("o")
-        }
-        else {
-          return ("niște")
-        }
+    if (gender = "el") {
+      return ("un")
+    }
+    else if (gender = "ea") {
+      return ("o")
+    }
+    else {
+      return ("niște")
+    }
   </function>
 
   <function name="WriteVerb" type="string" parameters="obj, verb">
@@ -467,7 +467,7 @@
     }
   </function>
 
-    <function name="Greu" type="string" parameters="obj">
+  <function name="Greu" type="string" parameters="obj">
     gender = obj.gender
     if (gender = "el") {
       return ("greu")

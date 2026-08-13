@@ -99,7 +99,7 @@
     <category>[EditorScriptsVariablesVariables]</category>
     <add>[EditorScriptsVariablesIncreaseobject]</add>
     <create>IncreaseObjectCounter (,"")</create>
-      <onlydisplayif>GetString(game, "_editorstyle") = null</onlydisplayif>
+    <onlydisplayif>GetString(game, "_editorstyle") = null</onlydisplayif>
 
     <control>
       <controltype>label</controltype>

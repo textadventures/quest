@@ -1,6 +1,6 @@
 <library>
 
-<!--
+  <!--
 This is first version done by Daria Mikhaylova, Yeshi Namkhai. It manages declination of nouns in Russian by GetSkl function, call it passing the object and the proper case (Nom for Nominative, Gen for Genitive, Dat for Dative, Acc for Accusative, Cre for Creative, Pre for Prepositional).
 
  Notice that name of the object should be written without ending (word stem), alias must be in Nominative (ex. name: мам alias: мама). Every object need also to be properly specified as type, in accordance with declination type and gender; we adopt the convention of listing nine options (I склонение (м,-я); I склонение (м,-а); I склонение (ж,-я); I склонение (ж,-а); II склонение (муж, -0); II склонение (муж,-ь); II склонение (ср,-о); II склонение (ср, -е);  III склонение). Nevertheless there may be errors due to large number of exceptions in how substuntives decline in Russian.
@@ -40,7 +40,7 @@ This is first version done by Daria Mikhaylova, Yeshi Namkhai. It manages declin
   <template name="UnrecognisedCommand">Извини, не понимаю твою команду</template>
   <template name="YouAreIn">Перед тобой</template>
   <template name="LookAt">Посмотреть на</template>
-   <template name="Take">Взять</template>
+  <template name="Take">Взять</template>
   <template name="SpeakTo">Поговорить с</template>
   <template name="Use">Использовать</template>
   <template name="Drop">Оставить</template>
@@ -185,9 +185,9 @@ This is first version done by Daria Mikhaylova, Yeshi Namkhai. It manages declin
   <verbtemplate name="speakto">поговорить</verbtemplate>
   <verbtemplate name="speakto">поболтать с</verbtemplate>
   <verbtemplate name="speakto">поболтать</verbtemplate>
-    <verbtemplate name="speakto">пообщаться с</verbtemplate>
+  <verbtemplate name="speakto">пообщаться с</verbtemplate>
   <verbtemplate name="speakto">поговорить</verbtemplate>
-   <verbtemplate name="speakto">поговорить с</verbtemplate>
+  <verbtemplate name="speakto">поговорить с</verbtemplate>
   <verbtemplate name="open">открыть</verbtemplate>
   <verbtemplate name="close">закрыть</verbtemplate>
   <template templatetype="command" name="put"><![CDATA[^положить (?<object1>.*) (на|в) (?<object2>.*)$]]></template>
@@ -306,119 +306,119 @@ This is first version done by Daria Mikhaylova, Yeshi Namkhai. It manages declin
   <!-- NOTE: To add a language-specific object type, fill in the template like this: -->
   <!--><template name="LanguageSpecificObjectTypes">masculine=Inanimate object (masculine); feminine=Inanimate object (feminine); </template>-->
   <!-- and then add <type>s masculine and feminine to the language .aslx file. The final "; " is important, don't delete it! -->
-   <template name="LanguageSpecificObjectTypes">skl11=I склонение (м,-я);skl12=I склонение (м,-а);skl13=I склонение (ж,-я);skl14=I склонение (ж,-а);skl21=II склонение (муж, -0);skl22=II склонение (муж,-ь);skl23=II склонение (ср,-о);skl24=II склонение (ср, -е); skl31=III склонение;</template>
+  <template name="LanguageSpecificObjectTypes">skl11=I склонение (м,-я);skl12=I склонение (м,-а);skl13=I склонение (ж,-я);skl14=I склонение (ж,-а);skl21=II склонение (муж, -0);skl22=II склонение (муж,-ь);skl23=II склонение (ср,-о);skl24=II склонение (ср, -е); skl31=III склонение;</template>
 
-<!-- For each declination type endings of each of 6 (Nominative, Genitive, Dative, Accusative, Creative, Preposition) declination, suffix, article and gender are deifned-->
-<!--Первое склонение - существительные мужского с окончанием -я -->
+  <!-- For each declination type endings of each of 6 (Nominative, Genitive, Dative, Accusative, Creative, Preposition) declination, suffix, article and gender are deifned-->
+  <!--Первое склонение - существительные мужского с окончанием -я -->
   <type name="skl11">
-  <gender>он</gender>
-  <article>его</article>
-  <suffix></suffix>
-  <sNom>я</sNom><pNom>и</pNom>
-  <sGen>и</sGen><pGen></pGen>
-  <sDat>е</sDat><pDat>ям</pDat>
-  <sAcc>ю</sAcc><pAcc>и</pAcc>
-  <sCre>ёй</sCre><pCre>ями</pCre>
-  <sPre>е</sPre><pPre>ях</pPre>
+    <gender>он</gender>
+    <article>его</article>
+    <suffix></suffix>
+    <sNom>я</sNom><pNom>и</pNom>
+    <sGen>и</sGen><pGen></pGen>
+    <sDat>е</sDat><pDat>ям</pDat>
+    <sAcc>ю</sAcc><pAcc>и</pAcc>
+    <sCre>ёй</sCre><pCre>ями</pCre>
+    <sPre>е</sPre><pPre>ях</pPre>
   </type>
- <!--Первое склонение - существительные мужского рода с окончанием -а -->
+  <!--Первое склонение - существительные мужского рода с окончанием -а -->
   <type name="skl12">
-  <gender>он</gender>
-  <article>его</article>
-  <suffix></suffix>
-  <sNom>а</sNom><pNom>ы</pNom>
-  <sGen>ы</sGen><pGen></pGen>
-  <sDat>е</sDat><pDat>ам</pDat>
-  <sAcc>у</sAcc><pAcc>ы</pAcc>
-  <sCre>ой</sCre><pCre>ами</pCre>
-  <sPre>е</sPre><pPre>ах</pPre>
+    <gender>он</gender>
+    <article>его</article>
+    <suffix></suffix>
+    <sNom>а</sNom><pNom>ы</pNom>
+    <sGen>ы</sGen><pGen></pGen>
+    <sDat>е</sDat><pDat>ам</pDat>
+    <sAcc>у</sAcc><pAcc>ы</pAcc>
+    <sCre>ой</sCre><pCre>ами</pCre>
+    <sPre>е</sPre><pPre>ах</pPre>
   </type>
-<!--Первое склонение - существительные женского рода с окончанием -я -->
+  <!--Первое склонение - существительные женского рода с окончанием -я -->
   <type name="skl13">
-  <gender>она</gender>
-  <article>ее</article>
-  <suffix>а</suffix>
-  <sNom>я</sNom><pNom>и</pNom>
-  <sGen>и</sGen><pGen></pGen>
-  <sDat>е</sDat><pDat>ям</pDat>
-  <sAcc>ю</sAcc><pAcc>и</pAcc>
-  <sCre>ёй</sCre><pCre>ями</pCre>
-  <sPre>е</sPre><pPre>ях</pPre>
+    <gender>она</gender>
+    <article>ее</article>
+    <suffix>а</suffix>
+    <sNom>я</sNom><pNom>и</pNom>
+    <sGen>и</sGen><pGen></pGen>
+    <sDat>е</sDat><pDat>ям</pDat>
+    <sAcc>ю</sAcc><pAcc>и</pAcc>
+    <sCre>ёй</sCre><pCre>ями</pCre>
+    <sPre>е</sPre><pPre>ях</pPre>
   </type>
-<!--Первое склонение - существительные женского рода с окончанием -а -->
+  <!--Первое склонение - существительные женского рода с окончанием -а -->
   <type name="skl14">
-  <gender>она</gender>
-  <article>ее</article>
-  <suffix>а</suffix>
-  <sNom>а</sNom><pNom>ы</pNom>
-  <sGen>ы</sGen><pGen></pGen>
-  <sDat>е</sDat><pDat>ам</pDat>
-  <sAcc>у</sAcc><pAcc>ы</pAcc>
-  <sCre>ой</sCre><pCre>ами</pCre>
-  <sPre>е</sPre><pPre>ах</pPre>
+    <gender>она</gender>
+    <article>ее</article>
+    <suffix>а</suffix>
+    <sNom>а</sNom><pNom>ы</pNom>
+    <sGen>ы</sGen><pGen></pGen>
+    <sDat>е</sDat><pDat>ам</pDat>
+    <sAcc>у</sAcc><pAcc>ы</pAcc>
+    <sCre>ой</sCre><pCre>ами</pCre>
+    <sPre>е</sPre><pPre>ах</pPre>
   </type>
-<!--Второе склонение - существительные мужского рода с нулевым окончанием-->
-<type name="skl21">
-  <gender>он</gender>
-  <article>его</article>
-  <suffix></suffix>
-  <sNom></sNom><pNom>и</pNom>
-  <sGen>а</sGen><pGen>ов</pGen>
-  <sDat>у</sDat><pDat>ам</pDat>
-  <sAcc></sAcc><pAcc>и</pAcc>
-  <sCre>ом</sCre><pCre>ами</pCre>
-  <sPre>е</sPre><pPre>х</pPre>
+  <!--Второе склонение - существительные мужского рода с нулевым окончанием-->
+  <type name="skl21">
+    <gender>он</gender>
+    <article>его</article>
+    <suffix></suffix>
+    <sNom></sNom><pNom>и</pNom>
+    <sGen>а</sGen><pGen>ов</pGen>
+    <sDat>у</sDat><pDat>ам</pDat>
+    <sAcc></sAcc><pAcc>и</pAcc>
+    <sCre>ом</sCre><pCre>ами</pCre>
+    <sPre>е</sPre><pPre>х</pPre>
   </type>
-<!--Второе склонение - существительные мужского рода с окончанием на мягкий знак-->
-<type name="skl22">
-  <gender>он</gender>
-  <article>его</article>
-  <suffix></suffix>
-  <sNom>ь</sNom><pNom>и</pNom>
-  <sGen>я</sGen><pGen>ей</pGen>
-  <sDat>ю</sDat><pDat>ям</pDat>
-  <sAcc>я</sAcc><pAcc>ей</pAcc>
-  <sCre>ем</sCre><pCre>ями</pCre>
-  <sPre>е</sPre><pPre>ях</pPre>
+  <!--Второе склонение - существительные мужского рода с окончанием на мягкий знак-->
+  <type name="skl22">
+    <gender>он</gender>
+    <article>его</article>
+    <suffix></suffix>
+    <sNom>ь</sNom><pNom>и</pNom>
+    <sGen>я</sGen><pGen>ей</pGen>
+    <sDat>ю</sDat><pDat>ям</pDat>
+    <sAcc>я</sAcc><pAcc>ей</pAcc>
+    <sCre>ем</sCre><pCre>ями</pCre>
+    <sPre>е</sPre><pPre>ях</pPre>
   </type>
-<!--Второе склонение - существительные среднего рода с окончанием -о-->
-<type name="skl23">
-  <gender>оно</gender>
-  <article>его</article>
-  <suffix>о</suffix>
-  <sNom>о</sNom><pNom>а</pNom>
-  <sGen>а</sGen><pGen></pGen>
-  <sDat>у</sDat><pDat>ам</pDat>
-  <sAcc>о</sAcc><pAcc>а</pAcc>
-  <sCre>ом</sCre><pCre>ами</pCre>
-  <sPre>е</sPre><pPre>ах</pPre>
+  <!--Второе склонение - существительные среднего рода с окончанием -о-->
+  <type name="skl23">
+    <gender>оно</gender>
+    <article>его</article>
+    <suffix>о</suffix>
+    <sNom>о</sNom><pNom>а</pNom>
+    <sGen>а</sGen><pGen></pGen>
+    <sDat>у</sDat><pDat>ам</pDat>
+    <sAcc>о</sAcc><pAcc>а</pAcc>
+    <sCre>ом</sCre><pCre>ами</pCre>
+    <sPre>е</sPre><pPre>ах</pPre>
   </type>
-<!--Второе склонение - существительные среднего рода с окончанием -е-->
-<type name="skl24">
-  <gender>оно</gender>
-  <article>его</article>
-  <suffix>о</suffix>
-  <sNom>е</sNom><pNom>я</pNom>
-  <sGen>я</sGen><pGen>ей</pGen>
-  <sDat>ю</sDat><pDat>ям</pDat>
-  <sAcc>е</sAcc><pAcc>я</pAcc>
-  <sCre>ем</sCre><pCre>ями</pCre>
-  <sPre>е</sPre><pPre>ях</pPre>
+  <!--Второе склонение - существительные среднего рода с окончанием -е-->
+  <type name="skl24">
+    <gender>оно</gender>
+    <article>его</article>
+    <suffix>о</suffix>
+    <sNom>е</sNom><pNom>я</pNom>
+    <sGen>я</sGen><pGen>ей</pGen>
+    <sDat>ю</sDat><pDat>ям</pDat>
+    <sAcc>е</sAcc><pAcc>я</pAcc>
+    <sCre>ем</sCre><pCre>ями</pCre>
+    <sPre>е</sPre><pPre>ях</pPre>
   </type>
-<!--Второе склонение - существительные женского рода, оканчивающиеся на ь-->
-<type name="skl31">
-  <gender>она</gender>
-  <article>ее</article>
-  <suffix>а</suffix>
-  <sNom>ь</sNom><pNom>и</pNom>
-  <sGen>и</sGen><pGen>ей</pGen>
-  <sDat>и</sDat><pDat>ям</pDat>
-  <sAcc></sAcc><pAcc>и</pAcc>
-  <sCre>ю</sCre><pCre>ями</pCre>
-  <sPre>и</sPre><pPre>ях</pPre>
+  <!--Второе склонение - существительные женского рода, оканчивающиеся на ь-->
+  <type name="skl31">
+    <gender>она</gender>
+    <article>ее</article>
+    <suffix>а</suffix>
+    <sNom>ь</sNom><pNom>и</pNom>
+    <sGen>и</sGen><pGen>ей</pGen>
+    <sDat>и</sDat><pDat>ям</pDat>
+    <sAcc></sAcc><pAcc>и</pAcc>
+    <sCre>ю</sCre><pCre>ями</pCre>
+    <sPre>и</sPre><pPre>ях</pPre>
   </type>
 
-<!--
+  <!--
 <type name="skl00">
   <gender></gender>
   <article></article>
@@ -507,47 +507,47 @@ This is first version done by Daria Mikhaylova, Yeshi Namkhai. It manages declin
       }
     }
   </function>
-<!-- GetSkl function return noun ending depending on the most common type of declination-->
+  <!-- GetSkl function return noun ending depending on the most common type of declination-->
   <function name="GetSkl" type="string" parameters="obj,dec">
-          if ( DoesInherit (obj, "skl11") or DoesInherit (obj, "skl12") or DoesInherit (obj, "skl13") or DoesInherit (obj, "skl14") or DoesInherit (obj, "skl21") or DoesInherit (obj, "skl22") or DoesInherit (obj, "skl23") or DoesInherit (obj, "skl24") or DoesInherit (obj, "skl31")) {
-            switch (dec) {
-              case("Nom") {
-              return (obj.sNom)
-              }
-              case("Gen") {
-              return (obj.sGen)
-              }
-              case("Dat") {
-              return (obj.sDat)
-              }
-              case("Acc") {
-              return (obj.sAcc)
-              }
-              case("Cre") {
-              return (obj.sCre)
-              }
-              case("Pre") {
-              return (obj.sPre)
-              }
-            }
-          <!-- plural ? -->
-          } else {
-             return ("")
-          }
+    if ( DoesInherit (obj, "skl11") or DoesInherit (obj, "skl12") or DoesInherit (obj, "skl13") or DoesInherit (obj, "skl14") or DoesInherit (obj, "skl21") or DoesInherit (obj, "skl22") or DoesInherit (obj, "skl23") or DoesInherit (obj, "skl24") or DoesInherit (obj, "skl31")) {
+      switch (dec) {
+        case("Nom") {
+          return (obj.sNom)
+        }
+        case("Gen") {
+          return (obj.sGen)
+        }
+        case("Dat") {
+          return (obj.sDat)
+        }
+        case("Acc") {
+          return (obj.sAcc)
+        }
+        case("Cre") {
+          return (obj.sCre)
+        }
+        case("Pre") {
+          return (obj.sPre)
+        }
+      }
+      <!-- plural ? -->
+    } else {
+      return ("")
+    }
   </function>
 
   <function name="GetSuffix" type="string" parameters="obj">
-          if ( DoesInherit (obj, "male") ) {
-             return (" ")
-          } else if ( DoesInherit (obj, "female") ) {
-             return ("а")
-          } else if ( DoesInherit (obj, "maleplural") ) {
-             return ("ы")
-          } else if ( DoesInherit (obj, "femaleplural") ) {
-             return ("ы")
-          } else {
-             return ("")
-          }
+    if ( DoesInherit (obj, "male") ) {
+      return (" ")
+    } else if ( DoesInherit (obj, "female") ) {
+      return ("а")
+    } else if ( DoesInherit (obj, "maleplural") ) {
+      return ("ы")
+    } else if ( DoesInherit (obj, "femaleplural") ) {
+      return ("ы")
+    } else {
+      return ("")
+    }
   </function>
 
 </library>

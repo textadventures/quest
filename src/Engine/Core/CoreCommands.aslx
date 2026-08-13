@@ -2,72 +2,72 @@
 
   <command name="lookat" template="lookat">
     <![CDATA[
-    if (GetBoolean(object, "hidechildren")) {
-      object.hidechildren = false
-    }
-
-    if (TypeOf(object, "look") = "script") {
-      if (not HasAttribute(object,"timesexamined")){
-        object.timesexamined = 0
-      }
-      do (object, "look")
-      object.timesexamined = object.timesexamined + 1
-    }
-    else {
-      lookdesc = ""
-      if (HasString(object, "look")) {
-        lookdesc = object.look
+      if (GetBoolean(object, "hidechildren")) {
+        object.hidechildren = false
       }
 
-      if (LengthOf(lookdesc) = 0) {
-        lookdesc = Template("DefaultObjectDescription")
-      }
-
-      if (GetBoolean(object, "switchedon")) {
-        if (HasString(object, "switchedondesc")) {
-          lookdesc = lookdesc + " " + object.switchedondesc
-        }
-      }
-      else {
-        if (HasString(object, "switchedoffdesc")) {
-          lookdesc = lookdesc + " " + object.switchedoffdesc
-        }
-      }
-
-      isDark = CheckDarkness()
-      if (isDark and not GetBoolean(object, "lightsource")) {
-        lookdesc = DynamicTemplate("LookAtDarkness", object)
-      }
-      else {
+      if (TypeOf(object, "look") = "script") {
         if (not HasAttribute(object,"timesexamined")){
           object.timesexamined = 0
         }
+        do (object, "look")
         object.timesexamined = object.timesexamined + 1
       }
-      msg (lookdesc)
-    }
+      else {
+        lookdesc = ""
+        if (HasString(object, "look")) {
+          lookdesc = object.look
+        }
 
-    ListObjectContents (object)
+        if (LengthOf(lookdesc) = 0) {
+          lookdesc = Template("DefaultObjectDescription")
+        }
+
+        if (GetBoolean(object, "switchedon")) {
+          if (HasString(object, "switchedondesc")) {
+            lookdesc = lookdesc + " " + object.switchedondesc
+          }
+        }
+        else {
+          if (HasString(object, "switchedoffdesc")) {
+            lookdesc = lookdesc + " " + object.switchedoffdesc
+          }
+        }
+
+        isDark = CheckDarkness()
+        if (isDark and not GetBoolean(object, "lightsource")) {
+          lookdesc = DynamicTemplate("LookAtDarkness", object)
+        }
+        else {
+          if (not HasAttribute(object,"timesexamined")){
+            object.timesexamined = 0
+          }
+          object.timesexamined = object.timesexamined + 1
+        }
+        msg (lookdesc)
+      }
+
+      ListObjectContents (object)
     ]]>
   </command>
 
   <function name="ListObjectContents" parameters="object">
     <![CDATA[
-    if ((GetBoolean(object, "isopen") or GetBoolean(object, "transparent")) and GetBoolean(object, "listchildren")) {
-      if (GetBoolean(object, "hidechildren")) {
-        object.hidechildren = false
+      if ((GetBoolean(object, "isopen") or GetBoolean(object, "transparent")) and GetBoolean(object, "listchildren")) {
+        if (GetBoolean(object, "hidechildren")) {
+          object.hidechildren = false
+        }
+        if (HasString(object, "listchildrenprefix")) {
+          listprefix = object.listchildrenprefix
+        }
+        else {
+          listprefix = DynamicTemplate("ObjectContains", object)
+        }
+        list = FormatObjectList(listprefix, object, Template("And"), ".")
+        if (list <> "") {
+          msg (list)
+        }
       }
-      if (HasString(object, "listchildrenprefix")) {
-        listprefix = object.listchildrenprefix
-      }
-      else {
-        listprefix = DynamicTemplate("ObjectContains", object)
-      }
-      list = FormatObjectList(listprefix, object, Template("And"), ".")
-      if (list <> "") {
-        msg (list)
-      }
-    }
     ]]>
   </function>
 
@@ -93,103 +93,103 @@
   </command>
 
   <function name="DoTake" parameters="object, ismultiple"><![CDATA[
-    prefix = ""
-    if (ismultiple) {
-      prefix = GetDisplayAlias(object) + ": "
-    }
-    if (object.parent = game.pov) {
-      msg (prefix + DynamicTemplate("AlreadyTaken", object))
-    }
-    else if (not ListContains(ScopeReachable(), object)) {
-      msg (BlockingMessage(object, prefix))
-    }
-    else if (not TestTakeGlobal(object, prefix)) {
-      // Do nothing, already handled
-    }
-    else if (not CheckLimits(object, prefix)) {
-      // Do nothing, already handled
-    }
-    else {
-      found = true
-      takemsg = object.takemsg
-      switch (TypeOf(object, "take")) {
-        case ("script") {
-          if (ismultiple) {
-            OutputTextNoBr (prefix)
+      prefix = ""
+      if (ismultiple) {
+        prefix = GetDisplayAlias(object) + ": "
+      }
+      if (object.parent = game.pov) {
+        msg (prefix + DynamicTemplate("AlreadyTaken", object))
+      }
+      else if (not ListContains(ScopeReachable(), object)) {
+        msg (BlockingMessage(object, prefix))
+      }
+      else if (not TestTakeGlobal(object, prefix)) {
+        // Do nothing, already handled
+      }
+      else if (not CheckLimits(object, prefix)) {
+        // Do nothing, already handled
+      }
+      else {
+        found = true
+        takemsg = object.takemsg
+        switch (TypeOf(object, "take")) {
+          case ("script") {
+            if (ismultiple) {
+              OutputTextNoBr (prefix)
+            }
+            do (object, "take")
+            takemsg = ""
           }
-          do (object, "take")
-          takemsg = ""
-        }
-        case ("boolean") {
-          if (object.take = true) {
-            object.parent = game.pov
-            if (takemsg = null) {
-              takemsg = DynamicTemplate("TakeSuccessful", object)
+          case ("boolean") {
+            if (object.take = true) {
+              object.parent = game.pov
+              if (takemsg = null) {
+                takemsg = DynamicTemplate("TakeSuccessful", object)
+              }
+            }
+            else {
+              found = false
             }
           }
-          else {
+          case ("string") {
+            object.parent = game.pov
+            takemsg = object.take
+          }
+          default {
             found = false
           }
         }
-        case ("string") {
-          object.parent = game.pov
-          takemsg = object.take
+        if (not found and takemsg = null) {
+          takemsg = DynamicTemplate("TakeUnsuccessful", object)
         }
-        default {
-          found = false
+        if (LengthOf(takemsg) > 0) {
+          msg (prefix + takemsg)
+        }
+        if (HasScript(object, "ontake")) {
+          do (object, "ontake")
+        }
+        if (found and GetBoolean (object, "scenery") and object.parent = game.pov) {
+          object.scenery = false
         }
       }
-      if (not found and takemsg = null) {
-        takemsg = DynamicTemplate("TakeUnsuccessful", object)
-      }
-      if (LengthOf(takemsg) > 0) {
-        msg (prefix + takemsg)
-      }
-      if (HasScript(object, "ontake")) {
-        do (object, "ontake")
-      }
-      if (found and GetBoolean (object, "scenery") and object.parent = game.pov) {
-        object.scenery = false
-      }
-    }
   ]]></function>
 
   <function name="CheckLimits" parameters="object, prefix" type="boolean"><![CDATA[
-    volume = 0
-    foreach (obj, GetAllChildObjects(game.pov)) {
-      if (HasInt(obj, "volume")) {
-        volume = volume + obj.volume
-      }
-    }
-    if (not Contains(game.pov, object)) {
-      volume = volume + GetVolume(object,true)
-    }
-    if (HasInt(game.pov, "maxvolume")) {
-      if (volume > game.pov.maxvolume) {
-        if (HasString(game.pov, "containerfullmessage")) {
-          msg (prefix + game.pov.containerfullmessage)
+      volume = 0
+      foreach (obj, GetAllChildObjects(game.pov)) {
+        if (HasInt(obj, "volume")) {
+          volume = volume + obj.volume
         }
-        else {
-          msg (prefix + DynamicTemplate("FullInventory", object))
-        }
-        return (false)
       }
-    }
-    children = GetDirectChildren(game.pov)
-    if (HasInt(game.pov, "maxobjects")) {
-      if (game.pov.maxobjects > 0) {
-        if (ListCount(children) >= game.pov.maxobjects) {
-          if (HasString(game.pov, "containermaxobjects")) {
-            msg (prefix + game.pov.containermaxobjects)
+      if (not Contains(game.pov, object)) {
+        volume = volume + GetVolume(object,true)
+      }
+      if (HasInt(game.pov, "maxvolume")) {
+        if (volume > game.pov.maxvolume) {
+          if (HasString(game.pov, "containerfullmessage")) {
+            msg (prefix + game.pov.containerfullmessage)
           }
           else {
-            msg (prefix + DynamicTemplate("MaxObjectsInInventory", object))
+            msg (prefix + DynamicTemplate("FullInventory", object))
           }
           return (false)
         }
       }
-    }
-    return (true)
+      children = GetDirectChildren(game.pov)
+      if (HasInt(game.pov, "maxobjects")) {
+        if (game.pov.maxobjects > 0) {
+          if (ListCount(children) >= game.pov.maxobjects) {
+            if (HasString(game.pov, "containermaxobjects")) {
+              msg (prefix + game.pov.containermaxobjects)
+            }
+            else {
+              msg (prefix + DynamicTemplate("MaxObjectsInInventory", object))
+            }
+            return (false)
+          }
+        }
+      }
+      return (true)
   ]]></function>
 
   <function name="TestTakeGlobal" parameters="object, prefix" type="boolean">
@@ -282,7 +282,7 @@
       }
 
       if (HasScript(object, "ondrop")) {
-         do (object, "ondrop", QuickParams("successful", not oldparent = object.parent))
+        do (object, "ondrop", QuickParams("successful", not oldparent = object.parent))
       }
     }
   </function>
@@ -310,35 +310,35 @@
   </function>
 
   <command name="use" template="use"><![CDATA[
-    if (HasScript(object, "use")) {
-      do (object, "use")
-    }
-    else {
-      if (GetBoolean(object, "use")) {
-        candidates = CreateUseMenuList (object)
-        if (ListCount(candidates) = 0) {
-          msg (Template("NoObjectsAvailable"))
-        }
-        else {
-          game.pov.usemenuobject = object
-          if (HasString(object, "usemenuprompt")) {
-            menucaption = object.usemenuprompt
+      if (HasScript(object, "use")) {
+        do (object, "use")
+      }
+      else {
+        if (GetBoolean(object, "use")) {
+          candidates = CreateUseMenuList (object)
+          if (ListCount(candidates) = 0) {
+            msg (Template("NoObjectsAvailable"))
           }
           else {
-            menucaption = Template("UseOnMenu")
-          }
-          ShowMenu (menucaption, candidates, true) {
-            if (result <> null) {
-              HandleUseOn (game.pov.usemenuobject, GetObject(result))
-              game.pov.usemenuobject = null
+            game.pov.usemenuobject = object
+            if (HasString(object, "usemenuprompt")) {
+              menucaption = object.usemenuprompt
+            }
+            else {
+              menucaption = Template("UseOnMenu")
+            }
+            ShowMenu (menucaption, candidates, true) {
+              if (result <> null) {
+                HandleUseOn (game.pov.usemenuobject, GetObject(result))
+                game.pov.usemenuobject = null
+              }
             }
           }
         }
+        else {
+          msg (DynamicTemplate("CantUse", object))
+        }
       }
-      else {
-        msg (DynamicTemplate("CantUse", object))
-      }
-    }
   ]]></command>
 
   <command name="undo">
@@ -367,31 +367,31 @@
   </command>
 
   <command name="lookdir" pattern="[lookdir]">
-   <![CDATA[
-    if (HasScript(exit, "look")) {
+    <![CDATA[
+      if (HasScript(exit, "look")) {
         do (exit, "look")
-    }
-    else {
-      message = DynamicTemplate("YouLooking",exit.alias)
-      if (HasString(exit, "look")){
-        if (exit.look <> "") {
-          message = exit.look
-        }
-      }
-      if (exit.locked) {
-        if (HasString(exit,"lockmessage")) {
-          lockmessage = exit.lockmessage
-        }
-        else {
-          lockmessage = Template("LockedExit")
-        }
-        msg (message+" "+lockmessage)
       }
       else {
-        msg (message)
+        message = DynamicTemplate("YouLooking",exit.alias)
+        if (HasString(exit, "look")){
+          if (exit.look <> "") {
+            message = exit.look
+          }
+        }
+        if (exit.locked) {
+          if (HasString(exit,"lockmessage")) {
+            lockmessage = exit.lockmessage
+          }
+          else {
+            lockmessage = Template("LockedExit")
+          }
+          msg (message+" "+lockmessage)
+        }
+        else {
+          msg (message)
+        }
       }
-    }
-   ]]>
+    ]]>
   </command>
 
   <command name="quit" pattern="[quit]">
@@ -412,7 +412,7 @@
         }
       }
       else if (exit.lookonly) {
-         msg (Template("UnresolvedLocation"))
+        msg (Template("UnresolvedLocation"))
       }
       else {
         if (HasString(exit, "message")) {
@@ -625,36 +625,36 @@
 
   <command name="givesingle" template="givesingle">
     <![CDATA[
-    if (HasScript(object, "givesingle")) {
-      do (object, "givesingle")
-    }
-    else {
-      if (GetBoolean(object, "givesingle")) {
-        candidates = CreateGiveMenuList (object)
-        if (ListCount(candidates) = 0) {
-          msg (Template("NoObjectsAvailable"))
-        }
-        else {
-          game.pov.givemenuobject = object
-          if (HasString(object, "givemenuprompt")) {
-            menucaption = object.givemenuprompt
+      if (HasScript(object, "givesingle")) {
+        do (object, "givesingle")
+      }
+      else {
+        if (GetBoolean(object, "givesingle")) {
+          candidates = CreateGiveMenuList (object)
+          if (ListCount(candidates) = 0) {
+            msg (Template("NoObjectsAvailable"))
           }
           else {
-            menucaption = Template("GiveToMenu")
-          }
-          ShowMenu (menucaption, candidates, true) {
-            if (result <> null) {
-              HandleGiveTo (game.pov.givemenuobject, GetObject(result))
-              game.pov.givemenuobject = null
+            game.pov.givemenuobject = object
+            if (HasString(object, "givemenuprompt")) {
+              menucaption = object.givemenuprompt
+            }
+            else {
+              menucaption = Template("GiveToMenu")
+            }
+            ShowMenu (menucaption, candidates, true) {
+              if (result <> null) {
+                HandleGiveTo (game.pov.givemenuobject, GetObject(result))
+                game.pov.givemenuobject = null
+              }
             }
           }
         }
+        else {
+          msg (DynamicTemplate("CantGive", object))
+        }
       }
-      else {
-        msg (DynamicTemplate("CantGive", object))
-      }
-    }
-  ]]>
+    ]]>
   </command>
 
   <command name="give" pattern="[give]">
@@ -796,40 +796,40 @@
 
   <function name="DoAskTell" parameters="object, text, property, defaultscript, defaulttemplate">
     <![CDATA[
-    handled = false
+      handled = false
 
-    maxstrength = 0
-    match = null
+      maxstrength = 0
+      match = null
 
-    text = LCase(text)
+      text = LCase(text)
 
-    if (TypeOf(object, property) = "scriptdictionary") {
-      dictionary = GetAttribute(object, property)
-      foreach (keywords, dictionary) {
-        strength = GetKeywordsMatchStrength(LCase(keywords), text)
-        if (strength >= maxstrength and strength>0) {
-          match = ScriptDictionaryItem(dictionary, keywords)
-          maxstrength = strength
+      if (TypeOf(object, property) = "scriptdictionary") {
+        dictionary = GetAttribute(object, property)
+        foreach (keywords, dictionary) {
+          strength = GetKeywordsMatchStrength(LCase(keywords), text)
+          if (strength >= maxstrength and strength>0) {
+            match = ScriptDictionaryItem(dictionary, keywords)
+            maxstrength = strength
+          }
+        }
+
+        if (match <> null) {
+          parameters = NewObjectDictionary()
+          dictionary add(parameters, "this", object)
+          invoke (match, parameters)
+          handled = true
         }
       }
 
-      if (match <> null) {
-        parameters = NewObjectDictionary()
-        dictionary add(parameters, "this", object)
-        invoke (match, parameters)
-        handled = true
+      if (not handled) {
+        if (HasScript(object, defaultscript)) {
+          d = NewDictionary()
+          dictionary add(d, "text", text)
+          do (object, defaultscript, d)
+        } else {
+          msg (DynamicTemplate(defaulttemplate, object))
+        }
       }
-    }
-
-    if (not handled) {
-      if (HasScript(object, defaultscript)) {
-        d = NewDictionary()
-        dictionary add(d, "text", text)
-        do (object, defaultscript, d)
-      } else {
-        msg (DynamicTemplate(defaulttemplate, object))
-      }
-    }
     ]]>
   </function>
 
@@ -856,21 +856,21 @@
   <command name="oops" pattern="[oops]">
     <isoops/>
     <script><![CDATA[
-      hasoops = false
-      if (HasAttribute(game, "unresolvedcommand")) {
-        if (game.unresolvedcommand <> null) {
-          hasoops = true
+        hasoops = false
+        if (HasAttribute(game, "unresolvedcommand")) {
+          if (game.unresolvedcommand <> null) {
+            hasoops = true
+          }
         }
-      }
-      if (not hasoops) {
-        msg (Template("DefaultOops"))
-      }
-      else {
-        dictionary remove (game.unresolvedcommandvarlist, game.unresolvedcommandkey)
-        dictionary add (game.unresolvedcommandvarlist, game.unresolvedcommandkey, text)
-        HandleSingleCommandPattern ("", game.unresolvedcommand, game.unresolvedcommandvarlist)
-      }
-      game.suppressturnscripts = true
+        if (not hasoops) {
+          msg (Template("DefaultOops"))
+        }
+        else {
+          dictionary remove (game.unresolvedcommandvarlist, game.unresolvedcommandkey)
+          dictionary add (game.unresolvedcommandvarlist, game.unresolvedcommandkey, text)
+          HandleSingleCommandPattern ("", game.unresolvedcommand, game.unresolvedcommandvarlist)
+        }
+        game.suppressturnscripts = true
     ]]></script>
   </command>
 
@@ -934,15 +934,15 @@
 
   <command name="version_cmd" pattern="[version_cmd]">
     <script><![CDATA[
-      s = "<b>TITLE: </b>" + game.gamename + "<br/>"
-      if (HasAttribute (game, "author")) {
-        s = s + "<b>AUTHOR: </b>" + game.author + "<br/>"
-      }
-      s = s + "<b>VERSION: </b>" + game.version + "<br/>"
-      s = s + "<b>IFID: </b>" + game.gameid + "<br/>"
-      s = s + "<br/>"
-      msg (s)
-      game.suppressturnscripts = true
+        s = "<b>TITLE: </b>" + game.gamename + "<br/>"
+        if (HasAttribute (game, "author")) {
+          s = s + "<b>AUTHOR: </b>" + game.author + "<br/>"
+        }
+        s = s + "<b>VERSION: </b>" + game.version + "<br/>"
+        s = s + "<b>IFID: </b>" + game.gameid + "<br/>"
+        s = s + "<br/>"
+        msg (s)
+        game.suppressturnscripts = true
     ]]></script>
   </command>
 
@@ -961,30 +961,30 @@
   <command name="transcript_on_cmd" pattern="[transcript_on_cmd]">
     <script>
       <![CDATA[
-      if (not GetBoolean(game, "notranscript")) {
-        if (not GetBoolean(game,"savetranscript")) {
-          if (GetBoolean(game,"showcommandbar")){
-            msg (Template("TranscriptEnterFilename"))
-            JS.loadTranscriptNameInputVal()
-            get input {
-              filename = Trim(result)
+        if (not GetBoolean(game, "notranscript")) {
+          if (not GetBoolean(game,"savetranscript")) {
+            if (GetBoolean(game,"showcommandbar")){
+              msg (Template("TranscriptEnterFilename"))
+              JS.loadTranscriptNameInputVal()
+              get input {
+                filename = Trim(result)
+                InitiateTranscript(filename)
+              }
+            }
+            else {
+              filename = game.gamename
               InitiateTranscript(filename)
             }
           }
           else {
-            filename = game.gamename
-            InitiateTranscript(filename)
+            msg (Template("TranscriptAlreadyEnabled"))
           }
         }
         else {
-          msg (Template("TranscriptAlreadyEnabled"))
+          msg (Template("NoTranscriptFeature"))
         }
-      }
-      else {
-        msg (Template("NoTranscriptFeature"))
-      }
-      SuppressTurnscripts
-    ]]>
+        SuppressTurnscripts
+      ]]>
     </script>
   </command>
 
@@ -996,7 +996,7 @@
           msg (Template("TranscriptDisabled"))
         }
         else {
-           msg (Template("TranscriptAlreadyDisabled"))
+          msg (Template("TranscriptAlreadyDisabled"))
         }
       }
       else {

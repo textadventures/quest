@@ -179,7 +179,7 @@
   <verbtemplate name="drop">læg</verbtemplate>
   <verbtemplate name="use">brug</verbtemplate>
   <verbtemplate name="speakto">tal til</verbtemplate>
- <verbtemplate name="speakto">tal med</verbtemplate>
+  <verbtemplate name="speakto">tal med</verbtemplate>
   <verbtemplate name="speakto">tal</verbtemplate>
   <verbtemplate name="speakto">tal til</verbtemplate>
   <verbtemplate name="speakto">tal</verbtemplate>
@@ -190,9 +190,9 @@
   <template templatetype="command" name="remove"><![CDATA[^fjern (?<object1>.*) fra (?<object2>.*)$]]></template>
   <template templatetype="command" name="ask"><![CDATA[^spørg (?<object>.*) om (?<text>.*)$]]></template>
   <template templatetype="command" name="tell"><![CDATA[^fortæl (?<object>.*) om (?<text>.*)$]]></template>
- <template templatetype="command" name="tellto"><![CDATA[^(bed) (?<object>.*) om at (?<text>.*)$]]></template>
- <template templatetype="command" name="alttellto"><![CDATA[^(?<object>.*), (?<text>.*)$]]></template>
- <template templatetype="command" name="oops"><![CDATA[^ups (?<text>.*)$]]></template>
+  <template templatetype="command" name="tellto"><![CDATA[^(bed) (?<object>.*) om at (?<text>.*)$]]></template>
+  <template templatetype="command" name="alttellto"><![CDATA[^(?<object>.*), (?<text>.*)$]]></template>
+  <template templatetype="command" name="oops"><![CDATA[^ups (?<text>.*)$]]></template>
 
   <verbtemplate name="buy">køb</verbtemplate>
   <dynamictemplate name="DefaultBuy">"Du kan ikke købe " + object.article + "."</dynamictemplate>

@@ -282,7 +282,7 @@
   <template name="EditorObjectAttributesPleaseenter2">Cadena de formato (opcional)</template>
   <template name="EditorScriptsScriptsPleaseenter">Por favor introduzca el caso de expresión</template>
   <template name="EditorScriptsScriptsPleaseenter2">Por favor introduzca el parámetro</template>
-   <template name="EditorObjectAskTellAskTell">Preguntar/Decir</template>
+  <template name="EditorObjectAskTellAskTell">Preguntar/Decir</template>
   <template name="EditorObjectAskTellPleaseenter">Por favor introduzca las palabras clave de los temas, separados por espacios</template>
   <template name="EditorObjectAskTellAsk">Preguntar</template>
   <template name="EditorObjectAskTellAskabout">Preguntar sobre</template>
@@ -344,7 +344,7 @@
   <template name="EditorObjectFeaturesContainer">Recipiente: el objeto es un recipiente o superficie, o puede abrirse o cerrarse</template>
   <template name="EditorObjectFeaturesSwitchable">Conmutable: el objeto se puede encender o apagar</template>
   <template name="EditorObjectFeaturesEdibleobject">Comestible: el objeto puede ser comido (y da salud si la característica "Salud" esta activada en la pestaña de características del juego)</template>
- <template name="EditorObjectFeaturesWearableobject">Ropa: puedes ponerte el objeto o quitártelo</template>
+  <template name="EditorObjectFeaturesWearableobject">Ropa: puedes ponerte el objeto o quitártelo</template>
   <template name="EditorObjectFeaturesLightnessand">Luz y oscuridad: los objetos pueden iluminar un lugar</template>
   <template name="EditorObjectFeaturesPlayerplayer">Jugador: el jugador puede llegar a convertirse en este objeto</template>
   <template name="EditorObjectInventoryInventory">Inventario</template>
@@ -420,7 +420,7 @@
   <template name="EditorObjectOptionsArticle">Artículo</template>
   <template name="EditorObjectOptionsOthernames">Otros nombres</template>
   <template name="EditorObjectOptionsPossessive">Posesivo</template>
- <template name="EditorObjectOptionsStartingmoney">Dinero inicial</template>
+  <template name="EditorObjectOptionsStartingmoney">Dinero inicial</template>
   <template name="EditorObjectRoomRoom">Lugar</template>
   <template name="EditorObjectRoomRoompicture">Imagen del lugar</template>
   <template name="EditorObjectRoomDescriptionPrefix">Prefijo descripción</template>

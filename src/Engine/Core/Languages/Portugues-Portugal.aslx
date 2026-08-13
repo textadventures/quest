@@ -511,18 +511,18 @@
   <template name="LanguageSpecificObjectTypes">feminine=Inanimate object (feminine); feminineplural=Inanimate object (feminineplural); </template>
 
   <type name="feminine">
-  <gender>isso</gender>
-  <article>a</article>
+    <gender>isso</gender>
+    <article>a</article>
   </type>
 
   <type name="feminineplural">
-  <gender>essas</gender>
-  <article>as</article>
+    <gender>essas</gender>
+    <article>as</article>
   </type>
 
   <template name="EditorVerbDefaultExpression">"Não " + object.article + " podes #verb#."</template>
 
-<function name="WriteVerb" type="string" parameters="obj, verb">
+  <function name="WriteVerb" type="string" parameters="obj, verb">
     return (CapFirst(obj.gender) + " " + Conjugate(obj, verb))
   </function>
 
@@ -659,7 +659,7 @@
           }
         }
       }
-            case ("aceitar") {
+      case ("aceitar") {
         switch (gender) {
           case ("eu") {
             return ("aceito")
@@ -721,9 +721,9 @@
           }
         }
       }
-          default {
-       return (verb)
-       }
+      default {
+        return (verb)
+      }
 
     }
   </function>

@@ -268,13 +268,13 @@
   <template name="LanguageSpecificObjectTypes">masculine=Inanimate object (masculine); feminine=Inanimate object (feminine); </template>
 
   <type name="masculine">
-  <gender>il</gender>
-  <article>le</article>
+    <gender>il</gender>
+    <article>le</article>
   </type>
 
   <type name="feminine">
-  <gender>elle</gender>
-  <article>la</article>
+    <gender>elle</gender>
+    <article>la</article>
   </type>
 
   <template name="EditorVerbDefaultExpression">"Vous ne pouvez pas " + object.article + " #verb#."</template>
@@ -285,7 +285,7 @@
     }
     else {
       return ("un")
-     }
+    }
   </function>
 
   <function name="WriteVerb" type="string" parameters="obj, verb">
