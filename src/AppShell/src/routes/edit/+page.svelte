@@ -4,7 +4,7 @@
     import { goto } from "$app/navigation";
     import { base } from "$app/paths";
     import { get } from "svelte/store";
-    import { isLoaded, isDirty, isEditingField, markFieldEditing, clearFieldEditing, saveGame, loadingStatus, addElementModal, addJavascriptModalOpen, addLibraryModalOpen, assetManagerOpen, publishModalOpen, codeViewPanelOpen, openGame, lastOpenGameError, createRoom, createObject, createPage, createFunction, createTimer, createWalkthrough, createTemplate, createDynamicTemplate, createObjectType, createJavascript, createIncludedLibrary, moveElementModal, moveElement } from "$lib/editor-store";
+    import { isLoaded, isDirty, isEditingField, markFieldEditing, clearFieldEditing, saveGame, loadingStatus, addElementModal, addJavascriptModalOpen, addLibraryModalOpen, assetManagerOpen, publishModalOpen, codeViewPanelOpen, openGame, lastOpenGameError, lastFailedGameBytes, lastFailedGameFilename, createRoom, createObject, createPage, createFunction, createTimer, createWalkthrough, createTemplate, createDynamicTemplate, createObjectType, createJavascript, createIncludedLibrary, moveElementModal, moveElement } from "$lib/editor-store";
     import { loadFromServer } from "$lib/filesystem/server-adapter";
     import Toolbar from "$components/Toolbar.svelte";
     import BackupBanner from "$components/BackupBanner.svelte";
@@ -13,6 +13,7 @@
     import TreePanel from "$components/TreePanel.svelte";
     import PropertyEditor from "$components/PropertyEditor.svelte";
     import CodeViewPanel from "$components/CodeViewPanel.svelte";
+    import SafeModeEditor from "$components/SafeModeEditor.svelte";
     import { isNarrow } from "$lib/layout.svelte";
     import AddElementModal from "$components/AddElementModal.svelte";
     import AddJavascriptModal from "$components/AddJavascriptModal.svelte";
@@ -115,9 +116,11 @@
         const gameId = new URLSearchParams(window.location.search).get("game");
         if (gameId) {
             loadGameFromServer(gameId);
-        } else if (!get(isLoaded)) {
-            // Nothing to edit — /edit is only ever reached with something
-            // already loaded (via /open) or a ?game= to load here.
+        } else if (!get(isLoaded) && !get(lastFailedGameBytes)) {
+            // Nothing to edit and nothing to recover — /edit is only ever
+            // reached with something already loaded (via /open), a ?game=
+            // to load here, or a failed load's bytes to fix in Safe Mode
+            // (see the template branch below).
             goto(`${base}/open`);
         }
 
@@ -130,6 +133,12 @@
             const ok = await openGame(loaded.bytes, loaded.adapter.filename, loaded.adapter);
             if (!ok) serverLoadError = get(lastOpenGameError) ?? t("editPage.failedToLoadGame");
         } catch (err) {
+            // Thrown before openGame() ever ran (e.g. an unknown game id) — no bytes exist to
+            // recover into Safe Mode. Clear defensively in case a stale value is still sitting
+            // in the store from an earlier failed attempt this session (see the template's
+            // lastFailedGameBytes branch, which would otherwise take priority over this error).
+            lastFailedGameBytes.set(null);
+            lastFailedGameFilename.set(null);
             serverLoadError = String(err);
         }
     }
@@ -151,10 +160,15 @@
     }
 </script>
 
-{#if serverLoadError}
-    <main class="flex flex-col items-center justify-center min-h-svh gap-6 p-8">
-        <p class="text-error-500 max-w-[40ch] text-center whitespace-pre-wrap">{serverLoadError}</p>
-    </main>
+{#if $lastFailedGameBytes}
+    <!-- Checked before $loadingStatus so a retry attempt from within Safe Mode (success or
+         failure) never unmounts SafeModeEditor while it's running — openGame() sets loadingStatus
+         for the duration of Initialise(), and this store isn't cleared until that call resolves,
+         so it stays truthy (and this branch keeps matching) throughout. An unmount here would
+         reset SafeModeEditor's per-file buffers, silently discarding any library fix the author
+         hadn't clicked Save on yet. SafeModeEditor shows its own "applying" spinner internally for
+         this same window instead. -->
+    <SafeModeEditor />
 {:else if $loadingStatus}
     <main class="flex flex-col items-center justify-center min-h-svh gap-6 p-8">
         <div class="size-10 rounded-full border-4 border-surface-300-700 border-t-primary-500 animate-spin"></div>
@@ -232,11 +246,16 @@
     {#if $publishModalOpen}
         <PublishModal oncancel={() => publishModalOpen.set(false)} />
     {/if}
+{:else if serverLoadError}
+    <!-- loadGameFromServer's own fetch/parse threw before any bytes ever reached openGame() (e.g.
+         an unknown game id) — nothing to recover into Safe Mode, unlike the branch above. -->
+    <main class="flex flex-col items-center justify-center min-h-svh gap-6 p-8">
+        <p class="text-error-500 max-w-[40ch] text-center whitespace-pre-wrap">{serverLoadError}</p>
+    </main>
 {:else if hasLoadedOnce}
-    <!-- Reached when a mid-session re-open (reloadGame(), or /open switching to a different
-         game while one was already loaded) fails: openGame() sets isLoaded back to false rather
-         than leaving the old game's now-disconnected tree up — see its own comments. Distinct
-         from serverLoadError above, which covers only the very first load on this page. -->
+    <!-- Defensive fallback: shouldn't normally be reached now that a genuine openGame() failure
+         is caught by the lastFailedGameBytes branch above, but kept in case isLoaded somehow
+         flips false without that store being set. -->
     <main class="flex flex-col items-center justify-center min-h-svh gap-6 p-8">
         <p class="text-error-500 max-w-[40ch] text-center whitespace-pre-wrap">{$lastOpenGameError ?? t("editPage.loadError")}</p>
         <button type="button" class="btn preset-filled-primary-500" onclick={() => goto(`${base}/open`)}>{t("editPage.backToHome")}</button>

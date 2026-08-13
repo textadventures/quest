@@ -169,16 +169,28 @@ function refreshUndoRedo() {
 // "ok"/"error:{message}" convention in WasmEditorBridge.cs.
 export const lastOpenGameError = writable<string | null>(null);
 
+// The raw bytes/filename openGame() was attempting to load when it last failed — set only in the
+// failure branch below, cleared on the next successful load. This is what lets a failed load fall
+// back to Safe Mode (SafeModeEditor.svelte) instead of a dead end: unlike WasmEditorBridge's own
+// _controller (disposed on a failed Initialise — see its comments), the bytes that were handed to
+// it are never otherwise kept anywhere once the call returns, so they have to be captured here.
+export const lastFailedGameBytes = writable<Uint8Array | null>(null);
+export const lastFailedGameFilename = writable<string | null>(null);
+
 // An Included Library element only stores its filename (<include ref="lib.aslx"/>) — the
 // library's actual content lives in the adapter's asset storage, not in the game bytes, so the
 // engine can't resolve it on its own when (re)loading. AddLibraryModal only ever uploads
 // .aslx files, so every asset with that extension is a candidate. Candidate discovery goes
 // through listLibraryCandidates() rather than listAssets() — see its own comment on
 // FileAdapter for why the two can't be the same list.
-async function resolveLibraryCandidateFiles(adapter: FileAdapter): Promise<Record<string, Uint8Array>> {
-    const candidates = adapter.listLibraryCandidates
+async function listLibraryCandidateFilenames(adapter: FileAdapter): Promise<string[]> {
+    return adapter.listLibraryCandidates
         ? await adapter.listLibraryCandidates()
         : (await adapter.listAssets()).map(a => a.key).filter(key => key.toLowerCase().endsWith(".aslx"));
+}
+
+async function resolveLibraryCandidateFiles(adapter: FileAdapter): Promise<Record<string, Uint8Array>> {
+    const candidates = await listLibraryCandidateFilenames(adapter);
     const files: Record<string, Uint8Array> = {};
     for (const key of candidates) {
         const blob = await adapter.getAsset(key);
@@ -186,6 +198,15 @@ async function resolveLibraryCandidateFiles(adapter: FileAdapter): Promise<Recor
         files[key] = new Uint8Array(await blob.arrayBuffer());
     }
     return files;
+}
+
+// SafeModeEditor's file-switcher list: the same candidate .aslx files every (re)load already
+// stages via resolveLibraryCandidateFiles above, exposed without fetching their bytes. Unlike
+// CodeViewPanel's file list (derived from treeNodes' <include> elements), this works even when the
+// game has never successfully parsed — it only depends on the adapter's own asset storage.
+export async function listSafeModeLibraryFiles(): Promise<string[]> {
+    if (!_adapter) return [];
+    return listLibraryCandidateFilenames(_adapter);
 }
 
 // Stages resolveLibraryCandidateFiles()'s result into the WASM side (WasmEditorBridge.AddAdjacentFile)
@@ -233,6 +254,10 @@ export async function openGame(bytes: Uint8Array, filename: string, adapter: Fil
     const ok = result === "ok";
     if (!ok) {
         lastOpenGameError.set(result.startsWith("error:") ? result.slice("error:".length) : result);
+        // Remembered so a failed load can fall back to Safe Mode instead of a dead end — see the
+        // stores' own comments. Cleared below on the next successful load/retry.
+        lastFailedGameBytes.set(bytes);
+        lastFailedGameFilename.set(filename);
         // Stop rendering/interacting with the old game's now-disconnected tree — its bridge
         // calls would otherwise silently target nothing (see the _controller comment above).
         // A genuine first load (isLoaded was already false) has nothing to tear down here; its
@@ -241,6 +266,8 @@ export async function openGame(bytes: Uint8Array, filename: string, adapter: Fil
         if (wasAlreadyLoaded) isLoaded.set(false);
     }
     if (ok) {
+        lastFailedGameBytes.set(null);
+        lastFailedGameFilename.set(null);
         _loadedGameId = _bridge.GetGameId() || null;
         isGamebook.set(_bridge.IsGamebook());
         const nodes: TreeNode[] = JSON.parse(_bridge.GetTreeNodes());
@@ -340,6 +367,20 @@ export async function setGameXml(xml: string): Promise<string> {
         scheduleAutosave();
     }
     return result;
+}
+
+// SafeModeEditor's "Try Loading Again" action. Unlike setGameXml (which requires an existing
+// _controller to validate against — exactly what's usually absent after a failed load, see
+// WasmEditorBridge.Initialise's comments on disposing it), this just re-runs openGame() itself
+// with edited bytes: Initialise() already does its own from-scratch attempt, so there's nothing
+// to protect. Reuses openGame() wholesale (adjacent-library staging, tree/isLoaded population,
+// nav history reset) rather than duplicating any of that. _adapter/_bridge survive a failed
+// openGame() call (see its own comments), so both are already available here without the caller
+// having to pass them back in.
+export async function retryFailedLoad(xml: string): Promise<boolean> {
+    const filename = get(lastFailedGameFilename);
+    if (!_bridge || !_adapter || !filename) return false;
+    return openGame(new TextEncoder().encode(xml), filename, _adapter);
 }
 
 // Whether a library filename refers to one shipped inside the engine (Core.aslx, GamebookCore.aslx,
