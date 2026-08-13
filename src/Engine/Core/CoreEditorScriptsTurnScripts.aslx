@@ -16,7 +16,7 @@
       <controltype>expression</controltype>
       <attribute>0</attribute>
 
-      <!-- TO DO: simpleeditor needs to be a dropdown turnscript list -->
+      <!-- TO DO (#2069): simpleeditor needs to be a dropdown turnscript list -->
     </control>
   </editor>
 
@@ -37,7 +37,7 @@
       <controltype>expression</controltype>
       <attribute>0</attribute>
 
-      <!-- TO DO: simpleeditor needs to be a dropdown turnscript list -->
+      <!-- TO DO (#2069): simpleeditor needs to be a dropdown turnscript list -->
     </control>
   </editor>
 
@@ -58,7 +58,7 @@
       <controltype>expression</controltype>
       <attribute>0</attribute>
 
-      <!-- TO DO: simpleeditor needs to be a dropdown turnscript list -->
+      <!-- TO DO (#2069): simpleeditor needs to be a dropdown turnscript list -->
     </control>
 
     <control>
