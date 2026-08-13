@@ -85,9 +85,18 @@
         const onDisk = lastTexteditorWrite?.filename === filename ? lastTexteditorWrite.text : loadedContent;
         if (value === onDisk) return;
         lastTexteditorWrite = { filename, text: value };
-        void (filename.toLowerCase().endsWith(".aslx")
-            ? putLibraryAssetText(filename, value)
-            : putAssetText(filename, value));
+        if (filename.toLowerCase().endsWith(".aslx")) {
+            void putLibraryAssetText(filename, value).then(result => {
+                // A malformed library edit is rejected before it's written (putLibraryAssetText
+                // validates against a throwaway controller first), so the game can't be reloaded
+                // into an unloadable state. lastTexteditorWrite keeps the rejected text, so
+                // blurring again without changing it stays quiet rather than re-validating and
+                // re-toasting; a fixed edit changes the value and re-validates normally.
+                if (result !== "ok") showToast(result.startsWith("error:") ? result.slice("error:".length) : result, "error");
+            });
+        } else {
+            void putAssetText(filename, value);
+        }
     }
     // Refetched whenever the selection changes, for dictionary controls whose keys are
     // object names (e.g. gamebook page "Options" links) rather than free text. The page

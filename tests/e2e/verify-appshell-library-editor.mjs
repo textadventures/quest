@@ -2,6 +2,8 @@
 // a CodeMirror editor for the library's .aslx file (like the JavaScript editor), built-in
 // engine-shipped libraries are read-only, custom uploaded libraries are editable, and editing one
 // writes the file and shows the LibraryReloadBanner (the edit only takes effect after reload).
+// Also checks that malformed edits are refused before anything is written, so the game can't be
+// reloaded into an unloadable state.
 import { chromium } from 'playwright';
 import { fileURLToPath } from 'node:url';
 import path from 'node:path';
@@ -146,6 +148,33 @@ try {
     if (!customContent.includes(EDITED_MARKER)) throw new Error('Expected the edited library content to survive a reload (proving the file was written to the adapter)');
     if (!customContent.includes('MyLibraryGreeting')) throw new Error('Expected the reloaded library to still be a valid library (function retained)');
     console.log('PASS: after Reload the edited library content is still there, proving the file write persisted');
+
+    // --- Regression: a malformed edit is refused, so the game can't be reloaded into an
+    //     unloadable state ---
+    // The tree editor validates the same way as the Code View panel's Apply (putLibraryAssetText
+    // funnels through the throwaway-controller check), so broken XML must never reach the adapter.
+    await setCmContent(page, 'not valid xml <unclosed');
+    await page.locator('input[aria-label="Filter game objects"]').click();
+    await page.waitForTimeout(1500);
+    if (await page.locator('text=Reload the editor to apply your library changes').count() > 0) {
+        throw new Error('Expected no reload banner after an invalid library edit: a malformed edit must be refused, not committed');
+    }
+    console.log('PASS: a malformed library edit is refused (no banner, nothing written)');
+
+    // Had the invalid edit above actually been committed to the adapter, the reload below would
+    // fail to load the game. Coming back up healthy with the valid content is the regression check.
+    await setCmContent(page, `<library>\n  <function name="MyLibraryGreeting">\n    <![CDATA[<msg>${EDITED_MARKER} after a rejected edit</msg>]]>\n  </function>\n</library>`);
+    await page.locator('[data-value="game"][data-part="branch-control"]').click();
+    await page.waitForSelector('text=Reload the editor to apply your library changes', { timeout: 5000 });
+    await page.click('button:has-text("Reload")');
+    await page.waitForSelector('button[title="More"]', { timeout: 90000 });
+    await page.waitForSelector('text=Reload the editor to apply your library changes', { state: 'hidden', timeout: 5000 });
+    await revealLibraries(page);
+    await treeItem(page, CUSTOM_LIBRARY).first().click();
+    await page.waitForSelector('.cm-editor', { timeout: 10000 });
+    customContent = await page.locator('.cm-content').first().innerText();
+    if (!customContent.includes('after a rejected edit')) throw new Error('Expected the game to reload cleanly after the malformed edit was refused, with the valid library content intact');
+    console.log('PASS: the game still reloads cleanly after the malformed edit was refused');
 
     console.log('PASS: all checks passed');
 } catch (err) {

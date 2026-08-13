@@ -103,7 +103,7 @@
             ]
         );
         if (choice === "discard") await loadFile(next);
-        // Any other outcome ("keep", or Escape/backdrop which resolves null) — stay put; the
+    // Any other outcome ("keep", or Escape/backdrop which resolves null) — stay put; the
         // <select> snaps back to selectedIndex on the next render.
     }
 
