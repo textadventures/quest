@@ -703,10 +703,6 @@ export default defineConfig({
                         }
                     ]
                 },
-                {
-                    label: "Docs Style Guide",
-                    slug: "style_guide"
-                },
             ],
         }),
     ],

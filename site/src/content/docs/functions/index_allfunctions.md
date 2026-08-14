@@ -1,5 +1,7 @@
 ---
 title: Functions
+sidebar:
+  hidden: true
 ---
 
 
