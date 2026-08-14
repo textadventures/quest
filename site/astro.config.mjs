@@ -21,6 +21,7 @@ export default defineConfig({
             sidebar: [
                 {
                     label: "Guides",
+                    collapsed: true,
                     items: [{ autogenerate: { directory: "guides" } }],
                 },
                 {
@@ -29,6 +30,7 @@ export default defineConfig({
                 },
                 {
                     label: "Tutorial",
+                    collapsed: true,
                     items: [
                         {
                             label: "Overview",
@@ -94,6 +96,7 @@ export default defineConfig({
                 },
                 {
                     label: "How to use commands",
+                    collapsed: true,
                     items: [
                         {
                             label: "Overview",
@@ -131,6 +134,7 @@ export default defineConfig({
                 },
                 {
                     label: "Features",
+                    collapsed: true,
                     items: [
                         {
                             label: "Overview",
@@ -182,6 +186,7 @@ export default defineConfig({
                         },
                         {
                             label: "Multimedia",
+                            collapsed: true,
                             items: [
                                 {
                                     label: "Overview",
@@ -209,6 +214,7 @@ export default defineConfig({
                 },
                 {
                     label: "Script commands",
+                    collapsed: true,
                     items: [
                         {
                             label: "Overview",
@@ -374,6 +380,7 @@ export default defineConfig({
                 },
                 {
                     label: "Functions",
+                    collapsed: true,
                     items: [
                         {
                             label: "Overview",
@@ -381,6 +388,7 @@ export default defineConfig({
                         },
                         {
                             label: "Functions for Attributes",
+                            collapsed: true,
                             items: [
                                 {
                                     label: "Overview",
@@ -478,6 +486,7 @@ export default defineConfig({
                         },
                         {
                             label: "Functions for Variables",
+                            collapsed: true,
                             items: [
                                 {
                                     label: "Overview",
@@ -519,6 +528,7 @@ export default defineConfig({
                         },
                         {
                             label: "Functions for Objects and Exits",
+                            collapsed: true,
                             items: [
                                 {
                                     label: "Overview",
@@ -596,6 +606,7 @@ export default defineConfig({
                         },
                         {
                             label: "Timers and Turnscripts",
+                            collapsed: true,
                             items: [
                                 {
                                     label: "Overview",
@@ -661,6 +672,7 @@ export default defineConfig({
                         },
                         {
                             label: "User Interface Functions",
+                            collapsed: true,
                             items: [
                                 {
                                     label: "Overview",
@@ -786,6 +798,7 @@ export default defineConfig({
                         },
                         {
                             label: "List Functions",
+                            collapsed: true,
                             items: [
                                 {
                                     label: "Overview",
@@ -887,6 +900,7 @@ export default defineConfig({
                         },
                         {
                             label: "Scope Functions",
+                            collapsed: true,
                             items: [
                                 {
                                     label: "Overview",
@@ -1020,6 +1034,7 @@ export default defineConfig({
                         },
                         {
                             label: "Dictionary Functions",
+                            collapsed: true,
                             items: [
                                 {
                                     label: "Overview",
@@ -1081,6 +1096,7 @@ export default defineConfig({
                         },
                         {
                             label: "String Functions",
+                            collapsed: true,
                             items: [
                                 {
                                     label: "Overview",
@@ -1238,6 +1254,7 @@ export default defineConfig({
                         },
                         {
                             label: "Clothing Functions",
+                            collapsed: true,
                             items: [
                                 {
                                     label: "Overview",
@@ -1279,6 +1296,7 @@ export default defineConfig({
                         },
                         {
                             label: "Randomising Functions",
+                            collapsed: true,
                             items: [
                                 {
                                     label: "Overview",
@@ -1328,6 +1346,7 @@ export default defineConfig({
                         },
                         {
                             label: "General Functions",
+                            collapsed: true,
                             items: [
                                 {
                                     label: "Overview",
@@ -1361,6 +1380,7 @@ export default defineConfig({
                         },
                         {
                             label: "Core.aslx Functions",
+                            collapsed: true,
                             items: [
                                 {
                                     label: "Overview",
@@ -1482,6 +1502,7 @@ export default defineConfig({
                         },
                         {
                             label: "Internal Core.aslx Functions",
+                            collapsed: true,
                             items: [
                                 {
                                     label: "Overview",
@@ -1717,6 +1738,7 @@ export default defineConfig({
                 },
                 {
                     label: "Attributes",
+                    collapsed: true,
                     items: [
                         {
                             label: "Overview",
@@ -1736,6 +1758,7 @@ export default defineConfig({
                         },
                         {
                             label: "Attribute Types",
+                            collapsed: true,
                             items: [
                                 {
                                     label: "Overview",
@@ -1809,6 +1832,7 @@ export default defineConfig({
                         },
                         {
                             label: "Attribute Reference",
+                            collapsed: true,
                             items: [
                                 {
                                     label: "Overview",
@@ -2428,6 +2452,7 @@ export default defineConfig({
                 },
                 {
                     label: "How To",
+                    collapsed: true,
                     items: [
                         {
                             label: "Overview",
@@ -2521,6 +2546,7 @@ export default defineConfig({
                 },
                 {
                     label: "User Experience",
+                    collapsed: true,
                     items: [
                         {
                             label: "Overview",
@@ -2590,6 +2616,7 @@ export default defineConfig({
                 },
                 {
                     label: "Characters (NPCs)",
+                    collapsed: true,
                     items: [
                         {
                             label: "Overview",
@@ -2627,6 +2654,7 @@ export default defineConfig({
                 },
                 {
                     label: "Introduction to RPGs",
+                    collapsed: true,
                     items: [
                         {
                             label: "Overview",
@@ -2652,6 +2680,7 @@ export default defineConfig({
                 },
                 {
                     label: "Coding With Quest",
+                    collapsed: true,
                     items: [
                         {
                             label: "Overview",
@@ -2745,6 +2774,7 @@ export default defineConfig({
                 },
                 {
                     label: "Advanced Topics",
+                    collapsed: true,
                     items: [
                         {
                             label: "Overview",
@@ -2790,6 +2820,7 @@ export default defineConfig({
                 },
                 {
                     label: "Publishing",
+                    collapsed: true,
                     items: [
                         {
                             label: "Overview",
@@ -2803,6 +2834,7 @@ export default defineConfig({
                 },
                 {
                     label: "Reference",
+                    collapsed: true,
                     items: [
                         {
                             label: "Overview",
@@ -2810,6 +2842,7 @@ export default defineConfig({
                         },
                         {
                             label: "XML Elements",
+                            collapsed: true,
                             items: [
                                 {
                                     label: "Overview",
@@ -2915,6 +2948,7 @@ export default defineConfig({
                         },
                         {
                             label: "JS functions",
+                            collapsed: true,
                             items: [
                                 {
                                     label: "Overview",
@@ -3002,6 +3036,7 @@ export default defineConfig({
                 },
                 {
                     label: "Other Guides",
+                    collapsed: true,
                     items: [
                         {
                             label: "Overview",
@@ -3009,6 +3044,7 @@ export default defineConfig({
                         },
                         {
                             label: "Community Guides",
+                            collapsed: true,
                             items: [
                                 {
                                     label: "Overview",
@@ -3070,6 +3106,7 @@ export default defineConfig({
                         },
                         {
                             label: "Helpsheets for beginners",
+                            collapsed: true,
                             items: [
                                 {
                                     label: "Overview",
@@ -3149,6 +3186,7 @@ export default defineConfig({
                 },
                 {
                     label: "Release Notes",
+                    collapsed: true,
                     items: [
                         {
                             label: "Overview",
@@ -3174,6 +3212,7 @@ export default defineConfig({
                 },
                 {
                     label: "Developers",
+                    collapsed: true,
                     items: [
                         {
                             label: "Overview",
