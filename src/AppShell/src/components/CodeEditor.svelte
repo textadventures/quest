@@ -4,7 +4,7 @@
     import { EditorView, keymap, lineNumbers, highlightActiveLine } from "@codemirror/view";
     import { history, defaultKeymap, historyKeymap, indentWithTab } from "@codemirror/commands";
     import { bracketMatching, indentOnInput, codeFolding, foldGutter, foldKeymap } from "@codemirror/language";
-    import { closeBrackets, closeBracketsKeymap } from "@codemirror/autocomplete";
+    import { closeBrackets, closeBracketsKeymap, autocompletion, completionKeymap, acceptCompletion } from "@codemirror/autocomplete";
     import { searchKeymap } from "@codemirror/search";
     import { javascript } from "@codemirror/lang-javascript";
     import { questScript } from "$lib/quest-script-lang";
@@ -62,13 +62,19 @@
                 bracketMatching(),
                 closeBrackets(),
                 indentOnInput(),
+                autocompletion(),
                 EditorView.lineWrapping,
                 keymap.of([
                     ...closeBracketsKeymap,
                     ...defaultKeymap,
                     ...historyKeymap,
                     ...searchKeymap,
+                    ...completionKeymap,
                     ...foldKeymap,
+                    // Tab also accepts a completion (VS Code-style) — acceptCompletion only
+                    // returns true while a suggestion is open, so otherwise this falls through
+                    // to indentWithTab below.
+                    { key: "Tab", run: acceptCompletion },
                     indentWithTab,
                     {
                         key: "Mod-s",

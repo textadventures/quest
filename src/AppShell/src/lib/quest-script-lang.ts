@@ -1,5 +1,6 @@
 import { StreamLanguage, LanguageSupport, foldService } from "@codemirror/language";
 import type { StreamParser, StringStream } from "@codemirror/language";
+import { completeAnyWord } from "@codemirror/autocomplete";
 import type { EditorState } from "@codemirror/state";
 
 // Approximate, non-validating highlighter for Quest's own line-oriented script
@@ -99,5 +100,8 @@ export const questScriptFoldService = foldService.of((state: EditorState, lineSt
 export const questScriptLanguage = StreamLanguage.define(questScriptParser);
 
 export function questScript(): LanguageSupport {
-    return new LanguageSupport(questScriptLanguage, [questScriptFoldService]);
+    return new LanguageSupport(questScriptLanguage, [
+        questScriptFoldService,
+        questScriptLanguage.data.of({ autocomplete: completeAnyWord }),
+    ]);
 }
