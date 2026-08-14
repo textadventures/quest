@@ -8,7 +8,7 @@ It can be helpful to the player if your game has a help system - something she c
 
 Back at the dawn of time, Infocom came up with the idea of [InvisiClues](https://en.wikipedia.org/wiki/InvisiClues) - and now you can do that too, in a virtual way.
 
-![](/images/guides/invisiclues.png)
+![](/images/other_guides/invisiclues.png)
 
 To get this to work, you need to create a new HELP command. For the command pattern, just type in "help;?", and for the name, "help2" (no quotes for both), as Quest already has a HELP command, and will object if you give your command the same name.
 
@@ -42,7 +42,7 @@ Click to add a new script, and select "Set a variable or attribute" from the lis
 
 Click to add a new script again, and select "Add a value to a dictionary. In the first box, put in `helpdict`. The two dropdowns should be set to "String". In the second box put the question, and in the third the answer. You need to do this for every hint you wish to add to your game.
 
-![](/images/guides/setup_hints.png)
+![](/images/other_guides/setup_hints.png)
 
 This is what the code looks like:
 

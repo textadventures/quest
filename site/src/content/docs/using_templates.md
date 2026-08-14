@@ -93,4 +93,4 @@ This in your code will give an open square bracket, `[`,  on output:
   &#91;
 ```
 
-See also: [Random default answers](/guides/random_default_answers)
+See also: [Random default answers](/other_guides/random_default_answers)
