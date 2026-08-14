@@ -36,7 +36,7 @@ sidebar:
 *  [Create exit](/scripts/create_exit)
 *  [Create timer](/scripts/create_timer)
 *  [Create turnscript](/scripts/create_turnscript)
-*  [CurrentDateUTC](/functions/currentDateUTC)  
+*  [CurrentDateUTC](/functions/currentdateutc)  
 
 ## D
 
