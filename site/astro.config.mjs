@@ -4,6 +4,7 @@ import starlight from "@astrojs/starlight";
 
 // https://astro.build/config
 export default defineConfig({
+    site: "https://questviva.com",
     integrations: [
         starlight({
             title: "Quest Viva",
@@ -2607,7 +2608,7 @@ export default defineConfig({
                             slug: "speak_to"
                         },
                         {
-                            label: "Handling ASK/TELL",
+                            label: "Building an Ask/Tell System",
                             slug: "ask_about"
                         },
                         {
@@ -2619,7 +2620,7 @@ export default defineConfig({
                             slug: "independent_npcs"
                         },
                         {
-                            label: "Handling ASK/TELL",
+                            label: "Ways to Talk to NPCs",
                             slug: "ask_tell"
                         }
                     ]

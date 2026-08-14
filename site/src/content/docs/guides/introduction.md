@@ -22,4 +22,8 @@ Because there's [another system](https://github.com/ThePix/QuestJS) already call
 
 ## Where's all the documentation?
 
-The proper Quest Viva documentation is a work in progress - for now, the [Quest 5 documentation](https://docs.textadventures.co.uk/quest/) is the place to look. Quest Viva 6 is pretty much "a modern version of Quest 5" so the way you build a game is pretty much the same. The docs will be migrated to this site soon.
+The [Quest Overview](/overview) is a good place to start, followed by the [Tutorial](/tutorial). Quest Viva is pretty much "a modern version of Quest 5" under the hood, so almost everything in these docs applies equally to both.
+
+## Getting help
+
+Quest is discussed on [Discord](https://textadventures.co.uk/community/discord) and [GitHub Discussions](https://github.com/textadventures/quest/discussions). If you find a bug or want to request a feature, [open an issue](https://github.com/textadventures/quest/issues).

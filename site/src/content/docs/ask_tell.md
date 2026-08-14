@@ -1,5 +1,5 @@
 ---
-title: Handling ASK/TELL
+title: Ways to Talk to NPCs
 sidebar:
   order: 7
 ---

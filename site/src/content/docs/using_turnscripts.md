@@ -54,7 +54,7 @@ SuppressTurnscripts
 Order of turnscripts
 --------------------
 
-At the end of each turn, all active turnscripts will be run in alphabetical order, based on their name (if you do not give a turnscript a name, it will be given a default one that begins with a "k"!). See [here](http://docs.textadventures.co.uk/quest/functions/objectlistsort.html) for how Quest orders alphabetically.
+At the end of each turn, all active turnscripts will be run in alphabetical order, based on their name (if you do not give a turnscript a name, it will be given a default one that begins with a "k"!). See [here](/functions/objectlistsort) for how Quest orders alphabetically.
 
 
 

@@ -19,7 +19,7 @@ Quest has some features built in to help us, so the first step is to turn these 
 
 Now you need to think about what currency you want to use. If you are using pounds sterling, you should consider if you want to track the pennies, or just the pounds (the system will only be using whole numbers, so think carefully!).
 
-Now go to the _Player_ tab, and the "Format for money" bit. By default it is "$!". The exclamation mark is a stand in for the actual value, so this will show money in dollars. You can modify that as you like - and there are [a lot of options](http://docs.textadventures.co.uk/quest/functions/string/displaymoney.html).
+Now go to the _Player_ tab, and the "Format for money" bit. By default it is "$!". The exclamation mark is a stand in for the actual value, so this will show money in dollars. You can modify that as you like - and there are [a lot of options](/functions/string/displaymoney).
 
 Clearly everything will need a price, so it can be bought and sold.  On the _Inventory_ tab of each object, you can set the price. You must also set the starting money for the player on the _Player_ tab of the player object (you will get errors if this is not set).
 

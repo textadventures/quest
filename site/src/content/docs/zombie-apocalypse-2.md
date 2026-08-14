@@ -276,7 +276,7 @@ Searching Corpses
 
 Looting the dead is very much frowned upon in real life, but accepted and almost mandatory in video games, so we better implement it for our game. What we need is a search command and some addition to the zombies that adds goodies to them.
 
-To turn on money, tick the "Money" box on the _Features_ tab of the game object, then go to the _Player_ tab of the player object and set the start money. Make sure you set a value here - it looks like it defaults to zero, but really it does not. If you want it to be zero, set it to 1, and then set it to 0. For more on how to handle money in Quest, see [here](http://docs.textadventures.co.uk/quest/shop.html).
+To turn on money, tick the "Money" box on the _Features_ tab of the game object, then go to the _Player_ tab of the player object and set the start money. Make sure you set a value here - it looks like it defaults to zero, but really it does not. If you want it to be zero, set it to 1, and then set it to 0. For more on how to handle money in Quest, see [here](/shop).
 
 Create a command, and give it this pattern:
 
