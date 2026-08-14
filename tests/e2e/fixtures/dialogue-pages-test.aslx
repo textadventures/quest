@@ -1,0 +1,54 @@
+<asl version="600">
+  <include ref="English.aslx" />
+  <include ref="Core.aslx" />
+  <game name="dialogue-pages-test">
+    <gameid>e2e-dialogue-pages-test</gameid>
+  </game>
+
+  <object name="hall">
+    <inherit name="editor_room" />
+    <object name="player">
+      <inherit name="defaultplayer" />
+    </object>
+
+    <object name="signpost">
+      <inherit name="editor_object" />
+      <look>A sign reads: {page:guard_intro:talk to the guard}.</look>
+    </object>
+
+    <object name="guard">
+      <inherit name="editor_object" />
+
+      <object name="guard_intro">
+        <inherit name="dialoguepage" />
+        <description>The guard eyes you suspiciously.</description>
+        <options type="simplestringdictionary">guard_weather = Ask about the weather;guard_castle = Ask about the castle</options>
+      </object>
+
+      <object name="guard_weather">
+        <inherit name="dialoguepage" />
+        <description>Nice weather today.</description>
+        <options type="simplestringdictionary">guard_intro = Back</options>
+      </object>
+
+      <object name="guard_castle">
+        <inherit name="dialoguepage" />
+        <description>The castle is closed.</description>
+      </object>
+    </object>
+  </object>
+
+  <command name="cmd_talk">
+    <pattern>talk</pattern>
+    <script>
+      ShowPage (guard_intro, false, false)
+    </script>
+  </command>
+
+  <command name="cmd_marker">
+    <pattern>marker</pattern>
+    <script>
+      msg ("marker ran")
+    </script>
+  </command>
+</asl>

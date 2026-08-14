@@ -1,0 +1,208 @@
+<library>
+
+  <!--
+  Gamebook-style "Pages" for Text Adventure games: inline branching choices, primarily
+  for NPC dialogue trees. This deliberately mirrors GamebookCore.aslx's DoPage /
+  HandleCommand mechanism rather than being built on ShowMenu: a ShowMenu-based dialogue
+  parks a callback in game.menucallback, which leaves the game in an intercepted state
+  that the players' turn-pending logic disables save around. Here each option is just a
+  CommandLink that runs as an ordinary complete turn, so between choices the game is
+  fully idle and all dialogue state is plain game attributes - save, load and undo work
+  mid-dialogue for free. The one substitution from gamebook: a Text Adventure player
+  stays in their room, so the current page is tracked in game.currentpage instead of
+  player.parent.
+  -->
+
+  <type name="dialoguepage">
+    <!-- Pages are data, not locations: opt out of world scoping so they never appear
+         in "look", "take all" or disambiguation menus, regardless of where they sit in
+         the object tree. -->
+    <visible type="boolean">false</visible>
+    <runscript type="boolean">false</runscript>
+    <runscriptonly type="boolean">false</runscriptonly>
+    <!-- Set the first time a {page:} link to this page is actually printed
+         (see ProcessTextCommand_Page below) - gates HandleCommand's
+         outside-a-dialogue fallback in CoreParser.aslx, so a page's raw
+         object name only becomes a de-facto command once the player has
+         genuinely been shown a link to it, not just because the page
+         object happens to exist somewhere in the game. -->
+    <pagelinkshown type="boolean">false</pagelinkshown>
+  </type>
+
+  <type name="pagescript">
+    <runscriptonly/>
+  </type>
+
+  <type name="pagescripttext">
+    <runscript/>
+  </type>
+
+  <!--
+  Author-facing entry point: starts a dialogue at the given page. The two flags are
+  stored as game attributes so they survive save/load mid-dialogue, and because they are
+  set where the dialogue is launched, entering the same page graph from two different
+  places can behave differently - that's a feature.
+  allowCancel: if true, a non-option command ends the dialogue and then runs normally;
+  if false, the player is told to choose one of the options.
+  runTurnScripts: each choice is a real turn, so turn scripts would otherwise fire per
+  click (e.g. hunger daemons ticking mid-conversation); off by default.
+  -->
+  <function name="ShowPage" parameters="page, allowCancel, runTurnScripts">
+    game.pageallowcancel = allowCancel
+    game.pageturnscripts = runTurnScripts
+    GoToPage (page)
+  </function>
+
+  <!--
+  Displays a page: the Text Adventure analog of GamebookCore's DoPage. Callable from a
+  page script to redirect the dialogue to a different page (the analog of gamebook's
+  MovePlayer).
+  -->
+  <function name="GoToPage" parameters="page">
+    <![CDATA[
+      if (HasString(game, "pageoptionsoutputsection")) {
+        HideOutputSection (game.pageoptionsoutputsection)
+        game.pageoptionsoutputsection = null
+      }
+      game.currentpage = page
+      on ready {
+        if (GetBoolean(page, "runscript") or GetBoolean(page, "runscriptonly")) {
+          if (HasScript(page, "script")) {
+            do (page, "script")
+          }
+          else {
+            msg ("No script has been created for this page.")
+          }
+        }
+        // the script may have started a different page (or ended the dialogue), so only
+        // finish this page if it is still the current one
+        if (game.currentpage = page and not GetBoolean(page, "runscriptonly")) {
+          msg (page.description)
+          msg ("")
+          game.currentpageoptionkeys = NewStringList()
+          game.pageoptionsoutputsection = StartNewOutputSection()
+          if (TypeOf(page, "options") = "stringdictionary") {
+            foreach (key, page.options) {
+              destination = GetObject(key)
+              if (destination = null) {
+                msg (StringDictionaryItem(page.options, key) + " (broken link)")
+              }
+              else {
+                list add (game.currentpageoptionkeys, key)
+                msg (ListCount(game.currentpageoptionkeys) + ": " + CommandLink(key, StringDictionaryItem(page.options, key)))
+              }
+            }
+          }
+          EndOutputSection (game.pageoptionsoutputsection)
+          if (ListCount(game.currentpageoptionkeys) = 0) {
+            // a page with no options to choose from ends the dialogue; leave its text
+            // visible (don't hide the section - it may contain broken-link lines)
+            ClearPageDialogueState
+          }
+        }
+        else if (game.currentpage = page and GetBoolean(page, "runscriptonly")) {
+          // a script-only page which didn't chain to another page ends the dialogue
+          ClearPageDialogueState
+        }
+      }
+      page.visited = true
+    ]]>
+  </function>
+
+  <!--
+  Ends the dialogue, hiding the current page's option links. Callable by authors (e.g.
+  from a page script) as well as from the cancel path in HandleCommand.
+  -->
+  <function name="EndPageDialogue">
+    if (HasString(game, "pageoptionsoutputsection")) {
+      HideOutputSection (game.pageoptionsoutputsection)
+    }
+    ClearPageDialogueState
+  </function>
+
+  <function name="ClearPageDialogueState">
+    game.currentpage = null
+    game.pageoptionsoutputsection = null
+    game.currentpageoptionkeys = null
+    game.pageallowcancel = null
+    game.pageturnscripts = null
+  </function>
+
+  <!--
+  Called from HandleCommand while game.currentpage is set. Accepts an option key (the
+  target page's name, which is what its CommandLink sends) or a typed option number -
+  an improvement over gamebook, matching ShowMenu's typed-number support. Returns false
+  for anything else so HandleCommand can consult game.pageallowcancel.
+  -->
+  <function name="HandlePageTextResponse" parameters="input" type="boolean">
+    <![CDATA[
+      handled = false
+      page = game.currentpage
+      chosenkey = null
+      if (TypeOf(page, "options") = "stringdictionary") {
+        if (IsInt(input)) {
+          number = ToInt(input)
+          if (number > 0 and number <= ListCount(game.currentpageoptionkeys)) {
+            chosenkey = StringListItem(game.currentpageoptionkeys, number - 1)
+          }
+        }
+        else if (DictionaryContains(page.options, input)) {
+          chosenkey = input
+        }
+      }
+      if (chosenkey <> null) {
+        destination = GetObject(chosenkey)
+        if (destination <> null) {
+          handled = true
+          start transaction ("page: " + chosenkey)
+          msg ("")
+          msg ("<b>" + StringDictionaryItem(page.options, chosenkey) + "</b>")
+          msg ("")
+          // decide the turn script behaviour now: by the time FinishTurn runs, a terminal
+          // page will already have cleared game.currentpage, so RunTurnScripts' own check
+          // can't cover the dialogue's final choice
+          if (GetBoolean(game, "pageturnscripts")) {
+            game.runturnscripts = true
+          }
+          else {
+            SuppressTurnscripts
+          }
+          GoToPage (destination)
+          FinishTurn
+        }
+      }
+      return (handled)
+    ]]>
+  </function>
+
+  <!--
+  Renders a {page:...} text-processor tag (see the "page:" entry in
+  CoreTypes.aslx's defaultgame.textprocessorcommands). This is the only place
+  a page's raw object name is ever actually shown to the player as a link
+  outside an active dialogue, so it marks the target page.pagelinkshown -
+  which is what CoreParser.aslx's HandleCommand fallback requires before it
+  will treat that raw name as a command. Delegates the actual rendering to
+  ProcessTextCommand_Command (the same handler {command:...} uses), which
+  {page:...} is otherwise identical to.
+  -->
+  <function name="ProcessTextCommand_Page" type="string" parameters="section, data">
+    <![CDATA[
+      colon = Instr(section, ":")
+      pagekey = Mid(section, colon + 1)
+      colon = Instr(pagekey, ":")
+      if (colon > 0) {
+        pagekey = Left(pagekey, colon - 1)
+      }
+      targetpage = GetObject(pagekey)
+      if (targetpage <> null and DoesInherit(targetpage, "dialoguepage")) {
+        targetpage.pagelinkshown = true
+      }
+      return (ProcessTextCommand_Command(section, data))
+    ]]>
+  </function>
+
+  <function name="HasSeenPage" parameters="page" type="boolean">
+    return (GetBoolean(page, "visited"))
+  </function>
+
+</library>

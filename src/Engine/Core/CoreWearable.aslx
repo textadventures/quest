@@ -1,0 +1,711 @@
+<library>
+
+  <!--  COMMANDS  -->
+
+  <command name="wear" template="wear">
+    <allow_all />
+    <script>
+      if (multiple and ListCount(object) = 0) {
+        msg(Template("NothingToWear"))
+      }
+      else{
+        foreach (obj, object) {
+          if (multiple) {
+            OutputTextNoBr(GetDisplayAlias(obj) + ": ")
+          }
+          f = _DoWear(obj)
+        }
+        UpdateArmour
+      }
+    </script>
+    <scope>inventory</scope>
+  </command>
+
+  <command name="remove" template="remove">
+    <allow_all />
+    <script>
+      if (multiple and ListCount(object) = 0) {
+        msg(Template("NothingToRemove"))
+      }
+      else{
+        foreach (obj, object) {
+          if (multiple) {
+            OutputTextNoBr(GetDisplayAlias(obj) + ": ")
+          }
+          f = _DoRemove(obj)
+        }
+      }
+      UpdateArmour
+    </script>
+    <scope>inventory</scope>
+  </command>
+
+  <!--  FUNCTIONS SUPPORTING COMMANDS  -->
+
+  <function name="_DoWear" parameters="object" type="boolean"><![CDATA[
+      // Is this possible?
+      if(not HasAttribute(object,"worn") or not HasAttribute(object,"wear_slots")) {
+        // No, not a garment
+        msg (DynamicTemplate("WearUnsuccessful", object))
+        return (false)
+      }
+      if (object.parent = game.pov and object.worn = true) {
+        // No, already worn
+        msg (DynamicTemplate("AlreadyWearing", object))
+        return (false)
+      }
+      if (not ListContains(ScopeInventory(), object)) {
+        // No, not held
+        msg (DynamicTemplate("CannotWearIfNotHeld", object))
+        return (false)
+      }
+      // Are other worn garments in the way?
+      obj = _GetOuterForGarment(game.pov, object)
+      if (not obj = null) {
+        if (obj.wear_layer > object.wear_layer or obj.wear_layer = 0 or object.wear_layer = 0) {
+          msg(DynamicTemplate("CannotWearOver", obj))
+          return (false)
+        }
+        if (obj.wear_layer = object.wear_layer) {
+          msg(DynamicTemplate("CannotWearWith", obj))
+          return (false)
+        }
+      }
+
+      if (not TestGarment(object)) {
+        return (false)
+      }
+
+      WearGarment(object)
+      if(object.wearmsg = null) {
+        P (DynamicTemplate("WearSuccessful",object))
+      } else {
+        P (object.wearmsg)
+      }
+
+      //do after
+      if (HasScript(object, "onafterwear")) {
+        do(object, "onafterwear")
+      } else if(HasString(object, "onafterwear")) {
+        P (object.onafterwear)
+      }
+      AfterWear
+      return(true)
+  ]]></function>
+
+  <!--
+  Use this to have the player wearing an item at the start of the game.
+  It will ensure it is in the player's inventory.
+  Sets aliases, verbs, etc.
+  This is unit tested.
+  -->
+  <function name="WearGarment" parameters="object">
+    <![CDATA[
+      if (GetBoolean(object, "multistate")) {
+        object.multistate_status = 1
+      }
+      else {
+        object.multistate_status = 0
+      }
+      if (object.alias = null) object.alias = object.name
+      if (object.listalias = null) object.listalias = object.alias
+
+      if (object.original_alias = null) {
+        object.original_drop = object.drop
+        object.original_alias = object.alias
+        object.original_listalias = object.listalias
+        object.original_bonusatts = object.bonusatts
+        object.original_wearslots = object.wear_slots
+        object.display = GetDisplayAlias(object)
+      }
+
+      object.parent = _GetWornClothingLocation()
+      object.worn = True
+      object.drop = false
+
+      _SetGarmentAlias(object)
+      _SetMultistate(object)
+      SetVerbs
+      SetBonuses(object, true)
+
+      if (HasInt(game.pov, "maxobjects")) {
+        game.pov.maxobjects = game.pov.maxobjects + 1
+      }
+
+      // Do error checking now so item can be put on even if multistate is going to fail
+      if (GetBoolean(object, "multistate")) {
+        if (not HasAttribute(object, "multistate_descriptors")) error ("No descriptors for multistate clothing: " + object.name)
+        if (not HasAttribute(object, "multistate_verbs")) error ("No verbs for multistate clothing: " + object.name)
+        if (not HasAttribute(object, "multistate_wearslots")) error ("No wearslots for multistate clothing: " + object.name)
+        statecount = ListCount(object.multistate_descriptors)
+        if (not statecount = ListCount(object.multistate_verbs)) error ("Mismatch in lists for multistate clothing: " + object.name)
+        if (not statecount = ListCount(object.multistate_wearslots)) error ("Mismatch in lists for multistate clothing: " + object.name)
+        object.original_wearslots = object.wear_slots
+      }
+  ]]></function>
+
+  <function name="_DoRemove" parameters="object" type="boolean"><![CDATA[
+      if (not ListContains(GetAllChildObjects(game.pov), object)) {
+        msg (DynamicTemplate("CannotRemoveIfNotHeld", object))
+        return (false)
+      }
+      if (not GetBoolean(object, "worn")) {
+        msg (DynamicTemplate("CannotRemoveIfNotWearing", object))
+        return (false)
+      }
+      if (not GetBoolean(object, "removeable")) {
+        if (HasString(object, "notremoveablemessage")) {
+          msg (object.notremoveablemessage)
+        }
+        else {
+          msg (DynamicTemplate("NotRemovable", object))
+        }
+        return (false)
+      }
+      if (HasInt(game.pov, "maxobjects")) {
+        if (ListCount(GetAllChildObjects(game.pov)) >= game.pov.maxobjects) {
+          msg (DynamicTemplate("MaxObjectsInInventory", object))
+          return (false)
+        }
+      }
+
+      obj = _GetOuterForGarment(game.pov, object)
+      if (not obj = null) {
+        if (obj.wear_layer > object.wear_layer) {
+          msg (DynamicTemplate("RemoveFirst", obj))
+          return (false)
+        }
+      }
+
+      if (not TestRemove(object)) {
+        return (false)
+      }
+
+      RemoveGarment(object)
+      if(object.removemsg = null) {
+        P (DynamicTemplate("RemoveSuccessful",object))
+      } else {
+        P (object.removemsg)
+      }
+
+      //do after
+      if (HasScript(object, "onafterremove")) {
+        do(object, "onafterremove")
+      } else if(HasString(object, "onafterremove")) {
+        P (object.onafterremove)
+      }
+      AfterRemove
+      return(true)
+  ]]></function>
+
+  <!--
+  Use this to have the player stop wearing an item.
+  It will ensure it is in the player's inventory.
+  This is unit tested.
+  -->
+  <function name="RemoveGarment" parameters="object"><![CDATA[
+      SetBonuses(object, false)
+      object.worn = false
+      object.drop = object.original_drop
+      object.alias = object.original_alias
+      object.multistate_status = 0
+      if (HasString(object, "listalias")) {
+        if (StartsWith(object.listalias, "<span style=\"color:blue\">")) {
+          object.listalias = null
+          do(object, "colourmylistalias")
+        }
+        else {
+          object.listalias = object.original_listalias
+        }
+      }
+      object.parent = game.pov
+      if (HasInt(game.pov, "maxobjects")) {
+        game.pov.maxobjects = game.pov.maxobjects - 1
+      }
+      SetVerbs
+  ]]></function>
+
+  <!--   UTILITY FUNCTIONS   -->
+
+  <!--
+  Returns a string list of every unique slot used in the game.
+  Useful for trouble-shooting if you want to see what slots you have set
+  in your game, but probably not useful otherwise.
+  -->
+  <function name="Slots" type="stringlist"><![CDATA[
+      sl = NewStringList()
+      foreach (o, AllObjects()) {
+        if (HasAttribute(o, "wear_slots")) {
+          foreach (s, o.wear_slots) {
+            if (not ListContains(sl, s)) {
+              list add(sl, s)
+            }
+          }
+        }
+      }
+      return (sl)
+  ]]></function>
+
+  <!-- GARMENT FUNCTIONS -->
+
+  <!--
+  The name of the garment, with prefix or suffix as appropriate
+  GetDisplayName will do this for most objects, but this function does it without "(worn)".
+  This is unit tested.
+  -->
+  <function name="GetDisplayGarment" parameters="obj" type="string">
+    if (not GetBoolean(obj, "usedefaultprefix")) {
+      if (obj.prefix = null) {
+        prefix = ""
+      }
+      else {
+        prefix = obj.prefix
+      }
+    }
+    else {
+      prefix = GetDefaultPrefix(obj)
+    }
+    if (LengthOf(prefix) > 0) {
+      prefix = prefix + " "
+    }
+    if (HasString(obj, "original_alias")) {
+      result = prefix + obj.original_alias
+    }
+    else {
+      result = prefix + obj.alias
+    }
+    if (not GetBoolean(obj, "usedefaultprefix") and HasString(obj, "suffix")) {
+      if (LengthOf(obj.suffix) > 0) {
+        result = result + " " + obj.suffix
+      }
+    }
+    return(result)
+  </function>
+
+  <!--
+  Use this to get the descriptor (eg, "(worn"), or can be more complicated for multistate.
+  Unit tested.
+  -->
+  <function name="GetDescriptor" parameters="object" type="string"><![CDATA[
+      if (object.multistate_status = 0) return (" (" + object.wornmodifier + ")")
+      s = StringListItem(object.multistate_descriptors, object.multistate_status - 1)
+      if (s = "*")  return (" (" + object.wornmodifier + ")")
+      return (" (" + object.wornmodifier + " " + s + ")")
+  ]]></function>
+
+  <!--
+  Use this to set the multi-state state of a garment.
+  Unit tested.
+  -->
+  <function name="SetMultistate" parameters="object, state"><![CDATA[
+      if (state < 1) error ("Attempt to set state to " + state + " for " + object.name)
+      if (state > ListCount(object.multistate_descriptors)) error ("Attempt to set state to " + state + " for " + object.name + " (max " + ListCount(object.multistate_descriptors) + ")")
+      if (not object.multistate_status = state) {
+        SetBonuses(object, false)
+        object.multistate_status = state
+        _SetGarmentAlias(object)
+        _SetMultistate(object)
+        SetBonuses(object, true)
+        SetVerbs
+      }
+  ]]></function>
+
+  <!-- FUNCTIONS FOR PLAYER AND NPCS -->
+
+  <!--
+  Returns the outermost garment in the given slot
+  This is unit tested.
+  -->
+  <function name="GetOuterFor" parameters="char, slot" type="object"><![CDATA[
+      garment = null
+      foreach(o, _GetList(char, slot)) {
+        if (garment = null) {
+          garment = o
+        }
+        else if (o.wear_layer > garment.wear_layer) {
+          garment = o
+        }
+      }
+      return (garment)
+  ]]></function>
+
+  <!--
+  Returns all the garments worn
+  This is unit tested.
+  -->
+  <function name="ListWornFor" parameters="char" type="objectlist">
+    return (_GetList(char, null))
+  </function>
+
+  <!--
+  Returns all the garments visible for the given char.
+  Note that garments that are not assigned to slot will NOT be included.
+  This is unit tested.
+  -->
+  <function name="ListVisibleFor" parameters="char" type="objectlist">
+    ol = newObjectList()
+    foreach (s, Slots()) {
+      o = GetOuterFor(char, s)
+      if (not o = null and not ListContains(ol, o)) {
+        list add (ol, o)
+      }
+    }
+    return (ol)
+  </function>
+
+  <!--
+  Returns TWENTY TIMES the level of overall protection, which could
+  be up to 110 for plate on top of chain.
+  This is unit tested.
+  -->
+  <function name="GetArmourFor" parameters="char" type="int"><![CDATA[
+      total = 2 * _GetSlotArmour(char, "head") + 3 * _GetSlotArmour(char, "torso")
+      foreach(s, Split("feet|legs|shoulders|arms|hands", "|")) {
+        total = total + _GetSlotArmour(char, s)
+      }
+      return (total)
+  ]]></function>
+
+  <!--   FUNCTIONS FOR PLAYER ONLY   -->
+
+  <!--
+  Returns the outermost garment in the given slot
+  This is unit tested.
+  -->
+  <function name="GetOuter" parameters="slot" type="object">
+    return(GetOuterFor(game.pov, slot))
+  </function>
+
+  <!--
+  Returns TWENTY TIMES the level of overall protection, which could
+  be up to 110 for plate on top of chain.
+  This is unit tested.
+  -->
+  <function name="GetArmour" type="int">
+    return(GetArmourFor(game.pov))
+  </function>
+
+  <!--
+  Sets the inventory verbs for all the garments the player is currently wearing.
+  Removing or wearing one item can affect whether another can be worn or removed,
+  so this is used when a garment is picked up, put on or taken off.
+  Generally this is done for you, but if you override the default scripts, remember to call this.
+  This is unit tested.
+  -->
+  <function name="SetVerbs"><![CDATA[
+      foreach(o, GetAllChildObjects(game.pov)) {
+        if (DoesInherit(o, "wearable")) {
+          if (HasAttribute(o, "wear_adjverbs")) {
+            if (o.wear_adjverbs) {
+              if (HasAttribute(o, "wear_slots") and HasInt(o, "wear_layer")) {
+                _SetVerbsForGarment(o)
+              }
+              if (not HasString(o, "alias")) o.alias = o.name
+              if (not HasString(o, "listalias")) o.listalias = o.alias
+            }
+          }
+        }
+      }
+  ]]></function>
+
+  <!--
+  Gets the number of garments curentlyu worn by the player.
+  This is unit tested.
+  -->
+  <function name="WornCount" type="int"><![CDATA[
+      count = 0
+      foreach(o, GetAllChildObjects(game.pov)) {
+        if (GetBoolean(o, "worn")) {
+          count = count + 1
+        }
+      }
+      return (count)
+  ]]></function>
+
+  <!--
+  Returns the items currently worn as a string in the form a one, a two and a three.
+  Unit tested.
+  -->
+  <function name="ListClothes" type="string"><![CDATA[
+      l = NewStringList()
+      foreach (obj, ListWornFor(game.pov)) {
+        list add (l, GetDisplayGarment(obj))
+      }
+      return (FormatList(l, ",", "[And]", "[Nothing]"))
+  ]]></function>
+
+  <!--
+  This gets called when an item is put on or taken off, and can be used
+  to add or subtract attribute bonuses for that garment, for example.
+  The wearflag will be true when the item is put on and false when taken
+  off.
+  If the item can be removed in other ways, remember to call this.
+  This is unit tested.
+  -->
+  <function name="SetBonuses" parameters="garment, wearflag"><![CDATA[
+      if (HasString(garment, "bonusatts")) {
+        foreach (att, Split(garment.bonusatts, ";")) {
+          bonus = 1
+          plusarray = Split(att, "+")
+          minusarray = Split(att, "-")
+          if (ListCount(plusarray) = 2) {
+            att = StringListitem(plusarray, 0)
+            if (not IsInt(StringListitem(plusarray, 1))) error ("Bonus attribute for " + garment.name + " not properly formatted: " + garment.bonusatts)
+            bonus = ToInt(StringListitem(plusarray, 1))
+          }
+          if (ListCount(minusarray) = 2) {
+            att = StringListitem(minusarray, 0)
+            if (not IsInt(StringListitem(minusarray, 1))) error ("Negative bonus attribute for " + garment.name + " not properly formatted: " + garment.bonusatts)
+            bonus = -ToInt(StringListitem(minusarray, 1))
+          }
+          if (not wearflag) {
+            bonus = -bonus
+          }
+          bonus = ClothingBonusMultiplier() * bonus
+          n = GetInt(game.pov, att) + bonus
+          set (game.pov, att, n)
+        }
+      }
+  ]]></function>
+
+  <function name="SetAlias" parameters="object, alias"><![CDATA[
+      SetListAlias(object, alias, alias)
+  ]]></function>
+
+  <function name="SetListAlias" parameters="object, alias, listalias"><![CDATA[
+      object.alias = alias
+      object.listalias = listalias
+      if (Equal(object.worn, true)) {
+        object.original_alias = object.alias
+        object.original_listalias = object.listalias
+        object.display = GetDisplayAlias(object)
+        _SetGarmentAlias(object)
+      }
+  ]]></function>
+
+  <!-- INTERNAL FUNCTIONS -->
+  <!-- There should be no reason to use these in a game -->
+
+  <function name="_SetMultistate" parameters="object"><![CDATA[
+      if (GetBoolean(object, "multistate")) {
+        ws = StringListItem(object.multistate_wearslots, object.multistate_status - 1)
+        if (ws = "*") {
+          object.wear_slots = object.original_wearslots
+        }
+        else {
+          object.wear_slots = Split(ws, ";")
+        }
+        wv = StringListItem(object.multistate_verbs, object.multistate_status - 1)
+        if (wv = "*") {
+          object.wornverbs = null
+        }
+        else {
+          object.wornverbs = wv
+        }
+        ba = StringListItem(object.multistate_bonusatts, object.multistate_status - 1)
+        if (ba = "*") {
+          object.bonusatts = object.original_bonusatts
+        }
+        else {
+          object.bonusatts = ba
+        }
+      }
+  ]]></function>
+
+  <function name="_SetGarmentAlias" parameters="object"><![CDATA[
+      ext = GetDescriptor(object)
+      object.alias = object.display + ext
+      if (HasString(object, "listalias")) {
+        if (StartsWith(object.listalias, "<span style=\"color:blue\">")) {
+          object.listalias = null
+          do(object, "colourmylistalias")
+        }
+        else {
+          object.listalias = object.original_listalias + ext
+        }
+      }
+  ]]></function>
+
+  <!--
+  Returns the place to put worn clothing
+  -->
+  <function name="_GetWornClothingLocation" type="object"><![CDATA[
+      foreach (o, GetDirectChildren(game.pov)) {
+        if (GetBoolean(o, "wornclothinglocation")) {
+          return (o)
+        }
+      }
+      return (game.pov)
+  ]]></function>
+
+  <!--
+  Returns the outermost garment in one of the slots of the given garment (not necessarily the same
+  as the outermost garment)
+  -->
+  <function name="_GetOuterForGarment" parameters="char, garment" type="object"><![CDATA[
+      foreach (slot, garment.wear_slots) {
+        obj = GetOuterFor(char, slot)
+        if (not obj = null and not obj = garment) {
+          return (obj)
+        }
+      }
+      return (null)
+  ]]></function>
+
+  <function name="_SetVerbList" parameters="garment, list, s">
+    garment.inventoryverbs = list
+    if (not s = null) {
+      if (not s = "") {
+        foreach (s2, Split(s, ";")) {
+          list add (garment.inventoryverbs, s2)
+        }
+      }
+    }
+  </function>
+
+  <function name="_SetVerbsForGarment" parameters="garment"><![CDATA[
+      outer = _GetOuterForGarment(game.pov, garment)
+      if (not garment.worn) {
+        if (outer = null) {
+          _SetVerbList (garment, Split("[LookAt];[Drop];[Wear]", ";"), garment.invverbs)
+        }
+        else if (outer.wear_layer < garment.wear_layer) {
+          _SetVerbList (garment, Split("[LookAt];[Drop];[Wear]", ";"), garment.invverbs)
+        }
+        else {
+          _SetVerbList (garment, Split("[LookAt];[Drop]", ";"), garment.invverbs)
+        }
+      }
+      else {
+        if (outer = null) {
+          if (garment.removeable) {
+            _SetVerbList (garment, Split("[LookAt];[Remove]", ";"), garment.wornverbs)
+          }
+          else {
+            _SetVerbList (garment, Split("[LookAt]", ";"), garment.wornverbs)
+          }
+        }
+        else if (outer.wear_layer < garment.wear_layer) {
+          if (garment.removeable) {
+            _SetVerbList (garment, Split("[LookAt];[Remove]", ";"), garment.wornverbs)
+          }
+          else {
+            _SetVerbList (garment, Split("[LookAt]", ";"), garment.wornverbs)
+          }
+        }
+        else {
+          garment.inventoryverbs = Split("[LookAt]", ";")
+        }
+      }
+  ]]></function>
+
+  <!--
+  Returns all the garments in the given slot
+  -->
+  <function name="_GetList" parameters="char, slot" type="objectlist"><![CDATA[
+      garments = NewObjectList()
+      foreach(o, GetAllChildObjects(char)) {
+        if (HasAttribute(o, "wear_slots") and HasInt(o, "wear_layer") and GetBoolean(o, "worn")) {
+          if (ListContains(o.wear_slots, slot) or slot = null) {
+            list add(garments, o)
+          }
+        }
+      }
+      return (garments)
+  ]]></function>
+
+  <!--
+  Returns TWICE the level of protection in the given slot, which could
+  be up to 11 for plate on top of chain.
+  -->
+  <function name="_GetSlotArmour" parameters="char, slot" type="int"><![CDATA[
+      total = 0
+      max = 0
+      foreach(o, _GetList(char, slot)) {
+        total = total + o.armour
+        if (o.armour > max) max = o.armour
+      }
+      return (total + max)
+  ]]></function>
+
+  <!--  CUSTOMISATION  -->
+
+  <function name="ClothingBonusMultiplier" type="int"><![CDATA[
+      return (1)
+  ]]></function>
+
+  <function name="AfterRemove">
+  </function>
+
+  <function name="AfterWear">
+  </function>
+
+  <function name="P" parameters="s">
+    msg(s)
+  </function>
+
+  <!--
+  Override this in your combat library
+  -->
+  <function name="UpdateArmour"><![CDATA[
+  ]]></function>
+
+  <!--
+  Override this in your game for custom testing, for
+  example to check the size is suitable.
+  -->
+  <function name="TestGarment" type="boolean" parameters="object"><![CDATA[
+      if (HasString(game.pov, "notallowedtodress")) {
+        msg(game.pov.notallowedtotake)
+        return (false)
+      }
+      else {
+        return (true)
+      }
+  ]]></function>
+
+  <!--
+  Override this in your game for custom testing, for removing the item.
+  -->
+  <function name="TestRemove" type="boolean" parameters="object"><![CDATA[
+      if (HasString(game.pov, "notallowedtoundress")) {
+        msg(game.pov.notallowedtotake)
+        return (false)
+      }
+      else {
+        return (true)
+      }
+  ]]></function>
+
+  <!--  TYPES  -->
+
+  <type name="wearable">
+    <usestandardverblist type="boolean">true</usestandardverblist>
+    <worn type="boolean">false</worn>
+    <armour type="int">0</armour>
+    <multistate_status type="int">0</multistate_status>
+    <invverbs type="string"></invverbs>
+    <wornverbs type="string"></wornverbs>
+    <take type="script">
+      msg (DynamicTemplate("TakeSuccessful", this))
+      this.parent = game.pov
+      SetVerbs
+    </take>
+    <removeable type="boolean">true</removeable>
+    <wear_layer type="int">2</wear_layer>
+    <wear_adjverbs type="boolean">true</wear_adjverbs>
+    <inventoryverbs type="listextend">[Wear];[Remove]</inventoryverbs>
+    <wear_slots type="stringlist" />
+    <colourmylistalias type="script"><![CDATA[
+        if (HasString(this, "alias")) {
+          s = CapFirst(this.alias)
+        }
+        else {
+          s = CapFirst(this.name)
+        }
+        if (HasString(this, "listalias")) s = this.listalias
+        this.listalias = "<span style=\"color:blue\">" + s + "</span>"
+    ]]></colourmylistalias>
+  </type>
+
+</library>

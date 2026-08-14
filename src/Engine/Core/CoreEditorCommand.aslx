@@ -1,0 +1,60 @@
+<library>
+  <editor name="_CommandEditor">
+    <appliesto>command</appliesto>
+
+    <tab>
+      <caption>[EditorCommandCommand]</caption>
+
+      <control>
+        <controltype>multi</controltype>
+        <caption>[EditorCommandPattern]</caption>
+        <attribute>pattern</attribute>
+        <types>
+          simplepattern=[TypePatternCommand]; string=[TypePatternRegular]
+        </types>
+      </control>
+
+      <control>
+        <caption>[EditorCommandName]</caption>
+        <controltype>textbox</controltype>
+        <attribute>name</attribute>
+      </control>
+
+      <control>
+        <controltype>multi</controltype>
+        <caption>[EditorCommandUnresolved]</caption>
+        <attribute>unresolved</attribute>
+        <types>
+          null=[EditorDefault]; string=[TypeText]; script=[TypeRunScript]
+        </types>
+        <editors>
+          string=textbox
+        </editors>
+      </control>
+
+      <control>
+        <caption>[EditorCommandScope]</caption>
+        <controltype>textbox</controltype>
+        <attribute>scope</attribute>
+      </control>
+
+      <control>
+        <caption>[EditorCommandScript]</caption>
+        <controltype>script</controltype>
+        <attribute>script</attribute>
+        <expand/>
+      </control>
+
+    </tab>
+
+    <tab>
+      <caption>[EditorCommandAttributes]</caption>
+
+      <control>
+        <controltype>attributes</controltype>
+        <expand/>
+      </control>
+    </tab>
+
+  </editor>
+</library>

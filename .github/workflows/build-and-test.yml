@@ -1,0 +1,215 @@
+name: Build and test
+
+on:
+  push:
+    branches: [ "main" ]
+    paths:
+      - "src/**"
+      - "tests/**"
+      - "site/**"
+  pull_request:
+    branches: [ "main" ]
+  workflow_dispatch:
+
+jobs:
+  build_site:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out repository code
+        uses: actions/checkout@v7
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v6
+        with:
+          node-version: 'lts/*'
+          cache: 'npm'
+          cache-dependency-path: site/package-lock.json
+
+      - name: Install dependencies
+        run: npm ci
+        working-directory: site
+
+      - name: Build
+        run: npm run build
+        working-directory: site
+
+  build_appshell:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out repository code
+        uses: actions/checkout@v7
+
+      # Matches the node-version deploy-play.yml uses to build AppShell for
+      # release, so a lockfile that only resolves cleanly on a contributor's
+      # local platform gets caught here instead of on release day.
+      - name: Set up Node.js
+        uses: actions/setup-node@v6
+        with:
+          node-version: '22'
+          cache: 'npm'
+          cache-dependency-path: src/AppShell/package-lock.json
+
+      - name: Install dependencies
+        run: npm ci
+        working-directory: src/AppShell
+
+      - name: Build
+        run: npm run build
+        working-directory: src/AppShell
+        env:
+          PUBLIC_APPSHELL_VERSION: ${{ github.sha }}
+          PUBLIC_SHOW_HOME: true
+
+  lint_appshell:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out repository code
+        uses: actions/checkout@v7
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v6
+        with:
+          node-version: '22'
+          cache: 'npm'
+          cache-dependency-path: src/AppShell/package-lock.json
+
+      - name: Install dependencies
+        run: npm ci
+        working-directory: src/AppShell
+
+      - name: Lint
+        run: npm run lint
+        working-directory: src/AppShell
+
+      - name: Type check
+        run: npm run check
+        working-directory: src/AppShell
+
+  build_electron:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out repository code
+        uses: actions/checkout@v7
+
+      - name: Set up .NET
+        uses: actions/setup-dotnet@v5
+        with:
+          dotnet-version: '10.0.x'
+
+      - name: Install wasm-tools workload
+        run: dotnet workload install wasm-tools
+
+      # Debug builds are enough to prove the Electron build pipeline (and its
+      # static-asset assembly step) works — Release/AOT is a packaging-time
+      # concern, not a per-PR one.
+      - name: Build WasmEditor
+        run: dotnet build src/WasmEditor/WasmEditor.csproj -c Debug
+
+      - name: Build WasmPlayer
+        run: dotnet build src/WasmPlayer/WasmPlayer.csproj -c Debug
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v6
+        with:
+          node-version: '22'
+          cache: 'npm'
+          cache-dependency-path: |
+            src/AppShell/package-lock.json
+            src/ElectronApp/package-lock.json
+
+      - name: Install AppShell dependencies
+        run: npm ci
+        working-directory: src/AppShell
+
+      - name: Build AppShell
+        run: npm run build
+        working-directory: src/AppShell
+        env:
+          PUBLIC_SHOW_HOME: true
+
+      - name: Install ElectronApp dependencies
+        run: npm ci
+        working-directory: src/ElectronApp
+
+      - name: Build ElectronApp
+        run: npm run build
+        working-directory: src/ElectronApp
+
+  i18n_audit:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out repository code
+        uses: actions/checkout@v7
+        with:
+          # Need the PR's base commit too, to tell a newly introduced
+          # duplicate-key translation bug (see tools/i18n/compare-duplicates.mjs)
+          # apart from a pre-existing one - not just HEAD.
+          fetch-depth: 0
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v6
+        with:
+          node-version: 'lts/*'
+
+      - name: Run i18n audit
+        run: |
+          node tools/i18n/audit.mjs >> "$GITHUB_STEP_SUMMARY"
+          node tools/i18n/audit.mjs --json > /tmp/audit-head.json
+
+      # Regression guard for languages the registry marks `supported: true`
+      # (currently en, de) - those are meant to stay at 100% coverage in
+      # every layer. Languages not yet marked supported are tracked in the
+      # summary above but don't fail the build.
+      - name: Enforce coverage for supported languages
+        run: node tools/i18n/audit.mjs --strict
+
+      # Fails only on a *newly introduced* differing-value duplicate
+      # template key (an earlier translation silently going dead - see
+      # compare-duplicates.mjs) - pre-existing ones are tracked, not gated.
+      # Skipped on push (no PR base to diff against) and gracefully skipped
+      # if the base ref predates this tool (nothing to compare against yet).
+      - name: Check for newly introduced duplicate-key bugs
+        if: github.event_name == 'pull_request'
+        run: |
+          git fetch origin ${{ github.event.pull_request.base.sha }} --depth=1
+          if git cat-file -e ${{ github.event.pull_request.base.sha }}:tools/i18n/audit.mjs 2>/dev/null; then
+            git worktree add /tmp/base-checkout ${{ github.event.pull_request.base.sha }}
+            node tools/i18n/audit.mjs --json --root /tmp/base-checkout > /tmp/audit-base.json
+            node tools/i18n/compare-duplicates.mjs /tmp/audit-base.json /tmp/audit-head.json
+          else
+            echo "Base ref predates tools/i18n/audit.mjs - nothing to compare against yet, skipping."
+          fi
+
+  build_and_test:
+    runs-on: ubuntu-latest
+
+    steps:
+      # Check out the repo so the workflow can access it
+      - name: Check out repository code
+        uses: actions/checkout@v7
+
+      # Set up the .NET SDK (change to the specific version you’re using)
+      - name: Set up .NET
+        uses: actions/setup-dotnet@v5
+        with:
+          dotnet-version: '10.0.x'
+
+      - name: Install wasm-tools workload
+        run: dotnet workload install wasm-tools
+
+      # Restore dependencies
+      - name: Restore dependencies
+        run: dotnet restore
+
+      # Build the project
+      - name: Build
+        run: dotnet build --no-restore --configuration Release
+
+      # Run tests
+      - name: Test
+        run: dotnet test --no-build --configuration Release --verbosity normal

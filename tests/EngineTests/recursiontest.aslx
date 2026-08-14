@@ -1,0 +1,56 @@
+<asl version="580">
+  <include ref="English.aslx" />
+  <include ref="Core.aslx" />
+  <game name="recursiontest"/>
+  <object name="start">
+    <object name="player">
+      <inherit name="defaultplayer" />
+    </object>
+  </object>
+
+  <!-- A changed<field> script that sets the field it's watching recurses into itself
+       every time, with no base case. Regression test for the WorldModel.RunScriptAsync
+       depth guard: this must fail with a catchable script error instead of overflowing
+       the stack and crashing the whole process. -->
+  <object name="widget">
+    <counter type="int">0</counter>
+    <changedcounter type="script">
+      this.counter = this.counter + 1
+    </changedcounter>
+  </object>
+
+  <command name="cmd_trigger_recursion">
+    <pattern>triggerrecursion</pattern>
+    <script>
+      widget.counter = 1
+      msg ("after trigger")
+    </script>
+  </command>
+
+  <!-- Regression fixture: changed<field> must only fire on an actual value change, matching
+       Quest 5 semantics, so a same-value write (e.g. an "enter" script re-running MoveObject
+       into the room the player is already in) doesn't recurse forever. -->
+  <object name="watcher">
+    <hits type="int">0</hits>
+    <flag type="boolean">false</flag>
+    <changedflag type="script">
+      watcher.hits = watcher.hits + 1
+    </changedflag>
+  </object>
+
+  <command name="cmd_trigger_noop_write">
+    <pattern>triggernoop</pattern>
+    <script>
+      watcher.flag = false
+      msg ("after noop write")
+    </script>
+  </command>
+
+  <command name="cmd_trigger_real_change">
+    <pattern>triggerrealchange</pattern>
+    <script>
+      watcher.flag = not watcher.flag
+      msg ("after real change")
+    </script>
+  </command>
+</asl>

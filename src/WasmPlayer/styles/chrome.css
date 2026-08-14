@@ -1,0 +1,509 @@
+/* Source for the "app chrome" stylesheet — the start screen, and (soon) the
+   debugger and save-slot manager. Anything built from this file only takes
+   effect inside a `.qv-chrome` container; see scripts/scope-css.mjs for how
+   that containment is enforced. This must never be linked as-is (unscoped) —
+   always build via `npm run build`, which produces generated/chrome.css.
+
+   Utility/component classes (`btn`, `card`, `flex`, ...) are deliberately
+   NOT prefixed. Tailwind's `prefix()` was tried first, but it silently
+   drops the `--color-*-100-900`-style light-dark pair variables that
+   Skeleton's `@utility` blocks (e.g. preset-filled-*) depend on — a
+   tree-shaking bug in tailwindcss v4.3's CLI, confirmed by comparing output
+   with/without prefix(). `@scope` (below) already fully contains these
+   rules to `.qv-chrome` subtrees, which is the isolation that actually
+   matters here — nothing outside `.qv-chrome` can be affected either way,
+   so the prefix would only have guarded against an unprefixed class
+   accidentally matching something *inside* `.qv-chrome`, which nothing
+   currently does. */
+
+@import 'tailwindcss';
+@import '@skeletonlabs/skeleton';
+@import '@skeletonlabs/skeleton/themes/wintry';
+
+/* Hand-written rules for elements that carry the `.qv-chrome` scope-root
+   class itself. Bare selectors inside `@scope (.qv-chrome)` only ever match
+   *descendants* of the root (see scripts/scope-css.mjs), so the root can't
+   be styled with `qv:`-prefixed utility classes — it needs `:scope` written
+   explicitly instead. Keep this list short; put everything else (colors,
+   spacing, components) on a descendant so it can use Skeleton/Tailwind.
+   `#qv-start` here is the start screen's own root — a future debugger or
+   save-slot manager root would get its own `:scope#id` rule alongside it. */
+/* The loaded game can restyle <body> directly (Quest's Core library does
+   `JS.setCss("body", "font-family:...;color:...;font-size:...")` at startup
+   so games can pick their own narrative font/colours). `@scope` only limits
+   which elements Tailwind/Skeleton's *selectors* can match — it doesn't stop
+   ordinary CSS inheritance, so without this, the chrome would inherit
+   whatever font the current game happens to set. Skeleton's own utility
+   classes (btn, input, anchor, ...) already set their own color/font-size
+   explicitly, so font-family is the only property that needs resetting here. */
+:scope#qv-start,
+:scope#qv-saves,
+:scope#questVivaDebugger,
+:scope#qv-restarting,
+:scope#qv-recording {
+    font-family: var(--font-sans);
+}
+
+/* z-index:9999 on both this and #qv-restarting below: the shared game chrome
+   (playercore.css, not this file) gives #sidebar z-index:1000 and #qv-status
+   (the top toolbar, holding Debug/Restart) z-index:100 — both plain
+   position:fixed elements with no z-index of their own would otherwise
+   render *underneath* those regardless of DOM order (an unstyled sibling
+   with z-index:auto always loses to one with an explicit z-index, no matter
+   which comes later in the document). #qv-start isn't known to hit this in
+   practice (the sidebar is still display:none this early), but #qv-restarting
+   definitely does — a restart's sidebar panes were already visible from the
+   previous session and can become visible again mid-restart, popping in
+   front of what's supposed to be a fully opaque overlay. */
+:scope#qv-start {
+    position: fixed;
+    inset: 0;
+    z-index: 9999;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 1rem;
+    background: var(--color-surface-950);
+}
+
+/* Not a <dialog> (see its doc comment in index.html) — position:fixed at the
+   same z-index tier as #qv-start (both just sit in the normal stacking
+   context; qv-saves/questVivaDebugger are actual <dialog>s and always
+   render above this regardless, which is fine since both are already closed
+   by the time restartGameCore shows this). Fully opaque, matching #qv-start
+   above — not a translucent backdrop like the dialogs' ::backdrop rules
+   below: this needs to fully mask #divOutput, which Bridge.Begin() writes to
+   progressively *before* its own JS promise resolves (i.e. before this
+   overlay gets hidden again) — a translucent background let that new
+   output visibly bleed through right at the tail end of a restart. */
+:scope#qv-restarting {
+    position: fixed;
+    inset: 0;
+    z-index: 9999;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--color-surface-950);
+}
+
+:scope#qv-restarting.hidden {
+    display: none;
+}
+
+/* Non-blocking, unlike #qv-start/#qv-restarting above — floats over the top-right
+   corner of the game chrome for the duration of a recording session, but the game
+   itself stays fully interactive underneath (no inset:0, no background). Below the
+   debugger's z-index:1500 (chosen deliberately, see #questVivaDebugger below) so an
+   opened debugger dialog still renders above it if both are up at once. */
+:scope#qv-recording {
+    position: fixed;
+    top: 0.75rem;
+    right: 0.75rem;
+    z-index: 1400;
+}
+
+:scope#qv-recording.hidden {
+    display: none;
+}
+
+/* Save/load manager — a native <dialog>, shown via showModal() so the
+   browser centers and backdrops it; only border/sizing need overriding
+   since Tailwind's preflight reset strips the UA default dialog styling. */
+:scope#qv-saves {
+    border: none;
+    border-radius: 0.75rem;
+    padding: 0;
+    max-width: 28rem;
+    width: 100%;
+}
+
+:scope#qv-saves::backdrop {
+    background: rgb(0 0 0 / 0.5);
+}
+
+/* data-mode="boot" is the lightweight Continue/New-Game prompt shown before
+   a game starts — hide the full manager's controls (name input, save/delete,
+   file import/export) so only "start new" + a plain Load list remain. */
+:scope#qv-saves[data-mode="boot"] .qv-manage-only,
+:scope#qv-saves[data-mode="boot"] [data-delete-slot] {
+    display: none;
+}
+
+:scope#qv-saves[data-mode="manage"] [data-mode-text="boot"] {
+    display: none;
+}
+
+/* The save-slot titles are .anchor buttons (renderSavesList in wasm-player.js),
+   and Skeleton's .anchor sets font-size:var(--anchor-font-size) — a custom
+   property Skeleton itself defaults to `inherit`. Unlike .btn/.input/.text-sm
+   (which hard-code their own font-size), that means the slot titles would
+   inherit the current game's <body> font-size — set via JS.setCss("body", ...)
+   at startup, see the font-family note above — and render out of proportion
+   with the rest of the dialog. Pin the list to the dialog's own base size;
+   every .anchor inside it then inherits from here instead of <body>. */
+:scope#qv-saves #qv-saves-list {
+    font-size: var(--text-base);
+}
+
+/* Debugger — movable and resizable (wireDebuggerMoveResize in wasm-player.js
+   sets explicit left/top/width/height right after every open, before the
+   first paint — see applyDebuggerRect's doc comment). margin:0 is required
+   for those inline top/left values to actually take effect: the UA
+   stylesheet's default centering for <dialog> relies on auto margins, which
+   would otherwise still apply and fight the explicit position. No
+   max-width/fixed width here at all — every dimension is JS-driven, with
+   sensible defaults computed on first open.
+
+   Non-modal (see wireDebuggerButton's doc comment) — a *modal* dialog is
+   promoted to the top layer and given `position:fixed` by the UA stylesheet
+   for free, so neither of those was needed while this used showModal().
+   Without that promotion, position defaults back to the UA stylesheet's
+   plain `absolute` (our JS-set left/top would drift with the page instead
+   of staying viewport-relative) and stacking falls back to normal DOM/z-index
+   order, which would put it *underneath* the shared game chrome's #sidebar
+   (playercore.css, z-index:1000) and #qv-status (z-index:100) rather than
+   above them. Both set explicitly here instead.
+
+   border + box-shadow: non-modal means no ::backdrop dimming the page
+   behind it (see wireDebuggerButton's doc comment — it's never left open
+   long enough to actually render one anyway), so without its own edge the
+   dialog had nothing visually separating it from the live game content
+   it now floats over while the player keeps playing. */
+:scope#questVivaDebugger {
+    border: 1px solid var(--color-surface-300-700);
+    border-radius: 0.75rem;
+    padding: 0;
+    margin: 0;
+    position: fixed;
+    z-index: 1500;
+    box-shadow: var(--shadow-xl, 0 20px 25px -5px rgb(0 0 0 / 0.15), 0 8px 10px -6px rgb(0 0 0 / 0.15));
+}
+
+#qv-debugger-titlebar {
+    cursor: move;
+    touch-action: none;
+}
+
+/* Applied to the dialog itself (not <body> — everything in this stylesheet
+   is wrapped in `@scope (.qv-chrome)` by scope-css.mjs, and <body> is an
+   *ancestor* of .qv-chrome roots, never a descendant, so a bare `body`
+   selector here would silently never match anything; :scope is the one
+   selector @scope lets match the root itself) for the duration of any drag
+   (move/resize/splitter/column-resize — see startDebuggerDrag) so dragging
+   over table text or the title bar doesn't also highlight/select it along
+   the way. user-select:none inherits to every descendant on its own. */
+:scope.qv-debugger-drag-active {
+    user-select: none;
+}
+
+/* The resize handle needs to sit above the scrollable panes/table without
+   being clipped by their overflow:auto — absolute positioning within the
+   card (position:relative) keeps it reachable regardless of scroll state.
+   container-type/-name turn this into the query container for the
+   list/detail stacking breakpoint further down — the card always fills
+   whatever width the dialog itself currently has (applyDebuggerRect's
+   default, or wherever the user has since dragged the resize handle to —
+   see wireDebuggerMoveResize), so sizing off *this* container tracks the
+   dialog's own resizable width instead of the browser window's. */
+#qv-debugger-card {
+    position: relative;
+    container-type: inline-size;
+    container-name: qv-debugger-card;
+}
+
+#qv-debugger-resize-handle {
+    position: absolute;
+    right: 0;
+    bottom: 0;
+    width: 1rem;
+    height: 1rem;
+    cursor: nwse-resize;
+    touch-action: none;
+}
+
+#qv-debugger-resize-handle::before {
+    content: '';
+    position: absolute;
+    right: 0.25rem;
+    bottom: 0.25rem;
+    width: 0.5rem;
+    height: 0.5rem;
+    border-right: 2px solid var(--color-surface-400-600);
+    border-bottom: 2px solid var(--color-surface-400-600);
+}
+
+/* Draggable divider between the object/walkthrough list and the detail pane
+   (adjusts #qv-debugger-list's width — see wireDebuggerSplitter). A little
+   wider than its visible line so it's actually easy to grab. */
+#qv-debugger-splitter {
+    flex-shrink: 0;
+    width: 0.75rem;
+    margin-inline: -0.25rem;
+    cursor: col-resize;
+    touch-action: none;
+    position: relative;
+}
+
+#qv-debugger-splitter::after {
+    content: '';
+    position: absolute;
+    inset-block: 0;
+    left: 50%;
+    width: 1px;
+    background: var(--color-surface-300-700);
+}
+
+#qv-debugger-splitter:hover::after,
+#qv-debugger-splitter.qv-debugger-dragging::after {
+    background: var(--color-primary-500);
+    width: 2px;
+}
+
+#qv-debugger-list {
+    overflow-y: auto;
+}
+
+/* #qv-debugger-detail is a flex column so the override panel / walkthrough
+   Run controls (.qv-debugger-footer) can be pinned below the table/step
+   list instead of scrolling away with it — see renderDebuggerAttributesDetail's
+   doc comment for why (a long inherited-attribute table used to push the
+   Apply button off the bottom of the visible area). Both panes fill
+   whatever height #qv-debugger-panes ends up with (flex:1 in the card's
+   column, which itself fills the JS-applied dialog height) rather than a
+   fixed rem value, so resizing the dialog actually grows/shrinks them. */
+#qv-debugger-detail {
+    display: flex;
+    flex-direction: column;
+    /* A touch of breathing room from the splitter — #qv-debugger-splitter's
+       negative inline margin (below) pulls its neighbours in to enlarge its
+       grab target, which otherwise left this pane's content (search input,
+       table) hugging the splitter's line with almost no visual gap. */
+    padding-left: 0.5rem;
+}
+
+.qv-debugger-scroll {
+    flex: 1 1 auto;
+    min-height: 0;
+    overflow-y: auto;
+    /* The attribute table's colgroup gives Attribute/Value fixed pixel
+       widths (renderDebuggerAttributesDetail in wasm-player.js). Without
+       overflow-x here, a container narrower than those widths combined
+       (routine once the object list eats into a narrow dialog on mobile —
+       see the max-width:767px block below) squeezes the unsized Source
+       column down toward 0 width instead; overflow-wrap:break-word then
+       wraps its text one character per line, which can inflate that cell —
+       and with it the whole row, since row height tracks the tallest cell —
+       to hundreds of pixels for nothing longer than a normal script/value
+       string. Letting the table keep its intended widths and scroll
+       horizontally instead avoids that entirely. */
+    overflow-x: auto;
+}
+
+.qv-debugger-footer {
+    flex-shrink: 0;
+    border-top: 1px solid var(--color-surface-300-700);
+    padding-top: 0.75rem;
+    margin-top: 0.75rem;
+}
+
+/* Below this width, the dialog is too narrow to fit #qv-debugger-list's
+   default 192px alongside a usable detail pane and still leave the
+   attribute table room to breathe (192px list + the table's own
+   100px/140px/100px-min Attribute/Value/Source columns needs ~450px for the
+   panes alone, plus the card's own padding) — stack list-above-detail
+   instead of the side-by-side splitter layout so each gets the dialog's
+   full width. A *container* query against #qv-debugger-card (see its
+   container-type/-name above), not a @media viewport query — the dialog is
+   independently movable/resizable (wireDebuggerMoveResize), so its own
+   current width is what actually determines whether the side-by-side
+   layout still fits, regardless of how wide the browser window is. 640px
+   is comfortably above DEBUGGER_MIN_WIDTH (480px, wasm-player.js) so the
+   dialog's user-resizable floor always gets the stacked layout too. */
+@container qv-debugger-card (max-width: 640px) {
+    #qv-debugger-panes {
+        flex-direction: column;
+    }
+
+    /* Overrides wireDebuggerSplitter's inline width (set once in
+       ensureDebuggerWired, and again on every drag) — !important is the
+       only way to win against an inline style from a plain stylesheet
+       rule. The splitter's horizontal drag no longer applies once the two
+       panes are stacked rather than side-by-side, so it's hidden below. */
+    #qv-debugger-list {
+        width: 100% !important;
+        max-height: 40%;
+        flex-shrink: 0;
+    }
+
+    #qv-debugger-splitter {
+        display: none;
+    }
+
+    #qv-debugger-detail {
+        padding-left: 0;
+        padding-top: 0.75rem;
+    }
+}
+
+/* Left-hand object/walkthrough list — a plain selectable list (block rows
+   with a hover/selected background), not hyperlinks; it was previously
+   styled with Skeleton's .anchor class, which reads as a list of links
+   rather than a list of selectable items. */
+.qv-debugger-list-item {
+    display: block;
+    width: 100%;
+    text-align: left;
+    padding: 0.375rem 0.5rem;
+    border-radius: var(--radius-base);
+    font-size: var(--text-sm);
+}
+
+.qv-debugger-list-item:hover {
+    background: var(--color-surface-200-800);
+}
+
+/* .qv-debugger-list-item:hover above would otherwise win over the plain
+   .qv-debugger-row-selected background below (two classes + :hover beats one
+   class on specificity), pairing the selected item's light contrast-color
+   text with that hover's neutral grey background — hard to read. A slightly
+   darker shade of the same selected color keeps it readable and still gives
+   hover feedback that the row remains clickable. */
+.qv-debugger-list-item.qv-debugger-row-selected:hover {
+    background: var(--color-primary-600);
+}
+
+/* Skeleton's plain .input class (used elsewhere, e.g. #qv-saves-name-input)
+   renders with a transparent background and only a faint focus-ring-style
+   border — barely readable as an editable field against this dialog's card
+   background. Explicit border/background here instead of relying on that. */
+.qv-debugger-input {
+    border-radius: var(--radius-base);
+    width: 100%;
+    padding-block: var(--spacing);
+    padding-inline: calc(var(--spacing) * 3);
+    border: 1px solid var(--color-surface-300-700);
+    background-color: var(--color-surface-50-950);
+    color: inherit;
+}
+
+.qv-debugger-input:focus {
+    outline: 2px solid var(--color-primary-500);
+    outline-offset: -1px;
+}
+
+/* Attribute table — fixed layout with wrapping so a long Value/Source
+   (e.g. a list-valued attribute) can't push the table wider than the
+   dialog; an earlier version put the override input+button+hint in a 4th
+   table column and it never had room to render. Overriding now happens in
+   a single panel below the table instead (#qv-debugger-override), populated
+   for whichever row was last clicked. */
+.qv-debugger-table {
+    table-layout: fixed;
+    width: 100%;
+}
+
+.qv-debugger-table th,
+.qv-debugger-table td {
+    overflow-wrap: break-word;
+    /* Default (middle) vertical-align made a long wrapped Value visually
+       drag the same row's Attribute/Source cells down to stay centered
+       against it — top-aligning keeps the attribute name anchored to the
+       first line of its value regardless of how many lines it wraps to. */
+    vertical-align: top;
+}
+
+/* .qv-debugger-scroll (the table's wrapper) flex-grows to fill whatever
+   vertical space #qv-debugger-detail has, so an object with only one or two
+   attributes leaves a lot of empty space below the last row. Without a
+   per-row boundary that empty space reads as part of the row itself (a
+   single row looking implausibly "tall") rather than as blank area past the
+   end of the table — this border makes clear where each row actually ends. */
+.qv-debugger-table tbody td {
+    padding-block: 0.375rem;
+    border-bottom: 1px solid var(--color-surface-200-800);
+}
+
+/* Column headers weren't visually differentiated from the body rows —
+   Tailwind's preflight reset unsets <th>'s default bold weight, so with no
+   explicit styling a <thead> row just looks like another row of text. */
+.qv-debugger-table thead th {
+    position: relative;
+    text-align: left;
+    font-size: var(--text-xs);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--color-surface-500);
+    border-bottom: 1px solid var(--color-surface-300-700);
+    padding-bottom: 0.5rem;
+}
+
+/* Resizable-column drag handle — sits on the right edge of a resizable
+   header (all but the last column; the last one just absorbs whatever width
+   is left over, see the <colgroup> built in renderDebuggerAttributesDetail).
+   Wider than its visible line for an easier grab target, same treatment as
+   #qv-debugger-splitter above. z-index keeps it grabbable over the header
+   text/sort-indicator it overlaps. */
+.qv-debugger-col-resize {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    right: -0.375rem;
+    width: 0.75rem;
+    cursor: col-resize;
+    touch-action: none;
+    z-index: 1;
+}
+
+.qv-debugger-col-resize:hover,
+.qv-debugger-col-resize.qv-debugger-dragging {
+    background: var(--color-primary-500);
+    opacity: 0.5;
+}
+
+#qv-debugger-detail [data-attr-row] {
+    cursor: pointer;
+}
+
+#qv-debugger-detail [data-sort-col] {
+    cursor: pointer;
+    user-select: none;
+    white-space: nowrap;
+}
+
+#qv-debugger-detail [data-sort-col]:hover {
+    color: var(--color-surface-900-100);
+}
+
+/* Marks a table row as an inherited attribute (from a type, not the object
+   itself) with a muted text color — deliberately *not* opacity, which used
+   to combine with .qv-debugger-row-selected's light contrast-color text and
+   blue background by fading both toward the card's background together,
+   leaving low-contrast light-grey-on-light-blue text once a row was both
+   inherited and selected. */
+.qv-debugger-row-inherited {
+    color: var(--color-surface-500);
+}
+
+/* Shared selected-row highlight — the left-hand list (.qv-debugger-list-item)
+   and the attribute table's rows (data-attr-row) both use this same class.
+   Declared after .qv-debugger-row-inherited so an inherited *and* selected
+   row's color still resolves to the readable contrast color, not the muted
+   one (same specificity — source order decides the tie). */
+.qv-debugger-row-selected {
+    background: var(--color-primary-500);
+    color: var(--color-primary-contrast-500);
+}
+
+/* Icons reference generated/icons.svg (a curated subset of Lucide's sprite,
+   see scripts/build-icons.mjs) via <use>. Lucide's per-icon SVG files carry
+   these presentation attributes on their own root <svg> — <symbol>/<use>
+   doesn't preserve that, so the consuming element needs them again here. */
+.qv-icon {
+    width: 1.25rem;
+    height: 1.25rem;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 2;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+}

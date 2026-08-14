@@ -1,0 +1,275 @@
+﻿#nullable disable
+using QuestViva.Engine.Functions;
+
+namespace QuestViva.Engine.Scripts;
+
+public class FunctionCallScriptConstructor : IScriptConstructor
+{
+    public IScript Create(string script, ScriptContext scriptContext)
+    {
+        List<IFunction<object>> paramExpressions = null;
+        string procName, afterParameter;
+
+        var param = Utility.GetParameter(script, out afterParameter);
+        IScript paramScript = null;
+
+        // Handle functions of the form
+        //    SomeFunction (parameter) { script }
+        if (afterParameter != null)
+        {
+            afterParameter = afterParameter.Trim();
+            if (afterParameter.Length > 0)
+            {
+                var paramScriptString = Utility.GetScript(afterParameter);
+                paramScript = ScriptFactory.CreateScript(paramScriptString);
+            }
+        }
+
+        if (param == null && paramScript == null)
+        {
+            procName = script;
+        }
+        else
+        {
+            if (param != null)
+            {
+                var parameters = Utility.SplitParameter(param);
+                procName = script.Substring(0, script.IndexOf('(')).Trim();
+                paramExpressions = new List<IFunction<object>>();
+                if (param.Trim().Length > 0)
+                {
+                    foreach (var s in parameters)
+                    {
+                        paramExpressions.Add(new Expression<object>(s, scriptContext));
+                    }
+                }
+            }
+            else
+            {
+                procName = script.Substring(0, script.IndexOfAny(new[] {'{', ' '}));
+            }
+        }
+
+        if (!WorldModel.EditMode && WorldModel.Procedure(procName) == null)
+        {
+            throw new Exception(string.Format("Function not found: '{0}'", procName));
+        }
+
+        return new FunctionCallScript(WorldModel, procName, paramExpressions, paramScript);
+    }
+
+    public IScriptFactory ScriptFactory { get; set; }
+
+    public WorldModel WorldModel { get; set; }
+
+    public string Keyword => null;
+}
+
+public class FunctionCallScript : ScriptBase, IFunctionCallScript
+{
+    private readonly FunctionCallParameters m_parameters;
+    private readonly WorldModel m_worldModel;
+    private IScript m_paramFunction;
+    private string m_procedure;
+
+    public FunctionCallScript(WorldModel worldModel, string procedure)
+        : this(worldModel, procedure, null, null)
+    {
+    }
+
+    public FunctionCallScript(WorldModel worldModel, string procedure, IList<IFunction<object>> parameters,
+        IScript paramFunction)
+    {
+        m_worldModel = worldModel;
+        m_procedure = procedure;
+        m_parameters = new FunctionCallParameters(worldModel, parameters);
+        m_paramFunction = paramFunction;
+
+        m_parameters.ParametersAsQuestList.Added += Parameters_Added;
+        m_parameters.ParametersAsQuestList.Removed += Parameters_Removed;
+    }
+
+    public event EventHandler<ScriptUpdatedEventArgs> FunctionCallParametersUpdated;
+
+    public override async Task ExecuteAsync(Context c)
+    {
+        if ((m_parameters.Parameters == null || m_parameters.Parameters.Count == 0) && m_paramFunction == null)
+        {
+            await m_worldModel.RunProcedureAsync(m_procedure);
+        }
+        else
+        {
+            var paramValues = new Parameters();
+            var proc = m_worldModel.Procedure(m_procedure);
+
+            var paramNames = proc.Fields[FieldDefinitions.ParamNames];
+
+            var paramCount = m_parameters.Parameters.Count;
+            if (m_paramFunction != null)
+            {
+                paramCount++;
+            }
+
+            if (paramCount > paramNames.Count)
+            {
+                throw new Exception(string.Format(
+                    "Too many parameters passed to {0} function - {1} passed, but only {2} expected",
+                    m_procedure,
+                    paramCount,
+                    paramNames.Count));
+            }
+
+            if (m_worldModel.Version >= WorldModelVersion.v520)
+            {
+                if (paramCount < paramNames.Count)
+                {
+                    throw new Exception(string.Format(
+                        "Too few parameters passed to {0} function - only {1} passed, but {2} expected",
+                        m_procedure,
+                        paramCount,
+                        paramNames.Count));
+                }
+            }
+
+            var cnt = 0;
+            foreach (var f in m_parameters.Parameters)
+            {
+                paramValues.Add((string) paramNames[cnt], await f.ExecuteAsync(c));
+                cnt++;
+            }
+
+            if (m_paramFunction != null)
+            {
+                paramValues.Add((string) paramNames[cnt], m_paramFunction);
+            }
+
+            await m_worldModel.RunProcedureAsync(m_procedure, paramValues, false);
+        }
+    }
+
+    public override string Keyword => "(function)" + m_procedure;
+
+    public override string Save()
+    {
+        if (m_worldModel.Procedure(m_procedure) == null)
+        {
+            // TO DO: this is the wrong place to be throwing an exception, because Save may be called while editing a script,
+            // and maybe the user simply hasn't created their function yet. Maybe instead we should append to a list of warnings
+            // when doing an actual File Save, then we can display any warnings after saving.
+            //throw new Exception(string.Format("Unable to save call to function '{0}' - function does not exist", m_procedure));
+        }
+
+        if ((m_parameters == null || m_parameters.ParametersAsQuestList.Count == 0) && m_paramFunction == null)
+        {
+            return m_procedure;
+        }
+
+        var saveParameters = new List<string>();
+        foreach (var p in m_parameters.ParametersAsQuestList)
+        {
+            saveParameters.Add(p);
+        }
+
+        if (m_paramFunction == null)
+        {
+            return SaveScript(m_procedure, saveParameters.ToArray());
+        }
+
+        if (saveParameters.Count > 0)
+        {
+            return SaveScript(m_procedure, m_paramFunction, saveParameters.ToArray());
+        }
+
+        return SaveScript(m_procedure + "()", m_paramFunction);
+    }
+
+    public override object GetParameter(int index)
+    {
+        switch (index)
+        {
+            case 0:
+                return m_procedure;
+            case 1:
+                return m_parameters.ParametersAsQuestList;
+            default:
+                throw new ArgumentOutOfRangeException();
+        }
+    }
+
+    public object GetFunctionCallParameter(int index)
+    {
+        if (index >= m_parameters.ParametersAsQuestList.Count)
+        {
+            // In the editor, when a blank function call is created, it will have no parameters, but
+            // if the editor requests a first parameter then we want to return a blank default instead
+            // of throwing an error.
+            return "";
+        }
+
+        return m_parameters.ParametersAsQuestList[index];
+    }
+
+    public void SetFunctionCallParameter(int index, object value)
+    {
+        if (index < m_parameters.ParametersAsQuestList.Count)
+        {
+            // In the editor, when a blank function call is created, it will have no parameters
+            m_parameters.ParametersAsQuestList.Remove(m_parameters.ParametersAsQuestList[index], UpdateSource.User,
+                index);
+        }
+
+        m_parameters.ParametersAsQuestList.Add(value, UpdateSource.User, index);
+    }
+
+    public IScript GetFunctionCallParameterScript()
+    {
+        return m_paramFunction;
+    }
+
+    public void SetFunctionCallParameterScript(IScript script)
+    {
+        m_paramFunction = script;
+    }
+
+    private void Parameters_Added(object sender, QuestListUpdatedEventArgs<string> e)
+    {
+        // the number of parameters in a function call cannot change. So, as QuestList doesn't
+        // provide an Updated event (we simulate Updates with a Remove and an Add at the same
+        // index), we assume that any Added event is really an update.
+
+        FunctionCallParametersUpdated(this, new ScriptUpdatedEventArgs(e.Index, e.UpdatedItem));
+    }
+
+    private void Parameters_Removed(object sender, QuestListUpdatedEventArgs<string> e)
+    {
+        // the only time we care about a parameter being removed is if it's the first parameter being
+        // deleted. Everything else should simply be a Remove followed by an Add, and we handle the
+        // Add above.
+        if (e.Index == 0)
+        {
+            FunctionCallParametersUpdated(this, new ScriptUpdatedEventArgs(e.Index, string.Empty));
+        }
+    }
+
+    protected override ScriptBase CloneScript()
+    {
+        return new FunctionCallScript(m_worldModel, m_procedure, m_parameters == null ? null : m_parameters.Parameters,
+            m_paramFunction);
+    }
+
+    protected override void SetParameterInternal(int index, object value)
+    {
+        switch (index)
+        {
+            case 0:
+                m_procedure = (string) value;
+                break;
+            case 1:
+                // any updates to the parameters should change the list itself - nothing should cause SetParameter to be triggered.
+                throw new InvalidOperationException(
+                    "Attempt to use SetParameter to change the parameters of a function call");
+            default:
+                throw new ArgumentOutOfRangeException();
+        }
+    }
+}

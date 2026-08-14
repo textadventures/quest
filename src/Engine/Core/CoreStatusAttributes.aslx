@@ -1,0 +1,105 @@
+<library>
+  <function name="UpdateStatusAttributes">
+    <![CDATA[
+      status = NewStringList()
+      AddStatusAttributesForElement (status, game, game.statusattributes)
+      AddStatusAttributesForElement (status, game.pov, game.povstatusattributes)
+      AddStatusAttributesForElement (status, game.pov, game.pov.statusattributes)
+      JS.updateStatus (Join(status, "<br/>"))
+    ]]>
+  </function>
+
+  <function name="AddStatusAttributesForElement" parameters="status, element, statusAttributes" type="string">
+    if (not statusAttributes = null) {
+      foreach (attr, statusAttributes) {
+        list add (status, FormatStatusAttribute(attr, GetAttribute(element, attr), StringDictionaryItem(statusAttributes, attr)))
+      }
+    }
+  </function>
+
+  <function name="FormatStatusAttribute" parameters="attr, value, format" type="string">
+    if (LengthOf(format) = 0) {
+      return (CapFirst(attr) + ": " + value)
+    } else {
+      if (TypeOf(value) = "int" and attr = "money" and HasString(game, "moneyformat")) {
+        value = DisplayMoney(value)
+      }
+      else if (TypeOf(value) = "int" or TypeOf(value) = "double") {
+        value = ToString(value)
+      }
+      else if (TypeOf(value) = "null") {
+        value = ""
+      }
+      return (Replace(format, "!", "" + value))
+    }
+  </function>
+
+  <function name="InitStatusAttributes">
+    <![CDATA[
+      if (game.showscore) {
+        game.score = 0
+        if (game.statusattributes = null) {
+          game.statusattributes = NewStringDictionary()
+        }
+        dictionary add (game.statusattributes, "score", "[Score]: !")
+      }
+
+      if (game.showhealth) {
+        if (game.povstatusattributes = null) {
+          game.povstatusattributes = NewStringDictionary()
+        }
+        dictionary add (game.povstatusattributes, "health", "[Health]: !%")
+      }
+
+      if (game.showmoney) {
+        if (game.povstatusattributes = null) {
+          game.povstatusattributes = NewStringDictionary()
+        }
+        dictionary add (game.povstatusattributes, "money", "[Money]: !")
+      }
+    ]]>
+  </function>
+
+  <function name="IncreaseScore" parameters="amount">
+    if (not HasInt(game, "score")) {
+      error ("Score is not configured. To enable score, go to 'game' and tick 'Show score' on the Player tab.")
+    }
+    game.score = game.score + amount
+  </function>
+
+  <function name="DecreaseScore" parameters="amount">
+    if (not HasInt(game, "score")) {
+      error ("Score is not configured. To enable score, go to 'game' and tick 'Show score' on the Player tab.")
+    }
+    game.score = game.score - amount
+  </function>
+
+  <function name="IncreaseHealth" parameters="amount">
+    if (not HasInt(game.pov, "health")) {
+      error ("Health is not configured. To enable health, go to 'game' and tick 'Show health' on the Player tab.")
+    }
+    game.pov.health = game.pov.health + amount
+  </function>
+
+  <function name="DecreaseHealth" parameters="amount">
+    if (not HasInt(game.pov, "health")) {
+      error ("Health is not configured. To enable health, go to 'game' and tick 'Show health' on the Player tab.")
+    }
+    game.pov.health = game.pov.health - amount
+  </function>
+
+  <function name="IncreaseMoney" parameters="amount">
+    if (not HasInt(game.pov, "money")) {
+      error ("Money is not configured. To enable money, go to 'game' and tick 'Show money' on the Player tab.")
+    }
+    game.pov.money = game.pov.money + amount
+  </function>
+
+  <function name="DecreaseMoney" parameters="amount">
+    if (not HasInt(game.pov, "money")) {
+      error ("Money is not configured. To enable money, go to 'game' and tick 'Show money' on the Player tab.")
+    }
+    game.pov.money = game.pov.money - amount
+  </function>
+
+</library>

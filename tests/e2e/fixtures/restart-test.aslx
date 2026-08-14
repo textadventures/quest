@@ -1,0 +1,20 @@
+<asl version="580">
+
+  <include ref="English.aslx"/>
+  <include ref="Core.aslx"/>
+
+  <game name="Simple">
+  </game>
+
+  <javascript src="restart-test.js"/>
+
+  <function name="StartGame">
+    JS.addSidebarPane()
+  </function>
+
+  <object name="room">
+    <object name="player">
+    </object>
+  </object>
+
+</asl>

@@ -1,0 +1,20 @@
+<library>
+  <editor>
+    <appliesto>dynamictemplate</appliesto>
+    <tab>
+      <caption>[EditorDynamicTemplateDynamicTemplate]</caption>
+
+      <control>
+        <controltype>textbox</controltype>
+        <attribute>name</attribute>
+        <caption>[EditorDynamicTemplateName]</caption>
+      </control>
+
+      <control>
+        <controltype>textbox</controltype>
+        <attribute>text</attribute>
+        <caption>[EditorDynamicTemplateText]</caption>
+      </control>
+    </tab>
+  </editor>
+</library>

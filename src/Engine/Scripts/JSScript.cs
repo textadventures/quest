@@ -1,0 +1,114 @@
+﻿#nullable disable
+using System.Text.RegularExpressions;
+using QuestViva.Engine.Functions;
+
+namespace QuestViva.Engine.Scripts;
+
+public class JSScriptConstructor : IScriptConstructor
+{
+    private static readonly Regex s_jsFunctionName = new(@"^JS\.([\w\.\@]*)");
+    public string Keyword => "JS.";
+
+    public IScript Create(string script, ScriptContext scriptContext)
+    {
+        var param = Utility.GetParameter(script);
+
+        List<IFunctionDynamic> expressions = null;
+
+        if (param != null)
+        {
+            var parameters = Utility.SplitParameter(param);
+            if (parameters.Count != 1 || parameters[0].Trim().Length != 0)
+            {
+                expressions =
+                    new List<IFunctionDynamic>(parameters.Select(p => new ExpressionDynamic(p, scriptContext)));
+            }
+        }
+
+        if (!s_jsFunctionName.IsMatch(script))
+        {
+            throw new Exception(string.Format("Invalid JS function name in '{0}'", script));
+        }
+
+        var functionName = s_jsFunctionName.Match(script).Groups[1].Value;
+
+        return new JSScript(scriptContext, functionName, expressions);
+    }
+
+    public IScriptFactory ScriptFactory { get; set; }
+
+    public WorldModel WorldModel { get; set; }
+}
+
+public class JSScript : ScriptBase
+{
+    private readonly ScriptContext m_scriptContext;
+    private string m_function;
+    private List<IFunctionDynamic> m_parameters;
+
+    public JSScript(ScriptContext scriptContext, string function, List<IFunctionDynamic> parameters)
+    {
+        m_scriptContext = scriptContext;
+        m_function = function;
+        m_parameters = parameters;
+    }
+
+    public override string Keyword => "JS.";
+
+    protected override ScriptBase CloneScript()
+    {
+        return new JSScript(m_scriptContext, m_function,
+            m_parameters == null ? null : new List<IFunctionDynamic>(m_parameters));
+    }
+
+    public override async Task ExecuteAsync(Context c)
+    {
+        if (string.IsNullOrEmpty(m_function))
+        {
+            return;
+        }
+
+        if (m_parameters != null)
+        {
+            var paramValues = new object[m_parameters.Count];
+            for (var i = 0; i < m_parameters.Count; i++)
+                paramValues[i] = await m_parameters[i].ExecuteAsync(c);
+            await m_scriptContext.WorldModel.PlayerUi.RunScriptAsync(m_function, paramValues);
+        }
+        else
+        {
+            await m_scriptContext.WorldModel.PlayerUi.RunScriptAsync(m_function, null);
+        }
+    }
+
+    public override string Save()
+    {
+        if (string.IsNullOrEmpty(m_function))
+        {
+            return "JS.";
+        }
+
+        return SaveScript("JS." + m_function,
+            m_parameters == null ? new[] {string.Empty} : m_parameters.Select(p => p.Save()).ToArray());
+    }
+
+    protected override void SetParameterInternal(int index, object value)
+    {
+        var constuctor = new JSScriptConstructor();
+        try
+        {
+            var newScript = (JSScript) constuctor.Create("JS." + (string) value, m_scriptContext);
+            m_function = newScript.m_function;
+            m_parameters = newScript.m_parameters;
+        }
+        catch
+        {
+            // simply ignore any invalid input
+        }
+    }
+
+    public override object GetParameter(int index)
+    {
+        return Save().Substring(3);
+    }
+}

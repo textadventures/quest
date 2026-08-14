@@ -1,0 +1,33 @@
+<asl version="580">
+  <include ref="English.aslx" />
+  <include ref="Core.aslx" />
+  <game name="DebuggerTest">
+    <score type="int">0</score>
+  </game>
+  <object name="kitchen">
+    <object name="player">
+      <inherit name="defaultplayer" />
+    </object>
+    <description>A kitchen.</description>
+  </object>
+  <object name="livingroom">
+    <description>A living room.</description>
+  </object>
+  <walkthrough name="basic">
+    <steps>
+      <![CDATA[
+      assert:game.score = 0
+      look
+      ]]>
+    </steps>
+  </walkthrough>
+  <walkthrough name="slow">
+    <steps>
+      <![CDATA[
+      look
+      delay:2000
+      look
+      ]]>
+    </steps>
+  </walkthrough>
+</asl>

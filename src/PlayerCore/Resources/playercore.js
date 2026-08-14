@@ -1,0 +1,2694 @@
+﻿var _allowMenuFontSizeChange = true;
+var _showGrid = false;
+var _outputSections = new Array();
+var numCommands = 0;
+var thisCommand = 0;
+var commandsList = new Array();
+var inventoryVerbs = null;
+var placesObjectsVerbs = null;
+var verbButtonCount = 9;
+var beginningOfCurrentTurnScrollPosition = 0;
+
+// Tracks whether the player has made progress since the game started/loaded
+// that hasn't been saved anywhere (slot or file) yet, so an accidental
+// refresh/close can warn before silently discarding it (see beforeunload
+// listener below). canSave mirrors the last value passed to
+// WebPlayer.setCanSave (both playerweb.js's and wasm-player.js's versions
+// keep this in sync) — if saving isn't even offered, there's nothing the
+// player could do about unsaved progress, so the warning is pointless. This
+// is what keeps the legacy editor's preview page (Editor.razor's
+// EnableSave="false") and WasmPlayer's editor-preview mode — both of which
+// reload on every edit — from being nagged by the warning on every reload.
+var hasUnsavedProgress = false;
+var canSave = true;
+
+function markUnsavedProgress() {
+    hasUnsavedProgress = true;
+}
+
+function clearUnsavedProgress() {
+    hasUnsavedProgress = false;
+}
+
+window.addEventListener("beforeunload", function (e) {
+    if (!hasUnsavedProgress || !canSave) return;
+    e.preventDefault();
+    e.returnValue = "";
+});
+
+function initPlayerUI() {
+    const gameBorder = document.getElementById("gameBorder");
+    gameBorder.style.display = "block";
+
+    addPaperScript();
+
+    $("#txtCommand").bind("inview", function (event, visible) {
+        // allows spacebar to scroll browser when txtCommand is not visible
+        if (visible == true) {
+            $("#txtCommand").focus();
+        } else {
+            $("#txtCommand").blur();
+        }
+    });
+
+    $("body").keydown(function (e) {
+        if (_waitMode) {
+            endWait();
+        }
+    });
+
+    $("#gameBorder button").button();
+    $("#gamePanesRunning").multiOpenAccordion({active: [0, 1, 2, 3]});
+    showStatusVisible(false);
+
+    const cmdSave = document.getElementById("cmdSave");
+    cmdSave.addEventListener("click", window.WebPlayer?.onSaveClick ?? (async () => {
+        await GameSaver.save();
+    }));
+
+    const cmdDebug = document.getElementById("cmdDebug");
+    cmdDebug.addEventListener("click", () => {
+        const dialog = document.getElementById("questVivaDebugger");
+        dialog.showModal();
+    });
+
+    $("#lstInventory").selectable({
+        selected: function (event, ui) {
+            $(ui.selected).siblings().removeClass("ui-selected");
+            updateVerbButtons($(ui.selected), inventoryVerbs, "cmdInventory");
+        }
+    });
+
+    $("#lstPlacesObjects").selectable({
+        selected: function (event, ui) {
+            $(ui.selected).siblings().removeClass("ui-selected");
+            updateVerbButtons($(ui.selected), placesObjectsVerbs, "cmdPlacesObjects");
+        }
+    });
+
+    $("#cmdCompassNW").button({
+        icons: {primary: "ui-icon-arrowthick-1-nw"}
+    });
+    $("#cmdCompassN").button({
+        icons: {primary: "ui-icon-arrowthick-1-n"}
+    });
+    $("#cmdCompassNE").button({
+        icons: {primary: "ui-icon-arrowthick-1-ne"}
+    });
+    $("#cmdCompassW").button({
+        icons: {primary: "ui-icon-arrowthick-1-w"}
+    });
+    $("#cmdCompassE").button({
+        icons: {primary: "ui-icon-arrowthick-1-e"}
+    });
+    $("#cmdCompassSW").button({
+        icons: {primary: "ui-icon-arrowthick-1-sw"}
+    });
+    $("#cmdCompassS").button({
+        icons: {primary: "ui-icon-arrowthick-1-s"}
+    });
+    $("#cmdCompassSE").button({
+        icons: {primary: "ui-icon-arrowthick-1-se"}
+    });
+    $("#cmdCompassU").button({
+        icons: {primary: "ui-icon-triangle-1-n"}
+    });
+    $("#cmdCompassD").button({
+        icons: {primary: "ui-icon-triangle-1-s"}
+    });
+    // fix to make compass button icons centred
+    $(".compassbutton span").css("left", "0.8em");
+
+    $("#txtCommand").bind('webkitspeechchange', function () {
+        sendCommand($("#txtCommand").val());
+        $("#txtCommand").val("");
+    });
+
+    $(document).on("click", "a", function (e) {
+        var href = $(this).attr("href");
+        if (href) {
+            goUrl(href);
+        }
+        e.preventDefault();
+    });
+
+    $(document).on("click", ".elementmenu", function (event) {
+        if (!$(this).hasClass("disabled")) {
+            event.preventDefault();
+            event.stopPropagation();
+            $(this).jjmenu_popup();
+            $(this).blur();
+            return false;
+        }
+    });
+
+    $(document).on("click", ".exitlink", function () {
+        if (!$(this).hasClass("disabled")) {
+            sendCommand($(this).attr("data-command"));
+        }
+    });
+
+    $(document).on("click", ".commandlink", function () {
+        var $this = $(this);
+        if (!$this.hasClass("disabled") && canSendCommand) {
+            if ($this.data("deactivateonclick")) {
+                $this.addClass("disabled");
+                $this.data("deactivated", true);
+            }
+            sendCommand($this.attr("data-command"));
+        }
+    });
+
+    // ShowMenu (and anything built on it - Ask, disambiguation) renders each
+    // choice as a bare <a class="cmdlink" onclick="ASLEvent(...)"> baked into the
+    // game's own compiled script - unlike .commandlink, it gets no client-side
+    // disable until the engine round-trip finishes and calls back
+    // disableMenuOutputSection. That's invisible on a fast round-trip, but on a
+    // slow one (e.g. WasmPlayer on an underpowered device) it leaves a long
+    // window where an impatient second click fires another ASLEvent after the
+    // engine has already cleared game.menucallback for the first, surfacing as
+    // "Unexpected menu response". This runs after the clicked link's own inline
+    // onclick (which fires at the target phase, before bubbling reaches this
+    // document-level delegate), so it can't stop that first click, but it does
+    // disable every live menu link before any subsequent click can be
+    // processed. Exact-match selector so it only catches bare ShowMenu-style
+    // links, not the compound-class .elementmenu/.exitlink/.commandlink ones
+    // that are meant to stay clickable across multiple turns. Scoped to
+    // #divOutput (where createNewDiv/msg append everything ShowMenu prints)
+    // rather than the whole document - #endWaitLink is also a bare
+    // class="cmdlink" for its styling, but lives in the static #endWaitDiv
+    // chrome outside #divOutput and must stay clickable across repeated
+    // wait()s; disabling it after the first would silently break every wait
+    // after it. Living here (rather than in the aslx ShowMenu template) means
+    // it protects every already-published game, not just ones re-exported
+    // after a library fix.
+    $(document).on("click", "#divOutput a[class=\"cmdlink\"]", function () {
+        $("#divOutput a[class=\"cmdlink\"]").addClass("disabled").attr("onclick", null);
+    });
+
+    const sidebar = document.getElementById("sidebar");
+    const cmdShowPanes = document.getElementById("cmdShowPanes");
+    const gamePanes = document.getElementById("gamePanes");
+    const gameContent = document.getElementById("gameContent");
+    const gamePanel = document.getElementById("gamePanel");
+    const gridPanel = document.getElementById("gridPanel");
+
+    cmdShowPanes.addEventListener("click", function () {
+        sidebar.style.display = (sidebar.style.display === "block") ? "none" : "block";
+    });
+
+    let gameWidth = 950;
+    let arePanesVisible = true;
+
+    const isWindowWide = () => window.innerWidth > gameWidth;
+    let wasWide = isWindowWide();
+
+    const doLayout = () => {
+        let isWide = isWindowWide();
+
+        if (isWide && arePanesVisible) {
+            sidebar.style.display = "block";
+            sidebar.style.background = "initial";
+            sidebar.style.boxShadow = "initial";
+            cmdShowPanes.style.display = "none";
+            gamePanes.style.left = "50%";
+            gamePanes.style.marginLeft = (gameWidth / 2 - 220) + "px";
+            gameContent.style.width = (gameWidth - 250) + "px";
+            gamePanel.style.width = (gameWidth - 220) + "px";
+            gridPanel.style.width = (gameWidth - 220) + "px";
+            if (window.paper && paper.view) paper.view.viewSize.width = gameWidth - 220;
+        } else {
+            if (wasWide) {
+                sidebar.style.display = "none";
+            }
+            sidebar.style.background = "#fff";
+            sidebar.style.boxShadow = "-2px 0 5px rgba(0,0,0,0.5)";
+            cmdShowPanes.style.display = arePanesVisible ? "inline" : "none";
+            gamePanes.style.left = "initial";
+            gamePanes.style.marginLeft = "0";
+            gameContent.style.width = "initial";
+            gamePanel.style.width = "100%";
+            gridPanel.style.width = "100%";
+            // "100%" here resolves to whichever is smaller: the actual window
+            // (narrow/mobile) or #gameBorder's max-width cap (a wide window with
+            // panes hidden, e.g. no places/inventory to show) — window.innerWidth
+            // alone ignored that cap and stretched the paper.js view past the
+            // visible (overflow: hidden) panel, throwing off its centering.
+            if (window.paper && paper.view) paper.view.viewSize.width = Math.min(window.innerWidth, gameWidth);
+        }
+
+        const newPanelImageMaxHeight = `${(window.innerHeight - 30) * 0.5}px`;
+        updatePanelImageMaxHeight(newPanelImageMaxHeight);
+
+        wasWide = isWide;
+    }
+
+    window.addEventListener("resize", doLayout);
+
+    window.setGameWidth = function (width) {
+        const gameBorder = document.getElementById("gameBorder");
+        gameBorder.style.maxWidth = width + "px";
+
+        const status = document.getElementById("qv-status");
+        status.style.maxWidth = (width - 2) + "px";
+
+        gameWidth = width;
+        doLayout();
+    };
+
+    window.panesVisible = function (visible) {
+        arePanesVisible = visible;
+        var screenWidth = $("#gameBorder").width();
+
+        if (visible) {
+            $("#gamePanes").show();
+        } else {
+            $("#gamePanes").hide();
+        }
+        doLayout();
+    };
+
+    const updatePanelImageMaxHeight = (newMaxHeight) => {
+        for (const sheet of document.styleSheets) {
+            try {
+                for (const rule of sheet.cssRules) {
+                    if (rule.selectorText === 'div#gamePanel img') {
+                        rule.style.maxHeight = newMaxHeight;
+                        return;
+                    }
+                }
+            } catch (e) {
+
+            }
+        }
+    };
+
+    // Fires from the picture frame's <img onload> (SetFramePicture/
+    // JS.setPanelContents) once the image has actually finished loading and
+    // #gamePanel has its real, final height — before that, stickyOverlayHeight()
+    // only sees whatever height an unloaded <img> renders at (effectively 0),
+    // so the turn's own scrollToEnd() call (fired the moment its text and the
+    // <img> tag are added, well before the image itself has loaded) can
+    // under-count the frame and land the turn's opening line where the
+    // picture is about to appear. Re-targets scrollToTurnStart() at
+    // lastScrollTurnStart — a snapshot of whichever turn start that original
+    // call used — rather than re-reading beginningOfCurrentTurnScrollPosition,
+    // which markScrollPosition() has typically already advanced to the next
+    // turn's start by the time a real image finishes loading.
+    window.setPanelHeight = function () {
+        if (_showGrid) return;
+        setTimeout(function () {
+            scrollToTurnStart(lastScrollTurnStart);
+        }, 100);
+    };
+
+    doLayout();
+    ui_init();
+    updateStatusVisibility();
+
+    if (document.layers) document.captureEvents(Event.MOUSEDOWN);
+
+    $("#txtCommand").focus();
+}
+
+function loadHtml(html) {
+    $("#divOutput").html(html);
+    // The injected HTML carries its own divOutputAlign<N> ids from whenever the
+    // game was saved, but _currentDiv/_divCount (used by addText/createNewDiv)
+    // are untouched by the line above. If a div was already created before this
+    // ran (e.g. WasmPlayer's in-session restore resets output and creates div 1
+    // before loadHtml overwrites #divOutput with the restored transcript),
+    // _currentDiv keeps pointing at that now-detached node — every future
+    // addText() call then silently appends to an invisible div instead of the
+    // page, even though the command that produced it succeeded. Resetting here
+    // makes the next addText() start a fresh div (via its getCurrentDiv()==null
+    // check), numbered past whatever the restored transcript already used.
+    _currentDiv = null;
+    var maxDivId = 0;
+    $("#divOutput [id^='divOutputAlign']").each(function () {
+        var n = parseInt(this.id.slice("divOutputAlign".length), 10);
+        if (n > maxDivId) maxDivId = n;
+    });
+    setDivCount(maxDivId);
+}
+
+function showStatusVisible(visible) {
+    if (visible) {
+        $("#statusVars").show();
+        $("#statusVarsAccordion").show();
+        $("#statusVarsLabel").show();
+    } else {
+        $("#statusVars").hide();
+        $("#statusVarsAccordion").hide();
+        $("#statusVarsLabel").hide();
+    }
+}
+
+function markScrollPosition() {
+    beginningOfCurrentTurnScrollPosition = $("#gameContent").height();
+}
+
+// Variable added by KV
+var gameName = document.title;
+
+function setGameName(text) {
+    $("#gameTitle").remove();
+    document.title = text;
+    // Added by KV
+    gameName = text;
+}
+
+var _waitMode = false;
+var _pauseMode = false;
+
+// Mirrors the engine's WorldModel._pendingCallbackCount > 0: true whenever
+// anything is suspended inside a TaskCompletionSource continuation (wait(),
+// get input(), ask, show menu, pause) that a save/reload can't reconstruct -
+// only world-model data is serialized, not "what the interpreter was doing".
+// Starts true (Save disabled) until the engine's first setTurnPending(false)
+// confirms a turn has genuinely finished with nothing outstanding, including
+// chained/nested wait()s at game start - previously Save flickered briefly
+// enabled between each one, since it was only gated on the narrower _waitMode.
+var _turnPending = true;
+var _gameFinished = false;
+
+function updateSaveButtonEnabled() {
+    $("#cmdSave").button((_turnPending || _gameFinished) ? "disable" : "enable");
+}
+
+function setTurnPending(pending) {
+    _turnPending = pending;
+    updateSaveButtonEnabled();
+}
+
+function beginPause(ms) {
+    _pauseMode = true;
+    $("#txtCommandDiv").hide();
+    window.setTimeout(function () {
+        endPause()
+    }, ms);
+}
+
+function endPause() {
+    _pauseMode = false;
+    $("#txtCommandDiv").show();
+
+    // TODO: This is WebPlayer-specific, so shouldn't be in this shared file
+    window.setTimeout(async function () {
+        await WebPlayer.uiEndPause();
+    }, 100);
+}
+
+function commandKey(e) {
+    if (_waitMode) return false;
+    switch (keyPressCode(e)) {
+        case 13:
+            runCommand();
+            return false;
+        case 38:
+            thisCommand--;
+            if (thisCommand == 0) thisCommand = numCommands;
+            $("#txtCommand").val(commandsList[thisCommand]);
+            e.preventDefault();
+            break;
+        case 40:
+            thisCommand++;
+            if (thisCommand > numCommands) thisCommand = 1;
+            $("#txtCommand").val(commandsList[thisCommand]);
+            e.preventDefault();
+            break;
+        case 27:
+            thisCommand = numCommands + 1;
+            $("#txtCommand").val("");
+            e.preventDefault();
+            break;
+    }
+}
+
+function runCommand() {
+    var command = $("#txtCommand").val();
+    if (command.length > 0 && canSendCommand) {
+        numCommands++;
+        commandsList[numCommands] = command;
+        thisCommand = numCommands + 1;
+        sendCommand(command);
+        $("#txtCommand").val("");
+    }
+}
+
+function showQuestion(title) {
+    $("#msgboxCaption").html(title);
+
+    var msgboxOptions = {
+        modal: true,
+        autoOpen: false,
+        buttons: [
+            {
+                text: "Yes",
+                click: function () {
+                    msgboxSubmit(true);
+                }
+            },
+            {
+                text: "No",
+                click: function () {
+                    msgboxSubmit(false);
+                }
+            }
+        ],
+        closeOnEscape: false,
+        open: function (event, ui) {
+            $(".ui-dialog-titlebar-close").hide();
+        }    // suppresses "close" button
+    };
+
+    $("#msgbox").dialog(msgboxOptions);
+    $("#msgbox").dialog("open");
+}
+
+function uiShow(element) {
+    if (element == "#gamePanes") {
+        panesVisible(true);
+    } else {
+        $(element).show();
+        updateStatusVisibility();
+    }
+}
+
+function uiHide(element) {
+    if (element == "#gamePanes") {
+        panesVisible(false);
+    } else {
+        $(element).hide();
+        updateStatusVisibility();
+    }
+}
+
+function updateStatusVisibility() {
+    var anyVisible = isElementVisible("#location") || isElementVisible("#cmdSave");
+    if (anyVisible) {
+        $("#qv-status").show();
+        $("#divOutput").css("margin-top", "20px");
+        $("#gamePanes").css("top", "24px");
+        $("#gridPanel").css("top", "32px");
+        $("#gamePanel").css("top", "32px");
+    } else {
+        $("#qv-status").hide();
+        $("#divOutput").css("margin-top", "0px");
+        $("#gamePanes").css("top", "0px");
+        $("#gridPanel").css("top", "0px");
+        $("#gamePanel").css("top", "0px");
+    }
+}
+
+function isElementVisible(element) {
+    return $(element).css("display") != "none";
+}
+
+var _animateScroll = true;
+
+// The page's own scrollable content sits behind #qv-status (fixed) and
+// whichever of #gamePanel/#gridPanel (sticky — the static picture frame
+// feature, e.g. "The Shack") is showing a picture. Once scrolled past their
+// natural flow position they float on top of whatever's beneath them, so a
+// scroll target that ignores them can land content behind the frame instead
+// of below it. #gamePanel/#gridPanel's own "top" CSS already accounts for
+// #qv-status's height (see updateStatusVisibility()), so taking the deepest
+// bottom edge of the three — rather than summing them — avoids double
+// counting #qv-status when a picture is also showing.
+function stickyOverlayHeight() {
+    var bottom = 0;
+    ["#qv-status", "#gamePanel", "#gridPanel"].forEach(function (selector) {
+        var $el = $(selector);
+        if ($el.length && isElementVisible($el)) {
+            bottom = Math.max(bottom, (parseFloat($el.css("top")) || 0) + $el.outerHeight());
+        }
+    });
+    return bottom;
+}
+
+// Snapshot of whichever turn-start position the most recent scrollToEnd()
+// call actually used, kept separately from beginningOfCurrentTurnScrollPosition
+// — see setPanelHeight()'s doc comment (above, in initPlayerUI()) for why.
+var lastScrollTurnStart = 0;
+
+// Scrolls just far enough that turnStart (the top of some turn's output)
+// lands below the fixed/sticky chrome at the top of the viewport, rather than
+// jumping straight to the bottom of the document — otherwise a long turn's
+// opening lines scroll off the top (or behind the status bar/picture frame)
+// before the player can read them. Never scrolls backward past wherever the
+// player currently is (e.g. if they've scrolled up to reread), and never
+// past the true bottom of the document.
+//
+// A turn can emit several OutputText calls, each triggering scrollToEnd(),
+// and — for a walkthrough or any other rapid burst of turns — the next one
+// can easily land while the previous call's animation is still running.
+// easeInOutCubic decelerates to a near-stop at the end of every animation;
+// restarting that curve from scratch on each interruption made the scroll
+// visibly stutter (slow down, barely move, speed up, slow down again) rather
+// than glide, with the final leg then covering whatever distance was left in
+// one comparatively large jump once nothing interrupted it further. Only the
+// very first call in a burst (starting from a stationary page) gets the
+// eased curve; anything that interrupts an already-running scroll continues
+// at the same steady rate instead of re-decelerating and re-accelerating.
+//
+// allowBackward (default false) lets the target move the scroll position
+// *up*, not just down — normally refused so that a manual scroll-up to
+// reread history doesn't get yanked back down by an unrelated later turn.
+// clearScreen() passes true: a turn that clears the screen can still hit an
+// ordinary turn-boundary scrollToEnd() call using the *pre-clear* turn start
+// (SignalTurnSuspended's own call, queued before the script that called
+// ClearScreen has necessarily finished, can still be based on wherever the
+// old, now-discarded page happened to end) — clamped against the old,
+// now-irrelevant document height, that can scroll to a wrong, much-too-far
+// position before clearScreen's own correction below runs. Since the entire
+// point of a clear is "nothing before this matters any more", its own
+// correction must be allowed to override that, forward or backward.
+function scrollToTurnStart(turnStart, allowBackward) {
+    lastScrollTurnStart = turnStart;
+
+    // A picture frame image that hasn't finished loading yet (successfully
+    // or not) doesn't have its real size yet — #gamePanel/#gridPanel's
+    // height right now is whatever an unloaded <img> renders at
+    // (effectively 0), so any target computed against it would undercount
+    // the frame and visibly place content where the picture is about to
+    // appear, needing a jump to fix once it loads. Skip for now instead:
+    // setPanelContents() wires up a load/error listener on every panel
+    // image (on top of SetFramePicture's own <img onload>) that calls back
+    // into here once the frame's real height is known, so this is never
+    // left stuck — just deferred until the answer is actually right.
+    var pendingImg = $("#gamePanel:visible img, #gridPanel:visible img").filter(function () {
+        return !this.complete;
+    })[0];
+    if (pendingImg) {
+        return;
+    }
+
+    if (!_animateScroll) {
+        // Used while fast-forwarding a walkthrough — always jump straight to
+        // the true end rather than following the turn-by-turn target below.
+        $('html,body').stop(true, false).scrollTop(document.body.scrollHeight);
+        focusCommandInput();
+        return;
+    }
+
+    var headerHeight = stickyOverlayHeight();
+    // turnStart is measured relative to #gameContent's own top (its height()
+    // when markScrollPosition() ran), not the page's — #gameContent isn't
+    // necessarily at page-top itself, since #gamePanel/#gridPanel (sticky,
+    // but still flow-participating) reserve real layout space above it
+    // whenever a picture is showing. Skipping this offset used to cancel out
+    // by accident whenever the frame was already showing before the turn
+    // started (its contribution to both this offset and headerHeight above
+    // were equal), which is why it went unnoticed until the frame's size
+    // changed *after* the turn had already been positioned.
+    var pageTurnStart = $("#gameContent").offset().top + turnStart;
+    var maxScrollTop = Math.max($(document).height() - $(window).height(), 0);
+    var target = Math.min(Math.max(pageTurnStart - headerHeight - 20, 0), maxScrollTop);
+    var currentScrollTop = Math.max($("body").scrollTop(), $("html").scrollTop());
+
+    if (target !== currentScrollTop && (allowBackward || target > currentScrollTop)) {
+        var wasAlreadyScrolling = $('html,body').is(":animated");
+        var distance = Math.abs(target - currentScrollTop);
+        var duration = Math.min(distance / 0.4, 2000);
+        var easing = wasAlreadyScrolling ? "linear" : "easeInOutCubic";
+        $('html,body').stop(true, false).animate({scrollTop: target}, duration, easing);
+    }
+    focusCommandInput();
+}
+
+// Plain jQuery .focus() calls the native HTMLElement.focus(), which — for an
+// element not already focused — asks the browser to scroll it into view.
+// #txtCommand sits right after all of #divOutput, so whenever it isn't
+// already focused (page just loaded, on mobile before the on-screen keyboard
+// has been tapped, focus lost to a click/selection elsewhere) that silently
+// jumped straight to the document's bottom, undoing every calculation above.
+// {preventScroll: true} keeps the input usable (typing still works
+// immediately) without fighting the scroll position we just computed.
+function focusCommandInput() {
+    document.getElementById("txtCommand")?.focus({preventScroll: true});
+}
+
+// beginningOfCurrentTurnScrollPosition is set by markScrollPosition() before
+// the turn began (see its own doc comment).
+function scrollToEnd() {
+    scrollToTurnStart(beginningOfCurrentTurnScrollPosition);
+}
+
+function SetAnimateScroll(value) {
+    _animateScroll = value;
+}
+
+var _backgroundOpacity = 1;
+
+function SetBackgroundOpacity(opacity) {
+    _backgroundOpacity = opacity;
+}
+
+function setBackground(col) {
+    /* If '#rgb', convert to '#rrggbb'*/
+    /* https://github.com/textadventures/quest/issues/1052 */
+    if (col.charAt(0) === "#" && col.length == 4) {
+        var colBak = "" + col + "";
+        newCol = col.replace(/#([0-9a-fA-F])([0-9a-fA-F])([0-9a-fA-F])/, '#$1$1$2$2$3$3');
+        col = newCol || col;
+    }
+    colNameToHex = colourNameToHex(col);
+    if (colNameToHex) col = colNameToHex;
+    rgbCol = hexToRgb(col);
+    var cssBackground = "rgba(" + rgbCol.r + "," + rgbCol.g + "," + rgbCol.b + "," + _backgroundOpacity + ")";
+    $("#gameBorder").css("background-color", cssBackground);
+    $("#gamePanel").css("background-color", col);
+    $("#gridPanel").css("background-color", col);
+}
+
+function setPanelContents(html) {
+    if (html.length > 0) {
+        $("#gamePanel").show()
+    } else {
+        $("#gamePanel").hide()
+    }
+    $("#gamePanel").html(html);
+    // Belt-and-braces alongside SetFramePicture's own <img onload="setPanelHeight()">
+    // markup: guarantees a retry once any image here finishes loading (success
+    // or failure) even for panel HTML set directly via JS.setPanelContents that
+    // doesn't happen to include that onload itself — scrollToTurnStart() below
+    // relies on one of these eventually firing to know it's safe to scroll.
+    $("#gamePanel img").one("load error", setPanelHeight);
+    setPanelHeight();
+}
+
+function setGamePadding(top, bottom, left, right) {
+    $("#gameContent").css("padding-top", top);
+    $("#gameContent").css("padding-bottom", bottom);
+    $("#gameContent").css("padding-left", left);
+    $("#gameContent").css("padding-right", right);
+}
+
+function hideBorder() {
+    $("#gameBorder").css("border", "none");
+}
+
+var _compassDirs = ["northwest", "north", "northeast", "west", "east", "southwest", "south", "southeast", "up", "down", "in", "out"];
+
+function updateCompass(listData) {
+    var directions = listData.split("/");
+    updateDir(directions, "NW", _compassDirs[0]);
+    updateDir(directions, "N", _compassDirs[1]);
+    updateDir(directions, "NE", _compassDirs[2]);
+    updateDir(directions, "W", _compassDirs[3]);
+    updateDir(directions, "E", _compassDirs[4]);
+    updateDir(directions, "SW", _compassDirs[5]);
+    updateDir(directions, "S", _compassDirs[6]);
+    updateDir(directions, "SE", _compassDirs[7]);
+    updateDir(directions, "U", _compassDirs[8]);
+    updateDir(directions, "D", _compassDirs[9]);
+    updateDir(directions, "In", _compassDirs[10]);
+    updateDir(directions, "Out", _compassDirs[11]);
+}
+
+function updateDir(directions, label, dir) {
+    if ($.inArray(dir, directions) == -1) {
+        $("#cmdCompass" + label).button("disable");
+    } else {
+        $("#cmdCompass" + label).button("enable");
+    }
+}
+
+function paneButtonClick(target, button) {
+    var selectedListItem = $(target + " .ui-selected");
+    var selectedObject = selectedListItem.text();
+    var selectedElementId = selectedListItem.data("elementid");
+    var selectedElementName = selectedListItem.data("elementname");
+    var verb = button.data("verb");
+    var metadata = {};
+    metadata[selectedElementName] = selectedElementId;
+
+    if (selectedObject.length > 0) {
+        var cmd = verb.toLowerCase() + " " + selectedElementName;
+        sendCommand(cmd, metadata);
+    }
+}
+
+function compassClick(direction) {
+    sendCommand(direction);
+}
+
+function updateStatus(text) {
+    if (text.length > 0) {
+        showStatusVisible(true);
+        $("#statusVars").html(text.replace(/\n/g, "<br/>"));
+    } else {
+        showStatusVisible(false);
+    }
+}
+
+function setForeground(col) {
+}
+
+function setCompassDirections(directions) {
+    if (typeof directions === "string") {
+        _compassDirs = directions.split(";")
+    } else {
+        _compassDirs = directions;
+    }
+    $("#cmdCompassNW").attr("title", _compassDirs[0]);
+    $("#cmdCompassN").attr("title", _compassDirs[1]);
+    $("#cmdCompassNE").attr("title", _compassDirs[2]);
+    $("#cmdCompassW").attr("title", _compassDirs[3]);
+    $("#cmdCompassE").attr("title", _compassDirs[4]);
+    $("#cmdCompassSW").attr("title", _compassDirs[5]);
+    $("#cmdCompassS").attr("title", _compassDirs[6]);
+    $("#cmdCompassSE").attr("title", _compassDirs[7]);
+    $("#cmdCompassU").attr("title", _compassDirs[8]);
+    $("#cmdCompassD").attr("title", _compassDirs[9]);
+    $("#cmdCompassIn").attr("title", _compassDirs[10]);
+    $("#cmdCompassOut").attr("title", _compassDirs[11]);
+}
+
+function updateLocation(text) {
+    $("#location").html(text);
+}
+
+
+// Used in grid.js, but defined here so it can be set during startup
+_respondToGridClicks = false;
+
+function respondToGridClicks(flag) {
+    _respondToGridClicks = flag;
+}
+
+function updateList(listName, listData) {
+    var listElement = "";
+    var buttonPrefix = "";
+
+    if (listName == "inventory") {
+        listElement = "#lstInventory";
+        inventoryVerbs = new Array();
+        buttonPrefix = "cmdInventory";
+    }
+
+    if (listName == "placesobjects") {
+        listElement = "#lstPlacesObjects";
+        placesObjectsVerbs = new Array();
+        buttonPrefix = "cmdPlacesObjects";
+    }
+
+    var previousSelectionText = "";
+    var previousSelectionKey = "";
+    var foundPreviousSelection = false;
+
+    var $selected = $(listElement + " .ui-selected");
+    if ($selected.length > 0) {
+        previousSelectionText = $selected.first().text();
+        previousSelectionKey = $selected.first().data("key");
+    }
+
+    $(listElement).empty();
+    var count = 0;
+    $.each(listData, function (key, value) {
+        var data = JSON.parse(value);
+        var objectDisplayName = data["Text"];
+        var verbsArray, idPrefix;
+
+        if (listName == "inventory") {
+            verbsArray = inventoryVerbs;
+            idPrefix = "cmdInventory";
+        } else {
+            verbsArray = placesObjectsVerbs;
+            idPrefix = "cmdPlacesObjects";
+        }
+
+        verbsArray.push(data);
+
+        if (listName == "inventory" || $.inArray(objectDisplayName, _compassDirs) == -1) {
+            var $newItem = $("<li/>").data("key", key).data("elementid", data["ElementId"]).data("elementname", data["ElementName"]).data("index", count).html(objectDisplayName);
+            if (objectDisplayName == previousSelectionText && key == previousSelectionKey) {
+                $newItem.addClass("ui-selected");
+                foundPreviousSelection = true;
+                updateVerbButtons($newItem, verbsArray, idPrefix);
+            }
+            $(listElement).append($newItem);
+            count++;
+        }
+    });
+
+    var selectSize = count;
+    if (selectSize < 3) selectSize = 3;
+    if (selectSize > 12) selectSize = 12;
+    $(listElement).attr("size", selectSize);
+
+    if (!foundPreviousSelection) {
+        for (var i = 1; i <= verbButtonCount; i++) {
+            var target = $("#" + buttonPrefix + i);
+            target.hide();
+        }
+    }
+}
+
+function updateVerbButtons(selectedItem, verbsArray, idprefix) {
+    var selectedIndex = selectedItem.data("index");
+    var verbs = verbsArray[selectedIndex]["Verbs"];
+    var count = 1;
+    $.each(verbs, function (index, value) {
+        $("#" + idprefix + count + " span").html(value);
+        var target = $("#" + idprefix + count);
+        target.data("verb", value);
+        target.show();
+        count++;
+    });
+    for (var i = count; i <= verbButtonCount; i++) {
+        var target = $("#" + idprefix + i);
+        target.hide();
+    }
+}
+
+function beginWait() {
+    _waitMode = true;
+    $("#txtCommand").hide();
+    $("#txtCommandPrompt").hide();
+    $("#endWaitLink").show();
+    markScrollPosition();
+}
+
+function endWait() {
+    if (!_waitMode) return;
+    sendEndWait();
+}
+
+function waitEnded() {
+    _waitMode = false;
+    $("#endWaitLink").hide();
+    $("#txtCommand").show();
+    $("#txtCommandPrompt").show();
+}
+
+function gameFinished() {
+    _gameFinished = true;
+    updateSaveButtonEnabled();
+    disableInterface();
+}
+
+function disableInterface() {
+    $("#txtCommandDiv").hide();
+    $("#gamePanesRunning").hide();
+    $("#gamePanesFinished").show();
+}
+
+function setCommandBarStyle(style) {
+    var hidden = $("#txtCommand").is(":hidden") && $("#txtCommand").parent().is(":visible");
+    $("#txtCommand").attr("style", style);
+    if (hidden) {
+        $("#txtCommand").hide();
+    } else {
+        $("#txtCommand").show();
+    }
+}
+
+function addTextAndScroll(text) {
+    addText(text);
+    scrollToEnd();
+}
+
+// Added by KV for the transcript
+var savingTranscript = false;
+var noTranscript = false;
+var transcriptString = ""; /* Added in Quest 5.8, but never worked properly */
+
+
+// This function altered for the transcript
+function addText(text) {
+    if (getCurrentDiv() == null) {
+        createNewDiv("left");
+    }
+    if (savingTranscript && !noTranscript) {
+        writeToTranscript(text);
+    }
+    getCurrentDiv().append(text);
+    $("#divOutput").css("min-height", $("#divOutput").height());
+}
+
+function createNewDiv(alignment) {
+    var classes = _outputSections.join(" ");
+    setDivCount(getDivCount() + 1);
+    $("<div/>", {
+        id: "divOutputAlign" + getDivCount(),
+        style: "text-align: " + alignment,
+        "class": classes
+    }).appendTo("#divOutput");
+    setCurrentDiv("#divOutputAlign" + getDivCount());
+}
+
+var _currentDiv = null;
+
+function getCurrentDiv() {
+    if (_currentDiv) return _currentDiv;
+
+    var divId = $("#outputData").attr("data-currentdiv");
+    if (divId) {
+        _currentDiv = $(divId);
+        return _currentDiv;
+    }
+
+    return null;
+}
+
+function setCurrentDiv(div) {
+    _currentDiv = $(div);
+    $("#outputData").attr("data-currentdiv", div);
+}
+
+var _divCount = -1;
+
+function getDivCount() {
+    if (_divCount < 1) {
+        _divCount = parseInt($("#outputData").attr("data-divcount")) || 0;
+    }
+    return _divCount;
+}
+
+function setDivCount(count) {
+    _divCount = count;
+    $("#outputData").attr("data-divcount", _divCount);
+}
+
+function bindMenu(linkid, verbs, text, elementId) {
+    var options = buildMenuOptions(verbs, text, elementId);
+    $("#" + linkid).jjmenu(options);
+}
+
+function buildMenuOptions(verbs, text, elementId) {
+    var verbsList = verbs ? verbs.split("/") : [];
+    var options = [];
+    var metadata = {};
+    metadata[text] = elementId;
+
+    $.each(verbsList, function (key, value) {
+        options = options.concat({
+            title: value,
+            action: {
+                callback: function (selectedValue) {
+                    sendCommand(selectedValue.toLowerCase() + " " + text, metadata);
+                }
+            }
+        });
+    });
+
+    return options;
+}
+
+function updateObjectLinks(data) {
+    $(".elementmenu").each(function (index, e) {
+        var $e = $(e);
+        var verbs = data[$e.data("elementid")];
+        if (verbs) {
+            $e.removeClass("disabled");
+            $e.data("verbs", verbs);
+            // also set attribute so verbs are persisted to savegame
+            $e.attr("data-verbs", verbs);
+        } else {
+            $e.addClass("disabled");
+        }
+    });
+}
+
+function updateExitLinks(data) {
+    $(".exitlink").each(function (index, e) {
+        var $e = $(e);
+        var exitid = $e.data("elementid");
+        var available = $.inArray(exitid, data) > -1;
+        if (available) {
+            $e.removeClass("disabled");
+        } else {
+            $e.addClass("disabled");
+        }
+    });
+}
+
+function updateCommandLinks(data) {
+    $(".commandlink").each(function (index, e) {
+        var $e = $(e);
+        if (!$(e).data("deactivated")) {
+            var elementid = $e.data("elementid");
+            var available = $.inArray(elementid, data) > -1 || elementid.length == 0;
+            if (available) {
+                $e.removeClass("disabled");
+            } else {
+                $e.addClass("disabled");
+            }
+        }
+    });
+}
+
+function disableAllCommandLinks() {
+    $(".commandlink").each(function (index, e) {
+        $(e).addClass("disabled");
+        $(e).data("deactivated", true);
+    });
+}
+
+var saveClearedText = false;
+var clearedOnce = false;
+
+function clearScreen() {
+    $("#outputData").appendTo($("body"));
+    if (!saveClearedText) {
+        $("#divOutput").css("min-height", 0);
+        $("#divOutput").html("");
+        createNewDiv("left");
+        beginningOfCurrentTurnScrollPosition = 0;
+        // scrollToTurnStart(0), not a bare scrollTop(0) — the new page's
+        // content starts at #gameContent height 0, but #gameContent itself
+        // isn't necessarily at the very top of the *page*: a static picture
+        // frame (#gamePanel/#gridPanel, e.g. "The Shack") reserves real flow
+        // space above it, and jumping to page-scrollTop 0 only clears that
+        // frame if the frame is shorter than the viewport — on a small/mobile
+        // screen it very often isn't, leaving the new page's opening line
+        // rendered behind the frame. This fires on every gamebook page
+        // transition (DoPage → ClearScreen when game.clearlastpage), which
+        // includes game start (the player's first changedparent).
+        setTimeout(function () {
+            scrollToTurnStart(0, true);
+        }, 100);
+    } else {
+        $("#divOutput").append("<hr class='clearedAbove' />");
+        if (!clearedOnce) {
+            addText('<style>#divOutput > .clearedScreen { display: none; }</style>');
+        }
+        clearedOnce = true;
+        $('#divOutput').children().addClass('clearedScreen');
+        $('.clearedScreen').attr('id', null);
+        $('#divOutput').css('min-height', 0);
+        createNewDiv('left');
+        beginningOfCurrentTurnScrollPosition = 0;
+        setTimeout(function () {
+            scrollToTurnStart(0, true);
+        }, 100);
+    }
+    $("#outputData").appendTo($("#divOutput"));
+}
+
+// Hard-resets output/transcript state so a different game/save can start
+// clean without a full page reload (used by WasmPlayer's in-game Load,
+// where _currentDiv/_divCount would otherwise still point at divs from the
+// game that just got torn down).
+function resetGameOutput() {
+    _outputSections = [];
+    _currentDiv = null;
+    _divCount = -1;
+    saveClearedText = false;
+    clearedOnce = false;
+    beginningOfCurrentTurnScrollPosition = 0;
+    $("#divOutput").css("min-height", 0).html("");
+    createNewDiv("left");
+    clearUnsavedProgress();
+}
+
+// Scrollback functions added by KV
+
+function showScrollback() {
+    var scrollbackDivString = '<div id="scrollback-dialog" style="display:none;"><div id="scrollbackdata"></div></div>';
+    addText(scrollbackDivString);
+    var scrollbackDialog = $("#scrollback-dialog").dialog({
+        autoOpen: false,
+        width: (window.innerWidth || document.documentElement.clientWidth ||
+            document.body.clientWidth) - 100,
+        height: (window.innerHeight || document.documentElement.clientHeight ||
+            document.body.clientHeight) - 100,
+        title: "Scrollback",
+        buttons: {
+            Ok: function () {
+                $(this).dialog("close");
+                $(this).remove();
+                $("#scrollback-dialog,#scrollbackdata").remove();
+            },
+            Print: function () {
+                printScrollbackDiv();
+            },
+        },
+        show: {effect: "fadeIn", duration: 500},
+        modal: true,
+    });
+    $('#scrollbackdata').html($('#divOutput').html());
+    $("#scrollbackdata a").addClass("disabled");
+    scrollbackDialog.dialog("open");
+    setTimeout(function () {
+        $("#scrollbackdata a").addClass("disabled");
+    }, 1);
+}
+
+function printScrollbackDiv() {
+    var iframe = document.createElement('iframe');
+    document.body.appendChild(iframe);
+    iframe.contentWindow.document.write($("#scrollbackdata").html());
+    iframe.contentWindow.print();
+    document.body.removeChild(iframe);
+    $("#scrollback-dialog").dialog("close");
+    $("#scrollback-dialog").remove();
+}
+
+function keyPressCode(e) {
+    var keynum
+    if (window.event) {
+        keynum = e.keyCode
+    } else if (e.which) {
+        keynum = e.which
+    }
+    return keynum;
+}
+
+function addExternalStylesheet(source) {
+    var link = $("<link>");
+    link.attr({
+        type: "text/css",
+        rel: "stylesheet",
+        href: source
+    });
+    $("head").append(link);
+}
+
+function setInterfaceString(name, text) {
+    switch (name) {
+        case "InventoryLabel":
+            $("#inventoryLabel span.accordion-header-text").html(text);
+            break;
+        case "StatusLabel":
+            $("#statusVarsLabel span.accordion-header-text").html(text);
+            break;
+        case "PlacesObjectsLabel":
+            $("#placesObjectsLabel span.accordion-header-text").html(text);
+            break;
+        case "CompassLabel":
+            $("#compassLabel span.accordion-header-text").html(text);
+            break;
+        case "InButtonLabel":
+            $("#cmdCompassIn span").html(text);
+            break;
+        case "OutButtonLabel":
+            $("#cmdCompassOut span").html(text);
+            break;
+        case "EmptyListLabel":
+            break;
+        case "NothingSelectedLabel":
+            break;
+        case "TypeHereLabel":
+            $("#txtCommand").prop("placeholder", text);
+            break;
+        case "ContinueLabel":
+            $("#endWaitLink").html(text);
+            break;
+    }
+}
+
+function AddYouTube(id) {
+    var url = "https://www.youtube.com/embed/" + id + "?autoplay=1&rel=0";
+    var embedHTML = "<iframe width=\"425\" height=\"344\" src=\"" + url + "\" frameborder=\"0\" allowfullscreen></iframe>";
+    addText(embedHTML);
+}
+
+function AddVimeo(id) {
+    var url = "https://player.vimeo.com/video/" + id + "?autoplay=1";
+    var embedHTML = "<iframe sandbox=\"allow-same-origin allow-scripts allow-popups\" src=\"" + url + "\" width=\"500\" height=\"281\" frameborder=\"0\" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe>";
+    addText(embedHTML);
+}
+
+function SetMenuBackground(color) {
+    var css = getCSSRule("div.jj_menu_item");
+    css.style.backgroundColor = color;
+}
+
+function SetMenuForeground(color) {
+    var css = getCSSRule("div.jj_menu_item");
+    css.style.color = color;
+}
+
+function SetMenuHoverBackground(color) {
+    var css = getCSSRule("div.jj_menu_item_hover");
+    css.style.backgroundColor = color;
+}
+
+function SetMenuHoverForeground(color) {
+    var css = getCSSRule("div.jj_menu_item_hover");
+    css.style.color = color;
+}
+
+function SetMenuFontName(font) {
+    var css = getCSSRule("div.jjmenu");
+    css.style.fontFamily = font;
+}
+
+function SetMenuFontSize(size) {
+    if (_allowMenuFontSizeChange) {
+        var css = getCSSRule("div.jjmenu");
+        css.style.fontSize = size;
+    }
+}
+
+function TurnOffHyperlinksUnderline() {
+    var css = getCSSRule("a.cmdlink");
+    css.style.textDecoration = "none";
+}
+
+function SetBackgroundImage(url) {
+    $("body").css("background-image", "url(" + url + ")");
+}
+
+function StartOutputSection(name) {
+    if ($.inArray(name, _outputSections) == -1) {
+        _outputSections.push(name);
+        createNewDiv("left");
+    }
+}
+
+function EndOutputSection(name) {
+    var index = $.inArray(name, _outputSections);
+    if (index != -1) {
+        _outputSections.splice(index, 1);
+        createNewDiv("left");
+    }
+}
+
+function HideOutputSection(name) {
+    EndOutputSection(name);
+    $("." + name + " a").attr("onclick", "");
+    setTimeout(function () {
+        $("." + name).hide(250, function () {
+            $(this).remove();
+        });
+        // Added by The Pixie, 04/Oct/17
+        // This should close the gap when the menu is hidden
+        $("#divOutput").animate({'min-height': 0}, 250);
+    }, 250);
+}
+
+var TextFX = new function () {
+    var fxCount = 0;
+
+    function addFx(text, font, color, size) {
+        fxCount++;
+        var style = "font-family:" + font + ";color:" + color + ";font-size:" + size + "pt";
+        var html = "<span id=\"fx" + fxCount + "\" style=\"" + style + "\">" + text + " </span><br />";
+        addText(html);
+        return $("#fx" + fxCount);
+    }
+
+    this.Typewriter = function (text, speed, font, color, size) {
+        var el = addFx(text, font, color, size);
+        el.typewriter(speed);
+    }
+
+    this.Unscramble = function (text, speed, reveal, font, color, size) {
+        var el = addFx(text, font, color, size);
+        el.unscramble(speed, reveal);
+    }
+}
+
+function colourNameToHex(colour) {
+    var colours = {
+        "aliceblue": "#f0f8ff",
+        "antiquewhite": "#faebd7",
+        "aqua": "#00ffff",
+        "aquamarine": "#7fffd4",
+        "azure": "#f0ffff",
+        "beige": "#f5f5dc",
+        "bisque": "#ffe4c4",
+        "black": "#000000",
+        "blanchedalmond": "#ffebcd",
+        "blue": "#0000ff",
+        "blueviolet": "#8a2be2",
+        "brown": "#a52a2a",
+        "burlywood": "#deb887",
+        "cadetblue": "#5f9ea0",
+        "chartreuse": "#7fff00",
+        "chocolate": "#d2691e",
+        "coral": "#ff7f50",
+        "cornflowerblue": "#6495ed",
+        "cornsilk": "#fff8dc",
+        "crimson": "#dc143c",
+        "cyan": "#00ffff",
+        "darkblue": "#00008b",
+        "darkcyan": "#008b8b",
+        "darkgoldenrod": "#b8860b",
+        "darkgray": "#a9a9a9",
+        "darkgreen": "#006400",
+        "darkkhaki": "#bdb76b",
+        "darkmagenta": "#8b008b",
+        "darkolivegreen": "#556b2f",
+        "darkorange": "#ff8c00",
+        "darkorchid": "#9932cc",
+        "darkred": "#8b0000",
+        "darksalmon": "#e9967a",
+        "darkseagreen": "#8fbc8f",
+        "darkslateblue": "#483d8b",
+        "darkslategray": "#2f4f4f",
+        "darkturquoise": "#00ced1",
+        "darkviolet": "#9400d3",
+        "deeppink": "#ff1493",
+        "deepskyblue": "#00bfff",
+        "dimgray": "#696969",
+        "dodgerblue": "#1e90ff",
+        "firebrick": "#b22222",
+        "floralwhite": "#fffaf0",
+        "forestgreen": "#228b22",
+        "fuchsia": "#ff00ff",
+        "gainsboro": "#dcdcdc",
+        "ghostwhite": "#f8f8ff",
+        "gold": "#ffd700",
+        "goldenrod": "#daa520",
+        "gray": "#808080",
+        "green": "#008000",
+        "greenyellow": "#adff2f",
+        "honeydew": "#f0fff0",
+        "hotpink": "#ff69b4",
+        "indianred ": "#cd5c5c",
+        "indigo ": "#4b0082",
+        "ivory": "#fffff0",
+        "khaki": "#f0e68c",
+        "lavender": "#e6e6fa",
+        "lavenderblush": "#fff0f5",
+        "lawngreen": "#7cfc00",
+        "lemonchiffon": "#fffacd",
+        "lightblue": "#add8e6",
+        "lightcoral": "#f08080",
+        "lightcyan": "#e0ffff",
+        "lightgoldenrodyellow": "#fafad2",
+        "lightgrey": "#d3d3d3",
+        "lightgreen": "#90ee90",
+        "lightpink": "#ffb6c1",
+        "lightsalmon": "#ffa07a",
+        "lightseagreen": "#20b2aa",
+        "lightskyblue": "#87cefa",
+        "lightslategray": "#778899",
+        "lightsteelblue": "#b0c4de",
+        "lightyellow": "#ffffe0",
+        "lime": "#00ff00",
+        "limegreen": "#32cd32",
+        "linen": "#faf0e6",
+        "magenta": "#ff00ff",
+        "maroon": "#800000",
+        "mediumaquamarine": "#66cdaa",
+        "mediumblue": "#0000cd",
+        "mediumorchid": "#ba55d3",
+        "mediumpurple": "#9370d8",
+        "mediumseagreen": "#3cb371",
+        "mediumslateblue": "#7b68ee",
+        "mediumspringgreen": "#00fa9a",
+        "mediumturquoise": "#48d1cc",
+        "mediumvioletred": "#c71585",
+        "midnightblue": "#191970",
+        "mintcream": "#f5fffa",
+        "mistyrose": "#ffe4e1",
+        "moccasin": "#ffe4b5",
+        "navajowhite": "#ffdead",
+        "navy": "#000080",
+        "oldlace": "#fdf5e6",
+        "olive": "#808000",
+        "olivedrab": "#6b8e23",
+        "orange": "#ffa500",
+        "orangered": "#ff4500",
+        "orchid": "#da70d6",
+        "palegoldenrod": "#eee8aa",
+        "palegreen": "#98fb98",
+        "paleturquoise": "#afeeee",
+        "palevioletred": "#d87093",
+        "papayawhip": "#ffefd5",
+        "peachpuff": "#ffdab9",
+        "peru": "#cd853f",
+        "pink": "#ffc0cb",
+        "plum": "#dda0dd",
+        "powderblue": "#b0e0e6",
+        "purple": "#800080",
+        "red": "#ff0000",
+        "rosybrown": "#bc8f8f",
+        "royalblue": "#4169e1",
+        "saddlebrown": "#8b4513",
+        "salmon": "#fa8072",
+        "sandybrown": "#f4a460",
+        "seagreen": "#2e8b57",
+        "seashell": "#fff5ee",
+        "sienna": "#a0522d",
+        "silver": "#c0c0c0",
+        "skyblue": "#87ceeb",
+        "slateblue": "#6a5acd",
+        "slategray": "#708090",
+        "snow": "#fffafa",
+        "springgreen": "#00ff7f",
+        "steelblue": "#4682b4",
+        "tan": "#d2b48c",
+        "teal": "#008080",
+        "thistle": "#d8bfd8",
+        "tomato": "#ff6347",
+        "turquoise": "#40e0d0",
+        "violet": "#ee82ee",
+        "wheat": "#f5deb3",
+        "white": "#ffffff",
+        "whitesmoke": "#f5f5f5",
+        "yellow": "#ffff00",
+        "yellowgreen": "#9acd32"
+    };
+
+    if (typeof colours[colour.toLowerCase()] != 'undefined')
+        return colours[colour.toLowerCase()];
+
+    return false;
+}
+
+function hexToRgb(hex) {
+    var result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+    return result ? {
+        r: parseInt(result[1], 16),
+        g: parseInt(result[2], 16),
+        b: parseInt(result[3], 16)
+    } : null;
+}
+
+function getCSSRule(ruleName, deleteFlag) {
+    ruleName = ruleName.toLowerCase();
+    if (document.styleSheets) {
+        for (var i = 0; i < document.styleSheets.length; i++) {
+            var styleSheet = document.styleSheets[i];
+            var ii = 0;
+            var cssRule = false;
+            try {
+                do {
+                    if (styleSheet.cssRules) {
+                        cssRule = styleSheet.cssRules[ii];
+                    } else if (styleSheet.rules) {
+                        cssRule = styleSheet.rules[ii];
+                    }
+                    if (cssRule) {
+                        if (typeof cssRule.selectorText != "undefined") {
+                            if (cssRule.selectorText.toLowerCase() == ruleName) {
+                                if (deleteFlag == 'delete') {
+                                    if (styleSheet.cssRules) {
+                                        styleSheet.deleteRule(ii);
+                                    } else {
+                                        styleSheet.removeRule(ii);
+                                    }
+                                    return true;
+                                } else {
+                                    return cssRule;
+                                }
+                            }
+                        }
+                    }
+                    ii++;
+                } while (cssRule)
+            } catch (e) {
+                // Firefox throws a SecurityError if you try reading
+                // a cross-domain stylesheet
+                if (e.name !== "SecurityError") {
+                    throw e;
+                }
+            }
+        }
+    }
+    return false;
+}
+
+function killCSSRule(ruleName) {
+    return getCSSRule(ruleName, 'delete');
+}
+
+function addCSSRule(ruleName) {
+    if (document.styleSheets) {
+        if (!getCSSRule(ruleName)) {
+            if (document.styleSheets[0].addRule) {
+                document.styleSheets[0].addRule(ruleName, null, 0);
+            } else {
+                document.styleSheets[0].insertRule(ruleName + ' { }', 0);
+            }
+        }
+    }
+    return getCSSRule(ruleName);
+}
+
+function ShowGrid(height) {
+    _showGrid = (height > 0);
+    $("#gridPanel").show();
+    $("#gridPanel").height(height);
+    $("#gridCanvas").prop("height", height);
+    paper.view.viewSize.height = height;
+}
+
+
+// ----------------------------------        
+// Section added by The Pixie
+
+function endsWith(str, suffix) {
+    return str.indexOf(suffix, str.length - suffix.length) !== -1;
+}
+
+// TODO: Stop calling this function from Core.aslx, I don't think the core libraries should depend on or manipulate
+// interface details like this - at least not while playercore.htm is part of the runtime instead of being supplied
+// by the library.
+function setCss(element, cssString) {
+    el = $(element);
+    ary = cssString.split(";");
+    for (i = 0; i < ary.length; i++) {
+        ary2 = ary[i].split(':');
+        el.css(ary2[0], ary2[1]);
+    }
+}
+
+function addScript(text) {
+    $('body').prepend(text);
+}
+
+function colourBlend(colour1, colour2) {
+    $('#gamePanes').css('background-color', 'transparent');
+    $('#gameBorder').css('background-color', 'transparent');
+    body = $('body');
+    body.css('background-color', colour1);
+    body.css('background-image', 'linear-gradient(to bottom,  ' + colour1 + ', ' + colour2 + ')');
+    body.css('background-image', '-webkit-linear-gradient(top,  ' + colour1 + ', ' + colour2 + ')');
+    body.css('background-attachment', 'fixed');
+    body.css('background-position', 'left bottom');
+}
+
+
+elements = [
+    '#statusVarsLabel', '#statusVarsAccordion',// '#statusVars',
+    '#inventoryLabel', '#inventoryAccordion', '#inventoryAccordion.ui-widget-content',
+    '#placesObjectsLabel', '#placesObjectsAccordion', '#placesObjectsAccordion.ui-widget-content',
+    '#compassLabel', '#compassAccordion', '.ui-button', //'.ui-button-text',
+    '#commandPane', '#customStatusPane'
+];
+
+dirs = ['N', 'E', 'S', 'W', 'NW', 'NE', 'SW', 'SE', 'U', 'In', 'D', 'Out'];
+
+commandColour = 'orange'
+
+function setElement(name, fore, back) {
+    el = $(name);
+    el.css('background', back);
+    el.css('color', fore);
+    el.css('border', 'solid 1px ' + fore);
+    if (endsWith(name, "Accordion")) {
+        el.css('border-top', 'none');
+    }
+}
+
+function setCompass(name, fore, back) {
+    el = $('#cmdCompass' + name);
+    el.css('background', back);
+    el.css('border', '2px solid ' + fore);
+}
+
+function setPanes(fore, back, secFore, secBack, highlight) {
+    if (arguments.length == 2) {
+        secFore = back;
+        secBack = fore;
+    }
+    if (arguments.length < 5) {
+        highlight = 'orange'
+    }
+    commandColour = fore;
+    for (i = 0; i < elements.length; i++) {
+        setElement(elements[i], fore, back);
+    }
+    for (i = 0; i < dirs.length; i++) {
+        setElement(dirs[i], fore, back);
+    }
+
+    var head = $('head');
+    head.append('<style>.ui-button-text { color: ' + fore + ';}</style>');
+    head.append('<style>.ui-state-active { color: ' + fore + ';}</style>');
+    head.append('<style>.ui-widget-content { color: ' + fore + ';}</style>');
+    head.append('<style>.ui-widget-header .ui-state-default { background-color: ' + secBack + ';}</style>');
+    head.append('<style>.ui-selecting { color: ' + secFore + '; background-color: ' + highlight + ';}</style>');
+    head.append('<style>.ui-selected { color: ' + secFore + '; background-color: ' + secBack + ';}</style>');
+
+    //$('.ui-button-text').css('color', fore);
+    //$('.ui-state-active').css('color', fore);
+    //$('.ui-widget-content').css('color', fore);
+
+}
+
+function setCommands(s, colour) {
+    if (arguments.length == 2) commandColour = colour;
+    ary = s.split(";");
+    el = $('#commandPaneHeading');
+    el.empty();
+    for (i = 0; i < ary.length; i++) {
+        ary2 = ary[i].split(":");
+        comm = ary2[0];
+        commLower = ary2[0].toLowerCase().replace(/ /g, "_");
+        commComm = (ary2.length == 2 ? ary2[1] : ary2[0]).toLowerCase();
+        //alert("ary[i]=" + ary[i] + ", Comm=" + comm + ", commComm=" + commComm + ", ary2[0].length=" + ary2.length);
+        el.append(' <span id="' + commLower + '_command_button"  class="accordion-header-text" style="padding:5px;"><a id="verblink' + commLower + '" class="cmdlink commandlink" style="text-decoration:none;color:' + commandColour + ';font-size:12pt;" data-elementid="" data-command="' + commComm + '">' + comm + '</a></span> ');
+    }
+}
+
+function setCustomStatus(s) {
+    el = $('#customStatusPane');
+    el.html(s);
+}
+
+
+// ----------------------------------        
+
+
+$(function () {
+    $("#gridPanel").mousewheel(function (e, delta) {
+        gridApi.zoomIn(delta);
+        return false;
+    });
+});
+
+// ***********
+// Section added by KV
+
+
+function isMobilePlayer() {
+    if (typeof (currentTab) === 'string') {
+        return true;
+    }
+    return false;
+}
+
+function showPopup(title, text) {
+    $('#msgboxCaption').html(text);
+
+    var msgboxOptions = {
+        modal: true,
+        autoOpen: false,
+        title: title,
+        buttons: [
+            {
+                text: 'OK',
+                click: function () {
+                    $(this).dialog('close');
+                }
+            },
+        ],
+        closeOnEscape: false,
+    };
+
+    $('#msgbox').dialog(msgboxOptions);
+    $('#msgbox').dialog('open');
+}
+
+function showPopupCustomSize(title, text, width, height) {
+    $('#msgboxCaption').html(text);
+
+    var msgboxOptions = {
+        modal: true,
+        autoOpen: false,
+        title: title,
+        width: width,
+        height: height,
+        buttons: [
+            {
+                text: 'OK',
+                click: function () {
+                    $(this).dialog('close');
+                }
+            },
+        ],
+        closeOnEscape: false,
+    };
+
+    $('#msgbox').dialog(msgboxOptions);
+    $('#msgbox').dialog('open');
+}
+
+function showPopupFullscreen(title, text) {
+    $('#msgboxCaption').html(text);
+
+    var msgboxOptions = {
+        modal: true,
+        autoOpen: false,
+        title: title,
+        width: $(window).width(),
+        height: $(window).height(),
+        buttons: [
+            {
+                text: 'OK',
+                click: function () {
+                    $(this).dialog('close');
+                }
+            },
+        ],
+        closeOnEscape: false,
+    };
+
+    $('#msgbox').dialog(msgboxOptions);
+    $('#msgbox').dialog('open');
+}
+
+// Log functions
+// In-game HTML log introduced in 5.8. Deprecated in 5.9
+// Its functions and variables are only here to avoid errors
+
+var logVar = "";
+
+function addLogEntry(data) {
+    // Do nothing.
+}
+
+var displayedInGameLogWarning = false;
+
+function showLog() {
+    // In-game HTML log introduced in 5.8. Removed in 5.9
+    if (!displayedInGameLogWarning) {
+        console.warning("The in-game HTML log feature has been removed.")
+        displayedInGameLogWarning = true;
+    }
+    // Do nothing.
+}
+
+function setupLogDiv() {
+    // Do nothing.
+}
+
+function showLogDiv() {
+    // Do nothing.
+}
+
+function hideLogDiv() {
+    // Do nothing.
+}
+
+function printLogDiv() {
+    // Do nothing.
+}
+
+function saveLog() {
+    // Do nothing.
+}
+
+// The transcript uses this function.
+function getTimeAndDateForLog() {
+    var date = new Date();
+    var currentDateTime = date.toLocaleString('en-US', {timeZoneName: 'short'}).replace(/,/g, "").replace(/[A-Z][A-Z][A-Z].*/g, "");
+    return currentDateTime;
+}
+
+// **********************************
+// TRANSCRIPT FUNCTIONS
+
+function writeToTranscript(text) {
+    if (!noTranscript && savingTranscript) {
+        var faker = document.createElement('div');
+        faker.innerHTML = text;
+        text = faker.innerHTML;
+        for (var key in Object.keys(faker.getElementsByTagName('img'))) {
+            var elem = faker.getElementsByTagName('img')[key];
+            if (elem != null) {
+                var altProp = $(faker.getElementsByTagName('img')[key]).attr('alt') || "";
+                text = text.replace(elem.outerHTML, altProp) || text;
+            }
+        }
+        for (var key in Object.keys(faker.getElementsByTagName('area'))) {
+            var elem = faker.getElementsByTagName('area')[key];
+            if (elem != null) {
+                var altProp = $(faker.getElementsByTagName('area')[key]).attr('alt') || "";
+                text = text.replace(elem.outerHTML, altProp) || text;
+            }
+        }
+        for (var key in Object.keys(faker.getElementsByTagName('input'))) {
+            var elem = faker.getElementsByTagName('input')[key];
+            if (elem != null) {
+                var altProp = $(faker.getElementsByTagName('input')[key]).attr('alt') || "";
+                text = text.replace(elem.outerHTML, altProp) || text;
+            }
+        }
+        WriteToTranscript(transcriptName + "___SCRIPTDATA___" + $("<div>" + text.replace(/<br\/>/g, "@@@NEW_LINE@@@").replace(/<br>/g, "@@@NEW_LINE@@@").replace(/<br \/>/g, "@@@NEW_LINE@@@").replace("&nbsp;", " ") + "</div>").text());
+    }
+}
+
+function enableTranscript(name) {
+    if (noTranscript) return;
+    transcriptName = name || transcriptName || gameName;
+    savingTranscript = true;
+}
+
+function disableTranscript() {
+    savingTranscript = false;
+}
+
+function killTranscript() {
+    noTranscript = true;
+    disableTranscript();
+}
+
+function setTranscriptStatus(status) {
+    switch (status) {
+        case "enabled":
+            var name = transcriptName || gameName;
+            enableTranscript(name);
+            break;
+        case "disabled":
+            disableTranscript();
+            break;
+        case "prohibited":
+        case "none":
+        case "killed":
+            killTranscript();
+            break;
+        case "allowed":
+            noTranscript = false;
+    }
+}
+
+var showedSaveTranscriptWarning = false;
+
+/*
+ * This function was missing from the webplayer in Quest 5.8.0
+ * Leaving this here as a fallback
+*/
+function SaveTranscript(text) {
+    if (!showedSaveTranscriptWarning) {
+        console.log("[QUEST]: SaveTranscript has been deprecated. Using writeToTranscript instead.");
+        showedSaveTranscriptWarning = true;
+    }
+    writeToTranscript(text);
+}
+
+var transcriptUrl = 'TranscriptViewer/index.html';
+
+// Another fallback to avoid errors
+function showTranscript() {
+    addTextAndScroll('Your transcripts are saved to the localStorage in your browser. You can view, download, or delete them here: <a href="' + transcriptUrl + '" target="_blank">Your Transcripts</a><br/>');
+}
+
+function replaceTranscriptString(data) {
+    // Added in 5.8, and never worked properly.
+    // Do nothing.
+}
+
+function printTranscriptDiv() {
+    // Added in 5.8, and never worked properly.
+    // Do nothing.
+}
+
+function reviveTranscript() {
+    noTranscript = false;
+}
+
+function getDateAndTimeForTranscript() {
+    return new Date().toLocaleString(navigator.language, {timeZoneName: 'short'});
+}
+
+function printTranscriptDateAndTime() {
+    addTextAndScroll('<b>DATE AND TIME:</b> ' + getDateAndTimeForTranscript());
+}
+
+function loadTranscriptNameInputVal() {
+    $('input#txtCommand').val(transcriptName);
+}
+
+// ***********************************
+
+function disableMenuOutputSection(el) {
+    $('.' + el + ' .cmdlink').addClass('disabled').attr('onclick', null);
+}
+
+
+// GRID FUNCTIONS ***********************************************************************************************************************
+
+// gridApi is global for interop between PaperScript and JavaScript - a workaround until
+// this tutorial exists: http://paperjs.org/tutorials/getting-started/paperscript-interoperability/
+
+window.gridApi = {};
+window.gridApi.onLoad = function () {
+};
+
+_canvasSupported = (window.HTMLCanvasElement);
+
+function Grid_DrawGridLines(minX, minY, maxX, maxY, border) {
+    if (!_canvasSupported) return;
+    gridApi.drawGrid(parseInt(minX), parseInt(minY), parseInt(maxX), parseInt(maxY), border);
+}
+
+function Grid_SetScale(scale) {
+    if (!_canvasSupported) return;
+    gridApi.setScale(parseInt(scale));
+}
+
+function Grid_DrawBox(x, y, z, width, height, border, borderWidth, fill, sides) {
+    if (!_canvasSupported) return;
+    gridApi.drawBox(parseFloat(x), parseFloat(y), parseFloat(z), parseInt(width), parseInt(height), border, parseInt(borderWidth), fill, parseInt(sides));
+}
+
+function Grid_DrawLine(x1, y1, x2, y2, border, borderWidth) {
+    if (!_canvasSupported) return;
+    gridApi.drawLine(parseFloat(x1), parseFloat(y1), parseFloat(x2), parseFloat(y2), border, parseInt(borderWidth));
+}
+
+function Grid_DrawArrow(id, x1, y1, x2, y2, border, borderWidth) {
+    if (!_canvasSupported) return;
+    gridApi.drawArrow(id, parseFloat(x1), parseFloat(y1), parseFloat(x2), parseFloat(y2), border, parseInt(borderWidth));
+}
+
+function Grid_DrawPlayer(x, y, z, radius, border, borderWidth, fill) {
+    if (!_canvasSupported) return;
+    gridApi.drawPlayer(parseFloat(x), parseFloat(y), parseFloat(z), parseInt(radius), border, parseInt(borderWidth), fill);
+}
+
+function Grid_DrawLabel(x, y, z, text, col) {
+    if (col === undefined) col = "black";
+    if (!_canvasSupported) return;
+    gridApi.drawLabel(parseFloat(x), parseFloat(y), parseFloat(z), text, col);
+}
+
+function Grid_ShowCustomLayer(visible) {
+    if (!_canvasSupported) return;
+    gridApi.showCustomLayer(visible == "true");
+}
+
+function Grid_ClearCustomLayer() {
+    if (!_canvasSupported) return;
+    gridApi.clearCustomLayer();
+}
+
+function Grid_ClearAllLayers() {
+    if (!_canvasSupported) return;
+    gridApi.clearAllLayers();
+}
+
+function Grid_SetCentre(x, y) {
+    if (!_canvasSupported) return;
+    gridApi.setCentre(parseFloat(x), parseFloat(y));
+}
+
+function Grid_DrawSquare(id, x, y, width, height, text, fill) {
+    if (!_canvasSupported) return;
+    gridApi.drawCustomLayerSquare(id, parseInt(x), parseInt(y), parseInt(width), parseInt(height), text, fill);
+}
+
+function Grid_LoadSvg(data, id) {
+    if (!_canvasSupported) return;
+    gridApi.loadSvg(data, id);
+}
+
+function Grid_DrawSvg(id, symbolId, x, y, width, height) {
+    if (!_canvasSupported) return;
+    gridApi.drawCustomLayerSvg(id, symbolId, parseInt(x), parseInt(y), parseInt(width), parseInt(height));
+}
+
+function Grid_DrawImage(id, url, x, y, width, height) {
+    if (!_canvasSupported) return;
+    gridApi.drawCustomLayerImage(id, url, parseInt(x), parseInt(y), parseInt(width), parseInt(height));
+}
+
+function Grid_AddNewShapePoint(x, y) {
+    if (!_canvasSupported) return;
+    gridApi.addNewShapePoint(x, y);
+}
+
+function Grid_DrawShape(id, border, fill, opacity) {
+    if (!_canvasSupported) return;
+    gridApi.drawShape(id, border, fill, opacity);
+}
+
+// JQUERY.MOUSEWEHEEL.JS ****************************************************************************************************************
+// https://github.com/brandonaaron/jquery-mousewheel
+
+/*! Copyright (c) 2011 Brandon Aaron (http://brandonaaron.net)
+* Licensed under the MIT License (LICENSE.txt).
+*
+* Thanks to: http://adomas.org/javascript-mouse-wheel/ for some pointers.
+* Thanks to: Mathias Bank(http://www.mathias-bank.de) for a scope bug fix.
+* Thanks to: Seamus Leahy for adding deltaX and deltaY
+*
+* Version: 3.0.6
+* 
+* Requires: 1.2.2+
+*/
+
+(function ($) {
+
+    var types = ['DOMMouseScroll', 'mousewheel'];
+
+    if ($.event.fixHooks) {
+        for (var i = types.length; i;) {
+            $.event.fixHooks[types[--i]] = $.event.mouseHooks;
+        }
+    }
+
+    $.event.special.mousewheel = {
+        setup: function () {
+            if (this.addEventListener) {
+                for (var i = types.length; i;) {
+                    this.addEventListener(types[--i], handler, false);
+                }
+            } else {
+                this.onmousewheel = handler;
+            }
+        },
+
+        teardown: function () {
+            if (this.removeEventListener) {
+                for (var i = types.length; i;) {
+                    this.removeEventListener(types[--i], handler, false);
+                }
+            } else {
+                this.onmousewheel = null;
+            }
+        }
+    };
+
+    $.fn.extend({
+        mousewheel: function (fn) {
+            return fn ? this.bind("mousewheel", fn) : this.trigger("mousewheel");
+        },
+
+        unmousewheel: function (fn) {
+            return this.unbind("mousewheel", fn);
+        }
+    });
+
+
+    function handler(event) {
+        var orgEvent = event || window.event, args = [].slice.call(arguments, 1), delta = 0, returnValue = true,
+            deltaX = 0, deltaY = 0;
+        event = $.event.fix(orgEvent);
+        event.type = "mousewheel";
+
+        // Old school scrollwheel delta
+        if (orgEvent.wheelDelta) {
+            delta = orgEvent.wheelDelta / 120;
+        }
+        if (orgEvent.detail) {
+            delta = -orgEvent.detail / 3;
+        }
+
+        // New school multidimensional scroll (touchpads) deltas
+        deltaY = delta;
+
+        // Gecko
+        if (orgEvent.axis !== undefined && orgEvent.axis === orgEvent.HORIZONTAL_AXIS) {
+            deltaY = 0;
+            deltaX = -1 * delta;
+        }
+
+        // Webkit
+        if (orgEvent.wheelDeltaY !== undefined) {
+            deltaY = orgEvent.wheelDeltaY / 120;
+        }
+        if (orgEvent.wheelDeltaX !== undefined) {
+            deltaX = -1 * orgEvent.wheelDeltaX / 120;
+        }
+
+        // Add event and delta to the front of the arguments
+        args.unshift(event, delta, deltaX, deltaY);
+
+        return ($.event.dispatch || $.event.handle).apply(this, args);
+    }
+
+})(jQuery);
+
+// JQUERY.TEXT-EFFECTS.JS ***************************************************************************************************************
+// https://github.com/jaz303/jquery-grab-bag/blob/master/javascripts/jquery.text-effects.js
+
+// (c) 2008 Jason Frame (jason@onehackoranother.com)
+// Released under The MIT License.
+
+(function ($) {
+
+    function shuffle(a) {
+        var i = a.length, j;
+        while (i) {
+            var j = Math.floor((i--) * Math.random());
+            var t = a[i];
+            a[i] = a[j];
+            a[j] = t;
+        }
+    }
+
+    function randomAlphaNum() {
+        var rnd = Math.floor(Math.random() * 62);
+        if (rnd >= 52) return String.fromCharCode(rnd - 4);
+        else if (rnd >= 26) return String.fromCharCode(rnd + 71);
+        else return String.fromCharCode(rnd + 65);
+    }
+
+    $.fn.rot13 = function () {
+        this.each(function () {
+            $(this).text($(this).text().replace(/[a-z0-9]/ig, function (chr) {
+                var cc = chr.charCodeAt(0);
+                if (cc >= 65 && cc <= 90) cc = 65 + ((cc - 52) % 26);
+                else if (cc >= 97 && cc <= 122) cc = 97 + ((cc - 84) % 26);
+                else if (cc >= 48 && cc <= 57) cc = 48 + ((cc - 43) % 10);
+                return String.fromCharCode(cc);
+            }));
+        });
+        return this;
+    };
+
+    $.fn.scrambledWriter = function () {
+        this.each(function () {
+            var $ele = $(this), str = $ele.text(), progress = 0, replace = /[^\s]/g,
+                random = randomAlphaNum, inc = 3;
+            $ele.text('');
+            var timer = setInterval(function () {
+                $ele.text(str.substring(0, progress) + str.substring(progress, str.length).replace(replace, random));
+                progress += inc
+                if (progress >= str.length + inc) clearInterval(timer);
+            }, 100);
+        });
+        return this;
+    };
+
+    $.fn.typewriter = function (speed) {
+        this.each(function () {
+            var $ele = $(this), str = $ele.text(), progress = 0;
+            $ele.text('');
+            var timer = setInterval(function () {
+                $ele.text(str.substring(0, progress++) + ((progress & 1) && progress < str.length ? '_' : ''));
+                if (progress >= str.length) clearInterval(timer);
+            }, speed);
+        });
+        return this;
+    };
+
+    $.fn.unscramble = function (speed, reveal) {
+        this.each(function () {
+            var $ele = $(this), str = $ele.text(), replace = /[^\s]/,
+                state = [], choose = [], random = randomAlphaNum;
+
+            for (var i = 0; i < str.length; i++) {
+                if (str.charAt(i).match(replace)) {
+                    state.push(random());
+                    choose.push(i);
+                } else {
+                    state.push(str.charAt(i));
+                }
+            }
+
+            shuffle(choose);
+            $ele.text(state.join(''));
+
+            var timer = setInterval(function () {
+                var i, r = reveal;
+                while (r-- && choose.length) {
+                    i = choose.pop();
+                    state[i] = str.charAt(i);
+                }
+                for (i = 0; i < choose.length; i++) state[choose[i]] = random();
+                $ele.text(state.join(''));
+                if (choose.length == 0) clearInterval(timer);
+            }, speed);
+        });
+        return this;
+    };
+
+})(jQuery);
+
+// JQUERY.INVIEW.JS *********************************************************************************************************************
+
+/**
+ * author Christopher Blum
+ *    - based on the idea of Remy Sharp, http://remysharp.com/2009/01/26/element-in-view-event-plugin/
+ *    - forked from http://github.com/zuk/jquery.inview/
+ */
+(function ($) {
+    var inviewObjects = {}, viewportSize, viewportOffset,
+        d = document, w = window, documentElement = d.documentElement, expando = $.expando, timer;
+
+    $.event.special.inview = {
+        add: function (data) {
+            inviewObjects[data.guid + "-" + this[expando]] = {data: data, $element: $(this)};
+
+            // Use setInterval in order to also make sure this captures elements within
+            // "overflow:scroll" elements or elements that appeared in the dom tree due to
+            // dom manipulation and reflow
+            // old: $(window).scroll(checkInView);
+            //
+            // By the way, iOS (iPad, iPhone, ...) seems to not execute, or at least delays
+            // intervals while the user scrolls. Therefore the inview event might fire a bit late there
+            // 
+            // Don't waste cycles with an interval until we get at least one element that
+            // has bound to the inview event.  
+            if (!timer && !$.isEmptyObject(inviewObjects)) {
+                timer = setInterval(checkInView, 250);
+            }
+        },
+
+        remove: function (data) {
+            try {
+                delete inviewObjects[data.guid + "-" + this[expando]];
+            } catch (e) {
+            }
+
+            // Clear interval when we no longer have any elements listening
+            if ($.isEmptyObject(inviewObjects)) {
+                clearInterval(timer);
+                timer = null;
+            }
+        }
+    };
+
+    function getViewportSize() {
+        var mode, domObject, size = {height: w.innerHeight, width: w.innerWidth};
+
+        // if this is correct then return it. iPad has compat Mode, so will
+        // go into check clientHeight/clientWidth (which has the wrong value).
+        if (!size.height) {
+            mode = d.compatMode;
+            if (mode || !$.support.boxModel) { // IE, Gecko
+                domObject = mode === 'CSS1Compat' ?
+                    documentElement : // Standards
+                    d.body; // Quirks
+                size = {
+                    height: domObject.clientHeight,
+                    width: domObject.clientWidth
+                };
+            }
+        }
+
+        return size;
+    }
+
+    function getViewportOffset() {
+        return {
+            top: w.pageYOffset || documentElement.scrollTop || d.body.scrollTop,
+            left: w.pageXOffset || documentElement.scrollLeft || d.body.scrollLeft
+        };
+    }
+
+    function checkInView() {
+        var $elements = $(), elementsLength, i = 0;
+
+        $.each(inviewObjects, function (i, inviewObject) {
+            var selector = inviewObject.data.selector,
+                $element = inviewObject.$element;
+            $elements = $elements.add(selector ? $element.find(selector) : $element);
+        });
+
+        elementsLength = $elements.length;
+        if (elementsLength) {
+            viewportSize = viewportSize || getViewportSize();
+            viewportOffset = viewportOffset || getViewportOffset();
+
+            for (; i < elementsLength; i++) {
+                // Ignore elements that are not in the DOM tree
+                if (!$.contains(documentElement, $elements[i])) {
+                    continue;
+                }
+
+                var $element = $($elements[i]),
+                    elementSize = {height: $element.height(), width: $element.width()},
+                    elementOffset = $element.offset(),
+                    inView = $element.data('inview'),
+                    visiblePartX,
+                    visiblePartY,
+                    visiblePartsMerged;
+
+                // Don't ask me why because I haven't figured out yet:
+                // viewportOffset and viewportSize are sometimes suddenly null in Firefox 5.
+                // Even though it sounds weird:
+                // It seems that the execution of this function is interferred by the onresize/onscroll event
+                // where viewportOffset and viewportSize are unset
+                if (!viewportOffset || !viewportSize) {
+                    return;
+                }
+
+                if (elementOffset.top + elementSize.height > viewportOffset.top &&
+                    elementOffset.top < viewportOffset.top + viewportSize.height &&
+                    elementOffset.left + elementSize.width > viewportOffset.left &&
+                    elementOffset.left < viewportOffset.left + viewportSize.width) {
+                    visiblePartX = (viewportOffset.left > elementOffset.left ?
+                        'right' : (viewportOffset.left + viewportSize.width) < (elementOffset.left + elementSize.width) ?
+                            'left' : 'both');
+                    visiblePartY = (viewportOffset.top > elementOffset.top ?
+                        'bottom' : (viewportOffset.top + viewportSize.height) < (elementOffset.top + elementSize.height) ?
+                            'top' : 'both');
+                    visiblePartsMerged = visiblePartX + "-" + visiblePartY;
+                    if (!inView || inView !== visiblePartsMerged) {
+                        $element.data('inview', visiblePartsMerged).trigger('inview', [true, visiblePartX, visiblePartY]);
+                    }
+                } else if (inView) {
+                    $element.data('inview', false).trigger('inview', [false]);
+                }
+            }
+        }
+    }
+
+    $(w).bind("scroll resize scrollstop", function () {
+        viewportSize = viewportOffset = null;
+    });
+
+    // IE < 9 scrolls to focused elements without firing the "scroll" event
+    if (!documentElement.addEventListener && documentElement.attachEvent) {
+        documentElement.attachEvent("onfocusin", function () {
+            viewportOffset = null;
+        });
+    }
+})(jQuery);
+
+// JJMENU.JS ****************************************************************************************************************************
+
+/* Heavily modified, based on jjmenu 1.1.2 by Jacek Jursza (okhan.pl@gmail.com)
+ * http://jursza.net/dev/jjmenu/
+ *  
+ * copyright (c) 2009 Jacek Jursza (http://jursza.net/)
+ * licence MIT [http://www.opensource.org/licenses/mit-license.php]    
+ */
+
+(function ($) {
+
+    $(document).click(function (event) {
+        if (event.button != 2) $("div[id^=jjmenu]").remove();
+    });
+
+    $.fn.jjmenu = function (param) {
+        this.click(function (event) {
+            event.preventDefault();
+            event.stopPropagation();
+            $(this).jjmenu_popup(param);
+            $(this).blur();
+            return false;
+        });
+    };
+
+    $.fn.jjmenu_popup = function (param) {
+        var el = this;
+
+        if (typeof param === "undefined") {
+            var verbs = el.data("verbs");
+            if (!verbs) {
+                // No live verb data for this element yet (or it was never made
+                // available server-side) - nothing to show, so bail out rather
+                // than crashing on an undefined verb list.
+                return;
+            }
+            var text = el.html();
+            var elementId = el.data("elementid");
+            param = buildMenuOptions(verbs, text, elementId);
+        }
+
+        $("div[id^=jjmenu_main]").remove();
+
+        var m = document.createElement('div');
+        var ms = document.createElement('span');
+        $(m).append(ms);
+
+        m.className = "jjmenu";
+        m.id = "jjmenu_main";
+        $(m).css({display: 'none'});
+        $(document.body).append(m);
+
+        positionMenu();
+
+        for (var i in param) {
+            putItem(param[i]);
+        }
+
+        checkPosition();
+        showMenu();
+
+        function positionMenu() {
+            var pos = $(el).offset();
+            var t = pos.top;
+            var l = pos.left;
+            $(m).css({position: "absolute", top: t + "px", left: l + "px"});
+        }
+
+        function checkPosition() {
+
+            var isHidden = $(m).css("display") == "none";
+            if (isHidden) $(m).show();
+
+            var positionTop = $(m).offset().top;
+            var positionLeft = $(m).offset().left;
+            if (isHidden) $(m).hide();
+
+            var xPos = positionTop - $(window).scrollTop();
+
+            $(m).css({left: "0px"});
+            var menuHeight = $(m).outerHeight();
+            var menuWidth = $(m).outerWidth();
+            $(m).css({left: positionLeft + "px"});
+
+            var nleft = positionLeft;
+            if (positionLeft + menuWidth > $(window).width()) {
+                nleft = $(window).width() - menuWidth;
+            }
+
+            var spaceBottom = true;
+
+            if (xPos + menuHeight + $(el).outerHeight() > $(window).height()) {
+                spaceBottom = false;
+            }
+
+            var spaceTop = true;
+
+            if (positionTop - menuHeight < 0) {
+                spaceTop = false;
+            }
+
+            var ntop;
+
+            if (!spaceBottom && spaceTop) {
+                // top orientation
+                ntop = parseInt(positionTop, 10) - parseInt(menuHeight, 10);
+                $(m).addClass("topOriented");
+
+            } else {
+                // bottom orientation
+                $(m).addClass("bottomOriented");
+                positionTop = positionTop + $(el).outerHeight();
+                ntop = parseInt(positionTop, 10);
+            }
+
+            $(m).css({"top": ntop + "px", "left": nleft + "px"});
+        }
+
+        function showMenu() {
+            var speed = 100;
+            $(m).fadeIn(speed);
+        }
+
+        function putItem(n) {
+            var item = document.createElement('div');
+            $(item).hover(function () {
+                    $(this).addClass("jj_menu_item_hover");
+                },
+                function () {
+                    $(this).removeClass("jj_menu_item_hover");
+                });
+
+            $(item).click(function (event) {
+                event.stopPropagation();
+                $("div[id^=jjmenu]").remove();
+                n.action.callback(n.title);
+            });
+
+            var span = document.createElement('span');
+            $(item).append(span);
+
+            item.className = "jj_menu_item";
+
+            $(span).html(n.title);
+            $(ms).append(item);
+        }
+    }
+
+})(jQuery);
+
+function whereAmI() {
+    ASLEvent("WhereAmI", platform);
+}
+
+var platform = "desktop";
+
+// Applies a resolved chrome-strings dictionary (see ChromeStrings.Resolve in
+// PlayerCore, surfaced via WebPlayer.setChromeStrings/Bridge.GetChromeStringsJson,
+// or a save's snapshot - see GameSaver.save below) to every chrome element
+// tagged with a data-chrome-key* attribute, e.g. the #cmdSave button and the
+// #qv-saves/Slots dialog. dict is always fully populated (every key defaults
+// to English), so a missing key here just means dict itself is null/undefined
+// (no game loaded, no snapshot available) - existing markup is left untouched
+// in that case. Shared by both players (playercore.htm's chrome is common to
+// both), called from wasm-player.js and from WebPlayer.setChromeStrings below.
+function applyChromeStrings(dict) {
+    if (!dict) return;
+    document.querySelectorAll('[data-chrome-key]').forEach(el => {
+        const value = dict[el.dataset.chromeKey];
+        if (value) el.textContent = value;
+    });
+    document.querySelectorAll('[data-chrome-key-placeholder]').forEach(el => {
+        const value = dict[el.dataset.chromeKeyPlaceholder];
+        if (value) el.placeholder = value;
+    });
+    document.querySelectorAll('[data-chrome-key-aria-label]').forEach(el => {
+        const value = dict[el.dataset.chromeKeyAriaLabel];
+        if (value) el.setAttribute('aria-label', value);
+    });
+}
+
+const GameSaver = (() => {
+    // Electron: file storage under userData rather than IndexedDB, since
+    // this window's origin (a local loopback port) isn't guaranteed to stay
+    // the same across restarts — see save-store.ts. window.electronGameSaves
+    // is bridged by player-preload.ts for every player window.
+    function useElectronGameSaves() {
+        return navigator.userAgent.includes('Electron/') && !!window.electronGameSaves;
+    }
+
+    function openDatabase() {
+        return new Promise((resolve, reject) => {
+            const request = indexedDB.open('quest-viva-saves', 1);
+
+            request.onupgradeneeded = () => {
+                const db = request.result;
+                if (!db.objectStoreNames.contains('saves')) {
+                    db.createObjectStore('saves', {keyPath: ['gameId', 'slotIndex']});
+                }
+            };
+
+            request.onsuccess = () => resolve(request.result);
+            request.onerror = () => reject(request.error);
+        });
+    }
+
+    async function ensurePersistentStorage() {
+        if (navigator.storage && navigator.storage.persist) {
+            const isPersisted = await navigator.storage.persisted();
+            if (isPersisted) {
+                console.log('Storage is already persistent.');
+                return true;
+            }
+
+            const granted = await navigator.storage.persist();
+            if (granted) {
+                console.log('Storage permission granted: persistent!');
+            } else {
+                console.warn('Persistent storage request was denied.');
+            }
+            return granted;
+        } else {
+            console.warn('StorageManager API not supported.');
+            return false;
+        }
+    }
+
+    async function saveGame(gameId, slotIndex, dataUint8Array, name) {
+        const chromeStrings = window.WebPlayer?.chromeStrings ?? null;
+        if (useElectronGameSaves()) {
+            await window.electronGameSaves.save(gameId, slotIndex, dataUint8Array, name || null, chromeStrings);
+            return;
+        }
+        const db = await openDatabase();
+        const tx = db.transaction('saves', 'readwrite');
+        const store = tx.objectStore('saves');
+
+        const entry = {
+            gameId,
+            slotIndex,
+            data: dataUint8Array,
+            name,
+            timestamp: new Date(),
+            // Snapshot of the game's own chrome-string translations at the moment
+            // it was saved - lets the boot-time "Continue your game?" prompt show
+            // the right language next session, before anything is parsed into a
+            // WorldModel (see WebPlayer.setChromeStrings / Bridge.GetChromeStringsJson).
+            chromeStrings
+        };
+
+        store.put(entry);
+
+        return tx.complete || tx.done || new Promise((res, rej) => {
+            tx.oncomplete = res;
+            tx.onerror = rej;
+        });
+    }
+
+    async function listSaves(gameId) {
+        if (useElectronGameSaves()) {
+            return await window.electronGameSaves.list(gameId);
+        }
+        const db = await openDatabase();
+        const tx = db.transaction('saves', 'readonly');
+        const store = tx.objectStore('saves');
+
+        const request = store.getAll();
+
+        return new Promise((resolve, reject) => {
+            request.onsuccess = () => {
+                const slots = request.result
+                    .filter(entry => entry.gameId === gameId)
+                    .map(entry => ({
+                        slotIndex: entry.slotIndex,
+                        name: entry.name || null,
+                        timestamp: entry.timestamp || null,
+                        chromeStrings: entry.chromeStrings || null,
+                    }));
+
+                resolve(slots);
+            };
+            request.onerror = () => reject(request.error);
+        });
+    }
+
+    async function loadGame(gameId, slotIndex) {
+        if (useElectronGameSaves()) {
+            return await window.electronGameSaves.load(gameId, slotIndex);
+        }
+        const db = await openDatabase();
+        const tx = db.transaction('saves', 'readonly');
+        const store = tx.objectStore('saves');
+        const request = store.get([gameId, slotIndex]);
+
+        return new Promise((resolve, reject) => {
+            request.onsuccess = () => resolve(request.result?.data || null);
+            request.onerror = () => reject(request.error);
+        });
+    }
+
+    async function deleteSaveSlot(gameId, slotIndex) {
+        if (useElectronGameSaves()) {
+            await window.electronGameSaves.delete(gameId, slotIndex);
+            return;
+        }
+        const db = await openDatabase();
+        const tx = db.transaction('saves', 'readwrite');
+        const store = tx.objectStore('saves');
+        store.delete([gameId, slotIndex]);
+
+        return tx.complete || tx.done || new Promise((res, rej) => {
+            tx.oncomplete = res;
+            tx.onerror = rej;
+        });
+    }
+
+    async function nextSlotIndex(gameId) {
+        const existing = await listSaves(gameId);
+        return existing.length ? Math.max(...existing.map(s => s.slotIndex)) + 1 : 0;
+    }
+
+    let persistenceRequested = false;
+
+    return {
+        save: async (name) => {
+            const gameId = WebPlayer.gameId;
+            const saveData = $("#divOutput").html();
+            const result = await WebPlayer.uiSaveGame(saveData);
+            const slotIndex = await nextSlotIndex(gameId);
+            // Locale-formatted (not ISO) so it reads naturally wherever it's shown —
+            // WebPlayer's Slots list shows only the name, with no separate timestamp.
+            const labelTemplate = window.WebPlayer?.chromeStrings?.SavedGameDefaultLabel || "Saved game — [timestamp]";
+            const label = name || labelTemplate.replace('[timestamp]', new Date().toLocaleString());
+            await saveGame(gameId, slotIndex, result, label);
+            addText("Game saved.<br>");
+            clearUnsavedProgress();
+            if (!persistenceRequested) {
+                await ensurePersistentStorage();
+                persistenceRequested = true;
+            }
+            return {slotIndex, name: label};
+        },
+        listSaves: async (gameId = WebPlayer.gameId) => {
+            return await listSaves(gameId);
+        },
+        load: async (slotIndex, gameId = WebPlayer.gameId) => {
+            return await loadGame(gameId, slotIndex);
+        },
+        deleteSlot: async (slotIndex, gameId = WebPlayer.gameId) => {
+            return await deleteSaveSlot(gameId, slotIndex);
+        }
+    }
+})();

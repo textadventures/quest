@@ -1,0 +1,41 @@
+@page "/"
+@using QuestViva.Common
+@inject Config Config
+@inject NavigationManager NavigationManager
+@rendermode InteractiveServer
+
+@if (string.IsNullOrEmpty(Config.HomeFile))
+{
+    @if (!string.IsNullOrEmpty(Config.HomeRedirect))
+    {
+        NavigationManager.NavigateTo(Config.HomeRedirect);
+    }
+
+    @if (Config.DevEnabled)
+    {
+        <p><a href="/dev/open">Open a file</a></p>
+    }
+    else
+    {
+        <p>No game file has been configured.</p>
+    }
+}
+else
+{
+    <Game GameDataProvider="GetGameDataProvider()" ResourceUrlProvider="GetResourceUrlProvider"
+          EnableDebug="Config.HomeDebug"></Game>
+}
+
+@code {
+
+    private IGameDataProvider GetGameDataProvider()
+    {
+        return new FileDirectoryGameDataProvider(Config.HomeFile!);
+    }
+
+    private IResourceUrlProvider GetResourceUrlProvider(GameData gameData)
+    {
+        return new LocalResourceUrlProvider("home");
+    }
+
+}

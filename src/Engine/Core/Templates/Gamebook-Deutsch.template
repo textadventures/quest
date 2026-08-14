@@ -1,0 +1,34 @@
+<asl version="600" templatetype="gamebook" template="Gamebook (Deutsch)">
+
+  <!-- Overrides GamebookCore.aslx's GamebookEditorLibrary/LanguageId defaults
+       (see the comment there) — these being declared directly in this
+       top-level file, rather than via another <include>, is what lets them
+       win despite GamebookCore.aslx's own baseline include running later. -->
+  <template name="GamebookEditorLibrary">EditorDeutsch.aslx</template>
+  <template name="LanguageId">de</template>
+
+  <include ref="GamebookCore.aslx"/>
+
+  <game name="$NAME$">
+    <gameid>$ID$</gameid>
+    <version>1.0</version>
+    <firstpublished>$YEAR$</firstpublished>
+  </game>
+
+  <object name="Page1">
+    <object name="player">
+      <inherit name="defaultplayer"/>
+    </object>
+    <description>Dies ist Seite 1. Gib hier eine Beschreibung ein und erstelle unten Links zu anderen Seiten.</description>
+    <options type="simplestringdictionary">Page2 = Dieser Link führt zu Seite 2;Page3 = Und dieser Link führt zu Seite 3</options>
+  </object>
+
+  <object name="Page2">
+    <description>Dies ist Seite 2. Gib hier eine Beschreibung ein und erstelle unten Links zu anderen Seiten.</description>
+  </object>
+
+  <object name="Page3">
+    <description>Dies ist Seite 3. Gib hier eine Beschreibung ein und erstelle unten Links zu anderen Seiten.</description>
+  </object>
+
+</asl>

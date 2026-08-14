@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Quest Viva</title>
+    <link rel="icon" type="image/svg+xml" href="favicon.svg" />
+    <script type="text/javascript" src="quest-config.js"></script>
+    <script type="text/javascript">
+        // Runs before the start screen is parsed, so when a game is specified via the
+        // URL (or a defaultGameUrl is configured) we paint straight into the loading
+        // state — otherwise the file/URL pickers render for a frame before
+        // showLoading() gets a chance to hide them.
+        (function () {
+            var params = new URLSearchParams(location.search);
+            if (params.get('id') || params.get('url') || params.get('source') === 'editor'
+                || params.get('source') === 'local' || window.QuestVivaConfig?.defaultGameUrl) {
+                document.documentElement.classList.add('qv-booting');
+            }
+        })();
+    </script>
+    <style type="text/css">
+        html.qv-booting #qv-pickers { display: none; }
+        html.qv-booting #qv-loading-msg { display: flex; }
+    </style>
+    <script type="text/javascript" src="lib/jquery-2.1.1.min.js"></script>
+    <script type="text/javascript" src="lib/jquery-ui.min.js"></script>
+    <script type="text/javascript" src="lib/jquery.multi-open-accordion-1.5.3.js"></script>
+    <link rel="stylesheet" type="text/css" href="lib/jquery-ui.min.css" />
+    <link rel="stylesheet" type="text/css" href="playercore.css" />
+    <!-- App-chrome styles (start screen, debugger, save-slot manager). Built from
+         styles/chrome.css via `npm run build` — see WasmPlayer/package.json. All of
+         its rules are contained to `.qv-chrome` subtrees so they can't affect the
+         game UI above (playercore.css / jQuery UI). -->
+    <link rel="stylesheet" type="text/css" href="chrome.css" />
+    <script type="text/javascript" src="playercore.js"></script>
+    <script type="text/javascript" src="player.js"></script>
+    <script type="text/javascript" src="lib/paper.js"></script>
+    <!-- VERSION_SCRIPT: spliced in at build time by scripts/inject-version.mjs
+         (into generated/index.html) — sets window.QuestVivaVersion from the
+         repo-root VERSION file before wasm-player.js runs. -->
+    <script type="text/javascript" src="wasm-player.js"></script>
+</head>
+<body>
+<div id="qv-start" class="qv-chrome">
+    <div class="card preset-filled-surface-100-900 w-full max-w-md p-8 space-y-6" data-theme="wintry">
+        <div>
+            <h1 class="h2 flex items-center gap-4">
+                <img src="logo.svg" alt="" class="h-7" />
+                Quest Viva
+            </h1>
+        </div>
+
+        <div id="qv-error" class="hidden card preset-tonal-error p-4 text-sm"></div>
+
+        <div id="qv-pickers" class="space-y-4">
+            <div>
+                <span class="label-text text-xs uppercase tracking-wide text-surface-500">Open a game file</span>
+                <button id="qv-file-btn" type="button" class="btn preset-tonal-primary w-full justify-start mt-2">
+                    <svg class="qv-icon" aria-hidden="true"><use href="#folder-open"></use></svg>
+                    Choose file (.quest, .aslx, .asl, .cas)
+                </button>
+                <input type="file" id="qv-file-input" class="hidden" accept=".quest,.aslx,.asl,.cas">
+            </div>
+
+            <div class="flex items-center gap-3 text-surface-500 text-xs">
+                <hr class="hr flex-1">
+                or
+                <hr class="hr flex-1">
+            </div>
+
+            <div>
+                <label class="label-text text-xs uppercase tracking-wide text-surface-500" for="qv-url-input">Load from URL</label>
+                <div class="flex gap-2 mt-2">
+                    <input type="url" id="qv-url-input" class="input" placeholder="https://&hellip;" autocomplete="off" spellcheck="false">
+                    <button id="qv-url-btn" type="button" class="btn preset-filled-primary-500">Load</button>
+                </div>
+            </div>
+        </div>
+
+        <div id="qv-loading-msg" class="hidden flex-col items-center gap-3 text-surface-500 text-sm text-center">
+            <div class="animate-spin rounded-full h-8 w-8 border-2 border-surface-400-600 border-t-transparent" aria-hidden="true"></div>
+            <span>Loading&hellip;</span>
+        </div>
+
+        <div id="qv-clicktobegin" class="hidden flex-col items-center gap-3 text-surface-500 text-sm text-center">
+            <button id="qv-clicktobegin-btn" type="button" class="btn preset-filled-primary-500">Begin</button>
+        </div>
+    </div>
+</div>
+
+<!-- Shown by restartGameCore (wasm-player.js) around the actual restart —
+     Bridge.Initialise re-parses the embedded Core library XML from scratch
+     every time (confirmed not cacheable), which blocks the single WASM UI
+     thread for a couple of seconds with no way for anything else to paint
+     meanwhile. A plain "Loading…" div sitting in the DOM the whole time
+     wouldn't help — see nextPaint()'s doc comment — restartGameCore
+     explicitly yields a frame after unhiding this so it's actually visible
+     before the freeze starts. Not a <dialog>: it only needs to sit above the
+     ordinary game chrome, never above qv-saves/questVivaDebugger (both
+     already closed by the time this shows — see restartGameCore). Same
+     spinner styling as #qv-loading-msg above for a consistent look. -->
+<div id="qv-restarting" class="qv-chrome hidden" role="status" aria-live="polite">
+    <div class="flex flex-col items-center gap-3 text-surface-100 text-sm text-center">
+        <div class="animate-spin rounded-full h-8 w-8 border-2 border-surface-300 border-t-transparent" aria-hidden="true"></div>
+        <span>Restarting&hellip;</span>
+    </div>
+</div>
+
+<!-- Shown by beginRecording (wasm-player.js) for the lifetime of an editor-launched
+     "Record Walkthrough" preview session (see AppShell's ListEditor.svelte Record
+     button and editor-store.ts's recordWalkthrough/previewInWasmPlayer). Non-modal
+     and non-blocking, unlike #qv-restarting above — the game stays fully playable
+     while this is up, it just floats over the chrome reporting progress. Preserved
+     across swapInPlayerUi() (a mid-session restart) the same way #qv-restarting is,
+     so a restart mid-recording doesn't lose the banner (recordedSteps itself is
+     plain JS module state and survives a restart regardless). -->
+<div id="qv-recording" class="qv-chrome hidden" role="status" aria-live="polite">
+    <div class="flex items-center gap-2 preset-filled-error-500 rounded-full px-3 py-1.5 text-sm shadow-lg">
+        <span class="inline-block h-2 w-2 rounded-full bg-current animate-pulse" aria-hidden="true"></span>
+        <span id="qv-recording-status">Recording&hellip;</span>
+        <button id="qv-recording-stop" type="button" class="btn-icon preset-tonal-surface ml-1" aria-label="Stop recording">
+            <svg class="qv-icon" aria-hidden="true"><use href="#square"></use></svg>
+        </button>
+    </div>
+</div>
+
+<dialog id="qv-saves" class="qv-chrome" data-mode="boot">
+    <!-- ICONS_SPRITE: spliced in at build time by scripts/build-icons.mjs (into
+         generated/index.html) — a hidden <symbol> defs block, kept inside
+         #qv-saves so it survives the dialog's detach/reattach around the
+         document.body.innerHTML swap in wasm-player.js. Cross-document SVG
+         <use href="file.svg#id"> isn't reliably supported (notably not in
+         Chrome), so the sprite must live in the same document as its <use>s. -->
+    <div class="card preset-filled-surface-100-900 w-full p-6 space-y-4" data-theme="wintry">
+        <div class="flex items-start justify-between gap-4">
+            <h2 class="h3" data-mode-text="boot" data-chrome-key="ContinueYourGamePrompt">Continue your game?</h2>
+            <h2 class="h3 qv-manage-only" data-mode-text="manage" data-chrome-key="SaveLoadTitle">Save / Load</h2>
+            <button id="qv-saves-close" type="button" class="qv-manage-only btn-icon preset-tonal-surface" aria-label="Close" data-chrome-key-aria-label="CloseDialog">
+                <svg class="qv-icon" aria-hidden="true"><use href="#x"></use></svg>
+            </button>
+        </div>
+
+        <div id="qv-saves-error" class="hidden card preset-tonal-error p-3 text-sm"></div>
+
+        <button id="qv-saves-start-new" type="button" class="btn preset-tonal-primary w-full justify-start" data-chrome-key="StartFromBeginning">
+            Start from the beginning
+        </button>
+
+        <ul id="qv-saves-list" class="space-y-2"></ul>
+
+        <div class="qv-manage-only space-y-3">
+            <hr class="hr">
+            <div class="flex gap-2">
+                <input id="qv-saves-name-input" class="input" type="text" placeholder="Save name" autocomplete="off" data-chrome-key-placeholder="SaveNamePlaceholder">
+                <button id="qv-saves-save-new" type="button" class="btn preset-filled-primary-500" data-chrome-key="SaveNew">Save new</button>
+            </div>
+            <div class="flex gap-2">
+                <button id="qv-saves-download" type="button" class="btn preset-tonal-primary flex-1" data-chrome-key="SaveToFile">Save to file</button>
+                <button id="qv-saves-upload-btn" type="button" class="btn preset-tonal-primary flex-1" data-chrome-key="LoadFromFile">Load from file</button>
+                <input type="file" id="qv-saves-file-input" class="hidden" accept=".quest-save">
+            </div>
+        </div>
+    </div>
+</dialog>
+
+<!-- Debugger — only ever shown in editor-preview sessions (see wasm-player.js's
+     WebPlayer.setCanDebug call in initWasmPlayer). #cmdDebug (in playercore.htm,
+     part of the shared WebPlayer/WasmPlayer chrome) already opens this dialog
+     by id via showModal() — see playercore.js's initPlayerUI.
+
+     Position/size are entirely JS-driven (wireDebuggerMoveResize in
+     wasm-player.js applies them right after every showModal(), before the
+     first paint) rather than left to the browser's default dialog centering,
+     so the whole card is a flex column filling exactly the applied
+     width/height — #qv-debugger-panes (and List/Detail inside it) flex-fill
+     the remaining vertical space rather than a fixed rem height. -->
+<dialog id="questVivaDebugger" class="qv-chrome">
+    <div class="card preset-filled-surface-100-900 p-6 flex flex-col h-full" id="qv-debugger-card" data-theme="wintry">
+        <div id="qv-debugger-titlebar" class="flex items-start justify-between gap-4 mb-4">
+            <h2 class="h3">Debugger</h2>
+            <button id="qv-debugger-close" type="button" class="btn-icon preset-tonal-surface" aria-label="Close">
+                <svg class="qv-icon" aria-hidden="true"><use href="#x"></use></svg>
+            </button>
+        </div>
+
+        <div id="qv-debugger-tabs" class="flex flex-wrap gap-2 mb-4"></div>
+
+        <div class="flex flex-1" id="qv-debugger-panes" style="min-height:0">
+            <ul id="qv-debugger-list" class="space-y-1 shrink-0 overflow-y-auto"></ul>
+            <div id="qv-debugger-splitter" role="separator" aria-orientation="vertical" aria-label="Resize object list"></div>
+            <div id="qv-debugger-detail" class="flex-1 overflow-y-auto text-sm">
+                <p class="text-surface-500">Select an item to view details.</p>
+            </div>
+        </div>
+
+        <div id="qv-debugger-resize-handle" aria-hidden="true"></div>
+    </div>
+</dialog>
+</body>
+</html>

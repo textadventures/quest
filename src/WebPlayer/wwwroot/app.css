@@ -1,0 +1,11 @@
+html, body {
+    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+}
+
+/* Unset Bootstrap styles in gameBorder */
+
+#gameBorder *,
+#gameBorder *:before,
+#gameBorder *:after {
+    box-sizing: content-box !important;
+}

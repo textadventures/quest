@@ -1,0 +1,24 @@
+<library>
+  <editor>
+    <appliesto>include</appliesto>
+    <tab>
+      <caption>[EditorIncludedLibraryLibrary]</caption>
+
+      <control>
+        <controltype>file</controltype>
+        <attribute>filename</attribute>
+        <caption>[EditorIncludedLibraryFilename]</caption>
+        <source>*.aslx</source>
+        <width>300</width>
+        <filefiltername>Libraries</filefiltername>
+        <lockedaftercreate/>
+      </control>
+
+      <control>
+        <controltype>texteditor</controltype>
+        <attribute>filename</attribute>
+        <expand/>
+      </control>
+    </tab>
+  </editor>
+</library>

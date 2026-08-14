@@ -1,0 +1,158 @@
+<asl version="500">
+  <include ref="English.aslx" />
+  <include ref="Core.aslx" />
+  <game name="waitturnscripttest"/>
+
+  <!-- Published pre-v580 games are fully self-contained (no <include>s - the whole library is
+       flattened into the .aslx at publish time), so they carry whatever CoreParser.aslx/Core.aslx
+       looked like when the game was published - not today's engine's copy. Verified against a
+       real Quest 5.4 (2013) game published .aslx: its FinishTurn is unconditional, and its
+       ResolveNextName has no "game.runturnscripts=true; FinishTurn" call at all - that call was
+       only added to the shared library "as of Quest 5.8" (per CoreParser.aslx's own comment).
+       Since this test <include>s today's Core.aslx (there's no other practical way to get a full
+       command parser here), override both functions back to their authentic pre-580 shape so this
+       accurately represents a real pre-580 game instead of an inconsistent hybrid. -->
+  <function name="FinishTurn">
+    RunTurnScripts
+    UpdateStatusAttributes
+    CheckDarkness
+    UpdateObjectLinks
+  </function>
+  <function name="ResolveNextName">
+    <![CDATA[
+    resolvedall = false
+    queuetype = TypeOf(game.pov, "currentcommandvarlistqueue")
+    if (queuetype = "stringlist") {
+      queuelength = ListCount(game.pov.currentcommandvarlistqueue)
+      if (queuelength > 0) {
+        var = StringListItem(game.pov.currentcommandvarlistqueue, 0)
+        if (queuelength = 1) {
+          game.pov.currentcommandvarlistqueue = null
+        }
+        else {
+          newqueue = NewStringList()
+          for (i, 1, queuelength - 1) {
+            list add (newqueue, StringListItem(game.pov.currentcommandvarlistqueue, i))
+          }
+          game.pov.currentcommandvarlistqueue = newqueue
+        }
+        value = StringDictionaryItem(game.pov.currentcommandvarlist, var)
+        if (value <> "") {
+          result = null
+          if (StartsWith(var, "object")) {
+            result = ResolveName(var, value, "object")
+          }
+          else if (StartsWith(var, "exit")) {
+            result = ResolveName(var, value, "exit")
+          }
+          else if (StartsWith(var, "text")) {
+            result = StringDictionaryItem(game.pov.currentcommandvarlist, var)
+          }
+          else {
+            error ("Unhandled command variable '" + var + "' - command variable names must begin with 'object', 'exit' or 'text'")
+          }
+          if (result = null) {
+            if (LengthOf(GetString(game.pov, "currentcommandpendingvariable")) = 0) {
+              UnresolvedCommand (value, var)
+            }
+          }
+          else {
+            AddToResolvedNames (var, result)
+          }
+        }
+        else {
+          ResolveNextName
+        }
+      }
+      else {
+        resolvedall = true
+      }
+    }
+    else if (queuetype = "null") {
+      resolvedall = true
+    }
+    else {
+      error ("Invalid queue type")
+    }
+    if (resolvedall) {
+      game.lastobjects = game.pov.currentcommandresolvedobjects
+      if (not DictionaryContains(game.pov.currentcommandresolvedelements, "multiple")) {
+        dictionary add (game.pov.currentcommandresolvedelements, "multiple", false)
+      }
+      if (not GetBoolean(game.pov.currentcommandpattern, "isundo")) {
+        if (LengthOf(game.pov.currentcommand) > 0) {
+          start transaction (game.pov.currentcommand)
+        }
+      }
+      if (not GetBoolean(game.pov.currentcommandpattern, "isoops")) {
+        game.unresolvedcommand = null
+        game.unresolvedcommandvarlist = null
+        game.unresolvedcommandkey = null
+      }
+      if (DictionaryContains(game.pov.currentcommandresolvedelements, "object")) {
+        game.text_processor_this = ObjectDictionaryItem(game.pov.currentcommandresolvedelements, "object")
+      }
+      else if (DictionaryContains(game.pov.currentcommandresolvedelements, "object1")) {
+        game.text_processor_this = ObjectDictionaryItem(game.pov.currentcommandresolvedelements, "object1")
+      }
+      if (HasScript(game.pov.currentcommandpattern, "script")) {
+        do (game.pov.currentcommandpattern, "script", game.pov.currentcommandresolvedelements)
+      }
+      HandleNextCommandQueueItem
+    }
+    ]]>
+  </function>
+
+  <object name="room1">
+    <turnscript name="room1turn">
+      <enabled type="boolean">true</enabled>
+      <script>
+        msg ("room1 turnscript")
+      </script>
+    </turnscript>
+    <object name="player">
+      <inherit name="defaultplayer" />
+    </object>
+  </object>
+
+  <object name="room2">
+    <turnscript name="room2turn">
+      <enabled type="boolean">true</enabled>
+      <script>
+        msg ("room2 turnscript")
+      </script>
+    </turnscript>
+  </object>
+
+  <!-- The wait callback moves the player to room2, but only once the wait actually
+       resolves (key press / FinishWait). FinishTurn/RunTurnScripts must not run until
+       after that move, otherwise room1's turnscript incorrectly fires for a turn where
+       the player has already left, and room2's correctly-scoped turnscript never fires. -->
+  <command name="cmd_movewait">
+    <pattern>movewait</pattern>
+    <script>
+      msg ("before wait")
+      wait {
+        MovePlayer (room2)
+        msg ("wait done")
+      }
+    </script>
+  </command>
+
+  <!-- A wait callback that itself opens another wait (e.g. a cutscene with two key presses).
+       Each key press should only resolve its own wait; FinishTurn must wait for both. -->
+  <command name="cmd_movewait_nested">
+    <pattern>movewaitnested</pattern>
+    <script>
+      msg ("step1")
+      wait {
+        MovePlayer (room2)
+        msg ("step2")
+        wait {
+          msg ("step3")
+        }
+        msg ("step4")
+      }
+    </script>
+  </command>
+</asl>

@@ -1,0 +1,25 @@
+<Project Sdk="Microsoft.NET.Sdk">
+    <PropertyGroup>
+        <TargetFramework>net10.0</TargetFramework>
+        <RuntimeIdentifier>browser-wasm</RuntimeIdentifier>
+        <OutputType>Exe</OutputType>
+        <RootNamespace>QuestViva.WasmEditor</RootNamespace>
+        <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+        <Nullable>enable</Nullable>
+        <LangVersion>default</LangVersion>
+        <RunAOTCompilation>true</RunAOTCompilation>
+        <WasmEmitSymbolMap>true</WasmEmitSymbolMap>
+        <!-- Release is what ships (Electron, static hosting, often offline). Shipping .pdb files
+             embeds SourceLink metadata pointing at raw.githubusercontent.com, which Chrome DevTools'
+             WASM debugger fetches from when attached — undesirable for an offline-capable app.
+             The dotnet.js/.runtime.js source maps have the same problem, pointing at dotnet/dotnet
+             on GitHub. Debug builds keep both for local dev-server debugging. -->
+        <WasmDebugLevel Condition="'$(Configuration)' == 'Release'">0</WasmDebugLevel>
+        <WasmEmitSourceMap Condition="'$(Configuration)' == 'Release'">false</WasmEmitSourceMap>
+    </PropertyGroup>
+    <ItemGroup>
+        <ProjectReference Include="..\EditorCore\EditorCore.csproj"/>
+        <ProjectReference Include="..\Common\Common.csproj"/>
+        <ProjectReference Include="..\PlayerCore\PlayerCore.csproj"/>
+    </ItemGroup>
+</Project>

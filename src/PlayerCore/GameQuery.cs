@@ -1,0 +1,406 @@
+using QuestViva.Common;
+using QuestViva.Engine;
+using QuestViva.Legacy;
+
+namespace QuestViva.PlayerCore;
+
+// bytes is null for the WebPlayer dev Query page's normal file-path usage (reads straight off
+// disk via FileGameDataProvider); WasmEditorBridge's cover-art lookup runs in-browser with no
+// filesystem access, so it passes the game's already-read bytes and gets a ByteArrayGameDataProvider
+// instead — same GameData shape either way, just a different source stream.
+public class GameQuery(string filename, byte[] bytes = null)
+{
+    private readonly GameQueryUi _dummyUi = new();
+    private readonly List<string> _errors = [];
+    private IGame _game;
+    private PlayerHelper _helper;
+    private V4Game _v4Game;
+    private WorldModel _v5Game;
+
+    public string GameName => _dummyUi.GameName;
+
+    public int ASLVersion
+    {
+        get
+        {
+            if (_v4Game != null)
+            {
+                return _v4Game.ASLVersion;
+            }
+
+            if (_v5Game != null)
+            {
+                return _v5Game.ASLVersion;
+            }
+
+            throw new InvalidOperationException();
+        }
+    }
+
+    public bool IsGamebook
+    {
+        get
+        {
+            if (_v4Game != null)
+            {
+                return false;
+            }
+
+            if (_v5Game != null)
+            {
+                return _v5Game.IsGamebook;
+            }
+
+            throw new InvalidOperationException();
+        }
+    }
+
+    public string GameId => _game.GameID;
+
+    public string Category
+    {
+        get
+        {
+            if (_v4Game != null)
+            {
+                return null;
+            }
+
+            if (_v5Game != null)
+            {
+                return _v5Game.Category;
+            }
+
+            throw new InvalidOperationException();
+        }
+    }
+
+    public string Description
+    {
+        get
+        {
+            if (_v4Game != null)
+            {
+                return null;
+            }
+
+            if (_v5Game != null)
+            {
+                return _v5Game.Description;
+            }
+
+            throw new InvalidOperationException();
+        }
+    }
+
+    public string CoverResourceName
+    {
+        get
+        {
+            if (_v4Game != null)
+            {
+                return null;
+            }
+
+            if (_v5Game != null)
+            {
+                return _v5Game.Cover;
+            }
+
+            throw new InvalidOperationException();
+        }
+    }
+
+    /// <summary>
+    ///     The language ID from the LanguageId template (e.g. "en", "de", "fr").
+    ///     Returns null for V4 games and for V5 games that don't set the LanguageId template.
+    ///     When null, callers can use <see cref="GameName" /> and <see cref="Description" /> for language detection.
+    /// </summary>
+    public string LanguageId
+    {
+        get
+        {
+            if (_v4Game != null)
+            {
+                return null;
+            }
+
+            if (_v5Game != null)
+            {
+                return _v5Game.LanguageId;
+            }
+
+            throw new InvalidOperationException();
+        }
+    }
+
+    /// <summary>
+    ///     A sample of the game's prose text, collected from object and room description fields.
+    ///     Intended for use with language detection when <see cref="LanguageId" /> is null.
+    ///     Returns null for V4 games.
+    /// </summary>
+    public string GameTextSample
+    {
+        get
+        {
+            if (_v4Game != null)
+            {
+                return null;
+            }
+
+            if (_v5Game != null)
+            {
+                var parts = new List<string>();
+                foreach (var obj in _v5Game.Objects)
+                {
+                    if (obj.Fields.HasString("description"))
+                    {
+                        parts.Add(obj.Fields.GetString("description"));
+                    }
+                }
+
+                return parts.Count > 0 ? string.Join(" ", parts) : null;
+            }
+
+            throw new InvalidOperationException();
+        }
+    }
+
+    /// <summary>
+    ///     All rooms and objects defined in the game itself, excluding anything inherited from Core libraries.
+    ///     Returns null for V4 games.
+    /// </summary>
+    public IReadOnlyList<GameObjectInfo> GameObjects
+    {
+        get
+        {
+            if (_v4Game != null)
+            {
+                return null;
+            }
+
+            if (_v5Game != null)
+            {
+                return _v5Game.Objects
+                    .Where(obj => obj.Type == ObjectType.Object
+                                  && !obj.MetaFields[MetaFieldDefinitions.Library])
+                    .Select(obj => new GameObjectInfo(
+                        obj.Name,
+                        obj.Fields.HasString("alias") ? obj.Fields.GetString("alias") : null,
+                        obj.Parent?.Name,
+                        obj.Fields.HasString("description") ? obj.Fields.GetString("description") : null
+                    ))
+                    .ToList()
+                    .AsReadOnly();
+            }
+
+            throw new InvalidOperationException();
+        }
+    }
+
+    public IEnumerable<string> Errors => _errors.AsReadOnly();
+
+    public async Task<bool> Initialise()
+    {
+        IGameDataProvider gameDataProvider = bytes != null
+            ? new ByteArrayGameDataProvider(bytes, filename)
+            : new FileGameDataProvider(filename);
+        var gameData = await gameDataProvider.GetData();
+
+        if (gameData == null)
+        {
+            return false;
+        }
+
+        var factory = new WorldModelFactory();
+        var gameLauncher = new GameLauncher(factory);
+
+        _game = gameLauncher.GetGame(gameData, null);
+        _v4Game = _game as V4Game;
+        _v5Game = _game as WorldModel;
+        _helper = new PlayerHelper(_game, _dummyUi);
+
+        try
+        {
+            var (initialised, errors) = await _helper.Initialise(_dummyUi);
+            if (!initialised)
+            {
+                _errors.AddRange(errors);
+                return false;
+            }
+        }
+        catch (Exception ex)
+        {
+            _errors.Add(ex.Message);
+            return false;
+        }
+
+        return true;
+    }
+
+    public IEnumerable<string> GetResourceNames()
+    {
+        return _game.GetResourceNames();
+    }
+
+    public Stream GetResource(string resourceName)
+    {
+        return _game.GetResourceStream(resourceName);
+    }
+
+    private class GameQueryUi : IPlayerHelperUI
+    {
+        public string GameName { get; private set; }
+
+        public void OutputText(string text)
+        {
+        }
+
+        public void SetAlignment(string alignment)
+        {
+        }
+
+        public void BindMenu(string linkid, string verbs, string text, string elementId)
+        {
+        }
+
+        public void ShowMenu(MenuData menuData)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void DoWait()
+        {
+            throw new NotImplementedException();
+        }
+
+        public void DoPause(int ms)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void ShowQuestion(string caption)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void SetWindowMenu(MenuData menuData)
+        {
+        }
+
+        public Task PlaySoundAsync(string filename, bool synchronous, bool looped)
+        {
+            return Task.CompletedTask;
+        }
+
+        public void StopSound()
+        {
+        }
+
+        public void WriteHTML(string html)
+        {
+        }
+
+        public Task<string> GetUrlAsync(string file)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void LocationUpdated(string location)
+        {
+        }
+
+        public void UpdateGameName(string name)
+        {
+            GameName = name;
+        }
+
+        public void ClearScreen()
+        {
+        }
+
+        public Task ShowPictureAsync(string filename)
+        {
+            return Task.CompletedTask;
+        }
+
+        public void SetPanesVisible(string data)
+        {
+        }
+
+        public void SetStatusText(string text)
+        {
+        }
+
+        public void SetBackground(string colour)
+        {
+        }
+
+        public void SetForeground(string colour)
+        {
+        }
+
+        public void SetLinkForeground(string colour)
+        {
+        }
+
+        public Task RunScriptAsync(string function, object[] parameters)
+        {
+            return Task.CompletedTask;
+        }
+
+        public void Quit()
+        {
+        }
+
+        public void SetFont(string fontName)
+        {
+        }
+
+        public void SetFontSize(string fontSize)
+        {
+        }
+
+        public void Speak(string text)
+        {
+        }
+
+        public void RequestSave(string html)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void Show(string element)
+        {
+        }
+
+        public void Hide(string element)
+        {
+        }
+
+        public void SetCompassDirections(IEnumerable<string> dirs)
+        {
+        }
+
+        public void SetInterfaceString(string name, string text)
+        {
+        }
+
+        public void SetPanelContents(string html)
+        {
+        }
+
+        public void Log(string text)
+        {
+        }
+
+        public string GetUIOption(UIOption option)
+        {
+            return null;
+        }
+
+        public void SetTurnPending(bool pending)
+        {
+        }
+    }
+}

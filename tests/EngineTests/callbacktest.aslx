@@ -1,0 +1,154 @@
+<asl version="600">
+  <include ref="English.aslx" />
+  <include ref="Core.aslx" />
+  <game name="callbacktest"/>
+  <object name="start">
+    <object name="player">
+      <inherit name="defaultplayer" />
+    </object>
+  </object>
+
+  <!-- GetInput() function form: script suspends until user responds -->
+  <command name="cmd_getinput">
+    <pattern>getinput</pattern>
+    <script>
+      msg ("before input")
+      x = GetInput()
+      msg ("got: " + x)
+    </script>
+  </command>
+
+  <!-- get input script form: script continues past the block; callback runs after response -->
+  <command name="cmd_getinputscript">
+    <pattern>getinputscript</pattern>
+    <script>
+      msg ("before input")
+      get input {
+        msg ("got: " + result)
+      }
+      msg ("after input block")
+    </script>
+  </command>
+
+  <!-- wait: script continues past the block; callback and on ready run after key press -->
+  <command name="cmd_wait">
+    <pattern>testwait</pattern>
+    <script>
+      msg ("before wait")
+      wait {
+        msg ("wait done")
+      }
+      msg ("after wait block")
+      on ready {
+        msg ("on ready")
+      }
+    </script>
+  </command>
+
+  <!-- wait callback creates a timer via SetTimeout: after FinishWait resolves the outer
+       wait, the newly-created/enabled timer must be picked up so the host is told when
+       to next call Tick(). Regression test for a bug where FinishWait/FinishPause/
+       SetQuestionResponse/SetMenuResponse didn't re-request the next timer tick. -->
+  <command name="cmd_wait_timer">
+    <pattern>testwaittimer</pattern>
+    <script>
+      msg ("before wait")
+      wait {
+        msg ("wait done")
+        SetTimeout (5) {
+          msg ("timer fired")
+        }
+      }
+    </script>
+  </command>
+
+  <!-- nested on ready: inner on ready should queue and run after the outer callback
+       completes, not nested inside it. Before the AddOnReady fix this would either
+       produce the wrong order (inner before "outer after") or stack-overflow when
+       the nesting was unbounded. -->
+  <command name="cmd_nested_on_ready">
+    <pattern>nestedonready</pattern>
+    <script>
+      on ready {
+        msg ("outer before")
+        on ready {
+          msg ("inner")
+        }
+        msg ("outer after")
+      }
+      msg ("after block")
+    </script>
+  </command>
+
+  <!-- Recursive get-input loop (the "get_partition_sequence" pattern used by mini-puzzles):
+       each response opens the next get input from inside the previous one's callback, before
+       that callback returns. This keeps _pendingCallbackCount above zero indefinitely (it never
+       falls all the way back to 0 while the loop is running), so an on-ready queued during a
+       round must still run on that same round, not be gated on the count reaching zero. -->
+  <function name="puzzle_loop">
+    msg ("prompt")
+    get input {
+      on ready {
+        msg ("deferred: " + result)
+      }
+      if (result = "stop") {
+        msg ("stopped")
+      }
+      else {
+        puzzle_loop
+      }
+    }
+  </function>
+  <command name="cmd_puzzle_loop">
+    <pattern>puzzleloop</pattern>
+    <script>
+      puzzle_loop
+    </script>
+  </command>
+
+  <!-- Fires as soon as elapsed time reaches its 5-second interval. Used to verify that
+       SendCommand runs elapsed-time-triggered timer scripts to completion before the
+       command itself runs, rather than racing the two. -->
+  <timer name="racetimer">
+    <enabled type="boolean">true</enabled>
+    <interval type="int">5</interval>
+    <script>
+      msg ("timer ran")
+    </script>
+  </timer>
+  <command name="cmd_timerrace">
+    <pattern>testtimerrace</pattern>
+    <script>
+      msg ("command ran")
+    </script>
+  </command>
+
+  <!-- Chained timers: chaintimer1 disables itself, prints (a genuine interop yield point
+       on a real player), then enables chaintimer2. If the host requests its next tick
+       before chaintimer1's whole script has finished running, it captures a stale snapshot
+       (chaintimer1 already disabled, chaintimer2 not yet enabled) and never re-arms for
+       chaintimer2 at all. -->
+  <timer name="chaintimer1">
+    <enabled type="boolean">false</enabled>
+    <interval type="int">2</interval>
+    <script>
+      DisableTimer (chaintimer1)
+      msg ("chain1 ran")
+      EnableTimer (chaintimer2)
+    </script>
+  </timer>
+  <timer name="chaintimer2">
+    <enabled type="boolean">false</enabled>
+    <interval type="int">3</interval>
+    <script>
+      msg ("chain2 ran")
+    </script>
+  </timer>
+  <command name="cmd_enable_chaintimer">
+    <pattern>enablechaintimer</pattern>
+    <script>
+      DisableTimer (racetimer)
+      EnableTimer (chaintimer1)
+    </script>
+  </command>
+</asl>

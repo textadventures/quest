@@ -1,0 +1,33 @@
+﻿@using System.Reflection
+@using QuestViva.WebPlayer.Components.Layout
+@inject IConfiguration Configuration
+
+<Router AppAssembly="typeof(Program).Assembly">
+    <Found Context="routeData">
+        @if (IsPageEnabled(routeData.PageType))
+        {
+            <RouteView RouteData="routeData" DefaultLayout="typeof(MainLayout)"/>
+            <FocusOnNavigate RouteData="routeData" Selector="h1"/>
+        }
+        else
+        {
+            <LayoutView Layout="typeof(MainLayout)">
+                <p>Not found</p>
+            </LayoutView>
+        }
+    </Found>
+</Router>
+
+
+@code {
+
+    private bool IsPageEnabled(Type pageType)
+    {
+        var attr = pageType.GetCustomAttribute<RequiresConfigAttribute>();
+        if (attr == null) return true;
+
+        var isEnabled = Configuration.GetValue<bool>(attr.FlagName);
+        return isEnabled;
+    }
+
+}

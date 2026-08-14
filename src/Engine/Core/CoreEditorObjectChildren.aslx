@@ -1,0 +1,15 @@
+<library>
+  <tab>
+    <parent>_ObjectEditor</parent>
+    <caption>[EditorObjectChildrenObjects]</caption>
+    <mustnotinherit>dialoguepage</mustnotinherit>
+
+    <control>
+      <controltype>elementslist</controltype>
+      <elementtype>object</elementtype>
+      <objecttype>object</objecttype>
+      <expand/>
+    </control>
+
+  </tab>
+</library>

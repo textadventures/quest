@@ -1,0 +1,162 @@
+@import 'tailwindcss';
+@import '@skeletonlabs/skeleton';
+@import '@skeletonlabs/skeleton-svelte';
+@import '@skeletonlabs/skeleton/themes/wintry';
+
+/* Dark mode is class-driven rather than Tailwind's default
+   prefers-color-scheme media query, so the Settings modal's Light/Dark/Match
+   system choice can override the OS. theme-store.ts (and app.html's pre-paint
+   inline script) toggles a .dark class on <html>; everything here — Skeleton's
+   dark: variants and the light-dark() paired tokens — keys off that class. */
+@custom-variant dark (&:where(.dark, .dark *));
+
+:root {
+    /* Explicit so a manual "Light" choice wins even when the OS is dark. */
+    color-scheme: light;
+}
+
+:root.dark {
+    color-scheme: dark;
+}
+
+[data-scope='app-bar'] {
+    background: light-dark(white, var(--color-surface-800));
+}
+
+/* Works around a still-open Electron/Chromium bug on macOS where a `title`
+   attribute's native tooltip shows once, then almost never again on repeat
+   hovers — https://github.com/electron/electron/issues/49843. A relatively
+   positioned, zero-content ::after covering the element's own box resets
+   Chromium's hover hit-testing enough for the tooltip to keep firing.
+   Inert (and harmless) outside Electron, where native tooltips already work
+   fine on their own — so this is applied globally rather than gated behind
+   isElectron(). The :not() list skips forcing `relative` onto anything that
+   already establishes its own positioning context (e.g. LocalFileRecentCard/
+   RecentGameCard's `absolute top-1 right-1` remove button) — forcing it
+   there would override their actual placement; the ::after below still
+   anchors correctly off whatever positioning context an element already has. */
+[title]:not(.absolute):not(.fixed):not(.sticky):not(.relative) {
+    position: relative;
+}
+[title]::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+}
+
+/* The default 1rem top+bottom padding is a bigger cost on a short viewport
+   than it's worth — shrink it whenever there isn't much height to spare.
+   Keyed on height (max-height), not just the isNarrow *width* breakpoint
+   used elsewhere: a phone in landscape is wider than 767px (so it correctly
+   keeps the desktop-arrangement toolbar — there's plenty of horizontal room
+   for it) but is just as height-constrained as portrait, so a width-only
+   query never applied there. */
+@media (max-width: 767px), (max-height: 500px) {
+    [data-scope='app-bar'][data-part='root'] {
+        padding-block: calc(var(--spacing) * 2);
+    }
+}
+
+/* Inset the editor's own root container from the device's safe area — the
+   notch/Dynamic Island, home indicator, and rounded corners — which
+   app.html's viewport-fit=cover (needed to avoid a letterboxed viewport)
+   otherwise lets content render underneath and get obscured by. Landscape
+   rotates the cutout to a side edge, so this needs all four sides, not just
+   top. */
+.safe-area-inset {
+    padding-top: env(safe-area-inset-top, 0px);
+    padding-right: env(safe-area-inset-right, 0px);
+    padding-bottom: env(safe-area-inset-bottom, 0px);
+    padding-left: env(safe-area-inset-left, 0px);
+}
+
+/* Override flex-start so branches/items stretch to the full panel width */
+[data-scope='tree-view'][data-part='root'] {
+    align-items: stretch;
+}
+
+/* Reduce right padding so the ⋯ button sits close to the edge */
+/* Pointer cursor on all nodes; tighter vertical padding for compactness */
+[data-scope='tree-view'][data-part='item'],
+[data-scope='tree-view'][data-part='branch-control'] {
+    padding-inline-end: 0;
+    padding-block: calc(var(--spacing) * 0.5);
+    cursor: pointer;
+}
+
+/* Ensure indent guides paint above item backgrounds */
+[data-scope='tree-view'][data-part='branch-indent-guide'] {
+    z-index: 1;
+    pointer-events: none;
+}
+
+/* Subtle neutral selection highlight instead of the stark preset-filled black/white */
+[data-scope='tree-view'][data-part='item'][data-selected],
+[data-scope='tree-view'][data-part='branch-control'][data-selected] {
+    background-color: var(--color-surface-200-800);
+    color: inherit;
+}
+
+/* Bump hit targets for finger-sized touch input on coarse pointers (mobile/tablet) */
+@media (pointer: coarse) {
+    [data-scope='tree-view'][data-part='item'],
+    [data-scope='tree-view'][data-part='branch-control'] {
+        padding-block: calc(var(--spacing) * 2.5);
+    }
+}
+
+/* Safari ignores box-shadow on <select> elements with native appearance.
+   Use a real border instead, which all browsers respect. */
+select.select {
+    border-width: 1px;
+    border-color: var(--color-surface-200-800);
+    box-shadow: none;
+}
+
+select.select:focus,
+select.select:active {
+    border-color: var(--color-primary-500);
+    outline: none;
+}
+
+/* Safari also renders native chrome around plain text/search inputs, showing
+   through the .input box-shadow ring as an extra 3D bezel that Chrome doesn't
+   have. As above, disable native appearance and use a real border instead,
+   keyed off the same states Skeleton's ring uses for focus. [type=color] and
+   [type=range] keep their own native look and are left alone. */
+input.input:not([type='color']):not([type='range']) {
+    -webkit-appearance: none;
+    appearance: none;
+    border-width: 1px;
+    border-color: var(--color-surface-200-800);
+    box-shadow: none;
+}
+
+input.input:not([type='color']):not([type='range']):focus,
+input.input:not([type='color']):not([type='range']):focus-within,
+input.input:not([type='color']):not([type='range']):active {
+    border-color: var(--color-primary-500);
+    outline: none;
+}
+
+/* The /play pages are always dark even when the app theme is light (see
+   +layout.svelte's isPlayContext — PlayCatalog and the play/* routes mark
+   their roots with this class), so their form controls must stay dark too.
+   The input/select rules above and Skeleton's .input ring otherwise force the
+   theme-adaptive paired tokens (surface-200-800) on them, which would show a
+   light-mode edge around the dark controls. Same fixed-shade rationale as
+   UpdateBanner's own comment: the Play tab never switches themes. */
+.play-dark input.input:not([type='color']):not([type='range']),
+.play-dark select.input,
+.play-dark select.select {
+    border-color: var(--color-surface-700);
+    --tw-ring-color: var(--color-surface-700);
+}
+
+/* preset-tonal is a paired light-dark() preset (see Skeleton's presets.css) —
+   under a light theme it would paint a light translucent background and dark
+   text onto the always-dark Play pages. Pin it to the dark-side members. */
+.play-dark .btn.preset-tonal {
+    background-color: color-mix(in oklab, var(--color-surface-50) 5%, transparent);
+    color: var(--color-primary-50);
+}

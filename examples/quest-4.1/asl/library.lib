@@ -1,0 +1,6 @@
+!library
+!asl-version <400>
+
+!addto game
+    command <test> msg <Test from library.>
+!end

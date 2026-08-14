@@ -1,0 +1,9 @@
+<library>
+
+  <include ref="CoreEditorScriptsOutput.aslx"/>
+  <include ref="GamebookCoreEditorScriptsPages.aslx"/>
+  <include ref="CoreEditorScriptsScripts.aslx"/>
+  <include ref="CoreEditorScriptsVariables.aslx"/>
+  <include ref="CoreEditorScriptsEffects.aslx"/>
+
+</library>

@@ -1,0 +1,54 @@
+@page "/textadventures/{Id}"
+@using QuestViva.Common
+@attribute [RequiresConfig("textadventures:Enabled")]
+@rendermode InteractiveServer
+@inject Config Config
+@inject HttpClient HttpClient
+@inject NavigationManager NavigationManager
+
+<Game GameDataProvider="GetGameDataProvider()" ResourceUrlProvider="GetResourceUrlProvider"
+      EnableDebug="Config.TextAdventuresDebug"></Game>
+
+@code {
+    [Parameter] public required string Id { get; set; }
+
+    [SupplyParameterFromQuery] public string? Token { get; set; }
+
+    protected override void OnInitialized()
+    {
+        var secret = Config.SessionTokenSecret;
+        if (!string.IsNullOrEmpty(secret))
+        {
+            if (string.IsNullOrEmpty(Token) || !PlayTokenValidator.Validate(Token, Id, secret, Config.PlayTokenMaxAgeMinutes))
+            {
+                NavigationManager.NavigateTo($"{Config.GamePlayRoot}{Id}", true);
+            }
+        }
+    }
+
+    private IGameDataProvider GetGameDataProvider()
+    {
+        if (!Config.TextAdventuresRemoteResources)
+        {
+            return new UrlGameDataProvider(HttpClient, $"{Config.GameDownloadRoot}?id={Id}", Id);
+        }
+
+        return new TextAdventuresGameDataProvider(Config, HttpClient, Id);
+    }
+
+    private IResourceUrlProvider GetResourceUrlProvider(GameData gameData)
+    {
+        if (!Config.TextAdventuresRemoteResources)
+        {
+            return new LocalResourceUrlProvider($"textadventures.{Id}");
+        }
+
+        if (gameData.ResourceRoot == null)
+        {
+            throw new InvalidOperationException("Resource root is not set.");
+        }
+
+        return new RemoteResourceUrlProvider(gameData.ResourceRoot);
+    }
+
+}

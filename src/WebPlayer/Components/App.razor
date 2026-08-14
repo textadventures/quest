@@ -1,0 +1,30 @@
+@using Microsoft.ApplicationInsights.AspNetCore
+@inject IServiceProvider ServiceProvider
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <base href="/"/>
+    <link rel="stylesheet" href="bootstrap/bootstrap.min.css"/>
+    <link rel="stylesheet" href="app.css"/>
+    <link rel="stylesheet" href="WebPlayer.styles.css"/>
+    <link rel="shortcut icon" href="/favicon.svg" type="image/svg+xml"/>
+    <script type="text/javascript" src="/res/lib/paper.js" crossorigin="anonymous"></script>
+    <script type="text/paperscript" src="/res/grid.js" canvas="gridCanvas" crossorigin="anonymous"></script>
+    @(new MarkupString(ServiceProvider.GetService<JavaScriptSnippet>()?.FullScript ?? string.Empty))
+    <HeadOutlet/>
+</head>
+
+<body>
+<Routes/>
+<canvas id="gridCanvas" width="700" height="300" keepalive="true" style="display: none;">
+    <p><b>The graphical map cannot be displayed</b></p>
+    <p>Your web browser does not support the graphical map.</p>
+</canvas>
+<script src="_framework/blazor.web.js"></script>
+</body>
+
+</html>

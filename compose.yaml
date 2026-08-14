@@ -1,0 +1,8 @@
+﻿services:
+  webplayer:
+    image: ghcr.io/textadventures/quest-viva-webplayer:latest
+    build:
+      context: .
+      dockerfile: src/WebPlayer/Dockerfile
+    ports:
+      - "8080:8080"

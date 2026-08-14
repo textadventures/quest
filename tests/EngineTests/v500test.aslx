@@ -1,0 +1,43 @@
+<asl version="500">
+  <include ref="English.aslx" />
+  <include ref="Core.aslx" />
+  <game name="v500test"/>
+  <object name="start">
+    <object name="player"><inherit name="defaultplayer" /></object>
+  </object>
+
+  <!-- GetInput() blocks the script until the user responds -->
+  <command name="cmd_input">
+    <pattern>input</pattern>
+    <script>
+      msg ("Enter your name...")
+      name = GetInput()
+      msg ("Hello " + name)
+    </script>
+  </command>
+
+  <!-- request(Wait) blocks the script until the player presses a key -->
+  <command name="cmd_wait">
+    <pattern>testwait</pattern>
+    <script>
+      msg ("Press a key...")
+      request (Wait, "")
+      msg ("Done!")
+    </script>
+  </command>
+
+  <!-- Ask() blocks the script until the player answers yes or no -->
+  <command name="cmd_ask">
+    <pattern>ask</pattern>
+    <script>
+      msg ("Asking a question...")
+      result = Ask("Answer me this")
+      if (result) {
+        msg ("You said yes")
+      } else {
+        msg ("You said no")
+      }
+      msg ("This is run after asking the question")
+    </script>
+  </command>
+</asl>

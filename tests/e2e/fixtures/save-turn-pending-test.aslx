@@ -1,0 +1,81 @@
+<asl version="600">
+
+  <include ref="English.aslx"/>
+  <include ref="Core.aslx"/>
+
+  <game name="TurnPendingTest">
+  </game>
+
+  <function name="StartGame">
+    game.pov = player
+    msg ("Start of game")
+    wait {
+      msg ("First wait done")
+      wait {
+        msg ("Second wait done")
+      }
+    }
+  </function>
+
+  <object name="room">
+    <object name="player">
+    </object>
+  </object>
+
+  <command name="noopcmd">
+    <pattern>noop</pattern>
+    <script>
+      msg ("noop done")
+    </script>
+  </command>
+
+  <!-- "get input { }" statement form - GetInputScript.ExecuteAsync -->
+  <command name="getinputscriptcmd">
+    <pattern>getinputscript</pattern>
+    <script>
+      msg ("Getting input via 'get input' script...")
+      get input {
+        msg ("Script got: " + result)
+      }
+    </script>
+  </command>
+
+  <!-- GetInput() expression function form - ExpressionOwner.GetInput -->
+  <command name="getinputfncmd">
+    <pattern>getinputfn</pattern>
+    <script>
+      msg ("Getting input via GetInput() function...")
+      msg ("Function got: " + GetInput())
+    </script>
+  </command>
+
+  <!-- Ask() expression function form - ExpressionOwner.Ask -->
+  <command name="askfncmd">
+    <pattern>askfn</pattern>
+    <script>
+      if (Ask("Some question")) {
+        msg ("Ask() got: yes")
+      }
+      else {
+        msg ("Ask() got: no")
+      }
+    </script>
+  </command>
+
+  <!-- ShowMenu() expression function form - ExpressionOwner.ShowMenu -->
+  <command name="menufncmd">
+    <pattern>menufn</pattern>
+    <script>
+      msg ("ShowMenu() got: " + ShowMenu("Pick one", Split("optiona;optionb", ";"), false))
+    </script>
+  </command>
+
+  <command name="finishcmd">
+    <pattern>finishit</pattern>
+    <script>
+      msg ("The end")
+      finish
+    </script>
+  </command>
+
+</asl>

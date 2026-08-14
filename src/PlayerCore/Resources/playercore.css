@@ -1,0 +1,306 @@
+﻿body {
+    font-family: Arial, Helvetica, sans-serif;
+    overflow-y: scroll;
+    background-attachment: fixed;
+    /* playercore.js explicitly recomputes and sets scroll position itself on
+       every relevant DOM change (new turn, picture frame resizing — see
+       scrollToTurnStart()/setPanelHeight() in playercore.js), including
+       content inserted above the current scroll position (the sticky
+       picture frame growing once its image loads). Chrome's default scroll
+       anchoring tries to do the same job automatically to avoid a visual
+       jump, but its guess and playercore.js's own (more informed) target
+       can disagree — and since anchoring applies *before* playercore.js's
+       own correction runs, its adjustment becomes the new "current scroll
+       position" that scrollToTurnStart()'s never-scroll-backward guard then
+       treats as intentional, silently defeating the real correction.
+       Disabling it leaves scroll positioning entirely to our own logic. */
+    overflow-anchor: none;
+}
+
+html,
+body {
+    margin: 0px;
+    height: 100%;
+}
+
+a.cmdlink {
+    text-decoration: underline;
+    color: Blue;
+    cursor: pointer;
+}
+
+a.cmdlink.disabled {
+    text-decoration: inherit;
+    color: inherit !important;
+    cursor: inherit;
+}
+
+div#gameBorder {
+    max-width: 950px;
+    margin-left: auto;
+    margin-right: auto;
+    border-left: 1px solid silver;
+    border-right: 1px solid silver;
+    margin-top: 0;
+    min-height: 100%;
+}
+
+div#gamePanel {
+    position: sticky;
+    top: 32px;
+    padding-top: 2px;
+    text-align: center;
+    display: none;
+}
+
+div#gridPanel {
+    position: sticky;
+    top: 32px;
+    padding: 0;
+    overflow: hidden;
+    display: none;
+}
+
+div#gameContent {
+    padding: 30px 20px 0px 20px;
+    min-height: 100%;
+}
+
+div#gamePanes {
+    position: fixed;
+    float: right;
+    width: 216px;
+    top: 24px;
+    padding: 2px;
+    background: #F9F9FF;
+    min-height: 100%;
+    display: none;
+    left: 50%;
+    margin-left: 255px;
+}
+
+div#qv-status {
+    height: 30px;
+    position: fixed;
+    top: 0px;
+    z-index: 100;
+    width: 100%;
+    max-width: 948px;
+    margin-left: auto;
+    margin-right: auto;
+    font-size: 14pt;
+    padding: 0;
+    display: none;
+}
+
+div#location {
+    display: none;
+    padding-left: 4px;
+    padding-top: 4px;
+}
+
+div#controlButtons {
+    float: right;
+}
+
+.hiddenbutton {
+    display: none;
+}
+
+#dialog {
+    display: none;
+}
+
+#msgbox {
+    display: none;
+}
+
+.compassbutton {
+    margin-right: 0;
+    height: 35px;
+    width: 35px;
+}
+
+#statusVars {
+    padding: 4px;
+    max-height: 140px;
+}
+
+#gamePanesFinished {
+    display: none;
+}
+
+#cmdSave {
+    margin-top: 0px;
+}
+
+div#divOutput {
+    margin-top: 20px;
+    min-height: 100%;
+}
+
+div#txtCommandDiv {
+    height: 40px;
+    display: none;
+}
+
+div#txtCommandContainer {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}
+
+#txtCommand {
+    font-size: 20px;
+    vertical-align: bottom;
+    padding: 6px;
+    flex-grow: 1;
+    /* Reset the browser's native inset/bevel text-field chrome (most visible
+       as a chunky border in Safari, but present — just subtler — everywhere)
+       with a flat, single-tone border instead. */
+    -webkit-appearance: none;
+    appearance: none;
+    border: 1px solid #999;
+    border-radius: 3px;
+    outline: none;
+}
+
+#txtCommand:focus {
+    border-color: #4a90d9;
+    box-shadow: 0 0 0 2px rgba(74, 144, 217, 0.25);
+}
+
+#txtCommandSpacer {
+    height: 10px;
+}
+
+div#controlButtons .ui-button {
+    font-size: 10px !important;
+}
+
+.verbButtons {
+    text-align: center;
+}
+
+.verbButtons .ui-button {
+    font-size: 10px !important;
+    margin: 5px;
+}
+
+#compassTable .ui-button {
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 10px !important;
+    border: 2px solid #C5DBEC;
+}
+
+#compassTable .ui-button-disabled {
+    border: 1px solid #C5DBEC;
+    background: inherit;
+}
+
+.ui-accordion .ui-accordion-content {
+    padding: 0;
+}
+
+.ui-accordion-header {
+    font-size: 12px;
+    margin-top: 10px !important;
+}
+
+h3 .ui-icon {
+    position: absolute;
+}
+
+h3 .accordion-header-text {
+    padding-left: 1.8em;
+}
+
+#gamePanes .ui-widget {
+    font-size: 12px;
+}
+
+#endWaitLink {
+    font-size: 16px;
+    font-weight: bold;
+}
+
+.ui-selecting {
+    background: #FECA40;
+}
+
+.ui-selected {
+    background: #F39814;
+    color: white;
+}
+
+.elementListWrapper {
+    max-height: 200px;
+    overflow-y: scroll;
+}
+
+.elementList {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+}
+
+.elementList li {
+    padding: 3px;
+    cursor: default;
+}
+
+div#gamePanel img {
+    max-width: 100%;
+}
+
+div#divOutput img {
+    max-width: 100%;
+}
+
+div.jjmenu {
+    font-size: 12px;
+    position: absolute;
+    background: #fffef0;
+    border-bottom: 2px solid gray;
+    border-right: 1px solid gray;
+    padding: 0px;
+}
+
+div.jj_menu_item {
+    color: black;
+    border: 1px solid gray;
+    border-bottom: none;
+    background: white;
+    cursor: pointer;
+}
+
+div.jj_menu_item span {
+    display: block;
+    padding: 4px;
+}
+
+div.jj_menu_item_hover {
+    background: #e4e4e4;
+}
+
+#cmdShowPanes {
+    display: none;
+}
+
+#sidebar {
+    display: none;
+    position: fixed; /* fixed position to overlay content */
+    top: 32px;
+    right: 0;
+    width: 220px;
+    height: 100%;
+    /*background: #fff;*/
+    z-index: 1000;
+    overflow-y: auto;
+    /*box-shadow: -2px 0 5px rgba(0,0,0,0.5);*/
+    padding: 10px;
+}
+
+#cmdShowPanes {
+    display: none;
+}

@@ -1,0 +1,91 @@
+{
+  "name": "quest-viva-desktop",
+  "version": "0.0.1",
+  "private": true,
+  "description": "Quest Viva desktop app — create and play text adventure games",
+  "author": "Alex Warren <alex@textadventures.co.uk>",
+  "homepage": "https://questviva.com",
+  "main": "dist/main.js",
+  "desktopName": "quest-viva.desktop",
+  "scripts": {
+    "build:ts": "tsc -p tsconfig.json",
+    "copy-static": "node scripts/copy-static.mjs",
+    "build": "npm run build:ts && npm run copy-static",
+    "start": "npm run build && electron .",
+    "dist": "npm run build && node scripts/dist.mjs"
+  },
+  "devDependencies": {
+    "@types/node": "^25.0.0",
+    "electron": "^43.1.0",
+    "electron-builder": "^26.15.3",
+    "typescript": "^7.0.2"
+  },
+  "build": {
+    "appId": "com.questviva.desktop",
+    "productName": "Quest Viva",
+    "directories": {
+      "output": "release"
+    },
+    "files": [
+      "dist/**/*"
+    ],
+    "extraResources": [
+      {
+        "from": "resources/app-static",
+        "to": "app-static"
+      },
+      {
+        "from": "build/icons/512x512.png",
+        "to": "icon.png"
+      }
+    ],
+    "fileAssociations": [
+      {
+        "ext": "aslx",
+        "name": "Quest Game",
+        "description": "Quest Viva game source",
+        "role": "Editor"
+      },
+      {
+        "ext": ["quest", "asl", "cas"],
+        "name": "Quest Game",
+        "description": "Quest Viva game",
+        "role": "Viewer"
+      }
+    ],
+    "afterSign": "scripts/adhoc-sign.js",
+    "mac": {
+      "category": "public.app-category.productivity",
+      "target": [
+        {
+          "target": "dmg",
+          "arch": ["arm64"]
+        }
+      ]
+    },
+    "win": {
+      "target": [
+        {
+          "target": "nsis",
+          "arch": ["x64"]
+        }
+      ]
+    },
+    "linux": {
+      "icon": "build/icons",
+      "category": "Utility",
+      "executableArgs": ["--no-sandbox"],
+      "syncDesktopName": true,
+      "target": [
+        {
+          "target": "AppImage",
+          "arch": ["x64", "arm64"]
+        },
+        {
+          "target": "deb",
+          "arch": ["x64", "arm64"]
+        }
+      ]
+    }
+  }
+}

@@ -1,0 +1,459 @@
+name: e2e
+
+# Nightly + manual, not on every push/PR — these are Playwright browser/
+# Electron-driven verification scripts (tests/e2e/*.mjs), not the dotnet test
+# suite. They drive real dev servers / a packaged Electron app end-to-end
+# rather than mocking anything, so they're slower and younger than dotnet
+# test — worth checking regularly, but too slow to put in every PR's critical
+# path. The nightly run is what catches drift between the scripts and the UI
+# (locator text/structure changes, timing assumptions) before it piles up
+# unnoticed; workflow_dispatch is still there for an on-demand run before
+# cutting a release, or after touching AppShell/WasmPlayer/WebPlayer/
+# ElectronApp. Each job below matches one of the distinct local setups
+# documented in the individual scripts' header comments — see those for the
+# "why" behind each one.
+on:
+  workflow_dispatch:
+  schedule:
+    # 03:17 UTC — off the hour to avoid the top-of-hour pile-up GitHub warns
+    # about for scheduled workflows. Runs against whatever's on main at that
+    # time regardless of whether anything changed since the last run.
+    - cron: '17 3 * * *'
+
+jobs:
+  # AppShell (Debug WasmEditor) + WasmPlayer (Debug), one Vite dev server and
+  # one WasmPlayer dev server shared by every script that doesn't need a
+  # special AppShell build/env — each script normally defaults to its own
+  # port for local ad-hoc use, but here they both get pointed at the same
+  # instances via an explicit baseUrl arg. WasmPlayer is needed because
+  # verify-appshell-play-open-file.mjs and verify-appshell-play-refresh.mjs
+  # boot a game through AppShell's Play tab, which proxies /player to it (see
+  # vite.config.ts).
+  appshell_chromium:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: actions/setup-dotnet@v5
+        with:
+          dotnet-version: '10.0.x'
+      - run: dotnet workload install wasm-tools
+
+      - run: dotnet build src/WasmEditor/WasmEditor.csproj -c Debug
+      - run: dotnet build src/WasmPlayer/WasmPlayer.csproj -c Debug
+
+      - uses: actions/setup-node@v6
+        with:
+          node-version: '22'
+          cache: 'npm'
+          cache-dependency-path: |
+            src/AppShell/package-lock.json
+            tests/e2e/package-lock.json
+
+      - run: npm ci
+        working-directory: src/AppShell
+      - run: npm ci
+        working-directory: tests/e2e
+      - run: npx playwright install --with-deps chromium
+        working-directory: tests/e2e
+
+      - name: Start WasmPlayer dev server (5175)
+        run: node src/WasmPlayer/dev-server.mjs &
+
+      - name: Wait for WasmPlayer dev server
+        run: |
+          for i in $(seq 1 30); do
+            curl -sf "http://localhost:5175/" > /dev/null && break
+            [ "$i" -eq 30 ] && { echo "port 5175 never came up"; exit 1; }
+            sleep 1
+          done
+
+      - name: Start AppShell dev server (5174)
+        run: npx vite dev --port 5174 &
+        working-directory: src/AppShell
+        env:
+          PUBLIC_SHOW_HOME: true
+
+      - name: Wait for dev server
+        run: |
+          for i in $(seq 1 30); do
+            curl -sf "http://localhost:5174/" > /dev/null && break
+            [ "$i" -eq 30 ] && { echo "port 5174 never came up"; exit 1; }
+            sleep 1
+          done
+
+      - run: node verify-appshell-opfs-default.mjs http://localhost:5174
+        working-directory: tests/e2e
+      - run: node verify-appshell-autosave.mjs http://localhost:5174
+        working-directory: tests/e2e
+      - run: node verify-appshell-play-open-file.mjs http://localhost:5174
+        working-directory: tests/e2e
+      - run: node verify-appshell-play-refresh.mjs http://localhost:5174
+        working-directory: tests/e2e
+      - run: node verify-advanced-tree.mjs http://localhost:5174
+        working-directory: tests/e2e
+      - run: node verify-appshell-addscript-modal-mobile.mjs http://localhost:5174
+        working-directory: tests/e2e
+      - run: node verify-appshell-advanced-controls.mjs http://localhost:5174
+        working-directory: tests/e2e
+      - run: node verify-appshell-assetpicker-mobile-overflow.mjs http://localhost:5174
+        working-directory: tests/e2e
+      - run: node verify-appshell-attributes-panel-pinned.mjs http://localhost:5174
+        working-directory: tests/e2e
+      - run: node verify-appshell-attributes-stack-scroll.mjs http://localhost:5174
+        working-directory: tests/e2e
+      - run: node verify-appshell-attributes-verbs-stack.mjs http://localhost:5174
+        working-directory: tests/e2e
+      - run: node verify-appshell-code-view.mjs http://localhost:5174
+        working-directory: tests/e2e
+      - run: node verify-appshell-download-button.mjs http://localhost:5174
+        working-directory: tests/e2e
+      - run: node verify-appshell-empty-advanced-categories.mjs http://localhost:5174
+        working-directory: tests/e2e
+      - run: node verify-appshell-exits-editor.mjs http://localhost:5174
+        working-directory: tests/e2e
+      - run: node verify-appshell-game-status-attributes-scroll.mjs http://localhost:5174
+        working-directory: tests/e2e
+      - run: node verify-appshell-gamebook-mode.mjs http://localhost:5174
+        working-directory: tests/e2e
+      - run: node verify-appshell-home-button.mjs http://localhost:5174
+        working-directory: tests/e2e
+      - run: node verify-appshell-home-header-links.mjs http://localhost:5174
+        working-directory: tests/e2e
+      - run: node verify-appshell-landscape-attributes-scroll.mjs http://localhost:5174
+        working-directory: tests/e2e
+      - run: node verify-appshell-landscape-toolbar-padding.mjs http://localhost:5174
+        working-directory: tests/e2e
+      - run: node verify-appshell-mobile-master-detail.mjs http://localhost:5174
+        working-directory: tests/e2e
+      - run: node verify-appshell-modal-sizing.mjs http://localhost:5174
+        working-directory: tests/e2e
+      - run: node verify-appshell-preview-flush.mjs http://localhost:5174
+        working-directory: tests/e2e
+      - run: node verify-appshell-responsive-toolbar.mjs http://localhost:5174
+        working-directory: tests/e2e
+      - run: node verify-appshell-richtext-stack.mjs http://localhost:5174
+        working-directory: tests/e2e
+      - run: node verify-appshell-script-adder-filter.mjs http://localhost:5174
+        working-directory: tests/e2e
+      - run: node verify-appshell-script-label-stacks-below.mjs http://localhost:5174
+        working-directory: tests/e2e
+      - run: node verify-appshell-scriptadder-advanced-categories.mjs http://localhost:5174
+        working-directory: tests/e2e
+      - run: node verify-appshell-scriptadder-advanced-commands.mjs http://localhost:5174
+        working-directory: tests/e2e
+      - run: node verify-appshell-scripteditor-row-buttons.mjs http://localhost:5174
+        working-directory: tests/e2e
+      - run: node verify-appshell-scripteditor-selection-toolbar.mjs http://localhost:5174
+        working-directory: tests/e2e
+      - run: node verify-appshell-surface-shade-fix.mjs http://localhost:5174
+        working-directory: tests/e2e
+      - run: node verify-appshell-tap-same-tree-node.mjs http://localhost:5174
+        working-directory: tests/e2e
+      - run: node verify-appshell-touch-affordances.mjs http://localhost:5174
+        working-directory: tests/e2e
+      - run: node verify-appshell-tree-dropdown-position.mjs http://localhost:5174
+        working-directory: tests/e2e
+      - run: node verify-appshell-tree-filter.mjs http://localhost:5174
+        working-directory: tests/e2e
+      - run: node verify-appshell-tree-splitter.mjs http://localhost:5174
+        working-directory: tests/e2e
+      - run: node verify-appshell-unlock-exit-picker.mjs http://localhost:5174
+        working-directory: tests/e2e
+      - run: node verify-appshell-verbs-editor.mjs http://localhost:5174
+        working-directory: tests/e2e
+      - run: node verify-rename-invalid-name.mjs http://localhost:5174
+        working-directory: tests/e2e
+      - run: node verify-update-banner-web.mjs http://localhost:5174
+        working-directory: tests/e2e
+
+  # OPFS local-drafts behavior on non-FSA browsers, against a Release
+  # WasmEditor build — createSyncAccessHandle (Safari's write path) needs the
+  # AOT build's real dotnet runtime bits present.
+  #
+  # Firefox only, not WebKit: Playwright's Linux WebKit build doesn't
+  # implement OPFS at all (navigator.storage.getDirectory is undefined there,
+  # confirmed on an actual Actions ubuntu-latest run — not a sandbox-specific
+  # flake), so verify-appshell-local-drafts.mjs's webkit variant can never
+  # pass here. It's still meant to be run by hand against real Safari
+  # locally (see that script's own header comment) — just not from Linux CI.
+  appshell_opfs_firefox:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: actions/setup-dotnet@v5
+        with:
+          dotnet-version: '10.0.x'
+      - run: dotnet workload install wasm-tools
+
+      - run: dotnet build src/WasmEditor/WasmEditor.csproj -c Release
+
+      - uses: actions/setup-node@v6
+        with:
+          node-version: '22'
+          cache: 'npm'
+          cache-dependency-path: |
+            src/AppShell/package-lock.json
+            tests/e2e/package-lock.json
+
+      - run: npm ci
+        working-directory: src/AppShell
+      - run: npm ci
+        working-directory: tests/e2e
+      - run: npx playwright install --with-deps firefox
+        working-directory: tests/e2e
+
+      - name: Start AppShell dev server (5174, Release WasmEditor)
+        run: npx vite dev --port 5174 &
+        working-directory: src/AppShell
+        env:
+          WASM_CONFIG: Release
+
+      - name: Wait for dev server
+        run: |
+          for i in $(seq 1 30); do
+            curl -sf "http://localhost:5174/" > /dev/null && break
+            [ "$i" -eq 30 ] && { echo "port 5174 never came up"; exit 1; }
+            sleep 1
+          done
+
+      - run: node verify-appshell-local-drafts.mjs http://localhost:5174 firefox
+        working-directory: tests/e2e
+      - run: node verify-appshell-drafts-rekey-backup.mjs http://localhost:5174
+        working-directory: tests/e2e
+      - run: node verify-appshell-multi-aslx-zip.mjs http://localhost:5174
+        working-directory: tests/e2e
+
+  # PUBLIC_HAS_SERVER=true (textadventures.co.uk build mode) — only checks
+  # /open's "existing games only" message/link, never enters the editor, so
+  # no WasmEditor build needed at all.
+  appshell_server_mode:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: actions/setup-node@v6
+        with:
+          node-version: '22'
+          cache: 'npm'
+          cache-dependency-path: |
+            src/AppShell/package-lock.json
+            tests/e2e/package-lock.json
+
+      - run: npm ci
+        working-directory: src/AppShell
+      - run: npm ci
+        working-directory: tests/e2e
+      - run: npx playwright install --with-deps chromium
+        working-directory: tests/e2e
+
+      - name: Start AppShell dev server (5174, PUBLIC_HAS_SERVER=true)
+        run: npx vite dev --port 5174 &
+        working-directory: src/AppShell
+        env:
+          PUBLIC_HAS_SERVER: true
+
+      - name: Wait for dev server
+        run: |
+          for i in $(seq 1 30); do
+            curl -sf "http://localhost:5174/" > /dev/null && break
+            [ "$i" -eq 30 ] && { echo "port 5174 never came up"; exit 1; }
+            sleep 1
+          done
+
+      - run: node verify-appshell-server-mode-no-create.mjs http://localhost:5174
+        working-directory: tests/e2e
+
+  # WasmPlayer alone, no AppShell involved.
+  wasmplayer_chromium:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: actions/setup-dotnet@v5
+        with:
+          dotnet-version: '10.0.x'
+      - run: dotnet workload install wasm-tools
+      - run: dotnet build src/WasmPlayer/WasmPlayer.csproj -c Debug
+
+      - uses: actions/setup-node@v6
+        with:
+          node-version: '22'
+          cache: 'npm'
+          cache-dependency-path: tests/e2e/package-lock.json
+
+      - run: npm ci
+        working-directory: tests/e2e
+      - run: npx playwright install --with-deps chromium
+        working-directory: tests/e2e
+
+      - name: Start WasmPlayer dev server (5175)
+        run: node src/WasmPlayer/dev-server.mjs &
+
+      - name: Wait for dev server
+        run: |
+          for i in $(seq 1 30); do
+            curl -sf "http://localhost:5175/" > /dev/null && break
+            [ "$i" -eq 30 ] && { echo "port 5175 never came up"; exit 1; }
+            sleep 1
+          done
+
+      - run: node verify-wasmplayer-restart-sidebar-dup.mjs http://localhost:5175
+        working-directory: tests/e2e
+      - run: node verify-clientinfo-web.mjs http://localhost:5175
+        working-directory: tests/e2e
+      - run: node verify-wasmplayer-debugger.mjs http://localhost:5175
+        working-directory: tests/e2e
+      - run: node verify-wasmplayer-save-disabled-during-wait-input.mjs http://localhost:5175
+        working-directory: tests/e2e
+      - run: node verify-wasmplayer-save-turn-pending.mjs http://localhost:5175
+        working-directory: tests/e2e
+      - run: node verify-wasmplayer-showmenu-select-default.mjs http://localhost:5175
+        working-directory: tests/e2e
+
+  # WebPlayer (ASP.NET Core + Blazor Server), Development mode with Dev:Enabled
+  # (appsettings.Development.json already sets this — see /dev/open's
+  # RequiresConfig("Dev:Enabled") gate).
+  webplayer_chromium:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: actions/setup-dotnet@v5
+        with:
+          dotnet-version: '10.0.x'
+
+      - uses: actions/setup-node@v6
+        with:
+          node-version: '22'
+          cache: 'npm'
+          cache-dependency-path: tests/e2e/package-lock.json
+
+      - run: npm ci
+        working-directory: tests/e2e
+      - run: npx playwright install --with-deps chromium
+        working-directory: tests/e2e
+
+      - name: Start WebPlayer (5099, Development)
+        run: dotnet run --configuration Release --no-launch-profile --urls http://localhost:5099 --project src/WebPlayer &
+        env:
+          ASPNETCORE_ENVIRONMENT: Development
+
+      - name: Wait for WebPlayer
+        run: |
+          for i in $(seq 1 60); do
+            curl -sf "http://localhost:5099/" > /dev/null && break
+            [ "$i" -eq 60 ] && { echo "port 5099 never came up"; exit 1; }
+            sleep 2
+          done
+
+      - run: node verify-webplayer-legacy-save.mjs http://localhost:5099
+        working-directory: tests/e2e
+      - run: node verify-webplayer-restart-chrome-reset.mjs http://localhost:5099
+        working-directory: tests/e2e
+
+  # Real, packaged Electron app (Playwright's _electron launcher) — macos-
+  # latest, not ubuntu-latest (unlike build_electron in build-and-test.yml,
+  # which only proves the build pipeline, never launches Electron itself): a
+  # real Electron window on Linux CI needs both Xvfb (no X server in the
+  # container) and --no-sandbox (the SUID-root chrome-sandbox helper needs
+  # setup a plain `npm install` doesn't do — see electron.sh's comment on this
+  # same issue). macOS runners have a real GUI session already, so neither
+  # applies. Also the runner electron-publish.yml already uses for DMG builds.
+  electron:
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: actions/setup-dotnet@v5
+        with:
+          dotnet-version: '10.0.x'
+      - run: dotnet workload install wasm-tools
+
+      - run: dotnet build src/WasmEditor/WasmEditor.csproj -c Debug
+      - run: dotnet build src/WasmPlayer/WasmPlayer.csproj -c Debug
+
+      - uses: actions/setup-node@v6
+        with:
+          node-version: '22'
+          cache: 'npm'
+          cache-dependency-path: |
+            src/AppShell/package-lock.json
+            src/ElectronApp/package-lock.json
+            tests/e2e/package-lock.json
+
+      - run: npm ci
+        working-directory: src/AppShell
+      - run: npm run build
+        working-directory: src/AppShell
+        env:
+          PUBLIC_SHOW_HOME: true
+
+      - run: npm ci
+        working-directory: src/ElectronApp
+      - run: npm run build
+        working-directory: src/ElectronApp
+
+      - run: npm ci
+        working-directory: tests/e2e
+
+      - run: node verify-electron-open-file.mjs
+        working-directory: tests/e2e
+      - run: node verify-electron-new-game-folder.mjs
+        working-directory: tests/e2e
+      - run: node verify-electron-recent-games.mjs
+        working-directory: tests/e2e
+      - run: node verify-electron-play-local-file.mjs
+        working-directory: tests/e2e
+      - run: node verify-electron-open-game-no-window.mjs
+        working-directory: tests/e2e
+      - run: node verify-electron-selectall-textbox.mjs
+        working-directory: tests/e2e
+      - run: node verify-electron-undo-textarea.mjs
+        working-directory: tests/e2e
+      - run: node verify-electron-unsaved-close-dialog.mjs
+        working-directory: tests/e2e
+      - run: node verify-clientinfo-electron.mjs
+        working-directory: tests/e2e
+      - run: node verify-update-banner.mjs
+        working-directory: tests/e2e
+
+  # questviva.com docs/marketing site (site/, separate Astro project) —
+  # no AppShell/Engine build needed at all, just the static site itself.
+  site_chromium:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: actions/setup-node@v6
+        with:
+          node-version: '22'
+          cache: 'npm'
+          cache-dependency-path: |
+            site/package-lock.json
+            tests/e2e/package-lock.json
+
+      - run: npm ci
+        working-directory: site
+      - run: npm run build
+        working-directory: site
+      - run: npm ci
+        working-directory: tests/e2e
+      - run: npx playwright install --with-deps chromium
+        working-directory: tests/e2e
+
+      - name: Start site preview server (4321)
+        run: npx astro preview &
+        working-directory: site
+
+      - name: Wait for site preview server
+        run: |
+          for i in $(seq 1 30); do
+            curl -sf "http://localhost:4321/" > /dev/null && break
+            [ "$i" -eq 30 ] && { echo "port 4321 never came up"; exit 1; }
+            sleep 1
+          done
+
+      - run: node verify-site-download-page.mjs http://localhost:4321
+        working-directory: tests/e2e

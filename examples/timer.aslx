@@ -1,0 +1,40 @@
+<!--Saved by Quest 5.10.9659.31767-->
+<asl version="580">
+  <include ref="English.aslx" />
+  <include ref="Core.aslx" />
+  <game name="timer">
+    <gameid>71d35b6e-b350-445e-ba1a-a077cc362e66</gameid>
+    <version>1.0</version>
+    <firstpublished>2026</firstpublished>
+    <start type="script">
+      msg ("ON, OFF")
+    </start>
+  </game>
+  <object name="room">
+    <inherit name="editor_room" />
+    <object name="player">
+      <inherit name="editor_object" />
+      <inherit name="editor_player" />
+    </object>
+  </object>
+  <command>
+    <pattern>on</pattern>
+    <script>
+      EnableTimer (tmr)
+      msg ("Timer on")
+    </script>
+  </command>
+  <command>
+    <pattern>off</pattern>
+    <script>
+      DisableTimer (tmr)
+      msg ("Timer off")
+    </script>
+  </command>
+  <timer name="tmr">
+    <interval>5</interval>
+    <script>
+      msg ("Tick!")
+    </script>
+  </timer>
+</asl>
