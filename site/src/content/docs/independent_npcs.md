@@ -200,7 +200,7 @@ If our NPCs are acting dynamically, it may not be possible to know in advance wh
 
 Let her work it out for herself!
 
-Jay Nabonne wrote a path-finding library we can use.
+Jay Nabonne wrote a path-finding library we can use - its code is below.
 
 ### Copy a library function to your game
 
