@@ -1,9 +1,10 @@
 // Regression test for user-reported feedback: ScriptEditor's per-row
-// move-up/move-down/delete buttons were always visible on a coarse pointer
-// for EVERY row, but root-level rows already have an equivalent (and more
-// touch-friendly) path via their checkbox + selection toolbar
-// (Cut/Copy/Delete/Move). Only nested if/for/while blocks (no checkbox, no
-// other way to reorder/delete) still need the always-visible buttons.
+// move-up/move-down/delete buttons used to be forced always-visible on a
+// coarse pointer for every row. Every row (root AND nested if/for/while
+// blocks) now has a checkbox + selection toolbar (Cut/Copy/Delete/Move) as
+// the touch-friendly reorder/delete path, so the row's own buttons stay
+// hover-only at every nesting level — even on touch, where there's no hover
+// and the checkbox/toolbar cover it.
 import { chromium } from 'playwright';
 
 const baseUrl = process.argv[2] || 'http://localhost:5174';
@@ -51,9 +52,11 @@ try {
     await page.click('input[type="checkbox"]');
     await page.waitForSelector('text=selected', { timeout: 5000 });
     console.log('PASS: checking a root row reveals the Cut/Copy/Delete/Move selection toolbar');
+    // Deselect again so the toolbar state doesn't leak into the nested-row check below.
+    await page.click('input[type="checkbox"]');
 
-    // Add an "If" block, whose nested (non-root) script rows have no checkbox —
-    // their move/delete buttons must stay always-visible on touch.
+    // Add an "If" block. Nested (non-root) rows have their own checkbox + selection
+    // toolbar too (they're not forced always-visible on touch).
     await page.click('button:has-text("Add script")');
     await page.waitForSelector('[role="dialog"]', { timeout: 5000 });
     await page.getByRole('button', { name: 'If', exact: true }).click();
@@ -69,25 +72,32 @@ try {
     await page.waitForTimeout(300);
 
     // Rather than guess DOM ordinal position among a mix of root and nested
-    // rows, classify every ScriptEditor row by whether its own row div has a
-    // checkbox sibling (root) or not (nested), and check each group's
-    // row-actions opacity accordingly.
+    // rows, classify every ScriptEditor row: a row is nested if it lives
+    // inside a nested ScriptEditor wrapper (the depth>0 indentClass —
+    // "ml-4 border-l ..."), root otherwise. Every row — root or nested — must
+    // have a checkbox and hover-only (opacity 0) row actions.
     const rows = await page.evaluate(() => {
         const results = [];
         for (const actions of document.querySelectorAll('div.absolute.top-1')) {
             const row = actions.closest('div.group.relative');
             if (!row) continue;
-            const hasCheckbox = !!row.querySelector('input[type="checkbox"]');
-            results.push({ hasCheckbox, opacity: getComputedStyle(actions).opacity });
+            const isNested = !!row.closest('div.ml-4.border-l.border-surface-300-700.pl-2');
+            results.push({ isNested, opacity: getComputedStyle(actions).opacity, hasCheckbox: !!row.querySelector('input[type="checkbox"]') });
         }
         return results;
     });
-    const rootRows = rows.filter(r => r.hasCheckbox);
-    const nestedRows = rows.filter(r => !r.hasCheckbox);
+    const rootRows = rows.filter(r => !r.isNested);
+    const nestedRows = rows.filter(r => r.isNested);
     if (nestedRows.length === 0) throw new Error('Expected at least one nested (non-root) script row after adding an If block with a nested Print command');
-    if (rootRows.some(r => r.opacity !== '0')) throw new Error(`All root rows should have opacity 0 (not forced visible): ${JSON.stringify(rootRows)}`);
-    if (nestedRows.some(r => r.opacity !== '1')) throw new Error(`All nested rows should have opacity 1 (always visible, no checkbox alternative): ${JSON.stringify(nestedRows)}`);
-    console.log(`PASS: ${rootRows.length} root row(s) not forced visible, ${nestedRows.length} nested row(s) stay always-visible on touch`);
+    if (rows.some(r => !r.hasCheckbox)) throw new Error(`Every row — root and nested — should have a selection checkbox: ${JSON.stringify(rows)}`);
+    if (rows.some(r => r.opacity !== '0')) throw new Error(`All rows should have hover-only row buttons (opacity 0, checkbox + toolbar cover touch): ${JSON.stringify(rows)}`);
+    console.log(`PASS: ${rootRows.length} root row(s) and ${nestedRows.length} nested row(s) all have checkboxes and hover-only row buttons`);
+
+    // The nested row's checkbox must also reveal the selection toolbar (the fix
+    // that gave nested blocks their own checkbox + Cut/Copy/Delete/Move).
+    await page.locator('div.ml-4.border-l.border-surface-300-700.pl-2 input[type="checkbox"]').first().click();
+    await page.waitForSelector('text=selected', { timeout: 5000 });
+    console.log('PASS: checking a nested row reveals the Cut/Copy/Delete/Move selection toolbar');
 
     console.log('PASS: all checks passed');
 } catch (err) {
