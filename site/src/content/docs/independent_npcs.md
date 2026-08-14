@@ -201,7 +201,6 @@ If our NPCs are acting dynamically, it may not be possible to know in advance wh
 Let her work it out for herself!
 
 Jay Nabonne wrote a path-finding library we can use.
-http://docs.textadventures.co.uk/quest/libraries/path_library.html
 
 ### Copy a library function to your game
 
