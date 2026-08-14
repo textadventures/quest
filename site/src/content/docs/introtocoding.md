@@ -29,7 +29,7 @@ Well, the first thing to say is you are already splashing around in the shallow 
 
 ![](/images/Say_to_troll.png)
 
-What you are looking at is a graphical representation of Quest code. Click on the "Code view" button (in the desktop version, this is icon that looks like the </>; it has changed since the image above)...
+What you are looking at is a graphical representation of Quest code. Click on the "Code view" button (it has changed since the image above)...
 
 ```
 switch (object_one) {

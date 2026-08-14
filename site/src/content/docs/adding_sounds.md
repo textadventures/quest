@@ -177,7 +177,7 @@ Like everything else, there are numerous ways to handle this.
 Controlling HTML Audio with JS (Stopping, Pausing, and Playing)
 ---------------------------------------------------------------
 
-The easiest way to stop a sound would be removing ALL audio tags from the game.  This can be handled [using Javascript](/using_javascript) via `JS.eval()` (NOTE: This will completely remove any HTML audio tags which have been added to the game!).
+The easiest way to stop a sound would be removing ALL audio tags from the game.  This can be handled [using Javascript](/ui-javascript) via `JS.eval()` (NOTE: This will completely remove any HTML audio tags which have been added to the game!).
 
 ```
 JS.eval("$('audio').remove();")

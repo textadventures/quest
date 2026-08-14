@@ -81,7 +81,7 @@ Then you just need to do this to get the new icons in your game (again, modifyin
 JS.setCss (".ui-icon", "background-image', 'url(" + GetFileURL("ui-icons_800080_256x240.png") + ");")
 ```
 
-Once you have the file, you could edit it to change the shape of the arrows too, or make them multicoloured (using the web editor, you will need to use the "Show picture" script element to upload the image; once uploaded, delete the "Show picture").
+Once you have the file, you could edit it to change the shape of the arrows too, or make them multicoloured (upload the image via the Assets manager in the editor toolbar).
 
 
 ### Disable the panes

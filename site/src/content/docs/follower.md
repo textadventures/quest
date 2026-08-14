@@ -8,7 +8,7 @@ Occasionally it is useful to have one or more characters follow the player, whet
 
 We will store the followers in an object list. This means you can have any number of them trailing along at one time. The first step, then, is to set this up.
 
-Usually at this point I would say that users of the on-line editor are at a disadvantage because they cannot set attributes directly, but for once this is true for users of the off-line editor too - the _Attributes_ tab cannot handle object lists, so we will all be doing this the same way.
+The _Attributes_ tab cannot handle object lists, so we will need to do this in a script.
 
 For the sake of this tutorial, create an object called "dog".
 

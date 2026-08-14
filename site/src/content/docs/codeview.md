@@ -1,5 +1,5 @@
 ---
-title: Tips and Tricks for Editing in Full Code View
+title: Editing in Full Code View
 sidebar:
   order: 14
 ---

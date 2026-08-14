@@ -80,7 +80,7 @@ A few verbs cannot be implements, as they already mean something in Quest. "Open
 The Verb Element
 ---------------
 
-The text Quest uses to match against goes into the verb element, and as Quest quietly creates these for you it is easy to miss they even exist (especially on the web version, where they are not accessible!). Look for them under the game object. Here is one for our `ROTATE` verb.
+The text Quest uses to match against goes into the verb element, and as Quest quietly creates these for you it is easy to miss they even exist. Look for them under the game object. Here is one for our `ROTATE` verb.
 
 ![](/images/verb_element.png)
 
@@ -97,6 +97,18 @@ The fourth part is for handling multiple objects for your verb. Remember the `AT
 The "Object separator" defaults to `with; using`. This is a list, separated by semi-colons, of words that will go between the two objects, i.e., between `GOBLIN` and `KNIFE`. In this case the default is what we want.
 
 If the player just types `ATTACK GOBLIN`, she will be presented with a menu of appropriate objects, and the "Menu caption" will be the caption for that menu. If there are no such objects around, the "If no objects available..." text is shown.
+
+The same information appears in the game's XML as a `<verb>` element:
+
+    <verb>
+      <property>zing</property>
+      <pattern>zing; ping; ling; ring ring</pattern>
+      <defaulttext>You can't zing that.</defaulttext>
+    </verb>
+
+Here, `property` is the attribute name, `pattern` is the semi-colon separated list of text Quest matches against, and `defaulttext` is the "Default" text box.
+
+Quest checks that a new verb won't clash with an existing one, but it can only do that for single words or phrases: it will stop you adding "look at" or "examine" on their own, but it will not stop you adding "look at;examine" as a single pattern, which can quietly break LOOK AT for everything else in your game.
 
 
 ### Complex verbs

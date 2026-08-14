@@ -163,4 +163,4 @@ msg ("<img src='http://www.mydomain.com/images/kitten.png' />")
 msg ("<img src='http://www.mydomain.com/images/kitten.png' style=\"display: block; margin-left: auto; margin-right: auto;\" />")
 ```
 
-If you are using the web editor, this will avoid issues with how you upload your image (otherwise you would need to upload the image with the `picture` command, then swap to the `msg` command) as well as allowing you to edit and delete images, which currently is not possible.
+This also avoids the extra step of uploading the image with the `picture` command and then swapping to the `msg` command. You can manage images you have already uploaded to your game from the Assets manager in the editor toolbar.

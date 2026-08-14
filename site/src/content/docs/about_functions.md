@@ -94,9 +94,9 @@ For more detail on creating functions with return values, see [Creating Function
 
 ### Overriding Functions
 
-Did I mention that the power of Quest is that it lets you do so much? Not only can you create your own functions, you can replace the existing ones (though not the script commands or some of the more fundamental functions). In the off-line editor anyway.
+Did I mention that the power of Quest is that it lets you do so much? Not only can you create your own functions, you can replace the existing ones (though not the script commands or some of the more fundamental functions).
 
-Let us suppose you want you want room descriptions to have some novel formatting (perhaps the letter 'A' in blue, to pick a common example). Click on "Filter" at the bottom left of the screen, and select "Show Library Elements". In the left pane you will see all the built in functions, commands and so in, all in grey. Find the one you want, in this case ShowRoomDescription (at the top of the pane is a filtering function, which makes the search easier). The function will appear in the right pane. You can click the "Copy" button at top left to get the function copied into your game, and then edit it as you see fit.
+Let us suppose you want you want room descriptions to have some novel formatting (perhaps the letter 'A' in blue, to pick a common example). Click the tree view options button, above the tree, and select "Show Library Elements". In the left pane you will see all the built in functions, commands and so in, all in grey. Find the one you want, in this case ShowRoomDescription (at the top of the pane is a filtering function, which makes the search easier). The function will appear in the right pane. You can click the "Copy" button at top left to get the function copied into your game, and then edit it as you see fit.
 
 Just do not change the name, return type or parameters.
 

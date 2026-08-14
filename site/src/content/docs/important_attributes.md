@@ -74,7 +74,7 @@ The parent attribute is an object that determines where a thing is. If the paren
 
 The parent attribute also determines how an object is displayed in the editor. This means that an object in a room in the editor will also be in that room at the start of the game.
 
-You can drag the object to its new parent in the desktop version, or click the "Move" button towards the top right in the web version. For any object you want the player to have at the start, for instance, just move them to the player.
+Use the tree's "Move to..." option (in its "..." menu, or the "Move" button towards the top right) to change an object's parent. For any object you want the player to have at the start, for instance, just move them to the player.
 
 Objects can and will change there parent as the game is played. When the player picks up and then drops an item, its parent will change to the player, and then to the room. When the player moves to a different room, the parent attribute of the player changes to the new room (so the parent attribute of the player is the current room).
 

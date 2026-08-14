@@ -5,7 +5,7 @@ sidebar:
 ---
 
 
-There is a library to handle shops, but this page describes how to do it yourself, which may be useful if you are using the web version.
+There is a library to handle shops, but this page describes how to do it yourself.
 
 There are several ways to set up a shop; this is more comprehensive, which does mean it is more effort to set up initially, but once done, it is very easy to expand.
 

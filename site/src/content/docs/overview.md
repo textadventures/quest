@@ -54,4 +54,4 @@ See the [Publishing](/publishing) section for full details on how to publish, fi
 
 ## What next?
 
-The **[Tutorial](/tutorial)** is the best way to get started - it walks you through building your first game from scratch.
+The **[Tutorial](/tutorial/tutorial_introduction)** is the best way to get started - it walks you through building your first game from scratch.

@@ -22,7 +22,7 @@ Because there's [another system](https://github.com/ThePix/QuestJS) already call
 
 ## Where's all the documentation?
 
-The [Quest Overview](/overview) is a good place to start, followed by the [Tutorial](/tutorial). Quest Viva is pretty much "a modern version of Quest 5" under the hood, so almost everything in these docs applies equally to both.
+The [Quest Overview](/overview) is a good place to start, followed by the [Tutorial](/tutorial/tutorial_introduction). Quest Viva is pretty much "a modern version of Quest 5" under the hood, so almost everything in these docs applies equally to both.
 
 ## Getting help
 

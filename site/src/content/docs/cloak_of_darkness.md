@@ -12,7 +12,7 @@ The Cloak of Darkness is a specification for an adventure game that has been cre
 
 This seems to be a great way to look in some detail at how to create a Quest game. This, then, is the _second_ Quest tutorial. It is more advanced than the first tutorial, so we will be working with code. We will try at each step to make systems that are general, so that this could be extended into a lengthy game.
 
-If you want to see how the scripts look in the GUI, and you are using the desktop version, just download the game (link below), open it up and take a look. If you are using the web version, you will need to click the "code view" button for that script, paste the code in there, and then click "code view" again to go back to the GUI view.
+If you want to see how the scripts look in the GUI, download the game (link below) and open it in the editor to take a look. Alternatively, you can click the "Code view" button for a script, paste the code in there, and then click "Code view" again to go back to the GUI view.
 
 There was a version written for Quest 3.5 in October 2003, which was very different to the version of Quest that we know today.
 
@@ -54,7 +54,7 @@ The only complicated bit is the locked door to the north of the foyer. Quest wil
 
 For the objects, on the _Object_ tab, add any synonyms ("peg" for hook; "cape", "mantle", "robe" for cloak; "note", "writing" for message).
 
-On the _Inventory_ tab of the cloak, tick that it can be taken. You need to make sure the cloak is inside the player; if it is not, drag it there on the desktop version, or click the "Move" button on the web version. We could set up the cloak as clothing, but there is nothing in the specification about putting it on and taking it off (which is a bit odd, perhaps), so I am not going to bother.
+On the _Inventory_ tab of the cloak, tick that it can be taken. You need to make sure the cloak is inside the player; if it is not, use "Move to..." to move it there. We could set up the cloak as clothing, but there is nothing in the specification about putting it on and taking it off (which is a bit odd, perhaps), so I am not going to bother.
 
 Give the cloak and the hook descriptions. Generally you would be adding descriptions for all the items and locations, but these are going to depend on the various systems, so we will leave that for now.
 
@@ -152,7 +152,7 @@ For the message, we need to keep a count of how many turns the player spends in 
 
 We also need the message to only be visible if the cloak is not here, but we will do that in the next bit.
 
-We will add a "count" attribute and a "disturbed" attribute to the message first. On the desktop, you can add attributes on the _Attributes_ tab, set them both to be integers. Otherwise, on the web version, tick "Run an initialisation script..." on the _Features_ tab, then on the _Initialisation script_ tab, paste in this code:
+We will add a "count" attribute and a "disturbed" attribute to the message first. You can add attributes directly on the _Attributes_ tab, and set them both to be integers. Alternatively, tick "Run an initialisation script..." on the _Features_ tab, then on the _Initialisation script_ tab, paste in this code:
 
 ```
 this.count = 0
@@ -165,7 +165,7 @@ The "count" attribute will store how many consecutive turns the player has spent
 message.count = 0
 ```
 
-To get this to increment each turn, we will use a turnscript. We only want it to do that when the player is in the room, so will will put the turnscript in the room (if it is not, drag it there on the desktop version, or click the "Move" button on the web version).
+To get this to increment each turn, we will use a turnscript. We only want it to do that when the player is in the room, so will will put the turnscript in the room (if it is not, use "Move to..." to move it there).
 
 Tick the "Enabled when the game begins" box, and paste in the code:
 
@@ -405,10 +405,10 @@ This will add each object in the "everywhere" room to the special object list "i
 
 ### LISTEN and SMELL
 
-We mention sounds and smells in the game, so the player is likely to try to `LISTEN` and to `SMELL`. The way these are handled is the same, so what works for one will work for the other. On the desktop, you can set attributes directly on the _Attributes_ tab, and it is far better to handle `LISTEN` and `SMELL` that way. On the web version, you cannot do that, and it is easier to handle the commands quite differently. With that in mind, we will do one one way, and the other the other.
+We mention sounds and smells in the game, so the player is likely to try to `LISTEN` and to `SMELL`. The way these are handled is the same, so what works for one will work for the other. There's more than one way to handle them, so we will do `SMELL` one way, and `LISTEN` another, to show you both techniques.
 
 
-_SMELL on the web version_
+_SMELL_
 
 Create a new command, with the pattern `smell;sniff`. Paste in this code:
 
@@ -429,9 +429,9 @@ switch (player.parent) {
 So here we are checking what room the player is in, and giving an appropriate message. Note that there is also a default; this is good practice in case we ever extend the game, and forget to update the SMELL command.
 
 
-_LISTEN on the desktop_
+_LISTEN, a better way_
 
-The above will work fine on the desktop, but there is a better way. Create a new command, with the pattern `listen`. Paste in this code:
+The above will work fine, but there is a better way. Create a new command, with the pattern `listen`. Paste in this code:
 
 ```
 if (HasString(player.parent, "listen")) {
@@ -444,7 +444,7 @@ else {
 
 What that will do is to check if the current room has a string attribute called "listen". If it has, print that, otherwise print a default message. Using an attribute is better as it keeps the information about the room with the room. The LOOK description is an attribute of the room; it makes sense for LISTEN and SMELL to be too. Furthermore as your game gets bigger and bigger, you never need to modify the LISTEN command, it does not need to get bigger and bigger with each new room, and indeed you can use that same command in all your games (possibly modifying the default).
 
-Now we need to give "listen" attributes to rooms where there is something to hear. On the desktop, go to the _Attributes_ tab of the room, and add it there. Type in the appropriate text.
+Now we need to give "listen" attributes to rooms where there is something to hear. Go to the _Attributes_ tab of the room, and add it there. Type in the appropriate text.
 
 
 _Improved LISTEN_
@@ -470,7 +470,7 @@ You can hear rasping breathing.
 
 It reads a little odd when the `LISTEN` command says one thing, and the turnscript something slightly different. Little annoyances like this can be very tricky to correct, and you may feel it is better to just keep it as it is. Only a minority of players will even do `LISTEN`; is it worth the hassle? Let us suppose it is!
 
-What we will do is have a flag on the player called "suppress_background_sounds"; when it is true, no extra sounds are allowed. Therefore, we need to add this to the end of the `LISTEN` command script (whether it is the web or desktop version):
+What we will do is have a flag on the player called "suppress_background_sounds"; when it is true, no extra sounds are allowed. Therefore, we need to add this to the end of the `LISTEN` command script:
 
 ```
 player.suppress_background_sounds = true
@@ -547,7 +547,7 @@ else {
 }
 ```
 
-Now we need to make the cloak wearable. On the desktop version, you can do this on the _Attributes_ tab, but we will do it the more general way. Go to the _Features_ tab of the cloak, and turn on "Initialisation script...", then go to the _Initialisation script_ tab. Paste in this code:
+Now we need to make the cloak wearable. You could do this directly on the _Attributes_ tab, but we will do it the more general way. Go to the _Features_ tab of the cloak, and turn on "Initialisation script...", then go to the _Initialisation script_ tab. Paste in this code:
 
 ```
 this.worn = true
@@ -610,7 +610,7 @@ Walkthrough
 
 You can test your game by following a walk through.
 
-On the desktop version, you can do more, and create a walkthrough object that you can play again and again. Click walkthrough in the left pane (almost at the bottom), then click the plus sign to create a new one. Give it some name. You can now add each step of the walkthrough.
+You can also create a walkthrough object that you can play again and again. Click "Add", then "Add Walkthrough", to create a new one. Give it some name. You can now add each step of the walkthrough.
 
 However, an easier way is to click the record button (the circle), and then play through the game. Quest will record each step.
 
@@ -625,7 +625,7 @@ So you think the game is ready for release... Not yet!
 
 _Save._ Go into the game, and try to save it. For some reason, saving the game during play checks your game code more thoroughly than anything else, and if you cannot save, you have a problem somewhere.
 
-_Spellcheck._ If on the web version, hopefully you are using a browser with a spell-checker, and have been checking as you go along. On the desktop version, back-up the game file, then open it in an editor with a spell-check facility (I like Notepad++). In fact, you can also do this with the web version, as you can download a copy of your game, and open that up with a text editor. All the stuff inside angle brackets (i.e., < and >) can be ignored (and indeed should not be touched). Hopefully you will recognise the text you typed, and the editor will tell you if there are mistakes in it. You could use a word processor like LibraOffice or MS Word to find errors, but be very careful saving the game from a word processor, as they are likely to make changes that will stop Quest loading your game.
+_Spellcheck._ Hopefully you are using a browser with a spell-checker, and have been checking as you go along. You can also back-up the game file, then open it in an editor with a spell-check facility (I like Notepad++). All the stuff inside angle brackets (i.e., < and >) can be ignored (and indeed should not be touched). Hopefully you will recognise the text you typed, and the editor will tell you if there are mistakes in it. You could use a word processor like LibraOffice or MS Word to find errors, but be very careful saving the game from a word processor, as they are likely to make changes that will stop Quest loading your game.
 
 _Beta-test._ Get some people to beta-test your game. They will find problems you have not. Remember to thank them somewhere in your game (the ABOUT command is usual). You can upload/publish your game as unlisted for beta-testing.
 

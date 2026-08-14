@@ -16,8 +16,6 @@ In fact, you can put any command together like this; say there is a command that
 
 However, a better way is using the third type of link. The command link just sends the input attribute to the parser.
 
-*Note:* Quest 5.3 is expected to add extra functionality to hyperlinks.
-
 Related functions
 -----------------
 

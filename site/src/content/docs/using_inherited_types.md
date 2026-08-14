@@ -60,7 +60,7 @@ Creating new types
 
 Creating your own types is a great way to extend Quest for your own needs. Any time you have a bunch of things that are all pretty similar in what they do, but a bit different to anything already in Quest, consider creating a new type.
 
-As an example, we are going to create a spell type. The easiest way to do that is to first do it for an actual example of the type, a prototype, and then to move the code from the object to the type (unfortunately, you can only do it this way with the off-line editor).
+As an example, we are going to create a spell type. The easiest way to do that is to first do it for an actual example of the type, a prototype, and then to move the code from the object to the type - this is easiest to do using Code View.
 
 
 ### Create a prototype

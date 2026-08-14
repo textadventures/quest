@@ -13,10 +13,7 @@ Adding a Simple Command
 
 Let's add a simple command - "say". This will let the player type conversation prefixed with the command "say," for example `SAY HELLO`. Quest will respond with "You say 'hello.' We will also add the contextual text of "but nobody replies" as no-one is present in the game at this point.
 
-To add a command:
-
--   In the Windows desktop version, select "game" in the tree. Now, you can right-click on the tree and choose "Add Command", or use the Add menu and choose "Command".
--   In the web version, select "Commands" in the tree (underneath "game"). Then click the "Add" button.
+To add a command, select "Commands" in the tree (underneath "game"), then click "+ Add" and choose "Add Command" (or use the "..." menu on "Commands").
 
 Enter the following text into the command pattern box:
 

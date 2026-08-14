@@ -23,5 +23,5 @@ The `Split` function is often useful when setting options for a menu.
 
 The `select` script is often useful when handling the result.
 
-- [select](/multiple_choices___using_a_switch_script)
+- [select](/multiple_choices_using_a_switch_script)
 

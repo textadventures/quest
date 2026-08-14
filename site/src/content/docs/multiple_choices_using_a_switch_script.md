@@ -32,13 +32,9 @@ It should now look like this:
 
 Now we need to add the choices. These need to match exactly, and it is a good idea to copy and paste. To add an option, click on the "Add" next to case. You will be asked "Please enter the case expression". Paste in the first option, inside double quotes. Click okay, and you will get a box to put a script. We will just have it print a message, but you can add as many steps as you need, perhaps changing attributes, moving objects, whatever.
 
-So now it looks like this on the desktop version:
+So now it looks like this:
 
 ![](/images/switch02.png)
-
-`switch` states are displayed differently on the web version; in that case it should look like this:
-
-![](/images/switch03.png)
 
 Launch the game and try the options to check that you see the correct response.
 

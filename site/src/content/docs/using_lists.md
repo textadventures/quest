@@ -18,7 +18,7 @@ mylist = NewList()
 ```
 It is best practice to use string lists or object lists wherever possible, rather than general lists.
 
-If using the off-line editor, you can add a list to an object on the attributes page, but you are restricted to string lists. Object lists and general lists are useful for temporarily storing information (i.e., as local variables), but generally should not be used as attributes (sometimes it is the only way!).
+You can add a list to an object on the Attributes tab, but you are restricted to string lists. Object lists and general lists are useful for temporarily storing information (i.e., as local variables), but generally should not be used as attributes (sometimes it is the only way!).
 
 
 Adding and removing items

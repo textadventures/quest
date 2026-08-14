@@ -108,9 +108,9 @@ It can be frustrating for the player to have to guess what topics are available,
 
 Note that this assumes all NPCs will have the same topics available. I think it likely that the player will assume that if she can ask Mary about Dr Black, she can ask any other character too. This does mean you will need to add all these topics to all the NPCs, even if they only say that they know nothing. This should be done anyway!
 
-The first step, then, is to create our string list. If using the off-line editor, go to the _Attributes_ tab of the game object, and create a new attribute called "topics". Set it to be a string list, and add names of any topics that will be available from the start. 
+The first step, then, is to create our string list. You can go to the _Attributes_ tab of the game object, and create a new attribute called "topics". Set it to be a string list, and add names of any topics that will be available from the start.
 
-If using the on-line editor, you will have to add the attribute in a script. Go to the _Scripts_ tab of the game object, and add this to the start script (this will set "Job" and "Alibi" as topics from the start):
+Alternatively, you can add the attribute in a script instead. Go to the _Scripts_ tab of the game object, and add this to the start script (this will set "Job" and "Alibi" as topics from the start):
 
 ```
 game.topics = Split("Job;Alibi", ";")

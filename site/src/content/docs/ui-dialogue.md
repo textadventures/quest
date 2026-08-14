@@ -10,7 +10,7 @@ This is not trivial, and some idea of CSS and HTML will be useful; it would be a
 
 The way it will work is we will hand some HTML to JQuery and JQuery will put it in a dialogue. We will then need to collect the data and pass it to Quest.
 
-There will be quite a bit of HTML and JavaScript code, and the neatest way to handle that is in its own file, so the first step is to create a text file in the sasme folder as your game, and to call in "dialogue.html".
+There will be quite a bit of HTML and JavaScript code, and the neatest way to handle that is in its own file, so the first step is to create a text file called "dialogue.html", and upload it to your game via the Assets manager in the editor toolbar.
 
 
 Basic Dialogue Panel
@@ -129,15 +129,10 @@ msg ("You are " + StringListItem(l, 0) + ", " + StringListItem(l, 1))
 ```
 
 
-Using the Web Editor
---------------------
-
-All this _can_ be done with the web editor, but it will require a hack to get the file into your game. Rename the file "dialogue.png" (Quest will only let you upload certain file types). Go to the start script of the game object, and click to add a new script element. Select "Show picture". Click "Choose file", and navigate to the file. Click "Okay", and your file will be uploaded. You can then delete the "Show picture" script element.
-
-You will need to edit the file name game start script too:
+To load the file into the page, add this to the game's start script:
 
 ```
-JS.addText (GetFileData("dialogue.png"))
+JS.addText (GetFileData("dialogue.html"))
 ```
 
 

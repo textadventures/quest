@@ -61,4 +61,4 @@ There are several [important attributes](/important_attributes) that already hav
 
 Do not use the following as names for attributes: **command, delegate, dynamictemplate, exit, function, game, include, object, template, timer, turnscript, type, verb**. It may appear at first that these are okay, but when you save the game (whether during play or when editing), the attribute will be converted to an XML element with the same name. When the game is re-loaded, Quest will assume these refer to something else entire, an actual command, or whatever.
 
-For lists and dictionaries, attribute names cannot include spaces. Again, Quest will not complain when you do it, but it will when it tries to save your game (and you might have added a shed of load of data by then). If using the web version this might only become apparent when the player tries to save the game.
+For lists and dictionaries, attribute names cannot include spaces. Again, Quest will not complain when you do it, but it will when it tries to save your game (and you might have added a shed of load of data by then). This might only become apparent when the player tries to save the game.

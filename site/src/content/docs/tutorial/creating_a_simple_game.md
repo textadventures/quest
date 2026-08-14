@@ -4,78 +4,26 @@ sidebar:
   order: 2
 ---
 
-This tutorial is applicable to both the Windows desktop version of Quest, and the web version. Any differences in the two versions will be mentioned as we go along. 
-
 This tutorial guides you through creating your first text adventure game. If you want to create a gamebook instead, see [Creating a gamebook](/tutorial/creating_a_gamebook).
 
 Creating a blank game
 ---------------------
 
+Open the editor - either in your browser, or the desktop app - and you'll see a "Create new game" section. Enter a name like "Tutorial Game", ensure that "Text Adventure" is selected as the game type, and choose a language from the list - this tutorial will focus on creating a game in English, but the editor itself will look mostly the same whichever language you pick here.
 
-### Windows desktop version
-
-To create a new game, open Quest and click the File menu, then Create New Game.
-
-![](/images/Newgamemenu.png)
-
-Alternatively, you can switch to the _Create_ tab and click the "Create a new game" button.
-
-You'll see a screen like this:
-
-![](/images/Newgame.png)
-
-Ensure that "Text adventure" is selected, and choose a language from the list - this tutorial will focus on creating a game in English, but the editor itself will look mostly the same whichever language you pick here.
-
-Enter a name like "Tutorial Game". Quest will create a folder and a game file for you. You can change where it puts the file by clicking the "Browse" button - it is recommended that you put your game file in its own folder.
-
-Click OK and you'll see the main Editor screen:
-
-
-### Web version
-
-To create a new game, [log in to Quest](https://textadventures.co.uk/quest/) and click "Create a new game". You'll see the "New game" form.
-
-![](/images/Webnewgame.png)
-
-As you can see, the options are the same in both versions, just laid out a bit differently.
-
-Ensure that "Text adventure" is selected, and choose a language from the list - this tutorial will focus on creating a game in English, but the editor itself will look mostly the same whichever language you pick here.
-
-Enter a name like "Tutorial Game" and click the "Create" button. Click the link which appears, and you'll see the main Editor screen.
+Click "Create local draft" (or "Save to folder..." if you'd rather store the game file yourself), and you'll see the main Editor screen.
 
 
 The Editor Screen
 -----------------
 
-
-![](/images/Blankgame.png)
-
-![](/images/Webblankgame.png)
-
 On the left is a tree showing you every element of the game. The "game" element is currently selected, so that's what we can see in the pane on the right.
 
-Quest has created a room called "room" for us, and inside this room is the "player" object, so that's where the player will begin when you run the game. You can test the game by clicking the "Play" button. On the Windows version you can also select "Play Game" from the File menu or press the F5 key.
+Quest has created a room called "room" for us, and inside this room is the "player" object, so that's where the player will begin when you run the game. You can test the game by clicking the "Preview" button towards the top right.
 
 As you'll see, it's a pretty empty game at the moment. We can type some standard commands such as `INVENTORY` to see that Quest comes up with some default responses, but that's about all we can do at the moment.
 
-![](/images/Playblankgame.png)
-
-![](/images/Webplayblankgame.png)
-
-In the Windows version you can go back to the Editor by clicking "Stop Game" in the top left of the screen, or you can also type `QUIT` or hit the Escape key.
-
-If you are using the web version, you will probably have noticed that the game started in its own tab in your browser. Just close the tab when you have finished.
-
-
-Simple Mode
------------
-
-When starting out with Quest, you may find it easier to run in "Simple Mode". This hides much of Quest's more advanced functionality, but still gives you access to the core features.
-
-You can toggle Simple Mode on or off at any time:
-
--   on the Windows desktop version, you can toggle Simple Mode from the Tools menu.
--   on the web version, click the Settings button at the top right of the screen.
+You can go back to the Editor by closing the preview, or typing `QUIT`.
 
 Setting up rooms
 ----------------
@@ -88,17 +36,7 @@ To create a room description, click the _Room_ tab. Enter a Description in the t
 
 ![](/images/Editroomdescription.png)
 
-Let's add a second room to the game.
-
-In the Windows desktop version, there are three ways you can do this:
-
--   Click the Add menu, then click Room
--   Click "Add Room" on the toolbar
--   Right-click in the tree, then choose "Add Room"
-
-In the web version:
-
--   Click the "+ Room" button at the top of the screen
+Let's add a second room to the game. Click "+ Add" on the toolbar, then "Add Room" (or use the "..." menu on an existing element in the tree, which also offers "Add Room").
 
 Add a room called "kitchen", and give it a description - use your imagination!
 
@@ -127,12 +65,10 @@ Adding objects
 
 Now let's add some objects to the lounge, to give the player something to do.
 
-A lounge is barely a lounge without a TV in it, so let's add one now. With the lounge selected, you have four different ways of adding an object to the room. You can:
+A lounge is barely a lounge without a TV in it, so let's add one now. With the lounge selected, you have a couple of ways of adding an object to the room. You can:
 
--   Click the Add Object button on the toolbar
--   Go to the _Objects_ tab and click the Add button
--   Click the Add menu and choose Object (Windows desktop version only)
--   Right-click "lounge" in the tree and select "Add Object" (Windows desktop version only)
+-   Click "+ Add" on the toolbar, then "Add Object in 'lounge'"
+-   Use the "..." menu on "lounge" in the tree, and choose "Add Object here"
 
 Use one of these methods to add an object to the lounge. A prompt will appear asking you to enter a name for the object. Enter "TV". Leave the parent as "lounge" and click OK.
 

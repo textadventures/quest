@@ -15,7 +15,7 @@ The `InitUserInterface` function has been in Quest for a long time. It is an emp
 
 The `game.inituserinterface` script is exactly the same; it is called at the start of the game, and also when the player loads a saved game. So why have both?
 
-If you are using the web version, you cannot override `InitUserInterface`, so what this meant was your user interface was restricted to the basic options. Now, however, you can change the `game.inituserinterface` to do whatever you want!
+Before this was added, users of the web editor could not override `InitUserInterface` at all, so their user interface was restricted to the basic options. Now, you can change `game.inituserinterface` to do whatever you want, regardless of which editor you're using!
 
 For a starting point as to what you can do, see [here](/ui-javascript).
 

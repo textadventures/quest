@@ -434,7 +434,7 @@ player.parent = this.to
 Firearms
 --------
 
-Now we will add a second weapon, a pistol. The pistol will have ammo, and will need to be reloaded. The first thing to do is to create the pistol, and the easiest way is to copy the spade. Click the "Copy" button, select a destination, and click "Paste" (if you are using the desktop version, find these on the _Edit_ menu). On the _Setup_ tab, give it the name "pistol", and this as the description, so it will display the ammo:
+Now we will add a second weapon, a pistol. The pistol will have ammo, and will need to be reloaded. The first thing to do is to create the pistol, and the easiest way is to copy the spade. Open the spade's "..." menu and choose "Copy", then open the "..." menu on the destination and choose "Paste". On the _Setup_ tab, give it the name "pistol", and this as the description, so it will display the ammo:
 
     Good for shooting zombies. Ammo: {pistol.ammo}/{pistol.ammomax}
 

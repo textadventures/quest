@@ -7,45 +7,19 @@ sidebar:
 Creating a blank game
 ---------------------
 
-Most of the tutorial is applicable to both the Windows desktop version of Quest, and the web version. Any differences in the two versions will be mentioned as we go along.
-
 This tutorial guides you through creating your first gamebook game. If you want to create a text adventure instead, see [the main Quest tutorial](/tutorial/creating_a_simple_game).
 
-To create a new game, open Quest and click the File menu, then Create New Game.
+Open the editor - either in your browser, or the desktop app - and you'll see a "Create new game" section. Ensure that "Gamebook" is selected as the game type, and enter a name like "Tutorial Game".
 
-![](/images/Newgamemenu.png)
-
-Alternatively, you can switch to the Create tab and click the "Create a new game" button.
-
-You'll see a screen like this:
-
-![](/images/Newgamebook.png)
-
-Ensure that "Gamebook" is selected, and enter a name like "Tutorial Game". Quest will create a folder and a game file for you. You can change where it puts the file by clicking the "Browse" button - it is recommended that you put your game file in its own folder.
-
-Click OK and you'll see the main Editor screen:
-
-![](/images/Blankgamebook.png)
+Click "Create local draft" (or "Save to folder..." if you'd rather store the game file yourself), and you'll see the main Editor screen.
 
 On the left is a tree showing you the pages in the gamebook, and a place to set options about the game itself. "Game" is currently selected, so that's what we can see in the pane on the right.
 
-Quest has created three example pages for us, and inside Page1 is the "player" object, which is where the game begins. You can test the game by clicking the "Play" button on the toolbar, or "Play Game" from the File menu. You can also press the F5 key.
+Quest has created three example pages for us, and inside Page1 is the "player" object, which is where the game begins. You can test the game by clicking the "Preview" button towards the top right.
 
 As you'll see, it's a pretty empty game at the moment. We can navigate to pages 2 and 3, but that's it.
 
-![](/images/Playblankgamebook.png)
-
-You can go back to the Editor by clicking "Stop Game" in the top left of the screen. (You can hit the Escape key)
-
-Simple Mode
------------
-
-When starting out with Quest, you may find it easier to run in "Simple Mode". This hides much of Quest's more advanced functionality, but still gives you access to the core features.
-
-You can toggle Simple Mode on or off at any time:
-
--   on the Windows desktop version, you can toggle Simple Mode from the Tools menu.
--   on the web version, click the Settings button at the top right of the screen.
+You can go back to the Editor by closing the preview, or typing `QUIT`.
 
 Editing pages
 -------------

@@ -90,7 +90,7 @@ If you want to do more than that, you need to learn a little about HTML and CSS.
 HTML
 ----
 
-HyperText Markup Language (HTML) is the way information is structured on a web page. If you are on the desktop version, you can click "HTML Tools" whilst playing to see the HTML behind the current view. On the web, right click, and select "View source" (or similar).
+HyperText Markup Language (HTML) is the way information is structured on a web page. Whilst playing, you can right-click and select "Inspect" (or similar) to see the HTML behind the current view, using your browser's Developer Tools - this works the same way in the desktop app.
 
 Here is an example:
 ```
@@ -127,7 +127,7 @@ In summary, then, this CSS code will set the background colour of something with
 
 CSS can also be set in HTML attributes. If you look back at the HTML example above, the `<div>` has an attribute, style, and the value is in CSS. The two `<span>` elements likewise have style attributes. The text, "Cool Game", will be in the combined style of all those elements.
 
-If you are using the desktop version, click on "HTML Tools" whilst playing again. On the web version, for Chrome go to Option - More Tools - Developer Tools, for Firefox go to Options - Developer - Inspector, for Internet Explorer go to Options - F12 Developer Tools. These all vary a bit, but you should find you can highlight elements of HTML, and you will see what CSS applies, and where it comes from.
+Open your browser's Developer Tools again whilst playing (in Chrome, More Tools - Developer Tools; in Firefox, More Tools - Web Developer Tools; this works the same way in the desktop app). These vary a bit between browsers, but you should find you can highlight elements of HTML, and you will see what CSS applies, and where it comes from.
 
 
 ### A note about colours
@@ -172,7 +172,7 @@ To edit the script, go to the _Features_ tab of the game object, and check that 
 
 Note, however, that you should not print anything from the "inituserinterface" script (you might feel tempted to output CSS or some JavaScripts using msg or OutputTextRawNoBr). If you do, when a saved game is reloaded, all the new text will get inserted into the top of the existing text. Instead, use the `JS.addScript` function, which will add your JavaScript or CSS or whatever outside the normal flow of text.
 
-Because it is easier to show, all the tricks here will be in code. In the desktop version, click on the seventh icon, "Code view", and a text box will appear. For the web version, the button is labelled "Code view". Just copy-and-paste code into here. You can paste in as many code blocks as you like, and it should work fine (note that that is not necessarily true of all code).
+Because it is easier to show, all the tricks here will be in code. Click the "Code view" button, and a text box will appear. Just copy-and-paste code into here. You can paste in as many code blocks as you like, and it should work fine (note that that is not necessarily true of all code).
 
 
 Using All That In Quest

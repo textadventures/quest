@@ -6,7 +6,7 @@ sidebar:
 
 Quest has a simple built-in score system you can enable on the _Features_ tab of the game object — see [Score, Health and Money](/score_health_money). This tutorial shows how to build a more flexible custom scoring system with achievements, rankings, and a SCORE command.
 
-Many years ago I wrote a library to help track the player's score. It was pretty simple, but worked well, and five years later on I cannot think of any way to improve. So, I am going to drop it altogether! You do not need a library to do this, instead, I present a tutorial. The advantages of a tutorial are that you will learn more of Quest coding whilst following it, and it will be useable by anyone using the on-line editor too.
+Many years ago I wrote a library to help track the player's score. It was pretty simple, but worked well, and five years later on I cannot think of any way to improve. So, I am going to drop it altogether! You do not need a library to do this, instead, I present a tutorial. The advantage of a tutorial is that you will learn more of Quest coding whilst following it.
 
 This system will not just keep score, it will also allow the player to see a list of achievements, and give her a rank. The on-going score will appear in the status panel.
 
@@ -20,18 +20,15 @@ The plan is to have the player get 1 point for jumping, using this command.
 
 By the way, quest does have a "score", which will do some of this for us. I am not going to use that because I want to show how status attributes are used.
 
-Status Attributes - Off-line
-------------------------------
+Status Attributes
+------------------
 
 Go to the _Attributes_ tab of the game object. In the lower box, click _Add_, then type "score" and set it to an integer. Then go to the upper box, marked "Status Attributes", click _Add_, and again then type "score". You will get a second box this time, in it, paste in this:
 ```
   Score: !/10
 ```
 
-Status Attributes - On-line
-----------------------------
-
-on-line we have no _Attributes_ tab, so we have to do this in the start scrip. Go to the _Scripts_ tab of the game object and paste in this to the start script at the top:
+Alternatively, you can set this up in a script instead, for example if you would rather work in code. Go to the _Scripts_ tab of the game object and paste in this to the start script at the top:
 
 ```
   game.score = 0
@@ -41,7 +38,7 @@ on-line we have no _Attributes_ tab, so we have to do this in the start scrip. G
 
 The first line is obviously setting up the "score" attribute.
 
-Quest stores information about status attributes in dictionary attributes called `statusattributes`, on the game and player objects, and the second line creates one on the game object (Quest does this automatically in the off-line editor). The third line adds one entry to that dictionary. It has two parts, the name of the attribute, "score", and the display format, "Score: !/10".
+Quest stores information about status attributes in dictionary attributes called `statusattributes`, on the game and player objects, and the second line creates one on the game object (Quest does this automatically for you if you use the Attributes tab instead). The third line adds one entry to that dictionary. It has two parts, the name of the attribute, "score", and the display format, "Score: !/10".
 
 
 Display Format

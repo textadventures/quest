@@ -19,7 +19,7 @@ First, let's set up the timer. After we have done this, we will add the script c
 
 ### Setting up the Timer
 
-In the Windows desktop version, add the timer by right-clicking the tree, or using the Add menu. In the web version, select "Timers" from the tree and click Add.
+Add the timer using the "+ Add" button on the toolbar, or the "..." menu on an element in the tree.
 
 Enter the name "bee timer".
 
@@ -50,7 +50,7 @@ In this section, we'll look at running a script after each turn in the game - a 
 
 We created a status attribute on the last page, this is just the same.
 
-For the desktop version, to set up our "turns" attribute, select the "player" object and go to the Attributes tab. Click the Add button next to the Attributes list at the bottom of the screen, enter the name "turns" and make this an integer. To make this into a status attribute, we need to add it to the Status Attributes list at the top of the screen, so click Add there and add "turns" to the list.
+To set up our "turns" attribute, select the "player" object and go to the Attributes tab. Click the Add button next to the Attributes list at the bottom of the screen, enter the name "turns" and make this an integer. To make this into a status attribute, we need to add it to the Status Attributes list at the top of the screen, so click Add there and add "turns" to the list.
 
 ![](/images/Turncounter1.png)
 
@@ -58,9 +58,9 @@ If you launch the game now, you should see the turns variable displayed on the r
 
 ### Increasing the turn counter after each turn
 
-A turn script can apply to a specific room, or it can apply to the entire game. To make a turn script apply for just one room, you simply need to create it in that room. If you create a turn script outside of a room, it will apply to the entire game. So, right-click the tree menu or use the Add button to create a turn script.
+A turn script can apply to a specific room, or it can apply to the entire game. To make a turn script apply for just one room, you simply need to create it in that room. If you create a turn script outside of a room, it will apply to the entire game. So, use the "..." menu on the tree, or the "+ Add" button, to create a turn script.
 
-On the desktop version, you can drag it to the "Objects" label at the top of the tree to move it outside of all rooms. On the web version, click the move button towards the top right.
+To move it outside of all rooms, use "Move to..." and select the "Objects" label at the top of the tree.
 
 You can optionally specify a name for your turn script. You can use this if you want to be able to switch your turn script on and off using script commands, in a similar way to how we switched a timer on and off in the previous section. You can leave the name blank for this turn script, as this will always be running.
 

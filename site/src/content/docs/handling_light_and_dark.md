@@ -82,7 +82,7 @@ For the other script, you need this:
 A Torch that Fails
 ------------------
 
-No torch lasts forever; let us put a limit on this one. First create a new attribute for the torch, called "battery". If working offline, you can do that by going to the Attributes tab to create it, and Set it to be an integer, with a value of 5 (we want a small number whilst we are playing around; for your game you will want it much higher). If using the web version, you have no Attributes tab, so go to the Script tab of the game object, and add this code:
+No torch lasts forever; let us put a limit on this one. First create a new attribute for the torch, called "battery". You can do that by going to the Attributes tab to create it, and set it to be an integer, with a value of 5 (we want a small number whilst we are playing around; for your game you will want it much higher). Alternatively, you can do the same thing in a script - go to the Script tab of the game object, and add this code:
 
 ```
   torch.battery = 5

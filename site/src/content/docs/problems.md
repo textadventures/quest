@@ -4,81 +4,6 @@ sidebar:
   order: 25
 ---
 
-Problems when installing Quest
-----------------------------
-
-Quest can only be installed on Windows. The latest version requires Windows 11. Versions 5.8 and earlier may run on earlier versions of Windows.
-
-
-Problems when starting Quest
-----------------------------
-
-### System.InvalidOperationException
-
-Occasionally we hear about a situation where the desktop version of Quest will not start. It has never happened to me, which makes finding the root cause very tricky, but for whatever reason Quest has got a double entry in the list of recently played or recently edited games. You might see an error message like this:
-
-```
-System.InvalidOperationException: An error occurred while creating the form. For more
-information, see Exception.InnerException. Error: An exception was thrown in the constructor
-call for the type 'GameBrowser.PlayBrowser' that matches the specified binding constraint. --->
-System.Windows.Markup.XamlParseException: An exception was thrown in the constructor call for
-the type 'GameBrowser.PlayBrowser' that matches the specified binding constraint. ---> 
-System.ArgumentException: An item with the same key has already been added.
-```
-
-Follow these steps (thanks Jay!):
-
--    Run "regedit" (e.g. press the Windows key and then hit "R" and then type "regedit" in the box that pops up.) If it asks to be able to make changes to the system, say "yes".
--    Under Computer in the tree on the left, look for HKEY_CURRENT_USER and open that folder.
--    Look for SOFTWARE under that and open the folder.
--    Search down for Quest under that and open the folder.
-
-We need to delete two keys, "Recent" and "EditorRecent" (in fact you only need to delete one; the former if the play browser is a problem, the latter if the edit browser is the problem, but if you are not sure it is safest to delete both). Right-click on the word "Recent" and then choose "Delete" from the popup menu. Choose yes to confirm. Do the same for "EditorRecent". Close the Regedit program (no need to save).
-
-Note that when you open Quest, the "recent" lists will be empty until you begin using Quest again, but that is preferable to not being able to open Quest at all!
-
-If you have never got the current version of Quest to run, then see also the section on problems with installing Quest, as it could be that Quest did not install properly.
-
-### System.NotSupportedException
-
-If instead you see this:
-
-```
-System.NotSupportedException: No imaging component suitable to complete this operation was found. ---> System.Runtime.InteropServices.COMException: The component cannot be found. (Exception from HRESULT: 0x88982F50)
-   --- End of inner exception stack trace ---
-   at System.Windows.Media.Imaging.BitmapDecoder.SetupDecoderFromUriOrStream(Uri uri, Stream stream, BitmapCacheOption cacheOption, Guid& clsId, Boolean& isOriginalWritable, Stream& uriStream, UnmanagedMemoryStream& unmanagedMemoryStream, SafeFileHandle& safeFilehandle)
-   at System.Windows.Media.Imaging.BitmapDecoder.CreateFromUriOrStream(Uri baseUri, Uri uri, Stream stream, BitmapCreateOptions createOptions, BitmapCacheOption cacheOption, RequestCachePolicy uriCachePolicy, Boolean insertInDecoderCache)
-   at System.Windows.Media.Imaging.BitmapImage.FinalizeCreation()
-   at System.Windows.Media.Imaging.BitmapImage.EndInit()
-...
-```
-
-It could be that there is a dodgy image in the folder. Go to the game folder (it will have the name of your game, inside "Quest games" folder), and move out every file except the one that ends .aslx (or the one with the Quest icon), then try opening again. If it opens, one of the files you moved was to blame. Move a few back at a time to see which one. Note that Quests will try to open _all_ the image files in the folder when you open your game, whether used or not.
-
-### System.Collections.Generic.KeyNotFoundException
-
-If you see this error:
-```
-System.Collections.Generic.KeyNotFoundException: The given key was not present in the dictionary.
-at System.Collections.Generic.Dictionary`2.get_Item(TKey key)
-at TextAdventures.Quest.EditorControls.WFEditorTree.SetMenuEnabled(String key, Boolean enabled)
-at TextAdventures.Quest.Editor.UpdateClipboardButtons()
-at TextAdventures.Quest.Editor.ShowEditor(String key)
-at TextAdventures.Quest.Editor.ctlTree_SelectionChanged(String key)
-at TextAdventures.Quest.EditorControls.WFEditorTree.ChangeSelection(String key)
-at TextAdventures.Quest.EditorControls.WFEditorTree.SelectCurrentTreeViewItem()
-at TextAdventures.Quest.EditorControls.WFEditorTree.ctlTreeView_AfterSelect(Object sender, TreeViewEventArgs e)
-at System.Windows.Forms.TreeView.OnAfterSelect(TreeViewEventArgs e)
-at System.Windows.Forms.TreeView.TvnSelected(NMTREEVIEW* nmtv)
-at System.Windows.Forms.TreeView.WmNotify(Message& m)
-at System.Windows.Forms.TreeView.WndProc(Message& m)
-at System.Windows.Forms.Control.ControlNativeWindow.OnMessage(Message& m)
-at System.Windows.Forms.Control.ControlNativeWindow.WndProc(Message& m)
-at System.Windows.Forms.NativeWindow.Callback(IntPtr hWnd, Int32 msg, IntPtr wparam, IntPtr lparam)
-```
-Try uninstalling Quest, restarting your PC and then re-installing.
-
-
 Problems when creating games
 ----------------------------
 
@@ -165,11 +90,9 @@ Error running script: Error compiling expression '[whatever]':
 
 The `[whatever]` is the important part, as that is the code that Quest cannot understand.
 
-If you are using the desktop version, copy the bit inside the single quotes (without the quotes) and go to _Tools - Code view_, press [Ctrl]-F, and paste in the text you just copied. Now you can search your game to quickly locate the code. Bear in mind that the same text could be at several places in your game, and some may be okay, so check each occurrence.
+Copy the bit inside the single quotes (without the quotes) and open the raw XML Code View from the editor toolbar, press [Ctrl]-F, and paste in the text you just copied. Now you can search your game to quickly locate the code. Bear in mind that the same text could be at several places in your game, and some may be okay, so check each occurrence.
 
-If using the web version, it is not as easy, but you could download your game, open it in a text editor and then search for the error. You would have to then correct the on-line version, and it still may not be clear how to do that.
-
-Either way, it may be easier to check any scripts you have changed recently, and see if the text is there using "Code view" for each script.
+It may also be easier to check any scripts you have changed recently, and see if the text is there using "Code view" for each script.
 
 
 ### Correcting the error
@@ -240,7 +163,7 @@ list add (sword.inventoryverbs, "Equip")
 list remove (hat.displayverbs, "Flatten")
 ```
 
-The problem is that the two list attributes, "inventoryverbs" and "displayverbs" are set on the object's type, not on the object itself (if you are using the desktop version, go to the _Attributes_ tab, and check its source). You cannot modify the list when it belongs to the type.
+The problem is that the two list attributes, "inventoryverbs" and "displayverbs" are set on the object's type, not on the object itself (go to the _Attributes_ tab, and check its source). You cannot modify the list when it belongs to the type.
 
 There are two solutions. The easiest is to add something to the the list in the editor (bottom of the Attributes tab). That will add the list attribute to this object. You can then delete the entry; once the attribute is on your object, it is there.
 

@@ -36,7 +36,7 @@ The penultimate line prints the InvisiClue. The trick is that it changes the fon
 
 Once you have the command, you need to put in the data. Go to the _Attributes_ tab of the game object, and create a new attribute, helpdict. Set it to be a string dictionary, and then put in your questions and answers.
 
-If using the web editor, you will not have an _Attributes_ tab, so we will have to do it differently. Go to the _Scripts_ tab of the game object, and modify the start script.
+Alternatively, you can do it in a script instead. Go to the _Scripts_ tab of the game object, and modify the start script.
 
 Click to add a new script, and select "Set a variable or attribute" from the list of scripts. in the first box type `helpdict`, then select "New string dictionary" from the drop down.
 

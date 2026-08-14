@@ -18,7 +18,7 @@ mydict = NewDictionary()
 ```
 As with lists, you are better using a specific dictionary type, rather than a general one, if possible.
 
-If using the off-line editor, you can add a dictionary to an object on the attributes page, but you are restricted to string and script dictionaries.
+You can add a dictionary to an object on the Attributes tab, but you are restricted to string and script dictionaries.
 
 
 

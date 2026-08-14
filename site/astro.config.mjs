@@ -33,10 +33,6 @@ export default defineConfig({
                     collapsed: true,
                     items: [
                         {
-                            label: "Overview",
-                            slug: "tutorial"
-                        },
-                        {
                             label: "Tutorial Introduction",
                             slug: "tutorial/tutorial_introduction"
                         },
@@ -125,10 +121,6 @@ export default defineConfig({
                         {
                             label: "Advanced Scope For Items",
                             slug: "advanced_scope"
-                        },
-                        {
-                            label: "Use verbs",
-                            slug: "use_verbs"
                         }
                     ]
                 },
@@ -136,10 +128,6 @@ export default defineConfig({
                     label: "Features",
                     collapsed: true,
                     items: [
-                        {
-                            label: "Overview",
-                            slug: "features"
-                        },
                         {
                             label: "Text processor",
                             slug: "text_processor"
@@ -171,10 +159,6 @@ export default defineConfig({
                         {
                             label: "Multi-state wearable items",
                             slug: "multistate-clothing"
-                        },
-                        {
-                            label: "Using lockable exits",
-                            slug: "using_lockable_exits"
                         },
                         {
                             label: "Transcripts",
@@ -257,14 +241,6 @@ export default defineConfig({
                             slug: "scripts/do"
                         },
                         {
-                            label: "else",
-                            slug: "scripts/else"
-                        },
-                        {
-                            label: "else if",
-                            slug: "scripts/else_if"
-                        },
-                        {
                             label: "error",
                             slug: "scripts/error"
                         },
@@ -315,10 +291,6 @@ export default defineConfig({
                         {
                             label: "on ready",
                             slug: "scripts/on_ready"
-                        },
-                        {
-                            label: "otherwise",
-                            slug: "scripts/otherwise"
                         },
                         {
                             label: "picture",
@@ -2445,7 +2417,7 @@ export default defineConfig({
                             ]
                         },
                         {
-                            label: "Notes",
+                            label: "Mutable Attributes on Inherited Types",
                             slug: "notes"
                         }
                     ]
@@ -2455,16 +2427,12 @@ export default defineConfig({
                     collapsed: true,
                     items: [
                         {
-                            label: "Overview",
-                            slug: "howto"
-                        },
-                        {
                             label: "How to use functions",
                             slug: "about_functions"
                         },
                         {
                             label: "Multiple choices - using a switch script",
-                            slug: "multiple_choices___using_a_switch_script"
+                            slug: "multiple_choices_using_a_switch_script"
                         },
                         {
                             label: "Changing the player object",
@@ -2549,10 +2517,6 @@ export default defineConfig({
                     collapsed: true,
                     items: [
                         {
-                            label: "Overview",
-                            slug: "user_experience"
-                        },
-                        {
                             label: "The UI and Game-play",
                             slug: "ui-game-play"
                         },
@@ -2607,10 +2571,6 @@ export default defineConfig({
                         {
                             label: "Customising the UI - Part 3",
                             slug: "ui-javascript3"
-                        },
-                        {
-                            label: "Customising the UI - Part 3",
-                            slug: "ui-javascript4"
                         }
                     ]
                 },
@@ -2618,10 +2578,6 @@ export default defineConfig({
                     label: "Characters (NPCs)",
                     collapsed: true,
                     items: [
-                        {
-                            label: "Overview",
-                            slug: "npcs"
-                        },
                         {
                             label: "Followers",
                             slug: "follower"
@@ -2645,10 +2601,6 @@ export default defineConfig({
                         {
                             label: "Making NPCs Act Independently",
                             slug: "independent_npcs"
-                        },
-                        {
-                            label: "Ways to Talk to NPCs",
-                            slug: "ask_tell"
                         }
                     ]
                 },
@@ -2682,10 +2634,6 @@ export default defineConfig({
                     label: "Coding With Quest",
                     collapsed: true,
                     items: [
-                        {
-                            label: "Overview",
-                            slug: "coding"
-                        },
                         {
                             label: "The Cloak of Darkness",
                             slug: "cloak_of_darkness"
@@ -2723,10 +2671,6 @@ export default defineConfig({
                             slug: "advanced_game_scripts"
                         },
                         {
-                            label: "Using Javascript",
-                            slug: "using_javascript"
-                        },
-                        {
                             label: "Blocks and scripts",
                             slug: "blocks_and_scripts"
                         },
@@ -2736,10 +2680,6 @@ export default defineConfig({
                         },
                         {
                             label: "Editing in Full Code View",
-                            slug: "full_code_view"
-                        },
-                        {
-                            label: "Tips and Tricks for Editing in Full Code View",
                             slug: "codeview"
                         },
                         {
@@ -2776,10 +2716,6 @@ export default defineConfig({
                     label: "Advanced Topics",
                     collapsed: true,
                     items: [
-                        {
-                            label: "Overview",
-                            slug: "advanced"
-                        },
                         {
                             label: "Overriding functions",
                             slug: "overriding"
@@ -2836,10 +2772,6 @@ export default defineConfig({
                     label: "Reference",
                     collapsed: true,
                     items: [
-                        {
-                            label: "Overview",
-                            slug: "reference"
-                        },
                         {
                             label: "XML Elements",
                             collapsed: true,
@@ -3039,10 +2971,6 @@ export default defineConfig({
                     collapsed: true,
                     items: [
                         {
-                            label: "Overview",
-                            slug: "other_guides"
-                        },
-                        {
                             label: "Community Guides",
                             collapsed: true,
                             items: [
@@ -3087,14 +3015,6 @@ export default defineConfig({
                                     slug: "other_guides/turn_based_events"
                                 },
                                 {
-                                    label: "Adding Introduction Text",
-                                    slug: "other_guides/adding_introduction_text"
-                                },
-                                {
-                                    label: "Hidden exit",
-                                    slug: "other_guides/hiddenexit"
-                                },
-                                {
                                     label: "Hyperlinks",
                                     slug: "other_guides/hyperlinks"
                                 },
@@ -3129,10 +3049,6 @@ export default defineConfig({
                                     slug: "helpsheets/hs_lockedexits"
                                 },
                                 {
-                                    label: "Adding Baddies who want to Kill or Eat you!",
-                                    slug: "helpsheets/hs_baddy1"
-                                },
-                                {
                                     label: "Baddies behind a Door who want to kill you (but if you close the door you won\u2019t die\u2026!)",
                                     slug: "helpsheets/hs_baddy2"
                                 },
@@ -3143,10 +3059,6 @@ export default defineConfig({
                                 {
                                     label: "Adding a Yes/No Quiz Question",
                                     slug: "helpsheets/hs_addingquestion1"
-                                },
-                                {
-                                    label: "Adding a Yes/No Question to a Container",
-                                    slug: "helpsheets/hs_addingquestion2"
                                 },
                                 {
                                     label: "The CASE Command",
@@ -3163,10 +3075,6 @@ export default defineConfig({
                                 {
                                     label: "\u201cKey\u201d Inside another Object",
                                     slug: "helpsheets/hs_keyinside"
-                                },
-                                {
-                                    label: "Multiple Options using Switch",
-                                    slug: "helpsheets/hs_multiple"
                                 },
                                 {
                                     label: "Adding Music to a Radio",
@@ -3188,10 +3096,6 @@ export default defineConfig({
                     label: "Release Notes",
                     collapsed: true,
                     items: [
-                        {
-                            label: "Overview",
-                            slug: "release_notes"
-                        },
                         {
                             label: "Quest 5.8",
                             slug: "quest5_8"

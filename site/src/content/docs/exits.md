@@ -62,6 +62,37 @@ An exit flagged as **scenery** will not be listed in the room description, and w
 If you have a flight of stairs heading up to the east, the player might type `UP` or `EAST`, so you need to be able to handle both. However, if the room description lists both up and east as exits, the player will think they are different exits. The solution is to flag one as scenery.
 
 
+### Example: a locked door
+
+You can create an exit which is impassable until something else happens in your game. This could be a locked door, or perhaps something like a guard blocking the way.
+
+Let's create a locked door in the kitchen of the [tutorial](/tutorial/tutorial_introduction) game, leading to a back garden. Create the following three elements:
+
+-   a new room, "garden"
+-   an object in the kitchen, "door"
+-   an exit leading south from the kitchen to the garden
+
+Select "Exit: garden" in the tree and tick the "Locked" box. You should see a warning message that we need to give the exit a name. This is because, to unlock the exit during the game, we will need to use a script command. The script command will need some way of referring to this particular exit, which is why we need to give it a name here. Call it something like "garden exit".
+
+![](/images/Lockedexit.png)
+
+Go to the door object, and on the Verbs tab add a verb "unlock". Set it to "Run a script", and then add a command to print a message (such as "You unlock you door"). Add an "unlock exit" command, and choose "garden exit" from the list.
+
+Run the game and verify that the exit now works correctly:
+
+     > south
+     That way is locked.
+     
+     > unlock door
+     You unlock the door.
+     
+     > south
+     You are in a garden.
+     You can go north.
+
+For a guide on setting up a door that is accessible from both sides — using lockable exits as described above — see [Setting Up a Door](/setting_up_door).
+
+
 Print message when used
 ------------------------
 

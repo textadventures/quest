@@ -80,7 +80,7 @@ It is tempting to get the game to beta-testers fast, but you are really just was
 
 1. Play the game through and correct any mistakes you can find.
 
-2. If using the desktop editor, open the game up in Notepad++ and use it to check the spelling (you will need to install a plug in). For the web editor, hopefully your browser has a spell checker, and you were checking the spelling as you typed.
+2. Hopefully your browser has a spell checker, and you were checking the spelling as you typed. Alternatively, you can open your downloaded game file in a text editor like Notepad++ and use its spell-check plugin.
 
 3. Some things you might want to check, depending on your game:
 

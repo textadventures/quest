@@ -8,7 +8,7 @@ sidebar:
 Inserting Pictures
 ------------------
 
-You can show a picture using the "Show a picture" command. Let's make our "kitchen" room in the [tutorial game](/tutorial) show a picture of a kitchen when we enter it.
+You can show a picture using the "Show a picture" command. Let's make our "kitchen" room in the [tutorial game](/tutorial/tutorial_introduction) show a picture of a kitchen when we enter it.
 
 First we need to find a picture of a kitchen.
 

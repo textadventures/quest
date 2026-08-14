@@ -11,26 +11,18 @@ Note that once you have published it, your game will go into a queue for moderat
 Moderation can take a few days; please be patient.
 
 
-Web version
------------
+Publishing your game
+---------------------
 
-In the on-line editor, click the _Publish_ button at the top right, then just follow the instructions. If you later update your game, you can click _Publish update_, and it will be updated.
+In the editor, go to _File - Publish_, and click _Publish_. This builds a `.quest` package (your game file plus its assets) and downloads it.
 
-
-Windows version
----------------
-
-In the editor, go to _Tools - Publish_, give it a name (the same as your main file by default, but with a `.quest` extension), and click OK. Quest will produce a file in a subfolder of your main game called "Output".
-
-On textadventures.co.uk, click on _Create_ at the top, then _Submit_ below that. Then follow the instructions.
+On textadventures.co.uk, click on _Create_ at the top, then _Submit_ below that. Then follow the instructions to upload the `.quest` file you just downloaded.
 
 
 The Publish Process
 --------------------
 
-_This applies to the desktop version only - the web version handles everything automatically._
-
-What gets included in the `.quest` file, when you do _Tools - Publish_? Broadly two things.
+What gets included in the `.quest` file, when you publish?  Broadly two things.
 
 Firstly the game code. This is all the code from all the libraries, including the built-in libraries, from whatever folders on your PC, assembled into one big file. This means that if, in a few years, Quest's built-in libraries get radically updated, your game will not be affected.
 
@@ -78,9 +70,9 @@ Beta-testing
 
 Beta-testing is getting other people to play your game so bugs and typos can be identified and corrected before release to the public. If you do not know anyone who can do this for you, it is worth asking on the forum.
 
-You can upload a game to Text Adventures in the normal way for beta-testing, but keep its visibility to private. If working on-line, there is a "Publish Update" button in your list of games, allowing you to publish updates during the testing process. If working off-line, there is an "Upload a new file" link on the _Edit_ page.
+You can upload a game to Text Adventures in the normal way for beta-testing, but keep its visibility to private. There is an "Upload a new file" link on the _Edit_ page, so you can publish updates during the testing process by downloading a fresh `.quest` package and uploading it there.
 
-One thing you _must_ check is saving the game. For some reason when you save, Quest does a particularly thorough check of the game code, and the save will fail if it finds an error (on-line it will not tell you it has failed, by the way, it will just not do anything). Do not release your game until it will successfully save.
+One thing you _must_ check is saving the game. For some reason when you save, Quest does a particularly thorough check of the game code, and the save will fail if it finds an error. Do not release your game until it will successfully save.
 
 You should also ensure the UI looks the same when you load a saved game.
 
@@ -90,8 +82,8 @@ When it is ready for release, go to "View/Edit Game Listing", and change the vis
 Spell checking
 --------------
 
-For once, the on-line editor wins when it comes to spell-checking, as long as you use a browser that supports it.
+Your browser's built-in spell-checker will generally underline mistakes as you type into the editor's text fields, as long as you're using a browser that supports it.
 
-If off-line, one technique is to open the source code in a text editor that has a spell-checker, such as _Notepad++_ (which can be downloaded for free). The source code can look intimidating, and you need to be careful only to correct text that will be seen, not code or XML. With Notepad++ you can set the language to XML, which will help.
+Another technique is to open the source code in a text editor that has a spell-checker, such as _Notepad++_ (which can be downloaded for free). The source code can look intimidating, and you need to be careful only to correct text that will be seen, not code or XML. With Notepad++ you can set the language to XML, which will help.
 
 Before doing this, it is best to quit Quest altogether, and then create a back-up of your file.

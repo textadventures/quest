@@ -9,7 +9,7 @@ As your game unfolds and the player interacts with your world, you may want to b
 Creating a Hidden Object
 ------------------------
 
-First, let's create the "bee" object. We don't want this object to appear anywhere when the game starts, so create it outside of a room. If using the desktop version, you can set the parent to "none" when you add the new object, but it may be better to create a special room, perhaps called "nowhere" or "limbo" or "offstage", and keep all your hidden objects there. Give the bee a suitable description.
+First, let's create the "bee" object. We don't want this object to appear anywhere when the game starts, so create it outside of a room. It's best to create a special room, perhaps called "nowhere" or "limbo" or "offstage", and keep all your hidden objects there. Give the bee a suitable description.
 
 Bringing the Object into Play
 -----------------------------

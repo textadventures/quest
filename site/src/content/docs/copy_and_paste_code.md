@@ -12,13 +12,11 @@ Once you understand the basics, code is a lot easier to show on the forum, and f
 Code View
 ---------
 
-So how do you see code? Click the _Code View_ button. In the web version, this will be below the script area, and will bring up a dialogue box with the code in it. In the desktop version, it is rather less obvious; there is a button above the script area; it is circled in red below:
+So how do you see code? Click the _Code View_ button below the script area, and it will bring up a dialogue box with the code in it.
 
-![](/images/codeview_desktop.png)
+There is also a "Raw XML code view" option in the editor toolbar. This shows the entire game in code view, with all the XML that defines your game. It is very rare you will ever need to use it, and it does have the potential to mess up your game, so this is best ignored!
 
-There is also a Code View option under the tools menu. This shows the entire game in code view, with all the XML that defines your game. It is very rare you will ever need to use it, and it does have the potential to mess up your game, so this is best ignored!
-
-If you have been following the tutorial, you will already have some scripts in your game. Why not take a look at one in code view right now? Here is the "look" script for the TV (in the web version):
+If you have been following the tutorial, you will already have some scripts in your game. Why not take a look at one in code view right now? Here is the "look" script for the TV:
 
 ![](/images/codeview_web.png)
 

@@ -45,6 +45,10 @@ Finally, the player can specify both the person to talk to and the subject:
 
     TELL BORIS TO DANCE
 
+Quest has a dedicated tab for this - tick "Ask/Tell" on the Features tab of the game object to turn it on, then each character gets an Ask/Tell tab where you list topics and their scripts, plus a script to run for any topic you haven't covered.
+
+![](/images/Talk3.png)
+
 [More here](/ask_about)
 
 

@@ -9,12 +9,12 @@ Introduction
 
 [Quest](https://textadventures.co.uk/quest) is a program for writing text adventure games and gamebooks (both of which are sometimes referred to as [Interactive Fiction](http://en.wikipedia.org/wiki/Interactive_fiction)).
 
-There are two versions:
+You can use it in two ways:
 
--   a web version which runs entirely in your web browser (Chrome, Edge, Safari, Firefox), without downloading any software
--   a downloadable Windows version
+-   in your web browser (Chrome, Edge, Safari, Firefox), without downloading any software
+-   as a downloadable desktop app
 
-This tutorial applies to both versions.
+Both give you the same editor, so this tutorial applies either way.
 
 What is a text adventure?
 -------------------------

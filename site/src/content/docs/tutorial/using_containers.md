@@ -20,7 +20,7 @@ By default, the player can open and close the fridge. We're going to add some ob
 Adding objects to the fridge
 ----------------------------
 
-Now let's create some objects inside the fridge. To do this, we just create these objects as normal, but on the "Add object" window we set the parent to "fridge". Alternatively you can move objects. In the desktop version, just drag them around the left pane. For the web version, click on the "Move" button, towards the top right.
+Now let's create some objects inside the fridge. To do this, we just create these objects as normal, but on the "Add object" window we set the parent to "fridge". Alternatively you can create the objects first and then move them - use "Move to..." to move an object into the fridge.
 
 Add the following objects: milk, cheese, beer. Give each object a sensible description. The prefix for each object should be "some", so that the room description sounds natural. Allow each object to be taken.
 
@@ -63,7 +63,7 @@ Please bear in mind this is probably the most boring puzzle imaginable. It is ju
 First, set up the objects:
 
 -   create a "box" object in the lounge. Make it a closed container.
--   move the "defibrillator" object to the box (you can click and drag in the tree in the Windows version, or if you're using the web version you can select the defibrillator and then click the Move button in the top-right of the screen)
+-   move the "defibrillator" object to the box (select the defibrillator and use "Move to...")
 -   in the kitchen, add a "key" object, and make it takeable.
 
 Now, make the box lockable. Go to the Container tab and in the "Locking" section, choose "Lockable" from the lock types list. This will display the lock options. You can now choose the "key" object from the list.

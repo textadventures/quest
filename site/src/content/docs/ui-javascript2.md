@@ -9,7 +9,7 @@ Elements
 
 Bits of an HTML page are called elements, and "gameBorder" is just one of them. All HTML documents have an "html" element that contains everything else, and inside that it has a "head" and a "body" elements. Quest then has a few dozen elements that make up the interface inside the "body" element.
 
-You can look at those elements as you play a game. In the off-line editor, click on HTML Tools; on-line, your browser will probably have the facility to do this too, perhaps called "Developer Tools" on the option menu. On the left you will see a hierarchy of elements (you will need to expand them to see them all), and on the right a list of properties. Click on an element, and it will be highlighted in your game so you can see what it refers to.
+You can look at those elements as you play a game, using your browser's Developer Tools (right-click on the page and choose "Inspect", or similar - this works the same way in the desktop app). On the left you will see a hierarchy of elements (you will need to expand them to see them all), and on the right a list of properties. Click on an element, and it will be highlighted in your game so you can see what it refers to.
 
 Most of the interesting elements are of the type "div", and each is identified by an "id". The gameBorder one looks like this:
 
