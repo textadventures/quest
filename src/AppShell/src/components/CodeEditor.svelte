@@ -3,7 +3,7 @@
     import { EditorState, Compartment, Transaction } from "@codemirror/state";
     import { EditorView, keymap, lineNumbers, highlightActiveLine } from "@codemirror/view";
     import { history, defaultKeymap, historyKeymap, indentWithTab } from "@codemirror/commands";
-    import { bracketMatching, indentOnInput } from "@codemirror/language";
+    import { bracketMatching, indentOnInput, codeFolding, foldGutter, foldKeymap } from "@codemirror/language";
     import { closeBrackets, closeBracketsKeymap } from "@codemirror/autocomplete";
     import { searchKeymap } from "@codemirror/search";
     import { javascript } from "@codemirror/lang-javascript";
@@ -55,6 +55,8 @@
             parent: editorEl,
             extensions: [
                 lineNumbers(),
+                foldGutter(),
+                codeFolding(),
                 highlightActiveLine(),
                 history(),
                 bracketMatching(),
@@ -66,6 +68,7 @@
                     ...defaultKeymap,
                     ...historyKeymap,
                     ...searchKeymap,
+                    ...foldKeymap,
                     indentWithTab,
                     {
                         key: "Mod-s",
