@@ -13,6 +13,13 @@
       "runtimeExecutable": "node",
       "runtimeArgs": ["src/WasmPlayer/dev-server.mjs"],
       "port": 5175
+    },
+    {
+      "name": "DocsSite",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": ["run", "dev"],
+      "cwd": "site",
+      "port": 4321
     }
   ]
 }
