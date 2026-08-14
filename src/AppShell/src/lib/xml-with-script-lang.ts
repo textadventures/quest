@@ -2,7 +2,8 @@ import { parseMixed } from "@lezer/common";
 import type { SyntaxNodeRef, Input } from "@lezer/common";
 import { xmlLanguage, autoCloseTags } from "@codemirror/lang-xml";
 import { LanguageSupport } from "@codemirror/language";
-import { questScriptLanguage } from "./quest-script-lang";
+import { completeAnyWord } from "@codemirror/autocomplete";
+import { questScriptLanguage, questScriptFoldService } from "./quest-script-lang";
 
 // ASLX marks every script-bearing attribute the same way regardless of the wrapping element's own
 // name — e.g. <start type="script">, <script type="script">, <take type="script">, <lock
@@ -33,5 +34,16 @@ const xmlWithScriptLanguage = xmlLanguage.configure({
 });
 
 export function xmlWithScript(): LanguageSupport {
-    return new LanguageSupport(xmlWithScriptLanguage, [autoCloseTags]);
+    // questScriptFoldService is registered for the whole document rather than just the embedded
+    // script regions — it only ever fires on `{`-terminated lines (a very Quest-script-y signal that
+    // won't occur in XML markup or prose), which is what lets the raw XML view fold script blocks
+    // that the base xmlLanguage's foldNodeProp can't see into. completeAnyWord is similarly
+    // document-wide: lang-xml's own schema completion is near-useless without a schema, so suggest
+    // words already in the file (tag/attribute names) instead — it combines with (and never
+    // replaces) the XML language's built-in source.
+    return new LanguageSupport(xmlWithScriptLanguage, [
+        autoCloseTags,
+        questScriptFoldService,
+        xmlWithScriptLanguage.data.of({ autocomplete: completeAnyWord }),
+    ]);
 }
