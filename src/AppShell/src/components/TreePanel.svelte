@@ -206,9 +206,13 @@
 
     // The player object conventionally lives inside the starting room, possibly
     // nested in other objects. Return every ancestor of the player node so the
-    // whole chain (room → … → player) is expanded by default.
+    // whole chain (room → … → player) is expanded by default. Match the player
+    // by name, not nodeType: it's "object" in a text adventure but "page" in
+    // gamebook mode (any object in GameBook style is typed "page"), so only
+    // structural/library rows (headers, include files, library-origin nodes)
+    // are excluded.
     function startingRoomPath(nodes: TreeNode[]): string[] {
-        const player = nodes.find(n => n.key === "player" && n.nodeType === "object");
+        const player = nodes.find(n => n.key === "player" && n.nodeType !== "header" && n.nodeType !== "include" && !n.isLibrary);
         if (!player) return [];
         const nodeMap = new Map(nodes.map(n => [n.key, n]));
         const ids: string[] = [];
