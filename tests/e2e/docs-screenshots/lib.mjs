@@ -91,6 +91,73 @@ export async function selectLabeledField(page, labelText, optionValue) {
     await fieldByLabel(page, labelText).selectOption(optionValue);
 }
 
+// Adds a verb to the currently-selected object/room and selects it in the Verbs table,
+// which opens its BEHAVIOUR panel on the right (defaults to "Print a message").
+export async function addVerb(page, verbName) {
+    const addVerbButton = page.locator('button:has-text("Add Verb")');
+    await addVerbButton.locator('..').locator('input').fill(verbName);
+    await addVerbButton.click();
+    const row = page.locator(`td:has-text("${verbName}")`);
+    await row.waitFor({ timeout: 10000 });
+    await row.click();
+}
+
+// Adds an element that lives under the "Advanced" tree node (Timer, Function, ...) —
+// these aren't in the toolbar "+ Add element" menu (see Toolbar.svelte's ADVANCED_ADDERS
+// comment), instead the node's own properties panel has one "+ Add <Type>" button per type.
+export async function addAdvancedElement(page, elementType, name) {
+    await selectTreeNode(page, '_advanced');
+    await page.getByRole('button', { name: `+ Add ${elementType}`, exact: true }).click();
+    await page.waitForSelector('#element-name');
+    await page.fill('#element-name', name);
+    await page.click(`[role="dialog"] button:has-text("Add ${elementType}")`);
+    await page.waitForSelector(`text=${name}`, { timeout: 10000 });
+}
+
+// Opens the "Add Script Command" modal from a given "+ Add script" button (there can be
+// several on screen at once — root level plus one per nested then/else block — so pass the
+// specific Locator for the one you mean, e.g. `page.locator('button:has-text("+ Add
+// script")').first()` for the outermost one). `category` navigates the left sidebar
+// (Output/Scripts/Objects/...); `item` picks a specific command by its exact visible label.
+// Both are optional — omitting them accepts the dialog's default ("Print a message").
+export async function addScriptCommand(page, addButtonLocator, { category, item } = {}) {
+    await addButtonLocator.click();
+    await page.waitForSelector('text=Add Script Command');
+    // Category sidebar and command list are both plain buttons with role="option"
+    // (a custom listbox, not a native <select>) — see AddScriptModal.svelte. Command rows
+    // (not categories) render with a leading "●" marker baked into the accessible name, and
+    // some labels are prefixes of others (e.g. "Move object" / "Move object to the current
+    // room") — anchor a regex against the bullet-prefixed full name instead of a plain
+    // substring match, which would hit both.
+    if (category) {
+        await page.getByRole('option', { name: category, exact: true }).click();
+    }
+    if (item) {
+        await page.getByRole('option', { name: new RegExp(`^●\\s*${item.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}$`) }).click();
+    }
+    await page.getByRole('button', { name: 'OK', exact: true }).click();
+}
+
+// Locators for the two dropdowns on an "if" (or "else if") condition row: the expression
+// type (e.g. "object is switched on") and, once that's chosen, the object it applies to.
+// Found via the literal "if"/"else if" label span rather than a container class, since
+// ScriptEditor.svelte nests these blocks recursively with no other stable hook — the
+// expression select is the label's first following <select> sibling, the object picker
+// (when the chosen expression takes a simple object argument) is the second. Pass `nth`
+// (0-based, in document order) when a page has more than one if-block on screen at once.
+export function ifExpressionSelect(page, { label = 'if', nth = 0 } = {}) {
+    return page.locator(`xpath=(//span[text()="${label}"]/following-sibling::select[1])[${nth + 1}]`);
+}
+export function ifObjectSelect(page, { label = 'if', nth = 0 } = {}) {
+    return page.locator(`xpath=(//span[text()="${label}"]/following-sibling::select[2])[${nth + 1}]`);
+}
+
+// Ticks a Features-tab checkbox by its row's leading label text (e.g. "Container:",
+// "Switchable:") to reveal that feature's own properties tab.
+export async function toggleFeature(page, labelPrefix) {
+    await page.locator(`text=${labelPrefix}`).locator('..').locator('input[type="checkbox"]').check();
+}
+
 // Captures a screenshot at the current state and reports the save path. Most editor
 // states only use the top portion of the fixed VIEWPORT height, leaving a lot of
 // blank space below (e.g. a short "rename this room" form) — pass `untilLocator` for

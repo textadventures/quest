@@ -47,8 +47,12 @@ see `.claude/skills/verify/SKILL.md` for the base convention this extends):
   filename** in `site/public/images/`. Same filename in, same filename out —
   no markdown edits needed.
 
-Viewport is fixed at 1280×800 (`lib.mjs`'s `VIEWPORT`), light theme, for a
-consistent look across captures.
+Viewport is fixed at 960×800 (`lib.mjs`'s `VIEWPORT`), light theme, for a
+consistent look across captures. Narrower than AppShell's usual 1280 dev-preview
+width on purpose — Starlight downscales images to its ~700-800px content column,
+so a narrower source image means less downscaling and more legible on-screen text.
+`capture()` crops to the last relevant element's bottom edge (`untilLocator`)
+rather than the full viewport height, since most states don't fill it.
 
 ## Adding a new capture script
 
