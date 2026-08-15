@@ -1,5 +1,5 @@
 <script lang="ts">
-    import { untrack } from "svelte";
+    import { untrack, onDestroy } from "svelte";
     import { TreeView, createTreeViewCollection } from "@skeletonlabs/skeleton-svelte";
     import Search from "@lucide/svelte/icons/search";
     import X from "@lucide/svelte/icons/x";
@@ -16,9 +16,11 @@
         canMoveElement, openMoveModal, copyElements, cutElements, canPasteElements, pasteElements,
         clipboardVersion, cutElementKeys,
         showLibraryElements, toggleShowLibraryElements,
+        swapElements, getCurrentGameId,
     } from "$lib/editor-store";
     import type { TreeNode } from "$lib/types";
     import { t } from "$lib/i18n";
+    import { loadTreeState, saveTreeState } from "$lib/tree-state";
 
     let { width, onactivate }: { width?: number; onactivate?: () => void } = $props();
 
@@ -159,17 +161,71 @@
     // ── Expansion state ────────────────────────────────────────────────────────
 
     let expandedIds = $state<string[]>([]);
-    let loadedGameKey = $state<string | null>(null);
+    // "State loaded for" marker — the `${gameKey}|${gameId}` of the tree the
+    // current expandedIds came from. Guards both directions: a fresh game (new
+    // key or id) re-applies the default + stored state, while a mid-session
+    // refreshTree (element added/renamed, etc.) leaves the user's expansion
+    // alone, and a TreePanel remount (navigating back into the editor) sees
+    // its previously-null marker and re-applies instead of showing a blank,
+    // fully-collapsed tree.
+    let loadedStateFor = $state<string | null>(null);
+    let saveTimer: ReturnType<typeof setTimeout> | undefined;
+    // Latest (gameId, ids) not yet written out — flushed from onDestroy when
+    // the panel unmounts (navigating Home etc.) before the debounce could fire.
+    let pendingTreeState: { gameId: string; ids: string[] } | null = null;
 
-    // On game load, expand all nodes except _advanced
+    // On game load, default to a collapsed tree — only the top-level structural
+    // header (the "_objects"/"_pages" one) starts open, so rooms, objects, turn
+    // scripts, functions etc. are all collapsed (#827). The "game" node starts
+    // collapsed too, hiding its Verbs/Commands headers until opened, and the
+    // "_advanced" header stays collapsed like everything else — its subtree
+    // (Included Libraries, Functions, ...) is the biggest source of default
+    // clutter. The one exception: the room the player starts in is expanded all
+    // the way down to the player object, so the game's opening scene is visible
+    // at a glance. Any per-game state saved for this game (see the persistence
+    // effect below) then overrides the default, so a returning author finds the
+    // tree exactly as they left it.
     $effect(() => {
         const nodes = $treeNodes;
-        if (nodes.length === 0) { loadedGameKey = null; return; }
+        if (nodes.length === 0) { loadedStateFor = null; return; }
         const gameKey = nodes.find(n => n.nodeType === "game")?.key ?? null;
-        if (gameKey === loadedGameKey) return;
-        loadedGameKey = gameKey;
-        expandedIds = nodes.filter(n => n.key !== "_advanced").map(n => n.key);
+        if (!gameKey) return;
+        const gameId = getCurrentGameId();
+        const stateKey = `${gameKey}|${gameId ?? ""}`;
+        if (stateKey === loadedStateFor) return;
+        loadedStateFor = stateKey;
+        const defaultIds = nodes
+            .filter(n => n.nodeType === "header" && !n.parent && n.key !== "_advanced")
+            .map(n => n.key);
+        const playerPath = startingRoomPath(nodes);
+        expandedIds = [...new Set([...defaultIds, ...playerPath])];
+        if (!gameId) return;
+        void loadTreeState(gameId).then((stored) => {
+            if (stored && stored.length > 0 && loadedStateFor === stateKey) {
+                expandedIds = stored;
+            }
+        });
     });
+
+    // The player object conventionally lives inside the starting room, possibly
+    // nested in other objects. Return every ancestor of the player node so the
+    // whole chain (room → … → player) is expanded by default. Match the player
+    // by name, not nodeType: it's "object" in a text adventure but "page" in
+    // gamebook mode (any object in GameBook style is typed "page"), so only
+    // structural/library rows (headers, include files, library-origin nodes)
+    // are excluded.
+    function startingRoomPath(nodes: TreeNode[]): string[] {
+        const player = nodes.find(n => n.key === "player" && n.nodeType !== "header" && n.nodeType !== "include" && !n.isLibrary);
+        if (!player) return [];
+        const nodeMap = new Map(nodes.map(n => [n.key, n]));
+        const ids: string[] = [];
+        let cur: TreeNode | undefined = player;
+        while (cur?.parent) {
+            ids.push(cur.parent);
+            cur = nodeMap.get(cur.parent);
+        }
+        return ids;
+    }
 
     function toggleExpand(id: string) {
         // While filtering, all matching branches are force-expanded so results stay
@@ -177,17 +233,47 @@
         if (isFiltering) return;
         if (expandedIds.includes(id)) {
             // If the selected node is inside this branch, select the branch itself first
-            const nodeMap = new Map($treeNodes.map(n => [n.key, n]));
-            let cur = nodeMap.get($selectedKey ?? "");
-            while (cur?.parent) {
-                if (cur.parent === id) { selectNode(id); break; }
-                cur = nodeMap.get(cur.parent);
-            }
+            selectBranchIfSelectedInside(id);
             expandedIds = expandedIds.filter(x => x !== id);
         } else {
             expandedIds = [...expandedIds, id];
         }
     }
+
+    // If the currently-selected node sits inside the branch being collapsed,
+    // select the branch node itself so the tree doesn't end up with its
+    // selection hidden inside a closed branch.
+    function selectBranchIfSelectedInside(id: string) {
+        const nodeMap = new Map($treeNodes.map(n => [n.key, n]));
+        let cur = nodeMap.get($selectedKey ?? "");
+        while (cur?.parent) {
+            if (cur.parent === id) { selectNode(id); break; }
+            cur = nodeMap.get(cur.parent);
+        }
+    }
+
+    // Debounced persistence of the expansion state, keyed by the game's stable
+    // <gameid>. Skipped for legacy games without one (they keep the collapsed
+    // default on every load). The timer itself is cleared on teardown — a
+    // change made within the debounce window of navigating away (Home, opening
+    // another game, …) would otherwise be lost — so the latest pending state is
+    // flushed from onDestroy instead.
+    $effect(() => {
+        const ids = expandedIds;
+        const gameId = getCurrentGameId();
+        if (!loadedStateFor || !gameId) return;
+        pendingTreeState = { gameId, ids };
+        clearTimeout(saveTimer);
+        saveTimer = setTimeout(() => {
+            pendingTreeState = null;
+            saveTreeState(gameId, ids);
+        }, 300);
+        return () => clearTimeout(saveTimer);
+    });
+
+    onDestroy(() => {
+        if (pendingTreeState) saveTreeState(pendingTreeState.gameId, pendingTreeState.ids);
+    });
 
     // Auto-expand the ancestor chain whenever the selected node changes
     $effect(() => {
@@ -298,6 +384,33 @@
         return nt !== "header" && nt !== "other" && node.canDelete;
     }
 
+    // Move up/down reorder the node among its same-parent siblings — the tree's
+    // synthetic parent grouping always maps to a single world-model parent (e.g.
+    // everything under "_objects" is a top-level element on the game), so
+    // swapping the two SortIndex meta-fields is always well-defined (see
+    // EditorController.SwapElements). Mirrors ElementsList's up/down buttons.
+    // The array order of $treeNodes is the tree's display order, so the
+    // adjacent flat-list entry is the swap target.
+    function reorderOptions(node: HierNode): Array<{ label: string; action: () => void }> {
+        const opts: Array<{ label: string; action: () => void }> = [];
+        // Headers, the game node, and included-library file nodes are structural
+        // or read-only — nothing is reorderable among them. (Library rows in
+        // particular are meant to have no context menu at all, mirroring the
+        // isLibrary guard in nodeMenuOptions.)
+        if (node.nodeType === "header" || node.nodeType === "game" || node.nodeType === "include") return opts;
+        const flat = $treeNodes.find(n => n.key === node.id);
+        if (!flat) return opts;
+        // The game node itself appears under "_objects" alongside the game's
+        // top-level elements — it's not a real sibling (nothing can be
+        // reordered above or below it), so exclude it from the sibling list.
+        const siblings = $treeNodes.filter(n => n.parent === flat.parent && n.nodeType !== "game");
+        const index = siblings.findIndex(n => n.key === flat.key);
+        if (index < 0) return opts;
+        if (index > 0) opts.push({ label: t("common.moveUp"), action: () => swapElements(flat.key, siblings[index - 1].key) });
+        if (index < siblings.length - 1) opts.push({ label: t("common.moveDown"), action: () => swapElements(flat.key, siblings[index + 1].key) });
+        return opts;
+    }
+
     function nodeMenuOptions(node: HierNode): Array<{ label: string; action: () => void }> {
         // Library-origin nodes (from Core.aslx or another included library) are read-only —
         // the only way to act on one is the "Copy into your game" banner in the properties
@@ -377,6 +490,20 @@
             if (canPasteElements(id)) {
                 opts.push({ label: t("common.paste"), action: () => pasteElements(id) });
             }
+        }
+
+        // Reordering + expand/collapse-all are available on any node with
+        // same-parent siblings or children (headers and the game node included)
+        // — both operate on the tree's synthetic grouping, not the world model.
+        opts.push(...reorderOptions(node));
+
+        if (node.children?.length && !isFiltering) {
+            // While filtering, every matching branch is force-expanded anyway
+            // (see effectiveExpandedIds), so both actions would be no-ops.
+            opts.push(
+                { label: t("treePanel.expandAllBelow"), action: () => { expandedIds = [...new Set([...expandedIds, ...collectBranchIds([node])])]; } },
+                { label: t("treePanel.collapseAllBelow"), action: () => { selectBranchIfSelectedInside(node.id); const toClose = new Set(collectBranchIds([node])); expandedIds = expandedIds.filter(id => !toClose.has(id)); } },
+            );
         }
 
         if (isDeletable(node)) {

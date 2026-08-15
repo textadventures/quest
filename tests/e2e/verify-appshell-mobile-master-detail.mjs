@@ -52,8 +52,18 @@ try {
     console.log('PASS: tapping a tree node pushes the properties pane with a back header showing its name');
     await mobilePage.screenshot({ path: '/tmp/mobile-props-pane.png' });
 
-    // Back button returns to tree, with expansion state intact (game/room still expanded).
+    // Back button returns to tree. The "room" branch now starts expanded all
+    // the way down to the player (#827), so it should already be open; make
+    // sure of that (in case state left it collapsed), then verify the
+    // expansion survives the pane switch (the original intent of this check).
     await mobilePage.click('button:has-text("room")');
+    await mobilePage.waitForSelector('text=GAME OBJECTS', { timeout: 5000 });
+    const roomCaret = mobilePage.locator('[data-part="branch-control"]:has-text("room") >> button[aria-label="Expand"]');
+    if (await roomCaret.count()) { await roomCaret.first().click(); }
+    await mobilePage.waitForSelector('text=player', { timeout: 5000 });
+    await mobilePage.click('text=player');
+    await mobilePage.waitForSelector('button:has-text("player")', { timeout: 5000 });
+    await mobilePage.click('button:has-text("player")'); // back to tree
     await mobilePage.waitForSelector('text=GAME OBJECTS', { timeout: 5000 });
     const playerVisibleAfterBack = await mobilePage.locator('text=player').first().isVisible();
     if (!playerVisibleAfterBack) throw new Error('Tree expansion state should survive switching panes');

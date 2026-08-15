@@ -132,6 +132,8 @@
     "treePanel.nodeOptions": "Options",
     "treePanel.expand": "Expand",
     "treePanel.collapse": "Collapse",
+    "treePanel.expandAllBelow": "Expand all below",
+    "treePanel.collapseAllBelow": "Collapse all below",
     "treePanel.header.objects": "Objects",
     "treePanel.header.pages": "Pages",
     "treePanel.header.functions": "Functions",

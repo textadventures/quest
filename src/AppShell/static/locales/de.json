@@ -132,6 +132,8 @@
     "treePanel.nodeOptions": "Optionen",
     "treePanel.expand": "Aufklappen",
     "treePanel.collapse": "Zuklappen",
+    "treePanel.expandAllBelow": "Alles darunter aufklappen",
+    "treePanel.collapseAllBelow": "Alles darunter zuklappen",
     "treePanel.header.objects": "Objekte",
     "treePanel.header.pages": "Seiten",
     "treePanel.header.functions": "Funktionen",

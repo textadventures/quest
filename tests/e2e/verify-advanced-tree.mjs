@@ -41,9 +41,13 @@ async function run() {
     console.log('PASS: toolbar Add dropdown is trimmed to "Add Room" and "Add Page"');
     await page.keyboard.press("Escape");
 
-    // Expand the Advanced tree node and confirm its panel offers the element
-    // types that used to live directly in the toolbar dropdown.
-    await page.getByRole("button", { name: "Expand Advanced" }).click();
+    // Select the Advanced tree node and confirm its panel offers the element
+    // types that used to live directly in the toolbar dropdown. (The node no
+    // longer needs expanding — branch expansion now starts collapsed-by-default
+    // per #827, but the Advanced header itself stays open on load).
+    // Exact match + .first() so the tree node's label wins over the game-name
+    // header ("Advanced Tree Test.aslx" contains but isn't equal to "Advanced").
+    await page.getByText("Advanced", { exact: true }).first().click();
     await page.waitForTimeout(500);
     const addFunctionBtn = page.getByRole("button", { name: "+ Add Function" });
     if (!(await addFunctionBtn.isVisible())) {

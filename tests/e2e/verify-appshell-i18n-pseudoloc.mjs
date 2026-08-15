@@ -232,7 +232,9 @@ async function run() {
 
     // --- TreePanel context menu (via "room", the only movable node in a
     // fresh draft) — exercises elementAdders.* reuse + treePanel.deleteNamed
-    // interpolation + common.moveTo/cut/copy, then opens MoveElementModal. ---
+    // interpolation + common.moveTo/cut/copy, then opens MoveElementModal.
+    // 13 items: the 11 at HEAD plus the two new expand/collapse-all-below
+    // entries; "Move to…" is index 7. ---
     await page.evaluate(() => {
         const roomText = Array.from(document.querySelectorAll('span')).find(el => el.textContent.trim() === 'room');
         const control = roomText.closest('[data-part="branch-control"]') ?? roomText.parentElement;
@@ -240,9 +242,9 @@ async function run() {
     });
     await page.waitForSelector('.tree-dropdown', { timeout: 10000 });
     const treeMenuItems = await page.$$eval('.tree-dropdown button', els => els.map(el => el.textContent ?? ''));
-    if (treeMenuItems.length !== 10) throw new Error(`TreePanel context menu: expected 10 items (room, movable), found ${treeMenuItems.length}`);
+    if (treeMenuItems.length !== 13) throw new Error(`TreePanel context menu: expected 13 items (room, movable), found ${treeMenuItems.length}`);
     for (const text of treeMenuItems) assertPseudo('TreePanel context menu item', text);
-    await page.click('.tree-dropdown button >> nth=6'); // "Move to…" — 7th item, see the 10-item assertion above
+    await page.click('.tree-dropdown button >> nth=7'); // "Move to…" — 8th item, see the 13-item assertion above
     await page.waitForSelector('div[role="dialog"]', { timeout: 10000 });
     assertPseudo('MoveElementModal heading', await page.textContent('div[role="dialog"] h2'));
     assertPseudo('MoveElementModal "New parent" label', await page.textContent('div[role="dialog"] span >> nth=0'));
@@ -250,8 +252,12 @@ async function run() {
     for (const text of moveModalButtons) assertPseudo('MoveElementModal button', text);
     await closeDialog();
 
-    // --- ElementsList — via the always-present "Verbs" header node ---
-    await page.click('text="Verbs"');
+    // --- ElementsList — via the "Commands" header node (chosen over "Verbs":
+    // verbsEditor.header IS in xx.json so it renders "[Vérbs]", while
+    // treePanel.header.commands isn't and falls back to English). The "game"
+    // node starts collapsed (#827), so expand it first. ---
+    await page.locator('[data-part="branch-control"]:has-text("game") >> button').first().click();
+    await page.click('text="Commands"');
     await page.waitForSelector('.flex.items-center.gap-1.mb-2 button', { timeout: 10000 });
     assertPseudoWithPrefix('ElementsList add button', await page.textContent('.flex.items-center.gap-1.mb-2 button'), '+ ');
     assertPseudo('ElementsList "No items" copy', await page.textContent('p.italic'));
@@ -259,8 +265,12 @@ async function run() {
     // --- Advanced adders (PropertyEditor.ALL_ADVANCED_ADDERS, shared
     // elementAdders.* keys, fixed order: Function/Timer/Walkthrough/Library/
     // Template/DynamicTemplate/Type/JavaScript) — also opens
-    // AddLibraryModal/AddJavascriptModal (indices 3 and 7). ---
-    await page.click('text="Advanced" >> nth=0');
+    // AddLibraryModal/AddJavascriptModal (indices 3 and 7). Select the
+    // "_advanced" header: its label is common.advanced ("[Ádváncéd]" under xx),
+    // so pick it as the only tree branch whose text starts with "[" rather
+    // than clicking English text that can't match under the pseudo-locale. ---
+    const advancedBranch = page.locator('[data-part="branch-control"]').filter({ hasText: /^\s*\[/ });
+    await advancedBranch.click();
     const advancedAddersScope = '.flex.flex-col.items-start.gap-1\\.5.px-3.py-3';
     await page.waitForSelector(`${advancedAddersScope} button`, { timeout: 10000 });
     const advancedAdders = await page.$$eval(`${advancedAddersScope} button`, els => els.map(el => el.textContent ?? ''));
@@ -391,7 +401,9 @@ async function run() {
     assertPseudo('ScriptEditor "N selected" copy', await scriptToolbar.locator('span').last().textContent());
 
     // --- VerbsEditor — via "player" (only "object" elements get a Verbs tab;
-    // rooms don't) — static labels only, no Combobox interaction. ---
+    // rooms don't) — static labels only, no Combobox interaction. "player"
+    // lives under the "room" branch, which now starts expanded all the way
+    // down to the player (#827), so it's already visible. ---
     await page.click('span:text-is("player")');
     await page.click('button:has-text("Verbs")');
     await page.waitForSelector('table', { timeout: 10000 });
@@ -410,6 +422,14 @@ async function run() {
     // (TreePanel's view-options menu — the same one checked earlier). ---
     await page.locator('button[aria-label]').first().click();
     await page.click('.absolute button');
+    // With libraries shown, the Verbs header has children (drink & co.); it
+    // starts collapsed like everything else (#827), so expand it before the
+    // click below. (A fresh game's empty Verbs header renders as a leaf item,
+    // which is why this can't happen earlier.)
+    const verbsRow = page.locator('[data-part="branch-control"]:has-text("[Vérbs]")');
+    if (await verbsRow.count()) {
+        await verbsRow.locator('button').first().click();
+    }
     await page.click('text="drink"');
     await page.waitForSelector('.bg-warning-100-900', { timeout: 10000 });
     assertPseudo('LibraryElementBanner message', await page.textContent('.bg-warning-100-900 span'));
