@@ -6,7 +6,7 @@ import { registerDialogHandlers } from "./ipc/dialog";
 import { registerShellHandlers } from "./ipc/shell";
 import { registerPathsHandlers } from "./ipc/paths";
 import { registerRecentHandlers } from "./ipc/recent";
-import { registerPlayerHandlers } from "./ipc/player";
+import { registerPlayerHandlers, attachTranscriptWindowHandling } from "./ipc/player";
 import { registerTranscriptHandlers } from "./ipc/transcript";
 import { registerGameSaveHandlers } from "./ipc/gamesave";
 import { registerCatalogPlaysHandlers } from "./ipc/catalog-plays";
@@ -543,6 +543,19 @@ function createEditorWindow(port: number, initialPath?: string | null, initialRo
         }
         void shell.openExternal(url);
         return { action: "deny" };
+    });
+    // The preview player window above is itself an opener: its game content
+    // can print the same "view transcript" link ipc/player.ts's Play-flow
+    // windows do (playercore.js's transcriptUrl), which needs the
+    // TranscriptViewer child window wired up the same way — see
+    // attachTranscriptWindowHandling's comment. Without this, that popup
+    // opens with no preload at all (Electron's default for an
+    // unhandled/unconfigured window.open) and window.electronTranscripts is
+    // left undefined.
+    editorWindow.webContents.on("did-create-window", (childWindow, details) => {
+        if (details.url.startsWith(`http://127.0.0.1:${port}/player/`)) {
+            attachTranscriptWindowHandling(childWindow, `http://127.0.0.1:${port}`);
+        }
     });
 
     // initialRoute is a pre-built route (used by sendMenuAction below to land

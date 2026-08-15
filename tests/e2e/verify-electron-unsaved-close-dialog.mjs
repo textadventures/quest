@@ -56,8 +56,14 @@ async function withFreshApp(fn) {
             await exited;
         }
         // Even after exit, Chromium's disk-cache writeback can still be finishing up, so an
-        // immediate rmSync can hit ENOTEMPTY on Cache_Data — maxRetries/retryDelay ride out that race.
-        rmSync(userDataDir, { recursive: true, force: true, maxRetries: 5, retryDelay: 200 });
+        // immediate rmSync can hit ENOTEMPTY on Cache_Data — maxRetries/retryDelay ride out
+        // that race, and if it still can't win, that's just leftover junk in the OS temp dir,
+        // not a test failure: log it and move on rather than failing the whole verification.
+        try {
+            rmSync(userDataDir, { recursive: true, force: true, maxRetries: 5, retryDelay: 200 });
+        } catch (err) {
+            console.warn(`WARN: could not remove temp userData dir ${userDataDir}: ${err.message}`);
+        }
     }
 }
 
