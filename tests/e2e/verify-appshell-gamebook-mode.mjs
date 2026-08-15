@@ -70,6 +70,14 @@ try {
     }
     console.log('PASS: "Advanced" adders are limited to Function/Library/JavaScript in gamebook mode');
 
+    // The tree starts collapsed (#827), but the page containing "player" —
+    // Page1 per the Gamebook template — is expanded all the way down to the
+    // player (whose nodeType is "page" in gamebook mode, not "object").
+    const page1Row = tree.locator('[data-part="branch-control"]', { hasText: 'Page1' });
+    await page1Row.locator('button[aria-label="Collapse"]').waitFor({ state: 'visible', timeout: 5000 });
+    await tree.getByText('player', { exact: true }).waitFor({ state: 'visible', timeout: 5000 });
+    console.log('PASS: starting page is expanded down to the player (nodeType "page")');
+
     // The page that contains "player" (Page1, per the Gamebook template)
     // must not be deletable — EditorController.CanDelete refuses it, so the
     // toolbar Delete button is disabled rather than clickable (see

@@ -119,6 +119,8 @@
     "treePanel.nodeOptions": "[Óptíóns]",
     "treePanel.expand": "[Éxpánd]",
     "treePanel.collapse": "[Cóllápsé]",
+    "treePanel.expandAllBelow": "[Éxpánd áll bélów]",
+    "treePanel.collapseAllBelow": "[Cóllápsé áll bélów]",
     "elementsList.noItems": "[Nó ítéms.]",
     "elementsList.cannotDelete": "[Thís cán't bé délétéd]",
     "elementsList.selectedCount": "[{count} séléctéd]",

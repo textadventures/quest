@@ -53,7 +53,11 @@ try {
     // while "Included Libraries" is not.
     const advancedSummary = tree.getByText('Advanced', { exact: true });
     await advancedSummary.waitFor({ state: 'visible', timeout: 5000 });
-    await tree.locator('button[aria-label="Expand"]').last().click();
+    // "_advanced" starts collapsed like every other branch now (#827), so
+    // expand it via its own caret (there are several collapsed branches — room
+    // and Included Libraries too — so target the Advanced row specifically).
+    await advancedSummary.locator('xpath=ancestor::*[@data-part="branch-control"]').locator('button[aria-label="Expand"]').click();
+    await page.waitForTimeout(300);
 
     await tree.getByText('Included Libraries', { exact: true }).waitFor({ state: 'visible', timeout: 5000 });
     console.log('PASS: "Advanced" is visible and shows "Included Libraries" (non-empty by default)');

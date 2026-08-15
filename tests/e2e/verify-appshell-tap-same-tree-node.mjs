@@ -43,6 +43,11 @@ try {
     // Same check on a leaf node (no children, different TreeView.Item path).
     await page.click('button:has-text("room")'); // back to tree
     await page.waitForSelector('text=GAME OBJECTS', { timeout: 5000 });
+    // "player" lives inside the "room" branch, which now starts expanded all
+    // the way down to the player (#827) — just make sure it's open (if a prior
+    // state left it collapsed) before the leaf-node checks below.
+    const roomCaret = page.locator('[data-part="branch-control"]:has-text("room") >> button[aria-label="Expand"]');
+    if (await roomCaret.count()) { await roomCaret.first().click(); }
     await page.click('text=player');
     await page.waitForSelector('button:has-text("player")', { timeout: 5000 });
     await page.click('button:has-text("player")'); // back to tree

@@ -127,6 +127,14 @@ interface ElectronUpdateDismissApi {
     set(version: string): Promise<void>;
 }
 
+// Per-game editor UI state (currently the tree's expanded-node ids), keyed by
+// the game's <gameid> element — persisted to a userData file (ElectronApp's
+// ui-state-store.ts), not localStorage — see tree-state.ts for why.
+interface ElectronUiStateApi {
+    get(): Promise<Record<string, string[]>>;
+    set(gameId: string, state: string[]): Promise<void>;
+}
+
 // id: catalog game (textadventures.co.uk id); omitted: a locally-picked
 // file, whose bytes/resources the caller hands over separately via the
 // 'quest-play-local' BroadcastChannel — see ipc/player.ts and
@@ -152,6 +160,7 @@ interface ElectronApi {
     recent: ElectronRecentApi;
     catalogPlays: ElectronCatalogPlaysApi;
     updateDismiss: ElectronUpdateDismissApi;
+    uiState: ElectronUiStateApi;
     fileWatch: ElectronFileWatchApi;
     menu: ElectronMenuApi;
     player: ElectronPlayerApi;

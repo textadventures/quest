@@ -169,6 +169,13 @@ contextBridge.exposeInMainWorld("electronApp", {
         get: (): Promise<string | null> => ipcRenderer.invoke("updateDismiss:get"),
         set: (version: string): Promise<void> => ipcRenderer.invoke("updateDismiss:set", version),
     },
+    uiState: {
+        // Per-game editor UI state (currently the tree's expanded-node ids),
+        // keyed by the game's <gameid> — see ElectronApp's ui-state-store.ts
+        // for why this can't be localStorage.
+        get: (): Promise<Record<string, string[]>> => ipcRenderer.invoke("uiState:get"),
+        set: (gameId: string, state: string[]): Promise<void> => ipcRenderer.invoke("uiState:set", gameId, state),
+    },
     player: {
         // Opens a dedicated player BrowserWindow (see ipc/player.ts) rather
         // than a renderer-driven window.open() — sidesteps the browser's

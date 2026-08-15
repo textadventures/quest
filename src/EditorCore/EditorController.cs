@@ -2574,9 +2574,13 @@ public sealed class EditorController : IDisposable
         var a = WorldModel.Elements.Get(key1);
         var b = WorldModel.Elements.Get(key2);
 
+        // Wrap in a transaction so the swap is undoable/redoable — MetaFields
+        // mutations only register with the UndoLogger while one is open.
+        WorldModel.UndoLogger.StartTransaction(string.Format("Move '{0}' and '{1}'", a.Name, b.Name));
         var index = a.MetaFields[MetaFieldDefinitions.SortIndex];
         a.MetaFields[MetaFieldDefinitions.SortIndex] = b.MetaFields[MetaFieldDefinitions.SortIndex];
         b.MetaFields[MetaFieldDefinitions.SortIndex] = index;
+        WorldModel.UndoLogger.EndTransaction();
     }
 
     public void BeginWalkthrough(string name, bool record)
