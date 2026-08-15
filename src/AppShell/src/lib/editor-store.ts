@@ -18,6 +18,14 @@ let _bridge: WasmBridge | null = null;
 let _adapter: FileAdapter | null = null;
 let _loadedGameId: string | null = null;
 
+// The <gameid> of the currently-loaded game (stable per game, unlike element
+// names — the root element is always called "game"), or null for legacy games
+// that predate the field. Set on openGame() / rekeyIfGameIdChanged(). Used to
+// key per-game UI state such as the tree's expansion state (tree-state.ts).
+export function getCurrentGameId(): string | null {
+    return _loadedGameId;
+}
+
 export const isLoaded = writable(false);
 export const loadingStatus = writable<string | null>(null);
 export const addElementModal = writable<AddElementModalState>(null);

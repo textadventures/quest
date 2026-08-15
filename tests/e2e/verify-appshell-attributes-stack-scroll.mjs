@@ -62,6 +62,8 @@ try {
     // Same close affordance on VerbsEditor's Behaviour panel.
     await page.getByRole('button', { name: 'room', exact: true }).click(); // back to tree pane
     await page.waitForSelector('text=GAME OBJECTS', { timeout: 5000 });
+    const roomCaret = page.locator('[data-part="branch-control"]:has-text("room") >> button[aria-label="Expand"]');
+    if (await roomCaret.count()) { await roomCaret.first().click(); } // room already expanded by default (#827)
     await page.click('text=player');
     await page.getByRole('button', { name: /^Verbs$/ }).click();
     await page.waitForSelector('text=No verbs added yet', { timeout: 5000 });
