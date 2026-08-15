@@ -1,5 +1,5 @@
 <script lang="ts">
-    import { untrack } from "svelte";
+    import { untrack, onDestroy } from "svelte";
     import { TreeView, createTreeViewCollection } from "@skeletonlabs/skeleton-svelte";
     import Search from "@lucide/svelte/icons/search";
     import X from "@lucide/svelte/icons/x";
@@ -170,6 +170,9 @@
     // fully-collapsed tree.
     let loadedStateFor = $state<string | null>(null);
     let saveTimer: ReturnType<typeof setTimeout> | undefined;
+    // Latest (gameId, ids) not yet written out — flushed from onDestroy when
+    // the panel unmounts (navigating Home etc.) before the debounce could fire.
+    let pendingTreeState: { gameId: string; ids: string[] } | null = null;
 
     // On game load, default to a collapsed tree — only the top-level structural
     // header (the "_objects"/"_pages" one) starts open, so rooms, objects, turn
@@ -251,15 +254,25 @@
 
     // Debounced persistence of the expansion state, keyed by the game's stable
     // <gameid>. Skipped for legacy games without one (they keep the collapsed
-    // default on every load). The teardown clears any pending write — fine to
-    // drop, the next load just re-applies the default for those few seconds.
+    // default on every load). The timer itself is cleared on teardown — a
+    // change made within the debounce window of navigating away (Home, opening
+    // another game, …) would otherwise be lost — so the latest pending state is
+    // flushed from onDestroy instead.
     $effect(() => {
         const ids = expandedIds;
         const gameId = getCurrentGameId();
         if (!loadedStateFor || !gameId) return;
+        pendingTreeState = { gameId, ids };
         clearTimeout(saveTimer);
-        saveTimer = setTimeout(() => saveTreeState(gameId, ids), 300);
+        saveTimer = setTimeout(() => {
+            pendingTreeState = null;
+            saveTreeState(gameId, ids);
+        }, 300);
         return () => clearTimeout(saveTimer);
+    });
+
+    onDestroy(() => {
+        if (pendingTreeState) saveTreeState(pendingTreeState.gameId, pendingTreeState.ids);
     });
 
     // Auto-expand the ancestor chain whenever the selected node changes

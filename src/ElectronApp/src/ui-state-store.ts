@@ -32,14 +32,22 @@ export async function readUiState(): Promise<UiState> {
     }
 }
 
+// Serializes writes — each set is a read-modify-write of the whole map, and
+// two overlapping ones (a debounced save landing while a flush-on-unmount is in
+// flight) could otherwise interleave and lose a game's state.
+let writeQueue: Promise<void> = Promise.resolve();
+
 // Writes to a temp file and renames over the real one — same atomicity
 // rationale as theme-store.ts's writeTheme. Debounced on the renderer side,
 // so this is called at most a couple of times a second.
-export async function setUiState(gameId: string, state: string[]): Promise<void> {
-    const all = await readUiState();
-    all[gameId] = state;
-    const finalPath = storePath();
-    const tmpPath = `${finalPath}.tmp-${process.pid}-${Date.now()}`;
-    await fs.writeFile(tmpPath, JSON.stringify(all));
-    await fs.rename(tmpPath, finalPath);
+export function setUiState(gameId: string, state: string[]): Promise<void> {
+    writeQueue = writeQueue.then(async () => {
+        const all = await readUiState();
+        all[gameId] = state;
+        const finalPath = storePath();
+        const tmpPath = `${finalPath}.tmp-${process.pid}-${Date.now()}`;
+        await fs.writeFile(tmpPath, JSON.stringify(all));
+        await fs.rename(tmpPath, finalPath);
+    });
+    return writeQueue;
 }

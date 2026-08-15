@@ -33,7 +33,12 @@ export async function loadTreeState(gameId: string): Promise<string[] | null> {
 export function saveTreeState(gameId: string, expandedIds: string[]): void {
     if (isElectron()) {
         try {
-            void window.electronApp!.uiState.set(gameId, expandedIds);
+            // expandedIds can be a Svelte $state array (a Proxy). IPC's
+            // structured clone can't clone proxies, so pass a plain copy —
+            // localStorage tolerates the proxy because JSON.stringify does.
+            void window.electronApp!.uiState.set(gameId, [...expandedIds]).catch(() => {
+                // Same degradation as the read path — nothing to recover, not fatal.
+            });
         } catch {
             // Same degradation as the read path — nothing to recover, not fatal.
         }
