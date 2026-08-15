@@ -1,5 +1,5 @@
 <script lang="ts">
-    import { selectedKey, selectedData, treeNodes, isGamebook, setAttribute, setDropdownType, setMultiType, setObjectReference, setSelectedFilter, addDictItem, removeDictItem, updateDictItem, getObjectNames, getExitNames, getPageNames, selectNode, createPageSilent, openAddModal, openAddLibraryModal, openAddJavascriptModal, getAssetText, putAssetText, putLibraryAssetText, isBuiltInLibrary, getLibraryXml } from "$lib/editor-store";
+    import { selectedKey, selectedData, treeNodes, isGamebook, setAttribute, setDropdownType, setMultiType, setObjectReference, setSelectedFilter, addDictItem, removeDictItem, updateDictItem, getObjectNames, getExitNames, getPageNames, selectNode, createPageSilent, openAddModal, openAddLibraryModal, openAddJavascriptModal, getAssetText, putAssetText, putLibraryAssetText, isBuiltInLibrary, getLibraryXml, setPatternAttribute } from "$lib/editor-store";
     import { showToast } from "$lib/toast";
     import { t } from "$lib/i18n";
     import type { ControlInfo, ControlOption, TextProcessorCommand } from "$lib/types";
@@ -139,6 +139,18 @@
 
     function onTextChange(attribute: string, controlType: string, value: string) {
         if ($selectedKey) recordResult(attribute, setAttribute($selectedKey, attribute, controlType, value));
+    }
+
+    // Routed through setPatternAttribute (not the generic setAttribute/textbox path) so an
+    // in-place edit updates the existing IEditableCommandPattern's text rather than replacing
+    // it with a raw string - overwriting it would silently reclassify the attribute as the
+    // "string" (regex) mode on next render, breaking "#text#"-style simple-pattern placeholders.
+    function onPatternTextChange(attribute: string, value: string) {
+        if ($selectedKey) recordResult(attribute, setPatternAttribute($selectedKey, attribute, value));
+    }
+
+    function onMultiTypeChange(subAttribute: string, newType: string) {
+        if ($selectedKey) recordResult(subAttribute, setMultiType($selectedKey, subAttribute, newType));
     }
 
     function onCheckboxChange(attribute: string, checked: boolean) {
@@ -742,7 +754,7 @@
             <select
                 class="select text-xs py-0.5 px-1.5 w-auto self-start"
                 value={selectedType}
-                onchange={(e) => $selectedKey && setMultiType($selectedKey, ctrl.subAttribute!, (e.target as HTMLSelectElement).value)}
+                onchange={(e) => onMultiTypeChange(ctrl.subAttribute!, (e.target as HTMLSelectElement).value)}
             >
                 {#each ctrl.options as opt (opt.value)}
                     <option value={opt.value}>{opt.label}</option>
@@ -768,13 +780,25 @@
                         onchange={(e) => onTextChange(ctrl.subAttribute!, "richtext", (e.target as HTMLTextAreaElement).value)}
                     ></textarea>
                 {/if}
-            {:else if subEditorType === "textbox" && ctrl.subAttribute !== null}
+            {:else if (subEditorType === "textbox" || subEditorType === "string") && ctrl.subAttribute !== null}
+                <!-- "string" (with no <editors> override) falls through to a plain textbox by
+                     default - e.g. Command's "Regular expression" pattern mode and Use/Give's
+                     "Print a message" mode. A control that wants richtext instead (e.g. object
+                     descriptions) opts in via <editors>string=richtext</editors>. -->
                 <input
                     type="text"
                     autocapitalize="off"
                     class="input text-xs py-0.5 px-1.5 w-full"
                     value={attrValue(ctrl.subAttribute) ?? ""}
                     onchange={(e) => onTextChange(ctrl.subAttribute!, "textbox", (e.target as HTMLInputElement).value)}
+                />
+            {:else if subEditorType === "simplepattern" && ctrl.subAttribute !== null}
+                <input
+                    type="text"
+                    autocapitalize="off"
+                    class="input text-xs py-0.5 px-1.5 w-full"
+                    value={attrValue(ctrl.subAttribute) ?? ""}
+                    onchange={(e) => onPatternTextChange(ctrl.subAttribute!, (e.target as HTMLInputElement).value)}
                 />
             {:else if subEditorType === "script" && ctrl.subAttribute !== null && $selectedKey !== null}
                 <ScriptEditor elementKey={$selectedKey} attribute={ctrl.subAttribute} />
@@ -788,6 +812,13 @@
                     />
                     <span class="text-xs text-surface-600-400">{ctrl.checkboxCaption ?? ctrl.subAttribute}</span>
                 </label>
+            {:else if subEditorType === "scriptdictionary" && ctrl.subAttribute !== null && $selectedKey !== null}
+                <ScriptDictionaryEditor
+                    elementKey={$selectedKey}
+                    attribute={ctrl.subAttribute}
+                    value={attrValue(ctrl.subAttribute)}
+                    keySource={ctrl.source === "object" ? "object" : "text"}
+                />
             {/if}
         </div>
     {:else if ctrl.controlType === "script" && ctrl.attribute !== null && $selectedKey !== null}
@@ -928,7 +959,7 @@
                     <select
                         class="select text-xs py-0.5 px-1.5 w-auto"
                         value={selectedType}
-                        onchange={(e) => $selectedKey && setMultiType($selectedKey, ctrl.subAttribute!, (e.target as HTMLSelectElement).value)}
+                        onchange={(e) => onMultiTypeChange(ctrl.subAttribute!, (e.target as HTMLSelectElement).value)}
                     >
                         {#each ctrl.options as opt (opt.value)}
                             <option value={opt.value}>{opt.label}</option>
@@ -955,13 +986,21 @@
                             onchange={(e) => onTextChange(ctrl.subAttribute!, "richtext", (e.target as HTMLTextAreaElement).value)}
                         ></textarea>
                     {/if}
-                {:else if subEditorType === "textbox" && ctrl.subAttribute !== null}
+                {:else if (subEditorType === "textbox" || subEditorType === "string") && ctrl.subAttribute !== null}
                     <input
                         type="text"
                         autocapitalize="off"
                         class="input text-xs py-0.5 px-1.5 w-full"
                         value={attrValue(ctrl.subAttribute) ?? ""}
                         onchange={(e) => onTextChange(ctrl.subAttribute!, "textbox", (e.target as HTMLInputElement).value)}
+                    />
+                {:else if subEditorType === "simplepattern" && ctrl.subAttribute !== null}
+                    <input
+                        type="text"
+                        autocapitalize="off"
+                        class="input text-xs py-0.5 px-1.5 w-full"
+                        value={attrValue(ctrl.subAttribute) ?? ""}
+                        onchange={(e) => onPatternTextChange(ctrl.subAttribute!, (e.target as HTMLInputElement).value)}
                     />
                 {:else if subEditorType === "script" && ctrl.subAttribute !== null && $selectedKey !== null}
                     <ScriptEditor elementKey={$selectedKey} attribute={ctrl.subAttribute} />
@@ -975,6 +1014,13 @@
                         />
                         <span class="text-xs text-surface-600-400">{ctrl.checkboxCaption ?? ctrl.subAttribute}</span>
                     </label>
+                {:else if subEditorType === "scriptdictionary" && ctrl.subAttribute !== null && $selectedKey !== null}
+                    <ScriptDictionaryEditor
+                        elementKey={$selectedKey}
+                        attribute={ctrl.subAttribute}
+                        value={attrValue(ctrl.subAttribute)}
+                        keySource={ctrl.source === "object" ? "object" : "text"}
+                    />
                 {/if}
             </div>
         {:else}
