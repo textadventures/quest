@@ -158,6 +158,78 @@ export async function toggleFeature(page, labelPrefix) {
     await page.locator(`text=${labelPrefix}`).locator('..').locator('input[type="checkbox"]').check();
 }
 
+// Clicks the toolbar Preview button and returns the WasmPlayer tab it opens, once booted
+// and ready to accept a command. Requires `baseUrl` (the page's own origin, i.e. the
+// AppShell dev server, not WasmPlayer's own port) to proxy '/player' — see vite.config.ts's
+// "Proxy WasmPlayer through the same origin so BroadcastChannel works between editor and
+// player tabs" comment; that same-origin requirement is also why this returns a second
+// Playwright `page` in the same browser context rather than navigating in place — Preview
+// always opens via `window.open`, and the original editor tab has to stay alive throughout
+// (it's the BroadcastChannel sender: it answers WasmPlayer's "ready" with the current game
+// bytes, and again on every subsequent "ready" if the player reloads) — closing or
+// navigating it away mid-capture strands the player on its boot screen.
+// `capture()` (this module's own) works unchanged against the returned page — pass
+// `page.locator('#txtCommand')` as `untilLocator` to crop to the bottom of the transcript.
+export async function openPreview(page) {
+    const context = page.context();
+    const [playerPage] = await Promise.all([
+        context.waitForEvent('page', { timeout: 15000 }),
+        page.click('button:has-text("Preview")'),
+    ]);
+    await playerPage.waitForSelector('#txtCommand', { state: 'visible', timeout: 60000 });
+    await playerPage.waitForFunction(() => window.canSendCommand === true, { timeout: 30000 });
+    return playerPage;
+}
+
+// Types a command into a WasmPlayer tab (as returned by openPreview) and submits it,
+// waiting for the previous command's turn to fully finish first — sendCommand() in
+// player.js silently drops a command while canSendCommand is still false from the last
+// one's round-trip, so a fixed sleep between commands would be flaky.
+export async function sendCommand(playerPage, command) {
+    await playerPage.waitForFunction(() => window.canSendCommand === true, { timeout: 10000 });
+    await playerPage.fill('#txtCommand', command);
+    await playerPage.press('#txtCommand', 'Enter');
+    await playerPage.waitForFunction(() => window.canSendCommand === true, { timeout: 10000 });
+}
+
+const CURSOR_ELEMENT_ID = '__docs-capture-cursor';
+
+// Classic arrow-cursor glyph, hotspot (the point it's "pointing at") at the path's own
+// (0,0) — so positioning the wrapper's top-left corner at a target coordinate puts the
+// tip exactly there, the same convention as a real OS cursor image. White fill with a
+// black outline keeps it legible over both light and dark editor chrome.
+const CURSOR_SVG = `<svg width="26" height="26" viewBox="0 0 26 26" xmlns="http://www.w3.org/2000/svg" style="filter: drop-shadow(0 1px 2px rgba(0,0,0,0.5))">
+  <path d="M 0 0 L 0 18 L 5 14 L 8 20.5 L 11 19 L 8 12.5 L 13.5 12.5 Z" fill="white" stroke="black" stroke-width="1.3" stroke-linejoin="round"/>
+</svg>`;
+
+// Injects a synthetic cursor image into the page at a target locator's position — real
+// page.screenshot() never captures the actual OS mouse cursor, so this fakes one in for
+// screenshots that need to show the reader where to click. `at` picks the point within
+// the target's box the cursor tip lands on: 'center' (default), or a corner/edge name
+// ('left' = vertical-center of the left edge, etc.) matching typical "pointing at a
+// dropdown/button" framing. Returns a cleanup function — call it after the screenshot is
+// taken so the fake cursor never leaks into later captures or lingers in the live DOM.
+async function injectCursor(page, targetLocator, at = 'center') {
+    const box = await targetLocator.boundingBox();
+    if (!box) return async () => {};
+    const points = {
+        center: { x: box.x + box.width / 2, y: box.y + box.height / 2 },
+        left: { x: box.x + 6, y: box.y + box.height / 2 },
+        right: { x: box.x + box.width - 6, y: box.y + box.height / 2 },
+        top: { x: box.x + box.width / 2, y: box.y + 6 },
+        bottom: { x: box.x + box.width / 2, y: box.y + box.height - 6 },
+    };
+    const { x, y } = points[at] ?? points.center;
+    await page.evaluate(({ id, left, top, svg }) => {
+        const el = document.createElement('div');
+        el.id = id;
+        el.style.cssText = `position:fixed; left:${left}px; top:${top}px; z-index:2147483647; pointer-events:none; margin:0; padding:0; line-height:0;`;
+        el.innerHTML = svg;
+        document.body.appendChild(el);
+    }, { id: CURSOR_ELEMENT_ID, left: x, top: y, svg: CURSOR_SVG });
+    return () => page.evaluate((id) => document.getElementById(id)?.remove(), CURSOR_ELEMENT_ID);
+}
+
 // Captures a screenshot at the current state and reports the save path. Most editor
 // states only use the top portion of the fixed VIEWPORT height, leaving a lot of
 // blank space below (e.g. a short "rename this room" form) — pass `untilLocator` for
@@ -165,7 +237,20 @@ export async function toggleFeature(page, labelPrefix) {
 // field just filled in, the button about to be clicked, ...) and the capture crops to
 // that element's bottom edge + padding instead of the full viewport height. Omit it
 // for states where the full viewport genuinely is the content (rare).
-export async function capture(page, outputPath, { untilLocator, padding = 24 } = {}) {
+//
+// Pass `cursorAt` to draw a synthetic cursor pointing at a specific control — a locator
+// on its own (tip lands centered on it), or `{ locator, at }` for one of the named
+// points `injectCursor` supports (e.g. `{ locator: dropdown, at: 'left' }` to point at a
+// dropdown about to be opened, without the cursor covering its label text). Useful for
+// "click here" framing where the surrounding prose alone doesn't make the target obvious
+// (e.g. a screenshot showing a still-closed native `<select>`, which can't be captured
+// mid-open — see docs-screenshots/README or ask the docs-screenshots skill for why).
+export async function capture(page, outputPath, { untilLocator, padding = 24, cursorAt } = {}) {
+    let removeCursor;
+    if (cursorAt) {
+        const { locator, at } = typeof cursorAt.boundingBox === 'function' ? { locator: cursorAt, at: 'center' } : cursorAt;
+        removeCursor = await injectCursor(page, locator, at);
+    }
     let clip;
     if (untilLocator) {
         const box = await untilLocator.boundingBox();
@@ -174,6 +259,7 @@ export async function capture(page, outputPath, { untilLocator, padding = 24 } =
         }
     }
     await page.screenshot({ path: outputPath, ...(clip ? { clip } : {}) });
+    if (removeCursor) await removeCursor();
     console.log(`SAVED: ${outputPath}`);
 }
 

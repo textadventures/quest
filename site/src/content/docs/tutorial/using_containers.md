@@ -30,6 +30,10 @@ By setting the "List prefix" you can change the "It contains" text which appears
 
 ![](/images/Containerfridge.png)
 
+Run the game and open the fridge again, and you'll see the contents listed with your custom prefix:
+
+![](/images/Containerfridgeplayer.png)
+
 Updating the description
 ------------------------
 

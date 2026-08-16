@@ -1,10 +1,10 @@
-// Regenerates the 3 editor screenshots embedded in
+// Regenerates the 3 editor screenshots plus 1 player screenshot embedded in
 // site/src/content/docs/tutorial/using_containers.md. See .claude/skills/docs-screenshots/SKILL.md.
 import { join, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import {
     runCapture, createLocalDraft, selectTreeNode, addElement, openTab,
-    toggleFeature, setLabeledField, capture,
+    toggleFeature, setLabeledField, openPreview, sendCommand, capture,
 } from './lib.mjs';
 
 const imagesDir = join(dirname(fileURLToPath(import.meta.url)), '..', '..', '..', 'site', 'public', 'images');
@@ -27,10 +27,26 @@ await runCapture(async ({ page, baseUrl }) => {
     await selectTreeNode(page, 'fridge');
     await addElement(page, 'Add Object in "fridge"', 'milk');
     await selectTreeNode(page, 'fridge');
+    await addElement(page, 'Add Object in "fridge"', 'cheese');
+    await selectTreeNode(page, 'fridge');
+    await addElement(page, 'Add Object in "fridge"', 'beer');
+    await selectTreeNode(page, 'fridge');
     await openTab(page, 'Container');
+    // "List children when object is looked at or opened" is <advanced/> in CoreEditorObjectContainer.aslx,
+    // so it's folded into the collapsed "Advanced" expander at the bottom of the tab — without checking
+    // it, "Contents prefix" has no effect on the actual game output (see capture-tutorial-using-containers
+    // spike notes / project memory: the prefix field itself still renders and accepts input even while
+    // this checkbox is off, which silently produces a screenshot that doesn't match the player transcript).
+    await page.locator('summary', { hasText: 'Advanced' }).click();
+    await page.locator('text=List children when object is looked at or opened').locator('..').locator('input[type="checkbox"]').check();
     const contentsPrefixInput = page.locator('text=Contents prefix').locator('..').locator('input');
     await contentsPrefixInput.fill('It contains');
     await capture(page, out('Containerfridge.png'), { untilLocator: contentsPrefixInput });
+
+    // --- Containerfridgeplayer.png: playing the game, opening the fridge to see the custom prefix ---
+    const playerPage = await openPreview(page);
+    await sendCommand(playerPage, 'open fridge');
+    await capture(playerPage, out('Containerfridgeplayer.png'), { untilLocator: playerPage.locator('#txtCommand') });
 
     // --- Lockedcontainer.png: box object, Locking section, Lockable ---
     await selectTreeNode(page, 'room');

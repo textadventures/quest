@@ -42,5 +42,5 @@ await runCapture(async ({ page, baseUrl }) => {
     const exprInput = page.locator('xpath=//span[text()="Print"]/following::input[1]');
     await exprInput.fill('"A box of eggs, weighing " + eggs.weight + " grams."');
     await exprInput.evaluate(el => { el.scrollLeft = 0; });
-    await capture(page, out('Printexpression.png'), { untilLocator: exprInput });
+    await capture(page, out('Printexpression.png'), { untilLocator: exprInput, cursorAt: printTypeSelect });
 });

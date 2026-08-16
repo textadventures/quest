@@ -16,14 +16,18 @@ running editor instead of by hand.
 
 ## Current scope
 
-**In scope today: editor-chrome screenshots** — pages showing the editor's own
-UI (tree, tabs, forms, dialogs). Root `site/public/images/` and
-`site/public/images/other_guides/`, roughly 150 images.
+**In scope today:**
+- **Editor-chrome screenshots** — pages showing the editor's own UI (tree,
+  tabs, forms, dialogs). Root `site/public/images/` and
+  `site/public/images/other_guides/`, roughly 150 images.
+- **In-game player screenshots** (~60 images, showing gameplay output) — via
+  `openPreview`/`sendCommand` (see below), which drives the *same* AppShell
+  draft a capture script already built, through the real toolbar Preview
+  button into a live WasmPlayer tab. No separate `.aslx` fixtures needed — one
+  script can build the draft and capture both the editor states and the
+  resulting gameplay in one run.
 
 **Out of scope — do not extend this harness to these without re-scoping first:**
-- **In-game player screenshots** (~60 images, showing gameplay output, not the
-  editor) — needs a different harness driving WasmPlayer/WebPlayer with an
-  actual built `.aslx` game reaching a specific play state. A separate problem.
 - **`site/public/images/helpsheets/`** (~152 images) — a large, distinct
   beginner-oriented track. Worth its own decision on approach before touching.
 - **External/non-Quest images** — Trizbort app screenshots, YouTube embed UI,
@@ -36,9 +40,10 @@ see `.claude/skills/verify/SKILL.md` for the base convention this extends):
 
 - **`lib.mjs`** — shared helpers: `createLocalDraft`, `selectTreeNode`,
   `addElement`, `openTab`, `fieldByLabel`/`setLabeledField`/`selectLabeledField`,
-  `capture`, and the `runCapture` try/finally wrapper. Reuse these rather than
-  re-deriving selectors — they're built on DOM patterns already proven out
-  across `tests/e2e/verify-appshell-*.mjs`.
+  `capture`, `openPreview`/`sendCommand` (player screenshots, see below), and
+  the `runCapture` try/finally wrapper. Reuse these rather than re-deriving
+  selectors — they're built on DOM patterns already proven out across
+  `tests/e2e/verify-appshell-*.mjs`.
 - **One capture script per doc page**, e.g.
   `capture-tutorial-creating-a-simple-game.mjs`. Each script walks through
   *that page's own narrative* — the same room/object names and steps the
@@ -76,6 +81,48 @@ rather than the full viewport height, since most states don't fill it.
 6. `Read` each output image and check it actually matches what the doc prose
    describes before considering it done (right object names, right tab, right
    content — not just "a screenshot got saved").
+
+## Capturing player (gameplay) screenshots
+
+`openPreview(page)` clicks the toolbar's Preview button and returns the
+WasmPlayer tab it opens (a second Playwright `page` in the same browser
+context — Preview always opens via `window.open`, proxied to the same origin
+so the editor tab and player tab can talk over `BroadcastChannel`; see
+`vite.config.ts`'s `/player` proxy comment). **The original editor page must
+stay open and untouched for the whole capture** — it's the thing answering
+WasmPlayer's game-bytes request, including on every reload.
+
+```js
+const playerPage = await openPreview(page);
+await sendCommand(playerPage, 'open fridge');
+await capture(playerPage, out('Containerfridge.png'), { untilLocator: playerPage.locator('#txtCommand') });
+```
+
+`sendCommand` waits for the previous turn to finish (`window.canSendCommand`)
+both before and after submitting, so the transcript is fully settled by the
+time you call `capture()` — no arbitrary `waitForTimeout`. `capture()` itself
+is unchanged and works against either page; `#txtCommand` is always the last
+element in the transcript, so it's the natural `untilLocator` for player shots.
+
+**Gotcha:** several container/object fields the tutorial text references
+(e.g. "List children when object is looked at or opened") are flagged
+`<advanced/>` in the `.aslx` control definition and live behind a collapsed
+"Advanced" `<summary>` at the bottom of their tab (see
+`tests/e2e/verify-appshell-advanced-controls.mjs`) — invisible, and
+`.check()`/`.fill()` will hang waiting for visibility, until you click
+`page.locator('summary', { hasText: 'Advanced' })` open first.
+
+## Pointing at a specific control
+
+`capture()` takes an optional `cursorAt` to draw a synthetic cursor (a real
+screenshot never captures the actual OS pointer) at a locator's position —
+either the locator itself (tip centered on it) or `{ locator, at }` with
+`at` one of `'center' | 'left' | 'right' | 'top' | 'bottom'`, e.g. pointing at
+the left edge of a dropdown you're about to describe opening. Note this only
+*points at* a control — it can't show a native `<select>` actually open
+(that's an OS-level popup outside anything a page screenshot can capture);
+for "here's what to pick" framing on a native select, show it closed with the
+cursor on it, then capture the *result* state after selecting.
 
 ## Re-running when the editor UI changes
 

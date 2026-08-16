@@ -33,9 +33,10 @@ await runCapture(async ({ page, baseUrl }) => {
     await page.getByRole('option', { name: 'Scripts', exact: true }).click();
     // Every command row's accessible name is prefixed with a "●" marker, so match by
     // substring rather than exact — "If..." alone would never match.
-    await page.getByRole('option', { name: 'If...' }).click();
+    const ifOption = page.getByRole('option', { name: 'If...' });
+    await ifOption.click();
     const dialog = page.locator('[role="dialog"]').filter({ hasText: 'Add Script Command' });
-    await capture(page, out('Addif.png'), { untilLocator: dialog });
+    await capture(page, out('Addif.png'), { untilLocator: dialog, cursorAt: { locator: ifOption, at: 'left' } });
     await page.getByRole('button', { name: 'OK', exact: true }).click();
 
     // --- Addif2.png: freshly-added if/then/else editor, condition not yet set ---
@@ -46,7 +47,7 @@ await runCapture(async ({ page, baseUrl }) => {
     // --- Addif3.png: condition set to "object is switched on", object "TV" ---
     await ifExpressionSelect(page).selectOption('object is switched on');
     await ifObjectSelect(page).selectOption('TV');
-    await capture(page, out('Addif3.png'), { untilLocator: elseIfButton });
+    await capture(page, out('Addif3.png'), { untilLocator: elseIfButton, cursorAt: ifObjectSelect(page) });
 
     // --- Addif4.png: Then/Else print-message scripts filled in ---
     await page.locator('button:has-text("+ Add script")').first().click();
