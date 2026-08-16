@@ -63,8 +63,8 @@ async function run() {
     await page.click('input[name="gametype"] >> nth=1');
     await page.waitForSelector('select', { timeout: 10000 });
     const options = await page.$$eval('select option', els => els.map(el => el.textContent ?? ''));
-    assertEqual('Gamebook template option count', options.length, 2);
-    if (!options.includes('English') || !options.includes('Deutsch')) {
+    assertEqual('Gamebook template option count', options.length, 3);
+    if (!options.includes('English') || !options.includes('Deutsch') || !options.includes('Español')) {
         throw new Error(`Gamebook template options missing expected labels: ${JSON.stringify(options)}`);
     }
     console.log(`PASS: [Gamebook template options] ${JSON.stringify(options)}`);
