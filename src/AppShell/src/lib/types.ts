@@ -118,11 +118,20 @@ export interface ScriptControlData {
   // ExpressionField.svelte, which renders a template picker instead of a plain ExpressionInput
   // when this is set and templates exist for that type.
   useTemplates?: string | null
+  // Pre-fetched nested script trees for a "scriptdictionary" control (e.g. switch's "cases"),
+  // one per dictionary key - lets the case-list editor render each case's script from initial
+  // data without a further round trip, mirroring how "scripts" does this for a "script" control.
+  cases?: CaseScriptData[] | null
 }
 
 export interface ElseIfClauseData {
   id: string
   expression: string
+  scripts: ScriptNodeData[]
+}
+
+export interface CaseScriptData {
+  key: string
   scripts: ScriptNodeData[]
 }
 

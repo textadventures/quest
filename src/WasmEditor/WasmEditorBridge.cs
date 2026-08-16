@@ -83,10 +83,16 @@ internal record ScriptControlData(
     // template picker (e.g. msg's text, MoveObject's destination). "if" conditions are a special
     // case (ScriptNodeData.Expression, not a Controls entry) but use the same "if" expressionType
     // and the same frontend picker, via IfExpressionControlDefinition.
-    string? UseTemplates = null
+    string? UseTemplates = null,
+    // Pre-fetched nested script trees for a "scriptdictionary" control (e.g. switch's "cases"),
+    // one per dictionary key - mirrors how the "script" controltype's own Scripts field lets a
+    // nested ScriptEditor render from initialData without a further round trip.
+    List<CaseScriptData>? Cases = null
 );
 
 internal record ElseIfClauseData(string Id, string Expression, List<ScriptNodeData> Scripts);
+
+internal record CaseScriptData(string Key, List<ScriptNodeData> Scripts);
 
 internal record ScriptNodeData(
     string Id,
@@ -1216,6 +1222,127 @@ public partial class WasmEditorBridge
                 keys = list.ItemsList.Select(i => i.Key).ToList();
             }
 
+            return "ok";
+        }
+        catch (Exception ex)
+        {
+            return ex.Message;
+        }
+    }
+
+    // Script-parameter-scriptdictionary variant of the above, for a "scriptdictionary" control
+    // living inside a script tree (e.g. switch's "cases", attribute "1") rather than directly on
+    // an element - same rationale as GetScriptParamList. Unlike switch's expression/default
+    // parameters, SwitchScript.CasesAsQuestDictionary always exists (created empty in the
+    // constructor), so — unlike AddScriptDictionaryItem's element-attribute equivalent — there's
+    // no "create the dictionary if it doesn't exist yet" branch to worry about here.
+    private static IEditableDictionary<IEditableScripts>? GetScriptParamDict(string elementKey, string attribute,
+        string containerPath, int scriptIndex, string paramAttribute)
+    {
+        var scripts = GetScripts(elementKey, attribute);
+        if (scripts == null)
+        {
+            return null;
+        }
+
+        var container = ResolveContainer(scripts, containerPath);
+        if (container == null || scriptIndex < 0 || scriptIndex >= container.Count)
+        {
+            return null;
+        }
+
+        var editorData = _controller!.GetScriptEditorData(container[scriptIndex]);
+        return editorData.GetAttribute(paramAttribute) as IEditableDictionary<IEditableScripts>;
+    }
+
+    [JSExport]
+    public static string AddScriptDictCase(string elementKey, string attribute, string containerPath,
+        int scriptIndex, string paramAttribute, string key)
+    {
+        if (_controller == null)
+        {
+            return "error";
+        }
+
+        var dict = GetScriptParamDict(elementKey, attribute, containerPath, scriptIndex, paramAttribute);
+        if (dict == null)
+        {
+            return "error";
+        }
+
+        try
+        {
+            var validation = dict.CanAdd(key);
+            if (!validation.Valid)
+            {
+                return validation.Message.ToString();
+            }
+
+            var emptyScript = _controller.CreateNewEditableScripts(null!, null!, null!, false);
+            dict.Add(key, emptyScript);
+            return "ok";
+        }
+        catch (Exception ex)
+        {
+            return ex.Message;
+        }
+    }
+
+    [JSExport]
+    public static string RemoveScriptDictCase(string elementKey, string attribute, string containerPath,
+        int scriptIndex, string paramAttribute, string key)
+    {
+        if (_controller == null)
+        {
+            return "error";
+        }
+
+        var dict = GetScriptParamDict(elementKey, attribute, containerPath, scriptIndex, paramAttribute);
+        if (dict == null)
+        {
+            return "error";
+        }
+
+        try
+        {
+            dict.Remove(key);
+            return "ok";
+        }
+        catch (Exception ex)
+        {
+            return ex.Message;
+        }
+    }
+
+    [JSExport]
+    public static string RenameScriptDictCase(string elementKey, string attribute, string containerPath,
+        int scriptIndex, string paramAttribute, string oldKey, string newKey)
+    {
+        if (_controller == null)
+        {
+            return "error";
+        }
+
+        var dict = GetScriptParamDict(elementKey, attribute, containerPath, scriptIndex, paramAttribute);
+        if (dict == null)
+        {
+            return "error";
+        }
+
+        if (oldKey == newKey)
+        {
+            return "ok";
+        }
+
+        try
+        {
+            var validation = dict.CanAdd(newKey);
+            if (!validation.Valid)
+            {
+                return validation.Message.ToString();
+            }
+
+            dict.ChangeKey(oldKey, newKey);
             return "ok";
         }
         catch (Exception ex)
@@ -3565,6 +3692,30 @@ public partial class WasmEditorBridge
 
                     current = nestedScripts;
                 }
+                else if (segment == "case")
+                {
+                    // "case" descends into one entry of a "scriptdictionary" parameter (e.g.
+                    // switch's "cases") - unlike "param" this needs a second path part beyond
+                    // the parameter name, since the parameter itself is keyed. The key is
+                    // percent-encoded by the caller so arbitrary case-match expressions (which
+                    // may contain "/" or other path-meaningful characters) can't corrupt the
+                    // containerPath's own "/"-delimited segmentation.
+                    if (i + 1 >= parts.Length)
+                    {
+                        return null;
+                    }
+
+                    var paramAttr = parts[i++];
+                    var key = Uri.UnescapeDataString(parts[i++]);
+                    var scriptEditorData = _controller!.GetScriptEditorData(script);
+                    if (scriptEditorData.GetAttribute(paramAttr) is not IEditableDictionary<IEditableScripts> dict
+                        || !dict.Items.TryGetValue(key, out var item))
+                    {
+                        return null;
+                    }
+
+                    current = item.Value;
+                }
                 else
                 {
                     return null;
@@ -3636,6 +3787,7 @@ public partial class WasmEditorBridge
         string? simpleEditor = null;
         List<ControlOption>? options = null;
         List<ScriptNodeData>? nestedScripts = null;
+        List<CaseScriptData>? cases = null;
 
         if (ctrl.Attribute != null)
         {
@@ -3645,6 +3797,17 @@ public partial class WasmEditorBridge
                 if (attrValue is IEditableScripts nested)
                 {
                     nestedScripts = BuildScriptBlockData(nested).Scripts;
+                }
+            }
+            else if (ctrl.ControlType == "scriptdictionary")
+            {
+                var attrValue = editorData.GetAttribute(ctrl.Attribute);
+                if (attrValue is IEditableDictionary<IEditableScripts> dict)
+                {
+                    value = SerializeAttributeValue(dict);
+                    cases = dict.Items
+                        .Select(kv => new CaseScriptData(kv.Key, BuildScriptBlockData(kv.Value.Value).Scripts))
+                        .ToList();
                 }
             }
             else
@@ -3736,7 +3899,8 @@ public partial class WasmEditorBridge
             isFunctionPicker,
             isFunctionParams,
             breakBefore,
-            useTemplates
+            useTemplates,
+            cases
         );
     }
 
