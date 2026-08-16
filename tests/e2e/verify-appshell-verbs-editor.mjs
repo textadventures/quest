@@ -157,7 +157,15 @@ async function run() {
 
     // The new verb command element lands under the game's synthetic "Verbs" tree node (key
     // "_gameVerbs" — see EditorController's k_verbs), alongside any library-defined verbs.
+    // The game node starts collapsed by default (#827), so expand it first to make its
+    // Verbs/Commands/Advanced headers visible.
+    await page.locator('[data-scope="tree-view"][data-value="game"][data-part="branch-control"] button[aria-label="Expand"]').click();
     await selectTreeNode('_gameVerbs');
+    // "_gameVerbs" itself starts collapsed too, so expand it to make its new
+    // "Verb: juggle" command child visible in the tree (the bare "juggle" text
+    // also matches the Verbs editor table cell, but the tree node is first in
+    // the DOM and hidden, so Playwright would otherwise wait on it forever).
+    await page.locator('[data-scope="tree-view"][data-value="_gameVerbs"][data-part="branch-control"] button[aria-label="Expand"]').click();
     await page.waitForSelector('text=juggle', { timeout: 10000 });
     console.log('PASS: the novel verb also created a new command element under the Verbs tree node');
 
