@@ -12,6 +12,14 @@ name: e2e
 # ElectronApp. Each job below matches one of the distinct local setups
 # documented in the individual scripts' header comments — see those for the
 # "why" behind each one.
+#
+# check_e2e_manifest is the one exception to "nightly + manual": it runs on
+# every trigger — including PRs that touch tests/e2e/** or this workflow — and
+# fails if any tests/e2e/verify-*.mjs script isn't wired into a
+# `node <script>.mjs` step below (or if a step points at a script that no
+# longer exists). See tests/e2e/check-workflow-manifest.mjs. GitHub Actions
+# `run:` steps are literal commands, so a new script can't be picked up by a
+# glob; this check is what keeps a fresh script from silently never running.
 on:
   workflow_dispatch:
   schedule:
@@ -19,8 +27,26 @@ on:
     # about for scheduled workflows. Runs against whatever's on main at that
     # time regardless of whether anything changed since the last run.
     - cron: '17 3 * * *'
+  pull_request:
+    # Only the manifest check runs on PRs (every other job is gated on
+    # `if: github.event_name != 'pull_request'` below) — so adding a
+    # verify-*.mjs without wiring it up turns the PR red, while the slow
+    # Playwright/Electron jobs stay off the PR critical path.
+    paths:
+      - 'tests/e2e/**'
+      - '.github/workflows/e2e.yml'
 
 jobs:
+  # No servers, no npm install — just verifies the scripts and the workflow
+  # below haven't drifted apart. Fast enough to run on every trigger.
+  check_e2e_manifest:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v6
+        with:
+          node-version: '22'
+      - run: node tests/e2e/check-workflow-manifest.mjs
   # AppShell (Debug WasmEditor) + WasmPlayer (Debug), one Vite dev server and
   # one WasmPlayer dev server shared by every script that doesn't need a
   # special AppShell build/env — each script normally defaults to its own
@@ -31,6 +57,7 @@ jobs:
   # vite.config.ts).
   appshell_chromium:
     runs-on: ubuntu-latest
+    if: github.event_name != 'pull_request'
     steps:
       - uses: actions/checkout@v7
 
@@ -166,6 +193,24 @@ jobs:
         working-directory: tests/e2e
       - run: node verify-update-banner-web.mjs http://localhost:5174
         working-directory: tests/e2e
+      - run: node verify-appshell-dialogue-pages.mjs http://localhost:5174
+        working-directory: tests/e2e
+      - run: node verify-appshell-gamebook-language-picker.mjs http://localhost:5174
+        working-directory: tests/e2e
+      - run: node verify-appshell-i18n-pseudoloc.mjs http://localhost:5174
+        working-directory: tests/e2e
+      - run: node verify-appshell-library-editor.mjs http://localhost:5174
+        working-directory: tests/e2e
+      - run: node verify-appshell-multi-control-editors.mjs http://localhost:5174
+        working-directory: tests/e2e
+      - run: node verify-appshell-object-pickers-exclude-pages.mjs http://localhost:5174
+        working-directory: tests/e2e
+      - run: node verify-appshell-theme-toggle.mjs http://localhost:5174
+        working-directory: tests/e2e
+      - run: node verify-default-tree-state.mjs http://localhost:5174
+        working-directory: tests/e2e
+      - run: node verify-preview-custom-library.mjs http://localhost:5174
+        working-directory: tests/e2e
 
   # OPFS local-drafts behavior on non-FSA browsers, against a Release
   # WasmEditor build — createSyncAccessHandle (Safari's write path) needs the
@@ -179,6 +224,7 @@ jobs:
   # locally (see that script's own header comment) — just not from Linux CI.
   appshell_opfs_firefox:
     runs-on: ubuntu-latest
+    if: github.event_name != 'pull_request'
     steps:
       - uses: actions/checkout@v7
 
@@ -230,6 +276,7 @@ jobs:
   # no WasmEditor build needed at all.
   appshell_server_mode:
     runs-on: ubuntu-latest
+    if: github.event_name != 'pull_request'
     steps:
       - uses: actions/checkout@v7
 
@@ -268,6 +315,7 @@ jobs:
   # WasmPlayer alone, no AppShell involved.
   wasmplayer_chromium:
     runs-on: ubuntu-latest
+    if: github.event_name != 'pull_request'
     steps:
       - uses: actions/checkout@v7
 
@@ -311,12 +359,31 @@ jobs:
         working-directory: tests/e2e
       - run: node verify-wasmplayer-showmenu-select-default.mjs http://localhost:5175
         working-directory: tests/e2e
+      - run: node verify-game-load-error.mjs http://localhost:5175
+        working-directory: tests/e2e
+      - run: node verify-wasmplayer-autoscroll.mjs http://localhost:5175
+        working-directory: tests/e2e
+      - run: node verify-wasmplayer-autoscroll-clearscreen-after-wait.mjs http://localhost:5175
+        working-directory: tests/e2e
+      - run: node verify-wasmplayer-autoscroll-clearscreen-frame.mjs http://localhost:5175
+        working-directory: tests/e2e
+      - run: node verify-wasmplayer-autoscroll-frame.mjs http://localhost:5175
+        working-directory: tests/e2e
+      - run: node verify-wasmplayer-autoscroll-frame-load-race.mjs http://localhost:5175
+        working-directory: tests/e2e
+      - run: node verify-wasmplayer-dialogue-pages.mjs http://localhost:5175
+        working-directory: tests/e2e
+      - run: node verify-wasmplayer-onready-recursive-getinput.mjs http://localhost:5175
+        working-directory: tests/e2e
+      - run: node verify-wasmplayer-save-slot-title-size.mjs http://localhost:5175
+        working-directory: tests/e2e
 
   # WebPlayer (ASP.NET Core + Blazor Server), Development mode with Dev:Enabled
   # (appsettings.Development.json already sets this — see /dev/open's
   # RequiresConfig("Dev:Enabled") gate).
   webplayer_chromium:
     runs-on: ubuntu-latest
+    if: github.event_name != 'pull_request'
     steps:
       - uses: actions/checkout@v7
 
@@ -363,6 +430,7 @@ jobs:
   # applies. Also the runner electron-publish.yml already uses for DMG builds.
   electron:
     runs-on: macos-latest
+    if: github.event_name != 'pull_request'
     steps:
       - uses: actions/checkout@v7
 
@@ -418,11 +486,16 @@ jobs:
         working-directory: tests/e2e
       - run: node verify-update-banner.mjs
         working-directory: tests/e2e
+      - run: node verify-electron-locale-persist.mjs
+        working-directory: tests/e2e
+      - run: node verify-electron-theme-persist.mjs
+        working-directory: tests/e2e
 
   # questviva.com docs/marketing site (site/, separate Astro project) —
   # no AppShell/Engine build needed at all, just the static site itself.
   site_chromium:
     runs-on: ubuntu-latest
+    if: github.event_name != 'pull_request'
     steps:
       - uses: actions/checkout@v7
 

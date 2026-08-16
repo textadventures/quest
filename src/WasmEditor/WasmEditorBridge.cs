@@ -648,6 +648,12 @@ public partial class WasmEditorBridge
                 case "script":
                     _controller.CreateNewEditableScripts(elementKey, attribute, null!, false);
                     break;
+                case "scriptdictionary":
+                    _controller.CreateNewEditableScriptDictionary(elementKey, attribute, null!, null!, false);
+                    break;
+                case "simplepattern":
+                    data.SetAttribute(attribute, new EditorCommandPattern(""));
+                    break;
                 default:
                     return $"Unknown type: {newType}";
             }
@@ -1299,6 +1305,7 @@ public partial class WasmEditorBridge
                 IEditableScripts => "script",
                 IEditableObjectReference => "object",
                 IEditableCommandPattern => "simplepattern",
+                IEditableDictionary<IEditableScripts> => "scriptdictionary",
                 _ => "null"
             };
         }
@@ -3880,7 +3887,7 @@ public partial class WasmEditorBridge
 
             var caption = ctrl.Caption ?? ctrl.GetString("selfcaption");
             return new ControlInfo(ctrl.Id, ctrl.ControlType, caption, options, subEditors, ctrl.Attribute,
-                multiTpCommands, Advanced: !ctrl.IsControlVisibleInSimpleMode, CheckboxCaption: ctrl.GetString("checkbox"));
+                multiTpCommands, Source: ctrl.GetString("source"), Advanced: !ctrl.IsControlVisibleInSimpleMode, CheckboxCaption: ctrl.GetString("checkbox"));
         }
         else if (ctrl.ControlType == "elementslist")
         {
