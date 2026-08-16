@@ -1,5 +1,29 @@
 # Changelog
 
+## [6.0.0-beta.53](https://github.com/textadventures/quest/compare/v6.0.0-beta.52...v6.0.0-beta.53) (2026-08-16)
+
+
+### Features
+
+* **AppShell:** add collapsible code sections and autocompletion to CodeMirror editors ([#2082](https://github.com/textadventures/quest/issues/2082)) ([a2103bb](https://github.com/textadventures/quest/commit/a2103bb856f004e1b2060d9a5dede3260a985557))
+* **AppShell:** add Light/Dark/Match system theme toggle to settings ([#2077](https://github.com/textadventures/quest/issues/2077)) ([3e12c6a](https://github.com/textadventures/quest/commit/3e12c6ac08108486a0b5134582c55021aaad2162))
+* **AppShell:** collapsed-by-default game tree with per-game expansion state, expand/collapse-all and move up/down ([#2085](https://github.com/textadventures/quest/issues/2085)) ([af83647](https://github.com/textadventures/quest/commit/af83647bcc9785ff256f12243977fe5cb6c7a56e))
+* **AppShell:** edit Included Library contents from the tree editor ([#2063](https://github.com/textadventures/quest/issues/2063)) ([6a90251](https://github.com/textadventures/quest/commit/6a902519ed3645cb411a67f53ff35666c35336eb))
+* **AppShell:** fall back to Safe Mode raw XML editor when a game fails to load ([#2076](https://github.com/textadventures/quest/issues/2076)) ([5d72d50](https://github.com/textadventures/quest/commit/5d72d50fadd2f7057583c64bef235e3190d79cfa))
+
+
+### Bug Fixes
+
+* **AppShell:** render Command Pattern and Use/Give per-object controls ([#2086](https://github.com/textadventures/quest/issues/2086)) ([2f49d1c](https://github.com/textadventures/quest/commit/2f49d1cacfa51b172293ae98fb82c73b1ec90083))
+* **AppShell:** show script selection checkboxes in nested blocks ([#2060](https://github.com/textadventures/quest/issues/2060)) ([dcf6a92](https://github.com/textadventures/quest/commit/dcf6a927098274f8f1d1a23a53649fb42954e3a8))
+* **AppShell:** use Lucide icon for non-image assets ([#2078](https://github.com/textadventures/quest/issues/2078)) ([0368c38](https://github.com/textadventures/quest/commit/0368c385f4392cacff20d849ebb7ee587c14764c))
+* **ElectronApp:** wire transcript preload into editor Preview popup ([#2084](https://github.com/textadventures/quest/issues/2084)) ([2dfca49](https://github.com/textadventures/quest/commit/2dfca49336419be8048c4537640aeee31b3ef4da))
+* **Engine:** restore exit grid offset X/Y editor controls ([#2067](https://github.com/textadventures/quest/issues/2067)) ([12c2c2a](https://github.com/textadventures/quest/commit/12c2c2ab19dae1b2a1ce6091f5eb229774d33878))
+* expand collapsed game tree nodes in e2e verbs-editor test ([#2087](https://github.com/textadventures/quest/issues/2087)) ([e8f3bf1](https://github.com/textadventures/quest/commit/e8f3bf1276581698cf4f02f05f9fb60c0ff28398))
+* stop e2e unsaved-close test failing on temp-dir cleanup race ([#2083](https://github.com/textadventures/quest/issues/2083)) ([a8ccb77](https://github.com/textadventures/quest/commit/a8ccb77f00436d18483fa206a659a3a6abbe49cd))
+* **WasmPlayer:** keep save-slot titles at the dialog's base font size ([#2079](https://github.com/textadventures/quest/issues/2079)) ([1198b4e](https://github.com/textadventures/quest/commit/1198b4e9fe711ee74b954f3551da00dfc2c190da))
+* **WasmPlayer:** surface game-load errors on the start screen instead of hanging ([#2062](https://github.com/textadventures/quest/issues/2062)) ([71b4175](https://github.com/textadventures/quest/commit/71b41752686b1f35a7bce34434d4886fe472584f))
+
 ## [6.0.0-beta.52](https://github.com/textadventures/quest/compare/v6.0.0-beta.51...v6.0.0-beta.52) (2026-08-12)
 
 
