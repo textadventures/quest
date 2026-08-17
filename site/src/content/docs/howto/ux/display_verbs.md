@@ -1,5 +1,5 @@
 ---
-title: Using Display Verbs
+title: Using display verbs
 sidebar:
   order: 3
 ---

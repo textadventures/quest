@@ -1,5 +1,5 @@
 ---
-title: Creating a Countdown Timer
+title: Creating a countdown timer
 sidebar:
   order: 16
 ---

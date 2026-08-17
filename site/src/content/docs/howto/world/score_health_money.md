@@ -1,5 +1,5 @@
 ---
-title: Score, Health and Money
+title: Score, health and money
 sidebar:
   order: 7
 ---

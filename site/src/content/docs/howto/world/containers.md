@@ -1,5 +1,5 @@
 ---
-title: Using Containers
+title: Using containers
 sidebar:
   order: 3
 ---

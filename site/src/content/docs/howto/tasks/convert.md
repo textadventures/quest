@@ -1,5 +1,5 @@
 ---
-title: Converting One Thing Into Another
+title: Converting one thing into another
 sidebar:
   order: 13
 ---

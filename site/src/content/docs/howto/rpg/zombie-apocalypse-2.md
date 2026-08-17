@@ -1,5 +1,5 @@
 ---
-title: Zombie Apocalypse (part 2)
+title: Zombie Apocalypse (Part 2)
 sidebar:
   order: 3
 ---

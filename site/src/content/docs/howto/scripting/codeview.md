@@ -1,5 +1,5 @@
 ---
-title: Editing in Full Code View
+title: Editing in full code view
 sidebar:
   order: 14
 ---

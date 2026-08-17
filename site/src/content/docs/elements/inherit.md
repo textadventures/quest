@@ -8,4 +8,4 @@ sidebar:
 
 Within an object, type, command or exit definition, inherits properties from the specified type.
 
-See [Types](/howto/scripting/about_types).
+See [Types](/advanced-topics/about_types).

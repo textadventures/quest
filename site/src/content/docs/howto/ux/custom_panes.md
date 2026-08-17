@@ -1,5 +1,5 @@
 ---
-title: Custom Status Pane
+title: Custom status pane
 sidebar:
   order: 8
 ---

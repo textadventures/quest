@@ -1,5 +1,5 @@
 ---
-title: Baddies behind a Door who want to kill you (but if you close the door you won’t die…!)
+title: A monster waiting behind a door
 sidebar:
   order: 6
 ---

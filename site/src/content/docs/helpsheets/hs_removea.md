@@ -1,5 +1,5 @@
 ---
-title: Irritated by “a” in your objects?
+title: "Removing the \"a\" before an object's name"
 sidebar:
   order: 2
 ---

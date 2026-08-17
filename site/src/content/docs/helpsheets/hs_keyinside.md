@@ -1,5 +1,5 @@
 ---
-title: “Key” Inside another Object
+title: "\"Key\" inside another object"
 sidebar:
   order: 13
 ---

@@ -1,5 +1,5 @@
 ---
-title: Building an Ask/Tell System
+title: Building an Ask/Tell system
 sidebar:
   order: 4
 ---

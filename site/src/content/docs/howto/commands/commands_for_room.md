@@ -1,5 +1,5 @@
 ---
-title: Commands Specific to a Room
+title: Commands specific to a room
 sidebar:
   order: 1
 ---

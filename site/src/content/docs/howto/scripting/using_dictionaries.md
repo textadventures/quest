@@ -1,5 +1,5 @@
 ---
-title: Using Dictionaries
+title: Using dictionaries
 sidebar:
   order: 5
 ---

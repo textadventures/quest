@@ -99,6 +99,10 @@ export default defineConfig({
                                     "slug": "tutorial/creating_a_gamebook"
                                 }
                             ]
+                        },
+                        {
+                            "label": "The Cloak of Darkness",
+                            "slug": "tutorial/cloak_of_darkness"
                         }
                     ]
                 },
@@ -115,7 +119,7 @@ export default defineConfig({
                                     "slug": "howto/commands/commands"
                                 },
                                 {
-                                    "label": "Commands Specific to a Room",
+                                    "label": "Commands specific to a room",
                                     "slug": "howto/commands/commands_for_room"
                                 },
                                 {
@@ -127,15 +131,15 @@ export default defineConfig({
                                     "slug": "howto/commands/complex_commands"
                                 },
                                 {
-                                    "label": "Handling Multiple Items (and All)",
+                                    "label": "Handling multiple items (and all)",
                                     "slug": "howto/commands/handling_multiple"
                                 },
                                 {
-                                    "label": "Pattern Matching with Regular Expressions",
+                                    "label": "Pattern matching with regular expressions",
                                     "slug": "howto/commands/pattern_matching"
                                 },
                                 {
-                                    "label": "Advanced Scope For Items",
+                                    "label": "Advanced scope for items",
                                     "slug": "howto/commands/advanced_scope"
                                 }
                             ]
@@ -153,7 +157,7 @@ export default defineConfig({
                                     "slug": "howto/world/exits"
                                 },
                                 {
-                                    "label": "Using Containers",
+                                    "label": "Using containers",
                                     "slug": "howto/world/containers"
                                 },
                                 {
@@ -169,7 +173,7 @@ export default defineConfig({
                                     "slug": "howto/world/wearables"
                                 },
                                 {
-                                    "label": "Score, Health and Money",
+                                    "label": "Score, health and money",
                                     "slug": "howto/world/score_health_money"
                                 },
                                 {
@@ -181,7 +185,7 @@ export default defineConfig({
                                     "slug": "howto/world/transcript"
                                 },
                                 {
-                                    "label": "When the Player Saves a Game",
+                                    "label": "When the player saves a game",
                                     "slug": "howto/world/about_save"
                                 },
                                 {
@@ -197,15 +201,15 @@ export default defineConfig({
                                             "slug": "howto/multimedia/images"
                                         },
                                         {
-                                            "label": "Creating Images on the Fly",
+                                            "label": "Creating images on the fly",
                                             "slug": "howto/multimedia/images_on_the_fly"
                                         },
                                         {
-                                            "label": "Adding Sounds to your Game",
+                                            "label": "Adding sounds to your game",
                                             "slug": "howto/multimedia/adding_sounds"
                                         },
                                         {
-                                            "label": "Adding Videos",
+                                            "label": "Adding videos",
                                             "slug": "howto/multimedia/adding_videos"
                                         }
                                     ]
@@ -249,19 +253,19 @@ export default defineConfig({
                                     "slug": "howto/tasks/keeping_a_journal"
                                 },
                                 {
-                                    "label": "How to Keep Score",
+                                    "label": "How to keep score",
                                     "slug": "howto/tasks/keeping_score"
                                 },
                                 {
-                                    "label": "How to Build a Transit System",
+                                    "label": "How to build a transit system",
                                     "slug": "howto/tasks/transit_system"
                                 },
                                 {
-                                    "label": "Converting One Thing Into Another",
+                                    "label": "Converting one thing into another",
                                     "slug": "howto/tasks/convert"
                                 },
                                 {
-                                    "label": "Tracking Time",
+                                    "label": "Tracking time",
                                     "slug": "howto/tasks/time"
                                 },
                                 {
@@ -269,11 +273,11 @@ export default defineConfig({
                                     "slug": "howto/tasks/shop"
                                 },
                                 {
-                                    "label": "Setting Up a Door",
+                                    "label": "Setting up a door",
                                     "slug": "howto/tasks/setting_up_door"
                                 },
                                 {
-                                    "label": "Give the player character memory or Wiki",
+                                    "label": "Give the player character memory or wiki",
                                     "slug": "howto/tasks/memory_or_wiki"
                                 },
                                 {
@@ -297,7 +301,7 @@ export default defineConfig({
                                     "slug": "howto/tasks/use_maths_functionality"
                                 },
                                 {
-                                    "label": "Resolving Common Problems",
+                                    "label": "Resolving common problems",
                                     "slug": "howto/tasks/problems"
                                 }
                             ]
@@ -307,23 +311,23 @@ export default defineConfig({
                             "collapsed": true,
                             "items": [
                                 {
-                                    "label": "The UI and Game-play",
+                                    "label": "The UI and game-play",
                                     "slug": "howto/ux/ui-game-play"
                                 },
                                 {
-                                    "label": "The UI Style",
+                                    "label": "The UI style",
                                     "slug": "howto/ux/ui-style"
                                 },
                                 {
-                                    "label": "Using Display Verbs",
+                                    "label": "Using display verbs",
                                     "slug": "howto/ux/display_verbs"
                                 },
                                 {
-                                    "label": "Custom Command Panes",
+                                    "label": "Custom command panes",
                                     "slug": "howto/ux/command_pane"
                                 },
                                 {
-                                    "label": "Modifying the Status and Game Panes",
+                                    "label": "Modifying the status and game panes",
                                     "slug": "howto/ux/ui-custom"
                                 },
                                 {
@@ -331,11 +335,11 @@ export default defineConfig({
                                     "slug": "howto/ux/ui-fonts"
                                 },
                                 {
-                                    "label": "Messing with the Location Bar",
+                                    "label": "Messing with the location bar",
                                     "slug": "howto/ux/ui-location-bar"
                                 },
                                 {
-                                    "label": "Custom Status Pane",
+                                    "label": "Custom status pane",
                                     "slug": "howto/ux/custom_panes"
                                 },
                                 {
@@ -343,11 +347,11 @@ export default defineConfig({
                                     "slug": "howto/ux/ui-callback"
                                 },
                                 {
-                                    "label": "Adding a Dialogue Panel",
+                                    "label": "Adding a dialogue panel",
                                     "slug": "howto/ux/ui-dialogue"
                                 },
                                 {
-                                    "label": "Adding a Dialogue Panel That Assigns Points",
+                                    "label": "Adding a dialogue panel that assigns points",
                                     "slug": "howto/ux/ui-dialogue-points"
                                 },
                                 {
@@ -373,7 +377,7 @@ export default defineConfig({
                                     "slug": "howto/npcs/follower"
                                 },
                                 {
-                                    "label": "Introduction to Conversations",
+                                    "label": "Introduction to conversations",
                                     "slug": "howto/npcs/conversations"
                                 },
                                 {
@@ -381,15 +385,15 @@ export default defineConfig({
                                     "slug": "howto/npcs/speak_to"
                                 },
                                 {
-                                    "label": "Building an Ask/Tell System",
+                                    "label": "Building an Ask/Tell system",
                                     "slug": "howto/npcs/ask_about"
                                 },
                                 {
-                                    "label": "Making NPCs Patrol",
+                                    "label": "Making NPCs patrol",
                                     "slug": "howto/npcs/patrolling_npcs"
                                 },
                                 {
-                                    "label": "Making NPCs Act Independently",
+                                    "label": "Making NPCs act independently",
                                     "slug": "howto/npcs/independent_npcs"
                                 }
                             ]
@@ -403,15 +407,15 @@ export default defineConfig({
                                     "slug": "howto/rpg/rpg-intro"
                                 },
                                 {
-                                    "label": "Character Creation",
+                                    "label": "Character creation",
                                     "slug": "howto/rpg/character_creation"
                                 },
                                 {
-                                    "label": "Zombie Apocalypse (part 1)",
+                                    "label": "Zombie Apocalypse (Part 1)",
                                     "slug": "howto/rpg/zombie-apocalypse-1"
                                 },
                                 {
-                                    "label": "Zombie Apocalypse (part 2)",
+                                    "label": "Zombie Apocalypse (Part 2)",
                                     "slug": "howto/rpg/zombie-apocalypse-2"
                                 },
                                 {
@@ -425,11 +429,7 @@ export default defineConfig({
                             "collapsed": true,
                             "items": [
                                 {
-                                    "label": "The Cloak of Darkness",
-                                    "slug": "howto/scripting/cloak_of_darkness"
-                                },
-                                {
-                                    "label": "Introduction to Coding",
+                                    "label": "Introduction to coding",
                                     "slug": "howto/scripting/introtocoding"
                                 },
                                 {
@@ -437,15 +437,15 @@ export default defineConfig({
                                     "slug": "howto/scripting/creating_functions_which_return_a_value"
                                 },
                                 {
-                                    "label": "Using Lists",
+                                    "label": "Using lists",
                                     "slug": "howto/scripting/using_lists"
                                 },
                                 {
-                                    "label": "Using Dictionaries",
+                                    "label": "Using dictionaries",
                                     "slug": "howto/scripting/using_dictionaries"
                                 },
                                 {
-                                    "label": "Using Turnscripts",
+                                    "label": "Using turnscripts",
                                     "slug": "howto/scripting/using_turnscripts"
                                 },
                                 {
@@ -469,7 +469,7 @@ export default defineConfig({
                                     "slug": "howto/scripting/expressions"
                                 },
                                 {
-                                    "label": "Editing in Full Code View",
+                                    "label": "Editing in full code view",
                                     "slug": "howto/scripting/codeview"
                                 },
                                 {
@@ -481,15 +481,11 @@ export default defineConfig({
                                     "slug": "howto/scripting/using_doubles"
                                 },
                                 {
-                                    "label": "Unit Testing",
+                                    "label": "Unit testing",
                                     "slug": "howto/scripting/unit_testing"
                                 },
                                 {
-                                    "label": "Types",
-                                    "slug": "howto/scripting/about_types"
-                                },
-                                {
-                                    "label": "How to Copy-and-Paste Code",
+                                    "label": "How to copy-and-paste code",
                                     "slug": "howto/scripting/copy_and_paste_code"
                                 },
                                 {
@@ -511,11 +507,11 @@ export default defineConfig({
                                     "slug": "helpsheets"
                                 },
                                 {
-                                    "label": "Introduction at Start of Game",
+                                    "label": "Introduction at start of game",
                                     "slug": "helpsheets/hs_introduction"
                                 },
                                 {
-                                    "label": "Irritated by “a” in your objects?",
+                                    "label": "Removing the \"a\" before an object's name",
                                     "slug": "helpsheets/hs_removea"
                                 },
                                 {
@@ -523,23 +519,23 @@ export default defineConfig({
                                     "slug": "helpsheets/hs_blockingexit"
                                 },
                                 {
-                                    "label": "Locked Exits and How to Open them?",
+                                    "label": "Locked exits and how to open them?",
                                     "slug": "helpsheets/hs_lockedexits"
                                 },
                                 {
-                                    "label": "Baddies behind a Door who want to kill you (but if you close the door you won’t die…!)",
+                                    "label": "A monster waiting behind a door",
                                     "slug": "helpsheets/hs_baddy2"
                                 },
                                 {
-                                    "label": "Making Objects Appear when a Light is Switched On",
+                                    "label": "Making objects appear when a light is switched on",
                                     "slug": "helpsheets/hs_objectsappear"
                                 },
                                 {
-                                    "label": "Adding a Yes/No Quiz Question",
+                                    "label": "Adding a yes/no quiz question",
                                     "slug": "helpsheets/hs_addingquestion1"
                                 },
                                 {
-                                    "label": "The CASE Command",
+                                    "label": "The CASE command",
                                     "slug": "helpsheets/hs_case"
                                 },
                                 {
@@ -551,15 +547,15 @@ export default defineConfig({
                                     "slug": "helpsheets/hs_asktell"
                                 },
                                 {
-                                    "label": "“Key” Inside another Object",
+                                    "label": "\"Key\" inside another object",
                                     "slug": "helpsheets/hs_keyinside"
                                 },
                                 {
-                                    "label": "Adding Music to a Radio",
+                                    "label": "Adding music to a radio",
                                     "slug": "helpsheets/hs_radio"
                                 },
                                 {
-                                    "label": "Creating a Countdown Timer",
+                                    "label": "Creating a countdown timer",
                                     "slug": "helpsheets/hs_countdown"
                                 }
                             ]
@@ -601,7 +597,7 @@ export default defineConfig({
                                     "slug": "other_guides/port_and_starboard"
                                 },
                                 {
-                                    "label": "A Hint System",
+                                    "label": "A hint system",
                                     "slug": "other_guides/a_hint_system"
                                 },
                                 {
@@ -631,6 +627,10 @@ export default defineConfig({
                         {
                             "label": "Using inherited types",
                             "slug": "advanced-topics/using_inherited_types"
+                        },
+                        {
+                            "label": "Types",
+                            "slug": "advanced-topics/about_types"
                         },
                         {
                             "label": "Changing templates",

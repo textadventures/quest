@@ -1,5 +1,5 @@
 ---
-title: The UI Style
+title: The UI style
 sidebar:
   order: 2
 ---

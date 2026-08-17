@@ -1,5 +1,5 @@
 ---
-title: Creating Images on the Fly
+title: Creating images on the fly
 sidebar:
   order: 2
 ---

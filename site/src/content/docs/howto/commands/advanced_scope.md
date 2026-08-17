@@ -1,5 +1,5 @@
 ---
-title: Advanced Scope For Items
+title: Advanced scope for items
 sidebar:
   order: 6
 ---

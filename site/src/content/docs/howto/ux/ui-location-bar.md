@@ -1,5 +1,5 @@
 ---
-title: Messing with the Location Bar
+title: Messing with the location bar
 sidebar:
   order: 7
 ---

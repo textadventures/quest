@@ -1,5 +1,5 @@
 ---
-title: Introduction to Coding
+title: Introduction to coding
 sidebar:
   order: 2
 ---

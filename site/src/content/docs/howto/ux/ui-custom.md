@@ -1,5 +1,5 @@
 ---
-title: Modifying the Status and Game Panes
+title: Modifying the status and game panes
 sidebar:
   order: 5
 ---

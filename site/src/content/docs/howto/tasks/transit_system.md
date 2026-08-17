@@ -1,5 +1,5 @@
 ---
-title: How to Build a Transit System
+title: How to build a transit system
 sidebar:
   order: 12
 ---

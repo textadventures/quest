@@ -1,5 +1,5 @@
 ---
-title: Adding Sounds to your Game
+title: Adding sounds to your game
 sidebar:
   order: 3
 ---

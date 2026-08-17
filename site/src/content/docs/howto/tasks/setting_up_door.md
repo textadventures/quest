@@ -1,5 +1,5 @@
 ---
-title: Setting Up a Door
+title: Setting up a door
 sidebar:
   order: 16
 ---

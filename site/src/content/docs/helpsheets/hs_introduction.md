@@ -1,5 +1,5 @@
 ---
-title: Introduction at Start of Game
+title: Introduction at start of game
 sidebar:
   order: 1
 ---

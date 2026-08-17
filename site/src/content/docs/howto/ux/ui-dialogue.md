@@ -1,5 +1,5 @@
 ---
-title: Adding a Dialogue Panel
+title: Adding a dialogue panel
 sidebar:
   order: 10
 ---

@@ -1,5 +1,5 @@
 ---
-title: Character Creation
+title: Character creation
 sidebar:
   order: 1
 ---

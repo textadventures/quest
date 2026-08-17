@@ -1,5 +1,5 @@
 ---
-title: Tracking Time
+title: Tracking time
 sidebar:
   order: 14
 ---

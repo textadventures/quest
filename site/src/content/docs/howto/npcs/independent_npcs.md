@@ -1,5 +1,5 @@
 ---
-title: Making NPCs Act Independently
+title: Making NPCs act independently
 sidebar:
   order: 6
 ---

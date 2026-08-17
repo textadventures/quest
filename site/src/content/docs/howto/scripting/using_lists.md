@@ -1,5 +1,5 @@
 ---
-title: Using Lists
+title: Using lists
 sidebar:
   order: 4
 ---

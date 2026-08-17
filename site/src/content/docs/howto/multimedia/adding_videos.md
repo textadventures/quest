@@ -1,5 +1,5 @@
 ---
-title: Adding Videos
+title: Adding videos
 sidebar:
   order: 4
 ---

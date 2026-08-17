@@ -1,5 +1,5 @@
 ---
-title: Making NPCs Patrol
+title: Making NPCs patrol
 sidebar:
   order: 5
 ---

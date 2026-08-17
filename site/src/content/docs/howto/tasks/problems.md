@@ -1,5 +1,5 @@
 ---
-title: Resolving Common Problems
+title: Resolving common problems
 sidebar:
   order: 25
 ---

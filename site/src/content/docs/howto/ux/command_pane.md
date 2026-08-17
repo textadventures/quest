@@ -1,5 +1,5 @@
 ---
-title: Custom Command Panes
+title: Custom command panes
 sidebar:
   order: 4
 ---

@@ -1,5 +1,5 @@
 ---
-title: A Hint System
+title: A hint system
 sidebar:
   order: 8
 ---

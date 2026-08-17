@@ -1,5 +1,5 @@
 ---
-title: Adding a Dialogue Panel That Assigns Points
+title: Adding a dialogue panel that assigns points
 sidebar:
   order: 11
 ---

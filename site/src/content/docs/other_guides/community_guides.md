@@ -1,5 +1,5 @@
 ---
-title: "Community Guides"
+title: Community recipes
 sidebar:
   order: 4
 ---

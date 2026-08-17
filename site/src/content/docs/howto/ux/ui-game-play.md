@@ -1,5 +1,5 @@
 ---
-title: The UI and Game-play
+title: The UI and game-play
 sidebar:
   order: 1
 ---

@@ -1,5 +1,5 @@
 ---
-title: Helpsheets for beginners
+title: Troubleshooting for beginners
 sidebar:
   order: 5
 ---

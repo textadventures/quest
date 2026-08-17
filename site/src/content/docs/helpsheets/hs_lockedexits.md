@@ -1,5 +1,5 @@
 ---
-title: Locked Exits and How to Open them?
+title: Locked exits and how to open them?
 sidebar:
   order: 4
 ---

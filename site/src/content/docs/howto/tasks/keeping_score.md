@@ -1,5 +1,5 @@
 ---
-title: How to Keep Score
+title: How to keep score
 sidebar:
   order: 11
 ---

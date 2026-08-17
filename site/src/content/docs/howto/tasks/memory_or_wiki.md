@@ -1,5 +1,5 @@
 ---
-title: Give the player character memory or Wiki
+title: Give the player character memory or wiki
 sidebar:
   order: 17
 ---

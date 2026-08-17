@@ -1,5 +1,5 @@
 ---
-title: Handling Multiple Items (and All)
+title: Handling multiple items (and all)
 sidebar:
   order: 4
 ---

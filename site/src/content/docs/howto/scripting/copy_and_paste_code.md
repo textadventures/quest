@@ -1,5 +1,5 @@
 ---
-title: How to Copy-and-Paste Code
+title: How to copy-and-paste code
 sidebar:
   order: 19
 ---

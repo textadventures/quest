@@ -1,5 +1,5 @@
 ---
-title: Making Objects Appear when a Light is Switched On
+title: Making objects appear when a light is switched on
 sidebar:
   order: 7
 ---

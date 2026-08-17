@@ -1,5 +1,5 @@
 ---
-title: Adding a Yes/No Quiz Question
+title: Adding a yes/no quiz question
 sidebar:
   order: 8
 ---

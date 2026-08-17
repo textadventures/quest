@@ -1,5 +1,5 @@
 ---
-title: When the Player Saves a Game
+title: When the player saves a game
 sidebar:
   order: 13
 ---

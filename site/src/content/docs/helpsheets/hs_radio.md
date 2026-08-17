@@ -1,5 +1,5 @@
 ---
-title: Adding Music to a Radio
+title: Adding music to a radio
 sidebar:
   order: 15
 ---

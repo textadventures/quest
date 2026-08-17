@@ -1,5 +1,5 @@
 ---
-title: The CASE Command
+title: The CASE command
 sidebar:
   order: 10
 ---

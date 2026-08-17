@@ -1,5 +1,5 @@
 ---
-title: Pattern Matching with Regular Expressions
+title: Pattern matching with regular expressions
 sidebar:
   order: 5
 ---
