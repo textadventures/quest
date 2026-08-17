@@ -107,3 +107,7 @@ docs.textadventures.co.uk/quest/* https://questviva.com/:splat 301
 /zombie-apocalypse-1 /howto/rpg/zombie-apocalypse-1 301
 /zombie-apocalypse-2 /howto/rpg/zombie-apocalypse-2 301
 /zombie-apocalypse-spells /howto/rpg/zombie-apocalypse-spells 301
+
+# Language Reference dedup — removed duplicate/nonexistent function docs
+/functions/scopeunlockedexitsforroom /functions/corelibrary/scopeunlockedexitsforroom 301
+/functions/listworn /functions/listwornfor 301

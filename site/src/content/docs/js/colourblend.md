@@ -1,5 +1,5 @@
 ---
-title: ShowGrid
+title: colourBlend
 sidebar:
   order: 3
 ---

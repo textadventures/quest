@@ -154,7 +154,7 @@ We are indebted to Kaspar Jan for providing a translation into Icelandic.
 New functions
 -------------
 
--  [ScopeUnlockedExitsForRoom](/functions/scopeunlockedexitsforroom)
+-  [ScopeUnlockedExitsForRoom](/functions/corelibrary/scopeunlockedexitsforroom)
 -  [CloneObjectAndMoveHere](/functions/corelibrary/cloneobjectandmovehere)
 -  [CreateBiExits](/functions/createbiexits): Creates an exit in the given direction, between the given rooms, and a second exit coming back.
 -  [Equal](/functions/equal): Compares any two things (comparing 4 and null will otherwise throw an error).

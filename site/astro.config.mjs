@@ -1437,10 +1437,6 @@ export default defineConfig({
                                             "slug": "functions/corelibrary/scopeunlockedexitsforroom"
                                         },
                                         {
-                                            "label": "ScopeUnlockedExitsForRoom",
-                                            "slug": "functions/scopeunlockedexitsforroom"
-                                        },
-                                        {
                                             "label": "ScopeVisible",
                                             "slug": "functions/corelibrary/scopevisible"
                                         },
@@ -1715,12 +1711,8 @@ export default defineConfig({
                                             "slug": "functions/getouterfor"
                                         },
                                         {
-                                            "label": "ListWorn",
+                                            "label": "GetOuter",
                                             "slug": "functions/getouter"
-                                        },
-                                        {
-                                            "label": "ListWorn",
-                                            "slug": "functions/listworn"
                                         },
                                         {
                                             "label": "ListWornFor",
@@ -3015,7 +3007,7 @@ export default defineConfig({
                                     "slug": "js/addtext"
                                 },
                                 {
-                                    "label": "ShowGrid",
+                                    "label": "colourBlend",
                                     "slug": "js/colourblend"
                                 },
                                 {

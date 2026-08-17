@@ -1,8 +1,8 @@
 ---
-title: ListWorn
+title: GetOuter
 ---
 
-    ListWorn (string slot)
+    GetOuter (string slot)
 
 **New in Quest 5.7**    
 
