@@ -175,6 +175,8 @@ jobs:
         working-directory: tests/e2e
       - run: node verify-appshell-surface-shade-fix.mjs http://localhost:5174
         working-directory: tests/e2e
+      - run: node verify-appshell-switch-cases-editor.mjs http://localhost:5174
+        working-directory: tests/e2e
       - run: node verify-appshell-tap-same-tree-node.mjs http://localhost:5174
         working-directory: tests/e2e
       - run: node verify-appshell-touch-affordances.mjs http://localhost:5174

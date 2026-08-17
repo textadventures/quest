@@ -39,6 +39,9 @@
         removeScriptListItem,
         updateScriptListItem,
         setScriptListItemCount,
+        addScriptDictCase,
+        removeScriptDictCase,
+        renameScriptDictCase,
     } from "$lib/editor-store";
     import type {
         ScriptBlockData,
@@ -48,6 +51,7 @@
         ExpressionTemplateData,
         ExpressionTemplate,
         ExpressionFunctionInfo,
+        CaseScriptData,
     } from "$lib/types";
 
     interface Props {
@@ -81,6 +85,12 @@
     // Tracks which expression controls the user has explicitly forced into expression mode,
     // overriding the default simple-mode detection based on value shape.
     const expressionOverrides = new SvelteSet<string>();
+    // Tracks which switch cases (scriptdictionary control entries) are expanded, keyed by
+    // `${scriptIndex}:${paramAttribute}:${caseKey}` - see switchCasesEditor.
+    const expandedCases = new SvelteSet<string>();
+    // Staged "add case" key text, keyed by `${scriptIndex}:${paramAttribute}` - one row of
+    // scriptdictionary controls can only appear once per script node, so this is unambiguous.
+    let newCaseKeys = $state<Record<string, string>>({});
     let objectNames = $state<string[]>([]);
     let exitNames = $state<string[]>([]);
     let pageNames = $state<string[]>([]);
@@ -408,6 +418,45 @@
         try { return JSON.parse(value ?? "[]"); } catch { return []; }
     }
 
+    function caseGroupKey(scriptIndex: number, paramAttribute: string): string {
+        return `${scriptIndex}:${paramAttribute}`;
+    }
+
+    function onAddCase(scriptIndex: number, paramAttribute: string) {
+        const groupKey = caseGroupKey(scriptIndex, paramAttribute);
+        const key = (newCaseKeys[groupKey] ?? "").trim();
+        if (!key) return;
+        const added = mutate(() => addScriptDictCase(elementKey, attribute, containerPath, scriptIndex, paramAttribute, key));
+        if (added) {
+            expandedCases.add(`${groupKey}:${key}`);
+            newCaseKeys[groupKey] = "";
+        }
+    }
+
+    function onRemoveCase(scriptIndex: number, paramAttribute: string, key: string) {
+        mutate(() => removeScriptDictCase(elementKey, attribute, containerPath, scriptIndex, paramAttribute, key));
+    }
+
+    function onRenameCase(scriptIndex: number, paramAttribute: string, oldKey: string, newKey: string) {
+        const trimmed = newKey.trim();
+        if (!trimmed || trimmed === oldKey) return;
+        const groupKey = caseGroupKey(scriptIndex, paramAttribute);
+        const renamed = mutate(() => renameScriptDictCase(elementKey, attribute, containerPath, scriptIndex, paramAttribute, oldKey, trimmed));
+        if (renamed && expandedCases.has(`${groupKey}:${oldKey}`)) {
+            expandedCases.delete(`${groupKey}:${oldKey}`);
+            expandedCases.add(`${groupKey}:${trimmed}`);
+        }
+    }
+
+    function toggleCaseExpanded(scriptIndex: number, paramAttribute: string, key: string) {
+        const fullKey = `${caseGroupKey(scriptIndex, paramAttribute)}:${key}`;
+        if (expandedCases.has(fullKey)) expandedCases.delete(fullKey); else expandedCases.add(fullKey);
+    }
+
+    function scriptsForCase(ctrl: ScriptControlData, key: string): ScriptNodeData[] {
+        return ctrl.cases?.find((c: CaseScriptData) => c.key === key)?.scripts ?? [];
+    }
+
     function onSetIfExpr(scriptIndex: number, expression: string) {
         mutate(() => setIfExpression(elementKey, attribute, containerPath, scriptIndex, expression));
     }
@@ -446,6 +495,12 @@
     function paramPath(scriptIndex: number, paramAttr: string): string {
         const base = containerPath ? `${containerPath}/${scriptIndex}` : `${scriptIndex}`;
         return `${base}/param/${paramAttr}`;
+    }
+    function casePath(scriptIndex: number, paramAttr: string, key: string): string {
+        const base = containerPath ? `${containerPath}/${scriptIndex}` : `${scriptIndex}`;
+        // The key is percent-encoded since it's an arbitrary case-match expression that may
+        // contain "/" - see ResolveContainer's "case" segment on the WasmEditorBridge side.
+        return `${base}/case/${paramAttr}/${encodeURIComponent(key)}`;
     }
 
     const indentClass = $derived(depth > 0 ? "ml-4 border-l border-surface-300-700 pl-2" : "");
@@ -774,6 +829,8 @@
         />
     {:else if ctrl.controlType === "list"}
         {@render paramListEditor(ctrl, scriptIndex, siblingControls)}
+    {:else if ctrl.controlType === "scriptdictionary"}
+        {@render switchCasesEditor(ctrl, scriptIndex)}
     {:else if ctrl.controlType === "checkbox"}
         <input
             type="checkbox"
@@ -843,6 +900,69 @@
             >+ {t("scriptEditor.addParam")}</button>
         </span>
     {/if}
+{/snippet}
+
+{#snippet switchCasesEditor(ctrl: ScriptControlData, scriptIndex: number)}
+    {@const paramAttribute = ctrl.attribute!}
+    {@const groupKey = caseGroupKey(scriptIndex, paramAttribute)}
+    {@const items = parseListItems(ctrl.value)}
+    <div class="w-full flex flex-col gap-1 mt-0.5">
+        {#each items as item (item.key)}
+            {@const expanded = expandedCases.has(`${groupKey}:${item.key}`)}
+            <div class="border border-surface-200-800 rounded">
+                <div class="flex items-center gap-1 px-2 py-1">
+                    <button
+                        type="button"
+                        class="text-surface-600-400 hover:text-primary-600-400 text-xs"
+                        onclick={() => toggleCaseExpanded(scriptIndex, paramAttribute, item.key)}
+                    >{expanded ? "▼" : "▶"}</button>
+                    <input
+                        type="text"
+                        autocapitalize="off"
+                        class="input text-xs py-0 px-1 min-w-16 max-w-48"
+                        aria-label={t("scriptEditor.caseKeyAriaLabel")}
+                        value={item.key}
+                        onchange={(e) => onRenameCase(scriptIndex, paramAttribute, item.key, (e.target as HTMLInputElement).value)}
+                    />
+                    <button
+                        type="button"
+                        class="btn btn-sm preset-tonal-error px-1 py-0 text-xs leading-none"
+                        title={t("scriptEditor.removeCase")}
+                        onclick={() => onRemoveCase(scriptIndex, paramAttribute, item.key)}
+                    >×</button>
+                </div>
+                {#if expanded}
+                    <div class="pl-2 pb-1 border-t border-surface-100-900">
+                        <ScriptEditor
+                            {elementKey}
+                            {attribute}
+                            containerPath={casePath(scriptIndex, paramAttribute, item.key)}
+                            initialData={scriptsForCase(ctrl, item.key)}
+                            depth={depth + 1}
+                        />
+                    </div>
+                {/if}
+            </div>
+        {/each}
+        <div class="flex items-center gap-1">
+            <input
+                type="text"
+                autocapitalize="off"
+                class="input text-xs py-0 px-1 min-w-16 max-w-48"
+                placeholder={t("scriptEditor.addCaseKeyPlaceholder")}
+                aria-label={t("scriptEditor.addCaseKeyAriaLabel")}
+                value={newCaseKeys[groupKey] ?? ""}
+                oninput={(e) => (newCaseKeys[groupKey] = (e.target as HTMLInputElement).value)}
+                onkeydown={(e) => { if (e.key === "Enter") onAddCase(scriptIndex, paramAttribute); }}
+            />
+            <button
+                type="button"
+                class="btn btn-sm preset-outlined-primary-500 text-xs px-2 py-0.5"
+                disabled={!(newCaseKeys[groupKey] ?? "").trim()}
+                onclick={() => onAddCase(scriptIndex, paramAttribute)}
+            >{t("common.add")}</button>
+        </div>
+    </div>
 {/snippet}
 
 {#snippet expressionField(

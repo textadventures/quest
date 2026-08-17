@@ -1173,6 +1173,14 @@ export function removeScriptDictItem(elementKey: string, attribute: string, key:
     return result;
 }
 
+export function renameScriptDictItem(elementKey: string, attribute: string, oldKey: string, newKey: string): string {
+    if (!_bridge) return "error";
+    const result = _bridge.RenameScriptDictionaryItem(elementKey, attribute, oldKey, newKey);
+    if (result === "ok") { refreshSelectedData(); bumpScriptVersion(); }
+    refreshUndoRedo();
+    return result;
+}
+
 export function changeAttributeType(elementKey: string, attribute: string, newType: string): string {
     if (!_bridge) return "error";
     const result = _bridge.ChangeAttributeType(elementKey, attribute, newType);
@@ -1279,6 +1287,30 @@ export function updateScriptListItem(elementKey: string, attribute: string, cont
 export function setScriptListItemCount(elementKey: string, attribute: string, containerPath: string, scriptIndex: number, paramAttribute: string, count: number): string {
     if (!_bridge) return "error";
     const result = _bridge.SetScriptListItemCount(elementKey, attribute, containerPath, scriptIndex, paramAttribute, count);
+    if (result === "ok") bumpScriptVersion();
+    refreshUndoRedo();
+    return result;
+}
+
+export function addScriptDictCase(elementKey: string, attribute: string, containerPath: string, scriptIndex: number, paramAttribute: string, key: string): string {
+    if (!_bridge) return "error";
+    const result = _bridge.AddScriptDictCase(elementKey, attribute, containerPath, scriptIndex, paramAttribute, key);
+    if (result === "ok") bumpScriptVersion();
+    refreshUndoRedo();
+    return result;
+}
+
+export function removeScriptDictCase(elementKey: string, attribute: string, containerPath: string, scriptIndex: number, paramAttribute: string, key: string): string {
+    if (!_bridge) return "error";
+    const result = _bridge.RemoveScriptDictCase(elementKey, attribute, containerPath, scriptIndex, paramAttribute, key);
+    if (result === "ok") bumpScriptVersion();
+    refreshUndoRedo();
+    return result;
+}
+
+export function renameScriptDictCase(elementKey: string, attribute: string, containerPath: string, scriptIndex: number, paramAttribute: string, oldKey: string, newKey: string): string {
+    if (!_bridge) return "error";
+    const result = _bridge.RenameScriptDictCase(elementKey, attribute, containerPath, scriptIndex, paramAttribute, oldKey, newKey);
     if (result === "ok") bumpScriptVersion();
     refreshUndoRedo();
     return result;

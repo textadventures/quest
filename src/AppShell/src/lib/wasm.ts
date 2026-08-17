@@ -58,6 +58,10 @@ export interface WasmBridge {
   RemoveScriptListItem(elementKey: string, attribute: string, containerPath: string, scriptIndex: number, paramAttribute: string, key: string): string
   UpdateScriptListItem(elementKey: string, attribute: string, containerPath: string, scriptIndex: number, paramAttribute: string, key: string, value: string): string
   SetScriptListItemCount(elementKey: string, attribute: string, containerPath: string, scriptIndex: number, paramAttribute: string, count: number): string
+  // Script parameter-scriptdictionary API (e.g. switch's "cases")
+  AddScriptDictCase(elementKey: string, attribute: string, containerPath: string, scriptIndex: number, paramAttribute: string, key: string): string
+  RemoveScriptDictCase(elementKey: string, attribute: string, containerPath: string, scriptIndex: number, paramAttribute: string, key: string): string
+  RenameScriptDictCase(elementKey: string, attribute: string, containerPath: string, scriptIndex: number, paramAttribute: string, oldKey: string, newKey: string): string
   // Attributes editor API
   GetFullAttributeData(elementKey: string): string | null
   RemoveAttribute(elementKey: string, attribute: string): string
@@ -71,6 +75,7 @@ export interface WasmBridge {
   MakeScriptDictEditable(elementKey: string, attribute: string): string
   AddScriptDictionaryItem(elementKey: string, attribute: string, key: string): string
   RemoveScriptDictionaryItem(elementKey: string, attribute: string, key: string): string
+  RenameScriptDictionaryItem(elementKey: string, attribute: string, oldKey: string, newKey: string): string
   ChangeAttributeType(elementKey: string, attribute: string, newType: string): string
   SetPatternAttribute(elementKey: string, attribute: string, pattern: string): string
   // Element creation / deletion
