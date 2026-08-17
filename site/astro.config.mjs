@@ -20,17 +20,6 @@ export default defineConfig({
             },
             sidebar: [
                 {
-                    "label": "Self-Hosting",
-                    "collapsed": true,
-                    "items": [
-                        {
-                            "autogenerate": {
-                                "directory": "guides"
-                            }
-                        }
-                    ]
-                },
-                {
                     "label": "Start Here",
                     "collapsed": true,
                     "items": [
@@ -217,6 +206,80 @@ export default defineConfig({
                             ]
                         },
                         {
+                            "label": "Scripting",
+                            "collapsed": true,
+                            "items": [
+                                {
+                                    "label": "Introduction to coding",
+                                    "slug": "howto/scripting/introtocoding"
+                                },
+                                {
+                                    "label": "Creating functions",
+                                    "slug": "howto/scripting/creating_functions_which_return_a_value"
+                                },
+                                {
+                                    "label": "Using lists",
+                                    "slug": "howto/scripting/using_lists"
+                                },
+                                {
+                                    "label": "Using dictionaries",
+                                    "slug": "howto/scripting/using_dictionaries"
+                                },
+                                {
+                                    "label": "Using turnscripts",
+                                    "slug": "howto/scripting/using_turnscripts"
+                                },
+                                {
+                                    "label": "Scopes",
+                                    "slug": "howto/scripting/scopes"
+                                },
+                                {
+                                    "label": "Attack of the Clones!",
+                                    "slug": "howto/scripting/clones"
+                                },
+                                {
+                                    "label": "Advanced game scripts",
+                                    "slug": "howto/scripting/advanced_game_scripts"
+                                },
+                                {
+                                    "label": "Blocks and scripts",
+                                    "slug": "howto/scripting/blocks_and_scripts"
+                                },
+                                {
+                                    "label": "Expressions",
+                                    "slug": "howto/scripting/expressions"
+                                },
+                                {
+                                    "label": "Editing in full code view",
+                                    "slug": "howto/scripting/codeview"
+                                },
+                                {
+                                    "label": "Much Ado About Nothing",
+                                    "slug": "howto/scripting/null"
+                                },
+                                {
+                                    "label": "Using \"doubles\"",
+                                    "slug": "howto/scripting/using_doubles"
+                                },
+                                {
+                                    "label": "Unit testing",
+                                    "slug": "howto/scripting/unit_testing"
+                                },
+                                {
+                                    "label": "How to copy-and-paste code",
+                                    "slug": "howto/scripting/copy_and_paste_code"
+                                },
+                                {
+                                    "label": "Using walkthroughs",
+                                    "slug": "howto/scripting/using_walkthroughs"
+                                },
+                                {
+                                    "label": "Debugging your game",
+                                    "slug": "howto/scripting/debugging_your_game"
+                                }
+                            ]
+                        },
+                        {
                             "label": "Task Recipes",
                             "collapsed": true,
                             "items": [
@@ -307,6 +370,36 @@ export default defineConfig({
                             ]
                         },
                         {
+                            "label": "NPCs & Dialogue",
+                            "collapsed": true,
+                            "items": [
+                                {
+                                    "label": "Followers",
+                                    "slug": "howto/npcs/follower"
+                                },
+                                {
+                                    "label": "Introduction to conversations",
+                                    "slug": "howto/npcs/conversations"
+                                },
+                                {
+                                    "label": "Handling SPEAK TO",
+                                    "slug": "howto/npcs/speak_to"
+                                },
+                                {
+                                    "label": "Building an Ask/Tell system",
+                                    "slug": "howto/npcs/ask_about"
+                                },
+                                {
+                                    "label": "Making NPCs patrol",
+                                    "slug": "howto/npcs/patrolling_npcs"
+                                },
+                                {
+                                    "label": "Making NPCs act independently",
+                                    "slug": "howto/npcs/independent_npcs"
+                                }
+                            ]
+                        },
+                        {
                             "label": "UI & Presentation",
                             "collapsed": true,
                             "items": [
@@ -369,36 +462,6 @@ export default defineConfig({
                             ]
                         },
                         {
-                            "label": "NPCs & Dialogue",
-                            "collapsed": true,
-                            "items": [
-                                {
-                                    "label": "Followers",
-                                    "slug": "howto/npcs/follower"
-                                },
-                                {
-                                    "label": "Introduction to conversations",
-                                    "slug": "howto/npcs/conversations"
-                                },
-                                {
-                                    "label": "Handling SPEAK TO",
-                                    "slug": "howto/npcs/speak_to"
-                                },
-                                {
-                                    "label": "Building an Ask/Tell system",
-                                    "slug": "howto/npcs/ask_about"
-                                },
-                                {
-                                    "label": "Making NPCs patrol",
-                                    "slug": "howto/npcs/patrolling_npcs"
-                                },
-                                {
-                                    "label": "Making NPCs act independently",
-                                    "slug": "howto/npcs/independent_npcs"
-                                }
-                            ]
-                        },
-                        {
                             "label": "RPG Mechanics",
                             "collapsed": true,
                             "items": [
@@ -421,80 +484,6 @@ export default defineConfig({
                                 {
                                     "label": "Spells for the Zombie Apocalypse",
                                     "slug": "howto/rpg/zombie-apocalypse-spells"
-                                }
-                            ]
-                        },
-                        {
-                            "label": "Scripting",
-                            "collapsed": true,
-                            "items": [
-                                {
-                                    "label": "Introduction to coding",
-                                    "slug": "howto/scripting/introtocoding"
-                                },
-                                {
-                                    "label": "Creating functions",
-                                    "slug": "howto/scripting/creating_functions_which_return_a_value"
-                                },
-                                {
-                                    "label": "Using lists",
-                                    "slug": "howto/scripting/using_lists"
-                                },
-                                {
-                                    "label": "Using dictionaries",
-                                    "slug": "howto/scripting/using_dictionaries"
-                                },
-                                {
-                                    "label": "Using turnscripts",
-                                    "slug": "howto/scripting/using_turnscripts"
-                                },
-                                {
-                                    "label": "Scopes",
-                                    "slug": "howto/scripting/scopes"
-                                },
-                                {
-                                    "label": "Attack of the Clones!",
-                                    "slug": "howto/scripting/clones"
-                                },
-                                {
-                                    "label": "Advanced game scripts",
-                                    "slug": "howto/scripting/advanced_game_scripts"
-                                },
-                                {
-                                    "label": "Blocks and scripts",
-                                    "slug": "howto/scripting/blocks_and_scripts"
-                                },
-                                {
-                                    "label": "Expressions",
-                                    "slug": "howto/scripting/expressions"
-                                },
-                                {
-                                    "label": "Editing in full code view",
-                                    "slug": "howto/scripting/codeview"
-                                },
-                                {
-                                    "label": "Much Ado About Nothing",
-                                    "slug": "howto/scripting/null"
-                                },
-                                {
-                                    "label": "Using \"doubles\"",
-                                    "slug": "howto/scripting/using_doubles"
-                                },
-                                {
-                                    "label": "Unit testing",
-                                    "slug": "howto/scripting/unit_testing"
-                                },
-                                {
-                                    "label": "How to copy-and-paste code",
-                                    "slug": "howto/scripting/copy_and_paste_code"
-                                },
-                                {
-                                    "label": "Using walkthroughs",
-                                    "slug": "howto/scripting/using_walkthroughs"
-                                },
-                                {
-                                    "label": "Debugging your game",
-                                    "slug": "howto/scripting/debugging_your_game"
                                 }
                             ]
                         },
@@ -3115,6 +3104,17 @@ export default defineConfig({
                         {
                             "label": "Older Versions",
                             "slug": "release-notes/older-versions"
+                        }
+                    ]
+                },
+                {
+                    "label": "Self-Hosting",
+                    "collapsed": true,
+                    "items": [
+                        {
+                            "autogenerate": {
+                                "directory": "guides"
+                            }
                         }
                     ]
                 },
