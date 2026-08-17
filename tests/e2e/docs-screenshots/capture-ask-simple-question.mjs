@@ -16,6 +16,15 @@ const out = name => join(imagesDir, name);
 
 const lastAddScript = page => page.locator('button:has-text("+ Add script")').last();
 
+// Switch cases render collapsed ("▶") by default — expand every one so the doc's screenshot
+// shows the actual per-case script content, not just the case labels.
+async function expandAllSwitchCases(page) {
+    const toggles = page.getByRole('button', { name: '▶' });
+    while (await toggles.count() > 0) {
+        await toggles.first().click();
+    }
+}
+
 await runCapture(async ({ page, baseUrl }) => {
     await createLocalDraft(page, baseUrl, 'Tutorial Game');
 
@@ -86,6 +95,7 @@ MoveObject (roses, player)
 }
 }`);
     await page.waitForSelector('text=Show menu with caption', { timeout: 5000 });
+    await expandAllSwitchCases(page);
     await capture(page, out('menu3.png'), { untilLocator: lastAddScript(page), padding: 40 });
 
     // --- menu4.png: + second case (Lavender), third still missing ---
@@ -109,6 +119,7 @@ MoveObject (lavender, player)
 }
 }`);
     await page.waitForSelector('text=Show menu with caption', { timeout: 5000 });
+    await expandAllSwitchCases(page);
     await capture(page, out('menu4.png'), { untilLocator: lastAddScript(page), padding: 40 });
 
     // --- menu4a.png: all four cases, including the conditional Orchids one ---
@@ -140,6 +151,7 @@ MoveObject (orchids, player)
 }
 }`);
     await page.waitForSelector('text=Show menu with caption', { timeout: 5000 });
+    await expandAllSwitchCases(page);
     await capture(page, out('menu4a.png'), { untilLocator: lastAddScript(page), padding: 40 });
 
     // --- menu5.png: separate simpler "Are you sure?" yes/no example (same verb slot) ---
