@@ -71,7 +71,7 @@ Script
 Note that your script now has access to a special local variable called "object", and you can use that as a handle for the actual zombie.
 
 
-The recommended way to build the script for a command is as a series of fail conditions followed by the success. We will look at the attack command so you can se what that means.
+The recommended way to build the script for a command is as a series of fail conditions followed by the success. We will look at the attack command so you can see what that means.
 
 Think of a checklist; what do we need to check before allowing the command to work?
 

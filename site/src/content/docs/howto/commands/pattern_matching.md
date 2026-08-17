@@ -78,7 +78,7 @@ Command Matching
 
 When the player types some input, Quest goes through the list of commands, looking for the best match. A match is determined by using `IsRegexMatch`.
 
-If there are more than one matching commands, quest uses three criteria to select the best. Firstly it looks at the value from `GetMatchStrength`, giving priority to the command with the higher match strength.
+If there is more than one matching command, Quest uses three criteria to select the best. Firstly it looks at the value from `GetMatchStrength`, giving priority to the command with the higher match strength.
 
 If there is a tie for the highest match strength, it will give priority to the command specific to the room. If there is still a tie after that, commands lower down the list take priority (so user defined commands take priority over the built in commands).
 
@@ -134,13 +134,13 @@ More on Regex
 
 Quest is based on .Net technology, and so uses the .Net format for regex. That said, it is fairly standard and is used across several programming languages, and not at all specific to Microsoft (one difference, though, is how capture groups are defined).
 
-[https://msdn.microsoft.com/en-us/library/az24scfc.aspx](https://msdn.microsoft.com/en-us/library/az24scfc.aspx)
+[https://learn.microsoft.com/en-us/dotnet/standard/base-types/regular-expression-language-quick-reference](https://learn.microsoft.com/en-us/dotnet/standard/base-types/regular-expression-language-quick-reference)
 
 A lot of regex options start with a backslash, and this is a bit of a problem, because Quest is using strings to handle them, and in Quest (and most programming languages) the backslash is an escape character. What this means is that to display a backslash in Quest, you actually need to have two of them.
 ```
 msg("Here is a single backslash: \\")
 ```
-If you want to use any regex option that has a backslash _in your code_ you need to remember to use two! An important use of backslashes is to match against a character that has some special meaning. For example, to match a question mark, the standard way is to use `\?`. In quest you will need to use `\\?`.
+If you want to use any regex option that has a backslash _in your code_ you need to remember to use two! An important use of backslashes is to match against a character that has some special meaning. For example, to match a question mark, the standard way is to use `\?`. In Quest you will need to use `\\?`.
 
 However, for pattern-matching _in a command_, you do not need the extra backslash.
 
@@ -188,7 +188,7 @@ You can also use curly braces to specify a specific number or range:
 
 ### Anchors
 
-Anchors allow to to specify where in the string the match must be. In the previous example, the number could be anywhere in the string. Perhaps you require them to be at the beginning or end?
+Anchors allow you to specify where in the string the match must be. In the previous example, the number could be anywhere in the string. Perhaps you require them to be at the beginning or end?
 ```
 regex = "^help$"
 ```

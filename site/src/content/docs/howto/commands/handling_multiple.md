@@ -50,7 +50,7 @@ Note that items held by the character will still not get included in ALL.
 DROP ALL
 --------
 
-What gets dropped is considerably easier
+What gets dropped is considerably easier.
 
 ```
 > i
@@ -75,7 +75,7 @@ The command must have a Boolean attribute called `allow_all` set to true.
 
 You need to set the scope. This tells Quest where to look for objects, and is a good idea for all commands.
 
-You also need to modify the script. For any command with `allow_all` set to true, the `object` variable will be a list of objects, rather than one object - even if the player only specifies a single object. The list will include any in the given scope, unless `not_all` is true
+You also need to modify the script. For any command with `allow_all` set to true, the `object` variable will be a list of objects, rather than one object - even if the player only specifies a single object. The list will include any in the given scope, unless `not_all` is true.
 
 The script will also have access to a second variable, `multiple`, which will be true if the player said `ALL` or gave a list of items.
 

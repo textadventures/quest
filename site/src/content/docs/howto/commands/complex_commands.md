@@ -69,7 +69,7 @@ If you are feeling brave, you could use a regular expression here (remember to s
 
 * If you need to match special characters, you can escape them with a backslash. Backslashes have a special meaning in strings, so you then need to escape the backslash as well! To match a `*`, you therefore need to use `\\*`
 
-Quest uses .NET regex rules, and and a quick reference for .NET regex rules can be found [here](http://msdn.microsoft.com/en-us/library/az24scfc.aspx).
+Quest uses .NET regex rules, and a quick reference for .NET regex rules can be found [here](https://learn.microsoft.com/en-us/dotnet/standard/base-types/regular-expression-language-quick-reference).
 
 May be not much point in this example, but if you have variations in the joining word to handle too, you could be looking at a lot of combinations, so this way may be easier. For example:
 ```
@@ -126,7 +126,7 @@ For the first three conditions, we convert them to a if/else if/else cascade, at
   }
   // 2. The first object is the cord
   else if (not object1 = cord) {
-    msg("You cannot tie the " + GetDisplayAlias(object1) + " to anytthing.")
+    msg("You cannot tie the " + GetDisplayAlias(object1) + " to anything.")
   }
   // 3. The second object is the hook
   else if (not object2 = hook) {
@@ -174,7 +174,7 @@ The code here has two changes. Condition number 3 now checks the attachable flag
 Burn, Baby, Burn!
 -----------------
 
-Let's ook at another example. Suppose you want to have fire in your game, to allow the player to burn certain items. There are several ways you could do this; I will offer a relatively simple approach.
+Let's look at another example. Suppose you want to have fire in your game, to allow the player to burn certain items. There are several ways you could do this; I will offer a relatively simple approach.
 
 We will do this with two commands, one to handle BURN PAPER IN FIREPLACE and one to handle BURN PAPER. The trick is that we will call the code in the first command from the second.
 

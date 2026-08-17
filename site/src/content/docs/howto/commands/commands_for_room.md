@@ -23,7 +23,7 @@ Now click the "Add new script" button, select "Print" and paste in some suitable
 
 Now create a second command. This will be the command that actually does something. Give it the same pattern, click the "Add new script" button, select "Print" and paste in some suitable text, "You climb the drainpipe, and go in through the window." Then click the "Add new script" button again, select "Move Object". Select the player object and some suitable room.
 
-Now the clever bit. Use the tree's "Move to..." option (in its "..." menu, or click "Move" towards the top right) to move the command into the room the player can climb in (make sure you do the right one!).
+Now the clever bit. Use the tree's "Move to…" option (in its "..." menu) to move the command into the room the player can climb in (make sure you do the right one!).
 
 If the player is in that room, Quest will use the `CLIMB` command for the room, and the player will climb the drainpipe. Otherwise the general command will be used.
 

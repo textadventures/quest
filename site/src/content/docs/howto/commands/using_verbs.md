@@ -7,7 +7,7 @@ sidebar:
 
 Verbs are an alternative to commands that can be simpler to use, but do seem to lead to some confusion. We did look at them in the [tutorial](/tutorial/using_scripts), but it is worth looking at them in more depth.
 
-Verbs are always used in conjunction an object, so `ROTATE KNOB` could be set up as a verb, but `STAND UP` or `JUMP` will require commands. You could use a command for `ROTATE KNOB`, but using a verb is probably simpler. If the player will only try to do this with one or two objects, use a verb. If she could potentially do it with anything, and the outcome will be broadly similar (such as a `SELL` command - the player could try to sell any object, and you would handle them all the same), a command might be better; however there is no hard and fast rule.
+Verbs are always used in conjunction with an object, so `ROTATE KNOB` could be set up as a verb, but `STAND UP` or `JUMP` will require commands. You could use a command for `ROTATE KNOB`, but using a verb is probably simpler. If the player will only try to do this with one or two objects, use a verb. If she could potentially do it with anything, and the outcome will be broadly similar (such as a `SELL` command - the player could try to sell any object, and you would handle them all the same), a command might be better; however there is no hard and fast rule.
 
 To create a verb, select the appropriate object, and go to the _Verbs_ tab. Click add, and type in your verb. Your verb will appear in the upper box, and the response can be set in the section below, either "Print a message" or "Run a script". Let us suppose we set this up with a script to make things happen when the dial is turned (how to do scripts is not something I will be dealing with here).
 
@@ -144,4 +144,6 @@ As with commands, you can also use a Regex to match against (change "Pattern" to
 
 By default, Regex matching is "greedy", and will try to grab as much as it can, so again will attempt to grab "mary a" as the object. The question mark after the asterisk makes that non-greedy so it takes the minimum, leaving the "a" out of the object name.
 
-For verbs that use two objects, Quest will append the option to include the second object in the command pattern, which will just confuse it if you are using a regular expression. That appears to be no way to successfully use a regular expression with multiple objects for a verb. There also seems to be no way to reverse the order (to allow for `ATTACK GOBLIN WITH KNIFE` and `USE KNIFE TO ATTACK GOBLIN`) using the command pattern. In both cases you will need to use commands.
+For verbs that use two objects, Quest will append the option to include the second object in the command pattern, which will just confuse it if you are using a regular expression. There appears to be no way to successfully use a regular expression with multiple objects for a verb. There also seems to be no way to reverse the order (to allow for `ATTACK GOBLIN WITH KNIFE` and `USE KNIFE TO ATTACK GOBLIN`) using the command pattern. In both cases you will need to use commands.
+
+There is more on regular expressions [here](/howto/commands/pattern_matching).
