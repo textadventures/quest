@@ -16,10 +16,39 @@ const VIEWPORT = { width: 960, height: 800 };
 
 export async function launch(baseUrl = DEFAULT_BASE_URL) {
     const browser = await chromium.launch();
-    const page = await browser.newPage({ viewport: VIEWPORT });
+    const context = await browser.newContext({ viewport: VIEWPORT });
+    await context.grantPermissions(['clipboard-read', 'clipboard-write']);
+    const page = await context.newPage();
     page.on('pageerror', err => console.log('[pageerror]', err.message));
     page.on('console', msg => { if (msg.type() === 'error') console.log('[console.error]', msg.text()); });
     return { browser, page, baseUrl };
+}
+
+// Types raw quest-script text directly into a script's "Code view" CodeMirror editor and
+// switches back to "Visual editor", letting the visual tree render whatever the script parses
+// to — much faster and more reliable than reconstructing a nested script via addScriptCommand
+// for every level, and the only way to reach a script command that's been intentionally removed
+// from the Add Script Command picker but is "still fully editable if already present" (e.g.
+// "get input", superseded in the picker by the GetInput() expression form — see
+// CoreEditorScriptsOutput.aslx). `codeViewButtonLocator` must resolve to the specific script's
+// own "Code view" button (there can be several on screen — Start script, room-entry script,
+// turn scripts, ...). Paste (not keyboard.type) avoids CodeMirror's closeBrackets/indentOnInput
+// extensions desyncing from synthetic keystrokes on longer text (confirmed interactively: typed
+// content over a few hundred characters can come out corrupted) — see
+// tests/e2e/verify-appshell-code-view.mjs's setCmContent for the same pattern.
+const selectAllKey = process.platform === 'darwin' ? 'Meta+A' : 'Control+A';
+const pasteKey = process.platform === 'darwin' ? 'Meta+V' : 'Control+V';
+
+export async function setScriptCodeView(page, codeViewButtonLocator, scriptText) {
+    await codeViewButtonLocator.click();
+    const cm = page.locator('.cm-editor .cm-content').first();
+    await cm.waitFor({ timeout: 5000 });
+    await cm.click();
+    await page.keyboard.press(selectAllKey);
+    await page.evaluate(t => navigator.clipboard.writeText(t), scriptText);
+    await page.keyboard.press(pasteKey);
+    await page.waitForTimeout(200);
+    await page.click('button:has-text("Visual editor")');
 }
 
 // Creates a local (browser-only) draft game with a fixed, human-readable name and
@@ -252,14 +281,26 @@ export async function capture(page, outputPath, { untilLocator, padding = 24, cu
         removeCursor = await injectCursor(page, locator, at);
     }
     let clip;
+    let resized = false;
     if (untilLocator) {
         const box = await untilLocator.boundingBox();
         if (box) {
-            clip = { x: 0, y: 0, width: VIEWPORT.width, height: Math.min(VIEWPORT.height, Math.ceil(box.y + box.height + padding)) };
+            const neededHeight = Math.ceil(box.y + box.height + padding);
+            // Deeply nested scripts (e.g. a get-input/show-menu/show-menu/wait chain) can be
+            // taller than the fixed VIEWPORT — grow the viewport to fit rather than silently
+            // truncating (the old min() against VIEWPORT.height did the latter). Widening only
+            // the height leaves layout/wrapping (driven by width) unaffected, so box.x/box.y
+            // stay valid after the resize.
+            if (neededHeight > VIEWPORT.height) {
+                await page.setViewportSize({ width: VIEWPORT.width, height: neededHeight });
+                resized = true;
+            }
+            clip = { x: 0, y: 0, width: VIEWPORT.width, height: neededHeight };
         }
     }
     await page.screenshot({ path: outputPath, ...(clip ? { clip } : {}) });
     if (removeCursor) await removeCursor();
+    if (resized) await page.setViewportSize(VIEWPORT);
     console.log(`SAVED: ${outputPath}`);
 }
 
