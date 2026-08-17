@@ -105,7 +105,7 @@ if (torch.battery < 1) {
 
 The first line reduces the life of the battery. If it gets to zero the rest of the script kicks in (I am checking for less than one rather than zero in case something odd happens, and it jumps to -1; I still want the torch to fail then). Once the battery fails, we need the torch to be switched off, to not be a light source and for this turn script to stop. We also need a message to the player.
 
-The last line sets a special attribute that (as of version 5.7) Quest will check before switching the object on; if the attribute is a string, the string is displayed, rather than turning on the item.
+The last line sets a special attribute that Quest will check before switching the object on; if the attribute is a string, the string is displayed, rather than turning on the item.
 
 Now we need to go back to the torch, and the scripts on the Switchable tab. The turn off script now looks like this, as we now want to turn off the turn script when the torch is off:
 

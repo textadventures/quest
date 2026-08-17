@@ -80,10 +80,10 @@ For the jacket, then, on the _Verbs_ tab, add a new verb, "fasten". Set it to ru
 All your verbs should be variations on this, just changing the numbers and strings as appropriate.
 
 
-Only removable when...
+Only removeable when...
 --------------------
 
-You may decide the garment should only be removed when in a certain state, perhaps when it is already unfastened. This is easy to accomplish, you just have to set the `removable` flag as appropriate. To ensure the display verbs are right, call `SetVerbs` after doing so. For example: 
+You may decide the garment should only be removed when in a certain state, perhaps when it is already unfastened. This is easy to accomplish, you just have to set the `removeable` flag as appropriate. To ensure the display verbs are right, call `SetVerbs` after doing so. For example: 
 
 ```
   if (not this.worn) {

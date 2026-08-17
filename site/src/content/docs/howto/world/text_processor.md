@@ -4,7 +4,7 @@ sidebar:
   order: 1
 ---
 
-Quest 5.4 introduces a text processor, giving an easy way to conditionally print text, show object links, show text only once, and more.
+The text processor gives an easy way to conditionally print text, show object links, show text only once, and more.
 
 To use the text processor, you can simply add a directive in curly braces in any text that gets displayed. In this simple example, a room description is set to say that room smells only the first time the text is printed:
 
@@ -113,8 +113,8 @@ Selects one text to display, based on the value of the object attribute (you can
 
 
 
-Additional text adventure commands in Quest 5.7
------------------------------------------------
+More text adventure commands
+-----------------------------
 
 {i:**text**}
 Displays the given text in italic.

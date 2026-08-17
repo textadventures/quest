@@ -28,7 +28,7 @@ Container
 
 We want our chest to be a container, so select that option.
 
-at this point it is just a case of making some choices. Can it be opened and closed? Is it already open? Is it transparent (player can see the contents even if closed, but not get it)?
+At this point it is just a case of making some choices. Can it be opened and closed? Is it already open? Is it transparent (player can see the contents even if closed, but not get it)?
 
 There are also scripts that will trigger when the chest is opened (perhaps the chest is trapped), is closed or an item is added (see later).
 
@@ -44,7 +44,7 @@ That said, we will set up our chest as lockable. Make sure it starts closed.
 
 In the "Locking" section, select: "Lockable". Again, you will see a bunch of options, and two new script options. The important part is the key. You can set up to five different objects to be keys. Select the number, and a number of dropdown lists will appear. Simply select the key object from the list.
 
-By default, the player will need to have all they keys to unlock the container. You can untick the "Require all keys" check box, and the player will be able to unlock the container with any of the keys.
+By default, the player will need to have all the keys to unlock the container. You can untick the "Require all keys" check box, and the player will be able to unlock the container with any of the keys.
 
 ![](/images/lockandkey.png)
 

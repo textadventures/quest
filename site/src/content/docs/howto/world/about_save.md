@@ -14,7 +14,7 @@ That works fine, until you update your game.
 
 When the player now loads a saved game, Quest does not bother to look at the game itself. The player saved the old version (in whatever game state), and so that is what is loaded, and so the player is still using the old version.
 
-Generally, this is not much of a problem; hopefully your original game was in a decent staste before you released it (you did beta-test, right?). For longer games, players may be disappinted that they need to start again to see new content.
+Generally, this is not much of a problem; hopefully your original game was in a decent state before you released it (you did beta-test, right?). For longer games, players may be disappointed that they need to start again to see new content.
 
 Possibly the biggest problem is when you upload your latest version, you may be confused why the changes are not there. It may be because you are played a saved game; you need to restart the game to see the changes.
 

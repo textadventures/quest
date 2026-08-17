@@ -55,7 +55,7 @@ Switchables can be given a special attribute, "cannotswitchon", that will indica
 
 In this simple example, the player just has to use a new `POWER` command to get power to the machine:
 
-![Power comnmand](/images/switchpower.png)
+![Power command](/images/switchpower.png)
 
 This is the code:
 

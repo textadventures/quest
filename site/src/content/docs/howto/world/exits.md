@@ -76,7 +76,7 @@ Select "Exit: garden" in the tree and tick the "Locked" box. You should see a wa
 
 ![](/images/Lockedexit.png)
 
-Go to the door object, and on the Verbs tab add a verb "unlock". Set it to "Run a script", and then add a command to print a message (such as "You unlock you door"). Add an "unlock exit" command, and choose "garden exit" from the list.
+Go to the door object, and on the Verbs tab add a verb "unlock". Set it to "Run a script", and then add a command to print a message (such as "You unlock the door"). Add an "unlock exit" command, and choose "garden exit" from the list.
 
 Run the game and verify that the exit now works correctly:
 
@@ -224,4 +224,4 @@ There are three scope functions that will return a list of exits for a given roo
 
 ### Random exit
 
-Two functions, [PickOneExit](/functions/pickoneexit) and [functions/pickoneunlockedexit.html](/functions/pickoneunlockedexit), will give a random exit from the given room (or `null` if there are none).
+Two functions, [PickOneExit](/functions/pickoneexit) and [PickOneUnlockedExit](/functions/pickoneunlockedexit), will give a random exit from the given room (or `null` if there are none).

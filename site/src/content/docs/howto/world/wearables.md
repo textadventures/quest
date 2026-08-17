@@ -94,7 +94,7 @@ The bonuses are applied by the SetBonuses function, which takes the garment as i
 
 The WEAR and REMOVE commands, together with the WearGarments function will call SetBonuses automatically. If you have garments getting put on or taken off any other way, you must remember to call SetBonuses for each garment, if you use this feature.
 
-You can override the GarmentBonusMultiplier function to have the effects doubled or tripled in certain situations. By default it returns 1, but if the player should get double the effect, have it return 2.
+You can override the `ClothingBonusMultiplier` function to have the effects doubled or tripled in certain situations. By default it returns 1, but if the player should get double the effect, have it return 2.
 
 NPCs are not affected by garment bonuses.
 
@@ -105,7 +105,7 @@ The system automatically updates the display verbs for all clothing as garments 
 
 For verbs that will be visible when the player has the item, set these on the _Wearables_ tab. There are two boxes, one for when the garment is just being carried and one for when it is worn (but only if it is the outmost garment). You can put as many verbs as you like, separated with semi-colons.
 
-You can change the additional display verbs mid-game by modifying the `wornverbs` or `invverbs` attributes, then called `SetVerbs`. Here is an example where two verbs are added to a hat for when it is worn, and one when it is not.
+You can change the additional display verbs mid-game by modifying the `wornverbs` or `invverbs` attributes, then calling `SetVerbs`. Here is an example where two verbs are added to a hat for when it is worn, and one when it is not.
 
 ```
   pink_hat.wornverbs = "Activate;Show off"
@@ -198,7 +198,7 @@ The `RemoveGarment` function works similarly, taking the garment to be removed a
 Quest handles changing the name of a garment, so when it is worn, its alias has "(worn)" added to it. However, that means that if the name of a garment changes, just setting the alias is going to confuse Quest. There are, therefore, two functions to do this. The `SetAlias` function takes the name of the object and the new alias, whilst `SetListAlias` takes the name of the object, the new alias and the new list alias. For example:
 
 ```
-SetAlias (trendy_jacket, "unfashionable jacket", "Unfashionable jacket")
+SetListAlias (trendy_jacket, "unfashionable jacket", "Unfashionable jacket")
 ```
 
 You can use this with any object, by the way; they will just change the alias and list alias.
