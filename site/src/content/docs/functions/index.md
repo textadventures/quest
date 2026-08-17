@@ -166,7 +166,7 @@ Functions that change what is displayed or how it is displayed or require the pl
 <a name="list"></a>List Functions
 ---------------------------------
 
-Functions for manipulating lists. For a discussion on how to use lists, see [here](/using_lists).
+Functions for manipulating lists. For a discussion on how to use lists, see [here](/howto/scripting/using_lists).
 
 * [Contains](/functions/contains)
 * [FilterByAttribute](/functions/filterbyattribute)
@@ -196,7 +196,7 @@ Functions for manipulating lists. For a discussion on how to use lists, see [her
 <a name="scope"></a>Scope Functions
 -----------------------------------
 
-Functions that will return a list of objects (in the loosest sense). See more [here](/scopes).
+Functions that will return a list of objects (in the loosest sense). See more [here](/howto/scripting/scopes).
 
 * [AllCommands](/functions/allcommands)
 * [AllExits](/functions/allexits)
@@ -231,7 +231,7 @@ Functions that will return a list of objects (in the loosest sense). See more [h
 <a name="dictionary"></a>Dictionary Functions
 ---------------------------------
 
-Functions for manipulating dictionaries. For a discussion on how to use dictionaries, see [here](/using_dictionaries).
+Functions for manipulating dictionaries. For a discussion on how to use dictionaries, see [here](/howto/scripting/using_dictionaries).
 
 * [DictionaryAdd](/functions/dictionaryadd)
 * [DictionaryContains](/functions/dictionarycontains)
@@ -307,7 +307,7 @@ Functions for manipulating dictionaries. For a discussion on how to use dictiona
 <a name="random"></a>Randomising Functions
 -------------------------------------
 
-These functions all return a random value. See also [here](/random).
+These functions all return a random value. See also [here](/howto/tasks/random).
 
 * [DiceRoll](/functions/corelibrary/diceroll)
 * [GetRandomDouble](/functions/getrandomdouble)

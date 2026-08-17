@@ -6,4 +6,4 @@ title: DictionaryAdd
 
 Adds to the dictionary an element with the specified key and value. If an element with that key already exists in the dictionary, that element will be removed first.
 
-See [Using Dictionaries](/using_dictionaries)
+See [Using Dictionaries](/howto/scripting/using_dictionaries)

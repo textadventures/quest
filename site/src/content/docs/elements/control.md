@@ -19,4 +19,4 @@ caption
 controltype  
 [string](/types/string) specifying the control type
 
-See [Editor User Interface Elements](/editor_user_interface_elements)
+See [Editor User Interface Elements](/advanced-topics/editor_user_interface_elements)

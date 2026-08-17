@@ -6,4 +6,4 @@ title: dictionary remove
 
 Removes the specified item from the dictionary.
 
-See [Using Dictionaries](/using_dictionaries)
+See [Using Dictionaries](/howto/scripting/using_dictionaries)

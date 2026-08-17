@@ -44,4 +44,4 @@ To handle "take all" and "drop all", the "take" and "drop" commands, for example
 Scope
 -----
 
-The scope attribute tells Quest where to look first for objects for this command. See the "Alternative scope" section of [this page](/advanced_scope) for details.
+The scope attribute tells Quest where to look first for objects for this command. See the "Alternative scope" section of [this page](/howto/commands/advanced_scope) for details.

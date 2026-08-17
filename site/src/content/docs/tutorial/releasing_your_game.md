@@ -41,7 +41,7 @@ In the editor, go to _Tools - Publish_, give it a name (the same as your main fi
 
 On textadventures.co.uk, click on _Create_ at the top, then _Upload_ game below that. Then follow the instructions.
 
-For more on the Publish tool, including size limitations and what gets included in the .quest file, see [Publishing](/publishing).
+For more on the Publish tool, including size limitations and what gets included in the .quest file, see [Publishing](/publishing/publishing).
 
 
 Upload testing
@@ -61,7 +61,7 @@ Once all the bugs are sorted, upload your game again, just as before. Check the 
 Announcement
 ------------
 
-Now all you have to do is tell people about it! See [Publishing](/publishing) for a list of places you can announce your game.
+Now all you have to do is tell people about it! See [Publishing](/publishing/publishing) for a list of places you can announce your game.
 
 
 

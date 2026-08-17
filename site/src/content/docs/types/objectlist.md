@@ -10,4 +10,4 @@ The format in an ASLX file is:
 
      <mylist type="objectlist">player; object1; thing</mylist>
 
- See [Using Lists](/using_lists) for more information.
+ See [Using Lists](/howto/scripting/using_lists) for more information.

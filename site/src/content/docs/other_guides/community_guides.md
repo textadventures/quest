@@ -24,7 +24,7 @@ Basic
 
 Be prepared to see code - but not write it. Most of these have blocks of code, but do not let that put you off; it is pretty easy to copy-and-paste a chunk of code straight into your game, then go back to the GUI view to look at it or change it.
 
--   [Character Creation](/character_creation)
+-   [Character Creation](/howto/rpg/character_creation)
 -   [Immobilise the player](/other_guides/immobilise_the_player)
 -   [Use InvisiClues for Help](/other_guides/invisiclues)
 -   [Random responses](/other_guides/random_default_answers)
@@ -37,7 +37,7 @@ For those happy to use code.
 
 -   [A Hint System](/other_guides/a_hint_system)
 -   [Turn-based events](/other_guides/turn_based_events)
--   [How to use functions](/about_functions)
+-   [How to use functions](/howto/tasks/about_functions)
 -   [Random default messages](/other_guides/random_default_answers)
 
 

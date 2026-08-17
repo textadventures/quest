@@ -50,7 +50,7 @@ The default player interface is clean and functional, but Quest gives you full c
 
 When your game is ready, you can publish it to [textadventures.co.uk](https://textadventures.co.uk), where players can find and play it directly in their browser without downloading anything. Games work on any device. You can also keep a game private and share just a direct link with friends.
 
-See the [Publishing](/publishing) section for full details on how to publish, file size limits, and competition entries.
+See the [Publishing](/publishing/publishing) section for full details on how to publish, file size limits, and competition entries.
 
 ## What next?
 

@@ -10,4 +10,4 @@ Defines a walkthrough with a list of steps. Each step should be on its own line.
 
 Walkthrough elements can be nested within each other to create a hierarchy.
 
-See [Walkthroughs](/using_walkthroughs).
+See [Walkthroughs](/howto/scripting/using_walkthroughs).

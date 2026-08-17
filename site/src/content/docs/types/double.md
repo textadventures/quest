@@ -8,4 +8,4 @@ A "double" attribute represents a number with a decimal point. It can be positiv
 
 Examples: 1.23, 5.8214, -0.12421, 0.0.
 
-More [here](/using_doubles).
+More [here](/howto/scripting/using_doubles).

@@ -18,4 +18,4 @@ Example:
 
 Use the [ask](/scripts/ask) script command for a popup menu.
 
-**Note:** This function is "non-blocking", and its script has no access to local variables. For a fuller discussion, see the note on [Blocks and Scripts](/blocks_and_scripts).
+**Note:** This function is "non-blocking", and its script has no access to local variables. For a fuller discussion, see the note on [Blocks and Scripts](/howto/scripting/blocks_and_scripts).

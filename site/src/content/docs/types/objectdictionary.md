@@ -36,4 +36,4 @@ This defines:
 |first|player|
 |second|lounge|
 
-See [Using Dictionaries](/using_dictionaries)
+See [Using Dictionaries](/howto/scripting/using_dictionaries)

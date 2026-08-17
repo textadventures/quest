@@ -38,4 +38,4 @@ Here is an example dictionary containing a variety of different types:
        </item>
      </example>
 
-See [Using Dictionaries](/using_dictionaries)
+See [Using Dictionaries](/howto/scripting/using_dictionaries)

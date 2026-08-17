@@ -22,4 +22,4 @@ In Quest 5.4, you can still use the older semi-colon separate format with "simpl
 
      <mylist type="simplestringlist">one; two; three</mylist>
 
-See [Using Lists](/using_lists).
+See [Using Lists](/howto/scripting/using_lists).

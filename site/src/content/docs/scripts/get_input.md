@@ -17,4 +17,4 @@ Example:
 
 This command was added in Quest 5.2.
 
-For more information see [here](/asking_a_question).
+For more information see [here](/howto/tasks/asking_a_question).

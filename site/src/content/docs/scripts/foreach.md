@@ -8,4 +8,4 @@ Run a script for each item in a list. If the list is a dictionary, the loop iter
 
 _Note:_ Do not use an attribute as the iterator variable (see [here](/scripts/for)).
 
-For more on how and why to use `foreach`, see [Using Lists](/using_lists)
+For more on how and why to use `foreach`, see [Using Lists](/howto/scripting/using_lists)

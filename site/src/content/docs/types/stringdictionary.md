@@ -34,4 +34,4 @@ This defines:
 |turns|You have taken ! turns|
 |health|Health !%|
 
-See [Using Dictionaries](/using_dictionaries)
+See [Using Dictionaries](/howto/scripting/using_dictionaries)

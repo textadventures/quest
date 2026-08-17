@@ -6,4 +6,4 @@ title: dictionary add
 
 Adds an item to the specified dictionary.
 
-See [Using Dictionaries](/using_dictionaries)
+See [Using Dictionaries](/howto/scripting/using_dictionaries)

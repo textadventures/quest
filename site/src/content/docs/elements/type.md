@@ -10,4 +10,4 @@ Creates a type. The type element can contain properties and [\<inherit\> tags](/
 
 Use an [\<inherit\> tag](/elements/inherit) in an object definition to include all the type's properties in that object.
 
-See [Types](/about_types).
+See [Types](/howto/scripting/about_types).

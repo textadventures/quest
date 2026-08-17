@@ -6,4 +6,4 @@ title: list add
 
 Adds an item to a list.
 
-See [Using Lists](/using_lists)
+See [Using Lists](/howto/scripting/using_lists)
