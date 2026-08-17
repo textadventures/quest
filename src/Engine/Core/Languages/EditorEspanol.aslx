@@ -321,6 +321,7 @@
   <template name="EditorObjectContainerLocking">Cerradura</template>
   <template name="EditorObjectContainerLocktype">Tipo de cerradura</template>
   <template name="EditorObjectContainerKey">Llave</template>
+  <template name="EditorObjectContainerRequireAllKeys">Requerir todas las llaves</template>
   <template name="EditorObjectContainerLocked">Bloqueado</template>
   <template name="EditorObjectContainerAutomatically">Desbloquear automáticamente si el jugador tiene la llave</template>
   <template name="EditorObjectContainerAutomatically2">Abrir automáticamente cuando se desbloquea</template>

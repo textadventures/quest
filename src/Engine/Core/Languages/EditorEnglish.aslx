@@ -319,6 +319,7 @@
   <template name="EditorObjectContainerLocking">Locking</template>
   <template name="EditorObjectContainerLocktype">Lock type</template>
   <template name="EditorObjectContainerKey">Key</template>
+  <template name="EditorObjectContainerRequireAllKeys">Require all keys</template>
   <template name="EditorObjectContainerLocked">Locked</template>
   <template name="EditorObjectContainerAutomatically">Automatically unlock if player has the key(s)</template>
   <template name="EditorObjectContainerAutomatically2">Automatically open when unlocked</template>

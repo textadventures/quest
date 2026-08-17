@@ -319,6 +319,7 @@
   <template name="EditorObjectContainerLocking">Verriegeln</template>
   <template name="EditorObjectContainerLocktype">Schlosstyp</template>
   <template name="EditorObjectContainerKey">Schlüssel</template>
+  <template name="EditorObjectContainerRequireAllKeys">Alle Schlüssel erforderlich</template>
   <template name="EditorObjectContainerLocked">Objekt ist verschlossen</template>
   <template name="EditorObjectContainerAutomatically">Objekt automatisch aufschliessen, wenn der Spieler den oder die Schlüssel besitzt</template>
   <template name="EditorObjectContainerAutomatically2">Objekt automatisch öffnen, wenn aufgeschlossen wurde</template>
