@@ -406,6 +406,39 @@
     return (true)
   </function>
 
+  <function name="AnyKeyAvailable" parameters="object" type="boolean">
+    if (HasObject(object, "key")) {
+      if (not HasInt(object,"keycount")) {
+        object.keycount = 1
+        object.key1 = object.key
+      }
+      if (not HasObject(object, "key1")) {
+        object.key1 = object.key
+      }
+    }
+    if (GetInt(object, "keycount") = 0) {
+      return (true)
+    }
+    for (x, 1, object.keycount) {
+      keyname = "key" + ToString(x)
+      if (HasObject(object, keyname)) {
+        if (ListContains(ScopeInventory(), GetAttribute(object, keyname))) {
+          return (true)
+        }
+      }
+    }
+    return (false)
+  </function>
+
+  <function name="KeysAvailable" parameters="object" type="boolean">
+    if (object.requireallkeys) {
+      return (AllKeysAvailable(object))
+    }
+    else {
+      return (AnyKeyAvailable(object))
+    }
+  </function>
+
   <function name="CreateBiExits" parameters="dir, from, to">
     create exit (dir, from, to)
     create exit (ReverseDirection(dir), to, from)

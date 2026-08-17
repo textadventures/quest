@@ -1,0 +1,70 @@
+<asl version="600">
+  <include ref="English.aslx" />
+  <include ref="Core.aslx" />
+  <game name="containerlockabletest"/>
+  <object name="room">
+    <object name="player">
+      <inherit name="defaultplayer" />
+      <object name="keya">
+        <inherit name="editor_object"/>
+      </object>
+    </object>
+    <object name="keyb">
+      <inherit name="editor_object"/>
+    </object>
+    <object name="chestall">
+      <inherit name="container"/>
+      <inherit name="container_lockable"/>
+      <keycount type="int">2</keycount>
+      <key1 type="object">keya</key1>
+      <key2 type="object">keyb</key2>
+      <locked type="boolean">true</locked>
+    </object>
+    <object name="chestany">
+      <inherit name="container"/>
+      <inherit name="container_lockable"/>
+      <requireallkeys type="boolean">false</requireallkeys>
+      <keycount type="int">2</keycount>
+      <key1 type="object">keya</key1>
+      <key2 type="object">keyb</key2>
+      <locked type="boolean">true</locked>
+    </object>
+  </object>
+
+  <command name="cmd_unlockall">
+    <pattern>unlockall</pattern>
+    <script>
+      do (chestall, "unlock")
+    </script>
+  </command>
+
+  <command name="cmd_unlockany">
+    <pattern>unlockany</pattern>
+    <script>
+      do (chestany, "unlock")
+    </script>
+  </command>
+
+  <command name="cmd_takekeyb">
+    <pattern>takekeyb</pattern>
+    <script>
+      keyb.parent = player
+    </script>
+  </command>
+
+  <walkthrough name="verify">
+    <steps>
+      <![CDATA[
+      assert:chestall.locked
+      assert:chestany.locked
+      unlockall
+      assert:chestall.locked
+      unlockany
+      assert:not chestany.locked
+      takekeyb
+      unlockall
+      assert:not chestall.locked
+      ]]>
+    </steps>
+  </walkthrough>
+</asl>
