@@ -1,6 +1,6 @@
 <script lang="ts">
     import { SvelteSet } from "svelte/reactivity";
-    import { addScriptDictItem, removeScriptDictItem, makeScriptDictEditable, getObjectNames } from "$lib/editor-store";
+    import { addScriptDictItem, removeScriptDictItem, renameScriptDictItem, makeScriptDictEditable, getObjectNames } from "$lib/editor-store";
     import ScriptEditor from "./ScriptEditor.svelte";
     import { t } from "$lib/i18n";
 
@@ -30,6 +30,11 @@
     const expandedKeys = new SvelteSet<string>();
     let newKey = $state("");
 
+    let editingKey = $state<string | null>(null);
+    let editingKeyValue = $state("");
+    let editingKeyInputEl = $state<HTMLInputElement>();
+    $effect(() => { if (editingKey !== null) editingKeyInputEl?.focus(); });
+
     let allObjectNames = $state<string[]>([]);
     $effect(() => {
         if (keySource === "object") allObjectNames = getObjectNames() ?? [];
@@ -52,6 +57,32 @@
     function toggleExpanded(key: string) {
         if (expandedKeys.has(key)) expandedKeys.delete(key); else expandedKeys.add(key);
     }
+
+    function startRename(key: string) {
+        editingKey = key;
+        editingKeyValue = key;
+    }
+
+    function cancelRename() {
+        editingKey = null;
+        editingKeyValue = "";
+    }
+
+    function commitRename() {
+        if (!editingKey) return;
+        const oldKey = editingKey;
+        const newKeyValue = editingKeyValue.trim();
+        if (!newKeyValue || newKeyValue === oldKey) {
+            cancelRename();
+            return;
+        }
+        const result = renameScriptDictItem(elementKey, attribute, oldKey, newKeyValue);
+        if (result === "ok" && expandedKeys.has(oldKey)) {
+            expandedKeys.delete(oldKey);
+            expandedKeys.add(newKeyValue);
+        }
+        cancelRename();
+    }
 </script>
 
 <div class="flex flex-col gap-1 w-full">
@@ -73,18 +104,39 @@
         {#each keys as key (key)}
             <div class="border border-surface-200-800 rounded">
                 <div class="flex items-center gap-1 px-2 py-1">
-                    <button
-                        type="button"
-                        class="flex-1 text-left text-xs font-medium hover:text-primary-600-400"
-                        onclick={() => toggleExpanded(key)}
-                    >
-                        <span class="mr-1 text-surface-600-400">{expandedKeys.has(key) ? "▼" : "▶"}</span>{key}
-                    </button>
-                    <button
-                        type="button"
-                        class="btn btn-sm preset-outlined-error-500 text-xs px-1.5 py-0.5 flex-shrink-0"
-                        onclick={() => removeScriptDictItem(elementKey, attribute, key)}
-                    >✕</button>
+                    {#if editingKey === key}
+                        <input
+                            type="text"
+                            autocapitalize="off"
+                            class="input text-xs py-0.5 px-1.5 flex-1"
+                            aria-label={t("scriptDictionaryEditor.editKeyInputAriaLabel")}
+                            bind:this={editingKeyInputEl}
+                            bind:value={editingKeyValue}
+                            onkeydown={(e) => {
+                                if (e.key === "Enter") commitRename();
+                                else if (e.key === "Escape") cancelRename();
+                            }}
+                            onblur={commitRename}
+                        />
+                    {:else}
+                        <button
+                            type="button"
+                            class="flex-1 text-left text-xs font-medium hover:text-primary-600-400"
+                            onclick={() => toggleExpanded(key)}
+                        >
+                            <span class="mr-1 text-surface-600-400">{expandedKeys.has(key) ? "▼" : "▶"}</span>{key}
+                        </button>
+                        <button
+                            type="button"
+                            class="btn btn-sm preset-outlined-primary-500 text-xs px-1.5 py-0.5 flex-shrink-0"
+                            onclick={() => startRename(key)}
+                        >{t("scriptDictionaryEditor.editKey")}</button>
+                        <button
+                            type="button"
+                            class="btn btn-sm preset-outlined-error-500 text-xs px-1.5 py-0.5 flex-shrink-0"
+                            onclick={() => removeScriptDictItem(elementKey, attribute, key)}
+                        >✕</button>
+                    {/if}
                 </div>
                 {#if expandedKeys.has(key)}
                     <div class="px-2 pb-2 border-t border-surface-100-900">

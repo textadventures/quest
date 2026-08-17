@@ -1173,6 +1173,14 @@ export function removeScriptDictItem(elementKey: string, attribute: string, key:
     return result;
 }
 
+export function renameScriptDictItem(elementKey: string, attribute: string, oldKey: string, newKey: string): string {
+    if (!_bridge) return "error";
+    const result = _bridge.RenameScriptDictionaryItem(elementKey, attribute, oldKey, newKey);
+    if (result === "ok") { refreshSelectedData(); bumpScriptVersion(); }
+    refreshUndoRedo();
+    return result;
+}
+
 export function changeAttributeType(elementKey: string, attribute: string, newType: string): string {
     if (!_bridge) return "error";
     const result = _bridge.ChangeAttributeType(elementKey, attribute, newType);

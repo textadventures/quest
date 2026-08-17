@@ -16,6 +16,11 @@
 // and the newly-rendered branch never engaged. This script exercises the full round trip
 // for both controls so a regression in any one of those three layers fails here.
 //
+// Also covers ScriptDictionaryEditor's "Edit Key" rename affordance (WasmEditorBridge.
+// RenameScriptDictionaryItem, backed by IEditableDictionary<T>.ChangeKey) - renaming an
+// entry's key must preserve its script content and expanded state, round-trip under the new
+// key in saved XML, and reject a rename that collides with an existing key.
+//
 // Requires the AppShell dev server running locally (WasmEditor Debug build first):
 //   cd src/AppShell && npm run dev
 // Run: node tests/e2e/verify-appshell-multi-control-editors.mjs [baseUrl]
@@ -160,6 +165,89 @@ try {
         throw new Error(`Expected <useon type="scriptdictionary"> with a defibrillator item in saved XML, got: ${xml.slice(0, 1000)}`);
     }
     console.log('PASS: scriptdictionary entry round-trips into saved XML');
+
+    // ── ScriptDictionaryEditor "Edit Key" rename ─────────────────────────────────
+    // readRawXml() switches the properties panel back to its default "Setup" tab on Cancel,
+    // so the Use/Give tab (and useonSection/entry within it) needs re-selecting first - which
+    // remounts ScriptDictionaryEditor, resetting its local expand/collapse state, so the entry
+    // needs re-expanding too before "+ Add script" is present.
+    await page.getByRole('button', { name: 'Use/Give', exact: true }).click();
+    await entry.waitFor({ state: 'visible', timeout: 10000 });
+    if ((await entry.textContent()).startsWith('▶')) await entry.click();
+
+    // Reference the entry's bordered wrapper by position, not by a locator derived from its
+    // key text/button - "Edit Key" replaces that button with an input, which would make any
+    // text- or button-based locator (including one chained from `entry` itself) stop matching
+    // anything the moment editing starts, since Playwright locators re-run their full selector
+    // chain on every action. There's only one entry at this point, hence .nth(0).
+    const defibrillatorEntry = useonSection.locator('div.border.border-surface-200-800.rounded').nth(0);
+    await defibrillatorEntry.locator('button:has-text("+ Add script")').click();
+    const scriptDialog = page.locator('[role="dialog"]').filter({ hasText: 'Add Script Command' });
+    await scriptDialog.waitFor({ timeout: 10000 });
+    await scriptDialog.getByRole('button', { name: 'OK' }).click();
+    await scriptDialog.waitFor({ state: 'hidden', timeout: 5000 });
+    console.log('PASS: added a "Print a message" script to the defibrillator entry');
+
+    const messageInput = defibrillatorEntry.locator('input[type="text"]').last();
+    await messageInput.fill('It beeps helpfully.');
+    await messageInput.blur();
+    await page.waitForTimeout(300);
+    console.log('PASS: filled in the script message');
+
+    await defibrillatorEntry.getByRole('button', { name: 'Edit Key' }).click();
+    const keyInput = defibrillatorEntry.locator('input[type="text"]').first();
+    await keyInput.waitFor({ state: 'visible', timeout: 10000 });
+    await keyInput.fill('medkit');
+    await keyInput.press('Enter');
+    await page.waitForTimeout(300);
+
+    const renamedEntry = useonSection.locator('button', { hasText: 'medkit' });
+    await renamedEntry.waitFor({ state: 'visible', timeout: 10000 });
+    if (await useonSection.locator('button', { hasText: 'defibrillator' }).count() !== 0) {
+        throw new Error('Expected the old key "defibrillator" to be gone after renaming to "medkit"');
+    }
+    console.log('PASS: "Edit Key" renames the entry from "defibrillator" to "medkit"');
+
+    const messageInputAfterRename = defibrillatorEntry.locator('input[type="text"]').last();
+    if (await messageInputAfterRename.inputValue() !== 'It beeps helpfully.') {
+        throw new Error('Expected the script content to be preserved and still visible (entry still expanded) after renaming the key');
+    }
+    console.log('PASS: script content is preserved and the entry stays expanded across the rename');
+
+    xml = await readRawXml(page);
+    if (!xml.includes('key="medkit"') || !xml.includes('It beeps helpfully.')) {
+        throw new Error(`Expected the renamed key "medkit" with its script content in saved XML, got: ${xml.slice(0, 1200)}`);
+    }
+    if (xml.includes('key="defibrillator"')) {
+        throw new Error('Expected the old key "defibrillator" to be gone from saved XML after rename');
+    }
+    console.log('PASS: renamed scriptdictionary entry round-trips into saved XML under the new key, old key removed');
+
+    // Renaming to an already-used key must be rejected (CanAdd validation), leaving the
+    // original entry untouched rather than silently overwriting or crashing.
+    // readRawXml() reset the tab to "Setup" again - re-select "Use/Give" as above.
+    await page.getByRole('button', { name: 'Use/Give', exact: true }).click();
+    await objectPicker.waitFor({ state: 'visible', timeout: 10000 });
+    await objectPicker.selectOption({ label: 'defibrillator' });
+    await useonSection.locator('button:has-text("Add")').click();
+    await page.waitForTimeout(300);
+    const secondEntry = useonSection.locator('button', { hasText: 'defibrillator' });
+    await secondEntry.waitFor({ state: 'visible', timeout: 10000 });
+    // Same positional approach as defibrillatorEntry above - the newly-added entry is appended
+    // after "medkit", making it index 1.
+    const secondEntryContainer = useonSection.locator('div.border.border-surface-200-800.rounded').nth(1);
+    await secondEntryContainer.getByRole('button', { name: 'Edit Key' }).click();
+    const secondKeyInput = secondEntryContainer.locator('input[type="text"]').first();
+    await secondKeyInput.fill('medkit');
+    await secondKeyInput.press('Enter');
+    await page.waitForTimeout(300);
+    if (await useonSection.locator('button', { hasText: 'defibrillator' }).count() === 0) {
+        throw new Error('Expected renaming to an already-used key ("medkit") to be rejected, but the entry key changed anyway');
+    }
+    if (await useonSection.locator('button', { hasText: 'medkit' }).count() !== 1) {
+        throw new Error('Expected exactly one "medkit" entry to remain after the rejected duplicate-key rename');
+    }
+    console.log('PASS: renaming to an already-used key is rejected, leaving the original key unchanged');
 
     console.log('PASS: all checks passed');
 } catch (err) {
