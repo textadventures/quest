@@ -262,6 +262,8 @@
     "scriptDictionaryEditor.selectObjectOption": "Select object…",
     "scriptDictionaryEditor.addEntryKeyPlaceholder": "Add entry key…",
     "scriptDictionaryEditor.addEntryKeyAriaLabel": "Add entry key",
+    "scriptDictionaryEditor.editKey": "Edit Key",
+    "scriptDictionaryEditor.editKeyInputAriaLabel": "Edit key",
 
     "scriptEditor.inheritedReadOnly": "This script is inherited — read-only.",
     "scriptEditor.visualView": "Visual view",

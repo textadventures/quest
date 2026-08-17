@@ -71,6 +71,7 @@ export interface WasmBridge {
   MakeScriptDictEditable(elementKey: string, attribute: string): string
   AddScriptDictionaryItem(elementKey: string, attribute: string, key: string): string
   RemoveScriptDictionaryItem(elementKey: string, attribute: string, key: string): string
+  RenameScriptDictionaryItem(elementKey: string, attribute: string, oldKey: string, newKey: string): string
   ChangeAttributeType(elementKey: string, attribute: string, newType: string): string
   SetPatternAttribute(elementKey: string, attribute: string, pattern: string): string
   // Element creation / deletion

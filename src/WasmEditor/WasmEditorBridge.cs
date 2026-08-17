@@ -3401,6 +3401,48 @@ public partial class WasmEditorBridge
         }
     }
 
+    [JSExport]
+    public static string RenameScriptDictionaryItem(string elementKey, string attribute, string oldKey, string newKey)
+    {
+        if (_controller == null)
+        {
+            return "error";
+        }
+
+        var data = _controller.GetEditorData(elementKey);
+        if (data == null)
+        {
+            return "error";
+        }
+
+        var dict = data.GetAttribute(attribute) as IEditableDictionary<IEditableScripts>;
+        if (dict == null)
+        {
+            return "error";
+        }
+
+        if (oldKey == newKey)
+        {
+            return "ok";
+        }
+
+        try
+        {
+            var validation = dict.CanAdd(newKey);
+            if (!validation.Valid)
+            {
+                return validation.Message.ToString();
+            }
+
+            dict.ChangeKey(oldKey, newKey);
+            return "ok";
+        }
+        catch (Exception ex)
+        {
+            return ex.Message;
+        }
+    }
+
     // ── Private helpers ────────────────────────────────────────────────────────
 
     private static string? SerializeAttributeValue(object? val)

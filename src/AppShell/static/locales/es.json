@@ -262,6 +262,8 @@
     "scriptDictionaryEditor.selectObjectOption": "Selecciona objeto…",
     "scriptDictionaryEditor.addEntryKeyPlaceholder": "Añadir clave de entrada…",
     "scriptDictionaryEditor.addEntryKeyAriaLabel": "Añadir clave de entrada",
+    "scriptDictionaryEditor.editKey": "Editar clave",
+    "scriptDictionaryEditor.editKeyInputAriaLabel": "Editar clave",
 
     "scriptEditor.inheritedReadOnly": "Este programa es heredado — solo lectura.",
     "scriptEditor.visualView": "Vista visual",
