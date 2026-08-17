@@ -1,13 +1,15 @@
-// Regenerates 3 of the 4 editor screenshots embedded in
+// Regenerates all 4 editor screenshots embedded in
 // site/src/content/docs/tutorial/custom_commands.md (Commandsay.png, Commandweigh.png,
-// Checkforattribute.png). Say_to_troll.png (the "Additional Example (Advanced)" using a
-// Switch script command with per-object cases) is out of scope: AppShell's ScriptEditor.svelte
-// doesn't yet render the Switch command's case-list editor at all — it shows literal
-// "Cases: [scriptdictionary]" placeholder text with no way to add/edit cases through the UI.
+// Checkforattribute.png, Say_to_troll.png). Say_to_troll.png (the "Additional Example
+// (Advanced)" using a Switch script command with per-object cases) was blocked on the Switch
+// case-list editor (task_082ae91c); now fixed upstream (PR #2090). The doc gives no exact code
+// for this example beyond the pattern and "switch command ... different response for different
+// characters, and a default too" — the case/message content here is a reasonable invented
+// match for that description, not transcribed from the doc.
 // See .claude/skills/docs-screenshots/SKILL.md.
 import { join, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { runCapture, createLocalDraft, selectTreeNode, addScriptCommand, capture } from './lib.mjs';
+import { runCapture, createLocalDraft, selectTreeNode, addElement, addScriptCommand, setScriptCodeView, capture } from './lib.mjs';
 
 const imagesDir = join(dirname(fileURLToPath(import.meta.url)), '..', '..', '..', 'site', 'public', 'images');
 const out = name => join(imagesDir, name);
@@ -86,4 +88,26 @@ await runCapture(async ({ page, baseUrl }) => {
     const elseMsgInput = page.locator('xpath=//span[text()="else"]/following::input[@type="text"][1]');
     await elseMsgInput.fill("You can't weigh that.");
     await capture(page, out('Checkforattribute.png'), { untilLocator: elseMsgInput });
+
+    // --- Say_to_troll.png: "say #text_talk# to #object_one#" command, switch(object_one)
+    // with a case for the troll and a default for anyone/anything else ---
+    await selectTreeNode(page, 'room');
+    await addElement(page, 'Add Object in "room"', 'troll');
+    await selectTreeNode(page, 'room');
+    await addCommand(page);
+    await patternInput(page).fill('say #text_talk# to #object_one#');
+    await setScriptCodeView(page, page.locator('button:has-text("Code view")').first(), `switch (object_one) {
+case (troll) {
+msg ("'Ugh,' grunts the troll, only half listening.")
+}
+default {
+msg (GetDisplayName(object_one) + " doesn't seem interested in talking about that.")
+}
+}`);
+    await page.waitForSelector('text=Switch:', { timeout: 5000 });
+    const trollCaseToggles = page.getByRole('button', { name: '▶' });
+    while (await trollCaseToggles.count() > 0) {
+        await trollCaseToggles.first().click();
+    }
+    await capture(page, out('Say_to_troll.png'), { untilLocator: addScriptButtons(page).last(), padding: 40 });
 });
