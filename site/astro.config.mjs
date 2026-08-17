@@ -24,6 +24,10 @@ export default defineConfig({
                     "collapsed": true,
                     "items": [
                         {
+                            "label": "Introduction",
+                            "slug": "intro"
+                        },
+                        {
                             "label": "Overview",
                             "slug": "overview"
                         },
@@ -3076,6 +3080,14 @@ export default defineConfig({
                             "slug": "publishing/publishing"
                         },
                         {
+                            "label": "Hosting your game",
+                            "slug": "publishing/hosting"
+                        },
+                        {
+                            "label": "WebPlayer",
+                            "slug": "publishing/webplayer"
+                        },
+                        {
                             "label": "Competition Entry",
                             "slug": "publishing/competition_entry"
                         },
@@ -3104,17 +3116,6 @@ export default defineConfig({
                         {
                             "label": "Older Versions",
                             "slug": "release-notes/older-versions"
-                        }
-                    ]
-                },
-                {
-                    "label": "Self-Hosting",
-                    "collapsed": true,
-                    "items": [
-                        {
-                            "autogenerate": {
-                                "directory": "guides"
-                            }
                         }
                     ]
                 },

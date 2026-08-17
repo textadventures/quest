@@ -115,3 +115,8 @@ docs.textadventures.co.uk/quest/* https://questviva.com/:splat 301
 # Guides pass — Types and Cloak of Darkness relocated to their better-fitting homes
 /howto/scripting/about_types /advanced-topics/about_types 301
 /howto/scripting/cloak_of_darkness /tutorial/cloak_of_darkness 301
+
+# Self-Hosting section dissolved — pages redistributed to their real homes
+/guides/introduction /intro 301
+/guides/hosting /publishing/hosting 301
+/guides/webplayer /publishing/webplayer 301

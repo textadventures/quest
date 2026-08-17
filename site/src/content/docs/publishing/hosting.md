@@ -46,4 +46,4 @@ A couple of things to know about this option:
 
 ## Host WebPlayer yourself
 
-This option requires a bit more setup, and is only recommended if you require that end users don't download your `.quest` file. For example, some people have used this option for running online treasure hunts - the `.quest` file stays on the server, so it can't be examined. See the separate [WebPlayer](/guides/webplayer/) guide.
+This option requires a bit more setup, and is only recommended if you require that end users don't download your `.quest` file. For example, some people have used this option for running online treasure hunts - the `.quest` file stays on the server, so it can't be examined. See the separate [WebPlayer](/publishing/webplayer/) guide.
