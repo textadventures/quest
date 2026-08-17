@@ -138,7 +138,7 @@ export default defineConfig({
                             ]
                         },
                         {
-                            "label": "World, Objects & Multimedia",
+                            "label": "World & Objects",
                             "collapsed": true,
                             "items": [
                                 {
@@ -180,32 +180,32 @@ export default defineConfig({
                                 {
                                     "label": "When the player saves a game",
                                     "slug": "howto/world/about_save"
+                                }
+                            ]
+                        },
+                        {
+                            "label": "Multimedia",
+                            "collapsed": true,
+                            "items": [
+                                {
+                                    "label": "Overview",
+                                    "slug": "howto/multimedia/multimedia"
                                 },
                                 {
-                                    "label": "Multimedia",
-                                    "collapsed": true,
-                                    "items": [
-                                        {
-                                            "label": "Overview",
-                                            "slug": "howto/multimedia/multimedia"
-                                        },
-                                        {
-                                            "label": "Images in Quest",
-                                            "slug": "howto/multimedia/images"
-                                        },
-                                        {
-                                            "label": "Creating images on the fly",
-                                            "slug": "howto/multimedia/images_on_the_fly"
-                                        },
-                                        {
-                                            "label": "Adding sounds to your game",
-                                            "slug": "howto/multimedia/adding_sounds"
-                                        },
-                                        {
-                                            "label": "Adding videos",
-                                            "slug": "howto/multimedia/adding_videos"
-                                        }
-                                    ]
+                                    "label": "Images in Quest",
+                                    "slug": "howto/multimedia/images"
+                                },
+                                {
+                                    "label": "Creating images on the fly",
+                                    "slug": "howto/multimedia/images_on_the_fly"
+                                },
+                                {
+                                    "label": "Adding sounds to your game",
+                                    "slug": "howto/multimedia/adding_sounds"
+                                },
+                                {
+                                    "label": "Adding videos",
+                                    "slug": "howto/multimedia/adding_videos"
                                 }
                             ]
                         },
