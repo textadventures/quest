@@ -1284,6 +1284,30 @@ export function setScriptListItemCount(elementKey: string, attribute: string, co
     return result;
 }
 
+export function addScriptDictCase(elementKey: string, attribute: string, containerPath: string, scriptIndex: number, paramAttribute: string, key: string): string {
+    if (!_bridge) return "error";
+    const result = _bridge.AddScriptDictCase(elementKey, attribute, containerPath, scriptIndex, paramAttribute, key);
+    if (result === "ok") bumpScriptVersion();
+    refreshUndoRedo();
+    return result;
+}
+
+export function removeScriptDictCase(elementKey: string, attribute: string, containerPath: string, scriptIndex: number, paramAttribute: string, key: string): string {
+    if (!_bridge) return "error";
+    const result = _bridge.RemoveScriptDictCase(elementKey, attribute, containerPath, scriptIndex, paramAttribute, key);
+    if (result === "ok") bumpScriptVersion();
+    refreshUndoRedo();
+    return result;
+}
+
+export function renameScriptDictCase(elementKey: string, attribute: string, containerPath: string, scriptIndex: number, paramAttribute: string, oldKey: string, newKey: string): string {
+    if (!_bridge) return "error";
+    const result = _bridge.RenameScriptDictCase(elementKey, attribute, containerPath, scriptIndex, paramAttribute, oldKey, newKey);
+    if (result === "ok") bumpScriptVersion();
+    refreshUndoRedo();
+    return result;
+}
+
 export function setIfExpression(elementKey: string, attribute: string, containerPath: string, scriptIndex: number, expression: string): string {
     if (!_bridge) return "error";
     const result = _bridge.SetIfExpression(elementKey, attribute, containerPath, scriptIndex, expression);
