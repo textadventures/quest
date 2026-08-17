@@ -221,7 +221,7 @@ If the text processor cannot understand your directive, it will generally leave 
 Curly braces
 ------------
 
-Should you want to use curly braces to actually display curly braces, Quest will usually work out that that is what you want. As of Quest 5.7, if you find it is trying to display it as a text processor command (or is throwing an error because it has failed to), you can use `@@@open@@@` and `@@@close@@@` to tell Quest to display curly braces.
+Should you want to use curly braces to actually display curly braces, Quest will usually work out that that is what you want. If you find it is trying to display it as a text processor command (or is throwing an error because it has failed to), you can use `@@@open@@@` and `@@@close@@@` to tell Quest to display curly braces.
 ```
 "player.count = @@@open@@@player.count@@@close@@@"
  -> "player.count = {player.count}"

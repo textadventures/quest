@@ -4,8 +4,6 @@ title: DisplayMoney
 
     DisplayMoney (int money)
 
-**New in Quest 5.7**
-    
 Returns a [string](/types/string) that is the given number, formatted according to the string in game.moneyformat. This allows money to be printed consistently across your game.
 
 The string game.moneyformat can be formatted in three ways:

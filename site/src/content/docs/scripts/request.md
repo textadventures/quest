@@ -124,7 +124,7 @@ Turns off an interface element. Valid elements are "Panes", "Location" and "Comm
 
 _SetCompassDirections_
 
-Takes a semi-colon separated list of compass direction names and assigns them to the compass buttons. As of Quest 5.7.2, use `JS` instead, for example:
+Takes a semi-colon separated list of compass direction names and assigns them to the compass buttons. Use `JS` instead, for example:
 
 ```
 JS.setCompassDirections("northwest;north;northeast;west;east;southwest;whatever;southeast;up;down;in;out")
@@ -164,7 +164,7 @@ Either way, valid element names are:
 
 _RequestSave_
 
-Requests the UI to save the game - this may bring up a "Save As" dialog if the user has not yet saved their progress. Parameter is ignored. As of Quest 5.8, use:
+Requests the UI to save the game - this may bring up a "Save As" dialog if the user has not yet saved their progress. Parameter is ignored. Use:
 
 ```
 requestsave()
@@ -178,12 +178,12 @@ Sets the static panel HTML contents. Use `SetFramePicture` and `ClearFramePictur
 
 _Log_
 
-(New in Quest 5.3) Log the specified text. Use [Log](/functions/corelibrary/log) instead.
+Log the specified text. Use [Log](/functions/corelibrary/log) instead.
 
 
 _Speak_  
 
-(New in Quest 5.4) Output text to speech synthesizer if enabled. As of Quest 5.8, use `requestspeak` instead:
+Output text to speech synthesizer if enabled. Use `requestspeak` instead:
 
 ```
 RequestSpeak("Hello World")

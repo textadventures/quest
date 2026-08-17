@@ -4,8 +4,6 @@ title: DisplayNumber
 
     DisplayNumber (int input, string format)
 
-**New in Quest 5.7**
-    
 Returns a [string](/types/string), the given number formatted. The format should consist of:
 
 - any number of non-digits (optional)

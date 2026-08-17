@@ -193,7 +193,7 @@ Note that this is not a way to get information from the interface; this is a one
 Shortcuts
 ---------
 
-As of Quest 5.7, you can use the `setCss` function to do this sort of thing. Like `eval`, this belongs to the JS object. It takes two parameters, the element and the style. The style should be in the standard CSS format, with a colon between the name and the value, and a semi-colon between each setting. The example above would therefore look like this:
+You can use the `setCss` function to do this sort of thing. Like `eval`, this belongs to the JS object. It takes two parameters, the element and the style. The style should be in the standard CSS format, with a colon between the name and the value, and a semi-colon between each setting. The example above would therefore look like this:
 
 ```
 JS.setCss("#gameBorder", "background-color;#800080;color:pink;")

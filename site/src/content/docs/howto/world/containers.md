@@ -44,7 +44,7 @@ That said, we will set up our chest as lockable. Make sure it starts closed.
 
 In the "Locking" section, select: "Lockable". Again, you will see a bunch of options, and two new script options. The important part is the key. You can set up to five different objects to be keys. Select the number, and a number of dropdown lists will appear. Simply select the key object from the list.
 
-By default, the player will need to have all they keys to unlock the container. As of Quest 5.8, you can untick the "Require all keys" check box, and the player will be able to unlock the container with any of the keys.
+By default, the player will need to have all they keys to unlock the container. You can untick the "Require all keys" check box, and the player will be able to unlock the container with any of the keys.
 
 ![](/images/lockandkey.png)
 

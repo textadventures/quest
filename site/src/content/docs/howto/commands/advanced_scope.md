@@ -13,7 +13,7 @@ Sometimes you want the player to be able to access items in other rooms. For exa
 -  items in a related location, perhaps the stock for a shop
 -  items of a specific type that might be anywhere, such as NPCs that can be phoned
 
-As of Quest 5.7, there are two new features that let you handle these situations relatively easily.
+There are two features that let you handle these situations relatively easily.
 
 To change the scope of all commands, say because of the nature of the rooms or objects (as with the first two examples), use the Extended Scope feature. If this is for a specific command (as with CAST, BUY or CALL in the examples above), use Alternative Scope.
 

@@ -126,7 +126,7 @@ You can output that in game.start, and it should now make the required change.
 JS.addText (game.css)
 ```
 
-As of Quest 5.7, you can turn off the border on the _Interface_ tab of the game object, but there may well be other elements that need to be handled like this, for example....
+You can turn off the border on the _Interface_ tab of the game object, but there may well be other elements that need to be handled like this, for example....
 
 ### Inventory Items
 

@@ -2,11 +2,9 @@
 title: ShowMenu
 ---
 
-**Note:** As of Quest 5.5, this function replaces one that was deprecated as of Quest 5.1 to display an inline menu.
-
     ShowMenu (string caption, stringdictionary or list options, boolean allow ignore)  { script } 
 
-Shows an inline menu of the specified options and returns a [string](/types/string) variable **result** containing the user input. If a dictionary of options is passed in, the values are displayed as options, the key is returned. If a list of options is passed in, the list item is returned if a string, or (as of Quest 5.7) the name of the object.
+Shows an inline menu of the specified options and returns a [string](/types/string) variable **result** containing the user input. If a dictionary of options is passed in, the values are displayed as options, the key is returned. If a list of options is passed in, the list item is returned if a string, or the name of the object.
 
 If the "allow ignore" parameter is set to **true**, the player can ignore the menu and interact with other objects. The menu is just closed then. If the "allow ignore" parameter is set to **false**, the player must choose one entry of the menu.
 
@@ -28,12 +26,6 @@ The [Split](/functions/string/split) function can be useful to quickly get a lis
         }
       }
     }
-
-_Prior to Quest 5.7_
-
-Strings used for options cannot contain single or double quotes (the option will not be selectable).
-
-_As of Quest 5.7_
 
 ShowMenu will also take an object list, or a list of objects and strings. If the object has a link colour specified, this will be used. Note that `result` will always be a string, in the case of an object, it will be the object's name.
 

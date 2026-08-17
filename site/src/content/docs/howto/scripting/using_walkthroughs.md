@@ -54,7 +54,7 @@ If you forget to put in these two statements, the walkthrough will immediately s
 Assertions
 ----------
 
-As of Quest 5.1, you can use walkthrough assertions to test your game. Simply include a line starting with "assert:", and then any expression which should be true.
+You can use walkthrough assertions to test your game. Simply include a line starting with "assert:", and then any expression which should be true.
 
 For example, in the walkthrough below, the assert expression checks that the "take biscuit" command succeeded:
 
@@ -73,7 +73,7 @@ If a walkthrough assert expression returns false, the walkthrough is immediately
 Displaying runtime
 ------------------
 
-As of Quest 5.9 you can include the line
+You can include the line
 
      runtime:
 

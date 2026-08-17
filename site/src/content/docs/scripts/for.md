@@ -4,7 +4,7 @@ title: for
 
     for (iterator variable, int from, int to) { script }
 
-As of Quest 5.1 there is an optional "step" parameter:
+There is an optional "step" parameter:
 
     for (iterator variable, int from, int to, int step) { script }
 

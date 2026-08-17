@@ -4,8 +4,6 @@ sidebar:
   order: 10
 ---
 
-**New in Quest 5.4**
-
 "list" is a sequence of any attribute type. The format is in the ASLX file:
 
      <myattribute type="list">

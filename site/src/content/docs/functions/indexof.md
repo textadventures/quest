@@ -4,8 +4,6 @@ title: IndexOf
 
     IndexOf (list, anything)
 
-**New in Quest 5.7**    
-
 Returns an [int](/types/int) - the position of the given element in the list, or -1 if it is not in the list. Note that lists count from zero.
 
 ```

@@ -4,8 +4,6 @@ title: PadString
 
     PadString (string input, int length, string pad)
 
-**New in Quest 5.7**
-    
 Returns a [string](/types/string) that has been padded to the given length with the given padding.
 
 ```

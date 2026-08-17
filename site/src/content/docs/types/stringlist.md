@@ -10,7 +10,7 @@ For Quest 5.3 and earlier, the format in an ASLX file is this:
 
      <mylist type="list">one; two; three</mylist>
 
-As of Quest 5.4, the same list is expressed like this:
+The same list is expressed like this:
 
      <mylist type="list">
        <value>one</value>

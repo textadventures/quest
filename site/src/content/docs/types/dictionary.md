@@ -4,8 +4,6 @@ sidebar:
   order: 13
 ---
 
-**New in Quest 5.4**
-
 "dictionary" is a mapping of string keys to values of any attribute type.
 
 Usually it is better to use a more specific dictionary type if you can, if you know that all the values will be of the same type. These more specific types are [stringdictionary](/types/stringdictionary), [objectdictionary](/types/objectdictionary) and [scriptdictionary](/types/scriptdictionary).

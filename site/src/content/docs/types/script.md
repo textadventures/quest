@@ -41,7 +41,7 @@ dictionary add (dict, "obj", sandwich)
 do(fridge, "look", dict)
 ```
 
-Now the "look" script will have access to local variables called "npc" and "obj", as well as "this". As of Quest 5.8, there is a shortcut to do that:
+Now the "look" script will have access to local variables called "npc" and "obj", as well as "this". There is a shortcut to do that:
 
 ```
 do(fridge, "look", QuickParams("npc", mary, "obj", sandwich))
