@@ -14,7 +14,7 @@ We will look at various ways of doing that, starting with the most basic.
 Just A Couple of Questions
 --------------------------
 
-Go to the "Scripts" tab of the "game" object. The start script is at the top. Set the script to print a message prompting the player, then select "Get input" from the "Output" options. Set it up like this:
+Go to the "Scripts" tab of the "game" object. The start script is at the top. Set the script to print a message prompting the player, then add a "Set a variable or attribute" action, and pick `GetInput()` from the list of value templates. Set it up like this:
 
 ![](/images/Creation1.png)
 
@@ -23,17 +23,13 @@ In code view it will look like this:
         <start type="script">
           msg ("Let's generate a character...")
           msg ("First, what is your name?")
-          get input {
-            player.alias = result
-            msg ("Hi, " + player.alias)
-          }
+          player.alias = GetInput()
+          msg ("Hi, " + player.alias)
         </start>
 
-The important part is the "get input" command, which grabs the next thing the player types and puts it into the string variable "result". This is then used to set the player alias.
+The important part is the `GetInput()` function, which suspends the game until the player types something, then returns what they typed as a string. There's no need to wrap the rest of the script in a block waiting for a callback - execution just continues on the next line once the player has answered, same as any other function call.
 
-The game has to wait for the player to do something, and to ensure it does all subsequent code goes into its own block (that is, the indented part between the curly braces).
-
-If you want to ask several questions, you need blocks with blocks within blocks. This is perfectly possible in the GUI view, but starts to get a bit messy, so seriously consider doing this in code view.
+If you want to ask several questions, you can just keep adding more lines the same way, for as long as each one is a plain text answer. Where it starts to need blocks within blocks is once you bring in `show menu`, which - unlike `GetInput()` - has to wait for the player to click an option, so the code that handles the answer has to go inside its callback block. This is perfectly possible in the GUI view, but starts to get a bit messy once you chain several menus together, so seriously consider doing this in code view.
 
 ![](/images/Creation2.png)
 
@@ -42,20 +38,18 @@ In code view it will look like this:
         <start type="script">
           msg ("Let's generate a character...")
           msg ("First, what is your name?")
-          get input  {
-            player.alias = result
-            msg ("Hi, " + player.alias)
-            show menu ("Your gender?", Split ("Male;Female", ";"), false) {
-              player.gender = result
-              show menu ("Your character class?", Split ("Warrior;Wizard;Priest;Thief", ";"), false) {
-                player.class = result
-                msg (" ")
-                msg (player.alias + " was a " + LCase (player.gender) + " " + LCase (player.class) + ".")
-                msg (" ")
-                msg ("Now press a key to begin...")
-                wait {
-                  ClearScreen
-                }
+          player.alias = GetInput()
+          msg ("Hi, " + player.alias)
+          show menu ("Your gender?", Split ("Male;Female", ";"), false) {
+            player.gender = result
+            show menu ("Your character class?", Split ("Warrior;Wizard;Priest;Thief", ";"), false) {
+              player.class = result
+              msg (" ")
+              msg (player.alias + " was a " + LCase (player.gender) + " " + LCase (player.class) + ".")
+              msg (" ")
+              msg ("Now press a key to begin...")
+              wait {
+                ClearScreen
               }
             }
           }
@@ -81,10 +75,8 @@ As an example, we will ask the same three questions. I suggest naming each funct
 ```
 msg ("Let's generate a character...")
 msg ("First, what is your name?")
-get input  {
-  player.alias = result
-  CharacterCreationGender
-}
+player.alias = GetInput()
+CharacterCreationGender
 ```
 
 Then "CharacterCreationGender" - note that the next question depends on the answer given here:
