@@ -4,8 +4,6 @@ sidebar:
   order: 9
 ---
 
-
-
 ## Asc
 
 Asc (string input)
@@ -194,13 +192,12 @@ Returns a [string](/types#string), listing the entries in the given list. For an
     msg(FormatList(list, ",", "and", "nothing"))
     // "nothing"
   
-This function was added in Quest 5.7.
 
 ## GetMatchStrength
 
 GetMatchStrength (string regex, string input)
 
-Optionally as of Quest 5.1 there is a new cache ID parameter:
+There is also an optional cache ID parameter:
 
     GetMatchStrength (string regex, string input, string cache ID)
 
@@ -262,7 +259,7 @@ Returns a [boolean](/types#boolean) - **true** if the input is numeric (i.e. a s
 
 IsRegexMatch (string regex, string)
 
-Optionally as of Quest 5.1 there is a new cache ID parameter:
+There is also an optional cache ID parameter:
 
     IsRegexMatch (string regex, string, string cache ID)
 
@@ -379,8 +376,6 @@ The RTrim function removes spaces on the right side of a [string](/types#string)
 SafeXML (string)
 
 Returns an XML encoded version of the string that is safe for output (for example, replacing angle brackets with &amp;lt; and &amp;gt;).
-
-This function was added in Quest 5.2.
 
 NOTE: This a [hard-coded function](/functions/hardcoded).
 

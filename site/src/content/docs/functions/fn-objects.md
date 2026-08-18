@@ -4,8 +4,6 @@ sidebar:
   order: 3
 ---
 
-
-
 ## Clone
 
 Clone (object object to clone)
@@ -106,8 +104,6 @@ Makes exit invisible.
 
 see also [MakeExitVisible](#makeexitvisible)
 
-Added in Quest 5.3.
-
 ## MakeExitVisible
 
 MakeExitVisible (object)
@@ -115,8 +111,6 @@ MakeExitVisible (object)
 Makes exit visible.
 
 see also [MakeExitInvisible](#makeexitinvisible)
-
-Added in Quest 5.3.
 
 ## MakeObjectInvisible
 

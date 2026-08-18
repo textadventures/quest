@@ -785,7 +785,7 @@ See also [lockmessage](#lockmessage).
 
 "useframe" is a [boolean](/types#boolean) attribute specifying whether a static picture frame should be displayed above the game text.
 
-No longer used as of Quest 5.1 - all games can use the static picture frame, without having to turn this attribute on.
+No longer used - all games can use the static picture frame, without having to turn this attribute on.
 
 ## useon
 

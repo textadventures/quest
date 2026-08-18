@@ -335,7 +335,7 @@ OpenObject(object)
 
 Populate (string regex, string input)
 
-Optionally as of Quest 5.1 there is a new cache ID parameter:
+There is also an optional cache ID parameter:
 
     Populate (string regex, string input, string cache ID)
 

@@ -20,8 +20,6 @@ Format dicetype: [number of dice]d[number of sides]
          msg ("you hit the troll.")
       } 
 
-This function was added in Quest 5.3.
-
 This can also handle strings like "d6+1" and "3d8-2", using these formats:
 
 ```

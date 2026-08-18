@@ -70,8 +70,6 @@ ListCombine (list, list)
 
 Combines two [stringlists](/types#stringlist) or two [objectlists](/types#objectlist) or two generic lists (can cannot add a list of one type to another).
 
-This function was added in Quest 5.1.
-
 NOTE: This a [hard-coded function](/functions/hardcoded).
 
 ## ListCompact
@@ -107,8 +105,6 @@ ListExclude (list, any type item or list)
 Returns a copy of the [stringlist](/types#stringlist) or [objectlist](/types#objectlist), with the specified item removed, or with all the items removed if the second parameter is a list.
 
 Note that this is different to the [list remove](/scripts#list-remove) script command, as that removes the item from the original list. ListExclude by contrast returns a copy of the list - the original list is unaffected.
-
-This function was added in Quest 5.1.
 
 NOTE: This a [hard-coded function](/functions/hardcoded).
 
@@ -213,8 +209,6 @@ If you try to sort by object, script, list or dictionary attribute you will get 
      
 To return the values in reverse order, use [ObjectListSortDescending](#objectlistsortdescending).
 
-This function was added in Quest 5.3.
-
 NOTE: This a [hard-coded function](/functions/hardcoded).
 
 ## ObjectListSortDescending
@@ -222,8 +216,6 @@ NOTE: This a [hard-coded function](/functions/hardcoded).
 ObjectListSortDescending (objectlist list, string attributes ...)
 
 Returns the reversed version of [ObjectListSort](#objectlistsort) - see that page for usage.
-
-This function was added in Quest 5.3.
 
 NOTE: This a [hard-coded function](/functions/hardcoded).
 
@@ -257,8 +249,6 @@ Returns a [stringlist](/types#stringlist) - a copy of the input stringlist, sort
 
 To return the values in reverse order, use [StringListSortDescending](#stringlistsortdescending).
 
-This function was added in Quest 5.3.
-
 NOTE: This a [hard-coded function](/functions/hardcoded).
 
 ## StringListSortDescending
@@ -268,7 +258,5 @@ StringListSortDescending (stringlist list)
 Returns a [stringlist](/types#stringlist) - a copy of the input stringlist, reverse sorted alphabetically.
 
 To return the values in ascending order, use [StringListSort](#stringlistsort).
-
-This function was added in Quest 5.3.
 
 NOTE: This a [hard-coded function](/functions/hardcoded).

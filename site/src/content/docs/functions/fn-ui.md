@@ -70,8 +70,6 @@ InitUserInterface ()
 
 InitUserInterface is an empty method which can be imported and overwritten by the user. It is called after initializing the interface after starting or loading a game. It can be used to reload user generated stylesheet or gui elements.
 
-This command was added in Quest 5.5.
-
 An alternative approach is to add a user interface initialisation script on the _Advanced Features_ tab of the game object (turn on the tab on the _Features_ tab of the game object). This is effectively the same but can also be used on the web version.
 
 ## OutputText
@@ -207,7 +205,6 @@ ShowMenu ("Select", ScopeInventory(), true) {
   msg ("You smash the " + obj.name + " to bits.")
 }
 ```
-
 
 **Note:** This function is "non-blocking", and its script has no access to local variables. For a fuller discussion, see the note on [Blocks and Scripts](/howto/scripting/blocks_and_scripts).
 

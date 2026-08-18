@@ -57,11 +57,7 @@ NOTE: This a [hard-coded function](/functions/hardcoded).
 
 Log (string text)
 
-Writes the [string](/types#string) **text** into the log, which can be viewed during play by entering LOG (as of Quest 5.8) or by pressing F11 in the desktop player.
-
-Writes entries to a text file in "Documents\Quest Logs\" when `game.writelogtofile` is set to `true` as of Quest 5.9.
-
-added in Quest 5.3
+Writes the [string](/types#string) **text** to the browser's JavaScript/developer console. This is intended for debugging during game development, not as a player-facing feature.
 
 ## RunDelegateFunction
 

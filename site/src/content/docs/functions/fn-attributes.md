@@ -38,8 +38,6 @@ GetAttributeNames (object, boolean include inherited attributes)
 
 Returns a [stringlist](/types#stringlist) of all attribute names of the specified object, optionally including attributes set by an included type.
 
-This function was added in Quest 5.3.
-
 NOTE: This a [hard-coded function](/functions/hardcoded).
 
 ## GetBoolean
@@ -59,8 +57,6 @@ GetDouble (object, string attribute name)
 Returns an [double](/types#double) if the object has that double attribute, or **null** if the attribute is set to null or some other non-double value.
 
 See also [HasDouble](#hasdouble) and [ToDouble](/functions/fn-variables#todouble)
-
-This function was added in Quest 5.3.
 
 NOTE: This a [hard-coded function](/functions/hardcoded).
 
@@ -121,8 +117,6 @@ HasDouble (object, string attribute name)
 Returns a [boolean](/types#boolean) - **true** if the object *has* a double attribute of the specified name.
 
 See also [GetDouble](#getdouble) and [ToDouble](/functions/fn-variables#todouble)
-
-This function was added in Quest 5.3.
 
 NOTE: This a [hard-coded function](/functions/hardcoded).
 

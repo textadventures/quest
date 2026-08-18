@@ -18,8 +18,6 @@ is equivalent to
 
      myobject.parent = game.pov
 
-Added in Quest 5.2.
-
 ## CanReachThrough
 
 CanReachThrough (object)
@@ -45,8 +43,6 @@ CheckDarkness()
 Returns a [boolean](/types#boolean) - **true** if the player is in an room, which is dark and has no strong lightsources in it.
 
 See also [SetDark](#setdark), [SetLight](#setlight), [SetObjectLightstrength](#setobjectlightstrength), [SetExitLightstrength](#setexitlightstrength)
-
-This command was added in Quest 5.3.
 
 ## FormatExitList
 
@@ -200,8 +196,6 @@ Set a **room** to dark. Objects and Exits can't be seen unless there is a lights
 
 See also [SetLight](#setlight), [SetObjectLightstrength](#setobjectlightstrength),[SetExitLightstrength](#setexitlightstrength), [CheckDarkness](#checkdarkness)
 
-This command was added in Quest 5.3.
-
 ## SetExitLightstrength
 
 SetExitLightstrength(exit, string value)
@@ -216,8 +210,6 @@ Define an **exit** as a lightsource. A possible **value** is:
 
 See also [SetDark](#setdark), [SetLight](#setlight), [SetObjectLightstrength](#setobjectlightstrength), [CheckDarkness](#checkdarkness)
 
-This command was added in Quest 5.3.
-
 ## SetLight
 
 SetLight(room)
@@ -225,8 +217,6 @@ SetLight(room)
 Set a **room** to light.
 
 See also [SetDark](#setdark), [SetObjectLightstrength](#setobjectlightstrength), [SetExitLightstrength](#setexitlightstrength), [CheckDarkness](#checkdarkness)
-
-This command was added in Quest 5.3.
 
 ## SetObjectLightstrength
 
@@ -242,8 +232,6 @@ Define an **object** as a lightsource. A possible **value** is:
 
 See also [SetDark](#setdark), [SetLight](#setlight), [SetExitLightstrength](#setexitlightstrength), [CheckDarkness](#checkdarkness)
 
-This command was added in Quest 5.3.
-
 ## ShowRoomDescription
 
 <b>Internal function to Core.aslx</b> - games should not normally need to call internal functions.
@@ -258,12 +246,9 @@ SwitchOff (object)
 
 Switches off the specified object, simply by setting the [switchedon](/attributes#switchedon) property to false.
 
-Added in Quest 5.2.
-
 ## SwitchOn
 
 SwitchOn (object)
 
 Switches on the specified object, simply by setting the [switchedon](/attributes#switchedon) property to true.
 
-Added in Quest 5.2.

@@ -22,8 +22,6 @@ Pops up a prompt for the user to choose Yes or No as the answer to the specified
 
 The nested script can check the "result" boolean variable to see the user's response - true for "yes", false for "no".
 
-This command was added in Quest 5.1.
-
           ask ("Do you want to eat an apple?") {
             if (result) {
                 msg("Ahhh, very tasty")
@@ -36,7 +34,7 @@ This command was added in Quest 5.1.
 
     create (string name)
 
-or (as of Quest 5.3)
+or
 
     create (string name, string type)
 
@@ -52,7 +50,7 @@ or
 
     create exit (string alias, object from, object to, string type)
 
-or, as of Quest 5.1
+or
 
     create exit (string name, string alias, object from, object to, string type)
 
@@ -152,8 +150,6 @@ Finish the game.
 
 runs **script1** if it is the first call, otherwise **script2** is executed
 
-This command was added in Quest 5.2.
-
 ## for
 
     for (iterator variable, int from, int to) { script }
@@ -212,8 +208,6 @@ Example:
       get input {
          msg ("Your name is " + result)
       }
-
-This command was added in Quest 5.2.
 
 For more information see [here](/howto/tasks/asking_a_question).
 
@@ -526,11 +520,7 @@ RequestSpeak("Hello World")
 
     return (any type result)
 
-Sets the return value of a function.
-
-In Quest 5.4.1 and earlier, the function would continue running after this is called.
-
-The execution of the function stops immediately.
+Sets the return value of a function, and stops execution of the function immediately.
 
 This command should only be used within a [\<function\> element](/elements#function).
 
@@ -579,8 +569,6 @@ To set a variable to a script:
 Shows a popup menu of options and then runs the nested script. The script can access the variable "result" which contains the result of the user selection - if a dictionary of options is passed in, the key is returned. If a list of options is passed in, the list item is returned.
 
 If the "allow cancel" parameter is set to **true**, the Cancel button is available. If "cancel" is pressed, the variable "result" returns [null](/types#null).
-
-This command was added in Quest 5.1.
 
 For an in-line menu, use the [ShowMenu](/functions/fn-ui#showmenu) function.
 
@@ -640,12 +628,8 @@ Waits for the user to press a key or click on a "Continue" link, and then runs t
         }
       }
 
-This command was added in Quest 5.1.
-
 ## while
 
     while (expression) { script }
 
 Run a script while the given expression returns true.
-
-This command was added in Quest 5.1.
