@@ -34,8 +34,6 @@ Secondly, your object will only have those attributes if you have modified the l
 Error running script: Cannot modify the contents of this list as it is defined by an inherited type. Clone it before attempting to modify.
 ```
 
-Thirdly, the web player is not great at spotting when the list has changed, so might not update the display anyway.
-
 
 
 Coding...

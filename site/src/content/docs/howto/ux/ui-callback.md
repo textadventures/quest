@@ -79,12 +79,10 @@ In Quest, you can use Split to break the string up, and then handle each section
       player.age = ToInt(StringListItem(l, 1))
       player.eyecolour = StringListItem(l, 2)
 
-_NOTE:_ There is an issue to be aware of that appears when games are played on line. It seems you can only have one callback function in operation at a time. Offline this is no problem, as they happen so fast, but online, you may find that only the last one called actually completes. This means that calling ASLEvent for each bit of data is not a reliable option.
-
 
 Timers
 ------
 
-If you want to use split second timing, then `ASLEvent` is the way to go. The Quest timers work in whole second only, and when you play on-line, the exact timing can go awry, depending on the load on the server and the speed of the player's internet connection. However, you can use a JavaScript timer, which will run on the players PC, rather than the Quest server, and have that fire events in Quest using ASLEvent.
+If you want to use split second timing, then `ASLEvent` is the way to go. Quest's built-in timers only work in whole seconds. You can use a JavaScript timer instead, and have that fire events in Quest using ASLEvent for much finer control.
 
 The details are beyond the scope of this article, but you can see examples [here](https://textadventures.co.uk/forum/samples/topic/gz1msne3k0_mjvoj8vpubw/countdown) and [here](https://textadventures.co.uk/forum/samples/topic/4rajpgh0ikicac9we2rsiq/thunder-and-lightning-effect).

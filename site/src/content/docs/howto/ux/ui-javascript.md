@@ -14,11 +14,9 @@ Potentially this means you can set up your game to look like _anything_. In prac
 Web Pages
 ---------
 
-To really get to grips with the UI you have to understand how it is represented in the computer. To do that it is best to focus on the web player. The principles are the same, but playing on-line nicely separates the two parts.
+To really get to grips with the UI you have to understand how it is represented in the computer.
 
-When you access a web page, such as this one, your browser sends a message, an HTTP request, to a server, which sends an HTTP response. Both of these are just a string of characters, a file in effect (and often the response actually is a file on the server).
-
-When a player accesses your game they send an HTTP request, the Quest web player sends back an HTTP response; the user interface, with no output on it.
+When you access most web pages, your browser sends a message, an HTTP request, to a server, which sends back an HTTP response, and that's the end of the interaction until you navigate again. Quest doesn't work like that. Once your game has loaded, the whole game engine runs directly in your browser (compiled to WebAssembly) alongside the JavaScript that draws the interface - there's no server involved at all, and no request/response cycle per turn.
 
 
 JavaScript
@@ -28,9 +26,9 @@ JavaScript is a programming language built into most web browsers. Most interact
 
 By the way, JavaScript is not the same as Java!
 
-JavaScript is also used in Quest, which, even when playing off-line, uses a web browser interface. Without JavaScript, you would have a static page. The JavaScript collects and processes the user clicking on the compass or whatever, it takes input from the command bar, it communicates with the web player on the Quest server, and it updates the web page being displayed as most text is output.
+JavaScript is also used in Quest, which uses a web browser interface even for the desktop app. Without JavaScript, you would have a static page. The JavaScript collects and processes the user clicking on the compass or whatever, it takes input from the command bar, it communicates with the Quest engine running alongside it in the browser, and it updates the web page being displayed as most text is output.
 
-The way JavaScript communicates with a web server if called [AJAX](https://en.wikipedia.org/wiki/Ajax_(programming)). Quest also uses a JavaScript extension called [jQuery](https://en.wikipedia.org/wiki/JQuery), which is a set of functions that gets downloaded with the original page.
+Quest also uses a JavaScript extension called [jQuery](https://en.wikipedia.org/wiki/JQuery), which is a set of functions that gets downloaded with the original page - you'll see it used throughout these examples as the `$(...)` syntax.
 
 Quest has a JavaScript object, called `JS`, and we can use that to dynamically change the web page that the player is looking at. Getting information back from the web page is something else again.
 
