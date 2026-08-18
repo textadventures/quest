@@ -5,12 +5,12 @@ sidebar:
 ---
 
 
-This is the second of two parts, and discusses how to add some more advanced features. Part one can be found [here](https://github.com/ThePix/quest/wiki/The-Zombie-Apocalypse-(on-the-web-version)).
+This is the second of two parts, and discusses how to add some more advanced features. Part one can be found [here](/howto/rpg/zombie-apocalypse-1).
 
 Status attributes
 -----------------
 
-It would be good if the player can see at a glance how she is doing. We can use status attributes to do that. The first step is to give the player a string dictionary, called "statusattributes". Then we can add the attributes we want to track.
+It would be good if the player can see at a glance how she is doing. We can use status attributes to do that. The first step is to give the player a string dictionary, called "statusattributes". Then we can add the attributes we want to track. (For a closer look at how status attributes work, see [How to Keep Score](/howto/tasks/keeping_score).)
 
 We should display both the weapon and the current ammo, if the weapon is a firearm, and these need to be done as strings, so first we will create a function that sets `player.equippedname` to the name of the current weapon, and `player.ammonote`, which will give the current and maximum ammo for a firearm.
 
@@ -49,7 +49,7 @@ The exclamation mark indicates where the number will go, by the way. Finally, we
 - equip command
 - unequip command
 - reload command
-- shootfunction
+- shoot command
 
 In each case, we need to insert the function as the penultimate line (the last line being just a curly brace). For example, `equip` will end like this:
 
@@ -148,7 +148,7 @@ if (not GetBoolean(game, "notarealturn")) {
   foreach (obj, GetDirectChildren(player.parent)) {
     if (HasBoolean(obj, "dead")) {
       if (not obj.dead) {
-        <em>DoAttack (obj, obj, player)</em>
+        <em>DoAttack (obj, obj, player, false)</em>
         list add (list, obj)
       }
     }

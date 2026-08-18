@@ -45,7 +45,7 @@ You need to work out how combat is resolved; if this was a pen and paper game, w
 
 ### Time or turn?
 
-Is the game based on turns; the player attacks, then the monsters attack? Or is it time-based, with the monsters attacking every so many seconds. The latter would be more cool, but rather more complicated. Do the player's attacks have a cooldown? Is Quest up to timed combat? The timers on the web player have issue with the lag between the player's computer and the Quest server, so investigate that before going too far.
+Is the game based on turns; the player attacks, then the monsters attack? Or is it time-based, with the monsters attacking every so many seconds. The latter would be more cool, but rather more complicated. Do the player's attacks have a cooldown? Quest supports timed combat via its timer system, which runs entirely client-side, with no server round-trip involved.
 
 ### Defence
 

@@ -129,7 +129,7 @@ obj.alias = StringListItem(names, game.crittercount % ListCount(names)) + " ghou
 obj.listalias = CapFirst(obj.alias)
 obj.look = ProcessText("A " + obj.alias + ", {random:with long talons:its pale eyes glaring at you}.")
 obj.hitpoints = 20
-obj.damage = 1d8
+obj.damage = "1d8"
 obj.attack = 1
 obj.defence = 0
 obj.armour = 20
@@ -140,7 +140,7 @@ obj.armour = 20
 The player
 ----------
 
-The player needs the same attributes for combat as the zombies. You could set these directly on the _Attributes_ tab of the player object, but for a handful of attributes like this, it is often just as easy to set them in the object's initialisation script instead. Prior to Quest 5.7, you would have had to do this in the start script of the game object, which is fine at first, but as your game gets more complex, the script will get huge, and increasingly difficult to maintain. So instead we will set up attributes for an object in its initialisation script.
+The player needs the same attributes for combat as the zombies. You could set these directly on the _Attributes_ tab of the player object, but for a handful of attributes like this, it is often just as easy to set them in the object's initialisation script instead. You could do this in the start script of the game object instead, which is fine at first, but as your game gets more complex, the script will get huge, and increasingly difficult to maintain. So instead we will set up attributes for an object in its initialisation script.
 
 On the player object's _Features_ tab, tick "Run an initialisation script for this object". Then go to the _Initialisation script_ tab, and put in this code, which will set its attributes.
 
@@ -538,7 +538,7 @@ If you go in game, you should be able to shoot the zombies, and when the pistol 
 player.ammo = 35
 ```
 
-This will give the player 35 spare bullets at the start. If she buys more, you need to add the extra to that amount. Go to the _Inventory_ tab of the pistol, and add "Reload" as an inventory verb.
+This will give the player 35 spare bullets at the start. If she buys more, you need to add the extra to that amount. Go to the _Object_ tab of the pistol, and add "Reload" as an inventory verb.
 
 Now we need a reload command. This is the pattern:
 
@@ -568,4 +568,4 @@ else {
 A Working Game!
 ---------------
 
-So now we have a working game, with two weapons and lots of zombies. That may be all you need, but if you want to implement some more advanced features, such as searching corpses and varying zombie attacks, you might like to go on to [part two](https://github.com/ThePix/quest/wiki/The-Zombie-Apocalypse-(part-two)).
+So now we have a working game, with two weapons and lots of zombies. That may be all you need, but if you want to implement some more advanced features, such as searching corpses and varying zombie attacks, you might like to go on to [part two](/howto/rpg/zombie-apocalypse-2).

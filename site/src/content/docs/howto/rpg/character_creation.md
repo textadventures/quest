@@ -14,7 +14,7 @@ We will look at various ways of doing that, starting with the most basic.
 Just A Couple of Questions
 --------------------------
 
-Go to the "Script" tab of the "game" object. The start script is at the top. Set the script to print a message prompting the player, then select "Get input" from the "Output" options. Set it up like this:
+Go to the "Scripts" tab of the "game" object. The start script is at the top. Set the script to print a message prompting the player, then select "Get input" from the "Output" options. Set it up like this:
 
 ![](/images/Creation1.png)
 
@@ -65,7 +65,7 @@ I am using the "show menu" command this time, to limit the player's choices, in 
 
       Split ("Male;Female", ";")
 
-The "set menu" function also takes a string, the prompt for the menu, and a Boolean signaling if the player is allowed to click cancel (which we do not want in this case). As before, the result goes into a string variable called "result".
+The "show menu" command also takes a string, the prompt for the menu, and a Boolean signaling if the player is allowed to click cancel (which we do not want in this case). As before, the result goes into a string variable called "result".
 
 After also asking for the character class, the screen is cleared. The "wait" command waits until the player presses a key before running its block.
 
@@ -102,7 +102,7 @@ show menu ("Your gender?", Split ("Male;Female", ";"), false) {
 }
 ```
 
-Then "CharacterCreationClassFemale". We can use the result to set attributes of the player (which would all be zero by default) and give some clothing too:
+Then "CharacterCreationClassFemale". We can use the result to set attributes of the player and give some clothing too. Note that an attribute you never assign stays completely unset rather than defaulting to zero - it isn't even blank; using it directly (printing it, doing arithmetic with it, anything beyond comparing it to `null`) will throw a script error. So give every class a baseline value for each attribute you plan to use, rather than leaving any of them unset:
 
 ```
 show menu ("Your character class?", Split ("Amazon;Witch;Priestess;Thief", ";"), false) {
