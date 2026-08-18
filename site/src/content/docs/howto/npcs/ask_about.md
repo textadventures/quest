@@ -20,7 +20,7 @@ This page is about using `ASK/ABOUT`. This also includes `TELL/ABOUT` and `TELL/
 Ask ... about ...
 -------------
 
-The way ASK works is that you give a list of topics and corresponding scripts. Suppose we have a character, Mary, and we want to ask her about the murder of Dr Black. In the ASK section, click _Add_, and then type in the topic, "dr black". Click _Okay_, and then add the script that will run when the player asks about Dr Black. For now, just have it print a simple message.
+The way ASK works is that you give a list of topics and corresponding scripts. Suppose we have a character, Mary, and we want to ask her about the murder of Dr Black. In the ASK section, type the topic, "dr black", into the entry box and click _Add_. The new entry appears expanded, ready for you to add the script that will run when the player asks about Dr Black. For now, just have it print a simple message.
 
 Now go in game, and type `ASK MARY ABOUT DR BLACK`, and you should see your message. Quest will do its best to match topics, so you should also see the message if you type `ASK MARY ABOUT DR` or `ASK MARY ABOUT BLACK`. Ah, but what if the player types `ASK MARY ABOUT DOCTOR BLACK`? Go back to the _Ask/Tell_ tab for Mary, make sure this topic is selected and click on "Edit Key". Replace "dr black" with "dr doctor black".
 
@@ -28,7 +28,7 @@ Now go in game, and type `ASK MARY ABOUT DR BLACK`, and you should see your mess
 
 What Quest does is attempt to match the topic against each word in the topic's key, rather than exactly matching the whole thing, so you can put a list of keywords here, separated by spaces.
 
-Obviously you can change the script that runs by selecting the topic and clicking "Edit Script"...
+Obviously you can change the script that runs at any time by clicking the topic again to expand it...
 
 
 More advanced...

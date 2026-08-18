@@ -44,7 +44,7 @@ The message will only get shown if the player is in that room.
 The NPC Script - Patrolling
 --------------
 
-So what about the "takeaturn" script? That depends on what you want the NPC to do. The easiest is to have the NPC patrol a circuit of rooms. For the benefit of uses of the on-line version, we will do this in the initialisation script of the NPC, so you will need to tick that option on the _Features_ tab first. Go to the _Initialisation script_ tab, and paste in this code (change the list of rooms to suit your game):
+So what about the "takeaturn" script? That depends on what you want the NPC to do. The easiest is to have the NPC patrol a circuit of rooms. We will do this in the initialisation script of the NPC, so you will need to tick that option on the _Features_ tab first. Go to the _Initialisation script_ tab, and paste in this code (change the list of rooms to suit your game):
 
 ```
 this.route = NewObjectList()
@@ -80,13 +80,13 @@ You can do this by setting attributes directly on the _Attributes_ tab.
 
 ![](/images/patrol1.png)
 
-You need to add three attributes: route (a string list); patrolstatus (an int); and takeaturn (a script). Note that the script has to be modified as we are storing the route in a string list, not a object list (which is not an option on the _Attributes_ tab).
+You need to add three attributes: route (a string list); patrolstate (an int); and takeaturn (a script). Note that the script has to be modified as we are storing the route in a string list, not a object list (which is not an option on the _Attributes_ tab).
 
 
 Notes
 -----
 
-The "patrolstate" attribute starts at -1, so the NPC will move to the first room in the list in her first turn (this means you can start the NPC in any room you like, not necessarily one on he route).
+The "patrolstate" attribute starts at -1, so the NPC will move to the first room in the list in her first turn (this means you can start the NPC in any room you like, not necessarily one on the route).
 
 If a room is added multiple times to the route, the NPC will stay there for a while. For example, we could have the NPC stay in the lounge for a while:
 

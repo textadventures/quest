@@ -53,7 +53,7 @@ msg ("'Sure, you need to look in the bedroom.'")
 Try:
 
 ```
-if (not GetBoolean (boris, "key_asked") {
+if (not GetBoolean (boris, "key_asked")) {
   msg ("'Hi,' you say to Boris, 'can you help me find the key to this door?'")
   msg ("'Sure, you need to look in the bedroom.'")
   boris.key_asked = true

@@ -48,7 +48,7 @@ Some Variation
 
 Your game will feel much better if the player is not seeing the same phrase again and again. If she reads "A dog is following you." every time she goes into a new room, it will get tedious.
 
-So mix it up a bit with the "followphrases" attribute. This is where the off-line users can look smug, they can go to the _Attributes_ tab of the follower, the dog in this case, create a new attribute called "followphrases", set it to be a string list, and start typing in phrases. On-line users will have to do this in the start script of the `game` object. Here is some example code for the dog.
+So mix it up a bit with the "followphrases" attribute. You can go to the _Attributes_ tab of the follower, the dog in this case, create a new attribute called "followphrases", set it to be a string list, and start typing in phrases. Alternatively, you can set it up in the start script of the `game` object instead. Here is some example code for the dog.
 
 ```
   dog.followphrases = NewStringList()

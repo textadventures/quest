@@ -109,7 +109,7 @@ PrintIfHere (npc.parent, GetDisplayName(npc) + " drops the " + GetDisplayAlias(o
 return (true)
 ```
 
-This is `NpcWait`. The NPC will wait until the given object is present if it is the player or an NPC, the object is unlocked if it has "locked" attribute, or the object in held by the NPC otherwise):
+This is `NpcWait`. The NPC will wait until the given object is present (if it is the player or an NPC), the object is unlocked (if it has "locked" attribute), or the object is held by the NPC (otherwise):
 
 ```
 if (obj = game.pov or HasScript(obj, "takeaturn")) {
@@ -257,7 +257,7 @@ We also need a function called "PathLib_AddEntry". This has two parameters, "lis
 
 ```
 // From PathLib by Jay Nabonne
-<!-- msg ("Add entry: " + room.name + "(length:" + ListCount(list) + ")") -->
+// msg ("Add entry: " + room.name + "(length:" + ListCount(list) + ")")
 entry = NewDictionary()
 dictionary add(entry, "room", room)
 list add(list, entry)
@@ -315,7 +315,7 @@ Here is a simple example that extends a patrol route if a gateway is open. Note 
 
 ```
 if (gateway.isopen) {
-  this.actions = Split("Move:Square;Move:Apple Street;Move:Gate house;Move:courtyard:Move:Gate houseScript:player", ";")
+  this.actions = Split("Move:Square;Move:Apple Street;Move:Gate house;Move:courtyard;Move:Gate house;Script:player", ";")
 }
 else {
   this.actions = Split("Move:Square;Move:Apple Street;Move:Gate house;Script:player", ";")
