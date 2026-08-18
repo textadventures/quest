@@ -1,9 +1,8 @@
 ---
-title: Customising the UI - Part 1
+title: Customising the UI
 sidebar:
   order: 12
 ---
-
 
 The Quest user interface is a web page. Even the desktop version has a built-in browser (Chrome as it happens), and what the player sees is just the same as any other web page on the internet.
 
@@ -135,14 +134,10 @@ If the hex value makes no sense, stick to the names!
 [https://en.wikipedia.org/wiki/Web_colors](https://en.wikipedia.org/wiki/Web_colors)
 
 
-JavaScript
-----------
-
-Static web pages use CSS like that, but if you want things to change, you need JavaScript. JavaScript is a fully-fledged programming language (and is _not_ the same as Java), and has become the standard for web browsers. We will try to avoid writing JavaScript code as far as possible!
-
-
 JQuery
 ------
+
+Static web pages use CSS like that, but if you want things to change, you need JavaScript. JavaScript is a fully-fledged programming language (and is _not_ the same as Java), and has become the standard for web browsers. We will try to avoid writing JavaScript code as far as possible - which is where jQuery comes in.
 
 JQuery is a library for JavaScript that is built in to Quest. Among other things, it offers relatively easy ways to access parts of the HTML page.
 
@@ -206,4 +201,261 @@ JS.setPanes ("orange", "black", "black", "orange")
 JS.setPanes ("midnightblue", "skyblue", "white", "midnightblue", "blue")
 ```
 
-In [part 2](/howto/ux/ui-javascript2) we will look in more depth at using HTML elements and CSS.
+
+Elements
+--------
+
+Bits of an HTML page are called elements, and "gameBorder" is just one of them. All HTML documents have an "html" element that contains everything else, and inside that it has a "head" and a "body" elements. Quest then has a few dozen elements that make up the interface inside the "body" element.
+
+You can look at those elements as you play a game, using your browser's Developer Tools (right-click on the page and choose "Inspect", or similar - this works the same way in the desktop app). On the left you will see a hierarchy of elements (you will need to expand them to see them all), and on the right a list of properties. Click on an element, and it will be highlighted in your game so you can see what it refers to.
+
+Most of the interesting elements are of the type "div", and each is identified by an "id". The gameBorder one looks like this:
+
+![](/images/devtools.png)
+
+
+CSS Properties and Values
+-------------------------
+
+There are a large number of CSS properties, to get a full list, use the internet. I will mention just some of the interesting ones. You do need to be careful that you supply the right type of value, but we will look at that too. Also, be aware that CSS uses America spelling for "center" and "color" (but you can use both "grey" and "gray").
+
+
+### color
+
+The colour of text is determined by the "color" property. You can set colours in a number of ways, the easiest is to use a name. This [Wiki page](http://en.wikipedia.org/wiki/Web_colors) has a full list of available names (note that there are no spaces in the name; for once, capitalisation does not matter):
+
+```
+  JS.setCss("#gameBorder", "color:blueviolet;")
+```
+
+You can also set colours by using the RGB code. These both set the colour to red.
+
+```
+  JS.setCss("#gameBorder", "color:rgb(255, 0, 0);")
+  JS.setCss("#gameBorder", "color:#ff0000;")
+```
+
+Each splits colours in to three components: red, green, blue. In the first, each component is a number from 0 to 255. In the second, it is a hexadecimal number from 00 to ff. If you do not know what hexadecimal is, use the other format.
+
+
+### background-color
+
+This works just the same as color, but changes the background for this element.
+```
+  JS.setCss("#gameBorder", "background-color:blueviolet;")
+```
+
+### background-image
+
+You can set the background image for each element. The CSS requires that the image name go inside a url function call, and to ensure it works on-line, Quest requires the name go inside a GetFileURL, so it gets complicated:
+
+```
+  JS.setCss("#gameBorder", "background-image:url(" + GetFileURL("gravestone.png") + ");")
+```
+
+The status bar at the top uses an image. If you want to stop that image displaying, do this:
+
+```
+  JS.setCss("#status", "background-image:none;")
+```
+
+### width
+
+This will change the width of the element. You have the potential to mess up big time here, so change one element at a time and see what happens. Elements do impact on each other, so you may not see any difference. When experimenting, change the width of Quest itself (or the browser) to see what effect that has too.
+
+Note that the value must include "px", which says the units are pixels.
+
+```
+  JS.setCss("#gameBorder", "width:950px;")
+```
+
+### opacity
+
+The opacity property defines how much this element covers the one below (the reverse of transparency). It can range from 0.0 (this element is not visible) to 1.0 (this element is completely opaque).
+
+```
+ JS.setCss("#gameBorder", "opacity:0.5;")
+```
+
+### border
+
+The border property lets you set borders. You can set various aspects in one go, so in this example a dashed line, 5 px wide and blue, will be added.
+
+```
+  JS.setCss("#gameBorder", "border:dashed 5px blue;")
+```
+
+The status bar at the top has a blue border. If you want to remove it, do this (also set the width to 950px to keep it aligned):
+
+```
+ JS.setCss("#status", "border:none;")
+```
+
+
+Awkward Attributes
+------------------
+
+### The Command Bar
+
+Some attributes are difficult to change, and the usual technique just does not work. A good example is the border of the command bar. The element's ID is `txtCommand`, and it has `border` and `outline` properties, but if you set them to "none", it does not work. Why not? No idea.
+
+However, there is a way around. If you go into full code view (press F9), you can add an attribute to the XML of the game object that includes CSS.
+
+```
+    <css><![CDATA[
+      <style>
+        #txtCommand {
+          outline:none;
+          border: none;
+        }
+      </style>
+    ]]></css>
+```
+
+Be careful how you do that; I would suggest pasting it below this line:
+
+```
+    <firstpublished>2016</firstpublished>
+```
+
+You can output that in game.start, and it should now make the required change.
+
+```
+JS.addText (game.css)
+```
+
+You can turn off the border on the _Interface_ tab of the game object, but there may well be other elements that need to be handled like this, for example....
+
+### Inventory Items
+
+This technique will also allow you to change how inventory items are displayed. They do not have IDs, they uses classes instead, `ui-selectee` (for all objects in the list), `ui-selected` (for the selected one) and `ui-selecting` (for the selected one whilst clicked). The difference is that only one element on the page can have a specific ID but any number can have a class. You specify a class by using a `.`, rather than a `#`.
+
+This example will alter the background colour when an item is selected.
+
+```
+    <css><![CDATA[
+      <style>
+        .ui-selected {
+          background-color: darkblue;
+          color: white;
+        }
+        .ui-selecting {
+          background-color: blue;
+          color: white;
+        }
+      </style>
+    ]]></css>
+```
+
+
+Testing
+-------
+
+When you are messing with the interface, it is easy to get things wrong - or try to do something that is not possible. You should test your game to make sure it works as you expect and looks as you expect. In particular, you should check that it still works and looks the same after the player has reloaded a save game, as this is when problems most often come to light, and it is easy to forget to check this.
+
+
+Various Tricks
+--------------
+
+A collection of tricks using the techniques already discussed.
+
+
+### The "Continue" link
+
+You can change the colour of hyperlinks on the Display tab of the game object, but it does not affect the "Continue" message when the game waits for the player to press a button, because that is actually part of the command line, not the output text. However, you can change it like this:
+
+```
+JS.setCss ("#txtCommandDiv a", "color:pink;")
+```
+
+Note that the first parameter is identifying an `a` element (an HTML anchor, which is used for hyperlinks) inside of the `#txtCommandDiv`.
+
+
+### The "Saved" text
+
+The message that says the game is saved is also odd, in that is has no ID so cannot be changed through JQuery/CSS.
+
+The solution is to change the style of a container element, however, even that is problematic as they may not exist yet when 'InitUserInterface' fires, so I suggest setting style properties on the body element (this is not an id, so has no # before it.
+
+```
+  JS.setCss ("body", "color:orange;font-family:georgia,serif;")
+```
+
+### Changing the Ending
+
+The `finish` script command terminates the game, and replaces the panes on the right with a message. You can change the default font using JQuery again, to make it consistent with your game:
+
+```
+JS.setCss ("#gamePanesFinished", "font-family:Berkshire Swash;")
+```
+
+You can also change what gets displayed, using the JQuery html method. In this example, I am modifying the text (using the `html` method of JQuery), and adding an image (and we have to use GetFileURL to do that). I am also building the string first, and then calling JS.eval.
+
+This is the HTML I want to add:
+
+```
+<h2>Game Over</h2>
+<p>This game has finished and you are dead!</p>
+<img src="gravestone.png" />
+```
+
+This is how we do it:
+
+```
+s = "$('#gamePanesFinished').html('<h2>Game Over</h2>"
+s = s + "<p>This game has finished and you are dead!</p>"
+s = s + "<img src=\"" + GetFileURL("gravestone.png") + "\" />"
+s = s + "');"
+JS.eval (s)
+finish
+```
+
+### Changing the Arrows
+
+The arrows in the compass rose and the triangles to the left of the panes are icons that are defined in JQuery. To change their color, you need to replace the image file (they are all in one file).
+
+You can get an image file with the right colours, from here:
+[http://download.jqueryui.com/themeroller/images/ui-icons_800080_256x240.png](http://download.jqueryui.com/themeroller/images/ui-icons_800080_256x240.png)
+
+You can change the number 800080 to the RGB colour what you want (I guess the file server creates the images on the fly, and will accept any value, but that may not be the case), this is a dark purple I was trying. Save the file in your game folder.
+
+Then you just need to do this to get the new icons in your game (again, modifying the number for your downloaded file):
+
+```
+JS.setCss (".ui-icon", "background-image:url(" + GetFileURL("ui-icons_800080_256x240.png") + ");")
+```
+
+Once you have the file, you could edit it to change the shape of the arrows too, or make them multicoloured (upload the image via the Assets manager in the editor toolbar).
+
+
+### Disable the panes
+
+This will leave the panes there, but clicking on them will do nothing.
+
+```
+JS.setCss ("#gamePanesRunning", "pointer-events:none;")
+```
+
+To enable them again:
+
+```
+JS.setCss ("#gamePanesRunning", "pointer-events:inherit;")
+```
+
+
+### Moving the screen to the bottom
+
+Sometimes when you display something on the screen, Quest fails to scroll down for. You can force that with this:
+
+```
+JS.scrollToEnd()
+```
+
+### Sticking the command bar to the bottom of the screen.
+
+You can use this to keep the box where the player types pinned to the bottom of the screen. The first line sets its position to "fixed", this means it will stay in one place relative to the screen. The second line specifies where it will be fixed. The third line stops the game printing messages behind the input box.
+
+```
+JS.setCss("#txtCommandDiv", "position:fixed;bottom:10px")
+JS.setCss("#gameContent", "margin-bottom:70px;")
+```

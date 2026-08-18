@@ -461,16 +461,8 @@ export default defineConfig({
                                     "slug": "howto/ux/ui-dialogue-points"
                                 },
                                 {
-                                    "label": "Customising the UI - Part 1",
-                                    "slug": "howto/ux/ui-javascript"
-                                },
-                                {
-                                    "label": "Customising the UI - Part 2",
-                                    "slug": "howto/ux/ui-javascript2"
-                                },
-                                {
-                                    "label": "Customising the UI - Part 3",
-                                    "slug": "howto/ux/ui-javascript3"
+                                    "label": "Customising the UI",
+                                    "slug": "howto/ux/customising_the_ui"
                                 }
                             ]
                         },

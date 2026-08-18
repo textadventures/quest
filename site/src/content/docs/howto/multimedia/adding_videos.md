@@ -251,7 +251,7 @@ If you choose to loop your video, you will probably need a way to stop it. Like 
 
 ### Controlling HTML Video with JS (Stopping, Pausing, and Playing)
 
-The easiest way to stop a video would be removing ALL video tags from the game.  This can be handled [using Javascript](/howto/ux/ui-javascript) via `JS.eval()` (NOTE: This will completely remove any HTML audio tags you have added to the game!).
+The easiest way to stop a video would be removing ALL video tags from the game.  This can be handled [using Javascript](/howto/ux/customising_the_ui) via `JS.eval()` (NOTE: This will completely remove any HTML audio tags you have added to the game!).
 
 ```
 JS.eval("$('video').remove();")

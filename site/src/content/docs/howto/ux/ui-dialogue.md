@@ -6,7 +6,7 @@ sidebar:
 
 We are going to use JQuery/JavaScript together with HTML to build a dialogue panel. This could be used at the start of an RPG-style game to create the character, for example, and you can see what is possible [here](https://textadventures.co.uk/games/view/em15b32xd0o-y-ysvgrtcg/deeper).
 
-This is not trivial, and some idea of CSS and HTML will be useful; it would be a good idea to have read through [part 1](/howto/ux/ui-javascript) and [part 2](/howto/ux/ui-javascript2) of customising the UI.
+This is not trivial, and some idea of CSS and HTML will be useful; it would be a good idea to have read through [Customising the UI](/howto/ux/customising_the_ui) first.
 
 The way it will work is we will hand some HTML to JQuery and JQuery will put it in a dialogue. We will then need to collect the data and pass it to Quest.
 

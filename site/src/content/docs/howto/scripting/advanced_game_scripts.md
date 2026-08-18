@@ -17,7 +17,7 @@ The `game.inituserinterface` script is exactly the same; it is called at the sta
 
 Before this was added, users of the web editor could not override `InitUserInterface` at all, so their user interface was restricted to the basic options. Now, you can change `game.inituserinterface` to do whatever you want, regardless of which editor you're using!
 
-For a starting point as to what you can do, see [here](/howto/ux/ui-javascript).
+For a starting point as to what you can do, see [here](/howto/ux/customising_the_ui).
 
 
 

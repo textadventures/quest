@@ -114,9 +114,12 @@ docs.textadventures.co.uk/quest/* https://questviva.com/:splat 301
 /ui-dialogue-points /howto/ux/ui-dialogue-points 301
 /ui-fonts /howto/ux/ui-fonts 301
 /ui-game-play /howto/ux/ui-game-play 301
-/ui-javascript /howto/ux/ui-javascript 301
-/ui-javascript2 /howto/ux/ui-javascript2 301
-/ui-javascript3 /howto/ux/ui-javascript3 301
+/ui-javascript /howto/ux/customising_the_ui 301
+/ui-javascript2 /howto/ux/customising_the_ui#elements 301
+/ui-javascript3 /howto/ux/customising_the_ui#testing 301
+/howto/ux/ui-javascript /howto/ux/customising_the_ui 301
+/howto/ux/ui-javascript2 /howto/ux/customising_the_ui#elements 301
+/howto/ux/ui-javascript3 /howto/ux/customising_the_ui#testing 301
 /ui-location-bar /howto/ux/ui-location-bar 301
 /ui-style /howto/ux/ui-style 301
 /undo_support /advanced-topics/undo_support 301
