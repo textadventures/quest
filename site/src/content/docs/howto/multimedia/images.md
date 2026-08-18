@@ -14,7 +14,7 @@ For photos, the best file format to use is JPG, however, for anything else, you 
 
 GIMP is very useful for editing images and is free. Inkscape is  good vector-based software for creating images.
 
-Bear in mind that there is a 20 Mb limit on games at textadventures.co.uk, and images, videos and sounds can quickly get you to that limit. Compressing images can help a lot.
+Bear in mind that there is a 50 Mb limit on games at textadventures.co.uk (see [Size Limitations](/publishing/publishing)), and images, videos and sounds can quickly get you to that limit. Compressing images can help a lot.
 
 
 Adding Images - The picture command
@@ -100,8 +100,8 @@ One Image On Top of Another
 You can even superimpose one image over another if you feel brave enough. You need to put them both inside an HTML div (this is then the reference point that the images are positioned against), and give the images an absolute position. All that needs to go inside a single "msg" as Quest will add its own HTML, so in this example, a string, `s`, is used, with each bit added to it (we could do it in one line, but it would be very long).
 ```
   s = "<div style='position:fixed; left: 0px; bottom: 20px; width: 260 px; height: 670px;'>"
-  s = s + "<img src='" + GetFileURL("gravestone.png") + "' style=\"position:absolute;top:0px;left:-200px;' />"
-  s = s + "<img src='" + GetFileURL("celebrate.png") + "' style=\"position:absolute;' />"
+  s = s + "<img src='" + GetFileURL("gravestone.png") + "' style='position:absolute;top:0px;left:-200px;' />"
+  s = s + "<img src='" + GetFileURL("celebrate.png") + "' style='position:absolute;' />"
   s = s + "</div>"
   msg (s)
 ```

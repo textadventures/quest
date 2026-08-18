@@ -85,7 +85,7 @@ Play the example game:
 
 View the example game's code:
 
-<a target="_blank" href="examples/PlayAudioExample.aslx">PlayAudioExample.aslx</a>
+<a target="_blank" href="/examples/PlayAudioExample.aslx">PlayAudioExample.aslx</a>
 
 
 
@@ -110,7 +110,7 @@ https://www.w3schools.com/html/html5_audio.asp
 
 When using a local audio file in Quest, we need to use [`GetFileURL()`](/functions/getfileurl) to retrieve our local file's URL.
 
-This will find the correct path to the file, whether we are using the desktop player or the web player.
+This will find the correct path to the file regardless of how the game is hosted or played.
 
 ```
 src = GetFileURL("snd effect.ogg")
@@ -122,7 +122,7 @@ msg ("<audio src='" + src + "' autoplay/>")
 
 The file "snd effect.ogg" is in my game's main folder.
 
-I also had to add ";*.ogg" to the end of the string attribute `game.publishfileextensions` so Quest would include the file when publishing the game.  Otherwise, it would not work because the file would not be present.
+The current engine's default `game.publishfileextensions` already includes `*.ogg`, so this step usually isn't necessary - you'd only need to add an extension manually if it isn't already in that default list.
 
 For more on the file extensions included in your game, see [A Note on The Publish Process](/tutorial/releasing_your_game).
 
@@ -134,10 +134,10 @@ Here's an example with an actual URL:
 
 ```
 src = "http://media.textadventures.co.uk/games/1RurGHLuLUqrWdMJh53LTQ/bushcave-explicit-r9/sounds/bushcave.ogg"
-msg ("<audio src='" + src + "' autoplay>")
+msg ("<audio src='" + src + "' autoplay />")
 ```
 
-For more on the maximum upload size, see the last section on [this page](/publishing/publishing).
+For more on the maximum upload size, see the Size Limitations section on [this page](/publishing/publishing).
 
 
 ### Adding Controls

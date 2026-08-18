@@ -16,7 +16,7 @@ Copy the video's ID from YouTube.
 
 Paste the ID into the "Play YouTube video" script.
 
-[![animated gif](/images/AddingYouTube.gif)](images/AddingYouTube.gif)
+[![animated gif](/images/AddingYouTube.gif)](/images/AddingYouTube.gif)
 
 
 
@@ -145,7 +145,7 @@ But, with the code like this, the new video loads but does not play! There are t
 
 ### The Quest Function:
 
-**ShowYouTubeVideo**
+**ShowYouTube**
 
 Takes one parameter:  `id`
 
@@ -178,6 +178,16 @@ Here's the new code:
 ChangeVideoSrc("my-video", "https://www.youtube.com/embed/-WNRvCpw3qo?autoplay=1&rel=0")
 ```
 
+### Vimeo
+
+Quest can also play videos from [Vimeo](https://vimeo.com), via the [`ShowVimeo`](/functions/corelibrary/showvimeo) function:
+
+```
+ShowVimeo (id)
+```
+
+This isn't currently offered as an option in the "Add script" picker on the Scripts tab, so you'll need to add it via code view, but it works the same way as `ShowYouTube` otherwise.
+
 
 
 Using HTML Video Elements
@@ -196,7 +206,7 @@ For more information, see [here](https://www.w3schools.com/html/html5_video.asp)
 
 When using a local video file in Quest, we need to use [`GetFileURL()`](/functions/getfileurl) to retrieve our local file's URL.
 
-This will find the correct path to the file, whether we are using the desktop player or the web player.
+This will find the correct path to the file regardless of how the game is hosted or played.
 
 ```
 src = GetFileURL("spinning_compass.ogv")
@@ -207,7 +217,7 @@ msg("<video src='"+src+"' autoplay width='90%' />")
 
 I set the width to 90% for this video, but **you will need to adjust the width according to each video's size!**
 
-The file "spinning_compass.ogv" is in my game's main folder. I also had to add ";*.ogv" to the end of the string attribute ```game.publishfileextensions``` so Quest would include the file when publishing the game.  Otherwise, it would not work because the file would not be present. For more on the file extensions included in your game, see [A Note on The Publish Process](/tutorial/releasing_your_game).
+The file "spinning_compass.ogv" is in my game's main folder. The current engine's default ```game.publishfileextensions``` already includes `*.ogv`, so you shouldn't normally need to add it yourself - you'd only need to add an extension manually if it isn't already in that default list. For more on the file extensions included in your game, see [A Note on The Publish Process](/tutorial/releasing_your_game).
 
 To simulate the “Wait for sound to finish before continuing” option when adding videos to a game via HTML video elements, follow the link at the end of this document.
 
@@ -217,10 +227,10 @@ Here's an example with an actual URL:
 
 ```
 src = "http://media.textadventures.co.uk/games/SQBeLzc7F0mHVspXyUfbbg/spinning_compass.mp4"
-msg ("<video src='" + src + "' autoplay>")
+msg ("<video src='" + src + "' autoplay />")
 ```
 
-For more on the maximum upload size, see the last section on [this page](/publishing/publishing).
+For more on the maximum upload size, see the Size Limitations section on [this page](/publishing/publishing).
 
 
 ### Adding Controls

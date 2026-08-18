@@ -32,7 +32,7 @@ For more complex drawings, building up a string is a good idea:
   // step 2, draw a circle
   s = s + "<circle cx=\"50\" cy=\"50\" r=\"40\" stroke=\"green\" stroke-width=\"4\" fill=\"yellow\" />"
   // step 3 draw a transparent rectangle
-  s = s + "<rect x=\"50\" y=\"20\" width=\"150\" height=\"150\" style=\"fill:blue;stroke:pink;stroke-width:5 fill-opacity:0.3;stroke-opacity:0.9\" />"
+  s = s + "<rect x=\"50\" y=\"20\" width=\"150\" height=\"150\" style=\"fill:blue;stroke:pink;stroke-width:5;fill-opacity:0.3;stroke-opacity:0.9\" />"
   // step 4 end the svg element
   s = s + "</svg>"
   // step 5 print it out
