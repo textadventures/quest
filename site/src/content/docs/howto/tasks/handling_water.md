@@ -51,7 +51,7 @@ The text processor is a bit limited, and you might prefer to use a script so you
 
 ## A Source of Water
 
-Now we will do a room with a pool of clear, fresh water. Create a room, give it a Boolean attribute, "watersource", and set it to true.Now you should be able to go in-game and fill the waterskin with water.
+Now we will do a room with a pool of clear, fresh water. Create a room, give it a Boolean attribute, "watersource", and set it to true. Now you should be able to go in-game and fill the waterskin with water.
 
 For a room with a tap, create the room, then create the tap as an object in it. For the tap, on the Features tab tick Switchable. On the "Switchable" tab set it to "Can be switched...". Fill in the text boxes as you like. For the first script, paste in this:
 ```

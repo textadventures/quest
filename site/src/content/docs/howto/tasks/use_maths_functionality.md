@@ -71,21 +71,21 @@ If you are reading a page about maths, chances are you are familiar with Boolean
       msg ("bitwise 20 and 4 is " + (20 and 4))
       msg ("bitwise 20 or 4 is " + (20 or 4))
 
-Twenty is 10100 in binary and 5 is 101. When you `and` them, the result is every bit they have in common, in this case just the third. When you `or` them, you get all the bits either of them have, the fifth and the third.
+Twenty is 10100 in binary and 4 is 100. When you `and` them, the result is every bit they have in common, in this case just the third. When you `or` them, you get all the bits either of them have, the fifth and the third.
 
 ```
 20     10100
- 5       101
+ 4       100
 and      100
- or    10101
+ or    10100
 ```
 
-There is also a bitwise shift operator; it moves the binary representation of the number on the left by a number of places indicated by the number on the right (in effect, shift left multiples the right number by two to the power of the left number; right shift divides by two to the power of the right number):
+There is also a bitwise shift operator; it moves the binary representation of the number on the left by a number of places indicated by the number on the right (in effect, shift left multiplies the left number by two to the power of the right number; shift right divides the left number by two to the power of the right number):
 
       msg ("24 shifted 3 right is " + (24 >> 3))
       msg ("3 shifted 3 left is " + (3 << 3))
 
-2 to the power 3 is eight, so the first line effectively divides by 8, to give 3, the second line multiples by eight tio give 24.
+2 to the power 3 is eight, so the first line effectively divides by 8, to give 3, the second line multiplies by eight to give 24.
 
 Thirty to forty years ago, this might give a significant speed boost, compared to 24 / 8. Nowadays, with faster computers, it is pretty much useless.
 
@@ -177,7 +177,7 @@ It works in Quest too. You can even do it for a dictionary:
 
       mydictionary["peter"]
 
-Note that these do the same as `ListItem` and 'DictionaryItem`; they return an element with an indeterminate type, and it will take Quest a moment to work out what it is handling.
+Note that these do the same as `ListItem` and `DictionaryItem`; they return an element with an indeterminate type, and it will take Quest a moment to work out what it is handling.
 
 Here is an example (TestFunc just prints out the value):
 

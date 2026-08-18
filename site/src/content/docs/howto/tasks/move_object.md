@@ -148,6 +148,12 @@ game.pov.parent = this
 
 On the _Exits_ tab, give it a "down" exit (to any room, but make sure it is one way). For the exit, tick the "Run a script" checkbox, and paste in this script:
 
+```
+game.pov.parent = this.parent.parent
+```
+
+Here, `this` is the exit, `this.parent` is the crate (since the crate is also a room), and `this.parent.parent` is the real room the crate stands in - so this moves the player off the crate and back into that room.
+
 You should now be able to CLIMB the crate, and use the DOWN direction to get off it.
 
 Create a second exit from the crate, to the room above the trapdoor. Tick it to be scenery, and to run a script. This code assumes the room with the trapdoor is "other room":

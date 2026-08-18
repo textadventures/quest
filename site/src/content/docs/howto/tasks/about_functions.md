@@ -4,7 +4,7 @@ sidebar:
   order: 3
 ---
 
-We looked at functions in the [tutorial](/tutorial/more_things_to_do_with_objects#Using_Functions), and for a basic understanding, you are recommended looking at that. This document goes into more detail on using and creating your own functions.
+We looked at functions in the [tutorial](/tutorial/more_things_to_do_with_objects#using-functions), and for a basic understanding, you are recommended looking at that. This document goes into more detail on using and creating your own functions.
 
 Quest has a whole load of functions built in, many of them will be used in your game without you even knowing about it. You can see a full list here:
 
@@ -52,13 +52,13 @@ The power of Quest is that it lets you do so much. It has dozens of built-in fun
 
 So why would you want to use a function? The basic reason is because you want to do the same thing in two or more different places. Let us say you have a futuristic city, and the player can teleport between any of several points. Each time he teleports, you want to charge him, and give a little description. The first time, you want to give a longer description, but you do not know which route that will be. The way to set this up is to have each exit call a function.
 
-To start, right click Object and select "Add Function"; give your function a good name. Like any function in a programming language, you can have parameters and a return value. In the example, the destination is a parameter, so click the parameters "Add" button and type "destination". The rest of it is creating a script as normal. The one extra point is that you can reference the parameters as expressions. Once you have the function set up, you just need to call it. "Call function" is an option under scripts, and when you select it, you can put in your parameters.
+To start, click the "⋯" button next to Functions in the tree and select "Add Function"; give your function a good name. Like any function in a programming language, you can have parameters and a return value. In the example, the destination is a parameter, so click the parameters "Add" button and type "destination". The rest of it is creating a script as normal. The one extra point is that you can reference the parameters as expressions. Once you have the function set up, you just need to call it. "Call function" is an option under scripts, and when you select it, you can put in your parameters.
 
 ### A More Complex Example
 
 As another example, let us say you have a room with a bench and another room with a chair, and you want the player to be able to type SIT, SIT ON BENCH and SIT ON CHAIR. One way would be to have a function that takes the seat as a parameter. You can set up a SIT command in each room that sends it the right seat depending on the room, and you can create SIT ON verbs for the chair and the bench that use the Sit function.
 
-So how do we create a function? Right-click in the left pane, and select "Add function". Your new function will appear. Set the return type; in this case the function will not return anything, so we can leave it as "None". Then you can add the parameters.
+So how do we create a function? In the tree, click the "⋯" button next to Functions, and select "Add Function". Your new function will appear. Set the return type; in this case the function will not return anything, so we can leave it as "None". Then you can add the parameters.
 
 You can use any names you like here; there is no need for them to correspond to the names in the commands or verbs - however the order IS important! In this case there is only one parameter, and I am going to call it "seat".
 
@@ -96,7 +96,7 @@ For more detail on creating functions with return values, see [Creating Function
 
 Did I mention that the power of Quest is that it lets you do so much? Not only can you create your own functions, you can replace the existing ones (though not the script commands or some of the more fundamental functions).
 
-Let us suppose you want you want room descriptions to have some novel formatting (perhaps the letter 'A' in blue, to pick a common example). Click the tree view options button, above the tree, and select "Show Library Elements". In the left pane you will see all the built in functions, commands and so in, all in grey. Find the one you want, in this case ShowRoomDescription (at the top of the pane is a filtering function, which makes the search easier). The function will appear in the right pane. You can click the "Copy" button at top left to get the function copied into your game, and then edit it as you see fit.
+Let us suppose you want you want room descriptions to have some novel formatting (perhaps the letter 'A' in blue, to pick a common example). Click the tree view options button, above the tree, and select "Show Library Elements". In the left pane you will see all the built in functions, commands and so in, all in grey. Find the one you want, in this case ShowRoomDescription (at the top of the pane is a filtering function, which makes the search easier). The function will appear in the right pane, with a banner explaining it comes from a library and can't be edited directly. Click "Copy into your game" on that banner to get the function copied into your game, and then edit it as you see fit.
 
 Just do not change the name, return type or parameters.
 

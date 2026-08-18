@@ -83,12 +83,12 @@ The `PickOneChild` and `PickOneChildOfType` functions return a random object fro
 
 ### Roll dice
 
-The `RollDice` function takes a string in the standard RPG format, eg "d6+1" and "3d8-2", and returns an integer, the result of rolling the given dice.
+The `DiceRoll` function takes a string in the standard RPG format, eg "d6+1" and "3d8-2", and returns an integer, the result of rolling the given dice.
 
 A great example of this in use would be calculating damage for a weapon. Each weapon could be given a damage string in this format, so dagger might be "d4" and great sword could be "3d6+2". Damage after a successful attack can then be determined:
 
 ```
-hits_lost = RollDice(weapon.damage)
+hits_lost = DiceRoll(weapon.damage)
 ```
 
 Examples of use
@@ -152,7 +152,7 @@ else if (RandomChance(20)) {
 else if (RandomChance(25)) {
   msg("Event four happens")
 }
-elseif (RandomChance(33)) {
+else if (RandomChance(33)) {
   msg("Event three happens")
 }
 else if (RandomChance(50)) {

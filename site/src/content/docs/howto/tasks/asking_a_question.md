@@ -43,7 +43,7 @@ You might think that you can just have one question after another...
   }
 ```
 
-Unfortunately, Quest will complain, "Error running script: Only one 'get input' can be in progress at a time". Quest does not wait for the player to give her name, it just goes straight to the next bit of code, asks her age, and then complains that it is now waiting for two answers.
+Unfortunately, this does not work as you might expect. Quest does not wait for the player to give her name - it just goes straight to the next bit of code and asks her age too, before the player has answered anything. Both questions get printed immediately, but only the second `get input` is actually listening; it silently replaces the first, so whatever the player types only ever gets treated as her age, and the "What is your name?" question never gets an answer at all.
 
 We need to _nest_ the question. This means putting the second inside the first.
 

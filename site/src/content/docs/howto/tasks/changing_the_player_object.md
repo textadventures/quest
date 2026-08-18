@@ -16,7 +16,7 @@ Each player object gets its own inventory and attributes. This includes status a
 Making an object the player
 ---------------------------
 
-Before an object can become the player, you need to set it up in the editor. On the _Features_ tab, tick the "Player:..." box, then on the _Player_ tab, select "Can be player".
+Before an object can become the player, you need to set it up in the editor. On the _Features_ tab, tick the "Player:..." box, then on the _Player_ tab, select "Can be a player".
 
 On the _Player_ tab of the `game` you can select which object will be the player at the start of the game (if you do not select one, it will default to `player`).
 

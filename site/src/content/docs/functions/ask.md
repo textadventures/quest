@@ -2,8 +2,6 @@
 title: Ask
 ---
 
-**Note:** The original function was deprecated as of Quest 5.1, and this version was introduced in Quest 5.4.
-
     Ask (string question)  { script } 
 
 Shows an inline menu of the specified **question** and returns a [boolean](/types/boolean) variable **result** with **true** if the player answers "Yes" to the question.

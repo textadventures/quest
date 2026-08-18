@@ -6,7 +6,7 @@ sidebar:
 
 A text adventure generally involves moving around the game world by following compass directions – north, south, east, and west, with the occasional use of up and down, or in and out. Many players like to map out a game as they play using pencil and paper, but you can help your players out by getting Quest to do that for them automatically!
 
-It's simple to enable the mapping feature - just select "game" from the tree, go to the _Interface_ tab (_Features_ tab prior to Quest 5.7), and turn on "Map and Drawing Grid".
+It's simple to enable the mapping feature - just select "game" from the tree, go to the _Interface_ tab, and turn on "Map and Drawing Grid".
 
 After turning the feature on, you can customise the map size, but we will leave the default scale and height settings - you can tweak these later if you want your map to be displayed at a different size. Quest draws the map on a hidden grid - the "scale" setting is the width and height of one grid square.
 
