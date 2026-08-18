@@ -123,11 +123,12 @@ Evaluates to true if the term on the left is in the list on the right, false oth
 
 The first line creates our list. The third line prints "true", as "two" is found in the list, the last line prints "false"; "zero" is not in the list.
 
-If you look at the documentation, you will see this can be used in another form,
+You don't need to build a list first; you can check against a parenthesised list of literal values directly:
 
-      msg ("two" in "on e", "two", "three")
+      msg ("two" in ("one", "two", "three"))
+      msg ("zero" in ("one", "two", "three"))
 
-However, this is not supported by quest.
+The first line prints "true", the second "false" - same rules as checking against a list.
 
 
 Trigonometry and Other Functions
