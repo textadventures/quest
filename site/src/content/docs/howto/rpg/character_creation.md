@@ -14,7 +14,7 @@ We will look at various ways of doing that, starting with the most basic.
 Just A Couple of Questions
 --------------------------
 
-Go to the "Scripts" tab of the "game" object. The start script is at the top. Set the script to print a message prompting the player, then add a "Set a variable or attribute" action, and pick `GetInput()` from the list of value templates. Set it up like this:
+Go to the "Scripts" tab of the "game" object. The start script is at the top. Set the script to print a message prompting the player, then add a "Set a variable or attribute" action, and pick "player's typed input" from the list of value templates (this is `GetInput()` under the hood - you'll see that if you switch to code view). Set it up like this:
 
 ![](/images/Creation1.png)
 
