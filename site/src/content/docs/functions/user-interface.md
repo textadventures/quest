@@ -179,7 +179,7 @@ If the "allow ignore" parameter is set to **true**, the player can ignore the me
 
 Use the [show menu](/scripts#show-menu) script command for a popup menu.
 
-The [Split](/functions/fn-string#split) function can be useful to quickly get a list of options, whilst [switch](/scripts#switch) can be useful for dealing with the result. For example:
+The [Split](/functions/string#split) function can be useful to quickly get a list of options, whilst [switch](/scripts#switch) can be useful for dealing with the result. For example:
 
     options = Split("Red;Green;Blue;Yellow", ";")
     ShowMenu ("What is your favourite colour?", options, false) {

@@ -14,6 +14,24 @@ Comments are denoted by //
 
      // this line will be ignored
 
+## Setting variables
+
+To set an object attribute to a value:
+
+    object.attribute = value 
+
+To set a variable to a value:
+
+    variable = value 
+
+To set an object attribute to a script:
+
+    object.attribute => { script } 
+
+To set a variable to a script:
+
+    variable => { script } 
+
 ## ask
 
     ask (string question) {script}
@@ -38,7 +56,7 @@ or
 
     create (string name, string type)
 
-Creates an object with the specified name. You can subsequently access the object using the [GetObject](/functions/fn-objects#getobject) function, or just use its name directly in an expression.
+Creates an object with the specified name. You can subsequently access the object using the [GetObject](/functions/objects#getobject) function, or just use its name directly in an expression.
 
 If you specify a type, the object created will be of that type. The command only accepts one type name - if you want the new object to inherit multiple types, you could create one type which inherits all of those types, and specify that here.
 
@@ -367,22 +385,22 @@ JS.setGameName("My Cool Game")
 
 _FontName_
 
-(Obsolete as of Quest 5.4) Sets the font name. Use [SetFontName](/functions/fn-ui#setfontname) instead.
+(Obsolete as of Quest 5.4) Sets the font name. Use [SetFontName](/functions/user-interface#setfontname) instead.
 
 
 _FontSize_
 
-(Obsolete as of Quest 5.4) Sets the font size. Use [SetFontSize](/functions/fn-ui#setfontsize) instead.
+(Obsolete as of Quest 5.4) Sets the font size. Use [SetFontSize](/functions/user-interface#setfontsize) instead.
 
 
 _Background_
 
-Sets the background to the specified HTML colour. Use [SetBackgroundColour](/functions/fn-ui#setbackgroundcolour) instead.
+Sets the background to the specified HTML colour. Use [SetBackgroundColour](/functions/user-interface#setbackgroundcolour) instead.
 
 
 _Foreground_
 
-Sets the foreground to the specified HTML colour. Use [SetForegroundColour](/functions/fn-ui#setforegroundcolour) instead.
+Sets the foreground to the specified HTML colour. Use [SetForegroundColour](/functions/user-interface#setforegroundcolour) instead.
 
 
 _LinkForeground_
@@ -505,7 +523,7 @@ Sets the static panel HTML contents. Use `SetFramePicture` and `ClearFramePictur
 
 _Log_
 
-Log the specified text. Use [Log](/functions/fn-general#log) instead.
+Log the specified text. Use [Log](/functions/general#log) instead.
 
 
 _Speak_  
@@ -530,7 +548,7 @@ This command should only be used within a [\<function\> element](/elements#funct
 
 Runs an object's delegate implementation script attribute, with the specified parameters.
 
-See [Using Delegates](/types/using_delegates)
+See [Using Delegates](/advanced-topics/using_delegates)
 
 ## set
 
@@ -544,24 +562,6 @@ Note that you can also use this syntax to do the same thing:
 
 You only need to use the "set" command if you are constructing the attribute name using an expression.
 
-## Setting variables
-
-To set an object attribute to a value:
-
-    object.attribute = value 
-
-To set a variable to a value:
-
-    variable = value 
-
-To set an object attribute to a script:
-
-    object.attribute => { script } 
-
-To set a variable to a script:
-
-    variable => { script } 
-
 ## show menu
 
     show menu (string caption, stringdictionary or stringlist options, boolean allow cancel) {script}
@@ -570,7 +570,7 @@ Shows a popup menu of options and then runs the nested script. The script can ac
 
 If the "allow cancel" parameter is set to **true**, the Cancel button is available. If "cancel" is pressed, the variable "result" returns [null](/types#null).
 
-For an in-line menu, use the [ShowMenu](/functions/fn-ui#showmenu) function.
+For an in-line menu, use the [ShowMenu](/functions/user-interface#showmenu) function.
 
 **example:**
 

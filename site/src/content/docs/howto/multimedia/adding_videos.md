@@ -192,7 +192,7 @@ The most basic example of a video tag:
 
 For more information, see [here](https://www.w3schools.com/html/html5_video.asp).
 
-When using a local video file in Quest, we need to use [`GetFileURL()`](/functions/fn-general#getfileurl) to retrieve our local file's URL.
+When using a local video file in Quest, we need to use [`GetFileURL()`](/functions/general#getfileurl) to retrieve our local file's URL.
 
 This will find the correct path to the file regardless of how the game is hosted or played.
 

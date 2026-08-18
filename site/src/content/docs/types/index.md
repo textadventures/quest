@@ -87,7 +87,7 @@ You can use the `IsDefined` function within a script to determine if it has acce
 if (IsDefined("npc")) {
 ```
 
-There is no way to convert a string to a script during play, by the way (though you can do something similar with the [Eval](/functions/fn-general#eval) function).
+There is no way to convert a string to a script during play, by the way (though you can do something similar with the [Eval](/functions/general#eval) function).
 
 ## Boolean
 
@@ -322,3 +322,7 @@ This defines:
 |health|Health !%|
 
 See [Using Dictionaries](/howto/scripting/using_dictionaries)
+
+## Command pattern
+
+Quest uses regular expressions to compare commands with what the player typed, and the regular expression is converted from a string in the background (see [here](/howto/commands/pattern_matching) for more on that). However, it also offers a simplified version, a "command pattern". This is essentially a string (such as "tie #object1# to #object2"), which Quest will convert to another string when the game start (in this case "^tie (?.*) to (?.*)$"), which can then be converted to a regular expression when required. There is not much point to command patterns outside of commands.

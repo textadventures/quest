@@ -108,7 +108,7 @@ For more information:
 
 https://www.w3schools.com/html/html5_audio.asp
 
-When using a local audio file in Quest, we need to use [`GetFileURL()`](/functions/fn-general#getfileurl) to retrieve our local file's URL.
+When using a local audio file in Quest, we need to use [`GetFileURL()`](/functions/general#getfileurl) to retrieve our local file's URL.
 
 This will find the correct path to the file regardless of how the game is hosted or played.
 

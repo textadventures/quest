@@ -205,7 +205,7 @@ Returns an [int](/types#int) indicating how strongly the given input matches the
 
 The strength is defined as the length of the "required" parts of the string, i.e. the total length of the string *minus* the total length of all named groups.
 
-Use a cache ID for improved performance if you repeatedly test strings against the same regular expression. The compiled regular expression will be cached and used again for subsequent calls to GetMatchStrength (or [IsRegexMatch](#isregexmatch) or [Populate](/functions/fn-internal#populate) ) using the same cache ID.
+Use a cache ID for improved performance if you repeatedly test strings against the same regular expression. The compiled regular expression will be cached and used again for subsequent calls to GetMatchStrength (or [IsRegexMatch](#isregexmatch) or [Populate](/functions/internal-core#populate) ) using the same cache ID.
 
 For example, given this regex which matches the text "look at " followed by any object name:
 
@@ -221,7 +221,7 @@ This is calculated as follows:
 
 The strength is used by the command handling functions in CoreCommands.aslx to determine which command is the best match for a given input.
 
-See also [IsRegexMatch](#isregexmatch), [Populate](/functions/fn-internal#populate)
+See also [IsRegexMatch](#isregexmatch), [Populate](/functions/internal-core#populate)
 
 NOTE: This a [hard-coded function](/functions/hardcoded).
 
@@ -265,9 +265,9 @@ There is also an optional cache ID parameter:
 
 Returns a [boolean](/types#boolean) - **true** if the string matches the specified regular expression.
 
-Use a cache ID for improved performance if you repeatedly test strings against the same regular expression. The compiled regular expression will be cached and used again for subsequent calls to IsRegexMatch (or [Populate](/functions/fn-internal#populate) or [GetMatchStrength](#getmatchstrength) ) using the same cache ID.
+Use a cache ID for improved performance if you repeatedly test strings against the same regular expression. The compiled regular expression will be cached and used again for subsequent calls to IsRegexMatch (or [Populate](/functions/internal-core#populate) or [GetMatchStrength](#getmatchstrength) ) using the same cache ID.
 
-See also [GetMatchStrength](#getmatchstrength), [Populate](/functions/fn-internal#populate)
+See also [GetMatchStrength](#getmatchstrength), [Populate](/functions/internal-core#populate)
 
 NOTE: This a [hard-coded function](/functions/hardcoded).
 

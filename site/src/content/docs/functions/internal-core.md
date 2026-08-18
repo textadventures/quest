@@ -122,7 +122,7 @@ GetKeywordsMatchStrength(keywords, input)
 
 GetPlacesObjectsList()
 
-Required by Quest so it can display the "Places and Objects" list. Returns [ScopeVisibleNotHeldNotScenery](/functions/fn-scope#scopevisiblenotheldnotscenery) with the player object excluded.
+Required by Quest so it can display the "Places and Objects" list. Returns [ScopeVisibleNotHeldNotScenery](/functions/scope#scopevisiblenotheldnotscenery) with the player object excluded.
 
 ## GetTaggedName
 
@@ -232,7 +232,7 @@ Grid_LoadSvg (string data, string id)
 
 Loads and SVG file and associates it with an id, so it can subsequently be drawn on the custom grid drawing layer using [Grid\_DrawSvg](#grid_drawsvg).
 
-The data parameter is the raw file data for the SVG file - you can load a string with file data using the [GetFileData](/functions/fn-general#getfiledata) function.
+The data parameter is the raw file data for the SVG file - you can load a string with file data using the [GetFileData](/functions/general#getfiledata) function.
 
 ## Grid_Redraw
 
@@ -343,7 +343,7 @@ The input must be a match for the regular expression, or an error occurs.
 
 Returns a [stringdictionary](/types#stringdictionary), keyed by the group names in the regular expression, with values set to the resolved regex groups.
 
-Use a cache ID for improved performance if you repeatedly test strings against the same regular expression. The compiled regular expression will be cached and used again for subsequent calls to Populate (or [GetMatchStrength](/functions/fn-string#getmatchstrength) or [IsRegexMatch](/functions/fn-string#isregexmatch) ) using the same cache ID.
+Use a cache ID for improved performance if you repeatedly test strings against the same regular expression. The compiled regular expression will be cached and used again for subsequent calls to Populate (or [GetMatchStrength](/functions/string#getmatchstrength) or [IsRegexMatch](/functions/string#isregexmatch) ) using the same cache ID.
 
 For example, given this regex which matches the text "put (object name) on (object name)":
 
@@ -351,7 +351,7 @@ For example, given this regex which matches the text "put (object name) on (obje
 
 Passing this to the Populate function with an input "put book on shelf" will return a [stringdictionary](/types#stringdictionary) where object1="book" and object2="shelf".
 
-See also [GetMatchStrength](/functions/fn-string#getmatchstrength), [IsRegexMatch](/functions/fn-string#isregexmatch)
+See also [GetMatchStrength](/functions/string#getmatchstrength), [IsRegexMatch](/functions/string#isregexmatch)
 
 NOTE: This a [hard-coded function](/functions/hardcoded).
 

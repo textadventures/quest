@@ -646,7 +646,7 @@ See also [suffix](#suffix).
 
 ## scenery
 
-"scenery" is a [boolean](/types#boolean) attribute. If set to true, the object is not automatically listed in room descriptions or in the "Places and Objects" list. It is still within [ScopeVisible](/functions/fn-scope#scopevisible) though, so the player can look at and interact with the object.
+"scenery" is a [boolean](/types#boolean) attribute. If set to true, the object is not automatically listed in room descriptions or in the "Places and Objects" list. It is still within [ScopeVisible](/functions/scope#scopevisible) though, so the player can look at and interact with the object.
 
 ## selfuseanything
 

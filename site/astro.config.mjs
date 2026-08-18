@@ -622,6 +622,10 @@ export default defineConfig({
                             "slug": "advanced-topics/about_types"
                         },
                         {
+                            "label": "Using Delegates",
+                            "slug": "advanced-topics/using_delegates"
+                        },
+                        {
                             "label": "Translating Quest",
                             "slug": "advanced-topics/translating_quest"
                         },
@@ -661,63 +665,63 @@ export default defineConfig({
                                 },
                                 {
                                     "label": "Functions for Attributes",
-                                    "slug": "functions/fn-attributes"
+                                    "slug": "functions/attributes"
                                 },
                                 {
                                     "label": "Functions for Variables",
-                                    "slug": "functions/fn-variables"
+                                    "slug": "functions/variables"
                                 },
                                 {
                                     "label": "Functions for Objects and Exits",
-                                    "slug": "functions/fn-objects"
+                                    "slug": "functions/objects"
                                 },
                                 {
                                     "label": "Timers and Turnscripts",
-                                    "slug": "functions/fn-tandt"
+                                    "slug": "functions/timers-turnscripts"
                                 },
                                 {
                                     "label": "User Interface Functions",
-                                    "slug": "functions/fn-ui"
+                                    "slug": "functions/user-interface"
                                 },
                                 {
                                     "label": "List Functions",
-                                    "slug": "functions/fn-list"
+                                    "slug": "functions/list"
                                 },
                                 {
                                     "label": "Scope Functions",
-                                    "slug": "functions/fn-scope"
+                                    "slug": "functions/scope"
                                 },
                                 {
                                     "label": "Dictionary Functions",
-                                    "slug": "functions/fn-dictionary"
+                                    "slug": "functions/dictionary"
                                 },
                                 {
                                     "label": "String Functions",
-                                    "slug": "functions/fn-string"
+                                    "slug": "functions/string"
                                 },
                                 {
                                     "label": "Clothing Functions",
-                                    "slug": "functions/fn-clothing"
+                                    "slug": "functions/clothing"
                                 },
                                 {
                                     "label": "Randomising Functions",
-                                    "slug": "functions/fn-random"
+                                    "slug": "functions/random"
                                 },
                                 {
                                     "label": "General Functions",
-                                    "slug": "functions/fn-general"
+                                    "slug": "functions/general"
                                 },
                                 {
                                     "label": "Core.aslx Functions",
-                                    "slug": "functions/fn-core"
+                                    "slug": "functions/core"
                                 },
                                 {
                                     "label": "Internal Core.aslx Functions",
-                                    "slug": "functions/fn-internal"
+                                    "slug": "functions/internal-core"
                                 },
                                 {
                                     "label": "Mathematical Functions",
-                                    "slug": "functions/fn-maths"
+                                    "slug": "functions/maths"
                                 }
                             ]
                         },
@@ -743,21 +747,7 @@ export default defineConfig({
                                 },
                                 {
                                     "label": "Attribute Types",
-                                    "collapsed": true,
-                                    "items": [
-                                        {
-                                            "label": "Overview",
-                                            "slug": "types"
-                                        },
-                                        {
-                                            "label": "Using Delegates",
-                                            "slug": "types/using_delegates"
-                                        },
-                                        {
-                                            "label": "Command pattern",
-                                            "slug": "types/command_pattern"
-                                        }
-                                    ]
+                                    "slug": "types"
                                 },
                                 {
                                     "label": "Attribute Reference",

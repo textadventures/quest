@@ -31,7 +31,7 @@ Per-object features - set these by selecting the object and then go to the Featu
 
 Other changes:
 
--   the "Pause" request is no longer supported. Use the [SetTimeout](/functions/fn-tandt#settimeout) function instead.
+-   the "Pause" request is no longer supported. Use the [SetTimeout](/functions/timers-turnscripts#settimeout) function instead.
 -   the game title and author name are now displayed by default when a game begins. You can turn this option off from the game Setup tab.
 -   in gamebook mode, the new default style is to not clear the screen between different pages. You can revert to the old behaviour by clicking game, then go to the Display tab and tick "Clear screen between each page".
 
@@ -53,11 +53,11 @@ Upgrading from Quest 5.3 to Quest 5.4
     -   new "objectdictionary" format
     -   new "list" format
     -   new "dictionary" format
--   new functions [NewList](/functions/fn-list#newlist) and [NewScriptDictionary](/functions/fn-dictionary#newscriptdictionary)
+-   new functions [NewList](/functions/list#newlist) and [NewScriptDictionary](/functions/dictionary#newscriptdictionary)
 -   new [text processor](/howto/world/text_processor)
--   [GetTaggedName](/functions/fn-internal#gettaggedname) is removed from Core.aslx
--   [GetDisplayNameLink](/functions/fn-core#getdisplaynamelink) no longer takes a verbs parameter
--   new function [SetAlignment](/functions/fn-ui#setalignment)
+-   [GetTaggedName](/functions/internal-core#gettaggedname) is removed from Core.aslx
+-   [GetDisplayNameLink](/functions/core#getdisplaynamelink) no longer takes a verbs parameter
+-   new function [SetAlignment](/functions/user-interface#setalignment)
 -   the [insert](/scripts#insert) script command is obsolete, as you can directly write HTML with [msg](/scripts#msg)
 -   the old text formatting XML is no longer relevant - use HTML instead. The only breaking change is there is no "color" tag in HTML.
 -   new "JS." calling method for JavaScript functions
@@ -74,14 +74,14 @@ You can open and edit your Quest 5.0 games in Quest 5.1 (but note that, once sav
 
 Please note that a few changes have been made to enable Quest games to be converted to Javascript (so they can run as stand-alone apps on iPhone, Android etc.). This means that some functions have been deprecated - this means that you can still use them, but I would encourage you to use the suggested replacements instead, particularly if you plan to convert your game into an app:
 
--   the [ShowMenu](/functions/fn-ui#showmenu) function is deprecated - use the new [show menu](/scripts#show-menu) script command instead
--   the [WaitForKeyPress](/functions/fn-ui#waitforkeypress) (and "Wait" [request](/scripts#request)) is deprecated - use the new [wait](/scripts#wait) script command instead
--   the [Ask](/functions/fn-ui#ask) function is deprecated - use the new [ask](/scripts#ask) script command instead
--   the + and - operators on lists are deprecated - use the new [ListCombine](/functions/fn-list#listcombine) and [ListExclude](/functions/fn-list#listexclude) functions instead
+-   the [ShowMenu](/functions/user-interface#showmenu) function is deprecated - use the new [show menu](/scripts#show-menu) script command instead
+-   the [WaitForKeyPress](/functions/user-interface#waitforkeypress) (and "Wait" [request](/scripts#request)) is deprecated - use the new [wait](/scripts#wait) script command instead
+-   the [Ask](/functions/user-interface#ask) function is deprecated - use the new [ask](/scripts#ask) script command instead
+-   the + and - operators on lists are deprecated - use the new [ListCombine](/functions/list#listcombine) and [ListExclude](/functions/list#listexclude) functions instead
 
 Some minor behaviour changes:
 
--   when playing videos with [ShowYouTube](/functions/fn-ui#showyoutube) or ShowVimeo (removed since - Vimeo support was dropped from the engine), the video now automatically starts playing
+-   when playing videos with [ShowYouTube](/functions/user-interface#showyoutube) or ShowVimeo (removed since - Vimeo support was dropped from the engine), the video now automatically starts playing
 -   the static picture frame feature is no longer an optional extra - there is no need to set the [useframe](/attributes#useframe) option.
 
 New features:
@@ -91,19 +91,19 @@ New features:
 -   [walkthrough assertions](/howto/scripting/using_walkthroughs#Assertions) let you test the value of expressions when a walkthrough is running
 -   new [while](/scripts#while) script command
 -   [for](/scripts#for) has a new "step" parameter
--   new [ObjectLink](/functions/fn-internal#objectlink) and [CommandLink](/functions/fn-internal#commandlink) functions make it easier to output hyperlinks within a script
+-   new [ObjectLink](/functions/internal-core#objectlink) and [CommandLink](/functions/internal-core#commandlink) functions make it easier to output hyperlinks within a script
 
 Other changes:
 
 -   ["changedXXXX" script attributes](/change_scripts) can now access "oldvalue" to get the previous value of the attribute they're watching
 -   richer set of attributes for use...on... and give...to...: [useanything](/attributes#useanything), [giveanything](/attributes#giveanything), [selfuseon](/attributes#selfuseon), [selfuseanything](/attributes#selfuseanything), [giveto](/attributes#giveto), [givetoanything](/attributes#givetoanything)
 -   new [onexit](/attributes#onexit) script can be run when leaving a room
--   new [GetAllChildObjects](/functions/fn-scope#getallchildobjects) function, and the related [GetDirectChildren](/functions/fn-scope#getdirectchildren) function has been moved from Core.aslx to become a Quest function
--   new [IsDefined](/functions/fn-variables#isdefined) function
+-   new [GetAllChildObjects](/functions/scope#getallchildobjects) function, and the related [GetDirectChildren](/functions/scope#getdirectchildren) function has been moved from Core.aslx to become a Quest function
+-   new [IsDefined](/functions/variables#isdefined) function
 -   the [create exit](/scripts#create-exit) script command now lets you specify a name for the exit object
--   new [IsGameRunning](/functions/fn-internal#isgamerunning) function
+-   new [IsGameRunning](/functions/internal-core#isgamerunning) function
 -   new [request](/scripts#request) types RequestSave and SetPanelContents
--   new optional cacheID parameter for regex functions [IsRegexMatch](/functions/fn-string#isregexmatch), [Populate](/functions/fn-internal#populate), [GetMatchStrength](/functions/fn-string#getmatchstrength)
+-   new optional cacheID parameter for regex functions [IsRegexMatch](/functions/string#isregexmatch), [Populate](/functions/internal-core#populate), [GetMatchStrength](/functions/string#getmatchstrength)
 
 Upgrading from Quest 5.0 Beta Versions
 --------------------------------------

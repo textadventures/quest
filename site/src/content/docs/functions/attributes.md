@@ -56,7 +56,7 @@ GetDouble (object, string attribute name)
 
 Returns an [double](/types#double) if the object has that double attribute, or **null** if the attribute is set to null or some other non-double value.
 
-See also [HasDouble](#hasdouble) and [ToDouble](/functions/fn-variables#todouble)
+See also [HasDouble](#hasdouble) and [ToDouble](/functions/variables#todouble)
 
 NOTE: This a [hard-coded function](/functions/hardcoded).
 
@@ -66,7 +66,7 @@ GetInt (object, string attribute name)
 
 Returns an [int](/types#int) if the object has that integer attribute, or **null** if the attribute is set to null or some other non-integer value.
 
-See also [HasInt](#hasint), [IsInt](/functions/fn-variables#isint) and [ToInt](/functions/fn-variables#toint)
+See also [HasInt](#hasint), [IsInt](/functions/variables#isint) and [ToInt](/functions/variables#toint)
 
 NOTE: This a [hard-coded function](/functions/hardcoded).
 
@@ -76,7 +76,7 @@ GetString (object, string attribute name)
 
 Returns the [string](/types#string) value of the specified object attribute. Returns [null](/types#null) if the attribute does not exist, or is not a string.
 
-See also [ToString](/functions/fn-variables#tostring) and [HasString](#hasstring)
+See also [ToString](/functions/variables#tostring) and [HasString](#hasstring)
 
 NOTE: This a [hard-coded function](/functions/hardcoded).
 
@@ -106,7 +106,7 @@ HasDelegateImplementation (object, string attribute name)
 
 Returns a [boolean](/types#boolean) - **true** if the specified attribute is a delegate implementation.
 
-See [Using Delegates](/types/using_delegates)
+See [Using Delegates](/advanced-topics/using_delegates)
 
 NOTE: This a [hard-coded function](/functions/hardcoded).
 
@@ -116,7 +116,7 @@ HasDouble (object, string attribute name)
 
 Returns a [boolean](/types#boolean) - **true** if the object *has* a double attribute of the specified name.
 
-See also [GetDouble](#getdouble) and [ToDouble](/functions/fn-variables#todouble)
+See also [GetDouble](#getdouble) and [ToDouble](/functions/variables#todouble)
 
 NOTE: This a [hard-coded function](/functions/hardcoded).
 
@@ -126,7 +126,7 @@ HasInt (object, string attribute name)
 
 Returns a [boolean](/types#boolean) - **true** if the object *has* an integer attribute of the specified name.
 
-See also [GetInt](#getint), [IsInt](/functions/fn-variables#isint) and [ToInt](/functions/fn-variables#toint)
+See also [GetInt](#getint), [IsInt](/functions/variables#isint) and [ToInt](/functions/variables#toint)
 
 NOTE: This a [hard-coded function](/functions/hardcoded).
 
@@ -136,7 +136,7 @@ HasObject (object, string attribute name)
 
 Returns a [boolean](/types#boolean) - **true** if the specified attribute is a reference to another object.
 
-See also [GetObject](/functions/fn-objects#getobject)
+See also [GetObject](/functions/objects#getobject)
 
 NOTE: This a [hard-coded function](/functions/hardcoded).
 
@@ -154,7 +154,7 @@ HasString (object, string attribute name)
 
 Returns a [boolean](/types#boolean) - **true** if the specified attribute is a string.
 
-See also [ToString](/functions/fn-variables#tostring) and [GetString](#getstring)
+See also [ToString](/functions/variables#tostring) and [GetString](#getstring)
 
 NOTE: This a [hard-coded function](/functions/hardcoded).
 

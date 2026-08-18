@@ -67,6 +67,6 @@ Return type is specified by the delegate definition.
 
 Runs the specified delegate function on an object.
 
-See [Using Delegates](/types/using_delegates)
+See [Using Delegates](/advanced-topics/using_delegates)
 
 NOTE: This a [hard-coded function](/functions/hardcoded).

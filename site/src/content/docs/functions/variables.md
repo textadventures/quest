@@ -69,7 +69,7 @@ Returns an [double](/types#double) - converts a valid string to a double.
 
 Note: An error occurs if the string does not represent a number.
 
-See also [HasDouble](/functions/fn-attributes#hasdouble) and [GetDouble](/functions/fn-attributes#getdouble)
+See also [HasDouble](/functions/attributes#hasdouble) and [GetDouble](/functions/attributes#getdouble)
 
 NOTE: This a [hard-coded function](/functions/hardcoded).
 
@@ -81,7 +81,7 @@ Returns an [int](/types#int) - converts a valid string to an integer.
 
 Note: An error occurs if the string does not represent a number. Use [IsInt](#isint) to test if a string represents a number first.
 
-See also [GetInt](/functions/fn-attributes#getint) and [HasInt](/functions/fn-attributes#hasint)
+See also [GetInt](/functions/attributes#getint) and [HasInt](/functions/attributes#hasint)
 
 NOTE: This a [hard-coded function](/functions/hardcoded).
 
@@ -91,7 +91,7 @@ ToString (anything)
 
 Returns a [string](/types#string). This is most useful for converting an integer or double to a string, however it will also convert an object, script, list or dictionary to a string, prefixing the string with the type (eg, "Object: player" or "List: one; two; three"). It will even convert a string to exactly the same string!
 
-See also [GetString](/functions/fn-attributes#getstring) and [HasString](/functions/fn-attributes#hasstring)
+See also [GetString](/functions/attributes#getstring) and [HasString](/functions/attributes#hasstring)
 
 NOTE: This a [hard-coded function](/functions/hardcoded).
 

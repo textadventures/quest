@@ -28,7 +28,7 @@ Loads the specified library.
 
     <template name="name">text</template>
 
-Creates a template of the specified name. You can print the template's text using the [Template](/functions/fn-string#template) function.
+Creates a template of the specified name. You can print the template's text using the [Template](/functions/string#template) function.
 
 Within a language library, a template may define a **templatetype** of "command", for example:
 
@@ -56,7 +56,7 @@ Note that it is important to have templates defined in the right place in the co
 
 A dynamictemplate is used in a similar way as [template](#template), except that its value is an expression, not a static string. The expression will have access to an object called "object", which you can use to craft a response.
 
-You can print a dynamic template using the [DynamicTemplate](/functions/fn-string#dynamictemplate) function. This takes an object or text parameter, which is then passed in to the template expression.
+You can print a dynamic template using the [DynamicTemplate](/functions/string#dynamictemplate) function. This takes an object or text parameter, which is then passed in to the template expression.
 
 ## verbtemplate
 
@@ -479,9 +479,9 @@ This means we can specify an alt attribute without specifying the type:
 
 Creates a delegate type. Delegates are script properties that can be called like functions. The delegate tag defines the function signature (the parameters passed to the function and its return type, if any), and then an object can provide its own implementation of the delegate function.
 
-You can run delegate functions on objects using the [rundelegate](/scripts#rundelegate) command (if the delegate does not return a value) or using the [RunDelegateFunction](/functions/fn-general#rundelegatefunction) function (for delegates that do return a value).
+You can run delegate functions on objects using the [rundelegate](/scripts#rundelegate) command (if the delegate does not return a value) or using the [RunDelegateFunction](/functions/general#rundelegatefunction) function (for delegates that do return a value).
 
-See [Using Delegates](/types/using_delegates)
+See [Using Delegates](/advanced-topics/using_delegates)
 
 ## javascript
 

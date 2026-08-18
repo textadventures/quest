@@ -52,7 +52,7 @@ Cloning an object also clones its child objects. Now they get the correct "alias
 
 Following a [suggestion from mrangel](https://textadventures.co.uk/forum/quest/topic/ij3dghpuok_kgo3myoj4vg/thinking-about-the-text-processor), text processor directives are now extensible. More towards the end of [this page](/howto/world/text_processor).
 
-You can use the [QuickParams](/functions/fn-dictionary#quickparams) to quickly create a dictionary with up to three entries, useful for quickly sending parameters to a script.
+You can use the [QuickParams](/functions/dictionary#quickparams) to quickly create a dictionary with up to three entries, useful for quickly sending parameters to a script.
 
 The `GetDefiniteName` function will return the name or alias of an object, with "the" prepended where appropriate.
 

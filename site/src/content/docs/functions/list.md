@@ -163,7 +163,7 @@ Returns the [object](/types#object) from the list by the specified index. The in
 You can use the [ListItem](#listitem) function if you don't know the type of the list.
 
 ### Example
-For example, to show a specific objects' name from a list, first create an [objectlist](/types#objectlist) called myList, in this example it is a list of objects that can be seen currently [ScopeVisibleNotHeld](/functions/fn-scope#scopevisiblenotheld).
+For example, to show a specific objects' name from a list, first create an [objectlist](/types#objectlist) called myList, in this example it is a list of objects that can be seen currently [ScopeVisibleNotHeld](/functions/scope#scopevisiblenotheld).
 
      myList = ScopeVisibleNotHeld()
 
@@ -171,7 +171,7 @@ Now show the name of the second item in the list. Note that the second object is
 
      msg ("myList item 2 is " + ObjectListItem(myList, 1).name)
 
-This could be used with [GetRandomInt](/functions/fn-random#getrandomint) to remove an item from the players inventory ([ScopeInventory](/functions/fn-scope#scopeinventory)) and place it into the current room (for example, if you're creating a poltergeist or thief).
+This could be used with [GetRandomInt](/functions/random#getrandomint) to remove an item from the players inventory ([ScopeInventory](/functions/scope#scopeinventory)) and place it into the current room (for example, if you're creating a poltergeist or thief).
 
 NOTE: This a [hard-coded function](/functions/hardcoded).
 

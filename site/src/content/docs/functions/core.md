@@ -84,7 +84,7 @@ GetBlockingObject (object)
 
 Returns the [object](/types#object) which is preventing the player from reaching the specified object.
 
-If an object is in [ScopeVisible](/functions/fn-scope#scopevisible) but not in [ScopeReachable](/functions/fn-scope#scopereachable), then it may be inside a container where the player can see it but not reach it. You can call the GetBlockingObject function to find out what is "blocking" the player from reaching the object. It will be the top-most parent which the player cannot reach through.
+If an object is in [ScopeVisible](/functions/scope#scopevisible) but not in [ScopeReachable](/functions/scope#scopereachable), then it may be inside a container where the player can see it but not reach it. You can call the GetBlockingObject function to find out what is "blocking" the player from reaching the object. It will be the top-most parent which the player cannot reach through.
 
 ## GetDefiniteName
 
@@ -156,7 +156,7 @@ If **inclusiveobject** is true, then the volume of all objects within **object**
 
 Got (object)
 
-Returns a [boolean](/types#boolean) - **true** if the player has the specified object. This is just a convenient shortcut to seeing if it is within the list returned by [ScopeInventory](/functions/fn-scope#scopeinventory).
+Returns a [boolean](/types#boolean) - **true** if the player has the specified object. This is just a convenient shortcut to seeing if it is within the list returned by [ScopeInventory](/functions/scope#scopeinventory).
 
 ## HelperCloseObject
 

@@ -134,7 +134,7 @@ ShowMenu ("Are you sure?", Split("Yes;No", ";"), false) {
 }
 ```
 
-You can also use the `Ask` function - see [here](/functions/fn-ui#ask).
+You can also use the `Ask` function - see [here](/functions/user-interface#ask).
 
 
 Note 2: Code after will run immediately

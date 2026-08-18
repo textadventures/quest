@@ -1,7 +1,7 @@
 ---
 title: Using Delegates
 sidebar:
-  order: 14
+  order: 3
 ---
 
 <div class="alert alert-info">
@@ -17,8 +17,8 @@ First you need to define the delegate, using a [delegate](/elements#delegate) XM
 Now you can simply use the delegate name as an attribute type name.
 
 -   To run a delegate which does not return a value, use the [rundelegate](/scripts#rundelegate) script command.
--   To get a return value from a delegate, use the [RunDelegateFunction](/functions/fn-general#rundelegatefunction) function.
--   To see if an object implements a delegate, use the [HasDelegateImplementation](/functions/fn-attributes#hasdelegateimplementation) function.
+-   To get a return value from a delegate, use the [RunDelegateFunction](/functions/general#rundelegatefunction) function.
+-   To see if an object implements a delegate, use the [HasDelegateImplementation](/functions/attributes#hasdelegateimplementation) function.
 
 Delegates in Action
 -------------------
