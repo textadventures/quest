@@ -89,11 +89,11 @@ This will check the "alreadydone" on the command itself, and only increase the s
 Listing Achievements
 --------------------
 
-So we have a simple system, and that may be enough for you. However, we can improve the system to ensure the player only every gets rewarded once for any achievement, and to allow the player to check what she got points for. To do that, we will record each achievement in a string list, so the first step is to set that up. If on-line, add this to the start script of the game object:
+So we have a simple system, and that may be enough for you. However, we can improve the system to ensure the player only every gets rewarded once for any achievement, and to allow the player to check what she got points for. To do that, we will record each achievement in a string dictionary, so the first step is to set that up - either add this to the start script of the game object:
 ```
   game.score_achievements = NewStringDictionary()
 ```
-If off-line you might prefer to add a string list attribute to the game object called "score_achievements" instead.
+or add a string dictionary attribute to the game object called "score_achievements" directly, on the _Attributes_ tab.
 
 This string list will keep a list of the achievements, and we can check that to see if an achievement has already been done. Best way to do that is in a function. Go to _Functions_, and click _Add_. Give it the name "IncScore", and leave its return type to _None_. You will need to add two parameters, `str` and `inc`, and then paste in this code:
 

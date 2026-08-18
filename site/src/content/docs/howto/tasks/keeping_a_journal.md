@@ -10,13 +10,13 @@ This is a way to add a journal to your game. This is a book the player can make 
 The journal
 -----------
 
-The first step is to add an object to the player that will be the journal. Let us call it "journal". Make sure it is in the player; Quest will try to put it in the same room. To move it to the right place, off-line you can just drag it, on-line click the _Move_ button.
+The first step is to add an object to the player that will be the journal. Let us call it "journal". Make sure it is in the player; Quest will try to put it in the same room. To move it there, use the tree's "Move to…" option (in its "..." menu).
 
 We will be adding new commands later to handle the journal and what we could do is have those commands check the player has the journal, and give an error if not. However, we are going to do this differently, and stop the play dropping the journal, so we know she will always have it. Go to the _Inventory_ tab of the journal, and untick "Object can be dropped". On the _Object_ tab, delete "Drop" from the list at the bottom.
 
-The journal needs to hold information so we need to give it a string list to do that. If off-line, you can do that on the _Attributes_ tab, add a new attribute called "entries", and set it to be a string list.
+The journal needs to hold information so we need to give it a string list to do that. You can do that on the _Attributes_ tab, add a new attribute called "entries", and set it to be a string list.
 
-If working on-line, go to the _Scripts_ tab of the game object, and add this to the start script:
+Alternatively, go to the _Scripts_ tab of the game object, and add this to the start script:
 ```
   journal.entries = NewStringList()
 ```

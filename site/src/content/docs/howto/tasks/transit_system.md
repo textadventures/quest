@@ -85,7 +85,7 @@ Paying a fare
 
 If money is important in your game, you might want to charge the player for travelling (but consider if the player can get in an unwinnable situation by wasting all her money).
 
-This needs to be updated in three places to charge the player a flat rate for each journey. First you need to give the player an integer attribute, called "money". If on-line, you will have to do that in the start script of the game object again, by adding this line (set the amount to whatever):
+This needs to be updated in three places to charge the player a flat rate for each journey. First you need to give the player an integer attribute, called "money" - either directly on the _Attributes_ tab, or in the start script of the game object by adding this line (set the amount to whatever):
 
 ```
   player.money = 17

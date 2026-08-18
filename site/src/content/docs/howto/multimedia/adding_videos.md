@@ -302,6 +302,6 @@ Sometimes, you may want to play two (or more) videos at once, and this is possib
 Additional Audio and Video Functions
 -----------------------------------
 
-There is a user-submitted guide which provides step-by-step instructions for any online (or offline) users who would like to add a few audio and video functions to a game (desktop users may prefer to download the library, which can be downloaded from the same page).
+There is a user-submitted guide which provides step-by-step instructions if you would like to add a few audio and video functions to a game (or you may prefer to just download the library, from the same page).
 
 [Advanced Audio and Video Functions](http://media.textadventures.co.uk/games/PHVys9dICUiMSSpr_m9WYQ/index.html)

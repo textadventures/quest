@@ -20,7 +20,7 @@ Now you can do with it whatever you like.
 
 Not Only Functions
 ------------------
-You can also override templates, dynamic templates, types and commands in just the same way (commands can also be overridden by copying the pattern, so even on-line users can override commands).
+You can also override templates, dynamic templates, types and commands in just the same way (commands can also be overridden by copying the pattern).
 
 
 But Not All Functions...

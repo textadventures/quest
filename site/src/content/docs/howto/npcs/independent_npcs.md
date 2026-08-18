@@ -8,7 +8,7 @@ An NPC is going to feel more alive if he or she is doing things on their own ini
 
 _NOTE:_ This page builds on the page about [patrolling NPCs](/howto/npcs/patrolling_npcs), and you should read that first. In particular, you should add a turn script to your game as described on that page (note that the script is updated in the pausing section) and a `PrintIfHere` function.
 
-_NOTE:_ For desktop users there is a library available that adds the turn script and all the functions to your game, and is discussed more at the end.
+_NOTE:_ There is a library available that adds the turn script and all the functions to your game, and is discussed more at the end.
 
 We have already discussed how to have an NPC explore or patrol, but perhaps you want your NPC to follow a series of actions. How would you do that?
 
@@ -204,7 +204,7 @@ Jay Nabonne wrote a path-finding library we can use - its code is below.
 
 ### Copy a library function to your game
 
-If you are using the on-line version, you will need to copy two functions into your game, as libraries cannot be used on-line. Create a new function, name it "PathLib_GetPathExt", give it these parameters: "start", "end", "exits", "maxlength" (in that order), and set it to return an object list. Here is the code:
+Create a new function, name it "PathLib_GetPathExt", give it these parameters: "start", "end", "exits", "maxlength" (in that order), and set it to return an object list. Here is the code:
 
 ```
 // From PathLib by Jay Nabonne
@@ -375,9 +375,9 @@ Goals and agendas
 The script option gives the potential for NPCs to have goals that they will seek to achieve. The script could potentially select a goal, and then set the "actions" attribute accordingly.
 
 
-Desktop Users
--------------
+Using a library
+---------------
 
-All the above is available in a library for desktop users. You will find there is a new tab where you can set an object to be an NPC, and then you can add commands to a list to have the NPC do anything you like.
+All the above is available in a library. Include it in your game, and you will find there is a new tab where you can set an object to be an NPC, and then you can add commands to a list to have the NPC do anything you like.
 
 [NpcLib.aslx](https://raw.githubusercontent.com/ThePix/quest/master/NpcLib.aslx)

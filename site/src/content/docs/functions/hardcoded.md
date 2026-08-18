@@ -11,7 +11,7 @@ Quest functions fall into two types, hard-coded and library. Generally when you 
 
 Most to the Quest functions are written in Quest's own coding language. These library functions are just like functions you create yourself, the only difference is that the work has been done for you. 
 
-If you are using the desktop version, you can find that code in the various .aslx library files where Quest is installed, and if you click the "Filter" button at the bottom left, and select "Show library elements" you will see a long list of all those functions. You can override these functions, replacing the library version with your own version.
+You can find that code by clicking the "Filter" button at the bottom left of the editor and selecting "Show library elements" — this shows a long list of all those functions. You can override these functions, replacing the library version with your own version.
 
 ### Hard-coded Functions
 
