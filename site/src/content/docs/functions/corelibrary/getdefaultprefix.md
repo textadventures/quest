@@ -6,4 +6,4 @@ title: GetDefaultPrefix
 
 GetDefaultPrefix(object)
 
-Should be defined by the language library (but is only used within the language library, so it is safe to not define this if it is not used). When [usedefaultprefix](/attributes/usedefaultprefix) is in use for an object, this should generate the relevant default.
+Should be defined by the language library (but is only used within the language library, so it is safe to not define this if it is not used). When [usedefaultprefix](/attributes#usedefaultprefix) is in use for an object, this should generate the relevant default.

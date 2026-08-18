@@ -6,4 +6,4 @@ title: ListObjectContents
 
 ListObjectContents(object)
 
-Lists the contents of the specified object, only if [isopen](/attributes/isopen) and [listchildren](/attributes/listchildren) are set.
+Lists the contents of the specified object, only if [isopen](/attributes#isopen) and [listchildren](/attributes#listchildren) are set.

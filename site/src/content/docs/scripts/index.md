@@ -58,7 +58,7 @@ or, as of Quest 5.1
 
 Creates an exit with the specified alias (usually the direction, such as "north") between two objects/rooms.
 
-An initial type can be specified e.g. "northdirection". This will ensure that the correct [alt](/attributes/alt) names are applied to compass exits.
+An initial type can be specified e.g. "northdirection". This will ensure that the correct [alt](/attributes#alt) names are applied to compass exits.
 
     create exit ("northwest", fromRoom, toRoom, "northwestdirection")
 

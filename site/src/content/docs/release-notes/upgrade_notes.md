@@ -82,7 +82,7 @@ Please note that a few changes have been made to enable Quest games to be conver
 Some minor behaviour changes:
 
 -   when playing videos with [ShowYouTube](/functions/corelibrary/showyoutube) or ShowVimeo (removed since - Vimeo support was dropped from the engine), the video now automatically starts playing
--   the static picture frame feature is no longer an optional extra - there is no need to set the [useframe](/attributes/useframe) option.
+-   the static picture frame feature is no longer an optional extra - there is no need to set the [useframe](/attributes#useframe) option.
 
 New features:
 
@@ -96,8 +96,8 @@ New features:
 Other changes:
 
 -   ["changedXXXX" script attributes](/change_scripts) can now access "oldvalue" to get the previous value of the attribute they're watching
--   richer set of attributes for use...on... and give...to...: [useanything](/attributes/useanything), [giveanything](/attributes/giveanything), [selfuseon](/attributes/selfuseon), [selfuseanything](/attributes/selfuseanything), [giveto](/attributes/giveto), [givetoanything](/attributes/givetoanything)
--   new [onexit](/attributes/onexit) script can be run when leaving a room
+-   richer set of attributes for use...on... and give...to...: [useanything](/attributes#useanything), [giveanything](/attributes#giveanything), [selfuseon](/attributes#selfuseon), [selfuseanything](/attributes#selfuseanything), [giveto](/attributes#giveto), [givetoanything](/attributes#givetoanything)
+-   new [onexit](/attributes#onexit) script can be run when leaving a room
 -   new [GetAllChildObjects](/functions/getallchildobjects) function, and the related [GetDirectChildren](/functions/getdirectchildren) function has been moved from Core.aslx to become a Quest function
 -   new [IsDefined](/functions/isdefined) function
 -   the [create exit](/scripts#create-exit) script command now lets you specify a name for the exit object

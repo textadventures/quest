@@ -18,4 +18,4 @@ may return output like this:
 
 > You can see a sofa, a lamp, a box (containing a diary and a pen) and a kitten in this room.
 
-All object names will be hyperlinked to show a menu of [displayverbs](/attributes/displayverbs). The final parameter lets you specify whether to use the [inventoryverbs](/attributes/inventoryverbs) instead.
+All object names will be hyperlinked to show a menu of [displayverbs](/attributes#displayverbs). The final parameter lets you specify whether to use the [inventoryverbs](/attributes#inventoryverbs) instead.

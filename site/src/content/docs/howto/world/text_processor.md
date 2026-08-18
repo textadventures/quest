@@ -102,7 +102,7 @@ For more on how object and command links behave when clicked, and the functions 
 Displays an exit hyperlink. The name is the name you give to the exit (by default exits do not have names; you will need to give it a name yourself). The link will appear as the exit's alias ("north", "up", etc.)
 
 {rndalt:**object**}  
-Display a randomly chosen name from an object's [alt](/attributes/alt) list.
+Display a randomly chosen name from an object's [alt](/attributes#alt) list.
 
 {if **attribute**:**text**}  
 Display text only if game attribute is true

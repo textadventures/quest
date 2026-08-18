@@ -79,7 +79,7 @@ Dynamic templates are expressions - usually these are templates that include som
   <dynamictemplate name="TakeSuccessful">"You pick " + object.article + " up."</dynamictemplate>
 ```
 
-Your translation should also be an expression, but you're not forced to use the same attributes. If it makes more sense for your language, for example, you could use the [gender](/attributes/gender) instead of the [article](/attributes/article) to create your sentence. Again, you just change the bit between the tags, as these examples from Russian show.
+Your translation should also be an expression, but you're not forced to use the same attributes. If it makes more sense for your language, for example, you could use the [gender](/attributes#gender) instead of the [article](/attributes#article) to create your sentence. Again, you just change the bit between the tags, as these examples from Russian show.
 
 ```
   <dynamictemplate name="DropSuccessful">"Ты оставляешь " + object.article + " здесь."</dynamictemplate>
