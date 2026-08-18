@@ -146,9 +146,9 @@ There are various scope and other functions that will return a list of objects, 
 
 Some other useful functions that return object lists:
 
--   [AllObjects](/functions/allobjects)
--   [GetAllChildObjects](/functions/getallchildobjects)
--   [GetDirectChildren](/functions/getdirectchildren)
+-   [AllObjects](/functions/fn-scope#allobjects)
+-   [GetAllChildObjects](/functions/fn-scope#getallchildobjects)
+-   [GetDirectChildren](/functions/fn-scope#getdirectchildren)
 
 
 
@@ -278,20 +278,20 @@ sceneryonly = FilterByAttribute(allobjects, "scenery", true)
 
 The `IndexOf` function can be used to get the position of an element in a list (or -1 if it is not in the list).
 
-[IndexOf](/functions/indexof)
+[IndexOf](/functions/fn-list#indexof)
 
 
 ### Sorting lists
 
 You can use `StringListSort` and `StringListSortDescending` to sort a list of strings.
 
-[StringListSort](/functions/stringlistsort)
-[StringListSortDescending](/functions/stringlistsortdescending)
+[StringListSort](/functions/fn-list#stringlistsort)
+[StringListSortDescending](/functions/fn-list#stringlistsortdescending)
 
 You can also use `ObjectListSort` and `ObjectListSortDescending` to sort a list of objects according to a certain attribute.
 
-[ObjectListSort](/functions/objectlistsort)
-[ObjectListSortDescending](/functions/objectlistsortdescending)
+[ObjectListSort](/functions/fn-list#objectlistsort)
+[ObjectListSortDescending](/functions/fn-list#objectlistsortdescending)
 
 
 

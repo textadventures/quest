@@ -87,7 +87,7 @@ You can use the `IsDefined` function within a script to determine if it has acce
 if (IsDefined("npc")) {
 ```
 
-There is no way to convert a string to a script during play, by the way (though you can do something similar with the [Eval](/functions/eval) function).
+There is no way to convert a string to a script during play, by the way (though you can do something similar with the [Eval](/functions/fn-general#eval) function).
 
 ## Boolean
 

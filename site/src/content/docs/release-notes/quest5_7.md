@@ -154,53 +154,53 @@ We are indebted to Kaspar Jan for providing a translation into Icelandic.
 New functions
 -------------
 
--  [ScopeUnlockedExitsForRoom](/functions/corelibrary/scopeunlockedexitsforroom)
--  [CloneObjectAndMoveHere](/functions/corelibrary/cloneobjectandmovehere)
--  [CreateBiExits](/functions/createbiexits): Creates an exit in the given direction, between the given rooms, and a second exit coming back.
--  [Equal](/functions/equal): Compares any two things (comparing 4 and null will otherwise throw an error).
+-  [ScopeUnlockedExitsForRoom](/functions/fn-scope#scopeunlockedexitsforroom)
+-  [CloneObjectAndMoveHere](/functions/fn-objects#cloneobjectandmovehere)
+-  [CreateBiExits](/functions/fn-objects#createbiexits): Creates an exit in the given direction, between the given rooms, and a second exit coming back.
+-  [Equal](/functions/fn-variables#equal): Compares any two things (comparing 4 and null will otherwise throw an error).
 
 
 ### String utilities
 
-[FormatList](/functions/string/formatlist)
+[FormatList](/functions/fn-string#formatlist)
 ```
 FormatList (Split("one;two;three"), ",", " and", "nothing")
  -> "one, two and three"
 ```
-[Spaces](/functions/string/spaces)
+[Spaces](/functions/fn-string#spaces)
 ```
 Spaces (5)
  -> "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"
  ```
-[ToWords](/functions/string/towords)
+[ToWords](/functions/fn-string#towords)
 ```
 ToWords (42)
  -> "forty two"
  ```
-[ToRoman](/functions/string/toroman)
+[ToRoman](/functions/fn-string#toroman)
 ```
 ToRoman (42)
  -> "XLII"
  ```
-[PadString](/functions/string/padstring)
+[PadString](/functions/fn-string#padstring)
 ```
 PadString ("34", 5, "0")
  -> "00034"
  ```
-[Decimalise](/functions/string/decimalise)
+[Decimalise](/functions/fn-string#decimalise)
 ```
 Decimalise (1234, 2)
  -> "12.34"
  ```
-[DisplayMoney](/functions/string/displaymoney)
+[DisplayMoney](/functions/fn-string#displaymoney)
 ```
 game.moneyformat = "!$1,2!($1,2)!"
 DisplayMoney (1234)
  -> "$12,34"
-[DisplayMoney](/functions/string/displaymoney) (-1234)
+[DisplayMoney](/functions/fn-string#displaymoney) (-1234)
  -> "($12,34)"
  ```
-[ReverseDirection](/functions/string/reversedirection)
+[ReverseDirection](/functions/fn-string#reversedirection)
 ```
 ReverseDirection ("southeast")
  -> "northwest"
@@ -208,22 +208,22 @@ ReverseDirection ("southeast")
 
 ### List utilities
 
--  [IndexOf](/functions/indexof)
--  [FilterByType](/functions/filterbytype)
--  [FilterByAttribute](/functions/filterbyattribute)
--  [FilterByNotAttribute](/functions/filterbynotattribute)
--  [ObjectListToStringList](/functions/objectlisttostringlist)
+-  [IndexOf](/functions/fn-list#indexof)
+-  [FilterByType](/functions/fn-list#filterbytype)
+-  [FilterByAttribute](/functions/fn-list#filterbyattribute)
+-  [FilterByNotAttribute](/functions/fn-list#filterbynotattribute)
+-  [ObjectListToStringList](/functions/fn-list#objectlisttostringlist)
 
 
 
 ### Get one at random
 
--  [PickOneString](/functions/pickonestring)
--  [PickOneObject](/functions/pickoneobject)
--  [PickOneChild](/functions/pickonechild)
--  [PickOneChildOfType](/functions/pickonechildoftype)
--  [PickOneExit](/functions/pickoneexit)
--  [PickOneUnlockedExit](/functions/pickoneunlockedexit)
+-  [PickOneString](/functions/fn-random#pickonestring)
+-  [PickOneObject](/functions/fn-random#pickoneobject)
+-  [PickOneChild](/functions/fn-random#pickonechild)
+-  [PickOneChildOfType](/functions/fn-random#pickonechildoftype)
+-  [PickOneExit](/functions/fn-random#pickoneexit)
+-  [PickOneUnlockedExit](/functions/fn-random#pickoneunlockedexit)
 
 
 
@@ -323,7 +323,7 @@ The _Containers_ tab in the editor now has comments under the scripts that expla
 
 If you set a string attribute on a switchable object called "cannotswitchon", then when the player tries to turn the object on, this message will be displayed instead. This will allow authors to have devices that must be fixed before they will work, or have light sources that require power or fuel. To allow the object to be turned on, just set the attribute to null, by the way. The string can also be set in the GUI.
 
-You can now have single and double quotes in options when using the [ShowMenu](/functions/showmenu) function. ShowMenu will now accept any list of strings or objects, not just string lists. Links for objects will be displayed in the objects link colour, if used. This will also apply to disambiguation menus too.
+You can now have single and double quotes in options when using the [ShowMenu](/functions/fn-ui#showmenu) function. ShowMenu will now accept any list of strings or objects, not just string lists. Links for objects will be displayed in the objects link colour, if used. This will also apply to disambiguation menus too.
 
 Restricted containers (limit to number of items or volume of item) used a delegate called "addscript". This has been changed to a script that takes parameters. The code of the script has not been changed, but the code that calls it has.
 This could affect anyone whose game overrides the existing "addscript" delegate. However, given that it is a delegate, I think it very unlikely anyone would do that (when was the last time someone asked about delegates on the forum?). This really is the point; by making it a script, it becomes far more accessible.

@@ -196,11 +196,11 @@ Useful Functions
 
 ### Creating exits on the fly
 
-Sometimes the tricking of setting a exit to be visible is not going to work, and you really need to create an exit. Quest has the [create exit](/scripts#create-exit) script command for just this purpose. If you want to create an exit going the other way at the same time, we have the [CreateBiExits](/functions/createbiexits) function.
+Sometimes the tricking of setting a exit to be visible is not going to work, and you really need to create an exit. Quest has the [create exit](/scripts#create-exit) script command for just this purpose. If you want to create an exit going the other way at the same time, we have the [CreateBiExits](/functions/fn-objects#createbiexits) function.
 
 ### Finding an exit
 
-To find a specific exit, use [GetExitByLink](/functions/getexitbylink) to get the exit from one room to another or [GetExitByName](/functions/getexitbyname) to get the exit from a room in a specific direction (uses the alias of the exit). These both return the name of the exit (or `null` if there is none). Use `GetObject` to get the exit itself.
+To find a specific exit, use [GetExitByLink](/functions/fn-objects#getexitbylink) to get the exit from one room to another or [GetExitByName](/functions/fn-objects#getexitbyname) to get the exit from a room in a specific direction (uses the alias of the exit). These both return the name of the exit (or `null` if there is none). Use `GetObject` to get the exit itself.
 
 ```
 exitname = GetExitByName(room2, "north")
@@ -217,11 +217,11 @@ else {
 
 There are three scope functions that will return a list of exits for a given room. 
 
-- [ScopeExits](/functions/corelibrary/scopeexits) All visible exits for current room
-- [ScopeExitsForRoom](/functions/corelibrary/scopeexitsforroom) All visible exits for the given room
-- [ScopeUnlockedExitsForRoom](/functions/corelibrary/scopeunlockedexitsforroom) All visible and unlocked exits for the given room
+- [ScopeExits](/functions/fn-scope#scopeexits) All visible exits for current room
+- [ScopeExitsForRoom](/functions/fn-scope#scopeexitsforroom) All visible exits for the given room
+- [ScopeUnlockedExitsForRoom](/functions/fn-scope#scopeunlockedexitsforroom) All visible and unlocked exits for the given room
 
 
 ### Random exit
 
-Two functions, [PickOneExit](/functions/pickoneexit) and [PickOneUnlockedExit](/functions/pickoneunlockedexit), will give a random exit from the given room (or `null` if there are none).
+Two functions, [PickOneExit](/functions/fn-random#pickoneexit) and [PickOneUnlockedExit](/functions/fn-random#pickoneunlockedexit), will give a random exit from the given room (or `null` if there are none).

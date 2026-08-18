@@ -10,17 +10,17 @@ Core.aslx defines various "scope" functions. Each of these will return an object
 Exits
 -----
 
-* [ScopeExits](/functions/corelibrary/scopeexits) Exits that the player can use from the current location, i.e., all visible exits for this room, whether locked or not.
-* [ScopeExitsForRoom](/functions/corelibrary/scopeexitsforroom)
-* [ScopeUnlockedExitsForRoom](/functions/corelibrary/scopeunlockedexitsforroom)
-* [AllExits](/functions/allexits) All exits in the game.
+* [ScopeExits](/functions/fn-scope#scopeexits) Exits that the player can use from the current location, i.e., all visible exits for this room, whether locked or not.
+* [ScopeExitsForRoom](/functions/fn-scope#scopeexitsforroom)
+* [ScopeUnlockedExitsForRoom](/functions/fn-scope#scopeunlockedexitsforroom)
+* [AllExits](/functions/fn-scope#allexits) All exits in the game.
 
 
 Commands
 --------
 
-* [ScopeCommands](/functions/corelibrary/scopecommands) Gets a list of all global commands and all commands local to the current room.
-* [AllCommands](/functions/allcommands) All commands in the game.
+* [ScopeCommands](/functions/fn-scope#scopecommands) Gets a list of all global commands and all commands local to the current room.
+* [AllCommands](/functions/fn-scope#allcommands) All commands in the game.
 
 
 Reachable Objects
@@ -30,11 +30,11 @@ Quest makes a distinction between objects a player can reach and objects the pla
 
 Objects in a container are considered _reachable_ if the container is open. If an item's `visible` attribute is not set (i.e., it is `false`), or if the room is dark and the object is not a light source, then the object is not _reachable_.
 
-* [ScopeReachableInventory](/functions/corelibrary/scopereachableinventory) Items carried that are also _reachable_.
-* [ScopeReachable](/functions/corelibrary/scopereachable) All objects in this scope can be interacted with directly by the player, items in the current room or in the inventory that are _reachable_.
-* [ScopeReachableForRoom](/functions/corelibrary/scopereachableforroom) All objects in the room that are _reachable_ by the player. If this is the current room, then it will include items in the inventory that are _reachable_.
-* [ScopeReachableNotHeld](/functions/corelibrary/scopereachablenotheld) These objects are in the current room and can be interacted with, but they're not in the player's inventory.
-* [ScopeReachableNotHeldForRoom](/functions/corelibrary/scopereachablenotheldforroom)
+* [ScopeReachableInventory](/functions/fn-scope#scopereachableinventory) Items carried that are also _reachable_.
+* [ScopeReachable](/functions/fn-scope#scopereachable) All objects in this scope can be interacted with directly by the player, items in the current room or in the inventory that are _reachable_.
+* [ScopeReachableForRoom](/functions/fn-scope#scopereachableforroom) All objects in the room that are _reachable_ by the player. If this is the current room, then it will include items in the inventory that are _reachable_.
+* [ScopeReachableNotHeld](/functions/fn-scope#scopereachablenotheld) These objects are in the current room and can be interacted with, but they're not in the player's inventory.
+* [ScopeReachableNotHeldForRoom](/functions/fn-scope#scopereachablenotheldforroom)
 
 
 Visible Objects
@@ -42,15 +42,15 @@ Visible Objects
 
 Objects in a container are considered _visible_ if it is either open or transparent (or both). If an item's `visible` attribute is not set (i.e., it is `false`), or if the room is dark and the object is not a light source, then the object is not _visible_.
 
-* [ScopeInventory](/functions/corelibrary/scopeinventory) All the _visible_ objects the player is carrying. Used to populate the "Inventory" list, and the list of objects returned by the "inventory" command.
-* [ScopeVisible](/functions/corelibrary/scopevisible) Any carried items and items in the room that are _visible_.
-* [ScopeVisibleForRoom](/functions/corelibrary/scopevisibleforroom) All objects in the room that are _visible_ by the player. If this is the current room, then it will include items in the inventory that are _visible_.
-* [ScopeVisibleNotHeld](/functions/corelibrary/scopevisiblenotheld) This is everything _visible_ in the current room.
-* [ScopeVisibleNotHeldForRoom](/functions/corelibrary/scopevisiblenotheldforroom)
-* [ScopeVisibleNotHeldNotScenery](/functions/corelibrary/scopevisiblenotheldnotscenery) As `ScopeVisibleNotHeld`, but excludes items tagged as scenery.
-* [ScopeVisibleNotHeldNotSceneryForRoom](/functions/corelibrary/scopevisiblenotheldnotsceneryforroom)
-* [ScopeVisibleNotReachable](/functions/corelibrary/scopevisiblenotreachable) All objects in this scope are _visible_ but not _reachable_.
-* [ScopeVisibleNotReachableForRoom](/functions/corelibrary/scopevisiblenotreachableforroom)
+* [ScopeInventory](/functions/fn-scope#scopeinventory) All the _visible_ objects the player is carrying. Used to populate the "Inventory" list, and the list of objects returned by the "inventory" command.
+* [ScopeVisible](/functions/fn-scope#scopevisible) Any carried items and items in the room that are _visible_.
+* [ScopeVisibleForRoom](/functions/fn-scope#scopevisibleforroom) All objects in the room that are _visible_ by the player. If this is the current room, then it will include items in the inventory that are _visible_.
+* [ScopeVisibleNotHeld](/functions/fn-scope#scopevisiblenotheld) This is everything _visible_ in the current room.
+* [ScopeVisibleNotHeldForRoom](/functions/fn-scope#scopevisiblenotheldforroom)
+* [ScopeVisibleNotHeldNotScenery](/functions/fn-scope#scopevisiblenotheldnotscenery) As `ScopeVisibleNotHeld`, but excludes items tagged as scenery.
+* [ScopeVisibleNotHeldNotSceneryForRoom](/functions/fn-scope#scopevisiblenotheldnotsceneryforroom)
+* [ScopeVisibleNotReachable](/functions/fn-scope#scopevisiblenotreachable) All objects in this scope are _visible_ but not _reachable_.
+* [ScopeVisibleNotReachableForRoom](/functions/fn-scope#scopevisiblenotreachableforroom)
 
 
 Rooms
@@ -58,10 +58,10 @@ Rooms
 
 You can get a list of rooms (more specifically, objects with "isroom" set to true).
 
-* [AllRooms](/functions/allrooms)
+* [AllRooms](/functions/fn-scope#allrooms)
 
 
 Others
 ------
 
-* [AllObjects](/functions/allobjects) All the objects (i.e., including rooms) in the game.
+* [AllObjects](/functions/fn-scope#allobjects) All the objects (i.e., including rooms) in the game.

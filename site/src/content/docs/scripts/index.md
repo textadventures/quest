@@ -40,7 +40,7 @@ or (as of Quest 5.3)
 
     create (string name, string type)
 
-Creates an object with the specified name. You can subsequently access the object using the [GetObject](/functions/getobject) function, or just use its name directly in an expression.
+Creates an object with the specified name. You can subsequently access the object using the [GetObject](/functions/fn-objects#getobject) function, or just use its name directly in an expression.
 
 If you specify a type, the object created will be of that type. The command only accepts one type name - if you want the new object to inherit multiple types, you could create one type which inherits all of those types, and specify that here.
 
@@ -373,22 +373,22 @@ JS.setGameName("My Cool Game")
 
 _FontName_
 
-(Obsolete as of Quest 5.4) Sets the font name. Use [SetFontName](/functions/corelibrary/setfontname) instead.
+(Obsolete as of Quest 5.4) Sets the font name. Use [SetFontName](/functions/fn-ui#setfontname) instead.
 
 
 _FontSize_
 
-(Obsolete as of Quest 5.4) Sets the font size. Use [SetFontSize](/functions/corelibrary/setfontsize) instead.
+(Obsolete as of Quest 5.4) Sets the font size. Use [SetFontSize](/functions/fn-ui#setfontsize) instead.
 
 
 _Background_
 
-Sets the background to the specified HTML colour. Use [SetBackgroundColour](/functions/corelibrary/setbackgroundcolour) instead.
+Sets the background to the specified HTML colour. Use [SetBackgroundColour](/functions/fn-ui#setbackgroundcolour) instead.
 
 
 _Foreground_
 
-Sets the foreground to the specified HTML colour. Use [SetForegroundColour](/functions/corelibrary/setforegroundcolour) instead.
+Sets the foreground to the specified HTML colour. Use [SetForegroundColour](/functions/fn-ui#setforegroundcolour) instead.
 
 
 _LinkForeground_
@@ -511,7 +511,7 @@ Sets the static panel HTML contents. Use `SetFramePicture` and `ClearFramePictur
 
 _Log_
 
-Log the specified text. Use [Log](/functions/corelibrary/log) instead.
+Log the specified text. Use [Log](/functions/fn-general#log) instead.
 
 
 _Speak_  
@@ -582,7 +582,7 @@ If the "allow cancel" parameter is set to **true**, the Cancel button is availab
 
 This command was added in Quest 5.1.
 
-For an in-line menu, use the [ShowMenu](/functions/showmenu) function.
+For an in-line menu, use the [ShowMenu](/functions/fn-ui#showmenu) function.
 
 **example:**
 

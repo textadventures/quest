@@ -28,7 +28,7 @@ A Dynamic Template is an expression, and the relevant object is passed in to the
 
 Using the object article means that this template can print the correct thing for a singular or plural object, or even a male/female character if you have one that can be taken.
 
-These Dynamic Templates often take advantage of some functions which are defined in the English.aslx library - the [Conjugate](/functions/corelibrary/conjugate) and [WriteVerb](/functions/corelibrary/writeverb) functions ensure that correct English is written. For example, the AlreadyOpen template is:
+These Dynamic Templates often take advantage of some functions which are defined in the English.aslx library - the [Conjugate](/functions/fn-string#conjugate) and [WriteVerb](/functions/fn-string#writeverb) functions ensure that correct English is written. For example, the AlreadyOpen template is:
 
      WriteVerb(object, "be") + " already open."
 
