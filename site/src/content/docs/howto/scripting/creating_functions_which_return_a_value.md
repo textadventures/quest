@@ -97,7 +97,7 @@ Look at the last line. This is telling Quest what value we want the function to 
 By the way, there is a quick way to do this in Quest:
 
 ```
-FilterByAttribute(ScopeVisible(), "cansiton", true))
+FilterByAttribute(ScopeVisible(), "cansiton", true)
 ```
 
 

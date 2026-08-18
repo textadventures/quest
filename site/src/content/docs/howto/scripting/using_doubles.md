@@ -10,7 +10,7 @@ Doubles are an alternative number system to integers; what is the difference?
 Integers 
 --------
 
-Integers are whole numbers (1, 2, 3, etc.), and in maths they can go from minus infinity, through zero, all the way up to plus infinity. Computers have limited space, and in Quest, an integer can go from -2147483647 to 2147483647 - plenty big enough for most purposes.
+Integers are whole numbers (1, 2, 3, etc.), and in maths they can go from minus infinity, through zero, all the way up to plus infinity. Computers have limited space, and in Quest, an integer can go from -2147483648 to 2147483647 - plenty big enough for most purposes.
 
 
 Non-Integers

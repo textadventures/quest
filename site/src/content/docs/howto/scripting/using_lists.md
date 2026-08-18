@@ -125,7 +125,7 @@ if (n = 42) {
 Quick string lists
 -------------------
 
-A quick way to get a string list is the Split command (especially useful for menu options). The second parameter is the separator, and you can choose anything suitable (as of Quest 5.8, this is optional, and if omitted will default to a semi-colon):
+A quick way to get a string list is the Split command (especially useful for menu options). The second parameter is the separator, and you can choose anything suitable (this is optional, and if omitted will default to a semi-colon):
 ```
 l1 = Split("one|two|three", "|")
 msg(l1)
@@ -361,7 +361,7 @@ shuffled = NewStringList()
 while (ListCount(list) > 0) {
   s = PickOneString (list)
   list remove (list, s)
-  list add (shuffled)
+  list add (shuffled, s)
 }
 ```
 

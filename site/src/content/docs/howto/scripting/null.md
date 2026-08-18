@@ -30,9 +30,9 @@ msg(HasString(obj, "name"))
 -> True
 obj = null
 msg(HasString(obj, "name"))
--> Error running script: Error evaluating expression 'HasString(obj, "name")': HasString function expected object parameter but was passed 'null'
+-> Error running script: Error evaluating expression 'HasString(obj, "name")': Value cannot be null. (Parameter 'obj')
 msg(HasString(player, obj))
--> Error running script: Error compiling expression 'HasString(player, obj)': FunctionCallElement: Could find not function 'HasString(Element, Object)'
+-> Error running script: Error evaluating expression 'HasString(player, obj)': Value cannot be null. (Parameter 'property')
 ```
 
 
@@ -68,7 +68,7 @@ In fact, behind the scenes, what happens is that when we try to access `bob.gend
 Compared to null
 ----------------
 
-You can test if most things are null, but not integers.
+You can test if anything is null, including integers.
 
 ```
 obj.att = "somestring"
@@ -79,10 +79,10 @@ msg (obj.att = null)
 -> False
 obj.att = 42
 msg (obj.att = null)
--> Error running script: Error compiling expression 'obj.att = null': CompareElement: Operation 'Equal' is not defined for types 'Int32' and 'Null'
+-> False
 ```
 
-If you are not sure what it may be, the safe way is to use the `Equal` function:
+If you are not sure what type a value is, and want to avoid a direct comparison, you can instead use the `Equal` function:
 
 ```
 obj.att = 42

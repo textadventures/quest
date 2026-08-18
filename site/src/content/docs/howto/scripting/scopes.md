@@ -12,14 +12,14 @@ Exits
 
 * [ScopeExits](/functions/corelibrary/scopeexits) Exits that the player can use from the current location, i.e., all visible exits for this room, whether locked or not.
 * [ScopeExitsForRoom](/functions/corelibrary/scopeexitsforroom)
-* [ScopeUnlockedExitsForRoom](/functions/corelibrary/scopeunlockedexitsforroom) From Quest 5.7.
+* [ScopeUnlockedExitsForRoom](/functions/corelibrary/scopeunlockedexitsforroom)
 * [AllExits](/functions/allexits) All exits in the game.
 
 
 Commands
 --------
 
-* [ScopeCommands](/functions/corelibrary/scopecommands) Gets a list of all global commands and all the lists for the current room.
+* [ScopeCommands](/functions/corelibrary/scopecommands) Gets a list of all global commands and all commands local to the current room.
 * [AllCommands](/functions/allcommands) All commands in the game.
 
 

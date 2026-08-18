@@ -11,7 +11,7 @@ A walkthrough is the set of steps or commands that you can record in the editor,
 
 Another use for walkthroughs is when you have a problem with Quest - it helps hugely if we can play your game through to the required point, and a walkthrough will take us straight there.
 
-You can record and play back walkthroughs from the Editor, or you can also play a walkthrough from within a game by going to the Tools menu. Walkthroughs are automatically removed from published .quest files.
+You can record and play back walkthroughs from the Editor, or you can also play a walkthrough from within a game by opening the Debugger and choosing the Walkthrough tab. Walkthroughs are automatically removed from published .quest files.
 
 Creating and recording a walkthrough
 ------------------------------------
@@ -29,7 +29,7 @@ Creating sub-walkthroughs
 
 Many of your walkthroughs may share the same steps - for example, if your game has multiple endings, there may be points in the walkthrough where you want to "branch off". Quest lets you handle this by creating a hierarchy of walkthroughs - if you move one walkthrough in the tree to be a child of another walkthrough, when the child walkthrough is run, it will run all the steps of its parent walkthrough(s) first.
 
-Currently you need to go into Full Code View to create a sub-walkthrough.
+To create a sub-walkthrough, select the walkthrough in the tree, choose "Move to..." and pick the walkthrough that should be its parent.
 
 
 Handling menus and questions
@@ -65,8 +65,8 @@ For example, in the walkthrough below, the assert expression checks that the "ta
          look at biscuit
          take biscuit
          assert:biscuit.parent = player
-       <steps>
-     <walkthrough>
+       </steps>
+     </walkthrough>
 
 If a walkthrough assert expression returns false, the walkthrough is immediately stopped.
 
@@ -82,7 +82,7 @@ anywhere in the walkthrough to display the total runtime of the walkthrough. The
 Output speed
 ------------
 
-From Quest 5.9 you can influence the speed of the output with the line "delay:". The delay in milliseconds is specified behind it. The setting takes effect after the delay command line.
+You can influence the speed of the output with the line "delay:". The delay in milliseconds is specified behind it. The setting takes effect after the delay command line.
 
      <walkthrough name="main">
        <steps>
@@ -96,7 +96,7 @@ From Quest 5.9 you can influence the speed of the output with the line "delay:".
          examine horse
          use apple with horse
          runtime:
-       <steps>
-     <walkthrough>
+       </steps>
+     </walkthrough>
 
 The command can also be used several times in a walkthrough if certain areas are to be displayed with their own speed.

@@ -4,7 +4,7 @@ sidebar:
   order: 9
 ---
 
-This file describes some new features for Quest 5.7. These are called advanced scripts for a reason, and will be of no interest to many users. You will need to turn the feature on by ticking it on the _Features_ tab of the game object. If you are using these scripts, it is assumed you are reasonably comfortable looking at code.
+This describes some advanced features. These are called advanced scripts for a reason, and will be of no interest to many users. You will need to turn the feature on by ticking it on the _Features_ tab of the game object. If you are using these scripts, it is assumed you are reasonably comfortable looking at code.
 
 
 
@@ -25,7 +25,7 @@ For a starting point as to what you can do, see [here](/howto/ux/ui-javascript).
 The `unresolvedcommandhandler` script
 -------------------------------------
 
-This has been in Quest for even longer, but in Quest 5.7 you can add it via the GUI.
+This has been in Quest for a long time, and you can add it via the GUI.
 
 If it exists, this script gets called when Quest has no idea how to handle a command (if there is no script, Quest will just print "I don't understand your command.").
 

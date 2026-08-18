@@ -7,7 +7,7 @@ sidebar:
 
 A clone is an exact copy of a prototype, and can be a useful way to quickly create several of the same things whilst a game is underway. For example, you could create a single orc, and then clone it several times to give the player a hoard to fight against, or you could [implement a shop](/howto/tasks/shop) where all the goods for sale get cloned when the player purchases them, so the shop remains stocked.
 
-Actually clones are not exact copies. Every object in Quest must have a unique name, so each clone will have its own name. This name will be the name of the prototype, with a number appended (orc1, orc2, etc.). To ensure the clone is _apparently_ identical to the player, it is best to use the `CloneObject` function (rather than the `Clone` function), so the clone will be given the name of the prototype as an alias, if none is already set. It will also (as of Quest 5.7) be given a new attribute "prototype", which points to the prototype.
+Actually clones are not exact copies. Every object in Quest must have a unique name, so each clone will have its own name. This name will be the name of the prototype, with a number appended (orc1, orc2, etc.). To ensure the clone is _apparently_ identical to the player, it is best to use the `CloneObject` function (rather than the `Clone` function), so the clone will be given the name of the prototype as an alias, if none is already set. It will also be given a new attribute "prototype", which points to the prototype.
 
 Note that cloning an object with `CloneObject` will also clone any objects it contains.
 
@@ -129,7 +129,7 @@ The next one, `CreateProtectionPotion` is a bit more specialised, but could read
 
 ```
     o = CloneObjectAndMove(masterpotionprotection, room)
-    o.element = GetObject(PickOneStr("fire|frost|necrotic"))
+    o.element = GetObject(PickOneString("fire;frost;necrotic"))
     o.alias = "Potion of Protection from " + CapFirst(o.element.name)
     o.listalias = o.alias
     o.price = o.price - GetRandomInt(o.price/-4, o.price/4)
@@ -145,9 +145,9 @@ This is a more involved example, but the principle is the same. `CreateScroll` h
 
 ```
     o = CloneObjectAndMove(masterscroll, room)
-    o.element = GetObject(PickOneStr("fire|frost|divine|storm|earthmight"))
+    o.element = GetObject(PickOneString("fire;frost;divine;storm;earthmight"))
     qualifier = StringListItem(Split("Lesser ||Greater ", "|"), level % 3)
-    o.alias = "Scroll of " + qualifier + CapFirst(o.element.name) + " Blast " + Roman(level / 3 + 1)
+    o.alias = "Scroll of " + qualifier + CapFirst(o.element.name) + " Blast " + ToRoman(level / 3 + 1)
     o.listalias = o.alias
     o.look = "The scroll has a glyph of " + o.alias + " on it."
     o.price = 10 * level

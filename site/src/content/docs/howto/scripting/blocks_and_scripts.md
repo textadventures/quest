@@ -9,7 +9,7 @@ Some script commands have blocks assciated with them, some functions have script
 
 Script commands with blocks with no wait: `if (else), for, foreach, firsttime (otherwise), switch (case), while`
 
-Script commands with blocks that wait: `ask, on ready, show menu, wait`
+Script commands with blocks that wait: `ask, get input, on ready, show menu, wait`
 
 Functions with scripts that wait: `Ask, ShowMenu, SetTimeout, SetTimeoutID, SetTurnTimeout, SetTurnTimeoutID`
 

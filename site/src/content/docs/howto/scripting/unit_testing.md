@@ -8,7 +8,7 @@ Unit testing is a standard procedure in software development; the coder makes an
 
 A unit test, then, is a bit of code that runs a method or function and then tests the output or state against expected values. Generally a developer will run a whole set of unit tests (often called a test suite) from one command or click of a button, and any that do not give the expected results are flagged. The test suite can be run at regular intervals to ensure recent changes have not messed up systems that previously worked.
 
-As part of the development of Quest 5.7, I have looked at doing unit testing in Quest. This is most applicable to libraries (and really it is  dubious if it is worth the effort unless you plan to release the library). You can have your game in one file and your unit tests in another, and both use the same set of libraries. With that in mind, this is not a library file, but a game file. To use it, add _your_ library to this file, and then add your tests to this game file.
+Quest supports unit testing too. This is most applicable to libraries (and really it is  dubious if it is worth the effort unless you plan to release the library). You can have your game in one file and your unit tests in another, and both use the same set of libraries. With that in mind, this is not a library file, but a game file. To use it, add _your_ library to this file, and then add your tests to this game file.
 
 [unit_test.aslx](util/unit_test.aslx)
 
@@ -35,7 +35,7 @@ Obviously your tests will go where it says "TEST CODE HERE". In case you are won
 Basic Testing
 --------------
 
-Let us start with a simple example. Here are the unit tests for the `FormatList` and `IndexOf` functions, which were new in Quest 5.7.
+Let us start with a simple example. Here are the unit tests for the `FormatList` and `IndexOf` functions.
 
 
 ```
