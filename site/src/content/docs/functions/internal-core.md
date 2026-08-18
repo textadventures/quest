@@ -140,33 +140,33 @@ GetUniqueElementName (string element name)
 
 Returns a [string](/types#string) containing the specified name - if necessary with a number added to ensure it is an unused element name.
 
-NOTE: This a [hard-coded function](/functions/hardcoded).
+NOTE: This is a [hard-coded function](/functions/hardcoded).
 
-## Grid CalculateMapCoordinates
+## Grid_CalculateMapCoordinates
 
 <b>Internal function to Core.aslx</b> - games should not normally need to call internal functions.
 
 Grid\_CalculateMapCoordinates(room)
 
-## Grid DrawPlayerInRoom
+## Grid_DrawPlayerInRoom
 
 <b>Internal function to Core.aslx</b> - games should not normally need to call internal functions.
 
 Grid\_DrawPlayerInRoom(room)
 
-## Grid DrawRoom
+## Grid_DrawRoom
 
 <b>Internal function to Core.aslx</b> - games should not normally need to call internal functions.
 
 Grid DrawRoom(room, redraw)
 
-## Grid SetScale
+## Grid_SetScale
 
 <b>Internal function to Core.aslx</b> - games should not normally need to call internal functions.
 
 Grid\_SetScale(scale)
 
-## Grid ShowCustomLayer
+## Grid_ShowCustomLayer
 
 Grid ShowCustomLayer (boolean visible)
 
@@ -299,7 +299,7 @@ IsGameRunning ()
 
 Returns a [boolean](/types#boolean) indicating whether the game is currently running (i.e. false when the game has finished).
 
-NOTE: This a [hard-coded function](/functions/hardcoded).
+NOTE: This is a [hard-coded function](/functions/hardcoded).
 
 ## ListObjectContents
 
@@ -353,7 +353,7 @@ Passing this to the Populate function with an input "put book on shelf" will ret
 
 See also [GetMatchStrength](/functions/string#getmatchstrength), [IsRegexMatch](/functions/string#isregexmatch)
 
-NOTE: This a [hard-coded function](/functions/hardcoded).
+NOTE: This is a [hard-coded function](/functions/hardcoded).
 
 ## ResolveName
 

@@ -22,7 +22,7 @@ Returns a [boolean](/types#boolean) - **true** if the dictionary contains an ele
 
 See [Using Dictionaries](/howto/scripting/using_dictionaries)
 
-NOTE: This a [hard-coded function](/functions/hardcoded).
+NOTE: This is a [hard-coded function](/functions/hardcoded).
 
 ## DictionaryCount
 
@@ -32,7 +32,7 @@ Returns an [int](/types#int) - the number of items in the dictionary.
 
 See [Using Dictionaries](/howto/scripting/using_dictionaries)
 
-NOTE: This a [hard-coded function](/functions/hardcoded).
+NOTE: This is a [hard-coded function](/functions/hardcoded).
 
 ## DictionaryItem
 
@@ -43,6 +43,8 @@ Retrieves the specified item from the dictionary. Returns a [string](/types#stri
 Usually you will know the type of list that you're passing in, so you should use the [StringDictionaryItem](#stringdictionaryitem), [ObjectDictionaryItem](#objectdictionaryitem) or [ScriptDictionaryItem](#scriptdictionaryitem) functions instead.
 
 See [Using Dictionaries](/howto/scripting/using_dictionaries)
+
+NOTE: This is a [hard-coded function](/functions/hardcoded).
 
 ## DictionaryRemove
 
@@ -60,7 +62,7 @@ Returns an empty [dictionary](/howto/scripting/using_dictionaries). The dictiona
 
 If the dictionary will only contain one type of data (as will usually be the case), you should use [NewStringDictionary](#newstringdictionary) or [NewObjectDictionary](#newobjectdictionary) instead.
 
-NOTE: This a [hard-coded function](/functions/hardcoded).
+NOTE: This is a [hard-coded function](/functions/hardcoded).
 
 ## NewObjectDictionary
 
@@ -68,7 +70,7 @@ NewObjectDictionary ()
 
 Returns an empty [objectdictionary](/types#objectdictionary).
 
-NOTE: This a [hard-coded function](/functions/hardcoded).
+NOTE: This is a [hard-coded function](/functions/hardcoded).
 
 ## NewScriptDictionary
 
@@ -76,7 +78,7 @@ NewScriptDictionary ()
 
 Returns an empty [scriptdictionary](/types#scriptdictionary).
 
-NOTE: This a [hard-coded function](/functions/hardcoded).
+NOTE: This is a [hard-coded function](/functions/hardcoded).
 
 ## NewStringDictionary
 
@@ -84,7 +86,7 @@ NewStringDictionary ()
 
 Returns an empty [stringdictionary](/types#stringdictionary).
 
-NOTE: This a [hard-coded function](/functions/hardcoded).
+NOTE: This is a [hard-coded function](/functions/hardcoded).
 
 ## ObjectDictionaryItem
 
@@ -96,7 +98,7 @@ You can use the [DictionaryItem](#dictionaryitem) function if you don't know the
 
 See [Using Dictionaries](/howto/scripting/using_dictionaries)
 
-NOTE: This a [hard-coded function](/functions/hardcoded).
+NOTE: This is a [hard-coded function](/functions/hardcoded).
 
 ## QuickParams
 
@@ -132,7 +134,7 @@ You can use the [DictionaryItem](#dictionaryitem) function if you don't know the
 
 See [Using Dictionaries](/howto/scripting/using_dictionaries)
 
-NOTE: This a [hard-coded function](/functions/hardcoded).
+NOTE: This is a [hard-coded function](/functions/hardcoded).
 
 ## StringDictionaryItem
 
@@ -144,4 +146,4 @@ You can use the [DictionaryItem](#dictionaryitem) function if you don't know the
 
 See [Using Dictionaries](/howto/scripting/using_dictionaries)
 
-NOTE: This a [hard-coded function](/functions/hardcoded).
+NOTE: This is a [hard-coded function](/functions/hardcoded).

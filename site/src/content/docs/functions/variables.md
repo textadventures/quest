@@ -45,13 +45,15 @@ IsDefined (string variable name)
 
 Returns a [boolean](/types#boolean) indicating whether the specified variable name is defined in the current scope.
 
+NOTE: This is a [hard-coded function](/functions/hardcoded).
+
 ## IsDouble
 
 IsDouble (string number)
 
 Returns a [boolean](/types#boolean) indicating whether the specified string represents a double.
 
-NOTE: This a [hard-coded function](/functions/hardcoded).
+NOTE: This is a [hard-coded function](/functions/hardcoded).
 
 ## IsInt
 
@@ -59,7 +61,7 @@ IsInt (string number)
 
 Returns a [boolean](/types#boolean) indicating whether the specified string represents an integer.
 
-NOTE: This a [hard-coded function](/functions/hardcoded).
+NOTE: This is a [hard-coded function](/functions/hardcoded).
 
 ## ToDouble
 
@@ -71,7 +73,7 @@ Note: An error occurs if the string does not represent a number.
 
 See also [HasDouble](/functions/attributes#hasdouble) and [GetDouble](/functions/attributes#getdouble)
 
-NOTE: This a [hard-coded function](/functions/hardcoded).
+NOTE: This is a [hard-coded function](/functions/hardcoded).
 
 ## ToInt
 
@@ -83,7 +85,7 @@ Note: An error occurs if the string does not represent a number. Use [IsInt](#is
 
 See also [GetInt](/functions/attributes#getint) and [HasInt](/functions/attributes#hasint)
 
-NOTE: This a [hard-coded function](/functions/hardcoded).
+NOTE: This is a [hard-coded function](/functions/hardcoded).
 
 ## ToString
 
@@ -93,7 +95,7 @@ Returns a [string](/types#string). This is most useful for converting an integer
 
 See also [GetString](/functions/attributes#getstring) and [HasString](/functions/attributes#hasstring)
 
-NOTE: This a [hard-coded function](/functions/hardcoded).
+NOTE: This is a [hard-coded function](/functions/hardcoded).
 
 ## TypeOf
 
@@ -107,4 +109,4 @@ Returns a [string](/types#string) representing the name of the type of the speci
 
 See [Attribute Types](/types/) for a list of strings that may be returned.
 
-NOTE: This a [hard-coded function](/functions/hardcoded).
+NOTE: This is a [hard-coded function](/functions/hardcoded).

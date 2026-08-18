@@ -37,7 +37,7 @@ GetRandomDouble ()
 
 Returns a random [double](/types#double) value between 0.0 and 1.0.
 
-NOTE: This a [hard-coded function](/functions/hardcoded).
+NOTE: This is a [hard-coded function](/functions/hardcoded).
 
 ## GetRandomInt
 
@@ -45,7 +45,7 @@ GetRandomInt (integer min, integer max)
 
 Returns a random [int](/types#int) value between the specified maximum and minimum.
 
-NOTE: This a [hard-coded function](/functions/hardcoded).
+NOTE: This is a [hard-coded function](/functions/hardcoded).
 
 ## PickOneChild
 

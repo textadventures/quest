@@ -14,6 +14,8 @@ Returns the [int](/types#int) value of the current Unix epoch time in UTC.
 
 Information on the Unix timestamp can be found at [Wikipedia](https://en.wikipedia.org/wiki/Unix_time)
 
+NOTE: This is a [hard-coded function](/functions/hardcoded).
+
 ## Eval
 
 Eval (string expression, dictionary parameters)
@@ -35,7 +37,7 @@ Example:
 
 This will result in "150" being printed.
 
-NOTE: This a [hard-coded function](/functions/hardcoded).
+NOTE: This is a [hard-coded function](/functions/hardcoded).
 
 ## GetFileData
 
@@ -43,7 +45,7 @@ GetFileData (string file name)
 
 Loads the specified file and returns a [string](/types#string) containing its contents.
 
-NOTE: This a [hard-coded function](/functions/hardcoded).
+NOTE: This is a [hard-coded function](/functions/hardcoded).
 
 ## GetFileURL
 
@@ -51,7 +53,7 @@ GetFileURL(string filename)
 
 Returns a [string](/types#string) containing the full path to the specified file. The file must exist in the same directory as the game. This can be used to access a game's resources such as sounds and pictures, and pass their URLs to the player UI.
 
-NOTE: This a [hard-coded function](/functions/hardcoded).
+NOTE: This is a [hard-coded function](/functions/hardcoded).
 
 ## Log
 
@@ -69,4 +71,4 @@ Runs the specified delegate function on an object.
 
 See [Using Delegates](/advanced-topics/using_delegates)
 
-NOTE: This a [hard-coded function](/functions/hardcoded).
+NOTE: This is a [hard-coded function](/functions/hardcoded).

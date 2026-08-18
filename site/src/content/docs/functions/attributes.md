@@ -30,7 +30,7 @@ GetAttribute (object, string attribute name)
 
 Returns the value of the specified object attribute. The return type will be the attribute type. Returns [null](/types#null) if the attribute does not exist.
 
-NOTE: This a [hard-coded function](/functions/hardcoded).
+NOTE: This is a [hard-coded function](/functions/hardcoded).
 
 ## GetAttributeNames
 
@@ -38,7 +38,7 @@ GetAttributeNames (object, boolean include inherited attributes)
 
 Returns a [stringlist](/types#stringlist) of all attribute names of the specified object, optionally including attributes set by an included type.
 
-NOTE: This a [hard-coded function](/functions/hardcoded).
+NOTE: This is a [hard-coded function](/functions/hardcoded).
 
 ## GetBoolean
 
@@ -48,7 +48,7 @@ Returns a [boolean](/types#boolean) - **true** if the object has that boolean at
 
 See also [HasBoolean](#hasboolean)
 
-NOTE: This a [hard-coded function](/functions/hardcoded).
+NOTE: This is a [hard-coded function](/functions/hardcoded).
 
 ## GetDouble
 
@@ -58,7 +58,7 @@ Returns an [double](/types#double) if the object has that double attribute, or *
 
 See also [HasDouble](#hasdouble) and [ToDouble](/functions/variables#todouble)
 
-NOTE: This a [hard-coded function](/functions/hardcoded).
+NOTE: This is a [hard-coded function](/functions/hardcoded).
 
 ## GetInt
 
@@ -68,7 +68,7 @@ Returns an [int](/types#int) if the object has that integer attribute, or **null
 
 See also [HasInt](#hasint), [IsInt](/functions/variables#isint) and [ToInt](/functions/variables#toint)
 
-NOTE: This a [hard-coded function](/functions/hardcoded).
+NOTE: This is a [hard-coded function](/functions/hardcoded).
 
 ## GetString
 
@@ -78,7 +78,7 @@ Returns the [string](/types#string) value of the specified object attribute. Ret
 
 See also [ToString](/functions/variables#tostring) and [HasString](#hasstring)
 
-NOTE: This a [hard-coded function](/functions/hardcoded).
+NOTE: This is a [hard-coded function](/functions/hardcoded).
 
 ## HasAttribute
 
@@ -86,7 +86,7 @@ HasAttribute (object, string attribute name)
 
 Returns true if the object has the specified attribute.
 
-NOTE: This a [hard-coded function](/functions/hardcoded).
+NOTE: This is a [hard-coded function](/functions/hardcoded).
 
 ## HasBoolean
 
@@ -98,7 +98,7 @@ Whether the value of that attribute is true or false is unimportant - this funct
 
 See also [GetBoolean](#getboolean)
 
-NOTE: This a [hard-coded function](/functions/hardcoded).
+NOTE: This is a [hard-coded function](/functions/hardcoded).
 
 ## HasDelegateImplementation
 
@@ -108,7 +108,7 @@ Returns a [boolean](/types#boolean) - **true** if the specified attribute is a d
 
 See [Using Delegates](/advanced-topics/using_delegates)
 
-NOTE: This a [hard-coded function](/functions/hardcoded).
+NOTE: This is a [hard-coded function](/functions/hardcoded).
 
 ## HasDouble
 
@@ -118,7 +118,7 @@ Returns a [boolean](/types#boolean) - **true** if the object *has* a double attr
 
 See also [GetDouble](#getdouble) and [ToDouble](/functions/variables#todouble)
 
-NOTE: This a [hard-coded function](/functions/hardcoded).
+NOTE: This is a [hard-coded function](/functions/hardcoded).
 
 ## HasInt
 
@@ -128,7 +128,7 @@ Returns a [boolean](/types#boolean) - **true** if the object *has* an integer at
 
 See also [GetInt](#getint), [IsInt](/functions/variables#isint) and [ToInt](/functions/variables#toint)
 
-NOTE: This a [hard-coded function](/functions/hardcoded).
+NOTE: This is a [hard-coded function](/functions/hardcoded).
 
 ## HasObject
 
@@ -138,7 +138,7 @@ Returns a [boolean](/types#boolean) - **true** if the specified attribute is a r
 
 See also [GetObject](/functions/objects#getobject)
 
-NOTE: This a [hard-coded function](/functions/hardcoded).
+NOTE: This is a [hard-coded function](/functions/hardcoded).
 
 ## HasScript
 
@@ -146,7 +146,7 @@ HasScript (object, string attribute name)
 
 Returns a [boolean](/types#boolean) - **true** if the specified attribute is a script.
 
-NOTE: This a [hard-coded function](/functions/hardcoded).
+NOTE: This is a [hard-coded function](/functions/hardcoded).
 
 ## HasString
 
@@ -156,7 +156,7 @@ Returns a [boolean](/types#boolean) - **true** if the specified attribute is a s
 
 See also [ToString](/functions/variables#tostring) and [GetString](#getstring)
 
-NOTE: This a [hard-coded function](/functions/hardcoded).
+NOTE: This is a [hard-coded function](/functions/hardcoded).
 
 ## IncreaseHealth
 

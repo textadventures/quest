@@ -12,7 +12,7 @@ Clones the object and returns the created clone. It is generally better to use [
 
 See also [CloneObjectAndMove](#cloneobjectandmove).
 
-NOTE: This a [hard-coded function](/functions/hardcoded).
+NOTE: This is a [hard-coded function](/functions/hardcoded).
 
 ## CloneObject
 
@@ -62,7 +62,7 @@ Returns a [boolean](/types#boolean) indicating whether the object inherits the s
 
 Note that the types "editor_player", "editor_room" and "editor_object" are removed when you publish your game, so it is a bad idea to test for them.
 
-NOTE: This a [hard-coded function](/functions/hardcoded).
+NOTE: This is a [hard-coded function](/functions/hardcoded).
 
 ## GetExitByLink
 
@@ -70,7 +70,7 @@ GetExitByLink (object from room, object to room)
 
 Returns a [string](/types#string) containing the name of the exit joining the specified rooms, if it exits. If it does not exist, [null](/types#null) is returned instead.
 
-NOTE: This a [hard-coded function](/functions/hardcoded).
+NOTE: This is a [hard-coded function](/functions/hardcoded).
 
 ## GetExitByName
 
@@ -78,7 +78,7 @@ GetExitByName (object from room, string direction name)
 
 Returns a [string](/types#string) containing the name of the exit going from the specified room in the specified direction, if it exists. If it does not exist, [null](/types#null) is returned instead.
 
-NOTE: This a [hard-coded function](/functions/hardcoded).
+NOTE: This is a [hard-coded function](/functions/hardcoded).
 
 ## GetObject
 
@@ -88,7 +88,7 @@ Returns the [object](/types#object) of the specified name (or exit, or command, 
 
 See also [HasObject](/functions/attributes#hasobject)
 
-NOTE: This a [hard-coded function](/functions/hardcoded).
+NOTE: This is a [hard-coded function](/functions/hardcoded).
 
 ## LockExit
 

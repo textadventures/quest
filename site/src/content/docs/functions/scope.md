@@ -12,7 +12,7 @@ AllCommands()
 
 Returns an [objectlist](/types#objectlist) of all commands defined in the game.
 
-NOTE: This a [hard-coded function](/functions/hardcoded).
+NOTE: This is a [hard-coded function](/functions/hardcoded).
 
 ## AllExits
 
@@ -20,7 +20,7 @@ AllExits()
 
 Returns an [objectlist](/types#objectlist) of all exits defined in the game.
 
-NOTE: This a [hard-coded function](/functions/hardcoded).
+NOTE: This is a [hard-coded function](/functions/hardcoded).
 
 ## AllObjects
 
@@ -28,7 +28,7 @@ AllObjects()
 
 Returns an [objectlist](/types#objectlist) of all objects defined in the game.
 
-NOTE: This a [hard-coded function](/functions/hardcoded).
+NOTE: This is a [hard-coded function](/functions/hardcoded).
 
 ## AllRooms
 
@@ -42,7 +42,7 @@ AllTurnScripts()
 
 Returns an [objectlist](/types#objectlist) of all turn scripts defined in the game.
 
-NOTE: This a [hard-coded function](/functions/hardcoded).
+NOTE: This is a [hard-coded function](/functions/hardcoded).
 
 ## GetAllChildObjects
 
@@ -54,7 +54,7 @@ For example, if object A contains object B, and object B contains object C, then
 
 Use [GetDirectChildren](#getdirectchildren) instead if you only want children directly contained (in the above example, only B).
 
-NOTE: This a [hard-coded function](/functions/hardcoded).
+NOTE: This is a [hard-coded function](/functions/hardcoded).
 
 ## GetDirectChildren
 
@@ -64,7 +64,7 @@ Returns an [objectlist](/types#objectlist) containing all objects directly conta
 
 Use [GetAllChildObjects](#getallchildobjects) instead to return all objects directly *or* indirectly contained (i.e. including children of children).
 
-NOTE: This a [hard-coded function](/functions/hardcoded).
+NOTE: This is a [hard-coded function](/functions/hardcoded).
 
 ## ListVisible
 

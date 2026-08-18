@@ -12,11 +12,15 @@ The Asc function returns the character code of the input.
 
 Maps to the VB.net [Asc function](http://msdn.microsoft.com/en-us/library/zew1e4wc%28v=VS.80%29.aspx).
 
+NOTE: This is a [hard-coded function](/functions/hardcoded).
+
 ## CapFirst
 
 CapFirst (input)
 
 Returns a [string](/types#string) with the first character of the input capitalised.
+
+NOTE: This is a [hard-coded function](/functions/hardcoded).
 
 ## Chr
 
@@ -25,6 +29,8 @@ Chr (int input)
 The Chr function returns the character with the character code of the input.
 
 Maps to the VB.net [Chr function](http://msdn.microsoft.com/en-us/library/613dxh46%28v=VS.80%29.aspx).
+
+NOTE: This is a [hard-coded function](/functions/hardcoded).
 
 ## Conjugate
 
@@ -169,13 +175,15 @@ Now we could add a message expression to the script in an exit, something like:
 
 NOTE: As the script is defined in the *script* attribute of the *exit*, we use the "this" keyword to reference the current *exit* object
 
-NOTE: This a [hard-coded function](/functions/hardcoded).
+NOTE: This is a [hard-coded function](/functions/hardcoded).
 
 ## EndsWith
 
 EndsWith (string input, string ending)
 
 Returns a [boolean](/types#boolean) - **true** if the input string finishes with the ending string.
+
+NOTE: This is a [hard-coded function](/functions/hardcoded).
 
 ## FormatList
 
@@ -223,7 +231,7 @@ The strength is used by the command handling functions in CoreCommands.aslx to d
 
 See also [IsRegexMatch](#isregexmatch), [Populate](/functions/internal-core#populate)
 
-NOTE: This a [hard-coded function](/functions/hardcoded).
+NOTE: This is a [hard-coded function](/functions/hardcoded).
 
 ## Instr
 
@@ -237,6 +245,8 @@ Returns an [int](/types#int) representing the character position of the search s
 
 Maps to the VB.net [Instr function](http://msdn.microsoft.com/en-us/library/8460tsh1(VS.80).aspx).
 
+NOTE: This is a [hard-coded function](/functions/hardcoded).
+
 ## InstrRev
 
 InstrRev (string input, string search)
@@ -249,11 +259,15 @@ Returns an [int](/types#int) representing the character position of the search s
 
 Maps to the VB.net [InstrRev function](http://msdn.microsoft.com/en-us/library/t2ekk41a%28v=VS.80%29.aspx).
 
+NOTE: This is a [hard-coded function](/functions/hardcoded).
+
 ## IsNumeric
 
 IsNumeric (string input)
 
 Returns a [boolean](/types#boolean) - **true** if the input is numeric (i.e. a string which can be converted into a number).
+
+NOTE: This is a [hard-coded function](/functions/hardcoded).
 
 ## IsRegexMatch
 
@@ -269,7 +283,7 @@ Use a cache ID for improved performance if you repeatedly test strings against t
 
 See also [GetMatchStrength](#getmatchstrength), [Populate](/functions/internal-core#populate)
 
-NOTE: This a [hard-coded function](/functions/hardcoded).
+NOTE: This is a [hard-coded function](/functions/hardcoded).
 
 ## Join
 
@@ -277,11 +291,15 @@ Join (stringlist input, string split character)
 
 Returns a [string](/types#string) containing each element of the input, separated by the split character. This is the inverse of the [split](#split) function.
 
+NOTE: This is a [hard-coded function](/functions/hardcoded).
+
 ## LCase
 
 LCase (string input)
 
 Returns a [string](/types#string) - the lower-case version of the input.
+
+NOTE: This is a [hard-coded function](/functions/hardcoded).
 
 ## Left
 
@@ -291,17 +309,23 @@ Returns a [string](/types#string) containing characters from the left of the inp
 
 Maps to the VB.net [Left function](http://msdn.microsoft.com/en-US/library/y050k1wb(v=VS.80).aspx).
 
+NOTE: This is a [hard-coded function](/functions/hardcoded).
+
 ## LengthOf
 
 LengthOf (string input)
 
 Returns an [int](/types#int) containing the number of characters in the string.
 
+NOTE: This is a [hard-coded function](/functions/hardcoded).
+
 ## LTrim
 
 LTrim (input)
 
 The LTrim function removes spaces on the left side of a [string](/types#string).
+
+NOTE: This is a [hard-coded function](/functions/hardcoded).
 
 ## Mid
 
@@ -314,6 +338,8 @@ or
 Returns a [string](/types#string) containing characters from the middle of the input string. The position counts from 1.
 
 Maps to the VB.net [Mid function](http://msdn.microsoft.com/en-us/library/05e63829(v=VS.90).aspx).
+
+NOTE: This is a [hard-coded function](/functions/hardcoded).
 
 ## PadString
 
@@ -351,6 +377,8 @@ Replace (string input, string old text, string new text)
 
 Returns a [string](/types#string) where any text matching "old text" in the input has been replaced by "new text".
 
+NOTE: This is a [hard-coded function](/functions/hardcoded).
+
 ## ReverseDirection
 
 ReverseDirection (string input)
@@ -365,11 +393,15 @@ Returns a [string](/types#string) containing characters from the right of the in
 
 Maps to the VB.net [Right function](http://msdn.microsoft.com/en-us/library/dxs6hz0a.aspx).
 
+NOTE: This is a [hard-coded function](/functions/hardcoded).
+
 ## RTrim
 
 RTrim (input)
 
 The RTrim function removes spaces on the right side of a [string](/types#string).
+
+NOTE: This is a [hard-coded function](/functions/hardcoded).
 
 ## SafeXML
 
@@ -377,7 +409,7 @@ SafeXML (string)
 
 Returns an XML encoded version of the string that is safe for output (for example, replacing angle brackets with &amp;lt; and &amp;gt;).
 
-NOTE: This a [hard-coded function](/functions/hardcoded).
+NOTE: This is a [hard-coded function](/functions/hardcoded).
 
 ## Spaces
 
@@ -400,11 +432,15 @@ These two lines are equivalent:
     list = Split("one;two;three;four", ";")
     list = Split("one;two;three;four")
 
+NOTE: This is a [hard-coded function](/functions/hardcoded).
+
 ## StartsWith
 
 StartsWith (string input, string start)
 
 Returns a [boolean](/types#boolean) - **true** if the input string begins with the start string.
+
+NOTE: This is a [hard-coded function](/functions/hardcoded).
 
 ## Template
 
@@ -416,7 +452,7 @@ You can create a template in your ASLX file with a [\<template\> element](/eleme
 
 See [Changing templates](/howto/world/changing_templates)
 
-NOTE: This a [hard-coded function](/functions/hardcoded).
+NOTE: This is a [hard-coded function](/functions/hardcoded).
 
 ## ToRoman
 
@@ -438,11 +474,15 @@ Trim (input)
 
 The Trim function removes spaces on both sides of a [string](/types#string).
 
+NOTE: This is a [hard-coded function](/functions/hardcoded).
+
 ## UCase
 
 UCase (string input)
 
 Returns a [string](/types#string) - the upper-case version of the input.
+
+NOTE: This is a [hard-coded function](/functions/hardcoded).
 
 ## WriteVerb
 

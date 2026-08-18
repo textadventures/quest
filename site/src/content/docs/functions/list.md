@@ -16,7 +16,7 @@ Returns a [boolean](/types#boolean) - **true** if the child object is contained 
 
 will return **true**.
 
-NOTE: This a [hard-coded function](/functions/hardcoded).
+NOTE: This is a [hard-coded function](/functions/hardcoded).
 
 ## FilterByAttribute
 
@@ -70,7 +70,7 @@ ListCombine (list, list)
 
 Combines two [stringlists](/types#stringlist) or two [objectlists](/types#objectlist) or two generic lists (can cannot add a list of one type to another).
 
-NOTE: This a [hard-coded function](/functions/hardcoded).
+NOTE: This is a [hard-coded function](/functions/hardcoded).
 
 ## ListCompact
 
@@ -88,7 +88,7 @@ ListContains (list, any type item)
 
 Returns a [boolean](/types#boolean) - **true** if the list contains the item.
 
-NOTE: This a [hard-coded function](/functions/hardcoded).
+NOTE: This is a [hard-coded function](/functions/hardcoded).
 
 ## ListCount
 
@@ -96,7 +96,7 @@ ListCount (list)
 
 Returns an [int](/types#int) - the number of items in the list.
 
-NOTE: This a [hard-coded function](/functions/hardcoded).
+NOTE: This is a [hard-coded function](/functions/hardcoded).
 
 ## ListExclude
 
@@ -106,7 +106,7 @@ Returns a copy of the [stringlist](/types#stringlist) or [objectlist](/types#obj
 
 Note that this is different to the [list remove](/scripts#list-remove) script command, as that removes the item from the original list. ListExclude by contrast returns a copy of the list - the original list is unaffected.
 
-NOTE: This a [hard-coded function](/functions/hardcoded).
+NOTE: This is a [hard-coded function](/functions/hardcoded).
 
 ## ListItem
 
@@ -116,7 +116,7 @@ Returns a [string](/types#string) or an [object](/types#object), depending on wh
 
 Usually you will know the type of list that you're passing in, so you should use the [StringListItem](#stringlistitem) or [ObjectListItem](#objectlistitem) functions instead.
 
-NOTE: This a [hard-coded function](/functions/hardcoded).
+NOTE: This is a [hard-coded function](/functions/hardcoded).
 
 ## NewList
 
@@ -126,7 +126,7 @@ Returns an empty [list](/types#list). The list can contain any type of data, or 
 
 If the list will only contain one type of data (as will usually be the case), you should use [NewStringList](#newstringlist) or [NewObjectList](#newobjectlist) instead.
 
-NOTE: This a [hard-coded function](/functions/hardcoded).
+NOTE: This is a [hard-coded function](/functions/hardcoded).
 
 ## NewObjectList
 
@@ -134,7 +134,7 @@ NewObjectList ()
 
 Returns an empty [objectlist](/types#objectlist).
 
-NOTE: This a [hard-coded function](/functions/hardcoded).
+NOTE: This is a [hard-coded function](/functions/hardcoded).
 
 ## NewStringList
 
@@ -142,7 +142,7 @@ NewStringList ()
 
 Returns an empty [stringlist](/types#stringlist).
 
-NOTE: This a [hard-coded function](/functions/hardcoded).
+NOTE: This is a [hard-coded function](/functions/hardcoded).
 
 ## ObjectListCompact
 
@@ -173,7 +173,7 @@ Now show the name of the second item in the list. Note that the second object is
 
 This could be used with [GetRandomInt](/functions/random#getrandomint) to remove an item from the players inventory ([ScopeInventory](/functions/scope#scopeinventory)) and place it into the current room (for example, if you're creating a poltergeist or thief).
 
-NOTE: This a [hard-coded function](/functions/hardcoded).
+NOTE: This is a [hard-coded function](/functions/hardcoded).
 
 ## ObjectListSort
 
@@ -209,7 +209,7 @@ If you try to sort by object, script, list or dictionary attribute you will get 
      
 To return the values in reverse order, use [ObjectListSortDescending](#objectlistsortdescending).
 
-NOTE: This a [hard-coded function](/functions/hardcoded).
+NOTE: This is a [hard-coded function](/functions/hardcoded).
 
 ## ObjectListSortDescending
 
@@ -217,7 +217,7 @@ ObjectListSortDescending (objectlist list, string attributes ...)
 
 Returns the reversed version of [ObjectListSort](#objectlistsort) - see that page for usage.
 
-NOTE: This a [hard-coded function](/functions/hardcoded).
+NOTE: This is a [hard-coded function](/functions/hardcoded).
 
 ## ObjectListToStringList
 
@@ -239,7 +239,7 @@ Returns the [string](/types#string) from the list by the specified index. The in
 
 You can use the [ListItem](#listitem) function if you don't know the type of the list.
 
-NOTE: This a [hard-coded function](/functions/hardcoded).
+NOTE: This is a [hard-coded function](/functions/hardcoded).
 
 ## StringListSort
 
@@ -249,7 +249,7 @@ Returns a [stringlist](/types#stringlist) - a copy of the input stringlist, sort
 
 To return the values in reverse order, use [StringListSortDescending](#stringlistsortdescending).
 
-NOTE: This a [hard-coded function](/functions/hardcoded).
+NOTE: This is a [hard-coded function](/functions/hardcoded).
 
 ## StringListSortDescending
 
@@ -259,4 +259,4 @@ Returns a [stringlist](/types#stringlist) - a copy of the input stringlist, reve
 
 To return the values in ascending order, use [StringListSort](#stringlistsort).
 
-NOTE: This a [hard-coded function](/functions/hardcoded).
+NOTE: This is a [hard-coded function](/functions/hardcoded).

@@ -24,6 +24,8 @@ Use the [ask](/scripts#ask) script command for a popup menu.
 
 **Note:** This function is "non-blocking", and its script has no access to local variables. For a fuller discussion, see the note on [Blocks and Scripts](/howto/scripting/blocks_and_scripts).
 
+NOTE: This is a [hard-coded function](/functions/hardcoded).
+
 ## ClearFramePicture
 
 ClearFramePicture
@@ -63,6 +65,8 @@ Returns the fonts currently in use - the [defaultwebfont](/attributes#defaultweb
     GetInput()
 
 Waits for the user to enter some text at the command prompt. Instead of handling the input as a command, it is returned as the result of the function, as a [string](/types#string).
+
+NOTE: This is a [hard-coded function](/functions/hardcoded).
 
 ## InitUserInterface
 
@@ -207,6 +211,8 @@ ShowMenu ("Select", ScopeInventory(), true) {
 ```
 
 **Note:** This function is "non-blocking", and its script has no access to local variables. For a fuller discussion, see the note on [Blocks and Scripts](/howto/scripting/blocks_and_scripts).
+
+NOTE: This is a [hard-coded function](/functions/hardcoded).
 
 ## ShowYouTube
 
