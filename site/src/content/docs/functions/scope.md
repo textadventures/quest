@@ -1,5 +1,5 @@
 ---
-title: "Scope Functions"
+title: "Scope functions"
 sidebar:
   order: 7
 ---

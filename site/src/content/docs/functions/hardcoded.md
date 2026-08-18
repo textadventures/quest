@@ -1,5 +1,5 @@
 ---
-title: Hard-coded Functions and Library Functions
+title: Hard-coded functions and library functions
 sidebar:
   order: 28
 ---

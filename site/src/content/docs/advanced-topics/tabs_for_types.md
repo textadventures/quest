@@ -1,5 +1,5 @@
 ---
-title: Using Tabs for Types
+title: Using tabs for types
 sidebar:
   order: 8
 ---

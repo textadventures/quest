@@ -1,5 +1,5 @@
 ---
-title: "Functions for Objects and Exits"
+title: "Functions for objects and exits"
 sidebar:
   order: 3
 ---

@@ -88,7 +88,7 @@ In both the Quest full code view and Notepad++ you will see minus signs in boxes
 
 Personally, I like to move all turn scripts, functions, verbs, commands and types into libraries, and leave objects (rooms and items) in the main game. For one thing, objects are a lot easier to edit in the proper editor, while functions and commands not so much. An important point here is that you do not need to plan to use libraries from the start. In fact, there is not much point until you have a fair number of functions in your game.
 
-If you create a library, it is a good idea to add Editor elements to it, so that users of your library (even if it is only you) can easily use its features. For information, please see [Editor User Interface Elements](/advanced-topics/editor_user_interface_elements).
+If you create a library, it is a good idea to add Editor elements to it, so that users of your library (even if it is only you) can easily use its features. For information, please see [Editor user interface elements](/advanced-topics/editor_user_interface_elements).
 
 _NOTE:_ The point of creating your own libraries is you can quickly get to the code if you need to tweak something. If you prefer to use the GUI to create scripts, do not bother with your own libraries.
 

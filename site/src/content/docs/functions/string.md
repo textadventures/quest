@@ -1,5 +1,5 @@
 ---
-title: "String Functions"
+title: "String functions"
 sidebar:
   order: 9
 ---

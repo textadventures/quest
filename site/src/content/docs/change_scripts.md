@@ -1,5 +1,5 @@
 ---
-title: Change Script
+title: Change script
 sidebar:
   order: 4
 ---

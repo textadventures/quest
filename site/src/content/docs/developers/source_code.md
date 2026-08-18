@@ -1,5 +1,5 @@
 ---
-title: Building from Source
+title: Building from source
 sidebar:
   order: 1
 ---

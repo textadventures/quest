@@ -1,5 +1,5 @@
 ---
-title: "Internal Core.aslx Functions"
+title: "Internal Core.aslx functions"
 sidebar:
   order: 14
 ---

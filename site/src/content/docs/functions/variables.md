@@ -1,5 +1,5 @@
 ---
-title: "Functions for Variables"
+title: "Functions for variables"
 sidebar:
   order: 2
 ---

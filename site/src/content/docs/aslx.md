@@ -1,5 +1,5 @@
 ---
-title: ASLX File Format
+title: ASLX file format
 sidebar:
   order: 29
 ---

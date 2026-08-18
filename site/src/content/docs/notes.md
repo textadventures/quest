@@ -1,5 +1,5 @@
 ---
-title: Mutable Attributes on Inherited Types
+title: Mutable attributes on inherited types
 ---
 
 Mutable attributes on inherited types

@@ -37,7 +37,7 @@ export default defineConfig({
                             "collapsed": true,
                             "items": [
                                 {
-                                    "label": "Tutorial Introduction",
+                                    "label": "Tutorial introduction",
                                     "slug": "tutorial/tutorial_introduction"
                                 },
                                 {
@@ -77,7 +77,7 @@ export default defineConfig({
                                     "slug": "tutorial/moving_objects_during_the_game"
                                 },
                                 {
-                                    "label": "Status Attributes",
+                                    "label": "Status attributes",
                                     "slug": "tutorial/status_attributes"
                                 },
                                 {
@@ -627,7 +627,7 @@ export default defineConfig({
                             "slug": "advanced-topics/about_types"
                         },
                         {
-                            "label": "Using Delegates",
+                            "label": "Using delegates",
                             "slug": "advanced-topics/using_delegates"
                         },
                         {
@@ -643,11 +643,11 @@ export default defineConfig({
                             "slug": "advanced-topics/undo_support"
                         },
                         {
-                            "label": "Using Tabs for Types",
+                            "label": "Using tabs for types",
                             "slug": "advanced-topics/tabs_for_types"
                         },
                         {
-                            "label": "Editor User Interface Elements",
+                            "label": "Editor user interface elements",
                             "slug": "advanced-topics/editor_user_interface_elements"
                         }
                     ]
@@ -669,63 +669,63 @@ export default defineConfig({
                                     "slug": "functions"
                                 },
                                 {
-                                    "label": "Functions for Attributes",
+                                    "label": "Functions for attributes",
                                     "slug": "functions/attributes"
                                 },
                                 {
-                                    "label": "Functions for Variables",
+                                    "label": "Functions for variables",
                                     "slug": "functions/variables"
                                 },
                                 {
-                                    "label": "Functions for Objects and Exits",
+                                    "label": "Functions for objects and exits",
                                     "slug": "functions/objects"
                                 },
                                 {
-                                    "label": "Timers and Turnscripts",
+                                    "label": "Timers and turnscripts",
                                     "slug": "functions/timers-turnscripts"
                                 },
                                 {
-                                    "label": "User Interface Functions",
+                                    "label": "User interface functions",
                                     "slug": "functions/user-interface"
                                 },
                                 {
-                                    "label": "List Functions",
+                                    "label": "List functions",
                                     "slug": "functions/list"
                                 },
                                 {
-                                    "label": "Scope Functions",
+                                    "label": "Scope functions",
                                     "slug": "functions/scope"
                                 },
                                 {
-                                    "label": "Dictionary Functions",
+                                    "label": "Dictionary functions",
                                     "slug": "functions/dictionary"
                                 },
                                 {
-                                    "label": "String Functions",
+                                    "label": "String functions",
                                     "slug": "functions/string"
                                 },
                                 {
-                                    "label": "Clothing Functions",
+                                    "label": "Clothing functions",
                                     "slug": "functions/clothing"
                                 },
                                 {
-                                    "label": "Randomising Functions",
+                                    "label": "Randomising functions",
                                     "slug": "functions/random"
                                 },
                                 {
-                                    "label": "General Functions",
+                                    "label": "General functions",
                                     "slug": "functions/general"
                                 },
                                 {
-                                    "label": "Core.aslx Functions",
+                                    "label": "Core.aslx functions",
                                     "slug": "functions/core"
                                 },
                                 {
-                                    "label": "Internal Core.aslx Functions",
+                                    "label": "Internal Core.aslx functions",
                                     "slug": "functions/internal-core"
                                 },
                                 {
-                                    "label": "Mathematical Functions",
+                                    "label": "Mathematical functions",
                                     "slug": "functions/maths"
                                 }
                             ]
@@ -739,15 +739,15 @@ export default defineConfig({
                                     "slug": "about_attributes"
                                 },
                                 {
-                                    "label": "Important Attributes",
+                                    "label": "Important attributes",
                                     "slug": "important_attributes"
                                 },
                                 {
-                                    "label": "Status Attributes",
+                                    "label": "Status attributes",
                                     "slug": "status_attributes"
                                 },
                                 {
-                                    "label": "Change Script",
+                                    "label": "Change script",
                                     "slug": "change_scripts"
                                 },
                                 {
@@ -755,17 +755,17 @@ export default defineConfig({
                                     "slug": "types"
                                 },
                                 {
-                                    "label": "Attribute Reference",
+                                    "label": "Attribute reference",
                                     "slug": "attributes"
                                 },
                                 {
-                                    "label": "Mutable Attributes on Inherited Types",
+                                    "label": "Mutable attributes on inherited types",
                                     "slug": "notes"
                                 }
                             ]
                         },
                         {
-                            "label": "XML Elements",
+                            "label": "XML elements",
                             "slug": "elements"
                         },
                         {
@@ -773,15 +773,15 @@ export default defineConfig({
                             "slug": "js"
                         },
                         {
-                            "label": "Hard-coded Functions and Library Functions",
+                            "label": "Hard-coded functions and library functions",
                             "slug": "functions/hardcoded"
                         },
                         {
-                            "label": "ASLX File Format",
+                            "label": "ASLX file format",
                             "slug": "aslx"
                         },
                         {
-                            "label": "ASL Requirements",
+                            "label": "ASL requirements",
                             "slug": "asl_requirements"
                         }
                     ]
@@ -803,7 +803,7 @@ export default defineConfig({
                             "slug": "publishing/webplayer"
                         },
                         {
-                            "label": "Competition Entry",
+                            "label": "Competition entry",
                             "slug": "publishing/competition_entry"
                         }
                     ]
@@ -817,7 +817,7 @@ export default defineConfig({
                             "slug": "developers/developers"
                         },
                         {
-                            "label": "Building from Source",
+                            "label": "Building from source",
                             "slug": "developers/source_code"
                         },
                         {
@@ -825,7 +825,7 @@ export default defineConfig({
                             "slug": "developers/open_source"
                         },
                         {
-                            "label": "Older Versions",
+                            "label": "Older versions",
                             "slug": "developers/older-versions"
                         }
                     ]

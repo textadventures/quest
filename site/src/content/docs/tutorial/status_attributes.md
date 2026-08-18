@@ -1,5 +1,5 @@
 ---
-title: Status Attributes
+title: Status attributes
 sidebar:
   order: 11
 ---

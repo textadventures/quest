@@ -1,5 +1,5 @@
 ---
-title: "Dictionary Functions"
+title: "Dictionary functions"
 sidebar:
   order: 8
 ---

@@ -1,5 +1,5 @@
 ---
-title: Older Versions
+title: Older versions
 sidebar:
   order: 3
 ---

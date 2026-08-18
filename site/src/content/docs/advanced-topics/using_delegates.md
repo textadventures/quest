@@ -1,5 +1,5 @@
 ---
-title: Using Delegates
+title: Using delegates
 sidebar:
   order: 3
 ---

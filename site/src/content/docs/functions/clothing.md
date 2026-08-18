@@ -1,5 +1,5 @@
 ---
-title: "Clothing Functions"
+title: "Clothing functions"
 sidebar:
   order: 10
 ---

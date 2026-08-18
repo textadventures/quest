@@ -1,5 +1,5 @@
 ---
-title: "Randomising Functions"
+title: "Randomising functions"
 sidebar:
   order: 11
 ---

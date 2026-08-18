@@ -1,5 +1,5 @@
 ---
-title: "List Functions"
+title: "List functions"
 sidebar:
   order: 6
 ---

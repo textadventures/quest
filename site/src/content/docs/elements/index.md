@@ -1,5 +1,5 @@
 ---
-title: XML Elements
+title: XML elements
 sidebar:
   order: 25
 ---
@@ -481,7 +481,7 @@ Creates a delegate type. Delegates are script properties that can be called like
 
 You can run delegate functions on objects using the [rundelegate](/scripts#rundelegate) command (if the delegate does not return a value) or using the [RunDelegateFunction](/functions/general#rundelegatefunction) function (for delegates that do return a value).
 
-See [Using Delegates](/advanced-topics/using_delegates)
+See [Using delegates](/advanced-topics/using_delegates)
 
 ## javascript
 
@@ -532,7 +532,7 @@ caption
 controltype  
 [string](/types#string) specifying the control type
 
-See [Editor User Interface Elements](/advanced-topics/editor_user_interface_elements)
+See [Editor user interface elements](/advanced-topics/editor_user_interface_elements)
 
 ## resource
 

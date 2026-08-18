@@ -1,5 +1,5 @@
 ---
-title: "User Interface Functions"
+title: "User interface functions"
 sidebar:
   order: 5
 ---

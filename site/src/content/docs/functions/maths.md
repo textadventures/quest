@@ -1,5 +1,5 @@
 ---
-title: "Mathematical Functions"
+title: "Mathematical functions"
 sidebar:
   order: 15
 ---

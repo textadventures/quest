@@ -1,5 +1,5 @@
 ---
-title: Tutorial Introduction
+title: Tutorial introduction
 sidebar:
   order: 1
 ---

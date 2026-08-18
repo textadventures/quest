@@ -1,5 +1,5 @@
 ---
-title: Important Attributes
+title: Important attributes
 sidebar:
   order: 2
 ---

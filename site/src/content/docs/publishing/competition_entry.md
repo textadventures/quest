@@ -1,5 +1,5 @@
 ---
-title: Competition Entry
+title: Competition entry
 sidebar:
   order: 1
 ---

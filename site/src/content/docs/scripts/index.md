@@ -557,7 +557,7 @@ rundelegate (object, string attribute name, any type parameters ... )
 
 Runs an object's delegate implementation script attribute, with the specified parameters.
 
-See [Using Delegates](/advanced-topics/using_delegates)
+See [Using delegates](/advanced-topics/using_delegates)
 
 ## set
 ```

@@ -1,5 +1,5 @@
 ---
-title: Editor User Interface Elements
+title: Editor user interface elements
 sidebar:
   order: 9
 ---
