@@ -2026,68 +2026,12 @@ export default defineConfig({
                                             "slug": "types"
                                         },
                                         {
-                                            "label": "Null",
-                                            "slug": "types/null"
-                                        },
-                                        {
-                                            "label": "String",
-                                            "slug": "types/string"
-                                        },
-                                        {
-                                            "label": "Script",
-                                            "slug": "types/script"
-                                        },
-                                        {
-                                            "label": "Boolean",
-                                            "slug": "types/boolean"
-                                        },
-                                        {
-                                            "label": "Int",
-                                            "slug": "types/int"
-                                        },
-                                        {
-                                            "label": "Double",
-                                            "slug": "types/double"
-                                        },
-                                        {
-                                            "label": "Object",
-                                            "slug": "types/object"
-                                        },
-                                        {
-                                            "label": "Stringlist",
-                                            "slug": "types/stringlist"
-                                        },
-                                        {
-                                            "label": "Objectlist",
-                                            "slug": "types/objectlist"
-                                        },
-                                        {
-                                            "label": "List",
-                                            "slug": "types/list"
-                                        },
-                                        {
-                                            "label": "Objectdictionary",
-                                            "slug": "types/objectdictionary"
-                                        },
-                                        {
-                                            "label": "Scriptdictionary",
-                                            "slug": "types/scriptdictionary"
-                                        },
-                                        {
-                                            "label": "Dictionary",
-                                            "slug": "types/dictionary"
-                                        },
-                                        {
                                             "label": "Using Delegates",
                                             "slug": "types/using_delegates"
                                         },
                                         {
                                             "label": "Command pattern",
                                             "slug": "types/command_pattern"
-                                        },
-                                        {
-                                            "label": "Stringdictionary",
-                                            "slug": "types/stringdictionary"
                                         }
                                     ]
                                 },

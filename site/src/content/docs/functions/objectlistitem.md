@@ -4,14 +4,14 @@ title: ObjectListItem
 
     ObjectListItem (objectlist, int index)
 
-Returns the [object](/types/object) from the list by the specified index. The index is zero-based. (The first item is at index 0, the second is at index 1, etc.)
+Returns the [object](/types#object) from the list by the specified index. The index is zero-based. (The first item is at index 0, the second is at index 1, etc.)
 
 You can use the [ListItem](/functions/listitem) function if you don't know the type of the list.
 
 Example
 -------
 
-For example, to show a specific objects' name from a list, first create an [objectlist](/types/objectlist) called myList, in this example it is a list of objects that can be seen currently [ScopeVisibleNotHeld](/functions/corelibrary/scopevisiblenotheld).
+For example, to show a specific objects' name from a list, first create an [objectlist](/types#objectlist) called myList, in this example it is a list of objects that can be seen currently [ScopeVisibleNotHeld](/functions/corelibrary/scopevisiblenotheld).
 
      myList = ScopeVisibleNotHeld()
 

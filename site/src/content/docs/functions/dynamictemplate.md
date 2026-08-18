@@ -8,7 +8,7 @@ or
 
     DynamicTemplate (string  template name, string  text)
 
-Returns a [string](/types/string) containing the requested text, based on the object or string passed in.
+Returns a [string](/types#string) containing the requested text, based on the object or string passed in.
 
 You can pass in multiple objects. If you only pass in one, you can refer to it using the variable "object". Otherwise you can use "object1", "object2" etc.
 

@@ -4,7 +4,7 @@ title: FormatObjectList
 
     FormatObjectList (string pre-list, object parent, string pre-final, string post-list, boolean use inventory verbs)
 
-Returns a [string](/types/string) containing a formatted list of objects.
+Returns a [string](/types#string) containing a formatted list of objects.
 
 Used by [ShowRoomDescription](/functions/corelibrary/showroomdescription) and the "inventory" command to display lists of visible and carried objects.
 

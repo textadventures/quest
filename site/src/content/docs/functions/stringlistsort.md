@@ -4,7 +4,7 @@ title: StringListSort
 
     StringListSort (stringlist list)
 
-Returns a [stringlist](/types/stringlist) - a copy of the input stringlist, sorted alphabetically.
+Returns a [stringlist](/types#stringlist) - a copy of the input stringlist, sorted alphabetically.
 
 To return the values in reverse order, use [StringListSortDescending](/functions/stringlistsortdescending).
 

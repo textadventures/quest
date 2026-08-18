@@ -4,7 +4,7 @@ title: StringListSortDescending
 
     StringListSortDescending (stringlist list)
 
-Returns a [stringlist](/types/stringlist) - a copy of the input stringlist, reverse sorted alphabetically.
+Returns a [stringlist](/types#stringlist) - a copy of the input stringlist, reverse sorted alphabetically.
 
 To return the values in ascending order, use [StringListSort](/functions/stringlistsort).
 

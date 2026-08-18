@@ -4,4 +4,4 @@ title: ScopeExitsForRoom
 
     ScopeExitsForRoom(room)
 
-Returns an [objectlist](/types/objectlist) containing all the exits which are available to the player (whether locked or not) in the specified room.
+Returns an [objectlist](/types#objectlist) containing all the exits which are available to the player (whether locked or not) in the specified room.

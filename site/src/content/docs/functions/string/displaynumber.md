@@ -4,7 +4,7 @@ title: DisplayNumber
 
     DisplayNumber (int input, string format)
 
-Returns a [string](/types/string), the given number formatted. The format should consist of:
+Returns a [string](/types#string), the given number formatted. The format should consist of:
 
 - any number of non-digits (optional)
 - a number, the minimum number of digits left of the decimal point (padded with 0)

@@ -4,7 +4,7 @@ title: Split
 
     Split (string input, string split character)
 
-Returns a [stringlist](/types/stringlist) where the input has been split into individual strings by the split character. Useful for turning a comma-separated string into a list of strings, for example.
+Returns a [stringlist](/types#stringlist) where the input has been split into individual strings by the split character. Useful for turning a comma-separated string into a list of strings, for example.
 
 As of version 5.7.2, you can omit the split character, and Quest will assume it is a semicolon.
 

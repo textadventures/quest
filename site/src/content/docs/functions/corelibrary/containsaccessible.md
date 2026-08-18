@@ -6,4 +6,4 @@ title: ContainsAccessible
 
     ContainsAccessible (object parent, object child, boolean reachable)
 
-Returns a [boolean](/types/boolean).
+Returns a [boolean](/types#boolean).

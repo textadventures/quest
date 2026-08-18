@@ -4,7 +4,7 @@ title: DiceRoll
 
     DiceRoll (string dicetype)
 
-Returns an [int](/types/int) - the result of the dice roll.
+Returns an [int](/types#int) - the result of the dice roll.
 
 Format dicetype: [number of dice]d[number of sides]
 

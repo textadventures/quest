@@ -4,7 +4,7 @@ title: ScopeReachable
 
     ScopeReachable ()
 
-Returns an [objectlist](/types/objectlist) containing all the objects which the player can currently reach.
+Returns an [objectlist](/types#objectlist) containing all the objects which the player can currently reach.
 
 All objects in this scope can be interacted with directly by the player.
 

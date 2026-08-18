@@ -4,7 +4,7 @@ title: ShowMenu
 
     ShowMenu (string caption, stringdictionary or list options, boolean allow ignore)  { script } 
 
-Shows an inline menu of the specified options and returns a [string](/types/string) variable **result** containing the user input. If a dictionary of options is passed in, the values are displayed as options, the key is returned. If a list of options is passed in, the list item is returned if a string, or the name of the object.
+Shows an inline menu of the specified options and returns a [string](/types#string) variable **result** containing the user input. If a dictionary of options is passed in, the values are displayed as options, the key is returned. If a list of options is passed in, the list item is returned if a string, or the name of the object.
 
 If the "allow ignore" parameter is set to **true**, the player can ignore the menu and interact with other objects. The menu is just closed then. If the "allow ignore" parameter is set to **false**, the player must choose one entry of the menu.
 

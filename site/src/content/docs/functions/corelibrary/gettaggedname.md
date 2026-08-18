@@ -6,6 +6,6 @@ title: GetTaggedName
 
     GetTaggedName (object, string type, stringlist verbs)
 
-Returns a [string](/types/string).
+Returns a [string](/types#string).
 
 **This function was removed in Quest 5.4**

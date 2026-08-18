@@ -4,7 +4,7 @@ title: ScopeVisible
 
     ScopeVisible ()
 
-Returns an [objectlist](/types/objectlist) containing all the objects which the player can currently see.
+Returns an [objectlist](/types#objectlist) containing all the objects which the player can currently see.
 
 These objects can be looked at.
 

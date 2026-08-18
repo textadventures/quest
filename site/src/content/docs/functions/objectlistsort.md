@@ -4,7 +4,7 @@ title: ObjectListSort
 
     ObjectListSort (objectlist list, string attributes ...)
 
-Returns an [objectlist](/types/objectlist) - a copy of the input objectlist, sorted in order of the values of the first specified attribute (and then optionally by any subsequently specified attributes).
+Returns an [objectlist](/types#objectlist) - a copy of the input objectlist, sorted in order of the values of the first specified attribute (and then optionally by any subsequently specified attributes).
 
 For example, to return a list of objects sorted by name:
 

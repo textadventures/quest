@@ -4,7 +4,7 @@ title: DoesInherit
 
     DoesInherit (object object, string type name)
 
-Returns a [boolean](/types/boolean) indicating whether the object inherits the specified type.
+Returns a [boolean](/types#boolean) indicating whether the object inherits the specified type.
 
     if (DoesInherit(o, "male")) {
       msg("'Hi,' he grunts.")

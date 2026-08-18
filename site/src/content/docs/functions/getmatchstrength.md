@@ -8,7 +8,7 @@ Optionally as of Quest 5.1 there is a new cache ID parameter:
 
     GetMatchStrength (string regex, string input, string cache ID)
 
-Returns an [int](/types/int) indicating how strongly the given input matches the regular expression.
+Returns an [int](/types#int) indicating how strongly the given input matches the regular expression.
 
 The strength is defined as the length of the "required" parts of the string, i.e. the total length of the string *minus* the total length of all named groups.
 

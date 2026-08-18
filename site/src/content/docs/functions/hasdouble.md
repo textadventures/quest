@@ -4,7 +4,7 @@ title: HasDouble
 
     HasDouble (object, string attribute name)
 
-Returns a [boolean](/types/boolean) - **true** if the object *has* a double attribute of the specified name.
+Returns a [boolean](/types#boolean) - **true** if the object *has* a double attribute of the specified name.
 
 See also [GetDouble](/functions/getdouble) and [ToDouble](/functions/todouble)
 

@@ -4,7 +4,7 @@ title: ToDouble
 
     ToDouble (string number)
 
-Returns an [double](/types/double) - converts a valid string to a double.
+Returns an [double](/types#double) - converts a valid string to a double.
 
 Note: An error occurs if the string does not represent a number.
 

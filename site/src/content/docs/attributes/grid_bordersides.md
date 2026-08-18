@@ -2,7 +2,7 @@
 title: grid_bordersides
 ---
 
-"grid\_bordersides" is an [int](/types/int) attribute. It specifies which sides of the square should be drawn for for this room on the map.
+"grid\_bordersides" is an [int](/types#int) attribute. It specifies which sides of the square should be drawn for for this room on the map.
 
 You shouldn't need to set this directly, as there are types set up to make it easier to choose the correct value.
 

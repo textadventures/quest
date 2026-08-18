@@ -63,7 +63,7 @@ There are two libraries included in this example:
 Attributes
 ----------
 
-Each object's attributes are defined in the XML. Attributes define all the behaviour of an object. The XML "type" attribute used is to specify the type of the attribute. If no type is specified, the [string](/types/string) type is assumed, as with the sink's "look" attribute in the above example. An exception is if there is no data in the XML tag, in which case a [boolean](/types/boolean) "true" is assumed instead.
+Each object's attributes are defined in the XML. Attributes define all the behaviour of an object. The XML "type" attribute used is to specify the type of the attribute. If no type is specified, the [string](/types#string) type is assumed, as with the sink's "look" attribute in the above example. An exception is if there is no data in the XML tag, in which case a [boolean](/types#boolean) "true" is assumed instead.
 
 The available types are listed on the [Attribute Types](/types/) page.
 

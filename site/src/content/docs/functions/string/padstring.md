@@ -4,7 +4,7 @@ title: PadString
 
     PadString (string input, int length, string pad)
 
-Returns a [string](/types/string) that has been padded to the given length with the given padding.
+Returns a [string](/types#string) that has been padded to the given length with the given padding.
 
 ```
 PadString("23", 4, "0")

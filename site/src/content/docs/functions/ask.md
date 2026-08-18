@@ -4,7 +4,7 @@ title: Ask
 
     Ask (string question)  { script } 
 
-Shows an inline menu of the specified **question** and returns a [boolean](/types/boolean) variable **result** with **true** if the player answers "Yes" to the question.
+Shows an inline menu of the specified **question** and returns a [boolean](/types#boolean) variable **result** with **true** if the player answers "Yes" to the question.
 
 Example:
 

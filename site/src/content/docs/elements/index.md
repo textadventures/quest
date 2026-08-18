@@ -381,10 +381,10 @@ The name is optional. If no name is specified, Quest will generate a name for th
 Attributes:
 
 alias  
-[string](/types/string) exit alias
+[string](/types#string) exit alias
 
 grid\_length  
-[int](/types/int) length of exit line on map in grid units
+[int](/types#int) length of exit line on map in grid units
 
 grid\_offset\_x  
 X offset of exit position on grid
@@ -399,28 +399,28 @@ lightstrength
 see [lightstrength](/attributes/lightstrength) object attribute
 
 locked  
-[boolean](/types/boolean) specifying if exit is locked
+[boolean](/types#boolean) specifying if exit is locked
 
 lockmessage  
-[string](/types/string) to display when exit is locked
+[string](/types#string) to display when exit is locked
 
 look  
-[string](/types/string) description to print when the player looks in this direction, or [script](/types/script) to run
+[string](/types#string) description to print when the player looks in this direction, or [script](/types#script) to run
 
 lookonly  
-[boolean](/types/boolean) - if true, the player can't move in this direction, only look
+[boolean](/types#boolean) - if true, the player can't move in this direction, only look
 
 prefix  
-[string](/types/string) to print before exit name in room descriptions
+[string](/types#string) to print before exit name in room descriptions
 
 script  
-[script](/types/script) to run instead of moving the player
+[script](/types#script) to run instead of moving the player
 
 suffix  
-[string](/types/string) to print after exit name in room descriptions
+[string](/types#string) to print after exit name in room descriptions
 
 visible  
-[boolean](/types/boolean) - if false, exit is not available (as if the exit's parent was null)
+[boolean](/types#boolean) - if false, exit is not available (as if the exit's parent was null)
 
 ## walkthrough
 
@@ -439,13 +439,13 @@ See [Walkthroughs](/howto/scripting/using_walkthroughs).
 Timer attributes:
 
 enabled  
-[boolean](/types/boolean) specifying whether timer is ticking
+[boolean](/types#boolean) specifying whether timer is ticking
 
 interval  
-[int](/types/int) specifying number of seconds between tick events
+[int](/types#int) specifying number of seconds between tick events
 
 script  
-[script](/types/script) specifying what to do when timer ticks
+[script](/types#script) specifying what to do when timer ticks
 
 ## turnscript
 
@@ -454,10 +454,10 @@ script
 Turnscript attributes:
 
 enabled  
-[boolean](/types/boolean) specifying whether turnscript is active
+[boolean](/types#boolean) specifying whether turnscript is active
 
 script  
-[script](/types/script) specifying what to do after each turn
+[script](/types#script) specifying what to do after each turn
 
 Note that as of 5.7.2, turnscripts run in alphabetic order (in earlier versions the order could change unexpectedly). To have turnscripts in a certain order, prefix them "ts01_", "ts02_", ... .
 
@@ -500,7 +500,7 @@ It should have nested [tab](#tab) elements and [control](#control) elements. "Na
 Attributes:
 
 appliesto  
-[string](/types/string) specifying which element type or script command this editor definition applies to
+[string](/types#string) specifying which element type or script command this editor definition applies to
 
 ## tab
 
@@ -513,7 +513,7 @@ It should have nested [control](#control) elements.
 Attributes:
 
 caption  
-[string](/types/string) specifying the caption for the tab
+[string](/types#string) specifying the caption for the tab
 
 ## control
 
@@ -524,13 +524,13 @@ This defines the controls within a [tab element](#tab).
 Attributes:
 
 attribute  
-[string](/types/string) specifying the attribute name that this control applies to
+[string](/types#string) specifying the attribute name that this control applies to
 
 caption  
-[string](/types/string) specifying the label for the control
+[string](/types#string) specifying the label for the control
 
 controltype  
-[string](/types/string) specifying the control type
+[string](/types#string) specifying the control type
 
 See [Editor User Interface Elements](/advanced-topics/editor_user_interface_elements)
 

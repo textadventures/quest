@@ -6,4 +6,4 @@ title: GetInput
 
     GetInput()
 
-Waits for the user to enter some text at the command prompt. Instead of handling the input as a command, it is returned as the result of the function, as a [string](/types/string).
+Waits for the user to enter some text at the command prompt. Instead of handling the input as a command, it is returned as the result of the function, as a [string](/types#string).

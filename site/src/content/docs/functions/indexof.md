@@ -4,7 +4,7 @@ title: IndexOf
 
     IndexOf (list, anything)
 
-Returns an [int](/types/int) - the position of the given element in the list, or -1 if it is not in the list. Note that lists count from zero.
+Returns an [int](/types#int) - the position of the given element in the list, or -1 if it is not in the list. Note that lists count from zero.
 
 ```
 list = Split("One;Two;Three;Four")

@@ -4,6 +4,6 @@ title: CurrentDateUTC
 
     CurrentDateUTC()
 
-Returns the [int](/types/int) value of the current Unix epoch time in UTC. 
+Returns the [int](/types#int) value of the current Unix epoch time in UTC. 
 
 Information on the Unix timestamp can be found at [Wikipedia](https://en.wikipedia.org/wiki/Unix_time)

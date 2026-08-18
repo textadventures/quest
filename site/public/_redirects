@@ -207,3 +207,17 @@ docs.textadventures.co.uk/quest/* https://questviva.com/:splat 301
 /scripts/undo /scripts#undo 301
 /scripts/wait /scripts#wait 301
 /scripts/while /scripts#while 301
+/types/null /types#null 301
+/types/string /types#string 301
+/types/script /types#script 301
+/types/boolean /types#boolean 301
+/types/int /types#int 301
+/types/double /types#double 301
+/types/object /types#object 301
+/types/stringlist /types#stringlist 301
+/types/objectlist /types#objectlist 301
+/types/list /types#list 301
+/types/objectdictionary /types#objectdictionary 301
+/types/scriptdictionary /types#scriptdictionary 301
+/types/dictionary /types#dictionary 301
+/types/stringdictionary /types#stringdictionary 301

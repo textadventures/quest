@@ -2,7 +2,7 @@
 title: lightstrength
 ---
 
-"lightstrength" is a [string](/types/string) attribute specifying the level of illumination this object provides.
+"lightstrength" is a [string](/types#string) attribute specifying the level of illumination this object provides.
 
 Valid values are:
 

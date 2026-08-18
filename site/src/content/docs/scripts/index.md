@@ -578,7 +578,7 @@ To set a variable to a script:
 
 Shows a popup menu of options and then runs the nested script. The script can access the variable "result" which contains the result of the user selection - if a dictionary of options is passed in, the key is returned. If a list of options is passed in, the list item is returned.
 
-If the "allow cancel" parameter is set to **true**, the Cancel button is available. If "cancel" is pressed, the variable "result" returns [null](/types/null).
+If the "allow cancel" parameter is set to **true**, the Cancel button is available. If "cancel" is pressed, the variable "result" returns [null](/types#null).
 
 This command was added in Quest 5.1.
 

@@ -10,7 +10,7 @@ Optionally as of Quest 5.1 there is a new cache ID parameter:
 
 The input must be a match for the regular expression, or an error occurs.
 
-Returns a [stringdictionary](/types/stringdictionary), keyed by the group names in the regular expression, with values set to the resolved regex groups.
+Returns a [stringdictionary](/types#stringdictionary), keyed by the group names in the regular expression, with values set to the resolved regex groups.
 
 Use a cache ID for improved performance if you repeatedly test strings against the same regular expression. The compiled regular expression will be cached and used again for subsequent calls to Populate (or [GetMatchStrength](/functions/getmatchstrength) or [IsRegexMatch](/functions/isregexmatch) ) using the same cache ID.
 
@@ -18,7 +18,7 @@ For example, given this regex which matches the text "put (object name) on (obje
 
     put (<object1>.*) on (<object2>.*)
 
-Passing this to the Populate function with an input "put book on shelf" will return a [stringdictionary](/types/stringdictionary) where object1="book" and object2="shelf".
+Passing this to the Populate function with an input "put book on shelf" will return a [stringdictionary](/types#stringdictionary) where object1="book" and object2="shelf".
 
 See also [GetMatchStrength](/functions/getmatchstrength), [IsRegexMatch](/functions/isregexmatch)
 

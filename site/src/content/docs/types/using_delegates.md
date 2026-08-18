@@ -8,7 +8,7 @@ sidebar:
 Note: Delegates can currently only be edited in full code view. There is no dedicated editor support for delegates.
 </div>
 
-It is easy to create a [script](/types/script) attribute to run at a particular point in the game, but what if you want to create a script attribute that returns a value? It would look a lot like a function. The answer is to use **delegates**.
+It is easy to create a [script](/types#script) attribute to run at a particular point in the game, but what if you want to create a script attribute that returns a value? It would look a lot like a function. The answer is to use **delegates**.
 
 Note: Delegates also offer a way to pass parameters to a script, but this is arguably better done by passing a dictionary to a script (if only because it is supposed by the editors).
 

@@ -4,7 +4,7 @@ title: StringDictionaryItem
 
     StringDictionaryItem (stringdictionary, string key)
 
-Returns the [string](/types/string) specified by the dictionary key.
+Returns the [string](/types#string) specified by the dictionary key.
 
 You can use the [DictionaryItem](/functions/dictionaryitem) function if you don't know the type of the dictionary.
 

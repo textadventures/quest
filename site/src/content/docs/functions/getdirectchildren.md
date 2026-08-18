@@ -4,7 +4,7 @@ title: GetDirectChildren
 
     GetDirectChildren (object)
 
-Returns an [objectlist](/types/objectlist) containing all objects directly contained by the parent object.
+Returns an [objectlist](/types#objectlist) containing all objects directly contained by the parent object.
 
 Use [GetAllChildObjects](/functions/getallchildobjects) instead to return all objects directly *or* indirectly contained (i.e. including children of children).
 

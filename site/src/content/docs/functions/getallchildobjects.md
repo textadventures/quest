@@ -4,7 +4,7 @@ title: GetAllChildObjects
 
     GetAllChildObjects (object)
 
-Returns an [objectlist](/types/objectlist) containing all objects directly or indirectly contained by the parent object (i.e. including all children of children etc.)
+Returns an [objectlist](/types#objectlist) containing all objects directly or indirectly contained by the parent object (i.e. including all children of children etc.)
 
 For example, if object A contains object B, and object B contains object C, then GetAllChildObjects(A) returns a list containing B and C.
 

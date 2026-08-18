@@ -4,7 +4,7 @@ title: CommandLink
 
     CommandLink (string command, string link text)
 
-Returns a [string](/types/string) containing the XML required to display a hyperlink. When the hyperlink is clicked, the specified player command will be run. For example:
+Returns a [string](/types#string) containing the XML required to display a hyperlink. When the hyperlink is clicked, the specified player command will be run. For example:
 
      msg (CommandLink("undo", "Click here to undo the previous turn"))
 

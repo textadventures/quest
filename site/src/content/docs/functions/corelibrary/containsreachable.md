@@ -6,4 +6,4 @@ title: ContainsReachable
 
     ContainsReachable (object parent, object child)
 
-Returns a [boolean](/types/boolean).
+Returns a [boolean](/types#boolean).
