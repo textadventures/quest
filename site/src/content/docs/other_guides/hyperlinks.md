@@ -2,7 +2,7 @@
 title: Hyperlinks
 ---
 
-Quest lets you embed clickable links directly in text. There are three different kinds, and if you set up a room description to run a script, and have it print the following as a message, you can see all three:
+Quest lets you embed clickable links directly in text, using the same `{...}` syntax as the rest of the [text processor](/howto/world/text_processor). There are three different kinds, and if you set up a room description to run a script, and have it print the following as a message, you can see all three:
 
       Here is some text with an <a href="https://textadventures.co.uk/forum/quest">anchor link</a>,
       a link for {object:torch:the torch}

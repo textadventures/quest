@@ -96,6 +96,8 @@ Displays an object hyperlink, using the object's display alias.
 {object:**name**:**link text**}  
 Displays an object hyperlink, using text you specify.
 
+For more on how object and command links behave when clicked, and the functions that generate them, see [Hyperlinks](/other_guides/hyperlinks).
+
 {exit:**name**}  
 Displays an exit hyperlink. The name is the name you give to the exit (by default exits do not have names; you will need to give it a name yourself). The link will appear as the exit's alias ("north", "up", etc.)
 

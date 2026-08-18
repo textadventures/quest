@@ -4,7 +4,7 @@ sidebar:
   order: 3
 ---
 
-If you find you have several places in the game where you have script (or bits of scripts) doing essentially the same thing, you are probably better creating a function to do it just one. The basic idea is that you put the code in just one place, and then anywhere that needs to use the code, you send to the place.
+If you find you have several places in the game where you have script (or bits of scripts) doing essentially the same thing, you are probably better creating a function to do it just one. The basic idea is that you put the code in just one place, and then anywhere that needs to use the code, you send to the place. This page walks through one worked example in depth; for the broader picture (built-in vs custom functions, overriding, and more) see [How to use functions](/howto/tasks/about_functions).
 
 If you did the tutorial, you will already have encountered functions [here](/tutorial/more_things_to_do_with_objects#Using_Functions).
 
