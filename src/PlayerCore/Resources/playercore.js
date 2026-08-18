@@ -1206,6 +1206,16 @@ function AddYouTube(id) {
     addText(embedHTML);
 }
 
+// ShowVimeo itself was removed from Core.aslx (no longer offered to newly-authored/saved
+// games), but this is the shared runtime, not something frozen per-game - an already-published
+// game's own inlined ShowVimeo function still calls JS.AddVimeo directly, so this has to keep
+// working regardless of what Core.aslx currently offers. See Core Library Semantics in CLAUDE.md.
+function AddVimeo(id) {
+    var url = "https://player.vimeo.com/video/" + id + "?autoplay=1";
+    var embedHTML = "<iframe sandbox=\"allow-same-origin allow-scripts allow-popups\" src=\"" + url + "\" width=\"500\" height=\"281\" frameborder=\"0\" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe>";
+    addText(embedHTML);
+}
+
 function SetMenuBackground(color) {
     var css = getCSSRule("div.jj_menu_item");
     css.style.backgroundColor = color;
