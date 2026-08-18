@@ -78,7 +78,7 @@ You can change the number 800080 to the RGB colour what you want (I guess the fi
 Then you just need to do this to get the new icons in your game (again, modifying the number for your downloaded file):
 
 ```
-JS.setCss (".ui-icon", "background-image', 'url(" + GetFileURL("ui-icons_800080_256x240.png") + ");")
+JS.setCss (".ui-icon", "background-image:url(" + GetFileURL("ui-icons_800080_256x240.png") + ");")
 ```
 
 Once you have the file, you could edit it to change the shape of the arrows too, or make them multicoloured (upload the image via the Assets manager in the editor toolbar).

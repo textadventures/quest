@@ -67,7 +67,6 @@ You can use it to access the other built-in JavaScript functions (and your own t
   // Others that may or may not be useful
   JS.setGameWidth(width)
   JS.hideBorder()
-  JS.showBorder()
   JS.setGamePadding(top, bottom, left, right)
   JS.addExternalStylesheet(stylesheet)
   // I think the stylesheet should be a file name (or perhaps a URL) as the parameter
@@ -80,7 +79,6 @@ You can use it to access the other built-in JavaScript functions (and your own t
   JS.SetMenuFontSize(size)
   // the size must be a string that is a number followed by "pt"
   JS.TurnOffHyperlinksUnderline()
-  JS.TurnOnHyperlinksUnderline()
   JS.showStatusVisible(Boolean)
   JS.setBackground(colour)
 ```
@@ -168,7 +166,7 @@ Quest sets up the User Interface in the `InitInterface` function, which is defin
 
 The big advantage of doing it this way is that this will be called whenever Quest thinks the interface needs updating, which is not just at the start of the game (for example, when the screen is cleared). You also get the bonus of having all your interface stuff in the same place, which keeps it neat.
 
-To edit the script, go to the _Features_ tab of the game object, and check that "Show advanced scripts for the game object" is ticked. Then go to the _Advanced Scripts" tab. The "inituserinterface" script is at the top.
+To edit the script, go to the _Features_ tab of the game object, and check that "Show advanced scripts for the game object" is ticked. Then go to the _Advanced Scripts_ tab. The "inituserinterface" script is at the top.
 
 Note, however, that you should not print anything from the "inituserinterface" script (you might feel tempted to output CSS or some JavaScripts using msg or OutputTextRawNoBr). If you do, when a saved game is reloaded, all the new text will get inserted into the top of the existing text. Instead, use the `JS.addScript` function, which will add your JavaScript or CSS or whatever outside the normal flow of text.
 
@@ -196,7 +194,7 @@ Shortcuts
 You can use the `setCss` function to do this sort of thing. Like `eval`, this belongs to the JS object. It takes two parameters, the element and the style. The style should be in the standard CSS format, with a colon between the name and the value, and a semi-colon between each setting. The example above would therefore look like this:
 
 ```
-JS.setCss("#gameBorder", "background-color;#800080;color:pink;")
+JS.setCss("#gameBorder", "background-color:#800080;color:pink;")
 ```
 
 Using this function, you can now change any element in the game (well nearly any, a few are a bit odd). You just need to know the id of the element and the right CSS to use. 

@@ -45,7 +45,7 @@ You can set the scale and height. You can also set the colour and width for exit
 
 ### Game panes
 
-You can selectively turn off a pane, or add a control or custom status pane. You can move the status and compass to the top (which will stop them moving up and down as the inventory changes). You can also select from a number of colour schemes.
+You can selectively turn off a pane, or add a [command pane](/howto/ux/command_pane) or [custom status pane](/howto/ux/custom_panes). You can move the status and compass to the top (which will stop them moving up and down as the inventory changes). You can also select from a number of colour schemes.
 
 ### Command bar
 
@@ -63,7 +63,7 @@ To get these symbols in your game, you need to use the decimal value, with `&#` 
 
 ### Location bar
 
-You can turn off the classic location bar style, and set your own colours. You can also hide the save button (for the web player; players can still save via the SAVE command).
+You can turn off the classic location bar style, and set your own colours. See [Messing with the location bar](/howto/ux/ui-location-bar) for how to customise it further with code.
 
 ### Border
 

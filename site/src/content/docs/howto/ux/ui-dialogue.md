@@ -16,7 +16,7 @@ There will be quite a bit of HTML and JavaScript code, and the neatest way to ha
 Basic Dialogue Panel
 --------------------
 
-The first step is to create a snippet of HTML with all the widgets (a widget is a control such as a checkbox or textfield) you want on your dialogue panel. It all has to go instead a `div` element, with its own id and title, with the class set to "dialog_window". Here is a simple example:
+The first step is to create a snippet of HTML with all the widgets (a widget is a control such as a checkbox or textfield) you want on your dialogue panel. It all has to go inside a `div` element, with its own id and title, with the class set to "dialog_window". Here is a simple example:
 
 ```
 <div id="dialog_window_1" class="dialog_window" title="Your Character">

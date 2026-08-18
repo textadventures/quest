@@ -4,7 +4,7 @@ sidebar:
   order: 5
 ---
 
-In this article we will modify the status bar and game panes of the Quest interface, to show how easy it is to get a ook that is unique to your game. We will go for an old-fashioned look, in brown. This is what we are aiming for:
+In this article we will modify the status bar and game panes of the Quest interface, to show how easy it is to get a look that is unique to your game. We will go for an old-fashioned look, in brown. This is what we are aiming for:
 
 ![](/images/interface1.png)
 
@@ -81,7 +81,7 @@ JS.eval ("$('#gamePanes').width(227);")
 
 Note that we have to use JS.eval for the width as it is not a CSS property.
 
-Here is the whole thing (which should go in the interface script at the top of the _Advanced Scripts_ tab of thye game object):
+Here is the whole thing (which should go in the interface script at the top of the _Advanced Scripts_ tab of the game object):
 
 ```
 backandborder = "border: chocolate ridge 6px;background:sandybrown"

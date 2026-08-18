@@ -10,7 +10,7 @@ Quest allows the player to click and object and then click on an associated verb
 Setting up
 ----------
 
-On the _Interface_ panel of the game object, make sure "Show Panes" is ticked, then tick "Show a custom command pane". If you start your game, you should see the new pane, but it just says "Commands" and does not do anything.
+On the _Interface_ panel of the game object, make sure "Show panes" is ticked, then tick "Show a command pane". If you start your game, you should see the new pane, but it just says "Commands" and does not do anything.
 
 We need to set some commands. Go to the _Features_ tab of the game object, and tick "Advanced scripts", then go to the _Advanced scripts_ tab of the game object, at the top is the user interface initialisation script. This is the place to add the script command that will set up the panel.
 
@@ -58,4 +58,4 @@ More advanced options?
 
 The custom command pane is quite specific in how it works. What if it does not work quite as you like? Perhaps you want images or want clicks to do something different.
 
-You best option is to use a custom status pane instead. This allows you to add any HTML/JavaAScript, giving you full control on what it does and how it looks.
+Your best option is to use a custom status pane instead. This allows you to add any HTML/JavaScript, giving you full control on what it does and how it looks.
