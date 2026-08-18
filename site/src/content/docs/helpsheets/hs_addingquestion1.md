@@ -46,7 +46,7 @@ Make the box a normal container and tick the appropriate options:
 
 ![](/images/helpsheets/Hsaddingquestion22.jpg)
 
-Then add an "If" script to **After Opening the object**, with a "player answers Yes" script attached to **Script to run when opening object**, and the Yes/No question typed in as before. Here, "Yes" is the wrong answer, and it uses **Game Over** to end the game if the player gets it wrong:
+Then add an "If" script to **After Opening the object**, using a "player answers Yes to" condition with the Yes/No question typed in as before. Here, "Yes" is the wrong answer: print a "Game over!" message, then use **Finish the game** to end the game:
 
 ![](/images/helpsheets/Hsaddingquestion23.jpg)
 

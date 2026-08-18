@@ -18,7 +18,7 @@ sidebar:
 
      ![](/images/helpsheets/Hsobjectappear3.jpg)
 
-4. Click on **Options** on the switch/sensor and select **Can be switched on/off**:
+4. Tick **Switchable** on the switch/sensor's **Features** tab, then on the new **Switchable** tab select **Can be switched on/off**:
 
      ![](/images/helpsheets/Hsobjectappear4.jpg)
 

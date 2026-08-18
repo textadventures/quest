@@ -71,3 +71,5 @@ sidebar:
 17. Here is how it looks with different options in action:
 
      ![](/images/helpsheets/Hscase14.jpg)
+
+For more on this script, including matching multiple values in a single case and using ranges, see [Multiple choices - using a switch script](/howto/tasks/multiple_choices_using_a_switch_script).

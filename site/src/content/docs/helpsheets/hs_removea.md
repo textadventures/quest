@@ -10,7 +10,7 @@ In my game I have an object called Simon Cowell but when I run the game it keeps
 
 ***Answer***
 
-1. Go to the object and Select the Object Tab
+1. Go to the object and select the **Setup** tab
 
      ![](/images/helpsheets/Hsremovea1.jpg)
 

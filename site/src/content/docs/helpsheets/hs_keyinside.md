@@ -12,7 +12,7 @@ sidebar:
 
      ![](/images/helpsheets/Hskeyinside1.jpg)
 
-2. I have made the machine a switch in **Options** and kept it switched on at the start:
+2. I have made the machine switchable by ticking **Switchable** on the **Features** tab, then on the new **Switchable** tab I kept it switched on at the start:
 
      ![](/images/helpsheets/Hskeyinside2.jpg)
 

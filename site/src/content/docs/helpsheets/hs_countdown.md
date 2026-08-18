@@ -6,7 +6,7 @@ sidebar:
 
 *There used to be a TV program called the Crystal Maze where a team had to recover crystals from different rooms by doing certain challenges. Each person had to do a challenge and the difficult bit was that they only had 5 minutes to do it before the room was locked.*
 
-Important note: in Quest 5.3 the object 'player' is replaced with 'game.pov' so if you are working with Q 5.3 or higher replace 'player' with 'game.pov'
+Important note: use `game.pov` (not `player`) when referring to the player object in expressions and variable names.
 
 1. I have set up two rooms in Quest. One room is called **Dungeon** where the challenge is set.
 
@@ -75,11 +75,11 @@ In the room are lots of different objects:
 
      ![](/images/helpsheets/Hscountdown12.jpg)
 
-20. I now CAREFULLY type in the name of my variable – **player.countdown** (Q5.3: game.pov.countdown)
+20. I now CAREFULLY type in the name of my variable – **game.pov.countdown**
 
      ![](/images/helpsheets/Hscountdown13.jpg)
 
-21. In the **expression** box I type in the same variable but then with MINUS 1 eg **player.countdown -1** (Q5.3: game.pov.countdown -1)
+21. In the **expression** box I type in the same variable but then with MINUS 1 eg **game.pov.countdown -1**
 
      ![](/images/helpsheets/Hscountdown14.jpg)
 
