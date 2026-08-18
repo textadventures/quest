@@ -20,7 +20,7 @@ Example:
      
 Scripts can be created by adding script commands using the user interface, or by typing code in "code view". Behind the scenes, it is all the same, so you can flip between the two as you like.
 
-You can use [do](/scripts/do) or [invoke](/scripts/invoke) to have Quest run a script.
+You can use [do](/scripts#do) or [invoke](/scripts#invoke) to have Quest run a script.
 
 Let us suppose the above script is attached to an object called "fridge". You could run the script:
 

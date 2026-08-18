@@ -4,7 +4,7 @@ sidebar:
   order: 22
 ---
 
-There are two ways to show a menu. To have a dialogue box pop-up, use the [show menu](/scripts/show_menu) script command. If you prefer to have an in-line menu with hyperlinks, use the [ShowMenu](/functions/showmenu) function. How you implement them is virtually the same.
+There are two ways to show a menu. To have a dialogue box pop-up, use the [show menu](/scripts#show-menu) script command. If you prefer to have an in-line menu with hyperlinks, use the [ShowMenu](/functions/showmenu) function. How you implement them is virtually the same.
 
 First, you need to create a string list of options - see [Using Lists](/howto/scripting/using_lists). Then call the "show menu" command or "ShowMenu" function to display the list to the user and run a nested script after the user has made their selection.
 
@@ -17,7 +17,7 @@ Here is an example how to create a menu (in this case a pop-up menu). A new list
 For technical details, see:
 
 - [ShowMenu](/functions/showmenu)
-- [show menu](/scripts/show_menu)
+- [show menu](/scripts#show-menu)
 
 The `Split` function is often useful when setting options for a menu.
 

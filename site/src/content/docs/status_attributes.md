@@ -84,4 +84,4 @@ So how do we ensure `player.ammonote` always gets updated? With [change scripts]
 Behind the Scenes
 ------------------
 
-Core.aslx updates the status attributes using an UpdateStatusAttributes function. It populates a string and then sends it to the UI using a SetStatus [request](/scripts/request).
+Core.aslx updates the status attributes using an UpdateStatusAttributes function. It populates a string and then sends it to the UI using a SetStatus [request](/scripts#request).

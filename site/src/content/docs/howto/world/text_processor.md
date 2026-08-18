@@ -10,7 +10,7 @@ To use the text processor, you can simply add a directive in curly braces in any
 
 ![](/images/text_processor_text.png)
 
-The more important text areas have shortcut buttons for some text processor commands; these are the buttons on the right in the image above. However, you can use text processor commands in almost any text, for example, in an [msg](/scripts/msg) command:
+The more important text areas have shortcut buttons for some text processor commands; these are the buttons on the right in the image above. However, you can use text processor commands in almost any text, for example, in an [msg](/scripts#msg) command:
 
      msg ("Would you like some {command:help}?")
 

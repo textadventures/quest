@@ -5,7 +5,7 @@ title: Mutable Attributes on Inherited Types
 Mutable attributes on inherited types
 -------------------------------------
 
-When you inherit an attribute from a type, the type's attributes are not copied, just pointed to. For most attribute types there's no problem with this, but lists and dictionaries are mutable - i.e. they can be changed by commands such as [list add](/scripts/list_add), but you're still pointing to the same list.
+When you inherit an attribute from a type, the type's attributes are not copied, just pointed to. For most attribute types there's no problem with this, but lists and dictionaries are mutable - i.e. they can be changed by commands such as [list add](/scripts#list-add), but you're still pointing to the same list.
 
 If type "MyType" has a list attribute "TypeList", and object "MyObject" inherits from MyType, then we potentially have a problem if we call "list add (MyObject.TypeList, value)", as we would then change the list on the underlying type - affecting all other objects that inherit from it.
 

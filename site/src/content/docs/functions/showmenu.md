@@ -8,9 +8,9 @@ Shows an inline menu of the specified options and returns a [string](/types/stri
 
 If the "allow ignore" parameter is set to **true**, the player can ignore the menu and interact with other objects. The menu is just closed then. If the "allow ignore" parameter is set to **false**, the player must choose one entry of the menu.
 
-Use the [show menu](/scripts/show_menu) script command for a popup menu.
+Use the [show menu](/scripts#show-menu) script command for a popup menu.
 
-The [Split](/functions/string/split) function can be useful to quickly get a list of options, whilst [switch](/scripts/switch) can be useful for dealing with the result. For example:
+The [Split](/functions/string/split) function can be useful to quickly get a list of options, whilst [switch](/scripts#switch) can be useful for dealing with the result. For example:
 
     options = Split("Red;Green;Blue;Yellow", ";")
     ShowMenu ("What is your favourite colour?", options, false) {

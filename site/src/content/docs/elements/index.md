@@ -83,7 +83,7 @@ Creates a function.
 
 If no type is specified, the function does not return a value.
 
-If the function does return a value, the type should be one of the valid [Attribute Types](/types/). Return a value within the function using the [return](/scripts/return) command.
+If the function does return a value, the type should be one of the valid [Attribute Types](/types/). Return a value within the function using the [return](/scripts#return) command.
 
 If the function takes parameters, the parameters should be specified as a comma-delimited list.
 
@@ -99,7 +99,7 @@ For example:
 
 **parameters:** These are the values (if any) passed into the function. You give them names, and when the function is called, those parameters must be set by giving values in the function call (e.g. MyFunction(a, b) ). The values are mapped to the parameters in the order they are given. If your function does not take input parameters, then you can omit this or leave it as an empty string.
 
-**type:** This is the return type of the function (the value passed out), if the function returns a value. Some functions do, and some don't. If you use a "[return](/scripts/return)" statement in your function to send a value back to the caller, then you need to specify the return type, so that Quest knows what type the function is expected to return. If your function does not return a value, then you can omit this or leave it an empty string.
+**type:** This is the return type of the function (the value passed out), if the function returns a value. Some functions do, and some don't. If you use a "[return](/scripts#return)" statement in your function to send a value back to the caller, then you need to specify the return type, so that Quest knows what type the function is expected to return. If your function does not return a value, then you can omit this or leave it an empty string.
 
 Quest will object if there is a return statement, but no type specified; or if there is a type specified, but no return statement.
 
@@ -479,7 +479,7 @@ This means we can specify an alt attribute without specifying the type:
 
 Creates a delegate type. Delegates are script properties that can be called like functions. The delegate tag defines the function signature (the parameters passed to the function and its return type, if any), and then an object can provide its own implementation of the delegate function.
 
-You can run delegate functions on objects using the [rundelegate](/scripts/rundelegate) command (if the delegate does not return a value) or using the [RunDelegateFunction](/functions/rundelegatefunction) function (for delegates that do return a value).
+You can run delegate functions on objects using the [rundelegate](/scripts#rundelegate) command (if the delegate does not return a value) or using the [RunDelegateFunction](/functions/rundelegatefunction) function (for delegates that do return a value).
 
 See [Using Delegates](/types/using_delegates)
 

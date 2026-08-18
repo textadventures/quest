@@ -11,7 +11,7 @@ Using Quest's Built-in Script Commands to Add MP3 or WAV Files
 
 ### Adding Sounds
 
-You can add sounds to your game using the [`play sound`](/scripts/play_sound) script command. 
+You can add sounds to your game using the [`play sound`](/scripts#play-sound) script command. 
 
 ![](/images/play_a_sound.jpg)
 
@@ -29,7 +29,7 @@ Also note that Quest will only play one sound at a time when using the `play sou
 
 ### Stopping Sounds
 
-Sometimes, you need to stop a sound.  For instance the “loop” option will cause the sound to continue playing until the [```stop sound```](/scripts/stop_sound) script command is run. 
+Sometimes, you need to stop a sound.  For instance the “loop” option will cause the sound to continue playing until the [```stop sound```](/scripts#stop-sound) script command is run. 
 
 ![](/images/stop_sound.jpg)
 

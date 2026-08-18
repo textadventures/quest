@@ -58,7 +58,7 @@ Upgrading from Quest 5.3 to Quest 5.4
 -   [GetTaggedName](/functions/corelibrary/gettaggedname) is removed from Core.aslx
 -   [GetDisplayNameLink](/functions/corelibrary/getdisplaynamelink) no longer takes a verbs parameter
 -   new function [SetAlignment](/functions/corelibrary/setalignment)
--   the [insert](/scripts/insert) script command is obsolete, as you can directly write HTML with [msg](/scripts/msg)
+-   the [insert](/scripts#insert) script command is obsolete, as you can directly write HTML with [msg](/scripts#msg)
 -   the old text formatting XML is no longer relevant - use HTML instead. The only breaking change is there is no "color" tag in HTML.
 -   new "JS." calling method for JavaScript functions
 
@@ -74,9 +74,9 @@ You can open and edit your Quest 5.0 games in Quest 5.1 (but note that, once sav
 
 Please note that a few changes have been made to enable Quest games to be converted to Javascript (so they can run as stand-alone apps on iPhone, Android etc.). This means that some functions have been deprecated - this means that you can still use them, but I would encourage you to use the suggested replacements instead, particularly if you plan to convert your game into an app:
 
--   the [ShowMenu](/functions/showmenu) function is deprecated - use the new [show menu](/scripts/show_menu) script command instead
--   the [WaitForKeyPress](/functions/corelibrary/waitforkeypress) (and "Wait" [request](/scripts/request)) is deprecated - use the new [wait](/scripts/wait) script command instead
--   the [Ask](/functions/ask) function is deprecated - use the new [ask](/scripts/ask) script command instead
+-   the [ShowMenu](/functions/showmenu) function is deprecated - use the new [show menu](/scripts#show-menu) script command instead
+-   the [WaitForKeyPress](/functions/corelibrary/waitforkeypress) (and "Wait" [request](/scripts#request)) is deprecated - use the new [wait](/scripts#wait) script command instead
+-   the [Ask](/functions/ask) function is deprecated - use the new [ask](/scripts#ask) script command instead
 -   the + and - operators on lists are deprecated - use the new [ListCombine](/functions/listcombine) and [ListExclude](/functions/listexclude) functions instead
 
 Some minor behaviour changes:
@@ -89,8 +89,8 @@ New features:
 -   there is a new "Simple Mode" in the Editor, which can be toggled on and off from the Tools menu. This hides away much of Quest's more advanced functionality, so is useful for beginners, or if you don't need to use the more advanced features.
 -   you can now add, view and edit comments in the script editor
 -   [walkthrough assertions](/howto/scripting/using_walkthroughs#Assertions) let you test the value of expressions when a walkthrough is running
--   new [while](/scripts/while) script command
--   [for](/scripts/for) has a new "step" parameter
+-   new [while](/scripts#while) script command
+-   [for](/scripts#for) has a new "step" parameter
 -   new [ObjectLink](/functions/corelibrary/objectlink) and [CommandLink](/functions/corelibrary/commandlink) functions make it easier to output hyperlinks within a script
 
 Other changes:
@@ -100,9 +100,9 @@ Other changes:
 -   new [onexit](/attributes/onexit) script can be run when leaving a room
 -   new [GetAllChildObjects](/functions/getallchildobjects) function, and the related [GetDirectChildren](/functions/getdirectchildren) function has been moved from Core.aslx to become a Quest function
 -   new [IsDefined](/functions/isdefined) function
--   the [create exit](/scripts/create_exit) script command now lets you specify a name for the exit object
+-   the [create exit](/scripts#create-exit) script command now lets you specify a name for the exit object
 -   new [IsGameRunning](/functions/isgamerunning) function
--   new [request](/scripts/request) types RequestSave and SetPanelContents
+-   new [request](/scripts#request) types RequestSave and SetPanelContents
 -   new optional cacheID parameter for regex functions [IsRegexMatch](/functions/isregexmatch), [Populate](/functions/populate), [GetMatchStrength](/functions/getmatchstrength)
 
 Upgrading from Quest 5.0 Beta Versions

@@ -22,5 +22,5 @@ Optionally:
 -   There may be a **GetDisplayAlias** function, taking one object parameter (called "obj"), which returns the name of an object to use in the "Places and Objects" lists.
 -   If an **UpdateStatusAttributes** function is defined, it will be run after timer scripts run
 -   As of v5.1, if a **FinishTurn** function is defined, it is run when a turn has finished (after running a command, handling an async menu selection etc., when there are no more pending scripts to run)
--   As of v5.4, if an **OutputText** function is defined, all text sent to the [msg](/scripts/msg) command will be sent through it, instead of text being printed directly.
+-   As of v5.4, if an **OutputText** function is defined, all text sent to the [msg](/scripts#msg) command will be sent through it, instead of text being printed directly.
 

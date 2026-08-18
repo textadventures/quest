@@ -196,7 +196,7 @@ Useful Functions
 
 ### Creating exits on the fly
 
-Sometimes the tricking of setting a exit to be visible is not going to work, and you really need to create an exit. Quest has the [create exit](/scripts/create_exit) script command for just this purpose. If you want to create an exit going the other way at the same time, we have the [CreateBiExits](/functions/createbiexits) function.
+Sometimes the tricking of setting a exit to be visible is not going to work, and you really need to create an exit. Quest has the [create exit](/scripts#create-exit) script command for just this purpose. If you want to create an exit going the other way at the same time, we have the [CreateBiExits](/functions/createbiexits) function.
 
 ### Finding an exit
 
