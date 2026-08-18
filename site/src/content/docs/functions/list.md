@@ -7,8 +7,11 @@ sidebar:
 Functions for manipulating lists. For a discussion on how to use lists, see [here](/howto/scripting/using_lists).
 
 ## Contains
-
+```
 Contains (object parent, object child)
+```
+
+<a href="/functions/hardcoded" class="qv-badge">hard-coded</a>
 
 Returns a [boolean](/types#boolean) - **true** if the child object is contained by the parent. This doesn't necessarily mean that there is a direct parent-child relationship - for example if object A has parent B, and B has parent C, then
 
@@ -16,11 +19,10 @@ Returns a [boolean](/types#boolean) - **true** if the child object is contained 
 
 will return **true**.
 
-NOTE: This is a [hard-coded function](/functions/hardcoded).
-
 ## FilterByAttribute
-
+```
 FilterByAttribute (objectlist list, string attribute name, any value)
+```
 
 Returns a new object list containing only the objects in the given list for which the named attribute has the given value (which can be of any type).
 
@@ -31,8 +33,9 @@ See also [FilterByNotAttribute](#filterbynotattribute).
 You can omit the last value, and it will be assumed to be `null`.
 
 ## FilterByNotAttribute
-
+```
 FilterByNotAttribute (objectlist list, string attribute name, any value)
+```
 
 Returns a new object list containing only the objects in the given list for which the named attribute does _not_ have the given value (which can be of any type).
 
@@ -43,14 +46,16 @@ See also [FilterByAttribute](#filterbyattribute).
 You can omit the last value, and it will be assumed to be `null`.
 
 ## FilterByType
-
+```
 FilterByType (objectlist list, string typename)
+```
 
 Returns a new object list containing only the objects in the given list that are of the given type.
 
 ## IndexOf
-
+```
 IndexOf (list, anything)
+```
 
 Returns an [int](/types#int) - the position of the given element in the list, or -1 if it is not in the list. Note that lists count from zero.
 
@@ -65,16 +70,18 @@ msg(IndexOf(list, "Five")
 ```
 
 ## ListCombine
-
+```
 ListCombine (list, list)
+```
+
+<a href="/functions/hardcoded" class="qv-badge">hard-coded</a>
 
 Combines two [stringlists](/types#stringlist) or two [objectlists](/types#objectlist) or two generic lists (can cannot add a list of one type to another).
 
-NOTE: This is a [hard-coded function](/functions/hardcoded).
-
 ## ListCompact
-
+```
 ListCompact (any list list)
+```
 
 Returns a [list](/types#list), based on the given list, but with any repeated entries removed and any entries that are null removed. The canonical use is when combining two lists that might have some entries in common:
 
@@ -83,70 +90,78 @@ combinedlist = ListCompact (list1 + list2)
 ```
 
 ## ListContains
-
+```
 ListContains (list, any type item)
+```
+
+<a href="/functions/hardcoded" class="qv-badge">hard-coded</a>
 
 Returns a [boolean](/types#boolean) - **true** if the list contains the item.
 
-NOTE: This is a [hard-coded function](/functions/hardcoded).
-
 ## ListCount
-
+```
 ListCount (list)
+```
+
+<a href="/functions/hardcoded" class="qv-badge">hard-coded</a>
 
 Returns an [int](/types#int) - the number of items in the list.
 
-NOTE: This is a [hard-coded function](/functions/hardcoded).
-
 ## ListExclude
-
+```
 ListExclude (list, any type item or list)
+```
+
+<a href="/functions/hardcoded" class="qv-badge">hard-coded</a>
 
 Returns a copy of the [stringlist](/types#stringlist) or [objectlist](/types#objectlist), with the specified item removed, or with all the items removed if the second parameter is a list.
 
 Note that this is different to the [list remove](/scripts#list-remove) script command, as that removes the item from the original list. ListExclude by contrast returns a copy of the list - the original list is unaffected.
 
-NOTE: This is a [hard-coded function](/functions/hardcoded).
-
 ## ListItem
-
+```
 ListItem (list, int index)
+```
+
+<a href="/functions/hardcoded" class="qv-badge">hard-coded</a>
 
 Returns a [string](/types#string) or an [object](/types#object), depending on whether the list is a [stringlist](/types#stringlist) or an [objectlist](/types#objectlist). Gets an item from the list by index. The index is zero-based. (The first item is at index 0, the second is at index 1, etc.)
 
 Usually you will know the type of list that you're passing in, so you should use the [StringListItem](#stringlistitem) or [ObjectListItem](#objectlistitem) functions instead.
 
-NOTE: This is a [hard-coded function](/functions/hardcoded).
-
 ## NewList
-
+```
 NewList ()
+```
+
+<a href="/functions/hardcoded" class="qv-badge">hard-coded</a>
 
 Returns an empty [list](/types#list). The list can contain any type of data, or a mixture - for example, both objects and strings.
 
 If the list will only contain one type of data (as will usually be the case), you should use [NewStringList](#newstringlist) or [NewObjectList](#newobjectlist) instead.
 
-NOTE: This is a [hard-coded function](/functions/hardcoded).
-
 ## NewObjectList
-
+```
 NewObjectList ()
+```
+
+<a href="/functions/hardcoded" class="qv-badge">hard-coded</a>
 
 Returns an empty [objectlist](/types#objectlist).
 
-NOTE: This is a [hard-coded function](/functions/hardcoded).
-
 ## NewStringList
-
+```
 NewStringList ()
+```
+
+<a href="/functions/hardcoded" class="qv-badge">hard-coded</a>
 
 Returns an empty [stringlist](/types#stringlist).
 
-NOTE: This is a [hard-coded function](/functions/hardcoded).
-
 ## ObjectListCompact
-
+```
 ObjectListCompact (objectlist list)
+```
 
 Returns an [objectlist](/types#list), based on the given list, but with any repeated entries removed and any entries that are null removed. The canonical use is when combining two lists that might have some entries in common:
 
@@ -155,8 +170,11 @@ combinedlist = ObjectListCompact (list1 + list2)
 ```
 
 ## ObjectListItem
-
+```
 ObjectListItem (objectlist, int index)
+```
+
+<a href="/functions/hardcoded" class="qv-badge">hard-coded</a>
 
 Returns the [object](/types#object) from the list by the specified index. The index is zero-based. (The first item is at index 0, the second is at index 1, etc.)
 
@@ -173,11 +191,12 @@ Now show the name of the second item in the list. Note that the second object is
 
 This could be used with [GetRandomInt](/functions/random#getrandomint) to remove an item from the players inventory ([ScopeInventory](/functions/scope#scopeinventory)) and place it into the current room (for example, if you're creating a poltergeist or thief).
 
-NOTE: This is a [hard-coded function](/functions/hardcoded).
-
 ## ObjectListSort
-
+```
 ObjectListSort (objectlist list, string attributes ...)
+```
+
+<a href="/functions/hardcoded" class="qv-badge">hard-coded</a>
 
 Returns an [objectlist](/types#objectlist) - a copy of the input objectlist, sorted in order of the values of the first specified attribute (and then optionally by any subsequently specified attributes).
 
@@ -209,54 +228,59 @@ If you try to sort by object, script, list or dictionary attribute you will get 
      
 To return the values in reverse order, use [ObjectListSortDescending](#objectlistsortdescending).
 
-NOTE: This is a [hard-coded function](/functions/hardcoded).
-
 ## ObjectListSortDescending
-
+```
 ObjectListSortDescending (objectlist list, string attributes ...)
+```
+
+<a href="/functions/hardcoded" class="qv-badge">hard-coded</a>
 
 Returns the reversed version of [ObjectListSort](#objectlistsort) - see that page for usage.
 
-NOTE: This is a [hard-coded function](/functions/hardcoded).
-
 ## ObjectListToStringList
-
+```
 ObjectListToStringList (objectlist list, string attribute name)
+```
 
 Returns a new string list containing the values or the names attribute for each object in the given list. The value of the attribute must be a string or it will not be added. If an object does not have that attribute or it is not a string, then it will be missing from the list, so the string list that is returned could well be shorter than the object list.
 
 ## RemoveSceneryObjects
-
+```
 RemoveSceneryObjects(objectlist)
+```
 
 Returns a list where all scenery objects are removed from the list **objectlist**
 
 ## StringListItem
-
+```
 StringListItem (stringlist, int index)
+```
+
+<a href="/functions/hardcoded" class="qv-badge">hard-coded</a>
 
 Returns the [string](/types#string) from the list by the specified index. The index is zero-based. (The first item is at index 0, the second is at index 1, etc.)
 
 You can use the [ListItem](#listitem) function if you don't know the type of the list.
 
-NOTE: This is a [hard-coded function](/functions/hardcoded).
-
 ## StringListSort
-
+```
 StringListSort (stringlist list)
+```
+
+<a href="/functions/hardcoded" class="qv-badge">hard-coded</a>
 
 Returns a [stringlist](/types#stringlist) - a copy of the input stringlist, sorted alphabetically.
 
 To return the values in reverse order, use [StringListSortDescending](#stringlistsortdescending).
 
-NOTE: This is a [hard-coded function](/functions/hardcoded).
-
 ## StringListSortDescending
-
+```
 StringListSortDescending (stringlist list)
+```
+
+<a href="/functions/hardcoded" class="qv-badge">hard-coded</a>
 
 Returns a [stringlist](/types#stringlist) - a copy of the input stringlist, reverse sorted alphabetically.
 
 To return the values in ascending order, use [StringListSort](#stringlistsort).
 
-NOTE: This is a [hard-coded function](/functions/hardcoded).

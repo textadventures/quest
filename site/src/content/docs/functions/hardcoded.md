@@ -6,7 +6,6 @@ sidebar:
 
 Quest functions fall into two types, hard-coded and library. Generally when you are created a text adventure, you will see no difference, but just occasionally it might be significant.
 
-
 ### Library Functions
 
 Most to the Quest functions are written in Quest's own coding language. These library functions are just like functions you create yourself, the only difference is that the work has been done for you. 

@@ -4,25 +4,29 @@ sidebar:
   order: 12
 ---
 
-
-
 ## CurrentDateUTC
-
+```
 CurrentDateUTC()
+```
+
+<a href="/functions/hardcoded" class="qv-badge">hard-coded</a>
 
 Returns the [int](/types#int) value of the current Unix epoch time in UTC. 
 
 Information on the Unix timestamp can be found at [Wikipedia](https://en.wikipedia.org/wiki/Unix_time)
 
-NOTE: This is a [hard-coded function](/functions/hardcoded).
-
 ## Eval
-
+```
 Eval (string expression, dictionary parameters)
+```
 
 or
 
-    Eval (string expression)
+```
+Eval (string expression)
+```
+
+<a href="/functions/hardcoded" class="qv-badge">hard-coded</a>
 
 Returns the result of the specified expression.
 
@@ -37,33 +41,37 @@ Example:
 
 This will result in "150" being printed.
 
-NOTE: This is a [hard-coded function](/functions/hardcoded).
-
 ## GetFileData
-
+```
 GetFileData (string file name)
+```
+
+<a href="/functions/hardcoded" class="qv-badge">hard-coded</a>
 
 Loads the specified file and returns a [string](/types#string) containing its contents.
 
-NOTE: This is a [hard-coded function](/functions/hardcoded).
-
 ## GetFileURL
-
+```
 GetFileURL(string filename)
+```
+
+<a href="/functions/hardcoded" class="qv-badge">hard-coded</a>
 
 Returns a [string](/types#string) containing the full path to the specified file. The file must exist in the same directory as the game. This can be used to access a game's resources such as sounds and pictures, and pass their URLs to the player UI.
 
-NOTE: This is a [hard-coded function](/functions/hardcoded).
-
 ## Log
-
+```
 Log (string text)
+```
 
 Writes the [string](/types#string) **text** to the browser's JavaScript/developer console. This is intended for debugging during game development, not as a player-facing feature.
 
 ## RunDelegateFunction
-
+```
 RunDelegateFunction (object, string attribute name, any type parameters ...)
+```
+
+<a href="/functions/hardcoded" class="qv-badge">hard-coded</a>
 
 Return type is specified by the delegate definition.
 
@@ -71,4 +79,3 @@ Runs the specified delegate function on an object.
 
 See [Using Delegates](/advanced-topics/using_delegates)
 
-NOTE: This is a [hard-coded function](/functions/hardcoded).

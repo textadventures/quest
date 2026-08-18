@@ -33,8 +33,9 @@ To set a variable to a script:
     variable => { script } 
 
 ## ask
-
-    ask (string question) {script}
+```
+ask (string question) {script}
+```
 
 Pops up a prompt for the user to choose Yes or No as the answer to the specified question, and then runs the nested script.
 
@@ -49,28 +50,36 @@ The nested script can check the "result" boolean variable to see the user's resp
           }
 
 ## create
-
-    create (string name)
+```
+create (string name)
+```
 
 or
 
-    create (string name, string type)
+```
+create (string name, string type)
+```
 
 Creates an object with the specified name. You can subsequently access the object using the [GetObject](/functions/objects#getobject) function, or just use its name directly in an expression.
 
 If you specify a type, the object created will be of that type. The command only accepts one type name - if you want the new object to inherit multiple types, you could create one type which inherits all of those types, and specify that here.
 
 ## create exit
-
-    create exit (string alias, object from, object to)
-
-or
-
-    create exit (string alias, object from, object to, string type)
+```
+create exit (string alias, object from, object to)
+```
 
 or
 
-    create exit (string name, string alias, object from, object to, string type)
+```
+create exit (string alias, object from, object to, string type)
+```
+
+or
+
+```
+create exit (string name, string alias, object from, object to, string type)
+```
 
 Creates an exit with the specified alias (usually the direction, such as "north") between two objects/rooms.
 
@@ -85,8 +94,9 @@ You can also specify the object name to use. If not specified, an id will be aut
 It is usually easier to make an exit in the normal way in the editor, but to set it so it is not visible; instead of then creating an exit during game play, you set this exit to be visible.
 
 ## create timer
-
-    create timer (string name)
+```
+create timer (string name)
+```
 
 Creates a timer with the specified name. You can then use `GetObject` to get the timer, and assign values to it. Here is a trivial example that will produce a timer that will tell you its name every 10 seconds:
 
@@ -104,8 +114,9 @@ EnableTimer(o)
 It is generally easier to create the timer in the editor, but have it disabled, and then enable it when required.
 
 ## create turnscript
-
-    create turnscript (string name)
+```
+create turnscript (string name)
+```
 
 Creates a turnscript with the specified name. You can then use `GetObject` to get the turn script, and assign values to it. Here is a trivial example that will produce a turnscript that will tell you its name every turn:
 
@@ -119,30 +130,34 @@ Creates a turnscript with the specified name. You can then use `GetObject` to ge
 It is generally easier to create the turn script in the editor, but have it disabled, and then enable it when required.
 
 ## destroy
-
-    destroy (string name)
+```
+destroy (string name)
+```
 
 Destroys the specified object. Note that this takes the object's name, not the object itself, as a parameter.
 
 ## dictionary add
-
-    dictionary add (dictionary, string key, any type item)
+```
+dictionary add (dictionary, string key, any type item)
+```
 
 Adds an item to the specified dictionary.
 
 See [Using Dictionaries](/howto/scripting/using_dictionaries)
 
 ## dictionary remove
-
-    dictionary remove (dictionary, string key)
+```
+dictionary remove (dictionary, string key)
+```
 
 Removes the specified item from the dictionary.
 
 See [Using Dictionaries](/howto/scripting/using_dictionaries)
 
 ## do
-
-    do (object, string attribute name)
+```
+do (object, string attribute name)
+```
 
 Runs an object's script attribute.
 
@@ -151,26 +166,30 @@ Runs an object's script attribute.
 Runs an object's script attribute, passing in parameters via dictionary. The key/value pairs in the dictionary will be turned into local variables for the script. The special variable "this" can be used in the script to reference the object.
 
 ## error
-
-    error (string message)
+```
+error (string message)
+```
 
 Stops running the current script and raises the specified error message.
 
 ## finish
-
-    finish
+```
+finish
+```
 
 Finish the game.
 
 ## firsttime
-
-    firsttime { script1 } [ otherwise { script2 } ] 
+```
+firsttime { script1 } [ otherwise { script2 } ]
+```
 
 runs **script1** if it is the first call, otherwise **script2** is executed
 
 ## for
-
-    for (iterator variable, int from, int to) { script }
+```
+for (iterator variable, int from, int to) { script }
+```
 
 There is an optional "step" parameter:
 
@@ -191,7 +210,6 @@ Generally, `foreach` offers a neater way of going through a list, but `for` can 
       msg(i + ": " + Mid(s, i, 1))
     }
 
-
 _Note:_ The iterator variable should be a local variable, not an attribute. For example, consider this code, which uses an attribute of the game object:
 
     for (game.i, 1, 5) {
@@ -203,8 +221,9 @@ If `game.i` already exists, the loop will run 5 times as expected, but the value
 See [Using Lists](/howto/scripting/using_lists)
 
 ## foreach
-
-    foreach (iterator variable, list) { script }
+```
+foreach (iterator variable, list) { script }
+```
 
 Run a script for each item in a list. If the list is a dictionary, the loop iterates over the dictionary keys.
 
@@ -213,8 +232,9 @@ _Note:_ Do not use an attribute as the iterator variable (see [here](#for)).
 For more on how and why to use `foreach`, see [Using Lists](/howto/scripting/using_lists)
 
 ## get input
-
-    get input {script}
+```
+get input {script}
+```
 
 Waits for the user to type some text, then runs the nested script.
 
@@ -230,8 +250,9 @@ Example:
 For more information see [here](/howto/tasks/asking_a_question).
 
 ## if
-
-    if (boolean expression) { script } [ else if ... ]* [ else { script } ]
+```
+if (boolean expression) { script } [ else if ... ]* [ else { script } ]
+```
 
 Conditionally runs the script. If the condition fails, the `else` script is run, if present. Multiple `if/else`s can be put together. Some examples:
 
@@ -280,16 +301,18 @@ if (result > 10 and not player.is_female) {
 ```
 
 ## insert
-
-    insert (string filename)
+```
+insert (string filename)
+```
 
 Outputs the contents of the specified HTML file.
 
 **Not supported in Quest 5.4 or later.**
 
 ## invoke
-
-    invoke (script)
+```
+invoke (script)
+```
 
 Runs a script.
 
@@ -298,30 +321,34 @@ Runs a script.
 Runs a script, passing in parameters via dictionary. The key/value pairs in the dictionary will be turned into local variables for the script. See also the [do](#do) script command.
 
 ## list add
-
-    list add (list, any type item)
+```
+list add (list, any type item)
+```
 
 Adds an item to a list.
 
 See [Using Lists](/howto/scripting/using_lists)
 
 ## list remove
-
-    list remove (list, any type item)
+```
+list remove (list, any type item)
+```
 
 Removes an item from a list.
 
 See [Using Lists](/howto/scripting/using_lists)
 
 ## msg
-
-    msg (string message)
+```
+msg (string message)
+```
 
 Prints the specified text.
 
 ## on ready
-
-    on ready { script } 
+```
+on ready { script }
+```
 
 Runs the nested script when any callbacks have finished.
 
@@ -334,20 +361,23 @@ Generally there should be no need to use this command in your own games, as of c
 Note that this does not wait for scripts attached to functions to work (such as `Ask` and `ShowMenu`). see [here](/howto/scripting/blocks_and_scripts)
 
 ## picture
-
-    picture (string filename)
+```
+picture (string filename)
+```
 
 Outputs the specified picture file.
 
 ## play sound
-
-    play sound (string file, boolean wait, boolean loop)
+```
+play sound (string file, boolean wait, boolean loop)
+```
 
 Plays a sound file (WAV or MP3 format), which must be in the same directory as the game file. If the parameter **wait** is "true", the script will stop until the sound has finished. If the parameter **loop** is "true", the sound will loop.
 
 ## request
-
-    request (request name, string parameter)
+```
+request (request name, string parameter)
+```
 
 Raises a UI request. The request name must be specified directly - it is not a string expression. For example:
 
@@ -359,11 +389,9 @@ The `request` script command is really a throw-back to the original Quest 5.0 in
 
 Valid request names and parameters (and alternatives):
 
-
 _Quit_  
 
 Quits the game. Parameter is ignored. Use `finish` instead.
-
 
 _UpdateLocation_
 
@@ -373,7 +401,6 @@ Updates the location bar at the top of the screen with the parameter text. Use J
 JS.updateLocation("The kitchen")
 ```
 
-
 _GameName_
 
 Sets the name of the game. Do this instead:
@@ -382,31 +409,25 @@ Sets the name of the game. Do this instead:
 JS.setGameName("My Cool Game")
 ```
 
-
 _FontName_
 
 (Obsolete as of Quest 5.4) Sets the font name. Use [SetFontName](/functions/user-interface#setfontname) instead.
-
 
 _FontSize_
 
 (Obsolete as of Quest 5.4) Sets the font size. Use [SetFontSize](/functions/user-interface#setfontsize) instead.
 
-
 _Background_
 
 Sets the background to the specified HTML colour. Use [SetBackgroundColour](/functions/user-interface#setbackgroundcolour) instead.
-
 
 _Foreground_
 
 Sets the foreground to the specified HTML colour. Use [SetForegroundColour](/functions/user-interface#setforegroundcolour) instead.
 
-
 _LinkForeground_
 
 Sets the link foreground to the specified HTML colour. As of 5.7.2, use `SetLinkForegroundColour` instead.
-
 
 _RunScript_
 
@@ -416,16 +437,13 @@ Runs the specified JavaScript function. A far better way is to use the JS object
 JS.myCustomFunction(15, "some string)
 ```
 
-
 _SetStatus_
 
 Sets the text for the status area on the right of the screen (under "Inventory"). If blank, the status area is removed. This is best done using [status attributes](/status_attributes).
 
-
 _ClearScreen_
 
 Clears the screen. Parameter is ignored. Use `ClearScreen` instead.
-
 
 _PanesVisible_  
 
@@ -436,11 +454,9 @@ JS.panesVisible(true)
 JS.panesVisible(false)
 ```
 
-
 _ShowPicture_  
 
 Shows the specified picture file from the game directory. Use [picture](#picture) instead.
-
 
 _Show_
 
@@ -461,11 +477,9 @@ JS.uiHide("#compassAccordion")
 
 For the inventory, do `#inventoryLabel` and `#inventoryAccordion`; for the places and objects pane, `#placesObjectsLabel` and `#placesObjectsAccordion`. For the custom status pane and the custom command pane, use `#customStatusPane` and `#commandPane` respectively (these have only one part).
 
-
 _Hide_
 
 Turns off an interface element. Valid elements are "Panes", "Location" and "Command". Use `JS.uiHide(element)` instead (see above for details).
-
 
 _SetCompassDirections_
 
@@ -477,16 +491,13 @@ JS.setCompassDirections("northwest;north;northeast;west;east;southwest;whatever;
 
 These names will also then not appear as exits in the "Places and Objects" list. The default is as shown in the example. The compass directions must be specified in the same order and there must be the same number of elements in the list. The exit in the compass rose will only be active if the alias of the exit matches the text you set here.
 
-
 _Pause_  
 
 (Obsolete as of Quest 5.5) Pauses the game for the specified number of milliseconds.
 
-
 _Wait_
 
 Waits for the player to press a key. The parameter is ignored. Deprecated as of Quest 5.1 and unsupported as of Quest 5.4 - use the [wait](#wait) script command instead.
-
 
 _SetInterfaceString_
 
@@ -506,7 +517,6 @@ Either way, valid element names are:
 -   EmptyListLabel (default "(empty)")
 -   NothingSelectedLabel (default "(nothing selected)")
 
-
 _RequestSave_
 
 Requests the UI to save the game - this may bring up a "Save As" dialog if the user has not yet saved their progress. Parameter is ignored. Use:
@@ -515,16 +525,13 @@ Requests the UI to save the game - this may bring up a "Save As" dialog if the u
 requestsave()
 ```
 
-
 _SetPanelContents_
 
 Sets the static panel HTML contents. Use `SetFramePicture` and `ClearFramePicture` instead.
 
-
 _Log_
 
 Log the specified text. Use [Log](/functions/general#log) instead.
-
 
 _Speak_  
 
@@ -535,24 +542,27 @@ RequestSpeak("Hello World")
 ```
 
 ## return
-
-    return (any type result)
+```
+return (any type result)
+```
 
 Sets the return value of a function, and stops execution of the function immediately.
 
 This command should only be used within a [\<function\> element](/elements#function).
 
 ## rundelegate
-
-    rundelegate (object, string attribute name, any type parameters ... )
+```
+rundelegate (object, string attribute name, any type parameters ... )
+```
 
 Runs an object's delegate implementation script attribute, with the specified parameters.
 
 See [Using Delegates](/advanced-topics/using_delegates)
 
 ## set
-
-    set (object, string attribute name, any type value)
+```
+set (object, string attribute name, any type value)
+```
 
 Sets a named attribute on the object.
 
@@ -563,8 +573,9 @@ Note that you can also use this syntax to do the same thing:
 You only need to use the "set" command if you are constructing the attribute name using an expression.
 
 ## show menu
-
-    show menu (string caption, stringdictionary or stringlist options, boolean allow cancel) {script}
+```
+show menu (string caption, stringdictionary or stringlist options, boolean allow cancel) {script}
+```
 
 Shows a popup menu of options and then runs the nested script. The script can access the variable "result" which contains the result of the user selection - if a dictionary of options is passed in, the key is returned. If a list of options is passed in, the list item is returned.
 
@@ -589,34 +600,39 @@ For an in-line menu, use the [ShowMenu](/functions/user-interface#showmenu) func
           }
 
 ## start transaction
-
-    start transaction (string command)
+```
+start transaction (string command)
+```
 
 Starts a transaction in the undo-logger for the specified command, and ends the previous transaction (if one was open).
 
 ## stop sound
-
-    stop sound
+```
+stop sound
+```
 
 Stops playing sounds.
 
 ## switch
-
-    switch (any type value) { case (any type value) { script } [ default { script } ] }
+```
+switch (any type value) { case (any type value) { script } [ default { script } ] }
+```
 
 Switch is used with one or more `case` statements and an optional `default` statement. It is used to test a variable or object attribute against 2 or more possible values; a shortcut instead of writing many `if` statements. 
 
 For more, see [here](/howto/tasks/multiple_choices_using_a_switch_script)
 
 ## undo
-
-    undo
+```
+undo
+```
 
 Moves the game state backwards one transaction.
 
 ## wait
-
-    wait {script}
+```
+wait {script}
+```
 
 Waits for the user to press a key or click on a "Continue" link, and then runs the nested script. Each successive part needs to be nested inside the one before, like this:
 
@@ -629,7 +645,8 @@ Waits for the user to press a key or click on a "Continue" link, and then runs t
       }
 
 ## while
-
-    while (expression) { script }
+```
+while (expression) { script }
+```
 
 Run a script while the given expression returns true.

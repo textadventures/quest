@@ -18,6 +18,7 @@ export default defineConfig({
             editLink: {
                 baseUrl: "https://github.com/textadventures/quest/edit/main/site/",
             },
+            customCss: ["./src/styles/custom.css"],
             sidebar: [
                 {
                     "label": "Start Here",

@@ -5,36 +5,40 @@ sidebar:
 ---
 
 ## Asc
-
+```
 Asc (string input)
+```
+
+<a href="/functions/hardcoded" class="qv-badge">hard-coded</a>
 
 The Asc function returns the character code of the input.
 
 Maps to the VB.net [Asc function](http://msdn.microsoft.com/en-us/library/zew1e4wc%28v=VS.80%29.aspx).
 
-NOTE: This is a [hard-coded function](/functions/hardcoded).
-
 ## CapFirst
-
+```
 CapFirst (input)
+```
+
+<a href="/functions/hardcoded" class="qv-badge">hard-coded</a>
 
 Returns a [string](/types#string) with the first character of the input capitalised.
 
-NOTE: This is a [hard-coded function](/functions/hardcoded).
-
 ## Chr
-
+```
 Chr (int input)
+```
+
+<a href="/functions/hardcoded" class="qv-badge">hard-coded</a>
 
 The Chr function returns the character with the character code of the input.
 
 Maps to the VB.net [Chr function](http://msdn.microsoft.com/en-us/library/613dxh46%28v=VS.80%29.aspx).
 
-NOTE: This is a [hard-coded function](/functions/hardcoded).
-
 ## Conjugate
-
+```
 Conjugate (object, string verb)
+```
 
 Returns the correct form of the verb for the given object, based on the "gender" attribute of the object. This allows authors to create responses neutral with respect to the object.
 
@@ -56,8 +60,9 @@ Conjugate (dog, "sit")
 See also [WriteVerb](#writeverb)
 
 ## Decimalise
-
+```
 Decimalise (int input, int places)
+```
 
 Returns a [string](/types#string) with the given number divided by 10^places and then displayed as a decimal. For example, if `places` is 2, the number is divided by 100, and then shown with two digits after the decimal point. If `places` is zero, the number is returns as a string (no decimal point).
 
@@ -73,8 +78,9 @@ Decimalise(1234, 0)
 ```
 
 ## DisplayMoney
-
+```
 DisplayMoney (int money)
+```
 
 Returns a [string](/types#string) that is the given number, formatted according to the string in game.moneyformat. This allows money to be printed consistently across your game.
 
@@ -125,8 +131,9 @@ It will throw an error if game.moneyformat is not set or not understood.
 The easiest way to set game.moneyformat, is to tick "Money" on the _Features_ tab of the game object, and to set the format on the _Player_ tab. If you do not want the built-in money status attribute displayed, untick "Money" on the _Features_ tab of the game object - the format will still be set, but money will not be shown as a status attribute.
 
 ## DisplayNumber
-
+```
 DisplayNumber (int input, string format)
+```
 
 Returns a [string](/types#string), the given number formatted. The format should consist of:
 
@@ -150,12 +157,17 @@ DisplayNumber(1234, "(3,3)")
 ```
 
 ## DynamicTemplate
-
+```
 DynamicTemplate (string  template name, object  object)
+```
 
 or
 
-    DynamicTemplate (string  template name, string  text)
+```
+DynamicTemplate (string  template name, string  text)
+```
+
+<a href="/functions/hardcoded" class="qv-badge">hard-coded</a>
 
 Returns a [string](/types#string) containing the requested text, based on the object or string passed in.
 
@@ -175,19 +187,19 @@ Now we could add a message expression to the script in an exit, something like:
 
 NOTE: As the script is defined in the *script* attribute of the *exit*, we use the "this" keyword to reference the current *exit* object
 
-NOTE: This is a [hard-coded function](/functions/hardcoded).
-
 ## EndsWith
-
+```
 EndsWith (string input, string ending)
+```
+
+<a href="/functions/hardcoded" class="qv-badge">hard-coded</a>
 
 Returns a [boolean](/types#boolean) - **true** if the input string finishes with the ending string.
 
-NOTE: This is a [hard-coded function](/functions/hardcoded).
-
 ## FormatList
-
+```
 FormatList (stringlist or object list, string joiner, string lastjoiner, string nothing)
+```
 
 Returns a [string](/types#string), listing the entries in the given list. For an object list, the GetDisplayName function is used to get an appropriate string. The last two entries in the list are separated by `lastjoiner`, whilst other entries are separated by `joiner`. If the list is empty the string string in `nothing` is returned.
 
@@ -202,12 +214,17 @@ Returns a [string](/types#string), listing the entries in the given list. For an
   
 
 ## GetMatchStrength
-
+```
 GetMatchStrength (string regex, string input)
+```
 
 There is also an optional cache ID parameter:
 
-    GetMatchStrength (string regex, string input, string cache ID)
+```
+GetMatchStrength (string regex, string input, string cache ID)
+```
+
+<a href="/functions/hardcoded" class="qv-badge">hard-coded</a>
 
 Returns an [int](/types#int) indicating how strongly the given input matches the regular expression.
 
@@ -231,51 +248,61 @@ The strength is used by the command handling functions in CoreCommands.aslx to d
 
 See also [IsRegexMatch](#isregexmatch), [Populate](/functions/internal-core#populate)
 
-NOTE: This is a [hard-coded function](/functions/hardcoded).
-
 ## Instr
-
+```
 Instr (string input, string search)
+```
 
 or
 
-    Instr (int start position, string input, string search)
+```
+Instr (int start position, string input, string search)
+```
+
+<a href="/functions/hardcoded" class="qv-badge">hard-coded</a>
 
 Returns an [int](/types#int) representing the character position of the search string within the input, or zero if it is not found.
 
 Maps to the VB.net [Instr function](http://msdn.microsoft.com/en-us/library/8460tsh1(VS.80).aspx).
 
-NOTE: This is a [hard-coded function](/functions/hardcoded).
-
 ## InstrRev
-
+```
 InstrRev (string input, string search)
+```
 
 or
 
-    InstrRev (int start position, string input, string search)
+```
+InstrRev (int start position, string input, string search)
+```
+
+<a href="/functions/hardcoded" class="qv-badge">hard-coded</a>
 
 Returns an [int](/types#int) representing the character position of the search string within the input, starting from the right side of the string.
 
 Maps to the VB.net [InstrRev function](http://msdn.microsoft.com/en-us/library/t2ekk41a%28v=VS.80%29.aspx).
 
-NOTE: This is a [hard-coded function](/functions/hardcoded).
-
 ## IsNumeric
-
+```
 IsNumeric (string input)
+```
+
+<a href="/functions/hardcoded" class="qv-badge">hard-coded</a>
 
 Returns a [boolean](/types#boolean) - **true** if the input is numeric (i.e. a string which can be converted into a number).
 
-NOTE: This is a [hard-coded function](/functions/hardcoded).
-
 ## IsRegexMatch
-
+```
 IsRegexMatch (string regex, string)
+```
 
 There is also an optional cache ID parameter:
 
-    IsRegexMatch (string regex, string, string cache ID)
+```
+IsRegexMatch (string regex, string, string cache ID)
+```
+
+<a href="/functions/hardcoded" class="qv-badge">hard-coded</a>
 
 Returns a [boolean](/types#boolean) - **true** if the string matches the specified regular expression.
 
@@ -283,67 +310,74 @@ Use a cache ID for improved performance if you repeatedly test strings against t
 
 See also [GetMatchStrength](#getmatchstrength), [Populate](/functions/internal-core#populate)
 
-NOTE: This is a [hard-coded function](/functions/hardcoded).
-
 ## Join
-
+```
 Join (stringlist input, string split character)
+```
+
+<a href="/functions/hardcoded" class="qv-badge">hard-coded</a>
 
 Returns a [string](/types#string) containing each element of the input, separated by the split character. This is the inverse of the [split](#split) function.
 
-NOTE: This is a [hard-coded function](/functions/hardcoded).
-
 ## LCase
-
+```
 LCase (string input)
+```
+
+<a href="/functions/hardcoded" class="qv-badge">hard-coded</a>
 
 Returns a [string](/types#string) - the lower-case version of the input.
 
-NOTE: This is a [hard-coded function](/functions/hardcoded).
-
 ## Left
-
+```
 Left (string input, int character count)
+```
+
+<a href="/functions/hardcoded" class="qv-badge">hard-coded</a>
 
 Returns a [string](/types#string) containing characters from the left of the input string.
 
 Maps to the VB.net [Left function](http://msdn.microsoft.com/en-US/library/y050k1wb(v=VS.80).aspx).
 
-NOTE: This is a [hard-coded function](/functions/hardcoded).
-
 ## LengthOf
-
+```
 LengthOf (string input)
+```
+
+<a href="/functions/hardcoded" class="qv-badge">hard-coded</a>
 
 Returns an [int](/types#int) containing the number of characters in the string.
 
-NOTE: This is a [hard-coded function](/functions/hardcoded).
-
 ## LTrim
-
+```
 LTrim (input)
+```
+
+<a href="/functions/hardcoded" class="qv-badge">hard-coded</a>
 
 The LTrim function removes spaces on the left side of a [string](/types#string).
 
-NOTE: This is a [hard-coded function](/functions/hardcoded).
-
 ## Mid
-
+```
 Mid (string input, int start position)
+```
 
 or
 
-    Mid (string input, int start position, int character count)
+```
+Mid (string input, int start position, int character count)
+```
+
+<a href="/functions/hardcoded" class="qv-badge">hard-coded</a>
 
 Returns a [string](/types#string) containing characters from the middle of the input string. The position counts from 1.
 
 Maps to the VB.net [Mid function](http://msdn.microsoft.com/en-us/library/05e63829(v=VS.90).aspx).
 
-NOTE: This is a [hard-coded function](/functions/hardcoded).
-
 ## PadString
-
+```
 PadString (string input, int length, string pad)
+```
 
 Returns a [string](/types#string) that has been padded to the given length with the given padding.
 
@@ -366,60 +400,70 @@ PadString(23, 4, 0)
 It will attempt to do it if the pad string is more than 1 character, but will be approximate. If the pad string is empty, it will throw an error.
 
 ## ProcessText
-
+```
 ProcessText (string)
+```
 
 Returns an [string](/types#string) - the result of passing the given string through the text processor. For details on what the text processor does, see [here](/howto/world/text_processor).
 
 ## Replace
-
+```
 Replace (string input, string old text, string new text)
+```
+
+<a href="/functions/hardcoded" class="qv-badge">hard-coded</a>
 
 Returns a [string](/types#string) where any text matching "old text" in the input has been replaced by "new text".
 
-NOTE: This is a [hard-coded function](/functions/hardcoded).
-
 ## ReverseDirection
-
+```
 ReverseDirection (string input)
+```
 
 Returns a [string](/types#string), the reverse direction of the given string, so "northwest" becomes "southeast", and "in" becomes "out" (or the equivalent for the language you areusing). Only works for the full name (not "nw" for example). Unrecognised strings are returned unaltered.
 
 ## Right
-
+```
 Right (string input, int character count)
+```
+
+<a href="/functions/hardcoded" class="qv-badge">hard-coded</a>
 
 Returns a [string](/types#string) containing characters from the right of the input string.
 
 Maps to the VB.net [Right function](http://msdn.microsoft.com/en-us/library/dxs6hz0a.aspx).
 
-NOTE: This is a [hard-coded function](/functions/hardcoded).
-
 ## RTrim
-
+```
 RTrim (input)
+```
+
+<a href="/functions/hardcoded" class="qv-badge">hard-coded</a>
 
 The RTrim function removes spaces on the right side of a [string](/types#string).
 
-NOTE: This is a [hard-coded function](/functions/hardcoded).
-
 ## SafeXML
-
+```
 SafeXML (string)
+```
+
+<a href="/functions/hardcoded" class="qv-badge">hard-coded</a>
 
 Returns an XML encoded version of the string that is safe for output (for example, replacing angle brackets with &amp;lt; and &amp;gt;).
 
-NOTE: This is a [hard-coded function](/functions/hardcoded).
-
 ## Spaces
-
+```
 Spaces (int)
+```
 
 Returns a [string](/types#string) - a number of spaces equal to the given number. This is useful because HTML will collapse a string of spaces into just one.
 
 ## Split
-
+```
 Split (string input, string split character)
+```
+
+<a href="/functions/hardcoded" class="qv-badge">hard-coded</a>
 
 Returns a [stringlist](/types#stringlist) where the input has been split into individual strings by the split character. Useful for turning a comma-separated string into a list of strings, for example.
 
@@ -432,19 +476,21 @@ These two lines are equivalent:
     list = Split("one;two;three;four", ";")
     list = Split("one;two;three;four")
 
-NOTE: This is a [hard-coded function](/functions/hardcoded).
-
 ## StartsWith
-
+```
 StartsWith (string input, string start)
+```
+
+<a href="/functions/hardcoded" class="qv-badge">hard-coded</a>
 
 Returns a [boolean](/types#boolean) - **true** if the input string begins with the start string.
 
-NOTE: This is a [hard-coded function](/functions/hardcoded).
-
 ## Template
-
+```
 Template (string template name)
+```
+
+<a href="/functions/hardcoded" class="qv-badge">hard-coded</a>
 
 Returns a [string](/types#string) containing the text for the requested template.
 
@@ -452,41 +498,44 @@ You can create a template in your ASLX file with a [\<template\> element](/eleme
 
 See [Changing templates](/howto/world/changing_templates)
 
-NOTE: This is a [hard-coded function](/functions/hardcoded).
-
 ## ToRoman
-
+```
 ToRoman (int)
+```
 
 Returns a [string](/types#string) - the given number in Roman numerals (i.e., I, II, III...). Good for numbers from 1 to 3999 (the Romans had no zero or negative numbers, this will produce an empty string; for high numbers, it will just add more and more Ms).
 
 ## ToWords
-
+```
 ToWords (int)
+```
 
 Returns a [string](/types#string) - the given integer in word form (i.e., one, two...). Numbers outside the range -1999 to 1999 are returned as the digits, but in a string (eg "2000").
 
 This function is part of English.aslx, and is currently only available in English. We would welcome any code for other languages, to be added to later versions of Quest.
 
 ## Trim
-
+```
 Trim (input)
+```
+
+<a href="/functions/hardcoded" class="qv-badge">hard-coded</a>
 
 The Trim function removes spaces on both sides of a [string](/types#string).
 
-NOTE: This is a [hard-coded function](/functions/hardcoded).
-
 ## UCase
-
+```
 UCase (string input)
+```
+
+<a href="/functions/hardcoded" class="qv-badge">hard-coded</a>
 
 Returns a [string](/types#string) - the upper-case version of the input.
 
-NOTE: This is a [hard-coded function](/functions/hardcoded).
-
 ## WriteVerb
-
+```
 WriteVerb(obj, verb)
+```
 
 Returns the correct form of the verb for the given object, based on the "gender" attribute of the object, together with the object name, capitalised. This allows authors to create responses neutral with respect to the object.
 
