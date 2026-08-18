@@ -8,9 +8,81 @@ Unit testing is a standard procedure in software development; the coder makes an
 
 A unit test, then, is a bit of code that runs a method or function and then tests the output or state against expected values. Generally a developer will run a whole set of unit tests (often called a test suite) from one command or click of a button, and any that do not give the expected results are flagged. The test suite can be run at regular intervals to ensure recent changes have not messed up systems that previously worked.
 
-Quest supports unit testing too. This is most applicable to libraries (and really it is  dubious if it is worth the effort unless you plan to release the library). You can have your game in one file and your unit tests in another, and both use the same set of libraries. With that in mind, this is not a library file, but a game file. To use it, add _your_ library to this file, and then add your tests to this game file.
+Quest supports unit testing too. This is most applicable to libraries (and really it is dubious if it is worth the effort unless you plan to release the library). You can have your game in one file and your unit tests in another, and both use the same set of libraries. With that in mind, this is not a library file, but a game file. To use it, add _your_ library to this file, and then add your tests to this game file.
 
-[unit_test.aslx](util/unit_test.aslx)
+There's no ready-made test-game file to download for this - instead, add each of the following functions to your test game (see [How to copy-and-paste code](/howto/scripting/copy_and_paste_code) for how to paste code into a new function). Together they give you `Testing`, `Assert`, `AssertMatch`, `AssertCommand`, `AssertCommandMatch`, and `Results`, all used below.
+
+```
+Testing (title)
+  game.testingtitle = title
+
+Assert (expected, actual)
+  if (not TypeOf(expected) = TypeOf(actual)) {
+    Result (">" + actual + "< (" + TypeOf(actual) + ") was expected to be >" + expected + "< (" + TypeOf(expected) + ")")
+  }
+  else if (not expected = actual) {
+    Result (">" + actual + "< was expected to be >" + expected + "<")
+  }
+  else {
+    Result (null)
+  }
+
+AssertMatch (expected, actual)
+  if (not "string" = TypeOf(actual)) {
+    Result (">" + actual + "< (" + TypeOf(actual) + ") was expected to match >" + expected + "< (" + TypeOf(expected) + ")")
+  }
+  else if (not IsRegexMatch(expected, actual)) {
+    Result (">" + actual + "< was expected to match >" + expected + "<")
+  }
+  else {
+    Result (null)
+  }
+
+AssertCommand (com, s)
+  game.hideoutput = true
+  HandleSingleCommand (com)
+  game.hideoutput = false
+  Assert (s, game.lastoutputtext)
+
+AssertCommandMatch (com, s)
+  game.hideoutput = true
+  HandleSingleCommand (com)
+  game.hideoutput = false
+  AssertMatch (s, game.lastoutputtext)
+
+Result (message)
+  if (not HasInt(game, "testcount")) {
+    game.testcount = 0
+    game.testfailures = NewStringList()
+  }
+  if (message = null) {
+    JS.addText (".")
+  }
+  else {
+    JS.addText ("F")
+    list add (game.testfailures, "Error in " + game.testingtitle + ": " + message)
+  }
+  game.testcount = game.testcount + 1
+
+Results ()
+  if (ListCount(game.testfailures) = 0) {
+    msg ("No failures!")
+  }
+  else {
+    msg (ListCount(game.testfailures) + " failure(s):")
+    foreach (s, game.testfailures) {
+      OutputTextRaw (s)
+    }
+  }
+```
+
+`AssertCommand` and `AssertCommandMatch` need to know what a command printed, so they also need your game to override the built-in `OutputText` function to record it:
+
+```
+OutputText (text)
+  game.lastoutputtext = ProcessText(text)
+  OutputTextRaw (game.lastoutputtext)
+```
 
 It is usual practice in unit testing to have the system automatically reset after each test. That is not practical in Quest, so you need to be aware that the game state will potentially change. If you add a new test at the start and this moves an object, for example, then that might impact on other tests. You need to design your tests with this in mind, and it is good practice after a set of tests to change back anything you have changed.
 
