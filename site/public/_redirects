@@ -103,7 +103,8 @@ docs.textadventures.co.uk/quest/* https://questviva.com/:splat 301
 /transcript /howto/world/transcript 301
 /transit_system /howto/tasks/transit_system 301
 /translating_quest /advanced-topics/translating_quest 301
-/trizbort /publishing/trizbort 301
+/trizbort /howto/world/trizbort 301
+/publishing/trizbort /howto/world/trizbort 301
 /ui-callback /howto/ux/ui-callback 301
 /ui-custom /howto/ux/ui-custom 301
 /ui-dialogue /howto/ux/ui-dialogue 301

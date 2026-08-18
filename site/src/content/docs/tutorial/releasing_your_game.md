@@ -37,7 +37,7 @@ Upload as an unlisted game
 
 By default your game will be unlisted; leave it like that for now.
 
-In the editor, go to _Tools - Publish_, give it a name (the same as your main file by default, but with a .quest extension), and click okay. Quest will produce a file in a subfolder of your main game called "Output".
+In the editor, open the **File** menu in the toolbar and choose **Publish…**. This builds a `.quest` package (your game file plus its assets) and downloads it.
 
 On textadventures.co.uk, click on _Create_ at the top, then _Upload_ game below that. Then follow the instructions.
 

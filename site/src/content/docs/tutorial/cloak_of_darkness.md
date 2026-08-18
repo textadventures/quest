@@ -42,7 +42,7 @@ We will divide the process into five sections, starting with the locations and i
 Locations and Items
 -------------------
 
-The first place to start is the geography of your game; creating the locations, the exits between them and the items in them. For a big game, you might want to create a map with [trizbort](/publishing/trizbort), and export it to Quest, but there is no point when there are only three rooms!
+The first place to start is the geography of your game; creating the locations, the exits between them and the items in them. For a big game, you might want to create a map with [trizbort](/howto/world/trizbort), and export it to Quest, but there is no point when there are only three rooms!
 
 Note that if you are creating a large adventure you may find it more convenient to create a section of the geography, and then get all the systems working there, then move to the next section. In fact, you may find it advantageous to do it in reverse order; do the ending first, and get that right, then work your way back to the start. In that way you do not have to trek all the way through the adventure to get to the bit you are working on.
 

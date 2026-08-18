@@ -61,7 +61,7 @@ So now we are ready to create a new type. Right click in the Quest right pane, a
 
 So far so good, but it does not do anything yet. We will change that by copying code. It may look scary, but if you are careful, it will be pretty easy.
 
-On the menus, go to _Tools - Code_ view. This will show you the code that is your game. If you are not familiar with XML, it will not make much sense, but do not worry about that. Somewhere there will be a bit like this (if you do [CTRL]-F, you can search for "fireball" to find it quickly):
+Open the raw XML code view in the editor toolbar. This will show you the code that is your game. If you are not familiar with XML, it will not make much sense, but do not worry about that. Somewhere there will be a bit like this (if you do [CTRL]-F, you can search for "fireball" to find it quickly):
 ```
     <object name="fireball spell">
       <inherit name="editor_object" />
@@ -107,7 +107,7 @@ Step 3. ... And paste them into the type:
       </learn>
   </type>
 ```
-Now go _Tools - Code view_ again, to get back to the GUI.
+Now close the code view again, to get back to the GUI.
 
 Now if you look at the spelltype, you should see it has a whole load of attributes.
 

@@ -4,7 +4,7 @@ sidebar:
   order: 29
 ---
 
-Quest uses an XML-based file format, and files have an .aslx extension. If you go to _Tools - Code view_ you can see the XML code that is your game. 
+Quest uses an XML-based file format, and files have an .aslx extension. If you open the raw XML code view in the editor toolbar, you can see the XML code that is your game. 
 
 Generally you have no need to look at the full code view, but just occasionally it is useful, for example if you are creating or editing a library, or when spell checking, and some idea of XML is useful.
 

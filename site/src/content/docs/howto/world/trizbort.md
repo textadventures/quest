@@ -1,7 +1,7 @@
 ---
 title: Creating with Trizbort and Quest
 sidebar:
-  order: 6
+  order: 3
 ---
 
 
@@ -131,26 +131,26 @@ Alternatively, export the Trizbort map to an image, and add that to your game.
 Languages
 ---------
 
-If you want to create a game in a language other than English, you just need to add the language file to your game. Go to _Tools – Code_ view. You will see the code behind your game. It will start like this:
+If you want to create a game in a language other than English, you just need to add the language file to your game. In the editor toolbar, open the raw XML code view. You will see the code behind your game. It will start like this:
 
 ```
-<!–Saved by Quest 5.7.6597.24702–>
-<asl version=”550″>
-<include ref=”English.aslx” />
-<include ref=”Core.aslx” />
+<!--Saved by Quest 5.7.6597.24702-->
+<asl version="550">
+<include ref="English.aslx" />
+<include ref="Core.aslx" />
 ```
 
 You need to add a line to add your language, after English, and before Core. This example is for French.
 
 ```
-<!–Saved by Quest 5.7.6597.24702–>
-<asl version=”550″>
-<include ref=”English.aslx” />
-<include ref=”Francais.aslx” />
-<include ref=”Core.aslx” />
+<!--Saved by Quest 5.7.6597.24702-->
+<asl version="550">
+<include ref="English.aslx" />
+<include ref="Francais.aslx" />
+<include ref="Core.aslx" />
 ```
 
-Go to _Tools – Code_ view to go back to the normal view.
+Close the code view to go back to the normal editor.
 
  
 
@@ -159,12 +159,12 @@ Adding to an existing game
 
 Another way to use Trizbort is to create a new region in an existing game. You will need to be careful to make sure every room and object has a unique room, as Trizbort will not be able to check against rooms and objects already in your game. I recommend backing up your Quest game before doing this!
 
-After creating the new region, go to _File – Export_ to export your game, and select _Quest to clipboard (no header)_. All the new rooms and objects will be copied to the clipboard. In Quest, go to _Tools – Code view_. You will see the code behind your game. Right at the bottom, you will see this line:
+After creating the new region, go to _File – Export_ to export your game, and select _Quest to clipboard (no header)_. All the new rooms and objects will be copied to the clipboard. In the editor, open the raw XML code view. You will see the code behind your game. Right at the bottom, you will see this line:
 
 ```
 </asl>
-``
+```
 
-Put in a couple of blank lines above that line, and then do _Edit – Paste_ to add all those new rooms.
+Put in a couple of blank lines above that line, and paste in the copied XML there, then click Apply to add all those new rooms.
 
-Go to _Tools – Code view_ to go back to the normal view.
+Close the code view to go back to the normal editor.

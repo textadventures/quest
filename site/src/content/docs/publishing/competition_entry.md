@@ -72,40 +72,10 @@ The important message here is to think about the UI, and make a choice for what 
 Testing
 -------
 
-Beta-testing is getting other people to play your game before you release it. It is absolutely vital; with the best will in the world, they are sure to find spelling mistakes, objects you have not implemented, verbs you have not thought of, routes through the game you have not considered. Better these things are found during beta-testing than after a release, and especially during a competition.
+Beta-testing is especially important for a competition entry, since you only get one shot at a good first impression from the judges. See [Beta-testing](/publishing/publishing#beta-testing) for the general process - before-testing checklist, how to publish a private test version, and crediting testers. A few things are specific to a competition entry:
 
-### Before Beta-Testing
+**Keep it "Unlisted", not just private.** The rules of IfComp mean your game will be disqualified if it is released publicly before the competition, so double-check its visibility stays "Unlisted" throughout testing.
 
-It is tempting to get the game to beta-testers fast, but you are really just wasting their time and yours if you know there are problems before sending it. So:
+**Explain that it's a beta.** Have a statement at the start of your game explaining that this is a beta version, what version it is, and how testers can send you comments - update the text with each new version so testers can tell you which one they were looking at. Remember to remove or update this text before the real release.
 
-1. Play the game through and correct any mistakes you can find.
-
-2. Hopefully your browser has a spell checker, and you were checking the spelling as you typed. Alternatively, you can open your downloaded game file in a text editor like Notepad++ and use its spell-check plugin.
-
-3. Some things you might want to check, depending on your game:
-
-    -   Every room and object has an alias and a description
-    -   Everything mentioned in a description is actually implemented
-    -   The appropriate display and inventory verbs are there, and inappropriate ones are absent
-
-4. Play the game, then try to save it. When Quest saves it does some extra error checking it does not do any other time, so this a quick test of your code. If it saved successful, you should now try to load the game. Loading will stress test you UI, so check that the game still looks the same, and the various parts of the UI still work.
-
-
-### Beta-Testing
-
-When you are ready for beta-testing, publish your game as normal, but ensure it is "Unlisted". This is important as the rules of IfComp mean your game will be disqualified if it is released opening before the competition. An unlisted game will not appear on textadventures.co.uk, but you will be able to give your tests a link to the game.
-
-Have a statement at the start of your game explaining that this is a beta version, what version it is and how testers can send you comments. When you upload a new version, make sure you have changed the text. Hopefully your testers will tell you which version they were looking at.
-
-Obviously when you release, this text should be modified or deleted!
-
-
-### Several Rounds, Many Testers
-
-You should assume you will be releasing around three beta-versions, each improving on the previous. It may be a good idea to get new testers at each round of testing.
-
-Ask on the Quest forum, you might also want to ask people outside the Quest community too (especially for a competition entry), [start here](http://www.intfiction.org/forum/viewforum.php?f=19).
-
-### Credit Your Testers
-
-Remember to credit your testers; they worked hard too. If this is for a competition, you may get a lower score if you do not, as people will assume the game is untested.
+**Look beyond the Quest community for testers.** Ask on the Quest forum, but especially for a competition entry, it's worth asking people outside the Quest community too - [start here](http://www.intfiction.org/forum/viewforum.php?f=19).

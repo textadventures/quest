@@ -6,7 +6,7 @@ sidebar:
 
 Writing code is not trivial, and I cannot hope to make you an expert here. However, it is not as difficult as you might think, and hopefully this will get you started.
 
-Quest uses four languages, including XML. If you click on Tools - Code view you will see the XML. Writing XML is a pain in the neck; let Quest do that for you. The only time I ever look at this code view is when I have spotted a typo when playing my game and want to quickly find it to correct it.
+Quest uses four languages, including XML. If you open the raw XML code view in the editor toolbar you will see the XML. Writing XML is a pain in the neck; let Quest do that for you. The only time I ever look at this code view is when I have spotted a typo when playing my game and want to quickly find it to correct it.
 
 Quest also uses Javascript, but unless you want to do fancy stuff with the interface, you can ignore that. This is not about JavaScript.
 

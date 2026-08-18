@@ -155,6 +155,10 @@ export default defineConfig({
                                     "slug": "howto/world/exits"
                                 },
                                 {
+                                    "label": "Creating with Trizbort and Quest",
+                                    "slug": "howto/world/trizbort"
+                                },
+                                {
                                     "label": "Using containers",
                                     "slug": "howto/world/containers"
                                 },
@@ -801,10 +805,6 @@ export default defineConfig({
                         {
                             "label": "Competition Entry",
                             "slug": "publishing/competition_entry"
-                        },
-                        {
-                            "label": "Creating with Trizbort and Quest",
-                            "slug": "publishing/trizbort"
                         }
                     ]
                 },

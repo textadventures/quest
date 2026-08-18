@@ -70,7 +70,7 @@ And the last line should be this:
 ```
   </library>
 ```
-Everything in between will be XML elements, as in the main game (go to _Tools - Code view_ to see the XML behind Quest). You can use a library to define objects, functions, types, and everything else that an ordinary game file can define.
+Everything in between will be XML elements, as in the main game (open the raw XML code view in the editor toolbar to see the XML behind Quest). You can use a library to define objects, functions, types, and everything else that an ordinary game file can define.
 
 The easiest way to create those XML elements is to create them in Quest, and then cut-and-paste into your library. For example, for a new function, create the function in Quest, check it works okay, then go into the code view, cut the relevant code, paste into you library. Test again.
 
