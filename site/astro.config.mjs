@@ -528,16 +528,8 @@ export default defineConfig({
                                     "slug": "helpsheets/hs_addingquestion1"
                                 },
                                 {
-                                    "label": "The CASE command",
-                                    "slug": "helpsheets/hs_case"
-                                },
-                                {
                                     "label": "Objects appearing (inside other objects)",
                                     "slug": "helpsheets/hs_appearingobjects"
-                                },
-                                {
-                                    "label": "Ask and Tell",
-                                    "slug": "helpsheets/hs_asktell"
                                 },
                                 {
                                     "label": "\"Key\" inside another object",
