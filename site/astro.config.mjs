@@ -3050,10 +3050,6 @@ export default defineConfig({
                                 {
                                     "label": "updateStatus",
                                     "slug": "js/updatestatus"
-                                },
-                                {
-                                    "label": "whereAmI",
-                                    "slug": "js/whereami"
                                 }
                             ]
                         },
