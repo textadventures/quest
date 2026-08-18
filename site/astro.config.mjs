@@ -2969,73 +2969,7 @@ export default defineConfig({
                         },
                         {
                             "label": "JS functions",
-                            "collapsed": true,
-                            "items": [
-                                {
-                                    "label": "Overview",
-                                    "slug": "js/js"
-                                },
-                                {
-                                    "label": "addScript",
-                                    "slug": "js/addscript"
-                                },
-                                {
-                                    "label": "addText",
-                                    "slug": "js/addtext"
-                                },
-                                {
-                                    "label": "colourBlend",
-                                    "slug": "js/colourblend"
-                                },
-                                {
-                                    "label": "eval",
-                                    "slug": "js/eval"
-                                },
-                                {
-                                    "label": "scrollToEnd",
-                                    "slug": "js/scrolltoend"
-                                },
-                                {
-                                    "label": "setCommands",
-                                    "slug": "js/setcommands"
-                                },
-                                {
-                                    "label": "setCss",
-                                    "slug": "js/setcss"
-                                },
-                                {
-                                    "label": "setCustomStatus",
-                                    "slug": "js/setcustomstatus"
-                                },
-                                {
-                                    "label": "setInterfaceString",
-                                    "slug": "js/setinterfacestring"
-                                },
-                                {
-                                    "label": "setPanes",
-                                    "slug": "js/setpanes"
-                                },
-                                {
-                                    "label": "ShowGrid",
-                                    "slug": "js/showgrid"
-                                },
-                                {
-                                    "label": "showPopup/showPopupCustomSize/showPopupFullscreen",
-                                    "slug": "js/showpopup"
-                                },
-                                {
-                                    "label": "uiShow/uiHide",
-                                    "slug": "js/uishow"
-                                },
-                                {
-                                    "label": "updateLocation",
-                                    "slug": "js/updatelocation"
-                                },
-                                {
-                                    "label": "updateStatus",
-                                    "slug": "js/updatestatus"
-                                }
-                            ]
+                            "slug": "js"
                         },
                         {
                             "label": "Hard-coded Functions and Library Functions",

@@ -113,7 +113,23 @@ docs.textadventures.co.uk/quest/* https://questviva.com/:splat 301
 # Language Reference dedup — removed duplicate/nonexistent function docs
 /functions/scopeunlockedexitsforroom /functions/corelibrary/scopeunlockedexitsforroom 301
 /functions/listworn /functions/listwornfor 301
-/js/whereami /js/js 301
+/js/whereami /js 301
+/js/js /js 301
+/js/addscript /js#addscript 301
+/js/addtext /js#addtext 301
+/js/colourblend /js#colourblend 301
+/js/eval /js#eval 301
+/js/scrolltoend /js#scrolltoend 301
+/js/setcommands /js#setcommands 301
+/js/setcss /js#setcss 301
+/js/setcustomstatus /js#setcustomstatus 301
+/js/setinterfacestring /js#setinterfacestring 301
+/js/setpanes /js#setpanes 301
+/js/showgrid /js#showgrid 301
+/js/showpopup /js#showpopup 301
+/js/uishow /js#uishow 301
+/js/updatelocation /js#updatelocation 301
+/js/updatestatus /js#updatestatus 301
 
 # Troubleshooting cuts — duplicated content already covered more completely elsewhere
 /helpsheets/hs_case /howto/tasks/multiple_choices_using_a_switch_script 301
