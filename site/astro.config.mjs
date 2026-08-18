@@ -493,60 +493,6 @@ export default defineConfig({
                             ]
                         },
                         {
-                            "label": "Troubleshooting",
-                            "collapsed": true,
-                            "items": [
-                                {
-                                    "label": "Overview",
-                                    "slug": "helpsheets"
-                                },
-                                {
-                                    "label": "Introduction at start of game",
-                                    "slug": "helpsheets/hs_introduction"
-                                },
-                                {
-                                    "label": "Removing the \"a\" before an object's name",
-                                    "slug": "helpsheets/hs_removea"
-                                },
-                                {
-                                    "label": "Object blocking an exit",
-                                    "slug": "helpsheets/hs_blockingexit"
-                                },
-                                {
-                                    "label": "Locked exits and how to open them?",
-                                    "slug": "helpsheets/hs_lockedexits"
-                                },
-                                {
-                                    "label": "A monster waiting behind a door",
-                                    "slug": "helpsheets/hs_baddy2"
-                                },
-                                {
-                                    "label": "Making objects appear when a light is switched on",
-                                    "slug": "helpsheets/hs_objectsappear"
-                                },
-                                {
-                                    "label": "Adding a yes/no quiz question",
-                                    "slug": "helpsheets/hs_addingquestion1"
-                                },
-                                {
-                                    "label": "Objects appearing (inside other objects)",
-                                    "slug": "helpsheets/hs_appearingobjects"
-                                },
-                                {
-                                    "label": "\"Key\" inside another object",
-                                    "slug": "helpsheets/hs_keyinside"
-                                },
-                                {
-                                    "label": "Adding music to a radio",
-                                    "slug": "helpsheets/hs_radio"
-                                },
-                                {
-                                    "label": "Creating a countdown timer",
-                                    "slug": "helpsheets/hs_countdown"
-                                }
-                            ]
-                        },
-                        {
                             "label": "Community Recipes",
                             "collapsed": true,
                             "items": [
