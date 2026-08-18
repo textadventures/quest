@@ -1,7 +1,7 @@
 ---
 title: Older Versions
 sidebar:
-  order: 99
+  order: 3
 ---
 
 The current release is available from [textadventures.co.uk/quest](https://textadventures.co.uk/quest). It is fully compatible with games made in older versions, so always use the latest version if you can.

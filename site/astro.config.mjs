@@ -809,28 +809,6 @@ export default defineConfig({
                     ]
                 },
                 {
-                    "label": "Release Notes",
-                    "collapsed": true,
-                    "items": [
-                        {
-                            "label": "Quest 5.8",
-                            "slug": "release-notes/quest5_8"
-                        },
-                        {
-                            "label": "Quest 5.7",
-                            "slug": "release-notes/quest5_7"
-                        },
-                        {
-                            "label": "Upgrade Notes",
-                            "slug": "release-notes/upgrade_notes"
-                        },
-                        {
-                            "label": "Older Versions",
-                            "slug": "release-notes/older-versions"
-                        }
-                    ]
-                },
-                {
                     "label": "Developers",
                     "collapsed": true,
                     "items": [
@@ -845,6 +823,10 @@ export default defineConfig({
                         {
                             "label": "Open source",
                             "slug": "developers/open_source"
+                        },
+                        {
+                            "label": "Older Versions",
+                            "slug": "developers/older-versions"
                         }
                     ]
                 }
