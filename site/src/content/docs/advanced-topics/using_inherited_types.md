@@ -4,41 +4,7 @@ sidebar:
   order: 2
 ---
 
-Object types in Quest offer a way to give a group of things the same properties. 
-
-About Types
------------
-
-Before getting down to how we use types in Quest, we will discuss what types are and why they are useful.
-
-Types is how Quest supports [object-orientated programming](https://en.wikipedia.org/wiki/Object-oriented_programming). The basic idea is that the Quest world is made up of any number of objects, and that these objects differ in their attributes. Where types come in is how we group objects together.
-
-For example, you might have a lot of NPCs (non-player characters) in your game; you could make them all of the "npc" type. A group of them might be security guards, and the security guards are all pretty much the same, so they could be of the "securityguard" type.
-
-The clever bit is that we can make the "securityguard" type itself be of the "npc" type.
-
-Now when we create a new security guard, and give him the "securityguard" type, he will get all the default attributes of a security guard, and he will also get given the "npc" type, so will also get all the default attributes of an NPC - except those set by the "securityguard" type.
-
-You can add as many types as you want to an object (the technical term for this is "multiple inheritance"). You may well want to add "male" or "female", so his or her pronouns are right.
-
-Alternatively, you could add the "male" type to the "securityguard" type, so now "securityguard" inherits from both "npc" and "male". Then when you create a security guard, you do not need to add the "male" type too, but you still have the option to add the "female" type to make a female guard (but make sure "female" is added _after_ "securityguard").
-
-A great advantage of using types is that you only need to do things once. If you have a special script for NPCs, you just give that script to the "npc" type, and all your NPCs have it. If you later find you want to alter it, you just alter it fo the type, not each NPC. If you later realise you want your NPCs to inherit from another type (perhaps to support conversations with dynamic  menus), you can add the new type to the "npc" type.
-
-Quest types
------------
-
-Quest has several object types built in, such as the editor_object type and the editor_room type; it uses these two to flag whether something is an object or a room (incidentally, these types are only there when you are editing the game; when a game is published editor types are not included).
-
-You can see the type of an object by going to the _Attributes_ tab; the top pane is a list of types. Here is an example for an openable container:
-
-![](/images/type_attributes.png)
-
-As you can see, something in Quest can be more than one type. As well as being an editor_object type, this is also a container_open type. Also, in grey, it is a container_base; this is an inherited type, my object has this because container_open inherits from container_base. It is also a defaultobject, which is in grey too, because everything in Quest has the defaultobject type.
-
-My container gets all the properties of the types it has inherited, which is how it will work as a container with minimal effort from me. Note that container_base sets up a closed container, but that that value is overridden by container_open. I can further change any of the setting to suit my needs.
-
-You can do all that without knowing what types are, but sometimes we want to do more, and hopefully this tutorial will show you how.
+This page builds on [Types](/advanced-topics/about_types), which covers what types are, how attributes are inherited, and multiple inheritance - read that first if you haven't already. Here, we'll cover how to test for types in a script, and how to create your own.
 
 
 Testing for Types

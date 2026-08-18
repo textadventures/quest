@@ -12,7 +12,7 @@ Returns a [string](/types/string) containing the requested text, based on the ob
 
 You can pass in multiple objects. If you only pass in one, you can refer to it using the variable "object". Otherwise you can use "object1", "object2" etc.
 
-See [Using Templates](/advanced-topics/using_templates)
+See [Changing templates](/howto/world/changing_templates)
 
 *Example:* We want to provide a templated message about a blocked exit.
 

@@ -1,7 +1,7 @@
 ---
 title: Changing templates
 sidebar:
-  order: 3
+  order: 2
 ---
 
 When a player types in a command that Quest doesn't recognise, it will by default respond "I don't understand your command". If you mis-type the name of an object, you get "I can't see that". These responses are all very well, but it might break the flow of our game if they don't fit in with the rest of the text that we've written. Fortunately, Quest provides a way for you to change all of its default responses - in fact none of the text is "hard coded" at all, which is why it is possible to create games in any language, not just English.
@@ -33,3 +33,19 @@ These Dynamic Templates often take advantage of some functions which are defined
      WriteVerb(object, "be") + " already open."
 
 This means it will correctly write "It is already open", "They are already open" etc.
+
+Printing Square Brackets
+-------------------------
+
+Since text in square brackets gets automatically substituted with a template's contents, you need another way to print an actual square bracket. As the output is HTML, you can use the HTML code `&#91;`.
+
+This in your code will give an open square bracket, `[`, on output:
+
+```
+  &#91;
+```
+
+See also
+--------
+
+For the underlying `<template>` and `<dynamictemplate>` XML elements, see the [template](/elements/template) and [dynamictemplate](/elements/dynamictemplate) reference pages.

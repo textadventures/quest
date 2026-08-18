@@ -12,7 +12,8 @@ docs.textadventures.co.uk/quest/* https://questviva.com/:splat 301
 /ask_simple_question /howto/tasks/ask_simple_question 301
 /asking_a_question /howto/tasks/asking_a_question 301
 /blocks_and_scripts /howto/scripting/blocks_and_scripts 301
-/changing_templates /advanced-topics/changing_templates 301
+/changing_templates /howto/world/changing_templates 301
+/advanced-topics/changing_templates /howto/world/changing_templates 301
 /changing_the_player_object /howto/tasks/changing_the_player_object 301
 /character_creation /howto/rpg/character_creation 301
 /cloak_of_darkness /howto/scripting/cloak_of_darkness 301
@@ -99,7 +100,8 @@ docs.textadventures.co.uk/quest/* https://questviva.com/:splat 301
 /using_inherited_types /advanced-topics/using_inherited_types 301
 /using_libraries /advanced-topics/using_libraries 301
 /using_lists /howto/scripting/using_lists 301
-/using_templates /advanced-topics/using_templates 301
+/using_templates /howto/world/changing_templates 301
+/advanced-topics/using_templates /howto/world/changing_templates 301
 /using_turnscripts /howto/scripting/using_turnscripts 301
 /using_verbs /howto/commands/using_verbs 301
 /using_walkthroughs /howto/scripting/using_walkthroughs 301

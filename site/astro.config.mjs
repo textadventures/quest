@@ -146,6 +146,10 @@ export default defineConfig({
                                     "slug": "howto/world/text_processor"
                                 },
                                 {
+                                    "label": "Changing templates",
+                                    "slug": "howto/world/changing_templates"
+                                },
+                                {
                                     "label": "Exits",
                                     "slug": "howto/world/exits"
                                 },
@@ -618,20 +622,12 @@ export default defineConfig({
                             "slug": "advanced-topics/about_types"
                         },
                         {
-                            "label": "Changing templates",
-                            "slug": "advanced-topics/changing_templates"
-                        },
-                        {
                             "label": "Translating Quest",
                             "slug": "advanced-topics/translating_quest"
                         },
                         {
                             "label": "Using and creating libraries",
                             "slug": "advanced-topics/using_libraries"
-                        },
-                        {
-                            "label": "Using Templates",
-                            "slug": "advanced-topics/using_templates"
                         },
                         {
                             "label": "Undo support",
