@@ -787,7 +787,7 @@ export default defineConfig({
                     ]
                 },
                 {
-                    "label": "Publishing & Community",
+                    "label": "Publishing",
                     "collapsed": true,
                     "items": [
                         {
