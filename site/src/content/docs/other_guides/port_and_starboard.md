@@ -8,7 +8,7 @@ So you have this plan for a game, but it is set on a ship or a starship, and nor
 
 One limitation of the shipwise directions is that you lose four directions. While "northeast" is well established, I think people will find "forwardport" rather odd. Remember that when adding exits to your game!
 
-So what do we need to do? All that is needed is to change about a dozen templates. It is very import that these changes are done in the correct place in the code, and unfortunately the GUI fails to do that (as of version 5.2 to 5.4), so you really need to do this in the code.
+So what do we need to do? All that is needed is to change about a dozen templates. Each of the templates below already exists in the English language library, so the simplest way to change them is to [override](/advanced-topics/overriding) each one individually through the GUI. Alternatively, you can paste them straight into code view as shown below; template overrides are matched by name, so it does not matter exactly whereabouts in the file you add them.
 
 In code view, at the very top, it will look like this:
 
@@ -17,7 +17,7 @@ In code view, at the very top, it will look like this:
         <include ref="English.aslx" />
         <include ref="Core.aslx" />
 
-All the default templates are in English.aslx, and we want to override them, so our templates have to go after that third line. However, templates are used as the files are loaded (but note that dynamic templates are different; they are implemented during game play, so can appear in your code anywhere after the third line), so they have to be before the core library is called in the fourth line.
+All the default templates are in English.aslx, and we want to override them. A template you add directly to your own game file will always win over the version in English.aslx, wherever in the file you put it - dynamic templates work the same way. The one place order still matters is if you move your overrides out into a separate library file of their own (see below); that file needs to be included after English.aslx, so its version of each template is the one that ends up registered.
 
 So let us add some templates.
 
@@ -40,7 +40,7 @@ Quest uses these next two for pattern matching the player input. The specific di
       <template templatetype="command" name="go"><![CDATA[^go to (?<exit>.*)$|^go (?<exit>.*)$|^(?<exit>forward|port|starboard|aft|f|p|a|s|in|out|up|down|o|u|d)$]]></template>
       <template templatetype="command" name="lookdir"><![CDATA[^look (?<exit>forward|port|starboard|aft|f|p|a|s|in|out|up|down|o|u|d)$]]></template>
 
-You also need to change the help command. One way is to override the DefaultHelp template (which I am not doing here as it seriously messes with Wiki's formatting), but you might prefer to create your own help command and do it there. It may be useful to spell out the directions as people are somewhat less familiar with ship directions, and to point out they only have four directions instead of eight.
+You also need to change the help command. One way is to override the DefaultHelp template (which is not shown here, as it is a lot of text), but you might prefer to create your own help command and do it there. It may be useful to spell out the directions as people are somewhat less familiar with ship directions, and to point out they only have four directions instead of eight.
 
 So what does it look like now? The top of your code should now look like this (this is without the help template):
 

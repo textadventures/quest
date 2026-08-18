@@ -17,6 +17,7 @@ Easy to implement using only the GUI.
 -   [Time-limited puzzles](/other_guides/timelimitedpuzzles)
 -   [Security code to unlock door](/other_guides/unlockdoor)
 -   [Starting inventory](/other_guides/starting_inventory)
+-   [Implementing components of an object](/other_guides/implementing_components_of_an_object)
 
 
 Basic
@@ -27,7 +28,6 @@ Be prepared to see code - but not write it. Most of these have blocks of code, b
 -   [Character Creation](/howto/rpg/character_creation)
 -   [Immobilise the player](/other_guides/immobilise_the_player)
 -   [Use InvisiClues for Help](/other_guides/invisiclues)
--   [Random responses](/other_guides/random_default_answers)
 -   [Port and starboard](/other_guides/port_and_starboard)
 
 
@@ -39,6 +39,7 @@ For those happy to use code.
 -   [Turn-based events](/other_guides/turn_based_events)
 -   [How to use functions](/howto/tasks/about_functions)
 -   [Random default messages](/other_guides/random_default_answers)
+-   [Hyperlinks](/other_guides/hyperlinks)
 
 
 
