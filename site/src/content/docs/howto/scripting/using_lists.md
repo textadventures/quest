@@ -88,7 +88,7 @@ It is good practice to consider a list as either:
 - Variable: Elements can be removed from the list, so the position of an element is expected to change and cannot be reliable upon.
 
 
-### Retrieving from string lists and object Lists
+### Retrieving from string lists and object lists
 
 If you know your list will contain only strings then it is better to use a string list rather than a general list. Similarly, if the list is just going to hold objects, use an object list.
 

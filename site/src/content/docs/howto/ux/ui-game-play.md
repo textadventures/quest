@@ -47,7 +47,7 @@ The game panes are an alternative to hyperlinks, and may be more appropriate if 
 
 The game panes can be turned off or customised on the _Interface_ tab of the game object.
 
-### Command Pane
+### Command pane
 
 An additional pane can be added for simple commands, such as LOOK and WAIT, that the player can click instead of typing. See [Custom Command Panes](/howto/ux/command_pane) for how to set it up.
 

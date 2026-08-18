@@ -17,7 +17,7 @@ The engine and server-side code is all C# (.NET 10). The editor's UI (AppShell) 
 Developer Guidelines
 --------------------
 
-### GitHub Issues
+### GitHub issues
 
 [GitHub Issues](https://github.com/textadventures/quest/issues) contains features that need to be implemented and bugs that need to be fixed. If there's an obvious missing feature or bug, open an issue - check it's not a duplicate first. If you're proposing a major new feature, it's worth raising it in [GitHub Discussions](https://github.com/textadventures/quest/discussions) first.
 

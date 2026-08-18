@@ -27,7 +27,7 @@ We will start by giving the player some magic points. Go to the "start" script o
 player.magicka = 5
 ```
 
-### The Frotz Spell
+### The Frotz spell
 
 Our first spell will be "Frotz", which will make an object glow. This will be relatively easy, as Quest has light and dark built in, and it affects objects that are in reach.
 
@@ -104,7 +104,7 @@ otherwise {
 
 
 
-### The Lleps Spell
+### The Lleps spell
 
 The Lleps spell reverses any known spell. As spells are not objects (okay, I just said commands are, but when Quest tries to match text the player has typed, it only looks at _object_ objects), we will need to use "text" in the command pattern:
 
@@ -151,7 +151,7 @@ If all goes well the last few lines do the spell effect. In particular this line
 This will set the "llepsed" flag of the target spell if not set, but will unset it if it is. This means the spell can be cast a second time on a spell to set it back to how it was.
 
 
-### The Frotz Spell Again
+### The Frotz spell again
 
 So far so good. Now we need to change "Frotz" spell so it can be reversed. 
 
@@ -213,7 +213,7 @@ Frotz(glowstone)
 Now we can be sure that all the glowing items can be set to not glow by the reversed Frotz spell.
 
 
-### Other Spells
+### Other spells
 
 So now we can think about how to approach all other spells. Create a command, give it a pattern in the form we did before, and a name. The code has the general format:
 
@@ -245,7 +245,7 @@ else {
 It is as easy as that!
 
 
-### The Aimfiz Spell
+### The Aimfiz spell
 
 This spell teleports the caster to someone else's location, and we will look at it as it can be cast on objects that are not here. The pattern is the usual:
 

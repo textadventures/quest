@@ -9,7 +9,7 @@ Using Quest's Built-in Script Commands to Add MP3 or WAV Files
 --------------------------------------------------------------
 
 
-### Adding Sounds
+### Adding sounds
 
 You can add sounds to your game using the [`play sound`](/scripts#play-sound) script command. 
 
@@ -27,7 +27,7 @@ Note that Quest won’t let you use both the “wait” and “loop” options a
 
 Also note that Quest will only play one sound at a time when using the `play sound` script command.  If you have a sound set to loop for ambience, playing a new sound will stop the current one!
 
-### Stopping Sounds
+### Stopping sounds
 
 Sometimes, you need to stop a sound.  For instance the “loop” option will cause the sound to continue playing until the [```stop sound```](/scripts#stop-sound) script command is run. 
 
@@ -42,7 +42,7 @@ Let's see this in action.
 
 We have an example game with a starting room called "Hub".  If the door is open in the hub, we can hear an ambient sound.
 
-### The Hub
+### The hub
 
 We can set up an "After entering" script.  If the "Door" object is open, the sound "ambient sound.mp3" will play, and it will be set to loop.
 
@@ -51,28 +51,28 @@ Then, we set up an "After leaving" script, which stops the sound (because we can
 ![](/images/play_audio_example1_loop.jpg)
 
 
-### The Door
+### The door
 
 We set the Door up as a container, making it "Openable/Closable".  Then we set up the open and close scripts to play and stop the sound.
 
 ![](/images/play_audio_example4_door.jpg)
 
 
-### A Silent Room
+### A silent room
 
 We also have a room called "Hall of Silence". This one is easy.  We just add a 'stop sound' script command to the "Before entering" script on the room.
 
 ![](/images/stop_audio_example1.jpg)
 
 
-### A Sound Playing Between Rooms
+### A sound playing between rooms
 
 We have a third room called "Sound Effects Room", and a message plays before entering. In this script, we're using the `sync` option to pause play until the sound has finished playing.
 
 ![](/images/play_audio_example2_sync.jpg)
 
 
-### A Noise-making Object
+### A noise-making object
 
 Just for fun, we have a button.  We've set up a "Press" verb on the button so it plays a sound when pressed.
 
@@ -140,7 +140,7 @@ msg ("<audio src='" + src + "' autoplay />")
 For more on the maximum upload size, see the Size Limitations section on [this page](/publishing/publishing).
 
 
-### Adding Controls
+### Adding controls
 
 We can add `controls` to the tag, giving the player an option to play or pause the sound at will.
 
@@ -160,7 +160,7 @@ If we were to add the `controls` option, we could remove `autoplay`, making it s
 
 
 
-### Looping HTML Audio
+### Looping HTML audio
 
 We can also add a `loop` option, if we wish.  (Guess what this does!)
 
@@ -184,7 +184,7 @@ JS.eval("$('audio').remove();")
 ```
 
 
-### Using an ID to Control a Specific Audio Element
+### Using an ID to control a specific audio element
 
 
 An alternate approach would be assigning an ID to the audio element.
@@ -216,7 +216,7 @@ JS.eval("$('#html-audio').remove();")
 ```
 
 
-### Mobile Browsers
+### Mobile browsers
 
 For things to work in a mobile browser, we MUST include the `controls` option! The `autoplay` option will do nothing in a mobile browser, by the way.  The player must actually press 'play' on a mobile device.
 
@@ -251,7 +251,7 @@ JS.eval("var songVar = new Audio();songVar.src = '"+src+"';songVar.load();songVa
 ```
 
 
-### Playing Multiple Sounds at Once
+### Playing multiple sounds at once
 
 Sometimes, you may want to play two (or more) sounds at once.
 

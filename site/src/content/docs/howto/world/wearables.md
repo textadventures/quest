@@ -54,7 +54,7 @@ The logic here is that, for garments that have the same slot, you can only put o
 Garments can occupy more than one slot, so overalls could be set to have both "lower" and "upper". And any garment with no slots can be worn without restrictions.
 
 
-### Layer Zero
+### Layer zero
 
 Layer zero is special; it is effectively all layers. Say you have a pair of shorts that cannot be worn under trousers or over underpants, you can set its layer to 0.
 
@@ -78,7 +78,7 @@ If you go to the _Attributes_ tab, you can create a string attribute called `not
 The library gives some facilities to handle armour for a combat-orientated RPG-style game, which is discussed more below. The `armour` attribute of this item can be set in the "Protection" box.
 
 
-### Bonuses and Penalties
+### Bonuses and penalties
 
 This feature is for garments that give bonuses when worn. Bonuses (and penalties) are set in the "Wearing gives a bonus to these attributes" box. In there you can list any attributes on the player character that get increased when the garment is worn. If there is more than one, separate them with semi-colons (and no spaces). By default, the increase is 1, but you can specify other values too, so you can use a minus to give a penalty.
 
@@ -99,7 +99,7 @@ You can override the `ClothingBonusMultiplier` function to have the effects doub
 NPCs are not affected by garment bonuses.
 
 
-### Display Verbs
+### Display verbs
 
 The system automatically updates the display verbs for all clothing as garments are put on and taken off. Occasionally, you may want to add your own. For verbs that should be seen when the item is in the room, rather than the player's inventory, do this on the _Object_ tab as normal.
 
@@ -240,7 +240,7 @@ List: lower; feet; upper; Lower; head;
 Remember to delete that line from the start script before you upload your game; it is just for testing.
 
 
-### A "Worn Clothing" Location
+### A "Worn Clothing" location
 
 If you feel the player's inventory is getting cluttered with what the player is wearing, an option is to create a container, perhaps called "Worn Clothing", on the player object, and to have anything worn go in there. If the container is open, the clothing will get listed, but if it is closed, they will be hidden.
 
@@ -265,7 +265,7 @@ Click _Add_ there again, and this time type in "Show" and set this to run a scri
 If you are using inventory limits, increase the maximum by one to allow for this new object.
 
 
-### No Public Nudity
+### No public nudity
 
 Let us suppose you want to ensure the player is modestly attired in public places. How might you do that? The first step is to decide what that means in game terms, and then to create a function, let us say, `IsDecent` that will test that, and return a Boolean as appropriate. How that works will depend on your game, but let us suppose there is a flag on the player "isfemale" that is true for female characters, and the important body slots are "lower" and "upper". We will also set an attribute, "private" on rooms that are private. The code might look like this:
 

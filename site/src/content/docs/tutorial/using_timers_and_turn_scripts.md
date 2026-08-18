@@ -17,7 +17,7 @@ To do this, we will use a timer. This timer will only be activated when the play
 
 First, let's set up the timer. After we have done this, we will add the script command to activate it at the right time.
 
-### Setting up the Timer
+### Setting up the timer
 
 Add the timer using the "+ Add" button on the toolbar, or the "..." menu on an element in the tree.
 
@@ -29,7 +29,7 @@ For the timer script, add a "print a message" command to display "The bee buzzes
 
 ![](/images/TimerBee1.png)
 
-### Activating the Timer
+### Activating the timer
 
 Go back to the "window" object and edit the script which runs when the bee enters the kitchen - this will be the "Else" script if you've followed the tutorial so far. Add a command after the "move object" command - from the Timers category, choose "Enable timer". Select "bee timer" from the list.
 

@@ -39,7 +39,7 @@ Create a new object, called "torch". On the Inventory tab tick it so it can be t
 Now go in-game. With the torch in hand, your darkroom will be illuminated.
 
 
-### A Note about Containers
+### A note about containers
 
 Quest has a sophisticated container system. If the player puts the torch in a container that is flagged as transparent, the torch will still illuminate the room.
 

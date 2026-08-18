@@ -54,7 +54,7 @@ Once the vertical is also matched, we end up with this:
 ![](/images/map5.png)
 
 
-### Up and Down, In and Out
+### Up and down, in and out
 
 The map will cope with up and down exits (though it will not display them). When the player goes up or down, rooms on other levels will be shown faded behind the current level. It does assume your game is strictly levelled, that is, the only way between levels is up and down exits.
 

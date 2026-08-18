@@ -10,7 +10,7 @@ Many years ago I wrote a library to help track the player's score. It was pretty
 
 This system will not just keep score, it will also allow the player to see a list of achievements, and give her a rank. The on-going score will appear in the status panel.
 
-## Before We Begin
+## Before we begin
 
 Just for the sake of testing, we will set up a new command, with the pattern `JUMP`, and paste in this code:
 ```

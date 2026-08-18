@@ -134,7 +134,7 @@ HTML is the mark-up language used on web pages to control how a browser will dis
 Like XML, HTML is derived from SGML, a markup language developed 30 years ago, and uses the same scheme of tags. There are differences, but recent versions of HTML have become more XML like, and the differences are not worth discussing here. If you follow the rules for XML when writing HTML you will a step ahead of the game.
 
 
-### Simple Formatting
+### Simple formatting
 
 HTML has some tags to display text in bold, underline or italic:
 ```

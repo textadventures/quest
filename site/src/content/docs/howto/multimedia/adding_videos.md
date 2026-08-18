@@ -143,7 +143,7 @@ ChangeVideoSrc("my-video", "https://www.youtube.com/embed/-WNRvCpw3qo")
 But, with the code like this, the new video loads but does not play! There are two functions in Quest which deal with the ```Play YouTube video``` script:
 
 
-### The Quest Function:
+### The Quest function:
 
 **ShowYouTube**
 
@@ -221,7 +221,7 @@ msg ("<video src='" + src + "' autoplay />")
 For more on the maximum upload size, see the Size Limitations section on [this page](/publishing/publishing).
 
 
-### Adding Controls
+### Adding controls
 
 We can add `controls` to the tag, giving the player an option to play or pause the video at will.
 
@@ -236,7 +236,7 @@ If we were to add the `controls` option, we could remove `autoplay`, making it s
 
 
 
-### Looping HTML Video
+### Looping HTML video
 
 You can also add a `loop` option, if you wish.  (Guess what this does!)
 
@@ -249,7 +249,7 @@ msg ("<video src='" + src + "' autoplay loop />")
 If you choose to loop your video, you will probably need a way to stop it. Like everything else, there are numerous ways to handle this.
 
 
-### Controlling HTML Video with JS (Stopping, Pausing, and Playing)
+### Controlling HTML video with JS (stopping, pausing, and playing)
 
 The easiest way to stop a video would be removing ALL video tags from the game.  This can be handled [using Javascript](/howto/ux/customising_the_ui) via `JS.eval()` (NOTE: This will completely remove any HTML audio tags you have added to the game!).
 
@@ -258,7 +258,7 @@ JS.eval("$('video').remove();")
 ```
 
 
-### Using an ID to Control a Specific Video Element
+### Using an ID to control a specific video element
 
 An alternate approach would be assigning an ID to the audio element. This can be done like so:
 

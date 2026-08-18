@@ -116,11 +116,11 @@ The last thing to do is to go back to the fireball spell, and on the attributes 
 Now go into the game, and see if you can still learn that spell.
 
 
-### More on Creating Types
+### More on creating types
 
 When you are creating types yourself, you may not want all the attributes in your prototype to be in your type. The best approach then is to copy the code from the prototype, rather than cutting it. Then, when you are in the GUI again, go to the type, and delete the attributes you do not want in the type. Then go to the prototype, and delete from there the attributes you do want in your type there.
 
 
-### A Note About Lists and Dictionaries
+### A note about lists and dictionaries
 
 It is worth noting that attributes on types are not mutable - they cannot be changed. You might never notice this, because if you have an object and you attempt to assign a value to an attribute that is set in the object’s type, it works fine - behind the scenes when you assign it, the attribute stops being on the type, and is now on the object, and as far as the game is concerned the attribute value has changed. The problem only arises if you try to change the content of a list or dictionary, so unless you are sure a list or dictionary will not change during a game, I would advise against having them in types.

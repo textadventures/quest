@@ -295,7 +295,7 @@ The status bar at the top has a blue border. If you want to remove it, do this (
 Awkward Attributes
 ------------------
 
-### The Command Bar
+### The command bar
 
 Some attributes are difficult to change, and the usual technique just does not work. A good example is the border of the command bar. The element's ID is `txtCommand`, and it has `border` and `outline` properties, but if you set them to "none", it does not work. Why not? No idea.
 
@@ -326,7 +326,7 @@ JS.addText (game.css)
 
 You can turn off the border on the _Interface_ tab of the game object, but there may well be other elements that need to be handled like this, for example....
 
-### Inventory Items
+### Inventory items
 
 This technique will also allow you to change how inventory items are displayed. They do not have IDs, they uses classes instead, `ui-selectee` (for all objects in the list), `ui-selected` (for the selected one) and `ui-selecting` (for the selected one whilst clicked). The difference is that only one element on the page can have a specific ID but any number can have a class. You specify a class by using a `.`, rather than a `#`.
 
@@ -381,7 +381,7 @@ The solution is to change the style of a container element, however, even that i
   JS.setCss ("body", "color:orange;font-family:georgia,serif;")
 ```
 
-### Changing the Ending
+### Changing the ending
 
 The `finish` script command terminates the game, and replaces the panes on the right with a message. You can change the default font using JQuery again, to make it consistent with your game:
 
@@ -410,7 +410,7 @@ JS.eval (s)
 finish
 ```
 
-### Changing the Arrows
+### Changing the arrows
 
 The arrows in the compass rose and the triangles to the left of the panes are icons that are defined in JQuery. To change their color, you need to replace the image file (they are all in one file).
 

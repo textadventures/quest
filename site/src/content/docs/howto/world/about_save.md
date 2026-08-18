@@ -39,7 +39,7 @@ Quest does not currently expose a way to convert a string into an executable scr
 I am not aware of anyone attempting this. Test well before release.
 
 
-### Alternative Saving
+### Alternative saving
 
 An alternative approach is to have your own save system. To get this to work you would need to flag every attribute that can potentially change, and just save them. Then the player would restart the game, and use a new LOAD command, apply her saved file, and all those attributes get set.
 

@@ -147,7 +147,7 @@ Other Options
 
 Now you know the basics, you will want to know what other options are available.
 
-### Conditional Display
+### Conditional display
 
 Often, a tab is only applicable to certain types, or it not applicable to certain types, and you can help keep the GUI tidy by having your tab only displayed when relevant. In this example, the tab will only be shown for objects with the "container" type:
 
@@ -203,7 +203,7 @@ There are several types of controls you can put on your tabs, the simplest are t
 The `controltype` element tells Quest what type of control you want, the `caption` tab puts text on the page. Both `controltype` and `caption` should be present in all your controls.
 
 
-### Basic Controls
+### Basic controls
 
 These five examples show how to add controls for attributes that are Booleans, integers, strings, objects and scripts respectively.
 
@@ -240,7 +240,7 @@ These five examples show how to add controls for attributes that are Booleans, i
 There is a new element, `attribute`, and this contains the name of the attribute that will be set. It is generally a good idea to set a default value on your type by the way.
 
 
-### Not So Basic
+### Not so basic
 
 This one will give a string, but the type is "richtext", allowing the user to format the string (this also has the "expand" element, so the text area will expand to fill the tab).
 
@@ -380,7 +380,7 @@ These seem to add a new child object to the object, rather than an attribute. He
 Probably not so useful for your custom library - easier to create the object through the GUI normally.
 
 
-### For Completeness
+### For completeness
 
 A couple more examples you will probably never need to see.
 

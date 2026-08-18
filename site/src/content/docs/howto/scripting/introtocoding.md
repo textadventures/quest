@@ -15,7 +15,7 @@ Quest is written in C#, but you will never need to know anything about C# to cre
 The important one is the one used in scripts, ASL, and that is unique to Quest. It is kind of similar to C++/Java and many of the built-in functions come from Visual BASIC.
 
 
-### A Note About Objects
+### A note about objects
 
 Note: The word "object" has two distinct meanings in Quest. Firstly it can mean something that the player can interact with, perhaps pick up, examine, etc. However, in the programming world, an object is sort of data structure, and in that sense Quest uses it to include rooms, exits, commands, the game object and indeed everything in the game world. When I use the word "object", I mean it in this second sense. I will use the word "item" to indicate the first meaning (however, if I am quoting a label or dialogue box, "object" will probably mean item).
 
@@ -128,7 +128,7 @@ To move an item to the current room, set its parent to the player's parent
   my_item.parent = player.parent
 ```
 
-### Aside: About "player"
+### Aside: about "player"
 
 Just be aware that Quest has the capability for changing the point of view (i.e. swapping from one player character to another) built-in. To handle that, Quest has an attribute of the game object called "pov", and that refers to the current player. To be able to change the player's point of view, we should use "game.pov" rather than "player". I mention this for completeness; I am going to continue to use "player" to keep things simple, but if you look at code in a library it will probably use "game.pov".
 
@@ -177,7 +177,7 @@ Control structures have the same general format. First there is the script comma
 Let us have a look at a couple:
 
 
-### The `foreach` Loop
+### The `foreach` loop
 
 This is how to go through each entry in a list (or dictionary). Quest has a number of "scope" functions that will grab all the appropriate items. For example, ScopeInventory gives us a list of items in the player's inventory. We can use that with `foreach`.
 ```
@@ -193,7 +193,7 @@ Then there are the instructions. Here there are two, each on its own line, inden
 Quest will go though the objects returned by ScopeInventory. For each one, it will put the value in "item" and then run the code.
 
 
-### The `if` Structure
+### The `if` structure
 
 You use `if` to make the script sometimes do one thing and sometimes another. In this simple example, the message is only seen if the `hat` item is in this room.
 ```

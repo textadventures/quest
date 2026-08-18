@@ -96,7 +96,7 @@ When to Use Change Scripts
 
 A couple of examples...
 
-### Capping an Attribute with a Change Script
+### Capping an attribute with a change script
 
 Often you will find you want to constrain an attribute to a range, and change scripts offer a great way to do that. Suppose we want to track purity, as a percentage, so it can range from 0 to 100.
 

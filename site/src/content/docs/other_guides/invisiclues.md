@@ -32,7 +32,7 @@ The `foreach` command loops over game.helpdict. This is a dictionary, which is k
 The penultimate line prints the InvisiClue. The trick is that it changes the font colour to match the background, so first the key is printed in italics, then the value from the dictionary is printed in the background colour.
 
 
-### The Hints
+### The hints
 
 Once you have the command, you need to put in the data. Go to the _Attributes_ tab of the game object, and create a new attribute, helpdict. Set it to be a string dictionary, and then put in your questions and answers.
 

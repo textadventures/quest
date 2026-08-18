@@ -48,6 +48,6 @@ It also supports Regex matching, which is very powerful in combination with repl
 Notepad++ has a spell-checker plugin, DSpellCheck, though it needs to be added to the basic install.
 
 
-### Comparing Files
+### Comparing files
 
 Occasionally you may find you have edited an old version of a file, and you end up with two versions, both have bits you want that is missing from the other. Notepad++ has a Compare plugin that will show you the two files side by side and will highlight the differences between the two.

@@ -113,7 +113,7 @@ else {
 Another complicated one. The first three lines handle the player not having enough money. If so, then the "cloneme" attribute is checked, and if true, the object is cloned, and we then work with the clone. We set the "take" attribute to true so the object can be picked up like a normal object from now on, we move it to the player, we remove the "buy" script so it cannot be bought again, we reset the "listalias" attribute so it does not show the price. The next three lines remove "Buy" from the verb lists. Then we take the money off the player, and finally say we did it.
 
 
-### One Command
+### One command
 
 The system uses verbs to handle purchasing, but it is easier to use a command for selling, as the player might try to sell anything. So create a new command (go to "Commands" in the left pane, then click "Add" in the right pane), and put this as the pattern:
 
@@ -155,7 +155,7 @@ This checks if the room is a shop, then checks if the object is being carried. I
 
 
 
-### Game Scripts
+### Game scripts
 
 We need to add a script on the game object. On the _Features_ tab, tick to display "Advanced scripts", then on the _Advanced scripts_ tab, paste this in at the bottom ("backdrop scope script..."):
 
@@ -182,7 +182,7 @@ SetUpShop (shop, stock)
 
 You will need to replace "shop" with the name of the shop object in your game, and "stock" with the name of its stock room.
 
-### A Cake Shop...
+### A cake shop...
 
 As an example, we will create a shop called "Cake Shop". Add exits so the player can get to and from it, and a description as usual. Then create a second room, "Cake Shop Stock". This should have no exits and needs no description. However, it does need some cake objects, so put a lamington, a Victoria sponge and a fairy cake in there. Make sure each has a price set.
 

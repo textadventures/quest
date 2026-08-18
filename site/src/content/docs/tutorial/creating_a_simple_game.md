@@ -72,7 +72,7 @@ A lounge is barely a lounge without a TV in it, so let's add one now. With the l
 
 Use one of these methods to add an object to the lounge. A prompt will appear asking you to enter a name for the object. Enter "TV". Leave the parent as "lounge" and click OK.
 
-### Object Names and Aliases
+### Object names and aliases
 
 It is important to note the distinction between:
 
@@ -87,7 +87,7 @@ If you don't set an alias, players will see the object name – so you only usua
 
 So for now, we can leave the Alias box blank for the TV.
 
-### Other Names
+### Other names
 
 If you go to the _Object_ tab, you'll see an "Other Names" box. This lets you specify additional names that players can use to refer to this object. It is important to note that different players will have different ways of interacting with your game – many players prefer to use hyperlinks, but some prefer to type. You want to make it easy for Quest to understand what players type in, so you can add additional, alternative object names to ensure that happens. For example, for our TV object, some players might type in `LOOK AT TELEVISION`, and would reasonably expect that to work.
 

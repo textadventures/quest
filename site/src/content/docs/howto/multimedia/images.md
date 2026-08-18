@@ -110,7 +110,7 @@ Using this sort of positioning puts the images outside the normal flow of elemen
 
 What you can then do is have the images appear in response to how the game progresses.
 
-### A Map
+### A map
 
 You could, for example, have a series of images where each one is a section of a map, and the map becomes revealed as the player explores. Obviously the rest of the image must be transparent, and each room has to be positioned correctly in the image.
 
@@ -147,7 +147,7 @@ if (HasInt(game.pov.parent, "number")) {
 
 The first three lines set all the maps to hidden. The next five lines set the maps for any room visited to be visible, but transparent, so it seems greyed out. The last three lines show the current room fully opaque.
 
-### Or You Could
+### Or you could
 
 Another possibility is to display a map and to have a marker on it that shows the players position, by changing the `margin-top` and `margin-left` values. Or display an image of the player, to which armour and weapons can be added. Or allow the user to design a face. Or...
 

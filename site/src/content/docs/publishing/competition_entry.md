@@ -21,18 +21,18 @@ IFComp requires that games can be played in two hours. This is a practical neces
 
 Try to create a game that stands out from the crowd, something with a novel hook to it. Perhaps easier said than done, but take a look at previous winners to see what I mean. Talking of which...
 
-### Easy Puzzles
+### Easy puzzles
 
 Do not make the puzzles too tricky. With only two hours playing time, if a player gets stuck on one puzzle, she might not find half your game. Of course, you need *some* challenges, the trick is to get the balance right.
 
-### Compare to Other Entries
+### Compare to other entries
 
 Take a look at some other entries from previous years, and see what works and what does not. See what the standard is. Just as important, read the reviews and see what the judges think worked and what did not. Think if common criticisms might also apply to your own work, and modify it accordingly.
 
 Implementation
 --------------
 
-### Help, Hints and Walk-though
+### Help, hints and walk-though
 
 Include some in-game system to help players get to the end. They only have two hours and if they are stuck on a puzzle with no way to cheat, they just will not see the end of your game. Make sure the clues are both good (easy to follow) and comprehensive (cover all possible problems).
 
@@ -44,7 +44,7 @@ Include an "about" command, so you can tell people who wrote the game, and give 
 
 Credit beta-testers here; you may be marked down otherwise.
 
-### Implement Everything
+### Implement everything
 
 Every object mentioned in the text should be implemented as an object that can be looked at in the game. Also aim to implement all the common commands such as "jump", "xyzzy", etc., even if they are not relevant. Default and error responses are *bad*.
 
@@ -56,7 +56,7 @@ Some games include feelies. Back in the day, commercial adventure games included
 
 Unfortunately, it is easy for players to miss feelies; if they play on line, they just will not know they exist. Happily Quest handles this well, as you can insert images, videos and audio right into your game, and Quest has support for cover art built in.
 
-### The User Interface
+### The user interface
 
 Bear in mind that the vast majority of players will be playing on-line, so bear that in mind.
 

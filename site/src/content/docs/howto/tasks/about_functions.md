@@ -54,7 +54,7 @@ So why would you want to use a function? The basic reason is because you want to
 
 To start, click the "⋯" button next to Functions in the tree and select "Add Function"; give your function a good name. Like any function in a programming language, you can have parameters and a return value. In the example, the destination is a parameter, so click the parameters "Add" button and type "destination". The rest of it is creating a script as normal. The one extra point is that you can reference the parameters as expressions. Once you have the function set up, you just need to call it. "Call function" is an option under scripts, and when you select it, you can put in your parameters.
 
-### A More Complex Example
+### A more complex example
 
 As another example, let us say you have a room with a bench and another room with a chair, and you want the player to be able to type SIT, SIT ON BENCH and SIT ON CHAIR. One way would be to have a function that takes the seat as a parameter. You can set up a SIT command in each room that sends it the right seat depending on the room, and you can create SIT ON verbs for the chair and the bench that use the Sit function.
 
@@ -65,7 +65,7 @@ You can use any names you like here; there is no need for them to correspond to 
 Then put in your script. In this example, all it does is print a message. Whatever values are sent as parameters will automatically go into the variables in the same order. In this function we are expecting to be sent some kind of seat, and whatever it is will be held in the "seat" variable. If this function is called by the "siton" verb of the bench, then the "seat" variable will contain the bench object.
 
 
-### Assumptions and Unexpected Values
+### Assumptions and unexpected values
 
 You need to think about what will happen if the function is sent the wrong sort of variable. Or more specifically, what assumptions are you making about the values the function receives?
 
@@ -83,7 +83,7 @@ Obviously you need to remove the test lines once the function is validated. It m
 For how to do proper unit testing, see [Unit Testing](/howto/scripting/unit_testing).
 
 
-### Returning Values
+### Returning values
 
 A function can return a value. You need to specify what type the returned value will be (boolean, string, object, etc.). In the script, you set the return value by calling the `Return` function.
 
@@ -92,7 +92,7 @@ Be aware that the script will continue to run even after the `Return`. It only s
 For more detail on creating functions with return values, see [Creating Functions](/howto/scripting/creating_functions_which_return_a_value).
 
 
-### Overriding Functions
+### Overriding functions
 
 Did I mention that the power of Quest is that it lets you do so much? Not only can you create your own functions, you can replace the existing ones (though not the script commands or some of the more fundamental functions).
 

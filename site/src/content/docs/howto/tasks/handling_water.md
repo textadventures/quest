@@ -49,7 +49,7 @@ The text processor is a bit limited, and you might prefer to use a script so you
   }
 ```
 
-## A Source of Water
+## A source of water
 
 Now we will do a room with a pool of clear, fresh water. Create a room, give it a Boolean attribute, "watersource", and set it to true. Now you should be able to go in-game and fill the waterskin with water.
 
@@ -62,7 +62,7 @@ And for the second:
   this.parent.watersource = false
 ```
 
-## Playing With Water
+## Playing with water
 
 What else do you want to do? Well, you could empty it. Create an "empty" verb, and paste this in.
 ```

@@ -41,7 +41,7 @@ This is the same as the Text type, but you can also choose a picture to display 
 
 This is the same as the Text type, but you can also choose a YouTube video to display at the top of the screen. You will need the YouTube id of the video - an easy way to get this for a YouTube video is to find the video you want and click Share. The id will be displayed at the end of a URL like `https://youtu.be/8jPyg2pK11M` where `8jPyg2pK11M` is the id you want.
 
-### External Link
+### External link
 
 This is a special page type which takes the player directly to another website. It doesn't display any text of its own.
 
