@@ -701,7 +701,7 @@
   <type name="container_lockable">
     <openscript type="script">
       if (this.locked) {
-        if (this.autounlock and AllKeysAvailable(this)) {
+        if (this.autounlock and KeysAvailable(this)) {
           do (this, "unlock")
           if (not this.isopen) {
             OpenObject (this)
@@ -731,7 +731,7 @@
         msg (DynamicTemplate("CannotLockOpen", this))
       }
       else {
-        if (AllKeysAvailable(this)) {
+        if (KeysAvailable(this)) {
           msg (this.lockmessage)
           this.locked = true
         }
@@ -745,7 +745,7 @@
         msg (DynamicTemplate("AlreadyUnlocked", this))
       }
       else {
-        if (AllKeysAvailable(this)) {
+        if (KeysAvailable(this)) {
           msg (this.unlockmessage)
           this.locked = false
           if (this.autoopen and not this.isopen) {
@@ -764,6 +764,7 @@
     <canlockopen type="boolean">false</canlockopen>
     <autoopen/>
     <autounlock/>
+    <requireallkeys type="boolean">true</requireallkeys>
   </type>
 
   <type name="defaultplayer">

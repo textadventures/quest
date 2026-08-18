@@ -251,6 +251,14 @@
 
     <control>
       <controltype>checkbox</controltype>
+      <caption>[EditorObjectContainerRequireAllKeys]</caption>
+      <attribute>requireallkeys</attribute>
+      <mustinherit>container_lockable</mustinherit>
+      <onlydisplayif>GetInt(this, "keycount") > 1</onlydisplayif>
+    </control>
+
+    <control>
+      <controltype>checkbox</controltype>
       <caption>[EditorObjectContainerLocked]</caption>
       <attribute>locked</attribute>
       <mustinherit>container_lockable</mustinherit>
