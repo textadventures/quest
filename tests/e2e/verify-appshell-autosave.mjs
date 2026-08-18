@@ -41,17 +41,30 @@ async function run() {
     await descBox.waitFor({ timeout: 10000 });
     const marker = `Autosave marker ${Date.now()}`;
     await descBox.fill(marker);
+
+    // Explicitly dispatch input+change events to guarantee the PropertyEditor's
+    // onchange handler fires. page.fill() sets the DOM value and dispatches
+    // input events, but the native change event (which triggers the bridge's
+    // setAttribute → isDirty flip) doesn't always fire on blur in headless
+    // Chromium on CI — making the subsequent pill check time out.
+    await descBox.dispatchEvent('input');
+    await descBox.dispatchEvent('change');
     await page.click('.toolbar-divider'); // blur onto something inert
 
-    // The debounce-to-save-start latency (not the pill's own visible window,
-    // which editor-store.ts's MIN_SAVING_VISIBLE_MS already holds open ~300ms)
-    // is the part that varies — measured ~700-900ms locally, but a loaded CI
-    // runner can occasionally push it past a tighter budget. 3000ms measurably
-    // flaked here (confirmed on main too, not something this branch caused).
-    await page.waitForSelector('text=Saving…', { timeout: 8000 });
-    console.log('PASS: "Saving…" pill appeared after edit, without clicking any Save button');
+    // Wait for the "Unsaved" pill (class save-chip-unsaved) — it appears the
+    // instant isDirty flips to true, confirming the bridge was actually
+    // updated. Then wait for "Unsaved" to disappear (save completed, pill
+    // transitioned to "Saving…" then "Saved"), and finally confirm "Saved"
+    // is visible.  Checking "Saving…" directly via text= flaked on CI because
+    // MIN_SAVING_VISIBLE_MS's 300ms window could elapse between frames, and
+    // "Unsaved" contains the substring "Saved" which gave false positives.
+    await page.locator('.save-chip-unsaved').waitFor({ state: 'visible', timeout: 5000 });
+    console.log('PASS: "Unsaved" pill appeared — bridge isDirty confirmed');
 
-    await page.waitForSelector('text=Saved', { timeout: 10000 });
+    await page.locator('.save-chip-unsaved').waitFor({ state: 'hidden', timeout: 10000 });
+    console.log('PASS: "Unsaved" pill gone — save cycle started');
+
+    await page.locator('.save-chip-saved').waitFor({ state: 'visible', timeout: 10000 });
     console.log('PASS: pill returned to "Saved" after the autosave debounce fired');
 
     // Reopen via /open (a bare reload of "/" just redirects to /open anyway,
