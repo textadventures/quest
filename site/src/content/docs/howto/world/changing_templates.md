@@ -48,4 +48,4 @@ This in your code will give an open square bracket, `[`, on output:
 See also
 --------
 
-For the underlying `<template>` and `<dynamictemplate>` XML elements, see the [template](/elements/template) and [dynamictemplate](/elements/dynamictemplate) reference pages.
+For the underlying `<template>` and `<dynamictemplate>` XML elements, see the [template](/elements#template) and [dynamictemplate](/elements#dynamictemplate) reference pages.

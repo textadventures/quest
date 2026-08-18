@@ -62,7 +62,7 @@ This will include the English template within yours. This means that if English.
 Translating default text
 ------------------------
 
-Default text appears within [template](/elements/template) and [dynamictemplate](/elements/dynamictemplate) tags.
+Default text appears within [template](/elements#template) and [dynamictemplate](/elements#dynamictemplate) tags.
 
 You can translate "template" tags directly, as they are simply static text. Note that the name must not be changed, just the bit between the tags. Here are some examples from the Russian.aslx:
 
@@ -94,7 +94,7 @@ If you want to know where a template is used, search through the Core library fi
 Translating commands
 --------------------
 
-Some commands are defined using a [verbtemplate](/elements/verbtemplate) - you can have as many of these as you wish for any particular command, so feel free to add more if there are more alternatives. Likewise, feel free to remove any additional ones you don't need - there are 4 "speakto" verbtemplates in English.aslx, but it's fine for there to be fewer in your translation.
+Some commands are defined using a [verbtemplate](/elements#verbtemplate) - you can have as many of these as you wish for any particular command, so feel free to add more if there are more alternatives. Likewise, feel free to remove any additional ones you don't need - there are 4 "speakto" verbtemplates in English.aslx, but it's fine for there to be fewer in your translation.
 
 Some commands are defined like this:
 
@@ -134,7 +134,7 @@ For example, in Deutsch.aslx the translation of this is:
 Language-specific object types
 ------------------------------
 
-English doesn't have the concept of "gender" for inanimate objects, but most other languages do. To handle this, you can define "masculine" and "feminine" [types](/elements/type) in your language file.
+English doesn't have the concept of "gender" for inanimate objects, but most other languages do. To handle this, you can define "masculine" and "feminine" [types](/elements#type) in your language file.
 
 For example, in French:
 

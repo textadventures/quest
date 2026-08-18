@@ -12,7 +12,7 @@ It is easy to create a [script](/types/script) attribute to run at a particular 
 
 Note: Delegates also offer a way to pass parameters to a script, but this is arguably better done by passing a dictionary to a script (if only because it is supposed by the editors).
 
-First you need to define the delegate, using a [delegate](/elements/delegate) XML tag. This accepts the same attributes as the [function](/elements/function) tag, so you can specify parameters and/or a return value type.
+First you need to define the delegate, using a [delegate](/elements#delegate) XML tag. This accepts the same attributes as the [function](/elements#function) tag, so you can specify parameters and/or a return value type.
 
 Now you can simply use the delegate name as an attribute type name.
 
