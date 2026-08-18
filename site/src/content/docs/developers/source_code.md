@@ -5,106 +5,75 @@ sidebar:
 ---
 
 
-Compiling Quest
----------------
+Compiling Quest Viva
+---------------------
 
-This describes how to download and compile the Quest source code.
+This describes how to download and compile the Quest Viva source code.
 
 ### Download
 
-Quest can be downloaded from Github. Go to this address and over on the right is a "Clone or download" button. Download the ZIP and unpack it somewhere convenient (or even better, if you have GitHub desktop installed, use that to Clone it).
+Clone the repository from GitHub:
 
 [https://github.com/textadventures/quest](https://github.com/textadventures/quest)
 
-You also need to download [Visual Studio Community 2026](https://visualstudio.microsoft.com/downloads/), which is free from Microsoft.
-
+You'll also need the [.NET 10 SDK](https://dotnet.microsoft.com/en-us/download). Any editor works - Visual Studio, VS Code, JetBrains Rider - or you can just use the `dotnet` CLI directly, which is what the examples below use.
 
 ### Compiling
 
-You should have a folder called "quest", within which there are several more folders and files, one called Quest.sln. Double click that one, and this should open the Quest solution up in Visual Studio.
-
-You should be able to build (_Build - Build Solution_) the solution; there may be some warnings but should be no errors.
-
-To run the unit tests, do _Test - Run - All tests_, hopefully all 87 will pass.
-
-
-### Running Quest
-
-Press F5 to start the editor up. You should be able to load a game, edit it and and run it.
-
-
-### Running the web editor
-
-Copy WebEditorSettings.default.xml to a new file called WebEditorSettings.xml, and uncomment the last two lines. Point DebugFileManagerFile to a Quest file on your PC. Here is an example (last few lines only):
-
-```
-  <!-- OR, when debugging, use the Debug Plugins -->
-  <add key="FileManagerType" value="WebEditor.Services.DebugEditorFileManager, WebEditor"/>
-  <add key="DebugFileManagerFile" value="C:\Users\pixie\Documents\Quest Games\test5\test5.aslx"/>
-</appSettings>
+```bash
+dotnet build --configuration Release
 ```
 
-Set WebEditor as the Startup project in VS by right-clicking it in Solution Explorer.
+This builds the whole solution (`QuestViva.sln`). To run the tests:
 
-Press F5 to start the web editor. It will open a new tab in your browser with the TextAdventures home page, but you can then go here to edit a new game:
-
-[http://localhost:50212/Edit/Game/1](http://localhost:50212/Edit/Game/1)
-
-
-
-Editing Quest
--------------
-
-### Adding new files
-
-Visual Studio tracks files in a solution, and if you just drag a file into the folder, Visual Studio will fail to realise it is there. Either use _File - New - File_ from inside the IDE, or, if you have dragged a file into the folder, right click the folder, and select _Add - Existing File_.
-
-Quest .aslx files need to go in this folder (or a subfolder):
-
-```
-C:\Users\pixie\Documents\quest-master\WorldModel\WorldModel\Core
+```bash
+dotnet test --configuration Release
 ```
 
-Once the file is there, and Visual Studio has noted it is there, you can click on it in the list, and will see the properties in the box below. Set _Copy to Output Directory_ to "Copy always", so the file is copied to the various directories across the project.
+There are around 200 tests across the various test projects (`tests/EngineTests`, `tests/PlayerCoreTests`, `tests/EditorCoreTests`, `tests/LegacyTests`, `tests/WebPlayerTests`) - they should all pass.
 
-At least one directory is handled differently, and you need the files added (as links) by hand; this is the "Core" folder inside "WebEditor". As before, right click the folder, and select _Add - Existing File_. Select the file(s), then from the dropdown under the "Add" button, select "Add as link". The file(s) should now appear in the list, with the same icon as the others, which is different to the icons for the master files. Again, this needs to be set to "Copy always".
+To run a single test project, or filter to a specific test:
 
-The _Save all_.
+```bash
+dotnet test tests/EngineTests
+dotnet test tests/EngineTests --filter "FullyQualifiedName~TestMethodName"
+```
 
 
+Running the players
+--------------------
+
+### WebPlayer
+
+```bash
+docker compose up --build
+```
+
+This runs WebPlayer at `http://localhost:8080`. Alternatively, run it directly from source:
+
+```bash
+dotnet run --project src/WebPlayer/WebPlayer.csproj
+```
+
+See [WebPlayer](/publishing/webplayer) for configuration options.
+
+### WasmPlayer
+
+```bash
+dotnet build src/WasmPlayer/WasmPlayer.csproj
+node src/WasmPlayer/dev-server.mjs
+```
+
+Then open `http://localhost:5175/?url=/examples/simple.aslx`. For a faster AOT-compiled build closer to what actually ships, add `--configuration Release` to the build command and `--release` to the dev server command instead.
 
 
-Before Release
-----------------
+Running the editor (AppShell)
+-------------------------------
 
-This will probably not be relevant to you, but is recorded here nevertheless so there is a record somewhere. Prior to a release, these are the steps I perform to reduce the risk of bugs. This would be the case for a beta-release as well as a normal release.
+The editor is a SvelteKit app (`src/AppShell/`) that talks to the engine through a WASM bridge (`src/WasmEditor/`). The quickest way to get both running together is the root-level dev script:
 
-First ensure all version numbers are updated. There are lots of places! Also make sure any new files are replicated properly. Files in WorldModel should get copied to other locations when you do a Build, but you need to tell Visual Studio to do that. It is also helpful to keep a list of any new files for when you upload to textadventures.co.uk, as these will be the stumbling blocks.
+```bash
+./dev.sh
+```
 
-- **Github**
-- Synchronise with Github
-- Rename the local repository
-- Download a fresh from Github (this ensures I release the version currently on Github, which could be different to the version on my PC)
-
-- **Visual Studio**
-- Run unit tests, check they all pass
-- Run the WebPlayer, check the game is responsive
-- Run the WebEditor, check the editor is responsive
-- Set to release build
-- Rebuild
-
-- **In Inno Setup**
-- Compile
-
-- Install Quest
-
-- **In Quest**
-- Check the version number
-- Load `unit test_for_5_7.aslx`
-- Run (ensure no failures)
-- Load another game
-- Check it saves
-- Open a save game, check it plays normally
-- Check it can be published
-
-The file `unit_test_for_5_7.aslx` can be found [here](https://github.com/textadventures/quest/blob/master/docs/util/unit_test_for_5_7.aslx), and has tests for nearly all the code added to Quest in versions 5.7.1 and 5.7.2, and a bit for 5.8. Read about Quest unit testing [here](/howto/scripting/unit_testing).
+This builds WasmEditor and WasmPlayer, then starts the AppShell dev server (`http://localhost:5174`) alongside the WasmPlayer dev server it uses for Preview. See `docs/appshell-wasm-svelte.md` in the repository for more on how the pieces fit together.
