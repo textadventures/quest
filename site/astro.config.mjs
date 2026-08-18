@@ -1198,10 +1198,6 @@ export default defineConfig({
                                             "slug": "functions/showmenu"
                                         },
                                         {
-                                            "label": "ShowVimeo",
-                                            "slug": "functions/corelibrary/showvimeo"
-                                        },
-                                        {
                                             "label": "ShowYouTube",
                                             "slug": "functions/corelibrary/showyoutube"
                                         },

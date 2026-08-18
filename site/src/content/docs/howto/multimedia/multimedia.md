@@ -44,6 +44,6 @@ Sound and Video
 
 You can play a sound in a script using the "Play sound" command, and stop it again with "Stop sound". See [Adding sounds to your game](/howto/multimedia/adding_sounds) for the full set of options (waiting for a sound to finish, looping, HTML audio elements) and a worked example.
 
-You can also embed video in your game, in-line with the game text, using the "Play YouTube video" command from the Scripts tab. See [Adding videos](/howto/multimedia/adding_videos) for how to do this, how to control the embedded video with JavaScript, and how to embed your own video files or videos from Vimeo.
+You can also embed video in your game, in-line with the game text, using the "Play YouTube video" command from the Scripts tab. See [Adding videos](/howto/multimedia/adding_videos) for how to do this, how to control the embedded video with JavaScript, and how to embed your own video files.
 
 You can also find script commands to print an email or web address hyperlink - see [Hyperlinks](/other_guides/hyperlinks).

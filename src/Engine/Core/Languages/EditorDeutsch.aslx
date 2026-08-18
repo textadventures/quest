@@ -608,7 +608,6 @@
   <template name="EditorScriptsOutputLoop">Den Sound in einer Schleife abspielen?</template>
   <template name="EditorScriptsOutputStopsound">Sound stoppen</template>
   <template name="EditorScriptsOutputPlayYouTube">Youtube-Video abspielen</template>
-  <template name="EditorScriptsOutputPlayVimeovideo">Vimeo-Video abspielen</template>
   <template name="EditorScriptsOutputPrintweblink">Einen Weblink anzeigen</template>
   <template name="EditorScriptsOutputDisplaylink">Folgenden Link anzeigen</template>
   <template name="EditorScriptsOutputhttp//">http://</template>

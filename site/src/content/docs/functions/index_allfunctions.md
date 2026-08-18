@@ -308,7 +308,6 @@ sidebar:
 *  [ShowMenu](/functions/showmenu)
 *  [Show menu](/scripts/show_menu)
 *  [ShowRoomDescription](/functions/corelibrary/showroomdescription)
-*  [ShowVimeo](/functions/corelibrary/showvimeo)
 *  [ShowYouTube](/functions/corelibrary/showyoutube)
 *  [Spaces](/functions/string/spaces)
 *  [Split](/functions/string/split)

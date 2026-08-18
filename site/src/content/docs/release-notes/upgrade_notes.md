@@ -81,7 +81,7 @@ Please note that a few changes have been made to enable Quest games to be conver
 
 Some minor behaviour changes:
 
--   when playing videos with [ShowYouTube](/functions/corelibrary/showyoutube) or [ShowVimeo](/functions/corelibrary/showvimeo), the video now automatically starts playing
+-   when playing videos with [ShowYouTube](/functions/corelibrary/showyoutube) or ShowVimeo (removed since - Vimeo support was dropped from the engine), the video now automatically starts playing
 -   the static picture frame feature is no longer an optional extra - there is no need to set the [useframe](/attributes/useframe) option.
 
 New features:

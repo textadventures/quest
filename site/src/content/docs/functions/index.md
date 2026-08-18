@@ -155,7 +155,6 @@ Functions that change what is displayed or how it is displayed or require the pl
 * [SetFramePicture](/functions/corelibrary/setframepicture)
 * [SetWebFontName](/functions/corelibrary/setwebfontname)
 * [ShowMenu](/functions/showmenu)
-* [ShowVimeo](/functions/corelibrary/showvimeo)
 * [ShowYouTube](/functions/corelibrary/showyoutube)
 * [TextFX_Typewriter](/functions/corelibrary/textfx_typewriter)
 * [TextFX_Unscramble](/functions/corelibrary/textfx_unscramble)

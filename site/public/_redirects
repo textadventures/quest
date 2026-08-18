@@ -117,6 +117,9 @@ docs.textadventures.co.uk/quest/* https://questviva.com/:splat 301
 /helpsheets/hs_case /howto/tasks/multiple_choices_using_a_switch_script 301
 /helpsheets/hs_asktell /howto/npcs/ask_about 301
 
+# Vimeo support removed from the engine entirely
+/functions/corelibrary/showvimeo /functions/corelibrary/showyoutube 301
+
 # Guides pass — Types and Cloak of Darkness relocated to their better-fitting homes
 /howto/scripting/about_types /advanced-topics/about_types 301
 /howto/scripting/cloak_of_darkness /tutorial/cloak_of_darkness 301

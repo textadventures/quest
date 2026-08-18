@@ -178,18 +178,6 @@ Here's the new code:
 ChangeVideoSrc("my-video", "https://www.youtube.com/embed/-WNRvCpw3qo?autoplay=1&rel=0")
 ```
 
-### Vimeo
-
-Quest can also play videos from [Vimeo](https://vimeo.com), via the [`ShowVimeo`](/functions/corelibrary/showvimeo) function:
-
-```
-ShowVimeo (id)
-```
-
-This isn't currently offered as an option in the "Add script" picker on the Scripts tab, so you'll need to add it via code view, but it works the same way as `ShowYouTube` otherwise.
-
-
-
 Using HTML Video Elements
 --------------------
 
