@@ -5,7 +5,7 @@ sidebar:
 ---
 
 
-Verbs are an alternative to commands that can be simpler to use, but do seem to lead to some confusion. We did look at them in the [tutorial](/tutorial/using_scripts), but it is worth looking at them in more depth.
+Verbs are an alternative to commands that can be simpler to use, but do seem to lead to some confusion. We did look at them in the [tutorial](/tutorial/verbs_in_depth), but it is worth looking at them in more depth.
 
 Verbs are always used in conjunction with an object, so `ROTATE KNOB` could be set up as a verb, but `STAND UP` or `JUMP` will require commands. You could use a command for `ROTATE KNOB`, but using a verb is probably simpler. If the player will only try to do this with one or two objects, use a verb. If she could potentially do it with anything, and the outcome will be broadly similar (such as a `SELL` command - the player could try to sell any object, and you would handle them all the same), a command might be better; however there is no hard and fast rule.
 
@@ -68,13 +68,13 @@ The first step is to add the verb to the object, in this case the goblin. Howeve
 
 ## Notes
 
-Some verbs are already implemented, such as "speak to" and "sit on". If you start to type in the Add Verb box, you will see these appear as options. If this is the case, check what the attribute name is. If you add "talk to" as a verb, it will get added as an attribute called "speak", for example.
+Some verbs are already implemented, such as "speak to" and "sit on". If you start to type in the Add Verb box, you will see these appear as options. The left-hand column below is the internal name Quest matches your typing against - the resulting script attribute (shown in brackets) is sometimes different, so check the object's Attributes tab if you're not sure. If you add "talk to" as a verb, for example, it matches the built-in "speak" verb, and the response script ends up in an attribute called "speak" too.
 
 ```
-lieon             lie on #object#; lie upon #object#; lie down on #object#; lie down upon #object#
-listento          listen to #object#
-siton             sit on #object#; sit upon #object#; sit down on #object#; sit down upon #object#
-speak             speak to #object#; speak #object#; talk to #object#; talk #object#
+lieon      (attribute: lie)     lie on #object#; lie upon #object#; lie down on #object#; lie down upon #object#
+listento   (attribute: listen)  listen to #object#
+siton      (attribute: sit)     sit on #object#; sit upon #object#; sit down on #object#; sit down upon #object#
+speak      (attribute: speak)   speak to #object#; speak #object#; talk to #object#; talk #object#
 ```
 
 A few verbs cannot be implements, as they already mean something in Quest. "Open" and "close", and "switch/turn on/off" and "enter" are the main examples. Quest should warn you if you try to do this, as it can have far-reaching consequences in your game.

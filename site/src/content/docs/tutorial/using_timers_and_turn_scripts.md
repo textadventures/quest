@@ -1,7 +1,7 @@
 ---
 title: Using timers and turn scripts
 sidebar:
-  order: 12
+  order: 14
 ---
 
 You can use timers to make something happens every so many seconds, whilst with a turn script you can make it happen every turn.

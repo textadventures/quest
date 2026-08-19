@@ -1,7 +1,7 @@
 ---
 title: Making NPCs act independently
 sidebar:
-  order: 6
+  order: 7
 ---
 
 An NPC is going to feel more alive if he or she is doing things on their own initiative, rather than just reacting to what the player does. 

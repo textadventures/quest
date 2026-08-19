@@ -1,7 +1,7 @@
 ---
 title: Releasing your game
 sidebar:
-  order: 13
+  order: 15
 ---
 
 There are five stages to releasing a Quest game.

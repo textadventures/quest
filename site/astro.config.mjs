@@ -74,8 +74,16 @@ export default defineConfig({
                                     "slug": "tutorial/custom_commands"
                                 },
                                 {
+                                    "label": "Verbs in depth",
+                                    "slug": "tutorial/verbs_in_depth"
+                                },
+                                {
                                     "label": "More things to do with objects",
                                     "slug": "tutorial/more_things_to_do_with_objects"
+                                },
+                                {
+                                    "label": "Using Pages",
+                                    "slug": "tutorial/using_pages"
                                 },
                                 {
                                     "label": "Using containers",
@@ -410,6 +418,10 @@ export default defineConfig({
                                 {
                                     "label": "Building an Ask/Tell system",
                                     "slug": "howto/npcs/ask_about"
+                                },
+                                {
+                                    "label": "Building a conversation with Pages",
+                                    "slug": "howto/npcs/dialogue_pages"
                                 },
                                 {
                                     "label": "Making NPCs patrol",

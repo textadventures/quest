@@ -126,6 +126,8 @@ The first line of the script sets up the topics. They need to be a string list, 
 
 A switch statement is used to decide which response will be seen. Note that the key for each case must be exactly the same as the topic you listed before. The script for each case is set up just as the script for the first option.
 
+If you want a topic's response to lead on to a further set of choices, rather than a one-off menu, see [Building a conversation with Pages](/howto/npcs/dialogue_pages) - unlike `ShowMenu`, a Pages-based conversation doesn't block saving between choices.
+
 
 ## Menu and varying?
 

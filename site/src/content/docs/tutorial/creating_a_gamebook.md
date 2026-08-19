@@ -1,7 +1,7 @@
 ---
 title: Creating a gamebook
 sidebar:
-  order: 14
+  order: 16
 ---
 
 ## Creating a blank game

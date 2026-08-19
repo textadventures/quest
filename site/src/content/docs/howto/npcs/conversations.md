@@ -50,6 +50,21 @@ Quest has a dedicated tab for this - tick "Ask/Tell" on the Features tab of the 
 
 
 
+## Pages
+
+For a more structured exchange - where the player picks from a fixed set of replies, and each reply leads to further choices - Quest has **Pages**, the Text Adventure equivalent of a gamebook's branching passages:
+
+    TALK TO BORIS
+    1: Ask about the key
+    2: Ask about the Queen
+    > 1
+
+Unlike a `ShowMenu`-based conversation, each choice is a complete, ordinary turn, so save, load and undo all keep working in the middle of a conversation.
+
+[More here](/howto/npcs/dialogue_pages)
+
+
+
 ## How it is displayed
 
 You should also consider whether you want both sides of the conversation in the output. Which you choose is up to you, but it will look better if you are consistent, so I suggest deciding now, before you start typing.

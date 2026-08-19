@@ -1,7 +1,7 @@
 ---
 title: Making NPCs patrol
 sidebar:
-  order: 5
+  order: 6
 ---
 
 An NPC is going to feel more alive if he or she is doing things on their own initiative, rather than just reacting to what the player does. A simple way to do this is to add something to the room description for the location the NPC is in. Something like this, maybe:

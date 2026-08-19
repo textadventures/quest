@@ -1,7 +1,7 @@
 ---
 title: More things to do with objects
 sidebar:
-  order: 8
+  order: 9
 ---
 
 ## Giving and using objects
