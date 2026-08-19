@@ -610,7 +610,6 @@
   <template name="EditorScriptsOutputLoop">Bucle:</template>
   <template name="EditorScriptsOutputStopsound">Detener sonido</template>
   <template name="EditorScriptsOutputPlayYouTube">Reproducir vídeo de Youtube</template>
-  <template name="EditorScriptsOutputPlayVimeovideo">Reproducir vídeo de Vimeo</template>
   <template name="EditorScriptsOutputPrintweblink">Imprimir un vínculo de internet</template>
   <template name="EditorScriptsOutputDisplaylink">Mostrar vínculo</template>
   <template name="EditorScriptsOutputhttp//">http://</template>

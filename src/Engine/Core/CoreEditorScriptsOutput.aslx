@@ -371,23 +371,6 @@
     </control>
   </editor>
 
-  <!-- removed the ability to add this as it doesn't work on desktop -->
-  <editor>
-    <appliesto>(function)ShowVimeo</appliesto>
-    <display>Play Vimeo video #0</display>
-
-    <control>
-      <controltype>label</controltype>
-      <caption>[EditorScriptsOutputPlayVimeovideo]</caption>
-    </control>
-
-    <control>
-      <controltype>expression</controltype>
-      <attribute>0</attribute>
-      <simple>id</simple>
-    </control>
-  </editor>
-
   <editor>
     <appliesto>(function)DisplayHttpLink</appliesto>
     <display>Display link '#0' to http(s)://#1</display>
