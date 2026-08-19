@@ -607,7 +607,6 @@
   <template name="EditorScriptsOutputLoop">Loop:</template>
   <template name="EditorScriptsOutputStopsound">Stop sound</template>
   <template name="EditorScriptsOutputPlayYouTube">Play YouTube video</template>
-  <template name="EditorScriptsOutputPlayVimeovideo">Play Vimeo video</template>
   <template name="EditorScriptsOutputPrintweblink">Print web link</template>
   <template name="EditorScriptsOutputDisplaylink">Display link</template>
   <template name="EditorScriptsOutputhttp//">http://</template>

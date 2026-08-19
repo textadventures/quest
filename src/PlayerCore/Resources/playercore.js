@@ -1206,12 +1206,6 @@ function AddYouTube(id) {
     addText(embedHTML);
 }
 
-function AddVimeo(id) {
-    var url = "https://player.vimeo.com/video/" + id + "?autoplay=1";
-    var embedHTML = "<iframe sandbox=\"allow-same-origin allow-scripts allow-popups\" src=\"" + url + "\" width=\"500\" height=\"281\" frameborder=\"0\" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe>";
-    addText(embedHTML);
-}
-
 function SetMenuBackground(color) {
     var css = getCSSRule("div.jj_menu_item");
     css.style.backgroundColor = color;

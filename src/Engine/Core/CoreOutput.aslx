@@ -829,10 +829,6 @@
     JS.AddYouTube(id)
   </function>
 
-  <function name="ShowVimeo" parameters="id">
-    JS.AddVimeo(id)
-  </function>
-
   <function name="WaitForKeyPress">
     request (Wait, "")
   </function>
