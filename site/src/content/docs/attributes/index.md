@@ -484,6 +484,10 @@ See also [unlockmessage](#unlockmessage).
 -   If [string](/types#string), that is printed.
 -   If [script](/types#script), that is run.
 
+## lookonly
+
+"lookonly" is a [boolean](/types#boolean) attribute on an exit. If set to true, the exit is excluded from the exit list shown to the player (via [GetExitsList](/functions/scope#getexitslist)) and from the automatically generated map, and the player cannot move through it with "go" - attempting to do so gives the same response as an unrecognised direction. It's intended for exits that exist only to be referred to by name in a "look" context (e.g. "look north"), not as a way to actually move between rooms.
+
 ## male
 
 The "male" type is defined in CoreTypes.aslx. It sets the [gender](#gender) and [article](#article) as appropriate for a male character, and sets the [displayverbs](#displayverbs) to "Look at" and "Speak to".

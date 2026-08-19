@@ -101,7 +101,7 @@ Returns an [objectlist](/types#objectlist): the given list filtered down to obje
 RemoveLookOnlyExits (objectlist)
 ```
 
-Returns an [objectlist](/types#objectlist): the given list of exits with any exits flagged `lookonly` filtered out. Used by [GetExitsList](#getexitslist) so look-only exits are excluded from the exit list shown to the player.
+Returns an [objectlist](/types#objectlist): the given list of exits with any exits flagged [lookonly](/attributes#lookonly) filtered out. Used by [GetExitsList](#getexitslist) so look-only exits are excluded from the exit list shown to the player.
 
 ## ScopeCommands
 ```
