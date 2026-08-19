@@ -52,4 +52,85 @@
     </control>
   </editor>
 
+  <editor>
+    <appliesto>(function)AddPageLink</appliesto>
+    <display>[EditorScriptsPagesAddLinkFromXToY]</display>
+    <category>[EditorScriptsPagesCategory]</category>
+    <create>AddPageLink (,,"")</create>
+    <add>[EditorScriptsPagesAddPageLink]</add>
+
+    <control>
+      <controltype>label</controltype>
+      <caption>[EditorScriptsPagesAddPageLinkFrom]</caption>
+    </control>
+
+    <control>
+      <controltype>expression</controltype>
+      <attribute>0</attribute>
+      <simple>page</simple>
+      <simpleeditor>objects</simpleeditor>
+      <objecttype>page</objecttype>
+    </control>
+
+    <control>
+      <controltype>label</controltype>
+      <caption>[EditorScriptsPagesAddPageLinkTo]</caption>
+    </control>
+
+    <control>
+      <controltype>expression</controltype>
+      <attribute>1</attribute>
+      <simple>page</simple>
+      <simpleeditor>objects</simpleeditor>
+      <objecttype>page</objecttype>
+    </control>
+
+    <control>
+      <controltype>label</controltype>
+      <caption>[EditorScriptsPagesAddLinkText]</caption>
+      <breakbefore/>
+    </control>
+
+    <control>
+      <controltype>expression</controltype>
+      <attribute>2</attribute>
+      <simple>text</simple>
+      <expand/>
+    </control>
+  </editor>
+
+  <editor>
+    <appliesto>(function)RemovePageLink</appliesto>
+    <display>[EditorScriptsPagesRemoveLinkFromXToY]</display>
+    <category>[EditorScriptsPagesCategory]</category>
+    <create>RemovePageLink (,)</create>
+    <add>[EditorScriptsPagesRemovePageLink]</add>
+
+    <control>
+      <controltype>label</controltype>
+      <caption>[EditorScriptsPagesRemovePageLinkFrom]</caption>
+    </control>
+
+    <control>
+      <controltype>expression</controltype>
+      <attribute>0</attribute>
+      <simple>page</simple>
+      <simpleeditor>objects</simpleeditor>
+      <objecttype>page</objecttype>
+    </control>
+
+    <control>
+      <controltype>label</controltype>
+      <caption>[EditorScriptsPagesAddPageLinkTo]</caption>
+    </control>
+
+    <control>
+      <controltype>expression</controltype>
+      <attribute>1</attribute>
+      <simple>page</simple>
+      <simpleeditor>objects</simpleeditor>
+      <objecttype>page</objecttype>
+    </control>
+  </editor>
+
 </library>
