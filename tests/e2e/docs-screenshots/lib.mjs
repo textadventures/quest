@@ -56,7 +56,7 @@ export async function setScriptCodeView(page, codeViewButtonLocator, scriptText)
 // screenshots, so it needs to read cleanly (not e.g. "Tutorial Game 1786726809698"),
 // which means reusing the same name across every run — so any existing draft with
 // that name is deleted first, keeping repeat runs idempotent.
-export async function createLocalDraft(page, baseUrl, name) {
+export async function createLocalDraft(page, baseUrl, name, { gameType } = {}) {
     await page.goto(`${baseUrl}/open`);
     await page.waitForSelector('button:has-text("Create local draft")', { timeout: 30000 });
 
@@ -71,6 +71,9 @@ export async function createLocalDraft(page, baseUrl, name) {
     // Game type defaults to Text Adventure once the name field triggers the extra
     // fields to appear — no need to explicitly select it for a text-adventure capture.
     await page.waitForSelector('text=Text Adventure', { timeout: 10000 });
+    if (gameType === 'Gamebook') {
+        await page.getByText('Gamebook', { exact: true }).click();
+    }
     await page.click('button:has-text("Create local draft")');
     await page.waitForSelector('button[title="Manage assets"]', { timeout: 30000 });
 }
