@@ -129,11 +129,13 @@ JS.setCommands("Wait;Look;Get apple", "red")
 JS.setCompassDirections (string directions)
 ```
 
-Takes a semicolon-separated list of names for the twelve compass directions - northwest, north, northeast, west, east, southwest, south, southeast, up, down, in, out, in that order - and uses them as the tooltip text for the compass buttons.
+Takes a semicolon-separated list of names for the twelve compass directions - northwest, north, northeast, west, east, southwest, south, southeast, up, down, in, out, in that order - and uses them as the tooltip text for the compass buttons. These names also then stop appearing as exits in the "Places and Objects" list.
 
 ```quest
 JS.setCompassDirections("northwest;north;northeast;west;east;southwest;south;southeast;up;down;in;out")
 ```
+
+The compass directions must be specified in the same order and with the same number of elements as the default shown above. The exit in the compass rose is only active if the alias of the exit matches the text set here.
 
 ## setCss
 
@@ -333,7 +335,12 @@ Removes the underline from in-text command hyperlinks.
 JS.uiHide(string element)
 ```
 
-Hides the given element (see [uiShow](#uishow) for details).
+Hides the given element the same way (see [uiShow](#uishow) for the available selectors). `#gamePanes` is special-cased to behave the same as `panesVisible(false)`.
+
+```quest
+JS.uiHide("#compassLabel")
+JS.uiHide("#compassAccordion")
+```
 
 ## uiShow
 
@@ -341,11 +348,15 @@ Hides the given element (see [uiShow](#uishow) for details).
 JS.uiShow(string element)
 ```
 
-Shows the given element - any CSS selector works, e.g. `#location`, `#txtCommandDiv`, `#status`. `#gamePanes` is special-cased to behave the same as `panesVisible(true)`/`panesVisible(false)`. See the [request](/scripts#request) command reference for the fuller list of selectors used to show/hide individual panes.
+Shows the given element - any CSS selector works. `#gamePanes` is special-cased to behave the same as `panesVisible(true)`.
 
 ```quest
-JS.uiShow("#status")
+JS.uiShow("#gamePanes")
+JS.uiShow("#location")
+JS.uiShow("#txtCommandDiv")
 ```
+
+You can also selectively show or hide one pane (if game panes are shown). Each pane has two components, so to show/hide the compass: `#compassLabel` and `#compassAccordion`. For the inventory, use `#inventoryLabel` and `#inventoryAccordion`; for the places and objects pane, `#placesObjectsLabel` and `#placesObjectsAccordion`. For the custom status pane and the custom command pane, use `#customStatusPane` and `#commandPane` respectively (these have only one part).
 
 ## updateLocation
 
