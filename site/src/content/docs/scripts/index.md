@@ -421,80 +421,35 @@ request(UpdateLocation, "The Kitchen")
 
 The `request` script command is really a throw-back to the original Quest 5.0 interface, which, while it did use HTML, was not a fully-fledged browser. As of 5.3, the interface is a version of Chrome embedded in the software, and all interaction between the game world and the interface is done with JavaScript. Since then `request` has become increasingly obsolete, and it is recommended that the alternative is used. It is just possible `request` will be taken out of Quest at some date.
 
-Valid request names and parameters (and alternatives):
+Valid request names, what they do, and their modern alternative:
 
-### Quit
+| Request name | Effect | Use instead |
+|---|---|---|
+| `Quit` | Quits the game. Parameter is ignored. | `finish` |
+| `UpdateLocation` | Updates the location bar with the parameter text. | `JS.updateLocation(location)` |
+| `GameName` | Sets the name of the game. | `JS.setGameName(name)` |
+| `FontName` | Sets the font name. *(Obsolete as of 5.4.)* | [SetFontName](/functions/user-interface#setfontname) |
+| `FontSize` | Sets the font size. *(Obsolete as of 5.4.)* | [SetFontSize](/functions/user-interface#setfontsize) |
+| `Background` | Sets the background to the specified HTML colour. | [SetBackgroundColour](/functions/user-interface#setbackgroundcolour) |
+| `Foreground` | Sets the foreground to the specified HTML colour. | [SetForegroundColour](/functions/user-interface#setforegroundcolour) |
+| `LinkForeground` | Sets the link foreground to the specified HTML colour. | `SetLinkForegroundColour` *(as of 5.7.2)* |
+| `RunScript` | Runs the specified JavaScript function. | the `JS` object, e.g. `JS.myCustomFunction(15, "some string")` |
+| `SetStatus` | Sets the status area text (right of screen, under "Inventory"); blank removes it. | [status attributes](/status_attributes) |
+| `ClearScreen` | Clears the screen. Parameter is ignored. | [ClearScreen](/functions/user-interface#clearscreen) |
+| `PanesVisible` | Shows/hides the side panes. "on"/"off" toggle them; "disabled" turns them off and removes the button to turn them back on (that button appears to no longer be available). | `JS.panesVisible(true)` / `JS.panesVisible(false)` |
+| `ShowPicture` | Shows the specified picture file from the game directory. | [picture](#picture) |
+| `Show` | Turns on an interface element ("Panes", "Location" or "Command"). | `JS.uiShow(...)` — see below |
+| `Hide` | Turns off an interface element. | `JS.uiHide(...)` — see below |
+| `SetCompassDirections` | Assigns compass direction names from a semicolon-separated list. | `JS.setCompassDirections(...)` — see below |
+| `Pause` | Pauses the game for the specified number of milliseconds. *(Obsolete as of 5.5.)* | — |
+| `Wait` | Waits for the player to press a key. Parameter is ignored. *(Deprecated as of 5.1, unsupported as of 5.4.)* | [wait](#wait) script command |
+| `SetInterfaceString` | Sets UI text via an `"ElementName=Value"` parameter. | `JS.setInterfaceString(...)` — see below |
+| `RequestSave` | Requests the UI to save the game (may prompt a "Save As" dialog). Parameter is ignored. | `requestsave()` |
+| `SetPanelContents` | Sets the static panel HTML contents. | `SetFramePicture` and `ClearFramePicture` |
+| `Log` | Logs the specified text. | [Log](/functions/general#log) |
+| `Speak` | Outputs text to the speech synthesizer, if enabled. | `RequestSpeak("Hello World")` |
 
-Quits the game. Parameter is ignored. Use `finish` instead.
-
-### UpdateLocation
-
-Updates the location bar at the top of the screen with the parameter text. Use JS instead:
-
-```quest
-JS.updateLocation("The kitchen")
-```
-
-### GameName
-
-Sets the name of the game. Do this instead:
-
-```quest
-JS.setGameName("My Cool Game")
-```
-
-### FontName
-
-(Obsolete as of Quest 5.4) Sets the font name. Use [SetFontName](/functions/user-interface#setfontname) instead.
-
-### FontSize
-
-(Obsolete as of Quest 5.4) Sets the font size. Use [SetFontSize](/functions/user-interface#setfontsize) instead.
-
-### Background
-
-Sets the background to the specified HTML colour. Use [SetBackgroundColour](/functions/user-interface#setbackgroundcolour) instead.
-
-### Foreground
-
-Sets the foreground to the specified HTML colour. Use [SetForegroundColour](/functions/user-interface#setforegroundcolour) instead.
-
-### LinkForeground
-
-Sets the link foreground to the specified HTML colour. As of 5.7.2, use `SetLinkForegroundColour` instead.
-
-### RunScript
-
-Runs the specified JavaScript function. A far better way is to use the JS object, which can be used to access any built-in JavaScript function or any you add yourself.
-
-```quest
-JS.myCustomFunction(15, "some string)
-```
-
-### SetStatus
-
-Sets the text for the status area on the right of the screen (under "Inventory"). If blank, the status area is removed. This is best done using [status attributes](/status_attributes).
-
-### ClearScreen
-
-Clears the screen. Parameter is ignored. Use `ClearScreen` instead.
-
-### PanesVisible
-
-Sets whether the panes on the right of the screen are displayed. Valid values are "on" and "off" (toggling whether panes are shown), and "disabled" (turns panes off and removes the button which would let the player turn them back on - this button appears to no longer be available). Instead use:
-
-```quest
-JS.panesVisible(true)
-JS.panesVisible(false)
-```
-
-### ShowPicture
-
-Shows the specified picture file from the game directory. Use [picture](#picture) instead.
-
-### Show
-
-Turns on an interface element. Valid elements are "Panes", "Location" and "Command". Instead use `JS.uiShow`.
+**`Show` and `Hide`** control interface elements via the `JS` object:
 
 ```quest
 JS.uiShow("#gamePanes")
@@ -502,22 +457,18 @@ JS.uiShow("#location")
 JS.uiShow("#txtCommandDiv")
 ```
 
-You can also selectively hide or show one pane (if games panes are shown). Note that each pane has two components, so to hide the compass:
+Use `JS.uiHide(...)` the same way to turn an element off.
+
+You can also selectively hide or show one pane (if game panes are shown). Each pane has two components, so to hide the compass:
 
 ```quest
 JS.uiHide("#compassLabel")
 JS.uiHide("#compassAccordion")
 ```
 
-For the inventory, do `#inventoryLabel` and `#inventoryAccordion`; for the places and objects pane, `#placesObjectsLabel` and `#placesObjectsAccordion`. For the custom status pane and the custom command pane, use `#customStatusPane` and `#commandPane` respectively (these have only one part).
+For the inventory, use `#inventoryLabel` and `#inventoryAccordion`; for the places and objects pane, `#placesObjectsLabel` and `#placesObjectsAccordion`. For the custom status pane and the custom command pane, use `#customStatusPane` and `#commandPane` respectively (these have only one part).
 
-### Hide
-
-Turns off an interface element. Valid elements are "Panes", "Location" and "Command". Use `JS.uiHide(element)` instead (see above for details).
-
-### SetCompassDirections
-
-Takes a semi-colon separated list of compass direction names and assigns them to the compass buttons. Use `JS` instead, for example:
+**`SetCompassDirections`**:
 
 ```quest
 JS.setCompassDirections("northwest;north;northeast;west;east;southwest;whatever;southeast;up;down;in;out")
@@ -525,23 +476,13 @@ JS.setCompassDirections("northwest;north;northeast;west;east;southwest;whatever;
 
 These names will also then not appear as exits in the "Places and Objects" list. The default is as shown in the example. The compass directions must be specified in the same order and there must be the same number of elements in the list. The exit in the compass rose will only be active if the alias of the exit matches the text you set here.
 
-### Pause
-
-(Obsolete as of Quest 5.5) Pauses the game for the specified number of milliseconds.
-
-### Wait
-
-Waits for the player to press a key. The parameter is ignored. Deprecated as of Quest 5.1 and unsupported as of Quest 5.4 - use the [wait](#wait) script command instead.
-
-### SetInterfaceString
-
-Takes a parameter of the form "ElementName=Value", to set the text in the user interface. Do this instead:
+**`SetInterfaceString`**:
 
 ```quest
 JS.setInterfaceString("PlacesObjectsLabel", "You can see:")
 ```
 
-Either way, valid element names are:
+Valid element names are:
 
 -   InventoryLabel (default "Inventory")
 -   PlacesObjectsLabel (default "Places and Objects")
@@ -550,30 +491,6 @@ Either way, valid element names are:
 -   OutButtonLabel (default "out")
 -   EmptyListLabel (default "(empty)")
 -   NothingSelectedLabel (default "(nothing selected)")
-
-### RequestSave
-
-Requests the UI to save the game - this may bring up a "Save As" dialog if the user has not yet saved their progress. Parameter is ignored. Use:
-
-```quest
-requestsave()
-```
-
-### SetPanelContents
-
-Sets the static panel HTML contents. Use `SetFramePicture` and `ClearFramePicture` instead.
-
-### Log
-
-Log the specified text. Use [Log](/functions/general#log) instead.
-
-### Speak
-
-Output text to speech synthesizer if enabled. Use `requestspeak` instead:
-
-```quest
-RequestSpeak("Hello World")
-```
 
 ## return
 ```quest
