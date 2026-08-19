@@ -277,7 +277,49 @@ async function injectCursor(page, targetLocator, at = 'center') {
 // "click here" framing where the surrounding prose alone doesn't make the target obvious
 // (e.g. a screenshot showing a still-closed native `<select>`, which can't be captured
 // mid-open — see docs-screenshots/README or ask the docs-screenshots skill for why).
+// Clicks the toolbar's "Unsaved" pill (save-chip-unsaved) if present and visible, so
+// captures never show it — it's the real isDirty/isEditingField indicator (see
+// Toolbar.svelte), not a capture artifact, but every doc screenshot is meant to show a
+// clean "just did this one thing" state, not mid-edit save-pending chrome. The pill is
+// itself the save button (onclick={handleSaveNow}), so no extra selector is needed
+// beyond it. Only present on editor pages — WasmPlayer preview tabs have no toolbar, so
+// this is a harmless no-op there (count() is 0).
+async function saveIfDirty(page) {
+    // Some captures intentionally show an open modal (e.g. the Add Script Command dialog) -
+    // its full-viewport backdrop intercepts clicks on the toolbar behind it, and forcing a
+    // save isn't the point of those screenshots anyway. Leave the pill as-is when a dialog
+    // is up rather than hanging on a blocked click.
+    if (await page.locator('[role="dialog"]').count() > 0) return;
+    const unsavedChip = page.locator('.save-chip-unsaved');
+    if (await unsavedChip.count() === 0) return;
+    if (!(await unsavedChip.isVisible())) return;
+    await unsavedChip.click();
+    // Wait past the transient "Saving..." chip too (editor-store.ts's MIN_SAVING_VISIBLE_MS
+    // holds it for a minimum stretch even for an instant save) - waiting only for the unsaved
+    // chip to detach would resolve mid-save, capturing "Saving..." instead of the settled state.
+    await page.waitForFunction(() => {
+        return !document.querySelector('.save-chip-unsaved') && !document.querySelector('.save-chip-saving');
+    }, { timeout: 15000 }).catch(() => {});
+}
+
+// Dismisses the "This game is only stored in this browser" backup nudge (BackupBanner.svelte)
+// if it's showing. Checked after saveIfDirty(), not just once up front - editor-store.ts's
+// doPersist() re-evaluates shouldShowBackupBanner() on every save once a local draft crosses
+// its activity threshold, so the banner can reappear mid-script after the very save this
+// module's own saveIfDirty() just triggered. Dismissing goes through the adapter's own
+// markBackupBannerResolved(), not the save/dirty path, so no follow-up save is needed here.
+async function dismissBackupBannerIfShown(page) {
+    if (await page.locator('[role="dialog"]').count() > 0) return;
+    const dismissButton = page.getByRole('button', { name: 'Dismiss', exact: true });
+    if (await dismissButton.count() === 0) return;
+    if (!(await dismissButton.isVisible())) return;
+    await dismissButton.click();
+    await dismissButton.waitFor({ state: 'detached', timeout: 5000 }).catch(() => {});
+}
+
 export async function capture(page, outputPath, { untilLocator, padding = 24, cursorAt } = {}) {
+    await saveIfDirty(page);
+    await dismissBackupBannerIfShown(page);
     let removeCursor;
     if (cursorAt) {
         const { locator, at } = typeof cursorAt.boundingBox === 'function' ? { locator: cursorAt, at: 'center' } : cursorAt;

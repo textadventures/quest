@@ -8,7 +8,7 @@ import { join, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import {
     runCapture, createLocalDraft, selectTreeNode, addElement, openTab,
-    setLabeledField, selectLabeledField, capture,
+    setLabeledField, selectLabeledField, addVerb, capture,
 } from './lib.mjs';
 
 const imagesDir = join(dirname(fileURLToPath(import.meta.url)), '..', '..', '..', 'site', 'public', 'images');
@@ -81,11 +81,11 @@ await runCapture(async ({ page, baseUrl }) => {
     // --- Addverb.png: Verbs tab, "watch" verb with a print-message response ---
     await openTab(page, 'Verbs');
     await page.waitForSelector('text=No verbs added yet', { timeout: 15000 });
-    const addVerbButton = page.locator('button:has-text("Add Verb")');
-    await addVerbButton.locator('..').locator('input').fill('watch');
-    await addVerbButton.click();
-    await page.waitForSelector('text=watch', { timeout: 10000 });
-    await page.click('td:has-text("watch")');
+    // Not a plain `text=watch` wait+click - the verbs table renders a second, CSS-hidden
+    // "Verb: watch" label (a responsive mobile-card duplicate) earlier in the DOM than the
+    // visible table cell, and a bare text locator matches that first, invisible element and
+    // times out. addVerb() already waits on the specific `td:has-text(...)` cell instead.
+    await addVerb(page, 'watch');
     const verbValue = page.locator('textarea');
     await verbValue.fill(
         "You watch for a few minutes. As your will to live slowly ebbs away, you remember that you've always hated watching westerns."

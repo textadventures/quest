@@ -22,6 +22,16 @@ await runCapture(async ({ page, baseUrl }) => {
     await addElement(page, 'Add Object in "room"', 'TV');
     await selectTreeNode(page, 'room');
     await addElement(page, 'Add Object in "room"', 'Bob');
+    // Bob defaults to the generic "Inanimate object" type, which prints "a Bob" in room
+    // descriptions (the default "a"/"an" prefix) - switch to "Male character (named)" so he
+    // reads as a proper name instead, same as the tutorial's own "Creating a Character" step
+    // (interacting_with_objects.md) instructs. The Setup tab has two "Type" dropdowns with the
+    // same caption (Room/Object/Object-and-or-room, then Inanimate/Male/Female character) - the
+    // second one is the only one offering a "namedmale" option value, so select on that instead
+    // of relying on label text order.
+    await selectTreeNode(page, 'Bob');
+    await openTab(page, 'Setup');
+    await page.locator('select:has(option[value="namedmale"])').selectOption('namedmale');
     await selectTreeNode(page, 'room');
     await addElement(page, 'Add Room', 'kitchen');
     await selectTreeNode(page, 'room');
