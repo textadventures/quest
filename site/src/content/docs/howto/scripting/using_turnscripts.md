@@ -32,7 +32,7 @@ Conversely, if you find your turnscript is not firing, check you have not accide
 
 Turnscripts run after the player has taken a turn. You may decide you want them to run at the start of the game, before the player has done anything. Go to the _Scripts_ tab of the game object, and add this to the start script.
 
-```
+```quest
 RunTurnScripts
 ```
 
@@ -42,7 +42,7 @@ RunTurnScripts
 
 There may be times you do not want turnscripts to fire just for that one turn. For example, if the player types HELP, it is, perhaps, unfair if the goblin hoard still get to attack. To stop all turnscripts for one turn, add this to the code (for example, for the HELP command, this should be added to the command script):
 
-```
+```quest
 SuppressTurnscripts
 ```
 

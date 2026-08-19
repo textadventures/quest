@@ -12,7 +12,7 @@ In HTML terms, it consists of two elements: the "location" element, which holds 
 
 Using JQuery we can change the location bar to display anything we want. The basic code (in JavaScript( is this:
 
-```
+```js
 $('#location').replaceWith('Some new HTML code')
 ```
 
@@ -23,7 +23,7 @@ That new HTML can include a new "location" element, in which case Quest will con
 
 A good example would be to show the score and number of turns in the top right corner, and keep the room name in the left corner. To do that, we will insert a table into the location bar, one row high, two columns wide. The first cell is called "location", so will still display the room name, the second is called "altlocation".
 
-```
+```quest
 s = "<table width=\"100%\"><tr>"
 s = s + "<td id=\"location\"></td>"
 s = s + "<td id=\"altlocation\" align=\"right\">0/0</td>"
@@ -47,14 +47,14 @@ If you go in game, you show see the score and turn... but it does not update.
 
 We need to first initialise the score and turn counter, and this has to be done in the start script, on the _Scripts_ tab of the game object, as we want this to happen at the start of the game, but not when a saved game is loaded:
 
-```
+```quest
 game.turncount = 0
 game.score = 0
 ```
 
 Now add a new turn script, and tick it to be enabled at the start. Paste in this code, which will increment the turn counter, and then update the location bar.
 
-```
+```quest
 game.turncount = game.turncount + 1
 JS.eval ("$('#altlocation').html('" + game.score + "/" + game.turncount + "')")
 ```
@@ -64,7 +64,7 @@ JS.eval ("$('#altlocation').html('" + game.score + "/" + game.turncount + "')")
 
 We can also add commands to the location bar. Just change the "User interface initialisation script" to this:
 
-```
+```quest
 s = "<table width=\"100%\"><tr>"
 s = s + "<td id=\"cmdlocation\" width=\"25%\">"
 s = s + "<a onclick=\"ASLEvent(&apos;HandleSingleCommand&apos;, &apos;look&apos;);\" style=\"cursor:pointer\">LOOK</a> |"
@@ -80,7 +80,7 @@ if (HasAttribute(game, "pov")) {
 
 The first line is the same as before, as are the last seven (except the "location" element is now centrally aligned). The difference is we have inserted these three lines:
 
-```
+```xml
 s = s + "<td id=\"cmdlocation\" width=\"25%\">"
 s = s + "<a onclick=\"ASLEvent(&apos;HandleSingleCommand&apos;, &apos;look&apos;);\" style=\";cursor:pointer;\">LOOK</a> |"
 s = s + "<a onclick=\"ASLEvent(&apos;HandleSingleCommand&apos;, &apos;wait&apos;);\" style=\";cursor:pointer;\">WAIT</a></td>"
@@ -90,7 +90,7 @@ They add a new cell to the table, so now it has three columns. Note that `width=
 
 Our new table cell has two commands, LOOK and WAIT. When it is on the page, the HTML for the LOOK command will look like this:
 
-```
+```xml
 <a onclick="ASLEvent('HandleSingleCommand', 'look');\" style="cursor:pointer;">LOOK</a>
 ```
 
@@ -104,7 +104,7 @@ When we put this code into Quest, we need to escape the double quotes, by puttin
 As we have not touched the "status" element, changes you make on the _Interface_ tab will still be applied. The one exception to that is the colour of the text for commands, because links always get displayed in a different colour. The simple way to handle that is to set the colour in the "style" attribute.
 
 For example, to have it black (note the spelling of "color"!):
-```
+```xml
 s = s + "<td id=\"cmdlocation\" width=\"25%\">"
 s = s + "<a onclick=\"ASLEvent(&apos;HandleSingleCommand&apos;, &apos;look&apos;);\" style=\"cursor:pointer;color:black\">LOOK</a> |"
 s = s + "<a onclick=\"ASLEvent(&apos;HandleSingleCommand&apos;, &apos;wait&apos;);\" style=\"cursor:pointer;color:black\">WAIT</a></td>"

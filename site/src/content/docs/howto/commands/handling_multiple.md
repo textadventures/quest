@@ -78,7 +78,7 @@ The script will also have access to a second variable, `multiple`, which will be
 
 By way of an example, we will look at the script for `TAKE`:
 
-```
+```quest
 took_something = false
 foreach (obj, object) {
   // if this is multiple then we should skip anything in a container that will be taken

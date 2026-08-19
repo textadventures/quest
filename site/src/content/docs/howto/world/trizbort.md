@@ -54,7 +54,7 @@ You can make other changes too, but nothing that will get exported into Quest.
 
 You can add objects to rooms. Double click the room to open the properties box, and go to the _Objects_ tab. It is a simple list; one object per line. Each object can be flagged to be of a certain type, the flags should go inside square brackets. The following are supported:
 
-```
+```quest
 s scenery
 f female
 m male
@@ -124,7 +124,7 @@ Alternatively, export the Trizbort map to an image, and add that to your game.
 
 If you want to create a game in a language other than English, you just need to add the language file to your game. In the editor toolbar, open the raw XML code view. You will see the code behind your game. It will start like this:
 
-```
+```xml
 <!--Saved by Quest 5.7.6597.24702-->
 <asl version="550">
 <include ref="English.aslx" />
@@ -133,7 +133,7 @@ If you want to create a game in a language other than English, you just need to 
 
 You need to add a line to add your language, after English, and before Core. This example is for French.
 
-```
+```xml
 <!--Saved by Quest 5.7.6597.24702-->
 <asl version="550">
 <include ref="English.aslx" />
@@ -151,7 +151,7 @@ Another way to use Trizbort is to create a new region in an existing game. You w
 
 After creating the new region, go to _File – Export_ to export your game, and select _Quest to clipboard (no header)_. All the new rooms and objects will be copied to the clipboard. In the editor, open the raw XML code view. You will see the code behind your game. Right at the bottom, you will see this line:
 
-```
+```xml
 </asl>
 ```
 

@@ -26,11 +26,15 @@ So let's give the new objects weights. First we'll set the flour's "weight" attr
 
 You can read an attribute from any script command by using an **expression**. Expressions let you perform calculations, run functions, and read the values of variables and attributes. To read an attribute, you use this form:
 
-     object.attribute
+```quest
+ object.attribute
+```
 
 For example, to read the weight of the eggs, you would type:
 
-     eggs.weight
+```quest
+ eggs.weight
+```
 
 Let's update the "look at" description of the eggs, as an example. Select the eggs object, and then under the "Setup" tab, change the "Look at" description to "Run script". Add the "print a message" command. Now, instead of printing a normal message (which would never change, and can't read attributes), we want to print the result of an expression. So, click the "message" drop-down and select "expression" instead.
 
@@ -38,7 +42,9 @@ Let's update the "look at" description of the eggs, as an example. Select the eg
 
 Enter this expression exactly, including the quotation marks in the correct place:
 
-     "A box of eggs, weighing " + eggs.weight + " grams."
+```quest
+ "A box of eggs, weighing " + eggs.weight + " grams."
+```
 
 This will insert the value of the "weight" attribute in our text.
 

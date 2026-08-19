@@ -52,11 +52,11 @@ Go to the specific object, and the Attributes tab. Click "Add" in the lower sect
 Anything written in code can also be written using the GUI, and anything created using the GUI can also be written in code. They are just two ways of looking at the same thing.
 
 That said, there are various helper functions that are designed to make the GUI easier, but are not much use when writing code. In the GUI there is an option "Move object to current room". If you look at the code, it looks like this:
-```
+```quest
   MoveObjectHere (hat)
 ```
 If I was writing that if code, I would do this:
-```
+```quest
   hat.parent = player.parent
 ```
 It looks completely different, but what the first does is call a function, `MoveObjectHere`, and the function then does the same thing. And both can be displayed in the GUI (though again they look quite different).

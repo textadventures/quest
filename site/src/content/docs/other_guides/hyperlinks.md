@@ -4,9 +4,11 @@ title: Hyperlinks
 
 Quest lets you embed clickable links directly in text, using the same `{...}` syntax as the rest of the [text processor](/howto/world/text_processor). There are three different kinds, and if you set up a room description to run a script, and have it print the following as a message, you can see all three:
 
-      Here is some text with an <a href="https://textadventures.co.uk/forum/quest">anchor link</a>,
-      a link for {object:torch:the torch}
-      and a link for a {command:wait:wait a moment}.
+```xml
+  Here is some text with an <a href="https://textadventures.co.uk/forum/quest">anchor link</a>,
+  a link for {object:torch:the torch}
+  and a link for a {command:wait:wait a moment}.
+```
 
 When the room description is displayed, there are three links. Clicking on the first will open up that web page in your browser, and is exactly the same as a link on a web page (so, yes, the HTML tag that lets you move to another web page is `a` for anchor, a nautical device for keeping you from moving somewhere else).
 

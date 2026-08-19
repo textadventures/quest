@@ -13,7 +13,7 @@ Change scripts can be created for attributes on any object, not just the player,
 As an example, let us create an attribute called "hits" on the player object. You can do that on the Attributes tab by clicking Add just above the bottom box. Set it to be an integer. Once it is in the list, click on it and then click the "Add Change Script" button (the third one, a plus in a box). Quest will add a new attribute, "changedhits". Easy as that.
 
 Now make the script display the new hit points:
-```
+```quest
   if (player.hits > 0) {
     msg ("Hits points now " + player.hits)
   }
@@ -24,7 +24,7 @@ Now make the script display the new hit points:
 ```
 
 Quest recognises an attribute as a change script if it is a script and its name starts with "changed". There are just standard scripts, and you can use them as such:
-```
+```quest
   do (player, "changedhits")
 ```
 
@@ -34,7 +34,7 @@ Quest recognises an attribute as a change script if it is a script and its name 
 ### Lists
 
 Changing the contents of a list does not trigger a change script. Quest will consider it to be the same list. Say we have an attribute called "listofstuff".
-```
+```quest
   // This will not trigger a change script
   list add (player.listofstuff, "item")
   // These will
@@ -45,7 +45,7 @@ Changing the contents of a list does not trigger a change script. Quest will con
 ### Ordering
 
 The change script will fire when the attribute changes, so be careful where you make the change in your code. In the hit points example, this is wrong:
-```
+```quest
   player.hitpoints = player.hitpoints - 20
   msg("You drink the liquid... and realised it was poison!")
 ```
@@ -74,7 +74,7 @@ If the object in question is not the "player" object and will never be the playe
 ### The oldvalue variable
 
 There is a special variable that holds the previous value of the attribute your change script is following, and this is called "oldvalue". A good example of that in use is the change script on the "parent" attribute that was just mentioned:
-```
+```quest
   if (game.pov = this) {
     if (IsDefined("oldvalue")) {
       OnEnterRoom (oldvalue)
@@ -99,7 +99,7 @@ A couple of examples...
 Often you will find you want to constrain an attribute to a range, and change scripts offer a great way to do that. Suppose we want to track purity, as a percentage, so it can range from 0 to 100.
 
 Go to the _Attributes_ tab, and select the `purity` attribute. Then click on "Add change script", and paste in this code:
-```
+```quest
 if (this.purity < 0) {
   this.purity = 0
 }
@@ -115,7 +115,7 @@ Now whenever Purity changes, this will fire and ensure it is in range.
 
 You may find you want something to happen when an attribute hits a certain value. The classic example is the player dies when hits go to zero.
 
-```
+```quest
 this.hits = 35
 this.changedhits = > {
   if (this.hits <= 0) {

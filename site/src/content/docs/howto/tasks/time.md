@@ -12,7 +12,7 @@ The simplest way to track time is to say that by default, each turn is one minut
 
 So create a turn script, call it "TimeTurnScript", set it to be enabled, and paste in this code:
 
-```
+```quest
 if (not HasInt(game, "time")) {
   game.time = 60 * 10 + 23
 }
@@ -32,7 +32,7 @@ Two issues we can address. The first is that the turn script will not fire at th
 
 Go to the _Script_ tab of the game object, and add this to the start script:
 
-```
+```quest
 RunTurnScripts
 ```
 
@@ -40,14 +40,14 @@ Now all your turn scripts will run before the player takes a turn.
 
 The second issue is that we do not want time to pass if the player mistypes something. On the _Features_ tab, turn on advanced scripts, then on the _Advanced Scripts_ tab, for the unresolved command script, paste in this:
 
-```
+```quest
 game.notarealturn = true
 msg("I have no idea what that means.")
 ```
 
 Then back to the turn script, and replace the script with this:
 
-```
+```quest
 if (not HasInt(game, "time")) {
   game.time = 60 * 10 + 23
 }
@@ -61,13 +61,13 @@ Now if the player types in nonsense Quest cannot understand, `game.notarealturn`
 
 If you have anything else that should only happen after a real turn (such as enemies attacking the player), you can add that to the above script. It would need to go after this line:
 
-```
+```quest
   game.time = game.time + 1
 ```
 
 You might also want to modify some commands so a minute does not pass for them. For example, `HELP` and perhaps `INVENTORY` and `LOOK`. Just add this line to their scripts:
 
-```
+```quest
 game.notarealturn = true
 ```
 
@@ -76,7 +76,7 @@ game.notarealturn = true
 
 You can display the time as a status attribute (or elsewhere), and the best way is to have a "timeasstring" attribute that will hold it nicely formatted. Because of the weird way we write time (base 60, and noon is neither am or pm), the coding suddenly gets long...
 
-```
+```quest
 if (not HasInt(game, "time")) {
   game.time = 60 * 10 + 23
   if (not HasAttribute(game, "statusattributes")) {
@@ -111,13 +111,13 @@ Note that the third to sixth lines are adding "timeasstring" as a status attribu
 
 Most actions will take 1 minute, but you can increase that just by adding to `game.time`. Suppose mending the car takes 10 minutes, put this in the script (1 minute passes anyway):
 
-```
+```quest
 game.time = game.time + 9
 ```
 
 For exits, set them to run a script, then paste in this code:
 
-```
+```quest
 MoveObject(player, this.to)
 game.time = game.time + 9
 ```

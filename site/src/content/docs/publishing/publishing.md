@@ -32,7 +32,9 @@ Quest grabs any file with a name that matches one of these formats
 
 However, you can modify that by changing `game.publishfileextensions`; despite the name, it is not restricted to file extensions. If you have a text file you want included, but others you do not, you could set it like this:
 
-    *.jpg;*.jpeg;*.png;*.gif;*.js;*.wav;*.mp3;*.htm;*.html;*.svg;*.ogg;*.ogv;includeme.txt
+```quest
+*.jpg;*.jpeg;*.png;*.gif;*.js;*.wav;*.mp3;*.htm;*.html;*.svg;*.ogg;*.ogv;includeme.txt
+```
 
 The single code file plus all the supporting files are then compressed in a single archive file.
 

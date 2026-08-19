@@ -26,7 +26,9 @@ The solution is to avoid moving the player on any of the built-in room scripts. 
 
 Occasionally you may see this error:
 
-    Error running script: Error evaluating expression '(not GetBoolean(game.pov.parent, "visited")) and HasScript(game.pov.parent, "beforefirstenter")': GetBoolean function expected object parameter but was passed 'null'
+```quest
+Error running script: Error evaluating expression '(not GetBoolean(game.pov.parent, "visited")) and HasScript(game.pov.parent, "beforefirstenter")': GetBoolean function expected object parameter but was passed 'null'
+```
 
 This happens when the player's "parent" attribute is set to null, and can happen if you try to move the player to a variable that has not been set (and Quest will think an object name you have mis-spelled to be a variable).
 
@@ -43,7 +45,7 @@ Quest automatically assigns names to anything you do not name yourself (for exam
 
 You will probably never need them in a text adventure, but `e` and `pi` are both mathematical constants. Quest will happily let you assign a value to them, but will ignore the assignment.
 
-```
+```quest
 e = GetExitByLink (room, room2)
 msg (e)
 -> 2.71828182845905
@@ -70,7 +72,7 @@ Various attributes are already used by Quest. Do not do anything with "type" or 
 
 Runtime errors occur when playing the game. Quest has tried to run a script, and realised there is an issue. You will get an error in the game output that will usually consist of two parts. Here is an example:
 
-```
+```quest
 Error running script: Error compiling expression 'game.myflag': RootExpressionElement: Cannot convert type 'Object' to expression result of 'Boolean'
 ```
 
@@ -120,27 +122,27 @@ In this case, Quest has found `[something]` in a script, but has no idea what it
 
 If the function name is wrong, you will get something like this:
 
-```
+```quest
 Error running script: Error compiling expression 'msg2("some text")': FunctionCallElement: Could find not function 'msg2(String)'
 ```
 
 If you have the wrong number of arguments, you might see one of these (first is for hard-coded functions):
 
-```
+```quest
 Error running script: Expected 1 parameter(s) in script 'msg("some text", "more text")'
 Error running script: Too many parameters passed to OutputText function - 2 passed, but only 1 expected
 ```
 
 If you try to set a value from a function that does not return a type, you might see one of these:
 
-```
+```quest
 Error running script: Error compiling expression 'msg("some text")': FunctionCallElement: Could find not function 'msg(String)'
 Error running script: Error compiling expression 'OutputText("some text")': Value cannot be null.Parameter name: key
 ```
 
 For hard-coded functions, you will get an error if you do not set a value and it has a return type, and if you send it the wrong type in the parameters:
 
-```
+```quest
 The following errors occurred: Error: Error adding script attribute 'start' to element 'game': Function not found: 'GetBoolean'
 Error running script: Error evaluating expression 'GetBoolean("other text", "some text")': GetBoolean function expected object parameter but was passed 'other text'
 ```
@@ -155,7 +157,7 @@ Error running script: Cannot modify the contents of this list as it is defined b
 
 Somewhere in your game you will have a line like one of these:
 
-```
+```quest
 list add (sword.inventoryverbs, "Equip")
 list remove (hat.displayverbs, "Flatten")
 ```
@@ -166,7 +168,7 @@ There are two solutions. The easiest is to add something to the the list in the 
 
 Alternatively, you can give the object a new list. The `Split` function offers an easy way to do that:
 
-```
+```quest
 sword.inventoryverbs = Split("Look at;Take;Equip", ";")
 ```
 

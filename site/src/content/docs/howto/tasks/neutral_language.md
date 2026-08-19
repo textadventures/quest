@@ -21,7 +21,9 @@ You can see the attributes on that same tab, and see them change when you change
 
 Set the response to:
 
-    "You attack " + object.article + "; " + object.gender + " look angry."
+```quest
+"You attack " + object.article + "; " + object.gender + " look angry."
+```
 
 Now if the player attacks the crowd, she will see "You attack them; they look angry."
 
@@ -43,7 +45,7 @@ To illustrate, here are three objects. The shoes were set up with "Default prefi
 
 So back to attacking the crowd and Mary, we can now do this:
 
-```
+```quest
 "You can see " + GetDisplayName(object) + "."
 -> You can see a crowd.
 -> You can see Mary.
@@ -58,7 +60,7 @@ So back to attacking the crowd and Mary, we can now do this:
 
 We need a capital at the start of the second sentence. We can use the `CapFirst` function.
 
-```
+```quest
 "You attack " + GetDefiniteName(object) + ". " + CapFirst(object.gender) + " look angry."
 -> You attack the crowd. They look angry.
 -> You attack Mary. She look angry.
@@ -69,7 +71,7 @@ We need a capital at the start of the second sentence. We can use the `CapFirst`
 
 We also need to conjugate the verb so it is of the correct form. Quest has the `Conjugate` function for that, it takes the object that is doing the verb, followed by the verb as a string (use "be" for the verb to be, by the way).
 
-```
+```quest
 "You attack " + GetDefiniteName(object) + ". " + CapFirst(object.gender) + " " + Conjugate(object, "look") + " angry."
 -> You attack the crowd. They look angry.
 -> You attack Mary. She looks angry.
@@ -77,6 +79,6 @@ We also need to conjugate the verb so it is of the correct form. Quest has the `
 
 Because we often want to start a sentence with the object doing the verb, Quest has a `WriteVerb` that will get the gender of the object, capitalise it and add the conjugated verb. This is used a lot in the language files for built-in responses.
 
-```
+```quest
 "You attack " + GetDefiniteName(object) + ". " + WriteVerb(object, "look") + " angry."
 ```

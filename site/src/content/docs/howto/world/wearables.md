@@ -104,7 +104,7 @@ For verbs that will be visible when the player has the item, set these on the _W
 
 You can change the additional display verbs mid-game by modifying the `wornverbs` or `invverbs` attributes, then calling `SetVerbs`. Here is an example where two verbs are added to a hat for when it is worn, and one when it is not.
 
-```
+```quest
   pink_hat.wornverbs = "Activate;Show off"
   pink_hat.invverbs = "Activate"
   SetVerbs
@@ -148,7 +148,7 @@ There are various functions that can help you when handling clothing.
 
 Use the `ListClothes` function to get a string that lists the clothes currently worn (note, not a string list). If the player is naked, it will return the string "nothing". It could be used like this:
 
-```
+```quest
   msg("You are wearing " + ListClothes () + ".")
 ```
 
@@ -158,7 +158,7 @@ Do you need to know if the player is wearing anything at a certain location? For
 
 You can get the outer most garment for a wear slot, using the GetOuter function.
 
-```
+```quest
   GetOuter ("feet")
 ```
 
@@ -172,7 +172,7 @@ There are two functions, `WearGarment` and `RemoveGarment`, that you can use if 
 
 For example, to have the player wearing clothes at the start, use the WearGarment function. This will ensure the item is in the player's inventory, and all its attributes properly set. You can do this in the start script of the game object.
 
-```
+```quest
   WearGarment (underpants)
   WearGarment (trousers)
   WearGarment (shirt)
@@ -180,7 +180,7 @@ For example, to have the player wearing clothes at the start, use the WearGarmen
 
 The `RemoveGarment` function works similarly, taking the garment to be removed as a parameter. To remove all garments (without any message to the player), do this:
 
-```
+```quest
   foreach (o, GetAllChildObjects(game.pov)) {
     if (GetBoolean(o, "worn")) {
       RemoveGarment (o)
@@ -192,7 +192,7 @@ The `RemoveGarment` function works similarly, taking the garment to be removed a
 
 Quest handles changing the name of a garment, so when it is worn, its alias has "(worn)" added to it. However, that means that if the name of a garment changes, just setting the alias is going to confuse Quest. There are, therefore, two functions to do this. The `SetAlias` function takes the name of the object and the new alias, whilst `SetListAlias` takes the name of the object, the new alias and the new list alias. For example:
 
-```
+```quest
 SetListAlias (trendy_jacket, "unfashionable jacket", "Unfashionable jacket")
 ```
 
@@ -203,7 +203,7 @@ You can use this with any object, by the way; they will just change the alias an
 
 You can [override](/advanced-topics/overriding) a function called `TestGarment` if you want to check a garment can be worn, for example to ensure it is not too small for the player. `TestGarment` must return a boolean, and take a single parameter; the garment. It should return true if the garment can be worn. If it cannot, it should give a message to say that, and then return false.
 
-```
+```quest
   if (GetBoolean(object, "toosmall")) {
     msg("That is too small for you!")
     return (false)
@@ -220,7 +220,7 @@ There is a corresponding function `TestRemove` that is called before an item is 
 
 There is no built-in system to ensure that you only add the right wear_slots. If you have some jeans in a slot called "Lower", the player will be able to wear them at the same time as the trousers in slot "lower". To check you have not done that by mistake, add this line to the start script of your game object:
 
-```
+```quest
   msg (Slots())
 ```
 
@@ -245,14 +245,14 @@ At this point it should work fine, but there is some tidying up we can do to mak
 
 Now go to the verbs tab, and click _Add_ there. Again, type in "Hide" and set this to run a script, and paste this in:
 
-```
+```quest
   this.isopen = false
   this.inventoryverbs = Split("Show", ";")
 ```
 
 Click _Add_ there again, and this time type in "Show" and set this to run a script, and paste this in:
 
-```
+```quest
   this.isopen = true
   this.inventoryverbs = Split("Hide", ";")
 ```
@@ -264,7 +264,7 @@ If you are using inventory limits, increase the maximum by one to allow for this
 
 Let us suppose you want to ensure the player is modestly attired in public places. How might you do that? The first step is to decide what that means in game terms, and then to create a function, let us say, `IsDecent` that will test that, and return a Boolean as appropriate. How that works will depend on your game, but let us suppose there is a flag on the player "isfemale" that is true for female characters, and the important body slots are "lower" and "upper". We will also set an attribute, "private" on rooms that are private. The code might look like this:
 
-```
+```quest
 if (player.isfemale and GetOuter("upper") = null) {
   // Female player not decent if topless
   return (false)
@@ -279,7 +279,7 @@ return (true)
 
 For exits from private locations to public locations, you need to set the exit to run a script, and have that check `IsDecent`:
 
-```
+```quest
 if (IsDecent()) {
   player.parent = this.to
 }
@@ -290,7 +290,7 @@ else {
 
 Finally, you need to [override](/advanced-topics/overriding) the `TestGarment` function.
 
-```
+```quest
 if (GetBoolean(player.parent, "private")) {
   // Not a public area, so player can remove what he or she likes
   return (true)
@@ -313,7 +313,7 @@ else {
 ### Support for NPCs
 
 The library offers some support for having NPCs wearing clothing. Clothing worn by the player can be worn by NPCs too.
-```
+```quest
   // Get an object list containing garments worn by the NPC
   ListWornFor (char)
 

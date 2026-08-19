@@ -8,26 +8,28 @@ Much of the Editor user interface is defined by the core library itself, and the
 
 To add an Editor User Interface for a function defined in your library, add a section to your library like this:
 
-     <editor>
-        <appliesto>(function)EnableTimer</appliesto>
-        <display>Enable timer #0</display>
-        <category>Timers</category>
-        <create>EnableTimer ()</create>
-        <add>Enable timer</add>
-     
-        <control>
-          <controltype>label</controltype>
-          <caption>Enable timer</caption>
-        </control>
-     
-        <control>
-          <controltype>expression</controltype>
-          <attribute>0</attribute>
-          <simple>name</simple>
-          <simpleeditor>objects</simpleeditor>
-          <source>timer</source>
-        </control>
-     </editor>
+```quest
+ <editor>
+    <appliesto>(function)EnableTimer</appliesto>
+    <display>Enable timer #0</display>
+    <category>Timers</category>
+    <create>EnableTimer ()</create>
+    <add>Enable timer</add>
+ 
+    <control>
+      <controltype>label</controltype>
+      <caption>Enable timer</caption>
+    </control>
+ 
+    <control>
+      <controltype>expression</controltype>
+      <attribute>0</attribute>
+      <simple>name</simple>
+      <simpleeditor>objects</simpleeditor>
+      <source>timer</source>
+    </control>
+ </editor>
+```
 
 The example above adds the "Enable timer" command to the "Timers" category:
 

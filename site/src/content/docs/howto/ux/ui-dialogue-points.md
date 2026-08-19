@@ -11,7 +11,7 @@ Let us suppose you want the player to set some numerical attributes by spending 
 
 You need to add a row to your HTML table (in dialogue.html) for each attribute. Here is one row, for magic, you will need one of these for each attribute (they need to go before the `</table>` line):
 
-```
+```xml
            <tr>
             <td style="text-align:right;">
               Magic
@@ -28,7 +28,7 @@ The first line that start `span` will add an up arrow (the 25B2 is the code for 
 
 We also want to show the points remaining, so add this too (again just before the `</table>` line):
 
-```
+```xml
            <tr>
             <td style="text-align:right;">
               Points left
@@ -40,7 +40,7 @@ We also want to show the points remaining, so add this too (again just before th
 
 And we need to define those `intAtt` and `decAtt` functions. This needs to go inside the `<script>` element. Here is the former. It grabs the number of remaining points first, and if this is greater than 0, it increases the given stat and decreases the points remaining. You can add `decAtt` yourself!
 
-```
+```js
             function incAtt(att) {
                 pts = parseInt($('#points').html());
                 flag = (pts > 0);
@@ -54,7 +54,7 @@ And we need to define those `intAtt` and `decAtt` functions. This needs to go in
 
 We also need to update `setValues` to get these new values too. And `HandleDialogue`, to do something with the values (and you will need to use the Quest function `ToInt` to convert them from strings to integers). The dialogue will need to be bigger too. You are on your own for `HandleDialogue`, but here is the complete file:
 
-```
+```xml
  <div id="dialog_window_1" class="dialog_window" title="Your Character">
    <table>
      <tr>

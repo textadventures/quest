@@ -55,7 +55,7 @@ It will then be displayed:
     Total score: 0/10
 
 Status attributes do not support the text processor, but they are displayed in HTML, so you add fancy formatting.
-```
+```xml
 Total score: <b>!/10</b>
 ```
 
@@ -64,13 +64,13 @@ Total score: <b>!/10</b>
 
 Occasionally you want to do something more complicated for a status attribute - for example, you might want to show both the current and the maximum ammo in a gun. The trick is to create a new string attribute that holds both, and to update that whenever either value changes. The code might looking like this, where `player.ammonote` is a string to display the values (this needs to be run whenever the values change):
 
-```
+```quest
 player.ammonote = player.ammo + "/" + player.ammomax
 ```
 
 The attribute can be added to the list of status attributes as before (so in the game start script:
 
-```
+```quest
 dictionary add (player.statusattributes, "ammonote", "Ammo: !")
 ```
 

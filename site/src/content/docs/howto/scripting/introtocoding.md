@@ -30,7 +30,7 @@ Well, the first thing to say is you are already splashing around in the shallow 
 
 What you are looking at is a graphical representation of Quest code. Click on the "Code view" button (it has changed since the image above)...
 
-```
+```quest
 switch (object_one) {
   case (troll) {
     msg ("You say: " + text_talk)
@@ -72,7 +72,7 @@ Scripts are found in numerous places in Quest. Functions and commands are little
 
 Here is an example from a built-in command, INVENTORY:
 
-```
+```quest
   list = FormatObjectList(Template("CarryingListHeader"), game.pov, Template("And"), ".")
   if (list = "") {
     msg (Template("NotCarryingAnything"))
@@ -86,7 +86,7 @@ At its simplest, code is a list of instructions. When the script starts (the pla
 
 Here is a simple example that might be set on an exit:
 
-```
+```quest
   msg("You crawl for some time through the dark tunnel, before arriving at...")
   player.parent = this.to
 ```
@@ -118,11 +118,11 @@ All items and exits have a "parent" attribute (rooms can too). It indicates the 
 To move the player to a new room, all you have to do is set the player's parent to the new room. This is what the script above does. It sets the player's parent to be whatever room is indicated by the "to" attribute of this exit.
 
 To move an item to the player, set the item's parent to the player.
-```
+```quest
   my_item.parent = player
 ```
 To move an item to the current room, set its parent to the player's parent
-```
+```quest
   my_item.parent = player.parent
 ```
 
@@ -141,11 +141,11 @@ Working out what is missing can be tricky! However, if you do not check at this 
 ### Quotes in strings
 
 Given a double quote terminates a string, how do you handle doubles quotes? This is going to fail:
-```
+```quest
   msg ("The scarecrow looks at you. "Howdy!" he says.")
 ```
 Quest will consider `"The scarecrow looks at you. "` to be a string, and `" he says."` to be another, and will try to work out what `Howdy!` is supposed to mean! The trick is to use an escape code; put a backslash before the double quotes within the string. This will work fine.
-```
+```quest
   msg ("The scarecrow looks at you. \"Howdy!\" he says.")
 ```
 If you want to put a backslash into a string, you need to escape that too, so use `\\`.
@@ -177,7 +177,7 @@ Let us have a look at a couple:
 ### The `foreach` loop
 
 This is how to go through each entry in a list (or dictionary). Quest has a number of "scope" functions that will grab all the appropriate items. For example, ScopeInventory gives us a list of items in the player's inventory. We can use that with `foreach`.
-```
+```quest
   foreach (item, ScopeInventory()) {
     msg("You dry out " + GetDisplayName(item))
     item.wet = false
@@ -193,13 +193,13 @@ Quest will go though the objects returned by ScopeInventory. For each one, it wi
 ### The `if` structure
 
 You use `if` to make the script sometimes do one thing and sometimes another. In this simple example, the message is only seen if the `hat` item is in this room.
-```
+```quest
   if (hat.parent = this) {
     msg("There is a bowler hat on the hatstand.")
   }
 ```
 You can add an `else` if you want; this will get done if the condition fails:
-```
+```quest
   if (hat.parent = this) {
     msg("There is a bowler hat on the hatstand.")
   }
@@ -208,7 +208,7 @@ You can add an `else` if you want; this will get done if the condition fails:
   }
 ```
 You can append an `if` to an `else`, to make complex structures. In an adventure game, a common use is to check all the conditions have been met before something happens. This example might be the script for a SIT command.
-```
+```quest
   if (not this.has_chair) {
     msg("There's nowhere to sit here!")
   }
@@ -234,7 +234,7 @@ The strategy here is to test each condition has not been met in turn, and give a
 ### Complex conditions
 
 You can do some complicated condition testing in Quest. To test if conditions are all true, use the `and` operator, and to test if at least one is true, use `or`. You can also test a condition is not true using `not`. In this example all the above conditions are checked at once (the first implicitly).
-```
+```quest
   if (player.parent.name = clown_room and hat.worn and not clown.parent = clown_room) {
     msg ("You sit on the orange chair. A clown suddenly appears in the room, and knocks the hat off your head.")
   }

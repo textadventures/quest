@@ -28,7 +28,7 @@ To set this up in Quest, select the character, go to the verbs tab, and add a ne
 
 Here it is in code, which we will be using from now on!
 
-```
+```quest
 msg ("'Hi,' you say to Boris, 'can you help me find the key to this door?'")
 msg ("'Sure, you need to look in the bedroom.'")
 ```
@@ -43,14 +43,14 @@ If you have a counter in there, then you could have the response depend on how o
 
 Instead of:
 
-```
+```quest
 msg ("'Hi,' you say to Boris, 'can you help me find the key to this door?'")
 msg ("'Sure, you need to look in the bedroom.'")
 ```
 
 Try:
 
-```
+```quest
 if (not GetBoolean (boris, "key_asked")) {
   msg ("'Hi,' you say to Boris, 'can you help me find the key to this door?'")
   msg ("'Sure, you need to look in the bedroom.'")
@@ -64,7 +64,7 @@ else {
 
 Or it could respond to changes in the world. The code below will make Boris respond differently if the door is unlocked, or you are carrying the key.
 
-```
+```quest
 if (not that_door.locked) {
   msg ("'I see you finally managed to unlock the door then,' says Boris sarcastically.'")
 }
@@ -105,7 +105,7 @@ As this is again using the `TALK TO` command, setting it up is like the first op
 
 In code view, it looks like this:
 
-```
+```quest
 topics = Split ("Where is key;Who is the Queen;How do I defeat the troll", ";")
 ShowMenu ("Talk to Boris about...", topics, true) {
   switch (result) {
@@ -131,7 +131,7 @@ A switch statement is used to decide which response will be seen. Note that the 
 
 We can combine the last two, giving the player a menu to pick from, but having the character give a response depending on game state. In this example, it is only done for the first option. All we have done is inserted the code from "Varying Responses" into the above.
 
-```
+```quest
 topics = Split ("Where is key;Who is the Queen;How do I defeat the troll", ";")
 ShowMenu ("Talk to Boris about...", topics, true) {
   switch (result) {

@@ -10,20 +10,20 @@ On the _Interface_ panel of the game object, make sure "Show Panes" is ticked, t
 
 We need to use the `JS.setCustomStatus` function, which can take one parameter, a string to display. Here is an example:
 
-```
+```quest
 JS.setCustomStatus ("You are fine!")
 ```
 
 At this point, you may wonder why bother? The power of the custom status pane comes from using it with HTML. This allows you to format the string to show the information nicely. Here is an example that displays the player's status in a neat table. 
 
-```
+```xml
 html = "<table><tr><td width=\"50%\">Condition:</td><td>Poisoned</td></tr><tr><td></td><td>Woozy</td></tr></table>"
 JS.setCustomStatus (html)
 ```
 
 In your game, you would want to re-build the string whenever a attribute changes. Here is some example code that will take a string list of conditions, called "list", and display it in a table as in the previous example:
 
-```
+```xml
 s = "<table><tr><td width=\"50%\">Condition:</td><td>"
 s = s + Join(list, "</td></tr><tr><td></td><td>")
 s = s + "</td></tr></table>"
@@ -43,7 +43,7 @@ We are going to have two attributes here, the player's current "hitpoints" and t
 
 We need this to happen when the game starts and when reloaded, so this needs to go in the "inituserinterface" script as before. Here is the code for the "inituserinterface" script:
 
-```
+```quest
 s = "<table width=\"100%\"><tr>"
 s = s + "   <td style=\"text-align:right;\" width=\"50%\">Hit points:</td>"
 s = s + "   <td style=\"text-align:left;\" width=\"50%\"><span id=\"hits-span\">---</span></td>"
@@ -69,7 +69,7 @@ The last three rooms update the values - but only if player.changedhitpoints has
 
 And then in the "start script" (go to the _Scripts_ tab of the game object):
 
-```
+```quest
 player.changedhitpoints => {
   JS.eval ("$('#hits-span').html('" + game.pov.hitpoints + "/" + game.pov.maxhitpoints + "');")
   JS.eval ("$('#hits-indicator').css('padding-right', '" + (200 * game.pov.hitpoints / game.pov.maxhitpoints) + "px');")
@@ -89,7 +89,7 @@ The last two lines set the hit points and the maximum. Note that the hit points 
 You can have the pane show several indicators. This is the code for three, showing hit points, armour and magic.
 
 
-```
+```quest
 s = "<table width=\"100%\">"
 s = s + " <tr>"
 s = s + "   <td style=\"text-align:right;\" width=\"50%\">Hit points:</td>"

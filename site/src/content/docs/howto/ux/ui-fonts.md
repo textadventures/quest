@@ -10,7 +10,7 @@ There are about a dozen "base fonts" available in Quest. These are fonts that ar
 
 If you want to change the font during a game, use the `SetFontName` function. This allows you to list the equivalent fonts, so will ensure users on other operating systems see more-or-less the same thing.
 
-```
+```quest
   SetFontName("Arial, Heletica, sans-serif")
   msg("This is in Heletica")
   SetFontName("'Courier New', Courier, monospace")
@@ -23,7 +23,7 @@ The sans-serif and monospace are generic fonts; there are also serif, cursive an
 
 You also have access to web fonts. These are provided on-line by Google, and by default you can access just one in your game. To use any more, you need to call the `SetWebFontName` to pull the font off the internet, and then `SetFontName` as normal to actually use it.
 
-```
+```quest
   // Pull the fonts off the internet
   SetWebFontName("Wallpoet")
   SetWebFontName("Admina")

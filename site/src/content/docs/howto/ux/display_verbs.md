@@ -38,25 +38,25 @@ Error running script: Cannot modify the contents of this list as it is defined b
 
 So how do you actually add and remove verbs? We have an object called "hat", and we want to add a "Wear" verb to the inventory list. One approach is to create a new list each time. This is easily done with the `Split` function. This takes two strings, the first being a list of verbs, separated by semi-colons, the second just a semi-colon, telling Quest what to break the first list on.
 
-```
+```quest
   hat.inventoryverbs = Split("look at;Drop;Wear", ";")
 ```
 
 Then when the hat is worn:
 
-```
+```quest
   hat.inventoryverbs = Split("look at;Remove", ";")
 ```
 
 That will not work if there are potentially other verbs that may or may not be there, and you are better off assigning the attribute each time using `ListCombine`:
 
-```
+```quest
 object.displayverbs = ListCombine(object.displayverbs, Split("Attack"))
 ```
 
 When you want to remove the verb, it should be safe to use `list remove` as you know the object has the list, given you set it yourself earlier. To be extra safe, check the list has the verb first.
 
-```
+```quest
 if (ListContains(object.displayverbs, "Attack")) {
   list remove (object.displayverbs, "Attack")
 }

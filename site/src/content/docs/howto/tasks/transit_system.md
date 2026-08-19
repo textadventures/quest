@@ -19,7 +19,7 @@ Let's limit the player at the start so she can only travel to your house and to 
 
 Here is some example code that could be pasted in there (if you have rooms appropiately named!).
 
-```
+```quest
   Bus stop near your house.busstop = true
   Bus stop near mall.busstop = true
   Bus stop near Fenton Industries.busstop = true
@@ -44,7 +44,7 @@ Then we need a new command. What this is will depend on the type of transport. a
 
 Paste in this code:
 
-```
+```quest
 if (not GetBoolean(player.parent, "busstop")) {
   msg ("No buses stop here.")
 }
@@ -72,7 +72,7 @@ Then (if this is a bus stop) the command creates a new string list, and puts in 
 
 As the player progresses through the game, you can give her access to new areas by adding new destinations. Exactly where you do that will depend on your game, and what it was that opened up the new area, but the code to make it happen is very simple.
 
-```
+```quest
 dictionary add (game.destinations, "Downtown", Bus stop for downtown)
 ```
 
@@ -83,13 +83,13 @@ If money is important in your game, you might want to charge the player for trav
 
 This needs to be updated in three places to charge the player a flat rate for each journey. First you need to give the player an integer attribute, called "money" - either directly on the _Attributes_ tab, or in the start script of the game object by adding this line (set the amount to whatever):
 
-```
+```quest
   player.money = 17
 ```
 
 In the command we need to check the player has enough money, and if he does use the system, we need to deduct that from his money. The command will need to be updated to this (the fare is 5; you will need to modify it in two places if you want to change the fare):
 
-```
+```quest
 if (not GetBoolean(player.parent, "busstop")) {
   msg ("No buses stop here.")
 }

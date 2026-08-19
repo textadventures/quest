@@ -8,51 +8,65 @@ Note that this is about XML elements in the ASLX file, which is not quite the sa
 
 ## asl
 
-    <asl version="580">all game content</asl>
+```xml
+<asl version="580">all game content</asl>
+```
 
 To load any game, the top-level element must be an \<asl\> element as shown above. All other XML elements in the file must appear within this tag.
 
 ## library
 
-    <library>all library content</library>
+```xml
+<library>all library content</library>
+```
 
 The top-level element of any library must be a \<library\> element as shown above. All other XML elements in the file must appear within this tag.
 
 ## include
 
-    <include ref="filename"/>
+```xml
+<include ref="filename"/>
+```
 
 Loads the specified library.
 
 ## template
 
-    <template name="name">text</template>
+```xml
+<template name="name">text</template>
+```
 
 Creates a template of the specified name. You can print the template's text using the [Template](/functions/string#template) function.
 
 Within a language library, a template may define a **templatetype** of "command", for example:
 
-     <template templatetype="command" name="undo">^undo$</template>
+```xml
+ <template templatetype="command" name="undo">^undo$</template>
+```
 
 This simply is a flag to the Editor to prevent it from showing the template in the list of templates (as the way to edit it would be to edit the associated command pattern).
 
 Note that it is important to have templates defined in the right place in the code. If your template is to override an existing template, then it has to come *after* the language file include. However, it has to come *before* the template is used in the code, which should be before the core library file include. As of version 5.2 Quest does not do this, so you will need to manually move the templates to the right place. Your game file should start something like this:
 
-      <!--Saved by Quest 5.2.4515.34846-->
-      <asl version="520">
-        <include ref="English.aslx"/>
-        <template name="SeeListHeader">There's</template>
-        <template name="GoListHeader"> Go to </template>
-        <template name="UnrecognisedCommand">Unknown command.</template>
-        <template name="YouAreIn"></template>
-        <template name="PlacesObjectsLabel">Places / Objects</template>
-        <include ref="Core.aslx" />
-        <game name="Test_1">
-        ...
+```xml
+  <!--Saved by Quest 5.2.4515.34846-->
+  <asl version="520">
+    <include ref="English.aslx"/>
+    <template name="SeeListHeader">There's</template>
+    <template name="GoListHeader"> Go to </template>
+    <template name="UnrecognisedCommand">Unknown command.</template>
+    <template name="YouAreIn"></template>
+    <template name="PlacesObjectsLabel">Places / Objects</template>
+    <include ref="Core.aslx" />
+    <game name="Test_1">
+    ...
+```
 
 ## dynamictemplate
 
-    <dynamictemplate name="name">expression</template>
+```xml
+<dynamictemplate name="name">expression</template>
+```
 
 A dynamictemplate is used in a similar way as [template](#template), except that its value is an expression, not a static string. The expression will have access to an object called "object", which you can use to craft a response.
 
@@ -60,7 +74,9 @@ You can print a dynamic template using the [DynamicTemplate](/functions/string#d
 
 ## verbtemplate
 
-    <verbtemplate name="name">text</template>
+```xml
+<verbtemplate name="name">text</template>
+```
 
 Creates or adds to a verb template of the specified name. Specifying multiple verb templates with the same name lets you handle multiple verbs with one template.
 
@@ -68,7 +84,7 @@ You can refer to verbtemplates within a [verb element](#verb), or using the "tem
 
 The text can optionally include `#object#` as a stand-in for the object name; if it is omitted, the object name is assumed to be at the end. For example:
 
-```
+```xml
 <verbtemplate name="wear">wear</verbtemplate>
 <verbtemplate name="wear">put on</verbtemplate>
 <verbtemplate name="wear">put #object# on</verbtemplate>
@@ -77,7 +93,9 @@ The text can optionally include `#object#` as a stand-in for the object name; if
 
 ## function
 
-    <function name="name"optional type="type"optional parameters="parameters">script</function>
+```xml
+<function name="name"optional type="type"optional parameters="parameters">script</function>
+```
 
 Creates a function.
 
@@ -89,9 +107,11 @@ If the function takes parameters, the parameters should be specified as a comma-
 
 For example:
 
-    <function name="FormatObjectList" type="string" parameters="preList, parent, preFinal, postList">
-    ...
-	</function>
+```xml
+<function name="FormatObjectList" type="string" parameters="preList, parent, preFinal, postList">
+...
+</function>
+```
 
 ### The attributes of a function
 
@@ -107,25 +127,33 @@ Quest will object if there is a return statement, but no type specified; or if t
 
 Here is a trivial example. It's a function to concatenate two strings and return the result. Clearly, you don't need this function (since you can just use the "+" yourself), but hopefully it illustrates how functions are set up.
 
-        <function name="ConcatStrings" parameters="s1, s2" type="string">
-          return (s1 + s2)
-        </function>
+```xml
+    <function name="ConcatStrings" parameters="s1, s2" type="string">
+      return (s1 + s2)
+    </function>
+```
 
 This basically says, "We have a function called 'ConcatStrings', it takes two input parameters, which we will call 's1' and 's2' inside the function, and the function returns a string value."
 
 The function would be invoked as:
 
-        s = ConcatStrings("Mama ", "Mia")
+```quest
+    s = ConcatStrings("Mama ", "Mia")
+```
 
 The resulting "s" would be "Mama Mia"
 
 ## command
 
-    <command name="name" pattern="pattern" unresolved="unresolved text" template="template name">script</command>
+```xml
+<command name="name" pattern="pattern" unresolved="unresolved text" template="template name">script</command>
+```
 
 or
 
-    <command name="name">attributes</command>
+```xml
+<command name="name">attributes</command>
+```
 
 All XML attributes are optional.
 
@@ -159,11 +187,15 @@ The scope attribute tells Quest where to look first for objects for this command
 
 ## verb
 
-    <verboptional name="name"optional pattern="pattern"optional unresolved="unresolved text"optional property="attribute name"optional response="default response text"optional template="template name">script</verb>
+```xml
+<verboptional name="name"optional pattern="pattern"optional unresolved="unresolved text"optional property="attribute name"optional response="default response text"optional template="template name">script</verb>
+```
 
 or
 
-    <verboptional name="name">attributes</verb>
+```xml
+<verboptional name="name">attributes</verb>
+```
 
 Creates a verb, which is a specialised type of [command element](#command) - so everything that applies to a command also applies to a verb. Underneath, verbs are just commands - if you look at them in the Debugger, they are the same thing. But they are designed to be easier to use than commands for the vast majority of commands which are of the form "command object", such as "look at thing", "eat food", "sit on bench" etc.
 
@@ -176,7 +208,9 @@ In addition to any "defaultcommand" type, verbs also inherit "defaultverb". In C
 
 ## type
 
-    <type name="name">properties</type>
+```xml
+<type name="name">properties</type>
+```
 
 Creates a type. The type element can contain properties and [\<inherit\> tags](#inherit).
 
@@ -186,7 +220,9 @@ See [Types](/advanced-topics/about_types).
 
 ## game
 
-    <game name="name">properties</game>
+```xml
+<game name="name">properties</game>
+```
 
 Defines the name of the game and any global properties.
 
@@ -242,7 +278,9 @@ Game attributes handled by Core.aslx:
 
 ## object
 
-    <object name="name">attributes</object>
+```xml
+<object name="name">attributes</object>
+```
 
 Creates an object.
 
@@ -370,7 +408,9 @@ Object types defined by Core.aslx:
 
 ## exit
 
-    <exit alias="direction or displayed exit name" name="name" to="to room">attributes</exit>
+```xml
+<exit alias="direction or displayed exit name" name="name" to="to room">attributes</exit>
+```
 
 Creates an exit from the exit's parent room to the specified room.
 
@@ -424,7 +464,9 @@ visible
 
 ## walkthrough
 
-    <walkthrough name="name" > <steps>steps</steps> </walkthrough>
+```xml
+<walkthrough name="name" > <steps>steps</steps> </walkthrough>
+```
 
 Defines a walkthrough with a list of steps. Each step should be on its own line.
 
@@ -434,7 +476,9 @@ See [Walkthroughs](/howto/scripting/using_walkthroughs).
 
 ## timer
 
-    <timer name="name">attributes</timer>
+```xml
+<timer name="name">attributes</timer>
+```
 
 Timer attributes:
 
@@ -449,7 +493,9 @@ script
 
 ## turnscript
 
-    <turnscript name="name">attributes</turnscript>
+```xml
+<turnscript name="name">attributes</turnscript>
+```
 
 Turnscript attributes:
 
@@ -463,19 +509,27 @@ Note that as of 5.7.2, turnscripts run in alphabetic order (in earlier versions 
 
 ## implied
 
-    <implied element="element" property="attribute name" type="type"/>
+```xml
+<implied element="element" property="attribute name" type="type"/>
+```
 
 Specifies an implied type. For example, the "alt" attribute on an object is usually a list, so to save having to specify the type each time we can use this:
 
-     <implied element="object" property="alt" type="list">
+```xml
+ <implied element="object" property="alt" type="list">
+```
 
 This means we can specify an alt attribute without specifying the type:
 
-     <alt>telly; television</alt>
+```xml
+ <alt>telly; television</alt>
+```
 
 ## delegate
 
-    <delegate name="name"optional type="type"optional parameters="parameters">properties</delegate>
+```xml
+<delegate name="name"optional type="type"optional parameters="parameters">properties</delegate>
+```
 
 Creates a delegate type. Delegates are script properties that can be called like functions. The delegate tag defines the function signature (the parameters passed to the function and its return type, if any), and then an object can provide its own implementation of the delegate function.
 
@@ -485,13 +539,17 @@ See [Using delegates](/advanced-topics/using_delegates)
 
 ## javascript
 
-    <javascript src="filename"/>
+```xml
+<javascript src="filename"/>
+```
 
 Adds the specified Javascript file to the player interface.
 
 ## editor
 
-    <editor name="name">attributes</editor>
+```xml
+<editor name="name">attributes</editor>
+```
 
 This defines the Editor tabs and controls for a particular element type or script command.
 
@@ -504,7 +562,9 @@ appliesto
 
 ## tab
 
-    <tab>attributes</tab>
+```xml
+<tab>attributes</tab>
+```
 
 This defines a tab within an [editor element](#editor).
 
@@ -517,7 +577,9 @@ caption
 
 ## control
 
-    <control>nameattributes</control>
+```xml
+<control>nameattributes</control>
+```
 
 This defines the controls within a [tab element](#tab).
 
@@ -536,7 +598,9 @@ See [Editor user interface elements](/advanced-topics/editor_user_interface_elem
 
 ## resource
 
-    <resource src="filename"/>
+```xml
+<resource src="filename"/>
+```
 
 Specifies that a particular file should be included when building a .quest package.
 
@@ -544,7 +608,9 @@ Specifies that a particular file should be included when building a .quest packa
 
 ## inherit
 
-    <inherit name="name"/>
+```xml
+<inherit name="name"/>
+```
 
 Within an object, type, command or exit definition, inherits properties from the specified type.
 

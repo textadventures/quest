@@ -24,7 +24,7 @@ Probably the most common use is with the `if` script command. This example has t
 
 In code it looks like this:
 
-```
+```quest
 if (IsSwitchedOn(TV)) {
   msg ("You watch for a few minutes. ...")
 }
@@ -37,7 +37,7 @@ else {
 
 Note that blocks are non-blocking! That means Quest will continue with the rest of the code without waiting. This can lead to odd results when waiting for player input. Consider this example:
 
-```
+```quest
 msg ("A man steps out of the door way. 'You wanna a cheap watch?'")
 ask ("Buy dodgy watch?") {
   if (result) {
@@ -59,7 +59,7 @@ The `on ready` script command is there specifically to ensure Quest waits for an
 
 So now we are considering the script for a function, a script within a script. This will look just like a block. In the GUI view, it will be indented to the right; in code view it is indented and further denoted by `{` and `}` at the start and end. There will be some sort of function before it that controls it.
 
-```
+```quest
 options = Split("Red;Green;Blue;Yellow", ";")
 ShowMenu ("What is your favourite colour?", options, false) {
   switch (result) {
@@ -80,7 +80,7 @@ For the most part, scripts can be used just like blocks, but there are some diff
 
 Scripts are separate entities, and they can be passed around as things, similar to how numbers and strings are (you may already use them as attributes). You will probably never want to, but you could define your script first, and then call `ShowMenu`.
 
-```
+```quest
 options = Split("Red;Green;Blue;Yellow", ";")
 myscript => {
   switch (result) {
@@ -106,15 +106,17 @@ Perhaps a more important consequence is that local variables will not be availab
 
 Let us suppose a `Showmenu` is inside a command, with the pattern "paint #object#". The following code will fail; Quest will complain: "Unknown object or variable 'object'."
 
-    options = Split("Red;Green;Blue;Yellow", ";")
-    ShowMenu ("Paint " + GetDisplayAlias(object) + " what colour?", options, false) {
-      msg("You paint " + GetDisplayAlias(object) + " " + LCase(result) + ".")
-      object.colour = result
-    }
+```quest
+options = Split("Red;Green;Blue;Yellow", ";")
+ShowMenu ("Paint " + GetDisplayAlias(object) + " what colour?", options, false) {
+  msg("You paint " + GetDisplayAlias(object) + " " + LCase(result) + ".")
+  object.colour = result
+}
+```
 
 The way to get around this limitation is to set an attribute of the game object before the `ShowMenu`, and to access that inside the script.
 
-```
+```quest
 options = Split("Red;Green;Blue;Yellow", ";")
 game.objecttopaint = object
 ShowMenu ("Paint " + GetDisplayAlias(object) + " what colour?", options, false) {
@@ -133,7 +135,7 @@ The trick is _nesting_, which is putting one thing inside another. Instead of ha
 
 Here it is in code.
 
-```
+```quest
 options = Split("Red;Green;Blue;Yellow", ";")
 ShowMenu ("What is your favourite colour?", options, false) {
   switch (result) {

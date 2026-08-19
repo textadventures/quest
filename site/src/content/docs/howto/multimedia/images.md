@@ -19,7 +19,7 @@ Bear in mind that there is a 50 Mb limit on games at textadventures.co.uk (see [
 ## Adding images - the picture command
 
 Quest has a built-in picture command, which will show an image aligned to the left. 
-```
+```quest
   picture ("gravestone.png")
   msg ("You are in a room. A large room, entirely white, nothing here but a gravestone.")
   msg ("Your gravestone.")
@@ -33,17 +33,17 @@ Sometimes you want to change how it is displayed, for example put the image in t
 HTML is the way web pages on the internet tell your browser how they should be displayed. It is a set of codes embedded in the text, and, for example `<i>` will start italics, whilst `</i>` stops it.
 
 The HTML code for an image will look kind of like this; "img" is the tag for image, and "src" is an attribute that indicates the source of the image (traditionally HTML uses double quotes, but single quotes work too, and are easier to use with Quest):
-```
+```xml
   <img src='gravestone.png' />
 ```
 If only it was that simple. That will work offline, but online, you need a full URL for the file to be found. Fortunately Quest has a function built-in to do that for you, and it will work whether your game in online or offline. This means you need to add together three strings:
-```
+```xml
   "<img src='"
   GetFileURL("gravestone.png")
   "' />"
 ```
 The code ends up looking like this.
-```
+```quest
   msg ("<img src='" + GetFileURL("gravestone.png") + "' />")
   msg ("You are in a room. A large room, entirely white, nothing here but a gravestone.")
   msg ("Your gravestone.")
@@ -55,44 +55,44 @@ Looks just the same so far, but this gives us a handle on changing how it looks,
 ## Floating images
 
 Let us make the image float! When the image floats, the text will flow around it. The HTML will look kind of like this:
-```
+```xml
   <img src='gravestone.png' style='float:left;'/>
 ```
 The "style" attribute tells Quest what style you want this thing to be. You need to be pretty specific in the values. The general format is the name of the CSS attribute ("float" in this case) followed by a colon, then the value ("left"), followed by a semi-colon. Just to help the confusion, we have CSS attributes inside of HTML attributes!
-```
+```quest
   msg ("<img src='" + GetFileURL("gravestone.png") + "' style='float:left;' />")
   msg ("You are in a room. A large room, entirely white, nothing here but a gravestone.")
   msg ("Your gravestone.")
 ```
 
 You can just as easily have the image on the right. Let us add another CSS attribute. The "padding" attribute controls the spacing around the image. You need to specify "px" (pixels) as the units in this case.
-```
+```quest
   msg ("<img src='" + GetFileURL("gravestone.png") + "' style='float:right; padding:15px;' />")
   msg ("You are in a room. A large room, entirely white, nothing here but a gravestone.")
   msg ("Your gravestone.")
 ```
 
 The CSS to centre an image is rather more complicated than you would imagine:
-```
+```quest
   msg ("<img src='" + GetFileURL("gravestone.png") + "' style='display: block; margin-left: auto; margin-right: auto;' />")
 ```
 
 ## Other effects
 
 There are all sorts of attributes you can mess around with. Here the image is transparent.
-```
+```quest
 msg ("<img src='" + GetFileURL("gravestone.png") + "' style='float:left;opacity:0.5;' />")
 ```
 
 You can resize it. Changing just the width or height changes the image proportionally, or you can set both.
-```
+```quest
   msg ("<img src='" + GetFileURL("gravestone.png") + "' style='float:left;width:100px;' />")
 ```
 
 ## One image on top of another
 
 You can even superimpose one image over another if you feel brave enough. You need to put them both inside an HTML div (this is then the reference point that the images are positioned against), and give the images an absolute position. All that needs to go inside a single "msg" as Quest will add its own HTML, so in this example, a string, `s`, is used, with each bit added to it (we could do it in one line, but it would be very long).
-```
+```quest
   s = "<div style='position:fixed; left: 0px; bottom: 20px; width: 260 px; height: 670px;'>"
   s = s + "<img src='" + GetFileURL("gravestone.png") + "' style='position:absolute;top:0px;left:-200px;' />"
   s = s + "<img src='" + GetFileURL("celebrate.png") + "' style='position:absolute;' />"
@@ -112,7 +112,7 @@ Let us suppose 12 images, called "map1.png" to "map12.png". Give each room on th
 
 You could add this to your start script to add each map to the game (the first two lines move others bits to make space for them).
 
-```
+```quest
 JS.setCss ("#gameBorder", "margin-left:600px;margin-right:10px")
 JS.setCss ("#gamePanes", "margin-left:400px")
 s = "<div id='imageouter' style='position:fixed; left: 0px; bottom: 20px; width: 260 px; height: 670px;'>"
@@ -125,7 +125,7 @@ JS.addScript (s)
 
 Then have this script run when the player enters a room (_Scripts_ tab of the game object):
 
-```
+```quest
 for (i, 1, 12) {
   JS.eval ("$('#plan" + i + "').css('visibility', 'hidden')")
 }
@@ -151,7 +151,7 @@ Another possibility is to display a map and to have a marker on it that shows th
 
 One way to circumvent the size limitation is to host your images on another site, such as DeviantArt or Imgur. You can do that easily, using the technique above. In fact, it is even easier; you just add the full address, rather than having to use `GetFileURL`.
 
-```
+```quest
 msg ("<img src='http://www.mydomain.com/images/kitten.png' />")
 msg ("<img src='http://www.mydomain.com/images/kitten.png' style=\"display: block; margin-left: auto; margin-right: auto;\" />")
 ```

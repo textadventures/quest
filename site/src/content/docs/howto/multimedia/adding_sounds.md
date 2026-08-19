@@ -97,7 +97,7 @@ Using an HTML audio tag is the easiest way to handle this, and it will allow you
 
 The most basic example of an audio tag:
 
-```
+```xml
 <audio src='YOUR_URL_GOES_HERE' autoplay />
 ```
 
@@ -109,7 +109,7 @@ When using a local audio file in Quest, we need to use [`GetFileURL()`](/functio
 
 This will find the correct path to the file regardless of how the game is hosted or played.
 
-```
+```quest
 src = GetFileURL("snd effect.ogg")
 msg ("<audio src='" + src + "' autoplay/>")
 ```
@@ -129,7 +129,7 @@ We can also use an HTML audio tag to play audio from an external site, which wil
 
 Here's an example with an actual URL:
 
-```
+```quest
 src = "http://media.textadventures.co.uk/games/1RurGHLuLUqrWdMJh53LTQ/bushcave-explicit-r9/sounds/bushcave.ogg"
 msg ("<audio src='" + src + "' autoplay />")
 ```
@@ -141,7 +141,7 @@ For more on the maximum upload size, see the Size Limitations section on [this p
 
 We can add `controls` to the tag, giving the player an option to play or pause the sound at will.
 
-```
+```quest
 src = GetFileURL("snd effect.ogg")
 msg ("<audio src='" + src + "' autoplay controls />")
 ```
@@ -161,7 +161,7 @@ If we were to add the `controls` option, we could remove `autoplay`, making it s
 
 We can also add a `loop` option, if we wish.  (Guess what this does!)
 
-```
+```quest
 src = GetFileURL("snd effect.ogg")
 msg ("<audio src='" + src + "' autoplay loop />")
 ```
@@ -175,7 +175,7 @@ Like everything else, there are numerous ways to handle this.
 
 The easiest way to stop a sound would be removing ALL audio tags from the game.  This can be handled [using Javascript](/howto/ux/customising_the_ui) via `JS.eval()` (NOTE: This will completely remove any HTML audio tags which have been added to the game!).
 
-```
+```quest
 JS.eval("$('audio').remove();")
 ```
 
@@ -187,27 +187,27 @@ An alternate approach would be assigning an ID to the audio element.
 
 This can be done like so:
 
-```
+```quest
 src = GetFileURL("snd effect.ogg")
 msg ("<audio id='html-audio' src='" + src + "' autoplay loop />")
 ```
 
 Once you have assigned an ID, you can actually pause the audio like this:
 
-```
+```quest
 JS.eval("document.getElementById('html-audio').pause();")
 ```
 
 After pausing, you could resume like this:
 
-```
+```quest
 JS.eval("document.getElementById('html-audio').play();")
 ```
 
 
 You could also remove just that audio element:
 
-```
+```quest
 JS.eval("$('#html-audio').remove();")
 ```
 
@@ -219,7 +219,7 @@ For things to work in a mobile browser, we MUST include the `controls` option! T
 
 There is a way to check for the mobile player using Javascript. Add this to the `game.inituserinterface` script:
 
-```
+```quest
 js = "function isMobilePlayer(){"
 js = js + "if (typeof(currentTab) === 'string'){return true;}return false;};"
 JS.eval (js)
@@ -227,7 +227,7 @@ JS.eval (js)
 
 With that JS function now included, you can add the audio to your script like this:
 
-```
+```quest
 src = GetFileURL("snd effect.ogg")
 JS.eval ("var controlsOpt = '';if(isMobilePlayer()){controlsOpt = 'controls';}")
 JS.eval ("addText (\"<audio autoplay \" + controlsOpt + \" src='" + src + "' />\");")
@@ -241,7 +241,7 @@ You can see this in action in the example game to which there is a link in the n
 
 An easy way to avoid this is using JS to add the sound:
 
-```
+```quest
 src = GetFileURL("snd effect.ogg")
 JS.eval("var songVar = new Audio();songVar.src = '"+src+"';songVar.load();songVar.play();")
 ```

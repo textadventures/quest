@@ -20,7 +20,7 @@ Let us say the machine has a description that is text, and says "A funny looking
 
 You can sometimes get better prose using the text processor, as you are not limited to tacking a sentence on the end. Make the two "Extra object description..." fields blank, and have the description (_Setup_ tab) like this:
 
-```
+```quest
 A funny looking machine{if machine.switchedon: chugging away}.
 ```
 
@@ -28,7 +28,7 @@ This uses the "switchedon" flag (or Boolean attribute) of the object, which Ques
 
 For complex descriptions, you may have to use a script, instead of text, and in that case the two "Extra object description..." fields will be ignored. Again the text processor is a solution:
 
-```
+```quest
 msg ("A funny looking machine{if machine.switchedon: chugging away}.")
 ```
 
@@ -36,7 +36,7 @@ Or an `if` command. This is a trivial example, but could be much more complicate
 
 ![Machine description](/images/switchlookat.png)
 
-```
+```quest
 if (this.switchedon) {
   msg ("A funny looking machine chugging away.")
 }
@@ -56,7 +56,7 @@ In this simple example, the player just has to use a new `POWER` command to get 
 
 This is the code:
 
-```
+```quest
 machine.cannotswitchon = null
 ```
 
@@ -74,7 +74,7 @@ Suppose we have a crystal ball that can be used only when our machine is turned 
 
 ![Crystal ball](/images/switchstate.png)
 
-```
+```quest
 if (machine.switchedon) {
   msg ("You consult the crystal ball, and learn all sorts of stuff.")
 }
@@ -93,7 +93,7 @@ For the turn off script, we need to reverse all that. We have some extra house k
 
 The turn on code:
 
-```
+```quest
 light.lightsource = true
 light.look = "A light, shining brightly."
 machine.cannotswitchon = null
@@ -102,7 +102,7 @@ machine.cannotswitchon = null
 The turn off code:
 
 
-```
+```quest
 light.lightsource = false
 light.look = "A light."
 machine.cannotswitchon = "No power!"
@@ -111,7 +111,7 @@ machine.switchedon = false
 
 You might also want to put some text in there to let the play know these things have happened. Here is an example that checks if the machine is on (before turning it off!), and if it is, gives a message:
 
-```
+```quest
 light.lightsource = false
 light.look = "A light."
 machine.cannotswitchon = "No power!"
@@ -136,14 +136,14 @@ Let us suppose our machine will clone rabbits. We need to add a script that does
 
 ![Bunny machine](/images/switchmoment.png)
 
-```
+```quest
 CloneObjectAndMove (rabbit, player.parent)
 SwitchOff (machine)
 ```
 
 Or change the attribute directly:
 
-```
+```quest
 CloneObjectAndMove (rabbit, player.parent)
 machine.switchedon = false
 ```
@@ -161,14 +161,14 @@ Then go to the _Switchable_ tab, and set it to change the display verbs when tur
 
 ![Changing display verbs](/images/switchdisplayverbs.png)
 
-```
+```quest
 light.lightsource = true
 light.look = "A light, shining brightly."
 machine.cannotswitchon = null
 this.displayverbs = Split("Look at;Switch off", ";")
 ```
 
-```
+```quest
 light.lightsource = false
 light.look = "A light."
 machine.cannotswitchon = "No power!"
@@ -180,7 +180,7 @@ this.displayverbs = Split("Look at;Switch on", ";")
 
 If the object can be picked up, then you need to modify the inventory verbs, and include the "Take" and "Drop" verbs. Delete just "Switch off", but from both lists at the bottom of the _Object_ tab. The code on the _Switchable_ tab would then look like this:
 
-```
+```quest
 light.lightsource = true
 light.look = "A light, shining brightly."
 machine.cannotswitchon = null
@@ -188,7 +188,7 @@ this.displayverbs = Split("Look at;Take;Switch off", ";")
 this.inventoryverbs = Split("Look at;Drop;Switch off", ";")
 ```
 
-```
+```quest
 light.lightsource = false
 light.look = "A light."
 machine.cannotswitchon = "No power!"
@@ -201,7 +201,7 @@ this.inventoryverbs = Split("Look at;Drop;Switch on", ";")
 
 If your object can be turned off another way, you will need to update the display verbs there. For the machine powered by the generator, when the generator is turned off, we would have to also update the verbs for the machine.
 
-```
+```quest
 light.lightsource = false
 light.look = "A light."
 machine.cannotswitchon = "No power!"

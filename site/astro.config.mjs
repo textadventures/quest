@@ -1,6 +1,7 @@
 // @ts-check
 import { defineConfig } from "astro/config";
 import starlight from "@astrojs/starlight";
+import { questGrammar } from "./src/quest-grammar.mjs";
 
 // https://astro.build/config
 export default defineConfig({
@@ -8,6 +9,11 @@ export default defineConfig({
     integrations: [
         starlight({
             title: "Quest Viva",
+            expressiveCode: {
+                shiki: {
+                    langs: [questGrammar],
+                },
+            },
             logo: {
                 src: "./src/assets/quest-viva.svg",
             },

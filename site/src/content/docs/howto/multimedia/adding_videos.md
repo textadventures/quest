@@ -33,7 +33,7 @@ Add the parameter: `id`
 
 Paste this code into the script in code view:
 
-```
+```quest
 // Find all the iframes
 js = "var iframes = document.getElementsByTagName('iframe');"
 // Find the last iframe, and call it "lastIframe"
@@ -46,7 +46,7 @@ JS.eval(js)
 
 Now we can give it an ID to manipulate it.
 
-```
+```quest
 SetLastIframeID ("my-video")
 ```
 
@@ -54,21 +54,21 @@ SetLastIframeID ("my-video")
 
 To set the width to 100%:
 
-```
+```quest
 JS.eval("$('#my-video').width('100%');")
 ```
 
 
 To hide the video, allowing any audio to continue:
 
-```
+```quest
 JS.uiHide("#my-video")
 ```
 
 
 To show it again:
 
-```
+```quest
 JS.uiShow("#my-video")
 ```
 
@@ -76,7 +76,7 @@ JS.uiShow("#my-video")
 
 To remove the video entirely:
 
-```
+```quest
 JS.eval("$('#my-video').remove();")
 ```
 
@@ -84,13 +84,13 @@ JS.eval("$('#my-video').remove();")
 
 To print the video's source to the HTML tools console log:
 
-```
+```quest
 JS.eval("console.log($('#my-video').attr('src'));")
 ```
 
 In this example, this what we see when checking the console in HTML tools:
 
-```
+```quest
  https://www.youtube.com/embed/7vIi0U4rSX4?autoplay=1&rel=0
 ```
 
@@ -103,7 +103,7 @@ To change the video by changing the iframe's `src`, let's create another functio
 
 Create a new function, naming it `ChangeVideoSrc`. Give it the parameters: `id`, `src`. Paste this into the script in code view:
 
-```
+```quest
 js = "$('#"+id+"').attr('src', '"+src+"');"
 JS.eval(js)
 ```
@@ -114,7 +114,7 @@ How do we find the correct text to enter for a new source? We can simply copy th
 
 In this example, we would have this:
 
-```
+```xml
 <iframe width="854" height="480" src="https://www.youtube.com/embed/7vIi0U4rSX4" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
 ```
 
@@ -127,13 +127,13 @@ Now, let's find another video to switch to. A forum member with the web handle "
 
 Here is the embed code:
 
-```
+```xml
 <iframe width="854" height="480" src="https://www.youtube.com/embed/-WNRvCpw3qo" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
 ```
 
 After plugging that parameter into our function and see if it works.  It appears that our code would be:
 
-```
+```quest
 ChangeVideoSrc("my-video", "https://www.youtube.com/embed/-WNRvCpw3qo")
 ```
 
@@ -148,14 +148,14 @@ Takes one parameter:  `id`
 
 The script simply calls a JS function:
 
-```
+```quest
 JS.AddYouTube (id)
 ```
 
 
 ### The JS function:
 
-```
+```xml
  function AddYouTube(id) {
     var url = "https://www.youtube.com/embed/" + id + "?autoplay=1&rel=0";
     var embedHTML = "<iframe width=\"425\" height=\"344\" src=\"" + url + "\" frameborder=\"0\" allowfullscreen></iframe>";
@@ -171,7 +171,7 @@ Another important thing the script adds is the bit of text which makes the video
 
 Here's the new code:
 
-```
+```quest
 ChangeVideoSrc("my-video", "https://www.youtube.com/embed/-WNRvCpw3qo?autoplay=1&rel=0")
 ```
 
@@ -182,7 +182,7 @@ Playing your own videos (or online videos) requires a bit of coding, but it can 
 
 The most basic example of a video tag:
 
-```
+```xml
 <video src='YOUR_URL_GOES_HERE' autoplay />
 ```
 
@@ -192,7 +192,7 @@ When using a local video file in Quest, we need to use [`GetFileURL()`](/functio
 
 This will find the correct path to the file regardless of how the game is hosted or played.
 
-```
+```quest
 src = GetFileURL("spinning_compass.ogv")
 msg("<video src='"+src+"' autoplay width='90%' />")
 ```
@@ -209,7 +209,7 @@ We can also use an HTML video tag to play video from an external site, which wil
 
 Here's an example with an actual URL:
 
-```
+```quest
 src = "http://media.textadventures.co.uk/games/SQBeLzc7F0mHVspXyUfbbg/spinning_compass.mp4"
 msg ("<video src='" + src + "' autoplay />")
 ```
@@ -221,7 +221,7 @@ For more on the maximum upload size, see the Size Limitations section on [this p
 
 We can add `controls` to the tag, giving the player an option to play or pause the video at will.
 
-```
+```quest
 src = GetFileURL("spinning_compass.ogv")
 msg ("<video src='" + src + "' autoplay controls />")
 ```
@@ -236,7 +236,7 @@ If we were to add the `controls` option, we could remove `autoplay`, making it s
 
 You can also add a `loop` option, if you wish.  (Guess what this does!)
 
-```
+```quest
 src = GetFileURL("spinning_compass.ogv")
 msg ("<video src='" + src + "' autoplay loop />")
 ```
@@ -249,7 +249,7 @@ If you choose to loop your video, you will probably need a way to stop it. Like 
 
 The easiest way to stop a video would be removing ALL video tags from the game.  This can be handled [using Javascript](/howto/ux/customising_the_ui) via `JS.eval()` (NOTE: This will completely remove any HTML audio tags you have added to the game!).
 
-```
+```quest
 JS.eval("$('video').remove();")
 ```
 
@@ -258,27 +258,27 @@ JS.eval("$('video').remove();")
 
 An alternate approach would be assigning an ID to the audio element. This can be done like so:
 
-```
+```quest
 src = GetFileURL("spinning_compass.ogv")
 msg ("<video id='html-video' src='" + src + "' autoplay loop />")
 ```
 
 Once we have assigned an ID, we can actually pause the video like this:
 
-```
+```quest
 JS.eval("document.getElementById('html-video').pause();")
 ```
 
 
 After pausing, we could resume like this:
 
-```
+```quest
 JS.eval("document.getElementById('html-video').play();")
 ```
 
 We could also remove just that video element:
 
-```
+```quest
 JS.eval("$('#html-video').remove();")
 ```
 

@@ -87,7 +87,7 @@ Suppose the chest has a trap that will cause a small explosion when it is opened
 
 This is the code behind it:
 
-```
+```quest
 firsttime {
   if (not GetBoolean(this, "disarmed")) {
     msg ("As you open the chest, there is a sudden explosion! It was trapped.")
@@ -105,7 +105,7 @@ Limited containers are a special type of fussy containers; they will refuse to a
 
 ![](/images/containerfussy.png)
 
-```
+```quest
 if (DoesInherit(object, "wearable")) {
   MoveObject (object, this)
   msg ("You put " + object.article + " in the chest.")
@@ -124,7 +124,7 @@ We can use a similar script to track how many items are in the chest, and to rea
 
 ![](/images/containercounter.png)
 
-```
+```quest
 MoveObject (object, this)
 msg ("You put " + object.article + " in the chest.")
 if (ListCount(GetAllChildObjects(this)) > 2) {

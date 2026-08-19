@@ -12,7 +12,7 @@ Quest supports unit testing too. This is most applicable to libraries (and reall
 
 There's no ready-made test-game file to download for this - instead, add each of the following functions to your test game (see [How to copy-and-paste code](/howto/scripting/copy_and_paste_code) for how to paste code into a new function). Together they give you `Testing`, `Assert`, `AssertMatch`, `AssertCommand`, `AssertCommandMatch`, and `Results`, all used below.
 
-```
+```quest
 Testing (title)
   game.testingtitle = title
 
@@ -78,7 +78,7 @@ Results ()
 
 `AssertCommand` and `AssertCommandMatch` need to know what a command printed, so they also need your game to override the built-in `OutputText` function to record it:
 
-```
+```quest
 OutputText (text)
   game.lastoutputtext = ProcessText(text)
   OutputTextRaw (game.lastoutputtext)
@@ -91,7 +91,7 @@ It is usual practice in unit testing to have the system automatically reset afte
 
 Tests go in the `game.start` script (or in functions called from it). This is what it looks like before you do anything.
 
-```
+```quest
 player.changedparent => {
 }
 //
@@ -108,7 +108,7 @@ Obviously your tests will go where it says "TEST CODE HERE". In case you are won
 Let us start with a simple example. Here are the unit tests for the `FormatList` and `IndexOf` functions.
 
 
-```
+```quest
 Testing ("FormatList and IndexOf")
 list = Split("one;two;three", ";")
 Assert ("one, two or three", FormatList(list, ",", "or", "nothing"))
@@ -132,7 +132,7 @@ Run it and you will see this:
 
 What do you see if a test fails? Try it with this code (with an extra line added at the end):
 
-```
+```quest
 Testing ("FormatList and IndexOf")
 list = Split("one;two;three", ";")
 Assert ("one, two or three", FormatList(list, ",", "or", "nothing"))
@@ -160,7 +160,7 @@ For each test, it prints a dot if it passes or an F if it fails. Then, at the en
 
 You can test commands too, using `AssertCommand`. Again this takes two parameters, but in this case the first is the command, as the player would type it, and the second is the text that will be printed (specifically the last text sent to `msg` or `OutputText`). Here is a section of the testing for wearables, showing this in action.
 
-```
+```quest
 Testing ("Clothing - commands")
 AssertCommand ("wear overcoat", "You put it on.")
 AssertCommand ("put overcoat on", "You are already wearing it.")
@@ -173,7 +173,7 @@ AssertCommand ("take overalls off", "You can't remove that while wearing an over
 
 This set does a command then checks the game state afterwards (in this case the inventory verbs).
 
-```
+```quest
 AssertCommand ("get shoes", "You pick them up.")
 Assert ("Look at;Drop;Wear", Join(shoes.inventoryverbs, ";"))
 AssertCommand ("don shoes", "You put them on.")
@@ -184,7 +184,7 @@ Assert ("Look at;Drop", Join(socks.inventoryverbs, ";"))
 
 Text processor commands will get processed; you can test against the output.
 
-```
+```xml
 Testing ("Text processor: text style")
 Assert ("This is in <i>italic</i>", ProcessText("This is in {i:italic}"))
 Assert ("This is in <b>bold</b>", ProcessText("This is in {b:bold}"))
@@ -198,7 +198,7 @@ Assert ("You are in the Room", ProcessText("You are in the {=CapFirst(player.par
 
 You can use `AssertMatch` to test if a string matches a regular expression. A discussion of regular expressions is beyond the scope of this page, but essentially we are matching against a template rather than a specific string. In the examples below, `^` matches the start of the string, `$` the end, and `\\w` matches any letter or number. The first six assertions will pass, the last three will fail (note that `tiger` is an object).
 
-```
+```quest
 Testing ("AssertMatch")
 AssertMatch("tiger", tiger.name)
 AssertMatch("^tiger$", tiger.name)
@@ -218,7 +218,7 @@ You can use `AssertCommandMatch` to match against the output of a command.
 
 I suggest adding no more than 5 new tests at a time. If you have a failure, you will know it is one of those, and it will not be too tricky to find. If you have a lot of tests and one starts to fail, and you cannot work out which one, add some commands like this in you tests, and you will see "@1" in the output. Where the "F" is in relation to "@1" will help you identify the failure.
 
-```
+```quest
 Assert ("You are in the room", ProcessText("You are in the {=player.parent.name}"))
 OutputTextRawNoBr ("@1")
 Assert ("You are in the Room", ProcessText("You are in the {=CapFirst(player.parent.name)}"))

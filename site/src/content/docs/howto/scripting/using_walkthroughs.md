@@ -53,15 +53,17 @@ You can use walkthrough assertions to test your game. Simply include a line star
 
 For example, in the walkthrough below, the assert expression checks that the "take biscuit" command succeeded:
 
-     <walkthrough name="main">
-       <steps>
-         look at tin
-         open tin
-         look at biscuit
-         take biscuit
-         assert:biscuit.parent = player
-       </steps>
-     </walkthrough>
+```xml
+ <walkthrough name="main">
+   <steps>
+     look at tin
+     open tin
+     look at biscuit
+     take biscuit
+     assert:biscuit.parent = player
+   </steps>
+ </walkthrough>
+```
 
 If a walkthrough assert expression returns false, the walkthrough is immediately stopped.
 
@@ -77,19 +79,21 @@ anywhere in the walkthrough to display the total runtime of the walkthrough. The
 
 You can influence the speed of the output with the line "delay:". The delay in milliseconds is specified behind it. The setting takes effect after the delay command line.
 
-     <walkthrough name="main">
-       <steps>
-         look 
-         get apple
-         delay:1000
-         examine apple
-         north
-         look
-         delay:200
-         examine horse
-         use apple with horse
-         runtime:
-       </steps>
-     </walkthrough>
+```xml
+ <walkthrough name="main">
+   <steps>
+     look 
+     get apple
+     delay:1000
+     examine apple
+     north
+     look
+     delay:200
+     examine horse
+     use apple with horse
+     runtime:
+   </steps>
+ </walkthrough>
+```
 
 The command can also be used several times in a walkthrough if certain areas are to be displayed with their own speed.

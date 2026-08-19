@@ -26,7 +26,7 @@ On the _Features_ tab of the game object, tick "Advanced scripts", then go to th
 
 The simplest way to use this is to set up a room, let us say it is called "scenery", of background objects, things like walls, floor and ceiling. Each object should be set to be scenery (_Setup_ tab). The script then adds each item in the scenery room to a special variable called "items":
 
-```
+```quest
 foreach (obj, GetDirectChildren(scenery)) {
   list add (items, obj)
 }
@@ -40,7 +40,7 @@ Because we tagged the items as scenery, they will not show up in room lists, but
 
 We can go further, and add scenery items according to the type of room. How you do that depends on how you flag the rooms of a certain type. In the code below, it is assumed that locations in the forest all start "Forest", etc.
 
-```
+```quest
 if (StartsWith(game.pov.parent.name, "Forest")) {
   foreach (obj, GetDirectChildren(forest_scenery)) {
     list add (items, obj)
@@ -62,7 +62,7 @@ else {
 
 We can use the same system to allow the player to access objects in an adjacent room. This is fully compatible with the above; the code just needs to go after it. Here is an example:
 
-```
+```quest
 if (game.pov.parent = bar room) {
   foreach (obj, GetDirectChildren(behind the counter)) {
     list add (items, obj)
@@ -82,7 +82,7 @@ What this does is check if the player is in the bar, and if so, it adds all the 
 
 You can also set the scope for a command. Quest will look for any matching objects in that place first. If it fails to find a match, it will then fall back to looking in the normal places (inventory and current room). You have five options:
 
-```
+```quest
 "all"        ScopeVisible()
 "inventory"  ScopeInventory()
 "notheld"    ScopeVisibleNotHeld()

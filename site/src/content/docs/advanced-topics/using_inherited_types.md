@@ -10,7 +10,7 @@ This page builds on [Types](/advanced-topics/about_types), which covers what typ
 ## Testing for types
 
 You can test if an object is of a certain type in a script or function using the `DoesInherit` function. In code, it might look like this:
-```
+```quest
   if (DoesInherit (fireball_spell, "spell")) {
     // do stuff
   }
@@ -33,7 +33,7 @@ So the first thing to do is to create an actual spell, let us call it "fireball 
 
 Something  we can do with spells is to learn them, so next we will add a "learn" script to it. Go to the Verbs tab, and add a "learn" verb. Set it to run a script, and paste this code in:
 
-```
+```quest
   if (not this.parent = game.pov) {
     this.parent = player
     msg ("How about that? You can now cast " + GetDisplayName(this) + ".")
@@ -60,7 +60,7 @@ So now we are ready to create a new type. Right click in the Quest right pane, a
 So far so good, but it does not do anything yet. We will change that by copying code. It may look scary, but if you are careful, it will be pretty easy.
 
 Open the raw XML code view in the editor toolbar. This will show you the code that is your game. If you are not familiar with XML, it will not make much sense, but do not worry about that. Somewhere there will be a bit like this (if you do [CTRL]-F, you can search for "fireball" to find it quickly):
-```
+```quest
     <object name="fireball spell">
       <inherit name="editor_object" />
       <drop type="boolean">false</drop>
@@ -76,22 +76,22 @@ Open the raw XML code view in the editor toolbar. This will show you the code th
     </object>
 ```
 Somewhere else (probably at the bottom) you should find this:
-```
+```xml
   <type name="spelltype" />
 ```
 Step 1. Expand the type XML. Quest is using a condensed form of XML for the type because there is nothing in it. Change it to this:
-```
+```xml
   <type name="spelltype">
   </type>
 ```
 Step 2. Cut the attributes from the fireball spell to leave just this:
-```
+```xml
     <object name="fireball spell">
       <inherit name="editor_object" />
     </object>
 ```
 Step 3. ... And paste them into the type:
-```
+```quest
   <type name="spelltype">
       <drop type="boolean">false</drop>
       <learn type="script">

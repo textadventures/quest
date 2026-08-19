@@ -17,7 +17,7 @@ Here you can see the "Increase score" script command, set to add 5 to the player
 
 It you prefer to do this in code, you just need to add to or subtract from the attribute.
 
-```
+```quest
 game.score = game.score + 5
 player.health = player.health - 5
 player.money = player.money - 199
@@ -41,7 +41,7 @@ On the _Player_ tab of the game object, you can set what happens when health goe
 
 Here it is in code (just to show how simple it is):
 
-```
+```quest
 msg ("You died!")
 finish
 ```

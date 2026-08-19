@@ -24,7 +24,7 @@ So, firstly we need that random code. Click on the game object, then on the "Scr
 
 There are a couple of tricks that are worth mentioning there. This is the expression used:
 
-```
+```quest
 "" + GetRandomInt(1000, 9999)
 ```
 

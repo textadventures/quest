@@ -9,7 +9,7 @@ What exactly is a "regular expression"? It is a sort of string that can be used 
 Quest has three functions that can use a regex. All three functions takes the regex and a string to compare against it as parameters and differ only in what they return.
 
 To investigate what the three functions do, I am going to set up a regex and two strings.
-```
+```quest
 regex = "put (?<object1>.*) on (?<object2>.*)"
 s1 = "put hat on table"
 s2 = "put hat in box"
@@ -25,7 +25,7 @@ The rest of the regex is simple text and this needs to match exactly.
 ## `IsRegexMatch`
 
 The `IsRegexMatch` function will return true if there is a match and false if not. For our example, the first string is a match, the words (and spaces) of "put" and "on" match exactly, and hat and table match the capture groups. The second return false, because "in" does not match "on".
-```
+```quest
 IsRegexMatch(regex, s1)
 => true
 IsRegexMatch(regex, s2)
@@ -35,7 +35,7 @@ IsRegexMatch(regex, s2)
 ## `GetMatchStrength`
 
 The `GetMatchStrength` will return an indication of how good the match is, or throw an error if it is not a match. The strength is simply the number of characters that are matched outside of the capture groups. For `s1`, these are "put " and " on ", a total of eight characters.
-```
+```quest
 GetMatchStrength(regex, s1)
 => 8
 GetMatchStrength(regex, s2)
@@ -45,7 +45,7 @@ GetMatchStrength(regex, s2)
 ## `Populate`
 
 The `Populate` function will return a dictionary containing the capture groups, or throw an error if it is not a match. Each entry in the dictionary will have the name of the capture group paired with the matched text.
-```
+```quest
 Populate(regex, s1)
 => Dictionary: object1 = hat;object2 = table
 Populate(regex, s2)
@@ -57,7 +57,7 @@ Populate(regex, s2)
 All the above functions take an optional third parameter, the "cache ID". If you supply a cache ID, the regex will be saved under that name. The next time you use that cache ID for any of the above functions, Quest will ignore the regex you supply, and use the one it created earlier instead.
 
 Continuing with the example before:
-```
+```quest
 IsRegexMatch(regex, s1, "my regex")
 => true
 IsRegexMatch("nonsense", s1, "my regex")
@@ -82,7 +82,7 @@ Note that verb objects are actually a type of command, so when the game iterates
 ## A note about patterns
 
 You can use a "command pattern" for your command, instead of a regular expression. A command pattern is really just a short hand for a regex, and will get converted into a regex when the game starts. Here is a comparison
-```
+```quest
   regex = "^put (?<object1>.*) on (?<object2>.*)$"
   pattern "put #object1# on #object2#"
 ```
@@ -91,7 +91,7 @@ You can use a "command pattern" for your command, instead of a regular expressio
 ## What about object matching?
 
 None of the above has paid any attention to what objects are present in the game or are within reach. All these functions do is match text. I could have used this as the regex, the result would be the same (except the dictionary returned from `Populate` would contain different keys of course).
-```
+```quest
 regex = "put (?<bill>.*) on (?<ben>.*)"
 ```
 Once a command has been selected as the best match, it is only _then_ that Quest will attempt to match the text to the objects present. At this point it will complain if we use "bill" and "ben"; all capture group names _in commands_ must start "object", "exit" or "text", so Quest knows what it is supposed to be matching them to.
@@ -102,19 +102,21 @@ Text will match anything, and so is useful if you want to relate a command to an
 
 You can limit the text that will be matched. In the following example, a cheat command is set up; the player (presumably the author while testing) can type `CHEAT` followed by either `MOVE`, `SET` or `GET`, followed by further text. Quest will hand two variables to the command's script, `text1` and `text2`.
 
-```
+```regex
 ^cheat (?<text1>move|set|get) (?<text2>.+)$
 ```
 
 Here is another example that would allow you to handle violent commands peacefully:
 
-```
+```regex
 ^(?<text>hit|strike|slap|punch|kick|headbutt|kill|murder) (?<object>.+)$
 ```
 
 If the player types `KICK BORIS`, Quest will match it to this command, putting "KICK" in the `text` variable, the object `Boris` in the `object` variable, so you could have a message like this:
 
-    "For a moment you want to " + LCase(text) + " " + object.name + ", but then you think better of it."
+```quest
+"For a moment you want to " + LCase(text) + " " + object.name + ", but then you think better of it."
+```
 
 By the way, to get `HIT` to work, you will need to disable the built-in verb. You can do that by copying the verb into your game, and then typing a load of nonsense into the pattern. The player will never type in that nonsense, so the verb will never get matched.
 
@@ -127,7 +129,7 @@ Quest is based on .Net technology, and so uses the .Net format for regex. That s
 [https://learn.microsoft.com/en-us/dotnet/standard/base-types/regular-expression-language-quick-reference](https://learn.microsoft.com/en-us/dotnet/standard/base-types/regular-expression-language-quick-reference)
 
 A lot of regex options start with a backslash, and this is a bit of a problem, because Quest is using strings to handle them, and in Quest (and most programming languages) the backslash is an escape character. What this means is that to display a backslash in Quest, you actually need to have two of them.
-```
+```quest
 msg("Here is a single backslash: \\")
 ```
 If you want to use any regex option that has a backslash _in your code_ you need to remember to use two! An important use of backslashes is to match against a character that has some special meaning. For example, to match a question mark, the standard way is to use `\?`. In Quest you will need to use `\\?`.
@@ -140,7 +142,7 @@ So what can we put into a regular expression? There is a variety of options allo
 ### Classes
 
 You can match against a class of characters. For example, `\d` will match a single digit.
-```
+```quest
 \d    Any digit
 \D    Any non-digit
 \w    Any word character (digit or letter)
@@ -159,7 +161,7 @@ You can also set up you own class using square brackets. Some examples:
 ### Quantifiers
 
 You can control how many of a thing can be matched using ?, + and *. To illustrate, let us start with this: 
-```
+```quest
 regex = "\\d+\\.?\\d*"
 ```
 There are three parts to it (removing the extra backslashes):
@@ -171,7 +173,7 @@ There are three parts to it (removing the extra backslashes):
 The `\d` matches a digit. When followed by `+` it matches 1 or more digits, and when followed by `*` it matches zero or more. A `.` in a regex can match any character, as was seen in the capture groups of the first regex. Here, though, it is preceded by a backslash, so it instead means an actual full stop (period). The question mark after it indicates you can have zero or one of them. This regex will match a string containing a series of digits, optionally followed by a single decimal point and optionally followed by more digits.
 
 You can also use curly braces to specify a specific number or range:
-```
+```quest
 \d{2,5}    Between 2 and 5 digits
 [aeiou]{4} Exactly 4 vowels
 ```
@@ -179,7 +181,7 @@ You can also use curly braces to specify a specific number or range:
 ### Anchors
 
 Anchors allow you to specify where in the string the match must be. In the previous example, the number could be anywhere in the string. Perhaps you require them to be at the beginning or end?
-```
+```quest
 regex = "^help$"
 ```
 The `^` and `$` are special codes that must match the start of the string and the end respectively, and they appear in most built in Quest commands. \A and \z do the same. \b must match the boundary between alphanumerics and non-alphanumerics.
@@ -188,11 +190,11 @@ The `^` and `$` are special codes that must match the start of the string and th
 ## Other applications
 
 Here is some code that will handle a string like this:
-```
+```quest
   player.health = 60
 ```
 It uses a regex to first confirm the string is in the right format, and then to split it into the three important parts.
-```
+```quest
 regex = "(?<object>.+)\\.(?<attribute>\\S+)\\s*=\\s*(?<value>.+)"
 if (not IsRegexMatch(regex, text)) {
   error ("Sorry, wrong format")

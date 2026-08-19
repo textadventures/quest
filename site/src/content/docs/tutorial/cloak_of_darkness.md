@@ -76,7 +76,7 @@ Note that you need to have the longer versions at the start, otherwise Quest wil
 
 For the command script, the general strategy is to check each failing condition, with an appropriate message, and if it all passes, do the command:
 
-```
+```quest
 if (not object.parent = player) {
   msg ("You aren't carrying " + object.article + ".")
 }
@@ -102,7 +102,7 @@ Why not do this as "hang #object1# on hook"? It is better practice to always use
 
 Quest will only match against objects present (unless we tell it otherwise for a specific command), so we know the hook must be present; so rather than checking we are in the right room, we need to check `object2` is the hook object. For a bigger game, we might want to have an attribute on the hook that flags it as something we can hang stuff on, and then check that flag on `object2`; I have written the messages to keep them general. Note that `GetDisplayName` prepends "a" or "some" to the name, as appropriate.
 
-```
+```quest
 if (not object1.parent = player) {
   msg ("You aren't carry it " + object.article + ".")
 }
@@ -122,7 +122,7 @@ The cloakroom description will read more naturally if the hook is part of the de
 
 Go to the _Room_ tab of the cloakroom, and in the description paste in this code:
 
-```
+```quest
 s = "The cloakroom is {either CloakHere():dimly|brightly} lit, and is little more than a cupboard. "
 if (cloak.parent = hook) {
   s = s + "Your cloak is hung from the only hook."
@@ -150,14 +150,14 @@ We also need the message to only be visible if the cloak is not here, but we wil
 
 We will add a "count" attribute and a "disturbed" attribute to the message first. You can add attributes directly on the _Attributes_ tab, and set them both to be integers. Alternatively, tick "Run an initialisation script..." on the _Features_ tab, then on the _Initialisation script_ tab, paste in this code:
 
-```
+```quest
 this.count = 0
 this.disturbed = 0
 ```
 
 The "count" attribute will store how many consecutive turns the player has spent in the bar, so we need to reset it when the player leaves. Go to the _Scripts_ tab of the bar, and for the "After leaving the room" script, paste this in, to set the count back to zero:
 
-```
+```quest
 message.count = 0
 ```
 
@@ -165,7 +165,7 @@ To get this to increment each turn, we will use a turnscript. We only want it to
 
 Tick the "Enabled when the game begins" box, and paste in the code:
 
-```
+```quest
 message.count = message.count + 1
 if (message.count > 1) {
   message.disturbed = message.disturbed + 1
@@ -182,7 +182,7 @@ So the first thing this does is increment "count". If the player leaves the room
 
 Finally (for now), we need to set the description for the message. On the _Setup_ tab, set its description to be a script, and paste this in:
 
-```
+```quest
 if (this.disturbed < 2) {
   msg ("The message in the dust says 'You have won!'")
 }
@@ -203,7 +203,7 @@ So we have a working system, but can improve it.
 
 Firstly, the player is likely to try `READ MESSAGE`. Go to the _Verbs_ tab and add "read". Set it to run a script, and paste in this code:
 
-```
+```quest
 do (this, "look")
 ```
 
@@ -213,7 +213,7 @@ The second thing we can do is stop turnscripts running in some situations. If th
 
 Go to the _Features_ tab of the game object, and tick "Show advanced scrips...", then go to the _Advanced scripts_ tab. The middle script is for unresolved commands. We want to have it print a message, and to tell Quest to skip turnscripts this turn.
 
-```
+```quest
 msg ("Sorry, I do not understand '" + command + "'.")
 SuppressTurnscripts
 ```
@@ -226,7 +226,7 @@ For the help command, we do pretty much the same. The pattern is:
 
 And the script:
 
-```
+```quest
 msg ("Just type stuff at the prompt!")
 SuppressTurnscripts
 ```
@@ -245,7 +245,7 @@ A room is dark if the cloak is in it, and in the bar it is so dark nothing but t
 
 Create a function, call it "CloakHere", set it to return a Boolean, and paste in this code:
 
-```
+```quest
 return (cloak.parent = player.parent or cloak.parent.parent = player.parent)
 ```
 
@@ -259,7 +259,7 @@ Then we check if either the player or the hook have the cloak, and if the hook d
 
 Is either of these is true, then we want the function to return true. So we could do it like this:
 
-```
+```quest
 if (cloak.parent = player.parent or cloak.parent.parent = player.parent) {
   return (true)
 }
@@ -275,26 +275,32 @@ But the bit in the `if` condition is already `true` or `false`, so we can just r
 
 So now we need some room descriptions, and these need to depend on whether the cloak is present or not. There are a couple of ways to do that. `if/else` is a good idea if the text is very different, but the text processor is better if just a few words are changing. For the foyer, then, we might have:
 
-    There is something oppressive about the {either CloakHere():dark|dingy} {once:room}{notfirst:foyer}; a presence in the air that almost suffocates you. Very much faded glory, the walls sport posters from productions that ended over twenty years ago. Paint is peeling, dust is everywhere and it smells decidedly musty.
+```quest
+There is something oppressive about the {either CloakHere():dark|dingy} {once:room}{notfirst:foyer}; a presence in the air that almost suffocates you. Very much faded glory, the walls sport posters from productions that ended over twenty years ago. Paint is peeling, dust is everywhere and it smells decidedly musty.
+```
 
 This uses the `either` text processor directive, which then uses `CloakHere` as the condition. The true and false options are separated by `|`. If the cloak is here, the room is dark, otherwise dingy.
 
-    {either CloakHere():dark|dingy}
+```quest
+{either CloakHere():dark|dingy}
+```
 
 At the start of the game there is an introductory text saying how the player has arrived at the foyer. It reads better if this description then avoids the word "foyer". However, any other time the player enters the room, we do need the word. To handle this, we use the `once` directive which only uses the text the first time, and `notonce` which only uses the given text when it is not the first time.
 
-    {once:room}{notfirst:foyer}
+```quest
+{once:room}{notfirst:foyer}
+```
 
 
 The cloakroom uses a script, but we can modify the first line to use the same text processor directive:
 
-```
+```quest
 s = "The cloakroom is {either CloakHere():dimly|brightly} lit, and is little more than a cupboard. "
 ```
 
 For the bar, the descriptions are very different, so we will do it the other way. 
 
-```
+```quest
 if (CloakHere()) {
   msg ("It is too dark to see anything except the door to the north.")
 }
@@ -310,13 +316,13 @@ The player should not be able to look at or read the message when the cloak is i
 
 In this case, however, we can set it when the player enters the room, as there is no way for the player to get rid of the cloak whilst in the room. So, go to the _Scripts_ tab of the bar, and in the "after entering the room", put in this script:
 
-```
+```quest
 message.visible = not CloakHere()
 ```
 
 Again, the Boolean algebra. This is the same as doing this:
 
-```
+```quest
 if (not CloakHere()) {
   message.visible = true
 }
@@ -350,7 +356,7 @@ It is usually a good idea to give the player some introductory text that sets th
 
 You can put the text in the start script of the game object, but that can get pretty long with other stuff and I prefer to put it in the room. Go to the _Scripts_ tab of the foyer; the fourth one is "Before entering the room for the first time". We just want it to print a message (with a blank line at the end):
 
-```
+```quest
 msg ("You hurry through the night, keen to get out of the rain. ...")
 msg ("Moments later you are pushing though the doors into the foyer. ...")
 msg ("")
@@ -361,11 +367,15 @@ msg ("")
 
 We can improve the message the player sees when trying the locked door using the text processor. Using the `once` directive, we can have a longer message appear the first time.
 
-    You try the doors out of the opera house, but they are locked. {once:How did that happen? you wonder.}
+```quest
+You try the doors out of the opera house, but they are locked. {once:How did that happen? you wonder.}
+```
 
 We can put the player's thoughts in italics too, using the `i` directive, nesting one text directive in another.
 
-    You try the doors out of the opera house, but they are locked. {once:{i:How did that happen?} you wonder.}
+```quest
+You try the doors out of the opera house, but they are locked. {once:{i:How did that happen?} you wonder.}
+```
 
 
 
@@ -376,7 +386,7 @@ Some players will try to examine the walls. We do not want Quest to say there ar
 
 For the "Look at" description, we need to check if it is too dark to see the wall, that is, if the player is in the bar and the cloak is here. Here is an example for the walls:
 
-```
+```quest
 if (CloakHere() and player.parent = bar) {
   msg("It is too dark to see the walls.")
 }
@@ -387,7 +397,7 @@ else {
 
 Now go to the _Advanced scripts_ tab of the game object, and for the bottom script, "Backdrop scope script", add this code:
 
-```
+```quest
 foreach (o, GetAllChildObjects (everywhere)) {
   list add (items, o)
 }
@@ -405,7 +415,7 @@ _SMELL_
 
 Create a new command, with the pattern `smell;sniff`. Paste in this code:
 
-```
+```quest
 switch (player.parent) {
   case (foyer) {
     msg ("It smells of damp and neglect in here.")
@@ -426,7 +436,7 @@ _LISTEN, a better way_
 
 The above will work fine, but there is a better way. Create a new command, with the pattern `listen`. Paste in this code:
 
-```
+```quest
 if (HasString(player.parent, "listen")) {
   msg (player.parent.listen)
 }
@@ -465,13 +475,13 @@ It reads a little odd when the `LISTEN` command says one thing, and the turnscri
 
 What we will do is have a flag on the player called "suppress_background_sounds"; when it is true, no extra sounds are allowed. Therefore, we need to add this to the end of the `LISTEN` command script:
 
-```
+```quest
 player.suppress_background_sounds = true
 ```
 
 Now in the turnscript for the bar, we need to check that flag. Here is the full, modified script:
 
-```
+```quest
 message.count = message.count + 1
 if (message.count > 1) {
   message.disturbed = message.disturbed + 1
@@ -492,7 +502,7 @@ So now if the player does LISTEN, the command will set player.suppress_backgroun
 
 Turnscripts run in alphabetical order, so we can create a new turnscript, and give it a name, "z_endturn" (the turnscript in the bar has no name, but Quest will give it a name that starts with a "k" when the game starts). Tick to have it enabled at the start. The code just sets the flag back to false:
 
-```
+```quest
 player.suppress_background_sounds = false
 ```
 
@@ -508,7 +518,7 @@ As there is the built-in system, we cannot use verbs, but we can add our own com
 
 We can set the scope to "inventory", so Quest will look there first, but it will then look anywhere reachable when trying to match the object. Here is the code:
 
-```
+```quest
 if (not HasBoolean(object, "worn")) {
   msg ("That's not something you can wear.")
 }
@@ -530,7 +540,7 @@ For the `REMOVE` command:
 
 The code is a bit shorter, as it must be wearable and you must be carrying it if it is worn.
 
-```
+```quest
 if (not object.worn) {
   msg ("You're not wearing " + object.article + ".")
 }
@@ -542,7 +552,7 @@ else {
 
 Now we need to make the cloak wearable. You could do this directly on the _Attributes_ tab, but we will do it the more general way. Go to the _Features_ tab of the cloak, and turn on "Initialisation script...", then go to the _Initialisation script_ tab. Paste in this code:
 
-```
+```quest
 this.worn = true
 this.changedparent => {
   this.worn = false
@@ -555,11 +565,13 @@ The "this" variable indicates the object to which the script belongs, by the way
 
 Finally we need to tell the player if the cloak is worn or not when in the inventory, so we will create our own `INVENTORY` command. Here is the pattern:
 
-    ^i$|^inv$|^inventory$
+```regex
+^i$|^inv$|^inventory$
+```
 
 There is only one item that can be picked up in this game, so the code is very simple:
 
-```
+```quest
 if (not cloak.parent = player) {
   msg ("You are not carrying anything.")
 }
@@ -573,7 +585,7 @@ else {
 
 But we said at the start we would keep it general so this could be extended in to a large game, so let us re-write the code for any number of items...
 
-```
+```quest
 carrylist = FilterByNotAttribute(ScopeInventory(), "worn", true)
 wornlist = FilterByAttribute(ScopeInventory(), "worn", true)
 if (ListCount(carrylist) = 0) {

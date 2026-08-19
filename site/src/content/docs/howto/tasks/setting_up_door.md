@@ -26,7 +26,7 @@ Quest tracks the state of these things by an attribute called "isopen", and whil
 
 The top script is the one that will be run when the door is opened. That needs to unlock the exits, and open the door:
 
-```
+```quest
 exit to kitchen.locked = false
 exit to lounge.locked = false
 this.isopen = true
@@ -34,7 +34,7 @@ this.isopen = true
 
 The lower script is used when the door is closed:
 
-```
+```quest
 exit to kitchen.locked = true
 exit to lounge.locked = true
 this.isopen = false
@@ -47,7 +47,7 @@ Now we need to have the door in both rooms. We will use a bit of trickery, and m
 
 The way the script works is that anything we add to the "items" list will get added to things in the current room. Add this code:
 
-```
+```quest
 if (game.pov.parent = kitchen) {
   list add (items, door)
 }
@@ -60,7 +60,9 @@ The first line checks in the player is in the kitchen, and if she is, the second
 
 It is a good idea to keep the player informed, and in this case we want her to know whether the door is open or closed. You can do that in the room description using the text processor. For example:
 
-    The lounge is very retro. The door west is {either door.isopen:open|closed}.
+```quest
+The lounge is very retro. The door west is {either door.isopen:open|closed}.
+```
 
 This is again using the "isopen" attribute of the door object.
 

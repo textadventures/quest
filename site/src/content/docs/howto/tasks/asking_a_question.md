@@ -10,7 +10,7 @@ Often in a text adventure you want the game to ask an open-ended question of the
 
 ![](/images/Question1.png)
 
-```
+```quest
   msg ("What is your name?")
   get input {
     player.alias = CapFirst(result)
@@ -21,7 +21,9 @@ The first line just asks the question. Then we see the `get input` command. The 
 
 Note that we are setting the "alias" attribute; the "name" attribute cannot be changed during play as Quest uses that to track each object. Note that it makes sure there is a capital at the start. You can then use the text processor to insert the character's name in text:
 
-    'Hi, {player.alias},' says the oddly-shaped doll.
+```quest
+'Hi, {player.alias},' says the oddly-shaped doll.
+```
 
 
 
@@ -30,7 +32,7 @@ Note that we are setting the "alias" attribute; the "name" attribute cannot be c
 You might think that you can just have one question after another...
 
 
-```
+```quest
   msg ("What is your name?")
   get input {
     player.alias = CapFirst(result)
@@ -47,7 +49,7 @@ We need to _nest_ the question. This means putting the second inside the first.
 
 ![](/images/Question2.png)
 
-```
+```quest
   msg ("What is your name?")
   get input {
     player.alias = CapFirst(result)
@@ -70,7 +72,7 @@ You might want the player to give a specific answer - the answer to a riddle, pe
 
 ![](/images/Question3.png)
 
-```
+```quest
   msg ("'Hello. Can you answer my riddle? What walks on four legs in the morning, two in the afternoon, and three in the evening?'")
   get input {
     if (result = "man") {
@@ -95,7 +97,7 @@ The first problem is that the player has to type the exact string “man”. Wha
 
 To do this, replace the third line with this:
 
-```
+```quest
   if (IsRegexMatch  ("man", LCase (result))) {
 ```
 
@@ -103,19 +105,19 @@ The LCase function will convert the player's text to all lower case, so “Man�
 
 In this case, that will match human and woman too, which is great. Usually multiple answers are not so convenient, but you can do that too - just put them inside brackets and separate each with a vertical bar.
 
-```
+```quest
   if (IsRegexMatch  ("(man|lady)", LCase (result))) {
 ```
 
 In fact, this will match anything with "man" in the word, so would also match "shaman". We could improve it by using `\b` to match against the word boundary, and then include all the options we will allow (note that you have to "escape" backslashes, so we use two here, `\\b`):
 
-```
+```quest
   if (IsRegexMatch  ("\\b(man|lady|woman|human|person)\\b", LCase (result))) {
 ```
 
 We could optionally match "a" (the `?` indicates it is optional), and also match the start and end of the string with `^` and `$`:
 
-```
+```quest
   if (IsRegexMatch  ("^(a )?(man|lady|woman|human|person)$", LCase (result))) {
 ```
 
@@ -125,11 +127,11 @@ There is a section on Regex in the [pattern matching](/howto/commands/pattern_ma
 ## Changing the prompt
 
 This is worthwhile doing as it makes it clear to the player that he or she should not be typing a command. To get this to work, you need to use some JavaScript! 
-```
+```quest
   JS.eval("$('#txtCommand').attr('placeholder', 'Your answer');")
 ```
 It might be worth also turning off the panes on the right, to stop the player messing with them when she should be answering the question:
-```
+```quest
   JS.panesVisible(false)
 ```
 Remember to set them back to normal after.
@@ -141,7 +143,7 @@ Here is the full the script, doing all we have discussed:
 
 ![](/images/Question4.png)
 
-```
+```quest
   msg ("'Hello. Can you answer my riddle? What walks on four legs in the morning, two in the afternoon, and three in the evening?'")
   JS.eval("$('#txtCommand').attr('placeholder', 'Your answer');")
   JS.panesVisible(false)
@@ -173,7 +175,7 @@ The objective here is to ask a series of questions, which we will say is in a st
 It is vitally important that a recursive function has a way of stopping, otherwise it will be trapped in an infinite loop. We will remove the question from the list after asking it, and will terminate when the list is empty.
 
 Here is the code for the function, which is called `AskAQuestion` (no parameters or return type):
-```
+```quest
 if (ListCount(game.questions) > 0) {
   s = StringListItem(game.questions, 0)
   list remove (game.questions, s)

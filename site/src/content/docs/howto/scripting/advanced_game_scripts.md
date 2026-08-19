@@ -31,7 +31,7 @@ Why would you want to? Well, if you are counting turns, if would be unfair to co
 
 The "command" variable will hold what the player typed, so your script might look like this:
 
-```
+```quest
 msg("I do not understand \"" + command + "\"")
 SuppressTurnscripts
 ```
@@ -52,7 +52,7 @@ Why would you want to? Let us say your game is set in an old house; in every roo
 
 However, you really do not want to have to create a wall object in every room, plus floor, plus ceiling, etc. The `scopebackdrop` script offers a solution; just add  your generic objects to the "items" list in that script. For example:
 
-```
+```quest
 list add (items, wall)
 list add (items, floor)
 list add (items, ceiling)

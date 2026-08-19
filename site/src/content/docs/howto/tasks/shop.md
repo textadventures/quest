@@ -28,7 +28,7 @@ There are several functions we need to create. To create a function, select func
 
 The `SetUpShop` function has no return type, and two parameters, "shop" and "stock" (in that order!). It will be called at the start to set up each shop. Paste in this code (you will need to click on the "Code view" button first):
 
-```
+```quest
 shop.stock = stock
 foreach (o, GetDirectChildren(stock)) {
   SetUpMerchandise (o)
@@ -41,7 +41,7 @@ It should like like this if all went well:
 
 The `BuyingPrice` function has "integer" as the return type, and one parameter, "obj". This will calculate the price merchants sell at (i.e., the player is buying), based on the object's price, and in the example below, it is just double. Paste in this code:
 
-```
+```quest
 return (obj.price * 2)
 ```
 
@@ -49,7 +49,7 @@ You might want to modify this to reflect the player's skill at haggling, and per
 
 The `SellingPrice` function has "integer" as the return type, and one parameter, "obj". This will calculate the price merchants buy at, based on the object's price, and in the example below, it is not modified. Paste in this code:
 
-```
+```quest
 return (obj.price)
 ```
 
@@ -57,7 +57,7 @@ You might want to modify this too later.
 
 The `StealObject` function has no return type, and one parameter, "obj". It will be called if the player tries to take something from the shop without paying. Paste in this code:
 
-```
+```quest
 msg ("You can't just steal stuff!")
 ```
 
@@ -66,7 +66,7 @@ You might want to modify that to allow shop-lifting, but I am not going to condo
 
 The `SetUpMerchandise` function has no return type, and one parameter, "obj". It will be called at the start for each object in the shop, but also when an object is sold. Paste in this code:
 
-```
+```quest
 if (not HasString(obj, "alias")) {
   obj.alias = obj.name
 }
@@ -89,7 +89,7 @@ Then we set the "take" and "buy" attributes to scripts that call the functions w
 
 The `BuyObject` function has no return type, and one parameter, "obj". It will be called if the player tries to buy something from the shop. Paste in this code:
 
-```
+```quest
 if (obj.price > game.pov.money) {
   msg ("You can't afford that!")
 }
@@ -124,11 +124,13 @@ For the unresolved text:
 
 We can also set the scope, so that Quest looks in the player's inventory first. This means that if the player returns to the shop to sell something back, Quest will match the clone the player is holding, rather than the original in the shop.
 
-    inventory
+```quest
+inventory
+```
 
 And paste in the script:
 
-```
+```quest
 if (not HasAttribute(game.pov.parent, "stock")) {
   msg ("You can't sell stuff here.")
 }
@@ -158,7 +160,7 @@ This checks if the room is a shop, then checks if the object is being carried. I
 
 We need to add a script on the game object. On the _Features_ tab, tick to display "Advanced scripts", then on the _Advanced scripts_ tab, paste this in at the bottom ("backdrop scope script..."):
 
-```
+```quest
 if (HasAttribute(game.pov.parent, "stock")) {
   foreach (o, GetDirectChildren(game.pov.parent.stock)) {
     list add (items, o)
@@ -174,7 +176,7 @@ So now we have put in the infrastructure, we have done the hard work. Now you ca
 
 You need to initialise each shop. Go to the _Scripts_ tab of the game object, and add a line for each shop in your game to the start script at the top. The code will look like this:
 
-```
+```quest
 SetUpShop (shop, stock)
 ```
 
@@ -186,7 +188,7 @@ As an example, we will create a shop called "Cake Shop". Add exits so the player
 
 Now go to the _Scripts_ tab of the game object, and in the start script at the top, add this line:
 
-```
+```quest
 SetUpShop (Cake Shop, Cake Shop Stock)
 ```
 

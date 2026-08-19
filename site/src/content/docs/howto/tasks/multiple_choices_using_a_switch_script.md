@@ -48,7 +48,7 @@ As we are controlling what the player can select, there is no chance that anythi
 
 In code view, the script above looks like this, and we will look at more code in this section:
 
-```
+```quest
 options = Split("The weather;Her hair;The Lost Key of Arenbos", ";")
 ShowMenu ("Talk about?", options, true) {
   switch (result) {
@@ -71,7 +71,7 @@ ShowMenu ("Talk about?", options, true) {
 
 You can add multiple choices to a single `case` statement, just separate them with commas. For example, you might want to allow both 999 and 911 to be used as an emergency number:
 
-```
+```quest
   case (999, 911) {
     msg ("There’s no need to call the police now.")
   }
@@ -79,7 +79,7 @@ You can add multiple choices to a single `case` statement, just separate them wi
 
 You can also match against strings, but they need to be in quotes. In fact, you can mix numbers and strings:
 
-```
+```quest
   case (999, 911, "police") {
     msg ("There’s no need to call the police now.")
   }
@@ -87,14 +87,14 @@ You can also match against strings, but they need to be in quotes. In fact, you 
 
 If you are matching against text the player has typed, it is a good idea to make it all lowercase in the `switch`:
 
-```
+```quest
 switch (LCase(text)) {
   case (999, 911, "police") {
 ```
 
 The switch/case statement requires an exact match, but there is a trick we can use if we want to see if a number is in a range. Look at this code:
 
-```
+```quest
 switch (true) {
   case (player.strength > 20) {
     msg("You are strong!")

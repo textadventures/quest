@@ -58,7 +58,7 @@ Quest supports all the usual trigonometric functions - and the obscure ones too 
 
 Note that the trigonometric functions all use radians rather than degrees. If you want to work in degrees, you will need to make your own functions. For example, you could add a function called `Sine`, returning a double and taking a single parameter, "angle", and have it convert the angle to radians before calling the built-in function.
 
-```
+```quest
 return (Sin(angle * pi / 180))
 ```
 
@@ -88,13 +88,13 @@ Quest offers four functions that will round your double to an integer. Note, how
 
 To display a double to, say, three decimal places, multiple it by 1000, then round it, then divide by 1000.
 
-```
+```quest
 msg("The objective is " + (Round(distance * 1000)/1000) + " km away.")
 ```
 
 To convert to an integer _type_ you will need to use `cast` (note that there are no quotes around `int`).
 
-```
+```quest
 my_int = cast(4.56, int)
 ```
 

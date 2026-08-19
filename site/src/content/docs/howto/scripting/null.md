@@ -10,7 +10,7 @@ sidebar:
 
 In Quest code, null has two slightly different meanings. It can be an empty object; that is, an object with no attributes and of the special type "null".
 
-```
+```quest
 obj = player
 msg(TypeOf(obj))
 -> "object"
@@ -23,7 +23,7 @@ The variable obj is set to point to the built-in object, null, which is of the t
 
 Some functions will check if a parameter is null, some do not. Look at the `HasString` function. It takes an object and a string (the attribute name). It checks if the object is null, and gives a helpful error message if that is not the case.
 
-```
+```quest
 obj = player
 msg(HasString(obj, "name"))
 -> True
@@ -39,7 +39,7 @@ msg(HasString(player, obj))
 
 However, null also means nothing. If you set an attribute to `null`, then the attribute no longer exists.
 
-```
+```quest
 player.equipped = null
 msg(HasAttribute(player, "equipped"))
 -> False
@@ -49,7 +49,7 @@ Setting an attribute to null is a useful way to remove a script. Perhaps an obje
 
 This illustrates an important point: if the object is of a certain type, and the type has a value for the attribute, then setting the attribute to `null` will reset it to the value in the type. Suppose `bob` is of the type "male"...
 
-```
+```quest
 msg(bob.gender)
 -> "he"
 bob.gender = "she"
@@ -67,7 +67,7 @@ In fact, behind the scenes, what happens is that when we try to access `bob.gend
 
 You can test if anything is null, including integers.
 
-```
+```quest
 obj.att = "somestring"
 msg (obj.att = null)
 -> False
@@ -81,7 +81,7 @@ msg (obj.att = null)
 
 If you are not sure what type a value is, and want to avoid a direct comparison, you can instead use the `Equal` function:
 
-```
+```quest
 obj.att = 42
 msg (Equal(obj.att, null))
 -> False
@@ -89,7 +89,7 @@ msg (Equal(obj.att, null))
 
 Or compare the type first:
 
-```
+```quest
 obj.att = 42
 msg (TypeOf(obj.att) = "null")
 -> False

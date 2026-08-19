@@ -11,7 +11,7 @@ A list is a sequence of entries in a prescribed order. Each entry is associated 
 There are three types of lists: string lists; object lists; and general lists. As you might expect, a string list can only hold strings, and an object list can only hold objects, but a general list can pretty much hold anything.
 
 To create a list, then, we have three functions:
-```
+```quest
 mystringlist = NewStringList()
 myobjectlist = NewObjectList()
 mylist = NewList()
@@ -24,7 +24,7 @@ You can add a list to an object on the Attributes tab, but you are restricted to
 ## Adding and removing items
 
 To add items to a list, use the `list add` command. To remove something from a list, use `list remove`. Here is an example that illustrates how we can add various types to a list:
-```
+```quest
 l = NewList()
 l2 = NewList()
 list add (l, "one")
@@ -62,7 +62,7 @@ The alternative is to give the object a new list, using `NewStringList`, and the
 You can access an item in a list using the `ListItem` function. This takes the list and the position as parameters. Note that the positions count from zero, i.e, the first member of the list is at position 0.
 
 It is also important to note that removing an item from a list will change the position of all subsequent entries. So:
-```
+```quest
 l = NewList()
 l2 = NewList()
 list add (l, "one")
@@ -98,7 +98,7 @@ If you know that what you are retrieving is a string, you can use `StringListIte
 ### Retrieving from other lists
 
 It can take Quest a moment to work out what the thing is with `ListItem`. Consider this code:
-```
+```quest
 if (ListItem(l, 2) = "one") {
   msg("Here")
 }
@@ -107,7 +107,7 @@ if (ListItem(l, 2) = 42) {
 }
 ```
 The first line is fine, but the second will throw an error. Quest has extracted 42 from the list, but has yet to work out that it is an integer, and so throws an error when we try to compare it to a number. Assigning the value to a variable seems to give Quest enough time to work out what it is!
-```
+```quest
 if (ListItem(l, 2) = "one") {
   msg("Here")
 }
@@ -123,7 +123,7 @@ if (n = 42) {
 ## Quick string lists
 
 A quick way to get a string list is the Split command (especially useful for menu options). The second parameter is the separator, and you can choose anything suitable (this is optional, and if omitted will default to a semi-colon):
-```
+```quest
 l1 = Split("one|two|three", "|")
 msg(l1)
 // -> List: one; two; three; 
@@ -153,7 +153,7 @@ Some other useful functions that return object lists:
 Often you will want to go through each member of a list. Use the `foreach` command to do this. It takes two parameters, the first being a variable to store an entry in, and the second being the list. It also requires a script.
 
 This example will output each member of the list. The script will be run once for each entry in the list `l`, and for each iteration, `x` will have the value of that entry.
-```
+```quest
 foreach(x, l) {
   msg("Entry: " + x)
 }
@@ -165,7 +165,7 @@ Error running script: Collection was modified; enumeration operation may not exe
 ```
 
 One way around that is to add entries you want to remove to another list while you iterate, and then to remove them later. For example, say we have a list of monsters and want to go through it and remove any that are dead, we could do this:
-```
+```quest
 delete = NewObjectList()
 foreach(obj, listOfMonsters) {
   if (obj.dead) {
@@ -184,7 +184,7 @@ foreach (obj, delete) {
 ### How many?
 
 The `ListCount` function will return the number of entries in the list. Remember that the entries will number from zero to _one less than_ the number returned.
-```
+```quest
 msg("My list has " + ListCount(myList) + " things in it.")
 msg("The last entry is at position " + (ListCount(myList) - 1))
 ```
@@ -192,13 +192,13 @@ msg("The last entry is at position " + (ListCount(myList) - 1))
 ### Does it contain?
 
 Use `ListContains` to determine if a list contains a specific entry.
-```
+```quest
 if (ListContains(myList, player) {
   list remove(myList, player)            
 }
 ```
 Alternatively, you can use the `in` operator (but only in a local variable or attribute; extra brackets confuse it!):
-```
+```quest
 if (player in myList) {
   list remove(myList, player)            
 }
@@ -207,11 +207,11 @@ if (player in myList) {
 ### Adding and taking away
 
 The `ListCombine` function will return a new list made up by combining the two given lists. The lists must be of the same type.
-```
+```quest
 myBigList = ListCombine(list1, list2)
 ```
 The `ListExclude` function is the reverse, it will return a new list made up by subtracting the second list from the first. For string lists and object lists, you can also use it to exclude a single string or object as appropriate. In this example, the two `msg` commands print the same list, for both the player object is excluded.
-```
+```quest
 l = NewObjectList()
 l2 = NewObjectList()
 list add (l, player)
@@ -232,28 +232,28 @@ If you have combined two lists, you may have one entry appear in the list multip
 
 You can filter lists to pull out just the objects you are interested in. For example, you might want a list of characters in the current room. All characters are of the "npc_type" type.
 
-```
+```quest
 allobjects = ScopeReachable()
 charactersonly = FilterByType(allobjects)
 ```
 
 You can also filter by attribute. Suppose you have clones a whole hoard of goblins, and now you want to list them. If they all have the alias "goblin", then you can do this:
 
-```
+```quest
 allobjects = ScopeReachable()
 goblinsonly = FilterByAttribute(allobjects, "alias", "goblin")
 ```
 
 There is a reverse function, so we can get all the objects that are not goblins:
 
-```
+```quest
 allobjects = ScopeReachable()
 notgoblins = FilterByNotAttribute(allobjects, "alias", "goblin")
 ```
 
 Perhaps you just want the characters that are not goblins. You can do that by filtering twice:
 
-```
+```quest
 allobjects = ScopeReachable()
 charactersonly = FilterByType(allobjects)
 charactersnotgoblins = FilterByNotAttribute(charactersonly, "alias", "goblin")
@@ -261,7 +261,7 @@ charactersnotgoblins = FilterByNotAttribute(charactersonly, "alias", "goblin")
 
 Note that you can use any type of attribute. This example will get all the scenery objects in the room:
 
-```
+```quest
 allobjects = ScopeReachable()
 sceneryonly = FilterByAttribute(allobjects, "scenery", true)
 ```
@@ -297,7 +297,7 @@ You can also use `ObjectListSort` and `ObjectListSortDescending` to sort a list 
 ## List arithmetic
 
 You can use `+` and `-` on lists. These can be used to add and remove single elements from a list.
-```
+```quest
 listOne = Split("one|two|three", "|")
 listTwo = "zero" + listOne + "four"
 msg(listTwo)
@@ -311,13 +311,13 @@ msg(listFour)
 ```
 
 Also works for object lists:
-```
+```quest
 objectListOne = NewObjectList()
 objectListTwo = objectListOne + player
 msg(objectListTwo)
 ```
 And mixed lists, here in one step we add an object and a string:
-```
+```quest
 list1 = NewList()
 list2 = list1 + player + "player"
 ```
@@ -329,7 +329,7 @@ list2 = list1 + player + "player"
 
 You can pick a random string or object from a list using `PickOneObject` or `PickOneString`. If you want to do that several times, but avoid having any repeats, just remove the selected from the list.
 
-```
+```quest
 list = Split ("One;Two;Three")
 for (i, 1, 5) {
   if (ListCount(list) > 0) {
@@ -347,7 +347,7 @@ Inside the loop, we check if there are any left in the list. If there are, one i
 
 This also allows us to shuffle a list.
 
-```
+```quest
 list = Split ("One;Two;Three")
 shuffled = NewStringList()
 while (ListCount(list) > 0) {

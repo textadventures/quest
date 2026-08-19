@@ -23,7 +23,7 @@ You could create a "spell" type, and have each spell as an object of that type. 
 
 We will start by giving the player some magic points. Go to the "start" script of the game object, and add this line:
 
-```
+```quest
 player.magicka = 5
 ```
 
@@ -39,7 +39,7 @@ Now we can create the command. The pattern for our "frotz" spell will be this:
 
 You also need to give the command a name, "frotz", so we can reference it later (commands generally do not need names, but we will do some magic later that will need these to). Here is the code:
 
-```
+```quest
 if (player.magicka  < 1) {
   msg ("You don't have enough magic to do that.")
 }
@@ -81,7 +81,7 @@ So we have a spell, and the player can cast it limited times, but she knows it f
 
 So we need to modify the command script to check the flag first. We need to add three new lines at the top, and then add an `else` at the start of the next line. The top three lines we had before will then look like these six lines (indeed, the top three lines of nearly _all_ our spells will look like this):
 
-```
+```quest
 if (not GetBoolean(this, "learnt")) {
   msg ("You don't know how to do that.")
 }
@@ -92,7 +92,7 @@ else if (player.magicka  < 1) {
 
 Now we need a process to learn the spell. Let us say looking at a spell book does that (you may prefer to have the player read the book, or even drink a potion, look in a mirror or whatever). Create the spell book, and add this as a script to run when it is looked at:
 
-```
+```quest
 firsttime {
   frotz.learnt = true
   msg ("You learn the {i:Frotz}. spell!")
@@ -112,7 +112,7 @@ The Lleps spell reverses any known spell. As spells are not objects (okay, I jus
 
 The code then looks like this:
 
-```
+```quest
 object = null
 foreach (cmd, ScopeCommands()) {
   if (text = cmd.name and GetBoolean(cmd, "learnt")) {
@@ -144,7 +144,7 @@ At this point we have an `object` and can proceed as before. As with "Frotz" we 
 
 If all goes well the last few lines do the spell effect. In particular this line:
 
-```
+```quest
   object.llepsed = not GetBoolean(object, "llepsed")
 ```
 
@@ -157,7 +157,7 @@ So far so good. Now we need to change "Frotz" spell so it can be reversed.
 
 Note that any object that is glowing at the start of the game needs to be set up just right so the reversed Frotz spell will work properly. Hmm, this might be best set up as a function, as we will be doing the same thing several times. Create a new function, "Frotz" (this has a capital at the start, so is a different name to our command). Give it a single parameter, "object", and paste in the code, which you will recognise from before:
 
-```
+```quest
 object.lightsource = true
 object.lightstrength = "strong"
 object.frotzstatus = " " + WriteVerb(object, "be") + " shining brightly."
@@ -175,7 +175,7 @@ object.alias = object.alias + " (shining)"
 
 Now go to the "frotz" command, and change its code for this:
 
-```
+```quest
 if (not GetBoolean(this, "learnt")) {
   msg ("You don't know how to do that.")
 }
@@ -206,7 +206,7 @@ else {
 
 Now any object that is glowing at the start of the game, rather than setting it to glow on the _Light/Dark_ tab, instead doing it in code, in the "start" script of the game object. This example does it for an object called "glowstone":
 
-```
+```quest
 Frotz(glowstone)
 ```
 
@@ -217,7 +217,7 @@ Now we can be sure that all the glowing items can be set to not glow by the reve
 
 So now we can think about how to approach all other spells. Create a command, give it a pattern in the form we did before, and a name. The code has the general format:
 
-```
+```quest
 if (not GetBoolean(this, "learnt")) {
   msg ("You don't know how to do that.")
 }
@@ -257,7 +257,7 @@ The trick here is to set the scope to "world". Quest will try to match the objec
 
 The code then is pretty easy. We check all the possible fail scenarios as usual, then check if it is reversed, and perform the spell action. Note that the message should be before the line where the player moves so the player sees the message before the room description.
 
-```
+```quest
 if (not GetBoolean(this, "learnt")) {
   msg ("You don't know how to do that.")
 }

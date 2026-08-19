@@ -19,7 +19,7 @@ Quests scripts cannot cope with letters outside the standard Latin alphabet.
 
 Let us suppose you have an object, a rock, in a game you are writing in Greek. Quest will not object to you calling it πέτρα, and the player will be able to interact with it as normal. However, if you try to do anything in a script using that name, you will get an error:
 
-```
+```quest
 πέτρα.parent = player.parent
 ```
 
@@ -38,7 +38,7 @@ To translate Quest, make a copy of English.aslx and rename it for your language.
 
 At the top you will see this:
 
-```
+```xml
 <library>
   <include ref="EditorEnglish.aslx"/>
   <template name="LanguageId">en</template>
@@ -46,7 +46,7 @@ At the top you will see this:
 
 The first step is to modify that so it uses "English.aslx", rather than "EditorEnglish.aslx", and change the language ID. This example is for Icelandic:
 
-```
+```xml
 <library>
   <include ref="English.aslx"/>
   <template name="LanguageId">is</template>
@@ -61,7 +61,7 @@ Default text appears within [template](/elements#template) and [dynamictemplate]
 
 You can translate "template" tags directly, as they are simply static text. Note that the name must not be changed, just the bit between the tags. Here are some examples from the Russian.aslx:
 
-```
+```xml
   <template name="LookAt">Посмотреть на</template>
   <template name="Take">Взять</template>
   <template name="SpeakTo">Поговорить с</template>
@@ -70,13 +70,13 @@ You can translate "template" tags directly, as they are simply static text. Note
 
 Dynamic templates are expressions - usually these are templates that include some object attribute, for example:
 
-```
+```xml
   <dynamictemplate name="TakeSuccessful">"You pick " + object.article + " up."</dynamictemplate>
 ```
 
 Your translation should also be an expression, but you're not forced to use the same attributes. If it makes more sense for your language, for example, you could use the [gender](/attributes#gender) instead of the [article](/attributes#article) to create your sentence. Again, you just change the bit between the tags, as these examples from Russian show.
 
-```
+```xml
   <dynamictemplate name="DropSuccessful">"Ты оставляешь " + object.article + " здесь."</dynamictemplate>
   <dynamictemplate name="DropUnsuccessful">"Ты не можешь " + object.article + "оставить."</dynamictemplate>
 ```
@@ -92,7 +92,9 @@ Some commands are defined using a [verbtemplate](/elements#verbtemplate) - you c
 
 Some commands are defined like this:
 
-     <template templatetype="command" name="put"><![CDATA[^put (?<object1>.*) (on|in) (?<object2>.*)$]]></template>
+```xml
+ <template templatetype="command" name="put"><![CDATA[^put (?<object1>.*) (on|in) (?<object2>.*)$]]></template>
+```
 
 That may look a bit off-putting at first glance, but it's fairly simple. Let's break it down:
 
@@ -101,7 +103,9 @@ That may look a bit off-putting at first glance, but it's fairly simple. Let's b
 
 So the only bit we need to worry about is inside the CDATA, which is this:
 
-     ^put (?<object1>.*) (on|in) (?<object2>.*)$
+```regex
+ ^put (?<object1>.*) (on|in) (?<object2>.*)$
+```
 
 This is a [regular expression](http://en.wikipedia.org/wiki/Regular_expression) ("regex") and is simply a more advanced form of command pattern, and is discussed in some detail [here](/howto/commands/pattern_matching). This [cheat sheet](http://regexlib.com/CheatSheet.aspx) is a handy syntax reference.
 
@@ -109,7 +113,9 @@ The "^" at the beginning and the "$" at the end simply mean that this regex must
 
 That means you only need to worry about the bit in the middle:
 
-     put (?<object1>.*) (on|in) (?<object2>.*)
+```regex
+ put (?<object1>.*) (on|in) (?<object2>.*)
+```
 
 The brackets are there for grouping. There are three groups in the regex above. The first one is named using the ?\<name\> syntax as "object1". It matches ".\*" which is the regex way of saying "any number of any character". The second group matches "on" or "in". The third group is named "object2".
 
@@ -121,29 +127,35 @@ To translate it, you only need to worry about the "put" and "on|in" parts.
 
 For example, in Deutsch.aslx the translation of this is:
 
-     <template templatetype="command" name="put"><![CDATA[^lege (1?<object>.*) (auf|in) (?<object2>.*)$]]></template>
+```xml
+ <template templatetype="command" name="put"><![CDATA[^lege (1?<object>.*) (auf|in) (?<object2>.*)$]]></template>
 
-	 
-	 
+ 
+ 
+```
 ## Language-specific object types
 
 English doesn't have the concept of "gender" for inanimate objects, but most other languages do. To handle this, you can define "masculine" and "feminine" [types](/elements#type) in your language file.
 
 For example, in French:
 
-     <type name="masculine">
-       <gender>il</gender>
-       <article>le</article>
-     </type>
-     
-     <type name="feminine">
-       <gender>elle</gender>
-       <article>la</article>
-     </type>
+```xml
+ <type name="masculine">
+   <gender>il</gender>
+   <article>le</article>
+ </type>
+ 
+ <type name="feminine">
+   <gender>elle</gender>
+   <article>la</article>
+ </type>
+```
 
 Then the LanguageSpecificObjectTypes template should look like this:
 
-     <template name="LanguageSpecificObjectTypes">masculine=Inanimate object (masculine); feminine=Inanimate object (feminine); </template>
+```xml
+ <template name="LanguageSpecificObjectTypes">masculine=Inanimate object (masculine); feminine=Inanimate object (feminine); </template>
+```
 
 The type names in the template must match the type names you define. If they don't, you'll see errors in the Editor.
 

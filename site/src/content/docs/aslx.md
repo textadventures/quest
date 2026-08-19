@@ -10,43 +10,45 @@ Generally you have no need to look at the full code view, but just occasionally 
 
 Here is a simple example:
 
-     <asl version="500">
-       <include ref="English.aslx"/>
-       <include ref="Core.aslx"/>
-     
-       <game name="Test ASLX Game"/>
-     
-       <object name="lounge">
-     
-         <object name="player">
-           <inherit name="defaultplayer" />
-         </object>
-     
-         <object name="sofa">
-           <prefix>a</prefix>
-           <look>Just a sofa.</look>
-           <take type="script">
-              msg ("Example script attribute")
-           </take>
-         </object>
-     
-         <exit name="east" to="hall"/>
-       </object>
-     
-       <object name="hall">
-         <exit name="east" to="kitchen"/>
-         <exit name="west" to="lounge"/>
-       </object>
-     
-       <object name="kitchen">
-         <object name="sink">
-           <look>Just an ordinary sink</look>
-         </object>
-     
-         <exit name="west" to="hall"/>
-       </object>
-     
-     </asl>
+```quest
+ <asl version="500">
+   <include ref="English.aslx"/>
+   <include ref="Core.aslx"/>
+ 
+   <game name="Test ASLX Game"/>
+ 
+   <object name="lounge">
+ 
+     <object name="player">
+       <inherit name="defaultplayer" />
+     </object>
+ 
+     <object name="sofa">
+       <prefix>a</prefix>
+       <look>Just a sofa.</look>
+       <take type="script">
+          msg ("Example script attribute")
+       </take>
+     </object>
+ 
+     <exit name="east" to="hall"/>
+   </object>
+ 
+   <object name="hall">
+     <exit name="east" to="kitchen"/>
+     <exit name="west" to="lounge"/>
+   </object>
+ 
+   <object name="kitchen">
+     <object name="sink">
+       <look>Just an ordinary sink</look>
+     </object>
+ 
+     <exit name="west" to="hall"/>
+   </object>
+ 
+ </asl>
+```
 
 This example defines three "rooms" – a lounge, a hall and a kitchen. These "rooms" are defined as objects, and they themselves contain the objects "sofa" and "sink". The lounge also contains the "player" object.
 
@@ -82,19 +84,19 @@ When Quest loads the game, it will set the following additional attributes on ob
 ## More on XML
 
 A chunk of XML - called an element - typically consists of a start tag, possible with attributes, the content, and the end tag. Tags are delineated by angle brackets, with a slash before the name in the end tag:
-```
+```xml
 <tag name="value">The content</tag>
 ```
 Elements can nest, but they cannot overlap, so this is allowed because the `inner` element is entirely nested inside the `outer` element:
-```
+```xml
 <outer name="value">The content <inner>Some inner content</inner></outer>
 ```
 This is not, because the two elements overlap:
-```
+```xml
 <left name="value">The content <right>Some inner content</left></right>
 ```
 If an element has no content, a reduced form can be used:
-```
+```xml
 <tag name="value"/>
 ```
 Valid XML should include a link at the start to a document type definition, and this will state exactly what elements are allowed where, and with what attributes. Quest has no such link, but it still has a set of rules.
@@ -104,7 +106,7 @@ Valid XML should include a link at the start to a document type definition, and 
 The outer most element of a Quest document is the `asl` element; everything goes inside there. Inside that are the various parts of a Quest game: include (references to libraries), game, verb, command, object, function, turnscript, walkthrough. Every game has one game object, but can have any number of the other objects. All the attributes (in Quest terms) are elements inside those elements, except the `name` attribute, which is a XML attribute.
 
 Looking again at the blank game, you can see the `game` object has a name attribute as an XML attribute, but `gameid`, `version` and `firstpublished` are all XML elements.
-```
+```xml
   <game name="blank">
     <gameid>35ccfb71-ef3a-4edc-aba6-7c556231626b</gameid>
     <version>1.0</version>
@@ -112,7 +114,7 @@ Looking again at the blank game, you can see the `game` object has a name attrib
   </game>
 ```
 By default elements that hold Quest attributes are strings, but the type attribute can state otherwise. Here is some XML that defines an integer attribute called "temp" and a string dictionary called "statusattributes", and gives the latter a single name-value pair.
-```
+```xml
         <temp type="int">0</temp>
         <statusattributes type="stringdictionary">
           <item>
@@ -132,7 +134,7 @@ Like XML, HTML is derived from SGML, a markup language developed 30 years ago, a
 ### Simple formatting
 
 HTML has some tags to display text in bold, underline or italic:
-```
+```xml
 HTML has some tags to display text in <b>bold</b>, <u>underline</u> or <i>italic</i>.
 Also <strike>strike-through</strike>.
 And <b><i>combinations</i></b> too, but remember they have to nest!
@@ -149,7 +151,7 @@ That said, where possible I would recommend breaking paragraphs into separate `m
 For more involved styling, you are better using CSS. This can be associated with a section of HTML using `span` and `div` elements. Use `span` for a section within a single line, and use `div` for a section that includes several sections.
 
 Whichever you use, give it a `style` attribute, and use CSS as the value. Here is an example that sets both the foreground and background colour. Note that CSS attributes take a colon between the name and the value, and each pair is separated by a semi-colon (and the US spelling of "color").
-```
+```xml
 How to do <span style="color:white;background-color:black">reverse video</span>.
 ```
 CSS offers a huge range of options, see [here](http://www.w3schools.com/cssref/) for example. It can be quite fussy in the values allowed.
@@ -159,7 +161,7 @@ CSS offers a huge range of options, see [here](http://www.w3schools.com/cssref/)
 HTML is not compatible with XML. If you have HTML in your strings or scripts, Quest will get confused when opening your file, will try to interpret the HTML as XML, and throw an error. The solution is to put the HTML (and any test with a `<` in it) inside a CDATA section. A CDATA section is just something tagged as not XML.
 
 Generally Quest does this for you. If you are coding directly in the XML, perhaps in a library, you need to start and end the text with `<![CDATA[` and `]]>` respectively. For example:
-```
+```xml
   <take type="script"><![CDATA[
     msg("You can't take <i>that</i>!")
   ]]></take>

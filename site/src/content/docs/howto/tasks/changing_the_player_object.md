@@ -35,7 +35,7 @@ Say this object is Bob. On the _Player_ tab set the name, description, etc. that
 
 The `game` object has an attribute called "pov", and this stores the current player object. You can use that to test who the player is. For example, you might want Bob's description to change depending on who is looking at him. The description on the _Player_ tab is fine, that is only for when the player is Bob. However, we could change the one on _Setup_ tab to a script that changes depending on who the player is when not Bob.
 
-```
+```quest
 if (game.pov = Mary) {
   msg("Bob is that creepy guy with an unhealthy obsession with defibrillators.")
 }
@@ -52,7 +52,7 @@ else {
 
 To change the current player object, use the `ChangePOV` function, which changes `game.pov` and also does some house-keeping (so just setting `game.pov` to the new player object may not work properly).
 
-```
+```quest
 ChangePOV (bob)
 ```
 

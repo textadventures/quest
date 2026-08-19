@@ -14,7 +14,7 @@ We have already discussed how to have an NPC explore or patrol, but perhaps you 
 
 The first step is to consider how the NPC's itinerary will be incorporated into the game. What we will do is have each action defined by a string in a list. You might set it up like this on the initialisation script for the NPC:
 
-```
+```quest
 this.actions = NewStringList()
 list add (this.actions, "Wait:player")
 list add (this.actions, "'Don't tell anyone you saw me,' says Mary.")
@@ -32,7 +32,7 @@ There are two types of entries here; text and commands. Each command consists of
 
 The heart of the system, then, is a function called `NpcAct`, which returns a boolean and has two parameters, "npc" and "s" (where "s" will be the string from the list above). Here is the code:
 
-```
+```quest
 ary = Split(s, ":")
 if (ListCount(ary) = 1) {
   PrintIfHere (npc.parent, s)
@@ -60,7 +60,7 @@ Because we are using `Eval` we need to set the variables as attributes of game. 
 
 We are now ready to give the "takeaturn" script to the NPC (on the _Initialisation_ tab, as we did with patrolling NPCs).
 
-```
+```quest
 this.takeaturn => {
   if (ListCount(this.actions) > 0) {
     s = StringListItem(this.actions, 0)
@@ -80,7 +80,7 @@ At this point we need to set up some functions to handle individual commands. Th
 
 Let us start with `NpcMove`.
 
-```
+```quest
 oldroom = npc.parent
 npc.parent = obj
 if (not oldroom = npc.parent) {
@@ -92,7 +92,7 @@ return (true)
 
 This is `NpcGet`:
 
-```
+```quest
 obj.parent = npc
 PrintIfHere (npc.parent, GetDisplayName(npc) + " picks up the " + GetDisplayAlias(obj) + ".")
 return (true)
@@ -100,7 +100,7 @@ return (true)
 
 This is `NpcDrop`:
 
-```
+```quest
 obj.parent = npc.parent
 PrintIfHere (npc.parent, GetDisplayName(npc) + " drops the " + GetDisplayAlias(obj) + ".")
 return (true)
@@ -108,7 +108,7 @@ return (true)
 
 This is `NpcWait`. The NPC will wait until the given object is present (if it is the player or an NPC), the object is unlocked (if it has "locked" attribute), or the object is held by the NPC (otherwise):
 
-```
+```quest
 if (obj = game.pov or HasScript(obj, "takeaturn")) {
   return (npc.parent = obj.parent)
 }
@@ -122,7 +122,7 @@ else {
 
 NpcGive:
 
-```
+```quest
 obj.parent = game.pov
 PrintIfHere (npc.parent, GetDisplayName(npc) + " gives you the " + GetDisplayAlias(obj) + ".")
 return (true)
@@ -130,7 +130,7 @@ return (true)
 
 NpcSearch (NPC keeps moving randomly until in the same room as the object):
 
-```
+```quest
 exit = PickOneUnlockedExit (npc.parent)
 oldroom = npc.parent
 NpcMove(npc, exit.to)
@@ -139,7 +139,7 @@ return (obj.parent = npc.parent)
 
 NpcPause (NPC does nothing for 1 turn):
 
-```
+```quest
 return (true)
 ```
 
@@ -149,13 +149,13 @@ So far we have NPCs they act according to their own agenda, but do not react to 
 
 The simplest case is where the player has killed the NPC, so now the NPC does nothing. Just set the "actions" attribute to an empty list:
 
-```
+```quest
 mary.actions = NewStringList()
 ```
 
 However, you could give the NPC a new agenda, say when the player talks to her:
 
-```
+```quest
 msg("'Hi,' says Mary.")
 msg("'Could you get the key for me?' you ask her.")
 msg("'Sure!'")
@@ -164,7 +164,7 @@ mary.actions = Split("Move:Apple Street;Move:Gate house;Get:gate key;Move:Gate h
 
 You could even give the player some options that he could ask Mary to do:
 
-```
+```quest
 msg("'Hi,' says Mary.")
 ShowMenu("Talk about?", Split("Get the key;Meet in the shop;Wait here", ";"), false) {
   if (result = "Get the key") {
@@ -201,7 +201,7 @@ Jay Nabonne wrote a path-finding library we can use - its code is below.
 
 Create a new function, name it "PathLib_GetPathExt", give it these parameters: "start", "end", "exits", "maxlength" (in that order), and set it to return an object list. Here is the code:
 
-```
+```quest
 // From PathLib by Jay Nabonne
 // It is more efficient to mark the rooms rather than track them in lists.
 if (not HasInt(game, "pathID")) {
@@ -250,7 +250,7 @@ return (path)
 
 We also need a function called "PathLib_AddEntry". This has two parameters, "list" and "room", and should return a dictionary. Paste in this code:
 
-```
+```quest
 // From PathLib by Jay Nabonne
 // msg ("Add entry: " + room.name + "(length:" + ListCount(list) + ")")
 entry = NewDictionary()
@@ -263,7 +263,7 @@ return (entry)
 
 Now we can add a `GoTo` command. Create another function, "NpcGoTo", and as usual give it two parameters, "npc" and "obj" and have it return a Boolean. Here is the code:
 
-```
+```quest
 l = PathLib_GetPathExt(npc.parent, obj, AllExits(), -1)
 if (ListCount(l) = 0) {
   return (true)
@@ -279,7 +279,7 @@ Note that it calls `NpcMove` to actually move the player; this means if you chan
 
 Now we can do something like this, giving the NPC a destination, rather than a route:
 
-```
+```quest
 msg("'Hi,' says Mary.")
 msg("'Could you get the key for me?'")
 msg("'Sure!'")
@@ -291,7 +291,7 @@ mary.actions = Split("GoTo:Gate house;Get:gate key;GoTo:Apple Street;Wait:player
 
 We can also have NPCs that react to what is going on. First we will add a new function, NpcScript, with the same set up as before. Here is the script:
 
-```
+```quest
 npc.deletefromlist = true
 if (HasScript (npc, "npcscript")) {
   d = NewDictionary()
@@ -307,7 +307,7 @@ For example, you could use this to have your NPC make a decision. Give the NPC a
 
 Here is a simple example that extends a patrol route if a gateway is open. Note that we flag that the item is not to be deleted from the list; this is vital, as the current action is getting deleted as part of the script, and it is the entry from the new list that would be deleted. You need to do this any time you replace the "actions" list in your script.
 
-```
+```quest
 if (gateway.isopen) {
   this.actions = Split("Move:Square;Move:Apple Street;Move:Gate house;Move:courtyard;Move:Gate house;Script:player", ";")
 }
@@ -322,7 +322,7 @@ this.deletefromlist = false
 
 This also gives a way to have an NPC do the same thing repeatedly. In the list of actions, just put in "Script:player". For the script, set the "actions" to the sequence of actions to repeat. For a simple patrol route, it might look like this:
 
-```
+```quest
 this.actions = Split("Move:Square;Move:Apple Street;Move:Gate house;Script:player", ";")
 this.deletefromlist = false
 
@@ -330,7 +330,7 @@ this.deletefromlist = false
 
 Here is a more involved example. The NPC is serving drinks at a party, and has an object, `tray_of_drinks`. This has an attribute, "count", representing the number of glasses on the tray. If the NPC is in the kitchen and the tray is not full, he will add another glass to the tray. If the tray is empty he will start a new sequence, going to the kitchen. Otherwise he will start a new sequence, going to a randomly picked destination and waiting there three turns.
 
-```
+```quest
 if (tray_of_drinks.count < 5 and this.parent = kitchen) {
   PrintIfHere (this.parent, this.alias + " took a glass of Champagne from the replicator, and placed it on her tray.")
   tray_of_drinks.count = tray_of_drinks.count + 1
@@ -350,7 +350,7 @@ this.deletefromlist = false
 
 Bear in mind that NPCs can get delayed, say if the player talks to them, and if you want to coordinate NPCs, the best way is to have each one wait until the other is present. For example, if you want Mary to give Bob a hat, have Mary go to the rendez-vous, and then wait for Bob, and likewise have Bob go there and wait for Mary. For Bob, you can just use the Wait command ("Wait:mary") and then pause one turn ("Pause:player"), but we could have a script on Mary that has her wait until Bob is there, and when he is, give the hat to him.
 
-```
+```quest
 if (this.parent = bob.parent) {
   hat.parent = bob
   PrintIfHere(this.parent, "Mary hands the hat to Bob.")

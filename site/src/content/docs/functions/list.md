@@ -7,7 +7,7 @@ sidebar:
 Functions for manipulating lists. For a discussion on how to use lists, see [here](/howto/scripting/using_lists).
 
 ## Contains
-```
+```quest
 Contains (object parent, object child)
 ```
 
@@ -15,12 +15,14 @@ Contains (object parent, object child)
 
 Returns a [boolean](/types#boolean) - **true** if the child object is contained by the parent. This doesn't necessarily mean that there is a direct parent-child relationship - for example if object A has parent B, and B has parent C, then
 
-     Contains(C, A)
+```quest
+ Contains(C, A)
+```
 
 will return **true**.
 
 ## FilterByAttribute
-```
+```quest
 FilterByAttribute (objectlist list, string attribute name, any value)
 ```
 
@@ -33,7 +35,7 @@ See also [FilterByNotAttribute](#filterbynotattribute).
 You can omit the last value, and it will be assumed to be `null`.
 
 ## FilterByNotAttribute
-```
+```quest
 FilterByNotAttribute (objectlist list, string attribute name, any value)
 ```
 
@@ -46,20 +48,20 @@ See also [FilterByAttribute](#filterbyattribute).
 You can omit the last value, and it will be assumed to be `null`.
 
 ## FilterByType
-```
+```quest
 FilterByType (objectlist list, string typename)
 ```
 
 Returns a new object list containing only the objects in the given list that are of the given type.
 
 ## IndexOf
-```
+```quest
 IndexOf (list, anything)
 ```
 
 Returns an [int](/types#int) - the position of the given element in the list, or -1 if it is not in the list. Note that lists count from zero.
 
-```
+```quest
 list = Split("One;Two;Three;Four")
 msg(IndexOf(list, "One")
 // -> 0
@@ -70,7 +72,7 @@ msg(IndexOf(list, "Five")
 ```
 
 ## ListCombine
-```
+```quest
 ListCombine (list, list)
 ```
 
@@ -79,18 +81,18 @@ ListCombine (list, list)
 Combines two [stringlists](/types#stringlist) or two [objectlists](/types#objectlist) or two generic lists (can cannot add a list of one type to another).
 
 ## ListCompact
-```
+```quest
 ListCompact (any list list)
 ```
 
 Returns a [list](/types#list), based on the given list, but with any repeated entries removed and any entries that are null removed. The canonical use is when combining two lists that might have some entries in common:
 
-```
+```quest
 combinedlist = ListCompact (list1 + list2)
 ```
 
 ## ListContains
-```
+```quest
 ListContains (list, any type item)
 ```
 
@@ -99,7 +101,7 @@ ListContains (list, any type item)
 Returns a [boolean](/types#boolean) - **true** if the list contains the item.
 
 ## ListCount
-```
+```quest
 ListCount (list)
 ```
 
@@ -108,7 +110,7 @@ ListCount (list)
 Returns an [int](/types#int) - the number of items in the list.
 
 ## ListExclude
-```
+```quest
 ListExclude (list, any type item or list)
 ```
 
@@ -119,7 +121,7 @@ Returns a copy of the [stringlist](/types#stringlist) or [objectlist](/types#obj
 Note that this is different to the [list remove](/scripts#list-remove) script command, as that removes the item from the original list. ListExclude by contrast returns a copy of the list - the original list is unaffected.
 
 ## ListItem
-```
+```quest
 ListItem (list, int index)
 ```
 
@@ -130,7 +132,7 @@ Returns a [string](/types#string) or an [object](/types#object), depending on wh
 Usually you will know the type of list that you're passing in, so you should use the [StringListItem](#stringlistitem) or [ObjectListItem](#objectlistitem) functions instead.
 
 ## NewList
-```
+```quest
 NewList ()
 ```
 
@@ -141,7 +143,7 @@ Returns an empty [list](/types#list). The list can contain any type of data, or 
 If the list will only contain one type of data (as will usually be the case), you should use [NewStringList](#newstringlist) or [NewObjectList](#newobjectlist) instead.
 
 ## NewObjectList
-```
+```quest
 NewObjectList ()
 ```
 
@@ -150,7 +152,7 @@ NewObjectList ()
 Returns an empty [objectlist](/types#objectlist).
 
 ## NewStringList
-```
+```quest
 NewStringList ()
 ```
 
@@ -159,18 +161,18 @@ NewStringList ()
 Returns an empty [stringlist](/types#stringlist).
 
 ## ObjectListCompact
-```
+```quest
 ObjectListCompact (objectlist list)
 ```
 
 Returns an [objectlist](/types#list), based on the given list, but with any repeated entries removed and any entries that are null removed. The canonical use is when combining two lists that might have some entries in common:
 
-```
+```quest
 combinedlist = ObjectListCompact (list1 + list2)
 ```
 
 ## ObjectListItem
-```
+```quest
 ObjectListItem (objectlist, int index)
 ```
 
@@ -183,16 +185,20 @@ You can use the [ListItem](#listitem) function if you don't know the type of the
 ### Example
 For example, to show a specific objects' name from a list, first create an [objectlist](/types#objectlist) called myList, in this example it is a list of objects that can be seen currently [ScopeVisibleNotHeld](/functions/scope#scopevisiblenotheld).
 
-     myList = ScopeVisibleNotHeld()
+```quest
+ myList = ScopeVisibleNotHeld()
+```
 
 Now show the name of the second item in the list. Note that the second object is at index 1.
 
-     msg ("myList item 2 is " + ObjectListItem(myList, 1).name)
+```quest
+ msg ("myList item 2 is " + ObjectListItem(myList, 1).name)
+```
 
 This could be used with [GetRandomInt](/functions/random#getrandomint) to remove an item from the players inventory ([ScopeInventory](/functions/scope#scopeinventory)) and place it into the current room (for example, if you're creating a poltergeist or thief).
 
 ## ObjectListSort
-```
+```quest
 ObjectListSort (objectlist list, string attributes ...)
 ```
 
@@ -202,11 +208,15 @@ Returns an [objectlist](/types#objectlist) - a copy of the input objectlist, sor
 
 For example, to return a list of objects sorted by name:
 
-     sortedlist = ObjectListSort(list, "name")
+```quest
+ sortedlist = ObjectListSort(list, "name")
+```
 
 To return a list sorted by weight, with equivalent weight objects sorted by name:
 
-     sortedlist = ObjectListSort(list, "weight", "name")
+```quest
+ sortedlist = ObjectListSort(list, "weight", "name")
+```
 
 It is important to have all the objects in the list have the same type of attribute. If you are sorting by weight, and some objects have an integer attribute for weight and some have a double attribute, you will get an error:
 
@@ -229,7 +239,7 @@ If you try to sort by object, script, list or dictionary attribute you will get 
 To return the values in reverse order, use [ObjectListSortDescending](#objectlistsortdescending).
 
 ## ObjectListSortDescending
-```
+```quest
 ObjectListSortDescending (objectlist list, string attributes ...)
 ```
 
@@ -238,21 +248,21 @@ ObjectListSortDescending (objectlist list, string attributes ...)
 Returns the reversed version of [ObjectListSort](#objectlistsort) - see that page for usage.
 
 ## ObjectListToStringList
-```
+```quest
 ObjectListToStringList (objectlist list, string attribute name)
 ```
 
 Returns a new string list containing the values or the names attribute for each object in the given list. The value of the attribute must be a string or it will not be added. If an object does not have that attribute or it is not a string, then it will be missing from the list, so the string list that is returned could well be shorter than the object list.
 
 ## RemoveSceneryObjects
-```
+```quest
 RemoveSceneryObjects(objectlist)
 ```
 
 Returns a list where all scenery objects are removed from the list **objectlist**
 
 ## StringListItem
-```
+```quest
 StringListItem (stringlist, int index)
 ```
 
@@ -263,7 +273,7 @@ Returns the [string](/types#string) from the list by the specified index. The in
 You can use the [ListItem](#listitem) function if you don't know the type of the list.
 
 ## StringListSort
-```
+```quest
 StringListSort (stringlist list)
 ```
 
@@ -274,7 +284,7 @@ Returns a [stringlist](/types#stringlist) - a copy of the input stringlist, sort
 To return the values in reverse order, use [StringListSortDescending](#stringlistsortdescending).
 
 ## StringListSortDescending
-```
+```quest
 StringListSortDescending (stringlist list)
 ```
 

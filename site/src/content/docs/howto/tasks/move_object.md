@@ -15,14 +15,14 @@ This is pretty easy to do in its simplest form. We need a new command, with this
 
 The script will only run if both the object and exit have a match, so all the script has to do is move the object to the destination of the exit (which is set in its "to" attribute), and tell the player:
 
-```
+```quest
 msg ("You push " + object.article + " " + exit.alias + ".")
 object.parent = exit.to
 ```
 
 You might also want the player to end up in the other room - I am not sure what the player would expect. If so, then just add an extra line.
 
-```
+```quest
 msg ("You push " + object.article + " " + exit.alias + ".")
 object.parent = exit.to
 game.pov.parent = exit.to
@@ -39,7 +39,7 @@ Go to the _Attributes_ tab of the crate, and add a new attribute, "shiftable". S
 
 We then need to adjust the code for the command to check for that flag:
 
-```
+```quest
 if (not GetBoolean(object, "shiftable")) {
   if (GetBoolean(object, "take")) {
     msg ("Just pick " + object.article + " up!")
@@ -64,7 +64,7 @@ We also check the value of the "take" attribute to give a different error messag
 
 We can stop the player pushing the object up or down (you may feel objects can be pushed downwards, just delete those three lines):
 
-```
+```quest
 if (not GetBoolean(object, "shiftable")) {
   if (GetBoolean(object, "take")) {
     msg ("Just pick " + object.article + " up!")
@@ -92,7 +92,7 @@ Go to the _Attributes_ tab of the exit, give it a new attribute, "noshifting", a
 
 Then update the code:
 
-```
+```quest
 if (not GetBoolean(object, "shiftable")) {
   if (GetBoolean(object, "take")) {
     msg ("Just pick " + object.article + " up!")
@@ -130,20 +130,20 @@ So the player can get the crate to the other room, how do we handle climbing on 
 
 Set the crate to be a room as well as an object (_Setup_ tab). On the _Room_ tab, set the description to be a script, and paste this in.
 
-```
+```quest
 msg("You are stood on a crate in " + GetDisplayName(this.parent) + ".")
 ```
 
 Give it a "climb" verb, and add this code:
 
-```
+```quest
 msg("You climb on to the crate.")
 game.pov.parent = this
 ```
 
 On the _Exits_ tab, give it a "down" exit (to any room, but make sure it is one way). For the exit, tick the "Run a script" checkbox, and paste in this script:
 
-```
+```quest
 game.pov.parent = this.parent.parent
 ```
 
@@ -153,7 +153,7 @@ You should now be able to CLIMB the crate, and use the DOWN direction to get off
 
 Create a second exit from the crate, to the room above the trapdoor. Tick it to be scenery, and to run a script. This code assumes the room with the trapdoor is "other room":
 
-```
+```quest
 if (this.parent.parent = other room) {
   msg ("From the crate you can just reach the trapdoor. You pull yourself through.")
   game.pov.parent = this.to

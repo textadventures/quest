@@ -24,11 +24,13 @@ The way to do this is to rewrite the GO command.
 
 Create a new command, and set the pattern to be a regular expression. In the text box below, paste in this string:
 
-    ^go to (?<exit>.*)$|^go (?<exit>.*)$|^(?<exit>north|east|south|west|northeast|northwest|southeast|southwest|in|out|up|down|n|e|s|w|ne|nw|se|sw|o|u|d)$
+```regex
+^go to (?<exit>.*)$|^go (?<exit>.*)$|^(?<exit>north|east|south|west|northeast|northwest|southeast|southwest|in|out|up|down|n|e|s|w|ne|nw|se|sw|o|u|d)$
+```
 
 Then paste in this code.
 
-```
+```quest
 if (HasString (player, "immobilisedmessage")) {
   Print (player.immobilisedmessage)
 }
@@ -62,12 +64,12 @@ As it has the same pattern as the built-in GO command, this will get used instea
 
 Now to immobilise the player, your code needs to do something like this:
 
-```
+```quest
 player.immobilisedmessage = "Cannot move while seated."
 ```
 
 To allow him to move again:
 
-```
+```quest
 player.immobilisedmessage = null
 ```

@@ -14,6 +14,8 @@ You can get around the problem by cloning the list or dictionary first. Quest au
 
 The same principle works for cloning an attribute defined on an underlying type - in our example above, we can clone the TypeList attribute first using this:
 
-    MyObject.TypeList = MyObject.TypeList
+```quest
+MyObject.TypeList = MyObject.TypeList
+```
 
 Yep, it looks like assigning to the same thing. But we've made use of the fact that assignment clones mutable types to give MyObject an editable version of TypeList.

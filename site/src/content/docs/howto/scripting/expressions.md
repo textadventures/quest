@@ -12,25 +12,27 @@ This means the "if" command gets the full power of expressions – you can use n
 
 Here are some example script commands containing expressions:
 
-     foreach (obj, GetObjectsInScope("Visible")) {
-       msg ("You can see: " + obj.name)
-     }
-     
-     if ((a and b) or (c and d) or (somenumber * 3 > somethingelse)) { .... }
-     
-     foreach (obj, somelist + anotherlist + SomeFunctionReturningAList(blah)) {
-       ....
-     }
-     
-     MyCustomFunction(a, b, c+d)
-     
-     player.parent = GetRandomRoom(GetNearbyRooms(player.parent))
-     
-     someobject.take => {
-       msg ("Blah blah")
-       someobject.counter = someobject.counter + someotherobject.someproperty
-     }
-     
+```quest
+ foreach (obj, GetObjectsInScope("Visible")) {
+   msg ("You can see: " + obj.name)
+ }
+ 
+ if ((a and b) or (c and d) or (somenumber * 3 > somethingelse)) { .... }
+ 
+ foreach (obj, somelist + anotherlist + SomeFunctionReturningAList(blah)) {
+   ....
+ }
+ 
+ MyCustomFunction(a, b, c+d)
+ 
+ player.parent = GetRandomRoom(GetNearbyRooms(player.parent))
+ 
+ someobject.take => {
+   msg ("Blah blah")
+   someobject.counter = someobject.counter + someotherobject.someproperty
+ }
+ 
+```
 
 Quest also supports local variables. This means you can reuse the same simple variable name inside different functions, if you don’t need to access that value outside the function. You don’t need to declare variables in advance – you can just use them by setting them.
 

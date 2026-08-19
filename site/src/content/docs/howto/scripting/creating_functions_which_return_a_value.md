@@ -28,13 +28,13 @@ In this example, you may want to handle the command with a pattern like this:
 
 The script for the command could then pass the object to the function, like this:
 
-```
+```quest
 SitOnChair(object)
 ```
 
 Your Use/Give script (and _Verbs_ script if you did it that way) can be modified like this:
 
-```
+```quest
 SitOnChair(this)
 ```
 
@@ -42,13 +42,13 @@ The special identifier `this` indicates the object the script is attached to.
 
 The script for the SIT command would have to specify the chair. How do you know the chair is in the room? One way would be to not allow the player to move the chair, and to move the command into that room. You could have a SIT command in every room where there is something the player could sit on.
 
-```
+```quest
 SitOnChair(chair)
 ```
 
 Hmm, we have a design decision to make. The player might want to try sitting on anything, so somewhere we need to check if the object can be sat. Do we do that in the function, or in the command? We do not need to do it for the Use/Give script (or the verb script), because they will only be on objects you can sit on, and the SIT command is only going to send items you can sit on too. So it is probably best to check this in the command, so we will update the script to do that (if you have lots of things the player can sit on, you might want to check a flag):
 
-```
+```quest
 if (not object = chair) {
   msg("That's not something you can sit on.")
 }
@@ -66,7 +66,7 @@ A function can have any number of parameters. If it has more than one, then the 
 
 In the script for the function, you can refer to the parameters as you named them in the list.
 
-```
+```quest
 msg("You sit on the " + GetDisplayAlias(chair) + ".")
 player.sat = true
 ```
@@ -80,7 +80,7 @@ By way of an example, we will create a function that will get a list of objects 
 
 Create the function as normal, give it a name and then set the return type to "object list". Here is some code:
 
-```
+```quest
 list = NewObjectList()
 foreach (o, ScopeVisible()) {
   if (GetBoolean(o, "cansiton")) {
@@ -94,7 +94,7 @@ Look at the last line. This is telling Quest what value we want the function to 
 
 By the way, there is a quick way to do this in Quest:
 
-```
+```quest
 FilterByAttribute(ScopeVisible(), "cansiton", true)
 ```
 
@@ -103,7 +103,7 @@ FilterByAttribute(ScopeVisible(), "cansiton", true)
 
 Let us suppose you just want a single object you can sit on from your function. In this case the return type would be "object", and the code might look like this:
 
-```
+```quest
 foreach (o, ScopeVisible()) {
   if (GetBoolean(o, "cansiton")) {
     return (o)
@@ -122,7 +122,7 @@ We do have to take account of what will happen if we find nothing, so the last l
 
 It is important to test your functions properly. Often the most convenient way to do that is to _temporarily_ put them into the "start" script of the `game` object. Let us suppose the script to get a list of objects that can be sat on is called "GetSittables", you could put this in the start script:
 
-```
+```quest
 msg("---------------------------")
 msg(GetSittables())
 player.parent = lounge

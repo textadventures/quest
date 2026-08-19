@@ -21,7 +21,9 @@ Not really a function, but the easiest to use. As with all [text processor](/how
 
 Here is a simple example. When the text is printed, Quest will randomly select one of "blue", "red" or "yellow".
 
-    It was a {random:blue:red:yellow} flower.
+```quest
+It was a {random:blue:red:yellow} flower.
+```
 
 It is worth emphasising that the colour is picked randomly every time the text is printed. If the player looks again, she may well find the flowers have changed colour. We will look at a solution to that in the examples.
 
@@ -36,7 +38,7 @@ The `GetRandomInt` function takes two integer parameters, and will return a rand
 
 Here is a simple example that will randomly print 1, 2 or 3 ten times.
 
-```
+```quest
 for (i, 1, 10) {
   msg(GetRandomInt(1, 3))
 }
@@ -47,7 +49,7 @@ for (i, 1, 10) {
 
 The `RandomChance` function takes one integer parameter, between 0 and 100, and will return a Boolean. It will return `true` a percentage of the time equal to the number given.
 
-```
+```quest
 // Always successful
 success = RandomChance(100)
 
@@ -86,7 +88,7 @@ The `DiceRoll` function takes a string in the standard RPG format, eg "d6+1" and
 
 A great example of this in use would be calculating damage for a weapon. Each weapon could be given a damage string in this format, so dagger might be "d4" and great sword could be "3d6+2". Damage after a successful attack can then be determined:
 
-```
+```quest
 hits_lost = DiceRoll(weapon.damage)
 ```
 
@@ -95,7 +97,7 @@ hits_lost = DiceRoll(weapon.damage)
 ### Selecting one option
 
 Let us suppose you want to randomly pick one of three (or more) things. You might think you could do this:
-```
+```quest
 if (RandomChance(33)) {
   msg("Event three happens")
 }
@@ -110,7 +112,7 @@ Event three will be selected a third of the time - so far so good. It will not b
 
 The way to approach this is to consider that if event three has not happened, then if we want events two and one to be equally likely, then there has to be a fifty percent chance of each:
 
-```
+```quest
 if (RandomChance(33)) {
   msg("Event three happens")
 }
@@ -122,7 +124,7 @@ else {
 }
 ```
 You could even think of it like this, though the `RandomChance(100)` is entirely unnecessary:
-```
+```quest
 if (RandomChance(33)) {
   msg("Event three happens")
 }
@@ -137,7 +139,7 @@ At the start there are three options to pick between, so the first is 33%. When 
 
 What if you have multiple events? The general formula is to count how many options are left at each point; the percentage chance is 100 divided by that. Here there are seven events. The first has a probability of 100/7. For the second, there are six remaining, so the probability is 100/6.
 
-```
+```quest
 if (RandomChance(14)) {
   msg("Event seven happens")
 }
@@ -161,7 +163,7 @@ else {
 }
 ```
 An alternative (and conceptually simpler) approach is to use `GetRandomInt` and a `switch` statement.
-```
+```quest
 switch (GetRandomInt(1,7)) {
   case (1) {
     msg("Event seven happens")
@@ -194,19 +196,19 @@ The text processor offers a very simple randomisation technique, but the fact th
 
 The trick is to process the text when the clone is created rather than when the player looks at it. Here is a very simple example:
 
-```
+```quest
 clone.look = ProcessText("The alien has {random:red:blue:yellow} skin.")
 ```
 
 It is probably more convenient to have the description in the prototype, and to process that when the clone is created.
 
-```
+```quest
 clone.look = ProcessText(prototype.look)
 ```
 
 If the attributes of the clone change randomly, you will need to have the description depend on those attributes. Here is a more involved example:
 
-```
+```quest
 clone.size = GetRandomInt(0,2)
 clone.weapon = CloneObjectAndMove(PickOneChild(weapons), clone)
 clone.weapon_name = GetDisplayName(clone.weapon)

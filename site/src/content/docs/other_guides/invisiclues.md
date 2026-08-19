@@ -14,16 +14,18 @@ To get this to work, you need to create a new HELP command. For the command patt
 
 For the script, paste in this:
 
-    if (HasAttribute(game, "defaultbackground")) {
-      bg = LCase (game.defaultbackground)
-    }
-    else {
-      bg = "white"
-    }
-    msg ("Drag your mouse over the text to reveal only the clues you need.")
-    foreach (key, game.helpdict) {
-      msg ("<i>" + key + "</i> [<font color=\"" + bg + "\">" + StringDictionaryItem(game.helpdict, key) + "</font>]")
-    }
+```quest
+if (HasAttribute(game, "defaultbackground")) {
+  bg = LCase (game.defaultbackground)
+}
+else {
+  bg = "white"
+}
+msg ("Drag your mouse over the text to reveal only the clues you need.")
+foreach (key, game.helpdict) {
+  msg ("<i>" + key + "</i> [<font color=\"" + bg + "\">" + StringDictionaryItem(game.helpdict, key) + "</font>]")
+}
+```
 
 The first 6 lines just get the background colour, the seven line is obvious just a message to the player. The important part is the loop at the end.
 
@@ -46,7 +48,7 @@ Click to add a new script again, and select "Add a value to a dictionary. In the
 
 This is what the code looks like:
 
-```
+```quest
 game.helpdict = NewStringDictionary()
 dictionary add (game.helpdict, "How do I go north?", "Open the door!")
 dictionary add (game.helpdict, "How do I open the door?", "Type OPEN DOOR!")

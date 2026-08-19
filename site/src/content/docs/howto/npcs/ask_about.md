@@ -42,14 +42,14 @@ For more on how to copy-and-paste code, see [here](/howto/scripting/copy_and_pas
 
 Currently Mary will give the same response every time the player asks her about the murder.
 
-```
+```quest
 msg ("'What do you know about the murder of Dr. Black?'")
 msg ("'Me? Nothing!'")
 ```
 
 It will be better if she varies it a bit. In this simple example we set a flag, "askedaboutmurder" on the character the first time she is asked. We can then test that flag using `GetBoolean` (which returns false if the attribute does not exist, so saves us having to set it to false from the start).
 
-```
+```quest
 if (not GetBoolean(this, "askedaboutmurder")) {
   msg ("'What do you know about the murder of Dr. Black?'")
   msg ("'Me? Nothing!'")
@@ -63,7 +63,7 @@ else {
 
 We might also want to have it change depending on the player's progress through the game.
 
-```
+```quest
 if (Got(lab report)) {
   msg ("'What do you know about the murder of Dr. Black?' you say, showing Mary the lab report.")
   msg ("'Oh, God! Okay, yes, it was me. But he had it coming to him!'")
@@ -92,7 +92,7 @@ Underneath the list of ASK topics, you can put a script to run when there is no 
 
 You can use a special variable, "text", which will contain the subject the player was asking about. You could have something like this:
 
-```
+```quest
 msg("Mary shrugs, and says, 'I know nothing about " + text + ".'")
 ```
 
@@ -107,7 +107,7 @@ The first step, then, is to create our string list. You can go to the _Attribute
 
 Alternatively, you can add the attribute in a script instead. Go to the _Scripts_ tab of the game object, and add this to the start script (this will set "Job" and "Alibi" as topics from the start):
 
-```
+```quest
 game.topics = Split("Job;Alibi", ";")
 ```
 
@@ -115,7 +115,7 @@ This will be shown to the player, so capitalise it nicely and bear in mind it ne
 
 Now we need to create a new command. Go to _Commands_ in the left pane, then click "Add" in the right pane. For the command pattern, type in `topics`, and paste in this code:
 
-```
+```quest
 msg ("Topics you might want to ask about include:")
 foreach (s, game.topics) {
   msg (s)
@@ -124,7 +124,7 @@ foreach (s, game.topics) {
 
 You can add to the list of topics at any time during the game, as the plot develops. For example:
 
-```
+```quest
 list add(game.topics, "Forensic results")
 ```
 
@@ -133,7 +133,7 @@ list add(game.topics, "Forensic results")
 
 If there is only one NPC in the room, we can save the player some typing by creating an `ASK ABOUT ...` command. Go to _Commands_ in the left pane, then click "Add" in the right pane. For the command pattern, type in `ask about #text#`, and paste in this code:
 
-```
+```quest
 npcs = NewObjectList()
 opts = NewStringDictionary()
 foreach (o, GetDirectChildren(player.parent)) {
@@ -171,7 +171,7 @@ If it found more than one, it will show a menu, asking the player to select one,
 A further option we could give the player is to ask a character, and then offer a list of topics to ask about. We already have the list of topics from the TOPICS command, so half the work is done.
 
 Go to _Commands_ in the left pane, then click "Add" in the right pane. For the command pattern, type in `ask #object#`, and paste in this code:
-```
+```quest
 game.askaboutobject = object
 ShowMenu ("Ask about?", game.topics, true) {
   if (not result = null) {

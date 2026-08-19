@@ -12,7 +12,9 @@ The callback function is a function in your game code that will be called from J
 
 For example, let us create a function called "InputboxCallback", with a parameter, "s". The code might look like this:
 
-      msg ("You are " + s + " years old.")
+```quest
+  msg ("You are " + s + " years old.")
+```
 
 
 ## ASLEvent function
@@ -21,19 +23,21 @@ Quest has a special JavaScript function called `ASLEvent`, which will pass two s
 
 Here is a very simple example of some JavaScript code. A discussion of the language is way beyond the scope of this tutorial, but the first line says we are defining a function, and the second displays a text box on screen, putting the players response in a new variable called "answer". We then check the user actually types something (i.e., `answer` is not empty), and if so, invoke the `ASLEvent` function, which in turn will call the function we created above.
 
-      function askAge() {
-        var answer = prompt("How old are you?");
-        if (answer != null && answer != "") {
-          ASLEvent("InputboxCallback", answer);
-        }
-      }
+```js
+  function askAge() {
+    var answer = prompt("How old are you?");
+    if (answer != null && answer != "") {
+      ASLEvent("InputboxCallback", answer);
+    }
+  }
 
-      
+  
+```
 ## To test...
 
 If you want to see that in action, wrap the JavaScript in `script` tags, and put it in a string. We can then add that to the HTML document using `addScript`. In the game start script it would lok like this:
 
-```
+```quest
 s = "<script>"
 s = s + "function askAge() {"
 s = s + "var answer = prompt('How old are you?');"
@@ -50,8 +54,10 @@ JS.askAge()
 
 Using this technique, you could change the [custom status pane](/howto/ux/custom_panes) into a control panel. Go to the game object, and turn on the custom status pane on the _Interface_ tab, then add this to the start script:
 
-      html = "<p><a onclick=\"ASLEvent('HandleClick', 'HERE')\">HERE</a><p>"
-      JS.setCustomStatus (html)
+```xml
+  html = "<p><a onclick=\"ASLEvent('HandleClick', 'HERE')\">HERE</a><p>"
+  JS.setCustomStatus (html)
+```
 
 Create a new function, HandleClick, that will print its single parameter. When you go in game, you can click "HERE" and Quest will respond. Obviously this does nothing more than the custom command pane, but potentially you could set up a sophisticated control panel with switches and flashing lights and sliders.
 
@@ -62,17 +68,21 @@ If you have a lot of bits of data to pass from JavaScript to Quest (say the resu
 
 The JavaScript might look like this:
 
-      var s = name;
-      s += "|" + age;
-      s += "|" + eyeColour;
-      ASLEvent("CreatorCallback", s);
+```js
+  var s = name;
+  s += "|" + age;
+  s += "|" + eyeColour;
+  ASLEvent("CreatorCallback", s);
+```
 
 In Quest, you can use Split to break the string up, and then handle each section. Remember to convert to integers where necessary:
 
-      l = Split(s, "|")
-      player.name = StringListItem(l, 0)
-      player.age = ToInt(StringListItem(l, 1))
-      player.eyecolour = StringListItem(l, 2)
+```quest
+  l = Split(s, "|")
+  player.name = StringListItem(l, 0)
+  player.age = ToInt(StringListItem(l, 1))
+  player.eyecolour = StringListItem(l, 2)
+```
 
 
 ## Timers

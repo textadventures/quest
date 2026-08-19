@@ -7,21 +7,21 @@ sidebar:
 Functions for checking and setting attributes on objects.
 
 ## DecreaseHealth
-```
+```quest
 DecreaseHealth (integer amount)
 ```
 
 Decreases the current player's health attribute by the specified amount.
 
 ## DecreaseMoney
-```
+```quest
 DecreaseMoney (integer amount)
 ```
 
 Decreases the player's money attribute by the specified amount.
 
 ## DecreaseObjectCounter
-```
+```quest
 DecreaseObjectCounter (object, string counter name)
 ```
 
@@ -30,14 +30,14 @@ Decreases the named integer attribute on the object by 1. If the object doesn't 
 See also [IncreaseObjectCounter](#increaseobjectcounter).
 
 ## DecreaseScore
-```
+```quest
 DecreaseScore (integer amount)
 ```
 
 Decreases the game's score attribute by the specified amount.
 
 ## GetAttribute
-```
+```quest
 GetAttribute (object, string attribute name)
 ```
 
@@ -46,7 +46,7 @@ GetAttribute (object, string attribute name)
 Returns the value of the specified object attribute. The return type will be the attribute type. Returns [null](/types#null) if the attribute does not exist.
 
 ## GetAttributeNames
-```
+```quest
 GetAttributeNames (object, boolean include inherited attributes)
 ```
 
@@ -55,7 +55,7 @@ GetAttributeNames (object, boolean include inherited attributes)
 Returns a [stringlist](/types#stringlist) of all attribute names of the specified object, optionally including attributes set by an included type.
 
 ## GetBoolean
-```
+```quest
 GetBoolean (object, string attribute name)
 ```
 
@@ -66,7 +66,7 @@ Returns a [boolean](/types#boolean) - **true** if the object has that boolean at
 See also [HasBoolean](#hasboolean)
 
 ## GetDouble
-```
+```quest
 GetDouble (object, string attribute name)
 ```
 
@@ -77,7 +77,7 @@ Returns an [double](/types#double) if the object has that double attribute, or *
 See also [HasDouble](#hasdouble) and [ToDouble](/functions/variables#todouble)
 
 ## GetInt
-```
+```quest
 GetInt (object, string attribute name)
 ```
 
@@ -88,7 +88,7 @@ Returns an [int](/types#int) if the object has that integer attribute, or **null
 See also [HasInt](#hasint), [IsInt](/functions/variables#isint) and [ToInt](/functions/variables#toint)
 
 ## GetString
-```
+```quest
 GetString (object, string attribute name)
 ```
 
@@ -99,7 +99,7 @@ Returns the [string](/types#string) value of the specified object attribute. Ret
 See also [ToString](/functions/variables#tostring) and [HasString](#hasstring)
 
 ## HasAttribute
-```
+```quest
 HasAttribute (object, string attribute name)
 ```
 
@@ -108,7 +108,7 @@ HasAttribute (object, string attribute name)
 Returns true if the object has the specified attribute.
 
 ## HasBoolean
-```
+```quest
 HasBoolean (object, string attribute name)
 ```
 
@@ -121,7 +121,7 @@ Whether the value of that attribute is true or false is unimportant - this funct
 See also [GetBoolean](#getboolean)
 
 ## HasDelegateImplementation
-```
+```quest
 HasDelegateImplementation (object, string attribute name)
 ```
 
@@ -132,7 +132,7 @@ Returns a [boolean](/types#boolean) - **true** if the specified attribute is a d
 See [Using delegates](/advanced-topics/using_delegates)
 
 ## HasDouble
-```
+```quest
 HasDouble (object, string attribute name)
 ```
 
@@ -143,7 +143,7 @@ Returns a [boolean](/types#boolean) - **true** if the object *has* a double attr
 See also [GetDouble](#getdouble) and [ToDouble](/functions/variables#todouble)
 
 ## HasInt
-```
+```quest
 HasInt (object, string attribute name)
 ```
 
@@ -154,7 +154,7 @@ Returns a [boolean](/types#boolean) - **true** if the object *has* an integer at
 See also [GetInt](#getint), [IsInt](/functions/variables#isint) and [ToInt](/functions/variables#toint)
 
 ## HasObject
-```
+```quest
 HasObject (object, string attribute name)
 ```
 
@@ -165,7 +165,7 @@ Returns a [boolean](/types#boolean) - **true** if the specified attribute is a r
 See also [GetObject](/functions/objects#getobject)
 
 ## HasScript
-```
+```quest
 HasScript (object, string attribute name)
 ```
 
@@ -174,7 +174,7 @@ HasScript (object, string attribute name)
 Returns a [boolean](/types#boolean) - **true** if the specified attribute is a script.
 
 ## HasString
-```
+```quest
 HasString (object, string attribute name)
 ```
 
@@ -185,21 +185,21 @@ Returns a [boolean](/types#boolean) - **true** if the specified attribute is a s
 See also [ToString](/functions/variables#tostring) and [GetString](#getstring)
 
 ## IncreaseHealth
-```
+```quest
 IncreaseHealth (integer amount)
 ```
 
 Increases the current player's health attribute by the specified amount.
 
 ## IncreaseMoney
-```
+```quest
 IncreaseMoney (integer amount)
 ```
 
 Increases the player's money attribute by the specified amount.
 
 ## IncreaseObjectCounter
-```
+```quest
 IncreaseObjectCounter (object, string counter name)
 ```
 
@@ -208,38 +208,46 @@ Increases the named integer attribute on the object by 1. If the object doesn't 
 See also [DecreaseObjectCounter](#decreaseobjectcounter).
 
 ## IncreaseScore
-```
+```quest
 IncreaseScore (integer amount)
 ```
 
 Increases the game's score attribute by the specified amount.
 
 ## SetObjectFlagOff
-```
+```quest
 SetObjectFlagOff (object, string flag name)
 ```
 
 Turns the object flag off - an object flag is simply a [boolean](/types#boolean) attribute, so:
 
-     SetObjectFlagOff(myobject, "myflag")
+```quest
+ SetObjectFlagOff(myobject, "myflag")
+```
 
 is equivalent to
 
-     myobject.myflag = false
+```quest
+ myobject.myflag = false
+```
 
 See also [SetObjectFlagOn](#setobjectflagon)
 
 ## SetObjectFlagOn
-```
+```quest
 SetObjectFlagOn (object, string flag name)
 ```
 
 Turns the object flag on - an object flag is simply a [boolean](/types#boolean) attribute, so:
 
-     SetObjectFlagOn(myobject, "myflag")
+```quest
+ SetObjectFlagOn(myobject, "myflag")
+```
 
 is equivalent to
 
-     myobject.myflag = true
+```quest
+ myobject.myflag = true
+```
 
 See also [SetObjectFlagOff](#setobjectflagoff)

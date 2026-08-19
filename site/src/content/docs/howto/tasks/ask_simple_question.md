@@ -79,7 +79,7 @@ If you have variable options (for example, the option to buy orchids is only the
 
 It is worthwhile looking briefly at the code view:
 
-```
+```quest
 options = NewStringList()
 list add (options, "Red roses")
 list add (options, "Lavender")
@@ -120,7 +120,7 @@ For simple questions, we can shortcut some of that. We can use the `Split` funct
 
 In code:
 
-```
+```quest
 ShowMenu ("Are you sure?", Split("Yes;No", ";"), false) {
   if (result = "Yes") {
     msg ("You buy some red roses from Cindy.")
@@ -135,7 +135,7 @@ You can also use the `Ask` function - see [here](/functions/user-interface#ask).
 
 If you have any script after the ShowMenu, this will run straightaway, without waiting for the player to make a choice. Consider this example:
 
-```
+```quest
 options = NewStringList()
 list add (options, "Red roses")
 list add (options, "Lavender")
@@ -155,7 +155,7 @@ msg("'Have a nice day!' she says.")
 
 Quest will set up the string list, display the menu, but will then print "'Have a nice day!' she says." immediately, whilst another part waits for the player to make a choice. That is probably not what you want! This is how to do it properly:
 
-```
+```quest
 options = NewStringList()
 list add (options, "Red roses")
 list add (options, "Lavender")
@@ -180,7 +180,7 @@ The script that runs inside of ShowMenu when the player makes a choice has no ac
 
 For example, suppose the above script is an attribute of Cindy, we could try this:
 
-```
+```quest
 options = NewStringList()
 list add (options, "Red roses")
 list add (options, "Lavender")
@@ -202,7 +202,7 @@ The 'What flowers do you want to buy?' bit will be okay, `this` will refer to Ci
 
 The way to get around that is to assign the value to an attribute of the game or player object (you can use the same one for all your `ShowMenu` calls, as it is only needed temporarily.
 
-```
+```quest
 options = NewStringList()
 list add (options, "Red roses")
 list add (options, "Lavender")

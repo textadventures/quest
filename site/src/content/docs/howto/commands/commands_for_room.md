@@ -15,7 +15,9 @@ Let us suppose a room where the player has to `CLIMB`.
 
 In most rooms, CLIMB will do nothing. We will handle that first. Create a command as usual, and give it this pattern:
 
-    climb
+```quest
+climb
+```
 
 Now click the "Add new script" button, select "Print" and paste in some suitable text, "Nothing to climb here."
 

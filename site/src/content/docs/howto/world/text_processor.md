@@ -12,13 +12,16 @@ To use the text processor, you can simply add a directive in curly braces in any
 
 The more important text areas have shortcut buttons for some text processor commands; these are the buttons on the right in the image above. However, you can use text processor commands in almost any text, for example, in an [msg](/scripts#msg) command:
 
-     msg ("Would you like some {command:help}?")
+```quest
+ msg ("Would you like some {command:help}?")
+```
 
 You can use as many sections as you like within the same text, and even nest them:
 
-     msg ("You can {command:go to shop:go into the shop}. {if player.coins>10:You have {player.coins} coins, which is more than enough.}")
+```quest
+ msg ("You can {command:go to shop:go into the shop}. {if player.coins>10:You have {player.coins} coins, which is more than enough.}")
 
-    
+```
 Supported processor commands are:
 
 ## Text adventure mode and gamebook mode
@@ -32,7 +35,9 @@ Does not displays the text the first time it is printed; the text will only be p
 {random:**text 1:text 2:text 3**}  
 Choose text at random (you can have as many sections as you like). This is a great way to add some movement to a character.
 
-    You can see Mary {random:paddling in the sea:building a sand castle:running in the sand}.
+```quest
+You can see Mary {random:paddling in the sea:building a sand castle:running in the sand}.
+```
 
 {img:**filename.png**}  
 Insert the specified image.
@@ -40,12 +45,15 @@ Insert the specified image.
 {**object.attribute**}  
 Displays the value of an object's attribute. A great example of this is where the player can set the name of the main character, you can use `{player.alias}` as a stand-in for the character's name.
 
-    'Hi, {player.alias},' says Mary, 'I've not seen you in a while!'
-    
+```quest
+'Hi, {player.alias},' says Mary, 'I've not seen you in a while!'
+```
 {if **object.attribute**:**text**}  
 Display text only if object attribute is true (so requires a flag, otherwise known as a Boolean attribute). Containers have a flag called "isopen", and you could use that to modify the description, for instance.
 
-    The chest is old, and almost falling apart. {if chest.isopen:The lid is open.}
+```quest
+The chest is old, and almost falling apart. {if chest.isopen:The lid is open.}
+```
 
 {if not **object.attribute**:**text**}  
 Display text only if object attribute is false.
@@ -139,12 +147,16 @@ Displays the given text with the colour specified as the background. To show tex
 {here **object**:**text**}
 Displays the text only if the given object is in the current room (but not if in the player's inventory or in a container in the room).
 
-    The beach is long, and the sand almost white. {here mary:You can see Mary, building a sand castle.}
+```quest
+The beach is long, and the sand almost white. {here mary:You can see Mary, building a sand castle.}
+```
 
 {nothere **object**:**text**}
 Displays the text only if the given object is NOT in the current room.
 
-    The beach is long, and the sand almost white. {nothere mary:You wonder where Mary could be.}
+```quest
+The beach is long, and the sand almost white. {nothere mary:You wonder where Mary could be.}
+```
 
 {popup:**text**:**long text**}
 Displays a link, with the first text (which cannot have text processor directives nested in it). When the player clicks on the link, a pop-up will be displayed, containing the long text. The pop-up will disappear when the long text is clicked on. This can be used with the img command to have an image pop-up.
@@ -154,7 +166,7 @@ Displays a link, with the first text (which cannot have text processor directive
 This works similar to the if command above, but with two important differences. The first is that the condition can be any Quest code that results in a Boolean (true or false). The second is that if you are comparing a string it needs to be in double quotes (as is true of normal Quest code).
 
 
-```
+```quest
 "You {either StartsWith(player.name, \"play\") and not player.flag:are the player}"
  -> "You are the player",
 "'Oh, {either player.male_flag:he|she} is not worth it.'"
@@ -166,7 +178,7 @@ The code is evaluated, just as normal Quest code is, and the result displayed.
 
 {=**code**}
 This is a short cut for eval, and works just the same. The samples below show the potential, though by its nature this is rather less forgiving that the other commands available.
-```
+```quest
 "You are in the {eval:player.parent.name}"
  -> "You are in the kitchen"
 "You are in the {=player.parent.name}"
@@ -218,7 +230,7 @@ If the text processor cannot understand your directive, it will generally leave 
 ## Curly braces
 
 Should you want to use curly braces to actually display curly braces, Quest will usually work out that that is what you want. If you find it is trying to display it as a text processor command (or is throwing an error because it has failed to), you can use `@@@open@@@` and `@@@close@@@` to tell Quest to display curly braces.
-```
+```quest
 "player.count = @@@open@@@player.count@@@close@@@"
  -> "player.count = {player.count}"
  ```
@@ -233,7 +245,7 @@ You cannot use text processor commands in an object's name, as only a limited se
 
 In Quest, "this" is a special local variable that refers to the object that owns the current script. Text processor directives do not naturally support "this", because when they are being processed they do not belong to a script. However, you can fake it by setting a special attribute of the game object called "text_processor_this". This would allow you to do something like this:
 
-```
+```quest
 game.text_processor_this = teapot
 msg("The {this.alias} is {if this.capacity<5:not }big enough.")
 ```
@@ -243,7 +255,7 @@ msg("The {this.alias} is {if this.capacity<5:not }big enough.")
 
 In fact you can add any number of local variables in a dictionary attribute of the game object called "text_processor_variables". The key will be the name of the variable, and the value should be the object.
 
-```
+```quest
 game.text_processor_variables = NewDictionary()
 dictionary add (game.text_processor_variables, "animal", tiger)
 msg("You can see a {animal.name}")
@@ -258,7 +270,7 @@ You can add your own text processor directives. This should be done in the "star
 
 Here is a very simple example that will replace `{test}` with `Some Text`:
 
-```
+```quest
 game.textprocessorcommands = game.textprocessorcommands
 scr => {
   game.textprocessorcommandresult = "Some Text"
@@ -274,7 +286,7 @@ The script has access to a local variable called "section", which contains the t
 
 Let us add another directive to see how that can be used:
 
-```
+```quest
 scr => {
   s = Mid(section, 6)
   game.textprocessorcommandresult = "<span style=\"color:blue\">" + s + "</span>"
@@ -284,7 +296,7 @@ dictionary add(game.textprocessorcommands, "blue", scr)
 
 This will print the text in blue. 
 
-```
+```quest
 msg("Here is the {test}, now with some in {blue:a different colour!}")
 ```
 
@@ -296,6 +308,8 @@ The second line then sets the return value, using HTML and CSS to change the tex
 
 You can also use HTML tags directly in any text output. For example:
 
-    This text is <b>bold</b>. This text is <i>italic</i>. This text is <u>underlined</u>.
+```xml
+This text is <b>bold</b>. This text is <i>italic</i>. This text is <u>underlined</u>.
+```
 
 For more complex styling, use `<span>` tags with inline CSS, for example `<span style="color:red">this is red</span>`. The text processor `{colour:}` and `{back:}` commands above are generally more convenient for this.

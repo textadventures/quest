@@ -57,11 +57,11 @@ So you want to create your own library...
 It is pretty easy. Library files are just text files, so you need a text editor; I recommend Notepad++. Quest itself cannot handle them unfortunately. Like Quest itself, library files must be in XML, and a simple understanding of XML is useful.
 
 The root element of a library file is `library. This means that the first line of the file should be this:
-```
+```xml
   <library>
 ```
 And the last line should be this:
-```
+```xml
   </library>
 ```
 Everything in between will be XML elements, as in the main game (open the raw XML code view in the editor toolbar to see the XML behind Quest). You can use a library to define objects, functions, types, and everything else that an ordinary game file can define.
@@ -73,7 +73,7 @@ The only tricky bit is ensuring you get the whole XML element, but remember for 
   <function...
 ```
 And ends
-```
+```xml
   </function>
 ```
 And make sure you get whole lines.
@@ -96,7 +96,7 @@ _NOTE:_ If you make your library publicly available, make sure all the elements 
 Quest library files usually end .aslx, just like Quest games, but you can alternatively use .xml. You could then set your PC to open .xml files with your editor, rather than Quest.
 
 You might also choose to keep all your library files in one location, whilst having other folders for the games themselves. Quest will handle that fine, as long as the `include` in your game file has the right path to the file.
-```
+```xml
   <include ref="../lib/Conversation.xml" />
 ```
 When the game is published, Quest will get the code from the library in that folder.
@@ -112,7 +112,7 @@ You can have library files invoked from other library files by the way, just as 
 Only put objects in libraries if you are sure they will not change. It is far easier to edit objects in the GUI, so generally not worth putting them in libraries.
 
 Use comments. In libraries you can use XML comments, which look like this (if you do this in the main game, Quest will delete them!). Make it clear enough that someone else will understand what it does - that way you will when you look at it again in three months.
-```
+```xml
   <!--
   Returns the given object list as a string in the
   form a one, a two, a three.

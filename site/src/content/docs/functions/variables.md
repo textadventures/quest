@@ -7,7 +7,7 @@ sidebar:
 Functions that check or change the values of variables (and can be used on attributes too).
 
 ## Equal
-```
+```quest
 Equal (value, value)
 ```
 
@@ -15,7 +15,7 @@ Returns a [boolean](/types#boolean) - **true** if the two values are the same, *
 
 This does mean you can test an attribute that might not exist in one step instead of two. Instead of this:
 
-```
+```quest
 if (HasInt(object, "status")) {
   if (object.status = 1) {
     msg("This has been done.")
@@ -31,7 +31,7 @@ else {
 
 You can do:
 
-```
+```quest
 if (Equal(object.status, 1)) {
   msg("This has been done.")
 }
@@ -41,7 +41,7 @@ else {
 ```
 
 ## IsDefined
-```
+```quest
 IsDefined (string variable name)
 ```
 
@@ -50,7 +50,7 @@ IsDefined (string variable name)
 Returns a [boolean](/types#boolean) indicating whether the specified variable name is defined in the current scope.
 
 ## IsDouble
-```
+```quest
 IsDouble (string number)
 ```
 
@@ -59,7 +59,7 @@ IsDouble (string number)
 Returns a [boolean](/types#boolean) indicating whether the specified string represents a double.
 
 ## IsInt
-```
+```quest
 IsInt (string number)
 ```
 
@@ -68,7 +68,7 @@ IsInt (string number)
 Returns a [boolean](/types#boolean) indicating whether the specified string represents an integer.
 
 ## ToDouble
-```
+```quest
 ToDouble (string number)
 ```
 
@@ -81,7 +81,7 @@ Note: An error occurs if the string does not represent a number.
 See also [HasDouble](/functions/attributes#hasdouble) and [GetDouble](/functions/attributes#getdouble)
 
 ## ToInt
-```
+```quest
 ToInt (string number)
 ```
 
@@ -94,7 +94,7 @@ Note: An error occurs if the string does not represent a number. Use [IsInt](#is
 See also [GetInt](/functions/attributes#getint) and [HasInt](/functions/attributes#hasint)
 
 ## ToString
-```
+```quest
 ToString (anything)
 ```
 
@@ -105,7 +105,7 @@ Returns a [string](/types#string). This is most useful for converting an integer
 See also [GetString](/functions/attributes#getstring) and [HasString](/functions/attributes#hasstring)
 
 ## TypeOf
-```
+```quest
 TypeOf (object, string attribute name)
 ```
 
@@ -113,7 +113,9 @@ TypeOf (object, string attribute name)
 
 Returns a [string](/types#string) representing the name of the type of the specified object's attribute.
 
-    TypeOf (value)
+```quest
+TypeOf (value)
+```
 
 Returns a [string](/types#string) representing the name of the type of the specified value.
 

@@ -24,19 +24,19 @@ Many script commands work just like functions, and this applies to them too.
 Some functions return a value, some require one or more values. The values it requires are called parameters. For example, the GetBoolean function requires an object and the name of an attribute, and it returns true if that attribute is present and set to true, and false if the attribute is set to false or missing.
 
 In this example, my_object and "flag" are the two parameters, and they go inside brackets. The brackets tell Quest these are the parameters.
-```
+```quest
   return_value = GetBoolean (my_object, "flag")
 ```
 Some functions take parameters, but do not return a value:
-```
+```quest
   LockExit (vault_exit)
 ```
 Sometimes a function has no return value and no parameters:
-```
+```quest
   ClearScreen ()
 ```
 You might wonder why you need the brackets, if there are no parameters. Actually, you do not.
-```
+```quest
   ClearScreen
 ```
 Well, not always. If the function is on a line on its own with nothing else, Quest will handle it fine. Otherwise, you will need the brackets to ensure Quest will realise this is a function and not something else.

@@ -5,35 +5,35 @@ sidebar:
 ---
 
 ## DisableTimer
-```
+```quest
 DisableTimer (timer)
 ```
 
 Disables the specified timer.
 
 ## DisableTurnScript
-```
+```quest
 DisableTurnScript (turn script)
 ```
 
 Disables the specified turn script.
 
 ## EnableTimer
-```
+```quest
 EnableTimer (timer)
 ```
 
 Enables the specified timer. Note that this sets the `trigger` attribute as well as setting `enabled` to true.
 
 ## EnableTurnScript
-```
+```quest
 EnableTurnScript (turn script)
 ```
 
 Enables the specified turn script.
 
 ## GetTimer
-```
+```quest
 GetTimer (string timer name)
 ```
 
@@ -42,7 +42,7 @@ GetTimer (string timer name)
 Returns the [timer](/elements#timer) of the specified name. Returns null if the timer doesn't exist.
 
 ## Pause
-```
+```quest
 Pause (interval)
 ```
 
@@ -51,13 +51,13 @@ Pauses for the given number of seconds.
 The 'Pause' request is not supported for games written for Quest 5.5 or later. Use the 'SetTimeout' function instead.
 
 ## SetTimeout
-```
+```quest
 SetTimeout (interval, script)
 ```
 
 or
 
-```
+```quest
 SetTimeout (interval){ script }
 ```
 
@@ -68,13 +68,13 @@ If you may need to cancel the timer after creation, you can create a named timer
 **Note:** This function is "non-blocking", and its script has no access to local variables. For a fuller discussion, see the note on [Blocks and Scripts](/howto/scripting/blocks_and_scripts).
 
 ## SetTimeoutID
-```
+```quest
 SetTimeoutID (integer interval, string name, script)
 ```
 
 or
 
-```
+```quest
 SetTimeoutID (integer interval, string name){ script }
 ```
 
@@ -85,46 +85,46 @@ The name specifies the name of the timer to create. The anonymous version of thi
 **Note:** This function is "non-blocking", and its script has no access to local variables. For a fuller discussion, see the note on [Blocks and Scripts](/howto/scripting/blocks_and_scripts).
 
 ## SetTimerInterval
-```
+```quest
 SetTimerInterval (timer, interval)
 ```
 
 Sets the specified timer interval.
 
 ## SetTimerScript
-```
+```quest
 SetTimerScript (timer, script)
 ```
 
 or
 
-```
+```quest
 SetTimerScript (timer){ script }
 ```
 
 Sets the specified timer script.
 
 ## SetTurnScript
-```
+```quest
 SetTurnScript (turn script, script)
 ```
 
 or
 
-```
+```quest
 SetTurnScript (turn script){ script }
 ```
 
 Sets the script for the specified turn script.
 
 ## SetTurnTimeout
-```
+```quest
 SetTurnTimeout (turn count, script)
 ```
 
 or
 
-```
+```quest
 SetTurnTimeout (turn count){ script }
 ```
 
@@ -137,13 +137,13 @@ If you may need to cancel the turnscript after creation, you can create a named 
 **Note:** This function is "non-blocking", and its script has no access to local variables. For a fuller discussion, see the note on [Blocks and Scripts](/howto/scripting/blocks_and_scripts).
 
 ## SetTurnTimeoutID
-```
+```quest
 SetTurnTimeoutID (integer turn count, string name, script)
 ```
 
 or
 
-```
+```quest
 SetTurnTimeoutID (integer turn count, string name){ script }
 ```
 
@@ -154,7 +154,7 @@ The name specifies the name of the turnscript to create. The anonymous version o
 **Note:** This function is "non-blocking", and its script has no access to local variables. For a fuller discussion, see the note on [Blocks and Scripts](/howto/scripting/blocks_and_scripts).
 
 ## SuppressTurnscripts
-```
+```quest
 SuppressTurnscripts ()
 ```
 

@@ -38,7 +38,7 @@ Like the alias attribute, this can contain any characters.
 
 The listattribute is useful if you want to capitalise objects in the inventory pane, but not in the room descriptions. You can also include HTML codes in the listalias attribute to control how the item is displayed in the pane (if you do this for the alias attribute, the HTML codes will appear in the room descriptions too).
 
-```
+```xml
 <span style="background-color:yellow;">Ball</span>
 ```
 
@@ -77,7 +77,7 @@ Objects can and will change there parent as the game is played. When the player 
 
 You can change the parent attribute directly in code, or use the helper functions. All three of these will move the object `ball` to the current room:
 
-```
+```quest
 ball.parent = player.parent
 MoveObject (ball, player.parent)
 MoveObjectHere (ball)

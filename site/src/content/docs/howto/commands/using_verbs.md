@@ -19,12 +19,14 @@ When you create a verb for an object, it is just a script attribute of that obje
 
 Here is the script for the command:
 
-    if (chair.parent = player.parent) {
-      do (chair, "sit")
-    }
-    else {
-      msg ("Nothing to sit on here!")
-    }
+```quest
+if (chair.parent = player.parent) {
+  do (chair, "sit")
+}
+else {
+  msg ("Nothing to sit on here!")
+}
+```
 
 The second line is where the "sit on" verb is invoked.
 
@@ -44,11 +46,15 @@ This trick is also useful when you have a verb that can mean different things. Y
 
 What you can do is set up match with a "light" verb, and man with a "punch" verb. Then add a second verb to each for "strike". All the second verb does is invoke the other verb. So on the match, the "strike" verb does this:
 
-    do(this, "light")
+```quest
+do(this, "light")
+```
 
 On the man, the "strike" verb does this:
 
-    do(this, "punch")
+```quest
+do(this, "punch")
+```
 
 In case you are wondering, Quest understands "this" to mean the object to which the script is attached. It is good practice to use "this" rather than the name of the object; for one thing, you may later rename an object, perhaps giving the man a proper name.
 
@@ -96,11 +102,13 @@ If the player just types `ATTACK GOBLIN`, she will be presented with a menu of a
 
 The same information appears in the game's XML as a `<verb>` element:
 
-    <verb>
-      <property>zing</property>
-      <pattern>zing; ping; ling; ring ring</pattern>
-      <defaulttext>You can't zing that.</defaulttext>
-    </verb>
+```xml
+<verb>
+  <property>zing</property>
+  <pattern>zing; ping; ling; ring ring</pattern>
+  <defaulttext>You can't zing that.</defaulttext>
+</verb>
+```
 
 Here, `property` is the attribute name, `pattern` is the semi-colon separated list of text Quest matches against, and `defaulttext` is the "Default" text box.
 
@@ -134,7 +142,7 @@ hug;give #object# hug;give #object# a hug
 
 As with commands, you can also use a Regex to match against (change "Pattern" to "Regular expression"). 
 
-```
+```regex
 ^(hug (?<object>.*)|give (?<object>.*?) (a hug|hug))$
 ```
 

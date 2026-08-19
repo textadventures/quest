@@ -44,13 +44,13 @@ Quest has a sophisticated container system. If the player puts the torch in a co
 
 Create an object, lightswitch, inside the dark room. On the Features tab, make it switchable. On the Switchable tab, also make it Switchable, and fill in the message boxes. Then in the script to run when turned on, put in this (not sure what to do with code? See [here](/howto/scripting/copy_and_paste_code)):
 
-```
+```quest
   darkroom.dark=false
 ```
 
 For the other script, you need this:
 
-```
+```quest
   darkroom.dark=true
 ```
 
@@ -63,13 +63,13 @@ If you try it out, you will find the light switch now controls the darkness of t
 
 We should be able to turn the torch off, to save the battery. Pretty similar to before - on the torch object, first set it to not be a light source, as it is initially turned off (but keep it as a Strong light source!), then go to the Features tab, and make it switchable. On the Switchable tab, make it Switchable (the default messages are good enough). Then in the script to run when turned on, put in this:
 
-```
+```quest
   this.lightsource=true
 ```
 
 For the other script, you need this:
 
-```
+```quest
   this.lightsource=false
 ```
 
@@ -77,7 +77,7 @@ For the other script, you need this:
 
 No torch lasts forever; let us put a limit on this one. First create a new attribute for the torch, called "battery". You can do that by going to the Attributes tab to create it, and set it to be an integer, with a value of 5 (we want a small number whilst we are playing around; for your game you will want it much higher). Alternatively, you can do the same thing in a script - go to the Script tab of the game object, and add this code:
 
-```
+```quest
   torch.battery = 5
 ```
 
@@ -85,7 +85,7 @@ We now need a turn script. We could do this two ways: have the turn script enabl
 
 Create a turn script, and make sure it is under the Object object (i.e., it is vertically aligned with your rooms, not the stuff in the rooms). Give the turn script a name, torchturnscript, and paste in this code:
 
-```
+```quest
 torch.battery = torch.battery - 1
 if (torch.battery < 1) {
   torch.switchedon = false
@@ -102,12 +102,12 @@ The last line sets a special attribute that Quest will check before switching th
 
 Now we need to go back to the torch, and the scripts on the Switchable tab. The turn off script now looks like this, as we now want to turn off the turn script when the torch is off:
 
-```
+```quest
   this.lightsource = false
   DisableTurnScript (torchturnscript)
 ```
 The turn on script is more complicated, as we have to test if the battery is dead.
-```
+```quest
   if (this.battery > 0) {
     this.lightsource = true
     EnableTurnScript (torchturnscript)
@@ -124,7 +124,7 @@ If the battery is dead, we need to turn the torch off again, and give a message.
 
 Want to recharge or replace the battery? Here is the code:
 
-```
+```quest
 torch.battery = 5
 torch.cannotswitchon = null
 ```
@@ -133,7 +133,7 @@ torch.cannotswitchon = null
 
 If you want to know if it is dark in the current room, use the `CheckDarkness` function. This will return `true` if the room is dark and there is no strong light source in it, and false otherwise. For example, for a `SEARCH` command, the code might look like this:
 
-```
+```quest
 if (CheckDarkness()) {
   msg("It is too dark to search.")
 }
@@ -152,7 +152,7 @@ For objects, however, the Quest will run the script, whatever the illumination. 
 
 To get you started, this script will check if it is dark, and if it is, give the standard response; otherwise if gives the proper description.
 
-```
+```quest
 if (CheckDarkness()) {
   msg(DynamicTemplate("LookAtDarkness", this))
 }

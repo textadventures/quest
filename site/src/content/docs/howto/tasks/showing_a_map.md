@@ -76,7 +76,7 @@ _NOTE:_ The map system works by maintaining a dictionary attribute on the player
 ### Changing the colour of the map
 
 Use this code to change the background colour, in this instance to red:
-```
+```quest
 JS.setCss ("#gridPanel", "background-color:red")
 ```
 This is best put in the "User initialisation script...", found on the _Advanced Scripts_ tab of the game object (you may need to activate the tab on the _Features_ tab).
@@ -88,7 +88,7 @@ If you want the grid to appear and disappear, make sure it is set up to be drawn
 
 This, for example, will hide the map:
 
-```
+```quest
 JS.ShowGrid (0)
 ```
 
@@ -98,13 +98,17 @@ JS.ShowGrid (0)
 
 You can add code to allow an exit to move the player between levels when travelling along the compass directions. The trick is to define one room relative to the other. Say we have two rooms, `lower` and `upper`. In `upper`, this code should go in the Enter script:
 
-    Grid_SetGridCoordinateForPlayer (game.pov, upper, "z", Grid_GetGridCoordinateForPlayer(game.pov, lower, "z")+1)
+```quest
+Grid_SetGridCoordinateForPlayer (game.pov, upper, "z", Grid_GetGridCoordinateForPlayer(game.pov, lower, "z")+1)
+```
 
 We use `Grid_GetGridCoordinateForPlayer(game.pov, lower, "z")` to get the current z value, and add one to it.
 
 You also need to make sure it works the other way, so this goes in the Enter script of `lower`:
 
-    Grid_SetGridCoordinateForPlayer (game.pov, upper, "z", Grid_GetGridCoordinateForPlayer(game.pov, lower, "z")-1)
+```quest
+Grid_SetGridCoordinateForPlayer (game.pov, upper, "z", Grid_GetGridCoordinateForPlayer(game.pov, lower, "z")-1)
+```
 
 
 
@@ -133,7 +137,7 @@ An alternative way to ensure teleportation works is to make Quest map the whole 
 
 Create a new function, call it "VisitRoom", and give it a single parameter, "room". Paste in this code (the fourth line is commented out, if you remove the slashes at the start, the map will be fully visible from the start):
 
-```
+```quest
 if (not GetBoolean(room, "genvisited")) {
   room.genvisited = true
   Grid_CalculateMapCoordinates (room, game.pov)
@@ -148,7 +152,7 @@ if (not GetBoolean(room, "genvisited")) {
 
 Then in the start script:
 
-```
+```quest
 VisitRoom (game.pov.parent)
 ```
 
@@ -161,7 +165,7 @@ Restriction: _Best for isolated regions the player cannot return to._
 
 An alternative approach is to erase all the existing map data and start again. Here is the code to move the player to `room`:
 
-```
+```quest
 player.grid_coordinates = null
 player.parent = room
 JS.Grid_ClearAllLayers ()
@@ -191,7 +195,7 @@ If we limited the player to a single point of departure in each region, then we 
 
 We will do the hard work in a function. Call it "TeleportTo", and give it a single parameter, "to", then paste in this code:
 
-```
+```quest
 from = player.parent
 set (player, "saved_map_for_" + from.name, player.grid_coordinates)
 if (HasAttribute(player, "saved_map_for_" + to.name)) {
@@ -208,7 +212,7 @@ Grid_DrawPlayerInRoom (game.pov.parent)
 
 Now it is simply a matter if calling the function. For Station One, you will have some command or action that will move the player to Station Two. The code to do that looks like this:
 
-```
+```quest
 TeleportTo(Station Two)
 ```
 
@@ -222,7 +226,7 @@ You can [override](/advanced-topics/overriding) the `GridSquareClick` to handle 
 
 Working out what room was clicked takes some coding... First paste this in to the function:
 
-```
+```quest
 z = Grid_GetGridCoordinateForPlayer(game.pov, game.pov.parent, "z")
 d = Grid_GetPlayerCoordinateDictionary(player)
 foreach (key, d) {
@@ -238,7 +242,7 @@ foreach (key, d) {
 
 Then create a new function, call it `InGridRoom`, set it to return a Boolean, with these parameters: room, dict, x, y, z. Paste in this code:
 
-```
+```quest
 flag = DictionaryItem(dict, "grid_isdrawn")
 if (not flag) {
   return (false)
@@ -264,12 +268,12 @@ return (true)
 
 If you go into the game, you will find that when you click on a room, its name is printed. To get it to do something useful, modify this line in the first function:
 
-```
+```quest
       msg ("Room=" + r.name)
 ```
       
 For example, if you want to allow the player to quickly travel to another room (on the same level) just by clicking it, change it to this:
 
-```
+```quest
       player.parent = r
 ```

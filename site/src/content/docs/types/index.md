@@ -14,7 +14,9 @@ In fact, null is a special value for attributes that says the attribute does not
 
 You can check if an attribute is null using the "null" keyword:
 
-     if (someobject.parent = null) { ... }
+```quest
+ if (someobject.parent = null) { ... }
+```
 
 There is a "gotcha" lurking here. If your object is of a type that sets an attribute to some value, and your object sets it to another value, what happens when you set that attribute on the object to null? The attribute is removed from the object, and so reverts to being the value from the type. This may not be what you expect!
 
@@ -22,15 +24,21 @@ There is a "gotcha" lurking here. If your object is of a type that sets an attri
 
 A string is a piece of text (string literal), a string variable is variable that holds text.
 
-    myStingVar = "World"
+```quest
+myStingVar = "World"
+```
 
 Strings can be added together in any combination of string literal (enclosed in quotes) or variables.
 
-    myNewStringVar = "Hello " + myStringVar
+```quest
+myNewStringVar = "Hello " + myStringVar
+```
 
 They can also be used to show messages to the user with the *msg* command.
 
-    msg (myNewStringVar)
+```quest
+msg (myNewStringVar)
+```
 
 Also see String Functions
 
@@ -40,23 +48,25 @@ A script attribute contains code for Quest to run, i.e., a list of  instructions
 
 Example:
 
-     <look type="script">
-       if (not fridge.isopen) {
-         msg ("The fridge is open, casting its light out into the gloomy kitchen.")
-       }
-       else {
-         msg ("A big old refrigerator sits in the corner, humming quietly.")
-       }
-     </look>
+```quest
+ <look type="script">
+   if (not fridge.isopen) {
+     msg ("The fridge is open, casting its light out into the gloomy kitchen.")
+   }
+   else {
+     msg ("A big old refrigerator sits in the corner, humming quietly.")
+   }
+ </look>
 
-     
+ 
+```
 Scripts can be created by adding script commands using the user interface, or by typing code in "code view". Behind the scenes, it is all the same, so you can flip between the two as you like.
 
 You can use [do](/scripts#do) or [invoke](/scripts#invoke) to have Quest run a script.
 
 Let us suppose the above script is attached to an object called "fridge". You could run the script:
 
-```
+```quest
 do(fridge, "look")
 
 invoke(fridge.look)
@@ -66,7 +76,7 @@ If you use the `do` command, your script will have access to a local variable ca
 
 You can send other values to a script by adding them to a dictionary. For each name-value pair you add to the dictionary, a local variable will be available the name being the key, and the value being the value.
 
-```
+```quest
 dict = NewDictionary()
 dictionary add (dict, "npc", mary)
 dictionary add (dict, "obj", sandwich)
@@ -75,7 +85,7 @@ do(fridge, "look", dict)
 
 Now the "look" script will have access to local variables called "npc" and "obj", as well as "this". There is a shortcut to do that:
 
-```
+```quest
 do(fridge, "look", QuickParams("npc", mary, "obj", sandwich))
 ```
 
@@ -83,7 +93,7 @@ The `QuickParams` function can take either 2, 4 or 6 parameters, allowing you to
 
 You can use the `IsDefined` function within a script to determine if it has access to a certain variable. Note that it takes a string.
 
-```
+```quest
 if (IsDefined("npc")) {
 ```
 
@@ -95,19 +105,19 @@ A Boolean can be either `true` or `false`. When using the GUI to create a script
 
 Note that you do not need to compare a Boolean to `true` or `false`. It is already one of the other. Instead of:
 
-```
+```quest
 if (player.is_successful = true) {
 ```
 
 Just do:
 
-```
+```quest
 if (player.is_successful) {
 ```
 
 If you want to test that it is not true, just add the `not` keyword:
 
-```
+```quest
 if (not player.is_successful) {
 ```
 
@@ -115,13 +125,13 @@ Also note that to do any of the you need to ensure the Boolean is initialised (i
 
 Alternatively, use `GetBoolean`, which returns `true` if the attribute is `true`, or `false` if it is `false` or `null` (i.e., has not been set).
 
-```
+```quest
 if (GetBoolean(player, "is_successful")) {
 ```
 
 Or:
 
-```
+```quest
 if (not GetBoolean(player, "is_successful")) {
 ```
 
@@ -147,7 +157,9 @@ An object attribute points to another object by name.
 
 For example:
 
-     <parent type="object">lounge</parent>
+```xml
+ <parent type="object">lounge</parent>
+```
 
 would be another way of setting the [parent](/attributes#parent) attribute of an object, if you didn't want to nest the XML definition.
 
@@ -157,19 +169,25 @@ A stringlist is a [list](#list) that can contain a number of elements, all have 
 
 For Quest 5.3 and earlier, the format in an ASLX file is this:
 
-     <mylist type="list">one; two; three</mylist>
+```xml
+ <mylist type="list">one; two; three</mylist>
+```
 
 The same list is expressed like this:
 
-     <mylist type="list">
-       <value>one</value>
-       <value>two</value>
-       <value>three</value>
-     </mylist>
+```xml
+ <mylist type="list">
+   <value>one</value>
+   <value>two</value>
+   <value>three</value>
+ </mylist>
+```
 
 In Quest 5.4, you can still use the older semi-colon separate format with "simplestringlist":
 
-     <mylist type="simplestringlist">one; two; three</mylist>
+```xml
+ <mylist type="simplestringlist">one; two; three</mylist>
+```
 
 See [Using Lists](/howto/scripting/using_lists).
 
@@ -179,7 +197,9 @@ An objectlist is a [list](#list) that can contain any number of elements, all of
 
 The format in an ASLX file is:
 
-     <mylist type="objectlist">player; object1; thing</mylist>
+```xml
+ <mylist type="objectlist">player; object1; thing</mylist>
+```
 
  See [Using Lists](/howto/scripting/using_lists) for more information.
 
@@ -187,10 +207,12 @@ The format in an ASLX file is:
 
 "list" is a sequence of any attribute type. The format is in the ASLX file:
 
-     <myattribute type="list">
-       <value type="string">a string value</value>
-       <value type="int">123</value>
-     </myattribute>
+```xml
+ <myattribute type="list">
+   <value type="string">a string value</value>
+   <value type="int">123</value>
+ </myattribute>
+```
 
 Usually it is better to use a [stringlist](#stringlist) (if all elements in the list will be strings) or an [objectlist](#objectlist) (if all elements in the list will be objects) instead.
 
@@ -204,24 +226,30 @@ The format is "key = value", separated by semicolons.
 
 For example, for Quest 5.3 and earlier the format looks like this:
 
-     <myattribute type="objectdictionary">first = player; second = lounge</myattribute>
+```xml
+ <myattribute type="objectdictionary">first = player; second = lounge</myattribute>
+```
 
 For Quest 5.4 and later the format is:
 
-     <myattribute type="objectdictionary">
-       <item>
-         <key>first</key>
-         <value>player</value>
-       </item>
-       <item>
-         <key>second</key>
-         <value>lounge</value>
-       </item>
-     </myattribute>
+```xml
+ <myattribute type="objectdictionary">
+   <item>
+     <key>first</key>
+     <value>player</value>
+   </item>
+   <item>
+     <key>second</key>
+     <value>lounge</value>
+   </item>
+ </myattribute>
+```
 
 In Quest 5.4, you can still use the old semicolon-separated format by specifying "simpleobjectdictionary":
 
-     <myattribute type="simpleobjectdictionary">first = player; second = lounge</myattribute>
+```xml
+ <myattribute type="simpleobjectdictionary">first = player; second = lounge</myattribute>
+```
 
 This defines:
 
@@ -240,14 +268,16 @@ It is defined with nested \<item\> keys for each key/value pair.
 
 For example:
 
-     <useon type="scriptdictionary">
-       <item key="object1">
-         msg ("you use object1")
-       </item>
-       <item key="object2">
-         msg ("you use object2")
-       </item>
-     </useon>
+```quest
+ <useon type="scriptdictionary">
+   <item key="object1">
+     msg ("you use object1")
+   </item>
+   <item key="object2">
+     msg ("you use object2")
+   </item>
+ </useon>
+```
 
 See [Using Dictionaries](/howto/scripting/using_dictionaries)
 
@@ -259,31 +289,33 @@ Usually it is better to use a more specific dictionary type if you can, if you k
 
 Here is an example dictionary containing a variety of different types:
 
-     <example type="dictionary">
+```quest
+ <example type="dictionary">
+   <item>
+     <key>key1</key>
+     <value type="string">A string value.</value>
+   </item>
+   <item>
+     <key>key2</key>
+     <value type="int">12</value>
+   </item>
+   <item>
+     <key>key3</key>
+     <value type="script">
+       msg ("This is a script")
+     </value>
+   </item>
+   <item>
+     <key>key4</key>
+     <value type="dictionary">
        <item>
-         <key>key1</key>
-         <value type="string">A string value.</value>
+         <key>subkey1</key>
+         <value type="string">This is a string inside a dictionary inside another dictionary.</value>
        </item>
-       <item>
-         <key>key2</key>
-         <value type="int">12</value>
-       </item>
-       <item>
-         <key>key3</key>
-         <value type="script">
-           msg ("This is a script")
-         </value>
-       </item>
-       <item>
-         <key>key4</key>
-         <value type="dictionary">
-           <item>
-             <key>subkey1</key>
-             <value type="string">This is a string inside a dictionary inside another dictionary.</value>
-           </item>
-         </value>
-       </item>
-     </example>
+     </value>
+   </item>
+ </example>
+```
 
 See [Using Dictionaries](/howto/scripting/using_dictionaries)
 
@@ -295,24 +327,30 @@ The format is "key = value", separated by semicolons.
 
 For example (for Quest 5.3 and earlier):
 
-     <statusattributes type="stringdictionary">turns = You have taken ! turns; health = Health !%</statusattributes>
+```xml
+ <statusattributes type="stringdictionary">turns = You have taken ! turns; health = Health !%</statusattributes>
+```
 
 For Quest 5.4 and later the format is:
 
-     <statusattributes type="stringdictionary">
-       <item>
-         <key>turns</key>
-         <value>You have taken ! turns</value>
-       </item>
-       <item>
-         <key>health</key>
-         <value>Health !%</value>
-       </item>
-     </statusattributes>
+```xml
+ <statusattributes type="stringdictionary">
+   <item>
+     <key>turns</key>
+     <value>You have taken ! turns</value>
+   </item>
+   <item>
+     <key>health</key>
+     <value>Health !%</value>
+   </item>
+ </statusattributes>
+```
 
 In Quest 5.4, you can still use the old semicolon-separated format using "simplestringdictionary":
 
-     <statusattributes type="simplestringdictionary">turns = You have taken ! turns; health = Health !%</statusattributes>
+```xml
+ <statusattributes type="simplestringdictionary">turns = You have taken ! turns; health = Health !%</statusattributes>
+```
 
 This defines:
 

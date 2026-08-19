@@ -15,13 +15,13 @@ We need to set some commands. Go to the _Features_ tab of the game object, and t
 
 We need to use the `JS.setCommands` function, which can take two parameters. The first is a string of commands to display, separated by semi-colons. The second is the colour to display it in, and is optional. Here is an example:
 
-```
+```quest
 JS.setCommands ("Look;Wait")
 ```
 
 In this example, the colour is set too. Note that you can use any [web colour](https://en.wikipedia.org/wiki/Web_colors) or hex triples.
 
-```
+```quest
 JS.setCommands ("Look;Wait;Sit", "blue")
 ```
 
@@ -29,7 +29,7 @@ Go in game, and test it works!
 
 You can change the commands at any time in your game, just be using the `JS.setCommands` function again. If the player does sit, you might want to have a line in the SIT command like this, so now there will be a "Stand" command, and not "Sit":
 
-```
+```quest
 JS.setCommands ("Look;Wait;Stand", "blue")
 ```
 
@@ -40,13 +40,13 @@ You might want to set the commands when the player enters and leaves a specific 
 
 Let us suppose we want to add a SHOUT command to a specific room (see [here](/howto/commands/commands_for_room) for the best way to do that). Go to the _Scripts_ tab of the room, and add this to the script that runs when the player enters the room (not the one that only runs the first time):
 
-```
+```quest
 JS.setCommands ("Look;Wait;Shout")
 ```
 
 Then for the script that runs when leaving the room:
 
-```
+```quest
 JS.setCommands ("Look;Wait")
 ```
 

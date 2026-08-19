@@ -6,7 +6,9 @@ sidebar:
 
 An NPC is going to feel more alive if he or she is doing things on their own initiative, rather than just reacting to what the player does. A simple way to do this is to add something to the room description for the location the NPC is in. Something like this, maybe:
 
-    You are in a rather grubby lounge, with a tatty settee in the centre. Mary is here, {random:scratching her nose:looking at you expectantly:looking at her phone}.
+```quest
+You are in a rather grubby lounge, with a tatty settee in the centre. Mary is here, {random:scratching her nose:looking at you expectantly:looking at her phone}.
+```
 
 However, we will look at doing something a bit more involved, allowing the NPCs to move from one room to another (and in a later tutorial, to interact with objects in each room).
 
@@ -16,7 +18,7 @@ I am going to describe a turn-based system, which means that each time the playe
 
 The first thing we need, then, is a turn script (go to the _Scripts_ tab of the game object, and click "Add" in the turn scripts section, at the bottom). Give it a suitable name, "NpcTurnScript", say, and tick the box so it is enabled from the start. The code is very simple; it just goes through every object, and if it has the script, it runs it.
 
-```
+```quest
 foreach (o, AllObjects()) {
   if (HasScript(o, "takeaturn")) {
     do(o, "takeaturn")
@@ -31,7 +33,7 @@ This will cause all the NPCs to act, whether the player is there to see it or no
 
 As we will be checking that a lot, it is convenient to create a function, `PrintIfHere` (go to "Functions" in the left pane, then click "Add" in the right pane). Give it two parameters, "room" and "s", and no return type. Paste in this code:
 
-```
+```quest
 if (game.pov.parent = room) {
   msg(s)
 }
@@ -43,7 +45,7 @@ The message will only get shown if the player is in that room.
 
 So what about the "takeaturn" script? That depends on what you want the NPC to do. The easiest is to have the NPC patrol a circuit of rooms. We will do this in the initialisation script of the NPC, so you will need to tick that option on the _Features_ tab first. Go to the _Initialisation script_ tab, and paste in this code (change the list of rooms to suit your game):
 
-```
+```quest
 this.route = NewObjectList()
 list add (this.route, lounge)
 list add (this.route, kitchen)
@@ -86,7 +88,7 @@ The "patrolstate" attribute starts at -1, so the NPC will move to the first room
 
 If a room is added multiple times to the route, the NPC will stay there for a while. For example, we could have the NPC stay in the lounge for a while:
 
-```
+```quest
 this.route = NewObjectList()
 list add (this.route, lounge)
 list add (this.route, lounge)
@@ -102,7 +104,7 @@ Note that this system takes no account of whether an exit is locked or even exis
 
 We might want the NPC to pause for a turn. If the player talks to her, then it would make sense that she has done that rather than than go to another room, and the player may get annoyed if he is chasing after her as they have a conversation. To handler that, we need to modify the turn script:
 
-```
+```quest
 foreach (o, AllObjects()) {
   if (HasScript(o, "takeaturn")) {
     if (GetBoolean(o, "paused")) {
@@ -117,7 +119,7 @@ foreach (o, AllObjects()) {
 
 You do need to set the "paused" to `true` for your NPCs at the relevant points. For example, the script for speaking to the NPC might look like this:
 
-```
+```quest
 msg ("You chat to Mary for a while.")
 this.paused = true
 ```
@@ -128,7 +130,7 @@ Now the player can talk to Mary for any number of consecutive turns, and only wh
 
 You can set the script on the NPC to do all sorts of things. In this example, the NPC will pick a random, unlocked exit and go that way.
 
-```
+```quest
 this.takeaturn => {
   oldroom = this.parent
   exit = PickOneUnlockedExit (this.parent)

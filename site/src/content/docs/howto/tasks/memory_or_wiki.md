@@ -38,7 +38,7 @@ Now we need a command. The pattern for the command is:
 
 Add "Call function" to the script. For the name of the function, put in `DoAskTell`. You then need to add five parameters (note that the last three have quotes, the first two do not):
 
-```
+```quest
 memory
 text
 "ask"
@@ -48,7 +48,7 @@ text
 
 In code it will look like this:
 
-```
+```quest
 DoAskTell (memory, text, "ask", "askdefault", "DefaultAsk")
 ```
 
@@ -70,7 +70,7 @@ You might want to have topics only available later. Whether this is a good idea 
 
 The information is all held in a script dictionary on the memory object called "ask", so all you need to do is add a new entry. Because it is a script, that does add a it of a complication, as we need to set that to a local variable first (alternatively you could use an attribute of an object). We will also check the key has not already been added to the dictionary first.
 
-```
+```quest
 key = "dagger of letros"
 scr => {
   msg ("According to legend, this was the dagger used to assassinate Queen Hef.")
@@ -82,7 +82,7 @@ if (not DictionaryContains(memory.ask, key)) {
 
 We can also update existing entries.
 
-```
+```quest
 key = "fell-beast fell"
 scr => {
   msg ("Turns out the fell-beast is a huge demonic wolf and not a pony at all.")

@@ -63,7 +63,7 @@ To transition from one state to another, use verbs. Each verb has to check if th
 
 For the jacket, then, on the _Verbs_ tab, add a new verb, "fasten". Set it to run a script and paste in this code, which will put the jacket into the second state, fastened up:
 
-```
+```quest
   if (not this.worn) {
     msg ("You're not wearing it.")
   }
@@ -83,7 +83,7 @@ All your verbs should be variations on this, just changing the numbers and strin
 
 You may decide the garment should only be removed when in a certain state, perhaps when it is already unfastened. This is easy to accomplish, you just have to set the `removeable` flag as appropriate. To ensure the display verbs are right, call `SetVerbs` after doing so. For example: 
 
-```
+```quest
   if (not this.worn) {
     msg ("You're not wearing it.")
   }
@@ -100,7 +100,7 @@ You may decide the garment should only be removed when in a certain state, perha
 
 Of course, your unfasten verb will need to set "removeable" to true when the state becomes 1.
 
-```
+```quest
   if (not this.worn) {
     msg ("You're not wearing it.")
   }

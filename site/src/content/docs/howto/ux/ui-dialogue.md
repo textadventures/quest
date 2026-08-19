@@ -17,7 +17,7 @@ There will be quite a bit of HTML and JavaScript code, and the neatest way to ha
 
 The first step is to create a snippet of HTML with all the widgets (a widget is a control such as a checkbox or textfield) you want on your dialogue panel. It all has to go inside a `div` element, with its own id and title, with the class set to "dialog_window". Here is a simple example:
 
-```
+```xml
 <div id="dialog_window_1" class="dialog_window" title="Your Character">
   <table>
     <tr>
@@ -39,13 +39,13 @@ It is a good idea to always give default values as it will stop the player leavi
 
 To get the code into your game, add this to your game start script:
 
-```
+```quest
 JS.addText (GetFileData("dialogue.html"))
 ```
 
 If you start the game, you will see your widgets, but they are embedded in the page. We need JQuery to insert them into a dialogue panel. To do that, add this JavaScript code to the file:
 
-```      
+```xml
 <script>
     function setValues() {
         $("#dialog_window_1").dialog("close");
@@ -76,7 +76,7 @@ The next step is to get the data into your game. This will be done with the spec
 
 In the code above there was this function:
 
-```
+```js
     function setValues() {
         $("#dialog_window_1").dialog("close");
     }
@@ -84,19 +84,19 @@ In the code above there was this function:
 
 We need to change that to collect the data, and then to send it to Quest. You can get data from a form element with the JQuery `val` method. For text, it is trivial:
 
-```
+```js
 name = $('#name_input').val();
 ```
 
 For the radio buttons, a bit more complicated:
 
-```  
+```js
 gender = $("input:radio[name='sex_input']:checked").val();
 ```
 
 Both values need to be combined into a single string, separated by some obscure character; I use |. The new code looks like this:
 
-```
+```js
     function setValues() {
         $("#dialog_window_1").dialog("close");
         answer = $('#name_input').val() + "|" + $("input:radio[name='sex_input']:checked").val();
@@ -106,7 +106,7 @@ Both values need to be combined into a single string, separated by some obscure 
 
 Then we need to create a function in Quest to accept that data. Add it in the normal way, and call it `HandleDialogue`, no return type, and a single parameter, s. Paste in this code:
 
-```
+```quest
 l = Split(s, "|")
 msg ("You are " + StringListItem(l, 0) + ", " + StringListItem(l, 1)) 
 ```
@@ -118,7 +118,7 @@ The first line splits the given string on the separator character, the second li
 
 The dialogue box is not "modal", which means that the player can play your game whilst the dialogue box is still there. The best way around that is to turn off the command bar and panes on the right in the editor (_Interface_ tab of the game object), and turn them back on it the `HandleDialogue` function, so that is now:
 
-```
+```quest
 JS.panesVisible(true)
 JS.uiShow("#txtCommandDiv")
 l = Split(s, "|")
@@ -128,7 +128,7 @@ msg ("You are " + StringListItem(l, 0) + ", " + StringListItem(l, 1))
 
 To load the file into the page, add this to the game's start script:
 
-```
+```quest
 JS.addText (GetFileData("dialogue.html"))
 ```
 

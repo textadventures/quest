@@ -15,7 +15,7 @@ We should display both the weapon and the current ammo, if the weapon is a firea
 
 Call the function `WeaponUpdate`, no parameters or return type, and paste in the code:
 
-```
+```quest
 if (player.equipped = null) {
   player.equippedname = "-"
   player.ammonote = "-"
@@ -33,7 +33,7 @@ else {
 
 Now go to the game start script. We want to call that function, then add the dictionary to the player, and then add each attribute that we are interested in.
 
-```
+```quest
 // Status attributes
 WeaponUpdate
 player.statusattributes = NewStringDictionary()
@@ -52,7 +52,7 @@ The exclamation mark indicates where the number will go, by the way. Finally, we
 
 In each case, we need to insert the function as the penultimate line (the last line being just a curly brace). For example, `equip` will end like this:
 
-```
+```quest
   object.listalias = object.listalias + " (equipped)"
   WeaponUpdate
 }
@@ -76,7 +76,7 @@ Not too slick. But we can fix that, by adding a new attribute to the weapons and
 
 Go to the _initialisation script_ tab of the spade, and update the script:
 
-```
+```quest
 this.damage = "1d6"
 this.attack = 3
 this.critdesc = "You smash the spade down on #target# (#hits# hits)."
@@ -86,7 +86,7 @@ this.missdesc = "You swing wildly and entirely miss #target#."
 
 And for the pistol:
 
-```
+```quest
 this.damage = "2"
 this.attack = 0
 this.firearmdamage = "2d8"
@@ -100,7 +100,7 @@ this.missdesc = "You shoot wildly and entirely miss #target#."
 
 You also need to add them to the zombies (and any other monsters). Just tag these lines on to the end of SpawnZombie:
 
-```
+```quest
 obj.critdesc = "A well-placed blow by #attacker# sends you reeling (#hits# hits)."
 obj.attackdesc = "#Attacker# has hit you (#hits# hits)."
 obj.missdesc = "#Attacker# misses you."
@@ -108,7 +108,7 @@ obj.missdesc = "#Attacker# misses you."
 
 We will create a new function to print them. Call it "AttackReport", with no return type, with four parameters: s, attacker, target, hits. Paste in the code:
 
-```
+```quest
 s = Replace(s, "#Attacker#", CapFirst(GetDisplayAlias(attacker)))
 s = Replace(s, "#attacker#", GetDisplayAlias(attacker))
 s = Replace(s, "#Target#", CapFirst(GetDisplayAlias(target)))
@@ -119,7 +119,7 @@ msg (s)
 
 All the code does is substitute the real values with _#attacker#_ etc. Note that it preserves capitalisations. The last dozen lines of `DoAttack` need to be modified to use the new function.
 
-```
+```quest
 if (roll > 15) {
   damage = damage * 3
   AttackReport (weapon.critdesc, attacker, target, damage)
@@ -183,7 +183,7 @@ We will set up attacks for monsters just like other weapons, with the difference
 
 Select the spade, click "Copy", the go to the "monsterattacks" room, and click "Paste". Change the name, then set the parameters up in the initialisation script as before. Here is an example for "vomitattack":
 
-```
+```quest
 this.damage = "2d6"
 this.attack = 0
 this.critdesc = "#Attacker# spews noxious vomit all over you (#hits# hits)."
@@ -197,7 +197,7 @@ Note that even ranged attacks should be set up like this as monsters do not have
 
 Finally you need to add a script to the zombie to select an attack. Here is a simple example, this needs to go on the end of the `SpawnZombie` function.
 
-```
+```quest
 obj.selectweapon => {
   if (RandomChance(50)) {
     this.weapon = vomitattack
@@ -212,7 +212,7 @@ What this will do is 50% of the time the zombie will use the vomit attack, the r
 
 Let us suppose you have other attacks set up: talonattack and kickattack. Here are some other options for the script. The first picks an attack at random each turn:
 
-```
+```quest
 obj.selectweapon => {
   this.weapon = GetObject(PickOneString("vomitattack;talonattack;kickattack"))
 }
@@ -220,7 +220,7 @@ obj.selectweapon => {
 
 This will select one at random, but then will stick with it for a while:
 
-```
+```quest
 obj.selectweapon => {
   if (RandomChance(20) or this.weapon = null) {
     this.weapon = GetObject(PickOneString("vomitattack;talonattack;kickattack"))
@@ -230,7 +230,7 @@ obj.selectweapon => {
 
 This will select each in turn (it starts at a random number so the zombies are not all doing the same each turn):
 
-```
+```quest
 obj.weaponcount = GetRandomInt(0, 100)
 obj.selectweapon => {
   names = Split("vomitattack;talonattack;kickattack", ";")
@@ -242,7 +242,7 @@ obj.selectweapon => {
 
 Perhaps the zombie has to ready its vomit attack. If we have a `vomitreadying` attack object, we could set it up like this in its initialisation script:
 
-```
+```quest
 this.damage = "0"
 this.attack = -100
 this.critdesc = ""
@@ -252,7 +252,7 @@ this.missdesc = "#Attacker#'s abdomen is gurgling alarmingly."
 
 Then we can give the zombie this script:
 
-```
+```quest
 obj.selectweapon => {
   if (this.weapon = vomitreadying) {
     this.weapon = vomitattack
@@ -280,7 +280,7 @@ Create a command, and give it this pattern:
 
 We will keep the command very general, as you might want to have the player search all sorts of things in your game, not just monsters. All it will do is check if the object has a script called "searchscript", that it has not already been searched, and that it is not still moving. If all okay, run the script:
 
-```
+```quest
 if (not HasScript(object, "searchscript")) {
   msg ("There's nothing of interest there.")
 }
@@ -300,7 +300,7 @@ Now we need some things the player could find. Create a room called "treasureroo
 
 Now go to the `SpawnZombie` function, and add this to the end, to give your zombies a searchscript.
 
-```
+```quest
 obj.searchscript => {
   money = GetRandomInt(1, 50)
   msg ("You find " + DisplayMoney(money) + ".")
@@ -322,7 +322,7 @@ Obviously you can modify the numbers as you like.
 
 It would be nice if the display verbs changed when the zombie dies, so "search" is an option but "shoot" is not. Just update the script that runs when it dies.
 
-```
+```quest
 obj.changedhitpoints => {
   if (this.hitpoints < 1) {
     msg ("It is dead!")
@@ -334,7 +334,7 @@ obj.changedhitpoints => {
 
 As an aside, what if the player comes across a wraith? The thing about wraiths is that when they die, there is no corpse, and they cannot be searched. How do we handle that? Change the death script like this:
 
-```
+```quest
 obj.changedhitpoints => {
   if (this.hitpoints < 1) {
     msg ("It dissolves into mist. You have destroyed it!")
@@ -350,7 +350,7 @@ If you want the player to be able to search something else, here is how to do th
 
 Turn on the initialisation script on the junk pile, and go to the tab, and paste in this code:
 
-```
+```quest
 this.searchscript => {
   msg ("You find a battered book; it looks like a diary.")
   diary.visible = true

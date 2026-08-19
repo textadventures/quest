@@ -19,12 +19,14 @@ Go to the "Scripts" tab of the "game" object. The start script is at the top. Se
 
 In code view it will look like this:
 
-        <start type="script">
-          msg ("Let's generate a character...")
-          msg ("First, what is your name?")
-          player.alias = GetInput()
-          msg ("Hi, " + player.alias)
-        </start>
+```quest
+    <start type="script">
+      msg ("Let's generate a character...")
+      msg ("First, what is your name?")
+      player.alias = GetInput()
+      msg ("Hi, " + player.alias)
+    </start>
+```
 
 The important part is the `GetInput()` function, which suspends the game until the player types something, then returns what they typed as a string. There's no need to wrap the rest of the script in a block waiting for a callback - execution just continues on the next line once the player has answered, same as any other function call.
 
@@ -34,29 +36,33 @@ If you want to ask several questions, you can just keep adding more lines the sa
 
 In code view it will look like this:
 
-        <start type="script">
-          msg ("Let's generate a character...")
-          msg ("First, what is your name?")
-          player.alias = GetInput()
-          msg ("Hi, " + player.alias)
-          show menu ("Your gender?", Split ("Male;Female", ";"), false) {
-            player.gender = result
-            show menu ("Your character class?", Split ("Warrior;Wizard;Priest;Thief", ";"), false) {
-              player.class = result
-              msg (" ")
-              msg (player.alias + " was a " + LCase (player.gender) + " " + LCase (player.class) + ".")
-              msg (" ")
-              msg ("Now press a key to begin...")
-              wait {
-                ClearScreen
-              }
-            }
+```quest
+    <start type="script">
+      msg ("Let's generate a character...")
+      msg ("First, what is your name?")
+      player.alias = GetInput()
+      msg ("Hi, " + player.alias)
+      show menu ("Your gender?", Split ("Male;Female", ";"), false) {
+        player.gender = result
+        show menu ("Your character class?", Split ("Warrior;Wizard;Priest;Thief", ";"), false) {
+          player.class = result
+          msg (" ")
+          msg (player.alias + " was a " + LCase (player.gender) + " " + LCase (player.class) + ".")
+          msg (" ")
+          msg ("Now press a key to begin...")
+          wait {
+            ClearScreen
           }
-        </start>
+        }
+      }
+    </start>
+```
 
 I am using the "show menu" command this time, to limit the player's choices, in the first instance to either "Male" or "Female". A menu needs a string list containing the options, and Split gives a quick way to create one:
 
-      Split ("Male;Female", ";")
+```quest
+  Split ("Male;Female", ";")
+```
 
 The "show menu" command also takes a string, the prompt for the menu, and a Boolean signaling if the player is allowed to click cancel (which we do not want in this case). As before, the result goes into a string variable called "result".
 
@@ -70,7 +76,7 @@ If you want to ask a series of questions, you are better off breaking the proces
 As an example, we will ask the same three questions. I suggest naming each function "CharacterCreation" followed by the question name, so we start with "CharacterCreationName". No parameters or return type.
 
 
-```
+```quest
 msg ("Let's generate a character...")
 msg ("First, what is your name?")
 player.alias = GetInput()
@@ -79,7 +85,7 @@ CharacterCreationGender
 
 Then "CharacterCreationGender" - note that the next question depends on the answer given here:
 
-```
+```quest
 msg ("Hi, " + player.alias)
 show menu ("Your gender?", Split ("Male;Female", ";"), false) {
   player.gender = result
@@ -94,7 +100,7 @@ show menu ("Your gender?", Split ("Male;Female", ";"), false) {
 
 Then "CharacterCreationClassFemale". We can use the result to set attributes of the player and give some clothing too. Note that an attribute you never assign stays completely unset rather than defaulting to zero - it isn't even blank; using it directly (printing it, doing arithmetic with it, anything beyond comparing it to `null`) will throw a script error. So give every class a baseline value for each attribute you plan to use, rather than leaving any of them unset:
 
-```
+```quest
 show menu ("Your character class?", Split ("Amazon;Witch;Priestess;Thief", ";"), false) {
   player.class = result
   switch (result) {
@@ -123,7 +129,7 @@ show menu ("Your character class?", Split ("Amazon;Witch;Priestess;Thief", ";"),
 
 Then "CharacterCreationClassMale":
 
-```
+```quest
 show menu ("Your character class?", Split ("Barbarian;Wizard;Priest;Thief", ";"), false) {
   player.class = result
   switch (result) {

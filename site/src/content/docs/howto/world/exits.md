@@ -99,7 +99,7 @@ To change the state of an exit during a game, we need to change its attributes. 
 
 As mentioned before, you need to give your exit a name to be able to do this. Say we have an exit called "exit to kitchen" (lines that start with two slashes are comments by the way)...
 
-```
+```quest
 // lock the exit
 exit to kitchen.locked = true
 
@@ -126,7 +126,7 @@ A common reason to run a script is to only allow the exit to be used if a certai
 
 ![](/images/exitscript1.png)
 
-```
+```quest
 if (Got(talisman)) {
   msg ("The talisman hums as you pass through the portal.")
   MoveObject (player, room2)
@@ -147,7 +147,7 @@ You might want the player to trigger some event by using the exit.
 
 ![](/images/exitscript2.png)
 
-```
+```quest
 firsttime {
   msg ("As you walk down the path, the sky darkens alarmingly ")
   SetObjectFlagOn (player, "apocolyse started")
@@ -173,7 +173,7 @@ The best way is to set all the exits to be either locked or invisible. In this e
 
 ![](/images/exitscript3.png)
 
-```
+```quest
 foreach (ext, ScopeExits ()) {
   ext.locked = true
 }
@@ -192,7 +192,7 @@ Sometimes the tricking of setting a exit to be visible is not going to work, and
 
 To find a specific exit, use [GetExitByLink](/functions/objects#getexitbylink) to get the exit from one room to another or [GetExitByName](/functions/objects#getexitbyname) to get the exit from a room in a specific direction (uses the alias of the exit). These both return the name of the exit (or `null` if there is none). Use `GetObject` to get the exit itself.
 
-```
+```quest
 exitname = GetExitByName(room2, "north")
 if (not exitname = null) {
   ext = GetObject(exitname)

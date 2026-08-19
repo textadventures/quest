@@ -38,7 +38,7 @@ The code for this has to check the player has the parts, and if so then it does 
 
 This is the underlying code; these are two ways of looking at the same thing. It is the same script in both views:
 
-```
+```quest
 if (not Got(branch)) {
   msg ("You need some wood to make a bow.")
 }
@@ -66,7 +66,7 @@ On the string object, turn on "Use/Give" on the _Features_ tab, and then on the 
 
 In code it looks like this:
 
-```
+```quest
 do (CmdMakeBow, "script")
 ```
 
@@ -89,7 +89,7 @@ Here is what it looks like:
 
 And the code:
 
-```
+```quest
 if (not object1 = string) {
   msg ("That's not going to work.")
 }
@@ -119,7 +119,7 @@ The item to convert will be put inside the machine, so on the _Features_ tab, ti
 Now to get it to do something. Turn on "Use/Give" on the _Features_ tab, and then go to the _Use/Give_ tab and in the "Use (on its own)" section, set the action to run a script, and paste in this code:
 
 
-```
+```quest
 if (this.isopen) {
   msg ("You press the button, but nothing happens. Perhaps it needs to be closed?")
 }
@@ -154,7 +154,7 @@ Now we have the new object, we put it inside the machine, and move the old one a
 
 Let's modify the description so the player can see the state of the machine. This is important, because we are requiring the player to open and close the compartment, and the player needs to be informed of its current state. Because we want to say what is in the device, this is a bit beyond the text processor, so instead we build up a string, `s`, with all the bits we want, before printing it at the end.
 
-```
+```quest
 s = "This strange machine has a compartment in it, which is currently "
 if (this.isopen) {
   s = s + "open."
@@ -180,7 +180,7 @@ It is a good idea to think about other ways the player may try to use things in 
 
 We still need to handle PRESS RED BUTTON. Go to the _Verbs_ tab, and add "press". Set it to run a script:
 
-```
+```quest
 do (this, "use")
 ```
 
@@ -188,7 +188,7 @@ Now PRESS RED BUTTON will cause the "use" script to run.
 
 The player might also want to SWITCH ON T-REMOVER. On the _Features_ tab, set it to be "Switchable", and on the _Switchable_ tab, set it so it can be switched on and off. We need to add a script, "After switching on the object":
 
-```
+```quest
 do (this, "use")
 this.switchedon = false
 ```
@@ -197,7 +197,7 @@ As with the "press" verb, we just need to run the "use" script, but here we also
 
 Finally, let's have Ray do something! Go to the _Container_ tab, and the "After opening the object" script.
 
-```
+```quest
 if (ray.parent = this) {
   ray.parent = this.parent
   msg ("A boy leaps out of the device! Hey, it's Ray, that geeky kid from school.")

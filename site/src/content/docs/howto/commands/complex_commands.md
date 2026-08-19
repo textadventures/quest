@@ -54,7 +54,7 @@ You might now want to include alternative verbs.
 ## Regular expression (optional!)
 
 If you are feeling brave, you could use a regular expression here (remember to set Regular expression from the drop down list).
-```
+```regex
   ^(tie|attach|fasten) (?<object1>.*) to (?<object2>.*)$
 ```
 * The `^` at the start says Quest must match this to the start of the command, whilst the $ at the end says this must be the end of the command.
@@ -70,11 +70,11 @@ If you are feeling brave, you could use a regular expression here (remember to s
 Quest uses .NET regex rules, and a quick reference for .NET regex rules can be found [here](https://learn.microsoft.com/en-us/dotnet/standard/base-types/regular-expression-language-quick-reference).
 
 May be not much point in this example, but if you have variations in the joining word to handle too, you could be looking at a lot of combinations, so this way may be easier. For example:
-```
+```regex
   ^(get|pick up|take) (?<object1>.*) (using|holding|with) (the |)(?<object2>.*)$
 ```
 Or even:
-```
+```regex
   ^((get|pick up|take) (the |)(?<object1>.*) (using|holding|with) (the |)(?<object2>.*)|(using|holding|with) (the |)(?<object2>.*) (get|pick up|take) (the |)(?<object1>.*))$
 ```
 That will handle any of these:
@@ -116,7 +116,7 @@ There is a design consideration here. If you have some cord and tie it to a hook
 
 For the first three conditions, we convert them to a if/else if/else cascade, at each step testing if it is not so (lines starting with two slashes are comments, by the way):
 
-```
+```quest
   // 1. The player has the first object
   if (not object1.parent = player) {
     msg("You are not holding " + GetDisplayAlias(object1) + ".")
@@ -144,7 +144,7 @@ Suppose there are several objects the cord might be tied to, what is the best wa
 
 The code here has two changes. Condition number 3 now checks the attachable flag, instead of checking the object in the hook. Also, at the end, an attribute on the cord gets set to the object it is attached to, so you can test what that was if necessary (and we can check if that is set to see if the cord is attached so do not need the "tiedtohook" attribute).
 
-```
+```quest
   // 1. The player has the first object
   if (not object1.parent = player) {
     msg("You are not holding " + GetDisplayAlias(object1) + ".")
@@ -181,7 +181,7 @@ For the first command give it this pattern:
 
 Give it a name, "cmd_burn_with" (commands do not usually need names, but this will be useful later). Paste in the code:
 
-```
+```quest
 if (not GetBoolean(object2, "fire")) {
   msg (CapFirst(GetDisplayName(object2)) + " " + Conjugate(object2, "be") + "n't a fire.")
 }
@@ -212,7 +212,7 @@ The second command has this pattern:
 
 Here is the code:
 
-```
+```quest
 l = FilterByAttribute(ScopeReachable(), "fire", true)
 if (ListCount(l) = 0) {
   msg ("There is no fire here to burn anything on.")

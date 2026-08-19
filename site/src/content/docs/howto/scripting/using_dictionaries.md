@@ -10,7 +10,7 @@ A dictionary can never have two entries with the same key, just as a list can ne
 
 
 As with lists, there are various types, but with dictionaries you also get a version specifically for scripts. Note that whatever the type, the key must be a string.
-```
+```quest
 mystringdict = NewStringDictionary()
 myobjectdict = NewObjectDictionary()
 myscriptdict = NewScriptDictionary()
@@ -25,7 +25,7 @@ You can add a dictionary to an object on the Attributes tab, but you are restric
 ## Adding and removing items
 
 To add items to a dictionary, use the `dictionary add` command. To remove something from a dictionary, use `dictionary remove`. Unlike the list versions of these commands, we now need to provide a key.
-```
+```quest
 d = NewObjectDictionary()
 dictionary add (d, "table", fancy table)
 dictionary add (d, "table2", fancy table)
@@ -54,7 +54,7 @@ Note that Quest will throw an error if the key is not found in the dictionary, s
 Often you will want to go through each member of a dictionary, and as with a list we can use the `foreach` command to do this. It takes two parameters, the first being a variable to store a key in, and the second being the dictionary. It also requires a script.
 
 This example will output each member of the dictionary. The script will be run once for each entry in the dictionary `d`, and when it runs `key` will have the key for that entry.
-```
+```quest
 foreach(key, d) {
   msg("Entry: " + key + "=" + DictionaryItem(d, key))
 }
@@ -68,25 +68,25 @@ Changing a dictionary whilst in a foreach loop (i.e., adding or removing entries
 Dictionaries are fussy things that will throw an error if you try to add a key that is already there, if you try to delete a key that is not, or try to retrieve a key that is not (unlike lists). The  `DictionaryContains` function, then, is extremely useful as it will tell you if the dictionary already contains the given key (there is no function that will tell you if the entry is already in the dictionary).
 
 To check a key is not already in use before adding to the dictionary:
-```
+```quest
 if (not DictionaryContains(dict, obj.name)) {
   dictionary add(dict, obj.name, obj)
 }
 ```
 To check a key IS already in use before removing from the dictionary:
-```
+```quest
 if (DictionaryContains(dict, obj.name)) {
   dictionary remove(dict, obj.name, obj)
 }
 ```
 Alternatively we can use the `in` operator, which is rather less typing!
-```
+```quest
 if (not obj.name in dict) {
   dictionary add(dict, obj.name, obj)
 }
 ```
 
-```
+```quest
 if (obj.name in dict) {
   dictionary remove(dict, obj.name, obj)
 }
@@ -97,7 +97,7 @@ By the way, the reason there is a `DictionaryContains` function is to make it ea
 ## Other functions
 
 The `DictionaryCount` function will return the number of entries in the dictionary.
-```
+```quest
 msg("My dictionary has " + DictionaryCount(myDict) + " things in it.")
 ```
 
@@ -107,7 +107,7 @@ msg("My dictionary has " + DictionaryCount(myDict) + " things in it.")
 ### ShowMenu
 
 You can use a string dictionary with the `ShowMenu` function or `show menu` command. This allows you to give a set of options, and to handle them as a corresponding set of strings. This could, for example, allow you to run a script, depending on the option chosen. Suppose "getthing", "jump" and "vomit" are all scripts on the player object:
-```
+```quest
 options = NewStringDictionary()
 dictionary add (options, "getthing", "Get the thing")
 dictionary add (options, "jump", "Jump as high as you can")
@@ -120,7 +120,7 @@ ShowMenu ("Choose", options, false) {
 ### Script parameters
 
 You can also use dictionaries to pass values to scripts. The key will become the name of a local variable, while the value will be its value.
-```
+```quest
 vars = NewDictionary()
 dictionary add (vars, "weapon", weapon)
 dictionary add (vars, "success", "You hit the monster")

@@ -5,7 +5,7 @@ sidebar:
 ---
 
 ## Asc
-```
+```quest
 Asc (string input)
 ```
 
@@ -16,7 +16,7 @@ The Asc function returns the character code of the input.
 Maps to the VB.net [Asc function](http://msdn.microsoft.com/en-us/library/zew1e4wc%28v=VS.80%29.aspx).
 
 ## CapFirst
-```
+```quest
 CapFirst (input)
 ```
 
@@ -25,7 +25,7 @@ CapFirst (input)
 Returns a [string](/types#string) with the first character of the input capitalised.
 
 ## Chr
-```
+```quest
 Chr (int input)
 ```
 
@@ -36,13 +36,13 @@ The Chr function returns the character with the character code of the input.
 Maps to the VB.net [Chr function](http://msdn.microsoft.com/en-us/library/613dxh46%28v=VS.80%29.aspx).
 
 ## Conjugate
-```
+```quest
 Conjugate (object, string verb)
 ```
 
 Returns the correct form of the verb for the given object, based on the "gender" attribute of the object. This allows authors to create responses neutral with respect to the object.
 
-```
+```quest
 Conjugate (crowd, "be")
 -> "are"
 Conjugate (crowd, "do")
@@ -60,7 +60,7 @@ Conjugate (dog, "sit")
 See also [WriteVerb](#writeverb)
 
 ## Decimalise
-```
+```quest
 Decimalise (int input, int places)
 ```
 
@@ -68,7 +68,7 @@ Returns a [string](/types#string) with the given number divided by 10^places and
 
 This is especially useful for displaying money, when you are tracking the number of pennies the player has, and want to show the number of pounds.
 
-```
+```quest
 Decimalise(1234, 2)
  -> "12.34"
 Decimalise(1234, 1)
@@ -78,7 +78,7 @@ Decimalise(1234, 0)
 ```
 
 ## DisplayMoney
-```
+```quest
 DisplayMoney (int money)
 ```
 
@@ -88,7 +88,7 @@ The string game.moneyformat can be formatted in three ways:
 
 With a single !, the value will be inserted at that point.
 
-```
+```quest
 game.moneyformat = "! credits"
 DisplayMoney(1234)
   -> "1234 credits"
@@ -98,7 +98,7 @@ DisplayMoney(-1234)
 
 With two !, the bit between the exclamation marks will be used to format the number, using [DisplayNumber](#displaynumber). The format is a number, a separator and a second number, where the first number is the minimum number digits left of the decimal (padded with zeroes), and the second number is the number of decimal places. A + at the start will cause a + to appear at the start of the number if positive.
 
-```
+```quest
 game.moneyformat = "!3.2! credits"
 DisplayMoney(1234)
   -> "012.34 credits"
@@ -113,7 +113,7 @@ DisplayMoney(-1234)
   
 With three !, the bit between the first two exclamation marks will be used to format positive numbers (and zero), and the next bit for negative; again using [DisplayNumber](#displaynumber).
 
-```
+```quest
 game.moneyformat = "!+3.2!-3.2! credits"
 DisplayMoney(1234)
   -> "+012.34 credits"
@@ -131,7 +131,7 @@ It will throw an error if game.moneyformat is not set or not understood.
 The easiest way to set game.moneyformat, is to tick "Money" on the _Features_ tab of the game object, and to set the format on the _Player_ tab. If you do not want the built-in money status attribute displayed, untick "Money" on the _Features_ tab of the game object - the format will still be set, but money will not be shown as a status attribute.
 
 ## DisplayNumber
-```
+```quest
 DisplayNumber (int input, string format)
 ```
 
@@ -145,7 +145,7 @@ Returns a [string](/types#string), the given number formatted. The format should
 
 Note that the input number will be made positive, and then divided by 10 to the power of the second number (see [Decimalise](#decimalise)).
 
-```
+```quest
 DisplayNumber(1234, "+1.1")
   -> "+123.4"
 DisplayNumber(1234, "3.2")
@@ -157,13 +157,13 @@ DisplayNumber(1234, "(3,3)")
 ```
 
 ## DynamicTemplate
-```
+```quest
 DynamicTemplate (string  template name, object  object)
 ```
 
 or
 
-```
+```quest
 DynamicTemplate (string  template name, string  text)
 ```
 
@@ -179,16 +179,20 @@ See [Changing templates](/howto/world/changing_templates)
 
 First the dynamic template is defined as:
 
-    <dynamictemplate name="BlockedExit">"Your exit "+object.alias+" is blocked"</dynamictemplate>
+```xml
+<dynamictemplate name="BlockedExit">"Your exit "+object.alias+" is blocked"</dynamictemplate>
+```
 
 Now we could add a message expression to the script in an exit, something like:
 
-    msg (DynamicTemplate("BlockedExit",this))
+```quest
+msg (DynamicTemplate("BlockedExit",this))
+```
 
 NOTE: As the script is defined in the *script* attribute of the *exit*, we use the "this" keyword to reference the current *exit* object
 
 ## EndsWith
-```
+```quest
 EndsWith (string input, string ending)
 ```
 
@@ -197,30 +201,32 @@ EndsWith (string input, string ending)
 Returns a [boolean](/types#boolean) - **true** if the input string finishes with the ending string.
 
 ## FormatList
-```
+```quest
 FormatList (stringlist or object list, string joiner, string lastjoiner, string nothing)
 ```
 
 Returns a [string](/types#string), listing the entries in the given list. For an object list, the GetDisplayName function is used to get an appropriate string. The last two entries in the list are separated by `lastjoiner`, whilst other entries are separated by `joiner`. If the list is empty the string string in `nothing` is returned.
 
-    list = Split("one;two;three", ";") 
-    msg(FormatList(list, ",", "or", "nothing"))
-    // "one, two or three"
-    msg(FormatList(list, ";", "; and", "nothing"))
-    // "one; two; and three"
-    list = NewStringList()
-    msg(FormatList(list, ",", "and", "nothing"))
-    // "nothing"
+```quest
+list = Split("one;two;three", ";") 
+msg(FormatList(list, ",", "or", "nothing"))
+// "one, two or three"
+msg(FormatList(list, ";", "; and", "nothing"))
+// "one; two; and three"
+list = NewStringList()
+msg(FormatList(list, ",", "and", "nothing"))
+// "nothing"
+```
   
 
 ## GetMatchStrength
-```
+```quest
 GetMatchStrength (string regex, string input)
 ```
 
 There is also an optional cache ID parameter:
 
-```
+```quest
 GetMatchStrength (string regex, string input, string cache ID)
 ```
 
@@ -234,7 +240,9 @@ Use a cache ID for improved performance if you repeatedly test strings against t
 
 For example, given this regex which matches the text "look at " followed by any object name:
 
-     look at (?<object>.*)
+```regex
+ look at (?<object>.*)
+```
 
 An input of "look at dog" has a strength of 8.
 
@@ -249,13 +257,13 @@ The strength is used by the command handling functions in CoreCommands.aslx to d
 See also [IsRegexMatch](#isregexmatch), [Populate](/functions/internal-core#populate)
 
 ## Instr
-```
+```quest
 Instr (string input, string search)
 ```
 
 or
 
-```
+```quest
 Instr (int start position, string input, string search)
 ```
 
@@ -266,13 +274,13 @@ Returns an [int](/types#int) representing the character position of the search s
 Maps to the VB.net [Instr function](http://msdn.microsoft.com/en-us/library/8460tsh1(VS.80).aspx).
 
 ## InstrRev
-```
+```quest
 InstrRev (string input, string search)
 ```
 
 or
 
-```
+```quest
 InstrRev (int start position, string input, string search)
 ```
 
@@ -283,7 +291,7 @@ Returns an [int](/types#int) representing the character position of the search s
 Maps to the VB.net [InstrRev function](http://msdn.microsoft.com/en-us/library/t2ekk41a%28v=VS.80%29.aspx).
 
 ## IsNumeric
-```
+```quest
 IsNumeric (string input)
 ```
 
@@ -292,13 +300,13 @@ IsNumeric (string input)
 Returns a [boolean](/types#boolean) - **true** if the input is numeric (i.e. a string which can be converted into a number).
 
 ## IsRegexMatch
-```
+```quest
 IsRegexMatch (string regex, string)
 ```
 
 There is also an optional cache ID parameter:
 
-```
+```quest
 IsRegexMatch (string regex, string, string cache ID)
 ```
 
@@ -311,7 +319,7 @@ Use a cache ID for improved performance if you repeatedly test strings against t
 See also [GetMatchStrength](#getmatchstrength), [Populate](/functions/internal-core#populate)
 
 ## Join
-```
+```quest
 Join (stringlist input, string split character)
 ```
 
@@ -320,7 +328,7 @@ Join (stringlist input, string split character)
 Returns a [string](/types#string) containing each element of the input, separated by the split character. This is the inverse of the [split](#split) function.
 
 ## LCase
-```
+```quest
 LCase (string input)
 ```
 
@@ -329,7 +337,7 @@ LCase (string input)
 Returns a [string](/types#string) - the lower-case version of the input.
 
 ## Left
-```
+```quest
 Left (string input, int character count)
 ```
 
@@ -340,7 +348,7 @@ Returns a [string](/types#string) containing characters from the left of the inp
 Maps to the VB.net [Left function](http://msdn.microsoft.com/en-US/library/y050k1wb(v=VS.80).aspx).
 
 ## LengthOf
-```
+```quest
 LengthOf (string input)
 ```
 
@@ -349,7 +357,7 @@ LengthOf (string input)
 Returns an [int](/types#int) containing the number of characters in the string.
 
 ## LTrim
-```
+```quest
 LTrim (input)
 ```
 
@@ -358,13 +366,13 @@ LTrim (input)
 The LTrim function removes spaces on the left side of a [string](/types#string).
 
 ## Mid
-```
+```quest
 Mid (string input, int start position)
 ```
 
 or
 
-```
+```quest
 Mid (string input, int start position, int character count)
 ```
 
@@ -375,13 +383,13 @@ Returns a [string](/types#string) containing characters from the middle of the i
 Maps to the VB.net [Mid function](http://msdn.microsoft.com/en-us/library/05e63829(v=VS.90).aspx).
 
 ## PadString
-```
+```quest
 PadString (string input, int length, string pad)
 ```
 
 Returns a [string](/types#string) that has been padded to the given length with the given padding.
 
-```
+```quest
 PadString("23", 4, "0")
  -> "0023"
 PadString("12345", 4, "0")
@@ -392,7 +400,7 @@ PadString("23", 4, "0")
   
 You can use integers too:
 
-```
+```quest
 PadString(23, 4, 0)
  -> "0023"
 ```
@@ -400,21 +408,21 @@ PadString(23, 4, 0)
 It will attempt to do it if the pad string is more than 1 character, but will be approximate. If the pad string is empty, it will throw an error.
 
 ## Possessive
-```
+```quest
 Possessive (string possessive, object)
 ```
 
 Returns a [string](/types#string) combining **possessive** with the object's display name, e.g. `Possessive("your", box)` returns "your box". Note that in the current implementation, this doesn't inflect **possessive** itself for gender/number - it's a plain concatenation.
 
 ## ProcessText
-```
+```quest
 ProcessText (string)
 ```
 
 Returns an [string](/types#string) - the result of passing the given string through the text processor. For details on what the text processor does, see [here](/howto/world/text_processor).
 
 ## Replace
-```
+```quest
 Replace (string input, string old text, string new text)
 ```
 
@@ -423,14 +431,14 @@ Replace (string input, string old text, string new text)
 Returns a [string](/types#string) where any text matching "old text" in the input has been replaced by "new text".
 
 ## ReverseDirection
-```
+```quest
 ReverseDirection (string input)
 ```
 
 Returns a [string](/types#string), the reverse direction of the given string, so "northwest" becomes "southeast", and "in" becomes "out" (or the equivalent for the language you areusing). Only works for the full name (not "nw" for example). Unrecognised strings are returned unaltered.
 
 ## Right
-```
+```quest
 Right (string input, int character count)
 ```
 
@@ -441,7 +449,7 @@ Returns a [string](/types#string) containing characters from the right of the in
 Maps to the VB.net [Right function](http://msdn.microsoft.com/en-us/library/dxs6hz0a.aspx).
 
 ## RTrim
-```
+```quest
 RTrim (input)
 ```
 
@@ -450,7 +458,7 @@ RTrim (input)
 The RTrim function removes spaces on the right side of a [string](/types#string).
 
 ## SafeXML
-```
+```quest
 SafeXML (string)
 ```
 
@@ -459,14 +467,14 @@ SafeXML (string)
 Returns an XML encoded version of the string that is safe for output (for example, replacing angle brackets with &amp;lt; and &amp;gt;).
 
 ## Spaces
-```
+```quest
 Spaces (int)
 ```
 
 Returns a [string](/types#string) - a number of spaces equal to the given number. This is useful because HTML will collapse a string of spaces into just one.
 
 ## Split
-```
+```quest
 Split (string input, string split character)
 ```
 
@@ -476,15 +484,19 @@ Returns a [stringlist](/types#stringlist) where the input has been split into in
 
 As of version 5.7.2, you can omit the split character, and Quest will assume it is a semicolon.
 
-    Split (string input, string split character)
+```quest
+Split (string input, string split character)
+```
 
 These two lines are equivalent:
 
-    list = Split("one;two;three;four", ";")
-    list = Split("one;two;three;four")
+```quest
+list = Split("one;two;three;four", ";")
+list = Split("one;two;three;four")
+```
 
 ## StartsWith
-```
+```quest
 StartsWith (string input, string start)
 ```
 
@@ -493,7 +505,7 @@ StartsWith (string input, string start)
 Returns a [boolean](/types#boolean) - **true** if the input string begins with the start string.
 
 ## Template
-```
+```quest
 Template (string template name)
 ```
 
@@ -506,14 +518,14 @@ You can create a template in your ASLX file with a [\<template\> element](/eleme
 See [Changing templates](/howto/world/changing_templates)
 
 ## ToRoman
-```
+```quest
 ToRoman (int)
 ```
 
 Returns a [string](/types#string) - the given number in Roman numerals (i.e., I, II, III...). Good for numbers from 1 to 3999 (the Romans had no zero or negative numbers, this will produce an empty string; for high numbers, it will just add more and more Ms).
 
 ## ToWords
-```
+```quest
 ToWords (int)
 ```
 
@@ -522,7 +534,7 @@ Returns a [string](/types#string) - the given integer in word form (i.e., one, t
 This function is part of English.aslx, and is currently only available in English. We would welcome any code for other languages, to be added to later versions of Quest.
 
 ## Trim
-```
+```quest
 Trim (input)
 ```
 
@@ -531,7 +543,7 @@ Trim (input)
 The Trim function removes spaces on both sides of a [string](/types#string).
 
 ## UCase
-```
+```quest
 UCase (string input)
 ```
 
@@ -540,13 +552,13 @@ UCase (string input)
 Returns a [string](/types#string) - the upper-case version of the input.
 
 ## WriteVerb
-```
+```quest
 WriteVerb(obj, verb)
 ```
 
 Returns the correct form of the verb for the given object, based on the "gender" attribute of the object, together with the object name, capitalised. This allows authors to create responses neutral with respect to the object.
 
-```
+```quest
 WriteVerb (crowd, "be")
 -> "A crowd are"
 WriteVerb (crowd, "do")
