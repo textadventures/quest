@@ -482,15 +482,7 @@ These names will also then not appear as exits in the "Places and Objects" list.
 JS.setInterfaceString("PlacesObjectsLabel", "You can see:")
 ```
 
-Valid element names are:
-
--   InventoryLabel (default "Inventory")
--   PlacesObjectsLabel (default "Places and Objects")
--   CompassLabel (default "Compass")
--   InButtonLabel (default "in")
--   OutButtonLabel (default "out")
--   EmptyListLabel (default "(empty)")
--   NothingSelectedLabel (default "(nothing selected)")
+See [JS.setInterfaceString](/js/#setinterfacestring) for the full list of valid element names.
 
 ## return
 ```quest

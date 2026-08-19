@@ -10,6 +10,14 @@ The `JS` object is how Quest exposes the user interface. What this means is that
 JS.addText("You are in a deep hole.")
 ```
 
+## addExternalStylesheet
+
+```quest
+JS.addExternalStylesheet (string url)
+```
+
+Adds a `<link rel="stylesheet">` for the given URL to the page, loading an external CSS file.
+
 ## addScript
 
 ```quest
@@ -29,6 +37,14 @@ JS.addText (string text)
 ```
 
 Inserts the given text into the page. This is how `msg` displays text. Use [addScript](#addscript) to add code, such as CSS or JavaScript, or to add HTML outside the normal text flow.
+
+## AddYouTube
+
+```quest
+JS.AddYouTube (string id)
+```
+
+Embeds an autoplaying YouTube video for the given video ID. See [Adding videos](/howto/multimedia/adding_videos).
 
 ## colourBlend
 
@@ -50,6 +66,22 @@ JS.eval (string JavaScript code)
 
 Causes the given string to be evaluated by the JavaScript engine. This is a way to run any JavaScript code in your game, which can be used to move around the components of the UI or add new ones, among other things.
 
+## Grid_ClearAllLayers
+
+```quest
+JS.Grid_ClearAllLayers ()
+```
+
+Clears everything drawn on the map grid - rooms and any custom layers. Used when resetting the map entirely, e.g. when the player teleports to an unconnected region. See [Showing a map](/howto/tasks/showing_a_map).
+
+## hideBorder
+
+```quest
+JS.hideBorder ()
+```
+
+Removes the border around the game area.
+
 ## panesVisible
 
 ```quest
@@ -69,6 +101,14 @@ JS.scrollToEnd ()
 ```
 
 Moves the displayed text down to the bottom. This should happen automatically, but occasionally it is useful to be able to call it yourself from your game.
+
+## setBackground
+
+```quest
+JS.setBackground (string colour)
+```
+
+Sets the background colour of the game area.
 
 ## setCommands
 
@@ -106,13 +146,13 @@ Sets the CSS styling for the given element. If the element name is for an ID, th
 This example sets the `<body>` element to have the "serif" font.
 
 ```quest
-JS.setCSS ("body", "font-family: serif")
+JS.setCss ("body", "font-family: serif")
 ```
 
 This example sets styling for the element with the ID "status" (the strip across the top of the screen). It sets two properties, the background image and background colour.
 
 ```quest
-JS.setCSS ("#status", "background-image:none; background-color: green;")
+JS.setCss ("#status", "background-image:none; background-color: green;")
 ```
 
 ## setCustomStatus
@@ -135,6 +175,22 @@ Sets the name of the game, shown in the browser tab title.
 JS.setGameName("My Cool Game")
 ```
 
+## setGamePadding
+
+```quest
+JS.setGamePadding (string top, string bottom, string left, string right)
+```
+
+Sets the padding (CSS values, e.g. `"10px"`) around the game text.
+
+## setGameWidth
+
+```quest
+JS.setGameWidth (int width)
+```
+
+Sets the maximum width, in pixels, of the game area.
+
 ## setInterfaceString
 
 ```quest
@@ -152,6 +208,54 @@ For example, to change the name of the player inventory:
 ```quest
 JS.setInterfaceString("InventoryLabel", "You are holding")
 ```
+
+## SetMenuBackground
+
+```quest
+JS.SetMenuBackground (string colour)
+```
+
+Sets the background colour of the popup menu shown when the player clicks a hyperlink in the text.
+
+## SetMenuFontName
+
+```quest
+JS.SetMenuFontName (string fontName)
+```
+
+Sets the font used in the hyperlink popup menu.
+
+## SetMenuFontSize
+
+```quest
+JS.SetMenuFontSize (string size)
+```
+
+Sets the font size used in the hyperlink popup menu. The size must be given as a number followed by `"pt"`, e.g. `"14pt"`.
+
+## SetMenuForeground
+
+```quest
+JS.SetMenuForeground (string colour)
+```
+
+Sets the text colour of the hyperlink popup menu.
+
+## SetMenuHoverBackground
+
+```quest
+JS.SetMenuHoverBackground (string colour)
+```
+
+Sets the background colour of a hyperlink popup menu item when hovered over.
+
+## SetMenuHoverForeground
+
+```quest
+JS.SetMenuHoverForeground (string colour)
+```
+
+Sets the text colour of a hyperlink popup menu item when hovered over.
 
 ## setPanes
 
@@ -207,13 +311,29 @@ JS.showPopupFullscreen(title, text)
 
 As [showPopup](#showpopup), but will fill the Quest window (so the size will depend on how the player has it set up).
 
+## showStatusVisible
+
+```quest
+JS.showStatusVisible (boolean visible)
+```
+
+Shows or hides the status variables pane (see [status attributes](/status_attributes)).
+
+## TurnOffHyperlinksUnderline
+
+```quest
+JS.TurnOffHyperlinksUnderline ()
+```
+
+Removes the underline from in-text command hyperlinks.
+
 ## uiHide
 
 ```quest
 JS.uiHide(string element)
 ```
 
-Hides the given element (see [uiShow](#uishow) for the allowed values).
+Hides the given element (see [uiShow](#uishow) for details).
 
 ## uiShow
 
@@ -221,11 +341,7 @@ Hides the given element (see [uiShow](#uishow) for the allowed values).
 JS.uiShow(string element)
 ```
 
-Shows the given element. Allowed values are:
-
-> #txtCommandDiv, #location, #status
-
-For example,
+Shows the given element - any CSS selector works, e.g. `#location`, `#txtCommandDiv`, `#status`. `#gamePanes` is special-cased to behave the same as `panesVisible(true)`/`panesVisible(false)`. See the [request](/scripts#request) command reference for the fuller list of selectors used to show/hide individual panes.
 
 ```quest
 JS.uiShow("#status")
