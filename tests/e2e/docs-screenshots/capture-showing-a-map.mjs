@@ -165,8 +165,17 @@ await runCapture(async ({ page, baseUrl }) => {
     // --- map7.png: a huge lobby split into two locations, "Path" border types make them read
     // as one continuous room on the map despite being separate rooms with a zero-length exit
     // between them; border size 3 on both to show the effect (per the doc's own instructions).
-    // Own fresh draft (not the Map.png/Map2.png one above) so no leftover kitchen/exit pollutes
-    // this map. ---
+    // Rebuilt against the actual original screenshot (site/public/images/map7.png as it existed
+    // before this track started, pulled from commit 9c6f2cc5) after the first pass here missed
+    // several details the user caught: Lobby needs BOTH directions of its exit to Lobby E set to
+    // length 0 (only one side was set before, leaving a stray visible connector - the doc's own
+    // "remember to change both directions" lesson, missed here even after applying it correctly
+    // elsewhere on this same page); Lobby/Lounge/Kitchen all have fill colours in the original;
+    // the Lobby E -> Lounge exit is diagonal (northeast), not straight north; Lounge and Kitchen
+    // are labelled; and Lounge/Kitchen/Lobby W each have one extra stray exit to an offscreen
+    // room, which is why the original shows extra line stubs trailing off the crop edges. Own
+    // fresh draft (not the Map.png/Map2.png one above) so no leftover kitchen/exit pollutes this
+    // map. ---
     await createLocalDraft(page, baseUrl, 'Tutorial Game');
     await selectTreeNode(page, 'game');
     await openTab(page, 'Interface');
@@ -179,20 +188,43 @@ await runCapture(async ({ page, baseUrl }) => {
     await addElement(page, 'Add Room', 'Lobby E');
     await addElement(page, 'Add Room', 'Lounge');
     await addElement(page, 'Add Room', 'Kitchen');
+    // Stub destinations for the original's extra stray exit stubs (Lobby W north, Lounge east,
+    // Kitchen east/south) - never visited long enough to matter what's in them, just need to
+    // exist so their connecting line has somewhere to point.
+    await addElement(page, 'Add Room', 'Corridor');
+    await addElement(page, 'Add Room', 'Study');
+    await addElement(page, 'Add Room', 'Pantry');
+    await addElement(page, 'Add Room', 'Cellar');
 
     await selectTreeNode(page, 'Lobby W');
     await openTab(page, 'Exits');
     await createExit(page, 'Lobby W', 'east', 'Lobby E', { length: 0 });
+    await setReciprocalExitLength(page, 'Lobby E', 'Lobby W', 0);
+    await selectTreeNode(page, 'Lobby W');
+    await openTab(page, 'Exits');
+    await createExit(page, 'Lobby W', 'north', 'Corridor');
     await selectTreeNode(page, 'Lobby E');
     await openTab(page, 'Exits');
-    await createExit(page, 'Lobby E', 'north', 'Lounge');
+    await createExit(page, 'Lobby E', 'northeast', 'Lounge');
     await selectTreeNode(page, 'Lobby E');
     await openTab(page, 'Exits');
     await createExit(page, 'Lobby E', 'east', 'Kitchen');
+    await selectTreeNode(page, 'Lounge');
+    await openTab(page, 'Exits');
+    await createExit(page, 'Lounge', 'east', 'Study');
+    await selectTreeNode(page, 'Kitchen');
+    await openTab(page, 'Exits');
+    await createExit(page, 'Kitchen', 'east', 'Pantry');
+    await selectTreeNode(page, 'Kitchen');
+    await openTab(page, 'Exits');
+    await createExit(page, 'Kitchen', 'south', 'Cellar');
 
     // Sized generously (not the default 1x1) so the "merged" combined rectangle the Path border
     // types produce is actually visible as a wide room, matching the doc's own illustration.
-    for (const [room, borderType, label] of [['Lobby W', 'Path East', 'Lobby W'], ['Lobby E', 'Path West', 'Lobby E']]) {
+    for (const [room, borderType, label, colour] of [
+        ['Lobby W', 'Path East', 'Lobby W', 'PeachPuff'],
+        ['Lobby E', 'Path West', 'Lobby E', 'PeachPuff'],
+    ]) {
         await selectTreeNode(page, room);
         await openTab(page, 'Map');
         await mapField(page, 'Width:').fill('3');
@@ -200,14 +232,31 @@ await runCapture(async ({ page, baseUrl }) => {
         await mapField(page, 'Border width:').fill('3');
         await mapField(page, 'Border type:').selectOption({ label: borderType });
         await mapField(page, 'Label:').fill(label);
+        await mapField(page, 'Fill colour:').fill(colour);
+    }
+    for (const [room, colour] of [['Lounge', 'Yellow'], ['Kitchen', 'SkyBlue']]) {
+        await selectTreeNode(page, room);
+        await openTab(page, 'Map');
+        await mapField(page, 'Width:').fill('2');
+        await mapField(page, 'Length:').fill('2');
+        await mapField(page, 'Label:').fill(room);
+        await mapField(page, 'Fill colour:').fill(colour);
     }
 
     const context = page.context();
     const playerPage3 = await freshPreview(context, page);
-    await sendCommand(playerPage3, 'east');
     await sendCommand(playerPage3, 'north');
     await sendCommand(playerPage3, 'south');
     await sendCommand(playerPage3, 'east');
+    await sendCommand(playerPage3, 'northeast');
+    await sendCommand(playerPage3, 'east');
+    await sendCommand(playerPage3, 'west');
+    await sendCommand(playerPage3, 'southwest');
+    await sendCommand(playerPage3, 'east');
+    await sendCommand(playerPage3, 'east');
+    await sendCommand(playerPage3, 'west');
+    await sendCommand(playerPage3, 'south');
+    await sendCommand(playerPage3, 'north');
     await sendCommand(playerPage3, 'west');
     const gridPanel3 = playerPage3.locator('#gridPanel');
     await gridPanel3.waitFor({ state: 'visible', timeout: 10000 });
