@@ -6,6 +6,13 @@ sidebar:
 
 Functions that change what is displayed or how it is displayed or require the player to do something, rather than affecting the game world.
 
+## AddPageLink
+```quest
+AddPageLink (object source, object destination, string text)
+```
+
+Adds an option to the `dialoguepage` **source** linking to **destination**, displayed as **text**. If a link to that destination already exists, it's replaced. See also [RemovePageLink](#removepagelink) and [ShowPage](#showpage). There's also an [AddPageLink](/functions/gamebook#addpagelink) for gamebook pages, which works the same way.
+
 ## Ask
 ```quest
 Ask (string question)  { script }
@@ -148,6 +155,13 @@ PrintCentered(string text)
 
 Prints the specified text centered.
 
+## RemovePageLink
+```quest
+RemovePageLink (object source, object destination)
+```
+
+Removes the option (if any) on the `dialoguepage` **source** that links to **destination**. See also [AddPageLink](#addpagelink). There's also a [RemovePageLink](/functions/gamebook#removepagelink) for gamebook pages, which works the same way.
+
 ## SetAlignment
 ```quest
 SetAlignment(string alignment)
@@ -272,7 +286,7 @@ Starts a branching dialogue at the given `dialoguepage` object, for building NPC
 - **allowCancel**: if true, entering any command other than a numbered option or option name ends the dialogue (via [EndPageDialogue](#endpagedialogue)) and then runs normally; if false, the player is told to choose one of the options.
 - **runTurnScripts**: whether turn scripts should fire for each choice made during the dialogue. Off by default, since each choice is a real turn and most games don't want e.g. hunger daemons ticking mid-conversation.
 
-See also [GoToPage](#gotopage) (jump to a different page from within a page's own script), [HasSeenPage](#hasseenpage), and [EndPageDialogue](#endpagedialogue).
+See also [GoToPage](#gotopage) (jump to a different page from within a page's own script), [HasSeenPage](#hasseenpage), [EndPageDialogue](#endpagedialogue), and [AddPageLink](#addpagelink)/[RemovePageLink](#removepagelink) for building a page's options from a script instead of the editor's Options list.
 
 ## ShowYouTube
 ```quest

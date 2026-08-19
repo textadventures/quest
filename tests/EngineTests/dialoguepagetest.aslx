@@ -117,6 +117,27 @@
     </script>
   </command>
 
+  <command name="cmd_addlink">
+    <pattern>addlink</pattern>
+    <script>
+      AddPageLink (guard_castle, guard_weather, "Ask about the weather instead")
+    </script>
+  </command>
+
+  <command name="cmd_updatelink">
+    <pattern>updatelink</pattern>
+    <script>
+      AddPageLink (guard_intro, guard_weather, "Ask about the weather (updated)")
+    </script>
+  </command>
+
+  <command name="cmd_removelink">
+    <pattern>removelink</pattern>
+    <script>
+      RemovePageLink (guard_intro, guard_castle)
+    </script>
+  </command>
+
   <turnscript name="ticker">
     <enabled type="boolean">true</enabled>
     <script>

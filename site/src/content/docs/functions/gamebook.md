@@ -11,7 +11,7 @@ Functions specific to the Gamebook game type (see [Creating a gamebook](/tutoria
 AddPageLink (object source, object destination, string text)
 ```
 
-Adds an option to **source** linking to **destination**, displayed as **text**. If a link to that destination already exists, it's replaced. See also [RemovePageLink](#removepagelink) and [DoPage](#dopage).
+Adds an option to **source** linking to **destination**, displayed as **text**. If a link to that destination already exists, it's replaced. See also [RemovePageLink](#removepagelink) and [DoPage](#dopage). There's also an [AddPageLink](/functions/user-interface#addpagelink) for Text Adventure dialogue pages, which works the same way.
 
 ## ChangeCounter
 ```quest
@@ -60,7 +60,7 @@ Moves the player to **destination**. Equivalent to `player.parent = destination`
 RemovePageLink (object source, object destination)
 ```
 
-Removes the option (if any) on **source** that links to **destination**. See also [AddPageLink](#addpagelink).
+Removes the option (if any) on **source** that links to **destination**. See also [AddPageLink](#addpagelink). There's also a [RemovePageLink](/functions/user-interface#removepagelink) for Text Adventure dialogue pages, which works the same way.
 
 ## RequestSpeak
 ```quest
