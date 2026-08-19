@@ -57,8 +57,7 @@ Every time the player wears a multi-state item the system will check it has thes
 You should see that if you wear the jacket, it is now `(worn unfastened)` and it has a "Fasten" verb.
 
 
-Adding verbs
-------------
+## Adding verbs
 
 To transition from one state to another, use verbs. Each verb has to check if the item is worn, check it is not already in the new state, and if all is okay, change its state. The state changing is done with the `SetMultistate` function, which takes the object and the new state as parameters. States number from 1, so the first state is 1; you will get an error if you try to set it to a state that does not exist ("Attempt to set state to ...").
 
@@ -80,8 +79,7 @@ For the jacket, then, on the _Verbs_ tab, add a new verb, "fasten". Set it to ru
 All your verbs should be variations on this, just changing the numbers and strings as appropriate.
 
 
-Only removeable when...
---------------------
+## Only removeable when...
 
 You may decide the garment should only be removed when in a certain state, perhaps when it is already unfastened. This is easy to accomplish, you just have to set the `removeable` flag as appropriate. To ensure the display verbs are right, call `SetVerbs` after doing so. For example: 
 

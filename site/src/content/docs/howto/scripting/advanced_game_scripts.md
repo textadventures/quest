@@ -8,8 +8,7 @@ This describes some advanced features. These are called advanced scripts for a r
 
 
 
-The `inituserinterface` script
-------------------------------
+## The `inituserinterface` script
 
 The `InitUserInterface` function has been in Quest for a long time. It is an empty function that you can override to set up the user interface, and it gets called at the start of the game, and also when the player loads a saved game (unlike `game.start`, which only runs when the games starts, not a reload). This makes it ideal for code that customises the user interface.
 
@@ -22,8 +21,7 @@ For a starting point as to what you can do, see [here](/howto/ux/customising_the
 
 
 
-The `unresolvedcommandhandler` script
--------------------------------------
+## The `unresolvedcommandhandler` script
 
 This has been in Quest for a long time, and you can add it via the GUI.
 
@@ -40,8 +38,7 @@ SuppressTurnscripts
 
 
 
-The `scopebackdrop` script
---------------------------
+## The `scopebackdrop` script
 
 When the player does LOOK AT (or pretty much any command that references an object), Quest will compare the object in the typed text against all the items present. You can use this script to add to the list Quest will try to match against.
 

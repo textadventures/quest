@@ -17,8 +17,7 @@ There are two features that let you handle these situations relatively easily.
 
 To change the scope of all commands, say because of the nature of the rooms or objects (as with the first two examples), use the Extended Scope feature. If this is for a specific command (as with CAST, BUY or CALL in the examples above), use Alternative Scope.
 
-Extended Scope
---------------
+## Extended scope
 
 On the _Features_ tab of the game object, tick "Advanced scripts", then go to the _Advanced scripts_ tab. The script at the bottom allows you to add items to the scope Quest uses to decide what the player can reach.
 
@@ -79,8 +78,7 @@ if (game.pov.parent = behind the counter) {
 What this does is check if the player is in the bar, and if so, it adds all the object that are behind the bar to the list. Also, if the player is behind the bar, it will add objects from the bar room. You can have as many of these as you like.
 
 
-Alternative scope
------------------
+## Alternative scope
 
 You can also set the scope for a command. Quest will look for any matching objects in that place first. If it fails to find a match, it will then fall back to looking in the normal places (inventory and current room). You have five options:
 
@@ -114,8 +112,7 @@ For commands with multiple objects, you can specify by each object. You can see 
 In this example, Quest will look for object1 in containers or the storeroom location, and for object2 in the current location.
 
 
-Even More Options?
-------------------
+## Even more options?
 You can also add your own "changecommandscope" script to add even more items to the list Quest will try to match object names against. This script can be on the command, player, the player's parent (the room the player is in), the player's parent's parent, or the game object. Or all of them! This allows you to add objects on a per room or per zone basis as you like.
 
 As with Extended Scope, your script should add items to the "items" local variable. It can access the command object via the "command" variable.

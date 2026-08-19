@@ -9,8 +9,7 @@ Behind the scenes, Quest handles things using it own programming language, or co
 Once you understand the basics, code is a lot easier to show on the forum, and far easier to copy from one place and paste into another.
 
 
-Code View
----------
+## Code view
 
 So how do you see code? Click the _Code View_ button below the script area, and it will bring up a dialogue box with the code in it.
 
@@ -48,8 +47,7 @@ Go to the specific object, and the Verbs tab. Click "Add", and type in the verb.
 Go to the specific object, and the Attributes tab. Click "Add" in the lower section, and type in the name of the attribute. Make sure the attribute is selected, under the box, click on "String" and select instead "Script". As before, click on the _Code view_ button. You should now get a text box below. Just paste the code into this box.
 
 
-The GUI vs Code
----------------
+## The GUI vs code
 
 Anything written in code can also be written using the GUI, and anything created using the GUI can also be written in code. They are just two ways of looking at the same thing.
 

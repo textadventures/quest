@@ -6,8 +6,7 @@ sidebar:
 
 
 
-The `null` object
------------------
+## The `null` object
 
 In Quest code, null has two slightly different meanings. It can be an empty object; that is, an object with no attributes and of the special type "null".
 
@@ -36,8 +35,7 @@ msg(HasString(player, obj))
 ```
 
 
-Attributes set to `null`
-------------------------
+## Attributes set to `null`
 
 However, null also means nothing. If you set an attribute to `null`, then the attribute no longer exists.
 
@@ -65,8 +63,7 @@ msg(bob.gender)
 In fact, behind the scenes, what happens is that when we try to access `bob.gender`, Quest first checks if Bob has that attribute, and if not, it then looks for it in the types associated with Bob.
 
 
-Compared to null
-----------------
+## Compared to null
 
 You can test if anything is null, including integers.
 

@@ -13,20 +13,17 @@ So why use code view at all? One good reason is to find errors and typos. Whilst
 Another reason to use full code view is for a library file, as the Quest editor will not allow you to edit library files.
 
 
-Moving, copying and deleting elements
--------------------------------------
+## Moving, copying and deleting elements
 
 XML is very fussy, and you will get an error if end tags are missing or in the wrong order. To ensure that never happens, collapse an element before manipulating it. Look down the left side; you will see  some lines have a - in a box. Click the box, and the entire XML element will be collapsed into one line (and the - becomes +). Now you can copy or delete that line, confident that you have the entire XML element.
 
 
-Errors in XML
--------------
+## Errors in XML
 
 Collapsing elements is also a great way to find XML errors. If you can collapse the `asl` element at the top (or `library` element for a library), then your XML is formatted corrected. If not, go through it and collapse all the elements that you can. The error is somewhere in whatever is left and cannot be collapsed. When you correct an error, you should be able to collapse that bit.
 
 
-Use Notepad++
---------------
+## Use Notepad++
 
 For more advanced use, and for editing libraries, I would recommend using Notepad++. 
 

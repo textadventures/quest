@@ -13,8 +13,7 @@ To create a verb, select the appropriate object, and go to the _Verbs_ tab. Clic
 
 
 
-Verbs are just script attributes
---------------------------------
+## Verbs are just script attributes
 
 When you create a verb for an object, it is just a script attribute of that object, and scripts can be called whenever you like. Let us suppose you have an object that is a chair, and you create a "sit on" verb, with an appropriate script. That works fine if the player types `SIT ON CHAIR`, but what if she just types `SIT`? You need a command to handle that, but you can still use your verb here. Create your command, then, in the script, have it first test that sitting is appropriate (that the chair is in the current room), and if it is, invoke the script on the chair object.
 
@@ -54,16 +53,14 @@ On the man, the "strike" verb does this:
 In case you are wondering, Quest understands "this" to mean the object to which the script is attached. It is good practice to use "this" rather than the name of the object; for one thing, you may later rename an object, perhaps giving the man a proper name.
 
 
-Multiple Objects
-----------------
+## Multiple objects
 
 You can also set up verbs to handle multiple objects, so we could use them for `ATTACK GOBLIN WITH KNIFE`. Whether this is preferable to using a command is debatable. Again it depends how specific it is. If there are several things you can attack the goblin with, all doing pretty much the same thing, use a command. If there are specific combinations that apply then a verb is probably easier.
 
 The first step is to add the verb to the object, in this case the goblin. However, instead of setting "attack" to use a script, set it to "Require another object". this will then put up a list of objects (currently empty) to which you can add the knife by clicking Add. You will then get a new dialogue box, into which you can put your script.
 
 
-Notes
------
+## Notes
 
 Some verbs are already implemented, such as "speak to" and "sit on". If you start to type in the Add Verb box, you will see these appear as options. If this is the case, check what the attribute name is. If you add "talk to" as a verb, it will get added as an attribute called "speak", for example.
 
@@ -77,8 +74,7 @@ speak             speak to #object#; speak #object#; talk to #object#; talk #obj
 A few verbs cannot be implements, as they already mean something in Quest. "Open" and "close", and "switch/turn on/off" and "enter" are the main examples. Quest should warn you if you try to do this, as it can have far-reaching consequences in your game.
 
 
-The Verb Element
----------------
+## The verb element
 
 The text Quest uses to match against goes into the verb element, and as Quest quietly creates these for you it is easy to miss they even exist. Look for them under the game object. Here is one for our `ROTATE` verb.
 

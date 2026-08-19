@@ -9,8 +9,7 @@ This page is a guide to the issues involved, and is general to all interactive f
 Conversations are a thorny subject; there are several ways to present them to the player and none are accepted as "the" way to do it, or acknowledged as the best. You will need to think carefully about what is best for your game (and having some characters respond to one command, and others to another is just going to annoy your players).
 
 
-SAY
----------
+## SAY
 
 In the tutorial the "broadcast" method was introduced:
 
@@ -21,8 +20,7 @@ The player says something to everyone present. This is potentially very difficul
 It will work best if there is no chance of two characters being in the same room at a time, so it is always clear who should respond.
 
 
-SPEAK TO
---------
+## SPEAK TO
 
 The "speak to" method is directed to a specific character:
 
@@ -34,8 +32,7 @@ This could then be handled with a stock response or by offering a list of option
 
 
 
-ASK/TELL
---------
+## ASK/TELL
 
 Finally, the player can specify both the person to talk to and the subject:
 
@@ -53,8 +50,7 @@ Quest has a dedicated tab for this - tick "Ask/Tell" on the Features tab of the 
 
 
 
-How it is displayed
--------------------
+## How it is displayed
 
 You should also consider whether you want both sides of the conversation in the output. Which you choose is up to you, but it will look better if you are consistent, so I suggest deciding now, before you start typing.
 
@@ -82,8 +78,7 @@ OR
 
 
 
-See also
---------
+## See also
 
 For a more comprehensive discussion on conversations in interactive fiction, you might like to read [this article](http://emshort.wordpress.com/how-to-play/writing-if/my-articles/conversation/)
 

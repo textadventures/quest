@@ -34,8 +34,7 @@ These Dynamic Templates often take advantage of some functions which are defined
 
 This means it will correctly write "It is already open", "They are already open" etc.
 
-Printing Square Brackets
--------------------------
+## Printing square brackets
 
 Since text in square brackets gets automatically substituted with a template's contents, you need another way to print an actual square bracket. As the output is HTML, you can use the HTML code `&#91;`.
 
@@ -45,7 +44,6 @@ This in your code will give an open square bracket, `[`, on output:
   &#91;
 ```
 
-See also
---------
+## See also
 
 For the underlying `<template>` and `<dynamictemplate>` XML elements, see the [template](/elements#template) and [dynamictemplate](/elements#dynamictemplate) reference pages.

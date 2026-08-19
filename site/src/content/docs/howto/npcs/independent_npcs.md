@@ -28,8 +28,7 @@ list add (this.actions, "Drop:knife")
 There are two types of entries here; text and commands. Each command consists of the command name, followed by the object name. Each turn we will go to the next item in the list; if it is text, print it, otherwise, do the command.
 
 
-The `NpcAct` function
----------------------
+## The `NpcAct` function
 
 The heart of the system, then, is a function called `NpcAct`, which returns a boolean and has two parameters, "npc" and "s" (where "s" will be the string from the list above). Here is the code:
 
@@ -57,8 +56,7 @@ At this point it does something a bit sneaky! It uses the `Eval` function to cal
 Because we are using `Eval` we need to set the variables as attributes of game. We also need to return a value, in this case a Boolean. That will be useful later.
 
 
-The "takeaturn" script
-----------------------
+## The "takeaturn" script
 
 We are now ready to give the "takeaturn" script to the NPC (on the _Initialisation_ tab, as we did with patrolling NPCs).
 
@@ -76,8 +74,7 @@ this.takeaturn => {
 What this does is take the first entry in the list of actions and send it to `NpcAct` to handle. If `NpcAct` returns `true`, then that entry is removed from the list, so next time the next entry will get used. If `NpcAct` returns `false` the entry remains and will get used again next time.
 
 
-The functions
--------------
+## The functions
 
 At this point we need to set up some functions to handle individual commands. They all have to follow certain rules; the name must be "Npc" plus the command, they must return a Boolean, and they must have two parameters, `npc`, and `obj`.
 
@@ -146,8 +143,7 @@ NpcPause (NPC does nothing for 1 turn):
 return (true)
 ```
 
-Dynamic NPCs
-------------
+## Dynamic NPCs
 
 So far we have NPCs they act according to their own agenda, but do not react to what the player does. How do we address that? It is simply a case of giving the NPC a new string list based on the current state of the game.
 
@@ -193,8 +189,7 @@ In the third option, note how the NPC will pause for five turns, hopefully long 
 
 
 
-Path finding
-------------
+## Path finding
 
 If our NPCs are acting dynamically, it may not be possible to know in advance where they will be at the start of their agenda. In the example above, perhaps the player could talk to Mary when she at any number of locations, so how can we give Mary a route?
 
@@ -292,8 +287,7 @@ mary.actions = Split("GoTo:Gate house;Get:gate key;GoTo:Apple Street;Wait:player
 ```
 
 
-Reactive NPCs
--------------
+## Reactive NPCs
 
 We can also have NPCs that react to what is going on. First we will add a new function, NpcScript, with the same set up as before. Here is the script:
 
@@ -324,8 +318,7 @@ this.deletefromlist = false
 ```
 
 
-Repeated actions
-----------------
+## Repeated actions
 
 This also gives a way to have an NPC do the same thing repeatedly. In the list of actions, just put in "Script:player". For the script, set the "actions" to the sequence of actions to repeat. For a simple patrol route, it might look like this:
 
@@ -353,8 +346,7 @@ this.deletefromlist = false
 ```
 
 
-Coordinating NPCs
------------------
+## Coordinating NPCs
 
 Bear in mind that NPCs can get delayed, say if the player talks to them, and if you want to coordinate NPCs, the best way is to have each one wait until the other is present. For example, if you want Mary to give Bob a hat, have Mary go to the rendez-vous, and then wait for Bob, and likewise have Bob go there and wait for Mary. For Bob, you can just use the Wait command ("Wait:mary") and then pause one turn ("Pause:player"), but we could have a script on Mary that has her wait until Bob is there, and when he is, give the hat to him.
 
@@ -369,14 +361,12 @@ else {
 ```
 
 
-Goals and agendas
------------------
+## Goals and agendas
 
 The script option gives the potential for NPCs to have goals that they will seek to achieve. The script could potentially select a goal, and then set the "actions" attribute accordingly.
 
 
-Using a library
----------------
+## Using a library
 
 All the above is available in a library. Include it in your game, and you will find there is a new tab where you can set an object to be an NPC, and then you can add commands to a list to have the NPC do anything you like.
 

@@ -87,8 +87,7 @@ OutputText (text)
 It is usual practice in unit testing to have the system automatically reset after each test. That is not practical in Quest, so you need to be aware that the game state will potentially change. If you add a new test at the start and this moves an object, for example, then that might impact on other tests. You need to design your tests with this in mind, and it is good practice after a set of tests to change back anything you have changed.
 
 
-Where Tests Go
---------------
+## Where tests go
 
 Tests go in the `game.start` script (or in functions called from it). This is what it looks like before you do anything.
 
@@ -104,8 +103,7 @@ Results
 Obviously your tests will go where it says "TEST CODE HERE". In case you are wondering, the first two lines disable the script that runs when the player changes rooms, so you can move the player during a test without the room description getting displayed. The last line prints a summary of the tests.
 
 
-Basic Testing
---------------
+## Basic testing
 
 Let us start with a simple example. Here are the unit tests for the `FormatList` and `IndexOf` functions.
 
@@ -130,8 +128,7 @@ Run it and you will see this:
 > 
 > No failures!
 
-What happens when a test fails?
--------------------------------
+## What happens when a test fails?
 
 What do you see if a test fails? Try it with this code (with an extra line added at the end):
 
@@ -159,8 +156,7 @@ For each test, it prints a dot if it passes or an F if it fails. Then, at the en
 
 
 
-Testing commands
-----------------
+## Testing commands
 
 You can test commands too, using `AssertCommand`. Again this takes two parameters, but in this case the first is the command, as the player would type it, and the second is the text that will be printed (specifically the last text sent to `msg` or `OutputText`). Here is a section of the testing for wearables, showing this in action.
 
@@ -198,8 +194,7 @@ Assert ("You are in the room", ProcessText("You are in the {=player.parent.name}
 Assert ("You are in the Room", ProcessText("You are in the {=CapFirst(player.parent.name)}"))
 ```
 
-Matching text
--------------
+## Matching text
 
 You can use `AssertMatch` to test if a string matches a regular expression. A discussion of regular expressions is beyond the scope of this page, but essentially we are matching against a template rather than a specific string. In the examples below, `^` matches the start of the string, `$` the end, and `\\w` matches any letter or number. The first six assertions will pass, the last three will fail (note that `tiger` is an object).
 
@@ -219,8 +214,7 @@ AssertMatch("t\\w\\wer$", "I see a tiger.")
 
 You can use `AssertCommandMatch` to match against the output of a command.
 
-In use
-------
+## In use
 
 I suggest adding no more than 5 new tests at a time. If you have a failure, you will know it is one of those, and it will not be too tricky to find. If you have a lot of tests and one starts to fail, and you cannot work out which one, add some commands like this in you tests, and you will see "@1" in the output. Where the "F" is in relation to "@1" will help you identify the failure.
 

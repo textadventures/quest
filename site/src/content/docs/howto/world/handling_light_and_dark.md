@@ -7,8 +7,7 @@ sidebar:
 Quest has a system built in for handling light and darkness in your game.
 
 
-A Dark Room
------------
+## A dark room
 
 The first step is to go to the features tab of the game object and tick the box "Lightness and darkness..." (actually this is optional; it just turns the editor features on, your game will run the same either way).
 
@@ -17,22 +16,19 @@ By default rooms are lit. We will create a dark room, called "darkroom". Create 
 Try the game, and you will find two things. The first is that there is no default dark room description; it is just blank. The second is that you are trapped in the dark room - there is no way to use the exit if it is too dark to see it!
 
 
-A Light from the Door
----------------------
+## A light from the door
 
 Go to the exit from this room, and on the Options tab, tick the "This object is a light source" box. In the dropdown box that appears, set it to be weak. Now the player will see and be able to use this exit, even if the room is dark - there is a faint light coming from the other room, enough to show you the way out.
 
 Go back to the Light/Dark tab of the room, and add a description to display when dark. Perhaps: "It is dark, but you can just make out an exit to the west." Now when you play the game the room is still dark, but the exit is useable, and the player will not be trapped here.
 
 
-Weak and Strong
----------------
+## Weak and strong
 
 Quest has three levels of light for objects. None at all, weak and strong. A strong light will illuminate the whole room. A weak source only illuminates itself. The exit was a weak light source, so it could be seen in the dark room but nothing else could. What we need is a strong light source.
 
 
-Implementing a Torch
---------------------
+## Implementing a torch
 
 Create a new object, called "torch". On the Inventory tab tick it so it can be taken. On the Features tab, tick Lightness and Darkness. Then on the Light/Dark tab, tick it as a light source and set it to be Strong.
 
@@ -44,8 +40,7 @@ Now go in-game. With the torch in hand, your darkroom will be illuminated.
 Quest has a sophisticated container system. If the player puts the torch in a container that is flagged as transparent, the torch will still illuminate the room.
 
 
-Implementing a Light Switch
----------------------------
+## Implementing a light switch
 
 Create an object, lightswitch, inside the dark room. On the Features tab, make it switchable. On the Switchable tab, also make it Switchable, and fill in the message boxes. Then in the script to run when turned on, put in this (not sure what to do with code? See [here](/howto/scripting/copy_and_paste_code)):
 
@@ -64,8 +59,7 @@ Very simple, they just alter the "dark" attribute of your dark room.
 If you try it out, you will find the light switch now controls the darkness of the room (you will need the torch to find the switch, but then leave the torch elsewhere to confirm the room is now lit). You could, of course, set the switch to be a weak light source, so it can be found in the dark.
 
 
-Implementing a Switchable Torch
--------------------------------
+## Implementing a switchable torch
 
 We should be able to turn the torch off, to save the battery. Pretty similar to before - on the torch object, first set it to not be a light source, as it is initially turned off (but keep it as a Strong light source!), then go to the Features tab, and make it switchable. On the Switchable tab, make it Switchable (the default messages are good enough). Then in the script to run when turned on, put in this:
 
@@ -79,8 +73,7 @@ For the other script, you need this:
   this.lightsource=false
 ```
 
-A Torch that Fails
-------------------
+## A torch that fails
 
 No torch lasts forever; let us put a limit on this one. First create a new attribute for the torch, called "battery". You can do that by going to the Attributes tab to create it, and set it to be an integer, with a value of 5 (we want a small number whilst we are playing around; for your game you will want it much higher). Alternatively, you can do the same thing in a script - go to the Script tab of the game object, and add this code:
 
@@ -136,8 +129,7 @@ torch.battery = 5
 torch.cannotswitchon = null
 ```
 
-Is it dark?
------------
+## Is it dark?
 
 If you want to know if it is dark in the current room, use the `CheckDarkness` function. This will return `true` if the room is dark and there is no strong light source in it, and false otherwise. For example, for a `SEARCH` command, the code might look like this:
 
@@ -150,8 +142,7 @@ else {
 }
 ```
 
-Descriptions: scripts vs text
------------------
+## Descriptions: scripts vs text
 
 If you use text for a room or object description, Quest will check if it is dark first, and only give the description if there is light to see the object.
 

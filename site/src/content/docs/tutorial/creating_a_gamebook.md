@@ -4,8 +4,7 @@ sidebar:
   order: 14
 ---
 
-Creating a blank game
----------------------
+## Creating a blank game
 
 This tutorial guides you through creating your first gamebook game. If you want to create a text adventure instead, see [the main Quest tutorial](/tutorial/creating_a_simple_game).
 
@@ -21,13 +20,11 @@ As you'll see, it's a pretty empty game at the moment. We can navigate to pages 
 
 You can go back to the Editor by closing the preview, or typing `QUIT`.
 
-Editing pages
--------------
+## Editing pages
 
 To create your game, edit the text for Page1. Underneath the text, the "Options" list shows which pages a player can get to from here. You can add new pages directly from here, or create links to other pages which already exist.
 
-Page types
-----------
+## Page types
 
 ### Text
 
@@ -45,12 +42,10 @@ This is the same as the Text type, but you can also choose a YouTube video to di
 
 This is a special page type which takes the player directly to another website. It doesn't display any text of its own.
 
-Playing sounds
---------------
+## Playing sounds
 
 You can play a sound when a player reaches a page. Go to the Action tab and browse for a sound file.
 
-Releasing your game
--------------------
+## Releasing your game
 
 To publish your game, follow the same steps as listed in [Releasing your game](/tutorial/releasing_your_game) in the main text adventure tutorial.

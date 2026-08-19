@@ -13,8 +13,7 @@ The way it will work is we will hand some HTML to JQuery and JQuery will put it 
 There will be quite a bit of HTML and JavaScript code, and the neatest way to handle that is in its own file, so the first step is to create a text file called "dialogue.html", and upload it to your game via the Assets manager in the editor toolbar.
 
 
-Basic Dialogue Panel
---------------------
+## Basic dialogue panel
 
 The first step is to create a snippet of HTML with all the widgets (a widget is a control such as a checkbox or textfield) you want on your dialogue panel. It all has to go inside a `div` element, with its own id and title, with the class set to "dialog_window". Here is a simple example:
 
@@ -71,8 +70,7 @@ The other part puts the HTML into a dialogue box. I am not going deeply into Jav
 Save the file. Now if you go into the game, you will see the dialogue panel, and it will disappear when you click "Done".
 
 
-Communicating with Quest
-------------------------
+## Communicating with Quest
 
 The next step is to get the data into your game. This will be done with the special JavaScript function `ASLEvent`, which is provided by Quest. A complication here is that that can only take two parameters; the name of the Quest function to use, and a string. Either we need to use it numerous times, once for each value, or use it once but send it all the data in a single string. We will be doing the latter.
 
@@ -116,8 +114,7 @@ msg ("You are " + StringListItem(l, 0) + ", " + StringListItem(l, 1))
 The first line splits the given string on the separator character, the second line just displays it. Obviously you could set attributes on the player object here if desired.
 
 
-Disabling Other Input
----------------------
+## Disabling other input
 
 The dialogue box is not "modal", which means that the player can play your game whilst the dialogue box is still there. The best way around that is to turn off the command bar and panes on the right in the editor (_Interface_ tab of the game object), and turn them back on it the `HandleDialogue` function, so that is now:
 

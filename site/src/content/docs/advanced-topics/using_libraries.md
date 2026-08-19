@@ -12,8 +12,7 @@ To see what these libraries add to your game, go to the bottom left of the Quest
 ![](/images/Showlibraryelements.png)
 
 
-Where to find libraries
------------------------
+## Where to find libraries
 
 You can find libraries:
 
@@ -22,20 +21,17 @@ You can find libraries:
 - [Libraries and Code Samples forum](https://textadventures.co.uk/forum/samples).
 
 
-How to Add a Library to Your Game
----------------------------------
+## How to add a library to your game
 
 To add a library to your game, go the bottom of the left pane in the GUI, and expand Advanced, then click on Included Libraries. Click Add, and navigate to the library. Quest will copy the file to your game folder, and add a line of code to your game so the library is part of it. You will see a message at the top of the screen asking you to save your game, and then reload it; this will ensure the library is incorporated into the editor session.
 
 
-Publishing Your Game
---------------------
+## Publishing your game
 
 When you use the publish tool before uploading your game, Quest creates a .quest file. This file includes everything from all the libraries you use, including Core.aslx (this means if Core.aslx is updated, it will not break your game because it will still be using the same version). You do not have to do anything to ensure the libraries are included (even libraries in other folders; as long as Quest could find a library when you were creating your game, it will be included).
 
 
-Conflicts and The Order of Libraries
-------------------------------------
+## Conflicts and the order of libraries
 
 In general, if there are several things with the same name in your game, later ones will overwrite former ones. This is good as it allows libraries to change the fundamentals of Quest. 
 
@@ -44,8 +40,7 @@ The upshot of this is that your libraries should be after the standard libraries
 An exception to this is templates (but not dynamic templates), but unless you are adding a new language file, these are best avoided (see [here](/advanced-topics/translating_quest) if you are).
 
 
-Your own libraries?
--------------------
+## Your own libraries?
 
 If you've created some functionality in your game that you think would be useful to others, consider turning it into a library, and add a short demo game to show what it can do. This has a number of benefits:
 
@@ -55,8 +50,7 @@ If you've created some functionality in your game that you think would be useful
 -   Finally, of course, others can get the benefit of your efforts too.
 
 
-Creating a library
-------------------
+## Creating a library
 
 So you want to create your own library...
 
@@ -97,8 +91,7 @@ _NOTE:_ There is an issue with creating objects in the main file that have a par
 _NOTE:_ If you make your library publicly available, make sure all the elements have names, so users can override them. In particular, check your verb and command elements.
 
 
-File name and location
-----------------------
+## File name and location
 
 Quest library files usually end .aslx, just like Quest games, but you can alternatively use .xml. You could then set your PC to open .xml files with your editor, rather than Quest.
 
@@ -110,8 +103,7 @@ When the game is published, Quest will get the code from the library in that fol
 
 
 
-Tips for Large Games
---------------------
+## Tips for large games
 
 If your game is big, you might find it convenient to break it up across several libraries, so it is easier to find things. Arrange the contents of libraries systematically. For example, put commands in one library, functions in another. Notepad++ allows you to search all files in a folder, which is a big help.
 

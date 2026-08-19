@@ -22,8 +22,7 @@ You can add a dictionary to an object on the Attributes tab, but you are restric
 
 
 
-Adding and removing items
--------------------------
+## Adding and removing items
 
 To add items to a dictionary, use the `dictionary add` command. To remove something from a dictionary, use `dictionary remove`. Unlike the list versions of these commands, we now need to provide a key.
 ```
@@ -38,8 +37,7 @@ As with lists, you can add the same thing as many times as you like, however, th
 The functions `DictionaryAdd` and `DictionaryRemove` offer a safe way to add and remove keys. `DictionaryAdd` will replace the existing key, if it is present. `DictionaryRemove` will just do nothing if the key does not exist.
 
 
-Retrieving from dictionaries
------------------------------
+## Retrieving from dictionaries
 
 You can access an item in a dictionary using the `DictionaryItem` function. This takes the dictionary and the key as parameters. If you are using a specific dictionary type, it is again better to use the function for that type:
 ```
@@ -51,8 +49,7 @@ Note that Quest will throw an error if the key is not found in the dictionary, s
 
 
 
-Iterating
----------
+## Iterating
 
 Often you will want to go through each member of a dictionary, and as with a list we can use the `foreach` command to do this. It takes two parameters, the first being a variable to store a key in, and the second being the dictionary. It also requires a script.
 
@@ -66,8 +63,7 @@ Changing a dictionary whilst in a foreach loop (i.e., adding or removing entries
 
 
 
-Dictionary Contains?
----------------
+## Dictionary contains?
 
 Dictionaries are fussy things that will throw an error if you try to add a key that is already there, if you try to delete a key that is not, or try to retrieve a key that is not (unlike lists). The  `DictionaryContains` function, then, is extremely useful as it will tell you if the dictionary already contains the given key (there is no function that will tell you if the entry is already in the dictionary).
 
@@ -98,8 +94,7 @@ if (obj.name in dict) {
 
 By the way, the reason there is a `DictionaryContains` function is to make it easier to use dictionaries via the GUI interface.
 
-Other functions
----------------
+## Other functions
 
 The `DictionaryCount` function will return the number of entries in the dictionary.
 ```
@@ -107,8 +102,7 @@ msg("My dictionary has " + DictionaryCount(myDict) + " things in it.")
 ```
 
 
-Some uses of dictionaries
--------------------------
+## Some uses of dictionaries
 
 ### ShowMenu
 

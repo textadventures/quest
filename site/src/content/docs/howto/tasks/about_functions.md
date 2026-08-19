@@ -17,8 +17,7 @@ Quest also has "script commands", which in many ways are like functions. One dif
 Many of these can be accessed through the GUI; for example, when you select the "Print" script in the GUI, that is adding the `msg` script command to your game.
 
 
-Using Functions
----------------
+## Using functions
 
 Many script commands work just like functions, and this applies to them too.
 
@@ -45,8 +44,7 @@ Well, not always. If the function is on a line on its own with nothing else, Que
 The type of the value a function returns and the parameters it needs is called its "type signature", and Quest will complain if you get it wrong.
 
 
-Custom Functions
-----------------
+## Custom functions
 
 The power of Quest is that it lets you do so much. It has dozens of built-in functions, but you can easily create your own.
 

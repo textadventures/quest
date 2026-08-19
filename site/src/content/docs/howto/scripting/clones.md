@@ -27,8 +27,7 @@ In the code above, `goblin` is an object that has the name "goblin", and this is
 So what is the clone called? The first will be "goblin1", the second "goblin2", and so on. We need a way to refer to the clone, without knowing its name.
 
 
-Commands
---------
+## Commands
 
 In commands, we have a system built-in. Say there is an ATTACK command, the pattern could be:
 
@@ -42,8 +41,7 @@ object.hitpoints = object.hitpoints - 5
 
 
 
-Scripts
--------
+## Scripts
 
 Scripts are attached to an object, and when the object is cloned, the clone has that script too. All well and good... unless the script refers to the object by name. Suppose you have a script for LOOK, and it is set up like this:
 
@@ -65,8 +63,7 @@ Verbs use scripts, so again should be using `this`, not the name of the prototyp
 
 
 
-Finding and checking for clones
--------------------------------
+## Finding and checking for clones
 
 Note that neither of these techniques will flag up the prototype; it is generally best to keep the prototypes somewhere the player will never find them.
 
@@ -106,8 +103,7 @@ else {
 
 
 
-Specialised Functions
----------------------
+## Specialised functions
 
 If you are going to be cloning several of the same type of thing in your game, you might want to create functions to do the job for you. Let's look at some examples, from an RPG-style game.
 

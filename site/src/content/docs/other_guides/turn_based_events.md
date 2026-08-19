@@ -8,8 +8,7 @@ If your game is only responding to what the player does, it feels dead. Bring it
 
 Here then is a simple framework for turn-based events.
 
-Set up the framework
---------------------
+## Set up the framework
 
 1. Set an int attribute on game called "turn".
 
@@ -45,8 +44,7 @@ Set up the framework
         </action>
       </type>
 
-Set up events
--------------
+## Set up events
 
 Each event needs to be an object in one of the rooms, "active\_events" and "dead\_events". The room "active\_events" is for events that are counting down, while "dead\_events" is for events that have expired or are waiting in the wings to be used.
 
@@ -59,24 +57,20 @@ For events in "dead\_events", you need to set up something to start them off. Th
       event3.turn = 2 + game.turn
       event3.parent = active_events
 
-Chaining events
----------------
+## Chaining events
 
 You can set up one event to start the count down to another very easily. Just set the "next" attribute to the event to be started, and the "nextturn" attribute to the number of turns to wait.
 
-Turn off auto
--------------
+## Turn off auto
 
 By default, events are automatically moved to "dead\_events" and start the next chained event (if set) when they trigger. Setting the "auto" attribute to false stops that behaviour. This may be desirable if you want to wait until the player is in a certain room, for example. In that case, turn off auto, and the event will fire every turn. Each time it fires, you can have it test to see if the player is in the room; if she is, perform the special action, and then move the event to dead\_events in the script.
 
-Note
-----
+## Note
 
 Quest counts each player input as a turn. If the player spending 10 turns typing commands that are not recognised, that is still 10 turns.
 
 
-Example game
-------------
+## Example game
 
 There are only two rooms and three events. Event 1 initiates the countdown to event 2, which in turn sets off event 3. Event 2 has "auto" set to false, so it keeps going until a condition is met (player in room 2), and only then starts the countdown to event 3.
 

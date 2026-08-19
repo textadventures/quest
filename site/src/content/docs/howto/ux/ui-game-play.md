@@ -12,8 +12,7 @@ Quest offers a number of options for the player to interact with the game:
 
 Before releasing your game, you should consider if all these are applicable to the game.
 
-Command bar
------------
+## Command bar
 
 The command bar is the traditional input method for interactive fiction. It offers the most flexibility to the player, creating a great sense (or illusion at least) of freedom. At the same time, this puts extra demands on the creator, as she has to anticipate all reasonable commands. If an object is mentioned in a room description, many players will expect to be able to look at it. You will also need to think of all possible synonyms for objects and verbs.
 
@@ -22,8 +21,7 @@ However, if you decide to turn off the command bar, you need to address the limi
 The command bar can be turned off or customised on the _Interface_ tab of the game object.
 
 
-Hyperlinks
-----------
+## Hyperlinks
 
 Hyperlinks are the bread-and-butter of hypertext books, and Quest allows you to build games that are entirely navigated by such link, but still has a sophisticated world model (i.e., objects and rooms existing in a meaningful relationship to each other).
 
@@ -40,8 +38,7 @@ The text processor command in this case is called "command", so that is the firs
 Hyperlinks can be turned off and customised from the _Display_ tab. You can give objects their own individual hyperlink colour on their _Object_ tab.
 
 
-Game panes
------------
+## Game panes
 
 The game panes are an alternative to hyperlinks, and may be more appropriate if you do not want your text interrupted by underlining and different colours. The compass also gives a quick indication of what exits are available. As with hyperlinks, Quest will list the appropriate verbs for an object.
 
@@ -52,8 +49,7 @@ The game panes can be turned off or customised on the _Interface_ tab of the gam
 An additional pane can be added for simple commands, such as LOOK and WAIT, that the player can click instead of typing. See [Custom Command Panes](/howto/ux/command_pane) for how to set it up.
 
 
-Further consideration
----------------------
+## Further consideration
 
 It can be easier to create puzzles for a game using the command bar, as it is far less obvious to the player what to do at a certain point (in contrast to randomly linking links until something works). This can also lead to the "guess the verb" problem, where the player is trying to work out what obscure phrase the game is expecting next.
 

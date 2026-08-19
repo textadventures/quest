@@ -4,8 +4,7 @@ sidebar:
   order: 3
 ---
 
-Object Types
-------------
+## Object types
 
 An object's _Setup_ tab lets you choose the type of object. Select the "TV" object we created in the last section.
 
@@ -31,8 +30,7 @@ Whichever type you select, the object will behave in pretty much the same way, e
 -   **Gender**: Usually "it", "he", "she" or "they". Quest uses this for sentences such as "*It* is closed", "*He* says nothing" and so on.
 -   **Article**: Usually "it", "him", "her" or "them". Quest uses this for sentences such as "You pick *it* up", "You can't move *her*" and so on.
 
-Scenery
--------
+## Scenery
 
 The "Scenery" option means that the object won't be displayed automatically in the room description, or the "Places and Objects" on the right of the screen.
 
@@ -44,13 +42,11 @@ So, create a new object called "wallpaper" and tick the Scenery box. Enter a des
 
 Launch the game and verify that although the wallpaper doesn't explicitly appear in the description, you can still get a sensible response by typing `LOOK AT WALLPAPER`.
 
-Exercise
---------
+## Exercise
 
 Remember that we also mentioned the carpet in the room description as well. As an exercise, add this as another scenery object, and give it a sensible description.
 
-Creating a Character
---------------------
+## Creating a character
 
 Let's create our first character. He'll be about as basic a character as you can get, and he won't be the most talkative. This is because he's dead. Well, you've got to start somewhere.
 
@@ -58,8 +54,7 @@ Create a new object called "Bob" and change his type to "Male character". Give h
 
 There is one other thing we need to do. If you run the game now, you'll see the room description says "You can see a TV, a sofa and *a* Bob". There's only one Bob - well, in this game anyway - so we want to get rid of that "a". Where did that even come from? The answer is the prefix.
 
-Prefix and Suffix
------------------
+## Prefix and suffix
 
 A prefix and a suffix let you insert text before and after the object name when it's displayed in a room description. When you leave "Use default prefix and suffix" checked, the suffix is blank, and the prefix (for English games) is either "a" or "an" depending on whether the object name (or alias) begins with a vowel.
 
@@ -69,8 +64,7 @@ A quicker way of doing this is to select "Male character (named)" from the types
 
 We will come back to Bob later in the tutorial, where we will make him a little more animated.
 
-Taking the newspaper
---------------------
+## Taking the newspaper
 
 You should have added a newspaper object as an exercise at the end of the previous section. If you didn't, add one now. We're going to make this an object that the player can take.
 
@@ -86,8 +80,7 @@ To let the player take the newspaper, we just need to tick the "Object can be ta
 
 The "Object can be dropped" box is ticked by default, so the player can take and drop the object as many times as they like. The options are the same as for "Take", so you can specify your own drop message or completely customise the behaviour with a script if you like.
 
-Switching the TV on and off
----------------------------
+## Switching the TV on and off
 
 Let's make it possible to turn the TV off.
 
@@ -111,8 +104,7 @@ Now when you play the game, you get sensible behaviour for `SWITCH ON TV`, `SWIT
 
 Notice that by setting this object up as "Can be switched on/off", two new options "switch on" and "switch off" have automatically appeared in the TV hyperlink menu.
 
-Exercise
---------
+## Exercise
 
 Add a "switchable" lamp to the lounge that is switched on at the start of the game.
 

@@ -10,8 +10,7 @@ The default answer of a command is defined in the language file. So if you want 
       <dynamictemplate name="DefaultHit">"You can't hit " + object.article + "."</dynamictemplate>
      
 
-Random default answers
-----------------------
+## Random default answers
 
 If you want to return more than one default message you have to define additional dynamictemplates and call them from the main-template with the function [DynamicTemplate](/functions/string#dynamictemplate)
 

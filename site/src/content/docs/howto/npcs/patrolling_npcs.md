@@ -12,8 +12,7 @@ However, we will look at doing something a bit more involved, allowing the NPCs 
 
 I am going to describe a turn-based system, which means that each time the player does something, the NPCs get a chance to act too, but it could potentially be adapted to a time-based system. In either case, the under-lying system is the same; each NPC will have a script, called "takeaturn", and we run that each time.
 
-A Turnscript
-------------
+## A turnscript
 
 The first thing we need, then, is a turn script (go to the _Scripts_ tab of the game object, and click "Add" in the turn scripts section, at the bottom). Give it a suitable name, "NpcTurnScript", say, and tick the box so it is enabled from the start. The code is very simple; it just goes through every object, and if it has the script, it runs it.
 
@@ -28,8 +27,7 @@ foreach (o, AllObjects()) {
 This will cause all the NPCs to act, whether the player is there to see it or not. That makes sense, we want it to seem as though they are living independent lives that go on even if the player is not there to see it. However, we only want to tell the player about it if the player _is_ present.
 
 
-A Function
-----------
+## A function
 
 As we will be checking that a lot, it is convenient to create a function, `PrintIfHere` (go to "Functions" in the left pane, then click "Add" in the right pane). Give it two parameters, "room" and "s", and no return type. Paste in this code:
 
@@ -41,8 +39,7 @@ if (game.pov.parent = room) {
 
 The message will only get shown if the player is in that room.
 
-The NPC Script - Patrolling
---------------
+## The NPC script - patrolling
 
 So what about the "takeaturn" script? That depends on what you want the NPC to do. The easiest is to have the NPC patrol a circuit of rooms. We will do this in the initialisation script of the NPC, so you will need to tick that option on the _Features_ tab first. Go to the _Initialisation script_ tab, and paste in this code (change the list of rooms to suit your game):
 
@@ -83,8 +80,7 @@ You can do this by setting attributes directly on the _Attributes_ tab.
 You need to add three attributes: route (a string list); patrolstate (an int); and takeaturn (a script). Note that the script has to be modified as we are storing the route in a string list, not a object list (which is not an option on the _Attributes_ tab).
 
 
-Notes
------
+## Notes
 
 The "patrolstate" attribute starts at -1, so the NPC will move to the first room in the list in her first turn (this means you can start the NPC in any room you like, not necessarily one on the route).
 
@@ -102,8 +98,7 @@ list add (this.route, hall)
 Note that this system takes no account of whether an exit is locked or even exists. In effect the NPC is teleporting from one room to the next.
 
 
-Pausing
--------
+## Pausing
 
 We might want the NPC to pause for a turn. If the player talks to her, then it would make sense that she has done that rather than than go to another room, and the player may get annoyed if he is chasing after her as they have a conversation. To handler that, we need to modify the turn script:
 
@@ -129,8 +124,7 @@ this.paused = true
 
 Now the player can talk to Mary for any number of consecutive turns, and only when the player does something else will Mary go back to patrolling.
 
-Exploring
-----------------
+## Exploring
 
 You can set the script on the NPC to do all sorts of things. In this example, the NPC will pick a random, unlocked exit and go that way.
 
@@ -146,8 +140,7 @@ this.takeaturn => {
 }
 ```
 
-More Complicated...
--------------------
+## More complicated...
 
 Perhaps you want your NPC to follow a series of actions. If so, read on...
 [Independent NPCs](/howto/npcs/independent_npcs)

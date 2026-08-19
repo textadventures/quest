@@ -11,16 +11,14 @@ Like everything else in Quest, an exit is an object, and your exit will appear i
 We will start by looking at the various settings for an exit.
 
 
-To
------------
+## To
 
 The "To" dropdown determines where the exit will take the player.
 
 When you create a room, you will find you cannot create an exit that goes to the room it came from. However, once the exit is created, you can change its destination to any room (or object), including the same room.
 
 
-Type vs alias
--------------
+## Type vs alias
 
 Quest uses the alias of the exit to decide which direction it is. The type is used when the exit is created, but does not really do anything once that has happened (it does provide an alternative name, if the alias is "east" and the type is "north", then the exit will get used for `EAST`, `E` and `N`).
 
@@ -28,8 +26,7 @@ You can set the alias to any value you like, so you could have "kitchen" as a di
 
 
 
-Prefix and Suffix
------------------
+## Prefix and suffix
 
 This is text that will get added to the direction in the list of exits for the room description. For example, if you have an exit going south, you could add the prefix "through an arched doorway to the" and when the player sees the room description, she will see:
 
@@ -42,14 +39,12 @@ If you are using names instead of directions, you might want to have a prefix li
 > You can go to the kitchen.
 
 
-Name
-----
+## Name
 
 A name is optional for an exit (if you do not give the exit a room, Quest will when the game starts). However, if you want to change any attribute of the exit during play (say to unlock it), you will need a name to refer to it by.
 
 
-Locked vs Visible vs Scenery
------------------------------
+## Locked vs visible vs scenery
 
 An exit that is not **visible** will not appear in the compass rose or room description, and cannot be used. As far as the player is concerned, it does not exist.
 
@@ -93,14 +88,12 @@ Run the game and verify that the exit now works correctly:
 For a guide on setting up a door that is accessible from both sides — using lockable exits as described above — see [Setting Up a Door](/howto/tasks/setting_up_door).
 
 
-Print message when used
-------------------------
+## Print message when used
 
 By default, Quest does not print anything when an exit is used, and just gives the details of the new room. You can use this text field to have a message when the player heads that way.
 
 
-Attributes
-----------
+## Attributes
 
 To change the state of an exit during a game, we need to change its attributes. Actually, that is what we were changing with all the setting above, but during a game you need to do that with a script.
 
@@ -121,8 +114,7 @@ exit to kitchen.to = garden
 ```
 
 
-Exit script
------------
+## Exit script
 
 You can have an exit run a script when the player uses it. Tick the "Run a script" check box to activate the script, and an area for the script will appear.
 
@@ -171,8 +163,7 @@ In this instance, we only want it to happen once, so we use the `firsttime` scri
 Rather than using a specific destination in your scripts, it can be a good idea to use `this.to` instead. `this` is a special value in Quest that refers to the object the script is attached to (i.e., the exit), and the "to" attribute is the destination of an exit. This means you can potentially use the same script for different exits to different destinations. It also means that if you later modify your game and change the destination of an exit, your script will still work fine; it will send the player to the new destination without you having to remember to update the script. It is probably less typing too!
 
 
-Room scripts
-------------
+## Room scripts
 
 It is worth briefly mentioning room scripts. Rooms have a number of scripts that fire in different situations; before entering, after entering, when leaving, etc. Do not be tempted to move the player in any of these scripts; it will confuse Quest, and the output will confuse you.
 
@@ -191,8 +182,7 @@ foreach (ext, ScopeExits ()) {
 Note that `ext` is a local variable. Do not be tempted to use `e` as a local variable for an exit (or anything else); this is a built-in constant and cannot be set to anything (though Quest will fail to tell you that!).
 
 
-Useful Functions
-----------------
+## Useful functions
 
 ### Creating exits on the fly
 

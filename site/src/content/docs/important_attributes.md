@@ -12,8 +12,7 @@ You can add your own attributes to an object, but this page is about the built-i
 Quest has a number of ways of naming things...
 
 
-The name attribute
-------------------
+## The name attribute
 
 Everything in Quest is identified by its name attribute; effectively this is the ID of the database record. This means everything must have a name (they are some things that get names automatically, such as exits), and each must be unique.
 
@@ -24,8 +23,7 @@ It is good practice to have a consistent naming policy, for example, always usin
 The name attribute is the only one of these attribute that is required; the rest are optional.
 
 
-The alias attribute (and others)
---------------------------------
+## The alias attribute (and others)
 
 The alias attribute is what the player will see when Quest mentions the object, for example in a list of objects present in the room. If it does not exist, the name attribute is used instead. Similarly, when matching objects in a command the player has typed, Quest will use the alias attribute if it exists, and the name attribute otherwise (if there is an alias attribute, it will not even attempt to match with the name).
 
@@ -67,8 +65,7 @@ You see a {rndalt:ball}
 ```
 
 
-The parent attribute
-------
+## The parent attribute
 
 The parent attribute is an object that determines where a thing is. If the parent is a room, then the object is in that room. If it is the player, then the player is carrying it. If the parent is a container, then the object is in the container.
 
@@ -91,16 +88,14 @@ The `RemoveObject` function clears the parent attribute (sets it to `null`); for
 Even commands and turnscripts can have parent attributes. If they do, they will only apply when the player is inside that room.
 
 
-The look and description attributes
-------------------------------------
+## The look and description attributes
 
 These are the descriptions the player will see. The "look" attribute is used when the player examines an object. The "description" is seen when the player enters a room. Both can be a string or a script.
 
 
 
 
-The visible and scenery attributes
---------------------
+## The visible and scenery attributes
 
 These can be set on the first tab, both are flags (Booleans) and both apply to exits as well as objects.
 
@@ -127,22 +122,19 @@ However, when the ornament is picked up, scenery will be set to false, and there
 Setting an exit to scenery can be a good idea if there are two ways it could be used. If there are stairs going down to the east, you would want to have both EAST and DOWN going to the same destination, but you might want to set one to scenery so only one appears on the compass rose (otherwise the player might think there are exits to two different locations).
 
 
-The visited attribute
----------------------
+## The visited attribute
 
 The visited attribute gets set to true when the player visits a room. This is how Quest tracks whether to use the scripts that only happen when the player first visits a room, but can also be used by your own scripts to track the player's progress.
 
 
 
-The to attribute
-----------------
+## The to attribute
 
 The to attribute of an exit is an object - where the exit goes to (the parent attribute is when it comes from, of course).
 
 
 
-The locked and isopen attributes
---------------------------------
+## The locked and isopen attributes
 
 Obviously these determine if something is locked or open (the "open" verb uses the "open" attribute, so Quest had to use "isopen" instead). Exits can be locked; containers can be opened or locked, an item that is openable/closeable can be opened.
 
@@ -150,8 +142,7 @@ Note that Quest will handle the setting of "isopen" for a container. However, fo
 
 
 
-Various verb attributes
------------------------
+## Various verb attributes
 
 Several attributes are used by Quest to determine how the object will respond to commands:
 

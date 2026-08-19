@@ -4,8 +4,7 @@ sidebar:
   order: 8
 ---
 
-Giving and Using objects
-------------------------
+## Giving and using objects
 
 After a player has taken an object, they can give that object to, or use it on, other objects in the game.
 
@@ -21,8 +20,7 @@ It is good practice to give flags meaningful names, and to have them start off (
 
 So, using the defibrillator on Bob is going to add a flag called "alive" to Bob. In the "look at" description, we'll check whether Bob has his "alive" flag set. If so, we'll print "Bob is sitting up, appearing to feel somewhat under the weather", and if not, we'll print the old description "Bob is lying on the floor, a lot more still than usual."
 
-Updating the description
-------------------------
+## Updating the description
 
 Getting the correct description to display is very similar to the "watch" example in the [Using scripts](/tutorial/using_scripts) section.
 
@@ -32,8 +30,7 @@ For the expression, choose "object has flag". Then select "Bob" and enter the fl
 
 ![](/images/Use1.png)
 
-Using the defibrillator
------------------------
+## Using the defibrillator
 
 Now, add a "defibrillator" object to the lounge. Enter a description like "A heart defibrillator can magically revive a dead person, if all those hospital dramas are to be believed."
 
@@ -59,8 +56,7 @@ Close the Script Editor window. Now run the game. Look at Bob, then type `USE DE
 
 Notice what happens when you type `USE DEFIBRILLATOR ON BOB` a second time - you get the same response again. You should know how to fix this now - update your "use defibrillator on bob" script to check for the "alive" flag. Update this now (if you are struggling, just move on to the next section, where it will be revealed!).
 
-Using Functions
----------------
+## Using functions
 
 It would be good if we could get the same effect just by typing `USE DEFIBRILLATOR`. There are a couple of things we could do here, from the defibrillator _Use/Give_ tab, under "Use (on its own)":
 
@@ -97,13 +93,11 @@ Launch the game now and verify you get the same response whether you type `USE D
 
 Note that if you pick up the defibrillator and go to the kitchen, `USE DEFIBRILLATOR` will still work. It would be pretty remarkable for a defibrillator to work at such a long range, so consider adding an "if" command to the "revive bob" procedure. You can select "player is in room" from the list of conditions to check whether the player is in the lounge before carrying out the defibrillation. If they're not in the lounge, print a suitably sarcastic message.
 
-Giving objects
---------------
+## Giving objects
 
 Giving an object to a character works in exactly the same way as using objects on a character. Look at the "Give" sections - notice that you get the same options as for "Use". You can add objects to it in the same way.
 
-Ask and Tell
-------------
+## Ask and tell
 
 Ask and Tell work in the same way, so we'll only cover "ask" here.
 

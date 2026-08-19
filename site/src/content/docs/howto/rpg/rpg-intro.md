@@ -5,8 +5,7 @@ sidebar:
 ---
 
 
-Introduction
-------------
+## Introduction
 
 ### What is an RPG?
 
@@ -26,8 +25,7 @@ https://textadventures.co.uk/games/view/em15b32xd0o-y-ysvgrtcg/deeper
 The very first thing to do is to realise it is a lot of work. RPG games are both big and complicated. You are going to have to design a game system, then code it and then build a whole world.
 
 
-Designing a game system
------------------------
+## Designing a game system
 
 Before you start doing anything in Quest, you need to think about how your game will play. Forget about how we will code it, just think about what the player will experience.
 
@@ -93,8 +91,7 @@ Will the player be able to recruit a companion (or summon an elemental or raise 
 
 
 
-Creating
---------
+## Creating
 
 ### Using a library
 

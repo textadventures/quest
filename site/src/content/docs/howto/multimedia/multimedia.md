@@ -5,8 +5,7 @@ sidebar:
 ---
 
 
-Inserting Pictures
-------------------
+## Inserting pictures
 
 You can show a picture using the "Show picture" command. Let's make our "kitchen" room in the [tutorial game](/tutorial/tutorial_introduction) show a picture of a kitchen when we enter it.
 
@@ -24,8 +23,7 @@ Now launch the game and go to the kitchen to verify that the picture is displaye
 
 For more advanced image techniques - positioning and resizing with CSS, layering images, hosting images elsewhere - see [Images in Quest](/howto/multimedia/images). You can also generate images entirely in code with SVG - see [Creating images on the fly](/howto/multimedia/images_on_the_fly).
 
-Static Picture Frame
---------------------
+## Static picture frame
 
 If you want to use a picture for each room, creating a script for each one is a pain, and more importantly, you probably don't want the picture to scroll in-line with the rest of the game text.
 
@@ -39,8 +37,7 @@ If you click on any room and go to the "Room" tab, you'll see a "Room picture" e
 
 You can also change the frame picture using a script, with the "Set frame picture" command.
 
-Sound and Video
----------------
+## Sound and video
 
 You can play a sound in a script using the "Play sound" command, and stop it again with "Stop sound". See [Adding sounds to your game](/howto/multimedia/adding_sounds) for the full set of options (waiting for a sound to finish, looping, HTML audio elements) and a worked example.
 

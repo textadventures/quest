@@ -16,8 +16,7 @@ The best way to do these transformations is to quietly move the original parts e
 By the way, you might also want to do something like use a tap to fill cup. Transformations like that are better handled using attribute; in this case an attribute on the cup tracks how much water is in it. That sort of system is described in the section on [handling water](/howto/tasks/handling_water).
 
 
-The Bow
--------
+## The bow
 
 ### MAKE BOW
 
@@ -103,8 +102,7 @@ else {
 ```
 
 
-The Machine
------------
+## The machine
 
 Let's look at an entirely different system. There was, way back in the mists of time, a game called _Leather Goddesses of Phobos_, and this game featured a machine called the "T-remover". The player could put an item in a compartment, press a button, and the item would be changed into something else. If you put a tray into the machine, it would convert it to a guy called Ray. Put a rabbit it, you get a rabbi (it does have an actual point to it too). There are some gameplay issues here - you will have to design your game so that every item the player picks up with a T in its name can be changed, and the game can still be completed after doing so (something they did not always worry about back then).
 

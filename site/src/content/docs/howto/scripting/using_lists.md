@@ -21,8 +21,7 @@ It is best practice to use string lists or object lists wherever possible, rathe
 You can add a list to an object on the Attributes tab, but you are restricted to string lists. Object lists and general lists are useful for temporarily storing information (i.e., as local variables), but generally should not be used as attributes (sometimes it is the only way!).
 
 
-Adding and removing items
----------------------------
+## Adding and removing items
 
 To add items to a list, use the `list add` command. To remove something from a list, use `list remove`. Here is an example that illustrates how we can add various types to a list:
 ```
@@ -58,8 +57,7 @@ The simplest is to add something to the list in the editor (bottom of the _objec
 The alternative is to give the object a new list, using `NewStringList`, and then add all the values from scratch (or use the `Split` function discussed later).
 
 
-Retrieving from lists
-----------------------
+## Retrieving from lists
 
 You can access an item in a list using the `ListItem` function. This takes the list and the position as parameters. Note that the positions count from zero, i.e, the first member of the list is at position 0.
 
@@ -122,8 +120,7 @@ if (n = 42) {
 
 
 
-Quick string lists
--------------------
+## Quick string lists
 
 A quick way to get a string list is the Split command (especially useful for menu options). The second parameter is the separator, and you can choose anything suitable (this is optional, and if omitted will default to a semi-colon):
 ```
@@ -139,8 +136,7 @@ By the way, the `Join` function goes the other way; it converts from a string li
 
 
 
-Quick object lists
-------------------
+## Quick object lists
 
 There are various scope and other functions that will return a list of objects, and should be used where possible. See the [Scopes](/howto/scripting/scopes) page for more details.
 
@@ -152,8 +148,7 @@ Some other useful functions that return object lists:
 
 
 
-Iterating
-----------
+## Iterating
 
 Often you will want to go through each member of a list. Use the `foreach` command to do this. It takes two parameters, the first being a variable to store an entry in, and the second being the list. It also requires a script.
 
@@ -184,8 +179,7 @@ foreach (obj, delete) {
 
 
 
-Other functions
----------------
+## Other functions
 
 ### How many?
 
@@ -300,8 +294,7 @@ You can also use `ObjectListSort` and `ObjectListSortDescending` to sort a list 
 
 
 
-List arithmetic
----------------
+## List arithmetic
 
 You can use `+` and `-` on lists. These can be used to add and remove single elements from a list.
 ```
@@ -332,8 +325,7 @@ list2 = list1 + player + "player"
 
 
 
-Randomising
------------
+## Randomising
 
 You can pick a random string or object from a list using `PickOneObject` or `PickOneString`. If you want to do that several times, but avoid having any repeats, just remove the selected from the list.
 

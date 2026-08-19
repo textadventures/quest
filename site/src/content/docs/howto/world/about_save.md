@@ -19,8 +19,7 @@ Generally, this is not much of a problem; hopefully your original game was in a 
 Possibly the biggest problem is when you upload your latest version, you may be confused why the changes are not there. It may be because you are played a saved game; you need to restart the game to see the changes.
 
 
-Are There Any Alternatives?
----------------------------
+## Are there any alternatives?
 
 If you feel you absolutely must have player's saved games updated too, you have two approaches, neither of which will be easy to implement.
 

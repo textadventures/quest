@@ -21,8 +21,7 @@ You can use as many sections as you like within the same text, and even nest the
     
 Supported processor commands are:
 
-Text adventure mode and Gamebook mode
--------------------------------------
+## Text adventure mode and gamebook mode
 
 {once:**text**}  
 Displays the text only once. The text will not be printed on subsequent occasions.
@@ -87,8 +86,7 @@ As `command` (an alternative name that may be preferred for game books).
 
 
 
-Additional text adventure commands
-----------------------------------
+## Additional text adventure commands
 
 {object:**name**}  
 Displays an object hyperlink, using the object's display alias.
@@ -115,8 +113,7 @@ Selects one text to display, based on the value of the object attribute (you can
 
 
 
-More text adventure commands
------------------------------
+## More text adventure commands
 
 {i:**text**}
 Displays the given text in italic.
@@ -185,8 +182,7 @@ This is a short cut for eval, and works just the same. The samples below show th
 
 
 
-Additional gamebook commands
-----------------------------
+## Additional gamebook commands
 
 {counter:**countername**}  
 Displays the value of an counter
@@ -213,15 +209,13 @@ Display text only if a counter is less than a certain value.
 Display text only if a counter is less than or equal to a certain value.
 
 
-Errors
-------
+## Errors
 
 If the text processor cannot understand your directive, it will generally leave the text as is. This should make it easier to identify issue. For example, for the "select" directive, if the value of the object attribute is outside the range (a negative number or a number higher or equal to the number of options), no processing is done, and the text will appear as written.
 
 
 
-Curly braces
-------------
+## Curly braces
 
 Should you want to use curly braces to actually display curly braces, Quest will usually work out that that is what you want. If you find it is trying to display it as a text processor command (or is throwing an error because it has failed to), you can use `@@@open@@@` and `@@@close@@@` to tell Quest to display curly braces.
 ```
@@ -230,14 +224,12 @@ Should you want to use curly braces to actually display curly braces, Quest will
  ```
 
  
-Using text processor with object aliases
-----------------------------------------
+## Using text processor with object aliases
 
 You cannot use text processor commands in an object's name, as only a limited set of characters is allowed (letters, numbers, space and underscore). You can for the object's alias, however, so you could set an alias to "{i:big} settee". You will find that the alias as it appears in the pane on the right has not been processed; the player will see the raw "{i:big} settee". To get around that, give the object a list alias on the _Object_ tab.
  
  
-Support for "this"
-------------------
+## Support for "this"
 
 In Quest, "this" is a special local variable that refers to the object that owns the current script. Text processor directives do not naturally support "this", because when they are being processed they do not belong to a script. However, you can fake it by setting a special attribute of the game object called "text_processor_this". This would allow you to do something like this:
 
@@ -247,8 +239,7 @@ msg("The {this.alias} is {if this.capacity<5:not }big enough.")
 ```
 
 
-Local variables
----------------
+## Local variables
 
 In fact you can add any number of local variables in a dictionary attribute of the game object called "text_processor_variables". The key will be the name of the variable, and the value should be the object.
 
@@ -261,8 +252,7 @@ msg("You can see a {animal.name}")
 You can add as many variables as you like to the dictionary, and they will last until you set "text_processor_variables" to be a new dictionary again. Note that if you have "this" set in the dictionary and using "text_processor_this", the latter value will be used.
 
 
-Extending
----------
+## Extending
 
 You can add your own text processor directives. This should be done in the "start" script of the game object (top of the _Scripts_ tab on the game object).
 
@@ -302,8 +292,7 @@ Inside the script, scr, there are two lines. The first gets the actual text. The
 
 The second line then sets the return value, using HTML and CSS to change the text colour to blue.
 
-HTML tags
----------
+## HTML tags
 
 You can also use HTML tags directly in any text output. For example:
 

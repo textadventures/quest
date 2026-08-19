@@ -20,8 +20,7 @@ The important one is the one used in scripts, ASL, and that is unique to Quest. 
 Note: The word "object" has two distinct meanings in Quest. Firstly it can mean something that the player can interact with, perhaps pick up, examine, etc. However, in the programming world, an object is sort of data structure, and in that sense Quest uses it to include rooms, exits, commands, the game object and indeed everything in the game world. When I use the word "object", I mean it in this second sense. I will use the word "item" to indicate the first meaning (however, if I am quoting a label or dialogue box, "object" will probably mean item).
 
 
-Code view versus the GUI
-------------------------
+## Code view versus the GUI
 
 I am going to assume you have made it to the end of the tutorial, and now you are ready to jump into the deep end!
 
@@ -67,8 +66,7 @@ The GUI is excellent when you start out because it handles the details (those `{
 Start with the GUI, but take a look at the code you are creating to see how it looks and get an idea of how it works. As you get more confident, and your scripts get more complicated, see if you can start to use code.
 
 
-Scripts in Quest
-----------------
+## Scripts in Quest
 
 Scripts are found in numerous places in Quest. Functions and commands are little more than scripts, but you can also attach scripts to items, rooms and exits. Rooms can be set to run a script when the player enters or leaves. Verbs on objects are all scripts, exits can run a script when used, items can run a script when picked up or dropped.
 
@@ -167,8 +165,7 @@ See here for how to use them and how to write your own:
 
 
 
-Control Structures
-------------------
+## Control structures
 
 A control structure allows code to break out of the simple recipe. Instead of just doing each line in turn, we can get Quest to perform some lines repeatedly or to only do certain lines if specific conditions are met.
 

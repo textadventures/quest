@@ -15,16 +15,14 @@ s1 = "put hat on table"
 s2 = "put hat in box"
 ```
 
-The Regex
----------
+## The regex
 
 So what does that regex mean? We will look at this in detail later, but the regex for a lot of commands use these same components, so we will quickly look at it now. The two bits in brackets, `(?<object1>.*)`, are called "capture groups", that is, groups of characters that we want to capture for later use. The capture group starts with an open bracket, followed by a question mark, and then the name of the group in angle brackets, `<object1>`, followed by the pattern to match, `.*`, which in this case says to match any number of anything, and then ended with a close bracket.
 
 The rest of the regex is simple text and this needs to match exactly.
 
 
-`IsRegexMatch`
---------------
+## `IsRegexMatch`
 
 The `IsRegexMatch` function will return true if there is a match and false if not. For our example, the first string is a match, the words (and spaces) of "put" and "on" match exactly, and hat and table match the capture groups. The second return false, because "in" does not match "on".
 ```
@@ -34,8 +32,7 @@ IsRegexMatch(regex, s2)
 => false
 ```
 
-`GetMatchStrength`
-------------------
+## `GetMatchStrength`
 
 The `GetMatchStrength` will return an indication of how good the match is, or throw an error if it is not a match. The strength is simply the number of characters that are matched outside of the capture groups. For `s1`, these are "put " and " on ", a total of eight characters.
 ```
@@ -45,8 +42,7 @@ GetMatchStrength(regex, s2)
 => Error running script: Error evaluating expression ...
 ```
 
-`Populate`
-----------
+## `Populate`
 
 The `Populate` function will return a dictionary containing the capture groups, or throw an error if it is not a match. Each entry in the dictionary will have the name of the capture group paired with the matched text.
 ```
@@ -56,8 +52,7 @@ Populate(regex, s2)
 => Error running script: Error evaluating expression ...
 ```
 
-The "cache ID" parameter
-------------------------
+## The "cache ID" parameter
 
 All the above functions take an optional third parameter, the "cache ID". If you supply a cache ID, the regex will be saved under that name. The next time you use that cache ID for any of the above functions, Quest will ignore the regex you supply, and use the one it created earlier instead.
 
@@ -73,8 +68,7 @@ The original regex is given a cache ID here (the string "my regex"). When `IsReg
 Every time the player types some input, Quest has to compare that against the regex for every command, and using cache IDs makes that process considerably faster (and it does that for any custom command you add yourself). It is doubtful if cache IDs are of significant use outside of that, and are more likely to be a source of obscure bugs, so my advice is to not use them.
 
 
-Command Matching
-----------------
+## Command matching
 
 When the player types some input, Quest goes through the list of commands, looking for the best match. A match is determined by using `IsRegexMatch`.
 
@@ -85,8 +79,7 @@ If there is a tie for the highest match strength, it will give priority to the c
 Note that verb objects are actually a type of command, so when the game iterates through all the commands, that includes verbs. A verb object is really just a command with some specific behaviour, which is to run a certain script on the given object.
 
 
-A Note About Patterns
----------------------
+## A note about patterns
 
 You can use a "command pattern" for your command, instead of a regular expression. A command pattern is really just a short hand for a regex, and will get converted into a regex when the game starts. Here is a comparison
 ```
@@ -95,8 +88,7 @@ You can use a "command pattern" for your command, instead of a regular expressio
 ```
 
 
-What About Object Matching?
----------------------------
+## What about object matching?
 
 None of the above has paid any attention to what objects are present in the game or are within reach. All these functions do is match text. I could have used this as the regex, the result would be the same (except the dictionary returned from `Populate` would contain different keys of course).
 ```
@@ -104,8 +96,7 @@ regex = "put (?<bill>.*) on (?<ben>.*)"
 ```
 Once a command has been selected as the best match, it is only _then_ that Quest will attempt to match the text to the objects present. At this point it will complain if we use "bill" and "ben"; all capture group names _in commands_ must start "object", "exit" or "text", so Quest knows what it is supposed to be matching them to.
 
-Text matching
--------------
+## Text matching
 
 Text will match anything, and so is useful if you want to relate a command to an object outside the normal scope. You could also use text matching for open-ended commands, such as `SAY`, as is done in the basic tutorial. You then need to work out what you will do with the text.
 
@@ -129,8 +120,7 @@ By the way, to get `HIT` to work, you will need to disable the built-in verb. Yo
 
 
 
-More on Regex
--------------
+## More on regex
 
 Quest is based on .Net technology, and so uses the .Net format for regex. That said, it is fairly standard and is used across several programming languages, and not at all specific to Microsoft (one difference, though, is how capture groups are defined).
 
@@ -195,8 +185,7 @@ regex = "^help$"
 The `^` and `$` are special codes that must match the start of the string and the end respectively, and they appear in most built in Quest commands. \A and \z do the same. \b must match the boundary between alphanumerics and non-alphanumerics.
 
 
-Other Applications
-------------------
+## Other applications
 
 Here is some code that will handle a string like this:
 ```

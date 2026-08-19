@@ -4,8 +4,7 @@ sidebar:
   order: 4
 ---
 
-Introduction
-------------
+## Introduction
 
 Quest has been designed to be language neutral, so you can write games that can be played in any language.
 
@@ -14,8 +13,7 @@ There are numerous translations that are built in, donated by the community over
 You can even use the editor in your own language, but that will obviously involve more translations. As of March 2018, the editor can only be used in German and, to a degree, Spanish.
 
 
-Using Non-Latin Alphabets
--------------------------
+## Using non-Latin alphabets
 
 Quests scripts cannot cope with letters outside the standard Latin alphabet.
 
@@ -28,15 +26,13 @@ Let us suppose you have an object, a rock, in a game you are writing in Greek. Q
 The solution is to name in in the Latin alphabet, and give it an alias "πέτρα".
 
 
-Verbs
------
+## Verbs
 
 In English, we can just put a verb with a noun to get a command, and the verbs in Quest employ this to great effect. That may not work in your language. You can edit the verb object. In the pattern bit, you can set a pattern just as you do with commands, so instead of "wear", you could use "put #object# on", and the verb will match PUT HAT ON.
 
 
 
-Making a Translation
---------------------
+## Making a translation
 
 To translate Quest, make a copy of English.aslx and rename it for your language. Open the file in a text editor, we recommend [NotePad++](https://notepad-plus-plus.org/).
 
@@ -59,8 +55,7 @@ The first step is to modify that so it uses "English.aslx", rather than "EditorE
 This will include the English template within yours. This means that if English.aslx is updated, your translation won't cause errors due to missing template entries.
 
 
-Translating default text
-------------------------
+## Translating default text
 
 Default text appears within [template](/elements#template) and [dynamictemplate](/elements#dynamictemplate) tags.
 
@@ -91,8 +86,7 @@ Some functions that appear within dynamic templates are defined in English.aslx 
 If you want to know where a template is used, search through the Core library files. Notepad++ has a good "Find in Files" feature that lets you search across all files in a folder.
 
 
-Translating commands
---------------------
+## Translating commands
 
 Some commands are defined using a [verbtemplate](/elements#verbtemplate) - you can have as many of these as you wish for any particular command, so feel free to add more if there are more alternatives. Likewise, feel free to remove any additional ones you don't need - there are 4 "speakto" verbtemplates in English.aslx, but it's fine for there to be fewer in your translation.
 
@@ -131,8 +125,7 @@ For example, in Deutsch.aslx the translation of this is:
 
 	 
 	 
-Language-specific object types
-------------------------------
+## Language-specific object types
 
 English doesn't have the concept of "gender" for inanimate objects, but most other languages do. To handle this, you can define "masculine" and "feminine" [types](/elements#type) in your language file.
 
@@ -160,8 +153,7 @@ If your language has more than two genders, you can add more types and add them 
 
 
 
-Adding the translation to your game
------------------------------------
+## Adding the translation to your game
 
 These are standard library files so can be added as such.
 
@@ -170,21 +162,18 @@ To add a library, go the bottom of the left pane in the GUI, and expand Advanced
 More on using libraries [here](/advanced-topics/using_libraries).
 
 
-Display Verbs
--------------
+## Display verbs
 
 Quest uses a very simple method for handling display verbs (the verbs that are shown when you click on an object): The verb followed by the object name are sent to be handled as a command. In English this works fine; "wear" plus "hat" gives "wear hat", and Quest will understand that. That may not be the case in your language. If not, them just add that as an alternative.
 
 For example, in German, the verb to display to allow the player to wear something is "Anziehen", but the full phrase for "wear hat" would be "ziehe hut an". The solution is to add "anziehen #object#" as an alternative, even though it is bad German.
 
 
-Releasing your translation
---------------------------
+## Releasing your translation
 
 When you have finished your translation - and checked it works in your game - if you'd like it to be included with Quest so that other game authors can use it, open a Pull Request. We would also be grateful for updates to existing translations.
 
-Keeping the translation up to date
-----------------------------------
+## Keeping the translation up to date
 
 Quest is continually improving, and as new features are added, new templates are added to English.aslx. This means that your language library will need to be updated to reflect new changes.
 

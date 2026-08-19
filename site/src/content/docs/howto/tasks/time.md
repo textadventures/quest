@@ -8,8 +8,7 @@ This describes how you can track the passage of time in your game. You may prefe
 
 The simplest way to track time is to say that by default, each turn is one minute (so some things will take longer). For that we need a turnscript, and we need an attribute that tracks time.
 
-A Turnscript
-------------
+## A turnscript
 
 So create a turn script, call it "TimeTurnScript", set it to be enabled, and paste in this code:
 
@@ -27,8 +26,7 @@ All it does is checks if the time is already set, if not it sets it to a value, 
 Note that the time is set to `60 * 10 + 23`; that will be 623 minutes past midnight. I could have set it to 623, but doing it this way makes it clear that the game starts at 10:23. You can, of course, put in your own time here.
 
 
-A Better Turn Script
---------------------
+## A better turn script
 
 Two issues we can address. The first is that the turn script will not fire at the start of the game (they fire _after_ the player takes a turn), and we really need this set up from the start.
 
@@ -74,8 +72,7 @@ game.notarealturn = true
 ```
 
 
-Showing the Time
-----------------
+## Showing the time
 
 You can display the time as a status attribute (or elsewhere), and the best way is to have a "timeasstring" attribute that will hold it nicely formatted. Because of the weird way we write time (base 60, and noon is neither am or pm), the coding suddenly gets long...
 
@@ -110,8 +107,7 @@ game.notarealturn = false
 Note that the third to sixth lines are adding "timeasstring" as a status attribute of the game object.
 
 
-Taking Your Time
-----------------
+## Taking your time
 
 Most actions will take 1 minute, but you can increase that just by adding to `game.time`. Suppose mending the car takes 10 minutes, put this in the script (1 minute passes anyway):
 

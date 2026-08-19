@@ -67,8 +67,7 @@ In and out exits are displayed over the top of the connected room.
 Sometimes you want to have two exits going to the same destination. For example, a shed to the east can be accessed by going _east_ or by going _in_. The map gives priority to the exit that appear last in the list, so in this case, it is best to have the _in_ exit above the _east_ exit. For the shed location, then, you want the _out_ exit above the _west_ exit.
 
 
-Advanced Options
-----------------
+## Advanced options
 
 _NOTE:_ We will be using code from here on in. It is easier for me to type, and it is also easier for you to copy-and-paste. That said, you do not need to understand code to follow!
 

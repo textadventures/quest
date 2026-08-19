@@ -7,8 +7,7 @@ sidebar:
 Core.aslx defines various "scope" functions. Each of these will return an object list (possible empty). Scope functions that end "ForRoom" must be given a room as a parameter (other functions will default to the current room).
 
 
-Exits
------
+## Exits
 
 * [ScopeExits](/functions/scope#scopeexits) Exits that the player can use from the current location, i.e., all visible exits for this room, whether locked or not.
 * [ScopeExitsForRoom](/functions/scope#scopeexitsforroom)
@@ -16,15 +15,13 @@ Exits
 * [AllExits](/functions/scope#allexits) All exits in the game.
 
 
-Commands
---------
+## Commands
 
 * [ScopeCommands](/functions/scope#scopecommands) Gets a list of all global commands and all commands local to the current room.
 * [AllCommands](/functions/scope#allcommands) All commands in the game.
 
 
-Reachable Objects
------------------
+## Reachable objects
 
 Quest makes a distinction between objects a player can reach and objects the player can see. Obviously with most objects, the player can do both, but this can be important in some situations.
 
@@ -37,8 +34,7 @@ Objects in a container are considered _reachable_ if the container is open. If a
 * [ScopeReachableNotHeldForRoom](/functions/scope#scopereachablenotheldforroom)
 
 
-Visible Objects
----------------
+## Visible objects
 
 Objects in a container are considered _visible_ if it is either open or transparent (or both). If an item's `visible` attribute is not set (i.e., it is `false`), or if the room is dark and the object is not a light source, then the object is not _visible_.
 
@@ -53,15 +49,13 @@ Objects in a container are considered _visible_ if it is either open or transpar
 * [ScopeVisibleNotReachableForRoom](/functions/scope#scopevisiblenotreachableforroom)
 
 
-Rooms
-------
+## Rooms
 
 You can get a list of rooms (more specifically, objects with "isroom" set to true).
 
 * [AllRooms](/functions/scope#allrooms)
 
 
-Others
-------
+## Others
 
 * [AllObjects](/functions/scope#allobjects) All the objects (i.e., including rooms) in the game.

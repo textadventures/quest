@@ -7,8 +7,7 @@ sidebar:
 
 Occasionally you might want to have the player move an object from one room to another by pushing or pulling it, rather than carrying it. Let us suppose there is a heavy crate; the player cannot lift it, but she could push it into the room to the west, then climb up it to get to a trapdoor in the ceiling.
 
-Basic Command
--------------
+## Basic command
 
 This is pretty easy to do in its simplest form. We need a new command, with this pattern:
 
@@ -32,8 +31,7 @@ game.pov.parent = exit.to
 For the rest of this page, I will be moving the player as well. If you do not want that to happen, just delete that line from your code.
 
 
-Limiting objects
-----------------
+## Limiting objects
 
 It is likely you will not want the player to move any object in this way. There will be some that cannot be moved, and some that are too small (the player can just pick them up). We will therefore flag objects that can be pushed as "shiftable".
 
@@ -62,8 +60,7 @@ We use `GetBoolean` because most objects will not have a "shiftable" attribute. 
 We also check the value of the "take" attribute to give a different error message when the player tries to push a hat, compared to trying to push a wall.
 
 
-Limiting directions
--------------------
+## Limiting directions
 
 We can stop the player pushing the object up or down (you may feel objects can be pushed downwards, just delete those three lines):
 
@@ -120,14 +117,12 @@ else {
 }
 ```
 
-Other commands
----------------
+## Other commands
 
 You might also want to create commands for `PULL` (which definitely should move the player too), `SHIFT` and `MOVE`. The code will be the same, except the messages should be modified as appropriate.
 
 
-Finally
--------
+## Finally
 
 This is outside the topic of the page, but is included for completeness.
 

@@ -13,8 +13,7 @@ The _Attributes_ tab cannot handle object lists, so we will need to do this in a
 For the sake of this tutorial, create an object called "dog".
 
 
-Setting Up
-----------
+## Setting up
 
 On the `game` object, go to the _Scripts_ tab, and add these line to the Start script:
 
@@ -43,8 +42,7 @@ Go in game and see if the dog will follow you!
 
 
 
-Some Variation
---------------
+## Some variation
 
 Your game will feel much better if the player is not seeing the same phrase again and again. If she reads "A dog is following you." every time she goes into a new room, it will get tedious.
 
@@ -59,8 +57,7 @@ So mix it up a bit with the "followphrases" attribute. You can go to the _Attrib
 
 
 
-Adding and Removing Followers
------------------------------
+## Adding and removing followers
 
 This is just a matter of adding or removing the follower from the `player.followers` list. We added the dog at the start; here it is again, together with removing the dog. Once removed, the dog will stay in the last room it followed the player into.
 

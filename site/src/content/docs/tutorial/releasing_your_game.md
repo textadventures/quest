@@ -13,8 +13,7 @@ There are five stages to releasing a Quest game.
 5.  Announcement
 
 
-Before release testing
-----------------------
+## Before release testing
 
 Before you even think about releasing your game, you need to thoroughly check to make sure it works properly, and that it has sensible responses for things that a player might reasonably type while playing it. To create a good game is a lot of hard work, and while it might be tempting to release your first efforts after a minimal amount of testing, your players won’t thank you for it.
 
@@ -32,8 +31,7 @@ Here are some things to think about before unleashing your game on an unsuspecti
 
 
 
-Upload as an unlisted game
---------------------------
+## Upload as an unlisted game
 
 By default your game will be unlisted; leave it like that for now.
 
@@ -44,22 +42,19 @@ On textadventures.co.uk, click on _Create_ at the top, then _Upload_ game below 
 For more on the Publish tool, including size limitations and what gets included in the .quest file, see [Publishing](/publishing/publishing).
 
 
-Upload testing
---------------
+## Upload testing
 
 Now play the uploaded version of your game. I would recommend saving, and ensuring a saved game can be loaded and looks okay, as saving and loading tend to be especially sensitive to errors in scripts!
 
 Now get some other people to test it – you'll be surprised at all the things they pick up that you would never have thought of. This is called beta-testing, and while it can be a pain, especially as you are keen to get your game out there fast, it is well worth it in the long run. A couple of bugs in your game will quickly lead to bad reviews.
 
 
-Public upload
----------------
+## Public upload
 
 Once all the bugs are sorted, upload your game again, just as before. Check the game listing text is fine, and set who can access the game to everyone. Congratulations, your game is now live!
 
 
-Announcement
-------------
+## Announcement
 
 Now all you have to do is tell people about it! See [Publishing](/publishing/publishing) for a list of places you can announce your game.
 

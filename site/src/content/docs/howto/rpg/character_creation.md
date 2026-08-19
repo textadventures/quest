@@ -11,8 +11,7 @@ To do that in Quest involves setting up a start script on the game object and as
 We will look at various ways of doing that, starting with the most basic.
 
 
-Just A Couple of Questions
---------------------------
+## Just a couple of questions
 
 Go to the "Scripts" tab of the "game" object. The start script is at the top. Set the script to print a message prompting the player, then add a "Set a variable or attribute" action, and pick "player's typed input" from the list of value templates (this is `GetInput()` under the hood - you'll see that if you switch to code view). Set it up like this:
 
@@ -64,8 +63,7 @@ The "show menu" command also takes a string, the prompt for the menu, and a Bool
 After also asking for the character class, the screen is cleared. The "wait" command waits until the player presses a key before running its block.
 
 
-Many Questions
---------------
+## Many questions
 
 If you want to ask a series of questions, you are better off breaking the process up into functions, one question per function.
 
@@ -157,16 +155,14 @@ You should consider carefully if you want the player to know what bonuses she wi
 
 
 
-A Creation Room
----------------
+## A creation room
 
 A useful trick is to start the player in a blank room, with no exits, description or objects. This will prevent the player doing anything until the character creation is over and nothing will be displayed in the panes on the right.
 
 At the end of the creation process, move the player to the start room. This will conveniently trigger the description for that room, setting the scene.
 
 
-A Note About Random Stats
--------------------------
+## A note about random stats
 
 You may be tempted to generate stats randomly. This is more in keeping with traditional tabletop RPGs, though I think most are moving away from that nowadays, and in any case they still offered a way to reject the worst values or to assign them to attributes as you choose.
 

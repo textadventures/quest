@@ -8,8 +8,7 @@ Competitions are a good way to reach a wider audience for your Quest adventure, 
 
 Probably the most significant Interactive Fiction competition is [IfComp](http://www.ifcomp.org/), run during October each year, and this page is mostly geared towards that. It will not guarantee your game is a winner, but hopefully will improve its ranking to some degree.
 
-Starting Out
-------------
+## Starting out
 
 Before you start creating, think about your game.
 
@@ -29,8 +28,7 @@ Do not make the puzzles too tricky. With only two hours playing time, if a playe
 
 Take a look at some other entries from previous years, and see what works and what does not. See what the standard is. Just as important, read the reviews and see what the judges think worked and what did not. Think if common criticisms might also apply to your own work, and modify it accordingly.
 
-Implementation
---------------
+## Implementation
 
 ### Help, hints and walk-though
 
@@ -69,8 +67,7 @@ Also think about the colours and the font. Be sure to pick a font that reflects 
 The important message here is to think about the UI, and make a choice for what is right for your game, and not just use the Quest defaults.
 
 
-Testing
--------
+## Testing
 
 Beta-testing is especially important for a competition entry, since you only get one shot at a good first impression from the judges. See [Beta-testing](/publishing/publishing#beta-testing) for the general process - before-testing checklist, how to publish a private test version, and crediting testers. A few things are specific to a competition entry:
 

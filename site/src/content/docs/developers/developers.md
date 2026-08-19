@@ -4,8 +4,7 @@ sidebar:
   order: 20
 ---
 
-Join In
--------
+## Join in
 
 Quest Viva is an open-source software project, [hosted on GitHub](https://github.com/textadventures/quest).
 
@@ -14,8 +13,7 @@ To compile the source code, you just need the [.NET 10 SDK](https://dotnet.micro
 The engine and server-side code is all C# (.NET 10). The editor's UI (AppShell) is TypeScript and Svelte.
 
 
-Developer Guidelines
---------------------
+## Developer guidelines
 
 ### GitHub issues
 
@@ -32,8 +30,7 @@ If you know a language other than English, why not try translating the English.a
 See [Translating Quest](/advanced-topics/translating_quest) for full information.
 
 
-Technical Overview
-------------------
+## Technical overview
 
 ![](/images/architecture.svg)
 

@@ -7,8 +7,7 @@ sidebar:
 A common feature of text adventures is items that can be worn.
 
 
-Basics Clothing
----------------
+## Basic clothing
 
 Adding clothing is very simple. Let us suppose we want to add some trousers. Create an object called "trousers", and on the _Features_ tab, tick "Wearable: object can be put on and taken off". You will see there is a new tab, "Wearables". On that tab, set the garment to "Can be worn" and a bunch of new boxes will appear.
 
@@ -35,8 +34,7 @@ That is the basics, however, the library allows you to do rather more. What abou
 
 
 
-Layers and Slots
-----------------
+## Layers and slots
 
 Garments can be assigned to layers and slots. Slots are where the item is worn. Each slot is a string, for example "head". At this point, we need to make a design decision - how are we going to divide the body up? For simplicity, we will say: feet, lower, upper and head. Trousers cover the lower body, so in the wear slots section, add "lower"
 
@@ -59,8 +57,7 @@ Garments can occupy more than one slot, so overalls could be set to have both "l
 Layer zero is special; it is effectively all layers. Say you have a pair of shorts that cannot be worn under trousers or over underpants, you can set its layer to 0.
 
 
-Advanced features
------------------
+## Advanced features
 
 Most people will not need to worry about the advanced features, so they are hidden to keep the tab uncluttered. To turn them on, go to the _Features_ tab of the game object, and tick "Show advanced options for wearables".
 
@@ -131,8 +128,7 @@ Tick the _Multistate?_ box to show options related to garments that can be in mo
 
 
 
-A note on inventory limits
---------------------------
+## A note on inventory limits
 
 This only applies if you are using the inventory limits feature.
 
@@ -144,8 +140,7 @@ In Quest, the volume limit works more like a weight limit, and the player is sti
 
 
 
-More on wearables
------------------
+## More on wearables
 
 There are various functions that can help you when handling clothing.
 

@@ -14,8 +14,7 @@ Then add a keypad object to your room. Go to the _Features_ tab, and turn on "Us
 
 ![](/images/other_guides/Unlockdoor2.jpg)
 
-Random Code
------------
+## Random code
 
 So now some wise guy has pasted the code on the internet, and everyone knows how to open the door already, without having to play part of your game. What we need is a code randomly generated each time the game is played.
 

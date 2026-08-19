@@ -4,8 +4,7 @@ sidebar:
   order: 18
 ---
 
-Overview
---------
+## Overview
 
 "Types" let you share sets of attributes between objects. Instead of copying the attributes to the object, the object just references the underlying the type if it doesn't have its own override for a attribute.
 
@@ -25,8 +24,7 @@ Types are defined using a [<type> element](/elements#type), and attributes are d
         <health>10</health>
       </type>
 
-Default behaviour
------------------
+## Default behaviour
 
 If the ASLX defines a type called "[defaultobject](/attributes#defaultobject)", then it is applied to all objects – there is no need to specifically inherit from this type. Core.aslx uses this to define the default behaviour for objects:
 

@@ -11,8 +11,7 @@ Handling `ALL` is not straightforward, as we need to consider exactly what items
 
 Note that turnscripts will only fire once per command, rather than once per object.
 
-TAKE ALL
---------
+## TAKE ALL
 
 Let us suppose there is a rucksack with a book in it, an open cupboard with a ball of string in it, a character called Mary, who is holding a cup, and a table with an apple on it. There is also a door that is mentioned in the room description, and is implemented, but is just scenery, and not listed when the player types `LOOK`.
 
@@ -47,8 +46,7 @@ Conversely, you may want a character to be taken. Perhaps Mary is a poodle that 
 Note that items held by the character will still not get included in ALL.
 
 
-DROP ALL
---------
+## DROP ALL
 
 What gets dropped is considerably easier.
 
@@ -66,8 +64,7 @@ apple: You drop it.
 The only thing to note is that the book is dropped inside the rucksack, so is not mentioned.
 
 
-Handling ALL in your own commands
----------------------------------
+## Handling ALL in your own commands
 
 For the majority of commands, it is not necessary to add the facility for `ALL`, and most of the built-in commands do not support it. However, if you want to allow it for your custom command, here is what you must do:
 

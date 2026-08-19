@@ -100,8 +100,7 @@ JS.setCss ("#gamePanes", "margin-top: 16px")
 JS.eval ("$('#gamePanes').width(227);")
 ```
 
-Actually I would prefer...
-------------------------
+## Actually I would prefer...
 
 Because we set up strings at the start, we can change the first two lines to see some dramatic differences...
 

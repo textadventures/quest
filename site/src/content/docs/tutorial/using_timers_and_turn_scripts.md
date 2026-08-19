@@ -7,8 +7,7 @@ sidebar:
 You can use timers to make something happens every so many seconds, whilst with a turn script you can make it happen every turn.
 
 
-Timers
-------
+## Timers
 
 
 In a previous section, we made a bee fly into the kitchen after the player opened a window. We'll now make that bee a bit more annoying as it flies around the kitchen – every 20 seconds, it will buzz past the player.
@@ -41,8 +40,7 @@ You've already seen how to do this - an "if" command can check "player is in roo
 
 ![](/images/TimerBee2.png)
 
-Turn scripts
-------------
+## Turn scripts
 
 In this section, we'll look at running a script after each turn in the game - a **turn script**. We'll store the number of turns a player has taken in an attribute called "turns" on the player object.
 

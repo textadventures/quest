@@ -5,8 +5,7 @@ sidebar:
 ---
 
 
-Compiling Quest Viva
----------------------
+## Compiling Quest Viva
 
 This describes how to download and compile the Quest Viva source code.
 
@@ -40,8 +39,7 @@ dotnet test tests/EngineTests --filter "FullyQualifiedName~TestMethodName"
 ```
 
 
-Running the players
---------------------
+## Running the players
 
 ### WebPlayer
 
@@ -67,8 +65,7 @@ node src/WasmPlayer/dev-server.mjs
 Then open `http://localhost:5175/?url=/examples/simple.aslx`. For a faster AOT-compiled build closer to what actually ships, add `--configuration Release` to the build command and `--release` to the dev server command instead.
 
 
-Running the editor (AppShell)
--------------------------------
+## Running the editor (AppShell)
 
 The editor is a SvelteKit app (`src/AppShell/`) that talks to the engine through a WASM bridge (`src/WasmEditor/`). The quickest way to get both running together is the root-level dev script:
 

@@ -14,8 +14,7 @@ In this example, we'll store the weights of various objects by creating a new "w
 
 First, let us create a few objects we can weigh. Create three objects – flour, eggs and sugar. Make sure the object types are set correctly (either "inanimate object" or "inanimate object (plural)"). We'll use units of grams, so we'll say the flour has a weight of 500, the eggs have a weight of 250, and the sugar has a weight of 1000.
 
-The Attributes Tab
-------------------
+## The attributes tab
 
 Click an object and select the Attributes tab - you'll see all the underlying data for the object. We can also use the Attributes tab to add our own custom data to any object. 
 
@@ -23,8 +22,7 @@ So let's give the new objects weights. First we'll set the flour's "weight" attr
 
 ![](/images/Weightflour.png)
 
-Reading Attributes
-------------------
+## Reading attributes
 
 You can read an attribute from any script command by using an **expression**. Expressions let you perform calculations, run functions, and read the values of variables and attributes. To read an attribute, you use this form:
 

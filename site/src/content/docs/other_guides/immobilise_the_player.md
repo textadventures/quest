@@ -6,20 +6,17 @@ sidebar:
 
 Occasionally you want to stop the player moving to another room, say because he is sat down, and he has to stand first, or he is tied up or whatever. There are three ways (at least) to do this:
 
-Move to another room
---------------------
+## Move to another room
 
 The first way is to move him to another room with no exits. This might not be appropriate in some cases, but suppose the player logs on to a computer, and while logged on, all commands relate to the computer. The player does not need to interact or even see other objects in the room with the computer, so effectively moving the player inside the computer is a good solution.
 
 
-Block the exit
---------------
+## Block the exit
 
 If this is something that happens in one specific room with a small number of exits, then the easiest solution is to just lock the exits while the player is immobilised, unlock them afterwards.
 
 
-Rewrite the go command
-----------------------
+## Rewrite the go command
 
 This is a little more complicated, but more general. What you do is set a string on the player when he is immobilised. The GO command checks to see if this string exists, and if it does, rather than moving the player, it prints the string.
 

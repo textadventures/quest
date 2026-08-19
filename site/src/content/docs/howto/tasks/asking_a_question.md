@@ -4,8 +4,7 @@ sidebar:
   order: 9
 ---
 
-Open-Ended Question
--------------------
+## Open-ended question
 
 Often in a text adventure you want the game to ask an open-ended question of the player. A simple example would be to allow the player to name the character. The `get input` script command exists to handle just that. 
 
@@ -26,8 +25,7 @@ Note that we are setting the "alias" attribute; the "name" attribute cannot be c
 
 
 
-Multiple Questions
--------------------
+## Multiple questions
 
 You might think that you can just have one question after another...
 
@@ -66,8 +64,7 @@ We need to _nest_ the question. This means putting the second inside the first.
 
 
 
-Looking for a Specific Answer
------------------------------
+## Looking for a specific answer
 
 You might want the player to give a specific answer - the answer to a riddle, perhaps. Here is an example script:
 
@@ -92,8 +89,7 @@ The first line just asks the riddle. This time we need to check it is the correc
 This will work, but has a couple of issues that we want to resolve.
 
 
-Testing Input
--------------
+## Testing input
 
 The first problem is that the player has to type the exact string “man”. What if he types “Man” or “a man”? We might also like to handle “woman” and “human” so the riddle is more politically correct.
 
@@ -126,8 +122,7 @@ We could optionally match "a" (the `?` indicates it is optional), and also match
 There is a section on Regex in the [pattern matching](/howto/commands/pattern_matching) page.
 
 
-Changing the Prompt
--------------------
+## Changing the prompt
 
 This is worthwhile doing as it makes it clear to the player that he or she should not be typing a command. To get this to work, you need to use some JavaScript! 
 ```
@@ -140,8 +135,7 @@ It might be worth also turning off the panes on the right, to stop the player me
 Remember to set them back to normal after.
 
 
-Altogether Now...
------------------
+## Altogether now...
 
 Here is the full the script, doing all we have discussed:
 
@@ -170,8 +164,7 @@ Here is the full the script, doing all we have discussed:
 
 
 
-Dozens of questions
--------------------
+## Dozens of questions
 
 For a complex RPG-style game you might have lots of questions to create the character. There are ways to do that using JavaScript and dialogue panels, but they are not straightforward. However, you can use recursion. Which is also not straightforward, but is not _so_ bad.
 

@@ -8,15 +8,13 @@ In a world of electronic goods, items that can be turned on and off are very com
 
 Let's create an object called "machine", and do just that!
 
-Switchable
-----------
+## Switchable
 
 On the _Features_ tab, of the object, tick "Switchable:...", and then go to the _Switchable_ tab. Select "Can be switched on/off". Various options will appear that you can fill in as you see fit, or just leave blank:
 
 ![Basic machine](/images/switchbasic.png)
 
-Descriptions
-------------
+## Descriptions
 
 Let us say the machine has a description that is text, and says "A funny looking machine." With the values set above, when the machine is looked at, the player will see "A funny looking machine." when it is turned off, and "A funny looking machine. It is chugging away to itself." when it is turned on.
 
@@ -48,8 +46,7 @@ else {
 ```
 
 
-It won't turn on!
----------
+## It won't turn on!
 
 Switchables can be given a special attribute, "cannotswitchon", that will indicate it cannot be turned on - for example, there is no power or it needs a part or needs repairing. You can set this in the third text field on the _Switchable_ tab. In your game, you will need to set this to null at some point - when the device has power, perhaps.
 
@@ -69,8 +66,7 @@ Note that using the "After switching on the object" script is not a good option 
 
 
 
-Doing something
----------------
+## Doing something
 
 So it is great that we can turn it on and off, but so what? How does that impact the game world? There are two approaches here. The first is to have other systems check if the object is on or off. A simple example might be checking if a generator is turned on, before allowing something else to work. This is best done by checking the "switchedon" attribute of the machine.
 
@@ -132,8 +128,7 @@ However, the second approach is easy for on-going situations, such as the light;
 
 
 
-On for a moment
----------------
+## On for a moment
 
 Occasionally you might want to implement a machine that the player turns on, it does something straight away, and then is off again.
 
@@ -156,8 +151,7 @@ machine.switchedon = false
 It is also a good idea to go to the _Object_ tab and delete "Switch off" from the two lists at the bottom.
 
 
-Better Display Verbs
---------------------
+## Better display verbs
 
 In fact, it will look better if the player only sees "Switch on" when the object is off, and "Switch off" when it is on.
 
@@ -216,8 +210,7 @@ machine.displayverbs = Split("Look at;Switch on", ";")
 this.displayverbs = Split("Look at;Switch on", ";")
 ```
 
-Testing
--------
+## Testing
 
 It is vital that you test your switchable objects, as there is potential for weird bugs.
 

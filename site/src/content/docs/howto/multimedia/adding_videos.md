@@ -5,8 +5,7 @@ sidebar:
 ---
 
 
-Linking to YouTube
------------------
+## Linking to YouTube
 
 ### Step 1
 
@@ -20,8 +19,7 @@ Paste the ID into the "Play YouTube video" script.
 
 
 
-Adjusting the Width of the Video
---------------------------------
+## Adjusting the width of the video
 
 Quest adds an iframe to the HTML which contains the video.
 
@@ -98,8 +96,7 @@ In this example, this what we see when checking the console in HTML tools:
 
 
 
-Changing the video source
----------------------------
+## Changing the video source
 
 
 To change the video by changing the iframe's `src`, let's create another function.
@@ -178,8 +175,7 @@ Here's the new code:
 ChangeVideoSrc("my-video", "https://www.youtube.com/embed/-WNRvCpw3qo?autoplay=1&rel=0")
 ```
 
-Using HTML Video Elements
---------------------
+## Using HTML video elements
 
 
 Playing your own videos (or online videos) requires a bit of coding, but it can be done. Using an HTML video tag is the easiest way to handle this, and it will allow you to use whatever file format you like.
@@ -291,14 +287,12 @@ JS.eval("$('#html-video').remove();")
 
 
 
-Playing Multiple Videos at Once
---------------------------------
+## Playing multiple videos at once
 
 Sometimes, you may want to play two (or more) videos at once, and this is possible (although it would probably be extremely distracting).  To do this, just keep adding videos with the `Play YouTube video` script or with the functions listed on this page.
 
 
-Additional Audio and Video Functions
------------------------------------
+## Additional audio and video functions
 
 There is a user-submitted guide which provides step-by-step instructions if you would like to add a few audio and video functions to a game (or you may prefer to just download the library, from the same page).
 

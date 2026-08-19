@@ -7,8 +7,7 @@ sidebar:
 This page builds on [Types](/advanced-topics/about_types), which covers what types are, how attributes are inherited, and multiple inheritance - read that first if you haven't already. Here, we'll cover how to test for types in a script, and how to create your own.
 
 
-Testing for Types
------------------
+## Testing for types
 
 You can test if an object is of a certain type in a script or function using the `DoesInherit` function. In code, it might look like this:
 ```
@@ -21,8 +20,7 @@ Here, "fireball_spell" is the thing we are testing, and we want to know if it is
 As mentioned, an object can have several types, and this function will tell you about all of them, even the ones that would appear in grey on the _Attributes_ tab.
 
 
-Creating new types
-------------------
+## Creating new types
 
 Creating your own types is a great way to extend Quest for your own needs. Any time you have a bunch of things that are all pretty similar in what they do, but a bit different to anything already in Quest, consider creating a new type.
 

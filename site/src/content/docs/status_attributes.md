@@ -15,8 +15,7 @@ You can display as many as you want, but are limited to string, int, double and 
 Status attributes are just attributes that you tell Quest to display - there is nothing special about the attribute itself. Quest has two lists of status attributes, one for the game object and one for the player. If the player object can change, then each one gets its own list, but only the current one will be used. Therefore you should use the game one to hold game-wide values such as the time and score, and the player one for those that relate to the player, such as health and money.
 
 
-Setting up
-----------
+## Setting up
 
 You can set up status attributes on the _Attributes_ tab of the player or game objects.
 
@@ -30,8 +29,7 @@ You will then be asked for the format - this is how the attribute will be displa
 
 
 
-Formatting
-------------
+## Formatting
 
 If you leave the format blank, the default display will be the attribute name with a capital at the start, a colon, and then the value.
 
@@ -62,8 +60,7 @@ Total score: <b>!/10</b>
 ```
 
 
-Advanced options
----------------
+## Advanced options
 
 Occasionally you want to do something more complicated for a status attribute - for example, you might want to show both the current and the maximum ammo in a gun. The trick is to create a new string attribute that holds both, and to update that whenever either value changes. The code might looking like this, where `player.ammonote` is a string to display the values (this needs to be run whenever the values change):
 
@@ -81,7 +78,6 @@ So how do we ensure `player.ammonote` always gets updated? With [change scripts]
 
 
 
-Behind the Scenes
-------------------
+## Behind the scenes
 
 Core.aslx updates the status attributes using an UpdateStatusAttributes function. It populates a string and then sends it to the UI using a SetStatus [request](/scripts#request).

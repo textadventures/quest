@@ -12,8 +12,7 @@ When setting up conversations between the player and a character, one option is 
 This could then be handled with a stock response or by offering a list of options (Quest will accept `TALK TO` as a synonym of `SPEAK TO`). This is a restricted approach to conversations, compared to [ASK/TELL](/howto/npcs/ask_about), because while the player can choose who to talk to, you are dictating what the conversation is about.
 
 
-Stock responses
-----------------------------
+## Stock responses
 
 The examples above illustrate this in play.
 
@@ -36,8 +35,7 @@ msg ("'Sure, you need to look in the bedroom.'")
 
 
 
-Varying Responses
------------------
+## Varying responses
 
 In the above example, the character will respond the same every time. That is not ideal, people are not like that, they will get annoyed if you ask the same question fifteen times, and wonder why you are asking where the key is when you have just used it to open the door.
 
@@ -85,8 +83,7 @@ else {
 ```
 
 
-A menu of responses
----------------------------
+## A menu of responses
 
 In play this might look like this:
 
@@ -130,8 +127,7 @@ The first line of the script sets up the topics. They need to be a string list, 
 A switch statement is used to decide which response will be seen. Note that the key for each case must be exactly the same as the topic you listed before. The script for each case is set up just as the script for the first option.
 
 
-Menu and varying?
------------------
+## Menu and varying?
 
 We can combine the last two, giving the player a menu to pick from, but having the character give a response depending on game state. In this example, it is only done for the first option. All we have done is inserted the code from "Varying Responses" into the above.
 

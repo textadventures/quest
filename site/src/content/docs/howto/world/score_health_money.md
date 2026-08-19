@@ -26,14 +26,12 @@ player.money = player.money - 199
 If your game is set to display the panes on the right, score, health and money will automatically be added to the status pane, if ticked on the _Features_ tab.
 
 
-Score
------
+## Score
 
 Score is the simplest. The score attribute belongs to the game object, so is the same even if the player can change to other characters during the game. It starts at zero.
 
 
-Health
-------
+## Health
 
 The health attribute belongs to the player object (or objects, if you have more than one). Health is treated as a percentage, so starts at 100, and is capped at that (if you try to set it to 120, it will become 100).
 
@@ -54,8 +52,7 @@ You can set an object to be food (or a potion, or whatever) that will heal the p
 **NOTE:** If you want a more flexible health system, for example you want to be able to set the maximum health, you are best starting from scratch with a custom attribute, not called "health", and turning off the health feature.
 
 
-Money
------
+## Money
 
 Like health, money is an attribute of the player object. By default, money starts at zero, but you can change that on the _Player_ tab of the player object (and if you have several player objects, you can give each their own money).
 

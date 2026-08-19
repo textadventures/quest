@@ -6,16 +6,14 @@ sidebar:
 
 Text adventures do not have a lot of call for mathematics, but Quest does have a lot of maths functions built in nevertheless.
 
-Basic operations
-----------------
+## Basic operations
 
 You know about +, -, \* and /, right? Quest also supports ^ and %, for raising to the power, and modulo arithmetic.
 
       msg ("2 to the 3 is " + (2^3))
       msg ("13 mod 3 is " + (13 % 3))
 
-Rounding
---------
+## Rounding
 
 Three functions are available:
 
@@ -51,16 +49,14 @@ The output is:
       Ceiling -3.6 is -3
       Round -3.6 is -4
 
-Minimum and maximum
--------------------
+## Minimum and maximum
 
 Use the min and max functions:
 
       msg ("Min of 4 and 10 is " + min (4, 10))
       msg ("Max of 4 and 10 is " + max (4, 10))
 
-Bitwise Operations
-------------------
+## Bitwise operations
 
 If you are reading a page about maths, chances are you are familiar with Boolean operations such as:
 
@@ -91,8 +87,7 @@ Thirty to forty years ago, this might give a significant speed boost, compared t
 
 
 
-Tertiary Operator
------------------
+## Tertiary operator
 
 So called because it takes three values. If the first is true, it returns the second, otherwise it returns the third.
 
@@ -111,8 +106,7 @@ The third line, for example, would otherwise be written like this:
       }
 
       
-The in Operator
----------------
+## The in operator
 
 Evaluates to true if the term on the left is in the list on the right, false otherwise.
 
@@ -131,8 +125,7 @@ You don't need to build a list first; you can check against a parenthesised list
 The first line prints "true", the second "false" - same rules as checking against a list.
 
 
-Trigonometry and Other Functions
------------------------
+## Trigonometry and other functions
 
 Every felt you cannot create the adventure game of your dreams because Quest does not support hyperbolic cosine? Fret no more!
 
@@ -150,8 +143,7 @@ Every felt you cannot create the adventure game of your dreams because Quest doe
 In case you are wondering, `abs` gets the absolute value, i.e., makes it a positive value. The `sign` function returns -1 for negative numbers, 1 for positive, and zero for zero.
 
 
-Constants `e` and `pi`
-----------------------
+## Constants `e` and `pi`
 
 They are irrational! They are transcendental! They are right there in quest!
 
@@ -167,8 +159,7 @@ Quest will actually allow you to go through the motions of assigning a value to 
 No error will be given, but e will still be 2.718... Using e or pi as a variable name can lead to some very mysterious errors.
 
 
-Indexing
---------
+## Indexing
 
 In most languages you can index an element in a array (or list, as they are also termed) with something like this:
 

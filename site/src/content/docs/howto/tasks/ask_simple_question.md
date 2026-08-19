@@ -12,8 +12,7 @@ We will look at asking simple questions here, and by that I mean a question with
 There are four parts to the process. First we have to decide what will prompt the question, then we need to get the options for the menu, then we show the menu, and finally we need to handle the response.
 
 
-What prompts the question?
---------------------------
+## What prompts the question?
 
 There are all sorts of triggers, and we cannot address them all here, but here are some examples.
 
@@ -30,8 +29,7 @@ There are all sorts of triggers, and we cannot address them all here, but here a
 **Others:** For other triggers, you are on your own, but think about what item or room is involved, and go to that, and look at what tab seems most appropriate; what scripts are available?
 
 
-Collecting the options
-----------------------
+## Collecting the options
 
 Each option you give the player must go into a string list, so the first thing to do is create a new string list. Click "Add new script", and select "Set a variable or attribute". In the first text box, type "options" (no quotes), and from the drop-down, select "new string list".
 
@@ -47,8 +45,7 @@ In some situations, you might want to vary the list. There are various ways to d
 
 
 
-Show the menu
--------------
+## Show the menu
 
 Click "Add new script", and select "Show a menu". In the first textbox, type in the question you want to ask the player. In the second, type in "options" to tell it to use the list of options we created before. You can also choose whether the player can ignore the menu. If this is asking the player whether to be a man or a woman, you would want to set this "no" to ensure the player makes a choice. For our flower seller, we can leave it as "yes"; if the player decides the flowers on offer are not that good, she can just ignore the menu and do something else.
 
@@ -57,8 +54,7 @@ Click "Add new script", and select "Show a menu". In the first textbox, type in 
 At this point you should be able to go into the game and actually see the menu work - though it will not do anything.
 
 
-Handle the response
--------------------
+## Handle the response
 
 So now we need to handle the response. You will see you now have two "Add new script" buttons. You need to be using the upper one, indented to the right. This will ensure the scripts you add will be run after the choice is made.
 
@@ -79,8 +75,7 @@ If you have variable options (for example, the option to buy orchids is only the
 ![](/images/menu4a.png)
 
 
-In code?!?
-----------
+## In code?!?
 
 It is worthwhile looking briefly at the code view:
 
@@ -117,8 +112,7 @@ ShowMenu ("What flowers do you want to buy?", options, true) {
 If you look through it you should see each set that we added is there, in the same order. The code is just a different way of looking at the same thing.
 
 
-Note 1: Yes or no?
--------------------
+## Note 1: yes or no?
 
 For simple questions, we can shortcut some of that. We can use the `Split` function to make the string list, and just check for one value for `result`. For example:
 
@@ -137,8 +131,7 @@ ShowMenu ("Are you sure?", Split("Yes;No", ";"), false) {
 You can also use the `Ask` function - see [here](/functions/user-interface#ask).
 
 
-Note 2: Code after will run immediately
------------------------------------------
+## Note 2: code after will run immediately
 
 If you have any script after the ShowMenu, this will run straightaway, without waiting for the player to make a choice. Consider this example:
 
@@ -181,8 +174,7 @@ ShowMenu ("What flowers do you want to buy?", options, true) {
 ```
 
 
-Note 3: No local variables
----------------------------
+## Note 3: no local variables
 
 The script that runs inside of ShowMenu when the player makes a choice has no access to local variables. It will not know what `this` is, and if in a command will not know what `object` (or whatever) is.
 

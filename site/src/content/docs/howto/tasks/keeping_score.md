@@ -20,8 +20,7 @@ The plan is to have the player get 1 point for jumping, using this command.
 
 By the way, quest does have a "score", which will do some of this for us. I am not going to use that because I want to show how status attributes are used.
 
-Status Attributes
-------------------
+## Status attributes
 
 Go to the _Attributes_ tab of the game object. In the lower box, click _Add_, then type "score" and set it to an integer. Then go to the upper box, marked "Status Attributes", click _Add_, and again then type "score". You will get a second box this time, in it, paste in this:
 ```
@@ -41,8 +40,7 @@ The first line is obviously setting up the "score" attribute.
 Quest stores information about status attributes in dictionary attributes called `statusattributes`, on the game and player objects, and the second line creates one on the game object (Quest does this automatically for you if you use the Attributes tab instead). The third line adds one entry to that dictionary. It has two parts, the name of the attribute, "score", and the display format, "Score: !/10".
 
 
-Display Format
----------------
+## Display format
 
 However you set it up, your "score" status attribute should have a display format like this:
 
@@ -57,8 +55,7 @@ Score: 0/10
 ```
 
 
-Scoring a Point...
-------------------
+## Scoring a point...
 
 Now go back to the `JUMP` command, and change its script to this:
 
@@ -70,8 +67,7 @@ Now go back to the `JUMP` command, and change its script to this:
 You should now be able to go into the game, and see your score, and see that it goes up when you jump.
 
 
-... And Only One Point
----------------------
+## ... And only one point
 
 In fact the score goes up every time you type `JUMP`; really we only want that to happen once. We will build in a system to ensure that that is the case later, but let us do it a different way first. Did you know you can set attributes on commands? Paste in this code:
 
@@ -86,8 +82,7 @@ In fact the score goes up every time you type `JUMP`; really we only want that t
 This will check the "alreadydone" on the command itself, and only increase the score if it is not yet set. By the way, "this" indicates the thing the script belongs to - the command in this case.
 
 
-Listing Achievements
---------------------
+## Listing achievements
 
 So we have a simple system, and that may be enough for you. However, we can improve the system to ensure the player only every gets rewarded once for any achievement, and to allow the player to check what she got points for. To do that, we will record each achievement in a string dictionary, so the first step is to set that up - either add this to the start script of the game object:
 ```
@@ -119,8 +114,7 @@ If you go into the game, you will find that you get 5 points for jumping, but on
 You could have several things giving the same reward. Perhaps leaping a chasm also counts as a jump; in your `LEAP` command, just have exactly the same line of code. The score system will check whether "You jumped" is already in the list, and only hand out points if it is not.
 
 
-A SCORE Command
-----------------
+## A SCORE command
 
 We can add a score command, to allow the player to see how much she has scored and for what. Create a new command, and give it the pattern "score", then paste in this code:
 

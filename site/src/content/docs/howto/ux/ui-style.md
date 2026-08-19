@@ -11,8 +11,7 @@ This is the classic Quest interface:
 ![](/images/ui-classic.png)
 
 
-The _Display_ Tab
------------------
+## The _display_ tab
 
 On the Display tab of the game object, there are options for changing the text, the background and (if used) hyperlinks. 
 
@@ -31,8 +30,7 @@ This example shows the subtle use of a colour blend, in a game with the command 
 ![](/images/ui-no-cursor.png)
 
 
-The _Interface_ Tab
--------------------
+## The _interface_ tab
 
 The Interface tab is where you control the features of the UI. Here you can turn on or off: the map; the game panes; the command bar; the location bar; the border; custom layout; and the picture frame.
 
@@ -78,8 +76,7 @@ You can set the padding and the width.
 You can set it to be clear for rooms with no image set.
 
 
-The _Room Descriptions_ Tab
----------------------------
+## The _room descriptions_ tab
 
 With the Room Descriptions tab, you can control what happens when the player enters a room (or types LOOK). Note that "Automatically generate room descriptions" does not mean Quest will do the work for you! Rather, it means it will list the exits and the objects for you. If the box is ticked, you can control their order by modifying the numbers (set to zero if you do not what that one displayed).
 

@@ -4,8 +4,7 @@ sidebar:
   order: 25
 ---
 
-Problems when creating games
-----------------------------
+## Problems when creating games
 
 There are all sorts of problems that can arise as you code with Quest. Computer languages are fussy things that expect you to type to very strict rules, and Quest is no different. Some things to check:
 
@@ -32,8 +31,7 @@ Occasionally you may see this error:
 This happens when the player's "parent" attribute is set to null, and can happen if you try to move the player to a variable that has not been set (and Quest will think an object name you have mis-spelled to be a variable).
 
 
-Names you cannot use
---------------------
+## Names you cannot use
 
 Sometimes Quest is clever and will warn you or take some action if you try to give something a bad name (if you try to add an object called "game" it will call it "game1"). However, there are other times it will not...
 
@@ -68,8 +66,7 @@ Various attributes are already used by Quest. Do not do anything with "type" or 
 
 
 
-Understanding runtime error messages
-----------------------------
+## Understanding runtime error messages
 
 Runtime errors occur when playing the game. Quest has tried to run a script, and realised there is an issue. You will get an error in the game output that will usually consist of two parts. Here is an example:
 

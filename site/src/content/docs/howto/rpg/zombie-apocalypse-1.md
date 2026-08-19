@@ -8,8 +8,7 @@ sidebar:
 I am assuming you at least know how to copy-and-paste code, and that you know what the game start script is. If you do not, I would respectfully suggest you start with something simpler, and come back to this when you have more experience.
 
 
-Zombies
--------
+## Zombies
 
 There will be a lot of zombies, all pretty much the same, and you really do not want to create each one individually. There may be more spawning all the time too, so we will have a function to create zombies as we need them. Call this `SpawnZombie`, no return type, with a single parameter, "room". Paste in this code:
 
@@ -137,8 +136,7 @@ obj.armour = 20
 
 
 
-The player
-----------
+## The player
 
 The player needs the same attributes for combat as the zombies. You could set these directly on the _Attributes_ tab of the player object, but for a handful of attributes like this, it is often just as easy to set them in the object's initialisation script instead. You could do this in the start script of the game object instead, which is fine at first, but as your game gets more complex, the script will get huge, and increasingly difficult to maintain. So instead we will set up attributes for an object in its initialisation script.
 
@@ -163,8 +161,7 @@ player.changedhitpoints => {
 ```
 
 
-Attacking
----------
+## Attacking
 
 We are getting close to being able to kill those zombies (do you kill zombies, if they are already dead?). Create a command, and put in this pattern:
 
@@ -252,8 +249,7 @@ You may choose to adjust these numbers, or to have a totally different way to re
 A big advantage of having all attacks use this one function is that changes need only be done once. If you decide criticals will only do double damage, one change in this function will affect everything in your game.
 
 
-Weapons
--------
+## Weapons
 
 We need a weapon to attack the zombies. We will just do one for now, but you may want several in your game. We could set attributes on the _Attributes_ tab, and use verbs to interact, set up on a weapon type. Instead, we will set attributes in an initialisation script for the item as we did with the player object, and are better off using commands, as you can have a single command to handle all the weapons.
 
@@ -331,8 +327,7 @@ else {
 
 Now go into the game, grab that spade and smack some zombies with it!
 
-Zombie attack!
---------------
+## Zombie attack!
 
 So far our game is pretty easy - the zombies just stand there and let you hit them. We need them to attack back. We need a turn script to do that, so go to the _Scripts_ tab of the game object, and in the "turn scripts" section, click "Add". Give it some name, perhaps "attackturnscript", and tick it to be enabled at the start. Paste in this code:
 
@@ -350,8 +345,7 @@ This is pretty simple. `GetDirectChildren(player.parent)` gets all the things in
 
 Now go in game and those zombies will fight back!
 
-...But not for a typo
----------------------
+## ...But not for a typo
 
 When the zombies fought back, you might have found that they do so even if you mistyped something. That seems to give the zombies an unfair advantage, so let's change it so they only attack if Quest has understood the command (even if Quest then says no).
 
@@ -378,8 +372,7 @@ if (not GetBoolean(game, "notarealturn")) {
 game.notarealturn = false
 ```
 
-Zombies that follow
--------------------
+## Zombies that follow
 
 You will also have noticed that the zombies stay in one place. Let's get them moving. 
 
@@ -419,8 +412,7 @@ game.notarealturn = false
 
 This will have a zombie follow 80% of the time, you can adjust as seems fit.
 
-Safe room
----------
+## Safe room
 
 If you want to _stop_ the zombies following the player through a certain exit, go to the exit, and tick the "Run a script" box. Paste in this code (editing the text as required):
 
@@ -431,8 +423,7 @@ player.parent = this.to
 ```
 
 
-Firearms
---------
+## Firearms
 
 Now we will add a second weapon, a pistol. The pistol will have ammo, and will need to be reloaded. The first thing to do is to create the pistol, and the easiest way is to copy the spade. Open the spade's "..." menu and choose "Copy", then open the "..." menu on the destination and choose "Paste". On the _Setup_ tab, give it the name "pistol", and this as the description, so it will display the ammo:
 
@@ -565,7 +556,6 @@ else {
 ```
 
 
-A Working Game!
----------------
+## A working game!
 
 So now we have a working game, with two weapons and lots of zombies. That may be all you need, but if you want to implement some more advanced features, such as searching corpses and varying zombie attacks, you might like to go on to [part two](/howto/rpg/zombie-apocalypse-2).

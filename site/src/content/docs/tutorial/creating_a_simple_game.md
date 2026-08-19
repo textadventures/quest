@@ -6,16 +6,14 @@ sidebar:
 
 This tutorial guides you through creating your first text adventure game. If you want to create a gamebook instead, see [Creating a gamebook](/tutorial/creating_a_gamebook).
 
-Creating a blank game
----------------------
+## Creating a blank game
 
 Open the editor - either in your browser, or the desktop app - and you'll see a "Create new game" section. Enter a name like "Tutorial Game", ensure that "Text Adventure" is selected as the game type, and choose a language from the list - this tutorial will focus on creating a game in English, but the editor itself will look mostly the same whichever language you pick here.
 
 Click "Create local draft" (or "Save to folder..." if you'd rather store the game file yourself), and you'll see the main Editor screen.
 
 
-The Editor Screen
------------------
+## The editor screen
 
 On the left is a tree showing you every element of the game. The "game" element is currently selected, so that's what we can see in the pane on the right.
 
@@ -25,8 +23,7 @@ As you'll see, it's a pretty empty game at the moment. We can type some standard
 
 You can go back to the Editor by closing the preview, or typing `QUIT`.
 
-Setting up rooms
-----------------
+## Setting up rooms
 
 Quest created a room called "room", which isn't a very good name. In this tutorial game, we want to start in a lounge, so select "room" from the tree and change its name.
 
@@ -60,8 +57,7 @@ Exits, like every object in Quest, can have an alias, which is simply a way of d
 
 Play the game and verify that the player can go south and north between the lounge and kitchen.
 
-Adding objects
---------------
+## Adding objects
 
 Now let's add some objects to the lounge, to give the player something to do.
 

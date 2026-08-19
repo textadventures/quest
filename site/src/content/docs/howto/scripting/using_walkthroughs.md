@@ -4,8 +4,7 @@ sidebar:
   order: 20
 ---
 
-What is a walkthrough?
-----------------------
+## What is a walkthrough?
 
 A walkthrough is the set of steps or commands that you can record in the editor, and then play during the game. Quest lets you record and play back walkthroughs, allowing you to test your game - after making changes, you can run your walkthrough to ensure your game is still winnable, and that any alternative endings also still work.
 
@@ -13,8 +12,7 @@ Another use for walkthroughs is when you have a problem with Quest - it helps hu
 
 You can record and play back walkthroughs from the Editor, or you can also play a walkthrough from within a game by opening the Debugger and choosing the Walkthrough tab. Walkthroughs are automatically removed from published .quest files.
 
-Creating and recording a walkthrough
-------------------------------------
+## Creating and recording a walkthrough
 
 To add a walkthrough, you can right-click the tree and choose "Add Walkthrough", or you can go via the "Add" menu. Give the walkthrough a name to describe it, for example "win game".
 
@@ -24,16 +22,14 @@ You'll see that the walkthrough editor has now been updated with the moves you m
 
 If you want to add steps to an existing walkthrough, choose this walkthrough und click the Record button. The walkthrough is then executed and all new moves will be appended.
 
-Creating sub-walkthroughs
--------------------------
+## Creating sub-walkthroughs
 
 Many of your walkthroughs may share the same steps - for example, if your game has multiple endings, there may be points in the walkthrough where you want to "branch off". Quest lets you handle this by creating a hierarchy of walkthroughs - if you move one walkthrough in the tree to be a child of another walkthrough, when the child walkthrough is run, it will run all the steps of its parent walkthrough(s) first.
 
 To create a sub-walkthrough, select the walkthrough in the tree, choose "Move to..." and pick the walkthrough that should be its parent.
 
 
-Handling menus and questions
-----------------------------
+## Handling menus and questions
 
 You can manually add a menu selection to a walkthrough by preceding it with "menu:"
 
@@ -51,8 +47,7 @@ For example if somebody asks you a question when you speak to them, put this in 
 
 If you forget to put in these two statements, the walkthrough will immediately stop.
 
-Assertions
-----------
+## Assertions
 
 You can use walkthrough assertions to test your game. Simply include a line starting with "assert:", and then any expression which should be true.
 
@@ -70,8 +65,7 @@ For example, in the walkthrough below, the assert expression checks that the "ta
 
 If a walkthrough assert expression returns false, the walkthrough is immediately stopped.
 
-Displaying runtime
-------------------
+## Displaying runtime
 
 You can include the line
 
@@ -79,8 +73,7 @@ You can include the line
 
 anywhere in the walkthrough to display the total runtime of the walkthrough. The command can also be used several times in a walkthrough.
 
-Output speed
-------------
+## Output speed
 
 You can influence the speed of the output with the line "delay:". The delay in milliseconds is specified behind it. The setting takes effect after the delay command line.
 

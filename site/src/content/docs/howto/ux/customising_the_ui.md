@@ -10,16 +10,14 @@ Potentially this means you can set up your game to look like _anything_. In prac
 
 
 
-Web Pages
----------
+## Web pages
 
 To really get to grips with the UI you have to understand how it is represented in the computer.
 
 When you access most web pages, your browser sends a message, an HTTP request, to a server, which sends back an HTTP response, and that's the end of the interaction until you navigate again. Quest doesn't work like that. Once your game has loaded, the whole game engine runs directly in your browser (compiled to WebAssembly) alongside the JavaScript that draws the interface - there's no server involved at all, and no request/response cycle per turn.
 
 
-JavaScript
-----------
+## JavaScript
 
 JavaScript is a programming language built into most web browsers. Most interactive web pages use JavaScript to make stuff happen on them.
 
@@ -32,8 +30,7 @@ Quest also uses a JavaScript extension called [jQuery](https://en.wikipedia.org/
 Quest has a JavaScript object, called `JS`, and we can use that to dynamically change the web page that the player is looking at. Getting information back from the web page is something else again.
 
 
-The JS Object
--------------
+## The JS object
 
 The `JS` object is a quick way to use JavaScript in your game. 
 
@@ -82,8 +79,7 @@ You can use it to access the other built-in JavaScript functions (and your own t
 
 If you want to do more than that, you need to learn a little about HTML and CSS...
 
-HTML
-----
+## HTML
 
 HyperText Markup Language (HTML) is the way information is structured on a web page. Whilst playing, you can right-click and select "Inspect" (or similar) to see the HTML behind the current view, using your browser's Developer Tools - this works the same way in the desktop app.
 
@@ -102,8 +98,7 @@ Here is an example:
 HTML code is made up of _elements_, and each element has a start tag (eg `<div>`) and an end tag (eg `</div>`). The bit between them is the content, and the content can be other elements or text or a mixture. The start tag can often have attributes, and these are important because they can give us a way to access the element. In the snippet above, the `<div>` has an attribute, id, which has the value "divOutputAlign3". The id attribute will be important later.
 
 
-CSS
----
+## CSS
 
 Cascading style sheets (CSS) is the primary way for web pages to define the style, as opposed to the content; that is, what font to use, colours, etc. CSS is probably the technology you need to know properly, as really there is no short-cut here. The objective here is to set styles as you want them, so knowing the underlying style system is going to serve you well, and we can only do a brief overview here.
 
@@ -134,8 +129,7 @@ If the hex value makes no sense, stick to the names!
 [https://en.wikipedia.org/wiki/Web_colors](https://en.wikipedia.org/wiki/Web_colors)
 
 
-JQuery
-------
+## jQuery
 
 Static web pages use CSS like that, but if you want things to change, you need JavaScript. JavaScript is a fully-fledged programming language (and is _not_ the same as Java), and has become the standard for web browsers. We will try to avoid writing JavaScript code as far as possible - which is where jQuery comes in.
 
@@ -152,8 +146,7 @@ Notice that all the same information is there, just arranged differently, accord
 
 
 
-Quest
------
+## Quest
 
 Quest sets up the User Interface in the `InitInterface` function, which is defined in Core.aslx. Almost the last thing it does is call a script, "inituserinterface", on the game object (if it exists), after which game.start will run (unless the player is resuming with a saved game). The best way to modify the user interface, then, is using the "inituserinterface" script.
 
@@ -166,8 +159,7 @@ Note, however, that you should not print anything from the "inituserinterface" s
 Because it is easier to show, all the tricks here will be in code. Click the "Code view" button, and a text box will appear. Just copy-and-paste code into here. You can paste in as many code blocks as you like, and it should work fine (note that that is not necessarily true of all code).
 
 
-Using All That In Quest
------------------------
+## Using all that in Quest
 
 So now we know where to put the code in Quest, and we know the JavaScript to do it. We just need a way to pass the JavaScript from the game to the interface. This is done using the `JS` object, for example using the `eval` function:
 
@@ -181,8 +173,7 @@ The JS object is a way to access any JavaScript function, even those you add you
 Note that this is not a way to get information from the interface; this is a one-way street. Data is going from Quest to JavaScript only (there is a way to go the other way; that is how the player's inputs get to Quest, but that is beyond the scope of this article).
 
 
-Shortcuts
----------
+## Shortcuts
 
 You can use the `setCss` function to do this sort of thing. Like `eval`, this belongs to the JS object. It takes two parameters, the element and the style. The style should be in the standard CSS format, with a colon between the name and the value, and a semi-colon between each setting. The example above would therefore look like this:
 
@@ -202,8 +193,7 @@ JS.setPanes ("midnightblue", "skyblue", "white", "midnightblue", "blue")
 ```
 
 
-Elements
---------
+## Elements
 
 Bits of an HTML page are called elements, and "gameBorder" is just one of them. All HTML documents have an "html" element that contains everything else, and inside that it has a "head" and a "body" elements. Quest then has a few dozen elements that make up the interface inside the "body" element.
 
@@ -214,8 +204,7 @@ Most of the interesting elements are of the type "div", and each is identified b
 ![](/images/devtools.png)
 
 
-CSS Properties and Values
--------------------------
+## CSS properties and values
 
 There are a large number of CSS properties, to get a full list, use the internet. I will mention just some of the interesting ones. You do need to be careful that you supply the right type of value, but we will look at that too. Also, be aware that CSS uses America spelling for "center" and "color" (but you can use both "grey" and "gray").
 
@@ -292,8 +281,7 @@ The status bar at the top has a blue border. If you want to remove it, do this (
 ```
 
 
-Awkward Attributes
-------------------
+## Awkward attributes
 
 ### The command bar
 
@@ -348,14 +336,12 @@ This example will alter the background colour when an item is selected.
 ```
 
 
-Testing
--------
+## Testing
 
 When you are messing with the interface, it is easy to get things wrong - or try to do something that is not possible. You should test your game to make sure it works as you expect and looks as you expect. In particular, you should check that it still works and looks the same after the player has reloaded a save game, as this is when problems most often come to light, and it is easy to forget to check this.
 
 
-Various Tricks
---------------
+## Various tricks
 
 A collection of tricks using the techniques already discussed.
 

@@ -9,8 +9,7 @@ A `switch` is like an `if` script, but it caters for more options without you ha
 The most common use of a `switch` is after asking the player a question, so we will have a go at that, using the `ShowMenu` function. Let us suppose we have a character the player can talk to, and we want to give the player a number of conversation options. So first, add a character, we can call her "Mary", make her a "Female character (named)" on the _Setup_ tab, then on the _Verbs_ tab add a new verb, "Speak to", and set it to run a script.
 
 
-The `ShowMenu` bit
----------------------
+## The `ShowMenu` bit
 
 The first step is to create some options the player can choose from. Do add script, and select "Set a variable or attribute". Call the variable `options`, and for the expression: `Split("The weather;Her hair;The Lost Key of Arenbos", ";")`
 
@@ -19,8 +18,7 @@ What that will do is create a variable, called "options", and will put a string 
 Then do add a new script again, and this time pick "Show a menu". For the text, type is `Talk about?`.
 
 
-The `switch` statement
-----------------------
+## The `switch` statement
 
 We need to add another script, but you now have two "Add new script" buttons. You need to pick the higher one that is indented, because this is happening inside the `ShowMenu`. Select `Switch...` and type in `result` for the switch.
 
@@ -39,16 +37,14 @@ So now it looks like this:
 Launch the game and try the options to check that you see the correct response.
 
 
-Default option
---------------
+## Default option
 
 As we are controlling what the player can select, there is no chance that anything else will be encountered by the `switch` statement, but that is not always the case. To catch everything that would otherwise be missed, we can add a default. This just involves clicking the "Add new script" button - but now there are three! You want the highest, most indented one in this case.
 
 ![](/images/switch04.png)
 
 
-Advanced
---------
+## Advanced
 
 In code view, the script above looks like this, and we will look at more code in this section:
 

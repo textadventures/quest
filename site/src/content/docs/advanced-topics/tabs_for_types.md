@@ -11,8 +11,7 @@ Some familiarity with XML (or HTML) will be useful!
 This is great if you want to share your library as it makes it much easier for other people to include objects of your type - it is all done through a dedicated tab. If can be useful for you too; if you have a dozen or so of the same type of thing, it may be easier to set up a tab, and then modify the attributes there.
 
 
-Use a library
--------------
+## Use a library
 
 If we are going to get serious, it is better to put your types in another file (and personally, I would put verbs, commands, functions, turnscripts and templates all in there too), so we will do that first.
 
@@ -66,8 +65,7 @@ In your game file in Quest, you need an extra line at the top of the code, telli
 Now go into the game, and check it still works.
 
 
-More Types
-----------
+## More types
 
 We will now set up a new type, attackspell. The attackspell is a particular type of spell, so it needs all the properties of an ordinary spell, but perhaps some new ones too. So it wants to *inherit* those properties from spell. Here, then, is our new type:
 
@@ -76,8 +74,7 @@ We will now set up a new type, attackspell. The attackspell is a particular type
       </type>
 
 
-A Simple Tab
-------------
+## A simple tab
 
 Let us suppose attack spells will use different elements and have different power ratings. The way to do that is to have attributes on each spell, "powerrating" and "element". The cool way to do *that*, is to create new tabs in the editor.
 
@@ -103,8 +100,7 @@ Then there is our control, and you can have several of these. This one gives a d
 Quest will not realise you have changed your library file; to see a difference, you will need to close your game (from the _File_ menu - no need to exit Quest completely), then open it again. Hopefully, if you click on an object you will see a new tab called "Spell"!
 
 
-More Controls
--------------
+## More controls
 
 Now we will put in a powerrating control. Try this (remember, it has to go before the </tag> line, because that marks the end of the tag):
 
@@ -142,8 +138,7 @@ We also want to be able to select an element (fire for fireball, etc). Now we ca
       </control>
       
 
-Other Options
--------------
+## Other options
 
 Now you know the basics, you will want to know what other options are available.
 

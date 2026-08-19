@@ -2,8 +2,7 @@
 title: Mutable attributes on inherited types
 ---
 
-Mutable attributes on inherited types
--------------------------------------
+## Mutable attributes on inherited types
 
 When you inherit an attribute from a type, the type's attributes are not copied, just pointed to. For most attribute types there's no problem with this, but lists and dictionaries are mutable - i.e. they can be changed by commands such as [list add](/scripts#list-add), but you're still pointing to the same list.
 

@@ -12,8 +12,7 @@ You can find it here: <https://trizbort.io/>
 
  
 
-So how would you use it?
--------------------------
+## So how would you use it?
 
 The first thing to realise is that this is a one way trip. You start creating with Trizbort, then export to Quest, and then create with Quest. You cannot go back to Trizbort once you have started to make changes in Quest.
 
@@ -23,8 +22,7 @@ Trizbort is available as a .zip file, and should be extracted into a folder call
 
  
 
-Rooms
------
+## Rooms
 
 Press “R” to create a room. When a room is selected you can drag it to move it, or select it and then drag its square handles to change its size. Double click on the room to change its properties. Here you can type in a description. You can tick it as dark too.
 
@@ -40,8 +38,7 @@ Note that Subtitle, Regions and Room shapes will not be exported to Quest.
 
  
 
-Exits
------
+## Exits
 
 To create an exit, make sure no room is selected (just click outside a room). Now if you hover your cursor over a room the circular exit ports will appear. Drag the port from one room to another. Ports line up to the normal compass directions. Trizbort actually supports sixteen compass directions; I am not aware of _any_ text adventure that uses that many and Quest certainly does not. Just use the standard eight (you might want to use the others for up/down and in/out).
 
@@ -53,8 +50,7 @@ You can make other changes too, but nothing that will get exported into Quest.
 
  
 
-Objects
--------
+## Objects
 
 You can add objects to rooms. Double click the room to open the properties box, and go to the _Objects_ tab. It is a simple list; one object per line. Each object can be flagged to be of a certain type, the flags should go inside square brackets. The following are supported:
 
@@ -85,8 +81,7 @@ Note that position just determines where the list appears in Trizbort, and is no
 
  
 
-Map Settings
-------------
+## Map settings
 
 Go to _Tools – Settings_ to see general setting. Here you can give your game a title, add yourself as the author and add a description. This is just as easily done in Quest, and you may prefer to do it there.
 
@@ -94,8 +89,7 @@ None of the other settings will be included in your Quest game.
 
  
 
-Exporting
----------
+## Exporting
 
 Before exporting, check: Do you have a start room (it will have a yellow glow around it; Trizbort will not let you have more than one)? Do you have any objects/rooms with the same names?
 
@@ -108,8 +102,7 @@ Once you have completed your map, go to _File – Export_ to export your game, a
 
  
 
-In Quest
---------
+## In Quest
 
 You should now be able to open your game in Quest.
 
@@ -117,8 +110,7 @@ Remember to give all those objects a description. If any can be picked up, you w
 
  
 
-Quest Maps
-----------
+## Quest maps
 
 You will need to go to the _Interface_ tab of the game object to turn the map on, if you want to have an in-game map.
 
@@ -128,8 +120,7 @@ Alternatively, export the Trizbort map to an image, and add that to your game.
 
  
 
-Languages
----------
+## Languages
 
 If you want to create a game in a language other than English, you just need to add the language file to your game. In the editor toolbar, open the raw XML code view. You will see the code behind your game. It will start like this:
 
@@ -154,8 +145,7 @@ Close the code view to go back to the normal editor.
 
  
 
-Adding to an existing game
---------------------------
+## Adding to an existing game
 
 Another way to use Trizbort is to create a new region in an existing game. You will need to be careful to make sure every room and object has a unique room, as Trizbort will not be able to check against rooms and objects already in your game. I recommend backing up your Quest game before doing this!
 

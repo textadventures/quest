@@ -16,8 +16,7 @@ You can add a script just as you would for a command or anything else.
 
 
 
-Parameters
-----------
+## Parameters
 
 ### Calling the function
 
@@ -73,8 +72,7 @@ player.sat = true
 ```
 
 
-Returning A Value
------------------
+## Returning a value
 
 It is often useful to have function return a value. There may be several points in your game where you need to do the same calculation; it would be better to do the calculation in a function, and have the function return the result as an integer. Or there might be several conditions that the player needs to meet to advance to the next stage, and you want a function that returns a Boolean. Functions can return any type including lists, but, while you can have as many parameters as you like, you can only return one value.
 
@@ -120,8 +118,7 @@ We do have to take account of what will happen if we find nothing, so the last l
 
 
 
-Testing
--------
+## Testing
 
 It is important to test your functions properly. Often the most convenient way to do that is to _temporarily_ put them into the "start" script of the `game` object. Let us suppose the script to get a list of objects that can be sat on is called "GetSittables", you could put this in the start script:
 

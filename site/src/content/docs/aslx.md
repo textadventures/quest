@@ -52,16 +52,14 @@ This example defines three "rooms" – a lounge, a hall and a kitchen. These "ro
 
 By nesting \<object\> elements, you can define further objects inside objects.
 
-Libraries
----------
+## Libraries
 
 There are two libraries included in this example:
 
 -   Core.aslx provides the default Quest functionality, including: showing room descriptions, implementing default verbs such as "take", "drop" and "use", opening and closing containers, and deciding which objects are currently available to the player.
 -   [English.aslx](/advanced-topics/translating_quest) provides the English text for the built-in default responses, and the names of the verbs whose behaviour is defined in Core.aslx. This means Core.aslx is language-neutral – if you wanted to make a game in German or Spanish, just translate English.aslx and plug it in to your game.
 
-Attributes
-----------
+## Attributes
 
 Each object's attributes are defined in the XML. Attributes define all the behaviour of an object. The XML "type" attribute used is to specify the type of the attribute. If no type is specified, the [string](/types#string) type is assumed, as with the sink's "look" attribute in the above example. An exception is if there is no data in the XML tag, in which case a [boolean](/types#boolean) "true" is assumed instead.
 
@@ -71,8 +69,7 @@ The type of an attribute can determine the behaviour of an object. In the above 
 
 Attributes can change type while the game is running, by simply setting them to a new value.
 
-Additional attributes
----------------------
+## Additional attributes
 
 When Quest loads the game, it will set the following additional attributes on objects:
 
@@ -82,8 +79,7 @@ When Quest loads the game, it will set the following additional attributes on ob
 
 
 
-More on XML
------------
+## More on XML
 
 A chunk of XML - called an element - typically consists of a start tag, possible with attributes, the content, and the end tag. Tags are delineated by angle brackets, with a slash before the name in the end tag:
 ```
@@ -126,8 +122,7 @@ By default elements that hold Quest attributes are strings, but the type attribu
 ```
 
 
-What About HTML?
-----------------
+## What about HTML?
 
 HTML is the mark-up language used on web pages to control how a browser will display the page.
 

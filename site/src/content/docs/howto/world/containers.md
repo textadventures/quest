@@ -23,8 +23,7 @@ To make it a container, go to the _Features_ tab of the object, and tick "Contai
 **Openable/closable:** A object that is not a container, but can be opened and closed; a door or window. This is quite different to a container, and not discussed on this page (but see [here](/howto/tasks/setting_up_door)).
 
 
-Container
----------
+## Container
 
 We want our chest to be a container, so select that option.
 
@@ -35,8 +34,7 @@ There are also scripts that will trigger when the chest is opened (perhaps the c
 ![](/images/container2.png)
 
 
-Locked Container
-----------------
+## Locked container
 
 _Be careful using locked containers. The "Key hunt" is something of a cliche in computer games._
 
@@ -55,8 +53,7 @@ Set up the script like this:
 ![](/images/unlock.png)
 
 
-Limited Container
------------------
+## Limited container
 
 _Again, you need to be a little bit careful here. The limited container is something of a text adventure cliche, and can end up just annoying the player._
 
@@ -78,8 +75,7 @@ You can use any units that are convenient; it does not matter as long as you are
 
 
 
-Advanced
---------
+## Advanced
 
 Let's quickly look at scripts.
 

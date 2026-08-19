@@ -17,8 +17,7 @@ This is something built in to Quest, but it does need to be turned on. On the _F
 This page is about using `ASK/ABOUT`. This also includes `TELL/ABOUT` and `TELL/TO`, both of which are on the same tab, and work in exactly the same way, so everything here can also be applied to `TELL/ABOUT` and `TELL/TO`. For simplicity, we will go through just `ASK/ABOUT`.
 
 
-Ask ... about ...
--------------
+## Ask ... about ...
 
 The way ASK works is that you give a list of topics and corresponding scripts. Suppose we have a character, Mary, and we want to ask her about the murder of Dr Black. In the ASK section, type the topic, "dr black", into the entry box and click _Add_. The new entry appears expanded, ready for you to add the script that will run when the player asks about Dr Black. For now, just have it print a simple message.
 
@@ -31,8 +30,7 @@ What Quest does is attempt to match the topic against each word in the topic's k
 Obviously you can change the script that runs at any time by clicking the topic again to expand it...
 
 
-More advanced...
-----------------
+## More advanced...
 
 We can make this system more sophisticated in a number of ways. However, we will be using code to do that. Why? Well, it is easier for me to show you, but it is easier for you to put in your game, as you can just copy-and-paste the code. We will keep it simple, and let you know what you need to change for your game, and what can be pasted in without any changes.
 
@@ -40,8 +38,7 @@ For more on how to copy-and-paste code, see [here](/howto/scripting/copy_and_pas
 
 
 
-Varying the response
---------------------
+## Varying the response
 
 Currently Mary will give the same response every time the player asks her about the murder.
 
@@ -89,8 +86,7 @@ else {
 This does have the potential to become complex, but that is the nature of the beast. The more complex, the more natural it will seem to the player. It will need thorough testing, however!
 
 
-Default replies
----------------
+## Default replies
 
 Underneath the list of ASK topics, you can put a script to run when there is no topic for this character. Perhaps for Mary we could print a message that says "She looks at you, wondering what you are talking about."
 
@@ -101,8 +97,7 @@ msg("Mary shrugs, and says, 'I know nothing about " + text + ".'")
 ```
 
 
-Topics
-------
+## Topics
 
 It can be frustrating for the player to have to guess what topics are available, so an option is to provide a `TOPICS` command, which simply lists the topics the player can ask about. The best way to do this is to set up a string with some initial entries, and then to add to it as the game progresses. In the investigation of the murder of Dr Black, new topics could be added as new evidence comes to light, for instance.
 
@@ -134,8 +129,7 @@ list add(game.topics, "Forensic results")
 ```
 
 
-Ask about ...
--------------
+## Ask about ...
 
 If there is only one NPC in the room, we can save the player some typing by creating an `ASK ABOUT ...` command. Go to _Commands_ in the left pane, then click "Add" in the right pane. For the command pattern, type in `ask about #text#`, and paste in this code:
 
@@ -172,8 +166,7 @@ Then it looks at how many NPCs it found. If none, an error message; if one, then
 If it found more than one, it will show a menu, asking the player to select one, and then again call `DoAskTell`.
 
 
-Ask ...
--------
+## Ask ...
 
 A further option we could give the player is to ask a character, and then offer a list of topics to ask about. We already have the list of topics from the TOPICS command, so half the work is done.
 

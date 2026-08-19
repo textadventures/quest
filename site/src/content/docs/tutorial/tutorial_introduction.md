@@ -4,8 +4,7 @@ sidebar:
   order: 1
 ---
 
-Introduction
-------------
+## Introduction
 
 [Quest](https://textadventures.co.uk/quest) is a program for writing text adventure games and gamebooks (both of which are sometimes referred to as [Interactive Fiction](http://en.wikipedia.org/wiki/Interactive_fiction)).
 
@@ -16,13 +15,11 @@ You can use it in two ways:
 
 Both give you the same editor, so this tutorial applies either way.
 
-What is a text adventure?
--------------------------
+## What is a text adventure?
 
 Text adventure games were the earliest type of computer game, from a time when computers could only display text - there were no graphics, so everything was described with text. You would play the game by typing commands with the keyboard such as `GO NORTH` or `HIT TROLL`. Quest lets you make this kind of game - you can include graphics now though, and play the game by clicking hyperlinks instead of having to type everything.
 
-Why create text adventures
---------------------------
+## Why create text adventures
 
 Here are some reasons why interactive text games are great:
 
@@ -38,13 +35,11 @@ If you have some time to spare, it's well worth watching the documentary [Get La
 
 You can find another great introduction for beginners at [Brass Lantern](http://www.brasslantern.org/beginners/).
 
-Programming without Programming
--------------------------------
+## Programming without programming
 
 Quest is a powerful system with a gentle learning curve - you can get started very easily without doing any programming at all, and build up from there. The point and click editor means there's no need to remember syntax, type in strange punctuation or even remember commands. But there is a lot of power underneath - a full programming language in fact. You never need to see any code to access the full power of Quest, but it includes a "Code View" feature so it's there if you need it.
 
-Let's Begin
------------
+## Let's begin
 
 [Next: Creating a simple text adventure](/tutorial/creating_a_simple_game)
 

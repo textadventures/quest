@@ -16,8 +16,7 @@ Click on the third (the `{command:...}` link), and Quest sends the given command
 
 In fact, you can put any command together like this; say there is a command that recognises "jump up and down", this will give a link to that: Here is some text with a link for {command:jump up and down:jump about}.
 
-Related functions
------------------
+## Related functions
 
 *GetDisplayNameLink (object, type)* Gets the name/alias of the object. If type is not the empty string and game.enablehyperlinks then this is wrapped up as a link, using the `{object:...}` syntax above, unless type is "exit" (and the object has exactly one verb), in which case the `{exit:...}` syntax is used. Prefixes and suffixes are also added as required, outside the link.
 

@@ -6,8 +6,7 @@ sidebar:
 
 Containers are objects that can contain other objects. In this example, we'll create a "fridge" object in the kitchen, which contains several items of food and drink. The fridge is initially closed, so these items will only be visible once the player has opened the fridge.
 
-Creating the Fridge
--------------------
+## Creating the fridge
 
 Create a "fridge" object in the kitchen and give it a description like "A big old refrigerator sits in the corner, humming quietly."
 
@@ -17,8 +16,7 @@ Now let's set the fridge up as a container. This is a feature, so first go to th
 
 By default, the player can open and close the fridge. We're going to add some objects to the fridge in a moment, and it would be good if the contents were listed when the player opened the fridge, so tick the "List children when object is looked at or opened" option.
 
-Adding objects to the fridge
-----------------------------
+## Adding objects to the fridge
 
 Now let's create some objects inside the fridge. To do this, we just create these objects as normal, but on the "Add object" window we set the parent to "fridge". Alternatively you can create the objects first and then move them - use "Move to..." to move an object into the fridge.
 
@@ -34,8 +32,7 @@ Run the game and open the fridge again, and you'll see the contents listed with 
 
 ![](/images/Containerfridgeplayer.png)
 
-Updating the description
-------------------------
+## Updating the description
 
 In your "look at" description, you can check if the object is open by running a script. Add an "if" command and choose "object is open" - then you can print a different message depending on whether the fridge is open or closed.
 
@@ -43,20 +40,17 @@ When the fridge is open, you might print "The fridge is open, casting its light 
 
 As an exercise, add a closed cupboard to the kitchen. Add a few items to the cupboard such as a tin of beans, a packet of rice etc. The player should be able to open and close the cupboard. When Quest lists the contents of the cupboard, it should say something like "The cupboard is bare except for ..."
 
-Transparency
-------------
+## Transparency
 
 When you set the "Transparent" option, the player can see what objects are inside the container, even if it is closed.
 
 Although the player can see what's inside a transparent container, they still can't take objects from it or put objects in it unless it is open.
 
-Surfaces
---------
+## Surfaces
 
 Surfaces act very much like containers - they act as an always-open container, and objects that are on a surface are visible in a room description even before the player has looked at the surface. For this reason they’re a good choice for implementing things like tables. As an exercise, change the table object in the lounge to make it a surface (or create it if you haven't already). Then move the newspaper so that it is on the table.
 
-Lockable Containers
--------------------
+## Lockable containers
 
 What if you don't want the container to be immediately openable? If it's part of a puzzle, you may want the player to have a particular "key" object before they can open it. To implement this, you can make the container lockable.
 

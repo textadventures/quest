@@ -9,8 +9,7 @@ Often you will want the player to be able to see how they are doing at a glance,
 Status attributes must be set up as ordinary attributes first. You must then tell Quest that you want these particular ones to be shown in the interface. You can do this with attributes of the player or of the game object, but not anything else in the game. We will set up a score attribute on the player object.
 
 
-Status Attributes
------------------
+## Status attributes
 
 Go to the _Attributes_ tab of the player object. In the lower box, click "Add", then type "score" and set it to an integer. Then go to the upper box, marked "Status Attributes", click Add.
 

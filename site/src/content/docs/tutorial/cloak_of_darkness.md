@@ -21,8 +21,7 @@ The source code for Cloak of Darkness for Quest 5.8 can be downloaded here:
 [cloak_of_darkness.aslx](/examples/cloak_of_darkness.aslx)
 
 
-The Specification
-------------------
+## The specification
 
 The specification is as follows:
 
@@ -39,8 +38,7 @@ As you can see, there is really not much to it! So how would one go about creati
 We will divide the process into five sections, starting with the locations and items, then each of the systems in turn (i.e., the hook, message and darkness), then the interface. As you complete a section, you should go into the game and check it works properly (and other times too, as required). You should check you can save the game (as this is particularly sensitive to errors), and you should also check all the response messages. Do not just check you can hang the cloak on the hook, test what happens when you try to hang the hook on the cloak, or hang in up in the foyer, etc.
 
 
-Locations and Items
--------------------
+## Locations and items
 
 The first place to start is the geography of your game; creating the locations, the exits between them and the items in them. For a big game, you might want to create a map with [trizbort](/howto/world/trizbort), and export it to Quest, but there is no point when there are only three rooms!
 
@@ -59,8 +57,7 @@ On the _Inventory_ tab of the cloak, tick that it can be taken. You need to make
 Give the cloak and the hook descriptions. Generally you would be adding descriptions for all the items and locations, but these are going to depend on the various systems, so we will leave that for now.
 
 
-The Hook
---------
+## The hook
 
 The first system we will look at is the hook, upon which we can hang the cloak.
 
@@ -145,8 +142,7 @@ Now go to the _Setup_ tab of the hook, and tick it to be scenery. This will stop
 
 
 
-The Message
------------
+## The message
 
 For the message, we need to keep a count of how many turns the player spends in the bar, and to base the message on that. It is complicated because entering the bar, and then leaving straight after is okay, so we need to count how many consecutive turns the player spends there.
 
@@ -238,8 +234,7 @@ SuppressTurnscripts
 You might want something more helpful...
 
 
-The Darkness
-------------
+## The darkness
 
 So now we have to handle the darkness. Note that Quest has a built-in light/dark system, but it is not so useful here, where the darkness will depend on where an object is.
 
@@ -333,8 +328,7 @@ else {
 You should now have a working game that fits the required specification.
 
 
-The Interface
--------------
+## The interface
 
 So the last step is the aesthetics. We want this to look good, to fit the mood of the game. This is all done on the game object.
 
@@ -345,8 +339,7 @@ We can then select colours and fonts. When picking a font, make sure it is easil
 On the _Room descriptions_ tab we can change the text displayed. I am going to turn off using "You are in", and the list of exits (set it to zero). I want the objects after the description, so will swap their numbers.
 
 
-Next steps
-----------
+## Next steps
 
 Now we have a complete game, that looks good too. We can add some finishing touches, such as an `ABOUT` command, or implement the posters that are mentioned in the foyer (remember to set them to be scenery).
 
@@ -605,8 +598,7 @@ else {
 This version creates two lists, one of worn items, one of carried items, and prints a message depending on whether there is anything is each list. I am using a local variable, `s`, primarily so the code will fit the page, by the way.
 
 
-Walkthrough
------------
+## Walkthrough
 
 You can test your game by following a walk through.
 
@@ -618,8 +610,7 @@ Once you have a walkthrough you can click the play button (the triangle), to pla
 
 
 
-Releasing the game
-------------------
+## Releasing the game
 
 So you think the game is ready for release... Not yet!
 

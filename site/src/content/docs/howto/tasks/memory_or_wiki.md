@@ -18,8 +18,7 @@ We will look at giving the player a memory, but the principle is the same for al
 
 This is pretty simple to do, by hooking into the existing Ask/Tell system. The first thing to do is turn on Ask/Tell on the _Features_ tab of the game object.
 
-Memory object
--------------
+## Memory object
 
 We then need to create an object to represent the player's memory, in a place the player cannot get to. Call it "memory", and go to the _Ask/Tell_ tab. In the Ask section, put in the look ups. In the example, the topic keywords are "weddle hoots", and for the script, have it print a message, "The Weddle-Hoots are an old aristocratic family."
 
@@ -31,8 +30,7 @@ For example, you could have it print an expression:
 
 ![](/images/memory1.png)
 
-REMEMBER command
------------------
+## REMEMBER command
 
 Now we need a command. The pattern for the command is:
 
@@ -57,16 +55,14 @@ DoAskTell (memory, text, "ask", "askdefault", "DefaultAsk")
 ![](/images/memory2.png)
 
 
-All done
---------
+## All done
 
 Now you can play your game, and type REMEMBER HOOTS, and it should all work.
 
 The Ask/Tell system is pretty clever and will try to match the text the player types as best it can, but you can add additional keywords as you see fit.
 
 
-Advanced
---------
+## Advanced
 
 We are doing this in code!
 

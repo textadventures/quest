@@ -8,8 +8,7 @@ sidebar:
 When the player types something (or clicks a link), Quest will try to match the command string against all the commands it knows. If it gets a match, then it will process that command.
 
 
-Simple commands
----------------
+## Simple commands
 
 Let us start with a `HELP` command. There is already a `HELP` command in Quest, but we will add our own (somewhat less helpful) version.
 
@@ -30,8 +29,7 @@ There is a convention in interactive fiction that a question mark can be used as
     help;?
 
 
-Commands and objects
---------------------
+## Commands and objects
 
 Often you will want a command to involve an object. To handle that, Quest has a special system (in fact it has two, but [using verbs](/howto/commands/using_verbs) is a discussion for another time). Let us say we want to have a command for attacking a zombie. And we want to allow `STRIKE` and `HIT`.
 
@@ -65,8 +63,7 @@ If there are two or more zombies here, Quest will ask the player which one she m
 So we have a single object matched to our command, so now Quest will run the script for the command.
 
 
-Script
-------
+## Script
 
 Note that your script now has access to a special local variable called "object", and you can use that as a handle for the actual zombie.
 
@@ -103,7 +100,6 @@ You may find that you want to adjust the order of the checks; if the zombie is b
 
 
 
-See also
---------
+## See also
 
 If your command should only work in a specific room, see [here](/howto/commands/commands_for_room) for the best way to handle it. For commands that need to have two objects, see the page on [complex commands](/howto/commands/complex_commands). To make your responses grammatically correct for any object, use [neutral language](/howto/tasks/neutral_language).

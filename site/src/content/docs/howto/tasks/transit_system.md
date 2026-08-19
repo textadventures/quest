@@ -11,8 +11,7 @@ Some years ago I release a library for a simple transit system. Due to changes i
 In this systyem, the player can go to any one of a set of locations (stations, spaceports, teleportation booths, magic gateway etc.), and at that location type in a certain command. She will then be presented with a list of destinations, and if she selects one, she will go directly there.
 
 
-On the Buses
-------------
+## On the buses
 
 I am going to build a bus system in this example, so there will be certain locations that are bus stops. Each of them will have a Boolean attribute, "busstop", set to true. We also need an object dictionary to store the destinations. 
 
@@ -39,8 +38,7 @@ The last two lines, then, add entries to the dictionary. Note that when adding e
 You will have noticed we are only adding two bus stops - we only want the player to be able to travel to the mall and back at first.
 
 
-Catching a bus
---------------
+## Catching a bus
 
 Then we need a new command. What this is will depend on the type of transport. as this is for a bus stop, I will be doing CATCH BUS, so create a new command and put in "catch bus" as the pattern.
 
@@ -70,8 +68,7 @@ The first three lines are checking the player is at a bus stop. This is why we s
 Then (if this is a bus stop) the command creates a new string list, and puts in it all the destination names, except the current location. The `ShowMenu` function displays the menu, with that string list as the options displayed. The selection goes into a variable called `result`, and this is used to get the destination from the dictionary. A message is displayed, and the player moved.
 
 
-Adding Destinations
---------------------
+## Adding destinations
 
 As the player progresses through the game, you can give her access to new areas by adding new destinations. Exactly where you do that will depend on your game, and what it was that opened up the new area, but the code to make it happen is very simple.
 
@@ -80,8 +77,7 @@ dictionary add (game.destinations, "Downtown", Bus stop for downtown)
 ```
 
 
-Paying a fare
--------------
+## Paying a fare
 
 If money is important in your game, you might want to charge the player for travelling (but consider if the player can get in an unwinnable situation by wasting all her money).
 

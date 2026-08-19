@@ -7,8 +7,7 @@ sidebar:
 A picture paints a thousand words, or so they say. So how do you add images to your game?
 
 
-About Image Files
-------------
+## About image files
 
 For photos, the best file format to use is JPG, however, for anything else, you should use PNG. PNG uses lossless compression, and it supports transparency, so you can make the image appear to be any shape you want.
 
@@ -17,8 +16,7 @@ GIMP is very useful for editing images and is free. Inkscape is  good vector-bas
 Bear in mind that there is a 50 Mb limit on games at textadventures.co.uk (see [Size Limitations](/publishing/publishing)), and images, videos and sounds can quickly get you to that limit. Compressing images can help a lot.
 
 
-Adding Images - The picture command
--------------------
+## Adding images - the picture command
 
 Quest has a built-in picture command, which will show an image aligned to the left. 
 ```
@@ -30,8 +28,7 @@ Quest has a built-in picture command, which will show an image aligned to the le
 Sometimes you want to change how it is displayed, for example put the image in the middle, or have text flow round it. The picture command gives no control over the image, so we will need to output the raw HTML to do anything more. Sounds scary? You bet!
 
 
-Using HTML
-----------
+## Using HTML
 
 HTML is the way web pages on the internet tell your browser how they should be displayed. It is a set of codes embedded in the text, and, for example `<i>` will start italics, whilst `</i>` stops it.
 
@@ -55,8 +52,7 @@ The code ends up looking like this.
 Looks just the same so far, but this gives us a handle on changing how it looks, via the style attribute and CSS. 
 
 
-Floating Images
----------------
+## Floating images
 
 Let us make the image float! When the image floats, the text will flow around it. The HTML will look kind of like this:
 ```
@@ -81,8 +77,7 @@ The CSS to centre an image is rather more complicated than you would imagine:
   msg ("<img src='" + GetFileURL("gravestone.png") + "' style='display: block; margin-left: auto; margin-right: auto;' />")
 ```
 
-Other Effects
--------------
+## Other effects
 
 There are all sorts of attributes you can mess around with. Here the image is transparent.
 ```
@@ -94,8 +89,7 @@ You can resize it. Changing just the width or height changes the image proportio
   msg ("<img src='" + GetFileURL("gravestone.png") + "' style='float:left;width:100px;' />")
 ```
 
-One Image On Top of Another
----------------------------
+## One image on top of another
 
 You can even superimpose one image over another if you feel brave enough. You need to put them both inside an HTML div (this is then the reference point that the images are positioned against), and give the images an absolute position. All that needs to go inside a single "msg" as Quest will add its own HTML, so in this example, a string, `s`, is used, with each bit added to it (we could do it in one line, but it would be very long).
 ```
@@ -153,8 +147,7 @@ Another possibility is to display a map and to have a marker on it that shows th
 
 
 
-Hosting images elsewhere
-------------------------
+## Hosting images elsewhere
 
 One way to circumvent the size limitation is to host your images on another site, such as DeviantArt or Imgur. You can do that easily, using the technique above. In fact, it is even easier; you just add the full address, rather than having to use `GetFileURL`.
 

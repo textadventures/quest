@@ -12,8 +12,7 @@ There are several ways to set up a shop; this is more comprehensive, which does 
 The approach is to have separate rooms that the player cannot get to to hold the stock. When goods are purchased from stock, a clone is made for the player. When the player sells an item, if it is something that was purchased, it will get destroyed, otherwise it will get added to stock (and if bought back will not be cloned).
 
 
-Setting Up An Economy
----------------------
+## Setting up an economy
 
 Quest has some features built in to help us, so the first step is to turn these on. Go to the _Features_ tab of the `game` object, and tick "Money".
 
@@ -169,8 +168,7 @@ if (HasAttribute(game.pov.parent, "stock")) {
 
 This will add the contents of the shop's stock room to the scope, so the player will see the items there and can interact with them.
 
-Creating A Shop
----------------
+## Creating a shop
 
 So now we have put in the infrastructure, we have done the hard work. Now you can create your shop - or however many you like. For each shop you need to also create a stockroom, which is just a room with no exits going to it, that contains everything for sale in that shop.
 
@@ -198,7 +196,6 @@ It should look like this:
 
 
 
-Clones
-------
+## Clones
 
 There some issues when using clones in your game. See [here](/howto/scripting/clones).

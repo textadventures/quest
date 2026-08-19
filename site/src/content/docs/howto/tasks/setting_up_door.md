@@ -13,14 +13,12 @@ This guide uses Quest's lockable exits feature. If you are not already familiar 
 Let us suppose we have two rooms; the lounge with the kitchen to the west, with exits going each way. We will say the door is closed to start with.
 
 
-Exits
------
+## Exits
 
 To stop the player going through the closed door, tick the "Locked" option for each exit. You will also need to give them names, let us say "exit to kitchen" and "exit to lounge". You should also change the locked message, perhaps to "The door is closed."
 
 
-The Door...
------------
+## The door...
 
 Create an object in the lounge; the door. Set it to be scenery. On the _Features_ tab, set it to be a container, then on the _Container_ tab, set it to be "Openable/Closeable".
 
@@ -43,8 +41,7 @@ this.isopen = false
 ```
 
 
-... In Both Rooms
-------------------
+## ... In both rooms
 
 Now we need to have the door in both rooms. We will use a bit of trickery, and make it look like it is in the second room. Go to the _Features_ tab of the game object, and tick "Show advanced scripts for the game object". Then go to the _Advanced scripts_ tab. The bottom script, "Backdrop scope script" is the one we are interested in.
 
@@ -59,8 +56,7 @@ if (game.pov.parent = kitchen) {
 The first line checks in the player is in the kitchen, and if she is, the second line adds the door to the list. Now whenever the player is in the kitchen, it will seem as though the door is too.
 
 
-Rooms
------
+## Rooms
 
 It is a good idea to keep the player informed, and in this case we want her to know whether the door is open or closed. You can do that in the room description using the text processor. For example:
 
@@ -69,8 +65,7 @@ It is a good idea to keep the player informed, and in this case we want her to k
 This is again using the "isopen" attribute of the door object.
 
 
-Starts Open?
-------------
+## Starts open?
 
 What if you want the door open at the start of the game? Just make sure the two exits are not locked, and tick the "Is open" box on the _Container_ tab of the door.
 

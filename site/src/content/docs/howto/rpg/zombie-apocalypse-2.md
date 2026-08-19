@@ -7,8 +7,7 @@ sidebar:
 
 This is the second of two parts, and discusses how to add some more advanced features. Part one can be found [here](/howto/rpg/zombie-apocalypse-1).
 
-Status attributes
------------------
+## Status attributes
 
 It would be good if the player can see at a glance how she is doing. We can use status attributes to do that. The first step is to give the player a string dictionary, called "statusattributes". Then we can add the attributes we want to track. (For a closer look at how status attributes work, see [How to Keep Score](/howto/tasks/keeping_score).)
 
@@ -59,8 +58,7 @@ In each case, we need to insert the function as the penultimate line (the last l
 }
 ```
 
-Attack descriptions
--------------------
+## Attack descriptions
 
 You may have noticed that if you shoot the zombie, you see:
 
@@ -137,8 +135,7 @@ else {
 ```
 
 
-Multiple attacks
-----------------
+## Multiple attacks
 
 So the player has a choice of different weapons, perhaps we could give the zombies some options. Half the work has been done because it already works for the player's weapons. The first bit to change is the turn script. This is what we already have in the top half of the turn script:
 
@@ -271,8 +268,7 @@ If the zombie was readying the vomit attack last turn, then this turn it will pe
 
 
 
-Searching Corpses
------------------
+## Searching corpses
 
 Looting the dead is very much frowned upon in real life, but accepted and almost mandatory in video games, so we better implement it for our game. What we need is a search command and some addition to the zombies that adds goodies to them.
 
@@ -322,8 +318,7 @@ So what does it do? First it picks a number from 1 to 50; this is how much money
 Obviously you can modify the numbers as you like.
 
 
-On death
---------
+## On death
 
 It would be nice if the display verbs changed when the zombie dies, so "search" is an option but "shoot" is not. Just update the script that runs when it dies.
 
@@ -349,8 +344,7 @@ obj.changedhitpoints => {
 ```
 
 
-Searching a junk pile
----------------------
+## Searching a junk pile
 
 If you want the player to be able to search something else, here is how to do that. We will create an object called "junk pile", and something to be found in it, let us say "diary". Put the diary in the same room as the junk pile, but on the _Setup_ tab untick the visible tab.
 

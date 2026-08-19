@@ -9,8 +9,7 @@ This page is for "how to" guides which don't fit in to the tutorial (and may be 
 
 
 
-Simple
-------
+## Simple
 
 Easy to implement using only the GUI.
 
@@ -20,8 +19,7 @@ Easy to implement using only the GUI.
 -   [Implementing components of an object](/other_guides/implementing_components_of_an_object)
 
 
-Basic
------
+## Basic
 
 Be prepared to see code - but not write it. Most of these have blocks of code, but do not let that put you off; it is pretty easy to copy-and-paste a chunk of code straight into your game, then go back to the GUI view to look at it or change it.
 
@@ -31,8 +29,7 @@ Be prepared to see code - but not write it. Most of these have blocks of code, b
 -   [Port and starboard](/other_guides/port_and_starboard)
 
 
-Advanced
--------------
+## Advanced
 For those happy to use code.
 
 -   [A Hint System](/other_guides/a_hint_system)
@@ -44,8 +41,7 @@ For those happy to use code.
 
 
 
-See also
----------
+## See also
 
 More guides can be found here:
 

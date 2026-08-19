@@ -6,8 +6,7 @@ sidebar:
 
 A great feature of Quest is that you can create your own version of most of the built-in functions to do what you want. In object-orientate programming, this is called "overriding".
 
-How to...
----------
+## How to...
 
 So let us suppose we want to override `InitUserInterface`. This is an empty function that is designed to be overridden; all your custom formatting should go in this function.
 
@@ -18,12 +17,10 @@ The yellow strip across the top is because it in a library, not your main game, 
 Now you can do with it whatever you like.
 
 
-Not Only Functions
-------------------
+## Not only functions
 You can also override templates, dynamic templates, types and commands in just the same way (commands can also be overridden by copying the pattern).
 
 
-But Not All Functions...
-------------------------
+## But not all functions...
 
 There are two types of functions in Quest, those written in Quest code, and those written in the underlying code. You cannot override the latter; your new function will just get ignored. These functions do not appear in the list in the left pane. They include script commands, but also some of the more fundamental functions.

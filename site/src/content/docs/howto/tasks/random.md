@@ -13,8 +13,7 @@ You might also want to randomly generate descriptions of cloned objects so they 
 
 Quest has a suite of functions to allow these things. We will look first at what is available, and then at some examples of them in use.
 
-Random functions
----------------
+## Random functions
 
 ### Text processor
 
@@ -91,8 +90,7 @@ A great example of this in use would be calculating damage for a weapon. Each we
 hits_lost = DiceRoll(weapon.damage)
 ```
 
-Examples of use
-----------------
+## Examples of use
 
 ### Selecting one option
 

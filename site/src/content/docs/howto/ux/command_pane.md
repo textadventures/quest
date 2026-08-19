@@ -7,8 +7,7 @@ sidebar:
 Quest allows the player to click and object and then click on an associated verb, without typing anything. A custom command pane allows the player to click on simple one-word commands, such as WAIT and LOOK.
 
 
-Setting up
-----------
+## Setting up
 
 On the _Interface_ panel of the game object, make sure "Show panes" is ticked, then tick "Show a command pane". If you start your game, you should see the new pane, but it just says "Commands" and does not do anything.
 
@@ -35,8 +34,7 @@ JS.setCommands ("Look;Wait;Stand", "blue")
 ```
 
 
-Commands for specific rooms
-----------------------------
+## Commands for specific rooms
 
 You might want to set the commands when the player enters and leaves a specific room, if there are commands specific to that room. This works best for simple, one-word commands, however you can use any command Quest can understand, including commands you have added yourself.
 
@@ -53,8 +51,7 @@ JS.setCommands ("Look;Wait")
 ```
 
 
-More advanced options?
----------------------
+## More advanced options?
 
 The custom command pane is quite specific in how it works. What if it does not work quite as you like? Perhaps you want images or want clicks to do something different.
 

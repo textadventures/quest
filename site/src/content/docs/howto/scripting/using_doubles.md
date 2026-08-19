@@ -7,14 +7,12 @@ sidebar:
 Doubles are an alternative number system to integers; what is the difference?
 
 
-Integers 
---------
+## Integers
 
 Integers are whole numbers (1, 2, 3, etc.), and in maths they can go from minus infinity, through zero, all the way up to plus infinity. Computers have limited space, and in Quest, an integer can go from -2147483648 to 2147483647 - plenty big enough for most purposes.
 
 
-Non-Integers
-------------
+## Non-integers
 
 In mathematics, numbers that are expressed as a fraction or decimal are called "rational" numbers (or "real" number; rational numbers are in fact a subset of real numbers). In computing, these are called floating point number because they have a decimal point that can be anywhere in the number. While rational (and  real) numbers can range from minus infinity to plus infinity, floating point numbers are limited because of the space in a computer. They are also limited in terms of their accuracy (how many digits you can store).
 
@@ -23,16 +21,14 @@ More modern computers (like since the eighties or something) therefore offer a s
 This, then, is what is known as a "double".
 
 
-Why not to use doubles
-----------------------
+## Why not to use doubles
 
 The problem with doubles is that they are approximate. Usually they are good enough, but occasionally you might see something like 6.12303176911189E-17 rather than zero. That is very close, and for calculations good enough, but it does not _look_ right.
 
 Use integers if you possibly can.
 
 
-What about money, etc.?
------------------------
+## What about money, etc.?
 
 You might wonder about how you would handle money, say to represent £2.99, in Quest. Use integers!
 
@@ -41,14 +37,12 @@ Use integers to count the pennies, rather than doubles to count the pounds. You 
 For other quantities, you can do similar. If you want to track temperature to the nearest 0.1 of a degree, store the number in tenths of a degree, and output it in degrees (perhaps with the `DisplayNumber` function).
 
 
-When to use doubles...
-----------------------
+## When to use doubles...
 
 I have been messing with Quest for over 6 years and besides experimenting for tutorials like this have never had to use anything other than integers. The only time I have seen it come up on the forum was for someone trying to track the progress of a ship across the ocean (or spaceship across space maybe), where the player specifies an angle and distance. For complex trigonometric calculations, you are into the realm of doubles.
 
 
-Trigonometry
-------------
+## Trigonometry
 
 Quest supports all the usual trigonometric functions - and the obscure ones too - and others functions as well.
 
@@ -68,8 +62,7 @@ Note that the trigonometric functions all use radians rather than degrees. If yo
 return (Sin(angle * pi / 180))
 ```
 
-Other Functions and Constants
----------------
+## Other functions and constants
 
 The constants `e` and `pi` are built-in.
 
@@ -82,8 +75,7 @@ Quest also has these other functions.
 * Sqrt
 
 
-Notes...
--------------
+## Notes...
 
 If you do a calculation that mixes integers and doubles, Quest will convert the integers to doubles to do the maths, and the result will be a double.
 

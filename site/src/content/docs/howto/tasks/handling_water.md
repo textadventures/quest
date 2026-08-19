@@ -11,8 +11,7 @@ What we will do is to create a waterskin that can be filled and drunk from, and 
 There is also a [library](https://github.com/ThePix/quest/wiki/Liquid-Library) available.
 
 
-The waterskin
--------------
+## The waterskin
 
 So first create the waterskin, in the normal way. Give it two integer attributes, "full" and "capacity". Set them to 0 and 10 respectively. The full attribute will track how much water is in the waterskin, the capacity will be the maximum. You may want to play around with these values.
 

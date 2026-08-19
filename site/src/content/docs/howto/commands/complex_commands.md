@@ -25,8 +25,7 @@ First, remember that `GIVE` and `USE` are already built in; if you want to use t
 As an example, I am going to implement `TIE CORD TO HOOK`.
 
 
-Command Pattern
----------------
+## Command pattern
 
 First you need a command pattern. We could do this:
 ```
@@ -52,8 +51,7 @@ You might now want to include alternative verbs.
 ```
 
 
-Regular Expression (optional!)
-------------------------------
+## Regular expression (optional!)
 
 If you are feeling brave, you could use a regular expression here (remember to set Regular expression from the drop down list).
 ```
@@ -94,8 +92,7 @@ That will handle any of these:
 There is more on regular expressions [here](/howto/commands/pattern_matching).
 
 
-Script
-------
+## Script
 
 So we have a command pattern or regular expression that Quest will use to match this command, now we need to do something, so we need a script. Because we used this as the command pattern:
 ```
@@ -141,8 +138,7 @@ For the first three conditions, we convert them to a if/else if/else cascade, at
   }
 ```
 
-More General
-------------
+## More general
 
 Suppose there are several objects the cord might be tied to, what is the best way to handle that? What we want is a command that can handle tying the cord to any such object, so the first thing to do is to flag an object as attachable. Go to the _Attributes_ tab of each object, and add a new attribute, "attachable", set it to be a Boolean, and tick it. Now our command can check if the object has that set, and if it does, the cord can be tied to it.
 
@@ -171,8 +167,7 @@ The code here has two changes. Condition number 3 now checks the attachable flag
 ```
 
 
-Burn, Baby, Burn!
------------------
+## Burn, baby, burn!
 
 Let's look at another example. Suppose you want to have fire in your game, to allow the player to burn certain items. There are several ways you could do this; I will offer a relatively simple approach.
 

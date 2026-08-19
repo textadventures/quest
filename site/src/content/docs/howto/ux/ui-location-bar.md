@@ -19,8 +19,7 @@ $('#location').replaceWith('Some new HTML code')
 That new HTML can include a new "location" element, in which case Quest will continue to update the location, or not if you do not want that.
 
 
-Tracking Turns and Score
-------------------------
+## Tracking turns and score
 
 A good example would be to show the score and number of turns in the top right corner, and keep the room name in the left corner. To do that, we will insert a table into the location bar, one row high, two columns wide. The first cell is called "location", so will still display the room name, the second is called "altlocation".
 
@@ -44,8 +43,7 @@ This needs to go in the "User interface initialisation script", on the _Advanced
 If you go in game, you show see the score and turn... but it does not update.
 
 
-Updating the display
---------------------
+## Updating the display
 
 We need to first initialise the score and turn counter, and this has to be done in the start script, on the _Scripts_ tab of the game object, as we want this to happen at the start of the game, but not when a saved game is loaded:
 
@@ -62,8 +60,7 @@ JS.eval ("$('#altlocation').html('" + game.score + "/" + game.turncount + "')")
 ```
 
 
-Adding Commands
----------------
+## Adding commands
 
 We can also add commands to the location bar. Just change the "User interface initialisation script" to this:
 
@@ -102,8 +99,7 @@ The "onclick" attribute is an event handler; when the player clicks this element
 When we put this code into Quest, we need to escape the double quotes, by putting a backslash before them, so Quest knows they are part of the string, not marking the end of it. We also need to escape the apostrophes so JQuery knows that _they_ are not marking the end of the string for it, and in this case we use the special HTML code `&apos;`.
 
 
-Modifying the Style
--------------------
+## Modifying the style
 
 As we have not touched the "status" element, changes you make on the _Interface_ tab will still be applied. The one exception to that is the colour of the text for commands, because links always get displayed in a different colour. The simple way to handle that is to set the colour in the "style" attribute.
 

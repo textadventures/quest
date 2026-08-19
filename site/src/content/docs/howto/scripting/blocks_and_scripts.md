@@ -14,8 +14,7 @@ Script commands with blocks that wait: `ask, get input, on ready, show menu, wai
 Functions with scripts that wait: `Ask, ShowMenu, SetTimeout, SetTimeoutID, SetTurnTimeout, SetTurnTimeoutID`
 
 
-Script commands and blocks
---------------------------
+## Script commands and blocks
 
 A block is a section of code that is set apart from the main. In the GUI view, it will be indented to the right; in code view it is indented and further denoted by `{` and `}` at the start and end. There will be some sort of script command before it that controls it.
 
@@ -56,8 +55,7 @@ The player will be asked the question, but Quest will print "You walk swiftly on
 The `on ready` script command is there specifically to ensure Quest waits for any outstanding block to end before running its own block.
 
 
-Functions with scripts
-----------------------
+## Functions with scripts
 
 So now we are considering the script for a function, a script within a script. This will look just like a block. In the GUI view, it will be indented to the right; in code view it is indented and further denoted by `{` and `}` at the start and end. There will be some sort of function before it that controls it.
 
@@ -125,8 +123,7 @@ ShowMenu ("Paint " + GetDisplayAlias(object) + " what colour?", options, false) 
 }
 ```
 
-Nesting
--------
+## Nesting
 
 Given Quest does not wait for a block or script to complete, what do you do if you want to have multiple `ShowMenu` calls in the same script? For example, during character creation, you might want to ask the player several questions to set up the character.
 

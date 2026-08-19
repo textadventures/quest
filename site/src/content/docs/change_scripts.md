@@ -29,8 +29,7 @@ Quest recognises an attribute as a change script if it is a script and its name 
 ```
 
 
-Notes
------
+## Notes
 
 ### Lists
 
@@ -91,8 +90,7 @@ There is a special variable that holds the previous value of the attribute your 
 The first line means that this code only applies if this object is the current player point-of-view (usually that is the "player" object). If this is the player, then the player has moved. It checks to see if oldvalue exists (which it should do, but is good to check; if this is being set for the first time, there will be no old value). If it exists, it is passed to OnEnterRoom, which can then run the leaving script for the old room if necessary.
 
 
-When to Use Change Scripts
---------------------------
+## When to use change scripts
 
 A couple of examples...
 

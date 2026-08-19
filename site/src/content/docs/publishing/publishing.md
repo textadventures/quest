@@ -11,16 +11,14 @@ Note that once you have published it, your game will go into a queue for moderat
 Moderation can take a few days; please be patient.
 
 
-Publishing your game
----------------------
+## Publishing your game
 
 In the editor, open the **File** menu in the toolbar and choose **Publish…**. This builds a `.quest` package (your game file plus its assets) and downloads it.
 
 On textadventures.co.uk, click on _Create_ at the top, then _Submit_ below that. Then follow the instructions to upload the `.quest` file you just downloaded.
 
 
-The Publish Process
---------------------
+## The publish process
 
 What gets included in the `.quest` file, when you publish?  Broadly two things.
 
@@ -39,8 +37,7 @@ However, you can modify that by changing `game.publishfileextensions`; despite t
 The single code file plus all the supporting files are then compressed in a single archive file.
 
 
-Size Limitations
-----------------
+## Size limitations
 
 textadventures.co.uk has a 50 Mb upload limit. This is the size of the published `.quest` file, and if your game is larger than that, the editor will give you a warning when you try to publish. In terms of game, that is a huge amount, and you will be doing well to build a game that is even 1 Mb. However, images, videos and sounds can seriously inflate the file size.
 
@@ -55,8 +52,7 @@ If your game is too large, you can try:
 * Host your game yourself instead - see [Hosting your game](/publishing/hosting) for several options, including one that's just a single file to upload
 
 
-Announcing your game
---------------------
+## Announcing your game
 
 Once your game is live, tell people about it! You can post on:
 
@@ -65,8 +61,7 @@ Once your game is live, tell people about it! You can post on:
 -   [IFDB](https://ifdb.org/)
 
 
-Spell checking
---------------
+## Spell checking
 
 Your browser's built-in spell-checker will generally underline mistakes as you type into the editor's text fields, as long as you're using a browser that supports it.
 
@@ -75,8 +70,7 @@ Another technique is to open the source code in a text editor that has a spell-c
 Before doing this, it is best to save and close the game in the editor first, and to create a back-up of your file.
 
 
-Beta-testing
-------------
+## Beta-testing
 
 Beta-testing is getting other people to play your game so bugs and typos can be identified and corrected before release to the public. It is absolutely vital; with the best will in the world, testers are sure to find spelling mistakes, objects you have not implemented, verbs you have not thought of, and routes through the game you have not considered. Better these things are found during beta-testing than after release. If you do not know anyone who can do this for you, it is worth asking on the forum.
 

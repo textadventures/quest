@@ -8,8 +8,7 @@ In this section, we will add a **command** that lets the player "say" something,
 
 Note that we will *not* be using a **verb** here, as we have done before. Why not? Verbs are good when you want to have a *separate* response for each object, what we want is *one* script that will return information about *any object* in the case of "weigh", or that has no object in the case of "say". For this, we need to use a **command**.
 
-Adding a Simple Command
------------------------
+## Adding a simple command
 
 Let's add a simple command - "say". This will let the player type conversation prefixed with the command "say," for example `SAY HELLO`. Quest will respond with "You say 'hello.' We will also add the contextual text of "but nobody replies" as no-one is present in the game at this point.
 
@@ -42,15 +41,13 @@ But if you don't  like the backslashes, you could use single quotes quite safely
 
 Launch the game and type in a few `SAY` commands to see that Quest responds correctly.
 
-Alternative Command Patterns
-----------------------------
+## Alternative command patterns
 
 You can easily add alternatives to a command pattern by separating them with semicolons. For example, we could adapt our `say #text#` command to deal with "shout" and "yell" by modifying the pattern to read:
 
     say #text#; shout #text#; yell #text#
 
-Adding a "Weigh" Command
-------------------------
+## Adding a "Weigh" command
 
 We now know how to add a command that will process any kind of text the player enters. However, a lot of the time, our commands will be dealing with objects that the player can see. To handle objects correctly, just use the variable name "object". So the "weigh" command's pattern should be:
 
@@ -78,8 +75,7 @@ Now go back to the lounge. What happens when you weigh Bob?
 
 Quest responds with "It weighs grams." Why? Because he doesn't have a "weight" attribute. Since we don't want to have to enter a weight for every single object in the game, we'll need to update our command so it checks for the existence of the "weight" attribute, and then prints the appropriate response.
 
-Checking for an Attribute
--------------------------
+## Checking for an attribute
 
 Go back to the script for the "weigh" command, select the existing "Print a message" command and click the "Cut" button on the Script Editor to move this to the clipboard.
 
@@ -93,8 +89,7 @@ The script should now look like this:
 
 Launch the game and verify that you now get a sensible response for `WEIGH BOB` and `WEIGH SOFA` in the lounge (it should say "You can't weigh that") and that you can still weigh the items in the kitchen.
 
-Additional Example (Advanced)
-------------------
+## Additional example (advanced)
 
 Quest can handle text and objects in the same command. Here the say command is extended to allow the player to specify who she is talking to.
 

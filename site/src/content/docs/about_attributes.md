@@ -10,8 +10,7 @@ The game code in Quest, that you write, can interrogate these attributes on an o
 
 See the [Custom attributes](/tutorial/custom_attributes) tutorial for more information.
 
-What attributes do
-------------------
+## What attributes do
 
 Most things in Quest are objects. In fact there are five types of objects. Rooms, objects and player objects are objects of the object type. Commands and verbs are objects of the command type. Exits are objects of the exit type. Turnscripts are objects of the turnscript type (timers are not objects by the way). The game object is an object of the game type.
 
@@ -26,34 +25,29 @@ By the way, it is also worth mentioning that you cannot give anything an attribu
 All other attributes you can add, modify or remove as you like, both with the editor and during play, and this is what makes your game world.
 
 
-Built-in Attributes
--------------------
+## Built-in attributes
 
 Lots of things in Quest have built-in attributes; these are the attributes you can set on the various tabs for an object (or whatever). You can access more of them using the _Features_ tab. However, this page is more about custom attributes...
 
 
-Setting Up Custom Attributes
----------------------
+## Setting up custom attributes
 
 You can set up attributes on the _Attributes_ tab. The lower half lists all the attributes for this object, those in grey are what it has inherited from its types (which are listed in the upper half). To add a new attribute, click "Add", give it a name, select a type (it defaults to string), and then give it a starting value.
 
 
-Status Attributes
------------------
+## Status attributes
 
 [Status attributes](/status_attributes) are just attributes that you tell Quest to display - there is nothing special about the attribute itself. 
 
 
-Change Scripts
---------------
+## Change scripts
 
 A [change script](/change_scripts) is a special attribute, a script that will fire whenever another attribute changes. From the example above, we want to update `player.ammonote`, whenever `player.ammo` changes (and `player.ammomax` too).
 
 
 
 
-Attribute names to avoid
-------------------------
+## Attribute names to avoid
 
 Quest uses "name", "type" and "elementtype" to track what things are, and will not allow you to change them during a game; only "name" can be changed in the editor.
 

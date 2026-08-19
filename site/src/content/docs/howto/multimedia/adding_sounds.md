@@ -5,8 +5,7 @@ sidebar:
 ---
 
 
-Using Quest's Built-in Script Commands to Add MP3 or WAV Files
---------------------------------------------------------------
+## Using Quest's built-in script commands to add MP3 or WAV files
 
 
 ### Adding sounds
@@ -35,8 +34,7 @@ Sometimes, you need to stop a sound.  For instance the “loop” option will ca
 
 Another sure-fire way to stop a sound from playing is to use `play sound` to play another sound!  Quest will only play one sound at a time when using the `play sound` script command.
 
-Example Game
-------------
+## Example game
 
 Let's see this in action.
 
@@ -89,8 +87,7 @@ View the example game's code:
 
 
 
-Using HTML Audio Elements
--------------------------
+## Using HTML audio elements
 
 
 Playing .ogg files requires a bit more coding, but it can be done.
@@ -174,8 +171,7 @@ If you choose to loop your audio, we will probably need a way to stop the sound.
 Like everything else, there are numerous ways to handle this.
 
 
-Controlling HTML Audio with JS (Stopping, Pausing, and Playing)
----------------------------------------------------------------
+## Controlling HTML audio with JS (stopping, pausing, and playing)
 
 The easiest way to stop a sound would be removing ALL audio tags from the game.  This can be handled [using Javascript](/howto/ux/customising_the_ui) via `JS.eval()` (NOTE: This will completely remove any HTML audio tags which have been added to the game!).
 

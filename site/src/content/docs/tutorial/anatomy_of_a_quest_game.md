@@ -6,8 +6,7 @@ sidebar:
 
 Every Quest game is made up of the following parts. Here are the main ones:
 
-Elements
---------
+## Elements
 
 There are various types of element:
 
@@ -32,8 +31,7 @@ Verbs are a shortcut for commands. Many commands follow the same pattern, and it
 
 The game itself is a special kind of object - it contains attributes such as the name of the game, options such as how to print room descriptions, and display settings.
 
-Attributes
-----------
+## Attributes
 
 All element data (that is, all information about objects, commands, etc.) is stored in **attributes**. An element can have an unlimited number of attributes. Attributes can store things such as the object description, alternative object names, the behaviour when an object is taken, which objects can be used on the object, and much more. The attribute can be of many types:
 
@@ -65,8 +63,7 @@ A list is an ordered sequence of things. Lists can contain strings, scripts or o
 
 A dictionary is a look-up table of strings, scripts or objects. That is, a set of data where each item can be accessed by a string.
 
-Libraries
----------
+## Libraries
 
 Libraries are used to include common functionality in a game. There is a standard "Core" library that is included by default with all Quest games. This is made up of the elements above - commands, scripts and so on - and provides a lot of the standard functionality that players will expect in your game, such as the "look at" command, printing room descriptions, and so on.
 
