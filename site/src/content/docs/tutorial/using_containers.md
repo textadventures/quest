@@ -95,5 +95,3 @@ Unlocked.
 You open it.
 It contains a defibrillator.
 ```
-
-[Next: Moving objects during the game](/tutorial/moving_objects_during_the_game)

@@ -66,5 +66,3 @@ A dictionary is a look-up table of strings, scripts or objects. That is, a set o
 ## Libraries
 
 Libraries are used to include common functionality in a game. There is a standard "Core" library that is included by default with all Quest games. This is made up of the elements above - commands, scripts and so on - and provides a lot of the standard functionality that players will expect in your game, such as the "look at" command, printing room descriptions, and so on.
-
-[Next: Using scripts](/tutorial/using_scripts)

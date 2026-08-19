@@ -22,5 +22,3 @@ The exclamation mark is a stand-in for the actual number, so when the score is z
 Start the game, and find that a new panel has a appeared on the right, with the score displayed!
 
 You can use status attributes with any type of attribute (on the game or player), but it works best with numbers and strings.
-
-[Next: Using timers and turn scripts](/tutorial/using_timers_and_turn_scripts)

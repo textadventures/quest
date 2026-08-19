@@ -39,5 +39,3 @@ Your screen should now look like this:
 ![](/images/Addif4.png)
 
 Now would be a good time to play the game to test that it works properly. Switch the TV on and off, and verify that you get a sensible response when you type `WATCH TV`.
-
-[Next: Custom attributes](/tutorial/custom_attributes)

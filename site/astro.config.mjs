@@ -6,6 +6,9 @@ import { questGrammar } from "./src/quest-grammar.mjs";
 // https://astro.build/config
 export default defineConfig({
     site: "https://questviva.com",
+    redirects: {
+        "/tutorial/cloak_of_darkness": "/cloak_of_darkness",
+    },
     integrations: [
         starlight({
             title: "Quest Viva",
@@ -108,7 +111,7 @@ export default defineConfig({
                     "items": [
                         {
                             "label": "The Cloak of Darkness",
-                            "slug": "tutorial/cloak_of_darkness"
+                            "slug": "cloak_of_darkness"
                         },
                         {
                             "label": "Commands & Parser",

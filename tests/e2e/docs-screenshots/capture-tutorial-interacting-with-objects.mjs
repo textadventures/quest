@@ -1,12 +1,11 @@
-// Regenerates 2 of the 3 editor screenshots embedded in
-// site/src/content/docs/tutorial/interacting_with_objects.md (Takedrop.png, Switchonoff.png).
-// Switchonoffplay.png is an in-game player screenshot, not editor chrome — out of scope for
-// this harness (see .claude/skills/docs-screenshots/SKILL.md's scope section).
+// Regenerates the 3 editor/player screenshots embedded in
+// site/src/content/docs/tutorial/interacting_with_objects.md
+// (Takedrop.png, Switchonoff.png, Switchonoffplay.png).
 import { join, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import {
     runCapture, createLocalDraft, selectTreeNode, addElement, openTab,
-    toggleFeature, capture,
+    toggleFeature, selectLabeledField, openPreview, sendCommand, capture,
 } from './lib.mjs';
 
 const imagesDir = join(dirname(fileURLToPath(import.meta.url)), '..', '..', '..', 'site', 'public', 'images');
@@ -46,4 +45,16 @@ await runCapture(async ({ page, baseUrl }) => {
         .locator('xpath=following::input[1]');
     await extraOffInput.fill('It is currently switched off.');
     await capture(page, out('Switchonoff.png'), { untilLocator: extraOffInput });
+
+    // --- Switchonoffplay.png: playing the game, switching the TV on ---
+    // Doc text: "Go back to the Setup tab and change the 'Look at' description
+    // so it just reads 'The TV is an old model, possibly 20 years old.'"
+    await openTab(page, 'Setup');
+    await selectLabeledField(page, 'object description:', 'string');
+    await page.locator('textarea').fill('The TV is an old model, possibly 20 years old.');
+    const playerPage = await openPreview(page);
+    await sendCommand(playerPage, 'look at tv');
+    await sendCommand(playerPage, 'switch on tv');
+    await sendCommand(playerPage, 'look at tv');
+    await capture(playerPage, out('Switchonoffplay.png'), { untilLocator: playerPage.locator('#txtCommand') });
 });

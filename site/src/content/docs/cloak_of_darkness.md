@@ -411,7 +411,7 @@ This will add each object in the "everywhere" room to the special object list "i
 We mention sounds and smells in the game, so the player is likely to try to `LISTEN` and to `SMELL`. The way these are handled is the same, so what works for one will work for the other. There's more than one way to handle them, so we will do `SMELL` one way, and `LISTEN` another, to show you both techniques.
 
 
-_SMELL_
+#### SMELL
 
 Create a new command, with the pattern `smell;sniff`. Paste in this code:
 
@@ -432,7 +432,7 @@ switch (player.parent) {
 So here we are checking what room the player is in, and giving an appropriate message. Note that there is also a default; this is good practice in case we ever extend the game, and forget to update the SMELL command.
 
 
-_LISTEN, a better way_
+#### LISTEN, a better way
 
 The above will work fine, but there is a better way. Create a new command, with the pattern `listen`. Paste in this code:
 
@@ -450,7 +450,7 @@ What that will do is to check if the current room has a string attribute called 
 Now we need to give "listen" attributes to rooms where there is something to hear. Go to the _Attributes_ tab of the room, and add it there. Type in the appropriate text.
 
 
-_Improved LISTEN_
+#### Improved LISTEN
 
 There is an issue here that if you go and listen in the bar, you will see this:
 

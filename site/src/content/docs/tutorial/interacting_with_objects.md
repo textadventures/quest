@@ -107,5 +107,3 @@ Notice that by setting this object up as "Can be switched on/off", two new optio
 ## Exercise
 
 Add a "switchable" lamp to the lounge that is switched on at the start of the game.
-
-[Next: Anatomy of a Quest game](/tutorial/anatomy_of_a_quest_game)

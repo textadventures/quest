@@ -87,5 +87,3 @@ This will add 1 each time the script is called.
 Launch the game now and verify that whenever you type a command, the "Turns" value is automatically updated.
 
 Congratulations, you now know the basics of using Quest. There is much more to it, but you are probably best learning that as you need it. Now go make that great game! The last part of the tutorial is about how to release your masterpiece.
-
-[Next: Releasing your game](/tutorial/releasing_your_game)
