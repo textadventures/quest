@@ -94,16 +94,16 @@ export default defineConfig({
                                 }
                             ]
                         },
-                        {
-                            "label": "The Cloak of Darkness",
-                            "slug": "tutorial/cloak_of_darkness"
-                        }
                     ]
                 },
                 {
                     "label": "Guides",
                     "collapsed": true,
                     "items": [
+                        {
+                            "label": "The Cloak of Darkness",
+                            "slug": "tutorial/cloak_of_darkness"
+                        },
                         {
                             "label": "Commands & Parser",
                             "collapsed": true,

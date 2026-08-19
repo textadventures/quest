@@ -1,0 +1,390 @@
+<!--Saved by Quest 5.8.6809.15141-->
+<asl version="580">
+  <include ref="English.aslx" />
+  <include ref="Core.aslx" />
+  <game name="Cloak of Darkness">
+    <gameid>18ad63b5-78e2-4846-872b-9177d78cc5e6</gameid>
+    <version>1.0</version>
+    <firstpublished>2018</firstpublished>
+    <description><![CDATA[From the specification here:<br/>http://www.firthworks.com/roger/cloak/]]></description>
+    <author>The Pixie</author>
+    <attr name="feature_advancedwearables" type="boolean">false</attr>
+    <feature_advancedscripts />
+    <showpanes type="boolean">false</showpanes>
+    <enablehyperlinks type="boolean">false</enablehyperlinks>
+    <colourblend type="boolean">false</colourblend>
+    <borderlesscursor />
+    <classiclocation type="boolean">false</classiclocation>
+    <showlocation type="boolean">false</showlocation>
+    <showcommandbar />
+    <customlocationcolour>Black</customlocationcolour>
+    <customlocationtextcolour>White</customlocationtextcolour>
+    <defaultwebfont>Kavivanar</defaultwebfont>
+    <defaultforeground>Pink</defaultforeground>
+    <defaultbackground>#333</defaultbackground>
+    <marginscolour>#333</marginscolour>
+    <attr name="autodescription_youarein_useprefix" type="boolean">false</attr>
+    <attr name="autodescription_youcango_newline" type="boolean">false</attr>
+    <attr name="autodescription_description" type="int">2</attr>
+    <attr name="autodescription_youcansee" type="int">4</attr>
+    <attr name="autodescription_youcango" type="int">0</attr>
+    <feature_devmode />
+    <start type="script">
+      message.count = 0
+    </start>
+    <unresolvedcommandhandler type="script">
+      msg ("Sorry, I do not understand '" + command + "'.")
+      SuppressTurnscripts
+    </unresolvedcommandhandler>
+    <scopebackdrop type="script">
+      foreach (o, GetAllChildObjects (everywhere)) {
+        list add (items, o)
+      }
+    </scopebackdrop>
+  </game>
+  <object name="foyer">
+    <inherit name="editor_room" />
+    <isroom />
+    <description>There is something oppressive about the {either CloakHere():dark|dingy} {once:room}{notfirst:foyer}; a presence in the air that almost suffocates you. It's former glory has all but faded, the walls still sport old posters from productions that ended over twenty years ago. Paint is peeling, dust is everywhere and it smells decidedly musty. You can see doors to the north, west and south.</description>
+    <listen>You can hear the rain pounding against the windows.</listen>
+    <beforefirstenter type="script">
+      msg ("You hurry through the night, keen to get out of the rain. Ahead, you can see the old opera house, a brightly lit beacon of safety.")
+      msg ("Moments later you are pushing though the doors into a foyer. Now that you are here it does not seem so bright. The door closes behind you with an ominous finality...")
+      msg ("")
+    </beforefirstenter>
+    <object name="player">
+      <inherit name="editor_object" />
+      <inherit name="editor_player" />
+      <object name="cloak">
+        <inherit name="editor_object" />
+        <take />
+        <look>The cloak is black... Very black... So black it seems to absorb light.</look>
+        <alt type="stringlist">
+          <value>cape</value>
+          <value>mantle</value>
+          <value>robe</value>
+        </alt>
+        <usedefaultprefix />
+        <attr name="feature_wearable" type="boolean">false</attr>
+        <feature_startscript />
+        <attr name="_initialise_" type="script"><![CDATA[
+          this.worn = true
+          this.changedparent => {
+            this.worn = false
+          }
+        ]]></attr>
+        <attr name="changed_initialise_" type="script">
+        </attr>
+      </object>
+    </object>
+    <exit alias="north" to="bar">
+      <inherit name="northdirection" />
+      <locked />
+      <lockmessage>You try the doors out of the opera house, but they are locked. {once:{i:How did that happen?} you wonder.}</lockmessage>
+    </exit>
+    <exit alias="south" to="bar">
+      <inherit name="southdirection" />
+    </exit>
+    <exit alias="west" to="cloakroom">
+      <inherit name="westdirection" />
+    </exit>
+    <object name="posters">
+      <inherit name="editor_object" />
+      <look>The posters are ripped and peeling off the wall. </look>
+      <usedefaultprefix type="boolean">false</usedefaultprefix>
+      <scenery />
+    </object>
+  </object>
+  <object name="cloakroom">
+    <inherit name="editor_room" />
+    <description type="script">
+      s = "The cloakroom is {either CloakHere():dimly|brightly} lit, and is little more than a cupboard. "
+      if (cloak.parent = hook) {
+        s = s + "Your cloak is hung from the only hook."
+      }
+      else if (cloak.parent = this) {
+        s = s + "There is a single hook, which apparently was not good enough for you, to judge from the cloak on the floor."
+      }
+      else {
+        s = s + "There is a single hook, which strikes you as strange for a cloakroom."
+      }
+      msg (s + " The only way out is back to the east. ")
+    </description>
+    <exit alias="east" to="foyer">
+      <inherit name="eastdirection" />
+    </exit>
+    <object name="hook">
+      <inherit name="editor_object" />
+      <inherit name="surface" />
+      <scenery />
+      <feature_container />
+      <alt type="stringlist">
+        <value>peg</value>
+      </alt>
+      <isroom />
+      <look type="script">
+        if (cloak.parent = hook) {
+          msg ("An ornate brass hook, with a cloak hanging from it.")
+        }
+        else {
+          msg ("An ornate brass hook, ideal for hanging cloaks on.")
+        }
+      </look>
+    </object>
+  </object>
+  <object name="bar">
+    <inherit name="editor_room" />
+    <listen>Is there something moving?</listen>
+    <description type="script">
+      if (CloakHere()) {
+        msg ("It is too dark to see anything except the door to the north.")
+      }
+      else {
+        msg ("The bar is dark, and somehow brooding. It is also thick with dust. So much so that someone has scrawled a message in the dust on the floor. The only exit is north.")
+      }
+    </description>
+    <enter type="script">
+      message.visible = not CloakHere()
+    </enter>
+    <onexit type="script">
+      message.count = 0
+    </onexit>
+    <exit alias="north" to="foyer">
+      <inherit name="northdirection" />
+    </exit>
+    <object name="message">
+      <inherit name="editor_object" />
+      <visible />
+      <alt type="stringlist">
+        <value>note</value>
+        <value>writing</value>
+      </alt>
+      <isroom type="boolean">false</isroom>
+      <usedefaultprefix />
+      <feature_startscript />
+      <scenery />
+      <look type="script"><![CDATA[
+        if (this.disturbed < 3) {
+          msg ("The message in the dust says 'You have won!'")
+        }
+        else {
+          msg ("The message in the dust says 'You have lost!'")
+        }
+        finish
+      ]]></look>
+      <read type="script">
+        do (this, "look")
+      </read>
+      <attr name="_initialise_" type="script">
+        this.count = 0
+        this.disturbed = 0
+      </attr>
+    </object>
+    <turnscript>
+      <enabled />
+      <script><![CDATA[
+        message.count = message.count + 1
+        if (message.count > 1) {
+          message.disturbed = message.disturbed + 1
+          firsttime {
+            msg ("You think it might be a bad idea to disturb things in the dark.")
+          }
+          otherwise {
+            if (not GetBoolean(player, "suppress_background_sounds")) {
+              msg ("You can hear {random:scratching:something moving in the dark:rasping breathing}.")
+            }
+          }
+        }
+      ]]></script>
+    </turnscript>
+  </object>
+  <command name="HangOnHook">
+    <pattern>hang up #object#;hang #object#</pattern>
+    <script>
+      if (not object.parent = player) {
+        msg ("You aren't carry it " + object.article + ".")
+      }
+      else if (not player.parent = cloakroom) {
+        msg ("Hang " + object.article + " where, exactly?")
+      }
+      else {
+        object.parent = hook
+        msg ("You hang the " + GetDisplayAlias(object) + " on the hook.")
+      }
+    </script>
+  </command>
+  <command name="HangOn">
+    <pattern>hang #object1# on #object2#</pattern>
+    <script>
+      if (not object1.parent = player) {
+        msg ("You aren't carry it " + object.article + ".")
+      }
+      else if (not object2 = hook) {
+        msg ("You can't hang stuff on " + GetDisplayName(object2) + ".")
+      }
+      else {
+        object1.parent = object2
+        msg ("You hang the " + GetDisplayAlias(object1) + " on the " + GetDisplayAlias(object2) + ".")
+      }
+    </script>
+  </command>
+  <command name="NewHelp">
+    <pattern>help;?</pattern>
+    <script>
+      msg ("Just type stuff at the prompt!")
+      SuppressTurnscripts
+    </script>
+  </command>
+  <command name="About">
+    <pattern>about</pattern>
+    <script>
+      msg ("This game was created by The Pixie, following the Cloak of Darkness specification by Roger Firth. Thats to KV for beta-testing.")
+      SuppressTurnscripts
+    </script>
+  </command>
+  <object name="everywhere">
+    <inherit name="editor_room" />
+    <object name="walls">
+      <inherit name="editor_object" />
+      <scenery />
+      <look type="script">
+        if (CloakHere() and player.parent = bar) {
+          msg ("It is too dark to see the walls.")
+        }
+        else {
+          msg ("The walls are covered in a faded red and gold wallpaper, that is showing signs of damp.")
+        }
+      </look>
+    </object>
+    <object name="ceiling">
+      <inherit name="editor_object" />
+      <look type="script">
+        if (CloakHere() and player.parent = bar) {
+          msg ("It is too dark to see the ceiling.")
+        }
+        else {
+          msg ("The ceiling is - or was - white. Now it is a dirty grey.")
+        }
+      </look>
+    </object>
+    <object name="floor">
+      <inherit name="editor_object" />
+      <alt type="stringlist">
+        <value>carpet</value>
+      </alt>
+      <look type="script">
+        if (CloakHere() and player.parent = bar) {
+          msg ("It is too dark to see the walls.")
+        }
+        else {
+          msg ("A red carpet covers the floor, worn almost though in places.")
+        }
+      </look>
+    </object>
+  </object>
+  <command name="Listen">
+    <pattern>listen</pattern>
+    <script>
+      if (HasString(player.parent, "listen")) {
+        msg (player.parent.listen)
+      }
+      else {
+        msg ("It is quiet as the grave...")
+      }
+      player.suppress_background_sounds = true
+    </script>
+  </command>
+  <command name="Smell">
+    <pattern>smell;sniff</pattern>
+    <script>
+      switch (player.parent) {
+        case (foyer) {
+          msg ("It smells of damp and neglect in here.")
+        }
+        case (bar) {
+          msg ("There is a musty smell, but behind that, something else, something thast reminds you of the zoo, perhaps?")
+        }
+        default {
+          msg ("It smells slightly musty.")
+        }
+      }
+    </script>
+  </command>
+  <turnscript>
+    <enabled />
+    <script>
+      player.suppress_background_sounds = false
+    </script>
+  </turnscript>
+  <command name="Wear">
+    <pattern>put #object# on; wear #object#; put on #object#; don #object#; wear #object#</pattern>
+    <unresolved>You want to wear what?</unresolved>
+    <scope>inventory</scope>
+    <script>
+      if (not HasBoolean(object, "worn")) {
+        msg ("That's not something you can wear.")
+      }
+      else if (object.worn) {
+        msg ("You're already wearing " + object.article + ".")
+      }
+      else {
+        msg ("You put " + object.article + " on.")
+        object.parent = player
+        object.worn = true
+      }
+    </script>
+  </command>
+  <command name="Remove">
+    <pattern><![CDATA[> take #object# off; remove #object#; take off #object#; doff #object#]]></pattern>
+    <scope>inventory</scope>
+    <script>
+      if (not object.worn) {
+        msg ("You're not wearing " + object.article + ".")
+      }
+      else {
+        msg ("You take " + object.article + " off.")
+        object.worn = false
+      }
+    </script>
+  </command>
+  <command name="Inventory">
+    <pattern>^i$|^inv$|^inventory$</pattern>
+    <script>
+      carrylist = FilterByNotAttribute(ScopeInventory(), "worn", true)
+      wornlist = FilterByAttribute(ScopeInventory(), "worn", true)
+      if (ListCount(carrylist) = 0) {
+        if (ListCount(wornlist) = 0) {
+          msg ("You are not carrying anything.")
+        }
+        else {
+          msg ("You are wearing " + FormatList(wornlist, ",", "and", "nothing") + ".")
+        }
+      }
+      else {
+        s = "You are carrying " + FormatList(carrylist, ",", "and", "nothing")
+        if (ListCount(wornlist) = 0) {
+          msg (s + ".")
+        }
+        else {
+          msg (s + ", and wearing " + FormatList(wornlist, ",", "and", "nothing") + ".")
+        }
+      }
+    </script>
+  </command>
+  <function name="CloakHere" type="boolean">
+    return (cloak.parent = player.parent or cloak.parent.parent = player.parent)
+  </function>
+  <walkthrough name="test">
+    <steps type="simplestringlist">
+l
+west
+west
+i
+x hook
+put cloak on hook
+east
+south
+x message
+</steps>
+  </walkthrough>
+</asl>

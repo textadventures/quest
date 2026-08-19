@@ -10,7 +10,7 @@ The Cloak of Darkness is a specification for an adventure game that has been cre
 
 > This adventure is a tiny adventure designed to be easy to port to a given Authoring system. It is, if you will, the interactive fiction equivalent of "Hello, world!"
 
-This seems to be a great way to look in some detail at how to create a Quest game. This, then, is the _second_ Quest tutorial. It is more advanced than the first tutorial, so we will be working with code. We will try at each step to make systems that are general, so that this could be extended into a lengthy game.
+This seems to be a great way to look in some detail at how to create a Quest game. This walkthrough assumes you have already completed the [Tutorial](/tutorial/tutorial_introduction), and goes further than it does - we will be working with code throughout. We will try at each step to make systems that are general, so that this could be extended into a lengthy game.
 
 If you want to see how the scripts look in the GUI, download the game (link below) and open it in the editor to take a look. Alternatively, you can click the "Code view" button for a script, paste the code in there, and then click "Code view" again to go back to the GUI view.
 
@@ -18,7 +18,7 @@ There was a version written for Quest 3.5 in October 2003, which was very differ
 
 The source code for Cloak of Darkness for Quest 5.8 can be downloaded here:
 
-[cloak_of_darkness.aslx](util/cloak_of_darkness.aslx)
+[cloak_of_darkness.aslx](/examples/cloak_of_darkness.aslx)
 
 
 The Specification
