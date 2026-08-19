@@ -18,6 +18,7 @@ This is a reference for the functions built in to Quest, grouped by type:
 - [Clothing functions](/functions/clothing)
 - [Randomising functions](/functions/random)
 - [General functions](/functions/general)
+- [Gamebook functions](/functions/gamebook)
 - [Core.aslx functions](/functions/core)
 - [Internal Core.aslx functions](/functions/internal-core)
 - [Mathematical functions](/functions/maths)

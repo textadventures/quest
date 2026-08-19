@@ -57,6 +57,13 @@ DisplayMailtoLink(string displaylink, string email)
 
 Displays a maillink, which will open an external mailclient.
 
+## EndPageDialogue
+```
+EndPageDialogue ()
+```
+
+Ends the current [Pages](#showpage) dialogue, hiding the current page's option links. Callable from a page script, or automatically run when the player cancels out of a dialogue that allows it.
+
 ## GetCurrentFontFamily
 ```
 GetCurrentFontFamily ()
@@ -74,6 +81,20 @@ GetInput()
 <a href="/functions/hardcoded" class="qv-badge">hard-coded</a>
 
 Waits for the user to enter some text at the command prompt. Instead of handling the input as a command, it is returned as the result of the function, as a [string](/types#string).
+
+## GoToPage
+```
+GoToPage (object page)
+```
+
+Displays the given [dialoguepage](#showpage) object: prints its description, then its options as a numbered list of links (or ends the dialogue if it has none). Callable from a page's own script to redirect to a different page, the same way [ShowPage](#showpage) starts at one.
+
+## HasSeenPage
+```
+HasSeenPage (object page)
+```
+
+Returns a [boolean](/types#boolean) - **true** if the given [dialoguepage](#showpage) has been visited before (its `visited` attribute), for conditional page text or options based on what the player has already seen.
 
 ## InitUserInterface
 ```
@@ -236,6 +257,18 @@ ShowMenu ("Select", ScopeInventory(), true) {
 ```
 
 **Note:** This function is "non-blocking", and its script has no access to local variables. For a fuller discussion, see the note on [Blocks and Scripts](/howto/scripting/blocks_and_scripts).
+
+## ShowPage
+```
+ShowPage (object page, boolean allowCancel, boolean runTurnScripts)  { script }
+```
+
+Starts a branching dialogue at the given `dialoguepage` object, for building NPC conversations or other choice-driven text out of linked pages rather than [ShowMenu](#showmenu) callbacks. Each page has a description and a set of options (added with [AddPageLink](/functions/gamebook#addpagelink)) linking to other pages; choosing an option is a normal command, so - unlike a ShowMenu-based dialogue - the game is fully idle between choices and save/load/undo work throughout.
+
+- **allowCancel**: if true, entering any command other than a numbered option or option name ends the dialogue (via [EndPageDialogue](#endpagedialogue)) and then runs normally; if false, the player is told to choose one of the options.
+- **runTurnScripts**: whether turn scripts should fire for each choice made during the dialogue. Off by default, since each choice is a real turn and most games don't want e.g. hunger daemons ticking mid-conversation.
+
+See also [GoToPage](#gotopage) (jump to a different page from within a page's own script), [HasSeenPage](#hasseenpage), and [EndPageDialogue](#endpagedialogue).
 
 ## ShowYouTube
 ```

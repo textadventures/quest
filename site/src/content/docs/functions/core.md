@@ -6,6 +6,13 @@ sidebar:
 
 Functions with very specific effects in the game world.
 
+## AddDescriptionLine
+```
+AddDescriptionLine (string description so far, string line)
+```
+
+Returns a [string](/types#string). Building-block used to assemble a multi-line description: if **line** is non-empty, any text already accumulated in **description so far** is printed immediately (via [msg](/scripts#msg)) and the description is reset to just **line**; if **line** is empty, **description so far** is returned unchanged. This lets you print each non-blank line as its own paragraph while collapsing blank lines, by repeatedly calling it and printing whatever's left over at the end.
+
 ## AddToInventory
 ```
 AddToInventory (object)
@@ -48,6 +55,20 @@ CheckDarkness()
 Returns a [boolean](/types#boolean) - **true** if the player is in an room, which is dark and has no strong lightsources in it.
 
 See also [SetDark](#setdark), [SetLight](#setlight), [SetObjectLightstrength](#setobjectlightstrength), [SetExitLightstrength](#setexitlightstrength)
+
+## CloneObjectAndInitialise
+```
+CloneObjectAndInitialise (object)
+```
+
+Returns an [object](/types#object). Clones the object using [CloneObject](/functions/objects#cloneobject) and, if the clone has an `_initialise_` script, runs it. Useful for prototype objects that need to set up their own state (e.g. random stats) each time a new copy is created, rather than only when moved into a room - see also [CloneObjectAndMoveHere](/functions/objects#cloneobjectandmovehere).
+
+## FinishTurn
+```
+FinishTurn ()
+```
+
+Ends the current turn: runs turn scripts (if `game.runturnscripts` is set and they haven't been suppressed), then updates status attributes and darkness/hyperlink state for the next command. Quest calls this automatically after each player command; you would only call it yourself if you're driving a "turn" from custom code that bypasses the normal command loop.
 
 ## FormatExitList
 ```
@@ -93,6 +114,13 @@ GetBlockingObject (object)
 Returns the [object](/types#object) which is preventing the player from reaching the specified object.
 
 If an object is in [ScopeVisible](/functions/scope#scopevisible) but not in [ScopeReachable](/functions/scope#scopereachable), then it may be inside a container where the player can see it but not reach it. You can call the GetBlockingObject function to find out what is "blocking" the player from reaching the object. It will be the top-most parent which the player cannot reach through.
+
+## GetClone
+```
+GetClone (object prototype, object parent)
+```
+
+Returns the [object](/types#object) among **parent**'s direct children whose `prototype` attribute points to **prototype**, or [null](/types#null) if there isn't one. **parent** is optional and defaults to the current player. Useful for finding a previously-made clone (see [CloneObject](/functions/objects#cloneobject)) instead of creating a new one.
 
 ## GetDefiniteName
 ```
@@ -156,6 +184,13 @@ Returns the first [object](/types#object) in the parent hierarchy that is non-tr
 
 So if the player gets onto a platform within a room, or is inside a transparent box within the room, you can still find out the overall parent room by calling this function.
 
+## GetRoomDescription
+```
+GetRoomDescription ()
+```
+
+Returns a [string](/types#string) containing the full formatted description of the current room (the current player's parent) - the same text [ShowRoomDescription](#showroomdescription) would print, including the dark-room fallback from [CheckDarkness](#checkdarkness). Useful if you want the description as text rather than having it printed immediately, e.g. to include it in a menu or a saved log.
+
 ## GetVolume
 ```
 GetVolume (object, boolean inclusiveobject)
@@ -173,6 +208,13 @@ Got (object)
 ```
 
 Returns a [boolean](/types#boolean) - **true** if the player has the specified object. This is just a convenient shortcut to seeing if it is within the list returned by [ScopeInventory](/functions/scope#scopeinventory).
+
+## GridSquareClick
+```
+GridSquareClick (integer x, integer y)
+```
+
+Override hook for [grid maps](/howto/tasks/showing_a_map): the default implementation does nothing. Copy this function into your game and give it a body to handle clicks on a grid map square, using the clicked square's coordinates.
 
 ## HelperCloseObject
 ```
@@ -207,6 +249,13 @@ ListParents (object)
 ```
 
 Returns an [objectlist](/types#objectlist) of all parents of an object - the object's direct parent, the parent's parent, and so on.
+
+## MoveObjectHere
+```
+MoveObjectHere (object)
+```
+
+Moves the object to the current player's room. Equivalent to `object.parent = game.pov.parent`. See also [MoveObject](/functions/objects#moveobject) to move an object to an arbitrary parent, and [AddToInventory](#addtoinventory) to move it into the player's inventory instead.
 
 ## SetDark
 ```
@@ -264,6 +313,13 @@ ShowRoomDescription ()
 ```
 
 Does not return a value.
+
+## WhereAmI
+```
+WhereAmI (string platform name)
+```
+
+Sets the `questplatform` attribute on `game` to the given string. Despite the name, this has nothing to do with the player's location - nothing in the current engine reads `questplatform` back, so this is a legacy hook rather than something new games need to call.
 
 ## SwitchOff
 ```

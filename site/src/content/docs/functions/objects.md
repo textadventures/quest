@@ -4,6 +4,20 @@ sidebar:
   order: 3
 ---
 
+## AllKeysAvailable
+```
+AllKeysAvailable (object)
+```
+
+Returns a [boolean](/types#boolean) - **true** if the player is carrying every key object listed in the locked object's `key`/`key1`, `key2`, ... attributes. Used by the built-in unlock handling when the object's `requireallkeys` attribute is true; see [KeysAvailable](#keysavailable).
+
+## AnyKeyAvailable
+```
+AnyKeyAvailable (object)
+```
+
+Returns a [boolean](/types#boolean) - **true** if the player is carrying at least one of the key objects listed in the locked object's `key`/`key1`, `key2`, ... attributes (or if no keys are set at all). Used by the built-in unlock handling when the object's `requireallkeys` attribute is false; see [KeysAvailable](#keysavailable).
+
 ## Clone
 ```
 Clone (object object to clone)
@@ -98,6 +112,13 @@ GetObject (string object name)
 Returns the [object](/types#object) of the specified name (or exit, or command, or turn script; but not timer). Returns null if the object doesn't exist.
 
 See also [HasObject](/functions/attributes#hasobject)
+
+## KeysAvailable
+```
+KeysAvailable (object)
+```
+
+Returns a [boolean](/types#boolean) indicating whether the player has the key(s) needed to unlock the object. Delegates to [AllKeysAvailable](#allkeysavailable) if the object's `requireallkeys` attribute is true, otherwise to [AnyKeyAvailable](#anykeyavailable).
 
 ## LockExit
 ```

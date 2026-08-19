@@ -73,32 +73,35 @@ Returns an [objectlist](/types#objectlist) containing all objects directly conta
 
 Use [GetAllChildObjects](#getallchildobjects) instead to return all objects directly *or* indirectly contained (i.e. including children of children).
 
-## ListVisible
+## GetExitsList
 ```
-ListVisible ()
+GetExitsList ()
 ```
 
-Returns an [object list](/types#objectlist) containing all the items worn by the player that are visible, i.e., not covered by another garment.
-
-For more on handling wearable objects, see [here](/howto/world/wearables).
+Returns an [objectlist](/types#objectlist) containing the exits from the current room that should be mentioned to the player: [ScopeExits](#scopeexits) with scenery exits and [look-only exits](#removelookonlyexits) filtered out.
 
 ## ListVisibleFor
 ```
 ListVisibleFor (object character)
 ```
 
-Returns an [object list](/types#objectlist) containing all the items worn by the character that are visible, i.e., not covered by another garment.
+Returns an [object list](/types#objectlist) containing all the items worn by the character that are visible, i.e., not covered by another garment. For the current player, pass `game.pov`.
 
 For more on handling wearable objects, see [here](/howto/world/wearables).
 
-## ScopeAllExitsForRoom
+## RemoveDarkObjects
 ```
-ScopeAllExitsForRoom (room)
+RemoveDarkObjects (objectlist)
 ```
 
-Returns an [objectlist](/types#objectlist) containing all the exits which are available to the player from the specified room.
+Returns an [objectlist](/types#objectlist): the given list filtered down to objects that should still be visible in the dark - lightsources, plus anything the player is directly holding. Used when building a room's visible-objects list in the dark.
 
-**This function was replaced in 5.4 by [ScopeExitsForRoom](#scopeexitsforroom)**
+## RemoveLookOnlyExits
+```
+RemoveLookOnlyExits (objectlist)
+```
+
+Returns an [objectlist](/types#objectlist): the given list of exits with any exits flagged `lookonly` filtered out. Used by [GetExitsList](#getexitslist) so look-only exits are excluded from the exit list shown to the player.
 
 ## ScopeCommands
 ```
@@ -113,15 +116,6 @@ ScopeExits ()
 ```
 
 Returns an [objectlist](/types#objectlist) containing all the exits which are available to the player (whether locked or not) from the current room.
-
-## ScopeExitsAll
-```
-ScopeExitsAll ()
-```
-
-Returns an [objectlist](/types#objectlist) containing all the exits which are available to the player from the current room.
-
-**This function was replaced in 5.4 by [ScopeExits](#scopeexits)**
 
 ## ScopeExitsForRoom
 ```
@@ -138,13 +132,6 @@ ScopeInventory ()
 Returns an [objectlist](/types#objectlist) containing all the visible objects which the player has in their inventory.
 
 Used to populate the "Inventory" list, and the list of objects returned by the "inventory" command
-
-## ScopeInventoryNotScenery
-```
-ScopeInventoryNotScenery
-```
-
-Returns an [object list](/types#objectlist), containing all the items held by the player, not flagged as scenery (note that when an object is picked up, the scenery flag is set to sale, so usually this will return the same list as `ScopeInventory`).
 
 ## ScopeReachable
 ```
@@ -221,6 +208,13 @@ Returns an [objectlist](/types#objectlist) containing all the objects in the spe
 These objects can be looked at.
 
 If the player is in the specified room, it is the union of two lists - [ScopeVisibleNotHeldForRoom](#scopevisiblenotheldforroom) (all the objects the player can see which are not in the inventory) and [ScopeInventory](#scopeinventory) (all the visible objects in the inventory). Otherwise it returns the list [ScopeVisibleNotHeldForRoom](#scopevisiblenotheldforroom).
+
+## ScopeVisibleLightsource
+```
+ScopeVisibleLightsource (string light strength)
+```
+
+Returns an [objectlist](/types#objectlist) containing the visible objects and exits (from [ScopeVisible](#scopevisible) and [ScopeExits](#scopeexits)) that are lightsources with the given light strength ("weak" or "strong" - see [SetObjectLightstrength](/functions/core#setobjectlightstrength)). Used by [CheckDarkness](/functions/core#checkdarkness) to decide whether a dark room is lit.
 
 ## ScopeVisibleNotHeld
 ```

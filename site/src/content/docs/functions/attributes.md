@@ -20,6 +20,15 @@ DecreaseMoney (integer amount)
 
 Decreases the player's money attribute by the specified amount.
 
+## DecreaseObjectCounter
+```
+DecreaseObjectCounter (object, string counter name)
+```
+
+Decreases the named integer attribute on the object by 1. If the object doesn't already have that attribute, it is treated as starting at 0 (so the result is -1).
+
+See also [IncreaseObjectCounter](#increaseobjectcounter).
+
 ## DecreaseScore
 ```
 DecreaseScore (integer amount)
@@ -188,6 +197,15 @@ IncreaseMoney (integer amount)
 ```
 
 Increases the player's money attribute by the specified amount.
+
+## IncreaseObjectCounter
+```
+IncreaseObjectCounter (object, string counter name)
+```
+
+Increases the named integer attribute on the object by 1. If the object doesn't already have that attribute, it is treated as starting at 0 (so the result is 1).
+
+See also [DecreaseObjectCounter](#decreaseobjectcounter).
 
 ## IncreaseScore
 ```

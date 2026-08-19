@@ -399,6 +399,13 @@ PadString(23, 4, 0)
 
 It will attempt to do it if the pad string is more than 1 character, but will be approximate. If the pad string is empty, it will throw an error.
 
+## Possessive
+```
+Possessive (string possessive, object)
+```
+
+Returns a [string](/types#string) combining **possessive** with the object's display name, e.g. `Possessive("your", box)` returns "your box". Note that in the current implementation, this doesn't inflect **possessive** itself for gender/number - it's a plain concatenation.
+
 ## ProcessText
 ```
 ProcessText (string)
