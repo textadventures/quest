@@ -223,6 +223,15 @@ function addExternalScript(url) {
     });
 }
 
+// The "write log to file" feature itself was removed from Core.aslx (#1924) - a game authored
+// since then has no way to call this. But an already-published game's own inlined Log function
+// may still call JS.WriteToLog(text) when its game.writelogtofile flag is set, and that has to
+// keep working regardless of what Core.aslx currently offers. See Core Library Semantics in
+// CLAUDE.md.
+function WriteToLog(data) {
+    // Do nothing.
+}
+
 function WriteToTranscript(data) {
     if (noTranscript) {
         // Do nothing.
