@@ -50,6 +50,18 @@ JS.eval (string JavaScript code)
 
 Causes the given string to be evaluated by the JavaScript engine. This is a way to run any JavaScript code in your game, which can be used to move around the components of the UI or add new ones, among other things.
 
+## panesVisible
+
+```quest
+JS.panesVisible (boolean visible)
+```
+
+Shows or hides the panes on the right of the screen.
+
+```quest
+JS.panesVisible(false)
+```
+
 ## scrollToEnd
 
 ```quest
@@ -69,6 +81,18 @@ Sets the commands to be displayed on the command pane (turn the command pane on 
 ```quest
 JS.setCommands("Wait;Look")
 JS.setCommands("Wait;Look;Get apple", "red")
+```
+
+## setCompassDirections
+
+```quest
+JS.setCompassDirections (string directions)
+```
+
+Takes a semicolon-separated list of names for the twelve compass directions - northwest, north, northeast, west, east, southwest, south, southeast, up, down, in, out, in that order - and uses them as the tooltip text for the compass buttons.
+
+```quest
+JS.setCompassDirections("northwest;north;northeast;west;east;southwest;south;southeast;up;down;in;out")
 ```
 
 ## setCss
@@ -98,6 +122,18 @@ JS.setCustomStatus(string html)
 ```
 
 Sets the HTML text to be displayed on the custom status pane (turn the command pane on on the _Interface_ script of the game object). This is an involved issue, rather than give an example, go see this [page](/howto/ux/custom_panes).
+
+## setGameName
+
+```quest
+JS.setGameName (string name)
+```
+
+Sets the name of the game, shown in the browser tab title.
+
+```quest
+JS.setGameName("My Cool Game")
+```
 
 ## setInterfaceString
 
@@ -171,6 +207,14 @@ JS.showPopupFullscreen(title, text)
 
 As [showPopup](#showpopup), but will fill the Quest window (so the size will depend on how the player has it set up).
 
+## uiHide
+
+```quest
+JS.uiHide(string element)
+```
+
+Hides the given element (see [uiShow](#uishow) for the allowed values).
+
 ## uiShow
 
 ```quest
@@ -186,14 +230,6 @@ For example,
 ```quest
 JS.uiShow("#status")
 ```
-
-## uiHide
-
-```quest
-JS.uiHide(string element)
-```
-
-Hides the given element (see [uiShow](#uishow) for the allowed values).
 
 ## updateLocation
 

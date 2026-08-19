@@ -425,29 +425,29 @@ Valid request names, what they do, and their modern alternative:
 
 | Request name | Effect | Use instead |
 |---|---|---|
-| `Quit` | Quits the game. Parameter is ignored. | `finish` |
-| `UpdateLocation` | Updates the location bar with the parameter text. | `JS.updateLocation(location)` |
-| `GameName` | Sets the name of the game. | `JS.setGameName(name)` |
+| `Background` | Sets the background to the specified HTML colour. | [SetBackgroundColour](/functions/user-interface#setbackgroundcolour) |
+| `ClearScreen` | Clears the screen. Parameter is ignored. | [ClearScreen](/functions/user-interface#clearscreen) |
 | `FontName` | Sets the font name. *(Obsolete as of 5.4.)* | [SetFontName](/functions/user-interface#setfontname) |
 | `FontSize` | Sets the font size. *(Obsolete as of 5.4.)* | [SetFontSize](/functions/user-interface#setfontsize) |
-| `Background` | Sets the background to the specified HTML colour. | [SetBackgroundColour](/functions/user-interface#setbackgroundcolour) |
 | `Foreground` | Sets the foreground to the specified HTML colour. | [SetForegroundColour](/functions/user-interface#setforegroundcolour) |
-| `LinkForeground` | Sets the link foreground to the specified HTML colour. | `SetLinkForegroundColour` *(as of 5.7.2)* |
-| `RunScript` | Runs the specified JavaScript function. | the `JS` object, e.g. `JS.myCustomFunction(15, "some string")` |
-| `SetStatus` | Sets the status area text (right of screen, under "Inventory"); blank removes it. | [status attributes](/status_attributes) |
-| `ClearScreen` | Clears the screen. Parameter is ignored. | [ClearScreen](/functions/user-interface#clearscreen) |
-| `PanesVisible` | Shows/hides the side panes. "on"/"off" toggle them; "disabled" turns them off and removes the button to turn them back on (that button appears to no longer be available). | `JS.panesVisible(true)` / `JS.panesVisible(false)` |
-| `ShowPicture` | Shows the specified picture file from the game directory. | [picture](#picture) |
-| `Show` | Turns on an interface element ("Panes", "Location" or "Command"). | `JS.uiShow(...)` — see below |
-| `Hide` | Turns off an interface element. | `JS.uiHide(...)` — see below |
-| `SetCompassDirections` | Assigns compass direction names from a semicolon-separated list. | `JS.setCompassDirections(...)` — see below |
-| `Pause` | Pauses the game for the specified number of milliseconds. *(Obsolete as of 5.5.)* | — |
-| `Wait` | Waits for the player to press a key. Parameter is ignored. *(Deprecated as of 5.1, unsupported as of 5.4.)* | [wait](#wait) script command |
-| `SetInterfaceString` | Sets UI text via an `"ElementName=Value"` parameter. | `JS.setInterfaceString(...)` — see below |
-| `RequestSave` | Requests the UI to save the game (may prompt a "Save As" dialog). Parameter is ignored. | `requestsave()` |
-| `SetPanelContents` | Sets the static panel HTML contents. | `SetFramePicture` and `ClearFramePicture` |
+| `GameName` | Sets the name of the game. | [JS.setGameName(name)](/js/#setgamename) |
+| `Hide` | Turns off an interface element. | [JS.uiHide(...)](/js/#uihide) — see below |
+| `LinkForeground` | Sets the link foreground to the specified HTML colour. | [SetLinkForegroundColour](/functions/internal-core#setlinkforegroundcolour) *(as of 5.7.2)* |
 | `Log` | Logs the specified text. | [Log](/functions/general#log) |
-| `Speak` | Outputs text to the speech synthesizer, if enabled. | `RequestSpeak("Hello World")` |
+| `PanesVisible` | Shows/hides the side panes. "on"/"off" toggle them; "disabled" turns them off and removes the button to turn them back on (that button appears to no longer be available). | [JS.panesVisible(true / false)](/js/#panesvisible) |
+| `Pause` | Pauses the game for the specified number of milliseconds. *(Obsolete as of 5.5.)* | — |
+| `Quit` | Quits the game. Parameter is ignored. | [finish](#finish) |
+| `RequestSave` | Requests the UI to save the game (may prompt a "Save As" dialog). Parameter is ignored. | `requestsave()` |
+| `RunScript` | Runs the specified JavaScript function. | the [JS](/js/) object, e.g. `JS.myCustomFunction(15, "some string")` |
+| `SetCompassDirections` | Assigns compass direction names from a semicolon-separated list. | [JS.setCompassDirections(...)](/js/#setcompassdirections) — see below |
+| `SetInterfaceString` | Sets UI text via an `"ElementName=Value"` parameter. | [JS.setInterfaceString(...)](/js/#setinterfacestring) — see below |
+| `SetPanelContents` | Sets the static panel HTML contents. | [SetFramePicture](/functions/user-interface#setframepicture) and [ClearFramePicture](/functions/user-interface#clearframepicture) |
+| `SetStatus` | Sets the status area text (right of screen, under "Inventory"); blank removes it. | [status attributes](/status_attributes) |
+| `Show` | Turns on an interface element ("Panes", "Location" or "Command"). | [JS.uiShow(...)](/js/#uishow) — see below |
+| `ShowPicture` | Shows the specified picture file from the game directory. | [picture](#picture) |
+| `Speak` | Outputs text to the speech synthesizer, if enabled. | [RequestSpeak("Hello World")](/functions/gamebook#requestspeak) |
+| `UpdateLocation` | Updates the location bar with the parameter text. | [JS.updateLocation(location)](/js/#updatelocation) |
+| `Wait` | Waits for the player to press a key. Parameter is ignored. *(Deprecated as of 5.1, unsupported as of 5.4.)* | [wait](#wait) script command |
 
 **`Show` and `Hide`** control interface elements via the `JS` object:
 
@@ -471,7 +471,7 @@ For the inventory, use `#inventoryLabel` and `#inventoryAccordion`; for the plac
 **`SetCompassDirections`**:
 
 ```quest
-JS.setCompassDirections("northwest;north;northeast;west;east;southwest;whatever;southeast;up;down;in;out")
+JS.setCompassDirections("northwest;north;northeast;west;east;southwest;south;southeast;up;down;in;out")
 ```
 
 These names will also then not appear as exits in the "Places and Objects" list. The default is as shown in the example. The compass directions must be specified in the same order and there must be the same number of elements in the list. The exit in the compass rose will only be active if the alias of the exit matches the text you set here.
