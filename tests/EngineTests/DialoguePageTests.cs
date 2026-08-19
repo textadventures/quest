@@ -214,6 +214,47 @@ public class DialoguePageTests
     }
 
     [TestMethod]
+    public async Task AddPageLink_AddsAnOptionToAPageThatHadNone()
+    {
+        var driver = await LoadGameAsync();
+
+        await driver.SendCommandAsync("addlink");
+        await driver.SendCommandAsync("talk");
+        var output = string.Join("\n", await driver.SendCommandAsync("2")); // castle - previously terminal
+
+        output.ShouldContain("The castle is closed.");
+        output.ShouldContain("1: Ask about the weather instead");
+        await AssertTrueAsync(driver, "game.currentpage = guard_castle");
+    }
+
+    [TestMethod]
+    public async Task AddPageLink_ReplacesAnExistingLinkToTheSameDestination()
+    {
+        var driver = await LoadGameAsync();
+
+        await driver.SendCommandAsync("updatelink");
+        var output = string.Join("\n", await driver.SendCommandAsync("talk"));
+
+        output.ShouldContain("Ask about the weather (updated)");
+        output.ShouldNotContain(": Ask about the weather\n");
+    }
+
+    [TestMethod]
+    public async Task RemovePageLink_RemovesAnOption()
+    {
+        var driver = await LoadGameAsync();
+
+        await driver.SendCommandAsync("removelink");
+        var output = string.Join("\n", await driver.SendCommandAsync("talk"));
+
+        output.ShouldNotContain("Ask about the castle");
+
+        // and the option number is no longer accepted
+        output = string.Join("\n", await driver.SendCommandAsync("2"));
+        output.ShouldContain("Please choose one of the options above.");
+    }
+
+    [TestMethod]
     public async Task SaveAndLoadMidDialogue_PreservesDialogueStateAndOptions()
     {
         var driver = await LoadGameAsync();
