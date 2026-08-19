@@ -25,6 +25,14 @@
   <template name="EditorScriptsPagesShowPage">Seite anzeigen</template>
   <template name="EditorScriptsPagesAllowCancel">Erlaube dem Spieler, den Dialog zu verlassen (jeder andere Befehl beendet ihn)</template>
   <template name="EditorScriptsPagesRunTurnScripts">Turn-Skripte während des Dialogs ausführen</template>
+  <template name="EditorScriptsPagesAddLinkFromXToY">Link von #0 auf #1 "#2" hinzufügen</template>
+  <template name="EditorScriptsPagesAddPageLink">Seitenlink hinzufügen</template>
+  <template name="EditorScriptsPagesAddPageLinkFrom">Seitenlink von</template>
+  <template name="EditorScriptsPagesAddPageLinkTo">zu</template>
+  <template name="EditorScriptsPagesAddLinkText">Link-Text:</template>
+  <template name="EditorScriptsPagesRemoveLinkFromXToY">Link von #0 bis #1 entfernen</template>
+  <template name="EditorScriptsPagesRemovePageLink">Seitenlink entfernen</template>
+  <template name="EditorScriptsPagesRemovePageLinkFrom">Seitenlink entfernen von</template>
   <template name="EditorGBAction">Aktion</template>
   <template name="EditorGBPlaySoundWhenEnterPage">Sound beim Betreten der Seite abspielen</template>
   <template name="EditorGBPlaySoundFilterName">Sound-Dateien</template>

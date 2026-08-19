@@ -24,6 +24,14 @@
   <template name="EditorScriptsPagesShowPage">Show page</template>
   <template name="EditorScriptsPagesAllowCancel">Allow the player to leave the dialogue (any other command ends it)</template>
   <template name="EditorScriptsPagesRunTurnScripts">Run turn scripts during the dialogue</template>
+  <template name="EditorScriptsPagesAddLinkFromXToY">Add link from #0 to #1 "#2"</template>
+  <template name="EditorScriptsPagesAddPageLink">Add page link</template>
+  <template name="EditorScriptsPagesAddPageLinkFrom">Add page link from</template>
+  <template name="EditorScriptsPagesAddPageLinkTo">to</template>
+  <template name="EditorScriptsPagesAddLinkText">Link text:</template>
+  <template name="EditorScriptsPagesRemoveLinkFromXToY">Remove link from #0 to #1</template>
+  <template name="EditorScriptsPagesRemovePageLink">Remove page link</template>
+  <template name="EditorScriptsPagesRemovePageLinkFrom">Remove page link from</template>
   <template name="EditorGBAction">Action</template>
   <template name="EditorGBPlaySoundWhenEnterPage">Play sound when entering page</template>
   <template name="EditorGBPlaySoundFilterName">Sound Files</template>
