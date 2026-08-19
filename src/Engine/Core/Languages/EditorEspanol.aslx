@@ -31,6 +31,14 @@
   <template name="EditorScriptsPagesShowPage">Mostrar página</template>
   <template name="EditorScriptsPagesAllowCancel">Permitir que el jugador abandone el diálogo (cualquier otro comando lo termina)</template>
   <template name="EditorScriptsPagesRunTurnScripts">Ejecutar los scripts de turno durante el diálogo</template>
+  <template name="EditorScriptsPagesAddLinkFromXToY">Añadir enlace de #0 a #1 "#2"</template>
+  <template name="EditorScriptsPagesAddPageLink">Añadir enlace de página</template>
+  <template name="EditorScriptsPagesAddPageLinkFrom">Añadir enlace de página desde</template>
+  <template name="EditorScriptsPagesAddPageLinkTo">a</template>
+  <template name="EditorScriptsPagesAddLinkText">Texto del enlace:</template>
+  <template name="EditorScriptsPagesRemoveLinkFromXToY">Quitar enlace de #0 a #1</template>
+  <template name="EditorScriptsPagesRemovePageLink">Quitar enlace de página</template>
+  <template name="EditorScriptsPagesRemovePageLinkFrom">Quitar enlace de página desde</template>
   <template name="EditorGBAction">Acción</template>
   <template name="EditorGBPlaySoundWhenEnterPage">Reproducir sonido al entrar a la página</template>
   <template name="EditorGBPlaySoundFilterName">Archivos de sonido</template>
