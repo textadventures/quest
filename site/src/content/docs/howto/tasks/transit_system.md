@@ -20,13 +20,13 @@ Let's limit the player at the start so she can only travel to your house and to 
 Here is some example code that could be pasted in there (if you have rooms appropiately named!).
 
 ```quest
-  Bus stop near your house.busstop = true
-  Bus stop near mall.busstop = true
-  Bus stop near Fenton Industries.busstop = true
-  Bus stop near docks.busstop = true
-  game.destinations = NewObjectDictionary()
-  dictionary add(game.destinations, "Your house", Bus stop near your house)
-  dictionary add(game.destinations, "The Mall", Bus stop near mall)
+Bus stop near your house.busstop = true
+Bus stop near mall.busstop = true
+Bus stop near Fenton Industries.busstop = true
+Bus stop near docks.busstop = true
+game.destinations = NewObjectDictionary()
+dictionary add(game.destinations, "Your house", Bus stop near your house)
+dictionary add(game.destinations, "The Mall", Bus stop near mall)
 ```
 
 So what does that all mean? The first four lines set up the four bus stops in the game, one for each location (the first room is called `Bus stop near your house` and so on).
@@ -84,7 +84,7 @@ If money is important in your game, you might want to charge the player for trav
 This needs to be updated in three places to charge the player a flat rate for each journey. First you need to give the player an integer attribute, called "money" - either directly on the _Attributes_ tab, or in the start script of the game object by adding this line (set the amount to whatever):
 
 ```quest
-  player.money = 17
+player.money = 17
 ```
 
 In the command we need to check the player has enough money, and if he does use the system, we need to deduct that from his money. The command will need to be updated to this (the fare is 5; you will need to modify it in two places if you want to change the fare):

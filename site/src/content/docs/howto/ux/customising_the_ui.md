@@ -39,42 +39,42 @@ Let us start with the easy stuff. Quest has an `addText` method on the `JS` obje
 You can use it to access the other built-in JavaScript functions (and your own too), and there are several that can be used to change the UI. 
 
 ```quest
-  // Use these two to turn features on and off during play
-  // Valid element names include "#txtCommandDiv", "#location"
-  JS.uiShow(element)
-  JS.uiHide(element)
-  // For the panes on the right, use this:
-  JS.panesVisible(Boolean)
+// Use these two to turn features on and off during play
+// Valid element names include "#txtCommandDiv", "#location"
+JS.uiShow(element)
+JS.uiHide(element)
+// For the panes on the right, use this:
+JS.panesVisible(Boolean)
 
-  // Use these to modify the texts on the UI
-  JS.setInterfaceString ("InventoryLabel", "You are holding")
-  JS.setInterfaceString ("StatusLabel", "How you are doing")
-  JS.setInterfaceString ("PlacesObjectsLabel", "Things you can see")
-  JS.setInterfaceString ("CompassLabel", "Directions you can go")
-  JS.setInterfaceString ("InButtonLabel", "In")
-  JS.setInterfaceString ("OutButtonLabel", "out")
-  JS.setInterfaceString ("EmptyListLabel", "Stuff all")
-  JS.setInterfaceString ("NothingSelectedLabel", "-")
-  JS.setInterfaceString ("TypeHereLabel", "Now what?")
-  JS.setInterfaceString ("ContinueLabel", "Just press a button to get on with it")
+// Use these to modify the texts on the UI
+JS.setInterfaceString ("InventoryLabel", "You are holding")
+JS.setInterfaceString ("StatusLabel", "How you are doing")
+JS.setInterfaceString ("PlacesObjectsLabel", "Things you can see")
+JS.setInterfaceString ("CompassLabel", "Directions you can go")
+JS.setInterfaceString ("InButtonLabel", "In")
+JS.setInterfaceString ("OutButtonLabel", "out")
+JS.setInterfaceString ("EmptyListLabel", "Stuff all")
+JS.setInterfaceString ("NothingSelectedLabel", "-")
+JS.setInterfaceString ("TypeHereLabel", "Now what?")
+JS.setInterfaceString ("ContinueLabel", "Just press a button to get on with it")
 
-  // Others that may or may not be useful
-  JS.setGameWidth(width)
-  JS.hideBorder()
-  JS.setGamePadding(top, bottom, left, right)
-  JS.addExternalStylesheet(stylesheet)
-  // I think the stylesheet should be a file name (or perhaps a URL) as the parameter
-  JS.SetMenuBackground(colour)
-  JS.SetMenuForeground(colour)
-  JS.SetMenuHoverBackground(colour)
-  JS.SetMenuHoverForeground(colour)
-  JS.SetMenuFontName(fontname)
-  // these refer to the menu that appears when the player clicks on a hyperlink in the text
-  JS.SetMenuFontSize(size)
-  // the size must be a string that is a number followed by "pt"
-  JS.TurnOffHyperlinksUnderline()
-  JS.showStatusVisible(Boolean)
-  JS.setBackground(colour)
+// Others that may or may not be useful
+JS.setGameWidth(width)
+JS.hideBorder()
+JS.setGamePadding(top, bottom, left, right)
+JS.addExternalStylesheet(stylesheet)
+// I think the stylesheet should be a file name (or perhaps a URL) as the parameter
+JS.SetMenuBackground(colour)
+JS.SetMenuForeground(colour)
+JS.SetMenuHoverBackground(colour)
+JS.SetMenuHoverForeground(colour)
+JS.SetMenuFontName(fontname)
+// these refer to the menu that appears when the player clicks on a hyperlink in the text
+JS.SetMenuFontSize(size)
+// the size must be a string that is a number followed by "pt"
+JS.TurnOffHyperlinksUnderline()
+JS.showStatusVisible(Boolean)
+JS.setBackground(colour)
 ```
 
 If you want to do more than that, you need to learn a little about HTML and CSS...
@@ -138,8 +138,8 @@ JQuery is a library for JavaScript that is built in to Quest. Among other things
 This is how JQuery/JavaScript could be used to set the styles in the CSS example.
 
 ```js
-  $('#gameBorder').css('background-color', '#800080');
-  $('#gameBorder').css('color', 'pink');
+$('#gameBorder').css('background-color', '#800080');
+$('#gameBorder').css('color', 'pink');
 ```
 
 Notice that all the same information is there, just arranged differently, according to the syntax of JavaScript/JQuery. The $ at the start signifies this is JQuery (it is a shorthand for a function called `JQuery`), and $('#gameBorder') will grab the thing with the ID "gameBorder" (again, the # indicates this is an ID). Once we have that we call a method (or function) called "css", and send it two parameters, the thing we want to change and the new value.
@@ -214,14 +214,14 @@ There are a large number of CSS properties, to get a full list, use the internet
 The colour of text is determined by the "color" property. You can set colours in a number of ways, the easiest is to use a name. This [Wiki page](http://en.wikipedia.org/wiki/Web_colors) has a full list of available names (note that there are no spaces in the name; for once, capitalisation does not matter):
 
 ```quest
-  JS.setCss("#gameBorder", "color:blueviolet;")
+JS.setCss("#gameBorder", "color:blueviolet;")
 ```
 
 You can also set colours by using the RGB code. These both set the colour to red.
 
 ```quest
-  JS.setCss("#gameBorder", "color:rgb(255, 0, 0);")
-  JS.setCss("#gameBorder", "color:#ff0000;")
+JS.setCss("#gameBorder", "color:rgb(255, 0, 0);")
+JS.setCss("#gameBorder", "color:#ff0000;")
 ```
 
 Each splits colours in to three components: red, green, blue. In the first, each component is a number from 0 to 255. In the second, it is a hexadecimal number from 00 to ff. If you do not know what hexadecimal is, use the other format.
@@ -231,7 +231,7 @@ Each splits colours in to three components: red, green, blue. In the first, each
 
 This works just the same as color, but changes the background for this element.
 ```quest
-  JS.setCss("#gameBorder", "background-color:blueviolet;")
+JS.setCss("#gameBorder", "background-color:blueviolet;")
 ```
 
 ### background-image
@@ -239,13 +239,13 @@ This works just the same as color, but changes the background for this element.
 You can set the background image for each element. The CSS requires that the image name go inside a url function call, and to ensure it works on-line, Quest requires the name go inside a GetFileURL, so it gets complicated:
 
 ```quest
-  JS.setCss("#gameBorder", "background-image:url(" + GetFileURL("gravestone.png") + ");")
+JS.setCss("#gameBorder", "background-image:url(" + GetFileURL("gravestone.png") + ");")
 ```
 
 The status bar at the top uses an image. If you want to stop that image displaying, do this:
 
 ```quest
-  JS.setCss("#status", "background-image:none;")
+JS.setCss("#status", "background-image:none;")
 ```
 
 ### width
@@ -255,7 +255,7 @@ This will change the width of the element. You have the potential to mess up big
 Note that the value must include "px", which says the units are pixels.
 
 ```quest
-  JS.setCss("#gameBorder", "width:950px;")
+JS.setCss("#gameBorder", "width:950px;")
 ```
 
 ### opacity
@@ -263,7 +263,7 @@ Note that the value must include "px", which says the units are pixels.
 The opacity property defines how much this element covers the one below (the reverse of transparency). It can range from 0.0 (this element is not visible) to 1.0 (this element is completely opaque).
 
 ```quest
- JS.setCss("#gameBorder", "opacity:0.5;")
+JS.setCss("#gameBorder", "opacity:0.5;")
 ```
 
 ### border
@@ -271,13 +271,13 @@ The opacity property defines how much this element covers the one below (the rev
 The border property lets you set borders. You can set various aspects in one go, so in this example a dashed line, 5 px wide and blue, will be added.
 
 ```quest
-  JS.setCss("#gameBorder", "border:dashed 5px blue;")
+JS.setCss("#gameBorder", "border:dashed 5px blue;")
 ```
 
 The status bar at the top has a blue border. If you want to remove it, do this (also set the width to 950px to keep it aligned):
 
 ```quest
- JS.setCss("#status", "border:none;")
+JS.setCss("#status", "border:none;")
 ```
 
 
@@ -290,20 +290,20 @@ Some attributes are difficult to change, and the usual technique just does not w
 However, there is a way around. If you go into full code view (press F9), you can add an attribute to the XML of the game object that includes CSS.
 
 ```xml
-    <css><![CDATA[
-      <style>
-        #txtCommand {
-          outline:none;
-          border: none;
-        }
-      </style>
-    ]]></css>
+<css><![CDATA[
+  <style>
+    #txtCommand {
+      outline:none;
+      border: none;
+    }
+  </style>
+]]></css>
 ```
 
 Be careful how you do that; I would suggest pasting it below this line:
 
 ```xml
-    <firstpublished>2016</firstpublished>
+<firstpublished>2016</firstpublished>
 ```
 
 You can output that in game.start, and it should now make the required change.
@@ -321,18 +321,18 @@ This technique will also allow you to change how inventory items are displayed. 
 This example will alter the background colour when an item is selected.
 
 ```xml
-    <css><![CDATA[
-      <style>
-        .ui-selected {
-          background-color: darkblue;
-          color: white;
-        }
-        .ui-selecting {
-          background-color: blue;
-          color: white;
-        }
-      </style>
-    ]]></css>
+<css><![CDATA[
+  <style>
+    .ui-selected {
+      background-color: darkblue;
+      color: white;
+    }
+    .ui-selecting {
+      background-color: blue;
+      color: white;
+    }
+  </style>
+]]></css>
 ```
 
 
@@ -364,7 +364,7 @@ The message that says the game is saved is also odd, in that is has no ID so can
 The solution is to change the style of a container element, however, even that is problematic as they may not exist yet when 'InitUserInterface' fires, so I suggest setting style properties on the body element (this is not an id, so has no # before it.
 
 ```quest
-  JS.setCss ("body", "color:orange;font-family:georgia,serif;")
+JS.setCss ("body", "color:orange;font-family:georgia,serif;")
 ```
 
 ### Changing the ending

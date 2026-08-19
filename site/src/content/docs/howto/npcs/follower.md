@@ -49,10 +49,10 @@ Your game will feel much better if the player is not seeing the same phrase agai
 So mix it up a bit with the "followphrases" attribute. You can go to the _Attributes_ tab of the follower, the dog in this case, create a new attribute called "followphrases", set it to be a string list, and start typing in phrases. Alternatively, you can set it up in the start script of the `game` object instead. Here is some example code for the dog.
 
 ```quest
-  dog.followphrases = NewStringList()
-  list add (dog.followphrases, "A dog enters the room behind you.")
-  list add (dog.followphrases, "Sniffing cautiously, a dog follows you into the room.")
-  list add (dog.followphrases, "A dog, wagging its tail, enters the room behind you.")
+dog.followphrases = NewStringList()
+list add (dog.followphrases, "A dog enters the room behind you.")
+list add (dog.followphrases, "Sniffing cautiously, a dog follows you into the room.")
+list add (dog.followphrases, "A dog, wagging its tail, enters the room behind you.")
 ```
 
 
@@ -70,16 +70,16 @@ list remove (player.followers, dog)
 You could add these scripts to commands to allow the player to control the dog. For example, for a `SAY STAY` command, you could add this script:
 
 ```quest
-  if (not dog.parent = player.parent) {
-    msg("Who are you talking to?")
-  }
-  else if (not ListContains(player.followers, dog)) {
-    msg("The dog gives you a strange look.")
-  }
-  else {
-    list remove (player.followers, dog)
-    msg("You dog looks at you sadly, as it sits.")
-  }
+if (not dog.parent = player.parent) {
+  msg("Who are you talking to?")
+}
+else if (not ListContains(player.followers, dog)) {
+  msg("The dog gives you a strange look.")
+}
+else {
+  list remove (player.followers, dog)
+  msg("You dog looks at you sadly, as it sits.")
+}
 ```
 
 

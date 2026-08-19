@@ -110,9 +110,9 @@ If you are going to be cloning several of the same type of thing in your game, y
 The first is `CreateTreasure`. It is going to create a clone of a given object, then mix it up a bit. It has no return type, and two parameters, obj and room. Here is the code:
 
 ```quest
-    o = CloneObjectAndMove(obj, room)
-    if (HasString(o, "look")) o.look = ProcessText(o.look)
-    o.price = o.price - GetRandomInt(o.price/-4, o.price/4)
+o = CloneObjectAndMove(obj, room)
+if (HasString(o, "look")) o.look = ProcessText(o.look)
+o.price = o.price - GetRandomInt(o.price/-4, o.price/4)
 ```
 
 It will clone any item, move it to the given room, then, to give some variety, it will call `ProcessText` on the "look" attribute. This means that we can set the attribute to something like this:
@@ -124,11 +124,11 @@ The text processor directive will get processed now, as the item is created, and
 The next one, `CreateProtectionPotion` is a bit more specialised, but could readily be adapted. It take a single parameter, room. It makes a clone of a specific item, masterpotionprotection, and assigns an element from one of a set of predefined objects too.
 
 ```quest
-    o = CloneObjectAndMove(masterpotionprotection, room)
-    o.element = GetObject(PickOneString("fire;frost;necrotic"))
-    o.alias = "Potion of Protection from " + CapFirst(o.element.name)
-    o.listalias = o.alias
-    o.price = o.price - GetRandomInt(o.price/-4, o.price/4)
+o = CloneObjectAndMove(masterpotionprotection, room)
+o.element = GetObject(PickOneString("fire;frost;necrotic"))
+o.alias = "Potion of Protection from " + CapFirst(o.element.name)
+o.listalias = o.alias
+o.price = o.price - GetRandomInt(o.price/-4, o.price/4)
 ```
 
 In this case the "look" attribute is a script, which references the attribute set in the function:
@@ -140,27 +140,27 @@ msg ("An inky black liquid in a small glass phial. You can see the word \"" + th
 This is a more involved example, but the principle is the same. `CreateScroll` has two parameters, level and room. The prototype, masterscroll, is cloned, and various attributes set.
 
 ```quest
-    o = CloneObjectAndMove(masterscroll, room)
-    o.element = GetObject(PickOneString("fire;frost;divine;storm;earthmight"))
-    qualifier = StringListItem(Split("Lesser ||Greater ", "|"), level % 3)
-    o.alias = "Scroll of " + qualifier + CapFirst(o.element.name) + " Blast " + ToRoman(level / 3 + 1)
-    o.listalias = o.alias
-    o.look = "The scroll has a glyph of " + o.alias + " on it."
-    o.price = 10 * level
-    o.level = level
+o = CloneObjectAndMove(masterscroll, room)
+o.element = GetObject(PickOneString("fire;frost;divine;storm;earthmight"))
+qualifier = StringListItem(Split("Lesser ||Greater ", "|"), level % 3)
+o.alias = "Scroll of " + qualifier + CapFirst(o.element.name) + " Blast " + ToRoman(level / 3 + 1)
+o.listalias = o.alias
+o.look = "The scroll has a glyph of " + o.alias + " on it."
+o.price = 10 * level
+o.level = level
 ```    
     
     
 Finally, `CreateArmour`, which has two parameters, level and room. In this case the prototype is randomly picked from a room called "garments". It will also try to pick something that is suitable to the level, specifically has a price less than 10 times the level. It will make random picks up to 6 times.
 
 ```quest
-    count = 0
-    prototype = PickFromObject(garments)
-    while (prototype.price > 10 * level and 6 > count) {
-      prototype = PickFromObject(garments)
-    }
-    o = CloneObjectAndMove(prototype, room)
-    o.prototype = prototype
-    o.price = o.price - GetRandomInt(o.price/-4, o.price/4)
+count = 0
+prototype = PickFromObject(garments)
+while (prototype.price > 10 * level and 6 > count) {
+  prototype = PickFromObject(garments)
+}
+o = CloneObjectAndMove(prototype, room)
+o.prototype = prototype
+o.price = o.price - GetRandomInt(o.price/-4, o.price/4)
 ```  
 

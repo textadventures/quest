@@ -11,9 +11,9 @@ This page builds on [Types](/advanced-topics/about_types), which covers what typ
 
 You can test if an object is of a certain type in a script or function using the `DoesInherit` function. In code, it might look like this:
 ```quest
-  if (DoesInherit (fireball_spell, "spell")) {
-    // do stuff
-  }
+if (DoesInherit (fireball_spell, "spell")) {
+  // do stuff
+}
 ```
 Here, "fireball_spell" is the thing we are testing, and we want to know if it is of the spell type. I am guessing it is.
 
@@ -34,13 +34,13 @@ So the first thing to do is to create an actual spell, let us call it "fireball 
 Something  we can do with spells is to learn them, so next we will add a "learn" script to it. Go to the Verbs tab, and add a "learn" verb. Set it to run a script, and paste this code in:
 
 ```quest
-  if (not this.parent = game.pov) {
-    this.parent = player
-    msg ("How about that? You can now cast " + GetDisplayName(this) + ".")
-  }
-  else {
-    msg ("Er, you already know that one!")
-  }
+if (not this.parent = game.pov) {
+  this.parent = player
+  msg ("How about that? You can now cast " + GetDisplayName(this) + ".")
+}
+else {
+  msg ("Er, you already know that one!")
+}
 ```
 
 Briefly then: The first line of the script checks that the player does not already hold the spell. The next line moves this spell to the player, and the next line lets the player know this happened.
@@ -61,49 +61,49 @@ So far so good, but it does not do anything yet. We will change that by copying 
 
 Open the raw XML code view in the editor toolbar. This will show you the code that is your game. If you are not familiar with XML, it will not make much sense, but do not worry about that. Somewhere there will be a bit like this (if you do [CTRL]-F, you can search for "fireball" to find it quickly):
 ```quest
-    <object name="fireball spell">
-      <inherit name="editor_object" />
-      <drop type="boolean">false</drop>
-      <learn type="script">
-        if (not this.parent = game.pov) {
-          this.parent = player
-          msg ("How about that? You can now cast " + GetDisplayName(this) + ".")
-        }
-        else {
-          msg ("Er, you already know that one!")
-        }
-      </learn>
-    </object>
+<object name="fireball spell">
+  <inherit name="editor_object" />
+  <drop type="boolean">false</drop>
+  <learn type="script">
+    if (not this.parent = game.pov) {
+      this.parent = player
+      msg ("How about that? You can now cast " + GetDisplayName(this) + ".")
+    }
+    else {
+      msg ("Er, you already know that one!")
+    }
+  </learn>
+</object>
 ```
 Somewhere else (probably at the bottom) you should find this:
 ```xml
-  <type name="spelltype" />
+<type name="spelltype" />
 ```
 Step 1. Expand the type XML. Quest is using a condensed form of XML for the type because there is nothing in it. Change it to this:
 ```xml
-  <type name="spelltype">
-  </type>
+<type name="spelltype">
+</type>
 ```
 Step 2. Cut the attributes from the fireball spell to leave just this:
 ```xml
-    <object name="fireball spell">
-      <inherit name="editor_object" />
-    </object>
+<object name="fireball spell">
+  <inherit name="editor_object" />
+</object>
 ```
 Step 3. ... And paste them into the type:
 ```quest
-  <type name="spelltype">
-      <drop type="boolean">false</drop>
-      <learn type="script">
-        if (not this.parent = game.pov) {
-          this.parent = player
-          msg ("How about that? You can now cast " + GetDisplayName(this) + ".")
-        }
-        else {
-          msg ("Er, you already know that one!")
-        }
-      </learn>
-  </type>
+<type name="spelltype">
+    <drop type="boolean">false</drop>
+    <learn type="script">
+      if (not this.parent = game.pov) {
+        this.parent = player
+        msg ("How about that? You can now cast " + GetDisplayName(this) + ".")
+      }
+      else {
+        msg ("Er, you already know that one!")
+      }
+    </learn>
+</type>
 ```
 Now close the code view again, to get back to the GUI.
 

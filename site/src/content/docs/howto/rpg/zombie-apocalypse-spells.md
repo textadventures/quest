@@ -145,7 +145,7 @@ At this point we have an `object` and can proceed as before. As with "Frotz" we 
 If all goes well the last few lines do the spell effect. In particular this line:
 
 ```quest
-  object.llepsed = not GetBoolean(object, "llepsed")
+object.llepsed = not GetBoolean(object, "llepsed")
 ```
 
 This will set the "llepsed" flag of the target spell if not set, but will unset it if it is. This means the spell can be cast a second time on a spell to set it back to how it was.

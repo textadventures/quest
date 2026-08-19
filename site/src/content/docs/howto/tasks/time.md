@@ -62,7 +62,7 @@ Now if the player types in nonsense Quest cannot understand, `game.notarealturn`
 If you have anything else that should only happen after a real turn (such as enemies attacking the player), you can add that to the above script. It would need to go after this line:
 
 ```quest
-  game.time = game.time + 1
+game.time = game.time + 1
 ```
 
 You might also want to modify some commands so a minute does not pass for them. For example, `HELP` and perhaps `INVENTORY` and `LOOK`. Just add this line to their scripts:

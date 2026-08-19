@@ -77,9 +77,9 @@ The next step is to get the data into your game. This will be done with the spec
 In the code above there was this function:
 
 ```js
-    function setValues() {
-        $("#dialog_window_1").dialog("close");
-    }
+function setValues() {
+    $("#dialog_window_1").dialog("close");
+}
 ```
 
 We need to change that to collect the data, and then to send it to Quest. You can get data from a form element with the JQuery `val` method. For text, it is trivial:
@@ -97,11 +97,11 @@ gender = $("input:radio[name='sex_input']:checked").val();
 Both values need to be combined into a single string, separated by some obscure character; I use |. The new code looks like this:
 
 ```js
-    function setValues() {
-        $("#dialog_window_1").dialog("close");
-        answer = $('#name_input').val() + "|" + $("input:radio[name='sex_input']:checked").val();
-        ASLEvent("HandleDialogue", answer);
-    }
+function setValues() {
+    $("#dialog_window_1").dialog("close");
+    answer = $('#name_input').val() + "|" + $("input:radio[name='sex_input']:checked").val();
+    ASLEvent("HandleDialogue", answer);
+}
 ```
 
 Then we need to create a function in Quest to accept that data. Add it in the normal way, and call it `HandleDialogue`, no return type, and a single parameter, s. Paste in this code:

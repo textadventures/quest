@@ -25,7 +25,7 @@ There is a second section "Dynamic Templates", which contains templates which ar
 A Dynamic Template is an expression, and the relevant object is passed in to the expression via a variable called "object". So the TakeSuccessful template expression is:
 
 ```quest
- "You pick " + object.article + " up."
+"You pick " + object.article + " up."
 ```
 
 Using the object article means that this template can print the correct thing for a singular or plural object, or even a male/female character if you have one that can be taken.
@@ -33,7 +33,7 @@ Using the object article means that this template can print the correct thing fo
 These Dynamic Templates often take advantage of some functions which are defined in the English.aslx library - the [Conjugate](/functions/string#conjugate) and [WriteVerb](/functions/string#writeverb) functions ensure that correct English is written. For example, the AlreadyOpen template is:
 
 ```quest
- WriteVerb(object, "be") + " already open."
+WriteVerb(object, "be") + " already open."
 ```
 
 This means it will correctly write "It is already open", "They are already open" etc.
@@ -45,7 +45,7 @@ Since text in square brackets gets automatically substituted with a template's c
 This in your code will give an open square bracket, `[`, on output:
 
 ```
-  &#91;
+&#91;
 ```
 
 ## See also

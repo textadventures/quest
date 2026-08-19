@@ -64,16 +64,16 @@ To transition from one state to another, use verbs. Each verb has to check if th
 For the jacket, then, on the _Verbs_ tab, add a new verb, "fasten". Set it to run a script and paste in this code, which will put the jacket into the second state, fastened up:
 
 ```quest
-  if (not this.worn) {
-    msg ("You're not wearing it.")
-  }
-  else if (this.multistate_status = 3) {
-    msg ("It already is.")
-  }
-  else {
-    msg ("You button up the jacket.")
-    SetMultistate (this, this.multistate_status + 1)
-  }
+if (not this.worn) {
+  msg ("You're not wearing it.")
+}
+else if (this.multistate_status = 3) {
+  msg ("It already is.")
+}
+else {
+  msg ("You button up the jacket.")
+  SetMultistate (this, this.multistate_status + 1)
+}
 ```
 
 All your verbs should be variations on this, just changing the numbers and strings as appropriate.
@@ -84,36 +84,36 @@ All your verbs should be variations on this, just changing the numbers and strin
 You may decide the garment should only be removed when in a certain state, perhaps when it is already unfastened. This is easy to accomplish, you just have to set the `removeable` flag as appropriate. To ensure the display verbs are right, call `SetVerbs` after doing so. For example: 
 
 ```quest
-  if (not this.worn) {
-    msg ("You're not wearing it.")
-  }
-  else if (this.multistate_status = 3) {
-    msg ("It already is.")
-  }
-  else {
-    msg ("You button up the jacket.")
-    SetMultistate (this, this.multistate_status + 1)
-    this.removeable = false
-    SetVerbs
-  }
+if (not this.worn) {
+  msg ("You're not wearing it.")
+}
+else if (this.multistate_status = 3) {
+  msg ("It already is.")
+}
+else {
+  msg ("You button up the jacket.")
+  SetMultistate (this, this.multistate_status + 1)
+  this.removeable = false
+  SetVerbs
+}
 ```
 
 Of course, your unfasten verb will need to set "removeable" to true when the state becomes 1.
 
 ```quest
-  if (not this.worn) {
-    msg ("You're not wearing it.")
+if (not this.worn) {
+  msg ("You're not wearing it.")
+}
+else if (this.multistate_status = 1) {
+  msg ("It already is.")
+}
+else {
+  msg ("You unbutton the jacket.")
+  SetMultistate (this, this.multistate_status - 1)
+  if (this.multistate_status = 1) {
+    this.removeable = true
   }
-  else if (this.multistate_status = 1) {
-    msg ("It already is.")
-  }
-  else {
-    msg ("You unbutton the jacket.")
-    SetMultistate (this, this.multistate_status - 1)
-    if (this.multistate_status = 1) {
-      this.removeable = true
-    }
-    this.removeable = false
-    SetVerbs
-  }
+  this.removeable = false
+  SetVerbs
+}
 ```

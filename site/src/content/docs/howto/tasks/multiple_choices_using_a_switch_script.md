@@ -72,17 +72,17 @@ ShowMenu ("Talk about?", options, true) {
 You can add multiple choices to a single `case` statement, just separate them with commas. For example, you might want to allow both 999 and 911 to be used as an emergency number:
 
 ```quest
-  case (999, 911) {
-    msg ("There’s no need to call the police now.")
-  }
+case (999, 911) {
+  msg ("There’s no need to call the police now.")
+}
 ```
 
 You can also match against strings, but they need to be in quotes. In fact, you can mix numbers and strings:
 
 ```quest
-  case (999, 911, "police") {
-    msg ("There’s no need to call the police now.")
-  }
+case (999, 911, "police") {
+  msg ("There’s no need to call the police now.")
+}
 ```
 
 If you are matching against text the player has typed, it is a good idea to make it all lowercase in the `switch`:

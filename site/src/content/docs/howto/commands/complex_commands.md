@@ -29,25 +29,25 @@ As an example, I am going to implement `TIE CORD TO HOOK`.
 
 First you need a command pattern. We could do this:
 ```
-  tie cord to hook
+tie cord to hook
 ```
 If you do that then the player has to type that exact phrase or Quest will not recognise it. We can concatenate alternatives by separating them with semi-colons (and optionally spaces too).
 ```
-  tie cord to hook; tie thread to hook; tie string to hook
+tie cord to hook; tie thread to hook; tie string to hook
 ```
 However, we can do even better, and let Quest handle the synonyms, by using `#object#`.
 ```
-  tie #object# to hook
+tie #object# to hook
 ```
 As long as you have set up the cord with these alternative names (the "Other names" list on the Object tab), Quest will match `#object#` against any of them. An important benefit here is that your game will have the same set of synonyms for an object whether the player is trying to pick it up, look at it or tie it to a hook.
 
 And you can have as many objects as you like in the pattern; just make sure they start object so Quest will match them against objects that are present (in practice, any more than two will confuse the player). We need two here, the cord and the hook:
 ```
-  tie #object1# to #object2#
+tie #object1# to #object2#
 ```
 You might now want to include alternative verbs.
 ```
-  tie #object1# to #object2#; attach #object1# to #object2#; fasten #object1# to #object2#
+tie #object1# to #object2#; attach #object1# to #object2#; fasten #object1# to #object2#
 ```
 
 
@@ -55,7 +55,7 @@ You might now want to include alternative verbs.
 
 If you are feeling brave, you could use a regular expression here (remember to set Regular expression from the drop down list).
 ```regex
-  ^(tie|attach|fasten) (?<object1>.*) to (?<object2>.*)$
+^(tie|attach|fasten) (?<object1>.*) to (?<object2>.*)$
 ```
 * The `^` at the start says Quest must match this to the start of the command, whilst the $ at the end says this must be the end of the command.
 
@@ -71,11 +71,11 @@ Quest uses .NET regex rules, and a quick reference for .NET regex rules can be f
 
 May be not much point in this example, but if you have variations in the joining word to handle too, you could be looking at a lot of combinations, so this way may be easier. For example:
 ```regex
-  ^(get|pick up|take) (?<object1>.*) (using|holding|with) (the |)(?<object2>.*)$
+^(get|pick up|take) (?<object1>.*) (using|holding|with) (the |)(?<object2>.*)$
 ```
 Or even:
 ```regex
-  ^((get|pick up|take) (the |)(?<object1>.*) (using|holding|with) (the |)(?<object2>.*)|(using|holding|with) (the |)(?<object2>.*) (get|pick up|take) (the |)(?<object1>.*))$
+^((get|pick up|take) (the |)(?<object1>.*) (using|holding|with) (the |)(?<object2>.*)|(using|holding|with) (the |)(?<object2>.*) (get|pick up|take) (the |)(?<object1>.*))$
 ```
 That will handle any of these:
 
@@ -96,7 +96,7 @@ There is more on regular expressions [here](/howto/commands/pattern_matching).
 
 So we have a command pattern or regular expression that Quest will use to match this command, now we need to do something, so we need a script. Because we used this as the command pattern:
 ```
-  tie #object1# to #object2#
+tie #object1# to #object2#
 ```
 ... Quest will already have assigned values to two special variables, in this case called object1 and object2. We do not know specifically what they are, but they will be objects that are present in the current room or in the player's inventory.
 
@@ -117,25 +117,25 @@ There is a design consideration here. If you have some cord and tie it to a hook
 For the first three conditions, we convert them to a if/else if/else cascade, at each step testing if it is not so (lines starting with two slashes are comments, by the way):
 
 ```quest
-  // 1. The player has the first object
-  if (not object1.parent = player) {
-    msg("You are not holding " + GetDisplayAlias(object1) + ".")
-  }
-  // 2. The first object is the cord
-  else if (not object1 = cord) {
-    msg("You cannot tie the " + GetDisplayAlias(object1) + " to anything.")
-  }
-  // 3. The second object is the hook
-  else if (not object2 = hook) {
-    msg("You cannot tie anything to the " + GetDisplayAlias(object2) + ".")
-  }
-  // Everything checked, so do it
-  else {
-    msg("You tie the cord to the hook.")
-    cord.take = false
-    cord.parent = player.parent
-    cord.tiedtohook = true
-  }
+// 1. The player has the first object
+if (not object1.parent = player) {
+  msg("You are not holding " + GetDisplayAlias(object1) + ".")
+}
+// 2. The first object is the cord
+else if (not object1 = cord) {
+  msg("You cannot tie the " + GetDisplayAlias(object1) + " to anything.")
+}
+// 3. The second object is the hook
+else if (not object2 = hook) {
+  msg("You cannot tie anything to the " + GetDisplayAlias(object2) + ".")
+}
+// Everything checked, so do it
+else {
+  msg("You tie the cord to the hook.")
+  cord.take = false
+  cord.parent = player.parent
+  cord.tiedtohook = true
+}
 ```
 
 ## More general
@@ -145,25 +145,25 @@ Suppose there are several objects the cord might be tied to, what is the best wa
 The code here has two changes. Condition number 3 now checks the attachable flag, instead of checking the object in the hook. Also, at the end, an attribute on the cord gets set to the object it is attached to, so you can test what that was if necessary (and we can check if that is set to see if the cord is attached so do not need the "tiedtohook" attribute).
 
 ```quest
-  // 1. The player has the first object
-  if (not object1.parent = player) {
-    msg("You are not holding " + GetDisplayAlias(object1) + ".")
-  }
-  // 2. The first object is the cord
-  else if (not object1 = cord) {
-    msg("You cannot tie the " + GetDisplayAlias(object1) + " to anything.")
-  }
-  // 3. The second object is the attachable
-  else if (not GetBoolean(object2, "attachable")) {
-    msg("You cannot tie anything to the " + GetDisplayAlias(object2) + ".")
-  }
-  // Everything checked, so do it
-  else {
-    msg("You tie the cord to the hook.")
-    cord.take = false
-    cord.parent = player.parent
-    cord.attachedto = object2
-  }
+// 1. The player has the first object
+if (not object1.parent = player) {
+  msg("You are not holding " + GetDisplayAlias(object1) + ".")
+}
+// 2. The first object is the cord
+else if (not object1 = cord) {
+  msg("You cannot tie the " + GetDisplayAlias(object1) + " to anything.")
+}
+// 3. The second object is the attachable
+else if (not GetBoolean(object2, "attachable")) {
+  msg("You cannot tie anything to the " + GetDisplayAlias(object2) + ".")
+}
+// Everything checked, so do it
+else {
+  msg("You tie the cord to the hook.")
+  cord.take = false
+  cord.parent = player.parent
+  cord.attachedto = object2
+}
 ```
 
 

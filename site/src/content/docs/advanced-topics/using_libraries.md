@@ -58,11 +58,11 @@ It is pretty easy. Library files are just text files, so you need a text editor;
 
 The root element of a library file is `library. This means that the first line of the file should be this:
 ```xml
-  <library>
+<library>
 ```
 And the last line should be this:
 ```xml
-  </library>
+</library>
 ```
 Everything in between will be XML elements, as in the main game (open the raw XML code view in the editor toolbar to see the XML behind Quest). You can use a library to define objects, functions, types, and everything else that an ordinary game file can define.
 
@@ -70,11 +70,11 @@ The easiest way to create those XML elements is to create them in Quest, and the
 
 The only tricky bit is ensuring you get the whole XML element, but remember for a function it starts:
 ```
-  <function...
+<function...
 ```
 And ends
 ```xml
-  </function>
+</function>
 ```
 And make sure you get whole lines.
 
@@ -97,7 +97,7 @@ Quest library files usually end .aslx, just like Quest games, but you can altern
 
 You might also choose to keep all your library files in one location, whilst having other folders for the games themselves. Quest will handle that fine, as long as the `include` in your game file has the right path to the file.
 ```xml
-  <include ref="../lib/Conversation.xml" />
+<include ref="../lib/Conversation.xml" />
 ```
 When the game is published, Quest will get the code from the library in that folder.
 
@@ -113,10 +113,10 @@ Only put objects in libraries if you are sure they will not change. It is far ea
 
 Use comments. In libraries you can use XML comments, which look like this (if you do this in the main game, Quest will delete them!). Make it clear enough that someone else will understand what it does - that way you will when you look at it again in three months.
 ```xml
-  <!--
-  Returns the given object list as a string in the
-  form a one, a two, a three.
-  -->
+<!--
+Returns the given object list as a string in the
+form a one, a two, a three.
+-->
 ```
 If you have multiple libraries, organise them so those higher in the list do not require any lower in the list (i.e., do not use types or use functions in them). Quest does not care; as long as the function is there somewhere, it will be happy. However, occasionally you will screw up, and your game will not load, and you will have no idea where the error is. Create a new test game in the same folder, and add your libraries one by one, in order. When you add one and it refuses to load, the error is in that library. This will only work, however, if libraries higher do not use verbs, types, dynamic templates or functions lower in the list.
 

@@ -21,13 +21,13 @@ AddToInventory (object)
 Moves the object to the inventory. This simply sets the object's parent to the current player, so:
 
 ```quest
- AddToInventory(myobject)
+AddToInventory(myobject)
 ```
 
 is equivalent to
 
 ```quest
- myobject.parent = game.pov
+myobject.parent = game.pov
 ```
 
 ## CanReachThrough

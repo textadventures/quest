@@ -11,43 +11,43 @@ Generally you have no need to look at the full code view, but just occasionally 
 Here is a simple example:
 
 ```quest
- <asl version="500">
-   <include ref="English.aslx"/>
-   <include ref="Core.aslx"/>
- 
-   <game name="Test ASLX Game"/>
- 
-   <object name="lounge">
- 
-     <object name="player">
-       <inherit name="defaultplayer" />
-     </object>
- 
-     <object name="sofa">
-       <prefix>a</prefix>
-       <look>Just a sofa.</look>
-       <take type="script">
-          msg ("Example script attribute")
-       </take>
-     </object>
- 
-     <exit name="east" to="hall"/>
-   </object>
- 
-   <object name="hall">
-     <exit name="east" to="kitchen"/>
-     <exit name="west" to="lounge"/>
-   </object>
- 
-   <object name="kitchen">
-     <object name="sink">
-       <look>Just an ordinary sink</look>
-     </object>
- 
-     <exit name="west" to="hall"/>
-   </object>
- 
- </asl>
+<asl version="500">
+  <include ref="English.aslx"/>
+  <include ref="Core.aslx"/>
+
+  <game name="Test ASLX Game"/>
+
+  <object name="lounge">
+
+    <object name="player">
+      <inherit name="defaultplayer" />
+    </object>
+
+    <object name="sofa">
+      <prefix>a</prefix>
+      <look>Just a sofa.</look>
+      <take type="script">
+         msg ("Example script attribute")
+      </take>
+    </object>
+
+    <exit name="east" to="hall"/>
+  </object>
+
+  <object name="hall">
+    <exit name="east" to="kitchen"/>
+    <exit name="west" to="lounge"/>
+  </object>
+
+  <object name="kitchen">
+    <object name="sink">
+      <look>Just an ordinary sink</look>
+    </object>
+
+    <exit name="west" to="hall"/>
+  </object>
+
+</asl>
 ```
 
 This example defines three "rooms" – a lounge, a hall and a kitchen. These "rooms" are defined as objects, and they themselves contain the objects "sofa" and "sink". The lounge also contains the "player" object.
@@ -107,20 +107,20 @@ The outer most element of a Quest document is the `asl` element; everything goes
 
 Looking again at the blank game, you can see the `game` object has a name attribute as an XML attribute, but `gameid`, `version` and `firstpublished` are all XML elements.
 ```xml
-  <game name="blank">
-    <gameid>35ccfb71-ef3a-4edc-aba6-7c556231626b</gameid>
-    <version>1.0</version>
-    <firstpublished>2016</firstpublished>
-  </game>
+<game name="blank">
+  <gameid>35ccfb71-ef3a-4edc-aba6-7c556231626b</gameid>
+  <version>1.0</version>
+  <firstpublished>2016</firstpublished>
+</game>
 ```
 By default elements that hold Quest attributes are strings, but the type attribute can state otherwise. Here is some XML that defines an integer attribute called "temp" and a string dictionary called "statusattributes", and gives the latter a single name-value pair.
 ```xml
-        <temp type="int">0</temp>
-        <statusattributes type="stringdictionary">
-          <item>
-            <key>temp</key>
-            <value>Temperure: !°C</value>
-          </item>
+<temp type="int">0</temp>
+<statusattributes type="stringdictionary">
+  <item>
+    <key>temp</key>
+    <value>Temperure: !°C</value>
+  </item>
 ```
 
 
@@ -162,7 +162,7 @@ HTML is not compatible with XML. If you have HTML in your strings or scripts, Qu
 
 Generally Quest does this for you. If you are coding directly in the XML, perhaps in a library, you need to start and end the text with `<![CDATA[` and `]]>` respectively. For example:
 ```xml
-  <take type="script"><![CDATA[
-    msg("You can't take <i>that</i>!")
-  ]]></take>
+<take type="script"><![CDATA[
+  msg("You can't take <i>that</i>!")
+]]></take>
 ```

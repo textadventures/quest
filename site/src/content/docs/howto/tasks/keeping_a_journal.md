@@ -17,22 +17,22 @@ The journal needs to hold information so we need to give it a string list to do 
 
 Alternatively, go to the _Scripts_ tab of the game object, and add this to the start script:
 ```quest
-  journal.entries = NewStringList()
+journal.entries = NewStringList()
 ```
 
 ## Read the journal
 
 We want the player to be able to read the journal, so go to the _Verbs_ tab of the journal, click _Add_ and type "read". At the bottom, set it to "Run a script", and paste this in:
 ```quest
-  if (ListCount(this.entries) = 0) {
-    msg ("You have nothing written in your journal.")
+if (ListCount(this.entries) = 0) {
+  msg ("You have nothing written in your journal.")
+}
+else {
+  msg ("You look at your journal:")
+  foreach (s, this.entries) {
+    msg (s)
   }
-  else {
-    msg ("You look at your journal:")
-    foreach (s, this.entries) {
-      msg (s)
-    }
-  }
+}
 ```
 The first bit checks if anything is written in the journal yet, and if not then says as much. The second bit prints an introductory message, then goes through each entry in turn, printing it out.
 
@@ -43,7 +43,7 @@ This is optional, but will allow the player to type `JOURNAL` to see what is cur
 
 Create a new command, and give it the pattern "journal". Then paste in this code:
 ```quest
-   do(journal, "read")
+do(journal, "read")
 ```
 We have already done the hard work setting up the `read` verb, so here all we need to do is invoke that script. We could paste in the same code, but doing it this way means that if we later update that code, we only have to do it once.
 
@@ -52,18 +52,18 @@ We have already done the hard work setting up the `read` verb, so here all we ne
 
 The journal can be used for two things. The game can write to it automatically when something important happens, and the player can write in it too. We will do the former first. Unfortunately for this tutorial, there are countless things that could be significant and need to be recorded; you will have to decide where and when to do that. The important bit is to add this line of code (modifying the text as appropriate of course):
 ```quest
-  list add(journal.entries, "You did something important!")
+list add(journal.entries, "You did something important!")
 ```
 
 ## Letting the player write in the journal
 
 We are going to do this three ways. Firstly, for `USE JOURNAL`. On the _Features_ tab, tick "Use/Give", then on the _Use/Give_ tab in the "Use (on its own)" section, set it to "Run script". Paste in this code:
 ```quest
-  msg ("Please type the text to go in the journal")
-  get input {
-    list add (journal.entries, result)
-    msg (result)
-  }
+msg ("Please type the text to go in the journal")
+get input {
+  list add (journal.entries, result)
+  msg (result)
+}
 ```
 The `get input` command makes Quest wait for the player to type something, and that goes into a special variable called `result`. That text then gets added to the journal entries.
 
@@ -72,7 +72,7 @@ The `get input` command makes Quest wait for the player to type something, and t
 
 Like the `JOURNAL` command, this is optional, but useful if the right pane is turned off. We can use the same trick here too. Create a new command, and give it the pattern "note". Then paste in this code:
 ```quest
-   do(journal, "use")
+do(journal, "use")
 ```
 
 
@@ -84,8 +84,8 @@ Again, create a command, and give it this pattern: "-#text#" (no quotes). Quest 
 
 Paste in this code:
 ```quest
-  msg("You write in your journal: " + text)
-  list add(journal.entries, text)
+msg("You write in your journal: " + text)
+list add(journal.entries, text)
 ```
 Probably worth pointing out to the player that she has this option.
 
@@ -95,20 +95,20 @@ Probably worth pointing out to the player that she has this option.
 
 Quest has a huge scope for showing text in different ways, and this is discussed else, so will not be covered here. However, I will say where to make the changes. What we want to display differently is the actual text written in the journal, so it is the "read" verb of the journal that needs updating. here is an example:
 ```quest
-  if (ListCount(this.entries) = 0) {
-    msg ("You have nothing written in your journal.")
+if (ListCount(this.entries) = 0) {
+  msg ("You have nothing written in your journal.")
+}
+else {
+  msg ("You look at your journal:")
+  defaultfont = game.defaultfont
+  defaultforeground = game.defaultforeground
+  SetFontName ("serif")
+  SetForegroundColour("Blue")
+  foreach (s, this.entries) {
+    msg (s)
   }
-  else {
-    msg ("You look at your journal:")
-    defaultfont = game.defaultfont
-    defaultforeground = game.defaultforeground
-    SetFontName ("serif")
-    SetForegroundColour("Blue")
-    foreach (s, this.entries) {
-      msg (s)
-    }
-    SetFontName (defaultfont)
-    SetForegroundColour(defaultforeground)
-  }
+  SetFontName (defaultfont)
+  SetForegroundColour(defaultforeground)
+}
 ```
 The first five lines are the same. Then the current values are saved to suitable variables, before the new vales are set. The entries are printed, and then the old values are set again to get the display back to normal.

@@ -91,7 +91,7 @@ JS.eval("console.log($('#my-video').attr('src'));")
 In this example, this what we see when checking the console in HTML tools:
 
 ```quest
- https://www.youtube.com/embed/7vIi0U4rSX4?autoplay=1&rel=0
+https://www.youtube.com/embed/7vIi0U4rSX4?autoplay=1&rel=0
 ```
 
 
@@ -156,11 +156,11 @@ JS.AddYouTube (id)
 ### The JS function:
 
 ```xml
- function AddYouTube(id) {
-    var url = "https://www.youtube.com/embed/" + id + "?autoplay=1&rel=0";
-    var embedHTML = "<iframe width=\"425\" height=\"344\" src=\"" + url + "\" frameborder=\"0\" allowfullscreen></iframe>";
-    addText(embedHTML);
- }
+function AddYouTube(id) {
+   var url = "https://www.youtube.com/embed/" + id + "?autoplay=1&rel=0";
+   var embedHTML = "<iframe width=\"425\" height=\"344\" src=\"" + url + "\" frameborder=\"0\" allowfullscreen></iframe>";
+   addText(embedHTML);
+}
 
 ```
 

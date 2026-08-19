@@ -13,13 +13,13 @@ To use the text processor, you can simply add a directive in curly braces in any
 The more important text areas have shortcut buttons for some text processor commands; these are the buttons on the right in the image above. However, you can use text processor commands in almost any text, for example, in an [msg](/scripts#msg) command:
 
 ```quest
- msg ("Would you like some {command:help}?")
+msg ("Would you like some {command:help}?")
 ```
 
 You can use as many sections as you like within the same text, and even nest them:
 
 ```quest
- msg ("You can {command:go to shop:go into the shop}. {if player.coins>10:You have {player.coins} coins, which is more than enough.}")
+msg ("You can {command:go to shop:go into the shop}. {if player.coins>10:You have {player.coins} coins, which is more than enough.}")
 
 ```
 Supported processor commands are:

@@ -20,12 +20,12 @@ Go to the "Scripts" tab of the "game" object. The start script is at the top. Se
 In code view it will look like this:
 
 ```quest
-    <start type="script">
-      msg ("Let's generate a character...")
-      msg ("First, what is your name?")
-      player.alias = GetInput()
-      msg ("Hi, " + player.alias)
-    </start>
+<start type="script">
+  msg ("Let's generate a character...")
+  msg ("First, what is your name?")
+  player.alias = GetInput()
+  msg ("Hi, " + player.alias)
+</start>
 ```
 
 The important part is the `GetInput()` function, which suspends the game until the player types something, then returns what they typed as a string. There's no need to wrap the rest of the script in a block waiting for a callback - execution just continues on the next line once the player has answered, same as any other function call.
@@ -37,31 +37,31 @@ If you want to ask several questions, you can just keep adding more lines the sa
 In code view it will look like this:
 
 ```quest
-    <start type="script">
-      msg ("Let's generate a character...")
-      msg ("First, what is your name?")
-      player.alias = GetInput()
-      msg ("Hi, " + player.alias)
-      show menu ("Your gender?", Split ("Male;Female", ";"), false) {
-        player.gender = result
-        show menu ("Your character class?", Split ("Warrior;Wizard;Priest;Thief", ";"), false) {
-          player.class = result
-          msg (" ")
-          msg (player.alias + " was a " + LCase (player.gender) + " " + LCase (player.class) + ".")
-          msg (" ")
-          msg ("Now press a key to begin...")
-          wait {
-            ClearScreen
-          }
-        }
+<start type="script">
+  msg ("Let's generate a character...")
+  msg ("First, what is your name?")
+  player.alias = GetInput()
+  msg ("Hi, " + player.alias)
+  show menu ("Your gender?", Split ("Male;Female", ";"), false) {
+    player.gender = result
+    show menu ("Your character class?", Split ("Warrior;Wizard;Priest;Thief", ";"), false) {
+      player.class = result
+      msg (" ")
+      msg (player.alias + " was a " + LCase (player.gender) + " " + LCase (player.class) + ".")
+      msg (" ")
+      msg ("Now press a key to begin...")
+      wait {
+        ClearScreen
       }
-    </start>
+    }
+  }
+</start>
 ```
 
 I am using the "show menu" command this time, to limit the player's choices, in the first instance to either "Male" or "Female". A menu needs a string list containing the options, and Split gives a quick way to create one:
 
 ```quest
-  Split ("Male;Female", ";")
+Split ("Male;Female", ";")
 ```
 
 The "show menu" command also takes a string, the prompt for the menu, and a Boolean signaling if the player is allowed to click cancel (which we do not want in this case). As before, the result goes into a string variable called "result".

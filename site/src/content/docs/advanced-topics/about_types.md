@@ -15,15 +15,15 @@ You can view all the attributes of an object using the Debugger, which is access
 Types are defined using a [<type> element](/elements#type), and attributes are defined in the same way as for an object. Objects and types can both inherit from other types using an <inherit> tag.
 
 ```xml
-  <type name="food">
-    <health type="int">0</health>
-    <eat>It looks tasty, but you're not hungry right now.</eat>
-  </type>
+<type name="food">
+  <health type="int">0</health>
+  <eat>It looks tasty, but you're not hungry right now.</eat>
+</type>
 
-  <type name="fruit">
-    <inherit name="food"/>
-    <health>10</health>
-  </type>
+<type name="fruit">
+  <inherit name="food"/>
+  <health>10</health>
+</type>
 ```
 
 ## Default behaviour

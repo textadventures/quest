@@ -30,7 +30,7 @@ We can read string variables within an expression, in exactly the same way as we
 Whenever the player types in a command that matches the command template, the command's script will be run. Let's now add a script to print the required response. Add a "print a message" command and choose "expression". Then enter this expression:
 
 ```quest
- "You say \"" + text + "\", but nobody replies."
+"You say \"" + text + "\", but nobody replies."
 ```
 
 What's with the backslashes in there? They let us use quotation marks inside an expression - if you put a backslash before a quote character, that quote character won't be interpreted as the end of a string.
@@ -38,7 +38,7 @@ What's with the backslashes in there? They let us use quotation marks inside an 
 But if you don't  like the backslashes, you could use single quotes quite safely instead:
 
 ```quest
- "You say '" + text + "', but nobody replies."
+"You say '" + text + "', but nobody replies."
 ```
 
 ![](/images/Commandsay.png)
@@ -64,7 +64,7 @@ The script we enter for the "weigh" command should respond "It weighs X grams", 
 We can read the weight attribute in the same way as before:
 
 ```quest
- object.weight
+object.weight
 ```
 
 Previously, we put an actual object name before the dot. This time, we're putting a variable name there - so we'll read the "weight" attribute of the object that the player entered.
@@ -72,7 +72,7 @@ Previously, we put an actual object name before the dot. This time, we're puttin
 Add the "weigh" command using the command pattern above, and add a "print a message" command to print this expression:
 
 ```quest
- "It weighs " + object.weight + " grams."
+"It weighs " + object.weight + " grams."
 ```
 
 ![](/images/Commandweigh.png)

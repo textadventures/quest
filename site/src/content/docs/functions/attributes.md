@@ -222,13 +222,13 @@ SetObjectFlagOff (object, string flag name)
 Turns the object flag off - an object flag is simply a [boolean](/types#boolean) attribute, so:
 
 ```quest
- SetObjectFlagOff(myobject, "myflag")
+SetObjectFlagOff(myobject, "myflag")
 ```
 
 is equivalent to
 
 ```quest
- myobject.myflag = false
+myobject.myflag = false
 ```
 
 See also [SetObjectFlagOn](#setobjectflagon)
@@ -241,13 +241,13 @@ SetObjectFlagOn (object, string flag name)
 Turns the object flag on - an object flag is simply a [boolean](/types#boolean) attribute, so:
 
 ```quest
- SetObjectFlagOn(myobject, "myflag")
+SetObjectFlagOn(myobject, "myflag")
 ```
 
 is equivalent to
 
 ```quest
- myobject.myflag = true
+myobject.myflag = true
 ```
 
 See also [SetObjectFlagOff](#setobjectflagoff)

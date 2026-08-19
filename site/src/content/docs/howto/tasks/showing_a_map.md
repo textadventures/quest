@@ -269,11 +269,11 @@ return (true)
 If you go into the game, you will find that when you click on a room, its name is printed. To get it to do something useful, modify this line in the first function:
 
 ```quest
-      msg ("Room=" + r.name)
+msg ("Room=" + r.name)
 ```
       
 For example, if you want to allow the player to quickly travel to another room (on the same level) just by clicking it, change it to this:
 
 ```quest
-      player.parent = r
+player.parent = r
 ```

@@ -25,19 +25,19 @@ Some functions return a value, some require one or more values. The values it re
 
 In this example, my_object and "flag" are the two parameters, and they go inside brackets. The brackets tell Quest these are the parameters.
 ```quest
-  return_value = GetBoolean (my_object, "flag")
+return_value = GetBoolean (my_object, "flag")
 ```
 Some functions take parameters, but do not return a value:
 ```quest
-  LockExit (vault_exit)
+LockExit (vault_exit)
 ```
 Sometimes a function has no return value and no parameters:
 ```quest
-  ClearScreen ()
+ClearScreen ()
 ```
 You might wonder why you need the brackets, if there are no parameters. Actually, you do not.
 ```quest
-  ClearScreen
+ClearScreen
 ```
 Well, not always. If the function is on a line on its own with nothing else, Quest will handle it fine. Otherwise, you will need the brackets to ensure Quest will realise this is a function and not something else.
 

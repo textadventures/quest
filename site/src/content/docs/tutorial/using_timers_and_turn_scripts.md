@@ -71,13 +71,13 @@ To do this, add the "Set a variable or attribute" command.
 In the left box, type:
 
 ```quest
- player.turns
+player.turns
 ```
 
 Then in the box on the right, type
 
 ```quest
- player.turns + 1
+player.turns + 1
 ```
 
 This will add 1 each time the script is called.

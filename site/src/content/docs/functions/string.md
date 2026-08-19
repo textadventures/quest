@@ -241,7 +241,7 @@ Use a cache ID for improved performance if you repeatedly test strings against t
 For example, given this regex which matches the text "look at " followed by any object name:
 
 ```regex
- look at (?<object>.*)
+look at (?<object>.*)
 ```
 
 An input of "look at dog" has a strength of 8.

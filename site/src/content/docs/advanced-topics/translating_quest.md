@@ -62,23 +62,23 @@ Default text appears within [template](/elements#template) and [dynamictemplate]
 You can translate "template" tags directly, as they are simply static text. Note that the name must not be changed, just the bit between the tags. Here are some examples from the Russian.aslx:
 
 ```xml
-  <template name="LookAt">Посмотреть на</template>
-  <template name="Take">Взять</template>
-  <template name="SpeakTo">Поговорить с</template>
-  <template name="Use">Использовать</template>
+<template name="LookAt">Посмотреть на</template>
+<template name="Take">Взять</template>
+<template name="SpeakTo">Поговорить с</template>
+<template name="Use">Использовать</template>
 ```
 
 Dynamic templates are expressions - usually these are templates that include some object attribute, for example:
 
 ```xml
-  <dynamictemplate name="TakeSuccessful">"You pick " + object.article + " up."</dynamictemplate>
+<dynamictemplate name="TakeSuccessful">"You pick " + object.article + " up."</dynamictemplate>
 ```
 
 Your translation should also be an expression, but you're not forced to use the same attributes. If it makes more sense for your language, for example, you could use the [gender](/attributes#gender) instead of the [article](/attributes#article) to create your sentence. Again, you just change the bit between the tags, as these examples from Russian show.
 
 ```xml
-  <dynamictemplate name="DropSuccessful">"Ты оставляешь " + object.article + " здесь."</dynamictemplate>
-  <dynamictemplate name="DropUnsuccessful">"Ты не можешь " + object.article + "оставить."</dynamictemplate>
+<dynamictemplate name="DropSuccessful">"Ты оставляешь " + object.article + " здесь."</dynamictemplate>
+<dynamictemplate name="DropUnsuccessful">"Ты не можешь " + object.article + "оставить."</dynamictemplate>
 ```
 
 Some functions that appear within dynamic templates are defined in English.aslx - for example the [GetDefaultPrefix](/functions/internal-core#getdefaultprefix) and [Conjugate](/functions/string#conjugate) functions. You can add, edit, or remove these functions in your template as required.
@@ -93,7 +93,7 @@ Some commands are defined using a [verbtemplate](/elements#verbtemplate) - you c
 Some commands are defined like this:
 
 ```xml
- <template templatetype="command" name="put"><![CDATA[^put (?<object1>.*) (on|in) (?<object2>.*)$]]></template>
+<template templatetype="command" name="put"><![CDATA[^put (?<object1>.*) (on|in) (?<object2>.*)$]]></template>
 ```
 
 That may look a bit off-putting at first glance, but it's fairly simple. Let's break it down:
@@ -104,7 +104,7 @@ That may look a bit off-putting at first glance, but it's fairly simple. Let's b
 So the only bit we need to worry about is inside the CDATA, which is this:
 
 ```regex
- ^put (?<object1>.*) (on|in) (?<object2>.*)$
+^put (?<object1>.*) (on|in) (?<object2>.*)$
 ```
 
 This is a [regular expression](http://en.wikipedia.org/wiki/Regular_expression) ("regex") and is simply a more advanced form of command pattern, and is discussed in some detail [here](/howto/commands/pattern_matching). This [cheat sheet](http://regexlib.com/CheatSheet.aspx) is a handy syntax reference.
@@ -114,7 +114,7 @@ The "^" at the beginning and the "$" at the end simply mean that this regex must
 That means you only need to worry about the bit in the middle:
 
 ```regex
- put (?<object1>.*) (on|in) (?<object2>.*)
+put (?<object1>.*) (on|in) (?<object2>.*)
 ```
 
 The brackets are there for grouping. There are three groups in the regex above. The first one is named using the ?\<name\> syntax as "object1". It matches ".\*" which is the regex way of saying "any number of any character". The second group matches "on" or "in". The third group is named "object2".
@@ -128,10 +128,10 @@ To translate it, you only need to worry about the "put" and "on|in" parts.
 For example, in Deutsch.aslx the translation of this is:
 
 ```xml
- <template templatetype="command" name="put"><![CDATA[^lege (1?<object>.*) (auf|in) (?<object2>.*)$]]></template>
+<template templatetype="command" name="put"><![CDATA[^lege (1?<object>.*) (auf|in) (?<object2>.*)$]]></template>
 
- 
- 
+
+
 ```
 ## Language-specific object types
 
@@ -140,21 +140,21 @@ English doesn't have the concept of "gender" for inanimate objects, but most oth
 For example, in French:
 
 ```xml
- <type name="masculine">
-   <gender>il</gender>
-   <article>le</article>
- </type>
- 
- <type name="feminine">
-   <gender>elle</gender>
-   <article>la</article>
- </type>
+<type name="masculine">
+  <gender>il</gender>
+  <article>le</article>
+</type>
+
+<type name="feminine">
+  <gender>elle</gender>
+  <article>la</article>
+</type>
 ```
 
 Then the LanguageSpecificObjectTypes template should look like this:
 
 ```xml
- <template name="LanguageSpecificObjectTypes">masculine=Inanimate object (masculine); feminine=Inanimate object (feminine); </template>
+<template name="LanguageSpecificObjectTypes">masculine=Inanimate object (masculine); feminine=Inanimate object (feminine); </template>
 ```
 
 The type names in the template must match the type names you define. If they don't, you'll see errors in the Editor.

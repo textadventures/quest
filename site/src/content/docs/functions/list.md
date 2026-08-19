@@ -16,7 +16,7 @@ Contains (object parent, object child)
 Returns a [boolean](/types#boolean) - **true** if the child object is contained by the parent. This doesn't necessarily mean that there is a direct parent-child relationship - for example if object A has parent B, and B has parent C, then
 
 ```quest
- Contains(C, A)
+Contains(C, A)
 ```
 
 will return **true**.
@@ -186,13 +186,13 @@ You can use the [ListItem](#listitem) function if you don't know the type of the
 For example, to show a specific objects' name from a list, first create an [objectlist](/types#objectlist) called myList, in this example it is a list of objects that can be seen currently [ScopeVisibleNotHeld](/functions/scope#scopevisiblenotheld).
 
 ```quest
- myList = ScopeVisibleNotHeld()
+myList = ScopeVisibleNotHeld()
 ```
 
 Now show the name of the second item in the list. Note that the second object is at index 1.
 
 ```quest
- msg ("myList item 2 is " + ObjectListItem(myList, 1).name)
+msg ("myList item 2 is " + ObjectListItem(myList, 1).name)
 ```
 
 This could be used with [GetRandomInt](/functions/random#getrandomint) to remove an item from the players inventory ([ScopeInventory](/functions/scope#scopeinventory)) and place it into the current room (for example, if you're creating a poltergeist or thief).
@@ -209,13 +209,13 @@ Returns an [objectlist](/types#objectlist) - a copy of the input objectlist, sor
 For example, to return a list of objects sorted by name:
 
 ```quest
- sortedlist = ObjectListSort(list, "name")
+sortedlist = ObjectListSort(list, "name")
 ```
 
 To return a list sorted by weight, with equivalent weight objects sorted by name:
 
 ```quest
- sortedlist = ObjectListSort(list, "weight", "name")
+sortedlist = ObjectListSort(list, "weight", "name")
 ```
 
 It is important to have all the objects in the list have the same type of attribute. If you are sorting by weight, and some objects have an integer attribute for weight and some have a double attribute, you will get an error:

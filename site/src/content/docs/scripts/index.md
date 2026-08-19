@@ -7,15 +7,15 @@ sidebar:
 Scripts are created in a style similar to C, with script blocks denoted by braces. Unlike C, there is no character to mark the end of a line - each script command is simply on its own line.
 
 ```quest
- if (someVariable = 3) {
-   msg ("Some text")
- }
+if (someVariable = 3) {
+  msg ("Some text")
+}
 ```
 
 Comments are denoted by //
 
 ```quest
- // this line will be ignored
+// this line will be ignored
 ```
 
 ## Setting variables
@@ -54,13 +54,13 @@ Pops up a prompt for the user to choose Yes or No as the answer to the specified
 The nested script can check the "result" boolean variable to see the user's response - true for "yes", false for "no".
 
 ```quest
-      ask ("Do you want to eat an apple?") {
-        if (result) {
-            msg("Ahhh, very tasty")
-        } else {
-            msg("But you should eat your daily apple!")
-        }
-      }
+ask ("Do you want to eat an apple?") {
+  if (result) {
+      msg("Ahhh, very tasty")
+  } else {
+      msg("But you should eat your daily apple!")
+  }
+}
 ```
 
 ## create
@@ -273,10 +273,10 @@ The nested script can evaluate the "result" string variable to work with the use
 Example:
 
 ```quest
-  msg ("What is your name?")
-  get input {
-     msg ("Your name is " + result)
-  }
+msg ("What is your name?")
+get input {
+   msg ("Your name is " + result)
+}
 ```
 
 For more information see [here](/howto/tasks/asking_a_question).
@@ -622,19 +622,19 @@ For an in-line menu, use the [ShowMenu](/functions/user-interface#showmenu) func
 **example:**
 
 ```quest
-      menulist = NewStringList()
-      list add (menulist, "first entry")
-      list add (menulist, "second entry")
-      list add (menulist, "third entry")
-      show menu ("please choose now", menulist, true) {
-        msg ("--" + result + "--")
-        if (result<>null) {
-           msg ("You have chosen the " + result)
-        }
-        else {
-           msg ("You have chosen to press cancel")
-        }
-      }
+menulist = NewStringList()
+list add (menulist, "first entry")
+list add (menulist, "second entry")
+list add (menulist, "third entry")
+show menu ("please choose now", menulist, true) {
+  msg ("--" + result + "--")
+  if (result<>null) {
+     msg ("You have chosen the " + result)
+  }
+  else {
+     msg ("You have chosen to press cancel")
+  }
+}
 ```
 
 ## start transaction
@@ -675,13 +675,13 @@ wait {script}
 Waits for the user to press a key or click on a "Continue" link, and then runs the nested script. Each successive part needs to be nested inside the one before, like this:
 
 ```quest
-  msg ("First bit")
+msg ("First bit")
+wait {
+  msg ("Second bit")
   wait {
-    msg ("Second bit")
-    wait {
-      msg ("Third bit")
-    }
+    msg ("Third bit")
   }
+}
 ```
 
 ## while

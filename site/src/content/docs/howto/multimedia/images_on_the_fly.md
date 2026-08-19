@@ -21,22 +21,22 @@ This is the example on the first page; it draws a green circle.
 To convert that to Quest, just put backslashes before each double quote, and print it out!
 
 ```quest
-  msg("<svg width=\"100\" height=\"100\"><circle cx=\"50\" cy=\"50\" r=\"40\" stroke=\"green\" stroke-width=\"4\" fill=\"yellow\" /></svg>")
+msg("<svg width=\"100\" height=\"100\"><circle cx=\"50\" cy=\"50\" r=\"40\" stroke=\"green\" stroke-width=\"4\" fill=\"yellow\" /></svg>")
 ```
 
 For more complex drawings, building up a string is a good idea:
 
 ```quest
-  // step 1, the svg element defines the drawing board
-  s = "<svg width=\"200\" height=\"100\">"
-  // step 2, draw a circle
-  s = s + "<circle cx=\"50\" cy=\"50\" r=\"40\" stroke=\"green\" stroke-width=\"4\" fill=\"yellow\" />"
-  // step 3 draw a transparent rectangle
-  s = s + "<rect x=\"50\" y=\"20\" width=\"150\" height=\"150\" style=\"fill:blue;stroke:pink;stroke-width:5;fill-opacity:0.3;stroke-opacity:0.9\" />"
-  // step 4 end the svg element
-  s = s + "</svg>"
-  // step 5 print it out
-  msg (s)
+// step 1, the svg element defines the drawing board
+s = "<svg width=\"200\" height=\"100\">"
+// step 2, draw a circle
+s = s + "<circle cx=\"50\" cy=\"50\" r=\"40\" stroke=\"green\" stroke-width=\"4\" fill=\"yellow\" />"
+// step 3 draw a transparent rectangle
+s = s + "<rect x=\"50\" y=\"20\" width=\"150\" height=\"150\" style=\"fill:blue;stroke:pink;stroke-width:5;fill-opacity:0.3;stroke-opacity:0.9\" />"
+// step 4 end the svg element
+s = s + "</svg>"
+// step 5 print it out
+msg (s)
 ```
 
 For really complicated shapes, you might want to look at using InkScape, a drawing program that will produce output in SVG format (disclaimer: while I have used InkScape, but never tried to convert the output to Quest).

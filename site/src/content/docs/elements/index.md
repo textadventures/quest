@@ -41,7 +41,7 @@ Creates a template of the specified name. You can print the template's text usin
 Within a language library, a template may define a **templatetype** of "command", for example:
 
 ```xml
- <template templatetype="command" name="undo">^undo$</template>
+<template templatetype="command" name="undo">^undo$</template>
 ```
 
 This simply is a flag to the Editor to prevent it from showing the template in the list of templates (as the way to edit it would be to edit the associated command pattern).
@@ -49,17 +49,17 @@ This simply is a flag to the Editor to prevent it from showing the template in t
 Note that it is important to have templates defined in the right place in the code. If your template is to override an existing template, then it has to come *after* the language file include. However, it has to come *before* the template is used in the code, which should be before the core library file include. As of version 5.2 Quest does not do this, so you will need to manually move the templates to the right place. Your game file should start something like this:
 
 ```xml
-  <!--Saved by Quest 5.2.4515.34846-->
-  <asl version="520">
-    <include ref="English.aslx"/>
-    <template name="SeeListHeader">There's</template>
-    <template name="GoListHeader"> Go to </template>
-    <template name="UnrecognisedCommand">Unknown command.</template>
-    <template name="YouAreIn"></template>
-    <template name="PlacesObjectsLabel">Places / Objects</template>
-    <include ref="Core.aslx" />
-    <game name="Test_1">
-    ...
+<!--Saved by Quest 5.2.4515.34846-->
+<asl version="520">
+  <include ref="English.aslx"/>
+  <template name="SeeListHeader">There's</template>
+  <template name="GoListHeader"> Go to </template>
+  <template name="UnrecognisedCommand">Unknown command.</template>
+  <template name="YouAreIn"></template>
+  <template name="PlacesObjectsLabel">Places / Objects</template>
+  <include ref="Core.aslx" />
+  <game name="Test_1">
+  ...
 ```
 
 ## dynamictemplate
@@ -128,9 +128,9 @@ Quest will object if there is a return statement, but no type specified; or if t
 Here is a trivial example. It's a function to concatenate two strings and return the result. Clearly, you don't need this function (since you can just use the "+" yourself), but hopefully it illustrates how functions are set up.
 
 ```xml
-    <function name="ConcatStrings" parameters="s1, s2" type="string">
-      return (s1 + s2)
-    </function>
+<function name="ConcatStrings" parameters="s1, s2" type="string">
+  return (s1 + s2)
+</function>
 ```
 
 This basically says, "We have a function called 'ConcatStrings', it takes two input parameters, which we will call 's1' and 's2' inside the function, and the function returns a string value."
@@ -138,7 +138,7 @@ This basically says, "We have a function called 'ConcatStrings', it takes two in
 The function would be invoked as:
 
 ```quest
-    s = ConcatStrings("Mama ", "Mia")
+s = ConcatStrings("Mama ", "Mia")
 ```
 
 The resulting "s" would be "Mama Mia"
@@ -516,13 +516,13 @@ Note that as of 5.7.2, turnscripts run in alphabetic order (in earlier versions 
 Specifies an implied type. For example, the "alt" attribute on an object is usually a list, so to save having to specify the type each time we can use this:
 
 ```xml
- <implied element="object" property="alt" type="list">
+<implied element="object" property="alt" type="list">
 ```
 
 This means we can specify an alt attribute without specifying the type:
 
 ```xml
- <alt>telly; television</alt>
+<alt>telly; television</alt>
 ```
 
 ## delegate

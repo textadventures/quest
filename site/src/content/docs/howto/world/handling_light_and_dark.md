@@ -45,13 +45,13 @@ Quest has a sophisticated container system. If the player puts the torch in a co
 Create an object, lightswitch, inside the dark room. On the Features tab, make it switchable. On the Switchable tab, also make it Switchable, and fill in the message boxes. Then in the script to run when turned on, put in this (not sure what to do with code? See [here](/howto/scripting/copy_and_paste_code)):
 
 ```quest
-  darkroom.dark=false
+darkroom.dark=false
 ```
 
 For the other script, you need this:
 
 ```quest
-  darkroom.dark=true
+darkroom.dark=true
 ```
 
 Very simple, they just alter the "dark" attribute of your dark room.
@@ -64,13 +64,13 @@ If you try it out, you will find the light switch now controls the darkness of t
 We should be able to turn the torch off, to save the battery. Pretty similar to before - on the torch object, first set it to not be a light source, as it is initially turned off (but keep it as a Strong light source!), then go to the Features tab, and make it switchable. On the Switchable tab, make it Switchable (the default messages are good enough). Then in the script to run when turned on, put in this:
 
 ```quest
-  this.lightsource=true
+this.lightsource=true
 ```
 
 For the other script, you need this:
 
 ```quest
-  this.lightsource=false
+this.lightsource=false
 ```
 
 ## A torch that fails
@@ -78,7 +78,7 @@ For the other script, you need this:
 No torch lasts forever; let us put a limit on this one. First create a new attribute for the torch, called "battery". You can do that by going to the Attributes tab to create it, and set it to be an integer, with a value of 5 (we want a small number whilst we are playing around; for your game you will want it much higher). Alternatively, you can do the same thing in a script - go to the Script tab of the game object, and add this code:
 
 ```quest
-  torch.battery = 5
+torch.battery = 5
 ```
 
 We now need a turn script. We could do this two ways: have the turn script enabled and disabled when the torch is turned on and off, or have it running all the time, but only use the battery when turned on. I am going to do the former.
@@ -103,19 +103,19 @@ The last line sets a special attribute that Quest will check before switching th
 Now we need to go back to the torch, and the scripts on the Switchable tab. The turn off script now looks like this, as we now want to turn off the turn script when the torch is off:
 
 ```quest
-  this.lightsource = false
-  DisableTurnScript (torchturnscript)
+this.lightsource = false
+DisableTurnScript (torchturnscript)
 ```
 The turn on script is more complicated, as we have to test if the battery is dead.
 ```quest
-  if (this.battery > 0) {
-    this.lightsource = true
-    EnableTurnScript (torchturnscript)
-  }
-  else {
-    msg ("No light - the battery is dead.")
-    this.switchedon = false
-  }
+if (this.battery > 0) {
+  this.lightsource = true
+  EnableTurnScript (torchturnscript)
+}
+else {
+  msg ("No light - the battery is dead.")
+  this.switchedon = false
+}
 ```
 
 If the battery is good, the torch becomes a light source, and the turn script goes on.

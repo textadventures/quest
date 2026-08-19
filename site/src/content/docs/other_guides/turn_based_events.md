@@ -55,8 +55,8 @@ For events in "active\_events", you need to set the "turn" attribute. The event 
 For events in "dead\_events", you need to set up something to start them off. This needs to move the event into the "active\_events", and to set the "turn" attribute to game.turn plus the number of turns to wait. It might look something like this, when the event, event3, is set to occur in 2 turns:
 
 ```quest
-  event3.turn = 2 + game.turn
-  event3.parent = active_events
+event3.turn = 2 + game.turn
+event3.parent = active_events
 ```
 
 ## Chaining events

@@ -20,9 +20,9 @@ Bear in mind that there is a 50 Mb limit on games at textadventures.co.uk (see [
 
 Quest has a built-in picture command, which will show an image aligned to the left. 
 ```quest
-  picture ("gravestone.png")
-  msg ("You are in a room. A large room, entirely white, nothing here but a gravestone.")
-  msg ("Your gravestone.")
+picture ("gravestone.png")
+msg ("You are in a room. A large room, entirely white, nothing here but a gravestone.")
+msg ("Your gravestone.")
 ```
 
 Sometimes you want to change how it is displayed, for example put the image in the middle, or have text flow round it. The picture command gives no control over the image, so we will need to output the raw HTML to do anything more. Sounds scary? You bet!
@@ -34,19 +34,19 @@ HTML is the way web pages on the internet tell your browser how they should be d
 
 The HTML code for an image will look kind of like this; "img" is the tag for image, and "src" is an attribute that indicates the source of the image (traditionally HTML uses double quotes, but single quotes work too, and are easier to use with Quest):
 ```xml
-  <img src='gravestone.png' />
+<img src='gravestone.png' />
 ```
 If only it was that simple. That will work offline, but online, you need a full URL for the file to be found. Fortunately Quest has a function built-in to do that for you, and it will work whether your game in online or offline. This means you need to add together three strings:
 ```xml
-  "<img src='"
-  GetFileURL("gravestone.png")
-  "' />"
+"<img src='"
+GetFileURL("gravestone.png")
+"' />"
 ```
 The code ends up looking like this.
 ```quest
-  msg ("<img src='" + GetFileURL("gravestone.png") + "' />")
-  msg ("You are in a room. A large room, entirely white, nothing here but a gravestone.")
-  msg ("Your gravestone.")
+msg ("<img src='" + GetFileURL("gravestone.png") + "' />")
+msg ("You are in a room. A large room, entirely white, nothing here but a gravestone.")
+msg ("Your gravestone.")
 ```
 
 Looks just the same so far, but this gives us a handle on changing how it looks, via the style attribute and CSS. 
@@ -56,25 +56,25 @@ Looks just the same so far, but this gives us a handle on changing how it looks,
 
 Let us make the image float! When the image floats, the text will flow around it. The HTML will look kind of like this:
 ```xml
-  <img src='gravestone.png' style='float:left;'/>
+<img src='gravestone.png' style='float:left;'/>
 ```
 The "style" attribute tells Quest what style you want this thing to be. You need to be pretty specific in the values. The general format is the name of the CSS attribute ("float" in this case) followed by a colon, then the value ("left"), followed by a semi-colon. Just to help the confusion, we have CSS attributes inside of HTML attributes!
 ```quest
-  msg ("<img src='" + GetFileURL("gravestone.png") + "' style='float:left;' />")
-  msg ("You are in a room. A large room, entirely white, nothing here but a gravestone.")
-  msg ("Your gravestone.")
+msg ("<img src='" + GetFileURL("gravestone.png") + "' style='float:left;' />")
+msg ("You are in a room. A large room, entirely white, nothing here but a gravestone.")
+msg ("Your gravestone.")
 ```
 
 You can just as easily have the image on the right. Let us add another CSS attribute. The "padding" attribute controls the spacing around the image. You need to specify "px" (pixels) as the units in this case.
 ```quest
-  msg ("<img src='" + GetFileURL("gravestone.png") + "' style='float:right; padding:15px;' />")
-  msg ("You are in a room. A large room, entirely white, nothing here but a gravestone.")
-  msg ("Your gravestone.")
+msg ("<img src='" + GetFileURL("gravestone.png") + "' style='float:right; padding:15px;' />")
+msg ("You are in a room. A large room, entirely white, nothing here but a gravestone.")
+msg ("Your gravestone.")
 ```
 
 The CSS to centre an image is rather more complicated than you would imagine:
 ```quest
-  msg ("<img src='" + GetFileURL("gravestone.png") + "' style='display: block; margin-left: auto; margin-right: auto;' />")
+msg ("<img src='" + GetFileURL("gravestone.png") + "' style='display: block; margin-left: auto; margin-right: auto;' />")
 ```
 
 ## Other effects
@@ -86,18 +86,18 @@ msg ("<img src='" + GetFileURL("gravestone.png") + "' style='float:left;opacity:
 
 You can resize it. Changing just the width or height changes the image proportionally, or you can set both.
 ```quest
-  msg ("<img src='" + GetFileURL("gravestone.png") + "' style='float:left;width:100px;' />")
+msg ("<img src='" + GetFileURL("gravestone.png") + "' style='float:left;width:100px;' />")
 ```
 
 ## One image on top of another
 
 You can even superimpose one image over another if you feel brave enough. You need to put them both inside an HTML div (this is then the reference point that the images are positioned against), and give the images an absolute position. All that needs to go inside a single "msg" as Quest will add its own HTML, so in this example, a string, `s`, is used, with each bit added to it (we could do it in one line, but it would be very long).
 ```quest
-  s = "<div style='position:fixed; left: 0px; bottom: 20px; width: 260 px; height: 670px;'>"
-  s = s + "<img src='" + GetFileURL("gravestone.png") + "' style='position:absolute;top:0px;left:-200px;' />"
-  s = s + "<img src='" + GetFileURL("celebrate.png") + "' style='position:absolute;' />"
-  s = s + "</div>"
-  msg (s)
+s = "<div style='position:fixed; left: 0px; bottom: 20px; width: 260 px; height: 670px;'>"
+s = s + "<img src='" + GetFileURL("gravestone.png") + "' style='position:absolute;top:0px;left:-200px;' />"
+s = s + "<img src='" + GetFileURL("celebrate.png") + "' style='position:absolute;' />"
+s = s + "</div>"
+msg (s)
 ```
 
 Using this sort of positioning puts the images outside the normal flow of elements on the page, and getting the text to go around the images would be very difficult. I have dodged that by putting the images outside the text altogether.

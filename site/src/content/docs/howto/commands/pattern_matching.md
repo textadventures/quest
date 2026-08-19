@@ -83,8 +83,8 @@ Note that verb objects are actually a type of command, so when the game iterates
 
 You can use a "command pattern" for your command, instead of a regular expression. A command pattern is really just a short hand for a regex, and will get converted into a regex when the game starts. Here is a comparison
 ```quest
-  regex = "^put (?<object1>.*) on (?<object2>.*)$"
-  pattern "put #object1# on #object2#"
+regex = "^put (?<object1>.*) on (?<object2>.*)$"
+pattern "put #object1# on #object2#"
 ```
 
 
@@ -191,7 +191,7 @@ The `^` and `$` are special codes that must match the start of the string and th
 
 Here is some code that will handle a string like this:
 ```quest
-  player.health = 60
+player.health = 60
 ```
 It uses a regex to first confirm the string is in the right format, and then to split it into the three important parts.
 ```quest

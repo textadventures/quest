@@ -15,7 +15,7 @@ Go to the _Attributes_ tab of the player object. In the lower box, click "Add", 
 
 We can going to give Quest two bits of information. The first is the name of the attribute, and the second is how to display it, so again type "score" for the first bit (this must be exactly as you did it before, because Quest will need to match this to the attribute). You can leave the second bit blank, and Quest will decide how to display it, but we try to do it a bit more fancy. Paste in this:
 ```
-  Score: !/10
+Score: !/10
 ```
 The exclamation mark is a stand-in for the actual number, so when the score is zero, the player will see "Score: 0/10".
 

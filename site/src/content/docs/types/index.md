@@ -15,7 +15,7 @@ In fact, null is a special value for attributes that says the attribute does not
 You can check if an attribute is null using the "null" keyword:
 
 ```quest
- if (someobject.parent = null) { ... }
+if (someobject.parent = null) { ... }
 ```
 
 There is a "gotcha" lurking here. If your object is of a type that sets an attribute to some value, and your object sets it to another value, what happens when you set that attribute on the object to null? The attribute is removed from the object, and so reverts to being the value from the type. This may not be what you expect!
@@ -49,16 +49,16 @@ A script attribute contains code for Quest to run, i.e., a list of  instructions
 Example:
 
 ```quest
- <look type="script">
-   if (not fridge.isopen) {
-     msg ("The fridge is open, casting its light out into the gloomy kitchen.")
-   }
-   else {
-     msg ("A big old refrigerator sits in the corner, humming quietly.")
-   }
- </look>
+<look type="script">
+  if (not fridge.isopen) {
+    msg ("The fridge is open, casting its light out into the gloomy kitchen.")
+  }
+  else {
+    msg ("A big old refrigerator sits in the corner, humming quietly.")
+  }
+</look>
 
- 
+
 ```
 Scripts can be created by adding script commands using the user interface, or by typing code in "code view". Behind the scenes, it is all the same, so you can flip between the two as you like.
 
@@ -158,7 +158,7 @@ An object attribute points to another object by name.
 For example:
 
 ```xml
- <parent type="object">lounge</parent>
+<parent type="object">lounge</parent>
 ```
 
 would be another way of setting the [parent](/attributes#parent) attribute of an object, if you didn't want to nest the XML definition.
@@ -170,23 +170,23 @@ A stringlist is a [list](#list) that can contain a number of elements, all have 
 For Quest 5.3 and earlier, the format in an ASLX file is this:
 
 ```xml
- <mylist type="list">one; two; three</mylist>
+<mylist type="list">one; two; three</mylist>
 ```
 
 The same list is expressed like this:
 
 ```xml
- <mylist type="list">
-   <value>one</value>
-   <value>two</value>
-   <value>three</value>
- </mylist>
+<mylist type="list">
+  <value>one</value>
+  <value>two</value>
+  <value>three</value>
+</mylist>
 ```
 
 In Quest 5.4, you can still use the older semi-colon separate format with "simplestringlist":
 
 ```xml
- <mylist type="simplestringlist">one; two; three</mylist>
+<mylist type="simplestringlist">one; two; three</mylist>
 ```
 
 See [Using Lists](/howto/scripting/using_lists).
@@ -198,7 +198,7 @@ An objectlist is a [list](#list) that can contain any number of elements, all of
 The format in an ASLX file is:
 
 ```xml
- <mylist type="objectlist">player; object1; thing</mylist>
+<mylist type="objectlist">player; object1; thing</mylist>
 ```
 
  See [Using Lists](/howto/scripting/using_lists) for more information.
@@ -208,10 +208,10 @@ The format in an ASLX file is:
 "list" is a sequence of any attribute type. The format is in the ASLX file:
 
 ```xml
- <myattribute type="list">
-   <value type="string">a string value</value>
-   <value type="int">123</value>
- </myattribute>
+<myattribute type="list">
+  <value type="string">a string value</value>
+  <value type="int">123</value>
+</myattribute>
 ```
 
 Usually it is better to use a [stringlist](#stringlist) (if all elements in the list will be strings) or an [objectlist](#objectlist) (if all elements in the list will be objects) instead.
@@ -227,28 +227,28 @@ The format is "key = value", separated by semicolons.
 For example, for Quest 5.3 and earlier the format looks like this:
 
 ```xml
- <myattribute type="objectdictionary">first = player; second = lounge</myattribute>
+<myattribute type="objectdictionary">first = player; second = lounge</myattribute>
 ```
 
 For Quest 5.4 and later the format is:
 
 ```xml
- <myattribute type="objectdictionary">
-   <item>
-     <key>first</key>
-     <value>player</value>
-   </item>
-   <item>
-     <key>second</key>
-     <value>lounge</value>
-   </item>
- </myattribute>
+<myattribute type="objectdictionary">
+  <item>
+    <key>first</key>
+    <value>player</value>
+  </item>
+  <item>
+    <key>second</key>
+    <value>lounge</value>
+  </item>
+</myattribute>
 ```
 
 In Quest 5.4, you can still use the old semicolon-separated format by specifying "simpleobjectdictionary":
 
 ```xml
- <myattribute type="simpleobjectdictionary">first = player; second = lounge</myattribute>
+<myattribute type="simpleobjectdictionary">first = player; second = lounge</myattribute>
 ```
 
 This defines:
@@ -269,14 +269,14 @@ It is defined with nested \<item\> keys for each key/value pair.
 For example:
 
 ```quest
- <useon type="scriptdictionary">
-   <item key="object1">
-     msg ("you use object1")
-   </item>
-   <item key="object2">
-     msg ("you use object2")
-   </item>
- </useon>
+<useon type="scriptdictionary">
+  <item key="object1">
+    msg ("you use object1")
+  </item>
+  <item key="object2">
+    msg ("you use object2")
+  </item>
+</useon>
 ```
 
 See [Using Dictionaries](/howto/scripting/using_dictionaries)
@@ -290,31 +290,31 @@ Usually it is better to use a more specific dictionary type if you can, if you k
 Here is an example dictionary containing a variety of different types:
 
 ```quest
- <example type="dictionary">
-   <item>
-     <key>key1</key>
-     <value type="string">A string value.</value>
-   </item>
-   <item>
-     <key>key2</key>
-     <value type="int">12</value>
-   </item>
-   <item>
-     <key>key3</key>
-     <value type="script">
-       msg ("This is a script")
-     </value>
-   </item>
-   <item>
-     <key>key4</key>
-     <value type="dictionary">
-       <item>
-         <key>subkey1</key>
-         <value type="string">This is a string inside a dictionary inside another dictionary.</value>
-       </item>
-     </value>
-   </item>
- </example>
+<example type="dictionary">
+  <item>
+    <key>key1</key>
+    <value type="string">A string value.</value>
+  </item>
+  <item>
+    <key>key2</key>
+    <value type="int">12</value>
+  </item>
+  <item>
+    <key>key3</key>
+    <value type="script">
+      msg ("This is a script")
+    </value>
+  </item>
+  <item>
+    <key>key4</key>
+    <value type="dictionary">
+      <item>
+        <key>subkey1</key>
+        <value type="string">This is a string inside a dictionary inside another dictionary.</value>
+      </item>
+    </value>
+  </item>
+</example>
 ```
 
 See [Using Dictionaries](/howto/scripting/using_dictionaries)
@@ -328,28 +328,28 @@ The format is "key = value", separated by semicolons.
 For example (for Quest 5.3 and earlier):
 
 ```xml
- <statusattributes type="stringdictionary">turns = You have taken ! turns; health = Health !%</statusattributes>
+<statusattributes type="stringdictionary">turns = You have taken ! turns; health = Health !%</statusattributes>
 ```
 
 For Quest 5.4 and later the format is:
 
 ```xml
- <statusattributes type="stringdictionary">
-   <item>
-     <key>turns</key>
-     <value>You have taken ! turns</value>
-   </item>
-   <item>
-     <key>health</key>
-     <value>Health !%</value>
-   </item>
- </statusattributes>
+<statusattributes type="stringdictionary">
+  <item>
+    <key>turns</key>
+    <value>You have taken ! turns</value>
+  </item>
+  <item>
+    <key>health</key>
+    <value>Health !%</value>
+  </item>
+</statusattributes>
 ```
 
 In Quest 5.4, you can still use the old semicolon-separated format using "simplestringdictionary":
 
 ```xml
- <statusattributes type="simplestringdictionary">turns = You have taken ! turns; health = Health !%</statusattributes>
+<statusattributes type="simplestringdictionary">turns = You have taken ! turns; health = Health !%</statusattributes>
 ```
 
 This defines:

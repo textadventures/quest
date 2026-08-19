@@ -82,7 +82,7 @@ This feature is for garments that give bonuses when worn. Bonuses (and penalties
 For example:
 
 ```
-  protection;charisma+2;agility-1
+protection;charisma+2;agility-1
 ```
 
 When the player puts on this garment, his protection will increase by 1, his charisma by 2 and his agility will drop by 1. When the garment is removed, the bonuses are all lost.
@@ -105,9 +105,9 @@ For verbs that will be visible when the player has the item, set these on the _W
 You can change the additional display verbs mid-game by modifying the `wornverbs` or `invverbs` attributes, then calling `SetVerbs`. Here is an example where two verbs are added to a hat for when it is worn, and one when it is not.
 
 ```quest
-  pink_hat.wornverbs = "Activate;Show off"
-  pink_hat.invverbs = "Activate"
-  SetVerbs
+pink_hat.wornverbs = "Activate;Show off"
+pink_hat.invverbs = "Activate"
+SetVerbs
 ```
 
 You might also want to call `SetVerbs` in the start script of the game object so any garments in the player's inventory at the start are set up correctly.
@@ -149,7 +149,7 @@ There are various functions that can help you when handling clothing.
 Use the `ListClothes` function to get a string that lists the clothes currently worn (note, not a string list). If the player is naked, it will return the string "nothing". It could be used like this:
 
 ```quest
-  msg("You are wearing " + ListClothes () + ".")
+msg("You are wearing " + ListClothes () + ".")
 ```
 
 ### What is covered?
@@ -159,7 +159,7 @@ Do you need to know if the player is wearing anything at a certain location? For
 You can get the outer most garment for a wear slot, using the GetOuter function.
 
 ```quest
-  GetOuter ("feet")
+GetOuter ("feet")
 ```
 
 If the player is wearing socks and boots, the function will return the boots object, as they are worn on the outside. If the player has nothing on his feet, it will return null.
@@ -173,19 +173,19 @@ There are two functions, `WearGarment` and `RemoveGarment`, that you can use if 
 For example, to have the player wearing clothes at the start, use the WearGarment function. This will ensure the item is in the player's inventory, and all its attributes properly set. You can do this in the start script of the game object.
 
 ```quest
-  WearGarment (underpants)
-  WearGarment (trousers)
-  WearGarment (shirt)
+WearGarment (underpants)
+WearGarment (trousers)
+WearGarment (shirt)
 ```
 
 The `RemoveGarment` function works similarly, taking the garment to be removed as a parameter. To remove all garments (without any message to the player), do this:
 
 ```quest
-  foreach (o, GetAllChildObjects(game.pov)) {
-    if (GetBoolean(o, "worn")) {
-      RemoveGarment (o)
-    }
+foreach (o, GetAllChildObjects(game.pov)) {
+  if (GetBoolean(o, "worn")) {
+    RemoveGarment (o)
   }
+}
 ```
 
 ### Changing the name of clothing
@@ -204,11 +204,11 @@ You can use this with any object, by the way; they will just change the alias an
 You can [override](/advanced-topics/overriding) a function called `TestGarment` if you want to check a garment can be worn, for example to ensure it is not too small for the player. `TestGarment` must return a boolean, and take a single parameter; the garment. It should return true if the garment can be worn. If it cannot, it should give a message to say that, and then return false.
 
 ```quest
-  if (GetBoolean(object, "toosmall")) {
-    msg("That is too small for you!")
-    return (false)
-  }
-  return (true)
+if (GetBoolean(object, "toosmall")) {
+  msg("That is too small for you!")
+  return (false)
+}
+return (true)
 ```
 
 `TestGarment` is called after the system has already determined that the object is wearable, is held and is not currently worn, so you can safely assume these are true.
@@ -221,7 +221,7 @@ There is a corresponding function `TestRemove` that is called before an item is 
 There is no built-in system to ensure that you only add the right wear_slots. If you have some jeans in a slot called "Lower", the player will be able to wear them at the same time as the trousers in slot "lower". To check you have not done that by mistake, add this line to the start script of your game object:
 
 ```quest
-  msg (Slots())
+msg (Slots())
 ```
 
 When you start the game, you should see something like this:
@@ -246,15 +246,15 @@ At this point it should work fine, but there is some tidying up we can do to mak
 Now go to the verbs tab, and click _Add_ there. Again, type in "Hide" and set this to run a script, and paste this in:
 
 ```quest
-  this.isopen = false
-  this.inventoryverbs = Split("Show", ";")
+this.isopen = false
+this.inventoryverbs = Split("Show", ";")
 ```
 
 Click _Add_ there again, and this time type in "Show" and set this to run a script, and paste this in:
 
 ```quest
-  this.isopen = true
-  this.inventoryverbs = Split("Hide", ";")
+this.isopen = true
+this.inventoryverbs = Split("Hide", ";")
 ```
 
 If you are using inventory limits, increase the maximum by one to allow for this new object.
@@ -314,20 +314,20 @@ else {
 
 The library offers some support for having NPCs wearing clothing. Clothing worn by the player can be worn by NPCs too.
 ```quest
-  // Get an object list containing garments worn by the NPC
-  ListWornFor (char)
+// Get an object list containing garments worn by the NPC
+ListWornFor (char)
 
-  // Get an object list containing garments worn by the NPC
-  // and visible. Garments without wear_slots assigned
-  // will not be listed
-  ListVisibleFor (char)
+// Get an object list containing garments worn by the NPC
+// and visible. Garments without wear_slots assigned
+// will not be listed
+ListVisibleFor (char)
 
-  // Gets the outermost garment worn by the NPC in the given
-  // slot, or null if there is none. 
-  GetOuterFor (char, slot) 
+// Gets the outermost garment worn by the NPC in the given
+// slot, or null if there is none. 
+GetOuterFor (char, slot) 
 
-  // As GetArmour, but for the specified NPC
-  GetArmourFor (char)
+// As GetArmour, but for the specified NPC
+GetArmourFor (char)
 ```
 
 Note that `ListVisibleFor` has some limitations, as it can only guess at what is visible. If a girl is wearing tights under shorts and shoes, and you are using feet, lower, upper and head as locations, the tights will not be considered visible. Using more body locations will solve this issue; however you need to think about this as early as possible! See-through garments are not supported.

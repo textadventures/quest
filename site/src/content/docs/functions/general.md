@@ -70,10 +70,10 @@ The parameters dictionary can be used to add variables into the eval context. Th
 Example:
 
 ```quest
-  params = NewDictionary()
-  dictionary add(params, "x", 50)
-  dictionary add(params, "y", 100)
-  msg(Eval ("x + y", params))
+params = NewDictionary()
+dictionary add(params, "x", 50)
+dictionary add(params, "y", 100)
+msg(Eval ("x + y", params))
 ```
 
 This will result in "150" being printed.

@@ -11,10 +11,10 @@ Often in a text adventure you want the game to ask an open-ended question of the
 ![](/images/Question1.png)
 
 ```quest
-  msg ("What is your name?")
-  get input {
-    player.alias = CapFirst(result)
-  }
+msg ("What is your name?")
+get input {
+  player.alias = CapFirst(result)
+}
 ```
 
 The first line just asks the question. Then we see the `get input` command. The block after that gets run only once the player has typed a response. A magic variable called `result` has the text the player typed, so we just need to assign that.
@@ -33,14 +33,14 @@ You might think that you can just have one question after another...
 
 
 ```quest
-  msg ("What is your name?")
-  get input {
-    player.alias = CapFirst(result)
-  }
-  msg ("How old are you?")
-  get input {
-    player.alias = CapFirst(result)
-  }
+msg ("What is your name?")
+get input {
+  player.alias = CapFirst(result)
+}
+msg ("How old are you?")
+get input {
+  player.alias = CapFirst(result)
+}
 ```
 
 Unfortunately, this does not work as you might expect. Quest does not wait for the player to give her name - it just goes straight to the next bit of code and asks her age too, before the player has answered anything. Both questions get printed immediately, but only the second `get input` is actually listening; it silently replaces the first, so whatever the player types only ever gets treated as her age, and the "What is your name?" question never gets an answer at all.
@@ -50,14 +50,14 @@ We need to _nest_ the question. This means putting the second inside the first.
 ![](/images/Question2.png)
 
 ```quest
-  msg ("What is your name?")
+msg ("What is your name?")
+get input {
+  player.alias = CapFirst(result)
+  msg ("How old are you?")
   get input {
-    player.alias = CapFirst(result)
-    msg ("How old are you?")
-    get input {
-      player.age = result
-    }
+    player.age = result
   }
+}
 ```
 
 
@@ -73,18 +73,18 @@ You might want the player to give a specific answer - the answer to a riddle, pe
 ![](/images/Question3.png)
 
 ```quest
-  msg ("'Hello. Can you answer my riddle? What walks on four legs in the morning, two in the afternoon, and three in the evening?'")
-  get input {
-    if (result = "man") {
-      msg ("'Is it a man?' you ask.")
-      msg ("'How come everyone knows the answer?'")
-      msg ("'We have this thing called the internet nowadays...'")
-    }
-    else {
-      msg ("'Is it \"" + result + "\"?' you ask.")
-      msg ("'No!'")
-    }
+msg ("'Hello. Can you answer my riddle? What walks on four legs in the morning, two in the afternoon, and three in the evening?'")
+get input {
+  if (result = "man") {
+    msg ("'Is it a man?' you ask.")
+    msg ("'How come everyone knows the answer?'")
+    msg ("'We have this thing called the internet nowadays...'")
   }
+  else {
+    msg ("'Is it \"" + result + "\"?' you ask.")
+    msg ("'No!'")
+  }
+}
 ```
 The first line just asks the riddle. This time we need to check it is the correct answer and react accordingly.
 
@@ -98,7 +98,7 @@ The first problem is that the player has to type the exact string “man”. Wha
 To do this, replace the third line with this:
 
 ```quest
-  if (IsRegexMatch  ("man", LCase (result))) {
+if (IsRegexMatch  ("man", LCase (result))) {
 ```
 
 The LCase function will convert the player's text to all lower case, so “Man” will be handled as “man”. This text will then be matched against a Regex (a pattern) rather than a specific string. As long as the player has “man” somewhere in the answer, the pattern will match.
@@ -106,19 +106,19 @@ The LCase function will convert the player's text to all lower case, so “Man�
 In this case, that will match human and woman too, which is great. Usually multiple answers are not so convenient, but you can do that too - just put them inside brackets and separate each with a vertical bar.
 
 ```quest
-  if (IsRegexMatch  ("(man|lady)", LCase (result))) {
+if (IsRegexMatch  ("(man|lady)", LCase (result))) {
 ```
 
 In fact, this will match anything with "man" in the word, so would also match "shaman". We could improve it by using `\b` to match against the word boundary, and then include all the options we will allow (note that you have to "escape" backslashes, so we use two here, `\\b`):
 
 ```quest
-  if (IsRegexMatch  ("\\b(man|lady|woman|human|person)\\b", LCase (result))) {
+if (IsRegexMatch  ("\\b(man|lady|woman|human|person)\\b", LCase (result))) {
 ```
 
 We could optionally match "a" (the `?` indicates it is optional), and also match the start and end of the string with `^` and `$`:
 
 ```quest
-  if (IsRegexMatch  ("^(a )?(man|lady|woman|human|person)$", LCase (result))) {
+if (IsRegexMatch  ("^(a )?(man|lady|woman|human|person)$", LCase (result))) {
 ```
 
 There is a section on Regex in the [pattern matching](/howto/commands/pattern_matching) page.
@@ -128,11 +128,11 @@ There is a section on Regex in the [pattern matching](/howto/commands/pattern_ma
 
 This is worthwhile doing as it makes it clear to the player that he or she should not be typing a command. To get this to work, you need to use some JavaScript! 
 ```quest
-  JS.eval("$('#txtCommand').attr('placeholder', 'Your answer');")
+JS.eval("$('#txtCommand').attr('placeholder', 'Your answer');")
 ```
 It might be worth also turning off the panes on the right, to stop the player messing with them when she should be answering the question:
 ```quest
-  JS.panesVisible(false)
+JS.panesVisible(false)
 ```
 Remember to set them back to normal after.
 
@@ -144,22 +144,22 @@ Here is the full the script, doing all we have discussed:
 ![](/images/Question4.png)
 
 ```quest
-  msg ("'Hello. Can you answer my riddle? What walks on four legs in the morning, two in the afternoon, and three in the evening?'")
-  JS.eval("$('#txtCommand').attr('placeholder', 'Your answer');")
-  JS.panesVisible(false)
-  get input {
-    if (IsRegexMatch  ("^(a )?(man|lady|woman|human|person)$", LCase (result))) {
-      msg ("'Is it a man?' you ask.")
-      msg ("'How come everyone knows the answer?'")
-      msg ("'We have this thing called the internet nowadays...'")
-    }
-    else {
-      msg ("'Is it \"" + result + "\"?' you ask.")
-      msg ("'No!'")
-    }
-    JS.eval("$('#txtCommand').attr('placeholder', 'Type here...');")
-    JS.panesVisible(true)
+msg ("'Hello. Can you answer my riddle? What walks on four legs in the morning, two in the afternoon, and three in the evening?'")
+JS.eval("$('#txtCommand').attr('placeholder', 'Your answer');")
+JS.panesVisible(false)
+get input {
+  if (IsRegexMatch  ("^(a )?(man|lady|woman|human|person)$", LCase (result))) {
+    msg ("'Is it a man?' you ask.")
+    msg ("'How come everyone knows the answer?'")
+    msg ("'We have this thing called the internet nowadays...'")
   }
+  else {
+    msg ("'Is it \"" + result + "\"?' you ask.")
+    msg ("'No!'")
+  }
+  JS.eval("$('#txtCommand').attr('placeholder', 'Type here...');")
+  JS.panesVisible(true)
+}
 ```
 
 

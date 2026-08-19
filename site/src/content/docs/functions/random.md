@@ -16,11 +16,11 @@ Returns an [int](/types#int) - the result of the dice roll.
 Format dicetype: [number of dice]d[number of sides]
 
 ```quest
-  //roll 3 dice with 6 sides
-  result=DiceRoll("3d6")
-  if (result>12){
-     msg ("you hit the troll.")
-  } 
+//roll 3 dice with 6 sides
+result=DiceRoll("3d6")
+if (result>12){
+   msg ("you hit the troll.")
+} 
 ```
 
 This can also handle strings like "d6+1" and "3d8-2", using these formats:
