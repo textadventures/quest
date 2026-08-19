@@ -84,6 +84,21 @@ async function setReciprocalExitLength(page, roomName, destName, length) {
     await setExitLength(page, roomName, destName, length);
 }
 
+// The player dot (and, after it, the view's pan/recentre offset) animate toward their new
+// position over several requestAnimationFrame ticks rather than snapping instantly - see
+// src/PlayerCore/Resources/grid.js's onFrame()/gridApi.drawPlayer (playerVector/offsetVector
+// are plain top-level `var`s in a non-module script, so genuinely reachable as window globals).
+// sendCommand() only waits for the game-logic turn to finish, not this separate canvas
+// animation, so a screenshot taken right after the last movement command can catch the dot
+// mid-slide or the view mid-pan. Wait for both vectors to null out (onFrame's own "arrived"
+// signal) before every grid screenshot in this file.
+async function waitForGridAnimation(playerPage) {
+    await playerPage.waitForFunction(
+        () => window.playerVector == null && window.offsetVector == null,
+        { timeout: 10000 },
+    );
+}
+
 async function freshPreview(context, page) {
     const [playerPage] = await Promise.all([
         context.waitForEvent('page', { timeout: 15000 }),
@@ -127,6 +142,7 @@ await runCapture(async ({ page, baseUrl }) => {
 
     const gridPanel = playerPage.locator('#gridPanel');
     await gridPanel.waitFor({ state: 'visible', timeout: 10000 });
+    await waitForGridAnimation(playerPage);
     const mapPath = out('Map.png');
     await gridPanel.screenshot({ path: mapPath });
     saveTrimmed(mapPath);
@@ -156,6 +172,7 @@ await runCapture(async ({ page, baseUrl }) => {
     await sendCommand(playerPage2, 'south');
     const gridPanel2 = playerPage2.locator('#gridPanel');
     await gridPanel2.waitFor({ state: 'visible', timeout: 10000 });
+    await waitForGridAnimation(playerPage2);
     const map2Path = out('Map2.png');
     await gridPanel2.screenshot({ path: map2Path });
     saveTrimmed(map2Path);
@@ -260,6 +277,7 @@ await runCapture(async ({ page, baseUrl }) => {
     await sendCommand(playerPage3, 'west');
     const gridPanel3 = playerPage3.locator('#gridPanel');
     await gridPanel3.waitFor({ state: 'visible', timeout: 10000 });
+    await waitForGridAnimation(playerPage3);
     const map7Path = out('map7.png');
     await gridPanel3.screenshot({ path: map7Path });
     saveTrimmed(map7Path);
@@ -328,6 +346,7 @@ await runCapture(async ({ page, baseUrl }) => {
     await sendCommand(playerPage3a, 'north');
     const gridPanel3a = playerPage3a.locator('#gridPanel');
     await gridPanel3a.waitFor({ state: 'visible', timeout: 10000 });
+    await waitForGridAnimation(playerPage3a);
     const map3Path = out('map3.png');
     await gridPanel3a.screenshot({ path: map3Path });
     saveTrimmed(map3Path);
@@ -364,6 +383,7 @@ await runCapture(async ({ page, baseUrl }) => {
     await sendCommand(playerPage4, 'north');
     const gridPanel4 = playerPage4.locator('#gridPanel');
     await gridPanel4.waitFor({ state: 'visible', timeout: 10000 });
+    await waitForGridAnimation(playerPage4);
     const map4Path = out('map4.png');
     await gridPanel4.screenshot({ path: map4Path });
     saveTrimmed(map4Path);
@@ -390,6 +410,7 @@ await runCapture(async ({ page, baseUrl }) => {
     await sendCommand(playerPage5, 'north');
     const gridPanel5 = playerPage5.locator('#gridPanel');
     await gridPanel5.waitFor({ state: 'visible', timeout: 10000 });
+    await waitForGridAnimation(playerPage5);
     const map5Path = out('map5.png');
     await gridPanel5.screenshot({ path: map5Path });
     saveTrimmed(map5Path);
@@ -446,6 +467,7 @@ await runCapture(async ({ page, baseUrl }) => {
     await sendCommand(playerPage6, 'east');
     const gridPanel6 = playerPage6.locator('#gridPanel');
     await gridPanel6.waitFor({ state: 'visible', timeout: 10000 });
+    await waitForGridAnimation(playerPage6);
     const map6Path = out('map6.png');
     await gridPanel6.screenshot({ path: map6Path });
     saveTrimmed(map6Path, { chopTop: 6 });
