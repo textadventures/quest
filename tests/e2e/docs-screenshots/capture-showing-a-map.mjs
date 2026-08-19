@@ -1,7 +1,5 @@
-// Regenerates Map.png, Map2.png and map7.png from
-// site/src/content/docs/howto/tasks/showing_a_map.md - map3/map4/map5/map6 illustrate matched-
-// loop-distance and up/down-level edge cases that need even more elaborate, carefully-measured
-// room graphs and are left for a follow-up pass. See .claude/skills/docs-screenshots/SKILL.md.
+// Regenerates all 7 images from site/src/content/docs/howto/tasks/showing_a_map.md.
+// See .claude/skills/docs-screenshots/SKILL.md.
 import { join, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { execFileSync } from 'node:child_process';
@@ -17,17 +15,25 @@ const mapField = (page, label) => page.getByText(label, { exact: true }).locator
 const imagesDir = join(dirname(fileURLToPath(import.meta.url)), '..', '..', '..', 'site', 'public', 'images');
 const out = name => join(imagesDir, name);
 
-function saveTrimmed(gridPanelScreenshotPath) {
+function saveTrimmed(gridPanelScreenshotPath, { chopTop } = {}) {
     // #gridPanel is a large fixed-size canvas mostly empty around the drawn rooms - the old
     // screenshots were tightly cropped to just the map itself, so trim the whitespace border
     // ImageMagick leaves after drawing (matches this repo's other post-processing conventions).
-    execFileSync('magick', [gridPanelScreenshotPath, '-trim', '+repage', '-bordercolor', 'white', '-border', '15', gridPanelScreenshotPath]);
+    const args = [gridPanelScreenshotPath];
+    if (chopTop) {
+        // The panel has its own thin coloured top border, only reachable by -trim (and thus
+        // wrongly kept as "content") on a tall enough canvas/layout that nothing else reaches
+        // close to true y=0 - confirmed only needed for map6.png's up/down-level layout.
+        args.push('-chop', `0x${chopTop}+0+0`);
+    }
+    args.push('-trim', '+repage', '-bordercolor', 'white', '-border', '15', gridPanelScreenshotPath);
+    execFileSync('magick', args);
     console.log(`SAVED: ${gridPanelScreenshotPath}`);
 }
 
 // Creates a same-named exit from the currently-selected room's Exits tab (must already be open)
 // to `destName`, with an optional grid `length` (0 = rooms drawn adjacent, no connecting line).
-async function createExit(page, direction, destName, { length } = {}) {
+async function createExit(page, roomName, direction, destName, { length } = {}) {
     await page.getByRole('button', { name: direction, exact: true }).click();
     const destCombobox = page.locator('[role="combobox"]');
     await destCombobox.click();
@@ -37,13 +43,45 @@ async function createExit(page, direction, destName, { length } = {}) {
     await page.click('button:has-text("Create exit")');
     await page.waitForSelector(`text=${direction} → ${destName}`, { timeout: 10000 });
     if (length !== undefined) {
-        // The newly-created exit's own tree row - select it via the summary link, which lands
-        // straight on the exit's own Exit/Map tabs (see capture-exits.mjs's Lockedexit.png note
-        // on why the summary link itself, not a separate tree click, is enough here).
-        await page.getByText(`${direction} → ${destName}`, { exact: true }).click();
-        await page.getByRole('button', { name: 'Map', exact: true }).click();
-        await mapField(page, 'Length:').fill(String(length));
+        await setExitLength(page, roomName, destName, length);
     }
+}
+
+// Sets the grid length on a specific exit, selected via its own TREE ROW ("Exit: <destName>"),
+// not the "direction → destName" summary link on the Exits tab - that link selects the
+// *destination room*, not the exit itself (see capture-exits.mjs's Lockedexit.png note). The
+// tree row lookup is scoped to `roomName`'s own treeitem (via a `has:` filter on its
+// [data-value] node), confirmed live via read_page that the tree really does nest each room's
+// exits as DOM descendants of that room's own treeitem/group - a page-wide text search breaks
+// as soon as two different rooms have an exit to the same destination name, since both render
+// an identically-labelled "Exit: <destName>" row.
+async function setExitLength(page, roomName, destName, length) {
+    // A room's `[data-value]` is shared by 3 different elements: the real ARIA treeitem
+    // (data-part="branch"), the clickable label row selectTreeNode() targets
+    // (data-part="branch-control"), and the (possibly hidden) content container holding its
+    // children (data-part="branch-content") - confirmed live via the strict-mode error listing
+    // all three. Selecting the room (branch-control) does NOT itself expand it - aria-expanded
+    // stayed "false" even once selected/re-created, so the branch-content stayed hidden and
+    // unclickable. Expand explicitly via its own chevron button first.
+    await selectTreeNode(page, roomName);
+    const branchControl = page.locator(`[data-value="${roomName}"][data-part="branch-control"]`);
+    if ((await branchControl.getAttribute('data-state')) !== 'open') {
+        await branchControl.getByRole('button', { name: 'Expand' }).click();
+    }
+    const branchContent = page.locator(`[data-value="${roomName}"][data-part="branch-content"]`);
+    await branchContent.getByText(`Exit: ${destName}`, { exact: true }).click();
+    await page.getByRole('button', { name: 'Map', exact: true }).click();
+    await mapField(page, 'Length:').fill(String(length));
+}
+
+// Sets the grid length on an exit's own reciprocal side - e.g. after creating "east" from
+// roomA to roomB, this selects roomB and its own auto-created exit back to roomA, and sets its
+// length too. Exit length is per-direction, not shared, so the doc's "remember to change both
+// directions" instruction has to be done as two separate edits.
+async function setReciprocalExitLength(page, roomName, destName, length) {
+    await selectTreeNode(page, roomName);
+    await page.getByRole('button', { name: 'Exits', exact: true }).click();
+    await setExitLength(page, roomName, destName, length);
 }
 
 async function freshPreview(context, page) {
@@ -144,13 +182,13 @@ await runCapture(async ({ page, baseUrl }) => {
 
     await selectTreeNode(page, 'Lobby W');
     await openTab(page, 'Exits');
-    await createExit(page, 'east', 'Lobby E', { length: 0 });
+    await createExit(page, 'Lobby W', 'east', 'Lobby E', { length: 0 });
     await selectTreeNode(page, 'Lobby E');
     await openTab(page, 'Exits');
-    await createExit(page, 'north', 'Lounge');
+    await createExit(page, 'Lobby E', 'north', 'Lounge');
     await selectTreeNode(page, 'Lobby E');
     await openTab(page, 'Exits');
-    await createExit(page, 'east', 'Kitchen');
+    await createExit(page, 'Lobby E', 'east', 'Kitchen');
 
     // Sized generously (not the default 1x1) so the "merged" combined rectangle the Path border
     // types produce is actually visible as a wide room, matching the doc's own illustration.
@@ -176,4 +214,190 @@ await runCapture(async ({ page, baseUrl }) => {
     const map7Path = out('map7.png');
     await gridPanel3.screenshot({ path: map7Path });
     saveTrimmed(map7Path);
+});
+
+await runCapture(async ({ page, baseUrl }) => {
+    // --- map3/map4/map5: a growing loop. map3 is a 3-room diagonal loop (Lounge/Lobby/Kitchen,
+    // all 2x2, "so the diagonal is fine") plus Garden hanging off Kitchen, not yet part of any
+    // loop. map4 adds a second loop back through Garden->Gazebo->Garage->Kitchen, but with
+    // mismatched distances so the two new exits don't visually meet ("the lengths do not
+    // match"). map5 is the fixed version, matching the doc's own worked horizontal arithmetic
+    // (Garden half-width 3 + exit 1 + Gazebo half-width 1 = 5; Kitchen half-width 1 + exit +
+    // Garage half-width, adjusting Garage to width 2 and the exit to length 3, gives the same
+    // 5) - the vertical pairing (Kitchen-Garden, already existing, vs the new Garage-Gazebo) is
+    // matched too, by sizing Garage/Gazebo the same 2x2 as Kitchen so the *default* exit length
+    // already lines up on that axis without needing its own explicit adjustment. ---
+    await createLocalDraft(page, baseUrl, 'Tutorial Game');
+    await selectTreeNode(page, 'game');
+    await openTab(page, 'Interface');
+    await toggleFeature(page, 'Map and Drawing Grid:');
+    // Default grid canvas height (300px) clips the top of this layout (Lounge ends up out of
+    // frame above Kitchen) - confirmed live by screenshotting the raw player page, not just the
+    // cropped #gridPanel. Give it more room.
+    await mapField(page, 'Height (pixels):').fill('550');
+
+    // Player starts here - rename the default room to "Kitchen" to match where the doc's own
+    // map3.png shows the player dot.
+    await selectTreeNode(page, 'room');
+    await page.locator('span:has-text("Name:")').locator('..').locator('input').fill('Kitchen');
+    await openTab(page, 'Room');
+    await page.waitForSelector('[data-value="Kitchen"]', { timeout: 10000 });
+    await addElement(page, 'Add Room', 'Lounge');
+    await addElement(page, 'Add Room', 'Lobby');
+    await addElement(page, 'Add Room', 'Garden');
+
+    for (const [room, size] of [['Kitchen', [2, 2]], ['Lounge', [2, 2]], ['Lobby', [2, 2]], ['Garden', [6, 2]]]) {
+        await selectTreeNode(page, room);
+        await openTab(page, 'Map');
+        await mapField(page, 'Width:').fill(String(size[0]));
+        await mapField(page, 'Length:').fill(String(size[1]));
+        await mapField(page, 'Label:').fill(room);
+    }
+
+    await selectTreeNode(page, 'Kitchen');
+    await openTab(page, 'Exits');
+    await createExit(page, 'Kitchen', 'north', 'Lounge');
+    await selectTreeNode(page, 'Kitchen');
+    await openTab(page, 'Exits');
+    await createExit(page, 'Kitchen', 'west', 'Lobby');
+    await selectTreeNode(page, 'Kitchen');
+    await openTab(page, 'Exits');
+    await createExit(page, 'Kitchen', 'south', 'Garden');
+    await selectTreeNode(page, 'Lobby');
+    await openTab(page, 'Exits');
+    await createExit(page, 'Lobby', 'northeast', 'Lounge');
+
+    const context = page.context();
+
+    // --- map3.png: the 3-room loop plus Garden, player ends back in Kitchen ---
+    const playerPage3a = await freshPreview(context, page);
+    await sendCommand(playerPage3a, 'north');
+    await sendCommand(playerPage3a, 'south');
+    await sendCommand(playerPage3a, 'west');
+    await sendCommand(playerPage3a, 'east');
+    await sendCommand(playerPage3a, 'south');
+    await sendCommand(playerPage3a, 'north');
+    const gridPanel3a = playerPage3a.locator('#gridPanel');
+    await gridPanel3a.waitFor({ state: 'visible', timeout: 10000 });
+    const map3Path = out('map3.png');
+    await gridPanel3a.screenshot({ path: map3Path });
+    saveTrimmed(map3Path);
+    await playerPage3a.close();
+
+    // --- map4.png: add Gazebo/Garage closing a second loop (Garden-Gazebo-Garage-Kitchen),
+    // Garage left at its original 1x1 default size and both new exits at default length, so the
+    // distances don't match and the exits don't meet ---
+    await addElement(page, 'Add Room', 'Gazebo');
+    await addElement(page, 'Add Room', 'Garage');
+    await selectTreeNode(page, 'Gazebo');
+    await openTab(page, 'Map');
+    await mapField(page, 'Width:').fill('2');
+    await mapField(page, 'Length:').fill('2');
+    await mapField(page, 'Label:').fill('Gazebo');
+
+    await selectTreeNode(page, 'Garden');
+    await openTab(page, 'Exits');
+    await createExit(page, 'Garden', 'east', 'Gazebo');
+    await selectTreeNode(page, 'Kitchen');
+    await openTab(page, 'Exits');
+    await createExit(page, 'Kitchen', 'east', 'Garage');
+    await selectTreeNode(page, 'Gazebo');
+    await openTab(page, 'Exits');
+    await createExit(page, 'Gazebo', 'north', 'Garage');
+
+    const playerPage4 = await freshPreview(context, page);
+    await sendCommand(playerPage4, 'north');
+    await sendCommand(playerPage4, 'south');
+    await sendCommand(playerPage4, 'west');
+    await sendCommand(playerPage4, 'east');
+    await sendCommand(playerPage4, 'south');
+    await sendCommand(playerPage4, 'east');
+    await sendCommand(playerPage4, 'north');
+    const gridPanel4 = playerPage4.locator('#gridPanel');
+    await gridPanel4.waitFor({ state: 'visible', timeout: 10000 });
+    const map4Path = out('map4.png');
+    await gridPanel4.screenshot({ path: map4Path });
+    saveTrimmed(map4Path);
+    await playerPage4.close();
+
+    // --- map5.png: fixed - Garage resized to 2x2 (half-width 1, matching the doc's "we will
+    // make the garage 2 units wide") and the Kitchen<->Garage exit set to length 3 on both
+    // sides (1 + 3 + 1 = 5, matching Garden<->Gazebo's 3 + 1 + 1 = 5) ---
+    await selectTreeNode(page, 'Garage');
+    await openTab(page, 'Map');
+    await mapField(page, 'Width:').fill('2');
+    await mapField(page, 'Length:').fill('2');
+    await mapField(page, 'Label:').fill('Garage');
+    await setReciprocalExitLength(page, 'Kitchen', 'Garage', 3);
+    await setReciprocalExitLength(page, 'Garage', 'Kitchen', 3);
+
+    const playerPage5 = await freshPreview(context, page);
+    await sendCommand(playerPage5, 'north');
+    await sendCommand(playerPage5, 'south');
+    await sendCommand(playerPage5, 'west');
+    await sendCommand(playerPage5, 'east');
+    await sendCommand(playerPage5, 'south');
+    await sendCommand(playerPage5, 'east');
+    await sendCommand(playerPage5, 'north');
+    const gridPanel5 = playerPage5.locator('#gridPanel');
+    await gridPanel5.waitFor({ state: 'visible', timeout: 10000 });
+    const map5Path = out('map5.png');
+    await gridPanel5.screenshot({ path: map5Path });
+    saveTrimmed(map5Path);
+});
+
+await runCapture(async ({ page, baseUrl }) => {
+    // --- map6.png: up/down exits - going up a level shows the room(s) on the previous level
+    // faded in the background. Own fresh draft. Kitchen (ground floor, coloured to match
+    // Map2.png's own Kitchen/Lounge scheme, since the doc's own map6.png appears to carry that
+    // styling over) is the starting room; "up" leads to Landing, which has Bedroom (east) and
+    // Lounge (north, same colour scheme again) on the new level - player ends in Bedroom,
+    // directly over where Kitchen was, so Kitchen should render faded behind it. ---
+    await createLocalDraft(page, baseUrl, 'Tutorial Game');
+    await selectTreeNode(page, 'game');
+    await openTab(page, 'Interface');
+    await toggleFeature(page, 'Map and Drawing Grid:');
+    await mapField(page, 'Height (pixels):').fill('450');
+
+    await selectTreeNode(page, 'room');
+    await page.locator('span:has-text("Name:")').locator('..').locator('input').fill('Kitchen');
+    await openTab(page, 'Room');
+    await page.waitForSelector('[data-value="Kitchen"]', { timeout: 10000 });
+    await addElement(page, 'Add Room', 'Landing');
+    await addElement(page, 'Add Room', 'Bedroom');
+    await addElement(page, 'Add Room', 'Lounge');
+
+    // Only Kitchen/Lounge are labelled+coloured here (matching Map2.png's own scheme) -
+    // confirmed live that adding Landing/Bedroom into this same loop, even unlabelled, somehow
+    // knocks out Kitchen's faded-behind-Bedroom rendering entirely (and the crop framing) in a
+    // way not worth chasing further; the whole point of this capture is the faded-level effect,
+    // so keep the sequence that reliably produces it.
+    for (const [room, colour] of [['Kitchen', 'SkyBlue'], ['Lounge', 'Yellow']]) {
+        await selectTreeNode(page, room);
+        await openTab(page, 'Map');
+        await mapField(page, 'Fill colour:').fill(colour);
+        await mapField(page, 'Label:').fill(room);
+    }
+
+    await selectTreeNode(page, 'Kitchen');
+    await openTab(page, 'Exits');
+    await createExit(page, 'Kitchen', 'up', 'Landing');
+    await selectTreeNode(page, 'Landing');
+    await openTab(page, 'Exits');
+    await createExit(page, 'Landing', 'east', 'Bedroom');
+    await selectTreeNode(page, 'Landing');
+    await openTab(page, 'Exits');
+    await createExit(page, 'Landing', 'north', 'Lounge');
+
+    const context = page.context();
+    const playerPage6 = await freshPreview(context, page);
+    await sendCommand(playerPage6, 'up');
+    await sendCommand(playerPage6, 'north');
+    await sendCommand(playerPage6, 'south');
+    await sendCommand(playerPage6, 'east');
+    const gridPanel6 = playerPage6.locator('#gridPanel');
+    await gridPanel6.waitFor({ state: 'visible', timeout: 10000 });
+    const map6Path = out('map6.png');
+    await gridPanel6.screenshot({ path: map6Path });
+    saveTrimmed(map6Path, { chopTop: 6 });
 });
