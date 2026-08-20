@@ -1,0 +1,136 @@
+---
+title: Adding a dialogue panel
+sidebar:
+  order: 10
+---
+
+We are going to use JQuery/JavaScript together with HTML to build a dialogue panel. This could be used at the start of an RPG-style game to create the character, for example, and you can see what is possible [here](https://textadventures.co.uk/games/view/em15b32xd0o-y-ysvgrtcg/deeper).
+
+This is not trivial, and some idea of CSS and HTML will be useful; it would be a good idea to have read through [Customising the UI](/howto/ux/customising_the_ui) first.
+
+The way it will work is we will hand some HTML to JQuery and JQuery will put it in a dialogue. We will then need to collect the data and pass it to Quest.
+
+There will be quite a bit of HTML and JavaScript code, and the neatest way to handle that is in its own file, so the first step is to create a text file called "dialogue.html", and upload it to your game via the Assets manager in the editor toolbar.
+
+
+## Basic dialogue panel
+
+The first step is to create a snippet of HTML with all the widgets (a widget is a control such as a checkbox or textfield) you want on your dialogue panel. It all has to go inside a `div` element, with its own id and title, with the class set to "dialog_window". Here is a simple example:
+
+```xml
+<div id="dialog_window_1" class="dialog_window" title="Your Character">
+  <table>
+    <tr>
+      <td colspan="2">Name: <input type="text" id="name_input" value="Skybird"/></td>
+    </tr>
+    <tr>
+      <td>
+        Sex: <input type="radio" name="sex_input" value="Male" checked="checked"/>Male
+             <input type="radio" name="sex_input" value="Female" checked="checked"/>Female
+      </td>
+    </tr>
+  </table>
+</div>
+```      
+
+I have chosen to set out the widgets in a table, as this helps keep things neatly aligned. I have a single text field, and two radio buttons. How to code HTML tables and widgets is beyond the scope of this article, but there are plenty of resources on the internet.
+
+It is a good idea to always give default values as it will stop the player leaving anything blank. This is complicated enough without checking for empty fields and then re-showing the dialogue panel!
+
+To get the code into your game, add this to your game start script:
+
+```quest
+JS.addText (GetFileData("dialogue.html"))
+```
+
+If you start the game, you will see your widgets, but they are embedded in the page. We need JQuery to insert them into a dialogue panel. To do that, add this JavaScript code to the file:
+
+```xml
+<script>
+    function setValues() {
+        $("#dialog_window_1").dialog("close");
+    }
+
+    $(document).ready(function () {
+        $('#dialog_window_1').dialog({
+           height: 220,
+           width: 300,
+           buttons: {
+              "Done": function() { setValues();}
+          }
+        });
+        $("button[title='Close']")[0].style.display = 'none';
+    });
+ </script>
+```
+There are two parts to this. The first part of that defines a function called `setValues`. At the  moment it just closes the dialogue box.
+
+The other part puts the HTML into a dialogue box. I am not going deeply into JavaScript, but briefly the first line says we are defining a function that will be called when the document is loaded. The second line puts out HTML into a jQuery dialogue, using the `dialog` method. The next two lines obvious set the width and height of the dialogue (and you may well need to make these bigger for your dialogue panel). The next three lines define a block that adds buttons to it. Just one button here, called "Done", which will call the `setValues` function we defined before. The next line removes the "Close" button from the dialogue, ensuring the only way to get passed the dialogue is clicking the "Done" button (try deleting the line and see what it looks like to see the difference).
+
+Save the file. Now if you go into the game, you will see the dialogue panel, and it will disappear when you click "Done".
+
+
+## Communicating with Quest
+
+The next step is to get the data into your game. This will be done with the special JavaScript function `ASLEvent`, which is provided by Quest. A complication here is that that can only take two parameters; the name of the Quest function to use, and a string. Either we need to use it numerous times, once for each value, or use it once but send it all the data in a single string. We will be doing the latter.
+
+In the code above there was this function:
+
+```js
+function setValues() {
+    $("#dialog_window_1").dialog("close");
+}
+```
+
+We need to change that to collect the data, and then to send it to Quest. You can get data from a form element with the JQuery `val` method. For text, it is trivial:
+
+```js
+name = $('#name_input').val();
+```
+
+For the radio buttons, a bit more complicated:
+
+```js
+gender = $("input:radio[name='sex_input']:checked").val();
+```
+
+Both values need to be combined into a single string, separated by some obscure character; I use |. The new code looks like this:
+
+```js
+function setValues() {
+    $("#dialog_window_1").dialog("close");
+    answer = $('#name_input').val() + "|" + $("input:radio[name='sex_input']:checked").val();
+    ASLEvent("HandleDialogue", answer);
+}
+```
+
+Then we need to create a function in Quest to accept that data. Add it in the normal way, and call it `HandleDialogue`, no return type, and a single parameter, s. Paste in this code:
+
+```quest
+l = Split(s, "|")
+msg ("You are " + StringListItem(l, 0) + ", " + StringListItem(l, 1)) 
+```
+
+The first line splits the given string on the separator character, the second line just displays it. Obviously you could set attributes on the player object here if desired.
+
+
+## Disabling other input
+
+The dialogue box is not "modal", which means that the player can play your game whilst the dialogue box is still there. The best way around that is to turn off the command bar and panes on the right in the editor (_Interface_ tab of the game object), and turn them back on it the `HandleDialogue` function, so that is now:
+
+```quest
+JS.panesVisible(true)
+JS.uiShow("#txtCommandDiv")
+l = Split(s, "|")
+msg ("You are " + StringListItem(l, 0) + ", " + StringListItem(l, 1)) 
+```
+
+
+To load the file into the page, add this to the game's start script:
+
+```quest
+JS.addText (GetFileData("dialogue.html"))
+```
+
+
+In the [second part](/howto/ux/ui-dialogue-points) we will build on this to create a dialogue panel where the player can assign points to attributes.

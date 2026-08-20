@@ -25,6 +25,15 @@ export default defineConfig([
             },
         },
     },
+    {
+        files: ["scripts/**/*.mjs"],
+        languageOptions: {
+            globals: {
+                console: "readonly",
+                process: "readonly",
+            },
+        },
+    },
     includeIgnoreFile(gitignorePath, "Imported .gitignore patterns"),
     globalIgnores(["**/.astro/**"]),
     eslint.configs.recommended,
