@@ -17,10 +17,11 @@
 // src/ElectronApp/dist — run electron.sh once first (or the build steps
 // inside it) so dist/ and resources/app-static exist.
 import { _electron as electron } from 'playwright';
-import { mkdtempSync, rmSync } from 'node:fs';
+import { mkdtempSync } from 'node:fs';
 import { tmpdir, homedir } from 'node:os';
 import { join } from 'node:path';
 import { createRequire } from 'node:module';
+import { killElectronApp, removeTempDirs } from './lib/electron-cleanup.mjs';
 
 const electronAppDir = join(import.meta.dirname, '..', '..', 'src', 'ElectronApp');
 const electronExecutablePath = createRequire(join(electronAppDir, 'package.json'))('electron');
@@ -116,9 +117,6 @@ try {
     // pops a *synchronous* native "Leave without saving?" dialog that blocks
     // the whole process — nothing left to click it away with here. Kill the
     // process directly instead of asking it to close gracefully.
-    app?.process().kill('SIGKILL');
-    // SIGKILL doesn't wait for Chromium to finish its disk-cache writeback, so an immediate
-    // rmSync can hit ENOTEMPTY on Cache_Data — maxRetries/retryDelay ride out that race.
-    rmSync(userDataDir, { recursive: true, force: true, maxRetries: 5, retryDelay: 200 });
-    rmSync(gameDirPath, { recursive: true, force: true });
+    await killElectronApp(app);
+    removeTempDirs(userDataDir, gameDirPath);
 }
