@@ -17,10 +17,11 @@
 // (dotnet build WasmEditor/WasmPlayer Debug, npm run build in AppShell and
 // ElectronApp) so dist/ and resources/app-static exist.
 import { _electron as electron } from 'playwright';
-import { mkdtempSync, readFileSync, writeFileSync, rmSync } from 'node:fs';
+import { mkdtempSync, readFileSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { createRequire } from 'node:module';
+import { removeTempDirs } from './lib/electron-cleanup.mjs';
 
 const electronAppDir = join(import.meta.dirname, '..', '..', 'src', 'ElectronApp');
 const electronExecutablePath = createRequire(join(electronAppDir, 'package.json'))('electron');
@@ -109,6 +110,5 @@ try {
     process.exitCode = 1;
 } finally {
     await app?.close();
-    rmSync(userDataDir, { recursive: true, force: true });
-    rmSync(gamesRoot, { recursive: true, force: true });
+    removeTempDirs(userDataDir, gamesRoot);
 }

@@ -12,10 +12,11 @@
 // launch (a fresh process, fresh random port) checks the language is still
 // Spanish.
 import { _electron as electron } from 'playwright';
-import { mkdtempSync, rmSync } from 'node:fs';
+import { mkdtempSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { createRequire } from 'node:module';
+import { removeTempDirs } from './lib/electron-cleanup.mjs';
 
 const electronAppDir = join(import.meta.dirname, '..', '..', 'src', 'ElectronApp');
 const electronExecutablePath = createRequire(join(electronAppDir, 'package.json'))('electron');
@@ -103,5 +104,5 @@ try {
     console.error('FAIL:', err.message);
     process.exitCode = 1;
 } finally {
-    rmSync(userDataDir, { recursive: true, force: true });
+    removeTempDirs(userDataDir);
 }

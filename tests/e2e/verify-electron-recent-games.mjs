@@ -19,10 +19,11 @@
 // this doesn't pollute or depend on whatever the user has actually opened
 // before.
 import { _electron as electron } from 'playwright';
-import { mkdtempSync, rmSync } from 'node:fs';
+import { mkdtempSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { createRequire } from 'node:module';
+import { removeTempDirs } from './lib/electron-cleanup.mjs';
 
 const electronAppDir = join(import.meta.dirname, '..', '..', 'src', 'ElectronApp');
 // tests/e2e has its own node_modules (no `electron` in it — that's
@@ -193,6 +194,5 @@ try {
     process.exitCode = 1;
 } finally {
     await app?.close();
-    rmSync(userDataDir, { recursive: true, force: true });
-    rmSync(gamesRoot, { recursive: true, force: true });
+    removeTempDirs(userDataDir, gamesRoot);
 }
