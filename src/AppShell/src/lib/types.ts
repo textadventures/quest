@@ -128,6 +128,12 @@ export interface ScriptControlData {
   // one per dictionary key - lets the case-list editor render each case's script from initial
   // data without a further round trip, mirroring how "scripts" does this for a "script" control.
   cases?: CaseScriptData[] | null
+  // <multiline/> - the "textbox" simple editor should render as a resizable textarea that
+  // keeps embedded newlines instead of a single-line input.
+  multiline?: boolean
+  // <expand/> - this control should grow to fill the remaining width of its row instead of
+  // being capped to a fixed max-width.
+  expand?: boolean
 }
 
 export interface ElseIfClauseData {

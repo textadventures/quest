@@ -87,7 +87,13 @@ internal record ScriptControlData(
     // Pre-fetched nested script trees for a "scriptdictionary" control (e.g. switch's "cases"),
     // one per dictionary key - mirrors how the "script" controltype's own Scripts field lets a
     // nested ScriptEditor render from initialData without a further round trip.
-    List<CaseScriptData>? Cases = null
+    List<CaseScriptData>? Cases = null,
+    // <multiline/> - the "textbox" simple editor should render as a resizable textarea that
+    // keeps embedded newlines (e.g. msg's message text) instead of a single-line input.
+    bool Multiline = false,
+    // <expand/> - this control should grow to fill the remaining width of its row instead of
+    // being capped to a fixed max-width.
+    bool Expand = false
 );
 
 internal record ElseIfClauseData(string Id, string Expression, List<ScriptNodeData> Scripts);
@@ -3923,6 +3929,8 @@ public partial class WasmEditorBridge
         // generic +/- item list.
         var isFunctionParams = ctrl.GetBool("functionparams");
         var breakBefore = ctrl.GetBool("breakbefore");
+        var multiline = ctrl.GetBool("multiline");
+        var expand = ctrl.Expand;
 
         string? useTemplates = null;
 
@@ -3985,7 +3993,9 @@ public partial class WasmEditorBridge
             isFunctionParams,
             breakBefore,
             useTemplates,
-            cases
+            cases,
+            multiline,
+            expand
         );
     }
 
