@@ -135,6 +135,14 @@ interface ElectronUiStateApi {
     set(gameId: string, state: string[]): Promise<void>;
 }
 
+// Whether ScriptEditor instances default to raw code view — persisted to a
+// userData file (ElectronApp's default-code-view-store.ts), not localStorage
+// — see code-view-store.ts for why.
+interface ElectronDefaultCodeViewApi {
+    get(): Promise<boolean | null>;
+    set(enabled: boolean): Promise<void>;
+}
+
 // id: catalog game (textadventures.co.uk id); omitted: a locally-picked
 // file, whose bytes/resources the caller hands over separately via the
 // 'quest-play-local' BroadcastChannel — see ipc/player.ts and
@@ -161,6 +169,7 @@ interface ElectronApi {
     catalogPlays: ElectronCatalogPlaysApi;
     updateDismiss: ElectronUpdateDismissApi;
     uiState: ElectronUiStateApi;
+    defaultCodeView: ElectronDefaultCodeViewApi;
     fileWatch: ElectronFileWatchApi;
     menu: ElectronMenuApi;
     player: ElectronPlayerApi;

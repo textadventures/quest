@@ -89,6 +89,7 @@
     "settingsModal.themeLight": "Hell",
     "settingsModal.themeDark": "Dunkel",
     "settingsModal.themeSystem": "Systemeinstellung",
+    "settingsModal.defaultCodeView": "Skripte standardmäßig in Code-Ansicht anzeigen",
 
     "common.moveTo": "Verschieben nach…",
     "common.cut": "Ausschneiden",

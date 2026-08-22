@@ -89,6 +89,7 @@
     "settingsModal.themeLight": "Light",
     "settingsModal.themeDark": "Dark",
     "settingsModal.themeSystem": "Match system",
+    "settingsModal.defaultCodeView": "Default scripts to code view",
 
     "common.moveTo": "Move to…",
     "common.cut": "Cut",

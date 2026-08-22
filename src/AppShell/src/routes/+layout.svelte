@@ -11,6 +11,7 @@
     import { isElectron } from "$lib/runtime";
     import { initI18n, localeReady } from "$lib/i18n";
     import { initTheme } from "$lib/theme-store";
+    import { initDefaultCodeView } from "$lib/code-view-store";
     import HomeHeader from "$components/HomeHeader.svelte";
     import HomeTabs from "$components/HomeTabs.svelte";
     import ConfirmDialog from "$components/ConfirmDialog.svelte";
@@ -68,6 +69,10 @@
 
     onMount(() => {
         void initTheme();
+    });
+
+    onMount(() => {
+        void initDefaultCodeView();
     });
 
     onMount(() => {
