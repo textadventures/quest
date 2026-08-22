@@ -89,6 +89,7 @@
     "settingsModal.themeLight": "Claro",
     "settingsModal.themeDark": "Oscuro",
     "settingsModal.themeSystem": "Seguir sistema",
+    "settingsModal.defaultCodeView": "Mostrar guiones en vista de código de forma predeterminada",
 
     "common.moveTo": "Mover a…",
     "common.cut": "Cortar",

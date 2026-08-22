@@ -43,6 +43,7 @@
         removeScriptDictCase,
         renameScriptDictCase,
     } from "$lib/editor-store";
+    import { defaultCodeView } from "$lib/code-view-store";
     import type {
         ScriptBlockData,
         ScriptNodeData,
@@ -109,6 +110,16 @@
     function templatesFor(expressionType: string | null | undefined): ExpressionTemplate[] {
         return (expressionType && templatesByType[expressionType]) || [];
     }
+
+    // Only root instances show the code-view toggle (nested if/for/case
+    // sub-editors share the root's `attribute` script, so their own
+    // codeViewMode is never read — see the isRoot guards below and on the
+    // scriptCode effect). The setting is a standing preference, not a
+    // per-panel choice: changing it flips every root ScriptEditor currently
+    // on screen, overriding whatever any of them was individually showing.
+    $effect(() => {
+        if (isRoot) codeViewMode = $defaultCodeView;
+    });
 
     // Load on mount and whenever scriptVersion bumps (undo/redo)
     $effect(() => {

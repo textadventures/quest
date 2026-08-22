@@ -1,7 +1,9 @@
 <script lang="ts">
+    import { Switch } from "@skeletonlabs/skeleton-svelte";
     import { settingsModalOpen } from "$lib/settings-store";
     import { locale, setLocale, SUPPORTED_LOCALES, t } from "$lib/i18n";
     import { theme, setTheme, type ThemePreference } from "$lib/theme-store";
+    import { defaultCodeView, setDefaultCodeView } from "$lib/code-view-store";
 
     function displayName(code: string): string {
         let name: string;
@@ -85,6 +87,17 @@
                     <option value="dark">{t("settingsModal.themeDark")}</option>
                     <option value="system">{t("settingsModal.themeSystem")}</option>
                 </select>
+            </div>
+
+            <div class="flex flex-col gap-1">
+                <Switch
+                    checked={$defaultCodeView}
+                    onCheckedChange={(e) => setDefaultCodeView(e.checked)}
+                >
+                    <Switch.Control><Switch.Thumb /></Switch.Control>
+                    <Switch.HiddenInput />
+                    <Switch.Label class="text-xs text-surface-600-400">{t("settingsModal.defaultCodeView")}</Switch.Label>
+                </Switch>
             </div>
         </div>
     </div>
