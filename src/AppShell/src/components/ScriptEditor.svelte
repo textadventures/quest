@@ -153,6 +153,16 @@
         }
     });
 
+    // Code view has its own separately-fetched buffer (scriptCode), so it needs its own
+    // reactive refresh when the selected element/attribute changes (e.g. picking a different
+    // command in the tree while code view is already open) - the scriptData effect above only
+    // covers the visual editor's data.
+    $effect(() => {
+        if (isRoot && codeViewMode) {
+            scriptCode = getScriptCode(elementKey, attribute);
+        }
+    });
+
     function scripts(): ScriptNodeData[] {
         if (!isRoot && initialData !== null) return initialData;
         return scriptData?.scripts ?? [];
