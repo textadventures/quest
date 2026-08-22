@@ -63,17 +63,19 @@
         return key ? t(key) : node.text;
     }
 
-    // Folds a run of 2+ consecutive children sharing the same grouping key — either a library
-    // filename (e.g. every function from Core.aslx) or a user-assigned folder (Functions only,
-    // via "Move to folder") — into a single synthetic, expand-on-demand "folder" node; a big
-    // library's (or folder's) worth of functions/timers/etc. otherwise floods this tree flat.
-    // Purely a display grouping over the existing SortIndex order (mirrors ElementsList's
-    // grouping); a lone run of 1 isn't worth the extra click to expand, so it's left inline. The
-    // library variant's synthetic node is isLibrary:true, making it fall out of
-    // nodeMenuOptions/reorderOptions for free (same guard real library rows use); the folder
-    // variant is a plain non-library node instead, since its members are real user-authored
-    // functions that still need their own context menu. Either way the id is deterministic so
-    // expand-state persistence (tree-state.ts) still works across reloads.
+    // Folds consecutive children sharing the same grouping key — either a library filename (e.g.
+    // every function from Core.aslx) or a user-assigned folder (Functions only, via "Move to
+    // folder") — into a single synthetic, expand-on-demand "folder" node; a big library's (or
+    // folder's) worth of functions/timers/etc. otherwise floods this tree flat. Purely a display
+    // grouping over the existing SortIndex order (mirrors ElementsList's grouping). A lone
+    // library-filename run isn't worth the extra click to expand, so it's left inline and only
+    // runs of 2+ fold; a lone folder still folds (see the "folder" special-case below) since it's
+    // a deliberate user action, not an incidental one. The library variant's synthetic node is
+    // isLibrary:true, making it fall out of nodeMenuOptions/reorderOptions for free (same guard
+    // real library rows use); the folder variant is a plain non-library node instead, since its
+    // members are real user-authored functions that still need their own context menu. Either way
+    // the id is deterministic so expand-state persistence (tree-state.ts) still works across
+    // reloads.
     function groupKey(node: HierNode): { key: string; kind: "lib" | "folder" } | null {
         if (node.isLibrary && node.filename) return { key: node.filename, kind: "lib" };
         if (!node.isLibrary && node.folder) return { key: node.folder, kind: "folder" };
@@ -93,7 +95,11 @@
                     if (!next || next.kind !== group.kind || next.key !== group.key) break;
                     j++;
                 }
-                if (j - i > 1) {
+                // A lone library-filename run isn't worth the extra click to expand (it's an
+                // incidental grouping nobody chose), but a lone folder is a deliberate "Move to
+                // folder" action - hiding it when it only has one member yet would make that
+                // action look like it did nothing, so folders always fold, even at length 1.
+                if (j - i > 1 || group.kind === "folder") {
                     // Suffixed with the run's first child id (globally unique, since it's a real
                     // element key) rather than just the group key — the same file/folder can
                     // produce more than one non-adjacent run under one parent (SortIndex order
