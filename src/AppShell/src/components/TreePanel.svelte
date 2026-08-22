@@ -17,6 +17,7 @@
         clipboardVersion, cutElementKeys,
         showLibraryElements, toggleShowLibraryElements,
         swapElements, getCurrentGameId,
+        canMoveFunctionUp, canMoveFunctionDown,
     } from "$lib/editor-store";
     import type { TreeNode } from "$lib/types";
     import { t } from "$lib/i18n";
@@ -485,8 +486,17 @@
         const siblings = $treeNodes.filter(n => n.parent === flat.parent && n.nodeType !== "game");
         const index = siblings.findIndex(n => n.key === flat.key);
         if (index < 0) return opts;
-        if (index > 0) opts.push({ label: t("common.moveUp"), action: () => swapElements(flat.key, siblings[index - 1].key) });
-        if (index < siblings.length - 1) opts.push({ label: t("common.moveDown"), action: () => swapElements(flat.key, siblings[index + 1].key) });
+        // A function's swap is also gated on canMoveFunctionUp/Down - a plain adjacent swap has
+        // no concept of folders, and swapping past the near edge of a *different* multi-member
+        // folder would split it in two by landing the mover between two of its other members
+        // (mirrors ElementsList's own moveUp/moveDown guard).
+        const isFunction = node.nodeType === "function";
+        if (index > 0 && (!isFunction || canMoveFunctionUp(flat.key))) {
+            opts.push({ label: t("common.moveUp"), action: () => swapElements(flat.key, siblings[index - 1].key) });
+        }
+        if (index < siblings.length - 1 && (!isFunction || canMoveFunctionDown(flat.key))) {
+            opts.push({ label: t("common.moveDown"), action: () => swapElements(flat.key, siblings[index + 1].key) });
+        }
         return opts;
     }
 

@@ -123,6 +123,97 @@ public class FunctionFolderTests
         controller.Uninitialise();
     }
 
+    [TestMethod]
+    public async Task CanMoveFunctionUpDown_False_ForOutsiderSteppingIntoMultiMemberFolder()
+    {
+        // Reproduces the reported bug: an ungrouped function sitting right next to a 2-member
+        // folder - moving it towards the folder would swap it with the folder's near edge,
+        // landing it directly between the folder's two functions and splitting the folder.
+        var controller = await LoadTemplateController("English");
+        controller.CreateNewFunction("f1");
+        controller.CreateNewFunction("f2");
+        controller.CreateNewFunction("f3");
+        controller.SetFunctionFolder("f2", "Group");
+        controller.SetFunctionFolder("f3", "Group");
+        controller.CreateNewFunction("f4");
+        // Final order: f1(none), f2(Group), f3(Group), f4(none).
+
+        Assert.IsFalse(controller.CanMoveFunctionDown("f1"), "f1 would step down into the Group folder");
+        Assert.IsFalse(controller.CanMoveFunctionUp("f4"), "f4 would step up into the Group folder");
+
+        controller.Uninitialise();
+    }
+
+    [TestMethod]
+    public async Task CanMoveFunctionUpDown_False_ForMultiMemberFolderMemberSteppingOut()
+    {
+        // The other direction of the same bug: a 2+-member folder's own member stepping out via
+        // a plain arrow swap doesn't clear its folder field, so it would keep carrying that
+        // folder's name to a disconnected spot - splitting the folder just as visibly as an
+        // outsider stepping in. Leaving a folder is done via "Move to folder" instead.
+        var controller = await LoadTemplateController("English");
+        controller.CreateNewFunction("f1");
+        controller.CreateNewFunction("f2");
+        controller.CreateNewFunction("f3");
+        controller.SetFunctionFolder("f2", "Group");
+        controller.SetFunctionFolder("f3", "Group");
+        controller.CreateNewFunction("f4");
+        // Final order: f1(none), f2(Group), f3(Group), f4(none).
+
+        Assert.IsFalse(controller.CanMoveFunctionUp("f2"), "f2 would step out of Group towards f1");
+        Assert.IsFalse(controller.CanMoveFunctionDown("f3"), "f3 would step out of Group towards f4");
+
+        controller.Uninitialise();
+    }
+
+    [TestMethod]
+    public async Task CanMoveFunctionDown_True_WhenNeighbourFolderHasOnlyOneMember()
+    {
+        var controller = await LoadTemplateController("English");
+        controller.CreateNewFunction("f1");
+        controller.CreateNewFunction("f2");
+        controller.SetFunctionFolder("f2", "Solo");
+
+        // Nothing to split with only one member in "Solo", so a plain swap is fine.
+        Assert.IsTrue(controller.CanMoveFunctionDown("f1"));
+
+        controller.Uninitialise();
+    }
+
+    [TestMethod]
+    public async Task CanMoveFunctionUpDown_True_WithinSameFolder()
+    {
+        var controller = await LoadTemplateController("English");
+        controller.CreateNewFunction("f1");
+        controller.CreateNewFunction("f2");
+        controller.SetFunctionFolder("f1", "Group");
+        controller.SetFunctionFolder("f2", "Group");
+
+        Assert.IsTrue(controller.CanMoveFunctionDown("f1"));
+        Assert.IsTrue(controller.CanMoveFunctionUp("f2"));
+
+        controller.Uninitialise();
+    }
+
+    [TestMethod]
+    public async Task CanMoveFunctionUpDown_False_AtListBoundary()
+    {
+        var controller = await LoadTemplateController("English");
+        controller.CreateNewFunction("f1");
+        controller.CreateNewFunction("f2");
+
+        // The template's built-in library functions precede anything user-created, so the very
+        // first function overall is one of those, not "f1" - query it rather than assume.
+        var firstFunction = controller.WorldModel.Elements.GetElements(ElementType.Function)
+            .OrderBy(e => e.MetaFields[MetaFieldDefinitions.SortIndex])
+            .First();
+
+        Assert.IsFalse(controller.CanMoveFunctionUp(firstFunction.Name), "the very first function has nothing above it");
+        Assert.IsFalse(controller.CanMoveFunctionDown("f2"), "f2 is already last");
+
+        controller.Uninitialise();
+    }
+
     private static string GetFolder(EditorController controller, string key) =>
         controller.WorldModel.Elements.Get(key).Fields[FieldDefinitions.EditorFolder];
 

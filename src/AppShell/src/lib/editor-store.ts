@@ -1706,6 +1706,18 @@ export function setFunctionFolder(key: string, folder: string): string {
     return result;
 }
 
+// A function's move up/down is a plain adjacent swap (see swapElements) with no concept of
+// folders, so these gate that swap to ones that can't split a *different* multi-member folder in
+// two by landing the mover between two of its other members - see EditorController's own
+// CanMoveFunctionUp/Down for the exact rule.
+export function canMoveFunctionUp(key: string): boolean {
+    return _bridge?.CanMoveFunctionUp(key) ?? false;
+}
+
+export function canMoveFunctionDown(key: string): boolean {
+    return _bridge?.CanMoveFunctionDown(key) ?? false;
+}
+
 // Bumped by copyElements/cutElements so TreePanel's per-node "⋯" menus (computed
 // inline from nodeMenuOptions(), not driven by a store) know to recompute their
 // "Paste" entry — the clipboard lives entirely in EditorController and mutating it

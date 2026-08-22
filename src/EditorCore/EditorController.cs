@@ -2654,6 +2654,55 @@ public sealed class EditorController : IDisposable
         WorldModel.UndoLogger.EndTransaction();
     }
 
+    public bool CanMoveFunctionUp(string key) => CanMoveFunctionAdjacent(key, up: true);
+
+    public bool CanMoveFunctionDown(string key) => CanMoveFunctionAdjacent(key, up: false);
+
+    // Move up/down is a plain adjacent SortIndex swap (see SwapElements) with no concept of
+    // folders, so unrestricted it can split a multi-member folder in two (visually duplicating
+    // that folder's header) two different ways: an outsider swapping past the near edge of a
+    // *different* 2+-member folder lands directly between two of its members, or a member of a
+    // 2+-member folder swapping out past its own edge leaves the rest of the folder behind while
+    // it keeps carrying that folder's name to its new, disconnected spot. Neither is safe, so a
+    // 2+-member folder's own members may only reorder among themselves (leaving is done via
+    // "Move to folder"), and no one may swap into the middle of someone else's 2+-member folder.
+    // A *solo* folder member is exempt either way - relocating the only thing wearing a label
+    // can never split it.
+    private bool CanMoveFunctionAdjacent(string key, bool up)
+    {
+        var all = GetFunctionsOrderedBySortIndex();
+        var element = WorldModel.Elements.Get(key);
+        var index = all.IndexOf(element);
+        var neighborIndex = index + (up ? -1 : 1);
+        if (neighborIndex < 0 || neighborIndex >= all.Count)
+        {
+            return false;
+        }
+
+        var myFolder = element.Fields[FieldDefinitions.EditorFolder];
+        var neighborFolder = all[neighborIndex].Fields[FieldDefinitions.EditorFolder];
+
+        if (!string.IsNullOrEmpty(myFolder) && neighborFolder != myFolder
+            && all.Count(e => e.Fields[FieldDefinitions.EditorFolder] == myFolder) > 1)
+        {
+            return false;
+        }
+
+        if (string.IsNullOrEmpty(neighborFolder) || neighborFolder == myFolder)
+        {
+            return true;
+        }
+
+        return all.Count(e => e.Fields[FieldDefinitions.EditorFolder] == neighborFolder) <= 1;
+    }
+
+    private List<Element> GetFunctionsOrderedBySortIndex()
+    {
+        return WorldModel.Elements.GetElements(ElementType.Function)
+            .OrderBy(e => e.MetaFields[MetaFieldDefinitions.SortIndex])
+            .ToList();
+    }
+
     public void BeginWalkthrough(string name, bool record)
     {
         RequestRunWalkthrough(this, new RequestRunWalkthroughEventArgs {Name = name, Record = record});

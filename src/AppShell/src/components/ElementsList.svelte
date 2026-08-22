@@ -1,6 +1,6 @@
 <script lang="ts">
     import { SvelteSet } from "svelte/reactivity";
-    import { treeNodes, selectedKey, selectNode, deleteElement, openAddModal, createVerb, createCommand, createTurnScript, openAddLibraryModal, openAddJavascriptModal, swapElements, isGamebook, openMoveToFolderModal } from "$lib/editor-store";
+    import { treeNodes, selectedKey, selectNode, deleteElement, openAddModal, createVerb, createCommand, createTurnScript, openAddLibraryModal, openAddJavascriptModal, swapElements, isGamebook, openMoveToFolderModal, canMoveFunctionUp, canMoveFunctionDown } from "$lib/editor-store";
     import { nodeIcon } from "$lib/node-icons";
     import Folder from "@lucide/svelte/icons/folder";
     import { t } from "$lib/i18n";
@@ -132,26 +132,39 @@
 
     // ── Move / delete ──────────────────────────────────────────────────────────
 
+    // Functions gate the swap on canMoveFunctionUp/Down too - a plain adjacent swap has no
+    // concept of folders, and swapping past the near edge of a *different* multi-member folder
+    // would split it in two by landing the mover between two of its other members.
+    function canMoveUp(index: number): boolean {
+        if (index <= 0) return false;
+        return !supportsFolders || canMoveFunctionUp(items[index].key);
+    }
+
+    function canMoveDown(index: number): boolean {
+        if (index < 0 || index >= items.length - 1) return false;
+        return !supportsFolders || canMoveFunctionDown(items[index].key);
+    }
+
     function moveUp(index: number) {
-        if (index <= 0) return;
+        if (!canMoveUp(index)) return;
         swapElements(items[index].key, items[index - 1].key);
     }
 
     function moveDown(index: number) {
-        if (index >= items.length - 1) return;
+        if (!canMoveDown(index)) return;
         swapElements(items[index].key, items[index + 1].key);
     }
 
     function onMoveUpSelected() {
         const key = activeSelection[0];
         const idx = items.findIndex(i => i.key === key);
-        if (idx > 0) swapElements(items[idx].key, items[idx - 1].key);
+        if (canMoveUp(idx)) swapElements(items[idx].key, items[idx - 1].key);
     }
 
     function onMoveDownSelected() {
         const key = activeSelection[0];
         const idx = items.findIndex(i => i.key === key);
-        if (idx >= 0 && idx < items.length - 1) swapElements(items[idx].key, items[idx + 1].key);
+        if (canMoveDown(idx)) swapElements(items[idx].key, items[idx + 1].key);
     }
 
     function onDeleteSelected() {
@@ -244,14 +257,14 @@
                             type="button"
                             class="btn btn-sm preset-outlined-primary-500 px-1 py-0 text-xs leading-none"
                             title={t("common.moveUp")}
-                            disabled={i === 0}
+                            disabled={!canMoveUp(i)}
                             onclick={() => moveUp(i)}
                         >↑</button>
                         <button
                             type="button"
                             class="btn btn-sm preset-outlined-primary-500 px-1 py-0 text-xs leading-none"
                             title={t("common.moveDown")}
-                            disabled={i === items.length - 1}
+                            disabled={!canMoveDown(i)}
                             onclick={() => moveDown(i)}
                         >↓</button>
                         <button
@@ -283,13 +296,13 @@
                 <button
                     type="button"
                     class="btn btn-sm preset-outlined-primary-500 text-xs py-0.5"
-                    disabled={idx === 0}
+                    disabled={!canMoveUp(idx)}
                     onclick={onMoveUpSelected}
                 >↑ {t("common.moveUp")}</button>
                 <button
                     type="button"
                     class="btn btn-sm preset-outlined-primary-500 text-xs py-0.5"
-                    disabled={idx === items.length - 1}
+                    disabled={!canMoveDown(idx)}
                     onclick={onMoveDownSelected}
                 >↓ {t("common.moveDown")}</button>
             {/if}
