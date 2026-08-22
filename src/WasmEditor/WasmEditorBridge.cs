@@ -17,7 +17,7 @@ using QuestViva.PlayerCore;
 
 namespace QuestViva.WasmEditor;
 
-internal record TreeNodeData(string Key, string Text, string? Parent, string NodeType, bool IsLibrary, bool CanDelete);
+internal record TreeNodeData(string Key, string Text, string? Parent, string NodeType, bool IsLibrary, bool CanDelete, string? Filename);
 
 internal record ControlOption(string Value, string Label);
 
@@ -3956,7 +3956,7 @@ public partial class WasmEditorBridge
         // Authoritative — mirrors exactly what DeleteElement/DeleteElements will actually allow
         // (see EditorController.CanDelete), rather than the UI guessing from node type/text.
         var node = new TreeNodeData(e.Key, e.Text, e.Parent, e.NodeType,
-            e.IsLibraryNode, _controller!.CanDelete(e.Key));
+            e.IsLibraryNode, _controller!.CanDelete(e.Key), e.Filename);
         if (_isRebuilding)
         {
             // ClearTree already emptied the list; all keys are unique in a fresh rebuild.
