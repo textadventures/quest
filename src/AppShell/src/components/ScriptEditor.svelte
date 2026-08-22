@@ -231,6 +231,30 @@
         return isSimpleValue(ctrl);
     }
 
+    // Grows a multiline textbox to exactly fit its content (one line when empty/single-line,
+    // taller as more lines are typed) instead of a fixed row count that leaves blank space.
+    function autoResizeTextarea(node: HTMLTextAreaElement, value: string) {
+        void value; // only needed so Svelte calls `update` below when it changes externally
+        function resize() {
+            node.style.height = "auto";
+            node.style.height = `${node.scrollHeight}px`;
+        }
+        resize();
+        node.addEventListener("input", resize);
+        return {
+            update(newValue: string) {
+                // Skip when this fires for the field's own keystrokes (already resized live by
+                // the "input" listener) and only re-measure for genuinely external changes.
+                if (newValue !== node.value) {
+                    resize();
+                }
+            },
+            destroy() {
+                node.removeEventListener("input", resize);
+            },
+        };
+    }
+
     function toSimpleDisplay(ctrl: ScriptControlData): string {
         const v = ctrl.value ?? "";
         switch (ctrl.simpleEditor) {
@@ -549,7 +573,7 @@
             language="quest-script"
             readonly={isLocked}
             onChange={onCodeViewSave}
-            minHeight="10rem"
+            minHeight="auto"
         />
     {:else}
         <div role="region" inert={isLocked || undefined} class={isLocked ? "opacity-60" : ""}>
@@ -803,24 +827,39 @@
                         onchange={(v) => onSimpleValueChange(scriptIndex, ctrl, v)}
                         class="input text-xs py-0 px-1 min-w-16 max-w-48"
                     />
+                {:else if ctrl.multiline}
+                    <!-- multiline textbox (e.g. Print's message) - keeps embedded newlines,
+                         auto-sized to the height of its content rather than a fixed row count -->
+                    <textarea
+                        autocapitalize="off"
+                        rows="1"
+                        class="input text-xs py-0.5 px-1 min-w-16 w-full resize-none overflow-hidden"
+                        value={toSimpleDisplay(ctrl)}
+                        use:autoResizeTextarea={toSimpleDisplay(ctrl)}
+                        onchange={(e) => onSimpleValueChange(scriptIndex, ctrl, (e.target as HTMLTextAreaElement).value)}
+                    ></textarea>
                 {:else}
                     <!-- textbox (default for message, text, colour, etc.) -->
                     <input
                         type="text"
                         autocapitalize="off"
-                        class="input text-xs py-0 px-1 min-w-16 max-w-48 flex-1"
+                        class={"input text-xs py-0 px-1 min-w-16 flex-1" + (ctrl.expand ? " w-full" : " max-w-48")}
                         value={toSimpleDisplay(ctrl)}
                         onchange={(e) => onSimpleValueChange(scriptIndex, ctrl, (e.target as HTMLInputElement).value)}
                     />
                 {/if}
             {:else}
-                <!-- Expression mode: raw expression text input -->
-                <ExpressionInput
-                    value={ctrl.value ?? ""}
-                    onchange={(v) => onSetParam(scriptIndex, ctrl.attribute!, v)}
-                    {objectNames}
-                    class="input text-xs py-0 px-1 min-w-16 max-w-48 flex-1"
-                />
+                <!-- Expression mode: raw expression text input. ExpressionInput's own root
+                     element isn't a flex item that grows on its own, so it needs a growing
+                     wrapper here to actually fill the row when expand is set. -->
+                <div class={ctrl.expand ? "flex-1 min-w-0" : "flex-none"}>
+                    <ExpressionInput
+                        value={ctrl.value ?? ""}
+                        onchange={(v) => onSetParam(scriptIndex, ctrl.attribute!, v)}
+                        {objectNames}
+                        class={"input text-xs py-0 px-1 min-w-16" + (ctrl.expand ? " w-full" : " max-w-48")}
+                    />
+                </div>
             {/if}
         {/if}
     {:else if ctrl.controlType === "expression"}
