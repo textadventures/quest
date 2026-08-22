@@ -1,5 +1,27 @@
 # Changelog
 
+## [6.0.0-beta.54](https://github.com/textadventures/quest/compare/v6.0.0-beta.53...v6.0.0-beta.54) (2026-08-22)
+
+
+### Features
+
+* **AppShell:** default-to-code-view setting, taller attribute value box ([#2112](https://github.com/textadventures/quest/issues/2112)) ([932c590](https://github.com/textadventures/quest/commit/932c590061e14d4599f50d7f4ecd98e854ae17cf))
+* **AppShell:** group library-origin elements by source file in editor tree ([#2113](https://github.com/textadventures/quest/issues/2113)) ([cfb74f4](https://github.com/textadventures/quest/commit/cfb74f40823bda2b260c1eed26788896b119b8e8))
+* **AppShell:** let authors group Functions into user-named folders ([#2114](https://github.com/textadventures/quest/issues/2114)) ([091bcad](https://github.com/textadventures/quest/commit/091bcada7411736e0b08c51a07b906a746331371))
+* **Engine:** add "require all keys" toggle for lockable containers ([#2092](https://github.com/textadventures/quest/issues/2092)) ([9c64f28](https://github.com/textadventures/quest/commit/9c64f282c689e5c106317e4f514fc29219d0e591))
+* **Engine:** AddPageLink/RemovePageLink for Text Adventure games ([#2105](https://github.com/textadventures/quest/issues/2105)) ([d5549ee](https://github.com/textadventures/quest/commit/d5549ee4c5785bcfd4e2cba7abfa9edf2a73db3c))
+
+
+### Bug Fixes
+
+* **AppShell:** add rename support to ScriptDictionaryEditor ([#2091](https://github.com/textadventures/quest/issues/2091)) ([039a760](https://github.com/textadventures/quest/commit/039a760bd38cb91e95feb13cd5895308bc8055d8))
+* **AppShell:** honor multiline/expand script control hints, auto-size code view ([#2115](https://github.com/textadventures/quest/issues/2115)) ([e9f26fb](https://github.com/textadventures/quest/commit/e9f26fbf7d9a3a3b3a47001468d9c9c459699765))
+* **AppShell:** refresh code view when switching commands in editor ([#2111](https://github.com/textadventures/quest/issues/2111)) ([2086ca8](https://github.com/textadventures/quest/commit/2086ca8e04292813aa542eaa46e2bb76385811c5))
+* **AppShell:** render Switch command's Cases editor in ScriptEditor ([#2090](https://github.com/textadventures/quest/issues/2090)) ([1141a8a](https://github.com/textadventures/quest/commit/1141a8a4902163f885f9fcb559e2dc9ba683ab12))
+* **Engine:** make the 'in' operator work on dictionaries ([#2110](https://github.com/textadventures/quest/issues/2110)) ([56ec22c](https://github.com/textadventures/quest/commit/56ec22c6416aa80674078586042918009e8e513a))
+* **Engine:** remove Vimeo support entirely, keep runtime playback for existing games ([#2106](https://github.com/textadventures/quest/issues/2106)) ([6f067f1](https://github.com/textadventures/quest/commit/6f067f137fe1ddd7fea7cb69dd227c9022edc7a3))
+* **PlayerCore:** restore WriteToLog as a no-op ([#2107](https://github.com/textadventures/quest/issues/2107)) ([2135ae5](https://github.com/textadventures/quest/commit/2135ae5696aef86d174a86e66a6d689c3bc54db0))
+
 ## [6.0.0-beta.53](https://github.com/textadventures/quest/compare/v6.0.0-beta.52...v6.0.0-beta.53) (2026-08-16)
 
 
