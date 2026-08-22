@@ -44,7 +44,11 @@
     // (which swaps SortIndex on the underlying list) stays untouched and headers simply track
     // wherever the runs currently fall. "Move to folder" is what keeps a folder's members
     // contiguous — see EditorController.SetFunctionFolder.
-    type Row = { kind: "header"; key: string; label: string } | { kind: "item"; index: number; item: typeof items[number] };
+    // `grouped` distinguishes a row that's actually under the header above it from one that
+    // merely comes right after — without it, an ungrouped item immediately following a group (no
+    // header of its own in between) rendered identically to a grouped one, making it look like
+    // part of the folder above when it wasn't.
+    type Row = { kind: "header"; key: string; label: string } | { kind: "item"; index: number; item: typeof items[number]; grouped: boolean };
 
     let rows = $derived.by(() => {
         const out: Row[] = [];
@@ -55,7 +59,7 @@
                 out.push({ kind: "header", key: `__group_${item.key}`, label: group });
             }
             lastGroup = group;
-            out.push({ kind: "item", index, item });
+            out.push({ kind: "item", index, item, grouped: group !== null });
         });
         return out;
     });
@@ -205,7 +209,7 @@
             {:else}
                 {@const item = row.item}
                 {@const i = row.index}
-                <div class="group relative border border-surface-200-800 rounded mb-1 bg-surface-50-950 flex items-center">
+                <div class="group relative border border-surface-200-800 rounded mb-1 bg-surface-50-950 flex items-center {row.grouped ? "ml-3 border-l-2 border-l-primary-300-700" : ""}">
                     <label class="flex items-center pt-1 pb-1 pl-1.5 pr-0.5 cursor-pointer flex-shrink-0">
                         <input
                             type="checkbox"

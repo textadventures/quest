@@ -2620,17 +2620,34 @@ public sealed class EditorController : IDisposable
 
         if (!string.IsNullOrEmpty(folder))
         {
-            var ordered = WorldModel.Elements.GetElements(ElementType.Function)
-                .Where(e => e != element)
+            // GetElements(Function) includes every built-in library function too (there can be
+            // hundreds, across Core.aslx/English.aslx/etc.) - moving one function only ever needs
+            // to shift it past its immediate neighbours, so only the slice of the list strictly
+            // between its old and new position is touched. Reassigning every function's SortIndex
+            // from scratch (as this used to) rewrote hundreds of untouched library functions too,
+            // each triggering a full tree-reposition event - the multi-second UI freeze this fixes.
+            var all = WorldModel.Elements.GetElements(ElementType.Function)
                 .OrderBy(e => e.MetaFields[MetaFieldDefinitions.SortIndex])
                 .ToList();
-            var lastInFolder = ordered.LastOrDefault(e => e.Fields[FieldDefinitions.EditorFolder] == folder);
-            var insertAt = lastInFolder != null ? ordered.IndexOf(lastInFolder) + 1 : ordered.Count;
-            ordered.Insert(insertAt, element);
+            var oldIndex = all.IndexOf(element);
+            all.RemoveAt(oldIndex);
 
-            for (var i = 0; i < ordered.Count; i++)
+            var lastInFolder = all.LastOrDefault(e => e.Fields[FieldDefinitions.EditorFolder] == folder);
+            var newIndex = lastInFolder != null ? all.IndexOf(lastInFolder) + 1 : all.Count;
+            all.Insert(newIndex, element);
+
+            var lo = Math.Min(oldIndex, newIndex);
+            var hi = Math.Max(oldIndex, newIndex);
+            // Redistribute the touched slice's own original SortIndex values among its new
+            // member order, rather than assigning fresh numbers - keeps every untouched element
+            // (on either side of the slice) numerically unaffected.
+            var originalValues = all.Skip(lo).Take(hi - lo + 1)
+                .Select(e => e.MetaFields[MetaFieldDefinitions.SortIndex])
+                .OrderBy(i => i)
+                .ToList();
+            for (var i = 0; i <= hi - lo; i++)
             {
-                ordered[i].MetaFields[MetaFieldDefinitions.SortIndex] = i;
+                all[lo + i].MetaFields[MetaFieldDefinitions.SortIndex] = originalValues[i];
             }
         }
 

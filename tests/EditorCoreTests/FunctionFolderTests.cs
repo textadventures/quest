@@ -48,6 +48,36 @@ public class FunctionFolderTests
     }
 
     [TestMethod]
+    public async Task SetFunctionFolder_DoesNotTouchLibraryFunctionSortIndexes()
+    {
+        // Regression test: SetFunctionFolder used to renumber the SortIndex of every Function
+        // element from scratch, including every built-in library function (there can be hundreds
+        // across Core.aslx/English.aslx/etc.) - each a needless write that triggered a full tree
+        // reposition event, causing a multi-second UI freeze. It must now only touch the small
+        // slice of user-authored functions actually shifted by the move.
+        var controller = await LoadTemplateController("English");
+        controller.CreateNewFunction("Alpha");
+        controller.CreateNewFunction("Beta");
+
+        var libraryFunctions = controller.WorldModel.Elements.GetElements(ElementType.Function)
+            .Where(e => e.MetaFields[MetaFieldDefinitions.Library])
+            .ToList();
+        Assert.IsTrue(libraryFunctions.Count > 0, "Expected the English template to include built-in library functions");
+        var beforeSortIndexes = libraryFunctions.ToDictionary(e => e.Name, e => e.MetaFields[MetaFieldDefinitions.SortIndex]);
+
+        controller.SetFunctionFolder("Alpha", "Math");
+        controller.SetFunctionFolder("Beta", "Math");
+
+        foreach (var function in libraryFunctions)
+        {
+            Assert.AreEqual(beforeSortIndexes[function.Name], function.MetaFields[MetaFieldDefinitions.SortIndex],
+                $"Library function '{function.Name}' should not have been reordered");
+        }
+
+        controller.Uninitialise();
+    }
+
+    [TestMethod]
     public async Task SetFunctionFolder_NewFolderName_AddsItToGetFunctionFolders()
     {
         var controller = await LoadTemplateController("English");
