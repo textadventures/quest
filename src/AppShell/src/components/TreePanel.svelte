@@ -13,10 +13,11 @@
         openAddModal, createExit, createTurnScript, createCommand, createVerb,
         openAddLibraryModal, openAddJavascriptModal,
         deleteElement,
-        canMoveElement, openMoveModal, copyElements, cutElements, canPasteElements, pasteElements,
+        canMoveElement, openMoveModal, openMoveToFolderModal, copyElements, cutElements, canPasteElements, pasteElements,
         clipboardVersion, cutElementKeys,
         showLibraryElements, toggleShowLibraryElements,
         swapElements, getCurrentGameId,
+        canMoveFunctionUp, canMoveFunctionDown,
     } from "$lib/editor-store";
     import type { TreeNode } from "$lib/types";
     import { t } from "$lib/i18n";
@@ -32,6 +33,9 @@
         canDelete: boolean
         // Only meaningful on isLibrary nodes — see groupLibraryChildren.
         filename?: string | null
+        // User-assigned folder name, currently only meaningful on non-library function nodes —
+        // see groupLibraryChildren.
+        folder?: string | null
         children?: HierNode[]
     }
 
@@ -60,31 +64,53 @@
         return key ? t(key) : node.text;
     }
 
-    // Folds a run of 2+ consecutive same-filename library children (e.g. every function from
-    // Core.aslx) into a single synthetic, expand-on-demand "folder" node — a big library's worth
-    // of functions/timers/etc. otherwise floods this tree flat. Purely a display grouping over the
-    // existing SortIndex order (mirrors ElementsList's grouping); a lone run of 1 isn't worth the
-    // extra click to expand, so it's left inline. The synthetic node's isLibrary:true makes it
-    // fall out of nodeMenuOptions/reorderOptions for free (same guard real library rows use), and
-    // its id is deterministic so expand-state persistence (tree-state.ts) still works across reloads.
+    // Folds consecutive children sharing the same grouping key — either a library filename (e.g.
+    // every function from Core.aslx) or a user-assigned folder (Functions only, via "Move to
+    // folder") — into a single synthetic, expand-on-demand "folder" node; a big library's (or
+    // folder's) worth of functions/timers/etc. otherwise floods this tree flat. Purely a display
+    // grouping over the existing SortIndex order (mirrors ElementsList's grouping). A lone
+    // library-filename run isn't worth the extra click to expand, so it's left inline and only
+    // runs of 2+ fold; a lone folder still folds (see the "folder" special-case below) since it's
+    // a deliberate user action, not an incidental one. The library variant's synthetic node is
+    // isLibrary:true, making it fall out of nodeMenuOptions/reorderOptions for free (same guard
+    // real library rows use); the folder variant is a plain non-library node instead, since its
+    // members are real user-authored functions that still need their own context menu. Either way
+    // the id is deterministic so expand-state persistence (tree-state.ts) still works across
+    // reloads.
+    function groupKey(node: HierNode): { key: string; kind: "lib" | "folder" } | null {
+        if (node.isLibrary && node.filename) return { key: node.filename, kind: "lib" };
+        if (!node.isLibrary && node.folder) return { key: node.folder, kind: "folder" };
+        return null;
+    }
+
     function groupLibraryChildren(children: HierNode[], parentId: string): HierNode[] {
         const out: HierNode[] = [];
         let i = 0;
         while (i < children.length) {
             const node = children[i];
-            if (node.isLibrary && node.filename) {
+            const group = groupKey(node);
+            if (group) {
                 let j = i + 1;
-                while (j < children.length && children[j].isLibrary && children[j].filename === node.filename) j++;
-                if (j - i > 1) {
+                while (j < children.length) {
+                    const next = groupKey(children[j]);
+                    if (!next || next.kind !== group.kind || next.key !== group.key) break;
+                    j++;
+                }
+                // A lone library-filename run isn't worth the extra click to expand (it's an
+                // incidental grouping nobody chose), but a lone folder is a deliberate "Move to
+                // folder" action - hiding it when it only has one member yet would make that
+                // action look like it did nothing, so folders always fold, even at length 1.
+                if (j - i > 1 || group.kind === "folder") {
                     // Suffixed with the run's first child id (globally unique, since it's a real
-                    // element key) rather than just filename — the same file can produce more than
-                    // one non-adjacent run under one parent (SortIndex order isn't guaranteed to
-                    // keep same-file items contiguous), and two runs would otherwise collide on id.
+                    // element key) rather than just the group key — the same file/folder can
+                    // produce more than one non-adjacent run under one parent (SortIndex order
+                    // isn't guaranteed to keep same-group items contiguous), and two runs would
+                    // otherwise collide on id.
                     out.push({
-                        id: `${parentId}::lib::${node.filename}::${node.id}`,
-                        text: node.filename,
-                        nodeType: "librarygroup",
-                        isLibrary: true,
+                        id: `${parentId}::${group.kind}::${group.key}::${node.id}`,
+                        text: group.key,
+                        nodeType: group.kind === "lib" ? "librarygroup" : "usergroup",
+                        isLibrary: group.kind === "lib",
                         canDelete: false,
                         children: children.slice(i, j),
                     });
@@ -133,6 +159,7 @@
                 isLibrary: node.isLibrary,
                 canDelete: node.canDelete,
                 filename: node.filename,
+                folder: node.folder,
                 ...(grouped ? { children: grouped } : {}),
             };
         };
@@ -459,8 +486,17 @@
         const siblings = $treeNodes.filter(n => n.parent === flat.parent && n.nodeType !== "game");
         const index = siblings.findIndex(n => n.key === flat.key);
         if (index < 0) return opts;
-        if (index > 0) opts.push({ label: t("common.moveUp"), action: () => swapElements(flat.key, siblings[index - 1].key) });
-        if (index < siblings.length - 1) opts.push({ label: t("common.moveDown"), action: () => swapElements(flat.key, siblings[index + 1].key) });
+        // A function's swap is also gated on canMoveFunctionUp/Down - a plain adjacent swap has
+        // no concept of folders, and swapping past the near edge of a *different* multi-member
+        // folder would split it in two by landing the mover between two of its other members
+        // (mirrors ElementsList's own moveUp/moveDown guard).
+        const isFunction = node.nodeType === "function";
+        if (index > 0 && (!isFunction || canMoveFunctionUp(flat.key))) {
+            opts.push({ label: t("common.moveUp"), action: () => swapElements(flat.key, siblings[index - 1].key) });
+        }
+        if (index < siblings.length - 1 && (!isFunction || canMoveFunctionDown(flat.key))) {
+            opts.push({ label: t("common.moveDown"), action: () => swapElements(flat.key, siblings[index + 1].key) });
+        }
         return opts;
     }
 
@@ -525,6 +561,8 @@
             if (canMoveElement(id)) {
                 opts.push({ label: t("common.moveTo"), action: () => openMoveModal(id) });
             }
+        } else if (nt === "function") {
+            opts.push({ label: t("common.moveToFolder"), action: () => openMoveToFolderModal(id) });
         }
 
         // Gamebook pages ("page") are plain ElementType.Object elements underneath —

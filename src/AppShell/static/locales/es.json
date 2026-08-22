@@ -92,6 +92,7 @@
     "settingsModal.defaultCodeView": "Mostrar guiones en vista de código de forma predeterminada",
 
     "common.moveTo": "Mover a…",
+    "common.moveToFolder": "Mover a carpeta…",
     "common.cut": "Cortar",
     "common.copy": "Copiar",
     "common.paste": "Pegar",
@@ -172,6 +173,11 @@
     "moveElementModal.heading": "Mover \"{name}\"",
     "moveElementModal.newParentLabel": "Nuevo padre",
     "moveElementModal.moveButton": "Mover",
+
+    "moveToFolderModal.topLevel": "(nivel superior)",
+    "moveToFolderModal.heading": "Mover \"{name}\" a carpeta",
+    "moveToFolderModal.folderLabel": "Carpeta",
+    "moveToFolderModal.moveButton": "Mover",
 
     "linkPickerModal.defaultTextLabel": "Texto del enlace",
     "linkPickerModal.optionalSuffix": " (opcional)",

@@ -92,6 +92,7 @@
     "settingsModal.defaultCodeView": "Default scripts to code view",
 
     "common.moveTo": "Move to…",
+    "common.moveToFolder": "Move to folder…",
     "common.cut": "Cut",
     "common.copy": "Copy",
     "common.paste": "Paste",
@@ -172,6 +173,11 @@
     "moveElementModal.heading": "Move \"{name}\"",
     "moveElementModal.newParentLabel": "New parent",
     "moveElementModal.moveButton": "Move",
+
+    "moveToFolderModal.topLevel": "(top level)",
+    "moveToFolderModal.heading": "Move \"{name}\" to folder",
+    "moveToFolderModal.folderLabel": "Folder",
+    "moveToFolderModal.moveButton": "Move",
 
     "linkPickerModal.defaultTextLabel": "Link text",
     "linkPickerModal.optionalSuffix": " (optional)",

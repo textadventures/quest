@@ -84,6 +84,10 @@ public static class FieldDefinitions
     public static IField<QuestList<string>> ParamNames = new FieldDef<QuestList<string>>("paramnames");
     public static IField<IScript> Script = new FieldDef<IScript>("script");
     public static IField<string> ReturnType = new FieldDef<string>("returntype");
+    // Editor-only organisational folder name for a user-authored Function — purely a display
+    // grouping in the editor tree/list, has no effect on the game itself. See ElementsList.svelte
+    // and TreePanel.svelte's folder grouping.
+    public static IField<string> EditorFolder = new FieldDef<string>("editorfolder");
     public static IField<string> Pattern = new FieldDef<string>("pattern");
     public static IField<string> Unresolved = new FieldDef<string>("unresolved");
     public static IField<string> Property = new FieldDef<string>("property");

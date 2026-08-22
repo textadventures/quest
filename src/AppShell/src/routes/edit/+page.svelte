@@ -4,7 +4,7 @@
     import { goto } from "$app/navigation";
     import { base } from "$app/paths";
     import { get } from "svelte/store";
-    import { isLoaded, isDirty, isEditingField, markFieldEditing, clearFieldEditing, saveGame, loadingStatus, addElementModal, addJavascriptModalOpen, addLibraryModalOpen, assetManagerOpen, publishModalOpen, codeViewPanelOpen, openGame, lastOpenGameError, lastFailedGameBytes, lastFailedGameFilename, createRoom, createObject, createPage, createFunction, createTimer, createWalkthrough, createTemplate, createDynamicTemplate, createObjectType, createJavascript, createIncludedLibrary, moveElementModal, moveElement } from "$lib/editor-store";
+    import { isLoaded, isDirty, isEditingField, markFieldEditing, clearFieldEditing, saveGame, loadingStatus, addElementModal, addJavascriptModalOpen, addLibraryModalOpen, assetManagerOpen, publishModalOpen, codeViewPanelOpen, openGame, lastOpenGameError, lastFailedGameBytes, lastFailedGameFilename, createRoom, createObject, createPage, createFunction, createTimer, createWalkthrough, createTemplate, createDynamicTemplate, createObjectType, createJavascript, createIncludedLibrary, moveElementModal, moveElement, moveToFolderModal, setFunctionFolder } from "$lib/editor-store";
     import { loadFromServer } from "$lib/filesystem/server-adapter";
     import Toolbar from "$components/Toolbar.svelte";
     import BackupBanner from "$components/BackupBanner.svelte";
@@ -19,6 +19,7 @@
     import AddJavascriptModal from "$components/AddJavascriptModal.svelte";
     import AddLibraryModal from "$components/AddLibraryModal.svelte";
     import MoveElementModal from "$components/MoveElementModal.svelte";
+    import MoveToFolderModal from "$components/MoveToFolderModal.svelte";
     import AssetManagerModal from "$components/AssetManagerModal.svelte";
     import PublishModal from "$components/PublishModal.svelte";
     import { t } from "$lib/i18n";
@@ -236,6 +237,14 @@
             elementKey={$moveElementModal}
             onconfirm={(parent) => { moveElement($moveElementModal!, parent); moveElementModal.set(null); }}
             oncancel={() => moveElementModal.set(null)}
+        />
+    {/if}
+
+    {#if $moveToFolderModal}
+        <MoveToFolderModal
+            elementKey={$moveToFolderModal}
+            onconfirm={(folder) => { setFunctionFolder($moveToFolderModal!, folder); moveToFolderModal.set(null); }}
+            oncancel={() => moveToFolderModal.set(null)}
         />
     {/if}
 

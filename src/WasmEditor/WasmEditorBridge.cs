@@ -17,7 +17,7 @@ using QuestViva.PlayerCore;
 
 namespace QuestViva.WasmEditor;
 
-internal record TreeNodeData(string Key, string Text, string? Parent, string NodeType, bool IsLibrary, bool CanDelete, string? Filename);
+internal record TreeNodeData(string Key, string Text, string? Parent, string NodeType, bool IsLibrary, bool CanDelete, string? Filename, string? Folder);
 
 internal record ControlOption(string Value, string Label);
 
@@ -2870,6 +2870,49 @@ public partial class WasmEditorBridge
     }
 
     [JSExport]
+    public static string GetFunctionFolders()
+    {
+        var folders = _controller?.GetFunctionFolders().ToList() ?? [];
+        return JsonSerializer.Serialize(folders, WasmEditorJsonContext.Default.ListString);
+    }
+
+    [JSExport]
+    public static string SetFunctionFolder(string elementKey, string? folder)
+    {
+        if (_controller == null)
+        {
+            return "error";
+        }
+
+        _controller.SetFunctionFolder(elementKey, folder);
+        // A full rebuild, not just an incremental refresh: SetFunctionFolder can reposition
+        // several functions at once (see its own comment), and the AddedNode/RemovedNode pair
+        // EditorController fires per repositioned element only ever *appends* to this class's
+        // TreeNodes cache when the key isn't already present (see OnAddedNode) - correct only
+        // when every repositioned element ends up trailing all its untouched siblings, which
+        // isn't guaranteed in general (e.g. inserting into the middle of an existing folder that
+        // has more functions after it). SwapElements avoids this the other way, by suppressing
+        // the natural events and patching its own two known slots directly; a full rebuild here
+        // is simpler to get right for an operation that can touch an arbitrary-sized slice, and
+        // is still cheap since it's one pass over the (now name-only) element list rather than
+        // the many redundant per-element writes the old implementation made.
+        _controller.UpdateTree();
+        return "ok";
+    }
+
+    [JSExport]
+    public static bool CanMoveFunctionUp(string elementKey)
+    {
+        return _controller?.CanMoveFunctionUp(elementKey) ?? false;
+    }
+
+    [JSExport]
+    public static bool CanMoveFunctionDown(string elementKey)
+    {
+        return _controller?.CanMoveFunctionDown(elementKey) ?? false;
+    }
+
+    [JSExport]
     public static void CopyElements(string keysJson)
     {
         if (_controller == null)
@@ -3956,7 +3999,7 @@ public partial class WasmEditorBridge
         // Authoritative — mirrors exactly what DeleteElement/DeleteElements will actually allow
         // (see EditorController.CanDelete), rather than the UI guessing from node type/text.
         var node = new TreeNodeData(e.Key, e.Text, e.Parent, e.NodeType,
-            e.IsLibraryNode, _controller!.CanDelete(e.Key), e.Filename);
+            e.IsLibraryNode, _controller!.CanDelete(e.Key), e.Filename, e.Folder);
         if (_isRebuilding)
         {
             // ClearTree already emptied the list; all keys are unique in a fresh rebuild.

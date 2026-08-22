@@ -47,5 +47,11 @@ public class PackagerTests
         Assert.IsNotNull(reloadedAsset);
         using var reader = new StreamReader(reloadedAsset);
         Assert.AreEqual("asset contents", await reader.ReadToEndAsync());
+
+        // savetest.aslx's "VerifyCreatedExit" function carries folder="Verification" — asserts
+        // the editor-only folder attribute (see FunctionSaver/FunctionLoaderBase) survives a
+        // full save/reload round trip, not just the initial parse.
+        var reloadedFunction = reloadedWorldModel.Elements.Get("VerifyCreatedExit");
+        Assert.AreEqual("Verification", reloadedFunction.Fields[FieldDefinitions.EditorFolder]);
     }
 }

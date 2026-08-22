@@ -11,6 +11,9 @@ export interface TreeNode {
   // The .aslx file this element was loaded from (e.g. "Core.aslx", "CoreTimers.aslx", or the
   // game's own file). Only meaningful for grouping when isLibrary is true.
   filename: string | null
+  // User-assigned organisational folder name, currently only settable on Function elements via
+  // "Move to folder" — purely a display grouping, like filename above, but author-controlled.
+  folder: string | null
 }
 
 export interface ControlOption {

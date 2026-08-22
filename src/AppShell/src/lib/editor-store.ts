@@ -59,6 +59,11 @@ export const moveElementModal = writable<string | null>(null);
 export function openMoveModal(key: string) {
     moveElementModal.set(key);
 }
+// Holds the key of the Function currently being assigned a folder, or null when closed.
+export const moveToFolderModal = writable<string | null>(null);
+export function openMoveToFolderModal(key: string) {
+    moveToFolderModal.set(key);
+}
 export const gameFilename = writable<string | null>(null);
 export const canSaveAs = writable(false);
 export const canBackup = writable(false);
@@ -1684,6 +1689,33 @@ export function moveElement(key: string, newParent: string): string {
         refreshUndoRedo();
     }
     return result;
+}
+
+export function getFunctionFolders(): string[] {
+    if (!_bridge) return [];
+    return JSON.parse(_bridge.GetFunctionFolders());
+}
+
+export function setFunctionFolder(key: string, folder: string): string {
+    if (!_bridge) return "error";
+    const result = _bridge.SetFunctionFolder(key, folder);
+    if (result === "ok") {
+        refreshTree();
+        refreshUndoRedo();
+    }
+    return result;
+}
+
+// A function's move up/down is a plain adjacent swap (see swapElements) with no concept of
+// folders, so these gate that swap to ones that can't split a *different* multi-member folder in
+// two by landing the mover between two of its other members - see EditorController's own
+// CanMoveFunctionUp/Down for the exact rule.
+export function canMoveFunctionUp(key: string): boolean {
+    return _bridge?.CanMoveFunctionUp(key) ?? false;
+}
+
+export function canMoveFunctionDown(key: string): boolean {
+    return _bridge?.CanMoveFunctionDown(key) ?? false;
 }
 
 // Bumped by copyElements/cutElements so TreePanel's per-node "⋯" menus (computed

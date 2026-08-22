@@ -41,6 +41,8 @@ export const NODE_TYPE_ICON: Record<string, IconComponent> = {
     javascript: FileCode,
     // Synthetic "grouped by source library file" folder node — see TreePanel's groupLibraryChildren.
     librarygroup: Folder,
+    // Synthetic "grouped by user-assigned folder" node — see TreePanel's groupLibraryChildren.
+    usergroup: Folder,
 };
 
 // Every header node's nodeType is the generic "header" (see WasmEditorBridge), so headers

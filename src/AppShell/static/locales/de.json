@@ -92,6 +92,7 @@
     "settingsModal.defaultCodeView": "Skripte standardmäßig in Code-Ansicht anzeigen",
 
     "common.moveTo": "Verschieben nach…",
+    "common.moveToFolder": "In Ordner verschieben…",
     "common.cut": "Ausschneiden",
     "common.copy": "Kopieren",
     "common.paste": "Einfügen",
@@ -172,6 +173,11 @@
     "moveElementModal.heading": "Verschiebe \"{name}\"",
     "moveElementModal.newParentLabel": "Neue übergeordnete Ebene",
     "moveElementModal.moveButton": "Verschieben",
+
+    "moveToFolderModal.topLevel": "(oberste Ebene)",
+    "moveToFolderModal.heading": "Verschiebe \"{name}\" in Ordner",
+    "moveToFolderModal.folderLabel": "Ordner",
+    "moveToFolderModal.moveButton": "Verschieben",
 
     "linkPickerModal.defaultTextLabel": "Link-Text",
     "linkPickerModal.optionalSuffix": " (optional)",
