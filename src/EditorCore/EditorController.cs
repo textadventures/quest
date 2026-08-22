@@ -610,7 +610,8 @@ public sealed class EditorController : IDisposable
             AddedNode(this,
                 new AddedNodeEventArgs
                 {
-                    Key = key, Text = text, Parent = parent, IsLibraryNode = isLibrary, Position = position,
+                    Key = key, Text = text, Parent = parent, IsLibraryNode = isLibrary,
+                    Filename = o.MetaFields[MetaFieldDefinitions.Filename], Position = position,
                     NodeType = GetNodeType(o)
                 });
 
@@ -2871,6 +2872,7 @@ public sealed class EditorController : IDisposable
         public string Text { get; set; }
         public string Parent { get; set; }
         public bool IsLibraryNode { get; set; }
+        public string Filename { get; set; }
         public int? Position { get; set; }
         public string NodeType { get; set; }
     }

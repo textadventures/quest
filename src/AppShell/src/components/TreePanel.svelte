@@ -30,6 +30,8 @@
         nodeType: string
         isLibrary: boolean
         canDelete: boolean
+        // Only meaningful on isLibrary nodes — see groupLibraryChildren.
+        filename?: string | null
         children?: HierNode[]
     }
 
@@ -58,6 +60,46 @@
         return key ? t(key) : node.text;
     }
 
+    // Folds a run of 2+ consecutive same-filename library children (e.g. every function from
+    // Core.aslx) into a single synthetic, expand-on-demand "folder" node — a big library's worth
+    // of functions/timers/etc. otherwise floods this tree flat. Purely a display grouping over the
+    // existing SortIndex order (mirrors ElementsList's grouping); a lone run of 1 isn't worth the
+    // extra click to expand, so it's left inline. The synthetic node's isLibrary:true makes it
+    // fall out of nodeMenuOptions/reorderOptions for free (same guard real library rows use), and
+    // its id is deterministic so expand-state persistence (tree-state.ts) still works across reloads.
+    function groupLibraryChildren(children: HierNode[], parentId: string): HierNode[] {
+        const out: HierNode[] = [];
+        let i = 0;
+        while (i < children.length) {
+            const node = children[i];
+            if (node.isLibrary && node.filename) {
+                let j = i + 1;
+                while (j < children.length && children[j].isLibrary && children[j].filename === node.filename) j++;
+                if (j - i > 1) {
+                    // Suffixed with the run's first child id (globally unique, since it's a real
+                    // element key) rather than just filename — the same file can produce more than
+                    // one non-adjacent run under one parent (SortIndex order isn't guaranteed to
+                    // keep same-file items contiguous), and two runs would otherwise collide on id.
+                    out.push({
+                        id: `${parentId}::lib::${node.filename}::${node.id}`,
+                        text: node.filename,
+                        nodeType: "librarygroup",
+                        isLibrary: true,
+                        canDelete: false,
+                        children: children.slice(i, j),
+                    });
+                } else {
+                    out.push(node);
+                }
+                i = j;
+            } else {
+                out.push(node);
+                i++;
+            }
+        }
+        return out;
+    }
+
     // Build HierNode tree from flat list
     function buildHierTree(nodes: TreeNode[]): HierNode[] {
         // Deduplicate by key (last write wins, matching C# upsert behaviour in OnAddedNode)
@@ -73,14 +115,25 @@
             byParent.get(p)!.push(n);
         }
         const build = (node: TreeNode): HierNode => {
-            const children = byParent.get(node.key);
+            const children = byParent.get(node.key)?.map(build);
+            // "Included Libraries" lists the library *files* themselves (nodeType "include") —
+            // each one's own name is already a filename, so grouping them by which file declared
+            // the <include> just wraps a filename in an identically-named folder, and the same
+            // library can be pulled in from more than one place, producing several duplicate-
+            // labeled groups. Skip grouping at this level only; libraries defined *inside* a
+            // browsed included library (its functions, objects, its own nested includes, ...)
+            // still group normally, same as everywhere else.
+            const grouped = children && children[0]?.nodeType !== "include"
+                ? groupLibraryChildren(children, node.key)
+                : children;
             return {
                 id: node.key,
                 text: node.nodeType === "header" ? headerText(node) : node.text,
                 nodeType: node.nodeType,
                 isLibrary: node.isLibrary,
                 canDelete: node.canDelete,
-                ...(children ? { children: children.map(build) } : {}),
+                filename: node.filename,
+                ...(grouped ? { children: grouped } : {}),
             };
         };
         return (byParent.get(null) ?? []).map(build);

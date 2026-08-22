@@ -36,6 +36,27 @@
         )
     );
 
+    // ── Library grouping ──────────────────────────────────────────────────────
+    // Purely a display grouping over the existing flat, SortIndex-ordered `items` — no
+    // reordering. A group header is inserted before each new contiguous run of library items
+    // sharing a filename, so move up/down (which swaps SortIndex on the underlying list)
+    // stays untouched and headers simply track wherever the runs currently fall.
+    type Row = { kind: "header"; key: string; label: string } | { kind: "item"; index: number; item: typeof items[number] };
+
+    let rows = $derived.by(() => {
+        const out: Row[] = [];
+        let lastGroup: string | null = null;
+        items.forEach((item, index) => {
+            const group = item.isLibrary && item.filename ? item.filename : null;
+            if (group !== null && group !== lastGroup) {
+                out.push({ kind: "header", key: `__group_${item.key}`, label: group });
+            }
+            lastGroup = group;
+            out.push({ kind: "item", index, item });
+        });
+        return out;
+    });
+
     // ── Selection ──────────────────────────────────────────────────────────────
 
     const selectedKeys = new SvelteSet<string>();
@@ -171,53 +192,59 @@
     {#if items.length === 0}
         <p class="text-xs text-surface-600-400 italic">{t("elementsList.noItems")}</p>
     {:else}
-        {#each items as item, i (item.key)}
-            <div class="group relative border border-surface-200-800 rounded mb-1 bg-surface-50-950 flex items-center">
-                <label class="flex items-center pt-1 pb-1 pl-1.5 pr-0.5 cursor-pointer flex-shrink-0">
-                    <input
-                        type="checkbox"
-                        class="checkbox size-3.5"
-                        checked={selectedKeys.has(item.key)}
-                        onchange={(e) => toggleSelect(item.key, (e.target as HTMLInputElement).checked)}
-                    />
-                </label>
-                <!-- pr-20 keeps name clear of the hover buttons (≈3×24px) -->
-                <button
-                    type="button"
-                    class="flex-1 flex items-center gap-1.5 text-left text-xs px-1.5 py-1 pr-20 text-primary-600-400 hover:underline truncate"
-                    onclick={() => selectNode(item.key)}
-                >
-                    {#if isObjectList}
-                        {@const Icon = nodeIcon(item.key, item.nodeType)}
-                        <Icon size={13} class="flex-shrink-0 opacity-70" />
-                    {/if}
-                    <span class="truncate">{item.text}</span>
-                </button>
-                <!-- pointer-events-none when invisible so clicks reach the name button -->
-                <div class="absolute right-1 top-1/2 -translate-y-1/2 flex gap-0.5 opacity-0 pointer-events-none group-hover:opacity-100 group-hover:pointer-events-auto transition-opacity z-10">
+        {#each rows as row (row.kind === "header" ? row.key : row.item.key)}
+            {#if row.kind === "header"}
+                <div class="text-[11px] font-semibold text-surface-600-400 uppercase tracking-wide mt-2 mb-1 px-1 truncate" title={row.label}>{row.label}</div>
+            {:else}
+                {@const item = row.item}
+                {@const i = row.index}
+                <div class="group relative border border-surface-200-800 rounded mb-1 bg-surface-50-950 flex items-center">
+                    <label class="flex items-center pt-1 pb-1 pl-1.5 pr-0.5 cursor-pointer flex-shrink-0">
+                        <input
+                            type="checkbox"
+                            class="checkbox size-3.5"
+                            checked={selectedKeys.has(item.key)}
+                            onchange={(e) => toggleSelect(item.key, (e.target as HTMLInputElement).checked)}
+                        />
+                    </label>
+                    <!-- pr-20 keeps name clear of the hover buttons (≈3×24px) -->
                     <button
                         type="button"
-                        class="btn btn-sm preset-outlined-primary-500 px-1 py-0 text-xs leading-none"
-                        title={t("common.moveUp")}
-                        disabled={i === 0}
-                        onclick={() => moveUp(i)}
-                    >↑</button>
-                    <button
-                        type="button"
-                        class="btn btn-sm preset-outlined-primary-500 px-1 py-0 text-xs leading-none"
-                        title={t("common.moveDown")}
-                        disabled={i === items.length - 1}
-                        onclick={() => moveDown(i)}
-                    >↓</button>
-                    <button
-                        type="button"
-                        class="btn btn-sm preset-tonal-error px-1 py-0 text-xs leading-none"
-                        title={item.canDelete ? t("common.delete") : t("elementsList.cannotDelete")}
-                        disabled={!item.canDelete}
-                        onclick={() => onDeleteItem(item.key)}
-                    >×</button>
+                        class="flex-1 flex items-center gap-1.5 text-left text-xs px-1.5 py-1 pr-20 text-primary-600-400 hover:underline truncate"
+                        onclick={() => selectNode(item.key)}
+                    >
+                        {#if isObjectList}
+                            {@const Icon = nodeIcon(item.key, item.nodeType)}
+                            <Icon size={13} class="flex-shrink-0 opacity-70" />
+                        {/if}
+                        <span class="truncate">{item.text}</span>
+                    </button>
+                    <!-- pointer-events-none when invisible so clicks reach the name button -->
+                    <div class="absolute right-1 top-1/2 -translate-y-1/2 flex gap-0.5 opacity-0 pointer-events-none group-hover:opacity-100 group-hover:pointer-events-auto transition-opacity z-10">
+                        <button
+                            type="button"
+                            class="btn btn-sm preset-outlined-primary-500 px-1 py-0 text-xs leading-none"
+                            title={t("common.moveUp")}
+                            disabled={i === 0}
+                            onclick={() => moveUp(i)}
+                        >↑</button>
+                        <button
+                            type="button"
+                            class="btn btn-sm preset-outlined-primary-500 px-1 py-0 text-xs leading-none"
+                            title={t("common.moveDown")}
+                            disabled={i === items.length - 1}
+                            onclick={() => moveDown(i)}
+                        >↓</button>
+                        <button
+                            type="button"
+                            class="btn btn-sm preset-tonal-error px-1 py-0 text-xs leading-none"
+                            title={item.canDelete ? t("common.delete") : t("elementsList.cannotDelete")}
+                            disabled={!item.canDelete}
+                            onclick={() => onDeleteItem(item.key)}
+                        >×</button>
+                    </div>
                 </div>
-            </div>
+            {/if}
         {/each}
     {/if}
 

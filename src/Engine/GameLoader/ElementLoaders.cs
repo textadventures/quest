@@ -338,7 +338,10 @@ internal partial class GameLoader
             }
 
             var stream = WorldModel.GetLibraryStream(filename);
-            var newReader = new XmlTextReader(stream);
+            // BaseURI (via this url overload) is what LoadXml/GameLoader.AddedElement records as
+            // MetaFieldDefinitions.Filename for every element loaded from this stream — used by the
+            // editor to group library elements by their source library file.
+            var newReader = new XmlTextReader(filename, stream);
             while (newReader.NodeType != XmlNodeType.Element && !newReader.EOF)
             {
                 newReader.Read();
