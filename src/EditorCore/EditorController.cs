@@ -395,6 +395,14 @@ public sealed class EditorController : IDisposable
             MoveNove(e.Element.Name, GetDisplayName(e.Element), GetElementTreeParent(e.Element));
         }
 
+        if (e.Attribute == "editorfolder" && e.Element.Name != null)
+        {
+            // A plain (non-reparenting) field refresh — AddedNode's consumers already upsert an
+            // existing key in place, so no RemovedNode is needed first (contrast the "sortindex"/
+            // "library" cases above, which reposition the node and so do remove-then-readd).
+            AddElementToTree(e.Element);
+        }
+
         if (e.Element.ElemType == ElementType.IncludedLibrary && e.Attribute == "filename")
         {
             if (LibrariesUpdated != null)
@@ -611,7 +619,9 @@ public sealed class EditorController : IDisposable
                 new AddedNodeEventArgs
                 {
                     Key = key, Text = text, Parent = parent, IsLibraryNode = isLibrary,
-                    Filename = o.MetaFields[MetaFieldDefinitions.Filename], Position = position,
+                    Filename = o.MetaFields[MetaFieldDefinitions.Filename],
+                    Folder = o.ElemType == ElementType.Function ? o.Fields[FieldDefinitions.EditorFolder] : null,
+                    Position = position,
                     NodeType = GetNodeType(o)
                 });
 
@@ -2584,6 +2594,49 @@ public sealed class EditorController : IDisposable
         WorldModel.UndoLogger.EndTransaction();
     }
 
+    // Distinct, alphabetically-ordered folder names currently assigned to any user-authored
+    // Function — powers the "Move to folder" dropdown (existing folders + free-text new name).
+    public IEnumerable<string> GetFunctionFolders()
+    {
+        return WorldModel.Elements.GetElements(ElementType.Function)
+            .Select(e => e.Fields[FieldDefinitions.EditorFolder])
+            .Where(f => !string.IsNullOrEmpty(f))
+            .Distinct()
+            .OrderBy(f => f, StringComparer.OrdinalIgnoreCase);
+    }
+
+    // Sets a Function's editor-only organisational folder (empty/null clears it back to "top
+    // level"). Purely a display grouping in ElementsList/TreePanel, no effect on the game itself.
+    // Assigning to a non-empty folder also relocates the function's SortIndex to sit immediately
+    // after the last existing member of that folder (or at the end of the list for a brand-new
+    // folder), so the display grouping's "contiguous run" assumption holds without needing the
+    // frontend to do anything fancier than #2113's existing library-filename grouping.
+    public void SetFunctionFolder(string key, string folder)
+    {
+        var element = WorldModel.Elements.Get(key);
+
+        WorldModel.UndoLogger.StartTransaction(string.Format("Set folder for '{0}'", element.Name));
+        element.Fields[FieldDefinitions.EditorFolder] = folder;
+
+        if (!string.IsNullOrEmpty(folder))
+        {
+            var ordered = WorldModel.Elements.GetElements(ElementType.Function)
+                .Where(e => e != element)
+                .OrderBy(e => e.MetaFields[MetaFieldDefinitions.SortIndex])
+                .ToList();
+            var lastInFolder = ordered.LastOrDefault(e => e.Fields[FieldDefinitions.EditorFolder] == folder);
+            var insertAt = lastInFolder != null ? ordered.IndexOf(lastInFolder) + 1 : ordered.Count;
+            ordered.Insert(insertAt, element);
+
+            for (var i = 0; i < ordered.Count; i++)
+            {
+                ordered[i].MetaFields[MetaFieldDefinitions.SortIndex] = i;
+            }
+        }
+
+        WorldModel.UndoLogger.EndTransaction();
+    }
+
     public void BeginWalkthrough(string name, bool record)
     {
         RequestRunWalkthrough(this, new RequestRunWalkthroughEventArgs {Name = name, Record = record});
@@ -2873,6 +2926,7 @@ public sealed class EditorController : IDisposable
         public string Parent { get; set; }
         public bool IsLibraryNode { get; set; }
         public string Filename { get; set; }
+        public string Folder { get; set; }
         public int? Position { get; set; }
         public string NodeType { get; set; }
     }

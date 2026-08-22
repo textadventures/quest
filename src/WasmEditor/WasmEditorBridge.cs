@@ -17,7 +17,7 @@ using QuestViva.PlayerCore;
 
 namespace QuestViva.WasmEditor;
 
-internal record TreeNodeData(string Key, string Text, string? Parent, string NodeType, bool IsLibrary, bool CanDelete, string? Filename);
+internal record TreeNodeData(string Key, string Text, string? Parent, string NodeType, bool IsLibrary, bool CanDelete, string? Filename, string? Folder);
 
 internal record ControlOption(string Value, string Label);
 
@@ -2870,6 +2870,25 @@ public partial class WasmEditorBridge
     }
 
     [JSExport]
+    public static string GetFunctionFolders()
+    {
+        var folders = _controller?.GetFunctionFolders().ToList() ?? [];
+        return JsonSerializer.Serialize(folders, WasmEditorJsonContext.Default.ListString);
+    }
+
+    [JSExport]
+    public static string SetFunctionFolder(string elementKey, string? folder)
+    {
+        if (_controller == null)
+        {
+            return "error";
+        }
+
+        _controller.SetFunctionFolder(elementKey, folder);
+        return "ok";
+    }
+
+    [JSExport]
     public static void CopyElements(string keysJson)
     {
         if (_controller == null)
@@ -3956,7 +3975,7 @@ public partial class WasmEditorBridge
         // Authoritative — mirrors exactly what DeleteElement/DeleteElements will actually allow
         // (see EditorController.CanDelete), rather than the UI guessing from node type/text.
         var node = new TreeNodeData(e.Key, e.Text, e.Parent, e.NodeType,
-            e.IsLibraryNode, _controller!.CanDelete(e.Key), e.Filename);
+            e.IsLibraryNode, _controller!.CanDelete(e.Key), e.Filename, e.Folder);
         if (_isRebuilding)
         {
             // ClearTree already emptied the list; all keys are unique in a fresh rebuild.

@@ -115,7 +115,7 @@
       invoke (ScriptDictionaryItem(lamp.scriptdictionaryattr, "key3"))
     </script>
   </command>
-  <function name="VerifyCreatedExit" type="boolean">
+  <function name="VerifyCreatedExit" type="boolean" folder="Verification">
     exitname = GetExitByName(start, "northeast")
     exitobject = GetObject(exitname)
     altattr = exitobject.alt

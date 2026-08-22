@@ -59,6 +59,11 @@ export const moveElementModal = writable<string | null>(null);
 export function openMoveModal(key: string) {
     moveElementModal.set(key);
 }
+// Holds the key of the Function currently being assigned a folder, or null when closed.
+export const moveToFolderModal = writable<string | null>(null);
+export function openMoveToFolderModal(key: string) {
+    moveToFolderModal.set(key);
+}
 export const gameFilename = writable<string | null>(null);
 export const canSaveAs = writable(false);
 export const canBackup = writable(false);
@@ -1681,6 +1686,21 @@ export function moveElement(key: string, newParent: string): string {
     if (result === "ok") {
         refreshTree();
         void selectNode(key);
+        refreshUndoRedo();
+    }
+    return result;
+}
+
+export function getFunctionFolders(): string[] {
+    if (!_bridge) return [];
+    return JSON.parse(_bridge.GetFunctionFolders());
+}
+
+export function setFunctionFolder(key: string, folder: string): string {
+    if (!_bridge) return "error";
+    const result = _bridge.SetFunctionFolder(key, folder);
+    if (result === "ok") {
+        refreshTree();
         refreshUndoRedo();
     }
     return result;

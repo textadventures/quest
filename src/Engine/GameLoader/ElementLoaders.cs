@@ -659,9 +659,10 @@ internal partial class GameLoader
         protected RequiredAttributes RequiredAttributes { get; } = new(
             new RequiredAttribute("name"),
             new RequiredAttribute(false, "parameters"),
-            new RequiredAttribute(false, "type"));
+            new RequiredAttribute(false, "type"),
+            new RequiredAttribute(false, "folder"));
 
-        protected void SetupProcedure(Element proc, string? returnType, string script, string name, string? parameters)
+        protected void SetupProcedure(Element proc, string? returnType, string script, string name, string? parameters, string? folder = null)
         {
             string[]? paramNames = null;
 
@@ -690,6 +691,11 @@ internal partial class GameLoader
             }
 
             proc.Fields.LazyFields.AddScript(FieldDefinitions.Script.Property, script);
+
+            if (!string.IsNullOrEmpty(folder))
+            {
+                proc.Fields[FieldDefinitions.EditorFolder] = folder;
+            }
         }
     }
 
@@ -707,7 +713,7 @@ internal partial class GameLoader
             var data = GameLoader.GetRequiredAttributes(reader, RequiredAttributes);
             var name = data["name"] ?? throw new InvalidOperationException("Function name is null");
             var proc = WorldModel.AddProcedure(name);
-            SetupProcedure(proc, data["type"], GameLoader.GetTemplateContents(reader), name, data["parameters"]);
+            SetupProcedure(proc, data["type"], GameLoader.GetTemplateContents(reader), name, data["parameters"], data["folder"]);
             return proc;
         }
     }

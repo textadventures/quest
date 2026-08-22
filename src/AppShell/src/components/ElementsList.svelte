@@ -1,7 +1,8 @@
 <script lang="ts">
     import { SvelteSet } from "svelte/reactivity";
-    import { treeNodes, selectedKey, selectNode, deleteElement, openAddModal, createVerb, createCommand, createTurnScript, openAddLibraryModal, openAddJavascriptModal, swapElements, isGamebook } from "$lib/editor-store";
+    import { treeNodes, selectedKey, selectNode, deleteElement, openAddModal, createVerb, createCommand, createTurnScript, openAddLibraryModal, openAddJavascriptModal, swapElements, isGamebook, openMoveToFolderModal } from "$lib/editor-store";
     import { nodeIcon } from "$lib/node-icons";
+    import Folder from "@lucide/svelte/icons/folder";
     import { t } from "$lib/i18n";
 
     interface Props {
@@ -36,18 +37,20 @@
         )
     );
 
-    // ── Library grouping ──────────────────────────────────────────────────────
+    // ── Library / folder grouping ─────────────────────────────────────────────
     // Purely a display grouping over the existing flat, SortIndex-ordered `items` — no
-    // reordering. A group header is inserted before each new contiguous run of library items
-    // sharing a filename, so move up/down (which swaps SortIndex on the underlying list)
-    // stays untouched and headers simply track wherever the runs currently fall.
+    // reordering. A group header is inserted before each new contiguous run of items sharing a
+    // filename (library-origin) or a folder (user-assigned, Functions only), so move up/down
+    // (which swaps SortIndex on the underlying list) stays untouched and headers simply track
+    // wherever the runs currently fall. "Move to folder" is what keeps a folder's members
+    // contiguous — see EditorController.SetFunctionFolder.
     type Row = { kind: "header"; key: string; label: string } | { kind: "item"; index: number; item: typeof items[number] };
 
     let rows = $derived.by(() => {
         const out: Row[] = [];
         let lastGroup: string | null = null;
         items.forEach((item, index) => {
-            const group = item.isLibrary && item.filename ? item.filename : null;
+            const group = item.isLibrary && item.filename ? item.filename : (item.folder || null);
             if (group !== null && group !== lastGroup) {
                 out.push({ kind: "header", key: `__group_${item.key}`, label: group });
             }
@@ -56,6 +59,10 @@
         });
         return out;
     });
+
+    // "Move to folder" is only wired up for Functions - GetFunctionFolders/SetFunctionFolder
+    // are Function-only on the backend (see EditorController).
+    let supportsFolders = $derived(nodeTypes.includes("function"));
 
     // ── Selection ──────────────────────────────────────────────────────────────
 
@@ -207,10 +214,10 @@
                             onchange={(e) => toggleSelect(item.key, (e.target as HTMLInputElement).checked)}
                         />
                     </label>
-                    <!-- pr-20 keeps name clear of the hover buttons (≈3×24px) -->
+                    <!-- pr-20/pr-28 keeps name clear of the hover buttons (3 or 4 × 24px) -->
                     <button
                         type="button"
-                        class="flex-1 flex items-center gap-1.5 text-left text-xs px-1.5 py-1 pr-20 text-primary-600-400 hover:underline truncate"
+                        class="flex-1 flex items-center gap-1.5 text-left text-xs px-1.5 py-1 {supportsFolders && !item.isLibrary ? "pr-28" : "pr-20"} text-primary-600-400 hover:underline truncate"
                         onclick={() => selectNode(item.key)}
                     >
                         {#if isObjectList}
@@ -221,6 +228,14 @@
                     </button>
                     <!-- pointer-events-none when invisible so clicks reach the name button -->
                     <div class="absolute right-1 top-1/2 -translate-y-1/2 flex gap-0.5 opacity-0 pointer-events-none group-hover:opacity-100 group-hover:pointer-events-auto transition-opacity z-10">
+                        {#if supportsFolders && !item.isLibrary}
+                            <button
+                                type="button"
+                                class="btn btn-sm preset-outlined-primary-500 px-1 py-0 text-xs leading-none"
+                                title={t("common.moveToFolder")}
+                                onclick={() => openMoveToFolderModal(item.key)}
+                            ><Folder size={11} /></button>
+                        {/if}
                         <button
                             type="button"
                             class="btn btn-sm preset-outlined-primary-500 px-1 py-0 text-xs leading-none"
