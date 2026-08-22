@@ -1,4 +1,5 @@
 #nullable disable
+using System.Collections;
 using System.Diagnostics.CodeAnalysis;
 using System.Reflection;
 using NCalc;
@@ -290,6 +291,7 @@ public class NcalcExpressionEvaluator<T> : IExpressionEvaluator<T>, IDynamicExpr
     private async Task EvaluateBinaryAsync(BinaryEventArgs args)
     {
         var isEquality = args.BinaryExpression.Type is BinaryExpressionType.Equal or BinaryExpressionType.NotEqual;
+        var isInOperator = args.BinaryExpression.Type is BinaryExpressionType.In or BinaryExpressionType.NotIn;
 
         var operatorName = args.BinaryExpression.Type switch
         {
@@ -301,10 +303,25 @@ public class NcalcExpressionEvaluator<T> : IExpressionEvaluator<T>, IDynamicExpr
             _ => null
         };
 
-        if (operatorName == null && !isEquality) return;
+        if (operatorName == null && !isEquality && !isInOperator) return;
 
         var left = await args.LeftValueAsync();
         var right = await args.RightValueAsync();
+
+        // NCalc's built-in 'in' operator does a plain foreach over the right-hand IEnumerable,
+        // which for IDictionary yields boxed KeyValuePairs rather than keys, so it can never
+        // match a key on the left. Route dictionaries through IDictionary.Contains(key) instead,
+        // matching DictionaryContains()'s behaviour.
+        if (isInOperator)
+        {
+            if (right is IDictionary dictionary)
+            {
+                var contains = dictionary.Contains(left);
+                args.Result = args.BinaryExpression.Type == BinaryExpressionType.In ? contains : !contains;
+            }
+
+            return;
+        }
 
         HandleBinaryResult(args, isEquality, operatorName, left, right);
     }

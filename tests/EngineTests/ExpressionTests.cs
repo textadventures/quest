@@ -420,6 +420,18 @@ public class ExpressionTests
     }
 
     [TestMethod]
+    public async Task TestInOperatorOnDictionary()
+    {
+        var dict = new QuestDictionary<string> { { "foo", "bar" }, { "baz", "qux" } };
+        var c = new Context { Parameters = new Parameters { { "mydict", dict } } };
+
+        (await new Expression<bool>("\"foo\" in mydict", _scriptContext).ExecuteAsync(c)).ShouldBe(true);
+        (await new Expression<bool>("\"missing\" in mydict", _scriptContext).ExecuteAsync(c)).ShouldBe(false);
+        (await new Expression<bool>("\"foo\" not in mydict", _scriptContext).ExecuteAsync(c)).ShouldBe(false);
+        (await new Expression<bool>("\"missing\" not in mydict", _scriptContext).ExecuteAsync(c)).ShouldBe(true);
+    }
+
+    [TestMethod]
     public async Task TestMethodCallSyntax()
     {
         (await RunExpressionGeneric("\"hello world\".StartsWith(\"hello\")")).ShouldBe(true);
