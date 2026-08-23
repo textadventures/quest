@@ -356,18 +356,29 @@
         if (pendingTreeState) saveTreeState(pendingTreeState.gameId, pendingTreeState.ids);
     });
 
-    // Auto-expand the ancestor chain whenever the selected node changes
+    // Ancestor ids of targetId within the *hierarchical* (post-grouping) tree, root-first -
+    // unlike a flat-tree parent-chain walk, this also passes through any synthetic folder/library
+    // group node the target got folded into (see buildHierTree/groupLibraryChildren), since those
+    // exist only as HierNode wrappers, never as a real element's own `parent` field.
+    function findAncestorIds(nodes: HierNode[], targetId: string, path: string[] = []): string[] | null {
+        for (const node of nodes) {
+            if (node.id === targetId) return path;
+            if (node.children) {
+                const found = findAncestorIds(node.children, targetId, [...path, node.id]);
+                if (found) return found;
+            }
+        }
+        return null;
+    }
+
+    // Auto-expand the ancestor chain (including any folder/library group it's folded into)
+    // whenever the selected node changes - e.g. a function just created inside a folder via "Add
+    // Function here" should have that folder visibly open, not collapsed around it.
     $effect(() => {
         const key = $selectedKey;
-        const nodes = $treeNodes;
-        if (!key || !nodes.length) return;
-        const nodeMap = new Map(nodes.map(n => [n.key, n]));
-        const toExpand: string[] = [];
-        let cur: TreeNode | undefined = nodeMap.get(key);
-        while (cur?.parent) {
-            toExpand.push(cur.parent);
-            cur = nodeMap.get(cur.parent);
-        }
+        const tree = rawHierTree;
+        if (!key || !tree.length) return;
+        const toExpand = findAncestorIds(tree, key) ?? [];
         // Use untrack so reading expandedIds doesn't make this effect re-run when
         // the user manually collapses a branch (which would immediately re-expand it).
         const current = untrack(() => expandedIds);
