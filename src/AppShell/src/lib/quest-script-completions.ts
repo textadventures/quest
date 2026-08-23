@@ -165,16 +165,23 @@ function keywordSnippet(keyword: string, createString: string): string {
 }
 
 // A tiny handful of commands where the mechanical <create>-template transform above can't capture
-// genuinely useful structure: "switch"'s <create> is just `switch ()` (its case/default children
-// are, like other block bodies, a structural tree child with no textual trace to derive from), and
-// "do"'s <create> is only the 2-arg form (`do (,"")`) even though a third QuickParams argument is
-// idiomatic and common enough to be worth offering outright. Everything else still comes from the
-// generic mechanism above and stays automatically in sync with the engine; only these two are
-// overridden entirely, bypassing keywordSnippet (including its NEEDS_TRAILING_BLOCK handling —
-// both snippets below already include whatever braces they need).
+// genuinely useful structure. Right now that's just "switch": its <create> is `switch ()` (its
+// case/default children are, like other block bodies, a structural tree child with no textual
+// trace to derive from), so the generic transform alone would only ever offer a bare, empty body.
+// Everything else still comes from the generic mechanism above and stays automatically in sync
+// with the engine; only entries here are overridden entirely, bypassing keywordSnippet (including
+// its NEEDS_TRAILING_BLOCK handling — the snippet below already includes the braces it needs).
+//
+// "do"'s optional third QuickParams argument (do (object, "action", QuickParams("key", value)))
+// was special-cased here too at first, but it's a rare pattern in practice — across every .aslx
+// file in this repo, only 2 of 103 real `do (...)` call sites use it, and both are Core.aslx's own
+// internals dispatching to its own extensibility hooks (CoreCommands' "ondrop", CoreParser's
+// "unresolved"), passing extra context a game author's own override reads back as local variables
+// in scope — not something an ordinary game author's own `do` call needs. Defaulting the
+// suggestion to that form would've pushed the rare case into the common slot, so "do" now falls
+// back to the plain, generic 2-arg form that matches the other 101 call sites.
 const SPECIAL_CASE_SNIPPETS: Record<string, string> = {
     switch: "switch (${1:expression}) {\n\tcase (\"${2:value}\") {\n\t\t${3}\n\t}\n\tdefault {\n\t\t${4}\n\t}\n}",
-    do: "do (${1:object}, \"${2:action}\", QuickParams(\"${3:param}\", ${4:value}))",
 };
 
 // boost only orders options within this source's own block (see the registration-order comment in
@@ -200,19 +207,23 @@ const EXTRA_KEYWORDS: Completion[] = [
 
 let cachedKeywordOptions: Completion[] = EXTRA_KEYWORDS;
 let loadedFromScriptCommandCategories = false;
-let keywordLoadInFlight = false;
+let keywordLoadPromise: Promise<void> | null = null;
 
 // getScriptCommandCategories() is async (its EditorController data carries per-command
 // onlydisplayif visibility checks) and hits the WASM bridge, which may not be ready yet the first
-// time a completion is requested (this module loads well before any game does) — so this retries
-// on each call until it succeeds once, then never re-fetches for the rest of the session. The
-// hand-kept EXTRA_KEYWORDS above are usable immediately, before this ever resolves.
-async function loadKeywordCompletions(): Promise<void> {
-    if (keywordLoadInFlight) return;
-    keywordLoadInFlight = true;
-    try {
+// time a completion is requested (this module loads well before any game does). Concurrent callers
+// share the same in-flight promise rather than each kicking off their own fetch; on failure (bridge
+// still not ready) the promise is cleared so the next request gets a fresh attempt, but once it
+// succeeds this never re-fetches for the rest of the session. The hand-kept EXTRA_KEYWORDS above
+// are usable immediately, before this ever resolves.
+function ensureKeywordsLoaded(): Promise<void> {
+    if (loadedFromScriptCommandCategories) return Promise.resolve();
+    keywordLoadPromise ??= (async () => {
         const data = await getScriptCommandCategories();
-        if (!data) return;
+        if (!data) {
+            keywordLoadPromise = null;
+            return;
+        }
 
         const options = [...EXTRA_KEYWORDS];
         const seen = new Set(options.map(o => o.label));
@@ -235,23 +246,31 @@ async function loadKeywordCompletions(): Promise<void> {
         }
         cachedKeywordOptions = options;
         loadedFromScriptCommandCategories = true;
-    } finally {
-        keywordLoadInFlight = false;
-    }
+    })();
+    return keywordLoadPromise;
+}
+
+function matchKeywords(typed: string, from: number): CompletionResult | null {
+    const options = cachedKeywordOptions.filter(c => (c.label ?? "").toLowerCase().startsWith(typed));
+    return options.length ? { from, options, filter: false } : null;
 }
 
 // Matches a run of up to two space-separated words ending at the cursor, so typing "create t"
 // (partway through "create turnscript") is recognised as one candidate string to prefix-match
-// against multi-word keyword labels, not just the bare trailing word "t".
-export function questKeywordCompletions(context: CompletionContext): CompletionResult | null {
-    if (!loadedFromScriptCommandCategories) void loadKeywordCompletions();
-
+// against multi-word keyword labels, not just the bare trailing word "t". Returns a Promise (which
+// CodeMirror's autocomplete natively supports and waits on) rather than firing the load and
+// immediately answering from a possibly-still-cold cache — the first completion request of a
+// session would otherwise silently render without any of the generated keywords and never
+// refresh once the fetch actually completes, since nothing re-triggers the popup on its own.
+export function questKeywordCompletions(
+    context: CompletionContext,
+): CompletionResult | Promise<CompletionResult | null> | null {
     const word = context.matchBefore(/[a-zA-Z_][a-zA-Z0-9_]*(?: [a-zA-Z_][a-zA-Z0-9_]*)?$/);
     if (!word) return null;
 
     const typed = word.text.toLowerCase();
-    const options = cachedKeywordOptions.filter(c => (c.label ?? "").toLowerCase().startsWith(typed));
-    if (options.length === 0) return null;
-
-    return { from: word.from, options, filter: false };
+    if (!loadedFromScriptCommandCategories) {
+        return ensureKeywordsLoaded().then(() => matchKeywords(typed, word.from));
+    }
+    return matchKeywords(typed, word.from);
 }
