@@ -29,11 +29,12 @@ async function setCmContent(page, text) {
     return cm;
 }
 
-// The Print script's message renders as an <input>'s value, not visible text content, so this
-// checks inputValue() rather than a text= selector (which only matches rendered text nodes).
+// The Print script's message renders as an <input>'s or <textarea>'s value (multiline as of
+// #2115), not visible text content, so this checks .value rather than a text= selector (which
+// only matches rendered text nodes).
 async function waitForInputValue(page, value) {
     await page.waitForFunction(
-        v => [...document.querySelectorAll('input[type="text"]')].some(i => i.value === v),
+        v => [...document.querySelectorAll('input[type="text"], textarea')].some(i => i.value === v),
         value,
         { timeout: 5000 }
     );
