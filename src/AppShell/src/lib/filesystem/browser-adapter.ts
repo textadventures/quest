@@ -1,4 +1,4 @@
-import { isJunkAssetName, isLibraryAslxContent, type AssetInfo, type FileAdapter, type LoadedFile } from "./types";
+import { isJunkAssetName, isLibraryAslxContent, isLibraryFilename, type AssetInfo, type FileAdapter, type LoadedFile } from "./types";
 import { toBlob, triggerDownload } from "./download";
 
 // FSA globals — not in the TS DOM lib at this target version
@@ -149,7 +149,7 @@ export class BrowserFileAdapter implements FileAdapter {
         try {
             const assets: AssetInfo[] = [];
             for await (const [name, handle] of this._dir) {
-                if (handle.kind === "file" && !name.toLowerCase().endsWith(".aslx") && !isJunkAssetName(name)) {
+                if (handle.kind === "file" && !isLibraryFilename(name) && !isJunkAssetName(name)) {
                     assets.push({ key: name, url: "" });
                 }
             }
@@ -168,7 +168,7 @@ export class BrowserFileAdapter implements FileAdapter {
         try {
             const libraries: string[] = [];
             for await (const [name, handle] of this._dir) {
-                if (handle.kind === "file" && name.toLowerCase().endsWith(".aslx") && name !== this._filename) {
+                if (handle.kind === "file" && isLibraryFilename(name) && name !== this._filename) {
                     libraries.push(name);
                 }
             }

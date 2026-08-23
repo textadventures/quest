@@ -1,6 +1,7 @@
 <script lang="ts">
     import { selectedKey, selectedData, treeNodes, isGamebook, setAttribute, setDropdownType, setMultiType, setObjectReference, setSelectedFilter, addDictItem, removeDictItem, updateDictItem, getObjectNames, getExitNames, getPageNames, selectNode, createPageSilent, openAddModal, openAddLibraryModal, openAddJavascriptModal, getAssetText, putAssetText, putLibraryAssetText, isBuiltInLibrary, getLibraryXml, setPatternAttribute } from "$lib/editor-store";
     import { showToast } from "$lib/toast";
+    import { isLibraryFilename } from "$lib/filesystem/types";
     import { t } from "$lib/i18n";
     import type { ControlInfo, ControlOption, TextProcessorCommand } from "$lib/types";
     import type { TreeNode } from "$lib/types";
@@ -85,7 +86,7 @@
         const onDisk = lastTexteditorWrite?.filename === filename ? lastTexteditorWrite.text : loadedContent;
         if (value === onDisk) return;
         lastTexteditorWrite = { filename, text: value };
-        if (filename.toLowerCase().endsWith(".aslx")) {
+        if (isLibraryFilename(filename)) {
             void putLibraryAssetText(filename, value).then(result => {
                 // A malformed library edit is rejected before it's written (putLibraryAssetText
                 // validates against a throwaway controller first), so the game can't be reloaded
@@ -828,12 +829,13 @@
     {:else if ctrl.controlType === "texteditor" && ctrl.attribute !== null}
         {@const filename = attrValue(ctrl.attribute)}
         <!-- The same control type drives both file kinds: a Javascript element's src (.js — the
-             original use, editable in place) and an Included Library's filename (.aslx — see
-             CoreEditorIncludedLibrary.aslx). Library content is handled differently because it's
+             original use, editable in place) and an Included Library's filename (.aslx, or .xml
+             for compatibility with libraries authored in Quest 5's desktop editor — see
+             CoreEditorIncludedLibrary.aslx and isLibraryFilename). Library content is handled differently because it's
              consumed at load time, not at play time: custom libraries are written via
              putLibraryAssetText (which flags that a reload is needed), and the engine-shipped
              built-in libraries are shown read-only since they don't belong to the game at all. -->
-        {@const isLibraryFile = !!filename && filename.toLowerCase().endsWith(".aslx")}
+        {@const isLibraryFile = !!filename && isLibraryFilename(filename)}
         {@const builtInLibrary = isLibraryFile && !!filename && isBuiltInLibrary(filename)}
         {@const language = isLibraryFile ? "xml" : "javascript"}
         <div class="w-full min-h-64">

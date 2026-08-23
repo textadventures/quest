@@ -58,3 +58,12 @@ export function isJunkAssetName(name: string): boolean {
 export function isLibraryAslxContent(text: string): boolean {
     return text.match(/<([a-zA-Z][\w:-]*)/)?.[1] === "library";
 }
+
+// Included Library filenames are normally .aslx, but Quest 5's desktop editor also accepted
+// .xml for them (its docs mentioned it too) — kept here so libraries authored back then still
+// upload/import/watch/edit correctly. Never applies to a game's own main file, which is always
+// .aslx regardless.
+export function isLibraryFilename(name: string): boolean {
+    const lower = name.toLowerCase();
+    return lower.endsWith(".aslx") || lower.endsWith(".xml");
+}
