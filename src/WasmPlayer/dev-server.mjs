@@ -19,7 +19,7 @@ const config = isRelease ? 'Release' : 'Debug';
 const appBundleDir = path.resolve(__dirname, `bin/${config}/net10.0/browser-wasm/AppBundle`);
 const examplesDir = path.resolve(__dirname, '../../examples');
 const e2eFixturesDir = path.resolve(__dirname, '../../tests/e2e/fixtures');
-const port = 5175;
+const port = Number(process.env.WASM_PLAYER_PORT) || 5175;
 
 const mimeTypes = {
   '.html': 'text/html',
