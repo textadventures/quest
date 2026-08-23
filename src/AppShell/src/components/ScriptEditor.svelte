@@ -704,7 +704,7 @@
 </div>
 
 {#snippet normalBlock(script: ScriptNodeData, i: number)}
-    <div class="px-2 py-1 pr-16 flex flex-wrap items-center gap-x-1 gap-y-0.5 text-xs">
+    <div class="px-2 py-1 pr-16 pointer-coarse:pr-2 flex flex-wrap items-center gap-x-1 gap-y-0.5 text-xs">
         {#each script.controls ?? [] as ctrl, ci (ci)}
             {@render inlineControl(ctrl, i, script.controls ?? [], ci)}
         {/each}
@@ -1094,7 +1094,7 @@
 {/snippet}
 
 {#snippet ifBlock(script: ScriptNodeData, i: number)}
-    <div class="px-2 py-1 pr-16 text-xs">
+    <div class="px-2 py-1 pr-16 pointer-coarse:pr-2 text-xs">
         <!-- If condition -->
         <div class="flex items-center gap-1 flex-wrap">
             <span class="text-surface-600-400 font-medium select-none">{t("scriptEditor.ifKeyword")}</span>
