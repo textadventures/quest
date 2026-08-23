@@ -558,6 +558,8 @@
   <dynamictemplate name="ToDisableTranscript"><![CDATA["<b><i>[  Gib </i>" + Template("TranscriptOffAllCaps") + "<i> ein um das Transkript zu beenden.  ]</i></b>"]]></dynamictemplate>
   <dynamictemplate name="TranscriptEnabledMessage"><![CDATA["<hr/>Start des Transkripts:<br/><b>TITEL: </b>" + game.gamename + "<br/><b>AUTOR: </b>" + game.author + "<br/><b>VERSION: </b>" + game.version + "<br/><b>IFID: </b>" + game.gameid]]></dynamictemplate>
   <template name="TranscriptOffAllCaps">TRANSKRIPT AUS</template>
+  <template name="TranscriptViewerMessage">Deine Transkripte werden im localStorage deines Browsers gespeichert. Du kannst sie hier ansehen, herunterladen oder löschen:</template>
+  <template name="TranscriptViewerLinkText">Deine Transkripte</template>
   <template name="Noted">Vermerkt.</template>
   <template name="ShowMenuResponsePrompt">>> </template>
   <template name="PageDialogueChooseOption">Bitte wähle eine der oben genannten Optionen.</template>
