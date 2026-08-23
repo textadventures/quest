@@ -13,9 +13,15 @@ name: e2e
 # documented in the individual scripts' header comments — see those for the
 # "why" behind each one.
 #
-# check_e2e_manifest is the one exception to "nightly + manual": it runs on
-# every trigger — including PRs that touch tests/e2e/** or this workflow — and
-# fails if any tests/e2e/verify-*.mjs script isn't wired into a
+# check_e2e_manifest is the one exception to "nightly + manual": it's a
+# required status check on main, so it has to run — and report a result — on
+# every PR regardless of what files it touches, not just ones that happen to
+# touch tests/e2e/** or this workflow. (A path-filtered trigger on a required
+# check is a trap: GitHub blocks merging forever on a check that never gets
+# reported for PRs outside those paths, enforce_admins included — this
+# workflow used to have exactly that filter, cheaply hidden until #2123's
+# second commit silently failed to land in the squash-merge with nothing to
+# catch it.) It fails if any tests/e2e/verify-*.mjs script isn't wired into a
 # `node <script>.mjs` step below (or if a step points at a script that no
 # longer exists). See tests/e2e/check-workflow-manifest.mjs. GitHub Actions
 # `run:` steps are literal commands, so a new script can't be picked up by a
@@ -27,14 +33,11 @@ on:
     # about for scheduled workflows. Runs against whatever's on main at that
     # time regardless of whether anything changed since the last run.
     - cron: '17 3 * * *'
+  # No paths: filter (see check_e2e_manifest's comment above for why) — this
+  # fires on every PR. Only the manifest check actually runs, though: every
+  # other job is gated on `if: github.event_name != 'pull_request'` below, so
+  # they just report "skipped" for a PR at effectively no cost.
   pull_request:
-    # Only the manifest check runs on PRs (every other job is gated on
-    # `if: github.event_name != 'pull_request'` below) — so adding a
-    # verify-*.mjs without wiring it up turns the PR red, while the slow
-    # Playwright/Electron jobs stay off the PR critical path.
-    paths:
-      - 'tests/e2e/**'
-      - '.github/workflows/e2e.yml'
 
 jobs:
   # No servers, no npm install — just verifies the scripts and the workflow
