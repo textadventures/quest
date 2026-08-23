@@ -164,6 +164,19 @@ function keywordSnippet(keyword: string, createString: string): string {
     return snippet;
 }
 
+// A tiny handful of commands where the mechanical <create>-template transform above can't capture
+// genuinely useful structure: "switch"'s <create> is just `switch ()` (its case/default children
+// are, like other block bodies, a structural tree child with no textual trace to derive from), and
+// "do"'s <create> is only the 2-arg form (`do (,"")`) even though a third QuickParams argument is
+// idiomatic and common enough to be worth offering outright. Everything else still comes from the
+// generic mechanism above and stays automatically in sync with the engine; only these two are
+// overridden entirely, bypassing keywordSnippet (including its NEEDS_TRAILING_BLOCK handling —
+// both snippets below already include whatever braces they need).
+const SPECIAL_CASE_SNIPPETS: Record<string, string> = {
+    switch: "switch (${1:expression}) {\n\tcase (\"${2:value}\") {\n\t\t${3}\n\t}\n\tdefault {\n\t\t${4}\n\t}\n}",
+    do: "do (${1:object}, \"${2:action}\", QuickParams(\"${3:param}\", ${4:value}))",
+};
+
 // boost only orders options within this source's own block (see the registration-order comment in
 // quest-script-lang.ts/xml-with-script-lang.ts for why cross-source ordering is controlled there
 // instead) — used so e.g. "create" sorts above the longer "create exit"/"create timer"/
@@ -211,7 +224,9 @@ async function loadKeywordCompletions(): Promise<void> {
                 if (!/^[a-zA-Z]/.test(command.keyword)) continue;
                 if (seen.has(command.keyword)) continue;
                 seen.add(command.keyword);
-                options.push(snippetCompletion(keywordSnippet(command.keyword, command.createString), {
+                const snippet = SPECIAL_CASE_SNIPPETS[command.keyword]
+                    ?? keywordSnippet(command.keyword, command.createString);
+                options.push(snippetCompletion(snippet, {
                     label: command.keyword,
                     type: "keyword",
                     boost: keywordBoost(command.keyword),
