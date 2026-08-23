@@ -58,6 +58,7 @@
     "addElementModal.addHeadingIn": "Neu: {label} unter \"{parent}\"",
     "addElementModal.nameLabel": "Name",
     "addElementModal.namePlaceholder": "Gib einen Namen ein...",
+    "addElementModal.parentLabel": "Übergeordnete Ebene",
 
     "assetManager.title": "Ressourcen",
     "assetManager.uploading": "Hochladen…",
@@ -110,6 +111,7 @@
     "elementAdders.pageHere": "Seite hier hinzufügen",
     "elementAdders.page": "Neue Seite",
     "elementAdders.function": "Neue Funktion",
+    "elementAdders.functionHere": "Neue Funktion hier",
     "elementAdders.timer": "Neuer Timer",
     "elementAdders.verb": "Neues Verb",
     "elementAdders.command": "Neues Kommando",
