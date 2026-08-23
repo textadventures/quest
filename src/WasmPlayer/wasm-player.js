@@ -474,8 +474,14 @@ function swapInPlayerUi() {
 // beginning"/Load in an editor-preview session.
 let currentIsPreview = false;
 
-async function initWasmPlayer(gameBytes, filename, bc = null, saveBytes = null, isPreview = false, recordWalkthrough = null, runWalkthrough = null, adjacentFiles = null) {
+// Same idea as currentIsPreview, but for the source=local .aslx case (see
+// setCanDebug's call sites below) — kept separate from isPreview because it
+// must NOT also disable Save or add the Restart button the way isPreview does.
+let currentAllowDebug = false;
+
+async function initWasmPlayer(gameBytes, filename, bc = null, saveBytes = null, isPreview = false, recordWalkthrough = null, runWalkthrough = null, adjacentFiles = null, allowDebug = false) {
     currentIsPreview = isPreview;
+    currentAllowDebug = allowDebug;
     const dotnetJsUrl = wasmPlayerScriptUrl
         ? new URL('_framework/dotnet.js', wasmPlayerScriptUrl).href
         : './_framework/dotnet.js';
@@ -611,10 +617,12 @@ async function initWasmPlayer(gameBytes, filename, bc = null, saveBytes = null, 
     // BroadcastChannel (to hand off the picked file's bytes and answer
     // resource requests) but is a real play session and should offer saving.
     WebPlayer.setCanSave(!isPreview);
-    // Only ever shown in editor-preview sessions (see the module doc comment
-    // above the Debugger section) — never for a normal play session, even
+    // Shown in editor-preview sessions, and also in a source=local play
+    // session for a raw .aslx file specifically (allowDebug — see the
+    // source=local boot branch below, which is the only caller that ever
+    // passes it true) — never for any other normal play session, even
     // though the loaded game itself might have DebugEnabled true.
-    WebPlayer.setCanDebug(isPreview && Bridge.IsDebugEnabled());
+    WebPlayer.setCanDebug((isPreview || allowDebug) && Bridge.IsDebugEnabled());
 
     await Bridge.Begin();
 
@@ -719,7 +727,7 @@ async function restartGameCore(saveBytes) {
         // restartGame reachable *from* a preview session too, hardcoding true
         // here would wrongly re-enable Save after a preview restart.
         WebPlayer.setCanSave(!currentIsPreview);
-        WebPlayer.setCanDebug(currentIsPreview && Bridge.IsDebugEnabled());
+        WebPlayer.setCanDebug((currentIsPreview || currentAllowDebug) && Bridge.IsDebugEnabled());
         await Bridge.Begin();
     } finally {
         restartingEl?.classList.add('hidden');
@@ -729,7 +737,7 @@ async function restartGameCore(saveBytes) {
 // Wraps initWasmPlayer with the boot-time "Continue / New Game" prompt: if
 // saves already exist for this game, ask before committing to either the
 // fresh game or a chosen save. Used by all boot entry points below.
-async function startGame(bytes, filename, bc = null, gameIdOverride = null, isPreview = false, recordWalkthrough = null, runWalkthrough = null, adjacentFiles = null) {
+async function startGame(bytes, filename, bc = null, gameIdOverride = null, isPreview = false, recordWalkthrough = null, runWalkthrough = null, adjacentFiles = null, allowDebug = false) {
     originalGameBytes = bytes;
     originalGameFilename = filename;
     originalAdjacentFiles = adjacentFiles;
@@ -769,7 +777,7 @@ async function startGame(bytes, filename, bc = null, gameIdOverride = null, isPr
     // by initWasmPlayer in that case) — callers with post-success work (e.g.
     // persisting the active URL) should key off this. Genuine setup failures
     // (fetch, WASM boot) still throw as before.
-    return initWasmPlayer(bytes, filename, bc, saveBytes, isPreview, recordWalkthrough, runWalkthrough, adjacentFiles);
+    return initWasmPlayer(bytes, filename, bc, saveBytes, isPreview, recordWalkthrough, runWalkthrough, adjacentFiles, allowDebug);
 }
 
 // ── Start screen helpers ──────────────────────────────────────────────────────
@@ -1022,10 +1030,11 @@ async function openSavesDialog(mode, gameId = WebPlayer.gameId) {
 }
 
 // ── Debugger (#questVivaDebugger) ─────────────────────────────────────────────
-// Only ever opened in editor-preview sessions (see WebPlayer.setCanDebug's
-// call site in initWasmPlayer/restartGame) — element browser, per-tab
-// attribute inspector with a "hack your own game" override, and a walkthrough
-// runner. Mirrors WebPlayer's Debugger/Attributes/Walkthrough.razor, which
+// Only ever opened in editor-preview sessions, or a source=local play session
+// for a raw .aslx file (see WebPlayer.setCanDebug's call sites in
+// initWasmPlayer/restartGame) — element browser, per-tab attribute inspector
+// with a "hack your own game" override, and a walkthrough runner. Mirrors
+// WebPlayer's Debugger/Attributes/Walkthrough.razor, which
 // drive IGameDebug directly as Blazor components; here the same data comes
 // over the bridge as JSON (Bridge.Get*Json — see WasmPlayerBridge.cs) for
 // plain-DOM rendering instead.
@@ -2084,7 +2093,15 @@ async function fetchGameBytes(url) {
                 // reassigns bc.onmessage itself to keep answering
                 // 'resource-response' messages for the rest of the session.
                 bc.onmessage = null;
-                await startGame(data.bytes, data.filename, bc, null, false, null, null, data.adjacentFiles ?? null);
+                // A raw .aslx picked straight from the Play tab is an
+                // author's own in-progress source file (unlike a packaged
+                // .quest/.asl/.cas), so treat it like an editor preview for
+                // Debug purposes — but only that, via the separate
+                // allowDebug flag: Save/Restart still behave as a normal
+                // play session (isPreview stays false) since a real save is
+                // still wanted here.
+                const allowDebug = /\.aslx$/i.test(data.filename ?? '');
+                await startGame(data.bytes, data.filename, bc, null, false, null, null, data.adjacentFiles ?? null, allowDebug);
             }
         };
         return;
