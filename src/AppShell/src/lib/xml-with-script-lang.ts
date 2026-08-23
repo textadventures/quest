@@ -4,7 +4,10 @@ import { xmlLanguage, autoCloseTags } from "@codemirror/lang-xml";
 import { LanguageSupport } from "@codemirror/language";
 import { completeAnyWord } from "@codemirror/autocomplete";
 import { questScriptLanguage, questScriptFoldService } from "./quest-script-lang";
-import { questFunctionCompletions, questAttributeCompletions, questDotAttributeCompletions, questKeywordCompletions } from "./quest-script-completions";
+import {
+    questFunctionCompletions, questAttributeCompletions, questDotAttributeCompletions, questKeywordCompletions,
+    questObjectCompletions,
+} from "./quest-script-completions";
 
 // ASLX marks every script-bearing attribute the same way regardless of the wrapping element's own
 // name — e.g. <start type="script">, <script type="script">, <take type="script">, <lock
@@ -54,6 +57,7 @@ export function xmlWithScript(): LanguageSupport {
         questScriptFoldService,
         xmlWithScriptLanguage.data.of({ autocomplete: questKeywordCompletions }),
         xmlWithScriptLanguage.data.of({ autocomplete: questFunctionCompletions }),
+        xmlWithScriptLanguage.data.of({ autocomplete: questObjectCompletions }),
         xmlWithScriptLanguage.data.of({ autocomplete: questAttributeCompletions }),
         xmlWithScriptLanguage.data.of({ autocomplete: questDotAttributeCompletions }),
         xmlWithScriptLanguage.data.of({ autocomplete: completeAnyWord }),

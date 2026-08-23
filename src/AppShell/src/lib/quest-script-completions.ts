@@ -1,6 +1,8 @@
 import { snippetCompletion } from "@codemirror/autocomplete";
 import type { Completion, CompletionContext, CompletionResult } from "@codemirror/autocomplete";
-import { getExpressionFunctions, getAttributeNames } from "./editor-store";
+import {
+    getExpressionFunctions, getAttributeNames, getObjectNames, getExitNames, getScriptCommandCategories,
+} from "./editor-store";
 
 // Turns a function's real parameter names into a tab-stop snippet, e.g. GetAttribute(object,
 // property) -> "GetAttribute(${1:object}, ${2:property})", so accepting the completion lets the
@@ -101,76 +103,139 @@ export function questDotAttributeCompletions(context: CompletionContext): Comple
     return { from: word.from + 1, options, filter: false };
 }
 
-// Real script-command keyword forms (if/foreach/msg/set/create timer/...). These are Script
-// objects (src/Engine/Scripts/*.cs) rather than expression functions, so none of them appear in
-// GetExpressionFunctions — without this list, typing "if" or "foreach" only ever offered fuzzy
-// function-name noise, never the keyword itself. Snippet bodies mirror the exact template each
-// script's own <create> element uses in src/Engine/Core/CoreEditorScripts*.aslx (what the visual
-// editor's "Add script" picker inserts), cross-checked against each Script(Constructor)'s real
-// ExpectedParameters/param names for the ones whose <create> template only shows blank commas.
-const SCRIPT_KEYWORDS: { label: string; snippet: string }[] = [
-    { label: "msg", snippet: "msg (\"${1:text}\")" },
-    { label: "if", snippet: "if (${1:condition}) {\n\t${2}\n}" },
-    { label: "else if", snippet: "else if (${1:condition}) {\n\t${2}\n}" },
-    { label: "else", snippet: "else {\n\t${1}\n}" },
-    { label: "otherwise", snippet: "otherwise {\n\t${1}\n}" },
-    { label: "foreach", snippet: "foreach (${1:item}, ${2:list}) {\n\t${3}\n}" },
-    { label: "for", snippet: "for (${1:i}, ${2:from}, ${3:to}) {\n\t${4}\n}" },
-    { label: "while", snippet: "while (${1:condition}) {\n\t${2}\n}" },
-    { label: "switch", snippet: "switch (${1:expression}) {\n\tcase (\"${2:value}\") {\n\t\t${3}\n\t}\n\tdefault {\n\t\t${4}\n\t}\n}" },
-    { label: "do", snippet: "do (${1:object}, \"${2:action}\", QuickParams(\"${3:param}\", ${4:value}))" },
-    { label: "set", snippet: "set (${1:object}, \"${2:attribute}\", ${3:value})" },
-    { label: "get input", snippet: "get input {\n\t${1}\n}" },
-    { label: "list add", snippet: "list add (${1:list}, ${2:item})" },
-    { label: "list remove", snippet: "list remove (${1:list}, ${2:item})" },
-    { label: "dictionary add", snippet: "dictionary add (${1:dict}, \"${2:key}\", ${3:value})" },
-    { label: "dictionary remove", snippet: "dictionary remove (${1:dict}, \"${2:key}\")" },
-    { label: "create", snippet: "create (\"${1:name}\")" },
-    { label: "create exit", snippet: "create exit (\"${1:name}\", ${2:from}, ${3:to})" },
-    { label: "create timer", snippet: "create timer (\"${1:name}\")" },
-    { label: "create turnscript", snippet: "create turnscript (\"${1:name}\")" },
-    { label: "destroy", snippet: "destroy (${1:object})" },
-    { label: "ask", snippet: "ask (\"${1:question}\") {\n\t${2}\n}" },
-    { label: "insert", snippet: "insert (\"${1:text}\")" },
-    { label: "invoke", snippet: "invoke (${1:script})" },
-    { label: "finish", snippet: "finish" },
-    { label: "error", snippet: "error (\"${1:message}\")" },
-    { label: "picture", snippet: "picture (\"${1:filename}\")" },
-    { label: "requestsave", snippet: "requestsave" },
-    { label: "firsttime", snippet: "firsttime {\n\t${1}\n}" },
-    { label: "on ready", snippet: "on ready {\n\t${1}\n}" },
-    { label: "play sound", snippet: "play sound (\"${1:filename}\", ${2:synchronous}, ${3:loop})" },
-    { label: "stop sound", snippet: "stop sound" },
-    { label: "wait", snippet: "wait {\n\t${1}\n}" },
-    { label: "undo", snippet: "undo" },
-    { label: "return", snippet: "return (${1:value})" },
-    { label: "request", snippet: "request (${1:type}, ${2:value})" },
-];
+// Completes game object/room/dialogue-page names (getObjectNames — Quest has no separate "room"
+// ObjectType, rooms/objects/pages are all plain objects, see Element.cs's ObjectType enum) plus
+// exit names (a distinct ObjectType, hence its own call). Mirrors the same two calls
+// ScriptEditor.svelte's own name pickers already combine (see e.g. its object/exit dropdown setup)
+// — not a new data source, just reusing it for the code view. Prefix-filtered for the same reason
+// as questFunctionCompletions above.
+export function questObjectCompletions(context: CompletionContext): CompletionResult | null {
+    const word = context.matchBefore(/[a-zA-Z_][a-zA-Z0-9_]*/);
+    if (!word) return null;
+    if (word.from === word.to && !context.explicit) return null;
 
-// Boolean/null literals — real NCalc/Quest expression literals (e.g. Core.aslx's
-// `return (null)`), but not functions, objects, or attributes, so nothing else here suggests them.
-const LITERAL_KEYWORDS: { label: string; snippet: string }[] = [
-    { label: "true", snippet: "true" },
-    { label: "false", snippet: "false" },
-    { label: "null", snippet: "null" },
-];
+    const typed = word.text.toLowerCase();
+    const names = [...(getObjectNames() ?? []), ...(getExitNames() ?? [])]
+        .filter(n => n.toLowerCase().startsWith(typed));
+    if (names.length === 0) return null;
+
+    const options: Completion[] = names.map(name => ({ label: name, type: "variable" }));
+    return { from: word.from, options, filter: false };
+}
+
+// Real script-command keywords (if/foreach/msg/set/create timer/...) that the visual editor's own
+// "Add script" picker offers, minus a handful it deliberately doesn't (see below). These are
+// Script objects (src/Engine/Scripts/*.cs), not expression functions, so none of them appear in
+// GetExpressionFunctions — without this, typing "if" or "foreach" only ever offered fuzzy
+// function-name noise, never the keyword itself.
+//
+// Rather than a hand-copied list of every command's syntax (which silently drifts out of sync the
+// moment a new one is added to the engine), this is generated from getScriptCommandCategories() —
+// the exact same data EditorController.GetScriptEditorData()/WasmEditorBridge.GetScriptCommandCategories
+// feeds to ScriptEditor.svelte's "Add script" dropdown — by turning each command's <create> template
+// (e.g. `create timer ("")`, `for (,,,1)`) into a tab-stop snippet. A "(function)Name" keyword is a
+// convenience shortcut for a built-in function (e.g. "(function)MoveObject") that's already covered,
+// with real parameter names, by questFunctionCompletions; "()" is the picker's generic "Call
+// function" entry. Both are skipped here rather than duplicated with a worse, nameless snippet.
+const NEEDS_TRAILING_BLOCK = new Set(["if", "foreach", "for", "while", "switch", "firsttime"]);
+
+function keywordSnippet(keyword: string, createString: string): string {
+    let n = 0;
+    let snippet = createString.replace(/\(([^()]*)\)/, (_whole, argsText: string) => {
+        // Genuinely empty parens (no comma at all, e.g. "invoke ()"/"if ()") still get one tab
+        // stop rather than being left bare — same reasoning as the blank-comma-slot case below,
+        // there's just no comma to split on here since there's only one slot to begin with.
+        if (argsText === "") return `(\${${++n}})`;
+        const args = argsText.split(",").map(arg => {
+            const trimmed = arg.trim();
+            const quoted = trimmed.match(/^"(.*)"$/);
+            if (quoted) return `"\${${++n}${quoted[1] ? `:${quoted[1]}` : ""}}"`;
+            if (trimmed === "") return `\${${++n}}`;
+            return `\${${++n}:${trimmed}}`;
+        });
+        return `(${args.join(", ")})`;
+    });
+    // Block-bodied commands (if/foreach/for/while/switch/firsttime) get no trailing braces in their
+    // <create> template — the visual editor represents their body as a structural tree child, not
+    // literal text, so there's nothing to strip there; the code view needs real braces though.
+    if (NEEDS_TRAILING_BLOCK.has(keyword) && !/\{\s*\}\s*$/.test(snippet)) {
+        snippet += ` {\n\t\${${++n}}\n}`;
+    }
+    return snippet;
+}
 
 // boost only orders options within this source's own block (see the registration-order comment in
 // quest-script-lang.ts/xml-with-script-lang.ts for why cross-source ordering is controlled there
-// instead) — set here so e.g. "create" sorts above the longer "create exit"/"create timer"/
+// instead) — used so e.g. "create" sorts above the longer "create exit"/"create timer"/
 // "create turnscript" it's also a prefix of.
-const KEYWORD_OPTIONS: Completion[] = [...SCRIPT_KEYWORDS, ...LITERAL_KEYWORDS].map(k =>
-    snippetCompletion(k.snippet, { label: k.label, type: "keyword", boost: k.label.includes(" ") ? 1 : 2 }));
+function keywordBoost(label: string): number {
+    return label.includes(" ") ? 1 : 2;
+}
+
+// A handful of real keywords/literals that never come from getScriptCommandCategories(), kept by
+// hand since there's no generic data source for either: "else"/"else if"/"otherwise" are added to
+// an existing `if` via a dedicated tree-editor action rather than through the generic "Add script"
+// picker, and true/false/null are expression literals, not script commands, at all.
+const EXTRA_KEYWORDS: Completion[] = [
+    { label: "else if", snippet: "else if (${1:condition}) {\n\t${2}\n}" },
+    { label: "else", snippet: "else {\n\t${1}\n}" },
+    { label: "otherwise", snippet: "otherwise {\n\t${1}\n}" },
+    { label: "true", snippet: "true" },
+    { label: "false", snippet: "false" },
+    { label: "null", snippet: "null" },
+].map(k => snippetCompletion(k.snippet, { label: k.label, type: "keyword", boost: keywordBoost(k.label) }));
+
+let cachedKeywordOptions: Completion[] = EXTRA_KEYWORDS;
+let loadedFromScriptCommandCategories = false;
+let keywordLoadInFlight = false;
+
+// getScriptCommandCategories() is async (its EditorController data carries per-command
+// onlydisplayif visibility checks) and hits the WASM bridge, which may not be ready yet the first
+// time a completion is requested (this module loads well before any game does) — so this retries
+// on each call until it succeeds once, then never re-fetches for the rest of the session. The
+// hand-kept EXTRA_KEYWORDS above are usable immediately, before this ever resolves.
+async function loadKeywordCompletions(): Promise<void> {
+    if (keywordLoadInFlight) return;
+    keywordLoadInFlight = true;
+    try {
+        const data = await getScriptCommandCategories();
+        if (!data) return;
+
+        const options = [...EXTRA_KEYWORDS];
+        const seen = new Set(options.map(o => o.label));
+        for (const category of data.categories) {
+            for (const command of category.commands) {
+                if (command.keyword === "()" || command.keyword.startsWith("(function)")) continue;
+                // Symbolic entries (=, =>, //, JS.) can never be reached anyway: this source's own
+                // trigger regex below only ever matches typed text starting with a letter.
+                if (!/^[a-zA-Z]/.test(command.keyword)) continue;
+                if (seen.has(command.keyword)) continue;
+                seen.add(command.keyword);
+                options.push(snippetCompletion(keywordSnippet(command.keyword, command.createString), {
+                    label: command.keyword,
+                    type: "keyword",
+                    boost: keywordBoost(command.keyword),
+                }));
+            }
+        }
+        cachedKeywordOptions = options;
+        loadedFromScriptCommandCategories = true;
+    } finally {
+        keywordLoadInFlight = false;
+    }
+}
 
 // Matches a run of up to two space-separated words ending at the cursor, so typing "create t"
 // (partway through "create turnscript") is recognised as one candidate string to prefix-match
 // against multi-word keyword labels, not just the bare trailing word "t".
 export function questKeywordCompletions(context: CompletionContext): CompletionResult | null {
+    if (!loadedFromScriptCommandCategories) void loadKeywordCompletions();
+
     const word = context.matchBefore(/[a-zA-Z_][a-zA-Z0-9_]*(?: [a-zA-Z_][a-zA-Z0-9_]*)?$/);
     if (!word) return null;
 
     const typed = word.text.toLowerCase();
-    const options = KEYWORD_OPTIONS.filter(c => (c.label ?? "").toLowerCase().startsWith(typed));
+    const options = cachedKeywordOptions.filter(c => (c.label ?? "").toLowerCase().startsWith(typed));
     if (options.length === 0) return null;
 
     return { from: word.from, options, filter: false };
