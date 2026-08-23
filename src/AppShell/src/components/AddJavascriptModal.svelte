@@ -21,6 +21,9 @@
     // exactly its src (EditorController.GetDisplayName), so this needs no extra bridge call.
     let alreadyUsed = $derived($treeNodes.filter(n => n.nodeType === "javascript").map(n => n.text));
 
+    let dialogEl = $state<HTMLDivElement>();
+    $effect(() => { dialogEl?.focus(); });
+
     function handleKeydown(e: KeyboardEvent) {
         if (e.key === "Escape") oncancel();
     }
@@ -47,6 +50,7 @@
 </script>
 
 <div
+    bind:this={dialogEl}
     role="dialog"
     aria-modal="true"
     tabindex="-1"

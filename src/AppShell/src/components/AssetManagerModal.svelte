@@ -30,6 +30,8 @@
     let inputEl: HTMLInputElement;
     let uploading = $state(false);
     let error = $state("");
+    let dialogEl = $state<HTMLDivElement>();
+    $effect(() => { dialogEl?.focus(); });
 
     async function handleUpload(e: Event) {
         const target = e.target as HTMLInputElement;
@@ -76,6 +78,7 @@
 </script>
 
 <div
+    bind:this={dialogEl}
     role="dialog"
     aria-modal="true"
     tabindex="-1"

@@ -25,6 +25,8 @@
     ]);
 
     let target = $state("");
+    let dialogEl = $state<HTMLDivElement>();
+    $effect(() => { dialogEl?.focus(); });
 
     function handleKeydown(e: KeyboardEvent) {
         if (e.key === "Enter" && target) confirm();
@@ -42,6 +44,7 @@
 </script>
 
 <div
+    bind:this={dialogEl}
     role="dialog"
     aria-modal="true"
     tabindex="-1"

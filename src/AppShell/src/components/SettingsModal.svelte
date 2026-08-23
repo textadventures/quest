@@ -5,6 +5,9 @@
     import { theme, setTheme, type ThemePreference } from "$lib/theme-store";
     import { defaultCodeView, setDefaultCodeView } from "$lib/code-view-store";
 
+    let dialogEl = $state<HTMLDivElement>();
+    $effect(() => { if ($settingsModalOpen) dialogEl?.focus(); });
+
     function displayName(code: string): string {
         let name: string;
         try {
@@ -48,6 +51,7 @@
 
 {#if $settingsModalOpen}
     <div
+        bind:this={dialogEl}
         role="dialog"
         aria-modal="true"
         tabindex="-1"
