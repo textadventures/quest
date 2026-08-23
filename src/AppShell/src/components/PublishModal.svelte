@@ -10,6 +10,8 @@
     let includeWalkthrough = $state(false);
     let publishing = $state(false);
     let error = $state("");
+    let dialogEl = $state<HTMLDivElement>();
+    $effect(() => { dialogEl?.focus(); });
 
     async function handlePublish() {
         publishing = true;
@@ -34,6 +36,7 @@
 </script>
 
 <div
+    bind:this={dialogEl}
     role="dialog"
     aria-modal="true"
     tabindex="-1"

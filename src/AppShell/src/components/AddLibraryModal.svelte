@@ -22,6 +22,9 @@
     // filename (EditorController.GetDisplayName), so this needs no extra bridge call.
     let alreadyUsed = $derived(new Set($treeNodes.filter(n => n.nodeType === "include").map(n => n.text)));
 
+    let dialogEl = $state<HTMLDivElement>();
+    $effect(() => { dialogEl?.focus(); });
+
     async function handleUpload(e: Event) {
         const target = e.target as HTMLInputElement;
         const file = target.files?.[0];
@@ -58,6 +61,7 @@
 </script>
 
 <div
+    bind:this={dialogEl}
     role="dialog"
     aria-modal="true"
     tabindex="-1"
