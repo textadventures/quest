@@ -4,6 +4,10 @@ import { xmlLanguage, autoCloseTags } from "@codemirror/lang-xml";
 import { LanguageSupport } from "@codemirror/language";
 import { completeAnyWord } from "@codemirror/autocomplete";
 import { questScriptLanguage, questScriptFoldService } from "./quest-script-lang";
+import {
+    questFunctionCompletions, questAttributeCompletions, questDotAttributeCompletions, questKeywordCompletions,
+    questObjectCompletions,
+} from "./quest-script-completions";
 
 // ASLX marks every script-bearing attribute the same way regardless of the wrapping element's own
 // name — e.g. <start type="script">, <script type="script">, <take type="script">, <lock
@@ -40,10 +44,22 @@ export function xmlWithScript(): LanguageSupport {
     // that the base xmlLanguage's foldNodeProp can't see into. completeAnyWord is similarly
     // document-wide: lang-xml's own schema completion is near-useless without a schema, so suggest
     // words already in the file (tag/attribute names) instead — it combines with (and never
-    // replaces) the XML language's built-in source.
+    // replaces) the XML language's built-in source. questFunctionCompletions/questAttributeCompletions
+    // are registered document-wide for the same reason: parseMixed embeds questScriptLanguage.parser
+    // as a bare Parser rather than a full Language, so completions registered on
+    // questScriptLanguage.data wouldn't reliably be picked up inside the embedded <... type="script">
+    // regions of this view. Ordering mirrors questScript() in quest-script-lang.ts (see its own
+    // comment): each of these sources sets filter: false, so multiple sources' results are shown
+    // concatenated in registration order rather than globally re-sorted by boost — most useful
+    // first (keywords, functions, attribute names), completeAnyWord's generic fallback last.
     return new LanguageSupport(xmlWithScriptLanguage, [
         autoCloseTags,
         questScriptFoldService,
+        xmlWithScriptLanguage.data.of({ autocomplete: questKeywordCompletions }),
+        xmlWithScriptLanguage.data.of({ autocomplete: questFunctionCompletions }),
+        xmlWithScriptLanguage.data.of({ autocomplete: questObjectCompletions }),
+        xmlWithScriptLanguage.data.of({ autocomplete: questAttributeCompletions }),
+        xmlWithScriptLanguage.data.of({ autocomplete: questDotAttributeCompletions }),
         xmlWithScriptLanguage.data.of({ autocomplete: completeAnyWord }),
     ]);
 }

@@ -94,6 +94,7 @@ export interface WasmBridge {
   // Verbs editor API
   GetVerbAttributesInfo(): string
   GetExpressionFunctions(): string
+  GetAttributeNames(): string
   AddVerb(elementKey: string, verbPattern: string): string
   CreateTurnScript(parent: string): string
   CreateCommand(parent: string): string

@@ -3072,6 +3072,22 @@ public partial class WasmEditorBridge
         return JsonSerializer.Serialize(functions, WasmEditorJsonContext.Default.ListExpressionFunctionData);
     }
 
+    // Feeds the code view's attribute-name autocomplete: every attribute name ever set on any
+    // object in the game (the values GetAttribute/HasAttribute/set/etc. take as their attribute
+    // argument), so authors get suggestions for attributes defined on other objects, not just
+    // ones already typed in the file open in the editor.
+    [JSExport]
+    public static string GetAttributeNames()
+    {
+        if (_controller == null)
+        {
+            return "[]";
+        }
+
+        var names = _controller.GetPropertyNames().ToList();
+        return JsonSerializer.Serialize(names, WasmEditorJsonContext.Default.ListString);
+    }
+
     [JSExport]
     public static string AddVerb(string elementKey, string verbPattern)
     {
