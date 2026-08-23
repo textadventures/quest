@@ -1873,8 +1873,15 @@ function SaveTranscript(text) {
 var transcriptUrl = 'TranscriptViewer/index.html';
 
 // Another fallback to avoid errors
-function showTranscript() {
-    addTextAndScroll('Your transcripts are saved to the localStorage in your browser. You can view, download, or delete them here: <a href="' + transcriptUrl + '" target="_blank">Your Transcripts</a><br/>');
+// message/linkText are passed in by CoreCommands.aslx via translated templates
+// (Core/Languages/*.aslx). Games published before this was added have the old
+// zero-arg "JS.showTranscript ()" call baked into their package (Core library
+// scripts are inlined at publish time, but this JS file isn't), so fall back
+// to the original hardcoded English text when called without arguments.
+function showTranscript(message, linkText) {
+    if (message == null) message = 'Your transcripts are saved to the localStorage in your browser. You can view, download, or delete them here:';
+    if (linkText == null) linkText = 'Your Transcripts';
+    addTextAndScroll(message + ' <a href="' + transcriptUrl + '" target="_blank">' + linkText + '</a><br/>');
 }
 
 function replaceTranscriptString(data) {
