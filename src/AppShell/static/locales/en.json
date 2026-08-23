@@ -155,7 +155,7 @@
     "addJavascriptModal.helpText": "Pick an existing .js file, type a filename to create a new one, or upload a file.",
 
     "addLibraryModal.title": "Add Included Library",
-    "addLibraryModal.helpText": "Upload a .aslx library file.",
+    "addLibraryModal.helpText": "Upload a .aslx or .xml library file.",
     "addLibraryModal.noFileChosen": "No file chosen",
     "addLibraryModal.change": "Change…",
     "addLibraryModal.alreadyUsedError": "\"{name}\" is already used by another Included Library.",

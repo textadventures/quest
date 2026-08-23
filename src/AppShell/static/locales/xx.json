@@ -128,7 +128,7 @@
     "elementsList.selectedCount": "[{count} séléctéd]",
     "addJavascriptModal.helpText": "[Píck án éxístíng .js fílé, typé á fílénámé tó créáté á néw óné, ór úplóád á fílé.]",
     "addLibraryModal.title": "[Ádd Ínclúdéd Líbráry]",
-    "addLibraryModal.helpText": "[Úplóád á .áslx líbráry fílé.]",
+    "addLibraryModal.helpText": "[Úplóád á .áslx ór .xml líbráry fílé.]",
     "addLibraryModal.noFileChosen": "[Nó fílé chósén]",
     "addLibraryModal.change": "[Chángé…]",
     "addLibraryModal.alreadyUsedError": "[\"{name}\" ís álréády úséd by ánóthér Ínclúdéd Líbráry.]",

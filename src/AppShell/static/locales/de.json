@@ -155,7 +155,7 @@
     "addJavascriptModal.helpText": "Wähle eine vorhandene .js-Datei aus, gebe einen Dateinamen ein, um eine neue Datei zu erstellen, oder lade eine Datei hoch.",
 
     "addLibraryModal.title": "Eingebundene Bibliothek hinzufügen",
-    "addLibraryModal.helpText": "Lade eine .aslx Bibliotheksdatei hoch.",
+    "addLibraryModal.helpText": "Lade eine .aslx- oder .xml-Bibliotheksdatei hoch.",
     "addLibraryModal.noFileChosen": "Keine Datei ausgewählt",
     "addLibraryModal.change": "Ändern…",
     "addLibraryModal.alreadyUsedError": "\"{name}\" wird bereits von einer anderen eingebundenen Bibliothek verwendet.",

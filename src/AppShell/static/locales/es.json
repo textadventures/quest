@@ -155,7 +155,7 @@
     "addJavascriptModal.helpText": "Elige un archivo .js existente, escribe un nombre de archivo para crear uno nuevo, o sube un archivo.",
 
     "addLibraryModal.title": "Añadir Biblioteca Incluida",
-    "addLibraryModal.helpText": "Sube un archivo de biblioteca .aslx.",
+    "addLibraryModal.helpText": "Sube un archivo de biblioteca .aslx o .xml.",
     "addLibraryModal.noFileChosen": "Ningún archivo seleccionado",
     "addLibraryModal.change": "Cambiar…",
     "addLibraryModal.alreadyUsedError": "\"{name}\" ya está siendo usado por otra Biblioteca Incluida.",

@@ -3,7 +3,7 @@ import { zipSync } from "fflate";
 import { PUBLIC_WASM_PLAYER_URL, PUBLIC_APPSHELL_VERSION } from "$env/static/public";
 import { loadWasm } from "./wasm";
 import type { WasmBridge } from "./wasm";
-import type { AssetInfo, FileAdapter } from "./filesystem/types";
+import { isLibraryFilename, type AssetInfo, type FileAdapter } from "./filesystem/types";
 import { LocalDraftAdapter, shouldShowBackupBanner, markBackupBannerResolved } from "./filesystem/local-adapter";
 import { ServerFileAdapter } from "./filesystem/server-adapter";
 import { triggerDownload } from "./filesystem/download";
@@ -199,7 +199,7 @@ export const lastFailedGameFilename = writable<string | null>(null);
 async function listLibraryCandidateFilenames(adapter: FileAdapter): Promise<string[]> {
     return adapter.listLibraryCandidates
         ? await adapter.listLibraryCandidates()
-        : (await adapter.listAssets()).map(a => a.key).filter(key => key.toLowerCase().endsWith(".aslx"));
+        : (await adapter.listAssets()).map(a => a.key).filter(key => isLibraryFilename(key));
 }
 
 async function resolveLibraryCandidateFiles(adapter: FileAdapter): Promise<Record<string, Uint8Array>> {
