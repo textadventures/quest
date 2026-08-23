@@ -2,7 +2,7 @@ import { StreamLanguage, LanguageSupport, foldService } from "@codemirror/langua
 import type { StreamParser, StringStream } from "@codemirror/language";
 import { completeAnyWord } from "@codemirror/autocomplete";
 import type { EditorState } from "@codemirror/state";
-import { questFunctionCompletions, questAttributeCompletions, questDotAttributeCompletions } from "./quest-script-completions";
+import { questFunctionCompletions, questAttributeCompletions, questDotAttributeCompletions, questKeywordCompletions } from "./quest-script-completions";
 
 // Approximate, non-validating highlighter for Quest's own line-oriented script
 // DSL (e.g. `msg ("Hello")`, `if (x = 1) { ... }`) — distinct from the ASLX XML
@@ -101,11 +101,20 @@ export const questScriptFoldService = foldService.of((state: EditorState, lineSt
 export const questScriptLanguage = StreamLanguage.define(questScriptParser);
 
 export function questScript(): LanguageSupport {
+    // Each of these sets `filter: false` (see quest-script-completions.ts) to do its own
+    // prefix-matching rather than CodeMirror's default fuzzy scorer — but that also means `boost`
+    // only orders options *within* one source's own block, not across sources: multiple filter:false
+    // results are shown concatenated in the order their sources are listed here, not globally
+    // re-sorted by boost. So the ordering below is itself the priority list, most useful first:
+    // exact language keywords/literals, then callable functions, then the two attribute-name
+    // sources (mutually exclusive by trigger context, so their relative order rarely matters), and
+    // finally completeAnyWord's generic in-buffer word matching as the least-precise fallback.
     return new LanguageSupport(questScriptLanguage, [
         questScriptFoldService,
-        questScriptLanguage.data.of({ autocomplete: completeAnyWord }),
+        questScriptLanguage.data.of({ autocomplete: questKeywordCompletions }),
         questScriptLanguage.data.of({ autocomplete: questFunctionCompletions }),
         questScriptLanguage.data.of({ autocomplete: questAttributeCompletions }),
         questScriptLanguage.data.of({ autocomplete: questDotAttributeCompletions }),
+        questScriptLanguage.data.of({ autocomplete: completeAnyWord }),
     ]);
 }
