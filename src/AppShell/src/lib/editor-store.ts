@@ -1804,6 +1804,14 @@ export function getExpressionFunctions(): ExpressionFunctionInfo[] {
     catch { return []; }
 }
 
+// Every attribute name ever set on any object in the game — feeds the code view's attribute-name
+// autocomplete (e.g. inside GetAttribute(obj, "...")).
+export function getAttributeNames(): string[] {
+    if (!_bridge) return [];
+    try { return JSON.parse(_bridge.GetAttributeNames()); }
+    catch { return []; }
+}
+
 // A new custom verb also creates a game-wide command element (visible under the Commands tree
 // node), so unlike createExitInDirection() this needs refreshTree() too, not just refreshSelectedData().
 export function addVerb(elementKey: string, verbPattern: string): string {

@@ -2,6 +2,7 @@ import { StreamLanguage, LanguageSupport, foldService } from "@codemirror/langua
 import type { StreamParser, StringStream } from "@codemirror/language";
 import { completeAnyWord } from "@codemirror/autocomplete";
 import type { EditorState } from "@codemirror/state";
+import { questFunctionCompletions, questAttributeCompletions, questDotAttributeCompletions } from "./quest-script-completions";
 
 // Approximate, non-validating highlighter for Quest's own line-oriented script
 // DSL (e.g. `msg ("Hello")`, `if (x = 1) { ... }`) — distinct from the ASLX XML
@@ -103,5 +104,8 @@ export function questScript(): LanguageSupport {
     return new LanguageSupport(questScriptLanguage, [
         questScriptFoldService,
         questScriptLanguage.data.of({ autocomplete: completeAnyWord }),
+        questScriptLanguage.data.of({ autocomplete: questFunctionCompletions }),
+        questScriptLanguage.data.of({ autocomplete: questAttributeCompletions }),
+        questScriptLanguage.data.of({ autocomplete: questDotAttributeCompletions }),
     ]);
 }
