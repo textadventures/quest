@@ -144,15 +144,18 @@
         }
     }
 
-    async function handleAddConfirm(name: string) {
+    async function handleAddConfirm(name: string, target: string | null) {
         const mode = get(addElementModal);
         addElementModal.set(null);
         await tick();
         if (!mode) return;
         if (mode.type === "room") createRoom(name, mode.parent);
-        else if (mode.type === "object") createObject(name, mode.parent);
+        else if (mode.type === "object") createObject(name, target ?? mode.parent);
         else if (mode.type === "page") createPage(name, mode.parent);
-        else if (mode.type === "function") createFunction(name);
+        else if (mode.type === "function") {
+            const key = createFunction(name);
+            if (!key.startsWith("error:") && target) setFunctionFolder(key, target);
+        }
         else if (mode.type === "timer") createTimer(name);
         else if (mode.type === "walkthrough") createWalkthrough(name, mode.parent);
         else if (mode.type === "template") createTemplate(name);
@@ -213,6 +216,7 @@
         <AddElementModal
             elementType={$addElementModal.type}
             parent={$addElementModal.parent}
+            folder={$addElementModal.folder}
             onconfirm={handleAddConfirm}
             oncancel={() => addElementModal.set(null)}
         />

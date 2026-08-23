@@ -214,6 +214,151 @@ public class FunctionFolderTests
         controller.Uninitialise();
     }
 
+    [TestMethod]
+    public async Task CanMoveFunctionFolderUpDown_FalseAtBoundaries_TrueOtherwise()
+    {
+        var controller = await LoadTemplateController("English");
+        controller.CreateNewFunction("f1");
+        controller.CreateNewFunction("f2");
+        controller.CreateNewFunction("f3");
+        controller.SetFunctionFolder("f2", "Group");
+        // Final order: f1(none), f2(Group), f3(none) - Group is the very last thing in the list.
+
+        Assert.IsTrue(controller.CanMoveFunctionFolderUp("Group"), "f1 sits before the folder");
+        Assert.IsFalse(controller.CanMoveFunctionFolderDown("Group"), "nothing follows the folder");
+
+        controller.Uninitialise();
+    }
+
+    [TestMethod]
+    public async Task MoveFunctionFolderUp_SwapsWholeBlockPastLoneFunction_PreservingMemberOrder()
+    {
+        var controller = await LoadTemplateController("English");
+        controller.CreateNewFunction("f1");
+        controller.CreateNewFunction("f2");
+        controller.CreateNewFunction("f3");
+        controller.SetFunctionFolder("f2", "Group");
+        controller.SetFunctionFolder("f3", "Group");
+        // Final order: f1(none), f2(Group), f3(Group).
+
+        controller.MoveFunctionFolderUp("Group");
+
+        var order = new[] { "f1", "f2", "f3" }
+            .Select(name => GetSortIndex(controller, name))
+            .ToArray();
+        Assert.IsTrue(order[1] < order[0], "the Group block should now precede f1");
+        Assert.IsTrue(order[1] < order[2], "f2 should stay before f3 within the Group block");
+        Assert.AreEqual("Group", GetFolder(controller, "f2"));
+        Assert.AreEqual("Group", GetFolder(controller, "f3"));
+
+        controller.Uninitialise();
+    }
+
+    [TestMethod]
+    public async Task MoveFunctionFolderDown_SwapsWholeBlockPastAnotherFolder_PreservingBothBlocksOrder()
+    {
+        var controller = await LoadTemplateController("English");
+        controller.CreateNewFunction("a1");
+        controller.CreateNewFunction("a2");
+        controller.CreateNewFunction("b1");
+        controller.CreateNewFunction("b2");
+        controller.SetFunctionFolder("a1", "Alpha");
+        controller.SetFunctionFolder("a2", "Alpha");
+        controller.SetFunctionFolder("b1", "Beta");
+        controller.SetFunctionFolder("b2", "Beta");
+        // Final order: a1(Alpha), a2(Alpha), b1(Beta), b2(Beta).
+
+        controller.MoveFunctionFolderDown("Alpha");
+
+        var order = new[] { "a1", "a2", "b1", "b2" }
+            .Select(name => GetSortIndex(controller, name))
+            .ToArray();
+        Assert.IsTrue(order[2] < order[0], "Beta block should now precede Alpha block");
+        Assert.IsTrue(order[2] < order[3], "b1 should stay before b2 within Beta");
+        Assert.IsTrue(order[0] < order[1], "a1 should stay before a2 within Alpha");
+
+        controller.Uninitialise();
+    }
+
+    [TestMethod]
+    public async Task MoveFunctionFolder_DoesNotTouchLibraryFunctionSortIndexes()
+    {
+        var controller = await LoadTemplateController("English");
+        controller.CreateNewFunction("f1");
+        controller.CreateNewFunction("f2");
+        controller.CreateNewFunction("f3");
+        controller.SetFunctionFolder("f2", "Group");
+        controller.SetFunctionFolder("f3", "Group");
+
+        var libraryFunctions = controller.WorldModel.Elements.GetElements(ElementType.Function)
+            .Where(e => e.MetaFields[MetaFieldDefinitions.Library])
+            .ToList();
+        var beforeSortIndexes = libraryFunctions.ToDictionary(e => e.Name, e => e.MetaFields[MetaFieldDefinitions.SortIndex]);
+
+        controller.MoveFunctionFolderUp("Group");
+
+        foreach (var function in libraryFunctions)
+        {
+            Assert.AreEqual(beforeSortIndexes[function.Name], function.MetaFields[MetaFieldDefinitions.SortIndex],
+                $"Library function '{function.Name}' should not have been reordered");
+        }
+
+        controller.Uninitialise();
+    }
+
+    [TestMethod]
+    public async Task MoveFunctionFolderUp_UndoRedo_RestoresPosition()
+    {
+        var controller = await LoadTemplateController("English");
+        controller.CreateNewFunction("f1");
+        controller.CreateNewFunction("f2");
+        controller.SetFunctionFolder("f2", "Group");
+
+        var before = GetSortIndex(controller, "f1") < GetSortIndex(controller, "f2");
+        Assert.IsTrue(before, "f1 should start before the Group folder");
+
+        controller.MoveFunctionFolderUp("Group");
+        Assert.IsTrue(GetSortIndex(controller, "f2") < GetSortIndex(controller, "f1"), "Group should now precede f1");
+
+        await controller.Undo();
+        Assert.IsTrue(GetSortIndex(controller, "f1") < GetSortIndex(controller, "f2"), "Undo should restore f1 before Group");
+
+        controller.Redo();
+        Assert.IsTrue(GetSortIndex(controller, "f2") < GetSortIndex(controller, "f1"), "Redo should reapply the move");
+
+        controller.Uninitialise();
+    }
+
+    [TestMethod]
+    public async Task UpdateTree_ReflectsSortIndexOrder_AfterFolderReassignmentInterleavesUntouchedFunction()
+    {
+        // Regression test: UpdateTree()'s full-rebuild traversal used to walk elements in raw
+        // creation/storage order rather than SortIndex order - fine normally since the two
+        // coincide, but SetFunctionFolder (and MoveFunctionFolderUp/Down) explicitly reorders
+        // functions by adjusting SortIndex alone, which a full rebuild must reflect or the
+        // reordered elements silently revert to their pre-reorder display position. Reproduces
+        // the exact pattern that exposed it: an untouched function (Gamma) created between two
+        // reassigned ones (Alpha, Beta), then a brand new one (Delta) created and assigned
+        // afterwards.
+        var controller = await LoadTemplateController("English");
+        controller.CreateNewFunction("Alpha");
+        controller.CreateNewFunction("Beta");
+        controller.CreateNewFunction("Gamma");
+        controller.SetFunctionFolder("Alpha", "Math");
+        controller.SetFunctionFolder("Beta", "Math");
+        controller.CreateNewFunction("Delta");
+        controller.SetFunctionFolder("Delta", "Math");
+
+        var addedOrder = new List<string>();
+        controller.AddedNode += (_, e) => addedOrder.Add(e.Key);
+        controller.UpdateTree();
+
+        var userFunctionOrder = addedOrder.Where(k => k is "Alpha" or "Beta" or "Gamma" or "Delta").ToArray();
+        CollectionAssert.AreEqual(new[] { "Gamma", "Alpha", "Beta", "Delta" }, userFunctionOrder);
+
+        controller.Uninitialise();
+    }
+
     private static string GetFolder(EditorController controller, string key) =>
         controller.WorldModel.Elements.Get(key).Fields[FieldDefinitions.EditorFolder];
 

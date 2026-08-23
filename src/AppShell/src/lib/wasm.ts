@@ -116,6 +116,11 @@ export interface WasmBridge {
   SetFunctionFolder(elementKey: string, folder: string): string
   CanMoveFunctionUp(elementKey: string): boolean
   CanMoveFunctionDown(elementKey: string): boolean
+  CanMoveFunctionFolderUp(folder: string): boolean
+  CanMoveFunctionFolderDown(folder: string): boolean
+  MoveFunctionFolderUp(folder: string): string
+  MoveFunctionFolderDown(folder: string): string
+  GetPossibleNewObjectParentsForCurrentSelection(elementKey: string): string
   CopyElements(keysJson: string): void
   CutElements(keysJson: string): void
   CanPasteElements(parentKey: string): boolean

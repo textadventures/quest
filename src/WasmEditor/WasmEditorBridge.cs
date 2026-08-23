@@ -2919,6 +2919,53 @@ public partial class WasmEditorBridge
     }
 
     [JSExport]
+    public static bool CanMoveFunctionFolderUp(string folder)
+    {
+        return _controller?.CanMoveFunctionFolderUp(folder) ?? false;
+    }
+
+    [JSExport]
+    public static bool CanMoveFunctionFolderDown(string folder)
+    {
+        return _controller?.CanMoveFunctionFolderDown(folder) ?? false;
+    }
+
+    [JSExport]
+    public static string MoveFunctionFolderUp(string folder)
+    {
+        if (_controller == null)
+        {
+            return "error";
+        }
+
+        _controller.MoveFunctionFolderUp(folder);
+        // Full rebuild, not an incremental patch - same reasoning as SetFunctionFolder's wrapper
+        // above: this can reposition an arbitrary-sized slice of functions at once.
+        _controller.UpdateTree();
+        return "ok";
+    }
+
+    [JSExport]
+    public static string MoveFunctionFolderDown(string folder)
+    {
+        if (_controller == null)
+        {
+            return "error";
+        }
+
+        _controller.MoveFunctionFolderDown(folder);
+        _controller.UpdateTree();
+        return "ok";
+    }
+
+    [JSExport]
+    public static string GetPossibleNewObjectParentsForCurrentSelection(string elementKey)
+    {
+        var parents = _controller?.GetPossibleNewObjectParentsForCurrentSelection(elementKey)?.ToList() ?? [];
+        return JsonSerializer.Serialize(parents, WasmEditorJsonContext.Default.ListString);
+    }
+
+    [JSExport]
     public static void CopyElements(string keysJson)
     {
         if (_controller == null)

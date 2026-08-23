@@ -43,6 +43,44 @@ public class EditorControllerRoomsAndPagesTests
         controller.Uninitialise();
     }
 
+    // Coverage for the ported-but-previously-unexposed v5 desktop editor method that scopes the
+    // "Add Object here" create modal's parent picker to just the target object's own ancestor
+    // chain (root-first), rather than every object in the game (that's GetMovePossibleParents,
+    // used by "Move to" instead).
+    [TestMethod]
+    public async Task TestGetPossibleNewObjectParentsForCurrentSelection_NestedObject_ReturnsAncestorChainRootFirst()
+    {
+        var controller = await LoadTemplateController("English");
+
+        controller.CreateNewObject("box", "game", "A Box");
+        controller.CreateNewObject("innerThing", "box", "Inner Thing");
+
+        var parents = controller.GetPossibleNewObjectParentsForCurrentSelection("innerThing").ToArray();
+
+        CollectionAssert.AreEqual(new[] { "game", "box", "innerThing" }, parents);
+
+        controller.Uninitialise();
+    }
+
+    [TestMethod]
+    public async Task TestGetPossibleNewObjectParentsForCurrentSelection_Room_ReturnsAncestorChainToo()
+    {
+        // A Room is ObjectType.Object underneath (see the ObjectType enum - Room/Object/Page are
+        // all just inherited-type distinctions layered over the same core Object type, IsRoom's
+        // own comment above says as much), so the ancestor-chain method returns a real chain for
+        // a Room just as it does for a plain Object - "Add Object here" from a Room can offer a
+        // parent picker too (e.g. to create the new object as a top-level sibling instead).
+        var controller = await LoadTemplateController("English");
+
+        controller.CreateNewRoom("aRoom", "game", "A Room");
+
+        var parents = controller.GetPossibleNewObjectParentsForCurrentSelection("aRoom").ToArray();
+
+        CollectionAssert.AreEqual(new[] { "game", "aRoom" }, parents);
+
+        controller.Uninitialise();
+    }
+
     private static async Task<EditorController> LoadTemplateController(string templateName)
     {
         var templates = EditorController.GetAvailableTemplates();

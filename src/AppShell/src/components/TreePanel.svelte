@@ -18,6 +18,7 @@
         showLibraryElements, toggleShowLibraryElements,
         swapElements, getCurrentGameId,
         canMoveFunctionUp, canMoveFunctionDown,
+        canMoveFunctionFolderUp, canMoveFunctionFolderDown, moveFunctionFolderUp, moveFunctionFolderDown,
     } from "$lib/editor-store";
     import type { TreeNode } from "$lib/types";
     import { t } from "$lib/i18n";
@@ -478,6 +479,19 @@
         // particular are meant to have no context menu at all, mirroring the
         // isLibrary guard in nodeMenuOptions.)
         if (node.nodeType === "header" || node.nodeType === "game" || node.nodeType === "include") return opts;
+        if (node.nodeType === "usergroup") {
+            // A folder's synthetic id has no single flat-tree entry to look up (see buildHierTree/
+            // groupLibraryChildren) - node.text is the folder name itself, and moving the whole
+            // block is handled server-side by name rather than by swapping two flat siblings.
+            const folderName = node.text;
+            if (canMoveFunctionFolderUp(folderName)) {
+                opts.push({ label: t("common.moveUp"), action: () => moveFunctionFolderUp(folderName) });
+            }
+            if (canMoveFunctionFolderDown(folderName)) {
+                opts.push({ label: t("common.moveDown"), action: () => moveFunctionFolderDown(folderName) });
+            }
+            return opts;
+        }
         const flat = $treeNodes.find(n => n.key === node.id);
         if (!flat) return opts;
         // The game node itself appears under "_objects" alongside the game's
@@ -547,11 +561,14 @@
             );
         } else if (nt === "object") {
             opts.push(
+                { label: t("elementAdders.objectHere"), action: () => openAddModal("object", id) },
                 { label: t("elementAdders.command"), action: () => createCommand(id) },
                 { label: t("elementAdders.verb"), action: () => createVerb(id) },
                 { label: t("elementAdders.turnScript"), action: () => createTurnScript(id) },
                 { label: t("elementAdders.pageHere"), action: () => openAddModal("page", id) },
             );
+        } else if (nt === "usergroup") {
+            opts.push({ label: t("elementAdders.functionHere"), action: () => openAddModal("function", null, text) });
         } else if (nt === "page" && !$isGamebook) {
             // Text Adventure dialogue pages can nest sub-pages; gamebook pages are
             // always flat, so this adder is TA-only.
