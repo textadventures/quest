@@ -58,6 +58,7 @@
     "addElementModal.addHeadingIn": "Add {label} in \"{parent}\"",
     "addElementModal.nameLabel": "Name",
     "addElementModal.namePlaceholder": "Enter a name...",
+    "addElementModal.parentLabel": "Parent",
 
     "assetManager.title": "Assets",
     "assetManager.uploading": "Uploading…",
@@ -110,6 +111,7 @@
     "elementAdders.pageHere": "Add Page here",
     "elementAdders.page": "Add Page",
     "elementAdders.function": "Add Function",
+    "elementAdders.functionHere": "Add Function here",
     "elementAdders.timer": "Add Timer",
     "elementAdders.verb": "Add Verb",
     "elementAdders.command": "Add Command",

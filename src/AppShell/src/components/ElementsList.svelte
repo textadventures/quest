@@ -1,6 +1,6 @@
 <script lang="ts">
     import { SvelteSet } from "svelte/reactivity";
-    import { treeNodes, selectedKey, selectNode, deleteElement, openAddModal, createVerb, createCommand, createTurnScript, openAddLibraryModal, openAddJavascriptModal, swapElements, isGamebook, openMoveToFolderModal, canMoveFunctionUp, canMoveFunctionDown } from "$lib/editor-store";
+    import { treeNodes, selectedKey, selectNode, deleteElement, openAddModal, createVerb, createCommand, createTurnScript, openAddLibraryModal, openAddJavascriptModal, swapElements, isGamebook, openMoveToFolderModal, canMoveFunctionUp, canMoveFunctionDown, canMoveFunctionFolderUp, canMoveFunctionFolderDown, moveFunctionFolderUp, moveFunctionFolderDown } from "$lib/editor-store";
     import { nodeIcon } from "$lib/node-icons";
     import Folder from "@lucide/svelte/icons/folder";
     import { t } from "$lib/i18n";
@@ -48,15 +48,16 @@
     // merely comes right after — without it, an ungrouped item immediately following a group (no
     // header of its own in between) rendered identically to a grouped one, making it look like
     // part of the folder above when it wasn't.
-    type Row = { kind: "header"; key: string; label: string } | { kind: "item"; index: number; item: typeof items[number]; grouped: boolean };
+    type Row = { kind: "header"; key: string; label: string; isLibraryGroup: boolean } | { kind: "item"; index: number; item: typeof items[number]; grouped: boolean };
 
     let rows = $derived.by(() => {
         const out: Row[] = [];
         let lastGroup: string | null = null;
         items.forEach((item, index) => {
-            const group = item.isLibrary && item.filename ? item.filename : (item.folder || null);
+            const isLibraryGroup = !!(item.isLibrary && item.filename);
+            const group = isLibraryGroup ? item.filename! : (item.folder || null);
             if (group !== null && group !== lastGroup) {
-                out.push({ kind: "header", key: `__group_${item.key}`, label: group });
+                out.push({ kind: "header", key: `__group_${item.key}`, label: group, isLibraryGroup });
             }
             lastGroup = group;
             out.push({ kind: "item", index, item, grouped: group !== null });
@@ -218,7 +219,36 @@
     {:else}
         {#each rows as row (row.kind === "header" ? row.key : row.item.key)}
             {#if row.kind === "header"}
-                <div class="text-[11px] font-semibold text-surface-600-400 uppercase tracking-wide mt-2 mb-1 px-1 truncate" title={row.label}>{row.label}</div>
+                <div class="group relative flex items-center mt-2 mb-1">
+                    <div
+                        class="text-[11px] font-semibold text-surface-600-400 uppercase tracking-wide px-1 truncate flex-1 {supportsFolders && !row.isLibraryGroup ? "pr-16" : ""}"
+                        title={row.label}
+                    >{row.label}</div>
+                    {#if supportsFolders && !row.isLibraryGroup}
+                        <div class="absolute right-1 top-1/2 -translate-y-1/2 flex gap-0.5 opacity-0 pointer-events-none group-hover:opacity-100 group-hover:pointer-events-auto transition-opacity z-10">
+                            <button
+                                type="button"
+                                class="btn btn-sm preset-outlined-primary-500 px-1 py-0 text-xs leading-none"
+                                title={t("elementAdders.functionHere")}
+                                onclick={() => openAddModal("function", null, row.label)}
+                            >+</button>
+                            <button
+                                type="button"
+                                class="btn btn-sm preset-outlined-primary-500 px-1 py-0 text-xs leading-none"
+                                title={t("common.moveUp")}
+                                disabled={!canMoveFunctionFolderUp(row.label)}
+                                onclick={() => moveFunctionFolderUp(row.label)}
+                            >↑</button>
+                            <button
+                                type="button"
+                                class="btn btn-sm preset-outlined-primary-500 px-1 py-0 text-xs leading-none"
+                                title={t("common.moveDown")}
+                                disabled={!canMoveFunctionFolderDown(row.label)}
+                                onclick={() => moveFunctionFolderDown(row.label)}
+                            >↓</button>
+                        </div>
+                    {/if}
+                </div>
             {:else}
                 {@const item = row.item}
                 {@const i = row.index}

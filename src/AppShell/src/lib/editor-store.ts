@@ -12,7 +12,7 @@ import { showToast } from "./toast";
 import { t } from "./i18n";
 import type { TreeNode, EditorDataResponse, ScriptBlockData, ScriptCommandCategoriesData, ExpressionTemplateData, ExpressionTemplate, FullAttributeData, ExitsData, VerbInfo, ExpressionFunctionInfo } from "./types";
 
-export type AddElementModalState = { type: "room" | "object" | "page" | "function" | "timer" | "walkthrough" | "template" | "dynamictemplate" | "type"; parent: string | null } | null;
+export type AddElementModalState = { type: "room" | "object" | "page" | "function" | "timer" | "walkthrough" | "template" | "dynamictemplate" | "type"; parent: string | null; folder: string | null } | null;
 
 let _bridge: WasmBridge | null = null;
 let _adapter: FileAdapter | null = null;
@@ -34,8 +34,8 @@ export const addElementModal = writable<AddElementModalState>(null);
 // wording/affordances in the tree, toolbar and advanced-adders panel.
 export const isGamebook = writable(false);
 
-export function openAddModal(type: "room" | "object" | "page" | "function" | "timer" | "walkthrough" | "template" | "dynamictemplate" | "type", parent: string | null) {
-    addElementModal.set({ type, parent });
+export function openAddModal(type: "room" | "object" | "page" | "function" | "timer" | "walkthrough" | "template" | "dynamictemplate" | "type", parent: string | null, folder: string | null = null) {
+    addElementModal.set({ type, parent, folder });
 }
 // A Javascript element's src (the file it points to) can't be changed after creation — see
 // PropertyEditor's "lockedAfterCreate" handling — so unlike the other adders above, creating one
@@ -1716,6 +1716,44 @@ export function canMoveFunctionUp(key: string): boolean {
 
 export function canMoveFunctionDown(key: string): boolean {
     return _bridge?.CanMoveFunctionDown(key) ?? false;
+}
+
+// A folder is always a contiguous run of same-folder functions, so unlike a single function's
+// move up/down, moving the whole block past its neighbour can never split anything — these are
+// gated only on "is there something on that side at all" (see EditorController's own
+// CanMoveFunctionFolderUp/Down).
+export function canMoveFunctionFolderUp(folder: string): boolean {
+    return _bridge?.CanMoveFunctionFolderUp(folder) ?? false;
+}
+
+export function canMoveFunctionFolderDown(folder: string): boolean {
+    return _bridge?.CanMoveFunctionFolderDown(folder) ?? false;
+}
+
+export function moveFunctionFolderUp(folder: string): void {
+    if (!_bridge) return;
+    if (_bridge.MoveFunctionFolderUp(folder) === "ok") {
+        refreshTree();
+        refreshUndoRedo();
+    }
+}
+
+export function moveFunctionFolderDown(folder: string): void {
+    if (!_bridge) return;
+    if (_bridge.MoveFunctionFolderDown(folder) === "ok") {
+        refreshTree();
+        refreshUndoRedo();
+    }
+}
+
+// Ancestor chain (root-first, ending with elementKey itself) for scoping the "Add Object here"
+// create modal's parent picker to just the clicked object's own lineage, rather than every object
+// in the game (that's getMovePossibleParents, used by "Move to" instead). Returns [] for anything
+// that isn't itself an Object (e.g. a Room, which can't be nested) — see
+// EditorController.GetPossibleNewParentsForCurrentSelection.
+export function getPossibleNewObjectParents(key: string): string[] {
+    if (!_bridge) return [];
+    return JSON.parse(_bridge.GetPossibleNewObjectParentsForCurrentSelection(key));
 }
 
 // Bumped by copyElements/cutElements so TreePanel's per-node "⋯" menus (computed

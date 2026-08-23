@@ -218,6 +218,8 @@ jobs:
         working-directory: tests/e2e
       - run: node verify-preview-custom-library.mjs http://localhost:5174
         working-directory: tests/e2e
+      - run: node verify-appshell-folder-move-and-add-here.mjs http://localhost:5174
+        working-directory: tests/e2e
 
   # OPFS local-drafts behavior on non-FSA browsers, against a Release
   # WasmEditor build — createSyncAccessHandle (Safari's write path) needs the

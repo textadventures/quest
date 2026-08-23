@@ -18,6 +18,7 @@
         showLibraryElements, toggleShowLibraryElements,
         swapElements, getCurrentGameId,
         canMoveFunctionUp, canMoveFunctionDown,
+        canMoveFunctionFolderUp, canMoveFunctionFolderDown, moveFunctionFolderUp, moveFunctionFolderDown,
     } from "$lib/editor-store";
     import type { TreeNode } from "$lib/types";
     import { t } from "$lib/i18n";
@@ -355,18 +356,29 @@
         if (pendingTreeState) saveTreeState(pendingTreeState.gameId, pendingTreeState.ids);
     });
 
-    // Auto-expand the ancestor chain whenever the selected node changes
+    // Ancestor ids of targetId within the *hierarchical* (post-grouping) tree, root-first -
+    // unlike a flat-tree parent-chain walk, this also passes through any synthetic folder/library
+    // group node the target got folded into (see buildHierTree/groupLibraryChildren), since those
+    // exist only as HierNode wrappers, never as a real element's own `parent` field.
+    function findAncestorIds(nodes: HierNode[], targetId: string, path: string[] = []): string[] | null {
+        for (const node of nodes) {
+            if (node.id === targetId) return path;
+            if (node.children) {
+                const found = findAncestorIds(node.children, targetId, [...path, node.id]);
+                if (found) return found;
+            }
+        }
+        return null;
+    }
+
+    // Auto-expand the ancestor chain (including any folder/library group it's folded into)
+    // whenever the selected node changes - e.g. a function just created inside a folder via "Add
+    // Function here" should have that folder visibly open, not collapsed around it.
     $effect(() => {
         const key = $selectedKey;
-        const nodes = $treeNodes;
-        if (!key || !nodes.length) return;
-        const nodeMap = new Map(nodes.map(n => [n.key, n]));
-        const toExpand: string[] = [];
-        let cur: TreeNode | undefined = nodeMap.get(key);
-        while (cur?.parent) {
-            toExpand.push(cur.parent);
-            cur = nodeMap.get(cur.parent);
-        }
+        const tree = rawHierTree;
+        if (!key || !tree.length) return;
+        const toExpand = findAncestorIds(tree, key) ?? [];
         // Use untrack so reading expandedIds doesn't make this effect re-run when
         // the user manually collapses a branch (which would immediately re-expand it).
         const current = untrack(() => expandedIds);
@@ -478,6 +490,19 @@
         // particular are meant to have no context menu at all, mirroring the
         // isLibrary guard in nodeMenuOptions.)
         if (node.nodeType === "header" || node.nodeType === "game" || node.nodeType === "include") return opts;
+        if (node.nodeType === "usergroup") {
+            // A folder's synthetic id has no single flat-tree entry to look up (see buildHierTree/
+            // groupLibraryChildren) - node.text is the folder name itself, and moving the whole
+            // block is handled server-side by name rather than by swapping two flat siblings.
+            const folderName = node.text;
+            if (canMoveFunctionFolderUp(folderName)) {
+                opts.push({ label: t("common.moveUp"), action: () => moveFunctionFolderUp(folderName) });
+            }
+            if (canMoveFunctionFolderDown(folderName)) {
+                opts.push({ label: t("common.moveDown"), action: () => moveFunctionFolderDown(folderName) });
+            }
+            return opts;
+        }
         const flat = $treeNodes.find(n => n.key === node.id);
         if (!flat) return opts;
         // The game node itself appears under "_objects" alongside the game's
@@ -547,11 +572,14 @@
             );
         } else if (nt === "object") {
             opts.push(
+                { label: t("elementAdders.objectHere"), action: () => openAddModal("object", id) },
                 { label: t("elementAdders.command"), action: () => createCommand(id) },
                 { label: t("elementAdders.verb"), action: () => createVerb(id) },
                 { label: t("elementAdders.turnScript"), action: () => createTurnScript(id) },
                 { label: t("elementAdders.pageHere"), action: () => openAddModal("page", id) },
             );
+        } else if (nt === "usergroup") {
+            opts.push({ label: t("elementAdders.functionHere"), action: () => openAddModal("function", null, text) });
         } else if (nt === "page" && !$isGamebook) {
             // Text Adventure dialogue pages can nest sub-pages; gamebook pages are
             // always flat, so this adder is TA-only.
