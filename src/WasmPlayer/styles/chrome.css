@@ -260,6 +260,43 @@
 }
 
 #qv-debugger-list {
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+}
+
+/* Column header for the object/walkthrough list — a single "Name" column,
+   so unlike the attribute table's per-column [data-sort-col] headers this
+   just toggles ascending/descending on click (see renderDebuggerList's
+   debuggerListSortAscending). Styled to match .qv-debugger-table thead th
+   below even though it isn't a <table> — the list is a plain <ul> (see
+   .qv-debugger-list-item's doc comment), and adding a real single-column
+   table just for the header would be more markup for no benefit. */
+#qv-debugger-list-sort {
+    display: block;
+    width: 100%;
+    flex-shrink: 0;
+    text-align: left;
+    cursor: pointer;
+    user-select: none;
+    font-size: var(--text-xs);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--color-surface-500);
+    border: none;
+    border-bottom: 1px solid var(--color-surface-300-700);
+    background: none;
+    padding: 0.25rem 0.5rem 0.5rem;
+    margin-bottom: 0.25rem;
+}
+
+#qv-debugger-list-sort:hover {
+    color: var(--color-surface-900-100);
+}
+
+#qv-debugger-list-items {
+    flex: 1 1 auto;
+    min-height: 0;
     overflow-y: auto;
 }
 

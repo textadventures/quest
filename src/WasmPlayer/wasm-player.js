@@ -1042,6 +1042,13 @@ async function openSavesDialog(mode, gameId = WebPlayer.gameId) {
 let debuggerWired = false;
 let debuggerActiveTab = 'Walkthrough';
 let debuggerSelectedItem = null;
+// Sort direction for the left-hand object/walkthrough list's single "Name"
+// column — clicking #qv-debugger-list-sort toggles this (see
+// ensureDebuggerWired). Deliberately not reset when switching tabs/objects
+// (unlike debuggerAttrSort below): it's a display preference for the list
+// itself, not per-object state, so it should stay put as the user browses
+// around, the same way a real file manager's sort column does.
+let debuggerListSortAscending = true;
 // Name of the walkthrough currently running, or null — the source of truth
 // for the Run/Cancel/status UI, *not* the DOM elements themselves. Closing
 // and reopening the dialog (or switching tabs/objects) rebuilds
@@ -1316,12 +1323,20 @@ function renderDebuggerTabs(types) {
 // when a turn has made the currently-selected item (an object that got
 // destroyed, a timer that finished, ...) disappear from its own list.
 function renderDebuggerList() {
-    const list = document.getElementById('qv-debugger-list');
+    const list = document.getElementById('qv-debugger-list-items');
+    const sortLabel = document.querySelector('#qv-debugger-list-sort .qv-debugger-sort-label');
+    if (sortLabel) sortLabel.textContent = 'Name' + (debuggerListSortAscending ? ' ▲' : ' ▼');
+
     const items = debuggerActiveTab === 'Walkthrough'
         ? JSON.parse(Bridge.GetWalkthroughNamesJson())
         : JSON.parse(Bridge.GetDebugObjectsJson(debuggerActiveTab));
+    // .slice() first — GetObjects/GetWalkthroughNamesJson return declaration
+    // order, and refreshDebuggerAfterTurn's `items.includes(...)` check below
+    // (in its own caller) has no need to see that order disturbed.
+    const sorted = items.slice().sort((a, b) => a.localeCompare(b, undefined, { sensitivity: 'base' }));
+    if (!debuggerListSortAscending) sorted.reverse();
 
-    if (!items.length) {
+    if (!sorted.length) {
         list.innerHTML = '<li class="text-sm text-surface-500 px-2 py-1">Nothing here.</li>';
         return items;
     }
@@ -1329,7 +1344,7 @@ function renderDebuggerList() {
     // A plain selectable list, not hyperlinks — .qv-debugger-list-item is a
     // block row with its own hover/selected background (shares
     // .qv-debugger-row-selected with the attribute table below).
-    list.innerHTML = items.map(item => {
+    list.innerHTML = sorted.map(item => {
         const selected = item === debuggerSelectedItem;
         return `<li><button type="button" class="qv-debugger-list-item${selected ? ' qv-debugger-row-selected' : ''}" data-item="${_esc(item)}" aria-selected="${selected}">${_esc(item)}</button></li>`;
     }).join('');
@@ -1629,10 +1644,10 @@ function ensureDebuggerWired() {
     });
 
     // Only needs setting once — #qv-debugger-list itself is never rebuilt
-    // (only its innerHTML, by renderDebuggerList), so this inline width
-    // survives every re-render and even a game restart (the dialog is on
-    // swapInPlayerUi's preserve-list). Subsequent changes come from dragging
-    // the splitter (wireDebuggerSplitter).
+    // (only #qv-debugger-list-items' innerHTML, by renderDebuggerList), so
+    // this inline width survives every re-render and even a game restart
+    // (the dialog is on swapInPlayerUi's preserve-list). Subsequent changes
+    // come from dragging the splitter (wireDebuggerSplitter).
     document.getElementById('qv-debugger-list').style.width = `${debuggerListWidth}px`;
 
     wireDebuggerMoveResize();
@@ -1654,6 +1669,12 @@ function ensureDebuggerWired() {
     });
 
     document.getElementById('qv-debugger-list').addEventListener('click', (e) => {
+        if (e.target.closest('#qv-debugger-list-sort')) {
+            debuggerListSortAscending = !debuggerListSortAscending;
+            renderDebuggerList();
+            return;
+        }
+
         const btn = e.target.closest('[data-item]');
         if (!btn) return;
         debuggerSelectedItem = btn.dataset.item;

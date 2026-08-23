@@ -187,7 +187,10 @@
         <div id="qv-debugger-tabs" class="flex flex-wrap gap-2 mb-4"></div>
 
         <div class="flex flex-1" id="qv-debugger-panes" style="min-height:0">
-            <ul id="qv-debugger-list" class="space-y-1 shrink-0 overflow-y-auto"></ul>
+            <div id="qv-debugger-list" class="shrink-0">
+                <button type="button" id="qv-debugger-list-sort"><span class="qv-debugger-sort-label">Name</span></button>
+                <ul id="qv-debugger-list-items" class="space-y-1"></ul>
+            </div>
             <div id="qv-debugger-splitter" role="separator" aria-orientation="vertical" aria-label="Resize object list"></div>
             <div id="qv-debugger-detail" class="flex-1 overflow-y-auto text-sm">
                 <p class="text-surface-500">Select an item to view details.</p>
