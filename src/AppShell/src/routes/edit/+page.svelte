@@ -179,12 +179,16 @@
         <p class="text-surface-600-400 text-sm">{$loadingStatus}</p>
     </main>
 {:else if $isLoaded}
-    <div class="flex flex-col h-dvh overflow-hidden safe-area-inset">
+    <a
+        href="#workspace-content"
+        class="sr-only focus:not-sr-only focus:fixed focus:top-2 focus:left-2 focus:z-[1000] focus:rounded focus:bg-primary-500 focus:text-white focus:px-3 focus:py-2 focus:text-sm"
+    >{t("editPage.skipToContent")}</a>
+    <main class="flex flex-col h-dvh overflow-hidden safe-area-inset">
         <Toolbar />
         <BackupBanner />
         <LibraryReloadBanner />
         <FileChangedExternallyBanner />
-        <div class="flex flex-1 overflow-hidden" oninput={handleFieldInput} onfocusout={clearFieldEditing}>
+        <div id="workspace-content" tabindex="-1" class="flex flex-1 overflow-hidden" oninput={handleFieldInput} onfocusout={clearFieldEditing}>
             {#if $codeViewPanelOpen}
                 <CodeViewPanel onclose={() => codeViewPanelOpen.set(false)} />
             {:else}
@@ -210,7 +214,7 @@
                 </div>
             {/if}
         </div>
-    </div>
+    </main>
 
     {#if $addElementModal}
         <AddElementModal
