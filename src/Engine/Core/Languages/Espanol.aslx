@@ -737,5 +737,7 @@
   <template name="RestartingBusy">Reiniciando…</template>
   <template name="DeleteSaveConfirm">¿Eliminar «[name]»? Esto no se puede deshacer.</template>
   <template name="SavedGameDefaultLabel">Partida guardada — [timestamp]</template>
+  <template name="CommandInputLabel">Escribe tu comando</template>
+  <template name="ShowPanesButton">Mostrar paneles</template>
 
 </library>

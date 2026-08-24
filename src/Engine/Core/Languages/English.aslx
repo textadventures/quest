@@ -526,5 +526,7 @@
   <template name="RestartingBusy">Restarting…</template>
   <template name="DeleteSaveConfirm">Delete "[name]"? This can't be undone.</template>
   <template name="SavedGameDefaultLabel">Saved game — [timestamp]</template>
+  <template name="CommandInputLabel">Type your command</template>
+  <template name="ShowPanesButton">Show panels</template>
 
 </library>

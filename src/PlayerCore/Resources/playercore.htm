@@ -3,7 +3,7 @@
         <div id="controlButtons">
             <button id="cmdDebug" style="display: none" type="button">Debug</button>
             <button id="cmdSave" type="button" data-chrome-key="SaveLoadTitle">Save / Load</button>
-            <button id="cmdShowPanes" type="button">&#9776;</button>
+            <button id="cmdShowPanes" type="button" data-chrome-key-aria-label="ShowPanesButton" aria-label="Show panels">&#9776;</button>
         </div>
         <div id="location">
         </div>
@@ -87,23 +87,24 @@
                                     <tr>
                                         <td>
                                             <button class="compassbutton" id="cmdCompassNW" onclick="compassClick(_compassDirs[0]);"
-                                                    title="go northwest"
+                                                    title="go northwest" aria-label="go northwest"
                                                     type="button"></button>
                                         </td>
                                         <td>
                                             <button class="compassbutton" id="cmdCompassN" onclick="compassClick(_compassDirs[1]);"
-                                                    title="go north"
+                                                    title="go north" aria-label="go north"
                                                     type="button"></button>
                                         </td>
                                         <td>
                                             <button class="compassbutton" id="cmdCompassNE" onclick="compassClick(_compassDirs[2]);"
-                                                    title="go northeast"
+                                                    title="go northeast" aria-label="go northeast"
                                                     type="button"></button>
                                         </td>
                                     </tr>
                                     <tr>
                                         <td>
                                             <button class="compassbutton" id="cmdCompassW" onclick="compassClick(_compassDirs[3]);" title="go west"
+                                                    aria-label="go west"
                                                     type="button"></button>
                                         </td>
                                         <td>
@@ -111,23 +112,24 @@
                                         </td>
                                         <td>
                                             <button class="compassbutton" id="cmdCompassE" onclick="compassClick(_compassDirs[4]);" title="go east"
+                                                    aria-label="go east"
                                                     type="button"></button>
                                         </td>
                                     </tr>
                                     <tr>
                                         <td>
                                             <button class="compassbutton" id="cmdCompassSW" onclick="compassClick(_compassDirs[5]);"
-                                                    title="go southwest"
+                                                    title="go southwest" aria-label="go southwest"
                                                     type="button"></button>
                                         </td>
                                         <td>
                                             <button class="compassbutton" id="cmdCompassS" onclick="compassClick(_compassDirs[6]);"
-                                                    title="go south"
+                                                    title="go south" aria-label="go south"
                                                     type="button"></button>
                                         </td>
                                         <td>
                                             <button class="compassbutton" id="cmdCompassSE" onclick="compassClick(_compassDirs[7]);"
-                                                    title="go southeast"
+                                                    title="go southeast" aria-label="go southeast"
                                                     type="button"></button>
                                         </td>
                                     </tr>
@@ -138,10 +140,12 @@
                                     <tr>
                                         <td>
                                             <button class="compassbutton" id="cmdCompassU" onclick="compassClick(_compassDirs[8]);" title="go up"
+                                                    aria-label="go up"
                                                     type="button"></button>
                                         </td>
                                         <td>
                                             <button class="compassbutton" id="cmdCompassIn" onclick="compassClick(_compassDirs[10]);" title="go in"
+                                                    aria-label="go in"
                                                     type="button">in
                                             </button>
                                         </td>
@@ -149,11 +153,12 @@
                                     <tr>
                                         <td>
                                             <button class="compassbutton" id="cmdCompassD" onclick="compassClick(_compassDirs[9]);" title="go down"
+                                                    aria-label="go down"
                                                     type="button"></button>
                                         </td>
                                         <td>
                                             <button class="compassbutton" id="cmdCompassOut" onclick="compassClick(_compassDirs[11]);"
-                                                    title="go out"
+                                                    title="go out" aria-label="go out"
                                                     type="button">out
                                             </button>
                                         </td>
@@ -174,7 +179,7 @@
     <div id="gamePanel"></div>
     <div id="gridPanel"></div>
     <div id="gameContent">
-        <div id="divOutput">
+        <div id="divOutput" role="log" aria-live="polite">
             <div data-divcount="0" id="outputData" style="display: none"></div>
             <h1 id="gameTitle">
                 Loading...</h1>
@@ -189,6 +194,7 @@
                 <input autofocus id="txtCommand" onkeydown="return commandKey(event);" placeholder="Type here..."
                        type="text"
                        autocapitalize="off"
+                       data-chrome-key-aria-label="CommandInputLabel" aria-label="Type your command"
                        x-webkit-speech/>
             </div>
         </div>

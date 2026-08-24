@@ -125,7 +125,7 @@
     </div>
 </div>
 
-<dialog id="qv-saves" class="qv-chrome" data-mode="boot">
+<dialog id="qv-saves" class="qv-chrome" data-mode="boot" aria-labelledby="qv-saves-heading-boot">
     <!-- ICONS_SPRITE: spliced in at build time by scripts/build-icons.mjs (into
          generated/index.html) — a hidden <symbol> defs block, kept inside
          #qv-saves so it survives the dialog's detach/reattach around the
@@ -134,8 +134,8 @@
          Chrome), so the sprite must live in the same document as its <use>s. -->
     <div class="card preset-filled-surface-100-900 w-full p-6 space-y-4" data-theme="wintry">
         <div class="flex items-start justify-between gap-4">
-            <h2 class="h3" data-mode-text="boot" data-chrome-key="ContinueYourGamePrompt">Continue your game?</h2>
-            <h2 class="h3 qv-manage-only" data-mode-text="manage" data-chrome-key="SaveLoadTitle">Save / Load</h2>
+            <h2 class="h3" id="qv-saves-heading-boot" data-mode-text="boot" data-chrome-key="ContinueYourGamePrompt">Continue your game?</h2>
+            <h2 class="h3 qv-manage-only" id="qv-saves-heading-manage" data-mode-text="manage" data-chrome-key="SaveLoadTitle">Save / Load</h2>
             <button id="qv-saves-close" type="button" class="qv-manage-only btn-icon preset-tonal-surface" aria-label="Close" data-chrome-key-aria-label="CloseDialog">
                 <svg class="qv-icon" aria-hidden="true"><use href="#x"></use></svg>
             </button>
@@ -152,7 +152,7 @@
         <div class="qv-manage-only space-y-3">
             <hr class="hr">
             <div class="flex gap-2">
-                <input id="qv-saves-name-input" class="input" type="text" placeholder="Save name" autocomplete="off" data-chrome-key-placeholder="SaveNamePlaceholder">
+                <input id="qv-saves-name-input" class="input" type="text" placeholder="Save name" aria-label="Save name" autocomplete="off" data-chrome-key-placeholder="SaveNamePlaceholder" data-chrome-key-aria-label="SaveNamePlaceholder">
                 <button id="qv-saves-save-new" type="button" class="btn preset-filled-primary-500" data-chrome-key="SaveNew">Save new</button>
             </div>
             <div class="flex gap-2">
@@ -175,10 +175,10 @@
      so the whole card is a flex column filling exactly the applied
      width/height — #qv-debugger-panes (and List/Detail inside it) flex-fill
      the remaining vertical space rather than a fixed rem height. -->
-<dialog id="questVivaDebugger" class="qv-chrome">
+<dialog id="questVivaDebugger" class="qv-chrome" aria-labelledby="qv-debugger-heading">
     <div class="card preset-filled-surface-100-900 p-6 flex flex-col h-full" id="qv-debugger-card" data-theme="wintry">
         <div id="qv-debugger-titlebar" class="flex items-start justify-between gap-4 mb-4">
-            <h2 class="h3">Debugger</h2>
+            <h2 class="h3" id="qv-debugger-heading">Debugger</h2>
             <button id="qv-debugger-close" type="button" class="btn-icon preset-tonal-surface" aria-label="Close">
                 <svg class="qv-icon" aria-hidden="true"><use href="#x"></use></svg>
             </button>

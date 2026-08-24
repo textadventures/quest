@@ -31,6 +31,8 @@ public static class ChromeStrings
         ["RestartingBusy"] = "Restarting…",
         ["DeleteSaveConfirm"] = "Delete \"[name]\"? This can't be undone.",
         ["SavedGameDefaultLabel"] = "Saved game — [timestamp]",
+        ["CommandInputLabel"] = "Type your command",
+        ["ShowPanesButton"] = "Show panels",
     };
 
     public static Dictionary<string, string> Resolve(WorldModel worldModel)
