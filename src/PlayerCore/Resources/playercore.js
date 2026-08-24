@@ -463,6 +463,22 @@ function runCommand() {
     }
 }
 
+// jQuery UI's dialog widget puts role="dialog"/aria-labelledby on the wrapper it
+// creates around #msgbox (accessible via the "widget" API, not #msgbox itself -
+// see _createWrapper in jquery-ui.min.js), and wires aria-labelledby to the title
+// bar automatically. It does NOT wire the dialog's own body text (#msgboxCaption,
+// set separately by each caller below) to anything - a screen reader landing on
+// the dialog's first focusable control (typically a button) has no guarantee of
+// ever reading that text, which is what "the dialog isn't announced" looks like
+// in practice even though the dialog *itself* technically is. aria-describedby
+// closes that gap. Centralised here since all four msgbox-opening functions below
+// share the same underlying element and the same gap.
+function openMsgbox(options) {
+    $("#msgbox").dialog(options);
+    $("#msgbox").dialog("widget").attr("aria-describedby", "msgboxCaption");
+    $("#msgbox").dialog("open");
+}
+
 function showQuestion(title) {
     $("#msgboxCaption").html(title);
 
@@ -489,8 +505,7 @@ function showQuestion(title) {
         }    // suppresses "close" button
     };
 
-    $("#msgbox").dialog(msgboxOptions);
-    $("#msgbox").dialog("open");
+    openMsgbox(msgboxOptions);
 }
 
 function uiShow(element) {
@@ -1730,8 +1745,7 @@ function showPopup(title, text) {
         closeOnEscape: false,
     };
 
-    $('#msgbox').dialog(msgboxOptions);
-    $('#msgbox').dialog('open');
+    openMsgbox(msgboxOptions);
 }
 
 function showPopupCustomSize(title, text, width, height) {
@@ -1754,8 +1768,7 @@ function showPopupCustomSize(title, text, width, height) {
         closeOnEscape: false,
     };
 
-    $('#msgbox').dialog(msgboxOptions);
-    $('#msgbox').dialog('open');
+    openMsgbox(msgboxOptions);
 }
 
 function showPopupFullscreen(title, text) {
@@ -1778,8 +1791,7 @@ function showPopupFullscreen(title, text) {
         closeOnEscape: false,
     };
 
-    $('#msgbox').dialog(msgboxOptions);
-    $('#msgbox').dialog('open');
+    openMsgbox(msgboxOptions);
 }
 
 // Log functions
