@@ -582,6 +582,8 @@
   <template name="RestartingBusy">Startet neu…</template>
   <template name="DeleteSaveConfirm">„[name]“ löschen? Das kann nicht rückgängig gemacht werden.</template>
   <template name="SavedGameDefaultLabel">Spielstand — [timestamp]</template>
+  <template name="CommandInputLabel">Gib deinen Befehl ein</template>
+  <template name="ShowPanesButton">Bereiche anzeigen</template>
 
   <!-- Explicit copies of English.aslx's own values (both already reached via
        the <include ref="English.aslx"/> above, so this changes nothing at
