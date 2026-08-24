@@ -465,17 +465,22 @@ function runCommand() {
 
 // jQuery UI's dialog widget puts role="dialog"/aria-labelledby on the wrapper it
 // creates around #msgbox (accessible via the "widget" API, not #msgbox itself -
-// see _createWrapper in jquery-ui.min.js), and wires aria-labelledby to the title
-// bar automatically. It does NOT wire the dialog's own body text (#msgboxCaption,
-// set separately by each caller below) to anything - a screen reader landing on
-// the dialog's first focusable control (typically a button) has no guarantee of
-// ever reading that text, which is what "the dialog isn't announced" looks like
-// in practice even though the dialog *itself* technically is. aria-describedby
-// closes that gap. Centralised here since all four msgbox-opening functions below
-// share the same underlying element and the same gap.
+// see _createWrapper in jquery-ui.min.js), wires aria-labelledby to the title bar
+// automatically, and moves focus to the first button in the button pane on open -
+// never to the wrapper itself. It does NOT wire the dialog's own body text
+// (#msgboxCaption, set separately by each caller below) to anything.
+//
+// aria-describedby on the wrapper alone isn't enough: a screen reader computes a
+// focused element's accessible description from *that element's own*
+// aria-describedby, not an ancestor's, and jQuery UI's initial focus lands on a
+// button, not the wrapper - confirmed by manual testing (VoiceOver/NVDA read the
+// dialog's title on open but never the actual message). Setting it on the buttons
+// too closes that gap regardless of which one ends up focused.
 function openMsgbox(options) {
     $("#msgbox").dialog(options);
-    $("#msgbox").dialog("widget").attr("aria-describedby", "msgboxCaption");
+    var $widget = $("#msgbox").dialog("widget");
+    $widget.attr("aria-describedby", "msgboxCaption");
+    $widget.find(".ui-dialog-buttonpane button").attr("aria-describedby", "msgboxCaption");
     $("#msgbox").dialog("open");
 }
 
