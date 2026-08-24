@@ -38,6 +38,16 @@ node src/WasmPlayer/dev-server.mjs --release    # Release/AOT build
 
 Tests use MSTest with Moq (mocking) and Shouldly (assertions).
 
+### e2e tests (`tests/e2e/`)
+
+Playwright scripts (`verify-*.mjs`) exercise AppShell/WasmPlayer/WebPlayer/Electron end-to-end against a running dev server.
+
+- **Assert for real.** Wrap steps in a `try`/`catch`/`finally`, `throw new Error(...)` on any mismatch, and set `process.exitCode = 1` in the `catch` — matching the ~55 existing scripts' convention. A script that only `console.log`s the actual value next to an "(expect X)" comment never compares them, so a regression prints PASS-shaped output and the script still exits 0.
+- Install any tooling a script needs (e.g. Playwright) inside this repo, never by borrowing a sibling repo's `node_modules`.
+- A stale DOM-shape assumption (e.g. a locator matching `input[type=text]` when a control was later changed to a `<textarea>`) is a common, easy-to-miss cause of a previously-passing script suddenly failing after an unrelated UI PR — check what UI changed before assuming a real regression.
+
+For AppShell (Svelte/TS) changes specifically, also run `npm run lint` (eslint) in `src/AppShell` before calling the work done — `npm run check` (svelte-check) and `dotnet test` passing is not a proxy for lint passing; they check different things.
+
 ## Documentation Site (site/)
 
 Separate Astro/Starlight project for the documentation website:
@@ -89,6 +99,10 @@ Implications when working on `Engine/Core/*.aslx`:
 - A fix/restoration to a Core.aslx function only affects games saved (in the Editor) or newly created *after* the change lands. It cannot retroactively repair or break anything already inlined into a previously published `.quest` file.
 - Conversely, current Core.aslx bugs *do* matter for anyone editing or creating a game right now (before it's published) — the Editor loads library functions live and only inlines them on save/publish. So "restore this broken current-Core.aslx function" is a real, valid fix for the authoring experience — just describe it as that, not as a bug affecting already-shipped games.
 
+**Editing `.aslx` files programmatically:** they are UTF-8 **BOM + CRLF**. A Python text-mode write (`open(path, 'w')`) silently strips the BOM and converts line endings to LF, corrupting/rewriting the whole file. Use `open(path, newline='')` (and preserve the BOM) for both reads and writes.
+
+**Progressive disclosure convention:** feature-gated content (`onlydisplayif game.feature_*`) is deliberately *not* also `<advanced/>`-flagged — the feature opt-in on the object/type is itself the disclosure mechanism (Player score/health/money commands are the model this follows).
+
 ## Git Workflow
 
 `main` is a protected branch (required status check `build_and_test`, required PR review, `enforce_admins` on) — direct pushes are rejected outright, including from repo admins. All changes, however small, go through a feature branch + PR.
@@ -97,7 +111,7 @@ Implications when working on `Engine/Core/*.aslx`:
 
 Releases are managed by [release-please](https://github.com/googleapis/release-please) (`.github/workflows/release-please.yml`, config in `release-please-config.json` / `.release-please-manifest.json`). There's no manual `VERSION`-bump PR:
 
-1. PRs must have a [Conventional Commits](https://www.conventionalcommits.org/)-prefixed title (`fix:`, `feat:`, `chore:`, etc.) — enforced by `pr-title-lint.yml`, which also restricts the optional scope (e.g. `feat(AppShell): ...`) to an exact-case allowlist of project names, so scoped changelog entries cluster and capitalize consistently. Since PRs are squash-merged, the PR title becomes the commit message on `main` that release-please parses.
+1. PRs must have a [Conventional Commits](https://www.conventionalcommits.org/)-prefixed title (`fix:`, `feat:`, `chore:`, etc.) — enforced by `pr-title-lint.yml`, which also restricts the optional scope (e.g. `feat(AppShell): ...`) to an exact-case allowlist of project names, so scoped changelog entries cluster and capitalize consistently. Since PRs are squash-merged, the PR title becomes the commit message on `main` that release-please parses. release-please's default changelog config surfaces `fix:` commits under "Bug Fixes" but hides `test:` (and `chore:`/`docs:`/etc.) from release notes entirely — a PR that only changes test files (e.g. a stale `tests/e2e/*.mjs` locator) should be titled `test:`, not `fix:`, even when it fixes a bug in the test, so the changelog doesn't fill up with things no user could observe. The `e2e` scope exists for exactly this, since e2e scripts span multiple projects and don't belong to one component.
 2. Every push to `main` updates a standing "release PR" that bumps `VERSION` and `CHANGELOG.md` from the commits merged since the last release.
 3. Merging that release PR *is* the release: release-please tags it directly (e.g. `v6.0.0-beta.36`), which triggers `docker-publish`, `nuget-publish`, `deploy-play`, and `electron-publish`, which build/push the Docker image, publish NuGet packages, deploy play.questviva.com, package the Electron desktop app, and attach a GitHub Release with a changelog generated from the PR titles. The version is also embedded in the binary at build time and displayed at `/about`.
 
@@ -121,3 +135,6 @@ Same tag also drives the AppShell deploy on textadventures.co.uk: `deploy-play` 
 - Version is stored in the `VERSION` file and embedded as a resource via Common.csproj
 - CI runs on GitHub Actions (build-and-test on push/PR to main for `src/` and `tests/` changes)
 - Library packages (`QuestViva.Common`, `QuestViva.Engine`, `QuestViva.Legacy`, `QuestViva.PlayerCore`) are published to NuGet.org on each release tag via the `nuget-publish` workflow
+- WasmPlayer/WasmEditor run **single-threaded** (no `WasmEnableThreads`) — a synchronous C# call into the engine (e.g. `GameSaver.Save()`) blocks the one UI thread for its full duration. Any busy-indicator shown right before such a call needs an explicit paint-yield first (e.g. two chained `requestAnimationFrame`s), or the label update sits queued and unpainted for the whole blocking call instead of actually appearing.
+- A `[JSExport]` method cannot return `Task<byte[]>` — the interop source generator rejects it (`SYSLIB1072`, arrays aren't supported inside `Task<T>`). Split into an async method that stashes the bytes in a field, plus a separate synchronous method that returns the `byte[]` directly.
+- When constructing a new `GameData` (`src/Common/IGameDataProvider.cs`) from an existing one, explicitly copy its init-only `IsCompiled`/`ResourceRoot` properties too — they're set by the original `IGameDataProvider`, not the constructor, and are silently dropped by naive reconstruction.
