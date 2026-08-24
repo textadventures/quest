@@ -671,13 +671,15 @@
             {/if}
         </div>
         <DropdownMenu items={libraryMenuItems}>
-            {#snippet trigger(toggle)}
+            {#snippet trigger(toggle, open)}
                 <button
                     type="button"
                     class="size-6 flex-shrink-0 flex items-center justify-center rounded {$showLibraryElements ? "text-primary-500" : "text-surface-400"} hover:text-primary-500 hover:bg-surface-200-800"
                     onclick={toggle}
                     title={t("treePanel.viewOptions")}
                     aria-label={t("treePanel.viewOptions")}
+                    aria-haspopup="menu"
+                    aria-expanded={open}
                 ><SlidersHorizontal class="size-3.5" /></button>
             {/snippet}
         </DropdownMenu>

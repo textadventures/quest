@@ -136,6 +136,7 @@
                     type="button"
                     class="text-surface-600-400 hover:text-primary-600-400 flex-shrink-0"
                     title={t("exitsEditor.editExit")}
+                    aria-label={t("exitsEditor.editExit")}
                     onclick={() => selectNode(dir.exitKey!)}
                 ><Pencil size={11} /></button>
             </div>
@@ -154,6 +155,7 @@
                     type="button"
                     class="btn btn-sm preset-outlined-error-500 px-1 py-0 text-xs leading-none flex-shrink-0"
                     title={t("common.delete")}
+                    aria-label={t("common.delete")}
                     onclick={() => void deleteExit(dir.exitKey!, dir.direction, dir.to, dir.lookOnly)}
                 >×</button>
             </div>
@@ -195,6 +197,8 @@
                     <button
                         type="button"
                         class="text-xs text-surface-600-400 hover:text-surface-600-400"
+                        title={t("common.close")}
+                        aria-label={t("common.close")}
                         onclick={() => { openDirection = null; }}
                     >✕</button>
                 </div>
@@ -255,12 +259,14 @@
                                 type="button"
                                 class="btn btn-sm preset-outlined-primary-500 px-1 py-0 text-xs leading-none flex items-center"
                                 title={t("exitsEditor.editExit")}
+                                aria-label={t("exitsEditor.editExit")}
                                 onclick={() => selectNode(exit.key)}
                             ><Pencil size={12} /></button>
                             <button
                                 type="button"
                                 class="btn btn-sm preset-outlined-primary-500 px-1 py-0 text-xs leading-none"
                                 title={t("common.moveUp")}
+                                aria-label={t("common.moveUp")}
                                 disabled={i === 0}
                                 onclick={() => moveUp(i)}
                             >↑</button>
@@ -268,6 +274,7 @@
                                 type="button"
                                 class="btn btn-sm preset-outlined-primary-500 px-1 py-0 text-xs leading-none"
                                 title={t("common.moveDown")}
+                                aria-label={t("common.moveDown")}
                                 disabled={i === data.allExits.length - 1}
                                 onclick={() => moveDown(i)}
                             >↓</button>
@@ -275,6 +282,7 @@
                                 type="button"
                                 class="btn btn-sm preset-tonal-error px-1 py-0 text-xs leading-none"
                                 title={t("common.delete")}
+                                aria-label={t("common.delete")}
                                 onclick={() => void deleteExit(exit.key, exit.alias, exit.to, exit.lookOnly)}
                             >×</button>
                         </div>

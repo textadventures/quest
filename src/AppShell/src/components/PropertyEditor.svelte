@@ -481,11 +481,13 @@
         {/each}
         <span class="w-px h-5 bg-surface-200-800 mx-0.5"></span>
         <DropdownMenu items={buildInsertMenuItems(commands, attribute, controlType)} align="left">
-            {#snippet trigger(toggle)}
+            {#snippet trigger(toggle, open)}
                 <button
                     type="button"
                     class="btn btn-sm preset-outlined-primary-500 text-xs px-2 py-0.5 gap-1"
                     onclick={toggle}
+                    aria-haspopup="menu"
+                    aria-expanded={open}
                 ><ListPlus size={14} aria-hidden="true" />{t("common.insert")}<ChevronDown size={12} aria-hidden="true" /></button>
             {/snippet}
         </DropdownMenu>
