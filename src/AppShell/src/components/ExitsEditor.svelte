@@ -250,7 +250,7 @@
                         {:else}
                             <span class="flex-1 text-xs px-1.5 py-1 pr-28 text-surface-600-400 truncate">{exit.alias ?? t("common.none")} → {exit.lookOnly ? t("exitsEditor.lookOnly") : t("exitsEditor.nowhere")}</span>
                         {/if}
-                        <div class="absolute right-1 top-1/2 -translate-y-1/2 flex gap-0.5 opacity-0 pointer-events-none group-hover:opacity-100 group-hover:pointer-events-auto transition-opacity z-10">
+                        <div class="absolute right-1 top-1/2 -translate-y-1/2 flex gap-0.5 opacity-0 pointer-events-none group-hover:opacity-100 group-hover:pointer-events-auto group-focus-within:opacity-100 group-focus-within:pointer-events-auto transition-opacity z-10">
                             <button
                                 type="button"
                                 class="btn btn-sm preset-outlined-primary-500 px-1 py-0 text-xs leading-none flex items-center"
