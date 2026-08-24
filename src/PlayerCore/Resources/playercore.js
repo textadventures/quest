@@ -57,8 +57,17 @@ function initPlayerUI() {
         }
     });
 
-    $("#gameBorder button").button();
+    // Excludes the accordion header buttons (.accordion-header-text) - the
+    // multiOpenAccordion plugin below already styles those itself
+    // (.ui-accordion-header etc.), and jQuery UI's own .button() widget would
+    // wrap their text in a nested .ui-button-text span, breaking the plain
+    // .html(text) writes setInterfaceString does against them.
+    $("#gameBorder button:not(.accordion-header-text)").button();
     $("#gamePanesRunning").multiOpenAccordion({active: [0, 1, 2, 3]});
+    $("#gamePanesRunning").on("multiopenaccordiontabshown multiopenaccordiontabhidden", function (event, ui) {
+        ui.tab.children("button.accordion-header-text")
+            .attr("aria-expanded", event.type === "multiopenaccordiontabshown");
+    });
     showStatusVisible(false);
 
     const cmdSave = document.getElementById("cmdSave");
@@ -1170,16 +1179,16 @@ function addExternalStylesheet(source) {
 function setInterfaceString(name, text) {
     switch (name) {
         case "InventoryLabel":
-            $("#inventoryLabel span.accordion-header-text").html(text);
+            $("#inventoryLabel button.accordion-header-text").html(text);
             break;
         case "StatusLabel":
-            $("#statusVarsLabel span.accordion-header-text").html(text);
+            $("#statusVarsLabel button.accordion-header-text").html(text);
             break;
         case "PlacesObjectsLabel":
-            $("#placesObjectsLabel span.accordion-header-text").html(text);
+            $("#placesObjectsLabel button.accordion-header-text").html(text);
             break;
         case "CompassLabel":
-            $("#compassLabel span.accordion-header-text").html(text);
+            $("#compassLabel button.accordion-header-text").html(text);
             break;
         case "InButtonLabel":
             $("#cmdCompassIn span").html(text);
