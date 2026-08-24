@@ -20,7 +20,10 @@ const baseRef = process.argv[2] || 'origin/main';
 const repoRoot = execFileSync('git', ['rev-parse', '--show-toplevel'], { encoding: 'utf8' }).trim();
 const coverageMapPath = join(import.meta.dirname, 'coverage-map.json');
 
-const changedFiles = execFileSync('git', ['diff', '--name-only', `${baseRef}...HEAD`], { cwd: repoRoot, encoding: 'utf8' })
+// Two-dot form (base vs. working tree directly), not `<base>...HEAD` - this deliberately
+// also picks up staged/uncommitted changes, since the point is to check before committing/
+// pushing, not just what's already landed in a commit.
+const changedFiles = execFileSync('git', ['diff', '--name-only', baseRef], { cwd: repoRoot, encoding: 'utf8' })
     .split('\n')
     .map(f => f.trim())
     .filter(Boolean);

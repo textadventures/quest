@@ -4,11 +4,11 @@
 // what find-affected-tests.mjs reads.
 //
 // Regenerate after a significant AppShell restructuring (new components, renamed
-// files) so the map doesn't drift too far from reality — there's no automatic
-// nightly regeneration (see e2e.yml's `refresh_coverage_map` workflow_dispatch-only
-// job for an on-demand way to produce fresh per-script JSON in CI).
+// files) so the map doesn't drift too far from reality. There's no automated
+// regeneration yet - to refresh it, run the appshell_chromium job's script list
+// locally against a dev server with QUEST_TOUCHED_FILES_DIR set, then:
 //
-// Run: node tests/e2e/build-coverage-map.mjs <touched-files-dir> [output-path]
+//   node tests/e2e/build-coverage-map.mjs <touched-files-dir> [output-path]
 import { readFileSync, readdirSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
 
