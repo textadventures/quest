@@ -975,6 +975,7 @@
                             <textarea
                                 id={textProcessorTextareaId(ctrl.subAttribute)}
                                 autocapitalize="off"
+                                aria-label={label}
                                 class="input text-xs py-0.5 px-1.5 flex-1 min-h-32 resize-y"
                                 value={attrValue(ctrl.subAttribute) ?? ""}
                                 onchange={(e) => onTextChange(ctrl.subAttribute!, "richtext", (e.target as HTMLTextAreaElement).value)}
@@ -983,6 +984,7 @@
                     {:else}
                         <textarea
                             autocapitalize="off"
+                            aria-label={label}
                             class="input text-xs py-0.5 px-1.5 w-full min-h-24 resize-y"
                             value={attrValue(ctrl.subAttribute) ?? ""}
                             onchange={(e) => onTextChange(ctrl.subAttribute!, "richtext", (e.target as HTMLTextAreaElement).value)}
@@ -992,6 +994,7 @@
                     <input
                         type="text"
                         autocapitalize="off"
+                        aria-label={label}
                         class="input text-xs py-0.5 px-1.5 w-full"
                         value={attrValue(ctrl.subAttribute) ?? ""}
                         onchange={(e) => onTextChange(ctrl.subAttribute!, "textbox", (e.target as HTMLInputElement).value)}
@@ -1000,12 +1003,15 @@
                     <input
                         type="text"
                         autocapitalize="off"
+                        aria-label={label}
                         class="input text-xs py-0.5 px-1.5 w-full"
                         value={attrValue(ctrl.subAttribute) ?? ""}
                         onchange={(e) => onPatternTextChange(ctrl.subAttribute!, (e.target as HTMLInputElement).value)}
                     />
                 {:else if subEditorType === "script" && ctrl.subAttribute !== null && $selectedKey !== null}
-                    <ScriptEditor elementKey={$selectedKey} attribute={ctrl.subAttribute} />
+                    <div role="group" aria-label={label} class="contents">
+                        <ScriptEditor elementKey={$selectedKey} attribute={ctrl.subAttribute} />
+                    </div>
                 {:else if subEditorType === "boolean" && ctrl.subAttribute !== null}
                     <label class="flex items-center gap-2">
                         <input
@@ -1017,12 +1023,14 @@
                         <span class="text-xs text-surface-600-400">{ctrl.checkboxCaption ?? ctrl.subAttribute}</span>
                     </label>
                 {:else if subEditorType === "scriptdictionary" && ctrl.subAttribute !== null && $selectedKey !== null}
-                    <ScriptDictionaryEditor
-                        elementKey={$selectedKey}
-                        attribute={ctrl.subAttribute}
-                        value={attrValue(ctrl.subAttribute)}
-                        keySource={ctrl.source === "object" ? "object" : "text"}
-                    />
+                    <div role="group" aria-label={label} class="contents">
+                        <ScriptDictionaryEditor
+                            elementKey={$selectedKey}
+                            attribute={ctrl.subAttribute}
+                            value={attrValue(ctrl.subAttribute)}
+                            keySource={ctrl.source === "object" ? "object" : "text"}
+                        />
+                    </div>
                 {/if}
             </div>
         {:else}
