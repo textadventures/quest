@@ -330,6 +330,7 @@ function initPlayerUI() {
 
 function loadHtml(html) {
     $("#divOutput").html(html);
+    makeCmdlinksFocusable($("#divOutput"));
     // The injected HTML carries its own divOutputAlign<N> ids from whenever the
     // game was saved, but _currentDiv/_divCount (used by addText/createNewDiv)
     // are untouched by the line above. If a div was already created before this
@@ -941,8 +942,22 @@ function addText(text) {
     if (savingTranscript && !noTranscript) {
         writeToTranscript(text);
     }
-    getCurrentDiv().append(text);
+    var $div = getCurrentDiv();
+    $div.append(text);
+    makeCmdlinksFocusable($div);
     $("#divOutput").css("min-height", $("#divOutput").height());
+}
+
+// .cmdlink links (.elementmenu/.exitlink/.commandlink/bare ShowMenu ones - see the
+// keydown handler above) come from Engine/Core/*.aslx, which is inlined into each
+// game at save/publish time - a game published before tabindex="0" was added there
+// (see CLAUDE.md's Core library semantics) still emits links with no tabindex, so
+// they'd never be reachable by keyboard no matter how new a *player* build runs
+// them. Unlike that markup, this file is shared player-chrome JS with no per-game
+// snapshot, so patching tabindex on here at the point each link enters the DOM
+// closes the gap for every already-published game too, not just newly-saved ones.
+function makeCmdlinksFocusable($scope) {
+    $scope.find("a.cmdlink:not([tabindex])").attr("tabindex", "0");
 }
 
 function createNewDiv(alignment) {
