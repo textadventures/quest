@@ -2361,8 +2361,19 @@ function Grid_DrawShape(id, border, fill, opacity) {
 
 (function ($) {
 
+    // The element that opened the currently-shown menu, so keyboard close paths
+    // (Escape/Tab) and the click-outside handler below can return focus to it -
+    // otherwise focus is dropped to <body> and a keyboard user loses their place.
+    var _jjmenuInvoker = null;
+
+    function closeMenu(restoreFocus) {
+        $("div[id^=jjmenu]").remove();
+        if (restoreFocus && _jjmenuInvoker) _jjmenuInvoker.focus();
+        _jjmenuInvoker = null;
+    }
+
     $(document).click(function (event) {
-        if (event.button != 2) $("div[id^=jjmenu]").remove();
+        if (event.button != 2) closeMenu(false);
     });
 
     $.fn.jjmenu = function (param) {
@@ -2370,13 +2381,13 @@ function Grid_DrawShape(id, border, fill, opacity) {
             event.preventDefault();
             event.stopPropagation();
             $(this).jjmenu_popup(param);
-            $(this).blur();
             return false;
         });
     };
 
     $.fn.jjmenu_popup = function (param) {
         var el = this;
+        _jjmenuInvoker = el.get(0);
 
         if (typeof param === "undefined") {
             var verbs = el.data("verbs");
@@ -2399,6 +2410,7 @@ function Grid_DrawShape(id, border, fill, opacity) {
 
         m.className = "jjmenu";
         m.id = "jjmenu_main";
+        m.setAttribute("role", "menu");
         $(m).css({display: 'none'});
         $(document.body).append(m);
 
@@ -2410,6 +2422,7 @@ function Grid_DrawShape(id, border, fill, opacity) {
 
         checkPosition();
         showMenu();
+        $(ms).children().first().trigger("focus");
 
         function positionMenu() {
             var pos = $(el).offset();
@@ -2473,8 +2486,24 @@ function Grid_DrawShape(id, border, fill, opacity) {
             $(m).fadeIn(speed);
         }
 
+        function activateItem(item, n) {
+            closeMenu(false);
+            n.action.callback(n.title);
+        }
+
+        function moveFocus(fromItem, delta) {
+            var items = $(ms).children().get();
+            var index = items.indexOf(fromItem);
+            var next = items[(index + delta + items.length) % items.length];
+            $(next).trigger("focus");
+        }
+
         function putItem(n) {
             var item = document.createElement('div');
+            item.className = "jj_menu_item";
+            item.setAttribute("role", "menuitem");
+            item.tabIndex = -1;
+
             $(item).hover(function () {
                     $(this).addClass("jj_menu_item_hover");
                 },
@@ -2482,16 +2511,45 @@ function Grid_DrawShape(id, border, fill, opacity) {
                     $(this).removeClass("jj_menu_item_hover");
                 });
 
+            $(item).on("focus", function () {
+                $(this).addClass("jj_menu_item_hover");
+            }).on("blur", function () {
+                $(this).removeClass("jj_menu_item_hover");
+            });
+
             $(item).click(function (event) {
                 event.stopPropagation();
-                $("div[id^=jjmenu]").remove();
-                n.action.callback(n.title);
+                activateItem(item, n);
+            });
+
+            $(item).on("keydown", function (event) {
+                switch (event.key) {
+                    case "ArrowDown":
+                        event.preventDefault();
+                        moveFocus(item, 1);
+                        break;
+                    case "ArrowUp":
+                        event.preventDefault();
+                        moveFocus(item, -1);
+                        break;
+                    case "Enter":
+                    case " ":
+                        event.preventDefault();
+                        activateItem(item, n);
+                        break;
+                    case "Escape":
+                        event.preventDefault();
+                        event.stopPropagation();
+                        closeMenu(true);
+                        break;
+                    case "Tab":
+                        closeMenu(true);
+                        break;
+                }
             });
 
             var span = document.createElement('span');
             $(item).append(span);
-
-            item.className = "jj_menu_item";
 
             $(span).html(n.title);
             $(ms).append(item);
