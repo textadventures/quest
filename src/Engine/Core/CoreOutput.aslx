@@ -558,7 +558,7 @@
             colour = GetLinkTextColour()
           }
           style = GetCurrentTextFormat(colour)
-          return ("<a id=\"" + linkid + "\" style=\"" + style + "\" class=\"cmdlink elementmenu\" data-elementid=\"" + object.name + "\">" + text + "</a>")
+          return ("<a id=\"" + linkid + "\" style=\"" + style + "\" class=\"cmdlink elementmenu\" tabindex=\"0\" data-elementid=\"" + object.name + "\">" + text + "</a>")
         }
         else {
           return (text)
@@ -603,7 +603,7 @@
         dataattrs = dataattrs + "data-deactivateonclick=\"true\" "
       }
       dataattrs = dataattrs + "data-command=\"" + command + "\""
-      return ("<a id=\"" + linkid + "\" style=\"" + style + "\" class=\"cmdlink commandlink\" data-elementid=\"" + elementid + "\" " + dataattrs + ">" + ProcessTextSection(text, data) + "</a>")
+      return ("<a id=\"" + linkid + "\" style=\"" + style + "\" class=\"cmdlink commandlink\" tabindex=\"0\" data-elementid=\"" + elementid + "\" " + dataattrs + ">" + ProcessTextSection(text, data) + "</a>")
     ]]>
   </function>
 
@@ -619,7 +619,7 @@
         alias = GetDisplayAlias(exit)
         command = LCase(StringListItem(verbs, 0)) + " " + alias
         style = GetCurrentLinkTextFormat()
-        return ("<a style=\"" + style + "\" class=\"cmdlink exitlink\" data-elementid=\"" + exit.name + "\" data-command=\"" + command + "\">" + alias + "</a>")
+        return ("<a style=\"" + style + "\" class=\"cmdlink exitlink\" tabindex=\"0\" data-elementid=\"" + exit.name + "\" data-command=\"" + command + "\">" + alias + "</a>")
       }
     ]]>
   </function>
