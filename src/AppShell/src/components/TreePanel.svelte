@@ -746,7 +746,7 @@
                     </button>
                     <Icon class="flex-shrink-0 size-3.5 text-surface-500 {node.isLibrary ? "opacity-60" : ""}" />
                     <TreeView.BranchText class="flex-1 min-w-0 truncate {node.isLibrary ? "text-surface-600-400" : ""} {$cutElementKeys.has(node.id) ? "opacity-50 italic" : ""}">{node.text}</TreeView.BranchText>
-                    <span class="opacity-0 group-hover:opacity-100 pointer-coarse:opacity-100">
+                    <span class="opacity-0 group-hover:opacity-100 group-focus-within:opacity-100 pointer-coarse:opacity-100">
                         {@render nodeActions(node)}
                     </span>
                 </TreeView.BranchControl>
@@ -761,7 +761,7 @@
             <TreeView.Item class="group flex items-center gap-1.5" onclick={() => activateIfAlreadySelected(node.id)}>
                 <Icon class="flex-shrink-0 size-3.5 text-surface-500 {node.isLibrary ? "opacity-60" : ""}" />
                 <span class="flex-1 min-w-0 truncate {node.isLibrary ? "text-surface-600-400" : ""} {$cutElementKeys.has(node.id) ? "opacity-50 italic" : ""}">{node.text}</span>
-                <span class="opacity-0 group-hover:opacity-100 pointer-coarse:opacity-100">
+                <span class="opacity-0 group-hover:opacity-100 group-focus-within:opacity-100 pointer-coarse:opacity-100">
                     {@render nodeActions(node)}
                 </span>
             </TreeView.Item>
