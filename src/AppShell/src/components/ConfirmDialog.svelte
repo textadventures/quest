@@ -1,5 +1,6 @@
 <script lang="ts">
     import { dialogState } from "$lib/confirm";
+    import { trapFocus } from "$lib/actions/trapFocus";
 
     let dialogEl = $state<HTMLDivElement>();
     $effect(() => { if ($dialogState) dialogEl?.focus(); });
@@ -32,6 +33,7 @@
         class="fixed inset-0 bg-black/30 flex items-center justify-center z-50 p-4"
         onclick={onBackdropClick}
         onkeydown={handleKeydown}
+        use:trapFocus
     >
         <div class="card bg-surface-50-950 rounded-xl shadow-xl w-full max-w-sm p-6 flex flex-col gap-4">
             <p class="text-sm">{state.message}</p>

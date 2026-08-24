@@ -2,6 +2,7 @@
     import { Switch } from "@skeletonlabs/skeleton-svelte";
     import { settingsModalOpen } from "$lib/settings-store";
     import { locale, setLocale, SUPPORTED_LOCALES, t } from "$lib/i18n";
+    import { trapFocus } from "$lib/actions/trapFocus";
     import { theme, setTheme, type ThemePreference } from "$lib/theme-store";
     import { defaultCodeView, setDefaultCodeView } from "$lib/code-view-store";
 
@@ -58,6 +59,7 @@
         class="fixed inset-0 bg-black/30 flex items-center justify-center z-50 p-4"
         onclick={onBackdropClick}
         onkeydown={handleKeydown}
+        use:trapFocus
     >
         <div class="card bg-surface-50-950 rounded-xl shadow-xl w-full max-w-80 p-6 flex flex-col gap-4">
             <div class="flex items-center justify-between">

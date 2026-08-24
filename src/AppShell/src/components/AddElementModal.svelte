@@ -2,6 +2,7 @@
     import { untrack } from "svelte";
     import { validateName, getFunctionFolders, getPossibleNewObjectParents } from "$lib/editor-store";
     import { t } from "$lib/i18n";
+    import { trapFocus } from "$lib/actions/trapFocus";
     import Combobox from "$components/Combobox.svelte";
     import type { ControlOption } from "$lib/types";
 
@@ -81,6 +82,7 @@
     class="fixed inset-0 bg-black/30 flex items-center justify-center z-50 p-4"
     onclick={onBackdropClick}
     onkeydown={handleKeydown}
+    use:trapFocus
 >
     <div class="card bg-surface-50-950 rounded-xl shadow-xl w-full max-w-80 p-6 flex flex-col gap-4">
         <h2 class="text-base font-semibold">
