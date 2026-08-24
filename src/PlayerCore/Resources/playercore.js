@@ -159,6 +159,23 @@ function initPlayerUI() {
         }
     });
 
+    // .cmdlink links (.elementmenu/.exitlink/.commandlink above, plus the bare
+    // ShowMenu-style links with their own inline onclick) are all <a> elements
+    // with no href, so activating one by keyboard needs an explicit Enter/Space
+    // handler - the browser only auto-fires click on Enter for a real link/button.
+    // Delegated here (not baked into each class's own click handler above) so it
+    // covers every .cmdlink regardless of which Core.aslx function produced it,
+    // and - unlike the tabindex="0" on the link markup itself, which only reaches
+    // games saved after this change (see CLAUDE.md's Core library semantics) -
+    // this part is shared player-chrome JS, so it also benefits any already-
+    // published game whose links happen to already be focusable some other way.
+    $(document).on("keydown", ".cmdlink", function (event) {
+        if (event.key === "Enter" || event.key === " ") {
+            event.preventDefault();
+            this.click();
+        }
+    });
+
     // ShowMenu (and anything built on it - Ask, disambiguation) renders each
     // choice as a bare <a class="cmdlink" onclick="ASLEvent(...)"> baked into the
     // game's own compiled script - unlike .commandlink, it gets no client-side
