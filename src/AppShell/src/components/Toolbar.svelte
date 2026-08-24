@@ -247,25 +247,27 @@
                 {#if $gameFilename}
                     <span class="font-mono text-sm font-medium truncate min-w-0">{$gameFilename}</span>
                 {/if}
-                {#if $saveError}
-                    <button
-                        type="button"
-                        class="save-chip save-chip-error shrink-0"
-                        onclick={() => retrySave()}
-                        title={$saveError}
-                    ><TriangleAlert size={13} /> <span class="hidden md:inline">{t("toolbar.saveFailedRetry")}</span></button>
-                {:else if $isSaving}
-                    <span class="save-chip save-chip-saving shrink-0"><LoaderCircle size={13} class="animate-spin" /> <span class="hidden md:inline">{t("toolbar.saving")}</span></span>
-                {:else if $isDirty || $isEditingField}
-                    <button
-                        type="button"
-                        class="save-chip save-chip-unsaved shrink-0"
-                        onclick={handleSaveNow}
-                        title={t("toolbar.saveNow")}
-                    ><Circle size={8} fill="currentColor" /> <span class="hidden md:inline">{t("toolbar.unsaved")}</span></button>
-                {:else if $gameFilename}
-                    <span class="save-chip save-chip-saved shrink-0"><Check size={13} /> <span class="hidden md:inline">{t("toolbar.saved")}</span></span>
-                {/if}
+                <span role="status" aria-live="polite" class="contents">
+                    {#if $saveError}
+                        <button
+                            type="button"
+                            class="save-chip save-chip-error shrink-0"
+                            onclick={() => retrySave()}
+                            title={$saveError}
+                        ><TriangleAlert size={13} /> <span class="hidden md:inline">{t("toolbar.saveFailedRetry")}</span></button>
+                    {:else if $isSaving}
+                        <span class="save-chip save-chip-saving shrink-0"><LoaderCircle size={13} class="animate-spin" /> <span class="hidden md:inline">{t("toolbar.saving")}</span></span>
+                    {:else if $isDirty || $isEditingField}
+                        <button
+                            type="button"
+                            class="save-chip save-chip-unsaved shrink-0"
+                            onclick={handleSaveNow}
+                            title={t("toolbar.saveNow")}
+                        ><Circle size={8} fill="currentColor" /> <span class="hidden md:inline">{t("toolbar.unsaved")}</span></button>
+                    {:else if $gameFilename}
+                        <span class="save-chip save-chip-saved shrink-0"><Check size={13} /> <span class="hidden md:inline">{t("toolbar.saved")}</span></span>
+                    {/if}
+                </span>
             </div>
         </AppBar.Lead>
         <AppBar.Trail>
