@@ -111,7 +111,10 @@ try {
     await page.click('[role="dialog"] button:has-text("OK")');
     await page.waitForTimeout(300);
 
-    const messageInput = caseBody.locator('input[type=text]').last();
+    // Print's message field renders as a <textarea> (multiline, see ScriptEditor.svelte's
+    // `ctrl.multiline` branch), not an `input[type=text]` - match both so `.last()` finds it
+    // rather than falling back to the case's own key input.
+    const messageInput = caseBody.locator('input[type=text], textarea').last();
     await messageInput.fill('You found a sword!');
     await messageInput.blur();
     await page.waitForTimeout(300);
