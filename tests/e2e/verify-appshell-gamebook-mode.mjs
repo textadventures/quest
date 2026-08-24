@@ -5,7 +5,7 @@
 // a new page be added flat and deleted, and refuse to delete the page
 // currently containing "player" (or player itself). Also confirms a regular
 // text-adventure game is unaffected (still offers Add Room/Object/Exit/etc).
-import { chromium } from 'playwright';
+import { chromium } from './lib/tracked-chromium.mjs';
 
 const baseUrl = process.argv[2] || 'http://localhost:5174';
 

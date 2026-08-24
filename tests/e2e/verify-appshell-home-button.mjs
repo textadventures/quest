@@ -10,7 +10,7 @@
 //
 // Requires the AppShell dev server running with PUBLIC_SHOW_HOME=true:
 //   (cd src/AppShell && PUBLIC_SHOW_HOME=true npx vite dev) &
-import { chromium } from 'playwright';
+import { chromium } from './lib/tracked-chromium.mjs';
 
 const baseUrl = process.argv[2] || 'http://localhost:5174';
 

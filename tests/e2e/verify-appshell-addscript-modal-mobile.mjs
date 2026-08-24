@@ -2,7 +2,7 @@
 // looked cluttered on mobile — text-sm throughout didn't match the rest of
 // the app's compact text-xs, and the "Quick add" shortcut pills wrapped onto
 // several rows on a narrow modal instead of staying on one scrollable row.
-import { chromium } from 'playwright';
+import { chromium } from './lib/tracked-chromium.mjs';
 
 const baseUrl = process.argv[2] || 'http://localhost:5174';
 

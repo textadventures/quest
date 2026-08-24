@@ -4,7 +4,7 @@
 // writes the file and shows the LibraryReloadBanner (the edit only takes effect after reload).
 // Also checks that malformed edits are refused before anything is written, so the game can't be
 // reloaded into an unloadable state.
-import { chromium } from 'playwright';
+import { chromium } from './lib/tracked-chromium.mjs';
 import { fileURLToPath } from 'node:url';
 import path from 'node:path';
 

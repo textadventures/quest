@@ -5,7 +5,7 @@
 // not shown in Manage assets as a deletable asset), and the game reloads cleanly afterwards —
 // proving <include ref="custom-library-test.xml"/> actually resolves via the adapter's library
 // candidate discovery, not just that the upload itself succeeded.
-import { chromium } from 'playwright';
+import { chromium } from './lib/tracked-chromium.mjs';
 import { fileURLToPath } from 'node:url';
 import path from 'node:path';
 

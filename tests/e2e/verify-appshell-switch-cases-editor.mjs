@@ -15,7 +15,7 @@
 // Requires the AppShell dev server running locally (WasmEditor Debug build first):
 //   cd src/AppShell && npm run dev
 // Run: node tests/e2e/verify-appshell-switch-cases-editor.mjs [baseUrl]
-import { chromium } from 'playwright';
+import { chromium } from './lib/tracked-chromium.mjs';
 
 const baseUrl = process.argv[2] || 'http://localhost:5174';
 

@@ -10,7 +10,7 @@
 //
 // Requires both dev servers running (./dev.sh): AppShell on 5174 (proxies /player to WasmPlayer
 // on 5175, so BroadcastChannel — same-origin only — actually works between the two tabs).
-import { chromium } from 'playwright';
+import { chromium } from './lib/tracked-chromium.mjs';
 
 const baseUrl = process.argv[2] || 'http://localhost:5174';
 
@@ -47,7 +47,8 @@ try {
     console.log('PASS: Add Included Library modal opened');
 
     await page.waitForSelector('text=Add Included Library', { timeout: 5000 });
-    const fileInput = page.locator('input[type="file"][accept=".aslx"]');
+    // Substring match, not exact - #2123 widened this to accept=".aslx,.xml".
+    const fileInput = page.locator('input[type="file"][accept*=".aslx"]');
     await fileInput.setInputFiles({
         name: 'custom.aslx',
         mimeType: 'application/octet-stream',

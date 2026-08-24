@@ -9,7 +9,7 @@
 //
 // Run: node src/WasmEditor... build first (Debug), then
 //   node tests/e2e/verify-appshell-advanced-controls.mjs [baseUrl]
-import { chromium } from 'playwright';
+import { chromium } from './lib/tracked-chromium.mjs';
 
 const baseUrl = process.argv[2] || 'http://localhost:5174';
 

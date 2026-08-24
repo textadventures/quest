@@ -2,7 +2,7 @@
 // home on a phone viewport, tapping an element pushes a full-screen
 // properties view with a back button, and desktop keeps the side-by-side +
 // splitter layout untouched.
-import { chromium } from 'playwright';
+import { chromium } from './lib/tracked-chromium.mjs';
 
 const baseUrl = process.argv[2] || 'http://localhost:5174';
 

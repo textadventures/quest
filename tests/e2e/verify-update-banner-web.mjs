@@ -3,7 +3,7 @@
 // non-null update field — belt-and-braces alongside the server-side gate
 // (ApiController.Catalog only computes Update for source=electron).
 // Requires the dev server running: ./dev.sh
-import { chromium } from 'playwright';
+import { chromium } from './lib/tracked-chromium.mjs';
 
 const baseUrl = process.argv[2] || 'http://localhost:5174';
 

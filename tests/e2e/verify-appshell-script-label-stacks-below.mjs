@@ -5,7 +5,7 @@
 // etc.) that should always stack below regardless of label length, since a
 // short label like "Start script" otherwise squeezed the script editor into
 // whatever width was left after a fixed-width label column.
-import { chromium } from 'playwright';
+import { chromium } from './lib/tracked-chromium.mjs';
 
 const baseUrl = process.argv[2] || 'http://localhost:5174';
 

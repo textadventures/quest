@@ -7,7 +7,7 @@
 // of one flowing column. This verifies: (1) the panel is visible without
 // having scrolled anywhere, immediately after selecting a row near the top
 // of a long list, and (2) part of the list stays visible alongside it.
-import { chromium } from 'playwright';
+import { chromium } from './lib/tracked-chromium.mjs';
 
 const baseUrl = process.argv[2] || 'http://localhost:5174';
 

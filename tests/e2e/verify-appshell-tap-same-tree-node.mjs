@@ -4,7 +4,7 @@
 // fires when the selected value actually changes, so re-tapping the same
 // node never pushed back into the properties pane. You had to tap a
 // *different* node first (which worked) to get anywhere.
-import { chromium } from 'playwright';
+import { chromium } from './lib/tracked-chromium.mjs';
 
 const baseUrl = process.argv[2] || 'http://localhost:5174';
 

@@ -4,7 +4,7 @@
 // scrolling — the row had no overflow handling and its buttons weren't
 // flex-shrink-0, so they just got cut off past the container edge. It should
 // scroll horizontally instead, and the background should read a bit lighter.
-import { chromium } from 'playwright';
+import { chromium } from './lib/tracked-chromium.mjs';
 
 const baseUrl = process.argv[2] || 'http://localhost:5174';
 

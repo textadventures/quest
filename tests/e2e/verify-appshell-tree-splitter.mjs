@@ -2,7 +2,7 @@
 // (element tree, left) and PropertyEditor (right) on the /edit page — the
 // tree pane used to be a fixed w-60 (240px) with no way to widen it to see
 // long room/object names.
-import { chromium } from 'playwright';
+import { chromium } from './lib/tracked-chromium.mjs';
 
 const baseUrl = process.argv[2] || 'http://localhost:5174';
 

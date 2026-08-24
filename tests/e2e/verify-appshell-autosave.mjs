@@ -4,7 +4,7 @@
 // stuck at page load, "Saving…" appears after an edit, then "Saved"), and
 // that the edit actually lands in OPFS storage (survives a reload), not just
 // held in the WASM model.
-import { chromium } from 'playwright';
+import { chromium } from './lib/tracked-chromium.mjs';
 
 const baseUrl = process.argv[2] || 'http://localhost:5176';
 

@@ -5,7 +5,7 @@
 // (shown on both the Play and Create tabs) rather than inline on the Play
 // tab, so every run below opens it via the icon button first.
 // Requires the dev server running: ./dev.sh
-import { chromium } from 'playwright';
+import { chromium } from './lib/tracked-chromium.mjs';
 
 const baseUrl = process.argv[2] || 'http://localhost:5174';
 

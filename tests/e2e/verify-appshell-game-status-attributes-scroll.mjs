@@ -6,7 +6,7 @@
 // extra controls into AttributesEditor via an `extraControls` snippet, which
 // renders them inside the same shared scroll region as Inherited
 // types/Attributes, instead of pinning them above it.
-import { chromium } from 'playwright';
+import { chromium } from './lib/tracked-chromium.mjs';
 
 const baseUrl = process.argv[2] || 'http://localhost:5174';
 

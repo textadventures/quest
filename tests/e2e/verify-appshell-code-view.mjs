@@ -4,7 +4,7 @@
 // (reloading the model and clearing undo history, after a confirm step), rejects malformed XML
 // with an inline error while leaving the currently-open game untouched, and Cancel discards
 // in-panel edits without applying them.
-import { chromium } from 'playwright';
+import { chromium } from './lib/tracked-chromium.mjs';
 
 const baseUrl = process.argv[2] || 'http://localhost:5174';
 
