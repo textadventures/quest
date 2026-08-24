@@ -25,17 +25,17 @@
     }
 </style>
 
-<dialog id="questVivaSlots" tabindex="0">
+<dialog id="questVivaSlots" tabindex="0" aria-labelledby="questVivaSlotsHeading">
     @if (ManageMode)
     {
         <div class="d-flex justify-content-between align-items-center">
-            <h3 class="m-0">@ChromeStrings["SaveLoadTitle"]</h3>
+            <h3 class="m-0" id="questVivaSlotsHeading">@ChromeStrings["SaveLoadTitle"]</h3>
             <button type="button" class="btn-close" aria-label="@ChromeStrings["CloseDialog"]" @onclick="() => OnClose.InvokeAsync()"></button>
         </div>
     }
     else
     {
-        <h3>@ChromeStrings["ContinueYourGamePrompt"]</h3>
+        <h3 id="questVivaSlotsHeading">@ChromeStrings["ContinueYourGamePrompt"]</h3>
     }
 
     @if (!string.IsNullOrEmpty(ErrorMessage))
@@ -65,7 +65,7 @@
     {
         <hr/>
         <div class="input-group mt-2">
-            <input class="form-control" placeholder="@ChromeStrings["SaveNamePlaceholder"]" @bind="newSaveName"/>
+            <input class="form-control" placeholder="@ChromeStrings["SaveNamePlaceholder"]" aria-label="@ChromeStrings["SaveNamePlaceholder"]" @bind="newSaveName"/>
             <button class="btn btn-primary" @onclick="SaveNew">@ChromeStrings["SaveNew"]</button>
         </div>
         <div class="d-flex gap-2 mt-2">

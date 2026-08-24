@@ -752,18 +752,18 @@ function setCompassDirections(directions) {
     } else {
         _compassDirs = directions;
     }
-    $("#cmdCompassNW").attr("title", _compassDirs[0]);
-    $("#cmdCompassN").attr("title", _compassDirs[1]);
-    $("#cmdCompassNE").attr("title", _compassDirs[2]);
-    $("#cmdCompassW").attr("title", _compassDirs[3]);
-    $("#cmdCompassE").attr("title", _compassDirs[4]);
-    $("#cmdCompassSW").attr("title", _compassDirs[5]);
-    $("#cmdCompassS").attr("title", _compassDirs[6]);
-    $("#cmdCompassSE").attr("title", _compassDirs[7]);
-    $("#cmdCompassU").attr("title", _compassDirs[8]);
-    $("#cmdCompassD").attr("title", _compassDirs[9]);
-    $("#cmdCompassIn").attr("title", _compassDirs[10]);
-    $("#cmdCompassOut").attr("title", _compassDirs[11]);
+    $("#cmdCompassNW").attr("title", _compassDirs[0]).attr("aria-label", _compassDirs[0]);
+    $("#cmdCompassN").attr("title", _compassDirs[1]).attr("aria-label", _compassDirs[1]);
+    $("#cmdCompassNE").attr("title", _compassDirs[2]).attr("aria-label", _compassDirs[2]);
+    $("#cmdCompassW").attr("title", _compassDirs[3]).attr("aria-label", _compassDirs[3]);
+    $("#cmdCompassE").attr("title", _compassDirs[4]).attr("aria-label", _compassDirs[4]);
+    $("#cmdCompassSW").attr("title", _compassDirs[5]).attr("aria-label", _compassDirs[5]);
+    $("#cmdCompassS").attr("title", _compassDirs[6]).attr("aria-label", _compassDirs[6]);
+    $("#cmdCompassSE").attr("title", _compassDirs[7]).attr("aria-label", _compassDirs[7]);
+    $("#cmdCompassU").attr("title", _compassDirs[8]).attr("aria-label", _compassDirs[8]);
+    $("#cmdCompassD").attr("title", _compassDirs[9]).attr("aria-label", _compassDirs[9]);
+    $("#cmdCompassIn").attr("title", _compassDirs[10]).attr("aria-label", _compassDirs[10]);
+    $("#cmdCompassOut").attr("title", _compassDirs[11]).attr("aria-label", _compassDirs[11]);
 }
 
 function updateLocation(text) {

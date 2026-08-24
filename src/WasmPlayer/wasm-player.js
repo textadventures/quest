@@ -1017,6 +1017,7 @@ async function openSavesDialog(mode, gameId = WebPlayer.gameId) {
     const dlg = document.getElementById('qv-saves');
     hideSavesError();
     dlg.dataset.mode = mode;
+    dlg.setAttribute('aria-labelledby', mode === 'boot' ? 'qv-saves-heading-boot' : 'qv-saves-heading-manage');
     renderSavesList(await GameSaver.listSaves(gameId), mode);
 
     if (mode === 'boot') {
