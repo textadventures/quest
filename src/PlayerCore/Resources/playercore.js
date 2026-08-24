@@ -476,12 +476,23 @@ function runCommand() {
 // button, not the wrapper - confirmed by manual testing (VoiceOver/NVDA read the
 // dialog's title on open but never the actual message). Setting it on the buttons
 // too closes that gap regardless of which one ends up focused.
+//
+// That still reads button-before-message though ("Yes, button" - only *then* the
+// question, since the description is announced as part of the focused button, not
+// before it) - confirmed by manual testing again. jQuery UI's own _focusTabbable
+// always prefers a tabbable control over the wrapper (see jquery-ui.min.js), so
+// explicitly re-focusing the wrapper (tabIndex=-1, already set by its own
+// _createWrapper) right after "open" overrides that: focus lands on the
+// role="dialog" element itself first, which reads title + description together in
+// the right order, and Tab from there reaches the buttons - the WAI-ARIA APG's
+// "focus the dialog when content must be read before interaction" pattern.
 function openMsgbox(options) {
     $("#msgbox").dialog(options);
     var $widget = $("#msgbox").dialog("widget");
     $widget.attr("aria-describedby", "msgboxCaption");
     $widget.find(".ui-dialog-buttonpane button").attr("aria-describedby", "msgboxCaption");
     $("#msgbox").dialog("open");
+    $widget.trigger("focus");
 }
 
 function showQuestion(title) {
