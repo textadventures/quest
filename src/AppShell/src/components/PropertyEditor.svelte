@@ -956,7 +956,7 @@
             {@const selectedType = attrValue(ctrl.attribute!) ?? "null"}
             {@const subEditorType = ctrl.subEditors?.find(e => e.value === selectedType)?.label ?? selectedType}
             <div class="flex flex-col gap-1 px-3 py-1.5">
-                <div class="flex items-center gap-2">
+                <label class="flex items-center gap-2">
                     <span class="text-xs text-surface-600-400 whitespace-nowrap">{label}:</span>
                     <select
                         class="select text-xs py-0.5 px-1.5 w-auto"
@@ -967,7 +967,7 @@
                             <option value={opt.value}>{opt.label}</option>
                         {/each}
                     </select>
-                </div>
+                </label>
                 {#if subEditorType === "richtext" && ctrl.subAttribute !== null}
                     {#if ctrl.textProcessorCommands?.length}
                         <div class="flex flex-col gap-1 w-full">
@@ -1031,22 +1031,29 @@
             {@const stacksBelowLabel = label.length > 20 || isMultiline}
             {#if stacksBelowLabel}
                 <div class="flex flex-col gap-1 px-3 py-1.5">
-                    {#if ctrl.controlType !== "texteditor"}
-                        <span class="text-xs text-surface-600-400">{label}:</span>
-                    {/if}
-                    {@render controlOnly(ctrl)}
+                    <svelte:element
+                        this={isMultiline ? "div" : "label"}
+                        role={isMultiline ? "group" : undefined}
+                        aria-label={isMultiline ? label : undefined}
+                        class="contents"
+                    >
+                        {#if ctrl.controlType !== "texteditor"}
+                            <span class="text-xs text-surface-600-400">{label}:</span>
+                        {/if}
+                        {@render controlOnly(ctrl)}
+                    </svelte:element>
                     {#if ctrl.attribute && attributeErrors[ctrl.attribute]}
-                        <p class="text-xs text-error-500">{attributeErrors[ctrl.attribute]}</p>
+                        <p class="text-xs text-error-500" role="alert">{attributeErrors[ctrl.attribute]}</p>
                     {/if}
                 </div>
             {:else}
                 <div class="flex flex-col gap-1 px-3 py-1.5">
-                    <div class="flex items-center gap-2 min-h-8">
+                    <label class="flex items-center gap-2 min-h-8 cursor-pointer">
                         <span class="text-xs text-surface-600-400 w-32 flex-shrink-0">{label}:</span>
                         {@render controlOnly(ctrl)}
-                    </div>
+                    </label>
                     {#if ctrl.attribute && attributeErrors[ctrl.attribute]}
-                        <p class="text-xs text-error-500">{attributeErrors[ctrl.attribute]}</p>
+                        <p class="text-xs text-error-500" role="alert">{attributeErrors[ctrl.attribute]}</p>
                     {/if}
                 </div>
             {/if}
