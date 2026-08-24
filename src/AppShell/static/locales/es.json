@@ -407,6 +407,7 @@
     "editPage.loadError": "No se pudo cargar este juego.",
     "editPage.failedToLoadGame": "Error al cargar el juego.",
     "editPage.backToHome": "Volver al inicio",
+    "editPage.skipToContent": "Saltar al contenido del editor",
 
     "openPage.title": "Editor de Quest Viva",
     "openPage.multipleFilesFound": "Se encontraron varios archivos de juego — elige uno para abrir:",
