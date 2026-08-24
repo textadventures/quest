@@ -1,5 +1,34 @@
 # Changelog
 
+## [6.0.0-beta.55](https://github.com/textadventures/quest/compare/v6.0.0-beta.54...v6.0.0-beta.55) (2026-08-24)
+
+
+### Features
+
+* **AppShell:** announce save status and add editor landmarks ([#2141](https://github.com/textadventures/quest/issues/2141)) ([994a229](https://github.com/textadventures/quest/commit/994a229bbeaf685d0203f1963df86c0723c2f735))
+* **AppShell:** IntelliSense-style autocomplete for the script editor ([#2129](https://github.com/textadventures/quest/issues/2129)) ([6ec1745](https://github.com/textadventures/quest/commit/6ec174584099a3bfba28214cab696b20bdd2ba31))
+* **AppShell:** keyboard-operable dropdown menu and icon button labels ([#2139](https://github.com/textadventures/quest/issues/2139)) ([3e0daca](https://github.com/textadventures/quest/commit/3e0dacaccd5212f2f27296f6621e4ad6f53d0c0b))
+* **AppShell:** move function folders and add objects/functions in-place ([#2128](https://github.com/textadventures/quest/issues/2128)) ([5be71c4](https://github.com/textadventures/quest/commit/5be71c4bae23349b40a6950ad102b4c6d8653f38))
+* **AppShell:** trap and restore focus in modal dialogs ([#2138](https://github.com/textadventures/quest/issues/2138)) ([c2e56c1](https://github.com/textadventures/quest/commit/c2e56c15f00008a2861e8d7805e454dcc99f5c10))
+* **Engine:** accessible accordion sidebar panels ([#2136](https://github.com/textadventures/quest/issues/2136)) ([fc6e2c5](https://github.com/textadventures/quest/commit/fc6e2c5b418340a52f28a95a625af05a972262e9))
+* **Engine:** keyboard support for the item/verb popup menu ([#2135](https://github.com/textadventures/quest/issues/2135)) ([cde20f6](https://github.com/textadventures/quest/commit/cde20f6bae0d4fa26aad6b2e0af635fc5081615e))
+* **WasmPlayer:** show Debug options for .aslx played from the Play tab ([#2121](https://github.com/textadventures/quest/issues/2121)) ([3a2fbab](https://github.com/textadventures/quest/commit/3a2fbab875bd62a9a0ed0462555de2944e605ecd))
+* **WasmPlayer:** sort the debugger's object list by Name ([#2127](https://github.com/textadventures/quest/issues/2127)) ([2020e15](https://github.com/textadventures/quest/commit/2020e156af54eb97bd7867ce8edba5cb88ac5751))
+
+
+### Bug Fixes
+
+* **AppShell:** accept .xml extension for included libraries ([#2123](https://github.com/textadventures/quest/issues/2123)) ([5737ecb](https://github.com/textadventures/quest/commit/5737ecbbb55c8fd5aaf43f9878f78698b1de57a8))
+* **AppShell:** dialogs move focus on open so Escape closes them ([#2125](https://github.com/textadventures/quest/issues/2125)) ([e4c62c8](https://github.com/textadventures/quest/commit/e4c62c86026e6ef68f86ff1c7a8c0312dc3f3e91))
+* **AppShell:** keep hover-revealed row actions visible to keyboard focus ([#2140](https://github.com/textadventures/quest/issues/2140)) ([dee05d5](https://github.com/textadventures/quest/commit/dee05d53f0340c5adb7567fd5a9ec50d68bd6166))
+* **AppShell:** label PropertyEditor fields and announce validation errors ([#2137](https://github.com/textadventures/quest/issues/2137)) ([b3a143b](https://github.com/textadventures/quest/commit/b3a143b0152aba511434c39baf6b0c20f4b67e05))
+* **AppShell:** match textarea in code-view e2e round-trip check ([#2117](https://github.com/textadventures/quest/issues/2117)) ([0a20b2f](https://github.com/textadventures/quest/commit/0a20b2f2549e7d52b4a57f58eedcca35b4274895))
+* **AppShell:** script editor controls reclaim width on touch ([#2122](https://github.com/textadventures/quest/issues/2122)) ([e987e1a](https://github.com/textadventures/quest/commit/e987e1a3e45b23dc097c5d05b2eed5458ddb1775))
+* **Engine:** announce game output and label controls for screen readers ([#2134](https://github.com/textadventures/quest/issues/2134)) ([22d2019](https://github.com/textadventures/quest/commit/22d20191ad5798093aa6e088161720f5ff0de4dc))
+* **Engine:** announce the actual message in msgbox-family dialogs ([#2142](https://github.com/textadventures/quest/issues/2142)) ([58bd274](https://github.com/textadventures/quest/commit/58bd274f63b1076232d6eaecda004152009cdccf))
+* **Engine:** make transcript viewer message translatable ([#2120](https://github.com/textadventures/quest/issues/2120)) ([58401b4](https://github.com/textadventures/quest/commit/58401b43b15b3ed756283b04cf721369169de850))
+* support running multiple dev.sh instances concurrently ([#2130](https://github.com/textadventures/quest/issues/2130)) ([c135257](https://github.com/textadventures/quest/commit/c13525788520e158c7a362da01bc06d0fefb7b2b))
+
 ## [6.0.0-beta.54](https://github.com/textadventures/quest/compare/v6.0.0-beta.53...v6.0.0-beta.54) (2026-08-22)
 
 
