@@ -4,7 +4,7 @@
 // friendly message. This checks that an inline error now appears (and a toast that survives
 // switching to a different tree node, unlike the tab-scoped inline error) and the rename doesn't
 // stick.
-import { chromium } from 'playwright';
+import { chromium } from './lib/tracked-chromium.mjs';
 
 const baseUrl = process.argv[2] || 'http://localhost:5174';
 

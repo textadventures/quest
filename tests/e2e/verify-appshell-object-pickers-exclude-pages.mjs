@@ -10,7 +10,7 @@
 // non-pages) - generic objects shouldn't be exit destinations either.
 // Requires the AppShell dev server running locally:
 //   cd src/AppShell && npm run dev
-import { chromium } from 'playwright';
+import { chromium } from './lib/tracked-chromium.mjs';
 
 const baseUrl = process.argv[2] || 'http://localhost:5174';
 

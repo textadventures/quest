@@ -24,7 +24,7 @@
 // Requires the AppShell dev server running locally (WasmEditor Debug build first):
 //   cd src/AppShell && npm run dev
 // Run: node tests/e2e/verify-appshell-multi-control-editors.mjs [baseUrl]
-import { chromium } from 'playwright';
+import { chromium } from './lib/tracked-chromium.mjs';
 
 const baseUrl = process.argv[2] || 'http://localhost:5174';
 
@@ -188,7 +188,10 @@ try {
     await scriptDialog.waitFor({ state: 'hidden', timeout: 5000 });
     console.log('PASS: added a "Print a message" script to the defibrillator entry');
 
-    const messageInput = defibrillatorEntry.locator('input[type="text"]').last();
+    // Print's message field renders as a <textarea> (multiline, see ScriptEditor.svelte's
+    // `ctrl.multiline` branch, #2115), not an `input[type=text]` - match both so `.last()` finds
+    // it rather than falling back to another input in the entry (see verify-appshell-switch-cases-editor.mjs).
+    const messageInput = defibrillatorEntry.locator('input[type="text"], textarea').last();
     await messageInput.fill('It beeps helpfully.');
     await messageInput.blur();
     await page.waitForTimeout(300);
@@ -208,7 +211,7 @@ try {
     }
     console.log('PASS: "Edit Key" renames the entry from "defibrillator" to "medkit"');
 
-    const messageInputAfterRename = defibrillatorEntry.locator('input[type="text"]').last();
+    const messageInputAfterRename = defibrillatorEntry.locator('input[type="text"], textarea').last();
     if (await messageInputAfterRename.inputValue() !== 'It beeps helpfully.') {
         throw new Error('Expected the script content to be preserved and still visible (entry still expanded) after renaming the key');
     }

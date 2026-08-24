@@ -2,7 +2,7 @@
 // Behaviour panel) stack list-above-panel in a narrow properties pane
 // (container query on the pane's own width), stay side-by-side on desktop,
 // and that selecting a row scrolls the panel into view when stacked.
-import { chromium } from 'playwright';
+import { chromium } from './lib/tracked-chromium.mjs';
 
 const baseUrl = process.argv[2] || 'http://localhost:5174';
 

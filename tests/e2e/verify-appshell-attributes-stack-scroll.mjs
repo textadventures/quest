@@ -10,7 +10,7 @@
 // instead of each sub-region trying to manage its own. Also verifies the new
 // close ("X") button on the Assignment/Behaviour panel deselects the current
 // attribute/verb.
-import { chromium } from 'playwright';
+import { chromium } from './lib/tracked-chromium.mjs';
 
 const baseUrl = process.argv[2] || 'http://localhost:5174';
 

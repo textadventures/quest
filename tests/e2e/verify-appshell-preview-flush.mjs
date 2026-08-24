@@ -6,7 +6,7 @@
 // content. Fixed by calling saveGame() at the top of handlePreview(), matching handleHome()'s
 // pattern. This only checks the editor-side flush (blur + persist) — it doesn't drive the actual
 // WasmPlayer preview tab, since that requires its own dev server running separately.
-import { chromium } from 'playwright';
+import { chromium } from './lib/tracked-chromium.mjs';
 
 const baseUrl = process.argv[2] || 'http://localhost:5174';
 

@@ -6,7 +6,7 @@
 // entry), and adding a function via that Advanced panel should actually
 // produce a real, selected tree node under Advanced > Functions, not just a
 // silently-dropped click.
-import { chromium } from "playwright";
+import { chromium } from './lib/tracked-chromium.mjs';
 
 const BASE = process.argv[2] || "http://localhost:5174";
 

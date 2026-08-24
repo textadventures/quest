@@ -17,7 +17,7 @@
 //
 // Run against a dev server started with:
 //   npm --prefix src/AppShell run dev -- --port 5174
-import { chromium } from 'playwright';
+import { chromium } from './lib/tracked-chromium.mjs';
 import { writeFileSync, mkdtempSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';

@@ -2,7 +2,7 @@
 // "exits" controltype rendered nothing (only the "Exits list prefix" textbox
 // showed). This checks the compass-grid quick-create (with reciprocal exit),
 // the full exit list, delete, and navigating into an exit's own editor page.
-import { chromium } from 'playwright';
+import { chromium } from './lib/tracked-chromium.mjs';
 
 const baseUrl = process.argv[2] || 'http://localhost:5174';
 

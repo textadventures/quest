@@ -1,7 +1,7 @@
 // Ad-hoc manual verification for the new filter textbox at the top of
 // TreePanel (element tree, left) on the /edit page — lets authors with lots
 // of objects narrow the tree down to matching names instead of scrolling.
-import { chromium } from 'playwright';
+import { chromium } from './lib/tracked-chromium.mjs';
 
 const baseUrl = process.argv[2] || 'http://localhost:5174';
 

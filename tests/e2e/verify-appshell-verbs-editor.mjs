@@ -2,7 +2,7 @@
 // nothing. Checks adding a custom verb (default "Print a message" behaviour), switching its
 // behaviour to "Run a script" and "Require another object", the clash-message shown when a
 // pattern collides with a built-in command, delete, and undo.
-import { chromium } from 'playwright';
+import { chromium } from './lib/tracked-chromium.mjs';
 
 const baseUrl = process.argv[2] || 'http://localhost:5174';
 

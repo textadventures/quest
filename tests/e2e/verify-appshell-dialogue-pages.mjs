@@ -16,7 +16,7 @@
 // previously a dead XML tag with no effect anywhere in the WASM editor).
 // Requires the AppShell dev server running locally:
 //   cd src/AppShell && npm run dev
-import { chromium } from 'playwright';
+import { chromium } from './lib/tracked-chromium.mjs';
 
 const baseUrl = process.argv[2] || 'http://localhost:5174';
 

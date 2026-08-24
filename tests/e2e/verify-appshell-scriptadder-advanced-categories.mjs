@@ -17,7 +17,7 @@
 // as an entirely-advanced category. Drawing is the only category left where
 // every command is still <advanced/> (checked via `grep -c` against every
 // CoreEditorScripts*.aslx file).
-import { chromium } from 'playwright';
+import { chromium } from './lib/tracked-chromium.mjs';
 
 const baseUrl = process.argv[2] || 'http://localhost:5174';
 

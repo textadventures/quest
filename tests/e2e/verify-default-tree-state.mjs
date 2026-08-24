@@ -2,7 +2,7 @@
 //   1. game node starts collapsed
 //   2. starting room is expanded all the way down to the player object
 //   3. Move up/down (swapElements) is undoable/redoable
-import { chromium } from 'playwright';
+import { chromium } from './lib/tracked-chromium.mjs';
 
 const baseUrl = process.argv[2] || 'http://localhost:5180';
 

@@ -5,7 +5,7 @@
 // every category (each tagged with its category name), then reverts to the normal per-category
 // browsing view when cleared. Also covers Up/Down arrow-key selection, added afterwards since
 // the command list is a custom listbox (plain buttons) with no keyboard nav for free.
-import { chromium } from 'playwright';
+import { chromium } from './lib/tracked-chromium.mjs';
 
 const baseUrl = process.argv[2] || 'http://localhost:5174';
 
