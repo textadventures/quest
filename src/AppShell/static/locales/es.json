@@ -311,6 +311,7 @@
 
     "assetPicker.readonlyTitle": "No se puede cambiar después de crearlo — añade un nuevo elemento para apuntar a otro lugar",
     "assetPicker.uploadTitle": "Subir un nuevo archivo",
+    "assetPicker.uploadTitleWithFilter": "Subir un nuevo archivo ({filterName})",
 
     "codeViewPanel.applyingChanges": "Aplicando cambios…",
     "codeViewPanel.applyConfirmMessage": "Al aplicar se recarga todo el juego desde este texto y se descarta el historial de deshacer. ¿Continuar?",

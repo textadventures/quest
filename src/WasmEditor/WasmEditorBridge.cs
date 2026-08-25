@@ -45,7 +45,10 @@ internal record ControlInfo(
     bool IsWalkthrough = false,
     string? Href = null,
     string? NewFile = null,
-    bool LockedAfterCreate = false);
+    bool LockedAfterCreate = false,
+    // <filefiltername> - human-readable label for what file types a "file" control accepts
+    // (e.g. "Picture Files"), shown as the upload button's tooltip.
+    string? FileFilterName = null);
 
 internal record TabInfo(string? Caption, List<ControlInfo> Controls);
 
@@ -93,7 +96,10 @@ internal record ScriptControlData(
     bool Multiline = false,
     // <expand/> - this control should grow to fill the remaining width of its row instead of
     // being capped to a fixed max-width.
-    bool Expand = false
+    bool Expand = false,
+    // <filefiltername> - human-readable label for what file types a "file" simple editor
+    // accepts (e.g. "Picture Files"), shown as the upload button's tooltip.
+    string? FileFilterName = null
 );
 
 internal record ElseIfClauseData(string Id, string Expression, List<ScriptNodeData> Scripts);
@@ -4041,6 +4047,8 @@ public partial class WasmEditorBridge
             }
         }
 
+        var fileFilterName = simpleEditor == "file" ? ctrl.GetString("filefiltername") : null;
+
         return new ScriptControlData(
             ctrl.ControlType,
             ctrl.Caption,
@@ -4058,7 +4066,8 @@ public partial class WasmEditorBridge
             useTemplates,
             cases,
             multiline,
-            expand
+            expand,
+            fileFilterName
         );
     }
 
@@ -4232,6 +4241,7 @@ public partial class WasmEditorBridge
         var source = ctrl.ControlType == "file" || isDictionary ? ctrl.GetString("source") : null;
         var newFile = ctrl.ControlType == "file" ? ctrl.GetString("newfile") : null;
         var lockedAfterCreate = ctrl.ControlType == "file" && ctrl.GetBool("lockedaftercreate");
+        var fileFilterName = ctrl.ControlType == "file" ? ctrl.GetString("filefiltername") : null;
         var keyPrompt = isDictionary ? ctrl.GetString("keyprompt") : null;
         var valuePrompt = isDictionary ? ctrl.GetString("valueprompt") : null;
         var sourceExclude = isDictionary ? ctrl.GetString("sourceexclude") : null;
@@ -4246,7 +4256,8 @@ public partial class WasmEditorBridge
             null, null, textProcessorCommands, addPrompt, Source: source,
             Advanced: !ctrl.IsControlVisibleInSimpleMode,
             KeyPrompt: keyPrompt, ValuePrompt: valuePrompt, SourceExclude: sourceExclude, SourceType: sourceType,
-            IsWalkthrough: isWalkthrough, Href: href, NewFile: newFile, LockedAfterCreate: lockedAfterCreate);
+            IsWalkthrough: isWalkthrough, Href: href, NewFile: newFile, LockedAfterCreate: lockedAfterCreate,
+            FileFilterName: fileFilterName);
     }
 
     [JSExport]

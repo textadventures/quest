@@ -4,9 +4,13 @@
     import FileIcon from "@lucide/svelte/icons/file";
     import { t } from "$lib/i18n";
 
-    let { value, source = null, creatable = false, readonly = false, exclude = [], onchange, onEnter, class: className = "input text-xs py-0.5 px-1.5 w-full min-w-0", containerClass = "" }: {
+    let { value, source = null, filterName = null, creatable = false, readonly = false, exclude = [], onchange, onEnter, class: className = "input text-xs py-0.5 px-1.5 w-full min-w-0", containerClass = "" }: {
         value: string;
         source?: string | null;
+        // <filefiltername> - human-readable label for what file types this picker accepts (e.g.
+        // "Picture Files"). HTML file inputs have no native filter-name UI to put this in, so
+        // it's surfaced as the upload button's tooltip instead.
+        filterName?: string | null;
         // When true, typing a filename that isn't an existing asset creates a blank one under
         // that name instead of leaving the attribute pointing at nothing — e.g. the Javascript
         // src picker, where "type a new name" is how you make a new file (no separate button).
@@ -95,7 +99,7 @@
             class="btn btn-sm preset-outlined-primary-500 text-xs px-1.5 py-0.5 whitespace-nowrap shrink-0"
             onclick={() => inputEl?.click()}
             disabled={uploading}
-            title={t("assetPicker.uploadTitle")}
+            title={filterName ? t("assetPicker.uploadTitleWithFilter", { filterName }) : t("assetPicker.uploadTitle")}
         >{uploading ? t("assetManager.uploading") : t("assetManager.upload")}</button>
         <input bind:this={inputEl} type="file" accept={filter.accept} class="hidden" onchange={handleUpload} />
     {/if}

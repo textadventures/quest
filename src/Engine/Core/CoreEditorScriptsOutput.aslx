@@ -114,7 +114,6 @@
       <simpleeditor>file</simpleeditor>
       <source>[EditorImageFormats]</source>
       <filefiltername>Picture Files</filefiltername>
-      <preview/>
     </control>
   </editor>
 
@@ -138,7 +137,6 @@
       <simpleeditor>file</simpleeditor>
       <source>[EditorImageFormats]</source>
       <filefiltername>Picture Files</filefiltername>
-      <preview/>
     </control>
   </editor>
 

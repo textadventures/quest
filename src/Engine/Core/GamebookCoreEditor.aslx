@@ -260,7 +260,6 @@
         <attribute>cover</attribute>
         <source>*.jpg;*.jpeg;*.png;*.gif</source>
         <filefiltername>[EditorGBPlayPictureFilterName]</filefiltername>
-        <preview/>
       </control>
 
       <control>
@@ -466,7 +465,6 @@
         <source>*.jpg;*.jpeg;*.png;*.gif</source>
         <filefiltername>[EditorGBPlayPictureFilterName]</filefiltername>
         <mustinherit>picture</mustinherit>
-        <preview/>
       </control>
 
       <control>

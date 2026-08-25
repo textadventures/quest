@@ -311,6 +311,7 @@
 
     "assetPicker.readonlyTitle": "Can't be changed after creation — add a new element to point elsewhere",
     "assetPicker.uploadTitle": "Upload a new file",
+    "assetPicker.uploadTitleWithFilter": "Upload a new file ({filterName})",
 
     "codeViewPanel.applyingChanges": "Applying changes…",
     "codeViewPanel.applyConfirmMessage": "Applying reloads the whole game from this text and discards undo history. Continue?",

@@ -311,6 +311,7 @@
 
     "assetPicker.readonlyTitle": "Kann nach dem Erstellen nicht mehr geändert werden — füge ein neues Element hinzu, um woanders hin zu verweisen",
     "assetPicker.uploadTitle": "Eine neue Datei hochladen",
+    "assetPicker.uploadTitleWithFilter": "Eine neue Datei hochladen ({filterName})",
 
     "codeViewPanel.applyingChanges": "Änderungen übernehmen…",
     "codeViewPanel.applyConfirmMessage": "Beim Übernehmen wird das gesamte Spiel aus diesem Text neu geladen und der Rückgängig-Verlauf verworfen. Fortfahren?",

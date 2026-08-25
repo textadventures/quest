@@ -596,6 +596,7 @@
         <AssetPicker
             value={attrValue(ctrl.attribute!) ?? ""}
             source={ctrl.source}
+            filterName={ctrl.fileFilterName}
             creatable={!!ctrl.newFile}
             readonly={!!(ctrl.lockedAfterCreate && attrValue(ctrl.attribute!))}
             onchange={(v) => onTextChange(ctrl.attribute!, ctrl.controlType, v)}

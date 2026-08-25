@@ -63,6 +63,9 @@ export interface ControlInfo {
   href?: string | null
   newFile?: string | null
   lockedAfterCreate?: boolean
+  // <filefiltername> - human-readable label for what file types a "file" control accepts
+  // (e.g. "Picture Files"), shown as the upload button's tooltip.
+  fileFilterName?: string | null
 }
 
 export interface TabInfo {
@@ -134,6 +137,9 @@ export interface ScriptControlData {
   // <expand/> - this control should grow to fill the remaining width of its row instead of
   // being capped to a fixed max-width.
   expand?: boolean
+  // <filefiltername> - human-readable label for what file types a "file" simple editor
+  // accepts (e.g. "Picture Files"), shown as the upload button's tooltip.
+  fileFilterName?: string | null
 }
 
 export interface ElseIfClauseData {

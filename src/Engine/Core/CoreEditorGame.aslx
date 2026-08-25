@@ -67,7 +67,6 @@
         <attribute>cover</attribute>
         <source>[EditorImageFormats]</source>
         <filefiltername>Picture Files</filefiltername>
-        <preview/>
       </control>
 
       <control>
@@ -285,7 +284,6 @@
         <attribute>backgroundimage</attribute>
         <source>[EditorImageFormats]</source>
         <filefiltername>Picture Files</filefiltername>
-        <preview/>
         <onlydisplayif>not game.colourblend</onlydisplayif>
       </control>
 
@@ -569,7 +567,6 @@
         <attribute>locationbarimage</attribute>
         <source>[EditorImageFormats]</source>
         <filefiltername>Picture Files</filefiltername>
-        <preview/>
         <onlydisplayif>game.showlocation and not game.classiclocation</onlydisplayif>
       </control>
 
