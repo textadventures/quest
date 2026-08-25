@@ -1074,6 +1074,20 @@
                         <option value={name}>{name}</option>
                     {/each}
                 </select>
+            {:else if ctrl.simpleEditor === "number" || ctrl.simpleEditor === "numberdouble"}
+                <input
+                    type="number"
+                    min={ctrl.minimum ?? undefined}
+                    max={ctrl.maximum ?? undefined}
+                    step={ctrl.increment ?? (ctrl.simpleEditor === "numberdouble" ? "any" : undefined)}
+                    class="input text-xs py-0 px-1 min-w-16 max-w-32 flex-1"
+                    placeholder={ctrl.simpleLabel ?? ctrl.name}
+                    value={ctrl.value ?? ""}
+                    onchange={(e) => {
+                        const newVal = (e.target as HTMLInputElement).value;
+                        onchange(buildTemplateExpression(tmplData!, ctrl.name, newVal));
+                    }}
+                />
             {:else}
                 <input
                     type="text"
