@@ -104,7 +104,12 @@ internal record ScriptControlData(
     // <freetext/> - a "dropdown" controltype or expression's "dropdown" simpleeditor should let
     // the user type a value not in its <validvalues> list, instead of being restricted to
     // picking one of the listed options.
-    bool Freetext = false
+    bool Freetext = false,
+    // <minimum>/<maximum>/<increment> - bounds and step for a "number"/"numberdouble" simple
+    // editor (e.g. Grid_DrawShape's opacity, 0.0-1.0 step 0.1).
+    double? Minimum = null,
+    double? Maximum = null,
+    double? Increment = null
 );
 
 internal record ElseIfClauseData(string Id, string Expression, List<ScriptNodeData> Scripts);
@@ -4053,6 +4058,11 @@ public partial class WasmEditorBridge
             }
         }
 
+        var isNumericSimpleEditor = simpleEditor is "number" or "numberdouble";
+        var minimum = isNumericSimpleEditor ? GetNumericHint(ctrl, "minimum") : null;
+        var maximum = isNumericSimpleEditor ? GetNumericHint(ctrl, "maximum") : null;
+        var increment = isNumericSimpleEditor ? GetNumericHint(ctrl, "increment") : null;
+
         return new ScriptControlData(
             ctrl.ControlType,
             ctrl.Caption,
@@ -4071,7 +4081,10 @@ public partial class WasmEditorBridge
             cases,
             multiline,
             expand,
-            freetext
+            freetext,
+            minimum,
+            maximum,
+            increment
         );
     }
 

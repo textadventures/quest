@@ -145,6 +145,11 @@ export interface ScriptControlData {
   // the user type a value not in its <validvalues> list, instead of being restricted to
   // picking one of the listed options.
   freetext?: boolean
+  // <minimum>/<maximum>/<increment> - bounds and step for a "number"/"numberdouble" simple
+  // editor.
+  minimum?: number | null
+  maximum?: number | null
+  increment?: number | null
 }
 
 export interface ElseIfClauseData {
