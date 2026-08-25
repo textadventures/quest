@@ -45,7 +45,10 @@ internal record ControlInfo(
     bool IsWalkthrough = false,
     string? Href = null,
     string? NewFile = null,
-    bool LockedAfterCreate = false);
+    bool LockedAfterCreate = false,
+    // <freetext/> - a "dropdown" control should let the user type a value not in its
+    // <validvalues> list, instead of being restricted to picking one of the listed options.
+    bool Freetext = false);
 
 internal record TabInfo(string? Caption, List<ControlInfo> Controls);
 
@@ -93,7 +96,11 @@ internal record ScriptControlData(
     bool Multiline = false,
     // <expand/> - this control should grow to fill the remaining width of its row instead of
     // being capped to a fixed max-width.
-    bool Expand = false
+    bool Expand = false,
+    // <freetext/> - a "dropdown" controltype or expression's "dropdown" simpleeditor should let
+    // the user type a value not in its <validvalues> list, instead of being restricted to
+    // picking one of the listed options.
+    bool Freetext = false
 );
 
 internal record ElseIfClauseData(string Id, string Expression, List<ScriptNodeData> Scripts);
@@ -3994,6 +4001,7 @@ public partial class WasmEditorBridge
         var breakBefore = ctrl.GetBool("breakbefore");
         var multiline = ctrl.GetBool("multiline");
         var expand = ctrl.Expand;
+        var freetext = ctrl.GetBool("freetext");
 
         string? useTemplates = null;
 
@@ -4058,7 +4066,8 @@ public partial class WasmEditorBridge
             useTemplates,
             cases,
             multiline,
-            expand
+            expand,
+            freetext
         );
     }
 
@@ -4130,9 +4139,11 @@ public partial class WasmEditorBridge
     {
         List<ControlOption>? options = null;
         var attribute = ctrl.Attribute;
+        var freetext = false;
 
         if (ctrl.ControlType == "dropdown")
         {
+            freetext = ctrl.GetBool("freetext");
             var list = ctrl.GetListString("validvalues");
             if (list != null)
             {
@@ -4246,7 +4257,8 @@ public partial class WasmEditorBridge
             null, null, textProcessorCommands, addPrompt, Source: source,
             Advanced: !ctrl.IsControlVisibleInSimpleMode,
             KeyPrompt: keyPrompt, ValuePrompt: valuePrompt, SourceExclude: sourceExclude, SourceType: sourceType,
-            IsWalkthrough: isWalkthrough, Href: href, NewFile: newFile, LockedAfterCreate: lockedAfterCreate);
+            IsWalkthrough: isWalkthrough, Href: href, NewFile: newFile, LockedAfterCreate: lockedAfterCreate,
+            Freetext: freetext);
     }
 
     [JSExport]

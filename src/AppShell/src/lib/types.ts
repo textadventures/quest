@@ -63,6 +63,9 @@ export interface ControlInfo {
   href?: string | null
   newFile?: string | null
   lockedAfterCreate?: boolean
+  // <freetext/> - a "dropdown" control should let the user type a value not in its
+  // <validvalues> list, instead of being restricted to picking one of the listed options.
+  freetext?: boolean
 }
 
 export interface TabInfo {
@@ -134,6 +137,10 @@ export interface ScriptControlData {
   // <expand/> - this control should grow to fill the remaining width of its row instead of
   // being capped to a fixed max-width.
   expand?: boolean
+  // <freetext/> - a "dropdown" controltype or expression's "dropdown" simpleeditor should let
+  // the user type a value not in its <validvalues> list, instead of being restricted to
+  // picking one of the listed options.
+  freetext?: boolean
 }
 
 export interface ElseIfClauseData {
