@@ -31,7 +31,7 @@ try {
 
     // Back to the tree — "room" stays selected/highlighted.
     await page.click('button:has-text("room")');
-    await page.waitForSelector('text=GAME OBJECTS', { timeout: 5000 });
+    await page.waitForSelector('input[placeholder="Filter..."]', { timeout: 5000 });
     console.log('PASS: back button returns to the tree pane');
 
     // Tap the SAME node again (still selected) — this is the reported bug:
@@ -42,7 +42,7 @@ try {
 
     // Same check on a leaf node (no children, different TreeView.Item path).
     await page.click('button:has-text("room")'); // back to tree
-    await page.waitForSelector('text=GAME OBJECTS', { timeout: 5000 });
+    await page.waitForSelector('input[placeholder="Filter..."]', { timeout: 5000 });
     // "player" lives inside the "room" branch, which now starts expanded all
     // the way down to the player (#827) — just make sure it's open (if a prior
     // state left it collapsed) before the leaf-node checks below.
@@ -51,7 +51,7 @@ try {
     await page.click('text=player');
     await page.waitForSelector('button:has-text("player")', { timeout: 5000 });
     await page.click('button:has-text("player")'); // back to tree
-    await page.waitForSelector('text=GAME OBJECTS', { timeout: 5000 });
+    await page.waitForSelector('input[placeholder="Filter..."]', { timeout: 5000 });
     await page.click('text=player');
     await page.waitForSelector('button:has-text("player")', { timeout: 5000 });
     console.log('PASS: same fix applies to a leaf node (TreeView.Item, not TreeView.BranchControl)');
