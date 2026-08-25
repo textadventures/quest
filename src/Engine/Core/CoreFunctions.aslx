@@ -185,11 +185,6 @@
     request (RequestSave, "")
   </function>
 
-  <function name="RequestSpeak" parameters="s">
-    // Deprecated
-    request (Speak, s)
-  </function>
-
   <function name="ShowMenu" parameters="caption, options, allowCancel, callback"><![CDATA[
       outputsection = StartNewOutputSection()
       msg (caption)
