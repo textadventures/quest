@@ -10,7 +10,6 @@
       format = GetCurrentTextFormat("")
       JS.addText("<span style=\"" + format + "\">" + text + "</span><br/>")
       ResetCommandBarFormat
-      RequestSpeak (text)
     ]]>
   </function>
 
@@ -37,7 +36,6 @@
   <function name="OutputTextRawNoBr" parameters="text">
     <![CDATA[
       JS.addText("<span style=\"" + GetCurrentTextFormat("") + "\">" + text + "</span>")
-      RequestSpeak (text)
     ]]>
   </function>
 

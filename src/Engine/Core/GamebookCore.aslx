@@ -504,8 +504,4 @@
     game.menucallback = null
   </function>
 
-  <function name="RequestSpeak" parameters="s">
-    request (Speak, s)
-  </function>
-
 </library>
