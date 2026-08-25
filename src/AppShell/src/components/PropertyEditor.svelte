@@ -516,12 +516,26 @@
             onchange={(e) => onNumberChange(ctrl.attribute!, "numberdouble", (e.target as HTMLInputElement).value)}
         />
     {:else if ctrl.controlType === "dropdown" && ctrl.options}
-        <Combobox
-            value={attrValue(ctrl.attribute!) ?? ""}
-            options={ctrl.options}
-            onchange={(v) => onDropdownChange(ctrl.attribute!, v)}
-            class="input text-xs py-0.5 px-1.5 w-auto min-w-24"
-        />
+        {#if ctrl.freetext}
+            <Combobox
+                value={attrValue(ctrl.attribute!) ?? ""}
+                options={ctrl.options}
+                onchange={(v) => onDropdownChange(ctrl.attribute!, v)}
+                class="input text-xs py-0.5 px-1.5 w-auto min-w-24"
+            />
+        {:else}
+            <!-- No <freetext/> hint - restrict to the listed options, unlike Combobox which
+                 always accepts arbitrary typed text. -->
+            <select
+                class="select text-xs py-0.5 px-1.5 w-auto"
+                value={attrValue(ctrl.attribute!) ?? ""}
+                onchange={(e) => onDropdownChange(ctrl.attribute!, (e.target as HTMLSelectElement).value)}
+            >
+                {#each ctrl.options as opt (opt.value)}
+                    <option value={opt.value}>{opt.label || opt.value || t("common.none")}</option>
+                {/each}
+            </select>
+        {/if}
     {:else if ctrl.controlType === "dropdowntypes" && ctrl.options && ctrl.attribute}
         <select
             class="select text-xs py-0.5 px-1.5 w-auto"
