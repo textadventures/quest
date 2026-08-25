@@ -35,18 +35,20 @@ try {
     console.log('PASS: tree header reads "Pages" (not "Objects")');
 
     // Toolbar "+" menu: only "Add Page" — none of the text-adventure adders.
+    // Menu items carry role="menuitem" (see DropdownMenu.svelte), not the
+    // default "button" role, per the WAI-ARIA menu pattern.
     await page.click('button[title="Add element"]');
-    await page.getByRole('button', { name: 'Add Page', exact: true }).waitFor({ state: 'visible', timeout: 5000 });
+    await page.getByRole('menuitem', { name: 'Add Page', exact: true }).waitFor({ state: 'visible', timeout: 5000 });
     console.log('PASS: toolbar "+" menu offers "Add Page"');
 
     for (const label of ['Add Room', 'Add Object', 'Add Exit', 'Add Verb', 'Add Command', 'Add Turn Script']) {
-        const visible = await page.getByRole('button', { name: label, exact: true }).isVisible().catch(() => false);
+        const visible = await page.getByRole('menuitem', { name: label, exact: true }).isVisible().catch(() => false);
         if (visible) throw new Error(`Toolbar "+" menu should not offer "${label}" in gamebook mode`);
     }
     console.log('PASS: toolbar "+" menu has no text-adventure-only adders');
 
     // Add a page via the toolbar, flat (no parent prompt).
-    await page.getByRole('button', { name: 'Add Page', exact: true }).click();
+    await page.getByRole('menuitem', { name: 'Add Page', exact: true }).click();
     await page.fill('#element-name', 'MyNewPage');
     await page.getByRole('button', { name: 'Add Page', exact: true }).click();
     await tree.getByText('MyNewPage', { exact: true }).waitFor({ state: 'visible', timeout: 5000 });
