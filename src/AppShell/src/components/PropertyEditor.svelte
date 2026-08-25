@@ -202,6 +202,12 @@
         return $selectedData?.attributes[attribute] ?? null;
     }
 
+    // <width> - a per-instance pixel width, only known at runtime, so it has to be an inline
+    // style rather than a Tailwind class (Tailwind's static scanning can't see a dynamic value).
+    function widthStyle(ctrl: ControlInfo): string | undefined {
+        return ctrl.width ? `width: ${ctrl.width}px` : undefined;
+    }
+
     function boolValue(attribute: string): boolean {
         const v = attrValue(attribute);
         return v === "True" || v === "true";
@@ -522,6 +528,7 @@
             max={ctrl.maximum ?? undefined}
             step={ctrl.increment ?? undefined}
             class="input text-xs py-0.5 px-1.5 w-auto"
+            style={widthStyle(ctrl)}
             value={attrValue(ctrl.attribute!) ?? ""}
             onchange={(e) => onNumberChange(ctrl.attribute!, "number", (e.target as HTMLInputElement).value)}
         />
@@ -532,6 +539,7 @@
             max={ctrl.maximum ?? undefined}
             step={ctrl.increment ?? "any"}
             class="input text-xs py-0.5 px-1.5 w-auto"
+            style={widthStyle(ctrl)}
             value={attrValue(ctrl.attribute!) ?? ""}
             onchange={(e) => onNumberChange(ctrl.attribute!, "numberdouble", (e.target as HTMLInputElement).value)}
         />
@@ -542,12 +550,14 @@
                 options={ctrl.options}
                 onchange={(v) => onDropdownChange(ctrl.attribute!, v, ctrl.nullable)}
                 class="input text-xs py-0.5 px-1.5 w-auto min-w-24"
+                style={widthStyle(ctrl)}
             />
         {:else}
             <!-- No <freetext/> hint - restrict to the listed options, unlike Combobox which
                  always accepts arbitrary typed text. -->
             <select
                 class="select text-xs py-0.5 px-1.5 w-auto"
+                style={widthStyle(ctrl)}
                 value={attrValue(ctrl.attribute!) ?? ""}
                 onchange={(e) => onDropdownChange(ctrl.attribute!, (e.target as HTMLSelectElement).value)}
             >
@@ -559,6 +569,7 @@
     {:else if ctrl.controlType === "dropdowntypes" && ctrl.options && ctrl.attribute}
         <select
             class="select text-xs py-0.5 px-1.5 w-auto"
+            style={widthStyle(ctrl)}
             value={attrValue(ctrl.attribute) ?? "*"}
             onchange={(e) => $selectedKey && setDropdownType($selectedKey, ctrl.attribute!, (e.target as HTMLSelectElement).value)}
         >
@@ -590,7 +601,8 @@
         <input
             type="text"
             autocapitalize="off"
-            class={"input text-xs py-0.5 px-1.5 w-full" + (ctrl.attribute && attributeErrors[ctrl.attribute] ? " !border-error-500" : "")}
+            class={"input text-xs py-0.5 px-1.5" + (ctrl.width ? "" : " w-full") + (ctrl.attribute && attributeErrors[ctrl.attribute] ? " !border-error-500" : "")}
+            style={widthStyle(ctrl)}
             value={attrValue(ctrl.attribute!) ?? ""}
             onchange={(e) => onTextChange(ctrl.attribute!, ctrl.controlType, (e.target as HTMLInputElement).value, ctrl.nullable)}
         />
@@ -604,6 +616,7 @@
     {:else if ctrl.controlType === "filter" && ctrl.options}
         <select
             class="select text-xs py-0.5 px-1.5 w-auto"
+            style={widthStyle(ctrl)}
             value={attrValue(ctrl.attribute!) ?? ""}
             onchange={(e) => $selectedKey && setSelectedFilter($selectedKey, ctrl.subAttribute!, (e.target as HTMLSelectElement).value)}
         >
@@ -781,6 +794,7 @@
             options={ctrl.options}
             onchange={(v) => $selectedKey && setObjectReference($selectedKey, ctrl.attribute!, v)}
             class="input text-xs py-0.5 px-1.5 w-auto min-w-24"
+            style={widthStyle(ctrl)}
         />
     {:else if ctrl.controlType === "multi" && ctrl.options}
         {@const selectedType = attrValue(ctrl.attribute!) ?? "null"}

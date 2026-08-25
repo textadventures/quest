@@ -56,7 +56,10 @@ internal record ControlInfo(
     // <nullable/> - emptying this control's value reverts the attribute to unset/inherited (as
     // opposed to just an empty string, which is still an explicit override) - the frontend calls
     // RemoveAttribute instead of SetAttribute("") when the new value is empty.
-    bool Nullable = false);
+    bool Nullable = false,
+    // <width> - fixed pixel width for this control (e.g. an exit's "to" object picker), instead
+    // of the default flexible sizing.
+    int? Width = null);
 
 internal record TabInfo(string? Caption, List<ControlInfo> Controls);
 
@@ -4208,7 +4211,7 @@ public partial class WasmEditorBridge
             options = dict?.Select(kv => new ControlOption(kv.Key, kv.Value)).ToList();
 
             return new ControlInfo(ctrl.Id, "filter", ctrl.Caption, options, null,
-                ctrl.GetString("filtergroupname"), Advanced: !ctrl.IsControlVisibleInSimpleMode);
+                ctrl.GetString("filtergroupname"), Advanced: !ctrl.IsControlVisibleInSimpleMode, Width: ctrl.Width);
         }
         else if (ctrl.ControlType == "objects")
         {
@@ -4291,7 +4294,8 @@ public partial class WasmEditorBridge
             IsWalkthrough: isWalkthrough, Href: href, NewFile: newFile, LockedAfterCreate: lockedAfterCreate,
             Freetext: freetext,
             Minimum: minimum, Maximum: maximum, Increment: increment,
-            Nullable: nullable);
+            Nullable: nullable,
+            Width: ctrl.Width);
     }
 
     // <minimum>/<maximum>/<increment> can be authored as either an int or a double literal in
