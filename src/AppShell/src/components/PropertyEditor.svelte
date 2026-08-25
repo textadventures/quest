@@ -963,10 +963,10 @@
                 href={ctrl.href}
                 target="_blank"
                 rel="noopener noreferrer"
-                class="block px-3 py-1 text-xs text-primary-600-400 italic hover:underline"
+                class={"block px-3 py-1 text-xs text-primary-600-400 italic hover:underline" + (ctrl.bold ? " font-semibold" : "")}
             >{ctrl.caption ?? ""}</a>
         {:else}
-            <div class="px-3 py-1 text-xs text-surface-600-400 italic">
+            <div class={"px-3 py-1 text-xs text-surface-600-400 italic" + (ctrl.bold ? " font-semibold" : "")}>
                 {ctrl.caption ?? ""}
             </div>
         {/if}
