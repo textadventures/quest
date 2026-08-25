@@ -645,9 +645,6 @@
     class="flex flex-col shrink-0 border-r border-surface-200-800 bg-surface-50-950 {width === undefined ? "w-full" : ""}"
     style={width !== undefined ? `width: ${width}px` : undefined}
 >
-    <div class="px-3 py-2 text-xs font-semibold uppercase text-surface-600-400 border-b border-surface-200-800">
-        {$isGamebook ? t("treePanel.gamePages") : t("treePanel.gameObjects")}
-    </div>
     <div class="p-1.5 border-b border-surface-200-800 flex items-center gap-1">
         <div class="relative flex-1">
             <Search class="absolute left-2.5 top-1/2 -translate-y-1/2 size-3.5 text-surface-400 pointer-events-none" />
