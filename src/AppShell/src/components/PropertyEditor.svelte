@@ -1,5 +1,5 @@
 <script lang="ts">
-    import { selectedKey, selectedData, treeNodes, isGamebook, setAttribute, setDropdownType, setMultiType, setObjectReference, setSelectedFilter, addDictItem, removeDictItem, updateDictItem, getObjectNames, getExitNames, getPageNames, selectNode, createPageSilent, openAddModal, openAddLibraryModal, openAddJavascriptModal, getAssetText, putAssetText, putLibraryAssetText, isBuiltInLibrary, getLibraryXml, setPatternAttribute } from "$lib/editor-store";
+    import { selectedKey, selectedData, treeNodes, isGamebook, setAttribute, removeAttribute, setDropdownType, setMultiType, setObjectReference, setSelectedFilter, addDictItem, removeDictItem, updateDictItem, getObjectNames, getExitNames, getPageNames, selectNode, createPageSilent, openAddModal, openAddLibraryModal, openAddJavascriptModal, getAssetText, putAssetText, putLibraryAssetText, isBuiltInLibrary, getLibraryXml, setPatternAttribute } from "$lib/editor-store";
     import { showToast } from "$lib/toast";
     import { isLibraryFilename } from "$lib/filesystem/types";
     import { t } from "$lib/i18n";
@@ -138,8 +138,18 @@
         if (error) showToast(error, "error");
     }
 
-    function onTextChange(attribute: string, controlType: string, value: string) {
-        if ($selectedKey) recordResult(attribute, setAttribute($selectedKey, attribute, controlType, value));
+    // <nullable/> - an empty value means "unset/inherited", not an explicit empty-string
+    // override (WorldModel attribute inheritance treats the two differently) - so clearing the
+    // field removes the attribute entirely instead of saving "". Mirrors the old Quest 5 desktop
+    // editor's TextBoxControl/RichTextControl/ExpressionControl, which do the same null-out on
+    // save when their own <nullable/> hint is set.
+    function onTextChange(attribute: string, controlType: string, value: string, nullable = false) {
+        if (!$selectedKey) return;
+        if (nullable && value === "") {
+            recordResult(attribute, removeAttribute($selectedKey, attribute));
+            return;
+        }
+        recordResult(attribute, setAttribute($selectedKey, attribute, controlType, value));
     }
 
     // Routed through setPatternAttribute (not the generic setAttribute/textbox path) so an
@@ -162,8 +172,13 @@
         if ($selectedKey) recordResult(attribute, setAttribute($selectedKey, attribute, controlType, value));
     }
 
-    function onDropdownChange(attribute: string, value: string) {
-        if ($selectedKey) recordResult(attribute, setAttribute($selectedKey, attribute, "dropdown", value));
+    function onDropdownChange(attribute: string, value: string, nullable = false) {
+        if (!$selectedKey) return;
+        if (nullable && value === "") {
+            recordResult(attribute, removeAttribute($selectedKey, attribute));
+            return;
+        }
+        recordResult(attribute, setAttribute($selectedKey, attribute, "dropdown", value));
     }
 
     function getControlsForView(): ControlInfo[] {
@@ -525,7 +540,7 @@
             <Combobox
                 value={attrValue(ctrl.attribute!) ?? ""}
                 options={ctrl.options}
-                onchange={(v) => onDropdownChange(ctrl.attribute!, v)}
+                onchange={(v) => onDropdownChange(ctrl.attribute!, v, ctrl.nullable)}
                 class="input text-xs py-0.5 px-1.5 w-auto min-w-24"
             />
         {:else}
@@ -560,7 +575,7 @@
                     autocapitalize="off"
                     class="input text-xs py-0.5 px-1.5 flex-1 min-h-32 resize-y"
                     value={attrValue(ctrl.attribute!) ?? ""}
-                    onchange={(e) => onTextChange(ctrl.attribute!, ctrl.controlType, (e.target as HTMLTextAreaElement).value)}
+                    onchange={(e) => onTextChange(ctrl.attribute!, ctrl.controlType, (e.target as HTMLTextAreaElement).value, ctrl.nullable)}
                 ></textarea>
             </div>
         {:else}
@@ -568,7 +583,7 @@
                 autocapitalize="off"
                 class="input text-xs py-0.5 px-1.5 w-full min-h-24 resize-y"
                 value={attrValue(ctrl.attribute!) ?? ""}
-                onchange={(e) => onTextChange(ctrl.attribute!, ctrl.controlType, (e.target as HTMLTextAreaElement).value)}
+                onchange={(e) => onTextChange(ctrl.attribute!, ctrl.controlType, (e.target as HTMLTextAreaElement).value, ctrl.nullable)}
             ></textarea>
         {/if}
     {:else if ctrl.controlType === "textbox"}
@@ -577,12 +592,12 @@
             autocapitalize="off"
             class={"input text-xs py-0.5 px-1.5 w-full" + (ctrl.attribute && attributeErrors[ctrl.attribute] ? " !border-error-500" : "")}
             value={attrValue(ctrl.attribute!) ?? ""}
-            onchange={(e) => onTextChange(ctrl.attribute!, ctrl.controlType, (e.target as HTMLInputElement).value)}
+            onchange={(e) => onTextChange(ctrl.attribute!, ctrl.controlType, (e.target as HTMLInputElement).value, ctrl.nullable)}
         />
     {:else if ctrl.controlType === "expression"}
         <ExpressionInput
             value={attrValue(ctrl.attribute!) ?? ""}
-            onchange={(v) => onTextChange(ctrl.attribute!, ctrl.controlType, v)}
+            onchange={(v) => onTextChange(ctrl.attribute!, ctrl.controlType, v, ctrl.nullable)}
             objectNames={dictSourceObjectNames}
             class={"input text-xs py-0.5 px-1.5 w-full" + (ctrl.attribute && attributeErrors[ctrl.attribute] ? " !border-error-500" : "")}
         />

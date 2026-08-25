@@ -70,6 +70,10 @@ export interface ControlInfo {
   minimum?: number | null
   maximum?: number | null
   increment?: number | null
+  // <nullable/> - clearing this control's value (emptying the text) removes the attribute
+  // entirely (reverting to unset/inherited) instead of saving an explicit "". Matches the old
+  // Quest 5 desktop editor's behaviour for the same hint.
+  nullable?: boolean
 }
 
 export interface TabInfo {
