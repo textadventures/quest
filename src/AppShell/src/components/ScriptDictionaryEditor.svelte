@@ -18,9 +18,13 @@
         // <keyname> - overrides the generic "entry key" wording in the add-row placeholder/
         // labels with a more specific noun (e.g. "Object" for useon/selfuseon/give/giveto).
         keyLabel?: string | null;
+        // <keyprompt> - a longer descriptive sentence (e.g. "Please enter the name of the
+        // object..."), shown as a tooltip on the add-row input alongside keyLabel's shorter
+        // placeholder/aria-label wording.
+        keyPrompt?: string | null;
     }
 
-    let { elementKey, attribute, value, isLocked = false, keySource = "text", keyLabel = null }: Props = $props();
+    let { elementKey, attribute, value, isLocked = false, keySource = "text", keyLabel = null, keyPrompt = null }: Props = $props();
 
     let items = $derived.by<{key: string, value: string}[]>(() => {
         try {
@@ -153,6 +157,7 @@
                 <select
                     class="select text-xs py-0.5 px-1.5 flex-1"
                     aria-label={keyLabel ? t("scriptDictionaryEditor.addEntryKeyAriaLabelWithLabel", { label: keyLabel }) : t("scriptDictionaryEditor.addEntryKeyAriaLabel")}
+                    title={keyPrompt ?? undefined}
                     data-staging
                     bind:value={newKey}
                 >
@@ -168,6 +173,7 @@
                     class="input text-xs py-0.5 px-1.5 flex-1"
                     placeholder={keyLabel ? t("scriptDictionaryEditor.addEntryKeyPlaceholderWithLabel", { label: keyLabel }) : t("scriptDictionaryEditor.addEntryKeyPlaceholder")}
                     aria-label={keyLabel ? t("scriptDictionaryEditor.addEntryKeyAriaLabelWithLabel", { label: keyLabel }) : t("scriptDictionaryEditor.addEntryKeyAriaLabel")}
+                    title={keyPrompt ?? undefined}
                     data-staging
                     bind:value={newKey}
                     onkeydown={(e) => { if (e.key === "Enter") onAdd(); }}

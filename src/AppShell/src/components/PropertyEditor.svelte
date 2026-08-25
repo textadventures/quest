@@ -820,6 +820,7 @@
                     value={attrValue(ctrl.subAttribute)}
                     keySource={ctrl.source === "object" ? "object" : "text"}
                     keyLabel={ctrl.keyName}
+                    keyPrompt={ctrl.keyPrompt}
                 />
             {/if}
         </div>
@@ -1031,6 +1032,7 @@
                             value={attrValue(ctrl.subAttribute)}
                             keySource={ctrl.source === "object" ? "object" : "text"}
                             keyLabel={ctrl.keyName}
+                            keyPrompt={ctrl.keyPrompt}
                         />
                     </div>
                 {/if}

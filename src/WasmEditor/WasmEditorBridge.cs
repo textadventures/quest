@@ -4213,7 +4213,7 @@ public partial class WasmEditorBridge
             var caption = ctrl.Caption ?? ctrl.GetString("selfcaption");
             return new ControlInfo(ctrl.Id, ctrl.ControlType, caption, options, subEditors, ctrl.Attribute,
                 multiTpCommands, Source: ctrl.GetString("source"), Advanced: !ctrl.IsControlVisibleInSimpleMode, CheckboxCaption: ctrl.GetString("checkbox"),
-                KeyName: ctrl.GetString("keyname"));
+                KeyName: ctrl.GetString("keyname"), KeyPrompt: ctrl.GetString("keyprompt"));
         }
         else if (ctrl.ControlType == "elementslist")
         {
