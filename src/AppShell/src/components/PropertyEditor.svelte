@@ -819,6 +819,7 @@
                     attribute={ctrl.subAttribute}
                     value={attrValue(ctrl.subAttribute)}
                     keySource={ctrl.source === "object" ? "object" : "text"}
+                    keyLabel={ctrl.keyName}
                 />
             {/if}
         </div>
@@ -1029,6 +1030,7 @@
                             attribute={ctrl.subAttribute}
                             value={attrValue(ctrl.subAttribute)}
                             keySource={ctrl.source === "object" ? "object" : "text"}
+                            keyLabel={ctrl.keyName}
                         />
                     </div>
                 {/if}

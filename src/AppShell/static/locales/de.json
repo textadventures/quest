@@ -269,8 +269,11 @@
     "scriptDictionaryEditor.inheritedReadOnly": "Dieses Skript-Wörterbuch ist geerbt — nur lesbar.",
     "scriptDictionaryEditor.emptyValue": "(leer)",
     "scriptDictionaryEditor.selectObjectOption": "Objekt auswählen…",
+    "scriptDictionaryEditor.selectObjectOptionWithLabel": "{label} auswählen…",
     "scriptDictionaryEditor.addEntryKeyPlaceholder": "Schlüssel hinzufügen…",
+    "scriptDictionaryEditor.addEntryKeyPlaceholderWithLabel": "{label} hinzufügen…",
     "scriptDictionaryEditor.addEntryKeyAriaLabel": "Schlüssel hinzufügen",
+    "scriptDictionaryEditor.addEntryKeyAriaLabelWithLabel": "{label} hinzufügen",
     "scriptDictionaryEditor.editKey": "Schlüssel bearbeiten",
     "scriptDictionaryEditor.editKeyInputAriaLabel": "Schlüssel bearbeiten",
 

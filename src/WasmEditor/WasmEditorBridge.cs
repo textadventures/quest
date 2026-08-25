@@ -45,7 +45,10 @@ internal record ControlInfo(
     bool IsWalkthrough = false,
     string? Href = null,
     string? NewFile = null,
-    bool LockedAfterCreate = false);
+    bool LockedAfterCreate = false,
+    // <keyname> - overrides a "multi" control's scriptdictionary sub-editor's generic "key"
+    // label (e.g. "Object" for useon/selfuseon/give/giveto, whose keys are object names).
+    string? KeyName = null);
 
 internal record TabInfo(string? Caption, List<ControlInfo> Controls);
 
@@ -4209,7 +4212,8 @@ public partial class WasmEditorBridge
 
             var caption = ctrl.Caption ?? ctrl.GetString("selfcaption");
             return new ControlInfo(ctrl.Id, ctrl.ControlType, caption, options, subEditors, ctrl.Attribute,
-                multiTpCommands, Source: ctrl.GetString("source"), Advanced: !ctrl.IsControlVisibleInSimpleMode, CheckboxCaption: ctrl.GetString("checkbox"));
+                multiTpCommands, Source: ctrl.GetString("source"), Advanced: !ctrl.IsControlVisibleInSimpleMode, CheckboxCaption: ctrl.GetString("checkbox"),
+                KeyName: ctrl.GetString("keyname"));
         }
         else if (ctrl.ControlType == "elementslist")
         {

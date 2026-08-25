@@ -269,8 +269,11 @@
     "scriptDictionaryEditor.inheritedReadOnly": "Este diccionario de programas es heredado — solo lectura.",
     "scriptDictionaryEditor.emptyValue": "(vacío)",
     "scriptDictionaryEditor.selectObjectOption": "Selecciona objeto…",
+    "scriptDictionaryEditor.selectObjectOptionWithLabel": "Selecciona {label}…",
     "scriptDictionaryEditor.addEntryKeyPlaceholder": "Añadir clave de entrada…",
+    "scriptDictionaryEditor.addEntryKeyPlaceholderWithLabel": "Añadir {label}…",
     "scriptDictionaryEditor.addEntryKeyAriaLabel": "Añadir clave de entrada",
+    "scriptDictionaryEditor.addEntryKeyAriaLabelWithLabel": "Añadir {label}",
     "scriptDictionaryEditor.editKey": "Editar clave",
     "scriptDictionaryEditor.editKeyInputAriaLabel": "Editar clave",
 

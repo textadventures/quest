@@ -15,9 +15,12 @@
         // dictionaries (AttributesEditor) keep free-text keys, since those aren't necessarily
         // object names.
         keySource?: "text" | "object";
+        // <keyname> - overrides the generic "entry key" wording in the add-row placeholder/
+        // labels with a more specific noun (e.g. "Object" for useon/selfuseon/give/giveto).
+        keyLabel?: string | null;
     }
 
-    let { elementKey, attribute, value, isLocked = false, keySource = "text" }: Props = $props();
+    let { elementKey, attribute, value, isLocked = false, keySource = "text", keyLabel = null }: Props = $props();
 
     let items = $derived.by<{key: string, value: string}[]>(() => {
         try {
@@ -149,11 +152,11 @@
             {#if keySource === "object"}
                 <select
                     class="select text-xs py-0.5 px-1.5 flex-1"
-                    aria-label={t("scriptDictionaryEditor.addEntryKeyAriaLabel")}
+                    aria-label={keyLabel ? t("scriptDictionaryEditor.addEntryKeyAriaLabelWithLabel", { label: keyLabel }) : t("scriptDictionaryEditor.addEntryKeyAriaLabel")}
                     data-staging
                     bind:value={newKey}
                 >
-                    <option value="">{t("scriptDictionaryEditor.selectObjectOption")}</option>
+                    <option value="">{keyLabel ? t("scriptDictionaryEditor.selectObjectOptionWithLabel", { label: keyLabel }) : t("scriptDictionaryEditor.selectObjectOption")}</option>
                     {#each availableObjectNames as name (name)}
                         <option value={name}>{name}</option>
                     {/each}
@@ -163,8 +166,8 @@
                     type="text"
                     autocapitalize="off"
                     class="input text-xs py-0.5 px-1.5 flex-1"
-                    placeholder={t("scriptDictionaryEditor.addEntryKeyPlaceholder")}
-                    aria-label={t("scriptDictionaryEditor.addEntryKeyAriaLabel")}
+                    placeholder={keyLabel ? t("scriptDictionaryEditor.addEntryKeyPlaceholderWithLabel", { label: keyLabel }) : t("scriptDictionaryEditor.addEntryKeyPlaceholder")}
+                    aria-label={keyLabel ? t("scriptDictionaryEditor.addEntryKeyAriaLabelWithLabel", { label: keyLabel }) : t("scriptDictionaryEditor.addEntryKeyAriaLabel")}
                     data-staging
                     bind:value={newKey}
                     onkeydown={(e) => { if (e.key === "Enter") onAdd(); }}
