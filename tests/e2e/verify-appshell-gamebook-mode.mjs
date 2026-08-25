@@ -1,5 +1,5 @@
 // Verifies gamebook-mode support in the AppShell editor: creating a game from
-// the Gamebook template should show "Pages"/"Game Pages" wording, offer only
+// the Gamebook template should show "Pages" wording in the tree, offer only
 // "Add Page" (no Add Room/Object/Exit/Verb/Command/Timer/Turn
 // Script/Walkthrough/Template/Type anywhere, including under "Advanced"), let
 // a new page be added flat and deleted, and refuse to delete the page
@@ -27,10 +27,7 @@ try {
 
     const tree = page.locator('.overflow-y-auto.p-1.text-xs');
 
-    // "Game Pages" static header + "Pages" tree header (renamed from "Objects").
-    await page.locator('text=Game Pages').waitFor({ state: 'visible', timeout: 10000 });
-    console.log('PASS: static panel header reads "Game Pages"');
-
+    // Tree header (renamed from "Objects").
     await tree.getByText('Pages', { exact: true }).waitFor({ state: 'visible', timeout: 5000 });
     console.log('PASS: tree header reads "Pages" (not "Objects")');
 

@@ -382,17 +382,15 @@
 </script>
 
 <div class="@container flex flex-col flex-1 bg-surface-50-950 overflow-hidden">
-    <div class="px-3 py-2 border-b border-surface-200-800">
-        {#if onback}
+    {#if onback}
+        <div class="px-3 py-2 border-b border-surface-200-800">
             <button
                 type="button"
                 class="flex items-center gap-1 -ml-1 px-1 text-sm font-medium text-surface-900-50"
                 onclick={onback}
             ><ChevronLeft size={16} /> {selectedNode?.text ?? t("propertyEditor.propertiesFallback")}</button>
-        {:else}
-            <span class="text-xs font-semibold uppercase text-surface-600-400">{t("propertyEditor.propertiesFallback")}</span>
-        {/if}
-    </div>
+        </div>
+    {/if}
     <LibraryElementBanner />
 
     {#if $selectedKey === null}
