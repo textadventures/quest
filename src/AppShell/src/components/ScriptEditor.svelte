@@ -825,6 +825,9 @@
                 {:else if ctrl.simpleEditor === "number" || ctrl.simpleEditor === "numberdouble"}
                     <input
                         type="number"
+                        min={ctrl.minimum ?? undefined}
+                        max={ctrl.maximum ?? undefined}
+                        step={ctrl.increment ?? (ctrl.simpleEditor === "numberdouble" ? "any" : undefined)}
                         class="input text-xs py-0 px-1 min-w-12 max-w-24"
                         value={ctrl.value ?? "0"}
                         onchange={(e) => onSetParam(scriptIndex, ctrl.attribute!, (e.target as HTMLInputElement).value)}

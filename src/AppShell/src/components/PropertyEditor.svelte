@@ -503,6 +503,9 @@
     {#if ctrl.controlType === "number"}
         <input
             type="number"
+            min={ctrl.minimum ?? undefined}
+            max={ctrl.maximum ?? undefined}
+            step={ctrl.increment ?? undefined}
             class="input text-xs py-0.5 px-1.5 w-auto"
             value={attrValue(ctrl.attribute!) ?? ""}
             onchange={(e) => onNumberChange(ctrl.attribute!, "number", (e.target as HTMLInputElement).value)}
@@ -510,7 +513,9 @@
     {:else if ctrl.controlType === "numberdouble"}
         <input
             type="number"
-            step="any"
+            min={ctrl.minimum ?? undefined}
+            max={ctrl.maximum ?? undefined}
+            step={ctrl.increment ?? "any"}
             class="input text-xs py-0.5 px-1.5 w-auto"
             value={attrValue(ctrl.attribute!) ?? ""}
             onchange={(e) => onNumberChange(ctrl.attribute!, "numberdouble", (e.target as HTMLInputElement).value)}

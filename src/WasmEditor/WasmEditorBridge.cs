@@ -48,7 +48,11 @@ internal record ControlInfo(
     bool LockedAfterCreate = false,
     // <freetext/> - a "dropdown" control should let the user type a value not in its
     // <validvalues> list, instead of being restricted to picking one of the listed options.
-    bool Freetext = false);
+    bool Freetext = false,
+    // <minimum>/<maximum>/<increment> - bounds and step for a "number"/"numberdouble" control.
+    double? Minimum = null,
+    double? Maximum = null,
+    double? Increment = null);
 
 internal record TabInfo(string? Caption, List<ControlInfo> Controls);
 
@@ -100,7 +104,12 @@ internal record ScriptControlData(
     // <freetext/> - a "dropdown" controltype or expression's "dropdown" simpleeditor should let
     // the user type a value not in its <validvalues> list, instead of being restricted to
     // picking one of the listed options.
-    bool Freetext = false
+    bool Freetext = false,
+    // <minimum>/<maximum>/<increment> - bounds and step for a "number"/"numberdouble" simple
+    // editor (e.g. Grid_DrawShape's opacity, 0.0-1.0 step 0.1).
+    double? Minimum = null,
+    double? Maximum = null,
+    double? Increment = null
 );
 
 internal record ElseIfClauseData(string Id, string Expression, List<ScriptNodeData> Scripts);
@@ -4049,6 +4058,11 @@ public partial class WasmEditorBridge
             }
         }
 
+        var isNumericSimpleEditor = simpleEditor is "number" or "numberdouble";
+        var minimum = isNumericSimpleEditor ? GetNumericHint(ctrl, "minimum") : null;
+        var maximum = isNumericSimpleEditor ? GetNumericHint(ctrl, "maximum") : null;
+        var increment = isNumericSimpleEditor ? GetNumericHint(ctrl, "increment") : null;
+
         return new ScriptControlData(
             ctrl.ControlType,
             ctrl.Caption,
@@ -4067,7 +4081,10 @@ public partial class WasmEditorBridge
             cases,
             multiline,
             expand,
-            freetext
+            freetext,
+            minimum,
+            maximum,
+            increment
         );
     }
 
@@ -4253,12 +4270,26 @@ public partial class WasmEditorBridge
 
         var href = ctrl.ControlType == "label" ? ctrl.GetString("href") : null;
 
+        var isNumeric = ctrl.ControlType is "number" or "numberdouble";
+        var minimum = isNumeric ? GetNumericHint(ctrl, "minimum") : null;
+        var maximum = isNumeric ? GetNumericHint(ctrl, "maximum") : null;
+        var increment = isNumeric ? GetNumericHint(ctrl, "increment") : null;
+
         return new ControlInfo(attribute, ctrl.ControlType, ctrl.Caption ?? ctrl.GetString("selfcaption"), options,
             null, null, textProcessorCommands, addPrompt, Source: source,
             Advanced: !ctrl.IsControlVisibleInSimpleMode,
             KeyPrompt: keyPrompt, ValuePrompt: valuePrompt, SourceExclude: sourceExclude, SourceType: sourceType,
             IsWalkthrough: isWalkthrough, Href: href, NewFile: newFile, LockedAfterCreate: lockedAfterCreate,
-            Freetext: freetext);
+            Freetext: freetext,
+            Minimum: minimum, Maximum: maximum, Increment: increment);
+    }
+
+    // <minimum>/<maximum>/<increment> can be authored as either an int or a double literal in
+    // the .aslx (e.g. a whole-number bound vs. "0.1") - GetInt/GetDouble each only match their
+    // own literal type, so try both instead of assuming which one a given hint was written as.
+    private static double? GetNumericHint(IEditorControl ctrl, string tag)
+    {
+        return ctrl.GetDouble(tag) ?? (double?)ctrl.GetInt(tag);
     }
 
     [JSExport]
