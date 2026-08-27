@@ -17,7 +17,6 @@
     const { elementType, parent = null, folder = null, onconfirm, oncancel }: Props = $props();
 
     let label = $derived(t(`addElementModal.labels.${elementType}`));
-    let heading = $derived(parent ? t("addElementModal.addHeadingIn", { label, parent }) : t("addElementModal.addHeading", { label }));
 
     // Folder picker (Functions only) — lets a function be created straight into an existing or
     // brand-new folder, defaulting to the folder whose "..." menu was used (if any). Mirrors
@@ -30,16 +29,35 @@
     // nothing later to stay in sync with (mirrors CodeEditor's own initial-value-only props).
     let folderTarget = $state(untrack(() => folder ?? ""));
 
-    // Parent picker (Objects only, and only when created under another Object rather than a Room
-    // or at the top level) — scoped to just the clicked object's own ancestor chain, not every
+    // Parent picker (Objects and Rooms, and only when created under another element rather than
+    // at the top level) — scoped to just the clicked element's own ancestor chain, not every
     // object in the game (that's MoveElementModal's job for an existing object). Mirrors
-    // MoveElementModal's own options/Combobox.
+    // MoveElementModal's own options/Combobox. Rooms additionally get an explicit "(top level)"
+    // entry, defaulted to — rooms should default to being created at the top level even when
+    // opened from a room's own "Add Room" menu item, with that room still offered as a
+    // selectable (non-default) option.
     let objectParentOptions: ControlOption[] = $derived(
         elementType === "object" && parent
             ? getPossibleNewObjectParents(parent).map(name => ({ value: name, label: name }))
+            : elementType === "room" && parent
+            ? [
+                { value: "", label: t("moveToFolderModal.topLevel") },
+                ...getPossibleNewObjectParents(parent).map(name => ({ value: name, label: name })),
+            ]
             : []
     );
-    let objectParentTarget = $state(untrack(() => parent ?? ""));
+    let objectParentTarget = $state(untrack(() => elementType === "room" ? "" : (parent ?? "")));
+
+    // Tracks the picker's live selection (when one is shown) rather than the static `parent`
+    // prop, so the heading doesn't keep claiming "in {clicked room}" after the user has changed
+    // the Parent field away from it — most visibly for rooms, whose default is now top level
+    // rather than the clicked room.
+    let effectiveParent = $derived(
+        (elementType === "object" || elementType === "room") && objectParentOptions.length > 0
+            ? (objectParentTarget || null)
+            : parent
+    );
+    let heading = $derived(effectiveParent ? t("addElementModal.addHeadingIn", { label, parent: effectiveParent }) : t("addElementModal.addHeading", { label }));
 
     let dialogEl: HTMLDivElement;
     let inputEl: HTMLInputElement;
@@ -71,7 +89,7 @@
         const result = validateName(name);
         if (result !== "ok") { error = result; return; }
         const target = elementType === "function" ? folderTarget
-            : elementType === "object" && objectParentOptions.length > 0 ? objectParentTarget
+            : (elementType === "object" || elementType === "room") && objectParentOptions.length > 0 ? objectParentTarget
             : null;
         onconfirm(name, target);
     }
@@ -118,7 +136,7 @@
                     class="input bg-surface-50-950 px-2 py-1 text-sm w-full"
                 />
             </div>
-        {:else if elementType === "object" && objectParentOptions.length > 0}
+        {:else if (elementType === "object" || elementType === "room") && objectParentOptions.length > 0}
             <div class="flex flex-col gap-1">
                 <span class="text-xs text-surface-600-400">{t("addElementModal.parentLabel")}</span>
                 <Combobox
