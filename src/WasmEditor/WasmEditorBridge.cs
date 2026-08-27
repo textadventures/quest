@@ -52,7 +52,11 @@ internal record ControlInfo(
     // <minimum>/<maximum>/<increment> - bounds and step for a "number"/"numberdouble" control.
     double? Minimum = null,
     double? Maximum = null,
-    double? Increment = null);
+    double? Increment = null,
+    // <nullable/> - emptying this control's value reverts the attribute to unset/inherited (as
+    // opposed to just an empty string, which is still an explicit override) - the frontend calls
+    // RemoveAttribute instead of SetAttribute("") when the new value is empty.
+    bool Nullable = false);
 
 internal record TabInfo(string? Caption, List<ControlInfo> Controls);
 
@@ -4275,13 +4279,19 @@ public partial class WasmEditorBridge
         var maximum = isNumeric ? GetNumericHint(ctrl, "maximum") : null;
         var increment = isNumeric ? GetNumericHint(ctrl, "increment") : null;
 
+        // Only meaningful for a control bound to a single attribute value (dropdown, textbox,
+        // number, ...) - the dictionary/list/multi controltypes above return early and never
+        // reach here, so this can't misfire on something with no single value to clear.
+        var nullable = ctrl.GetBool("nullable");
+
         return new ControlInfo(attribute, ctrl.ControlType, ctrl.Caption ?? ctrl.GetString("selfcaption"), options,
             null, null, textProcessorCommands, addPrompt, Source: source,
             Advanced: !ctrl.IsControlVisibleInSimpleMode,
             KeyPrompt: keyPrompt, ValuePrompt: valuePrompt, SourceExclude: sourceExclude, SourceType: sourceType,
             IsWalkthrough: isWalkthrough, Href: href, NewFile: newFile, LockedAfterCreate: lockedAfterCreate,
             Freetext: freetext,
-            Minimum: minimum, Maximum: maximum, Increment: increment);
+            Minimum: minimum, Maximum: maximum, Increment: increment,
+            Nullable: nullable);
     }
 
     // <minimum>/<maximum>/<increment> can be authored as either an int or a double literal in
