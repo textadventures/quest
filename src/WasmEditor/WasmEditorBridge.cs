@@ -2271,14 +2271,6 @@ public partial class WasmEditorBridge
         );
     }
 
-    // <minimum>/<maximum>/<increment> can be authored as either an int or a double literal in
-    // the .aslx (e.g. a whole-number bound vs. "0.1") - GetInt/GetDouble each only match their
-    // own literal type, so try both instead of assuming which one a given hint was written as.
-    private static double? GetNumericHint(IEditorControl ctrl, string tag)
-    {
-        return ctrl.GetDouble(tag) ?? (double?)ctrl.GetInt(tag);
-    }
-
     // ── Element creation / deletion ───────────────────────────────────────────
 
     [JSExport]
