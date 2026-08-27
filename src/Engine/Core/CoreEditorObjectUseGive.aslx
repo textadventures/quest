@@ -39,7 +39,6 @@
       <types>
         null=[TypeNone];scriptdictionary=[TypeIndividually];string=[TypePrintMessage]
       </types>
-      <keyprompt>[EditorObjectUseGivePleaseenter]</keyprompt>
       <source>object</source>
     </control>
 
@@ -64,7 +63,6 @@
       <types>
         null=[TypeNone];scriptdictionary=[TypeIndividually];string=[TypePrintMessage]
       </types>
-      <keyprompt>[EditorPleaseEnterObjectName]</keyprompt>
       <source>object</source>
       <advanced/>
     </control>
@@ -111,7 +109,6 @@
       <types>
         null=[TypeNone];scriptdictionary=[TypeIndividually];string=[TypePrintMessage]
       </types>
-      <keyprompt>[EditorPleaseEnterObjectName]</keyprompt>
       <source>object</source>
     </control>
 
@@ -136,7 +133,6 @@
       <types>
         null=[TypeNone];scriptdictionary=[TypeIndividually];string=[TypePrintMessage]
       </types>
-      <keyprompt>[EditorPleaseEnterObjectName]</keyprompt>
       <source>object</source>
       <advanced/>
     </control>
