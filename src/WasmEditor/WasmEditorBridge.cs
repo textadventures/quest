@@ -59,10 +59,7 @@ internal record ControlInfo(
     bool Nullable = false,
     // <width> - fixed pixel width for this control (e.g. an exit's "to" object picker), instead
     // of the default flexible sizing.
-    int? Width = null,
-    // <keyname> - overrides a "multi" control's scriptdictionary sub-editor's generic "key"
-    // label (e.g. "Object" for useon/selfuseon/give/giveto, whose keys are object names).
-    string? KeyName = null);
+    int? Width = null);
 
 internal record TabInfo(string? Caption, List<ControlInfo> Controls);
 
@@ -4269,8 +4266,7 @@ public partial class WasmEditorBridge
 
             var caption = ctrl.Caption ?? ctrl.GetString("selfcaption");
             return new ControlInfo(ctrl.Id, ctrl.ControlType, caption, options, subEditors, ctrl.Attribute,
-                multiTpCommands, Source: ctrl.GetString("source"), Advanced: !ctrl.IsControlVisibleInSimpleMode, CheckboxCaption: ctrl.GetString("checkbox"),
-                KeyName: ctrl.GetString("keyname"));
+                multiTpCommands, Source: ctrl.GetString("source"), Advanced: !ctrl.IsControlVisibleInSimpleMode, CheckboxCaption: ctrl.GetString("checkbox"));
         }
         else if (ctrl.ControlType == "elementslist")
         {

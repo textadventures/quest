@@ -63,9 +63,6 @@ export interface ControlInfo {
   href?: string | null
   newFile?: string | null
   lockedAfterCreate?: boolean
-  // <keyname> - overrides a "multi" control's scriptdictionary sub-editor's generic "key"
-  // label (e.g. "Object" for useon/selfuseon/give/giveto, whose keys are object names).
-  keyName?: string | null
   // <freetext/> - a "dropdown" control should let the user type a value not in its
   // <validvalues> list, instead of being restricted to picking one of the listed options.
   freetext?: boolean

@@ -269,11 +269,8 @@
     "scriptDictionaryEditor.inheritedReadOnly": "This script dictionary is inherited — read-only.",
     "scriptDictionaryEditor.emptyValue": "(empty)",
     "scriptDictionaryEditor.selectObjectOption": "Select object…",
-    "scriptDictionaryEditor.selectObjectOptionWithLabel": "Select {label}…",
     "scriptDictionaryEditor.addEntryKeyPlaceholder": "Add entry key…",
-    "scriptDictionaryEditor.addEntryKeyPlaceholderWithLabel": "Add {label}…",
     "scriptDictionaryEditor.addEntryKeyAriaLabel": "Add entry key",
-    "scriptDictionaryEditor.addEntryKeyAriaLabelWithLabel": "Add {label}",
     "scriptDictionaryEditor.editKey": "Edit Key",
     "scriptDictionaryEditor.editKeyInputAriaLabel": "Edit key",
 
