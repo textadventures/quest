@@ -76,6 +76,8 @@ export interface ControlInfo {
   nullable?: boolean
   // <width> - fixed pixel width for this control, instead of the default flexible sizing.
   width?: number | null
+  // <bold/> - renders a "label" control's caption in bold.
+  bold?: boolean
 }
 
 export interface TabInfo {

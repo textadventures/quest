@@ -59,7 +59,10 @@ internal record ControlInfo(
     bool Nullable = false,
     // <width> - fixed pixel width for this control (e.g. an exit's "to" object picker), instead
     // of the default flexible sizing.
-    int? Width = null);
+    int? Width = null,
+    // <bold/> - renders a "label" control's caption in bold, e.g. to draw attention to a
+    // warning-style label (a locked exit's "to unlock this" note, a disabled-feature notice).
+    bool Bold = false);
 
 internal record TabInfo(string? Caption, List<ControlInfo> Controls);
 
@@ -4298,6 +4301,7 @@ public partial class WasmEditorBridge
         var sourceType = isDictionary ? ctrl.GetString("sourcetype") : null;
 
         var href = ctrl.ControlType == "label" ? ctrl.GetString("href") : null;
+        var bold = ctrl.ControlType == "label" && ctrl.GetBool("bold");
 
         var isNumeric = ctrl.ControlType is "number" or "numberdouble";
         var minimum = isNumeric ? GetNumericHint(ctrl, "minimum") : null;
@@ -4317,7 +4321,8 @@ public partial class WasmEditorBridge
             Freetext: freetext,
             Minimum: minimum, Maximum: maximum, Increment: increment,
             Nullable: nullable,
-            Width: ctrl.Width);
+            Width: ctrl.Width,
+            Bold: bold);
     }
 
     // <minimum>/<maximum>/<increment> can be authored as either an int or a double literal in
