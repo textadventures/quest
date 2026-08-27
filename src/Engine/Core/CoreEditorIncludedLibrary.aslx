@@ -9,7 +9,6 @@
         <attribute>filename</attribute>
         <caption>[EditorIncludedLibraryFilename]</caption>
         <source>*.aslx</source>
-        <filefiltername>Libraries</filefiltername>
         <lockedaftercreate/>
       </control>
 

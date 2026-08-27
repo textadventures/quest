@@ -66,8 +66,6 @@
         <caption>[EditorGameCoverart]</caption>
         <attribute>cover</attribute>
         <source>[EditorImageFormats]</source>
-        <filefiltername>Picture Files</filefiltername>
-        <preview/>
       </control>
 
       <control>
@@ -283,8 +281,6 @@
         <caption>[EditorGameBackground2]</caption>
         <attribute>backgroundimage</attribute>
         <source>[EditorImageFormats]</source>
-        <filefiltername>Picture Files</filefiltername>
-        <preview/>
         <onlydisplayif>not game.colourblend</onlydisplayif>
       </control>
 
@@ -567,8 +563,6 @@
         <caption>[EditorGameLocationBarBg]</caption>
         <attribute>locationbarimage</attribute>
         <source>[EditorImageFormats]</source>
-        <filefiltername>Picture Files</filefiltername>
-        <preview/>
         <onlydisplayif>game.showlocation and not game.classiclocation</onlydisplayif>
       </control>
 
