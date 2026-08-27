@@ -563,7 +563,7 @@
         } else if (nt === "room") {
             opts.push(
                 { label: t("elementAdders.objectHere"), action: () => openAddModal("object", id) },
-                { label: t("elementAdders.roomHere"), action: () => openAddModal("room", id) },
+                { label: t("elementAdders.room"), action: () => openAddModal("room", id) },
                 { label: t("elementAdders.exit"), action: () => createExit(id) },
                 { label: t("elementAdders.command"), action: () => createCommand(id) },
                 { label: t("elementAdders.verb"), action: () => createVerb(id) },

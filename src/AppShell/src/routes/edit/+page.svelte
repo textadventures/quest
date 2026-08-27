@@ -149,7 +149,7 @@
         addElementModal.set(null);
         await tick();
         if (!mode) return;
-        if (mode.type === "room") createRoom(name, mode.parent);
+        if (mode.type === "room") createRoom(name, target ?? mode.parent);
         else if (mode.type === "object") createObject(name, target ?? mode.parent);
         else if (mode.type === "page") createPage(name, mode.parent);
         else if (mode.type === "function") {
