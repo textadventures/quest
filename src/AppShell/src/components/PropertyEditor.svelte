@@ -646,7 +646,8 @@
             creatable={!!ctrl.newFile}
             readonly={!!(ctrl.lockedAfterCreate && attrValue(ctrl.attribute!))}
             onchange={(v) => onTextChange(ctrl.attribute!, ctrl.controlType, v)}
-            containerClass="w-full"
+            containerClass={ctrl.width ? "" : "w-full"}
+            style={widthStyle(ctrl)}
         />
     {:else if ctrl.controlType === "list" && ctrl.attribute && $selectedKey}
         <ListEditor elementKey={$selectedKey} attribute={ctrl.attribute} value={attrValue(ctrl.attribute)} addPrompt={ctrl.addPrompt ?? undefined} isWalkthrough={ctrl.isWalkthrough ?? false} />

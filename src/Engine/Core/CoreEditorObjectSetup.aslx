@@ -8,7 +8,6 @@
       <caption>[EditorObjectSetupType]</caption>
       <controltype>dropdowntypes</controltype>
       <types>editor_room=[TypeObjectRoom]; editor_object=[TypeObjectObject]; editor_room_object=[TypeObjectAndOr]; *=[TypeObjectUndefined]</types>
-      <width>150</width>
       <advanced/>
     </control>
 
@@ -64,7 +63,6 @@
       <controltype>dropdowntypes</controltype>
       <caption>[EditorObjectSetupType]</caption>
       <types>*=[TypeInanimateObject]; plural=[TypeInanimateObjects]; [LanguageSpecificObjectTypes]male=[TypeMaleCharacter]; namedmale=[TypeMaleCharacterNamed]; maleplural=[TypeMaleCharacters]; female=[TypeFemaleCharacter]; namedfemale=[TypeFemaleCharacterNamed]; femaleplural=[TypeFemaleCharacters]</types>
-      <width>150</width>
     </control>
 
     <control>
