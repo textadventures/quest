@@ -74,6 +74,8 @@ export interface ControlInfo {
   // entirely (reverting to unset/inherited) instead of saving an explicit "". Matches the old
   // Quest 5 desktop editor's behaviour for the same hint.
   nullable?: boolean
+  // <width> - fixed pixel width for this control, instead of the default flexible sizing.
+  width?: number | null
 }
 
 export interface TabInfo {
