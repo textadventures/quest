@@ -922,7 +922,6 @@
                     <AssetPicker
                         value={toSimpleDisplay(ctrl)}
                         source={ctrl.source}
-                        filterName={ctrl.fileFilterName}
                         onchange={(v) => onSimpleValueChange(scriptIndex, ctrl, v)}
                         class="input text-xs py-0 px-1 min-w-16 max-w-48"
                     />

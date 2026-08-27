@@ -63,9 +63,6 @@ export interface ControlInfo {
   href?: string | null
   newFile?: string | null
   lockedAfterCreate?: boolean
-  // <filefiltername> - human-readable label for what file types a "file" control accepts
-  // (e.g. "Picture Files"), shown as the upload button's tooltip.
-  fileFilterName?: string | null
   // <freetext/> - a "dropdown" control should let the user type a value not in its
   // <validvalues> list, instead of being restricted to picking one of the listed options.
   freetext?: boolean
@@ -150,9 +147,6 @@ export interface ScriptControlData {
   // <expand/> - this control should grow to fill the remaining width of its row instead of
   // being capped to a fixed max-width.
   expand?: boolean
-  // <filefiltername> - human-readable label for what file types a "file" simple editor
-  // accepts (e.g. "Picture Files"), shown as the upload button's tooltip.
-  fileFilterName?: string | null
   // <freetext/> - a "dropdown" controltype or expression's "dropdown" simpleeditor should let
   // the user type a value not in its <validvalues> list, instead of being restricted to
   // picking one of the listed options.

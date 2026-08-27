@@ -113,7 +113,6 @@
       <simple>filename</simple>
       <simpleeditor>file</simpleeditor>
       <source>[EditorImageFormats]</source>
-      <filefiltername>Picture Files</filefiltername>
     </control>
   </editor>
 
@@ -136,7 +135,6 @@
       <simple>filename</simple>
       <simpleeditor>file</simpleeditor>
       <source>[EditorImageFormats]</source>
-      <filefiltername>Picture Files</filefiltername>
     </control>
   </editor>
 
@@ -308,7 +306,6 @@
       <simple>filename</simple>
       <simpleeditor>file</simpleeditor>
       <source>*.wav;*.mp3</source>
-      <filefiltername>Sound Files</filefiltername>
     </control>
 
     <control>
@@ -711,7 +708,6 @@
       <simple>filename</simple>
       <simpleeditor>file</simpleeditor>
       <source>*.htm;*.html</source>
-      <filefiltername>HTML Files</filefiltername>
     </control>
   </editor>
 

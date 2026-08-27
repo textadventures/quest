@@ -46,9 +46,6 @@ internal record ControlInfo(
     string? Href = null,
     string? NewFile = null,
     bool LockedAfterCreate = false,
-    // <filefiltername> - human-readable label for what file types a "file" control accepts
-    // (e.g. "Picture Files"), shown as the upload button's tooltip.
-    string? FileFilterName = null,
     // <freetext/> - a "dropdown" control should let the user type a value not in its
     // <validvalues> list, instead of being restricted to picking one of the listed options.
     bool Freetext = false,
@@ -111,9 +108,6 @@ internal record ScriptControlData(
     // <expand/> - this control should grow to fill the remaining width of its row instead of
     // being capped to a fixed max-width.
     bool Expand = false,
-    // <filefiltername> - human-readable label for what file types a "file" simple editor
-    // accepts (e.g. "Picture Files"), shown as the upload button's tooltip.
-    string? FileFilterName = null,
     // <freetext/> - a "dropdown" controltype or expression's "dropdown" simpleeditor should let
     // the user type a value not in its <validvalues> list, instead of being restricted to
     // picking one of the listed options.
@@ -4093,7 +4087,6 @@ public partial class WasmEditorBridge
             }
         }
 
-        var fileFilterName = simpleEditor == "file" ? ctrl.GetString("filefiltername") : null;
         var isNumericSimpleEditor = simpleEditor is "number" or "numberdouble";
         var minimum = isNumericSimpleEditor ? GetNumericHint(ctrl, "minimum") : null;
         var maximum = isNumericSimpleEditor ? GetNumericHint(ctrl, "maximum") : null;
@@ -4117,7 +4110,6 @@ public partial class WasmEditorBridge
             cases,
             multiline,
             expand,
-            fileFilterName,
             freetext,
             minimum,
             maximum,
@@ -4297,7 +4289,6 @@ public partial class WasmEditorBridge
         var source = ctrl.ControlType == "file" || isDictionary ? ctrl.GetString("source") : null;
         var newFile = ctrl.ControlType == "file" ? ctrl.GetString("newfile") : null;
         var lockedAfterCreate = ctrl.ControlType == "file" && ctrl.GetBool("lockedaftercreate");
-        var fileFilterName = ctrl.ControlType == "file" ? ctrl.GetString("filefiltername") : null;
         var keyPrompt = isDictionary ? ctrl.GetString("keyprompt") : null;
         var valuePrompt = isDictionary ? ctrl.GetString("valueprompt") : null;
         var sourceExclude = isDictionary ? ctrl.GetString("sourceexclude") : null;
@@ -4323,7 +4314,6 @@ public partial class WasmEditorBridge
             Advanced: !ctrl.IsControlVisibleInSimpleMode,
             KeyPrompt: keyPrompt, ValuePrompt: valuePrompt, SourceExclude: sourceExclude, SourceType: sourceType,
             IsWalkthrough: isWalkthrough, Href: href, NewFile: newFile, LockedAfterCreate: lockedAfterCreate,
-            FileFilterName: fileFilterName,
             Freetext: freetext,
             Minimum: minimum, Maximum: maximum, Increment: increment,
             Nullable: nullable,

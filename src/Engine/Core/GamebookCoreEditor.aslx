@@ -259,7 +259,6 @@
         <caption>[EditorGameCoverart]</caption>
         <attribute>cover</attribute>
         <source>*.jpg;*.jpeg;*.png;*.gif</source>
-        <filefiltername>[EditorGBPlayPictureFilterName]</filefiltername>
       </control>
 
       <control>
@@ -462,7 +461,6 @@
         <controltype>file</controltype>
         <attribute>picture</attribute>
         <source>*.jpg;*.jpeg;*.png;*.gif</source>
-        <filefiltername>[EditorGBPlayPictureFilterName]</filefiltername>
         <mustinherit>picture</mustinherit>
       </control>
 
@@ -516,7 +514,6 @@
         <controltype>file</controltype>
         <attribute>sound</attribute>
         <source>*.mp3;*.wav</source>
-        <filefiltername>[EditorGBPlaySoundFilterName]</filefiltername>
       </control>
 
       <control>

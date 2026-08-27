@@ -267,7 +267,6 @@
     "scriptEditor.libraryFunctionsGroup": "[Líbráry fúnctíóns]",
     "assetPicker.readonlyTitle": "[Cán't bé chángéd áftér créátíón — ádd á néw élémént tó póínt élséwhéré]",
     "assetPicker.uploadTitle": "[Úplóád á néw fílé]",
-    "assetPicker.uploadTitleWithFilter": "[Úplóád á néw fílé ({filterName})]",
     "codeViewPanel.applyingChanges": "[Ápplyíng chángés…]",
     "codeViewPanel.applyConfirmMessage": "[Ápplyíng rélóáds thé whólé gámé fróm thís téxt ánd díscárds úndó hístóry. Cóntínúé?]",
     "codeViewPanel.applyLabel": "[Ápply]",
