@@ -157,11 +157,10 @@
             if (!open) return;
             activeIndex = Math.max(activeIndex - 1, 0);
         } else if (e.key === "Enter") {
+            e.preventDefault();
             if (open && activeIndex >= 0) {
-                e.preventDefault();
                 select(filtered[activeIndex].value);
             } else if (open && filtered.length === 1) {
-                e.preventDefault();
                 select(filtered[0].value);
             } else if (open) {
                 open = false;

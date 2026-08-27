@@ -55,7 +55,10 @@
     });
 
     function handleKeydown(e: KeyboardEvent) {
-        if (e.key === "Enter" && name && !error) confirm();
+        if (e.key === "Enter" && name && !error) {
+            e.preventDefault();
+            confirm();
+        }
         if (e.key === "Escape") oncancel();
     }
 

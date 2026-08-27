@@ -15,7 +15,10 @@
     function handleKeydown(e: KeyboardEvent) {
         if (!$dialogState) return;
         if (e.key === "Escape") respond(null);
-        if (e.key === "Enter") respond($dialogState.choices.at(-1)?.value);
+        if (e.key === "Enter") {
+            e.preventDefault();
+            respond($dialogState.choices.at(-1)?.value);
+        }
     }
 
     function onBackdropClick(e: MouseEvent) {
