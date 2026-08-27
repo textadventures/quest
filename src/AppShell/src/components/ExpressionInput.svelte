@@ -2,6 +2,7 @@
     import Wand2 from "@lucide/svelte/icons/wand-2";
     import { getExpressionFunctions } from "$lib/editor-store";
     import { t } from "$lib/i18n";
+    import { measureTextPx } from "$lib/text-measure";
     import type { ExpressionFunctionInfo } from "$lib/types";
 
     interface Props {
@@ -12,11 +13,42 @@
         // have every field independently re-fetch it.
         objectNames: string[];
         class?: string;
+        // When set, the field's own width tracks its typed content (clamped to this ch range)
+        // instead of being fixed by `class`'s width utilities - e.g. a template control's
+        // expression fallback, which should be no wider than it needs to be by default but grow
+        // as the user types a longer expression. Left unset, width is whatever `class` says.
+        minCh?: number;
+        maxCh?: number;
     }
 
-    let { value, onchange, objectNames, class: className = "" }: Props = $props();
+    let { value, onchange, objectNames, class: className = "", minCh, maxCh }: Props = $props();
+
+    // Mirrors `value` so the width (and the field itself) can react on every keystroke, not just
+    // on the commit-triggering change event - `value` only advances when the caller's onchange
+    // round-trips a new committed value back down as a prop. A writable $derived: assigning to
+    // it below overrides the mirrored value until `value` itself changes, at which point it
+    // resets to that (e.g. undo, or switching to a different control).
+    let liveText = $derived(value);
 
     let inputEl = $state<HTMLInputElement | undefined>();
+
+    // Sized to the field's own measured text rather than a `ch`-per-character estimate, which
+    // is off by an amount that depends on the actual character mix (a "0"-glyph-width "ch"
+    // overestimates a lowercase-and-space-heavy phrase, for instance) - not noticeable for a
+    // short value, but visible slack for a long one. `minCh`/`maxCh` stay expressed in roughly
+    // character terms for callers, converted using this font's own "0" width. The small flat
+    // reserve is this field's own padding - unlike a <select>, there's no dropdown-arrow chrome
+    // to leave extra room for.
+    let widthStyle = $derived.by(() => {
+        if (minCh === undefined || !inputEl) return "";
+        const font = getComputedStyle(inputEl).font;
+        const chPx = measureTextPx("0", font) || 8;
+        const rootPx = parseFloat(getComputedStyle(document.documentElement).fontSize) || 16;
+        const textPx = measureTextPx(liveText, font);
+        const minPx = minCh * chPx;
+        const maxPx = (maxCh ?? Number.POSITIVE_INFINITY) * chPx;
+        return `width: ${Math.max(minPx, Math.min(maxPx, textPx + 0.75 * rootPx))}px;`;
+    });
     let buttonEl = $state<HTMLButtonElement | undefined>();
     let popoverRootEl = $state<HTMLDivElement | undefined>();
     let open = $state(false);
@@ -87,11 +119,15 @@
     // the field never had focus), then restores focus/cursor there once Svelte has re-rendered
     // the now-longer value.
     function insertAtCursor(text: string) {
-        const start = inputEl?.selectionStart ?? value.length;
-        const end = inputEl?.selectionEnd ?? value.length;
-        const newValue = value.slice(0, start) + text + value.slice(end);
+        // Insert into whatever's actually in the field (liveText), not the last-committed
+        // `value` prop, so opening the picker mid-typing (before a blur/Enter commit) doesn't
+        // discard uncommitted keystrokes.
+        const start = inputEl?.selectionStart ?? liveText.length;
+        const end = inputEl?.selectionEnd ?? liveText.length;
+        const newValue = liveText.slice(0, start) + text + liveText.slice(end);
         const cursorPos = start + text.length;
         close();
+        liveText = newValue;
         onchange(newValue);
         requestAnimationFrame(() => {
             inputEl?.focus();
@@ -149,7 +185,9 @@
         type="text"
         autocapitalize="off"
         class={className || "input text-xs py-0.5 px-1.5 w-full"}
-        {value}
+        style={widthStyle}
+        value={liveText}
+        oninput={(e) => (liveText = (e.target as HTMLInputElement).value)}
         onchange={(e) => onchange((e.target as HTMLInputElement).value)}
     />
     <button

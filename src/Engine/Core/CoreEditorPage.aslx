@@ -21,7 +21,6 @@
       <controltype>dropdowntypes</controltype>
       <caption>[EditorGBPageType]</caption>
       <types>*=Text; pagescript=[EditorGBPageTypeScript]; pagescripttext=[EditorGBPageTypeScriptText]</types>
-      <width>150</width>
     </control>
 
     <control>
