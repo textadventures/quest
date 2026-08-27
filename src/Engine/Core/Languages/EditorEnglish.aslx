@@ -59,7 +59,6 @@
   <template name="EditorNumberKeysUnlockContainer">Number of keys to unlock container</template>
   <template name="EditorDisplayMenuObjectsCanUsedOn">Display menu of objects this can be used on</template>
   <template name="EditorDisplayMenuObjectsCanGivenTo">Display menu of objects this can be given to</template>
-  <template name="EditorPleaseEnterObjectName">Please enter the object name</template>
   <template name="EditorObjectCanBeTaken">Object can be taken</template>
   <template name="EditorObjectCanBeDropped">Object can be dropped</template>
   <template name="EditorCommandCommand">Command</template>
@@ -275,7 +274,6 @@
   <template name="EditorJavascriptFilename">Filename</template>
   <template name="EditorObjectObjectPleaseenter">Add additional name…</template>
   <template name="EditorObjectObjectPleaseenterVerb">Add verb…</template>
-  <template name="EditorObjectUseGivePleaseenter">Please enter the object name</template>
   <template name="EditorObjectUseGiveAction">Action</template>
   <template name="EditorObjectLightDarkDescription">Description to display when the room is dark</template>
   <template name="EditorObjectOptionsLookatobject">"Look at" object description</template>

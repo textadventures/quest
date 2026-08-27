@@ -60,7 +60,6 @@
   <template name="EditorNumberKeysUnlockContainer">Anzahl der Schlüssel zum Entsperren des Containers</template>
   <template name="EditorDisplayMenuObjectsCanUsedOn">Ein Auswahlmenü der verwendbaren Objekte anzeigen</template>
   <template name="EditorDisplayMenuObjectsCanGivenTo">Ein Auswahlmenü der verwendbaren Objekte anzeigen</template>
-  <template name="EditorPleaseEnterObjectName">Bitte gib einen Objektnamen ein</template>
   <template name="EditorObjectCanBeTaken">Objekt kann getragen werden</template>
   <template name="EditorObjectCanBeDropped">Objekt kann abgelegt werden</template>
   <template name="EditorCommandCommand">Kommando</template>
@@ -275,7 +274,6 @@
   <template name="EditorJavascriptFilename">Dateiname</template>
   <template name="EditorObjectObjectPleaseenter">Bitte gib einen zusätzlichen Namen für dieses Objekt ein</template>
   <template name="EditorObjectObjectPleaseenterVerb">Bitte gib ein Verb ein</template>
-  <template name="EditorObjectUseGivePleaseenter">Bitte gib den Objektnamen ein</template>
   <template name="EditorObjectUseGiveAction">Aktion</template>
   <template name="EditorObjectLightDarkDescription">Beschreibung, wenn der Raum dunkel ist</template>
   <template name="EditorObjectOptionsLookatobject">Beschreibung beim Betrachten</template>
