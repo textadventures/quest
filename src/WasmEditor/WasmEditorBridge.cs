@@ -119,7 +119,10 @@ internal record ScriptControlData(
     // editor (e.g. Grid_DrawShape's opacity, 0.0-1.0 step 0.1).
     double? Minimum = null,
     double? Maximum = null,
-    double? Increment = null
+    double? Increment = null,
+    // <colour> - renders a "textbox" control's text in the given CSS colour name (e.g. "Red"
+    // for @failed's fallback-script text, "Green" for a // comment) as warning/info styling.
+    string? Colour = null
 );
 
 internal record ElseIfClauseData(string Id, string Expression, List<ScriptNodeData> Scripts);
@@ -4043,6 +4046,7 @@ public partial class WasmEditorBridge
         var multiline = ctrl.GetBool("multiline");
         var expand = ctrl.Expand;
         var freetext = ctrl.GetBool("freetext");
+        var colour = ctrl.GetString("colour");
 
         string? useTemplates = null;
 
@@ -4116,7 +4120,8 @@ public partial class WasmEditorBridge
             freetext,
             minimum,
             maximum,
-            increment
+            increment,
+            colour
         );
     }
 

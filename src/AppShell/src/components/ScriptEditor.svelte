@@ -977,11 +977,24 @@
             class="input text-xs py-0 px-1"
             wrapperClass="min-w-32 max-w-96 flex-1"
         />
+    {:else if (ctrl.controlType === "textbox" || ctrl.controlType === "richtext") && ctrl.multiline}
+        <!-- multiline textbox (e.g. @failed's fallback-script text, a // comment) - keeps
+             embedded newlines, auto-sized to the height of its content. -->
+        <textarea
+            autocapitalize="off"
+            rows="1"
+            class={"input text-xs py-0.5 px-1 min-w-16 resize-none overflow-hidden" + (ctrl.expand ? " w-full" : " max-w-48")}
+            style={ctrl.colour ? `color: ${ctrl.colour}` : undefined}
+            value={ctrl.value ?? ""}
+            use:autoResizeTextarea={ctrl.value ?? ""}
+            onchange={(e) => onSetParam(scriptIndex, ctrl.attribute!, (e.target as HTMLTextAreaElement).value)}
+        ></textarea>
     {:else if ctrl.controlType === "textbox" || ctrl.controlType === "richtext"}
         <input
             type="text"
             autocapitalize="off"
-            class="input text-xs py-0 px-1 min-w-16 max-w-48 flex-1"
+            class={"input text-xs py-0 px-1 min-w-16 flex-1" + (ctrl.expand ? " w-full" : " max-w-48")}
+            style={ctrl.colour ? `color: ${ctrl.colour}` : undefined}
             value={ctrl.value ?? ""}
             onchange={(e) => onSetParam(scriptIndex, ctrl.attribute!, (e.target as HTMLInputElement).value)}
         />

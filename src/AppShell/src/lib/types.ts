@@ -158,6 +158,9 @@ export interface ScriptControlData {
   minimum?: number | null
   maximum?: number | null
   increment?: number | null
+  // <colour> - renders a "textbox" control's text in the given CSS colour name (e.g. "Red" for
+  // @failed's fallback-script text, "Green" for a // comment) as warning/info styling.
+  colour?: string | null
 }
 
 export interface ElseIfClauseData {
