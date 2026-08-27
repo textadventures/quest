@@ -175,7 +175,10 @@
             }
             onClose();
         }
-        if (e.key === "Enter" && selectedCommand) onOk();
+        if (e.key === "Enter" && selectedCommand) {
+            e.preventDefault();
+            onOk();
+        }
         if (e.key === "ArrowDown") { e.preventDefault(); moveSelection(1); }
         if (e.key === "ArrowUp") { e.preventDefault(); moveSelection(-1); }
     }

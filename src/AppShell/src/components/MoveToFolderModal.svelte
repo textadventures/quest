@@ -27,7 +27,10 @@
     $effect(() => { dialogEl?.focus(); });
 
     function handleKeydown(e: KeyboardEvent) {
-        if (e.key === "Enter" && hasChosen) confirm();
+        if (e.key === "Enter" && hasChosen) {
+            e.preventDefault();
+            confirm();
+        }
         if (e.key === "Escape") oncancel();
     }
 

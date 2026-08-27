@@ -43,7 +43,10 @@
     }
 
     function handleTextKeydown(e: KeyboardEvent) {
-        if (e.key === "Enter") confirm();
+        if (e.key === "Enter") {
+            e.preventDefault();
+            confirm();
+        }
     }
 
     let canConfirm = $derived(!!target && (textMode !== "required" || !!text.trim()));
