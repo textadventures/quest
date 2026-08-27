@@ -24,7 +24,6 @@
         <caption>[EditorVerbDefault]</caption>
         <controltype>filter</controltype>
         <filters>text=[EditorVerbText]; template=[EditorVerbTemplate]; expression=[EditorVerbExpression]</filters>
-        <width>150</width>
         <filtergroupname>responsetype</filtergroupname>
       </control>
 

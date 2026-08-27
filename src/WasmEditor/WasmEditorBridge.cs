@@ -46,6 +46,20 @@ internal record ControlInfo(
     string? Href = null,
     string? NewFile = null,
     bool LockedAfterCreate = false,
+    // <freetext/> - a "dropdown" control should let the user type a value not in its
+    // <validvalues> list, instead of being restricted to picking one of the listed options.
+    bool Freetext = false,
+    // <minimum>/<maximum>/<increment> - bounds and step for a "number"/"numberdouble" control.
+    double? Minimum = null,
+    double? Maximum = null,
+    double? Increment = null,
+    // <nullable/> - emptying this control's value reverts the attribute to unset/inherited (as
+    // opposed to just an empty string, which is still an explicit override) - the frontend calls
+    // RemoveAttribute instead of SetAttribute("") when the new value is empty.
+    bool Nullable = false,
+    // <width> - fixed pixel width for this control (e.g. an exit's "to" object picker), instead
+    // of the default flexible sizing.
+    int? Width = null,
     // <keyname> - overrides a "multi" control's scriptdictionary sub-editor's generic "key"
     // label (e.g. "Object" for useon/selfuseon/give/giveto, whose keys are object names).
     string? KeyName = null);
@@ -96,7 +110,16 @@ internal record ScriptControlData(
     bool Multiline = false,
     // <expand/> - this control should grow to fill the remaining width of its row instead of
     // being capped to a fixed max-width.
-    bool Expand = false
+    bool Expand = false,
+    // <freetext/> - a "dropdown" controltype or expression's "dropdown" simpleeditor should let
+    // the user type a value not in its <validvalues> list, instead of being restricted to
+    // picking one of the listed options.
+    bool Freetext = false,
+    // <minimum>/<maximum>/<increment> - bounds and step for a "number"/"numberdouble" simple
+    // editor (e.g. Grid_DrawShape's opacity, 0.0-1.0 step 0.1).
+    double? Minimum = null,
+    double? Maximum = null,
+    double? Increment = null
 );
 
 internal record ElseIfClauseData(string Id, string Expression, List<ScriptNodeData> Scripts);
@@ -124,10 +147,16 @@ internal record ScriptCommandCategoriesData(List<ScriptCategoryInfo> Categories)
 
 internal record ExpressionTemplateControlData(
     string Name,
+    string ControlType,
+    string? Caption,
     string? Value,
     string? SimpleEditor,
     string? SimpleLabel,
-    List<ControlOption>? Options
+    List<ControlOption>? Options,
+    // <minimum>/<maximum>/<increment> - bounds and step for a "number"/"numberdouble" control.
+    double? Minimum = null,
+    double? Maximum = null,
+    double? Increment = null
 );
 
 internal record ExpressionTemplateData(
@@ -2174,7 +2203,10 @@ public partial class WasmEditorBridge
         }
 
         var controls = definition.Controls
-            .Where(ctrl => ctrl.Attribute != null)
+            // A "label" control (e.g. RandomChance's "% of the time") has no <attribute> - it's
+            // static caption text, not a value - but it still needs to reach the UI in sequence
+            // with the value controls around it, so it can't be dropped by the attribute filter.
+            .Where(ctrl => ctrl.Attribute != null || ctrl.ControlType == "label")
             .Select(ctrl =>
             {
                 var simpleLabel = ctrl.GetString("simple");
@@ -2200,21 +2232,34 @@ public partial class WasmEditorBridge
                 }
 
                 string? paramValue = null;
-                try
+                if (ctrl.Attribute != null)
                 {
-                    paramValue = (string?) templateData.GetAttribute(ctrl.Attribute!);
-                }
-                catch
-                {
-                    /* parameter not present in expression */
+                    try
+                    {
+                        paramValue = (string?) templateData.GetAttribute(ctrl.Attribute);
+                    }
+                    catch
+                    {
+                        /* parameter not present in expression */
+                    }
                 }
 
+                var isNumeric = simpleEditor is "number" or "numberdouble";
+                var minimum = isNumeric ? GetNumericHint(ctrl, "minimum") : null;
+                var maximum = isNumeric ? GetNumericHint(ctrl, "maximum") : null;
+                var increment = isNumeric ? GetNumericHint(ctrl, "increment") : null;
+
                 return new ExpressionTemplateControlData(
-                    ctrl.Attribute!,
+                    ctrl.Attribute ?? ctrl.Id,
+                    ctrl.ControlType,
+                    ctrl.Caption,
                     paramValue,
                     simpleEditor,
                     simpleLabel,
-                    options
+                    options,
+                    minimum,
+                    maximum,
+                    increment
                 );
             })
             .ToList();
@@ -3997,6 +4042,7 @@ public partial class WasmEditorBridge
         var breakBefore = ctrl.GetBool("breakbefore");
         var multiline = ctrl.GetBool("multiline");
         var expand = ctrl.Expand;
+        var freetext = ctrl.GetBool("freetext");
 
         string? useTemplates = null;
 
@@ -4044,6 +4090,11 @@ public partial class WasmEditorBridge
             }
         }
 
+        var isNumericSimpleEditor = simpleEditor is "number" or "numberdouble";
+        var minimum = isNumericSimpleEditor ? GetNumericHint(ctrl, "minimum") : null;
+        var maximum = isNumericSimpleEditor ? GetNumericHint(ctrl, "maximum") : null;
+        var increment = isNumericSimpleEditor ? GetNumericHint(ctrl, "increment") : null;
+
         return new ScriptControlData(
             ctrl.ControlType,
             ctrl.Caption,
@@ -4061,7 +4112,11 @@ public partial class WasmEditorBridge
             useTemplates,
             cases,
             multiline,
-            expand
+            expand,
+            freetext,
+            minimum,
+            maximum,
+            increment
         );
     }
 
@@ -4133,9 +4188,11 @@ public partial class WasmEditorBridge
     {
         List<ControlOption>? options = null;
         var attribute = ctrl.Attribute;
+        var freetext = false;
 
         if (ctrl.ControlType == "dropdown")
         {
+            freetext = ctrl.GetBool("freetext");
             var list = ctrl.GetListString("validvalues");
             if (list != null)
             {
@@ -4179,7 +4236,7 @@ public partial class WasmEditorBridge
             options = dict?.Select(kv => new ControlOption(kv.Key, kv.Value)).ToList();
 
             return new ControlInfo(ctrl.Id, "filter", ctrl.Caption, options, null,
-                ctrl.GetString("filtergroupname"), Advanced: !ctrl.IsControlVisibleInSimpleMode);
+                ctrl.GetString("filtergroupname"), Advanced: !ctrl.IsControlVisibleInSimpleMode, Width: ctrl.Width);
         }
         else if (ctrl.ControlType == "objects")
         {
@@ -4246,11 +4303,33 @@ public partial class WasmEditorBridge
 
         var href = ctrl.ControlType == "label" ? ctrl.GetString("href") : null;
 
+        var isNumeric = ctrl.ControlType is "number" or "numberdouble";
+        var minimum = isNumeric ? GetNumericHint(ctrl, "minimum") : null;
+        var maximum = isNumeric ? GetNumericHint(ctrl, "maximum") : null;
+        var increment = isNumeric ? GetNumericHint(ctrl, "increment") : null;
+
+        // Only meaningful for a control bound to a single attribute value (dropdown, textbox,
+        // number, ...) - the dictionary/list/multi controltypes above return early and never
+        // reach here, so this can't misfire on something with no single value to clear.
+        var nullable = ctrl.GetBool("nullable");
+
         return new ControlInfo(attribute, ctrl.ControlType, ctrl.Caption ?? ctrl.GetString("selfcaption"), options,
             null, null, textProcessorCommands, addPrompt, Source: source,
             Advanced: !ctrl.IsControlVisibleInSimpleMode,
             KeyPrompt: keyPrompt, ValuePrompt: valuePrompt, SourceExclude: sourceExclude, SourceType: sourceType,
-            IsWalkthrough: isWalkthrough, Href: href, NewFile: newFile, LockedAfterCreate: lockedAfterCreate);
+            IsWalkthrough: isWalkthrough, Href: href, NewFile: newFile, LockedAfterCreate: lockedAfterCreate,
+            Freetext: freetext,
+            Minimum: minimum, Maximum: maximum, Increment: increment,
+            Nullable: nullable,
+            Width: ctrl.Width);
+    }
+
+    // <minimum>/<maximum>/<increment> can be authored as either an int or a double literal in
+    // the .aslx (e.g. a whole-number bound vs. "0.1") - GetInt/GetDouble each only match their
+    // own literal type, so try both instead of assuming which one a given hint was written as.
+    private static double? GetNumericHint(IEditorControl ctrl, string tag)
+    {
+        return ctrl.GetDouble(tag) ?? (double?)ctrl.GetInt(tag);
     }
 
     [JSExport]

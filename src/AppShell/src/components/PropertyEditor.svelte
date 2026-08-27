@@ -1,5 +1,5 @@
 <script lang="ts">
-    import { selectedKey, selectedData, treeNodes, isGamebook, setAttribute, setDropdownType, setMultiType, setObjectReference, setSelectedFilter, addDictItem, removeDictItem, updateDictItem, getObjectNames, getExitNames, getPageNames, selectNode, createPageSilent, openAddModal, openAddLibraryModal, openAddJavascriptModal, getAssetText, putAssetText, putLibraryAssetText, isBuiltInLibrary, getLibraryXml, setPatternAttribute } from "$lib/editor-store";
+    import { selectedKey, selectedData, treeNodes, isGamebook, setAttribute, removeAttribute, setDropdownType, setMultiType, setObjectReference, setSelectedFilter, addDictItem, removeDictItem, updateDictItem, getObjectNames, getExitNames, getPageNames, selectNode, createPageSilent, openAddModal, openAddLibraryModal, openAddJavascriptModal, getAssetText, putAssetText, putLibraryAssetText, isBuiltInLibrary, getLibraryXml, setPatternAttribute } from "$lib/editor-store";
     import { showToast } from "$lib/toast";
     import { isLibraryFilename } from "$lib/filesystem/types";
     import { t } from "$lib/i18n";
@@ -138,8 +138,18 @@
         if (error) showToast(error, "error");
     }
 
-    function onTextChange(attribute: string, controlType: string, value: string) {
-        if ($selectedKey) recordResult(attribute, setAttribute($selectedKey, attribute, controlType, value));
+    // <nullable/> - an empty value means "unset/inherited", not an explicit empty-string
+    // override (WorldModel attribute inheritance treats the two differently) - so clearing the
+    // field removes the attribute entirely instead of saving "". Mirrors the old Quest 5 desktop
+    // editor's TextBoxControl/RichTextControl/ExpressionControl, which do the same null-out on
+    // save when their own <nullable/> hint is set.
+    function onTextChange(attribute: string, controlType: string, value: string, nullable = false) {
+        if (!$selectedKey) return;
+        if (nullable && value === "") {
+            recordResult(attribute, removeAttribute($selectedKey, attribute));
+            return;
+        }
+        recordResult(attribute, setAttribute($selectedKey, attribute, controlType, value));
     }
 
     // Routed through setPatternAttribute (not the generic setAttribute/textbox path) so an
@@ -162,8 +172,13 @@
         if ($selectedKey) recordResult(attribute, setAttribute($selectedKey, attribute, controlType, value));
     }
 
-    function onDropdownChange(attribute: string, value: string) {
-        if ($selectedKey) recordResult(attribute, setAttribute($selectedKey, attribute, "dropdown", value));
+    function onDropdownChange(attribute: string, value: string, nullable = false) {
+        if (!$selectedKey) return;
+        if (nullable && value === "") {
+            recordResult(attribute, removeAttribute($selectedKey, attribute));
+            return;
+        }
+        recordResult(attribute, setAttribute($selectedKey, attribute, "dropdown", value));
     }
 
     function getControlsForView(): ControlInfo[] {
@@ -185,6 +200,12 @@
 
     function attrValue(attribute: string): string | null {
         return $selectedData?.attributes[attribute] ?? null;
+    }
+
+    // <width> - a per-instance pixel width, only known at runtime, so it has to be an inline
+    // style rather than a Tailwind class (Tailwind's static scanning can't see a dynamic value).
+    function widthStyle(ctrl: ControlInfo): string | undefined {
+        return ctrl.width ? `width: ${ctrl.width}px` : undefined;
     }
 
     function boolValue(attribute: string): boolean {
@@ -503,28 +524,52 @@
     {#if ctrl.controlType === "number"}
         <input
             type="number"
+            min={ctrl.minimum ?? undefined}
+            max={ctrl.maximum ?? undefined}
+            step={ctrl.increment ?? undefined}
             class="input text-xs py-0.5 px-1.5 w-auto"
+            style={widthStyle(ctrl)}
             value={attrValue(ctrl.attribute!) ?? ""}
             onchange={(e) => onNumberChange(ctrl.attribute!, "number", (e.target as HTMLInputElement).value)}
         />
     {:else if ctrl.controlType === "numberdouble"}
         <input
             type="number"
-            step="any"
+            min={ctrl.minimum ?? undefined}
+            max={ctrl.maximum ?? undefined}
+            step={ctrl.increment ?? "any"}
             class="input text-xs py-0.5 px-1.5 w-auto"
+            style={widthStyle(ctrl)}
             value={attrValue(ctrl.attribute!) ?? ""}
             onchange={(e) => onNumberChange(ctrl.attribute!, "numberdouble", (e.target as HTMLInputElement).value)}
         />
     {:else if ctrl.controlType === "dropdown" && ctrl.options}
-        <Combobox
-            value={attrValue(ctrl.attribute!) ?? ""}
-            options={ctrl.options}
-            onchange={(v) => onDropdownChange(ctrl.attribute!, v)}
-            class="input text-xs py-0.5 px-1.5 w-auto min-w-24"
-        />
+        {#if ctrl.freetext}
+            <Combobox
+                value={attrValue(ctrl.attribute!) ?? ""}
+                options={ctrl.options}
+                onchange={(v) => onDropdownChange(ctrl.attribute!, v, ctrl.nullable)}
+                class="input text-xs py-0.5 px-1.5 w-auto min-w-24"
+                style={widthStyle(ctrl)}
+            />
+        {:else}
+            <!-- No <freetext/> hint - restrict to the listed options, unlike Combobox which
+                 always accepts arbitrary typed text. -->
+            <select
+                class="select text-xs py-0.5 px-1.5 w-auto"
+                style={widthStyle(ctrl)}
+                value={attrValue(ctrl.attribute!) ?? ""}
+                onchange={(e) => onDropdownChange(ctrl.attribute!, (e.target as HTMLSelectElement).value)}
+            >
+                {#each ctrl.options as opt (opt.value)}
+                    <option value={opt.value}>{opt.label || opt.value || t("common.none")}</option>
+                {/each}
+            </select>
+        {/if}
     {:else if ctrl.controlType === "dropdowntypes" && ctrl.options && ctrl.attribute}
         <select
             class="select text-xs py-0.5 px-1.5 w-auto"
+            style={widthStyle(ctrl)}
             value={attrValue(ctrl.attribute) ?? "*"}
             onchange={(e) => $selectedKey && setDropdownType($selectedKey, ctrl.attribute!, (e.target as HTMLSelectElement).value)}
         >
@@ -541,7 +586,7 @@
                     autocapitalize="off"
                     class="input text-xs py-0.5 px-1.5 flex-1 min-h-32 resize-y"
                     value={attrValue(ctrl.attribute!) ?? ""}
-                    onchange={(e) => onTextChange(ctrl.attribute!, ctrl.controlType, (e.target as HTMLTextAreaElement).value)}
+                    onchange={(e) => onTextChange(ctrl.attribute!, ctrl.controlType, (e.target as HTMLTextAreaElement).value, ctrl.nullable)}
                 ></textarea>
             </div>
         {:else}
@@ -549,27 +594,29 @@
                 autocapitalize="off"
                 class="input text-xs py-0.5 px-1.5 w-full min-h-24 resize-y"
                 value={attrValue(ctrl.attribute!) ?? ""}
-                onchange={(e) => onTextChange(ctrl.attribute!, ctrl.controlType, (e.target as HTMLTextAreaElement).value)}
+                onchange={(e) => onTextChange(ctrl.attribute!, ctrl.controlType, (e.target as HTMLTextAreaElement).value, ctrl.nullable)}
             ></textarea>
         {/if}
     {:else if ctrl.controlType === "textbox"}
         <input
             type="text"
             autocapitalize="off"
-            class={"input text-xs py-0.5 px-1.5 w-full" + (ctrl.attribute && attributeErrors[ctrl.attribute] ? " !border-error-500" : "")}
+            class={"input text-xs py-0.5 px-1.5" + (ctrl.width ? "" : " w-full") + (ctrl.attribute && attributeErrors[ctrl.attribute] ? " !border-error-500" : "")}
+            style={widthStyle(ctrl)}
             value={attrValue(ctrl.attribute!) ?? ""}
-            onchange={(e) => onTextChange(ctrl.attribute!, ctrl.controlType, (e.target as HTMLInputElement).value)}
+            onchange={(e) => onTextChange(ctrl.attribute!, ctrl.controlType, (e.target as HTMLInputElement).value, ctrl.nullable)}
         />
     {:else if ctrl.controlType === "expression"}
         <ExpressionInput
             value={attrValue(ctrl.attribute!) ?? ""}
-            onchange={(v) => onTextChange(ctrl.attribute!, ctrl.controlType, v)}
+            onchange={(v) => onTextChange(ctrl.attribute!, ctrl.controlType, v, ctrl.nullable)}
             objectNames={dictSourceObjectNames}
             class={"input text-xs py-0.5 px-1.5 w-full" + (ctrl.attribute && attributeErrors[ctrl.attribute] ? " !border-error-500" : "")}
         />
     {:else if ctrl.controlType === "filter" && ctrl.options}
         <select
             class="select text-xs py-0.5 px-1.5 w-auto"
+            style={widthStyle(ctrl)}
             value={attrValue(ctrl.attribute!) ?? ""}
             onchange={(e) => $selectedKey && setSelectedFilter($selectedKey, ctrl.subAttribute!, (e.target as HTMLSelectElement).value)}
         >
@@ -747,6 +794,7 @@
             options={ctrl.options}
             onchange={(v) => $selectedKey && setObjectReference($selectedKey, ctrl.attribute!, v)}
             class="input text-xs py-0.5 px-1.5 w-auto min-w-24"
+            style={widthStyle(ctrl)}
         />
     {:else if ctrl.controlType === "multi" && ctrl.options}
         {@const selectedType = attrValue(ctrl.attribute!) ?? "null"}

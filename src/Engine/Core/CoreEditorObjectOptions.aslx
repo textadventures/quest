@@ -9,7 +9,6 @@
       <controltype>dropdowntypes</controltype>
       <caption>[EditorObjectOptionsSwitchable2]</caption>
       <types>*=[TypeCannotSwitched]; switchable=[TypeCanSwitched]</types>
-      <width>150</width>
     </control>
 
     <control>

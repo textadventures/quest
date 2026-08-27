@@ -2,7 +2,7 @@
     import type { ControlOption } from "$lib/types";
     import { t } from "$lib/i18n";
 
-    let { value, options, onchange, oninput, onEnter, class: className = "", wrapperClass = "" }: {
+    let { value, options, onchange, oninput, onEnter, class: className = "", wrapperClass = "", style = "" }: {
         value: string;
         options: ControlOption[];
         onchange: (value: string) => void;
@@ -20,6 +20,9 @@
         // row relies on this component itself (not just the input inside it) to grow/shrink,
         // since flex sizing classes on the input don't affect its own wrapping element.
         wrapperClass?: string;
+        // Inline style for the <input> — e.g. a per-instance pixel width (<width> control hint)
+        // that Tailwind's static class scanning can't express since it's only known at runtime.
+        style?: string;
     } = $props();
 
     // Unique ID prefix for ARIA references
@@ -187,6 +190,7 @@
         aria-activedescendant={activeDescendant}
         aria-controls="{uid}-listbox"
         class={className}
+        {style}
         placeholder={value === "" && hasEmptyOption ? t("common.none") : ""}
         value={inputValue}
         onfocus={handleFocus}

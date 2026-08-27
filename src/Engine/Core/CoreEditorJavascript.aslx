@@ -9,8 +9,6 @@
         <attribute>src</attribute>
         <caption>[EditorJavascriptFilename]</caption>
         <source>*.js</source>
-        <width>300</width>
-        <filefiltername>Javascript Files</filefiltername>
         <newfile>javascript.js</newfile>
         <lockedaftercreate/>
       </control>

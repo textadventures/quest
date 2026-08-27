@@ -66,6 +66,19 @@ export interface ControlInfo {
   // <keyname> - overrides a "multi" control's scriptdictionary sub-editor's generic "key"
   // label (e.g. "Object" for useon/selfuseon/give/giveto, whose keys are object names).
   keyName?: string | null
+  // <freetext/> - a "dropdown" control should let the user type a value not in its
+  // <validvalues> list, instead of being restricted to picking one of the listed options.
+  freetext?: boolean
+  // <minimum>/<maximum>/<increment> - bounds and step for a "number"/"numberdouble" control.
+  minimum?: number | null
+  maximum?: number | null
+  increment?: number | null
+  // <nullable/> - clearing this control's value (emptying the text) removes the attribute
+  // entirely (reverting to unset/inherited) instead of saving an explicit "". Matches the old
+  // Quest 5 desktop editor's behaviour for the same hint.
+  nullable?: boolean
+  // <width> - fixed pixel width for this control, instead of the default flexible sizing.
+  width?: number | null
 }
 
 export interface TabInfo {
@@ -137,6 +150,15 @@ export interface ScriptControlData {
   // <expand/> - this control should grow to fill the remaining width of its row instead of
   // being capped to a fixed max-width.
   expand?: boolean
+  // <freetext/> - a "dropdown" controltype or expression's "dropdown" simpleeditor should let
+  // the user type a value not in its <validvalues> list, instead of being restricted to
+  // picking one of the listed options.
+  freetext?: boolean
+  // <minimum>/<maximum>/<increment> - bounds and step for a "number"/"numberdouble" simple
+  // editor.
+  minimum?: number | null
+  maximum?: number | null
+  increment?: number | null
 }
 
 export interface ElseIfClauseData {
@@ -186,10 +208,16 @@ export interface ScriptCommandCategoriesData {
 
 export interface ExpressionTemplateControlData {
   name: string
+  controlType: string
+  caption: string | null
   value: string | null
   simpleEditor: string | null
   simpleLabel: string | null
   options: ControlOption[] | null
+  // <minimum>/<maximum>/<increment> - bounds and step for a "number"/"numberdouble" control.
+  minimum?: number | null
+  maximum?: number | null
+  increment?: number | null
 }
 
 export interface ExpressionTemplateData {
