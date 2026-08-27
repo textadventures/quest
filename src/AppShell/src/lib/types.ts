@@ -183,6 +183,8 @@ export interface ScriptCommandCategoriesData {
 
 export interface ExpressionTemplateControlData {
   name: string
+  controlType: string
+  caption: string | null
   value: string | null
   simpleEditor: string | null
   simpleLabel: string | null
