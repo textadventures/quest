@@ -163,7 +163,6 @@
         <caption>[EditorGameTheme]</caption>
         <controltype>dropdowntypes</controltype>
         <types>*=[TypeThemeStandard]; theme_novella=[TypeThemeNovella]; theme_retro=[TypeThemeRetro]; theme_typewriter=[TypeThemeTypewriter]; theme_hotdogstand=[TypeThemeHotDog]</types>
-        <width>150</width>
       </control>
 
       <control>

@@ -75,12 +75,13 @@ try {
     await page.waitForSelector('text=Command:', { timeout: 10000 });
 
     // Scoped tightly to the Pattern row's own wrapper (two levels up from the "Pattern:" label:
-    // span -> label/select row -> flex-col wrapper) and to its *direct* children only - a plain
-    // input[type=text].first() would instead match the sidebar's "Filter game objects" textbox,
-    // and an unscoped descendant search would also catch the "Unresolved object text" control
-    // that shares the same outer flex-col ancestor.
+    // span -> label/select row -> flex-col wrapper). The select is a descendant (not necessarily
+    // a direct child - PropertyEditor.svelte wraps it in a <label> for accessibility, see #2137)
+    // but this scoping still avoids matching the sidebar's "Filter game objects" textbox and the
+    // "Unresolved object text" control that shares the same outer flex-col ancestor, since
+    // neither is a descendant of patternRow.
     const patternRow = page.getByText('Pattern:', { exact: true }).locator('xpath=../..');
-    const patternModeSelect = patternRow.locator(':scope > select, :scope > div > select').first();
+    const patternModeSelect = patternRow.locator('select').first();
     await patternModeSelect.waitFor({ state: 'visible', timeout: 5000 });
     const patternInput = patternRow.locator(':scope > input[type=text]');
     await patternInput.waitFor({ state: 'visible', timeout: 5000 });

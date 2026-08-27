@@ -889,6 +889,15 @@
                             <option value={name}>{name}</option>
                         {/each}
                     </select>
+                {:else if ctrl.simpleEditor === "dropdown" && ctrl.options && ctrl.freetext}
+                    <!-- <freetext/> - lets the user type a value not in the list, e.g. a
+                         drawing command's colour parameter. -->
+                    <Combobox
+                        value={toSimpleDisplay(ctrl)}
+                        options={ctrl.options}
+                        onchange={(v) => onSimpleValueChange(scriptIndex, ctrl, v)}
+                        class="input text-xs py-0 px-1 max-w-32"
+                    />
                 {:else if ctrl.simpleEditor === "dropdown" && ctrl.options}
                     <select
                         class="select text-xs py-0 px-1 max-w-32"
@@ -902,6 +911,9 @@
                 {:else if ctrl.simpleEditor === "number" || ctrl.simpleEditor === "numberdouble"}
                     <input
                         type="number"
+                        min={ctrl.minimum ?? undefined}
+                        max={ctrl.maximum ?? undefined}
+                        step={ctrl.increment ?? (ctrl.simpleEditor === "numberdouble" ? "any" : undefined)}
                         class="input text-xs py-0 px-1 min-w-12 max-w-24"
                         value={ctrl.value ?? "0"}
                         onchange={(e) => onSetParam(scriptIndex, ctrl.attribute!, (e.target as HTMLInputElement).value)}
@@ -985,6 +997,13 @@
             onchange={(e) => onSetParam(scriptIndex, ctrl.attribute!, (e.target as HTMLInputElement).checked.toString())}
         />
         {#if ctrl.caption}<span class="text-surface-600-400">{ctrl.caption}</span>{/if}
+    {:else if ctrl.controlType === "dropdown" && ctrl.options && ctrl.freetext}
+        <Combobox
+            value={ctrl.value ?? ""}
+            options={ctrl.options}
+            onchange={(v) => onSetParam(scriptIndex, ctrl.attribute!, v)}
+            class="input text-xs py-0 px-1 max-w-32"
+        />
     {:else if ctrl.controlType === "dropdown" && ctrl.options}
         <select
             class="select text-xs py-0 px-1 max-w-32"
