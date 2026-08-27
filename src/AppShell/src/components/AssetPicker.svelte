@@ -4,7 +4,7 @@
     import FileIcon from "@lucide/svelte/icons/file";
     import { t } from "$lib/i18n";
 
-    let { value, source = null, creatable = false, readonly = false, exclude = [], onchange, onEnter, class: className = "input text-xs py-0.5 px-1.5 w-full min-w-0", containerClass = "", style = "" }: {
+    let { value, source = null, creatable = false, readonly = false, exclude = [], onchange, onEnter, class: className = "input text-xs py-0.5 px-1.5 w-full min-w-0", containerClass = "" }: {
         value: string;
         source?: string | null;
         // When true, typing a filename that isn't an existing asset creates a blank one under
@@ -26,11 +26,6 @@
         // (e.g. PropertyEditor), and leave unset for inline/wrapping layouts (e.g. ScriptEditor)
         // where growing to fill would force everything else in the row onto the next line.
         containerClass?: string;
-        // Inline style for the outer row — e.g. a per-instance pixel width (<width> control
-        // hint) that Tailwind's static class scanning can't express since it's only known at
-        // runtime. Applies to the whole row (icon + combobox/readonly text + upload button),
-        // matching how the width hint constrains other control types as a single unit.
-        style?: string;
     } = $props();
 
     let filter = $derived(parseAssetSource(source));
@@ -81,7 +76,7 @@
     }
 </script>
 
-<div class="flex items-center gap-1.5 min-w-0 {containerClass}" {style}>
+<div class="flex items-center gap-1.5 min-w-0 {containerClass}">
     {#if filter.kind === "image" && value}
         {#if thumbUrl}
             <img src={thumbUrl} alt="" class="h-6 w-6 object-cover rounded border border-surface-200-800 shrink-0" />
