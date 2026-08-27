@@ -408,6 +408,11 @@ public class IfExpressionControlDefinition : IEditorControl
         return Task.FromResult(true);
     }
 
+    public bool IsControlVisibleSync(IEditorData data)
+    {
+        return true;
+    }
+
     public IEditorDefinition Parent => null;
 
     public bool IsControlVisibleInSimpleMode => true;

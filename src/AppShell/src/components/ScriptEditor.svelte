@@ -968,6 +968,15 @@
             exprKey(scriptIndex, ctrl.attribute!),
             "input text-xs py-0 px-1 min-w-16 max-w-48 flex-1",
         )}
+    {:else if ctrl.controlType === "addparametersbutton"}
+        <!-- Reveals a sibling parameter control that <relatedattribute>/<relatedattributedisplaytype>
+             hides while its attribute is empty (e.g. do/invoke's parameter dictionary) - see
+             CoreEditorScriptsScripts.aslx's "addparametersbutton" controls. -->
+        <button
+            type="button"
+            class="btn btn-sm preset-outlined-primary-500 text-xs py-0 px-1.5 leading-none"
+            onclick={() => onSetParam(scriptIndex, ctrl.attribute!, "{}")}
+        >+ {ctrl.caption}</button>
     {:else if ctrl.controlType === "textbox" && ctrl.isFunctionPicker}
         {@const functionOptions = functionPickerOptions()}
         <Combobox
@@ -1042,12 +1051,11 @@
             {#each matchedFn.parameters as paramName, pi (pi)}
                 <span class="flex items-center gap-1">
                     <span class="text-surface-600-400 text-[10px] whitespace-nowrap">{paramName}:</span>
-                    <input
-                        type="text"
-                        autocapitalize="off"
-                        class="input text-xs py-0 px-1 w-20"
+                    <ExpressionInput
                         value={items[pi].value}
-                        onchange={(e) => onUpdateParam(scriptIndex, ctrl.attribute!, items[pi].key, (e.target as HTMLInputElement).value)}
+                        onchange={(v) => onUpdateParam(scriptIndex, ctrl.attribute!, items[pi].key, v)}
+                        {objectNames}
+                        class="input text-xs py-0 px-1 w-20"
                     />
                 </span>
             {/each}
@@ -1056,12 +1064,11 @@
         <span class="flex flex-wrap items-center gap-1">
             {#each items as item (item.key)}
                 <span class="flex items-center gap-0.5">
-                    <input
-                        type="text"
-                        autocapitalize="off"
-                        class="input text-xs py-0 px-1 w-20"
+                    <ExpressionInput
                         value={item.value}
-                        onchange={(e) => onUpdateParam(scriptIndex, ctrl.attribute!, item.key, (e.target as HTMLInputElement).value)}
+                        onchange={(v) => onUpdateParam(scriptIndex, ctrl.attribute!, item.key, v)}
+                        {objectNames}
+                        class="input text-xs py-0 px-1 w-20"
                     />
                     <button
                         type="button"
@@ -1094,13 +1101,12 @@
                         class="text-surface-600-400 hover:text-primary-600-400 text-xs"
                         onclick={() => toggleCaseExpanded(scriptIndex, paramAttribute, item.key)}
                     >{expanded ? "▼" : "▶"}</button>
-                    <input
-                        type="text"
-                        autocapitalize="off"
-                        class="input text-xs py-0 px-1 min-w-16 max-w-48"
-                        aria-label={t("scriptEditor.caseKeyAriaLabel")}
+                    <ExpressionInput
                         value={item.key}
-                        onchange={(e) => onRenameCase(scriptIndex, paramAttribute, item.key, (e.target as HTMLInputElement).value)}
+                        onchange={(v) => onRenameCase(scriptIndex, paramAttribute, item.key, v)}
+                        {objectNames}
+                        ariaLabel={t("scriptEditor.caseKeyAriaLabel")}
+                        class="input text-xs py-0 px-1 min-w-16 max-w-48"
                     />
                     <button
                         type="button"

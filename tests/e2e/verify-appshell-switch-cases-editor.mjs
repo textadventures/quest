@@ -158,7 +158,10 @@ try {
     // ── Remove the "buckler" case ────────────────────────────────────────────────────
     const bucklerCaseRowAfterReload = await caseKeyInput(switchRow, '"buckler"');
     if (!bucklerCaseRowAfterReload) throw new Error('"buckler" case not found after returning to the Scripts tab');
-    const bucklerCaseRow = bucklerCaseRowAfterReload.locator('xpath=..');
+    // Two levels up, not one - the case-key input is now wrapped in ExpressionInput's own
+    // "input + wand button" container (see issue #2070), so its immediate parent no longer has
+    // the row's × remove button as a sibling; the row container is one level above that.
+    const bucklerCaseRow = bucklerCaseRowAfterReload.locator('xpath=../..');
     await bucklerCaseRow.locator('button', { hasText: '×' }).click();
     await page.waitForTimeout(300);
 
