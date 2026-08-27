@@ -144,10 +144,16 @@ internal record ScriptCommandCategoriesData(List<ScriptCategoryInfo> Categories)
 
 internal record ExpressionTemplateControlData(
     string Name,
+    string ControlType,
+    string? Caption,
     string? Value,
     string? SimpleEditor,
     string? SimpleLabel,
-    List<ControlOption>? Options
+    List<ControlOption>? Options,
+    // <minimum>/<maximum>/<increment> - bounds and step for a "number"/"numberdouble" control.
+    double? Minimum = null,
+    double? Maximum = null,
+    double? Increment = null
 );
 
 internal record ExpressionTemplateData(
@@ -2194,7 +2200,10 @@ public partial class WasmEditorBridge
         }
 
         var controls = definition.Controls
-            .Where(ctrl => ctrl.Attribute != null)
+            // A "label" control (e.g. RandomChance's "% of the time") has no <attribute> - it's
+            // static caption text, not a value - but it still needs to reach the UI in sequence
+            // with the value controls around it, so it can't be dropped by the attribute filter.
+            .Where(ctrl => ctrl.Attribute != null || ctrl.ControlType == "label")
             .Select(ctrl =>
             {
                 var simpleLabel = ctrl.GetString("simple");
@@ -2220,21 +2229,34 @@ public partial class WasmEditorBridge
                 }
 
                 string? paramValue = null;
-                try
+                if (ctrl.Attribute != null)
                 {
-                    paramValue = (string?) templateData.GetAttribute(ctrl.Attribute!);
-                }
-                catch
-                {
-                    /* parameter not present in expression */
+                    try
+                    {
+                        paramValue = (string?) templateData.GetAttribute(ctrl.Attribute);
+                    }
+                    catch
+                    {
+                        /* parameter not present in expression */
+                    }
                 }
 
+                var isNumeric = simpleEditor is "number" or "numberdouble";
+                var minimum = isNumeric ? GetNumericHint(ctrl, "minimum") : null;
+                var maximum = isNumeric ? GetNumericHint(ctrl, "maximum") : null;
+                var increment = isNumeric ? GetNumericHint(ctrl, "increment") : null;
+
                 return new ExpressionTemplateControlData(
-                    ctrl.Attribute!,
+                    ctrl.Attribute ?? ctrl.Id,
+                    ctrl.ControlType,
+                    ctrl.Caption,
                     paramValue,
                     simpleEditor,
                     simpleLabel,
-                    options
+                    options,
+                    minimum,
+                    maximum,
+                    increment
                 );
             })
             .ToList();

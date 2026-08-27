@@ -205,10 +205,16 @@ export interface ScriptCommandCategoriesData {
 
 export interface ExpressionTemplateControlData {
   name: string
+  controlType: string
+  caption: string | null
   value: string | null
   simpleEditor: string | null
   simpleLabel: string | null
   options: ControlOption[] | null
+  // <minimum>/<maximum>/<increment> - bounds and step for a "number"/"numberdouble" control.
+  minimum?: number | null
+  maximum?: number | null
+  increment?: number | null
 }
 
 export interface ExpressionTemplateData {
