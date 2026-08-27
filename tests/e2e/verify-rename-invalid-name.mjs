@@ -72,8 +72,11 @@ async function run() {
     if (!borderClass?.includes('border-error-500')) throw new Error('Expected name input to get an error border');
     console.log('PASS: name input gets an error border');
 
-    // A toast should also have fired, rendered at the layout level.
-    const toast = page.locator('[role="alert"]', { hasText: /invalid/i });
+    // A toast should also have fired, rendered at the layout level. Scoped to Toast.svelte's
+    // "preset-filled-*" class (not just [role="alert"]) since PropertyEditor's tab-scoped inline
+    // error paragraph also picked up role="alert" in a later accessibility pass, making the two
+    // ambiguous under a bare role selector.
+    const toast = page.locator('[role="alert"][class*="preset-filled"]', { hasText: /invalid/i });
     await toast.waitFor({ timeout: 5000 });
     console.log(`PASS: toast notification shown: "${await toast.textContent()}"`);
 
