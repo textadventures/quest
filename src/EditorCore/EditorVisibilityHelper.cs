@@ -12,6 +12,7 @@ internal class EditorVisibilityHelper
     private readonly IList<string> m_notVisibleIfElementInheritsType;
     private readonly EditorDefinition m_parent;
     private readonly string m_relatedAttribute;
+    private readonly bool m_relatedAttributeNegate;
     private readonly Expression<bool> m_visibilityExpression;
     private readonly IList<string> m_visibleIfElementInheritsType;
     private readonly string m_visibleIfRelatedAttributeIsType;
@@ -29,6 +30,7 @@ internal class EditorVisibilityHelper
             m_alwaysVisible = false;
         }
 
+        m_relatedAttributeNegate = source.Fields.GetAsType<bool>("relatedattributenegate");
         m_visibleIfRelatedAttributeIsType = source.Fields.GetString("relatedattributedisplaytype");
         m_visibleIfElementInheritsType = source.Fields.GetAsType<QuestList<string>>("mustinherit");
         m_notVisibleIfElementInheritsType = source.Fields.GetAsType<QuestList<string>>("mustnotinherit");
@@ -81,6 +83,26 @@ internal class EditorVisibilityHelper
             }
         }
 
+        return IsVisibleSyncCore(data);
+    }
+
+    // Synchronous subset of IsVisible, used by callers (e.g. script-command control building) that
+    // can't await an <onlydisplayif> expression evaluation. A control that declares <onlydisplayif>
+    // is treated as always visible here - this mirrors those callers' previous behaviour of applying
+    // no visibility filtering at all, rather than silently hiding controls whose gate can't be
+    // evaluated synchronously.
+    public bool IsVisibleIgnoringExpression(IEditorData data)
+    {
+        if (m_alwaysVisible)
+        {
+            return true;
+        }
+
+        return IsVisibleSyncCore(data);
+    }
+
+    private bool IsVisibleSyncCore(IEditorData data)
+    {
         if (m_notVisibleIfElementInheritsType != null)
         {
             if (m_notVisibleIfElementInheritsTypeElement == null)
@@ -112,10 +134,19 @@ internal class EditorVisibilityHelper
                 relatedAttributeValue = ((IDataWrapper) relatedAttributeValue).GetUnderlyingValue();
             }
 
+            // An empty string (e.g. an unset script-parameter expression, which saves as "" rather
+            // than null once touched - see DoScript/InvokeScript) counts as "no value" here, the same
+            // as null, so <relatedattributedisplaytype> can mean "has a real value" rather than "has
+            // any value including empty".
+            if (relatedAttributeValue is string stringValue && string.IsNullOrEmpty(stringValue))
+            {
+                relatedAttributeValue = null;
+            }
+
             var relatedAttributeType = relatedAttributeValue == null
                 ? "null"
                 : WorldModel.ConvertTypeToTypeName(relatedAttributeValue.GetType());
-            return relatedAttributeType == m_visibleIfRelatedAttributeIsType;
+            return (relatedAttributeType == m_visibleIfRelatedAttributeIsType) != m_relatedAttributeNegate;
         }
 
         if (m_visibleIfElementInheritsType != null)

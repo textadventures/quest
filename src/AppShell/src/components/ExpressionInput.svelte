@@ -19,9 +19,10 @@
         // as the user types a longer expression. Left unset, width is whatever `class` says.
         minCh?: number;
         maxCh?: number;
+        ariaLabel?: string;
     }
 
-    let { value, onchange, objectNames, class: className = "", minCh, maxCh }: Props = $props();
+    let { value, onchange, objectNames, class: className = "", minCh, maxCh, ariaLabel }: Props = $props();
 
     // Mirrors `value` so the width (and the field itself) can react on every keystroke, not just
     // on the commit-triggering change event - `value` only advances when the caller's onchange
@@ -187,6 +188,7 @@
         class={className || "input text-xs py-0.5 px-1.5 w-full"}
         style={widthStyle}
         value={liveText}
+        aria-label={ariaLabel}
         oninput={(e) => (liveText = (e.target as HTMLInputElement).value)}
         onchange={(e) => onchange((e.target as HTMLInputElement).value)}
     />

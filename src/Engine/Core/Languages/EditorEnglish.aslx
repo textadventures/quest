@@ -685,6 +685,7 @@
   <template name="EditorScriptsScriptsRunobject">Run object</template>
   <template name="EditorScriptsScriptsscriptattribute">script attribute</template>
   <template name="EditorScriptsScriptsUsingparameter">Using parameter dictionary</template>
+  <template name="EditorScriptsScriptsAddParameters">Add parameters</template>
   <template name="EditorScriptsScriptsRunascript">Run a script returned by an expression</template>
   <template name="EditorScriptsScriptsInvokescript">Invoke script</template>
   <template name="EditorScriptsScriptsRaiseanerror">Raise an error</template>

@@ -686,6 +686,7 @@
   <template name="EditorScriptsScriptsRunobject">Führe vom Objekt</template>
   <template name="EditorScriptsScriptsscriptattribute">folgendendes Skriptattribut aus</template>
   <template name="EditorScriptsScriptsUsingparameter">Verwende zusätzlich Wörterbuch-Parameter</template>
+  <template name="EditorScriptsScriptsAddParameters">Parameter hinzufügen</template>
   <template name="EditorScriptsScriptsRunascript">Ein Skript starten, jenes einen Ausdruck zurückgibt</template>
   <template name="EditorScriptsScriptsInvokescript">Ein Skript starten</template>
   <template name="EditorScriptsScriptsRaiseanerror">Einen Fehler anzeigen</template>

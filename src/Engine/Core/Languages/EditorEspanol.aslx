@@ -689,6 +689,7 @@
   <template name="EditorScriptsScriptsRunobject">Ejecutar objeto</template>
   <template name="EditorScriptsScriptsscriptattribute">atributo de programa</template>
   <template name="EditorScriptsScriptsUsingparameter">Usando diccionario de parámetros</template>
+  <template name="EditorScriptsScriptsAddParameters">Añadir parámetros</template>
   <template name="EditorScriptsScriptsRunascript">Ejecutar un programa devuelto por una expresión</template>
   <template name="EditorScriptsScriptsInvokescript">Invocar programa</template>
   <template name="EditorScriptsScriptsRaiseanerror">Producir un error</template>

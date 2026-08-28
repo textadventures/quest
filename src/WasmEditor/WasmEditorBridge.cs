@@ -3966,7 +3966,10 @@ public partial class WasmEditorBridge
             var def = _controller!.GetEditorDefinition(script);
             var editorData = _controller.GetScriptEditorData(script);
             displayString = script.DisplayString();
-            controls = def.Controls.Select(c => BuildScriptControlData(c, editorData)).ToList();
+            controls = def.Controls
+                .Where(c => c.IsControlVisibleSync(editorData))
+                .Select(c => BuildScriptControlData(c, editorData))
+                .ToList();
         }
         catch
         {
