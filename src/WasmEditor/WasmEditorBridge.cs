@@ -637,6 +637,10 @@ public partial class WasmEditorBridge
                 CultureInfo.InvariantCulture, out var d)
                 ? (object) d
                 : value,
+            // Matches the old Quest 5 desktop editor's RichTextControl: a multi-line textbox's
+            // linebreaks are stored as literal <br/> tags, not raw newlines (which the player
+            // would otherwise collapse). Reversed for display in GetEditorData/ConvertRichtextValuesForEditing.
+            "richtext" => value.Replace("\r\n", "<br/>").Replace("\n", "<br/>"),
             _ => value
         };
 
@@ -1476,6 +1480,16 @@ public partial class WasmEditorBridge
                 IEditableDictionary<IEditableScripts> => "scriptdictionary",
                 _ => "null"
             };
+
+            // Matches the old Quest 5 desktop editor's RichTextControl.Populate: a <multi> control
+            // whose active string sub-editor is richtext (e.g. object descriptions, via
+            // <editors>string=richtext</editors>) shows real linebreaks, not the <br/> markup
+            // they're stored as (see SetAttribute).
+            if (val is string strVal && ctrl.GetDictionary("editors") is { } editors &&
+                editors.TryGetValue("string", out var stringSubEditor) && stringSubEditor == "richtext")
+            {
+                attrs[ctrl.Attribute!] = strVal.Replace("<br/>", "\n").Replace("<br />", "\n");
+            }
         }
 
         foreach (var ctrl in controls.Where(c => c.ControlType == "filter"))
@@ -1488,6 +1502,16 @@ public partial class WasmEditorBridge
 
             attrs[ctrl.Id] = data.GetSelectedFilter(filterGroupName)
                 ?? ctrl.Parent.GetDefaultFilterName(filterGroupName, data);
+        }
+
+        // Matches the old Quest 5 desktop editor's RichTextControl.Populate: show real linebreaks
+        // in the textarea rather than the <br/> markup they're stored as (see SetAttribute).
+        foreach (var ctrl in controls.Where(c => c.ControlType == "richtext" && c.Attribute != null))
+        {
+            if (attrs.TryGetValue(ctrl.Attribute!, out var richtextValue) && richtextValue != null)
+            {
+                attrs[ctrl.Attribute!] = richtextValue.Replace("<br/>", "\n").Replace("<br />", "\n");
+            }
         }
     }
 
