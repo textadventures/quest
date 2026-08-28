@@ -1,5 +1,26 @@
 # Changelog
 
+## [6.0.0-beta.56](https://github.com/textadventures/quest/compare/v6.0.0-beta.55...v6.0.0-beta.56) (2026-08-28)
+
+
+### Bug Fixes
+
+* add expression control and hide-when-empty to script-parameter editors ([#2164](https://github.com/textadventures/quest/issues/2164)) ([d9f84c9](https://github.com/textadventures/quest/commit/d9f84c98349ca4675b1cd4e3f5364bebf3fbfd90))
+* **AppShell:** default new rooms to top level, fix Combobox label/value mixup ([#2161](https://github.com/textadventures/quest/issues/2161)) ([f63ad3e](https://github.com/textadventures/quest/commit/f63ad3e658a5d409832e88251cb801acbbeb2ee5))
+* **AppShell:** expression-editor parity for if/set/foreach templates ([#2151](https://github.com/textadventures/quest/issues/2151)) ([60f23dc](https://github.com/textadventures/quest/commit/60f23dca7602f234809b8942c626f1a111b683a3))
+* **AppShell:** remove dead &lt;filefiltername&gt; and &lt;preview/&gt; hints ([#2152](https://github.com/textadventures/quest/issues/2152)) ([f4b107b](https://github.com/textadventures/quest/commit/f4b107b14cf6260d39ffcfdf7019b09aa3ae4f12))
+* **AppShell:** remove dead &lt;keyname&gt; control hint ([#2153](https://github.com/textadventures/quest/issues/2153)) ([df18dce](https://github.com/textadventures/quest/commit/df18dce8a90e2d2aa4719e9df86432d1422ae2c1))
+* **AppShell:** remove redundant pane header labels in editor ([#2144](https://github.com/textadventures/quest/issues/2144)) ([dd3f6b3](https://github.com/textadventures/quest/commit/dd3f6b31b237a79a4634d067f6fa06d9207813aa))
+* **AppShell:** stop Enter-confirm from re-triggering the trigger button in modals ([#2160](https://github.com/textadventures/quest/issues/2160)) ([60f73e8](https://github.com/textadventures/quest/commit/60f73e83241e901f43ce4437117b0e3dce612bfb))
+* **AppShell:** wire up &lt;bold/&gt; control hint for labels ([#2154](https://github.com/textadventures/quest/issues/2154)) ([923a517](https://github.com/textadventures/quest/commit/923a517fe3c4756f40725ef5f22ff7f5d027f1e5))
+* **AppShell:** wire up &lt;colour&gt; control hint for script textboxes ([#2156](https://github.com/textadventures/quest/issues/2156)) ([36cd0cc](https://github.com/textadventures/quest/commit/36cd0cca4aabb63da16ece019f2faaf0c2e39497))
+* **AppShell:** wire up &lt;freetext/&gt; control hint for dropdowns ([#2147](https://github.com/textadventures/quest/issues/2147)) ([f18d327](https://github.com/textadventures/quest/commit/f18d327ab8232bb8ac20bd5bd7cc5305fdb2b551))
+* **AppShell:** wire up &lt;minimum&gt;/&lt;maximum&gt;/&lt;increment&gt; control hints ([#2148](https://github.com/textadventures/quest/issues/2148)) ([f12b8fe](https://github.com/textadventures/quest/commit/f12b8fe403d763baf67819f80e480af77721e25f))
+* **AppShell:** wire up &lt;nullable/&gt; control hint ([#2149](https://github.com/textadventures/quest/issues/2149)) ([f82ca3d](https://github.com/textadventures/quest/commit/f82ca3d10985218b827b9e521e15eef200f51874))
+* **AppShell:** wire up &lt;width/&gt; control hint to the frontend ([#2150](https://github.com/textadventures/quest/issues/2150)) ([c018a96](https://github.com/textadventures/quest/commit/c018a966a727a5511f3661e47392ef9c91d87d21))
+* **Engine:** remove no-op RequestSpeak function ([#2146](https://github.com/textadventures/quest/issues/2146)) ([d430a68](https://github.com/textadventures/quest/commit/d430a68865d936265c7af4913538cf4cbd88a43b))
+* **WasmEditor:** convert richtext newlines to &lt;br/&gt; on save, and back on load ([#2165](https://github.com/textadventures/quest/issues/2165)) ([ca4875a](https://github.com/textadventures/quest/commit/ca4875ab056630bae36f2e6c4e5d1f9d74506462))
+
 ## [6.0.0-beta.55](https://github.com/textadventures/quest/compare/v6.0.0-beta.54...v6.0.0-beta.55) (2026-08-24)
 
 
