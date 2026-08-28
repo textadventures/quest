@@ -136,6 +136,8 @@ jobs:
         working-directory: tests/e2e
       - run: node verify-appshell-code-view.mjs http://localhost:5174
         working-directory: tests/e2e
+      - run: node verify-appshell-description-newline-roundtrip.mjs http://localhost:5174
+        working-directory: tests/e2e
       - run: node verify-appshell-download-button.mjs http://localhost:5174
         working-directory: tests/e2e
       - run: node verify-appshell-empty-advanced-categories.mjs http://localhost:5174
