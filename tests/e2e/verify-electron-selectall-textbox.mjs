@@ -51,7 +51,7 @@ try {
     await templateRadio.click();
     await win.click('button:has-text("Create"):near(:text("Will be created as a new folder"))');
 
-    await win.waitForSelector('text=GAME OBJECTS', { timeout: 30000 });
+    await win.waitForSelector('input[placeholder="Filter..."]', { timeout: 30000 });
     console.log('[editor] editor loaded');
 
     // Structural check: the custom Edit menu must actually list a selectAll-role item now.
