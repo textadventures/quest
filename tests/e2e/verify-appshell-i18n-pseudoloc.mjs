@@ -224,7 +224,11 @@ async function run() {
     // only TreePanel's own chrome (buttons/menus/placeholders) is pseudo here.
     assertPseudo('TreePanel filter placeholder', await page.getAttribute('input[placeholder]', 'placeholder'));
     assertPseudo('TreePanel filter aria-label', await page.getAttribute('input[aria-label]', 'aria-label'));
-    const viewOptionsBtn = page.locator('button[aria-label]').first();
+    // Scoped to #workspace-content (everything below Toolbar) — #2139 added
+    // aria-label to Toolbar's Back/Forward/BackToHome buttons too, and those
+    // render first in the DOM (and start disabled, with no history yet), so
+    // an unscoped `button[aria-label]` locator grabs one of those instead.
+    const viewOptionsBtn = page.locator('#workspace-content button[aria-label]').first();
     assertPseudo('TreePanel view-options title', await viewOptionsBtn.getAttribute('title'));
     await viewOptionsBtn.click();
     assertPseudo('TreePanel "Show Library Elements" menu item', await page.textContent('.absolute button'));
@@ -420,7 +424,7 @@ async function run() {
     // --- LibraryElementBanner — via a library-origin verb. Library verbs are
     // hidden from the tree by default, so enable "Show Library Elements" first
     // (TreePanel's view-options menu — the same one checked earlier). ---
-    await page.locator('button[aria-label]').first().click();
+    await page.locator('#workspace-content button[aria-label]').first().click();
     await page.click('.absolute button');
     // With libraries shown, the Verbs header has children (drink & co.); it
     // starts collapsed like everything else (#827), so expand it before the
