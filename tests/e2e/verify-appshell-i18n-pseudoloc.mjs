@@ -314,12 +314,12 @@ async function run() {
     await page.click('span:text-is("room")');
     await page.click('button:has-text("Attributes")');
     await page.waitForSelector('[data-attr="isroom"]', { timeout: 10000 });
-    // index 0 is PropertyEditor's own "Properties" header (same span classes,
-    // rendered above every tab's content) — AttributesEditor's own headers start at 1.
+    // #2144 removed PropertyEditor's own static "Properties" fallback header
+    // (same span classes), so AttributesEditor's own headers now start at 0.
     const attrHeaders = await page.$$eval('span.font-semibold.uppercase', els => els.map(el => el.textContent ?? ''));
-    if (attrHeaders.length < 3) throw new Error(`AttributesEditor: expected 3+ headers (incl. PropertyEditor's), found ${attrHeaders.length}`);
-    assertPseudo('AttributesEditor "Inherited types" header', attrHeaders[1]);
-    assertPseudo('AttributesEditor "Attributes" header', attrHeaders[2]);
+    if (attrHeaders.length < 2) throw new Error(`AttributesEditor: expected 2+ headers, found ${attrHeaders.length}`);
+    assertPseudo('AttributesEditor "Inherited types" header', attrHeaders[0]);
+    assertPseudo('AttributesEditor "Attributes" header', attrHeaders[1]);
     const attrThs = await page.$$eval('th', els => els.map(el => el.textContent?.trim() ?? '').filter(Boolean));
     if (attrThs.length === 0) throw new Error('AttributesEditor: no table headers found');
     for (const text of attrThs) assertPseudo('AttributesEditor table header', text);
