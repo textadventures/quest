@@ -428,16 +428,24 @@ async function run() {
     // the flow also matches unrelated hover-action overlays in other components. ---
     await page.locator('#workspace-content button[aria-label]').first().click();
     await page.click('[role="menu"] button');
-    // With libraries shown, the Verbs header has children (drink & co.). It
-    // normally starts collapsed like everything else (#827) — but the "juggle"
-    // verb added above (VerbsEditor section) created a new command element
-    // under this same Verbs tree node, which may already have auto-expanded
-    // it — so only click to expand if "drink" isn't visible yet, rather than
-    // assuming collapsed and risking a click that re-collapses it instead.
-    const verbsRow = page.locator('[data-part="branch-control"]:has-text("[Vérbs]")');
-    if (await verbsRow.count() && !(await page.locator('text="drink"').first().isVisible().catch(() => false))) {
-        await verbsRow.locator('button').first().click();
-    }
+    // With libraries shown, the Verbs header has children — but CoreCommands.aslx
+    // alone defines 20+ consecutive <verb> elements including "drink", so
+    // groupLibraryChildren folds them into a nested, separately-collapsed
+    // "librarygroup" node (see TreePanel.svelte). A single expand click on the
+    // Verbs branch itself only opens the outer level; "drink" stays hidden one
+    // level deeper. Use the node's own "Expand all below" context action
+    // instead, so it doesn't matter how many levels are actually collapsed.
+    await page.evaluate(() => {
+        // Scoped to branch-control spans, not a bare span search — "Vérbs" is
+        // also the room's own VerbsEditor tab header text (same locale key),
+        // which would otherwise be an ambiguous first match.
+        const verbsText = Array.from(document.querySelectorAll('[data-part="branch-control"] span'))
+            .find(el => el.textContent.trim() === '[Vérbs]');
+        const control = verbsText?.closest('[data-part="branch-control"]');
+        control?.querySelector('.node-actions button')?.click();
+    });
+    await page.waitForSelector('.tree-dropdown', { timeout: 10000 });
+    await page.click('.tree-dropdown button:has-text("[Éxpánd áll bélów]")');
     await page.click('text="drink"');
     await page.waitForSelector('.bg-warning-100-900', { timeout: 10000 });
     assertPseudo('LibraryElementBanner message', await page.textContent('.bg-warning-100-900 span'));
