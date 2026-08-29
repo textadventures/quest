@@ -350,7 +350,19 @@ public class NcalcExpressionEvaluator<T> : IExpressionEvaluator<T>, IDynamicExpr
 
         // Let NCalc handle standard numeric/bool/string/null operations natively
         if (IsStandardNCalcType(left) && IsStandardNCalcType(right))
+        {
+            // NCalc's native arithmetic throws a raw NullReferenceException when an operand is
+            // null instead of a proper value - this typically means the operand is an attribute
+            // that has never been assigned. Equality/inequality already handles null cleanly
+            // (both here and natively in NCalc), so this only needs to guard arithmetic.
+            if (!isEquality && (left is null || right is null))
+            {
+                throw new Exception(
+                    "Cannot use this value in a calculation because it has not been set - check whether an attribute or variable has been assigned a value before using it.");
+            }
+
             return;
+        }
 
         var leftType = left?.GetType();
         var rightType = right?.GetType();

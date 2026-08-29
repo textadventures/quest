@@ -413,6 +413,21 @@ public static partial class Utility
         return input.Replace("&", "&amp;").Replace("<", "&lt;").Replace(">", "&gt;");
     }
 
+    // A raw "result.ToString()" on a script/expression result throws a raw NullReferenceException
+    // when the result is null - most commonly because it came from an attribute that was never
+    // assigned a value. Use this instead wherever a script command converts an expression result
+    // to a string, so the author gets a clear error rather than a leaked NRE.
+    public static string ExpressionResultToString(object value)
+    {
+        if (value is null)
+        {
+            throw new Exception(
+                "Cannot convert this value to a string because it has not been set - check whether an attribute or variable has been assigned a value before using it.");
+        }
+
+        return value.ToString();
+    }
+
     public static string[] ListSplit(string value)
     {
         return value.Split(s_listSplitDelimiters, StringSplitOptions.None);

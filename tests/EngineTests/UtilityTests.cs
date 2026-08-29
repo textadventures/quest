@@ -207,4 +207,21 @@ public class UtilityTests
             "msg(\"end\")" + Environment.NewLine);
     }
 
+    [TestMethod]
+    public void TestExpressionResultToString_NonNullValue_ReturnsToString()
+    {
+        Engine.Utility.ExpressionResultToString(42).ShouldBe("42");
+        Engine.Utility.ExpressionResultToString("hello").ShouldBe("hello");
+    }
+
+    [TestMethod]
+    public void TestExpressionResultToString_NullValue_ThrowsFriendlyErrorInsteadOfNullReferenceException()
+    {
+        // Regression test for https://github.com/textadventures/quest/issues/2096 - msg/error/
+        // switch/requestspeak used to call result.ToString() directly, which throws a raw
+        // NullReferenceException when the result is a truly-unset attribute.
+        var ex = Should.Throw<Exception>(() => Engine.Utility.ExpressionResultToString(null));
+        ex.ShouldNotBeOfType<NullReferenceException>();
+        ex.Message.ShouldContain("has not been set");
+    }
 }

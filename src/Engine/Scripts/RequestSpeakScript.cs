@@ -51,7 +51,7 @@ public class RequestSpeakScript : ScriptBase
     public override async Task ExecuteAsync(Context c)
     {
         var result = await m_function.ExecuteAsync(c);
-        m_worldModel.PlayerUi.Speak(result.ToString());
+        m_worldModel.PlayerUi.Speak(Utility.ExpressionResultToString(result));
     }
 
     public override string Save()
