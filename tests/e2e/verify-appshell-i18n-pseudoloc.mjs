@@ -231,7 +231,7 @@ async function run() {
     const viewOptionsBtn = page.locator('#workspace-content button[aria-label]').first();
     assertPseudo('TreePanel view-options title', await viewOptionsBtn.getAttribute('title'));
     await viewOptionsBtn.click();
-    assertPseudo('TreePanel "Show Library Elements" menu item', await page.textContent('.absolute button'));
+    assertPseudo('TreePanel "Show Library Elements" menu item', await page.textContent('[role="menu"] button'));
     await page.keyboard.press('Escape');
 
     // --- TreePanel context menu (via "room", the only movable node in a
@@ -423,15 +423,19 @@ async function run() {
 
     // --- LibraryElementBanner — via a library-origin verb. Library verbs are
     // hidden from the tree by default, so enable "Show Library Elements" first
-    // (TreePanel's view-options menu — the same one checked earlier). ---
+    // (TreePanel's view-options menu — the same one checked earlier). Scoped to
+    // [role="menu"] rather than a bare ".absolute" class, which by this point in
+    // the flow also matches unrelated hover-action overlays in other components. ---
     await page.locator('#workspace-content button[aria-label]').first().click();
-    await page.click('.absolute button');
-    // With libraries shown, the Verbs header has children (drink & co.); it
-    // starts collapsed like everything else (#827), so expand it before the
-    // click below. (A fresh game's empty Verbs header renders as a leaf item,
-    // which is why this can't happen earlier.)
+    await page.click('[role="menu"] button');
+    // With libraries shown, the Verbs header has children (drink & co.). It
+    // normally starts collapsed like everything else (#827) — but the "juggle"
+    // verb added above (VerbsEditor section) created a new command element
+    // under this same Verbs tree node, which may already have auto-expanded
+    // it — so only click to expand if "drink" isn't visible yet, rather than
+    // assuming collapsed and risking a click that re-collapses it instead.
     const verbsRow = page.locator('[data-part="branch-control"]:has-text("[Vérbs]")');
-    if (await verbsRow.count()) {
+    if (await verbsRow.count() && !(await page.locator('text="drink"').first().isVisible().catch(() => false))) {
         await verbsRow.locator('button').first().click();
     }
     await page.click('text="drink"');
