@@ -56,6 +56,27 @@ const browser = await chromium.launch();
 const page = await browser.newPage({ viewport: { width: 1280, height: 900 } });
 page.on('pageerror', err => console.log('[pageerror]', err.message));
 
+// DownloadButton (checked below) hits GitHub's real releases API
+// unauthenticated (src/AppShell/src/lib/download-links.ts) — mocked here so
+// this script doesn't depend on network access or GitHub's unauthenticated
+// rate limit (60 req/hour/IP, easily exhausted by repeated e2e runs from the
+// same CI runner). Mirrors the sample release used in
+// verify-appshell-download-button.mjs.
+await page.route('https://api.github.com/repos/textadventures/quest/releases/latest', route => route.fulfill({
+    status: 200,
+    contentType: 'application/json',
+    body: JSON.stringify({
+        tag_name: 'v6.0.0-beta.42',
+        published_at: '2026-07-19T07:30:55Z',
+        assets: [
+            { name: 'Quest.Viva.Setup.6.0.0-beta.42.exe', browser_download_url: 'https://example.com/win.exe' },
+            { name: 'Quest.Viva-6.0.0-beta.42-arm64.dmg', browser_download_url: 'https://example.com/mac.dmg' },
+            { name: 'Quest.Viva-6.0.0-beta.42.deb', browser_download_url: 'https://example.com/linux.deb' },
+            { name: 'Quest.Viva-6.0.0-beta.42.AppImage', browser_download_url: 'https://example.com/linux.AppImage' },
+        ],
+    }),
+}));
+
 function assertPseudo(label, text) {
     if (text == null) throw new Error(`[${label}] element not found`);
     const trimmed = text.trim();
