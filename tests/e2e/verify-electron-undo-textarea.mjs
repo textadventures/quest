@@ -61,7 +61,7 @@ try {
     await win.click('button:has-text("Create"):near(:text("Will be created as a new folder"))');
 
     // Editor loaded once the tree's default "room" object is selectable.
-    await win.waitForSelector('text=GAME OBJECTS', { timeout: 30000 });
+    await win.waitForSelector('input[placeholder="Filter..."]', { timeout: 30000 });
     console.log('[editor] editor loaded');
 
     // Record every app-level menu-action the renderer receives, alongside the +layout.svelte subscriber already listening.
@@ -113,7 +113,7 @@ try {
     console.log('PASS: text-field-focused Undo took the native webContents.undo() path, not app-level undo');
 
     // --- Case B: no text field focused (blur to the tree) -> app-level Undo should still fire ---
-    await win.locator('text=GAME OBJECTS').click();
+    await win.evaluate(() => document.activeElement instanceof HTMLElement && document.activeElement.blur());
     await win.waitForTimeout(100);
     await app.evaluate(({ Menu, BrowserWindow }) => {
         const menu = Menu.getApplicationMenu();

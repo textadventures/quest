@@ -1,7 +1,10 @@
 // Drop-in replacement for `import { chromium } from 'playwright'`, used by every
-// verify-appshell-*.mjs script instead of importing 'playwright' directly. When
-// QUEST_TOUCHED_FILES_DIR is unset (every normal run, local or CI) this is a pure
-// passthrough to the real `chromium` export with zero behavioral difference.
+// verify-appshell-*.mjs script instead of importing 'playwright' directly.
+//
+// Always mocks GitHub's releases API (see mockReleasesApi below) on every
+// context/page a launched browser creates. Beyond that, when
+// QUEST_TOUCHED_FILES_DIR is unset (every normal run, local or CI) this adds no
+// other behavior over the real `chromium` export.
 //
 // When QUEST_TOUCHED_FILES_DIR is set, records real V8 JS coverage for every page
 // a launched browser opens and, on browser.close(), writes the set of AppShell
@@ -39,7 +42,62 @@ import { join, basename } from 'node:path';
 const outDir = process.env.QUEST_TOUCHED_FILES_DIR;
 const SNAPSHOT_INTERVAL_MS = 4000;
 
-export const chromium = outDir ? withTracking(realChromium, outDir) : realChromium;
+// HomeHeader mounts DownloadButton (src/AppShell/src/lib/download-links.ts)
+// on every page load when PUBLIC_SHOW_HOME is set (every appshell_chromium
+// e2e script does, via the workflow's dev-server env), which fires this
+// exact request unauthenticated. Almost every verify-appshell-*.mjs script
+// navigates to / or /open at least once, so left unmocked here this was
+// hitting GitHub's 60-req/hour unauthenticated rate limit across a full
+// suite run - default-mocked for every context/page so individual scripts
+// don't each need their own copy. A script that wants specific release data
+// (or to test the failure path) can still override with its own page.route()
+// for the same URL - Playwright always prefers a page-level route over this
+// context-level one, regardless of registration order.
+const RELEASES_API_URL = 'https://api.github.com/repos/textadventures/quest/releases/latest';
+const SAMPLE_RELEASE = {
+    tag_name: 'v6.0.0-beta.42',
+    published_at: '2026-07-19T07:30:55Z',
+    assets: [
+        { name: 'Quest.Viva.Setup.6.0.0-beta.42.exe', browser_download_url: 'https://example.com/win.exe' },
+        { name: 'Quest.Viva-6.0.0-beta.42-arm64.dmg', browser_download_url: 'https://example.com/mac.dmg' },
+        { name: 'Quest.Viva-6.0.0-beta.42.deb', browser_download_url: 'https://example.com/linux.deb' },
+        { name: 'Quest.Viva-6.0.0-beta.42.AppImage', browser_download_url: 'https://example.com/linux.AppImage' },
+    ],
+};
+
+async function mockReleasesApi(context) {
+    await context.route(RELEASES_API_URL, route => route.fulfill({
+        status: 200,
+        contentType: 'application/json',
+        body: JSON.stringify(SAMPLE_RELEASE),
+    }));
+}
+
+function withDefaultMocks(real) {
+    return {
+        ...real,
+        async launch(...args) {
+            const browser = await real.launch(...args);
+            for (const ctx of browser.contexts()) await mockReleasesApi(ctx);
+            const origNewContext = browser.newContext.bind(browser);
+            browser.newContext = async (...a) => {
+                const ctx = await origNewContext(...a);
+                await mockReleasesApi(ctx);
+                return ctx;
+            };
+            const origNewPage = browser.newPage.bind(browser);
+            browser.newPage = async (...a) => {
+                const page = await origNewPage(...a);
+                await mockReleasesApi(page.context());
+                return page;
+            };
+            return browser;
+        },
+    };
+}
+
+const withDefaults = withDefaultMocks(realChromium);
+export const chromium = outDir ? withTracking(withDefaults, outDir) : withDefaults;
 
 function withTracking(real, outDir) {
     return {
