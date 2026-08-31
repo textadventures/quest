@@ -676,6 +676,30 @@ public class ExpressionTests
     }
 
     [TestMethod]
+    public async Task TestUnsetAttribute_ComparedToNull_ReturnsExpectedBoolean()
+    {
+        // A truly-unset attribute must keep working with null comparisons (unaffected by the
+        // arithmetic guard below).
+        (await RunExpression<bool>($"{ObjectName}.unsetattribute = null")).ShouldBeTrue();
+        (await RunExpression<bool>($"{ObjectName}.unsetattribute <> null")).ShouldBeFalse();
+    }
+
+    [TestMethod]
+    public async Task TestUnsetAttribute_UsedInArithmetic_ThrowsFriendlyErrorInsteadOfNullReferenceException()
+    {
+        // Regression test for https://github.com/textadventures/quest/issues/2096 - using a
+        // truly-unset attribute (never assigned) in arithmetic used to leak a raw
+        // NullReferenceException all the way up to the player/author instead of a clear message.
+        var ex = await Should.ThrowAsync<Exception>(() => RunExpression<int>($"{ObjectName}.unsetattribute + 5"));
+        ex.Message.ShouldNotContain("Object reference not set");
+        ex.Message.ShouldContain($"'{ObjectName}.unsetattribute' is null");
+
+        var ex2 = await Should.ThrowAsync<Exception>(() => RunExpression<int>($"5 - {ObjectName}.unsetattribute"));
+        ex2.Message.ShouldNotContain("Object reference not set");
+        ex2.Message.ShouldContain($"'{ObjectName}.unsetattribute' is null");
+    }
+
+    [TestMethod]
     public async Task TestObjectEqualToStringReturnsFalse()
     {
         // Cross-type equality (Element vs string) must return false, not throw IConvertible.

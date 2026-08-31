@@ -73,6 +73,12 @@ public class NcalcExpressionEvaluator<T> : IExpressionEvaluator<T>, IDynamicExpr
     // returns the identifier name as a string rather than trying to resolve it as a variable.
     private bool _evaluatingCastType;
 
+    // Set by __Quest_PropertyAccess__ (see EvaluateAslFunctionAsync) whenever it resolves to null
+    // because the attribute has never been assigned, e.g. "object.unsetattribute". EvaluateBinaryAsync
+    // snapshots this right after evaluating each operand so a null-operand error can name the
+    // actual unset attribute instead of just saying "this value".
+    private string _lastNullPropertyAccessDescription;
+
     private void EvaluateParameter(string name, ParameterEventArgs args)
     {
         var tryMath = EvaluateVariableFromType(typeof(Math), name);
@@ -305,8 +311,13 @@ public class NcalcExpressionEvaluator<T> : IExpressionEvaluator<T>, IDynamicExpr
 
         if (operatorName == null && !isEquality && !isInOperator) return;
 
+        _lastNullPropertyAccessDescription = null;
         var left = await args.LeftValueAsync();
+        var leftNullDescription = left is null ? _lastNullPropertyAccessDescription : null;
+
+        _lastNullPropertyAccessDescription = null;
         var right = await args.RightValueAsync();
+        var rightNullDescription = right is null ? _lastNullPropertyAccessDescription : null;
 
         // NCalc's built-in 'in' operator does a plain foreach over the right-hand IEnumerable,
         // which for IDictionary yields boxed KeyValuePairs rather than keys, so it can never
@@ -323,10 +334,11 @@ public class NcalcExpressionEvaluator<T> : IExpressionEvaluator<T>, IDynamicExpr
             return;
         }
 
-        HandleBinaryResult(args, isEquality, operatorName, left, right);
+        HandleBinaryResult(args, isEquality, operatorName, left, right, leftNullDescription, rightNullDescription);
     }
 
-    private static void HandleBinaryResult(BinaryEventArgs args, bool isEquality, string operatorName, object left, object right)
+    private static void HandleBinaryResult(BinaryEventArgs args, bool isEquality, string operatorName, object left,
+        object right, string leftNullDescription, string rightNullDescription)
     {
         // NCalc's internal equality logic calls Convert.ChangeType() which requires IConvertible.
         // Element doesn't implement IConvertible, so intercept equality/inequality for non-standard
@@ -350,7 +362,21 @@ public class NcalcExpressionEvaluator<T> : IExpressionEvaluator<T>, IDynamicExpr
 
         // Let NCalc handle standard numeric/bool/string/null operations natively
         if (IsStandardNCalcType(left) && IsStandardNCalcType(right))
+        {
+            // NCalc's native arithmetic throws a raw NullReferenceException when an operand is
+            // null instead of a proper value - this typically means the operand is an attribute
+            // that has never been assigned. Equality/inequality already handles null cleanly
+            // (both here and natively in NCalc), so this only needs to guard arithmetic.
+            if (!isEquality && (left is null || right is null))
+            {
+                var description = left is null ? leftNullDescription : rightNullDescription;
+                throw new Exception(description != null
+                    ? $"'{description}' is null (it has not been set) and cannot be used in this calculation."
+                    : "Cannot use this value in a calculation because it has not been set - check whether an attribute or variable has been assigned a value before using it.");
+            }
+
             return;
+        }
 
         var leftType = left?.GetType();
         var rightType = right?.GetType();
@@ -431,7 +457,16 @@ public class NcalcExpressionEvaluator<T> : IExpressionEvaluator<T>, IDynamicExpr
             if (receiver is Element element)
             {
                 var fieldName = Utility.ResolveElementName(propertyName);
-                return element.Fields.Exists(fieldName, true) ? element.Fields.Get(fieldName) : null;
+                if (!element.Fields.Exists(fieldName, true))
+                {
+                    // Record what produced this null, so a guard further up the evaluation (e.g.
+                    // arithmetic on a null operand) can name the actual unset attribute in its
+                    // error message instead of just saying "this value".
+                    _lastNullPropertyAccessDescription = $"{element.Name}.{propertyName}";
+                    return null;
+                }
+
+                return element.Fields.Get(fieldName);
             }
 #pragma warning disable IL2075 // script-accessible types are explicitly rooted in ScriptDispatchRoots.cs
             var prop = receiver?.GetType().GetProperty(propertyName,
