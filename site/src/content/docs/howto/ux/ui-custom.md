@@ -39,10 +39,10 @@ text = "color:black;font-family:georgia, serif"
 To set the status bar at the top is now easy:
 
 ```quest
-JS.setCss ("#status", backandborder)
+JS.setCss ("#qv-status", backandborder)
 ```
 
-`JS.setCss` is a Quest function that takes two parameters; the HTML element and the CSS styling. The HTML element in this case is "#status". The hash at the start indicates this is the ID of an element by the way.
+`JS.setCss` is a Quest function that takes two parameters; the HTML element and the CSS styling. The HTML element in this case is "#qv-status". The hash at the start indicates this is the ID of an element by the way.
 
 To set the panes on the right, we can modify to classes, one used for the header and one for the content. As these are classes they start with a full stop (period). I also want square corners, so will be adding to the CSS. Oh, and the content should not have a border at the top because it has the one from the bottom of the header.
 
@@ -87,7 +87,7 @@ Here is the whole thing (which should go in the interface script at the top of t
 backandborder = "border: chocolate ridge 6px;background:sandybrown"
 button = "padding:5px;background:BurlyWood;border:ridge chocolate 1px;"
 text = "color:black;font-family:georgia, serif"
-JS.setCss ("#status", backandborder)
+JS.setCss ("#qv-status", backandborder)
 JS.setCss (".ui-accordion-header", "border-radius: 0px;" + backandborder)
 JS.setCss (".ui-accordion-content", "border-radius: 0px;" + backandborder + ";border-top:none")
 JS.setCss (".accordion-header-text", text)

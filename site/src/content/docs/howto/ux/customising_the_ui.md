@@ -245,7 +245,7 @@ JS.setCss("#gameBorder", "background-image:url(" + GetFileURL("gravestone.png") 
 The status bar at the top uses an image. If you want to stop that image displaying, do this:
 
 ```quest
-JS.setCss("#status", "background-image:none;")
+JS.setCss("#qv-status", "background-image:none;")
 ```
 
 ### width
@@ -277,7 +277,7 @@ JS.setCss("#gameBorder", "border:dashed 5px blue;")
 The status bar at the top has a blue border. If you want to remove it, do this (also set the width to 950px to keep it aligned):
 
 ```quest
-JS.setCss("#status", "border:none;")
+JS.setCss("#qv-status", "border:none;")
 ```
 
 

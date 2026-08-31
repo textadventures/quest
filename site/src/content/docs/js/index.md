@@ -151,10 +151,10 @@ This example sets the `<body>` element to have the "serif" font.
 JS.setCss ("body", "font-family: serif")
 ```
 
-This example sets styling for the element with the ID "status" (the strip across the top of the screen). It sets two properties, the background image and background colour.
+This example sets styling for the element with the ID "qv-status" (the strip across the top of the screen). It sets two properties, the background image and background colour.
 
 ```quest
-JS.setCss ("#status", "background-image:none; background-color: green;")
+JS.setCss ("#qv-status", "background-image:none; background-color: green;")
 ```
 
 ## setCustomStatus

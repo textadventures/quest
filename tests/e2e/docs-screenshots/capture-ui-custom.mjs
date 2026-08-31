@@ -3,15 +3,13 @@
 // initialisation script" (Advanced Scripts tab), captured against the resulting WasmPlayer
 // preview. See .claude/skills/docs-screenshots/SKILL.md.
 //
-// Note: the doc's very first JS.setCss ("#status", ...) call targets an id that no longer
-// exists - src/PlayerCore/Resources/playercore.htm's top bar was deliberately renamed
-// "status" -> "qv-status" in commit 42cdd9b8 ("We want to display this all the time,
-// regardless of what (potentially previous versions of) the Core library want to do with
-// it.") - so that call is a silent no-op against the current player and the top bar keeps its
-// default styling in every capture below, rather than picking up the doc's border/background.
-// Everything else in the doc's script (the accordion panes, command pane, buttons) still
-// targets valid selectors and renders correctly. Captured faithfully as the current engine
-// actually behaves, not patched to compensate - flagged separately as a real doc/engine gap.
+// Note: the doc's first JS.setCss call targets "#qv-status" - src/PlayerCore/Resources/
+// playercore.htm's top bar was renamed "status" -> "qv-status" in commit 42cdd9b8, and
+// Core.aslx's own InitInterface was retargeted to match in textadventures/quest#2169 (not
+// yet merged into this branch as of writing). Regenerating these 4 screenshots before that
+// fix has landed here will still show the top bar's default styling rather than the doc's
+// border/background - re-run this capture once #2169 is merged into main and merged/rebased
+// into this branch.
 import { join, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import {
@@ -27,7 +25,7 @@ const checkboxFor = (page, label) => page.getByText(label, { exact: true }).loca
 const scriptFor = (backandborder, button) => `backandborder = "${backandborder}"
 button = "${button}"
 text = "color:black;font-family:georgia, serif"
-JS.setCss ("#status", backandborder)
+JS.setCss ("#qv-status", backandborder)
 JS.setCss (".ui-accordion-header", "border-radius: 0px;" + backandborder)
 JS.setCss (".ui-accordion-content", "border-radius: 0px;" + backandborder + ";border-top:none")
 JS.setCss (".accordion-header-text", text)
