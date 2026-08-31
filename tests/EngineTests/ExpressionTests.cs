@@ -692,11 +692,11 @@ public class ExpressionTests
         // NullReferenceException all the way up to the player/author instead of a clear message.
         var ex = await Should.ThrowAsync<Exception>(() => RunExpression<int>($"{ObjectName}.unsetattribute + 5"));
         ex.Message.ShouldNotContain("Object reference not set");
-        ex.Message.ShouldContain("has not been set");
+        ex.Message.ShouldContain($"'{ObjectName}.unsetattribute' is null");
 
         var ex2 = await Should.ThrowAsync<Exception>(() => RunExpression<int>($"5 - {ObjectName}.unsetattribute"));
         ex2.Message.ShouldNotContain("Object reference not set");
-        ex2.Message.ShouldContain("has not been set");
+        ex2.Message.ShouldContain($"'{ObjectName}.unsetattribute' is null");
     }
 
     [TestMethod]
