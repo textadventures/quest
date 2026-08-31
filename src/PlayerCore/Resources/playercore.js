@@ -266,6 +266,11 @@ function initPlayerUI() {
         const newPanelImageMaxHeight = `${(window.innerHeight - 30) * 0.5}px`;
         updatePanelImageMaxHeight(newPanelImageMaxHeight);
 
+        // cmdShowPanes.style.display was just set above - recompute #qv-status's own
+        // visibility now in case resizing past the narrow-window threshold is what
+        // just made (or unmade) the hamburger button #qv-status's only visible child.
+        updateStatusVisibility();
+
         wasWide = isWide;
     }
 
@@ -543,7 +548,12 @@ function uiHide(element) {
 }
 
 function updateStatusVisibility() {
-    var anyVisible = isElementVisible("#location") || isElementVisible("#cmdSave");
+    // #cmdDebug and #cmdShowPanes can each be visible on their own (editor-preview
+    // sessions force Debug on regardless of location/save; #cmdShowPanes only shows
+    // itself up on a narrow window - see doLayout()) - #qv-status must stay up
+    // whenever any of the four buttons/location it hosts is actually showing.
+    var anyVisible = isElementVisible("#location") || isElementVisible("#cmdSave")
+        || isElementVisible("#cmdDebug") || isElementVisible("#cmdShowPanes");
     if (anyVisible) {
         $("#qv-status").show();
         $("#divOutput").css("margin-top", "20px");
