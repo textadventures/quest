@@ -388,6 +388,8 @@ jobs:
         working-directory: tests/e2e
       - run: node verify-wasmplayer-save-slot-title-size.mjs http://localhost:5175
         working-directory: tests/e2e
+      - run: node verify-wasmplayer-location-bar-status-rename.mjs http://localhost:5175
+        working-directory: tests/e2e
 
   # WebPlayer (ASP.NET Core + Blazor Server), Development mode with Dev:Enabled
   # (appsettings.Development.json already sets this — see /dev/open's
