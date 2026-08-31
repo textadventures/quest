@@ -443,7 +443,6 @@ Valid request names, what they do, and their modern alternative:
 | `SetStatus` | Sets the status area text (right of screen, under "Inventory"); blank removes it. | [status attributes](/status_attributes) |
 | `Show` | Turns on an interface element ("Panes", "Location" or "Command"). | [JS.uiShow(...)](/js/#uishow) |
 | `ShowPicture` | Shows the specified picture file from the game directory. | [picture](#picture) |
-| `Speak` | Outputs text to the speech synthesizer, if enabled. | [RequestSpeak("Hello World")](/functions/gamebook#requestspeak) |
 | `UpdateLocation` | Updates the location bar with the parameter text. | [JS.updateLocation(location)](/js/#updatelocation) |
 | `Wait` | Waits for the player to press a key. Parameter is ignored. | [wait](#wait) script command |
 

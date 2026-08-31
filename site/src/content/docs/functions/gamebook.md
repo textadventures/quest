@@ -62,13 +62,6 @@ RemovePageLink (object source, object destination)
 
 Removes the option (if any) on **source** that links to **destination**. See also [AddPageLink](#addpagelink). There's also a [RemovePageLink](/functions/user-interface#removepagelink) for Text Adventure dialogue pages, which works the same way.
 
-## RequestSpeak
-```quest
-RequestSpeak (string text)
-```
-
-Requests that **text** be read aloud, for games with text-to-speech support.
-
 ## SetCounter
 ```quest
 SetCounter (string counter name, integer value)
