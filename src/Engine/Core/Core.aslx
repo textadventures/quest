@@ -107,21 +107,21 @@
         JS.setCss ("#gameBorder", "border-left:1px solid " + game.bordercolour + ";border-right:1px solid " + game.bordercolour)
       }
       if (not game.classiclocation) {
-        JS.setCss ("#status", "background-image:none")
+        JS.setCss ("#qv-status", "background-image:none")
         if (HasString(game, "customlocationcolour")) {
-          JS.setCss ("#status", "background-color:" + game.customlocationcolour)
+          JS.setCss ("#qv-status", "background-color:" + game.customlocationcolour)
         }
         else {
-          JS.setCss ("#status", "background:transparent")
+          JS.setCss ("#qv-status", "background:transparent")
         }
         if (HasString(game, "customlocationtextcolour")) {
-          JS.setCss ("#status", "color:" + game.customlocationtextcolour)
+          JS.setCss ("#qv-status", "color:" + game.customlocationtextcolour)
         }
         if (HasString(game, "customlocationbordercolour")) {
-          JS.setCss ("#status", "border:1px solid " + game.customlocationbordercolour)
+          JS.setCss ("#qv-status", "border:1px solid " + game.customlocationbordercolour)
         }
         else {
-          JS.setCss ("#status", "border:none")
+          JS.setCss ("#qv-status", "border:none")
         }
         if (HasString(game, "locationbarimage")){
           if (not Trim(game.locationbarimage) = ""){
@@ -133,10 +133,9 @@
       //request (Show, "Location")
       if (game.showlocation) {
         JS.uiShow("#location")
-        JS.setCss ("#status", "display:block")
       }
       else {
-        JS.setCss ("#status", "display:none")
+        JS.uiHide("#location")
       }
       if (HasString(game, "marginscolour")) {
         JS.setCss ("body", "background-color:" + game.marginscolour)
