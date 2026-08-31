@@ -22,7 +22,7 @@ await runCapture(async ({ page, baseUrl }) => {
     await openTab(page, 'Setup');
     await selectLabeledField(page, 'object description:', 'script');
     await addScriptCommand(page, page.locator('button:has-text("+ Add script")').first());
-    const msgInput = page.locator('xpath=//span[text()="Print"]/following-sibling::input[1]');
+    const msgInput = page.locator('xpath=//span[text()="Print"]/following-sibling::textarea[1]');
     await msgInput.fill('The TV is an old model, possibly 20 years old.');
 
     await page.click('button:has-text("Code view")');

@@ -90,10 +90,12 @@ export async function selectTreeNode(page, name) {
 // visible menu item text exactly, e.g. "Add Room", `Add Object in "lounge"`,
 // `Add Exit from "lounge"`. Uses exact role matching, not has-text substring
 // matching — "Add Room" is itself a substring of "Add Room in \"lounge\"", so a
-// plain :has-text() click here is ambiguous once a room is selected.
+// plain :has-text() click here is ambiguous once a room is selected. The menu's
+// items are role="menuitem" (DropdownMenu.svelte), not role="button", despite
+// being rendered as <button> elements.
 export async function addElement(page, menuLabel, name) {
     await page.click('button[title="Add element"]');
-    await page.getByRole('button', { name: menuLabel, exact: true }).click({ timeout: 5000 });
+    await page.getByRole('menuitem', { name: menuLabel, exact: true }).click({ timeout: 5000 });
     await page.waitForSelector('#element-name');
     await page.fill('#element-name', name);
     await page.click('[role="dialog"] button:has-text("Add")');
@@ -174,14 +176,21 @@ export async function addScriptCommand(page, addButtonLocator, { category, item 
 // type (e.g. "object is switched on") and, once that's chosen, the object it applies to.
 // Found via the literal "if"/"else if" label span rather than a container class, since
 // ScriptEditor.svelte nests these blocks recursively with no other stable hook — the
-// expression select is the label's first following <select> sibling, the object picker
-// (when the chosen expression takes a simple object argument) is the second. Pass `nth`
-// (0-based, in document order) when a page has more than one if-block on screen at once.
+// expression select is the label's first following <select> sibling. Pass `nth` (0-based,
+// in document order) when a page has more than one if-block on screen at once.
 export function ifExpressionSelect(page, { label = 'if', nth = 0 } = {}) {
     return page.locator(`xpath=(//span[text()="${label}"]/following-sibling::select[1])[${nth + 1}]`);
 }
-export function ifObjectSelect(page, { label = 'if', nth = 0 } = {}) {
-    return page.locator(`xpath=(//span[text()="${label}"]/following-sibling::select[2])[${nth + 1}]`);
+// The object picker's own position varies by condition type: a condition whose object
+// argument can also be an expression (e.g. "object has flag") now renders an extra
+// object/expression toggle select immediately before the value select (added for
+// script-parameter editors generally, not just Print's message/expression toggle — see
+// PR #2164), making the value select the *third* following <select>, not the second. A
+// condition with a fixed-choice argument only (e.g. "player is in room", which just picks
+// a room) has no such toggle, so its value select stays the second. Pass
+// `selectIndex: 3` for the former.
+export function ifObjectSelect(page, { label = 'if', nth = 0, selectIndex = 2 } = {}) {
+    return page.locator(`xpath=(//span[text()="${label}"]/following-sibling::select[${selectIndex}])[${nth + 1}]`);
 }
 
 // Ticks a Features-tab checkbox by its row's leading label text (e.g. "Container:",

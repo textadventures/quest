@@ -25,7 +25,7 @@ await runCapture(async ({ page, baseUrl }) => {
     const typeSelect = page.locator('select').filter({ hasText: 'String dictionary' });
     await typeSelect.selectOption('Integer');
     // Rendered as "Value" — uppercase is CSS-only (text-transform), not the actual DOM text.
-    const valueInput = page.getByText('Value', { exact: true }).locator('xpath=following::input[1]');
+    const valueInput = page.getByText('Value', { exact: true }).locator('xpath=following::*[self::input or self::textarea][1]');
     await valueInput.fill('500');
     await capture(page, out('Weightflour.png'), { untilLocator: valueInput });
 
@@ -39,7 +39,7 @@ await runCapture(async ({ page, baseUrl }) => {
     await page.getByRole('button', { name: 'OK', exact: true }).click();
     const printTypeSelect = page.locator('xpath=//span[text()="Print"]/following-sibling::select[1]');
     await printTypeSelect.selectOption('expression');
-    const exprInput = page.locator('xpath=//span[text()="Print"]/following::input[1]');
+    const exprInput = page.locator('xpath=//span[text()="Print"]/following::*[self::input or self::textarea][1]');
     await exprInput.fill('"A box of eggs, weighing " + eggs.weight + " grams."');
     await exprInput.evaluate(el => { el.scrollLeft = 0; });
     await capture(page, out('Printexpression.png'), { untilLocator: exprInput, cursorAt: printTypeSelect });

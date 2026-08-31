@@ -26,7 +26,7 @@ await runCapture(async ({ page, baseUrl }) => {
     await askInput.locator('xpath=../..').locator('button:has-text("Add")').click();
     await page.waitForTimeout(300);
     await addScriptCommand(page, addScriptButtons(page).first());
-    const topicMsg = page.locator('xpath=//span[text()="Print"]/following-sibling::input[1]');
+    const topicMsg = page.locator('xpath=//span[text()="Print"]/following-sibling::textarea[1]');
     await topicMsg.fill('The Weddle-Hoots are an old aristocratic family.');
     await topicMsg.evaluate(el => { el.scrollLeft = 0; });
 
@@ -39,7 +39,7 @@ await runCapture(async ({ page, baseUrl }) => {
     await addScriptCommand(page, unknownAddBtn);
     const unknownType = page.locator('xpath=(//span[text()="Print"])[last()]/following-sibling::select[1]');
     await unknownType.selectOption('expression');
-    const unknownExpr = page.locator('xpath=(//span[text()="Print"])[last()]/following::input[1]');
+    const unknownExpr = page.locator('xpath=(//span[text()="Print"])[last()]/following::*[self::input or self::textarea][1]');
     await unknownExpr.fill('"You remember nothing about " + text + "."');
     await unknownExpr.evaluate(el => { el.scrollLeft = 0; });
     await page.waitForTimeout(200);

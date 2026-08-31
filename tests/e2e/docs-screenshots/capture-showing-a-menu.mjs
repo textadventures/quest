@@ -83,7 +83,7 @@ await runCapture(async ({ page, baseUrl }) => {
     await addScriptCommand(page, afterChoosingAddBtn);
     const finalPrintType = page.locator('xpath=(//span[text()="Print"])[last()]/following-sibling::select[1]');
     await finalPrintType.selectOption('expression');
-    const finalPrintInput = page.locator('xpath=(//span[text()="Print"])[last()]/following::input[1]');
+    const finalPrintInput = page.locator('xpath=(//span[text()="Print"])[last()]/following::*[self::input or self::textarea][1]');
     await finalPrintInput.fill('"You have chosen the " + result');
     await finalPrintInput.evaluate(el => { el.scrollLeft = 0; });
     await page.waitForTimeout(200);

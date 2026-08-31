@@ -33,15 +33,19 @@ await runCapture(async ({ page, baseUrl }) => {
     await page.getByRole('button', { name: 'OK', exact: true }).click();
     await page.waitForSelector('text=then');
     await ifExpressionSelect(page).selectOption('object contains');
+    // Each of the two object arguments ("Parent:"/"Contains child:") now has its own
+    // object/expression toggle select immediately before its value select (see
+    // lib.mjs's ifObjectSelect comment on PR #2164) — so the value selects are the
+    // 3rd and 5th following <select>, not the 2nd and 3rd.
     const objectSelects = page.locator('xpath=//span[text()="if"]/following-sibling::select');
-    await objectSelects.nth(1).selectOption('room');
-    await objectSelects.nth(2).selectOption('bee');
+    await objectSelects.nth(2).selectOption('room');
+    await objectSelects.nth(4).selectOption('bee');
 
     // then: print a message
     await addScriptButton(1).click();
     await page.waitForSelector('text=Add Script Command');
     await page.getByRole('button', { name: 'OK', exact: true }).click();
-    const thenInput = page.locator('xpath=//span[text()="then"]/following::input[@type="text"][1]');
+    const thenInput = page.locator('xpath=//span[text()="then"]/following::*[self::input[@type="text"] or self::textarea][1]');
     await thenInput.fill('You open the window. Not much happens.');
 
     // else: print a message + move the bee
@@ -49,7 +53,7 @@ await runCapture(async ({ page, baseUrl }) => {
     await addScriptButton(2).click();
     await page.waitForSelector('text=Add Script Command');
     await page.getByRole('button', { name: 'OK', exact: true }).click();
-    const elseInput = page.locator('xpath=//span[text()="else"]/following::input[@type="text"][1]');
+    const elseInput = page.locator('xpath=//span[text()="else"]/following::*[self::input[@type="text"] or self::textarea][1]');
     await elseInput.fill('You open the window and a bee flies into the kitchen.');
     await addScriptButton(2).click();
     await page.waitForSelector('text=Add Script Command');

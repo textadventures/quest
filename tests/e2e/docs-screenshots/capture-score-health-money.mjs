@@ -39,7 +39,7 @@ await runCapture(async ({ page, baseUrl }) => {
     await selectTreeNode(page, 'game');
     await page.getByRole('button', { name: 'Player', exact: true }).click();
     await addScriptCommand(page, page.locator('button:has-text("+ Add script")').first());
-    const diedMsg = page.locator('xpath=//span[text()="Print"]/following-sibling::input[1]');
+    const diedMsg = page.locator('xpath=//span[text()="Print"]/following-sibling::textarea[1]');
     await diedMsg.fill('You died!');
     await addScriptCommand(page, page.locator('button:has-text("+ Add script")').first(), { category: 'Game State', item: 'Finish the game' });
     await page.waitForTimeout(200);

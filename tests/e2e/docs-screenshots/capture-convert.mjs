@@ -26,7 +26,7 @@ await runCapture(async ({ page, baseUrl }) => {
     // --- make1.png: the CmdMakeBow command's pattern + script ---
     await selectTreeNode(page, 'room');
     await page.click('button[title="Add element"]');
-    await page.getByRole('button', { name: 'Add Command to "room"', exact: true }).click();
+    await page.getByRole('menuitem', { name: 'Add Command to "room"', exact: true }).click();
     await page.waitForSelector('text=Pattern:', { timeout: 10000 });
     // Scope away from the tree's own "Filter..." textbox (input[type="text"] index 0 on the
     // whole page) by anchoring off the "Command" properties-panel tab, not a bare .first().

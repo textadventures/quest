@@ -37,7 +37,7 @@ await runCapture(async ({ page, baseUrl }) => {
     await setScriptCodeView(page, openScriptCodeView,
         `msg ("You have surprised the sleeping (and hungry) alien!")`);
     await page.waitForSelector('xpath=//span[text()="Print"]', { timeout: 5000 });
-    const printInput = page.locator('xpath=//span[text()="Print"]/following-sibling::input[1]');
+    const printInput = page.locator('xpath=//span[text()="Print"]/following-sibling::textarea[1]');
     await capture(page, out('Hsbaddy12.jpg'), { untilLocator: printInput, padding: 40 });
 
     // --- Hsbaddy13.jpg: same script, second sibling command "Run script after a number of

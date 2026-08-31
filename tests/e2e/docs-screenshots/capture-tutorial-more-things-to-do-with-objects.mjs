@@ -34,15 +34,15 @@ await runCapture(async ({ page, baseUrl }) => {
     await selectLabeledField(page, 'object description:', 'script');
     await addScriptCommand(page, addScriptButtons(page).first(), { category: 'Scripts', item: 'If...' });
     await ifExpressionSelect(page).selectOption('object has flag');
-    await ifObjectSelect(page).selectOption({ label: 'Bob' });
+    await ifObjectSelect(page, { selectIndex: 3 }).selectOption({ label: 'Bob' });
     await ifFlagNameInput(page).fill('alive');
 
     await addScriptCommand(page, addScriptButtons(page).first());
-    const use1ThenMsg = page.locator('xpath=//span[text()="Print"]/following-sibling::input[1]');
+    const use1ThenMsg = page.locator('xpath=//span[text()="Print"]/following-sibling::textarea[1]');
     await use1ThenMsg.fill('Bob is sitting up, appearing to feel somewhat under the weather.');
     await page.getByRole('button', { name: '+ else', exact: true }).click();
     await addScriptCommand(page, addScriptButtons(page).nth(1));
-    const use1ElseMsg = page.locator('xpath=(//span[text()="Print"])[2]/following-sibling::input[1]');
+    const use1ElseMsg = page.locator('xpath=(//span[text()="Print"])[2]/following-sibling::textarea[1]');
     await use1ElseMsg.fill('Bob is lying on the floor, a lot more still than usual.');
     await capture(page, out('Use1.png'), { untilLocator: use1ElseMsg });
 
@@ -66,7 +66,7 @@ await runCapture(async ({ page, baseUrl }) => {
     await page.waitForTimeout(300);
 
     await addScriptCommand(page, useonSection.locator('button:has-text("+ Add script")').first());
-    const use3Msg = page.locator('xpath=//span[text()="Print"]/following-sibling::input[1]');
+    const use3Msg = page.locator('xpath=//span[text()="Print"]/following-sibling::textarea[1]');
     await use3Msg.fill('Miraculously, the defibrillator lived up to its promise, and Bob is now alive again. He says his head feels kind of fuzzy.');
     await addScriptCommand(page, useonSection.locator('button:has-text("+ Add script")').last(), { category: 'Variables', item: 'Set object flag' });
     const use3FlagObject = page.locator('xpath=//span[text()="Set flag"]/following-sibling::select[2]');
@@ -78,7 +78,7 @@ await runCapture(async ({ page, baseUrl }) => {
     // --- Functionrevive.png: new Function "revive bob" with the same print+set-flag script ---
     await addAdvancedElement(page, 'Function', 'revive bob');
     await addScriptCommand(page, addScriptButtons(page).first());
-    const funcMsg = page.locator('xpath=//span[text()="Print"]/following-sibling::input[1]');
+    const funcMsg = page.locator('xpath=//span[text()="Print"]/following-sibling::textarea[1]');
     await funcMsg.fill('Miraculously, the defibrillator lived up to its promise, and Bob is now alive again. He says his head feels kind of fuzzy.');
     await addScriptCommand(page, addScriptButtons(page).last(), { category: 'Variables', item: 'Set object flag' });
     const funcFlagObject = page.locator('xpath=//span[text()="Set flag"]/following-sibling::select[2]');
@@ -117,10 +117,10 @@ await runCapture(async ({ page, baseUrl }) => {
 
     await addScriptCommand(page, addScriptButtons(page).first(), { category: 'Scripts', item: 'If...' });
     await ifExpressionSelect(page).selectOption('object has flag');
-    await ifObjectSelect(page).selectOption({ label: 'Bob' });
+    await ifObjectSelect(page, { selectIndex: 3 }).selectOption({ label: 'Bob' });
     await ifFlagNameInput(page).fill('alive');
     await addScriptCommand(page, addScriptButtons(page).first());
-    const askMsg = page.locator('xpath=//span[text()="Print"]/following-sibling::input[1]');
+    const askMsg = page.locator('xpath=//span[text()="Print"]/following-sibling::textarea[1]');
     await askMsg.fill("Well, one moment I was sitting there, feeling pretty happy with myself after eating my afternoon snack - a cheeseburger, pizza and ice cream pie, smothered in bacon, which I'd washed down with a bucket of coffee and six cans of Red Bull - when all of a sudden, I was in terrible pain, and then everything was peaceful. Then you came along.");
     await askMsg.evaluate(el => { el.scrollLeft = 0; });
     await capture(page, out('Asktell.png'), { untilLocator: askMsg });

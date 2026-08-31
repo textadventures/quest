@@ -4,6 +4,9 @@
 // .claude/skills/docs-screenshots/SKILL.md.
 import { join, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { deflateSync } from 'node:zlib';
+import { writeFileSync } from 'node:fs';
+import { tmpdir } from 'node:os';
 import {
     runCapture, createLocalDraft, selectTreeNode, addElement, openTab, addVerb,
     toggleFeature, addScriptCommand, ifExpressionSelect, ifObjectSelect,
@@ -12,7 +15,57 @@ import {
 
 const imagesDir = join(dirname(fileURLToPath(import.meta.url)), '..', '..', '..', 'site', 'public', 'images');
 const out = name => join(imagesDir, name);
-const loungePicture = '/private/tmp/claude-501/-Users-alexwarren-Code-quest/ab5b1524-2956-4e1f-a0ed-ddffb535b27f/scratchpad/lounge.png';
+
+// A flat-color placeholder for the "room picture" upload — the doc only needs to show that
+// the Picture frame feature displays *an* image, not any specific content, so this is
+// generated at runtime rather than checked in as a fixture. Minimal from-scratch PNG encoder
+// (no image library in this package's devDependencies) — one uncompressed RGB scanline per
+// row, deflated with zlib per the PNG spec's IDAT requirement.
+function crc32(buf) {
+    const table = crc32.table ??= (() => {
+        const t = new Uint32Array(256);
+        for (let n = 0; n < 256; n++) {
+            let c = n;
+            for (let k = 0; k < 8; k++) c = c & 1 ? 0xedb88320 ^ (c >>> 1) : c >>> 1;
+            t[n] = c;
+        }
+        return t;
+    })();
+    let crc = 0xffffffff;
+    for (const byte of buf) crc = table[(crc ^ byte) & 0xff] ^ (crc >>> 8);
+    return (crc ^ 0xffffffff) >>> 0;
+}
+function pngChunk(type, data) {
+    const len = Buffer.alloc(4);
+    len.writeUInt32BE(data.length);
+    const typeAndData = Buffer.concat([Buffer.from(type, 'ascii'), data]);
+    const crc = Buffer.alloc(4);
+    crc.writeUInt32BE(crc32(typeAndData));
+    return Buffer.concat([len, typeAndData, crc]);
+}
+function makePlaceholderPng(width, height, [r, g, b]) {
+    const ihdr = Buffer.alloc(13);
+    ihdr.writeUInt32BE(width, 0);
+    ihdr.writeUInt32BE(height, 4);
+    ihdr[8] = 8; // bit depth
+    ihdr[9] = 2; // color type: RGB
+    const raw = Buffer.alloc((width * 3 + 1) * height);
+    for (let y = 0; y < height; y++) {
+        const rowStart = y * (width * 3 + 1); // leading byte per row: filter type 0 (none)
+        for (let x = 0; x < width; x++) {
+            const px = rowStart + 1 + x * 3;
+            raw[px] = r; raw[px + 1] = g; raw[px + 2] = b;
+        }
+    }
+    return Buffer.concat([
+        Buffer.from([137, 80, 78, 71, 13, 10, 26, 10]),
+        pngChunk('IHDR', ihdr),
+        pngChunk('IDAT', deflateSync(raw)),
+        pngChunk('IEND', Buffer.alloc(0)),
+    ]);
+}
+const loungePicture = join(tmpdir(), 'docs-screenshot-lounge-placeholder.png');
+writeFileSync(loungePicture, makePlaceholderPng(480, 320, [214, 196, 168])); // beige, matching the tutorial's own room description
 
 const checkboxFor = (page, label) => page.getByText(label, { exact: true }).locator('xpath=..').locator('input[type="checkbox"]');
 
@@ -76,15 +129,15 @@ await runCapture(async ({ page, baseUrl }) => {
     await page.locator('select').first().selectOption('script');
     await addScriptCommand(page, page.locator('button:has-text("+ Add script")').first(), { category: 'Scripts', item: 'If...' });
     await ifExpressionSelect(page).selectOption('object has flag');
-    await ifObjectSelect(page).selectOption({ label: 'Bob' });
+    await ifObjectSelect(page, { selectIndex: 3 }).selectOption({ label: 'Bob' });
     const flagNameInput = page.locator('xpath=(//span[text()="if"]/following::input)[1]');
     await flagNameInput.fill('alive');
     await addScriptCommand(page, page.locator('button:has-text("+ Add script")').first());
-    const thenMsg = page.locator('xpath=//span[text()="Print"]/following-sibling::input[1]');
+    const thenMsg = page.locator('xpath=//span[text()="Print"]/following-sibling::textarea[1]');
     await thenMsg.fill('Bob says he feels kind of fuzzy.');
     await page.getByRole('button', { name: '+ else', exact: true }).click();
     await addScriptCommand(page, page.locator('button:has-text("+ Add script")').nth(1));
-    const elseMsg = page.locator('xpath=(//span[text()="Print"])[2]/following-sibling::input[1]');
+    const elseMsg = page.locator('xpath=(//span[text()="Print"])[2]/following-sibling::textarea[1]');
     await elseMsg.fill('Bob stares at you blankly.');
     await capture(page, out('overview-script.png'), { untilLocator: elseMsg, padding: 40 });
 

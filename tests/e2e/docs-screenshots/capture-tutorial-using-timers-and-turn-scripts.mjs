@@ -21,7 +21,7 @@ await runCapture(async ({ page, baseUrl }) => {
     await page.click('button:has-text("+ Add script")');
     await page.waitForSelector('text=Add Script Command');
     await page.getByRole('button', { name: 'OK', exact: true }).click();
-    const messageInput = page.locator('input[type="text"]').last();
+    const messageInput = page.locator('xpath=//span[text()="Print"]/following-sibling::textarea[1]');
     await messageInput.fill('The bee buzzes past you. Pesky bee.');
     await messageInput.evaluate(el => { el.scrollLeft = 0; });
     await capture(page, out('TimerBee1.png'), { untilLocator: messageInput });
@@ -36,11 +36,11 @@ await runCapture(async ({ page, baseUrl }) => {
     await page.getByRole('button', { name: 'OK', exact: true }).click();
     await page.waitForSelector('text=then');
     await ifExpressionSelect(page).selectOption('player is in room');
-    await ifObjectSelect(page).selectOption('room');
+    await ifObjectSelect(page, { selectIndex: 3 }).selectOption('room');
     await page.locator('button:has-text("+ Add script")').first().click();
     await page.waitForSelector('text=Add Script Command');
     await page.getByRole('button', { name: 'OK', exact: true }).click();
-    const thenMessageInput = page.locator('xpath=//span[text()="then"]/following::input[@type="text"][1]');
+    const thenMessageInput = page.locator('xpath=//span[text()="then"]/following::*[self::input[@type="text"] or self::textarea][1]');
     await thenMessageInput.fill('The bee buzzes past you. Pesky bee.');
     const elseIfButton = page.locator('button:has-text("+ else if")').first();
     await capture(page, out('TimerBee2.png'), { untilLocator: elseIfButton, padding: 4 });
@@ -66,7 +66,7 @@ await runCapture(async ({ page, baseUrl }) => {
     // --- Turnscript.png: a turn script setting player.turns to player.turns + 1 ---
     await selectTreeNode(page, 'room');
     await page.click('button[title="Add element"]');
-    await page.getByRole('button', { name: 'Add Turn Script to "room"', exact: true }).click();
+    await page.getByRole('menuitem', { name: 'Add Turn Script to "room"', exact: true }).click();
     await page.waitForSelector('button:has-text("+ Add script")');
     await page.click('button:has-text("+ Add script")');
     await page.waitForSelector('text=Add Script Command');

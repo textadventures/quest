@@ -43,7 +43,7 @@ await runCapture(async ({ page, baseUrl }) => {
     await addScriptCommand(page, addScriptButtons(page).first());
     const sayPrintType = page.locator('xpath=//span[text()="Print"]/following-sibling::select[1]');
     await sayPrintType.selectOption('expression');
-    const sayExprInput = page.locator('xpath=//span[text()="Print"]/following::input[1]');
+    const sayExprInput = page.locator('xpath=//span[text()="Print"]/following::*[self::input or self::textarea][1]');
     await sayExprInput.fill('"You say \\"" + text + "\\", but nobody replies."');
     await sayExprInput.evaluate(el => { el.scrollLeft = 0; });
     await capture(page, out('Commandsay.png'), { untilLocator: sayExprInput });
@@ -55,7 +55,7 @@ await runCapture(async ({ page, baseUrl }) => {
     await addScriptCommand(page, addScriptButtons(page).first());
     const weighPrintType = page.locator('xpath=//span[text()="Print"]/following-sibling::select[1]');
     await weighPrintType.selectOption('expression');
-    const weighExprInput = page.locator('xpath=//span[text()="Print"]/following::input[1]');
+    const weighExprInput = page.locator('xpath=//span[text()="Print"]/following::*[self::input or self::textarea][1]');
     await weighExprInput.fill('"It weighs " + object.weight + " grams."');
     await weighExprInput.evaluate(el => { el.scrollLeft = 0; });
     await capture(page, out('Commandweigh.png'), { untilLocator: weighExprInput });
@@ -68,8 +68,11 @@ await runCapture(async ({ page, baseUrl }) => {
     const ifSelect = page.locator('xpath=(//span[text()="if"]/following-sibling::select[1])[1]');
     await ifSelect.selectOption('object has attribute');
     // Two inputs follow: the object expression (defaults to "object", left as-is) and the
-    // attribute name (defaults to an empty quoted string) — take the second by position.
-    const attrNameInput = page.locator('xpath=//span[text()="if"]/following-sibling::input[2]');
+    // attribute name (defaults to an empty quoted string) — take the second by document
+    // position. Not following-sibling: the object expression's input is now wrapped in its
+    // own <div> alongside an "Insert object or function" button, so it's no longer a direct
+    // sibling of the "if" span.
+    const attrNameInput = page.locator('xpath=//span[text()="if"]/following::input[2]');
     await attrNameInput.fill('weight');
 
     // The "Then" block's own "+ Add script" is the first on screen at this point (the if's
@@ -77,7 +80,7 @@ await runCapture(async ({ page, baseUrl }) => {
     await addScriptCommand(page, addScriptButtons(page).first());
     const thenPrintType = page.locator('xpath=//span[text()="Print"]/following-sibling::select[1]');
     await thenPrintType.selectOption('expression');
-    const thenExprInput = page.locator('xpath=//span[text()="Print"]/following::input[1]');
+    const thenExprInput = page.locator('xpath=//span[text()="Print"]/following::*[self::input or self::textarea][1]');
     await thenExprInput.fill('"It weighs " + object.weight + " grams."');
     await thenExprInput.evaluate(el => { el.scrollLeft = 0; });
 
@@ -85,7 +88,7 @@ await runCapture(async ({ page, baseUrl }) => {
     // Now 3 "+ Add script" buttons exist: Then's, the newly-created Else's, and the outer
     // command-level one - the Else block's is the middle one.
     await addScriptCommand(page, addScriptButtons(page).nth(1));
-    const elseMsgInput = page.locator('xpath=//span[text()="else"]/following::input[@type="text"][1]');
+    const elseMsgInput = page.locator('xpath=//span[text()="else"]/following::*[self::input[@type="text"] or self::textarea][1]');
     await elseMsgInput.fill("You can't weigh that.");
     await capture(page, out('Checkforattribute.png'), { untilLocator: elseMsgInput });
 

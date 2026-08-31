@@ -11,12 +11,12 @@ import {
 const imagesDir = join(dirname(fileURLToPath(import.meta.url)), '..', '..', '..', 'site', 'public', 'images');
 const out = name => join(imagesDir, name);
 
-// Script-editor text inputs share no id/placeholder, but the fixed set that precedes them
-// on this page (tree filter box, then the verb-name combobox) means the then/else "Print a
-// message" value boxes are always input[type="text"] indices 2 and 3 — confirmed live
-// against the running editor before relying on it here.
-const thenMessageInput = page => page.locator('input[type="text"]').nth(2);
-const elseMessageInput = page => page.locator('input[type="text"]').nth(3);
+// Print's default "message" mode renders its value as a <textarea> (see lib.mjs's
+// following-sibling::textarea convention), not an <input> — anchor on the "then"/"else"
+// label span instead of a positional input[type="text"] index, which shifts whenever an
+// unrelated field elsewhere on the page gains or loses a text input.
+const thenMessageInput = page => page.locator('xpath=//span[text()="then"]/following::*[self::input[@type="text"] or self::textarea][1]');
+const elseMessageInput = page => page.locator('xpath=//span[text()="else"]/following::*[self::input[@type="text"] or self::textarea][1]');
 
 await runCapture(async ({ page, baseUrl }) => {
     await createLocalDraft(page, baseUrl, 'Tutorial Game');
@@ -46,8 +46,8 @@ await runCapture(async ({ page, baseUrl }) => {
 
     // --- Addif3.png: condition set to "object is switched on", object "TV" ---
     await ifExpressionSelect(page).selectOption('object is switched on');
-    await ifObjectSelect(page).selectOption('TV');
-    await capture(page, out('Addif3.png'), { untilLocator: elseIfButton, cursorAt: ifObjectSelect(page) });
+    await ifObjectSelect(page, { selectIndex: 3 }).selectOption('TV');
+    await capture(page, out('Addif3.png'), { untilLocator: elseIfButton, cursorAt: ifObjectSelect(page, { selectIndex: 3 }) });
 
     // --- Addif4.png: Then/Else print-message scripts filled in ---
     await page.locator('button:has-text("+ Add script")').first().click();

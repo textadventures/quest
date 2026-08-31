@@ -17,10 +17,10 @@ await runCapture(async ({ page, baseUrl }) => {
     await addVerb(page, 'speak');
     await page.locator('select').first().selectOption('script');
     await addScriptCommand(page, page.locator('button:has-text("+ Add script")').first());
-    const msg1 = page.locator('xpath=//span[text()="Print"]/following-sibling::input[1]');
+    const msg1 = page.locator('xpath=//span[text()="Print"]/following-sibling::textarea[1]');
     await msg1.fill("'Hi,' you say to Boris, 'can you help me find the key to this door?'");
     await addScriptCommand(page, page.locator('button:has-text("+ Add script")').first());
-    const msg2 = page.locator('xpath=(//span[text()="Print"])[2]/following-sibling::input[1]');
+    const msg2 = page.locator('xpath=(//span[text()="Print"])[2]/following-sibling::textarea[1]');
     await msg2.fill("'Sure, you need to look in the bedroom.'");
     await page.waitForTimeout(200);
     await capture(page, out('Talk1.png'), { untilLocator: msg2, padding: 40 });

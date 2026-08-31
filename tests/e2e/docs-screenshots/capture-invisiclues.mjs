@@ -13,7 +13,7 @@ await runCapture(async ({ page, baseUrl }) => {
     // --- invisiclues.png: a "help2" Command, pattern "help;?", the InvisiClues foreach script ---
     await selectTreeNode(page, 'room');
     await page.click('button[title="Add element"]');
-    await page.getByRole('button', { name: 'Add Command to "room"', exact: true }).click();
+    await page.getByRole('menuitem', { name: 'Add Command to "room"', exact: true }).click();
     await page.waitForSelector('text=Pattern:', { timeout: 10000 });
     const patternField = page.getByRole('button', { name: 'Command', exact: true })
         .locator('xpath=following::input[@type="text"]').first();
