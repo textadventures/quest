@@ -52,6 +52,11 @@ public class PlaySoundScript : ScriptBase
         var synchronous = await m_synchronous.ExecuteAsync(c);
         var loop = await m_loop.ExecuteAsync(c);
 
+        if (synchronous && loop)
+        {
+            throw new Exception("play sound: cannot use 'wait' and 'loop' together - this would wait forever for a sound that never finishes");
+        }
+
         if (synchronous)
         {
             var tcs = WorldModel.BeginPrompt(ref m_worldModel._waitTcs);
