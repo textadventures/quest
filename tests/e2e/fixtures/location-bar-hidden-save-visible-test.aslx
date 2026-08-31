@@ -1,0 +1,15 @@
+<asl version="600">
+
+  <include ref="English.aslx"/>
+  <include ref="Core.aslx"/>
+
+  <game name="LocationBarHiddenTest">
+    <showlocation type="boolean">false</showlocation>
+  </game>
+
+  <object name="room">
+    <object name="player">
+    </object>
+  </object>
+
+</asl>
