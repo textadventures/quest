@@ -232,8 +232,12 @@
                 // Bare identifier (object name) or empty — not a complex expression
                 return v === "" || /^[a-zA-Z_][a-zA-Z0-9_]*$/.test(v);
             default:
-                // textbox, dropdown, file: simple when value is a quoted string literal
-                return v.length >= 2 && v.startsWith('"') && v.endsWith('"');
+                // textbox, dropdown, file: simple only when the *entire* value is a single
+                // quoted string literal, not just "starts and ends with a quote" - that laxer
+                // check also matched a compound expression like `"a" + b + "c"` that merely
+                // starts and ends with a string literal, silently reclassifying it as simple
+                // and (via toSimpleDisplay's slice(1,-1)) mangling it into garbled literal text.
+                return /^"(?:[^"\\]|\\.)*"$/.test(v);
         }
     }
 
