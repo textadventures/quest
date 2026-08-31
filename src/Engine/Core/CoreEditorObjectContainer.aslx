@@ -9,7 +9,6 @@
       <controltype>dropdowntypes</controltype>
       <caption>[EditorObjectContainerContainertype]</caption>
       <types>*=[TypeContainerNot]; container_open=[TypeContainer]; container_closed=[TypeContainerClosed]; surface=[TypeContainerSurface]; container_limited=[TypeContainerLinited]; openable=[TypeContainerOpenable]</types>
-      <width>150</width>
     </control>
 
     <control>
@@ -196,7 +195,6 @@
       <controltype>dropdowntypes</controltype>
       <caption>[EditorObjectContainerLocktype]</caption>
       <types>*=[TypeContainerNotLockable]; container_lockable=[TypeContainerLockable]</types>
-      <width>150</width>
       <onlydisplayif>(DoesInherit(this, "container_base") or DoesInherit(this, "openable")) and not DoesInherit(this, "surface")</onlydisplayif>
     </control>
 

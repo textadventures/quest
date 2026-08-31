@@ -474,8 +474,14 @@ function swapInPlayerUi() {
 // beginning"/Load in an editor-preview session.
 let currentIsPreview = false;
 
-async function initWasmPlayer(gameBytes, filename, bc = null, saveBytes = null, isPreview = false, recordWalkthrough = null, runWalkthrough = null, adjacentFiles = null) {
+// Same idea as currentIsPreview, but for the source=local .aslx case (see
+// setCanDebug's call sites below) — kept separate from isPreview because it
+// must NOT also disable Save or add the Restart button the way isPreview does.
+let currentAllowDebug = false;
+
+async function initWasmPlayer(gameBytes, filename, bc = null, saveBytes = null, isPreview = false, recordWalkthrough = null, runWalkthrough = null, adjacentFiles = null, allowDebug = false) {
     currentIsPreview = isPreview;
+    currentAllowDebug = allowDebug;
     const dotnetJsUrl = wasmPlayerScriptUrl
         ? new URL('_framework/dotnet.js', wasmPlayerScriptUrl).href
         : './_framework/dotnet.js';
@@ -611,10 +617,12 @@ async function initWasmPlayer(gameBytes, filename, bc = null, saveBytes = null, 
     // BroadcastChannel (to hand off the picked file's bytes and answer
     // resource requests) but is a real play session and should offer saving.
     WebPlayer.setCanSave(!isPreview);
-    // Only ever shown in editor-preview sessions (see the module doc comment
-    // above the Debugger section) — never for a normal play session, even
+    // Shown in editor-preview sessions, and also in a source=local play
+    // session for a raw .aslx file specifically (allowDebug — see the
+    // source=local boot branch below, which is the only caller that ever
+    // passes it true) — never for any other normal play session, even
     // though the loaded game itself might have DebugEnabled true.
-    WebPlayer.setCanDebug(isPreview && Bridge.IsDebugEnabled());
+    WebPlayer.setCanDebug((isPreview || allowDebug) && Bridge.IsDebugEnabled());
 
     await Bridge.Begin();
 
@@ -719,7 +727,7 @@ async function restartGameCore(saveBytes) {
         // restartGame reachable *from* a preview session too, hardcoding true
         // here would wrongly re-enable Save after a preview restart.
         WebPlayer.setCanSave(!currentIsPreview);
-        WebPlayer.setCanDebug(currentIsPreview && Bridge.IsDebugEnabled());
+        WebPlayer.setCanDebug((currentIsPreview || currentAllowDebug) && Bridge.IsDebugEnabled());
         await Bridge.Begin();
     } finally {
         restartingEl?.classList.add('hidden');
@@ -729,7 +737,7 @@ async function restartGameCore(saveBytes) {
 // Wraps initWasmPlayer with the boot-time "Continue / New Game" prompt: if
 // saves already exist for this game, ask before committing to either the
 // fresh game or a chosen save. Used by all boot entry points below.
-async function startGame(bytes, filename, bc = null, gameIdOverride = null, isPreview = false, recordWalkthrough = null, runWalkthrough = null, adjacentFiles = null) {
+async function startGame(bytes, filename, bc = null, gameIdOverride = null, isPreview = false, recordWalkthrough = null, runWalkthrough = null, adjacentFiles = null, allowDebug = false) {
     originalGameBytes = bytes;
     originalGameFilename = filename;
     originalAdjacentFiles = adjacentFiles;
@@ -769,7 +777,7 @@ async function startGame(bytes, filename, bc = null, gameIdOverride = null, isPr
     // by initWasmPlayer in that case) — callers with post-success work (e.g.
     // persisting the active URL) should key off this. Genuine setup failures
     // (fetch, WASM boot) still throw as before.
-    return initWasmPlayer(bytes, filename, bc, saveBytes, isPreview, recordWalkthrough, runWalkthrough, adjacentFiles);
+    return initWasmPlayer(bytes, filename, bc, saveBytes, isPreview, recordWalkthrough, runWalkthrough, adjacentFiles, allowDebug);
 }
 
 // ── Start screen helpers ──────────────────────────────────────────────────────
@@ -1009,6 +1017,7 @@ async function openSavesDialog(mode, gameId = WebPlayer.gameId) {
     const dlg = document.getElementById('qv-saves');
     hideSavesError();
     dlg.dataset.mode = mode;
+    dlg.setAttribute('aria-labelledby', mode === 'boot' ? 'qv-saves-heading-boot' : 'qv-saves-heading-manage');
     renderSavesList(await GameSaver.listSaves(gameId), mode);
 
     if (mode === 'boot') {
@@ -1022,10 +1031,11 @@ async function openSavesDialog(mode, gameId = WebPlayer.gameId) {
 }
 
 // ── Debugger (#questVivaDebugger) ─────────────────────────────────────────────
-// Only ever opened in editor-preview sessions (see WebPlayer.setCanDebug's
-// call site in initWasmPlayer/restartGame) — element browser, per-tab
-// attribute inspector with a "hack your own game" override, and a walkthrough
-// runner. Mirrors WebPlayer's Debugger/Attributes/Walkthrough.razor, which
+// Only ever opened in editor-preview sessions, or a source=local play session
+// for a raw .aslx file (see WebPlayer.setCanDebug's call sites in
+// initWasmPlayer/restartGame) — element browser, per-tab attribute inspector
+// with a "hack your own game" override, and a walkthrough runner. Mirrors
+// WebPlayer's Debugger/Attributes/Walkthrough.razor, which
 // drive IGameDebug directly as Blazor components; here the same data comes
 // over the bridge as JSON (Bridge.Get*Json — see WasmPlayerBridge.cs) for
 // plain-DOM rendering instead.
@@ -1033,6 +1043,13 @@ async function openSavesDialog(mode, gameId = WebPlayer.gameId) {
 let debuggerWired = false;
 let debuggerActiveTab = 'Walkthrough';
 let debuggerSelectedItem = null;
+// Sort direction for the left-hand object/walkthrough list's single "Name"
+// column — clicking #qv-debugger-list-sort toggles this (see
+// ensureDebuggerWired). Deliberately not reset when switching tabs/objects
+// (unlike debuggerAttrSort below): it's a display preference for the list
+// itself, not per-object state, so it should stay put as the user browses
+// around, the same way a real file manager's sort column does.
+let debuggerListSortAscending = true;
 // Name of the walkthrough currently running, or null — the source of truth
 // for the Run/Cancel/status UI, *not* the DOM elements themselves. Closing
 // and reopening the dialog (or switching tabs/objects) rebuilds
@@ -1307,12 +1324,20 @@ function renderDebuggerTabs(types) {
 // when a turn has made the currently-selected item (an object that got
 // destroyed, a timer that finished, ...) disappear from its own list.
 function renderDebuggerList() {
-    const list = document.getElementById('qv-debugger-list');
+    const list = document.getElementById('qv-debugger-list-items');
+    const sortLabel = document.querySelector('#qv-debugger-list-sort .qv-debugger-sort-label');
+    if (sortLabel) sortLabel.textContent = 'Name' + (debuggerListSortAscending ? ' ▲' : ' ▼');
+
     const items = debuggerActiveTab === 'Walkthrough'
         ? JSON.parse(Bridge.GetWalkthroughNamesJson())
         : JSON.parse(Bridge.GetDebugObjectsJson(debuggerActiveTab));
+    // .slice() first — GetObjects/GetWalkthroughNamesJson return declaration
+    // order, and refreshDebuggerAfterTurn's `items.includes(...)` check below
+    // (in its own caller) has no need to see that order disturbed.
+    const sorted = items.slice().sort((a, b) => a.localeCompare(b, undefined, { sensitivity: 'base' }));
+    if (!debuggerListSortAscending) sorted.reverse();
 
-    if (!items.length) {
+    if (!sorted.length) {
         list.innerHTML = '<li class="text-sm text-surface-500 px-2 py-1">Nothing here.</li>';
         return items;
     }
@@ -1320,7 +1345,7 @@ function renderDebuggerList() {
     // A plain selectable list, not hyperlinks — .qv-debugger-list-item is a
     // block row with its own hover/selected background (shares
     // .qv-debugger-row-selected with the attribute table below).
-    list.innerHTML = items.map(item => {
+    list.innerHTML = sorted.map(item => {
         const selected = item === debuggerSelectedItem;
         return `<li><button type="button" class="qv-debugger-list-item${selected ? ' qv-debugger-row-selected' : ''}" data-item="${_esc(item)}" aria-selected="${selected}">${_esc(item)}</button></li>`;
     }).join('');
@@ -1620,10 +1645,10 @@ function ensureDebuggerWired() {
     });
 
     // Only needs setting once — #qv-debugger-list itself is never rebuilt
-    // (only its innerHTML, by renderDebuggerList), so this inline width
-    // survives every re-render and even a game restart (the dialog is on
-    // swapInPlayerUi's preserve-list). Subsequent changes come from dragging
-    // the splitter (wireDebuggerSplitter).
+    // (only #qv-debugger-list-items' innerHTML, by renderDebuggerList), so
+    // this inline width survives every re-render and even a game restart
+    // (the dialog is on swapInPlayerUi's preserve-list). Subsequent changes
+    // come from dragging the splitter (wireDebuggerSplitter).
     document.getElementById('qv-debugger-list').style.width = `${debuggerListWidth}px`;
 
     wireDebuggerMoveResize();
@@ -1645,6 +1670,12 @@ function ensureDebuggerWired() {
     });
 
     document.getElementById('qv-debugger-list').addEventListener('click', (e) => {
+        if (e.target.closest('#qv-debugger-list-sort')) {
+            debuggerListSortAscending = !debuggerListSortAscending;
+            renderDebuggerList();
+            return;
+        }
+
         const btn = e.target.closest('[data-item]');
         if (!btn) return;
         debuggerSelectedItem = btn.dataset.item;
@@ -2084,7 +2115,15 @@ async function fetchGameBytes(url) {
                 // reassigns bc.onmessage itself to keep answering
                 // 'resource-response' messages for the rest of the session.
                 bc.onmessage = null;
-                await startGame(data.bytes, data.filename, bc, null, false, null, null, data.adjacentFiles ?? null);
+                // A raw .aslx picked straight from the Play tab is an
+                // author's own in-progress source file (unlike a packaged
+                // .quest/.asl/.cas), so treat it like an editor preview for
+                // Debug purposes — but only that, via the separate
+                // allowDebug flag: Save/Restart still behave as a normal
+                // play session (isPreview stays false) since a real save is
+                // still wanted here.
+                const allowDebug = /\.aslx$/i.test(data.filename ?? '');
+                await startGame(data.bytes, data.filename, bc, null, false, null, null, data.adjacentFiles ?? null, allowDebug);
             }
         };
         return;

@@ -7,7 +7,7 @@
 // editor's root container (the actual env(safe-area-inset-*) values can't be
 // emulated in Chromium/Playwright — that requires real iOS/Safari — but this
 // confirms the CSS is wired up and doesn't break layout).
-import { chromium } from 'playwright';
+import { chromium } from './lib/tracked-chromium.mjs';
 
 const baseUrl = process.argv[2] || 'http://localhost:5174';
 

@@ -15,7 +15,7 @@
 // Requires the AppShell dev server running locally (WasmEditor Debug build first):
 //   cd src/AppShell && npm run dev
 // Run: node tests/e2e/verify-appshell-switch-cases-editor.mjs [baseUrl]
-import { chromium } from 'playwright';
+import { chromium } from './lib/tracked-chromium.mjs';
 
 const baseUrl = process.argv[2] || 'http://localhost:5174';
 
@@ -111,7 +111,10 @@ try {
     await page.click('[role="dialog"] button:has-text("OK")');
     await page.waitForTimeout(300);
 
-    const messageInput = caseBody.locator('input[type=text]').last();
+    // Print's message field renders as a <textarea> (multiline, see ScriptEditor.svelte's
+    // `ctrl.multiline` branch), not an `input[type=text]` - match both so `.last()` finds it
+    // rather than falling back to the case's own key input.
+    const messageInput = caseBody.locator('input[type=text], textarea').last();
     await messageInput.fill('You found a sword!');
     await messageInput.blur();
     await page.waitForTimeout(300);
@@ -155,7 +158,10 @@ try {
     // ── Remove the "buckler" case ────────────────────────────────────────────────────
     const bucklerCaseRowAfterReload = await caseKeyInput(switchRow, '"buckler"');
     if (!bucklerCaseRowAfterReload) throw new Error('"buckler" case not found after returning to the Scripts tab');
-    const bucklerCaseRow = bucklerCaseRowAfterReload.locator('xpath=..');
+    // Two levels up, not one - the case-key input is now wrapped in ExpressionInput's own
+    // "input + wand button" container (see issue #2070), so its immediate parent no longer has
+    // the row's × remove button as a sibling; the row container is one level above that.
+    const bucklerCaseRow = bucklerCaseRowAfterReload.locator('xpath=../..');
     await bucklerCaseRow.locator('button', { hasText: '×' }).click();
     await page.waitForTimeout(300);
 

@@ -5,7 +5,7 @@
 // building ScriptControlData for script parameters (it was only wired up for the unrelated
 // PropertyEditor "objects"/"elementslist" controls). Fixed by threading objecttype through to
 // the frontend and loading a separate exit-names list for objecttype="exit" controls.
-import { chromium } from 'playwright';
+import { chromium } from './lib/tracked-chromium.mjs';
 
 const baseUrl = process.argv[2] || 'http://localhost:5174';
 

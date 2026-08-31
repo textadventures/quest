@@ -23,6 +23,9 @@ jobs:
           # match a project name exactly, so it clusters and capitalizes
           # consistently in the release-please changelog. "main" is included
           # because release-please's own PR titles are "chore(main): release X.Y.Z".
+          # "e2e" is included because tests/e2e/*.mjs scripts (see e2e.yml) span
+          # multiple projects (AppShell, WebPlayer, WasmPlayer, ElectronApp), so
+          # a test-only fix often doesn't belong to any single project scope.
           scopes: |
             Common
             Engine
@@ -35,4 +38,5 @@ jobs:
             WasmEditor
             ElectronApp
             Site
+            e2e
             main

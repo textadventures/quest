@@ -1,6 +1,7 @@
 <script lang="ts">
-    import { selectedKey, selectedData, treeNodes, isGamebook, setAttribute, setDropdownType, setMultiType, setObjectReference, setSelectedFilter, addDictItem, removeDictItem, updateDictItem, getObjectNames, getExitNames, getPageNames, selectNode, createPageSilent, openAddModal, openAddLibraryModal, openAddJavascriptModal, getAssetText, putAssetText, putLibraryAssetText, isBuiltInLibrary, getLibraryXml, setPatternAttribute } from "$lib/editor-store";
+    import { selectedKey, selectedData, treeNodes, isGamebook, setAttribute, removeAttribute, setDropdownType, setMultiType, setObjectReference, setSelectedFilter, addDictItem, removeDictItem, updateDictItem, getObjectNames, getExitNames, getPageNames, selectNode, createPageSilent, openAddModal, openAddLibraryModal, openAddJavascriptModal, getAssetText, putAssetText, putLibraryAssetText, isBuiltInLibrary, getLibraryXml, setPatternAttribute } from "$lib/editor-store";
     import { showToast } from "$lib/toast";
+    import { isLibraryFilename } from "$lib/filesystem/types";
     import { t } from "$lib/i18n";
     import type { ControlInfo, ControlOption, TextProcessorCommand } from "$lib/types";
     import type { TreeNode } from "$lib/types";
@@ -85,7 +86,7 @@
         const onDisk = lastTexteditorWrite?.filename === filename ? lastTexteditorWrite.text : loadedContent;
         if (value === onDisk) return;
         lastTexteditorWrite = { filename, text: value };
-        if (filename.toLowerCase().endsWith(".aslx")) {
+        if (isLibraryFilename(filename)) {
             void putLibraryAssetText(filename, value).then(result => {
                 // A malformed library edit is rejected before it's written (putLibraryAssetText
                 // validates against a throwaway controller first), so the game can't be reloaded
@@ -137,8 +138,18 @@
         if (error) showToast(error, "error");
     }
 
-    function onTextChange(attribute: string, controlType: string, value: string) {
-        if ($selectedKey) recordResult(attribute, setAttribute($selectedKey, attribute, controlType, value));
+    // <nullable/> - an empty value means "unset/inherited", not an explicit empty-string
+    // override (WorldModel attribute inheritance treats the two differently) - so clearing the
+    // field removes the attribute entirely instead of saving "". Mirrors the old Quest 5 desktop
+    // editor's TextBoxControl/RichTextControl/ExpressionControl, which do the same null-out on
+    // save when their own <nullable/> hint is set.
+    function onTextChange(attribute: string, controlType: string, value: string, nullable = false) {
+        if (!$selectedKey) return;
+        if (nullable && value === "") {
+            recordResult(attribute, removeAttribute($selectedKey, attribute));
+            return;
+        }
+        recordResult(attribute, setAttribute($selectedKey, attribute, controlType, value));
     }
 
     // Routed through setPatternAttribute (not the generic setAttribute/textbox path) so an
@@ -161,8 +172,13 @@
         if ($selectedKey) recordResult(attribute, setAttribute($selectedKey, attribute, controlType, value));
     }
 
-    function onDropdownChange(attribute: string, value: string) {
-        if ($selectedKey) recordResult(attribute, setAttribute($selectedKey, attribute, "dropdown", value));
+    function onDropdownChange(attribute: string, value: string, nullable = false) {
+        if (!$selectedKey) return;
+        if (nullable && value === "") {
+            recordResult(attribute, removeAttribute($selectedKey, attribute));
+            return;
+        }
+        recordResult(attribute, setAttribute($selectedKey, attribute, "dropdown", value));
     }
 
     function getControlsForView(): ControlInfo[] {
@@ -184,6 +200,12 @@
 
     function attrValue(attribute: string): string | null {
         return $selectedData?.attributes[attribute] ?? null;
+    }
+
+    // <width> - a per-instance pixel width, only known at runtime, so it has to be an inline
+    // style rather than a Tailwind class (Tailwind's static scanning can't see a dynamic value).
+    function widthStyle(ctrl: ControlInfo): string | undefined {
+        return ctrl.width ? `width: ${ctrl.width}px` : undefined;
     }
 
     function boolValue(attribute: string): boolean {
@@ -381,17 +403,15 @@
 </script>
 
 <div class="@container flex flex-col flex-1 bg-surface-50-950 overflow-hidden">
-    <div class="px-3 py-2 border-b border-surface-200-800">
-        {#if onback}
+    {#if onback}
+        <div class="px-3 py-2 border-b border-surface-200-800">
             <button
                 type="button"
                 class="flex items-center gap-1 -ml-1 px-1 text-sm font-medium text-surface-900-50"
                 onclick={onback}
             ><ChevronLeft size={16} /> {selectedNode?.text ?? t("propertyEditor.propertiesFallback")}</button>
-        {:else}
-            <span class="text-xs font-semibold uppercase text-surface-600-400">{t("propertyEditor.propertiesFallback")}</span>
-        {/if}
-    </div>
+        </div>
+    {/if}
     <LibraryElementBanner />
 
     {#if $selectedKey === null}
@@ -480,11 +500,13 @@
         {/each}
         <span class="w-px h-5 bg-surface-200-800 mx-0.5"></span>
         <DropdownMenu items={buildInsertMenuItems(commands, attribute, controlType)} align="left">
-            {#snippet trigger(toggle)}
+            {#snippet trigger(toggle, open)}
                 <button
                     type="button"
                     class="btn btn-sm preset-outlined-primary-500 text-xs px-2 py-0.5 gap-1"
                     onclick={toggle}
+                    aria-haspopup="menu"
+                    aria-expanded={open}
                 ><ListPlus size={14} aria-hidden="true" />{t("common.insert")}<ChevronDown size={12} aria-hidden="true" /></button>
             {/snippet}
         </DropdownMenu>
@@ -502,28 +524,52 @@
     {#if ctrl.controlType === "number"}
         <input
             type="number"
+            min={ctrl.minimum ?? undefined}
+            max={ctrl.maximum ?? undefined}
+            step={ctrl.increment ?? undefined}
             class="input text-xs py-0.5 px-1.5 w-auto"
+            style={widthStyle(ctrl)}
             value={attrValue(ctrl.attribute!) ?? ""}
             onchange={(e) => onNumberChange(ctrl.attribute!, "number", (e.target as HTMLInputElement).value)}
         />
     {:else if ctrl.controlType === "numberdouble"}
         <input
             type="number"
-            step="any"
+            min={ctrl.minimum ?? undefined}
+            max={ctrl.maximum ?? undefined}
+            step={ctrl.increment ?? "any"}
             class="input text-xs py-0.5 px-1.5 w-auto"
+            style={widthStyle(ctrl)}
             value={attrValue(ctrl.attribute!) ?? ""}
             onchange={(e) => onNumberChange(ctrl.attribute!, "numberdouble", (e.target as HTMLInputElement).value)}
         />
     {:else if ctrl.controlType === "dropdown" && ctrl.options}
-        <Combobox
-            value={attrValue(ctrl.attribute!) ?? ""}
-            options={ctrl.options}
-            onchange={(v) => onDropdownChange(ctrl.attribute!, v)}
-            class="input text-xs py-0.5 px-1.5 w-auto min-w-24"
-        />
+        {#if ctrl.freetext}
+            <Combobox
+                value={attrValue(ctrl.attribute!) ?? ""}
+                options={ctrl.options}
+                onchange={(v) => onDropdownChange(ctrl.attribute!, v, ctrl.nullable)}
+                class="input text-xs py-0.5 px-1.5 w-auto min-w-24"
+                style={widthStyle(ctrl)}
+            />
+        {:else}
+            <!-- No <freetext/> hint - restrict to the listed options, unlike Combobox which
+                 always accepts arbitrary typed text. -->
+            <select
+                class="select text-xs py-0.5 px-1.5 w-auto"
+                style={widthStyle(ctrl)}
+                value={attrValue(ctrl.attribute!) ?? ""}
+                onchange={(e) => onDropdownChange(ctrl.attribute!, (e.target as HTMLSelectElement).value)}
+            >
+                {#each ctrl.options as opt (opt.value)}
+                    <option value={opt.value}>{opt.label || opt.value || t("common.none")}</option>
+                {/each}
+            </select>
+        {/if}
     {:else if ctrl.controlType === "dropdowntypes" && ctrl.options && ctrl.attribute}
         <select
             class="select text-xs py-0.5 px-1.5 w-auto"
+            style={widthStyle(ctrl)}
             value={attrValue(ctrl.attribute) ?? "*"}
             onchange={(e) => $selectedKey && setDropdownType($selectedKey, ctrl.attribute!, (e.target as HTMLSelectElement).value)}
         >
@@ -540,7 +586,7 @@
                     autocapitalize="off"
                     class="input text-xs py-0.5 px-1.5 flex-1 min-h-32 resize-y"
                     value={attrValue(ctrl.attribute!) ?? ""}
-                    onchange={(e) => onTextChange(ctrl.attribute!, ctrl.controlType, (e.target as HTMLTextAreaElement).value)}
+                    onchange={(e) => onTextChange(ctrl.attribute!, ctrl.controlType, (e.target as HTMLTextAreaElement).value, ctrl.nullable)}
                 ></textarea>
             </div>
         {:else}
@@ -548,27 +594,29 @@
                 autocapitalize="off"
                 class="input text-xs py-0.5 px-1.5 w-full min-h-24 resize-y"
                 value={attrValue(ctrl.attribute!) ?? ""}
-                onchange={(e) => onTextChange(ctrl.attribute!, ctrl.controlType, (e.target as HTMLTextAreaElement).value)}
+                onchange={(e) => onTextChange(ctrl.attribute!, ctrl.controlType, (e.target as HTMLTextAreaElement).value, ctrl.nullable)}
             ></textarea>
         {/if}
     {:else if ctrl.controlType === "textbox"}
         <input
             type="text"
             autocapitalize="off"
-            class={"input text-xs py-0.5 px-1.5 w-full" + (ctrl.attribute && attributeErrors[ctrl.attribute] ? " !border-error-500" : "")}
+            class={"input text-xs py-0.5 px-1.5" + (ctrl.width ? "" : " w-full") + (ctrl.attribute && attributeErrors[ctrl.attribute] ? " !border-error-500" : "")}
+            style={widthStyle(ctrl)}
             value={attrValue(ctrl.attribute!) ?? ""}
-            onchange={(e) => onTextChange(ctrl.attribute!, ctrl.controlType, (e.target as HTMLInputElement).value)}
+            onchange={(e) => onTextChange(ctrl.attribute!, ctrl.controlType, (e.target as HTMLInputElement).value, ctrl.nullable)}
         />
     {:else if ctrl.controlType === "expression"}
         <ExpressionInput
             value={attrValue(ctrl.attribute!) ?? ""}
-            onchange={(v) => onTextChange(ctrl.attribute!, ctrl.controlType, v)}
+            onchange={(v) => onTextChange(ctrl.attribute!, ctrl.controlType, v, ctrl.nullable)}
             objectNames={dictSourceObjectNames}
             class={"input text-xs py-0.5 px-1.5 w-full" + (ctrl.attribute && attributeErrors[ctrl.attribute] ? " !border-error-500" : "")}
         />
     {:else if ctrl.controlType === "filter" && ctrl.options}
         <select
             class="select text-xs py-0.5 px-1.5 w-auto"
+            style={widthStyle(ctrl)}
             value={attrValue(ctrl.attribute!) ?? ""}
             onchange={(e) => $selectedKey && setSelectedFilter($selectedKey, ctrl.subAttribute!, (e.target as HTMLSelectElement).value)}
         >
@@ -746,6 +794,7 @@
             options={ctrl.options}
             onchange={(v) => $selectedKey && setObjectReference($selectedKey, ctrl.attribute!, v)}
             class="input text-xs py-0.5 px-1.5 w-auto min-w-24"
+            style={widthStyle(ctrl)}
         />
     {:else if ctrl.controlType === "multi" && ctrl.options}
         {@const selectedType = attrValue(ctrl.attribute!) ?? "null"}
@@ -828,12 +877,13 @@
     {:else if ctrl.controlType === "texteditor" && ctrl.attribute !== null}
         {@const filename = attrValue(ctrl.attribute)}
         <!-- The same control type drives both file kinds: a Javascript element's src (.js — the
-             original use, editable in place) and an Included Library's filename (.aslx — see
-             CoreEditorIncludedLibrary.aslx). Library content is handled differently because it's
+             original use, editable in place) and an Included Library's filename (.aslx, or .xml
+             for compatibility with libraries authored in Quest 5's desktop editor — see
+             CoreEditorIncludedLibrary.aslx and isLibraryFilename). Library content is handled differently because it's
              consumed at load time, not at play time: custom libraries are written via
              putLibraryAssetText (which flags that a reload is needed), and the engine-shipped
              built-in libraries are shown read-only since they don't belong to the game at all. -->
-        {@const isLibraryFile = !!filename && filename.toLowerCase().endsWith(".aslx")}
+        {@const isLibraryFile = !!filename && isLibraryFilename(filename)}
         {@const builtInLibrary = isLibraryFile && !!filename && isBuiltInLibrary(filename)}
         {@const language = isLibraryFile ? "xml" : "javascript"}
         <div class="w-full min-h-64">
@@ -913,10 +963,10 @@
                 href={ctrl.href}
                 target="_blank"
                 rel="noopener noreferrer"
-                class="block px-3 py-1 text-xs text-primary-600-400 italic hover:underline"
+                class={"block px-3 py-1 text-xs text-primary-600-400 italic hover:underline" + (ctrl.bold ? " font-semibold" : "")}
             >{ctrl.caption ?? ""}</a>
         {:else}
-            <div class="px-3 py-1 text-xs text-surface-600-400 italic">
+            <div class={"px-3 py-1 text-xs text-surface-600-400 italic" + (ctrl.bold ? " font-semibold" : "")}>
                 {ctrl.caption ?? ""}
             </div>
         {/if}
@@ -954,7 +1004,7 @@
             {@const selectedType = attrValue(ctrl.attribute!) ?? "null"}
             {@const subEditorType = ctrl.subEditors?.find(e => e.value === selectedType)?.label ?? selectedType}
             <div class="flex flex-col gap-1 px-3 py-1.5">
-                <div class="flex items-center gap-2">
+                <label class="flex items-center gap-2">
                     <span class="text-xs text-surface-600-400 whitespace-nowrap">{label}:</span>
                     <select
                         class="select text-xs py-0.5 px-1.5 w-auto"
@@ -965,7 +1015,7 @@
                             <option value={opt.value}>{opt.label}</option>
                         {/each}
                     </select>
-                </div>
+                </label>
                 {#if subEditorType === "richtext" && ctrl.subAttribute !== null}
                     {#if ctrl.textProcessorCommands?.length}
                         <div class="flex flex-col gap-1 w-full">
@@ -973,6 +1023,7 @@
                             <textarea
                                 id={textProcessorTextareaId(ctrl.subAttribute)}
                                 autocapitalize="off"
+                                aria-label={label}
                                 class="input text-xs py-0.5 px-1.5 flex-1 min-h-32 resize-y"
                                 value={attrValue(ctrl.subAttribute) ?? ""}
                                 onchange={(e) => onTextChange(ctrl.subAttribute!, "richtext", (e.target as HTMLTextAreaElement).value)}
@@ -981,6 +1032,7 @@
                     {:else}
                         <textarea
                             autocapitalize="off"
+                            aria-label={label}
                             class="input text-xs py-0.5 px-1.5 w-full min-h-24 resize-y"
                             value={attrValue(ctrl.subAttribute) ?? ""}
                             onchange={(e) => onTextChange(ctrl.subAttribute!, "richtext", (e.target as HTMLTextAreaElement).value)}
@@ -990,6 +1042,7 @@
                     <input
                         type="text"
                         autocapitalize="off"
+                        aria-label={label}
                         class="input text-xs py-0.5 px-1.5 w-full"
                         value={attrValue(ctrl.subAttribute) ?? ""}
                         onchange={(e) => onTextChange(ctrl.subAttribute!, "textbox", (e.target as HTMLInputElement).value)}
@@ -998,12 +1051,15 @@
                     <input
                         type="text"
                         autocapitalize="off"
+                        aria-label={label}
                         class="input text-xs py-0.5 px-1.5 w-full"
                         value={attrValue(ctrl.subAttribute) ?? ""}
                         onchange={(e) => onPatternTextChange(ctrl.subAttribute!, (e.target as HTMLInputElement).value)}
                     />
                 {:else if subEditorType === "script" && ctrl.subAttribute !== null && $selectedKey !== null}
-                    <ScriptEditor elementKey={$selectedKey} attribute={ctrl.subAttribute} />
+                    <div role="group" aria-label={label} class="contents">
+                        <ScriptEditor elementKey={$selectedKey} attribute={ctrl.subAttribute} />
+                    </div>
                 {:else if subEditorType === "boolean" && ctrl.subAttribute !== null}
                     <label class="flex items-center gap-2">
                         <input
@@ -1015,12 +1071,14 @@
                         <span class="text-xs text-surface-600-400">{ctrl.checkboxCaption ?? ctrl.subAttribute}</span>
                     </label>
                 {:else if subEditorType === "scriptdictionary" && ctrl.subAttribute !== null && $selectedKey !== null}
-                    <ScriptDictionaryEditor
-                        elementKey={$selectedKey}
-                        attribute={ctrl.subAttribute}
-                        value={attrValue(ctrl.subAttribute)}
-                        keySource={ctrl.source === "object" ? "object" : "text"}
-                    />
+                    <div role="group" aria-label={label} class="contents">
+                        <ScriptDictionaryEditor
+                            elementKey={$selectedKey}
+                            attribute={ctrl.subAttribute}
+                            value={attrValue(ctrl.subAttribute)}
+                            keySource={ctrl.source === "object" ? "object" : "text"}
+                        />
+                    </div>
                 {/if}
             </div>
         {:else}
@@ -1029,22 +1087,29 @@
             {@const stacksBelowLabel = label.length > 20 || isMultiline}
             {#if stacksBelowLabel}
                 <div class="flex flex-col gap-1 px-3 py-1.5">
-                    {#if ctrl.controlType !== "texteditor"}
-                        <span class="text-xs text-surface-600-400">{label}:</span>
-                    {/if}
-                    {@render controlOnly(ctrl)}
+                    <svelte:element
+                        this={isMultiline ? "div" : "label"}
+                        role={isMultiline ? "group" : undefined}
+                        aria-label={isMultiline ? label : undefined}
+                        class="contents"
+                    >
+                        {#if ctrl.controlType !== "texteditor"}
+                            <span class="text-xs text-surface-600-400">{label}:</span>
+                        {/if}
+                        {@render controlOnly(ctrl)}
+                    </svelte:element>
                     {#if ctrl.attribute && attributeErrors[ctrl.attribute]}
-                        <p class="text-xs text-error-500">{attributeErrors[ctrl.attribute]}</p>
+                        <p class="text-xs text-error-500" role="alert">{attributeErrors[ctrl.attribute]}</p>
                     {/if}
                 </div>
             {:else}
                 <div class="flex flex-col gap-1 px-3 py-1.5">
-                    <div class="flex items-center gap-2 min-h-8">
+                    <label class="flex items-center gap-2 min-h-8 cursor-pointer">
                         <span class="text-xs text-surface-600-400 w-32 flex-shrink-0">{label}:</span>
                         {@render controlOnly(ctrl)}
-                    </div>
+                    </label>
                     {#if ctrl.attribute && attributeErrors[ctrl.attribute]}
-                        <p class="text-xs text-error-500">{attributeErrors[ctrl.attribute]}</p>
+                        <p class="text-xs text-error-500" role="alert">{attributeErrors[ctrl.attribute]}</p>
                     {/if}
                 </div>
             {/if}

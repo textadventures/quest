@@ -196,8 +196,6 @@
       <breakbefore/>
     </control>
 
-    <!-- TO DO (#2070): Popup needs to have ExpressionControl in it -->
-
     <control>
       <controltype>scriptdictionary</controltype>
       <caption>[EditorScriptsScriptsCases2]</caption>
@@ -268,8 +266,6 @@
       <caption>[EditorScriptsScriptsWithparameters]</caption>
     </control>
 
-    <!-- TO DO (#2070): Popup needs to have ExpressionControl in it -->
-
     <control>
       <controltype>list</controltype>
       <caption>[EditorScriptsScriptsParameters]</caption>
@@ -281,7 +277,6 @@
 
   <editor>
     <appliesto>do</appliesto>
-    <!-- TO DO (#2070): Don't display parameter #2 if it's null or empty -->
     <display>Run #0's '#1' script with parameters from dictionary #2</display>
     <category>[EditorScriptsScriptsScripts]</category>
     <add>[EditorScriptsScriptsRunanobjects]</add>
@@ -316,17 +311,30 @@
       <controltype>label</controltype>
       <caption>[EditorScriptsScriptsUsingparameter]</caption>
       <breakbefore/>
+      <relatedattribute>2</relatedattribute>
+      <relatedattributedisplaytype>string</relatedattributedisplaytype>
     </control>
 
     <control>
       <controltype>expression</controltype>
       <attribute>2</attribute>
+      <relatedattribute>2</relatedattribute>
+      <relatedattributedisplaytype>string</relatedattributedisplaytype>
+    </control>
+
+    <control>
+      <controltype>addparametersbutton</controltype>
+      <caption>[EditorScriptsScriptsAddParameters]</caption>
+      <attribute>2</attribute>
+      <breakbefore/>
+      <relatedattribute>2</relatedattribute>
+      <relatedattributedisplaytype>string</relatedattributedisplaytype>
+      <relatedattributenegate/>
     </control>
   </editor>
 
   <editor>
     <appliesto>invoke</appliesto>
-    <!-- TO DO (#2070): Don't display parameter #1 if it's null or empty -->
     <display>Run '#0' script with parameters from dictionary #1</display>
     <category>[EditorScriptsScriptsScripts]</category>
     <add>[EditorScriptsScriptsRunascript]</add>
@@ -347,11 +355,25 @@
       <controltype>label</controltype>
       <caption>[EditorScriptsScriptsUsingparameter]</caption>
       <breakbefore/>
+      <relatedattribute>1</relatedattribute>
+      <relatedattributedisplaytype>string</relatedattributedisplaytype>
     </control>
 
     <control>
       <controltype>expression</controltype>
       <attribute>1</attribute>
+      <relatedattribute>1</relatedattribute>
+      <relatedattributedisplaytype>string</relatedattributedisplaytype>
+    </control>
+
+    <control>
+      <controltype>addparametersbutton</controltype>
+      <caption>[EditorScriptsScriptsAddParameters]</caption>
+      <attribute>1</attribute>
+      <breakbefore/>
+      <relatedattribute>1</relatedattribute>
+      <relatedattributedisplaytype>string</relatedattributedisplaytype>
+      <relatedattributenegate/>
     </control>
   </editor>
 
@@ -428,8 +450,6 @@
       <caption>[EditorScriptsScriptsWithparameters]</caption>
       <breakbefore/>
     </control>
-
-    <!-- TO DO (#2070): Popup needs to have ExpressionControl in it -->
 
     <control>
       <controltype>list</controltype>

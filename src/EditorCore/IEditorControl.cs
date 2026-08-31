@@ -18,4 +18,5 @@ public interface IEditorControl
     double? GetDouble(string tag);
     bool GetBool(string tag);
     Task<bool> IsControlVisible(IEditorData data);
+    bool IsControlVisibleSync(IEditorData data);
 }

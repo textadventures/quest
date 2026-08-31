@@ -48,13 +48,15 @@
 //
 // Run against a dev server started with:
 //   PUBLIC_SHOW_HOME=true npm --prefix src/AppShell run dev -- --port 5180
-import { chromium } from 'playwright';
+import { chromium } from './lib/tracked-chromium.mjs';
 
 const baseUrl = process.argv[2] || 'http://localhost:5180';
 
 const browser = await chromium.launch();
 const page = await browser.newPage({ viewport: { width: 1280, height: 900 } });
 page.on('pageerror', err => console.log('[pageerror]', err.message));
+// DownloadButton's GitHub releases API call is mocked by default for every
+// script via lib/tracked-chromium.mjs — see that file for why.
 
 function assertPseudo(label, text) {
     if (text == null) throw new Error(`[${label}] element not found`);
@@ -224,10 +226,14 @@ async function run() {
     // only TreePanel's own chrome (buttons/menus/placeholders) is pseudo here.
     assertPseudo('TreePanel filter placeholder', await page.getAttribute('input[placeholder]', 'placeholder'));
     assertPseudo('TreePanel filter aria-label', await page.getAttribute('input[aria-label]', 'aria-label'));
-    const viewOptionsBtn = page.locator('button[aria-label]').first();
+    // Scoped to #workspace-content (everything below Toolbar) — #2139 added
+    // aria-label to Toolbar's Back/Forward/BackToHome buttons too, and those
+    // render first in the DOM (and start disabled, with no history yet), so
+    // an unscoped `button[aria-label]` locator grabs one of those instead.
+    const viewOptionsBtn = page.locator('#workspace-content button[aria-label]').first();
     assertPseudo('TreePanel view-options title', await viewOptionsBtn.getAttribute('title'));
     await viewOptionsBtn.click();
-    assertPseudo('TreePanel "Show Library Elements" menu item', await page.textContent('.absolute button'));
+    assertPseudo('TreePanel "Show Library Elements" menu item', await page.textContent('[role="menu"] button'));
     await page.keyboard.press('Escape');
 
     // --- TreePanel context menu (via "room", the only movable node in a
@@ -310,12 +316,12 @@ async function run() {
     await page.click('span:text-is("room")');
     await page.click('button:has-text("Attributes")');
     await page.waitForSelector('[data-attr="isroom"]', { timeout: 10000 });
-    // index 0 is PropertyEditor's own "Properties" header (same span classes,
-    // rendered above every tab's content) — AttributesEditor's own headers start at 1.
+    // #2144 removed PropertyEditor's own static "Properties" fallback header
+    // (same span classes), so AttributesEditor's own headers now start at 0.
     const attrHeaders = await page.$$eval('span.font-semibold.uppercase', els => els.map(el => el.textContent ?? ''));
-    if (attrHeaders.length < 3) throw new Error(`AttributesEditor: expected 3+ headers (incl. PropertyEditor's), found ${attrHeaders.length}`);
-    assertPseudo('AttributesEditor "Inherited types" header', attrHeaders[1]);
-    assertPseudo('AttributesEditor "Attributes" header', attrHeaders[2]);
+    if (attrHeaders.length < 2) throw new Error(`AttributesEditor: expected 2+ headers, found ${attrHeaders.length}`);
+    assertPseudo('AttributesEditor "Inherited types" header', attrHeaders[0]);
+    assertPseudo('AttributesEditor "Attributes" header', attrHeaders[1]);
     const attrThs = await page.$$eval('th', els => els.map(el => el.textContent?.trim() ?? '').filter(Boolean));
     if (attrThs.length === 0) throw new Error('AttributesEditor: no table headers found');
     for (const text of attrThs) assertPseudo('AttributesEditor table header', text);
@@ -419,17 +425,29 @@ async function run() {
 
     // --- LibraryElementBanner — via a library-origin verb. Library verbs are
     // hidden from the tree by default, so enable "Show Library Elements" first
-    // (TreePanel's view-options menu — the same one checked earlier). ---
-    await page.locator('button[aria-label]').first().click();
-    await page.click('.absolute button');
-    // With libraries shown, the Verbs header has children (drink & co.); it
-    // starts collapsed like everything else (#827), so expand it before the
-    // click below. (A fresh game's empty Verbs header renders as a leaf item,
-    // which is why this can't happen earlier.)
-    const verbsRow = page.locator('[data-part="branch-control"]:has-text("[Vérbs]")');
-    if (await verbsRow.count()) {
-        await verbsRow.locator('button').first().click();
-    }
+    // (TreePanel's view-options menu — the same one checked earlier). Scoped to
+    // [role="menu"] rather than a bare ".absolute" class, which by this point in
+    // the flow also matches unrelated hover-action overlays in other components. ---
+    await page.locator('#workspace-content button[aria-label]').first().click();
+    await page.click('[role="menu"] button');
+    // With libraries shown, the Verbs header has children — but CoreCommands.aslx
+    // alone defines 20+ consecutive <verb> elements including "drink", so
+    // groupLibraryChildren folds them into a nested, separately-collapsed
+    // "librarygroup" node (see TreePanel.svelte). A single expand click on the
+    // Verbs branch itself only opens the outer level; "drink" stays hidden one
+    // level deeper. Use the node's own "Expand all below" context action
+    // instead, so it doesn't matter how many levels are actually collapsed.
+    await page.evaluate(() => {
+        // Scoped to branch-control spans, not a bare span search — "Vérbs" is
+        // also the room's own VerbsEditor tab header text (same locale key),
+        // which would otherwise be an ambiguous first match.
+        const verbsText = Array.from(document.querySelectorAll('[data-part="branch-control"] span'))
+            .find(el => el.textContent.trim() === '[Vérbs]');
+        const control = verbsText?.closest('[data-part="branch-control"]');
+        control?.querySelector('.node-actions button')?.click();
+    });
+    await page.waitForSelector('.tree-dropdown', { timeout: 10000 });
+    await page.click('.tree-dropdown button:has-text("[Éxpánd áll bélów]")');
     await page.click('text="drink"');
     await page.waitForSelector('.bg-warning-100-900', { timeout: 10000 });
     assertPseudo('LibraryElementBanner message', await page.textContent('.bg-warning-100-900 span'));

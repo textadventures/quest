@@ -94,6 +94,7 @@ export interface WasmBridge {
   // Verbs editor API
   GetVerbAttributesInfo(): string
   GetExpressionFunctions(): string
+  GetAttributeNames(): string
   AddVerb(elementKey: string, verbPattern: string): string
   CreateTurnScript(parent: string): string
   CreateCommand(parent: string): string
@@ -112,6 +113,15 @@ export interface WasmBridge {
   CanMoveElement(elementKey: string): boolean
   GetMovePossibleParents(elementKey: string): string
   MoveElement(elementKey: string, newParentKey: string): string
+  GetFunctionFolders(): string
+  SetFunctionFolder(elementKey: string, folder: string): string
+  CanMoveFunctionUp(elementKey: string): boolean
+  CanMoveFunctionDown(elementKey: string): boolean
+  CanMoveFunctionFolderUp(folder: string): boolean
+  CanMoveFunctionFolderDown(folder: string): boolean
+  MoveFunctionFolderUp(folder: string): string
+  MoveFunctionFolderDown(folder: string): string
+  GetPossibleNewObjectParentsForCurrentSelection(elementKey: string): string
   CopyElements(keysJson: string): void
   CutElements(keysJson: string): void
   CanPasteElements(parentKey: string): boolean

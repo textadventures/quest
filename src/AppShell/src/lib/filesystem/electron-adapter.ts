@@ -1,4 +1,4 @@
-import { isJunkAssetName, type AssetInfo, type FileAdapter } from "./types";
+import { isJunkAssetName, isLibraryFilename, type AssetInfo, type FileAdapter } from "./types";
 
 const ASLX_FILTER = [{ name: "Quest game files", extensions: ["aslx"] }];
 
@@ -95,7 +95,7 @@ async function trackRecent(dirPath: string, filename: string, kind: RecentKind =
 async function computeWatchList(dirPath: string, mainFilename: string): Promise<string[]> {
     const entries = await electronApp().fs.readDir(dirPath);
     const libraries = entries
-        .filter((e) => e.isFile && e.name.toLowerCase().endsWith(".aslx") && e.name !== mainFilename)
+        .filter((e) => e.isFile && isLibraryFilename(e.name) && e.name !== mainFilename)
         .map((e) => e.name);
     return [mainFilename, ...libraries];
 }
@@ -190,7 +190,7 @@ export class ElectronFileAdapter implements FileAdapter {
     async listAssets(): Promise<AssetInfo[]> {
         const entries = await electronApp().fs.readDir(this.dirPath);
         return entries
-            .filter((e) => e.isFile && !e.name.toLowerCase().endsWith(".aslx") && !isJunkAssetName(e.name))
+            .filter((e) => e.isFile && !isLibraryFilename(e.name) && !isJunkAssetName(e.name))
             .map((e) => ({ key: e.name, url: "" }));
     }
 
@@ -201,7 +201,7 @@ export class ElectronFileAdapter implements FileAdapter {
     async listLibraryCandidates(): Promise<string[]> {
         const entries = await electronApp().fs.readDir(this.dirPath);
         return entries
-            .filter((e) => e.isFile && e.name.toLowerCase().endsWith(".aslx") && e.name !== this._filename)
+            .filter((e) => e.isFile && isLibraryFilename(e.name) && e.name !== this._filename)
             .map((e) => e.name);
     }
 

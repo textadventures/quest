@@ -713,6 +713,8 @@
   <dynamictemplate name="ToDisableTranscript"><![CDATA["<b><i>[  Escribe </i>" + Template("TranscriptOffAllCaps") + "<i> para desactivar la transcripción.  ]</i></b>"]]></dynamictemplate>
   <dynamictemplate name="TranscriptEnabledMessage"><![CDATA["<hr/>Inicio de la transcripción de:<br/><b>TÍTULO: </b>" + game.gamename + "<br/><b>AUTOR: </b>" + game.author + "<br/><b>VERSIÓN: </b>" + game.version + "<br/><b>IFID: </b>" + game.gameid]]></dynamictemplate>
   <template name="TranscriptOffAllCaps">TRANSCRIPCIÓN APAGADA</template>
+  <template name="TranscriptViewerMessage">Tus transcripciones se guardan en el localStorage de tu navegador. Puedes verlas, descargarlas o eliminarlas aquí:</template>
+  <template name="TranscriptViewerLinkText">Tus transcripciones</template>
   <template name="Noted">Anotado.</template>
   <template name="ShowMenuResponsePrompt">>> </template>
   <template name="PageDialogueChooseOption">Por favor, elige una de las opciones anteriores.</template>
@@ -735,5 +737,7 @@
   <template name="RestartingBusy">Reiniciando…</template>
   <template name="DeleteSaveConfirm">¿Eliminar «[name]»? Esto no se puede deshacer.</template>
   <template name="SavedGameDefaultLabel">Partida guardada — [timestamp]</template>
+  <template name="CommandInputLabel">Escribe tu comando</template>
+  <template name="ShowPanesButton">Mostrar paneles</template>
 
 </library>

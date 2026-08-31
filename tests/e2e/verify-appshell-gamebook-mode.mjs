@@ -1,11 +1,11 @@
 // Verifies gamebook-mode support in the AppShell editor: creating a game from
-// the Gamebook template should show "Pages"/"Game Pages" wording, offer only
+// the Gamebook template should show "Pages" wording in the tree, offer only
 // "Add Page" (no Add Room/Object/Exit/Verb/Command/Timer/Turn
 // Script/Walkthrough/Template/Type anywhere, including under "Advanced"), let
 // a new page be added flat and deleted, and refuse to delete the page
 // currently containing "player" (or player itself). Also confirms a regular
 // text-adventure game is unaffected (still offers Add Room/Object/Exit/etc).
-import { chromium } from 'playwright';
+import { chromium } from './lib/tracked-chromium.mjs';
 
 const baseUrl = process.argv[2] || 'http://localhost:5174';
 
@@ -27,26 +27,25 @@ try {
 
     const tree = page.locator('.overflow-y-auto.p-1.text-xs');
 
-    // "Game Pages" static header + "Pages" tree header (renamed from "Objects").
-    await page.locator('text=Game Pages').waitFor({ state: 'visible', timeout: 10000 });
-    console.log('PASS: static panel header reads "Game Pages"');
-
+    // Tree header (renamed from "Objects").
     await tree.getByText('Pages', { exact: true }).waitFor({ state: 'visible', timeout: 5000 });
     console.log('PASS: tree header reads "Pages" (not "Objects")');
 
     // Toolbar "+" menu: only "Add Page" — none of the text-adventure adders.
+    // Menu items carry role="menuitem" (see DropdownMenu.svelte), not the
+    // default "button" role, per the WAI-ARIA menu pattern.
     await page.click('button[title="Add element"]');
-    await page.getByRole('button', { name: 'Add Page', exact: true }).waitFor({ state: 'visible', timeout: 5000 });
+    await page.getByRole('menuitem', { name: 'Add Page', exact: true }).waitFor({ state: 'visible', timeout: 5000 });
     console.log('PASS: toolbar "+" menu offers "Add Page"');
 
     for (const label of ['Add Room', 'Add Object', 'Add Exit', 'Add Verb', 'Add Command', 'Add Turn Script']) {
-        const visible = await page.getByRole('button', { name: label, exact: true }).isVisible().catch(() => false);
+        const visible = await page.getByRole('menuitem', { name: label, exact: true }).isVisible().catch(() => false);
         if (visible) throw new Error(`Toolbar "+" menu should not offer "${label}" in gamebook mode`);
     }
     console.log('PASS: toolbar "+" menu has no text-adventure-only adders');
 
     // Add a page via the toolbar, flat (no parent prompt).
-    await page.getByRole('button', { name: 'Add Page', exact: true }).click();
+    await page.getByRole('menuitem', { name: 'Add Page', exact: true }).click();
     await page.fill('#element-name', 'MyNewPage');
     await page.getByRole('button', { name: 'Add Page', exact: true }).click();
     await tree.getByText('MyNewPage', { exact: true }).waitFor({ state: 'visible', timeout: 5000 });

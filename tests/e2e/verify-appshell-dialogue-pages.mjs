@@ -16,7 +16,7 @@
 // previously a dead XML tag with no effect anywhere in the WASM editor).
 // Requires the AppShell dev server running locally:
 //   cd src/AppShell && npm run dev
-import { chromium } from 'playwright';
+import { chromium } from './lib/tracked-chromium.mjs';
 
 const baseUrl = process.argv[2] || 'http://localhost:5174';
 
@@ -41,8 +41,10 @@ async function run() {
     const tabBar = page.locator('.flex.border-b.border-surface-200-800.overflow-x-auto.flex-shrink-0');
 
     // "Add Page" is available immediately - no feature toggle to enable first.
+    // Menu items carry role="menuitem" (see DropdownMenu.svelte), not the
+    // default "button" role, per the WAI-ARIA menu pattern.
     await page.click('button[title="Add element"]');
-    await page.getByRole('button', { name: 'Add Page', exact: true }).waitFor({ state: 'visible', timeout: 5000 });
+    await page.getByRole('menuitem', { name: 'Add Page', exact: true }).waitFor({ state: 'visible', timeout: 5000 });
     console.log('PASS: "Add Page" available without any feature toggle');
     await page.keyboard.press('Escape');
 

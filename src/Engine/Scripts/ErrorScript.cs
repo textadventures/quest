@@ -45,7 +45,7 @@ public class ErrorScript : ScriptBase
     public override async Task ExecuteAsync(Context c)
     {
         var result = await m_function.ExecuteAsync(c);
-        throw new Exception(result.ToString());
+        throw new Exception(Utility.ExpressionResultToString(result));
     }
 
     public override string Save()

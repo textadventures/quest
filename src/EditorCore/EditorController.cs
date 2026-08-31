@@ -395,6 +395,14 @@ public sealed class EditorController : IDisposable
             MoveNove(e.Element.Name, GetDisplayName(e.Element), GetElementTreeParent(e.Element));
         }
 
+        if (e.Attribute == "editorfolder" && e.Element.Name != null)
+        {
+            // A plain (non-reparenting) field refresh — AddedNode's consumers already upsert an
+            // existing key in place, so no RemovedNode is needed first (contrast the "sortindex"/
+            // "library" cases above, which reposition the node and so do remove-then-readd).
+            AddElementToTree(e.Element);
+        }
+
         if (e.Element.ElemType == ElementType.IncludedLibrary && e.Attribute == "filename")
         {
             if (LibrariesUpdated != null)
@@ -566,7 +574,16 @@ public sealed class EditorController : IDisposable
 
         foreach (ElementType type in Enum.GetValues<ElementType>())
         {
-            foreach (var o in WorldModel.Elements.GetElements(type).Where(e => e.Parent == null))
+            // GetElements returns elements in raw creation/storage order, not SortIndex order -
+            // fine normally (the two coincide until something reorders SortIndex without also
+            // touching storage order, e.g. SwapElements or SetFunctionFolder's slice
+            // redistribution), but a full rebuild like this one must sort explicitly or a
+            // reordered element's new tree position silently reverts to its old, pre-reorder spot
+            // the next time anything triggers a full UpdateTree() rather than an incremental
+            // single-element reposition (see m_worldModel_ElementMetaFieldUpdated's own
+            // GetElementPosition, which already gets this right for that path).
+            foreach (var o in WorldModel.Elements.GetElements(type).Where(e => e.Parent == null)
+                         .OrderBy(e => e.MetaFields[MetaFieldDefinitions.SortIndex]))
             {
                 AddElementAndChildrenToTree(o);
             }
@@ -578,7 +595,10 @@ public sealed class EditorController : IDisposable
     private void AddElementAndChildrenToTree(Element o)
     {
         AddElementToTree(o);
-        foreach (var child in WorldModel.Elements.GetDirectChildren(o))
+        // Same SortIndex-ordering requirement as the top-level loop in UpdateTree() above -
+        // GetDirectChildren is also raw storage order, not SortIndex order.
+        foreach (var child in WorldModel.Elements.GetDirectChildren(o)
+                     .OrderBy(e => e.MetaFields[MetaFieldDefinitions.SortIndex]))
         {
             AddElementAndChildrenToTree(child);
         }
@@ -610,7 +630,10 @@ public sealed class EditorController : IDisposable
             AddedNode(this,
                 new AddedNodeEventArgs
                 {
-                    Key = key, Text = text, Parent = parent, IsLibraryNode = isLibrary, Position = position,
+                    Key = key, Text = text, Parent = parent, IsLibraryNode = isLibrary,
+                    Filename = o.MetaFields[MetaFieldDefinitions.Filename],
+                    Folder = o.ElemType == ElementType.Function ? o.Fields[FieldDefinitions.EditorFolder] : null,
+                    Position = position,
                     NodeType = GetNodeType(o)
                 });
 
@@ -2583,6 +2606,244 @@ public sealed class EditorController : IDisposable
         WorldModel.UndoLogger.EndTransaction();
     }
 
+    // Distinct, alphabetically-ordered folder names currently assigned to any user-authored
+    // Function — powers the "Move to folder" dropdown (existing folders + free-text new name).
+    public IEnumerable<string> GetFunctionFolders()
+    {
+        return WorldModel.Elements.GetElements(ElementType.Function)
+            .Select(e => e.Fields[FieldDefinitions.EditorFolder])
+            .Where(f => !string.IsNullOrEmpty(f))
+            .Distinct()
+            .OrderBy(f => f, StringComparer.OrdinalIgnoreCase);
+    }
+
+    // Sets a Function's editor-only organisational folder (empty/null clears it back to "top
+    // level"). Purely a display grouping in ElementsList/TreePanel, no effect on the game itself.
+    // Assigning to a non-empty folder also relocates the function's SortIndex to sit immediately
+    // after the last existing member of that folder (or at the end of the list for a brand-new
+    // folder), so the display grouping's "contiguous run" assumption holds without needing the
+    // frontend to do anything fancier than #2113's existing library-filename grouping.
+    public void SetFunctionFolder(string key, string folder)
+    {
+        var element = WorldModel.Elements.Get(key);
+
+        WorldModel.UndoLogger.StartTransaction(string.Format("Set folder for '{0}'", element.Name));
+        element.Fields[FieldDefinitions.EditorFolder] = folder;
+
+        if (!string.IsNullOrEmpty(folder))
+        {
+            // GetElements(Function) includes every built-in library function too (there can be
+            // hundreds, across Core.aslx/English.aslx/etc.) - moving one function only ever needs
+            // to shift it past its immediate neighbours, so only the slice of the list strictly
+            // between its old and new position is touched. Reassigning every function's SortIndex
+            // from scratch (as this used to) rewrote hundreds of untouched library functions too,
+            // each triggering a full tree-reposition event - the multi-second UI freeze this fixes.
+            var all = WorldModel.Elements.GetElements(ElementType.Function)
+                .OrderBy(e => e.MetaFields[MetaFieldDefinitions.SortIndex])
+                .ToList();
+            var oldIndex = all.IndexOf(element);
+            all.RemoveAt(oldIndex);
+
+            var lastInFolder = all.LastOrDefault(e => e.Fields[FieldDefinitions.EditorFolder] == folder);
+            var newIndex = lastInFolder != null ? all.IndexOf(lastInFolder) + 1 : all.Count;
+            all.Insert(newIndex, element);
+
+            var lo = Math.Min(oldIndex, newIndex);
+            var hi = Math.Max(oldIndex, newIndex);
+            // Redistribute the touched slice's own original SortIndex values among its new
+            // member order, rather than assigning fresh numbers - keeps every untouched element
+            // (on either side of the slice) numerically unaffected.
+            var originalValues = all.Skip(lo).Take(hi - lo + 1)
+                .Select(e => e.MetaFields[MetaFieldDefinitions.SortIndex])
+                .OrderBy(i => i)
+                .ToList();
+            for (var i = 0; i <= hi - lo; i++)
+            {
+                all[lo + i].MetaFields[MetaFieldDefinitions.SortIndex] = originalValues[i];
+            }
+        }
+
+        WorldModel.UndoLogger.EndTransaction();
+    }
+
+    public bool CanMoveFunctionUp(string key) => CanMoveFunctionAdjacent(key, up: true);
+
+    public bool CanMoveFunctionDown(string key) => CanMoveFunctionAdjacent(key, up: false);
+
+    // Move up/down is a plain adjacent SortIndex swap (see SwapElements) with no concept of
+    // folders, so unrestricted it can split a multi-member folder in two (visually duplicating
+    // that folder's header) two different ways: an outsider swapping past the near edge of a
+    // *different* 2+-member folder lands directly between two of its members, or a member of a
+    // 2+-member folder swapping out past its own edge leaves the rest of the folder behind while
+    // it keeps carrying that folder's name to its new, disconnected spot. Neither is safe, so a
+    // 2+-member folder's own members may only reorder among themselves (leaving is done via
+    // "Move to folder"), and no one may swap into the middle of someone else's 2+-member folder.
+    // A *solo* folder member is exempt either way - relocating the only thing wearing a label
+    // can never split it.
+    private bool CanMoveFunctionAdjacent(string key, bool up)
+    {
+        var all = GetFunctionsOrderedBySortIndex();
+        var element = WorldModel.Elements.Get(key);
+        var index = all.IndexOf(element);
+        var neighborIndex = index + (up ? -1 : 1);
+        if (neighborIndex < 0 || neighborIndex >= all.Count)
+        {
+            return false;
+        }
+
+        var myFolder = element.Fields[FieldDefinitions.EditorFolder];
+        var neighborFolder = all[neighborIndex].Fields[FieldDefinitions.EditorFolder];
+
+        if (!string.IsNullOrEmpty(myFolder) && neighborFolder != myFolder
+            && all.Count(e => e.Fields[FieldDefinitions.EditorFolder] == myFolder) > 1)
+        {
+            return false;
+        }
+
+        if (string.IsNullOrEmpty(neighborFolder) || neighborFolder == myFolder)
+        {
+            return true;
+        }
+
+        return all.Count(e => e.Fields[FieldDefinitions.EditorFolder] == neighborFolder) <= 1;
+    }
+
+    private List<Element> GetFunctionsOrderedBySortIndex()
+    {
+        return WorldModel.Elements.GetElements(ElementType.Function)
+            .OrderBy(e => e.MetaFields[MetaFieldDefinitions.SortIndex])
+            .ToList();
+    }
+
+    public bool CanMoveFunctionFolderUp(string folder) => CanMoveFunctionFolderAdjacent(folder, up: true);
+
+    public bool CanMoveFunctionFolderDown(string folder) => CanMoveFunctionFolderAdjacent(folder, up: false);
+
+    private bool CanMoveFunctionFolderAdjacent(string folder, bool up)
+    {
+        var all = GetFunctionsOrderedBySortIndex();
+        var (start, end) = GetFolderRange(all, folder);
+        if (start < 0)
+        {
+            return false;
+        }
+
+        return up ? start > 0 : end < all.Count - 1;
+    }
+
+    // A folder is always a contiguous run of same-folder functions in SortIndex order (an
+    // invariant SetFunctionFolder maintains), so unlike a single function's move up/down, moving
+    // the whole block can never split anything - there's nothing to guard beyond "is there
+    // something on that side at all" (see CanMoveFunctionFolderAdjacent above).
+    public void MoveFunctionFolderUp(string folder) => MoveFunctionFolder(folder, up: true);
+
+    public void MoveFunctionFolderDown(string folder) => MoveFunctionFolder(folder, up: false);
+
+    private void MoveFunctionFolder(string folder, bool up)
+    {
+        var all = GetFunctionsOrderedBySortIndex();
+        var (start, end) = GetFolderRange(all, folder);
+        if (start < 0)
+        {
+            return;
+        }
+
+        int neighborStart, neighborEnd;
+        if (up)
+        {
+            if (start == 0)
+            {
+                return;
+            }
+
+            (neighborStart, neighborEnd) = GetAdjacentBlock(all, start - 1, towardsStart: true);
+        }
+        else
+        {
+            if (end == all.Count - 1)
+            {
+                return;
+            }
+
+            (neighborStart, neighborEnd) = GetAdjacentBlock(all, end + 1, towardsStart: false);
+        }
+
+        var lo = Math.Min(start, neighborStart);
+        var hi = Math.Max(end, neighborEnd);
+
+        var folderBlock = all.Skip(start).Take(end - start + 1).ToList();
+        var neighborBlock = all.Skip(neighborStart).Take(neighborEnd - neighborStart + 1).ToList();
+        // Moving up puts the folder before its neighbour; moving down puts it after.
+        var newOrder = up ? folderBlock.Concat(neighborBlock) : neighborBlock.Concat(folderBlock);
+
+        // Same technique as SetFunctionFolder: redistribute the touched slice's own original
+        // SortIndex values among its new order, leaving every untouched element (on either side
+        // of the slice) numerically unaffected.
+        var originalValues = all.Skip(lo).Take(hi - lo + 1)
+            .Select(e => e.MetaFields[MetaFieldDefinitions.SortIndex])
+            .OrderBy(i => i)
+            .ToList();
+
+        WorldModel.UndoLogger.StartTransaction(string.Format("Move folder '{0}'", folder));
+        var i = 0;
+        foreach (var element in newOrder)
+        {
+            element.MetaFields[MetaFieldDefinitions.SortIndex] = originalValues[i];
+            i++;
+        }
+        WorldModel.UndoLogger.EndTransaction();
+    }
+
+    // The folder's own contiguous member run - assumed contiguous (SetFunctionFolder's own
+    // invariant), so the first and last matching indexes fully bound it.
+    private static (int start, int end) GetFolderRange(List<Element> all, string folder)
+    {
+        var start = all.FindIndex(e => e.Fields[FieldDefinitions.EditorFolder] == folder);
+        if (start < 0)
+        {
+            return (-1, -1);
+        }
+
+        var end = start;
+        while (end + 1 < all.Count && all[end + 1].Fields[FieldDefinitions.EditorFolder] == folder)
+        {
+            end++;
+        }
+
+        return (start, end);
+    }
+
+    // The block immediately beside the folder on the given side: if that neighbour itself belongs
+    // to a (different) non-empty folder, extends across that folder's whole contiguous run;
+    // otherwise it's just the one lone non-foldered function at fromIndex.
+    private static (int start, int end) GetAdjacentBlock(List<Element> all, int fromIndex, bool towardsStart)
+    {
+        var neighborFolder = all[fromIndex].Fields[FieldDefinitions.EditorFolder];
+        if (string.IsNullOrEmpty(neighborFolder))
+        {
+            return (fromIndex, fromIndex);
+        }
+
+        var start = fromIndex;
+        var end = fromIndex;
+        if (towardsStart)
+        {
+            while (start > 0 && all[start - 1].Fields[FieldDefinitions.EditorFolder] == neighborFolder)
+            {
+                start--;
+            }
+        }
+        else
+        {
+            while (end + 1 < all.Count && all[end + 1].Fields[FieldDefinitions.EditorFolder] == neighborFolder)
+            {
+                end++;
+            }
+        }
+
+        return (start, end);
+    }
+
     public void BeginWalkthrough(string name, bool record)
     {
         RequestRunWalkthrough(this, new RequestRunWalkthroughEventArgs {Name = name, Record = record});
@@ -2871,6 +3132,8 @@ public sealed class EditorController : IDisposable
         public string Text { get; set; }
         public string Parent { get; set; }
         public bool IsLibraryNode { get; set; }
+        public string Filename { get; set; }
+        public string Folder { get; set; }
         public int? Position { get; set; }
         public string NodeType { get; set; }
     }

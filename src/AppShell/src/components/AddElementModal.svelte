@@ -1,18 +1,63 @@
 <script lang="ts">
-    import { validateName } from "$lib/editor-store";
+    import { untrack } from "svelte";
+    import { validateName, getFunctionFolders, getPossibleNewObjectParents } from "$lib/editor-store";
     import { t } from "$lib/i18n";
+    import { trapFocus } from "$lib/actions/trapFocus";
+    import Combobox from "$components/Combobox.svelte";
+    import type { ControlOption } from "$lib/types";
 
     interface Props {
         elementType: "room" | "object" | "page" | "function" | "timer" | "walkthrough" | "template" | "dynamictemplate" | "type";
         parent?: string | null;
-        onconfirm: (name: string) => void;
+        folder?: string | null;
+        onconfirm: (name: string, target: string | null) => void;
         oncancel: () => void;
     }
 
-    const { elementType, parent = null, onconfirm, oncancel }: Props = $props();
+    const { elementType, parent = null, folder = null, onconfirm, oncancel }: Props = $props();
 
     let label = $derived(t(`addElementModal.labels.${elementType}`));
-    let heading = $derived(parent ? t("addElementModal.addHeadingIn", { label, parent }) : t("addElementModal.addHeading", { label }));
+
+    // Folder picker (Functions only) — lets a function be created straight into an existing or
+    // brand-new folder, defaulting to the folder whose "..." menu was used (if any). Mirrors
+    // MoveToFolderModal's own options/Combobox.
+    let folderOptions: ControlOption[] = $derived([
+        { value: "", label: t("moveToFolderModal.topLevel") },
+        ...getFunctionFolders().map(name => ({ value: name, label: name })),
+    ]);
+    // Deliberately only the initial value — this modal is freshly mounted per open, so there's
+    // nothing later to stay in sync with (mirrors CodeEditor's own initial-value-only props).
+    let folderTarget = $state(untrack(() => folder ?? ""));
+
+    // Parent picker (Objects and Rooms, and only when created under another element rather than
+    // at the top level) — scoped to just the clicked element's own ancestor chain, not every
+    // object in the game (that's MoveElementModal's job for an existing object). Mirrors
+    // MoveElementModal's own options/Combobox. Rooms additionally get an explicit "(top level)"
+    // entry, defaulted to — rooms should default to being created at the top level even when
+    // opened from a room's own "Add Room" menu item, with that room still offered as a
+    // selectable (non-default) option.
+    let objectParentOptions: ControlOption[] = $derived(
+        elementType === "object" && parent
+            ? getPossibleNewObjectParents(parent).map(name => ({ value: name, label: name }))
+            : elementType === "room" && parent
+            ? [
+                { value: "", label: t("moveToFolderModal.topLevel") },
+                ...getPossibleNewObjectParents(parent).map(name => ({ value: name, label: name })),
+            ]
+            : []
+    );
+    let objectParentTarget = $state(untrack(() => elementType === "room" ? "" : (parent ?? "")));
+
+    // Tracks the picker's live selection (when one is shown) rather than the static `parent`
+    // prop, so the heading doesn't keep claiming "in {clicked room}" after the user has changed
+    // the Parent field away from it — most visibly for rooms, whose default is now top level
+    // rather than the clicked room.
+    let effectiveParent = $derived(
+        (elementType === "object" || elementType === "room") && objectParentOptions.length > 0
+            ? (objectParentTarget || null)
+            : parent
+    );
+    let heading = $derived(effectiveParent ? t("addElementModal.addHeadingIn", { label, parent: effectiveParent }) : t("addElementModal.addHeading", { label }));
 
     let dialogEl: HTMLDivElement;
     let inputEl: HTMLInputElement;
@@ -28,7 +73,10 @@
     });
 
     function handleKeydown(e: KeyboardEvent) {
-        if (e.key === "Enter" && name && !error) confirm();
+        if (e.key === "Enter" && name && !error) {
+            e.preventDefault();
+            confirm();
+        }
         if (e.key === "Escape") oncancel();
     }
 
@@ -40,7 +88,10 @@
         if (!name || error) return;
         const result = validateName(name);
         if (result !== "ok") { error = result; return; }
-        onconfirm(name);
+        const target = elementType === "function" ? folderTarget
+            : (elementType === "object" || elementType === "room") && objectParentOptions.length > 0 ? objectParentTarget
+            : null;
+        onconfirm(name, target);
     }
 </script>
 
@@ -52,6 +103,7 @@
     class="fixed inset-0 bg-black/30 flex items-center justify-center z-50 p-4"
     onclick={onBackdropClick}
     onkeydown={handleKeydown}
+    use:trapFocus
 >
     <div class="card bg-surface-50-950 rounded-xl shadow-xl w-full max-w-80 p-6 flex flex-col gap-4">
         <h2 class="text-base font-semibold">
@@ -73,6 +125,28 @@
                 <p class="text-xs text-error-500">{error}</p>
             {/if}
         </div>
+
+        {#if elementType === "function"}
+            <div class="flex flex-col gap-1">
+                <span class="text-xs text-surface-600-400">{t("moveToFolderModal.folderLabel")}</span>
+                <Combobox
+                    options={folderOptions}
+                    value={folderTarget}
+                    onchange={(v) => { folderTarget = v; }}
+                    class="input bg-surface-50-950 px-2 py-1 text-sm w-full"
+                />
+            </div>
+        {:else if (elementType === "object" || elementType === "room") && objectParentOptions.length > 0}
+            <div class="flex flex-col gap-1">
+                <span class="text-xs text-surface-600-400">{t("addElementModal.parentLabel")}</span>
+                <Combobox
+                    options={objectParentOptions}
+                    value={objectParentTarget}
+                    onchange={(v) => { objectParentTarget = v; }}
+                    class="input bg-surface-50-950 px-2 py-1 text-sm w-full"
+                />
+            </div>
+        {/if}
 
         <div class="flex justify-end gap-2">
             <button class="btn btn-sm preset-tonal" onclick={oncancel}>{t("common.cancel")}</button>

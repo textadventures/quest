@@ -338,7 +338,10 @@ internal partial class GameLoader
             }
 
             var stream = WorldModel.GetLibraryStream(filename);
-            var newReader = new XmlTextReader(stream);
+            // BaseURI (via this url overload) is what LoadXml/GameLoader.AddedElement records as
+            // MetaFieldDefinitions.Filename for every element loaded from this stream — used by the
+            // editor to group library elements by their source library file.
+            var newReader = new XmlTextReader(filename, stream);
             while (newReader.NodeType != XmlNodeType.Element && !newReader.EOF)
             {
                 newReader.Read();
@@ -656,9 +659,10 @@ internal partial class GameLoader
         protected RequiredAttributes RequiredAttributes { get; } = new(
             new RequiredAttribute("name"),
             new RequiredAttribute(false, "parameters"),
-            new RequiredAttribute(false, "type"));
+            new RequiredAttribute(false, "type"),
+            new RequiredAttribute(false, "folder"));
 
-        protected void SetupProcedure(Element proc, string? returnType, string script, string name, string? parameters)
+        protected void SetupProcedure(Element proc, string? returnType, string script, string name, string? parameters, string? folder = null)
         {
             string[]? paramNames = null;
 
@@ -687,6 +691,11 @@ internal partial class GameLoader
             }
 
             proc.Fields.LazyFields.AddScript(FieldDefinitions.Script.Property, script);
+
+            if (!string.IsNullOrEmpty(folder))
+            {
+                proc.Fields[FieldDefinitions.EditorFolder] = folder;
+            }
         }
     }
 
@@ -704,7 +713,7 @@ internal partial class GameLoader
             var data = GameLoader.GetRequiredAttributes(reader, RequiredAttributes);
             var name = data["name"] ?? throw new InvalidOperationException("Function name is null");
             var proc = WorldModel.AddProcedure(name);
-            SetupProcedure(proc, data["type"], GameLoader.GetTemplateContents(reader), name, data["parameters"]);
+            SetupProcedure(proc, data["type"], GameLoader.GetTemplateContents(reader), name, data["parameters"], data["folder"]);
             return proc;
         }
     }

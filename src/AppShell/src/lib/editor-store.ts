@@ -3,7 +3,7 @@ import { zipSync } from "fflate";
 import { PUBLIC_WASM_PLAYER_URL, PUBLIC_APPSHELL_VERSION } from "$env/static/public";
 import { loadWasm } from "./wasm";
 import type { WasmBridge } from "./wasm";
-import type { AssetInfo, FileAdapter } from "./filesystem/types";
+import { isLibraryFilename, type AssetInfo, type FileAdapter } from "./filesystem/types";
 import { LocalDraftAdapter, shouldShowBackupBanner, markBackupBannerResolved } from "./filesystem/local-adapter";
 import { ServerFileAdapter } from "./filesystem/server-adapter";
 import { triggerDownload } from "./filesystem/download";
@@ -12,7 +12,7 @@ import { showToast } from "./toast";
 import { t } from "./i18n";
 import type { TreeNode, EditorDataResponse, ScriptBlockData, ScriptCommandCategoriesData, ExpressionTemplateData, ExpressionTemplate, FullAttributeData, ExitsData, VerbInfo, ExpressionFunctionInfo } from "./types";
 
-export type AddElementModalState = { type: "room" | "object" | "page" | "function" | "timer" | "walkthrough" | "template" | "dynamictemplate" | "type"; parent: string | null } | null;
+export type AddElementModalState = { type: "room" | "object" | "page" | "function" | "timer" | "walkthrough" | "template" | "dynamictemplate" | "type"; parent: string | null; folder: string | null } | null;
 
 let _bridge: WasmBridge | null = null;
 let _adapter: FileAdapter | null = null;
@@ -34,8 +34,8 @@ export const addElementModal = writable<AddElementModalState>(null);
 // wording/affordances in the tree, toolbar and advanced-adders panel.
 export const isGamebook = writable(false);
 
-export function openAddModal(type: "room" | "object" | "page" | "function" | "timer" | "walkthrough" | "template" | "dynamictemplate" | "type", parent: string | null) {
-    addElementModal.set({ type, parent });
+export function openAddModal(type: "room" | "object" | "page" | "function" | "timer" | "walkthrough" | "template" | "dynamictemplate" | "type", parent: string | null, folder: string | null = null) {
+    addElementModal.set({ type, parent, folder });
 }
 // A Javascript element's src (the file it points to) can't be changed after creation — see
 // PropertyEditor's "lockedAfterCreate" handling — so unlike the other adders above, creating one
@@ -58,6 +58,11 @@ export function openAddLibraryModal() {
 export const moveElementModal = writable<string | null>(null);
 export function openMoveModal(key: string) {
     moveElementModal.set(key);
+}
+// Holds the key of the Function currently being assigned a folder, or null when closed.
+export const moveToFolderModal = writable<string | null>(null);
+export function openMoveToFolderModal(key: string) {
+    moveToFolderModal.set(key);
 }
 export const gameFilename = writable<string | null>(null);
 export const canSaveAs = writable(false);
@@ -194,7 +199,7 @@ export const lastFailedGameFilename = writable<string | null>(null);
 async function listLibraryCandidateFilenames(adapter: FileAdapter): Promise<string[]> {
     return adapter.listLibraryCandidates
         ? await adapter.listLibraryCandidates()
-        : (await adapter.listAssets()).map(a => a.key).filter(key => key.toLowerCase().endsWith(".aslx"));
+        : (await adapter.listAssets()).map(a => a.key).filter(key => isLibraryFilename(key));
 }
 
 async function resolveLibraryCandidateFiles(adapter: FileAdapter): Promise<Record<string, Uint8Array>> {
@@ -1686,6 +1691,71 @@ export function moveElement(key: string, newParent: string): string {
     return result;
 }
 
+export function getFunctionFolders(): string[] {
+    if (!_bridge) return [];
+    return JSON.parse(_bridge.GetFunctionFolders());
+}
+
+export function setFunctionFolder(key: string, folder: string): string {
+    if (!_bridge) return "error";
+    const result = _bridge.SetFunctionFolder(key, folder);
+    if (result === "ok") {
+        refreshTree();
+        refreshUndoRedo();
+    }
+    return result;
+}
+
+// A function's move up/down is a plain adjacent swap (see swapElements) with no concept of
+// folders, so these gate that swap to ones that can't split a *different* multi-member folder in
+// two by landing the mover between two of its other members - see EditorController's own
+// CanMoveFunctionUp/Down for the exact rule.
+export function canMoveFunctionUp(key: string): boolean {
+    return _bridge?.CanMoveFunctionUp(key) ?? false;
+}
+
+export function canMoveFunctionDown(key: string): boolean {
+    return _bridge?.CanMoveFunctionDown(key) ?? false;
+}
+
+// A folder is always a contiguous run of same-folder functions, so unlike a single function's
+// move up/down, moving the whole block past its neighbour can never split anything — these are
+// gated only on "is there something on that side at all" (see EditorController's own
+// CanMoveFunctionFolderUp/Down).
+export function canMoveFunctionFolderUp(folder: string): boolean {
+    return _bridge?.CanMoveFunctionFolderUp(folder) ?? false;
+}
+
+export function canMoveFunctionFolderDown(folder: string): boolean {
+    return _bridge?.CanMoveFunctionFolderDown(folder) ?? false;
+}
+
+export function moveFunctionFolderUp(folder: string): void {
+    if (!_bridge) return;
+    if (_bridge.MoveFunctionFolderUp(folder) === "ok") {
+        refreshTree();
+        refreshUndoRedo();
+    }
+}
+
+export function moveFunctionFolderDown(folder: string): void {
+    if (!_bridge) return;
+    if (_bridge.MoveFunctionFolderDown(folder) === "ok") {
+        refreshTree();
+        refreshUndoRedo();
+    }
+}
+
+// Ancestor chain (root-first, ending with elementKey itself) for scoping the "Add Object here"
+// create modal's parent picker to just the clicked object's own lineage, rather than every object
+// in the game (that's getMovePossibleParents, used by "Move to" instead). Returns [] for anything
+// that isn't itself an Object (e.g. a Room, which can't be nested) — see
+// EditorController.GetPossibleNewParentsForCurrentSelection.
+export function getPossibleNewObjectParents(key: string): string[] {
+    if (!_bridge) return [];
+    return JSON.parse(_bridge.GetPossibleNewObjectParentsForCurrentSelection(key));
+}
+
 // Bumped by copyElements/cutElements so TreePanel's per-node "⋯" menus (computed
 // inline from nodeMenuOptions(), not driven by a store) know to recompute their
 // "Paste" entry — the clipboard lives entirely in EditorController and mutating it
@@ -1769,6 +1839,14 @@ export function getVerbAttributesInfo(): VerbInfo[] {
 export function getExpressionFunctions(): ExpressionFunctionInfo[] {
     if (!_bridge) return [];
     try { return JSON.parse(_bridge.GetExpressionFunctions()); }
+    catch { return []; }
+}
+
+// Every attribute name ever set on any object in the game — feeds the code view's attribute-name
+// autocomplete (e.g. inside GetAttribute(obj, "...")).
+export function getAttributeNames(): string[] {
+    if (!_bridge) return [];
+    try { return JSON.parse(_bridge.GetAttributeNames()); }
     catch { return []; }
 }
 

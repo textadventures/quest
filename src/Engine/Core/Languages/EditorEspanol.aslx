@@ -66,7 +66,6 @@
   <template name="EditorNumberKeysUnlockContainer">Número de llaves para desbloquear el recipiente</template>
   <template name="EditorDisplayMenuObjectsCanUsedOn">Mostrar menú de objetos con los que este puede ser usado</template>
   <template name="EditorDisplayMenuObjectsCanGivenTo">Mostrar menú de objetos a los que este puede ser entregado</template>
-  <template name="EditorPleaseEnterObjectName">Por favor ingresa el nombre del objeto</template>
   <template name="EditorObjectCanBeTaken">El objeto puede ser cogido</template>
   <template name="EditorObjectCanBeDropped">El objeto puede ser dejado</template>
   <template name="EditorCommandScope">Alcance ("inventory", "notheld", nombre de lugar o atributo de objeto, vacío para todos lados)</template>
@@ -276,7 +275,6 @@
   <template name="EditorJavascriptFilename">Nombre de archivo</template>
   <template name="EditorObjectObjectPleaseenter">Por favor introduzca un nombre adicional para este objeto</template>
   <template name="EditorObjectObjectPleaseenterVerb">Por favor introduzca un verbo</template>
-  <template name="EditorObjectUseGivePleaseenter">Por favor introduzca el nombre del objeto</template>
   <template name="EditorObjectUseGiveAction">Acción</template>
   <template name="EditorObjectLightDarkDescription">Descripción a mostrar cuando el lugar está oscuro</template>
   <template name="EditorObjectOptionsLookatobject">Descripción al "Mirar" el objeto</template>
@@ -691,6 +689,7 @@
   <template name="EditorScriptsScriptsRunobject">Ejecutar objeto</template>
   <template name="EditorScriptsScriptsscriptattribute">atributo de programa</template>
   <template name="EditorScriptsScriptsUsingparameter">Usando diccionario de parámetros</template>
+  <template name="EditorScriptsScriptsAddParameters">Añadir parámetros</template>
   <template name="EditorScriptsScriptsRunascript">Ejecutar un programa devuelto por una expresión</template>
   <template name="EditorScriptsScriptsInvokescript">Invocar programa</template>
   <template name="EditorScriptsScriptsRaiseanerror">Producir un error</template>

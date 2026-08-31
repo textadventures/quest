@@ -6,7 +6,7 @@
 // together, each taking only the space its own content needs) instead of
 // Inherited types reserving space regardless of how much content it has.
 // Also checks the AppBar's mobile padding was trimmed.
-import { chromium } from 'playwright';
+import { chromium } from './lib/tracked-chromium.mjs';
 
 const baseUrl = process.argv[2] || 'http://localhost:5174';
 

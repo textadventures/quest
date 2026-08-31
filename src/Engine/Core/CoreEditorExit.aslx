@@ -17,7 +17,6 @@
         <caption>[EditorExitType]</caption>
         <controltype>dropdowntypes</controltype>
         <types>*=[TypeExitNon];northwestdirection=[CompassNW];northdirection=[CompassN];northeastdirection=[CompassNE];westdirection=[CompassW];eastdirection=[CompassE];southwestdirection=[CompassSW];southdirection=[CompassS];southeastdirection=[CompassSE];updirection=[CompassUp];downdirection=[CompassDown];indirection=[CompassIn];outdirection=[CompassOut]</types>
-        <width>150</width>
       </control>
 
       <control>

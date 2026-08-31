@@ -15,7 +15,7 @@
 // "Advanced" group header itself — is visible even on a brand-new game;
 // Templates/Dynamic Templates/Object Types/Javascript are the ones actually
 // empty by default.
-import { chromium } from 'playwright';
+import { chromium } from './lib/tracked-chromium.mjs';
 
 const baseUrl = process.argv[2] || 'http://localhost:5174';
 

@@ -224,6 +224,7 @@
                         onclick={() => navigateBack()}
                         disabled={!$canGoBack}
                         title={t("toolbar.back")}
+                        aria-label={t("toolbar.back")}
                     ><ArrowLeft size={16} /></button>
                     <button
                         type="button"
@@ -231,6 +232,7 @@
                         onclick={() => navigateForward()}
                         disabled={!$canGoForward}
                         title={t("toolbar.forward")}
+                        aria-label={t("toolbar.forward")}
                     ><ArrowRight size={16} /></button>
                 {/if}
                 {#if showHome}
@@ -239,30 +241,33 @@
                         class="toolbar-icon-btn mr-2 shrink-0"
                         onclick={handleHome}
                         title={t("toolbar.backToHome")}
+                        aria-label={t("toolbar.backToHome")}
                     ><Home size={16} /></button>
                 {/if}
                 {#if $gameFilename}
                     <span class="font-mono text-sm font-medium truncate min-w-0">{$gameFilename}</span>
                 {/if}
-                {#if $saveError}
-                    <button
-                        type="button"
-                        class="save-chip save-chip-error shrink-0"
-                        onclick={() => retrySave()}
-                        title={$saveError}
-                    ><TriangleAlert size={13} /> <span class="hidden md:inline">{t("toolbar.saveFailedRetry")}</span></button>
-                {:else if $isSaving}
-                    <span class="save-chip save-chip-saving shrink-0"><LoaderCircle size={13} class="animate-spin" /> <span class="hidden md:inline">{t("toolbar.saving")}</span></span>
-                {:else if $isDirty || $isEditingField}
-                    <button
-                        type="button"
-                        class="save-chip save-chip-unsaved shrink-0"
-                        onclick={handleSaveNow}
-                        title={t("toolbar.saveNow")}
-                    ><Circle size={8} fill="currentColor" /> <span class="hidden md:inline">{t("toolbar.unsaved")}</span></button>
-                {:else if $gameFilename}
-                    <span class="save-chip save-chip-saved shrink-0"><Check size={13} /> <span class="hidden md:inline">{t("toolbar.saved")}</span></span>
-                {/if}
+                <span role="status" aria-live="polite" class="contents">
+                    {#if $saveError}
+                        <button
+                            type="button"
+                            class="save-chip save-chip-error shrink-0"
+                            onclick={() => retrySave()}
+                            title={$saveError}
+                        ><TriangleAlert size={13} /> <span class="hidden md:inline">{t("toolbar.saveFailedRetry")}</span></button>
+                    {:else if $isSaving}
+                        <span class="save-chip save-chip-saving shrink-0"><LoaderCircle size={13} class="animate-spin" /> <span class="hidden md:inline">{t("toolbar.saving")}</span></span>
+                    {:else if $isDirty || $isEditingField}
+                        <button
+                            type="button"
+                            class="save-chip save-chip-unsaved shrink-0"
+                            onclick={handleSaveNow}
+                            title={t("toolbar.saveNow")}
+                        ><Circle size={8} fill="currentColor" /> <span class="hidden md:inline">{t("toolbar.unsaved")}</span></button>
+                    {:else if $gameFilename}
+                        <span class="save-chip save-chip-saved shrink-0"><Check size={13} /> <span class="hidden md:inline">{t("toolbar.saved")}</span></span>
+                    {/if}
+                </span>
             </div>
         </AppBar.Lead>
         <AppBar.Trail>
@@ -271,13 +276,15 @@
                      there's no tree selection context there, and the tree itself isn't even
                      mounted (see edit/+page.svelte), so these actions have nothing to act on. -->
                 <DropdownMenu items={addOptions}>
-                    {#snippet trigger(toggle)}
+                    {#snippet trigger(toggle, open)}
                         <button
                             type="button"
                             class="btn btn-sm preset-outlined-primary-500"
                             onclick={toggle}
                             disabled={$codeViewPanelOpen}
                             title={t("toolbar.addElement")}
+                            aria-haspopup="menu"
+                            aria-expanded={open}
                         ><Plus size={14} /> <span class="hidden md:inline">{t("toolbar.add")}</span> <ChevronDown size={12} class="hidden md:inline" /></button>
                     {/snippet}
                 </DropdownMenu>
@@ -293,16 +300,17 @@
                     title={canDelete ? t("toolbar.deleteTitleNamed", { name: selectedNode?.text ?? "" }) : t("toolbar.deleteTitle")}
                 ><Trash2 size={14} /> {t("common.delete")}</button>
                 <div class="toolbar-divider hidden md:block"></div>
-                <button type="button" class="toolbar-icon-btn !hidden md:!inline-flex" onclick={() => assetManagerOpen.set(true)} title={t("toolbar.manageAssets")}><ImageIcon size={16} /></button>
-                <button type="button" class="toolbar-icon-btn !hidden md:!inline-flex" onclick={handleUndo} disabled={$hasActiveCmView ? false : !$canUndo} title={$hasActiveCmView ? t("toolbar.undoInCodeEditor") : t("toolbar.undo")}><Undo2 size={16} /></button>
-                <button type="button" class="toolbar-icon-btn !hidden md:!inline-flex" onclick={handleRedo} disabled={$hasActiveCmView ? false : !$canRedo} title={$hasActiveCmView ? t("toolbar.redoInCodeEditor") : t("toolbar.redo")}><Redo2 size={16} /></button>
-                <button type="button" class="toolbar-icon-btn !hidden md:!inline-flex" onclick={handleToggleCodeView} title={t("toolbar.rawXmlCodeView")}><FileCode size={16} /></button>
+                <button type="button" class="toolbar-icon-btn !hidden md:!inline-flex" onclick={() => assetManagerOpen.set(true)} title={t("toolbar.manageAssets")} aria-label={t("toolbar.manageAssets")}><ImageIcon size={16} /></button>
+                <button type="button" class="toolbar-icon-btn !hidden md:!inline-flex" onclick={handleUndo} disabled={$hasActiveCmView ? false : !$canUndo} title={$hasActiveCmView ? t("toolbar.undoInCodeEditor") : t("toolbar.undo")} aria-label={$hasActiveCmView ? t("toolbar.undoInCodeEditor") : t("toolbar.undo")}><Undo2 size={16} /></button>
+                <button type="button" class="toolbar-icon-btn !hidden md:!inline-flex" onclick={handleRedo} disabled={$hasActiveCmView ? false : !$canRedo} title={$hasActiveCmView ? t("toolbar.redoInCodeEditor") : t("toolbar.redo")} aria-label={$hasActiveCmView ? t("toolbar.redoInCodeEditor") : t("toolbar.redo")}><Redo2 size={16} /></button>
+                <button type="button" class="toolbar-icon-btn !hidden md:!inline-flex" onclick={handleToggleCodeView} title={t("toolbar.rawXmlCodeView")} aria-label={t("toolbar.rawXmlCodeView")}><FileCode size={16} /></button>
                 <div class="toolbar-divider hidden md:block"></div>
                 {#if fileMenuItems.length > 0}
                     <div class="hidden md:block">
                         <DropdownMenu items={fileMenuItems}>
-                            {#snippet trigger(toggle)}
+                            {#snippet trigger(toggle, open)}
                                 <button type="button" class="btn btn-sm preset-outlined-primary-500" onclick={toggle} disabled={saving} title={t("toolbar.file")}
+                                    aria-haspopup="menu" aria-expanded={open}
                                 >{t("toolbar.file")} <ChevronDown size={12} /></button>
                             {/snippet}
                         </DropdownMenu>
@@ -314,8 +322,8 @@
                 <!-- Overflow menu: community links + Settings on desktop; also Delete/Assets/
                      Undo/Redo/File-menu items on mobile (see overflowItems) -->
                 <DropdownMenu items={overflowItems}>
-                    {#snippet trigger(toggle)}
-                        <button type="button" class="toolbar-icon-btn" onclick={toggle} title={t("toolbar.more")}><Ellipsis size={16} /></button>
+                    {#snippet trigger(toggle, open)}
+                        <button type="button" class="toolbar-icon-btn" onclick={toggle} title={t("toolbar.more")} aria-label={t("toolbar.more")} aria-haspopup="menu" aria-expanded={open}><Ellipsis size={16} /></button>
                     {/snippet}
                 </DropdownMenu>
             </div>

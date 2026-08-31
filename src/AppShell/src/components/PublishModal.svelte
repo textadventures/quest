@@ -1,6 +1,7 @@
 <script lang="ts">
     import { publishGame, canPublishToServer } from "$lib/editor-store";
     import { t } from "$lib/i18n";
+    import { trapFocus } from "$lib/actions/trapFocus";
 
     interface Props {
         oncancel: () => void;
@@ -10,6 +11,8 @@
     let includeWalkthrough = $state(false);
     let publishing = $state(false);
     let error = $state("");
+    let dialogEl = $state<HTMLDivElement>();
+    $effect(() => { dialogEl?.focus(); });
 
     async function handlePublish() {
         publishing = true;
@@ -34,12 +37,14 @@
 </script>
 
 <div
+    bind:this={dialogEl}
     role="dialog"
     aria-modal="true"
     tabindex="-1"
     class="fixed inset-0 bg-black/30 flex items-center justify-center z-50 p-4"
     onclick={onBackdropClick}
     onkeydown={handleKeydown}
+    use:trapFocus
 >
     <div class="card bg-surface-50-950 rounded-xl shadow-xl w-full max-w-[28rem] p-6 flex flex-col gap-4">
         <div class="flex items-center justify-between">

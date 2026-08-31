@@ -2,7 +2,7 @@
     import type { ControlOption } from "$lib/types";
     import { t } from "$lib/i18n";
 
-    let { value, options, onchange, oninput, onEnter, class: className = "", wrapperClass = "" }: {
+    let { value, options, onchange, oninput, onEnter, class: className = "", wrapperClass = "", style = "" }: {
         value: string;
         options: ControlOption[];
         onchange: (value: string) => void;
@@ -20,6 +20,9 @@
         // row relies on this component itself (not just the input inside it) to grow/shrink,
         // since flex sizing classes on the input don't affect its own wrapping element.
         wrapperClass?: string;
+        // Inline style for the <input> — e.g. a per-instance pixel width (<width> control hint)
+        // that Tailwind's static class scanning can't express since it's only known at runtime.
+        style?: string;
     } = $props();
 
     // Unique ID prefix for ARIA references
@@ -27,6 +30,13 @@
 
     let open = $state(false);
     let inputValue = $state("");
+    // True only while inputValue holds live typed text the user hasn't committed yet (via
+    // handleInput) — false once it's just redisplaying an already-committed value/selection's
+    // label (select(), the closed-state effect, Escape). Needed because inputValue is now the
+    // *label*, not the raw value: handleBlur used to be able to re-send inputValue as-is after a
+    // select() (label happened to equal the raw value), but doing that today would send the
+    // display label instead of the option's value.
+    let dirty = $state(false);
     let activeIndex = $state(-1);
     let listboxEl = $state<HTMLDivElement | null>(null);
     let inputEl = $state<HTMLInputElement | null>(null);
@@ -48,6 +58,13 @@
 
     let hasEmptyOption = $derived(options.some(o => o.value === ""));
 
+    // The input shows an option's label while closed, never its raw value — e.g. a "(top
+    // level)" option can have an internal sentinel value like "_objects" that a user should
+    // never see.
+    function labelFor(v: string) {
+        return options.find(o => o.value === v)?.label ?? v;
+    }
+
     // Opens downward by default, flips upward when there isn't room below.
     function updatePosition() {
         if (!inputEl) return;
@@ -61,7 +78,7 @@
     }
 
     $effect(() => {
-        if (!open) inputValue = value;
+        if (!open) inputValue = labelFor(value);
     });
 
     // Reset highlight when filtered list changes
@@ -108,7 +125,8 @@
     );
 
     function select(optValue: string) {
-        inputValue = optValue;
+        inputValue = labelFor(optValue);
+        dirty = false;
         open = false;
         activeIndex = -1;
         onchange(optValue);
@@ -116,6 +134,7 @@
 
     function handleFocus() {
         inputValue = "";
+        dirty = false;
         updatePosition();
         open = true;
     }
@@ -123,6 +142,7 @@
     function handleClick() {
         if (!open) {
             inputValue = "";
+            dirty = false;
             updatePosition();
             open = true;
         }
@@ -131,15 +151,17 @@
     function handleBlur() {
         open = false;
         activeIndex = -1;
-        if (inputValue === "") {
-            inputValue = value;
+        if (!dirty || inputValue === "") {
+            inputValue = labelFor(value);
         } else {
             onchange(inputValue);
         }
+        dirty = false;
     }
 
     function handleInput(e: Event) {
         inputValue = (e.target as HTMLInputElement).value;
+        dirty = true;
         open = true;
         oninput?.(inputValue);
     }
@@ -154,11 +176,10 @@
             if (!open) return;
             activeIndex = Math.max(activeIndex - 1, 0);
         } else if (e.key === "Enter") {
+            e.preventDefault();
             if (open && activeIndex >= 0) {
-                e.preventDefault();
                 select(filtered[activeIndex].value);
             } else if (open && filtered.length === 1) {
-                e.preventDefault();
                 select(filtered[0].value);
             } else if (open) {
                 open = false;
@@ -166,11 +187,13 @@
                 // means "leave it as-is", not "clear the field" — e.g. accepting a pre-filled
                 // default by tabbing in and pressing Enter without typing over it.
                 onchange(inputValue === "" ? value : inputValue);
+                dirty = false;
             }
             onEnter?.();
         } else if (e.key === "Escape") {
             open = false;
-            inputValue = value;
+            inputValue = labelFor(value);
+            dirty = false;
             activeIndex = -1;
         }
     }
@@ -187,6 +210,7 @@
         aria-activedescendant={activeDescendant}
         aria-controls="{uid}-listbox"
         class={className}
+        {style}
         placeholder={value === "" && hasEmptyOption ? t("common.none") : ""}
         value={inputValue}
         onfocus={handleFocus}

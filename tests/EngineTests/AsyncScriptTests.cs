@@ -16,6 +16,7 @@ public class AsyncScriptTests
     public void Setup()
     {
         _worldModel = Helpers.CreateWorldModel();
+        _worldModel.LogError += ex => throw ex;
         _scriptContext = new ScriptContext(_worldModel);
         _scriptFactory = new ScriptFactory(_worldModel);
         _obj = _worldModel.GetElementFactory(ElementType.Object).Create("obj");
@@ -210,5 +211,12 @@ public class AsyncScriptTests
         AddFunction("RunAction", "do (obj, \"action\")");
         await _worldModel.RunProcedureAsync("RunAction", null, false);
         _obj.Fields.GetString("flag").ShouldBe("done");
+    }
+
+    [TestMethod]
+    public async Task TestPlaySoundWaitAndLoopThrowsAsync()
+    {
+        AddFunction("PlaySoundWaitAndLoop", "play sound (\"test.mp3\", true, true)");
+        await Should.ThrowAsync<Exception>(() => CallAsync("PlaySoundWaitAndLoop"));
     }
 }

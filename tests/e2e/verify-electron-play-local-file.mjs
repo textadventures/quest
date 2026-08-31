@@ -20,11 +20,12 @@
 // src/ElectronApp/dist — run electron.sh once first (or the build steps
 // inside it) so dist/ and resources/app-static exist.
 import { _electron as electron } from 'playwright';
-import { mkdtempSync, copyFileSync, rmSync } from 'node:fs';
+import { mkdtempSync, copyFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { createRequire } from 'node:module';
+import { removeTempDirs } from './lib/electron-cleanup.mjs';
 
 const electronAppDir = join(import.meta.dirname, '..', '..', 'src', 'ElectronApp');
 const electronExecutablePath = createRequire(join(electronAppDir, 'package.json'))('electron');
@@ -143,6 +144,5 @@ try {
     process.exitCode = 1;
 } finally {
     await app?.close();
-    rmSync(userDataDir, { recursive: true, force: true });
-    rmSync(gameDir, { recursive: true, force: true });
+    removeTempDirs(userDataDir, gameDir);
 }

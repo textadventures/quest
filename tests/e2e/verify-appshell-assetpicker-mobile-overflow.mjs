@@ -1,4 +1,4 @@
-import { chromium } from 'playwright';
+import { chromium } from './lib/tracked-chromium.mjs';
 
 const baseUrl = process.argv[2] || 'http://localhost:5174';
 const browser = await chromium.launch();
@@ -25,8 +25,7 @@ try {
     await mobilePage.click('text=room');
     await mobilePage.waitForSelector('button:has-text("room")', { timeout: 5000 });
     await mobilePage.click('button:has-text("room")'); // back to tree
-    await mobilePage.waitForSelector('text=GAME OBJECTS', { timeout: 5000 });
-    // Exact match — "text=game" (substring) also matches the "GAME OBJECTS" heading.
+    await mobilePage.waitForSelector('input[placeholder="Filter..."]', { timeout: 5000 });
     await mobilePage.click('text="game"');
     await mobilePage.waitForSelector('button:has-text("Setup")', { timeout: 5000 });
 

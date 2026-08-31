@@ -6,7 +6,7 @@
 // category, advanced commands sort after a divider too, e.g. "Scripts" (If,
 // First time non-advanced; Comment/For/For each/Switch/While/etc. advanced) —
 // visible on any fresh game, no feature flags required.
-import { chromium } from 'playwright';
+import { chromium } from './lib/tracked-chromium.mjs';
 
 const baseUrl = process.argv[2] || 'http://localhost:5174';
 

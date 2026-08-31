@@ -27,6 +27,11 @@ const mimeTypes: Record<string, string> = {
 // /api requests during development. Not needed in production (same-origin).
 const apiProxy = process.env.VITE_API_PROXY
 
+// Overridable so multiple dev.sh instances (e.g. main checkout + a PR worktree) can run
+// concurrently without port clashes — see dev.sh's --port flag.
+const appShellPort = Number(process.env.PORT) || 5174
+const playerPort = Number(process.env.WASM_PLAYER_PORT) || 5175
+
 // CI workflows set PUBLIC_APPSHELL_VERSION explicitly (to github.sha or github.ref_name);
 // locally it's blank, so fall back to the repo-root VERSION file — the same source
 // WasmPlayer's inject-version.mjs uses — so `npm run dev`/plain `npm run build` show a real version too.
@@ -66,11 +71,11 @@ export default defineConfig({
     }
   ],
   server: {
-    port: 5174,
+    port: appShellPort,
     proxy: {
       // Proxy WasmPlayer through the same origin so BroadcastChannel works between editor and player tabs.
       '/player': {
-        target: 'http://localhost:5175',
+        target: `http://localhost:${playerPort}`,
         changeOrigin: true,
         rewrite: (path) => path.replace(/^\/player/, ''),
       },
@@ -89,8 +94,8 @@ export default defineConfig({
       // fetching itself. Every /api/* call this app itself makes is under
       // /api/editor/* (checked via grep), so /api/editor taking priority above
       // is safe and doesn't shadow any real editor save-API call.
-      '/api': { target: 'http://localhost:5175', changeOrigin: true },
-      '/game-resource': { target: 'http://localhost:5175', changeOrigin: true },
+      '/api': { target: `http://localhost:${playerPort}`, changeOrigin: true },
+      '/game-resource': { target: `http://localhost:${playerPort}`, changeOrigin: true },
     },
   }
 })

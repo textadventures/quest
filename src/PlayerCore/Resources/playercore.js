@@ -57,8 +57,17 @@ function initPlayerUI() {
         }
     });
 
-    $("#gameBorder button").button();
+    // Excludes the accordion header buttons (.accordion-header-text) - the
+    // multiOpenAccordion plugin below already styles those itself
+    // (.ui-accordion-header etc.), and jQuery UI's own .button() widget would
+    // wrap their text in a nested .ui-button-text span, breaking the plain
+    // .html(text) writes setInterfaceString does against them.
+    $("#gameBorder button:not(.accordion-header-text)").button();
     $("#gamePanesRunning").multiOpenAccordion({active: [0, 1, 2, 3]});
+    $("#gamePanesRunning").on("multiopenaccordiontabshown multiopenaccordiontabhidden", function (event, ui) {
+        ui.tab.children("button.accordion-header-text")
+            .attr("aria-expanded", event.type === "multiopenaccordiontabshown");
+    });
     showStatusVisible(false);
 
     const cmdSave = document.getElementById("cmdSave");
@@ -159,6 +168,23 @@ function initPlayerUI() {
         }
     });
 
+    // .cmdlink links (.elementmenu/.exitlink/.commandlink above, plus the bare
+    // ShowMenu-style links with their own inline onclick) are all <a> elements
+    // with no href, so activating one by keyboard needs an explicit Enter/Space
+    // handler - the browser only auto-fires click on Enter for a real link/button.
+    // Delegated here (not baked into each class's own click handler above) so it
+    // covers every .cmdlink regardless of which Core.aslx function produced it,
+    // and - unlike the tabindex="0" on the link markup itself, which only reaches
+    // games saved after this change (see CLAUDE.md's Core library semantics) -
+    // this part is shared player-chrome JS, so it also benefits any already-
+    // published game whose links happen to already be focusable some other way.
+    $(document).on("keydown", ".cmdlink", function (event) {
+        if (event.key === "Enter" || event.key === " ") {
+            event.preventDefault();
+            this.click();
+        }
+    });
+
     // ShowMenu (and anything built on it - Ask, disambiguation) renders each
     // choice as a bare <a class="cmdlink" onclick="ASLEvent(...)"> baked into the
     // game's own compiled script - unlike .commandlink, it gets no client-side
@@ -240,6 +266,11 @@ function initPlayerUI() {
         const newPanelImageMaxHeight = `${(window.innerHeight - 30) * 0.5}px`;
         updatePanelImageMaxHeight(newPanelImageMaxHeight);
 
+        // cmdShowPanes.style.display was just set above - recompute #qv-status's own
+        // visibility now in case resizing past the narrow-window threshold is what
+        // just made (or unmade) the hamburger button #qv-status's only visible child.
+        updateStatusVisibility();
+
         wasWide = isWide;
     }
 
@@ -313,6 +344,7 @@ function initPlayerUI() {
 
 function loadHtml(html) {
     $("#divOutput").html(html);
+    makeCmdlinksFocusable($("#divOutput"));
     // The injected HTML carries its own divOutputAlign<N> ids from whenever the
     // game was saved, but _currentDiv/_divCount (used by addText/createNewDiv)
     // are untouched by the line above. If a div was already created before this
@@ -436,6 +468,38 @@ function runCommand() {
     }
 }
 
+// jQuery UI's dialog widget puts role="dialog"/aria-labelledby on the wrapper it
+// creates around #msgbox (accessible via the "widget" API, not #msgbox itself -
+// see _createWrapper in jquery-ui.min.js), wires aria-labelledby to the title bar
+// automatically, and moves focus to the first button in the button pane on open -
+// never to the wrapper itself. It does NOT wire the dialog's own body text
+// (#msgboxCaption, set separately by each caller below) to anything.
+//
+// aria-describedby on the wrapper alone isn't enough: a screen reader computes a
+// focused element's accessible description from *that element's own*
+// aria-describedby, not an ancestor's, and jQuery UI's initial focus lands on a
+// button, not the wrapper - confirmed by manual testing (VoiceOver/NVDA read the
+// dialog's title on open but never the actual message). Setting it on the buttons
+// too closes that gap regardless of which one ends up focused.
+//
+// That still reads button-before-message though ("Yes, button" - only *then* the
+// question, since the description is announced as part of the focused button, not
+// before it) - confirmed by manual testing again. jQuery UI's own _focusTabbable
+// always prefers a tabbable control over the wrapper (see jquery-ui.min.js), so
+// explicitly re-focusing the wrapper (tabIndex=-1, already set by its own
+// _createWrapper) right after "open" overrides that: focus lands on the
+// role="dialog" element itself first, which reads title + description together in
+// the right order, and Tab from there reaches the buttons - the WAI-ARIA APG's
+// "focus the dialog when content must be read before interaction" pattern.
+function openMsgbox(options) {
+    $("#msgbox").dialog(options);
+    var $widget = $("#msgbox").dialog("widget");
+    $widget.attr("aria-describedby", "msgboxCaption");
+    $widget.find(".ui-dialog-buttonpane button").attr("aria-describedby", "msgboxCaption");
+    $("#msgbox").dialog("open");
+    $widget.trigger("focus");
+}
+
 function showQuestion(title) {
     $("#msgboxCaption").html(title);
 
@@ -462,8 +526,7 @@ function showQuestion(title) {
         }    // suppresses "close" button
     };
 
-    $("#msgbox").dialog(msgboxOptions);
-    $("#msgbox").dialog("open");
+    openMsgbox(msgboxOptions);
 }
 
 function uiShow(element) {
@@ -485,7 +548,12 @@ function uiHide(element) {
 }
 
 function updateStatusVisibility() {
-    var anyVisible = isElementVisible("#location") || isElementVisible("#cmdSave");
+    // #cmdDebug and #cmdShowPanes can each be visible on their own (editor-preview
+    // sessions force Debug on regardless of location/save; #cmdShowPanes only shows
+    // itself up on a narrow window - see doLayout()) - #qv-status must stay up
+    // whenever any of the four buttons/location it hosts is actually showing.
+    var anyVisible = isElementVisible("#location") || isElementVisible("#cmdSave")
+        || isElementVisible("#cmdDebug") || isElementVisible("#cmdShowPanes");
     if (anyVisible) {
         $("#qv-status").show();
         $("#divOutput").css("margin-top", "20px");
@@ -752,18 +820,18 @@ function setCompassDirections(directions) {
     } else {
         _compassDirs = directions;
     }
-    $("#cmdCompassNW").attr("title", _compassDirs[0]);
-    $("#cmdCompassN").attr("title", _compassDirs[1]);
-    $("#cmdCompassNE").attr("title", _compassDirs[2]);
-    $("#cmdCompassW").attr("title", _compassDirs[3]);
-    $("#cmdCompassE").attr("title", _compassDirs[4]);
-    $("#cmdCompassSW").attr("title", _compassDirs[5]);
-    $("#cmdCompassS").attr("title", _compassDirs[6]);
-    $("#cmdCompassSE").attr("title", _compassDirs[7]);
-    $("#cmdCompassU").attr("title", _compassDirs[8]);
-    $("#cmdCompassD").attr("title", _compassDirs[9]);
-    $("#cmdCompassIn").attr("title", _compassDirs[10]);
-    $("#cmdCompassOut").attr("title", _compassDirs[11]);
+    $("#cmdCompassNW").attr("title", _compassDirs[0]).attr("aria-label", _compassDirs[0]);
+    $("#cmdCompassN").attr("title", _compassDirs[1]).attr("aria-label", _compassDirs[1]);
+    $("#cmdCompassNE").attr("title", _compassDirs[2]).attr("aria-label", _compassDirs[2]);
+    $("#cmdCompassW").attr("title", _compassDirs[3]).attr("aria-label", _compassDirs[3]);
+    $("#cmdCompassE").attr("title", _compassDirs[4]).attr("aria-label", _compassDirs[4]);
+    $("#cmdCompassSW").attr("title", _compassDirs[5]).attr("aria-label", _compassDirs[5]);
+    $("#cmdCompassS").attr("title", _compassDirs[6]).attr("aria-label", _compassDirs[6]);
+    $("#cmdCompassSE").attr("title", _compassDirs[7]).attr("aria-label", _compassDirs[7]);
+    $("#cmdCompassU").attr("title", _compassDirs[8]).attr("aria-label", _compassDirs[8]);
+    $("#cmdCompassD").attr("title", _compassDirs[9]).attr("aria-label", _compassDirs[9]);
+    $("#cmdCompassIn").attr("title", _compassDirs[10]).attr("aria-label", _compassDirs[10]);
+    $("#cmdCompassOut").attr("title", _compassDirs[11]).attr("aria-label", _compassDirs[11]);
 }
 
 function updateLocation(text) {
@@ -924,8 +992,22 @@ function addText(text) {
     if (savingTranscript && !noTranscript) {
         writeToTranscript(text);
     }
-    getCurrentDiv().append(text);
+    var $div = getCurrentDiv();
+    $div.append(text);
+    makeCmdlinksFocusable($div);
     $("#divOutput").css("min-height", $("#divOutput").height());
+}
+
+// .cmdlink links (.elementmenu/.exitlink/.commandlink/bare ShowMenu ones - see the
+// keydown handler above) come from Engine/Core/*.aslx, which is inlined into each
+// game at save/publish time - a game published before tabindex="0" was added there
+// (see CLAUDE.md's Core library semantics) still emits links with no tabindex, so
+// they'd never be reachable by keyboard no matter how new a *player* build runs
+// them. Unlike that markup, this file is shared player-chrome JS with no per-game
+// snapshot, so patching tabindex on here at the point each link enters the DOM
+// closes the gap for every already-published game too, not just newly-saved ones.
+function makeCmdlinksFocusable($scope) {
+    $scope.find("a.cmdlink:not([tabindex])").attr("tabindex", "0");
 }
 
 function createNewDiv(alignment) {
@@ -1170,16 +1252,16 @@ function addExternalStylesheet(source) {
 function setInterfaceString(name, text) {
     switch (name) {
         case "InventoryLabel":
-            $("#inventoryLabel span.accordion-header-text").html(text);
+            $("#inventoryLabel button.accordion-header-text").html(text);
             break;
         case "StatusLabel":
-            $("#statusVarsLabel span.accordion-header-text").html(text);
+            $("#statusVarsLabel button.accordion-header-text").html(text);
             break;
         case "PlacesObjectsLabel":
-            $("#placesObjectsLabel span.accordion-header-text").html(text);
+            $("#placesObjectsLabel button.accordion-header-text").html(text);
             break;
         case "CompassLabel":
-            $("#compassLabel span.accordion-header-text").html(text);
+            $("#compassLabel button.accordion-header-text").html(text);
             break;
         case "InButtonLabel":
             $("#cmdCompassIn span").html(text);
@@ -1689,8 +1771,7 @@ function showPopup(title, text) {
         closeOnEscape: false,
     };
 
-    $('#msgbox').dialog(msgboxOptions);
-    $('#msgbox').dialog('open');
+    openMsgbox(msgboxOptions);
 }
 
 function showPopupCustomSize(title, text, width, height) {
@@ -1713,8 +1794,7 @@ function showPopupCustomSize(title, text, width, height) {
         closeOnEscape: false,
     };
 
-    $('#msgbox').dialog(msgboxOptions);
-    $('#msgbox').dialog('open');
+    openMsgbox(msgboxOptions);
 }
 
 function showPopupFullscreen(title, text) {
@@ -1737,8 +1817,7 @@ function showPopupFullscreen(title, text) {
         closeOnEscape: false,
     };
 
-    $('#msgbox').dialog(msgboxOptions);
-    $('#msgbox').dialog('open');
+    openMsgbox(msgboxOptions);
 }
 
 // Log functions
@@ -1873,8 +1952,15 @@ function SaveTranscript(text) {
 var transcriptUrl = 'TranscriptViewer/index.html';
 
 // Another fallback to avoid errors
-function showTranscript() {
-    addTextAndScroll('Your transcripts are saved to the localStorage in your browser. You can view, download, or delete them here: <a href="' + transcriptUrl + '" target="_blank">Your Transcripts</a><br/>');
+// message/linkText are passed in by CoreCommands.aslx via translated templates
+// (Core/Languages/*.aslx). Games published before this was added have the old
+// zero-arg "JS.showTranscript ()" call baked into their package (Core library
+// scripts are inlined at publish time, but this JS file isn't), so fall back
+// to the original hardcoded English text when called without arguments.
+function showTranscript(message, linkText) {
+    if (message == null) message = 'Your transcripts are saved to the localStorage in your browser. You can view, download, or delete them here:';
+    if (linkText == null) linkText = 'Your Transcripts';
+    addTextAndScroll(message + ' <a href="' + transcriptUrl + '" target="_blank">' + linkText + '</a><br/>');
 }
 
 function replaceTranscriptString(data) {
@@ -2354,8 +2440,19 @@ function Grid_DrawShape(id, border, fill, opacity) {
 
 (function ($) {
 
+    // The element that opened the currently-shown menu, so keyboard close paths
+    // (Escape/Tab) and the click-outside handler below can return focus to it -
+    // otherwise focus is dropped to <body> and a keyboard user loses their place.
+    var _jjmenuInvoker = null;
+
+    function closeMenu(restoreFocus) {
+        $("div[id^=jjmenu]").remove();
+        if (restoreFocus && _jjmenuInvoker) _jjmenuInvoker.focus();
+        _jjmenuInvoker = null;
+    }
+
     $(document).click(function (event) {
-        if (event.button != 2) $("div[id^=jjmenu]").remove();
+        if (event.button != 2) closeMenu(false);
     });
 
     $.fn.jjmenu = function (param) {
@@ -2363,13 +2460,13 @@ function Grid_DrawShape(id, border, fill, opacity) {
             event.preventDefault();
             event.stopPropagation();
             $(this).jjmenu_popup(param);
-            $(this).blur();
             return false;
         });
     };
 
     $.fn.jjmenu_popup = function (param) {
         var el = this;
+        _jjmenuInvoker = el.get(0);
 
         if (typeof param === "undefined") {
             var verbs = el.data("verbs");
@@ -2392,6 +2489,7 @@ function Grid_DrawShape(id, border, fill, opacity) {
 
         m.className = "jjmenu";
         m.id = "jjmenu_main";
+        m.setAttribute("role", "menu");
         $(m).css({display: 'none'});
         $(document.body).append(m);
 
@@ -2403,6 +2501,7 @@ function Grid_DrawShape(id, border, fill, opacity) {
 
         checkPosition();
         showMenu();
+        $(ms).children().first().trigger("focus");
 
         function positionMenu() {
             var pos = $(el).offset();
@@ -2466,8 +2565,24 @@ function Grid_DrawShape(id, border, fill, opacity) {
             $(m).fadeIn(speed);
         }
 
+        function activateItem(item, n) {
+            closeMenu(false);
+            n.action.callback(n.title);
+        }
+
+        function moveFocus(fromItem, delta) {
+            var items = $(ms).children().get();
+            var index = items.indexOf(fromItem);
+            var next = items[(index + delta + items.length) % items.length];
+            $(next).trigger("focus");
+        }
+
         function putItem(n) {
             var item = document.createElement('div');
+            item.className = "jj_menu_item";
+            item.setAttribute("role", "menuitem");
+            item.tabIndex = -1;
+
             $(item).hover(function () {
                     $(this).addClass("jj_menu_item_hover");
                 },
@@ -2475,16 +2590,45 @@ function Grid_DrawShape(id, border, fill, opacity) {
                     $(this).removeClass("jj_menu_item_hover");
                 });
 
+            $(item).on("focus", function () {
+                $(this).addClass("jj_menu_item_hover");
+            }).on("blur", function () {
+                $(this).removeClass("jj_menu_item_hover");
+            });
+
             $(item).click(function (event) {
                 event.stopPropagation();
-                $("div[id^=jjmenu]").remove();
-                n.action.callback(n.title);
+                activateItem(item, n);
+            });
+
+            $(item).on("keydown", function (event) {
+                switch (event.key) {
+                    case "ArrowDown":
+                        event.preventDefault();
+                        moveFocus(item, 1);
+                        break;
+                    case "ArrowUp":
+                        event.preventDefault();
+                        moveFocus(item, -1);
+                        break;
+                    case "Enter":
+                    case " ":
+                        event.preventDefault();
+                        activateItem(item, n);
+                        break;
+                    case "Escape":
+                        event.preventDefault();
+                        event.stopPropagation();
+                        closeMenu(true);
+                        break;
+                    case "Tab":
+                        closeMenu(true);
+                        break;
+                }
             });
 
             var span = document.createElement('span');
             $(item).append(span);
-
-            item.className = "jj_menu_item";
 
             $(span).html(n.title);
             $(ms).append(item);

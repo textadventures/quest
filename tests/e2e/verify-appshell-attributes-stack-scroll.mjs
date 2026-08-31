@@ -10,7 +10,7 @@
 // instead of each sub-region trying to manage its own. Also verifies the new
 // close ("X") button on the Assignment/Behaviour panel deselects the current
 // attribute/verb.
-import { chromium } from 'playwright';
+import { chromium } from './lib/tracked-chromium.mjs';
 
 const baseUrl = process.argv[2] || 'http://localhost:5174';
 
@@ -61,7 +61,7 @@ try {
 
     // Same close affordance on VerbsEditor's Behaviour panel.
     await page.getByRole('button', { name: 'room', exact: true }).click(); // back to tree pane
-    await page.waitForSelector('text=GAME OBJECTS', { timeout: 5000 });
+    await page.waitForSelector('input[placeholder="Filter..."]', { timeout: 5000 });
     const roomCaret = page.locator('[data-part="branch-control"]:has-text("room") >> button[aria-label="Expand"]');
     if (await roomCaret.count()) { await roomCaret.first().click(); } // room already expanded by default (#827)
     await page.click('text=player');

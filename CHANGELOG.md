@@ -1,5 +1,77 @@
 # Changelog
 
+## [6.0.0-beta.56](https://github.com/textadventures/quest/compare/v6.0.0-beta.55...v6.0.0-beta.56) (2026-08-28)
+
+
+### Bug Fixes
+
+* add expression control and hide-when-empty to script-parameter editors ([#2164](https://github.com/textadventures/quest/issues/2164)) ([d9f84c9](https://github.com/textadventures/quest/commit/d9f84c98349ca4675b1cd4e3f5364bebf3fbfd90))
+* **AppShell:** default new rooms to top level, fix Combobox label/value mixup ([#2161](https://github.com/textadventures/quest/issues/2161)) ([f63ad3e](https://github.com/textadventures/quest/commit/f63ad3e658a5d409832e88251cb801acbbeb2ee5))
+* **AppShell:** expression-editor parity for if/set/foreach templates ([#2151](https://github.com/textadventures/quest/issues/2151)) ([60f23dc](https://github.com/textadventures/quest/commit/60f23dca7602f234809b8942c626f1a111b683a3))
+* **AppShell:** remove dead &lt;filefiltername&gt; and &lt;preview/&gt; hints ([#2152](https://github.com/textadventures/quest/issues/2152)) ([f4b107b](https://github.com/textadventures/quest/commit/f4b107b14cf6260d39ffcfdf7019b09aa3ae4f12))
+* **AppShell:** remove dead &lt;keyname&gt; control hint ([#2153](https://github.com/textadventures/quest/issues/2153)) ([df18dce](https://github.com/textadventures/quest/commit/df18dce8a90e2d2aa4719e9df86432d1422ae2c1))
+* **AppShell:** remove redundant pane header labels in editor ([#2144](https://github.com/textadventures/quest/issues/2144)) ([dd3f6b3](https://github.com/textadventures/quest/commit/dd3f6b31b237a79a4634d067f6fa06d9207813aa))
+* **AppShell:** stop Enter-confirm from re-triggering the trigger button in modals ([#2160](https://github.com/textadventures/quest/issues/2160)) ([60f73e8](https://github.com/textadventures/quest/commit/60f73e83241e901f43ce4437117b0e3dce612bfb))
+* **AppShell:** wire up &lt;bold/&gt; control hint for labels ([#2154](https://github.com/textadventures/quest/issues/2154)) ([923a517](https://github.com/textadventures/quest/commit/923a517fe3c4756f40725ef5f22ff7f5d027f1e5))
+* **AppShell:** wire up &lt;colour&gt; control hint for script textboxes ([#2156](https://github.com/textadventures/quest/issues/2156)) ([36cd0cc](https://github.com/textadventures/quest/commit/36cd0cca4aabb63da16ece019f2faaf0c2e39497))
+* **AppShell:** wire up &lt;freetext/&gt; control hint for dropdowns ([#2147](https://github.com/textadventures/quest/issues/2147)) ([f18d327](https://github.com/textadventures/quest/commit/f18d327ab8232bb8ac20bd5bd7cc5305fdb2b551))
+* **AppShell:** wire up &lt;minimum&gt;/&lt;maximum&gt;/&lt;increment&gt; control hints ([#2148](https://github.com/textadventures/quest/issues/2148)) ([f12b8fe](https://github.com/textadventures/quest/commit/f12b8fe403d763baf67819f80e480af77721e25f))
+* **AppShell:** wire up &lt;nullable/&gt; control hint ([#2149](https://github.com/textadventures/quest/issues/2149)) ([f82ca3d](https://github.com/textadventures/quest/commit/f82ca3d10985218b827b9e521e15eef200f51874))
+* **AppShell:** wire up &lt;width/&gt; control hint to the frontend ([#2150](https://github.com/textadventures/quest/issues/2150)) ([c018a96](https://github.com/textadventures/quest/commit/c018a966a727a5511f3661e47392ef9c91d87d21))
+* **Engine:** remove no-op RequestSpeak function ([#2146](https://github.com/textadventures/quest/issues/2146)) ([d430a68](https://github.com/textadventures/quest/commit/d430a68865d936265c7af4913538cf4cbd88a43b))
+* **WasmEditor:** convert richtext newlines to &lt;br/&gt; on save, and back on load ([#2165](https://github.com/textadventures/quest/issues/2165)) ([ca4875a](https://github.com/textadventures/quest/commit/ca4875ab056630bae36f2e6c4e5d1f9d74506462))
+
+## [6.0.0-beta.55](https://github.com/textadventures/quest/compare/v6.0.0-beta.54...v6.0.0-beta.55) (2026-08-24)
+
+
+### Features
+
+* **AppShell:** announce save status and add editor landmarks ([#2141](https://github.com/textadventures/quest/issues/2141)) ([994a229](https://github.com/textadventures/quest/commit/994a229bbeaf685d0203f1963df86c0723c2f735))
+* **AppShell:** IntelliSense-style autocomplete for the script editor ([#2129](https://github.com/textadventures/quest/issues/2129)) ([6ec1745](https://github.com/textadventures/quest/commit/6ec174584099a3bfba28214cab696b20bdd2ba31))
+* **AppShell:** keyboard-operable dropdown menu and icon button labels ([#2139](https://github.com/textadventures/quest/issues/2139)) ([3e0daca](https://github.com/textadventures/quest/commit/3e0dacaccd5212f2f27296f6621e4ad6f53d0c0b))
+* **AppShell:** move function folders and add objects/functions in-place ([#2128](https://github.com/textadventures/quest/issues/2128)) ([5be71c4](https://github.com/textadventures/quest/commit/5be71c4bae23349b40a6950ad102b4c6d8653f38))
+* **AppShell:** trap and restore focus in modal dialogs ([#2138](https://github.com/textadventures/quest/issues/2138)) ([c2e56c1](https://github.com/textadventures/quest/commit/c2e56c15f00008a2861e8d7805e454dcc99f5c10))
+* **Engine:** accessible accordion sidebar panels ([#2136](https://github.com/textadventures/quest/issues/2136)) ([fc6e2c5](https://github.com/textadventures/quest/commit/fc6e2c5b418340a52f28a95a625af05a972262e9))
+* **Engine:** keyboard support for the item/verb popup menu ([#2135](https://github.com/textadventures/quest/issues/2135)) ([cde20f6](https://github.com/textadventures/quest/commit/cde20f6bae0d4fa26aad6b2e0af635fc5081615e))
+* **WasmPlayer:** show Debug options for .aslx played from the Play tab ([#2121](https://github.com/textadventures/quest/issues/2121)) ([3a2fbab](https://github.com/textadventures/quest/commit/3a2fbab875bd62a9a0ed0462555de2944e605ecd))
+* **WasmPlayer:** sort the debugger's object list by Name ([#2127](https://github.com/textadventures/quest/issues/2127)) ([2020e15](https://github.com/textadventures/quest/commit/2020e156af54eb97bd7867ce8edba5cb88ac5751))
+
+
+### Bug Fixes
+
+* **AppShell:** accept .xml extension for included libraries ([#2123](https://github.com/textadventures/quest/issues/2123)) ([5737ecb](https://github.com/textadventures/quest/commit/5737ecbbb55c8fd5aaf43f9878f78698b1de57a8))
+* **AppShell:** dialogs move focus on open so Escape closes them ([#2125](https://github.com/textadventures/quest/issues/2125)) ([e4c62c8](https://github.com/textadventures/quest/commit/e4c62c86026e6ef68f86ff1c7a8c0312dc3f3e91))
+* **AppShell:** keep hover-revealed row actions visible to keyboard focus ([#2140](https://github.com/textadventures/quest/issues/2140)) ([dee05d5](https://github.com/textadventures/quest/commit/dee05d53f0340c5adb7567fd5a9ec50d68bd6166))
+* **AppShell:** label PropertyEditor fields and announce validation errors ([#2137](https://github.com/textadventures/quest/issues/2137)) ([b3a143b](https://github.com/textadventures/quest/commit/b3a143b0152aba511434c39baf6b0c20f4b67e05))
+* **AppShell:** match textarea in code-view e2e round-trip check ([#2117](https://github.com/textadventures/quest/issues/2117)) ([0a20b2f](https://github.com/textadventures/quest/commit/0a20b2f2549e7d52b4a57f58eedcca35b4274895))
+* **AppShell:** script editor controls reclaim width on touch ([#2122](https://github.com/textadventures/quest/issues/2122)) ([e987e1a](https://github.com/textadventures/quest/commit/e987e1a3e45b23dc097c5d05b2eed5458ddb1775))
+* **Engine:** announce game output and label controls for screen readers ([#2134](https://github.com/textadventures/quest/issues/2134)) ([22d2019](https://github.com/textadventures/quest/commit/22d20191ad5798093aa6e088161720f5ff0de4dc))
+* **Engine:** announce the actual message in msgbox-family dialogs ([#2142](https://github.com/textadventures/quest/issues/2142)) ([58bd274](https://github.com/textadventures/quest/commit/58bd274f63b1076232d6eaecda004152009cdccf))
+* **Engine:** make transcript viewer message translatable ([#2120](https://github.com/textadventures/quest/issues/2120)) ([58401b4](https://github.com/textadventures/quest/commit/58401b43b15b3ed756283b04cf721369169de850))
+* support running multiple dev.sh instances concurrently ([#2130](https://github.com/textadventures/quest/issues/2130)) ([c135257](https://github.com/textadventures/quest/commit/c13525788520e158c7a362da01bc06d0fefb7b2b))
+
+## [6.0.0-beta.54](https://github.com/textadventures/quest/compare/v6.0.0-beta.53...v6.0.0-beta.54) (2026-08-22)
+
+
+### Features
+
+* **AppShell:** default-to-code-view setting, taller attribute value box ([#2112](https://github.com/textadventures/quest/issues/2112)) ([932c590](https://github.com/textadventures/quest/commit/932c590061e14d4599f50d7f4ecd98e854ae17cf))
+* **AppShell:** group library-origin elements by source file in editor tree ([#2113](https://github.com/textadventures/quest/issues/2113)) ([cfb74f4](https://github.com/textadventures/quest/commit/cfb74f40823bda2b260c1eed26788896b119b8e8))
+* **AppShell:** let authors group Functions into user-named folders ([#2114](https://github.com/textadventures/quest/issues/2114)) ([091bcad](https://github.com/textadventures/quest/commit/091bcada7411736e0b08c51a07b906a746331371))
+* **Engine:** add "require all keys" toggle for lockable containers ([#2092](https://github.com/textadventures/quest/issues/2092)) ([9c64f28](https://github.com/textadventures/quest/commit/9c64f282c689e5c106317e4f514fc29219d0e591))
+* **Engine:** AddPageLink/RemovePageLink for Text Adventure games ([#2105](https://github.com/textadventures/quest/issues/2105)) ([d5549ee](https://github.com/textadventures/quest/commit/d5549ee4c5785bcfd4e2cba7abfa9edf2a73db3c))
+
+
+### Bug Fixes
+
+* **AppShell:** add rename support to ScriptDictionaryEditor ([#2091](https://github.com/textadventures/quest/issues/2091)) ([039a760](https://github.com/textadventures/quest/commit/039a760bd38cb91e95feb13cd5895308bc8055d8))
+* **AppShell:** honor multiline/expand script control hints, auto-size code view ([#2115](https://github.com/textadventures/quest/issues/2115)) ([e9f26fb](https://github.com/textadventures/quest/commit/e9f26fbf7d9a3a3b3a47001468d9c9c459699765))
+* **AppShell:** refresh code view when switching commands in editor ([#2111](https://github.com/textadventures/quest/issues/2111)) ([2086ca8](https://github.com/textadventures/quest/commit/2086ca8e04292813aa542eaa46e2bb76385811c5))
+* **AppShell:** render Switch command's Cases editor in ScriptEditor ([#2090](https://github.com/textadventures/quest/issues/2090)) ([1141a8a](https://github.com/textadventures/quest/commit/1141a8a4902163f885f9fcb559e2dc9ba683ab12))
+* **Engine:** make the 'in' operator work on dictionaries ([#2110](https://github.com/textadventures/quest/issues/2110)) ([56ec22c](https://github.com/textadventures/quest/commit/56ec22c6416aa80674078586042918009e8e513a))
+* **Engine:** remove Vimeo support entirely, keep runtime playback for existing games ([#2106](https://github.com/textadventures/quest/issues/2106)) ([6f067f1](https://github.com/textadventures/quest/commit/6f067f137fe1ddd7fea7cb69dd227c9022edc7a3))
+* **PlayerCore:** restore WriteToLog as a no-op ([#2107](https://github.com/textadventures/quest/issues/2107)) ([2135ae5](https://github.com/textadventures/quest/commit/2135ae5696aef86d174a86e66a6d689c3bc54db0))
+
 ## [6.0.0-beta.53](https://github.com/textadventures/quest/compare/v6.0.0-beta.52...v6.0.0-beta.53) (2026-08-16)
 
 

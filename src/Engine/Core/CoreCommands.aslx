@@ -949,7 +949,7 @@
   <command name="view_transcript_cmd" pattern="[view_transcript_cmd]">
     <script>
       if (not GetBoolean(game, "notranscript")){
-        JS.showTranscript ()
+        JS.showTranscript (Template("TranscriptViewerMessage"), Template("TranscriptViewerLinkText"))
       }
       else {
         msg (Template("NoTranscriptFeature"))

@@ -17,7 +17,7 @@ using QuestViva.PlayerCore;
 
 namespace QuestViva.WasmEditor;
 
-internal record TreeNodeData(string Key, string Text, string? Parent, string NodeType, bool IsLibrary, bool CanDelete);
+internal record TreeNodeData(string Key, string Text, string? Parent, string NodeType, bool IsLibrary, bool CanDelete, string? Filename, string? Folder);
 
 internal record ControlOption(string Value, string Label);
 
@@ -45,7 +45,24 @@ internal record ControlInfo(
     bool IsWalkthrough = false,
     string? Href = null,
     string? NewFile = null,
-    bool LockedAfterCreate = false);
+    bool LockedAfterCreate = false,
+    // <freetext/> - a "dropdown" control should let the user type a value not in its
+    // <validvalues> list, instead of being restricted to picking one of the listed options.
+    bool Freetext = false,
+    // <minimum>/<maximum>/<increment> - bounds and step for a "number"/"numberdouble" control.
+    double? Minimum = null,
+    double? Maximum = null,
+    double? Increment = null,
+    // <nullable/> - emptying this control's value reverts the attribute to unset/inherited (as
+    // opposed to just an empty string, which is still an explicit override) - the frontend calls
+    // RemoveAttribute instead of SetAttribute("") when the new value is empty.
+    bool Nullable = false,
+    // <width> - fixed pixel width for this control (e.g. an exit's "to" object picker), instead
+    // of the default flexible sizing.
+    int? Width = null,
+    // <bold/> - renders a "label" control's caption in bold, e.g. to draw attention to a
+    // warning-style label (a locked exit's "to unlock this" note, a disabled-feature notice).
+    bool Bold = false);
 
 internal record TabInfo(string? Caption, List<ControlInfo> Controls);
 
@@ -87,7 +104,25 @@ internal record ScriptControlData(
     // Pre-fetched nested script trees for a "scriptdictionary" control (e.g. switch's "cases"),
     // one per dictionary key - mirrors how the "script" controltype's own Scripts field lets a
     // nested ScriptEditor render from initialData without a further round trip.
-    List<CaseScriptData>? Cases = null
+    List<CaseScriptData>? Cases = null,
+    // <multiline/> - the "textbox" simple editor should render as a resizable textarea that
+    // keeps embedded newlines (e.g. msg's message text) instead of a single-line input.
+    bool Multiline = false,
+    // <expand/> - this control should grow to fill the remaining width of its row instead of
+    // being capped to a fixed max-width.
+    bool Expand = false,
+    // <freetext/> - a "dropdown" controltype or expression's "dropdown" simpleeditor should let
+    // the user type a value not in its <validvalues> list, instead of being restricted to
+    // picking one of the listed options.
+    bool Freetext = false,
+    // <minimum>/<maximum>/<increment> - bounds and step for a "number"/"numberdouble" simple
+    // editor (e.g. Grid_DrawShape's opacity, 0.0-1.0 step 0.1).
+    double? Minimum = null,
+    double? Maximum = null,
+    double? Increment = null,
+    // <colour> - renders a "textbox" control's text in the given CSS colour name (e.g. "Red"
+    // for @failed's fallback-script text, "Green" for a // comment) as warning/info styling.
+    string? Colour = null
 );
 
 internal record ElseIfClauseData(string Id, string Expression, List<ScriptNodeData> Scripts);
@@ -115,10 +150,16 @@ internal record ScriptCommandCategoriesData(List<ScriptCategoryInfo> Categories)
 
 internal record ExpressionTemplateControlData(
     string Name,
+    string ControlType,
+    string? Caption,
     string? Value,
     string? SimpleEditor,
     string? SimpleLabel,
-    List<ControlOption>? Options
+    List<ControlOption>? Options,
+    // <minimum>/<maximum>/<increment> - bounds and step for a "number"/"numberdouble" control.
+    double? Minimum = null,
+    double? Maximum = null,
+    double? Increment = null
 );
 
 internal record ExpressionTemplateData(
@@ -596,6 +637,10 @@ public partial class WasmEditorBridge
                 CultureInfo.InvariantCulture, out var d)
                 ? (object) d
                 : value,
+            // Matches the old Quest 5 desktop editor's RichTextControl: a multi-line textbox's
+            // linebreaks are stored as literal <br/> tags, not raw newlines (which the player
+            // would otherwise collapse). Reversed for display in GetEditorData/ConvertRichtextValuesForEditing.
+            "richtext" => value.Replace("\r\n", "<br/>").Replace("\n", "<br/>"),
             _ => value
         };
 
@@ -1435,6 +1480,16 @@ public partial class WasmEditorBridge
                 IEditableDictionary<IEditableScripts> => "scriptdictionary",
                 _ => "null"
             };
+
+            // Matches the old Quest 5 desktop editor's RichTextControl.Populate: a <multi> control
+            // whose active string sub-editor is richtext (e.g. object descriptions, via
+            // <editors>string=richtext</editors>) shows real linebreaks, not the <br/> markup
+            // they're stored as (see SetAttribute).
+            if (val is string strVal && ctrl.GetDictionary("editors") is { } editors &&
+                editors.TryGetValue("string", out var stringSubEditor) && stringSubEditor == "richtext")
+            {
+                attrs[ctrl.Attribute!] = strVal.Replace("<br/>", "\n").Replace("<br />", "\n");
+            }
         }
 
         foreach (var ctrl in controls.Where(c => c.ControlType == "filter"))
@@ -1447,6 +1502,16 @@ public partial class WasmEditorBridge
 
             attrs[ctrl.Id] = data.GetSelectedFilter(filterGroupName)
                 ?? ctrl.Parent.GetDefaultFilterName(filterGroupName, data);
+        }
+
+        // Matches the old Quest 5 desktop editor's RichTextControl.Populate: show real linebreaks
+        // in the textarea rather than the <br/> markup they're stored as (see SetAttribute).
+        foreach (var ctrl in controls.Where(c => c.ControlType == "richtext" && c.Attribute != null))
+        {
+            if (attrs.TryGetValue(ctrl.Attribute!, out var richtextValue) && richtextValue != null)
+            {
+                attrs[ctrl.Attribute!] = richtextValue.Replace("<br/>", "\n").Replace("<br />", "\n");
+            }
         }
     }
 
@@ -2165,7 +2230,10 @@ public partial class WasmEditorBridge
         }
 
         var controls = definition.Controls
-            .Where(ctrl => ctrl.Attribute != null)
+            // A "label" control (e.g. RandomChance's "% of the time") has no <attribute> - it's
+            // static caption text, not a value - but it still needs to reach the UI in sequence
+            // with the value controls around it, so it can't be dropped by the attribute filter.
+            .Where(ctrl => ctrl.Attribute != null || ctrl.ControlType == "label")
             .Select(ctrl =>
             {
                 var simpleLabel = ctrl.GetString("simple");
@@ -2191,21 +2259,34 @@ public partial class WasmEditorBridge
                 }
 
                 string? paramValue = null;
-                try
+                if (ctrl.Attribute != null)
                 {
-                    paramValue = (string?) templateData.GetAttribute(ctrl.Attribute!);
-                }
-                catch
-                {
-                    /* parameter not present in expression */
+                    try
+                    {
+                        paramValue = (string?) templateData.GetAttribute(ctrl.Attribute);
+                    }
+                    catch
+                    {
+                        /* parameter not present in expression */
+                    }
                 }
 
+                var isNumeric = simpleEditor is "number" or "numberdouble";
+                var minimum = isNumeric ? GetNumericHint(ctrl, "minimum") : null;
+                var maximum = isNumeric ? GetNumericHint(ctrl, "maximum") : null;
+                var increment = isNumeric ? GetNumericHint(ctrl, "increment") : null;
+
                 return new ExpressionTemplateControlData(
-                    ctrl.Attribute!,
+                    ctrl.Attribute ?? ctrl.Id,
+                    ctrl.ControlType,
+                    ctrl.Caption,
                     paramValue,
                     simpleEditor,
                     simpleLabel,
-                    options
+                    options,
+                    minimum,
+                    maximum,
+                    increment
                 );
             })
             .ToList();
@@ -2870,6 +2951,96 @@ public partial class WasmEditorBridge
     }
 
     [JSExport]
+    public static string GetFunctionFolders()
+    {
+        var folders = _controller?.GetFunctionFolders().ToList() ?? [];
+        return JsonSerializer.Serialize(folders, WasmEditorJsonContext.Default.ListString);
+    }
+
+    [JSExport]
+    public static string SetFunctionFolder(string elementKey, string? folder)
+    {
+        if (_controller == null)
+        {
+            return "error";
+        }
+
+        _controller.SetFunctionFolder(elementKey, folder);
+        // A full rebuild, not just an incremental refresh: SetFunctionFolder can reposition
+        // several functions at once (see its own comment), and the AddedNode/RemovedNode pair
+        // EditorController fires per repositioned element only ever *appends* to this class's
+        // TreeNodes cache when the key isn't already present (see OnAddedNode) - correct only
+        // when every repositioned element ends up trailing all its untouched siblings, which
+        // isn't guaranteed in general (e.g. inserting into the middle of an existing folder that
+        // has more functions after it). SwapElements avoids this the other way, by suppressing
+        // the natural events and patching its own two known slots directly; a full rebuild here
+        // is simpler to get right for an operation that can touch an arbitrary-sized slice, and
+        // is still cheap since it's one pass over the (now name-only) element list rather than
+        // the many redundant per-element writes the old implementation made.
+        _controller.UpdateTree();
+        return "ok";
+    }
+
+    [JSExport]
+    public static bool CanMoveFunctionUp(string elementKey)
+    {
+        return _controller?.CanMoveFunctionUp(elementKey) ?? false;
+    }
+
+    [JSExport]
+    public static bool CanMoveFunctionDown(string elementKey)
+    {
+        return _controller?.CanMoveFunctionDown(elementKey) ?? false;
+    }
+
+    [JSExport]
+    public static bool CanMoveFunctionFolderUp(string folder)
+    {
+        return _controller?.CanMoveFunctionFolderUp(folder) ?? false;
+    }
+
+    [JSExport]
+    public static bool CanMoveFunctionFolderDown(string folder)
+    {
+        return _controller?.CanMoveFunctionFolderDown(folder) ?? false;
+    }
+
+    [JSExport]
+    public static string MoveFunctionFolderUp(string folder)
+    {
+        if (_controller == null)
+        {
+            return "error";
+        }
+
+        _controller.MoveFunctionFolderUp(folder);
+        // Full rebuild, not an incremental patch - same reasoning as SetFunctionFolder's wrapper
+        // above: this can reposition an arbitrary-sized slice of functions at once.
+        _controller.UpdateTree();
+        return "ok";
+    }
+
+    [JSExport]
+    public static string MoveFunctionFolderDown(string folder)
+    {
+        if (_controller == null)
+        {
+            return "error";
+        }
+
+        _controller.MoveFunctionFolderDown(folder);
+        _controller.UpdateTree();
+        return "ok";
+    }
+
+    [JSExport]
+    public static string GetPossibleNewObjectParentsForCurrentSelection(string elementKey)
+    {
+        var parents = _controller?.GetPossibleNewObjectParentsForCurrentSelection(elementKey)?.ToList() ?? [];
+        return JsonSerializer.Serialize(parents, WasmEditorJsonContext.Default.ListString);
+    }
+
+    [JSExport]
     public static void CopyElements(string keysJson)
     {
         if (_controller == null)
@@ -2974,6 +3145,22 @@ public partial class WasmEditorBridge
             .ToList();
 
         return JsonSerializer.Serialize(functions, WasmEditorJsonContext.Default.ListExpressionFunctionData);
+    }
+
+    // Feeds the code view's attribute-name autocomplete: every attribute name ever set on any
+    // object in the game (the values GetAttribute/HasAttribute/set/etc. take as their attribute
+    // argument), so authors get suggestions for attributes defined on other objects, not just
+    // ones already typed in the file open in the editor.
+    [JSExport]
+    public static string GetAttributeNames()
+    {
+        if (_controller == null)
+        {
+            return "[]";
+        }
+
+        var names = _controller.GetPropertyNames().ToList();
+        return JsonSerializer.Serialize(names, WasmEditorJsonContext.Default.ListString);
     }
 
     [JSExport]
@@ -3803,7 +3990,10 @@ public partial class WasmEditorBridge
             var def = _controller!.GetEditorDefinition(script);
             var editorData = _controller.GetScriptEditorData(script);
             displayString = script.DisplayString();
-            controls = def.Controls.Select(c => BuildScriptControlData(c, editorData)).ToList();
+            controls = def.Controls
+                .Where(c => c.IsControlVisibleSync(editorData))
+                .Select(c => BuildScriptControlData(c, editorData))
+                .ToList();
         }
         catch
         {
@@ -3880,6 +4070,10 @@ public partial class WasmEditorBridge
         // generic +/- item list.
         var isFunctionParams = ctrl.GetBool("functionparams");
         var breakBefore = ctrl.GetBool("breakbefore");
+        var multiline = ctrl.GetBool("multiline");
+        var expand = ctrl.Expand;
+        var freetext = ctrl.GetBool("freetext");
+        var colour = ctrl.GetString("colour");
 
         string? useTemplates = null;
 
@@ -3927,6 +4121,11 @@ public partial class WasmEditorBridge
             }
         }
 
+        var isNumericSimpleEditor = simpleEditor is "number" or "numberdouble";
+        var minimum = isNumericSimpleEditor ? GetNumericHint(ctrl, "minimum") : null;
+        var maximum = isNumericSimpleEditor ? GetNumericHint(ctrl, "maximum") : null;
+        var increment = isNumericSimpleEditor ? GetNumericHint(ctrl, "increment") : null;
+
         return new ScriptControlData(
             ctrl.ControlType,
             ctrl.Caption,
@@ -3942,7 +4141,14 @@ public partial class WasmEditorBridge
             isFunctionParams,
             breakBefore,
             useTemplates,
-            cases
+            cases,
+            multiline,
+            expand,
+            freetext,
+            minimum,
+            maximum,
+            increment,
+            colour
         );
     }
 
@@ -3956,7 +4162,7 @@ public partial class WasmEditorBridge
         // Authoritative — mirrors exactly what DeleteElement/DeleteElements will actually allow
         // (see EditorController.CanDelete), rather than the UI guessing from node type/text.
         var node = new TreeNodeData(e.Key, e.Text, e.Parent, e.NodeType,
-            e.IsLibraryNode, _controller!.CanDelete(e.Key));
+            e.IsLibraryNode, _controller!.CanDelete(e.Key), e.Filename, e.Folder);
         if (_isRebuilding)
         {
             // ClearTree already emptied the list; all keys are unique in a fresh rebuild.
@@ -4014,9 +4220,11 @@ public partial class WasmEditorBridge
     {
         List<ControlOption>? options = null;
         var attribute = ctrl.Attribute;
+        var freetext = false;
 
         if (ctrl.ControlType == "dropdown")
         {
+            freetext = ctrl.GetBool("freetext");
             var list = ctrl.GetListString("validvalues");
             if (list != null)
             {
@@ -4060,7 +4268,7 @@ public partial class WasmEditorBridge
             options = dict?.Select(kv => new ControlOption(kv.Key, kv.Value)).ToList();
 
             return new ControlInfo(ctrl.Id, "filter", ctrl.Caption, options, null,
-                ctrl.GetString("filtergroupname"), Advanced: !ctrl.IsControlVisibleInSimpleMode);
+                ctrl.GetString("filtergroupname"), Advanced: !ctrl.IsControlVisibleInSimpleMode, Width: ctrl.Width);
         }
         else if (ctrl.ControlType == "objects")
         {
@@ -4125,12 +4333,36 @@ public partial class WasmEditorBridge
         var sourceType = isDictionary ? ctrl.GetString("sourcetype") : null;
 
         var href = ctrl.ControlType == "label" ? ctrl.GetString("href") : null;
+        var bold = ctrl.ControlType == "label" && ctrl.GetBool("bold");
+
+        var isNumeric = ctrl.ControlType is "number" or "numberdouble";
+        var minimum = isNumeric ? GetNumericHint(ctrl, "minimum") : null;
+        var maximum = isNumeric ? GetNumericHint(ctrl, "maximum") : null;
+        var increment = isNumeric ? GetNumericHint(ctrl, "increment") : null;
+
+        // Only meaningful for a control bound to a single attribute value (dropdown, textbox,
+        // number, ...) - the dictionary/list/multi controltypes above return early and never
+        // reach here, so this can't misfire on something with no single value to clear.
+        var nullable = ctrl.GetBool("nullable");
 
         return new ControlInfo(attribute, ctrl.ControlType, ctrl.Caption ?? ctrl.GetString("selfcaption"), options,
             null, null, textProcessorCommands, addPrompt, Source: source,
             Advanced: !ctrl.IsControlVisibleInSimpleMode,
             KeyPrompt: keyPrompt, ValuePrompt: valuePrompt, SourceExclude: sourceExclude, SourceType: sourceType,
-            IsWalkthrough: isWalkthrough, Href: href, NewFile: newFile, LockedAfterCreate: lockedAfterCreate);
+            IsWalkthrough: isWalkthrough, Href: href, NewFile: newFile, LockedAfterCreate: lockedAfterCreate,
+            Freetext: freetext,
+            Minimum: minimum, Maximum: maximum, Increment: increment,
+            Nullable: nullable,
+            Width: ctrl.Width,
+            Bold: bold);
+    }
+
+    // <minimum>/<maximum>/<increment> can be authored as either an int or a double literal in
+    // the .aslx (e.g. a whole-number bound vs. "0.1") - GetInt/GetDouble each only match their
+    // own literal type, so try both instead of assuming which one a given hint was written as.
+    private static double? GetNumericHint(IEditorControl ctrl, string tag)
+    {
+        return ctrl.GetDouble(tag) ?? (double?)ctrl.GetInt(tag);
     }
 
     [JSExport]

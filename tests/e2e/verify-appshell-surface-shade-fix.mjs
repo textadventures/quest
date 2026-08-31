@@ -11,7 +11,7 @@
 // which requires `dotnet build src/WasmEditor` — unavailable in some sandboxed
 // environments. All affected files use the identical Tailwind utility class,
 // so this route is a reliable proxy for the fix everywhere else.
-import { chromium } from 'playwright';
+import { chromium } from './lib/tracked-chromium.mjs';
 
 const baseUrl = process.argv[2] || 'http://localhost:5174';
 const browser = await chromium.launch();

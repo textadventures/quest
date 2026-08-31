@@ -121,7 +121,7 @@ public class SwitchScript : ScriptBase
     {
         var result = await m_expr.ExecuteAsync(c);
         // using .ToString() here as an object comparison of ints won't work
-        var success = await m_cases.ExecuteAsync(c, result.ToString());
+        var success = await m_cases.ExecuteAsync(c, Utility.ExpressionResultToString(result));
 
         if (!success && m_default != null)
         {
@@ -242,7 +242,7 @@ public class SwitchScript : ScriptBase
             {
                 var expr = m_compiledExpressions[switchCase.Key];
 
-                if (result == (await expr.ExecuteAsync(c)).ToString())
+                if (result == Utility.ExpressionResultToString(await expr.ExecuteAsync(c)))
                 {
                     await switchCase.Value.ExecuteAsync(c);
                     return true;

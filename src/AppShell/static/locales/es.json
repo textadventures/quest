@@ -58,6 +58,7 @@
     "addElementModal.addHeadingIn": "Añadir {label} en \"{parent}\"",
     "addElementModal.nameLabel": "Nombre",
     "addElementModal.namePlaceholder": "Ingresa un nombre...",
+    "addElementModal.parentLabel": "Padre",
 
     "assetManager.title": "Recursos",
     "assetManager.uploading": "Subiendo…",
@@ -89,8 +90,10 @@
     "settingsModal.themeLight": "Claro",
     "settingsModal.themeDark": "Oscuro",
     "settingsModal.themeSystem": "Seguir sistema",
+    "settingsModal.defaultCodeView": "Mostrar guiones en vista de código de forma predeterminada",
 
     "common.moveTo": "Mover a…",
+    "common.moveToFolder": "Mover a carpeta…",
     "common.cut": "Cortar",
     "common.copy": "Copiar",
     "common.paste": "Pegar",
@@ -102,12 +105,12 @@
     "common.moveDown": "Bajar",
 
     "elementAdders.room": "Añadir Lugar",
-    "elementAdders.roomHere": "Añadir Lugar aquí",
     "elementAdders.object": "Añadir Objeto",
     "elementAdders.objectHere": "Añadir Objeto aquí",
     "elementAdders.pageHere": "Añadir página aquí",
     "elementAdders.page": "Añadir Página",
     "elementAdders.function": "Añadir Función",
+    "elementAdders.functionHere": "Añadir Función aquí",
     "elementAdders.timer": "Añadir Temporizador",
     "elementAdders.verb": "Añadir Verbo",
     "elementAdders.command": "Añadir Comando",
@@ -153,7 +156,7 @@
     "addJavascriptModal.helpText": "Elige un archivo .js existente, escribe un nombre de archivo para crear uno nuevo, o sube un archivo.",
 
     "addLibraryModal.title": "Añadir Biblioteca Incluida",
-    "addLibraryModal.helpText": "Sube un archivo de biblioteca .aslx.",
+    "addLibraryModal.helpText": "Sube un archivo de biblioteca .aslx o .xml.",
     "addLibraryModal.noFileChosen": "Ningún archivo seleccionado",
     "addLibraryModal.change": "Cambiar…",
     "addLibraryModal.alreadyUsedError": "\"{name}\" ya está siendo usado por otra Biblioteca Incluida.",
@@ -171,6 +174,11 @@
     "moveElementModal.heading": "Mover \"{name}\"",
     "moveElementModal.newParentLabel": "Nuevo padre",
     "moveElementModal.moveButton": "Mover",
+
+    "moveToFolderModal.topLevel": "(nivel superior)",
+    "moveToFolderModal.heading": "Mover \"{name}\" a carpeta",
+    "moveToFolderModal.folderLabel": "Carpeta",
+    "moveToFolderModal.moveButton": "Mover",
 
     "linkPickerModal.defaultTextLabel": "Texto del enlace",
     "linkPickerModal.optionalSuffix": " (opcional)",
@@ -398,6 +406,7 @@
     "editPage.loadError": "No se pudo cargar este juego.",
     "editPage.failedToLoadGame": "Error al cargar el juego.",
     "editPage.backToHome": "Volver al inicio",
+    "editPage.skipToContent": "Saltar al contenido del editor",
 
     "openPage.title": "Editor de Quest Viva",
     "openPage.multipleFilesFound": "Se encontraron varios archivos de juego — elige uno para abrir:",

@@ -15,7 +15,7 @@
 //      "Couldn't reconnect" error within ~8s, not spin forever.
 //
 // Requires AppShell (5174) and WasmPlayer (5175) dev servers running.
-import { chromium } from 'playwright';
+import { chromium } from './lib/tracked-chromium.mjs';
 import { fileURLToPath } from 'node:url';
 import { dirname, join } from 'node:path';
 

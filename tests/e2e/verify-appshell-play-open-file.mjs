@@ -11,7 +11,7 @@
 // Requires AppShell (5174) and WasmPlayer (5175) dev servers running:
 //   node src/WasmPlayer/dev-server.mjs &
 //   (cd src/AppShell && PUBLIC_SHOW_HOME=true npx vite dev) &
-import { chromium } from 'playwright';
+import { chromium } from './lib/tracked-chromium.mjs';
 import { fileURLToPath } from 'node:url';
 import { dirname, join } from 'node:path';
 
@@ -50,6 +50,13 @@ async function run() {
 
     await popup.waitForFunction(() => document.title === 'Simple', null, { timeout: 15000 });
     console.log('[player] game booted, document.title:', await popup.title());
+
+    // A raw .aslx played straight from the Play tab (unlike a packaged .quest)
+    // should offer the same Debug options as the editor's own preview — see
+    // wasm-player.js's source=local boot branch.
+    const debugDisplay = await popup.$eval('#cmdDebug', el => getComputedStyle(el).display);
+    console.log('[player] Debug button display for .aslx file:', debugDisplay);
+    if (debugDisplay === 'none') throw new Error('Debug button should be visible when playing a .aslx file directly from the Play tab');
 
     // Back on the AppShell tab, the picked-file UI should have reset to the plain button.
     await page.waitForSelector('button:has-text("Open a game file…")', { timeout: 5000 });

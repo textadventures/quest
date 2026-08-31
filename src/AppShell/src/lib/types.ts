@@ -8,6 +8,12 @@ export interface TreeNode {
   // player object, and any built-in library such as Core.aslx or a language file), so the UI
   // never needs its own guess at what's deletable.
   canDelete: boolean
+  // The .aslx file this element was loaded from (e.g. "Core.aslx", "CoreTimers.aslx", or the
+  // game's own file). Only meaningful for grouping when isLibrary is true.
+  filename: string | null
+  // User-assigned organisational folder name, currently only settable on Function elements via
+  // "Move to folder" — purely a display grouping, like filename above, but author-controlled.
+  folder: string | null
 }
 
 export interface ControlOption {
@@ -57,6 +63,21 @@ export interface ControlInfo {
   href?: string | null
   newFile?: string | null
   lockedAfterCreate?: boolean
+  // <freetext/> - a "dropdown" control should let the user type a value not in its
+  // <validvalues> list, instead of being restricted to picking one of the listed options.
+  freetext?: boolean
+  // <minimum>/<maximum>/<increment> - bounds and step for a "number"/"numberdouble" control.
+  minimum?: number | null
+  maximum?: number | null
+  increment?: number | null
+  // <nullable/> - clearing this control's value (emptying the text) removes the attribute
+  // entirely (reverting to unset/inherited) instead of saving an explicit "". Matches the old
+  // Quest 5 desktop editor's behaviour for the same hint.
+  nullable?: boolean
+  // <width> - fixed pixel width for this control, instead of the default flexible sizing.
+  width?: number | null
+  // <bold/> - renders a "label" control's caption in bold.
+  bold?: boolean
 }
 
 export interface TabInfo {
@@ -122,6 +143,24 @@ export interface ScriptControlData {
   // one per dictionary key - lets the case-list editor render each case's script from initial
   // data without a further round trip, mirroring how "scripts" does this for a "script" control.
   cases?: CaseScriptData[] | null
+  // <multiline/> - the "textbox" simple editor should render as a resizable textarea that
+  // keeps embedded newlines instead of a single-line input.
+  multiline?: boolean
+  // <expand/> - this control should grow to fill the remaining width of its row instead of
+  // being capped to a fixed max-width.
+  expand?: boolean
+  // <freetext/> - a "dropdown" controltype or expression's "dropdown" simpleeditor should let
+  // the user type a value not in its <validvalues> list, instead of being restricted to
+  // picking one of the listed options.
+  freetext?: boolean
+  // <minimum>/<maximum>/<increment> - bounds and step for a "number"/"numberdouble" simple
+  // editor.
+  minimum?: number | null
+  maximum?: number | null
+  increment?: number | null
+  // <colour> - renders a "textbox" control's text in the given CSS colour name (e.g. "Red" for
+  // @failed's fallback-script text, "Green" for a // comment) as warning/info styling.
+  colour?: string | null
 }
 
 export interface ElseIfClauseData {
@@ -171,10 +210,16 @@ export interface ScriptCommandCategoriesData {
 
 export interface ExpressionTemplateControlData {
   name: string
+  controlType: string
+  caption: string | null
   value: string | null
   simpleEditor: string | null
   simpleLabel: string | null
   options: ControlOption[] | null
+  // <minimum>/<maximum>/<increment> - bounds and step for a "number"/"numberdouble" control.
+  minimum?: number | null
+  maximum?: number | null
+  increment?: number | null
 }
 
 export interface ExpressionTemplateData {

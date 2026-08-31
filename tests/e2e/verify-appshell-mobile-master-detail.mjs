@@ -2,7 +2,7 @@
 // home on a phone viewport, tapping an element pushes a full-screen
 // properties view with a back button, and desktop keeps the side-by-side +
 // splitter layout untouched.
-import { chromium } from 'playwright';
+import { chromium } from './lib/tracked-chromium.mjs';
 
 const baseUrl = process.argv[2] || 'http://localhost:5174';
 
@@ -27,8 +27,8 @@ try {
     const desktopPage = await createDraftAndGetPage(desktopCtx);
     await desktopPage.waitForSelector('[role="separator"][aria-orientation="vertical"]', { timeout: 5000 });
     console.log('PASS: desktop still shows the splitter');
-    const treeVisible = await desktopPage.locator('text=GAME OBJECTS').isVisible();
-    const propsVisible = await desktopPage.locator('text=PROPERTIES').isVisible();
+    const treeVisible = await desktopPage.locator('input[placeholder="Filter..."]').isVisible();
+    const propsVisible = await desktopPage.locator('button:has-text("Setup")').isVisible();
     if (!treeVisible || !propsVisible) throw new Error('Desktop should show both tree and properties panes');
     console.log('PASS: desktop shows tree and properties panes side by side');
     await desktopCtx.close();
@@ -39,8 +39,8 @@ try {
     const splitterCount = await mobilePage.locator('[role="separator"][aria-orientation="vertical"]').count();
     if (splitterCount !== 0) throw new Error('Mobile should not render the splitter');
     console.log('PASS: mobile hides the splitter');
-    if (!(await mobilePage.locator('text=GAME OBJECTS').isVisible())) throw new Error('Mobile should start on the tree pane');
-    if (await mobilePage.locator('text=PROPERTIES').isVisible()) throw new Error('Mobile should not show the properties pane yet');
+    if (!(await mobilePage.locator('input[placeholder="Filter..."]').isVisible())) throw new Error('Mobile should start on the tree pane');
+    if (await mobilePage.locator('button:has-text("Setup")').isVisible()) throw new Error('Mobile should not show the properties pane yet');
     console.log('PASS: mobile starts on the tree pane, full width');
     await mobilePage.screenshot({ path: '/tmp/mobile-tree-pane.png' });
 
@@ -48,7 +48,7 @@ try {
     // must NOT trigger onactivate), so tap "room" to actually change selection.
     await mobilePage.click('text=room');
     await mobilePage.waitForSelector('button:has-text("room")', { timeout: 5000 }); // back header
-    if (await mobilePage.locator('text=GAME OBJECTS').isVisible()) throw new Error('Tree pane should be hidden after activating a node');
+    if (await mobilePage.locator('input[placeholder="Filter..."]').isVisible()) throw new Error('Tree pane should be hidden after activating a node');
     console.log('PASS: tapping a tree node pushes the properties pane with a back header showing its name');
     await mobilePage.screenshot({ path: '/tmp/mobile-props-pane.png' });
 
@@ -57,14 +57,14 @@ try {
     // sure of that (in case state left it collapsed), then verify the
     // expansion survives the pane switch (the original intent of this check).
     await mobilePage.click('button:has-text("room")');
-    await mobilePage.waitForSelector('text=GAME OBJECTS', { timeout: 5000 });
+    await mobilePage.waitForSelector('input[placeholder="Filter..."]', { timeout: 5000 });
     const roomCaret = mobilePage.locator('[data-part="branch-control"]:has-text("room") >> button[aria-label="Expand"]');
     if (await roomCaret.count()) { await roomCaret.first().click(); }
     await mobilePage.waitForSelector('text=player', { timeout: 5000 });
     await mobilePage.click('text=player');
     await mobilePage.waitForSelector('button:has-text("player")', { timeout: 5000 });
     await mobilePage.click('button:has-text("player")'); // back to tree
-    await mobilePage.waitForSelector('text=GAME OBJECTS', { timeout: 5000 });
+    await mobilePage.waitForSelector('input[placeholder="Filter..."]', { timeout: 5000 });
     const playerVisibleAfterBack = await mobilePage.locator('text=player').first().isVisible();
     if (!playerVisibleAfterBack) throw new Error('Tree expansion state should survive switching panes');
     console.log('PASS: back button returns to tree pane with expansion state intact');

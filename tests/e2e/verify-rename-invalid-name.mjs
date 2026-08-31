@@ -4,7 +4,7 @@
 // friendly message. This checks that an inline error now appears (and a toast that survives
 // switching to a different tree node, unlike the tab-scoped inline error) and the rename doesn't
 // stick.
-import { chromium } from 'playwright';
+import { chromium } from './lib/tracked-chromium.mjs';
 
 const baseUrl = process.argv[2] || 'http://localhost:5174';
 
@@ -72,8 +72,11 @@ async function run() {
     if (!borderClass?.includes('border-error-500')) throw new Error('Expected name input to get an error border');
     console.log('PASS: name input gets an error border');
 
-    // A toast should also have fired, rendered at the layout level.
-    const toast = page.locator('[role="alert"]', { hasText: /invalid/i });
+    // A toast should also have fired, rendered at the layout level. Scoped to Toast.svelte's
+    // "preset-filled-*" class (not just [role="alert"]) since PropertyEditor's tab-scoped inline
+    // error paragraph also picked up role="alert" in a later accessibility pass, making the two
+    // ambiguous under a bare role selector.
+    const toast = page.locator('[role="alert"][class*="preset-filled"]', { hasText: /invalid/i });
     await toast.waitFor({ timeout: 5000 });
     console.log(`PASS: toast notification shown: "${await toast.textContent()}"`);
 

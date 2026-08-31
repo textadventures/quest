@@ -6,10 +6,11 @@
 //   dotnet build src/WasmPlayer/WasmPlayer.csproj
 //   (cd src/ElectronApp && npm run build)
 import { _electron as electron } from 'playwright';
-import { mkdtempSync, rmSync } from 'node:fs';
+import { mkdtempSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { createRequire } from 'node:module';
+import { removeTempDirs } from './lib/electron-cleanup.mjs';
 
 const electronAppDir = join(import.meta.dirname, '..', '..', 'src', 'ElectronApp');
 const electronExecutablePath = createRequire(join(electronAppDir, 'package.json'))('electron');
@@ -52,7 +53,7 @@ let failed = false;
         failed = true;
     } finally {
         await app.close();
-        rmSync(userDataDir, { recursive: true, force: true });
+        removeTempDirs(userDataDir);
     }
 }
 
@@ -91,7 +92,7 @@ let failed = false;
         failed = true;
     } finally {
         await app.close();
-        rmSync(userDataDir, { recursive: true, force: true });
+        removeTempDirs(userDataDir);
     }
 }
 

@@ -1,7 +1,8 @@
 <script lang="ts">
     import { SvelteSet } from "svelte/reactivity";
-    import { treeNodes, selectedKey, selectNode, deleteElement, openAddModal, createVerb, createCommand, createTurnScript, openAddLibraryModal, openAddJavascriptModal, swapElements, isGamebook } from "$lib/editor-store";
+    import { treeNodes, selectedKey, selectNode, deleteElement, openAddModal, createVerb, createCommand, createTurnScript, openAddLibraryModal, openAddJavascriptModal, swapElements, isGamebook, openMoveToFolderModal, canMoveFunctionUp, canMoveFunctionDown, canMoveFunctionFolderUp, canMoveFunctionFolderDown, moveFunctionFolderUp, moveFunctionFolderDown } from "$lib/editor-store";
     import { nodeIcon } from "$lib/node-icons";
+    import Folder from "@lucide/svelte/icons/folder";
     import { t } from "$lib/i18n";
 
     interface Props {
@@ -35,6 +36,38 @@
                 (showAll || n.parent === elementKey)
         )
     );
+
+    // ── Library / folder grouping ─────────────────────────────────────────────
+    // Purely a display grouping over the existing flat, SortIndex-ordered `items` — no
+    // reordering. A group header is inserted before each new contiguous run of items sharing a
+    // filename (library-origin) or a folder (user-assigned, Functions only), so move up/down
+    // (which swaps SortIndex on the underlying list) stays untouched and headers simply track
+    // wherever the runs currently fall. "Move to folder" is what keeps a folder's members
+    // contiguous — see EditorController.SetFunctionFolder.
+    // `grouped` distinguishes a row that's actually under the header above it from one that
+    // merely comes right after — without it, an ungrouped item immediately following a group (no
+    // header of its own in between) rendered identically to a grouped one, making it look like
+    // part of the folder above when it wasn't.
+    type Row = { kind: "header"; key: string; label: string; isLibraryGroup: boolean } | { kind: "item"; index: number; item: typeof items[number]; grouped: boolean };
+
+    let rows = $derived.by(() => {
+        const out: Row[] = [];
+        let lastGroup: string | null = null;
+        items.forEach((item, index) => {
+            const isLibraryGroup = !!(item.isLibrary && item.filename);
+            const group = isLibraryGroup ? item.filename! : (item.folder || null);
+            if (group !== null && group !== lastGroup) {
+                out.push({ kind: "header", key: `__group_${item.key}`, label: group, isLibraryGroup });
+            }
+            lastGroup = group;
+            out.push({ kind: "item", index, item, grouped: group !== null });
+        });
+        return out;
+    });
+
+    // "Move to folder" is only wired up for Functions - GetFunctionFolders/SetFunctionFolder
+    // are Function-only on the backend (see EditorController).
+    let supportsFolders = $derived(nodeTypes.includes("function"));
 
     // ── Selection ──────────────────────────────────────────────────────────────
 
@@ -100,26 +133,39 @@
 
     // ── Move / delete ──────────────────────────────────────────────────────────
 
+    // Functions gate the swap on canMoveFunctionUp/Down too - a plain adjacent swap has no
+    // concept of folders, and swapping past the near edge of a *different* multi-member folder
+    // would split it in two by landing the mover between two of its other members.
+    function canMoveUp(index: number): boolean {
+        if (index <= 0) return false;
+        return !supportsFolders || canMoveFunctionUp(items[index].key);
+    }
+
+    function canMoveDown(index: number): boolean {
+        if (index < 0 || index >= items.length - 1) return false;
+        return !supportsFolders || canMoveFunctionDown(items[index].key);
+    }
+
     function moveUp(index: number) {
-        if (index <= 0) return;
+        if (!canMoveUp(index)) return;
         swapElements(items[index].key, items[index - 1].key);
     }
 
     function moveDown(index: number) {
-        if (index >= items.length - 1) return;
+        if (!canMoveDown(index)) return;
         swapElements(items[index].key, items[index + 1].key);
     }
 
     function onMoveUpSelected() {
         const key = activeSelection[0];
         const idx = items.findIndex(i => i.key === key);
-        if (idx > 0) swapElements(items[idx].key, items[idx - 1].key);
+        if (canMoveUp(idx)) swapElements(items[idx].key, items[idx - 1].key);
     }
 
     function onMoveDownSelected() {
         const key = activeSelection[0];
         const idx = items.findIndex(i => i.key === key);
-        if (idx >= 0 && idx < items.length - 1) swapElements(items[idx].key, items[idx + 1].key);
+        if (canMoveDown(idx)) swapElements(items[idx].key, items[idx + 1].key);
     }
 
     function onDeleteSelected() {
@@ -171,53 +217,96 @@
     {#if items.length === 0}
         <p class="text-xs text-surface-600-400 italic">{t("elementsList.noItems")}</p>
     {:else}
-        {#each items as item, i (item.key)}
-            <div class="group relative border border-surface-200-800 rounded mb-1 bg-surface-50-950 flex items-center">
-                <label class="flex items-center pt-1 pb-1 pl-1.5 pr-0.5 cursor-pointer flex-shrink-0">
-                    <input
-                        type="checkbox"
-                        class="checkbox size-3.5"
-                        checked={selectedKeys.has(item.key)}
-                        onchange={(e) => toggleSelect(item.key, (e.target as HTMLInputElement).checked)}
-                    />
-                </label>
-                <!-- pr-20 keeps name clear of the hover buttons (≈3×24px) -->
-                <button
-                    type="button"
-                    class="flex-1 flex items-center gap-1.5 text-left text-xs px-1.5 py-1 pr-20 text-primary-600-400 hover:underline truncate"
-                    onclick={() => selectNode(item.key)}
-                >
-                    {#if isObjectList}
-                        {@const Icon = nodeIcon(item.key, item.nodeType)}
-                        <Icon size={13} class="flex-shrink-0 opacity-70" />
+        {#each rows as row (row.kind === "header" ? row.key : row.item.key)}
+            {#if row.kind === "header"}
+                <div class="group relative flex items-center mt-2 mb-1">
+                    <div
+                        class="text-[11px] font-semibold text-surface-600-400 uppercase tracking-wide px-1 truncate flex-1 {supportsFolders && !row.isLibraryGroup ? "pr-16" : ""}"
+                        title={row.label}
+                    >{row.label}</div>
+                    {#if supportsFolders && !row.isLibraryGroup}
+                        <div class="absolute right-1 top-1/2 -translate-y-1/2 flex gap-0.5 opacity-0 pointer-events-none group-hover:opacity-100 group-hover:pointer-events-auto transition-opacity z-10">
+                            <button
+                                type="button"
+                                class="btn btn-sm preset-outlined-primary-500 px-1 py-0 text-xs leading-none"
+                                title={t("elementAdders.functionHere")}
+                                onclick={() => openAddModal("function", null, row.label)}
+                            >+</button>
+                            <button
+                                type="button"
+                                class="btn btn-sm preset-outlined-primary-500 px-1 py-0 text-xs leading-none"
+                                title={t("common.moveUp")}
+                                disabled={!canMoveFunctionFolderUp(row.label)}
+                                onclick={() => moveFunctionFolderUp(row.label)}
+                            >↑</button>
+                            <button
+                                type="button"
+                                class="btn btn-sm preset-outlined-primary-500 px-1 py-0 text-xs leading-none"
+                                title={t("common.moveDown")}
+                                disabled={!canMoveFunctionFolderDown(row.label)}
+                                onclick={() => moveFunctionFolderDown(row.label)}
+                            >↓</button>
+                        </div>
                     {/if}
-                    <span class="truncate">{item.text}</span>
-                </button>
-                <!-- pointer-events-none when invisible so clicks reach the name button -->
-                <div class="absolute right-1 top-1/2 -translate-y-1/2 flex gap-0.5 opacity-0 pointer-events-none group-hover:opacity-100 group-hover:pointer-events-auto transition-opacity z-10">
-                    <button
-                        type="button"
-                        class="btn btn-sm preset-outlined-primary-500 px-1 py-0 text-xs leading-none"
-                        title={t("common.moveUp")}
-                        disabled={i === 0}
-                        onclick={() => moveUp(i)}
-                    >↑</button>
-                    <button
-                        type="button"
-                        class="btn btn-sm preset-outlined-primary-500 px-1 py-0 text-xs leading-none"
-                        title={t("common.moveDown")}
-                        disabled={i === items.length - 1}
-                        onclick={() => moveDown(i)}
-                    >↓</button>
-                    <button
-                        type="button"
-                        class="btn btn-sm preset-tonal-error px-1 py-0 text-xs leading-none"
-                        title={item.canDelete ? t("common.delete") : t("elementsList.cannotDelete")}
-                        disabled={!item.canDelete}
-                        onclick={() => onDeleteItem(item.key)}
-                    >×</button>
                 </div>
-            </div>
+            {:else}
+                {@const item = row.item}
+                {@const i = row.index}
+                <div class="group relative border border-surface-200-800 rounded mb-1 bg-surface-50-950 flex items-center {row.grouped ? "ml-3 border-l-2 border-l-primary-300-700" : ""}">
+                    <label class="flex items-center pt-1 pb-1 pl-1.5 pr-0.5 cursor-pointer flex-shrink-0">
+                        <input
+                            type="checkbox"
+                            class="checkbox size-3.5"
+                            checked={selectedKeys.has(item.key)}
+                            onchange={(e) => toggleSelect(item.key, (e.target as HTMLInputElement).checked)}
+                        />
+                    </label>
+                    <!-- pr-20/pr-28 keeps name clear of the hover buttons (3 or 4 × 24px) -->
+                    <button
+                        type="button"
+                        class="flex-1 flex items-center gap-1.5 text-left text-xs px-1.5 py-1 {supportsFolders && !item.isLibrary ? "pr-28" : "pr-20"} text-primary-600-400 hover:underline truncate"
+                        onclick={() => selectNode(item.key)}
+                    >
+                        {#if isObjectList}
+                            {@const Icon = nodeIcon(item.key, item.nodeType)}
+                            <Icon size={13} class="flex-shrink-0 opacity-70" />
+                        {/if}
+                        <span class="truncate">{item.text}</span>
+                    </button>
+                    <!-- pointer-events-none when invisible so clicks reach the name button -->
+                    <div class="absolute right-1 top-1/2 -translate-y-1/2 flex gap-0.5 opacity-0 pointer-events-none group-hover:opacity-100 group-hover:pointer-events-auto transition-opacity z-10">
+                        {#if supportsFolders && !item.isLibrary}
+                            <button
+                                type="button"
+                                class="btn btn-sm preset-outlined-primary-500 px-1 py-0 text-xs leading-none"
+                                title={t("common.moveToFolder")}
+                                onclick={() => openMoveToFolderModal(item.key)}
+                            ><Folder size={11} /></button>
+                        {/if}
+                        <button
+                            type="button"
+                            class="btn btn-sm preset-outlined-primary-500 px-1 py-0 text-xs leading-none"
+                            title={t("common.moveUp")}
+                            disabled={!canMoveUp(i)}
+                            onclick={() => moveUp(i)}
+                        >↑</button>
+                        <button
+                            type="button"
+                            class="btn btn-sm preset-outlined-primary-500 px-1 py-0 text-xs leading-none"
+                            title={t("common.moveDown")}
+                            disabled={!canMoveDown(i)}
+                            onclick={() => moveDown(i)}
+                        >↓</button>
+                        <button
+                            type="button"
+                            class="btn btn-sm preset-tonal-error px-1 py-0 text-xs leading-none"
+                            title={item.canDelete ? t("common.delete") : t("elementsList.cannotDelete")}
+                            disabled={!item.canDelete}
+                            onclick={() => onDeleteItem(item.key)}
+                        >×</button>
+                    </div>
+                </div>
+            {/if}
         {/each}
     {/if}
 
@@ -237,13 +326,13 @@
                 <button
                     type="button"
                     class="btn btn-sm preset-outlined-primary-500 text-xs py-0.5"
-                    disabled={idx === 0}
+                    disabled={!canMoveUp(idx)}
                     onclick={onMoveUpSelected}
                 >↑ {t("common.moveUp")}</button>
                 <button
                     type="button"
                     class="btn btn-sm preset-outlined-primary-500 text-xs py-0.5"
-                    disabled={idx === items.length - 1}
+                    disabled={!canMoveDown(idx)}
                     onclick={onMoveDownSelected}
                 >↓ {t("common.moveDown")}</button>
             {/if}

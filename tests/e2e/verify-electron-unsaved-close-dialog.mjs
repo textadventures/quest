@@ -29,10 +29,11 @@
 // src/ElectronApp/dist — run electron.sh once first (or the build steps
 // inside it) so dist/ and resources/app-static exist.
 import { _electron as electron } from 'playwright';
-import { mkdtempSync, rmSync } from 'node:fs';
+import { mkdtempSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { createRequire } from 'node:module';
+import { killElectronApp, removeTempDirs } from './lib/electron-cleanup.mjs';
 
 const electronAppDir = join(import.meta.dirname, '..', '..', 'src', 'ElectronApp');
 const electronExecutablePath = createRequire(join(electronAppDir, 'package.json'))('electron');
@@ -47,23 +48,8 @@ async function withFreshApp(fn) {
         await win.waitForSelector('a:has-text("Create"), a:has-text("Play")', { timeout: 30000 });
         return await fn(app, win);
     } finally {
-        const proc = app?.process();
-        if (proc && proc.exitCode === null) {
-            // kill() only sends the signal — it doesn't wait for the process to actually
-            // terminate, so without this the rmSync below could race a still-running process.
-            const exited = new Promise(resolve => proc.once('exit', resolve));
-            proc.kill('SIGKILL');
-            await exited;
-        }
-        // Even after exit, Chromium's disk-cache writeback can still be finishing up, so an
-        // immediate rmSync can hit ENOTEMPTY on Cache_Data — maxRetries/retryDelay ride out
-        // that race, and if it still can't win, that's just leftover junk in the OS temp dir,
-        // not a test failure: log it and move on rather than failing the whole verification.
-        try {
-            rmSync(userDataDir, { recursive: true, force: true, maxRetries: 5, retryDelay: 200 });
-        } catch (err) {
-            console.warn(`WARN: could not remove temp userData dir ${userDataDir}: ${err.message}`);
-        }
+        await killElectronApp(app);
+        removeTempDirs(userDataDir);
     }
 }
 

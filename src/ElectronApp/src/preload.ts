@@ -169,6 +169,12 @@ contextBridge.exposeInMainWorld("electronApp", {
         get: (): Promise<string | null> => ipcRenderer.invoke("updateDismiss:get"),
         set: (version: string): Promise<void> => ipcRenderer.invoke("updateDismiss:set", version),
     },
+    defaultCodeView: {
+        // Whether ScriptEditor instances default to raw code view — see
+        // ElectronApp's default-code-view-store.ts for why this can't be localStorage.
+        get: (): Promise<boolean | null> => ipcRenderer.invoke("defaultCodeView:get"),
+        set: (enabled: boolean): Promise<void> => ipcRenderer.invoke("defaultCodeView:set", enabled),
+    },
     uiState: {
         // Per-game editor UI state (currently the tree's expanded-node ids),
         // keyed by the game's <gameid> — see ElectronApp's ui-state-store.ts

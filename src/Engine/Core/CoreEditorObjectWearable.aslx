@@ -9,7 +9,6 @@
       <controltype>dropdowntypes</controltype>
       <caption>[EditorObjectWearableCanBeWorn]</caption>
       <types>*=[EditorObjectWearableTypCannotBeWorn]; wearable=[EditorObjectWearableTypCanBeWorn]</types>
-      <width>150</width>
     </control>
 
     <control>

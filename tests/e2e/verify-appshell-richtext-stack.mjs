@@ -7,7 +7,7 @@
 // grouped Insert menu") removed that layout entirely in favor of a fixed icon toolbar always
 // rendered above the textarea (see PropertyEditor.svelte's textProcessorTextareaId / the
 // `flex flex-col gap-1 w-full` wrapper), so there's no row/column distinction left to assert on.
-import { chromium } from 'playwright';
+import { chromium } from './lib/tracked-chromium.mjs';
 
 const baseUrl = process.argv[2] || 'http://localhost:5174';
 

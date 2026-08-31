@@ -3,6 +3,7 @@
     import { assets, treeNodes, refreshAssets, uploadAsset, deleteAssetAndOwner, resolveAssetUrl, isImageAsset } from "$lib/editor-store";
     import { confirmDialog } from "$lib/confirm";
     import { t } from "$lib/i18n";
+    import { trapFocus } from "$lib/actions/trapFocus";
     import FileIcon from "@lucide/svelte/icons/file";
 
     interface Props {
@@ -30,6 +31,8 @@
     let inputEl: HTMLInputElement;
     let uploading = $state(false);
     let error = $state("");
+    let dialogEl = $state<HTMLDivElement>();
+    $effect(() => { dialogEl?.focus(); });
 
     async function handleUpload(e: Event) {
         const target = e.target as HTMLInputElement;
@@ -76,12 +79,14 @@
 </script>
 
 <div
+    bind:this={dialogEl}
     role="dialog"
     aria-modal="true"
     tabindex="-1"
     class="fixed inset-0 bg-black/30 flex items-center justify-center z-50 p-4"
     onclick={onBackdropClick}
     onkeydown={handleKeydown}
+    use:trapFocus
 >
     <div class="card bg-surface-50-950 rounded-xl shadow-xl w-full max-w-[32rem] max-h-[85dvh] p-6 flex flex-col gap-4">
         <div class="flex items-center justify-between">

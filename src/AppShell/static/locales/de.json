@@ -58,6 +58,7 @@
     "addElementModal.addHeadingIn": "Neu: {label} unter \"{parent}\"",
     "addElementModal.nameLabel": "Name",
     "addElementModal.namePlaceholder": "Gib einen Namen ein...",
+    "addElementModal.parentLabel": "Übergeordnete Ebene",
 
     "assetManager.title": "Ressourcen",
     "assetManager.uploading": "Hochladen…",
@@ -89,8 +90,10 @@
     "settingsModal.themeLight": "Hell",
     "settingsModal.themeDark": "Dunkel",
     "settingsModal.themeSystem": "Systemeinstellung",
+    "settingsModal.defaultCodeView": "Skripte standardmäßig in Code-Ansicht anzeigen",
 
     "common.moveTo": "Verschieben nach…",
+    "common.moveToFolder": "In Ordner verschieben…",
     "common.cut": "Ausschneiden",
     "common.copy": "Kopieren",
     "common.paste": "Einfügen",
@@ -102,12 +105,12 @@
     "common.moveDown": "Nach unten schieben",
 
     "elementAdders.room": "Neuer Raum",
-    "elementAdders.roomHere": "Neuer Raum hier",
     "elementAdders.object": "Neues Objekt",
     "elementAdders.objectHere": "Neues Objekt hier",
     "elementAdders.pageHere": "Seite hier hinzufügen",
     "elementAdders.page": "Neue Seite",
     "elementAdders.function": "Neue Funktion",
+    "elementAdders.functionHere": "Neue Funktion hier",
     "elementAdders.timer": "Neuer Timer",
     "elementAdders.verb": "Neues Verb",
     "elementAdders.command": "Neues Kommando",
@@ -153,7 +156,7 @@
     "addJavascriptModal.helpText": "Wähle eine vorhandene .js-Datei aus, gebe einen Dateinamen ein, um eine neue Datei zu erstellen, oder lade eine Datei hoch.",
 
     "addLibraryModal.title": "Eingebundene Bibliothek hinzufügen",
-    "addLibraryModal.helpText": "Lade eine .aslx Bibliotheksdatei hoch.",
+    "addLibraryModal.helpText": "Lade eine .aslx- oder .xml-Bibliotheksdatei hoch.",
     "addLibraryModal.noFileChosen": "Keine Datei ausgewählt",
     "addLibraryModal.change": "Ändern…",
     "addLibraryModal.alreadyUsedError": "\"{name}\" wird bereits von einer anderen eingebundenen Bibliothek verwendet.",
@@ -171,6 +174,11 @@
     "moveElementModal.heading": "Verschiebe \"{name}\"",
     "moveElementModal.newParentLabel": "Neue übergeordnete Ebene",
     "moveElementModal.moveButton": "Verschieben",
+
+    "moveToFolderModal.topLevel": "(oberste Ebene)",
+    "moveToFolderModal.heading": "Verschiebe \"{name}\" in Ordner",
+    "moveToFolderModal.folderLabel": "Ordner",
+    "moveToFolderModal.moveButton": "Verschieben",
 
     "linkPickerModal.defaultTextLabel": "Link-Text",
     "linkPickerModal.optionalSuffix": " (optional)",
@@ -398,6 +406,7 @@
     "editPage.loadError": "Dieses Spiel konnte nicht geladen werden.",
     "editPage.failedToLoadGame": "Spiel konnte nicht geladen werden.",
     "editPage.backToHome": "Zurück zur Startseite",
+    "editPage.skipToContent": "Zum Editor-Inhalt springen",
 
     "openPage.title": "Quest Viva Editor",
     "openPage.multipleFilesFound": "Mehrere Spieldateien gefunden — wähle eine zum Öffnen aus:",

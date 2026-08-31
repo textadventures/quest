@@ -1,6 +1,7 @@
 <script lang="ts">
     import { treeNodes, uploadAsset } from "$lib/editor-store";
     import { t } from "$lib/i18n";
+    import { trapFocus } from "$lib/actions/trapFocus";
     import FileIcon from "@lucide/svelte/icons/file";
 
     interface Props {
@@ -21,6 +22,9 @@
     // element's content out from under it. An Included Library node's tree label is exactly its
     // filename (EditorController.GetDisplayName), so this needs no extra bridge call.
     let alreadyUsed = $derived(new Set($treeNodes.filter(n => n.nodeType === "include").map(n => n.text)));
+
+    let dialogEl = $state<HTMLDivElement>();
+    $effect(() => { dialogEl?.focus(); });
 
     async function handleUpload(e: Event) {
         const target = e.target as HTMLInputElement;
@@ -58,12 +62,14 @@
 </script>
 
 <div
+    bind:this={dialogEl}
     role="dialog"
     aria-modal="true"
     tabindex="-1"
     class="fixed inset-0 bg-black/30 flex items-center justify-center z-50 p-4"
     onclick={onBackdropClick}
     onkeydown={handleKeydown}
+    use:trapFocus
 >
     <div class="card bg-surface-50-950 rounded-xl shadow-xl w-full max-w-96 p-6 flex flex-col gap-4">
         <h2 class="text-base font-semibold">{t("addLibraryModal.title")}</h2>
@@ -85,7 +91,7 @@
                     onclick={() => inputEl.click()}
                     disabled={uploading}
                 >{uploading ? t("assetManager.uploading") : filename ? t("addLibraryModal.change") : t("assetManager.upload")}</button>
-                <input bind:this={inputEl} type="file" accept=".aslx" class="hidden" onchange={handleUpload} />
+                <input bind:this={inputEl} type="file" accept=".aslx,.xml" class="hidden" onchange={handleUpload} />
             </div>
             {#if error}<p class="text-xs text-error-500">{error}</p>{/if}
         </div>

@@ -2,7 +2,7 @@
 // FSA-capable browser (Chromium), the /open page should now default to OPFS
 // local drafts (same as Firefox/Safari) and offer "Open game folder" /
 // "Save to folder…" as secondary FSA options, not the primary path.
-import { chromium } from 'playwright';
+import { chromium } from './lib/tracked-chromium.mjs';
 
 const baseUrl = process.argv[2] || 'http://localhost:5174';
 

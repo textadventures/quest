@@ -43,12 +43,15 @@
         removeScriptDictCase,
         renameScriptDictCase,
     } from "$lib/editor-store";
+    import { defaultCodeView } from "$lib/code-view-store";
+    import { measureTextPx } from "$lib/text-measure";
     import type {
         ScriptBlockData,
         ScriptNodeData,
         ScriptControlData,
         ScriptCategoryInfo,
         ExpressionTemplateData,
+        ExpressionTemplateControlData,
         ExpressionTemplate,
         ExpressionFunctionInfo,
         CaseScriptData,
@@ -85,6 +88,10 @@
     // Tracks which expression controls the user has explicitly forced into expression mode,
     // overriding the default simple-mode detection based on value shape.
     const expressionOverrides = new SvelteSet<string>();
+    // Same idea as expressionOverrides, but for a single parameter *inside* an expression
+    // template (e.g. RandomChance's "percentile") rather than a whole script command param -
+    // keyed by `${overrideKey}::${ctrl.name}`, see expressionField/templateParamKey.
+    const templateParamOverrides = new SvelteSet<string>();
     // Tracks which switch cases (scriptdictionary control entries) are expanded, keyed by
     // `${scriptIndex}:${paramAttribute}:${caseKey}` - see switchCasesEditor.
     const expandedCases = new SvelteSet<string>();
@@ -109,6 +116,16 @@
     function templatesFor(expressionType: string | null | undefined): ExpressionTemplate[] {
         return (expressionType && templatesByType[expressionType]) || [];
     }
+
+    // Only root instances show the code-view toggle (nested if/for/case
+    // sub-editors share the root's `attribute` script, so their own
+    // codeViewMode is never read — see the isRoot guards below and on the
+    // scriptCode effect). The setting is a standing preference, not a
+    // per-panel choice: changing it flips every root ScriptEditor currently
+    // on screen, overriding whatever any of them was individually showing.
+    $effect(() => {
+        if (isRoot) codeViewMode = $defaultCodeView;
+    });
 
     // Load on mount and whenever scriptVersion bumps (undo/redo)
     $effect(() => {
@@ -153,6 +170,16 @@
         }
     });
 
+    // Code view has its own separately-fetched buffer (scriptCode), so it needs its own
+    // reactive refresh when the selected element/attribute changes (e.g. picking a different
+    // command in the tree while code view is already open) - the scriptData effect above only
+    // covers the visual editor's data.
+    $effect(() => {
+        if (isRoot && codeViewMode) {
+            scriptCode = getScriptCode(elementKey, attribute);
+        }
+    });
+
     function scripts(): ScriptNodeData[] {
         if (!isRoot && initialData !== null) return initialData;
         return scriptData?.scripts ?? [];
@@ -163,6 +190,7 @@
             scriptData = getScriptData(elementKey, attribute);
         }
         expressionOverrides.clear();
+        templateParamOverrides.clear();
     }
 
     function mutate(fn: () => string): boolean {
@@ -186,7 +214,13 @@
         return objectNames;
     }
 
-    function isSimpleValue(ctrl: ScriptControlData): boolean {
+    // Loosened to a minimal structural shape (rather than ScriptControlData specifically) so
+    // this same simple/expression-shape check works for both an ordinary script command param
+    // and a control nested inside an expression template (e.g. RandomChance's "percentile") -
+    // see inTemplateParamSimpleMode below, which is the only other caller of this shape.
+    type SimpleValueLike = { simpleEditor: string | null; value: string | null };
+
+    function isSimpleValue(ctrl: SimpleValueLike): boolean {
         const v = ctrl.value ?? "";
         switch (ctrl.simpleEditor) {
             case "boolean":
@@ -210,7 +244,104 @@
         return isSimpleValue(ctrl);
     }
 
-    function toSimpleDisplay(ctrl: ScriptControlData): string {
+    // Same intent as onSwitchToSimple's inline switch below, but as a pure function (a template
+    // control's toggle has no scriptIndex/onSetParam to hang that logic off) and with "objects"
+    // broken out from the default case: an object reference resets to a bare "" (nothing
+    // selected), not the quoted empty string a textbox/dropdown simple editor wants.
+    function defaultSimpleValue(simpleEditor: string): string {
+        switch (simpleEditor) {
+            case "number":
+            case "numberdouble":
+                return "0";
+            case "objects":
+                return "";
+            default:
+                return '""';
+        }
+    }
+
+    function templateParamKey(overrideKey: string, ctrlName: string): string {
+        return `${overrideKey}::${ctrlName}`;
+    }
+
+    function inTemplateParamSimpleMode(overrideKey: string, ctrl: ExpressionTemplateControlData): boolean {
+        if (!ctrl.simpleEditor) return false;
+        if (templateParamOverrides.has(templateParamKey(overrideKey, ctrl.name))) return false;
+        return isSimpleValue(ctrl);
+    }
+
+    // Svelte action: sizes a <select> (the condition/template picker, or a template control's
+    // object picker) to fit its own currently selected text rather than a fixed Tailwind max-w
+    // class - a plain width class either truncates a long value or, since a native <select>
+    // without an explicit width sizes to its widest *option* rather than the selected one, stays
+    // wide even once a short option is picked (e.g. Got(#object#) offering an object list that
+    // includes some long name).
+    //
+    // A canvas-measured text width plus a guessed flat reserve for the select's own native
+    // dropdown-arrow chrome was tried here first and still clipped the last character or so in
+    // practice - that chrome's actual footprint is drawn by the OS/browser itself, not something
+    // any fixed constant can promise to match everywhere. Instead, this asks the browser
+    // directly: an offscreen probe <select> - same classes, single option matching the real
+    // text, width left to size itself naturally - lays out exactly as wide as this browser wants
+    // to render that text with its own arrow, on this exact system. `minCh`/`maxCh` stay
+    // expressed in roughly character terms for callers, converted using this element's own
+    // "0"-glyph width (measureTextPx), since only they still need an actual estimate.
+    function autoWidthSelect(node: HTMLSelectElement, opts: { text: string; minCh: number; maxCh: number }) {
+        const probe = document.createElement("select");
+        probe.className = node.className;
+        probe.style.width = "auto";
+        probe.style.position = "fixed";
+        probe.style.visibility = "hidden";
+        probe.style.left = "-9999px";
+        probe.setAttribute("aria-hidden", "true");
+        probe.tabIndex = -1;
+        document.body.appendChild(probe);
+
+        function apply(o: typeof opts) {
+            probe.innerHTML = "";
+            const opt = document.createElement("option");
+            opt.textContent = o.text || " ";
+            probe.appendChild(opt);
+            const naturalWidth = probe.getBoundingClientRect().width;
+            const chPx = measureTextPx("0", getComputedStyle(node).font) || 8;
+            const minPx = o.minCh * chPx;
+            const maxPx = o.maxCh * chPx;
+            node.style.width = `${Math.max(minPx, Math.min(maxPx, naturalWidth))}px`;
+        }
+        apply(opts);
+        return {
+            update: apply,
+            destroy() {
+                probe.remove();
+            },
+        };
+    }
+
+    // Grows a multiline textbox to exactly fit its content (one line when empty/single-line,
+    // taller as more lines are typed) instead of a fixed row count that leaves blank space.
+    function autoResizeTextarea(node: HTMLTextAreaElement, value: string) {
+        void value; // only needed so Svelte calls `update` below when it changes externally
+        function resize() {
+            node.style.height = "auto";
+            node.style.height = `${node.scrollHeight}px`;
+        }
+        resize();
+        node.addEventListener("input", resize);
+        return {
+            update(newValue: string) {
+                // Skip when this fires for the field's own keystrokes (already resized live by
+                // the "input" listener) and only re-measure for genuinely external changes.
+                if (newValue !== node.value) {
+                    resize();
+                }
+            },
+            destroy() {
+                node.removeEventListener("input", resize);
+            },
+        };
+    }
+
+    function toSimpleDisplay(ctrl: SimpleValueLike): string {
         const v = ctrl.value ?? "";
         switch (ctrl.simpleEditor) {
             case "boolean":
@@ -528,7 +659,7 @@
             language="quest-script"
             readonly={isLocked}
             onChange={onCodeViewSave}
-            minHeight="10rem"
+            minHeight="auto"
         />
     {:else}
         <div role="region" inert={isLocked || undefined} class={isLocked ? "opacity-60" : ""}>
@@ -659,7 +790,7 @@
 </div>
 
 {#snippet normalBlock(script: ScriptNodeData, i: number)}
-    <div class="px-2 py-1 pr-16 flex flex-wrap items-center gap-x-1 gap-y-0.5 text-xs">
+    <div class="px-2 py-1 pr-16 pointer-coarse:pr-2 flex flex-wrap items-center gap-x-1 gap-y-0.5 text-xs">
         {#each script.controls ?? [] as ctrl, ci (ci)}
             {@render inlineControl(ctrl, i, script.controls ?? [], ci)}
         {/each}
@@ -758,6 +889,15 @@
                             <option value={name}>{name}</option>
                         {/each}
                     </select>
+                {:else if ctrl.simpleEditor === "dropdown" && ctrl.options && ctrl.freetext}
+                    <!-- <freetext/> - lets the user type a value not in the list, e.g. a
+                         drawing command's colour parameter. -->
+                    <Combobox
+                        value={toSimpleDisplay(ctrl)}
+                        options={ctrl.options}
+                        onchange={(v) => onSimpleValueChange(scriptIndex, ctrl, v)}
+                        class="input text-xs py-0 px-1 max-w-32"
+                    />
                 {:else if ctrl.simpleEditor === "dropdown" && ctrl.options}
                     <select
                         class="select text-xs py-0 px-1 max-w-32"
@@ -771,6 +911,9 @@
                 {:else if ctrl.simpleEditor === "number" || ctrl.simpleEditor === "numberdouble"}
                     <input
                         type="number"
+                        min={ctrl.minimum ?? undefined}
+                        max={ctrl.maximum ?? undefined}
+                        step={ctrl.increment ?? (ctrl.simpleEditor === "numberdouble" ? "any" : undefined)}
                         class="input text-xs py-0 px-1 min-w-12 max-w-24"
                         value={ctrl.value ?? "0"}
                         onchange={(e) => onSetParam(scriptIndex, ctrl.attribute!, (e.target as HTMLInputElement).value)}
@@ -782,24 +925,39 @@
                         onchange={(v) => onSimpleValueChange(scriptIndex, ctrl, v)}
                         class="input text-xs py-0 px-1 min-w-16 max-w-48"
                     />
+                {:else if ctrl.multiline}
+                    <!-- multiline textbox (e.g. Print's message) - keeps embedded newlines,
+                         auto-sized to the height of its content rather than a fixed row count -->
+                    <textarea
+                        autocapitalize="off"
+                        rows="1"
+                        class="input text-xs py-0.5 px-1 min-w-16 w-full resize-none overflow-hidden"
+                        value={toSimpleDisplay(ctrl)}
+                        use:autoResizeTextarea={toSimpleDisplay(ctrl)}
+                        onchange={(e) => onSimpleValueChange(scriptIndex, ctrl, (e.target as HTMLTextAreaElement).value)}
+                    ></textarea>
                 {:else}
                     <!-- textbox (default for message, text, colour, etc.) -->
                     <input
                         type="text"
                         autocapitalize="off"
-                        class="input text-xs py-0 px-1 min-w-16 max-w-48 flex-1"
+                        class={"input text-xs py-0 px-1 min-w-16 flex-1" + (ctrl.expand ? " w-full" : " max-w-48")}
                         value={toSimpleDisplay(ctrl)}
                         onchange={(e) => onSimpleValueChange(scriptIndex, ctrl, (e.target as HTMLInputElement).value)}
                     />
                 {/if}
             {:else}
-                <!-- Expression mode: raw expression text input -->
-                <ExpressionInput
-                    value={ctrl.value ?? ""}
-                    onchange={(v) => onSetParam(scriptIndex, ctrl.attribute!, v)}
-                    {objectNames}
-                    class="input text-xs py-0 px-1 min-w-16 max-w-48 flex-1"
-                />
+                <!-- Expression mode: raw expression text input. ExpressionInput's own root
+                     element isn't a flex item that grows on its own, so it needs a growing
+                     wrapper here to actually fill the row when expand is set. -->
+                <div class={ctrl.expand ? "flex-1 min-w-0" : "flex-none"}>
+                    <ExpressionInput
+                        value={ctrl.value ?? ""}
+                        onchange={(v) => onSetParam(scriptIndex, ctrl.attribute!, v)}
+                        {objectNames}
+                        class={"input text-xs py-0 px-1 min-w-16" + (ctrl.expand ? " w-full" : " max-w-48")}
+                    />
+                </div>
             {/if}
         {/if}
     {:else if ctrl.controlType === "expression"}
@@ -810,6 +968,15 @@
             exprKey(scriptIndex, ctrl.attribute!),
             "input text-xs py-0 px-1 min-w-16 max-w-48 flex-1",
         )}
+    {:else if ctrl.controlType === "addparametersbutton"}
+        <!-- Reveals a sibling parameter control that <relatedattribute>/<relatedattributedisplaytype>
+             hides while its attribute is empty (e.g. do/invoke's parameter dictionary) - see
+             CoreEditorScriptsScripts.aslx's "addparametersbutton" controls. -->
+        <button
+            type="button"
+            class="btn btn-sm preset-outlined-primary-500 text-xs py-0 px-1.5 leading-none"
+            onclick={() => onSetParam(scriptIndex, ctrl.attribute!, "{}")}
+        >+ {ctrl.caption}</button>
     {:else if ctrl.controlType === "textbox" && ctrl.isFunctionPicker}
         {@const functionOptions = functionPickerOptions()}
         <Combobox
@@ -819,11 +986,24 @@
             class="input text-xs py-0 px-1"
             wrapperClass="min-w-32 max-w-96 flex-1"
         />
+    {:else if (ctrl.controlType === "textbox" || ctrl.controlType === "richtext") && ctrl.multiline}
+        <!-- multiline textbox (e.g. @failed's fallback-script text, a // comment) - keeps
+             embedded newlines, auto-sized to the height of its content. -->
+        <textarea
+            autocapitalize="off"
+            rows="1"
+            class={"input text-xs py-0.5 px-1 min-w-16 resize-none overflow-hidden" + (ctrl.expand ? " w-full" : " max-w-48")}
+            style={ctrl.colour ? `color: ${ctrl.colour}` : undefined}
+            value={ctrl.value ?? ""}
+            use:autoResizeTextarea={ctrl.value ?? ""}
+            onchange={(e) => onSetParam(scriptIndex, ctrl.attribute!, (e.target as HTMLTextAreaElement).value)}
+        ></textarea>
     {:else if ctrl.controlType === "textbox" || ctrl.controlType === "richtext"}
         <input
             type="text"
             autocapitalize="off"
-            class="input text-xs py-0 px-1 min-w-16 max-w-48 flex-1"
+            class={"input text-xs py-0 px-1 min-w-16 flex-1" + (ctrl.expand ? " w-full" : " max-w-48")}
+            style={ctrl.colour ? `color: ${ctrl.colour}` : undefined}
             value={ctrl.value ?? ""}
             onchange={(e) => onSetParam(scriptIndex, ctrl.attribute!, (e.target as HTMLInputElement).value)}
         />
@@ -839,6 +1019,13 @@
             onchange={(e) => onSetParam(scriptIndex, ctrl.attribute!, (e.target as HTMLInputElement).checked.toString())}
         />
         {#if ctrl.caption}<span class="text-surface-600-400">{ctrl.caption}</span>{/if}
+    {:else if ctrl.controlType === "dropdown" && ctrl.options && ctrl.freetext}
+        <Combobox
+            value={ctrl.value ?? ""}
+            options={ctrl.options}
+            onchange={(v) => onSetParam(scriptIndex, ctrl.attribute!, v)}
+            class="input text-xs py-0 px-1 max-w-32"
+        />
     {:else if ctrl.controlType === "dropdown" && ctrl.options}
         <select
             class="select text-xs py-0 px-1 max-w-32"
@@ -864,12 +1051,11 @@
             {#each matchedFn.parameters as paramName, pi (pi)}
                 <span class="flex items-center gap-1">
                     <span class="text-surface-600-400 text-[10px] whitespace-nowrap">{paramName}:</span>
-                    <input
-                        type="text"
-                        autocapitalize="off"
-                        class="input text-xs py-0 px-1 w-20"
+                    <ExpressionInput
                         value={items[pi].value}
-                        onchange={(e) => onUpdateParam(scriptIndex, ctrl.attribute!, items[pi].key, (e.target as HTMLInputElement).value)}
+                        onchange={(v) => onUpdateParam(scriptIndex, ctrl.attribute!, items[pi].key, v)}
+                        {objectNames}
+                        class="input text-xs py-0 px-1 w-20"
                     />
                 </span>
             {/each}
@@ -878,12 +1064,11 @@
         <span class="flex flex-wrap items-center gap-1">
             {#each items as item (item.key)}
                 <span class="flex items-center gap-0.5">
-                    <input
-                        type="text"
-                        autocapitalize="off"
-                        class="input text-xs py-0 px-1 w-20"
+                    <ExpressionInput
                         value={item.value}
-                        onchange={(e) => onUpdateParam(scriptIndex, ctrl.attribute!, item.key, (e.target as HTMLInputElement).value)}
+                        onchange={(v) => onUpdateParam(scriptIndex, ctrl.attribute!, item.key, v)}
+                        {objectNames}
+                        class="input text-xs py-0 px-1 w-20"
                     />
                     <button
                         type="button"
@@ -916,13 +1101,12 @@
                         class="text-surface-600-400 hover:text-primary-600-400 text-xs"
                         onclick={() => toggleCaseExpanded(scriptIndex, paramAttribute, item.key)}
                     >{expanded ? "▼" : "▶"}</button>
-                    <input
-                        type="text"
-                        autocapitalize="off"
-                        class="input text-xs py-0 px-1 min-w-16 max-w-48"
-                        aria-label={t("scriptEditor.caseKeyAriaLabel")}
+                    <ExpressionInput
                         value={item.key}
-                        onchange={(e) => onRenameCase(scriptIndex, paramAttribute, item.key, (e.target as HTMLInputElement).value)}
+                        onchange={(v) => onRenameCase(scriptIndex, paramAttribute, item.key, v)}
+                        {objectNames}
+                        ariaLabel={t("scriptEditor.caseKeyAriaLabel")}
+                        class="input text-xs py-0 px-1 min-w-16 max-w-48"
                     />
                     <button
                         type="button"
@@ -976,9 +1160,17 @@
     {@const tmplData = expressionType && templates.length > 0 ? getExpressionTemplateData(value, expressionType) : null}
     {@const inTemplateMode = tmplData !== null && !expressionOverrides.has(overrideKey)}
     {#if templates.length > 0}
-        <!-- Template / expression mode toggle -->
+        <!-- Template / expression mode toggle - sized to the selected label (not a fixed
+             max-width) for the same reason as the object picker below: a native <select>
+             otherwise sizes to its widest *option* (e.g. "player answers a yes/no question"),
+             staying that wide even once a much shorter condition like "random chance" is picked. -->
         <select
-            class="select text-xs py-0 px-1 max-w-40"
+            class="select text-xs py-0 px-1"
+            use:autoWidthSelect={{
+                text: inTemplateMode ? tmplData!.templateName : t("scriptEditor.expressionOption"),
+                minCh: 8,
+                maxCh: 36,
+            }}
             value={inTemplateMode ? tmplData!.templateName : "expression"}
             onchange={(e) => {
                 const v = (e.target as HTMLSelectElement).value;
@@ -1000,31 +1192,139 @@
     {#if inTemplateMode && tmplData}
         <!-- Template controls (e.g. object picker for Got(#object#)) -->
         {#each tmplData.controls as ctrl (ctrl.name)}
-            {#if ctrl.simpleEditor === "objects"}
+            {#if ctrl.controlType === "label"}
+                <!-- Static caption between controls, e.g. RandomChance's "% of the time" -->
+                <span class="text-surface-600-400 select-none">{ctrl.caption ?? ""}</span>
+            {:else if ctrl.simpleEditor === "boolean"}
+                {@const boolSimple = inTemplateParamSimpleMode(overrideKey, ctrl)}
+                <!-- Boolean: yes / no / expression dropdown, no separate widget - mirrors
+                     valueControl's non-template boolean handling. -->
                 <select
-                    class="select text-xs py-0 px-1 max-w-40"
-                    value={ctrl.value ?? ""}
+                    class="select text-xs py-0 px-1 max-w-32"
+                    value={boolSimple ? ctrl.value : "expression"}
                     onchange={(e) => {
-                        const newVal = (e.target as HTMLSelectElement).value;
-                        onchange(buildTemplateExpression(tmplData!, ctrl.name, newVal));
+                        const v = (e.target as HTMLSelectElement).value;
+                        const paramKey = templateParamKey(overrideKey, ctrl.name);
+                        if (v === "expression") {
+                            templateParamOverrides.add(paramKey);
+                        } else {
+                            templateParamOverrides.delete(paramKey);
+                            onchange(buildTemplateExpression(tmplData!, ctrl.name, v));
+                        }
                     }}
                 >
-                    <option value=""></option>
-                    {#each objectNames as name (name)}
-                        <option value={name}>{name}</option>
-                    {/each}
+                    <option value="true">{t("scriptEditor.yesOption")}</option>
+                    <option value="false">{t("scriptEditor.noOption")}</option>
+                    <option value="expression">{t("scriptEditor.expressionOption")}</option>
                 </select>
-            {:else}
-                <input
-                    type="text"
-                    autocapitalize="off"
-                    class="input text-xs py-0 px-1 min-w-16 max-w-32 flex-1"
-                    placeholder={ctrl.simpleLabel ?? ctrl.name}
-                    value={ctrl.value ?? ""}
+                {#if !boolSimple}
+                    <ExpressionInput
+                        value={ctrl.value ?? ""}
+                        onchange={(v) => onchange(buildTemplateExpression(tmplData!, ctrl.name, v))}
+                        {objectNames}
+                        class="input text-xs py-0 px-1"
+                        minCh={16}
+                        maxCh={64}
+                    />
+                {/if}
+            {:else if ctrl.simpleEditor}
+                {@const paramKey = templateParamKey(overrideKey, ctrl.name)}
+                {@const paramSimple = inTemplateParamSimpleMode(overrideKey, ctrl)}
+                <!-- Labelled mode toggle (e.g. "object"/"flag name" vs "expression") - every
+                     simple editor gets one, since even a plain quoted-string field (e.g.
+                     GetBoolean's "flag name") needs an escape hatch to an arbitrary expression,
+                     not just object/number pickers whose own widget can't hold one at all. -->
+                <select
+                    class="select text-xs py-0 px-1 max-w-28"
+                    value={paramSimple ? (ctrl.simpleLabel ?? "simple") : "expression"}
                     onchange={(e) => {
-                        const newVal = (e.target as HTMLInputElement).value;
-                        onchange(buildTemplateExpression(tmplData!, ctrl.name, newVal));
+                        const v = (e.target as HTMLSelectElement).value;
+                        if (v === "expression") {
+                            templateParamOverrides.add(paramKey);
+                        } else {
+                            templateParamOverrides.delete(paramKey);
+                            // Switching back to the simple widget only takes effect visually if
+                            // the stored value is already simple-shaped (see
+                            // inTemplateParamSimpleMode) - an arbitrary leftover expression (e.g.
+                            // a function call) would otherwise leave the toggle showing
+                            // "object"/"flag name" while the expression box stays put, since
+                            // paramSimple is re-derived from the value's shape on every render.
+                            // Reset to a blank/zero default so the switch is visible immediately,
+                            // mirroring onSwitchToSimple's non-template twin.
+                            if (!isSimpleValue(ctrl)) {
+                                onchange(buildTemplateExpression(tmplData!, ctrl.name, defaultSimpleValue(ctrl.simpleEditor!)));
+                            }
+                        }
                     }}
+                >
+                    <option value={ctrl.simpleLabel ?? t("scriptEditor.simpleOption")}>{ctrl.simpleLabel ?? t("scriptEditor.simpleOption")}</option>
+                    <option value="expression">{t("scriptEditor.expressionOption")}</option>
+                </select>
+                {#if paramSimple && ctrl.simpleEditor === "objects"}
+                    <select
+                        class="select text-xs py-0 px-1"
+                        use:autoWidthSelect={{ text: ctrl.value ?? "", minCh: 4, maxCh: 46 }}
+                        value={ctrl.value ?? ""}
+                        onchange={(e) => {
+                            const newVal = (e.target as HTMLSelectElement).value;
+                            onchange(buildTemplateExpression(tmplData!, ctrl.name, newVal));
+                        }}
+                    >
+                        <option value=""></option>
+                        {#each objectNames as name (name)}
+                            <option value={name}>{name}</option>
+                        {/each}
+                    </select>
+                {:else if paramSimple && (ctrl.simpleEditor === "number" || ctrl.simpleEditor === "numberdouble")}
+                    <input
+                        type="number"
+                        min={ctrl.minimum ?? undefined}
+                        max={ctrl.maximum ?? undefined}
+                        step={ctrl.increment ?? (ctrl.simpleEditor === "numberdouble" ? "any" : undefined)}
+                        class="input text-xs py-0 px-1 min-w-16 max-w-32 flex-1"
+                        placeholder={ctrl.simpleLabel ?? ctrl.name}
+                        value={ctrl.value ?? ""}
+                        onchange={(e) => {
+                            const newVal = (e.target as HTMLInputElement).value;
+                            onchange(buildTemplateExpression(tmplData!, ctrl.name, newVal));
+                        }}
+                    />
+                {:else if paramSimple}
+                    <!-- textbox (default): quoted NCalc string literal <-> plain text, matching
+                         valueControl's own textbox handling. -->
+                    <input
+                        type="text"
+                        autocapitalize="off"
+                        class="input text-xs py-0 px-1 min-w-16 max-w-48 flex-1"
+                        placeholder={ctrl.simpleLabel ?? ctrl.name}
+                        value={toSimpleDisplay(ctrl)}
+                        onchange={(e) => {
+                            const newVal = fromSimpleToExpression((e.target as HTMLInputElement).value, ctrl.simpleEditor!);
+                            onchange(buildTemplateExpression(tmplData!, ctrl.name, newVal));
+                        }}
+                    />
+                {:else}
+                    <ExpressionInput
+                        value={ctrl.value ?? ""}
+                        onchange={(v) => onchange(buildTemplateExpression(tmplData!, ctrl.name, v))}
+                        {objectNames}
+                        class="input text-xs py-0 px-1"
+                        minCh={16}
+                        maxCh={64}
+                    />
+                {/if}
+            {:else}
+                <!-- No <simple>/<simpleeditor> at all (e.g. HasAttribute's "object" field, or
+                     #object#.#property# = #value#'s "value") - there's no simple mode to toggle
+                     to, so always show the full expression editor, same as this snippet's own
+                     top-level fallback below. -->
+                <ExpressionInput
+                    value={ctrl.value ?? ""}
+                    onchange={(v) => onchange(buildTemplateExpression(tmplData!, ctrl.name, v))}
+                    {objectNames}
+                    class="input text-xs py-0 px-1"
+                    minCh={16}
+                    maxCh={64}
                 />
             {/if}
         {/each}
@@ -1034,7 +1334,7 @@
 {/snippet}
 
 {#snippet ifBlock(script: ScriptNodeData, i: number)}
-    <div class="px-2 py-1 pr-16 text-xs">
+    <div class="px-2 py-1 pr-16 pointer-coarse:pr-2 text-xs">
         <!-- If condition -->
         <div class="flex items-center gap-1 flex-wrap">
             <span class="text-surface-600-400 font-medium select-none">{t("scriptEditor.ifKeyword")}</span>

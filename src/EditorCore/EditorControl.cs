@@ -99,6 +99,11 @@ internal class EditorControl : IEditorControl
         return m_visibilityHelper.IsVisible(data);
     }
 
+    public bool IsControlVisibleSync(IEditorData data)
+    {
+        return m_visibilityHelper.IsVisibleIgnoringExpression(data);
+    }
+
     public IEditorDefinition Parent => m_parent;
 
     public bool IsControlVisibleInSimpleMode { get; }

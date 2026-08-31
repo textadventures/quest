@@ -45,7 +45,7 @@ public class MsgScript : ScriptBase
     public override async Task ExecuteAsync(Context c)
     {
         var result = await m_function.ExecuteAsync(c);
-        await m_worldModel.PrintAsync(result.ToString());
+        await m_worldModel.PrintAsync(Utility.ExpressionResultToString(result));
     }
 
     public override string Save()

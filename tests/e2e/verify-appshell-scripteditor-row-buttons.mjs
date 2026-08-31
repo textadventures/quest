@@ -5,7 +5,7 @@
 // the touch-friendly reorder/delete path, so the row's own buttons stay
 // hover-only at every nesting level — even on touch, where there's no hover
 // and the checkbox/toolbar cover it.
-import { chromium } from 'playwright';
+import { chromium } from './lib/tracked-chromium.mjs';
 
 const baseUrl = process.argv[2] || 'http://localhost:5174';
 

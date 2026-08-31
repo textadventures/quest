@@ -1,0 +1,19 @@
+<asl version="600">
+
+  <include ref="English.aslx"/>
+  <include ref="Core.aslx"/>
+
+  <game name="LocationBarTest">
+    <showlocation type="boolean">true</showlocation>
+    <classiclocation type="boolean">false</classiclocation>
+    <customlocationcolour>#ff00ff</customlocationcolour>
+    <customlocationtextcolour>#ffffff</customlocationtextcolour>
+    <customlocationbordercolour>#000000</customlocationbordercolour>
+  </game>
+
+  <object name="room">
+    <object name="player">
+    </object>
+  </object>
+
+</asl>

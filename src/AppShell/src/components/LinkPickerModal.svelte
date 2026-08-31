@@ -2,6 +2,7 @@
     import Combobox from "./Combobox.svelte";
     import AssetPicker from "./AssetPicker.svelte";
     import { t } from "$lib/i18n";
+    import { trapFocus } from "$lib/actions/trapFocus";
     import type { ControlOption } from "$lib/types";
 
     interface Props {
@@ -42,7 +43,10 @@
     }
 
     function handleTextKeydown(e: KeyboardEvent) {
-        if (e.key === "Enter") confirm();
+        if (e.key === "Enter") {
+            e.preventDefault();
+            confirm();
+        }
     }
 
     let canConfirm = $derived(!!target && (textMode !== "required" || !!text.trim()));
@@ -60,6 +64,7 @@
     class="fixed inset-0 bg-black/30 flex items-center justify-center z-50 p-4"
     onclick={onBackdropClick}
     onkeydown={handleKeydown}
+    use:trapFocus
 >
     <div class="card bg-surface-50-950 rounded-xl shadow-xl w-full max-w-96 p-6 flex flex-col gap-4">
         <h2 class="text-base font-semibold">{title}</h2>

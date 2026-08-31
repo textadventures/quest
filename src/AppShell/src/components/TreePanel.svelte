@@ -13,10 +13,12 @@
         openAddModal, createExit, createTurnScript, createCommand, createVerb,
         openAddLibraryModal, openAddJavascriptModal,
         deleteElement,
-        canMoveElement, openMoveModal, copyElements, cutElements, canPasteElements, pasteElements,
+        canMoveElement, openMoveModal, openMoveToFolderModal, copyElements, cutElements, canPasteElements, pasteElements,
         clipboardVersion, cutElementKeys,
         showLibraryElements, toggleShowLibraryElements,
         swapElements, getCurrentGameId,
+        canMoveFunctionUp, canMoveFunctionDown,
+        canMoveFunctionFolderUp, canMoveFunctionFolderDown, moveFunctionFolderUp, moveFunctionFolderDown,
     } from "$lib/editor-store";
     import type { TreeNode } from "$lib/types";
     import { t } from "$lib/i18n";
@@ -30,6 +32,11 @@
         nodeType: string
         isLibrary: boolean
         canDelete: boolean
+        // Only meaningful on isLibrary nodes — see groupLibraryChildren.
+        filename?: string | null
+        // User-assigned folder name, currently only meaningful on non-library function nodes —
+        // see groupLibraryChildren.
+        folder?: string | null
         children?: HierNode[]
     }
 
@@ -58,6 +65,68 @@
         return key ? t(key) : node.text;
     }
 
+    // Folds consecutive children sharing the same grouping key — either a library filename (e.g.
+    // every function from Core.aslx) or a user-assigned folder (Functions only, via "Move to
+    // folder") — into a single synthetic, expand-on-demand "folder" node; a big library's (or
+    // folder's) worth of functions/timers/etc. otherwise floods this tree flat. Purely a display
+    // grouping over the existing SortIndex order (mirrors ElementsList's grouping). A lone
+    // library-filename run isn't worth the extra click to expand, so it's left inline and only
+    // runs of 2+ fold; a lone folder still folds (see the "folder" special-case below) since it's
+    // a deliberate user action, not an incidental one. The library variant's synthetic node is
+    // isLibrary:true, making it fall out of nodeMenuOptions/reorderOptions for free (same guard
+    // real library rows use); the folder variant is a plain non-library node instead, since its
+    // members are real user-authored functions that still need their own context menu. Either way
+    // the id is deterministic so expand-state persistence (tree-state.ts) still works across
+    // reloads.
+    function groupKey(node: HierNode): { key: string; kind: "lib" | "folder" } | null {
+        if (node.isLibrary && node.filename) return { key: node.filename, kind: "lib" };
+        if (!node.isLibrary && node.folder) return { key: node.folder, kind: "folder" };
+        return null;
+    }
+
+    function groupLibraryChildren(children: HierNode[], parentId: string): HierNode[] {
+        const out: HierNode[] = [];
+        let i = 0;
+        while (i < children.length) {
+            const node = children[i];
+            const group = groupKey(node);
+            if (group) {
+                let j = i + 1;
+                while (j < children.length) {
+                    const next = groupKey(children[j]);
+                    if (!next || next.kind !== group.kind || next.key !== group.key) break;
+                    j++;
+                }
+                // A lone library-filename run isn't worth the extra click to expand (it's an
+                // incidental grouping nobody chose), but a lone folder is a deliberate "Move to
+                // folder" action - hiding it when it only has one member yet would make that
+                // action look like it did nothing, so folders always fold, even at length 1.
+                if (j - i > 1 || group.kind === "folder") {
+                    // Suffixed with the run's first child id (globally unique, since it's a real
+                    // element key) rather than just the group key — the same file/folder can
+                    // produce more than one non-adjacent run under one parent (SortIndex order
+                    // isn't guaranteed to keep same-group items contiguous), and two runs would
+                    // otherwise collide on id.
+                    out.push({
+                        id: `${parentId}::${group.kind}::${group.key}::${node.id}`,
+                        text: group.key,
+                        nodeType: group.kind === "lib" ? "librarygroup" : "usergroup",
+                        isLibrary: group.kind === "lib",
+                        canDelete: false,
+                        children: children.slice(i, j),
+                    });
+                } else {
+                    out.push(node);
+                }
+                i = j;
+            } else {
+                out.push(node);
+                i++;
+            }
+        }
+        return out;
+    }
+
     // Build HierNode tree from flat list
     function buildHierTree(nodes: TreeNode[]): HierNode[] {
         // Deduplicate by key (last write wins, matching C# upsert behaviour in OnAddedNode)
@@ -73,14 +142,26 @@
             byParent.get(p)!.push(n);
         }
         const build = (node: TreeNode): HierNode => {
-            const children = byParent.get(node.key);
+            const children = byParent.get(node.key)?.map(build);
+            // "Included Libraries" lists the library *files* themselves (nodeType "include") —
+            // each one's own name is already a filename, so grouping them by which file declared
+            // the <include> just wraps a filename in an identically-named folder, and the same
+            // library can be pulled in from more than one place, producing several duplicate-
+            // labeled groups. Skip grouping at this level only; libraries defined *inside* a
+            // browsed included library (its functions, objects, its own nested includes, ...)
+            // still group normally, same as everywhere else.
+            const grouped = children && children[0]?.nodeType !== "include"
+                ? groupLibraryChildren(children, node.key)
+                : children;
             return {
                 id: node.key,
                 text: node.nodeType === "header" ? headerText(node) : node.text,
                 nodeType: node.nodeType,
                 isLibrary: node.isLibrary,
                 canDelete: node.canDelete,
-                ...(children ? { children: children.map(build) } : {}),
+                filename: node.filename,
+                folder: node.folder,
+                ...(grouped ? { children: grouped } : {}),
             };
         };
         return (byParent.get(null) ?? []).map(build);
@@ -275,18 +356,29 @@
         if (pendingTreeState) saveTreeState(pendingTreeState.gameId, pendingTreeState.ids);
     });
 
-    // Auto-expand the ancestor chain whenever the selected node changes
+    // Ancestor ids of targetId within the *hierarchical* (post-grouping) tree, root-first -
+    // unlike a flat-tree parent-chain walk, this also passes through any synthetic folder/library
+    // group node the target got folded into (see buildHierTree/groupLibraryChildren), since those
+    // exist only as HierNode wrappers, never as a real element's own `parent` field.
+    function findAncestorIds(nodes: HierNode[], targetId: string, path: string[] = []): string[] | null {
+        for (const node of nodes) {
+            if (node.id === targetId) return path;
+            if (node.children) {
+                const found = findAncestorIds(node.children, targetId, [...path, node.id]);
+                if (found) return found;
+            }
+        }
+        return null;
+    }
+
+    // Auto-expand the ancestor chain (including any folder/library group it's folded into)
+    // whenever the selected node changes - e.g. a function just created inside a folder via "Add
+    // Function here" should have that folder visibly open, not collapsed around it.
     $effect(() => {
         const key = $selectedKey;
-        const nodes = $treeNodes;
-        if (!key || !nodes.length) return;
-        const nodeMap = new Map(nodes.map(n => [n.key, n]));
-        const toExpand: string[] = [];
-        let cur: TreeNode | undefined = nodeMap.get(key);
-        while (cur?.parent) {
-            toExpand.push(cur.parent);
-            cur = nodeMap.get(cur.parent);
-        }
+        const tree = rawHierTree;
+        if (!key || !tree.length) return;
+        const toExpand = findAncestorIds(tree, key) ?? [];
         // Use untrack so reading expandedIds doesn't make this effect re-run when
         // the user manually collapses a branch (which would immediately re-expand it).
         const current = untrack(() => expandedIds);
@@ -398,6 +490,19 @@
         // particular are meant to have no context menu at all, mirroring the
         // isLibrary guard in nodeMenuOptions.)
         if (node.nodeType === "header" || node.nodeType === "game" || node.nodeType === "include") return opts;
+        if (node.nodeType === "usergroup") {
+            // A folder's synthetic id has no single flat-tree entry to look up (see buildHierTree/
+            // groupLibraryChildren) - node.text is the folder name itself, and moving the whole
+            // block is handled server-side by name rather than by swapping two flat siblings.
+            const folderName = node.text;
+            if (canMoveFunctionFolderUp(folderName)) {
+                opts.push({ label: t("common.moveUp"), action: () => moveFunctionFolderUp(folderName) });
+            }
+            if (canMoveFunctionFolderDown(folderName)) {
+                opts.push({ label: t("common.moveDown"), action: () => moveFunctionFolderDown(folderName) });
+            }
+            return opts;
+        }
         const flat = $treeNodes.find(n => n.key === node.id);
         if (!flat) return opts;
         // The game node itself appears under "_objects" alongside the game's
@@ -406,8 +511,17 @@
         const siblings = $treeNodes.filter(n => n.parent === flat.parent && n.nodeType !== "game");
         const index = siblings.findIndex(n => n.key === flat.key);
         if (index < 0) return opts;
-        if (index > 0) opts.push({ label: t("common.moveUp"), action: () => swapElements(flat.key, siblings[index - 1].key) });
-        if (index < siblings.length - 1) opts.push({ label: t("common.moveDown"), action: () => swapElements(flat.key, siblings[index + 1].key) });
+        // A function's swap is also gated on canMoveFunctionUp/Down - a plain adjacent swap has
+        // no concept of folders, and swapping past the near edge of a *different* multi-member
+        // folder would split it in two by landing the mover between two of its other members
+        // (mirrors ElementsList's own moveUp/moveDown guard).
+        const isFunction = node.nodeType === "function";
+        if (index > 0 && (!isFunction || canMoveFunctionUp(flat.key))) {
+            opts.push({ label: t("common.moveUp"), action: () => swapElements(flat.key, siblings[index - 1].key) });
+        }
+        if (index < siblings.length - 1 && (!isFunction || canMoveFunctionDown(flat.key))) {
+            opts.push({ label: t("common.moveDown"), action: () => swapElements(flat.key, siblings[index + 1].key) });
+        }
         return opts;
     }
 
@@ -449,7 +563,7 @@
         } else if (nt === "room") {
             opts.push(
                 { label: t("elementAdders.objectHere"), action: () => openAddModal("object", id) },
-                { label: t("elementAdders.roomHere"), action: () => openAddModal("room", id) },
+                { label: t("elementAdders.room"), action: () => openAddModal("room", id) },
                 { label: t("elementAdders.exit"), action: () => createExit(id) },
                 { label: t("elementAdders.command"), action: () => createCommand(id) },
                 { label: t("elementAdders.verb"), action: () => createVerb(id) },
@@ -458,11 +572,14 @@
             );
         } else if (nt === "object") {
             opts.push(
+                { label: t("elementAdders.objectHere"), action: () => openAddModal("object", id) },
                 { label: t("elementAdders.command"), action: () => createCommand(id) },
                 { label: t("elementAdders.verb"), action: () => createVerb(id) },
                 { label: t("elementAdders.turnScript"), action: () => createTurnScript(id) },
                 { label: t("elementAdders.pageHere"), action: () => openAddModal("page", id) },
             );
+        } else if (nt === "usergroup") {
+            opts.push({ label: t("elementAdders.functionHere"), action: () => openAddModal("function", null, text) });
         } else if (nt === "page" && !$isGamebook) {
             // Text Adventure dialogue pages can nest sub-pages; gamebook pages are
             // always flat, so this adder is TA-only.
@@ -472,6 +589,8 @@
             if (canMoveElement(id)) {
                 opts.push({ label: t("common.moveTo"), action: () => openMoveModal(id) });
             }
+        } else if (nt === "function") {
+            opts.push({ label: t("common.moveToFolder"), action: () => openMoveToFolderModal(id) });
         }
 
         // Gamebook pages ("page") are plain ElementType.Object elements underneath —
@@ -526,9 +645,6 @@
     class="flex flex-col shrink-0 border-r border-surface-200-800 bg-surface-50-950 {width === undefined ? "w-full" : ""}"
     style={width !== undefined ? `width: ${width}px` : undefined}
 >
-    <div class="px-3 py-2 text-xs font-semibold uppercase text-surface-600-400 border-b border-surface-200-800">
-        {$isGamebook ? t("treePanel.gamePages") : t("treePanel.gameObjects")}
-    </div>
     <div class="p-1.5 border-b border-surface-200-800 flex items-center gap-1">
         <div class="relative flex-1">
             <Search class="absolute left-2.5 top-1/2 -translate-y-1/2 size-3.5 text-surface-400 pointer-events-none" />
@@ -552,13 +668,15 @@
             {/if}
         </div>
         <DropdownMenu items={libraryMenuItems}>
-            {#snippet trigger(toggle)}
+            {#snippet trigger(toggle, open)}
                 <button
                     type="button"
                     class="size-6 flex-shrink-0 flex items-center justify-center rounded {$showLibraryElements ? "text-primary-500" : "text-surface-400"} hover:text-primary-500 hover:bg-surface-200-800"
                     onclick={toggle}
                     title={t("treePanel.viewOptions")}
                     aria-label={t("treePanel.viewOptions")}
+                    aria-haspopup="menu"
+                    aria-expanded={open}
                 ><SlidersHorizontal class="size-3.5" /></button>
             {/snippet}
         </DropdownMenu>
@@ -625,7 +743,7 @@
                     </button>
                     <Icon class="flex-shrink-0 size-3.5 text-surface-500 {node.isLibrary ? "opacity-60" : ""}" />
                     <TreeView.BranchText class="flex-1 min-w-0 truncate {node.isLibrary ? "text-surface-600-400" : ""} {$cutElementKeys.has(node.id) ? "opacity-50 italic" : ""}">{node.text}</TreeView.BranchText>
-                    <span class="opacity-0 group-hover:opacity-100 pointer-coarse:opacity-100">
+                    <span class="opacity-0 group-hover:opacity-100 group-focus-within:opacity-100 pointer-coarse:opacity-100">
                         {@render nodeActions(node)}
                     </span>
                 </TreeView.BranchControl>
@@ -640,7 +758,7 @@
             <TreeView.Item class="group flex items-center gap-1.5" onclick={() => activateIfAlreadySelected(node.id)}>
                 <Icon class="flex-shrink-0 size-3.5 text-surface-500 {node.isLibrary ? "opacity-60" : ""}" />
                 <span class="flex-1 min-w-0 truncate {node.isLibrary ? "text-surface-600-400" : ""} {$cutElementKeys.has(node.id) ? "opacity-50 italic" : ""}">{node.text}</span>
-                <span class="opacity-0 group-hover:opacity-100 pointer-coarse:opacity-100">
+                <span class="opacity-0 group-hover:opacity-100 group-focus-within:opacity-100 pointer-coarse:opacity-100">
                     {@render nodeActions(node)}
                 </span>
             </TreeView.Item>

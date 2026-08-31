@@ -1,6 +1,7 @@
 <script lang="ts">
     import type { ScriptCategoryInfo, ScriptCommandInfo } from "$lib/types";
     import { t } from "$lib/i18n";
+    import { trapFocus } from "$lib/actions/trapFocus";
     import Search from "@lucide/svelte/icons/search";
     import X from "@lucide/svelte/icons/x";
 
@@ -174,7 +175,10 @@
             }
             onClose();
         }
-        if (e.key === "Enter" && selectedCommand) onOk();
+        if (e.key === "Enter" && selectedCommand) {
+            e.preventDefault();
+            onOk();
+        }
         if (e.key === "ArrowDown") { e.preventDefault(); moveSelection(1); }
         if (e.key === "ArrowUp") { e.preventDefault(); moveSelection(-1); }
     }
@@ -192,6 +196,7 @@
     class="fixed inset-0 bg-black/30 flex items-center justify-center z-50 p-4"
     onclick={onBackdropClick}
     onkeydown={onKeydown}
+    use:trapFocus
 >
     <div class="bg-surface-50-950 rounded-xl shadow-xl w-full max-w-[600px] h-[min(520px,85dvh)] flex flex-col overflow-hidden ring-1 ring-surface-200-800">
 

@@ -58,6 +58,7 @@
     "addElementModal.addHeadingIn": "Add {label} in \"{parent}\"",
     "addElementModal.nameLabel": "Name",
     "addElementModal.namePlaceholder": "Enter a name...",
+    "addElementModal.parentLabel": "Parent",
 
     "assetManager.title": "Assets",
     "assetManager.uploading": "Uploading…",
@@ -89,8 +90,10 @@
     "settingsModal.themeLight": "Light",
     "settingsModal.themeDark": "Dark",
     "settingsModal.themeSystem": "Match system",
+    "settingsModal.defaultCodeView": "Default scripts to code view",
 
     "common.moveTo": "Move to…",
+    "common.moveToFolder": "Move to folder…",
     "common.cut": "Cut",
     "common.copy": "Copy",
     "common.paste": "Paste",
@@ -102,12 +105,12 @@
     "common.moveDown": "Move down",
 
     "elementAdders.room": "Add Room",
-    "elementAdders.roomHere": "Add Room here",
     "elementAdders.object": "Add Object",
     "elementAdders.objectHere": "Add Object here",
     "elementAdders.pageHere": "Add Page here",
     "elementAdders.page": "Add Page",
     "elementAdders.function": "Add Function",
+    "elementAdders.functionHere": "Add Function here",
     "elementAdders.timer": "Add Timer",
     "elementAdders.verb": "Add Verb",
     "elementAdders.command": "Add Command",
@@ -153,7 +156,7 @@
     "addJavascriptModal.helpText": "Pick an existing .js file, type a filename to create a new one, or upload a file.",
 
     "addLibraryModal.title": "Add Included Library",
-    "addLibraryModal.helpText": "Upload a .aslx library file.",
+    "addLibraryModal.helpText": "Upload a .aslx or .xml library file.",
     "addLibraryModal.noFileChosen": "No file chosen",
     "addLibraryModal.change": "Change…",
     "addLibraryModal.alreadyUsedError": "\"{name}\" is already used by another Included Library.",
@@ -171,6 +174,11 @@
     "moveElementModal.heading": "Move \"{name}\"",
     "moveElementModal.newParentLabel": "New parent",
     "moveElementModal.moveButton": "Move",
+
+    "moveToFolderModal.topLevel": "(top level)",
+    "moveToFolderModal.heading": "Move \"{name}\" to folder",
+    "moveToFolderModal.folderLabel": "Folder",
+    "moveToFolderModal.moveButton": "Move",
 
     "linkPickerModal.defaultTextLabel": "Link text",
     "linkPickerModal.optionalSuffix": " (optional)",
@@ -398,6 +406,7 @@
     "editPage.loadError": "This game could not be loaded.",
     "editPage.failedToLoadGame": "Failed to load game.",
     "editPage.backToHome": "Back to Home",
+    "editPage.skipToContent": "Skip to editor content",
 
     "openPage.title": "Quest Viva Editor",
     "openPage.multipleFilesFound": "Multiple game files found — choose one to open:",

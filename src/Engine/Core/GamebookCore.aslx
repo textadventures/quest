@@ -463,7 +463,7 @@
         else {
           error ("ShowMenu cannot handle a " + TypeOf(option))
         }
-        msg (count + ": <a class=\"cmdlink\" style=\"" + style + "\" onclick=\"ASLEvent('ShowMenuResponse','" + EscapeQuotes(optiontag) + "')\">" + optionText + "</a>")
+        msg (count + ": <a class=\"cmdlink\" style=\"" + style + "\" tabindex=\"0\" onclick=\"ASLEvent('ShowMenuResponse','" + EscapeQuotes(optiontag) + "')\">" + optionText + "</a>")
       }
       EndOutputSection (outputsection)
       game.menuoptions = options
@@ -502,10 +502,6 @@
     game.menuoutputsection = null
     game.menuoptions = null
     game.menucallback = null
-  </function>
-
-  <function name="RequestSpeak" parameters="s">
-    request (Speak, s)
   </function>
 
 </library>

@@ -2,7 +2,7 @@
 // AddScriptModal all fit fully on-screen at a phone viewport (no modal wider
 // than the viewport, no horizontal page overflow), while keeping their
 // original max sizes on desktop.
-import { chromium } from 'playwright';
+import { chromium } from './lib/tracked-chromium.mjs';
 
 const baseUrl = process.argv[2] || 'http://localhost:5174';
 

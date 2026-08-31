@@ -1,6 +1,7 @@
 <script lang="ts">
     import { getMovePossibleParents, treeNodes } from "$lib/editor-store";
     import { t } from "$lib/i18n";
+    import { trapFocus } from "$lib/actions/trapFocus";
     import Combobox from "$components/Combobox.svelte";
     import type { ControlOption } from "$lib/types";
 
@@ -25,9 +26,14 @@
     ]);
 
     let target = $state("");
+    let dialogEl = $state<HTMLDivElement>();
+    $effect(() => { dialogEl?.focus(); });
 
     function handleKeydown(e: KeyboardEvent) {
-        if (e.key === "Enter" && target) confirm();
+        if (e.key === "Enter" && target) {
+            e.preventDefault();
+            confirm();
+        }
         if (e.key === "Escape") oncancel();
     }
 
@@ -42,12 +48,14 @@
 </script>
 
 <div
+    bind:this={dialogEl}
     role="dialog"
     aria-modal="true"
     tabindex="-1"
     class="fixed inset-0 bg-black/30 flex items-center justify-center z-50 p-4"
     onclick={onBackdropClick}
     onkeydown={handleKeydown}
+    use:trapFocus
 >
     <div class="card bg-white rounded-xl shadow-xl w-full max-w-80 p-6 flex flex-col gap-4">
         <h2 class="text-base font-semibold">{t("moveElementModal.heading", { name: elementKey })}</h2>

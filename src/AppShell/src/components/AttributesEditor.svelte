@@ -473,7 +473,7 @@
             </div>
             {#if selectedAttr}
                 {@const attr = selectedAttr}
-                <div class="p-3 flex flex-col gap-2 overflow-y-auto">
+                <div class="p-3 flex flex-col gap-2 overflow-y-auto flex-1 min-h-0">
                     <div class="font-medium text-surface-700-300 truncate flex-shrink-0" title={attr.name}>{attr.name}</div>
 
                     {#if attr.isInherited || attr.isDefaultType}
@@ -510,7 +510,11 @@
                     {/if}
 
                     <!-- Value editor -->
-                    <div class="flex flex-col gap-1">
+                    <div
+                        class="flex flex-col gap-1"
+                        class:flex-1={attr.type === "string" || attr.type === "simplepattern"}
+                        class:min-h-0={attr.type === "string" || attr.type === "simplepattern"}
+                    >
                         <span class="text-surface-600-400 uppercase tracking-wide text-xs flex-shrink-0">{t("propertyEditor.valueFallback")}</span>
                         {#if attr.type === "null"}
                             <p class="text-surface-600-400 italic">{t("attributesEditor.noValueParenthetical")}</p>
@@ -568,8 +572,7 @@
                             <!-- string, simplepattern -->
                             <textarea
                                 autocapitalize="off"
-                                class="input text-xs py-1 px-1.5 w-full resize-none"
-                                rows="4"
+                                class="input text-xs py-1 px-1.5 w-full flex-1 min-h-24 resize-y"
                                 value={editingValue}
                                 disabled={isValueLocked(attr)}
                                 oninput={(e) => { editingValue = (e.target as HTMLTextAreaElement).value; }}

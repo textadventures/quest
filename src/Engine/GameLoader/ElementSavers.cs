@@ -24,6 +24,11 @@ internal partial class GameSaver
                 writer.WriteAttributeString("type", e.Fields[FieldDefinitions.ReturnType]);
             }
 
+            if (!string.IsNullOrEmpty(e.Fields[FieldDefinitions.EditorFolder]))
+            {
+                writer.WriteAttributeString("folder", e.Fields[FieldDefinitions.EditorFolder]);
+            }
+
             if (e.Fields[FieldDefinitions.Script] != null)
             {
                 writer.WriteString(GameSaver.SaveScript(writer, e.Fields[FieldDefinitions.Script], 0));

@@ -17,10 +17,11 @@
 // src/ElectronApp/dist — run electron.sh once first (or the build steps
 // inside it) so dist/ and resources/app-static exist.
 import { _electron as electron } from 'playwright';
-import { mkdtempSync, rmSync } from 'node:fs';
+import { mkdtempSync } from 'node:fs';
 import { tmpdir, homedir } from 'node:os';
 import { join } from 'node:path';
 import { createRequire } from 'node:module';
+import { killElectronApp, removeTempDirs } from './lib/electron-cleanup.mjs';
 
 const electronAppDir = join(import.meta.dirname, '..', '..', 'src', 'ElectronApp');
 const electronExecutablePath = createRequire(join(electronAppDir, 'package.json'))('electron');
@@ -60,7 +61,7 @@ try {
     await win.click('button:has-text("Create"):near(:text("Will be created as a new folder"))');
 
     // Editor loaded once the tree's default "room" object is selectable.
-    await win.waitForSelector('text=GAME OBJECTS', { timeout: 30000 });
+    await win.waitForSelector('input[placeholder="Filter..."]', { timeout: 30000 });
     console.log('[editor] editor loaded');
 
     // Record every app-level menu-action the renderer receives, alongside the +layout.svelte subscriber already listening.
@@ -112,7 +113,7 @@ try {
     console.log('PASS: text-field-focused Undo took the native webContents.undo() path, not app-level undo');
 
     // --- Case B: no text field focused (blur to the tree) -> app-level Undo should still fire ---
-    await win.locator('text=GAME OBJECTS').click();
+    await win.evaluate(() => document.activeElement instanceof HTMLElement && document.activeElement.blur());
     await win.waitForTimeout(100);
     await app.evaluate(({ Menu, BrowserWindow }) => {
         const menu = Menu.getApplicationMenu();
@@ -140,9 +141,6 @@ try {
     // pops a *synchronous* native "Leave without saving?" dialog that blocks
     // the whole process — nothing left to click it away with here. Kill the
     // process directly instead of asking it to close gracefully.
-    app?.process().kill('SIGKILL');
-    // SIGKILL doesn't wait for Chromium to finish its disk-cache writeback, so an immediate
-    // rmSync can hit ENOTEMPTY on Cache_Data — maxRetries/retryDelay ride out that race.
-    rmSync(userDataDir, { recursive: true, force: true, maxRetries: 5, retryDelay: 200 });
-    rmSync(gameDirPath, { recursive: true, force: true });
+    await killElectronApp(app);
+    removeTempDirs(userDataDir, gameDirPath);
 }

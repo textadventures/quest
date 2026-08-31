@@ -77,6 +77,8 @@
             <button
                 type="button"
                 class="btn btn-sm preset-outlined-error-500 text-xs px-1.5 py-0.5"
+                title={t("common.delete")}
+                aria-label={t("common.delete")}
                 onclick={() => removeListItem(elementKey, attribute, item.key)}
             >✕</button>
         </div>

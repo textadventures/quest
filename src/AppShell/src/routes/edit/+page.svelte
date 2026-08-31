@@ -4,7 +4,7 @@
     import { goto } from "$app/navigation";
     import { base } from "$app/paths";
     import { get } from "svelte/store";
-    import { isLoaded, isDirty, isEditingField, markFieldEditing, clearFieldEditing, saveGame, loadingStatus, addElementModal, addJavascriptModalOpen, addLibraryModalOpen, assetManagerOpen, publishModalOpen, codeViewPanelOpen, openGame, lastOpenGameError, lastFailedGameBytes, lastFailedGameFilename, createRoom, createObject, createPage, createFunction, createTimer, createWalkthrough, createTemplate, createDynamicTemplate, createObjectType, createJavascript, createIncludedLibrary, moveElementModal, moveElement } from "$lib/editor-store";
+    import { isLoaded, isDirty, isEditingField, markFieldEditing, clearFieldEditing, saveGame, loadingStatus, addElementModal, addJavascriptModalOpen, addLibraryModalOpen, assetManagerOpen, publishModalOpen, codeViewPanelOpen, openGame, lastOpenGameError, lastFailedGameBytes, lastFailedGameFilename, createRoom, createObject, createPage, createFunction, createTimer, createWalkthrough, createTemplate, createDynamicTemplate, createObjectType, createJavascript, createIncludedLibrary, moveElementModal, moveElement, moveToFolderModal, setFunctionFolder } from "$lib/editor-store";
     import { loadFromServer } from "$lib/filesystem/server-adapter";
     import Toolbar from "$components/Toolbar.svelte";
     import BackupBanner from "$components/BackupBanner.svelte";
@@ -19,6 +19,7 @@
     import AddJavascriptModal from "$components/AddJavascriptModal.svelte";
     import AddLibraryModal from "$components/AddLibraryModal.svelte";
     import MoveElementModal from "$components/MoveElementModal.svelte";
+    import MoveToFolderModal from "$components/MoveToFolderModal.svelte";
     import AssetManagerModal from "$components/AssetManagerModal.svelte";
     import PublishModal from "$components/PublishModal.svelte";
     import { t } from "$lib/i18n";
@@ -143,15 +144,18 @@
         }
     }
 
-    async function handleAddConfirm(name: string) {
+    async function handleAddConfirm(name: string, target: string | null) {
         const mode = get(addElementModal);
         addElementModal.set(null);
         await tick();
         if (!mode) return;
-        if (mode.type === "room") createRoom(name, mode.parent);
-        else if (mode.type === "object") createObject(name, mode.parent);
+        if (mode.type === "room") createRoom(name, target ?? mode.parent);
+        else if (mode.type === "object") createObject(name, target ?? mode.parent);
         else if (mode.type === "page") createPage(name, mode.parent);
-        else if (mode.type === "function") createFunction(name);
+        else if (mode.type === "function") {
+            const key = createFunction(name);
+            if (!key.startsWith("error:") && target) setFunctionFolder(key, target);
+        }
         else if (mode.type === "timer") createTimer(name);
         else if (mode.type === "walkthrough") createWalkthrough(name, mode.parent);
         else if (mode.type === "template") createTemplate(name);
@@ -175,12 +179,16 @@
         <p class="text-surface-600-400 text-sm">{$loadingStatus}</p>
     </main>
 {:else if $isLoaded}
-    <div class="flex flex-col h-dvh overflow-hidden safe-area-inset">
+    <a
+        href="#workspace-content"
+        class="sr-only focus:not-sr-only focus:fixed focus:top-2 focus:left-2 focus:z-[1000] focus:rounded focus:bg-primary-500 focus:text-white focus:px-3 focus:py-2 focus:text-sm"
+    >{t("editPage.skipToContent")}</a>
+    <main class="flex flex-col h-dvh overflow-hidden safe-area-inset">
         <Toolbar />
         <BackupBanner />
         <LibraryReloadBanner />
         <FileChangedExternallyBanner />
-        <div class="flex flex-1 overflow-hidden" oninput={handleFieldInput} onfocusout={clearFieldEditing}>
+        <div id="workspace-content" tabindex="-1" class="flex flex-1 overflow-hidden" oninput={handleFieldInput} onfocusout={clearFieldEditing}>
             {#if $codeViewPanelOpen}
                 <CodeViewPanel onclose={() => codeViewPanelOpen.set(false)} />
             {:else}
@@ -206,12 +214,13 @@
                 </div>
             {/if}
         </div>
-    </div>
+    </main>
 
     {#if $addElementModal}
         <AddElementModal
             elementType={$addElementModal.type}
             parent={$addElementModal.parent}
+            folder={$addElementModal.folder}
             onconfirm={handleAddConfirm}
             oncancel={() => addElementModal.set(null)}
         />
@@ -236,6 +245,14 @@
             elementKey={$moveElementModal}
             onconfirm={(parent) => { moveElement($moveElementModal!, parent); moveElementModal.set(null); }}
             oncancel={() => moveElementModal.set(null)}
+        />
+    {/if}
+
+    {#if $moveToFolderModal}
+        <MoveToFolderModal
+            elementKey={$moveToFolderModal}
+            onconfirm={(folder) => { setFunctionFolder($moveToFolderModal!, folder); moveToFolderModal.set(null); }}
+            oncancel={() => moveToFolderModal.set(null)}
         />
     {/if}
 

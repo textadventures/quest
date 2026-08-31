@@ -92,6 +92,11 @@ public class AttributeSubEditorControlData : IEditorControl
         return Task.FromResult(true);
     }
 
+    public bool IsControlVisibleSync(IEditorData data)
+    {
+        return true;
+    }
+
     public int? Width => null;
 
     public IEditorDefinition Parent => null;
