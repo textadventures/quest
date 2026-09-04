@@ -43,7 +43,7 @@ public class GetInputScript : ScriptBase
     {
         m_worldModel._commandOverride = true;
         WorldModel.BeginPrompt(ref m_worldModel._commandInputTcs);
-        m_worldModel.BeginPendingCallback();
+        m_worldModel.BeginDormantSuspension();
         m_worldModel.SignalTurnSuspended();
         _ = AwaitResponseAndRunCallbackAsync(c);
         return Task.CompletedTask;
@@ -51,9 +51,12 @@ public class GetInputScript : ScriptBase
 
     private async Task AwaitResponseAndRunCallbackAsync(Context c)
     {
+        var resolved = false;
         try
         {
             var result = await m_worldModel._commandInputTcs.Task;
+            resolved = true;
+            m_worldModel.SignalCallbackResolving();
             m_worldModel._commandOverride = false;
             c.Parameters["result"] = result;
             await m_worldModel.RunScriptAsync(m_callbackScript, c);
@@ -62,6 +65,7 @@ public class GetInputScript : ScriptBase
         catch (Exception ex) { m_worldModel.LogException(ex); }
         finally
         {
+            if (!resolved) m_worldModel.SignalCallbackResolving();
             await m_worldModel.EndPendingCallbackAsync();
             m_worldModel.SignalTurnSuspended();
         }

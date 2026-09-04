@@ -151,4 +151,39 @@
       EnableTimer (chaintimer1)
     </script>
   </command>
+
+  <!-- Regression fixture for #2176: a wait{} callback that chains two MoveObjects back to
+       back (e.g. a trap that drops the player into room_a, then immediately into room_b).
+       Each room relies on CoreDescriptions' real changedparent -> OnEnterRoom -> nested
+       'on ready' cascade (the same mechanism Grid_CalculateMapCoordinates hooks into via
+       game.gridmap) to run its own 'enter' script, which records what game.pov.parent was
+       and whether the other room had already run. Before the fix, both MoveObjects (and
+       both top-level on-ready registrations) completed before either room's cascade drained,
+       so room_a's cascade actually ran with game.pov.parent already pointing at room_b, and
+       room_b's cascade could run before room_a's - exactly the interleaving that left
+       Inescapable Cage's map coordinates unset in the reported game. -->
+  <object name="room_a">
+    <inherit name="editor_room" />
+    <enter type="script">
+      game.trap_a_seen_parent = game.pov.parent.name
+      game.trap_a_entered = true
+    </enter>
+  </object>
+  <object name="room_b">
+    <inherit name="editor_room" />
+    <enter type="script">
+      game.trap_b_seen_parent = game.pov.parent.name
+      game.trap_b_saw_a_entered = GetBoolean(game, "trap_a_entered")
+    </enter>
+  </object>
+  <command name="cmd_trap">
+    <pattern>trap</pattern>
+    <script>
+      msg ("before trap")
+      wait {
+        MoveObject (player, room_a)
+        MoveObject (player, room_b)
+      }
+    </script>
+  </command>
 </asl>

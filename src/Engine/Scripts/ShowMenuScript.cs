@@ -88,16 +88,19 @@ public class ShowMenuScript : ScriptBase
         m_worldModel.PlayerUi.ShowMenu(menuData);
 
         WorldModel.BeginPrompt(ref m_worldModel._menuTcs);
-        m_worldModel.BeginPendingCallback();
+        m_worldModel.BeginDormantSuspension();
         m_worldModel.SignalTurnSuspended();
         _ = AwaitResponseAndRunCallbackAsync(c, optionsDictionary);
     }
 
     private async Task AwaitResponseAndRunCallbackAsync(Context c, IDictionary<string, string> optionsDictionary)
     {
+        var resolved = false;
         try
         {
             var response = await m_worldModel._menuTcs!.Task;
+            resolved = true;
+            m_worldModel.SignalCallbackResolving();
             if (response != null)
                 await m_worldModel.PrintAsync(" - " + optionsDictionary[response]);
             c.Parameters["result"] = response;
@@ -107,6 +110,7 @@ public class ShowMenuScript : ScriptBase
         catch (Exception ex) { m_worldModel.LogException(ex); }
         finally
         {
+            if (!resolved) m_worldModel.SignalCallbackResolving();
             await m_worldModel.EndPendingCallbackAsync();
             m_worldModel.SignalTurnSuspended();
         }

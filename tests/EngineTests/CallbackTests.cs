@@ -191,6 +191,29 @@ public class CallbackTests
         phase2.ShouldContain("on ready");
     }
 
+    // Regression test for #2176: a wait{} callback that chains two MoveObjects back to back
+    // (room_a then room_b) must let room_a's changedparent -> OnEnterRoom -> 'on ready' cascade
+    // - including its 'enter' script - run to completion (as if it were fully synchronous, like
+    // Quest 5) before the second MoveObject fires. Before the fix, both MoveObjects (and both
+    // top-level 'on ready' registrations) ran back to back before either room's cascade drained,
+    // so room_a's cascade actually executed once game.pov.parent already pointed at room_b, and
+    // room_b's cascade could run before room_a's - exactly the interleaving that left the real
+    // reported game's Inescapable Cage without map coordinates when it was teleported into via
+    // the same wait{ MoveObject; MoveObject } pattern.
+    [TestMethod]
+    public async Task Wait_ChainedMoveObjectsInSameCallback_EachRoomsCascadeCompletesBeforeTheNextMove()
+    {
+        var driver = await GameDriver.LoadAsync("callbacktest.aslx");
+
+        await driver.SendCommandAsync("trap");
+        await driver.FinishWaitAsync();
+
+        var game = driver.Model.Object("game");
+        game.Fields.GetString("trap_a_seen_parent").ShouldBe("room_a");
+        game.Fields.GetString("trap_b_seen_parent").ShouldBe("room_b");
+        game.Fields.GetAsType<bool>("trap_b_saw_a_entered").ShouldBeTrue();
+    }
+
     // A timer created inside a wait callback (e.g. via SetTimeout) must cause the host
     // to be told when to next call Tick(), otherwise the timer never fires. Regression
     // test for a bug where FinishWait didn't re-request the next timer tick after running
