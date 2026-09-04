@@ -1,5 +1,18 @@
 # Changelog
 
+## [6.0.0-beta.57](https://github.com/textadventures/quest/compare/v6.0.0-beta.56...v6.0.0-beta.57) (2026-09-04)
+
+
+### Bug Fixes
+
+* **AppShell:** stop expression-mode script params reverting to simple mode ([#2171](https://github.com/textadventures/quest/issues/2171)) ([91920cd](https://github.com/textadventures/quest/commit/91920cdb08d7e0e70949b6381a84ceaa0e91231d))
+* **Engine:** don't treat string concatenation with an unset attribute as an error ([#2188](https://github.com/textadventures/quest/issues/2188)) ([c32d080](https://github.com/textadventures/quest/commit/c32d080009b5a5b8fe562ca003335fcef26bc41b))
+* **Engine:** drain the 'on ready' queue once at the turn boundary, not reentrantly ([#2182](https://github.com/textadventures/quest/issues/2182)) ([7afad59](https://github.com/textadventures/quest/commit/7afad59d618c59869938cc7274e32368cbcf66e8))
+* **Engine:** friendly error instead of NullReferenceException for unset attributes ([#2167](https://github.com/textadventures/quest/issues/2167)) ([7876e1a](https://github.com/textadventures/quest/commit/7876e1a181c223e93f44af820c609e9fba76bce8))
+* **Engine:** reject play sound wait+loop combination instead of hanging forever ([#2170](https://github.com/textadventures/quest/issues/2170)) ([a3dc09e](https://github.com/textadventures/quest/commit/a3dc09e9ee27049cbcb05c3b271d04cddf9cd8c9))
+* **Engine:** retarget Core.aslx location-bar styling to #qv-status ([#2169](https://github.com/textadventures/quest/issues/2169)) ([2e72af9](https://github.com/textadventures/quest/commit/2e72af9fed3cfdaee093f6faf0470ea1647b6824))
+* **Engine:** stop deferring 'on ready' during an unrelated wait/get input/ask/show menu callback ([#2177](https://github.com/textadventures/quest/issues/2177)) ([7e4a931](https://github.com/textadventures/quest/commit/7e4a931699b776eae266a2a87db659af80708949))
+
 ## [6.0.0-beta.56](https://github.com/textadventures/quest/compare/v6.0.0-beta.55...v6.0.0-beta.56) (2026-08-28)
 
 
