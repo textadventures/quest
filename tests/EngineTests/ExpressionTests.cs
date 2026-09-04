@@ -700,6 +700,19 @@ public class ExpressionTests
     }
 
     [TestMethod]
+    public async Task TestUnsetAttribute_ConcatenatedWithString_TreatedAsEmptyString()
+    {
+        // '+' with a string on either side is concatenation, not arithmetic, so an unset attribute
+        // is an empty string here - the arithmetic guard above must not fire. Core's own
+        // FormatStatusAttribute relies on this: with no format string it builds
+        // 'CapFirst(attr) + ": " + value' with no null check, so guarding it would turn any status
+        // bar listing a not-yet-set attribute into a script error.
+        (await RunExpression<string>($"\"prefix\" + {ObjectName}.unsetattribute")).ShouldBe("prefix");
+        (await RunExpression<string>($"{ObjectName}.unsetattribute + \"suffix\"")).ShouldBe("suffix");
+        (await RunExpression<string>($"\"a\" + {ObjectName}.unsetattribute + \"b\"")).ShouldBe("ab");
+    }
+
+    [TestMethod]
     public async Task TestObjectEqualToStringReturnsFalse()
     {
         // Cross-type equality (Element vs string) must return false, not throw IConvertible.
