@@ -162,6 +162,8 @@ jobs:
         working-directory: tests/e2e
       - run: node verify-appshell-preview-flush.mjs http://localhost:5174
         working-directory: tests/e2e
+      - run: node verify-appshell-print-expression-mode.mjs http://localhost:5174
+        working-directory: tests/e2e
       - run: node verify-appshell-responsive-toolbar.mjs http://localhost:5174
         working-directory: tests/e2e
       - run: node verify-appshell-richtext-stack.mjs http://localhost:5174
