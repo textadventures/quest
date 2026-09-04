@@ -93,11 +93,30 @@ public partial class WorldModel : IGame, IGameDebug
 
     // Tracks show menu / ask / get input callbacks that fire-and-forget their response handling.
     // Stays elevated for the whole span from Begin (suspension starts) through the matching End
-    // (the resumed callback script, if any, has finished running) - used for FinishTurn deferral
-    // and turn-pending reporting, where "still mid-callback" should count as pending. See
-    // _awaitingResolutionCount below for the narrower count 'on ready' actually gates on.
+    // (the resumed callback script, if any, has finished running), so it only returns to zero at
+    // the true end of a turn - which is what makes it the right trigger for turn-pending
+    // reporting, for FinishTurn deferral, and for flushing _deferredOnReadyQueue. See
+    // _awaitingResolutionCount below for the narrower count that decides, at registration time,
+    // whether an 'on ready' has to be deferred in the first place.
     private int _pendingCallbackCount;
-    private readonly List<(IScript Script, Context Context)> _onReadyQueue = [];
+
+    // 'on ready' scripts registered while a wait/get input/ask/show menu was genuinely dormant.
+    // This is the direct equivalent of Quest 5.10.2's CallbackManager.m_onReadyCallbacks: there,
+    // AddOnReady queues whenever m_callbacks.AnyOutstanding(), and the queue is flushed in exactly
+    // one place - TryRunOnFinallyScripts, reached from TryFinishTurn at the end of
+    // RunCallbackAndFinishTurn, i.e. once per resolved suspension, after that suspension's whole
+    // callback script has run. See FlushDeferredOnReadyQueueAsync.
+    private readonly List<(IScript Script, Context Context)> _deferredOnReadyQueue = [];
+
+    // 'on ready' scripts encountered *inside* another 'on ready' callback while nothing was
+    // dormant. Quest 5 simply recursed into these on the spot; Viva queues them instead, to avoid
+    // a native stack overflow on deeply nested chains (#1779) - so they are a trampoline, not a
+    // deferral. They belong to the on-ready chain currently executing and run at the end of it
+    // (see RunNestedOnReadyQueueAsync), long before the turn boundary that flushes
+    // _deferredOnReadyQueue. Keeping the two apart is what stops a stale item queued back when an
+    // older suspension was dormant from being dragged forward into the middle of an unrelated
+    // cascade (#2179).
+    private readonly List<(IScript Script, Context Context)> _nestedOnReadyQueue = [];
 
     // Counts wait/get input/ask/show menu suspensions that are still genuinely dormant - awaiting
     // a real external event (player keypress, response, menu choice) - as opposed to
@@ -133,12 +152,12 @@ public partial class WorldModel : IGame, IGameDebug
         }
     }
 
-    // Guards the on-ready drain loop in EndPendingCallbackAsync against re-entry: a queued
-    // script can itself synchronously await another prompt (e.g. a synchronous "play sound",
-    // or the GetInput()/Ask()/ShowMenu() expression forms), which calls EndPendingCallbackAsync
-    // again from within the drain loop's own call stack. When that happens, the inner call must
-    // not start a second drain loop - it just decrements the count and returns, leaving the
-    // outer loop (still on the stack) to keep going.
+    // Guards FlushDeferredOnReadyQueueAsync against re-entry: a flushed script can itself run a
+    // Begin/EndPendingCallback pair (a directly-run 'on ready', a synchronous "play sound", or the
+    // GetInput()/Ask()/ShowMenu() expression forms), and that inner End can see
+    // _pendingCallbackCount back at zero and try to start a second flush from within the first
+    // one's own call stack. When that happens the inner call must just return, leaving the outer
+    // loop (still on the stack) to keep going.
     private bool _isFlushingOnReadyQueue;
 
     // Guards specifically against 'on ready' recursing into itself (AddOnReady -> RunScriptAsync
@@ -804,7 +823,8 @@ public partial class WorldModel : IGame, IGameDebug
         _questionTcs?.TrySetCanceled();
         _commandInputTcs?.TrySetCanceled();
         _pauseTcs?.TrySetCanceled();
-        _onReadyQueue.Clear();
+        _deferredOnReadyQueue.Clear();
+        _nestedOnReadyQueue.Clear();
 
         RequestNextTimerTick?.Invoke(0);
         Finished?.Invoke();
@@ -1813,23 +1833,74 @@ public partial class WorldModel : IGame, IGameDebug
 
     internal async Task AddOnReady(IScript callback, Context c)
     {
-        if (_isRunningOnReadyCallback || _awaitingResolutionCount > 0)
+        // Check dormancy first: it wins over on-ready nesting, matching Quest 5.10.2's single
+        // AnyOutstanding() test. An 'on ready' registered while a wait/get input/ask/show menu is
+        // dormant belongs to the turn-boundary queue however deeply nested it is - it must not be
+        // treated as part of the chain currently executing, which is free to finish long before
+        // that suspension resolves.
+        if (_awaitingResolutionCount > 0)
         {
-            _onReadyQueue.Add((callback, c));
+            _deferredOnReadyQueue.Add((callback, c));
             return;
         }
+
+        if (_isRunningOnReadyCallback)
+        {
+            _nestedOnReadyQueue.Add((callback, c));
+            return;
+        }
+
         // Set the flag before running so that any nested 'on ready' statements encountered
         // during execution are queued rather than recursed into.
         _isRunningOnReadyCallback = true;
         BeginPendingCallback();
         try
         {
-            await RunScriptAsync(callback, c);
+            try
+            {
+                await RunScriptAsync(callback, c);
+            }
+            finally
+            {
+                // In the finally, so that a script error part-way through the callback still runs
+                // whatever it managed to queue. Leaving items in _nestedOnReadyQueue would strand
+                // them until some unrelated 'on ready' happened along - which, for the OnEnterRoom
+                // cascade, means silently losing the rest of a room's arrival text.
+                await RunNestedOnReadyQueueAsync();
+            }
         }
         finally
         {
             _isRunningOnReadyCallback = false;
             await EndPendingCallbackAsync();
+        }
+    }
+
+    // Trampolined stand-in for Quest 5's native recursion into a nested 'on ready' (see
+    // _nestedOnReadyQueue). Runs the chain the outermost 'on ready' started out to its end, so
+    // that - as in Quest 5 - the whole cascade has finished by the time control returns to the
+    // statement after the 'on ready' block. Nested registrations made while this runs are
+    // appended (_isRunningOnReadyCallback is still set), so the loop naturally follows the chain
+    // however deep it goes, without growing the native stack.
+    private async Task RunNestedOnReadyQueueAsync()
+    {
+        while (_nestedOnReadyQueue.Count > 0 && State != GameState.Finished)
+        {
+            if (_awaitingResolutionCount > 0)
+            {
+                // Something in this chain opened a new dormant wait/get input/ask/show menu (e.g.
+                // a room's 'beforeenter' containing its own "press any key" wait{}). Whatever is
+                // still queued has to hold until that resolves - which is exactly what
+                // _deferredOnReadyQueue means. Hand them over rather than running ahead of the
+                // suspension, or stranding them here where nothing would ever drain them again.
+                _deferredOnReadyQueue.AddRange(_nestedOnReadyQueue);
+                _nestedOnReadyQueue.Clear();
+                return;
+            }
+
+            var (script, context) = _nestedOnReadyQueue[0];
+            _nestedOnReadyQueue.RemoveAt(0);
+            await RunScriptAsync(script, context);
         }
     }
 
@@ -1851,47 +1922,68 @@ public partial class WorldModel : IGame, IGameDebug
     {
         _pendingCallbackCount--;
 
-        // Drain whenever *this* Begin/End pair resolves - not only once every other
-        // outstanding callback has also resolved. A script (e.g. get_partition_sequence-style
-        // puzzle loops) can open its next get input/wait/ask/show menu before this one's finally
-        // block runs, which keeps _pendingCallbackCount above zero indefinitely; gating the drain
-        // on it reaching zero left anything queued while such a loop is active stuck forever.
+        // _pendingCallbackCount returning to zero is Viva's turn boundary: the outermost
+        // wait/get input/ask/show menu of the current chain has now finished running its callback
+        // script *including* everything that script went on to do, because every suspension holds
+        // a count of its own from Begin right through to the end of its callback. That makes this
+        // the counterpart of Quest 5.10.2's one and only flush point - TryFinishTurn ->
+        // TryRunOnFinallyScripts at the end of RunCallbackAndFinishTurn.
         //
-        // But stop (without discarding what's left) as soon as _awaitingResolutionCount goes
-        // above zero part-way through: a queued item, once run directly here, can itself open a
-        // *new* dormant wait/get input/ask/show menu (e.g. a room's 'beforeenter' containing its
-        // own wait{} for "press any key") - anything queued after that (including further items
-        // this same pass would otherwise still process) needs to hold until that new suspension
-        // actually resolves, exactly like AddOnReady's own registration-time check. Running ahead
-        // of it here would let a later stage's 'on ready' (e.g. Grid_CalculateMapCoordinates) fire
-        // before the wait it was meant to follow ever resolved - left unset map coordinates in a
-        // real published game once #2176's first fix handled only the registration-time case.
-        // Whatever caused the new suspension will call EndPendingCallbackAsync again once it
-        // resolves, resuming the drain from here.
-        if (!_isFlushingOnReadyQueue)
-        {
-            _isFlushingOnReadyQueue = true;
-            try
-            {
-                while (_onReadyQueue.Count > 0 && _awaitingResolutionCount == 0 && State != GameState.Finished)
-                {
-                    var (script, context) = _onReadyQueue[0];
-                    _onReadyQueue.RemoveAt(0);
-                    await RunScriptAsync(script, context);
-                }
-            }
-            finally
-            {
-                _isFlushingOnReadyQueue = false;
-            }
-        }
-
-        // Run any FinishTurn a command/event deferred past this callback (see
-        // _finishTurnDeferred), but only once every wait/ask/get input/show menu from that turn -
-        // including ones nested inside this callback's own script - has actually resolved.
+        // Draining from every intermediate Begin/End pair instead (what Viva did up to #2177) ran
+        // items reentrantly, half-way through an unrelated cascade and ahead of statements still
+        // pending higher up the callback's own stack - which silently swallowed a room
+        // description in a real published game (#2179). Gating on _awaitingResolutionCount alone
+        // isn't enough either: it drops to zero the moment a suspension resolves, before its
+        // callback script has run a single statement.
+        //
+        // This also subsumes the old "_awaitingResolutionCount == 0" condition - a dormant
+        // suspension holds a _pendingCallbackCount for at least as long as it is dormant, so the
+        // count can only be zero when nothing is dormant either. And nothing gets stranded by
+        // waiting for it: an item only ever reaches a queue while a suspension is outstanding,
+        // and that suspension's own End is guaranteed to run (callbacks resolve, cancel, or
+        // report an error, all through the same finally block) and to bring the count back down.
         if (_pendingCallbackCount == 0)
         {
+            await FlushDeferredOnReadyQueueAsync();
+
+            // Run any FinishTurn a command/event deferred past this callback (see
+            // _finishTurnDeferred). Quest 5 orders these the same way round: TryFinishTurn flushes
+            // the on-ready queue first, then runs FinishTurn.
             await RunDeferredFinishTurnAsync();
+        }
+    }
+
+    private async Task FlushDeferredOnReadyQueueAsync()
+    {
+        if (_isFlushingOnReadyQueue)
+        {
+            return;
+        }
+
+        _isFlushingOnReadyQueue = true;
+        try
+        {
+            // Stop (without discarding what's left) as soon as _awaitingResolutionCount goes above
+            // zero part-way through: a flushed item can itself open a *new* dormant
+            // wait/get input/ask/show menu (e.g. a room's 'beforeenter' containing its own wait{}
+            // for "press any key"), and anything still queued has to hold until that resolves,
+            // exactly like AddOnReady's registration-time check. Running ahead of it would let a
+            // later stage's 'on ready' (e.g. Grid_CalculateMapCoordinates) fire before the wait it
+            // was meant to follow - which left unset map coordinates in a real published game.
+            // The new suspension's own End reaches the zero-count boundary above once it resolves,
+            // resuming the flush from here. Quest 5's flush is a flat foreach with no such check;
+            // this is a deliberate divergence, and the conservative direction to diverge in.
+            while (_deferredOnReadyQueue.Count > 0 && _awaitingResolutionCount == 0 &&
+                   State != GameState.Finished)
+            {
+                var (script, context) = _deferredOnReadyQueue[0];
+                _deferredOnReadyQueue.RemoveAt(0);
+                await RunScriptAsync(script, context);
+            }
+        }
+        finally
+        {
+            _isFlushingOnReadyQueue = false;
         }
     }
 

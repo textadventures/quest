@@ -156,6 +156,37 @@ public class V5BlockingTests
         phase2.ShouldContain("room2 turnscript");
     }
 
+    // #2179, second ordering bug found by the same investigation. A room entered while another
+    // wait{} is still dormant has its whole OnEnterRoom 'on ready' cascade queued, and that
+    // cascade has to run to completion before the turn's deferred FinishTurn. Viva used to
+    // discharge FinishTurn from the Begin/End pair of an *intermediate* stage of the cascade -
+    // the queue was drained by a flat loop that re-entered AddOnReady for each nested stage, and
+    // the innermost stage's End saw the pending count back at zero - so turnscripts ran before
+    // the room's own 'enter' script had. In a real published v550 game that pushed the ending
+    // scene's SetTurnTimeout a whole turn late.
+    [TestMethod]
+    public async Task Wait_RoomEnteredWhileSecondWaitDormant_EnterScriptRunsBeforeTurnScripts()
+    {
+        var driver = await V5BlockingGameDriver.LoadAsync("waitturnscripttest.aslx");
+
+        var phase1 = await driver.SendCommandAsync("movewaitdormant");
+        phase1.ShouldContain("before wait");
+        phase1.ShouldNotContain("entered room3");
+
+        // Resolves the outer wait; the callback opens the inner one and moves the player, so the
+        // room's cascade is queued rather than run.
+        var phase2 = await driver.FinishWaitAsync();
+        phase2.ShouldNotContain("entered room3");
+        phase2.ShouldNotContain("room1 turnscript");
+
+        var phase3 = (await driver.FinishWaitAsync()).ToList();
+        phase3.ShouldContain("entered room3");
+        // The 'enter' script enabled room3's turnscript, so this turn's turnscripts - run by the
+        // FinishTurn deferred from the original command - must see it enabled and fire it.
+        phase3.ShouldContain("room3 turnscript");
+        phase3.IndexOf("entered room3").ShouldBeLessThan(phase3.IndexOf("room3 turnscript"));
+    }
+
     // A wait callback that opens another wait (e.g. a two-beat cutscene) must resolve each
     // key press independently, and FinishTurn/turnscripts must wait for both - not just the
     // first - to resolve. 'wait { }' itself is fire-and-forget regardless of version (matching

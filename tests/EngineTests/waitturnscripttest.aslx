@@ -124,6 +124,22 @@
     </turnscript>
   </object>
 
+  <!-- Entered via a MovePlayer that happens while a second wait{} is still dormant, so the
+       whole OnEnterRoom 'on ready' cascade - including this 'enter' script - is queued and only
+       runs once that inner wait resolves. -->
+  <object name="room3">
+    <enter type="script">
+      msg ("entered room3")
+      EnableTurnScript (room3turn)
+    </enter>
+    <turnscript name="room3turn">
+      <enabled type="boolean">false</enabled>
+      <script>
+        msg ("room3 turnscript")
+      </script>
+    </turnscript>
+  </object>
+
   <!-- The wait callback moves the player to room2, but only once the wait actually
        resolves (key press / FinishWait). FinishTurn/RunTurnScripts must not run until
        after that move, otherwise room1's turnscript incorrectly fires for a turn where
@@ -152,6 +168,23 @@
           msg ("step3")
         }
         msg ("step4")
+      }
+    </script>
+  </command>
+  <!-- Mirrors the shape of a real published v550 game ("Xanadu - The World's Only Hope"):
+       the outer wait's callback opens a second, empty wait{} - fire-and-forget, so it is still
+       dormant - and then moves the player. The move's OnEnterRoom 'on ready' cascade is queued
+       behind that inner wait, and runs only once it resolves. The room's own 'enter' script is
+       part of that cascade, so it must run before the turn's deferred FinishTurn/RunTurnScripts,
+       not half-way through it. -->
+  <command name="cmd_movewait_dormant">
+    <pattern>movewaitdormant</pattern>
+    <script>
+      msg ("before wait")
+      wait {
+        wait {
+        }
+        MovePlayer (room3)
       }
     </script>
   </command>

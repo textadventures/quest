@@ -176,6 +176,50 @@
       game.trap_b_saw_a_entered = GetBoolean(game, "trap_a_entered")
     </enter>
   </object>
+  <!-- #2179: an 'on ready' registered while a wait{} is dormant must not be run by a
+       reentrant drain triggered from an unrelated 'on ready' cascade inside that wait's own
+       callback - it must wait for the callback script to finish, exactly like Quest 5.10.2's
+       single TryRunOnFinallyScripts flush at the end of RunCallbackAndFinishTurn. So the
+       stale callback must observe stale_flag = 1, and run after "callback end". -->
+  <command name="cmd_stale_on_ready">
+    <pattern>staleonready</pattern>
+    <script>
+      game.stale_flag = 0
+      on ready {
+        wait {
+          on ready {
+            msg ("inner cascade")
+          }
+          game.stale_flag = 1
+          msg ("callback end")
+        }
+        on ready {
+          msg ("stale: flag=" + game.stale_flag)
+        }
+      }
+    </script>
+  </command>
+
+  <!-- Two sibling 'on ready' scripts queued inside the same outer 'on ready', where the first
+       opens a wait{}. The second can't run until that wait resolves, and must not be stranded
+       in the meantime. -->
+  <command name="cmd_nested_wait_sibling">
+    <pattern>nestedwaitsibling</pattern>
+    <script>
+      on ready {
+        on ready {
+          msg ("sibling1 before")
+          wait {
+            msg ("sibling1 wait done")
+          }
+        }
+        on ready {
+          msg ("sibling2")
+        }
+      }
+    </script>
+  </command>
+
   <command name="cmd_trap">
     <pattern>trap</pattern>
     <script>
