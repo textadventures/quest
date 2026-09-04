@@ -1856,12 +1856,24 @@ public partial class WorldModel : IGame, IGameDebug
         // puzzle loops) can open its next get input/wait/ask/show menu before this one's finally
         // block runs, which keeps _pendingCallbackCount above zero indefinitely; gating the drain
         // on it reaching zero left anything queued while such a loop is active stuck forever.
+        //
+        // But stop (without discarding what's left) as soon as _awaitingResolutionCount goes
+        // above zero part-way through: a queued item, once run directly here, can itself open a
+        // *new* dormant wait/get input/ask/show menu (e.g. a room's 'beforeenter' containing its
+        // own wait{} for "press any key") - anything queued after that (including further items
+        // this same pass would otherwise still process) needs to hold until that new suspension
+        // actually resolves, exactly like AddOnReady's own registration-time check. Running ahead
+        // of it here would let a later stage's 'on ready' (e.g. Grid_CalculateMapCoordinates) fire
+        // before the wait it was meant to follow ever resolved - left unset map coordinates in a
+        // real published game once #2176's first fix handled only the registration-time case.
+        // Whatever caused the new suspension will call EndPendingCallbackAsync again once it
+        // resolves, resuming the drain from here.
         if (!_isFlushingOnReadyQueue)
         {
             _isFlushingOnReadyQueue = true;
             try
             {
-                while (_onReadyQueue.Count > 0 && State != GameState.Finished)
+                while (_onReadyQueue.Count > 0 && _awaitingResolutionCount == 0 && State != GameState.Finished)
                 {
                     var (script, context) = _onReadyQueue[0];
                     _onReadyQueue.RemoveAt(0);
