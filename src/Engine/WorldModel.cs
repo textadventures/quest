@@ -92,10 +92,27 @@ public partial class WorldModel : IGame, IGameDebug
     }
 
     // Tracks show menu / ask / get input callbacks that fire-and-forget their response handling.
-    // on ready defers while this is above zero, so it doesn't run mid-callback while state may
-    // still be inconsistent.
+    // Stays elevated for the whole span from Begin (suspension starts) through the matching End
+    // (the resumed callback script, if any, has finished running) - used for FinishTurn deferral
+    // and turn-pending reporting, where "still mid-callback" should count as pending. See
+    // _awaitingResolutionCount below for the narrower count 'on ready' actually gates on.
     private int _pendingCallbackCount;
     private readonly List<(IScript Script, Context Context)> _onReadyQueue = [];
+
+    // Counts wait/get input/ask/show menu suspensions that are still genuinely dormant - awaiting
+    // a real external event (player keypress, response, menu choice) - as opposed to
+    // _pendingCallbackCount, which stays elevated through the resumed callback's own synchronous
+    // execution too. 'on ready' only needs to defer while something is genuinely dormant: once a
+    // suspension resolves and its callback starts running, an 'on ready' triggered from inside it
+    // (e.g. a MoveObject that fires changedparent -> OnEnterRoom -> 'on ready') should run
+    // immediately, matching Quest 5's fully-synchronous 'on ready' - not queue behind whatever the
+    // callback's own script goes on to do next, which is what let a second MoveObject in the same
+    // wait{} callback run before the first one's on-ready (room map placement) had a chance to,
+    // leaving the second room's coordinates unset (#2176). Each Begin increments this alongside
+    // _pendingCallbackCount; call SignalCallbackResolving() exactly once, right when a suspension's
+    // own callback is about to run (or is skipped, e.g. on cancellation), to bring it back down -
+    // EndPendingCallbackAsync deliberately leaves it alone.
+    private int _awaitingResolutionCount;
 
     // Set when a pre-v580 command's (or event's) automatic FinishTurn call is pushed past a
     // wait/ask/get input/show menu it triggered - see HandleCommandAsyncInternal. Real Quest 5
@@ -123,6 +140,17 @@ public partial class WorldModel : IGame, IGameDebug
     // not start a second drain loop - it just decrements the count and returns, leaving the
     // outer loop (still on the stack) to keep going.
     private bool _isFlushingOnReadyQueue;
+
+    // Guards specifically against 'on ready' recursing into itself (AddOnReady -> RunScriptAsync
+    // -> nested 'on ready' -> AddOnReady -> ...), which is what actually risks a native stack
+    // overflow for deeply-nested 'on ready' chains (see #1779). This is deliberately separate from
+    // _pendingCallbackCount: a wait/get input/ask/show menu callback that itself calls MoveObject
+    // (triggering changedparent -> OnEnterRoom -> 'on ready') is not on-ready recursion, and
+    // deferring it just because _pendingCallbackCount is still elevated from the outer wait/etc.
+    // means the deferred callback runs after, not before, whatever the surrounding script does
+    // next - e.g. a second MoveObject in the same wait{} callback would run before the first
+    // MoveObject's on-ready (map placement) had a chance to, leaving the second room unplaced.
+    private bool _isRunningOnReadyCallback;
 
     private bool _reportingScriptError;
 
@@ -1785,13 +1813,14 @@ public partial class WorldModel : IGame, IGameDebug
 
     internal async Task AddOnReady(IScript callback, Context c)
     {
-        if (_pendingCallbackCount > 0)
+        if (_isRunningOnReadyCallback || _awaitingResolutionCount > 0)
         {
             _onReadyQueue.Add((callback, c));
             return;
         }
-        // Increment the pending count before running so that any nested 'on ready'
-        // statements encountered during execution are queued rather than recursed into.
+        // Set the flag before running so that any nested 'on ready' statements encountered
+        // during execution are queued rather than recursed into.
+        _isRunningOnReadyCallback = true;
         BeginPendingCallback();
         try
         {
@@ -1799,11 +1828,24 @@ public partial class WorldModel : IGame, IGameDebug
         }
         finally
         {
+            _isRunningOnReadyCallback = false;
             await EndPendingCallbackAsync();
         }
     }
 
     internal void BeginPendingCallback() => _pendingCallbackCount++;
+
+    // Use instead of BeginPendingCallback() at the start of a wait/get input/ask/show menu
+    // *script* command (the forms with a separate callback script that runs once a real external
+    // event resolves) - pairs with a single SignalCallbackResolving() call made right when that
+    // callback is about to run (or would have, had the suspension not been cancelled).
+    internal void BeginDormantSuspension()
+    {
+        BeginPendingCallback();
+        _awaitingResolutionCount++;
+    }
+
+    internal void SignalCallbackResolving() => _awaitingResolutionCount--;
 
     internal async Task EndPendingCallbackAsync()
     {
