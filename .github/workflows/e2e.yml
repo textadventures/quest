@@ -394,6 +394,8 @@ jobs:
         working-directory: tests/e2e
       - run: node verify-wasmplayer-asset-versioning.mjs http://localhost:5175
         working-directory: tests/e2e
+      - run: node verify-wasmplayer-runtime-preload.mjs http://localhost:5175
+        working-directory: tests/e2e
 
   # WebPlayer (ASP.NET Core + Blazor Server), Development mode with Dev:Enabled
   # (appsettings.Development.json already sets this — see /dev/open's

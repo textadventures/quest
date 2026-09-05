@@ -501,23 +501,30 @@ let currentIsPreview = false;
 // must NOT also disable Save or add the Restart button the way isPreview does.
 let currentAllowDebug = false;
 
-async function initWasmPlayer(gameBytes, filename, bc = null, saveBytes = null, isPreview = false, recordWalkthrough = null, runWalkthrough = null, adjacentFiles = null, allowDebug = false) {
-    currentIsPreview = isPreview;
-    currentAllowDebug = allowDebug;
-    // The version query on dotnet.js is load-bearing beyond its own cache key:
-    // the loader reads it back off its own import.meta.url and propagates it to
-    // the JS modules it imports and to dotnet.boot.js (its `modulesUniqueQuery`),
+// ── .NET runtime bootstrap ───────────────────────────────────────────────────
+//
+// The runtime is ~10.6 MB spread over ~190 files, and which game is being
+// played has no bearing on any of it. It used to be imported and instantiated
+// inside initWasmPlayer() — i.e. only once the game bytes were already in
+// hand, which for a ?id= link means after a textadventures API round trip and
+// then the game download, neither of which it depends on. Splitting the
+// download away from create() lets the boot IIFE start it up front instead, in
+// parallel with those two fetches. See issue #2186.
+let runtimeBuilderPromise = null;
+
+// Resolves to the configured — but not yet instantiated — host builder.
+function loadRuntimeBuilder() {
+    if (runtimeBuilderPromise) return runtimeBuilderPromise;
+    // A relative specifier fails here when this script is loaded cross-origin
+    // (the CDN-linked single-file export) — see wasmPlayerScriptUrl's comment.
+    // The version query is load-bearing beyond its own cache key too: the
+    // loader reads it back off its own import.meta.url and propagates it to
+    // the JS modules it imports and to dotnet.boot.js (`modulesUniqueQuery`),
     // so those need no further handling in withResourceLoader below.
     const dotnetJsUrl = versioned(wasmPlayerScriptUrl
         ? new URL('_framework/dotnet.js', wasmPlayerScriptUrl).href
         : './_framework/dotnet.js');
-    const [htmResponse, { dotnet }] = await Promise.all([
-        fetch(versioned('playercore.htm')),
-        import(dotnetJsUrl),
-    ]);
-    originalPlayerHtml = await htmResponse.text();
-
-    const runtime = await dotnet
+    runtimeBuilderPromise = import(dotnetJsUrl).then(({ dotnet }) => dotnet
         // The loader otherwise passes `cache: "no-cache"` on every asset fetch,
         // which forces a conditional request regardless of how long the CDN
         // said the response was fresh for — so without this, `immutable` on
@@ -533,8 +540,36 @@ async function initWasmPlayer(gameBytes, filename, bc = null, saveBytes = null, 
         .withResourceLoader((type, name, defaultUri) =>
             !assetVersionQuery || type === 'manifest' || type === 'dotnetjs'
                 ? null
-                : versioned(defaultUri))
-        .create();
+                : versioned(defaultUri)));
+    return runtimeBuilderPromise;
+}
+
+// Pulls every runtime asset into the browser cache without instantiating
+// anything, so the create() in initWasmPlayer has nothing left to fetch.
+// Fire-and-forget by design: it's started before we know the game will even
+// load, and its result is not what anyone waits on. The runtime's own
+// bookkeeping makes create() reuse this exact work rather than repeat it
+// (mono_download_assets is one-shot), and a failure here resurfaces from
+// create() where startGame already turns it into a visible error — so the
+// catch here only exists to keep it from becoming an unhandled rejection.
+//
+// The trade is that a game that turns out not to exist (a bad ?id=) now
+// downloads some of a runtime it won't use. That costs a failed load some
+// bandwidth; not doing it costs every successful load ~1.7s.
+function preloadRuntime() {
+    loadRuntimeBuilder().then(builder => builder.download()).catch(() => {});
+}
+
+async function initWasmPlayer(gameBytes, filename, bc = null, saveBytes = null, isPreview = false, recordWalkthrough = null, runWalkthrough = null, adjacentFiles = null, allowDebug = false) {
+    currentIsPreview = isPreview;
+    currentAllowDebug = allowDebug;
+    const [htmResponse, builder] = await Promise.all([
+        fetch(versioned('playercore.htm')),
+        loadRuntimeBuilder(),
+    ]);
+    originalPlayerHtml = await htmResponse.text();
+
+    const runtime = await builder.create();
     const { setModuleImports, getAssemblyExports, getConfig } = runtime;
 
     setModuleImports("wasm-player", {
@@ -2103,6 +2138,7 @@ async function fetchGameBytes(url) {
     // other boot source converges on. Checked first since, unlike the sources
     // below, an embedded export never carries any of their query params.
     if (window.QuestVivaEmbeddedGame) {
+        preloadRuntime();
         const bytes = Uint8Array.from(atob(window.QuestVivaEmbeddedGame), c => c.charCodeAt(0));
         const filename = window.QuestVivaEmbeddedGameFilename || 'game.quest';
         document.addEventListener('DOMContentLoaded', async () => {
@@ -2115,6 +2151,7 @@ async function fetchGameBytes(url) {
     const params = new URLSearchParams(window.location.search);
 
     if (params.get('source') === 'editor') {
+        preloadRuntime();
         const bc = new BroadcastChannel('quest-preview');
         bc.postMessage({ type: 'ready' });
         bc.onmessage = async ({ data }) => {
@@ -2140,6 +2177,7 @@ async function fetchGameBytes(url) {
     // distinct channel name keeps this from cross-talking with a real
     // editor-preview tab open at the same time.
     if (params.get('source') === 'local') {
+        preloadRuntime();
         const bc = new BroadcastChannel('quest-play-local');
         bc.postMessage({ type: 'ready' });
         // Covers the case where nothing ever answers — see
@@ -2178,7 +2216,10 @@ async function fetchGameBytes(url) {
     const gameUrl = params.get('url') || window.QuestVivaConfig?.defaultGameUrl;
 
     if (id) {
-        // Start API fetch immediately; wire DOM once it's ready.
+        // Start API fetch immediately; wire DOM once it's ready. The runtime
+        // download runs alongside it rather than behind it — the API response
+        // and the game file it points at are what used to gate it.
+        preloadRuntime();
         let resolvedSourceUrl = null;
         const gamePromise = (async () => {
             const apiRoot = window.QuestVivaConfig?.textAdventuresApiRoot
@@ -2210,6 +2251,7 @@ async function fetchGameBytes(url) {
 
     if (gameUrl) {
         // Start fetch immediately; wire DOM once it's ready.
+        preloadRuntime();
         const gamePromise = fetchGameBytes(gameUrl);
 
         document.addEventListener('DOMContentLoaded', async () => {
