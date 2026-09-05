@@ -27,6 +27,28 @@ console.log(
 // relative resolution entirely, so it works either way.
 const wasmPlayerScriptUrl = document.currentScript?.src;
 
+// Cache key for this build's own static assets, matching the `?v=` that
+// scripts/inject-version.mjs stamps onto every asset URL in the markup —
+// window.QuestVivaVersion is spliced in by that same script. This covers the
+// assets fetched from JS instead (playercore.htm, grid.js, and everything
+// under _framework/), so a deploy changes every URL and play.questviva.com can
+// serve them `immutable` rather than revalidating ~210 files on each load.
+//
+// For _framework/ specifically the version is also what makes `immutable`
+// *safe*. None of those filenames are content-hashed and AOT output isn't
+// byte-reproducible, so a browser holding dotnet.boot.js (the manifest of
+// per-file SHA-256 hashes) from one deploy alongside a binary from the next
+// gets an SRI mismatch and the resource is blocked. Stamping manifest and
+// binaries with the same version means they can never come from different
+// deploys — which is what the blanket `Cache-Control: no-cache` on
+// _framework/* used to buy, at the cost of ~190 revalidations per page load.
+//
+// Empty when the version is unknown (which also leaves the runtime's own
+// no-cache fetching alone, below) — nothing then depends on cache keys.
+const assetVersion = window.QuestVivaVersion || '';
+const assetVersionQuery = assetVersion ? `?v=${encodeURIComponent(assetVersion)}` : '';
+const versioned = (url) => (assetVersionQuery && !url.includes('?') ? url + assetVersionQuery : url);
+
 var _audio = null;
 
 const pendingResources = new Map();
@@ -426,7 +448,7 @@ async function setupPaperJs() {
     canvas.style.display = 'none';
     document.body.appendChild(canvas);
     paper.setup(canvas);
-    const code = await fetch('grid.js').then(r => r.text());
+    const code = await fetch(versioned('grid.js')).then(r => r.text());
     paper.PaperScript.evaluate(code, paper);
 }
 
@@ -482,16 +504,37 @@ let currentAllowDebug = false;
 async function initWasmPlayer(gameBytes, filename, bc = null, saveBytes = null, isPreview = false, recordWalkthrough = null, runWalkthrough = null, adjacentFiles = null, allowDebug = false) {
     currentIsPreview = isPreview;
     currentAllowDebug = allowDebug;
-    const dotnetJsUrl = wasmPlayerScriptUrl
+    // The version query on dotnet.js is load-bearing beyond its own cache key:
+    // the loader reads it back off its own import.meta.url and propagates it to
+    // the JS modules it imports and to dotnet.boot.js (its `modulesUniqueQuery`),
+    // so those need no further handling in withResourceLoader below.
+    const dotnetJsUrl = versioned(wasmPlayerScriptUrl
         ? new URL('_framework/dotnet.js', wasmPlayerScriptUrl).href
-        : './_framework/dotnet.js';
+        : './_framework/dotnet.js');
     const [htmResponse, { dotnet }] = await Promise.all([
-        fetch('playercore.htm'),
+        fetch(versioned('playercore.htm')),
         import(dotnetJsUrl),
     ]);
     originalPlayerHtml = await htmResponse.text();
 
-    const runtime = await dotnet.create();
+    const runtime = await dotnet
+        // The loader otherwise passes `cache: "no-cache"` on every asset fetch,
+        // which forces a conditional request regardless of how long the CDN
+        // said the response was fresh for — so without this, `immutable` on
+        // _framework/* buys nothing at all. Only safe to turn off because the
+        // URLs are version-stamped (see assetVersionQuery); left alone when
+        // there's no version to stamp with.
+        .withConfig({ disableNoCacheFetch: !!assetVersionQuery })
+        // Stamps the remaining assets — the assemblies, dotnet.native.wasm and
+        // the ICU data. Returning null means "use the default URL", which is
+        // what the JS modules and the manifest want: modulesUniqueQuery has
+        // already appended the same query to those, and doing it here as well
+        // would produce a doubled `?v=...?v=...`.
+        .withResourceLoader((type, name, defaultUri) =>
+            !assetVersionQuery || type === 'manifest' || type === 'dotnetjs'
+                ? null
+                : versioned(defaultUri))
+        .create();
     const { setModuleImports, getAssemblyExports, getConfig } = runtime;
 
     setModuleImports("wasm-player", {

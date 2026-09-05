@@ -69,11 +69,72 @@ jobs:
           cp -r src/WasmEditor/bin/Release/net10.0/browser-wasm/AppBundle/. deploy/AppBundle/
           cp -r src/WasmPlayer/bin/Release/net10.0/browser-wasm/AppBundle/. deploy/player/
           cat > deploy/_headers <<'EOF'
-          /player/_framework/*
-            Cache-Control: no-cache
+          # Cloudflare Pages' default for a static asset is
+          # `max-age=0, must-revalidate`, so without these rules a warm reload
+          # of /player spends ~210 conditional requests to move ~90 KB. Every
+          # path listed below is only ever requested with a `?v=<release>`
+          # cache key on it (WasmPlayer: inject-version.mjs stamps the markup,
+          # wasm-player.js the assets it fetches from JS; AppShell: wasm.ts) or
+          # is already content-hashed by Vite (/_app/immutable), so a deploy
+          # always produces a fresh URL and these can be cached indefinitely.
+          #
+          # For _framework/* the version is also what makes this *safe*, and it
+          # replaces the blanket `Cache-Control: no-cache` that used to sit
+          # here: those filenames aren't content-hashed and AOT output isn't
+          # byte-reproducible, so a browser pairing a cached dotnet.boot.js
+          # (the manifest of per-file SHA-256 hashes) with a binary from a
+          # later deploy got an SRI failure. Stamping both with the same
+          # version means they can't come from different deploys.
+          #
+          # Add nothing here that isn't requested with that version — an
+          # `immutable` response to an unversioned URL cannot be busted by any
+          # later deploy, by us or by the visitor. Three things are deliberately
+          # left on the default `must-revalidate` for exactly that reason:
+          # /player/index.html (which is what delivers each new version in the
+          # first place), /player/lib/images/* (referenced by relative URL from
+          # inside jquery-ui.min.css, so never stamped), and
+          # /AppBundle/_framework/dotnet.native.js.symbols (WasmEditor sets
+          # WasmEmitSymbolMap, and the runtime doesn't route that one asset
+          # through the resource loader that stamps all the others) — hence
+          # matching _framework/ by extension below rather than with a blanket
+          # `/*`, so the symbols file falls through to the default.
+          #
+          # Pattern semantics, confirmed against the live deployment rather
+          # than assumed: a `*` spans `/` (the `/*.js` rule below reaches
+          # /player/lib/paper.js), and a match is anchored at both ends (that
+          # same rule does *not* catch dotnet.native.js.symbols).
+          /player/_framework/*.wasm
+            Cache-Control: public, max-age=31536000, immutable
 
-          /AppBundle/_framework/*
-            Cache-Control: no-cache
+          /player/_framework/*.dat
+            Cache-Control: public, max-age=31536000, immutable
+
+          /AppBundle/_framework/*.wasm
+            Cache-Control: public, max-age=31536000, immutable
+
+          /AppBundle/_framework/*.dat
+            Cache-Control: public, max-age=31536000, immutable
+
+          /AppBundle/_framework/*.js
+            Cache-Control: public, max-age=31536000, immutable
+
+          /_app/immutable/*
+            Cache-Control: public, max-age=31536000, immutable
+
+          # Covers /player/lib/* and the four /player/_framework/*.js files too.
+          /player/*.js
+            Cache-Control: public, max-age=31536000, immutable
+
+          /player/*.css
+            Cache-Control: public, max-age=31536000, immutable
+
+          /player/*.svg
+            Cache-Control: public, max-age=31536000, immutable
+
+          # Fetched by wasm-player.js at boot. Spelled out in full rather than
+          # as `*.htm`, so there is no chance of it also catching index.html.
+          /player/playercore.htm
+            Cache-Control: public, max-age=31536000, immutable
 
           /*.js
             Content-Type: application/javascript; charset=utf-8
