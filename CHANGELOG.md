@@ -1,5 +1,13 @@
 # Changelog
 
+## [6.0.0-beta.58](https://github.com/textadventures/quest/compare/v6.0.0-beta.57...v6.0.0-beta.58) (2026-09-05)
+
+
+### Performance Improvements
+
+* **WasmPlayer:** cache static assets immutably instead of revalidating ~210 per load ([#2190](https://github.com/textadventures/quest/issues/2190)) ([7227971](https://github.com/textadventures/quest/commit/72279718283939078267a9885f8a9f0108f8ce0f))
+* **WasmPlayer:** start the runtime download up front instead of behind the game fetch ([#2191](https://github.com/textadventures/quest/issues/2191)) ([9e02aa7](https://github.com/textadventures/quest/commit/9e02aa7b2b880f9fe76804e093a366a16847ce1a))
+
 ## [6.0.0-beta.57](https://github.com/textadventures/quest/compare/v6.0.0-beta.56...v6.0.0-beta.57) (2026-09-04)
 
 
