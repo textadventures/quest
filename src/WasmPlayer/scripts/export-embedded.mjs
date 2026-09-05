@@ -52,6 +52,27 @@ const cdnBase = `https://cdn.jsdelivr.net/npm/@textadventures/quest-viva-wasmpla
 
 let html = template;
 
+// inject-version.mjs stamps a `?v=<version>` cache key onto every asset URL in
+// generated/index.html (see deploy-play.yml's _headers), so the two tags this
+// script rewrites below no longer match on their bare filenames — hence the
+// optional query in the pattern, which keeps the two scripts from having to
+// agree on its exact shape. (The stamp is harmless in this flavor: the <base
+// href> below already pins a versioned CDN package path, and jsDelivr ignores
+// the extra query.) Matching the whole line, so dropping a tag doesn't leave a
+// blank one behind.
+const scriptLine = (file) => new RegExp(
+    `^[ \\t]*<script type="text/javascript" src="${file.replace(/\./g, '\\.')}(?:\\?[^"]*)?"></script>\\r?\\n`,
+    'm');
+
+// A silently unmatched replace here would produce a plausible-looking export
+// that either leaks the CDN's unused quest-config.js or — far worse — never
+// embeds the game at all, so treat a miss as a build failure.
+function replaceOrFail(haystack, pattern, replacement, what) {
+    const match = pattern.exec(haystack);
+    if (!match) throw new Error(`export-embedded: could not find ${what} in generated/index.html`);
+    return haystack.slice(0, match.index) + replacement(match[0]) + haystack.slice(match.index + match[0].length);
+}
+
 // 1. <html class="qv-booting"> so the file/URL pickers never paint even for a
 //    frame — unlike the ?id=/?url= flavors, this document is exclusively for
 //    an embedded game, so there's no need to detect that at runtime.
@@ -67,7 +88,7 @@ html = html.replace('<head>', `<head>\n    <base href="${cdnBase}" />`);
 // 3. quest-config.js is local-hosting config (API root, defaultGameUrl) —
 //    nothing in this flavor is local, so drop the tag entirely rather than
 //    let it resolve to the CDN's own (unused) copy.
-html = html.replace('    <script type="text/javascript" src="quest-config.js"></script>\n', '');
+html = replaceOrFail(html, scriptLine('quest-config.js'), () => '', 'the quest-config.js tag');
 
 // 4. Embed the game bytes + original filename (its extension selects
 //    .quest vs .aslx vs Legacy .asl/.cas parsing — see
@@ -76,12 +97,12 @@ html = html.replace('    <script type="text/javascript" src="quest-config.js"></
 //    attributes needed on the wasm-player.js tag itself — it resolves its
 //    own absolute URL via document.currentScript to work around a
 //    cross-origin dynamic-import quirk, see the comment there.
-const embedScript = `<script type="text/javascript">\n`
+const embedScript = `    <script type="text/javascript">\n`
     + `        window.QuestVivaEmbeddedGame = ${JSON.stringify(gameBase64)};\n`
     + `        window.QuestVivaEmbeddedGameFilename = ${JSON.stringify(gameFilename)};\n`
-    + `    </script>\n`
-    + `    <script type="text/javascript" src="wasm-player.js"></script>`;
-html = html.replace('<script type="text/javascript" src="wasm-player.js"></script>', embedScript);
+    + `    </script>\n`;
+html = replaceOrFail(html, scriptLine('wasm-player.js'), (line) => embedScript + line,
+    'the wasm-player.js tag');
 
 const outFile = outFileArg
     ? path.resolve(outFileArg)
