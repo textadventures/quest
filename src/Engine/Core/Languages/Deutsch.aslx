@@ -546,7 +546,6 @@
   <template templatetype="command" name="view_transcript_cmd">^(zeige|zeig) (das |)(skript|transkript)$</template>
   <template templatetype="command" name="version_cmd">^(version|info|über)$</template>
   <verbtemplate name="enter">betrete</verbtemplate>
-  <verbtemplate name="enter">gehe</verbtemplate>
   <verbtemplate name="enter">gehe in</verbtemplate>
   <dynamictemplate name="DefaultEnter">"Du kannst " + object.article + " nicht betreten."</dynamictemplate>
 
