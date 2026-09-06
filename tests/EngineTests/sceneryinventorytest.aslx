@@ -1,0 +1,66 @@
+<asl version="600">
+  <include ref="English.aslx" />
+  <include ref="Core.aslx" />
+  <game name="sceneryinventorytest"/>
+  <object name="room">
+    <object name="player">
+      <inherit name="defaultplayer" />
+      <!-- An ordinary carried object: listed by INVENTORY before and after. -->
+      <object name="lamp">
+        <inherit name="editor_object"/>
+      </object>
+      <!--
+        Carried, but flagged as scenery - the objects pane has always listed
+        this (ScopeInventory never filtered on scenery) while the INVENTORY
+        command did not. See issue #905.
+      -->
+      <object name="poster">
+        <inherit name="editor_object"/>
+        <scenery type="boolean">true</scenery>
+      </object>
+      <!-- Carried scenery nested inside a carried open container. -->
+      <object name="bag">
+        <inherit name="editor_object"/>
+        <inherit name="container_open"/>
+        <object name="receipt">
+          <inherit name="editor_object"/>
+          <scenery type="boolean">true</scenery>
+        </object>
+      </object>
+      <!-- Carried but invisible: must stay unlisted either way. -->
+      <object name="ghost">
+        <inherit name="editor_object"/>
+        <visible type="boolean">false</visible>
+      </object>
+    </object>
+    <!-- Scenery in the room, not carried: must stay out of the room listing. -->
+    <object name="mural">
+      <inherit name="editor_object"/>
+      <scenery type="boolean">true</scenery>
+    </object>
+    <object name="rock">
+      <inherit name="editor_object"/>
+    </object>
+  </object>
+
+  <function name="InvList" type="string">
+    return (FormatInventoryList("Carrying:", game.pov, "and", "."))
+  </function>
+
+  <function name="RoomList" type="string">
+    return (FormatObjectList("Here:", room, "and", "."))
+  </function>
+
+  <walkthrough name="verify">
+    <steps>
+      <![CDATA[
+      assert:Instr(InvList(), "lamp") > 0
+      assert:Instr(InvList(), "poster") > 0
+      assert:Instr(InvList(), "receipt") > 0
+      assert:Instr(InvList(), "ghost") = 0
+      assert:Instr(RoomList(), "rock") > 0
+      assert:Instr(RoomList(), "mural") = 0
+      ]]>
+    </steps>
+  </walkthrough>
+</asl>
