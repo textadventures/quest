@@ -111,6 +111,25 @@ div#controlButtons {
     display: none;
 }
 
+/* showMenu() opens the menu dialog with width: "auto" so that long options
+   aren't clipped, so it's the options themselves that decide how wide the
+   dialog gets. Keep that within the window, keep a long caption wrapping
+   instead of stretching the dialog out on its own, and let the options list
+   shrink rather than overflow once the cap is reached. */
+.ui-dialog {
+    max-width: 95vw;
+}
+
+#dialogCaption {
+    max-width: 60ch;
+}
+
+#dialogOptions {
+    min-width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
+}
+
 #msgbox {
     display: none;
 }

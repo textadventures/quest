@@ -372,6 +372,8 @@ jobs:
         working-directory: tests/e2e
       - run: node verify-wasmplayer-showmenu-select-default.mjs http://localhost:5175
         working-directory: tests/e2e
+      - run: node verify-wasmplayer-showmenu-long-options.mjs http://localhost:5175
+        working-directory: tests/e2e
       - run: node verify-game-load-error.mjs http://localhost:5175
         working-directory: tests/e2e
       - run: node verify-wasmplayer-autoscroll.mjs http://localhost:5175
