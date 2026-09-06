@@ -232,6 +232,13 @@ function initPlayerUI() {
     const doLayout = () => {
         let isWide = isWindowWide();
 
+        // Published as a class so playercore.css can hang its larger touch
+        // targets off the same threshold this function already owns, instead
+        // of duplicating it as a media query - which setGameWidth() would then
+        // have no way to move. See issue #2181.
+        document.body.classList.toggle("qv-narrow", !isWide);
+        refreshMenuFontSize();
+
         if (isWide && arePanesVisible) {
             sidebar.style.display = "block";
             sidebar.style.background = "initial";
@@ -263,13 +270,17 @@ function initPlayerUI() {
             if (window.paper && paper.view) paper.view.viewSize.width = Math.min(window.innerWidth, gameWidth);
         }
 
-        const newPanelImageMaxHeight = `${(window.innerHeight - 30) * 0.5}px`;
-        updatePanelImageMaxHeight(newPanelImageMaxHeight);
-
         // cmdShowPanes.style.display was just set above - recompute #qv-status's own
         // visibility now in case resizing past the narrow-window threshold is what
         // just made (or unmade) the hamburger button #qv-status's only visible child.
         updateStatusVisibility();
+
+        // Budget the sticky picture frame against however tall the status bar
+        // actually ended up - it used to subtract a hard-coded 30, which is
+        // neither its narrow-layout height nor right at all when it isn't
+        // showing. updateStatusVisibility() has just settled both, hence the
+        // ordering here.
+        updatePanelImageMaxHeight(`${(window.innerHeight - statusBarHeight()) * 0.5}px`);
 
         wasWide = isWide;
     }
@@ -280,8 +291,12 @@ function initPlayerUI() {
         const gameBorder = document.getElementById("gameBorder");
         gameBorder.style.maxWidth = width + "px";
 
+        // playercore.css gives #qv-status box-sizing: border-box, so this cap is
+        // the bar's whole width including its 1px borders - matching #gameBorder's
+        // content box, which is what "width" is there (it's content-box, with its
+        // own 1px borders outside that).
         const status = document.getElementById("qv-status");
-        status.style.maxWidth = (width - 2) + "px";
+        status.style.maxWidth = width + "px";
 
         gameWidth = width;
         doLayout();
@@ -556,21 +571,59 @@ function updateStatusVisibility() {
         || isElementVisible("#cmdDebug") || isElementVisible("#cmdShowPanes");
     if (anyVisible) {
         $("#qv-status").show();
-        $("#divOutput").css("margin-top", "20px");
-        $("#gamePanes").css("top", "24px");
-        $("#gridPanel").css("top", "32px");
-        $("#gamePanel").css("top", "32px");
+        // #qv-status is no longer a fixed height - on a narrow window it grows
+        // to fit 44px touch targets (see playercore.css's .qv-narrow rules), so
+        // measure its real bottom edge rather than repeating the height as a
+        // constant here. Its 32px on the desktop layout is what the old 24/32
+        // constants were describing: the panels sat flush with the bar's bottom
+        // edge, and #gamePanes deliberately tucked 8px up under it.
+        var statusHeight = statusBarHeight();
+        // #qv-status is position: fixed, so it takes up no space in flow and
+        // this margin is the whole of what holds the game text clear of it.
+        // The 20px it used to be was picked against the 32px desktop bar,
+        // leaving 18px of daylight - which a 50px narrow-layout bar closed to
+        // nothing, running the text right up under it. Tracking the bar keeps
+        // that daylight constant. It's expressed as an offset from the bar's
+        // own height rather than computed from #gameContent's padding, so a
+        // game setting its own custompaddingtop keeps exactly the spacing it
+        // has today.
+        $("#divOutput").css("margin-top", (statusHeight - 12) + "px");
+        $("#gamePanes").css("top", (statusHeight - 8) + "px");
+        $("#gridPanel").css("top", statusHeight + "px");
+        $("#gamePanel").css("top", statusHeight + "px");
+        // The narrow layout's pane overlay, which is opaque and would otherwise
+        // sit over the bottom of the bar it drops down from. (In the wide
+        // layout it's a transparent container and this is the 32px it already
+        // had.) #gamePanes is laid out inside it there rather than positioned,
+        // so this is what actually places the panes on a narrow window - its
+        // own "top" above is only read by the wide layout.
+        $("#sidebar").css("top", statusHeight + "px");
     } else {
         $("#qv-status").hide();
         $("#divOutput").css("margin-top", "0px");
         $("#gamePanes").css("top", "0px");
         $("#gridPanel").css("top", "0px");
         $("#gamePanel").css("top", "0px");
+        $("#sidebar").css("top", "0px");
     }
 }
 
 function isElementVisible(element) {
     return $(element).css("display") != "none";
+}
+
+// doLayout() publishes its narrow/wide threshold as a class on <body> - see
+// playercore.css's .qv-narrow rules.
+function isNarrowLayout() {
+    return document.body.classList.contains("qv-narrow");
+}
+
+// #qv-status's on-screen height, or 0 when it isn't showing at all. 32px on the
+// desktop layout, but it grows to hold 44px touch targets on a narrow one, so
+// nothing downstream should be assuming a number for it.
+function statusBarHeight() {
+    var $status = $("#qv-status");
+    return ($status.length && isElementVisible($status)) ? $status.outerHeight() : 0;
 }
 
 var _animateScroll = true;
@@ -1323,11 +1376,39 @@ function SetMenuFontName(font) {
     css.style.fontFamily = font;
 }
 
+// game.menufontsize defaults to 9pt (12px), and - like every other Core
+// library value - is inlined into each game at publish time, so an already
+// published game calls SetMenuFontSize("9pt") on startup no matter what this
+// stylesheet's own default says. Rather than ignoring the game outright, treat
+// its value as a request with a floor under it on a narrow window: an author
+// who asked for something larger (theme_retro asks for 14pt) still gets
+// exactly what they asked for. max() does the comparison in CSS, so "9pt"
+// doesn't have to be converted to px here; in a browser without support the
+// assignment is simply dropped and the stylesheet's own div.jjmenu size
+// stands, exactly as it did before. See issue #2181.
+function menuFontSizeWithFloor(size) {
+    return isNarrowLayout() ? "max(" + size + ", 16px)" : size;
+}
+
+// The size the game last asked for, before any narrow-window floor, so the
+// floor can be re-evaluated when the window crosses the threshold.
+var _requestedMenuFontSize = null;
+
 function SetMenuFontSize(size) {
     if (_allowMenuFontSizeChange) {
         var css = getCSSRule("div.jjmenu");
-        css.style.fontSize = size;
+        css.style.fontSize = menuFontSizeWithFloor(size);
+        // Recorded only once getCSSRule has actually succeeded, so that
+        // refreshMenuFontSize() stays a no-op rather than throwing on every
+        // resize in the single-file-export case where the rule can't be
+        // reached at all (issue #2192).
+        _requestedMenuFontSize = size;
     }
+}
+
+function refreshMenuFontSize() {
+    if (_requestedMenuFontSize == null) return;
+    getCSSRule("div.jjmenu").style.fontSize = menuFontSizeWithFloor(_requestedMenuFontSize);
 }
 
 function TurnOffHyperlinksUnderline() {

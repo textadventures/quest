@@ -1,0 +1,25 @@
+<asl version="600">
+
+  <include ref="English.aslx"/>
+  <include ref="Core.aslx"/>
+
+  <!--
+    Companion to mobile-touch-targets-test.aslx: an author who has deliberately
+    chosen a menu font *larger* than the narrow-window floor must keep exactly
+    what they asked for. 20pt is 26.67px, well clear of the 16px floor.
+  -->
+  <game name="Large Menu">
+    <menufontsize type="int">20</menufontsize>
+  </game>
+
+  <object name="room">
+    <object name="player">
+      <inherit name="defaultplayer"/>
+    </object>
+    <object name="rock">
+      <inherit name="editor_object"/>
+      <take/>
+    </object>
+  </object>
+
+</asl>
