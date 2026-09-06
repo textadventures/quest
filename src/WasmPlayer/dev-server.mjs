@@ -34,6 +34,7 @@ const mimeTypes = {
   '.aslx': 'application/xml',
   '.asl': 'text/plain',
   '.svg': 'image/svg+xml',
+  '.wav': 'audio/wav',
 };
 
 function serveFile(res, filePath) {
