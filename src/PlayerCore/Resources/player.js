@@ -41,6 +41,7 @@ var _menuSelection = "";
 function showMenu(title, options, allowCancel) {
     $("#dialogOptions").empty();
     var firstOption = true;
+    var optionCount = 0;
     $.each(options, function (key, value) {
         // Explicitly mark the first <option> selected - a <select> visually
         // shows its first option as selected by default, but jQuery's .val()
@@ -51,13 +52,23 @@ function showMenu(title, options, allowCancel) {
             $("<option/>").attr("value", key).text(value).prop("selected", firstOption)
         );
         firstOption = false;
+        optionCount++;
     });
+
+    // Show every option at once where we can - the markup's fallback size of 3
+    // meant a menu of more than three options was scrolled by default, with no
+    // hint that there was anything below the fold.
+    $("#dialogOptions").attr("size", Math.min(Math.max(optionCount, 3), 10));
 
     $("#dialogCaption").html(title);
 
     var dialogOptions = {
         modal: true,
         autoOpen: false,
+        // Size to the widest option rather than jQuery UI's default 300px,
+        // which clipped longer options. playercore.css caps how far this can
+        // grow so it can't overflow the window.
+        width: "auto",
         buttons: [{
             text: "Select",
             click: function () {

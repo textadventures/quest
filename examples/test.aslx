@@ -154,6 +154,10 @@
             options = Split("One,Two,Three,Four", ",")
             msg ("You chose: " + ShowMenu("Please choose one of these...", options, true))
         }
+        else if (command = "menulong") {
+            options = Split("Ask the innkeeper about the strange lights over the northern marshes;Tell the innkeeper you would rather not get involved in any of this;Leave", ";")
+            msg ("You chose: " + ShowMenu("Please choose one of these...", options, true))
+        }
         else if (command = "event") {
             msg ("<a onclick=\"ASLEvent('FromJS','some parameter')\">Click me</a>")
         }
