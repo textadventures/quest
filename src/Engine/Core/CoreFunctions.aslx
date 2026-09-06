@@ -619,6 +619,18 @@
     return (l)
   </function>
 
+  <function name="StringListCompact" parameters="lst" type="stringlist">
+    l = NewStringList()
+    foreach (o, lst) {
+      if (not Equal(o, null)) {
+        if (IndexOf(l, o) = -1) {
+          list add (l, o)
+        }
+      }
+    }
+    return (l)
+  </function>
+
   <function name="AllRooms" type="objectlist">
     return (FilterByAttribute(AllObjects(),"isroom",true))
   </function>
