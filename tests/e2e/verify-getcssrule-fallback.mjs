@@ -3,9 +3,13 @@
 // caller (SetMenuBackground etc.) dereferenced that unchecked, throwing
 // TypeError. Fixed by having those setters call addCSSRule instead, which
 // inserts the rule if missing and never returns false.
+//
+// Requires the WasmPlayer dev server running locally:
+//   node src/WasmPlayer/dev-server.mjs
 import { chromium } from 'playwright';
 
-const url = 'http://localhost:5175/?url=/examples/simple.aslx';
+const baseUrl = process.argv[2] || 'http://localhost:5175';
+const url = `${baseUrl}/?url=/examples/simple.aslx`;
 let browser;
 try {
     browser = await chromium.launch();
