@@ -372,6 +372,8 @@ jobs:
         working-directory: tests/e2e
       - run: node verify-wasmplayer-save-turn-pending.mjs http://localhost:5175
         working-directory: tests/e2e
+      - run: node verify-wasmplayer-wait-pause-input-flicker.mjs http://localhost:5175
+        working-directory: tests/e2e
       - run: node verify-wasmplayer-showmenu-select-default.mjs http://localhost:5175
         working-directory: tests/e2e
       - run: node verify-wasmplayer-showmenu-long-options.mjs http://localhost:5175

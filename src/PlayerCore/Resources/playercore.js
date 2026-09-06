@@ -408,6 +408,13 @@ function setGameName(text) {
 var _waitMode = false;
 var _pauseMode = false;
 
+// True between endPause() and pauseEnded(), i.e. while the command bar is
+// hidden only because a finished pause hasn't been able to restore it yet.
+// Anything that snapshots the command bar's current visibility to restore it
+// later (playSound's synchronous branch) has to count that as visible, or the
+// pause's pending restore is swallowed and the command bar never comes back.
+var _pauseRestorePending = false;
+
 // Mirrors the engine's WorldModel._pendingCallbackCount > 0: true whenever
 // anything is suspended inside a TaskCompletionSource continuation (wait(),
 // get input(), ask, show menu, pause) that a save/reload can't reconstruct -
@@ -437,13 +444,33 @@ function beginPause(ms) {
 }
 
 function endPause() {
+    if (!_pauseMode) return;
     _pauseMode = false;
-    $("#txtCommandDiv").show();
+    // The command bar deliberately stays hidden until pauseEnded() - showing it
+    // here made it flash into view for the length of the round trip whenever the
+    // resumed script went straight into another pause (same bug as endWait()).
+    _pauseRestorePending = true;
 
     // TODO: This is WebPlayer-specific, so shouldn't be in this shared file
     window.setTimeout(async function () {
-        await WebPlayer.uiEndPause();
+        try {
+            await WebPlayer.uiEndPause();
+        } finally {
+            pauseEnded();
+        }
     }, 100);
+}
+
+// Called once the engine has resumed the paused turn and run on to its next
+// stopping point, so anything that turn did to the command bar has already
+// happened: another pause (beginPause), the end of the game (disableInterface)
+// or a synchronous sound (playSound), each of which owns the command bar until
+// it restores it itself.
+function pauseEnded() {
+    _pauseRestorePending = false;
+    if (_pauseMode || _gameFinished || _waitingForSoundToFinish) return;
+    $("#txtCommandDiv").show();
+    focusCommandInput();
 }
 
 function commandKey(e) {
@@ -994,14 +1021,34 @@ function beginWait() {
 
 function endWait() {
     if (!_waitMode) return;
+    // Leave wait mode and hide the Continue link straight away: that's the
+    // click's immediate feedback, and it also stops a second click/keypress
+    // firing a second FinishWait while the engine is resuming. The command
+    // input deliberately stays hidden until waitEnded() - see below.
+    _waitMode = false;
+    $("#endWaitLink").hide();
     sendEndWait();
 }
 
+// Called by the platform's sendEndWait() once the engine has resumed the
+// suspended turn and run on to its next stopping point. If that turn started
+// another wait(), beginWait() has already re-hidden the command input and
+// re-shown the Continue link, so leave both alone: restoring the input
+// unconditionally (as this used to, synchronously at click time) is what made
+// it flash into view for the length of the round trip between chained waits.
 function waitEnded() {
-    _waitMode = false;
-    $("#endWaitLink").hide();
+    if (_waitMode) return;
     $("#txtCommand").show();
     $("#txtCommandPrompt").show();
+    focusCommandInput();
+}
+
+// The command input loses focus while it's hidden (for a wait() or a pause), so
+// put it back once it returns - otherwise the player has to click into it before
+// they can type, and keystrokes meant for the game go nowhere.
+function focusCommandInput() {
+    if (!isElementVisible("#txtCommandDiv") || !isElementVisible("#txtCommand")) return;
+    $("#txtCommand").focus();
 }
 
 function gameFinished() {

@@ -246,10 +246,20 @@ function stageAdjacentFiles(files) {
 function ui_init() { }
 
 function sendEndWait() {
+    // The short delay lets the browser paint endWait()'s hidden Continue link
+    // before the engine resumes and (in the WASM build, which runs it on the
+    // one UI thread) blocks painting for the rest of the turn.
     window.setTimeout(async function () {
-        await WebPlayer.uiEndWait();
+        try {
+            await WebPlayer.uiEndWait();
+        } finally {
+            // uiEndWait only resolves once the resumed turn has reached its
+            // next stopping point and flushed its UI calls, so by now
+            // beginWait() has already run for a chained wait() - which is
+            // exactly what waitEnded() checks before restoring the input.
+            waitEnded();
+        }
     }, 100);
-    waitEnded();
 }
 
 function afterSendCommand() { }
@@ -259,7 +269,10 @@ function playSound(url, synchronous, looped) {
     _audio = new Audio(url);
     if (looped) _audio.loop = true;
     if (synchronous) {
-        var showCmdDiv = isElementVisible("#txtCommandDiv");
+        // Counts a pause whose restore is still pending as visible - see
+        // _pauseRestorePending, otherwise finishSync() below leaves the command
+        // bar hidden for good.
+        var showCmdDiv = isElementVisible("#txtCommandDiv") || _pauseRestorePending;
         _waitingForSoundToFinish = true;
         $("#txtCommandDiv").hide();
         _audio.addEventListener('ended', function () { finishSync(showCmdDiv); });
