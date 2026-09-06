@@ -1399,27 +1399,27 @@ function AddVimeo(id) {
 }
 
 function SetMenuBackground(color) {
-    var css = getCSSRule("div.jj_menu_item");
+    var css = addCSSRule("div.jj_menu_item");
     css.style.backgroundColor = color;
 }
 
 function SetMenuForeground(color) {
-    var css = getCSSRule("div.jj_menu_item");
+    var css = addCSSRule("div.jj_menu_item");
     css.style.color = color;
 }
 
 function SetMenuHoverBackground(color) {
-    var css = getCSSRule("div.jj_menu_item_hover");
+    var css = addCSSRule("div.jj_menu_item_hover");
     css.style.backgroundColor = color;
 }
 
 function SetMenuHoverForeground(color) {
-    var css = getCSSRule("div.jj_menu_item_hover");
+    var css = addCSSRule("div.jj_menu_item_hover");
     css.style.color = color;
 }
 
 function SetMenuFontName(font) {
-    var css = getCSSRule("div.jjmenu");
+    var css = addCSSRule("div.jjmenu");
     css.style.fontFamily = font;
 }
 
@@ -1443,23 +1443,19 @@ var _requestedMenuFontSize = null;
 
 function SetMenuFontSize(size) {
     if (_allowMenuFontSizeChange) {
-        var css = getCSSRule("div.jjmenu");
+        var css = addCSSRule("div.jjmenu");
         css.style.fontSize = menuFontSizeWithFloor(size);
-        // Recorded only once getCSSRule has actually succeeded, so that
-        // refreshMenuFontSize() stays a no-op rather than throwing on every
-        // resize in the single-file-export case where the rule can't be
-        // reached at all (issue #2192).
         _requestedMenuFontSize = size;
     }
 }
 
 function refreshMenuFontSize() {
     if (_requestedMenuFontSize == null) return;
-    getCSSRule("div.jjmenu").style.fontSize = menuFontSizeWithFloor(_requestedMenuFontSize);
+    addCSSRule("div.jjmenu").style.fontSize = menuFontSizeWithFloor(_requestedMenuFontSize);
 }
 
 function TurnOffHyperlinksUnderline() {
-    var css = getCSSRule("a.cmdlink");
+    var css = addCSSRule("a.cmdlink");
     css.style.textDecoration = "none";
 }
 
