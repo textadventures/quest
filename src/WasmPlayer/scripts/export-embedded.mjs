@@ -104,6 +104,22 @@ const embedScript = `    <script type="text/javascript">\n`
 html = replaceOrFail(html, scriptLine('wasm-player.js'), (line) => embedScript + line,
     'the wasm-player.js tag');
 
+// 5. The <base href> above makes these three stylesheets load cross-origin
+//    from jsDelivr. Without `crossorigin`, the browser won't expose their
+//    cssRules to script (SecurityError), which breaks getCSSRule and every
+//    caller that depends on it (SetMenuBackground, etc — see issue #2192).
+//    jsDelivr sends `Access-Control-Allow-Origin: *`, so anonymous mode is
+//    enough; harmless (if pointless) on the same-origin deployments that
+//    share this template, so it's added here rather than in index.html.
+const styleLine = (file) => new RegExp(
+    `^[ \\t]*<link rel="stylesheet" type="text/css" href="${file.replace(/\./g, '\\.')}(?:\\?[^"]*)?" />\\r?\\n`,
+    'm');
+for (const file of ['lib/jquery-ui.min.css', 'playercore.css', 'chrome.css']) {
+    html = replaceOrFail(html, styleLine(file),
+        (line) => line.replace(/ \/>(\r?\n)$/, ' crossorigin="anonymous" />$1'),
+        `the ${file} stylesheet link`);
+}
+
 const outFile = outFileArg
     ? path.resolve(outFileArg)
     : path.join(path.dirname(gameFile), path.basename(gameFile, path.extname(gameFile)) + '.html');
