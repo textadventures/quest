@@ -773,7 +773,12 @@ function scrollToTurnStart(turnStart, allowBackward) {
 // jumped straight to the document's bottom, undoing every calculation above.
 // {preventScroll: true} keeps the input usable (typing still works
 // immediately) without fighting the scroll position we just computed.
+//
+// Also guards against focusing the input while it's genuinely hidden (mid
+// wait()/pause()) — needed by waitEnded()/pauseEnded(), which share this
+// same function to restore focus once the command bar comes back.
 function focusCommandInput() {
+    if (!isElementVisible("#txtCommandDiv") || !isElementVisible("#txtCommand")) return;
     document.getElementById("txtCommand")?.focus({preventScroll: true});
 }
 
@@ -1041,14 +1046,6 @@ function waitEnded() {
     $("#txtCommand").show();
     $("#txtCommandPrompt").show();
     focusCommandInput();
-}
-
-// The command input loses focus while it's hidden (for a wait() or a pause), so
-// put it back once it returns - otherwise the player has to click into it before
-// they can type, and keystrokes meant for the game go nowhere.
-function focusCommandInput() {
-    if (!isElementVisible("#txtCommandDiv") || !isElementVisible("#txtCommand")) return;
-    $("#txtCommand").focus();
 }
 
 function gameFinished() {
