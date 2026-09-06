@@ -1,5 +1,27 @@
 # Changelog
 
+## [6.0.0-beta.59](https://github.com/textadventures/quest/compare/v6.0.0-beta.58...v6.0.0-beta.59) (2026-09-06)
+
+
+### Features
+
+* **Engine:** add StringListCompact Core library function ([#2204](https://github.com/textadventures/quest/issues/2204)) ([d8a35e7](https://github.com/textadventures/quest/commit/d8a35e76881c39494a5c03702011efc41e9569ae))
+
+
+### Bug Fixes
+
+* **ElectronApp:** set up the macOS signing keychain instead of letting electron-builder do it ([#2196](https://github.com/textadventures/quest/issues/2196)) ([ef3326d](https://github.com/textadventures/quest/commit/ef3326df3791999788be8e5dcb0b1d8b6cafd8f0))
+* **Engine:** list carried scenery objects in the INVENTORY command ([#2201](https://github.com/textadventures/quest/issues/2201)) ([fe77778](https://github.com/textadventures/quest/commit/fe77778ef496461d48d8673634c7656306584a65))
+* **Engine:** remove German enter verb clashing with go command ([#2198](https://github.com/textadventures/quest/issues/2198)) ([e0c0c6a](https://github.com/textadventures/quest/commit/e0c0c6af51b00f86b0f79a52caf290b318e47eff))
+* **Engine:** stop cloned function-call parameters entering the undo log ([#2205](https://github.com/textadventures/quest/issues/2205)) ([220ca1c](https://github.com/textadventures/quest/commit/220ca1c2b4c24e76584f63979015af6224a08b5e))
+* **PlayerCore:** fall back to inserting a CSS rule when a selector isn't found ([#2210](https://github.com/textadventures/quest/issues/2210)) ([e5539e4](https://github.com/textadventures/quest/commit/e5539e441a51ec7241291faf5b167e9e58d44c89))
+* **PlayerCore:** merge duplicate focusCommandInput definitions ([#2211](https://github.com/textadventures/quest/issues/2211)) ([cdcf8e9](https://github.com/textadventures/quest/commit/cdcf8e9a2481231bf01a3cb2b2062f7f449fea93))
+* **PlayerCore:** size the player chrome for touch on narrow windows ([#2207](https://github.com/textadventures/quest/issues/2207)) ([942a04c](https://github.com/textadventures/quest/commit/942a04c6f126a67da06783c4f1ef4b9e25f7c347))
+* **PlayerCore:** stop the command bar flickering when a wait or pause ends ([#2208](https://github.com/textadventures/quest/issues/2208)) ([edf4fef](https://github.com/textadventures/quest/commit/edf4fef356d1fc6c49e0dd524af527dbf19c337d))
+* **PlayerCore:** stop the ShowMenu dialog clipping long options ([#2202](https://github.com/textadventures/quest/issues/2202)) ([5dbfd33](https://github.com/textadventures/quest/commit/5dbfd33755321f53b7b12cddcb11c60c092da299))
+* **WasmPlayer:** add crossorigin to single-file export's CDN stylesheets ([#2209](https://github.com/textadventures/quest/issues/2209)) ([f2258d7](https://github.com/textadventures/quest/commit/f2258d7e32368bbd995e19007eeb68070522905d))
+* **WebPlayer:** stop legacy request(Quit) crashing the quit command ([#2203](https://github.com/textadventures/quest/issues/2203)) ([cf2663b](https://github.com/textadventures/quest/commit/cf2663bcdbf2bbedd0a7e9c71c400927b1a299ca))
+
 ## [6.0.0-beta.58](https://github.com/textadventures/quest/compare/v6.0.0-beta.57...v6.0.0-beta.58) (2026-09-05)
 
 
