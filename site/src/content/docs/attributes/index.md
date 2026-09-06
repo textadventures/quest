@@ -532,6 +532,12 @@ The "maleplural" type is defined in CoreTypes.aslx. It sets the [gender](#gender
 
 "menuhoverforeground" is a [string](/types#string) attribute which should be set to a valid HTML colour name. It specifies the text colour to use when hovering over a menu item.
 
+## multiplecommands
+
+"multiplecommands" is a [boolean](/types#boolean) attribute of the game object. If set to true, the player can enter several commands on one line, separated by ".", for example "take key. unlock door. north". It defaults to false. In the editor it is the "Allow input of multiple commands in one line separated by ." option on the Features tab of the game object.
+
+The input is split on "." before it is parsed, so this cannot be combined with [aliases](#alias) containing a full stop. An object aliased "Mr. Smith" gets split in two, and "x Mr. Smith" is parsed as "x Mr" followed by "Smith". The same applies to clicked hyperlinks whose text contains a dot. If your game uses aliases like these, leave multiplecommands turned off.
+
 ## namedfemale
 
 The "namedfemale" type is equivalent to [female](#female), but also turns off [usedefaultprefix](#usedefaultprefix) so no prefix is displayed. Use this for named female characters, e.g. "Sue".
