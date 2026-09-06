@@ -1,0 +1,32 @@
+<asl version="600">
+  <include ref="English.aslx" />
+  <include ref="Core.aslx" />
+  <game name="WaitPauseInputFlickerTest">
+  </game>
+  <object name="room">
+    <object name="player">
+    </object>
+  </object>
+  <command>
+    <pattern>gowait</pattern>
+    <script><![CDATA[
+      msg("First page of text.")
+      wait {
+        msg("<span id='waitpage2'></span>Second page of text.")
+        wait {
+          msg("<span id='waitpage3'></span>Third page of text.")
+        }
+      }
+    ]]></script>
+  </command>
+  <command>
+    <pattern>gopause</pattern>
+    <script><![CDATA[
+      msg("First paused line.")
+      Pause (1)
+      msg("<span id='pausepage2'></span>Second paused line.")
+      Pause (1)
+      msg("<span id='pausepage3'></span>Third paused line.")
+    ]]></script>
+  </command>
+</asl>
