@@ -80,12 +80,27 @@ div#gamePanes {
 }
 
 div#qv-status {
-    height: 30px;
+    /* A border-box total (box-sizing below): 30px of bar plus
+       .ui-widget-header's 1px border top and bottom. */
+    height: 32px;
     position: fixed;
     top: 0px;
     z-index: 100;
-    width: 100%;
-    max-width: 948px;
+    /* Anchored to the viewport rather than left to its static position inside
+       #gameBorder. It's position: fixed, so a plain "width: 100%" resolved
+       against the viewport while the bar still started at #gameBorder's 1px
+       left border - and with .ui-widget-header's own 1px borders sitting
+       outside a content-box width, the bar overran the window by 3px and
+       clipped its rightmost button on a phone. left/right/margin: auto centres
+       it on the viewport instead, which is where #gameBorder centres too, so
+       the wide layout is unchanged. */
+    left: 0;
+    right: 0;
+    width: auto;
+    /* A border-box total, matching #gameBorder's content width - see
+       setGameWidth() in playercore.js, which caps this at runtime. */
+    box-sizing: border-box;
+    max-width: 950px;
     margin-left: auto;
     margin-right: auto;
     font-size: 14pt;
@@ -335,4 +350,156 @@ div.jj_menu_item_hover {
 
 #cmdShowPanes {
     display: none;
+}
+
+/* ---------------------------------------------------------------------------
+   Narrow-window (phone/tablet) sizing - see issue #2181.
+
+   doLayout() in playercore.js owns the single narrow/wide threshold (the
+   window is narrower than the game width, so the panes have collapsed behind
+   the hamburger button) and publishes it as body.qv-narrow. Keying these rules
+   off that class rather than a media query of their own keeps one source of
+   truth: setGameWidth() can move the threshold at runtime, which a media query
+   couldn't follow.
+
+   The sizes here target WCAG 2.2's 44x44 CSS px pointer target (2.5.5 Target
+   Size (Enhanced)) and lift chrome text to 16px, matching the 12pt default
+   body text rather than sitting well below it.
+   --------------------------------------------------------------------------- */
+
+.qv-narrow {
+    --qv-sidebar-width: min(320px, 85vw);
+}
+
+/* The status bar is a fixed 32px when wide, which can't hold a 44px button.
+   updateStatusVisibility() measures whatever height this ends up being rather
+   than assuming, so #gamePanel/#gridPanel/#gamePanes stay directly below it. */
+.qv-narrow div#qv-status {
+    height: auto;
+    min-height: 50px;
+}
+
+.qv-narrow div#controlButtons {
+    padding-top: 2px;
+}
+
+.qv-narrow div#controlButtons .ui-button {
+    font-size: 16px !important;
+    min-height: 44px;
+    min-width: 44px;
+    /* jQuery UI puts the padding on the inner .ui-button-text span, so the
+       label sits at the top of a min-height-stretched button unless the button
+       itself centres it. */
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.qv-narrow div#location {
+    padding-top: 12px;
+}
+
+/* Side pane: 12px text in 15px rows, inside a 220px overlay.
+
+   The overlay is anchored between the status bar (updateStatusVisibility()
+   sets its top from the bar's measured height, so it can't end up underneath
+   it) and the bottom of the window. "height: 100%" would instead run the
+   overlay's bottom edge off the screen by however far down its top starts,
+   putting the end of a long pane out of reach. */
+.qv-narrow #sidebar {
+    width: var(--qv-sidebar-width);
+    box-sizing: border-box;
+    height: auto;
+    bottom: 0;
+}
+
+/* In the wide layout #gamePanes is a fixed, floated column positioned against
+   the viewport. Inside the narrow overlay it should simply be the overlay's
+   content: laying it out in flow is what lets #sidebar's own overflow-y scroll
+   it, which a fixed (out-of-flow) child left it unable to do - so a pane taller
+   than the screen had nothing to scroll and its lower half was unreachable.
+   float: none because a float would shrink-wrap instead of filling the width,
+   and min-height: 0 because a 100% of the overlay plus its padding is always
+   fractionally too tall, leaving the overlay permanently scrollable by a few
+   pixels. */
+.qv-narrow div#gamePanes {
+    position: static;
+    float: none;
+    width: auto;
+    min-height: 0;
+}
+
+.qv-narrow #gamePanes .ui-widget {
+    font-size: 16px;
+}
+
+.qv-narrow .ui-accordion-header {
+    font-size: 16px;
+}
+
+.qv-narrow button.accordion-header-text {
+    min-height: 44px;
+}
+
+.qv-narrow .elementList li {
+    display: flex;
+    align-items: center;
+    min-height: 44px;
+    padding: 0 6px;
+    box-sizing: border-box;
+}
+
+/* Six 44px rows rather than the ten 15px ones the 200px cap used to hold. */
+.qv-narrow .elementListWrapper {
+    max-height: 264px;
+}
+
+/* The multi-open accordion's expand/collapse arrow is a bare .ui-icon, not the
+   .ui-accordion-header-icon that jQuery UI's own centring rule targets, so it
+   keeps its static position at the top-left of the header's padding box - which
+   left it stranded against the top of a header now 44px tall. Centre it on the
+   header and scale the 16px sprite up to match the rest of the touch chrome
+   (transform rather than background-size, so the sprite's per-icon background
+   position doesn't have to be recomputed). */
+.qv-narrow .ui-accordion-header > .ui-icon {
+    top: 50%;
+    margin-top: -8px;
+    transform: scale(1.5);
+}
+
+/* The compass lives in the same pane, and its buttons are 35px. */
+.qv-narrow .compassbutton {
+    height: 44px;
+    width: 44px;
+}
+
+/* playercore.js pins the direction icon at an inline left: 0.8em, which centres
+   it in a 35px button but not a 44px one - hand centring back to jQuery UI's
+   own rule for it. */
+.qv-narrow .compassbutton span.ui-icon {
+    left: 50% !important;
+    margin-left: -8px;
+}
+
+.qv-narrow #compassTable .ui-button {
+    font-size: 14px !important;
+}
+
+.qv-narrow .verbButtons .ui-button {
+    font-size: 14px !important;
+    min-height: 44px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Hyperlink pop-up menu. The font size itself is the game's to choose (see
+   SetMenuFontSize in playercore.js, which applies a floor here rather than
+   overriding it outright), so only the row height is set from CSS. */
+.qv-narrow div.jj_menu_item span {
+    display: flex;
+    align-items: center;
+    min-height: 44px;
+    padding: 4px 10px;
+    box-sizing: border-box;
 }
