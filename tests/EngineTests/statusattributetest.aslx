@@ -1,0 +1,36 @@
+<asl version="600">
+  <include ref="English.aslx" />
+  <include ref="Core.aslx" />
+  <!--
+    Regression coverage for issue #2178: a status attribute whose value is only
+    assigned in the game's own 'start' script. StartGame calls
+    UpdateStatusAttributes once *before* running 'start', so that first call
+    reads the attribute while it is still unset.
+
+    "Next interaction" has no format string, so FormatStatusAttribute takes the
+    'CapFirst(attr) + ": " + value' branch, concatenating the unset value with a
+    string. "chapter" takes the format-string branch, which has always had its
+    own null check. Neither may log a script error.
+  -->
+  <game name="statusattributetest">
+    <statusattributes type="stringdictionary">
+      <item>
+        <key>Next interaction</key>
+        <value></value>
+      </item>
+      <item>
+        <key>chapter</key>
+        <value>Chapter: !</value>
+      </item>
+    </statusattributes>
+    <start type="script">
+      game.Next interaction = "Della"
+      game.chapter = "One"
+    </start>
+  </game>
+  <object name="room">
+    <object name="player">
+      <inherit name="defaultplayer" />
+    </object>
+  </object>
+</asl>
