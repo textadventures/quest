@@ -444,6 +444,8 @@ jobs:
         working-directory: tests/e2e
       - run: node verify-webplayer-restart-chrome-reset.mjs http://localhost:5099
         working-directory: tests/e2e
+      - run: node verify-webplayer-quit-command.mjs http://localhost:5099
+        working-directory: tests/e2e
 
   # Real, packaged Electron app (Playwright's _electron launcher) — macos-
   # latest, not ubuntu-latest (unlike build_electron in build-and-test.yml,
