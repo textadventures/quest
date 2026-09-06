@@ -224,12 +224,6 @@ public class Player : IPlayerHelperUI
         return Task.CompletedTask;
     }
 
-    void IPlayer.Quit()
-    {
-        // TODO
-        throw new NotImplementedException();
-    }
-
     void IPlayer.SetFont(string fontName)
     {
         PlayerHelper.SetFont(fontName);
