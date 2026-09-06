@@ -138,7 +138,6 @@ public class RequestScript : ScriptBase
 
                 break;
             case Request.Quit:
-                m_worldModel.PlayerUi.Quit();
                 m_worldModel.Finish();
                 break;
             case Request.FontName:
