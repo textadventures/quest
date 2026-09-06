@@ -398,6 +398,8 @@ jobs:
         working-directory: tests/e2e
       - run: node verify-wasmplayer-sound-timer.mjs http://localhost:5175
         working-directory: tests/e2e
+      - run: node verify-wasmplayer-scenery-inventory.mjs http://localhost:5175
+        working-directory: tests/e2e
 
   # WebPlayer (ASP.NET Core + Blazor Server), Development mode with Dev:Enabled
   # (appsettings.Development.json already sets this — see /dev/open's
