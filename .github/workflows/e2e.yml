@@ -404,6 +404,8 @@ jobs:
         working-directory: tests/e2e
       - run: node verify-wasmplayer-sound-timer.mjs http://localhost:5175
         working-directory: tests/e2e
+      - run: node verify-wasmplayer-aslevent-timer.mjs http://localhost:5175
+        working-directory: tests/e2e
       - run: node verify-wasmplayer-scenery-inventory.mjs http://localhost:5175
         working-directory: tests/e2e
       - run: node verify-wasmplayer-mobile-touch-targets.mjs http://localhost:5175

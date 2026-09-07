@@ -1,0 +1,59 @@
+<asl version="600">
+
+  <include ref="English.aslx"/>
+  <include ref="Core.aslx"/>
+
+  <!--
+    Verifies the "Timers" example in site/src/content/docs/howto/ux/ui-callback.md:
+    a JavaScript setInterval that updates the custom status pane itself and
+    calls back into the game exactly once, via ASLEvent, when it reaches zero.
+
+    The script tags below are written as &amp;lt;script&amp;gt; entities. They decode
+    to exactly the "<script>" / "</script>" string literals the docs show, and
+    to exactly what the editor stores when you type that example in - but an
+    unescaped <script> opening on one line and closing on another makes the
+    XML parser reject game.start as nested XML. Do not "simplify" them back.
+  -->
+  <game name="ASLEventTimerTest">
+    <customstatuspane />
+    <showpanes />
+    <start type="script">
+      s = "&lt;script&gt;"
+      s = s + "var countdownTimer;"
+      s = s + "function startCountdown(seconds) {"
+      s = s + "  var deadline = Date.now() + parseFloat(seconds) * 1000;"
+      s = s + "  countdownTimer = setInterval(function () {"
+      s = s + "    var left = deadline - Date.now();"
+      s = s + "    if (left > 0) {"
+      s = s + "      setCustomStatus('Time remaining: ' + (left / 1000).toFixed(1));"
+      s = s + "    }"
+      s = s + "    else {"
+      s = s + "      clearInterval(countdownTimer);"
+      s = s + "      setCustomStatus('Time remaining: 0.0');"
+      s = s + "      ASLEvent('CountdownFinished', 'timeout');"
+      s = s + "    }"
+      s = s + "  }, 100);"
+      s = s + "}"
+      s = s + "&lt;/script&gt;"
+      JS.addScript (s)
+    </start>
+  </game>
+
+  <object name="room">
+    <object name="player">
+    </object>
+  </object>
+
+  <command name="startcmd">
+    <pattern>start</pattern>
+    <script>
+      msg ("Countdown started.")
+      JS.startCountdown ("2")
+    </script>
+  </command>
+
+  <function name="CountdownFinished" parameters="s">
+    msg ("Out of time! (" + s + ")")
+  </function>
+
+</asl>
