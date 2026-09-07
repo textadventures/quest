@@ -12,7 +12,7 @@ This page is a summary for people coming from Quest 5. If you're new to Quest Vi
 
 ## Your existing games still work
 
-Quest Viva opens the same `.aslx` game files as Quest 5, so you can carry on working on a game you started there. The player will also run `.quest` packages, and games written in the much older Quest 4 formats (`.asl` and `.cas`).
+Quest Viva opens the same `.aslx` game files as Quest 5, so you can carry on working on a game you started there. The player will also run `.quest` packages, and games in the much older `.asl` and `.cas` formats, which Quest used from version 1.0 in 1998 right through to 4.1.
 
 Published games are unaffected by any of this. When you publish, the library code your game uses is baked into the `.quest` file, so a game published years ago keeps behaving exactly as it did, whatever version of Quest Viva a player uses to run it.
 
