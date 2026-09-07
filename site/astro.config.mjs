@@ -8,6 +8,9 @@ export default defineConfig({
     site: "https://questviva.com",
     redirects: {
         "/tutorial/cloak_of_darkness": "/cloak_of_darkness",
+        // Merged into the Introduction - it had become the same page with
+        // screenshots, and both sat at the top of Start Here.
+        "/overview": "/intro",
     },
     integrations: [
         starlight({
@@ -36,10 +39,6 @@ export default defineConfig({
                         {
                             "label": "Introduction",
                             "slug": "intro"
-                        },
-                        {
-                            "label": "Overview",
-                            "slug": "overview"
                         },
                         {
                             "label": "What's new in Quest Viva 6.0",

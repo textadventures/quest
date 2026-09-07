@@ -1,4 +1,4 @@
-// Regenerates the 6 screenshots embedded in site/src/content/docs/overview.md - a broad,
+// Regenerates the 6 screenshots embedded in site/src/content/docs/intro.md - a broad,
 // illustrative tour of the editor/player rather than tutorial-specific steps, so the exact
 // scenes below are representative rather than transcribed from prose. See
 // .claude/skills/docs-screenshots/SKILL.md.

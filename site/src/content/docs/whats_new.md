@@ -106,4 +106,4 @@ Because there's [another system](https://github.com/ThePix/QuestJS) already call
 
 ## Where's the documentation?
 
-Right here - and since Quest Viva is "a modern version of Quest 5" under the hood, almost everything in these docs applies to both. The [Overview](/overview) is a good tour of what's possible, and the [Tutorial](/tutorial/tutorial_introduction) is worth a skim even if you've used Quest 5, as the editor has moved on.
+Right here - and since Quest Viva is "a modern version of Quest 5" under the hood, almost everything in these docs applies to both. The [Introduction](/intro) is a good tour of what's possible, and the [Tutorial](/tutorial/tutorial_introduction) is worth a skim even if you've used Quest 5, as the editor has moved on.

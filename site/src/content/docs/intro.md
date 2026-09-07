@@ -17,16 +17,47 @@ Quest Viva is the current version of Quest, which people have been using to writ
 
 ## What can you make?
 
-Quest Viva supports two styles of game, and you choose which you want when you create it:
+Quest Viva supports two styles of game, and you choose which you want when you create it.
 
-- **Text adventures** - location-based games where the player explores rooms, picks up objects, solves puzzles and talks to characters, either by typing commands like `GO NORTH` or by clicking on links. This is the classic style, like _Zork_ or _The Hitchhiker's Guide to the Galaxy_.
-- **Gamebooks** - branching stories where the reader is given a set of choices at the end of each passage, and what they pick decides where the story goes next.
+**Text adventures** are location-based games where the player explores rooms, picks up objects, solves puzzles and talks to characters, either by typing commands like `GO NORTH` or by clicking on links. This is the classic style, like _Zork_ or _The Hitchhiker's Guide to the Galaxy_.
 
-Either kind can include images, sound, music and video, and you can customise the look of the game as much as you want - right down to writing your own HTML, CSS and JavaScript if that's your thing.
+![](/images/overview-textadventure.png)
+
+**Gamebooks** are branching stories rather than explorable worlds. The player reads a passage, picks from a set of options at the end of it, and that choice decides which passage comes next.
+
+![](/images/overview-gamebook.png)
 
 Wondering what that looks like in practice? [textadventures.co.uk](https://textadventures.co.uk) hosts games people have written and published over the years - have a browse through the [text adventures](https://textadventures.co.uk/games/platform/quest) and the [gamebooks](https://textadventures.co.uk/games/platform/quest-gamebook). They all play in your browser, with nothing to install.
 
-The [Overview](/overview) is a quick illustrated tour of the editor, both kinds of game, and what you can build with them.
+## The editor
+
+The editor lets you build a game by describing rooms, adding objects and characters, and setting up interactions - all without writing any code. Everything is displayed in plain English.
+
+![](/images/overview-editor.png)
+
+## Images, sound and video
+
+Your game can be more than just text. You can add:
+
+- **Images** - displayed in the game pane, or alongside room and object descriptions
+- **Sounds and music** - background audio or triggered sound effects
+- **Video** - embedded from YouTube
+
+![](/images/overview-multimedia.png)
+
+## Scripting
+
+When you want precise control over how your game behaves, Quest Viva's scripting system is there. You can write scripts in the editor using a visual block interface, or switch to Code View and write the [scripting language](/scripts) directly. Scripts can use variables, conditionals, loops and functions, and you can package up reusable behaviour in object types and libraries.
+
+You can make a complete game without ever using any of it.
+
+![](/images/overview-script.png)
+
+## Customising the interface
+
+The default player interface is clean and functional, but you have full control over it. You can add custom panes, change fonts and colours, rearrange the layout, and inject your own HTML, CSS and JavaScript to make the game look exactly how you want.
+
+![](/images/overview-customui.png)
 
 ## Browser or desktop
 
@@ -41,7 +72,7 @@ Otherwise your game is stored inside the browser itself, so use **Backup** every
 
 ## Sharing your game
 
-When your game is ready, you can [publish it](/publishing/publishing) to [textadventures.co.uk](https://textadventures.co.uk), where players can find it and play it in their browser.
+When your game is ready, you can [publish it](/publishing/publishing) to [textadventures.co.uk](https://textadventures.co.uk), where players can find it and play it in their browser. You can also keep a game private and share just a direct link with friends.
 
 If you'd rather host it yourself, you can - on your own website, or as a single HTML file you can upload almost anywhere. See [Hosting your game](/publishing/hosting) for the options.
 
