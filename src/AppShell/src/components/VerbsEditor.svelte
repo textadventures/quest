@@ -166,12 +166,18 @@
          verbs lists are usually short or empty, and forcing this column to fill all available
          height pinned "Add Verb" far below the list under a wall of blank space. This sizes to
          content instead, scrolling with the rest of the tab if the list ever gets long. -->
-    <div class="flex flex-col flex-1 min-w-0">
+    <div class="flex flex-col flex-1 min-w-0 overflow-hidden">
         <div class="px-3 py-1.5 border-b border-surface-100-900">
             <span class="font-semibold text-surface-600-400 uppercase tracking-wide">{t("verbsEditor.header")}</span>
         </div>
         <div>
-            <table class="w-full">
+            <!-- table-fixed (with overflow-hidden on the column above) so the columns are
+                 allocated out of the container's width and the verb cell's truncate absorbs
+                 the excess. Under auto layout the table grew to its own min-content width
+                 instead, and a wide row - a multi-pattern verb like "speak to; speak; talk
+                 to; talk" - pushed the row highlight and its delete button out across the
+                 splitter and under the Behaviour panel. -->
+            <table class="w-full table-fixed">
                 <thead class="sticky top-0 bg-surface-50-950 z-10">
                     <tr class="text-surface-600-400 border-b border-surface-200-800">
                         <th class="text-left py-1 px-3 font-medium">{t("verbsEditor.verbColumn")}</th>

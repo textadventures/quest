@@ -4,8 +4,6 @@
 // .claude/skills/docs-screenshots/SKILL.md.
 import { join, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { deflateSync } from 'node:zlib';
-import { writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import {
     runCapture, createLocalDraft, selectTreeNode, addElement, openTab, addVerb,
@@ -16,56 +14,54 @@ import {
 const imagesDir = join(dirname(fileURLToPath(import.meta.url)), '..', '..', '..', 'site', 'public', 'images');
 const out = name => join(imagesDir, name);
 
-// A flat-color placeholder for the "room picture" upload — the doc only needs to show that
-// the Picture frame feature displays *an* image, not any specific content, so this is
-// generated at runtime rather than checked in as a fixture. Minimal from-scratch PNG encoder
-// (no image library in this package's devDependencies) — one uncompressed RGB scanline per
-// row, deflated with zlib per the PNG spec's IDAT requirement.
-function crc32(buf) {
-    const table = crc32.table ??= (() => {
-        const t = new Uint32Array(256);
-        for (let n = 0; n < 256; n++) {
-            let c = n;
-            for (let k = 0; k < 8; k++) c = c & 1 ? 0xedb88320 ^ (c >>> 1) : c >>> 1;
-            t[n] = c;
-        }
-        return t;
-    })();
-    let crc = 0xffffffff;
-    for (const byte of buf) crc = table[(crc ^ byte) & 0xff] ^ (crc >>> 8);
-    return (crc ^ 0xffffffff) >>> 0;
+// The "room picture" upload for the Picture frame feature. The doc only needs to show that
+// the feature displays *a* picture, but a flat single-colour rectangle reads as a broken or
+// missing image rather than as a photo, so draw an actual scene. A small flat illustration
+// also survives Starlight's downscaling better than a photo would, and keeping it as SVG
+// source here (rasterised through the browser this script already drives, rather than by
+// hand-rolling a PNG encoder or adding an image dependency) means the scene stays editable.
+// It matches the room the rest of this capture builds: a lounge with a TV, which is what the
+// player then sees described as "You can see a TV and Bob".
+const LOUNGE_SVG = `<svg xmlns="http://www.w3.org/2000/svg" width="480" height="320" viewBox="0 0 480 320">
+  <rect width="480" height="320" fill="#e6d9c3"/>
+  <rect x="30" y="36" width="120" height="96" rx="4" fill="#f6efe4"/>
+  <rect x="38" y="44" width="104" height="80" fill="#9cc6dd"/>
+  <circle cx="66" cy="66" r="11" fill="#f4dc99"/>
+  <path d="M38 110 l26-22 18 14 16-18 44 30z" fill="#86a98f"/>
+  <path d="M90 44 v80 M38 84 h104" stroke="#f6efe4" stroke-width="7"/>
+  <rect x="330" y="50" width="96" height="72" rx="3" fill="#f6efe4"/>
+  <rect x="338" y="58" width="80" height="56" fill="#c7b295"/>
+  <path d="M338 114 l24-30 17 20 15-17 24 27z" fill="#7f9a86"/>
+  <rect y="226" width="480" height="8" fill="#f6efe4"/>
+  <rect y="234" width="480" height="86" fill="#b98d5f"/>
+  <ellipse cx="252" cy="278" rx="196" ry="30" fill="#cb8f74" opacity="0.5"/>
+  <rect x="62" y="212" width="126" height="28" rx="3" fill="#8b6a49"/>
+  <rect x="118" y="200" width="14" height="12" fill="#2d333d"/>
+  <rect x="76" y="136" width="98" height="66" rx="5" fill="#2d333d"/>
+  <rect x="83" y="143" width="84" height="52" rx="2" fill="#52697b"/>
+  <rect x="204" y="146" width="5" height="104" fill="#6d5c46"/>
+  <path d="M188 148 h34 l-8 -26 h-18 z" fill="#f0cf8f"/>
+  <ellipse cx="206" cy="250" rx="17" ry="5" fill="#6d5c46"/>
+  <rect x="238" y="172" width="192" height="60" rx="12" fill="#6f8d80"/>
+  <rect x="252" y="182" width="80" height="40" rx="7" fill="#82a094"/>
+  <rect x="338" y="182" width="80" height="40" rx="7" fill="#82a094"/>
+  <rect x="232" y="208" width="204" height="42" rx="12" fill="#7f9c8f"/>
+  <rect x="230" y="190" width="30" height="62" rx="12" fill="#628074"/>
+  <rect x="408" y="190" width="30" height="62" rx="12" fill="#628074"/>
+  <rect x="248" y="250" width="12" height="12" rx="2" fill="#6d5c46"/>
+  <rect x="408" y="250" width="12" height="12" rx="2" fill="#6d5c46"/>
+</svg>`;
+const loungePicture = join(tmpdir(), 'docs-screenshot-lounge.png');
+
+// Rasterise an SVG string to a PNG on disk via a throwaway page in the browser this capture
+// is already running, so the harness needs no image library of its own.
+async function renderSvgToPng(context, svg, outputPath, width, height) {
+    const svgPage = await context.newPage();
+    await svgPage.setViewportSize({ width, height });
+    await svgPage.setContent(`<body style="margin:0">${svg}</body>`);
+    await svgPage.screenshot({ path: outputPath });
+    await svgPage.close();
 }
-function pngChunk(type, data) {
-    const len = Buffer.alloc(4);
-    len.writeUInt32BE(data.length);
-    const typeAndData = Buffer.concat([Buffer.from(type, 'ascii'), data]);
-    const crc = Buffer.alloc(4);
-    crc.writeUInt32BE(crc32(typeAndData));
-    return Buffer.concat([len, typeAndData, crc]);
-}
-function makePlaceholderPng(width, height, [r, g, b]) {
-    const ihdr = Buffer.alloc(13);
-    ihdr.writeUInt32BE(width, 0);
-    ihdr.writeUInt32BE(height, 4);
-    ihdr[8] = 8; // bit depth
-    ihdr[9] = 2; // color type: RGB
-    const raw = Buffer.alloc((width * 3 + 1) * height);
-    for (let y = 0; y < height; y++) {
-        const rowStart = y * (width * 3 + 1); // leading byte per row: filter type 0 (none)
-        for (let x = 0; x < width; x++) {
-            const px = rowStart + 1 + x * 3;
-            raw[px] = r; raw[px + 1] = g; raw[px + 2] = b;
-        }
-    }
-    return Buffer.concat([
-        Buffer.from([137, 80, 78, 71, 13, 10, 26, 10]),
-        pngChunk('IHDR', ihdr),
-        pngChunk('IDAT', deflateSync(raw)),
-        pngChunk('IEND', Buffer.alloc(0)),
-    ]);
-}
-const loungePicture = join(tmpdir(), 'docs-screenshot-lounge-placeholder.png');
-writeFileSync(loungePicture, makePlaceholderPng(480, 320, [214, 196, 168])); // beige, matching the tutorial's own room description
 
 const checkboxFor = (page, label) => page.getByText(label, { exact: true }).locator('xpath=..').locator('input[type="checkbox"]');
 
@@ -115,6 +111,7 @@ await runCapture(async ({ page, baseUrl }) => {
     await selectTreeNode(page, 'room');
     await openTab(page, 'Room');
     await page.waitForSelector('text=Room picture:', { timeout: 10000 });
+    await renderSvgToPng(page.context(), LOUNGE_SVG, loungePicture, 480, 320);
     const uploadInput = page.getByText('Room picture:', { exact: true }).locator('xpath=following::input[@type="file"][1]');
     await uploadInput.setInputFiles(loungePicture);
     await page.waitForTimeout(500);
@@ -146,14 +143,28 @@ await runCapture(async ({ page, baseUrl }) => {
     await openTab(page, 'Features');
     await toggleFeature(page, 'Show advanced scripts for the game object');
     await openTab(page, 'Advanced Scripts');
-    await setScriptCodeView(page, page.locator('button:has-text("Code view")').first(), `backandborder = "border: 1px solid #4a5568;background:#1a202c"
-text = "color:#e2e8f0;font-family:georgia, serif"
-JS.setCss ("body", "background:#0f1117")
-JS.setCss (".ui-accordion-header", "border-radius: 3px;" + backandborder)
-JS.setCss (".ui-accordion-content", "border-radius: 3px;" + backandborder + ";border-top:none")
-JS.setCss (".accordion-header-text", text)
-JS.setCss (".ui-icon", "display:none")
-JS.setCss ("#gamePanes", "margin-top: 16px")`);
+    // Two halves, matching what the page's prose promises: the game's own colour/font settings,
+    // then CSS for the panes. The transcript's colours have to come from the former - every line
+    // of output is emitted already wrapped in a <span style="color:..."> built from
+    // game.defaultforeground (CoreOutput.aslx's OutputTextNoBr), so a stylesheet can't reach it.
+    // The pane chrome is the other way round: it's static markup, so CSS is the only lever.
+    await setScriptCodeView(page, page.locator('button:has-text("Code view")').first(), `SetBackgroundColour ("#141c26")
+SetForegroundColour ("#dde6f0")
+SetLinkForegroundColour ("#7cc3d8")
+SetFontName ("Georgia, serif")
+panel = "background:#1b2430;border:1px solid #35485f"
+JS.setCss ("#qv-status", "background:#1b2430;border:none;color:#f0c987")
+JS.setCss ("#txtCommand", "background:#1b2430;color:#dde6f0;border:1px solid #35485f")
+JS.setCss ("#gamePanes", "margin-top:16px")
+JS.setCss (".ui-accordion-header", "border-radius:4px 4px 0 0;" + panel)
+JS.setCss (".ui-accordion-content", "border-radius:0 0 4px 4px;border-top:none;color:#dde6f0;" + panel)
+JS.setCss (".accordion-header-text", "color:#f0c987;letter-spacing:0.04em;padding-left:0.9em")
+// The accordion's expand/collapse triangle only - NOT a bare ".ui-icon", which would also hide
+// the compass's direction arrows (they're .ui-icon too, see playercore.js's compass buttons).
+JS.setCss (".ui-accordion-header > .ui-icon", "display:none")
+JS.setCss (".compassbutton", "background:#25344a;border:1px solid #35485f")
+JS.setCss (".compassbutton .ui-icon", "filter:invert(1) brightness(1.7)")
+JS.setCss ("#compassTable .ui-button", "color:#7cc3d8")`);
     await page.waitForSelector('text=Set variable', { timeout: 5000 });
     const p3 = await openPreview(page);
     await capture(p3, out('overview-customui.png'), { untilLocator: p3.locator('#txtCommand') });
