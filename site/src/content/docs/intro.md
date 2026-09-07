@@ -9,7 +9,7 @@ sidebar:
 
 Quest Viva is a free, open source system for creating and playing **text adventure games** and **gamebooks** - the kind of games sometimes called [interactive fiction](https://en.wikipedia.org/wiki/Interactive_fiction).
 
-You write the story; Quest Viva handles the rest. It gives you a point-and-click editor where everything about your game is described in plain English, a scripting language for when you want to go further, and a player that runs your finished game in anybody's web browser.
+Quest Viva gives you a point-and-click editor where everything about your game is described in plain English, a scripting language for when you want to go further, and a player that runs your finished game in anybody's web browser. It handles the machinery underneath - working out what the player meant when they typed something, keeping track of where everything in the world is, and what the player can see and reach - so you can get on with writing and designing the game itself.
 
 You don't need any programming experience to use it. Plenty of people have written and published complete games without ever looking at a line of code.
 
@@ -26,7 +26,7 @@ Either kind can include images, sound, music and video, and you can customise th
 
 Wondering what that looks like in practice? [textadventures.co.uk](https://textadventures.co.uk) hosts games people have written and published over the years - have a browse through the [text adventures](https://textadventures.co.uk/games/platform/quest) and the [gamebooks](https://textadventures.co.uk/games/platform/quest-gamebook). They all play in your browser, with nothing to install.
 
-The [Overview](/overview) is a quick illustrated tour of all of this.
+The [Overview](/overview) is a quick illustrated tour of the editor, both kinds of game, and what you can build with them.
 
 ## Where does it run?
 
