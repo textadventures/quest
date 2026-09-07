@@ -137,7 +137,7 @@ After plugging that parameter into our function and see if it works.  It appears
 ChangeVideoSrc("my-video", "https://www.youtube.com/embed/-WNRvCpw3qo")
 ```
 
-But, with the code like this, the new video loads but does not play! There are two functions in Quest Viva which deal with the ```Play YouTube video``` script:
+But, with the code like this, the new video loads but does not play! There are two functions in Quest Viva which deal with the `Play YouTube video` script:
 
 
 ### The Quest Viva function:
@@ -201,7 +201,7 @@ msg("<video src='"+src+"' autoplay width='90%' />")
 
 I set the width to 90% for this video, but **you will need to adjust the width according to each video's size!**
 
-The file "spinning_compass.ogv" is in my game's main folder. The current engine's default ```game.publishfileextensions``` already includes `*.ogv`, so you shouldn't normally need to add it yourself - you'd only need to add an extension manually if it isn't already in that default list. For more on the file extensions included in your game, see [A Note on The Publish Process](/tutorial/releasing_your_game).
+The file "spinning_compass.ogv" is in my game's main folder. The current engine's default `game.publishfileextensions` already includes `*.ogv`, so you shouldn't normally need to add it yourself - you'd only need to add an extension manually if it isn't already in that default list. For more on the file extensions included in your game, see [A Note on The Publish Process](/tutorial/releasing_your_game).
 
 To simulate the “Wait for sound to finish before continuing” option when adding videos to a game via HTML video elements, follow the link at the end of this document.
 

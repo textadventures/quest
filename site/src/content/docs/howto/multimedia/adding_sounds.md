@@ -28,7 +28,7 @@ Also note that Quest Viva will only play one sound at a time when using the `pla
 
 ### Stopping sounds
 
-Sometimes, you need to stop a sound.  For instance the “loop” option will cause the sound to continue playing until the [```stop sound```](/scripts#stop-sound) script command is run. 
+Sometimes, you need to stop a sound.  For instance the “loop” option will cause the sound to continue playing until the [`stop sound`](/scripts#stop-sound) script command is run. 
 
 ![](/images/stop_sound.jpg)
 
@@ -125,7 +125,7 @@ For more on the file extensions included in your game, see [A Note on The Publis
 
 To simulate the “Wait for sound to finish before continuing” option when adding sounds to your game via HTML audio elements, follow the link at the end of this document.
 
-We can also use an HTML audio tag to play audio from an external site, which will help keep your game under the site's maximum upload size. Everything works the same way, you just use the actual URL instead of ```GetFileURL()```.
+We can also use an HTML audio tag to play audio from an external site, which will help keep your game under the site's maximum upload size. Everything works the same way, you just use the actual URL instead of `GetFileURL()`.
 
 Here's an example with an actual URL:
 

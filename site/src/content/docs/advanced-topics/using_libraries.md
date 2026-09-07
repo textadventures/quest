@@ -56,7 +56,7 @@ So you want to create your own library...
 
 It is pretty easy. Library files are just text files, so you need a text editor; I recommend Notepad++. Quest Viva itself cannot handle them unfortunately. Like Quest Viva itself, library files must be in XML, and a simple understanding of XML is useful.
 
-The root element of a library file is `library. This means that the first line of the file should be this:
+The root element of a library file is `library`. This means that the first line of the file should be this:
 ```xml
 <library>
 ```

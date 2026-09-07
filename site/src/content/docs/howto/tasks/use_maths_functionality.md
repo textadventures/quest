@@ -217,4 +217,4 @@ dictionary add (d, "" + list[1], list[2])
 msg (d["two"])
 ```
 
-Note that in the last but one line, the key for the dictionary is '"" + list[1]`. This addition gives Quest Viva a chance to work out what `list[1]` is.
+Note that in the last but one line, the key for the dictionary is `"" + list[1]`. This addition gives Quest Viva a chance to work out what `list[1]` is.
