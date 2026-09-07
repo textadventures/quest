@@ -9,7 +9,7 @@ sidebar:
 
 Quest Viva is a free, open source system for creating and playing **text adventure games** and **gamebooks** - the kind of games sometimes called [interactive fiction](https://en.wikipedia.org/wiki/Interactive_fiction).
 
-Quest Viva gives you a point-and-click editor where everything about your game is described in plain English, a scripting language for when you want to go further, and a player that runs your finished game in anybody's web browser. It handles the machinery underneath - working out what the player meant when they typed something, keeping track of where everything in the world is, and what the player can see and reach - so you can get on with writing and designing the game itself.
+Quest Viva gives you a point-and-click editor where everything about your game is described in plain English, a [scripting language](/scripts) for when you want to go further, and a player that runs your finished game in anybody's web browser. It handles the machinery underneath - working out what the player meant when they typed something, keeping track of where everything in the world is, and what the player can see and reach - so you can get on with writing and designing the game itself.
 
 You don't need any programming experience to use it. Plenty of people have written and published complete games without ever looking at a line of code.
 
@@ -50,8 +50,6 @@ Either way, your players just follow a link. There's nothing for them to install
 ## Getting started
 
 The **[Tutorial](/tutorial/tutorial_introduction)** is the best place to begin. It walks you through building a game from scratch, and you can follow it in the browser without downloading anything.
-
-After that, the **Guides** section covers specific topics in more depth - [The Cloak of Darkness](/cloak_of_darkness) is a good next step, building a small complete game with code throughout - and the **[Language Reference](/scripts)** documents every script command, function and attribute.
 
 ## Getting help
 

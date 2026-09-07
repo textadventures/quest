@@ -33,7 +33,7 @@ The specification is as follows:
 - The message reads either "You have won" or "You have lost", depending on how much it was disturbed by the player while the room was dark.
 - The act of reading the message ends the game.
 
-As you can see, there is really not much to it! So how would one go about creating that in Quest 5?
+As you can see, there is really not much to it! So how would one go about creating that in Quest Viva?
 
 We will divide the process into five sections, starting with the locations and items, then each of the systems in turn (i.e., the hook, message and darkness), then the interface. As you complete a section, you should go into the game and check it works properly (and other times too, as required). You should check you can save the game (as this is particularly sensitive to errors), and you should also check all the response messages. Do not just check you can hang the cloak on the hook, test what happens when you try to hang the hook on the cloak, or hang in up in the foyer, etc.
 
