@@ -60,7 +60,7 @@ Because a game no longer needs a server to run it, you're no longer tied to text
 
 See [Hosting your game](/publishing/hosting) for all the options.
 
-WebPlayer - the server-based player that ran Quest 5 games online - is still there, but it's a specialist option now rather than how games normally run. It's worth using if you specifically don't want players to be able to download your `.quest` file, for a treasure hunt or a competition say. See the [WebPlayer guide](/publishing/webplayer).
+WebPlayer, the server-based player, has been rewritten for Quest Viva - Quest 5's needed Windows, and this one runs on cross-platform .NET, so you can host it wherever you like. WasmPlayer has rather overtaken it since, though, so it's a specialist choice now: worth it if you specifically don't want players to be able to download your `.quest` file, for a treasure hunt or a competition say. See the [WebPlayer guide](/publishing/webplayer).
 
 ## Players can save without an account
 
@@ -85,7 +85,7 @@ Most of the scripting language is unchanged, but there are some additions:
 - **Pages in text adventures.** Quest 5 only had pages in gamebooks. Quest Viva lets a text adventure switch into a page - a set of links the player chooses from - which is a much easier way to write conversations and dialogue trees. See [Using Pages](/tutorial/using_pages).
 - Plenty of smaller additions and fixes besides - the [changelog](https://github.com/textadventures/quest/blob/main/CHANGELOG.md) lists these from 6.0.0-beta.36 onwards.
 
-A game saved in the Quest Viva editor is marked as world model version 600. Older games load and run unchanged - the version number just tells the engine which behaviour to use where something has been fixed in a way that would otherwise change an existing game.
+A game saved in the Quest Viva editor is marked as ASL version 600 - `<asl version="600">` at the top of the file. Older games load and run unchanged - the version number just tells the engine which behaviour to use where something has been fixed in a way that would otherwise change an existing game.
 
 ## Why isn't it called Quest 6?
 
