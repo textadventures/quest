@@ -28,22 +28,22 @@ Wondering what that looks like in practice? [textadventures.co.uk](https://texta
 
 The [Overview](/overview) is a quick illustrated tour of the editor, both kinds of game, and what you can build with them.
 
-## Where does it run?
+## Browser or desktop
 
-The editor runs in two places, and they're the same editor either way:
+You can use Quest Viva in two ways, and you get the same editor either way:
 
 - **In your web browser**, at [play.questviva.com](https://play.questviva.com) - nothing to install, and it works on Windows, Mac, Linux and Chromebooks.
 - **As a desktop app**, which you can [download](/download) for Windows, Mac or Linux.
 
 Your games are ordinary files that you keep wherever you like, so you can move between the browser and the desktop app freely.
 
-Finished games run in the player's web browser. There's nothing for them to install and no account to create, and once a game has loaded it keeps running even if their network connection drops. Games use a responsive layout, so they work just as well on a phone as on a desktop computer.
-
 ## Sharing your game
 
 When your game is ready, you can [publish it](/publishing/publishing) to [textadventures.co.uk](https://textadventures.co.uk), where players can find it and play it in their browser.
 
 If you'd rather host it yourself, you can - on your own website, or as a single HTML file you can upload almost anywhere. See [Hosting your game](/publishing/hosting) for the options.
+
+Either way, your players just follow a link. There's nothing for them to install and no account to create, and once a game has loaded it keeps running even if their network connection drops. Games use a responsive layout, so they work just as well on a phone as on a desktop computer.
 
 ## Getting started
 
