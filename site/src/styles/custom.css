@@ -1,0 +1,19 @@
+/* Small inline badge used to flag hard-coded functions in the Language Reference. */
+.qv-badge {
+	display: inline-block;
+	font-family: var(--sl-font-system-mono);
+	font-size: var(--sl-text-xs);
+	line-height: normal;
+	padding: 0.1rem 0.4rem;
+	border-radius: 0.25rem;
+	border: 1px solid var(--sl-color-gray-5);
+	color: var(--sl-color-gray-2);
+	background-color: var(--sl-color-gray-6);
+	text-decoration: none;
+	margin: 0.25rem 0;
+}
+
+a.qv-badge:hover {
+	border-color: var(--sl-color-text-accent);
+	color: var(--sl-color-text-accent);
+}

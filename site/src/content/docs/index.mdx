@@ -1,92 +1,126 @@
 ---
 title: Quest Viva
-description: Create text adventure games
+description: Create text adventure games and interactive fiction - free, open source, and no programming required
 template: splash
 editUrl: false
 hero:
-  # tagline: Quest Viva is a powerful platform for creating text adventure games and interactive fiction. It's easy to use, and you can create games quickly - no programming required!
-  tagline: Quest Viva is the next generation of the Quest 5 text adventure game engine.
+  tagline: Create your own text adventure games and interactive fiction. Free, open source, and no programming required.
   image:
     alt: Quest Viva logo
     file: ../../assets/quest-viva.svg
   actions:
-    - text: Open Quest Viva
+    - text: Start creating
       link: https://play.questviva.com/
       icon: right-arrow
       variant: primary
-    - text: Read the Docs
-      link: /guides/introduction
+    - text: Documentation
+      link: /intro
       icon: open-book
       variant: secondary
-    - text: Download
+    - text: Download the app
       link: /download
       icon: download
-      variant: secondary
+      variant: minimal
     - text: View on GitHub
       link: https://github.com/textadventures/quest
       icon: external
       variant: minimal
 ---
 
-import { Card, CardGrid } from '@astrojs/starlight/components';
+import { Card, CardGrid, LinkCard } from '@astrojs/starlight/components';
 
 <CardGrid>
-  <Card title="Cross-platform" icon="forward-slash">
-		Quest Viva runs on Windows, Mac and Linux.
-	</Card>
-  <Card title="Host your game anywhere" icon="document">
-		You can now host a Quest game on any website.
-	</Card>
-  <Card title="Save games without logging in" icon="cloud-download">
-		Players do not need to log in anywhere to save their progress. Game data is saved to their browser's local storage.
-	</Card>
-  <Card title="Responsive layout" icon="laptop">
-		All devices are now handled using a responsive layout, so the game will look good on any screen size.
-	</Card>
-	{/* <Card title="It's free..." icon="sun">
-		Quest Viva is free to use, and runs in your browser. Quest Viva is free open source software.
-	</Card>
-	<Card title="...and you're free" icon="heart">
-		No restrictions. Quest Viva is licenced under the [MIT License](https://opensource.org/license/MIT).
-
-    This means you can [download and modify the Quest Viva source code](https://github.com/textadventures/quest), and do whatever you want with it.
-
-    You can sell the games you make with Quest Viva. You can use the Quest Viva source code inside closed source commercial applications.
-
-    You don't need to ask for permission - you already have it.
-	</Card>
 	<Card title="Get started quickly" icon="rocket">
 		You don't need to know how to program to use Quest Viva. But you might pick up some handy programming knowledge along the way.
 
-    Everything about your game is displayed in plain English, but the source code to your game is also viewable and editable for the more technically minded.
+		Everything about your game is displayed in plain English, in a point-and-click editor. There's no syntax to remember and nothing to install.
 
-    A full tutorial is included, and help is always available on [Discord](https://textadventures.co.uk/community/discord) and [GitHub Discussions](https://github.com/textadventures/quest/discussions).
+		A full [tutorial](/tutorial/tutorial-introduction) is included, and help is always available on [Discord](https://textadventures.co.uk/community/discord) and [GitHub Discussions](https://github.com/textadventures/quest/discussions).
 	</Card>
-	<Card title="Ever wanted to..." icon="approve-check">
-		Ever wanted to create your own game, but were put off by complicated programming languages? Quest Viva is a great way to get started.
+	<Card title="Text adventures and gamebooks" icon="puzzle">
+		Write a classic **text adventure**, where players explore rooms, pick up objects, solve puzzles and talk to characters by typing commands or clicking links.
 
-    Want to get into game writing, or prototype game narrative before turning it into something bigger? Quest Viva is a quick way to experiment with interactive stories.
-	</Card>
-  <Card title="Surprisingly powerful" icon="seti:html">
-    Quest Viva is a powerful game platform. Although designed to be easy to learn, it has huge power when you need it.
+		Or write a **gamebook** - a branching story where the reader picks what happens next from a set of choices at the end of each passage.
 
-    There is a fully featured scripting language behind the scenes, which you can dip in and out of as required. You can use variables and functions, and encapsulate functionality using object types to share scripts between objects. You can create and share libraries of advanced functionality.
+		Browse published [text adventures](https://textadventures.co.uk/games/platform/quest) and [gamebooks](https://textadventures.co.uk/games/platform/quest-gamebook), or [see what Quest Viva can do](/intro).
 	</Card>
-  <Card title="Graphics, sound and video" icon="seti:video">
+	<Card title="Surprisingly powerful" icon="star">
+		Quest Viva is designed to be easy to learn, but it has huge power when you need it.
+
+		There's a fully featured [scripting language](/scripts) behind the scenes, which you can dip in and out of as required. Use variables and functions, share behaviour between objects using object types, and package up advanced functionality into libraries to reuse and share.
+	</Card>
+	<Card title="Graphics, sound and video" icon="youtube">
 		Who says text adventures are all about text?
 
-    You can add pictures to your game, music and sound effects. You can even embed video from YouTube.
+		You can add [pictures](/howto/multimedia/images) to your game, along with [music and sound effects](/howto/multimedia/adding-sounds), and you can even embed [video](/howto/multimedia/adding-videos) from YouTube.
 
-    And you can go even further, by customising the user interface using HTML and Javascript, to get your game looking exactly how you want it.
+		And you can go further still, [customising the user interface](/howto/ux/customising-the-ui) with your own HTML, CSS and JavaScript, to get your game looking exactly how you want.
 	</Card>
-  <Card title="Any language" icon="translate">
-		Create games in English, French, German, Spanish, Dutch, Italian, Poruguese, Romanian, even Esperanto.
+	<Card title="Create in your browser, or on your desktop" icon="laptop">
+		Quest Viva runs in any modern web browser - there's nothing to install, and it works on Windows, Mac, Linux and Chromebooks.
 
-    Or create your own translation.
+		Prefer to work offline? [Download the desktop app](/download) for Windows, Mac or Linux. It's the same editor either way, and the same game files, so you can switch between them whenever you like.
 	</Card>
-  <Card title="Share with the world" icon="open-book">
-    Publish your game to [textadventures.co.uk](https://textadventures.co.uk/), the top destination for people looking for text adventure games to play. Or, host your game on your own server.
+	<Card title="Plays on any device" icon="mobile-android">
+		Your finished game runs directly in the player's web browser, on phones, tablets and computers alike, using a responsive layout that adapts to any screen size.
 
-    There's no need for players to download any software - people can play your game directly in their browser, whatever device they're using.
-	</Card> */}
+		There's nothing for players to download or install, and nothing to sign up for - they just follow a link and start playing.
+	</Card>
+	<Card title="Saves without logging in" icon="cloud-download">
+		Players don't need an account anywhere to save their progress. Games save to the browser's own storage, with multiple save slots, and players can also save a game to a file to keep or move elsewhere.
+
+		Once a game has loaded, everything runs in the browser - so it keeps working even if the network drops.
+	</Card>
+	<Card title="Share with the world" icon="open-book">
+		[Publish your game](/publishing/publishing) to [textadventures.co.uk](https://textadventures.co.uk/), the top destination for people looking for text adventure games to play.
+
+		Or [host it yourself](/publishing/hosting) - on your own website, or as a single HTML file you can upload anywhere. It's your game, and you choose where it lives.
+	</Card>
+	<Card title="Any language" icon="translate">
+		Create games in English, French, German, Spanish, Dutch, Italian, Portuguese, Danish, Norwegian, Icelandic, Greek, Russian, Romanian - even Esperanto.
+
+		Or [create your own translation](/advanced-topics/translation).
+	</Card>
+	<Card title="It's free - and so are you" icon="heart">
+		Quest Viva is free and [open source](/developers/open-source), licensed under the [MIT License](https://opensource.org/license/MIT).
+
+		You can sell the games you make with it. You can [modify the source code](https://github.com/textadventures/quest) and use it inside closed source commercial applications.
+
+		You don't need to ask for permission - you already have it.
+	</Card>
+</CardGrid>
+
+## Find your way around
+
+New to all this? Start with the **[Tutorial](/tutorial/tutorial-introduction)**, which builds your first game from scratch. Coming from Quest 5? Start with **[What's new in Quest Viva 6.0](/whats-new)**.
+
+<CardGrid>
+	<LinkCard
+		title="Start Here"
+		href="/intro"
+		description="An introduction to Quest Viva, a tour of what it can do, and the full tutorial." />
+	<LinkCard
+		title="Guides"
+		href="/cloak-of-darkness"
+		description="How to do particular things - commands and the parser, rooms and objects, characters, images and sound, and customising the interface." />
+	<LinkCard
+		title="Language Reference"
+		href="/scripts"
+		description="Every script command, function, attribute and element, described in detail." />
+	<LinkCard
+		title="Advanced Topics"
+		href="/advanced-topics/overriding"
+		description="Object types, libraries, delegates, overriding built-in behaviour, and translating Quest Viva." />
+	<LinkCard
+		title="Publishing"
+		href="/publishing/publishing"
+		description="Getting your finished game in front of players, on textadventures.co.uk or hosted yourself." />
+	<LinkCard
+		title="Download the app"
+		href="/download"
+		description="The Quest Viva desktop app for Windows, Mac and Linux, for working offline." />
+	<LinkCard
+		title="Developers"
+		href="/developers/developers"
+		description="Building Quest Viva from source, how the project is organised, and older releases." />
 </CardGrid>

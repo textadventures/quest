@@ -8,7 +8,8 @@
     "build": "astro build",
     "preview": "astro preview",
     "astro": "astro",
-    "lint": "eslint ."
+    "lint": "eslint .",
+    "check-function-docs": "node scripts/check-function-docs.mjs"
   },
   "dependencies": {
     "@astrojs/starlight": "^0.41.10",

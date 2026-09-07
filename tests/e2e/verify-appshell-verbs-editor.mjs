@@ -155,6 +155,56 @@ async function run() {
     await page.waitForSelector('table >> text=juggle', { timeout: 10000 });
     console.log('PASS: adding a genuinely novel verb pattern ("juggle") succeeds');
 
+    // Layout: the verbs list column sits left of a drag splitter, with the Behaviour panel to
+    // its right. The table inside that column used to size to its own min-content width rather
+    // than the column's, so once the column got narrow the selected row's highlight and its
+    // delete button spilled out across the splitter and under the Behaviour panel. It takes a
+    // realistically wide row to push min-content past the column: "speak to" expands to the
+    // multi-pattern display "speak to; speak; talk to; talk", which is the case the docs
+    // screenshots hit. Measure against the splitter, not the table — the table is the thing
+    // that was overflowing, so it can't be its own reference.
+    await comboInput.click();
+    await comboInput.fill('speak to');
+    await page.keyboard.press('Tab');
+    await page.click('button:has-text("Add Verb")');
+    await page.waitForSelector('table >> text=speak to', { timeout: 10000 });
+
+    // 960px is the width the docs screenshot harness captures at, and where this first showed.
+    for (const [label, width] of [['wide', 1280], ['narrow pane', 960]]) {
+        await page.setViewportSize({ width, height: 800 });
+        await page.waitForTimeout(300);
+        // Scoped to the verbs editor's own splitter — a bare 'div.cursor-col-resize' also
+        // matches the tree/properties splitter further up the page.
+        const splitter = await page.locator('table').first()
+            .locator('xpath=ancestor::div[contains(@class,"min-w-0")][1]/following-sibling::div[contains(@class,"cursor-col-resize")][1]')
+            .boundingBox();
+        const rows = await page.locator('tbody tr').all();
+        if (rows.length === 0) throw new Error(`${label} (${width}px): no verb rows to measure`);
+        for (const row of rows) {
+            const rowBox = await row.boundingBox();
+            const buttonBox = await row.locator('button').first().boundingBox();
+            for (const [what, box] of [['row', rowBox], ['delete button', buttonBox]]) {
+                if (box.x + box.width > splitter.x + 1) {
+                    throw new Error(`${label} (${width}px): verb ${what} right edge ${box.x + box.width} crosses the splitter's left edge ${splitter.x}`);
+                }
+            }
+            if (buttonBox.width < 6 || buttonBox.height < 6) {
+                throw new Error(`${label} (${width}px): delete button clipped to ${buttonBox.width}x${buttonBox.height}`);
+            }
+        }
+    }
+    // Stacked layout (below the pane's @2xl container breakpoint): no splitter, but the same
+    // overflow-hidden must not clip the delete button away either.
+    await page.setViewportSize({ width: 620, height: 800 });
+    await page.waitForTimeout(300);
+    const stackedButton = await page.locator('tbody tr').first().locator('button').first().boundingBox();
+    if (stackedButton.width < 6 || stackedButton.height < 6) {
+        throw new Error(`stacked (620px): delete button clipped to ${stackedButton.width}x${stackedButton.height}`);
+    }
+    await page.setViewportSize({ width: 1280, height: 720 });
+    console.log('PASS: verb rows and delete buttons stay clear of the splitter, and survive the stacked layout');
+
+
     // The new verb command element lands under the game's synthetic "Verbs" tree node (key
     // "_gameVerbs" — see EditorController's k_verbs), alongside any library-defined verbs.
     // The game node starts collapsed by default (#827), so expand it first to make its
