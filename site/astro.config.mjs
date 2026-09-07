@@ -42,6 +42,14 @@ export default defineConfig({
                             "slug": "overview"
                         },
                         {
+                            "label": "What's new in Quest Viva 6.0",
+                            "slug": "whats_new"
+                        },
+                        {
+                            "label": "Download the app",
+                            "slug": "download"
+                        },
+                        {
                             "label": "Tutorial",
                             "collapsed": true,
                             "items": [
@@ -110,14 +118,6 @@ export default defineConfig({
                                     "slug": "tutorial/creating_a_gamebook"
                                 }
                             ]
-                        },
-                        {
-                            "label": "What's new in Quest Viva 6.0",
-                            "slug": "whats_new"
-                        },
-                        {
-                            "label": "Download the app",
-                            "slug": "download"
                         },
                     ]
                 },
