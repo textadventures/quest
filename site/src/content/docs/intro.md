@@ -24,6 +24,8 @@ Quest Viva supports two styles of game, and you choose which you want when you c
 
 Either kind can include images, sound, music and video, and you can customise the look of the game as much as you want - right down to writing your own HTML, CSS and JavaScript if that's your thing.
 
+Wondering what that looks like in practice? [textadventures.co.uk](https://textadventures.co.uk) hosts games people have written and published over the years - have a browse through the [text adventures](https://textadventures.co.uk/games/platform/quest) and the [gamebooks](https://textadventures.co.uk/games/platform/quest-gamebook). They all play in your browser, with nothing to install.
+
 The [Overview](/overview) is a quick illustrated tour of all of this.
 
 ## Where does it run?
