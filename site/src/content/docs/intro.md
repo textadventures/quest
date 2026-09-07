@@ -37,7 +37,7 @@ You can use Quest Viva in two ways, and you get the same editor either way:
 
 Where your game is kept depends on how you open it. Pick a folder on your computer - the desktop app always does, and browsers like Chrome and Edge can too - and your game is an ordinary file you keep wherever you like, so you can move between the browser and the desktop app freely.
 
-Otherwise your game is stored inside the browser itself. That works perfectly well, but it does mean the game is tied to that one browser on that one device, and clearing your browsing data can take it with it. Use **Backup** every so often to save a copy to disk - the editor will remind you if you haven't for a while.
+Otherwise your game is stored inside the browser itself, so use **Backup** every so often to save a copy to disk - the editor will remind you.
 
 ## Sharing your game
 
