@@ -74,6 +74,13 @@ FinishTurn ()
 
 Ends the current turn: runs turn scripts (if `game.runturnscripts` is set and they haven't been suppressed), then updates status attributes and darkness/hyperlink state for the next command. Quest calls this automatically after each player command; you would only call it yourself if you're driving a "turn" from custom code that bypasses the normal command loop.
 
+## FormatContentsList
+```quest
+FormatContentsList (string pre-list, object parent, string pre-final, string post-list, boolean include scenery)
+```
+
+Returns a [string](/types#string) containing a formatted list of the direct children of **parent**. This is the shared implementation behind [FormatObjectList](#formatobjectlist) (`include scenery` false) and [FormatInventoryList](#formatinventorylist) (`include scenery` true) - call one of those instead unless you specifically need a third scenery-filtering behaviour.
+
 ## FormatExitList
 ```quest
 FormatExitList (string pre-list, objectlist exits, string pre-final, string post-list)
@@ -90,6 +97,13 @@ FormatExitList("You can go", ScopeExits(), "or", ", if you like.")
 may return output like this:
 
 > You can go east, west or south, if you like.
+
+## FormatInventoryList
+```quest
+FormatInventoryList (string pre-list, object parent, string pre-final, string post-list)
+```
+
+Returns a [string](/types#string) containing a formatted list of what **parent** is carrying, for the "inventory" command. Unlike [FormatObjectList](#formatobjectlist), scenery-flagged objects are always included: "scenery" means "don't clutter the room description with this", not "don't tell the player they're holding it".
 
 ## FormatObjectList
 ```quest

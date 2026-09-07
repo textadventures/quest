@@ -254,12 +254,30 @@ ObjectListToStringList (objectlist list, string attribute name)
 
 Returns a new string list containing the values or the names attribute for each object in the given list. The value of the attribute must be a string or it will not be added. If an object does not have that attribute or it is not a string, then it will be missing from the list, so the string list that is returned could well be shorter than the object list.
 
+## RemoveInvisibleObjects
+```quest
+RemoveInvisibleObjects(objectlist)
+```
+
+Returns a list where the player object and any objects flagged not [visible](/attributes#visible) are removed from the list **objectlist**. Unlike [RemoveSceneryObjects](#removesceneryobjects), scenery objects are kept - used when building the "inventory" list, where scenery should still show as carried.
+
 ## RemoveSceneryObjects
 ```quest
 RemoveSceneryObjects(objectlist)
 ```
 
 Returns a list where all scenery objects are removed from the list **objectlist**
+
+## StringListCompact
+```quest
+StringListCompact (stringlist list)
+```
+
+Returns a [stringlist](/types#stringlist), based on the given list, but with any repeated entries removed and any entries that are null removed. The canonical use is when combining two lists that might have some entries in common:
+
+```quest
+combinedlist = StringListCompact (list1 + list2)
+```
 
 ## StringListItem
 ```quest
