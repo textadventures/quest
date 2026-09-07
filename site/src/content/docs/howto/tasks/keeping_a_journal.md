@@ -9,7 +9,7 @@ This is a way to add a journal to your game. This is a book the player can make 
 
 ## The journal
 
-The first step is to add an object to the player that will be the journal. Let us call it "journal". Make sure it is in the player; Quest will try to put it in the same room. To move it there, use the tree's "Move to…" option (in its "..." menu).
+The first step is to add an object to the player that will be the journal. Let us call it "journal". Make sure it is in the player; Quest Viva will try to put it in the same room. To move it there, use the tree's "Move to…" option (in its "..." menu).
 
 We will be adding new commands later to handle the journal and what we could do is have those commands check the player has the journal, and give an error if not. However, we are going to do this differently, and stop the play dropping the journal, so we know she will always have it. Go to the _Inventory_ tab of the journal, and untick "Object can be dropped". On the _Object_ tab, delete "Drop" from the list at the bottom.
 
@@ -65,7 +65,7 @@ get input {
   msg (result)
 }
 ```
-The `get input` command makes Quest wait for the player to type something, and that goes into a special variable called `result`. That text then gets added to the journal entries.
+The `get input` command makes Quest Viva wait for the player to type something, and that goes into a special variable called `result`. That text then gets added to the journal entries.
 
 
 ## The NOTE command
@@ -80,7 +80,7 @@ do(journal, "use")
 
 We can also let the player just type in a journal entry without any command. If the input starts with a dash, the rest of the line will go into the journal.
 
-Again, create a command, and give it this pattern: "-#text#" (no quotes). Quest will match `#text#` to any text, and will match the dash exactly, so this will match any line that starts with a dash, and the rest of the line will go into a variable called `text`.
+Again, create a command, and give it this pattern: "-#text#" (no quotes). Quest Viva will match `#text#` to any text, and will match the dash exactly, so this will match any line that starts with a dash, and the rest of the line will go into a variable called `text`.
 
 Paste in this code:
 ```quest
@@ -93,7 +93,7 @@ Probably worth pointing out to the player that she has this option.
 
 ## Fancy display
 
-Quest has a huge scope for showing text in different ways, and this is discussed else, so will not be covered here. However, I will say where to make the changes. What we want to display differently is the actual text written in the journal, so it is the "read" verb of the journal that needs updating. here is an example:
+Quest Viva has a huge scope for showing text in different ways, and this is discussed else, so will not be covered here. However, I will say where to make the changes. What we want to display differently is the actual text written in the journal, so it is the "read" verb of the journal that needs updating. here is an example:
 ```quest
 if (ListCount(this.entries) = 0) {
   msg ("You have nothing written in your journal.")

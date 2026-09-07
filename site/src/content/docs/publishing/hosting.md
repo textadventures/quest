@@ -4,7 +4,7 @@ sidebar:
   order: 2
 ---
 
-Once you have created a Quest game, you'll want to let other people play it. You have various options for hosting it.
+Once you have created a Quest Viva game, you'll want to let other people play it. You have various options for hosting it.
 
 ## Upload to textadventures.co.uk
 

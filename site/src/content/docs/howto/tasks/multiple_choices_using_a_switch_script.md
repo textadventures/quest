@@ -22,7 +22,7 @@ Then do add a new script again, and this time pick "Show a menu". For the text, 
 
 We need to add another script, but you now have two "Add new script" buttons. You need to pick the higher one that is indented, because this is happening inside the `ShowMenu`. Select `Switch...` and type in `result` for the switch.
 
-`result` is a special variable that Quest will set, and will contain the choice the player made.
+`result` is a special variable that Quest Viva will set, and will contain the choice the player made.
 
 It should now look like this:
 
@@ -111,4 +111,4 @@ switch (true) {
 }
 ``` 
 
-What we are doing is looking for an exact match to `true`. Each `case` statement is evaluated, and if it is true, then that is a match. Suppose the player's strength is 15, the first case will evaluate to false, so is not used. The second, however, is true, so the message is printed. Note that Quest breaks out of the `switch` once it has a match, so the third `case` is skipped, even though it would be true.
+What we are doing is looking for an exact match to `true`. Each `case` statement is evaluated, and if it is true, then that is a match. Suppose the player's strength is 15, the first case will evaluate to false, so is not used. The second, however, is true, so the message is printed. Note that Quest Viva breaks out of the `switch` once it has a match, so the third `case` is skipped, even though it would be true.

@@ -6,9 +6,9 @@ sidebar:
 
 ## What is a walkthrough?
 
-A walkthrough is the set of steps or commands that you can record in the editor, and then play during the game. Quest lets you record and play back walkthroughs, allowing you to test your game - after making changes, you can run your walkthrough to ensure your game is still winnable, and that any alternative endings also still work.
+A walkthrough is the set of steps or commands that you can record in the editor, and then play during the game. Quest Viva lets you record and play back walkthroughs, allowing you to test your game - after making changes, you can run your walkthrough to ensure your game is still winnable, and that any alternative endings also still work.
 
-Another use for walkthroughs is when you have a problem with Quest - it helps hugely if we can play your game through to the required point, and a walkthrough will take us straight there.
+Another use for walkthroughs is when you have a problem with Quest Viva - it helps hugely if we can play your game through to the required point, and a walkthrough will take us straight there.
 
 You can record and play back walkthroughs from the Editor, or you can also play a walkthrough from within a game by opening the Debugger and choosing the Walkthrough tab. Walkthroughs are automatically removed from published .quest files.
 
@@ -24,7 +24,7 @@ If you want to add steps to an existing walkthrough, choose this walkthrough und
 
 ## Creating sub-walkthroughs
 
-Many of your walkthroughs may share the same steps - for example, if your game has multiple endings, there may be points in the walkthrough where you want to "branch off". Quest lets you handle this by creating a hierarchy of walkthroughs - if you move one walkthrough in the tree to be a child of another walkthrough, when the child walkthrough is run, it will run all the steps of its parent walkthrough(s) first.
+Many of your walkthroughs may share the same steps - for example, if your game has multiple endings, there may be points in the walkthrough where you want to "branch off". Quest Viva lets you handle this by creating a hierarchy of walkthroughs - if you move one walkthrough in the tree to be a child of another walkthrough, when the child walkthrough is run, it will run all the steps of its parent walkthrough(s) first.
 
 To create a sub-walkthrough, select the walkthrough in the tree, choose "Move to..." and pick the walkthrough that should be its parent.
 

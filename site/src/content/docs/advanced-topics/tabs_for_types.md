@@ -15,9 +15,9 @@ This is great if you want to share your library as it makes it much easier for o
 
 If we are going to get serious, it is better to put your types in another file (and personally, I would put verbs, commands, functions, turnscripts and templates all in there too), so we will do that first.
 
-One reason to use a library is that Quest will not save your tabs, so if you add them to the main game they will disappear!
+One reason to use a library is that Quest Viva will not save your tabs, so if you add them to the main game they will disappear!
 
-Quest cannot edit library files, so open up in a text editor like Notepad++. Your basic library has a start tag and an end tag. I also put in an XML directive first, so I can use an online XML validator on it (such as [this](http://validator.w3.org/#validate_by_input)), in case I have messed up the code so much Quest cannot handle it. The basic framework looks like this:
+Quest Viva cannot edit library files, so open up in a text editor like Notepad++. Your basic library has a start tag and an end tag. I also put in an XML directive first, so I can use an online XML validator on it (such as [this](http://validator.w3.org/#validate_by_input)), in case I have messed up the code so much Quest Viva cannot handle it. The basic framework looks like this:
 
 ```xml
 <?xml version="1.0"?>
@@ -25,7 +25,7 @@ Quest cannot edit library files, so open up in a text editor like Notepad++. You
 </library>
 ```
 
-Go into the code in Quest, and cut the type from there, and paste it into your library (if you are following this as a tutorial from the previous page, you will see that I have improved the text here a little).
+Go into the code in Quest Viva, and cut the type from there, and paste it into your library (if you are following this as a tutorial from the previous page, you will see that I have improved the text here a little).
 
 ```xml
 <?xml version="1.0"?>
@@ -57,7 +57,7 @@ Go into the code in Quest, and cut the type from there, and paste it into your l
 
 It is vital that you cut-and-paste everything from the start tag to the end tag, including both tags. Save this file as "library.aslx" in the same directory as your game.
 
-In your game file in Quest, you need an extra line at the top of the code, telling Quest to include your library. The top five lines will be like this, with your library after the two standard libraries (the numbers in the first two lines may be different if you are using a different version).
+In your game file in Quest Viva, you need an extra line at the top of the code, telling Quest Viva to include your library. The top five lines will be like this, with your library after the two standard libraries (the numbers in the first two lines may be different if you are using a different version).
 
 ```xml
 <!--Saved by Quest 5.7.6404.15496-->
@@ -103,11 +103,11 @@ Here is the basic code (paste this in before the </library> tag).
 </tab>
 ```
 
-So what do we see here? It starts and ends with `<tab>` and `</tab>`, so Quest knows this is a tab. The `parent` element tells Quest this is an editor for an object (I think they all are). The `caption` is the name on the tab, and `mustnotinherit` stops this tab appearing for rooms and the player (note these types are separated by semi-colons).
+So what do we see here? It starts and ends with `<tab>` and `</tab>`, so Quest Viva knows this is a tab. The `parent` element tells Quest Viva this is an editor for an object (I think they all are). The `caption` is the name on the tab, and `mustnotinherit` stops this tab appearing for rooms and the player (note these types are separated by semi-colons).
 
 Then there is our control, and you can have several of these. This one gives a dropdown menu, allowing the user to select whether this is not spell, is a non-attack spell, or is an attack spell. The asterisk indicates the null choice, by the way.
 
-Quest will not realise you have changed your library file; to see a difference, you will need to close your game (from the _File_ menu - no need to exit Quest completely), then open it again. Hopefully, if you click on an object you will see a new tab called "Spell"!
+Quest Viva will not realise you have changed your library file; to see a difference, you will need to close your game (from the _File_ menu - no need to exit Quest Viva completely), then open it again. Hopefully, if you click on an object you will see a new tab called "Spell"!
 
 
 ## More controls
@@ -182,7 +182,7 @@ This tab will _not_ be be shown for rooms and the player object.
 
 As we saw earlier, the same "mustinherit" and "mustnotinherit" elements can be used inside the controls themselves. This way the user can select the object to be a "container", and the controls relevant to that type will suddenly appear on the tab.
 
-You can also control what is displayed based on the value of an attribute, using `onlydisplayif`. This takes a condition expressed in Quest code. Here are some examples from the core library.
+You can also control what is displayed based on the value of an attribute, using `onlydisplayif`. This takes a condition expressed in Quest Viva code. Here are some examples from the core library.
 
 This will display if the "feature_annotations" attribute of the game object is true:
 
@@ -222,7 +222,7 @@ There are several types of controls you can put on your tabs, the simplest are t
 </control>
 ```
 
-The `controltype` element tells Quest what type of control you want, the `caption` tab puts text on the page. Both `controltype` and `caption` should be present in all your controls.
+The `controltype` element tells Quest Viva what type of control you want, the `caption` tab puts text on the page. Both `controltype` and `caption` should be present in all your controls.
 
 
 ### Basic controls
@@ -315,7 +315,7 @@ You can add drop-down lists. There are two types, the first looks like this:
 </control>
 ```
 
-The "validvalues" obviously supplies the list the user can pick from. The "freetext" element tells Quest that the user can also just type in a value.
+The "validvalues" obviously supplies the list the user can pick from. The "freetext" element tells Quest Viva that the user can also just type in a value.
 
 The second type of drop-down is for selecting the type for an object. Here is an example:
 

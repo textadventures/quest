@@ -1,5 +1,5 @@
 ---
-title: Images in Quest
+title: Images in Quest Viva
 sidebar:
   order: 1
 ---
@@ -18,7 +18,7 @@ Bear in mind that there is a 50 Mb limit on games at textadventures.co.uk (see [
 
 ## Adding images - the picture command
 
-Quest has a built-in picture command, which will show an image aligned to the left. 
+Quest Viva has a built-in picture command, which will show an image aligned to the left. 
 ```quest
 picture ("gravestone.png")
 msg ("You are in a room. A large room, entirely white, nothing here but a gravestone.")
@@ -32,11 +32,11 @@ Sometimes you want to change how it is displayed, for example put the image in t
 
 HTML is the way web pages on the internet tell your browser how they should be displayed. It is a set of codes embedded in the text, and, for example `<i>` will start italics, whilst `</i>` stops it.
 
-The HTML code for an image will look kind of like this; "img" is the tag for image, and "src" is an attribute that indicates the source of the image (traditionally HTML uses double quotes, but single quotes work too, and are easier to use with Quest):
+The HTML code for an image will look kind of like this; "img" is the tag for image, and "src" is an attribute that indicates the source of the image (traditionally HTML uses double quotes, but single quotes work too, and are easier to use with Quest Viva):
 ```xml
 <img src='gravestone.png' />
 ```
-If only it was that simple. That will work offline, but online, you need a full URL for the file to be found. Fortunately Quest has a function built-in to do that for you, and it will work whether your game in online or offline. This means you need to add together three strings:
+If only it was that simple. That will work offline, but online, you need a full URL for the file to be found. Fortunately Quest Viva has a function built-in to do that for you, and it will work whether your game in online or offline. This means you need to add together three strings:
 ```xml
 "<img src='"
 GetFileURL("gravestone.png")
@@ -58,7 +58,7 @@ Let us make the image float! When the image floats, the text will flow around it
 ```xml
 <img src='gravestone.png' style='float:left;'/>
 ```
-The "style" attribute tells Quest what style you want this thing to be. You need to be pretty specific in the values. The general format is the name of the CSS attribute ("float" in this case) followed by a colon, then the value ("left"), followed by a semi-colon. Just to help the confusion, we have CSS attributes inside of HTML attributes!
+The "style" attribute tells Quest Viva what style you want this thing to be. You need to be pretty specific in the values. The general format is the name of the CSS attribute ("float" in this case) followed by a colon, then the value ("left"), followed by a semi-colon. Just to help the confusion, we have CSS attributes inside of HTML attributes!
 ```quest
 msg ("<img src='" + GetFileURL("gravestone.png") + "' style='float:left;' />")
 msg ("You are in a room. A large room, entirely white, nothing here but a gravestone.")
@@ -91,7 +91,7 @@ msg ("<img src='" + GetFileURL("gravestone.png") + "' style='float:left;width:10
 
 ## One image on top of another
 
-You can even superimpose one image over another if you feel brave enough. You need to put them both inside an HTML div (this is then the reference point that the images are positioned against), and give the images an absolute position. All that needs to go inside a single "msg" as Quest will add its own HTML, so in this example, a string, `s`, is used, with each bit added to it (we could do it in one line, but it would be very long).
+You can even superimpose one image over another if you feel brave enough. You need to put them both inside an HTML div (this is then the reference point that the images are positioned against), and give the images an absolute position. All that needs to go inside a single "msg" as Quest Viva will add its own HTML, so in this example, a string, `s`, is used, with each bit added to it (we could do it in one line, but it would be very long).
 ```quest
 s = "<div style='position:fixed; left: 0px; bottom: 20px; width: 260 px; height: 670px;'>"
 s = s + "<img src='" + GetFileURL("gravestone.png") + "' style='position:absolute;top:0px;left:-200px;' />"

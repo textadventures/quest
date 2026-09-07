@@ -4,7 +4,7 @@ sidebar:
   order: 6
 ---
 
-We'll now start creating things in the kitchen, where we'll look at some more of Quest's features.
+We'll now start creating things in the kitchen, where we'll look at some more of Quest Viva's features.
 
 Enter a description like "The kitchen is cold and the stench of the overflowing bin makes you feel somewhat faint." As an exercise, add a scenery object called "bin" and give it a sensible description.
 

@@ -6,7 +6,7 @@ sidebar:
 
 ## Creating a blank game
 
-This tutorial guides you through creating your first gamebook game. If you want to create a text adventure instead, see [the main Quest tutorial](/tutorial/creating_a_simple_game).
+This tutorial guides you through creating your first gamebook game. If you want to create a text adventure instead, see [the main Quest Viva tutorial](/tutorial/creating_a_simple_game).
 
 Open the editor - either in your browser, or the desktop app - and you'll see a "Create new game" section. Ensure that "Gamebook" is selected as the game type, and enter a name like "Tutorial Game".
 
@@ -14,7 +14,7 @@ Click "Create local draft" (or "Save to folder..." if you'd rather store the gam
 
 On the left is a tree showing you the pages in the gamebook, and a place to set options about the game itself. "Game" is currently selected, so that's what we can see in the pane on the right.
 
-Quest has created three example pages for us, and inside Page1 is the "player" object, which is where the game begins. You can test the game by clicking the "Preview" button towards the top right.
+Quest Viva has created three example pages for us, and inside Page1 is the "player" object, which is where the game begins. You can test the game by clicking the "Preview" button towards the top right.
 
 As you'll see, it's a pretty empty game at the moment. We can navigate to pages 2 and 3, but that's it.
 

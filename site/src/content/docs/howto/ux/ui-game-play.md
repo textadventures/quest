@@ -4,7 +4,7 @@ sidebar:
   order: 1
 ---
 
-Quest offers a number of options for the player to interact with the game:
+Quest Viva offers a number of options for the player to interact with the game:
 
 - Command bar
 - Hyperlinks
@@ -23,9 +23,9 @@ The command bar can be turned off or customised on the _Interface_ tab of the ga
 
 ## Hyperlinks
 
-Hyperlinks are the bread-and-butter of hypertext books, and Quest allows you to build games that are entirely navigated by such link, but still has a sophisticated world model (i.e., objects and rooms existing in a meaningful relationship to each other).
+Hyperlinks are the bread-and-butter of hypertext books, and Quest Viva allows you to build games that are entirely navigated by such link, but still has a sophisticated world model (i.e., objects and rooms existing in a meaningful relationship to each other).
 
-Quest will create hyperlinks for you. In object lists, each object will be given a link, that will show a list of appropriate options. In the exits list, each exit again will be a hyperlink.
+Quest Viva will create hyperlinks for you. In object lists, each object will be given a link, that will show a list of appropriate options. In the exits list, each exit again will be a hyperlink.
 
 In addition, you can use text processor commands to add your own link. Text processor commands are indicated by curly braces, with the sections separated by colons.
 
@@ -33,14 +33,14 @@ In addition, you can use text processor commands to add your own link. Text proc
 
 > Perhaps you could {command:PUT BALL IN SACK:put the ball in the sack} 
 
-The text processor command in this case is called "command", so that is the first section. The next part I put it in capitals, but it does not have to be; this is the actual command, what the player would type into the command bar. This can be as complicated as you like - just as long as Quest can understand it. The last bit is the text the player sees.
+The text processor command in this case is called "command", so that is the first section. The next part I put it in capitals, but it does not have to be; this is the actual command, what the player would type into the command bar. This can be as complicated as you like - just as long as Quest Viva can understand it. The last bit is the text the player sees.
 
 Hyperlinks can be turned off and customised from the _Display_ tab. You can give objects their own individual hyperlink colour on their _Object_ tab.
 
 
 ## Game panes
 
-The game panes are an alternative to hyperlinks, and may be more appropriate if you do not want your text interrupted by underlining and different colours. The compass also gives a quick indication of what exits are available. As with hyperlinks, Quest will list the appropriate verbs for an object.
+The game panes are an alternative to hyperlinks, and may be more appropriate if you do not want your text interrupted by underlining and different colours. The compass also gives a quick indication of what exits are available. As with hyperlinks, Quest Viva will list the appropriate verbs for an object.
 
 The game panes can be turned off or customised on the _Interface_ tab of the game object.
 

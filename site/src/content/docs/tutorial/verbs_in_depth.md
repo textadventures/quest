@@ -8,13 +8,13 @@ We've been using verbs since the very first section - "watch" on the TV, "sit on
 
 ## Verbs are just script attributes
 
-When you add a verb to an object, Quest stores its response as a script attribute on that object, named after the verb. You can run that same script from anywhere - not just when the player types the verb directly - using `do (object, "attributename")`.
+When you add a verb to an object, Quest Viva stores its response as a script attribute on that object, named after the verb. You can run that same script from anywhere - not just when the player types the verb directly - using `do (object, "attributename")`.
 
-If your verb is more than one word, Quest usually squashes it into one word for the attribute name - "look under" would become `lookunder`, for example. Built-in verbs sometimes use a shorter name instead: our sofa's "sit on" verb is one of these. Even though we typed "sit on" into the Add Verb box, the script is actually stored in an attribute called `sit`. If you're ever not sure what a verb's real attribute is called, check the object's Attributes tab.
+If your verb is more than one word, Quest Viva usually squashes it into one word for the attribute name - "look under" would become `lookunder`, for example. Built-in verbs sometimes use a shorter name instead: our sofa's "sit on" verb is one of these. Even though we typed "sit on" into the Add Verb box, the script is actually stored in an attribute called `sit`. If you're ever not sure what a verb's real attribute is called, check the object's Attributes tab.
 
 ## Combining verbs and commands
 
-Right now, if the player types `SIT ON SOFA`, they get our custom response - but if they just type `SIT`, they get Quest's own generic reply, even with the sofa right there in the room. Let's use what we learned about commands to fix that.
+Right now, if the player types `SIT ON SOFA`, they get our custom response - but if they just type `SIT`, they get Quest Viva's own generic reply, even with the sofa right there in the room. Let's use what we learned about commands to fix that.
 
 Select "Commands" in the tree (underneath "game"), click "+ Add", and choose "Add Command". For the command pattern, enter:
 
@@ -31,7 +31,7 @@ else {
 }
 ```
 
-`sofa.parent = player.parent` checks whether the sofa is in the same room as the player - if so, we run the sofa's own "sit" verb script directly, giving exactly the same response as `SIT ON SOFA`. Quest already has a generic built-in response for a plain `SIT`, but a command you add yourself takes priority over one built into Quest, so ours is the one that runs.
+`sofa.parent = player.parent` checks whether the sofa is in the same room as the player - if so, we run the sofa's own "sit" verb script directly, giving exactly the same response as `SIT ON SOFA`. Quest Viva already has a generic built-in response for a plain `SIT`, but a command you add yourself takes priority over one built into Quest Viva, so ours is the one that runs.
 
 Launch the game, go to the lounge, and try both `SIT` and `SIT ON SOFA` - you should get an identical response either way. Try `SIT` from the kitchen too, and check you get the "nothing to sit on" message instead.
 

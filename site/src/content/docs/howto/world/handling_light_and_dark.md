@@ -4,7 +4,7 @@ sidebar:
   order: 5
 ---
 
-Quest has a system built in for handling light and darkness in your game.
+Quest Viva has a system built in for handling light and darkness in your game.
 
 
 ## A dark room
@@ -25,7 +25,7 @@ Go back to the Light/Dark tab of the room, and add a description to display when
 
 ## Weak and strong
 
-Quest has three levels of light for objects. None at all, weak and strong. A strong light will illuminate the whole room. A weak source only illuminates itself. The exit was a weak light source, so it could be seen in the dark room but nothing else could. What we need is a strong light source.
+Quest Viva has three levels of light for objects. None at all, weak and strong. A strong light will illuminate the whole room. A weak source only illuminates itself. The exit was a weak light source, so it could be seen in the dark room but nothing else could. What we need is a strong light source.
 
 
 ## Implementing a torch
@@ -37,7 +37,7 @@ Now go in-game. With the torch in hand, your darkroom will be illuminated.
 
 ### A note about containers
 
-Quest has a sophisticated container system. If the player puts the torch in a container that is flagged as transparent, the torch will still illuminate the room.
+Quest Viva has a sophisticated container system. If the player puts the torch in a container that is flagged as transparent, the torch will still illuminate the room.
 
 
 ## Implementing a light switch
@@ -98,7 +98,7 @@ if (torch.battery < 1) {
 
 The first line reduces the life of the battery. If it gets to zero the rest of the script kicks in (I am checking for less than one rather than zero in case something odd happens, and it jumps to -1; I still want the torch to fail then). Once the battery fails, we need the torch to be switched off, to not be a light source and for this turn script to stop. We also need a message to the player.
 
-The last line sets a special attribute that Quest will check before switching the object on; if the attribute is a string, the string is displayed, rather than turning on the item.
+The last line sets a special attribute that Quest Viva will check before switching the object on; if the attribute is a string, the string is displayed, rather than turning on the item.
 
 Now we need to go back to the torch, and the scripts on the Switchable tab. The turn off script now looks like this, as we now want to turn off the turn script when the torch is off:
 
@@ -120,7 +120,7 @@ else {
 
 If the battery is good, the torch becomes a light source, and the turn script goes on.
 
-If the battery is dead, we need to turn the torch off again, and give a message. The turning on message will fire every time, that is just how Quest works, so the fail message needs to be crafted around that.
+If the battery is dead, we need to turn the torch off again, and give a message. The turning on message will fire every time, that is just how Quest Viva works, so the fail message needs to be crafted around that.
 
 Want to recharge or replace the battery? Here is the code:
 
@@ -144,11 +144,11 @@ else {
 
 ## Descriptions: scripts vs text
 
-If you use text for a room or object description, Quest will check if it is dark first, and only give the description if there is light to see the object.
+If you use text for a room or object description, Quest Viva will check if it is dark first, and only give the description if there is light to see the object.
 
-If you have set the room description to be a script, then Quest will again check if it is dark, and will only run the script if the room is illuminated.
+If you have set the room description to be a script, then Quest Viva will again check if it is dark, and will only run the script if the room is illuminated.
 
-For objects, however, the Quest will run the script, whatever the illumination. Note that this is only an issue when they are in the inventory - objects in the room are not reachable if the player cannot see them. You may want to check in each script, then, whether there is enough light to see the object. On the other hand, you might reason that since the player has picked the object up, it is reasonable to assume she can remember what it looks like or can feel it, and so it does not matter. Or you could give different descriptions depending on the lighting.
+For objects, however, the Quest Viva will run the script, whatever the illumination. Note that this is only an issue when they are in the inventory - objects in the room are not reachable if the player cannot see them. You may want to check in each script, then, whether there is enough light to see the object. On the other hand, you might reason that since the player has picked the object up, it is reasonable to assume she can remember what it looks like or can feel it, and so it does not matter. Or you could give different descriptions depending on the lighting.
 
 To get you started, this script will check if it is dark, and if it is, give the standard response; otherwise if gives the proper description.
 

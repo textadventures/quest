@@ -22,7 +22,7 @@ Now you can simply use the delegate name as an attribute type name.
 
 ## Delegates in action
 
-Let us see this in action. First, a bit of terminology. In "object-orientated programming" a function that is attached to an object is called a "method", and I am going to adopt that term here. The "signature" of a method is the return type and the parameters it expects (a Quest function similarly has a signature).
+Let us see this in action. First, a bit of terminology. In "object-orientated programming" a function that is attached to an object is called a "method", and I am going to adopt that term here. The "signature" of a method is the return type and the parameters it expects (a Quest Viva function similarly has a signature).
 
 Here is a very simple game where you can hit a goblin.
 

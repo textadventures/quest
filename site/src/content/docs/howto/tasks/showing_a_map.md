@@ -4,11 +4,11 @@ sidebar:
   order: 7
 ---
 
-A text adventure generally involves moving around the game world by following compass directions – north, south, east, and west, with the occasional use of up and down, or in and out. Many players like to map out a game as they play using pencil and paper, but you can help your players out by getting Quest to do that for them automatically!
+A text adventure generally involves moving around the game world by following compass directions – north, south, east, and west, with the occasional use of up and down, or in and out. Many players like to map out a game as they play using pencil and paper, but you can help your players out by getting Quest Viva to do that for them automatically!
 
 It's simple to enable the mapping feature - just select "game" from the tree, go to the _Interface_ tab, and turn on "Map and Drawing Grid".
 
-After turning the feature on, you can customise the map size, but we will leave the default scale and height settings - you can tweak these later if you want your map to be displayed at a different size. Quest draws the map on a hidden grid - the "scale" setting is the width and height of one grid square.
+After turning the feature on, you can customise the map size, but we will leave the default scale and height settings - you can tweak these later if you want your map to be displayed at a different size. Quest Viva draws the map on a hidden grid - the "scale" setting is the width and height of one grid square.
 
 Run your game now and move between rooms. When the player first enters a room, it is drawn on the map. The yellow dot indicates where the player currently is. This is what it looks like for the tutorial game:
 
@@ -24,7 +24,7 @@ Here you can change the size and colour of the grid square. You can change what 
 
 Exits are shown with a "length" of 1 grid pixel (for diagonal exits, this is automatically sized to fit). You can change this by selecting the exit in the tree, and going to its _Map_ tab. A length of 0 means that rooms will be displayed right next to each other, without a line (note that this will mean the player cannot see if there is an exit that way).
 
-If you change the length of one exit, make sure you change the exit in the other direction too, or Quest will get confused.
+If you change the length of one exit, make sure you change the exit in the other direction too, or Quest Viva will get confused.
 
 For large rooms, you might break them up into more than one location. Let's say the lobby is huge, and the player can go to the east end of it or the west end. How do we map that? This is where the "Border Type" is useful. For the east end, set the border type to "Path west", and for the west end, set it to "Path east". Set the exit length to zero in both directions.
 
@@ -117,7 +117,7 @@ Grid_SetGridCoordinateForPlayer (game.pov, upper, "z", Grid_GetGridCoordinateFor
 
 In this context, teleportation means moving the player to another room not connected to the first room. This could be because the player has flow to another planet, or has been dragged into prison, or has cast a spell for example.
 
-We have a problem here: If you try to jump the player to another room that Quest has not already mapped, Quest will get confused about how to draw the map, and will throw an error.
+We have a problem here: If you try to jump the player to another room that Quest Viva has not already mapped, Quest Viva will get confused about how to draw the map, and will throw an error.
 
 You have a number of options to avoid that, and each is suitable in different situations, so think carefully about how teleportation will work in your game.
 
@@ -133,7 +133,7 @@ The simplest technique is to only allow the player to teleport to a room she has
 
 Restriction: _Only works if all rooms are connected._
 
-An alternative way to ensure teleportation works is to make Quest map the whole game from the start. 
+An alternative way to ensure teleportation works is to make Quest Viva map the whole game from the start. 
 
 Create a new function, call it "VisitRoom", and give it a single parameter, "room". Paste in this code (the fourth line is commented out, if you remove the slashes at the start, the map will be fully visible from the start):
 

@@ -4,7 +4,7 @@ sidebar:
   order: 7
 ---
 
-So you have this plan for a game, but it is set on a ship or a starship, and north and south do not make any sense. The standard for marine ships is to use forward, starboard, aft and port, so why not implement that for your game? This is actually pretty easy to do using Quest's built-in language support.
+So you have this plan for a game, but it is set on a ship or a starship, and north and south do not make any sense. The standard for marine ships is to use forward, starboard, aft and port, so why not implement that for your game? This is actually pretty easy to do using Quest Viva's built-in language support.
 
 One limitation of the shipwise directions is that you lose four directions. While "northeast" is well established, I think people will find "forwardport" rather odd. Remember that when adding exits to your game!
 
@@ -23,7 +23,7 @@ All the default templates are in English.aslx, and we want to override them. A t
 
 So let us add some templates.
 
-This set changes the directions Quest uses in description when it says "You can go"
+This set changes the directions Quest Viva uses in description when it says "You can go"
 
 ```xml
 <template name="CompassN">forward</template>
@@ -41,7 +41,7 @@ Also need to change the abbreviated versions.
 <template name="CompassSShort">a</template>
 ```
 
-Quest uses these next two for pattern matching the player input. The specific direction is matched against the templates above.
+Quest Viva uses these next two for pattern matching the player input. The specific direction is matched against the templates above.
 
 ```xml
 <template templatetype="command" name="go"><![CDATA[^go to (?<exit>.*)$|^go (?<exit>.*)$|^(?<exit>forward|port|starboard|aft|f|p|a|s|in|out|up|down|o|u|d)$]]></template>
@@ -85,7 +85,7 @@ Save this file to your game's folder, and modify the code at the start of the fi
   <include ref="Core.aslx" />
 ```
 
-One last note. After adding new templates, or a library with templates, you need to save the game, quit Quest, then open it up again to get the templates loaded up properly.
+One last note. After adding new templates, or a library with templates, you need to save the game, quit Quest Viva, then open it up again to get the templates loaded up properly.
 
 * * * * *
 

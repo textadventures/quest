@@ -4,7 +4,7 @@ sidebar:
   order: 27
 ---
 
-The `JS` object is how Quest exposes the user interface. What this means is that we can use the JS object to call JavaScript functions that will modify what the player sees. The basic format is to append the JavaScript function name with a dot, so to call `addText` (the JavaScript function Quest uses to show text on the screen), use something like this:
+The `JS` object is how Quest Viva exposes the user interface. What this means is that we can use the JS object to call JavaScript functions that will modify what the player sees. The basic format is to append the JavaScript function name with a dot, so to call `addText` (the JavaScript function Quest Viva uses to show text on the screen), use something like this:
 
 ```quest
 JS.addText("You are in a deep hole.")
@@ -291,7 +291,7 @@ Sets the height for the grid map. Setting this to zero turns the map off, settin
 JS.showPopup(title, text)
 ```
 
-Shows a pop up, with an okay button, which the player can click to close. This version has a fixed width (of 300 px when I checked), and the height will expand up to the full Quest windows size to accommodate the text.
+Shows a pop up, with an okay button, which the player can click to close. This version has a fixed width (of 300 px when I checked), and the height will expand up to the full Quest Viva windows size to accommodate the text.
 
 ```quest
 JS.showPopup("Hi!", "This is where it all begins")
@@ -311,7 +311,7 @@ As [showPopup](#showpopup), but allows for custom width and height to be set; sc
 JS.showPopupFullscreen(title, text)
 ```
 
-As [showPopup](#showpopup), but will fill the Quest window (so the size will depend on how the player has it set up).
+As [showPopup](#showpopup), but will fill the Quest Viva window (so the size will depend on how the player has it set up).
 
 ## showStatusVisible
 

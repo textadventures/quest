@@ -10,7 +10,7 @@ Note that we will *not* be using a **verb** here, as we have done before. Why no
 
 ## Adding a simple command
 
-Let's add a simple command - "say". This will let the player type conversation prefixed with the command "say," for example `SAY HELLO`. Quest will respond with "You say 'hello.' We will also add the contextual text of "but nobody replies" as no-one is present in the game at this point.
+Let's add a simple command - "say". This will let the player type conversation prefixed with the command "say," for example `SAY HELLO`. Quest Viva will respond with "You say 'hello.' We will also add the contextual text of "but nobody replies" as no-one is present in the game at this point.
 
 To add a command, select "Commands" in the tree (underneath "game"), then click "+ Add" and choose "Add Command" (or use the "..." menu on "Commands").
 
@@ -43,7 +43,7 @@ But if you don't  like the backslashes, you could use single quotes quite safely
 
 ![](/images/Commandsay.png)
 
-Launch the game and type in a few `SAY` commands to see that Quest responds correctly.
+Launch the game and type in a few `SAY` commands to see that Quest Viva responds correctly.
 
 ## Alternative command patterns
 
@@ -81,7 +81,7 @@ Launch the game and go to the kitchen. See what happens when you type `WEIGH FLO
 
 Now go back to the lounge. What happens when you weigh Bob?
 
-Quest responds with "It weighs grams." Why? Because he doesn't have a "weight" attribute. Since we don't want to have to enter a weight for every single object in the game, we'll need to update our command so it checks for the existence of the "weight" attribute, and then prints the appropriate response.
+Quest Viva responds with "It weighs grams." Why? Because he doesn't have a "weight" attribute. Since we don't want to have to enter a weight for every single object in the game, we'll need to update our command so it checks for the existence of the "weight" attribute, and then prints the appropriate response.
 
 ## Checking for an attribute
 
@@ -99,7 +99,7 @@ Launch the game and verify that you now get a sensible response for `WEIGH BOB` 
 
 ## Additional example (advanced)
 
-Quest can handle text and objects in the same command. Here the say command is extended to allow the player to specify who she is talking to.
+Quest Viva can handle text and objects in the same command. Here the say command is extended to allow the player to specify who she is talking to.
 
 ![](/images/Say_to_troll.png)
 
@@ -107,13 +107,13 @@ The pattern you are using is this:
 
     say #text_talk# to #object_one#
 
-Quest will attempt to match `#object_one#` to an object present, and if it does then an object variable called "object_one" will be set to that object (if it cannot, Quest will output whatever you typed in the "Unresolved object text" box). The text part will match any text at all, just as before.
+Quest Viva will attempt to match `#object_one#` to an object present, and if it does then an object variable called "object_one" will be set to that object (if it cannot, Quest Viva will output whatever you typed in the "Unresolved object text" box). The text part will match any text at all, just as before.
 
 Suppose the player types:
 
     SAY HI TO TROLL
 
-Quest matches "say" and "to" directly. It then matches "hi" to the text, so now the string variable "text_talk" is set to "hi". Then it matches the object, as long as the troll is here, and sets the object variable "object_one" to the troll.
+Quest Viva matches "say" and "to" directly. It then matches "hi" to the text, so now the string variable "text_talk" is set to "hi". Then it matches the object, as long as the troll is here, and sets the object variable "object_one" to the troll.
 
 The script uses a switch command so you get a different response for different characters, and a default too.
 

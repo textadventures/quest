@@ -10,7 +10,7 @@ If type "MyType" has a list attribute "TypeList", and object "MyObject" inherits
 
 To prevent this, mutable attributes which are defined on types are *locked*. If you try to call the "list add" command in the example above, an error will be raised.
 
-You can get around the problem by cloning the list or dictionary first. Quest automatically clones on assignment. This means you can write objectA.list = objectB.list, and objectA actually gets a *clone* of objectB's list, so you can change objectA's list without affecting objectB.
+You can get around the problem by cloning the list or dictionary first. Quest Viva automatically clones on assignment. This means you can write objectA.list = objectB.list, and objectA actually gets a *clone* of objectB's list, so you can change objectA's list without affecting objectB.
 
 The same principle works for cloning an attribute defined on an underlying type - in our example above, we can clone the TypeList attribute first using this:
 

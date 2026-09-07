@@ -347,7 +347,7 @@ Now go in game and those zombies will fight back!
 
 ## ...But not for a typo
 
-When the zombies fought back, you might have found that they do so even if you mistyped something. That seems to give the zombies an unfair advantage, so let's change it so they only attack if Quest has understood the command (even if Quest then says no).
+When the zombies fought back, you might have found that they do so even if you mistyped something. That seems to give the zombies an unfair advantage, so let's change it so they only attack if Quest Viva has understood the command (even if Quest Viva then says no).
 
 Go to the game object, and on the _Features_ tab, tick "Show advanced scripts...". Then, on the _Advanced scripts_ tab, for the "Unresolved command script", add this code:
 

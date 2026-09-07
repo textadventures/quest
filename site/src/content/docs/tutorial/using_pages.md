@@ -25,7 +25,7 @@ A page with no options automatically ends the conversation once it's shown - tha
 
 ## Starting the conversation
 
-Pages need something to kick them off. Go to Bob's Verbs tab and add a "speak" verb (Quest will match `TALK TO BOB` and `SPEAK TO BOB` to it - see [Handling SPEAK TO](/howto/npcs/speak_to) for more on this). For its script, switch to Code View and enter:
+Pages need something to kick them off. Go to Bob's Verbs tab and add a "speak" verb (Quest Viva will match `TALK TO BOB` and `SPEAK TO BOB` to it - see [Handling SPEAK TO](/howto/npcs/speak_to) for more on this). For its script, switch to Code View and enter:
 
 ```quest
 ShowPage (bob_chat, true, false)

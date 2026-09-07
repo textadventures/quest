@@ -31,7 +31,7 @@ dictionary add(game.destinations, "The Mall", Bus stop near mall)
 
 So what does that all mean? The first four lines set up the four bus stops in the game, one for each location (the first room is called `Bus stop near your house` and so on).
 
-The fifth line sets up the dictionary. An object dictionary is a way to store information. Dictionaries allow you to retrieve an entry using a string, called a key, and in an object dictionary, all the entries are objects (which can include rooms in Quest). so what we have is a string - the name of the destination - connected to a room - the destination itself.
+The fifth line sets up the dictionary. An object dictionary is a way to store information. Dictionaries allow you to retrieve an entry using a string, called a key, and in an object dictionary, all the entries are objects (which can include rooms in Quest Viva). so what we have is a string - the name of the destination - connected to a room - the destination itself.
 
 The last two lines, then, add entries to the dictionary. Note that when adding entries, the first parameter is the dictionary, `game.destinations`, the second is a string (the name that will shown in the list of destinations) and the third is an object (the destination itself).
 

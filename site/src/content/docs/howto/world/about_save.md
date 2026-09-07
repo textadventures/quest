@@ -6,13 +6,13 @@ sidebar:
 
 When a player saves a game, she saves _everything_.
 
-Everything in Quest is an object with attributes, and potentially all those attributes could change. So Quest saves the lot. In effect, playing the game is like editing and saving your own version of it.
+Everything in Quest Viva is an object with attributes, and potentially all those attributes could change. So Quest Viva saves the lot. In effect, playing the game is like editing and saving your own version of it.
 
-When the player later loads a saved game, Quest does not do anything with the original. It does not need to know anything about the original, because all the data, the entire game (in its modified state) was saved.
+When the player later loads a saved game, Quest Viva does not do anything with the original. It does not need to know anything about the original, because all the data, the entire game (in its modified state) was saved.
 
 That works fine, until you update your game.
 
-When the player now loads a saved game, Quest does not bother to look at the game itself. The player saved the old version (in whatever game state), and so that is what is loaded, and so the player is still using the old version.
+When the player now loads a saved game, Quest Viva does not bother to look at the game itself. The player saved the old version (in whatever game state), and so that is what is loaded, and so the player is still using the old version.
 
 Generally, this is not much of a problem; hopefully your original game was in a decent state before you released it (you did beta-test, right?). For longer games, players may be disappointed that they need to start again to see new content.
 
@@ -33,7 +33,7 @@ Your PATCH command would need to be in the original game.
 
 You would need to think about how a player could do several patches.
 
-Quest does not currently expose a way to convert a string into an executable script at the `.aslx` level, so all your scripts would need to be in your original game (but you can add them to new objects).
+Quest Viva does not currently expose a way to convert a string into an executable script at the `.aslx` level, so all your scripts would need to be in your original game (but you can add them to new objects).
 
 I am not aware of anyone attempting this. Test well before release.
 

@@ -4,21 +4,21 @@ sidebar:
   order: 7
 ---
 
-Attributes help to describe an object to the game world and users of Quest, attributes can be added to an [object](/types#object) and can be of any type supported by Quest.
+Attributes help to describe an object to the game world and users of Quest Viva, attributes can be added to an [object](/types#object) and can be of any type supported by Quest Viva.
 
-The game code in Quest, that you write, can interrogate these attributes on an object and use this information to make things happen. Things like informing the user with some information or causing other objects to change state like a door unlocking.
+The game code in Quest Viva, that you write, can interrogate these attributes on an object and use this information to make things happen. Things like informing the user with some information or causing other objects to change state like a door unlocking.
 
 See the [Custom attributes](/tutorial/custom_attributes) tutorial for more information.
 
 ## What attributes do
 
-Most things in Quest are objects. In fact there are five types of objects. Rooms, objects and player objects are objects of the object type. Commands and verbs are objects of the command type. Exits are objects of the exit type. Turnscripts are objects of the turnscript type (timers are not objects by the way). The game object is an object of the game type.
+Most things in Quest Viva are objects. In fact there are five types of objects. Rooms, objects and player objects are objects of the object type. Commands and verbs are objects of the command type. Exits are objects of the exit type. Turnscripts are objects of the turnscript type (timers are not objects by the way). The game object is an object of the game type.
 
 You can use the `GetObject` function to get any of these, and all will register as an object with the `TypeOf` command.
 
 So what makes a turnscript different to a room or the player? The answer is: attributes.
 
-Attributes are values that are attached to an object. All objects have a "name" attribute that is unique to them. All objects have an "elementtype" attribute that is equal to "object". All objects have a "type" attribute equal to the type of the object ("object", "command", "exit", "turnscript" or "game"). Quest uses these to track what things are, and they cannot be changed during play, and indeed only the "name" attribute can be changed in the editor.
+Attributes are values that are attached to an object. All objects have a "name" attribute that is unique to them. All objects have an "elementtype" attribute that is equal to "object". All objects have a "type" attribute equal to the type of the object ("object", "command", "exit", "turnscript" or "game"). Quest Viva uses these to track what things are, and they cannot be changed during play, and indeed only the "name" attribute can be changed in the editor.
 
 By the way, it is also worth mentioning that you cannot give anything an attribute with any of these five names: "object", "command", "turnscript", "game", "exit", "type", "elementtype", "finish".
 
@@ -27,7 +27,7 @@ All other attributes you can add, modify or remove as you like, both with the ed
 
 ## Built-in attributes
 
-Lots of things in Quest have built-in attributes; these are the attributes you can set on the various tabs for an object (or whatever). You can access more of them using the _Features_ tab. However, this page is more about custom attributes...
+Lots of things in Quest Viva have built-in attributes; these are the attributes you can set on the various tabs for an object (or whatever). You can access more of them using the _Features_ tab. However, this page is more about custom attributes...
 
 
 ## Setting up custom attributes
@@ -37,7 +37,7 @@ You can set up attributes on the _Attributes_ tab. The lower half lists all the 
 
 ## Status attributes
 
-[Status attributes](/status_attributes) are just attributes that you tell Quest to display - there is nothing special about the attribute itself. 
+[Status attributes](/status_attributes) are just attributes that you tell Quest Viva to display - there is nothing special about the attribute itself. 
 
 
 ## Change scripts
@@ -49,10 +49,10 @@ A [change script](/change_scripts) is a special attribute, a script that will fi
 
 ## Attribute names to avoid
 
-Quest uses "name", "type" and "elementtype" to track what things are, and will not allow you to change them during a game; only "name" can be changed in the editor.
+Quest Viva uses "name", "type" and "elementtype" to track what things are, and will not allow you to change them during a game; only "name" can be changed in the editor.
 
-There are several [important attributes](/important_attributes) that already have a meaning in Quest, and you are probably best avoiding them to avoid confusion.
+There are several [important attributes](/important_attributes) that already have a meaning in Quest Viva, and you are probably best avoiding them to avoid confusion.
 
-Do not use the following as names for attributes: **command, delegate, dynamictemplate, exit, function, game, include, object, template, timer, turnscript, type, verb**. It may appear at first that these are okay, but when you save the game (whether during play or when editing), the attribute will be converted to an XML element with the same name. When the game is re-loaded, Quest will assume these refer to something else entire, an actual command, or whatever.
+Do not use the following as names for attributes: **command, delegate, dynamictemplate, exit, function, game, include, object, template, timer, turnscript, type, verb**. It may appear at first that these are okay, but when you save the game (whether during play or when editing), the attribute will be converted to an XML element with the same name. When the game is re-loaded, Quest Viva will assume these refer to something else entire, an actual command, or whatever.
 
-For lists and dictionaries, attribute names cannot include spaces. Again, Quest will not complain when you do it, but it will when it tries to save your game (and you might have added a shed of load of data by then). This might only become apparent when the player tries to save the game.
+For lists and dictionaries, attribute names cannot include spaces. Again, Quest Viva will not complain when you do it, but it will when it tries to save your game (and you might have added a shed of load of data by then). This might only become apparent when the player tries to save the game.

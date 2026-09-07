@@ -57,7 +57,7 @@ else if (not game.notarealturn) {
 game.notarealturn = false
 ```
 
-Now if the player types in nonsense Quest cannot understand, `game.notarealturn` will be set to true, and time will not get moved on.
+Now if the player types in nonsense Quest Viva cannot understand, `game.notarealturn` will be set to true, and time will not get moved on.
 
 If you have anything else that should only happen after a real turn (such as enemies attacking the player), you can add that to the above script. It would need to go after this line:
 

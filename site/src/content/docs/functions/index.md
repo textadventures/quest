@@ -4,7 +4,7 @@ sidebar:
   order: 6
 ---
 
-This is a reference for the functions built in to Quest, grouped by type:
+This is a reference for the functions built in to Quest Viva, grouped by type:
 
 - [Functions for attributes](/functions/attributes)
 - [Functions for variables](/functions/variables)

@@ -31,17 +31,17 @@ First you need a command pattern. We could do this:
 ```
 tie cord to hook
 ```
-If you do that then the player has to type that exact phrase or Quest will not recognise it. We can concatenate alternatives by separating them with semi-colons (and optionally spaces too).
+If you do that then the player has to type that exact phrase or Quest Viva will not recognise it. We can concatenate alternatives by separating them with semi-colons (and optionally spaces too).
 ```
 tie cord to hook; tie thread to hook; tie string to hook
 ```
-However, we can do even better, and let Quest handle the synonyms, by using `#object#`.
+However, we can do even better, and let Quest Viva handle the synonyms, by using `#object#`.
 ```
 tie #object# to hook
 ```
-As long as you have set up the cord with these alternative names (the "Other names" list on the Object tab), Quest will match `#object#` against any of them. An important benefit here is that your game will have the same set of synonyms for an object whether the player is trying to pick it up, look at it or tie it to a hook.
+As long as you have set up the cord with these alternative names (the "Other names" list on the Object tab), Quest Viva will match `#object#` against any of them. An important benefit here is that your game will have the same set of synonyms for an object whether the player is trying to pick it up, look at it or tie it to a hook.
 
-And you can have as many objects as you like in the pattern; just make sure they start object so Quest will match them against objects that are present (in practice, any more than two will confuse the player). We need two here, the cord and the hook:
+And you can have as many objects as you like in the pattern; just make sure they start object so Quest Viva will match them against objects that are present (in practice, any more than two will confuse the player). We need two here, the cord and the hook:
 ```
 tie #object1# to #object2#
 ```
@@ -57,9 +57,9 @@ If you are feeling brave, you could use a regular expression here (remember to s
 ```regex
 ^(tie|attach|fasten) (?<object1>.*) to (?<object2>.*)$
 ```
-* The `^` at the start says Quest must match this to the start of the command, whilst the $ at the end says this must be the end of the command.
+* The `^` at the start says Quest Viva must match this to the start of the command, whilst the $ at the end says this must be the end of the command.
 
-* The `(tie\|attach\|fasten)` tells Quest it has to match to one of these. One has to match exactly, but it does not matter which.
+* The `(tie\|attach\|fasten)` tells Quest Viva it has to match to one of these. One has to match exactly, but it does not matter which.
 
 * `(?\<object1\>.*)` is equivalent to `#object1#`; in a regex it is called a "capture group", because it groups some characters together, and captures them for use elsewhere.
 
@@ -67,7 +67,7 @@ If you are feeling brave, you could use a regular expression here (remember to s
 
 * If you need to match special characters, you can escape them with a backslash. Backslashes have a special meaning in strings, so you then need to escape the backslash as well! To match a `*`, you therefore need to use `\\*`
 
-Quest uses .NET regex rules, and a quick reference for .NET regex rules can be found [here](https://learn.microsoft.com/en-us/dotnet/standard/base-types/regular-expression-language-quick-reference).
+Quest Viva uses .NET regex rules, and a quick reference for .NET regex rules can be found [here](https://learn.microsoft.com/en-us/dotnet/standard/base-types/regular-expression-language-quick-reference).
 
 May be not much point in this example, but if you have variations in the joining word to handle too, you could be looking at a lot of combinations, so this way may be easier. For example:
 ```regex
@@ -94,11 +94,11 @@ There is more on regular expressions [here](/howto/commands/pattern_matching).
 
 ## Script
 
-So we have a command pattern or regular expression that Quest will use to match this command, now we need to do something, so we need a script. Because we used this as the command pattern:
+So we have a command pattern or regular expression that Quest Viva will use to match this command, now we need to do something, so we need a script. Because we used this as the command pattern:
 ```
 tie #object1# to #object2#
 ```
-... Quest will already have assigned values to two special variables, in this case called object1 and object2. We do not know specifically what they are, but they will be objects that are present in the current room or in the player's inventory.
+... Quest Viva will already have assigned values to two special variables, in this case called object1 and object2. We do not know specifically what they are, but they will be objects that are present in the current room or in the player's inventory.
 
 The way to write the code here is going to be the same for most commands; what do we need to check before allowing the command to work?
 
@@ -110,7 +110,7 @@ The way to write the code here is going to be the same for most commands; what d
 
 1. The cord is not already tied to the hook
 
-As Quest will only match an object if it is present, so we do not need to check if the hook is present, it must be if Quest found it (and you may choose not to check number 1; does the player need the cord in his inventory or should the command work if the cord is lying on the ground?).
+As Quest Viva will only match an object if it is present, so we do not need to check if the hook is present, it must be if Quest Viva found it (and you may choose not to check number 1; does the player need the cord in his inventory or should the command work if the cord is lying on the ground?).
 
 There is a design consideration here. If you have some cord and tie it to a hook, you could still hold the other end of it. However, you cannot take it to another room, so it is better to assume the player is not holding it and cannot pick it up once it is tied to the hook. This means that the last condition does not need to be tested - if the player is holding the cord it cannot be already tied.
 
@@ -173,7 +173,7 @@ Let's look at another example. Suppose you want to have fire in your game, to al
 
 We will do this with two commands, one to handle BURN PAPER IN FIREPLACE and one to handle BURN PAPER. The trick is that we will call the code in the first command from the second.
 
-Before we get to the commands, you need to give any fire a new attribute "fire", and set it to be a Boolean and true. This will tell Quest this is something objects can be burned on. Then for any object that can be destroyed in the fire, give it an attribute "ashes", and make this a string that can be used for the name (alias) of the ashes, say "ashes of the paper". You could also give the object another attribute "ashes_look" and that will be used for the description of the ashes.
+Before we get to the commands, you need to give any fire a new attribute "fire", and set it to be a Boolean and true. This will tell Quest Viva this is something objects can be burned on. Then for any object that can be destroyed in the fire, give it an attribute "ashes", and make this a string that can be used for the name (alias) of the ashes, say "ashes of the paper". You could also give the object another attribute "ashes_look" and that will be used for the description of the ashes.
 
 For the first command give it this pattern:
 
@@ -225,4 +225,4 @@ else {
 }
 ```
 
-This looks for an object present with the "fire" attribute. If it finds one, it passes that and object1 to the first command as a dictionary to do all the work. Note that if there are two fires in the room, one will be selected arbitrarily by Quest.
+This looks for an object present with the "fire" attribute. If it finds one, it passes that and object1 to the first command as a dictionary to do all the work. Note that if there are two fires in the room, one will be selected arbitrarily by Quest Viva.

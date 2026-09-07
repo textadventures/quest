@@ -1,12 +1,12 @@
 ---
-title: Translating Quest
+title: Translating Quest Viva
 sidebar:
   order: 4
 ---
 
 ## Introduction
 
-Quest has been designed to be language neutral, so you can write games that can be played in any language.
+Quest Viva has been designed to be language neutral, so you can write games that can be played in any language.
 
 There are numerous translations that are built in, donated by the community over the years. This does mean that some of them are out of date, and do not include the more recent additions. 
 
@@ -17,7 +17,7 @@ You can even use the editor in your own language, but that will obviously involv
 
 Quests scripts cannot cope with letters outside the standard Latin alphabet.
 
-Let us suppose you have an object, a rock, in a game you are writing in Greek. Quest will not object to you calling it πέτρα, and the player will be able to interact with it as normal. However, if you try to do anything in a script using that name, you will get an error:
+Let us suppose you have an object, a rock, in a game you are writing in Greek. Quest Viva will not object to you calling it πέτρα, and the player will be able to interact with it as normal. However, if you try to do anything in a script using that name, you will get an error:
 
 ```quest
 πέτρα.parent = player.parent
@@ -28,13 +28,13 @@ The solution is to name in in the Latin alphabet, and give it an alias "πέτρ
 
 ## Verbs
 
-In English, we can just put a verb with a noun to get a command, and the verbs in Quest employ this to great effect. That may not work in your language. You can edit the verb object. In the pattern bit, you can set a pattern just as you do with commands, so instead of "wear", you could use "put #object# on", and the verb will match PUT HAT ON.
+In English, we can just put a verb with a noun to get a command, and the verbs in Quest Viva employ this to great effect. That may not work in your language. You can edit the verb object. In the pattern bit, you can set a pattern just as you do with commands, so instead of "wear", you could use "put #object# on", and the verb will match PUT HAT ON.
 
 
 
 ## Making a translation
 
-To translate Quest, make a copy of English.aslx and rename it for your language. Open the file in a text editor, we recommend [NotePad++](https://notepad-plus-plus.org/).
+To translate Quest Viva, make a copy of English.aslx and rename it for your language. Open the file in a text editor, we recommend [NotePad++](https://notepad-plus-plus.org/).
 
 At the top you will see this:
 
@@ -169,25 +169,25 @@ If your language has more than two genders, you can add more types and add them 
 
 These are standard library files so can be added as such.
 
-To add a library, go the bottom of the left pane in the GUI, and expand Advanced, then click on Included Libraries. Click Add, and navigate to the file. Quest will copy the file to your game folder, and add a line of code to your game so the library is part of it. Quest will then tell you to save and re-load your game.
+To add a library, go the bottom of the left pane in the GUI, and expand Advanced, then click on Included Libraries. Click Add, and navigate to the file. Quest Viva will copy the file to your game folder, and add a line of code to your game so the library is part of it. Quest Viva will then tell you to save and re-load your game.
 
 More on using libraries [here](/advanced-topics/using_libraries).
 
 
 ## Display verbs
 
-Quest uses a very simple method for handling display verbs (the verbs that are shown when you click on an object): The verb followed by the object name are sent to be handled as a command. In English this works fine; "wear" plus "hat" gives "wear hat", and Quest will understand that. That may not be the case in your language. If not, them just add that as an alternative.
+Quest Viva uses a very simple method for handling display verbs (the verbs that are shown when you click on an object): The verb followed by the object name are sent to be handled as a command. In English this works fine; "wear" plus "hat" gives "wear hat", and Quest Viva will understand that. That may not be the case in your language. If not, them just add that as an alternative.
 
 For example, in German, the verb to display to allow the player to wear something is "Anziehen", but the full phrase for "wear hat" would be "ziehe hut an". The solution is to add "anziehen #object#" as an alternative, even though it is bad German.
 
 
 ## Releasing your translation
 
-When you have finished your translation - and checked it works in your game - if you'd like it to be included with Quest so that other game authors can use it, open a Pull Request. We would also be grateful for updates to existing translations.
+When you have finished your translation - and checked it works in your game - if you'd like it to be included with Quest Viva so that other game authors can use it, open a Pull Request. We would also be grateful for updates to existing translations.
 
 ## Keeping the translation up to date
 
-Quest is continually improving, and as new features are added, new templates are added to English.aslx. This means that your language library will need to be updated to reflect new changes.
+Quest Viva is continually improving, and as new features are added, new templates are added to English.aslx. This means that your language library will need to be updated to reflect new changes.
 
 If you include English.aslx in your language file, as recommended, you won't see errors, but it does mean that there is a chance players will see some English text. To avoid this, you will need to keep your language file up to date to reflect changes made in English.aslx.
 

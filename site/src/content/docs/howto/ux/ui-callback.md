@@ -1,10 +1,10 @@
 ---
-title: JavaScript to Quest with ASLEvent
+title: JavaScript to Quest Viva with ASLEvent
 sidebar:
   order: 9
 ---
 
-We can think of the game as two distinct parts, the game world, handled by Quest, and the user interface, handled by JavaScript in the browser window (even the desktop version uses a browser). The `JS` object can be uses to pass information and commands from Quest to JavaScript; how do we get information to pass the other way?
+We can think of the game as two distinct parts, the game world, handled by Quest Viva, and the user interface, handled by JavaScript in the browser window (even the desktop version uses a browser). The `JS` object can be uses to pass information and commands from Quest Viva to JavaScript; how do we get information to pass the other way?
 
 ## Callback function
 
@@ -19,7 +19,7 @@ msg ("You are " + s + " years old.")
 
 ## ASLEvent function
 
-Quest has a special JavaScript function called `ASLEvent`, which will pass two string values from the browser/JavaScript to the game world. The first parameter has to be the name of a Quest function, the second will be a string parameter to that function.
+Quest Viva has a special JavaScript function called `ASLEvent`, which will pass two string values from the browser/JavaScript to the game world. The first parameter has to be the name of a Quest Viva function, the second will be a string parameter to that function.
 
 Here is a very simple example of some JavaScript code. A discussion of the language is way beyond the scope of this tutorial, but the first line says we are defining a function, and the second displays a text box on screen, putting the players response in a new variable called "answer". We then check the user actually types something (i.e., `answer` is not empty), and if so, invoke the `ASLEvent` function, which in turn will call the function we created above.
 
@@ -59,12 +59,12 @@ html = "<p><a onclick=\"ASLEvent('HandleClick', 'HERE')\">HERE</a><p>"
 JS.setCustomStatus (html)
 ```
 
-Create a new function, HandleClick, that will print its single parameter. When you go in game, you can click "HERE" and Quest will respond. Obviously this does nothing more than the custom command pane, but potentially you could set up a sophisticated control panel with switches and flashing lights and sliders.
+Create a new function, HandleClick, that will print its single parameter. When you go in game, you can click "HERE" and Quest Viva will respond. Obviously this does nothing more than the custom command pane, but potentially you could set up a sophisticated control panel with switches and flashing lights and sliders.
 
 
 ## Handling multiple parameters
 
-If you have a lot of bits of data to pass from JavaScript to Quest (say the results from a character creation dialogue), you will have to collect them altogether into one long string in JavaScript before calling ASLEvent, and then in the Quest function, you will need to split them apart again. Each bit of data should be separated with a specific character, say the vertical bar, |.
+If you have a lot of bits of data to pass from JavaScript to Quest Viva (say the results from a character creation dialogue), you will have to collect them altogether into one long string in JavaScript before calling ASLEvent, and then in the Quest Viva function, you will need to split them apart again. Each bit of data should be separated with a specific character, say the vertical bar, |.
 
 The JavaScript might look like this:
 
@@ -75,7 +75,7 @@ s += "|" + eyeColour;
 ASLEvent("CreatorCallback", s);
 ```
 
-In Quest, you can use Split to break the string up, and then handle each section. Remember to convert to integers where necessary:
+In Quest Viva, you can use Split to break the string up, and then handle each section. Remember to convert to integers where necessary:
 
 ```quest
 l = Split(s, "|")
@@ -87,6 +87,6 @@ player.eyecolour = StringListItem(l, 2)
 
 ## Timers
 
-If you want to use split second timing, then `ASLEvent` is the way to go. Quest's built-in timers only work in whole seconds. You can use a JavaScript timer instead, and have that fire events in Quest using ASLEvent for much finer control.
+If you want to use split second timing, then `ASLEvent` is the way to go. Quest Viva's built-in timers only work in whole seconds. You can use a JavaScript timer instead, and have that fire events in Quest Viva using ASLEvent for much finer control.
 
 The details are beyond the scope of this article, but you can see examples [here](https://textadventures.co.uk/forum/samples/topic/gz1msne3k0_mjvoj8vpubw/countdown) and [here](https://textadventures.co.uk/forum/samples/topic/4rajpgh0ikicac9we2rsiq/thunder-and-lightning-effect).

@@ -4,7 +4,7 @@ sidebar:
   order: 1
 ---
 
-A great feature of Quest is that you can create your own version of most of the built-in functions to do what you want. In object-orientate programming, this is called "overriding".
+A great feature of Quest Viva is that you can create your own version of most of the built-in functions to do what you want. In object-orientate programming, this is called "overriding".
 
 ## How to...
 
@@ -23,4 +23,4 @@ You can also override templates, dynamic templates, types and commands in just t
 
 ## But not all functions...
 
-There are two types of functions in Quest, those written in Quest code, and those written in the underlying code. You cannot override the latter; your new function will just get ignored. These functions do not appear in the list in the left pane. They include script commands, but also some of the more fundamental functions.
+There are two types of functions in Quest Viva, those written in Quest Viva code, and those written in the underlying code. You cannot override the latter; your new function will just get ignored. These functions do not appear in the list in the left pane. They include script commands, but also some of the more fundamental functions.

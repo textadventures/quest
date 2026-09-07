@@ -11,7 +11,7 @@ Randomness is very useful in RPG-type games when you want to determine the outco
 
 You might also want to randomly generate descriptions of cloned objects so they do not all seem to be the same.
 
-Quest has a suite of functions to allow these things. We will look first at what is available, and then at some examples of them in use.
+Quest Viva has a suite of functions to allow these things. We will look first at what is available, and then at some examples of them in use.
 
 ## Random functions
 
@@ -19,7 +19,7 @@ Quest has a suite of functions to allow these things. We will look first at what
 
 Not really a function, but the easiest to use. As with all [text processor](/howto/world/text_processor) directives, this is embedded in a string. The directive is called "random", and will select one text from the following list.
 
-Here is a simple example. When the text is printed, Quest will randomly select one of "blue", "red" or "yellow".
+Here is a simple example. When the text is printed, Quest Viva will randomly select one of "blue", "red" or "yellow".
 
 ```quest
 It was a {random:blue:red:yellow} flower.
@@ -68,7 +68,7 @@ success = RandomChance(0)
 
 ### Pick one
 
-Quest has a number of functions that make it easy to randomly pick one example from a list:
+Quest Viva has a number of functions that make it easy to randomly pick one example from a list:
 
 ```
 PickOneChild

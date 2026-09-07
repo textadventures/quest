@@ -19,7 +19,7 @@ get input {
 
 The first line just asks the question. Then we see the `get input` command. The block after that gets run only once the player has typed a response. A magic variable called `result` has the text the player typed, so we just need to assign that.
 
-Note that we are setting the "alias" attribute; the "name" attribute cannot be changed during play as Quest uses that to track each object. Note that it makes sure there is a capital at the start. You can then use the text processor to insert the character's name in text:
+Note that we are setting the "alias" attribute; the "name" attribute cannot be changed during play as Quest Viva uses that to track each object. Note that it makes sure there is a capital at the start. You can then use the text processor to insert the character's name in text:
 
 ```quest
 'Hi, {player.alias},' says the oddly-shaped doll.
@@ -43,7 +43,7 @@ get input {
 }
 ```
 
-Unfortunately, this does not work as you might expect. Quest does not wait for the player to give her name - it just goes straight to the next bit of code and asks her age too, before the player has answered anything. Both questions get printed immediately, but only the second `get input` is actually listening; it silently replaces the first, so whatever the player types only ever gets treated as her age, and the "What is your name?" question never gets an answer at all.
+Unfortunately, this does not work as you might expect. Quest Viva does not wait for the player to give her name - it just goes straight to the next bit of code and asks her age too, before the player has answered anything. Both questions get printed immediately, but only the second `get input` is actually listening; it silently replaces the first, so whatever the player types only ever gets treated as her age, and the "What is your name?" question never gets an answer at all.
 
 We need to _nest_ the question. This means putting the second inside the first.
 

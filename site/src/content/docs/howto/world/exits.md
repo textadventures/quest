@@ -4,9 +4,9 @@ sidebar:
   order: 2
 ---
 
-Exits are dead easy to set up in Quest. Go to the _Exits_ tab of the room, click the direction, select a destination, choose if you want to also create a reverse exit and click "Create exit".
+Exits are dead easy to set up in Quest Viva. Go to the _Exits_ tab of the room, click the direction, select a destination, choose if you want to also create a reverse exit and click "Create exit".
 
-Like everything else in Quest, an exit is an object, and your exit will appear in the left hand pane, under the room (you may need to expand the node to see it).
+Like everything else in Quest Viva, an exit is an object, and your exit will appear in the left hand pane, under the room (you may need to expand the node to see it).
 
 We will start by looking at the various settings for an exit.
 
@@ -20,7 +20,7 @@ When you create a room, you will find you cannot create an exit that goes to the
 
 ## Type vs alias
 
-Quest uses the alias of the exit to decide which direction it is. The type is used when the exit is created, but does not really do anything once that has happened (it does provide an alternative name, if the alias is "east" and the type is "north", then the exit will get used for `EAST`, `E` and `N`).
+Quest Viva uses the alias of the exit to decide which direction it is. The type is used when the exit is created, but does not really do anything once that has happened (it does provide an alternative name, if the alias is "east" and the type is "north", then the exit will get used for `EAST`, `E` and `N`).
 
 You can set the alias to any value you like, so you could have "kitchen" as a direction. Note that the exit will then appear in the list of "Places and Objects" rather than the compass. Set the type to "Non-directional exit".
 
@@ -41,7 +41,7 @@ If you are using names instead of directions, you might want to have a prefix li
 
 ## Name
 
-A name is optional for an exit (if you do not give the exit a room, Quest will when the game starts). However, if you want to change any attribute of the exit during play (say to unlock it), you will need a name to refer to it by.
+A name is optional for an exit (if you do not give the exit a room, Quest Viva will when the game starts). However, if you want to change any attribute of the exit during play (say to unlock it), you will need a name to refer to it by.
 
 
 ## Locked vs visible vs scenery
@@ -90,7 +90,7 @@ For a guide on setting up a door that is accessible from both sides — using lo
 
 ## Print message when used
 
-By default, Quest does not print anything when an exit is used, and just gives the details of the new room. You can use this text field to have a message when the player heads that way.
+By default, Quest Viva does not print anything when an exit is used, and just gives the details of the new room. You can use this text field to have a message when the player heads that way.
 
 
 ## Attributes
@@ -160,12 +160,12 @@ In this instance, we only want it to happen once, so we use the `firsttime` scri
 
 ### Using `this.to`
 
-Rather than using a specific destination in your scripts, it can be a good idea to use `this.to` instead. `this` is a special value in Quest that refers to the object the script is attached to (i.e., the exit), and the "to" attribute is the destination of an exit. This means you can potentially use the same script for different exits to different destinations. It also means that if you later modify your game and change the destination of an exit, your script will still work fine; it will send the player to the new destination without you having to remember to update the script. It is probably less typing too!
+Rather than using a specific destination in your scripts, it can be a good idea to use `this.to` instead. `this` is a special value in Quest Viva that refers to the object the script is attached to (i.e., the exit), and the "to" attribute is the destination of an exit. This means you can potentially use the same script for different exits to different destinations. It also means that if you later modify your game and change the destination of an exit, your script will still work fine; it will send the player to the new destination without you having to remember to update the script. It is probably less typing too!
 
 
 ## Room scripts
 
-It is worth briefly mentioning room scripts. Rooms have a number of scripts that fire in different situations; before entering, after entering, when leaving, etc. Do not be tempted to move the player in any of these scripts; it will confuse Quest, and the output will confuse you.
+It is worth briefly mentioning room scripts. Rooms have a number of scripts that fire in different situations; before entering, after entering, when leaving, etc. Do not be tempted to move the player in any of these scripts; it will confuse Quest Viva, and the output will confuse you.
 
 So what if you want to trap the player in a room with several exits?
 
@@ -179,14 +179,14 @@ foreach (ext, ScopeExits ()) {
 }
 ```
 
-Note that `ext` is a local variable. Do not be tempted to use `e` as a local variable for an exit (or anything else); this is a built-in constant and cannot be set to anything (though Quest will fail to tell you that!).
+Note that `ext` is a local variable. Do not be tempted to use `e` as a local variable for an exit (or anything else); this is a built-in constant and cannot be set to anything (though Quest Viva will fail to tell you that!).
 
 
 ## Useful functions
 
 ### Creating exits on the fly
 
-Sometimes the tricking of setting a exit to be visible is not going to work, and you really need to create an exit. Quest has the [create exit](/scripts#create-exit) script command for just this purpose. If you want to create an exit going the other way at the same time, we have the [CreateBiExits](/functions/objects#createbiexits) function.
+Sometimes the tricking of setting a exit to be visible is not going to work, and you really need to create an exit. Quest Viva has the [create exit](/scripts#create-exit) script command for just this purpose. If you want to create an exit going the other way at the same time, we have the [CreateBiExits](/functions/objects#createbiexits) function.
 
 ### Finding an exit
 

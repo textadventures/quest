@@ -1,20 +1,20 @@
 ---
-title: Quest Overview
+title: Quest Viva Overview
 sidebar:
   order: 2
 ---
 
-Quest lets you create text adventure games, gamebooks, and other interactive fiction - no programming experience required. This page gives a quick tour of what Quest can do.
+Quest Viva lets you create text adventure games, gamebooks, and other interactive fiction - no programming experience required. This page gives a quick tour of what Quest Viva can do.
 
 ## The editor
 
-Quest's point-and-click editor lets you build a game by describing rooms, adding objects and characters, and setting up interactions - all without writing any code. Everything is displayed in plain English. When you're ready to go further, a full scripting language is available underneath, but you can make a complete game without ever using it.
+Quest Viva's point-and-click editor lets you build a game by describing rooms, adding objects and characters, and setting up interactions - all without writing any code. Everything is displayed in plain English. When you're ready to go further, a full scripting language is available underneath, but you can make a complete game without ever using it.
 
 ![](/images/overview-editor.png)
 
 ## Text adventures and gamebooks
 
-Quest supports two styles of interactive fiction:
+Quest Viva supports two styles of interactive fiction:
 
 **Text adventures** are location-based games where the player explores rooms, picks up objects, solves puzzles, and interacts with characters. This is the classic style, similar to _Zork_ or _Hitchhiker's Guide to the Galaxy_.
 
@@ -26,7 +26,7 @@ Quest supports two styles of interactive fiction:
 
 ## Multimedia
 
-Quest games are more than just text. You can add:
+Quest Viva games are more than just text. You can add:
 
 - **Images** - displayed in the game pane, or alongside room and object descriptions
 - **Sounds and music** - background audio or triggered sound effects
@@ -36,13 +36,13 @@ Quest games are more than just text. You can add:
 
 ## Scripting
 
-Quest's scripting system gives you precise control over your game's behaviour. You can write scripts in the editor using a visual block interface, or switch to Code View to write Quest's scripting language directly. Scripts can use variables, conditionals, loops, and functions, and you can encapsulate reusable behaviour in object types and libraries.
+Quest Viva's scripting system gives you precise control over your game's behaviour. You can write scripts in the editor using a visual block interface, or switch to Code View to write Quest Viva's scripting language directly. Scripts can use variables, conditionals, loops, and functions, and you can encapsulate reusable behaviour in object types and libraries.
 
 ![](/images/overview-script.png)
 
 ## Customising the interface
 
-The default player interface is clean and functional, but Quest gives you full control over it. You can add custom panes, change fonts and colours, rearrange the layout, and inject your own HTML, CSS and JavaScript to make the game look exactly how you want.
+The default player interface is clean and functional, but Quest Viva gives you full control over it. You can add custom panes, change fonts and colours, rearrange the layout, and inject your own HTML, CSS and JavaScript to make the game look exactly how you want.
 
 ![](/images/overview-customui.png)
 

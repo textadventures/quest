@@ -5,7 +5,7 @@ sidebar:
 ---
 
 
-## Using Quest's built-in script commands to add MP3 or WAV files
+## Using Quest Viva's built-in script commands to add MP3 or WAV files
 
 
 ### Adding sounds
@@ -22,9 +22,9 @@ This script supports both WAV and MP3 files, but it is recommended that you use 
 
 You can choose “Wait for sound to finish before continuing” if you want to run the remaining script only after the sound has finished. This is useful for intro sequences, or letting some speech finish before moving the player to a different room, for example.
 
-Note that Quest won’t let you use both the “wait” and “loop” options at the same time, as this would create an infinite loop.
+Note that Quest Viva won’t let you use both the “wait” and “loop” options at the same time, as this would create an infinite loop.
 
-Also note that Quest will only play one sound at a time when using the `play sound` script command.  If you have a sound set to loop for ambience, playing a new sound will stop the current one!
+Also note that Quest Viva will only play one sound at a time when using the `play sound` script command.  If you have a sound set to loop for ambience, playing a new sound will stop the current one!
 
 ### Stopping sounds
 
@@ -32,7 +32,7 @@ Sometimes, you need to stop a sound.  For instance the “loop” option will ca
 
 ![](/images/stop_sound.jpg)
 
-Another sure-fire way to stop a sound from playing is to use `play sound` to play another sound!  Quest will only play one sound at a time when using the `play sound` script command.
+Another sure-fire way to stop a sound from playing is to use `play sound` to play another sound!  Quest Viva will only play one sound at a time when using the `play sound` script command.
 
 ## Example game
 
@@ -105,7 +105,7 @@ For more information:
 
 https://www.w3schools.com/html/html5_audio.asp
 
-When using a local audio file in Quest, we need to use [`GetFileURL()`](/functions/general#getfileurl) to retrieve our local file's URL.
+When using a local audio file in Quest Viva, we need to use [`GetFileURL()`](/functions/general#getfileurl) to retrieve our local file's URL.
 
 This will find the correct path to the file regardless of how the game is hosted or played.
 

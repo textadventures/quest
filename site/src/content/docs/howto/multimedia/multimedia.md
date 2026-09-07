@@ -21,7 +21,7 @@ Now select the "kitchen" room from the tree. Click the Scripts tab, and go to th
 
 Now launch the game and go to the kitchen to verify that the picture is displayed with the room description.
 
-For more advanced image techniques - positioning and resizing with CSS, layering images, hosting images elsewhere - see [Images in Quest](/howto/multimedia/images). You can also generate images entirely in code with SVG - see [Creating images on the fly](/howto/multimedia/images_on_the_fly).
+For more advanced image techniques - positioning and resizing with CSS, layering images, hosting images elsewhere - see [Images in Quest Viva](/howto/multimedia/images). You can also generate images entirely in code with SVG - see [Creating images on the fly](/howto/multimedia/images_on_the_fly).
 
 ## Static picture frame
 

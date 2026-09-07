@@ -4,7 +4,7 @@ sidebar:
   order: 5
 ---
 
-In this article we will modify the status bar and game panes of the Quest interface, to show how easy it is to get a look that is unique to your game. We will go for an old-fashioned look, in brown. This is what we are aiming for:
+In this article we will modify the status bar and game panes of the Quest Viva interface, to show how easy it is to get a look that is unique to your game. We will go for an old-fashioned look, in brown. This is what we are aiming for:
 
 ![](/images/interface1.png)
 
@@ -42,7 +42,7 @@ To set the status bar at the top is now easy:
 JS.setCss ("#qv-status", backandborder)
 ```
 
-`JS.setCss` is a Quest function that takes two parameters; the HTML element and the CSS styling. The HTML element in this case is "#qv-status". The hash at the start indicates this is the ID of an element by the way.
+`JS.setCss` is a Quest Viva function that takes two parameters; the HTML element and the CSS styling. The HTML element in this case is "#qv-status". The hash at the start indicates this is the ID of an element by the way.
 
 To set the panes on the right, we can modify to classes, one used for the header and one for the content. As these are classes they start with a full stop (period). I also want square corners, so will be adding to the CSS. Oh, and the content should not have a border at the top because it has the one from the bottom of the header.
 

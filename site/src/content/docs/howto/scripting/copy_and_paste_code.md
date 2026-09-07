@@ -4,7 +4,7 @@ sidebar:
   order: 19
 ---
 
-Behind the scenes, Quest handles things using it own programming language, or code. If you are asking about how to do something on the forums, chances are people will respond by posting the code, and if you have never seen code before you may be left wondering what you do with it.
+Behind the scenes, Quest Viva handles things using it own programming language, or code. If you are asking about how to do something on the forums, chances are people will respond by posting the code, and if you have never seen code before you may be left wondering what you do with it.
 
 Once you understand the basics, code is a lot easier to show on the forum, and far easier to copy from one place and paste into another.
 
@@ -27,7 +27,7 @@ The important point here is that this is just text, so it can be copy-and-pasted
 
 Right click in the left pane, and select add function. Give it the right name (same capitalisation, etc.). Bottom of the stuff on the right is Script. Click the "Code view" button. You should now get a text box below. Just paste the code into this box.
 
-Click on _Code view_ again, and you should see the normal Quest view. If you see some red text, something has gone wrong. Check that you copy-and-pasted the whole code and nothing but the code (though it could even be a mistake in the code).
+Click on _Code view_ again, and you should see the normal Quest Viva view. If you see some red text, something has gone wrong. Check that you copy-and-pasted the whole code and nothing but the code (though it could even be a mistake in the code).
 
 You may need to set the return type or add parameters - see what the forum post says. To add a parameter, just click on the plus by the word "Parameters". Make sure you give the exact names specified and in the same order.
 

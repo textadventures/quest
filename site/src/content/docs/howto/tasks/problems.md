@@ -6,7 +6,7 @@ sidebar:
 
 ## Problems when creating games
 
-There are all sorts of problems that can arise as you code with Quest. Computer languages are fussy things that expect you to type to very strict rules, and Quest is no different. Some things to check:
+There are all sorts of problems that can arise as you code with Quest Viva. Computer languages are fussy things that expect you to type to very strict rules, and Quest Viva is no different. Some things to check:
 
 - Variables, attributes and objects are named consistently (if it is `hitpoints` in one place and `hit points` in another and `Hit points` in a third, it is not going to work)
 - Brackets and braces need to match; if you have three open brackets and only two close brackets it is not going to work
@@ -17,7 +17,7 @@ There are all sorts of problems that can arise as you code with Quest. Computer 
 
 ### Room description appears twice
 
-This can happen if you move the player in script on the room. Say you want to turn a player back from an exit. You might think it is a good idea to set up the script that runs on the destination room so it moves the player back to the original room. What happens is that the player is moved twice, and so Quest thinks it has to show the room description twice - and to add to the confusion, it does it for the current room, which will be where the player ends up.
+This can happen if you move the player in script on the room. Say you want to turn a player back from an exit. You might think it is a good idea to set up the script that runs on the destination room so it moves the player back to the original room. What happens is that the player is moved twice, and so Quest Viva thinks it has to show the room description twice - and to add to the confusion, it does it for the current room, which will be where the player ends up.
 
 The solution is to avoid moving the player on any of the built-in room scripts. In the example above, the script should be on the exit that goes to the destination, without moving the player at all.
 
@@ -30,20 +30,20 @@ Occasionally you may see this error:
 Error running script: Error evaluating expression '(not GetBoolean(game.pov.parent, "visited")) and HasScript(game.pov.parent, "beforefirstenter")': GetBoolean function expected object parameter but was passed 'null'
 ```
 
-This happens when the player's "parent" attribute is set to null, and can happen if you try to move the player to a variable that has not been set (and Quest will think an object name you have mis-spelled to be a variable).
+This happens when the player's "parent" attribute is set to null, and can happen if you try to move the player to a variable that has not been set (and Quest Viva will think an object name you have mis-spelled to be a variable).
 
 
 ## Names you cannot use
 
-Sometimes Quest is clever and will warn you or take some action if you try to give something a bad name (if you try to add an object called "game" it will call it "game1"). However, there are other times it will not...
+Sometimes Quest Viva is clever and will warn you or take some action if you try to give something a bad name (if you try to add an object called "game" it will call it "game1"). However, there are other times it will not...
 
 ### Items/Rooms called K1, K2, etc.
 
-Quest automatically assigns names to anything you do not name yourself (for example, most of the exits in your game will have no name). It will name the first one K1, the second K2, and so on. What this means is that if you name anything in your game 'K' following by a number you are in danger of having a name collision!
+Quest Viva automatically assigns names to anything you do not name yourself (for example, most of the exits in your game will have no name). It will name the first one K1, the second K2, and so on. What this means is that if you name anything in your game 'K' following by a number you are in danger of having a name collision!
 
 ### 'e' and 'pi'
 
-You will probably never need them in a text adventure, but `e` and `pi` are both mathematical constants. Quest will happily let you assign a value to them, but will ignore the assignment.
+You will probably never need them in a text adventure, but `e` and `pi` are both mathematical constants. Quest Viva will happily let you assign a value to them, but will ignore the assignment.
 
 ```quest
 e = GetExitByLink (room, room2)
@@ -55,7 +55,7 @@ This only applies to local variables, you can give these names to attributes.
 
 ### `object`, `game`, `turnscript`, `command`, `exit`,`type`
 
-Trying to use any of these as the name of an attribute will confuse the editor. You will not get an error, but it will not do what you expect when you save your game and then load it (whether during player or when editing). The problem is that these all have special meaning for Quest when it is loading XML files, and it will, for example, assume your "object" attribute is a real object.
+Trying to use any of these as the name of an attribute will confuse the editor. You will not get an error, but it will not do what you expect when you save your game and then load it (whether during player or when editing). The problem is that these all have special meaning for Quest Viva when it is loading XML files, and it will, for example, assume your "object" attribute is a real object.
 
 
 ### Attribute names with spaces
@@ -64,13 +64,13 @@ You can use attribute names with spaces in them for strings, number, objects and
 
 ### Other attributes
 
-Various attributes are already used by Quest. Do not do anything with "type" or "elementtype". Obviously "name", "parent", "alias", etc. have specific meanings in Quest, and trying to use them for something else will cause problems.
+Various attributes are already used by Quest Viva. Do not do anything with "type" or "elementtype". Obviously "name", "parent", "alias", etc. have specific meanings in Quest Viva, and trying to use them for something else will cause problems.
 
 
 
 ## Understanding runtime error messages
 
-Runtime errors occur when playing the game. Quest has tried to run a script, and realised there is an issue. You will get an error in the game output that will usually consist of two parts. Here is an example:
+Runtime errors occur when playing the game. Quest Viva has tried to run a script, and realised there is an issue. You will get an error in the game output that will usually consist of two parts. Here is an example:
 
 ```quest
 Error running script: Error compiling expression 'game.myflag': RootExpressionElement: Cannot convert type 'Object' to expression result of 'Boolean'
@@ -87,7 +87,7 @@ The first part is in this format:
 Error running script: Error compiling expression '[whatever]':
 ```
 
-The `[whatever]` is the important part, as that is the code that Quest cannot understand.
+The `[whatever]` is the important part, as that is the code that Quest Viva cannot understand.
 
 Copy the bit inside the single quotes (without the quotes) and open the raw XML Code View from the editor toolbar, press [Ctrl]-F, and paste in the text you just copied. Now you can search your game to quickly locate the code. Bear in mind that the same text could be at several places in your game, and some may be okay, so check each occurrence.
 
@@ -114,7 +114,7 @@ This could be 'Subtract' or whatever, and the types may be different. Again "Obj
 Unknown object or variable '[something]'
 ```
 
-In this case, Quest has found `[something]` in a script, but has no idea what it is. It could be an object that you misspelled or a local variable that you have not given a value to yet.
+In this case, Quest Viva has found `[something]` in a script, but has no idea what it is. It could be an object that you misspelled or a local variable that you have not given a value to yet.
 
 
 

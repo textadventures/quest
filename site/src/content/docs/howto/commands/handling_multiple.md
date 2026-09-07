@@ -25,11 +25,11 @@ table: You can't take it.
 apple: You pick it up.
 ```
 
-Note that Quest does not try to take the book; it is inside the rucksack, and that has been picked up already. It will get the string and the apple, though, as they are in containers that cannot be taken (even if the containers are scenery, by the way, though they would not normally appear in the room description).
+Note that Quest Viva does not try to take the book; it is inside the rucksack, and that has been picked up already. It will get the string and the apple, though, as they are in containers that cannot be taken (even if the containers are scenery, by the way, though they would not normally appear in the room description).
 
 There is no attempt to take the door, as it is scenery.
 
-Quest also does not try to take Mary, as she is a character. It can be useful to set up characters as surfaces or (as in the example above) transparent containers so the player can see what they are carrying. `GET ALL` will also ignore any item carried by a character (but note that items inside items held by characters are not properly supported!).
+Quest Viva also does not try to take Mary, as she is a character. It can be useful to set up characters as surfaces or (as in the example above) transparent containers so the player can see what they are carrying. `GET ALL` will also ignore any item carried by a character (but note that items inside items held by characters are not properly supported!).
 
 
 ### Excluding other items
@@ -70,7 +70,7 @@ For the majority of commands, it is not necessary to add the facility for `ALL`,
 
 The command must have a Boolean attribute called `allow_all` set to true.
 
-You need to set the scope. This tells Quest where to look for objects, and is a good idea for all commands.
+You need to set the scope. This tells Quest Viva where to look for objects, and is a good idea for all commands.
 
 You also need to modify the script. For any command with `allow_all` set to true, the `object` variable will be a list of objects, rather than one object - even if the player only specifies a single object. The list will include any in the given scope, unless `not_all` is true.
 

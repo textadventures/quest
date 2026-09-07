@@ -163,7 +163,7 @@ Displays a link, with the first text (which cannot have text processor directive
 
 
 {either **condition**:**text**}
-This works similar to the if command above, but with two important differences. The first is that the condition can be any Quest code that results in a Boolean (true or false). The second is that if you are comparing a string it needs to be in double quotes (as is true of normal Quest code).
+This works similar to the if command above, but with two important differences. The first is that the condition can be any Quest Viva code that results in a Boolean (true or false). The second is that if you are comparing a string it needs to be in double quotes (as is true of normal Quest Viva code).
 
 
 ```quest
@@ -174,7 +174,7 @@ This works similar to the if command above, but with two important differences. 
 ```
 
 {eval:**code**}
-The code is evaluated, just as normal Quest code is, and the result displayed.
+The code is evaluated, just as normal Quest Viva code is, and the result displayed.
 
 {=**code**}
 This is a short cut for eval, and works just the same. The samples below show the potential, though by its nature this is rather less forgiving that the other commands available.
@@ -229,7 +229,7 @@ If the text processor cannot understand your directive, it will generally leave 
 
 ## Curly braces
 
-Should you want to use curly braces to actually display curly braces, Quest will usually work out that that is what you want. If you find it is trying to display it as a text processor command (or is throwing an error because it has failed to), you can use `@@@open@@@` and `@@@close@@@` to tell Quest to display curly braces.
+Should you want to use curly braces to actually display curly braces, Quest Viva will usually work out that that is what you want. If you find it is trying to display it as a text processor command (or is throwing an error because it has failed to), you can use `@@@open@@@` and `@@@close@@@` to tell Quest Viva to display curly braces.
 ```quest
 "player.count = @@@open@@@player.count@@@close@@@"
  -> "player.count = {player.count}"
@@ -243,7 +243,7 @@ You cannot use text processor commands in an object's name, as only a limited se
  
 ## Support for "this"
 
-In Quest, "this" is a special local variable that refers to the object that owns the current script. Text processor directives do not naturally support "this", because when they are being processed they do not belong to a script. However, you can fake it by setting a special attribute of the game object called "text_processor_this". This would allow you to do something like this:
+In Quest Viva, "this" is a special local variable that refers to the object that owns the current script. Text processor directives do not naturally support "this", because when they are being processed they do not belong to a script. However, you can fake it by setting a special attribute of the game object called "text_processor_this". This would allow you to do something like this:
 
 ```quest
 game.text_processor_this = teapot

@@ -4,7 +4,7 @@ sidebar:
   order: 30
 ---
 
-Quest expects an ASL file to provide a few standard items. These are all provided by Core.aslx, but if this file is replaced, the ASL must still deliver the below requirements to Quest.
+Quest Viva expects an ASL file to provide a few standard items. These are all provided by Core.aslx, but if this file is replaced, the ASL must still deliver the below requirements to Quest Viva.
 
 -   There must be one object named "**player**"
 -   The following functions must be defined:

@@ -4,9 +4,9 @@ sidebar:
   order: 11
 ---
 
-Quest has a simple built-in score system you can enable on the _Features_ tab of the game object — see [Score, Health and Money](/howto/world/score_health_money). This tutorial shows how to build a more flexible custom scoring system with achievements, rankings, and a SCORE command.
+Quest Viva has a simple built-in score system you can enable on the _Features_ tab of the game object — see [Score, Health and Money](/howto/world/score_health_money). This tutorial shows how to build a more flexible custom scoring system with achievements, rankings, and a SCORE command.
 
-Many years ago I wrote a library to help track the player's score. It was pretty simple, but worked well, and five years later on I cannot think of any way to improve. So, I am going to drop it altogether! You do not need a library to do this, instead, I present a tutorial. The advantage of a tutorial is that you will learn more of Quest coding whilst following it.
+Many years ago I wrote a library to help track the player's score. It was pretty simple, but worked well, and five years later on I cannot think of any way to improve. So, I am going to drop it altogether! You do not need a library to do this, instead, I present a tutorial. The advantage of a tutorial is that you will learn more of Quest Viva coding whilst following it.
 
 This system will not just keep score, it will also allow the player to see a list of achievements, and give her a rank. The on-going score will appear in the status panel.
 
@@ -37,7 +37,7 @@ dictionary add (game.statusattributes, "score", "Score: !/10")
 
 The first line is obviously setting up the "score" attribute.
 
-Quest stores information about status attributes in dictionary attributes called `statusattributes`, on the game and player objects, and the second line creates one on the game object (Quest does this automatically for you if you use the Attributes tab instead). The third line adds one entry to that dictionary. It has two parts, the name of the attribute, "score", and the display format, "Score: !/10".
+Quest Viva stores information about status attributes in dictionary attributes called `statusattributes`, on the game and player objects, and the second line creates one on the game object (Quest Viva does this automatically for you if you use the Attributes tab instead). The third line adds one entry to that dictionary. It has two parts, the name of the attribute, "score", and the display format, "Score: !/10".
 
 
 ## Display format

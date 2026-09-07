@@ -7,7 +7,7 @@ sidebar:
 
 A clone is an exact copy of a prototype, and can be a useful way to quickly create several of the same things whilst a game is underway. For example, you could create a single orc, and then clone it several times to give the player a hoard to fight against, or you could [implement a shop](/howto/tasks/shop) where all the goods for sale get cloned when the player purchases them, so the shop remains stocked.
 
-Actually clones are not exact copies. Every object in Quest must have a unique name, so each clone will have its own name. This name will be the name of the prototype, with a number appended (orc1, orc2, etc.). To ensure the clone is _apparently_ identical to the player, it is best to use the `CloneObject` function (rather than the `Clone` function), so the clone will be given the name of the prototype as an alias, if none is already set. It will also be given a new attribute "prototype", which points to the prototype.
+Actually clones are not exact copies. Every object in Quest Viva must have a unique name, so each clone will have its own name. This name will be the name of the prototype, with a number appended (orc1, orc2, etc.). To ensure the clone is _apparently_ identical to the player, it is best to use the `CloneObject` function (rather than the `Clone` function), so the clone will be given the name of the prototype as an alias, if none is already set. It will also be given a new attribute "prototype", which points to the prototype.
 
 Note that cloning an object with `CloneObject` will also clone any objects it contains.
 
@@ -22,7 +22,7 @@ newgoblin.look = "This goblin has a wooden leg."
 
 Once the player is interacting with a clone, you need to ensure that it is the clone that things happen to. And this is where it gets complicated...
 
-In the code above, `goblin` is an object that has the name "goblin", and this is the way of all objects in Quest. However, `newgoblin` is quite different; it is a _local variable_, which is a kind of temporary container. The first line above puts the clone into the container, and we can then use it as though it is the real thing, as you see above. That is fine in that script, but as soon as the script ends, the container is gone. The clone still exists; that is now a part of the game world, but we have lost the container called "newgoblin".
+In the code above, `goblin` is an object that has the name "goblin", and this is the way of all objects in Quest Viva. However, `newgoblin` is quite different; it is a _local variable_, which is a kind of temporary container. The first line above puts the clone into the container, and we can then use it as though it is the real thing, as you see above. That is fine in that script, but as soon as the script ends, the container is gone. The clone still exists; that is now a part of the game world, but we have lost the container called "newgoblin".
 
 So what is the clone called? The first will be "goblin1", the second "goblin2", and so on. We need a way to refer to the clone, without knowing its name.
 

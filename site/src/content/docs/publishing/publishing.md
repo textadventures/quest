@@ -22,11 +22,11 @@ On textadventures.co.uk, click on _Create_ at the top, then _Submit_ below that.
 
 What gets included in the `.quest` file, when you publish?  Broadly two things.
 
-Firstly the game code. This is all the code from all the libraries, including the built-in libraries, from whatever folders on your PC, assembled into one big file. This means that if, in a few years, Quest's built-in libraries get radically updated, your game will not be affected.
+Firstly the game code. This is all the code from all the libraries, including the built-in libraries, from whatever folders on your PC, assembled into one big file. This means that if, in a few years, Quest Viva's built-in libraries get radically updated, your game will not be affected.
 
-Secondly, any supporting files. This is any file Quest can find in your game folder with a certain name format, whether they are used in your game or not. Images and sounds that are not in this folder will not be included, images and sounds that are in it, but not used will be included. Note that when you select images and sounds through the Quest GUI, it will copy the file into the game folder, so in theory all these files should already be there.
+Secondly, any supporting files. This is any file Quest Viva can find in your game folder with a certain name format, whether they are used in your game or not. Images and sounds that are not in this folder will not be included, images and sounds that are in it, but not used will be included. Note that when you select images and sounds through the Quest Viva GUI, it will copy the file into the game folder, so in theory all these files should already be there.
 
-Quest grabs any file with a name that matches one of these formats
+Quest Viva grabs any file with a name that matches one of these formats
 
     *.jpg;*.jpeg;*.png;*.gif;*.js;*.wav;*.mp3;*.htm;*.html;*.svg;*.ogg;*.ogv
 
@@ -83,7 +83,7 @@ It is tempting to get the game to testers fast, but you are really just wasting 
 1. Play the game through and correct any mistakes you can find.
 2. Spell check it - see [Spell checking](#spell-checking) above.
 3. Some things you might want to check, depending on your game: every room and object has an alias and a description; everything mentioned in a description is actually implemented; the appropriate display and inventory verbs are there, and inappropriate ones are absent.
-4. Play the game, then try to save it. When Quest saves it does some extra error checking it does not do any other time, so this is a quick test of your code - do not send testers a game that will not save. If it saved successfully, load it again and check the UI still looks the same and the various parts still work, since loading tends to be especially sensitive to errors in scripts.
+4. Play the game, then try to save it. When Quest Viva saves it does some extra error checking it does not do any other time, so this is a quick test of your code - do not send testers a game that will not save. If it saved successfully, load it again and check the UI still looks the same and the various parts still work, since loading tends to be especially sensitive to errors in scripts.
 
 ### Running beta-testing
 

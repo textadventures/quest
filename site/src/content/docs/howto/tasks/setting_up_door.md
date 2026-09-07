@@ -6,9 +6,9 @@ sidebar:
 
 Generally in text adventures doors are implied. That means that when the player heads into the kitchen, it is assumed she first opens the door - the player will not be happy if she has to open a door each time she wants to go anywhere. That said, there may be occasions when it warranted. Perhaps this is a particular special door, or the state of the door determines whether the player is found or which way the guard goes.
 
-The problem with doors is that need to be usable from both sides. In Quest an object is in one room, but the door needs to be in two. But there is a way around that.
+The problem with doors is that need to be usable from both sides. In Quest Viva an object is in one room, but the door needs to be in two. But there is a way around that.
 
-This guide uses Quest's lockable exits feature. If you are not already familiar with it, see [Exits](/howto/world/exits#example-a-locked-door) first.
+This guide uses Quest Viva's lockable exits feature. If you are not already familiar with it, see [Exits](/howto/world/exits#example-a-locked-door) first.
 
 Let us suppose we have two rooms; the lounge with the kitchen to the west, with exits going each way. We will say the door is closed to start with.
 
@@ -22,7 +22,7 @@ To stop the player going through the closed door, tick the "Locked" option for e
 
 Create an object in the lounge; the door. Set it to be scenery. On the _Features_ tab, set it to be a container, then on the _Container_ tab, set it to be "Openable/Closeable".
 
-Quest tracks the state of these things by an attribute called "isopen", and while it will handle that for you for containers, for Openable/Closeables we need to do that ourself (this is because you might want to check if the object can be opened before hand, but that is not necessary in this case). We also need to change whether the exits are locked.
+Quest Viva tracks the state of these things by an attribute called "isopen", and while it will handle that for you for containers, for Openable/Closeables we need to do that ourself (this is because you might want to check if the object can be opened before hand, but that is not necessary in this case). We also need to change whether the exits are locked.
 
 The top script is the one that will be run when the door is opened. That needs to unlock the exits, and open the door:
 

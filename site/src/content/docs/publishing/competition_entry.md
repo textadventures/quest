@@ -4,7 +4,7 @@ sidebar:
   order: 1
 ---
 
-Competitions are a good way to reach a wider audience for your Quest adventure, but you better be prepared to be judged harshly...
+Competitions are a good way to reach a wider audience for your Quest Viva adventure, but you better be prepared to be judged harshly...
 
 Probably the most significant Interactive Fiction competition is [IfComp](http://www.ifcomp.org/), run during October each year, and this page is mostly geared towards that. It will not guarantee your game is a winner, but hopefully will improve its ranking to some degree.
 
@@ -52,19 +52,19 @@ Or submit a game without a command line, such as a CYOA or gamebook.
 
 Some games include feelies. Back in the day, commercial adventure games included posters, comic books, scratch-and-sniff cards, etc. to limit piracy as much as anything. Nowadays, these feelies are virtual... so you cannot actually feel them. Nevertheless, they seem to be popular, and can help to give a game a profession touch.
 
-Unfortunately, it is easy for players to miss feelies; if they play on line, they just will not know they exist. Happily Quest handles this well, as you can insert images, videos and audio right into your game, and Quest has support for cover art built in.
+Unfortunately, it is easy for players to miss feelies; if they play on line, they just will not know they exist. Happily Quest Viva handles this well, as you can insert images, videos and audio right into your game, and Quest Viva has support for cover art built in.
 
 ### The user interface
 
 Bear in mind that the vast majority of players will be playing on-line, so bear that in mind.
 
-Think carefully what elements of the user interface (UI) you want to include. By default, Quest includes a command line, hyperlinks in the text and the panes on the right. Are they all appropriate to your game?
+Think carefully what elements of the user interface (UI) you want to include. By default, Quest Viva includes a command line, hyperlinks in the text and the panes on the right. Are they all appropriate to your game?
 
 Turning off the command bar will make it much easier to build your game, as you very much limit what the player can do, but at the cost of destroying the illusion of freedom for the player. For a traditional game, you might prefer to have only the command line.
 
 Also think about the colours and the font. Be sure to pick a font that reflects the style of your game, and is easy to read.
 
-The important message here is to think about the UI, and make a choice for what is right for your game, and not just use the Quest defaults.
+The important message here is to think about the UI, and make a choice for what is right for your game, and not just use the Quest Viva defaults.
 
 
 ## Testing

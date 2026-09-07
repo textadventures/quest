@@ -4,9 +4,9 @@ sidebar:
   order: 5
 ---
 
-What exactly is a "regular expression"? It is a sort of string that can be used to match against another string. You could think of it as a template or a set of rules that a string can be compared to. Quest handles a regex as a string, but behind the scenes it converts that into a proper regex object deep in its workings.
+What exactly is a "regular expression"? It is a sort of string that can be used to match against another string. You could think of it as a template or a set of rules that a string can be compared to. Quest Viva handles a regex as a string, but behind the scenes it converts that into a proper regex object deep in its workings.
 
-Quest has three functions that can use a regex. All three functions takes the regex and a string to compare against it as parameters and differ only in what they return.
+Quest Viva has three functions that can use a regex. All three functions takes the regex and a string to compare against it as parameters and differ only in what they return.
 
 To investigate what the three functions do, I am going to set up a regex and two strings.
 ```quest
@@ -54,7 +54,7 @@ Populate(regex, s2)
 
 ## The "cache ID" parameter
 
-All the above functions take an optional third parameter, the "cache ID". If you supply a cache ID, the regex will be saved under that name. The next time you use that cache ID for any of the above functions, Quest will ignore the regex you supply, and use the one it created earlier instead.
+All the above functions take an optional third parameter, the "cache ID". If you supply a cache ID, the regex will be saved under that name. The next time you use that cache ID for any of the above functions, Quest Viva will ignore the regex you supply, and use the one it created earlier instead.
 
 Continuing with the example before:
 ```quest
@@ -63,16 +63,16 @@ IsRegexMatch(regex, s1, "my regex")
 IsRegexMatch("nonsense", s1, "my regex")
 => true
 ```
-The original regex is given a cache ID here (the string "my regex"). When `IsRegexMatch` is called a second time, Quest ignores the nonsense regex, because it already has a regex with that cache ID.
+The original regex is given a cache ID here (the string "my regex"). When `IsRegexMatch` is called a second time, Quest Viva ignores the nonsense regex, because it already has a regex with that cache ID.
 
-Every time the player types some input, Quest has to compare that against the regex for every command, and using cache IDs makes that process considerably faster (and it does that for any custom command you add yourself). It is doubtful if cache IDs are of significant use outside of that, and are more likely to be a source of obscure bugs, so my advice is to not use them.
+Every time the player types some input, Quest Viva has to compare that against the regex for every command, and using cache IDs makes that process considerably faster (and it does that for any custom command you add yourself). It is doubtful if cache IDs are of significant use outside of that, and are more likely to be a source of obscure bugs, so my advice is to not use them.
 
 
 ## Command matching
 
-When the player types some input, Quest goes through the list of commands, looking for the best match. A match is determined by using `IsRegexMatch`.
+When the player types some input, Quest Viva goes through the list of commands, looking for the best match. A match is determined by using `IsRegexMatch`.
 
-If there is more than one matching command, Quest uses three criteria to select the best. Firstly it looks at the value from `GetMatchStrength`, giving priority to the command with the higher match strength.
+If there is more than one matching command, Quest Viva uses three criteria to select the best. Firstly it looks at the value from `GetMatchStrength`, giving priority to the command with the higher match strength.
 
 If there is a tie for the highest match strength, it will give priority to the command specific to the room. If there is still a tie after that, commands lower down the list take priority (so user defined commands take priority over the built in commands).
 
@@ -94,13 +94,13 @@ None of the above has paid any attention to what objects are present in the game
 ```quest
 regex = "put (?<bill>.*) on (?<ben>.*)"
 ```
-Once a command has been selected as the best match, it is only _then_ that Quest will attempt to match the text to the objects present. At this point it will complain if we use "bill" and "ben"; all capture group names _in commands_ must start "object", "exit" or "text", so Quest knows what it is supposed to be matching them to.
+Once a command has been selected as the best match, it is only _then_ that Quest Viva will attempt to match the text to the objects present. At this point it will complain if we use "bill" and "ben"; all capture group names _in commands_ must start "object", "exit" or "text", so Quest Viva knows what it is supposed to be matching them to.
 
 ## Text matching
 
 Text will match anything, and so is useful if you want to relate a command to an object outside the normal scope. You could also use text matching for open-ended commands, such as `SAY`, as is done in the basic tutorial. You then need to work out what you will do with the text.
 
-You can limit the text that will be matched. In the following example, a cheat command is set up; the player (presumably the author while testing) can type `CHEAT` followed by either `MOVE`, `SET` or `GET`, followed by further text. Quest will hand two variables to the command's script, `text1` and `text2`.
+You can limit the text that will be matched. In the following example, a cheat command is set up; the player (presumably the author while testing) can type `CHEAT` followed by either `MOVE`, `SET` or `GET`, followed by further text. Quest Viva will hand two variables to the command's script, `text1` and `text2`.
 
 ```regex
 ^cheat (?<text1>move|set|get) (?<text2>.+)$
@@ -112,7 +112,7 @@ Here is another example that would allow you to handle violent commands peaceful
 ^(?<text>hit|strike|slap|punch|kick|headbutt|kill|murder) (?<object>.+)$
 ```
 
-If the player types `KICK BORIS`, Quest will match it to this command, putting "KICK" in the `text` variable, the object `Boris` in the `object` variable, so you could have a message like this:
+If the player types `KICK BORIS`, Quest Viva will match it to this command, putting "KICK" in the `text` variable, the object `Boris` in the `object` variable, so you could have a message like this:
 
 ```quest
 "For a moment you want to " + LCase(text) + " " + object.name + ", but then you think better of it."
@@ -124,15 +124,15 @@ By the way, to get `HIT` to work, you will need to disable the built-in verb. Yo
 
 ## More on regex
 
-Quest is based on .Net technology, and so uses the .Net format for regex. That said, it is fairly standard and is used across several programming languages, and not at all specific to Microsoft (one difference, though, is how capture groups are defined).
+Quest Viva is based on .Net technology, and so uses the .Net format for regex. That said, it is fairly standard and is used across several programming languages, and not at all specific to Microsoft (one difference, though, is how capture groups are defined).
 
 [https://learn.microsoft.com/en-us/dotnet/standard/base-types/regular-expression-language-quick-reference](https://learn.microsoft.com/en-us/dotnet/standard/base-types/regular-expression-language-quick-reference)
 
-A lot of regex options start with a backslash, and this is a bit of a problem, because Quest is using strings to handle them, and in Quest (and most programming languages) the backslash is an escape character. What this means is that to display a backslash in Quest, you actually need to have two of them.
+A lot of regex options start with a backslash, and this is a bit of a problem, because Quest Viva is using strings to handle them, and in Quest Viva (and most programming languages) the backslash is an escape character. What this means is that to display a backslash in Quest Viva, you actually need to have two of them.
 ```quest
 msg("Here is a single backslash: \\")
 ```
-If you want to use any regex option that has a backslash _in your code_ you need to remember to use two! An important use of backslashes is to match against a character that has some special meaning. For example, to match a question mark, the standard way is to use `\?`. In Quest you will need to use `\\?`.
+If you want to use any regex option that has a backslash _in your code_ you need to remember to use two! An important use of backslashes is to match against a character that has some special meaning. For example, to match a question mark, the standard way is to use `\?`. In Quest Viva you will need to use `\\?`.
 
 However, for pattern-matching _in a command_, you do not need the extra backslash.
 
@@ -184,7 +184,7 @@ Anchors allow you to specify where in the string the match must be. In the previ
 ```quest
 regex = "^help$"
 ```
-The `^` and `$` are special codes that must match the start of the string and the end respectively, and they appear in most built in Quest commands. \A and \z do the same. \b must match the boundary between alphanumerics and non-alphanumerics.
+The `^` and `$` are special codes that must match the start of the string and the end respectively, and they appear in most built in Quest Viva commands. \A and \z do the same. \b must match the boundary between alphanumerics and non-alphanumerics.
 
 
 ## Other applications

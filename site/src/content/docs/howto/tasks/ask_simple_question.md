@@ -153,7 +153,7 @@ ShowMenu ("What flowers do you want to buy?", options, true) {
 msg("'Have a nice day!' she says.")
 ```
 
-Quest will set up the string list, display the menu, but will then print "'Have a nice day!' she says." immediately, whilst another part waits for the player to make a choice. That is probably not what you want! This is how to do it properly:
+Quest Viva will set up the string list, display the menu, but will then print "'Have a nice day!' she says." immediately, whilst another part waits for the player to make a choice. That is probably not what you want! This is how to do it properly:
 
 ```quest
 options = NewStringList()

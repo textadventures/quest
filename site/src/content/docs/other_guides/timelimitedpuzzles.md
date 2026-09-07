@@ -8,7 +8,7 @@ sidebar:
 
 When I was at Perins School last week, I was asked about puzzles with a time limit. For example, the player opens a cupboard, inside which is a hungry alien. How do you give the player 10 seconds to kill the alien, before the alien kills them instead?
 
-This is pretty straightforward to handle, because in Quest you can run scripts after a certain number of seconds. Here’s a quick how-to:
+This is pretty straightforward to handle, because in Quest Viva you can run scripts after a certain number of seconds. Here’s a quick how-to:
 
 First, add the cupboard and alien objects. The alien should be inside the cupboard. For the cupboard, go to the Container tab. Choose “Container” from the type list, and untick the “Is open” box so that the cupboard is closed when the game begins.
 

@@ -5,14 +5,14 @@ sidebar:
 ---
 
 
-When the player types something (or clicks a link), Quest will try to match the command string against all the commands it knows. If it gets a match, then it will process that command.
+When the player types something (or clicks a link), Quest Viva will try to match the command string against all the commands it knows. If it gets a match, then it will process that command.
 
 
 ## Simple commands
 
-Let us start with a `HELP` command. There is already a `HELP` command in Quest, but we will add our own (somewhat less helpful) version.
+Let us start with a `HELP` command. There is already a `HELP` command in Quest Viva, but we will add our own (somewhat less helpful) version.
 
-Quest searches the commands starting at the bottom, so any command we add in our game will be found first, before the built-in commands, so our new command will get a match and used, and the built-in one will not (actually it is a little more complicated than that, but that is good enough for now).
+Quest Viva searches the commands starting at the bottom, so any command we add in our game will be found first, before the built-in commands, so our new command will get a match and used, and the built-in one will not (actually it is a little more complicated than that, but that is good enough for now).
 
 To add a command:
 
@@ -24,14 +24,14 @@ The pattern we will match against is `help`, and we just want to print something
 
 Now if you play the game and type `HELP`, you will see the new text.
 
-There is a convention in interactive fiction that a question mark can be used as a synonym for `HELP`, so we better add that. You can add as many synonyms as you like (and should try to think of as many as possible), just separate them with semi-colons. So now the pattern Quest will use is:
+There is a convention in interactive fiction that a question mark can be used as a synonym for `HELP`, so we better add that. You can add as many synonyms as you like (and should try to think of as many as possible), just separate them with semi-colons. So now the pattern Quest Viva will use is:
 
     help;?
 
 
 ## Commands and objects
 
-Often you will want a command to involve an object. To handle that, Quest has a special system (in fact it has two, but [using verbs](/howto/commands/using_verbs) is a discussion for another time). Let us say we want to have a command for attacking a zombie. And we want to allow `STRIKE` and `HIT`.
+Often you will want a command to involve an object. To handle that, Quest Viva has a special system (in fact it has two, but [using verbs](/howto/commands/using_verbs) is a discussion for another time). Let us say we want to have a command for attacking a zombie. And we want to allow `STRIKE` and `HIT`.
 
 We could use this as the pattern:
 
@@ -39,28 +39,28 @@ We could use this as the pattern:
 
 That would work... but what if the player does `ATTACK UNDEAD` or `ATTACK FOE`? We could just add these synonyms too, but you can quickly get a dozen combinations. Also, we would have to check what zombie is present. Are we in the street with the ragged zombie or the back alley with the decrepit zombie or the cellar with the hat-wearing zombie?
 
-A far better way is to use a place-holder, and to let Quest dynamically match that against any object present.
+A far better way is to use a place-holder, and to let Quest Viva dynamically match that against any object present.
 
     attack #object#;strike #object#;hit #object#
 
-Quest will match that against all the different words for "zombie" you give to the zombie (on the _Object_ tab), and that will be good for any command.
+Quest Viva will match that against all the different words for "zombie" you give to the zombie (on the _Object_ tab), and that will be good for any command.
 
-So now the player can type `HIT UNDEAD`, and Quest will match this command pattern, and then it will check the objects present, and see if it can find a match for the object. If we are in the cellar, it will match it to the hat-wearing zombie, for example.
+So now the player can type `HIT UNDEAD`, and Quest Viva will match this command pattern, and then it will check the objects present, and see if it can find a match for the object. If we are in the cellar, it will match it to the hat-wearing zombie, for example.
 
 
 ### What if there is no matching object?
 
-If Quest cannot match the object, then it will print the "Unresolved object text".
+If Quest Viva cannot match the object, then it will print the "Unresolved object text".
 
 
 ### What if there are several matching objects?
 
-If there are two or more zombies here, Quest will ask the player which one she meant, and then will proceed with that one matched object.
+If there are two or more zombies here, Quest Viva will ask the player which one she meant, and then will proceed with that one matched object.
 
 
 ### What if there is one matching object
 
-So we have a single object matched to our command, so now Quest will run the script for the command.
+So we have a single object matched to our command, so now Quest Viva will run the script for the command.
 
 
 ## Script
@@ -80,7 +80,7 @@ Think of a checklist; what do we need to check before allowing the command to wo
 
 1. The player needs a weapon
 
-As Quest will only match an object if it is present, so we do not need to check if the zombie is present, it must be if Quest found it (that may not be the case if you use a [scope](/howto/commands/advanced_scope), but that is outside this discussion). We can ignore the first one. You may also choose to ignore the last depending on your game, but we will say that a weapon is required.
+As Quest Viva will only match an object if it is present, so we do not need to check if the zombie is present, it must be if Quest Viva found it (that may not be the case if you use a [scope](/howto/commands/advanced_scope), but that is outside this discussion). We can ignore the first one. You may also choose to ignore the last depending on your game, but we will say that a weapon is required.
 
 We then need to flip each item in the list, and add a response. I.e., instead of checking that it is an enemy, we check it is not, and add a response.
 

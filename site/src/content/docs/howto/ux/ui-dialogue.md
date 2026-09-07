@@ -8,7 +8,7 @@ We are going to use JQuery/JavaScript together with HTML to build a dialogue pan
 
 This is not trivial, and some idea of CSS and HTML will be useful; it would be a good idea to have read through [Customising the UI](/howto/ux/customising_the_ui) first.
 
-The way it will work is we will hand some HTML to JQuery and JQuery will put it in a dialogue. We will then need to collect the data and pass it to Quest.
+The way it will work is we will hand some HTML to JQuery and JQuery will put it in a dialogue. We will then need to collect the data and pass it to Quest Viva.
 
 There will be quite a bit of HTML and JavaScript code, and the neatest way to handle that is in its own file, so the first step is to create a text file called "dialogue.html", and upload it to your game via the Assets manager in the editor toolbar.
 
@@ -70,9 +70,9 @@ The other part puts the HTML into a dialogue box. I am not going deeply into Jav
 Save the file. Now if you go into the game, you will see the dialogue panel, and it will disappear when you click "Done".
 
 
-## Communicating with Quest
+## Communicating with Quest Viva
 
-The next step is to get the data into your game. This will be done with the special JavaScript function `ASLEvent`, which is provided by Quest. A complication here is that that can only take two parameters; the name of the Quest function to use, and a string. Either we need to use it numerous times, once for each value, or use it once but send it all the data in a single string. We will be doing the latter.
+The next step is to get the data into your game. This will be done with the special JavaScript function `ASLEvent`, which is provided by Quest Viva. A complication here is that that can only take two parameters; the name of the Quest Viva function to use, and a string. Either we need to use it numerous times, once for each value, or use it once but send it all the data in a single string. We will be doing the latter.
 
 In the code above there was this function:
 
@@ -82,7 +82,7 @@ function setValues() {
 }
 ```
 
-We need to change that to collect the data, and then to send it to Quest. You can get data from a form element with the JQuery `val` method. For text, it is trivial:
+We need to change that to collect the data, and then to send it to Quest Viva. You can get data from a form element with the JQuery `val` method. For text, it is trivial:
 
 ```js
 name = $('#name_input').val();
@@ -104,7 +104,7 @@ function setValues() {
 }
 ```
 
-Then we need to create a function in Quest to accept that data. Add it in the normal way, and call it `HandleDialogue`, no return type, and a single parameter, s. Paste in this code:
+Then we need to create a function in Quest Viva to accept that data. Add it in the normal way, and call it `HandleDialogue`, no return type, and a single parameter, s. Paste in this code:
 
 ```quest
 l = Split(s, "|")

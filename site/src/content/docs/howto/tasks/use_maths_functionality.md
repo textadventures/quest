@@ -4,11 +4,11 @@ sidebar:
   order: 24
 ---
 
-Text adventures do not have a lot of call for mathematics, but Quest does have a lot of maths functions built in nevertheless.
+Text adventures do not have a lot of call for mathematics, but Quest Viva does have a lot of maths functions built in nevertheless.
 
 ## Basic operations
 
-You know about +, -, \* and /, right? Quest also supports ^ and %, for raising to the power, and modulo arithmetic.
+You know about +, -, \* and /, right? Quest Viva also supports ^ and %, for raising to the power, and modulo arithmetic.
 
 ```quest
 msg ("2 to the 3 is " + (2^3))
@@ -149,7 +149,7 @@ The first line prints "true", the second "false" - same rules as checking agains
 
 ## Trigonometry and other functions
 
-Every felt you cannot create the adventure game of your dreams because Quest does not support hyperbolic cosine? Fret no more!
+Every felt you cannot create the adventure game of your dreams because Quest Viva does not support hyperbolic cosine? Fret no more!
 
 ```quest
 msg ("Absolute value of -2 is " + abs (-2))
@@ -177,7 +177,7 @@ msg ("pi is " + pi)
 
 ```
 
-Quest will actually allow you to go through the motions of assigning a value to these:
+Quest Viva will actually allow you to go through the motions of assigning a value to these:
 
 ```quest
 e = game.pov
@@ -195,13 +195,13 @@ In most languages you can index an element in a array (or list, as they are also
 myarray[5]
 ```
 
-It works in Quest too. You can even do it for a dictionary:
+It works in Quest Viva too. You can even do it for a dictionary:
 
 ```quest
 mydictionary["peter"]
 ```
 
-Note that these do the same as `ListItem` and `DictionaryItem`; they return an element with an indeterminate type, and it will take Quest a moment to work out what it is handling.
+Note that these do the same as `ListItem` and `DictionaryItem`; they return an element with an indeterminate type, and it will take Quest Viva a moment to work out what it is handling.
 
 Here is an example (TestFunc just prints out the value):
 
@@ -217,4 +217,4 @@ dictionary add (d, "" + list[1], list[2])
 msg (d["two"])
 ```
 
-Note that in the last but one line, the key for the dictionary is '"" + list[1]`. This addition gives Quest a chance to work out what `list[1]` is.
+Note that in the last but one line, the key for the dictionary is '"" + list[1]`. This addition gives Quest Viva a chance to work out what `list[1]` is.

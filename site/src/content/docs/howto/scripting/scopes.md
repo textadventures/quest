@@ -23,7 +23,7 @@ Core.aslx defines various "scope" functions. Each of these will return an object
 
 ## Reachable objects
 
-Quest makes a distinction between objects a player can reach and objects the player can see. Obviously with most objects, the player can do both, but this can be important in some situations.
+Quest Viva makes a distinction between objects a player can reach and objects the player can see. Obviously with most objects, the player can do both, but this can be important in some situations.
 
 Objects in a container are considered _reachable_ if the container is open. If an item's `visible` attribute is not set (i.e., it is `false`), or if the room is dark and the object is not a light source, then the object is not _reachable_.
 

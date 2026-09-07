@@ -72,7 +72,7 @@ Returns an [object](/types#object). Clones the object using [CloneObject](/funct
 FinishTurn ()
 ```
 
-Ends the current turn: runs turn scripts (if `game.runturnscripts` is set and they haven't been suppressed), then updates status attributes and darkness/hyperlink state for the next command. Quest calls this automatically after each player command; you would only call it yourself if you're driving a "turn" from custom code that bypasses the normal command loop.
+Ends the current turn: runs turn scripts (if `game.runturnscripts` is set and they haven't been suppressed), then updates status attributes and darkness/hyperlink state for the next command. Quest Viva calls this automatically after each player command; you would only call it yourself if you're driving a "turn" from custom code that bypasses the normal command loop.
 
 ## FormatContentsList
 ```quest
@@ -185,7 +185,7 @@ Returns a [string](/types#string) containing the full displayed name of an objec
 
 This will be the [prefix](/attributes#prefix) + the result from [GetDisplayAlias](#getdisplayalias) + the [suffix](/attributes#suffix).
 
-If type is not an empty string (and, in Quest 5.3 and earlier, a verbs list is specified), the result will include the display alias wrapped in an \<object\> tag complete with verbs. This will mean the Quest interface will display a hyperlinked object name with a menu of verbs. In Quest 5.4 and later, the [displayverbs](/attributes#displayverbs) or [inventoryverbs](/attributes#inventoryverbs) are picked up automatically depending on the object's parent.
+If type is not an empty string (and, in Quest 5.3 and earlier, a verbs list is specified), the result will include the display alias wrapped in an \<object\> tag complete with verbs. This will mean the Quest Viva interface will display a hyperlinked object name with a menu of verbs. In Quest 5.4 and later, the [displayverbs](/attributes#displayverbs) or [inventoryverbs](/attributes#inventoryverbs) are picked up automatically depending on the object's parent.
 
 ## GetDisplayVerbs
 ```quest

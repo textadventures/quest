@@ -26,7 +26,7 @@ The "speak to" method is directed to a specific character:
 
     SPEAK TO BORIS
 
-This could then be handled with a stock response or by offering a list of options (Quest will accept `TALK TO` as a synonym of `SPEAK TO`).
+This could then be handled with a stock response or by offering a list of options (Quest Viva will accept `TALK TO` as a synonym of `SPEAK TO`).
 
 [More here](/howto/npcs/speak_to)
 
@@ -42,7 +42,7 @@ Finally, the player can specify both the person to talk to and the subject:
 
     TELL BORIS TO DANCE
 
-Quest has a dedicated tab for this - tick "Ask/Tell" on the Features tab of the game object to turn it on, then each character gets an Ask/Tell tab where you list topics and their scripts, plus a script to run for any topic you haven't covered.
+Quest Viva has a dedicated tab for this - tick "Ask/Tell" on the Features tab of the game object to turn it on, then each character gets an Ask/Tell tab where you list topics and their scripts, plus a script to run for any topic you haven't covered.
 
 ![](/images/Talk3.png)
 
@@ -52,7 +52,7 @@ Quest has a dedicated tab for this - tick "Ask/Tell" on the Features tab of the 
 
 ## Pages
 
-For a more structured exchange - where the player picks from a fixed set of replies, and each reply leads to further choices - Quest has **Pages**, the Text Adventure equivalent of a gamebook's branching passages:
+For a more structured exchange - where the player picks from a fixed set of replies, and each reply leads to further choices - Quest Viva has **Pages**, the Text Adventure equivalent of a gamebook's branching passages:
 
     TALK TO BORIS
     1: Ask about the key

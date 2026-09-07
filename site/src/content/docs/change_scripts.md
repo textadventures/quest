@@ -6,11 +6,11 @@ sidebar:
 
 A change script is a script linked to an attribute. The script runs whenever the attribute changes. It is most useful when you have an attribute that can change in several different situations, but in all of them, you want the same thing to happen. A good example is in an RPG-style game, where you want to check the player's hit points to see if he is dead. The hit points might change when the player is attacked, drinks a poison or sets off a trap. Each of those events can modify the hits, but you have one just one change script that checks if the player is alive.
 
-Quest has some change scripts already built in. If you change the parent attribute of the player, a change script fires that calls the OnEnterRoom function. This ensures the function gets called every time, rather than relying on game creators calling it each time the player moves (in fact, this change script is on all objects, as any object can potentially be the player).
+Quest Viva has some change scripts already built in. If you change the parent attribute of the player, a change script fires that calls the OnEnterRoom function. This ensures the function gets called every time, rather than relying on game creators calling it each time the player moves (in fact, this change script is on all objects, as any object can potentially be the player).
 
 Change scripts can be created for attributes on any object, not just the player, by the way.
 
-As an example, let us create an attribute called "hits" on the player object. You can do that on the Attributes tab by clicking Add just above the bottom box. Set it to be an integer. Once it is in the list, click on it and then click the "Add Change Script" button (the third one, a plus in a box). Quest will add a new attribute, "changedhits". Easy as that.
+As an example, let us create an attribute called "hits" on the player object. You can do that on the Attributes tab by clicking Add just above the bottom box. Set it to be an integer. Once it is in the list, click on it and then click the "Add Change Script" button (the third one, a plus in a box). Quest Viva will add a new attribute, "changedhits". Easy as that.
 
 Now make the script display the new hit points:
 ```quest
@@ -23,7 +23,7 @@ else {
 }
 ```
 
-Quest recognises an attribute as a change script if it is a script and its name starts with "changed". There are just standard scripts, and you can use them as such:
+Quest Viva recognises an attribute as a change script if it is a script and its name starts with "changed". There are just standard scripts, and you can use them as such:
 ```quest
 do (player, "changedhits")
 ```
@@ -33,7 +33,7 @@ do (player, "changedhits")
 
 ### Lists
 
-Changing the contents of a list does not trigger a change script. Quest will consider it to be the same list. Say we have an attribute called "listofstuff".
+Changing the contents of a list does not trigger a change script. Quest Viva will consider it to be the same list. Say we have an attribute called "listofstuff".
 ```quest
 // This will not trigger a change script
 list add (player.listofstuff, "item")

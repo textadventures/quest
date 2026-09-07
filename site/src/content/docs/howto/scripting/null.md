@@ -8,7 +8,7 @@ sidebar:
 
 ## The `null` object
 
-In Quest code, null has two slightly different meanings. It can be an empty object; that is, an object with no attributes and of the special type "null".
+In Quest Viva code, null has two slightly different meanings. It can be an empty object; that is, an object with no attributes and of the special type "null".
 
 ```quest
 obj = player
@@ -60,7 +60,7 @@ msg(bob.gender)
 -> "he"
 ```
 
-In fact, behind the scenes, what happens is that when we try to access `bob.gender`, Quest first checks if Bob has that attribute, and if not, it then looks for it in the types associated with Bob.
+In fact, behind the scenes, what happens is that when we try to access `bob.gender`, Quest Viva first checks if Bob has that attribute, and if not, it then looks for it in the types associated with Bob.
 
 
 ## Compared to null

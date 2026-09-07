@@ -24,11 +24,11 @@ So let's implement a command for making a bow.
 
 First create three objects, the string, the branch and the bow. The bow should be put in a room the player cannot get to (no exits going to it); let's say it is called "nowhere". Remember to set them all so they can be taken.
 
-Now the command. Generally when implementing a command, we would use `#object#` in the pattern, telling Quest to match any object present. We cannot do that here, as the bow is not present, so instead we will just use straight text:
+Now the command. Generally when implementing a command, we would use `#object#` in the pattern, telling Quest Viva to match any object present. We cannot do that here, as the bow is not present, so instead we will just use straight text:
 
 > make bow;construct bow
 
-Give the command a name. This is not required by Quest, but will be useful later.
+Give the command a name. This is not required by Quest Viva, but will be useful later.
 
 > CmdMakeBow
 
@@ -108,11 +108,11 @@ Let's look at an entirely different system. There was, way back in the mists of 
 
 I am going to change it around a bit so we create an item, rather than two people (though the item is an ape, but we will say it is a small, passive ape that can be picked up).
 
-Note: _The scripts we will use are longer than before, and Quest will not display the whole of them on the screen at once (not on my PC anyway), so I am just giving the code. If you do not like code, just click on "Code view" for the script in your game, copy-and-paste the code into the text area, and exit "Code view". Now you can see it in the normal GUI view!_
+Note: _The scripts we will use are longer than before, and Quest Viva will not display the whole of them on the screen at once (not on my PC anyway), so I am just giving the code. If you do not like code, just click on "Code view" for the script in your game, copy-and-paste the code into the text area, and exit "Code view". Now you can see it in the normal GUI view!_
 
 First, on the _Features_ tab of the game object, turn on inventory limits. Then create four items; a tray, Ray, a tape and an ape. The ape and Ray need to go into the "nowhere" room. Make sure the tray, the tape and the ape can be picked up (_Inventory_ tab).
 
-We now need to create the t-remover. We will need to call it "t_remover" and then give it an alias as Quest only allows numbers, letters, spaces and underscores in names.
+We now need to create the t-remover. We will need to call it "t_remover" and then give it an alias as Quest Viva only allows numbers, letters, spaces and underscores in names.
 
 The item to convert will be put inside the machine, so on the _Features_ tab, tick "Container", then on the _Container_ tab, set it to be a "Limited container". Take a look at the _Container_ tab, and see if you want to change anything (I suggest have it start closed and not transparent), but you can leave all the defaults (it is already limited to a single item, which we want).
 
@@ -170,7 +170,7 @@ s = s + " There is a big red button on the top."
 msg (s)
 ```
 
-Note that we are not adding any new attributes to the machine. Quest has a comprehensive world model that will track the state of objects in it very well. Let Quest do its job, and ask it what the current state is when we need to know.
+Note that we are not adding any new attributes to the machine. Quest Viva has a comprehensive world model that will track the state of objects in it very well. Let Quest Viva do its job, and ask it what the current state is when we need to know.
 
 So now we have a working t-removing machine! Go into the game and confirm it works.
 

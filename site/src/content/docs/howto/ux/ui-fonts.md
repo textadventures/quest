@@ -6,7 +6,7 @@ sidebar:
 
 ## Fonts
 
-There are about a dozen "base fonts" available in Quest. These are fonts that are pretty much guaranteed to be available on any computer (or at least equivalents, so we have Arial on PC, or Helvetica on Mac or failing that sans-serif).
+There are about a dozen "base fonts" available in Quest Viva. These are fonts that are pretty much guaranteed to be available on any computer (or at least equivalents, so we have Arial on PC, or Helvetica on Mac or failing that sans-serif).
 
 If you want to change the font during a game, use the `SetFontName` function. This allows you to list the equivalent fonts, so will ensure users on other operating systems see more-or-less the same thing.
 

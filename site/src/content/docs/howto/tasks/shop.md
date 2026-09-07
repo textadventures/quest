@@ -14,7 +14,7 @@ The approach is to have separate rooms that the player cannot get to to hold the
 
 ## Setting up an economy
 
-Quest has some features built in to help us, so the first step is to turn these on. Go to the _Features_ tab of the `game` object, and tick "Money".
+Quest Viva has some features built in to help us, so the first step is to turn these on. Go to the _Features_ tab of the `game` object, and tick "Money".
 
 Now you need to think about what currency you want to use. If you are using pounds sterling, you should consider if you want to track the pennies, or just the pounds (the system will only be using whole numbers, so think carefully!).
 
@@ -122,7 +122,7 @@ For the unresolved text:
 
     You want to sell what exactly?
 
-We can also set the scope, so that Quest looks in the player's inventory first. This means that if the player returns to the shop to sell something back, Quest will match the clone the player is holding, rather than the original in the shop.
+We can also set the scope, so that Quest Viva looks in the player's inventory first. This means that if the player returns to the shop to sell something back, Quest Viva will match the clone the player is holding, rather than the original in the shop.
 
 ```quest
 inventory

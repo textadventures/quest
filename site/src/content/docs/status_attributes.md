@@ -12,7 +12,7 @@ You can display as many as you want, but are limited to string, int, double and 
 
 
 
-Status attributes are just attributes that you tell Quest to display - there is nothing special about the attribute itself. Quest has two lists of status attributes, one for the game object and one for the player. If the player object can change, then each one gets its own list, but only the current one will be used. Therefore you should use the game one to hold game-wide values such as the time and score, and the player one for those that relate to the player, such as health and money.
+Status attributes are just attributes that you tell Quest Viva to display - there is nothing special about the attribute itself. Quest Viva has two lists of status attributes, one for the game object and one for the player. If the player object can change, then each one gets its own list, but only the current one will be used. Therefore you should use the game one to hold game-wide values such as the time and score, and the player one for those that relate to the player, such as health and money.
 
 
 ## Setting up

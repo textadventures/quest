@@ -4,7 +4,7 @@ sidebar:
   order: 5
 ---
 
-A dictionary is a data set where each entry is accessed by a string, called a key. If you think about an actual dictionary, it contains words linked to definitions. To find a specific definition, you use the word to look it up. Quest dictionaries are the same, you use a word, called a key, to look up your information, called a value.
+A dictionary is a data set where each entry is accessed by a string, called a key. If you think about an actual dictionary, it contains words linked to definitions. To find a specific definition, you use the word to look it up. Quest Viva dictionaries are the same, you use a word, called a key, to look up your information, called a value.
 
 A dictionary can never have two entries with the same key, just as a list can never have two entries with the same position. However, unlike a list, there is no order to the entries in a dictionary (in theory anyway).
 
@@ -45,7 +45,7 @@ StringDictionaryItem
 ScriptDictionaryItem
 ObjectDictionaryItem
 ```
-Note that Quest will throw an error if the key is not found in the dictionary, so testing before hand is usually advised.
+Note that Quest Viva will throw an error if the key is not found in the dictionary, so testing before hand is usually advised.
 
 
 

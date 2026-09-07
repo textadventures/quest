@@ -30,7 +30,7 @@ else {
 
 The second line is where the "sit on" verb is invoked.
 
-By the way, if your verb is multiple words (such as `sit on`) Quest will run them together into one long word, `siton`. However, some built-in verbs have been set up differently, so in this case the attribute name is just `sit`. You can check what name Quest is using by looking on the Attributes tab.
+By the way, if your verb is multiple words (such as `sit on`) Quest Viva will run them together into one long word, `siton`. However, some built-in verbs have been set up differently, so in this case the attribute name is just `sit`. You can check what name Quest Viva is using by looking on the Attributes tab.
 
 This trick is also useful when you have a verb that can mean different things. You might want your game to handle these:
 
@@ -56,7 +56,7 @@ On the man, the "strike" verb does this:
 do(this, "punch")
 ```
 
-In case you are wondering, Quest understands "this" to mean the object to which the script is attached. It is good practice to use "this" rather than the name of the object; for one thing, you may later rename an object, perhaps giving the man a proper name.
+In case you are wondering, Quest Viva understands "this" to mean the object to which the script is attached. It is good practice to use "this" rather than the name of the object; for one thing, you may later rename an object, perhaps giving the man a proper name.
 
 
 ## Multiple objects
@@ -68,7 +68,7 @@ The first step is to add the verb to the object, in this case the goblin. Howeve
 
 ## Notes
 
-Some verbs are already implemented, such as "speak to" and "sit on". If you start to type in the Add Verb box, you will see these appear as options. The left-hand column below is the internal name Quest matches your typing against - the resulting script attribute (shown in brackets) is sometimes different, so check the object's Attributes tab if you're not sure. If you add "talk to" as a verb, for example, it matches the built-in "speak" verb, and the response script ends up in an attribute called "speak" too.
+Some verbs are already implemented, such as "speak to" and "sit on". If you start to type in the Add Verb box, you will see these appear as options. The left-hand column below is the internal name Quest Viva matches your typing against - the resulting script attribute (shown in brackets) is sometimes different, so check the object's Attributes tab if you're not sure. If you add "talk to" as a verb, for example, it matches the built-in "speak" verb, and the response script ends up in an attribute called "speak" too.
 
 ```
 lieon      (attribute: lie)     lie on #object#; lie upon #object#; lie down on #object#; lie down upon #object#
@@ -77,22 +77,22 @@ siton      (attribute: sit)     sit on #object#; sit upon #object#; sit down on 
 speak      (attribute: speak)   speak to #object#; speak #object#; talk to #object#; talk #object#
 ```
 
-A few verbs cannot be implements, as they already mean something in Quest. "Open" and "close", and "switch/turn on/off" and "enter" are the main examples. Quest should warn you if you try to do this, as it can have far-reaching consequences in your game.
+A few verbs cannot be implements, as they already mean something in Quest Viva. "Open" and "close", and "switch/turn on/off" and "enter" are the main examples. Quest Viva should warn you if you try to do this, as it can have far-reaching consequences in your game.
 
 
 ## The verb element
 
-The text Quest uses to match against goes into the verb element, and as Quest quietly creates these for you it is easy to miss they even exist. Look for them under the game object. Here is one for our `ROTATE` verb.
+The text Quest Viva uses to match against goes into the verb element, and as Quest Viva quietly creates these for you it is easy to miss they even exist. Look for them under the game object. Here is one for our `ROTATE` verb.
 
 ![](/images/verb_element.png)
 
-The first bit is the text that Quest will match against, just as with a command. You can change this, to allow for synonyms, with each word separated by semi-colons, like this:
+The first bit is the text that Quest Viva will match against, just as with a command. You can change this, to allow for synonyms, with each word separated by semi-colons, like this:
 
   rotate; turn; twist
 
-The "Attribute" is the name of the attribute on the object, it tells Quest to use the "rotate" script attribute in this case.
+The "Attribute" is the name of the attribute on the object, it tells Quest Viva to use the "rotate" script attribute in this case.
 
-The third part ("Default" and the text box below) is what Quest will use if the player tries this verb on something you have not implemented it for (and Quest will even generate this default text for you, so the above is the default default!). You can, of course, change this to your liking.
+The third part ("Default" and the text box below) is what Quest Viva will use if the player tries this verb on something you have not implemented it for (and Quest Viva will even generate this default text for you, so the above is the default default!). You can, of course, change this to your liking.
 
 The fourth part is for handling multiple objects for your verb. Remember the `ATTACK GOBLIN WITH KNIFE` verb?
 
@@ -110,9 +110,9 @@ The same information appears in the game's XML as a `<verb>` element:
 </verb>
 ```
 
-Here, `property` is the attribute name, `pattern` is the semi-colon separated list of text Quest matches against, and `defaulttext` is the "Default" text box.
+Here, `property` is the attribute name, `pattern` is the semi-colon separated list of text Quest Viva matches against, and `defaulttext` is the "Default" text box.
 
-Quest checks that a new verb won't clash with an existing one, but it can only do that for single words or phrases: it will stop you adding "look at" or "examine" on their own, but it will not stop you adding "look at;examine" as a single pattern, which can quietly break LOOK AT for everything else in your game.
+Quest Viva checks that a new verb won't clash with an existing one, but it can only do that for single words or phrases: it will stop you adding "look at" or "examine" on their own, but it will not stop you adding "look at;examine" as a single pattern, which can quietly break LOOK AT for everything else in your game.
 
 
 ### Complex verbs
@@ -137,7 +137,7 @@ Note that the order is important here. If you use this:
 hug;give #object# hug;give #object# a hug
 ```
 
-... Quest will get a match with the second option, then complain it cannot find a "mary a".
+... Quest Viva will get a match with the second option, then complain it cannot find a "mary a".
 
 
 As with commands, you can also use a Regex to match against (change "Pattern" to "Regular expression"). 
@@ -148,6 +148,6 @@ As with commands, you can also use a Regex to match against (change "Pattern" to
 
 By default, Regex matching is "greedy", and will try to grab as much as it can, so again will attempt to grab "mary a" as the object. The question mark after the asterisk makes that non-greedy so it takes the minimum, leaving the "a" out of the object name.
 
-For verbs that use two objects, Quest will append the option to include the second object in the command pattern, which will just confuse it if you are using a regular expression. There appears to be no way to successfully use a regular expression with multiple objects for a verb. There also seems to be no way to reverse the order (to allow for `ATTACK GOBLIN WITH KNIFE` and `USE KNIFE TO ATTACK GOBLIN`) using the command pattern. In both cases you will need to use commands.
+For verbs that use two objects, Quest Viva will append the option to include the second object in the command pattern, which will just confuse it if you are using a regular expression. There appears to be no way to successfully use a regular expression with multiple objects for a verb. There also seems to be no way to reverse the order (to allow for `ATTACK GOBLIN WITH KNIFE` and `USE KNIFE TO ATTACK GOBLIN`) using the command pattern. In both cases you will need to use commands.
 
 There is more on regular expressions [here](/howto/commands/pattern_matching).

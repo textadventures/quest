@@ -4,7 +4,7 @@ sidebar:
   order: 5
 ---
 
-When you create a Quest game, there is by default one "player" object, which represents the player's point of view (POV). The player's inventory consists of all the objects that are contained by this "player" object.
+When you create a Quest Viva game, there is by default one "player" object, which represents the player's point of view (POV). The player's inventory consists of all the objects that are contained by this "player" object.
 
 You can switch the POV at any time - your game remains a single-player experience, but that player can now switch between different characters. This means you could create a game where the player can explore from different points of view, or perhaps simply choose a pre-defined character when starting the game.
 
@@ -22,9 +22,9 @@ On the _Player_ tab of the `game` you can select which object will be the player
 
 ## Player or character?
 
-Quest will handle an object different depending on whether it is the current player or not. For example, if you have two player objects "Mary" and "Bob" in a game, and it is possible for them to be together in the same room at the same time, you will want different responses for LOOK AT MARY and LOOK AT BOB depending on whether the player is currently Mary or Bob.
+Quest Viva will handle an object different depending on whether it is the current player or not. For example, if you have two player objects "Mary" and "Bob" in a game, and it is possible for them to be together in the same room at the same time, you will want different responses for LOOK AT MARY and LOOK AT BOB depending on whether the player is currently Mary or Bob.
 
-When the player is Mary, Quest will use the setting for Mary on the _Player_ tab, so the the description there might start "You are...". For Bob, Quest will use the setting on the _Setup_ tab, just as it does for other objects. The description on the _Setup_ tab might start "Bob is...".
+When the player is Mary, Quest Viva will use the setting for Mary on the _Player_ tab, so the the description there might start "You are...". For Bob, Quest Viva will use the setting on the _Setup_ tab, just as it does for other objects. The description on the _Setup_ tab might start "Bob is...".
 
 
 ![](/images/Pov1.png)

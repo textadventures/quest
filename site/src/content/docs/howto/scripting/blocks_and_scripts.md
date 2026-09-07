@@ -35,7 +35,7 @@ else {
 
 ### Script commands with blocks that wait
 
-Note that blocks are non-blocking! That means Quest will continue with the rest of the code without waiting. This can lead to odd results when waiting for player input. Consider this example:
+Note that blocks are non-blocking! That means Quest Viva will continue with the rest of the code without waiting. This can lead to odd results when waiting for player input. Consider this example:
 
 ```quest
 msg ("A man steps out of the door way. 'You wanna a cheap watch?'")
@@ -50,9 +50,9 @@ ask ("Buy dodgy watch?") {
 msg ("You walk swiftly on.")
 ```
 
-The player will be asked the question, but Quest will print "You walk swiftly on." immediately, without waiting for the player to give a response.
+The player will be asked the question, but Quest Viva will print "You walk swiftly on." immediately, without waiting for the player to give a response.
 
-The `on ready` script command is there specifically to ensure Quest waits for any outstanding block to end before running its own block.
+The `on ready` script command is there specifically to ensure Quest Viva waits for any outstanding block to end before running its own block.
 
 
 ## Functions with scripts
@@ -98,13 +98,13 @@ myscript => {
 ShowMenu ("What is your favourite colour?", options, false, myscript)
 ```
 
-When Quest hits a `ShowMenu`, it displays the menu, and then it saves the script for later, assigning it as an attribute of the game object.
+When Quest Viva hits a `ShowMenu`, it displays the menu, and then it saves the script for later, assigning it as an attribute of the game object.
 
 One consequence of this is that the `on ready` script command will not wait. It only waits until all blocks have completed; it has no way of knowing what scripts are waiting.
 
 Perhaps a more important consequence is that local variables will not be available inside the script (while they are inside a block). You will not be able to use the `this` variable, nor will you be able to access parameters if this is inside a function, nor will you have access to `object` or `text` (or whatever) inside a command.
 
-Let us suppose a `Showmenu` is inside a command, with the pattern "paint #object#". The following code will fail; Quest will complain: "Unknown object or variable 'object'."
+Let us suppose a `Showmenu` is inside a command, with the pattern "paint #object#". The following code will fail; Quest Viva will complain: "Unknown object or variable 'object'."
 
 ```quest
 options = Split("Red;Green;Blue;Yellow", ";")
@@ -127,7 +127,7 @@ ShowMenu ("Paint " + GetDisplayAlias(object) + " what colour?", options, false) 
 
 ## Nesting
 
-Given Quest does not wait for a block or script to complete, what do you do if you want to have multiple `ShowMenu` calls in the same script? For example, during character creation, you might want to ask the player several questions to set up the character.
+Given Quest Viva does not wait for a block or script to complete, what do you do if you want to have multiple `ShowMenu` calls in the same script? For example, during character creation, you might want to ask the player several questions to set up the character.
 
 The trick is _nesting_, which is putting one thing inside another. Instead of having the second `ShowMenu` after the first, you put it inside the code for the first.
 

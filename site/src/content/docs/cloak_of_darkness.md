@@ -10,7 +10,7 @@ The Cloak of Darkness is a specification for an adventure game that has been cre
 
 > This adventure is a tiny adventure designed to be easy to port to a given Authoring system. It is, if you will, the interactive fiction equivalent of "Hello, world!"
 
-This seems to be a great way to look in some detail at how to create a Quest game. This walkthrough assumes you have already completed the [Tutorial](/tutorial/tutorial_introduction), and goes further than it does - we will be working with code throughout. We will try at each step to make systems that are general, so that this could be extended into a lengthy game.
+This seems to be a great way to look in some detail at how to create a Quest Viva game. This walkthrough assumes you have already completed the [Tutorial](/tutorial/tutorial_introduction), and goes further than it does - we will be working with code throughout. We will try at each step to make systems that are general, so that this could be extended into a lengthy game.
 
 If you want to see how the scripts look in the GUI, download the game (link below) and open it in the editor to take a look. Alternatively, you can click the "Code view" button for a script, paste the code in there, and then click "Code view" again to go back to the GUI view.
 
@@ -40,7 +40,7 @@ We will divide the process into five sections, starting with the locations and i
 
 ## Locations and items
 
-The first place to start is the geography of your game; creating the locations, the exits between them and the items in them. For a big game, you might want to create a map with [trizbort](/howto/world/trizbort), and export it to Quest, but there is no point when there are only three rooms!
+The first place to start is the geography of your game; creating the locations, the exits between them and the items in them. For a big game, you might want to create a map with [trizbort](/howto/world/trizbort), and export it to Quest Viva, but there is no point when there are only three rooms!
 
 Note that if you are creating a large adventure you may find it more convenient to create a section of the geography, and then get all the systems working there, then move to the next section. In fact, you may find it advantageous to do it in reverse order; do the ending first, and get that right, then work your way back to the start. In that way you do not have to trek all the way through the adventure to get to the bit you are working on.
 
@@ -48,7 +48,7 @@ For Cloak of Darkness, rename the starting room to "foyer", add two more rooms a
 
 ![](/images/cod01.png)
 
-The only complicated bit is the locked door to the north of the foyer. Quest will ask you for a destination when you try to create it. Just select any other room, but make sure "Also create exit in other direction" is not ticked. Then go to the exit (make sure it is the one to the north), and tick it as locked. You might want to change the message too.
+The only complicated bit is the locked door to the north of the foyer. Quest Viva will ask you for a destination when you try to create it. Just select any other room, but make sure "Also create exit in other direction" is not ticked. Then go to the exit (make sure it is the one to the north), and tick it as locked. You might want to change the message too.
 
 For the objects, on the _Object_ tab, add any synonyms ("peg" for hook; "cape", "mantle", "robe" for cloak; "note", "writing" for message).
 
@@ -72,7 +72,7 @@ Our command pattern will be this:
 
     hang up #object#;hang #object#
 
-Note that you need to have the longer versions at the start, otherwise Quest will match "hang #object#" to `HANG UP CLOAK`, and will complain that it cannot see an "up cloak"!
+Note that you need to have the longer versions at the start, otherwise Quest Viva will match "hang #object#" to `HANG UP CLOAK`, and will complain that it cannot see an "up cloak"!
 
 For the command script, the general strategy is to check each failing condition, with an appropriate message, and if it all passes, do the command:
 
@@ -89,7 +89,7 @@ else {
 }
 ```
 
-I am using "object.article" so Quest will use "it", "them, "him" as appropriate. The `GetDefiniteAlias` function will return the alias of the object if it exists, or the name otherwise, and will prepend "the" if appropriate. This is good practice that you should adopt, as it keeps the language flowing and natural.
+I am using "object.article" so Quest Viva will use "it", "them, "him" as appropriate. The `GetDefiniteAlias` function will return the alias of the object if it exists, or the name otherwise, and will prepend "the" if appropriate. This is good practice that you should adopt, as it keeps the language flowing and natural.
 
 
 ### Handling HANG CLOAK ON HOOK
@@ -98,9 +98,9 @@ Our command pattern will be this:
 
     hang #object1# on #object2#
 
-Why not do this as "hang #object1# on hook"? It is better practice to always use a general object, as this allows Quest to match the synonyms for the objects. The above will also match `HANG CAPE ON PEG`. If we later think of another synonym for hook, we can just add it to hook, and all the commands will handle it fine.
+Why not do this as "hang #object1# on hook"? It is better practice to always use a general object, as this allows Quest Viva to match the synonyms for the objects. The above will also match `HANG CAPE ON PEG`. If we later think of another synonym for hook, we can just add it to hook, and all the commands will handle it fine.
 
-Quest will only match against objects present (unless we tell it otherwise for a specific command), so we know the hook must be present; so rather than checking we are in the right room, we need to check `object2` is the hook object. For a bigger game, we might want to have an attribute on the hook that flags it as something we can hang stuff on, and then check that flag on `object2`; I have written the messages to keep them general. Note that `GetDisplayName` prepends "a" or "some" to the name, as appropriate.
+Quest Viva will only match against objects present (unless we tell it otherwise for a specific command), so we know the hook must be present; so rather than checking we are in the right room, we need to check `object2` is the hook object. For a bigger game, we might want to have an attribute on the hook that flags it as something we can hang stuff on, and then check that flag on `object2`; I have written the messages to keep them general. Note that `GetDisplayName` prepends "a" or "some" to the name, as appropriate.
 
 ```quest
 if (not object1.parent = player) {
@@ -211,7 +211,7 @@ All it will do is run the "look" script, exactly the same as `LOOK AT MESSAGE`. 
 
 The second thing we can do is stop turnscripts running in some situations. If the player mistypes a command, it is not really fair to count that as a turn. Typing `HELP` should also not count as a turn. There may be other examples you can think of.
 
-Go to the _Features_ tab of the game object, and tick "Show advanced scrips...", then go to the _Advanced scripts_ tab. The middle script is for unresolved commands. We want to have it print a message, and to tell Quest to skip turnscripts this turn.
+Go to the _Features_ tab of the game object, and tick "Show advanced scrips...", then go to the _Advanced scripts_ tab. The middle script is for unresolved commands. We want to have it print a message, and to tell Quest Viva to skip turnscripts this turn.
 
 ```quest
 msg ("Sorry, I do not understand '" + command + "'.")
@@ -236,7 +236,7 @@ You might want something more helpful...
 
 ## The darkness
 
-So now we have to handle the darkness. Note that Quest has a built-in light/dark system, but it is not so useful here, where the darkness will depend on where an object is.
+So now we have to handle the darkness. Note that Quest Viva has a built-in light/dark system, but it is not so useful here, where the darkness will depend on where an object is.
 
 A room is dark if the cloak is in it, and in the bar it is so dark nothing but the exit can be seen. We will be checking if the cloak is present a lot, so it is a good idea to do this with a function.
 
@@ -382,7 +382,7 @@ You try the doors out of the opera house, but they are locked. {once:{i:How did 
 
 ### Walls, etc.
 
-Some players will try to examine the walls. We do not want Quest to say there are no walls, so we will implement them. Create a new room called "everywhere", and in it put three objects, "walls", "ceiling" and "floor". Add any synonyms you can think of ("carpet" for example). Set them all to be scenery.
+Some players will try to examine the walls. We do not want Quest Viva to say there are no walls, so we will implement them. Create a new room called "everywhere", and in it put three objects, "walls", "ceiling" and "floor". Add any synonyms you can think of ("carpet" for example). Set them all to be scenery.
 
 For the "Look at" description, we need to check if it is too dark to see the wall, that is, if the player is in the bar and the cloak is here. Here is an example for the walls:
 
@@ -403,7 +403,7 @@ foreach (o, GetAllChildObjects (everywhere)) {
 }
 ```
 
-This will add each object in the "everywhere" room to the special object list "items". Note that you cannot use `ListCombine` here, you have to add each item in turn to "items". Also, you cannot use a scope function (eg `ScopeVisibleForRoom`), as they use this script, and you will get Quest stuck in a loop.
+This will add each object in the "everywhere" room to the special object list "items". Note that you cannot use `ListCombine` here, you have to add each item in turn to "items". Also, you cannot use a scope function (eg `ScopeVisibleForRoom`), as they use this script, and you will get Quest Viva stuck in a loop.
 
 
 ### LISTEN and SMELL
@@ -500,7 +500,7 @@ Note that we use `GetBoolean(player, "suppress_background_sounds")`; this is bec
 
 So now if the player does LISTEN, the command will set player.suppress_background_sounds to true, and no sounds of scratching will be printed.... Ever again... We need a way to reset it. The best way is in a turnscript that runs after everything else.
 
-Turnscripts run in alphabetical order, so we can create a new turnscript, and give it a name, "z_endturn" (the turnscript in the bar has no name, but Quest will give it a name that starts with a "k" when the game starts). Tick to have it enabled at the start. The code just sets the flag back to false:
+Turnscripts run in alphabetical order, so we can create a new turnscript, and give it a name, "z_endturn" (the turnscript in the bar has no name, but Quest Viva will give it a name that starts with a "k" when the game starts). Tick to have it enabled at the start. The code just sets the flag back to false:
 
 ```quest
 player.suppress_background_sounds = false
@@ -510,13 +510,13 @@ player.suppress_background_sounds = false
 
 Some players will expect to be able to wear and remove the cloak, so we better handle that too.
 
-Quest has a built-in system for wearables, but it is a bit much for this game. Specifically, it will insist that the cloak is removed before it is hung up or dropped, which will be annoying and against the Cloak of Darkness specification, so we will create our own.
+Quest Viva has a built-in system for wearables, but it is a bit much for this game. Specifically, it will insist that the cloak is removed before it is hung up or dropped, which will be annoying and against the Cloak of Darkness specification, so we will create our own.
 
 As there is the built-in system, we cannot use verbs, but we can add our own commands. For the `WEAR` command, this is the pattern:
 
     put #object# on; wear #object#; put on #object#; don #object#; wear #object#
 
-We can set the scope to "inventory", so Quest will look there first, but it will then look anywhere reachable when trying to match the object. Here is the code:
+We can set the scope to "inventory", so Quest Viva will look there first, but it will then look anywhere reachable when trying to match the object. Here is the code:
 
 ```quest
 if (not HasBoolean(object, "worn")) {
@@ -616,9 +616,9 @@ You can test your game by following a walk through.
 
 You can also create a walkthrough object that you can play again and again. Click "Add", then "Add Walkthrough", to create a new one. Give it some name. You can now add each step of the walkthrough.
 
-However, an easier way is to click the record button (the circle), and then play through the game. Quest will record each step.
+However, an easier way is to click the record button (the circle), and then play through the game. Quest Viva will record each step.
 
-Once you have a walkthrough you can click the play button (the triangle), to play through the walkthrough. You can add to a walkthrough by clicking record again; Quest will play through the existing steps, then record your new moves.
+Once you have a walkthrough you can click the play button (the triangle), to play through the walkthrough. You can add to a walkthrough by clicking record again; Quest Viva will play through the existing steps, then record your new moves.
 
 
 
@@ -628,7 +628,7 @@ So you think the game is ready for release... Not yet!
 
 _Save._ Go into the game, and try to save it. For some reason, saving the game during play checks your game code more thoroughly than anything else, and if you cannot save, you have a problem somewhere.
 
-_Spellcheck._ Hopefully you are using a browser with a spell-checker, and have been checking as you go along. You can also back-up the game file, then open it in an editor with a spell-check facility (I like Notepad++). All the stuff inside angle brackets (i.e., < and >) can be ignored (and indeed should not be touched). Hopefully you will recognise the text you typed, and the editor will tell you if there are mistakes in it. You could use a word processor like LibraOffice or MS Word to find errors, but be very careful saving the game from a word processor, as they are likely to make changes that will stop Quest loading your game.
+_Spellcheck._ Hopefully you are using a browser with a spell-checker, and have been checking as you go along. You can also back-up the game file, then open it in an editor with a spell-check facility (I like Notepad++). All the stuff inside angle brackets (i.e., < and >) can be ignored (and indeed should not be touched). Hopefully you will recognise the text you typed, and the editor will tell you if there are mistakes in it. You could use a word processor like LibraOffice or MS Word to find errors, but be very careful saving the game from a word processor, as they are likely to make changes that will stop Quest Viva loading your game.
 
 _Beta-test._ Get some people to beta-test your game. They will find problems you have not. Remember to thank them somewhere in your game (the ABOUT command is usual). You can upload/publish your game as unlisted for beta-testing.
 

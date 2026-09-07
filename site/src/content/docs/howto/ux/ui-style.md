@@ -4,9 +4,9 @@ sidebar:
   order: 2
 ---
 
-Quest offers a number of options for making your game look good, and fit the style and atmosphere you want. All these options can be accessed from various tabs on the game object.
+Quest Viva offers a number of options for making your game look good, and fit the style and atmosphere you want. All these options can be accessed from various tabs on the game object.
 
-This is the classic Quest interface:
+This is the classic Quest Viva interface:
 
 ![](/images/ui-classic.png)
 
@@ -78,6 +78,6 @@ You can set it to be clear for rooms with no image set.
 
 ## The _room descriptions_ tab
 
-With the Room Descriptions tab, you can control what happens when the player enters a room (or types LOOK). Note that "Automatically generate room descriptions" does not mean Quest will do the work for you! Rather, it means it will list the exits and the objects for you. If the box is ticked, you can control their order by modifying the numbers (set to zero if you do not what that one displayed).
+With the Room Descriptions tab, you can control what happens when the player enters a room (or types LOOK). Note that "Automatically generate room descriptions" does not mean Quest Viva will do the work for you! Rather, it means it will list the exits and the objects for you. If the box is ticked, you can control their order by modifying the numbers (set to zero if you do not what that one displayed).
 
 Hopefully most of the options are self-explanatory; experiment and see what works best for your game.

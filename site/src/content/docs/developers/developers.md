@@ -23,11 +23,11 @@ To contribute a change: fork the repository, make your changes on a branch, and 
 
 Questions about how things work are welcome in [GitHub Discussions](https://github.com/textadventures/quest/discussions).
 
-### Translating Quest
+### Translating Quest Viva
 
-If you know a language other than English, why not try translating the English.aslx file? The more languages Quest supports, the better, so please feel free to add any language you can speak!
+If you know a language other than English, why not try translating the English.aslx file? The more languages Quest Viva supports, the better, so please feel free to add any language you can speak!
 
-See [Translating Quest](/advanced-topics/translating_quest) for full information.
+See [Translating Quest Viva](/advanced-topics/translating_quest) for full information.
 
 
 ## Technical overview
@@ -37,7 +37,7 @@ See [Translating Quest](/advanced-topics/translating_quest) for full information
 Here are the main projects you'll find in `QuestViva.sln`:
 
 - **Common** - Shared types and interfaces used across all projects.
-- **Engine** - The core game interpreter: script execution, expression evaluation, game loading, built-in functions. Contains Quest's default game behaviour, default text, and the editor's own UI definitions, all written in ASLX (`Engine/Core/*.aslx`).
+- **Engine** - The core game interpreter: script execution, expression evaluation, game loading, built-in functions. Contains Quest Viva's default game behaviour, default text, and the editor's own UI definitions, all written in ASLX (`Engine/Core/*.aslx`).
 - **Legacy** - Backward-compatibility layer for games written for Quest 1.x through 4.x.
 - **PlayerCore** - Game player runtime shared by both players, wrapping Engine.
 - **EditorCore** - Game editor logic (non-UI).

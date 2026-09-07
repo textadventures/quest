@@ -8,7 +8,7 @@ sidebar:
 
 _Why are there spells in a zombie apocalypse? No one knows, but it is a fact._
 
-This is an extension to the two part series on how to do combat in Quest. However, nothing in this article relies on the other two articles, you could readily add these spells to your game without even reading them (though like them, this does assume some familiarity with Quest code, at least to be able to copy-and-paste it).
+This is an extension to the two part series on how to do combat in Quest Viva. However, nothing in this article relies on the other two articles, you could readily add these spells to your game without even reading them (though like them, this does assume some familiarity with Quest Viva code, at least to be able to copy-and-paste it).
 
 Spells have a number of issues that need to be considered, and will make a lot of work for the game creator. By their nature spells can do pretty much anything, and there is no way that can be covered here. All we can hope to do is look at a few examples, and hope that gives some points about how to implement your own spells.
 
@@ -29,7 +29,7 @@ player.magicka = 5
 
 ### The Frotz spell
 
-Our first spell will be "Frotz", which will make an object glow. This will be relatively easy, as Quest has light and dark built in, and it affects objects that are in reach.
+Our first spell will be "Frotz", which will make an object glow. This will be relatively easy, as Quest Viva has light and dark built in, and it affects objects that are in reach.
 
 First, go to the _Features_ tab of the game object, and tick "Lightness and darkness". Then go make a room dark (go to its _Light/Dark_ tab, and tick "Room is initially dark"). This will allow us to test the spell later.
 
@@ -77,7 +77,7 @@ Then we update the object alias (or give it an object alias if there is none).
 
 ### Learning the spell
 
-So we have a spell, and the player can cast it limited times, but she knows it from the start. We need some way to flag if this spell has been learnt. If this was an object, that would be trivial, just use a flag (i.e., a Boolean attribute). Well, in Quest, commands are objects too, and we can use attributes for them too.
+So we have a spell, and the player can cast it limited times, but she knows it from the start. We need some way to flag if this spell has been learnt. If this was an object, that would be trivial, just use a flag (i.e., a Boolean attribute). Well, in Quest Viva, commands are objects too, and we can use attributes for them too.
 
 So we need to modify the command script to check the flag first. We need to add three new lines at the top, and then add an `else` at the start of the next line. The top three lines we had before will then look like these six lines (indeed, the top three lines of nearly _all_ our spells will look like this):
 
@@ -106,7 +106,7 @@ otherwise {
 
 ### The Lleps spell
 
-The Lleps spell reverses any known spell. As spells are not objects (okay, I just said commands are, but when Quest tries to match text the player has typed, it only looks at _object_ objects), we will need to use "text" in the command pattern:
+The Lleps spell reverses any known spell. As spells are not objects (okay, I just said commands are, but when Quest Viva tries to match text the player has typed, it only looks at _object_ objects), we will need to use "text" in the command pattern:
 
     lleps #text#;cast lleps at #text#;cast lleps at #text#
 
@@ -253,7 +253,7 @@ This spell teleports the caster to someone else's location, and we will look at 
 
 Remember to name it "aimfiz" so it can be reversed. We will say that if it is reversed the target gets teleported to the player.
 
-The trick here is to set the scope to "world". Quest will try to match the object against everything in the game world. 
+The trick here is to set the scope to "world". Quest Viva will try to match the object against everything in the game world. 
 
 The code then is pretty easy. We check all the possible fail scenarios as usual, then check if it is reversed, and perform the spell action. Note that the message should be before the line where the player moves so the player sees the message before the room description.
 

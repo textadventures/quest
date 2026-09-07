@@ -246,7 +246,7 @@ GetLinkTextColour()
 GetPlacesObjectsList()
 ```
 
-Required by Quest so it can display the "Places and Objects" list. Returns [ScopeVisibleNotHeldNotScenery](/functions/scope#scopevisiblenotheldnotscenery) with the player object excluded.
+Required by Quest Viva so it can display the "Places and Objects" list. Returns [ScopeVisibleNotHeldNotScenery](/functions/scope#scopevisiblenotheldnotscenery) with the player object excluded.
 
 ## GetScope
 ```quest
@@ -490,7 +490,7 @@ InitInterface
 
 Does not return a value.
 
-Quest will look for a function called InitInterface in any ASLX file, and if one exists then it will be called when the game begins, and also when loading a saved game.
+Quest Viva will look for a function called InitInterface in any ASLX file, and if one exists then it will be called when the game begins, and also when loading a saved game.
 
 Core.aslx defines an implementation of a InitInterface function. It does the following:
 
@@ -804,7 +804,7 @@ StartGame
 
 Does not return a value.
 
-Quest will look for a function called StartGame, and if one exists then it will be called when the game begins, except if the game is being loaded from a .quest-save file.
+Quest Viva will look for a function called StartGame, and if one exists then it will be called when the game begins, except if the game is being loaded from a .quest-save file.
 
 Core.aslx defines an implementation of a StartGame function. It does the following:
 

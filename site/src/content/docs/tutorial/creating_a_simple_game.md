@@ -17,15 +17,15 @@ Click "Create local draft" (or "Save to folder..." if you'd rather store the gam
 
 On the left is a tree showing you every element of the game. The "game" element is currently selected, so that's what we can see in the pane on the right.
 
-Quest has created a room called "room" for us, and inside this room is the "player" object, so that's where the player will begin when you run the game. You can test the game by clicking the "Preview" button towards the top right.
+Quest Viva has created a room called "room" for us, and inside this room is the "player" object, so that's where the player will begin when you run the game. You can test the game by clicking the "Preview" button towards the top right.
 
-As you'll see, it's a pretty empty game at the moment. We can type some standard commands such as `INVENTORY` to see that Quest comes up with some default responses, but that's about all we can do at the moment.
+As you'll see, it's a pretty empty game at the moment. We can type some standard commands such as `INVENTORY` to see that Quest Viva comes up with some default responses, but that's about all we can do at the moment.
 
 You can go back to the Editor by closing the preview, or typing `QUIT`.
 
 ## Setting up rooms
 
-Quest created a room called "room", which isn't a very good name. In this tutorial game, we want to start in a lounge, so select "room" from the tree and change its name.
+Quest Viva created a room called "room", which isn't a very good name. In this tutorial game, we want to start in a lounge, so select "room" from the tree and change its name.
 
 ![](/images/Renameroom.png)
 
@@ -53,7 +53,7 @@ When you click the "Create" button, actually *two* exits are created - one exit 
 
 It is helpful to think of exits as "one way". Each exit is "in" only one parent room (the "from" room), and points "to" one other room. That is why we have one exit in the lounge, pointing to the kitchen. A separate exit is in the kitchen, pointing to the lounge.
 
-Exits, like every object in Quest, can have an alias, which is simply a way of displaying a particular name to the player. Notice how the two exits we just created have aliases of "south" and "north". (We could give our exits any alias - it doesn't have to be a compass direction. If we were setting a game on a ship for example, we might have exits with aliases like "port" and "starboard".)
+Exits, like every object in Quest Viva, can have an alias, which is simply a way of displaying a particular name to the player. Notice how the two exits we just created have aliases of "south" and "north". (We could give our exits any alias - it doesn't have to be a compass direction. If we were setting a game on a ship for example, we might have exits with aliases like "port" and "starboard".)
 
 Play the game and verify that the player can go south and north between the lounge and kitchen.
 
@@ -73,11 +73,11 @@ Use one of these methods to add an object to the lounge. A prompt will appear as
 It is important to note the distinction between:
 
 -   the names that *players* can see and use to refer to objects
--   the names that your Quest scripts use
+-   the names that your Quest Viva scripts use
 
 **Name:** In order to avoid confusion, each object must have a unique name. So, if you have multiple televisions in your game, they must be given different names – like "TV1", "TV2" and so on.
 
-**Alias:** Of course, this wouldn’t sound natural if these were the names that players saw, which is why Quest lets you set an alias. This is the name of the object that the player sees. In the example of multiple televisions, each of your TV objects could have an alias of "TV".
+**Alias:** Of course, this wouldn’t sound natural if these were the names that players saw, which is why Quest Viva lets you set an alias. This is the name of the object that the player sees. In the example of multiple televisions, each of your TV objects could have an alias of "TV".
 
 If you don't set an alias, players will see the object name – so you only usually need to worry about this if you want different objects to have the same displayed name.
 
@@ -85,7 +85,7 @@ So for now, we can leave the Alias box blank for the TV.
 
 ### Other names
 
-If you go to the _Object_ tab, you'll see an "Other Names" box. This lets you specify additional names that players can use to refer to this object. It is important to note that different players will have different ways of interacting with your game – many players prefer to use hyperlinks, but some prefer to type. You want to make it easy for Quest to understand what players type in, so you can add additional, alternative object names to ensure that happens. For example, for our TV object, some players might type in `LOOK AT TELEVISION`, and would reasonably expect that to work.
+If you go to the _Object_ tab, you'll see an "Other Names" box. This lets you specify additional names that players can use to refer to this object. It is important to note that different players will have different ways of interacting with your game – many players prefer to use hyperlinks, but some prefer to type. You want to make it easy for Quest Viva to understand what players type in, so you can add additional, alternative object names to ensure that happens. For example, for our TV object, some players might type in `LOOK AT TELEVISION`, and would reasonably expect that to work.
 
 So, add "television" to the list of Other Names for this object. This will ensure that players can type in either `LOOK AT TV` or `LOOK AT TELEVISION` to look at this object.
 
@@ -95,7 +95,7 @@ As an exercise, add any other alternative names you think that players might wan
 
 ### Description
 
-If you run the game and look at the TV, you’ll see that Quest doesn’t have much to say on the subject - it says "Nothing out of the ordinary".
+If you run the game and look at the TV, you’ll see that Quest Viva doesn’t have much to say on the subject - it says "Nothing out of the ordinary".
 
 That's a bit boring - it's a sign of a bad game if you can't even be bothered to come up with descriptions for all your objects. We don't want to make a bad game, so let's add a description for this object. To do this, go to the Description drop-down in the bottom half of the object's _Setup_ tab and select "Text".
 
@@ -109,7 +109,7 @@ Launch the game again and verify that it now shows you the description when you 
 
 It is a good idea to think about what kinds of things players might try to do to any objects in your game. In our example of the TV, it seems likely that a player might try to type `WATCH TV`, so it would be good if our game came up with a good response, rather than just saying it didn't understand.
 
-To do this, let's add the verb "watch" to our TV object. As you should remember from school, verbs are "doing words", and that's what they are in Quest – verbs let you say what things can be "done" to your object.
+To do this, let's add the verb "watch" to our TV object. As you should remember from school, verbs are "doing words", and that's what they are in Quest Viva – verbs let you say what things can be "done" to your object.
 
 Go to the _Verbs_ tab, click the "Add" button and type "watch". You can choose either to print a message or run a script when the player watches the TV. Enter a message. For example, "You watch for a few minutes. As your will to live slowly ebbs away, you remember that you’ve always hated watching westerns."
 

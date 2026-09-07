@@ -27,7 +27,7 @@ The very first thing to do is to realise it is a lot of work. RPG games are both
 
 ## Designing a game system
 
-Before you start doing anything in Quest, you need to think about how your game will play. Forget about how we will code it, just think about what the player will experience.
+Before you start doing anything in Quest Viva, you need to think about how your game will play. Forget about how we will code it, just think about what the player will experience.
 
 The decisions you make here will affect how complicated your game is. I tried to keep combat as simple as possible in Deeper, and it is still a huge amount of code! For example, there are no ranged attacks at all, there is no consideration of position, damage is the total hits rather than by location.
 
@@ -43,7 +43,7 @@ You need to work out how combat is resolved; if this was a pen and paper game, w
 
 ### Time or turn?
 
-Is the game based on turns; the player attacks, then the monsters attack? Or is it time-based, with the monsters attacking every so many seconds. The latter would be more cool, but rather more complicated. Do the player's attacks have a cooldown? Quest supports timed combat via its timer system, which runs entirely client-side, with no server round-trip involved.
+Is the game based on turns; the player attacks, then the monsters attack? Or is it time-based, with the monsters attacking every so many seconds. The latter would be more cool, but rather more complicated. Do the player's attacks have a cooldown? Quest Viva supports timed combat via its timer system, which runs entirely client-side, with no server round-trip involved.
 
 ### Defence
 

@@ -4,7 +4,7 @@ sidebar:
   order: 15
 ---
 
-There are five stages to releasing a Quest game.
+There are five stages to releasing a Quest Viva game.
 
 1.  Before release testing
 2.  Upload as an unlisted game

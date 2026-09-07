@@ -8,7 +8,7 @@ The [Tutorial](/tutorial/using_pages) covers the basics of setting up a Pages di
 
 ## When to use Pages
 
-Quest has several ways to let the player talk to a character - see [Introduction to conversations](/howto/npcs/conversations) for an overview. Pages are the right choice when you want a structured, multi-step exchange where each reply leads to a fixed set of further choices - the Text Adventure equivalent of a gamebook's branching passages. For a one-off list of topics with no follow-up, a [ShowMenu](/functions/user-interface#showmenu)-based menu (see [Handling SPEAK TO](/howto/npcs/speak_to)) is simpler. For a free-form "ask about anything" system, use [Ask/Tell](/howto/npcs/ask_about) instead.
+Quest Viva has several ways to let the player talk to a character - see [Introduction to conversations](/howto/npcs/conversations) for an overview. Pages are the right choice when you want a structured, multi-step exchange where each reply leads to a fixed set of further choices - the Text Adventure equivalent of a gamebook's branching passages. For a one-off list of topics with no follow-up, a [ShowMenu](/functions/user-interface#showmenu)-based menu (see [Handling SPEAK TO](/howto/npcs/speak_to)) is simpler. For a free-form "ask about anything" system, use [Ask/Tell](/howto/npcs/ask_about) instead.
 
 The main practical advantage of Pages over `ShowMenu` is that each choice is a complete, ordinary turn - the game is never "waiting" on a menu callback, so save, load and undo all work in the middle of a conversation.
 

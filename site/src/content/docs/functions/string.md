@@ -482,7 +482,7 @@ Split (string input, string split character)
 
 Returns a [stringlist](/types#stringlist) where the input has been split into individual strings by the split character. Useful for turning a comma-separated string into a list of strings, for example.
 
-As of version 5.7.2, you can omit the split character, and Quest will assume it is a semicolon.
+As of version 5.7.2, you can omit the split character, and Quest Viva will assume it is a semicolon.
 
 ```quest
 Split (string input, string split character)
@@ -531,7 +531,7 @@ ToWords (int)
 
 Returns a [string](/types#string) - the given integer in word form (i.e., one, two...). Numbers outside the range -1999 to 1999 are returned as the digits, but in a string (eg "2000").
 
-This function is part of English.aslx, and is currently only available in English. We would welcome any code for other languages, to be added to later versions of Quest.
+This function is part of English.aslx, and is currently only available in English. We would welcome any code for other languages, to be added to later versions of Quest Viva.
 
 ## Trim
 ```quest

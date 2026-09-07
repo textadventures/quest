@@ -8,7 +8,7 @@ If you find you have several places in the game where you have script (or bits o
 
 If you did the tutorial, you will already have encountered functions [here](/tutorial/more_things_to_do_with_objects#Using_Functions).
 
-A typical use of a function in Quest is when you have several ways the player can do something. Perhaps there is a chair the player can sit on, and she might type SIT, SIT ON CHAIR or USE CHAIR. You could handle SIT as a command, SIT ON CHAIR as a verb or a command and USE CHAIR via the Use/Give feature... but they all do the same thing, so we will use a function.
+A typical use of a function in Quest Viva is when you have several ways the player can do something. Perhaps there is a chair the player can sit on, and she might type SIT, SIT ON CHAIR or USE CHAIR. You could handle SIT as a command, SIT ON CHAIR as a verb or a command and USE CHAIR via the Use/Give feature... but they all do the same thing, so we will use a function.
 
 To create a function, go to "Functions" in the left pane, then click the Add button in the right pane. Give it a name. The standard format is to capitalise each word, and leave out the gaps, so we will call ours "SitOnChair".
 
@@ -62,7 +62,7 @@ else {
 
 Now we need to modify the function. Above the script, there is a list of parameters, currently empty. Click Add, and type in the name. Note that the name does not have to be the same as we used earlier (just as well, as we have used "object", "this" and "chair"). We know that what we send here can be sat on, so we will call it "chair". If we had chosen to check in the function, it would be better to call it "object", as a hint that the function can handle any object.
 
-A function can have any number of parameters. If it has more than one, then the order is very important. When you call a function, the parameters you send must be in the same order that they are listed in the function - this is how Quest decides which is which.
+A function can have any number of parameters. If it has more than one, then the order is very important. When you call a function, the parameters you send must be in the same order that they are listed in the function - this is how Quest Viva decides which is which.
 
 In the script for the function, you can refer to the parameters as you named them in the list.
 
@@ -90,9 +90,9 @@ foreach (o, ScopeVisible()) {
 return (list)
 ```
 
-Look at the last line. This is telling Quest what value we want the function to come back with. In this case, a local variable, `list`. The rest of the code is initialising `list`, and then adding values to it.
+Look at the last line. This is telling Quest Viva what value we want the function to come back with. In this case, a local variable, `list`. The rest of the code is initialising `list`, and then adding values to it.
 
-By the way, there is a quick way to do this in Quest:
+By the way, there is a quick way to do this in Quest Viva:
 
 ```quest
 FilterByAttribute(ScopeVisible(), "cansiton", true)

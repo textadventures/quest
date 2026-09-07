@@ -9,7 +9,7 @@ Doubles are an alternative number system to integers; what is the difference?
 
 ## Integers
 
-Integers are whole numbers (1, 2, 3, etc.), and in maths they can go from minus infinity, through zero, all the way up to plus infinity. Computers have limited space, and in Quest, an integer can go from -2147483648 to 2147483647 - plenty big enough for most purposes.
+Integers are whole numbers (1, 2, 3, etc.), and in maths they can go from minus infinity, through zero, all the way up to plus infinity. Computers have limited space, and in Quest Viva, an integer can go from -2147483648 to 2147483647 - plenty big enough for most purposes.
 
 
 ## Non-integers
@@ -30,9 +30,9 @@ Use integers if you possibly can.
 
 ## What about money, etc.?
 
-You might wonder about how you would handle money, say to represent £2.99, in Quest. Use integers!
+You might wonder about how you would handle money, say to represent £2.99, in Quest Viva. Use integers!
 
-Use integers to count the pennies, rather than doubles to count the pounds. You only need to see the pounds value when it is printed, and Quest has the `DisplayMoney` function to handle that.
+Use integers to count the pennies, rather than doubles to count the pounds. You only need to see the pounds value when it is printed, and Quest Viva has the `DisplayMoney` function to handle that.
 
 For other quantities, you can do similar. If you want to track temperature to the nearest 0.1 of a degree, store the number in tenths of a degree, and output it in degrees (perhaps with the `DisplayNumber` function).
 
@@ -44,7 +44,7 @@ I have been messing with Quest for over 6 years and besides experimenting for tu
 
 ## Trigonometry
 
-Quest supports all the usual trigonometric functions - and the obscure ones too - and others functions as well.
+Quest Viva supports all the usual trigonometric functions - and the obscure ones too - and others functions as well.
 
 * Acos
 * Asin
@@ -66,7 +66,7 @@ return (Sin(angle * pi / 180))
 
 The constants `e` and `pi` are built-in.
 
-Quest also has these other functions.
+Quest Viva also has these other functions.
 
 * Abs
 * Exp
@@ -77,9 +77,9 @@ Quest also has these other functions.
 
 ## Notes...
 
-If you do a calculation that mixes integers and doubles, Quest will convert the integers to doubles to do the maths, and the result will be a double.
+If you do a calculation that mixes integers and doubles, Quest Viva will convert the integers to doubles to do the maths, and the result will be a double.
 
-Quest offers four functions that will round your double to an integer. Note, however, that the _type_ will still be double. Rounding a double with the value 4.56 will give a double with the value 4.00.
+Quest Viva offers four functions that will round your double to an integer. Note, however, that the _type_ will still be double. Rounding a double with the value 4.56 will give a double with the value 4.00.
 
 * Ceiling
 * Floor

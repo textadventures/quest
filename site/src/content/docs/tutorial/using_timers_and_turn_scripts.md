@@ -52,7 +52,7 @@ To set up our "turns" attribute, select the "player" object and go to the Attrib
 
 ![](/images/Turncounter1.png)
 
-If you launch the game now, you should see the turns variable displayed on the right-hand side of the Quest window. We've not yet added the script to increase the value of this though, so it will always say “Turns: 0” no matter how many turns we take. Let's add this script now.
+If you launch the game now, you should see the turns variable displayed on the right-hand side of the Quest Viva window. We've not yet added the script to increase the value of this though, so it will always say “Turns: 0” no matter how many turns we take. Let's add this script now.
 
 ### Increasing the turn counter after each turn
 
@@ -86,4 +86,4 @@ This will add 1 each time the script is called.
 
 Launch the game now and verify that whenever you type a command, the "Turns" value is automatically updated.
 
-Congratulations, you now know the basics of using Quest. There is much more to it, but you are probably best learning that as you need it. Now go make that great game! The last part of the tutorial is about how to release your masterpiece.
+Congratulations, you now know the basics of using Quest Viva. There is much more to it, but you are probably best learning that as you need it. Now go make that great game! The last part of the tutorial is about how to release your masterpiece.

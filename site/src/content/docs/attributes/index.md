@@ -4,7 +4,7 @@ sidebar:
   order: 6
 ---
 
-Reference for all built-in Quest attributes.
+Reference for all built-in Quest Viva attributes.
 
 ## alias
 
@@ -97,7 +97,7 @@ autodescription\_youcansee\_newline
 
 "beforefirstenter" is a [script](/types#script) attribute. It is run the first time that a player enters an object (room), *before* the room description is printed.
 
-Quest keeps track of whether a room has been visited before by checking the value of the [visited](#visited) attribute.
+Quest Viva keeps track of whether a room has been visited before by checking the value of the [visited](#visited) attribute.
 
 See also [firstenter](#firstenter), [enter](#enter), [visited](#visited).
 
@@ -308,7 +308,7 @@ The "femaleplural" type is defined in CoreTypes.aslx. It sets the [gender](#gend
 
 "firstenter" is a [script](/types#script) attribute. It is run the first time that a player enters an object (room), *after* the room description is printed.
 
-Quest keeps track of whether a room has been visited before by checking the value of the [visited](#visited) attribute.
+Quest Viva keeps track of whether a room has been visited before by checking the value of the [visited](#visited) attribute.
 
 See also [beforefirstenter](#beforefirstenter), [enter](#enter), [visited](#visited).
 
@@ -813,7 +813,7 @@ See also [give](#give), [useanything](#useanything).
 
 ## visited
 
-"visited" is a [boolean](/types#boolean) attribute. Quest's core library sets the "visited" attribute of an object to true when the player enters that object (room). There should usually be no need to set the visited attribute yourself, but you can read its value to see if the player has been to a room in your game.
+"visited" is a [boolean](/types#boolean) attribute. Quest Viva's core library sets the "visited" attribute of an object to true when the player enters that object (room). There should usually be no need to set the visited attribute yourself, but you can read its value to see if the player has been to a room in your game.
 
 ## volume
 

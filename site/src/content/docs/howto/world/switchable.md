@@ -4,7 +4,7 @@ sidebar:
   order: 4
 ---
 
-In a world of electronic goods, items that can be turned on and off are very common. How would you implement that in Quest?
+In a world of electronic goods, items that can be turned on and off are very common. How would you implement that in Quest Viva?
 
 Let's create an object called "machine", and do just that!
 
@@ -24,7 +24,7 @@ You can sometimes get better prose using the text processor, as you are not limi
 A funny looking machine{if machine.switchedon: chugging away}.
 ```
 
-This uses the "switchedon" flag (or Boolean attribute) of the object, which Quest will set to true when the object is switched on.
+This uses the "switchedon" flag (or Boolean attribute) of the object, which Quest Viva will set to true when the object is switched on.
 
 For complex descriptions, you may have to use a script, instead of text, and in that case the two "Extra object description..." fields will be ignored. Again the text processor is a solution:
 
@@ -62,7 +62,7 @@ machine.cannotswitchon = null
 
 If the object becomes unuseable (perhaps the power is turned off), just set the "cannotswitchon" attribute to some appropriate string. Remember to also turn the machine off, by setting its "switchedon" attribute to false.
 
-Note that using the "After switching on the object" script is not a good option in this case, as Quest will report that the object has switched on before running the script; the player would see, "You turn the machine on. You can't turn it on, it has no power."
+Note that using the "After switching on the object" script is not a good option in this case, as Quest Viva will report that the object has switched on before running the script; the player would see, "You turn the machine on. You can't turn it on, it has no power."
 
 
 

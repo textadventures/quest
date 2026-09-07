@@ -44,7 +44,7 @@ Also see String Functions
 
 ## Script
 
-A script attribute contains code for Quest to run, i.e., a list of  instructions for Quest to carry out. Everything that happens in a game is controlled by script commands. Script commands can print messages, move objects around, show videos, start timers, change attributes, and much more.
+A script attribute contains code for Quest Viva to run, i.e., a list of  instructions for Quest Viva to carry out. Everything that happens in a game is controlled by script commands. Script commands can print messages, move objects around, show videos, start timers, change attributes, and much more.
 
 Example:
 
@@ -62,7 +62,7 @@ Example:
 ```
 Scripts can be created by adding script commands using the user interface, or by typing code in "code view". Behind the scenes, it is all the same, so you can flip between the two as you like.
 
-You can use [do](/scripts#do) or [invoke](/scripts#invoke) to have Quest run a script.
+You can use [do](/scripts#do) or [invoke](/scripts#invoke) to have Quest Viva run a script.
 
 Let us suppose the above script is attached to an object called "fridge". You could run the script:
 
@@ -363,4 +363,4 @@ See [Using Dictionaries](/howto/scripting/using_dictionaries)
 
 ## Command pattern
 
-Quest uses regular expressions to compare commands with what the player typed, and the regular expression is converted from a string in the background (see [here](/howto/commands/pattern_matching) for more on that). However, it also offers a simplified version, a "command pattern". This is essentially a string (such as "tie #object1# to #object2"), which Quest will convert to another string when the game start (in this case "^tie (?.*) to (?.*)$"), which can then be converted to a regular expression when required. There is not much point to command patterns outside of commands.
+Quest Viva uses regular expressions to compare commands with what the player typed, and the regular expression is converted from a string in the background (see [here](/howto/commands/pattern_matching) for more on that). However, it also offers a simplified version, a "command pattern". This is essentially a string (such as "tie #object1# to #object2"), which Quest Viva will convert to another string when the game start (in this case "^tie (?.*) to (?.*)$"), which can then be converted to a regular expression when required. There is not much point to command patterns outside of commands.

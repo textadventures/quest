@@ -6,11 +6,11 @@ sidebar:
 
 We looked at functions in the [tutorial](/tutorial/more_things_to_do_with_objects#using-functions), and for a basic understanding, you are recommended looking at that. This document goes into more detail on using and creating your own functions.
 
-Quest has a whole load of functions built in, many of them will be used in your game without you even knowing about it. You can see a full list here:
+Quest Viva has a whole load of functions built in, many of them will be used in your game without you even knowing about it. You can see a full list here:
 
 [Functions](/functions/)
 
-Quest also has "script commands", which in many ways are like functions. One difference is that script commands are all named in lower case, while functions are all in CamelCase.
+Quest Viva also has "script commands", which in many ways are like functions. One difference is that script commands are all named in lower case, while functions are all in CamelCase.
 
 [Script commands](/scripts/)
 
@@ -23,7 +23,7 @@ Many script commands work just like functions, and this applies to them too.
 
 Some functions return a value, some require one or more values. The values it requires are called parameters. For example, the GetBoolean function requires an object and the name of an attribute, and it returns true if that attribute is present and set to true, and false if the attribute is set to false or missing.
 
-In this example, my_object and "flag" are the two parameters, and they go inside brackets. The brackets tell Quest these are the parameters.
+In this example, my_object and "flag" are the two parameters, and they go inside brackets. The brackets tell Quest Viva these are the parameters.
 ```quest
 return_value = GetBoolean (my_object, "flag")
 ```
@@ -39,14 +39,14 @@ You might wonder why you need the brackets, if there are no parameters. Actually
 ```quest
 ClearScreen
 ```
-Well, not always. If the function is on a line on its own with nothing else, Quest will handle it fine. Otherwise, you will need the brackets to ensure Quest will realise this is a function and not something else.
+Well, not always. If the function is on a line on its own with nothing else, Quest Viva will handle it fine. Otherwise, you will need the brackets to ensure Quest Viva will realise this is a function and not something else.
 
-The type of the value a function returns and the parameters it needs is called its "type signature", and Quest will complain if you get it wrong.
+The type of the value a function returns and the parameters it needs is called its "type signature", and Quest Viva will complain if you get it wrong.
 
 
 ## Custom functions
 
-The power of Quest is that it lets you do so much. It has dozens of built-in functions, but you can easily create your own.
+The power of Quest Viva is that it lets you do so much. It has dozens of built-in functions, but you can easily create your own.
 
 So why would you want to use a function? The basic reason is because you want to do the same thing in two or more different places. Let us say you have a futuristic city, and the player can teleport between any of several points. Each time he teleports, you want to charge him, and give a little description. The first time, you want to give a longer description, but you do not know which route that will be. The way to set this up is to have each exit call a function.
 
@@ -92,10 +92,10 @@ For more detail on creating functions with return values, see [Creating Function
 
 ### Overriding functions
 
-Did I mention that the power of Quest is that it lets you do so much? Not only can you create your own functions, you can replace the existing ones (though not the script commands or some of the more fundamental functions).
+Did I mention that the power of Quest Viva is that it lets you do so much? Not only can you create your own functions, you can replace the existing ones (though not the script commands or some of the more fundamental functions).
 
 Let us suppose you want you want room descriptions to have some novel formatting (perhaps the letter 'A' in blue, to pick a common example). Click the tree view options button, above the tree, and select "Show Library Elements". In the left pane you will see all the built in functions, commands and so in, all in grey. Find the one you want, in this case ShowRoomDescription (at the top of the pane is a filtering function, which makes the search easier). The function will appear in the right pane, with a banner explaining it comes from a library and can't be edited directly. Click "Copy into your game" on that banner to get the function copied into your game, and then edit it as you see fit.
 
 Just do not change the name, return type or parameters.
 
-Of course, you can really mess Quest up by overriding functions, so some care is required...
+Of course, you can really mess Quest Viva up by overriding functions, so some care is required...

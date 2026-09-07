@@ -4,9 +4,9 @@ sidebar:
   order: 15
 ---
 
-These will not be relevant to many games at all, but are available as a consequence of the .NET framework Quest is built on. They are included here for completeness; if you need them, you will know what they do. There is no further documentation.
+These will not be relevant to many games at all, but are available as a consequence of the .NET framework Quest Viva is built on. They are included here for completeness; if you need them, you will know what they do. There is no further documentation.
 
-Quest has `e` and `pi` as built-in constants.
+Quest Viva has `e` and `pi` as built-in constants.
 
 These all take a single floating point number, and return the corresponding floating point number. Note that the trigonometric functions use radians rather than degrees.
 

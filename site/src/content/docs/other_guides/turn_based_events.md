@@ -69,7 +69,7 @@ By default, events are automatically moved to "dead\_events" and start the next 
 
 ## Note
 
-Quest counts each player input as a turn. If the player spending 10 turns typing commands that are not recognised, that is still 10 turns.
+Quest Viva counts each player input as a turn. If the player spending 10 turns typing commands that are not recognised, that is still 10 turns.
 
 
 ## Example game

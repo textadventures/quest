@@ -4,7 +4,7 @@ sidebar:
   order: 4
 ---
 
-Quest allows the player to click and object and then click on an associated verb, without typing anything. A custom command pane allows the player to click on simple one-word commands, such as WAIT and LOOK.
+Quest Viva allows the player to click and object and then click on an associated verb, without typing anything. A custom command pane allows the player to click on simple one-word commands, such as WAIT and LOOK.
 
 
 ## Setting up
@@ -36,7 +36,7 @@ JS.setCommands ("Look;Wait;Stand", "blue")
 
 ## Commands for specific rooms
 
-You might want to set the commands when the player enters and leaves a specific room, if there are commands specific to that room. This works best for simple, one-word commands, however you can use any command Quest can understand, including commands you have added yourself.
+You might want to set the commands when the player enters and leaves a specific room, if there are commands specific to that room. This works best for simple, one-word commands, however you can use any command Quest Viva can understand, including commands you have added yourself.
 
 Let us suppose we want to add a SHOUT command to a specific room (see [here](/howto/commands/commands_for_room) for the best way to do that). Go to the _Scripts_ tab of the room, and add this to the script that runs when the player enters the room (not the one that only runs the first time):
 

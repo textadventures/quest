@@ -22,7 +22,7 @@ As mentioned, an object can have several types, and this function will tell you 
 
 ## Creating new types
 
-Creating your own types is a great way to extend Quest for your own needs. Any time you have a bunch of things that are all pretty similar in what they do, but a bit different to anything already in Quest, consider creating a new type.
+Creating your own types is a great way to extend Quest Viva for your own needs. Any time you have a bunch of things that are all pretty similar in what they do, but a bit different to anything already in Quest Viva, consider creating a new type.
 
 As an example, we are going to create a spell type. The easiest way to do that is to first do it for an actual example of the type, a prototype, and then to move the code from the object to the type - this is easiest to do using Code View.
 
@@ -48,14 +48,14 @@ Briefly then: The first line of the script checks that the player does not alrea
 
 ### "this"
 
-The important point to notice about the code is that it uses "this". In Quest, "this" refers to the thing the script is attached to. In this case, that will be the spell. Later on this code will be used by the type, and it could be any spell, so we need to keep it generic; nothing there referring to this specific spell by name (this does mean using text processor commands in types is tricky...).
+The important point to notice about the code is that it uses "this". In Quest Viva, "this" refers to the thing the script is attached to. In this case, that will be the spell. Later on this code will be used by the type, and it could be any spell, so we need to keep it generic; nothing there referring to this specific spell by name (this does mean using text processor commands in types is tricky...).
 
 Go in game, and you should be able to learn the spell, and it will appear in your inventory.
 
 
 ### Create a type
 
-So now we are ready to create a new type. Right click in the Quest right pane, and select “Add Object Type”, in the box type “spelltype”, and click “Okay”.
+So now we are ready to create a new type. Right click in the Quest Viva right pane, and select “Add Object Type”, in the box type “spelltype”, and click “Okay”.
 
 So far so good, but it does not do anything yet. We will change that by copying code. It may look scary, but if you are careful, it will be pretty easy.
 
@@ -79,7 +79,7 @@ Somewhere else (probably at the bottom) you should find this:
 ```xml
 <type name="spelltype" />
 ```
-Step 1. Expand the type XML. Quest is using a condensed form of XML for the type because there is nothing in it. Change it to this:
+Step 1. Expand the type XML. Quest Viva is using a condensed form of XML for the type because there is nothing in it. Change it to this:
 ```xml
 <type name="spelltype">
 </type>

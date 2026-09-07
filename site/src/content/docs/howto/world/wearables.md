@@ -134,7 +134,7 @@ This only applies if you are using the inventory limits feature.
 
 Wearing something will automatically increase the player's inventory limit by 1, and removing it reduce it by 1. What this effectively means is that items that are worn will not contribute to the inventory limit.
 
-In Quest, the volume limit works more like a weight limit, and the player is still carrying the weight, so putting something on or taking it off does not affect the volume limit.
+In Quest Viva, the volume limit works more like a weight limit, and the player is still carrying the weight, so putting something on or taking it off does not affect the volume limit.
 
 
 
@@ -190,7 +190,7 @@ foreach (o, GetAllChildObjects(game.pov)) {
 
 ### Changing the name of clothing
 
-Quest handles changing the name of a garment, so when it is worn, its alias has "(worn)" added to it. However, that means that if the name of a garment changes, just setting the alias is going to confuse Quest. There are, therefore, two functions to do this. The `SetAlias` function takes the name of the object and the new alias, whilst `SetListAlias` takes the name of the object, the new alias and the new list alias. For example:
+Quest Viva handles changing the name of a garment, so when it is worn, its alias has "(worn)" added to it. However, that means that if the name of a garment changes, just setting the alias is going to confuse Quest Viva. There are, therefore, two functions to do this. The `SetAlias` function takes the name of the object and the new alias, whilst `SetListAlias` takes the name of the object, the new alias and the new list alias. For example:
 
 ```quest
 SetListAlias (trendy_jacket, "unfashionable jacket", "Unfashionable jacket")
@@ -336,7 +336,7 @@ Note that `ListVisibleFor` has some limitations, as it can only guess at what is
 
 ### Armour
 
-Quest gives some facilities to handle armour. If you want to use the default armour system, then the body locations you use must be:
+Quest Viva gives some facilities to handle armour. If you want to use the default armour system, then the body locations you use must be:
 
     feet, legs, shoulders, arms, hands, head, torso
 

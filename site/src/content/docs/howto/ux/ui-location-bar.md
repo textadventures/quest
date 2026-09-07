@@ -16,7 +16,7 @@ Using JQuery we can change the location bar to display anything we want. The bas
 $('#location').replaceWith('Some new HTML code')
 ```
 
-That new HTML can include a new "location" element, in which case Quest will continue to update the location, or not if you do not want that.
+That new HTML can include a new "location" element, in which case Quest Viva will continue to update the location, or not if you do not want that.
 
 
 ## Tracking turns and score
@@ -94,9 +94,9 @@ Our new table cell has two commands, LOOK and WAIT. When it is on the page, the 
 <a onclick="ASLEvent('HandleSingleCommand', 'look');\" style="cursor:pointer;">LOOK</a>
 ```
 
-The "onclick" attribute is an event handler; when the player clicks this element, run the JavaScript. In this case it runs the Quest JavaScript function, `ASLEvent`, which in turn will call the Quest function `HandleSingleCommand`, passing it the value "look". The "style" attribute changes the cursor to tell the player this is clickable.
+The "onclick" attribute is an event handler; when the player clicks this element, run the JavaScript. In this case it runs the Quest Viva JavaScript function, `ASLEvent`, which in turn will call the Quest Viva function `HandleSingleCommand`, passing it the value "look". The "style" attribute changes the cursor to tell the player this is clickable.
 
-When we put this code into Quest, we need to escape the double quotes, by putting a backslash before them, so Quest knows they are part of the string, not marking the end of it. We also need to escape the apostrophes so JQuery knows that _they_ are not marking the end of the string for it, and in this case we use the special HTML code `&apos;`.
+When we put this code into Quest Viva, we need to escape the double quotes, by putting a backslash before them, so Quest Viva knows they are part of the string, not marking the end of it. We also need to escape the apostrophes so JQuery knows that _they_ are not marking the end of the string for it, and in this case we use the special HTML code `&apos;`.
 
 
 ## Modifying the style

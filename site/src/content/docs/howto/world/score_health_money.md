@@ -5,7 +5,7 @@ sidebar:
 ---
 
 
-Quest offers an easy way to incorporate these common attributes in your game. The first step is to go to the _Features_ tab of the game object, and to turn on the ones that you want in your game.
+Quest Viva offers an easy way to incorporate these common attributes in your game. The first step is to go to the _Features_ tab of the game object, and to turn on the ones that you want in your game.
 
 To change the values, use one of these script commands (they will only be present if the relevant option was selected on the _Features_ tab): 
 

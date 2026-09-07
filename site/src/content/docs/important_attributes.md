@@ -4,17 +4,17 @@ sidebar:
   order: 2
 ---
 
-Attributes are what make objects (including rooms) in Quest what they are and do what they do. Where an object is, where it can be picked up, what it looks like, whether it can be locked or worn or eaten are all handled with attributes. Furthermore, attributes are the only things that change as the game progresses.
+Attributes are what make objects (including rooms) in Quest Viva what they are and do what they do. Where an object is, where it can be picked up, what it looks like, whether it can be locked or worn or eaten are all handled with attributes. Furthermore, attributes are the only things that change as the game progresses.
 
 You can add your own attributes to an object, but this page is about the built-in attributes that may be important as you craft your game.
 
 
-Quest has a number of ways of naming things...
+Quest Viva has a number of ways of naming things...
 
 
 ## The name attribute
 
-Everything in Quest is identified by its name attribute; effectively this is the ID of the database record. This means everything must have a name (they are some things that get names automatically, such as exits), and each must be unique.
+Everything in Quest Viva is identified by its name attribute; effectively this is the ID of the database record. This means everything must have a name (they are some things that get names automatically, such as exits), and each must be unique.
 
 The name is also the way to reference the object in code, and this means there are certain characters that cannot be used, including most punctuation. The name attribute can contain spaces, but not at the start or end, and it cannot contain consecutive spaces. Some people do not like spaces in names, as it looks weird in code if you are familiar with programming. It can contain digits, but not start with a digit. It can contain underscores. It can also contain upper and lower case letters. Note that when you later refer to an object by its name, the name is case-sensitive.
 
@@ -25,14 +25,14 @@ The name attribute is the only one of these attribute that is required; the rest
 
 ## The alias attribute (and others)
 
-The alias attribute is what the player will see when Quest mentions the object, for example in a list of objects present in the room. If it does not exist, the name attribute is used instead. Similarly, when matching objects in a command the player has typed, Quest will use the alias attribute if it exists, and the name attribute otherwise (if there is an alias attribute, it will not even attempt to match with the name).
+The alias attribute is what the player will see when Quest Viva mentions the object, for example in a list of objects present in the room. If it does not exist, the name attribute is used instead. Similarly, when matching objects in a command the player has typed, Quest Viva will use the alias attribute if it exists, and the name attribute otherwise (if there is an alias attribute, it will not even attempt to match with the name).
 
 The alias attribute can contain any characters you like, so you could use this for items that have punctuation in their title, such as "Dave's ball".
 
 
 ### The listalias attribute
 
-The listalias attribute is a string, what the player will see in the _Inventory_ and _Places and Objects_ lists on the right. It can be set on the _Object_ tab. If it does not exist, Quest will use the attribute alias instead, and if that does not exist, the name attribute.
+The listalias attribute is a string, what the player will see in the _Inventory_ and _Places and Objects_ lists on the right. It can be set on the _Object_ tab. If it does not exist, Quest Viva will use the attribute alias instead, and if that does not exist, the name attribute.
 
 Like the alias attribute, this can contain any characters. 
 
@@ -44,9 +44,9 @@ The listattribute is useful if you want to capitalise objects in the inventory p
 
 ### The alt attribute
 
-The alt attribute is a string list of alternative names, and again is found on the _Object_ tab. Quest will use this list, in addition to alias or name, when trying to match an object to a command the player has typed. This is where you type all the synonyms for the object.
+The alt attribute is a string list of alternative names, and again is found on the _Object_ tab. Quest Viva will use this list, in addition to alias or name, when trying to match an object to a command the player has typed. This is where you type all the synonyms for the object.
 
-Quest will match bits of names, so if you have "Dave's ball" as the alias, and "blue orb" in the alt list, it will match all these:
+Quest Viva will match bits of names, so if you have "Dave's ball" as the alias, and "blue orb" in the alt list, it will match all these:
 
 > X BALL
 
@@ -124,7 +124,7 @@ Setting an exit to scenery can be a good idea if there are two ways it could be 
 
 ## The visited attribute
 
-The visited attribute gets set to true when the player visits a room. This is how Quest tracks whether to use the scripts that only happen when the player first visits a room, but can also be used by your own scripts to track the player's progress.
+The visited attribute gets set to true when the player visits a room. This is how Quest Viva tracks whether to use the scripts that only happen when the player first visits a room, but can also be used by your own scripts to track the player's progress.
 
 
 
@@ -136,14 +136,14 @@ The to attribute of an exit is an object - where the exit goes to (the parent at
 
 ## The locked and isopen attributes
 
-Obviously these determine if something is locked or open (the "open" verb uses the "open" attribute, so Quest had to use "isopen" instead). Exits can be locked; containers can be opened or locked, an item that is openable/closeable can be opened.
+Obviously these determine if something is locked or open (the "open" verb uses the "open" attribute, so Quest Viva had to use "isopen" instead). Exits can be locked; containers can be opened or locked, an item that is openable/closeable can be opened.
 
-Note that Quest will handle the setting of "isopen" for a container. However, for openable/closeable items, it is up to you to provide a script that will do that (this is to allow you to check if the item can be opens first). If you set a container to be lockable on the _Container_ tab, Quest will likewise handle the lockable attribute for you.
+Note that Quest Viva will handle the setting of "isopen" for a container. However, for openable/closeable items, it is up to you to provide a script that will do that (this is to allow you to check if the item can be opens first). If you set a container to be lockable on the _Container_ tab, Quest Viva will likewise handle the lockable attribute for you.
 
 
 
 ## Various verb attributes
 
-Several attributes are used by Quest to determine how the object will respond to commands:
+Several attributes are used by Quest Viva to determine how the object will respond to commands:
 
 > take, drop, use, open, close, lock, unlock

@@ -6,7 +6,7 @@ sidebar:
 
 
 
-Containers have been a feature of text adventures from the very early days, and are simple to implement in Quest.
+Containers have been a feature of text adventures from the very early days, and are simple to implement in Quest Viva.
 
 A container is a type of object, so the first thing to do is to create an object. Let's say we want to create a chest.
 
@@ -46,7 +46,7 @@ By default, the player will need to have all the keys to unlock the container. Y
 
 ![](/images/lockandkey.png)
 
-Alternatively, you may require some event to unlock the chest. Perhaps the player has answered a riddle or moved the iron beam that was keeping the lid closed. In this case we will say the player has to talk to the pixie, who will magically unlock the chest. Set the number of keys to zero and untick the "Require all keys" check box (if using earlier versions of Quest you will need to set the number of keys to 1, and create a dummy key the player cannot get to).
+Alternatively, you may require some event to unlock the chest. Perhaps the player has answered a riddle or moved the iron beam that was keeping the lid closed. In this case we will say the player has to talk to the pixie, who will magically unlock the chest. Set the number of keys to zero and untick the "Require all keys" check box (if using earlier versions of Quest Viva you will need to set the number of keys to 1, and create a dummy key the player cannot get to).
 
 Set up the script like this:
 
@@ -61,7 +61,7 @@ Let's say we have a backpack, but it is not very big, and we want to limit how m
 
 This time we need to set it to be a "Limited container". We get a warning, now, telling us we also need to activate the feature for the game. Go to the _Features_ tab of the `game` object, and tick the "Inventory limits:... " check box. Go back to the object, and some new options are visible.
 
-Quest allows you to limit a container by count and by volume. The player will only be able to add an item to the container if the container has less than the maximum number of items _and_ it has enough volume for the new item. By default the volume of an item is 0, and if you are not interested in volumes, you can just leave everything to the default. We will do that for our backpack for now. Set the "Maximum number of objects" to some suitable number and, if you want, put in a message for when it is full.
+Quest Viva allows you to limit a container by count and by volume. The player will only be able to add an item to the container if the container has less than the maximum number of items _and_ it has enough volume for the new item. By default the volume of an item is 0, and if you are not interested in volumes, you can just leave everything to the default. We will do that for our backpack for now. Set the "Maximum number of objects" to some suitable number and, if you want, put in a message for when it is full.
 
 ![](/images/limitbycount.png)
 
@@ -71,7 +71,7 @@ If you want to limit the volume, you need to set the "Maximum number of objects"
 
 You will also need to set the volume of any object in your game that the player can pick up - including any containers.
 
-You can use any units that are convenient; it does not matter as long as you are consistent across your game. Note that if you put one container inside another, the volume of the inner container will be its own volume plus the volume of everything in it (Quest assumes containers are floppy bags that expand to hold things, rather than rigid boxes with fixed volumes).
+You can use any units that are convenient; it does not matter as long as you are consistent across your game. Note that if you put one container inside another, the volume of the inner container will be its own volume plus the volume of everything in it (Quest Viva assumes containers are floppy bags that expand to hold things, rather than rigid boxes with fixed volumes).
 
 
 

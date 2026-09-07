@@ -6,18 +6,18 @@ sidebar:
 
 Writing code is not trivial, and I cannot hope to make you an expert here. However, it is not as difficult as you might think, and hopefully this will get you started.
 
-Quest uses four languages, including XML. If you open the raw XML code view in the editor toolbar you will see the XML. Writing XML is a pain in the neck; let Quest do that for you. The only time I ever look at this code view is when I have spotted a typo when playing my game and want to quickly find it to correct it.
+Quest Viva uses four languages, including XML. If you open the raw XML code view in the editor toolbar you will see the XML. Writing XML is a pain in the neck; let Quest Viva do that for you. The only time I ever look at this code view is when I have spotted a typo when playing my game and want to quickly find it to correct it.
 
-Quest also uses Javascript, but unless you want to do fancy stuff with the interface, you can ignore that. This is not about JavaScript.
+Quest Viva also uses Javascript, but unless you want to do fancy stuff with the interface, you can ignore that. This is not about JavaScript.
 
-Quest is written in C#, but you will never need to know anything about C# to create games.
+Quest Viva is written in C#, but you will never need to know anything about C# to create games.
 
-The important one is the one used in scripts, ASL, and that is unique to Quest. It is kind of similar to C++/Java and many of the built-in functions come from Visual BASIC.
+The important one is the one used in scripts, ASL, and that is unique to Quest Viva. It is kind of similar to C++/Java and many of the built-in functions come from Visual BASIC.
 
 
 ### A note about objects
 
-Note: The word "object" has two distinct meanings in Quest. Firstly it can mean something that the player can interact with, perhaps pick up, examine, etc. However, in the programming world, an object is sort of data structure, and in that sense Quest uses it to include rooms, exits, commands, the game object and indeed everything in the game world. When I use the word "object", I mean it in this second sense. I will use the word "item" to indicate the first meaning (however, if I am quoting a label or dialogue box, "object" will probably mean item).
+Note: The word "object" has two distinct meanings in Quest Viva. Firstly it can mean something that the player can interact with, perhaps pick up, examine, etc. However, in the programming world, an object is sort of data structure, and in that sense Quest Viva uses it to include rooms, exits, commands, the game object and indeed everything in the game world. When I use the word "object", I mean it in this second sense. I will use the word "item" to indicate the first meaning (however, if I am quoting a label or dialogue box, "object" will probably mean item).
 
 
 ## Code view versus the GUI
@@ -28,7 +28,7 @@ Well, the first thing to say is you are already splashing around in the shallow 
 
 ![](/images/Say_to_troll.png)
 
-What you are looking at is a graphical representation of Quest code. Click on the "Code view" button (it has changed since the image above)...
+What you are looking at is a graphical representation of Quest Viva code. Click on the "Code view" button (it has changed since the image above)...
 
 ```quest
 switch (object_one) {
@@ -66,9 +66,9 @@ The GUI is excellent when you start out because it handles the details (those `{
 Start with the GUI, but take a look at the code you are creating to see how it looks and get an idea of how it works. As you get more confident, and your scripts get more complicated, see if you can start to use code.
 
 
-## Scripts in Quest
+## Scripts in Quest Viva
 
-Scripts are found in numerous places in Quest. Functions and commands are little more than scripts, but you can also attach scripts to items, rooms and exits. Rooms can be set to run a script when the player enters or leaves. Verbs on objects are all scripts, exits can run a script when used, items can run a script when picked up or dropped.
+Scripts are found in numerous places in Quest Viva. Functions and commands are little more than scripts, but you can also attach scripts to items, rooms and exits. Rooms can be set to run a script when the player enters or leaves. Verbs on objects are all scripts, exits can run a script when used, items can run a script when picked up or dropped.
 
 Here is an example from a built-in command, INVENTORY:
 
@@ -82,7 +82,7 @@ else {
 }
 ```
 
-At its simplest, code is a list of instructions. When the script starts (the player enters the room, drops the item, or whatever), Quest starts at the top and does each line in turn - just like following a recipe when baking a cake.
+At its simplest, code is a list of instructions. When the script starts (the player enters the room, drops the item, or whatever), Quest Viva starts at the top and does each line in turn - just like following a recipe when baking a cake.
 
 Here is a simple example that might be set on an exit:
 
@@ -91,7 +91,7 @@ msg("You crawl for some time through the dark tunnel, before arriving at...")
 player.parent = this.to
 ```
 
-Quest does the first line, which prints out the message, then the second line, which moves the player. Let's look at the second line in more detail...
+Quest Viva does the first line, which prints out the message, then the second line, which moves the player. Let's look at the second line in more detail...
 
 
 ### Attributes
@@ -103,7 +103,7 @@ In code, you can access an attribute using the dot operator. The above example a
 
 ### What is "this"?
 
-In Quest code, "this" has a special meaning, it refers to the object that this script belongs to. In the example, then, "this" refers to the exit itself. I could have used the name of the exit instead, but generally it is better to use "this", as it allows your code to be reused more easily.
+In Quest Viva code, "this" has a special meaning, it refers to the object that this script belongs to. In the example, then, "this" refers to the exit itself. I could have used the name of the exit instead, but generally it is better to use "this", as it allows your code to be reused more easily.
 
 
 ### What is "to"?
@@ -128,14 +128,14 @@ my_item.parent = player.parent
 
 ### Aside: about "player"
 
-Just be aware that Quest has the capability for changing the point of view (i.e. swapping from one player character to another) built-in. To handle that, Quest has an attribute of the game object called "pov", and that refers to the current player. To be able to change the player's point of view, we should use "game.pov" rather than "player". I mention this for completeness; I am going to continue to use "player" to keep things simple, but if you look at code in a library it will probably use "game.pov".
+Just be aware that Quest Viva has the capability for changing the point of view (i.e. swapping from one player character to another) built-in. To handle that, Quest Viva has an attribute of the game object called "pov", and that refers to the current player. To be able to change the player's point of view, we should use "game.pov" rather than "player". I mention this for completeness; I am going to continue to use "player" to keep things simple, but if you look at code in a library it will probably use "game.pov".
 
 
 ### Computers are fussy
 
 You have to be precise when writing code. Computers will not cope if you miss a quote or a bracket. To check you have not missed something, always click on the View code icon and check there is no red writing. Scroll down to the bottom to be sure.
 
-Working out what is missing can be tricky! However, if you do not check at this stage, Quest will sometimes try to correct the problem itself, which sometimes means deleting big chunks of code, leaving it in rather more of a mess.
+Working out what is missing can be tricky! However, if you do not check at this stage, Quest Viva will sometimes try to correct the problem itself, which sometimes means deleting big chunks of code, leaving it in rather more of a mess.
 
 
 ### Quotes in strings
@@ -144,7 +144,7 @@ Given a double quote terminates a string, how do you handle doubles quotes? This
 ```quest
 msg ("The scarecrow looks at you. "Howdy!" he says.")
 ```
-Quest will consider `"The scarecrow looks at you. "` to be a string, and `" he says."` to be another, and will try to work out what `Howdy!` is supposed to mean! The trick is to use an escape code; put a backslash before the double quotes within the string. This will work fine.
+Quest Viva will consider `"The scarecrow looks at you. "` to be a string, and `" he says."` to be another, and will try to work out what `Howdy!` is supposed to mean! The trick is to use an escape code; put a backslash before the double quotes within the string. This will work fine.
 ```quest
 msg ("The scarecrow looks at you. \"Howdy!\" he says.")
 ```
@@ -153,7 +153,7 @@ If you want to put a backslash into a string, you need to escape that too, so us
 
 ### Functions
 
-Quest has a large number of script commands and functions, listed on these helpful pages:
+Quest Viva has a large number of script commands and functions, listed on these helpful pages:
 
 [Script commands](/scripts/)
 
@@ -167,16 +167,16 @@ See here for how to use them and how to write your own:
 
 ## Control structures
 
-A control structure allows code to break out of the simple recipe. Instead of just doing each line in turn, we can get Quest to perform some lines repeatedly or to only do certain lines if specific conditions are met.
+A control structure allows code to break out of the simple recipe. Instead of just doing each line in turn, we can get Quest Viva to perform some lines repeatedly or to only do certain lines if specific conditions are met.
 
-Control structures have the same general format. First there is the script command, then the values, then the instructions. The values all go inside a set of brackets, and separated by commas. The instructions all go on separate lines (just like normal code), and inside a set of curly braces. To help make it easier to read, the instructions are indented. Quest will do this for you, but I recommend getting in the habit of doing it yourself anyway.
+Control structures have the same general format. First there is the script command, then the values, then the instructions. The values all go inside a set of brackets, and separated by commas. The instructions all go on separate lines (just like normal code), and inside a set of curly braces. To help make it easier to read, the instructions are indented. Quest Viva will do this for you, but I recommend getting in the habit of doing it yourself anyway.
 
 Let us have a look at a couple:
 
 
 ### The `foreach` loop
 
-This is how to go through each entry in a list (or dictionary). Quest has a number of "scope" functions that will grab all the appropriate items. For example, ScopeInventory gives us a list of items in the player's inventory. We can use that with `foreach`.
+This is how to go through each entry in a list (or dictionary). Quest Viva has a number of "scope" functions that will grab all the appropriate items. For example, ScopeInventory gives us a list of items in the player's inventory. We can use that with `foreach`.
 ```quest
 foreach (item, ScopeInventory()) {
   msg("You dry out " + GetDisplayName(item))
@@ -187,7 +187,7 @@ The first thing is the script command, `foreach`. Next we have the values, and t
 
 Then there are the instructions. Here there are two, each on its own line, indented by two spaces. They are surrounded by curly braces.
 
-Quest will go though the objects returned by ScopeInventory. For each one, it will put the value in "item" and then run the code.
+Quest Viva will go though the objects returned by ScopeInventory. For each one, it will put the value in "item" and then run the code.
 
 
 ### The `if` structure
@@ -233,7 +233,7 @@ The strategy here is to test each condition has not been met in turn, and give a
 
 ### Complex conditions
 
-You can do some complicated condition testing in Quest. To test if conditions are all true, use the `and` operator, and to test if at least one is true, use `or`. You can also test a condition is not true using `not`. In this example all the above conditions are checked at once (the first implicitly).
+You can do some complicated condition testing in Quest Viva. To test if conditions are all true, use the `and` operator, and to test if at least one is true, use `or`. You can also test a condition is not true using `not`. In this example all the above conditions are checked at once (the first implicitly).
 ```quest
 if (player.parent.name = clown_room and hat.worn and not clown.parent = clown_room) {
   msg ("You sit on the orange chair. A clown suddenly appears in the room, and knocks the hat off your head.")

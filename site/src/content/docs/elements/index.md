@@ -46,7 +46,7 @@ Within a language library, a template may define a **templatetype** of "command"
 
 This simply is a flag to the Editor to prevent it from showing the template in the list of templates (as the way to edit it would be to edit the associated command pattern).
 
-Note that it is important to have templates defined in the right place in the code. If your template is to override an existing template, then it has to come *after* the language file include. However, it has to come *before* the template is used in the code, which should be before the core library file include. As of version 5.2 Quest does not do this, so you will need to manually move the templates to the right place. Your game file should start something like this:
+Note that it is important to have templates defined in the right place in the code. If your template is to override an existing template, then it has to come *after* the language file include. However, it has to come *before* the template is used in the code, which should be before the core library file include. As of version 5.2 Quest Viva does not do this, so you will need to manually move the templates to the right place. Your game file should start something like this:
 
 ```xml
 <!--Saved by Quest 5.2.4515.34846-->
@@ -119,9 +119,9 @@ For example:
 
 **parameters:** These are the values (if any) passed into the function. You give them names, and when the function is called, those parameters must be set by giving values in the function call (e.g. MyFunction(a, b) ). The values are mapped to the parameters in the order they are given. If your function does not take input parameters, then you can omit this or leave it as an empty string.
 
-**type:** This is the return type of the function (the value passed out), if the function returns a value. Some functions do, and some don't. If you use a "[return](/scripts#return)" statement in your function to send a value back to the caller, then you need to specify the return type, so that Quest knows what type the function is expected to return. If your function does not return a value, then you can omit this or leave it an empty string.
+**type:** This is the return type of the function (the value passed out), if the function returns a value. Some functions do, and some don't. If you use a "[return](/scripts#return)" statement in your function to send a value back to the caller, then you need to specify the return type, so that Quest Viva knows what type the function is expected to return. If your function does not return a value, then you can omit this or leave it an empty string.
 
-Quest will object if there is a return statement, but no type specified; or if there is a type specified, but no return statement.
+Quest Viva will object if there is a return statement, but no type specified; or if there is a type specified, but no return statement.
 
 ### A Working Example
 
@@ -163,7 +163,7 @@ All commands automatically inherit a "defaultcommand" type if it exists.
 
 ### Name
 
-If a name is not specified, a unique name will be created. Using the first syntax allows Quest to try and create a user-friendly name by taking the first word(s) of the specified pattern; otherwise the name will be something like "k1". I recommend you always specify a name, as it will make debugging easier - the Debugger will show you a sensible name for your command. It will also let you easily change the behaviour of the command by setting its attributes when the game is in progress.
+If a name is not specified, a unique name will be created. Using the first syntax allows Quest Viva to try and create a user-friendly name by taking the first word(s) of the specified pattern; otherwise the name will be something like "k1". I recommend you always specify a name, as it will make debugging easier - the Debugger will show you a sensible name for your command. It will also let you easily change the behaviour of the command by setting its attributes when the game is in progress.
 
 ### Pattern
 
@@ -183,7 +183,7 @@ To handle "take all" and "drop all", the "take" and "drop" commands, for example
 
 ### Scope
 
-The scope attribute tells Quest where to look first for objects for this command. See the "Alternative scope" section of [this page](/howto/commands/advanced_scope) for details.
+The scope attribute tells Quest Viva where to look first for objects for this command. See the "Alternative scope" section of [this page](/howto/commands/advanced_scope) for details.
 
 ## verb
 
@@ -416,7 +416,7 @@ Creates an exit from the exit's parent room to the specified room.
 
 The alias might be something like "east", "north", or the name of a room that the player can go to.
 
-The name is optional. If no name is specified, Quest will generate a name for the exit.
+The name is optional. If no name is specified, Quest Viva will generate a name for the exit.
 
 Attributes:
 

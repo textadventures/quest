@@ -58,7 +58,7 @@ export default defineConfig({
                                     "slug": "tutorial/interacting_with_objects"
                                 },
                                 {
-                                    "label": "Anatomy of a Quest game",
+                                    "label": "Anatomy of a Quest Viva game",
                                     "slug": "tutorial/anatomy_of_a_quest_game"
                                 },
                                 {
@@ -110,6 +110,10 @@ export default defineConfig({
                                     "slug": "tutorial/creating_a_gamebook"
                                 }
                             ]
+                        },
+                        {
+                            "label": "What's new in Quest Viva 6.0",
+                            "slug": "whats_new"
                         },
                     ]
                 },
@@ -172,7 +176,7 @@ export default defineConfig({
                                     "slug": "howto/world/exits"
                                 },
                                 {
-                                    "label": "Creating with Trizbort and Quest",
+                                    "label": "Creating with Trizbort and Quest Viva",
                                     "slug": "howto/world/trizbort"
                                 },
                                 {
@@ -218,7 +222,7 @@ export default defineConfig({
                                     "slug": "howto/multimedia/multimedia"
                                 },
                                 {
-                                    "label": "Images in Quest",
+                                    "label": "Images in Quest Viva",
                                     "slug": "howto/multimedia/images"
                                 },
                                 {
@@ -470,7 +474,7 @@ export default defineConfig({
                                     "slug": "howto/ux/custom_panes"
                                 },
                                 {
-                                    "label": "JavaScript to Quest with ASLEvent",
+                                    "label": "JavaScript to Quest Viva with ASLEvent",
                                     "slug": "howto/ux/ui-callback"
                                 },
                                 {
@@ -590,7 +594,7 @@ export default defineConfig({
                             "slug": "advanced-topics/using_delegates"
                         },
                         {
-                            "label": "Translating Quest",
+                            "label": "Translating Quest Viva",
                             "slug": "advanced-topics/translating_quest"
                         },
                         {

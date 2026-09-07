@@ -22,7 +22,7 @@ Now let's create some objects inside the fridge. To do this, we just create thes
 
 Add the following objects: milk, cheese, beer. Give each object a sensible description. The prefix for each object should be "some", so that the room description sounds natural. Allow each object to be taken.
 
-Now run the game and go to the kitchen. Notice that you can't see the milk, and if you type something like `LOOK AT MILK`, Quest will tell you that it's not here. Now open the fridge, and the objects inside it will be revealed.
+Now run the game and go to the kitchen. Notice that you can't see the milk, and if you type something like `LOOK AT MILK`, Quest Viva will tell you that it's not here. Now open the fridge, and the objects inside it will be revealed.
 
 By setting the "List prefix" you can change the "It contains" text which appears before the list of objects.
 
@@ -38,7 +38,7 @@ In your "look at" description, you can check if the object is open by running a 
 
 When the fridge is open, you might print "The fridge is open, casting its light out into the gloomy kitchen". When it is closed, you might print "A big old refrigerator sits in the corner, humming quietly".
 
-As an exercise, add a closed cupboard to the kitchen. Add a few items to the cupboard such as a tin of beans, a packet of rice etc. The player should be able to open and close the cupboard. When Quest lists the contents of the cupboard, it should say something like "The cupboard is bare except for ..."
+As an exercise, add a closed cupboard to the kitchen. Add a few items to the cupboard such as a tin of beans, a packet of rice etc. The player should be able to open and close the cupboard. When Quest Viva lists the contents of the cupboard, it should say something like "The cupboard is bare except for ..."
 
 ## Transparency
 

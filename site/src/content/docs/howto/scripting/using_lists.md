@@ -52,7 +52,7 @@ This typically happens when you try to modify the display or inventory verbs, bu
 
 There are two solutions.
 
-The simplest is to add something to the list in the editor (bottom of the _object_ tab), and then delete it. This will force Quest to add the attribute to the object (you will find it is not in black on the _Attributes_ tab).
+The simplest is to add something to the list in the editor (bottom of the _object_ tab), and then delete it. This will force Quest Viva to add the attribute to the object (you will find it is not in black on the _Attributes_ tab).
 
 The alternative is to give the object a new list, using `NewStringList`, and then add all the values from scratch (or use the `Split` function discussed later).
 
@@ -97,7 +97,7 @@ If you know that what you are retrieving is a string, you can use `StringListIte
 
 ### Retrieving from other lists
 
-It can take Quest a moment to work out what the thing is with `ListItem`. Consider this code:
+It can take Quest Viva a moment to work out what the thing is with `ListItem`. Consider this code:
 ```quest
 if (ListItem(l, 2) = "one") {
   msg("Here")
@@ -106,7 +106,7 @@ if (ListItem(l, 2) = 42) {
   msg("Here")
 }
 ```
-The first line is fine, but the second will throw an error. Quest has extracted 42 from the list, but has yet to work out that it is an integer, and so throws an error when we try to compare it to a number. Assigning the value to a variable seems to give Quest enough time to work out what it is!
+The first line is fine, but the second will throw an error. Quest Viva has extracted 42 from the list, but has yet to work out that it is an integer, and so throws an error when we try to compare it to a number. Assigning the value to a variable seems to give Quest Viva enough time to work out what it is!
 ```quest
 if (ListItem(l, 2) = "one") {
   msg("Here")

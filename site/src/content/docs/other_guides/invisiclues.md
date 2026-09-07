@@ -10,7 +10,7 @@ Back at the dawn of time, Infocom came up with the idea of [InvisiClues](https:/
 
 ![](/images/other_guides/invisiclues.png)
 
-To get this to work, you need to create a new HELP command. For the command pattern, just type in "help;?", and for the name, "help2" (no quotes for both), as Quest already has a HELP command, and will object if you give your command the same name.
+To get this to work, you need to create a new HELP command. For the command pattern, just type in "help;?", and for the name, "help2" (no quotes for both), as Quest Viva already has a HELP command, and will object if you give your command the same name.
 
 For the script, paste in this:
 

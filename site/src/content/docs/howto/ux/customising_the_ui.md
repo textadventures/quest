@@ -4,7 +4,7 @@ sidebar:
   order: 12
 ---
 
-The Quest user interface is a web page. Even the desktop version has a built-in browser (Chrome as it happens), and what the player sees is just the same as any other web page on the internet.
+The Quest Viva user interface is a web page. Even the desktop version has a built-in browser (Chrome as it happens), and what the player sees is just the same as any other web page on the internet.
 
 Potentially this means you can set up your game to look like _anything_. In practice, this is not always trivial and at least some knowledge of HTML, CSS, JavaScript and JQuery are vital for the more advanced features. The [MDN Web Docs](https://developer.mozilla.org/en-US/docs/Learn_web_development/Core) are a good resource for learning these. That said, we can make a lot of changes without knowing too much about any of them.
 
@@ -14,7 +14,7 @@ Potentially this means you can set up your game to look like _anything_. In prac
 
 To really get to grips with the UI you have to understand how it is represented in the computer.
 
-When you access most web pages, your browser sends a message, an HTTP request, to a server, which sends back an HTTP response, and that's the end of the interaction until you navigate again. Quest doesn't work like that. Once your game has loaded, the whole game engine runs directly in your browser (compiled to WebAssembly) alongside the JavaScript that draws the interface - there's no server involved at all, and no request/response cycle per turn.
+When you access most web pages, your browser sends a message, an HTTP request, to a server, which sends back an HTTP response, and that's the end of the interaction until you navigate again. Quest Viva doesn't work like that. Once your game has loaded, the whole game engine runs directly in your browser (compiled to WebAssembly) alongside the JavaScript that draws the interface - there's no server involved at all, and no request/response cycle per turn.
 
 
 ## JavaScript
@@ -23,18 +23,18 @@ JavaScript is a programming language built into most web browsers. Most interact
 
 By the way, JavaScript is not the same as Java!
 
-JavaScript is also used in Quest, which uses a web browser interface even for the desktop app. Without JavaScript, you would have a static page. The JavaScript collects and processes the user clicking on the compass or whatever, it takes input from the command bar, it communicates with the Quest engine running alongside it in the browser, and it updates the web page being displayed as most text is output.
+JavaScript is also used in Quest Viva, which uses a web browser interface even for the desktop app. Without JavaScript, you would have a static page. The JavaScript collects and processes the user clicking on the compass or whatever, it takes input from the command bar, it communicates with the Quest Viva engine running alongside it in the browser, and it updates the web page being displayed as most text is output.
 
-Quest also uses a JavaScript extension called [jQuery](https://en.wikipedia.org/wiki/JQuery), which is a set of functions that gets downloaded with the original page - you'll see it used throughout these examples as the `$(...)` syntax.
+Quest Viva also uses a JavaScript extension called [jQuery](https://en.wikipedia.org/wiki/JQuery), which is a set of functions that gets downloaded with the original page - you'll see it used throughout these examples as the `$(...)` syntax.
 
-Quest has a JavaScript object, called `JS`, and we can use that to dynamically change the web page that the player is looking at. Getting information back from the web page is something else again.
+Quest Viva has a JavaScript object, called `JS`, and we can use that to dynamically change the web page that the player is looking at. Getting information back from the web page is something else again.
 
 
 ## The JS object
 
 The `JS` object is a quick way to use JavaScript in your game. 
 
-Let us start with the easy stuff. Quest has an `addText` method on the `JS` object which simply adds the given text to the web page at a certain point, i.e., at the end of the existing output text. `JS.addText` is used by both `OutputTextRaw` and `OutputTextRawNoBr`, which are in turn used by `OutputTextRaw` and `OutputTextRawNoBr` respectively, and `OutputTextRaw` is in turn used by `msg` and `PrintCentred`, so everything you print to screen uses `JS.addText`.
+Let us start with the easy stuff. Quest Viva has an `addText` method on the `JS` object which simply adds the given text to the web page at a certain point, i.e., at the end of the existing output text. `JS.addText` is used by both `OutputTextRaw` and `OutputTextRawNoBr`, which are in turn used by `OutputTextRaw` and `OutputTextRawNoBr` respectively, and `OutputTextRaw` is in turn used by `msg` and `PrintCentred`, so everything you print to screen uses `JS.addText`.
 
 You can use it to access the other built-in JavaScript functions (and your own too), and there are several that can be used to change the UI. 
 
@@ -133,7 +133,7 @@ If the hex value makes no sense, stick to the names!
 
 Static web pages use CSS like that, but if you want things to change, you need JavaScript. JavaScript is a fully-fledged programming language (and is _not_ the same as Java), and has become the standard for web browsers. We will try to avoid writing JavaScript code as far as possible - which is where jQuery comes in.
 
-JQuery is a library for JavaScript that is built in to Quest. Among other things, it offers relatively easy ways to access parts of the HTML page.
+JQuery is a library for JavaScript that is built in to Quest Viva. Among other things, it offers relatively easy ways to access parts of the HTML page.
 
 This is how JQuery/JavaScript could be used to set the styles in the CSS example.
 
@@ -146,11 +146,11 @@ Notice that all the same information is there, just arranged differently, accord
 
 
 
-## Quest
+## Quest Viva
 
-Quest sets up the User Interface in the `InitInterface` function, which is defined in Core.aslx. Almost the last thing it does is call a script, "inituserinterface", on the game object (if it exists), after which game.start will run (unless the player is resuming with a saved game). The best way to modify the user interface, then, is using the "inituserinterface" script.
+Quest Viva sets up the User Interface in the `InitInterface` function, which is defined in Core.aslx. Almost the last thing it does is call a script, "inituserinterface", on the game object (if it exists), after which game.start will run (unless the player is resuming with a saved game). The best way to modify the user interface, then, is using the "inituserinterface" script.
 
-The big advantage of doing it this way is that this will be called whenever Quest thinks the interface needs updating, which is not just at the start of the game (for example, when the screen is cleared). You also get the bonus of having all your interface stuff in the same place, which keeps it neat.
+The big advantage of doing it this way is that this will be called whenever Quest Viva thinks the interface needs updating, which is not just at the start of the game (for example, when the screen is cleared). You also get the bonus of having all your interface stuff in the same place, which keeps it neat.
 
 To edit the script, go to the _Features_ tab of the game object, and check that "Show advanced scripts for the game object" is ticked. Then go to the _Advanced Scripts_ tab. The "inituserinterface" script is at the top.
 
@@ -159,9 +159,9 @@ Note, however, that you should not print anything from the "inituserinterface" s
 Because it is easier to show, all the tricks here will be in code. Click the "Code view" button, and a text box will appear. Just copy-and-paste code into here. You can paste in as many code blocks as you like, and it should work fine (note that that is not necessarily true of all code).
 
 
-## Using all that in Quest
+## Using all that in Quest Viva
 
-So now we know where to put the code in Quest, and we know the JavaScript to do it. We just need a way to pass the JavaScript from the game to the interface. This is done using the `JS` object, for example using the `eval` function:
+So now we know where to put the code in Quest Viva, and we know the JavaScript to do it. We just need a way to pass the JavaScript from the game to the interface. This is done using the `JS` object, for example using the `eval` function:
 
 ```quest
 JS.eval("$('#gameBorder').css('background-color', '#800080');")
@@ -170,7 +170,7 @@ JS.eval("$('#gameBorder').css('color', 'pink');")
 
 The JS object is a way to access any JavaScript function, even those you add yourself. The `eval` function is useful because it will run any JavaScript code. So the first line above is saying, "JavaScript, please run this string as though it is JavaScript code", and the string to run is `$('#gameBorder').css('background-color', '#800080');`, i.e., the code we had before.
 
-Note that this is not a way to get information from the interface; this is a one-way street. Data is going from Quest to JavaScript only (there is a way to go the other way; that is how the player's inputs get to Quest, but that is beyond the scope of this article).
+Note that this is not a way to get information from the interface; this is a one-way street. Data is going from Quest Viva to JavaScript only (there is a way to go the other way; that is how the player's inputs get to Quest Viva, but that is beyond the scope of this article).
 
 
 ## Shortcuts
@@ -195,7 +195,7 @@ JS.setPanes ("midnightblue", "skyblue", "white", "midnightblue", "blue")
 
 ## Elements
 
-Bits of an HTML page are called elements, and "gameBorder" is just one of them. All HTML documents have an "html" element that contains everything else, and inside that it has a "head" and a "body" elements. Quest then has a few dozen elements that make up the interface inside the "body" element.
+Bits of an HTML page are called elements, and "gameBorder" is just one of them. All HTML documents have an "html" element that contains everything else, and inside that it has a "head" and a "body" elements. Quest Viva then has a few dozen elements that make up the interface inside the "body" element.
 
 You can look at those elements as you play a game, using your browser's Developer Tools (right-click on the page and choose "Inspect", or similar - this works the same way in the desktop app). On the left you will see a hierarchy of elements (you will need to expand them to see them all), and on the right a list of properties. Click on an element, and it will be highlighted in your game so you can see what it refers to.
 
@@ -236,7 +236,7 @@ JS.setCss("#gameBorder", "background-color:blueviolet;")
 
 ### background-image
 
-You can set the background image for each element. The CSS requires that the image name go inside a url function call, and to ensure it works on-line, Quest requires the name go inside a GetFileURL, so it gets complicated:
+You can set the background image for each element. The CSS requires that the image name go inside a url function call, and to ensure it works on-line, Quest Viva requires the name go inside a GetFileURL, so it gets complicated:
 
 ```quest
 JS.setCss("#gameBorder", "background-image:url(" + GetFileURL("gravestone.png") + ");")
@@ -250,7 +250,7 @@ JS.setCss("#qv-status", "background-image:none;")
 
 ### width
 
-This will change the width of the element. You have the potential to mess up big time here, so change one element at a time and see what happens. Elements do impact on each other, so you may not see any difference. When experimenting, change the width of Quest itself (or the browser) to see what effect that has too.
+This will change the width of the element. You have the potential to mess up big time here, so change one element at a time and see what happens. Elements do impact on each other, so you may not see any difference. When experimenting, change the width of Quest Viva itself (or the browser) to see what effect that has too.
 
 Note that the value must include "px", which says the units are pixels.
 
@@ -431,7 +431,7 @@ JS.setCss ("#gamePanesRunning", "pointer-events:inherit;")
 
 ### Moving the screen to the bottom
 
-Sometimes when you display something on the screen, Quest fails to scroll down for. You can force that with this:
+Sometimes when you display something on the screen, Quest Viva fails to scroll down for. You can force that with this:
 
 ```quest
 JS.scrollToEnd()

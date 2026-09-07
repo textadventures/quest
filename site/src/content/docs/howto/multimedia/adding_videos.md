@@ -21,7 +21,7 @@ Paste the ID into the "Play YouTube video" script.
 
 ## Adjusting the width of the video
 
-Quest adds an iframe to the HTML which contains the video.
+Quest Viva adds an iframe to the HTML which contains the video.
 
 To be able to control or modify this, we need to use Javascript.
 
@@ -119,7 +119,7 @@ In this example, we would have this:
 ```
 
 
-Now, let's find another video to switch to. A forum member with the web handle "onimike" creates videos concerning Quest, so we'll choose one of those.
+Now, let's find another video to switch to. A forum member with the web handle "onimike" creates videos concerning Quest Viva, so we'll choose one of those.
 
 ![](/images/questvidembedcode2.png)
 
@@ -137,10 +137,10 @@ After plugging that parameter into our function and see if it works.  It appears
 ChangeVideoSrc("my-video", "https://www.youtube.com/embed/-WNRvCpw3qo")
 ```
 
-But, with the code like this, the new video loads but does not play! There are two functions in Quest which deal with the ```Play YouTube video``` script:
+But, with the code like this, the new video loads but does not play! There are two functions in Quest Viva which deal with the ```Play YouTube video``` script:
 
 
-### The Quest function:
+### The Quest Viva function:
 
 **ShowYouTube**
 
@@ -165,7 +165,7 @@ function AddYouTube(id) {
 ```
 
 
-We can see that Quest sets the height of every video to `425` and the width to `344`.  This is the best part of the script.  If were we to simply copy YouTube's embed code into a `msg`, almost everything would work, but one problem we'd have would be that the video would be too wide in this case.
+We can see that Quest Viva sets the height of every video to `425` and the width to `344`.  This is the best part of the script.  If were we to simply copy YouTube's embed code into a `msg`, almost everything would work, but one problem we'd have would be that the video would be too wide in this case.
 
 Another important thing the script adds is the bit of text which makes the video play automatically: **"?autoplay=1&rel=0"**.  This is what we need to add to end of the `src` in our new function!
 
@@ -188,7 +188,7 @@ The most basic example of a video tag:
 
 For more information, see [here](https://www.w3schools.com/html/html5_video.asp).
 
-When using a local video file in Quest, we need to use [`GetFileURL()`](/functions/general#getfileurl) to retrieve our local file's URL.
+When using a local video file in Quest Viva, we need to use [`GetFileURL()`](/functions/general#getfileurl) to retrieve our local file's URL.
 
 This will find the correct path to the file regardless of how the game is hosted or played.
 

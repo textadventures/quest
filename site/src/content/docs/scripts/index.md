@@ -386,7 +386,7 @@ on ready { script }
 
 Runs the nested script when any callbacks have finished.
 
-For example, when you use an [ask](#ask) or [get input](#get-input) script command, Quest will wait for a response from the player and then run the nested scripts from those commands. However, any other scripts at the same level will run immediately. If you don't want this to happen, use "on ready" to make the script only run after the user has entered a command or responded to the question.
+For example, when you use an [ask](#ask) or [get input](#get-input) script command, Quest Viva will wait for a response from the player and then run the nested scripts from those commands. However, any other scripts at the same level will run immediately. If you don't want this to happen, use "on ready" to make the script only run after the user has entered a command or responded to the question.
 
 This is used by the Core library so that, for example, a room description is only displayed after any scripts which ask a question in "before enter" have run their nested scripts. This prevents the room description from being displayed while the question is still on-screen.
 
@@ -419,7 +419,7 @@ Raises a UI request. The request name must be specified directly - it is not a s
 request(UpdateLocation, "The Kitchen")
 ```
 
-The `request` script command is really a throw-back to the original Quest 5.0 interface, which, while it did use HTML, was not a fully-fledged browser. As of 5.3, the interface is a version of Chrome embedded in the software, and all interaction between the game world and the interface is done with JavaScript. Since then `request` has become increasingly obsolete, and it is recommended that the alternative is used. It is just possible `request` will be taken out of Quest at some date.
+The `request` script command is really a throw-back to the original Quest 5.0 interface, which, while it did use HTML, was not a fully-fledged browser. As of 5.3, the interface is a version of Chrome embedded in the software, and all interaction between the game world and the interface is done with JavaScript. Since then `request` has become increasingly obsolete, and it is recommended that the alternative is used. It is just possible `request` will be taken out of Quest Viva at some date.
 
 Valid request names, what they do, and their modern alternative:
 

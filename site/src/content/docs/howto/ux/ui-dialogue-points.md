@@ -52,7 +52,7 @@ function incAtt(att) {
 }
 ```
 
-We also need to update `setValues` to get these new values too. And `HandleDialogue`, to do something with the values (and you will need to use the Quest function `ToInt` to convert them from strings to integers). The dialogue will need to be bigger too. You are on your own for `HandleDialogue`, but here is the complete file:
+We also need to update `setValues` to get these new values too. And `HandleDialogue`, to do something with the values (and you will need to use the Quest Viva function `ToInt` to convert them from strings to integers). The dialogue will need to be bigger too. You are on your own for `HandleDialogue`, but here is the complete file:
 
 ```xml
 <div id="dialog_window_1" class="dialog_window" title="Your Character">

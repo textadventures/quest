@@ -15,7 +15,7 @@ In the command's script, you have this thing called "object", but you do not kno
 
 ## Attributes
 
-To help you, Quest has a number of attributes and functions built-in. However, you do need to set up your objects correctly. On the _Setup_ tab, in our example, set Mary to be a "Female character (named)" and set the crowd to "Inanimate objects (plural)" (the zombie will be fine as the default "inanimate object").
+To help you, Quest Viva has a number of attributes and functions built-in. However, you do need to set up your objects correctly. On the _Setup_ tab, in our example, set Mary to be a "Female character (named)" and set the crowd to "Inanimate objects (plural)" (the zombie will be fine as the default "inanimate object").
 
 You can see the attributes on that same tab, and see them change when you change the type: `gender`, `article` and `possessive` (but note, all lower-case).
 
@@ -69,7 +69,7 @@ We need a capital at the start of the second sentence. We can use the `CapFirst`
 
 ## Conjugation
 
-We also need to conjugate the verb so it is of the correct form. Quest has the `Conjugate` function for that, it takes the object that is doing the verb, followed by the verb as a string (use "be" for the verb to be, by the way).
+We also need to conjugate the verb so it is of the correct form. Quest Viva has the `Conjugate` function for that, it takes the object that is doing the verb, followed by the verb as a string (use "be" for the verb to be, by the way).
 
 ```quest
 "You attack " + GetDefiniteName(object) + ". " + CapFirst(object.gender) + " " + Conjugate(object, "look") + " angry."
@@ -77,7 +77,7 @@ We also need to conjugate the verb so it is of the correct form. Quest has the `
 -> You attack Mary. She looks angry.
 ```
 
-Because we often want to start a sentence with the object doing the verb, Quest has a `WriteVerb` that will get the gender of the object, capitalise it and add the conjugated verb. This is used a lot in the language files for built-in responses.
+Because we often want to start a sentence with the object doing the verb, Quest Viva has a `WriteVerb` that will get the gender of the object, capitalise it and add the conjugated verb. This is used a lot in the language files for built-in responses.
 
 ```quest
 "You attack " + GetDefiniteName(object) + ". " + WriteVerb(object, "look") + " angry."

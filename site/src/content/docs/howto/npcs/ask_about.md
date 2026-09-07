@@ -12,7 +12,7 @@ Interactive fiction has broadly three ways for the player to talk to NPCs.
 
     ASK ... ABOUT ...
 
-This is something built in to Quest, but it does need to be turned on. On the _Features_ tab of the game object, tick the "Ask/Tell" box. You should now find there is an _Ask/Tell_ tab for the objects in your game.
+This is something built in to Quest Viva, but it does need to be turned on. On the _Features_ tab of the game object, tick the "Ask/Tell" box. You should now find there is an _Ask/Tell_ tab for the objects in your game.
 
 This page is about using `ASK/ABOUT`. This also includes `TELL/ABOUT` and `TELL/TO`, both of which are on the same tab, and work in exactly the same way, so everything here can also be applied to `TELL/ABOUT` and `TELL/TO`. For simplicity, we will go through just `ASK/ABOUT`.
 
@@ -21,11 +21,11 @@ This page is about using `ASK/ABOUT`. This also includes `TELL/ABOUT` and `TELL/
 
 The way ASK works is that you give a list of topics and corresponding scripts. Suppose we have a character, Mary, and we want to ask her about the murder of Dr Black. In the ASK section, type the topic, "dr black", into the entry box and click _Add_. The new entry appears expanded, ready for you to add the script that will run when the player asks about Dr Black. For now, just have it print a simple message.
 
-Now go in game, and type `ASK MARY ABOUT DR BLACK`, and you should see your message. Quest will do its best to match topics, so you should also see the message if you type `ASK MARY ABOUT DR` or `ASK MARY ABOUT BLACK`. Ah, but what if the player types `ASK MARY ABOUT DOCTOR BLACK`? Go back to the _Ask/Tell_ tab for Mary, make sure this topic is selected and click on "Edit Key". Replace "dr black" with "dr doctor black".
+Now go in game, and type `ASK MARY ABOUT DR BLACK`, and you should see your message. Quest Viva will do its best to match topics, so you should also see the message if you type `ASK MARY ABOUT DR` or `ASK MARY ABOUT BLACK`. Ah, but what if the player types `ASK MARY ABOUT DOCTOR BLACK`? Go back to the _Ask/Tell_ tab for Mary, make sure this topic is selected and click on "Edit Key". Replace "dr black" with "dr doctor black".
 
 ![](/images/Asktell3.png)
 
-What Quest does is attempt to match the topic against each word in the topic's key, rather than exactly matching the whole thing, so you can put a list of keywords here, separated by spaces.
+What Quest Viva does is attempt to match the topic against each word in the topic's key, rather than exactly matching the whole thing, so you can put a list of keywords here, separated by spaces.
 
 Obviously you can change the script that runs at any time by clicking the topic again to expand it...
 
@@ -159,7 +159,7 @@ else {
 }
 ```
 
-What the code does is firstly go through all the objects in the current room (which it gets using `GetDirectChildren(player.parent)`), and collects up all those with an "ask" attribute (this is where Quest stores the topics we set earlier, so this is a good test of whether the object is a character).
+What the code does is firstly go through all the objects in the current room (which it gets using `GetDirectChildren(player.parent)`), and collects up all those with an "ask" attribute (this is where Quest Viva stores the topics we set earlier, so this is a good test of whether the object is a character).
 
 Then it looks at how many NPCs it found. If none, an error message; if one, then it calls the same function that the built-in ask/tell system uses, `DoAskTell`, using the one NPC it found.
 
