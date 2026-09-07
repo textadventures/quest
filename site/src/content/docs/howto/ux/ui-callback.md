@@ -87,6 +87,40 @@ player.eyecolour = StringListItem(l, 2)
 
 ## Timers
 
-If you want to use split second timing, then `ASLEvent` is the way to go. Quest Viva's built-in timers only work in whole seconds. You can use a JavaScript timer instead, and have that fire events in Quest Viva using ASLEvent for much finer control.
+If you want split second timing, then `ASLEvent` is the way to go. Quest Viva's built-in timers only work in whole seconds, but a JavaScript timer can run as fast as you like, and call back into the game when something actually needs to happen.
 
-The details are beyond the scope of this article, but you can see examples [here](https://textadventures.co.uk/forum/samples/topic/gz1msne3k0_mjvoj8vpubw/countdown) and [here](https://textadventures.co.uk/forum/samples/topic/4rajpgh0ikicac9we2rsiq/thunder-and-lightning-effect).
+The thing to get right is which half does the work. Every `ASLEvent` call runs a script in the game world, so firing one on every tick of a ten-per-second timer means a hundred script runs in ten seconds - and each one also marks the game as having unsaved progress. Keep the fast, cosmetic part - counting, animating, redrawing - in JavaScript, and call back only at the moments the game itself cares about.
+
+This example counts down in tenths of a second in the [custom status pane](/howto/ux/custom_panes), and calls the game just once, when it reaches zero. Turn on the custom status pane on the game object's _Interface_ tab, then put this in your start script:
+
+```quest
+s = "<script>"
+s = s + "var countdownTimer;"
+s = s + "function startCountdown(seconds) {"
+s = s + "  var deadline = Date.now() + parseFloat(seconds) * 1000;"
+s = s + "  countdownTimer = setInterval(function () {"
+s = s + "    var left = deadline - Date.now();"
+s = s + "    if (left > 0) {"
+s = s + "      setCustomStatus('Time remaining: ' + (left / 1000).toFixed(1));"
+s = s + "    }"
+s = s + "    else {"
+s = s + "      clearInterval(countdownTimer);"
+s = s + "      setCustomStatus('Time remaining: 0.0');"
+s = s + "      ASLEvent('CountdownFinished', 'timeout');"
+s = s + "    }"
+s = s + "  }, 100);"
+s = s + "}"
+s = s + "</script>"
+JS.addScript (s)
+```
+
+Start it whenever you want the clock to begin - `JS.startCountdown ("120")` for two minutes - and create a `CountdownFinished` function taking a single string parameter, to handle the end:
+
+```quest
+msg ("Out of time!")
+finish
+```
+
+The same shape works for anything you want timed finely: run the timer in JavaScript, and use `ASLEvent` to tell the game about the handful of moments that matter.
+
+There are further examples on the archived forum - a [countdown clock](https://archive.textadventures.co.uk/forum/samples/topic/gz1msne3k0_mjvoj8vpubw) that fires several events at different points along the way, and a [screen flash effect](https://archive.textadventures.co.uk/forum/samples/topic/4rajpgh0ikicac9we2rsiq) which stays entirely in JavaScript, since the game world has nothing to do while it runs.
