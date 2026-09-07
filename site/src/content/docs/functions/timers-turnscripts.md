@@ -65,7 +65,7 @@ Runs the specified script after the specified time interval.
 
 If you may need to cancel the timer after creation, you can create a named timer using [SetTimeoutID](#settimeoutid).
 
-**Note:** This function is "non-blocking", and its script has no access to local variables. For a fuller discussion, see the note on [Blocks and Scripts](/howto/scripting/blocks_and_scripts).
+**Note:** This function is "non-blocking", and its script has no access to local variables. For a fuller discussion, see the note on [Blocks and Scripts](/howto/scripting/blocks-and-scripts).
 
 ## SetTimeoutID
 ```quest
@@ -82,7 +82,7 @@ Runs the specified script after the specified time interval.
 
 The name specifies the name of the timer to create. The anonymous version of this function is [SetTimeout](#settimeout).
 
-**Note:** This function is "non-blocking", and its script has no access to local variables. For a fuller discussion, see the note on [Blocks and Scripts](/howto/scripting/blocks_and_scripts).
+**Note:** This function is "non-blocking", and its script has no access to local variables. For a fuller discussion, see the note on [Blocks and Scripts](/howto/scripting/blocks-and-scripts).
 
 ## SetTimerInterval
 ```quest
@@ -134,7 +134,7 @@ If you may need to cancel the turnscript after creation, you can create a named 
 
 **Note:** The `SetTurnTimeout` function has a script, rather than a block, which means that it is non-blocking and that local variables cannot be accessed inside the script. For a fuller discussion, see the note for [ShowMenu](/functions/user-interface#showmenu).
 
-**Note:** This function is "non-blocking", and its script has no access to local variables. For a fuller discussion, see the note on [Blocks and Scripts](/howto/scripting/blocks_and_scripts).
+**Note:** This function is "non-blocking", and its script has no access to local variables. For a fuller discussion, see the note on [Blocks and Scripts](/howto/scripting/blocks-and-scripts).
 
 ## SetTurnTimeoutID
 ```quest
@@ -151,7 +151,7 @@ Runs the specified script after the specified number of turns.
 
 The name specifies the name of the turnscript to create. The anonymous version of this function is [SetTurnTimeout](#setturntimeout).
 
-**Note:** This function is "non-blocking", and its script has no access to local variables. For a fuller discussion, see the note on [Blocks and Scripts](/howto/scripting/blocks_and_scripts).
+**Note:** This function is "non-blocking", and its script has no access to local variables. For a fuller discussion, see the note on [Blocks and Scripts](/howto/scripting/blocks-and-scripts).
 
 ## SuppressTurnscripts
 ```quest
@@ -160,4 +160,4 @@ SuppressTurnscripts ()
 
 Stops all turnscripts running for one turn.
 
-For more on turnscripts, see [here](/howto/scripting/using_turnscripts).
+For more on turnscripts, see [here](/howto/scripting/using-turnscripts).

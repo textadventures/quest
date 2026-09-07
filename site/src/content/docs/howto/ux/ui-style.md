@@ -43,7 +43,7 @@ You can set the scale and height. You can also set the colour and width for exit
 
 ### Game panes
 
-You can selectively turn off a pane, or add a [command pane](/howto/ux/command_pane) or [custom status pane](/howto/ux/custom_panes). You can move the status and compass to the top (which will stop them moving up and down as the inventory changes). You can also select from a number of colour schemes.
+You can selectively turn off a pane, or add a [command pane](/howto/ux/command-pane) or [custom status pane](/howto/ux/custom-panes). You can move the status and compass to the top (which will stop them moving up and down as the inventory changes). You can also select from a number of colour schemes.
 
 ### Command bar
 

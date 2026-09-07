@@ -163,7 +163,7 @@ dictionary add (dictionary, string key, any type item)
 
 Adds an item to the specified dictionary.
 
-See [Using Dictionaries](/howto/scripting/using_dictionaries)
+See [Using Dictionaries](/howto/scripting/using-dictionaries)
 
 ## dictionary remove
 ```quest
@@ -172,7 +172,7 @@ dictionary remove (dictionary, string key)
 
 Removes the specified item from the dictionary.
 
-See [Using Dictionaries](/howto/scripting/using_dictionaries)
+See [Using Dictionaries](/howto/scripting/using-dictionaries)
 
 ## do
 ```quest
@@ -248,7 +248,7 @@ for (game.i, 1, 5) {
 
 If `game.i` already exists, the loop will run 5 times as expected, but the value of `game.i` will keep its original value. If  `game.i` does not exist, an error will be produced.
 
-See [Using Lists](/howto/scripting/using_lists)
+See [Using Lists](/howto/scripting/using-lists)
 
 ## foreach
 ```quest
@@ -259,7 +259,7 @@ Run a script for each item in a list. If the list is a dictionary, the loop iter
 
 _Note:_ Do not use an attribute as the iterator variable (see [here](#for)).
 
-For more on how and why to use `foreach`, see [Using Lists](/howto/scripting/using_lists)
+For more on how and why to use `foreach`, see [Using Lists](/howto/scripting/using-lists)
 
 ## get input
 ```quest
@@ -279,7 +279,7 @@ get input {
 }
 ```
 
-For more information see [here](/howto/tasks/asking_a_question).
+For more information see [here](/howto/tasks/asking-a-question).
 
 ## if
 ```quest
@@ -361,7 +361,7 @@ list add (list, any type item)
 
 Adds an item to a list.
 
-See [Using Lists](/howto/scripting/using_lists)
+See [Using Lists](/howto/scripting/using-lists)
 
 ## list remove
 ```quest
@@ -370,7 +370,7 @@ list remove (list, any type item)
 
 Removes an item from a list.
 
-See [Using Lists](/howto/scripting/using_lists)
+See [Using Lists](/howto/scripting/using-lists)
 
 ## msg
 ```quest
@@ -392,7 +392,7 @@ This is used by the Core library so that, for example, a room description is onl
 
 Generally there should be no need to use this command in your own games, as of course if you want script to run after an "ask", you can just put it inside the "ask" script block.
 
-Note that this does not wait for scripts attached to functions to work (such as `Ask` and `ShowMenu`). see [here](/howto/scripting/blocks_and_scripts)
+Note that this does not wait for scripts attached to functions to work (such as `Ask` and `ShowMenu`). see [here](/howto/scripting/blocks-and-scripts)
 
 ## picture
 ```quest
@@ -440,7 +440,7 @@ Valid request names, what they do, and their modern alternative:
 | `SetCompassDirections` | Assigns compass direction names from a semicolon-separated list. | [JS.setCompassDirections(...)](/js/#setcompassdirections) |
 | `SetInterfaceString` | Sets UI text via an `"ElementName=Value"` parameter. | [JS.setInterfaceString(...)](/js/#setinterfacestring) |
 | `SetPanelContents` | Sets the static panel HTML contents. | [SetFramePicture](/functions/user-interface#setframepicture) and [ClearFramePicture](/functions/user-interface#clearframepicture) |
-| `SetStatus` | Sets the status area text (right of screen, under "Inventory"); blank removes it. | [status attributes](/status_attributes) |
+| `SetStatus` | Sets the status area text (right of screen, under "Inventory"); blank removes it. | [status attributes](/status-attributes) |
 | `Show` | Turns on an interface element ("Panes", "Location" or "Command"). | [JS.uiShow(...)](/js/#uishow) |
 | `ShowPicture` | Shows the specified picture file from the game directory. | [picture](#picture) |
 | `UpdateLocation` | Updates the location bar with the parameter text. | [JS.updateLocation(location)](/js/#updatelocation) |
@@ -464,7 +464,7 @@ rundelegate (object, string attribute name, any type parameters ... )
 
 Runs an object's delegate implementation script attribute, with the specified parameters.
 
-See [Using delegates](/advanced-topics/using_delegates)
+See [Using delegates](/advanced-topics/using-delegates)
 
 ## set
 ```quest
@@ -531,7 +531,7 @@ switch (any type value) { case (any type value) { script } [ default { script } 
 
 Switch is used with one or more `case` statements and an optional `default` statement. It is used to test a variable or object attribute against 2 or more possible values; a shortcut instead of writing many `if` statements. 
 
-For more, see [here](/howto/tasks/multiple_choices_using_a_switch_script)
+For more, see [here](/howto/tasks/multiple-choices-using-a-switch-script)
 
 ## undo
 ```quest

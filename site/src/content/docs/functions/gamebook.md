@@ -4,7 +4,7 @@ sidebar:
   order: 16
 ---
 
-Functions specific to the Gamebook game type (see [Creating a gamebook](/tutorial/creating_a_gamebook)), defined in GamebookCore.aslx. These aren't available in ordinary Text Adventure games.
+Functions specific to the Gamebook game type (see [Creating a gamebook](/tutorial/creating-a-gamebook)), defined in GamebookCore.aslx. These aren't available in ordinary Text Adventure games.
 
 ## AddPageLink
 ```quest

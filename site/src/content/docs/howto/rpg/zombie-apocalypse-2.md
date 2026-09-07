@@ -9,7 +9,7 @@ This is the second of two parts, and discusses how to add some more advanced fea
 
 ## Status attributes
 
-It would be good if the player can see at a glance how she is doing. We can use status attributes to do that. The first step is to give the player a string dictionary, called "statusattributes". Then we can add the attributes we want to track. (For a closer look at how status attributes work, see [How to Keep Score](/howto/tasks/keeping_score).)
+It would be good if the player can see at a glance how she is doing. We can use status attributes to do that. The first step is to give the player a string dictionary, called "statusattributes". Then we can add the attributes we want to track. (For a closer look at how status attributes work, see [How to Keep Score](/howto/tasks/keeping-score).)
 
 We should display both the weapon and the current ammo, if the weapon is a firearm, and these need to be done as strings, so first we will create a function that sets `player.equippedname` to the name of the current weapon, and `player.ammonote`, which will give the current and maximum ammo for a firearm.
 

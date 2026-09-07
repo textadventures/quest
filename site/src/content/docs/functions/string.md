@@ -173,7 +173,7 @@ Returns a [string](/types#string) containing the requested text, based on the ob
 
 You can pass in multiple objects. If you only pass in one, you can refer to it using the variable "object". Otherwise you can use "object1", "object2" etc.
 
-See [Changing templates](/howto/world/changing_templates)
+See [Changing templates](/howto/world/changing-templates)
 
 *Example:* We want to provide a templated message about a blocked exit.
 
@@ -419,7 +419,7 @@ Returns a [string](/types#string) combining **possessive** with the object's dis
 ProcessText (string)
 ```
 
-Returns an [string](/types#string) - the result of passing the given string through the text processor. For details on what the text processor does, see [here](/howto/world/text_processor).
+Returns an [string](/types#string) - the result of passing the given string through the text processor. For details on what the text processor does, see [here](/howto/world/text-processor).
 
 ## Replace
 ```quest
@@ -515,7 +515,7 @@ Returns a [string](/types#string) containing the text for the requested template
 
 You can create a template in your ASLX file with a [\<template\> element](/elements#template).
 
-See [Changing templates](/howto/world/changing_templates)
+See [Changing templates](/howto/world/changing-templates)
 
 ## ToRoman
 ```quest

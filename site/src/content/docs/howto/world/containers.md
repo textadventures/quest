@@ -20,7 +20,7 @@ To make it a container, go to the _Features_ tab of the object, and tick "Contai
 
 **Limited container:** A limited container can only hold a certain amount. We will look further later.
 
-**Openable/closable:** A object that is not a container, but can be opened and closed; a door or window. This is quite different to a container, and not discussed on this page (but see [here](/howto/tasks/setting_up_door)).
+**Openable/closable:** A object that is not a container, but can be opened and closed; a door or window. This is quite different to a container, and not discussed on this page (but see [here](/howto/tasks/setting-up-door)).
 
 
 ## Container

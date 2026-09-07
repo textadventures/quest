@@ -17,7 +17,7 @@ Quest Viva has a suite of functions to allow these things. We will look first at
 
 ### Text processor
 
-Not really a function, but the easiest to use. As with all [text processor](/howto/world/text_processor) directives, this is embedded in a string. The directive is called "random", and will select one text from the following list.
+Not really a function, but the easiest to use. As with all [text processor](/howto/world/text-processor) directives, this is embedded in a string. The directive is called "random", and will select one text from the following list.
 
 Here is a simple example. When the text is printed, Quest Viva will randomly select one of "blue", "red" or "yellow".
 

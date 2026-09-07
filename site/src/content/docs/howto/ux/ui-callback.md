@@ -52,7 +52,7 @@ JS.askAge()
 
 ## Custom status pane
 
-Using this technique, you could change the [custom status pane](/howto/ux/custom_panes) into a control panel. Go to the game object, and turn on the custom status pane on the _Interface_ tab, then add this to the start script:
+Using this technique, you could change the [custom status pane](/howto/ux/custom-panes) into a control panel. Go to the game object, and turn on the custom status pane on the _Interface_ tab, then add this to the start script:
 
 ```xml
 html = "<p><a onclick=\"ASLEvent('HandleClick', 'HERE')\">HERE</a><p>"
@@ -91,7 +91,7 @@ If you want split second timing, then `ASLEvent` is the way to go. Quest Viva's 
 
 The thing to get right is which half does the work. Every `ASLEvent` call runs a script in the game world, so firing one on every tick of a ten-per-second timer means a hundred script runs in ten seconds - and each one also marks the game as having unsaved progress. Keep the fast, cosmetic part - counting, animating, redrawing - in JavaScript, and call back only at the moments the game itself cares about.
 
-This example counts down in tenths of a second in the [custom status pane](/howto/ux/custom_panes), and calls the game just once, when it reaches zero. Turn on the custom status pane on the game object's _Interface_ tab, then put this in your start script:
+This example counts down in tenths of a second in the [custom status pane](/howto/ux/custom-panes), and calls the game just once, when it reaches zero. Turn on the custom status pane on the game object's _Interface_ tab, then put this in your start script:
 
 ```quest
 s = "<script>"

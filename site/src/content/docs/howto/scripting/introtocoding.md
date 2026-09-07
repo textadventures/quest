@@ -161,7 +161,7 @@ Quest Viva has a large number of script commands and functions, listed on these 
 
 See here for how to use them and how to write your own:
 
-[Using and Creating Functions](/howto/scripting/creating_functions_which_return_a_value)
+[Using and Creating Functions](/howto/scripting/creating-functions-which-return-a-value)
 
 
 

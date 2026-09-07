@@ -34,7 +34,7 @@ Ask ("Are you sure?") {
 
 Use the [ask](/scripts#ask) script command for a popup menu.
 
-**Note:** This function is "non-blocking", and its script has no access to local variables. For a fuller discussion, see the note on [Blocks and Scripts](/howto/scripting/blocks_and_scripts).
+**Note:** This function is "non-blocking", and its script has no access to local variables. For a fuller discussion, see the note on [Blocks and Scripts](/howto/scripting/blocks-and-scripts).
 
 ## ClearFramePicture
 ```quest
@@ -274,7 +274,7 @@ ShowMenu ("Select", ScopeInventory(), true) {
 }
 ```
 
-**Note:** This function is "non-blocking", and its script has no access to local variables. For a fuller discussion, see the note on [Blocks and Scripts](/howto/scripting/blocks_and_scripts).
+**Note:** This function is "non-blocking", and its script has no access to local variables. For a fuller discussion, see the note on [Blocks and Scripts](/howto/scripting/blocks-and-scripts).
 
 ## ShowPage
 ```quest

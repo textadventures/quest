@@ -44,7 +44,7 @@ Inserts the given text into the page. This is how `msg` displays text. Use [addS
 JS.AddYouTube (string id)
 ```
 
-Embeds an autoplaying YouTube video for the given video ID. See [Adding videos](/howto/multimedia/adding_videos).
+Embeds an autoplaying YouTube video for the given video ID. See [Adding videos](/howto/multimedia/adding-videos).
 
 ## colourBlend
 
@@ -72,7 +72,7 @@ Causes the given string to be evaluated by the JavaScript engine. This is a way 
 JS.Grid_ClearAllLayers ()
 ```
 
-Clears everything drawn on the map grid - rooms and any custom layers. Used when resetting the map entirely, e.g. when the player teleports to an unconnected region. See [Showing a map](/howto/tasks/showing_a_map).
+Clears everything drawn on the map grid - rooms and any custom layers. Used when resetting the map entirely, e.g. when the player teleports to an unconnected region. See [Showing a map](/howto/tasks/showing-a-map).
 
 ## hideBorder
 
@@ -163,7 +163,7 @@ JS.setCss ("#qv-status", "background-image:none; background-color: green;")
 JS.setCustomStatus(string html)
 ```
 
-Sets the HTML text to be displayed on the custom status pane (turn the command pane on on the _Interface_ script of the game object). This is an involved issue, rather than give an example, go see this [page](/howto/ux/custom_panes).
+Sets the HTML text to be displayed on the custom status pane (turn the command pane on on the _Interface_ script of the game object). This is an involved issue, rather than give an example, go see this [page](/howto/ux/custom-panes).
 
 ## setGameName
 
@@ -319,7 +319,7 @@ As [showPopup](#showpopup), but will fill the Quest Viva window (so the size wil
 JS.showStatusVisible (boolean visible)
 ```
 
-Shows or hides the status variables pane (see [status attributes](/status_attributes)).
+Shows or hides the status variables pane (see [status attributes](/status-attributes)).
 
 ## TurnOffHyperlinksUnderline
 

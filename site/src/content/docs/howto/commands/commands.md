@@ -31,7 +31,7 @@ There is a convention in interactive fiction that a question mark can be used as
 
 ## Commands and objects
 
-Often you will want a command to involve an object. To handle that, Quest Viva has a special system (in fact it has two, but [using verbs](/howto/commands/using_verbs) is a discussion for another time). Let us say we want to have a command for attacking a zombie. And we want to allow `STRIKE` and `HIT`.
+Often you will want a command to involve an object. To handle that, Quest Viva has a special system (in fact it has two, but [using verbs](/howto/commands/using-verbs) is a discussion for another time). Let us say we want to have a command for attacking a zombie. And we want to allow `STRIKE` and `HIT`.
 
 We could use this as the pattern:
 
@@ -80,7 +80,7 @@ Think of a checklist; what do we need to check before allowing the command to wo
 
 1. The player needs a weapon
 
-As Quest Viva will only match an object if it is present, so we do not need to check if the zombie is present, it must be if Quest Viva found it (that may not be the case if you use a [scope](/howto/commands/advanced_scope), but that is outside this discussion). We can ignore the first one. You may also choose to ignore the last depending on your game, but we will say that a weapon is required.
+As Quest Viva will only match an object if it is present, so we do not need to check if the zombie is present, it must be if Quest Viva found it (that may not be the case if you use a [scope](/howto/commands/advanced-scope), but that is outside this discussion). We can ignore the first one. You may also choose to ignore the last depending on your game, but we will say that a weapon is required.
 
 We then need to flip each item in the list, and add a response. I.e., instead of checking that it is an enemy, we check it is not, and add a response.
 
@@ -102,4 +102,4 @@ You may find that you want to adjust the order of the checks; if the zombie is b
 
 ## See also
 
-If your command should only work in a specific room, see [here](/howto/commands/commands_for_room) for the best way to handle it. For commands that need to have two objects, see the page on [complex commands](/howto/commands/complex_commands). To make your responses grammatically correct for any object, use [neutral language](/howto/tasks/neutral_language).
+If your command should only work in a specific room, see [here](/howto/commands/commands-for-room) for the best way to handle it. For commands that need to have two objects, see the page on [complex commands](/howto/commands/complex-commands). To make your responses grammatically correct for any object, use [neutral language](/howto/tasks/neutral-language).

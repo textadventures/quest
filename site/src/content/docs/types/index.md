@@ -149,7 +149,7 @@ A "double" attribute represents a number with a decimal point. It can be positiv
 
 Examples: 1.23, 5.8214, -0.12421, 0.0.
 
-More [here](/howto/scripting/using_doubles).
+More [here](/howto/scripting/using-doubles).
 
 ## Object
 
@@ -189,7 +189,7 @@ In Quest 5.4, you can still use the older semi-colon separate format with "simpl
 <mylist type="simplestringlist">one; two; three</mylist>
 ```
 
-See [Using Lists](/howto/scripting/using_lists).
+See [Using Lists](/howto/scripting/using-lists).
 
 ## Objectlist
 
@@ -201,7 +201,7 @@ The format in an ASLX file is:
 <mylist type="objectlist">player; object1; thing</mylist>
 ```
 
- See [Using Lists](/howto/scripting/using_lists) for more information.
+ See [Using Lists](/howto/scripting/using-lists) for more information.
 
 ## List
 
@@ -216,7 +216,7 @@ The format in an ASLX file is:
 
 Usually it is better to use a [stringlist](#stringlist) (if all elements in the list will be strings) or an [objectlist](#objectlist) (if all elements in the list will be objects) instead.
 
-There is more on lists [here](/howto/scripting/using_lists).
+There is more on lists [here](/howto/scripting/using-lists).
 
 ## Objectdictionary
 
@@ -258,7 +258,7 @@ This defines:
 |first|player|
 |second|lounge|
 
-See [Using Dictionaries](/howto/scripting/using_dictionaries)
+See [Using Dictionaries](/howto/scripting/using-dictionaries)
 
 ## Scriptdictionary
 
@@ -279,7 +279,7 @@ For example:
 </useon>
 ```
 
-See [Using Dictionaries](/howto/scripting/using_dictionaries)
+See [Using Dictionaries](/howto/scripting/using-dictionaries)
 
 ## Dictionary
 
@@ -317,7 +317,7 @@ Here is an example dictionary containing a variety of different types:
 </example>
 ```
 
-See [Using Dictionaries](/howto/scripting/using_dictionaries)
+See [Using Dictionaries](/howto/scripting/using-dictionaries)
 
 ## Stringdictionary
 
@@ -359,8 +359,8 @@ This defines:
 |turns|You have taken ! turns|
 |health|Health !%|
 
-See [Using Dictionaries](/howto/scripting/using_dictionaries)
+See [Using Dictionaries](/howto/scripting/using-dictionaries)
 
 ## Command pattern
 
-Quest Viva uses regular expressions to compare commands with what the player typed, and the regular expression is converted from a string in the background (see [here](/howto/commands/pattern_matching) for more on that). However, it also offers a simplified version, a "command pattern". This is essentially a string (such as "tie #object1# to #object2"), which Quest Viva will convert to another string when the game start (in this case "^tie (?.*) to (?.*)$"), which can then be converted to a regular expression when required. There is not much point to command patterns outside of commands.
+Quest Viva uses regular expressions to compare commands with what the player typed, and the regular expression is converted from a string in the background (see [here](/howto/commands/pattern-matching) for more on that). However, it also offers a simplified version, a "command pattern". This is essentially a string (such as "tie #object1# to #object2"), which Quest Viva will convert to another string when the game start (in this case "^tie (?.*) to (?.*)$"), which can then be converted to a regular expression when required. There is not much point to command patterns outside of commands.

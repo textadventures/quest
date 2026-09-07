@@ -240,7 +240,7 @@ Returns a [boolean](/types#boolean) - **true** if the player has the specified o
 GridSquareClick (integer x, integer y)
 ```
 
-Override hook for [grid maps](/howto/tasks/showing_a_map): the default implementation does nothing. Copy this function into your game and give it a body to handle clicks on a grid map square, using the clicked square's coordinates.
+Override hook for [grid maps](/howto/tasks/showing-a-map): the default implementation does nothing. Copy this function into your game and give it a body to handle clicks on a grid map square, using the clicked square's coordinates.
 
 ## HelperCloseObject
 ```quest

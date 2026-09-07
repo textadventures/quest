@@ -83,7 +83,7 @@ else {
 }
 ```
 
-Alternatively, you could have the machine change the state of another object - or as many objects as you like. Let us say we have a new switchable object, a generator. This is connected to our machine and to a light (for details on using light and dark in your game, see [here](/howto/world/handling_light_and_dark)).
+Alternatively, you could have the machine change the state of another object - or as many objects as you like. Let us say we have a new switchable object, a generator. This is connected to our machine and to a light (for details on using light and dark in your game, see [here](/howto/world/handling-light-and-dark)).
 
 In this case the turning-on script for the generator needs to change the state of the other objects affected; for the light, we need to set it as a light source and update the description. For the machine, we need to set the "cannotswitchon" attribute to null to allow it to be turned on.
 

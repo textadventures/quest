@@ -8,7 +8,7 @@ sidebar:
 
 Quest Viva is an open-source software project, [hosted on GitHub](https://github.com/textadventures/quest).
 
-To compile the source code, you just need the [.NET 10 SDK](https://dotnet.microsoft.com/en-us/download) - any editor works (Visual Studio, VS Code, JetBrains Rider), or the `dotnet` CLI on its own. More details on how to do that [here](/developers/source_code).
+To compile the source code, you just need the [.NET 10 SDK](https://dotnet.microsoft.com/en-us/download) - any editor works (Visual Studio, VS Code, JetBrains Rider), or the `dotnet` CLI on its own. More details on how to do that [here](/developers/source-code).
 
 The engine and server-side code is all C# (.NET 10). The editor's UI (AppShell) is TypeScript and Svelte.
 
@@ -27,7 +27,7 @@ Questions about how things work are welcome in [GitHub Discussions](https://gith
 
 If you know a language other than English, why not try translating the English.aslx file? The more languages Quest Viva supports, the better, so please feel free to add any language you can speak!
 
-See [Translating Quest Viva](/advanced-topics/translating_quest) for full information.
+See [Translating Quest Viva](/advanced-topics/translation) for full information.
 
 
 ## Technical overview

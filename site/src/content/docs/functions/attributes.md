@@ -129,7 +129,7 @@ HasDelegateImplementation (object, string attribute name)
 
 Returns a [boolean](/types#boolean) - **true** if the specified attribute is a delegate implementation.
 
-See [Using delegates](/advanced-topics/using_delegates)
+See [Using delegates](/advanced-topics/using-delegates)
 
 ## HasDouble
 ```quest

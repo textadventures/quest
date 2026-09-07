@@ -7,7 +7,7 @@ sidebar:
 
 ## Inserting pictures
 
-You can show a picture using the "Show picture" command. Let's make our "kitchen" room in the [tutorial game](/tutorial/tutorial_introduction) show a picture of a kitchen when we enter it.
+You can show a picture using the "Show picture" command. Let's make our "kitchen" room in the [tutorial game](/tutorial/tutorial-introduction) show a picture of a kitchen when we enter it.
 
 First we need to find a picture of a kitchen.
 
@@ -21,7 +21,7 @@ Now select the "kitchen" room from the tree. Click the Scripts tab, and go to th
 
 Now launch the game and go to the kitchen to verify that the picture is displayed with the room description.
 
-For more advanced image techniques - positioning and resizing with CSS, layering images, hosting images elsewhere - see [Images in Quest Viva](/howto/multimedia/images). You can also generate images entirely in code with SVG - see [Creating images on the fly](/howto/multimedia/images_on_the_fly).
+For more advanced image techniques - positioning and resizing with CSS, layering images, hosting images elsewhere - see [Images in Quest Viva](/howto/multimedia/images). You can also generate images entirely in code with SVG - see [Creating images on the fly](/howto/multimedia/images-on-the-fly).
 
 ## Static picture frame
 
@@ -39,8 +39,8 @@ You can also change the frame picture using a script, with the "Set frame pictur
 
 ## Sound and video
 
-You can play a sound in a script using the "Play sound" command, and stop it again with "Stop sound". See [Adding sounds to your game](/howto/multimedia/adding_sounds) for the full set of options (waiting for a sound to finish, looping, HTML audio elements) and a worked example.
+You can play a sound in a script using the "Play sound" command, and stop it again with "Stop sound". See [Adding sounds to your game](/howto/multimedia/adding-sounds) for the full set of options (waiting for a sound to finish, looping, HTML audio elements) and a worked example.
 
-You can also embed video in your game, in-line with the game text, using the "Play YouTube video" command from the Scripts tab. See [Adding videos](/howto/multimedia/adding_videos) for how to do this, how to control the embedded video with JavaScript, and how to embed your own video files.
+You can also embed video in your game, in-line with the game text, using the "Play YouTube video" command from the Scripts tab. See [Adding videos](/howto/multimedia/adding-videos) for how to do this, how to control the embedded video with JavaScript, and how to embed your own video files.
 
-You can also find script commands to print an email or web address hyperlink - see [Hyperlinks](/other_guides/hyperlinks).
+You can also find script commands to print an email or web address hyperlink - see [Hyperlinks](/other-guides/hyperlinks).

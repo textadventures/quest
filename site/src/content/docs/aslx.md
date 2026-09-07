@@ -59,7 +59,7 @@ By nesting \<object\> elements, you can define further objects inside objects.
 There are two libraries included in this example:
 
 -   Core.aslx provides the default Quest Viva functionality, including: showing room descriptions, implementing default verbs such as "take", "drop" and "use", opening and closing containers, and deciding which objects are currently available to the player.
--   [English.aslx](/advanced-topics/translating_quest) provides the English text for the built-in default responses, and the names of the verbs whose behaviour is defined in Core.aslx. This means Core.aslx is language-neutral – if you wanted to make a game in German or Spanish, just translate English.aslx and plug it in to your game.
+-   [English.aslx](/advanced-topics/translation) provides the English text for the built-in default responses, and the names of the verbs whose behaviour is defined in Core.aslx. This means Core.aslx is language-neutral – if you wanted to make a game in German or Spanish, just translate English.aslx and plug it in to your game.
 
 ## Attributes
 

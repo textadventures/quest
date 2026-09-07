@@ -28,7 +28,7 @@ The "speak to" method is directed to a specific character:
 
 This could then be handled with a stock response or by offering a list of options (Quest Viva will accept `TALK TO` as a synonym of `SPEAK TO`).
 
-[More here](/howto/npcs/speak_to)
+[More here](/howto/npcs/speak-to)
 
 
 
@@ -46,7 +46,7 @@ Quest Viva has a dedicated tab for this - tick "Ask/Tell" on the Features tab of
 
 ![](/images/Talk3.png)
 
-[More here](/howto/npcs/ask_about)
+[More here](/howto/npcs/ask-about)
 
 
 
@@ -61,7 +61,7 @@ For a more structured exchange - where the player picks from a fixed set of repl
 
 Unlike a `ShowMenu`-based conversation, each choice is a complete, ordinary turn, so save, load and undo all keep working in the middle of a conversation.
 
-[More here](/howto/npcs/dialogue_pages)
+[More here](/howto/npcs/dialogue-pages)
 
 
 

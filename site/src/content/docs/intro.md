@@ -13,7 +13,7 @@ Quest Viva gives you a point-and-click editor where everything about your game i
 
 You don't need any programming experience to use it. Plenty of people have written and published complete games without ever looking at a line of code.
 
-Quest Viva is the current version of Quest, which people have been using to write text adventures since 1998. If you've used Quest 5 before, see [What's new in Quest Viva 6.0](/whats_new).
+Quest Viva is the current version of Quest, which people have been using to write text adventures since 1998. If you've used Quest 5 before, see [What's new in Quest Viva 6.0](/whats-new).
 
 ## What can you make?
 
@@ -80,10 +80,10 @@ Either way, your players just follow a link. There's nothing for them to install
 
 ## Getting started
 
-The **[Tutorial](/tutorial/tutorial_introduction)** is the best place to begin. It walks you through building a game from scratch, and you can follow it in the browser without downloading anything.
+The **[Tutorial](/tutorial/tutorial-introduction)** is the best place to begin. It walks you through building a game from scratch, and you can follow it in the browser without downloading anything.
 
 ## Getting help
 
 If you get stuck, or just want to show people what you're making, ask on [Discord](https://textadventures.co.uk/community/discord) or in [GitHub Discussions](https://github.com/textadventures/quest/discussions). If you find a bug or want to request a feature, [open an issue](https://github.com/textadventures/quest/issues).
 
-Quest Viva is [open source](/developers/open_source) - the [source code is on GitHub](https://github.com/textadventures/quest), and contributions are welcome.
+Quest Viva is [open source](/developers/open-source) - the [source code is on GitHub](https://github.com/textadventures/quest), and contributions are welcome.

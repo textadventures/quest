@@ -183,7 +183,7 @@ To handle "take all" and "drop all", the "take" and "drop" commands, for example
 
 ### Scope
 
-The scope attribute tells Quest Viva where to look first for objects for this command. See the "Alternative scope" section of [this page](/howto/commands/advanced_scope) for details.
+The scope attribute tells Quest Viva where to look first for objects for this command. See the "Alternative scope" section of [this page](/howto/commands/advanced-scope) for details.
 
 ## verb
 
@@ -216,7 +216,7 @@ Creates a type. The type element can contain properties and [\<inherit\> tags](#
 
 Use an [\<inherit\> tag](#inherit) in an object definition to include all the type's properties in that object.
 
-See [Types](/advanced-topics/about_types).
+See [Types](/advanced-topics/about-types).
 
 ## game
 
@@ -472,7 +472,7 @@ Defines a walkthrough with a list of steps. Each step should be on its own line.
 
 Walkthrough elements can be nested within each other to create a hierarchy.
 
-See [Walkthroughs](/howto/scripting/using_walkthroughs).
+See [Walkthroughs](/howto/scripting/using-walkthroughs).
 
 ## timer
 
@@ -535,7 +535,7 @@ Creates a delegate type. Delegates are script properties that can be called like
 
 You can run delegate functions on objects using the [rundelegate](/scripts#rundelegate) command (if the delegate does not return a value) or using the [RunDelegateFunction](/functions/general#rundelegatefunction) function (for delegates that do return a value).
 
-See [Using delegates](/advanced-topics/using_delegates)
+See [Using delegates](/advanced-topics/using-delegates)
 
 ## javascript
 
@@ -594,7 +594,7 @@ caption
 controltype  
 [string](/types#string) specifying the control type
 
-See [Editor user interface elements](/advanced-topics/editor_user_interface_elements)
+See [Editor user interface elements](/advanced-topics/editor-user-interface-elements)
 
 ## resource
 
@@ -614,4 +614,4 @@ Specifies that a particular file should be included when building a .quest packa
 
 Within an object, type, command or exit definition, inherits properties from the specified type.
 
-See [Types](/advanced-topics/about_types).
+See [Types](/advanced-topics/about-types).

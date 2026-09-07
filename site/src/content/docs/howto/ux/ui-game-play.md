@@ -46,7 +46,7 @@ The game panes can be turned off or customised on the _Interface_ tab of the gam
 
 ### Command pane
 
-An additional pane can be added for simple commands, such as LOOK and WAIT, that the player can click instead of typing. See [Custom Command Panes](/howto/ux/command_pane) for how to set it up.
+An additional pane can be added for simple commands, such as LOOK and WAIT, that the player can click instead of typing. See [Custom Command Panes](/howto/ux/command-pane) for how to set it up.
 
 
 ## Further consideration

@@ -61,7 +61,7 @@ If you have a flight of stairs heading up to the east, the player might type `UP
 
 You can create an exit which is impassable until something else happens in your game. This could be a locked door, or perhaps something like a guard blocking the way.
 
-Let's create a locked door in the kitchen of the [tutorial](/tutorial/tutorial_introduction) game, leading to a back garden. Create the following three elements:
+Let's create a locked door in the kitchen of the [tutorial](/tutorial/tutorial-introduction) game, leading to a back garden. Create the following three elements:
 
 -   a new room, "garden"
 -   an object in the kitchen, "door"
@@ -85,7 +85,7 @@ Run the game and verify that the exit now works correctly:
      You are in a garden.
      You can go north.
 
-For a guide on setting up a door that is accessible from both sides — using lockable exits as described above — see [Setting Up a Door](/howto/tasks/setting_up_door).
+For a guide on setting up a door that is accessible from both sides — using lockable exits as described above — see [Setting Up a Door](/howto/tasks/setting-up-door).
 
 
 ## Print message when used
@@ -138,7 +138,7 @@ else {
 
 The basic principle is that we test the condition. If the condition passes, then we print a message, and move the player (it is important to do the message first, as moving the player will cause the room description to get printed, and you want the message before that). If the condition fails, just give a message.
 
-This is very much like having the exit locked, so when would you use this, rather than unlocked? This technique is best for checking an on-going situation, so in fact whether the player is carrying a key is actually better done this way. The "locked" attribute is better for specific events, such as the player using the `UNLOCK` command...  Hmm, turns out setting up a locked door is pretty involved, but is discussed in detail [here](/howto/tasks/setting_up_door).
+This is very much like having the exit locked, so when would you use this, rather than unlocked? This technique is best for checking an on-going situation, so in fact whether the player is carrying a key is actually better done this way. The "locked" attribute is better for specific events, such as the player using the `UNLOCK` command...  Hmm, turns out setting up a locked door is pretty involved, but is discussed in detail [here](/howto/tasks/setting-up-door).
 
 
 ### Move and...

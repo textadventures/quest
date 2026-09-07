@@ -34,7 +34,7 @@ See also [gender](#gender).
 
 "ask" is a [scriptdictionary](/types#scriptdictionary). Keys are topics, and values are the scripts to run when the object is asked about that topic.
 
-See also [Tutorial: Ask and Tell](/tutorial/more_things_to_do_with_objects#Ask_and_Tell), [askdefault](#askdefault), [tell](#tell).
+See also [Tutorial: Ask and Tell](/tutorial/more-things-to-do-with-objects#Ask_and_Tell), [askdefault](#askdefault), [tell](#tell).
 
 ## askdefault
 
@@ -696,7 +696,7 @@ See also [selfuseanything](#selfuseanything).
 
 ## statusattributes
 
-"statusattributes" is a [stringlist](/types#stringlist) attribute, only applicable for the [game](/elements#game) and [player](/howto/tasks/changing_the_player_object) objects. See [Status attributes](/status_attributes).
+"statusattributes" is a [stringlist](/types#stringlist) attribute, only applicable for the [game](/elements#game) and [player](/howto/tasks/changing-the-player-object) objects. See [Status attributes](/status-attributes).
 
 ## suffix
 
@@ -759,7 +759,7 @@ See also [drop](#drop), [takemsg](#takemsg).
 
 "tell" is a [scriptdictionary](/types#scriptdictionary). Keys are topics, and values are the scripts to run when the object is told about that topic.
 
-See also [Tutorial: Ask and Tell](/tutorial/more_things_to_do_with_objects#Ask_and_Tell), [telldefault](#telldefault), [ask](#ask).
+See also [Tutorial: Ask and Tell](/tutorial/more-things-to-do-with-objects#Ask_and_Tell), [telldefault](#telldefault), [ask](#ask).
 
 ## telldefault
 

@@ -7,10 +7,108 @@ import { questGrammar } from "./src/quest-grammar.mjs";
 export default defineConfig({
     site: "https://questviva.com",
     redirects: {
-        "/tutorial/cloak_of_darkness": "/cloak_of_darkness",
+        "/tutorial/cloak_of_darkness": "/cloak-of-darkness",
         // Merged into the Introduction - it had become the same page with
         // screenshots, and both sat at the top of Start Here.
         "/overview": "/intro",
+        // Underscore -> dash URL cleanup, and Quest -> Quest Viva renames.
+        "/about_attributes": "/about-attributes",
+        "/advanced-topics/about_types": "/advanced-topics/about-types",
+        "/advanced-topics/editor_user_interface_elements": "/advanced-topics/editor-user-interface-elements",
+        "/advanced-topics/tabs_for_types": "/advanced-topics/tabs-for-types",
+        "/advanced-topics/translating_quest": "/advanced-topics/translation",
+        "/advanced-topics/undo_support": "/advanced-topics/undo-support",
+        "/advanced-topics/using_delegates": "/advanced-topics/using-delegates",
+        "/advanced-topics/using_inherited_types": "/advanced-topics/using-inherited-types",
+        "/advanced-topics/using_libraries": "/advanced-topics/using-libraries",
+        "/asl_requirements": "/asl-requirements",
+        "/change_scripts": "/change-scripts",
+        "/cloak_of_darkness": "/cloak-of-darkness",
+        "/developers/open_source": "/developers/open-source",
+        "/developers/source_code": "/developers/source-code",
+        "/howto/commands/advanced_scope": "/howto/commands/advanced-scope",
+        "/howto/commands/commands_for_room": "/howto/commands/commands-for-room",
+        "/howto/commands/complex_commands": "/howto/commands/complex-commands",
+        "/howto/commands/handling_multiple": "/howto/commands/handling-multiple",
+        "/howto/commands/pattern_matching": "/howto/commands/pattern-matching",
+        "/howto/commands/using_verbs": "/howto/commands/using-verbs",
+        "/howto/multimedia/adding_sounds": "/howto/multimedia/adding-sounds",
+        "/howto/multimedia/adding_videos": "/howto/multimedia/adding-videos",
+        "/howto/multimedia/images_on_the_fly": "/howto/multimedia/images-on-the-fly",
+        "/howto/npcs/ask_about": "/howto/npcs/ask-about",
+        "/howto/npcs/dialogue_pages": "/howto/npcs/dialogue-pages",
+        "/howto/npcs/independent_npcs": "/howto/npcs/independent-npcs",
+        "/howto/npcs/patrolling_npcs": "/howto/npcs/patrolling-npcs",
+        "/howto/npcs/speak_to": "/howto/npcs/speak-to",
+        "/howto/rpg/character_creation": "/howto/rpg/character-creation",
+        "/howto/scripting/advanced_game_scripts": "/howto/scripting/advanced-game-scripts",
+        "/howto/scripting/blocks_and_scripts": "/howto/scripting/blocks-and-scripts",
+        "/howto/scripting/copy_and_paste_code": "/howto/scripting/copy-and-paste-code",
+        "/howto/scripting/creating_functions_which_return_a_value": "/howto/scripting/creating-functions-which-return-a-value",
+        "/howto/scripting/debugging_your_game": "/howto/scripting/debugging-your-game",
+        "/howto/scripting/unit_testing": "/howto/scripting/unit-testing",
+        "/howto/scripting/using_dictionaries": "/howto/scripting/using-dictionaries",
+        "/howto/scripting/using_doubles": "/howto/scripting/using-doubles",
+        "/howto/scripting/using_lists": "/howto/scripting/using-lists",
+        "/howto/scripting/using_turnscripts": "/howto/scripting/using-turnscripts",
+        "/howto/scripting/using_walkthroughs": "/howto/scripting/using-walkthroughs",
+        "/howto/tasks/about_functions": "/howto/tasks/about-functions",
+        "/howto/tasks/ask_simple_question": "/howto/tasks/ask-simple-question",
+        "/howto/tasks/asking_a_question": "/howto/tasks/asking-a-question",
+        "/howto/tasks/changing_the_player_object": "/howto/tasks/changing-the-player-object",
+        "/howto/tasks/handling_water": "/howto/tasks/handling-water",
+        "/howto/tasks/keeping_a_journal": "/howto/tasks/keeping-a-journal",
+        "/howto/tasks/keeping_score": "/howto/tasks/keeping-score",
+        "/howto/tasks/memory_or_wiki": "/howto/tasks/memory-or-wiki",
+        "/howto/tasks/move_object": "/howto/tasks/move-object",
+        "/howto/tasks/multiple_choices_using_a_switch_script": "/howto/tasks/multiple-choices-using-a-switch-script",
+        "/howto/tasks/neutral_language": "/howto/tasks/neutral-language",
+        "/howto/tasks/setting_up_door": "/howto/tasks/setting-up-door",
+        "/howto/tasks/showing_a_map": "/howto/tasks/showing-a-map",
+        "/howto/tasks/showing_a_menu": "/howto/tasks/showing-a-menu",
+        "/howto/tasks/transit_system": "/howto/tasks/transit-system",
+        "/howto/tasks/use_maths_functionality": "/howto/tasks/use-maths-functionality",
+        "/howto/ux/command_pane": "/howto/ux/command-pane",
+        "/howto/ux/custom_panes": "/howto/ux/custom-panes",
+        "/howto/ux/customising_the_ui": "/howto/ux/customising-the-ui",
+        "/howto/ux/display_verbs": "/howto/ux/display-verbs",
+        "/howto/world/about_save": "/howto/world/about-save",
+        "/howto/world/changing_templates": "/howto/world/changing-templates",
+        "/howto/world/handling_light_and_dark": "/howto/world/handling-light-and-dark",
+        "/howto/world/score_health_money": "/howto/world/score-health-money",
+        "/howto/world/text_processor": "/howto/world/text-processor",
+        "/important_attributes": "/important-attributes",
+        "/other_guides/a_hint_system": "/other-guides/a-hint-system",
+        "/other_guides/community_guides": "/other-guides/community-guides",
+        "/other_guides/hyperlinks": "/other-guides/hyperlinks",
+        "/other_guides/immobilise_the_player": "/other-guides/immobilise-the-player",
+        "/other_guides/implementing_components_of_an_object": "/other-guides/implementing-components-of-an-object",
+        "/other_guides/invisiclues": "/other-guides/invisiclues",
+        "/other_guides/port_and_starboard": "/other-guides/port-and-starboard",
+        "/other_guides/random_default_answers": "/other-guides/random-default-answers",
+        "/other_guides/starting_inventory": "/other-guides/starting-inventory",
+        "/other_guides/timelimitedpuzzles": "/other-guides/timelimitedpuzzles",
+        "/other_guides/turn_based_events": "/other-guides/turn-based-events",
+        "/other_guides/unlockdoor": "/other-guides/unlockdoor",
+        "/publishing/competition_entry": "/publishing/competition-entry",
+        "/status_attributes": "/status-attributes",
+        "/tutorial/anatomy_of_a_quest_game": "/tutorial/anatomy-of-a-quest-viva-game",
+        "/tutorial/creating_a_gamebook": "/tutorial/creating-a-gamebook",
+        "/tutorial/creating_a_simple_game": "/tutorial/creating-a-simple-game",
+        "/tutorial/custom_attributes": "/tutorial/custom-attributes",
+        "/tutorial/custom_commands": "/tutorial/custom-commands",
+        "/tutorial/interacting_with_objects": "/tutorial/interacting-with-objects",
+        "/tutorial/more_things_to_do_with_objects": "/tutorial/more-things-to-do-with-objects",
+        "/tutorial/moving_objects_during_the_game": "/tutorial/moving-objects-during-the-game",
+        "/tutorial/releasing_your_game": "/tutorial/releasing-your-game",
+        "/tutorial/status_attributes": "/tutorial/status-attributes",
+        "/tutorial/tutorial_introduction": "/tutorial/tutorial-introduction",
+        "/tutorial/using_containers": "/tutorial/using-containers",
+        "/tutorial/using_pages": "/tutorial/using-pages",
+        "/tutorial/using_scripts": "/tutorial/using-scripts",
+        "/tutorial/using_timers_and_turn_scripts": "/tutorial/using-timers-and-turn-scripts",
+        "/tutorial/verbs_in_depth": "/tutorial/verbs-in-depth",
+        "/whats_new": "/whats-new",
     },
     integrations: [
         starlight({
@@ -42,7 +140,7 @@ export default defineConfig({
                         },
                         {
                             "label": "What's new in Quest Viva 6.0",
-                            "slug": "whats_new"
+                            "slug": "whats-new"
                         },
                         {
                             "label": "Download the app",
@@ -54,67 +152,67 @@ export default defineConfig({
                             "items": [
                                 {
                                     "label": "Tutorial introduction",
-                                    "slug": "tutorial/tutorial_introduction"
+                                    "slug": "tutorial/tutorial-introduction"
                                 },
                                 {
                                     "label": "Creating a simple game",
-                                    "slug": "tutorial/creating_a_simple_game"
+                                    "slug": "tutorial/creating-a-simple-game"
                                 },
                                 {
                                     "label": "Interacting with objects",
-                                    "slug": "tutorial/interacting_with_objects"
+                                    "slug": "tutorial/interacting-with-objects"
                                 },
                                 {
                                     "label": "Anatomy of a Quest Viva game",
-                                    "slug": "tutorial/anatomy_of_a_quest_game"
+                                    "slug": "tutorial/anatomy-of-a-quest-viva-game"
                                 },
                                 {
                                     "label": "Using scripts",
-                                    "slug": "tutorial/using_scripts"
+                                    "slug": "tutorial/using-scripts"
                                 },
                                 {
                                     "label": "Custom attributes",
-                                    "slug": "tutorial/custom_attributes"
+                                    "slug": "tutorial/custom-attributes"
                                 },
                                 {
                                     "label": "Custom commands",
-                                    "slug": "tutorial/custom_commands"
+                                    "slug": "tutorial/custom-commands"
                                 },
                                 {
                                     "label": "Verbs in depth",
-                                    "slug": "tutorial/verbs_in_depth"
+                                    "slug": "tutorial/verbs-in-depth"
                                 },
                                 {
                                     "label": "More things to do with objects",
-                                    "slug": "tutorial/more_things_to_do_with_objects"
+                                    "slug": "tutorial/more-things-to-do-with-objects"
                                 },
                                 {
                                     "label": "Using Pages",
-                                    "slug": "tutorial/using_pages"
+                                    "slug": "tutorial/using-pages"
                                 },
                                 {
                                     "label": "Using containers",
-                                    "slug": "tutorial/using_containers"
+                                    "slug": "tutorial/using-containers"
                                 },
                                 {
                                     "label": "Moving objects during the game",
-                                    "slug": "tutorial/moving_objects_during_the_game"
+                                    "slug": "tutorial/moving-objects-during-the-game"
                                 },
                                 {
                                     "label": "Status attributes",
-                                    "slug": "tutorial/status_attributes"
+                                    "slug": "tutorial/status-attributes"
                                 },
                                 {
                                     "label": "Using timers and turn scripts",
-                                    "slug": "tutorial/using_timers_and_turn_scripts"
+                                    "slug": "tutorial/using-timers-and-turn-scripts"
                                 },
                                 {
                                     "label": "Releasing your game",
-                                    "slug": "tutorial/releasing_your_game"
+                                    "slug": "tutorial/releasing-your-game"
                                 },
                                 {
                                     "label": "Creating a gamebook",
-                                    "slug": "tutorial/creating_a_gamebook"
+                                    "slug": "tutorial/creating-a-gamebook"
                                 }
                             ]
                         },
@@ -126,7 +224,7 @@ export default defineConfig({
                     "items": [
                         {
                             "label": "The Cloak of Darkness",
-                            "slug": "cloak_of_darkness"
+                            "slug": "cloak-of-darkness"
                         },
                         {
                             "label": "Commands & Parser",
@@ -138,27 +236,27 @@ export default defineConfig({
                                 },
                                 {
                                     "label": "Commands specific to a room",
-                                    "slug": "howto/commands/commands_for_room"
+                                    "slug": "howto/commands/commands-for-room"
                                 },
                                 {
                                     "label": "How to use verbs",
-                                    "slug": "howto/commands/using_verbs"
+                                    "slug": "howto/commands/using-verbs"
                                 },
                                 {
                                     "label": "Complex commands",
-                                    "slug": "howto/commands/complex_commands"
+                                    "slug": "howto/commands/complex-commands"
                                 },
                                 {
                                     "label": "Handling multiple items (and all)",
-                                    "slug": "howto/commands/handling_multiple"
+                                    "slug": "howto/commands/handling-multiple"
                                 },
                                 {
                                     "label": "Pattern matching with regular expressions",
-                                    "slug": "howto/commands/pattern_matching"
+                                    "slug": "howto/commands/pattern-matching"
                                 },
                                 {
                                     "label": "Advanced scope for items",
-                                    "slug": "howto/commands/advanced_scope"
+                                    "slug": "howto/commands/advanced-scope"
                                 }
                             ]
                         },
@@ -168,11 +266,11 @@ export default defineConfig({
                             "items": [
                                 {
                                     "label": "Text processor",
-                                    "slug": "howto/world/text_processor"
+                                    "slug": "howto/world/text-processor"
                                 },
                                 {
                                     "label": "Changing templates",
-                                    "slug": "howto/world/changing_templates"
+                                    "slug": "howto/world/changing-templates"
                                 },
                                 {
                                     "label": "Exits",
@@ -192,7 +290,7 @@ export default defineConfig({
                                 },
                                 {
                                     "label": "Handling light and dark",
-                                    "slug": "howto/world/handling_light_and_dark"
+                                    "slug": "howto/world/handling-light-and-dark"
                                 },
                                 {
                                     "label": "Wearable items",
@@ -200,7 +298,7 @@ export default defineConfig({
                                 },
                                 {
                                     "label": "Score, health and money",
-                                    "slug": "howto/world/score_health_money"
+                                    "slug": "howto/world/score-health-money"
                                 },
                                 {
                                     "label": "Multi-state wearable items",
@@ -212,7 +310,7 @@ export default defineConfig({
                                 },
                                 {
                                     "label": "When the player saves a game",
-                                    "slug": "howto/world/about_save"
+                                    "slug": "howto/world/about-save"
                                 }
                             ]
                         },
@@ -230,15 +328,15 @@ export default defineConfig({
                                 },
                                 {
                                     "label": "Creating images on the fly",
-                                    "slug": "howto/multimedia/images_on_the_fly"
+                                    "slug": "howto/multimedia/images-on-the-fly"
                                 },
                                 {
                                     "label": "Adding sounds to your game",
-                                    "slug": "howto/multimedia/adding_sounds"
+                                    "slug": "howto/multimedia/adding-sounds"
                                 },
                                 {
                                     "label": "Adding videos",
-                                    "slug": "howto/multimedia/adding_videos"
+                                    "slug": "howto/multimedia/adding-videos"
                                 }
                             ]
                         },
@@ -252,19 +350,19 @@ export default defineConfig({
                                 },
                                 {
                                     "label": "Creating functions",
-                                    "slug": "howto/scripting/creating_functions_which_return_a_value"
+                                    "slug": "howto/scripting/creating-functions-which-return-a-value"
                                 },
                                 {
                                     "label": "Using lists",
-                                    "slug": "howto/scripting/using_lists"
+                                    "slug": "howto/scripting/using-lists"
                                 },
                                 {
                                     "label": "Using dictionaries",
-                                    "slug": "howto/scripting/using_dictionaries"
+                                    "slug": "howto/scripting/using-dictionaries"
                                 },
                                 {
                                     "label": "Using turnscripts",
-                                    "slug": "howto/scripting/using_turnscripts"
+                                    "slug": "howto/scripting/using-turnscripts"
                                 },
                                 {
                                     "label": "Scopes",
@@ -276,11 +374,11 @@ export default defineConfig({
                                 },
                                 {
                                     "label": "Advanced game scripts",
-                                    "slug": "howto/scripting/advanced_game_scripts"
+                                    "slug": "howto/scripting/advanced-game-scripts"
                                 },
                                 {
                                     "label": "Blocks and scripts",
-                                    "slug": "howto/scripting/blocks_and_scripts"
+                                    "slug": "howto/scripting/blocks-and-scripts"
                                 },
                                 {
                                     "label": "Expressions",
@@ -296,23 +394,23 @@ export default defineConfig({
                                 },
                                 {
                                     "label": "Using \"doubles\"",
-                                    "slug": "howto/scripting/using_doubles"
+                                    "slug": "howto/scripting/using-doubles"
                                 },
                                 {
                                     "label": "Unit testing",
-                                    "slug": "howto/scripting/unit_testing"
+                                    "slug": "howto/scripting/unit-testing"
                                 },
                                 {
                                     "label": "How to copy-and-paste code",
-                                    "slug": "howto/scripting/copy_and_paste_code"
+                                    "slug": "howto/scripting/copy-and-paste-code"
                                 },
                                 {
                                     "label": "Using walkthroughs",
-                                    "slug": "howto/scripting/using_walkthroughs"
+                                    "slug": "howto/scripting/using-walkthroughs"
                                 },
                                 {
                                     "label": "Debugging your game",
-                                    "slug": "howto/scripting/debugging_your_game"
+                                    "slug": "howto/scripting/debugging-your-game"
                                 }
                             ]
                         },
@@ -322,43 +420,43 @@ export default defineConfig({
                             "items": [
                                 {
                                     "label": "How to use functions",
-                                    "slug": "howto/tasks/about_functions"
+                                    "slug": "howto/tasks/about-functions"
                                 },
                                 {
                                     "label": "Multiple choices - using a switch script",
-                                    "slug": "howto/tasks/multiple_choices_using_a_switch_script"
+                                    "slug": "howto/tasks/multiple-choices-using-a-switch-script"
                                 },
                                 {
                                     "label": "Changing the player object",
-                                    "slug": "howto/tasks/changing_the_player_object"
+                                    "slug": "howto/tasks/changing-the-player-object"
                                 },
                                 {
                                     "label": "Handling water",
-                                    "slug": "howto/tasks/handling_water"
+                                    "slug": "howto/tasks/handling-water"
                                 },
                                 {
                                     "label": "Showing a map",
-                                    "slug": "howto/tasks/showing_a_map"
+                                    "slug": "howto/tasks/showing-a-map"
                                 },
                                 {
                                     "label": "Asking a simple question",
-                                    "slug": "howto/tasks/ask_simple_question"
+                                    "slug": "howto/tasks/ask-simple-question"
                                 },
                                 {
                                     "label": "Asking a question",
-                                    "slug": "howto/tasks/asking_a_question"
+                                    "slug": "howto/tasks/asking-a-question"
                                 },
                                 {
                                     "label": "Keeping a journal",
-                                    "slug": "howto/tasks/keeping_a_journal"
+                                    "slug": "howto/tasks/keeping-a-journal"
                                 },
                                 {
                                     "label": "How to keep score",
-                                    "slug": "howto/tasks/keeping_score"
+                                    "slug": "howto/tasks/keeping-score"
                                 },
                                 {
                                     "label": "How to build a transit system",
-                                    "slug": "howto/tasks/transit_system"
+                                    "slug": "howto/tasks/transit-system"
                                 },
                                 {
                                     "label": "Converting one thing into another",
@@ -374,19 +472,19 @@ export default defineConfig({
                                 },
                                 {
                                     "label": "Setting up a door",
-                                    "slug": "howto/tasks/setting_up_door"
+                                    "slug": "howto/tasks/setting-up-door"
                                 },
                                 {
                                     "label": "Give the player character memory or wiki",
-                                    "slug": "howto/tasks/memory_or_wiki"
+                                    "slug": "howto/tasks/memory-or-wiki"
                                 },
                                 {
                                     "label": "Move an object in a direction",
-                                    "slug": "howto/tasks/move_object"
+                                    "slug": "howto/tasks/move-object"
                                 },
                                 {
                                     "label": "Using neutral language",
-                                    "slug": "howto/tasks/neutral_language"
+                                    "slug": "howto/tasks/neutral-language"
                                 },
                                 {
                                     "label": "Randomisation",
@@ -394,11 +492,11 @@ export default defineConfig({
                                 },
                                 {
                                     "label": "Showing a menu",
-                                    "slug": "howto/tasks/showing_a_menu"
+                                    "slug": "howto/tasks/showing-a-menu"
                                 },
                                 {
                                     "label": "Use maths functionality",
-                                    "slug": "howto/tasks/use_maths_functionality"
+                                    "slug": "howto/tasks/use-maths-functionality"
                                 },
                                 {
                                     "label": "Resolving common problems",
@@ -420,23 +518,23 @@ export default defineConfig({
                                 },
                                 {
                                     "label": "Handling SPEAK TO",
-                                    "slug": "howto/npcs/speak_to"
+                                    "slug": "howto/npcs/speak-to"
                                 },
                                 {
                                     "label": "Building an Ask/Tell system",
-                                    "slug": "howto/npcs/ask_about"
+                                    "slug": "howto/npcs/ask-about"
                                 },
                                 {
                                     "label": "Building a conversation with Pages",
-                                    "slug": "howto/npcs/dialogue_pages"
+                                    "slug": "howto/npcs/dialogue-pages"
                                 },
                                 {
                                     "label": "Making NPCs patrol",
-                                    "slug": "howto/npcs/patrolling_npcs"
+                                    "slug": "howto/npcs/patrolling-npcs"
                                 },
                                 {
                                     "label": "Making NPCs act independently",
-                                    "slug": "howto/npcs/independent_npcs"
+                                    "slug": "howto/npcs/independent-npcs"
                                 }
                             ]
                         },
@@ -454,11 +552,11 @@ export default defineConfig({
                                 },
                                 {
                                     "label": "Using display verbs",
-                                    "slug": "howto/ux/display_verbs"
+                                    "slug": "howto/ux/display-verbs"
                                 },
                                 {
                                     "label": "Custom command panes",
-                                    "slug": "howto/ux/command_pane"
+                                    "slug": "howto/ux/command-pane"
                                 },
                                 {
                                     "label": "Modifying the status and game panes",
@@ -474,7 +572,7 @@ export default defineConfig({
                                 },
                                 {
                                     "label": "Custom status pane",
-                                    "slug": "howto/ux/custom_panes"
+                                    "slug": "howto/ux/custom-panes"
                                 },
                                 {
                                     "label": "JavaScript to Quest Viva with ASLEvent",
@@ -490,7 +588,7 @@ export default defineConfig({
                                 },
                                 {
                                     "label": "Customising the UI",
-                                    "slug": "howto/ux/customising_the_ui"
+                                    "slug": "howto/ux/customising-the-ui"
                                 }
                             ]
                         },
@@ -504,7 +602,7 @@ export default defineConfig({
                                 },
                                 {
                                     "label": "Character creation",
-                                    "slug": "howto/rpg/character_creation"
+                                    "slug": "howto/rpg/character-creation"
                                 },
                                 {
                                     "label": "Zombie Apocalypse (Part 1)",
@@ -526,51 +624,51 @@ export default defineConfig({
                             "items": [
                                 {
                                     "label": "Overview",
-                                    "slug": "other_guides/community_guides"
+                                    "slug": "other-guides/community-guides"
                                 },
                                 {
                                     "label": "Time-limited puzzles",
-                                    "slug": "other_guides/timelimitedpuzzles"
+                                    "slug": "other-guides/timelimitedpuzzles"
                                 },
                                 {
                                     "label": "Unlock with combination",
-                                    "slug": "other_guides/unlockdoor"
+                                    "slug": "other-guides/unlockdoor"
                                 },
                                 {
                                     "label": "Starting inventory",
-                                    "slug": "other_guides/starting_inventory"
+                                    "slug": "other-guides/starting-inventory"
                                 },
                                 {
                                     "label": "Immobilise the player",
-                                    "slug": "other_guides/immobilise_the_player"
+                                    "slug": "other-guides/immobilise-the-player"
                                 },
                                 {
                                     "label": "Help with InvisiClues",
-                                    "slug": "other_guides/invisiclues"
+                                    "slug": "other-guides/invisiclues"
                                 },
                                 {
                                     "label": "Random default answers",
-                                    "slug": "other_guides/random_default_answers"
+                                    "slug": "other-guides/random-default-answers"
                                 },
                                 {
                                     "label": "Port and starboard",
-                                    "slug": "other_guides/port_and_starboard"
+                                    "slug": "other-guides/port-and-starboard"
                                 },
                                 {
                                     "label": "A hint system",
-                                    "slug": "other_guides/a_hint_system"
+                                    "slug": "other-guides/a-hint-system"
                                 },
                                 {
                                     "label": "Turn-based events",
-                                    "slug": "other_guides/turn_based_events"
+                                    "slug": "other-guides/turn-based-events"
                                 },
                                 {
                                     "label": "Hyperlinks",
-                                    "slug": "other_guides/hyperlinks"
+                                    "slug": "other-guides/hyperlinks"
                                 },
                                 {
                                     "label": "Implementing components of an object",
-                                    "slug": "other_guides/implementing_components_of_an_object"
+                                    "slug": "other-guides/implementing-components-of-an-object"
                                 }
                             ]
                         }
@@ -586,35 +684,35 @@ export default defineConfig({
                         },
                         {
                             "label": "Using inherited types",
-                            "slug": "advanced-topics/using_inherited_types"
+                            "slug": "advanced-topics/using-inherited-types"
                         },
                         {
                             "label": "Types",
-                            "slug": "advanced-topics/about_types"
+                            "slug": "advanced-topics/about-types"
                         },
                         {
                             "label": "Using delegates",
-                            "slug": "advanced-topics/using_delegates"
+                            "slug": "advanced-topics/using-delegates"
                         },
                         {
                             "label": "Translating Quest Viva",
-                            "slug": "advanced-topics/translating_quest"
+                            "slug": "advanced-topics/translation"
                         },
                         {
                             "label": "Using and creating libraries",
-                            "slug": "advanced-topics/using_libraries"
+                            "slug": "advanced-topics/using-libraries"
                         },
                         {
                             "label": "Undo support",
-                            "slug": "advanced-topics/undo_support"
+                            "slug": "advanced-topics/undo-support"
                         },
                         {
                             "label": "Using tabs for types",
-                            "slug": "advanced-topics/tabs_for_types"
+                            "slug": "advanced-topics/tabs-for-types"
                         },
                         {
                             "label": "Editor user interface elements",
-                            "slug": "advanced-topics/editor_user_interface_elements"
+                            "slug": "advanced-topics/editor-user-interface-elements"
                         }
                     ]
                 },
@@ -702,19 +800,19 @@ export default defineConfig({
                             "items": [
                                 {
                                     "label": "Overview",
-                                    "slug": "about_attributes"
+                                    "slug": "about-attributes"
                                 },
                                 {
                                     "label": "Important attributes",
-                                    "slug": "important_attributes"
+                                    "slug": "important-attributes"
                                 },
                                 {
                                     "label": "Status attributes",
-                                    "slug": "status_attributes"
+                                    "slug": "status-attributes"
                                 },
                                 {
                                     "label": "Change script",
-                                    "slug": "change_scripts"
+                                    "slug": "change-scripts"
                                 },
                                 {
                                     "label": "Attribute Types",
@@ -748,7 +846,7 @@ export default defineConfig({
                         },
                         {
                             "label": "ASL requirements",
-                            "slug": "asl_requirements"
+                            "slug": "asl-requirements"
                         }
                     ]
                 },
@@ -770,7 +868,7 @@ export default defineConfig({
                         },
                         {
                             "label": "Competition entry",
-                            "slug": "publishing/competition_entry"
+                            "slug": "publishing/competition-entry"
                         }
                     ]
                 },
@@ -784,11 +882,11 @@ export default defineConfig({
                         },
                         {
                             "label": "Building from source",
-                            "slug": "developers/source_code"
+                            "slug": "developers/source-code"
                         },
                         {
                             "label": "Open source",
-                            "slug": "developers/open_source"
+                            "slug": "developers/open-source"
                         },
                         {
                             "label": "Older versions",
