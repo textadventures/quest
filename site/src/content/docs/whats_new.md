@@ -60,6 +60,8 @@ Because a game no longer needs a server to run it, you're no longer tied to text
 
 See [Hosting your game](/publishing/hosting) for all the options.
 
+WebPlayer - the server-based player that ran Quest 5 games online - is still there, but it's a specialist option now rather than how games normally run. It's worth using if you specifically don't want players to be able to download your `.quest` file, for a treasure hunt or a competition say. See the [WebPlayer guide](/publishing/webplayer).
+
 ## Players can save without an account
 
 In Quest 5, saving an online game meant having a textadventures.co.uk account. Quest Viva saves games to the browser's own storage instead, with multiple save slots, and players can also save a game out to a file to keep or move to another device. No account, no login.
@@ -83,20 +85,12 @@ Most of the scripting language is unchanged, but there are some additions:
 - **Pages in text adventures.** Quest 5 only had pages in gamebooks. Quest Viva lets a text adventure switch into a page - a set of links the player chooses from - which is a much easier way to write conversations and dialogue trees. See [Using Pages](/tutorial/using_pages).
 - Plenty of smaller additions and fixes besides - the [changelog](https://github.com/textadventures/quest/blob/main/CHANGELOG.md) lists these from 6.0.0-beta.36 onwards.
 
-Games saved by Quest Viva use world model version 600. Older games load and run unchanged - the version number just tells the engine which behaviour to use where something has been fixed in a way that would otherwise change an existing game.
-
-## What's gone
-
-- **Vimeo videos** are no longer offered when you're building a game. Existing games that use them still play. [YouTube video](/howto/multimedia/adding_videos) is unaffected.
-- **"Write log to file"** has been removed - it hadn't done anything useful for a long time.
-- **WebPlayer**, the server-based player, still exists but is now a specialist option rather than how online games normally run. It's worth using if you specifically don't want players to be able to download your `.quest` file - for example, for a treasure hunt or a competition. See the [WebPlayer guide](/publishing/webplayer).
-
-Quest Viva is under active development, so if there's something you relied on in Quest 5 that you can't find, please say so on [Discord](https://textadventures.co.uk/community/discord) or in [GitHub Discussions](https://github.com/textadventures/quest/discussions).
+A game saved in the Quest Viva editor is marked as world model version 600. Older games load and run unchanged - the version number just tells the engine which behaviour to use where something has been fixed in a way that would otherwise change an existing game.
 
 ## Why isn't it called Quest 6?
 
 Because there's [another system](https://github.com/ThePix/QuestJS) already called that, although it's more commonly known as QuestJS.
 
-## Where's the documentation?
+## Something missing?
 
-Right here - and since Quest Viva is "a modern version of Quest 5" under the hood, almost everything in these docs applies to both. The [Introduction](/intro) is a good tour of what's possible, and the [Tutorial](/tutorial/tutorial_introduction) is worth a skim even if you've used Quest 5, as the editor has moved on.
+Quest Viva is under active development, so if there's something you relied on in Quest 5 that you can't find, please say so on [Discord](https://textadventures.co.uk/community/discord) or in [GitHub Discussions](https://github.com/textadventures/quest/discussions).
