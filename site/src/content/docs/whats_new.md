@@ -81,10 +81,9 @@ The editor was rebuilt for Quest Viva. Most of it does what it always did - here
 Most of the scripting language is unchanged, but there are some additions:
 
 - **Pages in text adventures.** Quest 5 only had pages in gamebooks. Quest Viva lets a text adventure switch into a page - a set of links the player chooses from - which is a much easier way to write conversations and dialogue trees. See [Using Pages](/tutorial/using_pages).
-- **Lockable containers can require every key**, rather than any one of them.
-- Assorted new functions and fixes - see the [changelog](https://github.com/textadventures/quest/blob/main/CHANGELOG.md) for the full list.
+- Plenty of smaller additions and fixes besides - the [changelog](https://github.com/textadventures/quest/blob/main/CHANGELOG.md) lists these from 6.0.0-beta.36 onwards.
 
-Games saved by Quest Viva use world model version 600. Older games load and run unchanged; the version number just tells the engine which behaviour to use where something has been fixed in a way that would otherwise change an existing game.
+Games saved by Quest Viva use world model version 600. Older games load and run unchanged - the version number just tells the engine which behaviour to use where something has been fixed in a way that would otherwise change an existing game.
 
 ## What's gone
 
