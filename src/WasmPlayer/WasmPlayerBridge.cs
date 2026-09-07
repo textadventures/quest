@@ -826,8 +826,6 @@ public partial class WasmPlayerBridge
             _ => JsonSerializer.Serialize(arg.ToString() ?? "", WasmJsonContext.Default.String),
         };
 
-        void IPlayer.Quit() { }
-
         void IPlayer.SetFont(string fontName) => _helper?.SetFont(fontName);
 
         void IPlayer.SetFontSize(string fontSize) => _helper?.SetFontSize(fontSize);

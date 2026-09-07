@@ -208,10 +208,31 @@
   </function>
 
   <function name="FormatObjectList" type="string" parameters="preList, parent, preFinal, postList">
+    return (FormatContentsList(preList, parent, preFinal, postList, false))
+  </function>
+
+  <!--
+    Lists what the player is carrying. Unlike a room or container listing, this
+    includes objects flagged as scenery: "scenery" means "don't clutter the room
+    description with this", not "don't tell the player they are holding it", and
+    the objects pane (fed by ScopeInventory, which has never filtered on scenery)
+    has always shown them. Filtering them here left a carried object invisible to
+    the one command that lists carried objects.
+  -->
+  <function name="FormatInventoryList" type="string" parameters="preList, parent, preFinal, postList">
+    return (FormatContentsList(preList, parent, preFinal, postList, true))
+  </function>
+
+  <function name="FormatContentsList" type="string" parameters="preList, parent, preFinal, postList, includeScenery">
     <![CDATA[
       result = ""
       count = 0
-      list = RemoveSceneryObjects(GetDirectChildren(parent))
+      if (includeScenery) {
+        list = RemoveInvisibleObjects(GetDirectChildren(parent))
+      }
+      else {
+        list = RemoveSceneryObjects(GetDirectChildren(parent))
+      }
       if (CheckDarkness()) {
         list = RemoveDarkObjects(list)
       }
@@ -220,7 +241,9 @@
         if (LengthOf(result) = 0) result = preList + " "
         result = result + GetDisplayNameLink(item, "object")
         if (CanSeeThrough(item)) {
-          result = result + FormatObjectList(" (" + item.contentsprefix, item, preFinal, ")")
+          // Carried scenery stays listed however deep it is - a scenery object
+          // inside a bag the player is carrying is still being carried.
+          result = result + FormatContentsList(" (" + item.contentsprefix, item, preFinal, ")", includeScenery)
         }
         count = count + 1
         if (count = listLength - 1) {
@@ -242,6 +265,18 @@
       result = NewObjectList()
       foreach (obj, list) {
         if (not obj.scenery and obj <> game.pov and obj.visible) {
+          list add (result, obj)
+        }
+      }
+      return (result)
+    ]]>
+  </function>
+
+  <function name="RemoveInvisibleObjects" type="objectlist" parameters="list">
+    <![CDATA[
+      result = NewObjectList()
+      foreach (obj, list) {
+        if (obj <> game.pov and obj.visible) {
           list add (result, obj)
         }
       }

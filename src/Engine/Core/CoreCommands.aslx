@@ -354,7 +354,7 @@
   </command>
 
   <command name="inventory" pattern="[inventory]">
-    list = FormatObjectList(Template("CarryingListHeader"), game.pov, Template("And"), ".")
+    list = FormatInventoryList(Template("CarryingListHeader"), game.pov, Template("And"), ".")
     if (list = "") {
       msg (Template("NotCarryingAnything"))
     }

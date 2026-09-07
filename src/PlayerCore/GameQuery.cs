@@ -349,10 +349,6 @@ public class GameQuery(string filename, byte[] bytes = null)
             return Task.CompletedTask;
         }
 
-        public void Quit()
-        {
-        }
-
         public void SetFont(string fontName)
         {
         }

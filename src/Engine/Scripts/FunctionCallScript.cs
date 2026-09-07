@@ -231,13 +231,16 @@ public class FunctionCallScript : ScriptBase, IFunctionCallScript
         m_paramFunction = script;
     }
 
+    // Only an EditableScript wrapper - i.e. a script currently open in the editor - subscribes
+    // to FunctionCallParametersUpdated, so both handlers below have to cope with there being no
+    // subscriber at all.
     private void Parameters_Added(object sender, QuestListUpdatedEventArgs<string> e)
     {
         // the number of parameters in a function call cannot change. So, as QuestList doesn't
         // provide an Updated event (we simulate Updates with a Remove and an Add at the same
         // index), we assume that any Added event is really an update.
 
-        FunctionCallParametersUpdated(this, new ScriptUpdatedEventArgs(e.Index, e.UpdatedItem));
+        FunctionCallParametersUpdated?.Invoke(this, new ScriptUpdatedEventArgs(e.Index, e.UpdatedItem));
     }
 
     private void Parameters_Removed(object sender, QuestListUpdatedEventArgs<string> e)
@@ -247,7 +250,7 @@ public class FunctionCallScript : ScriptBase, IFunctionCallScript
         // Add above.
         if (e.Index == 0)
         {
-            FunctionCallParametersUpdated(this, new ScriptUpdatedEventArgs(e.Index, string.Empty));
+            FunctionCallParametersUpdated?.Invoke(this, new ScriptUpdatedEventArgs(e.Index, string.Empty));
         }
     }
 

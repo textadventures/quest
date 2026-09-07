@@ -104,10 +104,6 @@ internal class TestPlayer : IPlayer
         return Task.CompletedTask;
     }
 
-    public void Quit()
-    {
-    }
-
     public void SetFont(string fontName)
     {
         FontName = fontName;

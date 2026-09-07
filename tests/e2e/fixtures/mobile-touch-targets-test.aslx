@@ -1,0 +1,31 @@
+<asl version="600">
+
+  <include ref="English.aslx"/>
+  <include ref="Core.aslx"/>
+
+  <!--
+    Fixture for issue #2181 (menu/chrome too small on mobile). Deliberately
+    leaves game.menufontsize at the defaultgame default of 9pt (12px) - the
+    value every already-published game carries inlined - so the narrow-window
+    floor in playercore.js's SetMenuFontSize has something to lift.
+  -->
+  <game name="Touch Targets">
+  </game>
+
+  <object name="room">
+    <object name="player">
+      <inherit name="defaultplayer"/>
+      <!-- Something in the inventory pane, so its rows can be measured. -->
+      <object name="lamp">
+        <inherit name="editor_object"/>
+      </object>
+    </object>
+    <!-- A room object, so the description carries an .elementmenu hyperlink
+         whose verb pop-up (jjmenu) can be opened and measured. -->
+    <object name="rock">
+      <inherit name="editor_object"/>
+      <take/>
+    </object>
+  </object>
+
+</asl>

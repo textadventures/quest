@@ -12,11 +12,6 @@ internal class FunctionCallParameters
 {
     public FunctionCallParameters(WorldModel worldModel, IList<IFunction<object>> parameters)
     {
-        if (worldModel.EditMode)
-        {
-            ParametersAsQuestList.UndoLog = worldModel.UndoLogger;
-        }
-
         Parameters = parameters;
 
         if (parameters != null)
@@ -26,6 +21,16 @@ internal class FunctionCallParameters
                 var paramString = param.Save();
                 ParametersAsQuestList.Add(paramString);
             }
+        }
+
+        // Hook the list up to the undo logger only after populating it. The list doesn't exist
+        // outside this constructor yet, so its initial contents are never something the user could
+        // want to undo - but if a script is cloned while an undo transaction is open (which is what
+        // "Make editable copy" does), every one of those initial Adds would otherwise be logged into
+        // that transaction, and undoing it would strip the parameters back out of the clone again.
+        if (worldModel.EditMode)
+        {
+            ParametersAsQuestList.UndoLog = worldModel.UndoLogger;
         }
     }
 

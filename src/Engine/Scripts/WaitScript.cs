@@ -42,7 +42,7 @@ public class WaitScript : ScriptBase
     {
         m_worldModel.PlayerUi.DoWait();
         WorldModel.BeginPrompt(ref m_worldModel._waitTcs);
-        m_worldModel.BeginPendingCallback();
+        m_worldModel.BeginDormantSuspension();
         m_worldModel.SignalTurnSuspended();
         _ = AwaitWaitAndRunCallbackAsync(c);
         return Task.CompletedTask;
@@ -50,9 +50,12 @@ public class WaitScript : ScriptBase
 
     private async Task AwaitWaitAndRunCallbackAsync(Context c)
     {
+        var resolved = false;
         try
         {
             await m_worldModel._waitTcs.Task;
+            resolved = true;
+            m_worldModel.SignalCallbackResolving();
             if (m_callbackScript != null)
                 await m_worldModel.RunScriptAsync(m_callbackScript, c);
         }
@@ -60,6 +63,7 @@ public class WaitScript : ScriptBase
         catch (Exception ex) { m_worldModel.LogException(ex); }
         finally
         {
+            if (!resolved) m_worldModel.SignalCallbackResolving();
             await m_worldModel.EndPendingCallbackAsync();
             m_worldModel.SignalTurnSuspended();
         }

@@ -20,8 +20,13 @@ module.exports = async function adhocSign(context) {
     // codesign doesn't exist there and there's no .app to sign.
     if (context.electronPlatformName !== "darwin") return;
 
-    // A real identity means electron-builder's own signing step already ran.
-    if (process.env.CSC_LINK) return;
+    // A real identity means electron-builder's own signing step already ran,
+    // and ad-hoc signing on top of it would replace the Developer ID signature
+    // with an unusable one — the app would then fail notarization (or fail
+    // Gatekeeper on arrival). CSC_KEYCHAIN is what electron-publish.yml sets
+    // nowadays; CSC_LINK is still honoured for a local build that hands
+    // electron-builder a .p12 directly.
+    if (process.env.CSC_LINK || process.env.CSC_KEYCHAIN) return;
 
     const appPath = path.join(context.appOutDir, `${context.packager.appInfo.productFilename}.app`);
     execFileSync("codesign", ["--force", "--deep", "--sign", "-", appPath], { stdio: "inherit" });

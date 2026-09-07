@@ -1,0 +1,40 @@
+<asl version="600">
+
+  <include ref="English.aslx"/>
+  <include ref="Core.aslx"/>
+
+  <game name="SceneryInventoryTest">
+  </game>
+
+  <object name="room">
+    <object name="player">
+      <inherit name="defaultplayer"/>
+      <object name="lamp">
+        <inherit name="editor_object"/>
+      </object>
+      <!--
+        Issue #905: carried but flagged as scenery. The objects pane has always
+        listed this (ScopeInventory never filtered on scenery); the INVENTORY
+        command did not. Both should now agree.
+      -->
+      <object name="poster">
+        <inherit name="editor_object"/>
+        <scenery type="boolean">true</scenery>
+      </object>
+      <!-- Carried but invisible: must stay out of both. -->
+      <object name="ghost">
+        <inherit name="editor_object"/>
+        <visible type="boolean">false</visible>
+      </object>
+    </object>
+    <!-- Room scenery: must stay out of the room description. -->
+    <object name="mural">
+      <inherit name="editor_object"/>
+      <scenery type="boolean">true</scenery>
+    </object>
+    <object name="rock">
+      <inherit name="editor_object"/>
+    </object>
+  </object>
+
+</asl>

@@ -5,6 +5,16 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Quest Viva</title>
     <link rel="icon" type="image/svg+xml" href="favicon.svg" />
+    <!-- Lets the preload scanner start the runtime loader before the parser has
+         even reached wasm-player.js, which as the last script in this head only
+         executes once jQuery/jQuery UI/paper.js have all downloaded *and* run.
+         It's 37 KB, so it's unconditional rather than gated on a game actually
+         being on its way — the ~10.6 MB the loader then pulls is what's gated,
+         in wasm-player.js's boot IIFE. Stamped with ?v= like every other asset
+         here (scripts/inject-version.mjs), which is also what makes the
+         preload and wasm-player.js's own import() agree on one URL and share a
+         single fetch. -->
+    <link rel="modulepreload" href="_framework/dotnet.js" />
     <script type="text/javascript" src="quest-config.js"></script>
     <script type="text/javascript">
         // Runs before the start screen is parsed, so when a game is specified via the

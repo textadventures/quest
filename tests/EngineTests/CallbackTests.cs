@@ -191,6 +191,29 @@ public class CallbackTests
         phase2.ShouldContain("on ready");
     }
 
+    // Regression test for #2176: a wait{} callback that chains two MoveObjects back to back
+    // (room_a then room_b) must let room_a's changedparent -> OnEnterRoom -> 'on ready' cascade
+    // - including its 'enter' script - run to completion (as if it were fully synchronous, like
+    // Quest 5) before the second MoveObject fires. Before the fix, both MoveObjects (and both
+    // top-level 'on ready' registrations) ran back to back before either room's cascade drained,
+    // so room_a's cascade actually executed once game.pov.parent already pointed at room_b, and
+    // room_b's cascade could run before room_a's - exactly the interleaving that left the real
+    // reported game's Inescapable Cage without map coordinates when it was teleported into via
+    // the same wait{ MoveObject; MoveObject } pattern.
+    [TestMethod]
+    public async Task Wait_ChainedMoveObjectsInSameCallback_EachRoomsCascadeCompletesBeforeTheNextMove()
+    {
+        var driver = await GameDriver.LoadAsync("callbacktest.aslx");
+
+        await driver.SendCommandAsync("trap");
+        await driver.FinishWaitAsync();
+
+        var game = driver.Model.Object("game");
+        game.Fields.GetString("trap_a_seen_parent").ShouldBe("room_a");
+        game.Fields.GetString("trap_b_seen_parent").ShouldBe("room_b");
+        game.Fields.GetAsType<bool>("trap_b_saw_a_entered").ShouldBeTrue();
+    }
+
     // A timer created inside a wait callback (e.g. via SetTimeout) must cause the host
     // to be told when to next call Tick(), otherwise the timer never fires. Regression
     // test for a bug where FinishWait didn't re-request the next timer tick after running
@@ -274,6 +297,53 @@ public class CallbackTests
         var phase4 = await driver.SendCommandAsync("stop");
         phase4.ShouldContain("deferred: stop");
         phase4.ShouldContain("stopped");
+    }
+
+    // Regression test for #2179 (a gap left by #2177). An 'on ready' registered while a wait{}
+    // was still dormant must run at the *end* of that wait's callback script, not part-way
+    // through it. Viva used to attempt a drain from every Begin/End pair that completed, so an
+    // unrelated 'on ready' cascade inside the callback (here, and in the real reported game, a
+    // MoveObject's OnEnterRoom chain) dragged the older queued item forward and ran it before the
+    // statements still pending above it on the callback's own stack - which is how "The Mouse Who
+    // Woke Up For Christmas" lost a room description entirely: the queued callback re-ran
+    // ShowRoomDescription while game.autodescription_* were still zeroed, instead of after the
+    // wait callback had restored them. Quest 5.10.2 flushes its on-ready queue exactly once, from
+    // TryFinishTurn at the end of RunCallbackAndFinishTurn.
+    [TestMethod]
+    public async Task OnReady_QueuedBeforeWait_RunsAfterTheWholeWaitCallback()
+    {
+        var driver = await GameDriver.LoadAsync("callbacktest.aslx");
+
+        var phase1 = await driver.SendCommandAsync("staleonready");
+        phase1.ShouldNotContain("callback end");
+
+        var phase2 = (await driver.FinishWaitAsync()).ToList();
+        phase2.ShouldContain("inner cascade");
+        phase2.ShouldContain("callback end");
+        // The queued 'on ready' must see the state the callback script left behind...
+        phase2.ShouldContain("stale: flag=1");
+        // ...because it ran after the callback finished, not reentrantly inside it.
+        phase2.IndexOf("callback end").ShouldBeLessThan(phase2.IndexOf("stale: flag=1"));
+    }
+
+    // Sibling 'on ready' scripts queued inside one outer 'on ready' are a trampoline for what
+    // Quest 5 did with native recursion, so they normally all run before control returns to the
+    // statement after the block. When one of them opens a wait{}, the rest have to hold until it
+    // resolves - but must not be stranded: they move to the same queue as anything else deferred
+    // by a dormant suspension, and are flushed at the end of the wait's callback.
+    [TestMethod]
+    public async Task OnReady_SiblingQueuedBehindNestedWait_RunsWhenTheWaitResolves()
+    {
+        var driver = await GameDriver.LoadAsync("callbacktest.aslx");
+
+        var phase1 = await driver.SendCommandAsync("nestedwaitsibling");
+        phase1.ShouldContain("sibling1 before");
+        phase1.ShouldNotContain("sibling2");
+
+        var phase2 = (await driver.FinishWaitAsync()).ToList();
+        phase2.ShouldContain("sibling1 wait done");
+        phase2.ShouldContain("sibling2");
+        phase2.IndexOf("sibling1 wait done").ShouldBeLessThan(phase2.IndexOf("sibling2"));
     }
 
     // Tick() used to call SendNextTimerRequest() right after *starting* (not awaiting)

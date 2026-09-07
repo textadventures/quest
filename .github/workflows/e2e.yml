@@ -162,6 +162,8 @@ jobs:
         working-directory: tests/e2e
       - run: node verify-appshell-preview-flush.mjs http://localhost:5174
         working-directory: tests/e2e
+      - run: node verify-appshell-print-expression-mode.mjs http://localhost:5174
+        working-directory: tests/e2e
       - run: node verify-appshell-responsive-toolbar.mjs http://localhost:5174
         working-directory: tests/e2e
       - run: node verify-appshell-richtext-stack.mjs http://localhost:5174
@@ -209,6 +211,8 @@ jobs:
       - run: node verify-appshell-library-editor.mjs http://localhost:5174
         working-directory: tests/e2e
       - run: node verify-appshell-library-xml-extension.mjs http://localhost:5174
+        working-directory: tests/e2e
+      - run: node verify-appshell-make-script-editable-undo.mjs http://localhost:5174
         working-directory: tests/e2e
       - run: node verify-appshell-multi-control-editors.mjs http://localhost:5174
         working-directory: tests/e2e
@@ -368,7 +372,11 @@ jobs:
         working-directory: tests/e2e
       - run: node verify-wasmplayer-save-turn-pending.mjs http://localhost:5175
         working-directory: tests/e2e
+      - run: node verify-wasmplayer-wait-pause-input-flicker.mjs http://localhost:5175
+        working-directory: tests/e2e
       - run: node verify-wasmplayer-showmenu-select-default.mjs http://localhost:5175
+        working-directory: tests/e2e
+      - run: node verify-wasmplayer-showmenu-long-options.mjs http://localhost:5175
         working-directory: tests/e2e
       - run: node verify-game-load-error.mjs http://localhost:5175
         working-directory: tests/e2e
@@ -389,6 +397,18 @@ jobs:
       - run: node verify-wasmplayer-save-slot-title-size.mjs http://localhost:5175
         working-directory: tests/e2e
       - run: node verify-wasmplayer-location-bar-status-rename.mjs http://localhost:5175
+        working-directory: tests/e2e
+      - run: node verify-wasmplayer-asset-versioning.mjs http://localhost:5175
+        working-directory: tests/e2e
+      - run: node verify-wasmplayer-runtime-preload.mjs http://localhost:5175
+        working-directory: tests/e2e
+      - run: node verify-wasmplayer-sound-timer.mjs http://localhost:5175
+        working-directory: tests/e2e
+      - run: node verify-wasmplayer-scenery-inventory.mjs http://localhost:5175
+        working-directory: tests/e2e
+      - run: node verify-wasmplayer-mobile-touch-targets.mjs http://localhost:5175
+        working-directory: tests/e2e
+      - run: node verify-getcssrule-fallback.mjs http://localhost:5175
         working-directory: tests/e2e
 
   # WebPlayer (ASP.NET Core + Blazor Server), Development mode with Dev:Enabled
@@ -431,6 +451,8 @@ jobs:
       - run: node verify-webplayer-legacy-save.mjs http://localhost:5099
         working-directory: tests/e2e
       - run: node verify-webplayer-restart-chrome-reset.mjs http://localhost:5099
+        working-directory: tests/e2e
+      - run: node verify-webplayer-quit-command.mjs http://localhost:5099
         working-directory: tests/e2e
 
   # Real, packaged Electron app (Playwright's _electron launcher) — macos-

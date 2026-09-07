@@ -1,0 +1,83 @@
+<asl version="600">
+
+  <include ref="English.aslx"/>
+  <include ref="Core.aslx"/>
+
+  <game name="SoundTimerTest">
+  </game>
+
+  <object name="room">
+    <object name="player">
+    </object>
+  </object>
+
+  <!--
+    Issue #891: "a sound is played just before a 'Run script after a number of
+    seconds' script is executed". Synchronous sound (wait for it to finish,
+    no loop) followed by SetTimeout - the timeout script, and anything nested
+    inside it, was reported as being skipped entirely or delayed by a turn.
+  -->
+  <command name="syncsoundthentimeoutcmd">
+    <pattern>syncsoundthentimeout</pattern>
+    <script>
+      msg ("A: before sound")
+      play sound ("short-beep.wav", true, false)
+      msg ("B: after sound")
+      SetTimeout (1) {
+        msg ("C: timeout fired")
+        msg ("D: nested output")
+      }
+    </script>
+  </command>
+
+  <!--
+    Reverse ordering: the timeout is armed first and then a synchronous sound
+    suspends the turn, so the timer's due time falls during the sound wait.
+    This is the "Quest seems to try to execute both things simultaneously"
+    case from the report.
+  -->
+  <command name="timeoutthensyncsoundcmd">
+    <pattern>timeoutthensyncsound</pattern>
+    <script>
+      SetTimeout (1) {
+        msg ("C: timeout fired")
+        msg ("D: nested output")
+      }
+      msg ("A: before sound")
+      play sound ("short-beep.wav", true, false)
+      msg ("B: after sound")
+    </script>
+  </command>
+
+  <!--
+    Asynchronous sound (don't wait) immediately followed by SetTimeout - the
+    turn never suspends here, so the timer is armed while the sound is still
+    playing.
+  -->
+  <command name="asyncsoundthentimeoutcmd">
+    <pattern>asyncsoundthentimeout</pattern>
+    <script>
+      msg ("A: before sound")
+      play sound ("short-beep.wav", false, false)
+      msg ("B: after sound")
+      SetTimeout (1) {
+        msg ("C: timeout fired")
+        msg ("D: nested output")
+      }
+    </script>
+  </command>
+
+  <!-- Control: SetTimeout with no sound anywhere near it. -->
+  <command name="timeoutonlycmd">
+    <pattern>timeoutonly</pattern>
+    <script>
+      msg ("A: before sound")
+      msg ("B: after sound")
+      SetTimeout (1) {
+        msg ("C: timeout fired")
+        msg ("D: nested output")
+      }
+    </script>
+  </command>
+
+</asl>

@@ -367,7 +367,14 @@ public class NcalcExpressionEvaluator<T> : IExpressionEvaluator<T>, IDynamicExpr
             // null instead of a proper value - this typically means the operand is an attribute
             // that has never been assigned. Equality/inequality already handles null cleanly
             // (both here and natively in NCalc), so this only needs to guard arithmetic.
-            if (!isEquality && (left is null || right is null))
+            //
+            // "text" + unset is *not* arithmetic: it's string concatenation, where both .NET and
+            // NCalc treat a null operand as an empty string, and real games rely on that. Core's
+            // own FormatStatusAttribute concatenates a status attribute's value with no null check
+            // whenever the attribute has no format string ('CapFirst(attr) + ": " + value'), so
+            // guarding it here turns every status bar listing a not-yet-set attribute into a
+            // script error.
+            if (!isEquality && (left is null || right is null) && !IsStringConcatenation(args, left, right))
             {
                 var description = left is null ? leftNullDescription : rightNullDescription;
                 throw new Exception(description != null
@@ -394,6 +401,11 @@ public class NcalcExpressionEvaluator<T> : IExpressionEvaluator<T>, IDynamicExpr
             }
         }
     }
+
+    // '+' means concatenation as soon as either side is a string, so a null on the other side is
+    // an empty string rather than an unset number - see the guard in HandleBinaryResult.
+    private static bool IsStringConcatenation(BinaryEventArgs args, object left, object right) =>
+        args.BinaryExpression.Type == BinaryExpressionType.Plus && (left is string || right is string);
 
     private static bool IsStandardNCalcType(object value) =>
         value is null or int or long or double or float or decimal or byte or short or uint or ulong or ushort or sbyte or bool or string;

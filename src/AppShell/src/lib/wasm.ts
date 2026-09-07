@@ -1,3 +1,15 @@
+import { PUBLIC_APPSHELL_VERSION } from "$env/static/public";
+
+// Cache key for the WasmEditor AppBundle, mirroring what WasmPlayer's
+// inject-version.mjs/wasm-player.js do for /player — see the _headers block in
+// .github/workflows/deploy-play.yml. Two things need it: the version makes each
+// deploy a distinct URL so /AppBundle/_framework/* can be served `immutable`
+// instead of revalidating ~190 files on every editor load, and it keeps
+// dotnet.boot.js (the manifest of per-file SHA-256 hashes) from ever being
+// paired with a binary from a different deploy, which fails the SRI check.
+// Blank in a dev build, where the assets aren't cached anyway.
+const versionQuery = PUBLIC_APPSHELL_VERSION ? `?v=${encodeURIComponent(PUBLIC_APPSHELL_VERSION)}` : "";
+
 export interface WasmBridge {
   AddAdjacentFile(filename: string, data: Uint8Array): void
   Initialise(bytes: Uint8Array, filename: string): Promise<string>
@@ -157,10 +169,23 @@ export async function loadWasm(): Promise<WasmBridge> {
         // Use new Function to prevent Vite's import-analysis plugin from trying to resolve
         // the URL at build time — it only exists as a runtime-served file.
         const loadModule = new Function("url", "return import(url)");
-        const { dotnet } = (await loadModule("/AppBundle/_framework/dotnet.js")) as { dotnet: any };
+        // dotnet.js reads the query back off its own import.meta.url and
+        // propagates it to the JS modules it imports and to dotnet.boot.js
+        // (`modulesUniqueQuery`), so only the remaining assets — assemblies,
+        // dotnet.native.wasm, ICU data — need stamping in withResourceLoader.
+        const { dotnet } = (await loadModule(`/AppBundle/_framework/dotnet.js${versionQuery}`)) as { dotnet: any };
 
         const { getAssemblyExports, getConfig, runMain } = await dotnet
             .withDiagnosticTracing(false)
+            // Without this the loader fetches every asset with `cache:
+            // "no-cache"`, forcing a conditional request no matter what the CDN
+            // said about freshness — which would make `immutable` pointless.
+            .withConfig({ disableNoCacheFetch: !!versionQuery })
+            // null means "use the default URL" — right for the modules and the
+            // manifest, which modulesUniqueQuery has already stamped; doing it
+            // again here would give them a doubled `?v=...?v=...`.
+            .withResourceLoader((type: string, _name: string, defaultUri: string) =>
+                !versionQuery || type === "manifest" || type === "dotnetjs" ? null : defaultUri + versionQuery)
             .create();
 
         await runMain();
