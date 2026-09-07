@@ -66,15 +66,15 @@ In Quest 5, saving an online game meant having a textadventures.co.uk account. Q
 
 ## New in the editor
 
-The editor was rebuilt from scratch for Quest Viva, but it does the same job, so most of it should feel familiar - the tree, the tabs, Code View, the debugger, filtering, cut and paste, and so on are all where you would expect. These are the parts that are actually new, or different enough to notice:
+The editor was rebuilt for Quest Viva. Most of it does what it always did - here's what's different:
 
 - **Light and dark themes**, or match your system setting
-- **Syntax highlighting and autocompletion** in Code View, for scripts and for the raw XML behind your game
-- **An asset picker** for choosing images and sounds you've already added to your game
+- **Syntax highlighting and autocompletion** in Code View
+- **An asset picker** for images and sounds you've already added to your game
 - **Safe Mode**, a raw XML editor that opens if a game file fails to load, so a broken file is recoverable instead of lost
-- **Advanced options tucked away by default.** Quest 5 could hide them too, but only if you turned on Simple Mode - now it's just how the editor looks, and everything is still a click away
-- **Keyboard and screen reader support** throughout the editor and the player
-- **A translated interface** - English, German and Spanish. In Quest 5 only the desktop editor's own chrome could be translated, and only into English or German
+- **Advanced options hidden by default**, not only in Simple Mode
+- **Keyboard and screen reader support**, throughout the editor and the player
+- **A translated interface** - English, German and Spanish, in the browser as well as on the desktop
 
 ## New in the engine
 
