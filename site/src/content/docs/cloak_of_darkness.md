@@ -16,7 +16,7 @@ If you want to see how the scripts look in the GUI, download the game (link belo
 
 There was a version written for Quest 3.5 in October 2003, which was very different to the version of Quest that we know today.
 
-The source code for Cloak of Darkness for Quest 5.8 can be downloaded here:
+The source code for Cloak of Darkness can be downloaded here. It was saved with Quest 5.8, but like any older game file it opens and runs in Quest Viva unchanged:
 
 [cloak_of_darkness.aslx](/examples/cloak_of_darkness.aslx)
 
