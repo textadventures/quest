@@ -22,10 +22,20 @@ Quest 5's editor only ran on Windows, and the online editor at textadventures.co
 
 Quest Viva has a single editor, and you can use it either way:
 
-- **In your web browser**, at [play.questviva.com](https://play.questviva.com) - Windows, Mac, Linux, Chromebooks, whatever you have.
+- **In your web browser**, at [play.questviva.com](https://play.questviva.com) - Windows, Mac, Linux, Chromebooks, whatever you have, and tablets and phones too.
 - **As a desktop app**, which you can [download](/download) for Windows, Mac or Linux.
 
-It's the same editor and the same game files in both, so you can move between them as it suits you.
+These aren't two editors kept roughly in step with each other. It's the same application in both, so the browser version isn't a cut-down one the way Quest 5's was - anything you can do at your desk, you can do in a browser, and you can move between the two as it suits you.
+
+## Where your games are kept
+
+Quest 5's online editor kept your games on your textadventures.co.uk account, so using it meant signing up for one. Quest Viva keeps them local by default, with no account needed:
+
+- The desktop app saves your game as an ordinary file, in a folder you choose.
+- In the browser you can pick a folder too, if your browser supports it - Chrome and Edge do.
+- Otherwise your game is stored inside the browser itself. Use **Backup** every so often to save a copy to disk - the editor will remind you.
+
+If you already have games on a textadventures.co.uk account, they're still there. The editor at textadventures.co.uk can sign you in and load them, as before.
 
 ## Games run in the browser, with no server
 
