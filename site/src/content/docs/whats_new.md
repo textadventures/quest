@@ -66,21 +66,14 @@ In Quest 5, saving an online game meant having a textadventures.co.uk account. Q
 
 ## New in the editor
 
-The editor has been rebuilt, and it picked up a lot along the way:
+The editor was rebuilt from scratch for Quest Viva, but it does the same job, so most of it should feel familiar - the tree, the tabs, Code View, the debugger, filtering, cut and paste, and so on are all where you would expect. These are the parts that are actually new:
 
 - **Light and dark themes**, or match your system setting
-- **Code View** with syntax highlighting and autocompletion, for scripts and for the raw XML behind your game
-- **Filter boxes** on the element tree and the script command picker, so you can find things by typing instead of scrolling
-- **Back and forward navigation** through the elements you've been editing
-- **Cut, copy, paste and move** for objects, functions and scripts, and folders you can organise them into
-- **Dedicated tabs for exits and verbs**, instead of hunting through attribute lists
+- **Syntax highlighting and autocompletion** in Code View, for scripts and for the raw XML behind your game
 - **An asset picker** for choosing images and sounds you've already added to your game
-- **A built-in debugger** in the player, where you can inspect and override attributes while a game runs
 - **Safe Mode**, a raw XML editor that opens if a game file fails to load, so a broken file is recoverable instead of lost
 - **Advanced options tucked away** by default, so the things most games need are easier to find - everything is still there when you want it
 - **Keyboard and screen reader support** throughout the editor and the player
-
-The editor interface itself is also translated - it's currently available in English, German and Spanish.
 
 ## New in the engine
 
