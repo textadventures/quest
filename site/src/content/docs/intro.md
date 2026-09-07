@@ -20,7 +20,7 @@ Quest Viva is the current version of Quest, which people have been using to writ
 Quest Viva supports two styles of game, and you choose which you want when you create it:
 
 - **Text adventures** - location-based games where the player explores rooms, picks up objects, solves puzzles and talks to characters, either by typing commands like `GO NORTH` or by clicking on links. This is the classic style, like _Zork_ or _The Hitchhiker's Guide to the Galaxy_.
-- **Gamebooks** - branching stories where the reader is given a set of choices at the end of each passage, like a _Choose Your Own Adventure_ book.
+- **Gamebooks** - branching stories where the reader is given a set of choices at the end of each passage, and what they pick decides where the story goes next.
 
 Either kind can include images, sound, music and video, and you can customise the look of the game as much as you want - right down to writing your own HTML, CSS and JavaScript if that's your thing.
 

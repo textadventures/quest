@@ -46,7 +46,7 @@ Credit beta-testers here; you may be marked down otherwise.
 
 Every object mentioned in the text should be implemented as an object that can be looked at in the game. Also aim to implement all the common commands such as "jump", "xyzzy", etc., even if they are not relevant. Default and error responses are *bad*.
 
-Or submit a game without a command line, such as a CYOA or gamebook.
+Or submit a game without a command line, such as a gamebook.
 
 ### Feelies
 

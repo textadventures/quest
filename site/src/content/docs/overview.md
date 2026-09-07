@@ -20,7 +20,7 @@ Quest Viva supports two styles of interactive fiction:
 
 ![](/images/overview-textadventure.png)
 
-**Gamebooks** are linear narrative experiences with branching choices - closer to a _Choose Your Own Adventure_ book. The player reads passages and picks from a set of options at the end of each one.
+**Gamebooks** are branching stories rather than explorable worlds. The player reads a passage, picks from a set of options at the end of it, and that choice decides which passage comes next.
 
 ![](/images/overview-gamebook.png)
 
