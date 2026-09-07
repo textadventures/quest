@@ -32,10 +32,12 @@ The [Overview](/overview) is a quick illustrated tour of the editor, both kinds 
 
 You can use Quest Viva in two ways, and you get the same editor either way:
 
-- **In your web browser**, at [play.questviva.com](https://play.questviva.com) - nothing to install, and it works on Windows, Mac, Linux and Chromebooks.
+- **In your web browser**, at [play.questviva.com](https://play.questviva.com) - nothing to install. It works on Windows, Mac, Linux and Chromebooks, and on tablets and phones too.
 - **As a desktop app**, which you can [download](/download) for Windows, Mac or Linux.
 
-Your games are ordinary files that you keep wherever you like, so you can move between the browser and the desktop app freely.
+Where your game is kept depends on how you open it. Pick a folder on your computer - the desktop app always does, and browsers like Chrome and Edge can too - and your game is an ordinary file you keep wherever you like, so you can move between the browser and the desktop app freely.
+
+Otherwise your game is stored inside the browser itself. That works perfectly well, but it does mean the game is tied to that one browser on that one device, and clearing your browsing data can take it with it. Use **Backup** every so often to save a copy to disk - the editor will remind you if you haven't for a while.
 
 ## Sharing your game
 
