@@ -17,17 +17,17 @@ hero:
       link: /intro
       icon: open-book
       variant: secondary
-    - text: Download
+    - text: Download the app
       link: /download
       icon: download
-      variant: secondary
+      variant: minimal
     - text: View on GitHub
       link: https://github.com/textadventures/quest
       icon: external
       variant: minimal
 ---
 
-import { Card, CardGrid } from '@astrojs/starlight/components';
+import { Card, CardGrid, LinkCard } from '@astrojs/starlight/components';
 
 <CardGrid>
 	<Card title="Get started quickly" icon="rocket">
@@ -90,12 +90,37 @@ import { Card, CardGrid } from '@astrojs/starlight/components';
 	</Card>
 </CardGrid>
 
-<div style="text-align: center; margin-top: 3rem;">
+## Find your way around
 
-## Ready to begin?
+New to all this? Start with the **[Tutorial](/tutorial/tutorial_introduction)**, which builds your first game from scratch. Coming from Quest 5? Start with **[What's new in Quest Viva 6.0](/whats_new)**.
 
-The **[Tutorial](/tutorial/tutorial_introduction)** walks you through building your first game from scratch.
-
-Already used Quest 5? See **[What's new in Quest Viva 6.0](/whats_new)**.
-
-</div>
+<CardGrid>
+	<LinkCard
+		title="Start Here"
+		href="/intro"
+		description="An introduction to Quest Viva, a tour of what it can do, and the full tutorial." />
+	<LinkCard
+		title="Guides"
+		href="/cloak_of_darkness"
+		description="How to do particular things - commands and the parser, rooms and objects, characters, images and sound, and customising the interface." />
+	<LinkCard
+		title="Language Reference"
+		href="/scripts"
+		description="Every script command, function, attribute and element, described in detail." />
+	<LinkCard
+		title="Advanced Topics"
+		href="/advanced-topics/overriding"
+		description="Object types, libraries, delegates, overriding built-in behaviour, and translating Quest Viva." />
+	<LinkCard
+		title="Publishing"
+		href="/publishing/publishing"
+		description="Getting your finished game in front of players, on textadventures.co.uk or hosted yourself." />
+	<LinkCard
+		title="Download the app"
+		href="/download"
+		description="The Quest Viva desktop app for Windows, Mac and Linux, for working offline." />
+	<LinkCard
+		title="Developers"
+		href="/developers/developers"
+		description="Building Quest Viva from source, how the project is organised, and older releases." />
+</CardGrid>

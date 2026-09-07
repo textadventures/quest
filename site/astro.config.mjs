@@ -115,6 +115,10 @@ export default defineConfig({
                             "label": "What's new in Quest Viva 6.0",
                             "slug": "whats_new"
                         },
+                        {
+                            "label": "Download the app",
+                            "slug": "download"
+                        },
                     ]
                 },
                 {
