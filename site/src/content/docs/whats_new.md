@@ -6,7 +6,7 @@ sidebar:
   label: What's new in Quest Viva 6.0
 ---
 
-Quest Viva is the successor to [Quest 5](/developers/older-versions), which had been going since 2011. Under the hood it's the same engine and the same scripting language, so if you know Quest 5, you already know Quest Viva - but a lot has changed around it.
+Quest Viva is the successor to [Quest 5](/developers/older-versions), which had been Quest's current version since 2011. Under the hood it's the same engine and the same scripting language, so if you know Quest 5, you already know Quest Viva - but a lot has changed around it.
 
 This page is a summary for people coming from Quest 5. If you're new to Quest Viva, you don't need any of this - start with the [Introduction](/intro) instead.
 
