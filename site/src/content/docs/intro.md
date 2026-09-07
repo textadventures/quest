@@ -53,6 +53,6 @@ The **[Tutorial](/tutorial/tutorial_introduction)** is the best place to begin. 
 
 ## Getting help
 
-Quest Viva is discussed on [Discord](https://textadventures.co.uk/community/discord) and [GitHub Discussions](https://github.com/textadventures/quest/discussions). If you find a bug or want to request a feature, [open an issue](https://github.com/textadventures/quest/issues).
+If you get stuck, or just want to show people what you're making, ask on [Discord](https://textadventures.co.uk/community/discord) or in [GitHub Discussions](https://github.com/textadventures/quest/discussions). If you find a bug or want to request a feature, [open an issue](https://github.com/textadventures/quest/issues).
 
 Quest Viva is [open source](/developers/open_source) - the [source code is on GitHub](https://github.com/textadventures/quest), and contributions are welcome.
