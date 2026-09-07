@@ -4,7 +4,7 @@ sidebar:
   order: 3
 ---
 
-The current release is available from [textadventures.co.uk/quest](https://textadventures.co.uk/quest). It is fully compatible with games made in older versions, so always use the latest version if you can.
+The current release is Quest Viva, available from the [download page](/download) or in your browser at [play.questviva.com](https://play.questviva.com). It is fully compatible with games made in older versions, so always use the latest version if you can.
 
 Older versions are provided here for reference — for example, if you need to compare behaviour against a specific version, or if you want to run Quest on an older version of Windows.
 

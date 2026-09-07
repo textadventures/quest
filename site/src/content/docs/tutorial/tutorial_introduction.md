@@ -6,7 +6,7 @@ sidebar:
 
 ## Introduction
 
-[Quest Viva](https://textadventures.co.uk/quest) is a program for writing text adventure games and gamebooks (both of which are sometimes referred to as [Interactive Fiction](http://en.wikipedia.org/wiki/Interactive_fiction)).
+Quest Viva is a program for writing text adventure games and gamebooks (both of which are sometimes referred to as [Interactive Fiction](http://en.wikipedia.org/wiki/Interactive_fiction)).
 
 You can use it in two ways:
 
