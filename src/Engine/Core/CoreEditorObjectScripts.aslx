@@ -2,6 +2,7 @@
   <tab>
     <parent>_ObjectEditor</parent>
     <caption>[EditorObjectScriptsScripts]</caption>
+    <helpurl>/tutorial/using-scripts/</helpurl>
     <mustnotinherit>editor_object</mustnotinherit>
     <advanced/>
 

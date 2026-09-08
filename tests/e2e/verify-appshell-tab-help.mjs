@@ -30,8 +30,14 @@ function check(label, actual, expected) {
 
 const helpLink = () => page.locator('a:has-text("Help:")');
 
+// Scoped to the tab strip: other controls share tab names (the text processor's
+// "Page" insert button, for one), and a tab that's already active needs no click.
+const tabStrip = () => page.locator('.flex.border-b.border-surface-200-800.overflow-x-auto.flex-shrink-0');
+
 async function selectTab(name) {
-    await page.getByRole('button', { name: new RegExp(`^${name}$`) }).click();
+    const tab = tabStrip().getByRole('button', { name: new RegExp(`^${name}$`) });
+    await tab.waitFor({ state: 'visible', timeout: 10000 });
+    await tab.click();
     await page.waitForTimeout(150);
 }
 
@@ -64,6 +70,21 @@ async function run() {
     // The link tracks the active tab rather than being fixed per element.
     await selectTab('Room');
     check('no help link after switching to a tab without one (room > Room)', await helpLink().count(), 0);
+
+    // The gamebook editor reuses two caption keys from the Text Adventure editor,
+    // so a naive curation pass pointed its Page tab at the TA dialogue-pages
+    // guide. A gamebook page is Name/Page type/Picture - a different thing.
+    await page.goto(`${baseUrl}/open`);
+    await page.waitForSelector('button:has-text("Create local draft")', { timeout: 30000 });
+    await page.fill('input[placeholder="Game name"]', `Tab Help GB ${Date.now()}`);
+    await page.waitForSelector('text=Gamebook', { timeout: 10000 });
+    await page.getByText('Gamebook', { exact: true }).first().click();
+    await page.click('button:has-text("Create local draft")');
+    await page.waitForSelector('button[title="More"]', { timeout: 30000 });
+    await page.click('text=Page1');
+    await selectTab('Page');
+    check('gamebook Page tab points at the gamebook guide, not TA dialogue pages',
+        await helpLink().getAttribute('href'), 'https://questviva.com/tutorial/creating-a-gamebook/');
 
     console.log('PASS');
 }

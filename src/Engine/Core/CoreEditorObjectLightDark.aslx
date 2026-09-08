@@ -2,6 +2,7 @@
   <tab>
     <parent>_ObjectEditor</parent>
     <caption>[EditorObjectLightDarkLight/Dark]</caption>
+    <helpurl>/howto/world/handling-light-and-dark/</helpurl>
     <mustnotinherit>editor_object</mustnotinherit>
     <advanced/>
     <onlydisplayif>game.feature_lightdark</onlydisplayif>

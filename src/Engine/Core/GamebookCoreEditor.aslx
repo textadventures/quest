@@ -441,6 +441,7 @@
 
     <tab>
       <caption>[EditorGBPage]</caption>
+      <helpurl>/tutorial/creating-a-gamebook/</helpurl>
       <mustnotinherit>defaultplayer</mustnotinherit>
 
       <control>

@@ -2,6 +2,7 @@
   <tab>
     <parent>_ObjectEditor</parent>
     <caption>[EditorObjectUseGiveUse/Give]</caption>
+    <helpurl>/tutorial/more-things-to-do-with-objects/</helpurl>
     <mustnotinherit>editor_room</mustnotinherit>
     <onlydisplayif>this.feature_usegive</onlydisplayif>
 

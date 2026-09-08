@@ -8,6 +8,7 @@
   <tab>
     <parent>_ObjectEditor</parent>
     <caption>[EditorGBPage]</caption>
+    <helpurl>/howto/npcs/dialogue-pages/</helpurl>
     <mustinherit>dialoguepage</mustinherit>
 
     <control>

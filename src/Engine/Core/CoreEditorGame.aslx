@@ -735,6 +735,7 @@
     <tab>
       <onlydisplayif>game.feature_advancedscripts</onlydisplayif>
       <caption>[EditorGameAdvancedScript]</caption>
+      <helpurl>/howto/scripting/advanced-game-scripts/</helpurl>
       <advanced/>
 
       <control>
@@ -891,6 +892,7 @@
 
     <tab>
       <caption>[EditorGamePlayer]</caption>
+      <helpurl>/howto/tasks/changing-the-player-object/</helpurl>
       <advanced/>
 
       <control>
@@ -934,6 +936,7 @@
 
     <tab>
       <caption>[EditorGameAttributes]</caption>
+      <helpurl>/tutorial/custom-attributes/</helpurl>
       <advanced/>
 
       <control>

@@ -125,6 +125,7 @@
   <tab>
     <parent>_ObjectEditor</parent>
     <caption>[EditorObjectOptionsLight/Dark]</caption>
+    <helpurl>/howto/world/handling-light-and-dark/</helpurl>
     <mustnotinherit>editor_room</mustnotinherit>
     <onlydisplayif>this.feature_lightdark</onlydisplayif>
 
@@ -149,6 +150,7 @@
   <tab>
     <parent>_ObjectEditor</parent>
     <caption>[EditorObjectOptionsPlayer]</caption>
+    <helpurl>/howto/tasks/changing-the-player-object/</helpurl>
     <mustnotinherit>editor_room</mustnotinherit>
     <onlydisplayif>this.feature_player</onlydisplayif>
 

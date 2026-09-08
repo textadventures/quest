@@ -40,7 +40,9 @@ try {
     // scrollable ancestor — not "Inherited types" hogging a fixed block that
     // pushes Attributes rows out of any visible/scrollable space.
     const inheritedLabel = page.locator('span:text("Inherited types")');
-    const attributesLabel = page.locator('span:text("Attributes")');
+    // Scoped to the uppercase section header: the tab's help link ("Help: Custom
+    // attributes") also contains the word, and :text() matches substrings.
+    const attributesLabel = page.locator('span.uppercase:text-is("Attributes")');
     const nameRow = page.locator('[data-attr="name"]');
 
     const inheritedScrollParent = await inheritedLabel.evaluate(el => {

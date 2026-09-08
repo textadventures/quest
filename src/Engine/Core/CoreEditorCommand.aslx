@@ -50,6 +50,7 @@
 
     <tab>
       <caption>[EditorCommandAttributes]</caption>
+      <helpurl>/tutorial/custom-attributes/</helpurl>
 
       <control>
         <controltype>attributes</controltype>
