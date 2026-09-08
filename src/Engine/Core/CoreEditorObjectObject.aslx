@@ -2,6 +2,7 @@
   <tab>
     <parent>_ObjectEditor</parent>
     <caption>[EditorObjectObjectObject]</caption>
+    <helpurl>/howto/ux/display-verbs/</helpurl>
     <mustnotinherit>editor_room; dialoguepage</mustnotinherit>
     <advanced/>
 

@@ -3,6 +3,8 @@
     import { showToast } from "$lib/toast";
     import { isLibraryFilename } from "$lib/filesystem/types";
     import { t } from "$lib/i18n";
+    import { docsUrlForPath } from "$lib/docs-links";
+    import { HELP_PAGE_TITLES } from "$lib/docs-index.generated";
     import type { ControlInfo, ControlOption, TextProcessorCommand } from "$lib/types";
     import type { TreeNode } from "$lib/types";
     import ChevronLeft from "@lucide/svelte/icons/chevron-left";
@@ -386,6 +388,11 @@
         if (node instanceof HTMLInputElement || node instanceof HTMLTextAreaElement) node.select();
     }
 
+    // The active tab's <helpurl> and the title of the page it points at. Null
+    // for tabs with no help target, which is most of them.
+    let activeHelpUrl = $derived($selectedData?.tabs.find(tab => tab.caption === activeTab)?.helpUrl ?? null);
+    let activeHelpTitle = $derived(activeHelpUrl ? HELP_PAGE_TITLES[activeHelpUrl] ?? null : null);
+
     function tabClass(caption: string | null): string {
         return activeTab === caption
             ? "px-3 py-1.5 text-xs whitespace-nowrap transition-colors text-primary-600-400 border-b-2 border-primary-500 font-medium"
@@ -441,6 +448,23 @@
                     </button>
                 {/each}
             </div>
+        {/if}
+
+        <!-- Help for the active tab, above its contents rather than in the tab
+             strip: the strip already scrolls for space on narrower screens, and
+             a guide title ("Items that can be switched on and off") would be
+             competing with the tabs for the same row. Only tabs with a
+             <helpurl> in their editor definition get one. -->
+        {#if activeHelpUrl && activeHelpTitle}
+            <a
+                href={docsUrlForPath(activeHelpUrl)}
+                target="_blank"
+                rel="noopener noreferrer"
+                class="flex items-center gap-1.5 px-3 py-1.5 text-xs text-surface-600-400 hover:text-primary-600-400 transition-colors border-b border-surface-200-800 flex-shrink-0"
+            >
+                <BookOpen size={14} class="shrink-0" />
+                <span class="truncate">{t("propertyEditor.helpGuide", { title: activeHelpTitle })}</span>
+            </a>
         {/if}
 
         {@const viewControls = getControlsForView()}

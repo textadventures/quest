@@ -190,6 +190,7 @@
     "propertyEditor.propertiesFallback": "Propiedades",
     "propertyEditor.selectPrompt": "Selecciona un objeto para ver sus propiedades.",
     "propertyEditor.noProperties": "No hay propiedades disponibles.",
+    "propertyEditor.helpGuide": "Ayuda: {title}",
     "propertyEditor.tabFallback": "Pestaña",
     "propertyEditor.generateButton": "Generar",
     "propertyEditor.selectOption": "Selecciona…",

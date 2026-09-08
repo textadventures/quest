@@ -4,6 +4,7 @@
 
     <tab>
       <caption>[EditorVerbVerb]</caption>
+      <helpurl>/howto/commands/using-verbs/</helpurl>
 
       <control>
         <controltype>multi</controltype>
@@ -99,6 +100,7 @@
 
     <tab>
       <caption>[EditorVerbAttributes]</caption>
+      <helpurl>/tutorial/custom-attributes/#the-attributes-tab</helpurl>
 
       <control>
         <controltype>attributes</controltype>

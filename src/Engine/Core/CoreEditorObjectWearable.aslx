@@ -2,6 +2,7 @@
   <tab>
     <parent>_ObjectEditor</parent>
     <caption>[EditorObjectWearableWearable]</caption>
+    <helpurl>/howto/world/wearables/</helpurl>
     <mustnotinherit>editor_room; editor_player</mustnotinherit>
     <onlydisplayif>this.feature_wearable</onlydisplayif>
 

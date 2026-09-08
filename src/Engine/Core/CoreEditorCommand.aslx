@@ -4,6 +4,7 @@
 
     <tab>
       <caption>[EditorCommandCommand]</caption>
+      <helpurl>/howto/commands/commands/</helpurl>
 
       <control>
         <controltype>multi</controltype>
@@ -49,6 +50,7 @@
 
     <tab>
       <caption>[EditorCommandAttributes]</caption>
+      <helpurl>/tutorial/custom-attributes/#the-attributes-tab</helpurl>
 
       <control>
         <controltype>attributes</controltype>

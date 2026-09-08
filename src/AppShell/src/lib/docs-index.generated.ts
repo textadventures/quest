@@ -138,3 +138,28 @@ export const DOCS_INDEX: Readonly<Record<string, DocsIndexEntry>> = {
     "wait": { path: "/scripts/#wait" },
     "while": { path: "/scripts/#while" },
 };
+
+/** Documentation path (as used in a <helpurl>) -> that page's title. */
+export const HELP_PAGE_TITLES: Readonly<Record<string, string>> = {
+    "/howto/commands/commands/": "How to use commands",
+    "/howto/commands/using-verbs/": "How to use verbs",
+    "/howto/npcs/ask-about/": "Building an Ask/Tell system",
+    "/howto/npcs/dialogue-pages/": "Building a conversation with Pages",
+    "/howto/scripting/advanced-game-scripts/": "Advanced game scripts",
+    "/howto/scripting/using-turnscripts/": "Using turnscripts",
+    "/howto/tasks/changing-the-player-object/": "Changing the player object",
+    "/howto/tasks/showing-a-map/": "Showing a map",
+    "/howto/ux/display-verbs/": "Using display verbs",
+    "/howto/ux/ui-style/#the-display-tab": "The display tab",
+    "/howto/ux/ui-style/#the-interface-tab": "The interface tab",
+    "/howto/ux/ui-style/#the-room-descriptions-tab": "The room descriptions tab",
+    "/howto/world/containers/": "Using containers",
+    "/howto/world/exits/": "Exits",
+    "/howto/world/handling-light-and-dark/": "Handling light and dark",
+    "/howto/world/switchable/": "Items that can be switched on and off",
+    "/howto/world/wearables/": "Wearable items",
+    "/tutorial/creating-a-gamebook/": "Creating a gamebook",
+    "/tutorial/custom-attributes/#the-attributes-tab": "The attributes tab",
+    "/tutorial/more-things-to-do-with-objects/": "More things to do with objects",
+    "/tutorial/using-timers-and-turn-scripts/": "Using timers and turn scripts",
+};

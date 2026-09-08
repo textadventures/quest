@@ -28,6 +28,16 @@ export const DOCS_URL = docsUrl("/intro");
 export const DOCS_TUTORIAL_URL = docsUrl("/tutorial/tutorial-introduction");
 
 /**
+ * Absolute URL for a site-relative documentation path, as stored in a
+ * <helpurl> in the editor definitions (e.g. "/howto/world/exits/"). Paths are
+ * stored with their trailing slash so this adds no redirect hop; CI checks
+ * that each one resolves to a built page.
+ */
+export function docsUrlForPath(path: string): string {
+    return `${DOCS_BASE_URL}${path}`;
+}
+
+/**
  * The command's name as an author would write it in code — the editor keyword
  * minus the "(function)" marker that distinguishes a function call from a
  * built-in script command. "(function)MoveObject" -> "MoveObject", "msg" -> "msg".

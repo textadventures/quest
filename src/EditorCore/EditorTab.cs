@@ -12,6 +12,13 @@ internal class EditorTab : IEditorTab
     {
         m_controls = new Dictionary<string, IEditorControl>();
         Caption = source.Fields.GetString("caption");
+        // Editor definitions live in <library type="editor">, which GameSaver
+        // excludes from both package and editor saves - so unlike Core.aslx
+        // game libraries, a <helpurl> added here is never frozen into a .quest
+        // file and applies to every game, however old.
+        HelpUrl = string.IsNullOrWhiteSpace(source.Fields.GetString("helpurl"))
+            ? null
+            : source.Fields.GetString("helpurl");
         IsTabVisibleInSimpleMode = !source.Fields.GetAsType<bool>("advanced");
 
         foreach (var e in worldModel.Elements.GetElements(ElementType.EditorControl))
@@ -27,6 +34,8 @@ internal class EditorTab : IEditorTab
     }
 
     public string Caption { get; }
+
+    public string HelpUrl { get; }
 
     public IEnumerable<IEditorControl> Controls => m_controls.Values;
 
