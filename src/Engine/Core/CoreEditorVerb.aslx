@@ -100,7 +100,7 @@
 
     <tab>
       <caption>[EditorVerbAttributes]</caption>
-      <helpurl>/tutorial/custom-attributes/</helpurl>
+      <helpurl>/tutorial/custom-attributes/#the-attributes-tab</helpurl>
 
       <control>
         <controltype>attributes</controltype>

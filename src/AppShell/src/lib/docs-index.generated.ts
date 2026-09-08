@@ -159,8 +159,7 @@ export const HELP_PAGE_TITLES: Readonly<Record<string, string>> = {
     "/howto/world/switchable/": "Items that can be switched on and off",
     "/howto/world/wearables/": "Wearable items",
     "/tutorial/creating-a-gamebook/": "Creating a gamebook",
-    "/tutorial/custom-attributes/": "Custom attributes",
+    "/tutorial/custom-attributes/#the-attributes-tab": "The attributes tab",
     "/tutorial/more-things-to-do-with-objects/": "More things to do with objects",
-    "/tutorial/using-scripts/": "Using scripts",
     "/tutorial/using-timers-and-turn-scripts/": "Using timers and turn scripts",
 };

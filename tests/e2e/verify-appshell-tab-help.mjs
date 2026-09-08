@@ -75,6 +75,18 @@ async function run() {
         'https://questviva.com/howto/world/exits/');
     check('help link title tracks the tab', (await helpLink().textContent()).trim(), 'Help: Exits');
 
+    // Attributes is anchored at the section about that tab, so the reader
+    // doesn't land on the tutorial page's unrelated opening example.
+    await selectTab('Attributes');
+    check('Attributes tab is anchored at its section',
+        await helpLink().getAttribute('href'),
+        'https://questviva.com/tutorial/custom-attributes/#the-attributes-tab');
+
+    // room > Scripts holds before/after-entering and turn scripts; nothing
+    // documents those, and "Using scripts" is a tutorial step about verbs.
+    await selectTab('Scripts');
+    check('no help link on room > Scripts', await helpLink().count(), 0);
+
     // The link tracks the active tab rather than being fixed per element.
     await selectTab('Room');
     check('no help link after switching to a tab without one (room > Room)', await helpLink().count(), 0);

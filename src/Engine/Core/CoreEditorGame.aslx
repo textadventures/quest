@@ -936,7 +936,7 @@
 
     <tab>
       <caption>[EditorGameAttributes]</caption>
-      <helpurl>/tutorial/custom-attributes/</helpurl>
+      <helpurl>/tutorial/custom-attributes/#the-attributes-tab</helpurl>
       <advanced/>
 
       <control>
