@@ -4,6 +4,7 @@
 
     <tab>
       <caption>[EditorCommandCommand]</caption>
+      <helpurl>/howto/commands/commands/</helpurl>
 
       <control>
         <controltype>multi</controltype>

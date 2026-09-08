@@ -19,7 +19,11 @@ const page = await browser.newPage();
 page.on('pageerror', err => console.log('[pageerror]', err.message));
 page.on('console', msg => { if (msg.type() === 'error') console.log('[console.error]', msg.text()); });
 
-const tabBar = page.locator('.flex.border-b.border-surface-200-800.overflow-x-auto.flex-shrink-0');
+// The strip of tab buttons is nested inside this bar, so the active tab's
+// help "?" link can sit outside the scroll area and stay reachable when the
+// tabs overflow. getByRole('button') still matches only tabs - the help
+// affordance is an <a>.
+const tabBar = page.locator('.flex.border-b.border-surface-200-800.flex-shrink-0');
 
 // Same disambiguation issue as verify-appshell-exits-editor.mjs's selectTreeNode: a leaf's row is
 // [data-part="item"], a branch's own row is [data-part="branch-control"].

@@ -2,6 +2,7 @@
   <tab>
     <parent>_ObjectEditor</parent>
     <caption>[EditorObjectAskTellAskTell]</caption>
+    <helpurl>/howto/npcs/ask-about/</helpurl>
     <mustnotinherit>editor_room; dialoguepage</mustnotinherit>
     <onlydisplayif>game.feature_asktell</onlydisplayif>
 

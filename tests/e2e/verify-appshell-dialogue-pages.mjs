@@ -38,7 +38,11 @@ async function run() {
     // The pinned rich-text "Page Link" button also has an accessible name of
     // "Page", so property-tab buttons need to be scoped to the tab bar itself
     // to disambiguate from it.
-    const tabBar = page.locator('.flex.border-b.border-surface-200-800.overflow-x-auto.flex-shrink-0');
+    // The strip of tab buttons is nested inside this bar, so the active tab's
+    // help "?" link can sit outside the scroll area and stay reachable when the
+    // tabs overflow. getByRole('button') still matches only tabs - the help
+    // affordance is an <a>.
+    const tabBar = page.locator('.flex.border-b.border-surface-200-800.flex-shrink-0');
 
     // "Add Page" is available immediately - no feature toggle to enable first.
     // Menu items carry role="menuitem" (see DropdownMenu.svelte), not the

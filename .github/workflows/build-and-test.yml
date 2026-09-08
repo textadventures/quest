@@ -46,6 +46,10 @@ jobs:
         run: npm run check-redirects
         working-directory: site
 
+      - name: Check the editor's tab help links resolve
+        run: npm run check-editor-help-urls
+        working-directory: site
+
   build_appshell:
     runs-on: ubuntu-latest
 

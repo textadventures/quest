@@ -83,6 +83,9 @@ export interface ControlInfo {
 export interface TabInfo {
   caption: string | null
   controls: ControlInfo[]
+  // <helpurl> on the tab's editor definition - a site-relative documentation
+  // path. Absent for tabs with no help target, which show no help affordance.
+  helpUrl?: string | null
 }
 
 export interface EditorDataResponse {

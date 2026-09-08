@@ -156,6 +156,7 @@
 
     <tab>
       <caption>[EditorGameDisplay]</caption>
+      <helpurl>/howto/ux/ui-fonts/</helpurl>
 
       <control>
         <caption>[EditorGameTheme]</caption>
@@ -397,6 +398,7 @@
 
     <tab>
       <caption>[EditorGameInterface]</caption>
+      <helpurl>/howto/ux/customising-the-ui/</helpurl>
 
       <control>
         <controltype>label</controltype>
@@ -706,6 +708,7 @@
 
     <tab>
       <caption>[EditorGameScript]</caption>
+      <helpurl>/howto/scripting/advanced-game-scripts/</helpurl>
       <advanced/>
 
       <control>

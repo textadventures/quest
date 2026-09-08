@@ -220,6 +220,8 @@ jobs:
         working-directory: tests/e2e
       - run: node verify-appshell-object-pickers-exclude-pages.mjs http://localhost:5174
         working-directory: tests/e2e
+      - run: node verify-appshell-tab-help.mjs http://localhost:5174
+        working-directory: tests/e2e
       - run: node verify-appshell-theme-toggle.mjs http://localhost:5174
         working-directory: tests/e2e
       - run: node verify-default-tree-state.mjs http://localhost:5174

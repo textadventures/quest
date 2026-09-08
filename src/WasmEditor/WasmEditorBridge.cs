@@ -64,7 +64,7 @@ internal record ControlInfo(
     // warning-style label (a locked exit's "to unlock this" note, a disabled-feature notice).
     bool Bold = false);
 
-internal record TabInfo(string? Caption, List<ControlInfo> Controls);
+internal record TabInfo(string? Caption, List<ControlInfo> Controls, string? HelpUrl = null);
 
 // See WasmEditorBridge.ResolveLocalCover — DataUrl is null when Name is only a resource name
 // the caller must resolve itself (a plain unpacked .aslx's sibling-file cover).
@@ -596,7 +596,7 @@ public partial class WasmEditorBridge
                     AddDropdownTypeValues(attrs, visibleControls, key, data);
                 }
 
-                tabs.Add(new TabInfo(tab.Caption, visibleControls.Select(c => ToControlInfo(c, key)).ToList()));
+                tabs.Add(new TabInfo(tab.Caption, visibleControls.Select(c => ToControlInfo(c, key)).ToList(), tab.HelpUrl));
             }
 
             var visibleTopControls = data != null
