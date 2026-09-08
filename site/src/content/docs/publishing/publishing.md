@@ -18,6 +18,15 @@ In the editor, open the **File** menu in the toolbar and choose **Publish…**. 
 On textadventures.co.uk, click on _Create_ at the top, then _Submit_ below that. Then follow the instructions to upload the `.quest` file you just downloaded.
 
 
+## Where your game appears
+
+Once your game is through moderation, it is listed on textadventures.co.uk in the usual way. It will also start appearing in the **Play** tab of Quest Viva itself - both at [play.questviva.com](https://play.questviva.com) and on the home screen of the desktop app.
+
+The Play tab is not a separate place to submit your game to. It has no listings of its own: it reads the textadventures.co.uk listings live, so the games, categories and search results shown there are the ones from the web site. Publishing to textadventures.co.uk is all you need to do to appear in both.
+
+A game whose visibility is set to private is not listed in the Play tab, exactly as it is not listed on the web site. This is what makes the private-visibility approach to [beta-testing](#beta-testing) work - your testers play from the direct link you send them.
+
+
 ## The publish process
 
 What gets included in the `.quest` file, when you publish?  Broadly two things.
